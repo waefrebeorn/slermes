@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T19:31:39Z",
+  "generated_at": "2026-08-02T19:33:42Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -49804,10 +49804,10 @@
     },
     "agent/plugin_llm.py": {
       "total": 20,
-      "ported": 3,
+      "ported": 20,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 17,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 20,
@@ -49823,16 +49823,24 @@
             "decorators": [],
             "line_number": 178
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_plugin_llm_remaining.c",
+          "c_function": "pll_normalize_ref",
+          "pop_annotation": {
+            "c_function": "pll_normalize_ref",
+            "python_functions": [
+              "_normalize_ref"
+            ],
+            "c_file": "src/agent/port_plugin_llm_remaining.c",
+            "python_file": "agent/plugin_llm.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _normalize_ref @ agent/plugin_llm.py:_normalize_ref */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/plugin_llm.py",
@@ -49844,16 +49852,24 @@
             "decorators": [],
             "line_number": 183
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_plugin_llm_remaining.c",
+          "c_function": "pll_coerce_allowlist",
+          "pop_annotation": {
+            "c_function": "pll_coerce_allowlist",
+            "python_functions": [
+              "_coerce_allowlist"
+            ],
+            "c_file": "src/agent/port_plugin_llm_remaining.c",
+            "python_file": "agent/plugin_llm.py",
+            "line": 38,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _coerce_allowlist @ agent/plugin_llm.py:_coerce_allowlist */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/plugin_llm.py",
@@ -49865,16 +49881,24 @@
             "decorators": [],
             "line_number": 202
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_plugin_llm_remaining.c",
+          "c_function": "pll_resolve_trust_policy",
+          "pop_annotation": {
+            "c_function": "pll_resolve_trust_policy",
+            "python_functions": [
+              "_resolve_trust_policy"
+            ],
+            "c_file": "src/agent/port_plugin_llm_remaining.c",
+            "python_file": "agent/plugin_llm.py",
+            "line": 53,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_trust_policy @ agent/plugin_llm.py:_resolve_trust_policy */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/plugin_llm.py",
@@ -49886,16 +49910,24 @@
             "decorators": [],
             "line_number": 253
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_plugin_llm_remaining.c",
+          "c_function": "pll_check_overrides",
+          "pop_annotation": {
+            "c_function": "pll_check_overrides",
+            "python_functions": [
+              "_check_overrides"
+            ],
+            "c_file": "src/agent/port_plugin_llm_remaining.c",
+            "python_file": "agent/plugin_llm.py",
+            "line": 65,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _check_overrides @ agent/plugin_llm.py:_check_overrides */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/plugin_llm.py",
@@ -49907,16 +49939,24 @@
             "decorators": [],
             "line_number": 337
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_plugin_llm_remaining.c",
+          "c_function": "pll_normalize_input_block",
+          "pop_annotation": {
+            "c_function": "pll_normalize_input_block",
+            "python_functions": [
+              "_normalize_input_block"
+            ],
+            "c_file": "src/agent/port_plugin_llm_remaining.c",
+            "python_file": "agent/plugin_llm.py",
+            "line": 77,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _normalize_input_block @ agent/plugin_llm.py:_normalize_input_block */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/plugin_llm.py",
@@ -49928,16 +49968,24 @@
             "decorators": [],
             "line_number": 374
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_plugin_llm_remaining.c",
+          "c_function": "pll_build_structured_messages",
+          "pop_annotation": {
+            "c_function": "pll_build_structured_messages",
+            "python_functions": [
+              "_build_structured_messages"
+            ],
+            "c_file": "src/agent/port_plugin_llm_remaining.c",
+            "python_file": "agent/plugin_llm.py",
+            "line": 85,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _build_structured_messages @ agent/plugin_llm.py:_build_structured_messages */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/plugin_llm.py",
@@ -49949,16 +49997,24 @@
             "decorators": [],
             "line_number": 447
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_plugin_llm_remaining.c",
+          "c_function": "pll_strip_code_fences",
+          "pop_annotation": {
+            "c_function": "pll_strip_code_fences",
+            "python_functions": [
+              "_strip_code_fences"
+            ],
+            "c_file": "src/agent/port_plugin_llm_remaining.c",
+            "python_file": "agent/plugin_llm.py",
+            "line": 98,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _strip_code_fences @ agent/plugin_llm.py:_strip_code_fences */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/plugin_llm.py",
@@ -49970,16 +50026,24 @@
             "decorators": [],
             "line_number": 456
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_plugin_llm_remaining.c",
+          "c_function": "pll_parse_structured_text",
+          "pop_annotation": {
+            "c_function": "pll_parse_structured_text",
+            "python_functions": [
+              "_parse_structured_text"
+            ],
+            "c_file": "src/agent/port_plugin_llm_remaining.c",
+            "python_file": "agent/plugin_llm.py",
+            "line": 111,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _parse_structured_text @ agent/plugin_llm.py:_parse_structured_text */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/plugin_llm.py",
@@ -49991,16 +50055,24 @@
             "decorators": [],
             "line_number": 492
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_plugin_llm_remaining.c",
+          "c_function": "pll_extract_usage",
+          "pop_annotation": {
+            "c_function": "pll_extract_usage",
+            "python_functions": [
+              "_extract_usage"
+            ],
+            "c_file": "src/agent/port_plugin_llm_remaining.c",
+            "python_file": "agent/plugin_llm.py",
+            "line": 135,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _extract_usage @ agent/plugin_llm.py:_extract_usage */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/plugin_llm.py",
@@ -50012,16 +50084,24 @@
             "decorators": [],
             "line_number": 520
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_plugin_llm_remaining.c",
+          "c_function": "pll_extract_text",
+          "pop_annotation": {
+            "c_function": "pll_extract_text",
+            "python_functions": [
+              "_extract_text"
+            ],
+            "c_file": "src/agent/port_plugin_llm_remaining.c",
+            "python_file": "agent/plugin_llm.py",
+            "line": 156,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _extract_text @ agent/plugin_llm.py:_extract_text */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/plugin_llm.py",
@@ -50033,16 +50113,24 @@
             "decorators": [],
             "line_number": 543
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_plugin_llm_remaining.c",
+          "c_function": "pll_resolve_attribution",
+          "pop_annotation": {
+            "c_function": "pll_resolve_attribution",
+            "python_functions": [
+              "_resolve_attribution"
+            ],
+            "c_file": "src/agent/port_plugin_llm_remaining.c",
+            "python_file": "agent/plugin_llm.py",
+            "line": 172,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_attribution @ agent/plugin_llm.py:_resolve_attribution */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/plugin_llm.py",
@@ -50054,16 +50142,24 @@
             "decorators": [],
             "line_number": 607
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_plugin_llm_remaining.c",
+          "c_function": "pll_init",
+          "pop_annotation": {
+            "c_function": "pll_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_plugin_llm_remaining.c",
+            "python_file": "agent/plugin_llm.py",
+            "line": 183,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/plugin_llm.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/plugin_llm.py",
@@ -50075,16 +50171,24 @@
             "decorators": [],
             "line_number": 622
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_plugin_llm_remaining.c",
+          "c_function": "pll_complete",
+          "pop_annotation": {
+            "c_function": "pll_complete",
+            "python_functions": [
+              "complete"
+            ],
+            "c_file": "src/agent/port_plugin_llm_remaining.c",
+            "python_file": "agent/plugin_llm.py",
+            "line": 192,
+            "is_consolidated": false,
+            "full_text": "/* PoP: complete @ agent/plugin_llm.py:complete */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/plugin_llm.py",
@@ -50096,16 +50200,24 @@
             "decorators": [],
             "line_number": 683
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_plugin_llm_remaining.c",
+          "c_function": "pll_complete_structured",
+          "pop_annotation": {
+            "c_function": "pll_complete_structured",
+            "python_functions": [
+              "complete_structured"
+            ],
+            "c_file": "src/agent/port_plugin_llm_remaining.c",
+            "python_file": "agent/plugin_llm.py",
+            "line": 200,
+            "is_consolidated": false,
+            "full_text": "/* PoP: complete_structured @ agent/plugin_llm.py:complete_structured */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/plugin_llm.py",
@@ -50177,16 +50289,24 @@
             ],
             "line_number": 898
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_plugin_llm_remaining.c",
+          "c_function": "pll_json_response_format",
+          "pop_annotation": {
+            "c_function": "pll_json_response_format",
+            "python_functions": [
+              "_json_response_format"
+            ],
+            "c_file": "src/agent/port_plugin_llm_remaining.c",
+            "python_file": "agent/plugin_llm.py",
+            "line": 208,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _json_response_format @ agent/plugin_llm.py:_json_response_format */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/plugin_llm.py",
@@ -50198,16 +50318,24 @@
             "decorators": [],
             "line_number": 919
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_plugin_llm_remaining.c",
+          "c_function": "pll_invoke_sync",
+          "pop_annotation": {
+            "c_function": "pll_invoke_sync",
+            "python_functions": [
+              "_invoke_sync"
+            ],
+            "c_file": "src/agent/port_plugin_llm_remaining.c",
+            "python_file": "agent/plugin_llm.py",
+            "line": 214,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _invoke_sync @ agent/plugin_llm.py:_invoke_sync */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/plugin_llm.py",
@@ -50248,16 +50376,24 @@
             "decorators": [],
             "line_number": 1016
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_plugin_llm_remaining.c",
+          "c_function": "pll_make_for_test",
+          "pop_annotation": {
+            "c_function": "pll_make_for_test",
+            "python_functions": [
+              "make_plugin_llm_for_test"
+            ],
+            "c_file": "src/agent/port_plugin_llm_remaining.c",
+            "python_file": "agent/plugin_llm.py",
+            "line": 222,
+            "is_consolidated": false,
+            "full_text": "/* PoP: make_plugin_llm_for_test @ agent/plugin_llm.py:make_plugin_llm_for_test */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -346862,10 +346998,10 @@
     },
     "tools/voice_mode.py": {
       "total": 40,
-      "ported": 23,
+      "ported": 40,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 17,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 40,
@@ -346881,16 +347017,24 @@
             "decorators": [],
             "line_number": 32
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_voice_mode_remaining.c",
+          "c_function": "vmd_import_audio",
+          "pop_annotation": {
+            "c_function": "vmd_import_audio",
+            "python_functions": [
+              "_import_audio"
+            ],
+            "c_file": "src/tools/port_voice_mode_remaining.c",
+            "python_file": "tools/voice_mode.py",
+            "line": 25,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _import_audio @ tools/voice_mode.py:_import_audio */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/voice_mode.py",
@@ -347105,16 +347249,24 @@
             "decorators": [],
             "line_number": 291
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_voice_mode_remaining.c",
+          "c_function": "vmd_play_beep",
+          "pop_annotation": {
+            "c_function": "vmd_play_beep",
+            "python_functions": [
+              "play_beep"
+            ],
+            "c_file": "src/tools/port_voice_mode_remaining.c",
+            "python_file": "tools/voice_mode.py",
+            "line": 32,
+            "is_consolidated": false,
+            "full_text": "/* PoP: play_beep @ tools/voice_mode.py:play_beep */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/voice_mode.py",
@@ -347126,16 +347278,24 @@
             "decorators": [],
             "line_number": 340
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_voice_mode_remaining.c",
+          "c_function": "vmd_recorder_init",
+          "pop_annotation": {
+            "c_function": "vmd_recorder_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_voice_mode_remaining.c",
+            "python_file": "tools/voice_mode.py",
+            "line": 40,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/voice_mode.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/voice_mode.py",
@@ -347240,16 +347400,24 @@
             "decorators": [],
             "line_number": 361
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_voice_mode_remaining.c",
+          "c_function": "vmd_start",
+          "pop_annotation": {
+            "c_function": "vmd_start",
+            "python_functions": [
+              "start"
+            ],
+            "c_file": "src/tools/port_voice_mode_remaining.c",
+            "python_file": "tools/voice_mode.py",
+            "line": 46,
+            "is_consolidated": false,
+            "full_text": "/* PoP: start @ tools/voice_mode.py:start */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/voice_mode.py",
@@ -347261,16 +347429,24 @@
             "decorators": [],
             "line_number": 405
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_voice_mode_remaining.c",
+          "c_function": "vmd_stop_termux_recording",
+          "pop_annotation": {
+            "c_function": "vmd_stop_termux_recording",
+            "python_functions": [
+              "_stop_termux_recording"
+            ],
+            "c_file": "src/tools/port_voice_mode_remaining.c",
+            "python_file": "tools/voice_mode.py",
+            "line": 54,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _stop_termux_recording @ tools/voice_mode.py:_stop_termux_recording */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/voice_mode.py",
@@ -347282,16 +347458,24 @@
             "decorators": [],
             "line_number": 411
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_voice_mode_remaining.c",
+          "c_function": "vmd_stop",
+          "pop_annotation": {
+            "c_function": "vmd_stop",
+            "python_functions": [
+              "stop"
+            ],
+            "c_file": "src/tools/port_voice_mode_remaining.c",
+            "python_file": "tools/voice_mode.py",
+            "line": 61,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stop @ tools/voice_mode.py:stop */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/voice_mode.py",
@@ -347332,16 +347516,24 @@
             "decorators": [],
             "line_number": 456
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_voice_mode_remaining.c",
+          "c_function": "vmd_shutdown",
+          "pop_annotation": {
+            "c_function": "vmd_shutdown",
+            "python_functions": [
+              "shutdown"
+            ],
+            "c_file": "src/tools/port_voice_mode_remaining.c",
+            "python_file": "tools/voice_mode.py",
+            "line": 68,
+            "is_consolidated": false,
+            "full_text": "/* PoP: shutdown @ tools/voice_mode.py:shutdown */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/voice_mode.py",
@@ -347353,16 +347545,24 @@
             "decorators": [],
             "line_number": 481
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_voice_mode_remaining.c",
+          "c_function": "vmd_recorder_init",
+          "pop_annotation": {
+            "c_function": "vmd_recorder_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_voice_mode_remaining.c",
+            "python_file": "tools/voice_mode.py",
+            "line": 40,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/voice_mode.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/voice_mode.py",
@@ -347467,16 +347667,24 @@
             "decorators": [],
             "line_number": 525
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_voice_mode_remaining.c",
+          "c_function": "vmd_ensure_stream",
+          "pop_annotation": {
+            "c_function": "vmd_ensure_stream",
+            "python_functions": [
+              "_ensure_stream"
+            ],
+            "c_file": "src/tools/port_voice_mode_remaining.c",
+            "python_file": "tools/voice_mode.py",
+            "line": 74,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _ensure_stream @ tools/voice_mode.py:_ensure_stream */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/voice_mode.py",
@@ -347488,16 +347696,24 @@
             "decorators": [],
             "line_number": 655
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_voice_mode_remaining.c",
+          "c_function": "vmd_start",
+          "pop_annotation": {
+            "c_function": "vmd_start",
+            "python_functions": [
+              "start"
+            ],
+            "c_file": "src/tools/port_voice_mode_remaining.c",
+            "python_file": "tools/voice_mode.py",
+            "line": 46,
+            "is_consolidated": false,
+            "full_text": "/* PoP: start @ tools/voice_mode.py:start */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/voice_mode.py",
@@ -347509,16 +347725,24 @@
             "decorators": [],
             "line_number": 701
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_voice_mode_remaining.c",
+          "c_function": "vmd_close_stream_with_timeout",
+          "pop_annotation": {
+            "c_function": "vmd_close_stream_with_timeout",
+            "python_functions": [
+              "_close_stream_with_timeout"
+            ],
+            "c_file": "src/tools/port_voice_mode_remaining.c",
+            "python_file": "tools/voice_mode.py",
+            "line": 81,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _close_stream_with_timeout @ tools/voice_mode.py:_close_stream_with_timeout */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/voice_mode.py",
@@ -347530,16 +347754,24 @@
             "decorators": [],
             "line_number": 725
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_voice_mode_remaining.c",
+          "c_function": "vmd_stop",
+          "pop_annotation": {
+            "c_function": "vmd_stop",
+            "python_functions": [
+              "stop"
+            ],
+            "c_file": "src/tools/port_voice_mode_remaining.c",
+            "python_file": "tools/voice_mode.py",
+            "line": 61,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stop @ tools/voice_mode.py:stop */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/voice_mode.py",
@@ -347580,16 +347812,24 @@
             "decorators": [],
             "line_number": 780
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_voice_mode_remaining.c",
+          "c_function": "vmd_shutdown",
+          "pop_annotation": {
+            "c_function": "vmd_shutdown",
+            "python_functions": [
+              "shutdown"
+            ],
+            "c_file": "src/tools/port_voice_mode_remaining.c",
+            "python_file": "tools/voice_mode.py",
+            "line": 68,
+            "is_consolidated": false,
+            "full_text": "/* PoP: shutdown @ tools/voice_mode.py:shutdown */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/voice_mode.py",
@@ -347603,16 +347843,24 @@
             ],
             "line_number": 793
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_voice_mode_remaining.c",
+          "c_function": "vmd_write_wav",
+          "pop_annotation": {
+            "c_function": "vmd_write_wav",
+            "python_functions": [
+              "_write_wav"
+            ],
+            "c_file": "src/tools/port_voice_mode_remaining.c",
+            "python_file": "tools/voice_mode.py",
+            "line": 88,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _write_wav @ tools/voice_mode.py:_write_wav */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/voice_mode.py",
@@ -347711,16 +347959,24 @@
             "decorators": [],
             "line_number": 912
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_voice_mode_remaining.c",
+          "c_function": "vmd_should_chunk_for_transcription",
+          "pop_annotation": {
+            "c_function": "vmd_should_chunk_for_transcription",
+            "python_functions": [
+              "_should_chunk_for_transcription"
+            ],
+            "c_file": "src/tools/port_voice_mode_remaining.c",
+            "python_file": "tools/voice_mode.py",
+            "line": 119,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _should_chunk_for_transcription @ tools/voice_mode.py:_should_chunk_for_transcription */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/voice_mode.py",
@@ -347732,16 +347988,24 @@
             "decorators": [],
             "line_number": 922
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_voice_mode_remaining.c",
+          "c_function": "vmd_transcribe_wav_in_chunks",
+          "pop_annotation": {
+            "c_function": "vmd_transcribe_wav_in_chunks",
+            "python_functions": [
+              "_transcribe_wav_in_chunks"
+            ],
+            "c_file": "src/tools/port_voice_mode_remaining.c",
+            "python_file": "tools/voice_mode.py",
+            "line": 128,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _transcribe_wav_in_chunks @ tools/voice_mode.py:_transcribe_wav_in_chunks */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/voice_mode.py",
@@ -347753,16 +348017,24 @@
             "decorators": [],
             "line_number": 972
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_voice_mode_remaining.c",
+          "c_function": "vmd_split_wav_for_transcription",
+          "pop_annotation": {
+            "c_function": "vmd_split_wav_for_transcription",
+            "python_functions": [
+              "_split_wav_for_transcription"
+            ],
+            "c_file": "src/tools/port_voice_mode_remaining.c",
+            "python_file": "tools/voice_mode.py",
+            "line": 136,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _split_wav_for_transcription @ tools/voice_mode.py:_split_wav_for_transcription */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/voice_mode.py",
