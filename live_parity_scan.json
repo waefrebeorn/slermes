@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:28:30Z",
+  "generated_at": "2026-08-02T20:30:44Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -88049,10 +88049,10 @@
     },
     "cron/scheduler_provider.py": {
       "total": 12,
-      "ported": 3,
+      "ported": 12,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 9,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 12,
@@ -88071,16 +88071,24 @@
             ],
             "line_number": 39
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cron/port_scheduler_provider_remaining.c",
+          "c_function": "schp_name",
+          "pop_annotation": {
+            "c_function": "schp_name",
+            "python_functions": [
+              "name"
+            ],
+            "c_file": "src/cron/port_scheduler_provider_remaining.c",
+            "python_file": "cron/scheduler_provider.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: name @ cron/scheduler_provider.py:name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cron/scheduler_provider.py",
@@ -88092,16 +88100,24 @@
             "decorators": [],
             "line_number": 42
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cron/port_scheduler_provider_remaining.c",
+          "c_function": "schp_is_available",
+          "pop_annotation": {
+            "c_function": "schp_is_available",
+            "python_functions": [
+              "is_available"
+            ],
+            "c_file": "src/cron/port_scheduler_provider_remaining.c",
+            "python_file": "cron/scheduler_provider.py",
+            "line": 27,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_available @ cron/scheduler_provider.py:is_available */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cron/scheduler_provider.py",
@@ -88115,16 +88131,24 @@
             ],
             "line_number": 52
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cron/port_scheduler_provider_remaining.c",
+          "c_function": "schp_start",
+          "pop_annotation": {
+            "c_function": "schp_start",
+            "python_functions": [
+              "start"
+            ],
+            "c_file": "src/cron/port_scheduler_provider_remaining.c",
+            "python_file": "cron/scheduler_provider.py",
+            "line": 34,
+            "is_consolidated": false,
+            "full_text": "/* PoP: start @ cron/scheduler_provider.py:start */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cron/scheduler_provider.py",
@@ -88136,16 +88160,24 @@
             "decorators": [],
             "line_number": 68
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cron/port_scheduler_provider_remaining.c",
+          "c_function": "schp_stop",
+          "pop_annotation": {
+            "c_function": "schp_stop",
+            "python_functions": [
+              "stop"
+            ],
+            "c_file": "src/cron/port_scheduler_provider_remaining.c",
+            "python_file": "cron/scheduler_provider.py",
+            "line": 41,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stop @ cron/scheduler_provider.py:stop */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cron/scheduler_provider.py",
@@ -88215,16 +88247,24 @@
             "decorators": [],
             "line_number": 91
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cron/port_scheduler_provider_remaining.c",
+          "c_function": "schp_fire_due",
+          "pop_annotation": {
+            "c_function": "schp_fire_due",
+            "python_functions": [
+              "fire_due"
+            ],
+            "c_file": "src/cron/port_scheduler_provider_remaining.c",
+            "python_file": "cron/scheduler_provider.py",
+            "line": 48,
+            "is_consolidated": false,
+            "full_text": "/* PoP: fire_due @ cron/scheduler_provider.py:fire_due */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cron/scheduler_provider.py",
@@ -88236,16 +88276,24 @@
             "decorators": [],
             "line_number": 115
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cron/port_scheduler_provider_remaining.c",
+          "c_function": "schp_reconcile",
+          "pop_annotation": {
+            "c_function": "schp_reconcile",
+            "python_functions": [
+              "reconcile"
+            ],
+            "c_file": "src/cron/port_scheduler_provider_remaining.c",
+            "python_file": "cron/scheduler_provider.py",
+            "line": 56,
+            "is_consolidated": false,
+            "full_text": "/* PoP: reconcile @ cron/scheduler_provider.py:reconcile */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cron/scheduler_provider.py",
@@ -88257,16 +88305,24 @@
             "decorators": [],
             "line_number": 122
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cron/port_scheduler_provider_remaining.c",
+          "c_function": "schp_resolve_cron_scheduler",
+          "pop_annotation": {
+            "c_function": "schp_resolve_cron_scheduler",
+            "python_functions": [
+              "resolve_cron_scheduler"
+            ],
+            "c_file": "src/cron/port_scheduler_provider_remaining.c",
+            "python_file": "cron/scheduler_provider.py",
+            "line": 64,
+            "is_consolidated": false,
+            "full_text": "/* PoP: resolve_cron_scheduler @ cron/scheduler_provider.py:resolve_cron_scheduler */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cron/scheduler_provider.py",
@@ -88280,16 +88336,24 @@
             ],
             "line_number": 173
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cron/port_scheduler_provider_remaining.c",
+          "c_function": "schp_name",
+          "pop_annotation": {
+            "c_function": "schp_name",
+            "python_functions": [
+              "name"
+            ],
+            "c_file": "src/cron/port_scheduler_provider_remaining.c",
+            "python_file": "cron/scheduler_provider.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: name @ cron/scheduler_provider.py:name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cron/scheduler_provider.py",
@@ -88301,16 +88365,24 @@
             "decorators": [],
             "line_number": 176
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cron/port_scheduler_provider_remaining.c",
+          "c_function": "schp_start",
+          "pop_annotation": {
+            "c_function": "schp_start",
+            "python_functions": [
+              "start"
+            ],
+            "c_file": "src/cron/port_scheduler_provider_remaining.c",
+            "python_file": "cron/scheduler_provider.py",
+            "line": 34,
+            "is_consolidated": false,
+            "full_text": "/* PoP: start @ cron/scheduler_provider.py:start */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cron/scheduler_provider.py",
@@ -124855,10 +124927,10 @@
     },
     "gateway/platforms/yuanbao_media.py": {
       "total": 17,
-      "ported": 6,
+      "ported": 15,
       "partial": 2,
       "stub": 0,
-      "real_gaps": 9,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 17,
@@ -124874,17 +124946,24 @@
             "decorators": [],
             "line_number": 89
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_media_remaining.c",
+          "c_function": "ybm_guess_mime_type",
+          "pop_annotation": {
+            "c_function": "ybm_guess_mime_type",
+            "python_functions": [
+              "guess_mime_type"
+            ],
+            "c_file": "src/gateway/port_yuanbao_media_remaining.c",
+            "python_file": "gateway/platforms/yuanbao_media.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: guess_mime_type @ gateway/platforms/yuanbao_media.py:guess_mime_type */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao_media.py",
@@ -124896,17 +124975,24 @@
             "decorators": [],
             "line_number": 95
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_media_remaining.c",
+          "c_function": "ybm_is_image",
+          "pop_annotation": {
+            "c_function": "ybm_is_image",
+            "python_functions": [
+              "is_image"
+            ],
+            "c_file": "src/gateway/port_yuanbao_media_remaining.c",
+            "python_file": "gateway/platforms/yuanbao_media.py",
+            "line": 47,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_image @ gateway/platforms/yuanbao_media.py:is_image */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao_media.py",
@@ -124939,17 +125025,24 @@
             "decorators": [],
             "line_number": 108
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_media_remaining.c",
+          "c_function": "ybm_md5_hex",
+          "pop_annotation": {
+            "c_function": "ybm_md5_hex",
+            "python_functions": [
+              "md5_hex"
+            ],
+            "c_file": "src/gateway/port_yuanbao_media_remaining.c",
+            "python_file": "gateway/platforms/yuanbao_media.py",
+            "line": 57,
+            "is_consolidated": false,
+            "full_text": "/* PoP: md5_hex @ gateway/platforms/yuanbao_media.py:md5_hex */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao_media.py",
@@ -124982,17 +125075,24 @@
             "decorators": [],
             "line_number": 121
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_media_remaining.c",
+          "c_function": "ybm_parse_image_size",
+          "pop_annotation": {
+            "c_function": "ybm_parse_image_size",
+            "python_functions": [
+              "parse_image_size"
+            ],
+            "c_file": "src/gateway/port_yuanbao_media_remaining.c",
+            "python_file": "gateway/platforms/yuanbao_media.py",
+            "line": 110,
+            "is_consolidated": false,
+            "full_text": "/* PoP: parse_image_size @ gateway/platforms/yuanbao_media.py:parse_image_size */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao_media.py",
@@ -125004,17 +125104,24 @@
             "decorators": [],
             "line_number": 134
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_media_remaining.c",
+          "c_function": "ybm_parse_png_size",
+          "pop_annotation": {
+            "c_function": "ybm_parse_png_size",
+            "python_functions": [
+              "_parse_png_size"
+            ],
+            "c_file": "src/gateway/port_yuanbao_media_remaining.c",
+            "python_file": "gateway/platforms/yuanbao_media.py",
+            "line": 147,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _parse_png_size @ gateway/platforms/yuanbao_media.py:_parse_png_size */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao_media.py",
@@ -125142,17 +125249,24 @@
             "decorators": [],
             "line_number": 275
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_media_remaining.c",
+          "c_function": "ybm_cos_sign",
+          "pop_annotation": {
+            "c_function": "ybm_cos_sign",
+            "python_functions": [
+              "_cos_sign"
+            ],
+            "c_file": "src/gateway/port_yuanbao_media_remaining.c",
+            "python_file": "gateway/platforms/yuanbao_media.py",
+            "line": 157,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _cos_sign @ gateway/platforms/yuanbao_media.py:_cos_sign */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao_media.py",
@@ -125222,17 +125336,24 @@
             "decorators": [],
             "line_number": 575
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_media_remaining.c",
+          "c_function": "ybm_build_image_msg_body",
+          "pop_annotation": {
+            "c_function": "ybm_build_image_msg_body",
+            "python_functions": [
+              "build_image_msg_body"
+            ],
+            "c_file": "src/gateway/port_yuanbao_media_remaining.c",
+            "python_file": "gateway/platforms/yuanbao_media.py",
+            "line": 165,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_image_msg_body @ gateway/platforms/yuanbao_media.py:build_image_msg_body */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao_media.py",
@@ -125244,17 +125365,24 @@
             "decorators": [],
             "line_number": 623
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_media_remaining.c",
+          "c_function": "ybm_build_file_msg_body",
+          "pop_annotation": {
+            "c_function": "ybm_build_file_msg_body",
+            "python_functions": [
+              "build_file_msg_body"
+            ],
+            "c_file": "src/gateway/port_yuanbao_media_remaining.c",
+            "python_file": "gateway/platforms/yuanbao_media.py",
+            "line": 177,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_file_msg_body @ gateway/platforms/yuanbao_media.py:build_file_msg_body */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao_media.py",
@@ -125266,17 +125394,24 @@
             "decorators": [],
             "line_number": 659
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_media_remaining.c",
+          "c_function": "ybm_basename_from_url",
+          "pop_annotation": {
+            "c_function": "ybm_basename_from_url",
+            "python_functions": [
+              "_basename_from_url"
+            ],
+            "c_file": "src/gateway/port_yuanbao_media_remaining.c",
+            "python_file": "gateway/platforms/yuanbao_media.py",
+            "line": 189,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _basename_from_url @ gateway/platforms/yuanbao_media.py:_basename_from_url */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
