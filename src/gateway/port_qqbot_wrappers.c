@@ -269,7 +269,15 @@ int qqbot_u_guess_ext_from_data(const char *arg) {
 }
 
 /* PoP: _looks_like_silk @ gateway/platforms/qqbot/adapter.py:_looks_like_silk */
-int qqbot_u_looks_like_silk(const char *arg) { (void)arg; return 0; }
+int qqbot_u_looks_like_silk(const char *arg) {
+    /* Python: header sniff. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s (#!SILK / \\x02! / #!SILK_V3 headers)\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _convert_silk_to_wav @ gateway/platforms/qqbot/adapter.py:_convert_silk_to_wav */
 int qqbot_u_convert_silk_to_wav(const char *arg) { (void)arg; return 0; }

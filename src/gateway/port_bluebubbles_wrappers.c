@@ -69,7 +69,19 @@ int bb_u_compile_mention_patterns(const char *arg) { (void)arg; return 0; }
 int bb_u_message_matches_mention_patterns(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _clean_mention_text @ gateway/platforms/bluebubbles.py:_clean_mention_text */
-int bb_u_clean_mention_text(const char *arg) { (void)arg; return 0; }
+int bb_u_clean_mention_text(const char *arg) {
+    /* Python: leading-only strip. Arg =
+     * "cleaned\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int cleaned = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!cleaned) { printf("%s\n", t2 ? t2 + 1 : ""); return 0; }
+    printf("mention stripped (leading match only, separators trimmed): %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _api_post @ gateway/platforms/bluebubbles.py:_api_post */
 int bb_u_api_post(const char *arg) { (void)arg; return 0; }

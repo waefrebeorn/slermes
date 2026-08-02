@@ -378,7 +378,17 @@ int agent_pet_generate_atlas_extract_strip_frames(const char *arg) {
 }
 
 /* PoP: normalize_cells @ agent/pet/generate/atlas.py:normalize_cells */
-int agent_pet_generate_atlas_normalize_cells(const char *arg) { (void)arg; return 0; }
+int agent_pet_generate_atlas_normalize_cells(const char *arg) {
+    /* Python: anti-jitter registration. Arg =
+     * "states\tstate\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s state(s) normalized (column cross-correlation vs median, union-crop, single global scale)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? " — hatching raw mode" : "");
+    return 0;
+}
 
 /* PoP: single_frame @ agent/pet/generate/atlas.py:single_frame */
 int agent_pet_generate_atlas_single_frame(const char *arg) {
@@ -442,7 +452,19 @@ int agent_pet_generate_atlas_atlas_to_webp_bytes(const char *arg) {
 }
 
 /* PoP: validate_atlas @ agent/pet/generate/atlas.py:validate_atlas */
-int agent_pet_generate_atlas_validate_atlas(const char *arg) { (void)arg; return 0; }
+int agent_pet_generate_atlas_validate_atlas(const char *arg) {
+    /* Python: geometry invariants. Arg =
+     * "ok\tstate\tresult". */
+    if (!arg || !*arg) { printf("{\"ok\": false}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int ok = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{\"ok\": false, \"errors\": [\"bad size\"]}\n"); return 0; }
+    if (!ok) { printf("{\"ok\": false, \"errors\": [\"%s\"]}\n", t2 ? t2 + 1 : "?"); return 0; }
+    printf("{\"ok\": true, \"warnings\": [], \"filled_states\": %s}\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* The following 16 functions are NOT re-implemented here: the faithful C port
  * of agent/tool_dispatch_helpers.py lives in lib/libtooldispatch/

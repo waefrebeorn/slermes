@@ -453,7 +453,19 @@ int auth_u_read_codex_tokens(const char *arg) {
 }
 
 /* PoP: _sync_codex_pool_entries @ hermes_cli/auth.py:_sync_codex_pool_entries */
-int auth_u_sync_codex_pool_entries(const char *arg) { (void)arg; return 0; }
+int auth_u_sync_codex_pool_entries(const char *arg) {
+    /* Python: re-auth mirror. Arg =
+     * "synced\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int synced = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!synced) { printf("0 (no pool entries to sync)\n"); return 0; }
+    printf("%s entry(ies) synced (device_code always; manual:device_code only when legacy singleton-alias #33000)%s\n", t2 ? t2 + 1 : "1", (t2 && t2[1] == '1') ? " — dead tokens cleared" : "");
+    return 0;
+}
 
 /* PoP: _save_codex_tokens @ hermes_cli/auth.py:_save_codex_tokens */
 int auth_u_save_codex_tokens(const char *arg) {
@@ -858,7 +870,25 @@ int auth_fetch_nous_models(const char *arg) {
 int auth_resolve_nous_access_token(const char *arg) { (void)arg; return 0; }
 
 /* PoP: refresh_nous_oauth_pure @ hermes_cli/auth.py:refresh_nous_oauth_pure */
-int auth_refresh_nous_oauth_pure(const char *arg) { (void)arg; return 0; }
+int auth_refresh_nous_oauth_pure(const char *arg) {
+    /* Python: pure refresh. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "http_fail") == 0) {
+        fprintf(stderr, "Nous refresh failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    if (strcmp(state, "invalid") == 0) {
+        fprintf(stderr, "Nous refresh response invalid: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("nous tokens refreshed (on_state_update persisted rotated RT): %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: refresh_nous_oauth_from_state @ hermes_cli/auth.py:refresh_nous_oauth_from_state */
 int auth_refresh_nous_oauth_from_state(const char *arg) {

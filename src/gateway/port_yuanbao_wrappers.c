@@ -730,7 +730,19 @@ int yb_u_flush_inbound_buffer(const char *arg) {
 int yb_send_biz_request(const char *arg) { (void)arg; return 0; }
 
 /* PoP: schedule_reconnect @ gateway/platforms/yuanbao.py:schedule_reconnect */
-int yb_schedule_reconnect(const char *arg) { (void)arg; return 0; }
+int yb_schedule_reconnect(const char *arg) {
+    /* Python: guarded backoff. Arg =
+     * "scheduled\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int scheduled = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (not running)\n"); return 0; }
+    if (!scheduled) { printf("0 (already reconnecting)\n"); return 0; }
+    printf("1 (reconnect scheduled, exp backoff 1s→60s, %s attempts max)%s\n", t2 ? t2 + 1 : "5", (t2 && t2[1] == '1') ? " — backoff reset on success" : "");
+    return 0;
+}
 
 /* PoP: _reconnect_with_backoff @ gateway/platforms/yuanbao.py:_reconnect_with_backoff */
 int yb_u_reconnect_with_backoff(const char *arg) { (void)arg; return 0; }

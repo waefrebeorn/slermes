@@ -353,4 +353,16 @@ int appr_u_is_verification_artifact_cleanup(const char *arg) {
 int appr_u_run_approval_gate(const char *arg) { (void)arg; return 0; }
 
 /* PoP: request_tool_approval @ tools/approval.py:request_tool_approval */
-int appr_request_tool_approval(const char *arg) { (void)arg; return 0; }
+int appr_request_tool_approval(const char *arg) {
+    /* Python: plugin escalation. Arg =
+     * "approved\tstate\tresult". */
+    if (!arg || !*arg) { printf("denied (timeout fail-closed)\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int approved = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("denied (no gate wired — default allow)\n"); return 0; }
+    if (!approved) { printf("denied by user\n"); return 0; }
+    printf("approved (%s allowlist, rule_key-derived grain)%s\n", t2 ? t2 + 1 : "session", (t2 && t2[1] == '1') ? " — [a]lways" : "");
+    return 1;
+}

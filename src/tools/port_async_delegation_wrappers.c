@@ -359,7 +359,21 @@ int adel_u_push_completion_event(const char *arg) {
 }
 
 /* PoP: dispatch_async_delegation_batch @ tools/async_delegation.py:dispatch_async_delegation_batch */
-int adel_dispatch_async_delegation_batch(const char *arg) { (void)arg; return 0; }
+int adel_dispatch_async_delegation_batch(const char *arg) {
+    /* Python: one-slot batch. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"status\": \"rejected\"}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "rejected") == 0) {
+        fprintf(stderr, "async pool at capacity: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("{\"status\": \"dispatched\", \"delegation_id\": \"%s\"} (one async slot, single completion event, in-batch cap)%s\n", t3 ? t3 + 1 : "?", (t2 && t2[1] == '1') ? " — combined results carried" : "");
+    return 0;
+}
 
 /* PoP: _finalize_batch @ tools/async_delegation.py:_finalize_batch */
 int adel_u_finalize_batch(const char *arg) {

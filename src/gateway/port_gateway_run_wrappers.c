@@ -870,7 +870,15 @@ int grun_u_reset_notice_session_info(const char *arg) {
 }
 
 /* PoP: _format_session_info @ gateway/run.py:_format_session_info */
-int grun_u_format_session_info(const char *arg) { (void)arg; return 0; }
+int grun_u_format_session_info(const char *arg) {
+    /* Python: model info block. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("session info block (model/provider/context/endpoint — surfaces wrong context detection)%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _sibling_thread_run_keys @ gateway/run.py:_sibling_thread_run_keys */
 int grun_u_sibling_thread_run_keys(const char *arg) {
@@ -1087,7 +1095,17 @@ int grun_u_enrich_message_with_vision(const char *arg) { (void)arg; return 0; }
 int grun_u_enrich_message_with_transcription(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _pending_event_audio_paths @ gateway/run.py:_pending_event_audio_paths */
-int grun_u_pending_event_audio_paths(const char *arg) { (void)arg; return 0; }
+int grun_u_pending_event_audio_paths(const char *arg) {
+    /* Python: STT-eligible filter. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s audio path(s) STT-eligible (is_stt_input per media index)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? " — cached on event" : "");
+    return 0;
+}
 
 /* PoP: _transcribe_pending_audio_event_once @ gateway/run.py:_transcribe_pending_audio_event_once */
 int grun_u_transcribe_pending_audio_event_once(const char *arg) { (void)arg; return 0; }

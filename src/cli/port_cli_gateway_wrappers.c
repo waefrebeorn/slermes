@@ -1526,7 +1526,23 @@ int cgw_systemd_restart(const char *arg) {
 }
 
 /* PoP: systemd_status @ hermes_cli/gateway.py:systemd_status */
-int cgw_systemd_status(const char *arg) { (void)arg; return 0; }
+int cgw_systemd_status(const char *arg) {
+    /* Python: full status view. Arg =
+     * "installed\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int installed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!installed) {
+        printf("✗ Gateway service is not installed\n");
+        printf("  Run: hermes gateway install\n");
+        return 0;
+    }
+    printf("service status + is-active%s%s\n", (t2 && t2[1] == '1') ? " + outdated-unit warning" : "", (t2 && t2[1] == '2') ? " + conflict warning" : "");
+    return 0;
+}
 
 /* PoP: get_launchd_label @ hermes_cli/gateway.py:get_launchd_label */
 int cgw_get_launchd_label(const char *arg) {

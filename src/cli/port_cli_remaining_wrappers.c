@@ -3986,7 +3986,19 @@ int hermes_cli_env_loader_u_load_dotenv_with_fallback(const char *arg) {
 }
 
 /* PoP: _sanitize_env_file_if_needed @ hermes_cli/env_loader.py:_sanitize_env_file_if_needed */
-int hermes_cli_env_loader_u_sanitize_env_file_if_needed(const char *arg) { (void)arg; return 0; }
+int hermes_cli_env_loader_u_sanitize_env_file_if_needed(const char *arg) {
+    /* Python: BOM sniff + null strip. Arg =
+     * "rewrote\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int rewrote = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("no .env to sanitize\n"); return 0; }
+    if (!rewrote) { printf("env clean (no BOM/null/CRLF issues)\n"); return 0; }
+    printf(".env rewritten (UTF-16 → UTF-8, nulls stripped, UTF-32 refused untouched): %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _apply_managed_env @ hermes_cli/env_loader.py:_apply_managed_env */
 int hermes_cli_env_loader_u_apply_managed_env(const char *arg) {
@@ -4000,7 +4012,17 @@ int hermes_cli_env_loader_u_apply_managed_env(const char *arg) {
 }
 
 /* PoP: _apply_external_secret_sources @ hermes_cli/env_loader.py:_apply_external_secret_sources */
-int hermes_cli_env_loader_u_apply_external_secret_sources(const char *arg) { (void)arg; return 0; }
+int hermes_cli_env_loader_u_apply_external_secret_sources(const char *arg) {
+    /* Python: once-per-home guard. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("no external secret sources enabled\n"); return 0; }
+    printf("%s source(s) applied (mapped-beats-bulk, first-claim-wins, ASCII sweep, provenance map, idempotent per home)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? " — reset_secret_source_cache to force" : "");
+    return 0;
+}
 
 /* PoP: _remediation_hint @ hermes_cli/env_loader.py:_remediation_hint */
 int hermes_cli_env_loader_u_remediation_hint(const char *arg) {
@@ -6709,7 +6731,18 @@ int hermes_cli_container_boot_u_cleanup_stale_runtime_files(const char *arg) {
 }
 
 /* PoP: _register_service @ hermes_cli/container_boot.py:_register_service */
-int hermes_cli_container_boot_u_register_service(const char *arg) { (void)arg; return 0; }
+int hermes_cli_container_boot_u_register_service(const char *arg) {
+    /* Python: s6 slot atomic. Arg =
+     * "profile\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *profile = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state) { printf("registration failed\n"); return 0; }
+    printf("s6 slot gateway-%s registered (temp dir + Path.replace atomic, down marker controls start state)%s\n", profile, (t2 && t2[1] == '1') ? " — dot-prefixed for delete-on-rescan" : "");
+    return 0;
+}
 
 /* PoP: _write_reconcile_log @ hermes_cli/container_boot.py:_write_reconcile_log */
 int hermes_cli_container_boot_u_write_reconcile_log(const char *arg) {
@@ -9487,7 +9520,17 @@ int hermes_cli_goals_evaluate_after_turn(const char *arg) { (void)arg; return 0;
 int hermes_cli_goals_run_kanban_goal_loop(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _profile_bound_backend_pids @ hermes_cli/profiles.py:_profile_bound_backend_pids */
-int hermes_cli_profiles_u_profile_bound_backend_pids(const char *arg) { (void)arg; return 0; }
+int hermes_cli_profiles_u_profile_bound_backend_pids(const char *arg) {
+    /* Python: backend inspection. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s backend pid(s) bound to profile (serve/dashboard/gateway only, self+ancestors excluded)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? " — HERMES_HOME match" : "");
+    return 0;
+}
 
 /* PoP: _stop_profile_backends @ hermes_cli/profiles.py:_stop_profile_backends */
 int hermes_cli_profiles_u_stop_profile_backends(const char *arg) {

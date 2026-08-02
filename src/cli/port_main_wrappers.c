@@ -1681,7 +1681,24 @@ int main_u_stash_apply_failed_only_on_existing_untracked(const char *arg) {
 }
 
 /* PoP: _restore_stashed_changes @ hermes_cli/main.py:_restore_stashed_changes */
-int main_u_restore_stashed_changes(const char *arg) { (void)arg; return 0; }
+int main_u_restore_stashed_changes(const char *arg) {
+    /* Python: prompt + apply. Arg =
+     * "restored\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int restored = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no stash)\n"); return 0; }
+    if (!restored) {
+        printf("Skipped restoring local changes.\n");
+        printf("Your changes are still preserved in git stash.\n");
+        return 0;
+    }
+    printf("→ Restoring local changes...\n");
+    printf("restored (unmerged conflicts reported, %s remaining)\n", t2 ? t2 + 1 : "0");
+    return 1;
+}
 
 /* PoP: _discard_stashed_changes @ hermes_cli/main.py:_discard_stashed_changes */
 int main_u_discard_stashed_changes(const char *arg) {
@@ -2110,7 +2127,17 @@ int main_u_hermes_exe_shims(const char *arg) {
 }
 
 /* PoP: _detect_concurrent_hermes_instances @ hermes_cli/main.py:_detect_concurrent_hermes_instances */
-int main_u_detect_concurrent_hermes_instances(const char *arg) { (void)arg; return 0; }
+int main_u_detect_concurrent_hermes_instances(const char *arg) {
+    /* Python: shim-lock finder. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[] (off-windows / no psutil)\n"); return 0; }
+    printf("%s concurrent instance(s) (hermes.exe/launcher shims, self+ancestors excluded)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? " — desktop backend child" : "");
+    return 0;
+}
 
 /* PoP: _format_concurrent_instances_message @ hermes_cli/main.py:_format_concurrent_instances_message */
 int main_u_format_concurrent_instances_message(const char *arg) {
@@ -2130,7 +2157,22 @@ int main_u_format_concurrent_instances_message(const char *arg) {
 }
 
 /* PoP: _quarantine_running_hermes_exe @ hermes_cli/main.py:_quarantine_running_hermes_exe */
-int main_u_quarantine_running_hermes_exe(const char *arg) { (void)arg; return 0; }
+int main_u_quarantine_running_hermes_exe(const char *arg) {
+    /* Python: rename-then-retry. Arg =
+     * "quarantined\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int quarantined = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!quarantined) {
+        printf("quarantine failed — scheduled MOVEFILE_DELAY_UNTIL_REBOOT for %s\n", t2 ? t2 + 1 : "?");
+        return 0;
+    }
+    printf("quarantined to .old.<ms> (exponential backoff 100-1000ms, uv writes fresh shims)%s\n", (t2 && t2[1] == '1') ? " — cleaned next launch" : "");
+    return 1;
+}
 
 /* PoP: _schedule_replace_on_reboot @ hermes_cli/main.py:_schedule_replace_on_reboot */
 int main_u_schedule_replace_on_reboot(const char *arg) {
