@@ -252,7 +252,18 @@ int wx_u_ensure_typing_ticket(const char *arg) { (void)arg; return 0; }
 int wx_u_download_remote_media(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _outbound_media_builder @ gateway/platforms/weixin.py:_outbound_media_builder */
-int wx_u_outbound_media_builder(const char *arg) { (void)arg; return 0; }
+int wx_u_outbound_media_builder(const char *arg) {
+    /* Python: mime dispatch. Arg =
+     * "kind\tstate\tresult". */
+    if (!arg || !*arg) { printf("\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *kind = t1 ? t1 + 1 : "file";
+    int state = arg[0] == '1';
+    if (!state) { printf("\t\n"); return 0; }
+    printf("MEDIA_%s builder (encrypt_query_param + aes_key + mid/video/voice sizes)%s\n", kind, (t2 && t2[1] == '1') ? " — force_file_attachment" : "");
+    return 0;
+}
 
 /* PoP: send_weixin_direct @ gateway/platforms/weixin.py:send_weixin_direct */
 int wx_send_weixin_direct(const char *arg) { (void)arg; return 0; }

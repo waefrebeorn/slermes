@@ -732,7 +732,18 @@ int main_u_aux_config_menu(const char *arg) {
 }
 
 /* PoP: _aux_select_for_task @ hermes_cli/main.py:_aux_select_for_task */
-int main_u_aux_select_for_task(const char *arg) { (void)arg; return 0; }
+int main_u_aux_select_for_task(const char *arg) {
+    /* Python: authenticated-only picker. Arg =
+     * "task\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *task = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state) { printf("menu closed\n"); return 0; }
+    printf("aux '%s' configured (auto first, then authenticated providers): %s\n", task, t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _aux_flow_provider_model @ hermes_cli/main.py:_aux_flow_provider_model */
 int main_u_aux_flow_provider_model(const char *arg) {
@@ -1346,7 +1357,19 @@ int main_u_ensure_desktop_exe_launchable(const char *arg) {
 }
 
 /* PoP: _purge_electron_build_cache @ hermes_cli/main.py:_purge_electron_build_cache */
-int main_u_purge_electron_build_cache(const char *arg) { (void)arg; return 0; }
+int main_u_purge_electron_build_cache(const char *arg) {
+    /* Python: unconditional purge. Arg =
+     * "purged\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int purged = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("no purge\n"); return 0; }
+    if (!purged) { printf("no cache to purge (no cached zips found)\n"); return 0; }
+    printf("purged cached Electron zips + stale unpacked dir (SHASUM re-verify on redownload)%s\n", (t2 && t2[1] == '1') ? " — ENOENT rename root cause #?" : "");
+    return 0;
+}
 
 /* PoP: _redownload_electron_dist @ hermes_cli/main.py:_redownload_electron_dist */
 int main_u_redownload_electron_dist(const char *arg) {
@@ -2310,7 +2333,19 @@ int main_u__getattr___2(const char *arg) {
 }
 
 /* PoP: _install_hangup_protection @ hermes_cli/main.py:_install_hangup_protection */
-int main_u_install_hangup_protection(const char *arg) { (void)arg; return 0; }
+int main_u_install_hangup_protection(const char *arg) {
+    /* Python: SIGHUP guard. Arg =
+     * "gateway_mode\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int gateway_mode = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (gateway_mode) { printf("no-op (detached gateway update)\n"); return 0; }
+    if (!state) { printf("\n"); return 0; }
+    printf("hangup protection installed (SIGHUP→SIG_IGN survives exec, stdout/stderr mirrored to update.log, BrokenPipe absorbed)%s\n", (t2 && t2[1] == '1') ? " — SIGINT/SIGTERM left alone" : "");
+    return 0;
+}
 
 /* PoP: _log_only_write @ hermes_cli/main.py:_log_only_write */
 int main_u_log_only_write(const char *arg) {

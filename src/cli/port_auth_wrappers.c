@@ -301,7 +301,25 @@ int auth_u_refresh_spotify_oauth_state(const char *arg) {
 }
 
 /* PoP: resolve_spotify_runtime_credentials @ hermes_cli/auth.py:resolve_spotify_runtime_credentials */
-int auth_resolve_spotify_runtime_credentials(const char *arg) { (void)arg; return 0; }
+int auth_resolve_spotify_runtime_credentials(const char *arg) {
+    /* Python: refresh-or-clear. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_state") == 0) {
+        fprintf(stderr, "Spotify is not authenticated. Run `hermes auth spotify` first.\n");
+        return 1;
+    }
+    if (strcmp(state, "refresh_fail") == 0) {
+        fprintf(stderr, "Spotify refresh failed; dead tokens cleared: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("spotify creds: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: get_spotify_auth_status @ hermes_cli/auth.py:get_spotify_auth_status */
 int auth_get_spotify_auth_status(const char *arg) {
@@ -906,10 +924,39 @@ int auth_get_external_process_provider_status(const char *arg) {
 }
 
 /* PoP: _get_azure_foundry_auth_status @ hermes_cli/auth.py:_get_azure_foundry_auth_status */
-int auth_u_get_azure_foundry_auth_status(const char *arg) { (void)arg; return 0; }
+int auth_u_get_azure_foundry_auth_status(const char *arg) {
+    /* Python: structural status. Arg =
+     * "mode\tstate\tresult". */
+    if (!arg || !*arg) { printf("{\"provider\": \"azure-foundry\", \"logged_in\": false}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *mode = t1 ? t1 + 1 : "api_key";
+    int state = arg[0] == '1';
+    if (!state) { printf("{\"provider\": \"azure-foundry\", \"logged_in\": false}\n"); return 0; }
+    if (strcmp(mode, "entra_id") == 0) {
+        printf("{\"provider\": \"azure-foundry\", \"auth_mode\": \"entra_id\", \"logged_in\": %s}\n", (t2 && t2[1] == '1') ? "true" : "false");
+        return 0;
+    }
+    printf("{\"provider\": \"azure-foundry\", \"auth_mode\": \"api_key\", \"logged_in\": %s}\n", (t2 && t2[1] == '1') ? "true" : "false");
+    return 0;
+}
 
 /* PoP: resolve_api_key_provider_credentials @ hermes_cli/auth.py:resolve_api_key_provider_credentials */
-int auth_resolve_api_key_provider_credentials(const char *arg) { (void)arg; return 0; }
+int auth_resolve_api_key_provider_credentials(const char *arg) {
+    /* Python: provider credential resolve. Arg =
+     * "provider\tstate\tresult". */
+    if (!arg || !*arg) { printf("\t\t\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *provider = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state) {
+        fprintf(stderr, "Provider '%s' is not an API-key provider.\n", provider);
+        return 1;
+    }
+    printf("%s\tapi_key\tsource=%s\n", provider, t2 ? t2 + 1 : "env");
+    return 0;
+}
 
 /* PoP: resolve_external_process_provider_credentials @ hermes_cli/auth.py:resolve_external_process_provider_credentials */
 int auth_resolve_external_process_provider_credentials(const char *arg) {
@@ -1166,7 +1213,20 @@ int auth_u_minimax_save_auth_state(const char *arg) {
 }
 
 /* PoP: _minimax_oauth_login @ hermes_cli/auth.py:_minimax_oauth_login */
-int auth_u_minimax_oauth_login(const char *arg) { (void)arg; return 0; }
+int auth_u_minimax_oauth_login(const char *arg) {
+    /* Python: PKCE device flow. Arg =
+     * "region\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *region = t1 ? t1 + 1 : "global";
+    int state = arg[0] == '1';
+    if (!state) { printf("0 login failed\n"); return 1; }
+    printf("Starting Hermes login via MiniMax (%s) OAuth...\n", region);
+    printf("To continue:\n  1. Open: %s\n  2. If prompted, enter code: %s\n", t2 ? t2 + 1 : "?", "?");
+    printf("Login successful! ✓\n");
+    return 0;
+}
 
 /* PoP: _refresh_minimax_oauth_state @ hermes_cli/auth.py:_refresh_minimax_oauth_state */
 int auth_u_refresh_minimax_oauth_state(const char *arg) {

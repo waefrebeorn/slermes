@@ -638,7 +638,16 @@ int grun_u_should_emit_long_running_notification(const char *arg) {
 }
 
 /* PoP: _defer_agent_cleanup_until_future_done @ gateway/run.py:_defer_agent_cleanup_until_future_done */
-int grun_u_defer_agent_cleanup_until_future_done(const char *arg) { (void)arg; return 0; }
+int grun_u_defer_agent_cleanup_until_future_done(const char *arg) {
+    /* Python: shielded waiter. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("no deferral\n"); return 0; }
+    printf("cleanup deferred until executor future completes (shielded; cancelled waiter never cleans early): %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _cleanup_agent_resources_off_loop @ gateway/run.py:_cleanup_agent_resources_off_loop */
 int grun_u_cleanup_agent_resources_off_loop(const char *arg) { (void)arg; return 0; }

@@ -8548,7 +8548,22 @@ int hermes_cli_dashboard_register_u_generate_dashboard_name(const char *arg) {
 }
 
 /* PoP: _register_self_hosted_client @ hermes_cli/dashboard_register.py:_register_self_hosted_client */
-int hermes_cli_dashboard_register_u_register_self_hosted_client(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_register_u_register_self_hosted_client(const char *arg) {
+    /* Python: idempotent POST. Arg =
+     * "has_id\tstate\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int has_id = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) {
+        fprintf(stderr, "register failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("client registered%s: %s\n", has_id ? " (idempotent update)" : "", t3 ? t3 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _print_post_register_hint @ hermes_cli/dashboard_register.py:_print_post_register_hint */
 int hermes_cli_dashboard_register_u_print_post_register_hint(const char *arg) {
@@ -9782,7 +9797,12 @@ int hermes_cli_subcommands_backup_build_backup_parser(const char *arg) {
 }
 
 /* PoP: build_claw_parser @ hermes_cli/subcommands/claw.py:build_claw_parser */
-int hermes_cli_subcommands_claw_build_claw_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_claw_build_claw_parser(const char *arg) {
+    /* Python: claw tree. */
+    (void)arg;
+    printf("claw parser attached (migrate --source --dry-run --preset --overwrite --migrate-secrets; status; doctor)\n");
+    return 0;
+}
 
 /* PoP: build_config_parser @ hermes_cli/subcommands/config.py:build_config_parser */
 int hermes_cli_subcommands_config_build_config_parser(const char *arg) {

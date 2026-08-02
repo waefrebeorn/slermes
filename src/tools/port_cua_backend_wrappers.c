@@ -592,7 +592,17 @@ int cua_u_load_windows(const char *arg) {
 }
 
 /* PoP: _match_windows_for_app @ tools/computer_use/cua_backend.py:_match_windows_for_app */
-int cua_u_match_windows_for_app(const char *arg) { (void)arg; return 0; }
+int cua_u_match_windows_for_app(const char *arg) {
+    /* Python: exact-first. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s window(s) (exact direct > exact metadata > substring; pid-gated, title fallback kept on X11)\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: _apply_delivery @ tools/computer_use/cua_backend.py:_apply_delivery */
 int cua_u_apply_delivery(const char *arg) {

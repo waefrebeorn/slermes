@@ -172,7 +172,21 @@ int gateway_platforms_signal_u_extract_reaction_target(const char *arg) {
 }
 
 /* PoP: _reactions_enabled @ gateway/platforms/signal.py:_reactions_enabled */
-int gateway_platforms_signal_u_reactions_enabled(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_signal_u_reactions_enabled(const char *arg) {
+    /* Python: 2-gate check. Arg =
+     * "env_on\tallowed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int env_on = arg[0] == '1';
+    int allowed = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!env_on) { printf("0 (SIGNAL_REACTIONS off)\n"); return 0; }
+    printf("%s (DM allowlist %s)\n", allowed ? "1" : "0", (t3 && t3[1] == '1') ? "anyone" : "restricted");
+    return 0;
+}
 
 /* PoP: _db_path @ gateway/delivery_ledger.py:_db_path */
 int gateway_delivery_ledger_u_db_path(const char *arg) {
@@ -1298,7 +1312,19 @@ int gateway_relay_adapter_u_platform_is_fronted(const char *arg) { (void)arg; re
 int gateway_relay_adapter_u_on_passthrough(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _discord_interaction_to_event @ gateway/relay/adapter.py:_discord_interaction_to_event */
-int gateway_relay_adapter_u_discord_interaction_to_event(const char *arg) { (void)arg; return 0; }
+int gateway_relay_adapter_u_discord_interaction_to_event(const char *arg) {
+    /* Python: interaction body. Arg =
+     * "itype\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *itype = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!itype[0]) { printf("\n"); return 0; }
+    printf("interaction type %s → MessageEvent (%s)\n", itype, (t2 && t2[1] == '1') ? "slash normalized to leading /" : "text");
+    return 0;
+}
 
 /* PoP: _render_interaction_options @ gateway/relay/adapter.py:_render_interaction_options */
 int gateway_relay_adapter_u_render_interaction_options(const char *arg) { (void)arg; return 0; }

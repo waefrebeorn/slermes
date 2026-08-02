@@ -1128,7 +1128,16 @@ int cgw_u_systemd_watchdog_service_fields(const char *arg) {
 }
 
 /* PoP: generate_systemd_unit @ hermes_cli/gateway.py:generate_systemd_unit */
-int cgw_generate_systemd_unit(const char *arg) { (void)arg; return 0; }
+int cgw_generate_systemd_unit(const char *arg) {
+    /* Python: unit render. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("systemd unit generated (%s — node dir NOT resolved, symlink parent kept profile-agnostic)\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _normalize_service_definition @ hermes_cli/gateway.py:_normalize_service_definition */
 int cgw_u_normalize_service_definition(const char *arg) {

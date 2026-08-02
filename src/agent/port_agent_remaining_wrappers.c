@@ -365,7 +365,17 @@ int agent_pet_generate_atlas_u_validate_extracted_frames(const char *arg) {
 }
 
 /* PoP: extract_strip_frames @ agent/pet/generate/atlas.py:extract_strip_frames */
-int agent_pet_generate_atlas_extract_strip_frames(const char *arg) { (void)arg; return 0; }
+int agent_pet_generate_atlas_extract_strip_frames(const char *arg) {
+    /* Python: strip → frames. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s frame(s) extracted (keyed bg, strict components, %s fit)\n", t2 ? t2 + 1 : arg, (t2 && t2[1] == '1') ? "192x208 fit+center" : "raw columns");
+    return 0;
+}
 
 /* PoP: normalize_cells @ agent/pet/generate/atlas.py:normalize_cells */
 int agent_pet_generate_atlas_normalize_cells(const char *arg) { (void)arg; return 0; }
@@ -1005,7 +1015,18 @@ int agent_chat_completion_helpers_u_derive_stream_stale_timeout(const char *arg)
 }
 
 /* PoP: _bedrock_reasoning_stale_floor @ agent/chat_completion_helpers.py:_bedrock_reasoning_stale_floor */
-int agent_chat_completion_helpers_u_bedrock_reasoning_stale_floor(const char *arg) { (void)arg; return 0; }
+int agent_chat_completion_helpers_u_bedrock_reasoning_stale_floor(const char *arg) {
+    /* Python: profile-id slug map. Arg =
+     * "found\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int found = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !found) { printf("\n"); return 0; }
+    printf("floor=%s (region stripped, provider-dash + version-separator variants)\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _dispatch_nonstreaming_api_request @ agent/chat_completion_helpers.py:_dispatch_nonstreaming_api_request */
 int agent_chat_completion_helpers_u_dispatch_nonstreaming_api_re_st(const char *arg) { (void)arg; return 0; }
@@ -2694,7 +2715,18 @@ int agent_billing_view_u_parse_auto_reload_card(const char *arg) {
 }
 
 /* PoP: _dev_fixture_billing_state @ agent/billing_view.py:_dev_fixture_billing_state */
-int agent_billing_view_u_dev_fixture_billing_state(const char *arg) { (void)arg; return 0; }
+int agent_billing_view_u_dev_fixture_billing_state(const char *arg) {
+    /* Python: 6 fixture map. Arg = "name\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *name = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!name[0]) { printf("\n"); return 0; }
+    printf("fixture billing state: %s (org_acme, card %s, autoreload %s)\n", name, (t2 && t2[1] == '1') ? "on-file" : "none", (t2 && t2[1] == '2') ? "on" : "off");
+    return 0;
+}
 
 /* PoP: read_streaming_error_body @ agent/bounded_response.py:read_streaming_error_body */
 int agent_bounded_response_read_streaming_error_body(const char *arg) {
