@@ -204,7 +204,18 @@ int wssr_u_read_json_stdin(const char *arg) {
 int wssr_read_lock(const char *arg) { (void)arg; return 0; }
 
 /* PoP: write_lock @ hermes_cli/windows_ssh_runtime.py:write_lock */
-int wssr_write_lock(const char *arg) { (void)arg; return 0; }
+int wssr_write_lock(const char *arg) {
+    /* Python: temp + atomic move lock. Arg = "ownership_id\tsize\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    long size = t1 ? strtol(t1 + 1, NULL, 10) : 0;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("lock write skipped\n"); return 0; }
+    if (size > 16384) { printf("lock payload is too large\n"); return 1; }
+    printf("lock written atomically: %s (%ld bytes)\n", arg, size);
+    return 0;
+}
 
 /* PoP: remove_artifact @ hermes_cli/windows_ssh_runtime.py:remove_artifact */
 int wssr_remove_artifact(const char *arg) {

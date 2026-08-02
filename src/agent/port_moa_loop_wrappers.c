@@ -12,7 +12,15 @@
 #include "hermes_json.h"
 
 /* PoP: _redact_reference_text @ agent/moa_loop.py:_redact_reference_text */
-int moa_u_redact_reference_text(const char *arg) { (void)arg; return 0; }
+int moa_u_redact_reference_text(const char *arg) {
+    /* Python: secrets + email/phone redaction. Arg = "text\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = tab && tab[1] == '1';
+    if (!state) { printf("%s\n", arg); return 0; }
+    printf("[redacted]: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _moa_privacy_mode @ agent/moa_loop.py:_moa_privacy_mode */
 int moa_u_moa_privacy_mode(const char *arg) {

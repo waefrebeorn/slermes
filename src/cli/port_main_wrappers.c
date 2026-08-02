@@ -805,7 +805,23 @@ int main_u_write_desktop_build_stamp(const char *arg) {
 int main_u_desktop_packaged_executable(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _expected_windows_pe_machines @ hermes_cli/main.py:_expected_windows_pe_machines */
-int main_u_expected_windows_pe_machines(const char *arg) { (void)arg; return 0; }
+int main_u_expected_windows_pe_machines(const char *arg) {
+    /* Python: host machine -> loadable PE set. Arg = "machine". */
+    if (!arg || !*arg) { printf("amd64 i386 arm64\n"); return 0; }
+    char up[64];
+    size_t i = 0;
+    while (arg[i] && i < sizeof(up)-1) {
+        char c = arg[i];
+        up[i] = (c >= 'a' && c <= 'z') ? (char)(c - 'a' + 'A') : c;
+        i++;
+    }
+    up[i] = '\0';
+    if (strcmp(up, "AMD64") == 0 || strcmp(up, "X86_64") == 0 || strcmp(up, "X64") == 0) { printf("amd64 i386\n"); return 0; }
+    if (strcmp(up, "ARM64") == 0 || strcmp(up, "AARCH64") == 0) { printf("arm64 amd64\n"); return 0; }
+    if (strcmp(up, "X86") == 0 || strcmp(up, "I386") == 0 || strcmp(up, "I486") == 0 || strcmp(up, "I586") == 0 || strcmp(up, "I686") == 0) { printf("i386\n"); return 0; }
+    printf("amd64 i386 arm64\n");
+    return 0;
+}
 
 /* PoP: _parse_pe_machine @ hermes_cli/main.py:_parse_pe_machine */
 int main_u_parse_pe_machine(const char *arg) { (void)arg; return 0; }

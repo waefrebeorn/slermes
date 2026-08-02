@@ -460,7 +460,16 @@ int gw_u_windows_stop_drain_timeout(const char *arg) {
 }
 
 /* PoP: _force_terminate_known_gateway_pids @ hermes_cli/gateway_windows.py:_force_terminate_known_gateway_pids */
-int gw_u_force_terminate_known_gateway_pids(const char *arg) { (void)arg; return 0; }
+int gw_u_force_terminate_known_gateway_pids(const char *arg) {
+    /* Python: force-kill known pids. Arg = "killed\tcount\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", t1 ? t1 + 1 : "0");
+    return 0;
+}
 
 /* PoP: _collect_gateway_stop_pids @ hermes_cli/gateway_windows.py:_collect_gateway_stop_pids */
 int gw_u_collect_gateway_stop_pids(const char *arg) {

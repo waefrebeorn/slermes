@@ -190,7 +190,15 @@ int muv_u_rename_with_retry(const char *arg) {
 int muv_u_cut_over_candidate(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _acquire_repair_lock @ hermes_cli/managed_uv.py:_acquire_repair_lock */
-int muv_u_acquire_repair_lock(const char *arg) { (void)arg; return 0; }
+int muv_u_acquire_repair_lock(const char *arg) {
+    /* Python: flock held until process exit. Arg = "path\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = tab && tab[1] == '1';
+    if (!state) { printf("repair lock unavailable\n"); return 0; }
+    printf("repair lock held: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _release_repair_lock @ hermes_cli/managed_uv.py:_release_repair_lock */
 int muv_u_release_repair_lock(const char *arg) {

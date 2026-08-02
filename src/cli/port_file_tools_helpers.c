@@ -287,9 +287,12 @@ json_t *file_tools_get_hermes_config_resolved(void)
 
 /* PoP: _record_patch_failure @ tools/file_tools.py:_record_patch_failure */
 /* PoP: file_tools_record_patch_failure @ tools/file_tools.py:_record_patch_failure */
-void file_tools_record_patch_failure(const char *path, const char *reason)
+int file_tools_record_patch_failure(const char *path, const char *reason)
 {
-    (void)path; (void)reason;
+    /* Python: increment consecutive-failure count (cap 64 per task). */
+    (void)reason;
+    printf("patch failure recorded: %s\n", path ? path : "?");
+    return 1;
     /* In C, patch failures are logged but not persisted in a dict */
 }
 

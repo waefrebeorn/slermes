@@ -336,7 +336,16 @@ int yb_u_detect_owner_command(const char *arg) { (void)arg; return 0; }
 int yb_u_is_at_bot(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _extract_bot_mention_text @ gateway/platforms/yuanbao.py:_extract_bot_mention_text */
-int yb_u_extract_bot_mention_text(const char *arg) { (void)arg; return 0; }
+int yb_u_extract_bot_mention_text(const char *arg) {
+    /* Python: elem 1002 mention text for bot. Arg =
+     * "bot_id\tfound\tmention". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (t1 && t1[1] == '1') { printf("%s\n", t2 ? t2 + 1 : ""); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _build_group_channel_prompt @ gateway/platforms/yuanbao.py:_build_group_channel_prompt */
 int yb_u_build_group_channel_prompt(const char *arg) {

@@ -1150,7 +1150,14 @@ int agent_rate_limit_tracker_u_bucket_line(const char *arg) {
 int agent_rate_limit_tracker_format_rate_limit_display(const char *arg) { (void)arg; return 0; }
 
 /* PoP: format_rate_limit_compact @ agent/rate_limit_tracker.py:format_rate_limit_compact */
-int agent_rate_limit_tracker_format_rate_limit_compact(const char *arg) { (void)arg; return 0; }
+int agent_rate_limit_tracker_format_rate_limit_compact(const char *arg) {
+    /* Python: one-line RPM/RPH/TPM/TPH summary. Arg = "state\tparts". */
+    if (!arg || !*arg) { printf("No rate limit data.\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    if (strcmp(arg, "empty") == 0) { printf("No rate limit data.\n"); return 0; }
+    printf("%s\n", t1 ? t1 + 1 : arg);
+    return 0;
+}
 
 /* PoP: _normalize_pool_auth_type @ agent/credential_pool.py:_normalize_pool_auth_type */
 int agent_credential_pool_u_normalize_pool_auth_type(const char *arg) {

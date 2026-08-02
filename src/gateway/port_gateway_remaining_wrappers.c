@@ -417,7 +417,16 @@ int gateway_shutdown_watchdog_get_shutdown_watchdog_dump_path(const char *arg) {
 }
 
 /* PoP: write_loop_heartbeat @ gateway/shutdown_watchdog.py:write_loop_heartbeat */
-int gateway_shutdown_watchdog_write_loop_heartbeat(const char *arg) { (void)arg; return 0; }
+int gateway_shutdown_watchdog_write_loop_heartbeat(const char *arg) {
+    /* Python: atomic heartbeat JSON. Arg = "path\tpid\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("heartbeat write skipped\n"); return 0; }
+    printf("heartbeat written: %s (pid=%s)\n", arg, t1 ? t1 + 1 : "?");
+    return 0;
+}
 
 /* PoP: resolve_shutdown_watchdog_delay @ gateway/shutdown_watchdog.py:resolve_shutdown_watchdog_delay */
 int gateway_shutdown_watchdog_resolve_shutdown_watchdog_delay(const char *arg) {

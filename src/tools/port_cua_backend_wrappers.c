@@ -338,7 +338,18 @@ int cua_u_populate_capabilities(const char *arg) { (void)arg; return 0; }
 int cua_u_start_lifecycle_locked(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _stop_lifecycle_locked @ tools/computer_use/cua_backend.py:_stop_lifecycle_locked */
-int cua_u_stop_lifecycle_locked(const char *arg) { (void)arg; return 0; }
+int cua_u_stop_lifecycle_locked(const char *arg) {
+    /* Python: signal + wait 5s + clear future. Arg = "has_future\ttimed_out\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_future = arg[0] == '1';
+    if (!has_future) { printf("no lifecycle future\n"); return 0; }
+    int timed_out = t1 && t1[1] == '1';
+    if (timed_out) printf("cua-driver session shutdown timed out (5s)\n");
+    else printf("lifecycle stopped cleanly\n");
+    return 0;
+}
 
 /* PoP: _signal_shutdown_locked @ tools/computer_use/cua_backend.py:_signal_shutdown_locked */
 int cua_u_signal_shutdown_locked(const char *arg) {

@@ -358,7 +358,15 @@ int cgw_u_systemd_operational(const char *arg) {
 }
 
 /* PoP: _container_systemd_operational @ hermes_cli/gateway.py:_container_systemd_operational */
-int cgw_u_container_systemd_operational(const char *arg) { (void)arg; return 0; }
+int cgw_u_container_systemd_operational(const char *arg) {
+    /* Python: user OR system systemd. Arg = "user_ok\tsystem_ok". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int user_ok = arg[0] == '1';
+    int system_ok = tab && tab[1] == '1';
+    printf("%d\n", (user_ok || system_ok) ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _windows_gateway_should_absorb_console_controls @ hermes_cli/gateway.py:_windows_gateway_should_absorb_console_controls */
 int cgw_u_windows_gateway_should_absorb_console_controls(const char *arg) { (void)arg; return 0; }

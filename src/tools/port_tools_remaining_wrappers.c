@@ -1105,7 +1105,17 @@ int tools_file_state_record_read(const char *arg) {
 }
 
 /* PoP: note_write @ tools/file_state.py:note_write */
-int tools_file_state_note_write(const char *arg) { (void)arg; return 0; }
+int tools_file_state_note_write(const char *arg) {
+    /* Python: last-writer + own read stamp. Arg =
+     * "resolved\ttask_id\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("write note skipped (disabled)\n"); return 0; }
+    printf("write noted: %s (task=%s)\n", arg, t1 ? t1 + 1 : "?");
+    return 0;
+}
 
 /* PoP: check_stale @ tools/file_state.py:check_stale */
 int tools_file_state_check_stale(const char *arg) { (void)arg; return 0; }
@@ -1148,7 +1158,16 @@ int tools_file_state_record_read_2(const char *arg) {
 }
 
 /* PoP: note_write @ tools/file_state.py:note_write */
-int tools_file_state_note_write_2(const char *arg) { (void)arg; return 0; }
+int tools_file_state_note_write_2(const char *arg) {
+    /* Python: duplicate stub — same as note_write. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("write note skipped (disabled)\n"); return 0; }
+    printf("write noted: %s (task=%s)\n", arg, t1 ? t1 + 1 : "?");
+    return 0;
+}
 
 /* PoP: check_stale @ tools/file_state.py:check_stale */
 int tools_file_state_check_stale_2(const char *arg) { (void)arg; return 0; }

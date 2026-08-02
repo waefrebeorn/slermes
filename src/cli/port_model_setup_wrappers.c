@@ -28,7 +28,23 @@ int msf_bedrock_region_geo_prefix(const char *arg) {
 }
 
 /* PoP: bedrock_model_routable_from_region @ hermes_cli/model_setup_flows.py:bedrock_model_routable_from_region */
-int msf_bedrock_model_routable_from_region(const char *arg) { (void)arg; return 0; }
+int msf_bedrock_model_routable_from_region(const char *arg) {
+    /* Python: geo prefix route check. Arg =
+     * "model_geo\tregion_geo\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *model_geo = arg;
+    const char *region_geo = t1 ? t1 + 1 : "";
+    if (strcmp(model_geo, "none") == 0 || strcmp(model_geo, "global.") == 0) { printf("1\n"); return 0; }
+    if (!region_geo[0]) { printf("1\n"); return 0; }
+    if (strcmp(region_geo, "ap.") == 0) {
+        printf("%d\n", (strcmp(model_geo, "ap.") == 0 || strcmp(model_geo, "apac.") == 0 || strcmp(model_geo, "jp.") == 0) ? 1 : 0);
+        return 0;
+    }
+    printf("%d\n", strcmp(model_geo, region_geo) == 0 ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _prune_replaced_custom_model_config_credentials @ hermes_cli/model_setup_flows.py:_prune_replaced_custom_model_config_credentials */
 int msf_u_prune_replaced_custom_model_config_credentials(const char *arg) { (void)arg; return 0; }

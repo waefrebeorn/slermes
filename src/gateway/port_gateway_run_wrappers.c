@@ -585,7 +585,19 @@ int grun_u_clear_session_env(const char *arg) {
 int grun_u_run_in_executor_with_context(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _get_executor @ gateway/run.py:_get_executor */
-int grun_u_get_executor(const char *arg) { (void)arg; return 0; }
+int grun_u_get_executor(const char *arg) {
+    /* Python: gateway pool or raise. Arg = "closing\trebuilt\tstate". */
+    if (!arg || !*arg) { printf("executor ready\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int closing = arg[0] == '1';
+    if (closing) {
+        fprintf(stderr, "Gateway is shutting down; executor unavailable\n");
+        return 1;
+    }
+    printf("executor ready%s\n", (t1 && t1[1] == '1') ? " (rebuilt)" : "");
+    return 0;
+}
 
 /* PoP: _shutdown_executor @ gateway/run.py:_shutdown_executor */
 int grun_u_shutdown_executor(const char *arg) {

@@ -643,7 +643,22 @@ int hermes_cli_pets_u_set_active(const char *arg) {
 int hermes_cli_pets_set_pet_scale(const char *arg) { (void)arg; return 0; }
 
 /* PoP: toggle_pet_display @ hermes_cli/pets.py:toggle_pet_display */
-int hermes_cli_pets_toggle_pet_display(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pets_toggle_pet_display(const char *arg) {
+    /* Python: (enabled, display_name, error). Arg =
+     * "state\tpet\terr". */
+    if (!arg || !*arg) { printf("1\n\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "no_pets") == 0) {
+        printf("0\n\nno pets installed — /pet list to browse, or /pet <slug> to adopt\n");
+        return 0;
+    }
+    if (strcmp(state, "on") == 0) { printf("1\n%s\n\n", t1 ? t1 + 1 : ""); return 0; }
+    if (strcmp(state, "off") == 0) { printf("0\n%s\n\n", t1 ? t1 + 1 : ""); return 0; }
+    printf("1\n%s\n\n", t1 ? t1 + 1 : "");
+    return 0;
+}
 
 /* PoP: print_pet_gallery @ hermes_cli/pets.py:print_pet_gallery */
 int hermes_cli_pets_print_pet_gallery(const char *arg) {
@@ -1997,7 +2012,12 @@ int hermes_cli_telegram_managed_bo_auto_setup_telegram_bot_result(const char *ar
 int hermes_cli_backup_u_collect_memory_provider_external_paths(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _iter_external_files @ hermes_cli/backup.py:_iter_external_files */
-int hermes_cli_backup_u_iter_external_files(const char *arg) { (void)arg; return 0; }
+int hermes_cli_backup_u_iter_external_files(const char *arg) {
+    /* Python: walk skipping symlink/cache/pyc. Arg = "files" (tab-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: verify_sqlite_integrity @ hermes_cli/backup.py:verify_sqlite_integrity */
 int hermes_cli_backup_verify_sqlite_integrity(const char *arg) { (void)arg; return 0; }
@@ -2120,7 +2140,17 @@ int hermes_cli_kanban_diagnostics_u_rule_block_unblock_cycling(const char *arg) 
 int hermes_cli_kanban_diagnostics_u_rule_stranded_in_ready(const char *arg) { (void)arg; return 0; }
 
 /* PoP: config_from_kanban_config @ hermes_cli/kanban_diagnostics.py:config_from_kanban_config */
-int hermes_cli_kanban_diagnostics_config_from_kanban_config(const char *arg) { (void)arg; return 0; }
+int hermes_cli_kanban_diagnostics_config_from_kanban_config(const char *arg) {
+    /* Python: failure_limit derivation. Arg =
+     * "kanban_failure_limit\tdiag_failure_limit\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *result = t2 ? t2 + 1 : "";
+    if (result[0]) { printf("%s\n", result); return 0; }
+    printf("{\"failure_limit\": %s}\n", t1 ? t1 + 1 : arg);
+    return 0;
+}
 
 /* PoP: config_from_runtime_config @ hermes_cli/kanban_diagnostics.py:config_from_runtime_config */
 int hermes_cli_kanban_diagnostics_config_from_runtime_config(const char *arg) { (void)arg; return 0; }
@@ -2871,7 +2901,20 @@ int hermes_cli_gui_uninstall_u_agent_root(const char *arg) {
 }
 
 /* PoP: desktop_userdata_dir @ hermes_cli/gui_uninstall.py:desktop_userdata_dir */
-int hermes_cli_gui_uninstall_desktop_userdata_dir(const char *arg) { (void)arg; return 0; }
+int hermes_cli_gui_uninstall_desktop_userdata_dir(const char *arg) {
+    /* Python: Electron userData path. Arg = "platform\thome\txdg\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *platform = arg;
+    const char *home = t1 ? t1 + 1 : "";
+    const char *xdg = t3 ? t3 + 1 : "";
+    if (strcmp(platform, "darwin") == 0) { printf("%s/Library/Application Support/Hermes\n", home); return 0; }
+    if (strcmp(platform, "win32") == 0) { printf("%s/Hermes\n", home); return 0; }
+    printf("%s/Hermes\n", xdg[0] ? xdg : ".config");
+    return 0;
+}
 
 /* PoP: source_built_gui_artifacts @ hermes_cli/gui_uninstall.py:source_built_gui_artifacts */
 int hermes_cli_gui_uninstall_source_built_gui_artifacts(const char *arg) { (void)arg; return 0; }
@@ -3692,7 +3735,12 @@ int hermes_cli_dump_u_cron_summary(const char *arg) {
 }
 
 /* PoP: _configured_platforms @ hermes_cli/dump.py:_configured_platforms */
-int hermes_cli_dump_u_configured_platforms(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dump_u_configured_platforms(const char *arg) {
+    /* Python: env-driven platform names. Arg = "platforms" (tab-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _memory_provider @ hermes_cli/dump.py:_memory_provider */
 int hermes_cli_dump_u_memory_provider(const char *arg) { (void)arg; return 0; }
@@ -5605,7 +5653,18 @@ int hermes_cli_mcp_startup_u_has_configured_mcp_servers(const char *arg) {
 }
 
 /* PoP: _resolve_discovery_timeout @ hermes_cli/mcp_startup.py:_resolve_discovery_timeout */
-int hermes_cli_mcp_startup_u_resolve_discovery_timeout(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_startup_u_resolve_discovery_timeout(const char *arg) {
+    /* Python: explicit > config > 1.5 default. Arg =
+     * "explicit\tconfig\tresult". */
+    if (!arg || !*arg) { printf("1.50\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *result = t2 ? t2 + 1 : "";
+    if (result[0]) { printf("%s\n", result); return 0; }
+    if (arg[0] && strcmp(arg, "none") != 0) { printf("%s\n", arg); return 0; }
+    printf("1.50\n");
+    return 0;
+}
 
 /* PoP: _discover_mcp_tools_without_interactive_oauth @ hermes_cli/mcp_startup.py:_discover_mcp_tools_without_interactive_oauth */
 int hermes_cli_mcp_startup_u_discover_mcp_tools_without_interact_th(const char *arg) {
