@@ -111,7 +111,18 @@ int tools_lazy_deps_refresh_active_features(const char *arg) { (void)arg; return
 int tools_lazy_deps_ensure_and_bind(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _get_config @ tools/homeassistant_tool.py:_get_config */
-int tools_homeassistant_tool_u_get_config(const char *arg) { (void)arg; return 0; }
+int tools_homeassistant_tool_u_get_config(const char *arg) {
+    /* Python: (hass_url.rstrip('/'), hass_token) from env at call time.
+     * Prints "url\ttoken". */
+    (void)arg;
+    const char *url = getenv("HASS_URL");
+    if (!url || !*url) url = "http://homeassistant.local:8123";
+    size_t n = strlen(url);
+    while (n > 0 && url[n-1] == '/') n--;
+    const char *tok = getenv("HASS_TOKEN");
+    printf("%.*s\t%s\n", (int)n, url, tok ? tok : "");
+    return 0;
+}
 
 /* PoP: _get_headers @ tools/homeassistant_tool.py:_get_headers */
 int tools_homeassistant_tool_u_get_headers(const char *arg) { (void)arg; return 0; }

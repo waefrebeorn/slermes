@@ -1,9 +1,9 @@
-# Ranked fix queue — 3066 bootleg functions
+# Ranked fix queue — 3067 bootleg functions
 
 - A  (delegate to real fn): 22
-- Bt (trivial direct-port): 117
+- Bt (trivial direct-port): 113
 - Bx (direct but needs deps): 1020
-- C  (deep subsystem):        1907
+- C  (deep subsystem):        1912
 
 ## Top of queue (automatable first)
 
@@ -29,14 +29,12 @@
 - [A] gateway/restart_loop_guard.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
 - [A] gateway/stream_dispatch.py :: dispatch -> adel_u_persist_dispatch  (cands: dispatch)
 - [A] tools/slash_confirm.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
-- [Bt] hermes_cli/main.py :: _is_fork -> main_u_is_fork
 - [Bt] hermes_cli/main.py :: _is_windows_npm_path -> main_u_is_windows_npm_path
 - [Bt] hermes_cli/main.py :: _lazy_refresh_marker_path -> main_u_lazy_refresh_marker_path
 - [Bt] hermes_cli/main.py :: _print_stash_cleanup_guidance -> main_u_print_stash_cleanup_guidance
 - [Bt] hermes_cli/main.py :: _resolve_update_branch -> main_u_resolve_update_branch
 - [Bt] hermes_cli/main.py :: _sync_fork_with_upstream -> main_u_sync_fork_with_upstream
 - [Bt] hermes_cli/main.py :: _write_lazy_refresh_incomplete_marker -> main_u_write_lazy_refresh_incomplete_marker
-- [Bt] hermes_cli/gateway.py :: _print_linger_enable_warning -> cgw_u_print_linger_enable_warning
 - [Bt] hermes_cli/gateway.py :: _refuse_temp_home_service_write -> cgw_u_refuse_temp_home_service_write
 - [Bt] hermes_cli/gateway.py :: _service_scope_label -> cgw_u_service_scope_label
 - [Bt] hermes_cli/gateway.py :: _systemd_service_is_start_limited -> cgw_u_systemd_service_is_start_limited
@@ -63,14 +61,12 @@
 - [Bt] hermes_cli/telegram_managed_bot.py :: auto_setup_telegram_bot_result -> hermes_cli_telegram_managed_bo_auto_setup_telegram_bot_result
 - [Bt] hermes_cli/telegram_managed_bot.py :: generate_bot_username -> hermes_cli_telegram_managed_bo_generate_bot_username
 - [Bt] hermes_cli/telegram_managed_bot.py :: print_qr_code -> hermes_cli_telegram_managed_bo_print_qr_code
-- [Bt] tools/registry.py :: register_plugin_override_policy -> tools_registry_register_plugin_override_policy
-- [Bt] agent/chat_completion_helpers.py :: _fallback_entry_is_same_backend_by_base_url -> agent_chat_completion_helpers_u_fallback_entry_is_same_backe_rl
-- [Bt] agent/chat_completion_helpers.py :: _reset_stale_streak -> agent_chat_completion_helpers_u_reset_stale_streak
 - [Bt] hermes_cli/skin_engine.py :: get_active_skin_name -> hermes_cli_skin_engine_get_active_skin_name
 - [Bt] tools/homeassistant_tool.py :: _get_config -> tools_homeassistant_tool_u_get_config
 - [Bt] tools/homeassistant_tool.py :: _get_headers -> tools_homeassistant_tool_u_get_headers
 - [Bt] agent/agent_init.py :: _normalize_custom_provider_name -> agent_agent_init_u_normalize_custom_provider_name
 - [Bt] agent/agent_init.py :: _resolve_compression_threshold -> agent_agent_init_u_resolve_compression_threshold
+- [Bt] agent/chat_completion_helpers.py :: _reset_stale_streak -> agent_chat_completion_helpers_u_reset_stale_streak
 - [Bt] agent/rate_limit_tracker.py :: _fmt_count -> agent_rate_limit_tracker_u_fmt_count
 - [Bt] agent/rate_limit_tracker.py :: has_data -> agent_rate_limit_tracker_has_data
 - [Bt] gateway/relay/ws_transport.py :: set_inbound_handler -> ws_transport_set_inbound_handler
@@ -132,6 +128,7 @@
 - [Bt] hermes_cli/commands.py :: _score_path -> cmd_score_path
 - [Bt] hermes_cli/plugins.py :: clear_thread_tool_whitelist -> plug_clear_thread_tool_whitelist
 - [Bt] hermes_cli/plugins.py :: set_thread_tool_whitelist -> plug_set_thread_tool_whitelist
+- [Bt] tools/desktop_ui.py :: set_emitter -> tools_desktop_ui_set_emitter
 - [Bt] tools/thread_context.py :: _callback_api -> tools_thread_context_u_callback_api
 - [Bt] agent/secret_scope.py :: is_multiplex_active -> secret_scope_is_multiplex_active
 - [Bt] gateway/cwd_placeholder.py :: resolve_placeholder_terminal_cwd -> gateway_cwd_placeholder_resolve_placeholder_terminal_cwd
@@ -140,7 +137,6 @@
 - [Bt] hermes_cli/codex_runtime_switch.py :: check_codex_binary_ok -> hermes_cli_codex_runtime_switc_check_codex_binary_ok
 - [Bt] tools/binary_extensions.py :: has_binary_extension -> tools_binary_extensions_has_binary_extension
 - [Bt] tools/clarify_tool.py :: check_clarify_requirements -> cli_tools_clarify_tool_check_clarify_requirements
-- [Bt] tools/desktop_ui.py :: set_emitter -> tools_desktop_ui_set_emitter
 - [Bt] tools/environments/file_sync.py :: _resolve_host_path -> tools_environments_file_sync_u_resolve_host_path
 - [Bt] tools/mixture_of_agents_tool.py :: _build_auth_header -> tools_mixture_of_agents_tool_u_build_auth_header
 - [Bt] tools/moa_performance.py :: _build_auth_header -> tools_moa_performance_u_build_auth_header
@@ -207,3 +203,7 @@
 - [Bx] hermes_cli/main.py :: _write_update_incomplete_marker -> main_u_write_update_incomplete_marker
 - [Bx] hermes_cli/main.py :: _write_update_planned_stop_marker -> main_u_write_update_planned_stop_marker
 - [Bx] hermes_cli/main.py :: _write_web_ui_build_stamp -> main_u_write_web_ui_build_stamp
+- [Bx] hermes_cli/main.py :: cmd_version -> main_cmd_version
+- [Bx] gateway/run.py :: _apply_fallback_chain_to_agent -> grun_u_apply_fallback_chain_to_agent
+- [Bx] gateway/run.py :: _await_thread_exit -> grun_u_await_thread_exit
+- [Bx] gateway/run.py :: _build_process_event_source -> grun_u_build_process_event_source

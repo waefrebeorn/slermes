@@ -1,10 +1,10 @@
 {
- "total": 3066,
+ "total": 3067,
  "by_cat": {
   "A": 22,
-  "Bt": 117,
+  "Bt": 113,
   "Bx": 1020,
-  "C": 1907
+  "C": 1912
  },
  "by_module": {
   "agent/account_usage.py": 4,
@@ -18,7 +18,7 @@
   "agent/billing_usage.py": 4,
   "agent/billing_view.py": 5,
   "agent/bounded_response.py": 3,
-  "agent/chat_completion_helpers.py": 13,
+  "agent/chat_completion_helpers.py": 12,
   "agent/codex_runtime.py": 6,
   "agent/context_compressor.py": 23,
   "agent/context_engine.py": 8,
@@ -36,6 +36,7 @@
   "agent/jiter_preload.py": 1,
   "agent/kanban_stop.py": 4,
   "agent/lsp/client.py": 2,
+  "agent/lsp/eventlog.py": 2,
   "agent/lsp/manager.py": 1,
   "agent/memory_manager.py": 29,
   "agent/memory_provider.py": 8,
@@ -52,6 +53,7 @@
   "agent/pet/render.py": 5,
   "agent/plugin_llm.py": 1,
   "agent/prompt_caching.py": 2,
+  "agent/proxy_sources/iron_proxy.py": 1,
   "agent/rate_limit_tracker.py": 12,
   "agent/redact.py": 2,
   "agent/runtime_cwd.py": 1,
@@ -91,7 +93,7 @@
   "gateway/dead_targets.py": 1,
   "gateway/delivery.py": 2,
   "gateway/delivery_ledger.py": 15,
-  "gateway/hooks.py": 1,
+  "gateway/hooks.py": 2,
   "gateway/kanban_watchers.py": 9,
   "gateway/moa_slash.py": 1,
   "gateway/platform_registry.py": 6,
@@ -177,7 +179,7 @@
   "hermes_cli/env_loader.py": 12,
   "hermes_cli/fallback_cmd.py": 6,
   "hermes_cli/fallback_config.py": 2,
-  "hermes_cli/gateway.py": 137,
+  "hermes_cli/gateway.py": 136,
   "hermes_cli/gateway_enroll.py": 5,
   "hermes_cli/gateway_windows.py": 47,
   "hermes_cli/goals.py": 5,
@@ -187,7 +189,7 @@
   "hermes_cli/kanban_db.py": 24,
   "hermes_cli/kanban_diagnostics.py": 13,
   "hermes_cli/kanban_specify.py": 1,
-  "hermes_cli/main.py": 204,
+  "hermes_cli/main.py": 203,
   "hermes_cli/managed_scope.py": 6,
   "hermes_cli/managed_uv.py": 24,
   "hermes_cli/mcp_catalog.py": 15,
@@ -320,7 +322,7 @@
   "tools/debug_helpers.py": 1,
   "tools/delegate_tool.py": 13,
   "tools/delegation_live_log.py": 14,
-  "tools/desktop_ui.py": 1,
+  "tools/desktop_ui.py": 2,
   "tools/discord_tool.py": 1,
   "tools/env_probe.py": 4,
   "tools/environments/base.py": 28,
@@ -351,7 +353,7 @@
   "tools/open_preview_tool.py": 3,
   "tools/process_registry.py": 3,
   "tools/project_tools.py": 6,
-  "tools/registry.py": 14,
+  "tools/registry.py": 13,
   "tools/send_message_tool.py": 2,
   "tools/session_search_tool.py": 5,
   "tools/skill_manager_tool.py": 18,
@@ -599,14 +601,6 @@
   },
   {
    "module": "hermes_cli/main.py",
-   "py": "_is_fork",
-   "c": "main_u_is_fork",
-   "file": "src/cli/port_main_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/main.py",
    "py": "_is_windows_npm_path",
    "c": "main_u_is_windows_npm_path",
    "file": "src/cli/port_main_wrappers.c",
@@ -650,14 +644,6 @@
    "py": "_write_lazy_refresh_incomplete_marker",
    "c": "main_u_write_lazy_refresh_incomplete_marker",
    "file": "src/cli/port_main_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/gateway.py",
-   "py": "_print_linger_enable_warning",
-   "c": "cgw_u_print_linger_enable_warning",
-   "file": "src/cli/port_cli_gateway_wrappers.c",
    "cat": "Bt",
    "candidates": []
   },
@@ -870,30 +856,6 @@
    "candidates": []
   },
   {
-   "module": "tools/registry.py",
-   "py": "register_plugin_override_policy",
-   "c": "tools_registry_register_plugin_override_policy",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "_fallback_entry_is_same_backend_by_base_url",
-   "c": "agent_chat_completion_helpers_u_fallback_entry_is_same_backe_rl",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "_reset_stale_streak",
-   "c": "agent_chat_completion_helpers_u_reset_stale_streak",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
    "module": "hermes_cli/skin_engine.py",
    "py": "get_active_skin_name",
    "c": "hermes_cli_skin_engine_get_active_skin_name",
@@ -929,6 +891,14 @@
    "module": "agent/agent_init.py",
    "py": "_resolve_compression_threshold",
    "c": "agent_agent_init_u_resolve_compression_threshold",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bt",
+   "candidates": []
+  },
+  {
+   "module": "agent/chat_completion_helpers.py",
+   "py": "_reset_stale_streak",
+   "c": "agent_chat_completion_helpers_u_reset_stale_streak",
    "file": "src/agent/port_agent_remaining_wrappers.c",
    "cat": "Bt",
    "candidates": []
@@ -1422,6 +1392,14 @@
    "candidates": []
   },
   {
+   "module": "tools/desktop_ui.py",
+   "py": "set_emitter",
+   "c": "tools_desktop_ui_set_emitter",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bt",
+   "candidates": []
+  },
+  {
    "module": "tools/thread_context.py",
    "py": "_callback_api",
    "c": "tools_thread_context_u_callback_api",
@@ -1482,14 +1460,6 @@
    "py": "check_clarify_requirements",
    "c": "cli_tools_clarify_tool_check_clarify_requirements",
    "file": "src/cli/port_tools_clarify_tool.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "tools/desktop_ui.py",
-   "py": "set_emitter",
-   "c": "tools_desktop_ui_set_emitter",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
    "cat": "Bt",
    "candidates": []
   },
@@ -6158,102 +6128,6 @@
    "candidates": []
   },
   {
-   "module": "tools/registry.py",
-   "py": "_caller_module",
-   "c": "tools_registry_u_caller_module",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/registry.py",
-   "py": "_check_fn_cached",
-   "c": "tools_registry_u_check_fn_cached",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/registry.py",
-   "py": "_module_registers_tools",
-   "c": "tools_registry_u_module_registers_tools",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/registry.py",
-   "py": "_normalize_handler_result",
-   "c": "tools_registry_u_normalize_handler_result",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/registry.py",
-   "py": "_plugin_owner_of",
-   "c": "tools_registry_u_plugin_owner_of",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/registry.py",
-   "py": "_snapshot_entries",
-   "c": "tools_registry_u_snapshot_entries",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/registry.py",
-   "py": "_snapshot_state",
-   "c": "tools_registry_u_snapshot_state",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/registry.py",
-   "py": "check_tool_availability",
-   "c": "tools_registry_check_tool_availability",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/registry.py",
-   "py": "discover_builtin_tools",
-   "c": "tools_registry_discover_builtin_tools",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/registry.py",
-   "py": "get_definitions",
-   "c": "tools_registry_get_definitions",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/registry.py",
-   "py": "get_entry",
-   "c": "tools_registry_get_entry",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/registry.py",
-   "py": "invalidate_check_fn_cache",
-   "c": "tools_registry_invalidate_check_fn_cache",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
    "module": "tools/x_search_tool.py",
    "py": "_get_x_search_model",
    "c": "tools_x_search_tool_u_get_x_search_model",
@@ -6314,54 +6188,6 @@
    "py": "check_x_search_requirements",
    "c": "tools_x_search_tool_check_x_search_requirements",
    "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "_build_partial_stream_stub",
-   "c": "agent_chat_completion_helpers_u_build_partial_stream_stub",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "_bump_stale_streak",
-   "c": "agent_chat_completion_helpers_u_bump_stale_streak",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "_check_stale_giveup",
-   "c": "agent_chat_completion_helpers_u_check_stale_giveup",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "_codex_wait_notice_recovery",
-   "c": "agent_chat_completion_helpers_u_codex_wait_notice_recovery",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "_derive_stream_stale_timeout",
-   "c": "agent_chat_completion_helpers_u_derive_stream_stale_timeout",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "_dispatch_nonstreaming_api_request",
-   "c": "agent_chat_completion_helpers_u_dispatch_nonstreaming_api_re_st",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
    "cat": "Bx",
    "candidates": []
   },
@@ -6694,6 +6520,102 @@
    "candidates": []
   },
   {
+   "module": "tools/registry.py",
+   "py": "_caller_module",
+   "c": "tools_registry_u_caller_module",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/registry.py",
+   "py": "_check_fn_cached",
+   "c": "tools_registry_u_check_fn_cached",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/registry.py",
+   "py": "_module_registers_tools",
+   "c": "tools_registry_u_module_registers_tools",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/registry.py",
+   "py": "_normalize_handler_result",
+   "c": "tools_registry_u_normalize_handler_result",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/registry.py",
+   "py": "_plugin_owner_of",
+   "c": "tools_registry_u_plugin_owner_of",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/registry.py",
+   "py": "_snapshot_entries",
+   "c": "tools_registry_u_snapshot_entries",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/registry.py",
+   "py": "_snapshot_state",
+   "c": "tools_registry_u_snapshot_state",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/registry.py",
+   "py": "check_tool_availability",
+   "c": "tools_registry_check_tool_availability",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/registry.py",
+   "py": "discover_builtin_tools",
+   "c": "tools_registry_discover_builtin_tools",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/registry.py",
+   "py": "get_definitions",
+   "c": "tools_registry_get_definitions",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/registry.py",
+   "py": "get_entry",
+   "c": "tools_registry_get_entry",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/registry.py",
+   "py": "invalidate_check_fn_cache",
+   "c": "tools_registry_invalidate_check_fn_cache",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
    "module": "agent/agent_init.py",
    "py": "_build_codex_gpt5_autoraise_notice",
    "c": "agent_agent_init_u_build_codex_gpt5_autoraise_notice",
@@ -6737,6 +6659,54 @@
    "module": "agent/agent_init.py",
    "py": "_record_codex_gpt55_autoraise_notice",
    "c": "agent_agent_init_u_record_codex_gpt55_autoraise_notice",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/chat_completion_helpers.py",
+   "py": "_build_partial_stream_stub",
+   "c": "agent_chat_completion_helpers_u_build_partial_stream_stub",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/chat_completion_helpers.py",
+   "py": "_bump_stale_streak",
+   "c": "agent_chat_completion_helpers_u_bump_stale_streak",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/chat_completion_helpers.py",
+   "py": "_check_stale_giveup",
+   "c": "agent_chat_completion_helpers_u_check_stale_giveup",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/chat_completion_helpers.py",
+   "py": "_codex_wait_notice_recovery",
+   "c": "agent_chat_completion_helpers_u_codex_wait_notice_recovery",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/chat_completion_helpers.py",
+   "py": "_derive_stream_stale_timeout",
+   "c": "agent_chat_completion_helpers_u_derive_stream_stale_timeout",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/chat_completion_helpers.py",
+   "py": "_dispatch_nonstreaming_api_request",
+   "c": "agent_chat_completion_helpers_u_dispatch_nonstreaming_api_re_st",
    "file": "src/agent/port_agent_remaining_wrappers.c",
    "cat": "Bx",
    "candidates": []
@@ -9038,6 +9008,14 @@
    "candidates": []
   },
   {
+   "module": "gateway/hooks.py",
+   "py": "_resolve_handlers",
+   "c": "cli_gateway_hooks__resolve_handlers",
+   "file": "src/cli/port_gateway_hooks.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
    "module": "gateway/relay/auth.py",
    "py": "make_upgrade_token",
    "c": "relay_auth_make_upgrade_token",
@@ -9274,14 +9252,6 @@
    "py": "_disabled_web_plugin_for",
    "c": "agent_web_search_registry_u_disabled_web_plugin_for",
    "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "gateway/hooks.py",
-   "py": "_resolve_handlers",
-   "c": "cli_gateway_hooks__resolve_handlers",
-   "file": "src/cli/port_gateway_hooks.c",
    "cat": "Bx",
    "candidates": []
   },
@@ -19230,46 +19200,6 @@
    "candidates": []
   },
   {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "_bedrock_reasoning_stale_floor",
-   "c": "agent_chat_completion_helpers_u_bedrock_reasoning_stale_floor",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "_provider_preferences_for_agent",
-   "c": "agent_chat_completion_helpers_u_provider_preferences_for_agent",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "direct_api_call",
-   "c": "agent_chat_completion_helpers_direct_api_call",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "openai_codex_stale_timeout_floor",
-   "c": "agent_chat_completion_helpers_openai_codex_stale_timeout_floor",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/chat_completion_helpers.py",
-   "py": "should_use_direct_api_call",
-   "c": "agent_chat_completion_helpers_should_use_direct_api_call",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
    "module": "cron/executions.py",
    "py": "_connect",
    "c": "cron_executions_u_connect",
@@ -19985,6 +19915,46 @@
    "module": "agent/agent_init.py",
    "py": "_relay_moa_reference_event",
    "c": "agent_agent_init_u_relay_moa_reference_event",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/chat_completion_helpers.py",
+   "py": "_bedrock_reasoning_stale_floor",
+   "c": "agent_chat_completion_helpers_u_bedrock_reasoning_stale_floor",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/chat_completion_helpers.py",
+   "py": "_provider_preferences_for_agent",
+   "c": "agent_chat_completion_helpers_u_provider_preferences_for_agent",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/chat_completion_helpers.py",
+   "py": "direct_api_call",
+   "c": "agent_chat_completion_helpers_direct_api_call",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/chat_completion_helpers.py",
+   "py": "openai_codex_stale_timeout_floor",
+   "c": "agent_chat_completion_helpers_openai_codex_stale_timeout_floor",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/chat_completion_helpers.py",
+   "py": "should_use_direct_api_call",
+   "c": "agent_chat_completion_helpers_should_use_direct_api_call",
    "file": "src/agent/port_agent_remaining_wrappers.c",
    "cat": "C",
    "candidates": []
@@ -24302,6 +24272,22 @@
    "candidates": []
   },
   {
+   "module": "agent/lsp/eventlog.py",
+   "py": "_emit",
+   "c": "lsp_log_emit",
+   "file": "src/agent/port_lsp_eventlog.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/lsp/eventlog.py",
+   "py": "log_no_server_configured",
+   "c": "lsp_log_no_server_configured",
+   "file": "src/agent/port_lsp_eventlog.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
    "module": "agent/prompt_caching.py",
    "py": "_apply_system_cache_markers",
    "c": "agent_prompt_caching_u_apply_system_cache_markers",
@@ -24378,6 +24364,14 @@
    "py": "_windows_cron_python_invocation",
    "c": "cron_scheduler_u_windows_cron_python_invocation",
    "file": "src/cli/port_other_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "gateway/hooks.py",
+   "py": "emit",
+   "c": "lsp_log_emit",
+   "file": "src/agent/port_lsp_eventlog.c",
    "cat": "C",
    "candidates": []
   },
@@ -24598,6 +24592,14 @@
    "candidates": []
   },
   {
+   "module": "tools/desktop_ui.py",
+   "py": "emit",
+   "c": "lsp_log_emit",
+   "file": "src/agent/port_lsp_eventlog.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
    "module": "tools/focus_pane_tool.py",
    "py": "focus_pane_tool",
    "c": "tools_focus_pane_tool_focus_pane_tool",
@@ -24706,6 +24708,14 @@
    "py": "complete",
    "c": "agent_context_engine_on_turn_complete",
    "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/proxy_sources/iron_proxy.py",
+   "py": "configured",
+   "c": "lsp_log_no_server_configured",
+   "file": "src/agent/port_lsp_eventlog.c",
    "cat": "C",
    "candidates": []
   },

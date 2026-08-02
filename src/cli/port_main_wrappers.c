@@ -778,7 +778,18 @@ int main_u_npm_lockfile_changed(const char *arg) { (void)arg; return 0; }
 int main_u_record_npm_lockfile_hash(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_windows_npm_path @ hermes_cli/main.py:_is_windows_npm_path */
-int main_u_is_windows_npm_path(const char *arg) { (void)arg; return 0; }
+int main_u_is_windows_npm_path(const char *arg) {
+    /* Python: .exe/.cmd/.bat suffix, /mnt/ drive-mount prefix, or an
+     * embedded backslash marks a Windows npm shim. */
+    if (!arg || !*arg) return 0;
+    const char *p = arg;
+    size_t n = strlen(p);
+    if (n > 4 && (strcmp(p + n - 4, ".exe") == 0 || strcmp(p + n - 4, ".cmd") == 0 ||
+                  strcmp(p + n - 4, ".bat") == 0)) return 1;
+    if (strncmp(p, "/mnt/", 5) == 0) return 1;
+    if (strchr(p, '\\') != NULL) return 1;
+    return 0;
+}
 
 /* PoP: _resolve_node_runtime_npm @ hermes_cli/main.py:_resolve_node_runtime_npm */
 int main_u_resolve_node_runtime_npm(const char *arg) { (void)arg; return 0; }

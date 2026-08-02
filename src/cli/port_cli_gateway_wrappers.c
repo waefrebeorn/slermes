@@ -293,7 +293,38 @@ int cgw_systemd_unit_is_current(const char *arg) { (void)arg; return 0; }
 int cgw_u_temp_home_in_service_definition(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _refuse_temp_home_service_write @ hermes_cli/gateway.py:_refuse_temp_home_service_write */
-int cgw_u_refuse_temp_home_service_write(const char *arg) { (void)arg; return 0; }
+int cgw_u_refuse_temp_home_service_write(const char *arg) {
+    /* Python (definition, kind): refuse when the service definition bakes in
+     * a temp-dir HERMES_HOME; returns True when refused. Arg =
+     * "definition\tkind". */
+    if (!arg || !*arg) return 0;
+    const char *tab = strchr(arg, '\t');
+    const char *defn = tab ? arg : arg;
+    size_t dlen = tab ? (size_t)(tab - arg) : strlen(arg);
+    const char *kind = tab ? tab + 1 : "service";
+    /* find HERMES_HOME=... in the definition */
+    const char *hay = defn;
+    const char *hit = NULL;
+    size_t hitlen = 0;
+    for (const char *q = hay; q < hay + dlen; ) {
+        const char *eq = strstr(q, "HERMES_HOME=");
+        if (!eq || eq >= hay + dlen) break;
+        const char *val = eq + 12;
+        const char *eol = val;
+        while (eol < hay + dlen && *eol != '\n' && *eol != '\r' && *eol != '"' && *eol != ' ') eol++;
+        if (strncmp(val, "/tmp/", 5) == 0 || strncmp(val, "/var/tmp/", 9) == 0) {
+            hit = val;
+            hitlen = (size_t)(eol - val);
+            break;
+        }
+        q = eol;
+    }
+    if (!hit) return 0;
+    printf("\xe2\x9c\x97 Refusing to write the gateway %s: HERMES_HOME resolves to a temporary directory (%.*s).\n",
+           kind, (int)hitlen, hit);
+    printf("  This usually means a test/E2E environment exported HERMES_HOME. Unset it (or run from a clean shell) and retry.\n");
+    return 1;
+}
 
 /* PoP: refresh_systemd_unit_if_needed @ hermes_cli/gateway.py:refresh_systemd_unit_if_needed */
 int cgw_refresh_systemd_unit_if_needed(const char *arg) { (void)arg; return 0; }
