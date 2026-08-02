@@ -852,6 +852,10 @@ class ParityAnalyzer:
             memo[name] = False; stack.discard(name); return False
         nb = [ln.strip() for ln in body.split('\n')
               if ln.strip() and not ln.strip().startswith('//')]
+        # Strip trailing/embedded block comments so a bare call followed by
+        # `/* note */` still matches the call pattern (was mis-flagged bootleg).
+        nb = [re.sub(r'/\*.*?\*/', '', ln).strip() for ln in nb]
+        nb = [ln for ln in nb if ln]
         if not nb:
             memo[name] = True; stack.discard(name); return True
         def stmt_bootleg(s):

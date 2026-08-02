@@ -215,7 +215,32 @@ int gw_u_install_startup_entry(const char *arg) { (void)arg; return 0; }
 int gw_u_resolve_detached_python(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _prepend_pythonpath @ hermes_cli/gateway_windows.py:_prepend_pythonpath */
-int gw_u_prepend_pythonpath(const char *arg) { (void)arg; return 0; }
+int gw_u_prepend_pythonpath(const char *arg) {
+    /* Python: join clean entries + existing PYTHONPATH into env overlay.
+     * Arg = "entry\tentry..." (tab-sep, empties dropped). */
+    if (!arg || !*arg) { printf("no entries\n"); return 0; }
+    char clean[2048] = "";
+    const char *p = arg;
+    int first = 1;
+    while (*p) {
+        const char *tab = strchr(p, '\t');
+        size_t len = tab ? (size_t)(tab - p) : strlen(p);
+        if (len) {
+            if (!first) strncat(clean, ":", sizeof(clean) - strlen(clean) - 1);
+            if (len >= sizeof(clean) - strlen(clean)) len = sizeof(clean) - strlen(clean) - 1;
+            strncat(clean, p, len);
+            first = 0;
+        }
+        p = tab ? tab + 1 : p + len;
+    }
+    const char *existing = getenv("PYTHONPATH");
+    if (existing && *existing) {
+        if (!first) strncat(clean, ":", sizeof(clean) - strlen(clean) - 1);
+        strncat(clean, existing, sizeof(clean) - strlen(clean) - 1);
+    }
+    printf("PYTHONPATH=%s\n", clean);
+    return 0;
+}
 
 /* PoP: _build_gateway_argv @ hermes_cli/gateway_windows.py:_build_gateway_argv */
 int gw_u_build_gateway_argv(const char *arg) { (void)arg; return 0; }

@@ -199,7 +199,30 @@ int cgw_u_probe_launchd_service_running(const char *arg) { (void)arg; return 0; 
 int cgw_get_gateway_runtime_snapshot(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _format_gateway_pids @ hermes_cli/gateway.py:_format_gateway_pids */
-int cgw_u_format_gateway_pids(const char *arg) { (void)arg; return 0; }
+int cgw_u_format_gateway_pids(const char *arg) {
+    /* Python: comma-joined positive pids (limit + "..." if truncated).
+     * Arg = "pid pid...\tlimit" (limit empty = none). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    long limit = tab ? strtol(tab + 1, NULL, 10) : -1;
+    long count = 0;
+    const char *p = arg;
+    int first = 1;
+    while (p && *p && p != tab) {
+        while (*p == ' ' || *p == '\t') p++;
+        if (p == tab || !*p) break;
+        long pid = strtol(p, (char **)&p, 10);
+        if (pid > 0) {
+            if (limit >= 0 && count >= limit) { printf("..."); first = 0; break; }
+            if (!first) printf(", ");
+            printf("%ld", pid);
+            first = 0;
+            count++;
+        }
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _print_gateway_process_mismatch @ hermes_cli/gateway.py:_print_gateway_process_mismatch */
 int cgw_u_print_gateway_process_mismatch(const char *arg) {
@@ -279,7 +302,15 @@ int cgw_get_systemd_unit_path(const char *arg) {
 }
 
 /* PoP: _user_dbus_socket_path @ hermes_cli/gateway.py:_user_dbus_socket_path */
-int cgw_u_user_dbus_socket_path(const char *arg) { (void)arg; return 0; }
+int cgw_u_user_dbus_socket_path(const char *arg) {
+    /* Python: XDG_RUNTIME_DIR or /run/user/<uid> + "/bus". Arg = optional
+     * XDG_RUNTIME_DIR. */
+    if (arg && *arg) { printf("%s/bus\n", arg); return 0; }
+    const char *xdg = getenv("XDG_RUNTIME_DIR");
+    if (xdg && *xdg) { printf("%s/bus\n", xdg); return 0; }
+    printf("/run/user/%d/bus\n", getuid());
+    return 0;
+}
 
 /* PoP: _user_systemd_private_socket_path @ hermes_cli/gateway.py:_user_systemd_private_socket_path */
 int cgw_u_user_systemd_private_socket_path(const char *arg) { (void)arg; return 0; }

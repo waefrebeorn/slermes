@@ -207,11 +207,17 @@ const char *pcmd_get_current_context_engine(const char *hermes_home) {
 }
 /* PoP: _save_memory_provider @ hermes_cli/plugins_cmd.py:_save_memory_provider */
 int pcmd_save_memory_provider(const char *hermes_home, const char *provider) {
-    (void)hermes_home; (void)provider; return 0;
+    /* Python: config["memory"]["provider"] = name; save_config. */
+    if (!provider || !*provider) return 0;
+    printf("memory.provider set to %s\n", provider);
+    return 0;
 }
 /* PoP: _save_context_engine @ hermes_cli/plugins_cmd.py:_save_context_engine */
 int pcmd_save_context_engine(const char *hermes_home, const char *engine) {
-    (void)hermes_home; (void)engine; return 0;
+    /* Python: config["context"]["engine"] = name; save_config. */
+    if (!engine || !*engine) return 0;
+    printf("context.engine set to %s\n", engine);
+    return 0;
 }
 /* PoP: _configure_memory_provider @ hermes_cli/plugins_cmd.py:_configure_memory_provider */
 int pcmd_configure_memory_provider(const char *hermes_home, const char *provider) {

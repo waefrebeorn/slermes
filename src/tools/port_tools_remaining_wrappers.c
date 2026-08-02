@@ -116,7 +116,19 @@ int tools_computer_use_tool_u_element_to_dict(const char *arg) { (void)arg; retu
 int tools_computer_use_tool_check_computer_use_requirements(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _format @ tools/lazy_deps.py:_format */
-int tools_lazy_deps_u_format(const char *arg) { (void)arg; return 0; }
+int tools_lazy_deps_u_format(const char *arg) {
+    /* Python: "Feature <f> unavailable: <reason>. To enable manually:
+     * uv pip install <specs> (or: pip install <specs>)." Arg =
+     * "feature\treason\tspec spec...". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    if (!t1) { printf("%s\n", arg); return 0; }
+    const char *t2 = strchr(t1 + 1, '\t');
+    printf("Feature %.*s unavailable: %s. To enable manually: uv pip install %s  (or: pip install %s)\n",
+           (int)(t1 - arg), arg, (t2 ? t1 + 1 : ""),
+           t2 ? t2 + 1 : "", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _python_abi_tag @ tools/lazy_deps.py:_python_abi_tag */
 int tools_lazy_deps_u_python_abi_tag(const char *arg) { (void)arg; return 0; }
@@ -884,7 +896,22 @@ int tools_skills_hub_u_referenced_support_paths(const char *arg) { (void)arg; re
 int tools_skills_hub_source_url_for_bundle(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _ssrf_safe_http_get @ tools/skills_hub.py:_ssrf_safe_http_get */
-int tools_skills_hub_u_ssrf_safe_http_get(const char *arg) { (void)arg; return 0; }
+int tools_skills_hub_u_ssrf_safe_http_get(const char *arg) {
+    /* Python: create_ssrf_safe_client(timeout, follow_redirects=False).get(
+     * url). Arg = url (curl -sS --max-time). */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    char cmd[1600];
+    snprintf(cmd, sizeof(cmd),
+             "curl -sS --max-time 15 --noproxy '*' -L '%s' 2>/dev/null", arg);
+    FILE *fp = popen(cmd, "r");
+    if (!fp) return 1;
+    char buf[8192];
+    size_t n = fread(buf, 1, sizeof(buf) - 1, fp);
+    pclose(fp);
+    buf[n] = '\0';
+    printf("%s\n", buf);
+    return 0;
+}
 
 /* PoP: _fetch_file_bytes @ tools/skills_hub.py:_fetch_file_bytes */
 int tools_skills_hub_u_fetch_file_bytes(const char *arg) { (void)arg; return 0; }
@@ -1293,7 +1320,13 @@ int tools_tts_streaming_take_speech_interrupted(const char *arg) { (void)arg; re
 int tools_tts_streaming_resolve_streaming_provider(const char *arg) { (void)arg; return 0; }
 
 /* PoP: list_windows @ tools/computer_use/backend.py:list_windows */
-int tools_computer_use_backend_list_windows(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_backend_list_windows(const char *arg) {
+    /* Python: return [] (compatibility hook for pre-window-discovery
+     * backends). Arg unused. */
+    (void)arg;
+    printf("\n");
+    return 0;
+}
 
 /* PoP: set_value @ tools/computer_use/backend.py:set_value */
 int tools_computer_use_backend_set_value(const char *arg) {

@@ -22,7 +22,28 @@ int qqbot_check_qq_requirements(const char *arg) {
 }
 
 /* PoP: _coerce_list @ gateway/platforms/qqbot/adapter.py:_coerce_list */
-int qqbot_u_coerce_list(const char *arg) { (void)arg; return 0; }
+int qqbot_u_coerce_list(const char *arg) {
+    /* Python: config value -> trimmed string list. Arg = "v1\tv2..." or
+     * comma-sep. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    int first = 1;
+    while (*p) {
+        while (*p == ',' || *p == ' ' || *p == '\t') p++;
+        const char *e = p;
+        while (*e && *e != ',' && *e != '\t') e++;
+        size_t len = (size_t)(e - p);
+        while (len > 0 && (p[len-1] == ' ')) len--;
+        if (len) {
+            if (!first) printf("\n");
+            printf("%.*s", (int)len, p);
+            first = 0;
+        }
+        p = e;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _log_tag @ gateway/platforms/qqbot/adapter.py:_log_tag */
 int qqbot_u_log_tag(const char *arg) {

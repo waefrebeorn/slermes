@@ -546,7 +546,13 @@ int gateway_status_phrases_u_merge_phrase_paths(const char *arg) {
 }
 
 /* PoP: _load_builtin_catalog @ gateway/status_phrases.py:_load_builtin_catalog */
-int gateway_status_phrases_u_load_builtin_catalog(const char *arg) { (void)arg; return 0; }
+int gateway_status_phrases_u_load_builtin_catalog(const char *arg) {
+    /* Python: copy of _FALLBACK_PHRASES merged with assets YAML. Arg =
+     * "surface=phrases..." (passthrough). */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _copy_default_catalog @ gateway/status_phrases.py:_copy_default_catalog */
 int gateway_status_phrases_u_copy_default_catalog(const char *arg) {

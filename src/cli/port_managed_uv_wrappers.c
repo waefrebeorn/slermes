@@ -51,7 +51,16 @@ int muv_u__new__(const char *arg) {
 }
 
 /* PoP: __iter__ @ hermes_cli/managed_uv.py:__iter__ */
-int muv_u__iter__(const char *arg) { (void)arg; return 0; }
+int muv_u__iter__(const char *arg) {
+    /* Python: iter((str(self) or None, fresh_bootstrap)). Arg = "path\tfresh"
+     * (path empty = unavailable). */
+    if (!arg || !*arg) { printf("\n0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab == arg) { printf("\n%s\n", tab + 1); return 0; }
+    if (tab) printf("%.*s\n%s\n", (int)(tab - arg), arg, tab + 1);
+    else printf("%s\n0\n", arg);
+    return 0;
+}
 
 /* PoP: _ensure_uv_path @ hermes_cli/managed_uv.py:_ensure_uv_path */
 int muv_u_ensure_uv_path(const char *arg) { (void)arg; return 0; }

@@ -1412,7 +1412,27 @@ int hermes_cli_active_sessions_u__exit__(const char *arg) { (void)arg; return 0;
 int hermes_cli_active_sessions_u_read_entries(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _write_entries @ hermes_cli/active_sessions.py:_write_entries */
-int hermes_cli_active_sessions_u_write_entries(const char *arg) { (void)arg; return 0; }
+int hermes_cli_active_sessions_u_write_entries(const char *arg) {
+    /* Python: atomic json dump {entries: [...]} to path (tmp + rename).
+     * Arg = "path\tentries_json". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("0\n"); return 0; }
+    char path[1024];
+    size_t plen = (size_t)(tab - arg);
+    if (plen >= sizeof(path)) plen = sizeof(path) - 1;
+    memcpy(path, arg, plen); path[plen] = '\0';
+    const char *entries = tab + 1;
+    char tmp[1100];
+    snprintf(tmp, sizeof(tmp), "%s.%d.tmp", path, (int)getpid());
+    FILE *fp = fopen(tmp, "w");
+    if (!fp) { printf("0\n"); return 0; }
+    fprintf(fp, "{\"entries\": %s}\n", entries);
+    fclose(fp);
+    if (rename(tmp, path) != 0) { unlink(tmp); printf("0\n"); return 0; }
+    printf("1\n");
+    return 0;
+}
 
 /* PoP: _process_start_time @ hermes_cli/active_sessions.py:_process_start_time */
 int hermes_cli_active_sessions_u_process_start_time(const char *arg) { (void)arg; return 0; }
@@ -1824,7 +1844,21 @@ int hermes_cli_dashboard_auth_midd_u_auto_sso_response(const char *arg) { (void)
 int hermes_cli_dashboard_auth_midd_u_safe_next_target(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _extract_bearer @ hermes_cli/dashboard_auth/middleware.py:_extract_bearer */
-int hermes_cli_dashboard_auth_midd_u_extract_bearer(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_midd_u_extract_bearer(const char *arg) {
+    /* Python: "Bearer <token>" from Authorization header, else "". Arg =
+     * header value. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ' || *p == '\t') p++;
+    if (strncasecmp(p, "bearer", 6) == 0 && (p[6] == ' ' || p[6] == '\t')) {
+        const char *tok = p + 6;
+        while (*tok == ' ' || *tok == '\t') tok++;
+        printf("%s\n", tok);
+        return 0;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _verify_bearer @ hermes_cli/dashboard_auth/middleware.py:_verify_bearer */
 int hermes_cli_dashboard_auth_midd_u_verify_bearer(const char *arg) { (void)arg; return 0; }
@@ -2057,7 +2091,30 @@ int hermes_cli_webhook_u_load_subscriptions(const char *arg) {
 int hermes_cli_webhook_u_save_subscriptions(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _get_webhook_config @ hermes_cli/webhook.py:_get_webhook_config */
-int hermes_cli_webhook_u_get_webhook_config(const char *arg) { (void)arg; return 0; }
+int hermes_cli_webhook_u_get_webhook_config(const char *arg) {
+    /* Python: cfg.platforms.webhook or {}. Arg = config JSON. */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    json_t *cfg = json_parse(arg, NULL);
+    if (!cfg || !json_is_object(cfg)) {
+        if (cfg) json_free(cfg);
+        printf("{}\n");
+        return 0;
+    }
+    json_t *platforms = json_obj_get(cfg, "platforms");
+    if (platforms && json_is_object(platforms)) {
+        json_t *wh = json_obj_get(platforms, "webhook");
+        if (wh && json_is_object(wh)) {
+            char *s = json_dumps(wh, 0);
+            printf("%s\n", s ? s : "{}");
+            free(s);
+            json_free(cfg);
+            return 0;
+        }
+    }
+    printf("{}\n");
+    json_free(cfg);
+    return 0;
+}
 
 /* PoP: _is_webhook_enabled @ hermes_cli/webhook.py:_is_webhook_enabled */
 int hermes_cli_webhook_u_is_webhook_enabled(const char *arg) {
@@ -2798,7 +2855,40 @@ int hermes_cli_skin_cmd_u_use(const char *arg) {
 int hermes_cli_skin_cmd_u_skin_set(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _skin_list @ hermes_cli/skin_cmd.py:_skin_list */
-int hermes_cli_skin_cmd_u_skin_list(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skin_cmd_u_skin_list(const char *arg) {
+    /* Python: "* <name:16> <source:8> <description>" per skin; active
+     * marked *. Arg = "active\tname\tsource\tdesc\tname\tsource\tdesc..." */
+    char active[64] = "";
+    if (!arg || !*arg) return 0;
+    const char *p = arg;
+    const char *tab = strchr(arg, '\t');
+    if (tab) {
+        size_t alen = (size_t)(tab - arg);
+        if (alen >= sizeof(active)) alen = sizeof(active) - 1;
+        memcpy(active, arg, alen); active[alen] = '\0';
+        p = tab + 1;
+    }
+    while (*p) {
+        const char *t1 = strchr(p, '\t');
+        if (!t1) { printf("  %s\n", p); break; }
+        const char *t2 = strchr(t1 + 1, '\t');
+        const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+        char name[128];
+        size_t nlen = (size_t)(t1 - p);
+        if (nlen >= sizeof(name)) nlen = sizeof(name) - 1;
+        memcpy(name, p, nlen); name[nlen] = '\0';
+        char src[64] = "";
+        if (t2) {
+            size_t slen = (size_t)(t2 - t1 - 1);
+            if (slen >= sizeof(src)) slen = sizeof(src) - 1;
+            memcpy(src, t1 + 1, slen); src[slen] = '\0';
+        }
+        const char *desc = t3 ? t3 + 1 : (t2 ? t2 + 1 : "");
+        printf("%c %-16s %-8s %s\n", strcmp(name, active) == 0 ? '*' : ' ', name, src, desc);
+        p = t3 ? t3 + 1 : (t2 ? t2 + 1 : t1 + 1);
+    }
+    return 0;
+}
 
 /* PoP: skin_command @ hermes_cli/skin_cmd.py:skin_command */
 int hermes_cli_skin_cmd_skin_command(const char *arg) { (void)arg; return 0; }

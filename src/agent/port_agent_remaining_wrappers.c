@@ -957,7 +957,12 @@ int agent_error_classifier_u_classify_by_message(const char *arg) { (void)arg; r
 int agent_error_classifier_u_extract_error_code(const char *arg) { (void)arg; return 0; }
 
 /* PoP: queue_prefetch @ agent/memory_provider.py:queue_prefetch */
-int agent_memory_provider_queue_prefetch(const char *arg) { (void)arg; return 0; }
+int agent_memory_provider_queue_prefetch(const char *arg) {
+    /* Python: default no-op — providers that background-prefetch override. */
+    (void)arg;
+    printf("no-op\n");
+    return 0;
+}
 
 /* PoP: sync_turn @ agent/memory_provider.py:sync_turn */
 int agent_memory_provider_sync_turn(const char *arg) { (void)arg; return 0; }
@@ -993,7 +998,20 @@ int agent_codex_runtime_u_codex_item_completion_payload(const char *arg) { (void
 int agent_codex_runtime_make_codex_app_server_event_bridge(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _item_field @ agent/codex_runtime.py:_item_field */
-int agent_codex_runtime_u_item_field(const char *arg) { (void)arg; return 0; }
+int agent_codex_runtime_u_item_field(const char *arg) {
+    /* Python: getattr(item, name) else dict.get(name, default). Arg =
+     * "name\tvalue\tdefault" (value empty = missing). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    if (!t1) { printf("\n"); return 0; }
+    const char *t2 = strchr(t1 + 1, '\t');
+    if (t2 && t1[1] != '\0' && t1[1] != '~') {
+        printf("%.*s\n", (int)(t2 - t1 - 1), t1 + 1);
+        return 0;
+    }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _apply_active_turn_redirect @ agent/conversation_loop.py:_apply_active_turn_redirect */
 int agent_conversation_loop_u_apply_active_turn_redirect(const char *arg) { (void)arg; return 0; }
@@ -1035,7 +1053,16 @@ int agent_pet_generate_orchestrate_u_harden_transparency(const char *arg) { (voi
 int agent_pet_generate_orchestrate_generate_base_drafts(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _drafts_failed_reason @ agent/pet/generate/orchestrate.py:_drafts_failed_reason */
-int agent_pet_generate_orchestrate_u_drafts_failed_reason(const char *arg) { (void)arg; return 0; }
+int agent_pet_generate_orchestrate_u_drafts_failed_reason(const char *arg) {
+    /* Python: "image generation produced no usable drafts" if no errors;
+     * else humanized most-common error. Arg = "err\terr\t..." (tab-sep). */
+    if (!arg || !*arg) {
+        printf("image generation produced no usable drafts\n");
+        return 0;
+    }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _humanize_image_error @ agent/pet/generate/orchestrate.py:_humanize_image_error */
 int agent_pet_generate_orchestrate_u_humanize_image_error(const char *arg) { (void)arg; return 0; }

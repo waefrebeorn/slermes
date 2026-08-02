@@ -97,7 +97,32 @@ int gstat_u_file_cache_signature(const char *arg) {
 }
 
 /* PoP: _running_pid_cache_signature @ gateway/status.py:_running_pid_cache_signature */
-int gstat_u_running_pid_cache_signature(const char *arg) { (void)arg; return 0; }
+int gstat_u_running_pid_cache_signature(const char *arg) {
+    /* Python: tuple of file cache signatures (pid file + lock + optional
+     * runtime status). Arg = "pid_path\tlock_path\truntime_path" (paths
+     * may be empty). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    int first = 1;
+    const char *p = arg;
+    while (*p) {
+        const char *tab = strchr(p, '\t');
+        size_t len = tab ? (size_t)(tab - p) : strlen(p);
+        char path[1024];
+        if (len >= sizeof(path)) len = sizeof(path) - 1;
+        memcpy(path, p, len); path[len] = '\0';
+        struct stat st;
+        char sig[256] = "";
+        if (len && stat(path, &st) == 0) {
+            snprintf(sig, sizeof(sig), "%ld:%ld", (long)st.st_size, (long)st.st_mtime);
+        }
+        if (!first) printf("|");
+        printf("%s", sig);
+        first = 0;
+        p = tab ? tab + 1 : p + len;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: runtime_status_is_stale @ gateway/status.py:runtime_status_is_stale */
 int gstat_runtime_status_is_stale(const char *arg) { (void)arg; return 0; }
