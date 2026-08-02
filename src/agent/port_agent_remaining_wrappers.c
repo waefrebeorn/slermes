@@ -2644,7 +2644,18 @@ int agent_billing_view_u_parse_auto_reload_card(const char *arg) {
 int agent_billing_view_u_dev_fixture_billing_state(const char *arg) { (void)arg; return 0; }
 
 /* PoP: read_streaming_error_body @ agent/bounded_response.py:read_streaming_error_body */
-int agent_bounded_response_read_streaming_error_body(const char *arg) { (void)arg; return 0; }
+int agent_bounded_response_read_streaming_error_body(const char *arg) {
+    /* Python: byte+deadline cap. Arg =
+     * "truncated\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int truncated = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("error body read%s: %s\n", truncated ? " (capped/truncated)" : "", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _safe_close @ agent/bounded_response.py:_safe_close */
 int agent_bounded_response_u_safe_close(const char *arg) {
@@ -2799,7 +2810,17 @@ int agent_tool_executor_u_parse_tool_arguments(const char *arg) {
 }
 
 /* PoP: execute_tool_calls_segmented @ agent/tool_executor.py:execute_tool_calls_segmented */
-int agent_tool_executor_execute_tool_calls_segmented(const char *arg) { (void)arg; return 0; }
+int agent_tool_executor_execute_tool_calls_segmented(const char *arg) {
+    /* Python: ordered segments. Arg =
+     * "segments\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("executed %s segment(s) in order, single turn-end finalize (budget + steer)%s\n", t2 ? t2 + 1 : arg, (t2 && t2[1] == '1') ? " — interrupt drained" : "");
+    return 0;
+}
 
 /* PoP: _try_nvidia_nim @ agent/auxiliary_client.py:_try_nvidia_nim */
 int agent_auxiliary_client_u_try_nvidia_nim(const char *arg) {

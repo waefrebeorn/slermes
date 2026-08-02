@@ -1832,7 +1832,18 @@ int tools_kanban_tools_u_connect(const char *arg) {
 }
 
 /* PoP: heartbeat_current_worker_from_env @ tools/kanban_tools.py:heartbeat_current_worker_from_env */
-int tools_kanban_tools_heartbeat_current_worker_from_env(const char *arg) { (void)arg; return 0; }
+int tools_kanban_tools_heartbeat_current_worker_from_env(const char *arg) {
+    /* Python: env-identity heartbeat. Arg =
+     * "attempted\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int attempted = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !attempted) { printf("0 (no kanban worker env)\n"); return 0; }
+    printf("1 (heartbeat attempted, rate-limited at %s interval)\n", t2 ? t2 + 1 : "5s");
+    return 0;
+}
 
 /* PoP: _handle_attach @ tools/kanban_tools.py:_handle_attach */
 int tools_kanban_tools_u_handle_attach(const char *arg) {

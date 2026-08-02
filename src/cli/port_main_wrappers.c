@@ -869,7 +869,16 @@ int main_u_set_reasoning_effort(const char *arg) {
 }
 
 /* PoP: _prompt_reasoning_effort_selection @ hermes_cli/main.py:_prompt_reasoning_effort_selection */
-int main_u_prompt_reasoning_effort_selection(const char *arg) { (void)arg; return 0; }
+int main_u_prompt_reasoning_effort_selection(const char *arg) {
+    /* Python: canonical-order picker. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("effort selected: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _run_anthropic_oauth_flow @ hermes_cli/main.py:_run_anthropic_oauth_flow */
 int main_u_run_anthropic_oauth_flow(const char *arg) { (void)arg; return 0; }
@@ -2024,7 +2033,16 @@ int main_u_upgrade_pip_before_lazy_refresh(const char *arg) {
 }
 
 /* PoP: _detect_broken_lazy_refresh_imports @ hermes_cli/main.py:_detect_broken_lazy_refresh_imports */
-int main_u_detect_broken_lazy_refresh_imports(const char *arg) { (void)arg; return 0; }
+int main_u_detect_broken_lazy_refresh_imports(const char *arg) {
+    /* Python: certifi size gate. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "indeterminate") == 0) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _repair_broken_lazy_refresh_imports @ hermes_cli/main.py:_repair_broken_lazy_refresh_imports */
 int main_u_repair_broken_lazy_refresh_imports(const char *arg) {

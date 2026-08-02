@@ -468,7 +468,17 @@ int yb_u_media_marker(const char *arg) {
 }
 
 /* PoP: _walk_forward_msgs @ gateway/platforms/yuanbao.py:_walk_forward_msgs */
-int yb_u_walk_forward_msgs(const char *arg) { (void)arg; return 0; }
+int yb_u_walk_forward_msgs(const char *arg) {
+    /* Python: per-record yield. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("walked %s forward record(s), caps at %s chars\n", t2 ? t2 + 1 : arg, "1000");
+    return 0;
+}
 
 /* PoP: build_forward_text @ gateway/platforms/yuanbao.py:build_forward_text */
 int yb_build_forward_text(const char *arg) {

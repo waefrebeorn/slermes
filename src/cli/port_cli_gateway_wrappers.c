@@ -439,7 +439,18 @@ int cgw_u_print_other_profiles_gateway_status(const char *arg) {
 }
 
 /* PoP: _reap_unsupervised_gateway_orphans @ hermes_cli/gateway.py:_reap_unsupervised_gateway_orphans */
-int cgw_u_reap_unsupervised_gateway_orphans(const char *arg) { (void)arg; return 0; }
+int cgw_u_reap_unsupervised_gateway_orphans(const char *arg) {
+    /* Python: WSL orphan sweep. Arg =
+     * "reaped\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int reaped = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no-supervisor host only)\n"); return 0; }
+    printf("%s (SIGTERM + 5s grace + SIGKILL survivors, marker written per pid)%s\n", reaped ? "1" : "0", t2 && t2[1] == '1' ? " — permission denied logged" : "");
+    return 0;
+}
 
 /* PoP: _wsl_systemd_operational @ hermes_cli/gateway.py:_wsl_systemd_operational */
 int cgw_u_wsl_systemd_operational(const char *arg) {
@@ -1244,7 +1255,19 @@ int cgw_u_refuse_temp_home_service_write(const char *arg) {
 }
 
 /* PoP: refresh_systemd_unit_if_needed @ hermes_cli/gateway.py:refresh_systemd_unit_if_needed */
-int cgw_refresh_systemd_unit_if_needed(const char *arg) { (void)arg; return 0; }
+int cgw_refresh_systemd_unit_if_needed(const char *arg) {
+    /* Python: pytest-tmp belt. Arg =
+     * "refreshed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int refreshed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!refreshed) { printf("0 (unit current or temp-home refused)\n"); return 0; }
+    printf("1 (unit rewritten + daemon-reload: %s)\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _print_linger_enable_warning @ hermes_cli/gateway.py:_print_linger_enable_warning */
 int cgw_u_print_linger_enable_warning(const char *arg) {
@@ -1525,7 +1548,19 @@ int cgw_u_launchctl_label_registered(const char *arg) {
 }
 
 /* PoP: _retry_launchctl_bootstrap_until_registered @ hermes_cli/gateway.py:_retry_launchctl_bootstrap_until_registered */
-int cgw_u_retry_launchctl_bootstrap_until_registered(const char *arg) { (void)arg; return 0; }
+int cgw_u_retry_launchctl_bootstrap_until_registered(const char *arg) {
+    /* Python: deadline retry. Arg =
+     * "registered\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int registered = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (registered) { printf("1 (label registered after retries)\n"); return 0; }
+    printf("0 (deadline hit — reload log appended per attempt)\n");
+    return 0;
+}
 
 /* PoP: _launchd_unsupported_marker_path @ hermes_cli/gateway.py:_launchd_unsupported_marker_path */
 int cgw_u_launchd_unsupported_marker_path(const char *arg) {

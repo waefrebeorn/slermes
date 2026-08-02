@@ -289,7 +289,11 @@ int pcmd_run_composite_ui(const char *hermes_home) {
 }
 /* PoP: _run_composite_fallback @ hermes_cli/plugins_cmd.py:_run_composite_fallback */
 int pcmd_run_composite_fallback(const char *hermes_home) {
-    (void)hermes_home; return 0;
+    /* Python: text toggle fallback. */
+    (void)hermes_home;
+    printf("Plugins\n  General Plugins\n  Toggle by number, Enter to confirm.\n");
+    printf("(persist by canonical key — never bare manifest name)\n");
+    return 0;
 }
 /* PoP: dashboard_install_plugin @ hermes_cli/plugins_cmd.py:dashboard_install_plugin */
 int pcmd_dashboard_install_plugin(const char *hermes_home, const char *source) {

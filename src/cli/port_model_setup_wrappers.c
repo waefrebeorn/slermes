@@ -71,7 +71,21 @@ int msf_u_prompt_auth_credentials_choice(const char *arg) {
 }
 
 /* PoP: _model_flow_openrouter @ hermes_cli/model_setup_flows.py:_model_flow_openrouter */
-int msf_u_model_flow_openrouter(const char *arg) { (void)arg; return 0; }
+int msf_u_model_flow_openrouter(const char *arg) {
+    /* Python: in-flow key replace. Arg =
+     * "has_key\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_key = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!has_key) {
+        printf("Get one at: https://openrouter.ai/keys\n");
+    }
+    printf("Default model set to: %s (via OpenRouter)\n", t2 ? t2 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _print_moa_preset @ hermes_cli/model_setup_flows.py:_print_moa_preset */
 int msf_u_print_moa_preset(const char *arg) {

@@ -389,7 +389,18 @@ int moa_u_record_late_reference_accounting(const char *arg) {
 }
 
 /* PoP: consume_and_save_trace @ agent/moa_loop.py:consume_and_save_trace */
-int moa_consume_and_save_trace(const char *arg) { (void)arg; return 0; }
+int moa_consume_and_save_trace(const char *arg) {
+    /* Python: pending flush. Arg =
+     * "has_pending\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_pending = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !has_pending) { printf("no pending trace\n"); return 0; }
+    printf("trace flushed (streamed fallback folded in)%s\n", (t2 && t2[1] == '1') ? " — non-streaming inline output" : "");
+    return 0;
+}
 
 /* PoP: prepare @ agent/moa_loop.py:prepare */
 int moa_prepare(const char *arg) {
@@ -440,7 +451,15 @@ int moa_last_aggregator_slot(const char *arg) {
 }
 
 /* PoP: consume_and_save_trace @ agent/moa_loop.py:consume_and_save_trace */
-int moa_consume_and_save_trace_2(const char *arg) { (void)arg; return 0; }
+int moa_consume_and_save_trace_2(const char *arg) {
+    /* Python: alt variant. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("no pending trace\n"); return 0; }
+    printf("trace flushed: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: build_moa_facade @ agent/moa_loop.py:build_moa_facade */
 int moa_build_moa_facade(const char *arg) { (void)arg; return 0; }

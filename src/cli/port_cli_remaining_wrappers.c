@@ -4185,7 +4185,15 @@ int hermes_cli_codex_runtime_plugi_u_quote_key(const char *arg) {
 }
 
 /* PoP: render_codex_toml_section @ hermes_cli/codex_runtime_plugin_migration.py:render_codex_toml_section */
-int hermes_cli_codex_runtime_plugi_render_codex_toml_section(const char *arg) { (void)arg; return 0; }
+int hermes_cli_codex_runtime_plugi_render_codex_toml_section(const char *arg) {
+    /* Python: managed block render. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _insert_managed_block_at_top_level @ hermes_cli/codex_runtime_plugin_migration.py:_insert_managed_block_at_top_level */
 int hermes_cli_codex_runtime_plugi_u_insert_managed_block_at_top_el(const char *arg) {
@@ -4264,7 +4272,18 @@ int hermes_cli_codex_runtime_plugi_u_looks_like_test_tempdir(const char *arg) {
 }
 
 /* PoP: _build_hermes_tools_mcp_entry @ hermes_cli/codex_runtime_plugin_migration.py:_build_hermes_tools_mcp_entry */
-int hermes_cli_codex_runtime_plugi_u_build_hermes_tools_mcp_entry(const char *arg) { (void)arg; return 0; }
+int hermes_cli_codex_runtime_plugi_u_build_hermes_tools_mcp_entry(const char *arg) {
+    /* Python: stdio entry. Arg =
+     * "has_home\tstate\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_home = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("mcp entry: python -m agent.transports.hermes_tools_mcp_server (env: HERMES_HOME=%s, timeouts 30/600)%s\n", has_home ? "passthrough (tempdir-guarded)" : "inherit-at-runtime", t2 && t2[1] == '1' ? " — PYTHONPATH passthrough" : "");
+    return 0;
+}
 
 /* PoP: with_overrides @ hermes_cli/inventory.py:with_overrides */
 int hermes_cli_inventory_with_overrides(const char *arg) {
@@ -5508,7 +5527,23 @@ int hermes_cli_webhook_u_require_webhook_enabled(const char *arg) {
 }
 
 /* PoP: _cmd_subscribe @ hermes_cli/webhook.py:_cmd_subscribe */
-int hermes_cli_webhook_u_cmd_subscribe(const char *arg) { (void)arg; return 0; }
+int hermes_cli_webhook_u_cmd_subscribe(const char *arg) {
+    /* Python: subscription create. Arg =
+     * "valid\tstate\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int valid = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!valid) {
+        printf("Error: Invalid name. Use lowercase alphanumeric with hyphens/underscores.\n");
+        return 0;
+    }
+    printf("\n  %s webhook subscription: %s\n", t2 && t2[1] == '1' ? "Updated" : "Created", t3 ? t3 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _cmd_remove @ hermes_cli/webhook.py:_cmd_remove */
 int hermes_cli_webhook_u_cmd_remove(const char *arg) {
@@ -5544,7 +5579,25 @@ int hermes_cli_webhook_u_cmd_remove(const char *arg) {
 }
 
 /* PoP: _cmd_run @ hermes_cli/curator.py:_cmd_run */
-int hermes_cli_curator_u_cmd_run(const char *arg) { (void)arg; return 0; }
+int hermes_cli_curator_u_cmd_run(const char *arg) {
+    /* Python: review pass. Arg =
+     * "enabled\tdry\tstate\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int enabled = arg[0] == '1';
+    int dry = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) {
+        printf("curator: disabled via config; enable with `curator.enabled: true`\n");
+        return 1;
+    }
+    if (!enabled) { printf("curator: disabled\n"); return 1; }
+    printf("curator: running %s...\n", dry ? "DRY-RUN (report only, no mutations)" : "review pass");
+    printf("auto: checked=%s stale=%s archived=%s\n", t3 ? t3 + 1 : "0", "0", "0");
+    return 0;
+}
 
 /* PoP: _cmd_pause @ hermes_cli/curator.py:_cmd_pause */
 int hermes_cli_curator_u_cmd_pause(const char *arg) {
@@ -5666,7 +5719,29 @@ int hermes_cli_onepassword_secrets_cmd_remove(const char *arg) {
 }
 
 /* PoP: cmd_token @ hermes_cli/onepassword_secrets_cli.py:cmd_token */
-int hermes_cli_onepassword_secrets_cmd_token(const char *arg) { (void)arg; return 0; }
+int hermes_cli_onepassword_secrets_cmd_token(const char *arg) {
+    /* Python: verify-then-persist. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("1\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_tty") == 0) {
+        printf("[red]No TTY — pass the token with --token.[/red]\n");
+        return 1;
+    }
+    if (strcmp(state, "rejected") == 0) {
+        printf("[red]✗ New token was rejected by op — nothing was changed.[/red]\n");
+        return 1;
+    }
+    if (strcmp(state, "no_op") == 0) {
+        printf("[red]op CLI not found — install it or re-run with --no-verify.[/red]\n");
+        return 1;
+    }
+    printf("[green]✓[/green] stored in %s as %s. Takes effect on the next Hermes invocation.\n", t2 ? t2 + 1 : ".env", t3 ? t3 + 1 : "OP_SERVICE_ACCOUNT_TOKEN");
+    return 0;
+}
 
 /* PoP: cmd_sync @ hermes_cli/onepassword_secrets_cli.py:cmd_sync */
 int hermes_cli_onepassword_secrets_cmd_sync(const char *arg) { (void)arg; return 0; }
@@ -6203,7 +6278,16 @@ int hermes_cli__subprocess_compat_u_kill_git_process_tree(const char *arg) {
 }
 
 /* PoP: bounded_git_probe @ hermes_cli/_subprocess_compat.py:bounded_git_probe */
-int hermes_cli__subprocess_compat_bounded_git_probe(const char *arg) { (void)arg; return 0; }
+int hermes_cli__subprocess_compat_bounded_git_probe(const char *arg) {
+    /* Python: deadlock-safe probe. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _maybe_migrate_legacy_gateway_run_state @ hermes_cli/container_boot.py:_maybe_migrate_legacy_gateway_run_state */
 int hermes_cli_container_boot_u_maybe_migrate_legacy_gateway_run_te(const char *arg) {

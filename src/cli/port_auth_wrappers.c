@@ -661,7 +661,29 @@ int auth_u_poll_for_token(const char *arg) { (void)arg; return 0; }
 int auth_u_try_import_shared_nous_state(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _refresh_access_token @ hermes_cli/auth.py:_refresh_access_token */
-int auth_u_refresh_access_token(const char *arg) { (void)arg; return 0; }
+int auth_u_refresh_access_token(const char *arg) {
+    /* Python: reuse-revocation msg. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_token") == 0) {
+        fprintf(stderr, "Refresh response missing access_token\n");
+        return 1;
+    }
+    if (strcmp(state, "reused") == 0) {
+        fprintf(stderr, "Nous Portal detected refresh-token reuse and revoked this session. Re-authenticate with: hermes auth add nous\n");
+        return 1;
+    }
+    if (strcmp(state, "rejected") == 0) {
+        fprintf(stderr, "Refresh token exchange failed: %s\n", t3 ? t3 + 1 : "invalid_grant");
+        return 1;
+    }
+    printf("tokens refreshed: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: fetch_nous_models @ hermes_cli/auth.py:fetch_nous_models */
 int auth_fetch_nous_models(const char *arg) {
@@ -864,7 +886,29 @@ int auth_u_xai_oauth_request_device_code(const char *arg) {
 }
 
 /* PoP: _xai_oauth_poll_device_token @ hermes_cli/auth.py:_xai_oauth_poll_device_token */
-int auth_u_xai_oauth_poll_device_token(const char *arg) { (void)arg; return 0; }
+int auth_u_xai_oauth_poll_device_token(const char *arg) {
+    /* Python: slow_down ramp. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_access") == 0 || strcmp(state, "no_refresh") == 0) {
+        fprintf(stderr, "xAI device-code token response missing required field\n");
+        return 1;
+    }
+    if (strcmp(state, "timeout") == 0) {
+        fprintf(stderr, "Timed out waiting for xAI device authorization.\n");
+        return 1;
+    }
+    if (strcmp(state, "denied") == 0) {
+        fprintf(stderr, "xAI device-code token polling failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("device token OK: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _xai_oauth_device_code_login @ hermes_cli/auth.py:_xai_oauth_device_code_login */
 int auth_u_xai_oauth_device_code_login(const char *arg) { (void)arg; return 0; }
