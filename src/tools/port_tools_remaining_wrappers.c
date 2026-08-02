@@ -230,7 +230,20 @@ int tools_lazy_deps_activate_durable_lazy_target(const char *arg) { (void)arg; r
 int tools_lazy_deps_u_allow_lazy_installs(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _unsupported_feature_reason @ tools/lazy_deps.py:_unsupported_feature_reason */
-int tools_lazy_deps_u_unsupported_feature_reason(const char *arg) { (void)arg; return 0; }
+int tools_lazy_deps_u_unsupported_feature_reason(const char *arg) {
+    /* Python: win32+matrix -> reason else None. Arg = "platform\tfeature". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *platform = arg;
+    const char *feature = tab ? tab + 1 : "";
+    size_t plen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (plen == 5 && strncmp(platform, "win32", 5) == 0 && strcmp(feature, "platform.matrix") == 0) {
+        printf("unsupported on Windows: Matrix E2EE depends on python-olm, which has no Windows wheel and requires make + libolm to build from sdist. Run Hermes under WSL to use Matrix on Windows.\n");
+        return 0;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _is_satisfied @ tools/lazy_deps.py:_is_satisfied */
 int tools_lazy_deps_u_is_satisfied(const char *arg) { (void)arg; return 0; }
@@ -1629,7 +1642,30 @@ int tools_hook_output_spill_get_spill_config(const char *arg) { (void)arg; retur
 int tools_hook_output_spill_u_resolve_spill_dir(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _build_preview @ tools/hook_output_spill.py:_build_preview */
-int tools_hook_output_spill_u_build_preview(const char *arg) { (void)arg; return 0; }
+int tools_hook_output_spill_u_build_preview(const char *arg) {
+    /* Python: head/tail preview + saved footer. Arg =
+     * "source\ttext\thead\ttail\tsaved_path". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *source = arg;
+    const char *text = t1 ? t1 + 1 : "";
+    long head = t2 ? strtol(t2 + 1, NULL, 10) : 500;
+    long tail = t3 ? strtol(t3 + 1, NULL, 10) : 500;
+    const char *saved = t4 ? t4 + 1 : "";
+    long total = (long)strlen(text);
+    printf("[%s output truncated — %ld chars; full content %s]\n",
+           source, total, saved[0] ? "saved to <path>" : "unavailable — spill write failed");
+    if (head > 0 && total > 0) {
+        printf("--- head ---\n%.*s\n", (int)(head < total ? head : total), text);
+    }
+    if (tail > 0 && total > head) {
+        printf("--- tail ---\n%.*s\n", (int)(tail < total - head ? tail : total - head), text + (total - (tail < total - head ? tail : total - head)));
+    }
+    return 0;
+}
 
 /* PoP: spill_if_oversized @ tools/hook_output_spill.py:spill_if_oversized */
 int tools_hook_output_spill_spill_if_oversized(const char *arg) { (void)arg; return 0; }

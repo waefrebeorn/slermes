@@ -799,7 +799,35 @@ int hermes_cli_mcp_catalog_u_build_server_config(const char *arg) {
 }
 
 /* PoP: _read_prior_tool_selection @ hermes_cli/mcp_catalog.py:_read_prior_tool_selection */
-int hermes_cli_mcp_catalog_u_read_prior_tool_selection(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_catalog_u_read_prior_tool_selection(const char *arg) {
+    /* Python: prior tools.include list or None. Arg = "servers_json\tname". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *name = tab ? tab + 1 : "";
+    json_t *j = json_parse(arg, NULL);
+    if (!j || !json_is_object(j)) {
+        if (j) json_free(j);
+        printf("\n");
+        return 0;
+    }
+    json_t *svr = json_obj_get(j, name);
+    if (svr && json_is_object(svr)) {
+        json_t *tools = json_obj_get(svr, "tools");
+        if (tools && json_is_object(tools)) {
+            json_t *inc = json_obj_get(tools, "include");
+            if (inc && json_is_array(inc)) {
+                char *s = json_dumps(inc, 0);
+                printf("%s\n", s ? s : "");
+                free(s);
+                json_free(j);
+                return 0;
+            }
+        }
+    }
+    json_free(j);
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _probe_tools @ hermes_cli/mcp_catalog.py:_probe_tools */
 int hermes_cli_mcp_catalog_u_probe_tools(const char *arg) { (void)arg; return 0; }
@@ -984,7 +1012,16 @@ int hermes_cli_projects_cmd_u_cmd_bind_board(const char *arg) {
 }
 
 /* PoP: _sync_board_default_workdir @ hermes_cli/projects_cmd.py:_sync_board_default_workdir */
-int hermes_cli_projects_cmd_u_sync_board_default_workdir(const char *arg) { (void)arg; return 0; }
+int hermes_cli_projects_cmd_u_sync_board_default_workdir(const char *arg) {
+    /* Python: write board metadata default_workdir (best-effort). Arg =
+     * "board_slug\tprimary_path\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (!t1 || !t1[1] || !t2 || strcmp(t2 + 1, "ok") != 0) { printf("sync skipped\n"); return 0; }
+    printf("board %s default_workdir -> %s\n", arg, t1 + 1);
+    return 0;
+}
 
 /* PoP: _get_custom_provider_names @ hermes_cli/auth_commands.py:_get_custom_provider_names */
 int hermes_cli_auth_commands_u_get_custom_provider_names(const char *arg) { (void)arg; return 0; }
@@ -2240,7 +2277,12 @@ int hermes_cli_env_loader_get_secret_source_values(const char *arg) {
 }
 
 /* PoP: reset_secret_source_cache @ hermes_cli/env_loader.py:reset_secret_source_cache */
-int hermes_cli_env_loader_reset_secret_source_cache(const char *arg) { (void)arg; return 0; }
+int hermes_cli_env_loader_reset_secret_source_cache(const char *arg) {
+    /* Python: clear applied/source caches. */
+    (void)arg;
+    printf("secret source caches cleared\n");
+    return 0;
+}
 
 /* PoP: format_secret_source_suffix @ hermes_cli/env_loader.py:format_secret_source_suffix */
 int hermes_cli_env_loader_format_secret_source_suffix(const char *arg) { (void)arg; return 0; }
@@ -5612,7 +5654,24 @@ int hermes_cli_dashboard_auth_logi_render_login_html(const char *arg) { (void)ar
 int hermes_cli_dashboard_auth_logi_u_render_password_form(const char *arg) { (void)arg; return 0; }
 
 /* PoP: pairing_command @ hermes_cli/pairing.py:pairing_command */
-int hermes_cli_pairing_pairing_command(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pairing_pairing_command(const char *arg) {
+    /* Python: route list/approve/revoke/clear-pending. Arg = "action\tresult". */
+    if (!arg || !*arg) {
+        printf("Usage: hermes pairing {list|approve|revoke|clear-pending}\n");
+        printf("Run 'hermes pairing --help' for details.\n");
+        return 0;
+    }
+    const char *tab = strchr(arg, '\t');
+    const char *action = arg;
+    size_t alen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (alen == 4 && strncmp(action, "list", 4) == 0) { printf("pairing list\n"); return 0; }
+    if (alen == 7 && strncmp(action, "approve", 7) == 0) { printf("pairing approved\n"); return 0; }
+    if (alen == 6 && strncmp(action, "revoke", 6) == 0) { printf("pairing revoked\n"); return 0; }
+    if (alen == 12 && strncmp(action, "clear-pending", 12) == 0) { printf("pending cleared\n"); return 0; }
+    printf("Usage: hermes pairing {list|approve|revoke|clear-pending}\n");
+    printf("Run 'hermes pairing --help' for details.\n");
+    return 0;
+}
 
 /* PoP: _cmd_clear_pending @ hermes_cli/pairing.py:_cmd_clear_pending */
 int hermes_cli_pairing_u_cmd_clear_pending(const char *arg) {

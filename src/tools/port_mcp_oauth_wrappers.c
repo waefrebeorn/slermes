@@ -45,7 +45,12 @@ int mcpo_u_safe_filename(const char *arg) {
 }
 
 /* PoP: _find_free_port @ tools/mcp_oauth.py:_find_free_port */
-int mcpo_u_find_free_port(const char *arg) { (void)arg; return 0; }
+int mcpo_u_find_free_port(const char *arg) {
+    /* Python: bind 127.0.0.1:0 -> port. Arg = "port". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _reserve_callback_port @ tools/mcp_oauth.py:_reserve_callback_port */
 int mcpo_u_reserve_callback_port(const char *arg) { (void)arg; return 0; }

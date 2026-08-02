@@ -214,7 +214,35 @@ int sexp_u_render_user_prompts_markdown(const char *arg) {
 }
 
 /* PoP: _append_prompt_records @ hermes_cli/session_export.py:_append_prompt_records */
-int sexp_u_append_prompt_records(const char *arg) { (void)arg; return 0; }
+int sexp_u_append_prompt_records(const char *arg) {
+    /* Python: prompt record headings. Arg = "records_json\theading_level". */
+    if (!arg || !*arg) { printf("_No user prompts found._\n\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    long hl = tab ? strtol(tab + 1, NULL, 10) : 3;
+    json_t *j = json_parse(arg, NULL);
+    if (!j || !json_is_array(j) || json_array_size(j) == 0) {
+        if (j) json_free(j);
+        printf("_No user prompts found._\n\n");
+        return 0;
+    }
+    size_t n = json_array_size(j);
+    for (size_t i = 0; i < n; i++) {
+        json_t *p = json_array_get(j, i);
+        if (!p) continue;
+        long idx = (long)json_get_num(p, "index", 0);
+        const char *ts = json_get_str(p, "created_at", "timestamp unavailable");
+        char marker[16];
+        for (long k = 0; k < hl && k < 12; k++) marker[k] = '#';
+        marker[hl < 12 ? hl : 12] = '\0';
+        printf("%s %ld. %s\n", marker, idx, ts);
+        const char *mid = json_get_str(p, "message_id", "");
+        if (mid[0]) { printf("Message ID: `%s`\n\n", mid); }
+        const char *text = json_get_str(p, "text", "");
+        printf("%s\n\n", text);
+    }
+    json_free(j);
+    return 0;
+}
 
 /* PoP: _render_full_markdown @ hermes_cli/session_export.py:_render_full_markdown */
 int sexp_u_render_full_markdown(const char *arg) {

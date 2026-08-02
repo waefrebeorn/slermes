@@ -1262,7 +1262,16 @@ int gateway_authz_mixin_u_coerce_allow_set(const char *arg) {
 int gateway_authz_mixin_u_registered_transport_adapter(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _adapter_profile_for_source @ gateway/authz_mixin.py:_adapter_profile_for_source */
-int gateway_authz_mixin_u_adapter_profile_for_source(const char *arg) { (void)arg; return 0; }
+int gateway_authz_mixin_u_adapter_profile_for_source(const char *arg) {
+    /* Python: transport-owning profile or source profile. Arg =
+     * "matched\tprofile\tsource_profile". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (arg[0] == '1') { printf("%s\n", t1 ? t1 + 1 : ""); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _pairing_store_for @ gateway/authz_mixin.py:_pairing_store_for */
 int gateway_authz_mixin_u_pairing_store_for(const char *arg) { (void)arg; return 0; }
@@ -1470,7 +1479,12 @@ int gateway_cwd_placeholder_u_truthy_env(const char *arg) { (void)arg; return 0;
 int gateway_cwd_placeholder_resolve_placeholder_terminal_cwd(const char *arg) { (void)arg; return 0; }
 
 /* PoP: is_relay @ gateway/delivery.py:is_relay */
-int gateway_delivery_is_relay(const char *arg) { (void)arg; return 0; }
+int gateway_delivery_is_relay(const char *arg) {
+    /* Python: transport_platform == RELAY. Arg = "1"/"0". */
+    if (arg && arg[0] == '1') { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: resolve_delivery_transport @ gateway/delivery.py:resolve_delivery_transport */
 int gateway_delivery_resolve_delivery_transport(const char *arg) { (void)arg; return 0; }

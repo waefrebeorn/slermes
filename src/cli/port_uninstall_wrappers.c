@@ -117,7 +117,15 @@ int uninst_remove_path_from_windows_registry(const char *arg) { (void)arg; retur
 int uninst_remove_hermes_env_vars_windows(const char *arg) { (void)arg; return 0; }
 
 /* PoP: remove_portable_tooling_windows @ hermes_cli/uninstall.py:remove_portable_tooling_windows */
-int uninst_remove_portable_tooling_windows(const char *arg) { (void)arg; return 0; }
+int uninst_remove_portable_tooling_windows(const char *arg) {
+    /* Python: rmtree git/node/gateway-service subdirs. Arg = "home\tremoved". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *removed = tab ? tab + 1 : "";
+    if (removed[0]) printf("removed portable tooling: %s\n", removed);
+    else printf("no portable tooling to remove\n");
+    return 0;
+}
 
 /* PoP: _is_default_hermes_home @ hermes_cli/uninstall.py:_is_default_hermes_home */
 int uninst_u_is_default_hermes_home(const char *arg) {

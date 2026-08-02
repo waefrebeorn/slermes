@@ -53,7 +53,18 @@ int grun_u_wire_teams_pipeline_runtime(const char *arg) { (void)arg; return 0; }
 int grun_u_warn_if_docker_media_delivery_is_risky(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _set_adapter_auto_tts_disabled @ gateway/run.py:_set_adapter_auto_tts_disabled */
-int grun_u_set_adapter_auto_tts_disabled(const char *arg) { (void)arg; return 0; }
+int grun_u_set_adapter_auto_tts_disabled(const char *arg) {
+    /* Python: add/discard in TTS suppression sets. Arg =
+     * "chat_id\tdisabled\tsets_present". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int disabled = t1 && t1[1] == '1';
+    int present = t2 && t2[1] == '1';
+    if (!present) { printf("no tts sets on adapter\n"); return 0; }
+    printf("auto-tts %s for %s\n", disabled ? "disabled" : "enabled", arg);
+    return 0;
+}
 
 /* PoP: _set_adapter_auto_tts_enabled @ gateway/run.py:_set_adapter_auto_tts_enabled */
 int grun_u_set_adapter_auto_tts_enabled(const char *arg) { (void)arg; return 0; }

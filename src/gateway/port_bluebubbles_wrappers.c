@@ -93,7 +93,14 @@ int bb_u_webhook_url(const char *arg) {
 }
 
 /* PoP: _webhook_register_url @ gateway/platforms/bluebubbles.py:_webhook_register_url */
-int bb_u_webhook_register_url(const char *arg) { (void)arg; return 0; }
+int bb_u_webhook_register_url(const char *arg) {
+    /* Python: base URL + ?password= query. Arg = "base_url\tpassword". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab[1]) printf("%s?password=%s\n", arg, tab + 1);
+    else printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _webhook_register_url_for_log @ gateway/platforms/bluebubbles.py:_webhook_register_url_for_log */
 int bb_u_webhook_register_url_for_log(const char *arg) { (void)arg; return 0; }

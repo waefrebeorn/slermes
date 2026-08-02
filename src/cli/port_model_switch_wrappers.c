@@ -18,7 +18,15 @@ int msw_u_declared_model_ids(const char *arg) { (void)arg; return 0; }
 int msw_u_save_discovered_models_to_config(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _bare_custom_provider_def @ hermes_cli/model_switch.py:_bare_custom_provider_def */
-int msw_u_bare_custom_provider_def(const char *arg) { (void)arg; return 0; }
+int msw_u_bare_custom_provider_def(const char *arg) {
+    /* Python: ProviderDef for custom endpoint or None. Arg = "base_url". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ') p++;
+    if (!*p) { printf("\n"); return 0; }
+    printf("custom endpoint provider: %s\n", p);
+    return 0;
+}
 
 /* PoP: format_model_for_display @ hermes_cli/model_switch.py:format_model_for_display */
 int msw_format_model_for_display(const char *arg) {

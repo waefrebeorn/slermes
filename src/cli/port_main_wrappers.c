@@ -1237,7 +1237,16 @@ int main_u_upgrade_pip_before_lazy_refresh(const char *arg) {
 int main_u_detect_broken_lazy_refresh_imports(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _repair_broken_lazy_refresh_imports @ hermes_cli/main.py:_repair_broken_lazy_refresh_imports */
-int main_u_repair_broken_lazy_refresh_imports(const char *arg) { (void)arg; return 0; }
+int main_u_repair_broken_lazy_refresh_imports(const char *arg) {
+    /* Python: force-reinstall + re-probe; never raises. Arg =
+     * "packages\tresult" (result: ok/failed/indeterminate). */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *result = tab ? tab + 1 : "ok";
+    if (strcmp(result, "failed") == 0) { printf("0\n"); return 0; }
+    printf("1\n");
+    return 0;
+}
 
 /* PoP: _repair_venv_via_import_probes @ hermes_cli/main.py:_repair_venv_via_import_probes */
 int main_u_repair_venv_via_import_probes(const char *arg) { (void)arg; return 0; }

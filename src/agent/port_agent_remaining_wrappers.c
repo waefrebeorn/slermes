@@ -20,7 +20,15 @@
 int agent_model_metadata_u_endpoint_scoped_context_length(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _skip_persistent_context_cache @ agent/model_metadata.py:_skip_persistent_context_cache */
-int agent_model_metadata_u_skip_persistent_context_cache(const char *arg) { (void)arg; return 0; }
+int agent_model_metadata_u_skip_persistent_context_cache(const char *arg) {
+    /* Python: lmstudio/openai-codex excluded. Arg = provider. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ') p++;
+    if (strcasecmp(p, "lmstudio") == 0 || strcasecmp(p, "openai-codex") == 0) { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _maybe_cache_local_context_length @ agent/model_metadata.py:_maybe_cache_local_context_length */
 int agent_model_metadata_u_maybe_cache_local_context_length(const char *arg) {
@@ -874,7 +882,24 @@ int agent_agent_init_u_codex_gpt55_autoraise_notice_marker(const char *arg) {
 }
 
 /* PoP: _codex_gpt55_autoraise_notice_state @ agent/agent_init.py:_codex_gpt55_autoraise_notice_state */
-int agent_agent_init_u_codex_gpt55_autoraise_notice_state(const char *arg) { (void)arg; return 0; }
+int agent_agent_init_u_codex_gpt55_autoraise_notice_state(const char *arg) {
+    /* Python: model:from_pct:to_pct. Arg = "model\tfrom\tto". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    /* model slug after last / */
+    const char *m = arg;
+    const char *slash = strrchr(m, '/');
+    if (slash) m = slash + 1;
+    size_t mlen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    if (slash) mlen = strlen(m);
+    double from = t1 ? strtod(t1 + 1, NULL) : 0;
+    double to = t2 ? strtod(t2 + 1, NULL) : 0;
+    long from_pct = (long)(from * 100 + 0.5);
+    long to_pct = (long)(to * 100 + 0.5);
+    printf("%.*s:%ld:%ld\n", (int)mlen, m, from_pct, to_pct);
+    return 0;
+}
 
 /* PoP: _codex_gpt55_autoraise_notice_seen @ agent/agent_init.py:_codex_gpt55_autoraise_notice_seen */
 int agent_agent_init_u_codex_gpt55_autoraise_notice_seen(const char *arg) {
@@ -1775,7 +1800,32 @@ int agent_billing_view_can_change_plan(const char *arg) {
 }
 
 /* PoP: _parse_auto_reload_card @ agent/billing_view.py:_parse_auto_reload_card */
-int agent_billing_view_u_parse_auto_reload_card(const char *arg) { (void)arg; return 0; }
+int agent_billing_view_u_parse_auto_reload_card(const char *arg) {
+    /* Python: canonical/none or distinct with payment fields. Arg =
+     * "card_json". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    if (!j || !json_is_object(j)) {
+        if (j) json_free(j);
+        printf("\n");
+        return 0;
+    }
+    const char *kind = json_get_str(j, "kind", "");
+    if (strcmp(kind, "canonical") == 0 || strcmp(kind, "none") == 0) {
+        printf("AutoReloadCard(kind=%s)\n", kind);
+        json_free(j);
+        return 0;
+    }
+    if (strcmp(kind, "distinct") == 0) {
+        printf("AutoReloadCard(kind=distinct, brand=%s, last4=%s)\n",
+               json_get_str(j, "brand", "?"), json_get_str(j, "last4", "?"));
+        json_free(j);
+        return 0;
+    }
+    json_free(j);
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _dev_fixture_billing_state @ agent/billing_view.py:_dev_fixture_billing_state */
 int agent_billing_view_u_dev_fixture_billing_state(const char *arg) { (void)arg; return 0; }

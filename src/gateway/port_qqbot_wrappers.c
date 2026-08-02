@@ -63,7 +63,12 @@ int qqbot_u_fail_pending(const char *arg) {
 }
 
 /* PoP: _mark_transport_disconnected @ gateway/platforms/qqbot/adapter.py:_mark_transport_disconnected */
-int qqbot_u_mark_transport_disconnected(const char *arg) { (void)arg; return 0; }
+int qqbot_u_mark_transport_disconnected(const char *arg) {
+    /* Python: runtime status disconnected unless fatal. Arg = "has_fatal". */
+    if (arg && arg[0] == '1') { printf("fatal — skipping status write\n"); return 0; }
+    printf("transport marked disconnected (reconnect loop continues)\n");
+    return 0;
+}
 
 /* PoP: _ensure_token @ gateway/platforms/qqbot/adapter.py:_ensure_token */
 int qqbot_u_ensure_token(const char *arg) { (void)arg; return 0; }

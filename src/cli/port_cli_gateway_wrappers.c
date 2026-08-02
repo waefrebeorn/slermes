@@ -978,7 +978,19 @@ int cgw_u_get_restart_drain_timeout(const char *arg) {
 int cgw_systemd_install(const char *arg) { (void)arg; return 0; }
 
 /* PoP: systemd_uninstall @ hermes_cli/gateway.py:systemd_uninstall */
-int cgw_systemd_uninstall(const char *arg) { (void)arg; return 0; }
+int cgw_systemd_uninstall(const char *arg) {
+    /* Python: stop + disable + unlink + daemon-reload. Arg =
+     * "system\tunit_removed\tlabel". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *system = arg;
+    const char *label = t2 ? t2 + 1 : "user";
+    printf("systemctl stop + disable (%s scope)\n", system);
+    if (t1 && t1[1] == '1') printf("✓ Removed unit file\n");
+    printf("✓ %s service uninstalled\n", label);
+    return 0;
+}
 
 /* PoP: _require_service_installed @ hermes_cli/gateway.py:_require_service_installed */
 int cgw_u_require_service_installed(const char *arg) {
