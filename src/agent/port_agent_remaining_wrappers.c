@@ -1822,7 +1822,22 @@ int agent_video_gen_provider_save_url_video(const char *arg) { (void)arg; return
 int agent_video_gen_provider_u_create_and_poll(const char *arg) { (void)arg; return 0; }
 
 /* PoP: format_reference_value @ agent/context_references.py:format_reference_value */
-int agent_context_references_format_reference_value(const char *arg) { (void)arg; return 0; }
+int agent_context_references_format_reference_value(const char *arg) {
+    /* Python: quote if needs quoting (space etc); first unused quote. Arg =
+     * value. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    int needs = 0;
+    for (const char *p = arg; *p; p++) {
+        if (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') { needs = 1; break; }
+    }
+    if (!needs) { printf("%s\n", arg); return 0; }
+    static const char *quotes = "`\"'";
+    for (const char *q = quotes; *q; q++) {
+        if (!strchr(arg, *q)) { printf("%c%s%c\n", *q, arg, *q); return 0; }
+    }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _remove_xai_oauth_device_code @ agent/credential_sources.py:_remove_xai_oauth_device_code */
 int agent_credential_sources_u_remove_xai_oauth_device_code(const char *arg) { (void)arg; return 0; }

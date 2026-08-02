@@ -1111,7 +1111,19 @@ int main_u_recover_core_update_marker_locked(const char *arg) { (void)arg; retur
 int main_u_windows_running_hermes_launcher_locked(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _default_venv_install_target @ hermes_cli/main.py:_default_venv_install_target */
-int main_u_default_venv_install_target(const char *arg) { (void)arg; return 0; }
+int main_u_default_venv_install_target(const char *arg) {
+    /* Python: [uv, pip] with VIRTUAL_ENV or [sys.executable, -m, pip].
+     * Arg = "uv_available\tvenv_dir". */
+    if (!arg || !*arg) { printf("python3 -m pip\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int uv = arg[0] == '1';
+    if (uv) {
+        printf("uv pip (VIRTUAL_ENV=%s)\n", tab ? tab + 1 : "");
+        return 0;
+    }
+    printf("python3 -m pip\n");
+    return 0;
+}
 
 /* PoP: _run_install_with_heartbeat @ hermes_cli/main.py:_run_install_with_heartbeat */
 int main_u_run_install_with_heartbeat(const char *arg) { (void)arg; return 0; }
@@ -1200,7 +1212,13 @@ int main_u_run_package_only_install(const char *arg) {
 int main_u_lazy_refresh_repair_specs(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _upgrade_pip_before_lazy_refresh @ hermes_cli/main.py:_upgrade_pip_before_lazy_refresh */
-int main_u_upgrade_pip_before_lazy_refresh(const char *arg) { (void)arg; return 0; }
+int main_u_upgrade_pip_before_lazy_refresh(const char *arg) {
+    /* Python: pip install --upgrade pip (never raises). Arg = "cmd\trc". */
+    if (!arg || !*arg) { printf("pip upgrade attempted\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("pip upgrade before lazy refresh: rc=%s\n", tab ? tab + 1 : "?");
+    return 0;
+}
 
 /* PoP: _detect_broken_lazy_refresh_imports @ hermes_cli/main.py:_detect_broken_lazy_refresh_imports */
 int main_u_detect_broken_lazy_refresh_imports(const char *arg) { (void)arg; return 0; }

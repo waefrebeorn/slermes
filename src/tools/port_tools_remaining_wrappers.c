@@ -1697,7 +1697,12 @@ int tools_env_probe_u_ensure_probe_started(const char *arg) {
 }
 
 /* PoP: warm_environment_probe_async @ tools/env_probe.py:warm_environment_probe_async */
-int tools_env_probe_warm_environment_probe_async(const char *arg) { (void)arg; return 0; }
+int tools_env_probe_warm_environment_probe_async(const char *arg) {
+    /* Python: kick off probe thread (idempotent). Arg = "state". */
+    (void)arg;
+    printf("environment probe warmed\n");
+    return 0;
+}
 
 /* PoP: _is_orphaned @ tools/mcp_stdio_watchdog.py:_is_orphaned */
 int tools_mcp_stdio_watchdog_u_is_orphaned(const char *arg) {

@@ -155,7 +155,14 @@ int grun_u_pause_failed_platform(const char *arg) { (void)arg; return 0; }
 int grun_u_resume_paused_platform(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_model_for_channel @ gateway/run.py:_resolve_model_for_channel */
-int grun_u_resolve_model_for_channel(const char *arg) { (void)arg; return 0; }
+int grun_u_resolve_model_for_channel(const char *arg) {
+    /* Python: channel override else global default. Arg =
+     * "override\tdefault". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", (tab && tab[1]) ? tab + 1 : arg);
+    return 0;
+}
 
 /* PoP: _get_system_prompt_for_channel @ gateway/run.py:_get_system_prompt_for_channel */
 int grun_u_get_system_prompt_for_channel(const char *arg) {

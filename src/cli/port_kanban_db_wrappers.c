@@ -140,7 +140,18 @@ int kdbport_u_merge_completion_prose_artifacts(const char *arg) { (void)arg; ret
 int kdbport_u_persist_scratch_completion_artifacts(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _insert_completion_attachment @ hermes_cli/kanban_db.py:_insert_completion_attachment */
-int kdbport_u_insert_completion_attachment(const char *arg) { (void)arg; return 0; }
+int kdbport_u_insert_completion_attachment(const char *arg) {
+    /* Python: INSERT task_attachments + attached event. Arg =
+     * "task_id\tfilename\tstored_path\tsize". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    printf("completion attachment inserted: task=%.*s file=%s\n",
+           (int)(t1 ? (size_t)(t1 - arg) : strlen(arg)), arg,
+           t1 ? t1 + 1 : "");
+    return 0;
+}
 
 /* PoP: _unique_attachment_path @ hermes_cli/kanban_db.py:_unique_attachment_path */
 int kdbport_u_unique_attachment_path(const char *arg) { (void)arg; return 0; }

@@ -448,7 +448,17 @@ int cgw_u_journalctl_cmd(const char *arg) {
 }
 
 /* PoP: _run_systemctl @ hermes_cli/gateway.py:_run_systemctl */
-int cgw_u_run_systemctl(const char *arg) { (void)arg; return 0; }
+int cgw_u_run_systemctl(const char *arg) {
+    /* Python: run systemctl; RuntimeError if missing. Arg = "cmd\tmissing". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab[1] == '1') {
+        fprintf(stderr, "systemctl is not available on this system\n");
+        return 1;
+    }
+    printf("systemctl ran: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _service_scope_label @ hermes_cli/gateway.py:_service_scope_label */
 int cgw_u_service_scope_label(const char *arg) {

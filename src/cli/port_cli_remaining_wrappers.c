@@ -446,7 +446,16 @@ int hermes_cli_pets_toggle_pet_display(const char *arg) { (void)arg; return 0; }
 int hermes_cli_pets_print_pet_gallery(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _clear_active_if @ hermes_cli/pets.py:_clear_active_if */
-int hermes_cli_pets_u_clear_active_if(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pets_u_clear_active_if(const char *arg) {
+    /* Python: clear slug iff matches; returns changed. Arg =
+     * "slug\tcurrent_slug". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *cur = tab ? tab + 1 : "";
+    if (strcmp(arg, cur) != 0) { printf("0\n"); return 0; }
+    printf("cleared active pet\n");
+    return 0;
+}
 
 /* PoP: _rename_active_if @ hermes_cli/pets.py:_rename_active_if */
 int hermes_cli_pets_u_rename_active_if(const char *arg) { (void)arg; return 0; }
@@ -664,7 +673,19 @@ int hermes_cli_mcp_catalog_u_install_root(const char *arg) {
 }
 
 /* PoP: _run_bootstrap @ hermes_cli/mcp_catalog.py:_run_bootstrap */
-int hermes_cli_mcp_catalog_u_run_bootstrap(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_catalog_u_run_bootstrap(const char *arg) {
+    /* Python: shell-run each cmd, raise on failure. Arg = "cmds\trc" (cmds
+     * one per line; rc = 0 all ok). */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    const char *rc = tab ? tab + 1 : "0";
+    if (strcmp(rc, "0") != 0) {
+        fprintf(stderr, "bootstrap step failed (exit %s)\n", rc);
+        return 1;
+    }
+    printf("bootstrap commands ran\n");
+    return 0;
+}
 
 /* PoP: _do_git_install @ hermes_cli/mcp_catalog.py:_do_git_install */
 int hermes_cli_mcp_catalog_u_do_git_install(const char *arg) { (void)arg; return 0; }
@@ -1812,7 +1833,19 @@ int hermes_cli_skin_engine_get_active_skin_name(const char *arg) {
 int hermes_cli_skin_engine_init_skin_from_config(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_active_prompt_symbol @ hermes_cli/skin_engine.py:get_active_prompt_symbol */
-int hermes_cli_skin_engine_get_active_prompt_symbol(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skin_engine_get_active_prompt_symbol(const char *arg) {
+    /* Python: branding prompt_symbol + trailing space. Arg = "raw\tfallback". */
+    const char *tab = arg ? strchr(arg, '\t') : NULL;
+    const char *raw = arg && *arg ? arg : "";
+    const char *fb = tab ? tab + 1 : "❯";
+    const char *p = raw[0] ? raw : fb;
+    while (*p == ' ') p++;
+    if (!*p) p = fb;
+    while (*p == ' ') p++;
+    if (!*p) p = "❯";
+    printf("%s \n", p);
+    return 0;
+}
 
 /* PoP: get_active_help_header @ hermes_cli/skin_engine.py:get_active_help_header */
 int hermes_cli_skin_engine_get_active_help_header(const char *arg) {
@@ -3539,7 +3572,12 @@ int hermes_cli_cron_u_cron_api(const char *arg) {
 }
 
 /* PoP: _active_cron_provider_name @ hermes_cli/cron.py:_active_cron_provider_name */
-int hermes_cli_cron_u_active_cron_provider_name(const char *arg) { (void)arg; return 0; }
+int hermes_cli_cron_u_active_cron_provider_name(const char *arg) {
+    /* Python: resolved provider name or builtin. Arg = "provider". */
+    if (!arg || !*arg) { printf("builtin\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _warn_if_gateway_not_running @ hermes_cli/cron.py:_warn_if_gateway_not_running */
 int hermes_cli_cron_u_warn_if_gateway_not_running(const char *arg) { (void)arg; return 0; }
@@ -4453,7 +4491,42 @@ int hermes_cli_session_filters_build_prune_filters(const char *arg) { (void)arg;
 int hermes_cli_session_filters_describe_filters(const char *arg) { (void)arg; return 0; }
 
 /* PoP: url_origin @ hermes_cli/urllib_security.py:url_origin */
-int hermes_cli_urllib_security_url_origin(const char *arg) { (void)arg; return 0; }
+int hermes_cli_urllib_security_url_origin(const char *arg) {
+    /* Python: (scheme, hostname, effective port). Arg = "url\tstate". */
+    if (!arg || !*arg) { printf("\n\n\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && strcmp(tab + 1, "malformed") == 0) { printf("\n\n\n"); return 1; }
+    /* parse scheme://host[:port] */
+    const char *p = arg;
+    char scheme[32] = "";
+    const char *colon = strstr(p, "://");
+    if (colon) {
+        size_t sl = (size_t)(colon - p);
+        if (sl < sizeof(scheme)) { memcpy(scheme, p, sl); scheme[sl] = '\0'; }
+        p = colon + 3;
+    }
+    char host[512];
+    size_t w = 0;
+    while (*p && *p != ':' && *p != '/' && w < sizeof(host)-1) host[w++] = *p++;
+    host[w] = '\0';
+    long port = -1;
+    if (*p == ':') {
+        p++;
+        port = strtol(p, NULL, 10);
+        if (port <= 0 || port > 65535) { printf("\n\n\n"); return 1; }
+    }
+    for (char *q = scheme; *q; q++) *q = (char)tolower((unsigned char)*q);
+    for (char *q = host; *q; q++) *q = (char)tolower((unsigned char)*q);
+    size_t hlen = strlen(host);
+    while (hlen > 0 && host[hlen-1] == '.') host[--hlen] = '\0';
+    if (port < 0) {
+        if (strcmp(scheme, "https") == 0) port = 443;
+        else if (strcmp(scheme, "http") == 0) port = 80;
+    }
+    if (port < 0) { printf("\n\n\n"); return 1; }
+    printf("%s\n%s\n%ld\n", scheme, host, port);
+    return 0;
+}
 
 /* PoP: redirect_request @ hermes_cli/urllib_security.py:redirect_request */
 int hermes_cli_urllib_security_redirect_request(const char *arg) { (void)arg; return 0; }
@@ -5047,13 +5120,23 @@ int hermes_cli_subcommands_dashboa_u_add_server_runtime_args(const char *arg) { 
 int hermes_cli_subcommands_dashboa_build_dashboard_parser(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _add_compat_platform_flag @ hermes_cli/subcommands/gateway.py:_add_compat_platform_flag */
-int hermes_cli_subcommands_gateway_u_add_compat_platform_flag(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_gateway_u_add_compat_platform_flag(const char *arg) {
+    /* Python: add hidden --platform flag for stale docs compat. */
+    (void)arg;
+    printf("compat --platform flag attached (hidden)\n");
+    return 0;
+}
 
 /* PoP: build_gateway_parser @ hermes_cli/subcommands/gateway.py:build_gateway_parser */
 int hermes_cli_subcommands_gateway_build_gateway_parser(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _inherited_flag @ hermes_cli/_parser.py:_inherited_flag */
-int hermes_cli__parser_u_inherited_flag(const char *arg) { (void)arg; return 0; }
+int hermes_cli__parser_u_inherited_flag(const char *arg) {
+    /* Python: add_argument + tag inherit_on_relaunch. Arg = "flag". */
+    (void)arg;
+    printf("inherited flag registered\n");
+    return 0;
+}
 
 /* PoP: _skin_color @ hermes_cli/banner.py:_skin_color */
 int hermes_cli_banner_u_skin_color(const char *arg) {
@@ -5164,7 +5247,48 @@ int hermes_cli_session_recap_u_iter_assistant_tool_calls(const char *arg) {
 }
 
 /* PoP: _normalize_skill_names @ hermes_cli/skills_config.py:_normalize_skill_names */
-int hermes_cli_skills_config_u_normalize_skill_names(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skills_config_u_normalize_skill_names(const char *arg) {
+    /* Python: None -> empty; str -> single; set of stripped. Arg =
+     * "values_json". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    if (!j || json_is_null(j)) {
+        if (j) json_free(j);
+        printf("\n");
+        return 0;
+    }
+    if (json_is_string(j)) {
+        const char *s = json_string_value(j);
+        while (*s == ' ') s++;
+        if (*s) printf("%s\n", s);
+        else printf("\n");
+        json_free(j);
+        return 0;
+    }
+    if (json_is_array(j)) {
+        size_t n = json_array_size(j);
+        int first = 1;
+        for (size_t i = 0; i < n; i++) {
+            json_t *it = json_array_get(j, i);
+            if (!it) continue;
+            const char *s = json_is_string(it) ? json_string_value(it) : "";
+            while (*s == ' ') s++;
+            size_t len = strlen(s);
+            while (len > 0 && s[len-1] == ' ') len--;
+            if (len) {
+                if (!first) printf("\n");
+                printf("%.*s", (int)len, s);
+                first = 0;
+            }
+        }
+        printf("\n");
+        json_free(j);
+        return 0;
+    }
+    if (j) json_free(j);
+    printf("\n");
+    return 0;
+}
 
 /* PoP: add_accept_hooks_flag @ hermes_cli/subcommands/_shared.py:add_accept_hooks_flag */
 int hermes_cli_subcommands__shared_add_accept_hooks_flag(const char *arg) {

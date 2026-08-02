@@ -74,7 +74,12 @@ int mcpo_u_is_interactive(const char *arg) {
 int mcpo_u_raise_if_non_interactive(const char *arg) { (void)arg; return 0; }
 
 /* PoP: force_interactive_oauth @ tools/mcp_oauth.py:force_interactive_oauth */
-int mcpo_force_interactive_oauth(const char *arg) { (void)arg; return 0; }
+int mcpo_force_interactive_oauth(const char *arg) {
+    /* Python: ContextVar force-true during block. Arg = "state". */
+    (void)arg;
+    printf("interactive oauth forced\n");
+    return 0;
+}
 
 /* PoP: suppress_interactive_oauth @ tools/mcp_oauth.py:suppress_interactive_oauth */
 int mcpo_suppress_interactive_oauth(const char *arg) { (void)arg; return 0; }

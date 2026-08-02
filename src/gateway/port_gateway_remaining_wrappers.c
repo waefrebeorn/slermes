@@ -1223,7 +1223,17 @@ int gateway_systemd_notify_u_notify_address(const char *arg) {
 }
 
 /* PoP: watchdog_interval_seconds @ gateway/systemd_notify.py:watchdog_interval_seconds */
-int gateway_systemd_notify_watchdog_interval_seconds(const char *arg) { (void)arg; return 0; }
+int gateway_systemd_notify_watchdog_interval_seconds(const char *arg) {
+    /* Python: NOTIFY_SOCKET + WATCHDOG_USEC/1e6; None on bad. Arg =
+     * "notify_socket\twatchdog_usec". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!arg[0] || !tab || !tab[1]) { printf("\n"); return 0; }
+    double v = strtod(tab + 1, NULL) / 1000000.0;
+    if (!isfinite(v) || v <= 0) { printf("\n"); return 0; }
+    printf("%.3f\n", v);
+    return 0;
+}
 
 /* PoP: unhealthy @ gateway/systemd_notify.py:unhealthy */
 int gateway_systemd_notify_unhealthy(const char *arg) {
@@ -1403,7 +1413,16 @@ int gateway_platforms_helpers_discard(const char *arg) {
 }
 
 /* PoP: is_gateway_supervisor_process @ gateway/restart.py:is_gateway_supervisor_process */
-int gateway_restart_is_gateway_supervisor_process(const char *arg) { (void)arg; return 0; }
+int gateway_restart_is_gateway_supervisor_process(const char *arg) {
+    /* Python: INVOCATION_ID / s6 / XPC / EXTERNAL env truthy. Arg =
+     * "flags\ttruthy" (flags = i/s/x per char). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab[1] == '1') { printf("1\n"); return 0; }
+    if (strchr(arg, 'i') || strchr(arg, 's') || strchr(arg, 'x')) { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: declare_stateless_channel @ gateway/session_context.py:declare_stateless_channel */
 int gateway_session_context_declare_stateless_channel(const char *arg) { (void)arg; return 0; }

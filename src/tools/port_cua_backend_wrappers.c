@@ -247,7 +247,17 @@ int cua_resolve_cua_driver_cmd(const char *arg) {
 }
 
 /* PoP: cua_driver_update_nudge @ tools/computer_use/cua_backend.py:cua_driver_update_nudge */
-int cua_cua_driver_update_nudge(const char *arg) { (void)arg; return 0; }
+int cua_cua_driver_update_nudge(const char *arg) {
+    /* Python: update message or None. Arg = "available\tlatest\tcurrent". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int avail = arg[0] == '1';
+    if (!avail) { printf("\n"); return 0; }
+    printf("cua-driver %s is available (you have %s); update with `hermes computer-use install --upgrade`.\n",
+           t1 ? t1 + 1 : "?", t2 ? t2 + 1 : "?");
+    return 0;
+}
 
 /* PoP: cua_driver_install_hint @ tools/computer_use/cua_backend.py:cua_driver_install_hint */
 int cua_cua_driver_install_hint(void) {

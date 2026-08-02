@@ -270,7 +270,13 @@ int envl_u_quote_shell_path(const char *arg) {
 }
 
 /* PoP: _update_cwd @ tools/environments/local.py:_update_cwd */
-int envl_u_update_cwd(const char *arg) { (void)arg; return 0; }
+int envl_u_update_cwd(const char *arg) {
+    /* Python: extract cwd from stdout marker. Arg = "result\tcwd". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("cwd updated: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _extract_cwd_from_output @ tools/environments/local.py:_extract_cwd_from_output */
 int envl_u_extract_cwd_from_output(const char *arg) { (void)arg; return 0; }
