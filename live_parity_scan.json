@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T22:13:07Z",
+  "generated_at": "2026-08-02T22:15:09Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -43713,10 +43713,10 @@
     },
     "agent/message_content.py": {
       "total": 3,
-      "ported": 0,
+      "ported": 3,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 3,
@@ -43732,16 +43732,24 @@
             "decorators": [],
             "line_number": 11
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_message_content_remaining.c",
+          "c_function": "mct_field",
+          "pop_annotation": {
+            "c_function": "mct_field",
+            "python_functions": [
+              "_field"
+            ],
+            "c_file": "src/agent/port_message_content_remaining.c",
+            "python_file": "agent/message_content.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _field @ agent/message_content.py:_field */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/message_content.py",
@@ -43753,16 +43761,24 @@
             "decorators": [],
             "line_number": 17
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_message_content_remaining.c",
+          "c_function": "mct_text_from_part",
+          "pop_annotation": {
+            "c_function": "mct_text_from_part",
+            "python_functions": [
+              "_text_from_part"
+            ],
+            "c_file": "src/agent/port_message_content_remaining.c",
+            "python_file": "agent/message_content.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _text_from_part @ agent/message_content.py:_text_from_part */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/message_content.py",
@@ -43774,16 +43790,24 @@
             "decorators": [],
             "line_number": 34
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_message_content_remaining.c",
+          "c_function": "mct_flatten_message_text",
+          "pop_annotation": {
+            "c_function": "mct_flatten_message_text",
+            "python_functions": [
+              "flatten_message_text"
+            ],
+            "c_file": "src/agent/port_message_content_remaining.c",
+            "python_file": "agent/message_content.py",
+            "line": 51,
+            "is_consolidated": false,
+            "full_text": "/* PoP: flatten_message_text @ agent/message_content.py:flatten_message_text */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -53220,10 +53244,10 @@
     },
     "agent/portal_tags.py": {
       "total": 7,
-      "ported": 4,
+      "ported": 7,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 7,
@@ -53326,16 +53350,24 @@
             "decorators": [],
             "line_number": 85
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_portal_tags_remaining.c",
+          "c_function": "ptg_hermes_version",
+          "pop_annotation": {
+            "c_function": "ptg_hermes_version",
+            "python_functions": [
+              "_hermes_version"
+            ],
+            "c_file": "src/agent/port_portal_tags_remaining.c",
+            "python_file": "agent/portal_tags.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _hermes_version @ agent/portal_tags.py:_hermes_version */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/portal_tags.py",
@@ -53347,16 +53379,24 @@
             "decorators": [],
             "line_number": 98
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_portal_tags_remaining.c",
+          "c_function": "ptg_hermes_client_tag",
+          "pop_annotation": {
+            "c_function": "ptg_hermes_client_tag",
+            "python_functions": [
+              "hermes_client_tag"
+            ],
+            "c_file": "src/agent/port_portal_tags_remaining.c",
+            "python_file": "agent/portal_tags.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: hermes_client_tag @ agent/portal_tags.py:hermes_client_tag */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/portal_tags.py",
@@ -53397,16 +53437,24 @@
             "decorators": [],
             "line_number": 120
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_portal_tags_remaining.c",
+          "c_function": "ptg_nous_portal_tags",
+          "pop_annotation": {
+            "c_function": "ptg_nous_portal_tags",
+            "python_functions": [
+              "nous_portal_tags"
+            ],
+            "c_file": "src/agent/port_portal_tags_remaining.c",
+            "python_file": "agent/portal_tags.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: nous_portal_tags @ agent/portal_tags.py:nous_portal_tags */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
