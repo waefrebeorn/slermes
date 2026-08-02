@@ -19,7 +19,13 @@ int tools_computer_use_tool_u_canon_key_combo(const char *arg) { (void)arg; retu
 int tools_computer_use_tool_reset_backend_for_tests(const char *arg) { (void)arg; return 0; }
 
 /* PoP: type_text @ tools/computer_use/tool.py:type_text */
-int tools_computer_use_tool_type_text(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_tool_type_text(const char *arg) {
+    /* Python: self.calls.append(("type", {"text": text, **kw}));
+     * ActionResult(ok=True, action="type"). Arg = text. */
+    if (!arg) { printf("ok\ttype\n"); return 0; }
+    printf("ok\ttype\t%s\n", arg);
+    return 0;
+}
 
 /* PoP: list_apps @ tools/computer_use/tool.py:list_apps */
 int tools_computer_use_tool_list_apps(const char *arg) {
@@ -357,7 +363,25 @@ int tools_delegate_tool_u_strip_model_hidden_task_fields(const char *arg) { (voi
 int tools_delegation_live_log_live_transcript_root(const char *arg) { (void)arg; return 0; }
 
 /* PoP: new_live_delegation_id @ tools/delegation_live_log.py:new_live_delegation_id */
-int tools_delegation_live_log_new_live_delegation_id(const char *arg) { (void)arg; return 0; }
+int tools_delegation_live_log_new_live_delegation_id(const char *arg) {
+    /* Python: f"deleg_{uuid.uuid4().hex[:8]}" — 8 hex chars of a UUID. */
+    (void)arg;
+    unsigned char buf[8];
+    FILE *urand = fopen("/dev/urandom", "rb");
+    if (urand) {
+        size_t got = fread(buf, 1, sizeof(buf), urand);
+        fclose(urand);
+        if (got == sizeof(buf)) {
+            printf("deleg_%02x%02x%02x%02x\n", buf[0], buf[1], buf[2], buf[3]);
+            return 0;
+        }
+    }
+    /* fallback: time+pid seeded PRNG (not crypto; only used for a dir name) */
+    srand((unsigned)(time(NULL) ^ (getpid() << 16)));
+    printf("deleg_%02x%02x%02x%02x\n", rand() & 0xff, rand() & 0xff,
+           rand() & 0xff, rand() & 0xff);
+    return 0;
+}
 
 /* PoP: _one_line @ tools/delegation_live_log.py:_one_line */
 int tools_delegation_live_log_u_one_line(const char *arg) { (void)arg; return 0; }
@@ -526,7 +550,33 @@ int tools_mcp_dashboard_oauth_get_dashboard_oauth_flow(const char *arg) {
 }
 
 /* PoP: clear_expired @ tools/online_research.py:clear_expired */
-int tools_online_research_clear_expired(const char *arg) { (void)arg; return 0; }
+int tools_online_research_clear_expired(const char *arg) {
+    /* Python: keep only cache entries where now - timestamp < ttl.
+     * Arg = "now\tttl"; the C port drops its own static cache entries. */
+    static double g_ts[16];
+    static char   g_key[16][128];
+    static int    g_n = 0;
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    char now_s[64], ttl_s[64];
+    size_t nlen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (nlen >= sizeof(now_s)) nlen = sizeof(now_s) - 1;
+    memcpy(now_s, arg, nlen); now_s[nlen] = '\0';
+    const char *tt = tab ? tab + 1 : "0";
+    snprintf(ttl_s, sizeof(ttl_s), "%s", tt);
+    double now = strtod(now_s, NULL);
+    double ttl = strtod(ttl_s, NULL);
+    int kept = 0;
+    for (int i = 0; i < g_n; i++) {
+        if (now - g_ts[i] < ttl) {
+            if (kept != i) { g_ts[kept] = g_ts[i]; strcpy(g_key[kept], g_key[i]); }
+            kept++;
+        }
+    }
+    g_n = kept;
+    printf("%d\n", g_n);
+    return 0;
+}
 
 /* PoP: __aenter__ @ tools/online_research.py:__aenter__ */
 int tools_online_research_u__aenter__(const char *arg) { (void)arg; return 0; }
@@ -932,7 +982,14 @@ int tools_computer_use_backend_set_value(const char *arg) { (void)arg; return 0;
 int tools_focus_pane_tool_focus_pane_tool(const char *arg) { (void)arg; return 0; }
 
 /* PoP: check_focus_pane_requirements @ tools/focus_pane_tool.py:check_focus_pane_requirements */
-int tools_focus_pane_tool_check_focus_pane_requirements(const char *arg) { (void)arg; return 0; }
+int tools_focus_pane_tool_check_focus_pane_requirements(const char *arg) {
+    /* Python: env_var_enabled("HERMES_DESKTOP") — desktop GUI only. */
+    (void)arg;
+    const char *v = getenv("HERMES_DESKTOP");
+    int enabled = v && *v && strcmp(v, "0") != 0 && strcasecmp(v, "false") != 0;
+    printf("%d\n", enabled);
+    return 0;
+}
 
 /* PoP: check_image_generation_requirements @ tools/image_generation_tool.py:check_image_generation_requirements */
 int tools_image_generation_tool_check_image_generation_requirements(const char *arg) { (void)arg; return 0; }

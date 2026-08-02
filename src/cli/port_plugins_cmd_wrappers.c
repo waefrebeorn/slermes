@@ -9,6 +9,8 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <dirent.h>
+#include <sys/stat.h>
 #include "hermes_json.h"
 /* PoP: _resolve_git_executable @ hermes_cli/plugins_cmd.py:_resolve_git_executable */
 const char *pcmd_resolve_git_executable(void) {
@@ -131,7 +133,36 @@ bool pcmd_resolve_tool_override_grant(const char *hermes_home, const char *plugi
 }
 /* PoP: _plugin_exists @ hermes_cli/plugins_cmd.py:_plugin_exists */
 bool pcmd_plugin_exists(const char *hermes_home, const char *name) {
-    (void)hermes_home; (void)name; return false;
+    /* Python: _resolve_plugin_key(name) is not None — a plugin exists when a
+     * matching dir (bare name, or nested category/name key) is on disk. */
+    if (!name || !*name) return false;
+    char plugins[1024];
+    pcmd_plugins_dir(hermes_home, plugins, sizeof(plugins));
+    DIR *d = opendir(plugins);
+    if (!d) return false;
+    bool found = false;
+    struct dirent *e;
+    char sub[1100];
+    while ((e = readdir(d)) != NULL) {
+        if (e->d_name[0] == '.') continue;
+        if (strcmp(e->d_name, name) == 0) { found = true; break; }
+        /* nested category/name key: "observability/nemo_relay" */
+        snprintf(sub, sizeof(sub), "%s/%s", plugins, e->d_name);
+        struct stat st;
+        if (stat(sub, &st) == 0 && S_ISDIR(st.st_mode)) {
+            DIR *sd = opendir(sub);
+            if (!sd) continue;
+            struct dirent *se;
+            while ((se = readdir(sd)) != NULL) {
+                if (se->d_name[0] == '.') continue;
+                if (strcmp(se->d_name, name) == 0) { found = true; break; }
+            }
+            closedir(sd);
+            if (found) break;
+        }
+    }
+    closedir(d);
+    return found;
 }
 /* PoP: _read_manifest_info @ hermes_cli/plugins_cmd.py:_read_manifest_info */
 json_t *pcmd_read_manifest_info(const char *plugin_dir) {

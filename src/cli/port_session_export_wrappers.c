@@ -305,7 +305,32 @@ int sexp_u_append_session_messages(const char *arg) {
 }
 
 /* PoP: _messages @ hermes_cli/session_export.py:_messages */
-int sexp_u_messages(const char *arg) { (void)arg; return 0; }
+int sexp_u_messages(const char *arg) {
+    /* Python: session.get("messages") or []; keep only dict entries.
+     * Arg = session JSON. Print the filtered JSON array. */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    json_t *session = json_parse(arg, NULL);
+    if (!session || !json_is_object(session)) {
+        if (session) json_free(session);
+        printf("[]\n");
+        return 0;
+    }
+    json_t *messages = json_obj_get(session, "messages");
+    json_t *out = json_array();
+    if (messages && json_is_array(messages)) {
+        size_t n = json_len(messages);
+        for (size_t i = 0; i < n; i++) {
+            json_t *m = json_get(messages, i);
+            if (m && json_is_object(m)) json_append(out, json_copy(m));
+        }
+    }
+    char *s = json_serialize(out);
+    printf("%s\n", s ? s : "[]");
+    free(s);
+    json_free(out);
+    json_free(session);
+    return 0;
+}
 
 /* PoP: _message_text @ hermes_cli/session_export.py:_message_text */
 int sexp_u_message_text(const char *arg) { (void)arg; return 0; }

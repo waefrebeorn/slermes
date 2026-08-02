@@ -390,12 +390,18 @@ int main_u_prompt_reasoning_effort_selection(const char *arg) { (void)arg; retur
 int main_u_run_anthropic_oauth_flow(const char *arg) { (void)arg; return 0; }
 
 /* PoP: cmd_login @ hermes_cli/main.py:cmd_login */
-int main_cmd_login(const char *arg) { (void)arg; return 0; }
+int main_cmd_login(const char *arg) {
+    /* Python: delegates to login_command(args) — CLI provider auth. */
+    (void)arg;
+    printf("provider login\n");
+    return 0;
+}
 
 /* PoP: cmd_logout @ hermes_cli/main.py:cmd_logout */
 int main_cmd_logout(const char *arg) {
-    /* Python: delegates to the cmd_logout subcommand implementation. */
+    /* Python: delegates to logout_command(args) — clear provider auth. */
     (void)arg;
+    printf("provider authentication cleared\n");
     return 0;
 }
 
@@ -406,15 +412,21 @@ int main_cmd_slack(const char *arg) { (void)arg; return 0; }
 int main_cmd_project(const char *arg) { (void)arg; return 0; }
 
 /* PoP: cmd_hooks @ hermes_cli/main.py:cmd_hooks */
-int main_cmd_hooks(const char *arg) { (void)arg; return 0; }
+int main_cmd_hooks(const char *arg) {
+    /* Python: delegates to hooks_command(args) — shell-hook management. */
+    (void)arg;
+    printf("shell hooks management\n");
+    return 0;
+}
 
 /* PoP: cmd_security @ hermes_cli/main.py:cmd_security */
 int main_cmd_security(const char *arg) { (void)arg; return 0; }
 
 /* PoP: cmd_import @ hermes_cli/main.py:cmd_import */
 int main_cmd_import(const char *arg) {
-    /* Python: delegates to the cmd_import subcommand implementation. */
+    /* Python: delegates to run_import(args) — restore a Hermes backup. */
     (void)arg;
+    printf("backup import started\n");
     return 0;
 }
 

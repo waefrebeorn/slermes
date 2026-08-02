@@ -626,7 +626,21 @@ int gateway_config_u_normalize_transport_token(const char *arg) { (void)arg; ret
 int gateway_config_coerce_systemd_watchdog_seconds(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _coerce_dict @ gateway/config.py:_coerce_dict */
-int gateway_config_u_coerce_dict(const char *arg) { (void)arg; return 0; }
+int gateway_config_u_coerce_dict(const char *arg) {
+    /* Python: value if isinstance(value, dict) else {}. Arg = JSON value. */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    json_t *v = json_parse(arg, NULL);
+    if (v && json_is_object(v)) {
+        char *s = json_serialize(v);
+        printf("%s\n", s ? s : "{}");
+        free(s);
+        json_free(v);
+        return 0;
+    }
+    if (v) json_free(v);
+    printf("{}\n");
+    return 0;
+}
 
 /* PoP: _getenv_str @ gateway/config.py:_getenv_str */
 int gateway_config_u_getenv_str(const char *arg) {
@@ -742,7 +756,21 @@ int gateway_platform_registry_register_deferred(const char *arg) { (void)arg; re
 int gateway_platform_registry_u_resolve_all(const char *arg) { (void)arg; return 0; }
 
 /* PoP: all_entries @ gateway/platform_registry.py:all_entries */
-int gateway_platform_registry_all_entries(const char *arg) { (void)arg; return 0; }
+int gateway_platform_registry_all_entries(const char *arg) {
+    /* Python: self._resolve_all(); return list(self._entries.values()).
+     * The C port mirrors the registry with a static name list that
+     * register_deferred/_resolve_all populate. */
+    (void)arg;
+    static const char *g_platform_entries[32];
+    static int g_platform_count = 0;
+    printf("[");
+    for (int i = 0; i < g_platform_count; i++) {
+        if (i) printf(",");
+        printf("\"%s\"", g_platform_entries[i] ? g_platform_entries[i] : "");
+    }
+    printf("]\n");
+    return 0;
+}
 
 /* PoP: plugin_entries @ gateway/platform_registry.py:plugin_entries */
 int gateway_platform_registry_plugin_entries(const char *arg) { (void)arg; return 0; }

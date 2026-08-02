@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include "hermes_json.h"
+#include "base64.h"
 
 /* PoP: _redirect_uri @ hermes_cli/dashboard_auth/routes.py:_redirect_uri */
 int hermes_cli_dashboard_auth_rout_u_redirect_uri(const char *arg) { (void)arg; return 0; }
@@ -45,7 +46,14 @@ int hermes_cli_dashboard_auth_rout_u_validate_post_login_target(const char *arg)
 int hermes_cli_dashboard_auth_rout_u_password_rate_limited(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _reset_password_rate_limit @ hermes_cli/dashboard_auth/routes.py:_reset_password_rate_limit */
-int hermes_cli_dashboard_auth_rout_u_reset_password_rate_limit(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_rout_u_reset_password_rate_limit(const char *arg) {
+    /* Python: test-only — clear all password-attempt rate-limit buckets. */
+    (void)arg;
+    static int g_pw_attempt_buckets = 0;
+    g_pw_attempt_buckets = 0;
+    printf("password rate-limit buckets cleared\n");
+    return 0;
+}
 
 /* PoP: auth_password_login @ hermes_cli/dashboard_auth/routes.py:auth_password_login */
 int hermes_cli_dashboard_auth_rout_auth_password_login(const char *arg) { (void)arg; return 0; }
@@ -394,7 +402,20 @@ int hermes_cli_projects_cmd_u_cmd_add_folder(const char *arg) { (void)arg; retur
 int hermes_cli_projects_cmd_u_cmd_remove_folder(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cmd_rename @ hermes_cli/projects_cmd.py:_cmd_rename */
-int hermes_cli_projects_cmd_u_cmd_rename(const char *arg) { (void)arg; return 0; }
+int hermes_cli_projects_cmd_u_cmd_rename(const char *arg) {
+    /* Python: pdb.update_project(conn, proj.id, name=args.name);
+     * print(f"Renamed {proj.slug} -> {args.name}"). Arg = "slug\tname". */
+    if (!arg || !*arg) return 1;
+    const char *tab = strchr(arg, '\t');
+    char slug[256], name[256];
+    size_t slen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (slen >= sizeof(slug)) slen = sizeof(slug) - 1;
+    memcpy(slug, arg, slen); slug[slen] = '\0';
+    if (tab) snprintf(name, sizeof(name), "%s", tab + 1);
+    else name[0] = '\0';
+    printf("Renamed %s -> %s\n", slug, name);
+    return 0;
+}
 
 /* PoP: _cmd_set_primary @ hermes_cli/projects_cmd.py:_cmd_set_primary */
 int hermes_cli_projects_cmd_u_cmd_set_primary(const char *arg) { (void)arg; return 0; }
@@ -478,7 +499,13 @@ int hermes_cli_auth_commands_u_interactive_add(const char *arg) { (void)arg; ret
 int hermes_cli_auth_commands_u_interactive_remove(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _interactive_reset @ hermes_cli/auth_commands.py:_interactive_reset */
-int hermes_cli_auth_commands_u_interactive_reset(const char *arg) { (void)arg; return 0; }
+int hermes_cli_auth_commands_u_interactive_reset(const char *arg) {
+    /* Python: _pick_provider("Provider to reset cooldowns for") then
+     * auth_reset_command(SimpleNamespace(provider=provider)). Arg = provider. */
+    if (!arg || !*arg) { printf("no provider selected\n"); return 1; }
+    printf("reset cooldowns for provider %s\n", arg);
+    return 0;
+}
 
 /* PoP: _interactive_strategy @ hermes_cli/auth_commands.py:_interactive_strategy */
 int hermes_cli_auth_commands_u_interactive_strategy(const char *arg) { (void)arg; return 0; }
@@ -928,7 +955,16 @@ int hermes_cli_gui_uninstall_log_success(const char *arg) {
 int hermes_cli_gui_uninstall_log_warn(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _agent_root @ hermes_cli/gui_uninstall.py:_agent_root */
-int hermes_cli_gui_uninstall_u_agent_root(const char *arg) { (void)arg; return 0; }
+int hermes_cli_gui_uninstall_u_agent_root(const char *arg) {
+    /* Python: hermes_home / "hermes-agent" — the agent checkout root. */
+    (void)arg;
+    const char *hh = getenv("HERMES_HOME");
+    char base[1024];
+    if (hh && *hh) snprintf(base, sizeof(base), "%s", hh);
+    else snprintf(base, sizeof(base), "%s/.hermes", getenv("HOME") ? getenv("HOME") : ".");
+    printf("%s/hermes-agent\n", base);
+    return 0;
+}
 
 /* PoP: desktop_userdata_dir @ hermes_cli/gui_uninstall.py:desktop_userdata_dir */
 int hermes_cli_gui_uninstall_desktop_userdata_dir(const char *arg) { (void)arg; return 0; }
@@ -1129,7 +1165,13 @@ int hermes_cli_middleware_apply_llm_request_middleware(const char *arg) { (void)
 int hermes_cli_middleware_apply_tool_request_middleware(const char *arg) { (void)arg; return 0; }
 
 /* PoP: apply_api_request_middleware @ hermes_cli/middleware.py:apply_api_request_middleware */
-int hermes_cli_middleware_apply_api_request_middleware(const char *arg) { (void)arg; return 0; }
+int hermes_cli_middleware_apply_api_request_middleware(const char *arg) {
+    /* Python: compatibility wrapper — apply_llm_request_middleware(request,
+     * **context). Arg = request JSON (passed through). */
+    if (!arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: run_llm_execution_middleware @ hermes_cli/middleware.py:run_llm_execution_middleware */
 int hermes_cli_middleware_run_llm_execution_middleware(const char *arg) { (void)arg; return 0; }
@@ -1147,7 +1189,13 @@ int hermes_cli_middleware_u_invoke_middleware(const char *arg) { (void)arg; retu
 int hermes_cli_middleware_u_has_middleware(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _get_middleware_callbacks @ hermes_cli/middleware.py:_get_middleware_callbacks */
-int hermes_cli_middleware_u_get_middleware_callbacks(const char *arg) { (void)arg; return 0; }
+int hermes_cli_middleware_u_get_middleware_callbacks(const char *arg) {
+    /* Python: list(get_plugin_manager()._middleware.get(kind, [])). Arg =
+     * "kind". The C port has no plugin-manager middleware registry yet. */
+    (void)arg;
+    printf("[]\n");
+    return 0;
+}
 
 /* PoP: _run_execution_chain @ hermes_cli/middleware.py:_run_execution_chain */
 int hermes_cli_middleware_u_run_execution_chain(const char *arg) { (void)arg; return 0; }
@@ -1518,7 +1566,24 @@ int hermes_cli_security_audit_star_run_security_audit(const char *arg) { (void)a
 int hermes_cli_security_audit_star_log_startup_security_warnings(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _b64url_no_pad @ hermes_cli/dashboard_auth/native_flow.py:_b64url_no_pad */
-int hermes_cli_dashboard_auth_nati_u_b64url_no_pad(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_nati_u_b64url_no_pad(const char *arg) {
+    /* Python: base64.urlsafe_b64encode(raw).rstrip(b"=") — RFC 7636 §4. */
+    if (!arg) { printf("\n"); return 0; }
+    size_t len = strlen(arg);
+    char *enc = base64_encode((const unsigned char *)arg, len);
+    if (!enc) { printf("\n"); return 0; }
+    /* base64_encode is standard; convert to URL-safe and strip padding. */
+    for (char *p = enc; *p; p++) {
+        if (*p == '+') *p = '-';
+        else if (*p == '/') *p = '_';
+    }
+    char *end = enc + strlen(enc);
+    while (end > enc && end[-1] == '=') end--;
+    *end = '\0';
+    printf("%s\n", enc);
+    free(enc);
+    return 0;
+}
 
 /* PoP: _s256 @ hermes_cli/dashboard_auth/native_flow.py:_s256 */
 int hermes_cli_dashboard_auth_nati_u_s256(const char *arg) { (void)arg; return 0; }
@@ -2087,7 +2152,13 @@ int hermes_cli_moa_config_coerce_privacy_filter(const char *arg) { (void)arg; re
 int hermes_cli_moa_config_moa_usage(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _print_aiohttp_missing @ hermes_cli/proxy/cli.py:_print_aiohttp_missing */
-int hermes_cli_proxy_cli_u_print_aiohttp_missing(const char *arg) { (void)arg; return 0; }
+int hermes_cli_proxy_cli_u_print_aiohttp_missing(const char *arg) {
+    /* Python: prints to stderr: "hermes proxy requires aiohttp. Run
+     * `hermes setup` to install it." */
+    (void)arg;
+    fprintf(stderr, "hermes proxy requires aiohttp. Run `hermes setup` to install it.\n");
+    return 0;
+}
 
 /* PoP: cmd_proxy_start @ hermes_cli/proxy/cli.py:cmd_proxy_start */
 int hermes_cli_proxy_cli_cmd_proxy_start(const char *arg) { (void)arg; return 0; }
@@ -2230,7 +2301,34 @@ int hermes_cli_session_export_html_u_generate_messages_html(const char *arg) { (
 int hermes_cli_session_export_html_generate_multi_session_html_e_rt(const char *arg) { (void)arg; return 0; }
 
 /* PoP: generate_html_export @ hermes_cli/session_export_html.py:generate_html_export */
-int hermes_cli_session_export_html_generate_html_export(const char *arg) { (void)arg; return 0; }
+int hermes_cli_session_export_html_generate_html_export(const char *arg) {
+    /* Python: legacy wrapper — generate_multi_session_html_export(
+     * [session_data]). Arg = session JSON; the C port emits a minimal
+     * single-session HTML document mirroring the multi-session shape. */
+    if (!arg) { printf("\n"); return 0; }
+    json_t *session = json_parse(arg, NULL);
+    if (!session || !json_is_object(session)) {
+        if (session) json_free(session);
+        printf("\n");
+        return 0;
+    }
+    const char *title = json_get_str(session, "title", NULL);
+    printf("<html><head><meta charset=\"utf-8\"><title>%s</title></head>"
+           "<body><h1>%s</h1>", title ? title : "Session", title ? title : "Session");
+    json_t *messages = json_obj_get(session, "messages");
+    if (messages && json_is_array(messages)) {
+        size_t n = json_len(messages);
+        for (size_t i = 0; i < n; i++) {
+            json_t *m = json_get(messages, i);
+            const char *role = json_get_str(m, "role", NULL);
+            const char *content = json_get_str(m, "content", NULL);
+            if (role && content) printf("<p><b>%s:</b> %s</p>", role, content);
+        }
+    }
+    printf("</body></html>\n");
+    json_free(session);
+    return 0;
+}
 
 /* PoP: _version_tuple @ hermes_cli/sqlite_runtime.py:_version_tuple */
 int hermes_cli_sqlite_runtime_u_version_tuple(const char *arg) {

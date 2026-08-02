@@ -39,7 +39,13 @@ int ctxc_u_record_ineffective_compression_verdict(const char *arg) { (void)arg; 
 int ctxc_record_completed_compaction(const char *arg) { (void)arg; return 0; }
 
 /* PoP: snapshot_preflight_display_tokens @ agent/context_compressor.py:snapshot_preflight_display_tokens */
-int ctxc_snapshot_preflight_display_tokens(const char *arg) { (void)arg; return 0; }
+int ctxc_snapshot_preflight_display_tokens(const char *arg) {
+    /* Python: return self.last_prompt_tokens — capture the display token
+     * count before a speculative preflight seed. Arg = last_prompt_tokens. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: rollback_interrupted_preflight_display_tokens @ agent/context_compressor.py:rollback_interrupted_preflight_display_tokens */
 int ctxc_rollback_interrupted_preflight_display_tokens(const char *arg) { (void)arg; return 0; }

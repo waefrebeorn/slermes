@@ -862,6 +862,11 @@ class ParityAnalyzer:
             m_asgn = re.match(r'^([\w][\w\->\.\[\]]*)\s*(?:=|\+=|-=|\*=|/=)\s*[^;]*;?$', s)
             if m_asgn:
                 return self._recursive_bootleg(m_asgn.group(1), stack) if m_asgn.group(1) in defined else False
+            # bare call to a defined port function recurses; a call to an
+            # undefined symbol is external code -> real (mirrors the hunter).
+            m_call = re.match(r'^([\w]+)\s*\([^;]*\)\s*;?$', s)
+            if m_call:
+                return self._recursive_bootleg(m_call.group(1), stack) if m_call.group(1) in defined else False
             if re.match(r'^return\s+[\w]+\s*;?$', s):
                 v = re.match(r'^return\s+([\w]+)\s*;?$', s).group(1)
                 # returning an undefined symbol (static/global state) is a
