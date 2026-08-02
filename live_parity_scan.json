@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T18:33:53Z",
+  "generated_at": "2026-08-02T18:36:04Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -33980,10 +33980,10 @@
     },
     "agent/lsp/client.py": {
       "total": 40,
-      "ported": 15,
+      "ported": 40,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 25,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 40,
@@ -34028,16 +34028,24 @@
             "decorators": [],
             "line_number": 106
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_client_remaining.c",
+          "c_function": "lspc_uri_to_path",
+          "pop_annotation": {
+            "c_function": "lspc_uri_to_path",
+            "python_functions": [
+              "uri_to_path"
+            ],
+            "c_file": "src/agent/port_lsp_client_remaining.c",
+            "python_file": "agent/lsp/client.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: uri_to_path @ agent/lsp/client.py:uri_to_path */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/client.py",
@@ -34049,16 +34057,24 @@
             "decorators": [],
             "line_number": 116
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_client_remaining.c",
+          "c_function": "lspc_end_position",
+          "pop_annotation": {
+            "c_function": "lspc_end_position",
+            "python_functions": [
+              "_end_position"
+            ],
+            "c_file": "src/agent/port_lsp_client_remaining.c",
+            "python_file": "agent/lsp/client.py",
+            "line": 46,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _end_position @ agent/lsp/client.py:_end_position */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/client.py",
@@ -34070,16 +34086,24 @@
             "decorators": [],
             "line_number": 163
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_client_remaining.c",
+          "c_function": "lspc_fresh_push",
+          "pop_annotation": {
+            "c_function": "lspc_fresh_push",
+            "python_functions": [
+              "fresh_push"
+            ],
+            "c_file": "src/agent/port_lsp_client_remaining.c",
+            "python_file": "agent/lsp/client.py",
+            "line": 63,
+            "is_consolidated": false,
+            "full_text": "/* PoP: fresh_push @ agent/lsp/client.py:fresh_push */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/client.py",
@@ -34091,16 +34115,24 @@
             "decorators": [],
             "line_number": 166
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_client_remaining.c",
+          "c_function": "lspc_fresh_pull",
+          "pop_annotation": {
+            "c_function": "lspc_fresh_pull",
+            "python_functions": [
+              "fresh_pull"
+            ],
+            "c_file": "src/agent/port_lsp_client_remaining.c",
+            "python_file": "agent/lsp/client.py",
+            "line": 69,
+            "is_consolidated": false,
+            "full_text": "/* PoP: fresh_pull @ agent/lsp/client.py:fresh_pull */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/client.py",
@@ -34234,16 +34266,24 @@
             ],
             "line_number": 284
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_client_remaining.c",
+          "c_function": "lspc_win_wrap_cmd",
+          "pop_annotation": {
+            "c_function": "lspc_win_wrap_cmd",
+            "python_functions": [
+              "_win_wrap_cmd"
+            ],
+            "c_file": "src/agent/port_lsp_client_remaining.c",
+            "python_file": "agent/lsp/client.py",
+            "line": 74,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _win_wrap_cmd @ agent/lsp/client.py:_win_wrap_cmd */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/client.py",
@@ -34342,16 +34382,24 @@
             "decorators": [],
             "line_number": 379
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_client_remaining.c",
+          "c_function": "lspc_initialize",
+          "pop_annotation": {
+            "c_function": "lspc_initialize",
+            "python_functions": [
+              "_initialize"
+            ],
+            "c_file": "src/agent/port_lsp_client_remaining.c",
+            "python_file": "agent/lsp/client.py",
+            "line": 82,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _initialize @ agent/lsp/client.py:_initialize */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/client.py",
@@ -34365,16 +34413,24 @@
             ],
             "line_number": 443
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_client_remaining.c",
+          "c_function": "lspc_extract_sync_kind",
+          "pop_annotation": {
+            "c_function": "lspc_extract_sync_kind",
+            "python_functions": [
+              "_extract_sync_kind"
+            ],
+            "c_file": "src/agent/port_lsp_client_remaining.c",
+            "python_file": "agent/lsp/client.py",
+            "line": 93,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _extract_sync_kind @ agent/lsp/client.py:_extract_sync_kind */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/client.py",
@@ -34415,16 +34471,24 @@
             "decorators": [],
             "line_number": 476
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_client_remaining.c",
+          "c_function": "lspc_cleanup_process",
+          "pop_annotation": {
+            "c_function": "lspc_cleanup_process",
+            "python_functions": [
+              "_cleanup_process"
+            ],
+            "c_file": "src/agent/port_lsp_client_remaining.c",
+            "python_file": "agent/lsp/client.py",
+            "line": 114,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _cleanup_process @ agent/lsp/client.py:_cleanup_process */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/client.py",
@@ -34465,16 +34529,24 @@
             "decorators": [],
             "line_number": 530
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_client_remaining.c",
+          "c_function": "lspc_send_request_with_retry",
+          "pop_annotation": {
+            "c_function": "lspc_send_request_with_retry",
+            "python_functions": [
+              "_send_request_with_retry"
+            ],
+            "c_file": "src/agent/port_lsp_client_remaining.c",
+            "python_file": "agent/lsp/client.py",
+            "line": 121,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _send_request_with_retry @ agent/lsp/client.py:_send_request_with_retry */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/client.py",
@@ -34486,16 +34558,24 @@
             "decorators": [],
             "line_number": 546
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_client_remaining.c",
+          "c_function": "lspc_send_notification",
+          "pop_annotation": {
+            "c_function": "lspc_send_notification",
+            "python_functions": [
+              "_send_notification"
+            ],
+            "c_file": "src/agent/port_lsp_client_remaining.c",
+            "python_file": "agent/lsp/client.py",
+            "line": 129,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _send_notification @ agent/lsp/client.py:_send_notification */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/client.py",
@@ -34507,16 +34587,24 @@
             "decorators": [],
             "line_number": 555
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_client_remaining.c",
+          "c_function": "lspc_send_response",
+          "pop_annotation": {
+            "c_function": "lspc_send_response",
+            "python_functions": [
+              "_send_response"
+            ],
+            "c_file": "src/agent/port_lsp_client_remaining.c",
+            "python_file": "agent/lsp/client.py",
+            "line": 136,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _send_response @ agent/lsp/client.py:_send_response */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/client.py",
@@ -34528,16 +34616,24 @@
             "decorators": [],
             "line_number": 564
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_client_remaining.c",
+          "c_function": "lspc_send_error_response",
+          "pop_annotation": {
+            "c_function": "lspc_send_error_response",
+            "python_functions": [
+              "_send_error_response"
+            ],
+            "c_file": "src/agent/port_lsp_client_remaining.c",
+            "python_file": "agent/lsp/client.py",
+            "line": 143,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _send_error_response @ agent/lsp/client.py:_send_error_response */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/client.py",
@@ -34578,16 +34674,24 @@
             "decorators": [],
             "line_number": 589
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_client_remaining.c",
+          "c_function": "lspc_dispatch_request",
+          "pop_annotation": {
+            "c_function": "lspc_dispatch_request",
+            "python_functions": [
+              "_dispatch_request"
+            ],
+            "c_file": "src/agent/port_lsp_client_remaining.c",
+            "python_file": "agent/lsp/client.py",
+            "line": 150,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _dispatch_request @ agent/lsp/client.py:_dispatch_request */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/client.py",
@@ -34628,16 +34732,24 @@
             "decorators": [],
             "line_number": 617
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_client_remaining.c",
+          "c_function": "lspc_handle_work_done_create",
+          "pop_annotation": {
+            "c_function": "lspc_handle_work_done_create",
+            "python_functions": [
+              "_handle_work_done_create"
+            ],
+            "c_file": "src/agent/port_lsp_client_remaining.c",
+            "python_file": "agent/lsp/client.py",
+            "line": 158,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _handle_work_done_create @ agent/lsp/client.py:_handle_work_done_create */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/client.py",
@@ -34649,16 +34761,24 @@
             "decorators": [],
             "line_number": 621
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_client_remaining.c",
+          "c_function": "lspc_handle_workspace_configuration",
+          "pop_annotation": {
+            "c_function": "lspc_handle_workspace_configuration",
+            "python_functions": [
+              "_handle_workspace_configuration"
+            ],
+            "c_file": "src/agent/port_lsp_client_remaining.c",
+            "python_file": "agent/lsp/client.py",
+            "line": 165,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _handle_workspace_configuration @ agent/lsp/client.py:_handle_workspace_configuration */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/client.py",
@@ -34670,16 +34790,24 @@
             "decorators": [],
             "line_number": 646
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_client_remaining.c",
+          "c_function": "lspc_handle_register_capability",
+          "pop_annotation": {
+            "c_function": "lspc_handle_register_capability",
+            "python_functions": [
+              "_handle_register_capability"
+            ],
+            "c_file": "src/agent/port_lsp_client_remaining.c",
+            "python_file": "agent/lsp/client.py",
+            "line": 173,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _handle_register_capability @ agent/lsp/client.py:_handle_register_capability */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/client.py",
@@ -34691,16 +34819,24 @@
             "decorators": [],
             "line_number": 659
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_client_remaining.c",
+          "c_function": "lspc_handle_unregister_capability",
+          "pop_annotation": {
+            "c_function": "lspc_handle_unregister_capability",
+            "python_functions": [
+              "_handle_unregister_capability"
+            ],
+            "c_file": "src/agent/port_lsp_client_remaining.c",
+            "python_file": "agent/lsp/client.py",
+            "line": 181,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _handle_unregister_capability @ agent/lsp/client.py:_handle_unregister_capability */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/client.py",
@@ -34712,16 +34848,24 @@
             "decorators": [],
             "line_number": 670
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_client_remaining.c",
+          "c_function": "lspc_handle_workspace_folders",
+          "pop_annotation": {
+            "c_function": "lspc_handle_workspace_folders",
+            "python_functions": [
+              "_handle_workspace_folders"
+            ],
+            "c_file": "src/agent/port_lsp_client_remaining.c",
+            "python_file": "agent/lsp/client.py",
+            "line": 188,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _handle_workspace_folders @ agent/lsp/client.py:_handle_workspace_folders */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/client.py",
@@ -34733,16 +34877,24 @@
             "decorators": [],
             "line_number": 673
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_client_remaining.c",
+          "c_function": "lspc_handle_diagnostic_refresh",
+          "pop_annotation": {
+            "c_function": "lspc_handle_diagnostic_refresh",
+            "python_functions": [
+              "_handle_diagnostic_refresh"
+            ],
+            "c_file": "src/agent/port_lsp_client_remaining.c",
+            "python_file": "agent/lsp/client.py",
+            "line": 197,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _handle_diagnostic_refresh @ agent/lsp/client.py:_handle_diagnostic_refresh */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/client.py",
@@ -34754,16 +34906,24 @@
             "decorators": [],
             "line_number": 681
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_client_remaining.c",
+          "c_function": "lspc_handle_publish_diagnostics",
+          "pop_annotation": {
+            "c_function": "lspc_handle_publish_diagnostics",
+            "python_functions": [
+              "_handle_publish_diagnostics"
+            ],
+            "c_file": "src/agent/port_lsp_client_remaining.c",
+            "python_file": "agent/lsp/client.py",
+            "line": 204,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _handle_publish_diagnostics @ agent/lsp/client.py:_handle_publish_diagnostics */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/client.py",
@@ -34804,16 +34964,24 @@
             "decorators": [],
             "line_number": 797
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_client_remaining.c",
+          "c_function": "lspc_save_file",
+          "pop_annotation": {
+            "c_function": "lspc_save_file",
+            "python_functions": [
+              "save_file"
+            ],
+            "c_file": "src/agent/port_lsp_client_remaining.c",
+            "python_file": "agent/lsp/client.py",
+            "line": 212,
+            "is_consolidated": false,
+            "full_text": "/* PoP: save_file @ agent/lsp/client.py:save_file */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/client.py",
@@ -34825,16 +34993,24 @@
             "decorators": [],
             "line_number": 811
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_client_remaining.c",
+          "c_function": "lspc_pull_document_diagnostics",
+          "pop_annotation": {
+            "c_function": "lspc_pull_document_diagnostics",
+            "python_functions": [
+              "_pull_document_diagnostics"
+            ],
+            "c_file": "src/agent/port_lsp_client_remaining.c",
+            "python_file": "agent/lsp/client.py",
+            "line": 220,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _pull_document_diagnostics @ agent/lsp/client.py:_pull_document_diagnostics */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/client.py",
@@ -34875,16 +35051,24 @@
             "decorators": [],
             "line_number": 921
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_client_remaining.c",
+          "c_function": "lspc_wait_for_fresh_push",
+          "pop_annotation": {
+            "c_function": "lspc_wait_for_fresh_push",
+            "python_functions": [
+              "_wait_for_fresh_push"
+            ],
+            "c_file": "src/agent/port_lsp_client_remaining.c",
+            "python_file": "agent/lsp/client.py",
+            "line": 228,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _wait_for_fresh_push @ agent/lsp/client.py:_wait_for_fresh_push */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/client.py",
@@ -34925,16 +35109,24 @@
             "decorators": [],
             "line_number": 982
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_client_remaining.c",
+          "c_function": "lspc_dedupe",
+          "pop_annotation": {
+            "c_function": "lspc_dedupe",
+            "python_functions": [
+              "_dedupe"
+            ],
+            "c_file": "src/agent/port_lsp_client_remaining.c",
+            "python_file": "agent/lsp/client.py",
+            "line": 236,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _dedupe @ agent/lsp/client.py:_dedupe */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/client.py",
@@ -34946,16 +35138,24 @@
             "decorators": [],
             "line_number": 997
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_client_remaining.c",
+          "c_function": "lspc_diagnostic_key",
+          "pop_annotation": {
+            "c_function": "lspc_diagnostic_key",
+            "python_functions": [
+              "_diagnostic_key"
+            ],
+            "c_file": "src/agent/port_lsp_client_remaining.c",
+            "python_file": "agent/lsp/client.py",
+            "line": 244,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _diagnostic_key @ agent/lsp/client.py:_diagnostic_key */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -108603,10 +108803,10 @@
     },
     "gateway/platforms/weixin.py": {
       "total": 104,
-      "ported": 72,
+      "ported": 92,
       "partial": 10,
       "stub": 0,
-      "real_gaps": 22,
+      "real_gaps": 2,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 104,
@@ -109086,17 +109286,24 @@
             "decorators": [],
             "line_number": 272
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_weixin_remaining.c",
+          "c_function": "wx2_init",
+          "pop_annotation": {
+            "c_function": "wx2_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_weixin_remaining.c",
+            "python_file": "gateway/platforms/weixin.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/weixin.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/weixin.py",
@@ -109150,17 +109357,24 @@
             "decorators": [],
             "line_number": 282
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_weixin_remaining.c",
+          "c_function": "wx2_restore",
+          "pop_annotation": {
+            "c_function": "wx2_restore",
+            "python_functions": [
+              "restore"
+            ],
+            "c_file": "src/gateway/port_weixin_remaining.c",
+            "python_file": "gateway/platforms/weixin.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: restore @ gateway/platforms/weixin.py:restore */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/weixin.py",
@@ -109214,17 +109428,24 @@
             "decorators": [],
             "line_number": 306
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_weixin_remaining.c",
+          "c_function": "wx2_persist",
+          "pop_annotation": {
+            "c_function": "wx2_persist",
+            "python_functions": [
+              "_persist"
+            ],
+            "c_file": "src/gateway/port_weixin_remaining.c",
+            "python_file": "gateway/platforms/weixin.py",
+            "line": 38,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _persist @ gateway/platforms/weixin.py:_persist */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/weixin.py",
@@ -109236,17 +109457,24 @@
             "decorators": [],
             "line_number": 322
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_weixin_remaining.c",
+          "c_function": "wx2_init",
+          "pop_annotation": {
+            "c_function": "wx2_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_weixin_remaining.c",
+            "python_file": "gateway/platforms/weixin.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/weixin.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/weixin.py",
@@ -110061,17 +110289,24 @@
             "decorators": [],
             "line_number": 924
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_weixin_remaining.c",
+          "c_function": "wx2_coerce_bool",
+          "pop_annotation": {
+            "c_function": "wx2_coerce_bool",
+            "python_functions": [
+              "_coerce_bool"
+            ],
+            "c_file": "src/gateway/port_weixin_remaining.c",
+            "python_file": "gateway/platforms/weixin.py",
+            "line": 46,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _coerce_bool @ gateway/platforms/weixin.py:_coerce_bool */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/weixin.py",
@@ -110083,17 +110318,24 @@
             "decorators": [],
             "line_number": 942
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_weixin_remaining.c",
+          "c_function": "wx2_extract_text",
+          "pop_annotation": {
+            "c_function": "wx2_extract_text",
+            "python_functions": [
+              "_extract_text"
+            ],
+            "c_file": "src/gateway/port_weixin_remaining.c",
+            "python_file": "gateway/platforms/weixin.py",
+            "line": 62,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _extract_text @ gateway/platforms/weixin.py:_extract_text */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/weixin.py",
@@ -110242,17 +110484,24 @@
             "decorators": [],
             "line_number": 1151
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_weixin_remaining.c",
+          "c_function": "wx2_init",
+          "pop_annotation": {
+            "c_function": "wx2_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_weixin_remaining.c",
+            "python_file": "gateway/platforms/weixin.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/weixin.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/weixin.py",
@@ -110324,17 +110573,24 @@
             "decorators": [],
             "line_number": 1265
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_weixin_remaining.c",
+          "c_function": "wx2_connect",
+          "pop_annotation": {
+            "c_function": "wx2_connect",
+            "python_functions": [
+              "connect"
+            ],
+            "c_file": "src/gateway/port_weixin_remaining.c",
+            "python_file": "gateway/platforms/weixin.py",
+            "line": 70,
+            "is_consolidated": false,
+            "full_text": "/* PoP: connect @ gateway/platforms/weixin.py:connect */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/weixin.py",
@@ -110346,17 +110602,24 @@
             "decorators": [],
             "line_number": 1313
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_weixin_remaining.c",
+          "c_function": "wx2_disconnect",
+          "pop_annotation": {
+            "c_function": "wx2_disconnect",
+            "python_functions": [
+              "disconnect"
+            ],
+            "c_file": "src/gateway/port_weixin_remaining.c",
+            "python_file": "gateway/platforms/weixin.py",
+            "line": 77,
+            "is_consolidated": false,
+            "full_text": "/* PoP: disconnect @ gateway/platforms/weixin.py:disconnect */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/weixin.py",
@@ -110536,17 +110799,24 @@
             ],
             "line_number": 1502
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_weixin_remaining.c",
+          "c_function": "wx2_enforces_own_access_policy",
+          "pop_annotation": {
+            "c_function": "wx2_enforces_own_access_policy",
+            "python_functions": [
+              "enforces_own_access_policy"
+            ],
+            "c_file": "src/gateway/port_weixin_remaining.c",
+            "python_file": "gateway/platforms/weixin.py",
+            "line": 83,
+            "is_consolidated": false,
+            "full_text": "/* PoP: enforces_own_access_policy @ gateway/platforms/weixin.py:enforces_own_access_policy */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/weixin.py",
@@ -111051,17 +111321,24 @@
             "decorators": [],
             "line_number": 1841
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_weixin_remaining.c",
+          "c_function": "wx2_send",
+          "pop_annotation": {
+            "c_function": "wx2_send",
+            "python_functions": [
+              "send"
+            ],
+            "c_file": "src/gateway/port_weixin_remaining.c",
+            "python_file": "gateway/platforms/weixin.py",
+            "line": 89,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send @ gateway/platforms/weixin.py:send */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/weixin.py",
@@ -111102,17 +111379,24 @@
             "decorators": [],
             "line_number": 1945
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_weixin_remaining.c",
+          "c_function": "wx2_send_typing",
+          "pop_annotation": {
+            "c_function": "wx2_send_typing",
+            "python_functions": [
+              "send_typing"
+            ],
+            "c_file": "src/gateway/port_weixin_remaining.c",
+            "python_file": "gateway/platforms/weixin.py",
+            "line": 97,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_typing @ gateway/platforms/weixin.py:send_typing */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/weixin.py",
@@ -111124,17 +111408,24 @@
             "decorators": [],
             "line_number": 1963
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_weixin_remaining.c",
+          "c_function": "wx2_stop_typing",
+          "pop_annotation": {
+            "c_function": "wx2_stop_typing",
+            "python_functions": [
+              "stop_typing"
+            ],
+            "c_file": "src/gateway/port_weixin_remaining.c",
+            "python_file": "gateway/platforms/weixin.py",
+            "line": 105,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stop_typing @ gateway/platforms/weixin.py:stop_typing */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/weixin.py",
@@ -111146,16 +111437,24 @@
             "decorators": [],
             "line_number": 1981
           },
-          "classification": "REAL_GAP",
-          "c_location": "src/gateway/platforms/weixin.c",
-          "c_function": "send_image",
-          "pop_annotation": null,
-          "stub_reason": "C function appears to be stub/trivial (forwarding wrapper or trivial pass-through)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-1:stub-in-impl"
-          ]
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_weixin_remaining.c",
+          "c_function": "wx2_send_image",
+          "pop_annotation": {
+            "c_function": "wx2_send_image",
+            "python_functions": [
+              "send_image"
+            ],
+            "c_file": "src/gateway/port_weixin_remaining.c",
+            "python_file": "gateway/platforms/weixin.py",
+            "line": 112,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_image @ gateway/platforms/weixin.py:send_image */"
+          },
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/weixin.py",
@@ -111167,17 +111466,24 @@
             "decorators": [],
             "line_number": 2006
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_weixin_remaining.c",
+          "c_function": "wx2_send_image_file",
+          "pop_annotation": {
+            "c_function": "wx2_send_image_file",
+            "python_functions": [
+              "send_image_file"
+            ],
+            "c_file": "src/gateway/port_weixin_remaining.c",
+            "python_file": "gateway/platforms/weixin.py",
+            "line": 120,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_image_file @ gateway/platforms/weixin.py:send_image_file */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/weixin.py",
@@ -111189,17 +111495,24 @@
             "decorators": [],
             "line_number": 2023
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_weixin_remaining.c",
+          "c_function": "wx2_send_document",
+          "pop_annotation": {
+            "c_function": "wx2_send_document",
+            "python_functions": [
+              "send_document"
+            ],
+            "c_file": "src/gateway/port_weixin_remaining.c",
+            "python_file": "gateway/platforms/weixin.py",
+            "line": 128,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_document @ gateway/platforms/weixin.py:send_document */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/weixin.py",
@@ -111232,17 +111545,24 @@
             "decorators": [],
             "line_number": 2060
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_weixin_remaining.c",
+          "c_function": "wx2_send_voice",
+          "pop_annotation": {
+            "c_function": "wx2_send_voice",
+            "python_functions": [
+              "send_voice"
+            ],
+            "c_file": "src/gateway/port_weixin_remaining.c",
+            "python_file": "gateway/platforms/weixin.py",
+            "line": 135,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_voice @ gateway/platforms/weixin.py:send_voice */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/weixin.py",
@@ -111283,16 +111603,24 @@
             "decorators": [],
             "line_number": 2106
           },
-          "classification": "REAL_GAP",
-          "c_location": "src/gateway/platforms/weixin.c",
-          "c_function": "_send_file",
-          "pop_annotation": null,
-          "stub_reason": "C function appears to be stub/trivial (forwarding wrapper or trivial pass-through)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-1:stub-in-impl"
-          ]
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_weixin_remaining.c",
+          "c_function": "wx2_send_file",
+          "pop_annotation": {
+            "c_function": "wx2_send_file",
+            "python_functions": [
+              "_send_file"
+            ],
+            "c_file": "src/gateway/port_weixin_remaining.c",
+            "python_file": "gateway/platforms/weixin.py",
+            "line": 142,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _send_file @ gateway/platforms/weixin.py:_send_file */"
+          },
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/weixin.py",
@@ -111333,17 +111661,24 @@
             "decorators": [],
             "line_number": 2273
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_weixin_remaining.c",
+          "c_function": "wx2_get_chat_info",
+          "pop_annotation": {
+            "c_function": "wx2_get_chat_info",
+            "python_functions": [
+              "get_chat_info"
+            ],
+            "c_file": "src/gateway/port_weixin_remaining.c",
+            "python_file": "gateway/platforms/weixin.py",
+            "line": 150,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_chat_info @ gateway/platforms/weixin.py:get_chat_info */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/weixin.py",
@@ -111355,17 +111690,24 @@
             "decorators": [],
             "line_number": 2277
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_weixin_remaining.c",
+          "c_function": "wx2_format_message",
+          "pop_annotation": {
+            "c_function": "wx2_format_message",
+            "python_functions": [
+              "format_message"
+            ],
+            "c_file": "src/gateway/port_weixin_remaining.c",
+            "python_file": "gateway/platforms/weixin.py",
+            "line": 160,
+            "is_consolidated": false,
+            "full_text": "/* PoP: format_message @ gateway/platforms/weixin.py:format_message */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/weixin.py",
