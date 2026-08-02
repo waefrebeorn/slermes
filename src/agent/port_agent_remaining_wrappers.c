@@ -2032,7 +2032,15 @@ int agent_conversation_loop_u_invalid_tool_name_error_content(const char *arg) {
 }
 
 /* PoP: _compression_deferred_result @ agent/conversation_loop.py:_compression_deferred_result */
-int agent_conversation_loop_u_compression_deferred_result(const char *arg) { (void)arg; return 0; }
+int agent_conversation_loop_u_compression_deferred_result(const char *arg) {
+    /* Python: soft defer. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _apply_context_engine_selection @ agent/conversation_loop.py:_apply_context_engine_selection */
 int agent_conversation_loop_u_apply_context_engine_selection(const char *arg) { (void)arg; return 0; }

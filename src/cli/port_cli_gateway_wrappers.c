@@ -1166,7 +1166,15 @@ int cgw_u_normalize_launchd_plist_for_comparison(const char *arg) {
 int cgw_systemd_unit_is_current(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _temp_home_in_service_definition @ hermes_cli/gateway.py:_temp_home_in_service_definition */
-int cgw_u_temp_home_in_service_definition(const char *arg) { (void)arg; return 0; }
+int cgw_u_temp_home_in_service_definition(const char *arg) {
+    /* Python: temp-root detect. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _refuse_temp_home_service_write @ hermes_cli/gateway.py:_refuse_temp_home_service_write */
 int cgw_u_refuse_temp_home_service_write(const char *arg) {

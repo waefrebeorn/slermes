@@ -98,7 +98,29 @@ int nous_nous_portal_topup_url(const char *arg) {
 int nous_format_nous_portal_entitlement_message(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _no_paid_access_message @ hermes_cli/nous_account.py:_no_paid_access_message */
-int nous_u_no_paid_access_message(const char *arg) { (void)arg; return 0; }
+int nous_u_no_paid_access_message(const char *arg) {
+    /* Python: 4-case message. Arg = "case\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *case_ = arg;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (strcmp(case_, "exhausted") == 0) {
+        printf("Your Nous Portal credits are exhausted, so %s is unavailable. Top up or renew credits at %s.\n", t2 ? t2 + 1 : "?", "?");
+        return 0;
+    }
+    if (strcmp(case_, "no_paid") == 0) {
+        printf("Your current Nous Portal plan does not include paid service access, so %s is unavailable. Upgrade or add credits.\n", t2 ? t2 + 1 : "?");
+        return 0;
+    }
+    if (strcmp(case_, "no_sub") == 0) {
+        printf("Your Nous Portal account has no active subscription or usable credits, so %s is unavailable. Subscribe or add credits.\n", t2 ? t2 + 1 : "?");
+        return 0;
+    }
+    printf("Your Nous Portal account has no usable paid credits, so %s is unavailable. Add credits or update billing.\n", t2 ? t2 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _credit_detail @ hermes_cli/nous_account.py:_credit_detail */
 int nous_u_credit_detail(const char *arg) {
@@ -128,7 +150,18 @@ int nous_reset_nous_portal_account_info_cache(const char *arg) {
 }
 
 /* PoP: _fresh_account_info @ hermes_cli/nous_account.py:_fresh_account_info */
-int nous_u_fresh_account_info(const char *arg) { (void)arg; return 0; }
+int nous_u_fresh_account_info(const char *arg) {
+    /* Python: TTL cache. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "empty") == 0 || strcmp(state, "error") == 0) {
+        printf("{\"logged_in\": true, \"error\": \"%s\"}\n", tab ? tab + 1 : "?");
+        return 0;
+    }
+    printf("%s\n", tab ? tab + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _info_from_inference_key_pool @ hermes_cli/nous_account.py:_info_from_inference_key_pool */
 int nous_u_info_from_inference_key_pool(const char *arg) {

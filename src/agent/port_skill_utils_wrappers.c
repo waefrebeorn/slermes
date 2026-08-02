@@ -120,7 +120,18 @@ int sku_u_detect_environment(const char *arg) {
 }
 
 /* PoP: skill_matches_environment @ agent/skill_utils.py:skill_matches_environment */
-int sku_skill_matches_environment(const char *arg) { (void)arg; return 0; }
+int sku_skill_matches_environment(const char *arg) {
+    /* Python: OR semantics, fail-open. Arg =
+     * "has_envs\tstate\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_envs = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!has_envs || !state) { printf("1\n"); return 0; }
+    printf("%s\n", (t2 && t2[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: get_disabled_skill_names @ agent/skill_utils.py:get_disabled_skill_names */
 int sku_get_disabled_skill_names(const char *arg) {

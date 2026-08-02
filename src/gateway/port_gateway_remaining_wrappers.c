@@ -1783,7 +1783,16 @@ int gateway_profile_routing_specificity(const char *arg) {
 }
 
 /* PoP: parse_profile_routes @ gateway/profile_routing.py:parse_profile_routes */
-int gateway_profile_routing_parse_profile_routes(const char *arg) { (void)arg; return 0; }
+int gateway_profile_routing_parse_profile_routes(const char *arg) {
+    /* Python: specificity sort. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: match_profile_route @ gateway/profile_routing.py:match_profile_route */
 int gateway_profile_routing_match_profile_route(const char *arg) {

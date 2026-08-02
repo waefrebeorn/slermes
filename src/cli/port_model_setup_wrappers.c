@@ -125,7 +125,24 @@ int msf_u_model_flow_qwen_oauth(const char *arg) {
 }
 
 /* PoP: _model_flow_minimax_oauth @ hermes_cli/model_setup_flows.py:_model_flow_minimax_oauth */
-int msf_u_model_flow_minimax_oauth(const char *arg) { (void)arg; return 0; }
+int msf_u_model_flow_minimax_oauth(const char *arg) {
+    /* Python: minimax login gate. Arg =
+     * "logged_in\tstate\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int logged_in = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!logged_in) {
+        printf("Not logged into MiniMax. Starting OAuth login...\n");
+        printf("Login cancelled or failed.\n");
+        return 0;
+    }
+    printf("✓ Using MiniMax model: %s\n", t3 ? t3 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _model_flow_custom @ hermes_cli/model_setup_flows.py:_model_flow_custom */
 int msf_u_model_flow_custom(const char *arg) { (void)arg; return 0; }

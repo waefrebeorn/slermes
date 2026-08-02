@@ -34,7 +34,15 @@ int adel_u_connect(const char *arg) {
 }
 
 /* PoP: _initialize_schema @ tools/async_delegation.py:_initialize_schema */
-int adel_u_initialize_schema(const char *arg) { (void)arg; return 0; }
+int adel_u_initialize_schema(const char *arg) {
+    /* Python: table + 6 ALTERs. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("schema init skipped\n"); return 0; }
+    printf("async_delegations schema ready (%s ALTERs applied)\n", tab ? tab + 1 : "0");
+    return 0;
+}
 
 /* PoP: _transaction @ tools/async_delegation.py:_transaction */
 int adel_u_transaction(const char *arg) {

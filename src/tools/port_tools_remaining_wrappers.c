@@ -91,7 +91,25 @@ int tools_computer_use_tool_set_value(const char *arg) {
 }
 
 /* PoP: _request_approval @ tools/computer_use/tool.py:_request_approval */
-int tools_computer_use_tool_u_request_approval(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_tool_u_request_approval(const char *arg) {
+    /* Python: scoped approval. Arg =
+     * "auto_approved\tcb_none\tverdict\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int auto_approved = arg[0] == '1';
+    int cb_none = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    const char *verdict = t3 ? t3 + 1 : "";
+    if (!state) { printf("\n"); return 0; }
+    if (auto_approved || cb_none) { printf("\n"); return 0; }
+    if (strcmp(verdict, "approve_once") == 0) { printf("\n"); return 0; }
+    if (strcmp(verdict, "approve_session") == 0 || strcmp(verdict, "always_approve") == 0) { printf("\n"); return 0; }
+    printf("{\"error\": \"denied by user\", \"action\": \"%s\"}\n", t4 ? t4 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _summarize_action @ tools/computer_use/tool.py:_summarize_action */
 int tools_computer_use_tool_u_summarize_action(const char *arg) {
@@ -380,7 +398,15 @@ int tools_lazy_deps_active_features(const char *arg) {
 }
 
 /* PoP: refresh_active_features @ tools/lazy_deps.py:refresh_active_features */
-int tools_lazy_deps_refresh_active_features(const char *arg) { (void)arg; return 0; }
+int tools_lazy_deps_refresh_active_features(const char *arg) {
+    /* Python: status map. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "{}");
+    return 0;
+}
 
 /* PoP: ensure_and_bind @ tools/lazy_deps.py:ensure_and_bind */
 int tools_lazy_deps_ensure_and_bind(const char *arg) {

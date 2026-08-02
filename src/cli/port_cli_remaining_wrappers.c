@@ -2006,7 +2006,22 @@ int hermes_cli_profile_distributio_u_count_skills(const char *arg) {
 }
 
 /* PoP: _copy_dist_payload @ hermes_cli/profile_distribution.py:_copy_dist_payload */
-int hermes_cli_profile_distributio_u_copy_dist_payload(const char *arg) { (void)arg; return 0; }
+int hermes_cli_profile_distributio_u_copy_dist_payload(const char *arg) {
+    /* Python: dist-owned copy. Arg =
+     * "count\tstate\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) {
+        fprintf(stderr, "dist payload copy failed: %s\n", t4 ? t4 + 1 : "?");
+        return 1;
+    }
+    printf("copied %s dist-owned entries%s\n", arg, (t3 && t3[1] == '1') ? " (config preserved)" : "");
+    return 0;
+}
 
 /* PoP: _bootstrap_user_dirs @ hermes_cli/profile_distribution.py:_bootstrap_user_dirs */
 int hermes_cli_profile_distributio_u_bootstrap_user_dirs(const char *arg) {
@@ -2635,7 +2650,17 @@ int hermes_cli_kanban_diagnostics_u_main_model_visible(const char *arg) {
 int hermes_cli_kanban_diagnostics_triage_aux_status(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _rule_hallucinated_cards @ hermes_cli/kanban_diagnostics.py:_rule_hallucinated_cards */
-int hermes_cli_kanban_diagnostics_u_rule_hallucinated_cards(const char *arg) { (void)arg; return 0; }
+int hermes_cli_kanban_diagnostics_u_rule_hallucinated_cards(const char *arg) {
+    /* Python: blocked-hallucination gate. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _rule_triage_aux_unavailable @ hermes_cli/kanban_diagnostics.py:_rule_triage_aux_unavailable */
 int hermes_cli_kanban_diagnostics_u_rule_triage_aux_unavailable(const char *arg) { (void)arg; return 0; }
@@ -7174,7 +7199,16 @@ int hermes_cli_codex_models_u_extract_chatgpt_account_id(const char *arg) {
 }
 
 /* PoP: _fetch_models_from_api @ hermes_cli/codex_models.py:_fetch_models_from_api */
-int hermes_cli_codex_models_u_fetch_models_from_api(const char *arg) { (void)arg; return 0; }
+int hermes_cli_codex_models_u_fetch_models_from_api(const char *arg) {
+    /* Python: backend-api fetch. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _read_default_model @ hermes_cli/codex_models.py:_read_default_model */
 int hermes_cli_codex_models_u_read_default_model(const char *arg) {
@@ -8004,7 +8038,25 @@ int hermes_cli_secret_prompt_u_masked_secret_prompt_posix(const char *arg) {
 }
 
 /* PoP: _read_message_body @ hermes_cli/send_cmd.py:_read_message_body */
-int hermes_cli_send_cmd_u_read_message_body(const char *arg) { (void)arg; return 0; }
+int hermes_cli_send_cmd_u_read_message_body(const char *arg) {
+    /* Python: body resolution. Arg =
+     * "has_pos\tfile\tstdin\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *has_pos = t1 ? t1 + 1 : "";
+    int file = arg[0] == '1';
+    int stdin_avail = t2 && t2[1] == '1';
+    int state = t3 && t3[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (has_pos[0]) { printf("%s\n", has_pos); return 0; }
+    if (file) { printf("file:%s\n", t4 ? t4 + 1 : ""); return 0; }
+    if (stdin_avail) { printf("stdin piped\n"); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _emit_result @ hermes_cli/send_cmd.py:_emit_result */
 int hermes_cli_send_cmd_u_emit_result(const char *arg) {

@@ -523,7 +523,28 @@ int main_u_sync_bundled_skills_quietly(const char *arg) {
 }
 
 /* PoP: _resolve_use_tui @ hermes_cli/main.py:_resolve_use_tui */
-int main_u_resolve_use_tui(const char *arg) { (void)arg; return 0; }
+int main_u_resolve_use_tui(const char *arg) {
+    /* Python: TUI decision ladder. Arg =
+     * "cli_flag\ttui_flag\ttty\tenv_tui\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *t5 = t4 ? strchr(t4 + 1, '\t') : NULL;
+    int cli_flag = arg[0] == '1';
+    int tui_flag = t1 && t1[1] == '1';
+    int tty = t2 && t2[1] == '1';
+    int env_tui = t3 && t3[1] == '1';
+    int state = t4 && t4[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (cli_flag) { printf("0\n"); return 0; }
+    if (tui_flag) { printf("1\n"); return 0; }
+    if (!tty) { printf("0\n"); return 0; }
+    if (env_tui) { printf("1\n"); return 0; }
+    printf("%s\n", (t5 && t5[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: cmd_chat @ hermes_cli/main.py:cmd_chat */
 int main_cmd_chat(const char *arg) { (void)arg; return 0; }

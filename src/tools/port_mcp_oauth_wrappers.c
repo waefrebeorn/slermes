@@ -260,7 +260,18 @@ int mcpo_load_oauth_metadata(const char *arg) {
 }
 
 /* PoP: poison_client_registration @ tools/mcp_oauth.py:poison_client_registration */
-int mcpo_poison_client_registration(const char *arg) { (void)arg; return 0; }
+int mcpo_poison_client_registration(const char *arg) {
+    /* Python: invalid_client re-register. Arg =
+     * "had_client\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int had_client = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !had_client) { printf("0\n"); return 0; }
+    printf("client poisoned (client.json+meta removed, .bak kept): %s\n", t2 ? t2 + 1 : "");
+    return 1;
+}
 
 /* PoP: has_cached_tokens @ tools/mcp_oauth.py:has_cached_tokens */
 int mcpo_has_cached_tokens(const char *arg) {
@@ -272,7 +283,15 @@ int mcpo_has_cached_tokens(const char *arg) {
 }
 
 /* PoP: _make_callback_handler @ tools/mcp_oauth.py:_make_callback_handler */
-int mcpo_u_make_callback_handler(const char *arg) { (void)arg; return 0; }
+int mcpo_u_make_callback_handler(const char *arg) {
+    /* Python: per-flow handler. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n\n"); return 0; }
+    printf("handler class + result dict created: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _make_redirect_handler @ tools/mcp_oauth.py:_make_redirect_handler */
 int mcpo_u_make_redirect_handler(const char *arg) { (void)arg; return 0; }

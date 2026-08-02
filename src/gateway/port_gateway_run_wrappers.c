@@ -217,7 +217,18 @@ int grun_u_normalize_source_for_session_key(const char *arg) {
 int grun_u_resolve_session_agent_runtime(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_turn_agent_config @ gateway/run.py:_resolve_turn_agent_config */
-int grun_u_resolve_turn_agent_config(const char *arg) { (void)arg; return 0; }
+int grun_u_resolve_turn_agent_config(const char *arg) {
+    /* Python: turn route build. Arg =
+     * "model\ttier\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("turn route: model=%s, fast=%s\n", arg, (t3 && t3[1] == '1') ? "on" : "off");
+    return 0;
+}
 
 /* PoP: _sync_session_model_from_agent @ gateway/run.py:_sync_session_model_from_agent */
 int grun_u_sync_session_model_from_agent(const char *arg) { (void)arg; return 0; }

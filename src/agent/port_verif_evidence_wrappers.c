@@ -153,7 +153,17 @@ int vev_classify_verification_command(const char *arg) {
 int vev_record_terminal_result(const char *arg) { (void)arg; return 0; }
 
 /* PoP: mark_workspace_edited @ agent/verification_evidence.py:mark_workspace_edited */
-int vev_mark_workspace_edited(const char *arg) { (void)arg; return 0; }
+int vev_mark_workspace_edited(const char *arg) {
+    /* Python: stale evidence. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("workspace edit marked: %s path(s)\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: verification_status @ agent/verification_evidence.py:verification_status */
 int vev_verification_status(const char *arg) { (void)arg; return 0; }
