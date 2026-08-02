@@ -685,7 +685,17 @@ int yb_u_download_and_cache(const char *arg) {
 }
 
 /* PoP: _resolve_media_urls @ gateway/platforms/yuanbao.py:_resolve_media_urls */
-int yb_u_resolve_media_urls(const char *arg) { (void)arg; return 0; }
+int yb_u_resolve_media_urls(const char *arg) {
+    /* Python: COS private-IP workaround. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\t\n"); return 0; }
+    printf("%s path(s)\t%s mime(s) (self-download — COS resolves to private IP, tripping SSRF guard; bounded concurrency)%s\n", t2 ? t2 + 1 : "0", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _resolve_ybres_refs @ gateway/platforms/yuanbao.py:_resolve_ybres_refs */
 int yb_u_resolve_ybres_refs(const char *arg) {

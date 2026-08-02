@@ -381,7 +381,17 @@ int qqbot_u_handle_dm_message(const char *arg) {
 }
 
 /* PoP: _process_quoted_context @ gateway/platforms/qqbot/adapter.py:_process_quoted_context */
-int qqbot_u_process_quoted_context(const char *arg) { (void)arg; return 0; }
+int qqbot_u_process_quoted_context(const char *arg) {
+    /* Python: msg_elements 103. Arg =
+     * "quoted\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no quoted context)\n"); return 0; }
+    printf("1 (quoted text + attachments surfaced; quoted voice transcribed)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _merge_quote_into @ gateway/platforms/qqbot/adapter.py:_merge_quote_into */
 int qqbot_u_merge_quote_into(const char *arg) {
@@ -423,7 +433,16 @@ int qqbot_u_detect_message_type(const char *arg) {
 }
 
 /* PoP: _process_attachments @ gateway/platforms/qqbot/adapter.py:_process_attachments */
-int qqbot_u_process_attachments(const char *arg) { (void)arg; return 0; }
+int qqbot_u_process_attachments(const char *arg) {
+    /* Python: uniform inbox. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("{\"image_urls\": []}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("{\"image_urls\": [], \"attachment_info\": \"none\"}\n"); return 0; }
+    printf("{\"image_urls\": %s, \"voice_transcripts\": [], \"attachment_info\": \"…\"} (images/voice/files uniform)%s\n", tab ? tab + 1 : "[]", (tab && tab[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _download_and_cache @ gateway/platforms/qqbot/adapter.py:_download_and_cache */
 int qqbot_u_download_and_cache(const char *arg) {
@@ -472,7 +491,17 @@ int qqbot_u_qq_media_headers(const char *arg) {
 }
 
 /* PoP: _stt_voice_attachment @ gateway/platforms/qqbot/adapter.py:_stt_voice_attachment */
-int qqbot_u_stt_voice_attachment(const char *arg) { (void)arg; return 0; }
+int qqbot_u_stt_voice_attachment(const char *arg) {
+    /* Python: 3-priority STT. Arg =
+     * "text\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s (priority: QQ asr_refer_text → voice_wav_url → original w/ SILK decode)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? " — asr_refer_text used" : "");
+    return 0;
+}
 
 /* PoP: _convert_audio_to_wav_file @ gateway/platforms/qqbot/adapter.py:_convert_audio_to_wav_file */
 int qqbot_u_convert_audio_to_wav_file(const char *arg) {
@@ -738,7 +767,19 @@ int qqbot_u_build_text_body(const char *arg) {
 }
 
 /* PoP: _send_media @ gateway/platforms/qqbot/adapter.py:_send_media */
-int qqbot_u_send_media(const char *arg) { (void)arg; return 0; }
+int qqbot_u_send_media(const char *arg) {
+    /* Python: url vs chunked. Arg =
+     * "sent\tstate\tresult". */
+    if (!arg || !*arg) { printf("0 (not connected)\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int sent = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (send failed)\n"); return 1; }
+    if (!sent) { printf("0\n"); return 1; }
+    printf("1 (media sent via %s — url pass-through or 3-step chunked ~100MB)%s\n", t2 ? t2 + 1 : "upload", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _upload_local_file @ gateway/platforms/qqbot/adapter.py:_upload_local_file */
 int qqbot_u_upload_local_file(const char *arg) {

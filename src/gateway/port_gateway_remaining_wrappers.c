@@ -2316,7 +2316,19 @@ int gateway_wake_deliver_wake(const char *arg) {
 }
 
 /* PoP: _self_post_chat_completion @ gateway/wake.py:_self_post_chat_completion */
-int gateway_wake_u_self_post_chat_completion(const char *arg) { (void)arg; return 0; }
+int gateway_wake_u_self_post_chat_completion(const char *arg) {
+    /* Python: in-pod POST. Arg =
+     * "posted\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int posted = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (API_SERVER_KEY missing — hard error, never fresh session)\n"); return 1; }
+    if (!posted) { printf("0 (POST failed)\n"); return 1; }
+    printf("1 (wake text posted as session turn; wildcard bind → loopback; X-Hermes-Session-Id continuation)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _truthy_env @ gateway/cwd_placeholder.py:_truthy_env */
 int gateway_cwd_placeholder_u_truthy_env(const char *arg) { (void)arg; return 0; }

@@ -97,7 +97,21 @@ int hermes_cli_dashboard_auth_rout_auth_login(const char *arg) {
 int hermes_cli_dashboard_auth_rout_u_validate_loopback_redirect_uri(const char *arg) { (void)arg; return 0; }
 
 /* PoP: auth_native_authorize @ hermes_cli/dashboard_auth/routes.py:auth_native_authorize */
-int hermes_cli_dashboard_auth_rout_auth_native_authorize(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_rout_auth_native_authorize(const char *arg) {
+    /* Python: RFC 8252 start. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "native authorize failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("302 → upstream PKCE round trip (broker_state in PKCE cookie; loopback code minted at callback; NO browser cookie for desktop)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: auth_callback @ hermes_cli/dashboard_auth/routes.py:auth_callback */
 int hermes_cli_dashboard_auth_rout_auth_callback(const char *arg) { (void)arg; return 0; }

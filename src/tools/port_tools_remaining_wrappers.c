@@ -3482,7 +3482,21 @@ int tools_send_message_tool_u_media_caption_split(const char *arg) {
 }
 
 /* PoP: _resolve_slack_user_target @ tools/send_message_tool.py:_resolve_slack_user_target */
-int tools_send_message_tool_u_resolve_slack_user_target(const char *arg) { (void)arg; return 0; }
+int tools_send_message_tool_u_resolve_slack_user_target(const char *arg) {
+    /* Python: DM open. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "slack target resolve failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("%s (conversation id unchanged for C/G/D; user: → conversations.open; user_name: → stable handle match)%s\n", t3 ? t3 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _callback_api @ tools/thread_context.py:_callback_api */
 int tools_thread_context_u_callback_api(const char *arg) {

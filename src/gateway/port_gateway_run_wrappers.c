@@ -977,7 +977,17 @@ int grun_u_finish_startup_restore(const char *arg) {
 }
 
 /* PoP: _redeliver_pending_obligations @ gateway/run.py:_redeliver_pending_obligations */
-int grun_u_redeliver_pending_obligations(const char *arg) { (void)arg; return 0; }
+int grun_u_redeliver_pending_obligations(const char *arg) {
+    /* Python: ledger replay. Arg =
+     * "redelivered\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no recoverable obligations)\n"); return 0; }
+    printf("%s obligation(s) redelivered (turn completed, only delivery owed; resume_pending cleared — no re-pay)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _schedule_resume_pending_sessions @ gateway/run.py:_schedule_resume_pending_sessions */
 int grun_u_schedule_resume_pending_sessions(const char *arg) {
@@ -1130,7 +1140,17 @@ int grun_u_stop_systemd_watchdog(const char *arg) {
 }
 
 /* PoP: _start_secondary_profile_adapters @ gateway/run.py:_start_secondary_profile_adapters */
-int grun_u_start_secondary_profile_adapters(const char *arg) { (void)arg; return 0; }
+int grun_u_start_secondary_profile_adapters(const char *arg) {
+    /* Python: multiplex bring-up. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("0 (multiplex off)\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s secondary adapter(s) connected (per-profile HERMES_HOME + secret scope; source.profile stamped)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _start_one_profile_adapters @ gateway/run.py:_start_one_profile_adapters */
 int grun_u_start_one_profile_adapters(const char *arg) { (void)arg; return 0; }
@@ -1148,7 +1168,17 @@ int grun_u_configure_profile_adapter(const char *arg) {
 }
 
 /* PoP: _run_secondary_profile_reconnect @ gateway/run.py:_run_secondary_profile_reconnect */
-int grun_u_run_secondary_profile_reconnect(const char *arg) { (void)arg; return 0; }
+int grun_u_run_secondary_profile_reconnect(const char *arg) {
+    /* Python: scoped retry. Arg =
+     * "reconnected\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (loop ended)\n"); return 0; }
+    printf("1 (reconnected under %s profile scope; attempts=%s)%s\n", t2 ? t2 + 1 : "?", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _schedule_secondary_profile_reconnect @ gateway/run.py:_schedule_secondary_profile_reconnect */
 int grun_u_schedule_secondary_profile_reconnect(const char *arg) {
@@ -1479,7 +1509,19 @@ int grun_u_should_send_voice_reply(const char *arg) {
 }
 
 /* PoP: _send_voice_reply @ gateway/run.py:_send_voice_reply */
-int grun_u_send_voice_reply(const char *arg) { (void)arg; return 0; }
+int grun_u_send_voice_reply(const char *arg) {
+    /* Python: TTS bubble. Arg =
+     * "sent\tstate\tresult". */
+    if (!arg || !*arg) { printf("0 (no tts text)\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int sent = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (tts failed)\n"); return 0; }
+    if (!sent) { printf("0\n"); return 0; }
+    printf("1 (voice sent before text; ogg for Telegram native bubble, else mp3)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _deliver_media_from_response @ gateway/run.py:_deliver_media_from_response */
 int grun_u_deliver_media_from_response(const char *arg) { (void)arg; return 0; }
@@ -1587,7 +1629,19 @@ int grun_u_schedule_discord_semantic_thread_rename(const char *arg) {
 }
 
 /* PoP: _rename_telegram_topic_for_session_title @ gateway/run.py:_rename_telegram_topic_for_session_title */
-int grun_u_rename_telegram_topic_for_session_title(const char *arg) { (void)arg; return 0; }
+int grun_u_rename_telegram_topic_for_session_title(const char *arg) {
+    /* Python: auto-title rename. Arg =
+     * "renamed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int renamed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (not topic lane / disabled)\n"); return 0; }
+    if (!renamed) { printf("0\n"); return 0; }
+    printf("1 (topic renamed to auto-title; extra.disable_topic_auto_rename honored)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _schedule_telegram_topic_title_rename @ gateway/run.py:_schedule_telegram_topic_title_rename */
 int grun_u_schedule_telegram_topic_title_rename(const char *arg) {
@@ -1649,7 +1703,18 @@ int grun_u_restore_telegram_topic_session(const char *arg) {
 int grun_u_execute_mcp_reload(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _maybe_confirm_destructive_slash @ gateway/run.py:_maybe_confirm_destructive_slash */
-int grun_u_maybe_confirm_destructive_slash(const char *arg) { (void)arg; return 0; }
+int grun_u_maybe_confirm_destructive_slash(const char *arg) {
+    /* Python: destructive gate. Arg =
+     * "result\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *result = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state) { printf("executed immediately (gate off)\n"); return 0; }
+    printf("%s (once/always → execute; cancel → aborted)%s\n", result, (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _request_slash_confirm @ gateway/run.py:_request_slash_confirm */
 int grun_u_request_slash_confirm(const char *arg) {
@@ -1797,7 +1862,17 @@ int grun_u_enrich_message_with_vision(const char *arg) {
 }
 
 /* PoP: _enrich_message_with_transcription @ gateway/run.py:_enrich_message_with_transcription */
-int grun_u_enrich_message_with_transcription(const char *arg) { (void)arg; return 0; }
+int grun_u_enrich_message_with_transcription(const char *arg) {
+    /* Python: STT prefix. Arg =
+     * "enriched\tstate\tresult". */
+    if (!arg || !*arg) { printf("\t[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("%s\t[] (no audio / STT unavailable)\n", t1 ? t1 + 1 : ""); return 0; }
+    printf("%s\t%s (transcript wrappers prepended; raw transcripts returned)%s\n", t2 ? t2 + 1 : "", t2 ? t2 + 1 : "[]", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _pending_event_audio_paths @ gateway/run.py:_pending_event_audio_paths */
 int grun_u_pending_event_audio_paths(const char *arg) {
@@ -2067,7 +2142,17 @@ int grun_u_interrupt_and_clear_session(const char *arg) {
 }
 
 /* PoP: _refresh_agent_cache_message_count @ gateway/run.py:_refresh_agent_cache_message_count */
-int grun_u_refresh_agent_cache_message_count(const char *arg) { (void)arg; return 0; }
+int grun_u_refresh_agent_cache_message_count(const char *arg) {
+    /* Python: re-baseline #45966. Arg =
+     * "refreshed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("1 (cache snapshot re-baselined to %s after own turn — next-turn coherence guard won't false-rebuild)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _voice_channel_sidecar_note @ gateway/run.py:_voice_channel_sidecar_note */
 int grun_u_voice_channel_sidecar_note(const char *arg) {

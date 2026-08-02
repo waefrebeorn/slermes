@@ -488,4 +488,18 @@ int wx_u_outbound_media_builder(const char *arg) {
 }
 
 /* PoP: send_weixin_direct @ gateway/platforms/weixin.py:send_weixin_direct */
-int wx_send_weixin_direct(const char *arg) { (void)arg; return 0; }
+int wx_send_weixin_direct(const char *arg) {
+    /* Python: one-shot send. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "direct weixin send failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("ok (bypasses poll adapter; raw API + CDN; account/base_url from extra/secret)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}

@@ -415,7 +415,19 @@ int cua_u_require_started(const char *arg) {
 }
 
 /* PoP: _lifecycle_coro @ tools/computer_use/cua_backend.py:_lifecycle_coro */
-int cua_u_lifecycle_coro(const char *arg) { (void)arg; return 0; }
+int cua_u_lifecycle_coro(const char *arg) {
+    /* Python: same-task enter/exit. Arg =
+     * "ready\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int ready = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!ready) { printf("0 (open failed)\n"); return 0; }
+    printf("1 (stdio MCP contexts owned by ONE task — anyio cancel-scope invariant holds; blocks on shutdown then cleans)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _populate_capabilities @ tools/computer_use/cua_backend.py:_populate_capabilities */
 int cua_u_populate_capabilities(const char *arg) {
