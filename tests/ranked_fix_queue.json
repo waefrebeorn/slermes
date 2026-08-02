@@ -1,8 +1,8 @@
 {
- "total": 3084,
+ "total": 3078,
  "by_cat": {
   "A": 22,
-  "Bt": 133,
+  "Bt": 127,
   "Bx": 1022,
   "C": 1907
  },
@@ -41,7 +41,7 @@
   "agent/memory_provider.py": 8,
   "agent/moa_loop.py": 31,
   "agent/moa_trace.py": 3,
-  "agent/model_metadata.py": 16,
+  "agent/model_metadata.py": 15,
   "agent/moonshot_schema.py": 1,
   "agent/oneshot.py": 3,
   "agent/pet/generate/atlas.py": 16,
@@ -123,7 +123,7 @@
   "gateway/run.py": 181,
   "gateway/session.py": 1,
   "gateway/session_context.py": 1,
-  "gateway/shutdown_watchdog.py": 14,
+  "gateway/shutdown_watchdog.py": 13,
   "gateway/slash_commands.py": 1,
   "gateway/status.py": 19,
   "gateway/status_phrases.py": 12,
@@ -177,7 +177,7 @@
   "hermes_cli/env_loader.py": 12,
   "hermes_cli/fallback_cmd.py": 6,
   "hermes_cli/fallback_config.py": 2,
-  "hermes_cli/gateway.py": 140,
+  "hermes_cli/gateway.py": 139,
   "hermes_cli/gateway_enroll.py": 5,
   "hermes_cli/gateway_windows.py": 47,
   "hermes_cli/goals.py": 5,
@@ -187,7 +187,7 @@
   "hermes_cli/kanban_db.py": 24,
   "hermes_cli/kanban_diagnostics.py": 13,
   "hermes_cli/kanban_specify.py": 1,
-  "hermes_cli/main.py": 207,
+  "hermes_cli/main.py": 206,
   "hermes_cli/managed_scope.py": 6,
   "hermes_cli/managed_uv.py": 24,
   "hermes_cli/mcp_catalog.py": 15,
@@ -201,7 +201,7 @@
   "hermes_cli/moa_config.py": 4,
   "hermes_cli/model_catalog.py": 12,
   "hermes_cli/model_setup_flows.py": 24,
-  "hermes_cli/model_switch.py": 18,
+  "hermes_cli/model_switch.py": 17,
   "hermes_cli/nous_account.py": 19,
   "hermes_cli/nous_auth_keepalive.py": 7,
   "hermes_cli/nous_billing.py": 7,
@@ -319,7 +319,7 @@
   "tools/daemon_pool.py": 1,
   "tools/debug_helpers.py": 1,
   "tools/delegate_tool.py": 13,
-  "tools/delegation_live_log.py": 15,
+  "tools/delegation_live_log.py": 14,
   "tools/desktop_ui.py": 1,
   "tools/discord_tool.py": 1,
   "tools/env_probe.py": 4,
@@ -599,14 +599,6 @@
   },
   {
    "module": "hermes_cli/main.py",
-   "py": "_count_commits_between",
-   "c": "main_u_count_commits_between",
-   "file": "src/cli/port_main_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/main.py",
    "py": "_has_upstream_remote",
    "c": "main_u_has_upstream_remote",
    "file": "src/cli/port_main_wrappers.c",
@@ -674,14 +666,6 @@
    "py": "_write_lazy_refresh_incomplete_marker",
    "c": "main_u_write_lazy_refresh_incomplete_marker",
    "file": "src/cli/port_main_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/gateway.py",
-   "py": "_launchctl_label_registered",
-   "c": "cgw_u_launchctl_label_registered",
-   "file": "src/cli/port_cli_gateway_wrappers.c",
    "cat": "Bt",
    "candidates": []
   },
@@ -790,14 +774,6 @@
    "candidates": []
   },
   {
-   "module": "hermes_cli/model_switch.py",
-   "py": "format_model_for_display",
-   "c": "msw_format_model_for_display",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
    "module": "hermes_cli/debug.py",
    "py": "_capture_default_log_snapshots",
    "c": "hermes_cli_debug_u_capture_default_log_snapshots",
@@ -810,14 +786,6 @@
    "py": "_strip_bearer_prefix",
    "c": "hermes_cli_mcp_config_u_strip_bearer_prefix",
    "file": "src/cli/port_cli_remaining_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "agent/model_metadata.py",
-   "py": "_localhost_to_ipv4",
-   "c": "agent_model_metadata_u_localhost_to_ipv4",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
    "cat": "Bt",
    "candidates": []
   },
@@ -878,14 +846,6 @@
    "candidates": []
   },
   {
-   "module": "tools/delegation_live_log.py",
-   "py": "_manifest_path",
-   "c": "tools_delegation_live_log_u_manifest_path",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
    "module": "tools/registry.py",
    "py": "_is_registry_register_call",
    "c": "tools_registry_u_is_registry_register_call",
@@ -930,14 +890,6 @@
    "py": "_stale_streak",
    "c": "agent_chat_completion_helpers_u_stale_streak",
    "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "gateway/shutdown_watchdog.py",
-   "py": "resolve_shutdown_watchdog_delay",
-   "c": "gateway_shutdown_watchdog_resolve_shutdown_watchdog_delay",
-   "file": "src/gateway/port_gateway_remaining_wrappers.c",
    "cat": "Bt",
    "candidates": []
   },
@@ -5262,78 +5214,6 @@
    "candidates": []
   },
   {
-   "module": "hermes_cli/model_switch.py",
-   "py": "_credential_pool_is_usable",
-   "c": "msw_u_credential_pool_is_usable",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "_extra_headers_from_config",
-   "c": "msw_u_extra_headers_from_config",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "_resolve_alias_fallback",
-   "c": "msw_u_resolve_alias_fallback",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "_resolve_named_custom_model_id",
-   "c": "msw_u_resolve_named_custom_model_id",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "_save_discovered_models_to_config",
-   "c": "msw_u_save_discovered_models_to_config",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "get_authenticated_provider_slugs",
-   "c": "msw_get_authenticated_provider_slugs",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "is_nous_hermes_non_agentic",
-   "c": "msw_is_nous_hermes_non_agentic",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "parse_model_flags_detailed",
-   "c": "msw_parse_model_flags_detailed",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "resolve_display_context_length",
-   "c": "msw_resolve_display_context_length",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
    "module": "hermes_cli/session_export_md.py",
    "py": "_export_body_without_hash",
    "c": "sexmd_u_export_body_without_hash",
@@ -5502,6 +5382,78 @@
    "candidates": []
   },
   {
+   "module": "hermes_cli/model_switch.py",
+   "py": "_credential_pool_is_usable",
+   "c": "msw_u_credential_pool_is_usable",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/model_switch.py",
+   "py": "_extra_headers_from_config",
+   "c": "msw_u_extra_headers_from_config",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/model_switch.py",
+   "py": "_resolve_alias_fallback",
+   "c": "msw_u_resolve_alias_fallback",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/model_switch.py",
+   "py": "_resolve_named_custom_model_id",
+   "c": "msw_u_resolve_named_custom_model_id",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/model_switch.py",
+   "py": "_save_discovered_models_to_config",
+   "c": "msw_u_save_discovered_models_to_config",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/model_switch.py",
+   "py": "get_authenticated_provider_slugs",
+   "c": "msw_get_authenticated_provider_slugs",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/model_switch.py",
+   "py": "is_nous_hermes_non_agentic",
+   "c": "msw_is_nous_hermes_non_agentic",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/model_switch.py",
+   "py": "parse_model_flags_detailed",
+   "c": "msw_parse_model_flags_detailed",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/model_switch.py",
+   "py": "resolve_display_context_length",
+   "c": "msw_resolve_display_context_length",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
    "module": "hermes_cli/nous_subscription.py",
    "py": "_browser_label",
    "c": "nsub_u_browser_label",
@@ -5570,86 +5522,6 @@
    "py": "get_gateway_eligible_tools",
    "c": "nsub_get_gateway_eligible_tools",
    "file": "src/cli/port_nous_sub_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/model_metadata.py",
-   "py": "_codex_oauth_token_fingerprint",
-   "c": "agent_model_metadata_u_codex_oauth_token_fingerprint",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/model_metadata.py",
-   "py": "_endpoint_scoped_context_length",
-   "c": "agent_model_metadata_u_endpoint_scoped_context_length",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/model_metadata.py",
-   "py": "_extract_chatgpt_account_id",
-   "c": "agent_model_metadata_u_extract_chatgpt_account_id",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/model_metadata.py",
-   "py": "_fetch_codex_oauth_context_lengths_with_source",
-   "c": "agent_model_metadata_u_fetch_codex_oauth_context_lengths_wit_ce",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/model_metadata.py",
-   "py": "_is_cjk_token_dense_char",
-   "c": "agent_model_metadata_u_is_cjk_token_dense_char",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/model_metadata.py",
-   "py": "_maybe_cache_local_context_length",
-   "c": "agent_model_metadata_u_maybe_cache_local_context_length",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/model_metadata.py",
-   "py": "_query_local_context_length_uncached",
-   "c": "agent_model_metadata_u_query_local_context_length_uncached",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/model_metadata.py",
-   "py": "_reconcile_local_cached_context_length",
-   "c": "agent_model_metadata_u_reconcile_local_cached_context_length",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/model_metadata.py",
-   "py": "_resolve_codex_oauth_context_length_with_source",
-   "c": "agent_model_metadata_u_resolve_codex_oauth_context_length_wi_ce",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/model_metadata.py",
-   "py": "_tool_name_for_cache",
-   "c": "agent_model_metadata_u_tool_name_for_cache",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
    "cat": "Bx",
    "candidates": []
   },
@@ -5754,6 +5626,86 @@
    "py": "_write_gateway_desired_state",
    "c": "hermes_cli_service_manager_u_write_gateway_desired_state",
    "file": "src/cli/port_cli_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/model_metadata.py",
+   "py": "_codex_oauth_token_fingerprint",
+   "c": "agent_model_metadata_u_codex_oauth_token_fingerprint",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/model_metadata.py",
+   "py": "_endpoint_scoped_context_length",
+   "c": "agent_model_metadata_u_endpoint_scoped_context_length",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/model_metadata.py",
+   "py": "_extract_chatgpt_account_id",
+   "c": "agent_model_metadata_u_extract_chatgpt_account_id",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/model_metadata.py",
+   "py": "_fetch_codex_oauth_context_lengths_with_source",
+   "c": "agent_model_metadata_u_fetch_codex_oauth_context_lengths_wit_ce",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/model_metadata.py",
+   "py": "_is_cjk_token_dense_char",
+   "c": "agent_model_metadata_u_is_cjk_token_dense_char",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/model_metadata.py",
+   "py": "_maybe_cache_local_context_length",
+   "c": "agent_model_metadata_u_maybe_cache_local_context_length",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/model_metadata.py",
+   "py": "_query_local_context_length_uncached",
+   "c": "agent_model_metadata_u_query_local_context_length_uncached",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/model_metadata.py",
+   "py": "_reconcile_local_cached_context_length",
+   "c": "agent_model_metadata_u_reconcile_local_cached_context_length",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/model_metadata.py",
+   "py": "_resolve_codex_oauth_context_length_with_source",
+   "c": "agent_model_metadata_u_resolve_codex_oauth_context_length_wi_ce",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/model_metadata.py",
+   "py": "_tool_name_for_cache",
+   "c": "agent_model_metadata_u_tool_name_for_cache",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
    "cat": "Bx",
    "candidates": []
   },
@@ -6014,30 +5966,6 @@
    "candidates": []
   },
   {
-   "module": "tools/delegation_live_log.py",
-   "py": "add_stream_delta",
-   "c": "tools_delegation_live_log_add_stream_delta",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/delegation_live_log.py",
-   "py": "marker",
-   "c": "agent_agent_init_u_codex_gpt55_autoraise_notice_marker",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/delegation_live_log.py",
-   "py": "update_manifest_statuses",
-   "c": "tools_delegation_live_log_update_manifest_statuses",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
    "module": "tools/lazy_deps.py",
    "py": "_activate_target_on_syspath",
    "c": "tools_lazy_deps_u_activate_target_on_syspath",
@@ -6218,46 +6146,6 @@
    "py": "_dispatch_nonstreaming_api_request",
    "c": "agent_chat_completion_helpers_u_dispatch_nonstreaming_api_re_st",
    "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "gateway/shutdown_watchdog.py",
-   "py": "_write_watchdog_dump",
-   "c": "gateway_shutdown_watchdog_u_write_watchdog_dump",
-   "file": "src/gateway/port_gateway_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "gateway/shutdown_watchdog.py",
-   "py": "get_loop_heartbeat_path",
-   "c": "gateway_shutdown_watchdog_get_loop_heartbeat_path",
-   "file": "src/gateway/port_gateway_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "gateway/shutdown_watchdog.py",
-   "py": "get_shutdown_watchdog_dump_path",
-   "c": "gateway_shutdown_watchdog_get_shutdown_watchdog_dump_path",
-   "file": "src/gateway/port_gateway_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "gateway/shutdown_watchdog.py",
-   "py": "is_alive",
-   "c": "gateway_shutdown_watchdog_is_alive",
-   "file": "src/gateway/port_gateway_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "gateway/shutdown_watchdog.py",
-   "py": "write_loop_heartbeat",
-   "c": "gateway_shutdown_watchdog_write_loop_heartbeat",
-   "file": "src/gateway/port_gateway_remaining_wrappers.c",
    "cat": "Bx",
    "candidates": []
   },
@@ -6462,6 +6350,30 @@
    "candidates": []
   },
   {
+   "module": "tools/delegation_live_log.py",
+   "py": "add_stream_delta",
+   "c": "tools_delegation_live_log_add_stream_delta",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/delegation_live_log.py",
+   "py": "marker",
+   "c": "agent_agent_init_u_codex_gpt55_autoraise_notice_marker",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/delegation_live_log.py",
+   "py": "update_manifest_statuses",
+   "c": "tools_delegation_live_log_update_manifest_statuses",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
    "module": "tools/homeassistant_tool.py",
    "py": "_async_get_state",
    "c": "tools_homeassistant_tool_u_async_get_state",
@@ -6562,6 +6474,46 @@
    "py": "_owner_is_live",
    "c": "cron_executions_u_owner_is_live",
    "file": "src/cli/port_other_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "gateway/shutdown_watchdog.py",
+   "py": "_write_watchdog_dump",
+   "c": "gateway_shutdown_watchdog_u_write_watchdog_dump",
+   "file": "src/gateway/port_gateway_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "gateway/shutdown_watchdog.py",
+   "py": "get_loop_heartbeat_path",
+   "c": "gateway_shutdown_watchdog_get_loop_heartbeat_path",
+   "file": "src/gateway/port_gateway_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "gateway/shutdown_watchdog.py",
+   "py": "get_shutdown_watchdog_dump_path",
+   "c": "gateway_shutdown_watchdog_get_shutdown_watchdog_dump_path",
+   "file": "src/gateway/port_gateway_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "gateway/shutdown_watchdog.py",
+   "py": "is_alive",
+   "c": "gateway_shutdown_watchdog_is_alive",
+   "file": "src/gateway/port_gateway_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "gateway/shutdown_watchdog.py",
+   "py": "write_loop_heartbeat",
+   "c": "gateway_shutdown_watchdog_write_loop_heartbeat",
+   "file": "src/gateway/port_gateway_remaining_wrappers.c",
    "cat": "Bx",
    "candidates": []
   },
@@ -17382,70 +17334,6 @@
    "candidates": []
   },
   {
-   "module": "hermes_cli/model_switch.py",
-   "py": "_bare_custom_provider_def",
-   "c": "msw_u_bare_custom_provider_def",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "_configured_provider_matches",
-   "c": "msw_u_configured_provider_matches",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "_declared_model_ids",
-   "c": "msw_u_declared_model_ids",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "_ensure_direct_aliases",
-   "c": "msw_u_ensure_direct_aliases",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "_load_direct_aliases",
-   "c": "msw_u_load_direct_aliases",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "_model_sort_key",
-   "c": "msw_u_model_sort_key",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "_prepend_moa_picker_provider",
-   "c": "msw_u_prepend_moa_picker_provider",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "prewarm_picker_cache_async",
-   "c": "msw_prewarm_picker_cache_async",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
    "module": "hermes_cli/session_export_md.py",
    "py": "_body_for_digest",
    "c": "sexmd_u_body_for_digest",
@@ -17822,6 +17710,70 @@
    "candidates": []
   },
   {
+   "module": "hermes_cli/model_switch.py",
+   "py": "_bare_custom_provider_def",
+   "c": "msw_u_bare_custom_provider_def",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/model_switch.py",
+   "py": "_configured_provider_matches",
+   "c": "msw_u_configured_provider_matches",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/model_switch.py",
+   "py": "_declared_model_ids",
+   "c": "msw_u_declared_model_ids",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/model_switch.py",
+   "py": "_ensure_direct_aliases",
+   "c": "msw_u_ensure_direct_aliases",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/model_switch.py",
+   "py": "_load_direct_aliases",
+   "c": "msw_u_load_direct_aliases",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/model_switch.py",
+   "py": "_model_sort_key",
+   "c": "msw_u_model_sort_key",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/model_switch.py",
+   "py": "_prepend_moa_picker_provider",
+   "c": "msw_u_prepend_moa_picker_provider",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/model_switch.py",
+   "py": "prewarm_picker_cache_async",
+   "c": "msw_prewarm_picker_cache_async",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
    "module": "hermes_cli/nous_subscription.py",
    "py": "_local_browser_runnable",
    "c": "nsub_u_local_browser_runnable",
@@ -17882,46 +17834,6 @@
    "py": "video_gen",
    "c": "nsub_video_gen",
    "file": "src/cli/port_nous_sub_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/model_metadata.py",
-   "py": "_context_cache_key",
-   "c": "agent_model_metadata_u_context_cache_key",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/model_metadata.py",
-   "py": "_estimate_message_tokens_without_images",
-   "c": "agent_model_metadata_u_estimate_message_tokens_without_images",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/model_metadata.py",
-   "py": "_estimate_tools_tokens_rough",
-   "c": "agent_model_metadata_u_estimate_tools_tokens_rough",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/model_metadata.py",
-   "py": "_query_ollama_api_show_uncached",
-   "c": "agent_model_metadata_u_query_ollama_api_show_uncached",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/model_metadata.py",
-   "py": "_skip_persistent_context_cache",
-   "c": "agent_model_metadata_u_skip_persistent_context_cache",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
    "cat": "C",
    "candidates": []
   },
@@ -18313,6 +18225,46 @@
    "module": "hermes_cli/service_manager.py",
    "py": "start",
    "c": "agent_memory_provider_on_turn_start",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/model_metadata.py",
+   "py": "_context_cache_key",
+   "c": "agent_model_metadata_u_context_cache_key",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/model_metadata.py",
+   "py": "_estimate_message_tokens_without_images",
+   "c": "agent_model_metadata_u_estimate_message_tokens_without_images",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/model_metadata.py",
+   "py": "_estimate_tools_tokens_rough",
+   "c": "agent_model_metadata_u_estimate_tools_tokens_rough",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/model_metadata.py",
+   "py": "_query_ollama_api_show_uncached",
+   "c": "agent_model_metadata_u_query_ollama_api_show_uncached",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/model_metadata.py",
+   "py": "_skip_persistent_context_cache",
+   "c": "agent_model_metadata_u_skip_persistent_context_cache",
    "file": "src/agent/port_agent_remaining_wrappers.c",
    "cat": "C",
    "candidates": []
@@ -18982,94 +18934,6 @@
    "candidates": []
   },
   {
-   "module": "tools/delegation_live_log.py",
-   "py": "_one_line",
-   "c": "tools_delegation_live_log_u_one_line",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/delegation_live_log.py",
-   "py": "assistant_text",
-   "c": "tools_delegation_live_log_assistant_text",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/delegation_live_log.py",
-   "py": "create_live_transcripts",
-   "c": "tools_delegation_live_log_create_live_transcripts",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/delegation_live_log.py",
-   "py": "event",
-   "c": "agent_agent_init_u_relay_moa_reference_event",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/delegation_live_log.py",
-   "py": "live_transcript_root",
-   "c": "tools_delegation_live_log_live_transcript_root",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/delegation_live_log.py",
-   "py": "new_live_delegation_id",
-   "c": "tools_delegation_live_log_new_live_delegation_id",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/delegation_live_log.py",
-   "py": "observe",
-   "c": "tools_delegation_live_log_observe",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/delegation_live_log.py",
-   "py": "prune_stale_live_dirs",
-   "c": "tools_delegation_live_log_prune_stale_live_dirs",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/delegation_live_log.py",
-   "py": "tool_result",
-   "c": "tools_delegation_live_log_tool_result",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/delegation_live_log.py",
-   "py": "tool_start",
-   "c": "tools_delegation_live_log_tool_start",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/delegation_live_log.py",
-   "py": "wrap_progress_callback",
-   "c": "tools_delegation_live_log_wrap_progress_callback",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
    "module": "tools/lazy_deps.py",
    "py": "_allow_lazy_installs",
    "c": "tools_lazy_deps_u_allow_lazy_installs",
@@ -19178,70 +19042,6 @@
    "py": "should_use_direct_api_call",
    "c": "agent_chat_completion_helpers_should_use_direct_api_call",
    "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "gateway/shutdown_watchdog.py",
-   "py": "_arm_loop_floor_timer",
-   "c": "gateway_shutdown_watchdog_u_arm_loop_floor_timer",
-   "file": "src/gateway/port_gateway_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "gateway/shutdown_watchdog.py",
-   "py": "_process_hermes_home",
-   "c": "gateway_shutdown_watchdog_u_process_hermes_home",
-   "file": "src/gateway/port_gateway_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "gateway/shutdown_watchdog.py",
-   "py": "_schedule",
-   "c": "gateway_shutdown_watchdog_u_schedule",
-   "file": "src/gateway/port_gateway_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "gateway/shutdown_watchdog.py",
-   "py": "_tick",
-   "c": "gateway_shutdown_watchdog_u_tick",
-   "file": "src/gateway/port_gateway_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "gateway/shutdown_watchdog.py",
-   "py": "arm_shutdown_watchdog",
-   "c": "gateway_shutdown_watchdog_arm_shutdown_watchdog",
-   "file": "src/gateway/port_gateway_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "gateway/shutdown_watchdog.py",
-   "py": "cancel",
-   "c": "hermes_cli_cli_billing_mixin_u_subscription_confirm_cancel",
-   "file": "src/cli/port_cli_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "gateway/shutdown_watchdog.py",
-   "py": "loop_heartbeat_forever",
-   "c": "gateway_shutdown_watchdog_loop_heartbeat_forever",
-   "file": "src/gateway/port_gateway_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "gateway/shutdown_watchdog.py",
-   "py": "start_loop_liveness_watchdog",
-   "c": "gateway_shutdown_watchdog_start_loop_liveness_watchdog",
-   "file": "src/gateway/port_gateway_remaining_wrappers.c",
    "cat": "C",
    "candidates": []
   },
@@ -19426,6 +19226,94 @@
    "py": "poll_pairing_result_once",
    "c": "hermes_cli_telegram_managed_bo_poll_pairing_result_once",
    "file": "src/cli/port_cli_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/delegation_live_log.py",
+   "py": "_one_line",
+   "c": "tools_delegation_live_log_u_one_line",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/delegation_live_log.py",
+   "py": "assistant_text",
+   "c": "tools_delegation_live_log_assistant_text",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/delegation_live_log.py",
+   "py": "create_live_transcripts",
+   "c": "tools_delegation_live_log_create_live_transcripts",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/delegation_live_log.py",
+   "py": "event",
+   "c": "agent_agent_init_u_relay_moa_reference_event",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/delegation_live_log.py",
+   "py": "live_transcript_root",
+   "c": "tools_delegation_live_log_live_transcript_root",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/delegation_live_log.py",
+   "py": "new_live_delegation_id",
+   "c": "tools_delegation_live_log_new_live_delegation_id",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/delegation_live_log.py",
+   "py": "observe",
+   "c": "tools_delegation_live_log_observe",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/delegation_live_log.py",
+   "py": "prune_stale_live_dirs",
+   "c": "tools_delegation_live_log_prune_stale_live_dirs",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/delegation_live_log.py",
+   "py": "tool_result",
+   "c": "tools_delegation_live_log_tool_result",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/delegation_live_log.py",
+   "py": "tool_start",
+   "c": "tools_delegation_live_log_tool_start",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/delegation_live_log.py",
+   "py": "wrap_progress_callback",
+   "c": "tools_delegation_live_log_wrap_progress_callback",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
    "cat": "C",
    "candidates": []
   },
@@ -19626,6 +19514,70 @@
    "py": "recover_interrupted_executions",
    "c": "cron_executions_recover_interrupted_executions",
    "file": "src/cli/port_other_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "gateway/shutdown_watchdog.py",
+   "py": "_arm_loop_floor_timer",
+   "c": "gateway_shutdown_watchdog_u_arm_loop_floor_timer",
+   "file": "src/gateway/port_gateway_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "gateway/shutdown_watchdog.py",
+   "py": "_process_hermes_home",
+   "c": "gateway_shutdown_watchdog_u_process_hermes_home",
+   "file": "src/gateway/port_gateway_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "gateway/shutdown_watchdog.py",
+   "py": "_schedule",
+   "c": "gateway_shutdown_watchdog_u_schedule",
+   "file": "src/gateway/port_gateway_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "gateway/shutdown_watchdog.py",
+   "py": "_tick",
+   "c": "gateway_shutdown_watchdog_u_tick",
+   "file": "src/gateway/port_gateway_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "gateway/shutdown_watchdog.py",
+   "py": "arm_shutdown_watchdog",
+   "c": "gateway_shutdown_watchdog_arm_shutdown_watchdog",
+   "file": "src/gateway/port_gateway_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "gateway/shutdown_watchdog.py",
+   "py": "cancel",
+   "c": "hermes_cli_cli_billing_mixin_u_subscription_confirm_cancel",
+   "file": "src/cli/port_cli_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "gateway/shutdown_watchdog.py",
+   "py": "loop_heartbeat_forever",
+   "c": "gateway_shutdown_watchdog_loop_heartbeat_forever",
+   "file": "src/gateway/port_gateway_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "gateway/shutdown_watchdog.py",
+   "py": "start_loop_liveness_watchdog",
+   "c": "gateway_shutdown_watchdog_start_loop_liveness_watchdog",
+   "file": "src/gateway/port_gateway_remaining_wrappers.c",
    "cat": "C",
    "candidates": []
   },
