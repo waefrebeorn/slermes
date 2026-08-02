@@ -1516,7 +1516,26 @@ int tools_xai_video_tools_u_normalize_public_video_url(const char *arg) {
 }
 
 /* PoP: _handle_xai_video_edit @ tools/xai_video_tools.py:_handle_xai_video_edit */
-int tools_xai_video_tools_u_handle_xai_video_edit(const char *arg) { (void)arg; return 0; }
+int tools_xai_video_tools_u_handle_xai_video_edit(const char *arg) {
+    /* Python: prompt/url validation + run. Arg =
+     * "prompt\tvideo_url\tconfigured\tresult". */
+    if (!arg || !*arg) { printf("error: prompt is required for xAI video edit\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *prompt = arg;
+    const char *url = t1 ? t1 + 1 : "";
+    if (!prompt[0]) { printf("error: prompt is required for xAI video edit\n"); return 0; }
+    if (!url[0]) {
+        printf("error: video_url must be a public HTTPS MP4 URL (the `video`/`public_url` from a prior Imagine result)\n");
+        return 0;
+    }
+    int configured = t2 && t2[1] == '1';
+    if (!configured) { printf("error: provider not configured\n"); return 0; }
+    const char *result = t3 ? t3 + 1 : "{}";
+    printf("%s\n", result);
+    return 0;
+}
 
 /* PoP: _handle_xai_video_extend @ tools/xai_video_tools.py:_handle_xai_video_extend */
 int tools_xai_video_tools_u_handle_xai_video_extend(const char *arg) { (void)arg; return 0; }

@@ -216,4 +216,12 @@ int envd_u_container_network_mode(const char *arg) { (void)arg; return 0; }
 int envd_u_find_reusable_container(const char *arg) { (void)arg; return 0; }
 
 /* PoP: wait_for_cleanup @ tools/environments/docker.py:wait_for_cleanup */
-int envd_wait_for_cleanup(const char *arg) { (void)arg; return 0; }
+int envd_wait_for_cleanup(const char *arg) {
+    /* Python: join cleanup thread. Arg = "alive\tjoined". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int alive = arg[0] == '1';
+    if (!alive) { printf("1\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}

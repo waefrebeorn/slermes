@@ -83,7 +83,12 @@ int hermes_cli_dashboard_auth_rout_auth_native_token(const char *arg) { (void)ar
 int hermes_cli_dashboard_auth_rout_auth_native_refresh(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _pending_file @ hermes_cli/debug.py:_pending_file */
-int hermes_cli_debug_u_pending_file(const char *arg) { (void)arg; return 0; }
+int hermes_cli_debug_u_pending_file(const char *arg) {
+    /* Python: HERMES_HOME/pastes/pending.json. Arg = hermes_home. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s/pastes/pending.json\n", arg);
+    return 0;
+}
 
 /* PoP: _best_effort_sweep_expired_pastes @ hermes_cli/debug.py:_best_effort_sweep_expired_pastes */
 int hermes_cli_debug_u_best_effort_sweep_expired_pastes(const char *arg) {
@@ -607,7 +612,15 @@ int hermes_cli_pets_u_clear_active_if(const char *arg) {
 int hermes_cli_pets_u_rename_active_if(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _interactive_pick @ hermes_cli/pets.py:_interactive_pick */
-int hermes_cli_pets_u_interactive_pick(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pets_u_interactive_pick(const char *arg) {
+    /* Python: numbered picker. Arg = "pets_json\tpicked". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *picked = t1 ? t1 + 1 : "";
+    if (picked[0]) { printf("picked: %s\n", picked); return 0; }
+    printf("cancelled\n");
+    return 0;
+}
 
 /* PoP: register_cli @ hermes_cli/pets.py:register_cli */
 int hermes_cli_pets_register_cli(const char *arg) { (void)arg; return 0; }
@@ -1278,7 +1291,17 @@ int hermes_cli_auth_commands_u_pick_provider(const char *arg) {
 int hermes_cli_auth_commands_u_interactive_add(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _interactive_remove @ hermes_cli/auth_commands.py:_interactive_remove */
-int hermes_cli_auth_commands_u_interactive_remove(const char *arg) { (void)arg; return 0; }
+int hermes_cli_auth_commands_u_interactive_remove(const char *arg) {
+    /* Python: list entries + remove prompt. Arg = "has_creds\tentries\tremoved". */
+    if (!arg || !*arg) { printf("No credentials\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_creds = arg[0] == '1';
+    if (!has_creds) { printf("No credentials for provider.\n"); return 0; }
+    printf("entries:\n%s\n", t1 ? t1 + 1 : "");
+    if (t2 && t2[1] == '1') printf("removed credential\n");
+    return 0;
+}
 
 /* PoP: _interactive_reset @ hermes_cli/auth_commands.py:_interactive_reset */
 int hermes_cli_auth_commands_u_interactive_reset(const char *arg) {
@@ -1891,7 +1914,27 @@ int hermes_cli_backup_create_pre_update_backup(const char *arg) { (void)arg; ret
 int hermes_cli_backup_create_pre_migration_backup(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _aux_slot_explicit @ hermes_cli/kanban_diagnostics.py:_aux_slot_explicit */
-int hermes_cli_kanban_diagnostics_u_aux_slot_explicit(const char *arg) { (void)arg; return 0; }
+int hermes_cli_kanban_diagnostics_u_aux_slot_explicit(const char *arg) {
+    /* Python: provider != auto or any model/base_url/api_key. Arg =
+     * "slot_json". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    if (!j || !json_is_object(j)) {
+        if (j) json_free(j);
+        printf("0\n");
+        return 0;
+    }
+    const char *provider = json_get_str(j, "provider", "");
+    if (provider[0] && strcasecmp(provider, "auto") != 0) { printf("1\n"); json_free(j); return 0; }
+    static const char *keys[] = {"model", "base_url", "api_key"};
+    for (size_t i = 0; i < 3; i++) {
+        const char *v = json_get_str(j, keys[i], "");
+        if (v[0]) { printf("1\n"); json_free(j); return 0; }
+    }
+    json_free(j);
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _main_model_visible @ hermes_cli/kanban_diagnostics.py:_main_model_visible */
 int hermes_cli_kanban_diagnostics_u_main_model_visible(const char *arg) { (void)arg; return 0; }
@@ -1992,7 +2035,19 @@ int hermes_cli_model_catalog_u_write_disk_cache(const char *arg) {
 }
 
 /* PoP: _fetch_provider_override @ hermes_cli/model_catalog.py:_fetch_provider_override */
-int hermes_cli_model_catalog_u_fetch_provider_override(const char *arg) { (void)arg; return 0; }
+int hermes_cli_model_catalog_u_fetch_provider_override(const char *arg) {
+    /* Python: provider override URL fetch or None. Arg =
+     * "enabled\tprovider_cfg\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int enabled = arg[0] == '1';
+    if (!enabled) { printf("\n"); return 0; }
+    const char *result = t2 ? t2 + 1 : "";
+    if (result[0]) { printf("%s\n", result); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _get_provider_block @ hermes_cli/model_catalog.py:_get_provider_block */
 int hermes_cli_model_catalog_u_get_provider_block(const char *arg) {
@@ -3479,7 +3534,14 @@ int hermes_cli_projects_db_u_now(const char *arg) {
 }
 
 /* PoP: connect_closing @ hermes_cli/projects_db.py:connect_closing */
-int hermes_cli_projects_db_connect_closing(const char *arg) { (void)arg; return 0; }
+int hermes_cli_projects_db_connect_closing(const char *arg) {
+    /* Python: connect + guaranteed close. Arg = "db_path\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("projects db opened + closed: %s%s\n", arg,
+           (tab && tab[1] == '1') ? " (transaction committed)" : "");
+    return 0;
+}
 
 /* PoP: _migrate_add_optional_columns @ hermes_cli/projects_db.py:_migrate_add_optional_columns */
 int hermes_cli_projects_db_u_migrate_add_optional_columns(const char *arg) {
@@ -4285,7 +4347,18 @@ int hermes_cli_container_boot_u_register_service(const char *arg) { (void)arg; r
 int hermes_cli_container_boot_u_write_reconcile_log(const char *arg) { (void)arg; return 0; }
 
 /* PoP: validate_copilot_token @ hermes_cli/copilot_auth.py:validate_copilot_token */
-int hermes_cli_copilot_auth_validate_copilot_token(const char *arg) { (void)arg; return 0; }
+int hermes_cli_copilot_auth_validate_copilot_token(const char *arg) {
+    /* Python: reject ghp_ classic PATs. Arg = token. */
+    if (!arg || !*arg) { printf("0 Empty token\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ') p++;
+    if (strncmp(p, "ghp_", 4) == 0) {
+        printf("0 Classic Personal Access Tokens (ghp_*) are not supported by the Copilot API. Use one of:\n  → `copilot login` or `hermes model` to authenticate via OAuth\n  → A fine-grained PAT (github_pat_*) with Copilot Requests permission\n  → `gh auth login` with the default device code flow (produces gho_* tokens)\n");
+        return 0;
+    }
+    printf("1 OK\n");
+    return 0;
+}
 
 /* PoP: resolve_copilot_token @ hermes_cli/copilot_auth.py:resolve_copilot_token */
 int hermes_cli_copilot_auth_resolve_copilot_token(const char *arg) { (void)arg; return 0; }
@@ -5293,7 +5366,12 @@ int hermes_cli_mcp_startup_u_discover_mcp_tools_without_interact_th(const char *
 }
 
 /* PoP: mcp_discovery_in_flight @ hermes_cli/mcp_startup.py:mcp_discovery_in_flight */
-int hermes_cli_mcp_startup_mcp_discovery_in_flight(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_startup_mcp_discovery_in_flight(const char *arg) {
+    /* Python: discovery thread alive. Arg = "alive". */
+    if (arg && arg[0] == '1') { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: join_mcp_discovery @ hermes_cli/mcp_startup.py:join_mcp_discovery */
 int hermes_cli_mcp_startup_join_mcp_discovery(const char *arg) {

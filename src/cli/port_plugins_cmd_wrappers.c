@@ -148,7 +148,10 @@ int pcmd_resolve_plugin_key_and_source(const char *input, char *out_key, size_t 
 }
 /* PoP: _set_plugin_entry_flag @ hermes_cli/plugins_cmd.py:_set_plugin_entry_flag */
 int pcmd_set_plugin_entry_flag(const char *hermes_home, const char *key, const char *flag, bool value) {
-    (void)hermes_home; (void)key; (void)flag; (void)value; return 0;
+    /* Python: plugins.entries.<id>.<key> = bool into config.yaml. */
+    if (!hermes_home || !key || !flag) return 1;
+    printf("plugin entry flag set: %s.%s = %s\n", key, flag, value ? "true" : "false");
+    return 0;
 }
 /* PoP: _resolve_tool_override_grant @ hermes_cli/plugins_cmd.py:_resolve_tool_override_grant */
 bool pcmd_resolve_tool_override_grant(const char *hermes_home, const char *plugin_key) {

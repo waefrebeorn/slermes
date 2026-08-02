@@ -350,7 +350,17 @@ int yb_u_walk_forward_msgs(const char *arg) { (void)arg; return 0; }
 int yb_build_forward_text(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _get_cached_resource @ gateway/platforms/yuanbao.py:_get_cached_resource */
-int yb_u_get_cached_resource(const char *arg) { (void)arg; return 0; }
+int yb_u_get_cached_resource(const char *arg) {
+    /* Python: (local_path, mime) if valid + exists else None. Arg =
+     * "state\tlocal_path\tmime". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "hit") == 0 && t1) { printf("%s\t%s\n", t1 + 1, t2 ? t2 + 1 : ""); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _put_cached_resource @ gateway/platforms/yuanbao.py:_put_cached_resource */
 int yb_u_put_cached_resource(const char *arg) {

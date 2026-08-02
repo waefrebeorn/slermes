@@ -2137,7 +2137,14 @@ int agent_context_references_format_reference_value(const char *arg) {
 int agent_credential_sources_u_remove_xai_oauth_device_code(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _get_model_usage @ agent/insights.py:_get_model_usage */
-int agent_insights_u_get_model_usage(const char *arg) { (void)arg; return 0; }
+int agent_insights_u_get_model_usage(const char *arg) {
+    /* Python: per-model usage rows or []. Arg = "rows_json\ttable_missing". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab[1] == '1') { printf("[]\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: preload_jiter_native_extension @ agent/jiter_preload.py:preload_jiter_native_extension */
 int agent_jiter_preload_preload_jiter_native_extension(const char *arg) {

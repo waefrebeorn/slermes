@@ -119,7 +119,23 @@ int auth_u_refresh_spotify_oauth_state(const char *arg) { (void)arg; return 0; }
 int auth_resolve_spotify_runtime_credentials(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_spotify_auth_status @ hermes_cli/auth.py:get_spotify_auth_status */
-int auth_get_spotify_auth_status(const char *arg) { (void)arg; return 0; }
+int auth_get_spotify_auth_status(const char *arg) {
+    /* Python: {logged_in, ...} or {logged_in: False}. Arg =
+     * "has_state\trefresh_token\texpiring\tauth_type". */
+    if (!arg || !*arg) { printf("{\"logged_in\": false}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int has_state = arg[0] == '1';
+    if (!has_state) { printf("{\"logged_in\": false}\n"); return 0; }
+    const char *refresh = t1 ? t1 + 1 : "";
+    int expiring = t2 && t2[1] == '1';
+    int logged_in = refresh[0] || !expiring;
+    printf("{\"logged_in\": %s, \"auth_type\": \"%s\", \"has_refresh_token\": %s}\n",
+           logged_in ? "true" : "false", t3 ? t3 + 1 : "oauth_pkce",
+           refresh[0] ? "true" : "false");
+    return 0;
+}
 
 /* PoP: _spotify_interactive_setup @ hermes_cli/auth.py:_spotify_interactive_setup */
 int auth_u_spotify_interactive_setup(const char *arg) { (void)arg; return 0; }
@@ -287,7 +303,20 @@ int auth_u_refresh_xai_oauth_tokens(const char *arg) { (void)arg; return 0; }
 int auth_resolve_xai_oauth_runtime_credentials(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _request_device_code @ hermes_cli/auth.py:_request_device_code */
-int auth_u_request_device_code(const char *arg) { (void)arg; return 0; }
+int auth_u_request_device_code(const char *arg) {
+    /* Python: device code POST + field check. Arg =
+     * "state\tmissing_fields\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "missing") == 0) {
+        fprintf(stderr, "Device code response missing fields: %s\n", t1 ? t1 + 1 : "");
+        return 1;
+    }
+    printf("%s\n", t2 ? t2 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _poll_for_token @ hermes_cli/auth.py:_poll_for_token */
 int auth_u_poll_for_token(const char *arg) { (void)arg; return 0; }

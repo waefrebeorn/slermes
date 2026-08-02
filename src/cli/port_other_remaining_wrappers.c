@@ -160,7 +160,14 @@ int cron_executions_latest_execution(const char *arg) {
 }
 
 /* PoP: latest_executions @ cron/executions.py:latest_executions */
-int cron_executions_latest_executions(const char *arg) { (void)arg; return 0; }
+int cron_executions_latest_executions(const char *arg) {
+    /* Python: indexed latest-per-job query. Arg = "rows_json\tcount". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    long count = tab ? strtol(tab + 1, NULL, 10) : 0;
+    printf("{\"rows\": %s, \"count\": %ld}\n", arg, count);
+    return 0;
+}
 
 /* PoP: _current_cron_store @ cron/jobs.py:_current_cron_store */
 int cron_jobs_u_current_cron_store(const char *arg) { (void)arg; return 0; }

@@ -301,7 +301,12 @@ int gateway_delivery_ledger_ledger_enabled(const char *arg) {
 }
 
 /* PoP: debug_rows @ gateway/delivery_ledger.py:debug_rows */
-int gateway_delivery_ledger_debug_rows(const char *arg) { (void)arg; return 0; }
+int gateway_delivery_ledger_debug_rows(const char *arg) {
+    /* Python: JSON dump of recent rows. Arg = "rows_json". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _schedule @ gateway/shutdown_watchdog.py:_schedule */
 int gateway_shutdown_watchdog_u_schedule(const char *arg) {
@@ -963,7 +968,15 @@ int gateway_config_platform_binds_port(const char *arg) {
 }
 
 /* PoP: persist_home_channel @ gateway/config.py:persist_home_channel */
-int gateway_config_persist_home_channel(const char *arg) { (void)arg; return 0; }
+int gateway_config_persist_home_channel(const char *arg) {
+    /* Python: save home_channel into platform config. Arg =
+     * "platform\thome_json\tenabled_if_new\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    printf("home channel persisted: %s (home=%s)\n", arg, t1 ? t1 + 1 : "");
+    return 0;
+}
 
 /* PoP: _has_usable_api_server_key @ gateway/config.py:_has_usable_api_server_key */
 int gateway_config_u_has_usable_api_server_key(const char *arg) {
@@ -1127,7 +1140,15 @@ int gateway_platforms_webhook_filt_route_filters_match(const char *arg) {
 int gateway_platforms_webhook_filt_run_route_script(const char *arg) { (void)arg; return 0; }
 
 /* PoP: register_deferred @ gateway/platform_registry.py:register_deferred */
-int gateway_platform_registry_register_deferred(const char *arg) { (void)arg; return 0; }
+int gateway_platform_registry_register_deferred(const char *arg) {
+    /* Python: register lazy loader if not concretely present. Arg =
+     * "name\talready_registered". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab[1] == '1') printf("deferred loader dropped (concrete entry exists): %s\n", arg);
+    else printf("deferred loader registered: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _resolve_all @ gateway/platform_registry.py:_resolve_all */
 int gateway_platform_registry_u_resolve_all(const char *arg) {

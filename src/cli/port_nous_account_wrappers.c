@@ -168,7 +168,32 @@ int nous_u_info_from_valid_jwt(const char *arg) { (void)arg; return 0; }
 int nous_u_info_from_account_payload(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _tool_access_from_value @ hermes_cli/nous_account.py:_tool_access_from_value */
-int nous_u_tool_access_from_value(const char *arg) { (void)arg; return 0; }
+int nous_u_tool_access_from_value(const char *arg) {
+    /* Python: {enabled, coverage} fail-closed. Arg = "value_json". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    if (!j || !json_is_object(j)) {
+        if (j) json_free(j);
+        printf("\n");
+        return 0;
+    }
+    int enabled = json_get_bool(j, "enabled", 0);
+    json_t *cov = json_obj_get(j, "coverage");
+    int first = 1;
+    if (cov && json_is_object(cov)) {
+        for (size_t i = 0; i < cov->c.count; i++) {
+            json_t *v = json_obj_get(cov, cov->c.keys[i]);
+            if (v && json_is_true(v)) {
+                if (!first) printf("\n");
+                printf("%s", cov->c.keys[i]);
+                first = 0;
+            }
+        }
+    }
+    printf("\tenabled=%d\n", enabled ? 1 : 0);
+    json_free(j);
+    return 0;
+}
 
 /* PoP: _subscription_from_payload @ hermes_cli/nous_account.py:_subscription_from_payload */
 int nous_u_subscription_from_payload(const char *arg) {
