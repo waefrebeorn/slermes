@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T22:37:18Z",
+  "generated_at": "2026-08-02T22:39:15Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -203734,10 +203734,10 @@
     },
     "hermes_cli/kanban_decompose.py": {
       "total": 11,
-      "ported": 8,
+      "ported": 11,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 11,
@@ -203753,17 +203753,24 @@
             "decorators": [],
             "line_number": 139
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_kanban_decompose_remaining.c",
+          "c_function": "kbd_truncate",
+          "pop_annotation": {
+            "c_function": "kbd_truncate",
+            "python_functions": [
+              "_truncate"
+            ],
+            "c_file": "src/cli/port_kanban_decompose_remaining.c",
+            "python_file": "hermes_cli/kanban_decompose.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _truncate @ hermes_cli/kanban_decompose.py:_truncate */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/kanban_decompose.py",
@@ -203804,17 +203811,24 @@
             "decorators": [],
             "line_number": 163
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_kanban_decompose_remaining.c",
+          "c_function": "kbd_profile_author",
+          "pop_annotation": {
+            "c_function": "kbd_profile_author",
+            "python_functions": [
+              "_profile_author"
+            ],
+            "c_file": "src/cli/port_kanban_decompose_remaining.c",
+            "python_file": "hermes_cli/kanban_decompose.py",
+            "line": 37,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _profile_author @ hermes_cli/kanban_decompose.py:_profile_author */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/kanban_decompose.py",
@@ -203826,17 +203840,24 @@
             "decorators": [],
             "line_number": 172
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_kanban_decompose_remaining.c",
+          "c_function": "kbd_load_config",
+          "pop_annotation": {
+            "c_function": "kbd_load_config",
+            "python_functions": [
+              "_load_config"
+            ],
+            "c_file": "src/cli/port_kanban_decompose_remaining.c",
+            "python_file": "hermes_cli/kanban_decompose.py",
+            "line": 46,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _load_config @ hermes_cli/kanban_decompose.py:_load_config */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/kanban_decompose.py",
@@ -227287,10 +227308,10 @@
     },
     "hermes_cli/pairing.py": {
       "total": 5,
-      "ported": 2,
+      "ported": 5,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 5,
@@ -227335,17 +227356,24 @@
             "decorators": [],
             "line_number": 31
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_pairing_remaining.c",
+          "c_function": "par_cmd_list",
+          "pop_annotation": {
+            "c_function": "par_cmd_list",
+            "python_functions": [
+              "_cmd_list"
+            ],
+            "c_file": "src/cli/port_pairing_remaining.c",
+            "python_file": "hermes_cli/pairing.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _cmd_list @ hermes_cli/pairing.py:_cmd_list */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/pairing.py",
@@ -227357,17 +227385,24 @@
             "decorators": [],
             "line_number": 64
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_pairing_remaining.c",
+          "c_function": "par_cmd_approve",
+          "pop_annotation": {
+            "c_function": "par_cmd_approve",
+            "python_functions": [
+              "_cmd_approve"
+            ],
+            "c_file": "src/cli/port_pairing_remaining.c",
+            "python_file": "hermes_cli/pairing.py",
+            "line": 28,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _cmd_approve @ hermes_cli/pairing.py:_cmd_approve */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/pairing.py",
@@ -227379,17 +227414,24 @@
             "decorators": [],
             "line_number": 99
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_pairing_remaining.c",
+          "c_function": "par_cmd_revoke",
+          "pop_annotation": {
+            "c_function": "par_cmd_revoke",
+            "python_functions": [
+              "_cmd_revoke"
+            ],
+            "c_file": "src/cli/port_pairing_remaining.c",
+            "python_file": "hermes_cli/pairing.py",
+            "line": 38,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _cmd_revoke @ hermes_cli/pairing.py:_cmd_revoke */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/pairing.py",
