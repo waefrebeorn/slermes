@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T22:11:18Z",
+  "generated_at": "2026-08-02T22:13:07Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -12056,10 +12056,10 @@
     },
     "agent/billing_view.py": {
       "total": 18,
-      "ported": 15,
+      "ported": 18,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 18,
@@ -12166,16 +12166,24 @@
             ],
             "line_number": 95
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_billing_view_remaining.c",
+          "c_function": "biv_provenance",
+          "pop_annotation": {
+            "c_function": "biv_provenance",
+            "python_functions": [
+              "provenance"
+            ],
+            "c_file": "src/agent/port_billing_view_remaining.c",
+            "python_file": "agent/billing_view.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: provenance @ agent/billing_view.py:provenance */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/billing_view.py",
@@ -12189,16 +12197,24 @@
             ],
             "line_number": 103
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_billing_view_remaining.c",
+          "c_function": "biv_display",
+          "pop_annotation": {
+            "c_function": "biv_display",
+            "python_functions": [
+              "display"
+            ],
+            "c_file": "src/agent/port_billing_view_remaining.c",
+            "python_file": "agent/billing_view.py",
+            "line": 36,
+            "is_consolidated": false,
+            "full_text": "/* PoP: display @ agent/billing_view.py:display */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/billing_view.py",
@@ -12212,16 +12228,24 @@
             ],
             "line_number": 160
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_billing_view_remaining.c",
+          "c_function": "biv_is_admin",
+          "pop_annotation": {
+            "c_function": "biv_is_admin",
+            "python_functions": [
+              "is_admin"
+            ],
+            "c_file": "src/agent/port_billing_view_remaining.c",
+            "python_file": "agent/billing_view.py",
+            "line": 45,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_admin @ agent/billing_view.py:is_admin */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/billing_view.py",
@@ -37556,10 +37580,10 @@
     },
     "agent/lsp/eventlog.py": {
       "total": 14,
-      "ported": 11,
+      "ported": 14,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 14,
@@ -37633,16 +37657,24 @@
             "decorators": [],
             "line_number": 82
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_eventlog_remaining.c",
+          "c_function": "lel_announce_once",
+          "pop_annotation": {
+            "c_function": "lel_announce_once",
+            "python_functions": [
+              "_announce_once"
+            ],
+            "c_file": "src/agent/port_lsp_eventlog_remaining.c",
+            "python_file": "agent/lsp/eventlog.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _announce_once @ agent/lsp/eventlog.py:_announce_once */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/eventlog.py",
@@ -37915,16 +37947,24 @@
             "decorators": [],
             "line_number": 182
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_eventlog_remaining.c",
+          "c_function": "lel_log_spawn_failed",
+          "pop_annotation": {
+            "c_function": "lel_log_spawn_failed",
+            "python_functions": [
+              "log_spawn_failed"
+            ],
+            "c_file": "src/agent/port_lsp_eventlog_remaining.c",
+            "python_file": "agent/lsp/eventlog.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: log_spawn_failed @ agent/lsp/eventlog.py:log_spawn_failed */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/eventlog.py",
@@ -37936,16 +37976,24 @@
             "decorators": [],
             "line_number": 191
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_eventlog_remaining.c",
+          "c_function": "lel_reset_announce_caches",
+          "pop_annotation": {
+            "c_function": "lel_reset_announce_caches",
+            "python_functions": [
+              "reset_announce_caches"
+            ],
+            "c_file": "src/agent/port_lsp_eventlog_remaining.c",
+            "python_file": "agent/lsp/eventlog.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: reset_announce_caches @ agent/lsp/eventlog.py:reset_announce_caches */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
