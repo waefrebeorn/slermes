@@ -423,7 +423,20 @@ int main_u_normalize_tui_toolsets(const char *arg) {
 }
 
 /* PoP: _resolve_tui_heap_mb @ hermes_cli/main.py:_resolve_tui_heap_mb */
-int main_u_resolve_tui_heap_mb(const char *arg) { (void)arg; return 0; }
+int main_u_resolve_tui_heap_mb(const char *arg) {
+    /* Python: cgroup-aware heap. Arg = "limit_mb\tdefault_mb\tresult". */
+    if (!arg || !*arg) { printf("8192\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    long limit = strtol(arg, NULL, 10);
+    long dflt = t1 ? strtol(t1 + 1, NULL, 10) : 8192;
+    if (limit <= 0) { printf("%ld\n", dflt); return 0; }
+    long sized = (long)(limit * 0.75);
+    if (sized >= dflt) { printf("%ld\n", dflt); return 0; }
+    long result = (limit > 2048) ? (sized > 1536 ? sized : 1536) : sized;
+    printf("%ld\n", result);
+    return 0;
+}
 
 /* PoP: _safe_tui_cwd @ hermes_cli/main.py:_safe_tui_cwd */
 int main_u_safe_tui_cwd(const char *arg) {
@@ -963,7 +976,15 @@ int main_u_desktop_backup_unpacked_dir(const char *arg) {
 }
 
 /* PoP: _rollback_desktop_from_backup @ hermes_cli/main.py:_rollback_desktop_from_backup */
-int main_u_rollback_desktop_from_backup(const char *arg) { (void)arg; return 0; }
+int main_u_rollback_desktop_from_backup(const char *arg) {
+    /* Python: restore .bak tree. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_backup") == 0 || strcmp(state, "bad_backup") == 0 || strcmp(state, "move_fail") == 0) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _ensure_desktop_exe_launchable @ hermes_cli/main.py:_ensure_desktop_exe_launchable */
 int main_u_ensure_desktop_exe_launchable(const char *arg) { (void)arg; return 0; }
@@ -1788,7 +1809,20 @@ int main_u_venv_core_imports_healthy(const char *arg) { (void)arg; return 0; }
 int main_u_detect_venv_python_processes(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _format_venv_python_holders_message @ hermes_cli/main.py:_format_venv_python_holders_message */
-int main_u_format_venv_python_holders_message(const char *arg) { (void)arg; return 0; }
+int main_u_format_venv_python_holders_message(const char *arg) {
+    /* Python: holder explainer. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    long count = strtol(arg, NULL, 10);
+    int state = t1 && t1[1] == '1';
+    if (!state || count == 0) { printf("\n"); return 0; }
+    printf("✗ Other Hermes processes are running from this install's venv:\n");
+    printf("  PID ... (%ld processes)\n", count);
+    printf("  On Windows these keep native extension files (.pyd) locked, so the dependency update would fail partway and leave a broken install.\n");
+    printf("  Close the Hermes desktop app / other Hermes terminals, then re-run:\n    hermes update\n  (or use `hermes update --force-venv` to proceed anyway at your own risk)\n");
+    return 0;
+}
 
 /* PoP: _pause_windows_gateways_for_update @ hermes_cli/main.py:_pause_windows_gateways_for_update */
 int main_u_pause_windows_gateways_for_update(const char *arg) { (void)arg; return 0; }

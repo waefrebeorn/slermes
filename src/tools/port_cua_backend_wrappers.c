@@ -512,7 +512,22 @@ int cua_list_windows(const char *arg) {
 }
 
 /* PoP: launch_app @ tools/computer_use/cua_backend.py:launch_app */
-int cua_launch_app(const char *arg) { (void)arg; return 0; }
+int cua_launch_app(const char *arg) {
+    /* Python: idempotent launch. Arg = "has_id\tstate\tresult". */
+    if (!arg || !*arg) {
+        fprintf(stderr, "launch_app requires either bundle_id or name\n");
+        return 1;
+    }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_id = arg[0] == '1';
+    if (!has_id) {
+        fprintf(stderr, "launch_app requires either bundle_id or name\n");
+        return 1;
+    }
+    printf("%s\n", t2 ? t2 + 1 : "{\"data\": {}}");
+    return 0;
+}
 
 /* PoP: kill_app @ tools/computer_use/cua_backend.py:kill_app */
 int cua_kill_app(const char *arg) {

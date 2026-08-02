@@ -132,7 +132,16 @@ int agent_model_metadata_u_is_cjk_token_dense_char(const char *arg) {
 }
 
 /* PoP: _estimate_message_tokens_without_images @ agent/model_metadata.py:_estimate_message_tokens_without_images */
-int agent_model_metadata_u_estimate_message_tokens_without_images(const char *arg) { (void)arg; return 0; }
+int agent_model_metadata_u_estimate_message_tokens_without_images(const char *arg) {
+    /* Python: shadow msg w/ images stripped. Arg = "msg_json\tstate\ttokens". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "0");
+    return 0;
+}
 
 /* PoP: _tool_name_for_cache @ agent/model_metadata.py:_tool_name_for_cache */
 int agent_model_metadata_u_tool_name_for_cache(const char *arg) {
@@ -2506,7 +2515,21 @@ int agent_turn_finalizer_u_drop_verification_continuation_scaffo_ng(const char *
 int agent_video_gen_provider_save_url_video(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _create_and_poll @ agent/video_gen_provider.py:_create_and_poll */
-int agent_video_gen_provider_u_create_and_poll(const char *arg) { (void)arg; return 0; }
+int agent_video_gen_provider_u_create_and_poll(const char *arg) {
+    /* Python: create + poll w/ deadline. Arg =
+     * "state\tdeadline_s\tinterval_s\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "timeout") == 0) {
+        fprintf(stderr, "video job did not reach a terminal status within deadline\n");
+        return 1;
+    }
+    printf("video done: %s\n", t3 ? t3 + 1 : "completed");
+    return 0;
+}
 
 /* PoP: format_reference_value @ agent/context_references.py:format_reference_value */
 int agent_context_references_format_reference_value(const char *arg) {

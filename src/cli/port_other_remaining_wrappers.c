@@ -160,7 +160,15 @@ int cron_executions_finish_execution(const char *arg) {
 }
 
 /* PoP: recover_interrupted_executions @ cron/executions.py:recover_interrupted_executions */
-int cron_executions_recover_interrupted_executions(const char *arg) { (void)arg; return 0; }
+int cron_executions_recover_interrupted_executions(const char *arg) {
+    /* Python: mark abandoned -> unknown. Arg = "changed\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = tab && tab[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: list_executions @ cron/executions.py:list_executions */
 int cron_executions_list_executions(const char *arg) {

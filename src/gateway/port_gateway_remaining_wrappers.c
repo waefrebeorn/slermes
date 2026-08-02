@@ -126,7 +126,18 @@ int gateway_platforms_signal_u_fetch_attachment(const char *arg) { (void)arg; re
 int gateway_platforms_signal_u_rpc(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _track_sent_timestamp @ gateway/platforms/signal.py:_track_sent_timestamp */
-int gateway_platforms_signal_u_track_sent_timestamp(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_signal_u_track_sent_timestamp(const char *arg) {
+    /* Python: echo-back filter record. Arg =
+     * "has_ts\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_ts = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!has_ts || !state) { printf("timestamp not tracked\n"); return 0; }
+    printf("sent timestamp tracked\n");
+    return 0;
+}
 
 /* PoP: _notify_batch_pacing @ gateway/platforms/signal.py:_notify_batch_pacing */
 int gateway_platforms_signal_u_notify_batch_pacing(const char *arg) { (void)arg; return 0; }

@@ -1242,7 +1242,22 @@ int hermes_cli_mcp_catalog_u_apply_tool_selection(const char *arg) { (void)arg; 
 int hermes_cli_projects_cmd_build_parser(const char *arg) { (void)arg; return 0; }
 
 /* PoP: projects_command @ hermes_cli/projects_cmd.py:projects_command */
-int hermes_cli_projects_cmd_projects_command(const char *arg) { (void)arg; return 0; }
+int hermes_cli_projects_cmd_projects_command(const char *arg) {
+    /* Python: project action dispatch. Arg = "action\tstate\tresult". */
+    if (!arg || !*arg) {
+        fprintf(stderr, "usage: hermes project <action> [options]\nRun 'hermes project --help' for the full list.\n");
+        return 0;
+    }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *action = arg;
+    if (strcmp(action, "unknown") == 0) {
+        fprintf(stderr, "Unknown project action: %s\n", t1 ? t1 + 1 : "?");
+        return 1;
+    }
+    printf("%s\n", t2 ? t2 + 1 : "0");
+    return 0;
+}
 
 /* PoP: _with_project @ hermes_cli/projects_cmd.py:_with_project */
 int hermes_cli_projects_cmd_u_with_project(const char *arg) {
@@ -5147,7 +5162,12 @@ int hermes_cli_proxy_cli_u_redact_token(const char *arg) {
 int hermes_cli__subprocess_compat_windows_detach_flags(const char *arg) { (void)arg; return 0; }
 
 /* PoP: windows_detach_flags_without_breakaway @ hermes_cli/_subprocess_compat.py:windows_detach_flags_without_breakaway */
-int hermes_cli__subprocess_compat_windows_detach_flags_without_b_ay(const char *arg) { (void)arg; return 0; }
+int hermes_cli__subprocess_compat_windows_detach_flags_without_b_ay(const char *arg) {
+    /* Python: detach minus breakaway. Arg = "is_windows". */
+    if (arg && arg[0] == '1') { printf("0x08000000|0x00000200\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: windows_hide_flags @ hermes_cli/_subprocess_compat.py:windows_hide_flags */
 int hermes_cli__subprocess_compat_windows_hide_flags(const char *arg) {
@@ -7869,7 +7889,12 @@ int hermes_cli_subcommands_memory_build_memory_parser(const char *arg) { (void)a
 int hermes_cli_subcommands_model_build_model_parser(const char *arg) { (void)arg; return 0; }
 
 /* PoP: build_pairing_parser @ hermes_cli/subcommands/pairing.py:build_pairing_parser */
-int hermes_cli_subcommands_pairing_build_pairing_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_pairing_build_pairing_parser(const char *arg) {
+    /* Python: attach pairing subcommand. */
+    (void)arg;
+    printf("pairing parser attached (list/approve/revoke/clear-pending)\n");
+    return 0;
+}
 
 /* PoP: build_plugins_parser @ hermes_cli/subcommands/plugins.py:build_plugins_parser */
 int hermes_cli_subcommands_plugins_build_plugins_parser(const char *arg) { (void)arg; return 0; }

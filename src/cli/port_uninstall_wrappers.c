@@ -181,7 +181,25 @@ int uninst_run_gui_uninstall(const char *arg) { (void)arg; return 0; }
 int uninst_run_uninstall(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _print_uninstall_dry_run @ hermes_cli/uninstall.py:_print_uninstall_dry_run */
-int uninst_u_print_uninstall_dry_run(const char *arg) { (void)arg; return 0; }
+int uninst_u_print_uninstall_dry_run(const char *arg) {
+    /* Python: dry-run plan. Arg = "full\tproject_root\thermes_home\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int full = arg[0] == '1';
+    printf("\nDry run: no files, services, or environment entries will be changed.\n");
+    printf("\nWould inspect/remove:\n");
+    printf("  • Gateway services and standalone gateway processes\n");
+    printf("  • Hermes PATH entries from shell configs / Windows User PATH\n");
+    printf("  • Hermes wrapper scripts and Hermes-managed node/npm/npx symlinks\n");
+    printf("  • Desktop Chat GUI artifacts\n");
+    printf("  • Code checkout: %s\n", t1 ? t1 + 1 : "?");
+    if (full) printf("  • Hermes config/data: %s\n", t2 ? t2 + 1 : "?");
+    else printf("  • Keep Hermes config/data: %s\n", t2 ? t2 + 1 : "?");
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _perform_uninstall @ hermes_cli/uninstall.py:_perform_uninstall */
 int uninst_u_perform_uninstall(const char *arg) { (void)arg; return 0; }

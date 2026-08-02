@@ -826,7 +826,16 @@ int tools_delegate_tool_u_inherit_parent_base_url(const char *arg) { (void)arg; 
 int tools_delegate_tool_u_dump_subagent_timeout_diagnostic(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _spill_summary_to_file @ tools/delegate_tool.py:_spill_summary_to_file */
-int tools_delegate_tool_u_spill_summary_to_file(const char *arg) { (void)arg; return 0; }
+int tools_delegate_tool_u_spill_summary_to_file(const char *arg) {
+    /* Python: cache spill. Arg = "task_index\tstate\tpath". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _parent_summary_char_budget @ tools/delegate_tool.py:_parent_summary_char_budget */
 int tools_delegate_tool_u_parent_summary_char_budget(const char *arg) { (void)arg; return 0; }

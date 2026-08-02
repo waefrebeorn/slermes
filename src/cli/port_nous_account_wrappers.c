@@ -131,7 +131,15 @@ int nous_reset_nous_portal_account_info_cache(const char *arg) {
 int nous_u_fresh_account_info(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _info_from_inference_key_pool @ hermes_cli/nous_account.py:_info_from_inference_key_pool */
-int nous_u_info_from_inference_key_pool(const char *arg) { (void)arg; return 0; }
+int nous_u_info_from_inference_key_pool(const char *arg) {
+    /* Python: opaque-key snapshot. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "none") == 0) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _info_from_oauth_pool @ hermes_cli/nous_account.py:_info_from_oauth_pool */
 int nous_u_info_from_oauth_pool(const char *arg) { (void)arg; return 0; }

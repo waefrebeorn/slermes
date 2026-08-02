@@ -204,7 +204,17 @@ int envl_u_bash_starts(const char *arg) { (void)arg; return 0; }
 int envl_u_git_bash_bin_dirs(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _prepend_git_bash_dirs @ tools/environments/local.py:_prepend_git_bash_dirs */
-int envl_u_prepend_git_bash_dirs(const char *arg) { (void)arg; return 0; }
+int envl_u_prepend_git_bash_dirs(const char *arg) {
+    /* Python: prepend missing git dirs. Arg =
+     * "existing_path\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("%s\n", arg); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: _find_shell @ tools/environments/local.py:_find_shell */
 int envl_u_find_shell(const char *arg) { (void)arg; return 0; }

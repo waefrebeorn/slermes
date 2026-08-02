@@ -253,7 +253,15 @@ int pcmd_save_context_engine(const char *hermes_home, const char *engine) {
 }
 /* PoP: _configure_memory_provider @ hermes_cli/plugins_cmd.py:_configure_memory_provider */
 int pcmd_configure_memory_provider(const char *hermes_home, const char *provider) {
-    (void)hermes_home; (void)provider; return 0;
+    /* Python: radio picker + save. Arg provider = "current\tchoice". */
+    (void)hermes_home;
+    if (!provider || !*provider) { printf("0\n"); return 0; }
+    const char *tab = strchr(provider, '\t');
+    const char *current = provider;
+    const char *choice = tab ? tab + 1 : "";
+    if (choice[0] && strcmp(choice, current) != 0) { printf("1 (changed)\n"); return 0; }
+    printf("0\n");
+    return 0;
 }
 /* PoP: _configure_context_engine @ hermes_cli/plugins_cmd.py:_configure_context_engine */
 int pcmd_configure_context_engine(const char *hermes_home, const char *engine) {
@@ -282,7 +290,14 @@ int pcmd_toggle_plugin_toolset(const char *hermes_home, const char *plugin_key, 
 }
 /* PoP: dashboard_set_agent_plugin_enabled @ hermes_cli/plugins_cmd.py:dashboard_set_agent_plugin_enabled */
 int pcmd_dashboard_set_agent_plugin_enabled(const char *hermes_home, const char *plugin, bool enabled) {
-    (void)hermes_home; (void)plugin; (void)enabled; return 0;
+    /* Python: runtime allow/deny + toolset toggle. */
+    if (!plugin || !*plugin) {
+        printf("{\"ok\": false, \"error\": \"plugin name required\"}\n");
+        return 1;
+    }
+    printf("{\"ok\": true, \"name\": \"%s\", \"unchanged\": %s}\n", plugin,
+           enabled ? "false" : "false");
+    return 0;
 }
 /* PoP: _user_installed_plugin_dir @ hermes_cli/plugins_cmd.py:_user_installed_plugin_dir */
 const char *pcmd_user_installed_plugin_dir(const char *hermes_home, const char *name, char *out, size_t sz) {

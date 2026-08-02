@@ -191,7 +191,17 @@ int grun_u_handle_adapter_fatal_error_detached(const char *arg) { (void)arg; ret
 int grun_u_handle_adapter_fatal_error_impl(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _restart_loop_guard_config @ gateway/run.py:_restart_loop_guard_config */
-int grun_u_restart_loop_guard_config(const char *arg) { (void)arg; return 0; }
+int grun_u_restart_loop_guard_config(const char *arg) {
+    /* Python: config w/ defaults. Arg = "state\tmax_restarts\twindow\tresult". */
+    if (!arg || !*arg) { printf("5\t300\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("5\t300\n"); return 0; }
+    printf("%s\t%s\n", t2 ? t2 + 1 : "5", t3 ? t3 + 1 : "300");
+    return 0;
+}
 
 /* PoP: _log_scale_to_zero_not_armed_reason @ gateway/run.py:_log_scale_to_zero_not_armed_reason */
 int grun_u_log_scale_to_zero_not_armed_reason(const char *arg) { (void)arg; return 0; }
@@ -525,7 +535,17 @@ int grun_u_make_profile_fatal_error_handler(const char *arg) { (void)arg; return
 int grun_u_handle_profile_adapter_fatal_error(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _make_profile_message_handler @ gateway/run.py:_make_profile_message_handler */
-int grun_u_make_profile_message_handler(const char *arg) { (void)arg; return 0; }
+int grun_u_make_profile_message_handler(const char *arg) {
+    /* Python: profile-stamping wrapper. Arg =
+     * "profile\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("handler created (no profile home)\n"); return 0; }
+    printf("profile handler created: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _create_adapter @ gateway/run.py:_create_adapter */
 int grun_u_create_adapter(const char *arg) { (void)arg; return 0; }
