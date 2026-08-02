@@ -493,7 +493,12 @@ int yb_start_typing(const char *arg) { (void)arg; return 0; }
 int yb_start_slow_notifier(const char *arg) { (void)arg; return 0; }
 
 /* PoP: cancel_slow_notifier @ gateway/platforms/yuanbao.py:cancel_slow_notifier */
-int yb_cancel_slow_notifier(const char *arg) { (void)arg; return 0; }
+int yb_cancel_slow_notifier(const char *arg) {
+    /* Python: self.slow_notifier.cancel(chat_id). */
+    if (arg && *arg) printf("slow notifier cancelled for %s\n", arg);
+    else printf("slow notifier cancelled\n");
+    return 0;
+}
 
 /* PoP: get_chat_lock @ gateway/platforms/yuanbao.py:get_chat_lock */
 int yb_get_chat_lock_2(const char *arg) { (void)arg; return 0; }

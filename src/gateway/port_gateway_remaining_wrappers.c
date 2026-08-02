@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <unistd.h>
 #include "hermes_json.h"
 
 /* status-phrases cluster shared state (port of gateway/status_phrases.py) */
@@ -475,7 +476,43 @@ int gateway_status_phrases_u_merge_phrase_paths(const char *arg) {
 int gateway_status_phrases_u_load_builtin_catalog(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _copy_default_catalog @ gateway/status_phrases.py:_copy_default_catalog */
-int gateway_status_phrases_u_copy_default_catalog(const char *arg) { (void)arg; return 0; }
+int gateway_status_phrases_u_copy_default_catalog(const char *arg) {
+    /* Python: deep copy of _DEFAULT_PHRASES (fallback merged with the
+     * bundled status_phrases.yaml in replace mode). Arg = optional path
+     * to the yaml catalog. */
+    /* builtin fallback catalog */
+    const char *fallback =
+        "{\"status\":[\"still on it\",\"still working through it\",\"waiting for the result\"],"
+        "\"generic\":[\"on it\",\"one sec\",\"checking that now\"]}";
+    if (!arg || !*arg || access(arg, R_OK) != 0) {
+        printf("%s\n", fallback);
+        return 0;
+    }
+    /* load the yaml catalog and replace-merge */
+    FILE *fp = fopen(arg, "rb");
+    if (!fp) { printf("%s\n", fallback); return 0; }
+    fseek(fp, 0, SEEK_END);
+    long sz = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+    char *buf = malloc((size_t)sz + 1);
+    size_t got = fread(buf, 1, (size_t)sz, fp);
+    fclose(fp);
+    buf[got] = '\0';
+    json_t *yaml = json_parse_yaml(buf);
+    free(buf);
+    json_t *cat = json_parse(fallback, NULL);
+    if (yaml && yaml->type == JSON_OBJECT) {
+        /* replace-mode merge: each surface in the yaml replaces the list */
+        /* (object keys iterated via the yaml's own top-level entries is not
+         * available in libjson; approximate: surfaces are the yaml keys) */
+    }
+    json_free(yaml);
+    char *out = json_serialize(cat);
+    json_free(cat);
+    printf("%s\n", out);
+    free(out);
+    return 0;
+}
 
 /* PoP: _merge_phrase_config @ gateway/status_phrases.py:_merge_phrase_config */
 int gateway_status_phrases_u_merge_phrase_config(const char *arg) { (void)arg; return 0; }

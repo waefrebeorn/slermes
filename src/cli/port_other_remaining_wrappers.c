@@ -45,7 +45,22 @@ int cron_executions_recover_interrupted_executions(const char *arg) { (void)arg;
 int cron_executions_list_executions(const char *arg) { (void)arg; return 0; }
 
 /* PoP: latest_execution @ cron/executions.py:latest_execution */
-int cron_executions_latest_execution(const char *arg) { (void)arg; return 0; }
+int cron_executions_latest_execution(const char *arg) {
+    /* Python: list_executions(job_id, limit=1) -> rows[0] if rows else
+     * None. Arg = JSON array of execution rows. */
+    if (!arg || !*arg) { printf("null\n"); return 0; }
+    json_t *rows = json_parse(arg, NULL);
+    if (rows && rows->type == JSON_ARRAY && json_len(rows) > 0) {
+        json_t *first = json_get(rows, 0);
+        char *ser = json_serialize(first);
+        printf("%s\n", ser);
+        free(ser);
+    } else {
+        printf("null\n");
+    }
+    json_free(rows);
+    return 0;
+}
 
 /* PoP: latest_executions @ cron/executions.py:latest_executions */
 int cron_executions_latest_executions(const char *arg) { (void)arg; return 0; }

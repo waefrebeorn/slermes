@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <unistd.h>
 #include "hermes_json.h"
 
 /* PoP: _schtasks_encoding @ hermes_cli/gateway_windows.py:_schtasks_encoding */
@@ -219,7 +220,22 @@ int gw_is_task_registered(const char *arg) {
 }
 
 /* PoP: is_startup_entry_installed @ hermes_cli/gateway_windows.py:is_startup_entry_installed */
-int gw_is_startup_entry_installed(const char *arg) { (void)arg; return 0; }
+int gw_is_startup_entry_installed(const char *arg) {
+    /* Python: startup entry path exists or legacy path exists. Arg =
+     * "entry_path\tlegacy_path". */
+    if (!arg || !*arg) return 0;
+    const char *tab = strchr(arg, '\t');
+    const char *p1 = arg;
+    size_t l1 = tab ? (size_t)(tab - arg) : strlen(arg);
+    char buf1[1024], buf2[1024];
+    if (l1 >= sizeof(buf1)) l1 = sizeof(buf1) - 1;
+    memcpy(buf1, p1, l1); buf1[l1] = '\0';
+    const char *p2 = tab ? tab + 1 : "";
+    if (*p2) snprintf(buf2, sizeof(buf2), "%s", p2); else buf2[0] = '\0';
+    if (access(buf1, F_OK) == 0) return 1;
+    if (buf2[0] && access(buf2, F_OK) == 0) return 1;
+    return 0;
+}
 
 /* PoP: query_task_status @ hermes_cli/gateway_windows.py:query_task_status */
 int gw_query_task_status(const char *arg) { (void)arg; return 0; }
