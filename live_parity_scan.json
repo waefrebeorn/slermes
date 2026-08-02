@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:16:19Z",
+  "generated_at": "2026-08-02T20:18:51Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -35501,10 +35501,10 @@
     },
     "agent/lsp/cli.py": {
       "total": 10,
-      "ported": 0,
+      "ported": 10,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 10,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 10,
@@ -35520,16 +35520,24 @@
             "decorators": [],
             "line_number": 21
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_cli_remaining.c",
+          "c_function": "lspc2_register_subparser",
+          "pop_annotation": {
+            "c_function": "lspc2_register_subparser",
+            "python_functions": [
+              "register_subparser"
+            ],
+            "c_file": "src/agent/port_lsp_cli_remaining.c",
+            "python_file": "agent/lsp/cli.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: register_subparser @ agent/lsp/cli.py:register_subparser */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/cli.py",
@@ -35541,16 +35549,24 @@
             "decorators": [],
             "line_number": 69
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_cli_remaining.c",
+          "c_function": "lspc2_run_lsp_command",
+          "pop_annotation": {
+            "c_function": "lspc2_run_lsp_command",
+            "python_functions": [
+              "run_lsp_command"
+            ],
+            "c_file": "src/agent/port_lsp_cli_remaining.c",
+            "python_file": "agent/lsp/cli.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: run_lsp_command @ agent/lsp/cli.py:run_lsp_command */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/cli.py",
@@ -35562,16 +35578,24 @@
             "decorators": [],
             "line_number": 91
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_cli_remaining.c",
+          "c_function": "lspc2_cmd_status",
+          "pop_annotation": {
+            "c_function": "lspc2_cmd_status",
+            "python_functions": [
+              "_cmd_status"
+            ],
+            "c_file": "src/agent/port_lsp_cli_remaining.c",
+            "python_file": "agent/lsp/cli.py",
+            "line": 38,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _cmd_status @ agent/lsp/cli.py:_cmd_status */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/cli.py",
@@ -35583,16 +35607,24 @@
             "decorators": [],
             "line_number": 176
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_cli_remaining.c",
+          "c_function": "lspc2_cmd_list",
+          "pop_annotation": {
+            "c_function": "lspc2_cmd_list",
+            "python_functions": [
+              "_cmd_list"
+            ],
+            "c_file": "src/agent/port_lsp_cli_remaining.c",
+            "python_file": "agent/lsp/cli.py",
+            "line": 45,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _cmd_list @ agent/lsp/cli.py:_cmd_list */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/cli.py",
@@ -35604,16 +35636,24 @@
             "decorators": [],
             "line_number": 191
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_cli_remaining.c",
+          "c_function": "lspc2_cmd_install",
+          "pop_annotation": {
+            "c_function": "lspc2_cmd_install",
+            "python_functions": [
+              "_cmd_install"
+            ],
+            "c_file": "src/agent/port_lsp_cli_remaining.c",
+            "python_file": "agent/lsp/cli.py",
+            "line": 52,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _cmd_install @ agent/lsp/cli.py:_cmd_install */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/cli.py",
@@ -35625,16 +35665,24 @@
             "decorators": [],
             "line_number": 215
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_cli_remaining.c",
+          "c_function": "lspc2_cmd_install_all",
+          "pop_annotation": {
+            "c_function": "lspc2_cmd_install_all",
+            "python_functions": [
+              "_cmd_install_all"
+            ],
+            "c_file": "src/agent/port_lsp_cli_remaining.c",
+            "python_file": "agent/lsp/cli.py",
+            "line": 60,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _cmd_install_all @ agent/lsp/cli.py:_cmd_install_all */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/cli.py",
@@ -35646,16 +35694,24 @@
             "decorators": [],
             "line_number": 241
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_cli_remaining.c",
+          "c_function": "lspc2_cmd_restart",
+          "pop_annotation": {
+            "c_function": "lspc2_cmd_restart",
+            "python_functions": [
+              "_cmd_restart"
+            ],
+            "c_file": "src/agent/port_lsp_cli_remaining.c",
+            "python_file": "agent/lsp/cli.py",
+            "line": 67,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _cmd_restart @ agent/lsp/cli.py:_cmd_restart */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/cli.py",
@@ -35667,16 +35723,24 @@
             "decorators": [],
             "line_number": 249
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_cli_remaining.c",
+          "c_function": "lspc2_cmd_which",
+          "pop_annotation": {
+            "c_function": "lspc2_cmd_which",
+            "python_functions": [
+              "_cmd_which"
+            ],
+            "c_file": "src/agent/port_lsp_cli_remaining.c",
+            "python_file": "agent/lsp/cli.py",
+            "line": 74,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _cmd_which @ agent/lsp/cli.py:_cmd_which */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/cli.py",
@@ -35688,16 +35752,24 @@
             "decorators": [],
             "line_number": 262
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_cli_remaining.c",
+          "c_function": "lspc2_recipe_pkg_for",
+          "pop_annotation": {
+            "c_function": "lspc2_recipe_pkg_for",
+            "python_functions": [
+              "_recipe_pkg_for"
+            ],
+            "c_file": "src/agent/port_lsp_cli_remaining.c",
+            "python_file": "agent/lsp/cli.py",
+            "line": 82,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _recipe_pkg_for @ agent/lsp/cli.py:_recipe_pkg_for */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/cli.py",
@@ -35709,16 +35781,24 @@
             "decorators": [],
             "line_number": 277
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_cli_remaining.c",
+          "c_function": "lspc2_backend_warnings",
+          "pop_annotation": {
+            "c_function": "lspc2_backend_warnings",
+            "python_functions": [
+              "_backend_warnings"
+            ],
+            "c_file": "src/agent/port_lsp_cli_remaining.c",
+            "python_file": "agent/lsp/cli.py",
+            "line": 98,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _backend_warnings @ agent/lsp/cli.py:_backend_warnings */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -278360,10 +278440,10 @@
     },
     "tools/approval.py": {
       "total": 94,
-      "ported": 84,
+      "ported": 94,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 10,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 94,
@@ -280003,17 +280083,24 @@
             "decorators": [],
             "line_number": 2034
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_approval_remaining2.c",
+          "c_function": "apr2_init",
+          "pop_annotation": {
+            "c_function": "apr2_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_approval_remaining2.c",
+            "python_file": "tools/approval.py",
+            "line": 25,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/approval.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/approval.py",
@@ -280025,17 +280112,24 @@
             "decorators": [],
             "line_number": 2048
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_approval_remaining2.c",
+          "c_function": "apr2_register_gateway_notify",
+          "pop_annotation": {
+            "c_function": "apr2_register_gateway_notify",
+            "python_functions": [
+              "register_gateway_notify"
+            ],
+            "c_file": "src/tools/port_approval_remaining2.c",
+            "python_file": "tools/approval.py",
+            "line": 34,
+            "is_consolidated": false,
+            "full_text": "/* PoP: register_gateway_notify @ tools/approval.py:register_gateway_notify */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/approval.py",
@@ -280105,17 +280199,24 @@
             "decorators": [],
             "line_number": 2109
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_approval_remaining2.c",
+          "c_function": "apr2_has_blocking_approval",
+          "pop_annotation": {
+            "c_function": "apr2_has_blocking_approval",
+            "python_functions": [
+              "has_blocking_approval"
+            ],
+            "c_file": "src/tools/port_approval_remaining2.c",
+            "python_file": "tools/approval.py",
+            "line": 42,
+            "is_consolidated": false,
+            "full_text": "/* PoP: has_blocking_approval @ tools/approval.py:has_blocking_approval */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/approval.py",
@@ -280185,17 +280286,24 @@
             "decorators": [],
             "line_number": 2127
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_approval_remaining2.c",
+          "c_function": "apr2_enable_session_yolo",
+          "pop_annotation": {
+            "c_function": "apr2_enable_session_yolo",
+            "python_functions": [
+              "enable_session_yolo"
+            ],
+            "c_file": "src/tools/port_approval_remaining2.c",
+            "python_file": "tools/approval.py",
+            "line": 50,
+            "is_consolidated": false,
+            "full_text": "/* PoP: enable_session_yolo @ tools/approval.py:enable_session_yolo */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/approval.py",
@@ -280236,17 +280344,24 @@
             "decorators": [],
             "line_number": 2143
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_approval_remaining2.c",
+          "c_function": "apr2_clear_session",
+          "pop_annotation": {
+            "c_function": "apr2_clear_session",
+            "python_functions": [
+              "clear_session"
+            ],
+            "c_file": "src/tools/port_approval_remaining2.c",
+            "python_file": "tools/approval.py",
+            "line": 58,
+            "is_consolidated": false,
+            "full_text": "/* PoP: clear_session @ tools/approval.py:clear_session */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/approval.py",
@@ -280258,17 +280373,24 @@
             "decorators": [],
             "line_number": 2159
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_approval_remaining2.c",
+          "c_function": "apr2_is_session_yolo_enabled",
+          "pop_annotation": {
+            "c_function": "apr2_is_session_yolo_enabled",
+            "python_functions": [
+              "is_session_yolo_enabled"
+            ],
+            "c_file": "src/tools/port_approval_remaining2.c",
+            "python_file": "tools/approval.py",
+            "line": 66,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_session_yolo_enabled @ tools/approval.py:is_session_yolo_enabled */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/approval.py",
@@ -280512,17 +280634,24 @@
             "decorators": [],
             "line_number": 2273
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_approval_remaining2.c",
+          "c_function": "apr2_prompt_dangerous_approval",
+          "pop_annotation": {
+            "c_function": "apr2_prompt_dangerous_approval",
+            "python_functions": [
+              "prompt_dangerous_approval"
+            ],
+            "c_file": "src/tools/port_approval_remaining2.c",
+            "python_file": "tools/approval.py",
+            "line": 74,
+            "is_consolidated": false,
+            "full_text": "/* PoP: prompt_dangerous_approval @ tools/approval.py:prompt_dangerous_approval */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/approval.py",
@@ -280853,17 +280982,24 @@
             "decorators": [],
             "line_number": 2877
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_approval_remaining2.c",
+          "c_function": "apr2_check_dangerous_command",
+          "pop_annotation": {
+            "c_function": "apr2_check_dangerous_command",
+            "python_functions": [
+              "check_dangerous_command"
+            ],
+            "c_file": "src/tools/port_approval_remaining2.c",
+            "python_file": "tools/approval.py",
+            "line": 82,
+            "is_consolidated": false,
+            "full_text": "/* PoP: check_dangerous_command @ tools/approval.py:check_dangerous_command */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/approval.py",
@@ -280933,17 +281069,24 @@
             "decorators": [],
             "line_number": 3065
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_approval_remaining2.c",
+          "c_function": "apr2_await_gateway_decision",
+          "pop_annotation": {
+            "c_function": "apr2_await_gateway_decision",
+            "python_functions": [
+              "_await_gateway_decision"
+            ],
+            "c_file": "src/tools/port_approval_remaining2.c",
+            "python_file": "tools/approval.py",
+            "line": 91,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _await_gateway_decision @ tools/approval.py:_await_gateway_decision */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/approval.py",
@@ -281013,17 +281156,24 @@
             "decorators": [],
             "line_number": 3867
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_approval_remaining2.c",
+          "c_function": "apr2_request_elicitation_consent",
+          "pop_annotation": {
+            "c_function": "apr2_request_elicitation_consent",
+            "python_functions": [
+              "request_elicitation_consent"
+            ],
+            "c_file": "src/tools/port_approval_remaining2.c",
+            "python_file": "tools/approval.py",
+            "line": 99,
+            "is_consolidated": false,
+            "full_text": "/* PoP: request_elicitation_consent @ tools/approval.py:request_elicitation_consent */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
