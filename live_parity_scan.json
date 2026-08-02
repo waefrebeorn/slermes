@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T21:47:24Z",
+  "generated_at": "2026-08-02T21:49:29Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -72461,10 +72461,10 @@
     },
     "agent/tts_registry.py": {
       "total": 4,
-      "ported": 0,
+      "ported": 4,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 4,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 4,
@@ -72480,16 +72480,24 @@
             "decorators": [],
             "line_number": 67
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tts_registry_remaining.c",
+          "c_function": "ttsr_register_provider",
+          "pop_annotation": {
+            "c_function": "ttsr_register_provider",
+            "python_functions": [
+              "register_provider"
+            ],
+            "c_file": "src/agent/port_tts_registry_remaining.c",
+            "python_file": "agent/tts_registry.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: register_provider @ agent/tts_registry.py:register_provider */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tts_registry.py",
@@ -72501,16 +72509,24 @@
             "decorators": [],
             "line_number": 112
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tts_registry_remaining.c",
+          "c_function": "ttsr_list_providers",
+          "pop_annotation": {
+            "c_function": "ttsr_list_providers",
+            "python_functions": [
+              "list_providers"
+            ],
+            "c_file": "src/agent/port_tts_registry_remaining.c",
+            "python_file": "agent/tts_registry.py",
+            "line": 28,
+            "is_consolidated": false,
+            "full_text": "/* PoP: list_providers @ agent/tts_registry.py:list_providers */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tts_registry.py",
@@ -72522,16 +72538,24 @@
             "decorators": [],
             "line_number": 119
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tts_registry_remaining.c",
+          "c_function": "ttsr_get_provider",
+          "pop_annotation": {
+            "c_function": "ttsr_get_provider",
+            "python_functions": [
+              "get_provider"
+            ],
+            "c_file": "src/agent/port_tts_registry_remaining.c",
+            "python_file": "agent/tts_registry.py",
+            "line": 34,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_provider @ agent/tts_registry.py:get_provider */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/tts_registry.py",
@@ -72543,16 +72567,24 @@
             "decorators": [],
             "line_number": 131
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_tts_registry_remaining.c",
+          "c_function": "ttsr_reset_for_tests",
+          "pop_annotation": {
+            "c_function": "ttsr_reset_for_tests",
+            "python_functions": [
+              "_reset_for_tests"
+            ],
+            "c_file": "src/agent/port_tts_registry_remaining.c",
+            "python_file": "agent/tts_registry.py",
+            "line": 42,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _reset_for_tests @ agent/tts_registry.py:_reset_for_tests */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -75722,10 +75754,10 @@
     },
     "agent/web_search_provider.py": {
       "total": 9,
-      "ported": 5,
+      "ported": 9,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 4,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 9,
@@ -75773,16 +75805,24 @@
             ],
             "line_number": 102
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_web_search_provider_remaining.c",
+          "c_function": "wsp_name",
+          "pop_annotation": {
+            "c_function": "wsp_name",
+            "python_functions": [
+              "name"
+            ],
+            "c_file": "src/agent/port_web_search_provider_remaining.c",
+            "python_file": "agent/web_search_provider.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: name @ agent/web_search_provider.py:name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/web_search_provider.py",
@@ -75827,16 +75867,24 @@
             ],
             "line_number": 117
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_web_search_provider_remaining.c",
+          "c_function": "wsp_is_available",
+          "pop_annotation": {
+            "c_function": "wsp_is_available",
+            "python_functions": [
+              "is_available"
+            ],
+            "c_file": "src/agent/port_web_search_provider_remaining.c",
+            "python_file": "agent/web_search_provider.py",
+            "line": 27,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_available @ agent/web_search_provider.py:is_available */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/web_search_provider.py",
@@ -75906,16 +75954,24 @@
             "decorators": [],
             "line_number": 142
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_web_search_provider_remaining.c",
+          "c_function": "wsp_search",
+          "pop_annotation": {
+            "c_function": "wsp_search",
+            "python_functions": [
+              "search"
+            ],
+            "c_file": "src/agent/port_web_search_provider_remaining.c",
+            "python_file": "agent/web_search_provider.py",
+            "line": 33,
+            "is_consolidated": false,
+            "full_text": "/* PoP: search @ agent/web_search_provider.py:search */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/web_search_provider.py",
@@ -75927,16 +75983,24 @@
             "decorators": [],
             "line_number": 153
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_web_search_provider_remaining.c",
+          "c_function": "wsp_extract",
+          "pop_annotation": {
+            "c_function": "wsp_extract",
+            "python_functions": [
+              "extract"
+            ],
+            "c_file": "src/agent/port_web_search_provider_remaining.c",
+            "python_file": "agent/web_search_provider.py",
+            "line": 41,
+            "is_consolidated": false,
+            "full_text": "/* PoP: extract @ agent/web_search_provider.py:extract */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/web_search_provider.py",
