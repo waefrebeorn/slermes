@@ -1412,7 +1412,18 @@ int tools_image_source_u_resolve_data_url(const char *arg) {
 }
 
 /* PoP: _http_block_reason @ tools/image_source.py:_http_block_reason */
-int tools_image_source_u_http_block_reason(const char *arg) { (void)arg; return 0; }
+int tools_image_source_u_http_block_reason(const char *arg) {
+    /* Python: policy pre-flight block reason. Arg =
+     * "state\tmessage\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "unsafe") == 0) { printf("blocked: unsafe or private URL\n"); return 0; }
+    if (strcmp(state, "policy") == 0) { printf("%s\n", t1 ? t1 + 1 : "blocked by website policy"); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _download_to_bytes @ tools/image_source.py:_download_to_bytes */
 int tools_image_source_u_download_to_bytes(const char *arg) { (void)arg; return 0; }
@@ -1958,7 +1969,20 @@ int tools_hook_output_spill_u_coerce_non_negative_int(const char *arg) {
 int tools_hook_output_spill_get_spill_config(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_spill_dir @ tools/hook_output_spill.py:_resolve_spill_dir */
-int tools_hook_output_spill_u_resolve_spill_dir(const char *arg) { (void)arg; return 0; }
+int tools_hook_output_spill_u_resolve_spill_dir(const char *arg) {
+    /* Python: spill dir grouped by session. Arg =
+     * "home\tsession_id\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *home = arg;
+    const char *session = t1 ? t1 + 1 : "no-session";
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("%s/hook_outputs/%s\n", home, session); return 0; }
+    printf("%s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _build_preview @ tools/hook_output_spill.py:_build_preview */
 int tools_hook_output_spill_u_build_preview(const char *arg) {
@@ -2345,7 +2369,18 @@ int tools_tts_streaming_take_speech_interrupted(const char *arg) {
 }
 
 /* PoP: resolve_streaming_provider @ tools/tts_streaming.py:resolve_streaming_provider */
-int tools_tts_streaming_resolve_streaming_provider(const char *arg) { (void)arg; return 0; }
+int tools_tts_streaming_resolve_streaming_provider(const char *arg) {
+    /* Python: ready streamer or None. Arg = "name\tavailable\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int available = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!available || !state) { printf("\n"); return 0; }
+    printf("%s\n", t3 ? t3 + 1 : arg);
+    return 0;
+}
 
 /* PoP: list_windows @ tools/computer_use/backend.py:list_windows */
 int tools_computer_use_backend_list_windows(const char *arg) {
@@ -2500,7 +2535,19 @@ int tools_browser_camofox_state_get_camofox_state_dir(const char *arg) {
 int tools_budget_config_resolve_threshold(const char *arg) { (void)arg; return 0; }
 
 /* PoP: resolve_clarify_timeout @ tools/clarify_gateway.py:resolve_clarify_timeout */
-int tools_clarify_gateway_resolve_clarify_timeout(const char *arg) { (void)arg; return 0; }
+int tools_clarify_gateway_resolve_clarify_timeout(const char *arg) {
+    /* Python: clarify.timeout > agent.clarify_timeout > 3600. Arg =
+     * "legacy\tagent\tresult". */
+    if (!arg || !*arg) { printf("3600\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *legacy = arg;
+    const char *agent_v = t1 ? t1 + 1 : "";
+    if (strcmp(legacy, "none") != 0) { printf("%s\n", legacy); return 0; }
+    if (agent_v[0]) { printf("%s\n", agent_v); return 0; }
+    printf("3600\n");
+    return 0;
+}
 
 /* PoP: _adjust_thread_count @ tools/daemon_pool.py:_adjust_thread_count */
 int tools_daemon_pool_u_adjust_thread_count(const char *arg) {

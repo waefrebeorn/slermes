@@ -498,7 +498,13 @@ int main_select_provider_and_model(const char *arg) { (void)arg; return 0; }
 int main_u_clear_stale_openai_base_url(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _all_aux_tasks @ hermes_cli/main.py:_all_aux_tasks */
-int main_u_all_aux_tasks(const char *arg) { (void)arg; return 0; }
+int main_u_all_aux_tasks(const char *arg) {
+    /* Python: built-in + plugin tasks. Arg = "tasks_json\tcount". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _format_aux_current @ hermes_cli/main.py:_format_aux_current */
 int main_u_format_aux_current(const char *arg) {
@@ -1791,7 +1797,17 @@ int main_cmd_console(const char *arg) {
 }
 
 /* PoP: _plugin_cli_discovery_needed @ hermes_cli/main.py:_plugin_cli_discovery_needed */
-int main_u_plugin_cli_discovery_needed(const char *arg) { (void)arg; return 0; }
+int main_u_plugin_cli_discovery_needed(const char *arg) {
+    /* Python: unknown first arg needs discovery. Arg = "first\tbuiltin\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int builtin = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (strcmp(arg, "none") == 0 || builtin) { printf("0\n"); return 0; }
+    printf("%d\n", state ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _command_has_dedicated_mcp_startup @ hermes_cli/main.py:_command_has_dedicated_mcp_startup */
 int main_u_command_has_dedicated_mcp_startup(const char *arg) {

@@ -129,7 +129,32 @@ int appr_u_shell_segment_tokens(const char *arg) {
 }
 
 /* PoP: _iter_top_level_shell_segments @ tools/approval.py:_iter_top_level_shell_segments */
-int appr_u_iter_top_level_shell_segments(const char *arg) { (void)arg; return 0; }
+int appr_u_iter_top_level_shell_segments(const char *arg) {
+    /* Python: left-to-right top-level segments. Arg = "command". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    int first = 1;
+    while (*p) {
+        const char *t = strchr(p, ';');
+        const char *a = strchr(p, '&');
+        const char *n = strchr(p, '\n');
+        const char *end = NULL;
+        if (t && (!a || t < a)) end = t;
+        else if (a && (!t || a < t)) end = a;
+        else if (n && (!t || n < t) && (!a || n < a)) end = n;
+        else end = p + strlen(p);
+        size_t len = (size_t)(end - p);
+        if (len) {
+            if (!first) printf("\n");
+            printf("%.*s", (int)len, p);
+            first = 0;
+        }
+        p = end;
+        while (*p == ';' || *p == '&' || *p == '\n') p++;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _split_option @ tools/approval.py:_split_option */
 int appr_u_split_option(const char *arg) {

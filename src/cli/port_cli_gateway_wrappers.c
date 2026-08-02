@@ -100,7 +100,15 @@ int cgw_u_hermes_home_from_systemd_unit_file(const char *arg) { (void)arg; retur
 int cgw_u_sync_hermes_home_from_systemd_unit(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _read_systemd_unit_properties @ hermes_cli/gateway.py:_read_systemd_unit_properties */
-int cgw_u_read_systemd_unit_properties(const char *arg) { (void)arg; return 0; }
+int cgw_u_read_systemd_unit_properties(const char *arg) {
+    /* Python: systemctl show parse. Arg = "props_json\tstate". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = tab && tab[1] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _systemd_main_pid_from_props @ hermes_cli/gateway.py:_systemd_main_pid_from_props */
 int cgw_u_systemd_main_pid_from_props(const char *arg) {
@@ -271,7 +279,18 @@ int cgw_u_recover_pending_systemd_restart(const char *arg) { (void)arg; return 0
 int cgw_u_parse_launchd_pid_from_list_output(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _probe_launchd_service_running @ hermes_cli/gateway.py:_probe_launchd_service_running */
-int cgw_u_probe_launchd_service_running(const char *arg) { (void)arg; return 0; }
+int cgw_u_probe_launchd_service_running(const char *arg) {
+    /* Python: launchctl list + pid check. Arg = "has_plist\tpid_found\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_plist = arg[0] == '1';
+    if (!has_plist) { printf("0\n"); return 0; }
+    int pid_found = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    printf("%d\n", (pid_found && state) ? 1 : 0);
+    return 0;
+}
 
 /* PoP: get_gateway_runtime_snapshot @ hermes_cli/gateway.py:get_gateway_runtime_snapshot */
 int cgw_get_gateway_runtime_snapshot(const char *arg) { (void)arg; return 0; }
@@ -375,7 +394,18 @@ int cgw_u_container_systemd_operational(const char *arg) {
 }
 
 /* PoP: _windows_gateway_should_absorb_console_controls @ hermes_cli/gateway.py:_windows_gateway_should_absorb_console_controls */
-int cgw_u_windows_gateway_should_absorb_console_controls(const char *arg) { (void)arg; return 0; }
+int cgw_u_windows_gateway_should_absorb_console_controls(const char *arg) {
+    /* Python: detached opt-in or no tty. Arg = "is_windows\tdetached\tstdin_tty". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int is_windows = arg[0] == '1';
+    if (!is_windows) { printf("0\n"); return 0; }
+    int detached = t1 && t1[1] == '1';
+    if (detached) { printf("1\n"); return 0; }
+    printf("%d\n", (t2 && t2[1] != '1') ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _profile_arg_for_target_user @ hermes_cli/gateway.py:_profile_arg_for_target_user */
 int cgw_u_profile_arg_for_target_user(const char *arg) {
@@ -1338,7 +1368,13 @@ int cgw_u_is_official_docker_checkout(const char *arg) {
 }
 
 /* PoP: _running_under_gateway_supervisor @ hermes_cli/gateway.py:_running_under_gateway_supervisor */
-int cgw_u_running_under_gateway_supervisor(const char *arg) { (void)arg; return 0; }
+int cgw_u_running_under_gateway_supervisor(const char *arg) {
+    /* Python: supervisor env markers. Arg = "state". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    if (arg[0] == '1') { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _guard_supervised_gateway_conflict @ hermes_cli/gateway.py:_guard_supervised_gateway_conflict */
 int cgw_u_guard_supervised_gateway_conflict(const char *arg) { (void)arg; return 0; }

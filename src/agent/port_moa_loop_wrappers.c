@@ -196,7 +196,17 @@ int moa_u_render_tool_calls(const char *arg) { (void)arg; return 0; }
 int moa_u_reference_messages(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _preset_temperature @ agent/moa_loop.py:_preset_temperature */
-int moa_u_preset_temperature(const char *arg) { (void)arg; return 0; }
+int moa_u_preset_temperature(const char *arg) {
+    /* Python: None on absent/empty/null. Arg = "value\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "none") == 0) { printf("\n"); return 0; }
+    if (strcmp(state, "bad") == 0) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _is_failed_reference @ agent/moa_loop.py:_is_failed_reference */
 int moa_u_is_failed_reference(const char *arg) {

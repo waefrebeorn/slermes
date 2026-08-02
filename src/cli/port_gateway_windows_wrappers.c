@@ -358,7 +358,20 @@ int gw_u_install_choice_from_env(const char *arg) {
 }
 
 /* PoP: _prompt_install_choices @ hermes_cli/gateway_windows.py:_prompt_install_choices */
-int gw_u_prompt_install_choices(const char *arg) { (void)arg; return 0; }
+int gw_u_prompt_install_choices(const char *arg) {
+    /* Python: (start_now, start_on_login) w/ env fast path. Arg =
+     * "state\tstart_now\tstart_on_login". */
+    if (!arg || !*arg) { printf("1\t1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "env") == 0) {
+        printf("%s\t%s\n", (t1 && t1[1] == '1') ? "1" : "0", (t2 && t2[1] == '1') ? "1" : "0");
+        return 0;
+    }
+    printf("%s\t%s\n", t1 ? t1 + 1 : "1", t2 ? t2 + 1 : "1");
+    return 0;
+}
 
 /* PoP: _install_startup_fallback @ hermes_cli/gateway_windows.py:_install_startup_fallback */
 int gw_u_install_startup_fallback(const char *arg) { (void)arg; return 0; }

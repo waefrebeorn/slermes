@@ -888,7 +888,18 @@ int agent_agent_init_u_moa_reference_output_allowed(const char *arg) {
 }
 
 /* PoP: _relay_moa_reference_event @ agent/agent_init.py:_relay_moa_reference_event */
-int agent_agent_init_u_relay_moa_reference_event(const char *arg) { (void)arg; return 0; }
+int agent_agent_init_u_relay_moa_reference_event(const char *arg) {
+    /* Python: relay MoA display events. Arg =
+     * "event\tlabel\ttext\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t3 && t3[1] == '1';
+    if (!state) { printf("relay skipped (no callback)\n"); return 0; }
+    printf("moa event relayed: %s (%s)\n", arg, t1 ? t1 + 1 : "");
+    return 0;
+}
 
 /* PoP: _provider_default_routes @ agent/agent_init.py:_provider_default_routes */
 int agent_agent_init_u_provider_default_routes(const char *arg) {

@@ -2560,7 +2560,22 @@ int hermes_cli_skills_hub_u_is_valid_installed_skill_name(const char *arg) {
 int hermes_cli_skills_hub_u_existing_categories(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _prompt_for_skill_name @ hermes_cli/skills_hub.py:_prompt_for_skill_name */
-int hermes_cli_skills_hub_u_prompt_for_skill_name(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skills_hub_u_prompt_for_skill_name(const char *arg) {
+    /* Python: interactive name prompt. Arg = "url\tdefault\tanswer\tvalid". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *url = arg;
+    const char *dflt = t1 ? t1 + 1 : "";
+    const char *answer = t2 ? t2 + 1 : "";
+    int valid = t3 && t3[1] == '1';
+    printf("[yellow]The SKILL.md at %s doesn't declare a `name:` in its frontmatter,[/]\n[yellow]and the URL path doesn't produce a valid identifier either.[/]\n", url);
+    printf("[bold]Enter a skill name%s:[/] [dim](lowercase letters, digits, hyphens, underscores; starts with a letter)[/]\n", dflt[0] ? " [default]" : "");
+    if (answer[0] && !valid) { printf("[bold red]Invalid name:[/] '%s'. Aborting install.\n\n", answer); return 0; }
+    printf("%s\n", answer[0] ? answer : dflt);
+    return 0;
+}
 
 /* PoP: _prompt_for_category @ hermes_cli/skills_hub.py:_prompt_for_category */
 int hermes_cli_skills_hub_u_prompt_for_category(const char *arg) {
@@ -3336,7 +3351,14 @@ int hermes_cli_inventory_with_overrides(const char *arg) {
 int hermes_cli_inventory_build_models_payload(const char *arg) { (void)arg; return 0; }
 
 /* PoP: build_model_options_payload @ hermes_cli/inventory.py:build_model_options_payload */
-int hermes_cli_inventory_build_model_options_payload(const char *arg) { (void)arg; return 0; }
+int hermes_cli_inventory_build_model_options_payload(const char *arg) {
+    /* Python: picker payload with probe policy. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    printf("%s\n", tab ? tab + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _apply_capabilities @ hermes_cli/inventory.py:_apply_capabilities */
 int hermes_cli_inventory_u_apply_capabilities(const char *arg) { (void)arg; return 0; }
@@ -4442,7 +4464,15 @@ int hermes_cli_onepassword_secrets_u_op_version(const char *arg) {
 }
 
 /* PoP: _op_whoami @ hermes_cli/onepassword_secrets_cli.py:_op_whoami */
-int hermes_cli_onepassword_secrets_u_op_whoami(const char *arg) { (void)arg; return 0; }
+int hermes_cli_onepassword_secrets_u_op_whoami(const char *arg) {
+    /* Python: op whoami identity or None. Arg = "state\tidentity". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "ok") == 0) { printf("%s\n", tab ? tab + 1 : "authenticated"); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _is_root @ hermes_cli/security_audit_startup.py:_is_root */
 int hermes_cli_security_audit_star_u_is_root(const char *arg) {
@@ -6722,7 +6752,17 @@ int hermes_cli_suggestions_cmd_u_fmt_pending(const char *arg) {
 }
 
 /* PoP: _resolve_origin @ hermes_cli/suggestions_cmd.py:_resolve_origin */
-int hermes_cli_suggestions_cmd_u_resolve_origin(const char *arg) { (void)arg; return 0; }
+int hermes_cli_suggestions_cmd_u_resolve_origin(const char *arg) {
+    /* Python: session env origin. Arg = "platform\tchat_id\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: handle_suggestions_command @ hermes_cli/suggestions_cmd.py:handle_suggestions_command */
 int hermes_cli_suggestions_cmd_handle_suggestions_command(const char *arg) { (void)arg; return 0; }

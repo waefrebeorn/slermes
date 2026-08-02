@@ -1498,7 +1498,16 @@ int gateway_systemd_notify_u_lag_tolerance(const char *arg) {
 int gateway_systemd_notify_record_tick(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _warn_slack_directory @ gateway/channel_directory.py:_warn_slack_directory */
-int gateway_channel_directory_u_warn_slack_directory(const char *arg) { (void)arg; return 0; }
+int gateway_channel_directory_u_warn_slack_directory(const char *arg) {
+    /* Python: throttled warning. Arg = "team_id\tdetail\tthrottled". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int throttled = t2 && t2[1] == '1';
+    if (throttled) printf("slack directory failure suppressed (repeated)\n");
+    else printf("Channel directory: failed to list Slack channels for team %s: %s\n", arg, t1 ? t1 + 1 : "");
+    return 0;
+}
 
 /* PoP: _slack_api_error_code @ gateway/channel_directory.py:_slack_api_error_code */
 int gateway_channel_directory_u_slack_api_error_code(const char *arg) {

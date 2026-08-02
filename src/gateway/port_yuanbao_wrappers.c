@@ -339,7 +339,16 @@ int yb_u_rewrite_slash_command_2(const char *text) {
 int yb_u_detect_owner_command(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_at_bot @ gateway/platforms/yuanbao.py:_is_at_bot */
-int yb_u_is_at_bot(const char *arg) { (void)arg; return 0; }
+int yb_u_is_at_bot(const char *arg) {
+    /* Python: elem 1002 + user_id match. Arg = "bot_id\tfound\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%d\n", (t1 && t1[1] == '1') ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _extract_bot_mention_text @ gateway/platforms/yuanbao.py:_extract_bot_mention_text */
 int yb_u_extract_bot_mention_text(const char *arg) {
