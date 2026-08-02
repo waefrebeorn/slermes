@@ -264,7 +264,15 @@ int cron_jobs_u_job_running_in_this_process(const char *arg) {
 int cron_jobs_u_preserve_file_ownership(const char *arg) { (void)arg; return 0; }
 
 /* PoP: record_ticker_error @ cron/jobs.py:record_ticker_error */
-int cron_jobs_record_ticker_error(const char *arg) { (void)arg; return 0; }
+int cron_jobs_record_ticker_error(const char *arg) {
+    /* Python: atomic ticker error write. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("ticker error write skipped\n"); return 0; }
+    printf("ticker error recorded%s\n", (tab && tab[1] == '1') ? " (fsynced)" : "");
+    return 0;
+}
 
 /* PoP: clear_ticker_error @ cron/jobs.py:clear_ticker_error */
 int cron_jobs_clear_ticker_error(const char *arg) {

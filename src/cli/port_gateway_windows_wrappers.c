@@ -513,7 +513,16 @@ int gw_u_gateway_pids(const char *arg) {
 int gw_u_print_deep_probes(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _drain_gateway_pid @ hermes_cli/gateway_windows.py:_drain_gateway_pid */
-int gw_u_drain_gateway_pid(const char *arg) { (void)arg; return 0; }
+int gw_u_drain_gateway_pid(const char *arg) {
+    /* Python: marker + wait. Arg = "pid\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", (t2 && t2[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _windows_stop_drain_timeout @ hermes_cli/gateway_windows.py:_windows_stop_drain_timeout */
 int gw_u_windows_stop_drain_timeout(const char *arg) {

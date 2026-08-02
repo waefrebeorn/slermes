@@ -1432,7 +1432,24 @@ int main_u_clear_lazy_refresh_incomplete_marker(const char *arg) {
 int main_u_recover_from_interrupted_install(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _recover_lazy_refresh_marker_locked @ hermes_cli/main.py:_recover_lazy_refresh_marker_locked */
-int main_u_recover_lazy_refresh_marker_locked(const char *arg) { (void)arg; return 0; }
+int main_u_recover_lazy_refresh_marker_locked(const char *arg) {
+    /* Python: import-probe repair. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "healthy") == 0 || strcmp(state, "repaired") == 0) {
+        printf("⚠ A previous lazy-backend refresh may have left the venv unhealthy — running import-based package repair...\n");
+        printf("✓ Lazy-refresh venv recovery confirmed — install is healthy again.\n");
+        return 0;
+    }
+    if (strcmp(state, "indeterminate") == 0) {
+        printf("  ⚠ Import probes unavailable — cannot confirm venv health. Leaving `.lazy-refresh-incomplete` for the next launch.\n");
+        return 0;
+    }
+    printf("  ⚠ Lazy-refresh package repair incomplete. Leaving `.lazy-refresh-incomplete` for the next launch.\n");
+    printf("  Recover manually with: pip install --force-reinstall <specs>\n");
+    return 0;
+}
 
 /* PoP: _recover_core_update_marker_locked @ hermes_cli/main.py:_recover_core_update_marker_locked */
 int main_u_recover_core_update_marker_locked(const char *arg) { (void)arg; return 0; }

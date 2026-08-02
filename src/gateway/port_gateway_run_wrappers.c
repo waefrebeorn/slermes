@@ -130,7 +130,20 @@ int grun_u_bounded_adapter_teardown(const char *arg) { (void)arg; return 0; }
 int grun_u_connect_initial_adapter_with_timeout(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _telegram_topic_mode_enabled @ gateway/run.py:_telegram_topic_mode_enabled */
-int grun_u_telegram_topic_mode_enabled(const char *arg) { (void)arg; return 0; }
+int grun_u_telegram_topic_mode_enabled(const char *arg) {
+    /* Python: DM topic mode check. Arg =
+     * "is_telegram\tis_dm\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int is_telegram = arg[0] == '1';
+    int is_dm = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!is_telegram || !is_dm || !state) { printf("0\n"); return 0; }
+    printf("%s\n", (t3 && t3[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _should_send_telegram_lobby_reminder @ gateway/run.py:_should_send_telegram_lobby_reminder */
 int grun_u_should_send_telegram_lobby_reminder(const char *arg) {
@@ -835,7 +848,15 @@ int grun_u_async_delegation_watcher(const char *arg) { (void)arg; return 0; }
 int grun_u_run_process_watcher(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _extract_honcho_cache_busting_config @ gateway/run.py:_extract_honcho_cache_busting_config */
-int grun_u_extract_honcho_cache_busting_config(const char *arg) { (void)arg; return 0; }
+int grun_u_extract_honcho_cache_busting_config(const char *arg) {
+    /* Python: memoized honcho keys. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _extract_cache_busting_config @ gateway/run.py:_extract_cache_busting_config */
 int grun_u_extract_cache_busting_config(const char *arg) { (void)arg; return 0; }

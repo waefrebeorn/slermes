@@ -2893,7 +2893,15 @@ int hermes_cli_skills_hub_u_is_valid_installed_skill_name(const char *arg) {
 }
 
 /* PoP: _existing_categories @ hermes_cli/skills_hub.py:_existing_categories */
-int hermes_cli_skills_hub_u_existing_categories(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skills_hub_u_existing_categories(const char *arg) {
+    /* Python: category buckets. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _prompt_for_skill_name @ hermes_cli/skills_hub.py:_prompt_for_skill_name */
 int hermes_cli_skills_hub_u_prompt_for_skill_name(const char *arg) {
@@ -5382,7 +5390,15 @@ int hermes_cli_proxy_cli_cmd_disable(const char *arg) {
 }
 
 /* PoP: _load_env_file_into_environ @ hermes_cli/proxy_cli.py:_load_env_file_into_environ */
-int hermes_cli_proxy_cli_u_load_env_file_into_environ(const char *arg) { (void)arg; return 0; }
+int hermes_cli_proxy_cli_u_load_env_file_into_environ(const char *arg) {
+    /* Python: .env backfill. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "0");
+    return 0;
+}
 
 /* PoP: _yn @ hermes_cli/proxy_cli.py:_yn */
 int hermes_cli_proxy_cli_u_yn(const char *arg) {
@@ -5871,7 +5887,16 @@ int hermes_cli_nous_billing_invalidate_cached_token(const char *arg) {
 int hermes_cli_nous_billing_u_request(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_subscription_state @ hermes_cli/nous_billing.py:get_subscription_state */
-int hermes_cli_nous_billing_get_subscription_state(const char *arg) { (void)arg; return 0; }
+int hermes_cli_nous_billing_get_subscription_state(const char *arg) {
+    /* Python: GET subscription. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "error") == 0) { printf("0 billing request failed\n"); return 1; }
+    if (strcmp(state, "auth_error") == 0) { printf("0 billing auth required\n"); return 1; }
+    printf("%s\n", tab ? tab + 1 : "{}");
+    return 0;
+}
 
 /* PoP: post_subscription_preview @ hermes_cli/nous_billing.py:post_subscription_preview */
 int hermes_cli_nous_billing_post_subscription_preview(const char *arg) {
@@ -6646,7 +6671,16 @@ int hermes_cli_azure_detect_u_http_get_json(const char *arg) {
 }
 
 /* PoP: _probe_openai_models @ hermes_cli/azure_detect.py:_probe_openai_models */
-int hermes_cli_azure_detect_u_probe_openai_models(const char *arg) { (void)arg; return 0; }
+int hermes_cli_azure_detect_u_probe_openai_models(const char *arg) {
+    /* Python: /models probe. Arg = "state\tcount\tresult". */
+    if (!arg || !*arg) { printf("0\t0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\t0\n"); return 0; }
+    printf("1\t%s\n", t2 ? t2 + 1 : "0");
+    return 0;
+}
 
 /* PoP: _probe_anthropic_messages @ hermes_cli/azure_detect.py:_probe_anthropic_messages */
 int hermes_cli_azure_detect_u_probe_anthropic_messages(const char *arg) { (void)arg; return 0; }
@@ -8087,7 +8121,15 @@ int hermes_cli_route_identity_should_clear_context_pin(const char *arg) {
 }
 
 /* PoP: query_session_listing @ hermes_cli/session_listing.py:query_session_listing */
-int hermes_cli_session_listing_query_session_listing(const char *arg) { (void)arg; return 0; }
+int hermes_cli_session_listing_query_session_listing(const char *arg) {
+    /* Python: listing policy. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _iter_assistant_tool_calls @ hermes_cli/session_recap.py:_iter_assistant_tool_calls */
 int hermes_cli_session_recap_u_iter_assistant_tool_calls(const char *arg) {

@@ -1515,7 +1515,19 @@ int cgw_launchd_uninstall(const char *arg) {
 int cgw_launchd_start(const char *arg) { (void)arg; return 0; }
 
 /* PoP: launchd_stop @ hermes_cli/gateway.py:launchd_stop */
-int cgw_launchd_stop(const char *arg) { (void)arg; return 0; }
+int cgw_launchd_stop(const char *arg) {
+    /* Python: bootout + wait. Arg = "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "bootout_fail") == 0) {
+        fprintf(stderr, "launchctl bootout failed: %s\n", t2 ? t2 + 1 : "?");
+        return 1;
+    }
+    printf("✓ Service stopped\n");
+    return 0;
+}
 
 /* PoP: _wait_for_gateway_exit @ hermes_cli/gateway.py:_wait_for_gateway_exit */
 int cgw_u_wait_for_gateway_exit(const char *arg) { (void)arg; return 0; }

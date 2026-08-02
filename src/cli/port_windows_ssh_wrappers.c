@@ -134,7 +134,20 @@ int wssr_u_allowed_sids(const char *arg) {
 }
 
 /* PoP: _verify_security @ hermes_cli/windows_ssh_runtime.py:_verify_security */
-int wssr_u_verify_security(const char *arg) { (void)arg; return 0; }
+int wssr_u_verify_security(const char *arg) {
+    /* Python: owner + DACL check. Arg = "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "owner") == 0 || strcmp(state, "null_dacl") == 0 || strcmp(state, "permissive") == 0) {
+        fprintf(stderr, "Windows SSH runtime security violation: %s (%s)\n", state, t3 ? t3 + 1 : "");
+        return 1;
+    }
+    printf("security verified\n");
+    return 0;
+}
 
 /* PoP: _open @ hermes_cli/windows_ssh_runtime.py:_open */
 int wssr_u_open(const char *arg) {

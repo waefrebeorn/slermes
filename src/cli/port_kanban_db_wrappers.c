@@ -50,7 +50,18 @@ int kdbport_u_sqlite_connect(const char *arg) {
 }
 
 /* PoP: _maybe_checkpoint_wal @ hermes_cli/kanban_db.py:_maybe_checkpoint_wal */
-int kdbport_u_maybe_checkpoint_wal(const char *arg) { (void)arg; return 0; }
+int kdbport_u_maybe_checkpoint_wal(const char *arg) {
+    /* Python: coarse-interval TRUNCATE. Arg =
+     * "due\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int due = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!due || !state) { printf("checkpoint skipped (interval)\n"); return 0; }
+    printf("WAL checkpoint (TRUNCATE) done\n");
+    return 0;
+}
 
 /* PoP: _prune_corrupt_backups @ hermes_cli/kanban_db.py:_prune_corrupt_backups */
 int kdbport_u_prune_corrupt_backups(const char *arg) { (void)arg; return 0; }
@@ -125,7 +136,18 @@ int kdbport_u_repairable_index_names(const char *arg) {
 }
 
 /* PoP: _attempt_index_reindex_repair @ hermes_cli/kanban_db.py:_attempt_index_reindex_repair */
-int kdbport_u_attempt_index_reindex_repair(const char *arg) { (void)arg; return 0; }
+int kdbport_u_attempt_index_reindex_repair(const char *arg) {
+    /* Python: per-index then bare REINDEX. Arg =
+     * "clean\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\t[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int clean = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\t[reindex failed]\n"); return 0; }
+    printf("%d\t[%s]\n", clean ? 1 : 0, t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: repair_db @ hermes_cli/kanban_db.py:repair_db */
 int kdbport_repair_db(const char *arg) { (void)arg; return 0; }

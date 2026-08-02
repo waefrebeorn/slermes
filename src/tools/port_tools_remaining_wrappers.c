@@ -2655,7 +2655,15 @@ int tools_focus_pane_tool_check_focus_pane_requirements(const char *arg) {
 }
 
 /* PoP: check_image_generation_requirements @ tools/image_generation_tool.py:check_image_generation_requirements */
-int tools_image_generation_tool_check_image_generation_requirements(const char *arg) { (void)arg; return 0; }
+int tools_image_generation_tool_check_image_generation_requirements(const char *arg) {
+    /* Python: fal or configured plugin. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _dispatch_to_plugin_provider @ tools/image_generation_tool.py:_dispatch_to_plugin_provider */
 int tools_image_generation_tool_u_dispatch_to_plugin_provider(const char *arg) { (void)arg; return 0; }
@@ -2876,7 +2884,12 @@ int tools_environments_managed_mod_u_request(const char *arg) {
 int tools_feishu_drive_tool_u_do_request(const char *arg) { (void)arg; return 0; }
 
 /* PoP: clear_current_thread_interrupt @ tools/interrupt.py:clear_current_thread_interrupt */
-int tools_interrupt_clear_current_thread_interrupt(const char *arg) { (void)arg; return 0; }
+int tools_interrupt_clear_current_thread_interrupt(const char *arg) {
+    /* Python: per-thread clear. Arg = "state". */
+    (void)arg;
+    printf("current-thread interrupt bit cleared\n");
+    return 0;
+}
 
 /* PoP: _build_auth_header @ tools/mixture_of_agents_tool.py:_build_auth_header */
 int tools_mixture_of_agents_tool_u_build_auth_header(const char *arg) { (void)arg; return 0; }

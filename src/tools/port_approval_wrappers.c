@@ -37,7 +37,16 @@ int appr_u_observe_smart_approval_verdict(const char *arg) {
 }
 
 /* PoP: _match_user_deny_rule @ tools/approval.py:_match_user_deny_rule */
-int appr_u_match_user_deny_rule(const char *arg) { (void)arg; return 0; }
+int appr_u_match_user_deny_rule(const char *arg) {
+    /* Python: fnmatch deny. Arg = "command\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _user_deny_block_result @ tools/approval.py:_user_deny_block_result */
 int appr_u_user_deny_block_result(const char *arg) {

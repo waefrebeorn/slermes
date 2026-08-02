@@ -2562,7 +2562,15 @@ int agent_redact_u_redact_strict_url_credentials(const char *arg) {
 }
 
 /* PoP: split_stacked_skill_commands @ agent/skill_commands.py:split_stacked_skill_commands */
-int agent_skill_commands_split_stacked_skill_commands(const char *arg) { (void)arg; return 0; }
+int agent_skill_commands_split_stacked_skill_commands(const char *arg) {
+    /* Python: stacked /skill tokens. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\t\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\t%s\n", tab ? tab + 1 : ""); return 0; }
+    printf("%s\t\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: build_stacked_skill_invocation_message @ agent/skill_commands.py:build_stacked_skill_invocation_message */
 int agent_skill_commands_build_stacked_skill_invocation_message(const char *arg) { (void)arg; return 0; }

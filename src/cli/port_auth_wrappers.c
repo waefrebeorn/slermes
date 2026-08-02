@@ -280,7 +280,16 @@ int auth_u_read_codex_tokens(const char *arg) { (void)arg; return 0; }
 int auth_u_sync_codex_pool_entries(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _save_codex_tokens @ hermes_cli/auth.py:_save_codex_tokens */
-int auth_u_save_codex_tokens(const char *arg) { (void)arg; return 0; }
+int auth_u_save_codex_tokens(const char *arg) {
+    /* Python: singleton capture + pool sync. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("codex save skipped\n"); return 0; }
+    printf("codex tokens saved (pool synced): %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _recover_codex_tokens_from_cli @ hermes_cli/auth.py:_recover_codex_tokens_from_cli */
 int auth_u_recover_codex_tokens_from_cli(const char *arg) {
@@ -304,7 +313,15 @@ int auth_refresh_codex_oauth_pure(const char *arg) { (void)arg; return 0; }
 int auth_u_refresh_codex_auth_tokens(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _import_codex_cli_tokens @ hermes_cli/auth.py:_import_codex_cli_tokens */
-int auth_u_import_codex_cli_tokens(const char *arg) { (void)arg; return 0; }
+int auth_u_import_codex_cli_tokens(const char *arg) {
+    /* Python: ~/.codex/auth.json read. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_file") == 0 || strcmp(state, "bad_shape") == 0 || strcmp(state, "expired") == 0) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: resolve_codex_runtime_credentials @ hermes_cli/auth.py:resolve_codex_runtime_credentials */
 int auth_resolve_codex_runtime_credentials(const char *arg) { (void)arg; return 0; }
