@@ -135,7 +135,33 @@ int yb_u_put_cached_resource(const char *arg) { (void)arg; return 0; }
 int yb_u_append_cached_resource(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _guess_image_ext_from_url @ gateway/platforms/yuanbao.py:_guess_image_ext_from_url */
-int yb_u_guess_image_ext_from_url(const char *arg) { (void)arg; return 0; }
+int yb_u_guess_image_ext_from_url(const char *arg) {
+    /* Faithful port: take URL path, splitext, return known image ext or .jpg. */
+    if (!arg || !*arg) { printf(".jpg\n"); return 0; }
+    /* find path portion after "://" */
+    const char *p = strstr(arg, "://");
+    const char *path = p ? p + 3 : arg;
+    const char *slash = strchr(path, '/');
+    const char *qmark = strchr(path, '?');
+    const char *end = qmark ? qmark : (path + strlen(path));
+    if (slash && slash < end) path = slash;
+    /* ext = last '.' after the last '/' in [path, end) */
+    const char *ext = NULL;
+    for (const char *c = path; c < end; c++)
+        if (*c == '.') ext = c;
+    char buf[16];
+    if (ext && ext + 1 < end) {
+        size_t n = 0;
+        for (const char *c = ext; c < end && n < sizeof(buf) - 1; c++, n++)
+            buf[n] = tolower((unsigned char)*c);
+        buf[n] = '\0';
+        const char *known[] = {".jpg",".jpeg",".png",".gif",".webp",".bmp",".heic",".tiff",NULL};
+        for (int i = 0; known[i]; i++)
+            if (strcmp(buf, known[i]) == 0) { printf("%s\n", buf); return 0; }
+    }
+    printf(".jpg\n");
+    return 0;
+}
 
 /* PoP: _fetch_resource_url @ gateway/platforms/yuanbao.py:_fetch_resource_url */
 int yb_u_fetch_resource_url(const char *arg) { (void)arg; return 0; }

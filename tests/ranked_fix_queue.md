@@ -1,0 +1,209 @@
+# Ranked fix queue — 3268 bootleg functions
+
+- A  (delegate to real fn): 29
+- Bt (trivial direct-port): 230
+- Bx (direct but needs deps): 1049
+- C  (deep subsystem):        1960
+
+## Top of queue (automatable first)
+
+- [A] tools/computer_use/cua_backend.py :: key -> agent_model_metadata_u_context_cache_key  (cands: cmd_key)
+- [A] hermes_cli/gateway_windows.py :: status -> agent_error_classifier_u_classify_by_status  (cands: cmd_status)
+- [A] tools/environments/local.py :: cleanup -> tt_u_atexit_cleanup
+- [A] tools/environments/base.py :: cleanup -> tt_u_atexit_cleanup
+- [A] hermes_cli/windows_ssh_runtime.py :: dispatch -> adel_u_persist_dispatch  (cands: dispatch)
+- [A] tools/environments/docker.py :: cleanup -> tt_u_atexit_cleanup
+- [A] hermes_cli/kanban_db.py :: set_model_override -> kdbport_set_model_override  (cands: set_model_override)
+- [A] agent/context_compressor.py :: compress -> agent_memory_provider_on_pre_compress  (cands: cmd_compress)
+- [A] tools/computer_use/tool.py :: key -> agent_model_metadata_u_context_cache_key  (cands: cmd_key)
+- [A] tools/registry.py :: dispatch -> adel_u_persist_dispatch  (cands: dispatch)
+- [A] tools/environments/modal.py :: cleanup -> tt_u_atexit_cleanup
+- [A] tools/file_state.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
+- [A] agent/credential_pool.py :: current -> agent_subscription_view_u_parse_current  (cands: current)
+- [A] agent/credential_pool.py :: entries -> agent_credential_pool_u_log_no_available_entries  (cands: entries)
+- [A] agent/context_engine.py :: compress -> agent_memory_provider_on_pre_compress  (cands: cmd_compress)
+- [A] hermes_cli/goals.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
+- [A] tools/computer_use/backend.py :: key -> agent_model_metadata_u_context_cache_key  (cands: cmd_key)
+- [A] gateway/platforms/helpers.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
+- [A] gateway/platforms/helpers.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
+- [A] tools/interrupt.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
+- [A] cli.py :: status -> agent_error_classifier_u_classify_by_status  (cands: cmd_status)
+- [A] tools/environments/managed_modal.py :: cleanup -> tt_u_atexit_cleanup
+- [A] gateway/dead_targets.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
+- [A] gateway/restart_loop_guard.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
+- [A] gateway/stream_dispatch.py :: dispatch -> adel_u_persist_dispatch  (cands: dispatch)
+- [A] tools/environments/daytona.py :: cleanup -> tt_u_atexit_cleanup
+- [A] tools/environments/singularity.py :: cleanup -> tt_u_atexit_cleanup
+- [A] tools/environments/ssh.py :: cleanup -> tt_u_atexit_cleanup
+- [A] tools/slash_confirm.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
+- [Bt] hermes_cli/main.py :: _add_upstream_remote -> main_u_add_upstream_remote
+- [Bt] hermes_cli/main.py :: _command_has_dedicated_mcp_startup -> main_u_command_has_dedicated_mcp_startup
+- [Bt] hermes_cli/main.py :: _count_commits_between -> main_u_count_commits_between
+- [Bt] hermes_cli/main.py :: _has_upstream_remote -> main_u_has_upstream_remote
+- [Bt] hermes_cli/main.py :: _is_electron_packaged_web_dist -> main_u_is_electron_packaged_web_dist
+- [Bt] hermes_cli/main.py :: _is_fork -> main_u_is_fork
+- [Bt] hermes_cli/main.py :: _is_windows_npm_path -> main_u_is_windows_npm_path
+- [Bt] hermes_cli/main.py :: _lazy_refresh_marker_path -> main_u_lazy_refresh_marker_path
+- [Bt] hermes_cli/main.py :: _print_stash_cleanup_guidance -> main_u_print_stash_cleanup_guidance
+- [Bt] hermes_cli/main.py :: _resolve_update_branch -> main_u_resolve_update_branch
+- [Bt] hermes_cli/main.py :: _sync_fork_with_upstream -> main_u_sync_fork_with_upstream
+- [Bt] hermes_cli/main.py :: _write_lazy_refresh_incomplete_marker -> main_u_write_lazy_refresh_incomplete_marker
+- [Bt] gateway/run.py :: _agent_has_active_subagents -> grun_u_agent_has_active_subagents
+- [Bt] gateway/run.py :: _csv_or_list_to_set -> gw_strset_free
+- [Bt] gateway/run.py :: _get_system_prompt_for_channel -> grun_u_get_system_prompt_for_channel
+- [Bt] hermes_cli/gateway.py :: _default_system_service_user -> cgw_u_default_system_service_user
+- [Bt] hermes_cli/gateway.py :: _launchctl_bootstrap -> cgw_u_launchctl_bootstrap
+- [Bt] hermes_cli/gateway.py :: _launchctl_label_registered -> cgw_u_launchctl_label_registered
+- [Bt] hermes_cli/gateway.py :: _maybe_redirect_run_to_s6_supervision -> cgw_u_maybe_redirect_run_to_s6_supervision
+- [Bt] hermes_cli/gateway.py :: _print_gateway_process_mismatch -> cgw_u_print_gateway_process_mismatch
+- [Bt] hermes_cli/gateway.py :: _print_linger_enable_warning -> cgw_u_print_linger_enable_warning
+- [Bt] hermes_cli/gateway.py :: _print_other_profiles_gateway_status -> cgw_u_print_other_profiles_gateway_status
+- [Bt] hermes_cli/gateway.py :: _refuse_temp_home_service_write -> cgw_u_refuse_temp_home_service_write
+- [Bt] hermes_cli/gateway.py :: _retry_launchctl_bootstrap_until_registered -> cgw_u_retry_launchctl_bootstrap_until_registered
+- [Bt] hermes_cli/gateway.py :: _service_scope_label -> cgw_u_service_scope_label
+- [Bt] hermes_cli/gateway.py :: _systemd_service_is_start_limited -> cgw_u_systemd_service_is_start_limited
+- [Bt] hermes_cli/gateway.py :: has_conflicting_systemd_units -> cgw_has_conflicting_systemd_units
+- [Bt] hermes_cli/gateway.py :: has_legacy_hermes_units -> cgw_has_legacy_hermes_units
+- [Bt] hermes_cli/gateway.py :: has_process_service_mismatch -> cgw_has_process_service_mismatch
+- [Bt] hermes_cli/gateway.py :: print_systemd_linger_guidance -> cgw_print_systemd_linger_guidance
+- [Bt] gateway/platforms/yuanbao.py :: _guess_image_ext_from_url -> yb_u_guess_image_ext_from_url
+- [Bt] gateway/platforms/yuanbao.py :: _is_self_reference -> yb_u_is_self_reference
+- [Bt] gateway/platforms/yuanbao.py :: _rewrite_slash_command -> yb_u_rewrite_slash_command
+- [Bt] gateway/platforms/yuanbao.py :: _rewrite_slash_command -> yb_u_rewrite_slash_command
+- [Bt] gateway/platforms/yuanbao.py :: is_skippable_placeholder -> yb_is_skippable_placeholder
+- [Bt] gateway/platforms/yuanbao.py :: middleware_names -> yb_middleware_names
+- [Bt] gateway/platforms/yuanbao.py :: set_active -> yb_set_active
+- [Bt] gateway/platforms/yuanbao.py :: strip_cron_wrapper -> yb_strip_cron_wrapper
+- [Bt] hermes_cli/auth.py :: _is_codex_rate_limit_shaped -> auth_u_is_codex_rate_limit_shaped
+- [Bt] gateway/platforms/qqbot/adapter.py :: _guess_ext_from_data -> qqbot_u_guess_ext_from_data
+- [Bt] gateway/platforms/qqbot/adapter.py :: _merge_quote_into -> qqbot_u_merge_quote_into
+- [Bt] gateway/platforms/qqbot/adapter.py :: _parse_gateway_session_key -> qqbot_u_parse_gateway_session_key
+- [Bt] gateway/platforms/qqbot/adapter.py :: _parse_qq_timestamp -> qqbot_u_parse_qq_timestamp
+- [Bt] gateway/platforms/qqbot/adapter.py :: _strip_at_mention -> qqbot_u_strip_at_mention
+- [Bt] gateway/platforms/qqbot/adapter.py :: check_qq_requirements -> qqbot_check_qq_requirements
+- [Bt] gateway/platforms/qqbot/adapter.py :: set_interaction_callback -> qqbot_set_interaction_callback
+- [Bt] tools/computer_use/cua_backend.py :: _has_path_separator -> cua_u_has_path_separator
+- [Bt] tools/computer_use/cua_backend.py :: _is_closed_session_error -> cua_u_is_closed_session_error
+- [Bt] tools/computer_use/cua_backend.py :: _is_transient_daemon_error -> cua_u_is_transient_daemon_error
+- [Bt] tools/computer_use/cua_backend.py :: capability_version -> cua_capability_version
+- [Bt] tools/computer_use/cua_backend.py :: cua_driver_install_hint -> cua_cua_driver_install_hint
+- [Bt] tools/computer_use/cua_backend.py :: resolve_cua_driver_cmd -> cua_resolve_cua_driver_cmd
+- [Bt] hermes_cli/gateway_windows.py :: _install_choice_from_env -> gw_u_install_choice_from_env
+- [Bt] hermes_cli/gateway_windows.py :: _legacy_startup_entry_path -> gw_u_legacy_startup_entry_path
+- [Bt] hermes_cli/gateway_windows.py :: _quote_schtasks_arg -> gw_u_quote_schtasks_arg
+- [Bt] hermes_cli/gateway_windows.py :: _resolve_task_user -> gw_u_resolve_task_user
+- [Bt] hermes_cli/gateway_windows.py :: _sanitize_filename -> gw_u_sanitize_filename
+- [Bt] hermes_cli/gateway_windows.py :: get_startup_entry_path -> gw_get_startup_entry_path
+- [Bt] hermes_cli/gateway_windows.py :: is_task_registered -> gw_is_task_registered
+- [Bt] tools/environments/local.py :: _bash_safe_path -> envl_u_bash_safe_path
+- [Bt] tools/environments/local.py :: _path_env_key -> envl_u_path_env_key
+- [Bt] tools/environments/local.py :: _quote_shell_path -> envl_u_quote_shell_path
+- [Bt] tools/environments/local.py :: _resolve_hermes_bin_dir -> envl_u_resolve_hermes_bin_dir
+- [Bt] tools/mcp_oauth.py :: _client_info_path -> mcpo_u_client_info_path
+- [Bt] tools/mcp_oauth.py :: _meta_path -> mcpo_u_meta_path
+- [Bt] tools/mcp_oauth.py :: _safe_filename -> mcpo_u_safe_filename
+- [Bt] tools/mcp_oauth.py :: _tokens_path -> mcpo_u_tokens_path
+- [Bt] agent/moa_loop.py :: _degraded_notice -> moa_u_degraded_notice
+- [Bt] agent/moa_loop.py :: _failed_reference_labels -> moa_u_failed_reference_labels
+- [Bt] agent/moa_loop.py :: _is_failed_reference -> moa_u_is_failed_reference
+- [Bt] gateway/platforms/weixin.py :: _get_config -> wx_u_get_config
+- [Bt] gateway/platforms/weixin.py :: _get_upload_url -> wx_u_get_upload_url
+- [Bt] gateway/platforms/weixin.py :: set -> sku_u_normalize_string_set
+- [Bt] gateway/platforms/weixin.py :: set -> sku_u_normalize_string_set
+- [Bt] agent/memory_manager.py :: _has_block_opener_suffix -> mm_u_has_block_opener_suffix
+- [Bt] agent/memory_manager.py :: on_memory_write -> mm_on_memory_write
+- [Bt] tools/approval.py :: _read_tool_exec_flag -> appr_u_read_tool_exec_flag
+- [Bt] tools/environments/base.py :: _get_activity_callback -> envb_u_get_activity_callback
+- [Bt] tools/environments/base.py :: _quote_shell_path -> envb_u_quote_shell_path
+- [Bt] tools/environments/base.py :: set_activity_callback -> envb_set_activity_callback
+- [Bt] tools/terminal_tool.py :: _docker_volume_uses_host_path -> tt_u_docker_volume_uses_host_path
+- [Bt] tools/terminal_tool.py :: _get_approval_callback -> tt_u_get_approval_callback
+- [Bt] tools/terminal_tool.py :: _get_sudo_password_callback -> tt_u_get_sudo_password_callback
+- [Bt] tools/terminal_tool.py :: _invalidate_cached_sudo_on_auth_failure -> tt_u_invalidate_cached_sudo_on_auth_failure
+- [Bt] tools/terminal_tool.py :: _is_ssh_remote_tilde_cwd -> tt_u_is_ssh_remote_tilde_cwd
+- [Bt] tools/terminal_tool.py :: _stop_cleanup_thread -> tt_u_stop_cleanup_thread
+- [Bt] hermes_cli/windows_ssh_runtime.py :: _log_path -> wssr_u_log_path
+- [Bt] tools/environments/docker.py :: _get_active_profile_name -> envd_u_get_active_profile_name
+- [Bt] agent/skill_utils.py :: _normalize_string_set -> sku_u_normalize_string_set
+- [Bt] agent/skill_utils.py :: _resolve_dotpath -> sku_u_resolve_dotpath
+- [Bt] agent/skill_utils.py :: extract_skill_description -> sku_extract_skill_description
+- [Bt] agent/skill_utils.py :: is_skill_description_truncated_for_prompt -> sku_is_skill_description_truncated_for_prompt
+- [Bt] hermes_cli/managed_uv.py :: rebuild_venv -> muv_rebuild_venv
+- [Bt] hermes_cli/nous_account.py :: _coerce_str -> nous_u_coerce_str
+- [Bt] hermes_cli/nous_account.py :: _parse_iso_timestamp -> nous_u_parse_iso_timestamp
+- [Bt] hermes_cli/nous_account.py :: _pool_entry_is_portal_oauth -> nous_u_pool_entry_is_portal_oauth
+- [Bt] hermes_cli/nous_account.py :: reset_nous_portal_account_info_cache -> nous_reset_nous_portal_account_info_cache
+- [Bt] hermes_cli/nous_account.py :: tool_gateway_entitled -> nous_tool_gateway_entitled
+- [Bt] tools/skill_manager_tool.py :: _add_description_prompt_preview -> smt_u_add_description_prompt_preview
+- [Bt] tools/skill_manager_tool.py :: _background_review_read_before_write_guard -> smt_u_background_review_read_before_write_guard
+- [Bt] hermes_cli/session_export.py :: _render_markdown -> sexp_u_render_markdown
+- [Bt] gateway/platforms/base.py :: prefers_fresh_final_streaming -> gw_base__prefers_fresh_final_streaming
+- [Bt] gateway/platforms/base.py :: set_reaction_handler -> gw_base__set_reaction_handler
+- [Bt] gateway/platforms/base.py :: set_session_store -> gw_base__set_session_store
+- [Bt] hermes_cli/uninstall.py :: _hermes_path_markers -> uninst_u_hermes_path_markers
+- [Bt] hermes_cli/model_switch.py :: _check_hermes_model_warning -> msw_u_check_hermes_model_warning
+- [Bt] hermes_cli/model_switch.py :: format_model_for_display -> msw_format_model_for_display
+- [Bt] hermes_cli/session_export_md.py :: _render_content -> sexmd_u_render_content
+- [Bt] gateway/platforms/bluebubbles.py :: check_bluebubbles_requirements -> bb_check_bluebubbles_requirements
+- [Bt] hermes_cli/nous_subscription.py :: _resolve_browser_feature_state -> nsub_u_resolve_browser_feature_state
+- [Bt] hermes_cli/debug.py :: _capture_default_log_snapshots -> hermes_cli_debug_u_capture_default_log_snapshots
+- [Bt] hermes_cli/mcp_config.py :: _strip_bearer_prefix -> hermes_cli_mcp_config_u_strip_bearer_prefix
+- [Bt] agent/model_metadata.py :: _localhost_to_ipv4 -> agent_model_metadata_u_localhost_to_ipv4
+- [Bt] hermes_cli/service_manager.py :: _render_finish_script -> hermes_cli_service_manager_u_render_finish_script
+- [Bt] hermes_cli/service_manager.py :: _service_name -> hermes_cli_service_manager_u_service_name
+- [Bt] agent/subscription_view.py :: format_tier_row -> agent_subscription_view_format_tier_row
+- [Bt] hermes_cli/projects_cmd.py :: _print_project -> hermes_cli_projects_cmd_u_print_project
+- [Bt] tools/delegation_live_log.py :: _manifest_path -> tools_delegation_live_log_u_manifest_path
+- [Bt] tools/registry.py :: _is_registry_register_call -> tools_registry_u_is_registry_register_call
+- [Bt] tools/registry.py :: register_plugin_override_policy -> tools_registry_register_plugin_override_policy
+- [Bt] agent/chat_completion_helpers.py :: _bump_stale_streak -> agent_chat_completion_helpers_u_bump_stale_streak
+- [Bt] agent/chat_completion_helpers.py :: _fallback_entry_is_same_backend_by_base_url -> agent_chat_completion_helpers_u_fallback_entry_is_same_backe_rl
+- [Bt] agent/chat_completion_helpers.py :: _reset_stale_streak -> agent_chat_completion_helpers_u_reset_stale_streak
+- [Bt] agent/chat_completion_helpers.py :: _stale_streak -> agent_chat_completion_helpers_u_stale_streak
+- [Bt] gateway/shutdown_watchdog.py :: resolve_shutdown_watchdog_delay -> gateway_shutdown_watchdog_resolve_shutdown_watchdog_delay
+- [Bt] hermes_cli/auth_commands.py :: _api_key_default_label -> hermes_cli_auth_commands_u_api_key_default_label
+- [Bt] hermes_cli/auth_commands.py :: _oauth_default_label -> hermes_cli_auth_commands_u_oauth_default_label
+- [Bt] hermes_cli/profile_distribution.py :: _looks_like_git_url -> hermes_cli_profile_distributio_u_looks_like_git_url
+- [Bt] hermes_cli/security_audit.py :: _count_components -> hermes_cli_security_audit_u_count_components
+- [Bt] hermes_cli/security_audit.py :: _render_json -> hermes_cli_security_audit_u_render_json
+- [Bt] hermes_cli/telegram_managed_bot.py :: auto_setup_telegram_bot_result -> hermes_cli_telegram_managed_bo_auto_setup_telegram_bot_result
+- [Bt] hermes_cli/telegram_managed_bot.py :: generate_bot_username -> hermes_cli_telegram_managed_bo_generate_bot_username
+- [Bt] hermes_cli/telegram_managed_bot.py :: print_qr_code -> hermes_cli_telegram_managed_bo_print_qr_code
+- [Bt] tools/homeassistant_tool.py :: _check_ha_available -> tools_homeassistant_tool_u_check_ha_available
+- [Bt] tools/homeassistant_tool.py :: _get_config -> tools_homeassistant_tool_u_get_config
+- [Bt] tools/homeassistant_tool.py :: _get_headers -> tools_homeassistant_tool_u_get_headers
+- [Bt] hermes_cli/model_catalog.py :: reset_cache -> hermes_cli_model_catalog_reset_cache
+- [Bt] hermes_cli/skin_engine.py :: get_active_skin_name -> hermes_cli_skin_engine_get_active_skin_name
+- [Bt] agent/agent_init.py :: _normalize_custom_provider_name -> agent_agent_init_u_normalize_custom_provider_name
+- [Bt] agent/agent_init.py :: _resolve_compression_threshold -> agent_agent_init_u_resolve_compression_threshold
+- [Bt] agent/rate_limit_tracker.py :: _fmt_count -> agent_rate_limit_tracker_u_fmt_count
+- [Bt] agent/rate_limit_tracker.py :: has_data -> agent_rate_limit_tracker_has_data
+- [Bt] gateway/relay/ws_transport.py :: set_inbound_handler -> ws_transport_set_inbound_handler
+- [Bt] gateway/relay/ws_transport.py :: set_interrupt_inbound_handler -> ws_transport_set_interrupt_inbound_handler
+- [Bt] gateway/status_phrases.py :: _merge_phrase_paths -> gateway_status_phrases_u_merge_phrase_paths
+- [Bt] gateway/status_phrases.py :: classify_status_context -> gateway_status_phrases_classify_status_context
+- [Bt] hermes_cli/journey.py :: _term_size -> hermes_cli_journey_u_term_size
+- [Bt] hermes_cli/inventory.py :: build_model_options_payload -> hermes_cli_inventory_build_model_options_payload
+- [Bt] hermes_cli/middleware.py :: _has_middleware -> hermes_cli_middleware_u_has_middleware
+- [Bt] tools/online_research.py :: set -> sku_u_normalize_string_set
+- [Bt] agent/memory_provider.py :: on_memory_write -> agent_memory_provider_on_memory_write
+- [Bt] gateway/platforms/yuanbao_proto.py :: _encode_bytes -> yb_decode_varint
+- [Bt] gateway/platforms/yuanbao_proto.py :: _encode_message -> yb_decode_varint
+- [Bt] tools/file_tools.py :: _is_expected_write_exception -> file_tools_is_expected_write_exception
+- [Bt] agent/context_engine.py :: get_automatic_compaction_status_message -> agent_context_engine_get_automatic_compaction_status_message
+- [Bt] agent/display.py :: get_friendly_tool_labels -> cli_agent_display__get_friendly_tool_labels
+- [Bt] agent/display.py :: set_friendly_tool_labels -> cli_agent_display__set_friendly_tool_labels
+- [Bt] agent/trace_upload.py :: _resolve_hf_token -> agent_trace_upload_u_resolve_hf_token
+- [Bt] gateway/platforms/webhook_filters.py :: _stringify_filter_value -> gateway_platforms_webhook_filt_u_stringify_filter_value
+- [Bt] hermes_cli/mcp_picker.py :: _format_row -> hermes_cli_mcp_picker_u_format_row
+- [Bt] hermes_cli/mcp_picker.py :: is_custom -> hermes_cli_mcp_picker_is_custom
+- [Bt] tools/image_source.py :: _is_local_terminal_backend -> tools_image_source_u_is_local_terminal_backend
+- [Bt] tools/kanban_tools.py :: _is_delegated_child_context -> tools_kanban_tools_u_is_delegated_child_context
+- [Bt] tools/tool_backend_helpers.py :: resolve_modal_backend_state -> tools_tool_backend_helpers_resolve_modal_backend_state
+- [Bt] tools/tool_backend_helpers.py :: resolve_openai_audio_api_key -> tools_tool_backend_helpers_resolve_openai_audio_api_key
+- [Bt] agent/conversation_loop.py :: _invalid_tool_name_error_content -> agent_conversation_loop_u_invalid_tool_name_error_content
+- [Bt] hermes_cli/copilot_auth.py :: validate_copilot_token -> hermes_cli_copilot_auth_validate_copilot_token
+- [Bt] hermes_cli/nous_billing.py :: get_subscription_state -> hermes_cli_nous_billing_get_subscription_state
+- [Bt] hermes_cli/nous_billing.py :: invalidate_cached_token -> hermes_cli_nous_billing_invalidate_cached_token
+- [Bt] hermes_cli/setup_whatsapp_cloud.py :: _validate_access_token -> hermes_cli_setup_whatsapp_clou_u_validate_access_token
+- [Bt] hermes_cli/setup_whatsapp_cloud.py :: _validate_app_secret -> hermes_cli_setup_whatsapp_clou_u_validate_app_secret
