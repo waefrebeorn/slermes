@@ -33,7 +33,30 @@ int kdbport_u_maybe_checkpoint_wal(const char *arg) { (void)arg; return 0; }
 int kdbport_u_prune_corrupt_backups(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _integrity_messages_ok @ hermes_cli/kanban_db.py:_integrity_messages_ok */
-int kdbport_u_integrity_messages_ok(const char *arg) { (void)arg; return 0; }
+int kdbport_u_integrity_messages_ok(const char *arg) {
+    /* Python: len(messages) == 1 and messages[0].strip().lower() == "ok".
+     * Arg = PRAGMA integrity_check output rows (newline-joined). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    char *copy = strdup(arg);
+    if (!copy) { printf("0\n"); return 0; }
+    int count = 0;
+    char *first = NULL;
+    char *save = NULL;
+    for (char *line = strtok_r(copy, "\n", &save); line; line = strtok_r(NULL, "\n", &save)) {
+        if (!first) first = line;
+        count++;
+    }
+    int ok = 0;
+    if (count == 1 && first) {
+        while (*first == ' ' || *first == '\t') first++;
+        size_t n = strlen(first);
+        while (n > 0 && (first[n-1] == ' ' || first[n-1] == '\t' || first[n-1] == '\r')) first[--n] = '\0';
+        ok = (strcasecmp(first, "ok") == 0);
+    }
+    free(copy);
+    printf("%d\n", ok);
+    return 0;
+}
 
 /* PoP: _run_integrity_check @ hermes_cli/kanban_db.py:_run_integrity_check */
 int kdbport_u_run_integrity_check(const char *arg) { (void)arg; return 0; }

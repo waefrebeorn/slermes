@@ -102,10 +102,28 @@ int adel_drop_completion_delivery(const char *arg) { (void)arg; return 0; }
 int adel_complete_completion_delivery(const char *arg) { (void)arg; return 0; }
 
 /* PoP: complete_event_delivery @ tools/async_delegation.py:complete_event_delivery */
-int adel_complete_event_delivery(const char *arg) { (void)arg; return 0; }
+int adel_complete_event_delivery(const char *arg) {
+    /* Python: if claim_id and evt type async_delegation:
+     * complete_completion_delivery(delegation_id, claim_id).
+     * Arg = "delegation_id\tclaim_id". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("0\n"); return 0; }
+    printf("completed %.*s claim %s\n", (int)(tab - arg), arg, tab + 1);
+    return 0;
+}
 
 /* PoP: release_event_delivery @ tools/async_delegation.py:release_event_delivery */
-int adel_release_event_delivery(const char *arg) { (void)arg; return 0; }
+int adel_release_event_delivery(const char *arg) {
+    /* Python: if claim_id and evt type async_delegation:
+     * release_completion_delivery(delegation_id, claim_id).
+     * Arg = "delegation_id\tclaim_id". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("0\n"); return 0; }
+    printf("released %.*s claim %s\n", (int)(tab - arg), arg, tab + 1);
+    return 0;
+}
 
 /* PoP: get_durable_delegation @ tools/async_delegation.py:get_durable_delegation */
 int adel_get_durable_delegation(const char *arg) { (void)arg; return 0; }

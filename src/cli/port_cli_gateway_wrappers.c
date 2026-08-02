@@ -490,7 +490,15 @@ int cgw_get_launchd_label(const char *arg) { (void)arg; return 0; }
 int cgw_u_launchd_domain(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _launchd_error_indicates_unloaded @ hermes_cli/gateway.py:_launchd_error_indicates_unloaded */
-int cgw_u_launchd_error_indicates_unloaded(const char *arg) { (void)arg; return 0; }
+int cgw_u_launchd_error_indicates_unloaded(const char *arg) {
+    /* Python: exc.returncode in _LAUNCHD_JOB_UNLOADED_EXIT_CODES (113 +
+     * "Could not find service" variants). Arg = return code. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    long rc = strtol(arg, NULL, 10);
+    int unloaded = (rc == 113 || rc == 5 || rc == 111);
+    printf("%d\n", unloaded);
+    return 0;
+}
 
 /* PoP: _launchctl_domain_unsupported @ hermes_cli/gateway.py:_launchctl_domain_unsupported */
 int cgw_u_launchctl_domain_unsupported(const char *arg) { (void)arg; return 0; }
@@ -514,7 +522,16 @@ int cgw_u_launchctl_bootstrap(const char *arg) {
 }
 
 /* PoP: _launchd_reload_log_path @ hermes_cli/gateway.py:_launchd_reload_log_path */
-int cgw_u_launchd_reload_log_path(const char *arg) { (void)arg; return 0; }
+int cgw_u_launchd_reload_log_path(const char *arg) {
+    /* Python: get_hermes_home() / "logs" / "launchd-reload.log" — the path
+     * the launchd reload watchdog tails for persistent-orphan detection. */
+    (void)arg;
+    const char *hh = getenv("HERMES_HOME");
+    if (hh && *hh) printf("%s/logs/launchd-reload.log\n", hh);
+    else printf("%s/.hermes/logs/launchd-reload.log\n",
+                getenv("HOME") ? getenv("HOME") : ".");
+    return 0;
+}
 
 /* PoP: _append_launchd_reload_log @ hermes_cli/gateway.py:_append_launchd_reload_log */
 int cgw_u_append_launchd_reload_log(const char *arg) { (void)arg; return 0; }

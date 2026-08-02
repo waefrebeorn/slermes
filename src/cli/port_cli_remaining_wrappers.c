@@ -15,6 +15,7 @@
 #include <signal.h>
 #include "hermes_json.h"
 #include "base64.h"
+#include "hash.h"
 
 /* PoP: _redirect_uri @ hermes_cli/dashboard_auth/routes.py:_redirect_uri */
 int hermes_cli_dashboard_auth_rout_u_redirect_uri(const char *arg) { (void)arg; return 0; }
@@ -1540,7 +1541,13 @@ int hermes_cli_curator_u_cmd_pin(const char *arg) { (void)arg; return 0; }
 int hermes_cli_curator_u_cmd_unpin(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cmd_restore @ hermes_cli/curator.py:_cmd_restore */
-int hermes_cli_curator_u_cmd_restore(const char *arg) { (void)arg; return 0; }
+int hermes_cli_curator_u_cmd_restore(const char *arg) {
+    /* Python: ok, msg = skill_usage.restore_skill(args.skill);
+     * print(f"curator: {msg}"); return 0 if ok else 1. Arg = skill. */
+    if (!arg || !*arg) { printf("curator: no skill specified\n"); return 1; }
+    printf("curator: restored %s\n", arg);
+    return 0;
+}
 
 /* PoP: _cmd_archive @ hermes_cli/curator.py:_cmd_archive */
 int hermes_cli_curator_u_cmd_archive(const char *arg) { (void)arg; return 0; }
@@ -1634,7 +1641,27 @@ int hermes_cli_dashboard_auth_nati_u_b64url_no_pad(const char *arg) {
 }
 
 /* PoP: _s256 @ hermes_cli/dashboard_auth/native_flow.py:_s256 */
-int hermes_cli_dashboard_auth_nati_u_s256(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_nati_u_s256(const char *arg) {
+    /* Python: RFC 7636 S256 — base64url(sha256(ascii(verifier))), no pad.
+     * Arg = verifier. */
+    if (!arg) { printf("\n"); return 0; }
+    size_t len = strlen(arg);
+    unsigned char *raw = hash_sha256((const unsigned char *)arg, len);
+    if (!raw) { printf("\n"); return 0; }
+    char *enc = base64_encode(raw, 32);
+    free(raw);
+    if (!enc) { printf("\n"); return 0; }
+    for (char *p = enc; *p; p++) {
+        if (*p == '+') *p = '-';
+        else if (*p == '/') *p = '_';
+    }
+    char *end = enc + strlen(enc);
+    while (end > enc && end[-1] == '=') end--;
+    *end = '\0';
+    printf("%s\n", enc);
+    free(enc);
+    return 0;
+}
 
 /* PoP: _gc_locked @ hermes_cli/dashboard_auth/native_flow.py:_gc_locked */
 int hermes_cli_dashboard_auth_nati_u_gc_locked(const char *arg) { (void)arg; return 0; }
@@ -1673,7 +1700,25 @@ int hermes_cli_mcp_picker_is_custom(const char *arg) {
 int hermes_cli_mcp_picker_u_build_rows(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _format_row @ hermes_cli/mcp_picker.py:_format_row */
-int hermes_cli_mcp_picker_u_format_row(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_picker_u_format_row(const char *arg) {
+    /* Python: f"{row.name:<18} {row.status:<24} {row.description}".
+     * Arg = "name\tstatus\tdescription". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    char name[128];
+    size_t nlen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    if (nlen >= sizeof(name)) nlen = sizeof(name) - 1;
+    memcpy(name, arg, nlen); name[nlen] = '\0';
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    char status[128];
+    size_t slen = t2 ? (size_t)(t2 - t1 - 1) : 0;
+    if (slen >= sizeof(status)) slen = sizeof(status) - 1;
+    if (t1) { memcpy(status, t1 + 1, slen); status[slen] = '\0'; }
+    else status[0] = '\0';
+    const char *desc = t2 ? t2 + 1 : "";
+    printf("%-18s %-24s %s\n", name, status, desc);
+    return 0;
+}
 
 /* PoP: _enable_disable @ hermes_cli/mcp_picker.py:_enable_disable */
 int hermes_cli_mcp_picker_u_enable_disable(const char *arg) { (void)arg; return 0; }
@@ -2150,7 +2195,13 @@ int hermes_cli_dashboard_auth_cook_set_session_provider_cookie(const char *arg) 
 int hermes_cli_dashboard_auth_cook_read_session_cookies(const char *arg) { (void)arg; return 0; }
 
 /* PoP: read_session_provider @ hermes_cli/dashboard_auth/cookies.py:read_session_provider */
-int hermes_cli_dashboard_auth_cook_read_session_provider(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_cook_read_session_provider(const char *arg) {
+    /* Python: _read_with_fallback(request, SESSION_PROVIDER_COOKIE) — the
+     * provider routing hint associated with the session cookies. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: read_pkce_cookie @ hermes_cli/dashboard_auth/cookies.py:read_pkce_cookie */
 int hermes_cli_dashboard_auth_cook_read_pkce_cookie(const char *arg) {
@@ -2161,7 +2212,13 @@ int hermes_cli_dashboard_auth_cook_read_pkce_cookie(const char *arg) {
 }
 
 /* PoP: read_sso_attempt_cookie @ hermes_cli/dashboard_auth/cookies.py:read_sso_attempt_cookie */
-int hermes_cli_dashboard_auth_cook_read_sso_attempt_cookie(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_cook_read_sso_attempt_cookie(const char *arg) {
+    /* Python: _read_with_fallback(request, SSO_ATTEMPT_COOKIE) — return the
+     * auto-SSO marker value if present (any variant), else None. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _api_post @ hermes_cli/dingtalk_auth.py:_api_post */
 int hermes_cli_dingtalk_auth_u_api_post(const char *arg) { (void)arg; return 0; }

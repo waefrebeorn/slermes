@@ -65,13 +65,29 @@ char *clipboard_macos_osascript(const char *script) {
 }
 #else
 /* PoP: _macos_save @ hermes_cli/clipboard.py:_macos_save */
-int clipboard_macos_save(const char *text) { (void)text; return -1; }
+int clipboard_macos_save(const char *text) {
+    /* macOS-only (pbcopy/pngpaste); on other platforms report unavailable. */
+    (void)text;
+    printf("macos clipboard unavailable\n");
+    return -1;
+}
 /* PoP: _macos_has_image @ hermes_cli/clipboard.py:_macos_has_image */
-bool clipboard_macos_has_image(void) { return false; }
+bool clipboard_macos_has_image(void) {
+    printf("macos clipboard unavailable\n");
+    return false;
+}
 /* PoP: _macos_pngpaste @ hermes_cli/clipboard.py:_macos_pngpaste */
-char *clipboard_macos_pngpaste(const char *out_path) { (void)out_path; return NULL; }
+char *clipboard_macos_pngpaste(const char *out_path) {
+    (void)out_path;
+    printf("macos clipboard unavailable\n");
+    return NULL;
+}
 /* PoP: _macos_osascript @ hermes_cli/clipboard.py:_macos_osascript */
-char *clipboard_macos_osascript(const char *script) { (void)script; return NULL; }
+char *clipboard_macos_osascript(const char *script) {
+    (void)script;
+    printf("macos clipboard unavailable\n");
+    return NULL;
+}
 #endif
 
 /* ── Windows / PowerShell ──────────────────────────────────────── */

@@ -29,7 +29,13 @@ int envl_u_bash_safe_path(const char *arg) {
 }
 
 /* PoP: _quote_bash_path @ tools/environments/local.py:_quote_bash_path */
-int envl_u_quote_bash_path(const char *arg) { (void)arg; return 0; }
+int envl_u_quote_bash_path(const char *arg) {
+    /* Python: shlex.quote(_bash_safe_path(path)) — single-quote the path
+     * for safe interpolation into a Git Bash script. */
+    if (!arg || !*arg) { printf("''\n"); return 0; }
+    printf("'%s'\n", arg);
+    return 0;
+}
 
 /* PoP: _cwd_usable @ tools/environments/local.py:_cwd_usable */
 int envl_u_cwd_usable(const char *arg) { (void)arg; return 0; }

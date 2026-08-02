@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <errno.h>
 #include "hermes_json.h"
 #include "port_config_py_helpers.h"
 
@@ -753,10 +754,38 @@ int main_u_write_marker_file(const char *arg) { (void)arg; return 0; }
 int main_u_clear_marker_file(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _write_update_incomplete_marker @ hermes_cli/main.py:_write_update_incomplete_marker */
-int main_u_write_update_incomplete_marker(const char *arg) { (void)arg; return 0; }
+int main_u_write_update_incomplete_marker(const char *arg) {
+    /* Python: _write_marker_file(_update_marker_path(),
+     * label="update-incomplete"). Never raises. */
+    (void)arg;
+    extern char *update_marker_path(void);
+    char *path = update_marker_path();
+    if (!path) return 1;
+    FILE *fp = fopen(path, "w");
+    if (fp) {
+        fputs("update-incomplete\n", fp);
+        fclose(fp);
+    }
+    printf("marker written %s\n", path);
+    free(path);
+    return 0;
+}
 
 /* PoP: _clear_update_incomplete_marker @ hermes_cli/main.py:_clear_update_incomplete_marker */
-int main_u_clear_update_incomplete_marker(const char *arg) { (void)arg; return 0; }
+int main_u_clear_update_incomplete_marker(const char *arg) {
+    /* Python: _clear_marker_file(_update_marker_path(),
+     * label="update-incomplete"). Never raises. */
+    (void)arg;
+    extern char *update_marker_path(void);
+    char *path = update_marker_path();
+    if (!path) return 1;
+    if (unlink(path) == 0 || errno == ENOENT)
+        printf("marker cleared %s\n", path);
+    else
+        printf("marker clear failed %s\n", path);
+    free(path);
+    return 0;
+}
 
 /* PoP: _write_lazy_refresh_incomplete_marker @ hermes_cli/main.py:_write_lazy_refresh_incomplete_marker */
 int main_u_write_lazy_refresh_incomplete_marker(const char *arg) { (void)arg; return 0; }

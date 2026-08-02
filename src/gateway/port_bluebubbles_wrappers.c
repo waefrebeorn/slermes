@@ -21,7 +21,27 @@ int bb_check_bluebubbles_requirements(const char *arg) {
 int bb_u_normalize_server_url(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _api_url @ gateway/platforms/bluebubbles.py:_api_url */
-int bb_u_api_url(const char *arg) { (void)arg; return 0; }
+int bb_u_api_url(const char *arg) {
+    /* Python: sep = "&" if "?" in path else "?"; return
+     * f"{server_url}{path}{sep}password={quote(password, safe='')}".
+     * Arg = "server_url\tpath\tpassword". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    if (!t1) { printf("%s\n", arg); return 0; }
+    const char *t2 = strchr(t1 + 1, '\t');
+    char server[512];
+    size_t slen = (size_t)(t1 - arg);
+    if (slen >= sizeof(server)) slen = sizeof(server) - 1;
+    memcpy(server, arg, slen); server[slen] = '\0';
+    char path[512];
+    size_t plen = t2 ? (size_t)(t2 - t1 - 1) : strlen(t1 + 1);
+    if (plen >= sizeof(path)) plen = sizeof(path) - 1;
+    memcpy(path, t1 + 1, plen); path[plen] = '\0';
+    const char *password = t2 ? t2 + 1 : "";
+    const char *sep = strchr(path, '?') ? "&" : "?";
+    printf("%s%s%spassword=%s\n", server, path, sep, password);
+    return 0;
+}
 
 /* PoP: _compile_mention_patterns @ gateway/platforms/bluebubbles.py:_compile_mention_patterns */
 int bb_u_compile_mention_patterns(const char *arg) { (void)arg; return 0; }

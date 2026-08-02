@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <sys/stat.h>
 #include "hermes_json.h"
 
 /* PoP: _win32 @ hermes_cli/windows_ssh_runtime.py:_win32 */
@@ -114,7 +115,19 @@ int wssr_u_open(const char *arg) { (void)arg; return 0; }
 int wssr_u_ensure_directory(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _ensure_scope @ hermes_cli/windows_ssh_runtime.py:_ensure_scope */
-int wssr_u_ensure_scope(const char *arg) { (void)arg; return 0; }
+int wssr_u_ensure_scope(const char *arg) {
+    /* Python: root = _root(); _ensure_directory(root); directory =
+     * _directory(ownership_id); _ensure_directory(directory); return it.
+     * Arg = ownership_id. Print the resolved directory. */
+    if (!arg || !*arg) return 1;
+    char dir[1100];
+    snprintf(dir, sizeof(dir), "%s/desktop-ssh/%s", 
+             getenv("HERMES_HOME") ? getenv("HERMES_HOME") :
+             getenv("HOME") ? getenv("HOME") : ".", arg);
+    mkdir(dir, 0700);
+    printf("%s\n", dir);
+    return 0;
+}
 
 /* PoP: upload_token @ hermes_cli/windows_ssh_runtime.py:upload_token */
 int wssr_upload_token(const char *arg) { (void)arg; return 0; }

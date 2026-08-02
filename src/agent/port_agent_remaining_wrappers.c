@@ -13,6 +13,7 @@
 #include <math.h>
 #include "hermes_json.h"
 #include "libtooldispatch/tool_dispatch_helpers.h"
+#include "hash.h"
 
 /* PoP: _endpoint_scoped_context_length @ agent/model_metadata.py:_endpoint_scoped_context_length */
 int agent_model_metadata_u_endpoint_scoped_context_length(const char *arg) { (void)arg; return 0; }
@@ -55,7 +56,16 @@ int agent_model_metadata_u_query_ollama_api_show_uncached(const char *arg) { (vo
 int agent_model_metadata_u_query_local_context_length_uncached(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _codex_oauth_token_fingerprint @ agent/model_metadata.py:_codex_oauth_token_fingerprint */
-int agent_model_metadata_u_codex_oauth_token_fingerprint(const char *arg) { (void)arg; return 0; }
+int agent_model_metadata_u_codex_oauth_token_fingerprint(const char *arg) {
+    /* Python: hashlib.sha256(access_token.encode()).hexdigest()[:16] — a
+     * non-secret cache key for a Codex OAuth access token. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    char *hex = hash_sha256_hex((const unsigned char *)arg, strlen(arg));
+    if (!hex) { printf("\n"); return 0; }
+    printf("%.16s\n", hex);
+    free(hex);
+    return 0;
+}
 
 /* PoP: _extract_chatgpt_account_id @ agent/model_metadata.py:_extract_chatgpt_account_id */
 int agent_model_metadata_u_extract_chatgpt_account_id(const char *arg) { (void)arg; return 0; }
@@ -713,7 +723,33 @@ int agent_credential_pool_u_normalize_pool_auth_type(const char *arg) { (void)ar
 int agent_credential_pool_credential_pool_matches_provider(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _current_unlocked @ agent/credential_pool.py:_current_unlocked */
-int agent_credential_pool_u_current_unlocked(const char *arg) { (void)arg; return 0; }
+int agent_credential_pool_u_current_unlocked(const char *arg) {
+    /* Python: None if not self._current_id; else the entry whose id matches
+     * _current_id. Arg = "current_id\tentry_id..." — echoes the current id
+     * if it appears among entries, else empty. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("\n"); return 0; }
+    char current[256];
+    size_t clen = (size_t)(tab - arg);
+    if (clen >= sizeof(current)) clen = sizeof(current) - 1;
+    memcpy(current, arg, clen); current[clen] = '\0';
+    const char *entries = tab + 1;
+    const char *p = entries;
+    while (*p) {
+        while (*p == '\t') p++;
+        if (!*p) break;
+        const char *e = p;
+        while (*e && *e != '\t') e++;
+        if ((size_t)(e - p) == clen && strncmp(p, current, clen) == 0) {
+            printf("%s\n", current);
+            return 0;
+        }
+        p = e;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: entry_id_for_api_key @ agent/credential_pool.py:entry_id_for_api_key */
 int agent_credential_pool_entry_id_for_api_key(const char *arg) { (void)arg; return 0; }
@@ -1078,7 +1114,16 @@ int agent_tool_executor_execute_tool_calls_segmented(const char *arg) { (void)ar
 int agent_auxiliary_client_u_try_nvidia_nim(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _obj_get @ agent/auxiliary_client.py:_obj_get */
-int agent_auxiliary_client_u_obj_get(const char *arg) { (void)arg; return 0; }
+int agent_auxiliary_client_u_obj_get(const char *arg) {
+    /* Python: value = getattr(obj, key, default); if value is default and
+     * isinstance(obj, dict): value = obj.get(key, default); return value.
+     * Arg = "key\tvalue" (or "key" when absent); echoes value when found. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab) printf("%s\n", tab + 1);
+    else printf("\n");
+    return 0;
+}
 
 /* PoP: build_usage_model @ agent/billing_usage.py:build_usage_model */
 int agent_billing_usage_build_usage_model(const char *arg) { (void)arg; return 0; }
