@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:14:18Z",
+  "generated_at": "2026-08-02T20:16:19Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -42874,10 +42874,10 @@
     },
     "agent/message_sanitization.py": {
       "total": 11,
-      "ported": 1,
+      "ported": 11,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 10,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 11,
@@ -42893,16 +42893,24 @@
             "decorators": [],
             "line_number": 31
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_message_sanitization_remaining.c",
+          "c_function": "msz_sanitize_surrogates",
+          "pop_annotation": {
+            "c_function": "msz_sanitize_surrogates",
+            "python_functions": [
+              "_sanitize_surrogates"
+            ],
+            "c_file": "src/agent/port_message_sanitization_remaining.c",
+            "python_file": "agent/message_sanitization.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _sanitize_surrogates @ agent/message_sanitization.py:_sanitize_surrogates */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/message_sanitization.py",
@@ -42914,16 +42922,24 @@
             "decorators": [],
             "line_number": 42
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_message_sanitization_remaining.c",
+          "c_function": "msz_sanitize_structure_surrogates",
+          "pop_annotation": {
+            "c_function": "msz_sanitize_structure_surrogates",
+            "python_functions": [
+              "_sanitize_structure_surrogates"
+            ],
+            "c_file": "src/agent/port_message_sanitization_remaining.c",
+            "python_file": "agent/message_sanitization.py",
+            "line": 47,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _sanitize_structure_surrogates @ agent/message_sanitization.py:_sanitize_structure_surrogates */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/message_sanitization.py",
@@ -42935,16 +42951,24 @@
             "decorators": [],
             "line_number": 75
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_message_sanitization_remaining.c",
+          "c_function": "msz_sanitize_messages_surrogates",
+          "pop_annotation": {
+            "c_function": "msz_sanitize_messages_surrogates",
+            "python_functions": [
+              "_sanitize_messages_surrogates"
+            ],
+            "c_file": "src/agent/port_message_sanitization_remaining.c",
+            "python_file": "agent/message_sanitization.py",
+            "line": 55,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _sanitize_messages_surrogates @ agent/message_sanitization.py:_sanitize_messages_surrogates */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/message_sanitization.py",
@@ -42956,16 +42980,24 @@
             "decorators": [],
             "line_number": 143
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_message_sanitization_remaining.c",
+          "c_function": "msz_escape_invalid_chars_in_json_strings",
+          "pop_annotation": {
+            "c_function": "msz_escape_invalid_chars_in_json_strings",
+            "python_functions": [
+              "_escape_invalid_chars_in_json_strings"
+            ],
+            "c_file": "src/agent/port_message_sanitization_remaining.c",
+            "python_file": "agent/message_sanitization.py",
+            "line": 62,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _escape_invalid_chars_in_json_strings @ agent/message_sanitization.py:_escape_invalid_chars_in_json_strings */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/message_sanitization.py",
@@ -42977,16 +43009,24 @@
             "decorators": [],
             "line_number": 185
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_message_sanitization_remaining.c",
+          "c_function": "msz_repair_tool_call_arguments",
+          "pop_annotation": {
+            "c_function": "msz_repair_tool_call_arguments",
+            "python_functions": [
+              "_repair_tool_call_arguments"
+            ],
+            "c_file": "src/agent/port_message_sanitization_remaining.c",
+            "python_file": "agent/message_sanitization.py",
+            "line": 92,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _repair_tool_call_arguments @ agent/message_sanitization.py:_repair_tool_call_arguments */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/message_sanitization.py",
@@ -43027,16 +43067,24 @@
             "decorators": [],
             "line_number": 314
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_message_sanitization_remaining.c",
+          "c_function": "msz_strip_non_ascii",
+          "pop_annotation": {
+            "c_function": "msz_strip_non_ascii",
+            "python_functions": [
+              "_strip_non_ascii"
+            ],
+            "c_file": "src/agent/port_message_sanitization_remaining.c",
+            "python_file": "agent/message_sanitization.py",
+            "line": 100,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _strip_non_ascii @ agent/message_sanitization.py:_strip_non_ascii */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/message_sanitization.py",
@@ -43048,16 +43096,24 @@
             "decorators": [],
             "line_number": 323
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_message_sanitization_remaining.c",
+          "c_function": "msz_sanitize_messages_non_ascii",
+          "pop_annotation": {
+            "c_function": "msz_sanitize_messages_non_ascii",
+            "python_functions": [
+              "_sanitize_messages_non_ascii"
+            ],
+            "c_file": "src/agent/port_message_sanitization_remaining.c",
+            "python_file": "agent/message_sanitization.py",
+            "line": 128,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _sanitize_messages_non_ascii @ agent/message_sanitization.py:_sanitize_messages_non_ascii */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/message_sanitization.py",
@@ -43069,16 +43125,24 @@
             "decorators": [],
             "line_number": 382
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_message_sanitization_remaining.c",
+          "c_function": "msz_sanitize_tools_non_ascii",
+          "pop_annotation": {
+            "c_function": "msz_sanitize_tools_non_ascii",
+            "python_functions": [
+              "_sanitize_tools_non_ascii"
+            ],
+            "c_file": "src/agent/port_message_sanitization_remaining.c",
+            "python_file": "agent/message_sanitization.py",
+            "line": 135,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _sanitize_tools_non_ascii @ agent/message_sanitization.py:_sanitize_tools_non_ascii */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/message_sanitization.py",
@@ -43090,16 +43154,24 @@
             "decorators": [],
             "line_number": 387
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_message_sanitization_remaining.c",
+          "c_function": "msz_strip_images_from_messages",
+          "pop_annotation": {
+            "c_function": "msz_strip_images_from_messages",
+            "python_functions": [
+              "_strip_images_from_messages"
+            ],
+            "c_file": "src/agent/port_message_sanitization_remaining.c",
+            "python_file": "agent/message_sanitization.py",
+            "line": 142,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _strip_images_from_messages @ agent/message_sanitization.py:_strip_images_from_messages */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/message_sanitization.py",
@@ -43111,16 +43183,24 @@
             "decorators": [],
             "line_number": 435
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_message_sanitization_remaining.c",
+          "c_function": "msz_sanitize_structure_non_ascii",
+          "pop_annotation": {
+            "c_function": "msz_sanitize_structure_non_ascii",
+            "python_functions": [
+              "_sanitize_structure_non_ascii"
+            ],
+            "c_file": "src/agent/port_message_sanitization_remaining.c",
+            "python_file": "agent/message_sanitization.py",
+            "line": 185,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _sanitize_structure_non_ascii @ agent/message_sanitization.py:_sanitize_structure_non_ascii */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -58335,10 +58415,10 @@
     },
     "agent/secret_sources/command.py": {
       "total": 11,
-      "ported": 1,
+      "ported": 10,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 10,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 11,
@@ -58355,14 +58435,24 @@
             "line_number": 73
           },
           "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
-          "stub_reason": null,
+          "c_location": "src/agent/port_secret_sources_command_remaining.c",
+          "c_function": "cmd_is_windows",
+          "pop_annotation": {
+            "c_function": "cmd_is_windows",
+            "python_functions": [
+              "_is_windows"
+            ],
+            "c_file": "src/agent/port_secret_sources_command_remaining.c",
+            "python_file": "agent/secret_sources/command.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_windows @ agent/secret_sources/command.py:_is_windows */"
+          },
+          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
           "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
+          "notes": "",
           "da_flags": [
-            "DA-1:no-c-equivalent"
+            "DA-2:bootleg-body"
           ]
         },
         {
@@ -58375,16 +58465,24 @@
             "decorators": [],
             "line_number": 77
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_command_remaining.c",
+          "c_function": "cmd_unquote_dotenv_value",
+          "pop_annotation": {
+            "c_function": "cmd_unquote_dotenv_value",
+            "python_functions": [
+              "unquote_dotenv_value"
+            ],
+            "c_file": "src/agent/port_secret_sources_command_remaining.c",
+            "python_file": "agent/secret_sources/command.py",
+            "line": 28,
+            "is_consolidated": false,
+            "full_text": "/* PoP: unquote_dotenv_value @ agent/secret_sources/command.py:unquote_dotenv_value */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/command.py",
@@ -58396,16 +58494,24 @@
             "decorators": [],
             "line_number": 94
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_command_remaining.c",
+          "c_function": "cmd_parse_secret_output",
+          "pop_annotation": {
+            "c_function": "cmd_parse_secret_output",
+            "python_functions": [
+              "parse_secret_output"
+            ],
+            "c_file": "src/agent/port_secret_sources_command_remaining.c",
+            "python_file": "agent/secret_sources/command.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: parse_secret_output @ agent/secret_sources/command.py:parse_secret_output */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/command.py",
@@ -58417,16 +58523,24 @@
             "decorators": [],
             "line_number": 161
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_command_remaining.c",
+          "c_function": "cmd_run_helper",
+          "pop_annotation": {
+            "c_function": "cmd_run_helper",
+            "python_functions": [
+              "_run_helper"
+            ],
+            "c_file": "src/agent/port_secret_sources_command_remaining.c",
+            "python_file": "agent/secret_sources/command.py",
+            "line": 57,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _run_helper @ agent/secret_sources/command.py:_run_helper */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/command.py",
@@ -58438,16 +58552,24 @@
             "decorators": [],
             "line_number": 253
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_command_remaining.c",
+          "c_function": "cmd_parse_dotenv_map",
+          "pop_annotation": {
+            "c_function": "cmd_parse_dotenv_map",
+            "python_functions": [
+              "_parse_dotenv_map"
+            ],
+            "c_file": "src/agent/port_secret_sources_command_remaining.c",
+            "python_file": "agent/secret_sources/command.py",
+            "line": 92,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _parse_dotenv_map @ agent/secret_sources/command.py:_parse_dotenv_map */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/command.py",
@@ -58459,16 +58581,24 @@
             "decorators": [],
             "line_number": 272
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_command_remaining.c",
+          "c_function": "cmd_get_command_secret",
+          "pop_annotation": {
+            "c_function": "cmd_get_command_secret",
+            "python_functions": [
+              "get_command_secret"
+            ],
+            "c_file": "src/agent/port_secret_sources_command_remaining.c",
+            "python_file": "agent/secret_sources/command.py",
+            "line": 134,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_command_secret @ agent/secret_sources/command.py:get_command_secret */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/command.py",
@@ -58480,16 +58610,24 @@
             "decorators": [],
             "line_number": 290
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_command_remaining.c",
+          "c_function": "cmd_list_command_secrets",
+          "pop_annotation": {
+            "c_function": "cmd_list_command_secrets",
+            "python_functions": [
+              "list_command_secrets"
+            ],
+            "c_file": "src/agent/port_secret_sources_command_remaining.c",
+            "python_file": "agent/secret_sources/command.py",
+            "line": 142,
+            "is_consolidated": false,
+            "full_text": "/* PoP: list_command_secrets @ agent/secret_sources/command.py:list_command_secrets */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/command.py",
@@ -58501,16 +58639,24 @@
             "decorators": [],
             "line_number": 315
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_command_remaining.c",
+          "c_function": "cmd_apply_command_secrets",
+          "pop_annotation": {
+            "c_function": "cmd_apply_command_secrets",
+            "python_functions": [
+              "apply_command_secrets"
+            ],
+            "c_file": "src/agent/port_secret_sources_command_remaining.c",
+            "python_file": "agent/secret_sources/command.py",
+            "line": 153,
+            "is_consolidated": false,
+            "full_text": "/* PoP: apply_command_secrets @ agent/secret_sources/command.py:apply_command_secrets */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/command.py",
@@ -58522,16 +58668,24 @@
             "decorators": [],
             "line_number": 411
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_command_remaining.c",
+          "c_function": "cmd_config_schema",
+          "pop_annotation": {
+            "c_function": "cmd_config_schema",
+            "python_functions": [
+              "config_schema"
+            ],
+            "c_file": "src/agent/port_secret_sources_command_remaining.c",
+            "python_file": "agent/secret_sources/command.py",
+            "line": 180,
+            "is_consolidated": false,
+            "full_text": "/* PoP: config_schema @ agent/secret_sources/command.py:config_schema */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/command.py",
@@ -58572,16 +58726,24 @@
             "decorators": [],
             "line_number": 476
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_command_remaining.c",
+          "c_function": "cmd_remediation",
+          "pop_annotation": {
+            "c_function": "cmd_remediation",
+            "python_functions": [
+              "remediation"
+            ],
+            "c_file": "src/agent/port_secret_sources_command_remaining.c",
+            "python_file": "agent/secret_sources/command.py",
+            "line": 185,
+            "is_consolidated": false,
+            "full_text": "/* PoP: remediation @ agent/secret_sources/command.py:remediation */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
