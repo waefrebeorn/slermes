@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T21:43:39Z",
+  "generated_at": "2026-08-02T21:45:29Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -312152,10 +312152,10 @@
     },
     "tools/file_state.py": {
       "total": 19,
-      "ported": 14,
+      "ported": 19,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 5,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 19,
@@ -312171,16 +312171,24 @@
             "decorators": [],
             "line_number": 62
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_state_remaining.c",
+          "c_function": "fst_init",
+          "pop_annotation": {
+            "c_function": "fst_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_file_state_remaining.c",
+            "python_file": "tools/file_state.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/file_state.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_state.py",
@@ -312223,16 +312231,24 @@
             ],
             "line_number": 79
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_state_remaining.c",
+          "c_function": "fst_lock_path",
+          "pop_annotation": {
+            "c_function": "fst_lock_path",
+            "python_functions": [
+              "lock_path"
+            ],
+            "c_file": "src/tools/port_file_state_remaining.c",
+            "python_file": "tools/file_state.py",
+            "line": 27,
+            "is_consolidated": false,
+            "full_text": "/* PoP: lock_path @ tools/file_state.py:lock_path */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_state.py",
@@ -312389,16 +312405,24 @@
             "decorators": [],
             "line_number": 252
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_state_remaining.c",
+          "c_function": "fst_clear",
+          "pop_annotation": {
+            "c_function": "fst_clear",
+            "python_functions": [
+              "clear"
+            ],
+            "c_file": "src/tools/port_file_state_remaining.c",
+            "python_file": "tools/file_state.py",
+            "line": 35,
+            "is_consolidated": false,
+            "full_text": "/* PoP: clear @ tools/file_state.py:clear */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_state.py",
@@ -312410,16 +312434,24 @@
             "decorators": [],
             "line_number": 265
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_state_remaining.c",
+          "c_function": "fst_get_registry",
+          "pop_annotation": {
+            "c_function": "fst_get_registry",
+            "python_functions": [
+              "get_registry"
+            ],
+            "c_file": "src/tools/port_file_state_remaining.c",
+            "python_file": "tools/file_state.py",
+            "line": 42,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_registry @ tools/file_state.py:get_registry */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_state.py",
@@ -312605,16 +312637,24 @@
             "decorators": [],
             "line_number": 307
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_file_state_remaining.c",
+          "c_function": "fst_lock_path",
+          "pop_annotation": {
+            "c_function": "fst_lock_path",
+            "python_functions": [
+              "lock_path"
+            ],
+            "c_file": "src/tools/port_file_state_remaining.c",
+            "python_file": "tools/file_state.py",
+            "line": 27,
+            "is_consolidated": false,
+            "full_text": "/* PoP: lock_path @ tools/file_state.py:lock_path */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_state.py",
@@ -328045,10 +328085,10 @@
     },
     "tools/online_research.py": {
       "total": 19,
-      "ported": 14,
+      "ported": 19,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 5,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 19,
@@ -328064,16 +328104,24 @@
             "decorators": [],
             "line_number": 63
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_online_research_remaining.c",
+          "c_function": "onr_init",
+          "pop_annotation": {
+            "c_function": "onr_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_online_research_remaining.c",
+            "python_file": "tools/online_research.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/online_research.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/online_research.py",
@@ -328114,16 +328162,24 @@
             "decorators": [],
             "line_number": 70
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_online_research_remaining.c",
+          "c_function": "onr_get",
+          "pop_annotation": {
+            "c_function": "onr_get",
+            "python_functions": [
+              "get"
+            ],
+            "c_file": "src/tools/port_online_research_remaining.c",
+            "python_file": "tools/online_research.py",
+            "line": 31,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get @ tools/online_research.py:get */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/online_research.py",
@@ -328135,16 +328191,24 @@
             "decorators": [],
             "line_number": 80
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_online_research_remaining.c",
+          "c_function": "onr_set",
+          "pop_annotation": {
+            "c_function": "onr_set",
+            "python_functions": [
+              "set"
+            ],
+            "c_file": "src/tools/port_online_research_remaining.c",
+            "python_file": "tools/online_research.py",
+            "line": 40,
+            "is_consolidated": false,
+            "full_text": "/* PoP: set @ tools/online_research.py:set */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/online_research.py",
@@ -328185,16 +328249,24 @@
             "decorators": [],
             "line_number": 93
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_online_research_remaining.c",
+          "c_function": "onr_init",
+          "pop_annotation": {
+            "c_function": "onr_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_online_research_remaining.c",
+            "python_file": "tools/online_research.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/online_research.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/online_research.py",
@@ -328351,16 +328423,24 @@
             "decorators": [],
             "line_number": 195
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_online_research_remaining.c",
+          "c_function": "onr_research",
+          "pop_annotation": {
+            "c_function": "onr_research",
+            "python_functions": [
+              "research"
+            ],
+            "c_file": "src/tools/port_online_research_remaining.c",
+            "python_file": "tools/online_research.py",
+            "line": 48,
+            "is_consolidated": false,
+            "full_text": "/* PoP: research @ tools/online_research.py:research */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/online_research.py",
