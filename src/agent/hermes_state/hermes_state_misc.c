@@ -909,3 +909,75 @@ char *hermes_state_get_session_delete_targets(hermes_state_db_t *db, const char 
     json_free(arr);
     return out;
 }
+
+/* ── import validators (export/import cluster helpers) ─────────────────── */
+
+/* PoP: hermes_state_import_text_or_none @ hermes_state.py:_import_text_or_none */
+char *hermes_state_import_text_or_none(const char *value) {
+    /* None -> NULL; str -> copy; else NULL (Python raises ValueError). */
+    if (!value || !*value) return NULL;
+    return strdup(value);
+}
+
+/* PoP: hermes_state_import_json_object_or_none @ hermes_state.py:_import_json_object_or_none */
+char *hermes_state_import_json_object_or_none(const char *value) {
+    /* None -> NULL; JSON string that parses to an object -> original string;
+     * already-object JSON text -> original; else NULL (ValueError). */
+    if (!value || !*value) return NULL;
+    json_t *parsed = json_parse(value, NULL);
+    if (parsed) {
+        if (parsed->type == JSON_OBJECT) {
+            json_free(parsed);
+            return strdup(value);
+        }
+        json_free(parsed);
+        return NULL;
+    }
+    /* not parseable as JSON: only valid if it is a plain non-JSON string? No —
+     * Python requires a dict for objects; non-dict JSON -> ValueError */
+    return NULL;
+}
+
+/* PoP: hermes_state_import_int_or_none @ hermes_state.py:_import_int_or_none */
+long long hermes_state_import_int_or_none(const char *value, bool *valid) {
+    if (valid) *valid = true;
+    if (!value || !*value) return 0; /* None */
+    char *end = NULL;
+    long long v = strtoll(value, &end, 10);
+    if (!end || *end != '\0') { if (valid) *valid = false; return 0; }
+    return v;
+}
+
+/* PoP: hermes_state_int_or_default @ hermes_state.py:_int_or_default */
+long long hermes_state_int_or_default(const char *value, long long default_v) {
+    if (!value || !*value) return default_v;
+    char *end = NULL;
+    long long v = strtoll(value, &end, 10);
+    if (!end || *end != '\0') return default_v;
+    return v;
+}
+
+/* PoP: hermes_state_reasoning_json_value @ hermes_state.py:_reasoning_json_value */
+char *hermes_state_reasoning_json_value(const char *value) {
+    /* Non-string -> value as-is; string that parses as JSON -> the parsed
+     * JSON re-serialized (normalized); unparseable string -> value as-is. */
+    if (!value) return NULL;
+    json_t *parsed = json_parse(value, NULL);
+    if (parsed) {
+        char *ser = json_serialize(parsed);
+        json_free(parsed);
+        return ser;
+    }
+    return strdup(value);
+}
+
+/* PoP: hermes_state_import_error @ hermes_state.py:_import_error */
+char *hermes_state_import_error(long long index, const char *error, const char *session_id) {
+    json_t *o = json_object();
+    json_set(o, "index", json_int(index));
+    json_set(o, "error", error ? json_string(error) : json_string(""));
+    if (session_id && *session_id) json_set(o, "session_id", json_string(session_id));
+    char *out = json_serialize(o);
+    json_free(o);
+    return out;
+}
