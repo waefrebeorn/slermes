@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T22:51:12Z",
+  "generated_at": "2026-08-02T22:53:10Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -318192,10 +318192,10 @@
     },
     "tools/kanban_tools.py": {
       "total": 32,
-      "ported": 29,
+      "ported": 32,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 32,
@@ -318733,16 +318733,24 @@
             "decorators": [],
             "line_number": 478
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_kanban_tools_remaining.c",
+          "c_function": "kbt_handle_list",
+          "pop_annotation": {
+            "c_function": "kbt_handle_list",
+            "python_functions": [
+              "_handle_list"
+            ],
+            "c_file": "src/tools/port_kanban_tools_remaining.c",
+            "python_file": "tools/kanban_tools.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _handle_list @ tools/kanban_tools.py:_handle_list */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/kanban_tools.py",
@@ -319015,16 +319023,24 @@
             "decorators": [],
             "line_number": 1259
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_kanban_tools_remaining.c",
+          "c_function": "kbt_maybe_auto_subscribe",
+          "pop_annotation": {
+            "c_function": "kbt_maybe_auto_subscribe",
+            "python_functions": [
+              "_maybe_auto_subscribe"
+            ],
+            "c_file": "src/tools/port_kanban_tools_remaining.c",
+            "python_file": "tools/kanban_tools.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _maybe_auto_subscribe @ tools/kanban_tools.py:_maybe_auto_subscribe */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/kanban_tools.py",
@@ -319094,16 +319110,24 @@
             "decorators": [],
             "line_number": 1434
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_kanban_tools_remaining.c",
+          "c_function": "kbt_board_schema_prop",
+          "pop_annotation": {
+            "c_function": "kbt_board_schema_prop",
+            "python_functions": [
+              "_board_schema_prop"
+            ],
+            "c_file": "src/tools/port_kanban_tools_remaining.c",
+            "python_file": "tools/kanban_tools.py",
+            "line": 37,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _board_schema_prop @ tools/kanban_tools.py:_board_schema_prop */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -350708,10 +350732,10 @@
     },
     "tools/transcription_tools.py": {
       "total": 45,
-      "ported": 41,
+      "ported": 44,
       "partial": 1,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 45,
@@ -350727,17 +350751,24 @@
             "decorators": [],
             "line_number": 51
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_transcription_tools_remaining.c",
+          "c_function": "trt_get_env_value",
+          "pop_annotation": {
+            "c_function": "trt_get_env_value",
+            "python_functions": [
+              "get_env_value"
+            ],
+            "c_file": "src/tools/port_transcription_tools_remaining.c",
+            "python_file": "tools/transcription_tools.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_env_value @ tools/transcription_tools.py:get_env_value */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/transcription_tools.py",
@@ -350836,17 +350867,24 @@
             "decorators": [],
             "line_number": 139
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_transcription_tools_remaining.c",
+          "c_function": "trt_has_openai_audio_backend",
+          "pop_annotation": {
+            "c_function": "trt_has_openai_audio_backend",
+            "python_functions": [
+              "_has_openai_audio_backend"
+            ],
+            "c_file": "src/tools/port_transcription_tools_remaining.c",
+            "python_file": "tools/transcription_tools.py",
+            "line": 44,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _has_openai_audio_backend @ tools/transcription_tools.py:_has_openai_audio_backend */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/transcription_tools.py",
@@ -351952,17 +351990,24 @@
             "decorators": [],
             "line_number": 1857
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_transcription_tools_remaining.c",
+          "c_function": "trt_resolve_openai_audio_client_config",
+          "pop_annotation": {
+            "c_function": "trt_resolve_openai_audio_client_config",
+            "python_functions": [
+              "_resolve_openai_audio_client_config"
+            ],
+            "c_file": "src/tools/port_transcription_tools_remaining.c",
+            "python_file": "tools/transcription_tools.py",
+            "line": 53,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_openai_audio_client_config @ tools/transcription_tools.py:_resolve_openai_audio_client_config */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/transcription_tools.py",
