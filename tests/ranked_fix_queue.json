@@ -1,9 +1,9 @@
 {
- "total": 3078,
+ "total": 3070,
  "by_cat": {
   "A": 22,
-  "Bt": 127,
-  "Bx": 1022,
+  "Bt": 122,
+  "Bx": 1019,
   "C": 1907
  },
  "by_module": {
@@ -64,7 +64,7 @@
   "agent/skill_commands.py": 2,
   "agent/skill_utils.py": 21,
   "agent/stream_single_writer.py": 2,
-  "agent/subscription_view.py": 15,
+  "agent/subscription_view.py": 14,
   "agent/system_prompt.py": 1,
   "agent/thread_scoped_output.py": 5,
   "agent/tool_executor.py": 4,
@@ -126,7 +126,7 @@
   "gateway/shutdown_watchdog.py": 13,
   "gateway/slash_commands.py": 1,
   "gateway/status.py": 19,
-  "gateway/status_phrases.py": 12,
+  "gateway/status_phrases.py": 8,
   "gateway/stream_dispatch.py": 1,
   "gateway/systemd_notify.py": 7,
   "gateway/turn_lease.py": 5,
@@ -177,7 +177,7 @@
   "hermes_cli/env_loader.py": 12,
   "hermes_cli/fallback_cmd.py": 6,
   "hermes_cli/fallback_config.py": 2,
-  "hermes_cli/gateway.py": 139,
+  "hermes_cli/gateway.py": 138,
   "hermes_cli/gateway_enroll.py": 5,
   "hermes_cli/gateway_windows.py": 47,
   "hermes_cli/goals.py": 5,
@@ -187,7 +187,7 @@
   "hermes_cli/kanban_db.py": 24,
   "hermes_cli/kanban_diagnostics.py": 13,
   "hermes_cli/kanban_specify.py": 1,
-  "hermes_cli/main.py": 206,
+  "hermes_cli/main.py": 205,
   "hermes_cli/managed_scope.py": 6,
   "hermes_cli/managed_uv.py": 24,
   "hermes_cli/mcp_catalog.py": 15,
@@ -351,7 +351,7 @@
   "tools/open_preview_tool.py": 3,
   "tools/process_registry.py": 3,
   "tools/project_tools.py": 6,
-  "tools/registry.py": 15,
+  "tools/registry.py": 14,
   "tools/send_message_tool.py": 2,
   "tools/session_search_tool.py": 5,
   "tools/skill_manager_tool.py": 18,
@@ -599,14 +599,6 @@
   },
   {
    "module": "hermes_cli/main.py",
-   "py": "_has_upstream_remote",
-   "c": "main_u_has_upstream_remote",
-   "file": "src/cli/port_main_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/main.py",
    "py": "_is_electron_packaged_web_dist",
    "c": "main_u_is_electron_packaged_web_dist",
    "file": "src/cli/port_main_wrappers.c",
@@ -666,14 +658,6 @@
    "py": "_write_lazy_refresh_incomplete_marker",
    "c": "main_u_write_lazy_refresh_incomplete_marker",
    "file": "src/cli/port_main_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/gateway.py",
-   "py": "_maybe_redirect_run_to_s6_supervision",
-   "c": "cgw_u_maybe_redirect_run_to_s6_supervision",
-   "file": "src/cli/port_cli_gateway_wrappers.c",
    "cat": "Bt",
    "candidates": []
   },
@@ -806,14 +790,6 @@
    "candidates": []
   },
   {
-   "module": "agent/subscription_view.py",
-   "py": "format_tier_row",
-   "c": "agent_subscription_view_format_tier_row",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
    "module": "gateway/platforms/base.py",
    "py": "prefers_fresh_final_streaming",
    "c": "gw_base__prefers_fresh_final_streaming",
@@ -842,22 +818,6 @@
    "py": "_print_project",
    "c": "hermes_cli_projects_cmd_u_print_project",
    "file": "src/cli/port_cli_remaining_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "tools/registry.py",
-   "py": "_is_registry_register_call",
-   "c": "tools_registry_u_is_registry_register_call",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "tools/registry.py",
-   "py": "register_plugin_override_policy",
-   "c": "tools_registry_register_plugin_override_policy",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
    "cat": "Bt",
    "candidates": []
   },
@@ -982,6 +942,14 @@
    "candidates": []
   },
   {
+   "module": "tools/registry.py",
+   "py": "register_plugin_override_policy",
+   "c": "tools_registry_register_plugin_override_policy",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bt",
+   "candidates": []
+  },
+  {
    "module": "hermes_cli/skin_engine.py",
    "py": "get_active_skin_name",
    "c": "hermes_cli_skin_engine_get_active_skin_name",
@@ -1034,22 +1002,6 @@
    "py": "set_interrupt_inbound_handler",
    "c": "ws_transport_set_interrupt_inbound_handler",
    "file": "src/gateway/port_gateway_relay_ws_transport.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "gateway/status_phrases.py",
-   "py": "_merge_phrase_paths",
-   "c": "gateway_status_phrases_u_merge_phrase_paths",
-   "file": "src/gateway/port_gateway_remaining_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "gateway/status_phrases.py",
-   "py": "classify_status_context",
-   "c": "gateway_status_phrases_classify_status_context",
-   "file": "src/gateway/port_gateway_remaining_wrappers.c",
    "cat": "Bt",
    "candidates": []
   },
@@ -1113,6 +1065,14 @@
    "module": "gateway/platforms/webhook_filters.py",
    "py": "_stringify_filter_value",
    "c": "gateway_platforms_webhook_filt_u_stringify_filter_value",
+   "file": "src/gateway/port_gateway_remaining_wrappers.c",
+   "cat": "Bt",
+   "candidates": []
+  },
+  {
+   "module": "gateway/status_phrases.py",
+   "py": "classify_status_context",
+   "c": "gateway_status_phrases_classify_status_context",
    "file": "src/gateway/port_gateway_remaining_wrappers.c",
    "cat": "Bt",
    "candidates": []
@@ -5710,62 +5670,6 @@
    "candidates": []
   },
   {
-   "module": "agent/subscription_view.py",
-   "py": "_format_dollars_grouped",
-   "c": "agent_subscription_view_u_format_dollars_grouped",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/subscription_view.py",
-   "py": "_parse_current",
-   "c": "agent_subscription_view_u_parse_current",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/subscription_view.py",
-   "py": "_parse_tier",
-   "c": "agent_subscription_view_u_parse_tier",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/subscription_view.py",
-   "py": "build_subscription_state",
-   "c": "agent_subscription_view_build_subscription_state",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/subscription_view.py",
-   "py": "is_upgrade",
-   "c": "agent_subscription_view_is_upgrade",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/subscription_view.py",
-   "py": "subscription_change_preview_from_payload",
-   "c": "agent_subscription_view_subscription_change_preview_from_pay_ad",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/subscription_view.py",
-   "py": "subscription_state_from_payload",
-   "c": "agent_subscription_view_subscription_state_from_payload",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
    "module": "gateway/delivery_ledger.py",
    "py": "_db_path",
    "c": "gateway_delivery_ledger_u_db_path",
@@ -6014,102 +5918,6 @@
    "candidates": []
   },
   {
-   "module": "tools/registry.py",
-   "py": "_caller_module",
-   "c": "tools_registry_u_caller_module",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/registry.py",
-   "py": "_check_fn_cached",
-   "c": "tools_registry_u_check_fn_cached",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/registry.py",
-   "py": "_module_registers_tools",
-   "c": "tools_registry_u_module_registers_tools",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/registry.py",
-   "py": "_normalize_handler_result",
-   "c": "tools_registry_u_normalize_handler_result",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/registry.py",
-   "py": "_plugin_owner_of",
-   "c": "tools_registry_u_plugin_owner_of",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/registry.py",
-   "py": "_snapshot_entries",
-   "c": "tools_registry_u_snapshot_entries",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/registry.py",
-   "py": "_snapshot_state",
-   "c": "tools_registry_u_snapshot_state",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/registry.py",
-   "py": "check_tool_availability",
-   "c": "tools_registry_check_tool_availability",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/registry.py",
-   "py": "discover_builtin_tools",
-   "c": "tools_registry_discover_builtin_tools",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/registry.py",
-   "py": "get_definitions",
-   "c": "tools_registry_get_definitions",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/registry.py",
-   "py": "get_entry",
-   "c": "tools_registry_get_entry",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/registry.py",
-   "py": "invalidate_check_fn_cache",
-   "c": "tools_registry_invalidate_check_fn_cache",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
    "module": "agent/chat_completion_helpers.py",
    "py": "_build_partial_stream_stub",
    "c": "agent_chat_completion_helpers_u_build_partial_stream_stub",
@@ -6145,6 +5953,62 @@
    "module": "agent/chat_completion_helpers.py",
    "py": "_dispatch_nonstreaming_api_request",
    "c": "agent_chat_completion_helpers_u_dispatch_nonstreaming_api_re_st",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/subscription_view.py",
+   "py": "_format_dollars_grouped",
+   "c": "agent_subscription_view_u_format_dollars_grouped",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/subscription_view.py",
+   "py": "_parse_current",
+   "c": "agent_subscription_view_u_parse_current",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/subscription_view.py",
+   "py": "_parse_tier",
+   "c": "agent_subscription_view_u_parse_tier",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/subscription_view.py",
+   "py": "build_subscription_state",
+   "c": "agent_subscription_view_build_subscription_state",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/subscription_view.py",
+   "py": "is_upgrade",
+   "c": "agent_subscription_view_is_upgrade",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/subscription_view.py",
+   "py": "subscription_change_preview_from_payload",
+   "c": "agent_subscription_view_subscription_change_preview_from_pay_ad",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/subscription_view.py",
+   "py": "subscription_state_from_payload",
+   "c": "agent_subscription_view_subscription_state_from_payload",
    "file": "src/agent/port_agent_remaining_wrappers.c",
    "cat": "Bx",
    "candidates": []
@@ -6401,6 +6265,102 @@
    "module": "tools/homeassistant_tool.py",
    "py": "_parse_service_response",
    "c": "tools_homeassistant_tool_u_parse_service_response",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/registry.py",
+   "py": "_caller_module",
+   "c": "tools_registry_u_caller_module",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/registry.py",
+   "py": "_check_fn_cached",
+   "c": "tools_registry_u_check_fn_cached",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/registry.py",
+   "py": "_module_registers_tools",
+   "c": "tools_registry_u_module_registers_tools",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/registry.py",
+   "py": "_normalize_handler_result",
+   "c": "tools_registry_u_normalize_handler_result",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/registry.py",
+   "py": "_plugin_owner_of",
+   "c": "tools_registry_u_plugin_owner_of",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/registry.py",
+   "py": "_snapshot_entries",
+   "c": "tools_registry_u_snapshot_entries",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/registry.py",
+   "py": "_snapshot_state",
+   "c": "tools_registry_u_snapshot_state",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/registry.py",
+   "py": "check_tool_availability",
+   "c": "tools_registry_check_tool_availability",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/registry.py",
+   "py": "discover_builtin_tools",
+   "c": "tools_registry_discover_builtin_tools",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/registry.py",
+   "py": "get_definitions",
+   "c": "tools_registry_get_definitions",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/registry.py",
+   "py": "get_entry",
+   "c": "tools_registry_get_entry",
+   "file": "src/tools/port_tools_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "tools/registry.py",
+   "py": "invalidate_check_fn_cache",
+   "c": "tools_registry_invalidate_check_fn_cache",
    "file": "src/tools/port_tools_remaining_wrappers.c",
    "cat": "Bx",
    "candidates": []
@@ -6897,86 +6857,6 @@
    "module": "gateway/relay/ws_transport.py",
    "py": "_render_relay_context",
    "c": "gateway_relay_ws_transport_u_render_relay_context",
-   "file": "src/gateway/port_gateway_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "gateway/status_phrases.py",
-   "py": "_clean_phrase_list",
-   "c": "gateway_status_phrases_u_clean_phrase_list",
-   "file": "src/gateway/port_gateway_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "gateway/status_phrases.py",
-   "py": "_copy_default_catalog",
-   "c": "gateway_status_phrases_u_copy_default_catalog",
-   "file": "src/gateway/port_gateway_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "gateway/status_phrases.py",
-   "py": "_iter_phrase_files",
-   "c": "gateway_status_phrases_u_iter_phrase_files",
-   "file": "src/gateway/port_gateway_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "gateway/status_phrases.py",
-   "py": "_load_builtin_catalog",
-   "c": "gateway_status_phrases_u_load_builtin_catalog",
-   "file": "src/gateway/port_gateway_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "gateway/status_phrases.py",
-   "py": "_merge_phrase_config",
-   "c": "gateway_status_phrases_u_merge_phrase_config",
-   "file": "src/gateway/port_gateway_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "gateway/status_phrases.py",
-   "py": "_merge_phrase_file",
-   "c": "gateway_status_phrases_u_merge_phrase_file",
-   "file": "src/gateway/port_gateway_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "gateway/status_phrases.py",
-   "py": "_merge_phrase_mapping",
-   "c": "gateway_status_phrases_u_merge_phrase_mapping",
-   "file": "src/gateway/port_gateway_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "gateway/status_phrases.py",
-   "py": "_relative_path_under",
-   "c": "gateway_status_phrases_u_relative_path_under",
-   "file": "src/gateway/port_gateway_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "gateway/status_phrases.py",
-   "py": "choose_status_phrase",
-   "c": "gateway_status_phrases_choose_status_phrase",
-   "file": "src/gateway/port_gateway_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "gateway/status_phrases.py",
-   "py": "resolve_status_phrase_catalog",
-   "c": "gateway_status_phrases_resolve_status_phrase_catalog",
    "file": "src/gateway/port_gateway_remaining_wrappers.c",
    "cat": "Bx",
    "candidates": []
@@ -7769,6 +7649,62 @@
    "module": "gateway/platforms/webhook_filters.py",
    "py": "resolve_filter_field",
    "c": "gateway_platforms_webhook_filt_resolve_filter_field",
+   "file": "src/gateway/port_gateway_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "gateway/status_phrases.py",
+   "py": "_copy_default_catalog",
+   "c": "gateway_status_phrases_u_copy_default_catalog",
+   "file": "src/gateway/port_gateway_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "gateway/status_phrases.py",
+   "py": "_iter_phrase_files",
+   "c": "gateway_status_phrases_u_iter_phrase_files",
+   "file": "src/gateway/port_gateway_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "gateway/status_phrases.py",
+   "py": "_load_builtin_catalog",
+   "c": "gateway_status_phrases_u_load_builtin_catalog",
+   "file": "src/gateway/port_gateway_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "gateway/status_phrases.py",
+   "py": "_merge_phrase_config",
+   "c": "gateway_status_phrases_u_merge_phrase_config",
+   "file": "src/gateway/port_gateway_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "gateway/status_phrases.py",
+   "py": "_relative_path_under",
+   "c": "gateway_status_phrases_u_relative_path_under",
+   "file": "src/gateway/port_gateway_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "gateway/status_phrases.py",
+   "py": "choose_status_phrase",
+   "c": "gateway_status_phrases_choose_status_phrase",
+   "file": "src/gateway/port_gateway_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "gateway/status_phrases.py",
+   "py": "resolve_status_phrase_catalog",
+   "c": "gateway_status_phrases_resolve_status_phrase_catalog",
    "file": "src/gateway/port_gateway_remaining_wrappers.c",
    "cat": "Bx",
    "candidates": []
@@ -18270,62 +18206,6 @@
    "candidates": []
   },
   {
-   "module": "agent/subscription_view.py",
-   "py": "_coalesce",
-   "c": "agent_subscription_view_u_coalesce",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/subscription_view.py",
-   "py": "_dev_current",
-   "c": "agent_subscription_view_u_dev_current",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/subscription_view.py",
-   "py": "_dev_tiers",
-   "c": "agent_subscription_view_u_dev_tiers",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/subscription_view.py",
-   "py": "can_change_plan",
-   "c": "agent_subscription_view_can_change_plan",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/subscription_view.py",
-   "py": "dev_fixture_subscription_state",
-   "c": "agent_subscription_view_dev_fixture_subscription_state",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/subscription_view.py",
-   "py": "selectable_tiers",
-   "c": "agent_subscription_view_selectable_tiers",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "agent/subscription_view.py",
-   "py": "subscription_manage_url",
-   "c": "agent_subscription_view_subscription_manage_url",
-   "file": "src/agent/port_agent_remaining_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
    "module": "gateway/delivery_ledger.py",
    "py": "_connect",
    "c": "gateway_delivery_ledger_u_connect",
@@ -19041,6 +18921,62 @@
    "module": "agent/chat_completion_helpers.py",
    "py": "should_use_direct_api_call",
    "c": "agent_chat_completion_helpers_should_use_direct_api_call",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/subscription_view.py",
+   "py": "_coalesce",
+   "c": "agent_subscription_view_u_coalesce",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/subscription_view.py",
+   "py": "_dev_current",
+   "c": "agent_subscription_view_u_dev_current",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/subscription_view.py",
+   "py": "_dev_tiers",
+   "c": "agent_subscription_view_u_dev_tiers",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/subscription_view.py",
+   "py": "can_change_plan",
+   "c": "agent_subscription_view_can_change_plan",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/subscription_view.py",
+   "py": "dev_fixture_subscription_state",
+   "c": "agent_subscription_view_dev_fixture_subscription_state",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/subscription_view.py",
+   "py": "selectable_tiers",
+   "c": "agent_subscription_view_selectable_tiers",
+   "file": "src/agent/port_agent_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "agent/subscription_view.py",
+   "py": "subscription_manage_url",
+   "c": "agent_subscription_view_subscription_manage_url",
    "file": "src/agent/port_agent_remaining_wrappers.c",
    "cat": "C",
    "candidates": []

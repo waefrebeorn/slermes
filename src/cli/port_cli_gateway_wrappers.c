@@ -91,7 +91,26 @@ int cgw_get_gateway_runtime_snapshot(const char *arg) { (void)arg; return 0; }
 int cgw_u_format_gateway_pids(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _print_gateway_process_mismatch @ hermes_cli/gateway.py:_print_gateway_process_mismatch */
-int cgw_u_print_gateway_process_mismatch(const char *arg) { (void)arg; return 0; }
+int cgw_u_print_gateway_process_mismatch(const char *arg) {
+    /* Python (snapshot): prints the process/service mismatch warning,
+     * distinguishing the launchd detached fallback from a manual run.
+     * Arg = "has_mismatch\tlaunchd_marker_exists". */
+    if (!arg || !*arg) return 0;
+    int mismatch = 0, marker = 0;
+    if (sscanf(arg, "%d\t%d", &mismatch, &marker) < 1) return 0;
+    if (!mismatch) return 0;
+    printf("\n");
+    if (marker) {
+        printf("\xe2\x9a\xa0 Gateway is running as a detached fallback process - launchd cannot supervise it\n");
+        printf("  (macOS launchd exit-5 path)\n");
+    } else {
+        printf("\xe2\x9a\xa0 Gateway process is running for this profile, but the service is not active\n");
+        printf("  PID(s): (see gateway status)\n");
+        printf("  This is usually a manual foreground/tmux/nohup run, so `hermes gateway`\n");
+        printf("  can refuse to start another copy until this process stops.\n");
+    }
+    return 0;
+}
 
 /* PoP: _print_other_profiles_gateway_status @ hermes_cli/gateway.py:_print_other_profiles_gateway_status */
 int cgw_u_print_other_profiles_gateway_status(const char *arg) { (void)arg; return 0; }

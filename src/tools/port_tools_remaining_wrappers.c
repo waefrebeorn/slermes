@@ -150,7 +150,12 @@ int tools_homeassistant_tool_u_async_list_services(const char *arg) { (void)arg;
 int tools_homeassistant_tool_u_handle_list_services(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _check_ha_available @ tools/homeassistant_tool.py:_check_ha_available */
-int tools_homeassistant_tool_u_check_ha_available(const char *arg) { (void)arg; return 0; }
+int tools_homeassistant_tool_u_check_ha_available(const char *arg) {
+    /* Python: tool available only when HASS_TOKEN is set. */
+    (void)arg;
+    const char *tok = getenv("HASS_TOKEN");
+    return tok && *tok;
+}
 
 /* PoP: _is_registry_register_call @ tools/registry.py:_is_registry_register_call */
 int tools_registry_u_is_registry_register_call(const char *arg) {

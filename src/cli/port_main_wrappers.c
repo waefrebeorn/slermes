@@ -874,7 +874,13 @@ int main_u_maybe_setup_dashboard_auth_interactively(const char *arg) { (void)arg
 int main_u_read_ssh_session_token_file(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_electron_packaged_web_dist @ hermes_cli/main.py:_is_electron_packaged_web_dist */
-int main_u_is_electron_packaged_web_dist(const char *arg) { (void)arg; return 0; }
+int main_u_is_electron_packaged_web_dist(const char *arg) {
+    /* Python: True when *path* looks like an Electron-packaged renderer
+     * dist (HERMES_WEB_DIST points into app.asar[.unpacked]/dist). */
+    if (!arg || !*arg) return 0;
+    if (strstr(arg, "app.asar")) return 1;
+    return 0;
+}
 
 /* PoP: cmd_dashboard_register @ hermes_cli/main.py:cmd_dashboard_register */
 int main_cmd_dashboard_register(const char *arg) { (void)arg; return 0; }

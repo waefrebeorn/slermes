@@ -1,8 +1,8 @@
-# Ranked fix queue — 3078 bootleg functions
+# Ranked fix queue — 3070 bootleg functions
 
 - A  (delegate to real fn): 22
-- Bt (trivial direct-port): 127
-- Bx (direct but needs deps): 1022
+- Bt (trivial direct-port): 122
+- Bx (direct but needs deps): 1019
 - C  (deep subsystem):        1907
 
 ## Top of queue (automatable first)
@@ -29,7 +29,6 @@
 - [A] gateway/restart_loop_guard.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
 - [A] gateway/stream_dispatch.py :: dispatch -> adel_u_persist_dispatch  (cands: dispatch)
 - [A] tools/slash_confirm.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
-- [Bt] hermes_cli/main.py :: _has_upstream_remote -> main_u_has_upstream_remote
 - [Bt] hermes_cli/main.py :: _is_electron_packaged_web_dist -> main_u_is_electron_packaged_web_dist
 - [Bt] hermes_cli/main.py :: _is_fork -> main_u_is_fork
 - [Bt] hermes_cli/main.py :: _is_windows_npm_path -> main_u_is_windows_npm_path
@@ -38,7 +37,6 @@
 - [Bt] hermes_cli/main.py :: _resolve_update_branch -> main_u_resolve_update_branch
 - [Bt] hermes_cli/main.py :: _sync_fork_with_upstream -> main_u_sync_fork_with_upstream
 - [Bt] hermes_cli/main.py :: _write_lazy_refresh_incomplete_marker -> main_u_write_lazy_refresh_incomplete_marker
-- [Bt] hermes_cli/gateway.py :: _maybe_redirect_run_to_s6_supervision -> cgw_u_maybe_redirect_run_to_s6_supervision
 - [Bt] hermes_cli/gateway.py :: _print_gateway_process_mismatch -> cgw_u_print_gateway_process_mismatch
 - [Bt] hermes_cli/gateway.py :: _print_linger_enable_warning -> cgw_u_print_linger_enable_warning
 - [Bt] hermes_cli/gateway.py :: _refuse_temp_home_service_write -> cgw_u_refuse_temp_home_service_write
@@ -55,13 +53,10 @@
 - [Bt] hermes_cli/mcp_config.py :: _strip_bearer_prefix -> hermes_cli_mcp_config_u_strip_bearer_prefix
 - [Bt] hermes_cli/service_manager.py :: _render_finish_script -> hermes_cli_service_manager_u_render_finish_script
 - [Bt] hermes_cli/service_manager.py :: _service_name -> hermes_cli_service_manager_u_service_name
-- [Bt] agent/subscription_view.py :: format_tier_row -> agent_subscription_view_format_tier_row
 - [Bt] gateway/platforms/base.py :: prefers_fresh_final_streaming -> gw_base__prefers_fresh_final_streaming
 - [Bt] gateway/platforms/base.py :: set_reaction_handler -> gw_base__set_reaction_handler
 - [Bt] gateway/platforms/base.py :: set_session_store -> gw_base__set_session_store
 - [Bt] hermes_cli/projects_cmd.py :: _print_project -> hermes_cli_projects_cmd_u_print_project
-- [Bt] tools/registry.py :: _is_registry_register_call -> tools_registry_u_is_registry_register_call
-- [Bt] tools/registry.py :: register_plugin_override_policy -> tools_registry_register_plugin_override_policy
 - [Bt] agent/chat_completion_helpers.py :: _bump_stale_streak -> agent_chat_completion_helpers_u_bump_stale_streak
 - [Bt] agent/chat_completion_helpers.py :: _fallback_entry_is_same_backend_by_base_url -> agent_chat_completion_helpers_u_fallback_entry_is_same_backe_rl
 - [Bt] agent/chat_completion_helpers.py :: _reset_stale_streak -> agent_chat_completion_helpers_u_reset_stale_streak
@@ -77,6 +72,7 @@
 - [Bt] tools/homeassistant_tool.py :: _check_ha_available -> tools_homeassistant_tool_u_check_ha_available
 - [Bt] tools/homeassistant_tool.py :: _get_config -> tools_homeassistant_tool_u_get_config
 - [Bt] tools/homeassistant_tool.py :: _get_headers -> tools_homeassistant_tool_u_get_headers
+- [Bt] tools/registry.py :: register_plugin_override_policy -> tools_registry_register_plugin_override_policy
 - [Bt] hermes_cli/skin_engine.py :: get_active_skin_name -> hermes_cli_skin_engine_get_active_skin_name
 - [Bt] agent/agent_init.py :: _normalize_custom_provider_name -> agent_agent_init_u_normalize_custom_provider_name
 - [Bt] agent/agent_init.py :: _resolve_compression_threshold -> agent_agent_init_u_resolve_compression_threshold
@@ -84,8 +80,6 @@
 - [Bt] agent/rate_limit_tracker.py :: has_data -> agent_rate_limit_tracker_has_data
 - [Bt] gateway/relay/ws_transport.py :: set_inbound_handler -> ws_transport_set_inbound_handler
 - [Bt] gateway/relay/ws_transport.py :: set_interrupt_inbound_handler -> ws_transport_set_interrupt_inbound_handler
-- [Bt] gateway/status_phrases.py :: _merge_phrase_paths -> gateway_status_phrases_u_merge_phrase_paths
-- [Bt] gateway/status_phrases.py :: classify_status_context -> gateway_status_phrases_classify_status_context
 - [Bt] hermes_cli/model_catalog.py :: reset_cache -> hermes_cli_model_catalog_reset_cache
 - [Bt] hermes_cli/inventory.py :: build_model_options_payload -> hermes_cli_inventory_build_model_options_payload
 - [Bt] hermes_cli/journey.py :: _term_size -> hermes_cli_journey_u_term_size
@@ -94,6 +88,7 @@
 - [Bt] agent/memory_provider.py :: on_memory_write -> agent_memory_provider_on_memory_write
 - [Bt] agent/trace_upload.py :: _resolve_hf_token -> agent_trace_upload_u_resolve_hf_token
 - [Bt] gateway/platforms/webhook_filters.py :: _stringify_filter_value -> gateway_platforms_webhook_filt_u_stringify_filter_value
+- [Bt] gateway/status_phrases.py :: classify_status_context -> gateway_status_phrases_classify_status_context
 - [Bt] hermes_cli/mcp_picker.py :: _format_row -> hermes_cli_mcp_picker_u_format_row
 - [Bt] hermes_cli/mcp_picker.py :: is_custom -> hermes_cli_mcp_picker_is_custom
 - [Bt] tools/image_source.py :: _is_local_terminal_backend -> tools_image_source_u_is_local_terminal_backend
@@ -207,3 +202,8 @@
 - [Bx] hermes_cli/main.py :: _sync_with_upstream_if_needed -> main_u_sync_with_upstream_if_needed
 - [Bx] hermes_cli/main.py :: _termux_bundled_skills_fingerprint -> main_u_termux_bundled_skills_fingerprint
 - [Bx] hermes_cli/main.py :: _termux_bundled_skills_stamp_path -> main_u_termux_bundled_skills_stamp_path
+- [Bx] hermes_cli/main.py :: _termux_should_prefetch_update_check -> main_u_termux_should_prefetch_update_check
+- [Bx] hermes_cli/main.py :: _tui_need_rebuild -> main_u_tui_need_rebuild
+- [Bx] hermes_cli/main.py :: _validate_critical_files_syntax -> main_u_validate_critical_files_syntax
+- [Bx] hermes_cli/main.py :: _web_ui_build_needed -> main_u_web_ui_build_needed
+- [Bx] hermes_cli/main.py :: _web_ui_stamp_path -> main_u_web_ui_stamp_path

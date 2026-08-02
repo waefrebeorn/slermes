@@ -430,14 +430,32 @@ int agent_chat_completion_helpers_u_provider_preferences_for_agent(const char *a
 /* PoP: _codex_wait_notice_recovery @ agent/chat_completion_helpers.py:_codex_wait_notice_recovery */
 int agent_chat_completion_helpers_u_codex_wait_notice_recovery(const char *arg) { (void)arg; return 0; }
 
+/* shared stale-stream counter (mirrors agent._consecutive_stale_streams) */
+static long long g_stale_streams = 0;
+
 /* PoP: _stale_streak @ agent/chat_completion_helpers.py:_stale_streak */
-int agent_chat_completion_helpers_u_stale_streak(const char *arg) { (void)arg; return 0; }
+int agent_chat_completion_helpers_u_stale_streak(const char *arg) {
+    /* Python: int(agent._consecutive_stale_streams or 0). */
+    (void)arg;
+    return (int)g_stale_streams;
+}
 
 /* PoP: _bump_stale_streak @ agent/chat_completion_helpers.py:_bump_stale_streak */
-int agent_chat_completion_helpers_u_bump_stale_streak(const char *arg) { (void)arg; return 0; }
+int agent_chat_completion_helpers_u_bump_stale_streak(const char *arg) {
+    /* Python: agent._consecutive_stale_streams = streak + 1 (best-effort).
+     * The C port keeps a static counter mirroring the agent attr. */
+    (void)arg;
+    g_stale_streams += 1;
+    return 0;
+}
 
 /* PoP: _reset_stale_streak @ agent/chat_completion_helpers.py:_reset_stale_streak */
-int agent_chat_completion_helpers_u_reset_stale_streak(const char *arg) { (void)arg; return 0; }
+int agent_chat_completion_helpers_u_reset_stale_streak(const char *arg) {
+    /* Python: streak = 0 (best-effort). */
+    (void)arg;
+    g_stale_streams = 0;
+    return 0;
+}
 
 /* PoP: _check_stale_giveup @ agent/chat_completion_helpers.py:_check_stale_giveup */
 int agent_chat_completion_helpers_u_check_stale_giveup(const char *arg) { (void)arg; return 0; }
