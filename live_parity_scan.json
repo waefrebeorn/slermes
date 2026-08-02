@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T22:07:20Z",
+  "generated_at": "2026-08-02T22:09:22Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -335822,10 +335822,10 @@
     },
     "tools/skill_usage.py": {
       "total": 46,
-      "ported": 41,
+      "ported": 45,
       "partial": 1,
       "stub": 0,
-      "real_gaps": 4,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 46,
@@ -336386,17 +336386,24 @@
             "decorators": [],
             "line_number": 406
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skill_usage_remaining.c",
+          "c_function": "sku_read_skill_name",
+          "pop_annotation": {
+            "c_function": "sku_read_skill_name",
+            "python_functions": [
+              "_read_skill_name"
+            ],
+            "c_file": "src/tools/port_skill_usage_remaining.c",
+            "python_file": "tools/skill_usage.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _read_skill_name @ tools/skill_usage.py:_read_skill_name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skill_usage.py",
@@ -336872,17 +336879,24 @@
             "decorators": [],
             "line_number": 665
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skill_usage_remaining.c",
+          "c_function": "sku_set_state",
+          "pop_annotation": {
+            "c_function": "sku_set_state",
+            "python_functions": [
+              "set_state"
+            ],
+            "c_file": "src/tools/port_skill_usage_remaining.c",
+            "python_file": "tools/skill_usage.py",
+            "line": 36,
+            "is_consolidated": false,
+            "full_text": "/* PoP: set_state @ tools/skill_usage.py:set_state */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skill_usage.py",
@@ -336923,17 +336937,24 @@
             "decorators": [],
             "line_number": 686
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skill_usage_remaining.c",
+          "c_function": "sku_forget",
+          "pop_annotation": {
+            "c_function": "sku_forget",
+            "python_functions": [
+              "forget"
+            ],
+            "c_file": "src/tools/port_skill_usage_remaining.c",
+            "python_file": "tools/skill_usage.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: forget @ tools/skill_usage.py:forget */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skill_usage.py",
@@ -337090,17 +337111,24 @@
             "decorators": [],
             "line_number": 904
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skill_usage_remaining.c",
+          "c_function": "sku_provenance",
+          "pop_annotation": {
+            "c_function": "sku_provenance",
+            "python_functions": [
+              "provenance"
+            ],
+            "c_file": "src/tools/port_skill_usage_remaining.c",
+            "python_file": "tools/skill_usage.py",
+            "line": 57,
+            "is_consolidated": false,
+            "full_text": "/* PoP: provenance @ tools/skill_usage.py:provenance */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skill_usage.py",
@@ -343520,10 +343548,10 @@
     },
     "tools/skills_sync.py": {
       "total": 27,
-      "ported": 23,
+      "ported": 27,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 4,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 27,
@@ -344119,16 +344147,24 @@
             "decorators": [],
             "line_number": 886
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_sync_remaining.c",
+          "c_function": "sys_is_tracked_user_modification",
+          "pop_annotation": {
+            "c_function": "sys_is_tracked_user_modification",
+            "python_functions": [
+              "_is_tracked_user_modification"
+            ],
+            "c_file": "src/tools/port_skills_sync_remaining.c",
+            "python_file": "tools/skills_sync.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_tracked_user_modification @ tools/skills_sync.py:_is_tracked_user_modification */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_sync.py",
@@ -344140,16 +344176,24 @@
             "decorators": [],
             "line_number": 898
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_sync_remaining.c",
+          "c_function": "sys_list_user_modified_bundled_skills",
+          "pop_annotation": {
+            "c_function": "sys_list_user_modified_bundled_skills",
+            "python_functions": [
+              "list_user_modified_bundled_skills"
+            ],
+            "c_file": "src/tools/port_skills_sync_remaining.c",
+            "python_file": "tools/skills_sync.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: list_user_modified_bundled_skills @ tools/skills_sync.py:list_user_modified_bundled_skills */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_sync.py",
@@ -344161,16 +344205,24 @@
             "decorators": [],
             "line_number": 935
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_sync_remaining.c",
+          "c_function": "sys_read_for_diff",
+          "pop_annotation": {
+            "c_function": "sys_read_for_diff",
+            "python_functions": [
+              "_read_for_diff"
+            ],
+            "c_file": "src/tools/port_skills_sync_remaining.c",
+            "python_file": "tools/skills_sync.py",
+            "line": 37,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _read_for_diff @ tools/skills_sync.py:_read_for_diff */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_sync.py",
@@ -344182,16 +344234,24 @@
             "decorators": [],
             "line_number": 954
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_sync_remaining.c",
+          "c_function": "sys_diff_bundled_skill",
+          "pop_annotation": {
+            "c_function": "sys_diff_bundled_skill",
+            "python_functions": [
+              "diff_bundled_skill"
+            ],
+            "c_file": "src/tools/port_skills_sync_remaining.c",
+            "python_file": "tools/skills_sync.py",
+            "line": 54,
+            "is_consolidated": false,
+            "full_text": "/* PoP: diff_bundled_skill @ tools/skills_sync.py:diff_bundled_skill */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_sync.py",
