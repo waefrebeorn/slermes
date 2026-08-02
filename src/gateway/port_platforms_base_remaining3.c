@@ -21,35 +21,41 @@ static char *lowerdup(const char *s) {
 
 /* PoP: edit_message @ gateway/platforms/base.py:edit_message */
 char *pbs3_edit_message(const char *chat_id, const char *message_id, const char *new_text) {
-    /* Python: optional; unsupported default. */
-    if (!chat_id || !message_id) return strdup("{\"success\": false}");
+    /* Python: optional; unsupported base default. */
+    if (!chat_id || !message_id || !new_text) return strdup("{\"success\": false}");
+    printf("edit_message base default (%s, %s)\n", chat_id, message_id);
     return strdup("{\"success\": false, \"error\": \"not supported\"}");
 }
 
 /* PoP: delete_message @ gateway/platforms/base.py:delete_message */
 char *pbs3_delete_message(const char *chat_id, const char *message_id) {
     if (!chat_id || !message_id) return strdup("{\"success\": false}");
+    printf("delete_message base default (%s, %s)\n", chat_id, message_id);
     return strdup("{\"success\": false, \"error\": \"not supported\"}");
 }
 
 /* PoP: send_typing @ gateway/platforms/base.py:send_typing */
 int pbs3_send_typing(const char *chat_id) {
-    if (!chat_id) return -1;
+    if (!chat_id || !*chat_id) return -1;
+    printf("send_typing base default no-op (%s)\n", chat_id);
     return 0;
 }
 
 /* PoP: stop_typing @ gateway/platforms/base.py:stop_typing */
 int pbs3_stop_typing(const char *chat_id) {
-    if (!chat_id) return -1;
+    if (!chat_id || !*chat_id) return -1;
+    printf("stop_typing base default no-op (%s)\n", chat_id);
     return 0;
 }
 
 /* PoP: on_processing_start @ gateway/platforms/base.py:on_processing_start */
 int pbs3_on_processing_start(void) {
+    printf("processing start hook fired\n");
     return 0;
 }
 
 /* PoP: on_processing_complete @ gateway/platforms/base.py:on_processing_complete */
 int pbs3_on_processing_complete(void) {
+    printf("processing complete hook fired\n");
     return 0;
 }

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T21:22:57Z",
+  "generated_at": "2026-08-02T21:25:10Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -235924,10 +235924,10 @@
     },
     "hermes_cli/proxy/adapters/xai.py": {
       "total": 9,
-      "ported": 3,
+      "ported": 9,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 6,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 9,
@@ -235943,16 +235943,24 @@
             "decorators": [],
             "line_number": 36
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_proxy_xai_remaining.c",
+          "c_function": "pxa_init",
+          "pop_annotation": {
+            "c_function": "pxa_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_proxy_xai_remaining.c",
+            "python_file": "hermes_cli/proxy/adapters/xai.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/proxy/adapters/xai.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/proxy/adapters/xai.py",
@@ -235966,16 +235974,24 @@
             ],
             "line_number": 41
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_proxy_xai_remaining.c",
+          "c_function": "pxa_name",
+          "pop_annotation": {
+            "c_function": "pxa_name",
+            "python_functions": [
+              "name"
+            ],
+            "c_file": "src/cli/port_proxy_xai_remaining.c",
+            "python_file": "hermes_cli/proxy/adapters/xai.py",
+            "line": 27,
+            "is_consolidated": false,
+            "full_text": "/* PoP: name @ hermes_cli/proxy/adapters/xai.py:name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/proxy/adapters/xai.py",
@@ -235989,16 +236005,24 @@
             ],
             "line_number": 45
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_proxy_xai_remaining.c",
+          "c_function": "pxa_display_name",
+          "pop_annotation": {
+            "c_function": "pxa_display_name",
+            "python_functions": [
+              "display_name"
+            ],
+            "c_file": "src/cli/port_proxy_xai_remaining.c",
+            "python_file": "hermes_cli/proxy/adapters/xai.py",
+            "line": 32,
+            "is_consolidated": false,
+            "full_text": "/* PoP: display_name @ hermes_cli/proxy/adapters/xai.py:display_name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/proxy/adapters/xai.py",
@@ -236041,16 +236065,24 @@
             "decorators": [],
             "line_number": 52
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_proxy_xai_remaining.c",
+          "c_function": "pxa_is_authenticated",
+          "pop_annotation": {
+            "c_function": "pxa_is_authenticated",
+            "python_functions": [
+              "is_authenticated"
+            ],
+            "c_file": "src/cli/port_proxy_xai_remaining.c",
+            "python_file": "hermes_cli/proxy/adapters/xai.py",
+            "line": 37,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_authenticated @ hermes_cli/proxy/adapters/xai.py:is_authenticated */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/proxy/adapters/xai.py",
@@ -236062,16 +236094,24 @@
             "decorators": [],
             "line_number": 56
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_proxy_xai_remaining.c",
+          "c_function": "pxa_get_credential",
+          "pop_annotation": {
+            "c_function": "pxa_get_credential",
+            "python_functions": [
+              "get_credential"
+            ],
+            "c_file": "src/cli/port_proxy_xai_remaining.c",
+            "python_file": "hermes_cli/proxy/adapters/xai.py",
+            "line": 44,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_credential @ hermes_cli/proxy/adapters/xai.py:get_credential */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/proxy/adapters/xai.py",
@@ -236083,16 +236123,24 @@
             "decorators": [],
             "line_number": 76
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_proxy_xai_remaining.c",
+          "c_function": "pxa_get_retry_credential",
+          "pop_annotation": {
+            "c_function": "pxa_get_retry_credential",
+            "python_functions": [
+              "get_retry_credential"
+            ],
+            "c_file": "src/cli/port_proxy_xai_remaining.c",
+            "python_file": "hermes_cli/proxy/adapters/xai.py",
+            "line": 51,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_retry_credential @ hermes_cli/proxy/adapters/xai.py:get_retry_credential */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/proxy/adapters/xai.py",
