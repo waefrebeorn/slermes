@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:54:41Z",
+  "generated_at": "2026-08-02T20:56:47Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -57763,10 +57763,10 @@
     },
     "agent/secret_sources/base.py": {
       "total": 11,
-      "ported": 5,
+      "ported": 10,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 6,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 11,
@@ -57815,16 +57815,24 @@
             ],
             "line_number": 144
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_base_remaining.c",
+          "c_function": "ssb_fetch",
+          "pop_annotation": {
+            "c_function": "ssb_fetch",
+            "python_functions": [
+              "fetch"
+            ],
+            "c_file": "src/agent/port_secret_sources_base_remaining.c",
+            "python_file": "agent/secret_sources/base.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: fetch @ agent/secret_sources/base.py:fetch */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/base.py",
@@ -57866,14 +57874,24 @@
             "line_number": 158
           },
           "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
-          "stub_reason": null,
+          "c_location": "src/agent/port_secret_sources_base_remaining.c",
+          "c_function": "ssb_override_existing",
+          "pop_annotation": {
+            "c_function": "ssb_override_existing",
+            "python_functions": [
+              "override_existing"
+            ],
+            "c_file": "src/agent/port_secret_sources_base_remaining.c",
+            "python_file": "agent/secret_sources/base.py",
+            "line": 31,
+            "is_consolidated": false,
+            "full_text": "/* PoP: override_existing @ agent/secret_sources/base.py:override_existing */"
+          },
+          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
           "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
+          "notes": "",
           "da_flags": [
-            "DA-1:no-c-equivalent"
+            "DA-2:bootleg-body"
           ]
         },
         {
@@ -57886,16 +57904,24 @@
             "decorators": [],
             "line_number": 167
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_base_remaining.c",
+          "c_function": "ssb_protected_env_vars",
+          "pop_annotation": {
+            "c_function": "ssb_protected_env_vars",
+            "python_functions": [
+              "protected_env_vars"
+            ],
+            "c_file": "src/agent/port_secret_sources_base_remaining.c",
+            "python_file": "agent/secret_sources/base.py",
+            "line": 37,
+            "is_consolidated": false,
+            "full_text": "/* PoP: protected_env_vars @ agent/secret_sources/base.py:protected_env_vars */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/base.py",
@@ -57907,16 +57933,24 @@
             "decorators": [],
             "line_number": 176
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_base_remaining.c",
+          "c_function": "ssb_fetch_timeout_seconds",
+          "pop_annotation": {
+            "c_function": "ssb_fetch_timeout_seconds",
+            "python_functions": [
+              "fetch_timeout_seconds"
+            ],
+            "c_file": "src/agent/port_secret_sources_base_remaining.c",
+            "python_file": "agent/secret_sources/base.py",
+            "line": 43,
+            "is_consolidated": false,
+            "full_text": "/* PoP: fetch_timeout_seconds @ agent/secret_sources/base.py:fetch_timeout_seconds */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/base.py",
@@ -57928,16 +57962,24 @@
             "decorators": [],
             "line_number": 184
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_base_remaining.c",
+          "c_function": "ssb_config_schema",
+          "pop_annotation": {
+            "c_function": "ssb_config_schema",
+            "python_functions": [
+              "config_schema"
+            ],
+            "c_file": "src/agent/port_secret_sources_base_remaining.c",
+            "python_file": "agent/secret_sources/base.py",
+            "line": 55,
+            "is_consolidated": false,
+            "full_text": "/* PoP: config_schema @ agent/secret_sources/base.py:config_schema */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/base.py",
@@ -57949,16 +57991,24 @@
             "decorators": [],
             "line_number": 193
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_base_remaining.c",
+          "c_function": "ssb_remediation",
+          "pop_annotation": {
+            "c_function": "ssb_remediation",
+            "python_functions": [
+              "remediation"
+            ],
+            "c_file": "src/agent/port_secret_sources_base_remaining.c",
+            "python_file": "agent/secret_sources/base.py",
+            "line": 60,
+            "is_consolidated": false,
+            "full_text": "/* PoP: remediation @ agent/secret_sources/base.py:remediation */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/base.py",
@@ -64030,10 +64080,10 @@
     },
     "agent/system_prompt.py": {
       "total": 7,
-      "ported": 1,
+      "ported": 7,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 6,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 7,
@@ -64049,16 +64099,24 @@
             "decorators": [],
             "line_number": 55
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_system_prompt_remaining.c",
+          "c_function": "syp_ra",
+          "pop_annotation": {
+            "c_function": "syp_ra",
+            "python_functions": [
+              "_ra"
+            ],
+            "c_file": "src/agent/port_system_prompt_remaining.c",
+            "python_file": "agent/system_prompt.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _ra @ agent/system_prompt.py:_ra */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/system_prompt.py",
@@ -64070,16 +64128,24 @@
             "decorators": [],
             "line_number": 70
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_system_prompt_remaining.c",
+          "c_function": "syp_resolve_platform_hint",
+          "pop_annotation": {
+            "c_function": "syp_resolve_platform_hint",
+            "python_functions": [
+              "_resolve_platform_hint"
+            ],
+            "c_file": "src/agent/port_system_prompt_remaining.c",
+            "python_file": "agent/system_prompt.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_platform_hint @ agent/system_prompt.py:_resolve_platform_hint */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/system_prompt.py",
@@ -64120,16 +64186,24 @@
             "decorators": [],
             "line_number": 149
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_system_prompt_remaining.c",
+          "c_function": "syp_build_system_prompt_parts",
+          "pop_annotation": {
+            "c_function": "syp_build_system_prompt_parts",
+            "python_functions": [
+              "build_system_prompt_parts"
+            ],
+            "c_file": "src/agent/port_system_prompt_remaining.c",
+            "python_file": "agent/system_prompt.py",
+            "line": 45,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_system_prompt_parts @ agent/system_prompt.py:build_system_prompt_parts */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/system_prompt.py",
@@ -64141,16 +64215,24 @@
             "decorators": [],
             "line_number": 544
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_system_prompt_remaining.c",
+          "c_function": "syp_build_system_prompt",
+          "pop_annotation": {
+            "c_function": "syp_build_system_prompt",
+            "python_functions": [
+              "build_system_prompt"
+            ],
+            "c_file": "src/agent/port_system_prompt_remaining.c",
+            "python_file": "agent/system_prompt.py",
+            "line": 53,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_system_prompt @ agent/system_prompt.py:build_system_prompt */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/system_prompt.py",
@@ -64162,16 +64244,24 @@
             "decorators": [],
             "line_number": 571
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_system_prompt_remaining.c",
+          "c_function": "syp_invalidate_system_prompt",
+          "pop_annotation": {
+            "c_function": "syp_invalidate_system_prompt",
+            "python_functions": [
+              "invalidate_system_prompt"
+            ],
+            "c_file": "src/agent/port_system_prompt_remaining.c",
+            "python_file": "agent/system_prompt.py",
+            "line": 61,
+            "is_consolidated": false,
+            "full_text": "/* PoP: invalidate_system_prompt @ agent/system_prompt.py:invalidate_system_prompt */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/system_prompt.py",
@@ -64183,16 +64273,24 @@
             "decorators": [],
             "line_number": 583
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_system_prompt_remaining.c",
+          "c_function": "syp_format_tools_for_system_message",
+          "pop_annotation": {
+            "c_function": "syp_format_tools_for_system_message",
+            "python_functions": [
+              "format_tools_for_system_message"
+            ],
+            "c_file": "src/agent/port_system_prompt_remaining.c",
+            "python_file": "agent/system_prompt.py",
+            "line": 68,
+            "is_consolidated": false,
+            "full_text": "/* PoP: format_tools_for_system_message @ agent/system_prompt.py:format_tools_for_system_message */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
