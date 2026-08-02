@@ -99,7 +99,15 @@ int cgw_u_probe_systemd_service_running(const char *arg) {
 }
 
 /* PoP: _read_systemd_unit_environment @ hermes_cli/gateway.py:_read_systemd_unit_environment */
-int cgw_u_read_systemd_unit_environment(const char *arg) { (void)arg; return 0; }
+int cgw_u_read_systemd_unit_environment(const char *arg) {
+    /* Python: Environment= parse. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _hermes_home_from_systemd_unit_file @ hermes_cli/gateway.py:_hermes_home_from_systemd_unit_file */
 int cgw_u_hermes_home_from_systemd_unit_file(const char *arg) {

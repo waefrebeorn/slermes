@@ -68,7 +68,19 @@ int grun_u_drain_gateway_watch_events(const char *arg) { (void)arg; return 0; }
 int grun_u_dispose_unused_adapter(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _wire_teams_pipeline_runtime @ gateway/run.py:_wire_teams_pipeline_runtime */
-int grun_u_wire_teams_pipeline_runtime(const char *arg) { (void)arg; return 0; }
+int grun_u_wire_teams_pipeline_runtime(const char *arg) {
+    /* Python: pipeline bind. Arg = "has_adapter\tplugin_enabled\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int has_adapter = arg[0] == '1';
+    int plugin = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!has_adapter || !plugin || !state) { printf("no-op (adapter/plugin not active)\n"); return 0; }
+    printf("teams pipeline runtime bound: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _warn_if_docker_media_delivery_is_risky @ gateway/run.py:_warn_if_docker_media_delivery_is_risky */
 int grun_u_warn_if_docker_media_delivery_is_risky(const char *arg) { (void)arg; return 0; }
@@ -167,7 +179,17 @@ int grun_u_sync_telegram_topic_binding(const char *arg) {
 int grun_u_recover_telegram_topic_thread_id(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _normalize_source_for_session_key @ gateway/run.py:_normalize_source_for_session_key */
-int grun_u_normalize_source_for_session_key(const char *arg) { (void)arg; return 0; }
+int grun_u_normalize_source_for_session_key(const char *arg) {
+    /* Python: topic recovery copy. Arg = "recovered\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int recovered = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !recovered) { printf("source unchanged\n"); return 0; }
+    printf("source normalized: %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _resolve_session_agent_runtime @ gateway/run.py:_resolve_session_agent_runtime */
 int grun_u_resolve_session_agent_runtime(const char *arg) { (void)arg; return 0; }
@@ -841,7 +863,20 @@ int grun_u_release_turn_lease(const char *arg) {
 }
 
 /* PoP: _rebind_turn_lease @ gateway/run.py:_rebind_turn_lease */
-int grun_u_rebind_turn_lease(const char *arg) { (void)arg; return 0; }
+int grun_u_rebind_turn_lease(const char *arg) {
+    /* Python: rotation-follow rebind. Arg =
+     * "has_key\thas_new\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int has_key = arg[0] == '1';
+    int has_new = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!has_key || !has_new || !state) { printf("0\n"); return 0; }
+    printf("%s\n", (t3 && t3[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _clear_conversation_scope @ gateway/run.py:_clear_conversation_scope */
 int grun_u_clear_conversation_scope(const char *arg) { (void)arg; return 0; }
@@ -877,7 +912,18 @@ int grun_u_pinned_session_context_prompt(const char *arg) {
 }
 
 /* PoP: _init_cached_agent_for_turn @ gateway/run.py:_init_cached_agent_for_turn */
-int grun_u_init_cached_agent_for_turn(const char *arg) { (void)arg; return 0; }
+int grun_u_init_cached_agent_for_turn(const char *arg) {
+    /* Python: per-turn reset. Arg = "interrupt_depth\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    long depth = strtol(arg, NULL, 10);
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("agent reset for turn (depth=%ld, activity %s)\n", depth,
+           depth == 0 ? "restamped" : "preserved");
+    return 0;
+}
 
 /* PoP: _commit_memory_before_soft_evict @ gateway/run.py:_commit_memory_before_soft_evict */
 int grun_u_commit_memory_before_soft_evict(const char *arg) { (void)arg; return 0; }

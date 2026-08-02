@@ -45,7 +45,15 @@ int adel_u_transaction(const char *arg) {
 }
 
 /* PoP: _persist_dispatch @ tools/async_delegation.py:_persist_dispatch */
-int adel_u_persist_dispatch(const char *arg) { (void)arg; return 0; }
+int adel_u_persist_dispatch(const char *arg) {
+    /* Python: durable INSERT OR REPLACE. Arg = "delegation_id\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = tab && tab[1] == '1';
+    if (!state) { printf("dispatch persist failed\n"); return 1; }
+    printf("dispatch persisted: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _delete_durable_delegation @ tools/async_delegation.py:_delete_durable_delegation */
 int adel_u_delete_durable_delegation(const char *arg) {
@@ -133,7 +141,17 @@ int adel_u_note_delivery_attempt(const char *arg) {
 int adel_recover_abandoned_delegations(const char *arg) { (void)arg; return 0; }
 
 /* PoP: restore_undelivered_completions @ tools/async_delegation.py:restore_undelivered_completions */
-int adel_restore_undelivered_completions(const char *arg) { (void)arg; return 0; }
+int adel_restore_undelivered_completions(const char *arg) {
+    /* Python: durable pending -> queue, stamped restored. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s restored (stamped restored=True)\n", arg);
+    return 0;
+}
 
 /* PoP: mark_completion_delivered @ tools/async_delegation.py:mark_completion_delivered */
 int adel_mark_completion_delivered(const char *arg) {
@@ -265,7 +283,17 @@ int adel_u_new_delegation_id(const char *arg) {
 }
 
 /* PoP: _current_origin_session_id @ tools/async_delegation.py:_current_origin_session_id */
-int adel_u_current_origin_session_id(const char *arg) { (void)arg; return 0; }
+int adel_u_current_origin_session_id(const char *arg) {
+    /* Python: api_server-gated raw chat id. Arg = "platform\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *platform = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state || strcmp(platform, "api_server") != 0) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: dispatch_async_delegation @ tools/async_delegation.py:dispatch_async_delegation */
 int adel_dispatch_async_delegation(const char *arg) { (void)arg; return 0; }

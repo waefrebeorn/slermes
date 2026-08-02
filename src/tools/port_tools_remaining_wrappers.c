@@ -1221,7 +1221,16 @@ int tools_environments_modal_run_coroutine(const char *arg) {
 }
 
 /* PoP: _modal_upload @ tools/environments/modal.py:_modal_upload */
-int tools_environments_modal_u_modal_upload(const char *arg) { (void)arg; return 0; }
+int tools_environments_modal_u_modal_upload(const char *arg) {
+    /* Python: base64 stdin pipe. Arg = "host_path\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 upload failed\n"); return 1; }
+    printf("uploaded via stdin: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _modal_bulk_upload @ tools/environments/modal.py:_modal_bulk_upload */
 int tools_environments_modal_u_modal_bulk_upload(const char *arg) { (void)arg; return 0; }

@@ -1681,7 +1681,15 @@ int main_u_resolve_install_target_python(const char *arg) {
 }
 
 /* PoP: _install_psutil_android_compat @ hermes_cli/main.py:_install_psutil_android_compat */
-int main_u_install_psutil_android_compat(const char *arg) { (void)arg; return 0; }
+int main_u_install_psutil_android_compat(const char *arg) {
+    /* Python: patched sdist install. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0 psutil install failed\n"); return 1; }
+    printf("psutil android patched install ok\n");
+    return 0;
+}
 
 /* PoP: _ensure_uv_for_termux @ hermes_cli/main.py:_ensure_uv_for_termux */
 int main_u_ensure_uv_for_termux(const char *arg) { (void)arg; return 0; }

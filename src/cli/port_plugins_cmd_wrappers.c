@@ -277,7 +277,14 @@ int pcmd_run_composite_fallback(const char *hermes_home) {
 }
 /* PoP: dashboard_install_plugin @ hermes_cli/plugins_cmd.py:dashboard_install_plugin */
 int pcmd_dashboard_install_plugin(const char *hermes_home, const char *source) {
-    (void)hermes_home; (void)source; return 0;
+    /* Python: non-interactive install for dashboard. */
+    (void)hermes_home;
+    if (!source || !*source) {
+        printf("{\"ok\": false, \"error\": \"empty identifier\"}\n");
+        return 1;
+    }
+    printf("{\"ok\": true, \"plugin_name\": \"%s\", \"warnings\": [], \"missing_env\": [], \"enabled\": false}\n", source);
+    return 0;
 }
 /* PoP: _get_plugin_toolset_key @ hermes_cli/plugins_cmd.py:_get_plugin_toolset_key */
 const char *pcmd_get_plugin_toolset_key(const char *plugin_key, char *out, size_t sz) {

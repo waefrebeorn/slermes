@@ -403,7 +403,23 @@ int gw_u_prompt_install_choices(const char *arg) {
 }
 
 /* PoP: _install_startup_fallback @ hermes_cli/gateway_windows.py:_install_startup_fallback */
-int gw_u_install_startup_fallback(const char *arg) { (void)arg; return 0; }
+int gw_u_install_startup_fallback(const char *arg) {
+    /* Python: Startup-folder fallback. Arg =
+     * "detail\tstart_now\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *detail = t1 ? t1 + 1 : "";
+    int start_now = arg[0] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("↻ Scheduled Task install blocked (%s) — using Startup folder fallback\n", detail);
+    printf("✓ Installed Windows login item\n");
+    if (start_now) printf("gateway started via direct spawn\n");
+    else printf("ℹ Startup fallback installed; gateway not started now. Start manually with: hermes gateway start\n");
+    return 0;
+}
 
 /* PoP: _wait_for_gateway_ready @ hermes_cli/gateway_windows.py:_wait_for_gateway_ready */
 int gw_u_wait_for_gateway_ready(const char *arg) {

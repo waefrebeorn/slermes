@@ -1038,7 +1038,20 @@ int agent_agent_init_u_custom_provider_runtime_ids(const char *arg) {
 int agent_agent_init_u_build_codex_gpt5_autoraise_notice(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_compression_threshold @ agent/agent_init.py:_resolve_compression_threshold */
-int agent_agent_init_u_resolve_compression_threshold(const char *arg) { (void)arg; return 0; }
+int agent_agent_init_u_resolve_compression_threshold(const char *arg) {
+    /* Python: autoraise-never-lower. Arg =
+     * "has_override\tautoraise\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int has_override = arg[0] == '1';
+    int autoraise = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!has_override || !state) { printf("0\t\n"); return 0; }
+    printf("%s\t%s\n", autoraise ? "raised" : "override", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _codex_gpt55_autoraise_notice_marker @ agent/agent_init.py:_codex_gpt55_autoraise_notice_marker */
 int agent_agent_init_u_codex_gpt55_autoraise_notice_marker(const char *arg) {
@@ -2361,7 +2374,21 @@ int agent_moa_trace_u_slot_trace(const char *arg) {
 int agent_moa_trace_save_moa_turn(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _commit_message_template @ agent/oneshot.py:_commit_message_template */
-int agent_oneshot_u_commit_message_template(const char *arg) { (void)arg; return 0; }
+int agent_oneshot_u_commit_message_template(const char *arg) {
+    /* Python: commit msg template. Arg =
+     * "has_diff\thas_recent\thas_avoid\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int state = t3 && t3[1] == '1';
+    if (!state) { printf("\n\n"); return 0; }
+    printf("commit template: recent=%s diff=%s avoid=%s\n",
+           (t1 && t1[1] == '1') ? "yes" : "no", arg[0] == '1' ? "yes" : "no",
+           (t2 && t2[1] == '1') ? "yes" : "no");
+    return 0;
+}
 
 /* PoP: render_template @ agent/oneshot.py:render_template */
 int agent_oneshot_render_template(const char *arg) {

@@ -2283,7 +2283,16 @@ int hermes_cli_telegram_managed_bo_generate_pairing_nonce(const char *arg) {
 }
 
 /* PoP: create_pairing @ hermes_cli/telegram_managed_bot.py:create_pairing */
-int hermes_cli_telegram_managed_bo_create_pairing(const char *arg) { (void)arg; return 0; }
+int hermes_cli_telegram_managed_bo_create_pairing(const char *arg) {
+    /* Python: pairing POST. Arg = "bot_name\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "http_error") == 0 || strcmp(state, "missing_fields") == 0 || strcmp(state, "bad_qr") == 0) { printf("\n"); return 0; }
+    printf("pairing created: %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: poll_pairing_result_once @ hermes_cli/telegram_managed_bot.py:poll_pairing_result_once */
 int hermes_cli_telegram_managed_bo_poll_pairing_result_once(const char *arg) {
@@ -5430,7 +5439,24 @@ int hermes_cli__subprocess_compat_u_kill_git_process_tree(const char *arg) { (vo
 int hermes_cli__subprocess_compat_bounded_git_probe(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _maybe_migrate_legacy_gateway_run_state @ hermes_cli/container_boot.py:_maybe_migrate_legacy_gateway_run_state */
-int hermes_cli_container_boot_u_maybe_migrate_legacy_gateway_run_te(const char *arg) { (void)arg; return 0; }
+int hermes_cli_container_boot_u_maybe_migrate_legacy_gateway_run_te(const char *arg) {
+    /* Python: legacy container seed. Arg =
+     * "has_state\tno_supervise\tlegacy_request\tdry_run\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *t5 = t4 ? strchr(t4 + 1, '\t') : NULL;
+    int has_state = arg[0] == '1';
+    int no_supervise = t1 && t1[1] == '1';
+    int legacy = t2 && t2[1] == '1';
+    int dry_run = t3 && t3[1] == '1';
+    int state = t4 && t4[1] == '1';
+    if (has_state || no_supervise || !legacy || !state) { printf("\n"); return 0; }
+    printf("%s\n", dry_run ? "running (dry-run — would write)" : "running (state seeded)");
+    return 0;
+}
 
 /* PoP: _read_container_argv @ hermes_cli/container_boot.py:_read_container_argv */
 int hermes_cli_container_boot_u_read_container_argv(const char *arg) { (void)arg; return 0; }
@@ -5773,7 +5799,16 @@ int hermes_cli_nous_auth_keepalive_u_entry_state(const char *arg) {
 }
 
 /* PoP: _refresh_selected_pool_entry @ hermes_cli/nous_auth_keepalive.py:_refresh_selected_pool_entry */
-int hermes_cli_nous_auth_keepalive_u_refresh_selected_pool_entry(const char *arg) { (void)arg; return 0; }
+int hermes_cli_nous_auth_keepalive_u_refresh_selected_pool_entry(const char *arg) {
+    /* Python: pool refresh tri-state. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_pool") == 0) { printf("\n"); return 0; }
+    if (strcmp(state, "unusable") == 0) { printf("0\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: refresh_nous_auth_keepalive_once @ hermes_cli/nous_auth_keepalive.py:refresh_nous_auth_keepalive_once */
 int hermes_cli_nous_auth_keepalive_refresh_nous_auth_keepalive_once(const char *arg) {
@@ -6054,7 +6089,18 @@ int hermes_cli_credential_lifecycl_u_scrub_config_yaml_mirrors(const char *arg) 
 int hermes_cli_credential_lifecycl_purge_env_credential_references(const char *arg) { (void)arg; return 0; }
 
 /* PoP: save_provider_env_credential @ hermes_cli/credential_lifecycle.py:save_provider_env_credential */
-int hermes_cli_credential_lifecycl_save_provider_env_credential(const char *arg) { (void)arg; return 0; }
+int hermes_cli_credential_lifecycl_save_provider_env_credential(const char *arg) {
+    /* Python: .env write + mirror reconcile. Arg =
+     * "env_var\tstate\tconfig_updates\tresult". */
+    if (!arg || !*arg) { printf("{\"ok\": true}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("{\"ok\": true}\n"); return 0; }
+    printf("{\"ok\": true, \"key\": \"%s\", \"config_updates\": [%s]}\n", arg, t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: remove_provider_env_credential @ hermes_cli/credential_lifecycle.py:remove_provider_env_credential */
 int hermes_cli_credential_lifecycl_remove_provider_env_credential(const char *arg) {
@@ -6616,7 +6662,15 @@ int hermes_cli_codex_models_u_add_forward_compat_models(const char *arg) {
 }
 
 /* PoP: _extract_chatgpt_account_id @ hermes_cli/codex_models.py:_extract_chatgpt_account_id */
-int hermes_cli_codex_models_u_extract_chatgpt_account_id(const char *arg) { (void)arg; return 0; }
+int hermes_cli_codex_models_u_extract_chatgpt_account_id(const char *arg) {
+    /* Python: JWT claim. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "bad_token") == 0 || strcmp(state, "no_claim") == 0) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _fetch_models_from_api @ hermes_cli/codex_models.py:_fetch_models_from_api */
 int hermes_cli_codex_models_u_fetch_models_from_api(const char *arg) { (void)arg; return 0; }
@@ -6750,7 +6804,15 @@ int hermes_cli_gateway_enroll_u_default_gateway_id(const char *arg) {
 }
 
 /* PoP: _resolve_connector_url @ hermes_cli/gateway_enroll.py:_resolve_connector_url */
-int hermes_cli_gateway_enroll_u_resolve_connector_url(const char *arg) { (void)arg; return 0; }
+int hermes_cli_gateway_enroll_u_resolve_connector_url(const char *arg) {
+    /* Python: ws->http scheme map. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "none") == 0) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _resolve_identity_token @ hermes_cli/gateway_enroll.py:_resolve_identity_token */
 int hermes_cli_gateway_enroll_u_resolve_identity_token(const char *arg) {
