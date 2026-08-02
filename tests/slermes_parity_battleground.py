@@ -64,6 +64,7 @@ import re
 import sys
 import argparse
 import hashlib
+import pathlib
 from collections import defaultdict
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
@@ -953,6 +954,51 @@ class ParityAnalyzer:
         res = all(stmt_bootleg(st) for st in nb)
         memo[name] = res; stack.discard(name); return res
 
+    # Python real-work signals — used to cross-check a flagged C body: if the
+    # Python source for the same feature is ALSO trivial (no IO/http/fs/state),
+    # the C port is faithful and must NOT be flagged.  This makes the detector
+    # agnostic: a C stub is only a lie when the Python it ports does real work.
+    _PY_REAL_SIGNALS = [
+        r'\bopen\s*\(', r'\bPath\s*\(', r'\bhttp', r'\bsqlite', r'\bsystem\s*\(',
+        r'\bpopen', r'\bsubprocess', r'\bread_text', r'\bwrite_text', r'\bos\.',
+        r'\brequests', r'\bjson\.dump', r'\bhttpx', r'\baiohttp', r'\burllib',
+        r'\bsocket', r'\bfile\b', r'\bprint\s*\(', r'\binput\s*\(', r'\bexec',
+        r'\beval\s*\(', r'\bglob\s*\(', r'\blistdir', r'\bunlink', r'\brename',
+        r'\bmkdir', r'\benviron', r'\bgetenv', r'\bsetdefault', r'\bclick',
+        r'\btyper', r'\bargparse', r'\bregister', r'\badd_parser', r'\badd_argument',
+        r'\bThread', r'\basyncio', r'\bawait ',
+    ]
+    _PY_REAL_RE = [re.compile(p) for p in _PY_REAL_SIGNALS]
+
+    def _python_is_trivial(self, py_file, feature_name):
+        """True when the Python source for this feature does no real work.
+
+        Returns False (not trivial) when we cannot locate or parse the source,
+        so unknown cases are conservatively still flagged.
+        """
+        pypath = SLERMES_DIR.parent / py_file  # repo root is the parent
+        if not pypath.exists():
+            pypath = pathlib.Path(py_file)
+        if not pypath.exists():
+            return False
+        try:
+            src = pypath.read_text(errors='ignore')
+        except OSError:
+            return False
+        m = re.search(
+            r'^    (?:async )?def ' + re.escape(feature_name) +
+            r'\([^)]*\)[^:]*:\n(.*?)(?=^    (?:async )?def |^    @|^class |^[a-zA-Z_@]|\Z)',
+            src, re.MULTILINE | re.DOTALL)
+        if not m:
+            m = re.search(
+                r'^def ' + re.escape(feature_name) +
+                r'\([^)]*\)[^:]*:\n(.*?)(?=^def |^[a-zA-Z_@]|\Z)',
+                src, re.MULTILINE | re.DOTALL)
+        if not m:
+            return False
+        body = m.group(1)
+        return not any(rx.search(body) for rx in self._PY_REAL_RE)
+
     # ── classification (preserved; adds da_flags) ──
     def classify_feature(self, py_file, feature):
         pop_annotations = self.c_index.find_pop_for_python(feature.name, py_file)
@@ -960,10 +1006,17 @@ class ParityAnalyzer:
             pop = pop_annotations[0]
             self._ensure_port_graph()
             if self._recursive_bootleg(pop.c_function):
-                return GapEntry(py_file, feature, "REAL_GAP", c_location=pop.c_file,
+                # Cross-check the Python side: a trivial Python function ports
+                # faithfully as a trivial C function — only flag when the
+                # Python does real work that the C body omits.
+                if not self._python_is_trivial(py_file, feature.name):
+                    return GapEntry(py_file, feature, "REAL_GAP", c_location=pop.c_file,
+                                    c_function=pop.c_function, pop_annotation=pop,
+                                    stub_reason="C function is a recursive bootleg (delegates to / is a no-op stub)",
+                                    severity="HIGH", da_flags=["DA-2:bootleg-body"])
+                return GapEntry(py_file, feature, "PORTED", c_location=pop.c_file,
                                 c_function=pop.c_function, pop_annotation=pop,
-                                stub_reason="C function is a recursive bootleg (delegates to / is a no-op stub)",
-                                severity="HIGH", da_flags=["DA-2:bootleg-body"])
+                                severity="LOW", notes="Explicit PoP annotation (trivial python, faithful port)")
             return GapEntry(py_file, feature, "PORTED", c_location=pop.c_file,
                             c_function=pop.c_function, pop_annotation=pop,
                             severity="LOW", notes="Explicit PoP annotation")

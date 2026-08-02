@@ -26,7 +26,7 @@ already-wired live handlers / libraries). This cleanly separates
 Usage:
   python3 tests/recursive_false_gap_hunter.py [--json] [--porthint]
 """
-import re, sys, os, json, subprocess
+import re, sys, os, json, subprocess, pathlib
 from pathlib import Path
 
 SLERMES = Path(__file__).resolve().parent.parent
@@ -436,7 +436,71 @@ def classify_bootleg(name, info, defined, memo, stack=None):
             continue  # extractor includes the closing brace in the body
         if not stmt_is_bootleg(st):
             memo[name] = False; stack.discard(name); return False
+    # Python cross-check: if the PoP-annotated Python source for this C
+    # function is ALSO trivial (no IO/http/fs/state/print), the port is
+    # faithful — not a lie.  Only flag when the Python does real work.
+    if python_is_trivial_for(name):
+        memo[name] = False; stack.discard(name); return False
     memo[name] = True; stack.discard(name); return True
+
+# ── python-side cross-check ──
+PY_ROOT = pathlib.Path(__file__).resolve().parent.parent
+
+PY_REAL_SIGNALS = [
+    r'\bopen\s*\(', r'\bPath\s*\(', r'\bhttp', r'\bsqlite', r'\bsystem\s*\(',
+    r'\bpopen', r'\bsubprocess', r'\bread_text', r'\bwrite_text', r'\bos\.',
+    r'\brequests', r'\bjson\.dump', r'\bhttpx', r'\baiohttp', r'\burllib',
+    r'\bsocket', r'\bfile\b', r'\bprint\s*\(', r'\binput\s*\(', r'\bexec',
+    r'\beval\s*\(', r'\bglob\s*\(', r'\blistdir', r'\bunlink', r'\brename',
+    r'\bmkdir', r'\benviron', r'\bgetenv', r'\bsetdefault', r'\bclick',
+    r'\btyper', r'\bargparse', r'\bregister', r'\badd_parser', r'\badd_argument',
+    r'\bThread', r'\basyncio', r'\bawait ',
+]
+PY_REAL_RE = [re.compile(p) for p in PY_REAL_SIGNALS]
+
+# c function name -> (python module path incl .py, python feature name)
+_POP_INDEX = None
+
+def _build_pop_index():
+    global _POP_INDEX
+    idx = {}
+    for src in ported_sources():
+        text = src.read_text(errors='ignore')
+        for m in re.finditer(r'/\* PoP: (\S+) @ ([^:]+):(\S+) \*/', text):
+            idx.setdefault(m.group(1), []).append((m.group(2), m.group(3)))
+    _POP_INDEX = idx
+
+def python_is_trivial_for(c_name):
+    """True when the PoP-annotated Python source for c_name does no real work."""
+    global _POP_INDEX
+    if _POP_INDEX is None:
+        _build_pop_index()
+    entries = _POP_INDEX.get(c_name)
+    if not entries:
+        return False  # unknown -> conservative: keep flagged
+    for mod, py_name in entries:
+        pypath = PY_ROOT / mod
+        if not pypath.exists():
+            continue
+        try:
+            src = pypath.read_text(errors='ignore')
+        except OSError:
+            continue
+        m = re.search(
+            r'^    (?:async )?def ' + re.escape(py_name) +
+            r'\([^)]*\)[^:]*:\n(.*?)(?=^    (?:async )?def |^    @|^class |^[a-zA-Z_@]|\Z)',
+            src, re.MULTILINE | re.DOTALL)
+        if not m:
+            m = re.search(
+                r'^def ' + re.escape(py_name) +
+                r'\([^)]*\)[^:]*:\n(.*?)(?=^def |^[a-zA-Z_@]|\Z)',
+                src, re.MULTILINE | re.DOTALL)
+        if not m:
+            continue
+        body = m.group(1)
+        if not any(rx.search(body) for rx in PY_REAL_RE):
+            return True
+    return False
 
 def main():
     sources = ported_sources()
