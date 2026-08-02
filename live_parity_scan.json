@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T21:01:27Z",
+  "generated_at": "2026-08-02T21:04:42Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -40816,10 +40816,10 @@
     },
     "agent/lsp/workspace.py": {
       "total": 6,
-      "ported": 0,
+      "ported": 6,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 6,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 6,
@@ -40835,16 +40835,24 @@
             "decorators": [],
             "line_number": 33
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_workspace_remaining.c",
+          "c_function": "lsw_normalize_path",
+          "pop_annotation": {
+            "c_function": "lsw_normalize_path",
+            "python_functions": [
+              "normalize_path"
+            ],
+            "c_file": "src/agent/port_lsp_workspace_remaining.c",
+            "python_file": "agent/lsp/workspace.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: normalize_path @ agent/lsp/workspace.py:normalize_path */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/workspace.py",
@@ -40856,16 +40864,24 @@
             "decorators": [],
             "line_number": 44
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_workspace_remaining.c",
+          "c_function": "lsw_find_git_worktree",
+          "pop_annotation": {
+            "c_function": "lsw_find_git_worktree",
+            "python_functions": [
+              "find_git_worktree"
+            ],
+            "c_file": "src/agent/port_lsp_workspace_remaining.c",
+            "python_file": "agent/lsp/workspace.py",
+            "line": 44,
+            "is_consolidated": false,
+            "full_text": "/* PoP: find_git_worktree @ agent/lsp/workspace.py:find_git_worktree */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/workspace.py",
@@ -40877,16 +40893,24 @@
             "decorators": [],
             "line_number": 91
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_workspace_remaining.c",
+          "c_function": "lsw_is_inside_workspace",
+          "pop_annotation": {
+            "c_function": "lsw_is_inside_workspace",
+            "python_functions": [
+              "is_inside_workspace"
+            ],
+            "c_file": "src/agent/port_lsp_workspace_remaining.c",
+            "python_file": "agent/lsp/workspace.py",
+            "line": 65,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_inside_workspace @ agent/lsp/workspace.py:is_inside_workspace */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/workspace.py",
@@ -40898,16 +40922,24 @@
             "decorators": [],
             "line_number": 113
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_workspace_remaining.c",
+          "c_function": "lsw_nearest_root",
+          "pop_annotation": {
+            "c_function": "lsw_nearest_root",
+            "python_functions": [
+              "nearest_root"
+            ],
+            "c_file": "src/agent/port_lsp_workspace_remaining.c",
+            "python_file": "agent/lsp/workspace.py",
+            "line": 75,
+            "is_consolidated": false,
+            "full_text": "/* PoP: nearest_root @ agent/lsp/workspace.py:nearest_root */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/workspace.py",
@@ -40919,16 +40951,24 @@
             "decorators": [],
             "line_number": 173
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_workspace_remaining.c",
+          "c_function": "lsw_resolve_workspace_for_file",
+          "pop_annotation": {
+            "c_function": "lsw_resolve_workspace_for_file",
+            "python_functions": [
+              "resolve_workspace_for_file"
+            ],
+            "c_file": "src/agent/port_lsp_workspace_remaining.c",
+            "python_file": "agent/lsp/workspace.py",
+            "line": 111,
+            "is_consolidated": false,
+            "full_text": "/* PoP: resolve_workspace_for_file @ agent/lsp/workspace.py:resolve_workspace_for_file */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/workspace.py",
@@ -40940,16 +40980,24 @@
             "decorators": [],
             "line_number": 207
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_workspace_remaining.c",
+          "c_function": "lsw_clear_cache",
+          "pop_annotation": {
+            "c_function": "lsw_clear_cache",
+            "python_functions": [
+              "clear_cache"
+            ],
+            "c_file": "src/agent/port_lsp_workspace_remaining.c",
+            "python_file": "agent/lsp/workspace.py",
+            "line": 125,
+            "is_consolidated": false,
+            "full_text": "/* PoP: clear_cache @ agent/lsp/workspace.py:clear_cache */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -59998,10 +60046,10 @@
     },
     "agent/secret_sources/registry.py": {
       "total": 11,
-      "ported": 5,
+      "ported": 11,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 6,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 11,
@@ -60019,16 +60067,24 @@
             ],
             "line_number": 86
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_registry_remaining.c",
+          "c_function": "ssr_applied_any",
+          "pop_annotation": {
+            "c_function": "ssr_applied_any",
+            "python_functions": [
+              "applied_any"
+            ],
+            "c_file": "src/agent/port_secret_sources_registry_remaining.c",
+            "python_file": "agent/secret_sources/registry.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: applied_any @ agent/secret_sources/registry.py:applied_any */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/registry.py",
@@ -60127,16 +60183,24 @@
             "decorators": [],
             "line_number": 154
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_registry_remaining.c",
+          "c_function": "ssr_ensure_builtin_sources",
+          "pop_annotation": {
+            "c_function": "ssr_ensure_builtin_sources",
+            "python_functions": [
+              "_ensure_builtin_sources"
+            ],
+            "c_file": "src/agent/port_secret_sources_registry_remaining.c",
+            "python_file": "agent/secret_sources/registry.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _ensure_builtin_sources @ agent/secret_sources/registry.py:_ensure_builtin_sources */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/registry.py",
@@ -60148,16 +60212,24 @@
             "decorators": [],
             "line_number": 187
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_registry_remaining.c",
+          "c_function": "ssr_reset_registry_for_tests",
+          "pop_annotation": {
+            "c_function": "ssr_reset_registry_for_tests",
+            "python_functions": [
+              "_reset_registry_for_tests"
+            ],
+            "c_file": "src/agent/port_secret_sources_registry_remaining.c",
+            "python_file": "agent/secret_sources/registry.py",
+            "line": 36,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _reset_registry_for_tests @ agent/secret_sources/registry.py:_reset_registry_for_tests */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/registry.py",
@@ -60169,16 +60241,24 @@
             "decorators": [],
             "line_number": 198
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_registry_remaining.c",
+          "c_function": "ssr_fetch_with_timeout",
+          "pop_annotation": {
+            "c_function": "ssr_fetch_with_timeout",
+            "python_functions": [
+              "_fetch_with_timeout"
+            ],
+            "c_file": "src/agent/port_secret_sources_registry_remaining.c",
+            "python_file": "agent/secret_sources/registry.py",
+            "line": 42,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _fetch_with_timeout @ agent/secret_sources/registry.py:_fetch_with_timeout */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/registry.py",
@@ -60190,16 +60270,24 @@
             "decorators": [],
             "line_number": 245
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_registry_remaining.c",
+          "c_function": "ssr_ordered_enabled_sources",
+          "pop_annotation": {
+            "c_function": "ssr_ordered_enabled_sources",
+            "python_functions": [
+              "_ordered_enabled_sources"
+            ],
+            "c_file": "src/agent/port_secret_sources_registry_remaining.c",
+            "python_file": "agent/secret_sources/registry.py",
+            "line": 51,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _ordered_enabled_sources @ agent/secret_sources/registry.py:_ordered_enabled_sources */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/registry.py",
@@ -60240,16 +60328,24 @@
             "decorators": [],
             "line_number": 308
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_secret_sources_registry_remaining.c",
+          "c_function": "ssr_profile_alias_target",
+          "pop_annotation": {
+            "c_function": "ssr_profile_alias_target",
+            "python_functions": [
+              "_profile_alias_target"
+            ],
+            "c_file": "src/agent/port_secret_sources_registry_remaining.c",
+            "python_file": "agent/secret_sources/registry.py",
+            "line": 59,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _profile_alias_target @ agent/secret_sources/registry.py:_profile_alias_target */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/secret_sources/registry.py",
