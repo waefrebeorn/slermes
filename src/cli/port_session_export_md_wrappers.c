@@ -72,7 +72,23 @@ int sexmd_u_session_id(const char *arg) { (void)arg; return 0; }
 int sexmd_u_segments(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _message_count @ hermes_cli/session_export_md.py:_message_count */
-int sexmd_u_message_count(const char *arg) { (void)arg; return 0; }
+int sexmd_u_message_count(const char *arg) {
+    /* Python: sum(len(seg.get("messages") or []) for seg in _segments(...)).
+     * Arg = JSON array of segments with "messages" arrays. */
+    long long total = 0;
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    json_t *segs = json_parse(arg, NULL);
+    if (segs && segs->type == JSON_ARRAY) {
+        for (size_t i = 0; i < json_len(segs); i++) {
+            json_t *seg = json_get(segs, i);
+            json_t *msgs = seg ? json_obj_get(seg, "messages") : NULL;
+            if (msgs && msgs->type == JSON_ARRAY) total += (long long)json_len(msgs);
+        }
+    }
+    json_free(segs);
+    printf("%lld\n", total);
+    return 0;
+}
 
 /* PoP: _render_messages @ hermes_cli/session_export_md.py:_render_messages */
 int sexmd_u_render_messages(const char *arg) { (void)arg; return 0; }
@@ -81,7 +97,34 @@ int sexmd_u_render_messages(const char *arg) { (void)arg; return 0; }
 int sexmd_u_export_body_without_hash(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _body_for_digest @ hermes_cli/session_export_md.py:_body_for_digest */
-int sexmd_u_body_for_digest(const char *arg) { (void)arg; return 0; }
+int sexmd_u_body_for_digest(const char *arg) {
+    /* Python: _SHA_LINE_RE.sub("- SHA256 of exported body: `pending`", text).
+     * The line "- SHA256 of exported body: `<64 hex>`" is replaced with the
+     * pending placeholder; everything else passes through. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *marker = "- SHA256 of exported body: `";
+    char *out = malloc(strlen(arg) + 64);
+    char *dst = out;
+    const char *src = arg;
+    const char *line_start = arg;
+    while (*src) {
+        const char *nl = strchr(src, '\n');
+        size_t len = nl ? (size_t)(nl - src) : strlen(src);
+        if (strncmp(src, marker, strlen(marker)) == 0 && len > strlen(marker) + 64) {
+            memcpy(dst, "- SHA256 of exported body: `pending`", 36);
+            dst += 36;
+        } else {
+            memcpy(dst, src, len);
+            dst += len;
+        }
+        if (nl) { *dst++ = '\n'; src = nl + 1; }
+        else { src += len; }
+    }
+    *dst = '\0';
+    printf("%s\n", out);
+    free(out);
+    return 0;
+}
 
 /* PoP: render_session_markdown @ hermes_cli/session_export_md.py:render_session_markdown */
 int sexmd_render_session_markdown(const char *arg) { (void)arg; return 0; }

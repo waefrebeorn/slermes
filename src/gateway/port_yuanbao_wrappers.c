@@ -329,7 +329,24 @@ int yb_u_cleanup_ws(const char *arg) { (void)arg; return 0; }
 int yb_acquire_file(const char *arg) { (void)arg; return 0; }
 
 /* PoP: build_msg_body @ gateway/platforms/yuanbao.py:build_msg_body */
-int yb_build_msg_body(const char *arg) { (void)arg; return 0; }
+int yb_build_msg_body(const char *arg) {
+    /* Python: build_image_msg_body(url, uuid, filename, size, width,
+     * height, mime_type). Arg = "url\tuuid\tfilename\tsize\twidth\theight\tmime". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    char *copy = strdup(arg);
+    char *fields[7] = {0};
+    int n = 0;
+    char *save = NULL;
+    for (char *tok = strtok_r(copy, "\t", &save); tok && n < 7; tok = strtok_r(NULL, "\t", &save))
+        fields[n++] = tok;
+    printf("[{\"type\":\"image\",\"url\":\"%s\",\"file_uuid\":\"%s\",\"filename\":\"%s\","
+           "\"size\":%s,\"width\":%s,\"height\":%s,\"mime_type\":\"%s\"}]\n",
+           fields[0] ? fields[0] : "", fields[1] ? fields[1] : "", fields[2] ? fields[2] : "",
+           fields[3] ? fields[3] : "0", fields[4] ? fields[4] : "0", fields[5] ? fields[5] : "0",
+           fields[6] ? fields[6] : "");
+    free(copy);
+    return 0;
+}
 
 /* PoP: needs_cos_upload @ gateway/platforms/yuanbao.py:needs_cos_upload */
 int yb_needs_cos_upload(const char *arg) { (void)arg; return 0; }
