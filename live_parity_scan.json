@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T19:13:30Z",
+  "generated_at": "2026-08-02T19:15:19Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -106637,10 +106637,10 @@
     },
     "gateway/platforms/signal.py": {
       "total": 50,
-      "ported": 28,
+      "ported": 45,
       "partial": 2,
       "stub": 0,
-      "real_gaps": 20,
+      "real_gaps": 3,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 50,
@@ -106801,17 +106801,24 @@
             "decorators": [],
             "line_number": 141
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_signal_remaining.c",
+          "c_function": "sig_remux_aac_to_m4a",
+          "pop_annotation": {
+            "c_function": "sig_remux_aac_to_m4a",
+            "python_functions": [
+              "_remux_aac_to_m4a"
+            ],
+            "c_file": "src/gateway/port_signal_remaining.c",
+            "python_file": "gateway/platforms/signal.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _remux_aac_to_m4a @ gateway/platforms/signal.py:_remux_aac_to_m4a */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/signal.py",
@@ -107181,17 +107188,24 @@
             ],
             "line_number": 781
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_signal_remaining.c",
+          "c_function": "sig_extract_quote_author",
+          "pop_annotation": {
+            "c_function": "sig_extract_quote_author",
+            "python_functions": [
+              "_extract_quote_author"
+            ],
+            "c_file": "src/gateway/port_signal_remaining.c",
+            "python_file": "gateway/platforms/signal.py",
+            "line": 34,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _extract_quote_author @ gateway/platforms/signal.py:_extract_quote_author */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/signal.py",
@@ -107203,17 +107217,24 @@
             "decorators": [],
             "line_number": 798
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_signal_remaining.c",
+          "c_function": "sig_quote_references_own_message",
+          "pop_annotation": {
+            "c_function": "sig_quote_references_own_message",
+            "python_functions": [
+              "_quote_references_own_message"
+            ],
+            "c_file": "src/gateway/port_signal_remaining.c",
+            "python_file": "gateway/platforms/signal.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _quote_references_own_message @ gateway/platforms/signal.py:_quote_references_own_message */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/signal.py",
@@ -107225,17 +107246,24 @@
             "decorators": [],
             "line_number": 817
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_signal_remaining.c",
+          "c_function": "sig_remember_sent_message_timestamp",
+          "pop_annotation": {
+            "c_function": "sig_remember_sent_message_timestamp",
+            "python_functions": [
+              "_remember_sent_message_timestamp"
+            ],
+            "c_file": "src/gateway/port_signal_remaining.c",
+            "python_file": "gateway/platforms/signal.py",
+            "line": 56,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _remember_sent_message_timestamp @ gateway/platforms/signal.py:_remember_sent_message_timestamp */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/signal.py",
@@ -107394,17 +107422,24 @@
             "decorators": [],
             "line_number": 1019
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_signal_remaining.c",
+          "c_function": "sig_format_message",
+          "pop_annotation": {
+            "c_function": "sig_format_message",
+            "python_functions": [
+              "format_message"
+            ],
+            "c_file": "src/gateway/port_signal_remaining.c",
+            "python_file": "gateway/platforms/signal.py",
+            "line": 68,
+            "is_consolidated": false,
+            "full_text": "/* PoP: format_message @ gateway/platforms/signal.py:format_message */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/signal.py",
@@ -107416,17 +107451,24 @@
             "decorators": [],
             "line_number": 1028
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_signal_remaining.c",
+          "c_function": "sig_validate_send_result",
+          "pop_annotation": {
+            "c_function": "sig_validate_send_result",
+            "python_functions": [
+              "_validate_send_result"
+            ],
+            "c_file": "src/gateway/port_signal_remaining.c",
+            "python_file": "gateway/platforms/signal.py",
+            "line": 87,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _validate_send_result @ gateway/platforms/signal.py:_validate_send_result */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/signal.py",
@@ -107438,17 +107480,24 @@
             "decorators": [],
             "line_number": 1055
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_signal_remaining.c",
+          "c_function": "sig_send",
+          "pop_annotation": {
+            "c_function": "sig_send",
+            "python_functions": [
+              "send"
+            ],
+            "c_file": "src/gateway/port_signal_remaining.c",
+            "python_file": "gateway/platforms/signal.py",
+            "line": 161,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send @ gateway/platforms/signal.py:send */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/signal.py",
@@ -107489,17 +107538,24 @@
             "decorators": [],
             "line_number": 1118
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_signal_remaining.c",
+          "c_function": "sig_consume_sent_timestamp",
+          "pop_annotation": {
+            "c_function": "sig_consume_sent_timestamp",
+            "python_functions": [
+              "_consume_sent_timestamp"
+            ],
+            "c_file": "src/gateway/port_signal_remaining.c",
+            "python_file": "gateway/platforms/signal.py",
+            "line": 96,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _consume_sent_timestamp @ gateway/platforms/signal.py:_consume_sent_timestamp */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/signal.py",
@@ -107511,17 +107567,24 @@
             "decorators": [],
             "line_number": 1125
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_signal_remaining.c",
+          "c_function": "sig_send_typing",
+          "pop_annotation": {
+            "c_function": "sig_send_typing",
+            "python_functions": [
+              "send_typing"
+            ],
+            "c_file": "src/gateway/port_signal_remaining.c",
+            "python_file": "gateway/platforms/signal.py",
+            "line": 103,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_typing @ gateway/platforms/signal.py:send_typing */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/signal.py",
@@ -107533,17 +107596,24 @@
             "decorators": [],
             "line_number": 1178
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_signal_remaining.c",
+          "c_function": "sig_send_multiple_images",
+          "pop_annotation": {
+            "c_function": "sig_send_multiple_images",
+            "python_functions": [
+              "send_multiple_images"
+            ],
+            "c_file": "src/gateway/port_signal_remaining.c",
+            "python_file": "gateway/platforms/signal.py",
+            "line": 117,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_multiple_images @ gateway/platforms/signal.py:send_multiple_images */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/signal.py",
@@ -107584,17 +107654,24 @@
             "decorators": [],
             "line_number": 1369
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_signal_remaining.c",
+          "c_function": "sig_send_image",
+          "pop_annotation": {
+            "c_function": "sig_send_image",
+            "python_functions": [
+              "send_image"
+            ],
+            "c_file": "src/gateway/port_signal_remaining.c",
+            "python_file": "gateway/platforms/signal.py",
+            "line": 125,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_image @ gateway/platforms/signal.py:send_image */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/signal.py",
@@ -107627,17 +107704,24 @@
             "decorators": [],
             "line_number": 1460
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_signal_remaining.c",
+          "c_function": "sig_send_document",
+          "pop_annotation": {
+            "c_function": "sig_send_document",
+            "python_functions": [
+              "send_document"
+            ],
+            "c_file": "src/gateway/port_signal_remaining.c",
+            "python_file": "gateway/platforms/signal.py",
+            "line": 140,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_document @ gateway/platforms/signal.py:send_document */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/signal.py",
@@ -107649,17 +107733,24 @@
             "decorators": [],
             "line_number": 1471
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_signal_remaining.c",
+          "c_function": "sig_send_image_file",
+          "pop_annotation": {
+            "c_function": "sig_send_image_file",
+            "python_functions": [
+              "send_image_file"
+            ],
+            "c_file": "src/gateway/port_signal_remaining.c",
+            "python_file": "gateway/platforms/signal.py",
+            "line": 133,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_image_file @ gateway/platforms/signal.py:send_image_file */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/signal.py",
@@ -107671,17 +107762,24 @@
             "decorators": [],
             "line_number": 1486
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_signal_remaining.c",
+          "c_function": "sig_send_voice",
+          "pop_annotation": {
+            "c_function": "sig_send_voice",
+            "python_functions": [
+              "send_voice"
+            ],
+            "c_file": "src/gateway/port_signal_remaining.c",
+            "python_file": "gateway/platforms/signal.py",
+            "line": 147,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_voice @ gateway/platforms/signal.py:send_voice */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/signal.py",
@@ -107693,17 +107791,24 @@
             "decorators": [],
             "line_number": 1501
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_signal_remaining.c",
+          "c_function": "sig_send_video",
+          "pop_annotation": {
+            "c_function": "sig_send_video",
+            "python_functions": [
+              "send_video"
+            ],
+            "c_file": "src/gateway/port_signal_remaining.c",
+            "python_file": "gateway/platforms/signal.py",
+            "line": 154,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_video @ gateway/platforms/signal.py:send_video */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/signal.py",
@@ -107744,17 +107849,24 @@
             "decorators": [],
             "line_number": 1551
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_signal_remaining.c",
+          "c_function": "sig_stop_typing",
+          "pop_annotation": {
+            "c_function": "sig_stop_typing",
+            "python_functions": [
+              "stop_typing"
+            ],
+            "c_file": "src/gateway/port_signal_remaining.c",
+            "python_file": "gateway/platforms/signal.py",
+            "line": 110,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stop_typing @ gateway/platforms/signal.py:stop_typing */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/signal.py",
@@ -107932,17 +108044,24 @@
             "decorators": [],
             "line_number": 1686
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_signal_remaining.c",
+          "c_function": "sig_get_chat_info",
+          "pop_annotation": {
+            "c_function": "sig_get_chat_info",
+            "python_functions": [
+              "get_chat_info"
+            ],
+            "c_file": "src/gateway/port_signal_remaining.c",
+            "python_file": "gateway/platforms/signal.py",
+            "line": 169,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_chat_info @ gateway/platforms/signal.py:get_chat_info */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
