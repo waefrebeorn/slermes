@@ -1138,7 +1138,17 @@ int agent_codex_runtime_u_item_field(const char *arg) {
 int agent_conversation_loop_u_apply_active_turn_redirect(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _billing_block_dict @ agent/conversation_loop.py:_billing_block_dict */
-int agent_conversation_loop_u_billing_block_dict(const char *arg) { (void)arg; return 0; }
+int agent_conversation_loop_u_billing_block_dict(const char *arg) {
+    /* Python: build_billing_block(...).to_dict() or None. Arg =
+     * "provider\tbase_url\tmodel" (billing JSON or empty). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    printf("{\"provider\": \"%.*s\", \"model\": \"%s\"}\n",
+           (int)(t1 ? (size_t)(t1 - arg) : 0), arg,
+           t2 ? t2 + 1 : (t1 ? t1 + 1 : ""));
+    return 0;
+}
 
 /* PoP: _invalid_tool_name_error_content @ agent/conversation_loop.py:_invalid_tool_name_error_content */
 int agent_conversation_loop_u_invalid_tool_name_error_content(const char *arg) { (void)arg; return 0; }
@@ -1268,7 +1278,23 @@ int agent_bedrock_adapter_probe_bedrock_context_length(const char *arg) { (void)
 int agent_kanban_stop_kanban_stop_nudge_enabled(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _tool_call_name @ agent/kanban_stop.py:_tool_call_name */
-int agent_kanban_stop_u_tool_call_name(const char *arg) { (void)arg; return 0; }
+int agent_kanban_stop_u_tool_call_name(const char *arg) {
+    /* Python: tool_call dict/attr -> function.name then name. Arg = JSON. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *tc = json_parse(arg, NULL);
+    if (!tc || !json_is_object(tc)) {
+        if (tc) json_free(tc);
+        printf("\n");
+        return 0;
+    }
+    json_t *fn = json_obj_get(tc, "function");
+    const char *name = "";
+    if (fn && json_is_object(fn)) name = json_get_str(fn, "name", "");
+    if (!*name) name = json_get_str(tc, "name", "");
+    printf("%s\n", name);
+    json_free(tc);
+    return 0;
+}
 
 /* PoP: session_called_kanban_terminal @ agent/kanban_stop.py:session_called_kanban_terminal */
 int agent_kanban_stop_session_called_kanban_terminal(const char *arg) { (void)arg; return 0; }
@@ -1327,7 +1353,16 @@ int agent_anthropic_adapter_u_ensure_leading_user_turn(const char *arg) { (void)
 int agent_battery_u_read_battery_uncached(const char *arg) { (void)arg; return 0; }
 
 /* PoP: read_battery @ agent/battery.py:read_battery */
-int agent_battery_read_battery(const char *arg) { (void)arg; return 0; }
+int agent_battery_read_battery(const char *arg) {
+    /* Python: cached battery read (TTL a few seconds). Arg = "use_cache\tjson". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int use_cache = (arg[0] == '1');
+    (void)use_cache;
+    if (tab && tab[1]) printf("%s\n", tab + 1);
+    else printf("0\n");
+    return 0;
+}
 
 /* PoP: clear_cache @ agent/battery.py:clear_cache */
 int agent_battery_clear_cache(const char *arg) {

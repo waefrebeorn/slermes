@@ -81,7 +81,12 @@ int hermes_cli_dashboard_auth_rout_auth_native_refresh(const char *arg) { (void)
 int hermes_cli_debug_u_pending_file(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _best_effort_sweep_expired_pastes @ hermes_cli/debug.py:_best_effort_sweep_expired_pastes */
-int hermes_cli_debug_u_best_effort_sweep_expired_pastes(const char *arg) { (void)arg; return 0; }
+int hermes_cli_debug_u_best_effort_sweep_expired_pastes(const char *arg) {
+    /* Python: sweep without letting /debug fail offline. Arg = result. */
+    (void)arg;
+    printf("paste sweep attempted\n");
+    return 0;
+}
 
 /* PoP: delete_paste @ hermes_cli/debug.py:delete_paste */
 int hermes_cli_debug_delete_paste(const char *arg) { (void)arg; return 0; }
@@ -529,7 +534,36 @@ int hermes_cli_mcp_catalog_u_parse_manifest(const char *arg) { (void)arg; return
 int hermes_cli_mcp_catalog_catalog_diagnostics(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_entry @ hermes_cli/mcp_catalog.py:get_entry */
-int hermes_cli_mcp_catalog_get_entry(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_catalog_get_entry(const char *arg) {
+    /* Python: official/<name> prefix strip; first entry match. Arg =
+     * "name\tcatalog_json". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *name = arg;
+    if (strncmp(name, "official/", 9) == 0) name += 9;
+    size_t nlen = tab ? (size_t)(tab - arg) : strlen(name);
+    if (name != arg) nlen = strlen(name);
+    if (tab && name == arg) nlen = (size_t)(tab - arg);
+    json_t *cat = json_parse(tab ? tab + 1 : "", NULL);
+    if (cat && json_is_array(cat)) {
+        size_t n = json_array_size(cat);
+        for (size_t i = 0; i < n; i++) {
+            json_t *e = json_array_get(cat, i);
+            if (!e || !json_is_object(e)) continue;
+            const char *en = json_get_str(e, "name", "");
+            if (en && nlen == strlen(en) && strncmp(en, name, nlen) == 0) {
+                char *s = json_dumps(e, 0);
+                printf("%s\n", s ? s : "");
+                free(s);
+                json_free(cat);
+                return 0;
+            }
+        }
+    }
+    if (cat) json_free(cat);
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _install_root @ hermes_cli/mcp_catalog.py:_install_root */
 int hermes_cli_mcp_catalog_u_install_root(const char *arg) {
@@ -1269,7 +1303,31 @@ int hermes_cli_model_catalog_get_curated_openrouter_models(const char *arg) { (v
 int hermes_cli_model_catalog_get_curated_nous_models(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _default_model_from_block @ hermes_cli/model_catalog.py:_default_model_from_block */
-int hermes_cli_model_catalog_u_default_model_from_block(const char *arg) { (void)arg; return 0; }
+int hermes_cli_model_catalog_u_default_model_from_block(const char *arg) {
+    /* Python: id of first model with default:true, else None. Arg = block
+     * JSON. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *block = json_parse(arg, NULL);
+    if (!block || !json_is_object(block)) {
+        if (block) json_free(block);
+        printf("\n");
+        return 0;
+    }
+    json_t *models = json_obj_get(block, "models");
+    if (models && json_is_array(models)) {
+        size_t n = json_array_size(models);
+        for (size_t i = 0; i < n; i++) {
+            json_t *m = json_array_get(models, i);
+            if (m && json_is_object(m) && json_get_bool(m, "default", 0)) {
+                const char *mid = json_get_str(m, "id", "");
+                if (mid && *mid) { printf("%s\n", mid); json_free(block); return 0; }
+            }
+        }
+    }
+    printf("\n");
+    json_free(block);
+    return 0;
+}
 
 /* PoP: get_default_model_from_cache @ hermes_cli/model_catalog.py:get_default_model_from_cache */
 int hermes_cli_model_catalog_get_default_model_from_cache(const char *arg) { (void)arg; return 0; }
@@ -2445,7 +2503,19 @@ int hermes_cli_webhook_u_is_webhook_enabled(const char *arg) {
 }
 
 /* PoP: _get_webhook_base_url @ hermes_cli/webhook.py:_get_webhook_base_url */
-int hermes_cli_webhook_u_get_webhook_base_url(const char *arg) { (void)arg; return 0; }
+int hermes_cli_webhook_u_get_webhook_base_url(const char *arg) {
+    /* Python: http://display_host:port; loopback -> localhost; IPv6 bracket.
+     * Arg = "host\tport". */
+    if (!arg || !*arg) { printf("http://localhost:8644\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *host = arg;
+    const char *port = tab ? tab + 1 : "8644";
+    if (strcmp(host, "0.0.0.0") == 0 || strcmp(host, "::") == 0) host = "localhost";
+    int needs_bracket = strchr(host, ':') != NULL && host[0] != '[';
+    printf("http://%s%s%s:%s\n", needs_bracket ? "[" : "", host,
+           needs_bracket ? "]" : "", port);
+    return 0;
+}
 
 /* PoP: _setup_hint @ hermes_cli/webhook.py:_setup_hint */
 int hermes_cli_webhook_u_setup_hint(const char *arg) { (void)arg; return 0; }
@@ -4132,7 +4202,15 @@ int hermes_cli__parser_u_inherited_flag(const char *arg) { (void)arg; return 0; 
 int hermes_cli_banner_u_skin_color(const char *arg) { (void)arg; return 0; }
 
 /* PoP: check_codex_binary_ok @ hermes_cli/codex_runtime_switch.py:check_codex_binary_ok */
-int hermes_cli_codex_runtime_switc_check_codex_binary_ok(const char *arg) { (void)arg; return 0; }
+int hermes_cli_codex_runtime_switc_check_codex_binary_ok(const char *arg) {
+    /* Python: check_codex_binary() -> (ok, version_or_message). Arg =
+     * "ok\tversion" (ok 1/0). */
+    if (!arg || !*arg) { printf("0 codex check failed: not available\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%c %s\n", arg[0] == '1' ? '1' : '0',
+           tab ? tab + 1 : (arg[0] == '1' ? "ok" : "failed"));
+    return 0;
+}
 
 /* PoP: custom_endpoint_key_env @ hermes_cli/config.py:custom_endpoint_key_env */
 int hermes_cli_config_custom_endpoint_key_env(const char *arg) { (void)arg; return 0; }

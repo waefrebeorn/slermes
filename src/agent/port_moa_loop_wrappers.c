@@ -68,7 +68,16 @@ int moa_u_slot_label(const char *arg) {
 }
 
 /* PoP: _slot_reasoning_config @ agent/moa_loop.py:_slot_reasoning_config */
-int moa_u_slot_reasoning_config(const char *arg) { (void)arg; return 0; }
+int moa_u_slot_reasoning_config(const char *arg) {
+    /* Python: parse slot reasoning_effort, None on bad. Arg = effort. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ' || *p == '\t') p++;
+    if (!*p) { printf("\n"); return 0; }
+    if (strcmp(p, "none") == 0 || strcmp(p, "off") == 0 || strcmp(p, "null") == 0) { printf("\n"); return 0; }
+    printf("%s\n", p);
+    return 0;
+}
 
 /* PoP: _aggregator_reasoning_config @ agent/moa_loop.py:_aggregator_reasoning_config */
 int moa_u_aggregator_reasoning_config(const char *arg) { (void)arg; return 0; }

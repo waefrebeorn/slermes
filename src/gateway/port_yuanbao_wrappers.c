@@ -86,7 +86,36 @@ int yb_u_is_self_reference(const char *from_account, const char *bot_id) {
 }
 
 /* PoP: is_dm_allowed @ gateway/platforms/yuanbao.py:is_dm_allowed */
-int yb_is_dm_allowed(const char *arg) { (void)arg; return 0; }
+int yb_is_dm_allowed(const char *arg) {
+    /* Python: strict DM policy (disabled/allowlist/open; pairing excluded).
+     * Arg = "policy\tsender_id\tallowlist_json\topen_opted". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    size_t plen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    const char *sender = t1 ? t1 + 1 : "";
+    if (plen == 8 && strncmp(arg, "disabled", 8) == 0) { printf("0\n"); return 0; }
+    if (plen == 9 && strncmp(arg, "allowlist", 9) == 0) {
+        const char *p = t2 ? t2 + 1 : "";
+        int found = 0;
+        while (*p) {
+            const char *tab = strchr(p, '\t');
+            size_t len = tab ? (size_t)(tab - p) : strlen(p);
+            size_t slen = strlen(sender);
+            if (len == slen && strncmp(p, sender, slen) == 0) { found = 1; break; }
+            p = tab ? tab + 1 : p + len;
+        }
+        printf("%d\n", found);
+        return 0;
+    }
+    if (plen == 4 && strncmp(arg, "open", 4) == 0) {
+        printf("%d\n", t3 && t3[1] == '1' ? 1 : 0);
+        return 0;
+    }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: is_dm_intake_allowed @ gateway/platforms/yuanbao.py:is_dm_intake_allowed */
 int yb_is_dm_intake_allowed(const char *arg) { (void)arg; return 0; }

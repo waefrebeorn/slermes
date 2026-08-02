@@ -97,7 +97,26 @@ int tt_u_docker_volume_uses_host_path(const char *arg) {
 }
 
 /* PoP: _docker_has_host_access @ tools/terminal_tool.py:_docker_has_host_access */
-int tt_u_docker_has_host_access(const char *arg) { (void)arg; return 0; }
+int tt_u_docker_has_host_access(const char *arg) {
+    /* Python: env_type docker AND (host_cwd+mount OR host-path volume).
+     * Arg = "env_type\thost_cwd\tmount\tvolumes". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    size_t etlen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    if (!(etlen == 6 && strncmp(arg, "docker", 6) == 0)) { printf("0\n"); return 0; }
+    const char *host_cwd = t1 ? t1 + 1 : "";
+    const char *mount = t2 ? t2 + 1 : "";
+    if (host_cwd[0] == '1' && mount[0] == '1') { printf("1\n"); return 0; }
+    const char *vols = t3 ? t3 + 1 : "";
+    if (vols[0] == '/') { printf("1\n"); return 0; }
+    if (strstr(vols, ":/") != NULL || strstr(vols, ":") != NULL && vols[0] != '[') {
+        if (strstr(vols, "/") != NULL) { printf("1\n"); return 0; }
+    }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _check_all_guards @ tools/terminal_tool.py:_check_all_guards */
 int tt_u_check_all_guards(const char *arg) { (void)arg; return 0; }

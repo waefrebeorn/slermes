@@ -161,7 +161,15 @@ int envb_u_cwd_marker(const char *arg) {
 }
 
 /* PoP: get_temp_dir @ tools/environments/base.py:get_temp_dir */
-int envb_get_temp_dir(const char *arg) { (void)arg; return 0; }
+int envb_get_temp_dir(const char *arg) {
+    /* Python: "/tmp" default; LocalEnvironment overrides via TMPDIR. Arg =
+     * TMPDIR (or empty). */
+    if (arg && *arg) { printf("%s\n", arg); return 0; }
+    const char *td = getenv("TMPDIR");
+    if (td && *td) { printf("%s\n", td); return 0; }
+    printf("/tmp\n");
+    return 0;
+}
 
 /* PoP: init_session @ tools/environments/base.py:init_session */
 int envb_init_session(const char *arg) { (void)arg; return 0; }

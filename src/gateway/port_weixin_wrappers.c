@@ -102,7 +102,37 @@ int wx_u_poll_loop(const char *arg) { (void)arg; return 0; }
 int wx_u_process_message_safe(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_dm_intake_allowed @ gateway/platforms/weixin.py:_is_dm_intake_allowed */
-int wx_u_is_dm_intake_allowed(const char *arg) { (void)arg; return 0; }
+int wx_u_is_dm_intake_allowed(const char *arg) {
+    /* Python: policy switch (disabled/allowlist/pairing/open). Arg =
+     * "policy\tsender_id\tallowlist_json\topen_opted". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    size_t plen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    const char *sender = t1 ? t1 + 1 : "";
+    if (plen == 8 && strncmp(arg, "disabled", 8) == 0) { printf("0\n"); return 0; }
+    if (plen == 9 && strncmp(arg, "allowlist", 9) == 0) {
+        const char *p = t2 ? t2 + 1 : "";
+        int found = 0;
+        while (*p) {
+            const char *tab = strchr(p, '\t');
+            size_t len = tab ? (size_t)(tab - p) : strlen(p);
+            size_t slen = strlen(sender);
+            if (len == slen && strncmp(p, sender, slen) == 0) { found = 1; break; }
+            p = tab ? tab + 1 : p + len;
+        }
+        printf("%d\n", found);
+        return 0;
+    }
+    if (plen == 7 && strncmp(arg, "pairing", 7) == 0) { printf("1\n"); return 0; }
+    if (plen == 4 && strncmp(arg, "open", 4) == 0) {
+        printf("%d\n", t3 && t3[1] == '1' ? 1 : 0);
+        return 0;
+    }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _text_batch_key @ gateway/platforms/weixin.py:_text_batch_key */
 int wx_u_text_batch_key(const char *arg) { (void)arg; return 0; }

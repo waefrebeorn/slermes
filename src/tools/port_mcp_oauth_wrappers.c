@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <sys/stat.h>
 #include "hermes_json.h"
 
 /* PoP: _get_token_dir @ tools/mcp_oauth.py:_get_token_dir */
@@ -153,7 +154,13 @@ int mcpo_load_oauth_metadata(const char *arg) { (void)arg; return 0; }
 int mcpo_poison_client_registration(const char *arg) { (void)arg; return 0; }
 
 /* PoP: has_cached_tokens @ tools/mcp_oauth.py:has_cached_tokens */
-int mcpo_has_cached_tokens(const char *arg) { (void)arg; return 0; }
+int mcpo_has_cached_tokens(const char *arg) {
+    /* Python: tokens path exists. Arg = path. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    struct stat st;
+    printf("%d\n", stat(arg, &st) == 0 ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _make_callback_handler @ tools/mcp_oauth.py:_make_callback_handler */
 int mcpo_u_make_callback_handler(const char *arg) { (void)arg; return 0; }

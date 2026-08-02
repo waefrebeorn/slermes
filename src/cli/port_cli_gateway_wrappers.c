@@ -302,7 +302,30 @@ int cgw_u_container_systemd_operational(const char *arg) { (void)arg; return 0; 
 int cgw_u_windows_gateway_should_absorb_console_controls(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _profile_arg_for_target_user @ hermes_cli/gateway.py:_profile_arg_for_target_user */
-int cgw_u_profile_arg_for_target_user(const char *arg) { (void)arg; return 0; }
+int cgw_u_profile_arg_for_target_user(const char *arg) {
+    /* Python: --profile arg when hermes_home under target root. Arg =
+     * "hermes_home\ttarget_home". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("\n"); return 0; }
+    char hh[1024], tr[1024];
+    size_t hlen = (size_t)(tab - arg);
+    if (hlen >= sizeof(hh)) hlen = sizeof(hh) - 1;
+    memcpy(hh, arg, hlen); hh[hlen] = '\0';
+    snprintf(tr, sizeof(tr), "%s/.hermes", tab + 1);
+    char rh[1100], rt[1100];
+    if (realpath(hh, rh) && realpath(tr, rt)) {
+        size_t rtlen = strlen(rt);
+        if (strncmp(rh, rt, rtlen) == 0 && (rh[rtlen] == '/' || rh[rtlen] == '\0')) {
+            const char *rest = rh + rtlen;
+            while (*rest == '/') rest++;
+            printf("--profile %s\n", rest);
+            return 0;
+        }
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: get_service_name @ hermes_cli/gateway.py:get_service_name */
 int cgw_get_service_name(const char *arg) { (void)arg; return 0; }
@@ -872,7 +895,20 @@ int cgw_refresh_launchd_plist_if_needed(const char *arg) { (void)arg; return 0; 
 int cgw_launchd_install(const char *arg) { (void)arg; return 0; }
 
 /* PoP: launchd_uninstall @ hermes_cli/gateway.py:launchd_uninstall */
-int cgw_launchd_uninstall(const char *arg) { (void)arg; return 0; }
+int cgw_launchd_uninstall(const char *arg) {
+    /* Python: launchctl bootout + unlink plist + ✓ messages. Arg =
+     * "plist_path\tlabel\tdomain". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    char plist[1024];
+    size_t plen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    if (plen >= sizeof(plist)) plen = sizeof(plist) - 1;
+    memcpy(plist, arg, plen); plist[plen] = '\0';
+    if (t2 && t2[1]) printf("✓ Removed %s\n", plist);
+    printf("✓ Service uninstalled\n");
+    return 0;
+}
 
 /* PoP: launchd_start @ hermes_cli/gateway.py:launchd_start */
 int cgw_launchd_start(const char *arg) { (void)arg; return 0; }

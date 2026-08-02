@@ -290,7 +290,7 @@ class CIndexer:
                         st = fpath.stat()
                     except Exception:
                         continue
-                    if st.st_size > 200 * 1024:
+                    if st.st_size > 1024 * 1024:
                         continue
                     try:
                         with open(fpath) as fp:

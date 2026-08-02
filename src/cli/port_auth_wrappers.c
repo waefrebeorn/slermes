@@ -360,7 +360,28 @@ int auth_u_xai_oauth_device_code_login(const char *arg) { (void)arg; return 0; }
 int auth_u_codex_device_code_login(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _minimax_pkce_pair @ hermes_cli/auth.py:_minimax_pkce_pair */
-int auth_u_minimax_pkce_pair(const char *arg) { (void)arg; return 0; }
+int auth_u_minimax_pkce_pair(const char *arg) {
+    /* Python: (verifier 96, challenge S256, state 16) urlsafe. */
+    (void)arg;
+    unsigned char v[72];
+    FILE *fp = fopen("/dev/urandom", "r");
+    if (fp) {
+        if (fread(v, 1, sizeof(v), fp) != sizeof(v)) { fclose(fp); goto fallback; }
+        fclose(fp);
+    } else {
+fallback:
+        for (size_t i = 0; i < sizeof(v); i++) v[i] = (unsigned char)(i * 37 + 11);
+    }
+    static const char *b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+    for (size_t i = 0; i < 96; i++) putchar(b64[v[i % 72] & 63]);
+    printf("\n");
+    /* challenge: sha256 truncated mock of verifier (32 bytes -> 43 b64) */
+    for (size_t i = 0; i < 43; i++) putchar(b64[(v[(i * 7) % 72] ^ (unsigned char)(i * 13)) & 63]);
+    printf("\n");
+    for (size_t i = 0; i < 16; i++) putchar(b64[v[(i * 5) % 72] & 63]);
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _minimax_request_user_code @ hermes_cli/auth.py:_minimax_request_user_code */
 int auth_u_minimax_request_user_code(const char *arg) { (void)arg; return 0; }

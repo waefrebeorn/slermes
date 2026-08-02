@@ -39,7 +39,20 @@ int muv_repaired(const char *arg) {
 }
 
 /* PoP: _report_runtime_repair_failure @ hermes_cli/managed_uv.py:_report_runtime_repair_failure */
-int muv_u_report_runtime_repair_failure(const char *arg) { (void)arg; return 0; }
+int muv_u_report_runtime_repair_failure(const char *arg) {
+    /* Python: warn (no backup) or ✗ manual recovery (backup). Arg =
+     * "backup_venv\tdetail" (backup empty = none). */
+    if (!arg || !*arg) { printf("  ⚠ Managed Python runtime was not replaced\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab || tab == arg) {
+        printf("  ⚠ Managed Python runtime was not replaced; the existing venv is unchanged (%s).\n",
+               tab ? tab + 1 : "");
+        return 0;
+    }
+    printf("  ✗ Managed Python runtime cutover needs manual recovery: %s\n", tab + 1);
+    printf("    Previous venv: %.*s\n", (int)(tab - arg), arg);
+    return 0;
+}
 
 /* PoP: __new__ @ hermes_cli/managed_uv.py:__new__ */
 int muv_u__new__(const char *arg) {

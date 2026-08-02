@@ -985,7 +985,30 @@ int gateway_platform_registry_plugin_entries(const char *arg) {
 }
 
 /* PoP: is_registered @ gateway/platform_registry.py:is_registered */
-int gateway_platform_registry_is_registered(const char *arg) { (void)arg; return 0; }
+int gateway_platform_registry_is_registered(const char *arg) {
+    /* Python: name in entries or deferred. Arg = "name\tentries\tdeferred". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    size_t nlen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    const char *p = t1 ? t1 + 1 : "";
+    while (p && *p && p != t2) {
+        const char *tab = strchr(p, '\t');
+        if (tab && tab > t2) break;
+        size_t len = (t2 && tab == t2) ? (size_t)(t2 - p) : (tab ? (size_t)(tab - p) : strlen(p));
+        if (len == nlen && strncmp(p, arg, nlen) == 0) { printf("1\n"); return 0; }
+        p = tab ? tab + 1 : p + len;
+    }
+    p = t2 ? t2 + 1 : "";
+    while (*p) {
+        const char *tab = strchr(p, '\t');
+        size_t len = tab ? (size_t)(tab - p) : strlen(p);
+        if (len == nlen && strncmp(p, arg, nlen) == 0) { printf("1\n"); return 0; }
+        p = tab ? tab + 1 : p + len;
+    }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: create_adapter @ gateway/platform_registry.py:create_adapter */
 int gateway_platform_registry_create_adapter(const char *arg) { (void)arg; return 0; }

@@ -86,7 +86,25 @@ int sku_u_external_dirs_cache_clear(const char *arg) {
 int sku_get_external_skills_dirs(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_all_skills_dirs @ agent/skill_utils.py:get_all_skills_dirs */
-int sku_get_all_skills_dirs(const char *arg) { (void)arg; return 0; }
+int sku_get_all_skills_dirs(const char *arg) {
+    /* Python: [local skills dir] + external dirs (config order). Arg =
+     * "local\texternal\texternal..." (tab-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    int first = 1;
+    while (*p) {
+        const char *tab = strchr(p, '\t');
+        size_t len = tab ? (size_t)(tab - p) : strlen(p);
+        if (len) {
+            if (!first) printf("\n");
+            printf("%.*s", (int)len, p);
+            first = 0;
+        }
+        p = tab ? tab + 1 : p + len;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: normalize_skill_lookup_name @ agent/skill_utils.py:normalize_skill_lookup_name */
 int sku_normalize_skill_lookup_name(const char *arg) { (void)arg; return 0; }
