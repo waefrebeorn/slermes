@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <sys/stat.h>
 #include "hermes_json.h"
 
 /* PoP: _msys_to_windows_path @ tools/environments/local.py:_msys_to_windows_path */
@@ -63,7 +64,14 @@ int envl_u_quote_bash_path(const char *arg) {
 }
 
 /* PoP: _cwd_usable @ tools/environments/local.py:_cwd_usable */
-int envl_u_cwd_usable(const char *arg) { (void)arg; return 0; }
+int envl_u_cwd_usable(const char *arg) {
+    /* Python: isdir AND X_OK. Arg = path. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    struct stat st;
+    if (stat(arg, &st) != 0 || !S_ISDIR(st.st_mode)) { printf("0\n"); return 0; }
+    printf("%d\n", access(arg, X_OK) == 0 ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _resolve_safe_cwd @ tools/environments/local.py:_resolve_safe_cwd */
 int envl_u_resolve_safe_cwd(const char *arg) { (void)arg; return 0; }

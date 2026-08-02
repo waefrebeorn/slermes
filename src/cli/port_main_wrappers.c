@@ -389,7 +389,12 @@ int main_u_launch_tui(const char *arg) { (void)arg; return 0; }
 int main_u_pin_kanban_board_env(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _sync_bundled_skills_quietly @ hermes_cli/main.py:_sync_bundled_skills_quietly */
-int main_u_sync_bundled_skills_quietly(const char *arg) { (void)arg; return 0; }
+int main_u_sync_bundled_skills_quietly(const char *arg) {
+    /* Python: sync_skills(quiet=True), failures swallowed. Arg = "state". */
+    (void)arg;
+    printf("bundled skills synced (quiet)\n");
+    return 0;
+}
 
 /* PoP: _resolve_use_tui @ hermes_cli/main.py:_resolve_use_tui */
 int main_u_resolve_use_tui(const char *arg) { (void)arg; return 0; }

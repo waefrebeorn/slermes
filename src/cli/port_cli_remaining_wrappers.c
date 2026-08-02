@@ -419,7 +419,12 @@ int hermes_cli_mcp_config_u_reauth_oauth_server(const char *arg) { (void)arg; re
 int hermes_cli_mcp_config_cmd_mcp_reauth(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _print_usage_cta @ hermes_cli/cli_billing_mixin.py:_print_usage_cta */
-int hermes_cli_cli_billing_mixin_u_print_usage_cta(const char *arg) { (void)arg; return 0; }
+int hermes_cli_cli_billing_mixin_u_print_usage_cta(const char *arg) {
+    /* Python: usage CTA line. */
+    (void)arg;
+    printf("  Run /subscription to change plan · /topup to add to your balance\n");
+    return 0;
+}
 
 /* PoP: _show_subscription @ hermes_cli/cli_billing_mixin.py:_show_subscription */
 int hermes_cli_cli_billing_mixin_u_show_subscription(const char *arg) { (void)arg; return 0; }
@@ -455,7 +460,20 @@ int hermes_cli_cli_billing_mixin_u_subscription_apply(const char *arg) { (void)a
 int hermes_cli_cli_billing_mixin_u_subscription_handle_scope_req_ed(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _subscription_render_error @ hermes_cli/cli_billing_mixin.py:_subscription_render_error */
-int hermes_cli_cli_billing_mixin_u_subscription_render_error(const char *arg) { (void)arg; return 0; }
+int hermes_cli_cli_billing_mixin_u_subscription_render_error(const char *arg) {
+    /* Python: BillingError render by code. Arg = "code\tmessage\tportal_url". */
+    if (!arg || !*arg) { printf("  🔴 Something went wrong.\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *code = arg;
+    const char *msg = t1 ? t1 + 1 : "";
+    const char *url = t2 ? t2 + 1 : "";
+    if (strcmp(code, "insufficient_scope") == 0) printf("  🟡 Remote Spending isn't allowed yet. Allow it, then retry.\n");
+    else if (strcmp(code, "subscription_mutation_rejected") == 0 || strcmp(code, "preview_rejected") == 0) printf("  🟡 %s\n", msg);
+    else printf("  🔴 %s\n", msg);
+    if (url[0]) printf("  Portal: %s\n", url);
+    return 0;
+}
 
 /* PoP: _subscription_render_upgrade_ambiguous @ hermes_cli/cli_billing_mixin.py:_subscription_render_upgrade_ambiguous */
 int hermes_cli_cli_billing_mixin_u_subscription_render_upgrade_a_us(const char *arg) { (void)arg; return 0; }
@@ -609,7 +627,16 @@ int hermes_cli_pets_u_clear_active_if(const char *arg) {
 }
 
 /* PoP: _rename_active_if @ hermes_cli/pets.py:_rename_active_if */
-int hermes_cli_pets_u_rename_active_if(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pets_u_rename_active_if(const char *arg) {
+    /* Python: repoint active slug iff matches. Arg = "old_slug\tnew_slug\tcurrent". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (!t1 || !t1[1] || !t2 || !t2[1] || strcmp(t2 + 1, "same") == 0) { printf("0\n"); return 0; }
+    if (strcmp(arg, t2 + 1) != 0) { printf("0\n"); return 0; }
+    printf("active pet repointed: %s -> %s\n", arg, t1 + 1);
+    return 0;
+}
 
 /* PoP: _interactive_pick @ hermes_cli/pets.py:_interactive_pick */
 int hermes_cli_pets_u_interactive_pick(const char *arg) {
@@ -1880,7 +1907,12 @@ int hermes_cli_backup_run_import(const char *arg) { (void)arg; return 0; }
 int hermes_cli_backup_create_quick_snapshot(const char *arg) { (void)arg; return 0; }
 
 /* PoP: list_quick_snapshots @ hermes_cli/backup.py:list_quick_snapshots */
-int hermes_cli_backup_list_quick_snapshots(const char *arg) { (void)arg; return 0; }
+int hermes_cli_backup_list_quick_snapshots(const char *arg) {
+    /* Python: snapshot manifests most recent first. Arg = "snapshots_json". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: restore_quick_snapshot @ hermes_cli/backup.py:restore_quick_snapshot */
 int hermes_cli_backup_restore_quick_snapshot(const char *arg) { (void)arg; return 0; }
@@ -3351,7 +3383,33 @@ int hermes_cli_browser_connect_u_read_stderr_tail(const char *arg) {
 int hermes_cli_browser_connect_launch_chrome_debug(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _path_is_public @ hermes_cli/dashboard_auth/middleware.py:_path_is_public */
-int hermes_cli_dashboard_auth_midd_u_path_is_public(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_midd_u_path_is_public(const char *arg) {
+    /* Python: exact API allowlist or prefix match. Arg =
+     * "path\tpublic_paths\tpublic_prefixes". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *exact = t1 ? t1 + 1 : "";
+    const char *prefixes = t2 ? t2 + 1 : "";
+    /* exact match */
+    const char *p = exact;
+    while (*p) {
+        const char *t = strchr(p, '\t');
+        size_t len = t ? (size_t)(t - p) : strlen(p);
+        if (len == strlen(arg) && strncmp(p, arg, len) == 0) { printf("1\n"); return 0; }
+        p = t ? t + 1 : p + len;
+    }
+    /* prefix match */
+    p = prefixes;
+    while (*p) {
+        const char *t = strchr(p, '\t');
+        size_t len = t ? (size_t)(t - p) : strlen(p);
+        if (len && strncmp(p, arg, len) == 0) { printf("1\n"); return 0; }
+        p = t ? t + 1 : p + len;
+    }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _ordered_session_providers @ hermes_cli/dashboard_auth/middleware.py:_ordered_session_providers */
 int hermes_cli_dashboard_auth_midd_u_ordered_session_providers(const char *arg) {
@@ -3960,7 +4018,13 @@ int hermes_cli_onepassword_secrets_cmd_token(const char *arg) { (void)arg; retur
 int hermes_cli_onepassword_secrets_cmd_sync(const char *arg) { (void)arg; return 0; }
 
 /* PoP: cmd_disable @ hermes_cli/onepassword_secrets_cli.py:cmd_disable */
-int hermes_cli_onepassword_secrets_cmd_disable(const char *arg) { (void)arg; return 0; }
+int hermes_cli_onepassword_secrets_cmd_disable(const char *arg) {
+    /* Python: set enabled False + message. */
+    (void)arg;
+    printf("[green]Disabled.[/green]  1Password references will NOT be resolved on the next Hermes invocation.\n");
+    printf("  Your reference mappings are left in config.yaml — remove them with [cyan]hermes secrets onepassword remove ENV_VAR[/cyan] if you no longer need them.\n");
+    return 0;
+}
 
 /* PoP: _yn @ hermes_cli/onepassword_secrets_cli.py:_yn */
 int hermes_cli_onepassword_secrets_u_yn(const char *arg) {
@@ -6018,7 +6082,34 @@ int hermes_cli_relaunch_u_extract_inherited_flags(const char *arg) { (void)arg; 
 int hermes_cli_relaunch_resolve_hermes_bin(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _fmt_pending @ hermes_cli/suggestions_cmd.py:_fmt_pending */
-int hermes_cli_suggestions_cmd_u_fmt_pending(const char *arg) { (void)arg; return 0; }
+int hermes_cli_suggestions_cmd_u_fmt_pending(const char *arg) {
+    /* Python: numbered pending suggestions. Arg = "pending_json". */
+    if (!arg || !*arg) {
+        printf("No suggested automations right now.\nTry `/suggestions catalog` to see the curated starter set, or install a blueprint skill to get one.\n");
+        return 0;
+    }
+    json_t *j = json_parse(arg, NULL);
+    if (!j || !json_is_array(j) || json_array_size(j) == 0) {
+        if (j) json_free(j);
+        printf("No suggested automations right now.\nTry `/suggestions catalog` to see the curated starter set, or install a blueprint skill to get one.\n");
+        return 0;
+    }
+    printf("Suggested automations — `/suggestions accept N` or `dismiss N`:\n\n");
+    size_t n = json_array_size(j);
+    for (size_t i = 0; i < n; i++) {
+        json_t *s = json_array_get(j, i);
+        if (!s) continue;
+        json_t *spec = json_obj_get(s, "job_spec");
+        const char *sched = spec && json_is_object(spec) ? json_get_str(spec, "schedule", "?") : "?";
+        printf("  %zu. %s  [%s]  (%s)\n", i + 1,
+               json_get_str(s, "title", "(untitled)"), sched,
+               json_get_str(s, "source", "?"));
+        const char *desc = json_get_str(s, "description", "");
+        if (desc[0]) printf("     %s\n", desc);
+    }
+    json_free(j);
+    return 0;
+}
 
 /* PoP: _resolve_origin @ hermes_cli/suggestions_cmd.py:_resolve_origin */
 int hermes_cli_suggestions_cmd_u_resolve_origin(const char *arg) { (void)arg; return 0; }

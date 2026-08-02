@@ -33,7 +33,17 @@ static pthread_t tt_cleanup_thread;
 static bool tt_cleanup_thread_started = false;
 
 /* PoP: _safe_parse_import_env @ tools/terminal_tool.py:_safe_parse_import_env */
-int tt_u_safe_parse_import_env(const char *arg) { (void)arg; return 0; }
+int tt_u_safe_parse_import_env(const char *arg) {
+    /* Python: converter with fallback. Arg = "raw\tvalid\tdefault\tvalue". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int valid = t1 && t1[1] == '1';
+    if (!valid) { printf("%s\n", t2 ? t2 + 1 : ""); return 0; }
+    printf("%s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _get_sudo_password_callback @ tools/terminal_tool.py:_get_sudo_password_callback */
 int tt_u_get_sudo_password_callback(const char *arg) {

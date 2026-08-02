@@ -720,7 +720,16 @@ int agent_subscription_view_u_dev_tiers(const char *arg) {
 int agent_subscription_view_dev_fixture_subscription_state(const char *arg) { (void)arg; return 0; }
 
 /* PoP: openai_codex_stale_timeout_floor @ agent/chat_completion_helpers.py:openai_codex_stale_timeout_floor */
-int agent_chat_completion_helpers_openai_codex_stale_timeout_floor(const char *arg) { (void)arg; return 0; }
+int agent_chat_completion_helpers_openai_codex_stale_timeout_floor(const char *arg) {
+    /* Python: tiered floor by est tokens. Arg = "est_tokens". */
+    if (!arg || !*arg) { printf("0.00\n"); return 0; }
+    double t = strtod(arg, NULL);
+    if (t > 100000) { printf("1200.00\n"); return 0; }
+    if (t > 50000) { printf("900.00\n"); return 0; }
+    if (t > 10000) { printf("600.00\n"); return 0; }
+    printf("0.00\n");
+    return 0;
+}
 
 /* PoP: _provider_preferences_for_agent @ agent/chat_completion_helpers.py:_provider_preferences_for_agent */
 int agent_chat_completion_helpers_u_provider_preferences_for_agent(const char *arg) { (void)arg; return 0; }

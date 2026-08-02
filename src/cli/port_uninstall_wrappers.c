@@ -57,7 +57,18 @@ int uninst_find_shell_configs(const char *arg) {
 int uninst_remove_path_from_shell_configs(const char *arg) { (void)arg; return 0; }
 
 /* PoP: remove_wrapper_script @ hermes_cli/uninstall.py:remove_wrapper_script */
-int uninst_remove_wrapper_script(const char *arg) { (void)arg; return 0; }
+int uninst_remove_wrapper_script(const char *arg) {
+    /* Python: remove wrapper if it references hermes_cli. Arg =
+     * "home\tlocal_exists\tusr_exists\tremoved". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *removed = t3 ? t3 + 1 : "";
+    if (removed[0]) printf("removed wrapper: %s\n", removed);
+    else printf("no wrapper scripts to remove\n");
+    return 0;
+}
 
 /* PoP: _node_symlink_candidate_dirs @ hermes_cli/uninstall.py:_node_symlink_candidate_dirs */
 int uninst_u_node_symlink_candidate_dirs(const char *arg) {

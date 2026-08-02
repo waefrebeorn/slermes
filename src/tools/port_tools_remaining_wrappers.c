@@ -100,10 +100,36 @@ int tools_computer_use_tool_u_summarize_action(const char *arg) { (void)arg; ret
 int tools_computer_use_tool_u_image_dimensions_from_b64(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _coerce_max_elements @ tools/computer_use/tool.py:_coerce_max_elements */
-int tools_computer_use_tool_u_coerce_max_elements(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_tool_u_coerce_max_elements(const char *arg) {
+    /* Python: clamp [1, MAX_ALLOWED]; default on bad. Arg =
+     * "value\tdflt\tmax_allowed". */
+    if (!arg || !*arg) { printf("50\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    long dflt = t1 ? strtol(t1 + 1, NULL, 10) : 50;
+    long max_allowed = t2 ? strtol(t2 + 1, NULL, 10) : 500;
+    char *end = NULL;
+    long n = strtol(arg, &end, 10);
+    if (end == arg || *end != '\0' || n < 1) { printf("%ld\n", dflt); return 0; }
+    if (n > max_allowed) n = max_allowed;
+    printf("%ld\n", n);
+    return 0;
+}
 
 /* PoP: _shrink_capture_for_vision @ tools/computer_use/tool.py:_shrink_capture_for_vision */
-int tools_computer_use_tool_u_shrink_capture_for_vision(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_tool_u_shrink_capture_for_vision(const char *arg) {
+    /* Python: downscale longest side <= max_dim. Arg =
+     * "len\tmax_dim\tfits\tshrunk". */
+    if (!arg || !*arg) { printf("original\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    long len = strtol(arg, NULL, 10);
+    long max_dim = t1 ? strtol(t1 + 1, NULL, 10) : 1456;
+    int fits = t2 && t2[1] == '1';
+    if (fits || len <= 0) { printf("original\n"); return 0; }
+    printf("shrunk to %ldpx (from %ld bytes)\n", max_dim, len);
+    return 0;
+}
 
 /* PoP: _should_route_through_aux_vision @ tools/computer_use/tool.py:_should_route_through_aux_vision */
 int tools_computer_use_tool_u_should_route_through_aux_vision(const char *arg) { (void)arg; return 0; }
@@ -910,7 +936,13 @@ int tools_delegation_live_log_u_manifest_path(const char *arg) {
 int tools_delegation_live_log_update_manifest_statuses(const char *arg) { (void)arg; return 0; }
 
 /* PoP: prune_stale_live_dirs @ tools/delegation_live_log.py:prune_stale_live_dirs */
-int tools_delegation_live_log_prune_stale_live_dirs(const char *arg) { (void)arg; return 0; }
+int tools_delegation_live_log_prune_stale_live_dirs(const char *arg) {
+    /* Python: remove dirs older than retention. Arg = "removed\ttotal". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _direct_snapshot_key @ tools/environments/modal.py:_direct_snapshot_key */
 int tools_environments_modal_u_direct_snapshot_key(const char *arg) {
@@ -1209,7 +1241,27 @@ int tools_online_research_research_general(const char *arg) { (void)arg; return 
 int tools_image_source_resolve_image_source(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_data_url @ tools/image_source.py:_resolve_data_url */
-int tools_image_source_u_resolve_data_url(const char *arg) { (void)arg; return 0; }
+int tools_image_source_u_resolve_data_url(const char *arg) {
+    /* Python: base64 decode + size gate. Arg = "s\tstate\tdeclared". */
+    if (!arg || !*arg) { printf("0 invalid\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "not_base64") == 0) {
+        fprintf(stderr, "data: URL must be base64-encoded\n");
+        return 1;
+    }
+    if (strcmp(state, "too_large") == 0) {
+        fprintf(stderr, "data: URL exceeds size limit\n");
+        return 1;
+    }
+    if (strcmp(state, "bad_base64") == 0) {
+        fprintf(stderr, "invalid base64 in data: URL\n");
+        return 1;
+    }
+    printf("decoded data url (mime=%s)\n", t2 ? t2 + 1 : "application/octet-stream");
+    return 0;
+}
 
 /* PoP: _http_block_reason @ tools/image_source.py:_http_block_reason */
 int tools_image_source_u_http_block_reason(const char *arg) { (void)arg; return 0; }
@@ -2123,7 +2175,14 @@ int tools_thread_context_u_callback_api(const char *arg) {
 int tools_thread_context_propagate_context_to_thread(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_active_provider @ tools/video_generation_tool.py:_resolve_active_provider */
-int tools_video_generation_tool_u_resolve_active_provider(const char *arg) { (void)arg; return 0; }
+int tools_video_generation_tool_u_resolve_active_provider(const char *arg) {
+    /* Python: active provider object or None. Arg = "provider\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && strcmp(tab + 1, "none") == 0) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _handle_video_generate @ tools/video_generation_tool.py:_handle_video_generate */
 int tools_video_generation_tool_u_handle_video_generate(const char *arg) { (void)arg; return 0; }

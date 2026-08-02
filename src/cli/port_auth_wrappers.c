@@ -390,7 +390,20 @@ int auth_resolve_external_process_provider_credentials(const char *arg) { (void)
 int auth_u_update_config_for_provider(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _confirm_expensive_model_selection @ hermes_cli/auth.py:_confirm_expensive_model_selection */
-int auth_u_confirm_expensive_model_selection(const char *arg) { (void)arg; return 0; }
+int auth_u_confirm_expensive_model_selection(const char *arg) {
+    /* Python: warning + y/N prompt result. Arg = "warning\tconfirmed". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *warning = arg;
+    const char *confirmed = tab ? tab + 1 : "";
+    if (strcmp(warning, "none") == 0) { printf("1\n"); return 0; }
+    printf("\n");
+    printf("========================================================================================================================================\n");
+    printf("%s\n", warning);
+    printf("========================================================================================================================================\n");
+    printf("%s\n", (confirmed[0] && (strcmp(confirmed, "y") == 0 || strcmp(confirmed, "yes") == 0)) ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _prompt_model_selection @ hermes_cli/auth.py:_prompt_model_selection */
 int auth_u_prompt_model_selection(const char *arg) { (void)arg; return 0; }

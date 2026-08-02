@@ -174,7 +174,25 @@ int mm_commit_session_boundary_async(const char *arg) { (void)arg; return 0; }
 int mm_on_session_switch(const char *arg) { (void)arg; return 0; }
 
 /* PoP: on_pre_compress @ agent/memory_manager.py:on_pre_compress */
-int mm_on_pre_compress(const char *arg) { (void)arg; return 0; }
+int mm_on_pre_compress(const char *arg) {
+    /* Python: provider contributions joined. Arg = "parts" (tab-sep,
+     * empty = none). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    int first = 1;
+    while (*p) {
+        const char *t = strchr(p, '\t');
+        size_t len = t ? (size_t)(t - p) : strlen(p);
+        if (len) {
+            if (!first) printf("\n\n");
+            printf("%.*s", (int)len, p);
+            first = 0;
+        }
+        p = t ? t + 1 : p + len;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _provider_memory_write_metadata_mode @ agent/memory_manager.py:_provider_memory_write_metadata_mode */
 int mm_u_provider_memory_write_metadata_mode(const char *arg) { (void)arg; return 0; }
