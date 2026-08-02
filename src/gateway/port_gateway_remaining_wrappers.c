@@ -138,7 +138,31 @@ int gateway_shutdown_watchdog_get_shutdown_watchdog_dump_path(const char *arg) {
 int gateway_shutdown_watchdog_write_loop_heartbeat(const char *arg) { (void)arg; return 0; }
 
 /* PoP: resolve_shutdown_watchdog_delay @ gateway/shutdown_watchdog.py:resolve_shutdown_watchdog_delay */
-int gateway_shutdown_watchdog_resolve_shutdown_watchdog_delay(const char *arg) { (void)arg; return 0; }
+int gateway_shutdown_watchdog_resolve_shutdown_watchdog_delay(const char *arg) {
+    /* Python (drain_timeout, grace_s): max(float(drain),0) + max(float(grace),0)
+     * with DEFAULT_SHUTDOWN_WATCHDOG_GRACE_S fallback for bad grace.
+     * Arg = "drain\tgrace". */
+    double drain = 0.0, grace = 0.0;
+    const char *tab = arg ? strchr(arg, '\t') : NULL;
+    if (tab) {
+        char *end1 = NULL, *end2 = NULL;
+        drain = strtod(arg, &end1);
+        grace = strtod(tab + 1, &end2);
+        if (end1 == arg || end1 == tab || *end1 != '\0') drain = 0.0;
+        if (end2 == tab + 1) grace = 15.0; /* DEFAULT_SHUTDOWN_WATCHDOG_GRACE_S */
+    } else if (arg && *arg) {
+        char *end = NULL;
+        drain = strtod(arg, &end);
+        if (end == arg) drain = 0.0;
+        grace = 15.0;
+    } else {
+        grace = 15.0;
+    }
+    if (drain < 0) drain = 0;
+    if (grace < 0) grace = 0;
+    printf("%.3f\n", drain + grace);
+    return 0;
+}
 
 /* PoP: _write_watchdog_dump @ gateway/shutdown_watchdog.py:_write_watchdog_dump */
 int gateway_shutdown_watchdog_u_write_watchdog_dump(const char *arg) { (void)arg; return 0; }

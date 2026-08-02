@@ -25,7 +25,23 @@ int agent_model_metadata_u_maybe_cache_local_context_length(const char *arg) { (
 int agent_model_metadata_u_reconcile_local_cached_context_length(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _localhost_to_ipv4 @ agent/model_metadata.py:_localhost_to_ipv4 */
-int agent_model_metadata_u_localhost_to_ipv4(const char *arg) { (void)arg; return 0; }
+int agent_model_metadata_u_localhost_to_ipv4(const char *arg) {
+    /* Python: ^(https?://)localhost(?=[:/]|$) -> \g<1>127.0.0.1 (once). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    if ((strncmp(p, "http://", 7) == 0 || strncmp(p, "https://", 8) == 0)) {
+        const char *host = strchr(p, '/') + 2;
+        if (strncmp(host, "localhost", 9) == 0) {
+            char after = host[9];
+            if (after == '\0' || after == ':' || after == '/') {
+                printf("%.*s127.0.0.1%s\n", (int)(host - p), p, host + 9);
+                return 0;
+            }
+        }
+    }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _context_cache_key @ agent/model_metadata.py:_context_cache_key */
 int agent_model_metadata_u_context_cache_key(const char *arg) { (void)arg; return 0; }

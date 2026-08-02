@@ -1,8 +1,8 @@
-# Ranked fix queue — 3100 bootleg functions
+# Ranked fix queue — 3084 bootleg functions
 
 - A  (delegate to real fn): 22
-- Bt (trivial direct-port): 144
-- Bx (direct but needs deps): 1027
+- Bt (trivial direct-port): 133
+- Bx (direct but needs deps): 1022
 - C  (deep subsystem):        1907
 
 ## Top of queue (automatable first)
@@ -29,7 +29,6 @@
 - [A] gateway/restart_loop_guard.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
 - [A] gateway/stream_dispatch.py :: dispatch -> adel_u_persist_dispatch  (cands: dispatch)
 - [A] tools/slash_confirm.py :: clear -> sku_u_external_dirs_cache_clear  (cands: cmd_clear)
-- [Bt] hermes_cli/main.py :: _command_has_dedicated_mcp_startup -> main_u_command_has_dedicated_mcp_startup
 - [Bt] hermes_cli/main.py :: _count_commits_between -> main_u_count_commits_between
 - [Bt] hermes_cli/main.py :: _has_upstream_remote -> main_u_has_upstream_remote
 - [Bt] hermes_cli/main.py :: _is_electron_packaged_web_dist -> main_u_is_electron_packaged_web_dist
@@ -40,30 +39,21 @@
 - [Bt] hermes_cli/main.py :: _resolve_update_branch -> main_u_resolve_update_branch
 - [Bt] hermes_cli/main.py :: _sync_fork_with_upstream -> main_u_sync_fork_with_upstream
 - [Bt] hermes_cli/main.py :: _write_lazy_refresh_incomplete_marker -> main_u_write_lazy_refresh_incomplete_marker
-- [Bt] hermes_cli/gateway.py :: _launchctl_bootstrap -> cgw_u_launchctl_bootstrap
 - [Bt] hermes_cli/gateway.py :: _launchctl_label_registered -> cgw_u_launchctl_label_registered
 - [Bt] hermes_cli/gateway.py :: _maybe_redirect_run_to_s6_supervision -> cgw_u_maybe_redirect_run_to_s6_supervision
 - [Bt] hermes_cli/gateway.py :: _print_gateway_process_mismatch -> cgw_u_print_gateway_process_mismatch
 - [Bt] hermes_cli/gateway.py :: _print_linger_enable_warning -> cgw_u_print_linger_enable_warning
 - [Bt] hermes_cli/gateway.py :: _refuse_temp_home_service_write -> cgw_u_refuse_temp_home_service_write
-- [Bt] hermes_cli/gateway.py :: _retry_launchctl_bootstrap_until_registered -> cgw_u_retry_launchctl_bootstrap_until_registered
 - [Bt] hermes_cli/gateway.py :: _service_scope_label -> cgw_u_service_scope_label
 - [Bt] hermes_cli/gateway.py :: _systemd_service_is_start_limited -> cgw_u_systemd_service_is_start_limited
 - [Bt] hermes_cli/gateway.py :: has_conflicting_systemd_units -> cgw_has_conflicting_systemd_units
 - [Bt] hermes_cli/gateway.py :: has_legacy_hermes_units -> cgw_has_legacy_hermes_units
 - [Bt] hermes_cli/gateway.py :: has_process_service_mismatch -> cgw_has_process_service_mismatch
 - [Bt] hermes_cli/gateway.py :: print_systemd_linger_guidance -> cgw_print_systemd_linger_guidance
-- [Bt] tools/environments/local.py :: _resolve_hermes_bin_dir -> envl_u_resolve_hermes_bin_dir
 - [Bt] gateway/platforms/weixin.py :: _get_config -> wx_u_get_config
 - [Bt] gateway/platforms/weixin.py :: _get_upload_url -> wx_u_get_upload_url
-- [Bt] agent/memory_manager.py :: on_memory_write -> mm_on_memory_write
 - [Bt] tools/environments/base.py :: set_activity_callback -> envb_set_activity_callback
-- [Bt] hermes_cli/windows_ssh_runtime.py :: _log_path -> wssr_u_log_path
-- [Bt] tools/skill_manager_tool.py :: _background_review_read_before_write_guard -> smt_u_background_review_read_before_write_guard
-- [Bt] hermes_cli/model_switch.py :: _check_hermes_model_warning -> msw_u_check_hermes_model_warning
 - [Bt] hermes_cli/model_switch.py :: format_model_for_display -> msw_format_model_for_display
-- [Bt] hermes_cli/session_export_md.py :: _render_content -> sexmd_u_render_content
-- [Bt] hermes_cli/nous_subscription.py :: _resolve_browser_feature_state -> nsub_u_resolve_browser_feature_state
 - [Bt] hermes_cli/debug.py :: _capture_default_log_snapshots -> hermes_cli_debug_u_capture_default_log_snapshots
 - [Bt] hermes_cli/mcp_config.py :: _strip_bearer_prefix -> hermes_cli_mcp_config_u_strip_bearer_prefix
 - [Bt] agent/model_metadata.py :: _localhost_to_ipv4 -> agent_model_metadata_u_localhost_to_ipv4
@@ -144,7 +134,6 @@
 - [Bt] hermes_cli/stdio.py :: _default_windows_editor -> hermes_cli_stdio_u_default_windows_editor
 - [Bt] tools/checkpoint_manager.py :: _dir_has_any_entry -> tools_checkpoint_manager_u_dir_has_any_entry
 - [Bt] tools/env_probe.py :: _reset_cache_for_tests -> cli_tools_env_probe__reset_cache_for_tests
-- [Bt] tools/skill_provenance.py :: is_background_review -> tools_skill_provenance_is_background_review
 - [Bt] agent/battery.py :: read_battery -> agent_battery_read_battery
 - [Bt] agent/bounded_response.py :: read_error_body_or_default -> agent_bounded_response_read_error_body_or_default
 - [Bt] hermes_cli/dep_ensure.py :: _has_system_browser -> hermes_cli_dep_ensure_u_has_system_browser
@@ -207,3 +196,14 @@
 - [Bx] hermes_cli/main.py :: _recover_from_interrupted_install -> main_u_recover_from_interrupted_install
 - [Bx] hermes_cli/main.py :: _render_distribution_plan -> main_u_render_distribution_plan
 - [Bx] hermes_cli/main.py :: _report_dashboard_status -> main_u_report_dashboard_status
+- [Bx] hermes_cli/main.py :: _reset_aux_to_auto -> main_u_reset_aux_to_auto
+- [Bx] hermes_cli/main.py :: _resolve_install_target_python -> main_u_resolve_install_target_python
+- [Bx] hermes_cli/main.py :: _resolve_last_session -> main_u_resolve_last_session
+- [Bx] hermes_cli/main.py :: _resolve_node_runtime_npm -> main_u_resolve_node_runtime_npm
+- [Bx] hermes_cli/main.py :: _resolve_pre_update_backup_mode -> main_u_resolve_pre_update_backup_mode
+- [Bx] hermes_cli/main.py :: _resolve_session_by_name_or_id -> main_u_resolve_session_by_name_or_id
+- [Bx] hermes_cli/main.py :: _resolve_stash_selector -> main_u_resolve_stash_selector
+- [Bx] hermes_cli/main.py :: _resolve_tui_heap_mb -> main_u_resolve_tui_heap_mb
+- [Bx] hermes_cli/main.py :: _resolve_use_tui -> main_u_resolve_use_tui
+- [Bx] hermes_cli/main.py :: _rollback_desktop_from_backup -> main_u_rollback_desktop_from_backup
+- [Bx] hermes_cli/main.py :: _set_chat_arg_defaults -> main_u_set_chat_arg_defaults

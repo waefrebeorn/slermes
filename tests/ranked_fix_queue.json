@@ -1,9 +1,9 @@
 {
- "total": 3100,
+ "total": 3084,
  "by_cat": {
   "A": 22,
-  "Bt": 144,
-  "Bx": 1027,
+  "Bt": 133,
+  "Bx": 1022,
   "C": 1907
  },
  "by_module": {
@@ -37,7 +37,7 @@
   "agent/kanban_stop.py": 4,
   "agent/lsp/client.py": 2,
   "agent/lsp/manager.py": 1,
-  "agent/memory_manager.py": 30,
+  "agent/memory_manager.py": 29,
   "agent/memory_provider.py": 8,
   "agent/moa_loop.py": 31,
   "agent/moa_trace.py": 3,
@@ -177,7 +177,7 @@
   "hermes_cli/env_loader.py": 12,
   "hermes_cli/fallback_cmd.py": 6,
   "hermes_cli/fallback_config.py": 2,
-  "hermes_cli/gateway.py": 141,
+  "hermes_cli/gateway.py": 140,
   "hermes_cli/gateway_enroll.py": 5,
   "hermes_cli/gateway_windows.py": 47,
   "hermes_cli/goals.py": 5,
@@ -187,7 +187,7 @@
   "hermes_cli/kanban_db.py": 24,
   "hermes_cli/kanban_diagnostics.py": 13,
   "hermes_cli/kanban_specify.py": 1,
-  "hermes_cli/main.py": 208,
+  "hermes_cli/main.py": 207,
   "hermes_cli/managed_scope.py": 6,
   "hermes_cli/managed_uv.py": 24,
   "hermes_cli/mcp_catalog.py": 15,
@@ -201,11 +201,11 @@
   "hermes_cli/moa_config.py": 4,
   "hermes_cli/model_catalog.py": 12,
   "hermes_cli/model_setup_flows.py": 24,
-  "hermes_cli/model_switch.py": 19,
+  "hermes_cli/model_switch.py": 18,
   "hermes_cli/nous_account.py": 19,
   "hermes_cli/nous_auth_keepalive.py": 7,
   "hermes_cli/nous_billing.py": 7,
-  "hermes_cli/nous_subscription.py": 18,
+  "hermes_cli/nous_subscription.py": 17,
   "hermes_cli/onepassword_secrets_cli.py": 9,
   "hermes_cli/oneshot.py": 6,
   "hermes_cli/pairing.py": 2,
@@ -237,7 +237,7 @@
   "hermes_cli/service_manager.py": 16,
   "hermes_cli/session_export.py": 11,
   "hermes_cli/session_export_html.py": 4,
-  "hermes_cli/session_export_md.py": 19,
+  "hermes_cli/session_export_md.py": 18,
   "hermes_cli/session_filters.py": 5,
   "hermes_cli/session_listing.py": 1,
   "hermes_cli/session_recap.py": 1,
@@ -295,7 +295,7 @@
   "hermes_cli/web_git.py": 1,
   "hermes_cli/webhook.py": 10,
   "hermes_cli/win_pty_bridge.py": 2,
-  "hermes_cli/windows_ssh_runtime.py": 26,
+  "hermes_cli/windows_ssh_runtime.py": 25,
   "hermes_state.py": 1,
   "tools/ansi_strip.py": 1,
   "tools/approval.py": 20,
@@ -326,7 +326,7 @@
   "tools/environments/base.py": 28,
   "tools/environments/docker.py": 24,
   "tools/environments/file_sync.py": 1,
-  "tools/environments/local.py": 32,
+  "tools/environments/local.py": 31,
   "tools/environments/managed_modal.py": 1,
   "tools/environments/modal.py": 13,
   "tools/feishu_drive_tool.py": 1,
@@ -354,8 +354,7 @@
   "tools/registry.py": 15,
   "tools/send_message_tool.py": 2,
   "tools/session_search_tool.py": 5,
-  "tools/skill_manager_tool.py": 22,
-  "tools/skill_provenance.py": 4,
+  "tools/skill_manager_tool.py": 18,
   "tools/skill_usage.py": 5,
   "tools/skills_guard.py": 1,
   "tools/skills_hub.py": 6,
@@ -600,14 +599,6 @@
   },
   {
    "module": "hermes_cli/main.py",
-   "py": "_command_has_dedicated_mcp_startup",
-   "c": "main_u_command_has_dedicated_mcp_startup",
-   "file": "src/cli/port_main_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/main.py",
    "py": "_count_commits_between",
    "c": "main_u_count_commits_between",
    "file": "src/cli/port_main_wrappers.c",
@@ -688,14 +679,6 @@
   },
   {
    "module": "hermes_cli/gateway.py",
-   "py": "_launchctl_bootstrap",
-   "c": "cgw_u_launchctl_bootstrap",
-   "file": "src/cli/port_cli_gateway_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/gateway.py",
    "py": "_launchctl_label_registered",
    "c": "cgw_u_launchctl_label_registered",
    "file": "src/cli/port_cli_gateway_wrappers.c",
@@ -730,14 +713,6 @@
    "module": "hermes_cli/gateway.py",
    "py": "_refuse_temp_home_service_write",
    "c": "cgw_u_refuse_temp_home_service_write",
-   "file": "src/cli/port_cli_gateway_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/gateway.py",
-   "py": "_retry_launchctl_bootstrap_until_registered",
-   "c": "cgw_u_retry_launchctl_bootstrap_until_registered",
    "file": "src/cli/port_cli_gateway_wrappers.c",
    "cat": "Bt",
    "candidates": []
@@ -791,14 +766,6 @@
    "candidates": []
   },
   {
-   "module": "tools/environments/local.py",
-   "py": "_resolve_hermes_bin_dir",
-   "c": "envl_u_resolve_hermes_bin_dir",
-   "file": "src/tools/port_env_local_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
    "module": "gateway/platforms/weixin.py",
    "py": "_get_config",
    "c": "wx_u_get_config",
@@ -815,14 +782,6 @@
    "candidates": []
   },
   {
-   "module": "agent/memory_manager.py",
-   "py": "on_memory_write",
-   "c": "mm_on_memory_write",
-   "file": "src/agent/port_memory_manager_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
    "module": "tools/environments/base.py",
    "py": "set_activity_callback",
    "c": "envb_set_activity_callback",
@@ -831,50 +790,10 @@
    "candidates": []
   },
   {
-   "module": "hermes_cli/windows_ssh_runtime.py",
-   "py": "_log_path",
-   "c": "wssr_u_log_path",
-   "file": "src/cli/port_windows_ssh_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "tools/skill_manager_tool.py",
-   "py": "_background_review_read_before_write_guard",
-   "c": "smt_u_background_review_read_before_write_guard",
-   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "_check_hermes_model_warning",
-   "c": "msw_u_check_hermes_model_warning",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
    "module": "hermes_cli/model_switch.py",
    "py": "format_model_for_display",
    "c": "msw_format_model_for_display",
    "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export_md.py",
-   "py": "_render_content",
-   "c": "sexmd_u_render_content",
-   "file": "src/cli/port_session_export_md_wrappers.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/nous_subscription.py",
-   "py": "_resolve_browser_feature_state",
-   "c": "nsub_u_resolve_browser_feature_state",
-   "file": "src/cli/port_nous_sub_wrappers.c",
    "cat": "Bt",
    "candidates": []
   },
@@ -1515,14 +1434,6 @@
    "py": "_reset_cache_for_tests",
    "c": "cli_tools_env_probe__reset_cache_for_tests",
    "file": "src/cli/port_tools_env_probe.c",
-   "cat": "Bt",
-   "candidates": []
-  },
-  {
-   "module": "tools/skill_provenance.py",
-   "py": "is_background_review",
-   "c": "tools_skill_provenance_is_background_review",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
    "cat": "Bt",
    "candidates": []
   },
@@ -2856,6 +2767,14 @@
   },
   {
    "module": "hermes_cli/gateway.py",
+   "py": "_retry_launchctl_bootstrap_until_registered",
+   "c": "cgw_u_retry_launchctl_bootstrap_until_registered",
+   "file": "src/cli/port_cli_gateway_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/gateway.py",
    "py": "_set_platform_unauthorized_dm_behavior",
    "c": "cgw_u_set_platform_unauthorized_dm_behavior",
    "file": "src/cli/port_cli_gateway_wrappers.c",
@@ -4063,6 +3982,102 @@
    "candidates": []
   },
   {
+   "module": "agent/moa_loop.py",
+   "py": "_preset_temperature",
+   "c": "moa_u_preset_temperature",
+   "file": "src/agent/port_moa_loop_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/moa_loop.py",
+   "py": "_record_late_reference_accounting",
+   "c": "moa_u_record_late_reference_accounting",
+   "file": "src/agent/port_moa_loop_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/moa_loop.py",
+   "py": "_redact_trace_accounting",
+   "c": "moa_u_redact_trace_accounting",
+   "file": "src/agent/port_moa_loop_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/moa_loop.py",
+   "py": "_render_tool_calls",
+   "c": "moa_u_render_tool_calls",
+   "file": "src/agent/port_moa_loop_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/moa_loop.py",
+   "py": "_slot_label",
+   "c": "moa_u_slot_label",
+   "file": "src/agent/port_moa_loop_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "agent/moa_loop.py",
+   "py": "build_moa_facade",
+   "c": "moa_build_moa_facade",
+   "file": "src/agent/port_moa_loop_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "gateway/platforms/weixin.py",
+   "py": "_is_dm_intake_allowed",
+   "c": "wx_u_is_dm_intake_allowed",
+   "file": "src/gateway/port_weixin_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "gateway/platforms/weixin.py",
+   "py": "_make_ssl_connector",
+   "c": "wx_u_make_ssl_connector",
+   "file": "src/gateway/port_weixin_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "gateway/platforms/weixin.py",
+   "py": "_outbound_media_builder",
+   "c": "wx_u_outbound_media_builder",
+   "file": "src/gateway/port_weixin_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "gateway/platforms/weixin.py",
+   "py": "_reset_rate_limit_circuit",
+   "c": "wx_u_reset_rate_limit_circuit",
+   "file": "src/gateway/port_weixin_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "gateway/platforms/weixin.py",
+   "py": "load_weixin_account",
+   "c": "wx_load_weixin_account",
+   "file": "src/gateway/port_weixin_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "gateway/platforms/weixin.py",
+   "py": "save_weixin_account",
+   "c": "wx_save_weixin_account",
+   "file": "src/gateway/port_weixin_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
    "module": "tools/environments/local.py",
    "py": "_append_missing_sane_path_entries",
    "c": "envl_u_append_missing_sane_path_entries",
@@ -4179,102 +4194,6 @@
    "py": "get_temp_dir",
    "c": "envl_get_temp_dir",
    "file": "src/tools/port_env_local_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "_preset_temperature",
-   "c": "moa_u_preset_temperature",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "_record_late_reference_accounting",
-   "c": "moa_u_record_late_reference_accounting",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "_redact_trace_accounting",
-   "c": "moa_u_redact_trace_accounting",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "_render_tool_calls",
-   "c": "moa_u_render_tool_calls",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "_slot_label",
-   "c": "moa_u_slot_label",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "agent/moa_loop.py",
-   "py": "build_moa_facade",
-   "c": "moa_build_moa_facade",
-   "file": "src/agent/port_moa_loop_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "gateway/platforms/weixin.py",
-   "py": "_is_dm_intake_allowed",
-   "c": "wx_u_is_dm_intake_allowed",
-   "file": "src/gateway/port_weixin_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "gateway/platforms/weixin.py",
-   "py": "_make_ssl_connector",
-   "c": "wx_u_make_ssl_connector",
-   "file": "src/gateway/port_weixin_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "gateway/platforms/weixin.py",
-   "py": "_outbound_media_builder",
-   "c": "wx_u_outbound_media_builder",
-   "file": "src/gateway/port_weixin_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "gateway/platforms/weixin.py",
-   "py": "_reset_rate_limit_circuit",
-   "c": "wx_u_reset_rate_limit_circuit",
-   "file": "src/gateway/port_weixin_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "gateway/platforms/weixin.py",
-   "py": "load_weixin_account",
-   "c": "wx_load_weixin_account",
-   "file": "src/gateway/port_weixin_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "gateway/platforms/weixin.py",
-   "py": "save_weixin_account",
-   "c": "wx_save_weixin_account",
-   "file": "src/gateway/port_weixin_wrappers.c",
    "cat": "Bx",
    "candidates": []
   },
@@ -4951,70 +4870,6 @@
    "candidates": []
   },
   {
-   "module": "tools/skill_manager_tool.py",
-   "py": "_add_description_prompt_preview",
-   "c": "smt_u_add_description_prompt_preview",
-   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/skill_manager_tool.py",
-   "py": "_apply_skill_write_gate",
-   "c": "smt_u_apply_skill_write_gate",
-   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/skill_manager_tool.py",
-   "py": "_atomic_write_text",
-   "c": "smt_u_atomic_write_text",
-   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/skill_manager_tool.py",
-   "py": "_background_review_has_read",
-   "c": "smt_u_background_review_has_read",
-   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/skill_manager_tool.py",
-   "py": "_background_review_write_guard",
-   "c": "smt_u_background_review_write_guard",
-   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/skill_manager_tool.py",
-   "py": "_reset_background_review_read_marks",
-   "c": "smt_u_reset_background_review_read_marks",
-   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/skill_manager_tool.py",
-   "py": "_resolve_skill_dir",
-   "c": "smt_u_resolve_skill_dir",
-   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/skill_manager_tool.py",
-   "py": "mark_background_review_skill_read",
-   "c": "smt_mark_background_review_skill_read",
-   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
    "module": "agent/skill_utils.py",
    "py": "_detect_environment",
    "c": "sku_u_detect_environment",
@@ -5279,78 +5134,6 @@
    "candidates": []
   },
   {
-   "module": "hermes_cli/model_switch.py",
-   "py": "_credential_pool_is_usable",
-   "c": "msw_u_credential_pool_is_usable",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "_extra_headers_from_config",
-   "c": "msw_u_extra_headers_from_config",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "_resolve_alias_fallback",
-   "c": "msw_u_resolve_alias_fallback",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "_resolve_named_custom_model_id",
-   "c": "msw_u_resolve_named_custom_model_id",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "_save_discovered_models_to_config",
-   "c": "msw_u_save_discovered_models_to_config",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "get_authenticated_provider_slugs",
-   "c": "msw_get_authenticated_provider_slugs",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "is_nous_hermes_non_agentic",
-   "c": "msw_is_nous_hermes_non_agentic",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "parse_model_flags_detailed",
-   "c": "msw_parse_model_flags_detailed",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "resolve_display_context_length",
-   "c": "msw_resolve_display_context_length",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
    "module": "hermes_cli/nous_account.py",
    "py": "_fetch_nous_account_info",
    "c": "nous_u_fetch_nous_account_info",
@@ -5439,6 +5222,118 @@
    "candidates": []
   },
   {
+   "module": "hermes_cli/uninstall.py",
+   "py": "_discover_named_profiles",
+   "c": "uninst_u_discover_named_profiles",
+   "file": "src/cli/port_uninstall_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/uninstall.py",
+   "py": "_is_default_hermes_home",
+   "c": "uninst_u_is_default_hermes_home",
+   "file": "src/cli/port_uninstall_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/uninstall.py",
+   "py": "_print_uninstall_dry_run",
+   "c": "uninst_u_print_uninstall_dry_run",
+   "file": "src/cli/port_uninstall_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/uninstall.py",
+   "py": "remove_path_from_shell_configs",
+   "c": "uninst_remove_path_from_shell_configs",
+   "file": "src/cli/port_uninstall_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/uninstall.py",
+   "py": "remove_path_from_windows_registry",
+   "c": "uninst_remove_path_from_windows_registry",
+   "file": "src/cli/port_uninstall_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/model_switch.py",
+   "py": "_credential_pool_is_usable",
+   "c": "msw_u_credential_pool_is_usable",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/model_switch.py",
+   "py": "_extra_headers_from_config",
+   "c": "msw_u_extra_headers_from_config",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/model_switch.py",
+   "py": "_resolve_alias_fallback",
+   "c": "msw_u_resolve_alias_fallback",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/model_switch.py",
+   "py": "_resolve_named_custom_model_id",
+   "c": "msw_u_resolve_named_custom_model_id",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/model_switch.py",
+   "py": "_save_discovered_models_to_config",
+   "c": "msw_u_save_discovered_models_to_config",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/model_switch.py",
+   "py": "get_authenticated_provider_slugs",
+   "c": "msw_get_authenticated_provider_slugs",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/model_switch.py",
+   "py": "is_nous_hermes_non_agentic",
+   "c": "msw_is_nous_hermes_non_agentic",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/model_switch.py",
+   "py": "parse_model_flags_detailed",
+   "c": "msw_parse_model_flags_detailed",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/model_switch.py",
+   "py": "resolve_display_context_length",
+   "c": "msw_resolve_display_context_length",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
    "module": "hermes_cli/session_export_md.py",
    "py": "_export_body_without_hash",
    "c": "sexmd_u_export_body_without_hash",
@@ -5503,42 +5398,106 @@
    "candidates": []
   },
   {
-   "module": "hermes_cli/uninstall.py",
-   "py": "_discover_named_profiles",
-   "c": "uninst_u_discover_named_profiles",
-   "file": "src/cli/port_uninstall_wrappers.c",
+   "module": "tools/skill_manager_tool.py",
+   "py": "_add_description_prompt_preview",
+   "c": "smt_u_add_description_prompt_preview",
+   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
    "cat": "Bx",
    "candidates": []
   },
   {
-   "module": "hermes_cli/uninstall.py",
-   "py": "_is_default_hermes_home",
-   "c": "uninst_u_is_default_hermes_home",
-   "file": "src/cli/port_uninstall_wrappers.c",
+   "module": "tools/skill_manager_tool.py",
+   "py": "_apply_skill_write_gate",
+   "c": "smt_u_apply_skill_write_gate",
+   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
    "cat": "Bx",
    "candidates": []
   },
   {
-   "module": "hermes_cli/uninstall.py",
-   "py": "_print_uninstall_dry_run",
-   "c": "uninst_u_print_uninstall_dry_run",
-   "file": "src/cli/port_uninstall_wrappers.c",
+   "module": "tools/skill_manager_tool.py",
+   "py": "_atomic_write_text",
+   "c": "smt_u_atomic_write_text",
+   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
    "cat": "Bx",
    "candidates": []
   },
   {
-   "module": "hermes_cli/uninstall.py",
-   "py": "remove_path_from_shell_configs",
-   "c": "uninst_remove_path_from_shell_configs",
-   "file": "src/cli/port_uninstall_wrappers.c",
+   "module": "tools/skill_manager_tool.py",
+   "py": "_background_review_write_guard",
+   "c": "smt_u_background_review_write_guard",
+   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
    "cat": "Bx",
    "candidates": []
   },
   {
-   "module": "hermes_cli/uninstall.py",
-   "py": "remove_path_from_windows_registry",
-   "c": "uninst_remove_path_from_windows_registry",
-   "file": "src/cli/port_uninstall_wrappers.c",
+   "module": "tools/skill_manager_tool.py",
+   "py": "_resolve_skill_dir",
+   "c": "smt_u_resolve_skill_dir",
+   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/debug.py",
+   "py": "_primary_log_path",
+   "c": "hermes_cli_debug_u_primary_log_path",
+   "file": "src/cli/port_cli_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/debug.py",
+   "py": "_resolve_log_path",
+   "c": "hermes_cli_debug_u_resolve_log_path",
+   "file": "src/cli/port_cli_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/debug.py",
+   "py": "_schedule_auto_delete",
+   "c": "hermes_cli_debug_u_schedule_auto_delete",
+   "file": "src/cli/port_cli_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/debug.py",
+   "py": "build_nous_bundle",
+   "c": "hermes_cli_debug_build_nous_bundle",
+   "file": "src/cli/port_cli_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/debug.py",
+   "py": "upload_to_pastebin",
+   "c": "hermes_cli_debug_upload_to_pastebin",
+   "file": "src/cli/port_cli_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/mcp_config.py",
+   "py": "_get_mcp_servers",
+   "c": "hermes_cli_mcp_config_u_get_mcp_servers",
+   "file": "src/cli/port_cli_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/mcp_config.py",
+   "py": "_parse_env_assignments",
+   "c": "hermes_cli_mcp_config_u_parse_env_assignments",
+   "file": "src/cli/port_cli_remaining_wrappers.c",
+   "cat": "Bx",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/mcp_config.py",
+   "py": "_resolve_mcp_server_config",
+   "c": "hermes_cli_mcp_config_u_resolve_mcp_server_config",
+   "file": "src/cli/port_cli_remaining_wrappers.c",
    "cat": "Bx",
    "candidates": []
   },
@@ -5611,70 +5570,6 @@
    "py": "get_gateway_eligible_tools",
    "c": "nsub_get_gateway_eligible_tools",
    "file": "src/cli/port_nous_sub_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/debug.py",
-   "py": "_primary_log_path",
-   "c": "hermes_cli_debug_u_primary_log_path",
-   "file": "src/cli/port_cli_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/debug.py",
-   "py": "_resolve_log_path",
-   "c": "hermes_cli_debug_u_resolve_log_path",
-   "file": "src/cli/port_cli_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/debug.py",
-   "py": "_schedule_auto_delete",
-   "c": "hermes_cli_debug_u_schedule_auto_delete",
-   "file": "src/cli/port_cli_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/debug.py",
-   "py": "build_nous_bundle",
-   "c": "hermes_cli_debug_build_nous_bundle",
-   "file": "src/cli/port_cli_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/debug.py",
-   "py": "upload_to_pastebin",
-   "c": "hermes_cli_debug_upload_to_pastebin",
-   "file": "src/cli/port_cli_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/mcp_config.py",
-   "py": "_get_mcp_servers",
-   "c": "hermes_cli_mcp_config_u_get_mcp_servers",
-   "file": "src/cli/port_cli_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/mcp_config.py",
-   "py": "_parse_env_assignments",
-   "c": "hermes_cli_mcp_config_u_parse_env_assignments",
-   "file": "src/cli/port_cli_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/mcp_config.py",
-   "py": "_resolve_mcp_server_config",
-   "c": "hermes_cli_mcp_config_u_resolve_mcp_server_config",
-   "file": "src/cli/port_cli_remaining_wrappers.c",
    "cat": "Bx",
    "candidates": []
   },
@@ -9098,30 +8993,6 @@
    "module": "tools/computer_use/doctor.py",
    "py": "_sanitized_cua_env",
    "c": "tools_computer_use_doctor_u_sanitized_cua_env",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/skill_provenance.py",
-   "py": "get_current_write_origin",
-   "c": "tools_skill_provenance_get_current_write_origin",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/skill_provenance.py",
-   "py": "reset_current_write_origin",
-   "c": "tools_skill_provenance_reset_current_write_origin",
-   "file": "src/tools/port_tools_remaining_wrappers.c",
-   "cat": "Bx",
-   "candidates": []
-  },
-  {
-   "module": "tools/skill_provenance.py",
-   "py": "set_current_write_origin",
-   "c": "tools_skill_provenance_set_current_write_origin",
    "file": "src/tools/port_tools_remaining_wrappers.c",
    "cat": "Bx",
    "candidates": []
@@ -14559,134 +14430,6 @@
    "candidates": []
   },
   {
-   "module": "tools/environments/local.py",
-   "py": "_bash_starts",
-   "c": "envl_u_bash_starts",
-   "file": "src/tools/port_env_local_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/local.py",
-   "py": "_cwd_usable",
-   "c": "envl_u_cwd_usable",
-   "file": "src/tools/port_env_local_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/local.py",
-   "py": "_find_bash",
-   "c": "envl_u_find_bash",
-   "file": "src/tools/port_env_local_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/local.py",
-   "py": "_find_shell",
-   "c": "envl_u_find_shell",
-   "file": "src/tools/port_env_local_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/local.py",
-   "py": "_git_bash_aslr_help",
-   "c": "envl_u_git_bash_aslr_help",
-   "file": "src/tools/port_env_local_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/local.py",
-   "py": "_git_bash_bin_dirs",
-   "c": "envl_u_git_bash_bin_dirs",
-   "file": "src/tools/port_env_local_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/local.py",
-   "py": "_inject_context_hermes_home",
-   "c": "envl_u_inject_context_hermes_home",
-   "file": "src/tools/port_env_local_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/local.py",
-   "py": "_inject_session_context_env",
-   "c": "envl_u_inject_session_context_env",
-   "file": "src/tools/port_env_local_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/local.py",
-   "py": "_looks_like_msys_spawn_failure",
-   "c": "envl_u_looks_like_msys_spawn_failure",
-   "file": "src/tools/port_env_local_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/local.py",
-   "py": "_mandatory_aslr_enabled",
-   "c": "envl_u_mandatory_aslr_enabled",
-   "file": "src/tools/port_env_local_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/local.py",
-   "py": "_prepend_git_bash_dirs",
-   "c": "envl_u_prepend_git_bash_dirs",
-   "file": "src/tools/port_env_local_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/local.py",
-   "py": "_prepend_hermes_bin_dir",
-   "c": "envl_u_prepend_hermes_bin_dir",
-   "file": "src/tools/port_env_local_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/local.py",
-   "py": "_prepend_shell_init",
-   "c": "envl_u_prepend_shell_init",
-   "file": "src/tools/port_env_local_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/local.py",
-   "py": "_scrub_delegated_child_kanban_env",
-   "c": "envl_u_scrub_delegated_child_kanban_env",
-   "file": "src/tools/port_env_local_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/local.py",
-   "py": "_update_cwd",
-   "c": "envl_u_update_cwd",
-   "file": "src/tools/port_env_local_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/environments/local.py",
-   "py": "hermes_subprocess_env",
-   "c": "envl_hermes_subprocess_env",
-   "file": "src/tools/port_env_local_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
    "module": "agent/moa_loop.py",
    "py": "_aggregator_reasoning_config",
    "c": "moa_u_aggregator_reasoning_config",
@@ -15067,6 +14810,134 @@
    "py": "send_weixin_direct",
    "c": "wx_send_weixin_direct",
    "file": "src/gateway/port_weixin_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/local.py",
+   "py": "_bash_starts",
+   "c": "envl_u_bash_starts",
+   "file": "src/tools/port_env_local_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/local.py",
+   "py": "_cwd_usable",
+   "c": "envl_u_cwd_usable",
+   "file": "src/tools/port_env_local_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/local.py",
+   "py": "_find_bash",
+   "c": "envl_u_find_bash",
+   "file": "src/tools/port_env_local_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/local.py",
+   "py": "_find_shell",
+   "c": "envl_u_find_shell",
+   "file": "src/tools/port_env_local_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/local.py",
+   "py": "_git_bash_aslr_help",
+   "c": "envl_u_git_bash_aslr_help",
+   "file": "src/tools/port_env_local_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/local.py",
+   "py": "_git_bash_bin_dirs",
+   "c": "envl_u_git_bash_bin_dirs",
+   "file": "src/tools/port_env_local_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/local.py",
+   "py": "_inject_context_hermes_home",
+   "c": "envl_u_inject_context_hermes_home",
+   "file": "src/tools/port_env_local_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/local.py",
+   "py": "_inject_session_context_env",
+   "c": "envl_u_inject_session_context_env",
+   "file": "src/tools/port_env_local_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/local.py",
+   "py": "_looks_like_msys_spawn_failure",
+   "c": "envl_u_looks_like_msys_spawn_failure",
+   "file": "src/tools/port_env_local_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/local.py",
+   "py": "_mandatory_aslr_enabled",
+   "c": "envl_u_mandatory_aslr_enabled",
+   "file": "src/tools/port_env_local_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/local.py",
+   "py": "_prepend_git_bash_dirs",
+   "c": "envl_u_prepend_git_bash_dirs",
+   "file": "src/tools/port_env_local_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/local.py",
+   "py": "_prepend_hermes_bin_dir",
+   "c": "envl_u_prepend_hermes_bin_dir",
+   "file": "src/tools/port_env_local_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/local.py",
+   "py": "_prepend_shell_init",
+   "c": "envl_u_prepend_shell_init",
+   "file": "src/tools/port_env_local_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/local.py",
+   "py": "_scrub_delegated_child_kanban_env",
+   "c": "envl_u_scrub_delegated_child_kanban_env",
+   "file": "src/tools/port_env_local_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/local.py",
+   "py": "_update_cwd",
+   "c": "envl_u_update_cwd",
+   "file": "src/tools/port_env_local_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/environments/local.py",
+   "py": "hermes_subprocess_env",
+   "c": "envl_hermes_subprocess_env",
+   "file": "src/tools/port_env_local_wrappers.c",
    "cat": "C",
    "candidates": []
   },
@@ -16815,110 +16686,6 @@
    "candidates": []
   },
   {
-   "module": "tools/skill_manager_tool.py",
-   "py": "_background_review_preflight",
-   "c": "smt_u_background_review_preflight",
-   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/skill_manager_tool.py",
-   "py": "_create_skill",
-   "c": "smt_u_create_skill",
-   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/skill_manager_tool.py",
-   "py": "_curator_consolidation_delete_guard",
-   "c": "smt_u_curator_consolidation_delete_guard",
-   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/skill_manager_tool.py",
-   "py": "_delete_skill",
-   "c": "smt_u_delete_skill",
-   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/skill_manager_tool.py",
-   "py": "_edit_skill",
-   "c": "smt_u_edit_skill",
-   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/skill_manager_tool.py",
-   "py": "_find_skill_in_other_profiles",
-   "c": "smt_u_find_skill_in_other_profiles",
-   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/skill_manager_tool.py",
-   "py": "_guard_agent_created_enabled",
-   "c": "smt_u_guard_agent_created_enabled",
-   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/skill_manager_tool.py",
-   "py": "_patch_skill",
-   "c": "smt_u_patch_skill",
-   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/skill_manager_tool.py",
-   "py": "_pinned_guard",
-   "c": "smt_u_pinned_guard",
-   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/skill_manager_tool.py",
-   "py": "_remove_file",
-   "c": "smt_u_remove_file",
-   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/skill_manager_tool.py",
-   "py": "_security_scan_skill",
-   "c": "smt_u_security_scan_skill",
-   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/skill_manager_tool.py",
-   "py": "_skill_not_found_error",
-   "c": "smt_u_skill_not_found_error",
-   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "tools/skill_manager_tool.py",
-   "py": "apply_skill_pending",
-   "c": "smt_apply_skill_pending",
-   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
    "module": "agent/skill_utils.py",
    "py": "_external_dirs_cache_clear",
    "c": "sku_u_external_dirs_cache_clear",
@@ -17439,70 +17206,6 @@
    "candidates": []
   },
   {
-   "module": "hermes_cli/model_switch.py",
-   "py": "_bare_custom_provider_def",
-   "c": "msw_u_bare_custom_provider_def",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "_configured_provider_matches",
-   "c": "msw_u_configured_provider_matches",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "_declared_model_ids",
-   "c": "msw_u_declared_model_ids",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "_ensure_direct_aliases",
-   "c": "msw_u_ensure_direct_aliases",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "_load_direct_aliases",
-   "c": "msw_u_load_direct_aliases",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "_model_sort_key",
-   "c": "msw_u_model_sort_key",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "_prepend_moa_picker_provider",
-   "c": "msw_u_prepend_moa_picker_provider",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/model_switch.py",
-   "py": "prewarm_picker_cache_async",
-   "c": "msw_prewarm_picker_cache_async",
-   "file": "src/cli/port_model_switch_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
    "module": "hermes_cli/nous_account.py",
    "py": "_cache_key",
    "c": "nous_u_cache_key",
@@ -17563,86 +17266,6 @@
    "py": "nous_portal_topup_url",
    "c": "nous_nous_portal_topup_url",
    "file": "src/cli/port_nous_account_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export_md.py",
-   "py": "_body_for_digest",
-   "c": "sexmd_u_body_for_digest",
-   "file": "src/cli/port_session_export_md_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export_md.py",
-   "py": "_frontmatter_line",
-   "c": "sexmd_u_frontmatter_line",
-   "file": "src/cli/port_session_export_md_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export_md.py",
-   "py": "_frontmatter_value",
-   "c": "sexmd_u_frontmatter_value",
-   "file": "src/cli/port_session_export_md_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export_md.py",
-   "py": "_message_heading",
-   "c": "sexmd_u_message_heading",
-   "file": "src/cli/port_session_export_md_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export_md.py",
-   "py": "_segments",
-   "c": "sexmd_u_segments",
-   "file": "src/cli/port_session_export_md_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export_md.py",
-   "py": "_session_id",
-   "c": "sexmd_u_session_id",
-   "file": "src/cli/port_session_export_md_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export_md.py",
-   "py": "append_manifest_entry",
-   "c": "sexmd_append_manifest_entry",
-   "file": "src/cli/port_session_export_md_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export_md.py",
-   "py": "file_sha256",
-   "c": "sexmd_file_sha256",
-   "file": "src/cli/port_session_export_md_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export_md.py",
-   "py": "redact_session_data",
-   "c": "sexmd_redact_session_data",
-   "file": "src/cli/port_session_export_md_wrappers.c",
-   "cat": "C",
-   "candidates": []
-  },
-  {
-   "module": "hermes_cli/session_export_md.py",
-   "py": "verify_export_file",
-   "c": "sexmd_verify_export_file",
-   "file": "src/cli/port_session_export_md_wrappers.c",
    "cat": "C",
    "candidates": []
   },
@@ -17759,66 +17382,250 @@
    "candidates": []
   },
   {
-   "module": "hermes_cli/nous_subscription.py",
-   "py": "_local_browser_runnable",
-   "c": "nsub_u_local_browser_runnable",
-   "file": "src/cli/port_nous_sub_wrappers.c",
+   "module": "hermes_cli/model_switch.py",
+   "py": "_bare_custom_provider_def",
+   "c": "msw_u_bare_custom_provider_def",
+   "file": "src/cli/port_model_switch_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "hermes_cli/nous_subscription.py",
-   "py": "_local_stt_backend_available",
-   "c": "nsub_u_local_stt_backend_available",
-   "file": "src/cli/port_nous_sub_wrappers.c",
+   "module": "hermes_cli/model_switch.py",
+   "py": "_configured_provider_matches",
+   "c": "msw_u_configured_provider_matches",
+   "file": "src/cli/port_model_switch_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "hermes_cli/nous_subscription.py",
-   "py": "_run_nous_portal_login_only",
-   "c": "nsub_u_run_nous_portal_login_only",
-   "file": "src/cli/port_nous_sub_wrappers.c",
+   "module": "hermes_cli/model_switch.py",
+   "py": "_declared_model_ids",
+   "c": "msw_u_declared_model_ids",
+   "file": "src/cli/port_model_switch_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "hermes_cli/nous_subscription.py",
-   "py": "_uses_gateway",
-   "c": "nsub_u_uses_gateway",
-   "file": "src/cli/port_nous_sub_wrappers.c",
+   "module": "hermes_cli/model_switch.py",
+   "py": "_ensure_direct_aliases",
+   "c": "msw_u_ensure_direct_aliases",
+   "file": "src/cli/port_model_switch_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "hermes_cli/nous_subscription.py",
-   "py": "ensure_nous_portal_access",
-   "c": "nsub_ensure_nous_portal_access",
-   "file": "src/cli/port_nous_sub_wrappers.c",
+   "module": "hermes_cli/model_switch.py",
+   "py": "_load_direct_aliases",
+   "c": "msw_u_load_direct_aliases",
+   "file": "src/cli/port_model_switch_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "hermes_cli/nous_subscription.py",
-   "py": "image_gen",
-   "c": "nsub_image_gen",
-   "file": "src/cli/port_nous_sub_wrappers.c",
+   "module": "hermes_cli/model_switch.py",
+   "py": "_model_sort_key",
+   "c": "msw_u_model_sort_key",
+   "file": "src/cli/port_model_switch_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "hermes_cli/nous_subscription.py",
-   "py": "prompt_enable_tool_gateway",
-   "c": "nsub_prompt_enable_tool_gateway",
-   "file": "src/cli/port_nous_sub_wrappers.c",
+   "module": "hermes_cli/model_switch.py",
+   "py": "_prepend_moa_picker_provider",
+   "c": "msw_u_prepend_moa_picker_provider",
+   "file": "src/cli/port_model_switch_wrappers.c",
    "cat": "C",
    "candidates": []
   },
   {
-   "module": "hermes_cli/nous_subscription.py",
-   "py": "video_gen",
-   "c": "nsub_video_gen",
-   "file": "src/cli/port_nous_sub_wrappers.c",
+   "module": "hermes_cli/model_switch.py",
+   "py": "prewarm_picker_cache_async",
+   "c": "msw_prewarm_picker_cache_async",
+   "file": "src/cli/port_model_switch_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/session_export_md.py",
+   "py": "_body_for_digest",
+   "c": "sexmd_u_body_for_digest",
+   "file": "src/cli/port_session_export_md_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/session_export_md.py",
+   "py": "_frontmatter_line",
+   "c": "sexmd_u_frontmatter_line",
+   "file": "src/cli/port_session_export_md_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/session_export_md.py",
+   "py": "_frontmatter_value",
+   "c": "sexmd_u_frontmatter_value",
+   "file": "src/cli/port_session_export_md_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/session_export_md.py",
+   "py": "_message_heading",
+   "c": "sexmd_u_message_heading",
+   "file": "src/cli/port_session_export_md_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/session_export_md.py",
+   "py": "_segments",
+   "c": "sexmd_u_segments",
+   "file": "src/cli/port_session_export_md_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/session_export_md.py",
+   "py": "_session_id",
+   "c": "sexmd_u_session_id",
+   "file": "src/cli/port_session_export_md_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/session_export_md.py",
+   "py": "append_manifest_entry",
+   "c": "sexmd_append_manifest_entry",
+   "file": "src/cli/port_session_export_md_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/session_export_md.py",
+   "py": "file_sha256",
+   "c": "sexmd_file_sha256",
+   "file": "src/cli/port_session_export_md_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/session_export_md.py",
+   "py": "redact_session_data",
+   "c": "sexmd_redact_session_data",
+   "file": "src/cli/port_session_export_md_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/session_export_md.py",
+   "py": "verify_export_file",
+   "c": "sexmd_verify_export_file",
+   "file": "src/cli/port_session_export_md_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/skill_manager_tool.py",
+   "py": "_background_review_preflight",
+   "c": "smt_u_background_review_preflight",
+   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/skill_manager_tool.py",
+   "py": "_create_skill",
+   "c": "smt_u_create_skill",
+   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/skill_manager_tool.py",
+   "py": "_curator_consolidation_delete_guard",
+   "c": "smt_u_curator_consolidation_delete_guard",
+   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/skill_manager_tool.py",
+   "py": "_delete_skill",
+   "c": "smt_u_delete_skill",
+   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/skill_manager_tool.py",
+   "py": "_edit_skill",
+   "c": "smt_u_edit_skill",
+   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/skill_manager_tool.py",
+   "py": "_find_skill_in_other_profiles",
+   "c": "smt_u_find_skill_in_other_profiles",
+   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/skill_manager_tool.py",
+   "py": "_guard_agent_created_enabled",
+   "c": "smt_u_guard_agent_created_enabled",
+   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/skill_manager_tool.py",
+   "py": "_patch_skill",
+   "c": "smt_u_patch_skill",
+   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/skill_manager_tool.py",
+   "py": "_pinned_guard",
+   "c": "smt_u_pinned_guard",
+   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/skill_manager_tool.py",
+   "py": "_remove_file",
+   "c": "smt_u_remove_file",
+   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/skill_manager_tool.py",
+   "py": "_security_scan_skill",
+   "c": "smt_u_security_scan_skill",
+   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/skill_manager_tool.py",
+   "py": "_skill_not_found_error",
+   "c": "smt_u_skill_not_found_error",
+   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "tools/skill_manager_tool.py",
+   "py": "apply_skill_pending",
+   "c": "smt_apply_skill_pending",
+   "file": "src/tools/port_skill_mgr_tool_wrappers.c",
    "cat": "C",
    "candidates": []
   },
@@ -18011,6 +17818,70 @@
    "py": "cmd_mcp_reauth",
    "c": "hermes_cli_mcp_config_cmd_mcp_reauth",
    "file": "src/cli/port_cli_remaining_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/nous_subscription.py",
+   "py": "_local_browser_runnable",
+   "c": "nsub_u_local_browser_runnable",
+   "file": "src/cli/port_nous_sub_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/nous_subscription.py",
+   "py": "_local_stt_backend_available",
+   "c": "nsub_u_local_stt_backend_available",
+   "file": "src/cli/port_nous_sub_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/nous_subscription.py",
+   "py": "_run_nous_portal_login_only",
+   "c": "nsub_u_run_nous_portal_login_only",
+   "file": "src/cli/port_nous_sub_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/nous_subscription.py",
+   "py": "_uses_gateway",
+   "c": "nsub_u_uses_gateway",
+   "file": "src/cli/port_nous_sub_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/nous_subscription.py",
+   "py": "ensure_nous_portal_access",
+   "c": "nsub_ensure_nous_portal_access",
+   "file": "src/cli/port_nous_sub_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/nous_subscription.py",
+   "py": "image_gen",
+   "c": "nsub_image_gen",
+   "file": "src/cli/port_nous_sub_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/nous_subscription.py",
+   "py": "prompt_enable_tool_gateway",
+   "c": "nsub_prompt_enable_tool_gateway",
+   "file": "src/cli/port_nous_sub_wrappers.c",
+   "cat": "C",
+   "candidates": []
+  },
+  {
+   "module": "hermes_cli/nous_subscription.py",
+   "py": "video_gen",
+   "c": "nsub_video_gen",
+   "file": "src/cli/port_nous_sub_wrappers.c",
    "cat": "C",
    "candidates": []
   },

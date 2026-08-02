@@ -354,7 +354,13 @@ int cgw_u_launchd_reload_log_path(const char *arg) { (void)arg; return 0; }
 int cgw_u_append_launchd_reload_log(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _launchctl_label_registered @ hermes_cli/gateway.py:_launchctl_label_registered */
-int cgw_u_launchctl_label_registered(const char *arg) { (void)arg; return 0; }
+int cgw_u_launchctl_label_registered(const char *arg) {
+    /* Python (label): launchctl list <label> exit code 0 == registered. */
+    if (!arg || !*arg) return 0;
+    char cmd[1024];
+    snprintf(cmd, sizeof(cmd), "launchctl list %s >/dev/null 2>&1", arg);
+    return system(cmd) == 0;
+}
 
 /* PoP: _retry_launchctl_bootstrap_until_registered @ hermes_cli/gateway.py:_retry_launchctl_bootstrap_until_registered */
 int cgw_u_retry_launchctl_bootstrap_until_registered(const char *arg) { (void)arg; return 0; }

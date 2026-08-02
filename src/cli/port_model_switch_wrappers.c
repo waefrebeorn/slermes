@@ -21,7 +21,20 @@ int msw_u_save_discovered_models_to_config(const char *arg) { (void)arg; return 
 int msw_u_bare_custom_provider_def(const char *arg) { (void)arg; return 0; }
 
 /* PoP: format_model_for_display @ hermes_cli/model_switch.py:format_model_for_display */
-int msw_format_model_for_display(const char *arg) { (void)arg; return 0; }
+int msw_format_model_for_display(const char *arg) {
+    /* Python: strip the Palantir Foundry opaque proxy prefix
+     * "ri.language-model-service..language-model." and return the trailing
+     * slug; everything else passes through untouched. DISPLAY-ONLY. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    static const char *const PREFIX = "ri.language-model-service..language-model.";
+    size_t pl = strlen(PREFIX);
+    if (strncmp(arg, PREFIX, pl) == 0 && arg[pl]) {
+        printf("%s\n", arg + pl);
+        return 0;
+    }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: is_nous_hermes_non_agentic @ hermes_cli/model_switch.py:is_nous_hermes_non_agentic */
 int msw_is_nous_hermes_non_agentic(const char *arg) { (void)arg; return 0; }

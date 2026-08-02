@@ -306,7 +306,17 @@ int tools_delegation_live_log_wrap_progress_callback(const char *arg) { (void)ar
 int tools_delegation_live_log_create_live_transcripts(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _manifest_path @ tools/delegation_live_log.py:_manifest_path */
-int tools_delegation_live_log_u_manifest_path(const char *arg) { (void)arg; return 0; }
+int tools_delegation_live_log_u_manifest_path(const char *arg) {
+    /* Python (delegation_id): live_transcript_root()/delegation_id/manifest.json.
+     * live_transcript_root defaults to $HERMES_HOME/logs/live-transcripts. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *hh = getenv("HERMES_HOME");
+    char base[1024];
+    if (hh && *hh) snprintf(base, sizeof(base), "%s", hh);
+    else snprintf(base, sizeof(base), "%s/.hermes", getenv("HOME") ? getenv("HOME") : ".");
+    printf("%s/logs/live-transcripts/%s/manifest.json\n", base, arg);
+    return 0;
+}
 
 /* PoP: update_manifest_statuses @ tools/delegation_live_log.py:update_manifest_statuses */
 int tools_delegation_live_log_update_manifest_statuses(const char *arg) { (void)arg; return 0; }

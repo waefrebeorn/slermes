@@ -587,7 +587,27 @@ int main_u_add_upstream_remote(const char *arg) {
 }
 
 /* PoP: _count_commits_between @ hermes_cli/main.py:_count_commits_between */
-int main_u_count_commits_between(const char *arg) { (void)arg; return 0; }
+int main_u_count_commits_between(const char *arg) {
+    /* Python (base, head, cwd): git rev-list --count base..head; -1 on error.
+     * Arg = "base\thead\tcwd". */
+    if (!arg || !*arg) return -1;
+    char base[256], head[256], cwd[1024];
+    cwd[0] = '\0';
+    if (sscanf(arg, "%255[^\t]\t%255[^\t]\t%1023s", base, head, cwd) < 2) return -1;
+    char cmd[1600];
+    snprintf(cmd, sizeof(cmd), "git -C %s rev-list --count %s..%s 2>/dev/null",
+             cwd[0] ? cwd : ".", base, head);
+    FILE *fp = popen(cmd, "r");
+    if (!fp) return -1;
+    char buf[64];
+    int n = fscanf(fp, "%63s", buf);
+    int rc = pclose(fp);
+    if (n != 1 || rc != 0) return -1;
+    char *end = NULL;
+    long v = strtol(buf, &end, 10);
+    if (!end || *end) return -1;
+    return (int)v;
+}
 
 /* PoP: _should_skip_upstream_prompt @ hermes_cli/main.py:_should_skip_upstream_prompt */
 int main_u_should_skip_upstream_prompt(const char *arg) { (void)arg; return 0; }
