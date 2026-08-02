@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T22:47:10Z",
+  "generated_at": "2026-08-02T22:49:08Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -307731,10 +307731,10 @@
     },
     "tools/environments/local.py": {
       "total": 41,
-      "ported": 38,
+      "ported": 41,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": true,
       "pop_mismatch": false,
       "py_func_count": 41,
@@ -308678,17 +308678,24 @@
             "decorators": [],
             "line_number": 1296
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_env_local_remaining.c",
+          "c_function": "elc_init",
+          "pop_annotation": {
+            "c_function": "elc_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_env_local_remaining.c",
+            "python_file": "tools/environments/local.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/environments/local.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/local.py",
@@ -308789,17 +308796,24 @@
             "decorators": [],
             "line_number": 1358
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_env_local_remaining.c",
+          "c_function": "elc_run_bash",
+          "pop_annotation": {
+            "c_function": "elc_run_bash",
+            "python_functions": [
+              "_run_bash"
+            ],
+            "c_file": "src/tools/port_env_local_remaining.c",
+            "python_file": "tools/environments/local.py",
+            "line": 35,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _run_bash @ tools/environments/local.py:_run_bash */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/local.py",
@@ -308898,17 +308912,24 @@
             "decorators": [],
             "line_number": 1542
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_env_local_remaining.c",
+          "c_function": "elc_cleanup",
+          "pop_annotation": {
+            "c_function": "elc_cleanup",
+            "python_functions": [
+              "cleanup"
+            ],
+            "c_file": "src/tools/port_env_local_remaining.c",
+            "python_file": "tools/environments/local.py",
+            "line": 43,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cleanup @ tools/environments/local.py:cleanup */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -346252,10 +346273,10 @@
     },
     "tools/terminal_tool.py": {
       "total": 61,
-      "ported": 58,
+      "ported": 61,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 61,
@@ -346387,17 +346408,24 @@
             "decorators": [],
             "line_number": 184
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_terminal_tool_remaining.c",
+          "c_function": "ttm_set_sudo_password_callback",
+          "pop_annotation": {
+            "c_function": "ttm_set_sudo_password_callback",
+            "python_functions": [
+              "set_sudo_password_callback"
+            ],
+            "c_file": "src/tools/port_terminal_tool_remaining.c",
+            "python_file": "tools/terminal_tool.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: set_sudo_password_callback @ tools/terminal_tool.py:set_sudo_password_callback */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/terminal_tool.py",
@@ -346409,17 +346437,24 @@
             "decorators": [],
             "line_number": 193
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_terminal_tool_remaining.c",
+          "c_function": "ttm_set_approval_callback",
+          "pop_annotation": {
+            "c_function": "ttm_set_approval_callback",
+            "python_functions": [
+              "set_approval_callback"
+            ],
+            "c_file": "src/tools/port_terminal_tool_remaining.c",
+            "python_file": "tools/terminal_tool.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: set_approval_callback @ tools/terminal_tool.py:set_approval_callback */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/terminal_tool.py",
@@ -347098,17 +347133,24 @@
             "decorators": [],
             "line_number": 1119
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_terminal_tool_remaining.c",
+          "c_function": "ttm_clear_session_cwd",
+          "pop_annotation": {
+            "c_function": "ttm_clear_session_cwd",
+            "python_functions": [
+              "clear_session_cwd"
+            ],
+            "c_file": "src/tools/port_terminal_tool_remaining.c",
+            "python_file": "tools/terminal_tool.py",
+            "line": 36,
+            "is_consolidated": false,
+            "full_text": "/* PoP: clear_session_cwd @ tools/terminal_tool.py:clear_session_cwd */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/terminal_tool.py",
