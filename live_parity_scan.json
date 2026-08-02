@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T22:24:46Z",
+  "generated_at": "2026-08-02T22:27:05Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -147754,10 +147754,10 @@
     },
     "gateway/shutdown_watchdog.py": {
       "total": 18,
-      "ported": 15,
+      "ported": 18,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 18,
@@ -147773,16 +147773,24 @@
             "decorators": [],
             "line_number": 59
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_shutdown_watchdog_remaining.c",
+          "c_function": "sdw_init",
+          "pop_annotation": {
+            "c_function": "sdw_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_shutdown_watchdog_remaining.c",
+            "python_file": "gateway/shutdown_watchdog.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/shutdown_watchdog.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/shutdown_watchdog.py",
@@ -147881,16 +147889,24 @@
             "decorators": [],
             "line_number": 82
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_shutdown_watchdog_remaining.c",
+          "c_function": "sdw_init",
+          "pop_annotation": {
+            "c_function": "sdw_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_shutdown_watchdog_remaining.c",
+            "python_file": "gateway/shutdown_watchdog.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/shutdown_watchdog.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/shutdown_watchdog.py",
@@ -147902,16 +147918,24 @@
             "decorators": [],
             "line_number": 86
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_shutdown_watchdog_remaining.c",
+          "c_function": "sdw_stop",
+          "pop_annotation": {
+            "c_function": "sdw_stop",
+            "python_functions": [
+              "stop"
+            ],
+            "c_file": "src/gateway/port_shutdown_watchdog_remaining.c",
+            "python_file": "gateway/shutdown_watchdog.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stop @ gateway/shutdown_watchdog.py:stop */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/shutdown_watchdog.py",
@@ -155107,10 +155131,10 @@
     },
     "gateway/whatsapp_identity.py": {
       "total": 4,
-      "ported": 1,
+      "ported": 4,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 4,
@@ -155126,16 +155150,24 @@
             "decorators": [],
             "line_number": 48
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_whatsapp_identity_remaining.c",
+          "c_function": "wai_normalize_whatsapp_identifier",
+          "pop_annotation": {
+            "c_function": "wai_normalize_whatsapp_identifier",
+            "python_functions": [
+              "normalize_whatsapp_identifier"
+            ],
+            "c_file": "src/gateway/port_whatsapp_identity_remaining.c",
+            "python_file": "gateway/whatsapp_identity.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: normalize_whatsapp_identifier @ gateway/whatsapp_identity.py:normalize_whatsapp_identifier */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/whatsapp_identity.py",
@@ -155176,16 +155208,24 @@
             "decorators": [],
             "line_number": 121
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_whatsapp_identity_remaining.c",
+          "c_function": "wai_expand_whatsapp_aliases",
+          "pop_annotation": {
+            "c_function": "wai_expand_whatsapp_aliases",
+            "python_functions": [
+              "expand_whatsapp_aliases"
+            ],
+            "c_file": "src/gateway/port_whatsapp_identity_remaining.c",
+            "python_file": "gateway/whatsapp_identity.py",
+            "line": 34,
+            "is_consolidated": false,
+            "full_text": "/* PoP: expand_whatsapp_aliases @ gateway/whatsapp_identity.py:expand_whatsapp_aliases */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/whatsapp_identity.py",
@@ -155197,16 +155237,24 @@
             "decorators": [],
             "line_number": 173
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_whatsapp_identity_remaining.c",
+          "c_function": "wai_canonical_whatsapp_identifier",
+          "pop_annotation": {
+            "c_function": "wai_canonical_whatsapp_identifier",
+            "python_functions": [
+              "canonical_whatsapp_identifier"
+            ],
+            "c_file": "src/gateway/port_whatsapp_identity_remaining.c",
+            "python_file": "gateway/whatsapp_identity.py",
+            "line": 42,
+            "is_consolidated": false,
+            "full_text": "/* PoP: canonical_whatsapp_identifier @ gateway/whatsapp_identity.py:canonical_whatsapp_identifier */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
