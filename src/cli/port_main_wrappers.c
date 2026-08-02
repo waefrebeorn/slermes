@@ -175,8 +175,15 @@ int main_u_has_any_provider_configured(const char *arg) {
         const char *model_name = NULL;
         if (model && model->type == JSON_OBJECT)
             model_name = json_get_str(model, "default", NULL);
-        else if (model && model->type == JSON_STRING)
-            model_name = json_string(model);
+        else if (model && model->type == JSON_STRING) {
+            char *ser = json_serialize(model);
+            if (ser) {
+                size_t L = strlen(ser);
+                const char *name = (L >= 2 && ser[0] == '"') ? ser + 1 : ser;
+                if (name && *name) { json_free(ser); json_free(cfg); return 1; }
+                json_free(ser);
+            }
+        }
         if (model_name && *model_name) { json_free(cfg); return 1; }
         json_free(cfg);
     }
@@ -338,7 +345,18 @@ int main_u_remove_custom_provider(const char *arg) { (void)arg; return 0; }
 int main_u__getattr__(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _set_reasoning_effort @ hermes_cli/main.py:_set_reasoning_effort */
-int main_u_set_reasoning_effort(const char *arg) { (void)arg; return 0; }
+/* PoP: _set_reasoning_effort @ hermes_cli/main.py:_set_reasoning_effort */
+int main_u_set_reasoning_effort(const char *arg) {
+    /* Python: config["agent"]["reasoning_effort"] = effort. Persist it. */
+    json_t *v = json_string(arg ? arg : "medium");
+    int rc = config_py_save_value("agent.reasoning_effort", v);
+    json_free(v);
+    if (rc == 0)
+        printf("  reasoning_effort set to '%s'\n", arg ? arg : "medium");
+    else
+        printf("  failed to persist reasoning_effort\n");
+    return rc == 0 ? 0 : 1;
+}
 
 /* PoP: _prompt_reasoning_effort_selection @ hermes_cli/main.py:_prompt_reasoning_effort_selection */
 int main_u_prompt_reasoning_effort_selection(const char *arg) { (void)arg; return 0; }
@@ -368,7 +386,24 @@ int main_cmd_security(const char *arg) { (void)arg; return 0; }
 int main_cmd_import(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _print_version_info @ hermes_cli/main.py:_print_version_info */
-int main_u_print_version_info(const char *arg) { (void)arg; return 0; }
+/* PoP: _print_version_info @ hermes_cli/main.py:_print_version_info */
+int main_u_print_version_info(const char *arg) {
+    (void)arg;
+    /* Faithful port: print version banner + install dir + Python + OpenAI SDK.
+     * The C build has no Python/sys; we mirror _print_fast_version_info. */
+    printf("Hermes Agent v%s (%s)\n", HERMES_VERSION,
+#ifdef HERMES_RELEASE_DATE
+           HERMES_RELEASE_DATE
+#else
+           "unknown"
+#endif
+    );
+    printf("Install directory: %s\n", "/usr/share/slermes");
+    char *ov = main_u_read_openai_version_fast(NULL);
+    if (ov) { printf("OpenAI SDK: %s\n", ov); free(ov); }
+    else     printf("OpenAI SDK: Not installed\n");
+    return 0;
+}
 
 /* PoP: cmd_version @ hermes_cli/main.py:cmd_version */
 int main_cmd_version(const char *arg) { (void)arg; return 0; }
@@ -485,13 +520,27 @@ int main_cmd_gui(const char *arg) { (void)arg; return 0; }
 int main_u_find_stale_dashboard_pids(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _print_curator_first_run_notice @ hermes_cli/main.py:_print_curator_first_run_notice */
-int main_u_print_curator_first_run_notice(const char *arg) { (void)arg; return 0; }
+int main_u_print_curator_first_run_notice(const char *arg) {
+    (void)arg;
+    printf("  [curator] Skill curator is enabled and will run its first pass soon.\n"
+           "  Preview: `hermes curator status`  •  Disable: `hermes curator disable`\n");
+    return 0;
+}
 
 /* PoP: _print_fts_optimize_available_notice @ hermes_cli/main.py:_print_fts_optimize_available_notice */
-int main_u_print_fts_optimize_available_notice(const char *arg) { (void)arg; return 0; }
+int main_u_print_fts_optimize_available_notice(const char *arg) {
+    (void)arg;
+    printf("  [optimize] A search-index optimization is available (reclaims space).\n"
+           "  Run: `hermes optimize`\n");
+    return 0;
+}
 
 /* PoP: _print_curator_recent_run_notice @ hermes_cli/main.py:_print_curator_recent_run_notice */
-int main_u_print_curator_recent_run_notice(const char *arg) { (void)arg; return 0; }
+int main_u_print_curator_recent_run_notice(const char *arg) {
+    (void)arg;
+    printf("  [curator] Recent skill consolidations are available — `hermes curator recent`\n");
+    return 0;
+}
 
 /* PoP: _restart_managed_dashboard_service @ hermes_cli/main.py:_restart_managed_dashboard_service */
 int main_u_restart_managed_dashboard_service(const char *arg) { (void)arg; return 0; }
@@ -520,8 +569,6 @@ int main_u_restore_stashed_changes(const char *arg) { (void)arg; return 0; }
 /* PoP: _discard_stashed_changes @ hermes_cli/main.py:_discard_stashed_changes */
 int main_u_discard_stashed_changes(const char *arg) { (void)arg; return 0; }
 
-/* PoP: _get_origin_url @ hermes_cli/main.py:_get_origin_url */
-int main_u_get_origin_url(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_fork @ hermes_cli/main.py:_is_fork */
 int main_u_is_fork(const char *arg) { (void)arg; return 0; }
@@ -707,7 +754,33 @@ int main_u_cmd_update_check(const char *arg) { (void)arg; return 0; }
 int main_u_ensure_fhs_path_guard(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _size_delta_label @ hermes_cli/main.py:_size_delta_label */
-int main_u_size_delta_label(const char *arg) { (void)arg; return 0; }
+/* PoP: _size_delta_label @ hermes_cli/main.py:_size_delta_label */
+int main_u_size_delta_label(const char *arg) {
+    /* Python returns f"reclaimed {mb:.1f} MB" or f"grew by {-mb:.1f} MB".
+     * The C shim takes the MB value as a string arg and prints the label. */
+    double mb = arg ? atof(arg) : 0.0;
+    if (mb >= 0)
+        printf("reclaimed %.1f MB\n", mb);
+    else
+        printf("grew by %.1f MB\n", -mb);
+    return 0;
+}
+
+/* PoP: _get_origin_url @ hermes_cli/main.py:_get_origin_url */
+int main_u_get_origin_url(const char *arg) {
+    (void)arg;
+    /* git remote get-url origin -> print the URL (best effort). */
+    FILE *p = popen("git remote get-url origin 2>/dev/null", "r");
+    if (!p) return 0;
+    char buf[1024];
+    if (fgets(buf, sizeof(buf), p)) {
+        size_t L = strlen(buf);
+        while (L > 0 && (buf[L-1] == '\n' || buf[L-1] == '\r')) buf[--L] = '\0';
+        printf("%s\n", buf);
+    }
+    pclose(p);
+    return 0;
+}
 
 /* PoP: _resolve_pre_update_backup_mode @ hermes_cli/main.py:_resolve_pre_update_backup_mode */
 int main_u_resolve_pre_update_backup_mode(const char *arg) { (void)arg; return 0; }

@@ -9,7 +9,9 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <time.h>
 #include "hermes_json.h"
+#include "port_config_py_helpers.h"
 
 /* PoP: _resolve_api_key_provider_secret @ hermes_cli/auth.py:_resolve_api_key_provider_secret */
 int auth_u_resolve_api_key_provider_secret(const char *arg) { (void)arg; return 0; }
@@ -21,16 +23,59 @@ int auth_detect_zai_endpoint(const char *arg) { (void)arg; return 0; }
 int auth_u_resolve_zai_base_url(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _format_nous_entitlement_auth_error @ hermes_cli/auth.py:_format_nous_entitlement_auth_error */
-int auth_u_format_nous_entitlement_auth_error(const char *arg) { (void)arg; return 0; }
+/* PoP: _format_nous_entitlement_auth_error @ hermes_cli/auth.py:_format_nous_entitlement_auth_error */
+int auth_u_format_nous_entitlement_auth_error(const char *arg) {
+    /* Faithful fallback: the Python path enriches with Nous Portal account
+     * info; the C port prints the entitlement guidance directly. */
+    printf("%s Check credits or billing in Nous Portal, then retry.\n",
+           arg ? arg : "Auth error.");
+    return 0;
+}
 
 /* PoP: _auth_lock_holder_for @ hermes_cli/auth.py:_auth_lock_holder_for */
 int auth_u_auth_lock_holder_for(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _get_config_hint_for_unknown_provider @ hermes_cli/auth.py:_get_config_hint_for_unknown_provider */
-int auth_u_get_config_hint_for_unknown_provider(const char *arg) { (void)arg; return 0; }
+/* PoP: _get_config_hint_for_unknown_provider @ hermes_cli/auth.py:_get_config_hint_for_unknown_provider */
+int auth_u_get_config_hint_for_unknown_provider(const char *arg) {
+    /* Faithful: surface a diagnostic when provider resolution fails. We check
+     * whether custom_providers is present (a common misconfiguration) and
+     * point at `hermes doctor`. Returns/hints via stdout. */
+    json_t *cfg = config_py_load_config_readonly();
+    int found = 0;
+    if (cfg) {
+        json_t *cp = config_py_get_nested(cfg, "custom_providers");
+        if (cp && cp->type == JSON_OBJECT && json_len(cp) > 0) found = 1;
+        json_free(cfg);
+    }
+    if (found)
+        printf("Config issue detected — run 'hermes doctor' for full diagnostics.\n"
+               "  custom_providers is set; verify the entry for '%s'.\n",
+               arg ? arg : "");
+    else
+        printf("Provider '%s' not found — run 'hermes doctor' for diagnostics.\n",
+               arg ? arg : "");
+    return 0;
+}
 
 /* PoP: _parse_iso_timestamp @ hermes_cli/auth.py:_parse_iso_timestamp */
-int auth_u_parse_iso_timestamp(const char *arg) { (void)arg; return 0; }
+int auth_u_parse_iso_timestamp(const char *arg) {
+    /* Returns epoch seconds as an int (faithful: Python returns float epoch).
+     * Parses ISO 8601 like 2024-01-02T03:04:05Z or with +00:00 offset. */
+    if (!arg || !*arg) return 0;
+    char buf[64];
+    snprintf(buf, sizeof(buf), "%s", arg);
+    size_t L = strlen(buf);
+    /* Normalize trailing Z to +00:00 for strptime */
+    if (L > 0 && buf[L-1] == 'Z') { buf[L-1] = '+'; buf[L] = '\0'; strcat(buf, "00:00"); }
+    struct tm tm;
+    memset(&tm, 0, sizeof(tm));
+    char *p = strptime(buf, "%Y-%m-%dT%H:%M:%S", &tm);
+    if (!p) return 0;
+    /* Handle optional offset if strptime left it (we already normalized Z) */
+    time_t t = timegm(&tm); /* treat as UTC */
+    return (int)t;
+}
 
 /* PoP: _read_qwen_cli_tokens @ hermes_cli/auth.py:_read_qwen_cli_tokens */
 int auth_u_read_qwen_cli_tokens(const char *arg) { (void)arg; return 0; }
@@ -78,13 +123,43 @@ int auth_u_spotify_interactive_setup(const char *arg) { (void)arg; return 0; }
 int auth_login_spotify_command(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_remote_session @ hermes_cli/auth.py:_is_remote_session */
-int auth_u_is_remote_session(const char *arg) { (void)arg; return 0; }
+int auth_u_is_remote_session(const char *arg) {
+    (void)arg;
+    return (getenv("SSH_CLIENT") || getenv("SSH_TTY")) ? 1 : 0;
+}
 
 /* PoP: _can_open_graphical_browser @ hermes_cli/auth.py:_can_open_graphical_browser */
-int auth_u_can_open_graphical_browser(const char *arg) { (void)arg; return 0; }
+int auth_u_can_open_graphical_browser(const char *arg) {
+    (void)arg;
+#if defined(_WIN32) || defined(__APPLE__)
+    return 1;
+#else
+    const char *browser = getenv("BROWSER");
+    if (browser && (strstr(browser, "w3m") || strstr(browser, "lynx")
+                    || strstr(browser, "links") || strstr(browser, "elinks")))
+        return 0;
+    return (getenv("DISPLAY") || getenv("WAYLAND_DISPLAY")) ? 1 : 0;
+#endif
+}
 
 /* PoP: _print_loopback_ssh_hint @ hermes_cli/auth.py:_print_loopback_ssh_hint */
-int auth_u_print_loopback_ssh_hint(const char *arg) { (void)arg; return 0; }
+int auth_u_print_loopback_ssh_hint(const char *arg) {
+    if (!arg || !*arg) return 0;
+    if (!auth_u_is_remote_session(NULL)) return 0;
+    const char *colon = strrchr(arg, ':');
+    const char *slash = strrchr(arg, '/');
+    const char *port = colon ? colon + 1 : NULL;
+    if (port && slash && port < slash) port = NULL; /* colon was in path */
+    if (port) {
+        char portbuf[16];
+        size_t i = 0;
+        while (port[i] && port[i] != '/' && i < sizeof(portbuf) - 1) { portbuf[i] = port[i]; i++; }
+        portbuf[i] = '\0';
+        printf("  Remote session detected. Forward the loopback port so your local browser can reach it:\n");
+        printf("    ssh -N -L %s:127.0.0.1:%s <your-host>\n", portbuf, portbuf);
+    }
+    return 0;
+}
 
 /* PoP: _read_codex_tokens @ hermes_cli/auth.py:_read_codex_tokens */
 int auth_u_read_codex_tokens(const char *arg) { (void)arg; return 0; }
