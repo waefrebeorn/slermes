@@ -461,10 +461,32 @@ int gateway_status_phrases_classify_status_context(const char *arg) { (void)arg;
 int gateway_status_phrases_choose_status_phrase(const char *arg) { (void)arg; return 0; }
 
 /* PoP: file_size_human @ gateway/platforms/qqbot/chunked_upload.py:file_size_human */
-int gateway_platforms_qqbot_chunke_file_size_human(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_qqbot_chunke_file_size_human(const char *arg) {
+    /* Python: format_size(self.file_size) — human size with units. */
+    if (!arg || !*arg) { printf("0 B\n"); return 0; }
+    double bytes = strtod(arg, NULL);
+    static const char *units[] = {"B", "KB", "MB", "GB", "TB"};
+    int u = 0;
+    double v = bytes;
+    while (v >= 1024.0 && u < 4) { v /= 1024.0; u++; }
+    if (u == 0) printf("%.0f %s\n", v, units[u]);
+    else printf("%.1f %s\n", v, units[u]);
+    return 0;
+}
 
 /* PoP: file_size_human @ gateway/platforms/qqbot/chunked_upload.py:file_size_human */
-int gateway_platforms_qqbot_chunke_file_size_human_2(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_qqbot_chunke_file_size_human_2(const char *arg) {
+    /* Python: format_size(self.file_size) — human size with units. */
+    if (!arg || !*arg) { printf("0 B\n"); return 0; }
+    double bytes = strtod(arg, NULL);
+    static const char *units[] = {"B", "KB", "MB", "GB", "TB"};
+    int u = 0;
+    double v = bytes;
+    while (v >= 1024.0 && u < 4) { v /= 1024.0; u++; }
+    if (u == 0) printf("%.0f %s\n", v, units[u]);
+    else printf("%.1f %s\n", v, units[u]);
+    return 0;
+}
 
 /* PoP: limit_human @ gateway/platforms/qqbot/chunked_upload.py:limit_human */
 int gateway_platforms_qqbot_chunke_limit_human(const char *arg) { (void)arg; return 0; }

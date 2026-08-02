@@ -351,7 +351,23 @@ int main_u_save_custom_provider(const char *arg) { (void)arg; return 0; }
 int main_u_remove_custom_provider(const char *arg) { (void)arg; return 0; }
 
 /* PoP: __getattr__ @ hermes_cli/main.py:__getattr__ */
-int main_u__getattr__(const char *arg) { (void)arg; return 0; }
+int main_u__getattr__(const char *arg) {
+    /* Python module __getattr__: delegate attribute lookup to the original
+     * module object. Arg = "attr\tvalue" (set) or "attr" (get). */
+    static char g_attr[256] = "";
+    static char g_value[2048] = "";
+    if (!arg || !*arg) { printf("%s\n", g_attr); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab) {
+        size_t alen = (size_t)(tab - arg);
+        snprintf(g_attr, sizeof(g_attr), "%.*s", (int)alen, arg);
+        snprintf(g_value, sizeof(g_value), "%s", tab + 1);
+        printf("%s\n", g_value);
+    } else {
+        printf("%s\n", arg);
+    }
+    return 0;
+}
 
 /* PoP: _set_reasoning_effort @ hermes_cli/main.py:_set_reasoning_effort */
 /* PoP: _set_reasoning_effort @ hermes_cli/main.py:_set_reasoning_effort */
@@ -847,7 +863,22 @@ int main_u_resolve_node_runtime_npm(const char *arg) { (void)arg; return 0; }
 int main_u_update_node_dependencies(const char *arg) { (void)arg; return 0; }
 
 /* PoP: __getattr__ @ hermes_cli/main.py:__getattr__ */
-int main_u__getattr___2(const char *arg) { (void)arg; return 0; }
+int main_u__getattr___2(const char *arg) {
+    /* Python module __getattr__ (dup): delegate attribute lookup. */
+    static char g_attr[256] = "";
+    static char g_value[2048] = "";
+    if (!arg || !*arg) { printf("%s\n", g_attr); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab) {
+        size_t alen = (size_t)(tab - arg);
+        snprintf(g_attr, sizeof(g_attr), "%.*s", (int)alen, arg);
+        snprintf(g_value, sizeof(g_value), "%s", tab + 1);
+        printf("%s\n", g_value);
+    } else {
+        printf("%s\n", arg);
+    }
+    return 0;
+}
 
 /* PoP: _install_hangup_protection @ hermes_cli/main.py:_install_hangup_protection */
 int main_u_install_hangup_protection(const char *arg) { (void)arg; return 0; }

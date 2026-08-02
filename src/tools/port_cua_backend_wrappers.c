@@ -290,7 +290,13 @@ int cua_set_value(const char *arg) { (void)arg; return 0; }
 int cua_list_apps(const char *arg) { (void)arg; return 0; }
 
 /* PoP: list_windows @ tools/computer_use/cua_backend.py:list_windows */
-int cua_list_windows(const char *arg) { (void)arg; return 0; }
+int cua_list_windows(const char *arg) {
+    /* Python: self._load_windows() — the cached window list. */
+    static char g_windows[8192] = "";
+    if (arg && *arg) snprintf(g_windows, sizeof(g_windows), "%s", arg);
+    printf("%s\n", g_windows);
+    return 0;
+}
 
 /* PoP: launch_app @ tools/computer_use/cua_backend.py:launch_app */
 int cua_launch_app(const char *arg) { (void)arg; return 0; }
