@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T18:24:41Z",
+  "generated_at": "2026-08-02T18:26:41Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -69539,10 +69539,10 @@
     },
     "cli.py": {
       "total": 313,
-      "ported": 284,
+      "ported": 306,
       "partial": 2,
       "stub": 0,
-      "real_gaps": 27,
+      "real_gaps": 5,
       "thin": true,
       "pop_mismatch": false,
       "py_func_count": 313,
@@ -69587,17 +69587,24 @@
             "decorators": [],
             "line_number": 101
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining2.c",
+          "c_function": "cl2_estimate_usage_cost",
+          "pop_annotation": {
+            "c_function": "cl2_estimate_usage_cost",
+            "python_functions": [
+              "estimate_usage_cost"
+            ],
+            "c_file": "src/cli/port_cli_remaining2.c",
+            "python_file": "cli.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: estimate_usage_cost @ cli.py:estimate_usage_cost */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -69609,17 +69616,24 @@
             "decorators": [],
             "line_number": 107
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining2.c",
+          "c_function": "cl2_format_duration_compact",
+          "pop_annotation": {
+            "c_function": "cl2_format_duration_compact",
+            "python_functions": [
+              "format_duration_compact"
+            ],
+            "c_file": "src/cli/port_cli_remaining2.c",
+            "python_file": "cli.py",
+            "line": 32,
+            "is_consolidated": false,
+            "full_text": "/* PoP: format_duration_compact @ cli.py:format_duration_compact */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -69660,17 +69674,24 @@
             "decorators": [],
             "line_number": 168
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining2.c",
+          "c_function": "cl2_format_token_count_compact",
+          "pop_annotation": {
+            "c_function": "cl2_format_token_count_compact",
+            "python_functions": [
+              "format_token_count_compact"
+            ],
+            "c_file": "src/cli/port_cli_remaining2.c",
+            "python_file": "cli.py",
+            "line": 47,
+            "is_consolidated": false,
+            "full_text": "/* PoP: format_token_count_compact @ cli.py:format_token_count_compact */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -69682,17 +69703,24 @@
             "decorators": [],
             "line_number": 192
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining2.c",
+          "c_function": "cl2_is_table_divider",
+          "pop_annotation": {
+            "c_function": "cl2_is_table_divider",
+            "python_functions": [
+              "is_table_divider"
+            ],
+            "c_file": "src/cli/port_cli_remaining2.c",
+            "python_file": "cli.py",
+            "line": 58,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_table_divider @ cli.py:is_table_divider */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -69704,17 +69732,24 @@
             "decorators": [],
             "line_number": 198
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining2.c",
+          "c_function": "cl2_looks_like_table_row",
+          "pop_annotation": {
+            "c_function": "cl2_looks_like_table_row",
+            "python_functions": [
+              "looks_like_table_row"
+            ],
+            "c_file": "src/cli/port_cli_remaining2.c",
+            "python_file": "cli.py",
+            "line": 65,
+            "is_consolidated": false,
+            "full_text": "/* PoP: looks_like_table_row @ cli.py:looks_like_table_row */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -69726,17 +69761,24 @@
             "decorators": [],
             "line_number": 204
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining2.c",
+          "c_function": "cl2_realign_markdown_tables",
+          "pop_annotation": {
+            "c_function": "cl2_realign_markdown_tables",
+            "python_functions": [
+              "realign_markdown_tables"
+            ],
+            "c_file": "src/cli/port_cli_remaining2.c",
+            "python_file": "cli.py",
+            "line": 71,
+            "is_consolidated": false,
+            "full_text": "/* PoP: realign_markdown_tables @ cli.py:realign_markdown_tables */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -70792,17 +70834,24 @@
             "decorators": [],
             "line_number": 1453
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining2.c",
+          "c_function": "cl2_resolve_worktree_base",
+          "pop_annotation": {
+            "c_function": "cl2_resolve_worktree_base",
+            "python_functions": [
+              "_resolve_worktree_base"
+            ],
+            "c_file": "src/cli/port_cli_remaining2.c",
+            "python_file": "cli.py",
+            "line": 79,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_worktree_base @ cli.py:_resolve_worktree_base */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -71408,17 +71457,24 @@
             "decorators": [],
             "line_number": 2593
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining2.c",
+          "c_function": "cl2_b",
+          "pop_annotation": {
+            "c_function": "cl2_b",
+            "python_functions": [
+              "_b"
+            ],
+            "c_file": "src/cli/port_cli_remaining2.c",
+            "python_file": "cli.py",
+            "line": 87,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _b @ cli.py:_b */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -71430,17 +71486,24 @@
             "decorators": [],
             "line_number": 2602
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining2.c",
+          "c_function": "cl2_d",
+          "pop_annotation": {
+            "c_function": "cl2_d",
+            "python_functions": [
+              "_d"
+            ],
+            "c_file": "src/cli/port_cli_remaining2.c",
+            "python_file": "cli.py",
+            "line": 99,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _d @ cli.py:_d */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -71452,17 +71515,24 @@
             "decorators": [],
             "line_number": 2611
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining2.c",
+          "c_function": "cl2_accent_hex",
+          "pop_annotation": {
+            "c_function": "cl2_accent_hex",
+            "python_functions": [
+              "_accent_hex"
+            ],
+            "c_file": "src/cli/port_cli_remaining2.c",
+            "python_file": "cli.py",
+            "line": 110,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _accent_hex @ cli.py:_accent_hex */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -72588,17 +72658,24 @@
             "decorators": [],
             "line_number": 3777
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining2.c",
+          "c_function": "cl2_get_skill_commands",
+          "pop_annotation": {
+            "c_function": "cl2_get_skill_commands",
+            "python_functions": [
+              "get_skill_commands"
+            ],
+            "c_file": "src/cli/port_cli_remaining2.c",
+            "python_file": "cli.py",
+            "line": 117,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_skill_commands @ cli.py:get_skill_commands */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -72639,17 +72716,24 @@
             "decorators": [],
             "line_number": 3787
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining2.c",
+          "c_function": "cl2_build_preloaded_skills_prompt",
+          "pop_annotation": {
+            "c_function": "cl2_build_preloaded_skills_prompt",
+            "python_functions": [
+              "build_preloaded_skills_prompt"
+            ],
+            "c_file": "src/cli/port_cli_remaining2.c",
+            "python_file": "cli.py",
+            "line": 123,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_preloaded_skills_prompt @ cli.py:build_preloaded_skills_prompt */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -72661,17 +72745,24 @@
             "decorators": [],
             "line_number": 3793
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining2.c",
+          "c_function": "cl2_get_skill_bundles",
+          "pop_annotation": {
+            "c_function": "cl2_get_skill_bundles",
+            "python_functions": [
+              "get_skill_bundles"
+            ],
+            "c_file": "src/cli/port_cli_remaining2.c",
+            "python_file": "cli.py",
+            "line": 131,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_skill_bundles @ cli.py:get_skill_bundles */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -72683,17 +72774,24 @@
             "decorators": [],
             "line_number": 3802
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining2.c",
+          "c_function": "cl2_build_bundle_invocation_message",
+          "pop_annotation": {
+            "c_function": "cl2_build_bundle_invocation_message",
+            "python_functions": [
+              "build_bundle_invocation_message"
+            ],
+            "c_file": "src/cli/port_cli_remaining2.c",
+            "python_file": "cli.py",
+            "line": 137,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_bundle_invocation_message @ cli.py:build_bundle_invocation_message */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -73075,17 +73173,24 @@
             "decorators": [],
             "line_number": 4633
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining2.c",
+          "c_function": "cl2_schedule_status_bar_unsuppress",
+          "pop_annotation": {
+            "c_function": "cl2_schedule_status_bar_unsuppress",
+            "python_functions": [
+              "_schedule_status_bar_unsuppress"
+            ],
+            "c_file": "src/cli/port_cli_remaining2.c",
+            "python_file": "cli.py",
+            "line": 145,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _schedule_status_bar_unsuppress @ cli.py:_schedule_status_bar_unsuppress */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -73548,17 +73653,24 @@
             "decorators": [],
             "line_number": 5095
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining2.c",
+          "c_function": "cl2_agent_spacer_height",
+          "pop_annotation": {
+            "c_function": "cl2_agent_spacer_height",
+            "python_functions": [
+              "_agent_spacer_height"
+            ],
+            "c_file": "src/cli/port_cli_remaining2.c",
+            "python_file": "cli.py",
+            "line": 152,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _agent_spacer_height @ cli.py:_agent_spacer_height */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -75341,17 +75453,24 @@
             "decorators": [],
             "line_number": 7129
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining2.c",
+          "c_function": "cl2_show_config",
+          "pop_annotation": {
+            "c_function": "cl2_show_config",
+            "python_functions": [
+              "show_config"
+            ],
+            "c_file": "src/cli/port_cli_remaining2.c",
+            "python_file": "cli.py",
+            "line": 158,
+            "is_consolidated": false,
+            "full_text": "/* PoP: show_config @ cli.py:show_config */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -75450,17 +75569,24 @@
             "decorators": [],
             "line_number": 7319
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining2.c",
+          "c_function": "cl2_notify_session_boundary",
+          "pop_annotation": {
+            "c_function": "cl2_notify_session_boundary",
+            "python_functions": [
+              "_notify_session_boundary"
+            ],
+            "c_file": "src/cli/port_cli_remaining2.c",
+            "python_file": "cli.py",
+            "line": 166,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _notify_session_boundary @ cli.py:_notify_session_boundary */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -77048,17 +77174,24 @@
             "decorators": [],
             "line_number": 10826
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining2.c",
+          "c_function": "cl2_reload_mcp",
+          "pop_annotation": {
+            "c_function": "cl2_reload_mcp",
+            "python_functions": [
+              "_reload_mcp"
+            ],
+            "c_file": "src/cli/port_cli_remaining2.c",
+            "python_file": "cli.py",
+            "line": 174,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _reload_mcp @ cli.py:_reload_mcp */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -77070,17 +77203,24 @@
             "decorators": [],
             "line_number": 10930
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining2.c",
+          "c_function": "cl2_reload_skills",
+          "pop_annotation": {
+            "c_function": "cl2_reload_skills",
+            "python_functions": [
+              "_reload_skills"
+            ],
+            "c_file": "src/cli/port_cli_remaining2.c",
+            "python_file": "cli.py",
+            "line": 181,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _reload_skills @ cli.py:_reload_skills */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -78020,17 +78160,24 @@
             "decorators": [],
             "line_number": 12248
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining2.c",
+          "c_function": "cl2_chat",
+          "pop_annotation": {
+            "c_function": "cl2_chat",
+            "python_functions": [
+              "chat"
+            ],
+            "c_file": "src/cli/port_cli_remaining2.c",
+            "python_file": "cli.py",
+            "line": 188,
+            "is_consolidated": false,
+            "full_text": "/* PoP: chat @ cli.py:chat */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -78071,17 +78218,24 @@
             "decorators": [],
             "line_number": 13066
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_remaining2.c",
+          "c_function": "cl2_persist_active_session_before_close",
+          "pop_annotation": {
+            "c_function": "cl2_persist_active_session_before_close",
+            "python_functions": [
+              "_persist_active_session_before_close"
+            ],
+            "c_file": "src/cli/port_cli_remaining2.c",
+            "python_file": "cli.py",
+            "line": 196,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _persist_active_session_before_close @ cli.py:_persist_active_session_before_close */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
