@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T21:35:08Z",
+  "generated_at": "2026-08-02T21:37:27Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -127424,10 +127424,10 @@
     },
     "gateway/platforms/yuanbao_proto.py": {
       "total": 52,
-      "ported": 47,
+      "ported": 52,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 5,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 52,
@@ -127907,16 +127907,24 @@
             "decorators": [],
             "line_number": 335
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_proto_remaining.c",
+          "c_function": "ybp_encode_conn_msg",
+          "pop_annotation": {
+            "c_function": "ybp_encode_conn_msg",
+            "python_functions": [
+              "encode_conn_msg"
+            ],
+            "c_file": "src/gateway/port_yuanbao_proto_remaining.c",
+            "python_file": "gateway/platforms/yuanbao_proto.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: encode_conn_msg @ gateway/platforms/yuanbao_proto.py:encode_conn_msg */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao_proto.py",
@@ -127928,16 +127936,24 @@
             "decorators": [],
             "line_number": 361
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_proto_remaining.c",
+          "c_function": "ybp_decode_conn_msg",
+          "pop_annotation": {
+            "c_function": "ybp_decode_conn_msg",
+            "python_functions": [
+              "decode_conn_msg"
+            ],
+            "c_file": "src/gateway/port_yuanbao_proto_remaining.c",
+            "python_file": "gateway/platforms/yuanbao_proto.py",
+            "line": 32,
+            "is_consolidated": false,
+            "full_text": "/* PoP: decode_conn_msg @ gateway/platforms/yuanbao_proto.py:decode_conn_msg */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao_proto.py",
@@ -128674,16 +128690,24 @@
             "decorators": [],
             "line_number": 1121
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_proto_remaining.c",
+          "c_function": "ybp_encode_auth_bind",
+          "pop_annotation": {
+            "c_function": "ybp_encode_auth_bind",
+            "python_functions": [
+              "encode_auth_bind"
+            ],
+            "c_file": "src/gateway/port_yuanbao_proto_remaining.c",
+            "python_file": "gateway/platforms/yuanbao_proto.py",
+            "line": 40,
+            "is_consolidated": false,
+            "full_text": "/* PoP: encode_auth_bind @ gateway/platforms/yuanbao_proto.py:encode_auth_bind */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao_proto.py",
@@ -128811,16 +128835,24 @@
             "decorators": [],
             "line_number": 1268
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_proto_remaining.c",
+          "c_function": "ybp_encode_query_group_info",
+          "pop_annotation": {
+            "c_function": "ybp_encode_query_group_info",
+            "python_functions": [
+              "encode_query_group_info"
+            ],
+            "c_file": "src/gateway/port_yuanbao_proto_remaining.c",
+            "python_file": "gateway/platforms/yuanbao_proto.py",
+            "line": 48,
+            "is_consolidated": false,
+            "full_text": "/* PoP: encode_query_group_info @ gateway/platforms/yuanbao_proto.py:encode_query_group_info */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao_proto.py",
@@ -128861,16 +128893,24 @@
             "decorators": [],
             "line_number": 1340
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_yuanbao_proto_remaining.c",
+          "c_function": "ybp_encode_get_group_member_list",
+          "pop_annotation": {
+            "c_function": "ybp_encode_get_group_member_list",
+            "python_functions": [
+              "encode_get_group_member_list"
+            ],
+            "c_file": "src/gateway/port_yuanbao_proto_remaining.c",
+            "python_file": "gateway/platforms/yuanbao_proto.py",
+            "line": 56,
+            "is_consolidated": false,
+            "full_text": "/* PoP: encode_get_group_member_list @ gateway/platforms/yuanbao_proto.py:encode_get_group_member_list */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao_proto.py",
@@ -235760,10 +235800,10 @@
     },
     "hermes_cli/proxy/adapters/base.py": {
       "total": 7,
-      "ported": 2,
+      "ported": 7,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 5,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 7,
@@ -235782,16 +235822,24 @@
             ],
             "line_number": 43
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_proxy_adapters_base_remaining.c",
+          "c_function": "pxb_name",
+          "pop_annotation": {
+            "c_function": "pxb_name",
+            "python_functions": [
+              "name"
+            ],
+            "c_file": "src/cli/port_proxy_adapters_base_remaining.c",
+            "python_file": "hermes_cli/proxy/adapters/base.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: name @ hermes_cli/proxy/adapters/base.py:name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/proxy/adapters/base.py",
@@ -235806,16 +235854,24 @@
             ],
             "line_number": 48
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_proxy_adapters_base_remaining.c",
+          "c_function": "pxb_display_name",
+          "pop_annotation": {
+            "c_function": "pxb_display_name",
+            "python_functions": [
+              "display_name"
+            ],
+            "c_file": "src/cli/port_proxy_adapters_base_remaining.c",
+            "python_file": "hermes_cli/proxy/adapters/base.py",
+            "line": 27,
+            "is_consolidated": false,
+            "full_text": "/* PoP: display_name @ hermes_cli/proxy/adapters/base.py:display_name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/proxy/adapters/base.py",
@@ -235861,16 +235917,24 @@
             ],
             "line_number": 63
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_proxy_adapters_base_remaining.c",
+          "c_function": "pxb_is_authenticated",
+          "pop_annotation": {
+            "c_function": "pxb_is_authenticated",
+            "python_functions": [
+              "is_authenticated"
+            ],
+            "c_file": "src/cli/port_proxy_adapters_base_remaining.c",
+            "python_file": "hermes_cli/proxy/adapters/base.py",
+            "line": 32,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_authenticated @ hermes_cli/proxy/adapters/base.py:is_authenticated */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/proxy/adapters/base.py",
@@ -235884,16 +235948,24 @@
             ],
             "line_number": 71
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_proxy_adapters_base_remaining.c",
+          "c_function": "pxb_get_credential",
+          "pop_annotation": {
+            "c_function": "pxb_get_credential",
+            "python_functions": [
+              "get_credential"
+            ],
+            "c_file": "src/cli/port_proxy_adapters_base_remaining.c",
+            "python_file": "hermes_cli/proxy/adapters/base.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_credential @ hermes_cli/proxy/adapters/base.py:get_credential */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/proxy/adapters/base.py",
@@ -235905,16 +235977,24 @@
             "decorators": [],
             "line_number": 84
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_proxy_adapters_base_remaining.c",
+          "c_function": "pxb_get_retry_credential",
+          "pop_annotation": {
+            "c_function": "pxb_get_retry_credential",
+            "python_functions": [
+              "get_retry_credential"
+            ],
+            "c_file": "src/cli/port_proxy_adapters_base_remaining.c",
+            "python_file": "hermes_cli/proxy/adapters/base.py",
+            "line": 46,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_retry_credential @ hermes_cli/proxy/adapters/base.py:get_retry_credential */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/proxy/adapters/base.py",
