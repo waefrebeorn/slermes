@@ -80,7 +80,19 @@ int sexp_u_render_user_prompts_markdown(const char *arg);
 int sexp_u_render_full_markdown(const char *arg);
 
 /* PoP: normalize_export_format @ hermes_cli/session_export.py:normalize_export_format */
-int sexp_normalize_export_format(const char *arg) { (void)arg; return 0; }
+int sexp_normalize_export_format(const char *arg) {
+    /* Python: strip/lower; md -> markdown; jsonl/markdown only. Arg = fmt
+     * (default jsonl). */
+    const char *p = (arg && *arg) ? arg : "jsonl";
+    while (*p == ' ' || *p == '\t') p++;
+    size_t n = strlen(p);
+    while (n > 0 && (p[n-1] == ' ' || p[n-1] == '\t')) n--;
+    if (n == 2 && strncasecmp(p, "md", 2) == 0) { printf("markdown\n"); return 0; }
+    if (n == 5 && strncasecmp(p, "jsonl", 5) == 0) { printf("jsonl\n"); return 0; }
+    if (n == 8 && strncasecmp(p, "markdown", 8) == 0) { printf("markdown\n"); return 0; }
+    printf("unsupported: %.*s\n", (int)n, p);
+    return 1;
+}
 
 /* PoP: normalize_export_only @ hermes_cli/session_export.py:normalize_export_only */
 int sexp_normalize_export_only(const char *arg) {
@@ -103,7 +115,15 @@ int sexp_normalize_export_only(const char *arg) {
 int sexp_render_sessions_export(const char *arg) { (void)arg; return 0; }
 
 /* PoP: export_record_count @ hermes_cli/session_export.py:export_record_count */
-int sexp_export_record_count(const char *arg) { (void)arg; return 0; }
+int sexp_export_record_count(const char *arg) {
+    /* Python: (count, "prompt"|"session"). Arg = "only\tcount". */
+    if (!arg || !*arg) { printf("0 session\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    long count = tab ? strtol(tab + 1, NULL, 10) : 0;
+    if (tab && tab > arg && strncmp(arg, "user", 4) == 0) printf("%ld prompt\n", count);
+    else printf("%ld session\n", count);
+    return 0;
+}
 
 /* PoP: iter_user_prompt_records @ hermes_cli/session_export.py:iter_user_prompt_records */
 int sexp_iter_user_prompt_records(const char *arg) { (void)arg; return 0; }

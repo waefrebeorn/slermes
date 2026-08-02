@@ -21,7 +21,20 @@ int mm_inject_memory_provider_tools(const char *arg) { (void)arg; return 0; }
 int mm_u_find_boundary_open_tag(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _max_pending_open_suffix @ agent/memory_manager.py:_max_pending_open_suffix */
-int mm_u_max_pending_open_suffix(const char *arg) { (void)arg; return 0; }
+int mm_u_max_pending_open_suffix(const char *arg) {
+    /* Python: len(OPEN_TAG) when buf ends with tag at block boundary. Arg =
+     * "buf\topen_tag" (tag default "<open>"). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *buf = arg;
+    const char *tag = tab ? tab + 1 : "<open>";
+    size_t tlen = strlen(tag);
+    size_t blen = tab ? (size_t)(tab - arg) : strlen(buf);
+    if (blen < tlen) { printf("0\n"); return 0; }
+    if (strncmp(buf + blen - tlen, tag, tlen) != 0) { printf("0\n"); return 0; }
+    printf("%zu\n", tlen);
+    return 0;
+}
 
 /* PoP: _has_block_opener_suffix @ agent/memory_manager.py:_has_block_opener_suffix */
 int mm_u_has_block_opener_suffix(const char *arg) {

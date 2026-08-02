@@ -29,7 +29,13 @@ int grun_u_try_resolve_fallback_provider(const char *arg) { (void)arg; return 0;
 int grun_u_probe_audio_duration(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _dequeue_pending_event @ gateway/run.py:_dequeue_pending_event */
-int grun_u_dequeue_pending_event(const char *arg) { (void)arg; return 0; }
+int grun_u_dequeue_pending_event(const char *arg) {
+    /* Python: adapter.get_pending_message(session_key) — full event incl.
+     * media metadata. Arg = pending event JSON (or empty). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _get_channel_override @ gateway/run.py:_get_channel_override */
 int grun_u_get_channel_override(const char *arg) { (void)arg; return 0; }

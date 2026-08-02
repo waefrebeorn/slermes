@@ -15,7 +15,17 @@
 int appr_u_prepare_smart_approval_observer(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _observe_smart_approval_verdict @ tools/approval.py:_observe_smart_approval_verdict */
-int appr_u_observe_smart_approval_verdict(const char *arg) { (void)arg; return 0; }
+int appr_u_observe_smart_approval_verdict(const char *arg) {
+    /* Python: fire post_approval_response only for approve/deny. Arg =
+     * "verdict\tpayload_json". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    size_t vlen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (vlen == 7 && strncmp(arg, "approve", 7) == 0) { printf("post_approval_response smart_approve\n"); return 0; }
+    if (vlen == 4 && strncmp(arg, "deny", 4) == 0) { printf("post_approval_response smart_deny\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _match_user_deny_rule @ tools/approval.py:_match_user_deny_rule */
 int appr_u_match_user_deny_rule(const char *arg) { (void)arg; return 0; }

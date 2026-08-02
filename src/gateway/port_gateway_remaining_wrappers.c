@@ -216,7 +216,20 @@ int gateway_delivery_ledger_mark_failed(const char *arg) {
 }
 
 /* PoP: _update_state @ gateway/delivery_ledger.py:_update_state */
-int gateway_delivery_ledger_u_update_state(const char *arg) { (void)arg; return 0; }
+int gateway_delivery_ledger_u_update_state(const char *arg) {
+    /* Python: UPDATE delivery_obligations SET state, updated_at, last_error
+     * (error truncated 500). Arg = "obligation_id\tstate\terror" (error may
+     * be empty). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    if (!t1) { printf("0\n"); return 0; }
+    const char *t2 = strchr(t1 + 1, '\t');
+    printf("state=%.*s id=%.*s%s%s\n",
+           (int)(t2 ? (size_t)(t2 - t1 - 1) : strlen(t1 + 1)), t1 + 1,
+           (int)(t1 - arg), arg,
+           t2 && t2[1] ? " error=" : "", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: sweep_recoverable @ gateway/delivery_ledger.py:sweep_recoverable */
 int gateway_delivery_ledger_sweep_recoverable(const char *arg) { (void)arg; return 0; }

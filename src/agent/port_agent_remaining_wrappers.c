@@ -48,7 +48,22 @@ int agent_model_metadata_u_localhost_to_ipv4(const char *arg) {
 }
 
 /* PoP: _context_cache_key @ agent/model_metadata.py:_context_cache_key */
-int agent_model_metadata_u_context_cache_key(const char *arg) { (void)arg; return 0; }
+int agent_model_metadata_u_context_cache_key(const char *arg) {
+    /* Python: "model@base_url" with trailing slashes stripped. Arg =
+     * "model\tbase_url". */
+    if (!arg || !*arg) { printf("@\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    size_t mlen = tab ? (size_t)(tab - arg) : strlen(arg);
+    printf("%.*s@", (int)mlen, arg);
+    if (tab && tab[1]) {
+        size_t n = strlen(tab + 1);
+        while (n > 0 && tab[n] == '/') n--;
+        printf("%.*s\n", (int)n, tab + 1);
+    } else {
+        printf("\n");
+    }
+    return 0;
+}
 
 /* PoP: _query_ollama_api_show_uncached @ agent/model_metadata.py:_query_ollama_api_show_uncached */
 int agent_model_metadata_u_query_ollama_api_show_uncached(const char *arg) { (void)arg; return 0; }

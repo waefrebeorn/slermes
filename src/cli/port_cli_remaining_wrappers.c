@@ -140,7 +140,18 @@ int hermes_cli_debug_u_run_debug_share_nous(const char *arg) { (void)arg; return
 int hermes_cli_debug_run_debug(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _confirm @ hermes_cli/mcp_config.py:_confirm */
-int hermes_cli_mcp_config_u_confirm(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_config_u_confirm(const char *arg) {
+    /* Python: prompt "<question> [Y/n]: " (default) returning bool. Arg =
+     * "question\tdefault" (default "1"). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *q = arg;
+    int dflt = tab ? (tab[1] == '1') : 1;
+    printf("  %.*s [%s]: \n", (int)(tab ? (size_t)(tab - arg) : strlen(q)), q,
+           dflt ? "Y/n" : "y/N");
+    printf("%d\n", dflt);
+    return 0;
+}
 
 /* PoP: _get_mcp_servers @ hermes_cli/mcp_config.py:_get_mcp_servers */
 int hermes_cli_mcp_config_u_get_mcp_servers(const char *arg) {
@@ -471,7 +482,15 @@ int hermes_cli_curses_ui_u_numbered_single_fallback(const char *arg) { (void)arg
 int hermes_cli_curses_ui_u_numbered_fallback(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _catalog_root @ hermes_cli/mcp_catalog.py:_catalog_root */
-int hermes_cli_mcp_catalog_u_catalog_root(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_catalog_u_catalog_root(const char *arg) {
+    /* Python: optional-mcps dir (env override or repo-relative). Arg = env
+     * override or empty. */
+    if (arg && *arg) { printf("%s\n", arg); return 0; }
+    const char *env = getenv("HERMES_OPTIONAL_MCPS_DIR");
+    if (env && *env) { printf("%s\n", env); return 0; }
+    printf("optional-mcps\n");
+    return 0;
+}
 
 /* PoP: _parse_env_spec @ hermes_cli/mcp_catalog.py:_parse_env_spec */
 int hermes_cli_mcp_catalog_u_parse_env_spec(const char *arg) { (void)arg; return 0; }
@@ -943,7 +962,16 @@ int hermes_cli_telegram_managed_bo_u_parse_owner_user_id(const char *arg) {
 int hermes_cli_telegram_managed_bo_render_qr_terminal(const char *arg) { (void)arg; return 0; }
 
 /* PoP: print_qr_code @ hermes_cli/telegram_managed_bot.py:print_qr_code */
-int hermes_cli_telegram_managed_bo_print_qr_code(const char *arg) { (void)arg; return 0; }
+int hermes_cli_telegram_managed_bo_print_qr_code(const char *arg) {
+    /* Python: print QR text or install hint; + link when include_link. Arg =
+     * "url\tinclude_link". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int link = tab && tab[1] == '1';
+    printf("  (Install 'qrcode' for a scannable QR code: pip install qrcode)\n");
+    if (link) printf("  Link: %.*s\n", (int)(tab ? (size_t)(tab - arg) : strlen(arg)), arg);
+    return 0;
+}
 
 /* PoP: generate_username_slug @ hermes_cli/telegram_managed_bot.py:generate_username_slug */
 int hermes_cli_telegram_managed_bo_generate_username_slug(const char *arg) { (void)arg; return 0; }
@@ -955,7 +983,22 @@ int hermes_cli_telegram_managed_bo_generate_bot_username(const char *arg) { (voi
 int hermes_cli_telegram_managed_bo_generate_deep_link(const char *arg) { (void)arg; return 0; }
 
 /* PoP: generate_pairing_nonce @ hermes_cli/telegram_managed_bot.py:generate_pairing_nonce */
-int hermes_cli_telegram_managed_bo_generate_pairing_nonce(const char *arg) { (void)arg; return 0; }
+int hermes_cli_telegram_managed_bo_generate_pairing_nonce(const char *arg) {
+    /* Python: secrets.token_hex(16). Arg unused; /dev/urandom based. */
+    (void)arg;
+    unsigned char bytes[16];
+    FILE *fp = fopen("/dev/urandom", "r");
+    if (!fp) { printf("00000000000000000000000000000000\n"); return 0; }
+    if (fread(bytes, 1, sizeof(bytes), fp) != sizeof(bytes)) {
+        fclose(fp);
+        printf("00000000000000000000000000000000\n");
+        return 0;
+    }
+    fclose(fp);
+    for (size_t i = 0; i < sizeof(bytes); i++) printf("%02x", bytes[i]);
+    printf("\n");
+    return 0;
+}
 
 /* PoP: create_pairing @ hermes_cli/telegram_managed_bot.py:create_pairing */
 int hermes_cli_telegram_managed_bo_create_pairing(const char *arg) { (void)arg; return 0; }
@@ -1208,7 +1251,32 @@ int hermes_cli_skin_engine_get_color(const char *arg) {
 }
 
 /* PoP: get_spinner_wings @ hermes_cli/skin_engine.py:get_spinner_wings */
-int hermes_cli_skin_engine_get_spinner_wings(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skin_engine_get_spinner_wings(const char *arg) {
+    /* Python: spinner.wings pairs (str-str) or []. Arg = wings JSON. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *w = json_parse(arg, NULL);
+    if (!w || !json_is_array(w)) {
+        if (w) json_free(w);
+        printf("\n");
+        return 0;
+    }
+    size_t n = json_array_size(w);
+    int first = 1;
+    for (size_t i = 0; i < n; i++) {
+        json_t *pair = json_array_get(w, i);
+        if (!pair || !json_is_array(pair)) continue;
+        size_t pn = json_array_size(pair);
+        if (pn != 2) continue;
+        const char *a = json_string_value(json_array_get(pair, 0));
+        const char *b = json_string_value(json_array_get(pair, 1));
+        if (!first) printf("\n");
+        printf("%s\t%s", a ? a : "", b ? b : "");
+        first = 0;
+    }
+    printf("\n");
+    json_free(w);
+    return 0;
+}
 
 /* PoP: get_branding @ hermes_cli/skin_engine.py:get_branding */
 int hermes_cli_skin_engine_get_branding(const char *arg) {
@@ -2916,7 +2984,28 @@ int hermes_cli_fallback_cmd_u_snapshot_auth_active_provider(const char *arg) {
 int hermes_cli_fallback_cmd_u_restore_auth_active_provider(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _restore_model_cfg @ hermes_cli/fallback_cmd.py:_restore_model_cfg */
-int hermes_cli_fallback_cmd_u_restore_model_cfg(const char *arg) { (void)arg; return 0; }
+int hermes_cli_fallback_cmd_u_restore_model_cfg(const char *arg) {
+    /* Python: cfg["model"] = snapshot; pop when None. Arg =
+     * "model_json\tconfig_json" (model empty = pop). */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    json_t *cfg = json_parse(tab ? tab + 1 : "", NULL);
+    if (!cfg || !json_is_object(cfg)) {
+        if (cfg) json_free(cfg);
+        cfg = json_object();
+    }
+    if (!tab || tab == arg) {
+        json_obj_del(cfg, "model");
+    } else {
+        json_t *m = json_parse(arg, NULL);
+        if (m) json_set(cfg, "model", m);
+    }
+    char *s = json_dumps(cfg, 0);
+    printf("%s\n", s ? s : "{}");
+    free(s);
+    json_free(cfg);
+    return 0;
+}
 
 /* PoP: _numbered_pick @ hermes_cli/fallback_cmd.py:_numbered_pick */
 int hermes_cli_fallback_cmd_u_numbered_pick(const char *arg) { (void)arg; return 0; }

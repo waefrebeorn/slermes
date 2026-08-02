@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <unistd.h>
 #include "hermes_json.h"
 
 /* PoP: _get_token_dir @ tools/mcp_oauth.py:_get_token_dir */
@@ -46,7 +47,18 @@ int mcpo_u_cached_redirect_port(const char *arg) { (void)arg; return 0; }
 int mcpo_u_cached_redirect_uri(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_interactive @ tools/mcp_oauth.py:_is_interactive */
-int mcpo_u_is_interactive(const char *arg) { (void)arg; return 0; }
+int mcpo_u_is_interactive(const char *arg) {
+    /* Python: enabled flag; forced flag; else stdin isatty. Arg =
+     * "enabled\tforced". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    int enabled = (arg[0] == '1');
+    const char *tab = strchr(arg, '\t');
+    int forced = tab ? (tab[1] == '1') : 0;
+    if (!enabled) { printf("0\n"); return 0; }
+    if (forced) { printf("1\n"); return 0; }
+    printf("%d\n", isatty(0) ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _raise_if_non_interactive @ tools/mcp_oauth.py:_raise_if_non_interactive */
 int mcpo_u_raise_if_non_interactive(const char *arg) { (void)arg; return 0; }

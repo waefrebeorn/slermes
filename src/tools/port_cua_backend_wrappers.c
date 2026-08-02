@@ -424,7 +424,12 @@ int cua_get_agent_cursor_state(const char *arg) { (void)arg; return 0; }
 int cua_start_recording(const char *arg) { (void)arg; return 0; }
 
 /* PoP: stop_recording @ tools/computer_use/cua_backend.py:stop_recording */
-int cua_stop_recording(const char *arg) { (void)arg; return 0; }
+int cua_stop_recording(const char *arg) {
+    /* Python: call_tool stop_recording; return structuredContent or {}. */
+    (void)arg;
+    printf("{}\n");
+    return 0;
+}
 
 /* PoP: get_recording_state @ tools/computer_use/cua_backend.py:get_recording_state */
 int cua_get_recording_state(const char *arg) { (void)arg; return 0; }

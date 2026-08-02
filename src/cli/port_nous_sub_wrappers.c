@@ -79,7 +79,18 @@ int nsub_u_browser_label(const char *arg) {
 }
 
 /* PoP: _tts_label @ hermes_cli/nous_subscription.py:_tts_label */
-int nsub_u_tts_label(const char *arg) { (void)arg; return 0; }
+int nsub_u_tts_label(const char *arg) {
+    /* Python: provider -> label mapping. Arg = provider (default "edge"). */
+    if (!arg || !*arg) { printf("Edge TTS\n"); return 0; }
+    if (strcmp(arg, "openai") == 0) printf("OpenAI TTS\n");
+    else if (strcmp(arg, "elevenlabs") == 0) printf("ElevenLabs\n");
+    else if (strcmp(arg, "edge") == 0) printf("Edge TTS\n");
+    else if (strcmp(arg, "xai") == 0) printf("xAI TTS\n");
+    else if (strcmp(arg, "mistral") == 0) printf("Mistral Voxtral TTS\n");
+    else if (strcmp(arg, "neutts") == 0) printf("NeuTTS\n");
+    else printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _stt_label @ hermes_cli/nous_subscription.py:_stt_label */
 int nsub_u_stt_label(const char *arg) {

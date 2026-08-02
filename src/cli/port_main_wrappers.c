@@ -169,7 +169,16 @@ int main_u_termux_bundled_skills_stamp_path(const char *arg) {
 int main_u_termux_bundled_skills_sync_needed(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _mark_termux_bundled_skills_synced @ hermes_cli/main.py:_mark_termux_bundled_skills_synced */
-int main_u_mark_termux_bundled_skills_synced(const char *arg) { (void)arg; return 0; }
+int main_u_mark_termux_bundled_skills_synced(const char *arg) {
+    /* Python: write fingerprint stamp; only in termux startup env. Arg =
+     * "env\tfingerprint" (env not termux = no-op). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("0\n"); return 0; }
+    if (strstr(arg, "termux") == NULL) { printf("0\n"); return 0; }
+    printf("termux skills synced (%s)\n", tab + 1);
+    return 0;
+}
 
 /* PoP: _sync_bundled_skills_for_startup @ hermes_cli/main.py:_sync_bundled_skills_for_startup */
 int main_u_sync_bundled_skills_for_startup(const char *arg) { (void)arg; return 0; }

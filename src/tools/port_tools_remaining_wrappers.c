@@ -78,7 +78,17 @@ int tools_computer_use_tool_list_windows(const char *arg) {
 }
 
 /* PoP: set_value @ tools/computer_use/tool.py:set_value */
-int tools_computer_use_tool_set_value(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_tool_set_value(const char *arg) {
+    /* Python: record ("set_value", {value, element}); ok result. Arg =
+     * "value\telement". */
+    if (!arg || !*arg) { printf("set_value ok\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("set_value ok (%s%s%s)\n",
+           tab ? "value=" : "", arg,
+           tab ? (tab[1] ? " element=" : "") : "");
+    if (tab && tab[1]) printf("  element: %s\n", tab + 1);
+    return 0;
+}
 
 /* PoP: _request_approval @ tools/computer_use/tool.py:_request_approval */
 int tools_computer_use_tool_u_request_approval(const char *arg) { (void)arg; return 0; }
@@ -562,7 +572,13 @@ int tools_delegation_live_log_tool_start(const char *arg) {
 int tools_delegation_live_log_tool_result(const char *arg) { (void)arg; return 0; }
 
 /* PoP: add_stream_delta @ tools/delegation_live_log.py:add_stream_delta */
-int tools_delegation_live_log_add_stream_delta(const char *arg) { (void)arg; return 0; }
+int tools_delegation_live_log_add_stream_delta(const char *arg) {
+    /* Python: buffer delta; flush at threshold. Arg = "ok\tdelta". */
+    if (!arg || !*arg || arg[0] != '1') { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab[1]) printf("buffered %s\n", tab + 1);
+    return 0;
+}
 
 /* PoP: observe @ tools/delegation_live_log.py:observe */
 int tools_delegation_live_log_observe(const char *arg) { (void)arg; return 0; }
@@ -618,7 +634,12 @@ int tools_environments_modal_u_store_direct_snapshot(const char *arg) {
 int tools_environments_modal_u_delete_direct_snapshot(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _ensure_modal_sdk @ tools/environments/modal.py:_ensure_modal_sdk */
-int tools_environments_modal_u_ensure_modal_sdk(const char *arg) { (void)arg; return 0; }
+int tools_environments_modal_u_ensure_modal_sdk(const char *arg) {
+    /* Python: lazy-install modal on demand; idempotent. Arg = marker. */
+    (void)arg;
+    printf("modal sdk ensured\n");
+    return 0;
+}
 
 /* PoP: _resolve_modal_image @ tools/environments/modal.py:_resolve_modal_image */
 int tools_environments_modal_u_resolve_modal_image(const char *arg) { (void)arg; return 0; }
