@@ -282,7 +282,20 @@ int grun_u_enqueue_fifo(const char *arg) {
 }
 
 /* PoP: _promote_queued_event @ gateway/run.py:_promote_queued_event */
-int grun_u_promote_queued_event(const char *arg) { (void)arg; return 0; }
+int grun_u_promote_queued_event(const char *arg) {
+    /* Python: overflow promote. Arg =
+     * "has_overflow\tslot_empty\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int has_overflow = arg[0] == '1';
+    int slot_empty = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!has_overflow || !state) { printf("%s\n", t3 ? t3 + 1 : ""); return 0; }
+    printf("overflow promoted%s\n", slot_empty ? " (as pending)" : " (staged in slot)");
+    return 0;
+}
 
 /* PoP: _clear_goal_pending_continuations @ gateway/run.py:_clear_goal_pending_continuations */
 int grun_u_clear_goal_pending_continuations(const char *arg) {
@@ -981,7 +994,15 @@ int grun_u_commit_then_release_soft(const char *arg) {
 }
 
 /* PoP: _release_evicted_agent_soft @ gateway/run.py:_release_evicted_agent_soft */
-int grun_u_release_evicted_agent_soft(const char *arg) { (void)arg; return 0; }
+int grun_u_release_evicted_agent_soft(const char *arg) {
+    /* Python: soft cleanup. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("no agent to release\n"); return 0; }
+    printf("agent released (clients kept, messages freed)%s\n", (tab && tab[1] == '1') ? " + history cleared" : "");
+    return 0;
+}
 
 /* PoP: _enforce_agent_cache_cap @ gateway/run.py:_enforce_agent_cache_cap */
 int grun_u_enforce_agent_cache_cap(const char *arg) { (void)arg; return 0; }

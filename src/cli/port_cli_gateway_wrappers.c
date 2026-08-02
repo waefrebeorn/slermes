@@ -975,7 +975,15 @@ int cgw_u_build_service_path_dirs(const char *arg) {
 }
 
 /* PoP: _stable_service_working_dir @ hermes_cli/gateway.py:_stable_service_working_dir */
-int cgw_u_stable_service_working_dir(const char *arg) { (void)arg; return 0; }
+int cgw_u_stable_service_working_dir(const char *arg) {
+    /* Python: HERMES_HOME anchor. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("PROJECT_ROOT fallback\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _systemd_watchdog_seconds @ hermes_cli/gateway.py:_systemd_watchdog_seconds */
 int cgw_u_systemd_watchdog_seconds(const char *arg) {

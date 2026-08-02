@@ -1271,7 +1271,15 @@ int agent_rate_limit_tracker_u_bucket_line(const char *arg) {
 }
 
 /* PoP: format_rate_limit_display @ agent/rate_limit_tracker.py:format_rate_limit_display */
-int agent_rate_limit_tracker_format_rate_limit_display(const char *arg) { (void)arg; return 0; }
+int agent_rate_limit_tracker_format_rate_limit_display(const char *arg) {
+    /* Python: bucket display. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("No rate limit data yet — make an API request first.\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("No rate limit data yet — make an API request first.\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: format_rate_limit_compact @ agent/rate_limit_tracker.py:format_rate_limit_compact */
 int agent_rate_limit_tracker_format_rate_limit_compact(const char *arg) {
@@ -1603,7 +1611,16 @@ int agent_trace_upload_load_session_messages(const char *arg) {
 }
 
 /* PoP: upload_session_trace @ agent/trace_upload.py:upload_session_trace */
-int agent_trace_upload_upload_session_trace(const char *arg) { (void)arg; return 0; }
+int agent_trace_upload_upload_session_trace(const char *arg) {
+    /* Python: top-level upload. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("No active session to upload.\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_token") == 0) { printf("no HF token configured — run auth\n"); return 0; }
+    if (strcmp(state, "no_messages") == 0) { printf("No transcript to upload for this session yet.\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: sanitize_memory_context @ agent/context_engine.py:sanitize_memory_context */
 int agent_context_engine_sanitize_memory_context(const char *arg) {

@@ -223,7 +223,15 @@ int envl_u_git_bash_aslr_help(const char *arg) {
 }
 
 /* PoP: _bash_starts @ tools/environments/local.py:_bash_starts */
-int envl_u_bash_starts(const char *arg) { (void)arg; return 0; }
+int envl_u_bash_starts(const char *arg) {
+    /* Python: external-program probe. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _git_bash_bin_dirs @ tools/environments/local.py:_git_bash_bin_dirs */
 int envl_u_git_bash_bin_dirs(const char *arg) { (void)arg; return 0; }

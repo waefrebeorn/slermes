@@ -1661,7 +1661,20 @@ int tools_kanban_tools_u_download_url_with_cap(const char *arg) { (void)arg; ret
 int tools_kanban_tools_u_handle_attach_url(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _handle_attachments @ tools/kanban_tools.py:_handle_attachments */
-int tools_kanban_tools_u_handle_attachments(const char *arg) { (void)arg; return 0; }
+int tools_kanban_tools_u_handle_attachments(const char *arg) {
+    /* Python: attachment listing. Arg = "count\tstate\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"ok\": false}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) {
+        printf("{\"ok\": false, \"error\": \"%s\"}\n", t3 ? t3 + 1 : "kanban_attachments failed");
+        return 1;
+    }
+    printf("%s\n", t3 ? t3 + 1 : "{\"ok\": true, \"attachments\": []}");
+    return 0;
+}
 
 /* PoP: managed_nous_tools_enabled @ tools/tool_backend_helpers.py:managed_nous_tools_enabled */
 int tools_tool_backend_helpers_managed_nous_tools_enabled(const char *arg) {

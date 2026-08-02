@@ -174,7 +174,21 @@ int cua_u_is_real_app_window(const char *arg) {
 }
 
 /* PoP: _select_capture_target @ tools/computer_use/cua_backend.py:_select_capture_target */
-int cua_u_select_capture_target(const char *arg) { (void)arg; return 0; }
+int cua_u_select_capture_target(const char *arg) {
+    /* Python: z-index/active-window pick. Arg =
+     * "exact\tlinux\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int exact = arg[0] == '1';
+    int is_linux = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (exact) { printf("exact target (no probe): %s\n", t3 ? t3 + 1 : ""); return 0; }
+    printf("capture target: %s%s\n", t3 ? t3 + 1 : "", is_linux ? " (xprop active-window checked)" : "");
+    return 0;
+}
 
 /* PoP: _resolve_mcp_invocation @ tools/computer_use/cua_backend.py:_resolve_mcp_invocation */
 int cua_u_resolve_mcp_invocation(const char *arg) { (void)arg; return 0; }

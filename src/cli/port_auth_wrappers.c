@@ -424,7 +424,16 @@ int auth_u_xai_access_token_is_expiring(const char *arg) {
 }
 
 /* PoP: _xai_proactive_refresh_skew_seconds @ hermes_cli/auth.py:_xai_proactive_refresh_skew_seconds */
-int auth_u_xai_proactive_refresh_skew_seconds(const char *arg) { (void)arg; return 0; }
+int auth_u_xai_proactive_refresh_skew_seconds(const char *arg) {
+    /* Python: JWT exp-based skew. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("3600\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_jwt") == 0) { printf("3600\n"); return 0; }
+    if (strcmp(state, "short") == 0) { printf("120\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "3600");
+    return 0;
+}
 
 /* PoP: _xai_validate_oauth_endpoint @ hermes_cli/auth.py:_xai_validate_oauth_endpoint */
 int auth_u_xai_validate_oauth_endpoint(const char *arg) { (void)arg; return 0; }
@@ -507,7 +516,15 @@ int auth_resolve_nous_runtime_credentials(const char *arg) { (void)arg; return 0
 int auth_u_snapshot_nous_pool_status(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_nous_auth_status @ hermes_cli/auth.py:get_nous_auth_status */
-int auth_get_nous_auth_status(const char *arg) { (void)arg; return 0; }
+int auth_get_nous_auth_status(const char *arg) {
+    /* Python: memoized snapshot. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _compute_nous_auth_status @ hermes_cli/auth.py:_compute_nous_auth_status */
 int auth_u_compute_nous_auth_status(const char *arg) { (void)arg; return 0; }

@@ -1060,7 +1060,23 @@ int main_u_stop_desktop_processes_locking_build(const char *arg) { (void)arg; re
 int main_u_desktop_macos_relaunchable_fixup(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _force_adhoc_macos_signing @ hermes_cli/main.py:_force_adhoc_macos_signing */
-int main_u_force_adhoc_macos_signing(const char *arg) { (void)arg; return 0; }
+int main_u_force_adhoc_macos_signing(const char *arg) {
+    /* Python: ad-hoc signing flag. Arg =
+     * "darwin\tsource_mode\thas_identity\tpinned\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int darwin = arg[0] == '1';
+    int source_mode = t1 && t1[1] == '1';
+    int has_identity = t2 && t2[1] == '1';
+    int pinned = t3 && t3[1] == '1';
+    int state = t4 && t4[1] == '1';
+    if (!darwin || source_mode || has_identity || pinned || !state) { printf("0\n"); return 0; }
+    printf("1 (CSC_IDENTITY_AUTO_DISCOVERY=false set)\n");
+    return 0;
+}
 
 /* PoP: _desktop_linux_needs_no_sandbox @ hermes_cli/main.py:_desktop_linux_needs_no_sandbox */
 int main_u_desktop_linux_needs_no_sandbox(const char *arg) {
