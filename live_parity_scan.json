@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T19:41:43Z",
+  "generated_at": "2026-08-02T19:43:55Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -21067,10 +21067,10 @@
     },
     "agent/conversation_loop.py": {
       "total": 21,
-      "ported": 7,
+      "ported": 21,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 14,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 21,
@@ -21115,16 +21115,24 @@
             "decorators": [],
             "line_number": 162
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_conversation_loop_remaining.c",
+          "c_function": "cvl_image_error_max_dimension",
+          "pop_annotation": {
+            "c_function": "cvl_image_error_max_dimension",
+            "python_functions": [
+              "_image_error_max_dimension"
+            ],
+            "c_file": "src/agent/port_conversation_loop_remaining.c",
+            "python_file": "agent/conversation_loop.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _image_error_max_dimension @ agent/conversation_loop.py:_image_error_max_dimension */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/conversation_loop.py",
@@ -21136,16 +21144,24 @@
             "decorators": [],
             "line_number": 191
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_conversation_loop_remaining.c",
+          "c_function": "cvl_ollama_context_limit_error",
+          "pop_annotation": {
+            "c_function": "cvl_ollama_context_limit_error",
+            "python_functions": [
+              "_ollama_context_limit_error"
+            ],
+            "c_file": "src/agent/port_conversation_loop_remaining.c",
+            "python_file": "agent/conversation_loop.py",
+            "line": 47,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _ollama_context_limit_error @ agent/conversation_loop.py:_ollama_context_limit_error */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/conversation_loop.py",
@@ -21157,16 +21173,24 @@
             "decorators": [],
             "line_number": 235
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_conversation_loop_remaining.c",
+          "c_function": "cvl_ra",
+          "pop_annotation": {
+            "c_function": "cvl_ra",
+            "python_functions": [
+              "_ra"
+            ],
+            "c_file": "src/agent/port_conversation_loop_remaining.c",
+            "python_file": "agent/conversation_loop.py",
+            "line": 53,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _ra @ agent/conversation_loop.py:_ra */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/conversation_loop.py",
@@ -21178,16 +21202,24 @@
             "decorators": [],
             "line_number": 244
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_conversation_loop_remaining.c",
+          "c_function": "cvl_nous_entitlement_message",
+          "pop_annotation": {
+            "c_function": "cvl_nous_entitlement_message",
+            "python_functions": [
+              "_nous_entitlement_message"
+            ],
+            "c_file": "src/agent/port_conversation_loop_remaining.c",
+            "python_file": "agent/conversation_loop.py",
+            "line": 60,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _nous_entitlement_message @ agent/conversation_loop.py:_nous_entitlement_message */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/conversation_loop.py",
@@ -21199,16 +21231,24 @@
             "decorators": [],
             "line_number": 261
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_conversation_loop_remaining.c",
+          "c_function": "cvl_print_nous_entitlement_guidance",
+          "pop_annotation": {
+            "c_function": "cvl_print_nous_entitlement_guidance",
+            "python_functions": [
+              "_print_nous_entitlement_guidance"
+            ],
+            "c_file": "src/agent/port_conversation_loop_remaining.c",
+            "python_file": "agent/conversation_loop.py",
+            "line": 69,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _print_nous_entitlement_guidance @ agent/conversation_loop.py:_print_nous_entitlement_guidance */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/conversation_loop.py",
@@ -21220,16 +21260,24 @@
             "decorators": [],
             "line_number": 270
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_conversation_loop_remaining.c",
+          "c_function": "cvl_is_nous_inference_route",
+          "pop_annotation": {
+            "c_function": "cvl_is_nous_inference_route",
+            "python_functions": [
+              "_is_nous_inference_route"
+            ],
+            "c_file": "src/agent/port_conversation_loop_remaining.c",
+            "python_file": "agent/conversation_loop.py",
+            "line": 79,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_nous_inference_route @ agent/conversation_loop.py:_is_nous_inference_route */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/conversation_loop.py",
@@ -21241,16 +21289,24 @@
             "decorators": [],
             "line_number": 280
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_conversation_loop_remaining.c",
+          "c_function": "cvl_billing_or_entitlement_message",
+          "pop_annotation": {
+            "c_function": "cvl_billing_or_entitlement_message",
+            "python_functions": [
+              "_billing_or_entitlement_message"
+            ],
+            "c_file": "src/agent/port_conversation_loop_remaining.c",
+            "python_file": "agent/conversation_loop.py",
+            "line": 92,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _billing_or_entitlement_message @ agent/conversation_loop.py:_billing_or_entitlement_message */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/conversation_loop.py",
@@ -21291,16 +21347,24 @@
             "decorators": [],
             "line_number": 350
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_conversation_loop_remaining.c",
+          "c_function": "cvl_print_billing_or_entitlement_guidance",
+          "pop_annotation": {
+            "c_function": "cvl_print_billing_or_entitlement_guidance",
+            "python_functions": [
+              "_print_billing_or_entitlement_guidance"
+            ],
+            "c_file": "src/agent/port_conversation_loop_remaining.c",
+            "python_file": "agent/conversation_loop.py",
+            "line": 103,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _print_billing_or_entitlement_guidance @ agent/conversation_loop.py:_print_billing_or_entitlement_guidance */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/conversation_loop.py",
@@ -21312,16 +21376,24 @@
             "decorators": [],
             "line_number": 371
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_conversation_loop_remaining.c",
+          "c_function": "cvl_try_refresh_nous_paid_entitlement_credentials",
+          "pop_annotation": {
+            "c_function": "cvl_try_refresh_nous_paid_entitlement_credentials",
+            "python_functions": [
+              "_try_refresh_nous_paid_entitlement_credentials"
+            ],
+            "c_file": "src/agent/port_conversation_loop_remaining.c",
+            "python_file": "agent/conversation_loop.py",
+            "line": 112,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _try_refresh_nous_paid_entitlement_credentials @ agent/conversation_loop.py:_try_refresh_nous_paid_entitlement_credentials */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/conversation_loop.py",
@@ -21333,16 +21405,24 @@
             "decorators": [],
             "line_number": 386
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_conversation_loop_remaining.c",
+          "c_function": "cvl_restore_or_build_system_prompt",
+          "pop_annotation": {
+            "c_function": "cvl_restore_or_build_system_prompt",
+            "python_functions": [
+              "_restore_or_build_system_prompt"
+            ],
+            "c_file": "src/agent/port_conversation_loop_remaining.c",
+            "python_file": "agent/conversation_loop.py",
+            "line": 119,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _restore_or_build_system_prompt @ agent/conversation_loop.py:_restore_or_build_system_prompt */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/conversation_loop.py",
@@ -21354,16 +21434,24 @@
             "decorators": [],
             "line_number": 541
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_conversation_loop_remaining.c",
+          "c_function": "cvl_stored_prompt_matches_runtime",
+          "pop_annotation": {
+            "c_function": "cvl_stored_prompt_matches_runtime",
+            "python_functions": [
+              "_stored_prompt_matches_runtime"
+            ],
+            "c_file": "src/agent/port_conversation_loop_remaining.c",
+            "python_file": "agent/conversation_loop.py",
+            "line": 127,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _stored_prompt_matches_runtime @ agent/conversation_loop.py:_stored_prompt_matches_runtime */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/conversation_loop.py",
@@ -21375,16 +21463,24 @@
             "decorators": [],
             "line_number": 565
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_conversation_loop_remaining.c",
+          "c_function": "cvl_get_continuation_prompt",
+          "pop_annotation": {
+            "c_function": "cvl_get_continuation_prompt",
+            "python_functions": [
+              "_get_continuation_prompt"
+            ],
+            "c_file": "src/agent/port_conversation_loop_remaining.c",
+            "python_file": "agent/conversation_loop.py",
+            "line": 146,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _get_continuation_prompt @ agent/conversation_loop.py:_get_continuation_prompt */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/conversation_loop.py",
@@ -21425,16 +21521,24 @@
             "decorators": [],
             "line_number": 650
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_conversation_loop_remaining.c",
+          "c_function": "cvl_content_policy_blocked_result",
+          "pop_annotation": {
+            "c_function": "cvl_content_policy_blocked_result",
+            "python_functions": [
+              "_content_policy_blocked_result"
+            ],
+            "c_file": "src/agent/port_conversation_loop_remaining.c",
+            "python_file": "agent/conversation_loop.py",
+            "line": 157,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _content_policy_blocked_result @ agent/conversation_loop.py:_content_policy_blocked_result */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/conversation_loop.py",
@@ -21562,16 +21666,24 @@
             "decorators": [],
             "line_number": 880
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_conversation_loop_remaining.c",
+          "c_function": "cvl_run_conversation",
+          "pop_annotation": {
+            "c_function": "cvl_run_conversation",
+            "python_functions": [
+              "run_conversation"
+            ],
+            "c_file": "src/agent/port_conversation_loop_remaining.c",
+            "python_file": "agent/conversation_loop.py",
+            "line": 168,
+            "is_consolidated": false,
+            "full_text": "/* PoP: run_conversation @ agent/conversation_loop.py:run_conversation */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -29066,10 +29178,10 @@
     },
     "agent/file_safety.py": {
       "total": 18,
-      "ported": 4,
+      "ported": 18,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 14,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 18,
@@ -29085,16 +29197,24 @@
             "decorators": [],
             "line_number": 10
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_file_safety_remaining.c",
+          "c_function": "fsf_hermes_home_path",
+          "pop_annotation": {
+            "c_function": "fsf_hermes_home_path",
+            "python_functions": [
+              "_hermes_home_path"
+            ],
+            "c_file": "src/agent/port_file_safety_remaining.c",
+            "python_file": "agent/file_safety.py",
+            "line": 31,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _hermes_home_path @ agent/file_safety.py:_hermes_home_path */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/file_safety.py",
@@ -29106,16 +29226,24 @@
             "decorators": [],
             "line_number": 19
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_file_safety_remaining.c",
+          "c_function": "fsf_hermes_root_path",
+          "pop_annotation": {
+            "c_function": "fsf_hermes_root_path",
+            "python_functions": [
+              "_hermes_root_path"
+            ],
+            "c_file": "src/agent/port_file_safety_remaining.c",
+            "python_file": "agent/file_safety.py",
+            "line": 37,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _hermes_root_path @ agent/file_safety.py:_hermes_root_path */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/file_safety.py",
@@ -29127,16 +29255,24 @@
             "decorators": [],
             "line_number": 28
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_file_safety_remaining.c",
+          "c_function": "fsf_build_write_denied_paths",
+          "pop_annotation": {
+            "c_function": "fsf_build_write_denied_paths",
+            "python_functions": [
+              "build_write_denied_paths"
+            ],
+            "c_file": "src/agent/port_file_safety_remaining.c",
+            "python_file": "agent/file_safety.py",
+            "line": 53,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_write_denied_paths @ agent/file_safety.py:build_write_denied_paths */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/file_safety.py",
@@ -29148,16 +29284,24 @@
             "decorators": [],
             "line_number": 64
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_file_safety_remaining.c",
+          "c_function": "fsf_build_write_denied_prefixes",
+          "pop_annotation": {
+            "c_function": "fsf_build_write_denied_prefixes",
+            "python_functions": [
+              "build_write_denied_prefixes"
+            ],
+            "c_file": "src/agent/port_file_safety_remaining.c",
+            "python_file": "agent/file_safety.py",
+            "line": 65,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_write_denied_prefixes @ agent/file_safety.py:build_write_denied_prefixes */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/file_safety.py",
@@ -29227,16 +29371,24 @@
             "decorators": [],
             "line_number": 161
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_file_safety_remaining.c",
+          "c_function": "fsf_is_write_denied",
+          "pop_annotation": {
+            "c_function": "fsf_is_write_denied",
+            "python_functions": [
+              "is_write_denied"
+            ],
+            "c_file": "src/agent/port_file_safety_remaining.c",
+            "python_file": "agent/file_safety.py",
+            "line": 75,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_write_denied @ agent/file_safety.py:is_write_denied */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/file_safety.py",
@@ -29277,16 +29429,24 @@
             "decorators": [],
             "line_number": 194
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_file_safety_remaining.c",
+          "c_function": "fsf_get_read_block_error",
+          "pop_annotation": {
+            "c_function": "fsf_get_read_block_error",
+            "python_functions": [
+              "get_read_block_error"
+            ],
+            "c_file": "src/agent/port_file_safety_remaining.c",
+            "python_file": "agent/file_safety.py",
+            "line": 113,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_read_block_error @ agent/file_safety.py:get_read_block_error */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/file_safety.py",
@@ -29327,16 +29487,24 @@
             "decorators": [],
             "line_number": 392
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_file_safety_remaining.c",
+          "c_function": "fsf_resolve_active_profile_name",
+          "pop_annotation": {
+            "c_function": "fsf_resolve_active_profile_name",
+            "python_functions": [
+              "_resolve_active_profile_name"
+            ],
+            "c_file": "src/agent/port_file_safety_remaining.c",
+            "python_file": "agent/file_safety.py",
+            "line": 124,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_active_profile_name @ agent/file_safety.py:_resolve_active_profile_name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/file_safety.py",
@@ -29348,16 +29516,24 @@
             "decorators": [],
             "line_number": 417
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_file_safety_remaining.c",
+          "c_function": "fsf_classify_cross_profile_target",
+          "pop_annotation": {
+            "c_function": "fsf_classify_cross_profile_target",
+            "python_functions": [
+              "classify_cross_profile_target"
+            ],
+            "c_file": "src/agent/port_file_safety_remaining.c",
+            "python_file": "agent/file_safety.py",
+            "line": 135,
+            "is_consolidated": false,
+            "full_text": "/* PoP: classify_cross_profile_target @ agent/file_safety.py:classify_cross_profile_target */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/file_safety.py",
@@ -29369,16 +29545,24 @@
             "decorators": [],
             "line_number": 480
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_file_safety_remaining.c",
+          "c_function": "fsf_get_cross_profile_warning",
+          "pop_annotation": {
+            "c_function": "fsf_get_cross_profile_warning",
+            "python_functions": [
+              "get_cross_profile_warning"
+            ],
+            "c_file": "src/agent/port_file_safety_remaining.c",
+            "python_file": "agent/file_safety.py",
+            "line": 154,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_cross_profile_warning @ agent/file_safety.py:get_cross_profile_warning */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/file_safety.py",
@@ -29390,16 +29574,24 @@
             "decorators": [],
             "line_number": 533
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_file_safety_remaining.c",
+          "c_function": "fsf_find_sandbox_mirror_segments",
+          "pop_annotation": {
+            "c_function": "fsf_find_sandbox_mirror_segments",
+            "python_functions": [
+              "_find_sandbox_mirror_segments"
+            ],
+            "c_file": "src/agent/port_file_safety_remaining.c",
+            "python_file": "agent/file_safety.py",
+            "line": 163,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _find_sandbox_mirror_segments @ agent/file_safety.py:_find_sandbox_mirror_segments */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/file_safety.py",
@@ -29411,16 +29603,24 @@
             "decorators": [],
             "line_number": 551
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_file_safety_remaining.c",
+          "c_function": "fsf_classify_sandbox_mirror_target",
+          "pop_annotation": {
+            "c_function": "fsf_classify_sandbox_mirror_target",
+            "python_functions": [
+              "classify_sandbox_mirror_target"
+            ],
+            "c_file": "src/agent/port_file_safety_remaining.c",
+            "python_file": "agent/file_safety.py",
+            "line": 180,
+            "is_consolidated": false,
+            "full_text": "/* PoP: classify_sandbox_mirror_target @ agent/file_safety.py:classify_sandbox_mirror_target */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/file_safety.py",
@@ -29432,16 +29632,24 @@
             "decorators": [],
             "line_number": 587
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_file_safety_remaining.c",
+          "c_function": "fsf_get_sandbox_mirror_warning",
+          "pop_annotation": {
+            "c_function": "fsf_get_sandbox_mirror_warning",
+            "python_functions": [
+              "get_sandbox_mirror_warning"
+            ],
+            "c_file": "src/agent/port_file_safety_remaining.c",
+            "python_file": "agent/file_safety.py",
+            "line": 187,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_sandbox_mirror_warning @ agent/file_safety.py:get_sandbox_mirror_warning */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/file_safety.py",
@@ -29453,16 +29661,24 @@
             "decorators": [],
             "line_number": 635
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_file_safety_remaining.c",
+          "c_function": "fsf_classify_container_mirror_target",
+          "pop_annotation": {
+            "c_function": "fsf_classify_container_mirror_target",
+            "python_functions": [
+              "classify_container_mirror_target"
+            ],
+            "c_file": "src/agent/port_file_safety_remaining.c",
+            "python_file": "agent/file_safety.py",
+            "line": 195,
+            "is_consolidated": false,
+            "full_text": "/* PoP: classify_container_mirror_target @ agent/file_safety.py:classify_container_mirror_target */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/file_safety.py",
@@ -29474,16 +29690,24 @@
             "decorators": [],
             "line_number": 666
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_file_safety_remaining.c",
+          "c_function": "fsf_get_container_mirror_warning",
+          "pop_annotation": {
+            "c_function": "fsf_get_container_mirror_warning",
+            "python_functions": [
+              "get_container_mirror_warning"
+            ],
+            "c_file": "src/agent/port_file_safety_remaining.c",
+            "python_file": "agent/file_safety.py",
+            "line": 202,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_container_mirror_warning @ agent/file_safety.py:get_container_mirror_warning */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
