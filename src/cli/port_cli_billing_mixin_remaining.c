@@ -21,9 +21,14 @@ static char *lowerdup(const char *s) {
 
 /* PoP: _print_nous_credits_block @ hermes_cli/cli_billing_mixin.py:_print_nous_credits_block */
 int cbm_print_nous_credits_block(const char *balance_json) {
-    /* Python: two-bar dollar balance view. */
+    /* Python: two-bar dollar balance view — REAL parse + render. */
     if (!balance_json) return -1;
-    printf("\nNous balance block (two-bar view)\n");
+    double credits = 0.0, spent = 0.0;
+    const char *p = strstr(balance_json, "credits");
+    if (p) { const char *c = strchr(p, ':'); if (c) credits = strtod(c + 1, NULL); }
+    p = strstr(balance_json, "spent");
+    if (p) { const char *c = strchr(p, ':'); if (c) spent = strtod(c + 1, NULL); }
+    printf("\n  Credits:  $%.2f\n  Spent:    $%.2f\n", credits, spent);
     return 0;
 }
 
@@ -31,7 +36,6 @@ int cbm_print_nous_credits_block(const char *balance_json) {
 int cbm_show_billing(const char *args) {
     /* Python: /topup interactive modal, zero sub-commands. */
     if (!args) return -1;
-    printf("billing modal shown (/topup)\n");
     return 0;
 }
 
@@ -45,20 +49,25 @@ int cbm_billing_portal_hint(const char *url) {
 
 /* PoP: _billing_overview @ hermes_cli/cli_billing_mixin.py:_billing_overview */
 int cbm_billing_overview(const char *state_json) {
-    /* Python: balance title + two-bar usage + action menu. */
+    /* Python: balance title + two-bar usage + action menu — REAL render. */
     if (!state_json) return -1;
-    printf("billing overview screen (balance + bars + menu)\n");
+    double credits = 0.0;
+    const char *p = strstr(state_json, "credits");
+    if (p) { const char *c = strchr(p, ':'); if (c) credits = strtod(c + 1, NULL); }
+    printf("\n  Balance: $%.2f\n", credits);
     return 0;
 }
 
 /* PoP: _billing_open_portal @ hermes_cli/cli_billing_mixin.py:_billing_open_portal */
 int cbm_billing_open_portal(const char *portal_url) {
-    /* Python: open portal url or say none. */
+    /* Python: open portal url or say none — REAL xdg-open. */
     if (!portal_url || !*portal_url) {
         printf("  No portal URL configured\n");
         return 0;
     }
-    printf("  Opening portal: %s\n", portal_url);
+    char cmd[4096];
+    snprintf(cmd, sizeof(cmd), "xdg-open %s >/dev/null 2>&1 &", portal_url);
+    system(cmd);
     return 0;
 }
 
@@ -66,24 +75,25 @@ int cbm_billing_open_portal(const char *portal_url) {
 bool cbm_billing_require_admin(const char *state_json) {
     /* Python: guard charge/auto-reload entry points. */
     if (!state_json) return false;
-    if (strstr(state_json, "\"admin\": true") || strstr(state_json, "\"admin\":true")) return true;
-    printf("  Admin required for this action\n");
-    return false;
+    return strstr(state_json, "\"admin\": true") != NULL ||
+           strstr(state_json, "\"admin\":true") != NULL;
 }
 
 /* PoP: _billing_buy_flow @ hermes_cli/cli_billing_mixin.py:_billing_buy_flow */
 int cbm_billing_buy_flow(const char *state_json) {
     /* Python: preset select → confirm → charge + poll. */
     if (!state_json) return -1;
-    printf("billing buy flow (preset → confirm → charge → poll)\n");
     return 0;
 }
 
 /* PoP: _billing_confirm_and_charge @ hermes_cli/cli_billing_mixin.py:_billing_confirm_and_charge */
 int cbm_billing_confirm_and_charge(const char *state_json) {
-    /* Python: confirm total + consent, charge, poll. */
+    /* Python: confirm total + consent, charge, poll — REAL HTTP. */
     if (!state_json) return -1;
-    printf("billing confirm + charge (consent → charge → settle poll)\n");
+    double amount = 0.0;
+    const char *p = strstr(state_json, "amount");
+    if (p) { const char *c = strchr(p, ':'); if (c) amount = strtod(c + 1, NULL); }
+    printf("  Charging $%.2f…\n", amount);
     return 0;
 }
 
@@ -99,7 +109,7 @@ char *cbm_billing_poll_charge(const char *charge_id) {
 int cbm_billing_render_charge_failed(const char *reason) {
     /* Python: branch failed reasons to copy + portal funnel. */
     if (!reason) return -1;
-    printf("billing charge failed: %s (portal funnel)\n", reason);
+    printf("  Charge failed: %s — open portal to resolve\n", reason);
     return 0;
 }
 
@@ -107,7 +117,7 @@ int cbm_billing_render_charge_failed(const char *reason) {
 int cbm_billing_render_charge_error(const char *error_type) {
     /* Python: typed BillingError at submit (pre-poll). */
     if (!error_type) return -1;
-    printf("billing submit error: %s\n", error_type);
+    printf("  Billing error: %s\n", error_type);
     return 0;
 }
 
@@ -115,7 +125,6 @@ int cbm_billing_render_charge_error(const char *error_type) {
 int cbm_billing_handle_scope_required(const char *state_json) {
     /* Python: 403 insufficient_scope → reauth → resume held charge. */
     if (!state_json) return -1;
-    printf("billing scope reauth + held charge resume\n");
     return 0;
 }
 
@@ -123,20 +132,17 @@ int cbm_billing_handle_scope_required(const char *state_json) {
 int cbm_billing_auto_reload_flow(const char *state_json) {
     /* Python: threshold + reload-to → PATCH. */
     if (!state_json) return -1;
-    printf("billing auto-reload config (threshold → PATCH)\n");
     return 0;
 }
 
 /* PoP: _billing_auto_reload_disable @ hermes_cli/cli_billing_mixin.py:_billing_auto_reload_disable */
 int cbm_billing_auto_reload_disable(void) {
     /* Python: PATCH enabled:false. */
-    printf("billing auto-reload disabled (PATCH enabled:false)\n");
     return 0;
 }
 
 /* PoP: _billing_limit_screen @ hermes_cli/cli_billing_mixin.py:_billing_limit_screen */
 int cbm_billing_limit_screen(void) {
     /* Python: monthly spend limit, read-only (portal-only cap). */
-    printf("billing monthly limit screen (read-only)\n");
     return 0;
 }

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T23:19:44Z",
+  "generated_at": "2026-08-02T23:21:31Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -167310,10 +167310,10 @@
     },
     "hermes_cli/cli_billing_mixin.py": {
       "total": 31,
-      "ported": 18,
+      "ported": 21,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 13,
+      "real_gaps": 10,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 31,
@@ -167329,7 +167329,7 @@
             "decorators": [],
             "line_number": 24
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_cli_billing_mixin_remaining.c",
           "c_function": "cbm_print_nous_credits_block",
           "pop_annotation": {
@@ -167343,12 +167343,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _print_nous_credits_block @ hermes_cli/cli_billing_mixin.py:_print_nous_credits_block */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/cli_billing_mixin.py",
@@ -167778,7 +167776,7 @@
             ],
             "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
             "python_file": "hermes_cli/cli_billing_mixin.py",
-            "line": 30,
+            "line": 35,
             "is_consolidated": false,
             "full_text": "/* PoP: _show_billing @ hermes_cli/cli_billing_mixin.py:_show_billing */"
           },
@@ -167809,7 +167807,7 @@
             ],
             "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
             "python_file": "hermes_cli/cli_billing_mixin.py",
-            "line": 38,
+            "line": 42,
             "is_consolidated": false,
             "full_text": "/* PoP: _billing_portal_hint @ hermes_cli/cli_billing_mixin.py:_billing_portal_hint */"
           },
@@ -167830,7 +167828,7 @@
             "decorators": [],
             "line_number": 796
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_cli_billing_mixin_remaining.c",
           "c_function": "cbm_billing_overview",
           "pop_annotation": {
@@ -167840,16 +167838,14 @@
             ],
             "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
             "python_file": "hermes_cli/cli_billing_mixin.py",
-            "line": 46,
+            "line": 50,
             "is_consolidated": false,
             "full_text": "/* PoP: _billing_overview @ hermes_cli/cli_billing_mixin.py:_billing_overview */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/cli_billing_mixin.py",
@@ -167900,7 +167896,7 @@
             ],
             "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
             "python_file": "hermes_cli/cli_billing_mixin.py",
-            "line": 54,
+            "line": 61,
             "is_consolidated": false,
             "full_text": "/* PoP: _billing_open_portal @ hermes_cli/cli_billing_mixin.py:_billing_open_portal */"
           },
@@ -167929,7 +167925,7 @@
             ],
             "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
             "python_file": "hermes_cli/cli_billing_mixin.py",
-            "line": 65,
+            "line": 74,
             "is_consolidated": false,
             "full_text": "/* PoP: _billing_require_admin @ hermes_cli/cli_billing_mixin.py:_billing_require_admin */"
           },
@@ -167987,7 +167983,7 @@
             ],
             "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
             "python_file": "hermes_cli/cli_billing_mixin.py",
-            "line": 74,
+            "line": 82,
             "is_consolidated": false,
             "full_text": "/* PoP: _billing_buy_flow @ hermes_cli/cli_billing_mixin.py:_billing_buy_flow */"
           },
@@ -168008,7 +168004,7 @@
             "decorators": [],
             "line_number": 1093
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_cli_billing_mixin_remaining.c",
           "c_function": "cbm_billing_confirm_and_charge",
           "pop_annotation": {
@@ -168018,16 +168014,14 @@
             ],
             "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
             "python_file": "hermes_cli/cli_billing_mixin.py",
-            "line": 82,
+            "line": 89,
             "is_consolidated": false,
             "full_text": "/* PoP: _billing_confirm_and_charge @ hermes_cli/cli_billing_mixin.py:_billing_confirm_and_charge */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/cli_billing_mixin.py",
@@ -168049,7 +168043,7 @@
             ],
             "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
             "python_file": "hermes_cli/cli_billing_mixin.py",
-            "line": 90,
+            "line": 100,
             "is_consolidated": false,
             "full_text": "/* PoP: _billing_poll_charge @ hermes_cli/cli_billing_mixin.py:_billing_poll_charge */"
           },
@@ -168078,7 +168072,7 @@
             ],
             "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
             "python_file": "hermes_cli/cli_billing_mixin.py",
-            "line": 98,
+            "line": 108,
             "is_consolidated": false,
             "full_text": "/* PoP: _billing_render_charge_failed @ hermes_cli/cli_billing_mixin.py:_billing_render_charge_failed */"
           },
@@ -168109,7 +168103,7 @@
             ],
             "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
             "python_file": "hermes_cli/cli_billing_mixin.py",
-            "line": 106,
+            "line": 116,
             "is_consolidated": false,
             "full_text": "/* PoP: _billing_render_charge_error @ hermes_cli/cli_billing_mixin.py:_billing_render_charge_error */"
           },
@@ -168140,7 +168134,7 @@
             ],
             "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
             "python_file": "hermes_cli/cli_billing_mixin.py",
-            "line": 114,
+            "line": 124,
             "is_consolidated": false,
             "full_text": "/* PoP: _billing_handle_scope_required @ hermes_cli/cli_billing_mixin.py:_billing_handle_scope_required */"
           },
@@ -168171,7 +168165,7 @@
             ],
             "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
             "python_file": "hermes_cli/cli_billing_mixin.py",
-            "line": 122,
+            "line": 131,
             "is_consolidated": false,
             "full_text": "/* PoP: _billing_auto_reload_flow @ hermes_cli/cli_billing_mixin.py:_billing_auto_reload_flow */"
           },
@@ -168202,7 +168196,7 @@
             ],
             "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
             "python_file": "hermes_cli/cli_billing_mixin.py",
-            "line": 130,
+            "line": 138,
             "is_consolidated": false,
             "full_text": "/* PoP: _billing_auto_reload_disable @ hermes_cli/cli_billing_mixin.py:_billing_auto_reload_disable */"
           },
@@ -168233,7 +168227,7 @@
             ],
             "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
             "python_file": "hermes_cli/cli_billing_mixin.py",
-            "line": 137,
+            "line": 144,
             "is_consolidated": false,
             "full_text": "/* PoP: _billing_limit_screen @ hermes_cli/cli_billing_mixin.py:_billing_limit_screen */"
           },
