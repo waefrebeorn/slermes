@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T22:18:50Z",
+  "generated_at": "2026-08-02T22:21:03Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -65213,10 +65213,10 @@
     },
     "agent/think_scrubber.py": {
       "total": 10,
-      "ported": 7,
+      "ported": 10,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 10,
@@ -65232,16 +65232,24 @@
             "decorators": [],
             "line_number": 95
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_think_scrubber_remaining2.c",
+          "c_function": "ths_init",
+          "pop_annotation": {
+            "c_function": "ths_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_think_scrubber_remaining2.c",
+            "python_file": "agent/think_scrubber.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/think_scrubber.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/think_scrubber.py",
@@ -65429,16 +65437,24 @@
             "decorators": [],
             "line_number": 308
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_think_scrubber_remaining2.c",
+          "c_function": "ths_is_block_boundary",
+          "pop_annotation": {
+            "c_function": "ths_is_block_boundary",
+            "python_functions": [
+              "_is_block_boundary"
+            ],
+            "c_file": "src/agent/port_think_scrubber_remaining2.c",
+            "python_file": "agent/think_scrubber.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_block_boundary @ agent/think_scrubber.py:_is_block_boundary */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/think_scrubber.py",
@@ -65452,16 +65468,24 @@
             ],
             "line_number": 344
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_think_scrubber_remaining2.c",
+          "c_function": "ths_max_partial_suffix",
+          "pop_annotation": {
+            "c_function": "ths_max_partial_suffix",
+            "python_functions": [
+              "_max_partial_suffix"
+            ],
+            "c_file": "src/agent/port_think_scrubber_remaining2.c",
+            "python_file": "agent/think_scrubber.py",
+            "line": 44,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _max_partial_suffix @ agent/think_scrubber.py:_max_partial_suffix */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/think_scrubber.py",
@@ -68168,10 +68192,10 @@
     },
     "agent/trajectory.py": {
       "total": 3,
-      "ported": 0,
+      "ported": 3,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 3,
@@ -68187,16 +68211,24 @@
             "decorators": [],
             "line_number": 16
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_trajectory_remaining.c",
+          "c_function": "trj_convert_scratchpad_to_think",
+          "pop_annotation": {
+            "c_function": "trj_convert_scratchpad_to_think",
+            "python_functions": [
+              "convert_scratchpad_to_think"
+            ],
+            "c_file": "src/agent/port_trajectory_remaining.c",
+            "python_file": "agent/trajectory.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: convert_scratchpad_to_think @ agent/trajectory.py:convert_scratchpad_to_think */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/trajectory.py",
@@ -68208,16 +68240,24 @@
             "decorators": [],
             "line_number": 23
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_trajectory_remaining.c",
+          "c_function": "trj_has_incomplete_scratchpad",
+          "pop_annotation": {
+            "c_function": "trj_has_incomplete_scratchpad",
+            "python_functions": [
+              "has_incomplete_scratchpad"
+            ],
+            "c_file": "src/agent/port_trajectory_remaining.c",
+            "python_file": "agent/trajectory.py",
+            "line": 53,
+            "is_consolidated": false,
+            "full_text": "/* PoP: has_incomplete_scratchpad @ agent/trajectory.py:has_incomplete_scratchpad */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/trajectory.py",
@@ -68229,16 +68269,24 @@
             "decorators": [],
             "line_number": 30
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_trajectory_remaining.c",
+          "c_function": "trj_save_trajectory",
+          "pop_annotation": {
+            "c_function": "trj_save_trajectory",
+            "python_functions": [
+              "save_trajectory"
+            ],
+            "c_file": "src/agent/port_trajectory_remaining.c",
+            "python_file": "agent/trajectory.py",
+            "line": 63,
+            "is_consolidated": false,
+            "full_text": "/* PoP: save_trajectory @ agent/trajectory.py:save_trajectory */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
