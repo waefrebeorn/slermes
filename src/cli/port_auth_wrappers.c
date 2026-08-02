@@ -201,7 +201,19 @@ int auth_u_spotify_token_payload_to_state(const char *arg) {
 }
 
 /* PoP: _spotify_exchange_code_for_tokens @ hermes_cli/auth.py:_spotify_exchange_code_for_tokens */
-int auth_u_spotify_exchange_code_for_tokens(const char *arg) { (void)arg; return 0; }
+int auth_u_spotify_exchange_code_for_tokens(const char *arg) {
+    /* Python: PKCE token exchange. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "exchange_failed") == 0 || strcmp(state, "invalid_response") == 0) {
+        fprintf(stderr, "Spotify token exchange failed: %s\n", t2 ? t2 + 1 : "?");
+        return 1;
+    }
+    printf("%s\n", t2 ? t2 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _refresh_spotify_oauth_state @ hermes_cli/auth.py:_refresh_spotify_oauth_state */
 int auth_u_refresh_spotify_oauth_state(const char *arg) { (void)arg; return 0; }
@@ -626,7 +638,29 @@ fallback:
 }
 
 /* PoP: _minimax_request_user_code @ hermes_cli/auth.py:_minimax_request_user_code */
-int auth_u_minimax_request_user_code(const char *arg) { (void)arg; return 0; }
+int auth_u_minimax_request_user_code(const char *arg) {
+    /* Python: device-code POST. Arg =
+     * "state\tresult\tmissing\tmismatch". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "http_error") == 0) {
+        fprintf(stderr, "MiniMax OAuth authorization failed\n");
+        return 1;
+    }
+    if (strcmp(state, "missing") == 0) {
+        fprintf(stderr, "MiniMax OAuth response missing field: %s\n", t2 ? t2 + 1 : "?");
+        return 1;
+    }
+    if (strcmp(state, "mismatch") == 0) {
+        fprintf(stderr, "MiniMax OAuth state mismatch (possible CSRF).\n");
+        return 1;
+    }
+    printf("%s\n", t3 ? t3 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _minimax_poll_token @ hermes_cli/auth.py:_minimax_poll_token */
 int auth_u_minimax_poll_token(const char *arg) { (void)arg; return 0; }

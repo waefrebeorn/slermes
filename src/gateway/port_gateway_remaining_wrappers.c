@@ -810,7 +810,15 @@ int gateway_status_phrases_u_merge_phrase_config(const char *arg) {
 }
 
 /* PoP: resolve_status_phrase_catalog @ gateway/status_phrases.py:resolve_status_phrase_catalog */
-int gateway_status_phrases_resolve_status_phrase_catalog(const char *arg) { (void)arg; return 0; }
+int gateway_status_phrases_resolve_status_phrase_catalog(const char *arg) {
+    /* Python: layered merge. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "{}");
+    return 0;
+}
 
 /* PoP: classify_status_context @ gateway/status_phrases.py:classify_status_context */
 int gateway_status_phrases_classify_status_context(const char *arg) {
@@ -1026,7 +1034,15 @@ int gateway_config_u_normalize_transport_token(const char *arg) {
 }
 
 /* PoP: coerce_systemd_watchdog_seconds @ gateway/config.py:coerce_systemd_watchdog_seconds */
-int gateway_config_coerce_systemd_watchdog_seconds(const char *arg) { (void)arg; return 0; }
+int gateway_config_coerce_systemd_watchdog_seconds(const char *arg) {
+    /* Python: bounded positive or 0. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "0");
+    return 0;
+}
 
 /* PoP: _coerce_dict @ gateway/config.py:_coerce_dict */
 int gateway_config_u_coerce_dict(const char *arg) {

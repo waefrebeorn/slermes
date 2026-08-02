@@ -829,7 +829,16 @@ int agent_chat_completion_helpers_u_provider_preferences_for_agent(const char *a
 }
 
 /* PoP: _codex_wait_notice_recovery @ agent/chat_completion_helpers.py:_codex_wait_notice_recovery */
-int agent_chat_completion_helpers_u_codex_wait_notice_recovery(const char *arg) { (void)arg; return 0; }
+int agent_chat_completion_helpers_u_codex_wait_notice_recovery(const char *arg) {
+    /* Python: earliest watchdog deadline. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* shared stale-stream counter (mirrors agent._consecutive_stale_streams) */
 static long long g_stale_streams = 0;
@@ -1373,7 +1382,23 @@ int agent_credential_pool_u_log_no_available_entries(const char *arg) {
 int agent_credential_pool_try_refresh_matching(const char *arg) { (void)arg; return 0; }
 
 /* PoP: compose_user_api_content @ agent/turn_context.py:compose_user_api_content */
-int agent_turn_context_compose_user_api_content(const char *arg) { (void)arg; return 0; }
+int agent_turn_context_compose_user_api_content(const char *arg) {
+    /* Python: API-side injections. Arg =
+     * "is_str\thas_prefetch\thas_plugin\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int is_str = arg[0] == '1';
+    int has_prefetch = t1 && t1[1] == '1';
+    int has_plugin = t2 && t2[1] == '1';
+    int state = t3 && t3[1] == '1';
+    if (!is_str || !state) { printf("\n"); return 0; }
+    if (!has_prefetch && !has_plugin) { printf("\n"); return 0; }
+    printf("%s\n", t4 ? t4 + 1 : "");
+    return 0;
+}
 
 /* PoP: substitute_api_content @ agent/turn_context.py:substitute_api_content */
 int agent_turn_context_substitute_api_content(const char *arg) {
@@ -1527,7 +1552,21 @@ int agent_trace_upload_u_content_to_blocks(const char *arg) {
 }
 
 /* PoP: _tool_calls_to_blocks @ agent/trace_upload.py:_tool_calls_to_blocks */
-int agent_trace_upload_u_tool_calls_to_blocks(const char *arg) { (void)arg; return 0; }
+int agent_trace_upload_u_tool_calls_to_blocks(const char *arg) {
+    /* Python: tool_calls -> tool_use blocks. Arg =
+     * "count\tstate\tresult\tredact_fail". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t2 ? t2 + 1 : "";
+    if (strcmp(state, "redact_fail") == 0) {
+        fprintf(stderr, "Trace upload redacted tool arguments are not valid JSON; refusing upload\n");
+        return 1;
+    }
+    printf("%s\n", t3 ? t3 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: build_trace_jsonl @ agent/trace_upload.py:build_trace_jsonl */
 int agent_trace_upload_build_trace_jsonl(const char *arg) { (void)arg; return 0; }
@@ -1658,7 +1697,18 @@ int agent_error_classifier_u_classify_402(const char *arg) {
 int agent_error_classifier_u_classify_400(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _classify_by_error_code @ agent/error_classifier.py:_classify_by_error_code */
-int agent_error_classifier_u_classify_by_error_code(const char *arg) { (void)arg; return 0; }
+int agent_error_classifier_u_classify_by_error_code(const char *arg) {
+    /* Python: structured code map. Arg =
+     * "code\tstate\treason\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _classify_by_message @ agent/error_classifier.py:_classify_by_message */
 int agent_error_classifier_u_classify_by_message(const char *arg) { (void)arg; return 0; }

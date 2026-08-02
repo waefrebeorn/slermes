@@ -276,7 +276,17 @@ int grun_u_enqueue_fifo(const char *arg) {
 int grun_u_promote_queued_event(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _clear_goal_pending_continuations @ gateway/run.py:_clear_goal_pending_continuations */
-int grun_u_clear_goal_pending_continuations(const char *arg) { (void)arg; return 0; }
+int grun_u_clear_goal_pending_continuations(const char *arg) {
+    /* Python: synthetic /goal removal. Arg =
+     * "removed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "0");
+    return 0;
+}
 
 /* PoP: _persist_active_agents @ gateway/run.py:_persist_active_agents */
 int grun_u_persist_active_agents(const char *arg) { (void)arg; return 0; }

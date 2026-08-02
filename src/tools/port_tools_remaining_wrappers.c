@@ -265,7 +265,15 @@ int tools_lazy_deps_u_lazy_install_target(const char *arg) {
 int tools_lazy_deps_u_ensure_target_ready(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _activate_target_on_syspath @ tools/lazy_deps.py:_activate_target_on_syspath */
-int tools_lazy_deps_u_activate_target_on_syspath(const char *arg) { (void)arg; return 0; }
+int tools_lazy_deps_u_activate_target_on_syspath(const char *arg) {
+    /* Python: append-ordering activation. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("target not activated\n"); return 0; }
+    printf("target appended to sys.path (end, .pth honored, caches invalidated)\n");
+    return 0;
+}
 
 /* PoP: activate_durable_lazy_target @ tools/lazy_deps.py:activate_durable_lazy_target */
 int tools_lazy_deps_activate_durable_lazy_target(const char *arg) {

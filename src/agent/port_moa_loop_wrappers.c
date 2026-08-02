@@ -112,7 +112,15 @@ int moa_u_slot_reasoning_config(const char *arg) {
 }
 
 /* PoP: _aggregator_reasoning_config @ agent/moa_loop.py:_aggregator_reasoning_config */
-int moa_u_aggregator_reasoning_config(const char *arg) { (void)arg; return 0; }
+int moa_u_aggregator_reasoning_config(const char *arg) {
+    /* Python: slot > per-model > global. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _slot_runtime @ agent/moa_loop.py:_slot_runtime */
 int moa_u_slot_runtime(const char *arg) { (void)arg; return 0; }

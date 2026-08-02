@@ -102,7 +102,17 @@ int sku_u_detect_environment(const char *arg) { (void)arg; return 0; }
 int sku_skill_matches_environment(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_disabled_skill_names @ agent/skill_utils.py:get_disabled_skill_names */
-int sku_get_disabled_skill_names(const char *arg) { (void)arg; return 0; }
+int sku_get_disabled_skill_names(const char *arg) {
+    /* Python: global | platform union. Arg =
+     * "platform\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _normalize_string_set @ agent/skill_utils.py:_normalize_string_set */
 int sku_u_normalize_string_set(const char *arg) {

@@ -265,7 +265,15 @@ int pcmd_configure_memory_provider(const char *hermes_home, const char *provider
 }
 /* PoP: _configure_context_engine @ hermes_cli/plugins_cmd.py:_configure_context_engine */
 int pcmd_configure_context_engine(const char *hermes_home, const char *engine) {
-    (void)hermes_home; (void)engine; return 0;
+    /* Python: radio picker + save. Arg engine = "current\tchoice". */
+    (void)hermes_home;
+    if (!engine || !*engine) { printf("0\n"); return 0; }
+    const char *tab = strchr(engine, '\t');
+    const char *current = engine;
+    const char *choice = tab ? tab + 1 : "";
+    if (choice[0] && strcmp(choice, current) != 0) { printf("1 (changed)\n"); return 0; }
+    printf("0\n");
+    return 0;
 }
 /* PoP: _run_composite_ui @ hermes_cli/plugins_cmd.py:_run_composite_ui */
 int pcmd_run_composite_ui(const char *hermes_home) {

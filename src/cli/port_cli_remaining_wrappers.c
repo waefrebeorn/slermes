@@ -2515,7 +2515,16 @@ int hermes_cli_kanban_diagnostics_u_rule_hallucinated_cards(const char *arg) { (
 int hermes_cli_kanban_diagnostics_u_rule_triage_aux_unavailable(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _rule_prose_phantom_refs @ hermes_cli/kanban_diagnostics.py:_rule_prose_phantom_refs */
-int hermes_cli_kanban_diagnostics_u_rule_prose_phantom_refs(const char *arg) { (void)arg; return 0; }
+int hermes_cli_kanban_diagnostics_u_rule_prose_phantom_refs(const char *arg) {
+    /* Python: advisory phantom-ref scan. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _rule_repeated_failures @ hermes_cli/kanban_diagnostics.py:_rule_repeated_failures */
 int hermes_cli_kanban_diagnostics_u_rule_repeated_failures(const char *arg) { (void)arg; return 0; }
@@ -4402,7 +4411,15 @@ int hermes_cli_dashboard_auth_midd_u_attempt_refresh(const char *arg) { (void)ar
 int hermes_cli_dump_u_dotenv_key_names(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _get_git_commit @ hermes_cli/dump.py:_get_git_commit */
-int hermes_cli_dump_u_get_git_commit(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dump_u_get_git_commit(const char *arg) {
+    /* Python: rev-parse then baked SHA. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("(unknown)\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("(unknown)\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "(unknown)");
+    return 0;
+}
 
 /* PoP: _count_skills @ hermes_cli/dump.py:_count_skills */
 int hermes_cli_dump_u_count_skills(const char *arg) {
@@ -5081,7 +5098,15 @@ int hermes_cli_security_audit_star_u_ssh_password_auth_enabled(const char *arg) 
 }
 
 /* PoP: _path_is_mounted @ hermes_cli/security_audit_startup.py:_path_is_mounted */
-int hermes_cli_security_audit_star_u_path_is_mounted(const char *arg) { (void)arg; return 0; }
+int hermes_cli_security_audit_star_u_path_is_mounted(const char *arg) {
+    /* Python: /proc/mounts check. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("1\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _container_no_volume_mount @ hermes_cli/security_audit_startup.py:_container_no_volume_mount */
 int hermes_cli_security_audit_star_u_container_no_volume_mount(const char *arg) {
@@ -5256,7 +5281,16 @@ int hermes_cli_mcp_picker_is_custom(const char *arg) {
 }
 
 /* PoP: _build_rows @ hermes_cli/mcp_picker.py:_build_rows */
-int hermes_cli_mcp_picker_u_build_rows(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_picker_u_build_rows(const char *arg) {
+    /* Python: catalog + custom rows. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _format_row @ hermes_cli/mcp_picker.py:_format_row */
 int hermes_cli_mcp_picker_u_format_row(const char *arg) {
@@ -5766,7 +5800,20 @@ int hermes_cli_dashboard_auth_base_refresh_session(const char *arg) { (void)arg;
 int hermes_cli_dashboard_auth_base_revoke_session(const char *arg) { (void)arg; return 0; }
 
 /* PoP: complete_password_login @ hermes_cli/dashboard_auth/base.py:complete_password_login */
-int hermes_cli_dashboard_auth_base_complete_password_login(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_base_complete_password_login(const char *arg) {
+    /* Python: NotImplementedError default. Arg =
+     * "provider\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "unsupported") == 0) {
+        fprintf(stderr, "%s does not support password login (set supports_password = True)\n", arg);
+        return 1;
+    }
+    printf("%s\n", t2 ? t2 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: assert_protocol_compliance @ hermes_cli/dashboard_auth/base.py:assert_protocol_compliance */
 int hermes_cli_dashboard_auth_base_assert_protocol_compliance(const char *arg) {

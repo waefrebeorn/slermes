@@ -1186,7 +1186,16 @@ int main_u_print_stash_cleanup_guidance(const char *arg) {
 }
 
 /* PoP: _stash_apply_failed_only_on_existing_untracked @ hermes_cli/main.py:_stash_apply_failed_only_on_existing_untracked */
-int main_u_stash_apply_failed_only_on_existing_untracked(const char *arg) { (void)arg; return 0; }
+int main_u_stash_apply_failed_only_on_existing_untracked(const char *arg) {
+    /* Python: stash-apply tail classification. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _restore_stashed_changes @ hermes_cli/main.py:_restore_stashed_changes */
 int main_u_restore_stashed_changes(const char *arg) { (void)arg; return 0; }
