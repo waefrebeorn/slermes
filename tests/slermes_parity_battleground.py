@@ -250,8 +250,6 @@ class CIndexer:
             r'(?:\w+\s+)*(?:\*\s*)?(\w+)\s*\(', re.MULTILINE)
         pop_patterns = [
             re.compile(r'/\*\s*PoP:\s*(\w+)\s*@\s*([\w/.]+):([\w.]+)\s*\*/', re.MULTILINE),
-            re.compile(r'/\*\s*PoP:\s+\w+__(\w+)\s+@\s+[\w/]+\.py:\(?(\w+)\)?', re.MULTILINE),
-            re.compile(r'/\*\s*PoP:\s+\w+_(\w+)\s+@\s+[\w/]+\.py:\(?(\w+)\)?', re.MULTILINE),
             re.compile(r'/\*[\s\S]*?\n\s*\*\s*PoP:\s*(\w+)\s*@\s*([\w/.]+):([\w.]+)', re.MULTILINE),
             re.compile(r'/\*\s*Port of Python\s+\w+_\w+\.py:(_?)\w+\(', re.MULTILINE),
             re.compile(r'/\*\s*Port of Python[^:]*:?\s*([\w.]+)', re.MULTILINE),
@@ -455,7 +453,10 @@ class CIndexer:
         matches = []
         for pop in self.pop_annotations:
             if python_name in pop.python_functions:
-                if py_file and pop.python_file and pop.python_file != py_file:
+                # A pop without a python_file is a partial-pattern artifact
+                # (e.g. the trailing-underscore-word capture); it must never
+                # shadow a real annotation when the caller knows its module.
+                if py_file and (not pop.python_file or pop.python_file != py_file):
                     continue
                 matches.append(pop)
         return matches
