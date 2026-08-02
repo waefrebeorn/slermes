@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T22:17:02Z",
+  "generated_at": "2026-08-02T22:18:50Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -273885,10 +273885,10 @@
     },
     "hermes_cli/win_pty_bridge.py": {
       "total": 12,
-      "ported": 8,
+      "ported": 12,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 4,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 12,
@@ -273933,16 +273933,24 @@
             "decorators": [],
             "line_number": 65
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_win_pty_bridge_remaining.c",
+          "c_function": "wpb_init",
+          "pop_annotation": {
+            "c_function": "wpb_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_win_pty_bridge_remaining.c",
+            "python_file": "hermes_cli/win_pty_bridge.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/win_pty_bridge.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/win_pty_bridge.py",
@@ -274076,16 +274084,24 @@
             "decorators": [],
             "line_number": 118
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_win_pty_bridge_remaining.c",
+          "c_function": "wpb_read",
+          "pop_annotation": {
+            "c_function": "wpb_read",
+            "python_functions": [
+              "read"
+            ],
+            "c_file": "src/cli/port_win_pty_bridge_remaining.c",
+            "python_file": "hermes_cli/win_pty_bridge.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: read @ hermes_cli/win_pty_bridge.py:read */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/win_pty_bridge.py",
@@ -274126,16 +274142,24 @@
             "decorators": [],
             "line_number": 154
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_win_pty_bridge_remaining.c",
+          "c_function": "wpb_resize",
+          "pop_annotation": {
+            "c_function": "wpb_resize",
+            "python_functions": [
+              "resize"
+            ],
+            "c_file": "src/cli/port_win_pty_bridge_remaining.c",
+            "python_file": "hermes_cli/win_pty_bridge.py",
+            "line": 44,
+            "is_consolidated": false,
+            "full_text": "/* PoP: resize @ hermes_cli/win_pty_bridge.py:resize */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/win_pty_bridge.py",
@@ -274147,16 +274171,24 @@
             "decorators": [],
             "line_number": 166
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_win_pty_bridge_remaining.c",
+          "c_function": "wpb_close",
+          "pop_annotation": {
+            "c_function": "wpb_close",
+            "python_functions": [
+              "close"
+            ],
+            "c_file": "src/cli/port_win_pty_bridge_remaining.c",
+            "python_file": "hermes_cli/win_pty_bridge.py",
+            "line": 54,
+            "is_consolidated": false,
+            "full_text": "/* PoP: close @ hermes_cli/win_pty_bridge.py:close */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/win_pty_bridge.py",
