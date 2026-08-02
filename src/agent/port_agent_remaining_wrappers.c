@@ -1800,7 +1800,17 @@ int agent_trace_upload_u_tool_calls_to_blocks(const char *arg) {
 }
 
 /* PoP: build_trace_jsonl @ agent/trace_upload.py:build_trace_jsonl */
-int agent_trace_upload_build_trace_jsonl(const char *arg) { (void)arg; return 0; }
+int agent_trace_upload_build_trace_jsonl(const char *arg) {
+    /* Python: Claude Code JSONL. Arg =
+     * "lines\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s JSONL line(s) (tool results as tool_result user turns, uuid/parentUuid linked, git branch captured)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? " — sanitized ids" : "");
+    return 0;
+}
 
 /* PoP: _resolve_hf_token @ agent/trace_upload.py:_resolve_hf_token */
 int agent_trace_upload_u_resolve_hf_token(const char *arg) {

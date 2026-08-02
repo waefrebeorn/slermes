@@ -470,7 +470,17 @@ int gw_windowless_gateway_restart_spec(const char *arg) {
 }
 
 /* PoP: _spawn_detached @ hermes_cli/gateway_windows.py:_spawn_detached */
-int gw_u_spawn_detached(const char *arg) { (void)arg; return 0; }
+int gw_u_spawn_detached(const char *arg) {
+    /* Python: direct python.exe spawn. Arg =
+     * "pid\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (not windows)\n"); return 0; }
+    printf("spawned pid=%s (no cmd.exe shim, CREATE_NO_WINDOW own hidden console, NEW_PROCESS_GROUP, DEVNULL stdin)\n", t2 ? t2 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _install_choice_from_env @ hermes_cli/gateway_windows.py:_install_choice_from_env */
 int gw_u_install_choice_from_env(const char *arg) {

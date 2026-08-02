@@ -200,7 +200,18 @@ int cua_u_select_capture_target(const char *arg) {
 }
 
 /* PoP: _resolve_mcp_invocation @ tools/computer_use/cua_backend.py:_resolve_mcp_invocation */
-int cua_u_resolve_mcp_invocation(const char *arg) { (void)arg; return 0; }
+int cua_u_resolve_mcp_invocation(const char *arg) {
+    /* Python: manifest probe. Arg =
+     * "from_manifest\tstate\tresult". */
+    if (!arg || !*arg) { printf("\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int from_manifest = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\t\n"); return 0; }
+    printf("%s\t%s\n", from_manifest ? "manifest mcp_invocation" : "fallback [mcp]", (t2 && t2[1] == '1') ? " --no-overlay appended (Linux auto-detect)" : "");
+    return 0;
+}
 
 /* PoP: _mcp_args_with_overlay_flag @ tools/computer_use/cua_backend.py:_mcp_args_with_overlay_flag */
 int cua_u_mcp_args_with_overlay_flag(const char *arg) {

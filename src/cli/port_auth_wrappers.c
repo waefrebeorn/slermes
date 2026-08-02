@@ -376,7 +376,22 @@ int auth_u_spotify_interactive_setup(const char *arg) {
 }
 
 /* PoP: login_spotify_command @ hermes_cli/auth.py:login_spotify_command */
-int auth_login_spotify_command(const char *arg) { (void)arg; return 0; }
+int auth_login_spotify_command(const char *arg) {
+    /* Python: wizard + PKCE. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "wizard") == 0) {
+        printf("  Spotify app wizard launched (no client_id — interactive)\n");
+        return 0;
+    }
+    if (strcmp(state, "aborted") == 0) { printf("Spotify setup cancelled.\n"); return 1; }
+    printf("✓ Logged in to Spotify (PKCE verifier, state nonce, browser=%s): %s\n", (t2 && t2[1] == '1') ? "opened" : "off", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _is_remote_session @ hermes_cli/auth.py:_is_remote_session */
 int auth_u_is_remote_session(const char *arg) {

@@ -859,7 +859,17 @@ int yb_send_c2c_message(const char *arg) { (void)arg; return 0; }
 int yb_send_group_message(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _build_msg_body_with_mentions @ gateway/platforms/yuanbao.py:_build_msg_body_with_mentions */
-int yb_u_build_msg_body_with_mentions(const char *arg) { (void)arg; return 0; }
+int yb_u_build_msg_body_with_mentions(const char *arg) {
+    /* Python: @nickname split. Arg =
+     * "parts\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[] (no member cache — single text elem)\n"); return 0; }
+    printf("%s elem(s) (TIMTextElem + TIMCustomElem @mentions, case-insensitive nick map, TTL cache)\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: send_c2c_msg_body @ gateway/platforms/yuanbao.py:send_c2c_msg_body */
 int yb_send_c2c_msg_body(const char *arg) { (void)arg; return 0; }

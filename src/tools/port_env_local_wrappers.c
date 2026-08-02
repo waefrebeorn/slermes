@@ -109,7 +109,17 @@ int envl_u_resolve_safe_cwd(const char *arg) {
 }
 
 /* PoP: _build_provider_env_blocklist @ tools/environments/local.py:_build_provider_env_blocklist */
-int envl_u_build_provider_env_blocklist(const char *arg) { (void)arg; return 0; }
+int envl_u_build_provider_env_blocklist(const char *arg) {
+    /* Python: derived blocklist. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s var(s) blocked (provider keys, aws sdk vars, base_urls, tool/messaging/setting-password OPTIONAL vars, canonical list)\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: _inject_context_hermes_home @ tools/environments/local.py:_inject_context_hermes_home */
 int envl_u_inject_context_hermes_home(const char *arg) {

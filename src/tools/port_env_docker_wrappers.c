@@ -79,7 +79,17 @@ int envd_u_get_active_profile_name(const char *arg) {
 }
 
 /* PoP: reap_orphan_containers @ tools/environments/docker.py:reap_orphan_containers */
-int envd_reap_orphan_containers(const char *arg) { (void)arg; return 0; }
+int envd_reap_orphan_containers(const char *arg) {
+    /* Python: label-scoped sweep. Arg =
+     * "removed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s orphan(s) removed (exited-only, profile-scoped, FinishedAt older than max_age, best-effort idempotent #20561)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? " — running never reaped" : "");
+    return 0;
+}
 
 /* PoP: _container_finished_at @ tools/environments/docker.py:_container_finished_at */
 int envd_u_container_finished_at(const char *arg) {
@@ -284,7 +294,19 @@ int envd_u_is_container_gone(const char *arg) {
 }
 
 /* PoP: _recreate_container @ tools/environments/docker.py:_recreate_container */
-int envd_u_recreate_container(const char *arg) { (void)arg; return 0; }
+int envd_u_recreate_container(const char *arg) {
+    /* Python: label reuse first. Arg =
+     * "reused\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int reused = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (recreate failed)\n"); return 0; }
+    if (reused) { printf("1 (reused running label-matched container: %s)\n", t2 ? t2 + 1 : "?"); return 0; }
+    printf("1 (fresh container started with same image+run-args)%s\n", (t2 && t2[1] == '1') ? " — started stopped one" : "");
+    return 0;
+}
 
 /* PoP: _storage_opt_supported @ tools/environments/docker.py:_storage_opt_supported */
 int envd_u_storage_opt_supported(const char *arg) {

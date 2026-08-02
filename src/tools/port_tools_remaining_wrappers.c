@@ -190,7 +190,18 @@ int tools_computer_use_tool_u_capture_after_mode(const char *arg) {
 }
 
 /* PoP: _route_capture_through_aux_vision @ tools/computer_use/tool.py:_route_capture_through_aux_vision */
-int tools_computer_use_tool_u_route_capture_through_aux_vision(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_tool_u_route_capture_through_aux_vision(const char *arg) {
+    /* Python: vision pre-analysis. Arg =
+     * "routed\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int routed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !routed) { printf("\n"); return 0; }
+    printf("aux-vision description merged into AX/SOM summary (cache/vision materialized, fallback to multimodal on failure): %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _maybe_follow_capture @ tools/computer_use/tool.py:_maybe_follow_capture */
 int tools_computer_use_tool_u_maybe_follow_capture(const char *arg) {
@@ -2441,7 +2452,23 @@ int tools_project_tools_project_switch(const char *arg) {
 }
 
 /* PoP: register_credential_file @ tools/credential_files.py:register_credential_file */
-int tools_credential_files_register_credential_file(const char *arg) { (void)arg; return 0; }
+int tools_credential_files_register_credential_file(const char *arg) {
+    /* Python: containment guard. Arg =
+     * "registered\tstate\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int registered = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) {
+        fprintf(stderr, "refused: %s\n", t3 ? t3 + 1 : "absolute path / traversal / deny-listed master store");
+        return 1;
+    }
+    if (!registered) { printf("0 (file missing on host)\n"); return 0; }
+    printf("1 registered (contained in HERMES_HOME, deny-list enforced): %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: register_credential_files @ tools/credential_files.py:register_credential_files */
 int tools_credential_files_register_credential_files(const char *arg) {

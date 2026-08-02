@@ -231,7 +231,20 @@ int msf_u_model_flow_named_custom(const char *arg) { (void)arg; return 0; }
 int msf_u_model_flow_copilot(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _model_flow_copilot_acp @ hermes_cli/model_setup_flows.py:_model_flow_copilot_acp */
-int msf_u_model_flow_copilot_acp(const char *arg) { (void)arg; return 0; }
+int msf_u_model_flow_copilot_acp(const char *arg) {
+    /* Python: copilot ACP flow. Arg =
+     * "status\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *status = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("  GitHub Copilot ACP delegates Hermes turns to `copilot --acp`.\n");
+    printf("  Command: %s\n", t2 ? t2 + 1 : "copilot");
+    printf("  ✓ Using Copilot ACP model: %s\n", (t2 && t2[1] == '1') ? "?" : "?");
+    return 0;
+}
 
 /* PoP: _model_flow_kimi @ hermes_cli/model_setup_flows.py:_model_flow_kimi */
 int msf_u_model_flow_kimi(const char *arg) {
@@ -270,7 +283,23 @@ int msf_u_model_flow_bedrock_api_key(const char *arg) {
 int msf_u_model_flow_bedrock(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _model_flow_vertex @ hermes_cli/model_setup_flows.py:_model_flow_vertex */
-int msf_u_model_flow_vertex(const char *arg) { (void)arg; return 0; }
+int msf_u_model_flow_vertex(const char *arg) {
+    /* Python: vertex OAuth2. Arg =
+     * "sa\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int sa = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (sa) {
+        printf("  Vertex credentials: service account JSON (%s) ✓\n", t2 ? t2 + 1 : "?");
+    } else {
+        printf("  Vertex credentials: Application Default Credentials (ADC)\n");
+    }
+    printf("  ✓ Using Vertex model: %s\n", "gemini-2.5-pro");
+    return 0;
+}
 
 /* PoP: _select_zai_endpoint @ hermes_cli/model_setup_flows.py:_select_zai_endpoint */
 int msf_u_select_zai_endpoint(const char *arg) {

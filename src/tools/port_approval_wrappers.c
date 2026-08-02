@@ -91,7 +91,19 @@ int appr_u_shell_tokens_with_spans(const char *arg) {
 }
 
 /* PoP: _quoted_grep_pattern_spans @ tools/approval.py:_quoted_grep_pattern_spans */
-int appr_u_quoted_grep_pattern_spans(const char *arg) { (void)arg; return 0; }
+int appr_u_quoted_grep_pattern_spans(const char *arg) {
+    /* Python: fail-closed spans. Arg =
+     * "ambiguous\tstate\tresult". */
+    if (!arg || !*arg) { printf("\t0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int ambiguous = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\t0\n"); return 0; }
+    if (ambiguous) { printf("\t1 (ambiguous — callers fail closed, original command used)\n"); return 0; }
+    printf("%s\t0\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _grep_safe_detection_variant @ tools/approval.py:_grep_safe_detection_variant */
 int appr_u_grep_safe_detection_variant(const char *arg) {

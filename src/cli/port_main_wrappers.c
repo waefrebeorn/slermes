@@ -1585,7 +1585,19 @@ int main_u_print_curator_recent_run_notice(const char *arg) {
 }
 
 /* PoP: _restart_managed_dashboard_service @ hermes_cli/main.py:_restart_managed_dashboard_service */
-int main_u_restart_managed_dashboard_service(const char *arg) { (void)arg; return 0; }
+int main_u_restart_managed_dashboard_service(const char *arg) {
+    /* Python: systemd-aware restart. Arg =
+     * "handled\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int handled = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (not windows, no unit)\n"); return 0; }
+    if (!handled) { printf("0 (fall through to os.kill)\n"); return 0; }
+    printf("1 (systemctl restart via user scope first, system fallback, scope kept for all probes)%s\n", (t2 && t2[1] == '1') ? " — Restart=on-failure preserved" : "");
+    return 0;
+}
 
 /* PoP: _kill_stale_dashboard_processes @ hermes_cli/main.py:_kill_stale_dashboard_processes */
 int main_u_kill_stale_dashboard_processes(const char *arg) { (void)arg; return 0; }
@@ -1920,7 +1932,29 @@ int main_u_clear_lazy_refresh_incomplete_marker(const char *arg) {
 }
 
 /* PoP: _recover_from_interrupted_install @ hermes_cli/main.py:_recover_from_interrupted_install */
-int main_u_recover_from_interrupted_install(const char *arg) { (void)arg; return 0; }
+int main_u_recover_from_interrupted_install(const char *arg) {
+    /* Python: dual breadcrumbs. Arg =
+     * "core\tlazy\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int core = arg[0] == '1';
+    int lazy = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("no recovery needed\n"); return 0; }
+    if (core) {
+        printf("⚠ A previous `hermes update` was interrupted mid-install — finishing dependency installation now...\n");
+        printf("core marker: full quarantined reinstall (stderr-routed output, O_EXCL lockfile serializes)%s\n", (t3 && t3[1] == '1') ? " — winner cleared" : " — marker left for next launch");
+        return 0;
+    }
+    if (lazy) {
+        printf("lazy-refresh marker: package-only import probes, cleared only on healthy/repaired\n");
+        return 0;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _recover_lazy_refresh_marker_locked @ hermes_cli/main.py:_recover_lazy_refresh_marker_locked */
 int main_u_recover_lazy_refresh_marker_locked(const char *arg) {

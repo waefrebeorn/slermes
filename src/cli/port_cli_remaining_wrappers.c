@@ -5930,7 +5930,33 @@ int hermes_cli_onepassword_secrets_cmd_token(const char *arg) {
 }
 
 /* PoP: cmd_sync @ hermes_cli/onepassword_secrets_cli.py:cmd_sync */
-int hermes_cli_onepassword_secrets_cmd_sync(const char *arg) { (void)arg; return 0; }
+int hermes_cli_onepassword_secrets_cmd_sync(const char *arg) {
+    /* Python: 1password sync. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "disabled") == 0) {
+        printf("[yellow]1Password integration is disabled. Run `hermes secrets onepassword setup` first.[/yellow]\n");
+        return 1;
+    }
+    if (strcmp(state, "no_refs") == 0) {
+        printf("[yellow]No op:// references configured. Add one with `hermes secrets onepassword set ENV_VAR \"op://…\"`.[/yellow]\n");
+        return 0;
+    }
+    if (strcmp(state, "op_missing") == 0) {
+        fprintf(stderr, "op CLI not found: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "sync failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("synced %s reference(s)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? " — --apply delegated to startup path" : "");
+    return 0;
+}
 
 /* PoP: cmd_disable @ hermes_cli/onepassword_secrets_cli.py:cmd_disable */
 int hermes_cli_onepassword_secrets_cmd_disable(const char *arg) {

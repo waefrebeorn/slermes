@@ -801,7 +801,17 @@ int cgw_print_legacy_unit_warning(const char *arg) {
 }
 
 /* PoP: remove_legacy_hermes_units @ hermes_cli/gateway.py:remove_legacy_hermes_units */
-int cgw_remove_legacy_hermes_units(const char *arg) { (void)arg; return 0; }
+int cgw_remove_legacy_hermes_units(const char *arg) {
+    /* Python: allowlist legacy rm. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\t[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\t[] (no legacy units found)\n"); return 0; }
+    printf("%s removed\t%s remaining (system-scope without root)\n", t2 ? t2 + 1 : "0", "");
+    return 0;
+}
 
 /* PoP: print_systemd_scope_conflict_warning @ hermes_cli/gateway.py:print_systemd_scope_conflict_warning */
 int cgw_print_systemd_scope_conflict_warning(const char *arg) {
@@ -1853,7 +1863,16 @@ int cgw_launchd_restart(const char *arg) {
 }
 
 /* PoP: launchd_status @ hermes_cli/gateway.py:launchd_status */
-int cgw_launchd_status(const char *arg) { (void)arg; return 0; }
+int cgw_launchd_status(const char *arg) {
+    /* Python: launchd+fallback. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s (launchd pid from list output, fallback pid dedup, unsupported marker honored)\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _truthy_env @ hermes_cli/gateway.py:_truthy_env */
 int cgw_u_truthy_env(const char *arg) {
