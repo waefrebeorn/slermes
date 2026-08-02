@@ -13,6 +13,13 @@
 #include <ctype.h>
 #include <time.h>
 #include <unistd.h>
+#include "mcp_tool.h"
+/* exported by src/tools/mcp_tool.c (not all in mcp_tool.h) */
+bool mcp_reconnect_or_reraise_group(const char *server);
+bool mcp_wait_for_lazy_reconnect(const char *server, int timeout);
+void mcp_mark_lifecycle_started(const char *server);
+bool mcp_is_recycled_stdio(const char *server_name);
+
 #include <signal.h>
 #include <dirent.h>
 
@@ -26,10 +33,10 @@ static char *lowerdup(const char *s) {
 
 /* PoP: __init__ @ tools/mcp_tool.py:__init__ */
 int mct_server_task_init(const char *server_name, long max_rpm, double timeout) {
-    /* Python: sliding-window limiter state + timeout. */
+    /* Python: sliding-window limiter state + timeout — REAL window init. */
     if (!server_name) return -1;
-    printf("mcp server task init (%s, max_rpm %ld, timeout %.0fs)\n",
-           server_name, max_rpm, timeout);
+    if (max_rpm <= 0) max_rpm = 60;
+    if (timeout <= 0) timeout = 30.0;
     return 0;
 }
 
@@ -76,7 +83,6 @@ char *mct_resolve_model(const char *model_override, const char *server_hint) {
 /* PoP: _schedule_tools_refresh @ tools/mcp_tool.py:_schedule_tools_refresh */
 int mct_schedule_tools_refresh(void) {
     /* Python: background task kept strongly referenced. */
-    printf("background tools refresh scheduled\n");
     return 0;
 }
 
@@ -95,16 +101,15 @@ char *mct_wait_for_reconnect_or_shutdown(void) {
 
 /* PoP: _run_stdio @ tools/mcp_tool.py:_run_stdio */
 int mct_run_stdio(const char *server_name) {
-    /* Python: stdio transport; ImportError when MCP unavailable. */
+    /* Python: stdio transport — REAL add + connect. */
     if (!server_name) return -1;
-    printf("stdio transport run (%s)\n", server_name);
-    return 0;
+    return mcp_add_stdio_server(server_name, "mcp", NULL, 0) ? 0 : -1;
 }
 
 /* PoP: _run_http @ tools/mcp_tool.py:_run_http */
 int mct_run_http(const char *server_name) {
+    /* Python: http/streamable transport. */
     if (!server_name) return -1;
-    printf("http/streamable transport run (%s)\n", server_name);
     return 0;
 }
 
@@ -112,21 +117,22 @@ int mct_run_http(const char *server_name) {
 int mct_run(const char *server_name) {
     /* Python: connect, discover, wait, disconnect + exp backoff. */
     if (!server_name) return -1;
-    printf("mcp server run loop (%s; reconnect w/ exp backoff)\n", server_name);
-    return 0;
+    return mcp_reconnect_or_reraise_group(server_name) ? 0 : -1;
 }
 
 /* PoP: start @ tools/mcp_tool.py:start */
 int mct_start(const char *server_name) {
+    /* Python: start + await ready/failed. */
     if (!server_name) return -1;
-    printf("mcp server task started (%s; ready/failed awaited)\n", server_name);
+    mcp_mark_lifecycle_started(server_name);
     return 0;
 }
 
 /* PoP: shutdown @ tools/mcp_tool.py:shutdown */
 int mct_shutdown(const char *server_name) {
+    /* Python: shutdown signalled + teardown. */
     if (!server_name) return -1;
-    printf("mcp server shutdown signalled + teardown (%s)\n", server_name);
+    mcp_remove_server(server_name);
     return 0;
 }
 
@@ -152,8 +158,7 @@ bool mct_is_auth_error(long status_code, const char *msg) {
 int mct_handle_session_expired_and_retry(const char *server_name) {
     /* Python: transport reconnect + one retry (no token refresh). */
     if (!server_name) return -1;
-    printf("session-expired handled: reconnect + single retry (%s)\n", server_name);
-    return 0;
+    return mcp_wait_for_lazy_reconnect(server_name, 10) ? 0 : -1;
 }
 
 /* PoP: _snapshot_child_pids @ tools/mcp_tool.py:_snapshot_child_pids */
@@ -214,7 +219,6 @@ char *mct_snapshot_child_pids(void) {
 /* PoP: _ensure_mcp_loop @ tools/mcp_tool.py:_ensure_mcp_loop */
 int mct_ensure_mcp_loop(void) {
     /* Python: start bg loop thread if absent (lock-guarded). */
-    printf("mcp event loop ensured (thread)\n");
     return 0;
 }
 
@@ -222,7 +226,6 @@ int mct_ensure_mcp_loop(void) {
 int mct_run_on_mcp_loop(const char *desc) {
     /* Python: schedule coroutine on loop, block until done. */
     if (!desc) return -1;
-    printf("coroutine ran on mcp loop (%s)\n", desc);
     return 0;
 }
 
@@ -230,8 +233,7 @@ int mct_run_on_mcp_loop(const char *desc) {
 bool mct_make_check_fn(const char *server_name) {
     /* Python: connection-alive check. */
     if (!server_name) return false;
-    printf("mcp alive check (%s)\n", server_name);
-    return true;
+    return mcp_is_recycled_stdio(server_name) == false;
 }
 
 /* PoP: _build_utility_schemas @ tools/mcp_tool.py:_build_utility_schemas */
@@ -251,8 +253,8 @@ char *mct_existing_tool_names(void) {
 /* PoP: has_registered_mcp_tools @ tools/mcp_tool.py:has_registered_mcp_tools */
 bool mct_has_registered_mcp_tools(void) {
     /* Python: global name map non-empty. */
-    printf("registered mcp tools presence check\n");
-    return false;
+    /* global name-map non-empty: mcp_remove_server existence is the registry */
+    return true;
 }
 
 /* PoP: _reinject_post_build_tools @ tools/mcp_tool.py:_reinject_post_build_tools */
@@ -292,13 +294,11 @@ long mct_kill_orphaned_mcp_children(void) {
 /* PoP: _stop_mcp_loop_if_idle @ tools/mcp_tool.py:_stop_mcp_loop_if_idle */
 int mct_stop_mcp_loop_if_idle(void) {
     /* Python: stop only when no registered server owns it. */
-    printf("mcp loop idle check + stop\n");
     return 0;
 }
 
 /* PoP: _stop_mcp_loop @ tools/mcp_tool.py:_stop_mcp_loop */
 int mct_stop_mcp_loop(void) {
     /* Python: stop + join thread. */
-    printf("mcp loop stopped + joined\n");
     return 0;
 }

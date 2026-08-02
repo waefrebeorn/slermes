@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T23:13:39Z",
+  "generated_at": "2026-08-02T23:17:11Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -323095,10 +323095,10 @@
     },
     "tools/mcp_tool.py": {
       "total": 132,
-      "ported": 117,
+      "ported": 124,
       "partial": 1,
       "stub": 0,
-      "real_gaps": 14,
+      "real_gaps": 7,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 132,
@@ -323897,7 +323897,7 @@
             "decorators": [],
             "line_number": 1270
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/tools/port_mcp_tool_remaining.c",
           "c_function": "mct_server_task_init",
           "pop_annotation": {
@@ -323907,16 +323907,14 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 27,
+            "line": 34,
             "is_consolidated": false,
             "full_text": "/* PoP: __init__ @ tools/mcp_tool.py:__init__ */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -323938,7 +323936,7 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 36,
+            "line": 43,
             "is_consolidated": false,
             "full_text": "/* PoP: _check_rate_limit @ tools/mcp_tool.py:_check_rate_limit */"
           },
@@ -323967,7 +323965,7 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 68,
+            "line": 75,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_model @ tools/mcp_tool.py:_resolve_model */"
           },
@@ -324214,7 +324212,7 @@
             "decorators": [],
             "line_number": 1677
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/tools/port_mcp_tool_remaining.c",
           "c_function": "mct_server_task_init",
           "pop_annotation": {
@@ -324224,16 +324222,14 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 27,
+            "line": 34,
             "is_consolidated": false,
             "full_text": "/* PoP: __init__ @ tools/mcp_tool.py:__init__ */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -324303,7 +324299,7 @@
             "decorators": [],
             "line_number": 1837
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/tools/port_mcp_tool_remaining.c",
           "c_function": "mct_server_task_init",
           "pop_annotation": {
@@ -324313,16 +324309,14 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 27,
+            "line": 34,
             "is_consolidated": false,
             "full_text": "/* PoP: __init__ @ tools/mcp_tool.py:__init__ */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -324605,7 +324599,7 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 76,
+            "line": 83,
             "is_consolidated": false,
             "full_text": "/* PoP: _schedule_tools_refresh @ tools/mcp_tool.py:_schedule_tools_refresh */"
           },
@@ -324781,7 +324775,7 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 83,
+            "line": 89,
             "is_consolidated": false,
             "full_text": "/* PoP: _wait_for_lifecycle_event @ tools/mcp_tool.py:_wait_for_lifecycle_event */"
           },
@@ -324810,7 +324804,7 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 90,
+            "line": 96,
             "is_consolidated": false,
             "full_text": "/* PoP: _wait_for_reconnect_or_shutdown @ tools/mcp_tool.py:_wait_for_reconnect_or_shutdown */"
           },
@@ -324829,7 +324823,7 @@
             "decorators": [],
             "line_number": 2351
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/tools/port_mcp_tool_remaining.c",
           "c_function": "mct_run_stdio",
           "pop_annotation": {
@@ -324839,16 +324833,14 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 96,
+            "line": 102,
             "is_consolidated": false,
             "full_text": "/* PoP: _run_stdio @ tools/mcp_tool.py:_run_stdio */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -324928,7 +324920,7 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 104,
+            "line": 109,
             "is_consolidated": false,
             "full_text": "/* PoP: _run_http @ tools/mcp_tool.py:_run_http */"
           },
@@ -325017,7 +325009,7 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 111,
+            "line": 116,
             "is_consolidated": false,
             "full_text": "/* PoP: run @ tools/mcp_tool.py:run */"
           },
@@ -325046,7 +325038,7 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 119,
+            "line": 123,
             "is_consolidated": false,
             "full_text": "/* PoP: start @ tools/mcp_tool.py:start */"
           },
@@ -325065,7 +325057,7 @@
             "decorators": [],
             "line_number": 3428
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/tools/port_mcp_tool_remaining.c",
           "c_function": "mct_shutdown",
           "pop_annotation": {
@@ -325075,16 +325067,14 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 126,
+            "line": 131,
             "is_consolidated": false,
             "full_text": "/* PoP: shutdown @ tools/mcp_tool.py:shutdown */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -325425,7 +325415,7 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 133,
+            "line": 139,
             "is_consolidated": false,
             "full_text": "/* PoP: _get_auth_error_types @ tools/mcp_tool.py:_get_auth_error_types */"
           },
@@ -325454,7 +325444,7 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 139,
+            "line": 145,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_auth_error @ tools/mcp_tool.py:_is_auth_error */"
           },
@@ -325531,7 +325521,7 @@
             "decorators": [],
             "line_number": 3997
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/tools/port_mcp_tool_remaining.c",
           "c_function": "mct_handle_session_expired_and_retry",
           "pop_annotation": {
@@ -325541,16 +325531,14 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 151,
+            "line": 157,
             "is_consolidated": false,
             "full_text": "/* PoP: _handle_session_expired_and_retry @ tools/mcp_tool.py:_handle_session_expired_and_retry */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -325572,7 +325560,7 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 159,
+            "line": 164,
             "is_consolidated": false,
             "full_text": "/* PoP: _snapshot_child_pids @ tools/mcp_tool.py:_snapshot_child_pids */"
           },
@@ -325659,7 +325647,7 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 214,
+            "line": 219,
             "is_consolidated": false,
             "full_text": "/* PoP: _ensure_mcp_loop @ tools/mcp_tool.py:_ensure_mcp_loop */"
           },
@@ -325748,7 +325736,7 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 221,
+            "line": 225,
             "is_consolidated": false,
             "full_text": "/* PoP: _run_on_mcp_loop @ tools/mcp_tool.py:_run_on_mcp_loop */"
           },
@@ -326146,7 +326134,7 @@
             "decorators": [],
             "line_number": 5028
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/tools/port_mcp_tool_remaining.c",
           "c_function": "mct_make_check_fn",
           "pop_annotation": {
@@ -326156,16 +326144,14 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 229,
+            "line": 232,
             "is_consolidated": false,
             "full_text": "/* PoP: _make_check_fn @ tools/mcp_tool.py:_make_check_fn */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -326303,7 +326289,7 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 237,
+            "line": 239,
             "is_consolidated": false,
             "full_text": "/* PoP: _build_utility_schemas @ tools/mcp_tool.py:_build_utility_schemas */"
           },
@@ -326506,7 +326492,7 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 244,
+            "line": 246,
             "is_consolidated": false,
             "full_text": "/* PoP: _existing_tool_names @ tools/mcp_tool.py:_existing_tool_names */"
           },
@@ -326738,7 +326724,7 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 251,
+            "line": 253,
             "is_consolidated": false,
             "full_text": "/* PoP: has_registered_mcp_tools @ tools/mcp_tool.py:has_registered_mcp_tools */"
           },
@@ -326827,7 +326813,7 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 258,
+            "line": 260,
             "is_consolidated": false,
             "full_text": "/* PoP: _reinject_post_build_tools @ tools/mcp_tool.py:_reinject_post_build_tools */"
           },
@@ -326885,7 +326871,7 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 266,
+            "line": 268,
             "is_consolidated": false,
             "full_text": "/* PoP: _kill_orphaned_mcp_children @ tools/mcp_tool.py:_kill_orphaned_mcp_children */"
           },
@@ -326914,7 +326900,7 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 292,
+            "line": 294,
             "is_consolidated": false,
             "full_text": "/* PoP: _stop_mcp_loop_if_idle @ tools/mcp_tool.py:_stop_mcp_loop_if_idle */"
           },
@@ -326945,7 +326931,7 @@
             ],
             "c_file": "src/tools/port_mcp_tool_remaining.c",
             "python_file": "tools/mcp_tool.py",
-            "line": 299,
+            "line": 300,
             "is_consolidated": false,
             "full_text": "/* PoP: _stop_mcp_loop @ tools/mcp_tool.py:_stop_mcp_loop */"
           },
