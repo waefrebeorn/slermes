@@ -171,7 +171,12 @@ int gateway_shutdown_watchdog_u_tick(const char *arg) { (void)arg; return 0; }
 int gateway_shutdown_watchdog_cancel(const char *arg) { (void)arg; return 0; }
 
 /* PoP: is_alive @ gateway/shutdown_watchdog.py:is_alive */
-int gateway_shutdown_watchdog_is_alive(const char *arg) { (void)arg; return 0; }
+int gateway_shutdown_watchdog_is_alive(const char *arg) {
+    /* Python: the watchdog thread's liveness. */
+    static int g_alive = 1;
+    if (arg && *arg) g_alive = atoi(arg) != 0;
+    return g_alive;
+}
 
 /* PoP: _arm_loop_floor_timer @ gateway/shutdown_watchdog.py:_arm_loop_floor_timer */
 int gateway_shutdown_watchdog_u_arm_loop_floor_timer(const char *arg) { (void)arg; return 0; }

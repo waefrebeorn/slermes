@@ -64,13 +64,25 @@ int envb_u_file_mtime_key(const char *arg) { (void)arg; return 0; }
 int envb_stdout(const char *arg) { (void)arg; return 0; }
 
 /* PoP: returncode @ tools/environments/base.py:returncode */
-int envb_returncode(const char *arg) { (void)arg; return 0; }
+int envb_returncode(const char *arg) {
+    /* Python property: the process returncode. */
+    static int g_rc = 0;
+    if (arg && *arg) g_rc = atoi(arg);
+    printf("%d\n", g_rc);
+    return 0;
+}
 
 /* PoP: stdout @ tools/environments/base.py:stdout */
 int envb_stdout_2(const char *arg) { (void)arg; return 0; }
 
 /* PoP: returncode @ tools/environments/base.py:returncode */
-int envb_returncode_2(const char *arg) { (void)arg; return 0; }
+int envb_returncode_2(const char *arg) {
+    /* Python property: the process returncode. */
+    static int g_rc = 0;
+    if (arg && *arg) g_rc = atoi(arg);
+    printf("%d\n", g_rc);
+    return 0;
+}
 
 /* PoP: _cwd_marker @ tools/environments/base.py:_cwd_marker */
 int envb_u_cwd_marker(const char *arg) { (void)arg; return 0; }

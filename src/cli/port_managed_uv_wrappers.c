@@ -21,7 +21,11 @@ int muv_managed_python_install_dir(const char *arg) { (void)arg; return 0; }
 int muv_managed_python_env(const char *arg) { (void)arg; return 0; }
 
 /* PoP: repaired @ hermes_cli/managed_uv.py:repaired */
-int muv_repaired(const char *arg) { (void)arg; return 0; }
+int muv_repaired(const char *arg) {
+    /* Python: status == "repaired". */
+    if (!arg || !*arg) return 0;
+    return strcmp(arg, "repaired") == 0;
+}
 
 /* PoP: _report_runtime_repair_failure @ hermes_cli/managed_uv.py:_report_runtime_repair_failure */
 int muv_u_report_runtime_repair_failure(const char *arg) { (void)arg; return 0; }

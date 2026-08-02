@@ -367,7 +367,11 @@ int hermes_cli_projects_cmd_u_print_project(const char *arg) { (void)arg; return
 int hermes_cli_projects_cmd_u_cmd_create(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cmd_show @ hermes_cli/projects_cmd.py:_cmd_show */
-int hermes_cli_projects_cmd_u_cmd_show(const char *arg) { (void)arg; return 0; }
+int hermes_cli_projects_cmd_u_cmd_show(const char *arg) {
+    /* Python: print the project row for the given project id. */
+    if (arg && *arg) printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _cmd_add_folder @ hermes_cli/projects_cmd.py:_cmd_add_folder */
 int hermes_cli_projects_cmd_u_cmd_add_folder(const char *arg) { (void)arg; return 0; }
@@ -1759,7 +1763,16 @@ int hermes_cli_secrets_cli_u_token_validation_status(const char *arg) { (void)ar
 int hermes_cli_secrets_cli_u_resolve_server_url(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _skins_dir @ hermes_cli/skin_cmd.py:_skins_dir */
-int hermes_cli_skin_cmd_u_skins_dir(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skin_cmd_u_skins_dir(const char *arg) {
+    /* Python: get_hermes_home() / "skins". */
+    (void)arg;
+    const char *hh = getenv("HERMES_HOME");
+    char base[1024];
+    if (hh && *hh) snprintf(base, sizeof(base), "%s", hh);
+    else snprintf(base, sizeof(base), "%s/.hermes", getenv("HOME") ? getenv("HOME") : ".");
+    printf("%s/skins\n", base);
+    return 0;
+}
 
 /* PoP: _active_skin @ hermes_cli/skin_cmd.py:_active_skin */
 int hermes_cli_skin_cmd_u_active_skin(const char *arg) { (void)arg; return 0; }
