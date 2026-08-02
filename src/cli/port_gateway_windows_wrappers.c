@@ -447,7 +447,18 @@ int gw_u_build_gateway_argv(const char *arg) {
 }
 
 /* PoP: windowless_gateway_restart_spec @ hermes_cli/gateway_windows.py:windowless_gateway_restart_spec */
-int gw_windowless_gateway_restart_spec(const char *arg) { (void)arg; return 0; }
+int gw_windowless_gateway_restart_spec(const char *arg) {
+    /* Python: respawn spec. Arg =
+     * "win32\tstate\tresult". */
+    if (!arg || !*arg) { printf("\t\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int win32 = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!win32 || !state) { printf("\t\t\n"); return 0; }
+    printf("argv\tcwd\tHERMES_HOME+VIRTUAL_ENV+PYTHONPATH overlay\n");
+    return 0;
+}
 
 /* PoP: _spawn_detached @ hermes_cli/gateway_windows.py:_spawn_detached */
 int gw_u_spawn_detached(const char *arg) { (void)arg; return 0; }

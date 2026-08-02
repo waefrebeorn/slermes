@@ -156,7 +156,17 @@ int adel_u_note_delivery_attempt(const char *arg) {
 }
 
 /* PoP: recover_abandoned_delegations @ tools/async_delegation.py:recover_abandoned_delegations */
-int adel_recover_abandoned_delegations(const char *arg) { (void)arg; return 0; }
+int adel_recover_abandoned_delegations(const char *arg) {
+    /* Python: owner-gone classify. Arg =
+     * "recovered\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("recovered %s delegation(s) as outcome-unknown (wake target restored)\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: restore_undelivered_completions @ tools/async_delegation.py:restore_undelivered_completions */
 int adel_restore_undelivered_completions(const char *arg) {

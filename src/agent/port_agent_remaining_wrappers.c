@@ -896,7 +896,15 @@ int agent_subscription_view_u_dev_tiers(const char *arg) {
 }
 
 /* PoP: dev_fixture_subscription_state @ agent/subscription_view.py:dev_fixture_subscription_state */
-int agent_subscription_view_dev_fixture_subscription_state(const char *arg) { (void)arg; return 0; }
+int agent_subscription_view_dev_fixture_subscription_state(const char *arg) {
+    /* Python: fixture map. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "unset") == 0) { printf("\n"); return 0; }
+    printf("fixture subscription state: %s\n", tab ? tab + 1 : "?");
+    return 0;
+}
 
 /* PoP: openai_codex_stale_timeout_floor @ agent/chat_completion_helpers.py:openai_codex_stale_timeout_floor */
 int agent_chat_completion_helpers_openai_codex_stale_timeout_floor(const char *arg) {
@@ -1853,7 +1861,15 @@ int agent_context_engine_prune_tool_results_only(const char *arg) {
 int agent_context_engine_select_context(const char *arg) { (void)arg; return 0; }
 
 /* PoP: on_turn_complete @ agent/context_engine.py:on_turn_complete */
-int agent_context_engine_on_turn_complete(const char *arg) { (void)arg; return 0; }
+int agent_context_engine_on_turn_complete(const char *arg) {
+    /* Python: post-turn observation. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("turn observed (usage %s, messages read-only)%s\n", (tab && tab[1] == '1') ? "included" : "absent", (tab && tab[1] == '2') ? " — engine handled" : "");
+    return 0;
+}
 
 /* PoP: get_automatic_compaction_status_message @ agent/context_engine.py:get_automatic_compaction_status_message */
 int agent_context_engine_get_automatic_compaction_status_message(const char *arg) {
@@ -3238,4 +3254,15 @@ int agent_web_search_provider_get_provider_env(const char *arg) {
 }
 
 /* PoP: _disabled_web_plugin_for @ agent/web_search_registry.py:_disabled_web_plugin_for */
-int agent_web_search_registry_u_disabled_web_plugin_for(const char *arg) { (void)arg; return 0; }
+int agent_web_search_registry_u_disabled_web_plugin_for(const char *arg) {
+    /* Python: disabled-provider hint. Arg =
+     * "found\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int found = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !found) { printf("\n"); return 0; }
+    printf("disabled plugin: %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}

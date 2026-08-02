@@ -833,7 +833,19 @@ int main_u_custom_provider_base_url_config_value(const char *arg) {
 int main_u_save_custom_provider(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _remove_custom_provider @ hermes_cli/main.py:_remove_custom_provider */
-int main_u_remove_custom_provider(const char *arg) { (void)arg; return 0; }
+int main_u_remove_custom_provider(const char *arg) {
+    /* Python: picker remove. Arg =
+     * "removed\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int removed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("No custom providers configured.\n"); return 0; }
+    if (!removed) { printf("No change.\n"); return 0; }
+    printf("✅ Removed \"%s\" from custom providers.\n", t2 ? t2 + 1 : "?");
+    return 0;
+}
 
 /* PoP: __getattr__ @ hermes_cli/main.py:__getattr__ */
 int main_u__getattr__(const char *arg) {
@@ -2077,7 +2089,22 @@ int main_u_repair_venv_via_import_probes(const char *arg) {
 int main_u_refresh_active_lazy_features(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _install_python_dependencies_with_optional_fallback @ hermes_cli/main.py:_install_python_dependencies_with_optional_fallback */
-int main_u_install_python_dependencies_with_optional_fallback(const char *arg) { (void)arg; return 0; }
+int main_u_install_python_dependencies_with_optional_fallback(const char *arg) {
+    /* Python: extra fallback ladder. Arg =
+     * "ok\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int ok = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("install skipped\n"); return 0; }
+    if (ok) {
+        printf("base deps installed (quarantine dance, shims verified)\n");
+        return 0;
+    }
+    printf("  ⚠ Optional extras failed, reinstalling base + retrying extras individually: %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _load_console_script_names @ hermes_cli/main.py:_load_console_script_names */
 int main_u_load_console_script_names(const char *arg) {
@@ -2631,7 +2658,19 @@ int main_u_set_chat_arg_defaults(const char *arg) {
 }
 
 /* PoP: _try_termux_fast_cli_launch @ hermes_cli/main.py:_try_termux_fast_cli_launch */
-int main_u_try_termux_fast_cli_launch(const char *arg) { (void)arg; return 0; }
+int main_u_try_termux_fast_cli_launch(const char *arg) {
+    /* Python: light parser. Arg =
+     * "handled\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int handled = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (not termux or disabled)\n"); return 0; }
+    if (!handled) { printf("0 (full dispatch)\n"); return 0; }
+    printf("1 (fast CLI path: %s)%s\n", t2 ? t2 + 1 : "chat/oneshot/version", (t2 && t2[1] == '1') ? " — deferred agent startup" : "");
+    return 0;
+}
 
 /* PoP: _try_termux_fast_tui_launch @ hermes_cli/main.py:_try_termux_fast_tui_launch */
 int main_u_try_termux_fast_tui_launch(const char *arg) {

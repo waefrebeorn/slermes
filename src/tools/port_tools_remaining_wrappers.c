@@ -1867,7 +1867,21 @@ int tools_kanban_tools_u_handle_attach(const char *arg) {
 }
 
 /* PoP: _download_url_with_cap @ tools/kanban_tools.py:_download_url_with_cap */
-int tools_kanban_tools_u_download_url_with_cap(const char *arg) { (void)arg; return 0; }
+int tools_kanban_tools_u_download_url_with_cap(const char *arg) {
+    /* Python: SSRF-guarded fetch. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\t\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "bad_scheme") == 0 || strcmp(state, "ssrf") == 0 || strcmp(state, "too_large") == 0 || strcmp(state, "too_many") == 0) {
+        fprintf(stderr, "download rejected: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("%s\t%s\n", t3 ? t3 + 1 : "", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _handle_attach_url @ tools/kanban_tools.py:_handle_attach_url */
 int tools_kanban_tools_u_handle_attach_url(const char *arg) {

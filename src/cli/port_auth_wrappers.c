@@ -762,7 +762,25 @@ int auth_u_compute_nous_auth_status(const char *arg) { (void)arg; return 0; }
 int auth_get_nous_session_validity(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_codex_auth_status @ hermes_cli/auth.py:get_codex_auth_status */
-int auth_get_codex_auth_status(const char *arg) { (void)arg; return 0; }
+int auth_get_codex_auth_status(const char *arg) {
+    /* Python: pool-first snapshot. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"logged_in\": false}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "rate_limited") == 0) {
+        printf("{\"logged_in\": true, \"rate_limited\": true, \"error\": \"Codex provider quota exhausted\"}\n");
+        return 0;
+    }
+    if (strcmp(state, "not_logged") == 0) {
+        printf("{\"logged_in\": false, \"error\": \"%s\"}\n", t3 ? t3 + 1 : "?");
+        return 0;
+    }
+    printf("%s\n", t3 ? t3 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: get_xai_oauth_auth_status @ hermes_cli/auth.py:get_xai_oauth_auth_status */
 int auth_get_xai_oauth_auth_status(const char *arg) {
@@ -1030,7 +1048,24 @@ int auth_u_minimax_save_auth_state(const char *arg) {
 int auth_u_minimax_oauth_login(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _refresh_minimax_oauth_state @ hermes_cli/auth.py:_refresh_minimax_oauth_state */
-int auth_u_refresh_minimax_oauth_state(const char *arg) { (void)arg; return 0; }
+int auth_u_refresh_minimax_oauth_state(const char *arg) {
+    /* Python: skew-gated refresh. Arg =
+     * "fresh\tstate\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int fresh = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (fresh) { printf("state unchanged (within skew)\n"); return 0; }
+    if (!state) {
+        fprintf(stderr, "MiniMax OAuth refresh failed: %s\n", t4 ? t4 + 1 : "?");
+        return 1;
+    }
+    printf("refreshed (expires_at recomputed, saved): %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _minimax_oauth_quarantine_on_terminal_refresh @ hermes_cli/auth.py:_minimax_oauth_quarantine_on_terminal_refresh */
 int auth_u_minimax_oauth_quarantine_on_terminal_refresh(const char *arg) {

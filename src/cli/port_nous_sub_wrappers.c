@@ -204,7 +204,15 @@ int nsub_u_get_gateway_direct_credentials(const char *arg) {
 }
 
 /* PoP: get_gateway_eligible_tools @ hermes_cli/nous_subscription.py:get_gateway_eligible_tools */
-int nsub_get_gateway_eligible_tools(const char *arg) { (void)arg; return 0; }
+int nsub_get_gateway_eligible_tools(const char *arg) {
+    /* Python: 3-way split. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\t\t\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\t\t\n"); return 0; }
+    printf("unconfigured=%s has_direct=%s already_managed=%s\n", tab ? tab + 1 : "[]", "?", "?");
+    return 0;
+}
 
 /* PoP: apply_gateway_defaults @ hermes_cli/nous_subscription.py:apply_gateway_defaults */
 int nsub_apply_gateway_defaults(const char *arg) {

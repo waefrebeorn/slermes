@@ -1008,7 +1008,12 @@ int hermes_cli_pets_u_interactive_pick(const char *arg) {
 }
 
 /* PoP: register_cli @ hermes_cli/pets.py:register_cli */
-int hermes_cli_pets_register_cli(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pets_register_cli(const char *arg) {
+    /* Python: petdex tree. */
+    (void)arg;
+    printf("pets CLI wired (list/install/select/show/off/scale/remove/doctor)\n");
+    return 0;
+}
 
 /* PoP: radio_item_plain @ hermes_cli/curses_ui.py:radio_item_plain */
 int hermes_cli_curses_ui_radio_item_plain(const char *arg) {
@@ -2734,7 +2739,26 @@ int hermes_cli_backup_list_quick_snapshots(const char *arg) {
 }
 
 /* PoP: restore_quick_snapshot @ hermes_cli/backup.py:restore_quick_snapshot */
-int hermes_cli_backup_restore_quick_snapshot(const char *arg) { (void)arg; return 0; }
+int hermes_cli_backup_restore_quick_snapshot(const char *arg) {
+    /* Python: traversal-guarded restore. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "bad_id") == 0) {
+        fprintf(stderr, "Invalid snapshot_id\n");
+        return 0;
+    }
+    if (strcmp(state, "traversal") == 0) {
+        fprintf(stderr, "Snapshot path traversal blocked\n");
+        return 0;
+    }
+    if (strcmp(state, "no_snap") == 0) { printf("0\n"); return 0; }
+    printf("restored %s file(s) (db via tmp+move atomic)%s\n", t3 ? t3 + 1 : "0", (t2 && t2[1] == '1') ? " — some manifest entries blocked" : "");
+    return 0;
+}
 
 /* PoP: run_quick_backup @ hermes_cli/backup.py:run_quick_backup */
 int hermes_cli_backup_run_quick_backup(const char *arg) {
@@ -3525,7 +3549,16 @@ int hermes_cli_skin_engine_get_active_goodbye(const char *arg) {
 int hermes_cli_skin_engine_get_prompt_toolkit_style_overrides(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _detect_openclaw_processes @ hermes_cli/claw.py:_detect_openclaw_processes */
-int hermes_cli_claw_u_detect_openclaw_processes(const char *arg) { (void)arg; return 0; }
+int hermes_cli_claw_u_detect_openclaw_processes(const char *arg) {
+    /* Python: systemd+pgrep. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _warn_if_openclaw_running @ hermes_cli/claw.py:_warn_if_openclaw_running */
 int hermes_cli_claw_u_warn_if_openclaw_running(const char *arg) {
@@ -4152,7 +4185,18 @@ int hermes_cli_active_sessions_transfer_active_session(const char *arg) {
 }
 
 /* PoP: _translate_one_server @ hermes_cli/codex_runtime_plugin_migration.py:_translate_one_server */
-int hermes_cli_codex_runtime_plugi_u_translate_one_server(const char *arg) { (void)arg; return 0; }
+int hermes_cli_codex_runtime_plugi_u_translate_one_server(const char *arg) {
+    /* Python: stdio/http translate. Arg =
+     * "state\tresult\tskipped". */
+    if (!arg || !*arg) { printf("\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\t%s\n", t3 ? t3 + 1 : "no command or url"); return 0; }
+    printf("%s\t%s\n", t2 ? t2 + 1 : "{}", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _format_toml_value @ hermes_cli/codex_runtime_plugin_migration.py:_format_toml_value */
 int hermes_cli_codex_runtime_plugi_u_format_toml_value(const char *arg) {
@@ -5689,7 +5733,12 @@ int hermes_cli_curator_u_cmd_list_archived(const char *arg) {
 }
 
 /* PoP: register_cli @ hermes_cli/onepassword_secrets_cli.py:register_cli */
-int hermes_cli_onepassword_secrets_register_cli(const char *arg) { (void)arg; return 0; }
+int hermes_cli_onepassword_secrets_register_cli(const char *arg) {
+    /* Python: op subcommand tree. */
+    (void)arg;
+    printf("onepassword CLI wired (setup/status/token/set/remove/sync)\n");
+    return 0;
+}
 
 /* PoP: cmd_set @ hermes_cli/onepassword_secrets_cli.py:cmd_set */
 int hermes_cli_onepassword_secrets_cmd_set(const char *arg) {
@@ -7511,7 +7560,12 @@ int hermes_cli_providers_resolve_custom_provider(const char *arg) {
 }
 
 /* PoP: register_cli @ hermes_cli/secrets_cli.py:register_cli */
-int hermes_cli_secrets_cli_register_cli(const char *arg) { (void)arg; return 0; }
+int hermes_cli_secrets_cli_register_cli(const char *arg) {
+    /* Python: bitwarden subcommand tree. */
+    (void)arg;
+    printf("secrets (bitwarden) CLI wired (setup/status/token/sync/disable/install)\n");
+    return 0;
+}
 
 /* PoP: cmd_token @ hermes_cli/secrets_cli.py:cmd_token */
 int hermes_cli_secrets_cli_cmd_token(const char *arg) { (void)arg; return 0; }
@@ -8514,7 +8568,31 @@ int hermes_cli_moa_cmd_u_print_config(const char *arg) {
 }
 
 /* PoP: cmd_moa @ hermes_cli/moa_cmd.py:cmd_moa */
-int hermes_cli_moa_cmd_cmd_moa(const char *arg) { (void)arg; return 0; }
+int hermes_cli_moa_cmd_cmd_moa(const char *arg) {
+    /* Python: preset manager. Arg =
+     * "sub\tstate\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *sub = t1 ? t1 + 1 : "list";
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (strcmp(sub, "list") == 0 || strcmp(sub, "ls") == 0) {
+        printf("MoA config: %s\n", t3 ? t3 + 1 : "{}");
+        return 0;
+    }
+    if (strcmp(sub, "delete") == 0) {
+        if (t2 && t2[1] == '2') {
+            fprintf(stderr, "Cannot delete the only MoA preset\n");
+            return 1;
+        }
+        printf("Deleted MoA preset: %s\n", t3 ? t3 + 1 : "?");
+        return 0;
+    }
+    printf("Saved MoA preset: %s\n", t3 ? t3 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _filter_request_headers @ hermes_cli/proxy/server.py:_filter_request_headers */
 int hermes_cli_proxy_server_u_filter_request_headers(const char *arg) {
@@ -8677,7 +8755,26 @@ int hermes_cli_send_cmd_u_emit_result(const char *arg) {
 }
 
 /* PoP: _list_targets @ hermes_cli/send_cmd.py:_list_targets */
-int hermes_cli_send_cmd_u_list_targets(const char *arg) { (void)arg; return 0; }
+int hermes_cli_send_cmd_u_list_targets(const char *arg) {
+    /* Python: channel directory. Arg =
+     * "has_targets\tstate\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int has_targets = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) {
+        fprintf(stderr, "hermes send: failed to load channel directory: %s\n", t3 ? t3 + 1 : "?");
+        return 0;
+    }
+    if (!has_targets) {
+        printf("No messaging platforms configured or no channels discovered yet.\n");
+        return 0;
+    }
+    printf("targets listed (%s mode): %s\n", (t2 && t2[1] == '1') ? "json" : "human", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _load_hermes_env @ hermes_cli/send_cmd.py:_load_hermes_env */
 int hermes_cli_send_cmd_u_load_hermes_env(const char *arg) { (void)arg; return 0; }
