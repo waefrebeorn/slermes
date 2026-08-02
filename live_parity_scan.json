@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T17:41:29Z",
+  "generated_at": "2026-08-02T17:47:34Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -260679,10 +260679,10 @@
     },
     "hermes_state.py": {
       "total": 230,
-      "ported": 136,
+      "ported": 227,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 94,
+      "real_gaps": 3,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 230,
@@ -260785,16 +260785,24 @@
             "decorators": [],
             "line_number": 129
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_delegate_from_json",
+          "pop_annotation": {
+            "c_function": "hermes_state_delegate_from_json",
+            "python_functions": [
+              "_delegate_from_json"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 18,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _delegate_from_json @ hermes_state.py:_delegate_from_json */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -260864,16 +260872,24 @@
             "decorators": [],
             "line_number": 189
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_shape_preview",
+          "pop_annotation": {
+            "c_function": "hermes_state_shape_preview",
+            "python_functions": [
+              "_shape_preview"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 28,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _shape_preview @ hermes_state.py:_shape_preview */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -260885,16 +260901,24 @@
             "decorators": [],
             "line_number": 222
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_ephemeral_child_sql",
+          "pop_annotation": {
+            "c_function": "hermes_state_ephemeral_child_sql",
+            "python_functions": [
+              "_ephemeral_child_sql"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 41,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _ephemeral_child_sql @ hermes_state.py:_ephemeral_child_sql */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -260906,16 +260930,24 @@
             "decorators": [],
             "line_number": 233
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_collect_delegate_child_ids",
+          "pop_annotation": {
+            "c_function": "hermes_state_collect_delegate_child_ids",
+            "python_functions": [
+              "_collect_delegate_child_ids"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 50,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _collect_delegate_child_ids @ hermes_state.py:_collect_delegate_child_ids */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -260927,16 +260959,24 @@
             "decorators": [],
             "line_number": 265
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_delete_delegate_children",
+          "pop_annotation": {
+            "c_function": "hermes_state_delete_delegate_children",
+            "python_functions": [
+              "_delete_delegate_children"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 57,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _delete_delegate_children @ hermes_state.py:_delete_delegate_children */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261006,16 +261046,24 @@
             "decorators": [],
             "line_number": 397
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_is_background_review_harness_message",
+          "pop_annotation": {
+            "c_function": "hermes_state_is_background_review_harness_message",
+            "python_functions": [
+              "_is_background_review_harness_message"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 64,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_background_review_harness_message @ hermes_state.py:_is_background_review_harness_message */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261027,16 +261075,24 @@
             "decorators": [],
             "line_number": 416
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_strip_background_review_harness",
+          "pop_annotation": {
+            "c_function": "hermes_state_strip_background_review_harness",
+            "python_functions": [
+              "_strip_background_review_harness"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 81,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _strip_background_review_harness @ hermes_state.py:_strip_background_review_harness */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261106,16 +261162,24 @@
             "decorators": [],
             "line_number": 487
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_apply_macos_checkpoint_barrier",
+          "pop_annotation": {
+            "c_function": "hermes_state_apply_macos_checkpoint_barrier",
+            "python_functions": [
+              "_apply_macos_checkpoint_barrier"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 92,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _apply_macos_checkpoint_barrier @ hermes_state.py:_apply_macos_checkpoint_barrier */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261127,16 +261191,24 @@
             "decorators": [],
             "line_number": 522
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_enforce_macos_synchronous_full",
+          "pop_annotation": {
+            "c_function": "hermes_state_enforce_macos_synchronous_full",
+            "python_functions": [
+              "_enforce_macos_synchronous_full"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 101,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _enforce_macos_synchronous_full @ hermes_state.py:_enforce_macos_synchronous_full */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261206,16 +261278,24 @@
             "decorators": [],
             "line_number": 582
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_apply_wal_with_fallback",
+          "pop_annotation": {
+            "c_function": "hermes_state_apply_wal_with_fallback",
+            "python_functions": [
+              "apply_wal_with_fallback"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 110,
+            "is_consolidated": false,
+            "full_text": "/* PoP: apply_wal_with_fallback @ hermes_state.py:apply_wal_with_fallback */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261227,16 +261307,24 @@
             "decorators": [],
             "line_number": 659
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_apply_delete_for_wal_reset_bug",
+          "pop_annotation": {
+            "c_function": "hermes_state_apply_delete_for_wal_reset_bug",
+            "python_functions": [
+              "_apply_delete_for_wal_reset_bug"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 118,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _apply_delete_for_wal_reset_bug @ hermes_state.py:_apply_delete_for_wal_reset_bug */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261248,16 +261336,24 @@
             "decorators": [],
             "line_number": 694
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_log_wal_reset_bug_once",
+          "pop_annotation": {
+            "c_function": "hermes_state_log_wal_reset_bug_once",
+            "python_functions": [
+              "_log_wal_reset_bug_once"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 126,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _log_wal_reset_bug_once @ hermes_state.py:_log_wal_reset_bug_once */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261269,16 +261365,24 @@
             "decorators": [],
             "line_number": 723
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_log_wal_fallback_once",
+          "pop_annotation": {
+            "c_function": "hermes_state_log_wal_fallback_once",
+            "python_functions": [
+              "_log_wal_fallback_once"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 138,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _log_wal_fallback_once @ hermes_state.py:_log_wal_fallback_once */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261348,16 +261452,24 @@
             "decorators": [],
             "line_number": 805
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_backup_db_file",
+          "pop_annotation": {
+            "c_function": "hermes_state_backup_db_file",
+            "python_functions": [
+              "_backup_db_file"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 151,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _backup_db_file @ hermes_state.py:_backup_db_file */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261369,16 +261481,24 @@
             "decorators": [],
             "line_number": 849
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_preflight_db_writability",
+          "pop_annotation": {
+            "c_function": "hermes_state_preflight_db_writability",
+            "python_functions": [
+              "preflight_db_writability"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 169,
+            "is_consolidated": false,
+            "full_text": "/* PoP: preflight_db_writability @ hermes_state.py:preflight_db_writability */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261419,16 +261539,24 @@
             "decorators": [],
             "line_number": 1065
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_repair_state_db_schema",
+          "pop_annotation": {
+            "c_function": "hermes_state_repair_state_db_schema",
+            "python_functions": [
+              "repair_state_db_schema"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 183,
+            "is_consolidated": false,
+            "full_text": "/* PoP: repair_state_db_schema @ hermes_state.py:repair_state_db_schema */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261440,16 +261568,24 @@
             "decorators": [],
             "line_number": 1647
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_fts5_cjk_so_path",
+          "pop_annotation": {
+            "c_function": "hermes_state_fts5_cjk_so_path",
+            "python_functions": [
+              "fts5_cjk_so_path"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 194,
+            "is_consolidated": false,
+            "full_text": "/* PoP: fts5_cjk_so_path @ hermes_state.py:fts5_cjk_so_path */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261461,16 +261597,24 @@
             "decorators": [],
             "line_number": 1655
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_cjk_fts_config_enabled",
+          "pop_annotation": {
+            "c_function": "hermes_state_cjk_fts_config_enabled",
+            "python_functions": [
+              "_cjk_fts_config_enabled"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 202,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _cjk_fts_config_enabled @ hermes_state.py:_cjk_fts_config_enabled */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261482,16 +261626,24 @@
             "decorators": [],
             "line_number": 1662
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_load_fts5_cjk_extension",
+          "pop_annotation": {
+            "c_function": "hermes_state_load_fts5_cjk_extension",
+            "python_functions": [
+              "load_fts5_cjk_extension"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 215,
+            "is_consolidated": false,
+            "full_text": "/* PoP: load_fts5_cjk_extension @ hermes_state.py:load_fts5_cjk_extension */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261524,16 +261676,24 @@
             "decorators": [],
             "line_number": 1766
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_connect_tracked_db",
+          "pop_annotation": {
+            "c_function": "hermes_state_connect_tracked_db",
+            "python_functions": [
+              "_connect_tracked_db"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 223,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _connect_tracked_db @ hermes_state.py:_connect_tracked_db */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261545,16 +261705,24 @@
             "decorators": [],
             "line_number": 1801
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_is_zeroed_state_db",
+          "pop_annotation": {
+            "c_function": "hermes_state_is_zeroed_state_db",
+            "python_functions": [
+              "is_zeroed_state_db"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 231,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_zeroed_state_db @ hermes_state.py:is_zeroed_state_db */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261566,16 +261734,24 @@
             "decorators": [],
             "line_number": 1840
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_quarantine_zeroed_state_db",
+          "pop_annotation": {
+            "c_function": "hermes_state_quarantine_zeroed_state_db",
+            "python_functions": [
+              "quarantine_zeroed_state_db"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 246,
+            "is_consolidated": false,
+            "full_text": "/* PoP: quarantine_zeroed_state_db @ hermes_state.py:quarantine_zeroed_state_db */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261610,16 +261786,24 @@
             ],
             "line_number": 2148
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_is_fts5_unavailable_error",
+          "pop_annotation": {
+            "c_function": "hermes_state_is_fts5_unavailable_error",
+            "python_functions": [
+              "_is_fts5_unavailable_error"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 257,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_fts5_unavailable_error @ hermes_state.py:_is_fts5_unavailable_error */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261633,16 +261817,24 @@
             ],
             "line_number": 2164
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_is_trigram_unavailable_error",
+          "pop_annotation": {
+            "c_function": "hermes_state_is_trigram_unavailable_error",
+            "python_functions": [
+              "_is_trigram_unavailable_error"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 269,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_trigram_unavailable_error @ hermes_state.py:_is_trigram_unavailable_error */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261656,16 +261848,24 @@
             ],
             "line_number": 2178
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_db_has_legacy_inline_fts",
+          "pop_annotation": {
+            "c_function": "hermes_state_db_has_legacy_inline_fts",
+            "python_functions": [
+              "_db_has_legacy_inline_fts"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 281,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _db_has_legacy_inline_fts @ hermes_state.py:_db_has_legacy_inline_fts */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261677,16 +261877,24 @@
             "decorators": [],
             "line_number": 2203
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_warn_trigram_unavailable",
+          "pop_annotation": {
+            "c_function": "hermes_state_warn_trigram_unavailable",
+            "python_functions": [
+              "_warn_trigram_unavailable"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 289,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _warn_trigram_unavailable @ hermes_state.py:_warn_trigram_unavailable */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261698,16 +261906,24 @@
             "decorators": [],
             "line_number": 2217
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_warn_fts5_unavailable",
+          "pop_annotation": {
+            "c_function": "hermes_state_warn_fts5_unavailable",
+            "python_functions": [
+              "_warn_fts5_unavailable"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 299,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _warn_fts5_unavailable @ hermes_state.py:_warn_fts5_unavailable */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261719,16 +261935,24 @@
             "decorators": [],
             "line_number": 2231
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_sqlite_supports_fts5",
+          "pop_annotation": {
+            "c_function": "hermes_state_sqlite_supports_fts5",
+            "python_functions": [
+              "_sqlite_supports_fts5"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 310,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _sqlite_supports_fts5 @ hermes_state.py:_sqlite_supports_fts5 */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261740,16 +261964,24 @@
             "decorators": [],
             "line_number": 2242
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_ensure_fts_cjk_schema",
+          "pop_annotation": {
+            "c_function": "hermes_state_ensure_fts_cjk_schema",
+            "python_functions": [
+              "_ensure_fts_cjk_schema"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 317,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _ensure_fts_cjk_schema @ hermes_state.py:_ensure_fts_cjk_schema */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261763,16 +261995,24 @@
             ],
             "line_number": 2361
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_drop_fts_triggers",
+          "pop_annotation": {
+            "c_function": "hermes_state_drop_fts_triggers",
+            "python_functions": [
+              "_drop_fts_triggers"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 325,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _drop_fts_triggers @ hermes_state.py:_drop_fts_triggers */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261786,16 +262026,24 @@
             ],
             "line_number": 2369
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_fts_trigger_count",
+          "pop_annotation": {
+            "c_function": "hermes_state_fts_trigger_count",
+            "python_functions": [
+              "_fts_trigger_count"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 333,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _fts_trigger_count @ hermes_state.py:_fts_trigger_count */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261809,16 +262057,24 @@
             ],
             "line_number": 2379
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_rebuild_fts_indexes",
+          "pop_annotation": {
+            "c_function": "hermes_state_rebuild_fts_indexes",
+            "python_functions": [
+              "_rebuild_fts_indexes"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 340,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _rebuild_fts_indexes @ hermes_state.py:_rebuild_fts_indexes */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261832,16 +262088,24 @@
             ],
             "line_number": 2402
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_rebuild_legacy_fts_indexes",
+          "pop_annotation": {
+            "c_function": "hermes_state_rebuild_legacy_fts_indexes",
+            "python_functions": [
+              "_rebuild_legacy_fts_indexes"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 348,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _rebuild_legacy_fts_indexes @ hermes_state.py:_rebuild_legacy_fts_indexes */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261853,16 +262117,24 @@
             "decorators": [],
             "line_number": 2435
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_fts_table_probe",
+          "pop_annotation": {
+            "c_function": "hermes_state_fts_table_probe",
+            "python_functions": [
+              "_fts_table_probe"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 356,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _fts_table_probe @ hermes_state.py:_fts_table_probe */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261874,16 +262146,24 @@
             "decorators": [],
             "line_number": 2452
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_ensure_fts_schema",
+          "pop_annotation": {
+            "c_function": "hermes_state_ensure_fts_schema",
+            "python_functions": [
+              "_ensure_fts_schema"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 364,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _ensure_fts_schema @ hermes_state.py:_ensure_fts_schema */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261895,16 +262175,24 @@
             "decorators": [],
             "line_number": 2479
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_execute_write",
+          "pop_annotation": {
+            "c_function": "hermes_state_execute_write",
+            "python_functions": [
+              "_execute_write"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 371,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _execute_write @ hermes_state.py:_execute_write */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261918,16 +262206,24 @@
             ],
             "line_number": 2550
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_is_fts_write_corruption_error",
+          "pop_annotation": {
+            "c_function": "hermes_state_is_fts_write_corruption_error",
+            "python_functions": [
+              "_is_fts_write_corruption_error"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 380,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_fts_write_corruption_error @ hermes_state.py:_is_fts_write_corruption_error */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261939,16 +262235,24 @@
             "decorators": [],
             "line_number": 2565
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_try_runtime_fts_rebuild",
+          "pop_annotation": {
+            "c_function": "hermes_state_try_runtime_fts_rebuild",
+            "python_functions": [
+              "_try_runtime_fts_rebuild"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 392,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _try_runtime_fts_rebuild @ hermes_state.py:_try_runtime_fts_rebuild */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261960,16 +262264,24 @@
             "decorators": [],
             "line_number": 2614
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_try_wal_checkpoint",
+          "pop_annotation": {
+            "c_function": "hermes_state_try_wal_checkpoint",
+            "python_functions": [
+              "_try_wal_checkpoint"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 400,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _try_wal_checkpoint @ hermes_state.py:_try_wal_checkpoint */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -261981,16 +262293,24 @@
             "decorators": [],
             "line_number": 2644
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_try_optimize_fts",
+          "pop_annotation": {
+            "c_function": "hermes_state_try_optimize_fts",
+            "python_functions": [
+              "_try_optimize_fts"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 408,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _try_optimize_fts @ hermes_state.py:_try_optimize_fts */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -262002,16 +262322,24 @@
             "decorators": [],
             "line_number": 2660
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_close",
+          "pop_annotation": {
+            "c_function": "hermes_state_close",
+            "python_functions": [
+              "close"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 416,
+            "is_consolidated": false,
+            "full_text": "/* PoP: close @ hermes_state.py:close */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -262023,16 +262351,24 @@
             "decorators": [],
             "line_number": 2709
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_fts_rebuild_status",
+          "pop_annotation": {
+            "c_function": "hermes_state_fts_rebuild_status",
+            "python_functions": [
+              "fts_rebuild_status"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 424,
+            "is_consolidated": false,
+            "full_text": "/* PoP: fts_rebuild_status @ hermes_state.py:fts_rebuild_status */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -262044,16 +262380,24 @@
             "decorators": [],
             "line_number": 2727
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_fts_rebuild_finish",
+          "pop_annotation": {
+            "c_function": "hermes_state_fts_rebuild_finish",
+            "python_functions": [
+              "_fts_rebuild_finish"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 431,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _fts_rebuild_finish @ hermes_state.py:_fts_rebuild_finish */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -262065,16 +262409,24 @@
             "decorators": [],
             "line_number": 2774
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_fts_teardown_trash_step",
+          "pop_annotation": {
+            "c_function": "hermes_state_fts_teardown_trash_step",
+            "python_functions": [
+              "_fts_teardown_trash_step"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 439,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _fts_teardown_trash_step @ hermes_state.py:_fts_teardown_trash_step */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -262086,16 +262438,24 @@
             "decorators": [],
             "line_number": 2816
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_fts_rebuild_step",
+          "pop_annotation": {
+            "c_function": "hermes_state_fts_rebuild_step",
+            "python_functions": [
+              "fts_rebuild_step"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 448,
+            "is_consolidated": false,
+            "full_text": "/* PoP: fts_rebuild_step @ hermes_state.py:fts_rebuild_step */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -262107,16 +262467,24 @@
             "decorators": [],
             "line_number": 2891
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_fts_cjk_rebuild_status",
+          "pop_annotation": {
+            "c_function": "hermes_state_fts_cjk_rebuild_status",
+            "python_functions": [
+              "fts_cjk_rebuild_status"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 456,
+            "is_consolidated": false,
+            "full_text": "/* PoP: fts_cjk_rebuild_status @ hermes_state.py:fts_cjk_rebuild_status */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -262128,16 +262496,24 @@
             "decorators": [],
             "line_number": 2903
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_fts_cjk_rebuild_step",
+          "pop_annotation": {
+            "c_function": "hermes_state_fts_cjk_rebuild_step",
+            "python_functions": [
+              "fts_cjk_rebuild_step"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 462,
+            "is_consolidated": false,
+            "full_text": "/* PoP: fts_cjk_rebuild_step @ hermes_state.py:fts_cjk_rebuild_step */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -262149,16 +262525,24 @@
             "decorators": [],
             "line_number": 2949
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_fts_cjk_rebuild_finish",
+          "pop_annotation": {
+            "c_function": "hermes_state_fts_cjk_rebuild_finish",
+            "python_functions": [
+              "_fts_cjk_rebuild_finish"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 469,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _fts_cjk_rebuild_finish @ hermes_state.py:_fts_cjk_rebuild_finish */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -262170,16 +262554,24 @@
             "decorators": [],
             "line_number": 2975
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_fts_cjk_reset_if_stale",
+          "pop_annotation": {
+            "c_function": "hermes_state_fts_cjk_reset_if_stale",
+            "python_functions": [
+              "_fts_cjk_reset_if_stale"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 476,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _fts_cjk_reset_if_stale @ hermes_state.py:_fts_cjk_reset_if_stale */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -262191,16 +262583,24 @@
             "decorators": [],
             "line_number": 3024
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_fts_optimize_available",
+          "pop_annotation": {
+            "c_function": "hermes_state_fts_optimize_available",
+            "python_functions": [
+              "fts_optimize_available"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 484,
+            "is_consolidated": false,
+            "full_text": "/* PoP: fts_optimize_available @ hermes_state.py:fts_optimize_available */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -262212,16 +262612,24 @@
             "decorators": [],
             "line_number": 3058
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_has_fts_trash",
+          "pop_annotation": {
+            "c_function": "hermes_state_has_fts_trash",
+            "python_functions": [
+              "_has_fts_trash"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 491,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _has_fts_trash @ hermes_state.py:_has_fts_trash */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -262233,16 +262641,24 @@
             "decorators": [],
             "line_number": 3067
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_demote_legacy_fts_to_trash",
+          "pop_annotation": {
+            "c_function": "hermes_state_demote_legacy_fts_to_trash",
+            "python_functions": [
+              "_demote_legacy_fts_to_trash"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 497,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _demote_legacy_fts_to_trash @ hermes_state.py:_demote_legacy_fts_to_trash */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -262254,16 +262670,24 @@
             "decorators": [],
             "line_number": 3114
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_optimize_fts_storage",
+          "pop_annotation": {
+            "c_function": "hermes_state_optimize_fts_storage",
+            "python_functions": [
+              "optimize_fts_storage"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 505,
+            "is_consolidated": false,
+            "full_text": "/* PoP: optimize_fts_storage @ hermes_state.py:optimize_fts_storage */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -262277,16 +262701,24 @@
             ],
             "line_number": 3267
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_parse_schema_columns",
+          "pop_annotation": {
+            "c_function": "hermes_state_parse_schema_columns",
+            "python_functions": [
+              "_parse_schema_columns"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 513,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _parse_schema_columns @ hermes_state.py:_parse_schema_columns */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -262298,16 +262730,24 @@
             "decorators": [],
             "line_number": 3309
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_reconcile_columns",
+          "pop_annotation": {
+            "c_function": "hermes_state_reconcile_columns",
+            "python_functions": [
+              "_reconcile_columns"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 520,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _reconcile_columns @ hermes_state.py:_reconcile_columns */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -262319,16 +262759,24 @@
             "decorators": [],
             "line_number": 3353
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_init_schema",
+          "pop_annotation": {
+            "c_function": "hermes_state_init_schema",
+            "python_functions": [
+              "_init_schema"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 528,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _init_schema @ hermes_state.py:_init_schema */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -262398,16 +262846,24 @@
             "decorators": [],
             "line_number": 3948
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_record_gateway_session_peer",
+          "pop_annotation": {
+            "c_function": "hermes_state_record_gateway_session_peer",
+            "python_functions": [
+              "record_gateway_session_peer"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 535,
+            "is_consolidated": false,
+            "full_text": "/* PoP: record_gateway_session_peer @ hermes_state.py:record_gateway_session_peer */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -262622,16 +263078,24 @@
             "decorators": [],
             "line_number": 4177
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_backfill_gateway_metadata_from_sessions_json",
+          "pop_annotation": {
+            "c_function": "hermes_state_backfill_gateway_metadata_from_sessions_json",
+            "python_functions": [
+              "_backfill_gateway_metadata_from_sessions_json"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 545,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _backfill_gateway_metadata_from_sessions_json @ hermes_state.py:_backfill_gateway_metadata_from_sessions_json */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -262643,16 +263107,24 @@
             "decorators": [],
             "line_number": 4226
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_find_latest_gateway_session_for_peer",
+          "pop_annotation": {
+            "c_function": "hermes_state_find_latest_gateway_session_for_peer",
+            "python_functions": [
+              "find_latest_gateway_session_for_peer"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 552,
+            "is_consolidated": false,
+            "full_text": "/* PoP: find_latest_gateway_session_for_peer @ hermes_state.py:find_latest_gateway_session_for_peer */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -262838,16 +263310,24 @@
             "decorators": [],
             "line_number": 4545
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_backfill_repo_roots",
+          "pop_annotation": {
+            "c_function": "hermes_state_backfill_repo_roots",
+            "python_functions": [
+              "backfill_repo_roots"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 559,
+            "is_consolidated": false,
+            "full_text": "/* PoP: backfill_repo_roots @ hermes_state.py:backfill_repo_roots */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -263789,16 +264269,24 @@
             "decorators": [],
             "line_number": 5791
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_get_session_by_title",
+          "pop_annotation": {
+            "c_function": "hermes_state_get_session_by_title",
+            "python_functions": [
+              "get_session_by_title"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 566,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_session_by_title @ hermes_state.py:get_session_by_title */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -263810,16 +264298,24 @@
             "decorators": [],
             "line_number": 5800
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_resolve_session_by_title",
+          "pop_annotation": {
+            "c_function": "hermes_state_resolve_session_by_title",
+            "python_functions": [
+              "resolve_session_by_title"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 574,
+            "is_consolidated": false,
+            "full_text": "/* PoP: resolve_session_by_title @ hermes_state.py:resolve_session_by_title */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -263891,16 +264387,24 @@
             ],
             "line_number": 5937
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_compact_session_cols",
+          "pop_annotation": {
+            "c_function": "hermes_state_compact_session_cols",
+            "python_functions": [
+              "_compact_session_cols"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 582,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _compact_session_cols @ hermes_state.py:_compact_session_cols */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -263912,16 +264416,24 @@
             "decorators": [],
             "line_number": 5949
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_distinct_session_cwds",
+          "pop_annotation": {
+            "c_function": "hermes_state_distinct_session_cwds",
+            "python_functions": [
+              "distinct_session_cwds"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 588,
+            "is_consolidated": false,
+            "full_text": "/* PoP: distinct_session_cwds @ hermes_state.py:distinct_session_cwds */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -263962,16 +264474,24 @@
             "decorators": [],
             "line_number": 6261
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_list_cron_job_runs",
+          "pop_annotation": {
+            "c_function": "hermes_state_list_cron_job_runs",
+            "python_functions": [
+              "list_cron_job_runs"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 595,
+            "is_consolidated": false,
+            "full_text": "/* PoP: list_cron_job_runs @ hermes_state.py:list_cron_job_runs */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -263983,16 +264503,24 @@
             "decorators": [],
             "line_number": 6322
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_get_session_rich_row",
+          "pop_annotation": {
+            "c_function": "hermes_state_get_session_rich_row",
+            "python_functions": [
+              "_get_session_rich_row"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 603,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _get_session_rich_row @ hermes_state.py:_get_session_rich_row */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -264004,16 +264532,24 @@
             "decorators": [],
             "line_number": 6356
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_list_skill_scaffolded_sessions",
+          "pop_annotation": {
+            "c_function": "hermes_state_list_skill_scaffolded_sessions",
+            "python_functions": [
+              "list_skill_scaffolded_sessions"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 611,
+            "is_consolidated": false,
+            "full_text": "/* PoP: list_skill_scaffolded_sessions @ hermes_state.py:list_skill_scaffolded_sessions */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -264025,16 +264561,24 @@
             "decorators": [],
             "line_number": 6383
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_get_first_assistant_text",
+          "pop_annotation": {
+            "c_function": "hermes_state_get_first_assistant_text",
+            "python_functions": [
+              "get_first_assistant_text"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 618,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_first_assistant_text @ hermes_state.py:get_first_assistant_text */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -264547,16 +265091,24 @@
             "decorators": [],
             "line_number": 7485
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_get_resume_conversations",
+          "pop_annotation": {
+            "c_function": "hermes_state_get_resume_conversations",
+            "python_functions": [
+              "get_resume_conversations"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 625,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_resume_conversations @ hermes_state.py:get_resume_conversations */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -264568,16 +265120,24 @@
             "decorators": [],
             "line_number": 7534
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_get_ancestor_display_prefix",
+          "pop_annotation": {
+            "c_function": "hermes_state_get_ancestor_display_prefix",
+            "python_functions": [
+              "get_ancestor_display_prefix"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 633,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_ancestor_display_prefix @ hermes_state.py:get_ancestor_display_prefix */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -264767,16 +265327,24 @@
             ],
             "line_number": 7801
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_sanitize_fts5_query",
+          "pop_annotation": {
+            "c_function": "hermes_state_sanitize_fts5_query",
+            "python_functions": [
+              "_sanitize_fts5_query"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 640,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _sanitize_fts5_query @ hermes_state.py:_sanitize_fts5_query */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -264790,16 +265358,24 @@
             ],
             "line_number": 7881
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_is_cjk_codepoint",
+          "pop_annotation": {
+            "c_function": "hermes_state_is_cjk_codepoint",
+            "python_functions": [
+              "_is_cjk_codepoint"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 657,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_cjk_codepoint @ hermes_state.py:_is_cjk_codepoint */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -264813,16 +265389,24 @@
             ],
             "line_number": 7891
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_contains_cjk",
+          "pop_annotation": {
+            "c_function": "hermes_state_contains_cjk",
+            "python_functions": [
+              "_contains_cjk"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 663,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _contains_cjk @ hermes_state.py:_contains_cjk */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -264836,16 +265420,24 @@
             ],
             "line_number": 7906
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_count_cjk",
+          "pop_annotation": {
+            "c_function": "hermes_state_count_cjk",
+            "python_functions": [
+              "_count_cjk"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 678,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _count_cjk @ hermes_state.py:_count_cjk */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -264859,16 +265451,24 @@
             ],
             "line_number": 7911
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_has_lone_cjk_run",
+          "pop_annotation": {
+            "c_function": "hermes_state_has_lone_cjk_run",
+            "python_functions": [
+              "_has_lone_cjk_run"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 694,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _has_lone_cjk_run @ hermes_state.py:_has_lone_cjk_run */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -264882,16 +265482,24 @@
             ],
             "line_number": 7929
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_trigram_eligible_tokens",
+          "pop_annotation": {
+            "c_function": "hermes_state_trigram_eligible_tokens",
+            "python_functions": [
+              "_trigram_eligible_tokens"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 716,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _trigram_eligible_tokens @ hermes_state.py:_trigram_eligible_tokens */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -264903,16 +265511,24 @@
             "decorators": [],
             "line_number": 7945
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_run_trigram_search",
+          "pop_annotation": {
+            "c_function": "hermes_state_run_trigram_search",
+            "python_functions": [
+              "_run_trigram_search"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 733,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _run_trigram_search @ hermes_state.py:_run_trigram_search */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -264924,16 +265540,24 @@
             "decorators": [],
             "line_number": 8024
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_search_messages",
+          "pop_annotation": {
+            "c_function": "hermes_state_search_messages",
+            "python_functions": [
+              "search_messages"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 740,
+            "is_consolidated": false,
+            "full_text": "/* PoP: search_messages @ hermes_state.py:search_messages */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -264974,16 +265598,24 @@
             "decorators": [],
             "line_number": 8094
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_search_messages_impl",
+          "pop_annotation": {
+            "c_function": "hermes_state_search_messages_impl",
+            "python_functions": [
+              "_search_messages_impl"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 748,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _search_messages_impl @ hermes_state.py:_search_messages_impl */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -264995,16 +265627,24 @@
             "decorators": [],
             "line_number": 8649
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_search_unindexed_gap",
+          "pop_annotation": {
+            "c_function": "hermes_state_search_unindexed_gap",
+            "python_functions": [
+              "_search_unindexed_gap"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 755,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _search_unindexed_gap @ hermes_state.py:_search_unindexed_gap */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -265016,16 +265656,24 @@
             "decorators": [],
             "line_number": 8722
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_search_sessions_by_id",
+          "pop_annotation": {
+            "c_function": "hermes_state_search_sessions_by_id",
+            "python_functions": [
+              "search_sessions_by_id"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 763,
+            "is_consolidated": false,
+            "full_text": "/* PoP: search_sessions_by_id @ hermes_state.py:search_sessions_by_id */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -265037,16 +265685,24 @@
             "decorators": [],
             "line_number": 8769
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_search_sessions",
+          "pop_annotation": {
+            "c_function": "hermes_state_search_sessions",
+            "python_functions": [
+              "search_sessions"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 770,
+            "is_consolidated": false,
+            "full_text": "/* PoP: search_sessions @ hermes_state.py:search_sessions */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -265261,16 +265917,24 @@
             "decorators": [],
             "line_number": 8980
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_export_session_lineage",
+          "pop_annotation": {
+            "c_function": "hermes_state_export_session_lineage",
+            "python_functions": [
+              "export_session_lineage"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 778,
+            "is_consolidated": false,
+            "full_text": "/* PoP: export_session_lineage @ hermes_state.py:export_session_lineage */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -265282,16 +265946,24 @@
             "decorators": [],
             "line_number": 9000
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_export_all",
+          "pop_annotation": {
+            "c_function": "hermes_state_export_all",
+            "python_functions": [
+              "export_all"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 785,
+            "is_consolidated": false,
+            "full_text": "/* PoP: export_all @ hermes_state.py:export_all */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -265367,16 +266039,24 @@
             ],
             "line_number": 9040
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_float_or_none",
+          "pop_annotation": {
+            "c_function": "hermes_state_float_or_none",
+            "python_functions": [
+              "_float_or_none"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 792,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _float_or_none @ hermes_state.py:_float_or_none */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -265512,16 +266192,24 @@
             "decorators": [],
             "line_number": 9082
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_import_sessions",
+          "pop_annotation": {
+            "c_function": "hermes_state_import_sessions",
+            "python_functions": [
+              "import_sessions"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 803,
+            "is_consolidated": false,
+            "full_text": "/* PoP: import_sessions @ hermes_state.py:import_sessions */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -266262,16 +266950,24 @@
             "decorators": [],
             "line_number": 10546
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_list_unlinked_telegram_sessions_for_user",
+          "pop_annotation": {
+            "c_function": "hermes_state_list_unlinked_telegram_sessions_for_user",
+            "python_functions": [
+              "list_unlinked_telegram_sessions_for_user"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 812,
+            "is_consolidated": false,
+            "full_text": "/* PoP: list_unlinked_telegram_sessions_for_user @ hermes_state.py:list_unlinked_telegram_sessions_for_user */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -266312,16 +267008,24 @@
             "decorators": [],
             "line_number": 10641
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_optimize_fts",
+          "pop_annotation": {
+            "c_function": "hermes_state_optimize_fts",
+            "python_functions": [
+              "optimize_fts"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 821,
+            "is_consolidated": false,
+            "full_text": "/* PoP: optimize_fts @ hermes_state.py:optimize_fts */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -266333,16 +267037,24 @@
             "decorators": [],
             "line_number": 10680
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_rebuild_fts",
+          "pop_annotation": {
+            "c_function": "hermes_state_rebuild_fts",
+            "python_functions": [
+              "rebuild_fts"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 828,
+            "is_consolidated": false,
+            "full_text": "/* PoP: rebuild_fts @ hermes_state.py:rebuild_fts */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -266412,16 +267124,24 @@
             "decorators": [],
             "line_number": 10777
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_maybe_auto_prune_and_vacuum",
+          "pop_annotation": {
+            "c_function": "hermes_state_maybe_auto_prune_and_vacuum",
+            "python_functions": [
+              "maybe_auto_prune_and_vacuum"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 835,
+            "is_consolidated": false,
+            "full_text": "/* PoP: maybe_auto_prune_and_vacuum @ hermes_state.py:maybe_auto_prune_and_vacuum */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_state.py",
@@ -266657,16 +267377,24 @@
             "decorators": [],
             "line_number": 11010
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/hermes_state/port_hermes_state_remaining.c",
+          "c_function": "hermes_state_getattr_offload",
+          "pop_annotation": {
+            "c_function": "hermes_state_getattr_offload",
+            "python_functions": [
+              "__getattr__"
+            ],
+            "c_file": "src/agent/hermes_state/port_hermes_state_remaining.c",
+            "python_file": "hermes_state.py",
+            "line": 843,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __getattr__ @ hermes_state.py:__getattr__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
