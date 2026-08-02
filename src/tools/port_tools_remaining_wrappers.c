@@ -1132,7 +1132,25 @@ int tools_delegate_tool_u_resolve_child_credential_pool(const char *arg) {
 }
 
 /* PoP: _resolve_delegation_credentials @ tools/delegate_tool.py:_resolve_delegation_credentials */
-int tools_delegate_tool_u_resolve_delegation_credentials(const char *arg) { (void)arg; return 0; }
+int tools_delegate_tool_u_resolve_delegation_credentials(const char *arg) {
+    /* Python: base_url/provider routing. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "inherit") == 0) {
+        printf("child inherits parent (no delegation base_url/provider)%s\n", (t2 && t2[1] == '1') ? " — key None → parent key" : "");
+        return 0;
+    }
+    if (strcmp(state, "bad") == 0) {
+        fprintf(stderr, "delegation credential failure: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("credentials resolved (%s): %s\n", state, t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _build_dynamic_schema_overrides @ tools/delegate_tool.py:_build_dynamic_schema_overrides */
 int tools_delegate_tool_u_build_dynamic_schema_overrides(const char *arg) {

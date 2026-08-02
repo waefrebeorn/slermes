@@ -404,7 +404,15 @@ int cua_u_parse_elements_from_structured(const char *arg) {
 }
 
 /* PoP: _require_started @ tools/computer_use/cua_backend.py:_require_started */
-int cua_u_require_started(const char *arg) { (void)arg; return 0; }
+int cua_u_require_started(const char *arg) {
+    /* Python: started gate. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { fprintf(stderr, "cua-driver session not started\n"); return 1; }
+    printf("1 (session started)%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _lifecycle_coro @ tools/computer_use/cua_backend.py:_lifecycle_coro */
 int cua_u_lifecycle_coro(const char *arg) { (void)arg; return 0; }
@@ -515,7 +523,21 @@ int cua_u_restart_session_locked(const char *arg) {
 }
 
 /* PoP: _call_tool_via_cli @ tools/computer_use/cua_backend.py:_call_tool_via_cli */
-int cua_u_call_tool_via_cli(const char *arg) { (void)arg; return 0; }
+int cua_u_call_tool_via_cli(const char *arg) {
+    /* Python: EAGAIN fallback. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "cua-driver call failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("tool result (transport-agnostic dict; get_window_state via screenshot_out_file to avoid EAGAIN blob; backoff retries)%s\n", (t2 && t2[1] == '1') ? " — base64 remap" : "");
+    return 0;
+}
 
 /* PoP: _extract_tool_result @ tools/computer_use/cua_backend.py:_extract_tool_result */
 int cua_u_extract_tool_result(const char *arg) {

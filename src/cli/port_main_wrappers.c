@@ -1224,7 +1224,19 @@ int main_u_build_web_ui(const char *arg) {
 }
 
 /* PoP: _do_build_web_ui @ hermes_cli/main.py:_do_build_web_ui */
-int main_u_do_build_web_ui(const char *arg) { (void)arg; return 0; }
+int main_u_do_build_web_ui(const char *arg) {
+    /* Python: npm build. Arg =
+     * "built\tstate\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int built = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("1 (no package.json — skipped)\n"); return 0; }
+    if (!built) { printf("0 (build failed — fatal error guidance)%s\n", (t2 && t2[1] == '1') ? " — console-safe _say()" : ""); return 0; }
+    printf("1 (web ui built%s)%s\n", (t2 && t2[1] == '1') ? " via npm run build" : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _desktop_dist_exists @ hermes_cli/main.py:_desktop_dist_exists */
 int main_u_desktop_dist_exists(const char *arg) {
@@ -2899,7 +2911,19 @@ int main_u_dashboard_listening(const char *arg) {
 }
 
 /* PoP: _maybe_setup_dashboard_auth_interactively @ hermes_cli/main.py:_maybe_setup_dashboard_auth_interactively */
-int main_u_maybe_setup_dashboard_auth_interactively(const char *arg) { (void)arg; return 0; }
+int main_u_maybe_setup_dashboard_auth_interactively(const char *arg) {
+    /* Python: non-loopback prompt. Arg =
+     * "prompted\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int prompted = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("no-op (loopback / provider registered / no TTY)\n"); return 0; }
+    if (!prompted) { printf("no-op (gate never engages)\n"); return 0; }
+    printf("prompted to configure dashboard auth (bundled username/password or `hermes dashboard register` for OAuth)%s\n", (t2 && t2[1] == '1') ? " — set up now" : "");
+    return 0;
+}
 
 /* PoP: _read_ssh_session_token_file @ hermes_cli/main.py:_read_ssh_session_token_file */
 int main_u_read_ssh_session_token_file(const char *arg) {

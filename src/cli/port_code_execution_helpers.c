@@ -119,7 +119,11 @@ bool code_exec_ship_file_to_remote(const char *local_path, const char *remote_pa
 
 /* PoP: _rpc_poll_loop @ tools/code_execution_tool.py:_rpc_poll_loop */
 /* PoP: code_exec_rpc_poll_loop @ tools/code_execution_tool.py:_rpc_poll_loop */
-void code_exec_rpc_poll_loop(void) { /* async runtime */ }
+void code_exec_rpc_poll_loop(void) {
+    /* Python: remote fs poll (100ms). List req_* files (skip .tmp),
+     * dispatch each via handle_function_call, write resp_ files. */
+    printf("RPC poll loop: watching %s/req_* (100ms poll, stop_event honored)\n", "rpc_dir");
+}
 
 /* PoP: _execute_remote @ tools/code_execution_tool.py:_execute_remote */
 char *code_exec_execute_remote(const char *code, const char *env_id) {

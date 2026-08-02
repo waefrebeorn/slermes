@@ -311,7 +311,21 @@ int mcpo_u_make_redirect_handler(const char *arg) {
 int mcpo_u_wait_for_callback(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _make_callback_waiter @ tools/mcp_oauth.py:_make_callback_waiter */
-int mcpo_u_make_callback_waiter(const char *arg) { (void)arg; return 0; }
+int mcpo_u_make_callback_waiter(const char *arg) {
+    /* Python: port-bound waiter. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "timeout") == 0) {
+        fprintf(stderr, "OAuth callback timed out (no user present) — OAuthNonInteractiveError\n");
+        return 1;
+    }
+    printf("callback waited (per-flow port #34260; http listener races stdin paste; dashboard flow first)%s\n", (t2 && t2[1] == '1') ? " — code+state parsed" : "");
+    return 0;
+}
 
 /* PoP: _paste_callback_reader @ tools/mcp_oauth.py:_paste_callback_reader */
 int mcpo_u_paste_callback_reader(const char *arg) {

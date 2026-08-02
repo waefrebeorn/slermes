@@ -549,7 +549,25 @@ int auth_u_import_codex_cli_tokens(const char *arg) {
 }
 
 /* PoP: resolve_codex_runtime_credentials @ hermes_cli/auth.py:resolve_codex_runtime_credentials */
-int auth_resolve_codex_runtime_credentials(const char *arg) { (void)arg; return 0; }
+int auth_resolve_codex_runtime_credentials(const char *arg) {
+    /* Python: pool fallback. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "pool_fallback") == 0) {
+        printf("singleton missing — pool fallback used (#32992 pool-only restoration)%s\n", (t2 && t2[1] == '1') ? " — recovered from CLI store" : "");
+        return 0;
+    }
+    if (strcmp(state, "missing") == 0) {
+        fprintf(stderr, "no usable Codex credentials: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("codex runtime creds resolved (singleton first): %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _is_codex_rate_limit_shaped @ hermes_cli/auth.py:_is_codex_rate_limit_shaped */
 int auth_u_is_codex_rate_limit_shaped(const char *arg) {

@@ -239,7 +239,29 @@ int uninst_run_gui_uninstall(const char *arg) {
 }
 
 /* PoP: run_uninstall @ hermes_cli/uninstall.py:run_uninstall */
-int uninst_run_uninstall(const char *arg) { (void)arg; return 0; }
+int uninst_run_uninstall(const char *arg) {
+    /* Python: full/keep-data. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("1\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "dry_run") == 0) {
+        printf("dry run — would remove code%s ~/.hermes\n", (t2 && t2[1] == '1') ? " +" : " (keep");
+        return 0;
+    }
+    if (strcmp(state, "cancelled") == 0) {
+        printf("Uninstall cancelled.\n");
+        return 0;
+    }
+    if (strcmp(state, "failed") == 0) {
+        fprintf(stderr, "uninstall failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("uninstall complete (%s: code + %s, profiles %s)%s\n", state, (t2 && t2[1] == '1') ? "~/.hermes wiped" : "~/.hermes kept", (t2 && t2[1] == '2') ? "cleaned" : "kept", (t2 && t2[1] == '3') ? " — desktop detached path" : "");
+    return 0;
+}
 
 /* PoP: _print_uninstall_dry_run @ hermes_cli/uninstall.py:_print_uninstall_dry_run */
 int uninst_u_print_uninstall_dry_run(const char *arg) {

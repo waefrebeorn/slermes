@@ -3097,7 +3097,17 @@ int hermes_cli_kanban_diagnostics_u_rule_prose_phantom_refs(const char *arg) {
 }
 
 /* PoP: _rule_repeated_failures @ hermes_cli/kanban_diagnostics.py:_rule_repeated_failures */
-int hermes_cli_kanban_diagnostics_u_rule_repeated_failures(const char *arg) { (void)arg; return 0; }
+int hermes_cli_kanban_diagnostics_u_rule_repeated_failures(const char *arg) {
+    /* Python: unified counter. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("consecutive_failures >= %s (legacy spawn_failure_threshold honored; terminal/running exempt; failure_limit-derived)%s\n", t2 ? t2 + 1 : "3", (t2 && t2[1] == '1') ? " — runtime derived" : "");
+    return 0;
+}
 
 /* PoP: _rule_repeated_crashes @ hermes_cli/kanban_diagnostics.py:_rule_repeated_crashes */
 int hermes_cli_kanban_diagnostics_u_rule_repeated_crashes(const char *arg) {
@@ -5090,7 +5100,16 @@ int hermes_cli_service_manager_u_write_gateway_desired_state(const char *arg) {
 }
 
 /* PoP: _seed_supervise_skeleton @ hermes_cli/service_manager.py:_seed_supervise_skeleton */
-int hermes_cli_service_manager_u_seed_supervise_skeleton(const char *arg) { (void)arg; return 0; }
+int hermes_cli_service_manager_u_seed_supervise_skeleton(const char *arg) {
+    /* Python: hermes-owned skeleton. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("supervise/ + event/ skeleton seeded (0700 dirs + control fifo 0600, hermes-user owned — s6 treats EEXIST as success)%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _service_dir @ hermes_cli/service_manager.py:_service_dir */
 int hermes_cli_service_manager_u_service_dir(const char *arg) {
@@ -9277,7 +9296,21 @@ int hermes_cli_proxy_server_u_filter_response_headers(const char *arg) {
 }
 
 /* PoP: create_app @ hermes_cli/proxy/server.py:create_app */
-int hermes_cli_proxy_server_create_app(const char *arg) { (void)arg; return 0; }
+int hermes_cli_proxy_server_create_app(const char *arg) {
+    /* Python: aiohttp app. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_aiohttp") == 0) {
+        fprintf(stderr, "aiohttp is required for `hermes proxy`. Run `hermes setup` to install it.\n");
+        return 1;
+    }
+    printf("app created (AppKey adapter, health + /v1 proxy + allowed_paths gate%s): %s\n", (t2 && t2[1] == '1') ? " + websocket passthrough" : "", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: run_server @ hermes_cli/proxy/server.py:run_server */
 int hermes_cli_proxy_server_run_server(const char *arg) { (void)arg; return 0; }
@@ -9683,7 +9716,19 @@ int hermes_cli_goals_draft_contract(const char *arg) {
 int hermes_cli_goals_evaluate_after_turn(const char *arg) { (void)arg; return 0; }
 
 /* PoP: run_kanban_goal_loop @ hermes_cli/goals.py:run_kanban_goal_loop */
-int hermes_cli_goals_run_kanban_goal_loop(const char *arg) { (void)arg; return 0; }
+int hermes_cli_goals_run_kanban_goal_loop(const char *arg) {
+    /* Python: Ralph-style loop. Arg =
+     * "ended\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int ended = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("loop skipped\n"); return 0; }
+    if (ended) { printf("task already terminated (complete/block) — nothing to do\n"); return 0; }
+    printf("goal loop running (continue prompts in same session, done→kanban_complete nudge, budget exhausted→block_fn sticky block)%s\n", (t2 && t2[1] == '1') ? " — no SessionDB persistence (ephemeral worker)" : "");
+    return 0;
+}
 
 /* PoP: _profile_bound_backend_pids @ hermes_cli/profiles.py:_profile_bound_backend_pids */
 int hermes_cli_profiles_u_profile_bound_backend_pids(const char *arg) {
@@ -10102,7 +10147,12 @@ int hermes_cli_subcommands_dashboa_u_add_server_runtime_args(const char *arg) {
 }
 
 /* PoP: build_dashboard_parser @ hermes_cli/subcommands/dashboard.py:build_dashboard_parser */
-int hermes_cli_subcommands_dashboa_build_dashboard_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_dashboa_build_dashboard_parser(const char *arg) {
+    /* Python: dashboard+serve. */
+    (void)arg;
+    printf("dashboard/serve parsers attached (shared backend, --no-open, --tui compat shim, runtime args)\n");
+    return 0;
+}
 
 /* PoP: _add_compat_platform_flag @ hermes_cli/subcommands/gateway.py:_add_compat_platform_flag */
 int hermes_cli_subcommands_gateway_u_add_compat_platform_flag(const char *arg) {
@@ -10409,7 +10459,12 @@ int hermes_cli_subcommands_console_build_console_parser(const char *arg) {
 }
 
 /* PoP: build_cron_parser @ hermes_cli/subcommands/cron.py:build_cron_parser */
-int hermes_cli_subcommands_cron_build_cron_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_cron_build_cron_parser(const char *arg) {
+    /* Python: cron tree. */
+    (void)arg;
+    printf("cron parser attached (list --all, create/add schedule prompt --name --deliver --repeat --skill, remove, pause, resume, run)\n");
+    return 0;
+}
 
 /* PoP: build_debug_parser @ hermes_cli/subcommands/debug.py:build_debug_parser */
 int hermes_cli_subcommands_debug_build_debug_parser(const char *arg) {

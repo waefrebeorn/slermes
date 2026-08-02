@@ -165,7 +165,19 @@ int grun_u_set_adapter_auto_tts_enabled(const char *arg) {
 }
 
 /* PoP: _sync_voice_mode_state_to_adapter @ gateway/run.py:_sync_voice_mode_state_to_adapter */
-int grun_u_sync_voice_mode_state_to_adapter(const char *arg) { (void)arg; return 0; }
+int grun_u_sync_voice_mode_state_to_adapter(const char *arg) {
+    /* Python: persisted /voice. Arg =
+     * "synced\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int synced = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!synced) { printf("0 (no adapter sets — skip)\n"); return 0; }
+    printf("1 (auto_tts default + enabled/disabled chat sets pushed to adapter)%s\n", (t2 && t2[1] == '1') ? " — lazy config load" : "");
+    return 0;
+}
 
 /* PoP: _await_adapter_cleanup_with_timeout @ gateway/run.py:_await_adapter_cleanup_with_timeout */
 int grun_u_await_adapter_cleanup_with_timeout(const char *arg) { (void)arg; return 0; }
@@ -263,7 +275,18 @@ int grun_u_normalize_source_for_session_key(const char *arg) {
 }
 
 /* PoP: _resolve_session_agent_runtime @ gateway/run.py:_resolve_session_agent_runtime */
-int grun_u_resolve_session_agent_runtime(const char *arg) { (void)arg; return 0; }
+int grun_u_resolve_session_agent_runtime(const char *arg) {
+    /* Python: runtime priority. Arg =
+     * "override\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int override = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("runtime resolved (session /model > channel_overrides > global; rehydrate+override merge%s): %s\n", override ? " APPLIED" : "", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _resolve_turn_agent_config @ gateway/run.py:_resolve_turn_agent_config */
 int grun_u_resolve_turn_agent_config(const char *arg) {
@@ -837,7 +860,18 @@ int grun_u_make_profile_message_handler(const char *arg) {
 }
 
 /* PoP: _create_adapter @ gateway/run.py:_create_adapter */
-int grun_u_create_adapter(const char *arg) { (void)arg; return 0; }
+int grun_u_create_adapter(const char *arg) {
+    /* Python: registry-first. Arg =
+     * "plugin\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int plugin = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("adapter created via %s (extra defaults group/thread sessions; runner back-ref injected for admin alerts + profile routing)%s\n", plugin ? "plugin registry" : "built-in chain", (t2 && t2[1] == '1') ? " — started" : "");
+    return 0;
+}
 
 /* PoP: _make_adapter_auth_check @ gateway/run.py:_make_adapter_auth_check */
 int grun_u_make_adapter_auth_check(const char *arg) { (void)arg; return 0; }

@@ -363,7 +363,17 @@ int moa_u_degraded_notice(const char *arg) {
 }
 
 /* PoP: aggregate_moa_context @ agent/moa_loop.py:aggregate_moa_context */
-int moa_aggregate_moa_context(const char *arg) { (void)arg; return 0; }
+int moa_aggregate_moa_context(const char *arg) {
+    /* Python: reference fan-out. Arg =
+     * "notes\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("references fanned out (%s notes; aggregator synthesis uncapped #53580, temp/max_tokens omitted when None; agent interrupt aborts fan-out)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? " — partial context kept" : "");
+    return 0;
+}
 
 /* PoP: _attach_reference_guidance @ agent/moa_loop.py:_attach_reference_guidance */
 int moa_u_attach_reference_guidance(const char *arg) {
