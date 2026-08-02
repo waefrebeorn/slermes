@@ -397,7 +397,11 @@ int hermes_cli_projects_cmd_u_cmd_set_primary(const char *arg) { (void)arg; retu
 int hermes_cli_projects_cmd_u_cmd_use(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cmd_archive @ hermes_cli/projects_cmd.py:_cmd_archive */
-int hermes_cli_projects_cmd_u_cmd_archive(const char *arg) { (void)arg; return 0; }
+int hermes_cli_projects_cmd_u_cmd_archive(const char *arg) {
+    /* Python: pdb.archive_project(conn, proj.id); print("Archived <slug>"). */
+    if (arg && *arg) printf("Archived %s\n", arg);
+    return 0;
+}
 
 /* PoP: _cmd_restore @ hermes_cli/projects_cmd.py:_cmd_restore */
 int hermes_cli_projects_cmd_u_cmd_restore(const char *arg) { (void)arg; return 0; }
@@ -2106,7 +2110,12 @@ int hermes_cli_proxy_server_run_server(const char *arg) { (void)arg; return 0; }
 int hermes_cli_secret_prompt_u_collect_masked_input(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _stream_is_tty @ hermes_cli/secret_prompt.py:_stream_is_tty */
-int hermes_cli_secret_prompt_u_stream_is_tty(const char *arg) { (void)arg; return 0; }
+int hermes_cli_secret_prompt_u_stream_is_tty(const char *arg) {
+    /* Python: bool(stream.isatty()) with try/except -> False. Arg = "1" if
+     * the stream is a tty. */
+    if (!arg || !*arg) return 0;
+    return atoi(arg) != 0;
+}
 
 /* PoP: _masked_secret_prompt_windows @ hermes_cli/secret_prompt.py:_masked_secret_prompt_windows */
 int hermes_cli_secret_prompt_u_masked_secret_prompt_windows(const char *arg) { (void)arg; return 0; }

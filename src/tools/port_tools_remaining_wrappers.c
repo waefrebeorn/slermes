@@ -589,7 +589,21 @@ int tools_tool_backend_helpers_normalize_browser_cloud_provider(const char *arg)
 int tools_tool_backend_helpers_coerce_modal_mode(const char *arg) { (void)arg; return 0; }
 
 /* PoP: normalize_modal_mode @ tools/tool_backend_helpers.py:normalize_modal_mode */
-int tools_tool_backend_helpers_normalize_modal_mode(const char *arg) { (void)arg; return 0; }
+int tools_tool_backend_helpers_normalize_modal_mode(const char *arg) {
+    /* Python: coerce_modal_mode(value) — normalize modal execution mode. */
+    if (!arg || !*arg) { printf("local\n"); return 0; }
+    char low[16];
+    size_t n = strlen(arg);
+    if (n >= sizeof(low)) n = sizeof(low) - 1;
+    for (size_t i = 0; i < n; i++) low[i] = (char)tolower((unsigned char)arg[i]);
+    low[n] = '\0';
+    if (strcmp(low, "1") == 0 || strcmp(low, "true") == 0 || strcmp(low, "yes") == 0 ||
+        strcmp(low, "on") == 0 || strcmp(low, "modal") == 0) printf("modal\n");
+    else if (strcmp(low, "0") == 0 || strcmp(low, "false") == 0 || strcmp(low, "no") == 0 ||
+             strcmp(low, "off") == 0 || strcmp(low, "local") == 0) printf("local\n");
+    else printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: has_direct_modal_credentials @ tools/tool_backend_helpers.py:has_direct_modal_credentials */
 int tools_tool_backend_helpers_has_direct_modal_credentials(const char *arg) { (void)arg; return 0; }

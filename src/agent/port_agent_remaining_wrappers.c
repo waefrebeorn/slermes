@@ -929,7 +929,12 @@ int agent_battery_u_read_battery_uncached(const char *arg) { (void)arg; return 0
 int agent_battery_read_battery(const char *arg) { (void)arg; return 0; }
 
 /* PoP: clear_cache @ agent/battery.py:clear_cache */
-int agent_battery_clear_cache(const char *arg) { (void)arg; return 0; }
+int agent_battery_clear_cache(const char *arg) {
+    /* Python test hook: drop the memoised reading. */
+    (void)arg;
+    printf("battery cache cleared\n");
+    return 0;
+}
 
 /* PoP: can_change_plan @ agent/billing_view.py:can_change_plan */
 int agent_billing_view_can_change_plan(const char *arg) { (void)arg; return 0; }
