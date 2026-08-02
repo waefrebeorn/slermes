@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T21:30:17Z",
+  "generated_at": "2026-08-02T21:33:03Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -62612,10 +62612,10 @@
     },
     "agent/skill_preprocessing.py": {
       "total": 5,
-      "ported": 0,
+      "ported": 5,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 5,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 5,
@@ -62631,16 +62631,24 @@
             "decorators": [],
             "line_number": 25
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_preprocessing_remaining.c",
+          "c_function": "skp_load_skills_config",
+          "pop_annotation": {
+            "c_function": "skp_load_skills_config",
+            "python_functions": [
+              "load_skills_config"
+            ],
+            "c_file": "src/agent/port_skill_preprocessing_remaining.c",
+            "python_file": "agent/skill_preprocessing.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: load_skills_config @ agent/skill_preprocessing.py:load_skills_config */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/skill_preprocessing.py",
@@ -62652,16 +62660,24 @@
             "decorators": [],
             "line_number": 39
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_preprocessing_remaining.c",
+          "c_function": "skp_substitute_template_vars",
+          "pop_annotation": {
+            "c_function": "skp_substitute_template_vars",
+            "python_functions": [
+              "substitute_template_vars"
+            ],
+            "c_file": "src/agent/port_skill_preprocessing_remaining.c",
+            "python_file": "agent/skill_preprocessing.py",
+            "line": 32,
+            "is_consolidated": false,
+            "full_text": "/* PoP: substitute_template_vars @ agent/skill_preprocessing.py:substitute_template_vars */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/skill_preprocessing.py",
@@ -62673,16 +62689,24 @@
             "decorators": [],
             "line_number": 65
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_preprocessing_remaining.c",
+          "c_function": "skp_run_inline_shell",
+          "pop_annotation": {
+            "c_function": "skp_run_inline_shell",
+            "python_functions": [
+              "run_inline_shell"
+            ],
+            "c_file": "src/agent/port_skill_preprocessing_remaining.c",
+            "python_file": "agent/skill_preprocessing.py",
+            "line": 82,
+            "is_consolidated": false,
+            "full_text": "/* PoP: run_inline_shell @ agent/skill_preprocessing.py:run_inline_shell */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/skill_preprocessing.py",
@@ -62694,16 +62718,24 @@
             "decorators": [],
             "line_number": 106
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_preprocessing_remaining.c",
+          "c_function": "skp_expand_inline_shell",
+          "pop_annotation": {
+            "c_function": "skp_expand_inline_shell",
+            "python_functions": [
+              "expand_inline_shell"
+            ],
+            "c_file": "src/agent/port_skill_preprocessing_remaining.c",
+            "python_file": "agent/skill_preprocessing.py",
+            "line": 111,
+            "is_consolidated": false,
+            "full_text": "/* PoP: expand_inline_shell @ agent/skill_preprocessing.py:expand_inline_shell */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/skill_preprocessing.py",
@@ -62715,16 +62747,24 @@
             "decorators": [],
             "line_number": 128
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_preprocessing_remaining.c",
+          "c_function": "skp_preprocess_skill_content",
+          "pop_annotation": {
+            "c_function": "skp_preprocess_skill_content",
+            "python_functions": [
+              "preprocess_skill_content"
+            ],
+            "c_file": "src/agent/port_skill_preprocessing_remaining.c",
+            "python_file": "agent/skill_preprocessing.py",
+            "line": 159,
+            "is_consolidated": false,
+            "full_text": "/* PoP: preprocess_skill_content @ agent/skill_preprocessing.py:preprocess_skill_content */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -65353,10 +65393,10 @@
     },
     "agent/thread_scoped_output.py": {
       "total": 12,
-      "ported": 7,
+      "ported": 12,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 5,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 12,
@@ -65372,16 +65412,24 @@
             "decorators": [],
             "line_number": 45
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_thread_scoped_output_remaining.c",
+          "c_function": "tso_init",
+          "pop_annotation": {
+            "c_function": "tso_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_thread_scoped_output_remaining.c",
+            "python_file": "agent/thread_scoped_output.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/thread_scoped_output.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/thread_scoped_output.py",
@@ -65480,16 +65528,24 @@
             "decorators": [],
             "line_number": 73
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_thread_scoped_output_remaining.c",
+          "c_function": "tso_write",
+          "pop_annotation": {
+            "c_function": "tso_write",
+            "python_functions": [
+              "write"
+            ],
+            "c_file": "src/agent/port_thread_scoped_output_remaining.c",
+            "python_file": "agent/thread_scoped_output.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: write @ agent/thread_scoped_output.py:write */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/thread_scoped_output.py",
@@ -65501,16 +65557,24 @@
             "decorators": [],
             "line_number": 79
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_thread_scoped_output_remaining.c",
+          "c_function": "tso_flush",
+          "pop_annotation": {
+            "c_function": "tso_flush",
+            "python_functions": [
+              "flush"
+            ],
+            "c_file": "src/agent/port_thread_scoped_output_remaining.c",
+            "python_file": "agent/thread_scoped_output.py",
+            "line": 38,
+            "is_consolidated": false,
+            "full_text": "/* PoP: flush @ agent/thread_scoped_output.py:flush */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/thread_scoped_output.py",
@@ -65551,16 +65615,24 @@
             "decorators": [],
             "line_number": 92
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_thread_scoped_output_remaining.c",
+          "c_function": "tso_isatty",
+          "pop_annotation": {
+            "c_function": "tso_isatty",
+            "python_functions": [
+              "isatty"
+            ],
+            "c_file": "src/agent/port_thread_scoped_output_remaining.c",
+            "python_file": "agent/thread_scoped_output.py",
+            "line": 44,
+            "is_consolidated": false,
+            "full_text": "/* PoP: isatty @ agent/thread_scoped_output.py:isatty */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/thread_scoped_output.py",
@@ -65572,16 +65644,24 @@
             "decorators": [],
             "line_number": 98
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_thread_scoped_output_remaining.c",
+          "c_function": "tso_fileno",
+          "pop_annotation": {
+            "c_function": "tso_fileno",
+            "python_functions": [
+              "fileno"
+            ],
+            "c_file": "src/agent/port_thread_scoped_output_remaining.c",
+            "python_file": "agent/thread_scoped_output.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: fileno @ agent/thread_scoped_output.py:fileno */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/thread_scoped_output.py",
