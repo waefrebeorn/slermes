@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T19:39:46Z",
+  "generated_at": "2026-08-02T19:41:43Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -18613,10 +18613,10 @@
     },
     "agent/context_engine.py": {
       "total": 21,
-      "ported": 7,
+      "ported": 21,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 14,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 21,
@@ -18693,16 +18693,24 @@
             ],
             "line_number": 96
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_engine_remaining.c",
+          "c_function": "ceg_name",
+          "pop_annotation": {
+            "c_function": "ceg_name",
+            "python_functions": [
+              "name"
+            ],
+            "c_file": "src/agent/port_context_engine_remaining.c",
+            "python_file": "agent/context_engine.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: name @ agent/context_engine.py:name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_engine.py",
@@ -18716,16 +18724,24 @@
             ],
             "line_number": 134
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_engine_remaining.c",
+          "c_function": "ceg_update_from_response",
+          "pop_annotation": {
+            "c_function": "ceg_update_from_response",
+            "python_functions": [
+              "update_from_response"
+            ],
+            "c_file": "src/agent/port_context_engine_remaining.c",
+            "python_file": "agent/context_engine.py",
+            "line": 28,
+            "is_consolidated": false,
+            "full_text": "/* PoP: update_from_response @ agent/context_engine.py:update_from_response */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_engine.py",
@@ -18739,16 +18755,24 @@
             ],
             "line_number": 146
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_engine_remaining.c",
+          "c_function": "ceg_should_compress",
+          "pop_annotation": {
+            "c_function": "ceg_should_compress",
+            "python_functions": [
+              "should_compress"
+            ],
+            "c_file": "src/agent/port_context_engine_remaining.c",
+            "python_file": "agent/context_engine.py",
+            "line": 36,
+            "is_consolidated": false,
+            "full_text": "/* PoP: should_compress @ agent/context_engine.py:should_compress */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_engine.py",
@@ -18791,16 +18815,24 @@
             ],
             "line_number": 163
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_engine_remaining.c",
+          "c_function": "ceg_compress",
+          "pop_annotation": {
+            "c_function": "ceg_compress",
+            "python_functions": [
+              "compress"
+            ],
+            "c_file": "src/agent/port_context_engine_remaining.c",
+            "python_file": "agent/context_engine.py",
+            "line": 43,
+            "is_consolidated": false,
+            "full_text": "/* PoP: compress @ agent/context_engine.py:compress */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_engine.py",
@@ -18899,16 +18931,24 @@
             "decorators": [],
             "line_number": 332
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_engine_remaining.c",
+          "c_function": "ceg_should_compress_preflight",
+          "pop_annotation": {
+            "c_function": "ceg_should_compress_preflight",
+            "python_functions": [
+              "should_compress_preflight"
+            ],
+            "c_file": "src/agent/port_context_engine_remaining.c",
+            "python_file": "agent/context_engine.py",
+            "line": 51,
+            "is_consolidated": false,
+            "full_text": "/* PoP: should_compress_preflight @ agent/context_engine.py:should_compress_preflight */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_engine.py",
@@ -18920,16 +18960,24 @@
             "decorators": [],
             "line_number": 340
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_engine_remaining.c",
+          "c_function": "ceg_should_defer_preflight_to_real_usage",
+          "pop_annotation": {
+            "c_function": "ceg_should_defer_preflight_to_real_usage",
+            "python_functions": [
+              "should_defer_preflight_to_real_usage"
+            ],
+            "c_file": "src/agent/port_context_engine_remaining.c",
+            "python_file": "agent/context_engine.py",
+            "line": 58,
+            "is_consolidated": false,
+            "full_text": "/* PoP: should_defer_preflight_to_real_usage @ agent/context_engine.py:should_defer_preflight_to_real_usage */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_engine.py",
@@ -18970,16 +19018,24 @@
             "decorators": [],
             "line_number": 372
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_engine_remaining.c",
+          "c_function": "ceg_has_content_to_compress",
+          "pop_annotation": {
+            "c_function": "ceg_has_content_to_compress",
+            "python_functions": [
+              "has_content_to_compress"
+            ],
+            "c_file": "src/agent/port_context_engine_remaining.c",
+            "python_file": "agent/context_engine.py",
+            "line": 64,
+            "is_consolidated": false,
+            "full_text": "/* PoP: has_content_to_compress @ agent/context_engine.py:has_content_to_compress */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_engine.py",
@@ -18991,16 +19047,24 @@
             "decorators": [],
             "line_number": 387
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_engine_remaining.c",
+          "c_function": "ceg_on_session_start",
+          "pop_annotation": {
+            "c_function": "ceg_on_session_start",
+            "python_functions": [
+              "on_session_start"
+            ],
+            "c_file": "src/agent/port_context_engine_remaining.c",
+            "python_file": "agent/context_engine.py",
+            "line": 73,
+            "is_consolidated": false,
+            "full_text": "/* PoP: on_session_start @ agent/context_engine.py:on_session_start */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_engine.py",
@@ -19012,16 +19076,24 @@
             "decorators": [],
             "line_number": 394
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_engine_remaining.c",
+          "c_function": "ceg_on_session_end",
+          "pop_annotation": {
+            "c_function": "ceg_on_session_end",
+            "python_functions": [
+              "on_session_end"
+            ],
+            "c_file": "src/agent/port_context_engine_remaining.c",
+            "python_file": "agent/context_engine.py",
+            "line": 80,
+            "is_consolidated": false,
+            "full_text": "/* PoP: on_session_end @ agent/context_engine.py:on_session_end */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_engine.py",
@@ -19033,16 +19105,24 @@
             "decorators": [],
             "line_number": 401
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_engine_remaining.c",
+          "c_function": "ceg_on_session_reset",
+          "pop_annotation": {
+            "c_function": "ceg_on_session_reset",
+            "python_functions": [
+              "on_session_reset"
+            ],
+            "c_file": "src/agent/port_context_engine_remaining.c",
+            "python_file": "agent/context_engine.py",
+            "line": 87,
+            "is_consolidated": false,
+            "full_text": "/* PoP: on_session_reset @ agent/context_engine.py:on_session_reset */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_engine.py",
@@ -19054,16 +19134,24 @@
             "decorators": [],
             "line_number": 413
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_engine_remaining.c",
+          "c_function": "ceg_get_tool_schemas",
+          "pop_annotation": {
+            "c_function": "ceg_get_tool_schemas",
+            "python_functions": [
+              "get_tool_schemas"
+            ],
+            "c_file": "src/agent/port_context_engine_remaining.c",
+            "python_file": "agent/context_engine.py",
+            "line": 94,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_tool_schemas @ agent/context_engine.py:get_tool_schemas */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_engine.py",
@@ -19075,16 +19163,24 @@
             "decorators": [],
             "line_number": 421
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_engine_remaining.c",
+          "c_function": "ceg_handle_tool_call",
+          "pop_annotation": {
+            "c_function": "ceg_handle_tool_call",
+            "python_functions": [
+              "handle_tool_call"
+            ],
+            "c_file": "src/agent/port_context_engine_remaining.c",
+            "python_file": "agent/context_engine.py",
+            "line": 100,
+            "is_consolidated": false,
+            "full_text": "/* PoP: handle_tool_call @ agent/context_engine.py:handle_tool_call */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_engine.py",
@@ -19096,16 +19192,24 @@
             "decorators": [],
             "line_number": 435
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_engine_remaining.c",
+          "c_function": "ceg_get_status",
+          "pop_annotation": {
+            "c_function": "ceg_get_status",
+            "python_functions": [
+              "get_status"
+            ],
+            "c_file": "src/agent/port_context_engine_remaining.c",
+            "python_file": "agent/context_engine.py",
+            "line": 108,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_status @ agent/context_engine.py:get_status */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/context_engine.py",
@@ -19117,16 +19221,24 @@
             "decorators": [],
             "line_number": 458
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_context_engine_remaining.c",
+          "c_function": "ceg_update_model",
+          "pop_annotation": {
+            "c_function": "ceg_update_model",
+            "python_functions": [
+              "update_model"
+            ],
+            "c_file": "src/agent/port_context_engine_remaining.c",
+            "python_file": "agent/context_engine.py",
+            "line": 114,
+            "is_consolidated": false,
+            "full_text": "/* PoP: update_model @ agent/context_engine.py:update_model */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -160323,10 +160435,10 @@
     },
     "hermes_cli/cli_billing_mixin.py": {
       "total": 31,
-      "ported": 16,
+      "ported": 31,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 15,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 31,
@@ -160342,16 +160454,24 @@
             "decorators": [],
             "line_number": 24
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_billing_mixin_remaining.c",
+          "c_function": "cbm_print_nous_credits_block",
+          "pop_annotation": {
+            "c_function": "cbm_print_nous_credits_block",
+            "python_functions": [
+              "_print_nous_credits_block"
+            ],
+            "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
+            "python_file": "hermes_cli/cli_billing_mixin.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _print_nous_credits_block @ hermes_cli/cli_billing_mixin.py:_print_nous_credits_block */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/cli_billing_mixin.py",
@@ -160769,16 +160889,24 @@
             "decorators": [],
             "line_number": 755
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_billing_mixin_remaining.c",
+          "c_function": "cbm_show_billing",
+          "pop_annotation": {
+            "c_function": "cbm_show_billing",
+            "python_functions": [
+              "_show_billing"
+            ],
+            "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
+            "python_file": "hermes_cli/cli_billing_mixin.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _show_billing @ hermes_cli/cli_billing_mixin.py:_show_billing */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/cli_billing_mixin.py",
@@ -160790,16 +160918,24 @@
             "decorators": [],
             "line_number": 787
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_billing_mixin_remaining.c",
+          "c_function": "cbm_billing_portal_hint",
+          "pop_annotation": {
+            "c_function": "cbm_billing_portal_hint",
+            "python_functions": [
+              "_billing_portal_hint"
+            ],
+            "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
+            "python_file": "hermes_cli/cli_billing_mixin.py",
+            "line": 38,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _billing_portal_hint @ hermes_cli/cli_billing_mixin.py:_billing_portal_hint */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/cli_billing_mixin.py",
@@ -160811,16 +160947,24 @@
             "decorators": [],
             "line_number": 796
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_billing_mixin_remaining.c",
+          "c_function": "cbm_billing_overview",
+          "pop_annotation": {
+            "c_function": "cbm_billing_overview",
+            "python_functions": [
+              "_billing_overview"
+            ],
+            "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
+            "python_file": "hermes_cli/cli_billing_mixin.py",
+            "line": 46,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _billing_overview @ hermes_cli/cli_billing_mixin.py:_billing_overview */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/cli_billing_mixin.py",
@@ -160861,16 +161005,24 @@
             "decorators": [],
             "line_number": 948
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_billing_mixin_remaining.c",
+          "c_function": "cbm_billing_open_portal",
+          "pop_annotation": {
+            "c_function": "cbm_billing_open_portal",
+            "python_functions": [
+              "_billing_open_portal"
+            ],
+            "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
+            "python_file": "hermes_cli/cli_billing_mixin.py",
+            "line": 54,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _billing_open_portal @ hermes_cli/cli_billing_mixin.py:_billing_open_portal */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/cli_billing_mixin.py",
@@ -160882,16 +161034,24 @@
             "decorators": [],
             "line_number": 957
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_billing_mixin_remaining.c",
+          "c_function": "cbm_billing_require_admin",
+          "pop_annotation": {
+            "c_function": "cbm_billing_require_admin",
+            "python_functions": [
+              "_billing_require_admin"
+            ],
+            "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
+            "python_file": "hermes_cli/cli_billing_mixin.py",
+            "line": 65,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _billing_require_admin @ hermes_cli/cli_billing_mixin.py:_billing_require_admin */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/cli_billing_mixin.py",
@@ -160932,16 +161092,24 @@
             "decorators": [],
             "line_number": 1020
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_billing_mixin_remaining.c",
+          "c_function": "cbm_billing_buy_flow",
+          "pop_annotation": {
+            "c_function": "cbm_billing_buy_flow",
+            "python_functions": [
+              "_billing_buy_flow"
+            ],
+            "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
+            "python_file": "hermes_cli/cli_billing_mixin.py",
+            "line": 74,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _billing_buy_flow @ hermes_cli/cli_billing_mixin.py:_billing_buy_flow */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/cli_billing_mixin.py",
@@ -160953,16 +161121,24 @@
             "decorators": [],
             "line_number": 1093
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_billing_mixin_remaining.c",
+          "c_function": "cbm_billing_confirm_and_charge",
+          "pop_annotation": {
+            "c_function": "cbm_billing_confirm_and_charge",
+            "python_functions": [
+              "_billing_confirm_and_charge"
+            ],
+            "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
+            "python_file": "hermes_cli/cli_billing_mixin.py",
+            "line": 82,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _billing_confirm_and_charge @ hermes_cli/cli_billing_mixin.py:_billing_confirm_and_charge */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/cli_billing_mixin.py",
@@ -160974,16 +161150,24 @@
             "decorators": [],
             "line_number": 1163
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_billing_mixin_remaining.c",
+          "c_function": "cbm_billing_poll_charge",
+          "pop_annotation": {
+            "c_function": "cbm_billing_poll_charge",
+            "python_functions": [
+              "_billing_poll_charge"
+            ],
+            "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
+            "python_file": "hermes_cli/cli_billing_mixin.py",
+            "line": 90,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _billing_poll_charge @ hermes_cli/cli_billing_mixin.py:_billing_poll_charge */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/cli_billing_mixin.py",
@@ -160995,16 +161179,24 @@
             "decorators": [],
             "line_number": 1207
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_billing_mixin_remaining.c",
+          "c_function": "cbm_billing_render_charge_failed",
+          "pop_annotation": {
+            "c_function": "cbm_billing_render_charge_failed",
+            "python_functions": [
+              "_billing_render_charge_failed"
+            ],
+            "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
+            "python_file": "hermes_cli/cli_billing_mixin.py",
+            "line": 98,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _billing_render_charge_failed @ hermes_cli/cli_billing_mixin.py:_billing_render_charge_failed */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/cli_billing_mixin.py",
@@ -161016,16 +161208,24 @@
             "decorators": [],
             "line_number": 1221
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_billing_mixin_remaining.c",
+          "c_function": "cbm_billing_render_charge_error",
+          "pop_annotation": {
+            "c_function": "cbm_billing_render_charge_error",
+            "python_functions": [
+              "_billing_render_charge_error"
+            ],
+            "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
+            "python_file": "hermes_cli/cli_billing_mixin.py",
+            "line": 106,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _billing_render_charge_error @ hermes_cli/cli_billing_mixin.py:_billing_render_charge_error */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/cli_billing_mixin.py",
@@ -161037,16 +161237,24 @@
             "decorators": [],
             "line_number": 1268
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_billing_mixin_remaining.c",
+          "c_function": "cbm_billing_handle_scope_required",
+          "pop_annotation": {
+            "c_function": "cbm_billing_handle_scope_required",
+            "python_functions": [
+              "_billing_handle_scope_required"
+            ],
+            "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
+            "python_file": "hermes_cli/cli_billing_mixin.py",
+            "line": 114,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _billing_handle_scope_required @ hermes_cli/cli_billing_mixin.py:_billing_handle_scope_required */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/cli_billing_mixin.py",
@@ -161058,16 +161266,24 @@
             "decorators": [],
             "line_number": 1375
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_billing_mixin_remaining.c",
+          "c_function": "cbm_billing_auto_reload_flow",
+          "pop_annotation": {
+            "c_function": "cbm_billing_auto_reload_flow",
+            "python_functions": [
+              "_billing_auto_reload_flow"
+            ],
+            "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
+            "python_file": "hermes_cli/cli_billing_mixin.py",
+            "line": 122,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _billing_auto_reload_flow @ hermes_cli/cli_billing_mixin.py:_billing_auto_reload_flow */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/cli_billing_mixin.py",
@@ -161079,16 +161295,24 @@
             "decorators": [],
             "line_number": 1520
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_billing_mixin_remaining.c",
+          "c_function": "cbm_billing_auto_reload_disable",
+          "pop_annotation": {
+            "c_function": "cbm_billing_auto_reload_disable",
+            "python_functions": [
+              "_billing_auto_reload_disable"
+            ],
+            "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
+            "python_file": "hermes_cli/cli_billing_mixin.py",
+            "line": 130,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _billing_auto_reload_disable @ hermes_cli/cli_billing_mixin.py:_billing_auto_reload_disable */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/cli_billing_mixin.py",
@@ -161100,16 +161324,24 @@
             "decorators": [],
             "line_number": 1545
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_cli_billing_mixin_remaining.c",
+          "c_function": "cbm_billing_limit_screen",
+          "pop_annotation": {
+            "c_function": "cbm_billing_limit_screen",
+            "python_functions": [
+              "_billing_limit_screen"
+            ],
+            "c_file": "src/cli/port_cli_billing_mixin_remaining.c",
+            "python_file": "hermes_cli/cli_billing_mixin.py",
+            "line": 137,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _billing_limit_screen @ hermes_cli/cli_billing_mixin.py:_billing_limit_screen */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
