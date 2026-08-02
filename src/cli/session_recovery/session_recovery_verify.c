@@ -15,6 +15,7 @@ static void sr_add(json_t *arr, const char *msg) {
 /* _db_opens_cleanly analog: journal_mode + integrity_check + sessions read +
  * rolled-back messages write probe (FTS corruption detector). Returns
  * malloc'd reason or NULL when healthy. */
+/* PoP: sr_db_opens_cleanly @ hermes_state.py:_db_opens_cleanly */
 static char *sr_db_opens_cleanly(const char *path) {
     sqlite3 *conn = NULL;
     if (sqlite3_open_v2(path, &conn, SQLITE_OPEN_READWRITE, NULL) != SQLITE_OK) {

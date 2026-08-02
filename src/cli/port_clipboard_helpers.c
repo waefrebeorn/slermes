@@ -36,6 +36,7 @@ static int run_cmd_silent(const char *cmd) {
 /* ── macOS ───────────────────────────────────────────────────── */
 #if defined(__APPLE__)
 /* PoP: _macos_save @ hermes_cli/clipboard.py:_macos_save */
+/* PoP: clipboard_macos_save @ hermes_cli/clipboard.py:_macos_save */
 int clipboard_macos_save(const char *text) {
     if (!text) return -1;
     FILE *fp = popen("pbcopy", "w");

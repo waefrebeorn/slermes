@@ -267,6 +267,7 @@ char *provider_profile_fetch_models_default(provider_profile_t *p,
 }
 
 /* ── chat_completions.py:_reasoning_config_for_model ─────────────────── */
+/* PoP: profile_reasoning_config_for_model @ agent/transports/chat_completions.py:_reasoning_config_for_model */
 char *profile_reasoning_config_for_model(const char *model,
                                          const char *reasoning_config_json)
 {

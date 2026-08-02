@@ -215,6 +215,7 @@ int ccm_handle_cron_command(const char *args) {
     return 0;
 }
 /* PoP: _handle_suggestions_command @ hermes_cli/cli_commands_mixin.py:_handle_suggestions_command */
+/* PoP: ccm_handle_suggestions_command @ gateway/run.py:_handle_suggestions_command */
 int ccm_handle_suggestions_command(const char *args) {
     (void)args;
     json_t *pending = cron_sugg_list_pending();
@@ -235,6 +236,7 @@ int ccm_handle_suggestions_command(const char *args) {
     return 0;
 }
 /* PoP: _handle_blueprint_command @ hermes_cli/cli_commands_mixin.py:_handle_blueprint_command */
+/* PoP: ccm_handle_blueprint_command @ gateway/run.py:_handle_blueprint_command */
 int ccm_handle_blueprint_command(const char *args) {
     blueprint_catalog_t *cat = blueprint_catalog_load_json(blueprint_catalog_raw_json());
     if (!cat) { printf("  No blueprint catalog available.\n"); return 0; }
@@ -323,6 +325,7 @@ int ccm_handle_subgoal_command(const char *args) {
     return 0;
 }
 /* PoP: _handle_skin_command @ hermes_cli/cli_commands_mixin.py:_handle_skin_command */
+/* PoP: ccm_handle_skin_command @ hermes_cli/skin_cmd.py:skin_command */
 int ccm_handle_skin_command(const char *args) {
     cmd_skin(args ? args : "", NULL);
     return 0;

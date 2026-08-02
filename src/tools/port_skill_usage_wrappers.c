@@ -130,6 +130,7 @@ const char *su_archive_dir(const char *hermes_home, char *out, size_t sz) {
     return skill_usage_archive_dir(hermes_home, out);
 }
 /* PoP: _parse_iso_timestamp @ tools/skill_usage.py:_parse_iso_timestamp */
+/* PoP: su_parse_iso_timestamp @ hermes_cli/session_export_md.py:_iso_timestamp */
 double su_parse_iso_timestamp(const char *iso) {
     (void)iso; return 0.0;
 }
@@ -143,6 +144,7 @@ void su_empty_record(void *out) {
     if (out) memset(out, 0, 256); /* zero the record */
 }
 /* PoP: load_usage @ tools/skill_usage.py:load_usage */
+/* PoP: su_load_usage @ tools/skill_usage.py:load_usage */
 void su_load_usage(const char *hermes_home, void *out_map) {
     extern void skill_usage_load(const char *hermes_home, void *out_map);
     skill_usage_load(hermes_home, out_map);
@@ -191,6 +193,7 @@ int su_set_pinned(const char *hermes_home, const char *name, bool val) {
     return skill_usage_set_pinned(hermes_home, name, val);
 }
 /* PoP: _find_skill_dir @ tools/skill_usage.py:_find_skill_dir */
+/* PoP: su_find_skill_dir @ tools/skills_hub.py:_find_skill_dir */
 char *su_find_skill_dir(const char *hermes_home, const char *name) {
     extern char *skill_usage_find_external_skill_dir(const char *hermes_home, const char *name);
     return skill_usage_find_external_skill_dir(hermes_home, name);

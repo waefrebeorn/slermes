@@ -481,6 +481,7 @@ char *cronjob_validate_cron_base_url(const char *provider, const char *base_url)
 /* Best-effort scheduler-provider notification. Mirrors Python: delegate to
  * notify_provider_jobs_changed() (src/cron/port_scheduler.c) and never let a
  * provider error propagate out of the tool. */
+/* PoP: cronjob_notify_provider_jobs_changed_safe @ tools/cronjob_tools.py:_notify_provider_jobs_changed_safe */
 void cronjob_notify_provider_jobs_changed_safe(void)
 {
     notify_provider_jobs_changed();

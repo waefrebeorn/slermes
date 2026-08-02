@@ -151,6 +151,7 @@ static int parse_single_hook(const char *event, const json_t *node) {
  * The object keys are event names, values are arrays of hook specs.
  * Returns number of parsed specs.
  * Port of Python agent/shell_hooks.py:_parse_hooks_block(). */
+/* PoP: shell_hooks_parse_json @ gateway/platforms/qqbot/adapter.py:_parse_json */
 int shell_hooks_parse_json(const json_t *hooks_json) {
     if (!hooks_json || hooks_json->type != JSON_OBJECT) return 0;
 

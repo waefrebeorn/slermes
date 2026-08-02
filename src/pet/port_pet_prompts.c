@@ -134,6 +134,7 @@ char *pet_prompts_style_hint(const char *style)
 
 /* PoP: _spacing_spec @ agent/pet/generate/prompts.py:_spacing_spec */
 /* (per-pose width px, gap px) for a row of frame_count poses. */
+/* PoP: pet_prompts_spacing_spec @ agent/pet/generate/prompts.py:_spacing_spec */
 void pet_prompts_spacing_spec(int frame_count, int *out_pose_px, int *out_gap_px)
 {
     int slots = frame_count > 0 ? frame_count : 1;

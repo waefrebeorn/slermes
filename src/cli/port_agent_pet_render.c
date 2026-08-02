@@ -98,12 +98,14 @@ void pet_union_alpha_bbox(const unsigned char *rgba, int w, int h,
 }
 
 /* PoP: _crop_frames_to_alpha_union @ agent/pet/render.py:_crop_frames_to_alpha_union */
+/* PoP: pet_crop_frames_to_alpha_union @ agent/pet/render.py:_crop_frames_to_alpha_union */
 void pet_crop_frames_to_alpha_union(const unsigned char *rgba, int w, int h,
                                      int *out_x, int *out_y, int *out_w, int *out_h) {
     pet_union_alpha_bbox(rgba, w, h, out_x, out_y, out_w, out_h);
 }
 
 /* PoP: _snap_frames_to_cell_grid @ agent/pet/render.py:_snap_frames_to_cell_grid */
+/* PoP: pet_snap_frames_to_cell_grid @ agent/pet/render.py:_snap_frames_to_cell_grid */
 void pet_snap_frames_to_cell_grid(int *x, int *y, int *w, int *h, int cell_w, int cell_h) {
     if (!x || !y || !w || !h) return;
     if (cell_w > 0) { *x = (*x / cell_w) * cell_w; *w = ((*w + cell_w - 1) / cell_w) * cell_w; }
@@ -206,6 +208,7 @@ json_t *pet_cells(const char *sheet_path, int cell_w, int cell_h) {
 }
 
 /* PoP: _cell_box @ agent/pet/render.py:_cell_box */
+/* PoP: pet_cell_box @ agent/pet/render.py:_cell_box */
 void pet_cell_box(int frame_idx, int cell_w, int cell_h, int sheet_w,
                   int *out_x, int *out_y, int *out_w, int *out_h) {
     int cols = sheet_w / cell_w;

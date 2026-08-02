@@ -60,6 +60,7 @@ void relay_auth_make_token(const char *secret, const char *payload, char *token_
 
 
 /* Port of Python: make_upgrade_token */
+/* PoP: relay_auth_make_upgrade_token @ gateway/relay/auth.py:make_upgrade_token */
 void relay_auth_make_upgrade_token(const char *secret, const char *ws_url, char *token_out, size_t out_sz) {
     if (!secret || !ws_url || !token_out || out_sz == 0) return;
     

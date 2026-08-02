@@ -1562,6 +1562,7 @@ int get_next_probe_tier(int current_length) {
 /* ---- provider_context_cache_path ---- */
 /* Port of Python model_metadata._get_context_cache_path().
  * Returns path: {hermes_home}/context_length_cache.json */
+/* PoP: provider_context_cache_path @ hermes_cli/model_catalog.py:_cache_path */
 void provider_context_cache_path(char *buf, size_t sz) {
     hermes_resolve_path("context_length_cache.json", buf, sz);
 }

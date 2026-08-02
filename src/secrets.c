@@ -76,6 +76,7 @@ static char *find_bws(const hermes_config_t *cfg) {
 /* ----------------------------------------------------------------
  *  Lazy install bws
  * ---------------------------------------------------------------- */
+/* PoP: lazy_install_bws @ agent/secret_sources/bitwarden.py:install_bws */
 
 static bool lazy_install_bws(void) {
     fprintf(stderr, "[secrets] bws CLI not found. Attempting lazy install...\n");
@@ -327,6 +328,7 @@ char *hermes_secrets_resolve_string(const char *input, bool strict) {
     *ow = '\0';
     return output;
 }
+/* PoP: hermes_secrets_cleanup @ tools/environments/base.py:cleanup */
 
 void hermes_secrets_cleanup(void) {
     g_project_id[0] = '\0';

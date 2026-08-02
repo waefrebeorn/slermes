@@ -19,6 +19,7 @@ const char *MOA_DEFAULT_PRESET_NAME = "default";
  * Live-tested 2026-07-24 on integrate.api.nvidia.com — ALL FREE on NVIDIA NIM.
  * NVIDIA is a cloud provider hosting non-NVIDIA models (GLM, DeepSeek, MiniMax, etc.)
  */
+/* PoP: moa_default_reference_models @ hermes_cli/moa_config.py:_default_reference_models */
 static json_t *moa_default_reference_models(void) {
     json_t *a = json_array();
     /* TIER S: Verified-callable agentic leaders */

@@ -722,6 +722,7 @@ bool relay_adapter_on_interrupt(const char *session_key, const char *chat_id) {
 
 /* ── _on_inbound (bridge from transport to adapter) ──────────────────── */
 /* Port of Python: _on_inbound */
+/* PoP: relay_adapter_on_inbound @ gateway/relay/adapter.py:_on_inbound */
 void relay_adapter_on_inbound(const char *event_json) {
     if (!event_json) return;
 

@@ -341,6 +341,7 @@ void codex_session_set_event_callback(
  *  ensure_started — spawn subprocess, initialize, thread/start
  * ================================================================ */
 
+/* PoP: codex_session_ensure_started @ agent/transports/codex_app_server_session.py:ensure_started */
 char *codex_session_ensure_started(codex_session_t *s) {
     if (!s) return NULL;
     if (s->thread_id) return strdup(s->thread_id);
@@ -395,6 +396,7 @@ char *codex_session_ensure_started(codex_session_t *s) {
 /* ================================================================
  *  Interrupt
  * ================================================================ */
+/* PoP: codex_session_request_interrupt @ agent/transports/codex_app_server_session.py:request_interrupt */
 
 void codex_session_request_interrupt(codex_session_t *s) {
     if (!s) return;
@@ -552,6 +554,7 @@ static void handle_server_request(codex_session_t *s, const char *req_json) {
  *  run_turn — main turn loop
  * ================================================================ */
 
+/* PoP: codex_session_run_turn @ agent/transports/codex_app_server_session.py:run_turn */
 codex_turn_result_t *codex_session_run_turn(
     codex_session_t *s,
     const char *user_input,

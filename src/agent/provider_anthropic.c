@@ -2758,6 +2758,7 @@ void manage_thinking_signatures(json_t *result,
  * NOTE: OAuth-specific Claude Code transforms (system prefix, tool name
  * prefixing, product name sanitization) are NOT implemented here — C
  * does not use the OAuth flow. */
+/* PoP: anthropic_build_kwargs @ agent/transports/anthropic.py:build_kwargs */
 json_t *anthropic_build_kwargs(
     const char *model,
     const json_t *messages,

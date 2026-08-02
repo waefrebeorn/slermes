@@ -440,6 +440,7 @@ bool ws_transport_handshake(ws_transport_t *t, char *descriptor_out, size_t out_
 
 /* ── set_inbound_handler ─────────────────────────────────────────────── */
 /* Port of Python: set_inbound_handler */
+/* PoP: ws_transport_set_inbound_handler @ gateway/relay/transport.py:set_inbound_handler */
 void ws_transport_set_inbound_handler(ws_transport_t *t, ws_inbound_fn handler) {
     if (!t) return;
     t->inbound_handler = handler;
@@ -447,6 +448,7 @@ void ws_transport_set_inbound_handler(ws_transport_t *t, ws_inbound_fn handler) 
 
 /* ── set_interrupt_inbound_handler ───────────────────────────────────── */
 /* Port of Python: set_interrupt_inbound_handler */
+/* PoP: ws_transport_set_interrupt_inbound_handler @ gateway/relay/ws_transport.py:set_interrupt_inbound_handler */
 void ws_transport_set_interrupt_inbound_handler(ws_transport_t *t, ws_interrupt_fn handler) {
     if (!t) return;
     t->interrupt_handler = handler;

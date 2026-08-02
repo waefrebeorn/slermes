@@ -111,6 +111,7 @@ json_t *cmd_slack_subcommand_map(void) {
     return json_object();
 }
 /* PoP: _command_allowed @ hermes_cli/commands.py:_command_allowed */
+/* PoP: cmd_command_allowed @ hermes_cli/commands.py:_command_allowed */
 bool cmd_command_allowed(const char *command_name, json_t *disabled_set) {
     (void)command_name;
     if (!disabled_set) return true;
@@ -172,6 +173,7 @@ json_t *cmd_get_project_files(const char *dir, int max_count) {
     (void)dir; (void)max_count; return json_array();
 }
 /* PoP: _score_path @ hermes_cli/commands.py:_score_path */
+/* PoP: cmd_score_path @ hermes_cli/commands.py:_score_path */
 double cmd_score_path(const char *path, const char *query) {
     (void)path; (void)query; return 0.0;
 }

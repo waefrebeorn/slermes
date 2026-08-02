@@ -46,6 +46,7 @@ cron_job_t cron_fire_due(const char *scheduler_config) {
 
 
 /* Port of Python: on_jobs_changed */
+/* PoP: cron_on_jobs_changed @ cron/scheduler_provider.py:on_jobs_changed */
 void cron_on_jobs_changed(const char *change_type, const char *job_id) {
     if (!change_type || !job_id) return;
     

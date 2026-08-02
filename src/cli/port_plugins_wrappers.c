@@ -151,8 +151,10 @@ void *plug_load_entrypoint_module(const char *path) { return plugin_load_entrypo
 /* PoP: has_hook @ hermes_cli/plugins.py:has_hook */
 bool plug_has_hook(const char *name) { return plugin_has_hook(name); }
 /* PoP: has_middleware @ hermes_cli/plugins.py:has_middleware */
+/* PoP: plug_has_middleware @ hermes_cli/middleware.py:_has_middleware */
 bool plug_has_middleware(const char *name) { return plugin_has_middleware(name); }
 /* PoP: invoke_middleware @ hermes_cli/plugins.py:invoke_middleware */
+/* PoP: plug_invoke_middleware @ hermes_cli/middleware.py:_invoke_middleware */
 json_t *plug_invoke_middleware(json_t *request, const char *middleware_name) {
     return plugin_invoke_middleware(request, middleware_name);
 }
@@ -200,6 +202,7 @@ json_t *plug_get_auxiliary_tasks(void) { return plugin_get_auxiliary_tasks(); }
 json_t *plug_get_toolsets(void) { return plugin_get_toolsets(); }
 
 /* PoP: set_thread_tool_whitelist @ hermes_cli/plugins.py:set_thread_tool_whitelist */
+/* PoP: plug_set_thread_tool_whitelist @ hermes_cli/plugins.py:set_thread_tool_whitelist */
 void plug_set_thread_tool_whitelist(const char *thread_id, json_t *tools) {
     (void)thread_id; (void)tools;
 }

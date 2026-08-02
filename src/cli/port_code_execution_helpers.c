@@ -63,6 +63,7 @@ char *code_exec_generate_hermes_tools_module(void) {
 }
 
 /* PoP: _rpc_server_loop @ tools/code_execution_tool.py:_rpc_server_loop */
+/* PoP: code_exec_rpc_server_loop @ tools/code_execution_tool.py:_rpc_server_loop */
 void code_exec_rpc_server_loop(void) { /* async runtime */ }
 
 /* PoP: _get_or_create_env @ tools/code_execution_tool.py:_get_or_create_env */
@@ -78,6 +79,7 @@ bool code_exec_ship_file_to_remote(const char *local_path, const char *remote_pa
 }
 
 /* PoP: _rpc_poll_loop @ tools/code_execution_tool.py:_rpc_poll_loop */
+/* PoP: code_exec_rpc_poll_loop @ tools/code_execution_tool.py:_rpc_poll_loop */
 void code_exec_rpc_poll_loop(void) { /* async runtime */ }
 
 /* PoP: _execute_remote @ tools/code_execution_tool.py:_execute_remote */
@@ -87,6 +89,7 @@ char *code_exec_execute_remote(const char *code, const char *env_id) {
 }
 
 /* PoP: _kill_process_group @ tools/code_execution_tool.py:_kill_process_group */
+/* PoP: code_exec_kill_process_group @ tools/code_execution_tool.py:_kill_process_group */
 void code_exec_kill_process_group(pid_t pgid) {
     if (pgid > 0) kill(-pgid, SIGKILL);
 }

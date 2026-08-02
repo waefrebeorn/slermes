@@ -166,6 +166,7 @@ json_t *pcmd_discover_context_engines(const char *hermes_home) {
     (void)hermes_home; return json_array();
 }
 /* PoP: _get_current_memory_provider @ hermes_cli/plugins_cmd.py:_get_current_memory_provider */
+/* PoP: pcmd_get_current_memory_provider @ hermes_cli/dump.py:_memory_provider */
 const char *pcmd_get_current_memory_provider(const char *hermes_home) {
     (void)hermes_home; return "";
 }

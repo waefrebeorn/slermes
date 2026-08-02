@@ -194,6 +194,7 @@ void *discord_request(const char *method, const char *endpoint, const char *body
 }
 
 /* PoP: _detect_capabilities_nonblocking @ tools/discord_tool.py:_detect_capabilities_nonblocking */
+/* PoP: discord_detect_capabilities_nonblocking @ tools/discord_tool.py:_detect_capabilities_nonblocking */
 void discord_detect_capabilities_nonblocking(const char *guild_id) {
     (void)guild_id;
     /* Synchronous in C; no async thread pool */

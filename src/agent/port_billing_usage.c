@@ -34,6 +34,7 @@ bool billing_usage_finite(const void *json_value, double *out) {
 }
 
 /* PoP: billing_usage__fmt_usd @ agent/billing_usage.py:_fmt_usd */
+/* PoP: billing_usage_fmt_usd @ agent/billing_usage.py:_fmt_usd */
 void billing_usage_fmt_usd(double value, char *buf, size_t sz) {
     account_usage_fmt_usd(value, buf, sz);
 }

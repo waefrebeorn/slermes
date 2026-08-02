@@ -54,12 +54,14 @@ json_t *kanban_u_cmd_heartbeat(json_t *req) { (void)req; return json_object(); }
 json_t *kanban_u_cmd_assignees(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: _cmd_create @ hermes_cli/kanban.py:_cmd_create */
+/* PoP: kanban_u_cmd_create @ hermes_cli/bundles.py:_cmd_create */
 json_t *kanban_u_cmd_create(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: _cmd_swarm @ hermes_cli/kanban.py:_cmd_swarm */
 json_t *kanban_u_cmd_swarm(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: _cmd_show @ hermes_cli/kanban.py:_cmd_show */
+/* PoP: kanban_u_cmd_show @ hermes_cli/bundles.py:_cmd_show */
 json_t *kanban_u_cmd_show(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: _cmd_assign @ hermes_cli/kanban.py:_cmd_assign */
@@ -102,6 +104,7 @@ json_t *kanban_u_cmd_attach_rm(json_t *req) { (void)req; return json_object(); }
 json_t *kanban_u_cmd_complete(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: _cmd_edit @ hermes_cli/kanban.py:_cmd_edit */
+/* PoP: kanban_u_cmd_edit @ hermes_cli/journey.py:_cmd_edit */
 json_t *kanban_u_cmd_edit(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: _cmd_block @ hermes_cli/kanban.py:_cmd_block */
@@ -117,6 +120,7 @@ json_t *kanban_u_cmd_unblock(json_t *req) { (void)req; return json_object(); }
 json_t *kanban_u_cmd_promote(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: _cmd_archive @ hermes_cli/kanban.py:_cmd_archive */
+/* PoP: kanban_u_cmd_archive @ hermes_cli/curator.py:_cmd_archive */
 json_t *kanban_u_cmd_archive(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: _cmd_tail @ hermes_cli/kanban.py:_cmd_tail */

@@ -841,6 +841,7 @@ int spotify_validate_redirect_uri(const char *redirect_uri, char **host_out,
  * PoP: _xai_validate_loopback_redirect_uri @ hermes_cli/auth.py:_xai_validate_loopback_redirect_uri
  * Like the Spotify variant but requires http://127.0.0.1. Returns 0 on
  * success, -1 on invalid (err filled). */
+/* PoP: xai_validate_loopback_redirect_uri @ hermes_cli/dashboard_auth/routes.py:_validate_loopback_redirect_uri */
 int xai_validate_loopback_redirect_uri(const char *redirect_uri, char **host_out,
                                        int *port_out, char **path_out, char *err, size_t errsz)
 {

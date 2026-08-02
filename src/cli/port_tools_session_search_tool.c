@@ -90,6 +90,7 @@ typedef struct {
 } sst_msg_t;
 
 /* Decode content (strip the JSON-encoding prefix the Python DB applies). */
+/* PoP: sst_decode_content @ hermes_state.py:_decode_content */
 static void sst_decode_content(const char *raw, char *out, size_t outsz) {
     out[0] = '\0';
     if (!raw) return;

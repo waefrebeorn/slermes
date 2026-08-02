@@ -593,6 +593,7 @@ static const char *profile_scoped_areas[] = {
  * ~/.hermes/profiles/X   -> "X"
  * Falls back to "default" on any error. */
 /* Port of Python agent/file_safety.py:_resolve_active_profile_name(). */
+/* PoP: resolve_active_profile_name @ agent/secret_sources/registry.py:_active_profile_name */
 static const char *resolve_active_profile_name(void) {
     char home[PATH_MAX], root[PATH_MAX];
     get_hermes_home_path(home, sizeof(home));

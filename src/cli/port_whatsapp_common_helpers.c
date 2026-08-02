@@ -39,6 +39,7 @@ const char *whatsapp_common_effective_reply_prefix(const char *config_prefix) {
 }
 
 /* PoP: _outgoing_chunk_limit @ gateway/platforms/whatsapp_common.py:_outgoing_chunk_limit */
+/* PoP: whatsapp_common_outgoing_chunk_limit @ gateway/platforms/whatsapp_common.py:_outgoing_chunk_limit */
 int whatsapp_common_outgoing_chunk_limit(int config_limit) {
     if (config_limit <= 0) return 4096;
     if (config_limit > 65536) return 65536;
@@ -116,18 +117,21 @@ bool whatsapp_common_is_dm_allowed(const char *sender_id, json_t *allowlist, boo
 }
 
 /* PoP: _is_dm_intake_allowed @ gateway/platforms/whatsapp_common.py:_is_dm_intake_allowed */
+/* PoP: whatsapp_common_is_dm_intake_allowed @ gateway/platforms/qqbot/adapter.py:_is_dm_intake_allowed */
 bool whatsapp_common_is_dm_intake_allowed(const char *sender_id, json_t *allowlist, bool intake_enabled) {
     if (!intake_enabled) return false;
     return whatsapp_common_matches_allowlist(sender_id, allowlist);
 }
 
 /* PoP: _is_group_allowed @ gateway/platforms/whatsapp_common.py:_is_group_allowed */
+/* PoP: whatsapp_common_is_group_allowed @ gateway/platforms/qqbot/adapter.py:_is_group_allowed */
 bool whatsapp_common_is_group_allowed(const char *chat_id, json_t *allowlist, bool allowlist_enabled) {
     if (!allowlist_enabled) return true;
     return whatsapp_common_matches_allowlist(chat_id, allowlist);
 }
 
 /* PoP: _compile_mention_patterns @ gateway/platforms/whatsapp_common.py:_compile_mention_patterns */
+/* PoP: whatsapp_common_compile_mention_patterns @ gateway/platforms/bluebubbles.py:_compile_mention_patterns */
 json_t *whatsapp_common_compile_mention_patterns(json_t *bot_names) {
     json_t *patterns = json_array();
     if (!bot_names) return patterns;
@@ -174,6 +178,7 @@ bool whatsapp_common_message_mentions_bot(json_t *msg, const char *bot_id) {
 }
 
 /* PoP: _message_matches_mention_patterns @ gateway/platforms/whatsapp_common.py:_message_matches_mention_patterns */
+/* PoP: whatsapp_common_message_matches_mention_patterns @ gateway/platforms/bluebubbles.py:_message_matches_mention_patterns */
 bool whatsapp_common_message_matches_mention_patterns(const char *text, json_t *patterns) {
     if (!text || !patterns) return false;
     size_t n = json_array_size(patterns);

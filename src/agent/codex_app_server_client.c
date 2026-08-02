@@ -556,6 +556,7 @@ int codex_client_notify(codex_client_t *c,
     write(c->stdin_fd, "\n", 1);
     return 0;
 }
+/* PoP: codex_client_respond @ agent/transports/codex_app_server.py:respond */
 
 int codex_client_respond(codex_client_t *c,
                          int request_id,
@@ -573,6 +574,7 @@ int codex_client_respond(codex_client_t *c,
     write(c->stdin_fd, "\n", 1);
     return 0;
 }
+/* PoP: codex_client_respond_error @ agent/transports/codex_app_server.py:respond_error */
 
 int codex_client_respond_error(codex_client_t *c,
                                 const char *request_id_str,
@@ -607,6 +609,7 @@ int codex_client_respond_error(codex_client_t *c,
     return 0;
 }
 
+/* PoP: codex_client_take_notification @ agent/transports/codex_app_server.py:take_notification */
 char *codex_client_take_notification(codex_client_t *c, double timeout_sec) {
     if (!c) return NULL;
     return queue_pop(&c->notifications, timeout_sec);
@@ -617,6 +620,7 @@ char *codex_client_take_server_request(codex_client_t *c, double timeout_sec) {
     if (!c) return NULL;
     return queue_pop(&c->server_requests, timeout_sec);
 }
+/* PoP: codex_client_is_alive @ agent/transports/codex_app_server.py:is_alive */
 
 bool codex_client_is_alive(codex_client_t *c) {
     if (!c || c->pid <= 0) return false;
@@ -625,6 +629,7 @@ bool codex_client_is_alive(codex_client_t *c) {
     return (w == 0); /* 0 = still running */
 }
 
+/* PoP: codex_client_stderr_tail @ agent/transports/codex_app_server.py:stderr_tail */
 char *codex_client_stderr_tail(codex_client_t *c, int n_lines) {
     if (!c) return NULL;
     pthread_mutex_lock(&c->stderr_mutex);

@@ -52,6 +52,7 @@ json_t *vi_handle_vision_analyze(json_t *args) {
     return vi_vision_analyze_tool(args);
 }
 /* PoP: _download_video @ tools/vision_tools.py:_download_video */
+/* PoP: vi_download_video @ gateway/platforms/weixin.py:_download_video */
 char *vi_download_video(const char *url) {
     (void)url; return strdup("/tmp/hermes_video.mp4");
 }

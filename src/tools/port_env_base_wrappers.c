@@ -24,6 +24,7 @@ int envb_total_chars(const char *arg) { (void)arg; return 0; }
 int envb_append(const char *arg) { (void)arg; return 0; }
 
 /* PoP: set_activity_callback @ tools/environments/base.py:set_activity_callback */
+/* PoP: envb_set_activity_callback @ tools/environments/base.py:set_activity_callback */
 int envb_set_activity_callback(const char *arg) {
     /* Python: _activity_callback_local.callback = cb. */
     g_envb_activity_callback = arg;

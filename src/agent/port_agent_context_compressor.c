@@ -15,6 +15,7 @@
 #include "hermes_json.h"
 
 /* Port of Python: _compute_threshold_tokens */
+/* PoP: compute_threshold_tokens @ hermes_cli/context_switch_guard.py:_threshold_tokens */
 int compute_threshold_tokens(int context_length, float threshold_percent)
 {
     if (context_length <= 0) return 0;

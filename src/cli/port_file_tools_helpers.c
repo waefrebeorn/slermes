@@ -131,6 +131,7 @@ static int ft_endswith(const char *s, const char *suf)
 /* errnum = errno from the failed write; is_permission_error mirrors
  * isinstance(exc, PermissionError) (PermissionError is a subclass of
  * OSError with errno set, but the Python check is explicit, so we pass it). */
+/* PoP: file_tools_is_expected_write_exception @ tools/file_tools.py:_is_expected_write_exception */
 int file_tools_is_expected_write_exception(int errnum, int is_permission_error)
 {
     if (is_permission_error) return 1;
@@ -285,6 +286,7 @@ json_t *file_tools_get_hermes_config_resolved(void)
 }
 
 /* PoP: _record_patch_failure @ tools/file_tools.py:_record_patch_failure */
+/* PoP: file_tools_record_patch_failure @ tools/file_tools.py:_record_patch_failure */
 void file_tools_record_patch_failure(const char *path, const char *reason)
 {
     (void)path; (void)reason;
@@ -292,15 +294,19 @@ void file_tools_record_patch_failure(const char *path, const char *reason)
 }
 
 /* PoP: _reset_patch_failures @ tools/file_tools.py:_reset_patch_failures */
+/* PoP: file_tools_reset_patch_failures @ tools/file_tools.py:_reset_patch_failures */
 void file_tools_reset_patch_failures(void) { /* no-op in C */ }
 
 /* PoP: clear_file_ops_cache @ tools/file_tools.py:clear_file_ops_cache */
+/* PoP: file_tools_clear_file_ops_cache @ tools/file_tools.py:clear_file_ops_cache */
 void file_tools_clear_file_ops_cache(void) { /* no-op in C */ }
 
 /* PoP: reset_file_dedup @ tools/file_tools.py:reset_file_dedup */
+/* PoP: file_tools_reset_file_dedup @ tools/file_tools.py:reset_file_dedup */
 void file_tools_reset_file_dedup(void) { /* no-op in C */ }
 
 /* PoP: notify_other_tool_call @ tools/file_tools.py:notify_other_tool_call */
+/* PoP: file_tools_notify_other_tool_call @ tools/file_tools.py:notify_other_tool_call */
 void file_tools_notify_other_tool_call(const char *tool_name)
 {
     (void)tool_name;
@@ -308,6 +314,7 @@ void file_tools_notify_other_tool_call(const char *tool_name)
 }
 
 /* PoP: _invalidate_dedup_for_path @ tools/file_tools.py:_invalidate_dedup_for_path */
+/* PoP: file_tools_invalidate_dedup_for_path @ tools/file_tools.py:_invalidate_dedup_for_path */
 void file_tools_invalidate_dedup_for_path(const char *path)
 {
     (void)path;
@@ -315,6 +322,7 @@ void file_tools_invalidate_dedup_for_path(const char *path)
 }
 
 /* PoP: _update_read_timestamp @ tools/file_tools.py:_update_read_timestamp */
+/* PoP: file_tools_update_read_timestamp @ tools/file_tools.py:_update_read_timestamp */
 void file_tools_update_read_timestamp(const char *path)
 {
     (void)path;
@@ -330,6 +338,7 @@ bool file_tools_check_file_staleness(const char *path)
 }
 
 /* PoP: _mark_verification_stale @ tools/file_tools.py:_mark_verification_stale */
+/* PoP: file_tools_mark_verification_stale @ tools/file_tools.py:_mark_verification_stale */
 void file_tools_mark_verification_stale(const char *path)
 {
     (void)path;

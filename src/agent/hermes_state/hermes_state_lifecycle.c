@@ -29,6 +29,7 @@ bool hermes_state_create_session(hermes_state_db_t *db, const char *session_id,
 }
 
 /* PoP: end_session @ hermes_state.py:end_session (first writer wins) */
+/* PoP: hermes_state_end_session @ hermes_state.py:end_session */
 bool hermes_state_end_session(hermes_state_db_t *db, const char *session_id,
                               const char *end_reason) {
     if (!db || !session_id || !*session_id) return false;

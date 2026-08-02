@@ -311,6 +311,7 @@ float compression_threshold_for_model(const char *model) {
 /* Port of Python: _nous_extra_body() (line 398-404)               */
 /* Port of Python: _codex_cloudflare_headers() (line 434-470)     */
 /* ================================================================== */
+/* PoP: aux_is_truthy_env @ gateway/cwd_placeholder.py:_truthy_env */
 
 static bool aux_is_truthy_env(const char *val) {
     if (!val || val[0] == '\0') return false;
