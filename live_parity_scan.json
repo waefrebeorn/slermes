@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T22:15:09Z",
+  "generated_at": "2026-08-02T22:17:02Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -36020,10 +36020,10 @@
     },
     "agent/lsp/__init__.py": {
       "total": 3,
-      "ported": 0,
+      "ported": 3,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 3,
@@ -36039,16 +36039,24 @@
             "decorators": [],
             "line_number": 45
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_init_remaining.c",
+          "c_function": "lspi_get_service",
+          "pop_annotation": {
+            "c_function": "lspi_get_service",
+            "python_functions": [
+              "get_service"
+            ],
+            "c_file": "src/agent/port_lsp_init_remaining.c",
+            "python_file": "agent/lsp/__init__.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_service @ agent/lsp/__init__.py:get_service */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/__init__.py",
@@ -36060,16 +36068,24 @@
             "decorators": [],
             "line_number": 80
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_init_remaining.c",
+          "c_function": "lspi_shutdown_service",
+          "pop_annotation": {
+            "c_function": "lspi_shutdown_service",
+            "python_functions": [
+              "shutdown_service"
+            ],
+            "c_file": "src/agent/port_lsp_init_remaining.c",
+            "python_file": "agent/lsp/__init__.py",
+            "line": 28,
+            "is_consolidated": false,
+            "full_text": "/* PoP: shutdown_service @ agent/lsp/__init__.py:shutdown_service */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/lsp/__init__.py",
@@ -36081,16 +36097,24 @@
             "decorators": [],
             "line_number": 96
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_lsp_init_remaining.c",
+          "c_function": "lspi_atexit_shutdown",
+          "pop_annotation": {
+            "c_function": "lspi_atexit_shutdown",
+            "python_functions": [
+              "_atexit_shutdown"
+            ],
+            "c_file": "src/agent/port_lsp_init_remaining.c",
+            "python_file": "agent/lsp/__init__.py",
+            "line": 35,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _atexit_shutdown @ agent/lsp/__init__.py:_atexit_shutdown */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -54783,10 +54807,10 @@
     },
     "agent/prompt_caching.py": {
       "total": 5,
-      "ported": 2,
+      "ported": 5,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 5,
@@ -54802,16 +54826,24 @@
             "decorators": [],
             "line_number": 17
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_prompt_caching_remaining.c",
+          "c_function": "pca_apply_cache_marker",
+          "pop_annotation": {
+            "c_function": "pca_apply_cache_marker",
+            "python_functions": [
+              "_apply_cache_marker"
+            ],
+            "c_file": "src/agent/port_prompt_caching_remaining.c",
+            "python_file": "agent/prompt_caching.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _apply_cache_marker @ agent/prompt_caching.py:_apply_cache_marker */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/prompt_caching.py",
@@ -54852,16 +54884,24 @@
             "decorators": [],
             "line_number": 78
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_prompt_caching_remaining.c",
+          "c_function": "pca_build_marker",
+          "pop_annotation": {
+            "c_function": "pca_build_marker",
+            "python_functions": [
+              "_build_marker"
+            ],
+            "c_file": "src/agent/port_prompt_caching_remaining.c",
+            "python_file": "agent/prompt_caching.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _build_marker @ agent/prompt_caching.py:_build_marker */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/prompt_caching.py",
@@ -54902,16 +54942,24 @@
             "decorators": [],
             "line_number": 122
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_prompt_caching_remaining.c",
+          "c_function": "pca_apply_anthropic_cache_control",
+          "pop_annotation": {
+            "c_function": "pca_apply_anthropic_cache_control",
+            "python_functions": [
+              "apply_anthropic_cache_control"
+            ],
+            "c_file": "src/agent/port_prompt_caching_remaining.c",
+            "python_file": "agent/prompt_caching.py",
+            "line": 46,
+            "is_consolidated": false,
+            "full_text": "/* PoP: apply_anthropic_cache_control @ agent/prompt_caching.py:apply_anthropic_cache_control */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
