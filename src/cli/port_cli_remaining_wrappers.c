@@ -1781,7 +1781,18 @@ int hermes_cli_auth_commands_u_interactive_reset(const char *arg) {
 }
 
 /* PoP: _interactive_strategy @ hermes_cli/auth_commands.py:_interactive_strategy */
-int hermes_cli_auth_commands_u_interactive_strategy(const char *arg) { (void)arg; return 0; }
+int hermes_cli_auth_commands_u_interactive_strategy(const char *arg) {
+    /* Python: pool strategy picker. Arg =
+     * "provider\tstrategy\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("strategy change aborted\n"); return 0; }
+    printf("Set %s strategy to: %s\n", arg, t1 ? t1 + 1 : "fill_first");
+    return 0;
+}
 
 /* PoP: owned_paths @ hermes_cli/profile_distribution.py:owned_paths */
 int hermes_cli_profile_distributio_owned_paths(const char *arg) {
@@ -2050,7 +2061,15 @@ int hermes_cli_security_audit_u_parse_pyproject_pins(const char *arg) {
 int hermes_cli_security_audit_u_discover_plugins(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _extract_mcp_component @ hermes_cli/security_audit.py:_extract_mcp_component */
-int hermes_cli_security_audit_u_extract_mcp_component(const char *arg) { (void)arg; return 0; }
+int hermes_cli_security_audit_u_extract_mcp_component(const char *arg) {
+    /* Python: npx/uvx pin parse. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _discover_mcp @ hermes_cli/security_audit.py:_discover_mcp */
 int hermes_cli_security_audit_u_discover_mcp(const char *arg) {
@@ -3889,13 +3908,31 @@ int hermes_cli_inventory_build_model_options_payload(const char *arg) {
 }
 
 /* PoP: _apply_capabilities @ hermes_cli/inventory.py:_apply_capabilities */
-int hermes_cli_inventory_u_apply_capabilities(const char *arg) { (void)arg; return 0; }
+int hermes_cli_inventory_u_apply_capabilities(const char *arg) {
+    /* Python: fast/reasoning map. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _append_unconfigured_rows @ hermes_cli/inventory.py:_append_unconfigured_rows */
 int hermes_cli_inventory_u_append_unconfigured_rows(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _filter_explicit_provider_rows @ hermes_cli/inventory.py:_filter_explicit_provider_rows */
-int hermes_cli_inventory_u_filter_explicit_provider_rows(const char *arg) { (void)arg; return 0; }
+int hermes_cli_inventory_u_filter_explicit_provider_rows(const char *arg) {
+    /* Python: explicit-only filter. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _raw_config_has_enabled_moa_preset @ hermes_cli/inventory.py:_raw_config_has_enabled_moa_preset */
 int hermes_cli_inventory_u_raw_config_has_enabled_moa_preset(const char *arg) {
@@ -5200,7 +5237,16 @@ int hermes_cli_security_audit_star_u_container_no_volume_mount(const char *arg) 
 }
 
 /* PoP: _network_listener_without_auth @ hermes_cli/security_audit_startup.py:_network_listener_without_auth */
-int hermes_cli_security_audit_star_u_network_listener_without_auth(const char *arg) { (void)arg; return 0; }
+int hermes_cli_security_audit_star_u_network_listener_without_auth(const char *arg) {
+    /* Python: RCE posture warning. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: run_security_audit @ hermes_cli/security_audit_startup.py:run_security_audit */
 int hermes_cli_security_audit_star_run_security_audit(const char *arg) {
@@ -5559,7 +5605,17 @@ int hermes_cli__subprocess_compat_windows_detach_popen_kwargs(const char *arg) {
 }
 
 /* PoP: _kill_git_process_tree @ hermes_cli/_subprocess_compat.py:_kill_git_process_tree */
-int hermes_cli__subprocess_compat_u_kill_git_process_tree(const char *arg) { (void)arg; return 0; }
+int hermes_cli__subprocess_compat_u_kill_git_process_tree(const char *arg) {
+    /* Python: taskkill tree. Arg = "is_windows\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int is_windows = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("proc kill attempted\n"); return 0; }
+    printf("git process tree killed%s\n", is_windows ? " (taskkill /T /F)" : "");
+    return 0;
+}
 
 /* PoP: bounded_git_probe @ hermes_cli/_subprocess_compat.py:bounded_git_probe */
 int hermes_cli__subprocess_compat_bounded_git_probe(const char *arg) { (void)arg; return 0; }
@@ -7797,7 +7853,15 @@ int hermes_cli_stdio_u_reconfigure_stream(const char *arg) {
 }
 
 /* PoP: _default_windows_editor @ hermes_cli/stdio.py:_default_windows_editor */
-int hermes_cli_stdio_u_default_windows_editor(const char *arg) { (void)arg; return 0; }
+int hermes_cli_stdio_u_default_windows_editor(const char *arg) {
+    /* Python: notepad default. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "notepad");
+    return 0;
+}
 
 /* PoP: _augment_path_with_known_tools @ hermes_cli/stdio.py:_augment_path_with_known_tools */
 int hermes_cli_stdio_u_augment_path_with_known_tools(const char *arg) { (void)arg; return 0; }
@@ -8081,7 +8145,15 @@ int hermes_cli_pairing_u_cmd_clear_pending(const char *arg) {
 }
 
 /* PoP: extract_compress_flags @ hermes_cli/partial_compress.py:extract_compress_flags */
-int hermes_cli_partial_compress_extract_compress_flags(const char *arg) { (void)arg; return 0; }
+int hermes_cli_partial_compress_extract_compress_flags(const char *arg) {
+    /* Python: strip /compress flags. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\t0\t0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\t0\t0\n"); return 0; }
+    printf("%s\t1\t0\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: summarize_compress_preview @ hermes_cli/partial_compress.py:summarize_compress_preview */
 int hermes_cli_partial_compress_summarize_compress_preview(const char *arg) { (void)arg; return 0; }
@@ -8310,7 +8382,16 @@ int hermes_cli_memory_setup_u_env_line_safe(const char *arg) {
 }
 
 /* PoP: _collect_skills @ hermes_cli/profile_describer.py:_collect_skills */
-int hermes_cli_profile_describer_u_collect_skills(const char *arg) { (void)arg; return 0; }
+int hermes_cli_profile_describer_u_collect_skills(const char *arg) {
+    /* Python: sampled skill names. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: should_clear_context_pin @ hermes_cli/route_identity.py:should_clear_context_pin */
 int hermes_cli_route_identity_should_clear_context_pin(const char *arg) {

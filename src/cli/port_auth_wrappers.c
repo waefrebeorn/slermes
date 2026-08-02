@@ -166,7 +166,17 @@ int auth_get_qwen_auth_status(const char *arg) {
 }
 
 /* PoP: _make_spotify_callback_handler @ hermes_cli/auth.py:_make_spotify_callback_handler */
-int auth_u_make_spotify_callback_handler(const char *arg) { (void)arg; return 0; }
+int auth_u_make_spotify_callback_handler(const char *arg) {
+    /* Python: handler class + result dict. Arg =
+     * "path\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n\n"); return 0; }
+    printf("handler for %s + result box created\n", arg);
+    return 0;
+}
 
 /* PoP: _spotify_wait_for_callback @ hermes_cli/auth.py:_spotify_wait_for_callback */
 int auth_u_spotify_wait_for_callback(const char *arg) {

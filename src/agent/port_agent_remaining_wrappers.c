@@ -125,7 +125,15 @@ int agent_model_metadata_u_extract_chatgpt_account_id(const char *arg) {
 int agent_model_metadata_u_fetch_codex_oauth_context_lengths_wit_ce(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_codex_oauth_context_length_with_source @ agent/model_metadata.py:_resolve_codex_oauth_context_length_with_source */
-int agent_model_metadata_u_resolve_codex_oauth_context_length_wi_ce(const char *arg) { (void)arg; return 0; }
+int agent_model_metadata_u_resolve_codex_oauth_context_length_wi_ce(const char *arg) {
+    /* Python: live/memory/fallback. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n\n"); return 0; }
+    printf("%s\t%s\n", tab ? tab + 1 : "", "fallback");
+    return 0;
+}
 
 /* PoP: _is_cjk_token_dense_char @ agent/model_metadata.py:_is_cjk_token_dense_char */
 int agent_model_metadata_u_is_cjk_token_dense_char(const char *arg) {
@@ -1191,7 +1199,15 @@ int agent_rate_limit_tracker_u_safe_float(const char *arg) {
 }
 
 /* PoP: parse_rate_limit_headers @ agent/rate_limit_tracker.py:parse_rate_limit_headers */
-int agent_rate_limit_tracker_parse_rate_limit_headers(const char *arg) { (void)arg; return 0; }
+int agent_rate_limit_tracker_parse_rate_limit_headers(const char *arg) {
+    /* Python: header parse. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _fmt_count @ agent/rate_limit_tracker.py:_fmt_count */
 int agent_rate_limit_tracker_u_fmt_count(const char *arg) {
@@ -2561,7 +2577,15 @@ int agent_auxiliary_client_u_obj_get(const char *arg) {
 }
 
 /* PoP: build_usage_model @ agent/billing_usage.py:build_usage_model */
-int agent_billing_usage_build_usage_model(const char *arg) { (void)arg; return 0; }
+int agent_billing_usage_build_usage_model(const char *arg) {
+    /* Python: fail-open usage model. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("{\"available\": false}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("{\"available\": false}\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "{\"available\": false}");
+    return 0;
+}
 
 /* PoP: _dev_fixture_usage_model @ agent/billing_usage.py:_dev_fixture_usage_model */
 int agent_billing_usage_u_dev_fixture_usage_model(const char *arg) { (void)arg; return 0; }

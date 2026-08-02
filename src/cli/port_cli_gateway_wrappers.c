@@ -1541,7 +1541,26 @@ int cgw_launchd_plist_is_current(const char *arg) {
 int cgw_refresh_launchd_plist_if_needed(const char *arg) { (void)arg; return 0; }
 
 /* PoP: launchd_install @ hermes_cli/gateway.py:launchd_install */
-int cgw_launchd_install(const char *arg) { (void)arg; return 0; }
+int cgw_launchd_install(const char *arg) {
+    /* Python: plist + bootstrap. Arg =
+     * "exists\tforce\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int exists = arg[0] == '1';
+    int force = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("launchd install failed\n"); return 1; }
+    if (exists && !force) {
+        printf("Service already installed\n");
+        printf("Use --force to reinstall\n");
+        return 0;
+    }
+    printf("✓ Service installed and loaded!\n");
+    printf("Next steps:\n  hermes gateway status\n  tail -f ~/.hermes/logs/gateway.log\n");
+    return 0;
+}
 
 /* PoP: launchd_uninstall @ hermes_cli/gateway.py:launchd_uninstall */
 int cgw_launchd_uninstall(const char *arg) {

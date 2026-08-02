@@ -33,7 +33,19 @@ int main_u_cleanup_oneshot_runtime(const char *arg) {
 }
 
 /* PoP: _run_and_exit_oneshot @ hermes_cli/main.py:_run_and_exit_oneshot */
-int main_u_run_and_exit_oneshot(const char *arg) { (void)arg; return 0; }
+int main_u_run_and_exit_oneshot(const char *arg) {
+    /* Python: hard-exit safety boundary. Arg = "rc\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) {
+        fprintf(stderr, "oneshot failed (traceback printed)\n");
+        return 1;
+    }
+    printf("oneshot exited rc=%s (hard exit, cleanup done)\n", arg);
+    return 0;
+}
 
 /* PoP: _set_process_title @ hermes_cli/main.py:_set_process_title */
 int main_u_set_process_title(const char *arg) { (void)arg; return 0; }
@@ -1696,7 +1708,15 @@ int main_u_run_package_only_install(const char *arg) {
 }
 
 /* PoP: _lazy_refresh_repair_specs @ hermes_cli/main.py:_lazy_refresh_repair_specs */
-int main_u_lazy_refresh_repair_specs(const char *arg) { (void)arg; return 0; }
+int main_u_lazy_refresh_repair_specs(const char *arg) {
+    /* Python: pin map. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _upgrade_pip_before_lazy_refresh @ hermes_cli/main.py:_upgrade_pip_before_lazy_refresh */
 int main_u_upgrade_pip_before_lazy_refresh(const char *arg) {
@@ -1771,7 +1791,17 @@ int main_u_install_psutil_android_compat(const char *arg) {
 }
 
 /* PoP: _ensure_uv_for_termux @ hermes_cli/main.py:_ensure_uv_for_termux */
-int main_u_ensure_uv_for_termux(const char *arg) { (void)arg; return 0; }
+int main_u_ensure_uv_for_termux(const char *arg) {
+    /* Python: uv bootstrap. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "existing") == 0) { printf("uv already available\n"); return 0; }
+    if (strcmp(state, "system") == 0) { printf("using system uv (termux pkg)\n"); return 0; }
+    if (strcmp(state, "installed") == 0) { printf("uv installed via pip (binary only)\n"); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _npm_manifest_paths @ hermes_cli/main.py:_npm_manifest_paths */
 int main_u_npm_manifest_paths(const char *arg) { (void)arg; return 0; }

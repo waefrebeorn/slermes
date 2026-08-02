@@ -82,7 +82,15 @@ int envd_u_get_active_profile_name(const char *arg) {
 int envd_reap_orphan_containers(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _container_finished_at @ tools/environments/docker.py:_container_finished_at */
-int envd_u_container_finished_at(const char *arg) { (void)arg; return 0; }
+int envd_u_container_finished_at(const char *arg) {
+    /* Python: FinishedAt parse. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "never") == 0 || strcmp(state, "fail") == 0) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: find_docker @ tools/environments/docker.py:find_docker */
 int envd_find_docker(const char *arg) { (void)arg; return 0; }

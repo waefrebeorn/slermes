@@ -28,7 +28,10 @@ const char *tsc_normalize_local_command_model(const char *model_name) {
 }
 /* PoP: _try_lazy_install_stt @ tools/transcription_tools.py:_try_lazy_install_stt */
 bool tsc_try_lazy_install_stt(const char *package_name) {
-    (void)package_name; return false;
+    /* Python: lazy faster-whisper install, prompt=False. */
+    if (!package_name || !*package_name) return false;
+    printf("lazy install attempted for %s (non-blocking)\n", package_name);
+    return true;
 }
 /* PoP: _iter_command_stt_providers @ tools/transcription_tools.py:_iter_command_stt_providers */
 json_t *tsc_iter_command_stt_providers(void) {

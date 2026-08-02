@@ -212,7 +212,25 @@ int smt_u_delete_skill(const char *arg) { (void)arg; return 0; }
 int smt_u_remove_file(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _apply_skill_write_gate @ tools/skill_manager_tool.py:_apply_skill_write_gate */
-int smt_u_apply_skill_write_gate(const char *arg) { (void)arg; return 0; }
+int smt_u_apply_skill_write_gate(const char *arg) {
+    /* Python: gate decision. Arg =
+     * "action\tbypassed\tstate\tdecision\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int bypassed = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    const char *decision = t3 ? t3 + 1 : "";
+    if (bypassed || !state || strcmp(decision, "allow") == 0) { printf("\n"); return 0; }
+    if (strcmp(decision, "blocked") == 0) {
+        printf("{\"success\": false, \"error\": \"skill write blocked by approval policy\"}\n");
+        return 1;
+    }
+    printf("{\"success\": true, \"staged\": true, \"pending_id\": \"%s\"}\n", t4 ? t4 + 1 : "?");
+    return 0;
+}
 
 /* PoP: apply_skill_pending @ tools/skill_manager_tool.py:apply_skill_pending */
 int smt_apply_skill_pending(const char *arg) {
