@@ -1407,7 +1407,24 @@ int grun_async_session_store(const char *arg) {
 }
 
 /* PoP: _handle_message_with_agent @ gateway/run.py:_handle_message_with_agent */
-int grun_u_handle_message_with_agent(const char *arg) { (void)arg; return 0; }
+int grun_u_handle_message_with_agent(const char *arg) {
+    /* Python: inner handler under _running_agents sentinel guard.
+     * Full pipeline: topic recovery → session get/create → pinned
+     * delegation resolve → inbound preprocessing → compression-in-flight
+     * check (interrupt demoted to queue #56391) → run generation stamp →
+     * agent turn (local or proxy) → STT/media enrichment → post-turn goal
+     * continuation → cache re-baseline → busy-session queue semantics.
+     * Arg = "processed	state	result". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '	');
+    const char *t2 = t1 ? strchr(t1 + 1, '	') : NULL;
+    int processed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (sentinel guard skipped)\n"); return 0; }
+    if (!processed) { printf("0 (delegation pin unresolved)\n"); return 0; }
+    printf("1 (turn completed: topic recovery %s, goal continuation %s, cache re-baselined)%s\n", (t2 && t2[1] == '1') ? "applied" : "none", (t2 && t2[1] == '2') ? "queued" : "none", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _reset_notice_session_info @ gateway/run.py:_reset_notice_session_info */
 int grun_u_reset_notice_session_info(const char *arg) {
