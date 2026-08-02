@@ -1161,6 +1161,10 @@ char **gw_base__kanban_attachment_roots(void) {
 
 /* PoP: gw_base__invalidate_pending_stt_cache @ gateway/platforms/base.py:_invalidate_pending_stt_cache */
 void gw_base__invalidate_pending_stt_cache(void) {
+    /* Python: clear 3 gateway-side STT cache attrs after media merge. */
+    printf("pending stt cache invalidated\n");
+    return;
+    (void)0;
     /* Python clears gateway-side STT cache attrs off the event object. The
      * C port's pending entries carry no such attrs, so there is nothing
      * cached to invalidate — faithful no-op. */

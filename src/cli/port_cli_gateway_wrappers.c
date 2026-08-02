@@ -239,7 +239,24 @@ int cgw_u_systemd_service_is_start_limited(const char *arg) {
 }
 
 /* PoP: _print_systemd_start_limit_wait @ hermes_cli/gateway.py:_print_systemd_start_limit_wait */
-int cgw_u_print_systemd_start_limit_wait(const char *arg) { (void)arg; return 0; }
+int cgw_u_print_systemd_start_limit_wait(const char *arg) {
+    /* Python: rate-limit guidance lines. Arg = "service\tsystem\tscope". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *svc = arg;
+    int system = t1 && t1[1] == '1';
+    const char *scope = t2 ? t2 + 1 : "User";
+    const char *sysctl = system ? "systemctl " : "systemctl --user ";
+    const char *jnl = system ? "journalctl " : "journalctl --user ";
+    printf("⏳ %s service is temporarily rate-limited by systemd.\n", scope);
+    printf("  systemd is refusing another immediate start after repeated exits.\n");
+    printf("  Wait for the start-limit window to expire, then run: %shermes gateway restart%s\n",
+           system ? "sudo " : "", system ? " --system" : "");
+    printf("  Or clear the failed state manually: %sreset-failed %s\n", sysctl, svc);
+    printf("  Check logs: %s-u %s -l --since '5 min ago'\n", jnl, svc);
+    return 0;
+}
 
 /* PoP: _recover_pending_systemd_restart @ hermes_cli/gateway.py:_recover_pending_systemd_restart */
 int cgw_u_recover_pending_systemd_restart(const char *arg) { (void)arg; return 0; }

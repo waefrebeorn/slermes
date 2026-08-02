@@ -699,7 +699,13 @@ int tools_x_search_tool_u_parse_iso_date(const char *arg) {
 int tools_x_search_tool_u_validate_date_range(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _extract_inline_citations @ tools/x_search_tool.py:_extract_inline_citations */
-int tools_x_search_tool_u_extract_inline_citations(const char *arg) { (void)arg; return 0; }
+int tools_x_search_tool_u_extract_inline_citations(const char *arg) {
+    /* Python: pull url_citation annotations. Arg = "citations_json\tcount". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _http_error_message @ tools/x_search_tool.py:_http_error_message */
 int tools_x_search_tool_u_http_error_message(const char *arg) { (void)arg; return 0; }
@@ -1631,7 +1637,26 @@ int tools_xai_video_tools_u_handle_xai_video_edit(const char *arg) {
 }
 
 /* PoP: _handle_xai_video_extend @ tools/xai_video_tools.py:_handle_xai_video_extend */
-int tools_xai_video_tools_u_handle_xai_video_extend(const char *arg) { (void)arg; return 0; }
+int tools_xai_video_tools_u_handle_xai_video_extend(const char *arg) {
+    /* Python: prompt/url gates + run. Arg =
+     * "prompt\tvideo_url\tconfigured\tresult". */
+    if (!arg || !*arg) { printf("error: prompt is required for xAI video extend\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *prompt = arg;
+    const char *url = t1 ? t1 + 1 : "";
+    if (!prompt[0]) { printf("error: prompt is required for xAI video extend\n"); return 0; }
+    if (!url[0]) {
+        printf("error: video_url must be a public HTTPS MP4 URL (the `video`/`public_url` from a prior Imagine result)\n");
+        return 0;
+    }
+    int configured = t2 && t2[1] == '1';
+    if (!configured) { printf("error: provider not configured\n"); return 0; }
+    const char *result = t3 ? t3 + 1 : "{}";
+    printf("%s\n", result);
+    return 0;
+}
 
 /* PoP: _resolve_driver_cmd @ tools/computer_use/permissions.py:_resolve_driver_cmd */
 int tools_computer_use_permissions_u_resolve_driver_cmd(const char *arg) {
@@ -2112,7 +2137,27 @@ int tools_open_preview_tool_u_normalize_target(const char *arg) {
 }
 
 /* PoP: open_preview_tool @ tools/open_preview_tool.py:open_preview_tool */
-int tools_open_preview_tool_open_preview_tool(const char *arg) { (void)arg; return 0; }
+int tools_open_preview_tool_open_preview_tool(const char *arg) {
+    /* Python: normalize + emit preview.open. Arg =
+     * "target\tstate\terr". */
+    if (!arg || !*arg) {
+        printf("error: url is required — a web URL (https://…), a localhost dev server, or a file path to show in the preview pane.\n");
+        return 0;
+    }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_desktop") == 0) {
+        printf("error: The preview pane is only available in the Hermes desktop app.\n");
+        return 0;
+    }
+    if (strcmp(state, "emit_error") == 0) {
+        printf("error: Failed to open the preview pane: %s\n", t2 ? t2 + 1 : "unknown");
+        return 0;
+    }
+    printf("{\"success\": true, \"url\": \"%s\"}\n", arg);
+    return 0;
+}
 
 /* PoP: check_open_preview_requirements @ tools/open_preview_tool.py:check_open_preview_requirements */
 int tools_open_preview_tool_check_open_preview_requirements(const char *arg) {

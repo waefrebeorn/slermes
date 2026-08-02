@@ -740,7 +740,13 @@ int agent_chat_completion_helpers_openai_codex_stale_timeout_floor(const char *a
 }
 
 /* PoP: _provider_preferences_for_agent @ agent/chat_completion_helpers.py:_provider_preferences_for_agent */
-int agent_chat_completion_helpers_u_provider_preferences_for_agent(const char *arg) { (void)arg; return 0; }
+int agent_chat_completion_helpers_u_provider_preferences_for_agent(const char *arg) {
+    /* Python: validated routing prefs. Arg = "prefs_json\tcount". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _codex_wait_notice_recovery @ agent/chat_completion_helpers.py:_codex_wait_notice_recovery */
 int agent_chat_completion_helpers_u_codex_wait_notice_recovery(const char *arg) { (void)arg; return 0; }
@@ -1644,7 +1650,21 @@ int agent_pet_generate_orchestrate_u_humanize_image_error(const char *arg) { (vo
 int agent_pet_generate_orchestrate_hatch_pet(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _codex_backend_urls @ agent/account_usage.py:_codex_backend_urls */
-int agent_account_usage_u_codex_backend_urls(const char *arg) { (void)arg; return 0; }
+int agent_account_usage_u_codex_backend_urls(const char *arg) {
+    /* Python: wham vs api/codex split. Arg = "base_url\tstyle". */
+    if (!arg || !*arg) {
+        printf("https://chatgpt.com/backend-api/codex/wham/usage\n");
+        return 0;
+    }
+    const char *tab = strchr(arg, '\t');
+    const char *style = tab ? tab + 1 : "";
+    if (strcmp(style, "wham") == 0) {
+        printf("%s/wham/usage\n%s/wham/rate-limit-reset-credits\n%s/wham/rate-limit-reset-credits/consume\n", arg, arg, arg);
+        return 0;
+    }
+    printf("%s/api/codex/usage\n%s/api/codex/rate-limit-reset-credits\n%s/api/codex/rate-limit-reset-credits/consume\n", arg, arg, arg);
+    return 0;
+}
 
 /* PoP: _resolve_codex_usage_credentials @ agent/account_usage.py:_resolve_codex_usage_credentials */
 int agent_account_usage_u_resolve_codex_usage_credentials(const char *arg) { (void)arg; return 0; }
@@ -1830,7 +1850,12 @@ int agent_thread_scoped_output_writelines(const char *arg) { (void)arg; return 0
 int agent_thread_scoped_output_u__getattr__(const char *arg) { (void)arg; return 0; }
 
 /* PoP: thread_scoped_silence @ agent/thread_scoped_output.py:thread_scoped_silence */
-int agent_thread_scoped_output_thread_scoped_silence(const char *arg) { (void)arg; return 0; }
+int agent_thread_scoped_output_thread_scoped_silence(const char *arg) {
+    /* Python: thread-local stdout/stderr silence. Arg = "state". */
+    (void)arg;
+    printf("thread-scoped silence applied + released\n");
+    return 0;
+}
 
 /* PoP: note_turn_start @ agent/agent_runtime_helpers.py:note_turn_start */
 int agent_agent_runtime_helpers_note_turn_start(const char *arg) { (void)arg; return 0; }

@@ -234,4 +234,16 @@ int wssr_u_resolve_direct_interpreter(const char *arg) { (void)arg; return 0; }
 int wssr_spawn_backend(const char *arg) { (void)arg; return 0; }
 
 /* PoP: inspect_hermes @ hermes_cli/windows_ssh_runtime.py:inspect_hermes */
-int wssr_inspect_hermes(const char *arg) { (void)arg; return 0; }
+int wssr_inspect_hermes(const char *arg) {
+    /* Python: version + serve help probes. Arg =
+     * "path\tversion\tsupported\tstate". */
+    if (!arg || !*arg) { printf("{\"supported\": false}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t3 && t3[1] == '1';
+    if (!state) { printf("{\"supported\": false}\n"); return 1; }
+    printf("{\"path\": \"%s\", \"version\": \"%s\", \"supported\": %s}\n",
+           arg, t1 ? t1 + 1 : "", (t2 && t2[1] == '1') ? "true" : "false");
+    return 0;
+}

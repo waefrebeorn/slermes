@@ -215,7 +215,16 @@ int adel_get_durable_delegation(const char *arg) {
 }
 
 /* PoP: _get_executor @ tools/async_delegation.py:_get_executor */
-int adel_u_get_executor(const char *arg) { (void)arg; return 0; }
+int adel_u_get_executor(const char *arg) {
+    /* Python: lazy daemon pool, grow-only. Arg = "max_workers\tgrew\tstate". */
+    if (!arg || !*arg) { printf("executor ready (daemon pool)\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int grew = t1 && t1[1] == '1';
+    printf("executor ready (%s, %s workers)\n",
+           grew ? "rebuilt larger" : "reused", arg);
+    return 0;
+}
 
 /* PoP: _new_delegation_id @ tools/async_delegation.py:_new_delegation_id */
 int adel_u_new_delegation_id(const char *arg) {

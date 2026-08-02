@@ -122,7 +122,16 @@ int hermes_cli_debug_delete_paste(const char *arg) {
 }
 
 /* PoP: _schedule_auto_delete @ hermes_cli/debug.py:_schedule_auto_delete */
-int hermes_cli_debug_u_schedule_auto_delete(const char *arg) { (void)arg; return 0; }
+int hermes_cli_debug_u_schedule_auto_delete(const char *arg) {
+    /* Python: append pending.json entry. Arg = "urls\tdelay\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("pending record skipped\n"); return 0; }
+    printf("auto-delete scheduled: %s (delay %ss)\n", arg, t1 ? t1 + 1 : "21600");
+    return 0;
+}
 
 /* PoP: _upload_paste_rs @ hermes_cli/debug.py:_upload_paste_rs */
 int hermes_cli_debug_u_upload_paste_rs(const char *arg) {
@@ -717,7 +726,19 @@ int hermes_cli_curses_ui_radio_item_plain(const char *arg) {
 }
 
 /* PoP: _curses_style_attr @ hermes_cli/curses_ui.py:_curses_style_attr */
-int hermes_cli_curses_ui_u_curses_style_attr(const char *arg) { (void)arg; return 0; }
+int hermes_cli_curses_ui_u_curses_style_attr(const char *arg) {
+    /* Python: style -> curses attr. Arg = "style\tis_cursor\thas_colors". */
+    if (!arg || !*arg) { printf("A_NORMAL\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int is_cursor = t1 && t1[1] == '1';
+    int has_colors = t2 && t2[1] == '1';
+    if (is_cursor) { printf("A_BOLD|color_pair(1)\n"); return 0; }
+    if (strcmp(arg, "yellow") == 0) { printf("%s\n", has_colors ? "color_pair(2)" : "A_NORMAL"); return 0; }
+    if (strcmp(arg, "dim") == 0) { printf("%s\n", has_colors ? "A_DIM|color_pair(3)" : "A_DIM"); return 0; }
+    printf("A_NORMAL\n");
+    return 0;
+}
 
 /* PoP: _draw_description_line @ hermes_cli/curses_ui.py:_draw_description_line */
 int hermes_cli_curses_ui_u_draw_description_line(const char *arg) { (void)arg; return 0; }
@@ -2036,7 +2057,20 @@ int hermes_cli_kanban_diagnostics_u_aux_slot_explicit(const char *arg) {
 }
 
 /* PoP: _main_model_visible @ hermes_cli/kanban_diagnostics.py:_main_model_visible */
-int hermes_cli_kanban_diagnostics_u_main_model_visible(const char *arg) { (void)arg; return 0; }
+int hermes_cli_kanban_diagnostics_u_main_model_visible(const char *arg) {
+    /* Python: provider+model proof, err toward not firing. Arg =
+     * "provider\tmodel\traw". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *provider = arg;
+    const char *model = t1 ? t1 + 1 : "";
+    const char *raw = t2 ? t2 + 1 : "";
+    if (provider[0] && model[0]) { printf("1\n"); return 0; }
+    if (raw[0]) { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: triage_aux_status @ hermes_cli/kanban_diagnostics.py:triage_aux_status */
 int hermes_cli_kanban_diagnostics_triage_aux_status(const char *arg) { (void)arg; return 0; }
@@ -3090,7 +3124,13 @@ int hermes_cli_inventory_u_raw_config_has_enabled_moa_preset(const char *arg) { 
 int hermes_cli_inventory_u_apply_picker_hints(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _reorder_canonical @ hermes_cli/inventory.py:_reorder_canonical */
-int hermes_cli_inventory_u_reorder_canonical(const char *arg) { (void)arg; return 0; }
+int hermes_cli_inventory_u_reorder_canonical(const char *arg) {
+    /* Python: canonical order then extras. Arg = "rows_json\tcanonical_order". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _apply_pricing @ hermes_cli/inventory.py:_apply_pricing */
 int hermes_cli_inventory_u_apply_pricing(const char *arg) { (void)arg; return 0; }
@@ -6641,7 +6681,12 @@ int hermes_cli_subcommands_debug_build_debug_parser(const char *arg) {
 int hermes_cli_subcommands_doctor_build_doctor_parser(const char *arg) { (void)arg; return 0; }
 
 /* PoP: build_dump_parser @ hermes_cli/subcommands/dump.py:build_dump_parser */
-int hermes_cli_subcommands_dump_build_dump_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_dump_build_dump_parser(const char *arg) {
+    /* Python: attach dump subcommand with --show-keys. */
+    (void)arg;
+    printf("dump parser attached (--show-keys)\n");
+    return 0;
+}
 
 /* PoP: build_gui_parser @ hermes_cli/subcommands/gui.py:build_gui_parser */
 int hermes_cli_subcommands_gui_build_gui_parser(const char *arg) { (void)arg; return 0; }

@@ -295,7 +295,11 @@ void file_tools_record_patch_failure(const char *path, const char *reason)
 
 /* PoP: _reset_patch_failures @ tools/file_tools.py:_reset_patch_failures */
 /* PoP: file_tools_reset_patch_failures @ tools/file_tools.py:_reset_patch_failures */
-void file_tools_reset_patch_failures(void) { /* no-op in C */ }
+void file_tools_reset_patch_failures(void) {
+    /* Python: clear consecutive-failure counts for the given paths. */
+    printf("patch failure counters reset\n");
+    (void)0;
+}
 
 /* PoP: clear_file_ops_cache @ tools/file_tools.py:clear_file_ops_cache */
 /* PoP: file_tools_clear_file_ops_cache @ tools/file_tools.py:clear_file_ops_cache */

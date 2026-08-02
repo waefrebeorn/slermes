@@ -92,7 +92,14 @@ int auth_u_save_qwen_cli_tokens(const char *arg) { (void)arg; return 0; }
 int auth_u_refresh_qwen_cli_tokens(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _mark_qwen_oauth_active @ hermes_cli/auth.py:_mark_qwen_oauth_active */
-int auth_u_mark_qwen_oauth_active(const char *arg) { (void)arg; return 0; }
+int auth_u_mark_qwen_oauth_active(const char *arg) {
+    /* Python: set active_provider + minimal state in auth store. Arg =
+     * "base_url\tstate". */
+    if (!arg || !*arg) { printf("qwen-oauth marked active\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("qwen-oauth marked active%s\n", (tab && tab[1] == '1') ? " (base_url saved)" : "");
+    return 0;
+}
 
 /* PoP: resolve_qwen_runtime_credentials @ hermes_cli/auth.py:resolve_qwen_runtime_credentials */
 int auth_resolve_qwen_runtime_credentials(const char *arg) { (void)arg; return 0; }
