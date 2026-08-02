@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T19:53:52Z",
+  "generated_at": "2026-08-02T19:55:51Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -59820,10 +59820,10 @@
     },
     "agent/skill_commands.py": {
       "total": 17,
-      "ported": 8,
+      "ported": 17,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 9,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 17,
@@ -59926,16 +59926,24 @@
             "decorators": [],
             "line_number": 115
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_commands_remaining.c",
+          "c_function": "skc_resolve_skill_commands_platform",
+          "pop_annotation": {
+            "c_function": "skc_resolve_skill_commands_platform",
+            "python_functions": [
+              "_resolve_skill_commands_platform"
+            ],
+            "c_file": "src/agent/port_skill_commands_remaining.c",
+            "python_file": "agent/skill_commands.py",
+            "line": 33,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_skill_commands_platform @ agent/skill_commands.py:_resolve_skill_commands_platform */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/skill_commands.py",
@@ -59976,16 +59984,24 @@
             "decorators": [],
             "line_number": 178
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_commands_remaining.c",
+          "c_function": "skc_inject_skill_config",
+          "pop_annotation": {
+            "c_function": "skc_inject_skill_config",
+            "python_functions": [
+              "_inject_skill_config"
+            ],
+            "c_file": "src/agent/port_skill_commands_remaining.c",
+            "python_file": "agent/skill_commands.py",
+            "line": 41,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _inject_skill_config @ agent/skill_commands.py:_inject_skill_config */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/skill_commands.py",
@@ -59997,16 +60013,24 @@
             "decorators": [],
             "line_number": 217
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_commands_remaining.c",
+          "c_function": "skc_build_skill_message",
+          "pop_annotation": {
+            "c_function": "skc_build_skill_message",
+            "python_functions": [
+              "_build_skill_message"
+            ],
+            "c_file": "src/agent/port_skill_commands_remaining.c",
+            "python_file": "agent/skill_commands.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _build_skill_message @ agent/skill_commands.py:_build_skill_message */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/skill_commands.py",
@@ -60018,16 +60042,24 @@
             "decorators": [],
             "line_number": 320
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_commands_remaining.c",
+          "c_function": "skc_scan_skill_commands",
+          "pop_annotation": {
+            "c_function": "skc_scan_skill_commands",
+            "python_functions": [
+              "scan_skill_commands"
+            ],
+            "c_file": "src/agent/port_skill_commands_remaining.c",
+            "python_file": "agent/skill_commands.py",
+            "line": 57,
+            "is_consolidated": false,
+            "full_text": "/* PoP: scan_skill_commands @ agent/skill_commands.py:scan_skill_commands */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/skill_commands.py",
@@ -60039,16 +60071,24 @@
             "decorators": [],
             "line_number": 416
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_commands_remaining.c",
+          "c_function": "skc_get_skill_commands",
+          "pop_annotation": {
+            "c_function": "skc_get_skill_commands",
+            "python_functions": [
+              "get_skill_commands"
+            ],
+            "c_file": "src/agent/port_skill_commands_remaining.c",
+            "python_file": "agent/skill_commands.py",
+            "line": 101,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_skill_commands @ agent/skill_commands.py:get_skill_commands */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/skill_commands.py",
@@ -60060,16 +60100,24 @@
             "decorators": [],
             "line_number": 431
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_commands_remaining.c",
+          "c_function": "skc_reload_skills",
+          "pop_annotation": {
+            "c_function": "skc_reload_skills",
+            "python_functions": [
+              "reload_skills"
+            ],
+            "c_file": "src/agent/port_skill_commands_remaining.c",
+            "python_file": "agent/skill_commands.py",
+            "line": 108,
+            "is_consolidated": false,
+            "full_text": "/* PoP: reload_skills @ agent/skill_commands.py:reload_skills */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/skill_commands.py",
@@ -60081,16 +60129,24 @@
             "decorators": [],
             "line_number": 496
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_commands_remaining.c",
+          "c_function": "skc_resolve_skill_command_key",
+          "pop_annotation": {
+            "c_function": "skc_resolve_skill_command_key",
+            "python_functions": [
+              "resolve_skill_command_key"
+            ],
+            "c_file": "src/agent/port_skill_commands_remaining.c",
+            "python_file": "agent/skill_commands.py",
+            "line": 115,
+            "is_consolidated": false,
+            "full_text": "/* PoP: resolve_skill_command_key @ agent/skill_commands.py:resolve_skill_command_key */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/skill_commands.py",
@@ -60102,16 +60158,24 @@
             "decorators": [],
             "line_number": 515
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_commands_remaining.c",
+          "c_function": "skc_build_skill_invocation_message",
+          "pop_annotation": {
+            "c_function": "skc_build_skill_invocation_message",
+            "python_functions": [
+              "build_skill_invocation_message"
+            ],
+            "c_file": "src/agent/port_skill_commands_remaining.c",
+            "python_file": "agent/skill_commands.py",
+            "line": 125,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_skill_invocation_message @ agent/skill_commands.py:build_skill_invocation_message */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/skill_commands.py",
@@ -60181,16 +60245,24 @@
             "decorators": [],
             "line_number": 693
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_skill_commands_remaining.c",
+          "c_function": "skc_build_preloaded_skills_prompt",
+          "pop_annotation": {
+            "c_function": "skc_build_preloaded_skills_prompt",
+            "python_functions": [
+              "build_preloaded_skills_prompt"
+            ],
+            "c_file": "src/agent/port_skill_commands_remaining.c",
+            "python_file": "agent/skill_commands.py",
+            "line": 134,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_preloaded_skills_prompt @ agent/skill_commands.py:build_preloaded_skills_prompt */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/skill_commands.py",
@@ -66299,10 +66371,10 @@
     },
     "agent/transports/chat_completions.py": {
       "total": 13,
-      "ported": 1,
+      "ported": 13,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 12,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 13,
@@ -66347,16 +66419,24 @@
             "decorators": [],
             "line_number": 35
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_chat_completions_remaining.c",
+          "c_function": "cct_build_gemini_thinking_config",
+          "pop_annotation": {
+            "c_function": "cct_build_gemini_thinking_config",
+            "python_functions": [
+              "_build_gemini_thinking_config"
+            ],
+            "c_file": "src/agent/port_chat_completions_remaining.c",
+            "python_file": "agent/transports/chat_completions.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _build_gemini_thinking_config @ agent/transports/chat_completions.py:_build_gemini_thinking_config */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/chat_completions.py",
@@ -66368,16 +66448,24 @@
             "decorators": [],
             "line_number": 91
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_chat_completions_remaining.c",
+          "c_function": "cct_snake_case_gemini_thinking_config",
+          "pop_annotation": {
+            "c_function": "cct_snake_case_gemini_thinking_config",
+            "python_functions": [
+              "_snake_case_gemini_thinking_config"
+            ],
+            "c_file": "src/agent/port_chat_completions_remaining.c",
+            "python_file": "agent/transports/chat_completions.py",
+            "line": 41,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _snake_case_gemini_thinking_config @ agent/transports/chat_completions.py:_snake_case_gemini_thinking_config */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/chat_completions.py",
@@ -66389,16 +66477,24 @@
             "decorators": [],
             "line_number": 106
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_chat_completions_remaining.c",
+          "c_function": "cct_is_gemini_openai_compat_base_url",
+          "pop_annotation": {
+            "c_function": "cct_is_gemini_openai_compat_base_url",
+            "python_functions": [
+              "_is_gemini_openai_compat_base_url"
+            ],
+            "c_file": "src/agent/port_chat_completions_remaining.c",
+            "python_file": "agent/transports/chat_completions.py",
+            "line": 66,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_gemini_openai_compat_base_url @ agent/transports/chat_completions.py:_is_gemini_openai_compat_base_url */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/chat_completions.py",
@@ -66410,16 +66506,24 @@
             "decorators": [],
             "line_number": 115
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_chat_completions_remaining.c",
+          "c_function": "cct_model_consumes_thought_signature",
+          "pop_annotation": {
+            "c_function": "cct_model_consumes_thought_signature",
+            "python_functions": [
+              "_model_consumes_thought_signature"
+            ],
+            "c_file": "src/agent/port_chat_completions_remaining.c",
+            "python_file": "agent/transports/chat_completions.py",
+            "line": 81,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _model_consumes_thought_signature @ agent/transports/chat_completions.py:_model_consumes_thought_signature */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/chat_completions.py",
@@ -66433,16 +66537,24 @@
             ],
             "line_number": 138
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_chat_completions_remaining.c",
+          "c_function": "cct_api_mode",
+          "pop_annotation": {
+            "c_function": "cct_api_mode",
+            "python_functions": [
+              "api_mode"
+            ],
+            "c_file": "src/agent/port_chat_completions_remaining.c",
+            "python_file": "agent/transports/chat_completions.py",
+            "line": 92,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_mode @ agent/transports/chat_completions.py:api_mode */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/chat_completions.py",
@@ -66454,16 +66566,24 @@
             "decorators": [],
             "line_number": 141
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_chat_completions_remaining.c",
+          "c_function": "cct_convert_messages",
+          "pop_annotation": {
+            "c_function": "cct_convert_messages",
+            "python_functions": [
+              "convert_messages"
+            ],
+            "c_file": "src/agent/port_chat_completions_remaining.c",
+            "python_file": "agent/transports/chat_completions.py",
+            "line": 97,
+            "is_consolidated": false,
+            "full_text": "/* PoP: convert_messages @ agent/transports/chat_completions.py:convert_messages */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/chat_completions.py",
@@ -66475,16 +66595,24 @@
             "decorators": [],
             "line_number": 276
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_chat_completions_remaining.c",
+          "c_function": "cct_convert_tools",
+          "pop_annotation": {
+            "c_function": "cct_convert_tools",
+            "python_functions": [
+              "convert_tools"
+            ],
+            "c_file": "src/agent/port_chat_completions_remaining.c",
+            "python_file": "agent/transports/chat_completions.py",
+            "line": 105,
+            "is_consolidated": false,
+            "full_text": "/* PoP: convert_tools @ agent/transports/chat_completions.py:convert_tools */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/chat_completions.py",
@@ -66496,16 +66624,24 @@
             "decorators": [],
             "line_number": 280
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_chat_completions_remaining.c",
+          "c_function": "cct_build_kwargs",
+          "pop_annotation": {
+            "c_function": "cct_build_kwargs",
+            "python_functions": [
+              "build_kwargs"
+            ],
+            "c_file": "src/agent/port_chat_completions_remaining.c",
+            "python_file": "agent/transports/chat_completions.py",
+            "line": 112,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_kwargs @ agent/transports/chat_completions.py:build_kwargs */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/chat_completions.py",
@@ -66517,16 +66653,24 @@
             "decorators": [],
             "line_number": 514
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_chat_completions_remaining.c",
+          "c_function": "cct_build_kwargs_from_profile",
+          "pop_annotation": {
+            "c_function": "cct_build_kwargs_from_profile",
+            "python_functions": [
+              "_build_kwargs_from_profile"
+            ],
+            "c_file": "src/agent/port_chat_completions_remaining.c",
+            "python_file": "agent/transports/chat_completions.py",
+            "line": 120,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _build_kwargs_from_profile @ agent/transports/chat_completions.py:_build_kwargs_from_profile */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/chat_completions.py",
@@ -66538,16 +66682,24 @@
             "decorators": [],
             "line_number": 656
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_chat_completions_remaining.c",
+          "c_function": "cct_normalize_response",
+          "pop_annotation": {
+            "c_function": "cct_normalize_response",
+            "python_functions": [
+              "normalize_response"
+            ],
+            "c_file": "src/agent/port_chat_completions_remaining.c",
+            "python_file": "agent/transports/chat_completions.py",
+            "line": 128,
+            "is_consolidated": false,
+            "full_text": "/* PoP: normalize_response @ agent/transports/chat_completions.py:normalize_response */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/chat_completions.py",
@@ -66559,16 +66711,24 @@
             "decorators": [],
             "line_number": 771
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_chat_completions_remaining.c",
+          "c_function": "cct_validate_response",
+          "pop_annotation": {
+            "c_function": "cct_validate_response",
+            "python_functions": [
+              "validate_response"
+            ],
+            "c_file": "src/agent/port_chat_completions_remaining.c",
+            "python_file": "agent/transports/chat_completions.py",
+            "line": 136,
+            "is_consolidated": false,
+            "full_text": "/* PoP: validate_response @ agent/transports/chat_completions.py:validate_response */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/chat_completions.py",
@@ -66580,16 +66740,24 @@
             "decorators": [],
             "line_number": 781
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_chat_completions_remaining.c",
+          "c_function": "cct_extract_cache_stats",
+          "pop_annotation": {
+            "c_function": "cct_extract_cache_stats",
+            "python_functions": [
+              "extract_cache_stats"
+            ],
+            "c_file": "src/agent/port_chat_completions_remaining.c",
+            "python_file": "agent/transports/chat_completions.py",
+            "line": 145,
+            "is_consolidated": false,
+            "full_text": "/* PoP: extract_cache_stats @ agent/transports/chat_completions.py:extract_cache_stats */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
