@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T18:42:08Z",
+  "generated_at": "2026-08-02T18:44:03Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -196377,10 +196377,10 @@
     },
     "hermes_cli/main.py": {
       "total": 285,
-      "ported": 254,
+      "ported": 284,
       "partial": 1,
       "stub": 0,
-      "real_gaps": 30,
+      "real_gaps": 0,
       "thin": true,
       "pop_mismatch": false,
       "py_func_count": 285,
@@ -197527,17 +197527,24 @@
             "decorators": [],
             "line_number": 1827
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_restore_tui_workspace",
+          "pop_annotation": {
+            "c_function": "mn_restore_tui_workspace",
+            "python_functions": [
+              "_restore_tui_workspace"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 25,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _restore_tui_workspace @ hermes_cli/main.py:_restore_tui_workspace */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -197549,17 +197556,24 @@
             "decorators": [],
             "line_number": 1854
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_ensure_tui_workspace",
+          "pop_annotation": {
+            "c_function": "mn_ensure_tui_workspace",
+            "python_functions": [
+              "_ensure_tui_workspace"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 33,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _ensure_tui_workspace @ hermes_cli/main.py:_ensure_tui_workspace */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -197890,17 +197904,24 @@
             "decorators": [],
             "line_number": 2656
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_cmd_gateway",
+          "pop_annotation": {
+            "c_function": "mn_cmd_gateway",
+            "python_functions": [
+              "cmd_gateway"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 41,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cmd_gateway @ hermes_cli/main.py:cmd_gateway */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -197999,17 +198020,24 @@
             "decorators": [],
             "line_number": 2928
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_cmd_setup",
+          "pop_annotation": {
+            "c_function": "mn_cmd_setup",
+            "python_functions": [
+              "cmd_setup"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cmd_setup @ hermes_cli/main.py:cmd_setup */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -198021,17 +198049,24 @@
             "decorators": [],
             "line_number": 2935
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_cmd_model",
+          "pop_annotation": {
+            "c_function": "mn_cmd_model",
+            "python_functions": [
+              "cmd_model"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 57,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cmd_model @ hermes_cli/main.py:cmd_model */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -198594,17 +198629,24 @@
             "decorators": [],
             "line_number": 4136
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_current_reasoning_effort",
+          "pop_annotation": {
+            "c_function": "mn_current_reasoning_effort",
+            "python_functions": [
+              "_current_reasoning_effort"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 65,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _current_reasoning_effort @ hermes_cli/main.py:_current_reasoning_effort */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -198674,17 +198716,24 @@
             "decorators": [],
             "line_number": 4235
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_prompt_api_key",
+          "pop_annotation": {
+            "c_function": "mn_prompt_api_key",
+            "python_functions": [
+              "_prompt_api_key"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 80,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _prompt_api_key @ hermes_cli/main.py:_prompt_api_key */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -198870,17 +198919,24 @@
             "decorators": [],
             "line_number": 4465
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_cmd_status",
+          "pop_annotation": {
+            "c_function": "mn_cmd_status",
+            "python_functions": [
+              "cmd_status"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 88,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cmd_status @ hermes_cli/main.py:cmd_status */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -198892,17 +198948,24 @@
             "decorators": [],
             "line_number": 4472
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_cmd_cron",
+          "pop_annotation": {
+            "c_function": "mn_cmd_cron",
+            "python_functions": [
+              "cmd_cron"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 96,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cmd_cron @ hermes_cli/main.py:cmd_cron */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -198914,17 +198977,24 @@
             "decorators": [],
             "line_number": 4479
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_cmd_webhook",
+          "pop_annotation": {
+            "c_function": "mn_cmd_webhook",
+            "python_functions": [
+              "cmd_webhook"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 103,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cmd_webhook @ hermes_cli/main.py:cmd_webhook */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -199052,17 +199122,24 @@
             "decorators": [],
             "line_number": 4541
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_cmd_doctor",
+          "pop_annotation": {
+            "c_function": "mn_cmd_doctor",
+            "python_functions": [
+              "cmd_doctor"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 110,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cmd_doctor @ hermes_cli/main.py:cmd_doctor */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -199161,17 +199238,24 @@
             "decorators": [],
             "line_number": 4575
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_cmd_config",
+          "pop_annotation": {
+            "c_function": "mn_cmd_config",
+            "python_functions": [
+              "cmd_config"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 117,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cmd_config @ hermes_cli/main.py:cmd_config */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -199212,17 +199296,24 @@
             "decorators": [],
             "line_number": 4589
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_cmd_backup",
+          "pop_annotation": {
+            "c_function": "mn_cmd_backup",
+            "python_functions": [
+              "cmd_backup"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 124,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cmd_backup @ hermes_cli/main.py:cmd_backup */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -199321,17 +199412,24 @@
             "decorators": [],
             "line_number": 4658
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_cmd_uninstall",
+          "pop_annotation": {
+            "c_function": "mn_cmd_uninstall",
+            "python_functions": [
+              "cmd_uninstall"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 132,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cmd_uninstall @ hermes_cli/main.py:cmd_uninstall */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -200155,17 +200253,24 @@
             "decorators": [],
             "line_number": 5842
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_electron_dir",
+          "pop_annotation": {
+            "c_function": "mn_electron_dir",
+            "python_functions": [
+              "_electron_dir"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 140,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _electron_dir @ hermes_cli/main.py:_electron_dir */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -200177,17 +200282,24 @@
             "decorators": [],
             "line_number": 5860
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_electron_dist_binary",
+          "pop_annotation": {
+            "c_function": "mn_electron_dist_binary",
+            "python_functions": [
+              "_electron_dist_binary"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 148,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _electron_dist_binary @ hermes_cli/main.py:_electron_dist_binary */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -200199,17 +200311,24 @@
             "decorators": [],
             "line_number": 5876
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_electron_dist_ok",
+          "pop_annotation": {
+            "c_function": "mn_electron_dist_ok",
+            "python_functions": [
+              "_electron_dist_ok"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 156,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _electron_dist_ok @ hermes_cli/main.py:_electron_dist_ok */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -200221,17 +200340,24 @@
             "decorators": [],
             "line_number": 5890
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_electron_pkg_staged_missing_dist",
+          "pop_annotation": {
+            "c_function": "mn_electron_pkg_staged_missing_dist",
+            "python_functions": [
+              "_electron_pkg_staged_missing_dist"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 166,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _electron_pkg_staged_missing_dist @ hermes_cli/main.py:_electron_pkg_staged_missing_dist */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -200272,17 +200398,24 @@
             "decorators": [],
             "line_number": 5937
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_try_redownload_electron_dist",
+          "pop_annotation": {
+            "c_function": "mn_try_redownload_electron_dist",
+            "python_functions": [
+              "_try_redownload_electron_dist"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 178,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _try_redownload_electron_dist @ hermes_cli/main.py:_try_redownload_electron_dist */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -200729,17 +200862,24 @@
             "decorators": [],
             "line_number": 7046
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_atomic_replace_dir",
+          "pop_annotation": {
+            "c_function": "mn_atomic_replace_dir",
+            "python_functions": [
+              "_atomic_replace_dir"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 186,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _atomic_replace_dir @ hermes_cli/main.py:_atomic_replace_dir */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -202636,17 +202776,24 @@
             "decorators": [],
             "line_number": 9773
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_tee_init",
+          "pop_annotation": {
+            "c_function": "mn_tee_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 194,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/main.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -202687,17 +202834,24 @@
             "decorators": [],
             "line_number": 9798
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_tee_flush",
+          "pop_annotation": {
+            "c_function": "mn_tee_flush",
+            "python_functions": [
+              "flush"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 203,
+            "is_consolidated": false,
+            "full_text": "/* PoP: flush @ hermes_cli/main.py:flush */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -202709,17 +202863,24 @@
             "decorators": [],
             "line_number": 9811
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_tee_isatty",
+          "pop_annotation": {
+            "c_function": "mn_tee_isatty",
+            "python_functions": [
+              "isatty"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 209,
+            "is_consolidated": false,
+            "full_text": "/* PoP: isatty @ hermes_cli/main.py:isatty */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -202731,17 +202892,24 @@
             "decorators": [],
             "line_number": 9819
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_tee_fileno",
+          "pop_annotation": {
+            "c_function": "mn_tee_fileno",
+            "python_functions": [
+              "fileno"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 216,
+            "is_consolidated": false,
+            "full_text": "/* PoP: fileno @ hermes_cli/main.py:fileno */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -203681,17 +203849,24 @@
             "decorators": [],
             "line_number": 13947
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_cmd_dashboard",
+          "pop_annotation": {
+            "c_function": "mn_cmd_dashboard",
+            "python_functions": [
+              "cmd_dashboard"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 222,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cmd_dashboard @ hermes_cli/main.py:cmd_dashboard */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -203790,17 +203965,24 @@
             "decorators": [],
             "line_number": 14285
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_cmd_prompt_size",
+          "pop_annotation": {
+            "c_function": "mn_cmd_prompt_size",
+            "python_functions": [
+              "cmd_prompt_size"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 231,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cmd_prompt_size @ hermes_cli/main.py:cmd_prompt_size */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -203812,17 +203994,24 @@
             "decorators": [],
             "line_number": 14292
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_cmd_logs",
+          "pop_annotation": {
+            "c_function": "mn_cmd_logs",
+            "python_functions": [
+              "cmd_logs"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 239,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cmd_logs @ hermes_cli/main.py:cmd_logs */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -203863,17 +204052,24 @@
             "decorators": [],
             "line_number": 14320
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_build_provider_choices",
+          "pop_annotation": {
+            "c_function": "mn_build_provider_choices",
+            "python_functions": [
+              "_build_provider_choices"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 246,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _build_provider_choices @ hermes_cli/main.py:_build_provider_choices */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -204175,17 +204371,24 @@
             "decorators": [],
             "line_number": 14689
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_cmd_memory",
+          "pop_annotation": {
+            "c_function": "mn_cmd_memory",
+            "python_functions": [
+              "cmd_memory"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 253,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cmd_memory @ hermes_cli/main.py:cmd_memory */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -204342,17 +204545,24 @@
             "decorators": [],
             "line_number": 14825
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_main_remaining.c",
+          "c_function": "mn_cmd_plugins",
+          "pop_annotation": {
+            "c_function": "mn_cmd_plugins",
+            "python_functions": [
+              "cmd_plugins"
+            ],
+            "c_file": "src/cli/port_main_remaining.c",
+            "python_file": "hermes_cli/main.py",
+            "line": 261,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cmd_plugins @ hermes_cli/main.py:cmd_plugins */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
