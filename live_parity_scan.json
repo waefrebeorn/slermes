@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T22:21:03Z",
+  "generated_at": "2026-08-02T22:22:57Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -65956,10 +65956,10 @@
     },
     "agent/title_generator.py": {
       "total": 8,
-      "ported": 5,
+      "ported": 8,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 8,
@@ -66033,16 +66033,24 @@
             "decorators": [],
             "line_number": 74
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_title_generator_remaining.c",
+          "c_function": "tig_generate_title",
+          "pop_annotation": {
+            "c_function": "tig_generate_title",
+            "python_functions": [
+              "generate_title"
+            ],
+            "c_file": "src/agent/port_title_generator_remaining.c",
+            "python_file": "agent/title_generator.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: generate_title @ agent/title_generator.py:generate_title */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/title_generator.py",
@@ -66083,16 +66091,24 @@
             "decorators": [],
             "line_number": 210
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_title_generator_remaining.c",
+          "c_function": "tig_auto_title_session",
+          "pop_annotation": {
+            "c_function": "tig_auto_title_session",
+            "python_functions": [
+              "auto_title_session"
+            ],
+            "c_file": "src/agent/port_title_generator_remaining.c",
+            "python_file": "agent/title_generator.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: auto_title_session @ agent/title_generator.py:auto_title_session */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/title_generator.py",
@@ -66133,16 +66149,24 @@
             "decorators": [],
             "line_number": 330
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_title_generator_remaining.c",
+          "c_function": "tig_maybe_auto_title",
+          "pop_annotation": {
+            "c_function": "tig_maybe_auto_title",
+            "python_functions": [
+              "maybe_auto_title"
+            ],
+            "c_file": "src/agent/port_title_generator_remaining.c",
+            "python_file": "agent/title_generator.py",
+            "line": 37,
+            "is_consolidated": false,
+            "full_text": "/* PoP: maybe_auto_title @ agent/title_generator.py:maybe_auto_title */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/title_generator.py",
@@ -68620,10 +68644,10 @@
     },
     "agent/transports/__init__.py": {
       "total": 3,
-      "ported": 0,
+      "ported": 3,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 3,
@@ -68639,16 +68663,24 @@
             "decorators": [],
             "line_number": 21
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_init_remaining.c",
+          "c_function": "tri_register_transport",
+          "pop_annotation": {
+            "c_function": "tri_register_transport",
+            "python_functions": [
+              "register_transport"
+            ],
+            "c_file": "src/agent/port_transports_init_remaining.c",
+            "python_file": "agent/transports/__init__.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: register_transport @ agent/transports/__init__.py:register_transport */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/__init__.py",
@@ -68660,16 +68692,24 @@
             "decorators": [],
             "line_number": 26
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_init_remaining.c",
+          "c_function": "tri_get_transport",
+          "pop_annotation": {
+            "c_function": "tri_get_transport",
+            "python_functions": [
+              "get_transport"
+            ],
+            "c_file": "src/agent/port_transports_init_remaining.c",
+            "python_file": "agent/transports/__init__.py",
+            "line": 28,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_transport @ agent/transports/__init__.py:get_transport */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/__init__.py",
@@ -68681,16 +68721,24 @@
             "decorators": [],
             "line_number": 49
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_init_remaining.c",
+          "c_function": "tri_discover_transports",
+          "pop_annotation": {
+            "c_function": "tri_discover_transports",
+            "python_functions": [
+              "_discover_transports"
+            ],
+            "c_file": "src/agent/port_transports_init_remaining.c",
+            "python_file": "agent/transports/__init__.py",
+            "line": 36,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _discover_transports @ agent/transports/__init__.py:_discover_transports */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
