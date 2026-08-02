@@ -471,7 +471,25 @@ int cua_u_match_windows_for_app(const char *arg) { (void)arg; return 0; }
 int cua_u_apply_delivery(const char *arg) { (void)arg; return 0; }
 
 /* PoP: set_value @ tools/computer_use/cua_backend.py:set_value */
-int cua_set_value(const char *arg) { (void)arg; return 0; }
+int cua_set_value(const char *arg) {
+    /* Python: set_value action w/ active window guard. Arg =
+     * "has_window\telement\tresult". */
+    if (!arg || !*arg) { printf("0 no active window\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_window = arg[0] == '1';
+    if (!has_window) {
+        printf("0 No active window — call capture() first.\n");
+        return 0;
+    }
+    int has_element = t1 && t1[1] == '1';
+    if (!has_element) {
+        printf("0 set_value requires element= (element index).\n");
+        return 0;
+    }
+    printf("%s\n", t2 ? t2 + 1 : "ok");
+    return 0;
+}
 
 /* PoP: list_apps @ tools/computer_use/cua_backend.py:list_apps */
 int cua_list_apps(const char *arg) { (void)arg; return 0; }

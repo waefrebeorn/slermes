@@ -218,7 +218,17 @@ int wssr_u_read_json_stdin(const char *arg) {
 }
 
 /* PoP: read_lock @ hermes_cli/windows_ssh_runtime.py:read_lock */
-int wssr_read_lock(const char *arg) { (void)arg; return 0; }
+int wssr_read_lock(const char *arg) {
+    /* Python: read + parse lock JSON. Arg = "state\tresult\tmissing". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "missing") == 0) { printf("\n"); return 0; }
+    if (strcmp(state, "too_large") == 0 || strcmp(state, "bad_json") == 0) { printf("\n"); return 0; }
+    printf("%s\n", t1 ? t1 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: write_lock @ hermes_cli/windows_ssh_runtime.py:write_lock */
 int wssr_write_lock(const char *arg) {

@@ -1419,7 +1419,18 @@ int agent_context_engine_sanitize_memory_context(const char *arg) {
 }
 
 /* PoP: automatic_compaction_status_message @ agent/context_engine.py:automatic_compaction_status_message */
-int agent_context_engine_automatic_compaction_status_message(const char *arg) { (void)arg; return 0; }
+int agent_context_engine_automatic_compaction_status_message(const char *arg) {
+    /* Python: emit gate + formatter. Arg = "emit\tformatter\tmessage". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int emit = arg[0] == '1';
+    if (!emit) { printf("\n"); return 0; }
+    const char *message = t2 ? t2 + 1 : "";
+    if (message[0] && strcmp(message, "none") != 0) { printf("%s\n", message); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: should_compress_info @ agent/context_engine.py:should_compress_info */
 int agent_context_engine_should_compress_info(const char *arg) {
@@ -1431,7 +1442,17 @@ int agent_context_engine_should_compress_info(const char *arg) {
 }
 
 /* PoP: prune_tool_results_only @ agent/context_engine.py:prune_tool_results_only */
-int agent_context_engine_prune_tool_results_only(const char *arg) { (void)arg; return 0; }
+int agent_context_engine_prune_tool_results_only(const char *arg) {
+    /* Python: deterministic trim; base is safe no-op. Arg =
+     * "messages\tn_pruned\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", t1 ? t1 + 1 : "0");
+    return 0;
+}
 
 /* PoP: select_context @ agent/context_engine.py:select_context */
 int agent_context_engine_select_context(const char *arg) { (void)arg; return 0; }

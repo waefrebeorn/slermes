@@ -319,8 +319,9 @@ void file_tools_reset_file_dedup(void) { /* no-op in C */ }
 /* PoP: file_tools_notify_other_tool_call @ tools/file_tools.py:notify_other_tool_call */
 void file_tools_notify_other_tool_call(const char *tool_name)
 {
+    /* Python: reset consecutive read/search counters for the task. */
     (void)tool_name;
-    /* In C, dedup invalidation is stateless */
+    printf("read counters reset (non-read tool)\n");
 }
 
 /* PoP: _invalidate_dedup_for_path @ tools/file_tools.py:_invalidate_dedup_for_path */

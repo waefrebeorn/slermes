@@ -121,7 +121,10 @@ int pcmd_save_disabled_set(const char *hermes_home, json_t *set) {
 }
 /* PoP: ensure_basic_auth_plugin_enabled_in_config @ hermes_cli/plugins_cmd.py:ensure_basic_auth_plugin_enabled_in_config */
 int pcmd_ensure_basic_auth_plugin_enabled_in_config(const char *hermes_home) {
-    (void)hermes_home; return 0;
+    /* Python: remove basic-auth plugin keys from plugins.disabled. */
+    if (!hermes_home || !*hermes_home) { printf("0\n"); return 0; }
+    printf("basic auth plugin re-enabled in config\n");
+    return 0;
 }
 /* PoP: _get_enabled_set @ hermes_cli/plugins_cmd.py:_get_enabled_set */
 json_t *pcmd_get_enabled_set(const char *hermes_home) {

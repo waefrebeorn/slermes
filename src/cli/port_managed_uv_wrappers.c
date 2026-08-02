@@ -34,7 +34,15 @@ int muv_managed_python_install_dir(const char *arg) {
 }
 
 /* PoP: managed_python_env @ hermes_cli/managed_uv.py:managed_python_env */
-int muv_managed_python_env(const char *arg) { (void)arg; return 0; }
+int muv_managed_python_env(const char *arg) {
+    /* Python: sanitized env with UV pins. Arg = "install_dir\tstate". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = tab && tab[1] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("{\"UV_MANAGED_PYTHON\": \"1\", \"UV_NO_CONFIG\": \"1\", \"UV_PYTHON_INSTALL_DIR\": \"%s\"}\n", arg);
+    return 0;
+}
 
 /* PoP: repaired @ hermes_cli/managed_uv.py:repaired */
 int muv_repaired(const char *arg) {

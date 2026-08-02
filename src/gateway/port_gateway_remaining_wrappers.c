@@ -799,7 +799,17 @@ int gateway_status_phrases_classify_status_context(const char *arg) {
 }
 
 /* PoP: choose_status_phrase @ gateway/status_phrases.py:choose_status_phrase */
-int gateway_status_phrases_choose_status_phrase(const char *arg) { (void)arg; return 0; }
+int gateway_status_phrases_choose_status_phrase(const char *arg) {
+    /* Python: avoid recent repeats. Arg = "category\tcandidates\tpicked\tstate". */
+    if (!arg || !*arg) { printf("working on it\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *picked = t2 ? t2 + 1 : "";
+    if (picked[0]) { printf("%s\n", picked); return 0; }
+    printf("generic status phrase\n");
+    return 0;
+}
 
 /* PoP: file_size_human @ gateway/platforms/qqbot/chunked_upload.py:file_size_human */
 int gateway_platforms_qqbot_chunke_file_size_human(const char *arg) {

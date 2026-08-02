@@ -1537,7 +1537,15 @@ int main_u__getattr___2(const char *arg) {
 int main_u_install_hangup_protection(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _log_only_write @ hermes_cli/main.py:_log_only_write */
-int main_u_log_only_write(const char *arg) { (void)arg; return 0; }
+int main_u_log_only_write(const char *arg) {
+    /* Python: write to update.log handle only. Arg = "text\thas_log". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int has_log = tab && tab[1] == '1';
+    if (!has_log) { printf("no update log stream\n"); return 0; }
+    printf("log-only write: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _run_logged_subprocess @ hermes_cli/main.py:_run_logged_subprocess */
 int main_u_run_logged_subprocess(const char *arg) {

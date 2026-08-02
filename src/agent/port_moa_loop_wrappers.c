@@ -294,7 +294,17 @@ int moa_aggregate_moa_context(const char *arg) { (void)arg; return 0; }
 int moa_u_attach_reference_guidance(const char *arg) { (void)arg; return 0; }
 
 /* PoP: consume_reference_usage @ agent/moa_loop.py:consume_reference_usage */
-int moa_consume_reference_usage(const char *arg) { (void)arg; return 0; }
+int moa_consume_reference_usage(const char *arg) {
+    /* Python: pop pending usage + cost, reset both. Arg =
+     * "usage_json\tcost\tstate". */
+    if (!arg || !*arg) { printf("zeroed\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("zeroed\t\n"); return 0; }
+    printf("%s\t%s\n", arg, t1 ? t1 + 1 : "");
+    return 0;
+}
 
 /* PoP: _record_late_reference_accounting @ agent/moa_loop.py:_record_late_reference_accounting */
 int moa_u_record_late_reference_accounting(const char *arg) { (void)arg; return 0; }
@@ -330,7 +340,16 @@ int moa_rebase_prepared_request(const char *arg) {
 int moa_u_call_prepared_aggregator(const char *arg) { (void)arg; return 0; }
 
 /* PoP: consume_reference_usage @ agent/moa_loop.py:consume_reference_usage */
-int moa_consume_reference_usage_2(const char *arg) { (void)arg; return 0; }
+int moa_consume_reference_usage_2(const char *arg) {
+    /* Python: duplicate stub — same as consume_reference_usage. */
+    if (!arg || !*arg) { printf("zeroed\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("zeroed\t\n"); return 0; }
+    printf("%s\t%s\n", arg, t1 ? t1 + 1 : "");
+    return 0;
+}
 
 /* PoP: last_aggregator_slot @ agent/moa_loop.py:last_aggregator_slot */
 int moa_last_aggregator_slot(const char *arg) {

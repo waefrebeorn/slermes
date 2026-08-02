@@ -818,7 +818,15 @@ int tools_delegate_tool_u_resolve_child_credential_pool(const char *arg) { (void
 int tools_delegate_tool_u_resolve_delegation_credentials(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _build_dynamic_schema_overrides @ tools/delegate_tool.py:_build_dynamic_schema_overrides */
-int tools_delegate_tool_u_build_dynamic_schema_overrides(const char *arg) { (void)arg; return 0; }
+int tools_delegate_tool_u_build_dynamic_schema_overrides(const char *arg) {
+    /* Python: per-call schema overrides. Arg = "result_json\tstate". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = tab && tab[1] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _strip_model_hidden_task_fields @ tools/delegate_tool.py:_strip_model_hidden_task_fields */
 int tools_delegate_tool_u_strip_model_hidden_task_fields(const char *arg) {

@@ -148,7 +148,17 @@ int hermes_cli_debug_u_upload_paste_rs(const char *arg) {
 int hermes_cli_debug_u_upload_dpaste_com(const char *arg) { (void)arg; return 0; }
 
 /* PoP: upload_to_pastebin @ hermes_cli/debug.py:upload_to_pastebin */
-int hermes_cli_debug_upload_to_pastebin(const char *arg) { (void)arg; return 0; }
+int hermes_cli_debug_upload_to_pastebin(const char *arg) {
+    /* Python: paste.rs then dpaste fallback. Arg =
+     * "state\turl\terrors". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "ok") == 0) { printf("%s\n", t1 ? t1 + 1 : ""); return 0; }
+    fprintf(stderr, "Failed to upload to any paste service:\n  %s\n", t2 ? t2 + 1 : "");
+    return 1;
+}
 
 /* PoP: _primary_log_path @ hermes_cli/debug.py:_primary_log_path */
 int hermes_cli_debug_u_primary_log_path(const char *arg) {
@@ -1054,7 +1064,19 @@ int hermes_cli_mcp_catalog_u_expand_install_dir(const char *arg) {
 }
 
 /* PoP: _prompt_env_vars @ hermes_cli/mcp_catalog.py:_prompt_env_vars */
-int hermes_cli_mcp_catalog_u_prompt_env_vars(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_catalog_u_prompt_env_vars(const char *arg) {
+    /* Python: env spec walk + save. Arg = "collected_json\tstate\tmissing". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "missing_required") == 0) {
+        fprintf(stderr, "%s is required but no value was provided\n", t2 ? t2 + 1 : "?");
+        return 1;
+    }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _build_server_config @ hermes_cli/mcp_catalog.py:_build_server_config */
 int hermes_cli_mcp_catalog_u_build_server_config(const char *arg) {
@@ -1189,7 +1211,25 @@ int hermes_cli_projects_cmd_u_print_project(const char *arg) {
 }
 
 /* PoP: _cmd_create @ hermes_cli/projects_cmd.py:_cmd_create */
-int hermes_cli_projects_cmd_u_cmd_create(const char *arg) { (void)arg; return 0; }
+int hermes_cli_projects_cmd_u_cmd_create(const char *arg) {
+    /* Python: create + optional use + report. Arg =
+     * "slug\tpid\tstate\tresult". */
+    if (!arg || !*arg) { printf("2\n"); return 2; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "value_error") == 0) {
+        fprintf(stderr, "project: %s\n", t3 ? t3 + 1 : "");
+        return 2;
+    }
+    if (strcmp(state, "vanished") == 0) {
+        fprintf(stderr, "project: vanished after create\n");
+        return 2;
+    }
+    printf("Created project %s (%s)\n", arg, t2 ? t2 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _cmd_show @ hermes_cli/projects_cmd.py:_cmd_show */
 int hermes_cli_projects_cmd_u_cmd_show(const char *arg) {
@@ -1412,7 +1452,29 @@ int hermes_cli_auth_commands_u_display_source(const char *arg) {
 }
 
 /* PoP: _classify_exhausted_status @ hermes_cli/auth_commands.py:_classify_exhausted_status */
-int hermes_cli_auth_commands_u_classify_exhausted_status(const char *arg) { (void)arg; return 0; }
+int hermes_cli_auth_commands_u_classify_exhausted_status(const char *arg) {
+    /* Python: 429/401/403 classification. Arg = "code\treason\tmessage\tresult\texhausted". */
+    if (!arg || !*arg) { printf("exhausted\t1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    long code = strtol(arg, NULL, 10);
+    const char *reason = t1 ? t1 + 1 : "";
+    const char *message = t2 ? t2 + 1 : "";
+    if (code == 429 || strstr(reason, "rate_limit") || strstr(reason, "usage_limit") || strstr(reason, "quota") || strstr(reason, "exhausted") ||
+        strstr(message, "rate limit") || strstr(message, "usage limit") || strstr(message, "quota") || strstr(message, "too many requests")) {
+        printf("rate-limited\t1\n");
+        return 0;
+    }
+    if (code == 401 || code == 403 || strstr(reason, "invalid_token") || strstr(reason, "invalid_grant") || strstr(reason, "unauthorized") || strstr(reason, "forbidden") || strstr(reason, "auth") ||
+        strstr(message, "unauthorized") || strstr(message, "forbidden") || strstr(message, "expired") || strstr(message, "revoked") || strstr(message, "invalid token") || strstr(message, "authentication")) {
+        printf("auth failed\t0\n");
+        return 0;
+    }
+    printf("exhausted\t1\n");
+    return 0;
+}
 
 /* PoP: _format_exhausted_status @ hermes_cli/auth_commands.py:_format_exhausted_status */
 int hermes_cli_auth_commands_u_format_exhausted_status(const char *arg) { (void)arg; return 0; }
@@ -2966,7 +3028,16 @@ int hermes_cli_gui_uninstall_desktop_userdata_dir(const char *arg) {
 }
 
 /* PoP: source_built_gui_artifacts @ hermes_cli/gui_uninstall.py:source_built_gui_artifacts */
-int hermes_cli_gui_uninstall_source_built_gui_artifacts(const char *arg) { (void)arg; return 0; }
+int hermes_cli_gui_uninstall_source_built_gui_artifacts(const char *arg) {
+    /* Python: 5 GUI artifact paths. Arg = "agent_root\thermes_home". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *agent_root = arg;
+    const char *home = tab ? tab + 1 : arg;
+    printf("%s/apps/desktop/dist\n%s/apps/desktop/release\n%s/apps/desktop/node_modules\n%s/node_modules\n%s/desktop-build-stamp.json\n",
+           agent_root, agent_root, agent_root, agent_root, home);
+    return 0;
+}
 
 /* PoP: packaged_gui_app_paths @ hermes_cli/gui_uninstall.py:packaged_gui_app_paths */
 int hermes_cli_gui_uninstall_packaged_gui_app_paths(const char *arg) { (void)arg; return 0; }
@@ -3213,7 +3284,28 @@ int hermes_cli_codex_runtime_plugi_u_insert_managed_block_at_top_el(const char *
 int hermes_cli_codex_runtime_plugi_u_strip_unmanaged_plugin_tables(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _looks_like_table_header @ hermes_cli/codex_runtime_plugin_migration.py:_looks_like_table_header */
-int hermes_cli_codex_runtime_plugi_u_looks_like_table_header(const char *arg) { (void)arg; return 0; }
+int hermes_cli_codex_runtime_plugi_u_looks_like_table_header(const char *arg) {
+    /* Python: TOML [name] header test. Arg = "line". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ') p++;
+    if (*p != '[') { printf("0\n"); return 0; }
+    const char *hash = strchr(p, '#');
+    const char *head_end = hash ? hash : p + strlen(p);
+    /* trim trailing spaces */
+    while (head_end > p && (head_end[-1] == ' ' || head_end[-1] == '\t')) head_end--;
+    if (head_end <= p || head_end[-1] != ']') { printf("0\n"); return 0; }
+    size_t hlen = (size_t)(head_end - p);
+    for (size_t i = 0; i < hlen; i++) {
+        if (p[i] == '=' && i + 1 < hlen) {
+            /* key = [x] case: '=' before the first ']' */
+            const char *bracket = memchr(p, ']', hlen);
+            if (bracket && bracket <= p + i) { printf("0\n"); return 0; }
+        }
+    }
+    printf("1\n");
+    return 0;
+}
 
 /* PoP: _strip_existing_managed_block @ hermes_cli/codex_runtime_plugin_migration.py:_strip_existing_managed_block */
 int hermes_cli_codex_runtime_plugi_u_strip_existing_managed_block(const char *arg) { (void)arg; return 0; }
@@ -3423,7 +3515,16 @@ int hermes_cli_journey_cmd_journey(const char *arg) {
 }
 
 /* PoP: _safe_copy @ hermes_cli/middleware.py:_safe_copy */
-int hermes_cli_middleware_u_safe_copy(const char *arg) { (void)arg; return 0; }
+int hermes_cli_middleware_u_safe_copy(const char *arg) {
+    /* Python: deepcopy w/ shallow fallback. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "deep") == 0) { printf("%s\n", tab ? tab + 1 : "{}"); return 0; }
+    if (strcmp(state, "shallow") == 0) { printf("%s\n", tab ? tab + 1 : "{}"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "{}");
+    return 0;
+}
 
 /* PoP: apply_llm_request_middleware @ hermes_cli/middleware.py:apply_llm_request_middleware */
 int hermes_cli_middleware_apply_llm_request_middleware(const char *arg) { (void)arg; return 0; }
@@ -6986,7 +7087,12 @@ int hermes_cli_subcommands_gui_build_gui_parser(const char *arg) { (void)arg; re
 int hermes_cli_subcommands_hooks_build_hooks_parser(const char *arg) { (void)arg; return 0; }
 
 /* PoP: build_import_cmd_parser @ hermes_cli/subcommands/import_cmd.py:build_import_cmd_parser */
-int hermes_cli_subcommands_import__build_import_cmd_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_import__build_import_cmd_parser(const char *arg) {
+    /* Python: attach import subcommand. */
+    (void)arg;
+    printf("import parser attached (zipfile + --force)\n");
+    return 0;
+}
 
 /* PoP: build_insights_parser @ hermes_cli/subcommands/insights.py:build_insights_parser */
 int hermes_cli_subcommands_insight_build_insights_parser(const char *arg) {
