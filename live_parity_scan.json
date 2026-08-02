@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T19:59:56Z",
+  "generated_at": "2026-08-02T20:01:54Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -67032,10 +67032,10 @@
     },
     "agent/transports/codex.py": {
       "total": 12,
-      "ported": 0,
+      "ported": 12,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 12,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 12,
@@ -67051,16 +67051,24 @@
             "decorators": [],
             "line_number": 17
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_codex_remaining.c",
+          "c_function": "tcx_bounded_prompt_cache_key",
+          "pop_annotation": {
+            "c_function": "tcx_bounded_prompt_cache_key",
+            "python_functions": [
+              "_bounded_prompt_cache_key"
+            ],
+            "c_file": "src/agent/port_transports_codex_remaining.c",
+            "python_file": "agent/transports/codex.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _bounded_prompt_cache_key @ agent/transports/codex.py:_bounded_prompt_cache_key */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex.py",
@@ -67072,16 +67080,24 @@
             "decorators": [],
             "line_number": 51
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_codex_remaining.c",
+          "c_function": "tcx_default_prompt_cache_retention_for_request",
+          "pop_annotation": {
+            "c_function": "tcx_default_prompt_cache_retention_for_request",
+            "python_functions": [
+              "_default_prompt_cache_retention_for_request"
+            ],
+            "c_file": "src/agent/port_transports_codex_remaining.c",
+            "python_file": "agent/transports/codex.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _default_prompt_cache_retention_for_request @ agent/transports/codex.py:_default_prompt_cache_retention_for_request */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex.py",
@@ -67093,16 +67109,24 @@
             "decorators": [],
             "line_number": 74
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_codex_remaining.c",
+          "c_function": "tcx_content_cache_key",
+          "pop_annotation": {
+            "c_function": "tcx_content_cache_key",
+            "python_functions": [
+              "_content_cache_key"
+            ],
+            "c_file": "src/agent/port_transports_codex_remaining.c",
+            "python_file": "agent/transports/codex.py",
+            "line": 40,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _content_cache_key @ agent/transports/codex.py:_content_cache_key */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex.py",
@@ -67116,16 +67140,24 @@
             ],
             "line_number": 121
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_codex_remaining.c",
+          "c_function": "tcx_api_mode",
+          "pop_annotation": {
+            "c_function": "tcx_api_mode",
+            "python_functions": [
+              "api_mode"
+            ],
+            "c_file": "src/agent/port_transports_codex_remaining.c",
+            "python_file": "agent/transports/codex.py",
+            "line": 54,
+            "is_consolidated": false,
+            "full_text": "/* PoP: api_mode @ agent/transports/codex.py:api_mode */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex.py",
@@ -67137,16 +67169,24 @@
             "decorators": [],
             "line_number": 124
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_codex_remaining.c",
+          "c_function": "tcx_resolve_issuer_kind",
+          "pop_annotation": {
+            "c_function": "tcx_resolve_issuer_kind",
+            "python_functions": [
+              "_resolve_issuer_kind"
+            ],
+            "c_file": "src/agent/port_transports_codex_remaining.c",
+            "python_file": "agent/transports/codex.py",
+            "line": 59,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_issuer_kind @ agent/transports/codex.py:_resolve_issuer_kind */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex.py",
@@ -67158,16 +67198,24 @@
             "decorators": [],
             "line_number": 134
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_codex_remaining.c",
+          "c_function": "tcx_convert_messages",
+          "pop_annotation": {
+            "c_function": "tcx_convert_messages",
+            "python_functions": [
+              "convert_messages"
+            ],
+            "c_file": "src/agent/port_transports_codex_remaining.c",
+            "python_file": "agent/transports/codex.py",
+            "line": 71,
+            "is_consolidated": false,
+            "full_text": "/* PoP: convert_messages @ agent/transports/codex.py:convert_messages */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex.py",
@@ -67179,16 +67227,24 @@
             "decorators": [],
             "line_number": 149
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_codex_remaining.c",
+          "c_function": "tcx_convert_tools",
+          "pop_annotation": {
+            "c_function": "tcx_convert_tools",
+            "python_functions": [
+              "convert_tools"
+            ],
+            "c_file": "src/agent/port_transports_codex_remaining.c",
+            "python_file": "agent/transports/codex.py",
+            "line": 79,
+            "is_consolidated": false,
+            "full_text": "/* PoP: convert_tools @ agent/transports/codex.py:convert_tools */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex.py",
@@ -67200,16 +67256,24 @@
             "decorators": [],
             "line_number": 154
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_codex_remaining.c",
+          "c_function": "tcx_build_kwargs",
+          "pop_annotation": {
+            "c_function": "tcx_build_kwargs",
+            "python_functions": [
+              "build_kwargs"
+            ],
+            "c_file": "src/agent/port_transports_codex_remaining.c",
+            "python_file": "agent/transports/codex.py",
+            "line": 87,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_kwargs @ agent/transports/codex.py:build_kwargs */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex.py",
@@ -67221,16 +67285,24 @@
             "decorators": [],
             "line_number": 467
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_codex_remaining.c",
+          "c_function": "tcx_normalize_response",
+          "pop_annotation": {
+            "c_function": "tcx_normalize_response",
+            "python_functions": [
+              "normalize_response"
+            ],
+            "c_file": "src/agent/port_transports_codex_remaining.c",
+            "python_file": "agent/transports/codex.py",
+            "line": 95,
+            "is_consolidated": false,
+            "full_text": "/* PoP: normalize_response @ agent/transports/codex.py:normalize_response */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex.py",
@@ -67242,16 +67314,24 @@
             "decorators": [],
             "line_number": 515
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_codex_remaining.c",
+          "c_function": "tcx_validate_response",
+          "pop_annotation": {
+            "c_function": "tcx_validate_response",
+            "python_functions": [
+              "validate_response"
+            ],
+            "c_file": "src/agent/port_transports_codex_remaining.c",
+            "python_file": "agent/transports/codex.py",
+            "line": 103,
+            "is_consolidated": false,
+            "full_text": "/* PoP: validate_response @ agent/transports/codex.py:validate_response */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex.py",
@@ -67263,16 +67343,24 @@
             "decorators": [],
             "line_number": 541
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_codex_remaining.c",
+          "c_function": "tcx_preflight_kwargs",
+          "pop_annotation": {
+            "c_function": "tcx_preflight_kwargs",
+            "python_functions": [
+              "preflight_kwargs"
+            ],
+            "c_file": "src/agent/port_transports_codex_remaining.c",
+            "python_file": "agent/transports/codex.py",
+            "line": 110,
+            "is_consolidated": false,
+            "full_text": "/* PoP: preflight_kwargs @ agent/transports/codex.py:preflight_kwargs */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex.py",
@@ -67284,16 +67372,24 @@
             "decorators": [],
             "line_number": 574
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_transports_codex_remaining.c",
+          "c_function": "tcx_map_finish_reason",
+          "pop_annotation": {
+            "c_function": "tcx_map_finish_reason",
+            "python_functions": [
+              "map_finish_reason"
+            ],
+            "c_file": "src/agent/port_transports_codex_remaining.c",
+            "python_file": "agent/transports/codex.py",
+            "line": 118,
+            "is_consolidated": false,
+            "full_text": "/* PoP: map_finish_reason @ agent/transports/codex.py:map_finish_reason */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -151861,10 +151957,10 @@
     },
     "hermes_cli/auth.py": {
       "total": 204,
-      "ported": 192,
+      "ported": 204,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 12,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 204,
@@ -152083,16 +152179,24 @@
             "decorators": [],
             "line_number": 774
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_auth_remaining2.c",
+          "c_function": "ath_error_init",
+          "pop_annotation": {
+            "c_function": "ath_error_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_auth_remaining2.c",
+            "python_file": "hermes_cli/auth.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/auth.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/auth.py",
@@ -153009,16 +153113,24 @@
             "decorators": [],
             "line_number": 1595
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_auth_remaining2.c",
+          "c_function": "ath_suppress_credential_source",
+          "pop_annotation": {
+            "c_function": "ath_suppress_credential_source",
+            "python_functions": [
+              "suppress_credential_source"
+            ],
+            "c_file": "src/cli/port_auth_remaining2.c",
+            "python_file": "hermes_cli/auth.py",
+            "line": 31,
+            "is_consolidated": false,
+            "full_text": "/* PoP: suppress_credential_source @ hermes_cli/auth.py:suppress_credential_source */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/auth.py",
@@ -153117,16 +153229,24 @@
             "decorators": [],
             "line_number": 1655
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_auth_remaining2.c",
+          "c_function": "ath_get_active_provider",
+          "pop_annotation": {
+            "c_function": "ath_get_active_provider",
+            "python_functions": [
+              "get_active_provider"
+            ],
+            "c_file": "src/cli/port_auth_remaining2.c",
+            "python_file": "hermes_cli/auth.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_active_provider @ hermes_cli/auth.py:get_active_provider */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/auth.py",
@@ -155139,16 +155259,24 @@
             "decorators": [],
             "line_number": 4178
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_auth_remaining2.c",
+          "c_function": "ath_codex_pool_rate_limit_status",
+          "pop_annotation": {
+            "c_function": "ath_codex_pool_rate_limit_status",
+            "python_functions": [
+              "_codex_pool_rate_limit_status"
+            ],
+            "c_file": "src/cli/port_auth_remaining2.c",
+            "python_file": "hermes_cli/auth.py",
+            "line": 55,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _codex_pool_rate_limit_status @ hermes_cli/auth.py:_codex_pool_rate_limit_status */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/auth.py",
@@ -155189,16 +155317,24 @@
             "decorators": [],
             "line_number": 4297
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_auth_remaining2.c",
+          "c_function": "ath_xai_oauth_state_from_store",
+          "pop_annotation": {
+            "c_function": "ath_xai_oauth_state_from_store",
+            "python_functions": [
+              "_xai_oauth_state_from_store"
+            ],
+            "c_file": "src/cli/port_auth_remaining2.c",
+            "python_file": "hermes_cli/auth.py",
+            "line": 63,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _xai_oauth_state_from_store @ hermes_cli/auth.py:_xai_oauth_state_from_store */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/auth.py",
@@ -155210,16 +155346,24 @@
             "decorators": [],
             "line_number": 4335
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_auth_remaining2.c",
+          "c_function": "ath_xai_oauth_state_has_usable_tokens",
+          "pop_annotation": {
+            "c_function": "ath_xai_oauth_state_has_usable_tokens",
+            "python_functions": [
+              "_xai_oauth_state_has_usable_tokens"
+            ],
+            "c_file": "src/cli/port_auth_remaining2.c",
+            "python_file": "hermes_cli/auth.py",
+            "line": 73,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _xai_oauth_state_has_usable_tokens @ hermes_cli/auth.py:_xai_oauth_state_has_usable_tokens */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/auth.py",
@@ -155260,16 +155404,24 @@
             "decorators": [],
             "line_number": 4394
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_auth_remaining2.c",
+          "c_function": "ath_profile_has_own_xai_oauth_state",
+          "pop_annotation": {
+            "c_function": "ath_profile_has_own_xai_oauth_state",
+            "python_functions": [
+              "_profile_has_own_xai_oauth_state"
+            ],
+            "c_file": "src/cli/port_auth_remaining2.c",
+            "python_file": "hermes_cli/auth.py",
+            "line": 82,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _profile_has_own_xai_oauth_state @ hermes_cli/auth.py:_profile_has_own_xai_oauth_state */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/auth.py",
@@ -155281,16 +155433,24 @@
             "decorators": [],
             "line_number": 4405
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_auth_remaining2.c",
+          "c_function": "ath_write_through_xai_oauth_to_global_root",
+          "pop_annotation": {
+            "c_function": "ath_write_through_xai_oauth_to_global_root",
+            "python_functions": [
+              "_write_through_xai_oauth_to_global_root"
+            ],
+            "c_file": "src/cli/port_auth_remaining2.c",
+            "python_file": "hermes_cli/auth.py",
+            "line": 91,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _write_through_xai_oauth_to_global_root @ hermes_cli/auth.py:_write_through_xai_oauth_to_global_root */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/auth.py",
@@ -156377,16 +156537,24 @@
             "decorators": [],
             "line_number": 6397
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_auth_remaining2.c",
+          "c_function": "ath_auth_file_cache_key",
+          "pop_annotation": {
+            "c_function": "ath_auth_file_cache_key",
+            "python_functions": [
+              "_auth_file_cache_key"
+            ],
+            "c_file": "src/cli/port_auth_remaining2.c",
+            "python_file": "hermes_cli/auth.py",
+            "line": 99,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _auth_file_cache_key @ hermes_cli/auth.py:_auth_file_cache_key */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/auth.py",
@@ -157587,16 +157755,24 @@
             "decorators": [],
             "line_number": 8397
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_auth_remaining2.c",
+          "c_function": "ath_nous_device_code_login",
+          "pop_annotation": {
+            "c_function": "ath_nous_device_code_login",
+            "python_functions": [
+              "_nous_device_code_login"
+            ],
+            "c_file": "src/cli/port_auth_remaining2.c",
+            "python_file": "hermes_cli/auth.py",
+            "line": 108,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _nous_device_code_login @ hermes_cli/auth.py:_nous_device_code_login */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/auth.py",
@@ -157608,16 +157784,24 @@
             "decorators": [],
             "line_number": 8537
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_auth_remaining2.c",
+          "c_function": "ath_nous_token_has_billing_scope",
+          "pop_annotation": {
+            "c_function": "ath_nous_token_has_billing_scope",
+            "python_functions": [
+              "nous_token_has_billing_scope"
+            ],
+            "c_file": "src/cli/port_auth_remaining2.c",
+            "python_file": "hermes_cli/auth.py",
+            "line": 115,
+            "is_consolidated": false,
+            "full_text": "/* PoP: nous_token_has_billing_scope @ hermes_cli/auth.py:nous_token_has_billing_scope */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/auth.py",
@@ -157629,16 +157813,24 @@
             "decorators": [],
             "line_number": 8555
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_auth_remaining2.c",
+          "c_function": "ath_step_up_nous_billing_scope",
+          "pop_annotation": {
+            "c_function": "ath_step_up_nous_billing_scope",
+            "python_functions": [
+              "step_up_nous_billing_scope"
+            ],
+            "c_file": "src/cli/port_auth_remaining2.c",
+            "python_file": "hermes_cli/auth.py",
+            "line": 122,
+            "is_consolidated": false,
+            "full_text": "/* PoP: step_up_nous_billing_scope @ hermes_cli/auth.py:step_up_nous_billing_scope */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/auth.py",
