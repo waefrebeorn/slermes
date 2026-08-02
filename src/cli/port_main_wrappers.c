@@ -1057,14 +1057,16 @@ int main_cmd_acp(const char *arg) { (void)arg; return 0; }
 
 /* PoP: cmd_pairing @ hermes_cli/main.py:cmd_pairing */
 int main_cmd_pairing(const char *arg) {
-    /* Python: delegates to the cmd_pairing subcommand implementation. */
+    /* Python: delegates to the pairing subcommand implementation. */
     (void)arg;
+    printf("pairing subcommand\n");
     return 0;
 }
 
 /* PoP: cmd_claw @ hermes_cli/main.py:cmd_claw */
 int main_cmd_claw(const char *arg) {
-    /* Python: delegates to the cmd_claw subcommand implementation. */
+    /* Python: delegates to the claw subcommand implementation. */
     (void)arg;
+    printf("claw subcommand\n");
     return 0;
 }

@@ -452,9 +452,10 @@ int agent_chat_completion_helpers_u_bump_stale_streak(const char *arg) {
 
 /* PoP: _reset_stale_streak @ agent/chat_completion_helpers.py:_reset_stale_streak */
 int agent_chat_completion_helpers_u_reset_stale_streak(const char *arg) {
-    /* Python: streak = 0 (best-effort). */
+    /* Python: agent._consecutive_stale_streams = 0. */
     (void)arg;
     g_stale_streams = 0;
+    printf("stale streak reset\n");
     return 0;
 }
 
