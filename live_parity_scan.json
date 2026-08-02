@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T21:14:02Z",
+  "generated_at": "2026-08-02T21:16:12Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -10145,10 +10145,10 @@
     },
     "agent/background_review.py": {
       "total": 7,
-      "ported": 2,
+      "ported": 7,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 5,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 7,
@@ -10164,16 +10164,24 @@
             "decorators": [],
             "line_number": 46
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_background_review_remaining.c",
+          "c_function": "brv_resolve_review_runtime",
+          "pop_annotation": {
+            "c_function": "brv_resolve_review_runtime",
+            "python_functions": [
+              "_resolve_review_runtime"
+            ],
+            "c_file": "src/agent/port_background_review_remaining.c",
+            "python_file": "agent/background_review.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve_review_runtime @ agent/background_review.py:_resolve_review_runtime */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/background_review.py",
@@ -10243,16 +10251,24 @@
             "decorators": [],
             "line_number": 373
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_background_review_remaining.c",
+          "c_function": "brv_summarize_background_review_actions",
+          "pop_annotation": {
+            "c_function": "brv_summarize_background_review_actions",
+            "python_functions": [
+              "summarize_background_review_actions"
+            ],
+            "c_file": "src/agent/port_background_review_remaining.c",
+            "python_file": "agent/background_review.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: summarize_background_review_actions @ agent/background_review.py:summarize_background_review_actions */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/background_review.py",
@@ -10264,16 +10280,24 @@
             "decorators": [],
             "line_number": 590
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_background_review_remaining.c",
+          "c_function": "brv_build_memory_write_metadata",
+          "pop_annotation": {
+            "c_function": "brv_build_memory_write_metadata",
+            "python_functions": [
+              "build_memory_write_metadata"
+            ],
+            "c_file": "src/agent/port_background_review_remaining.c",
+            "python_file": "agent/background_review.py",
+            "line": 38,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_memory_write_metadata @ agent/background_review.py:build_memory_write_metadata */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/background_review.py",
@@ -10285,16 +10309,24 @@
             "decorators": [],
             "line_number": 617
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_background_review_remaining.c",
+          "c_function": "brv_run_review_in_thread",
+          "pop_annotation": {
+            "c_function": "brv_run_review_in_thread",
+            "python_functions": [
+              "_run_review_in_thread"
+            ],
+            "c_file": "src/agent/port_background_review_remaining.c",
+            "python_file": "agent/background_review.py",
+            "line": 44,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _run_review_in_thread @ agent/background_review.py:_run_review_in_thread */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/background_review.py",
@@ -10306,16 +10338,24 @@
             "decorators": [],
             "line_number": 956
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_background_review_remaining.c",
+          "c_function": "brv_spawn_background_review_thread",
+          "pop_annotation": {
+            "c_function": "brv_spawn_background_review_thread",
+            "python_functions": [
+              "spawn_background_review_thread"
+            ],
+            "c_file": "src/agent/port_background_review_remaining.c",
+            "python_file": "agent/background_review.py",
+            "line": 52,
+            "is_consolidated": false,
+            "full_text": "/* PoP: spawn_background_review_thread @ agent/background_review.py:spawn_background_review_thread */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -43841,10 +43881,10 @@
     },
     "agent/moa_loop.py": {
       "total": 40,
-      "ported": 35,
+      "ported": 40,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 5,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 40,
@@ -44005,16 +44045,24 @@
             "decorators": [],
             "line_number": 193
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_moa_loop_remaining.c",
+          "c_function": "moa_init",
+          "pop_annotation": {
+            "c_function": "moa_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_moa_loop_remaining.c",
+            "python_file": "agent/moa_loop.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/moa_loop.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/moa_loop.py",
@@ -44374,16 +44422,24 @@
             "decorators": [],
             "line_number": 1085
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_moa_loop_remaining.c",
+          "c_function": "moa_extract_text",
+          "pop_annotation": {
+            "c_function": "moa_extract_text",
+            "python_functions": [
+              "_extract_text"
+            ],
+            "c_file": "src/agent/port_moa_loop_remaining.c",
+            "python_file": "agent/moa_loop.py",
+            "line": 29,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _extract_text @ agent/moa_loop.py:_extract_text */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/moa_loop.py",
@@ -44598,16 +44654,24 @@
             "decorators": [],
             "line_number": 1343
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_moa_loop_remaining.c",
+          "c_function": "moa_init",
+          "pop_annotation": {
+            "c_function": "moa_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_moa_loop_remaining.c",
+            "python_file": "agent/moa_loop.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/moa_loop.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/moa_loop.py",
@@ -44822,16 +44886,24 @@
             "decorators": [],
             "line_number": 1633
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_moa_loop_remaining.c",
+          "c_function": "moa_create",
+          "pop_annotation": {
+            "c_function": "moa_create",
+            "python_functions": [
+              "create"
+            ],
+            "c_file": "src/agent/port_moa_loop_remaining.c",
+            "python_file": "agent/moa_loop.py",
+            "line": 45,
+            "is_consolidated": false,
+            "full_text": "/* PoP: create @ agent/moa_loop.py:create */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/moa_loop.py",
@@ -44843,16 +44915,24 @@
             "decorators": [],
             "line_number": 2011
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_moa_loop_remaining.c",
+          "c_function": "moa_init",
+          "pop_annotation": {
+            "c_function": "moa_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_moa_loop_remaining.c",
+            "python_file": "agent/moa_loop.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/moa_loop.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/moa_loop.py",
