@@ -15,7 +15,16 @@
 int ctxc_u_begin_compression_telemetry(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _record_compression_regions @ agent/context_compressor.py:_record_compression_regions */
-int ctxc_u_record_compression_regions(const char *arg) { (void)arg; return 0; }
+int ctxc_u_record_compression_regions(const char *arg) {
+    /* Python: telemetry head/middle/tail token estimates. Arg =
+     * "head\tmiddle\ttail". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    printf("regions recorded: head=%s middle=%s tail=%s\n",
+           arg, t1 ? t1 + 1 : "", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _record_aux_compression_call @ agent/context_compressor.py:_record_aux_compression_call */
 int ctxc_u_record_aux_compression_call(const char *arg) { (void)arg; return 0; }

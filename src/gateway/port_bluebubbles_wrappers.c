@@ -120,4 +120,32 @@ int bb_mark_read(const char *arg) { (void)arg; return 0; }
 int bb_u_download_attachment(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _extract_payload_record @ gateway/platforms/bluebubbles.py:_extract_payload_record */
-int bb_u_extract_payload_record(const char *arg) { (void)arg; return 0; }
+int bb_u_extract_payload_record(const char *arg) {
+    /* Python: payload data dict/list-first/message dict. Arg = payload JSON. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *p = json_parse(arg, NULL);
+    if (!p) { printf("\n"); return 0; }
+    json_t *out = NULL;
+    if (json_is_object(p)) {
+        json_t *data = json_obj_get(p, "data");
+        if (data && json_is_object(data)) out = data;
+        else if (data && json_is_array(data)) {
+            size_t n = json_array_size(data);
+            for (size_t i = 0; i < n; i++) {
+                json_t *it = json_array_get(data, i);
+                if (it && json_is_object(it)) { out = it; break; }
+            }
+        } else {
+            json_t *msg = json_obj_get(p, "message");
+            if (msg && json_is_object(msg)) out = msg;
+            else out = p;
+        }
+    }
+    if (out) {
+        char *s = json_dumps(out, 0);
+        printf("%s\n", s ? s : "");
+        free(s);
+    } else printf("\n");
+    json_free(p);
+    return 0;
+}

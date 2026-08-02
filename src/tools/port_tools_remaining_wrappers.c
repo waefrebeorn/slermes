@@ -109,7 +109,16 @@ int tools_computer_use_tool_u_shrink_capture_for_vision(const char *arg) { (void
 int tools_computer_use_tool_u_should_route_through_aux_vision(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _capture_after_mode @ tools/computer_use/tool.py:_capture_after_mode */
-int tools_computer_use_tool_u_capture_after_mode(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_tool_u_capture_after_mode(const char *arg) {
+    /* Python: config capture_after_mode in {som,vision,ax} else som. Arg =
+     * raw. */
+    if (!arg || !*arg) { printf("som\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ' || *p == '\t') p++;
+    if (strcmp(p, "som") == 0 || strcmp(p, "vision") == 0 || strcmp(p, "ax") == 0) { printf("%s\n", p); return 0; }
+    printf("som\n");
+    return 0;
+}
 
 /* PoP: _route_capture_through_aux_vision @ tools/computer_use/tool.py:_route_capture_through_aux_vision */
 int tools_computer_use_tool_u_route_capture_through_aux_vision(const char *arg) { (void)arg; return 0; }
@@ -294,7 +303,19 @@ int tools_homeassistant_tool_u_build_service_payload(const char *arg) {
 }
 
 /* PoP: _parse_service_response @ tools/homeassistant_tool.py:_parse_service_response */
-int tools_homeassistant_tool_u_parse_service_response(const char *arg) { (void)arg; return 0; }
+int tools_homeassistant_tool_u_parse_service_response(const char *arg) {
+    /* Python: {success, service, affected_entities}. Arg =
+     * "domain\tservice\tresult_json". */
+    if (!arg || !*arg) { printf("{\"success\": true}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *domain = arg;
+    const char *service = t1 ? t1 + 1 : "";
+    const char *result = t2 ? t2 + 1 : "[]";
+    printf("{\"success\": true, \"service\": \"%.*s.%s\", \"affected_entities\": %s}\n",
+           (int)(t1 ? (size_t)(t1 - arg) : 0), domain, service, result);
+    return 0;
+}
 
 /* PoP: _async_call_service @ tools/homeassistant_tool.py:_async_call_service */
 int tools_homeassistant_tool_u_async_call_service(const char *arg) { (void)arg; return 0; }

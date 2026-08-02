@@ -329,7 +329,12 @@ int cgw_u_profile_arg_for_target_user(const char *arg) {
 }
 
 /* PoP: get_service_name @ hermes_cli/gateway.py:get_service_name */
-int cgw_get_service_name(const char *arg) { (void)arg; return 0; }
+int cgw_get_service_name(const char *arg) {
+    /* Python: hermes-gateway[-suffix]. Arg = suffix (empty = none). */
+    if (!arg || !*arg) { printf("hermes-gateway\n"); return 0; }
+    printf("hermes-gateway-%s\n", arg);
+    return 0;
+}
 
 /* PoP: get_systemd_unit_path @ hermes_cli/gateway.py:get_systemd_unit_path */
 int cgw_get_systemd_unit_path(const char *arg) {
@@ -591,7 +596,17 @@ int cgw_u_launchd_user_home(const char *arg) {
 }
 
 /* PoP: get_launchd_plist_path @ hermes_cli/gateway.py:get_launchd_plist_path */
-int cgw_get_launchd_plist_path(const char *arg) { (void)arg; return 0; }
+int cgw_get_launchd_plist_path(const char *arg) {
+    /* Python: ~/Library/LaunchAgents/ai.hermes.gateway[-suffix].plist.
+     * Arg = "home\tsuffix". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *home = arg;
+    const char *suffix = tab ? tab + 1 : "";
+    if (suffix[0]) printf("%s/Library/LaunchAgents/ai.hermes.gateway-%s.plist\n", home, suffix);
+    else printf("%s/Library/LaunchAgents/ai.hermes.gateway.plist\n", home);
+    return 0;
+}
 
 /* PoP: _detect_venv_dir @ hermes_cli/gateway.py:_detect_venv_dir */
 int cgw_u_detect_venv_dir(const char *arg) { (void)arg; return 0; }
@@ -656,7 +671,50 @@ int cgw_u_normalize_service_definition(const char *arg) {
 }
 
 /* PoP: _strip_optional_systemd_directives @ hermes_cli/gateway.py:_strip_optional_systemd_directives */
-int cgw_u_strip_optional_systemd_directives(const char *arg) { (void)arg; return 0; }
+int cgw_u_strip_optional_systemd_directives(const char *arg) {
+    /* Python: drop non-comment lines whose KEY is optional. Arg =
+     * "text\toptional_keys" (keys tab-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *text = arg;
+    const char *keys = tab ? tab + 1 : "";
+    const char *p = text;
+    int first = 1;
+    while (*p) {
+        const char *nl = strchr(p, '\n');
+        size_t len = nl ? (size_t)(nl - p) : strlen(p);
+        char line[1600];
+        if (len >= sizeof(line)) len = sizeof(line) - 1;
+        memcpy(line, p, len); line[len] = '\0';
+        /* trimmed */
+        char *t = line;
+        while (*t == ' ' || *t == '\t') t++;
+        size_t tl = strlen(t);
+        while (tl > 0 && (t[tl-1] == ' ' || t[tl-1] == '\t')) t[--tl] = '\0';
+        int drop = 0;
+        if (tl && t[0] != '#') {
+            const char *eq = strchr(t, '=');
+            size_t klen = eq ? (size_t)(eq - t) : tl;
+            const char *k = t;
+            while (klen > 0 && (k[klen-1] == ' ' || k[klen-1] == '\t')) klen--;
+            const char *kp = keys;
+            while (*kp) {
+                const char *kt = strchr(kp, '\t');
+                size_t kl = kt ? (size_t)(kt - kp) : strlen(kp);
+                if (kl == klen && strncmp(kp, k, klen) == 0) { drop = 1; break; }
+                kp = kt ? kt + 1 : kp + kl;
+            }
+        }
+        if (!drop) {
+            if (!first) printf("\n");
+            printf("%.*s", (int)len, p);
+            first = 0;
+        }
+        p = nl ? nl + 1 : p + len;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _normalize_launchd_plist_for_comparison @ hermes_cli/gateway.py:_normalize_launchd_plist_for_comparison */
 int cgw_u_normalize_launchd_plist_for_comparison(const char *arg) { (void)arg; return 0; }

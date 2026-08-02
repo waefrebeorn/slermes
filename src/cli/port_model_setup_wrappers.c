@@ -27,7 +27,35 @@ int msf_u_prompt_auth_credentials_choice(const char *arg) { (void)arg; return 0;
 int msf_u_model_flow_openrouter(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _print_moa_preset @ hermes_cli/model_setup_flows.py:_print_moa_preset */
-int msf_u_print_moa_preset(const char *arg) { (void)arg; return 0; }
+int msf_u_print_moa_preset(const char *arg) {
+    /* Python: preset breakdown print. Arg = "name\tpreset_json". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *name = arg;
+    const char *pj = tab ? tab + 1 : "{}";
+    printf("  Preset: %.*s\n", (int)(tab ? (size_t)(tab - arg) : strlen(arg)), name);
+    printf("  Reference models:\n");
+    json_t *j = json_parse(pj, NULL);
+    if (j && json_is_object(j)) {
+        json_t *refs = json_obj_get(j, "reference_models");
+        if (refs && json_is_array(refs)) {
+            size_t n = json_array_size(refs);
+            for (size_t i = 0; i < n; i++) {
+                json_t *slot = json_array_get(refs, i);
+                if (!slot) continue;
+                const char *prov = json_get_str(slot, "provider", "");
+                const char *model = json_get_str(slot, "model", "");
+                printf("    %zu. %s:%s\n", i + 1, prov, model);
+            }
+        }
+        json_t *agg = json_obj_get(j, "aggregator");
+        const char *ap = agg ? json_get_str(agg, "provider", "") : "";
+        const char *am = agg ? json_get_str(agg, "model", "") : "";
+        printf("  Aggregator:  %s:%s\n", ap, am);
+    }
+    if (j) json_free(j);
+    return 0;
+}
 
 /* PoP: _model_flow_moa @ hermes_cli/model_setup_flows.py:_model_flow_moa */
 int msf_u_model_flow_moa(const char *arg) { (void)arg; return 0; }

@@ -159,7 +159,15 @@ int cron_executions_latest_executions(const char *arg) { (void)arg; return 0; }
 int cron_jobs_u_current_cron_store(const char *arg) { (void)arg; return 0; }
 
 /* PoP: use_cron_store @ cron/jobs.py:use_cron_store */
-int cron_jobs_use_cron_store(const char *arg) { (void)arg; return 0; }
+int cron_jobs_use_cron_store(const char *arg) {
+    /* Python: context manager routing cron storage to home/cron. Arg =
+     * "home\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("cron store routed to %.*s/cron\n",
+           (int)(tab ? (size_t)(tab - arg) : strlen(arg)), arg);
+    return 0;
+}
 
 /* PoP: get_cron_output_dir @ cron/jobs.py:get_cron_output_dir */
 int cron_jobs_get_cron_output_dir(const char *arg) { (void)arg; return 0; }

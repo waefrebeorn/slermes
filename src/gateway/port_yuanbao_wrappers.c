@@ -27,7 +27,18 @@ int yb_u__repr__(const char *arg) {
 }
 
 /* PoP: use_before @ gateway/platforms/yuanbao.py:use_before */
-int yb_use_before(const char *arg) { (void)arg; return 0; }
+int yb_use_before(const char *arg) {
+    /* Python: insert middleware before target or append. Arg =
+     * "name\ttarget\tfound". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (t2 && t2[1] == '1') printf("middleware %.*s inserted before %s\n",
+        (int)(t1 ? (size_t)(t1 - arg) : 0), arg, t1 + 1);
+    else printf("middleware %.*s appended\n",
+        (int)(t1 ? (size_t)(t1 - arg) : 0), arg);
+    return 0;
+}
 
 /* PoP: use_after @ gateway/platforms/yuanbao.py:use_after */
 int yb_use_after(const char *arg) { (void)arg; return 0; }
@@ -447,7 +458,12 @@ int yb_u_worker(const char *arg) { (void)arg; return 0; }
 int yb_u_notifier(const char *arg) { (void)arg; return 0; }
 
 /* PoP: cancel @ gateway/platforms/yuanbao.py:cancel */
-int yb_cancel(const char *arg) { (void)arg; return 0; }
+int yb_cancel(const char *arg) {
+    /* Python: cancel pending notifier task for chat_id. Arg = "chat_id". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("cancelled slow-response notifier: %s\n", arg);
+    return 0;
+}
 
 /* PoP: register_handler @ gateway/platforms/yuanbao.py:register_handler */
 int yb_register_handler(const char *arg) {

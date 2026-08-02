@@ -1150,7 +1150,17 @@ int agent_memory_provider_on_session_switch(const char *arg) { (void)arg; return
 int agent_memory_provider_on_pre_compress(const char *arg) { (void)arg; return 0; }
 
 /* PoP: on_delegation @ agent/memory_provider.py:on_delegation */
-int agent_memory_provider_on_delegation(const char *arg) { (void)arg; return 0; }
+int agent_memory_provider_on_delegation(const char *arg) {
+    /* Python: observation hook on parent when subagent completes (no-op
+     * base; subclasses record). Arg = "task\tresult\tchild". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    printf("delegation observed: task=%.*s child=%s\n",
+           (int)(t1 ? (size_t)(t1 - arg) : strlen(arg)), arg,
+           t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: on_memory_write @ agent/memory_provider.py:on_memory_write */
 int agent_memory_provider_on_memory_write(const char *arg) { (void)arg; return 0; }
@@ -1481,7 +1491,25 @@ int agent_bounded_response_read_error_body_or_default(const char *arg) {
 }
 
 /* PoP: _display_url @ agent/display.py:_display_url */
-int agent_display_u_display_url(const char *arg) { (void)arg; return 0; }
+int agent_display_u_display_url(const char *arg) {
+    /* Python: dict url/href or str strip, else "". Arg = "json_or_raw". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    const char *v = NULL;
+    if (j && json_is_object(j)) {
+        v = json_get_str(j, "url", "");
+        if (!v[0]) v = json_get_str(j, "href", "");
+    } else {
+        v = arg;
+    }
+    if (j) json_free(j);
+    if (!v) { printf("\n"); return 0; }
+    while (*v == ' ') v++;
+    size_t len = strlen(v);
+    while (len > 0 && (v[len-1] == ' ' || v[len-1] == '\n' || v[len-1] == '\r')) len--;
+    printf("%.*s\n", (int)len, v);
+    return 0;
+}
 
 /* PoP: build_status_phrase @ agent/display.py:build_status_phrase */
 int agent_display_build_status_phrase(const char *arg) { (void)arg; return 0; }
@@ -1620,7 +1648,40 @@ int agent_stream_single_writer_stream_writer_is_current(const char *arg) { (void
 int agent_turn_finalizer_u_is_pure_tool_call_tail(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _drop_verification_continuation_scaffolding @ agent/turn_finalizer.py:_drop_verification_continuation_scaffolding */
-int agent_turn_finalizer_u_drop_verification_continuation_scaffo_ng(const char *arg) { (void)arg; return 0; }
+int agent_turn_finalizer_u_drop_verification_continuation_scaffo_ng(const char *arg) {
+    /* Python: strip nudge messages with continuation flags. Arg = messages
+     * JSON (array). */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    json_t *msgs = json_parse(arg, NULL);
+    if (!msgs || !json_is_array(msgs)) {
+        if (msgs) json_free(msgs);
+        printf("[]\n");
+        return 0;
+    }
+    static const char *flags[] = {"is_verification_continuation", "verification_continuation"};
+    json_t *out = json_array();
+    size_t n = json_array_size(msgs);
+    for (size_t i = 0; i < n; i++) {
+        json_t *m = json_array_get(msgs, i);
+        if (!m || !json_is_object(m)) { json_append(out, json_parse("null", NULL)); continue; }
+        int drop = 0;
+        for (size_t f = 0; f < sizeof(flags)/sizeof(flags[0]); f++) {
+            json_t *fv = json_obj_get(m, flags[f]);
+            if (fv && !json_is_null(fv) && json_is_bool(fv) && (fv)->bool_val) { drop = 1; break; }
+            if (fv && !json_is_null(fv) && !json_is_bool(fv)) { drop = 1; break; }
+        }
+        if (drop) continue;
+        char *s = json_dumps(m, 0);
+        json_append(out, s ? json_parse(s, NULL) : json_parse("null", NULL));
+        free(s);
+    }
+    char *s = json_dumps(out, 0);
+    printf("%s\n", s ? s : "[]");
+    free(s);
+    json_free(out);
+    json_free(msgs);
+    return 0;
+}
 
 /* PoP: save_url_video @ agent/video_gen_provider.py:save_url_video */
 int agent_video_gen_provider_save_url_video(const char *arg) { (void)arg; return 0; }

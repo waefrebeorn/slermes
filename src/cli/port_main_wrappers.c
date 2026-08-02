@@ -512,7 +512,19 @@ int main_cmd_hooks(const char *arg) {
 }
 
 /* PoP: cmd_security @ hermes_cli/main.py:cmd_security */
-int main_cmd_security(const char *arg) { (void)arg; return 0; }
+int main_cmd_security(const char *arg) {
+    /* Python: audit default, else unknown subcommand exit 2. Arg =
+     * "sub\tresult". */
+    if (!arg || !*arg) { printf("audit\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    size_t slen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (slen == 0 || (slen == 5 && strncmp(arg, "audit", 5) == 0)) {
+        printf("audit done\n");
+        return 0;
+    }
+    fprintf(stderr, "unknown security subcommand: %.*s\n", (int)slen, arg);
+    return 2;
+}
 
 /* PoP: cmd_import @ hermes_cli/main.py:cmd_import */
 int main_cmd_import(const char *arg) {
@@ -755,7 +767,37 @@ int main_u_update_via_zip(const char *arg) { (void)arg; return 0; }
 int main_u_stash_local_changes_if_needed(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_stash_selector @ hermes_cli/main.py:_resolve_stash_selector */
-int main_u_resolve_stash_selector(const char *arg) { (void)arg; return 0; }
+int main_u_resolve_stash_selector(const char *arg) {
+    /* Python: stash list scan for commit match. Arg = "stash_ref\tlines"
+     * (lines = selector H per line). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *ref = arg;
+    const char *lines = tab ? tab + 1 : "";
+    size_t rlen = tab ? (size_t)(tab - arg) : strlen(ref);
+    const char *p = lines;
+    while (*p) {
+        const char *nl = strchr(p, '\n');
+        size_t len = nl ? (size_t)(nl - p) : strlen(p);
+        char line[1024];
+        if (len >= sizeof(line)) len = sizeof(line) - 1;
+        memcpy(line, p, len); line[len] = '\0';
+        /* selector, _, commit = line.partition(" ") */
+        char *sp = strchr(line, ' ');
+        if (sp) {
+            const char *commit = sp + 1;
+            size_t clen = strlen(commit);
+            if (clen == rlen && strncmp(commit, ref, rlen) == 0) {
+                size_t slen = (size_t)(sp - line);
+                printf("%.*s\n", (int)slen, line);
+                return 0;
+            }
+        }
+        p = nl ? nl + 1 : p + len;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _print_stash_cleanup_guidance @ hermes_cli/main.py:_print_stash_cleanup_guidance */
 int main_u_print_stash_cleanup_guidance(const char *arg) { (void)arg; return 0; }

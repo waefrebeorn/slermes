@@ -151,7 +151,16 @@ int wx_u_is_dm_intake_allowed(const char *arg) {
 }
 
 /* PoP: _text_batch_key @ gateway/platforms/weixin.py:_text_batch_key */
-int wx_u_text_batch_key(const char *arg) { (void)arg; return 0; }
+int wx_u_text_batch_key(const char *arg) {
+    /* Python: session key from event source. Arg = "source\tprofile\tkey". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *key = t2 ? t2 + 1 : "";
+    if (key[0]) { printf("%s\n", key); return 0; }
+    printf("weixin:%s\n", t1 ? t1 + 1 : "");
+    return 0;
+}
 
 /* PoP: _enqueue_text_event @ gateway/platforms/weixin.py:_enqueue_text_event */
 int wx_u_enqueue_text_event(const char *arg) { (void)arg; return 0; }

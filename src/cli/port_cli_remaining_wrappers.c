@@ -1756,7 +1756,30 @@ int hermes_cli_env_loader_reset_secret_source_cache(const char *arg) { (void)arg
 int hermes_cli_env_loader_format_secret_source_suffix(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _format_offending_chars @ hermes_cli/env_loader.py:_format_offending_chars */
-int hermes_cli_env_loader_u_format_offending_chars(const char *arg) { (void)arg; return 0; }
+int hermes_cli_env_loader_u_format_offending_chars(const char *arg) {
+    /* Python: U+XXXX ('c') summary of non-ASCII, limit. Arg = "value\tlimit". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *value = arg;
+    long limit = tab ? strtol(tab + 1, NULL, 10) : 8;
+    if (limit <= 0) limit = 8;
+    const char *p = value;
+    int first = 1;
+    long shown = 0;
+    while (*p && shown < limit) {
+        unsigned char c = (unsigned char)*p;
+        if (c > 127) {
+            if (!first) printf(", ");
+            printf("U+%04X", c);
+            if (c >= 32 && c < 127) printf(" ('%c')", c);
+            first = 0;
+            shown++;
+        }
+        p++;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _sanitize_loaded_credentials @ hermes_cli/env_loader.py:_sanitize_loaded_credentials */
 int hermes_cli_env_loader_u_sanitize_loaded_credentials(const char *arg) { (void)arg; return 0; }
@@ -2752,7 +2775,19 @@ int hermes_cli_curator_u_cmd_pause(const char *arg) {
 }
 
 /* PoP: _cmd_pin @ hermes_cli/curator.py:_cmd_pin */
-int hermes_cli_curator_u_cmd_pin(const char *arg) { (void)arg; return 0; }
+int hermes_cli_curator_u_cmd_pin(const char *arg) {
+    /* Python: only agent-created; set_pinned True. Arg =
+     * "skill\tis_agent_created". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    int agent_created = tab && tab[1] == '1';
+    if (!agent_created) {
+        printf("curator: '%s' is bundled or hub-installed — cannot pin (only agent-created skills participate in curation)\n", arg);
+        return 1;
+    }
+    printf("curator: pinned '%s' (will bypass auto-transitions)\n", arg);
+    return 0;
+}
 
 /* PoP: _cmd_unpin @ hermes_cli/curator.py:_cmd_unpin */
 int hermes_cli_curator_u_cmd_unpin(const char *arg) {
@@ -4577,7 +4612,16 @@ int hermes_cli_subcommands_gateway_build_gateway_parser(const char *arg) { (void
 int hermes_cli__parser_u_inherited_flag(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _skin_color @ hermes_cli/banner.py:_skin_color */
-int hermes_cli_banner_u_skin_color(const char *arg) { (void)arg; return 0; }
+int hermes_cli_banner_u_skin_color(const char *arg) {
+    /* Python: active skin color or fallback. Arg = "key\tfallback\tcolor". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *color = t2 ? t2 + 1 : "";
+    if (color[0]) { printf("%s\n", color); return 0; }
+    printf("%s\n", t1 ? t1 + 1 : "");
+    return 0;
+}
 
 /* PoP: check_codex_binary_ok @ hermes_cli/codex_runtime_switch.py:check_codex_binary_ok */
 int hermes_cli_codex_runtime_switc_check_codex_binary_ok(const char *arg) {
