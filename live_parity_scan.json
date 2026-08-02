@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T22:03:07Z",
+  "generated_at": "2026-08-02T22:05:24Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -241972,10 +241972,10 @@
     },
     "hermes_cli/service_manager.py": {
       "total": 51,
-      "ported": 47,
+      "ported": 51,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 4,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 51,
@@ -242919,16 +242919,24 @@
             "decorators": [],
             "line_number": 555
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_service_manager_remaining.c",
+          "c_function": "svm_init",
+          "pop_annotation": {
+            "c_function": "svm_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_service_manager_remaining.c",
+            "python_file": "hermes_cli/service_manager.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/service_manager.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/service_manager.py",
@@ -242940,16 +242948,24 @@
             "decorators": [],
             "line_number": 569
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_service_manager_remaining.c",
+          "c_function": "svm_init",
+          "pop_annotation": {
+            "c_function": "svm_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_service_manager_remaining.c",
+            "python_file": "hermes_cli/service_manager.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/service_manager.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/service_manager.py",
@@ -242961,16 +242977,24 @@
             "decorators": [],
             "line_number": 587
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_service_manager_remaining.c",
+          "c_function": "svm_init",
+          "pop_annotation": {
+            "c_function": "svm_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_service_manager_remaining.c",
+            "python_file": "hermes_cli/service_manager.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/service_manager.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/service_manager.py",
@@ -242982,16 +243006,24 @@
             "decorators": [],
             "line_number": 611
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_service_manager_remaining.c",
+          "c_function": "svm_init",
+          "pop_annotation": {
+            "c_function": "svm_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_service_manager_remaining.c",
+            "python_file": "hermes_cli/service_manager.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/service_manager.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/service_manager.py",
