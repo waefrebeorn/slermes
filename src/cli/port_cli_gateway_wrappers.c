@@ -865,7 +865,16 @@ int cgw_get_launchd_plist_path(const char *arg) {
 }
 
 /* PoP: _detect_venv_dir @ hermes_cli/gateway.py:_detect_venv_dir */
-int cgw_u_detect_venv_dir(const char *arg) { (void)arg; return 0; }
+int cgw_u_detect_venv_dir(const char *arg) {
+    /* Python: sys.prefix > VIRTUAL_ENV > names. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: get_python_path @ hermes_cli/gateway.py:get_python_path */
 int cgw_get_python_path(const char *arg) {

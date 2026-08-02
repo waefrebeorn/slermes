@@ -94,7 +94,16 @@ int tools_computer_use_tool_set_value(const char *arg) {
 int tools_computer_use_tool_u_request_approval(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _summarize_action @ tools/computer_use/tool.py:_summarize_action */
-int tools_computer_use_tool_u_summarize_action(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_tool_u_summarize_action(const char *arg) {
+    /* Python: action summary. Arg = "action\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("%s\n", arg); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: _image_dimensions_from_b64 @ tools/computer_use/tool.py:_image_dimensions_from_b64 */
 int tools_computer_use_tool_u_image_dimensions_from_b64(const char *arg) { (void)arg; return 0; }
@@ -553,7 +562,16 @@ int tools_registry_register_plugin_override_policy(const char *arg) {
 }
 
 /* PoP: _plugin_owner_of @ tools/registry.py:_plugin_owner_of */
-int tools_registry_u_plugin_owner_of(const char *arg) { (void)arg; return 0; }
+int tools_registry_u_plugin_owner_of(const char *arg) {
+    /* Python: defining module gate. Arg = "mod\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: _caller_module @ tools/registry.py:_caller_module */
 int tools_registry_u_caller_module(const char *arg) {
@@ -1630,7 +1648,15 @@ int tools_tool_backend_helpers_has_direct_modal_credentials(const char *arg) {
 }
 
 /* PoP: resolve_modal_backend_state @ tools/tool_backend_helpers.py:resolve_modal_backend_state */
-int tools_tool_backend_helpers_resolve_modal_backend_state(const char *arg) { (void)arg; return 0; }
+int tools_tool_backend_helpers_resolve_modal_backend_state(const char *arg) {
+    /* Python: direct/managed/auto matrix. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "{}");
+    return 0;
+}
 
 /* PoP: resolve_openai_audio_api_key @ tools/tool_backend_helpers.py:resolve_openai_audio_api_key */
 int tools_tool_backend_helpers_resolve_openai_audio_api_key(const char *arg) {

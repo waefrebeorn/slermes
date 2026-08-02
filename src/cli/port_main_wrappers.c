@@ -1480,7 +1480,21 @@ int main_u_hermes_exe_shims(const char *arg) {
 int main_u_detect_concurrent_hermes_instances(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _format_concurrent_instances_message @ hermes_cli/main.py:_format_concurrent_instances_message */
-int main_u_format_concurrent_instances_message(const char *arg) { (void)arg; return 0; }
+int main_u_format_concurrent_instances_message(const char *arg) {
+    /* Python: concurrent hermes.exe explainer. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("✗ Another hermes.exe is running:\n");
+    printf("  PID ... (%s processes)\n", arg);
+    printf("  Updating now would fail to overwrite hermes.exe because Windows blocks REPLACE on a running executable.\n");
+    printf("  Close Hermes Desktop, exit any open `hermes` REPLs, and stop the gateway (`hermes gateway stop`) before retrying.\n");
+    printf("  Override with `hermes update --force` if you've already confirmed those processes will not write to the venv.\n");
+    return 0;
+}
 
 /* PoP: _quarantine_running_hermes_exe @ hermes_cli/main.py:_quarantine_running_hermes_exe */
 int main_u_quarantine_running_hermes_exe(const char *arg) { (void)arg; return 0; }

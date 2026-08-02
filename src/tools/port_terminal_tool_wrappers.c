@@ -301,7 +301,22 @@ int tt_u_is_ssh_remote_tilde_cwd(const char *arg) {
 }
 
 /* PoP: _is_unusable_container_cwd @ tools/terminal_tool.py:_is_unusable_container_cwd */
-int tt_u_is_unusable_container_cwd(const char *arg) { (void)arg; return 0; }
+int tt_u_is_unusable_container_cwd(const char *arg) {
+    /* Python: host/relative cwd check. Arg = "cwd\tis_abs\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int is_abs = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (arg[0] == '/' || (arg[0] && arg[1] == ':')) {
+        if (!is_abs) { printf("1\n"); return 0; }
+        printf("0\n");
+        return 0;
+    }
+    printf("1\n");
+    return 0;
+}
 
 /* PoP: _ensure_terminal_env_bridged @ tools/terminal_tool.py:_ensure_terminal_env_bridged */
 int tt_u_ensure_terminal_env_bridged(const char *arg) { (void)arg; return 0; }

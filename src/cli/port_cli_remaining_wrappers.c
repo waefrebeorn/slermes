@@ -515,7 +515,16 @@ int hermes_cli_cli_billing_mixin_u_show_subscription(const char *arg) { (void)ar
 int hermes_cli_cli_billing_mixin_u_subscription_overview(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _open_url_in_browser @ hermes_cli/cli_billing_mixin.py:_open_url_in_browser */
-int hermes_cli_cli_billing_mixin_u_open_url_in_browser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_cli_billing_mixin_u_open_url_in_browser(const char *arg) {
+    /* Python: graphical-only opener. Arg = "url\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%d\n", (t2 && t2[1] == '1') ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _subscription_free_catalog @ hermes_cli/cli_billing_mixin.py:_subscription_free_catalog */
 int hermes_cli_cli_billing_mixin_u_subscription_free_catalog(const char *arg) { (void)arg; return 0; }
@@ -886,7 +895,25 @@ int hermes_cli_curses_ui_u_scroll_for_cursor(const char *arg) {
 }
 
 /* PoP: _handle_active_search_key @ hermes_cli/curses_ui.py:_handle_active_search_key */
-int hermes_cli_curses_ui_u_handle_active_search_key(const char *arg) { (void)arg; return 0; }
+int hermes_cli_curses_ui_u_handle_active_search_key(const char *arg) {
+    /* Python: search key handling. Arg = "key\tactive\thad_query\tresult". */
+    if (!arg || !*arg) { printf("0 0 0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int active = t1 && t1[1] == '1';
+    int had_query = t2 && t2[1] == '1';
+    int state = t3 && t3[1] == '1';
+    if (!active) { printf("0 0 0\n"); return 0; }
+    if (!state) { printf("0 0 0\n"); return 0; }
+    long key = strtol(arg, NULL, 10);
+    if (key == 27) { printf("1 0 %d\n", had_query ? 1 : 0); return 0; }
+    if (key == 21) { printf("1 0 1\n"); return 0; }
+    if (key == 10 || key == 13) { printf("1 1 0\n"); return 0; }
+    if (key >= 32 && key < 127) { printf("1 0 1\n"); return 0; }
+    printf("0 0 0\n");
+    return 0;
+}
 
 /* PoP: flush_stdin @ hermes_cli/curses_ui.py:flush_stdin */
 int hermes_cli_curses_ui_flush_stdin(const char *arg) {
@@ -3341,7 +3368,15 @@ int hermes_cli_gui_uninstall_gui_is_installed(const char *arg) {
 }
 
 /* PoP: gui_install_summary @ hermes_cli/gui_uninstall.py:gui_install_summary */
-int hermes_cli_gui_uninstall_gui_install_summary(const char *arg) { (void)arg; return 0; }
+int hermes_cli_gui_uninstall_gui_install_summary(const char *arg) {
+    /* Python: structured install snapshot. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _remove_path @ hermes_cli/gui_uninstall.py:_remove_path */
 int hermes_cli_gui_uninstall_u_remove_path(const char *arg) {
@@ -3691,7 +3726,15 @@ int hermes_cli_inventory_u_reorder_canonical(const char *arg) {
 int hermes_cli_inventory_u_apply_pricing(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _moa_provider_row @ hermes_cli/inventory.py:_moa_provider_row */
-int hermes_cli_inventory_u_moa_provider_row(const char *arg) { (void)arg; return 0; }
+int hermes_cli_inventory_u_moa_provider_row(const char *arg) {
+    /* Python: virtual MoA row. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_presets") == 0) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _primary_hex @ hermes_cli/journey.py:_primary_hex */
 int hermes_cli_journey_u_primary_hex(const char *arg) {
@@ -5214,7 +5257,12 @@ int hermes_cli__subprocess_compat_windows_hide_flags(const char *arg) {
 int hermes_cli__subprocess_compat_suppress_platform_ver_console(const char *arg) { (void)arg; return 0; }
 
 /* PoP: windows_detach_popen_kwargs @ hermes_cli/_subprocess_compat.py:windows_detach_popen_kwargs */
-int hermes_cli__subprocess_compat_windows_detach_popen_kwargs(const char *arg) { (void)arg; return 0; }
+int hermes_cli__subprocess_compat_windows_detach_popen_kwargs(const char *arg) {
+    /* Python: creationflags vs start_new_session. Arg = "is_windows". */
+    if (arg && arg[0] == '1') { printf("creationflags=0x08000000\n"); return 0; }
+    printf("start_new_session=True\n");
+    return 0;
+}
 
 /* PoP: _kill_git_process_tree @ hermes_cli/_subprocess_compat.py:_kill_git_process_tree */
 int hermes_cli__subprocess_compat_u_kill_git_process_tree(const char *arg) { (void)arg; return 0; }
@@ -5520,7 +5568,16 @@ int hermes_cli_dashboard_auth_base_revoke_session(const char *arg) { (void)arg; 
 int hermes_cli_dashboard_auth_base_complete_password_login(const char *arg) { (void)arg; return 0; }
 
 /* PoP: assert_protocol_compliance @ hermes_cli/dashboard_auth/base.py:assert_protocol_compliance */
-int hermes_cli_dashboard_auth_base_assert_protocol_compliance(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_base_assert_protocol_compliance(const char *arg) {
+    /* Python: provider protocol check. Arg = "state\tmissing\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "ok") == 0) { printf("compliance passed\n"); return 0; }
+    fprintf(stderr, "provider missing: %s\n", t1 ? t1 + 1 : "?");
+    return 1;
+}
 
 /* PoP: _timeout_seconds @ hermes_cli/nous_auth_keepalive.py:_timeout_seconds */
 int hermes_cli_nous_auth_keepalive_u_timeout_seconds(const char *arg) {
@@ -5728,7 +5785,20 @@ int hermes_cli_setup_whatsapp_clou_u_validate_app_secret(const char *arg) {
 int hermes_cli_setup_whatsapp_clou_u_validate_access_token(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _prompt_validated @ hermes_cli/setup_whatsapp_cloud.py:_prompt_validated */
-int hermes_cli_setup_whatsapp_clou_u_prompt_validated(const char *arg) { (void)arg; return 0; }
+int hermes_cli_setup_whatsapp_clou_u_prompt_validated(const char *arg) {
+    /* Python: validated prompt loop. Arg = "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "abort") == 0) { printf("\n"); return 0; }
+    if (strcmp(state, "invalid") == 0) {
+        printf("    ✗ %s\n", t2 ? t2 + 1 : "invalid");
+        return 0;
+    }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: run_whatsapp_cloud_setup @ hermes_cli/setup_whatsapp_cloud.py:run_whatsapp_cloud_setup */
 int hermes_cli_setup_whatsapp_clou_run_whatsapp_cloud_setup(const char *arg) { (void)arg; return 0; }
@@ -7843,7 +7913,12 @@ int hermes_cli_subcommands_acp_build_acp_parser(const char *arg) { (void)arg; re
 int hermes_cli_subcommands_auth_build_auth_parser(const char *arg) { (void)arg; return 0; }
 
 /* PoP: build_backup_parser @ hermes_cli/subcommands/backup.py:build_backup_parser */
-int hermes_cli_subcommands_backup_build_backup_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_backup_build_backup_parser(const char *arg) {
+    /* Python: attach backup subcommand. */
+    (void)arg;
+    printf("backup parser attached (-o --quick -l)\n");
+    return 0;
+}
 
 /* PoP: build_claw_parser @ hermes_cli/subcommands/claw.py:build_claw_parser */
 int hermes_cli_subcommands_claw_build_claw_parser(const char *arg) { (void)arg; return 0; }

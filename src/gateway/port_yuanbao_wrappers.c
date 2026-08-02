@@ -538,7 +538,18 @@ int yb_u_heartbeat_loop(const char *arg) { (void)arg; return 0; }
 int yb_u_receive_loop(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _extract_sender_key @ gateway/platforms/yuanbao.py:_extract_sender_key */
-int yb_u_extract_sender_key(const char *arg) { (void)arg; return 0; }
+int yb_u_extract_sender_key(const char *arg) {
+    /* Python: sender key for debounce. Arg = "state\tfrom_account\tgroup_code\tresult". */
+    if (!arg || !*arg) { printf("__unknown__\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "json") == 0) { printf("%s:%s\n", t2 ? t2 + 1 : "", t3 ? t3 + 1 : ""); return 0; }
+    if (strcmp(state, "proto") == 0) { printf("%s:%s\n", t2 ? t2 + 1 : "", t3 ? t3 + 1 : ""); return 0; }
+    printf("__unknown_%s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _push_to_inbound @ gateway/platforms/yuanbao.py:_push_to_inbound */
 int yb_u_push_to_inbound(const char *arg) { (void)arg; return 0; }

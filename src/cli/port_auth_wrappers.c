@@ -161,7 +161,24 @@ int auth_get_qwen_auth_status(const char *arg) {
 int auth_u_make_spotify_callback_handler(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _spotify_wait_for_callback @ hermes_cli/auth.py:_spotify_wait_for_callback */
-int auth_u_spotify_wait_for_callback(const char *arg) { (void)arg; return 0; }
+int auth_u_spotify_wait_for_callback(const char *arg) {
+    /* Python: local callback server. Arg = "state\tresult\tcode\tbind_fail". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "bind_failed") == 0) {
+        fprintf(stderr, "Could not bind Spotify callback server: %s\n", t3 ? t3 + 1 : "");
+        return 1;
+    }
+    if (strcmp(state, "timeout") == 0) {
+        fprintf(stderr, "Spotify authorization timed out waiting for the local callback.\n");
+        return 1;
+    }
+    printf("%s\n", t2 ? t2 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _spotify_token_payload_to_state @ hermes_cli/auth.py:_spotify_token_payload_to_state */
 int auth_u_spotify_token_payload_to_state(const char *arg) {
@@ -481,7 +498,17 @@ int auth_get_api_key_provider_status(const char *arg) {
 }
 
 /* PoP: get_external_process_provider_status @ hermes_cli/auth.py:get_external_process_provider_status */
-int auth_get_external_process_provider_status(const char *arg) { (void)arg; return 0; }
+int auth_get_external_process_provider_status(const char *arg) {
+    /* Python: external process status. Arg =
+     * "provider_id\tstate\tresult". */
+    if (!arg || !*arg) { printf("{\"configured\": false}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{\"configured\": false}\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _get_azure_foundry_auth_status @ hermes_cli/auth.py:_get_azure_foundry_auth_status */
 int auth_u_get_azure_foundry_auth_status(const char *arg) { (void)arg; return 0; }

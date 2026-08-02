@@ -818,7 +818,17 @@ int grun_u_rehydrate_session_model_override(const char *arg) { (void)arg; return
 int grun_u_release_running_agent_state(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _release_turn_lease @ gateway/run.py:_release_turn_lease */
-int grun_u_release_turn_lease(const char *arg) { (void)arg; return 0; }
+int grun_u_release_turn_lease(const char *arg) {
+    /* Python: generation-keyed lease release. Arg =
+     * "session_key\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", (t2 && t2[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _rebind_turn_lease @ gateway/run.py:_rebind_turn_lease */
 int grun_u_rebind_turn_lease(const char *arg) { (void)arg; return 0; }

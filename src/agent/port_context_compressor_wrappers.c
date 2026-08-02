@@ -199,7 +199,25 @@ int ctxc_prune_tool_results_only(const char *arg) { (void)arg; return 0; }
 int ctxc_u_bound_summary_input(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _validate_summary_user_provenance @ agent/context_compressor.py:_validate_summary_user_provenance */
-int ctxc_u_validate_summary_user_provenance(const char *arg) { (void)arg; return 0; }
+int ctxc_u_validate_summary_user_provenance(const char *arg) {
+    /* Python: reject invented attribution. Arg =
+     * "has_user_turn\tsnapshot_ok\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int has_user = arg[0] == '1';
+    if (has_user) { printf("provenance ok\n"); return 0; }
+    int snapshot_ok = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("provenance ok (no snapshot)\n"); return 0; }
+    if (!snapshot_ok) {
+        fprintf(stderr, "Context compression summary invented user attribution for a session with no user-authored turns\n");
+        return 1;
+    }
+    printf("provenance ok (sentinel matched)\n");
+    return 0;
+}
 
 /* PoP: _latest_user_task_snapshot @ agent/context_compressor.py:_latest_user_task_snapshot */
 int ctxc_u_latest_user_task_snapshot(const char *arg) { (void)arg; return 0; }
