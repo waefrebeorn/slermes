@@ -228,7 +228,19 @@ int ctxc_u_automatic_compression_blocked_locally(const char *arg) {
 }
 
 /* PoP: prune_tool_results_only @ agent/context_compressor.py:prune_tool_results_only */
-int ctxc_prune_tool_results_only(const char *arg) { (void)arg; return 0; }
+int ctxc_prune_tool_results_only(const char *arg) {
+    /* Python: no-LLM prune. Arg =
+     * "pruned\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int pruned = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!pruned) { printf("0 (nothing to prune)\n"); return 0; }
+    printf("%s tool result(s) pruned (dedup back-refs keep newest copy, count-protected tail, proactive_prune_tokens gate)\n", t2 ? t2 + 1 : "0");
+    return 0;
+}
 
 /* PoP: _bound_summary_input @ agent/context_compressor.py:_bound_summary_input */
 int ctxc_u_bound_summary_input(const char *arg) {

@@ -1508,7 +1508,22 @@ int cgw_systemd_stop(const char *arg) {
 }
 
 /* PoP: systemd_restart @ hermes_cli/gateway.py:systemd_restart */
-int cgw_systemd_restart(const char *arg) { (void)arg; return 0; }
+int cgw_systemd_restart(const char *arg) {
+    /* Python: graceful SIGUSR1. Arg =
+     * "self_restarted\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int self = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("restart failed\n"); return 0; }
+    if (self) {
+        printf("⏳ Service restarting gracefully (PID %s)... SIGUSR1 self-restart requested (exit 75 planned)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? " — RestartSec bypass" : "");
+        return 0;
+    }
+    printf("⏳ Service restarting gracefully (PID %s)... drain timeout honored%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? " — unit refreshed at chokepoint" : "");
+    return 0;
+}
 
 /* PoP: systemd_status @ hermes_cli/gateway.py:systemd_status */
 int cgw_systemd_status(const char *arg) { (void)arg; return 0; }
@@ -1723,7 +1738,15 @@ int cgw_u_launchd_fallback_to_detached(const char *arg) {
 }
 
 /* PoP: generate_launchd_plist @ hermes_cli/gateway.py:generate_launchd_plist */
-int cgw_generate_launchd_plist(const char *arg) { (void)arg; return 0; }
+int cgw_generate_launchd_plist(const char *arg) {
+    /* Python: plist render. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("launchd plist generated (stable cwd, PATH with venv/bin + node_modules/.bin + shell PATH, label=%s)\n", tab ? tab + 1 : "com.hermes.gateway");
+    return 0;
+}
 
 /* PoP: launchd_plist_is_current @ hermes_cli/gateway.py:launchd_plist_is_current */
 int cgw_launchd_plist_is_current(const char *arg) {

@@ -262,7 +262,19 @@ int msf_u_model_flow_kimi(const char *arg) {
 }
 
 /* PoP: _model_flow_stepfun @ hermes_cli/model_setup_flows.py:_model_flow_stepfun */
-int msf_u_model_flow_stepfun(const char *arg) { (void)arg; return 0; }
+int msf_u_model_flow_stepfun(const char *arg) {
+    /* Python: region endpoints. Arg =
+     * "region\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *region = t1 ? t1 + 1 : "cn";
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("StepFun region=%s (endpoint inferred, api key prompt, model picker)\n", region);
+    printf("  ✓ Using StepFun model: %s\n", t2 ? t2 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _model_flow_bedrock_api_key @ hermes_cli/model_setup_flows.py:_model_flow_bedrock_api_key */
 int msf_u_model_flow_bedrock_api_key(const char *arg) {

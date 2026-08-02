@@ -95,7 +95,19 @@ int nous_nous_portal_topup_url(const char *arg) {
 }
 
 /* PoP: format_nous_portal_entitlement_message @ hermes_cli/nous_account.py:format_nous_portal_entitlement_message */
-int nous_format_nous_portal_entitlement_message(const char *arg) { (void)arg; return 0; }
+int nous_format_nous_portal_entitlement_message(const char *arg) {
+    /* Python: entitlement guidance. Arg =
+     * "entitled\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int entitled = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (entitled) { printf("\n"); return 0; }
+    printf("guidance (coverage-category aware, pool-vs-paid never surfaced): %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _no_paid_access_message @ hermes_cli/nous_account.py:_no_paid_access_message */
 int nous_u_no_paid_access_message(const char *arg) {

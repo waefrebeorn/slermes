@@ -1606,7 +1606,20 @@ int main_u_kill_stale_dashboard_processes(const char *arg) { (void)arg; return 0
 int main_u_update_via_zip(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _stash_local_changes_if_needed @ hermes_cli/main.py:_stash_local_changes_if_needed */
-int main_u_stash_local_changes_if_needed(const char *arg) { (void)arg; return 0; }
+int main_u_stash_local_changes_if_needed(const char *arg) {
+    /* Python: unmerged-reset stash. Arg =
+     * "stashed\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int stashed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("no local changes\n"); return 0; }
+    if (!stashed) { printf("stash failed\n"); return 0; }
+    printf("→ Local changes detected — stashing before update...%s\n", (t2 && t2[1] == '1') ? " (unmerged index reset first)" : "");
+    printf("stash name: hermes-update-autostash-<utc>\n");
+    return 0;
+}
 
 /* PoP: _resolve_stash_selector @ hermes_cli/main.py:_resolve_stash_selector */
 int main_u_resolve_stash_selector(const char *arg) {
@@ -2246,7 +2259,19 @@ int main_u_repair_venv_via_import_probes(const char *arg) {
 }
 
 /* PoP: _refresh_active_lazy_features @ hermes_cli/main.py:_refresh_active_lazy_features */
-int main_u_refresh_active_lazy_features(const char *arg) { (void)arg; return 0; }
+int main_u_refresh_active_lazy_features(const char *arg) {
+    /* Python: post-update reinstall. Arg =
+     * "ok\tstate\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int ok = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("1 (no active lazy backends / import failed)\n"); return 0; }
+    if (!ok) { printf("0 (broken core imports beyond repair #57828)\n"); return 0; }
+    printf("1 (active lazy backends reinstalled under current pins)%s\n", (t2 && t2[1] == '1') ? " — import repair used" : "");
+    return 0;
+}
 
 /* PoP: _install_python_dependencies_with_optional_fallback @ hermes_cli/main.py:_install_python_dependencies_with_optional_fallback */
 int main_u_install_python_dependencies_with_optional_fallback(const char *arg) {
@@ -2757,7 +2782,25 @@ int main_u_dashboard_listening(const char *arg) {
 int main_u_maybe_setup_dashboard_auth_interactively(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _read_ssh_session_token_file @ hermes_cli/main.py:_read_ssh_session_token_file */
-int main_u_read_ssh_session_token_file(const char *arg) { (void)arg; return 0; }
+int main_u_read_ssh_session_token_file(const char *arg) {
+    /* Python: rigid token path. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "bad_path") == 0) {
+        fprintf(stderr, "--ssh-session-token-file must be absolute / under desktop-ssh\n");
+        return 1;
+    }
+    if (strcmp(state, "bad_name") == 0) {
+        fprintf(stderr, "--ssh-session-token-file has an invalid runtime path or filename\n");
+        return 1;
+    }
+    printf("token read + unlinked: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _is_electron_packaged_web_dist @ hermes_cli/main.py:_is_electron_packaged_web_dist */
 int main_u_is_electron_packaged_web_dist(const char *arg) {

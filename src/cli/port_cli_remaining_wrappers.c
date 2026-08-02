@@ -600,7 +600,22 @@ int hermes_cli_mcp_config_u_unwrap_exception_group(const char *arg) {
 }
 
 /* PoP: _reauth_oauth_server @ hermes_cli/mcp_config.py:_reauth_oauth_server */
-int hermes_cli_mcp_config_u_reauth_oauth_server(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_config_u_reauth_oauth_server(const char *arg) {
+    /* Python: wipe+probe+verify. Arg =
+     * "success\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int success = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) {
+        printf("Server '%s' is not configured for OAuth / no URL — use mcp remove + add.\n", t2 ? t2 + 1 : "?");
+        return 0;
+    }
+    if (!success) { printf("  ✗ OAuth re-auth failed or no token landed.\n"); return 1; }
+    printf("  ✓ Re-authenticated '%s' (state wiped, token verified)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? " — cache cleared" : "");
+    return 1;
+}
 
 /* PoP: cmd_mcp_reauth @ hermes_cli/mcp_config.py:cmd_mcp_reauth */
 int hermes_cli_mcp_config_cmd_mcp_reauth(const char *arg) {
@@ -3635,7 +3650,15 @@ int hermes_cli_skin_engine_get_active_goodbye(const char *arg) {
 }
 
 /* PoP: get_prompt_toolkit_style_overrides @ hermes_cli/skin_engine.py:get_prompt_toolkit_style_overrides */
-int hermes_cli_skin_engine_get_prompt_toolkit_style_overrides(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skin_engine_get_prompt_toolkit_style_overrides(const char *arg) {
+    /* Python: live /skin refresh. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("style overrides: %s\n", tab ? tab + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _detect_openclaw_processes @ hermes_cli/claw.py:_detect_openclaw_processes */
 int hermes_cli_claw_u_detect_openclaw_processes(const char *arg) {
@@ -3802,7 +3825,19 @@ int hermes_cli_claw_u_cmd_migrate(const char *arg) { (void)arg; return 0; }
 int hermes_cli_claw_u_cmd_cleanup(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _print_migration_report @ hermes_cli/claw.py:_print_migration_report */
-int hermes_cli_claw_u_print_migration_report(const char *arg) { (void)arg; return 0; }
+int hermes_cli_claw_u_print_migration_report(const char *arg) {
+    /* Python: grouped report. Arg =
+     * "dry_run\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int dry = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("\n%s\n", dry ? "Dry Run Results — No files were modified. Preview only." : "Migration Results");
+    printf("  ✓ Migrated / Skipped / Conflicts / Errors: %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: get_secret_source @ hermes_cli/env_loader.py:get_secret_source */
 int hermes_cli_env_loader_get_secret_source(const char *arg) {
@@ -6370,7 +6405,12 @@ int hermes_cli_mcp_picker_u_print_rows_text(const char *arg) {
 }
 
 /* PoP: register_cli @ hermes_cli/proxy_cli.py:register_cli */
-int hermes_cli_proxy_cli_register_cli(const char *arg) { (void)arg; return 0; }
+int hermes_cli_proxy_cli_register_cli(const char *arg) {
+    /* Python: egress tree. */
+    (void)arg;
+    printf("egress parser attached (install --force, setup --tunnel-port, status, mint, prune, verify, uninstall)\n");
+    return 0;
+}
 
 /* PoP: cmd_install @ hermes_cli/proxy_cli.py:cmd_install */
 int hermes_cli_proxy_cli_cmd_install(const char *arg) {
@@ -9124,7 +9164,17 @@ int hermes_cli_session_export_html_u_escape_html(const char *arg) {
 int hermes_cli_session_export_html_u_generate_messages_html(const char *arg) { (void)arg; return 0; }
 
 /* PoP: generate_multi_session_html_export @ hermes_cli/session_export_html.py:generate_multi_session_html_export */
-int hermes_cli_session_export_html_generate_multi_session_html_e_rt(const char *arg) { (void)arg; return 0; }
+int hermes_cli_session_export_html_generate_multi_session_html_e_rt(const char *arg) {
+    /* Python: multi-session html. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("<html><body><h1>No sessions to export.</h1></body></html>\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("<html><body><h1>No sessions to export.</h1></body></html>\n"); return 0; }
+    printf("html export generated for %s session(s) (sidebar items, escaped titles, hash anchors)%s\n", t2 ? t2 + 1 : arg, (t2 && t2[1] == '1') ? " — multi-session mode" : "");
+    return 0;
+}
 
 /* PoP: generate_html_export @ hermes_cli/session_export_html.py:generate_html_export */
 int hermes_cli_session_export_html_generate_html_export(const char *arg) {

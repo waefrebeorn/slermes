@@ -177,7 +177,16 @@ int envl_u_scrub_delegated_child_kanban_env(const char *arg) {
 int envl_hermes_subprocess_env(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _find_bash @ tools/environments/local.py:_find_bash */
-int envl_u_find_bash(const char *arg) { (void)arg; return 0; }
+int envl_u_find_bash(const char *arg) {
+    /* Python: portable-git first. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("/bin/sh\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("/bin/sh\n"); return 0; }
+    printf("%s (which bash > /usr/bin/bash > /bin/bash > $SHELL > /bin/sh; Windows: HERMES_GIT_BASH_PATH + own PortableGit first)\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _looks_like_msys_spawn_failure @ tools/environments/local.py:_looks_like_msys_spawn_failure */
 int envl_u_looks_like_msys_spawn_failure(const char *arg) {

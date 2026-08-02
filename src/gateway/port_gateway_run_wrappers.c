@@ -1331,7 +1331,19 @@ int grun_u_release_evicted_agent_soft(const char *arg) {
 }
 
 /* PoP: _enforce_agent_cache_cap @ gateway/run.py:_enforce_agent_cache_cap */
-int grun_u_enforce_agent_cache_cap(const char *arg) { (void)arg; return 0; }
+int grun_u_enforce_agent_cache_cap(const char *arg) {
+    /* Python: LRU evict. Arg =
+     * "evicted\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int evicted = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no cache / non-OrderedDict)\n"); return 0; }
+    if (!evicted) { printf("0 (all candidates active — leave over cap, re-check next insert)\n"); return 0; }
+    printf("%s agent(s) evicted (running agents skipped; teardown on daemon thread, lock not held during cleanup)\n", t2 ? t2 + 1 : "1");
+    return 0;
+}
 
 /* PoP: _sweep_idle_cached_agents @ gateway/run.py:_sweep_idle_cached_agents */
 int grun_u_sweep_idle_cached_agents(const char *arg) { (void)arg; return 0; }

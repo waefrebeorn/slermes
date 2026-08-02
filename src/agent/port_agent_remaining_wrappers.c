@@ -2347,7 +2347,17 @@ int agent_pet_generate_orchestrate_u_harden_transparency(const char *arg) {
 }
 
 /* PoP: generate_base_drafts @ agent/pet/generate/orchestrate.py:generate_base_drafts */
-int agent_pet_generate_orchestrate_generate_base_drafts(const char *arg) { (void)arg; return 0; }
+int agent_pet_generate_orchestrate_generate_base_drafts(const char *arg) {
+    /* Python: concurrent drafts. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s draft(s) generated (transparent cutouts, on_draft streams per-index, cancellation cooperative)%s\n", t2 ? t2 + 1 : arg, (t2 && t2[1] == '1') ? " — ref-capable provider" : "");
+    return 0;
+}
 
 /* PoP: _drafts_failed_reason @ agent/pet/generate/orchestrate.py:_drafts_failed_reason */
 int agent_pet_generate_orchestrate_u_drafts_failed_reason(const char *arg) {

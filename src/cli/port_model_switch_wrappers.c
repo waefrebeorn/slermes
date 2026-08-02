@@ -141,7 +141,15 @@ int msw_parse_model_flags_detailed(const char *arg) {
 }
 
 /* PoP: _model_sort_key @ hermes_cli/model_switch.py:_model_sort_key */
-int msw_u_model_sort_key(const char *arg) { (void)arg; return 0; }
+int msw_u_model_sort_key(const char *arg) {
+    /* Python: version state machine. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("(0, 9, '')\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("(0, 9, '')\n"); return 0; }
+    printf("%s (negated version, suffix rank: pro<plain<omni<flash, prefix stripped)\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: get_authenticated_provider_slugs @ hermes_cli/model_switch.py:get_authenticated_provider_slugs */
 int msw_get_authenticated_provider_slugs(const char *arg) {

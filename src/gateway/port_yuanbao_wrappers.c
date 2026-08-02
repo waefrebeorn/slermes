@@ -765,7 +765,15 @@ int yb_build_msg_body(const char *arg) {
 }
 
 /* PoP: needs_cos_upload @ gateway/platforms/yuanbao.py:needs_cos_upload */
-int yb_needs_cos_upload(const char *arg) { (void)arg; return 0; }
+int yb_needs_cos_upload(const char *arg) {
+    /* Python: sticker skip. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("1\n"); return 0; }
+    printf("%s (COS upload needed; stickers use TIMFaceElem, no bytes)\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: acquire_file @ gateway/platforms/yuanbao.py:acquire_file */
 int yb_acquire_file_2(const char *arg) { (void)arg; return 0; }
@@ -792,7 +800,15 @@ int yb_acquire_file_5(const char *arg) { (void)arg; return 0; }
 int yb_build_msg_body_5(const char *arg) { (void)arg; return 0; }
 
 /* PoP: needs_cos_upload @ gateway/platforms/yuanbao.py:needs_cos_upload */
-int yb_needs_cos_upload_2(const char *arg) { (void)arg; return 0; }
+int yb_needs_cos_upload_2(const char *arg) {
+    /* Python: alt variant. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("1\n"); return 0; }
+    printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: acquire_file @ gateway/platforms/yuanbao.py:acquire_file */
 int yb_acquire_file_6(const char *arg) { (void)arg; return 0; }

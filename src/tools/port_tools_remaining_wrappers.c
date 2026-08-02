@@ -3381,7 +3381,15 @@ int tools_mixture_of_agents_tool_u_build_auth_header(const char *arg) {
 }
 
 /* PoP: _build_auth_header @ tools/moa_performance.py:_build_auth_header */
-int tools_moa_performance_u_build_auth_header(const char *arg) { (void)arg; return 0; }
+int tools_moa_performance_u_build_auth_header(const char *arg) {
+    /* Python: env-key bearer. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("Bearer %s\n", tab ? tab + 1 : "***");
+    return 0;
+}
 
 /* PoP: scan_file @ tools/skills_guard.py:scan_file */
 int tools_skills_guard_scan_file(const char *arg) {
