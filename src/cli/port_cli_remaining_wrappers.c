@@ -766,7 +766,20 @@ int hermes_cli_skills_hub_u_github_publish(const char *arg) { (void)arg; return 
 int hermes_cli_skills_hub_u_print_skills_help(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_color @ hermes_cli/skin_engine.py:get_color */
-int hermes_cli_skin_engine_get_color(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skin_engine_get_color(const char *arg) {
+    /* Python: self.colors.get(key, fallback). Arg = "key\tfallback\tvalue"
+     * where value is the stored color or "-" when absent. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    if (!t1) { printf("\n"); return 0; }
+    const char *t2 = strchr(t1 + 1, '\t');
+    const char *fallback = t1 + 1;
+    size_t flen = t2 ? (size_t)(t2 - t1 - 1) : strlen(t1 + 1);
+    const char *val = t2 ? t2 + 1 : NULL;
+    if (val && *val && strcmp(val, "-") != 0) printf("%s\n", val);
+    else printf("%.*s\n", (int)flen, fallback);
+    return 0;
+}
 
 /* PoP: get_spinner_wings @ hermes_cli/skin_engine.py:get_spinner_wings */
 int hermes_cli_skin_engine_get_spinner_wings(const char *arg) { (void)arg; return 0; }

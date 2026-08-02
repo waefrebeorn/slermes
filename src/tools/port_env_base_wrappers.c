@@ -15,7 +15,14 @@
 static const char *g_envb_activity_callback = NULL;
 
 /* PoP: buffered_chars @ tools/environments/base.py:buffered_chars */
-int envb_buffered_chars(const char *arg) { (void)arg; return 0; }
+int envb_buffered_chars(const char *arg) {
+    /* Python: locked head_chars + tail_chars. Arg = "head\ttail". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    long long head = 0, tail = 0;
+    sscanf(arg, "%lld\t%lld", &head, &tail);
+    printf("%lld\n", head + tail);
+    return 0;
+}
 
 /* PoP: total_chars @ tools/environments/base.py:total_chars */
 int envb_total_chars(const char *arg) {

@@ -66,7 +66,12 @@ int mm_sync_all(const char *arg) { (void)arg; return 0; }
 int mm_u_submit_background(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _forget_background_future @ agent/memory_manager.py:_forget_background_future */
-int mm_u_forget_background_future(const char *arg) { (void)arg; return 0; }
+int mm_u_forget_background_future(const char *arg) {
+    /* Python: locked pop from the background-futures set. */
+    (void)arg;
+    printf("background future forgotten\n");
+    return 0;
+}
 
 /* PoP: _get_sync_executor @ agent/memory_manager.py:_get_sync_executor */
 int mm_u_get_sync_executor(const char *arg) { (void)arg; return 0; }

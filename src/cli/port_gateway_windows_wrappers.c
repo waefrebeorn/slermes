@@ -16,7 +16,17 @@
 int gw_u_schtasks_encoding(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _assert_windows @ hermes_cli/gateway_windows.py:_assert_windows */
-int gw_u_assert_windows(const char *arg) { (void)arg; return 0; }
+int gw_u_assert_windows(const char *arg) {
+    /* Python: raise RuntimeError("gateway_windows is Windows-only") unless
+     * win32. The C build targets POSIX; the shim reports the refusal. */
+    (void)arg;
+#ifdef _WIN32
+    return 0;
+#else
+    fprintf(stderr, "gateway_windows is Windows-only\n");
+    return 1;
+#endif
+}
 
 /* PoP: _preserve_hermes_home_path @ hermes_cli/gateway_windows.py:_preserve_hermes_home_path */
 int gw_u_preserve_hermes_home_path(const char *arg) { (void)arg; return 0; }

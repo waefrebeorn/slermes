@@ -9,10 +9,23 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <time.h>
 #include "hermes_json.h"
 
 /* PoP: _retention_cutoff @ agent/verification_evidence.py:_retention_cutoff */
-int vev_u_retention_cutoff(const char *arg) { (void)arg; return 0; }
+int vev_u_retention_cutoff(const char *arg) {
+    /* Python: (now_utc - 30 days).isoformat(). */
+    (void)arg;
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    time_t cutoff = ts.tv_sec - 30L * 86400L;
+    struct tm tmv;
+    gmtime_r(&cutoff, &tmv);
+    printf("%04d-%02d-%02dT%02d:%02d:%02d.000000+00:00\n",
+           tmv.tm_year + 1900, tmv.tm_mon + 1, tmv.tm_mday,
+           tmv.tm_hour, tmv.tm_min, tmv.tm_sec);
+    return 0;
+}
 
 /* PoP: _db_path @ agent/verification_evidence.py:_db_path */
 int vev_u_db_path(const char *arg) {
