@@ -225,7 +225,7 @@ PORT_OBJ = \
         src/cli/port_dashboard_auth_audit.o \
         src/cli/port_dashboard_auth_registry.o \
         src/cli/port_dashboard_auth_cookies.o \
-        src/cli/port_kanban_diagnostics.o src/cli/port_kanban_diagnostics_remaining.o src/cli/port_nous_account_remaining.o \
+        src/cli/port_kanban_diagnostics.o src/cli/port_kanban_diagnostics_remaining.o src/cli/port_nous_account_remaining.o src/cli/port_nous_portal_remaining.o src/cli/port_uninstall_remaining.o \
         src/cli/port_moa_config.o \
         src/cli/port_azure_detect.o \
         src/cli/port_fallback_cmd.o \

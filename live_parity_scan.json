@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T22:41:07Z",
+  "generated_at": "2026-08-02T22:43:05Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -237063,10 +237063,10 @@
     },
     "hermes_cli/proxy/adapters/nous_portal.py": {
       "total": 10,
-      "ported": 7,
+      "ported": 10,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 10,
@@ -237082,16 +237082,24 @@
             "decorators": [],
             "line_number": 48
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_nous_portal_remaining.c",
+          "c_function": "npo_init",
+          "pop_annotation": {
+            "c_function": "npo_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_nous_portal_remaining.c",
+            "python_file": "hermes_cli/proxy/adapters/nous_portal.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/proxy/adapters/nous_portal.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/proxy/adapters/nous_portal.py",
@@ -237105,16 +237113,24 @@
             ],
             "line_number": 54
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_nous_portal_remaining.c",
+          "c_function": "npo_name",
+          "pop_annotation": {
+            "c_function": "npo_name",
+            "python_functions": [
+              "name"
+            ],
+            "c_file": "src/cli/port_nous_portal_remaining.c",
+            "python_file": "hermes_cli/proxy/adapters/nous_portal.py",
+            "line": 27,
+            "is_consolidated": false,
+            "full_text": "/* PoP: name @ hermes_cli/proxy/adapters/nous_portal.py:name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/proxy/adapters/nous_portal.py",
@@ -237128,16 +237144,24 @@
             ],
             "line_number": 58
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_nous_portal_remaining.c",
+          "c_function": "npo_display_name",
+          "pop_annotation": {
+            "c_function": "npo_display_name",
+            "python_functions": [
+              "display_name"
+            ],
+            "c_file": "src/cli/port_nous_portal_remaining.c",
+            "python_file": "hermes_cli/proxy/adapters/nous_portal.py",
+            "line": 32,
+            "is_consolidated": false,
+            "full_text": "/* PoP: display_name @ hermes_cli/proxy/adapters/nous_portal.py:display_name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/proxy/adapters/nous_portal.py",
@@ -255223,10 +255247,10 @@
     },
     "hermes_cli/uninstall.py": {
       "total": 24,
-      "ported": 21,
+      "ported": 24,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 24,
@@ -255329,16 +255353,24 @@
             "decorators": [],
             "line_number": 28
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_uninstall_remaining.c",
+          "c_function": "uni_get_project_root",
+          "pop_annotation": {
+            "c_function": "uni_get_project_root",
+            "python_functions": [
+              "get_project_root"
+            ],
+            "c_file": "src/cli/port_uninstall_remaining.c",
+            "python_file": "hermes_cli/uninstall.py",
+            "line": 21,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_project_root @ hermes_cli/uninstall.py:get_project_root */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/uninstall.py",
@@ -255872,16 +255904,24 @@
             "decorators": [],
             "line_number": 921
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_uninstall_remaining.c",
+          "c_function": "uni_init",
+          "pop_annotation": {
+            "c_function": "uni_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_uninstall_remaining.c",
+            "python_file": "hermes_cli/uninstall.py",
+            "line": 33,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/uninstall.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/uninstall.py",
@@ -255893,16 +255933,24 @@
             "decorators": [],
             "line_number": 928
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_uninstall_remaining.c",
+          "c_function": "uni_main",
+          "pop_annotation": {
+            "c_function": "uni_main",
+            "python_functions": [
+              "main"
+            ],
+            "c_file": "src/cli/port_uninstall_remaining.c",
+            "python_file": "hermes_cli/uninstall.py",
+            "line": 44,
+            "is_consolidated": false,
+            "full_text": "/* PoP: main @ hermes_cli/uninstall.py:main */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
