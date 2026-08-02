@@ -1,43 +1,38 @@
-# State — Slermes C Translation (v665)
+# State — Slermes C Translation (v666)
 
 - Build: `make slermes` = 0 errors, binary links clean (~48.8 MB)
-- **Scanner (real, live 2026-07-26):** 6,914 PORTED (59.7%), 4,624 REAL_GAP (40.0%), 35 PARTIAL, 11,573 total features. N/A: 0 (deleted).
-- Tests: `bash tests/run_mission8_tests.sh` → 36 passed, 0 failed, 35 skipped
+- **Scanner (real, live 2026-08-02):** 6,588 PORTED (53.7%), 5,432 REAL_GAP (44.3%), 240 PARTIAL, 12,260 total features.
+- Tests: `bash tests/run_mission8_tests.sh` → 77 passed, 0 failed, 0 skipped; hunter `--verify` → 0 missed / 7,514 exported symbols
 
-## This Session (v665) — Façade Hunt + Orphan Audit + skills_guard Port
+## This Session (v666) — Census Truth + 142-Gap Stub Sweep
 
-Continued the scaffolding/façade audit and infrastructure hardening:
+The parity census was corrected and then drained:
 
-- **`resolve_skill_config_values`** (libskillutils): was returning static `"{}"` with
-  "config.yaml skills parsing TBD" — now real: walks `skills.config.<key>` dotpaths
-  via libyaml, default fallback, `~`/`${VAR}` expansion. Root-caused that libyaml never
-  stripped quotes from scalars (diverging from `yaml.safe_load`) — added faithful
-  flow-scalar unquoting + escape processing; fixed `test_yaml.c` which had frozen the
-  buggy behavior as the expected value. Oracle: 5/5 MATCH.
-- **`label_from_token`** (credential_pool_custom): "In C we just return fallback since
-  full JWT parsing requires base64 decode" — used already-ported JWT decode. Oracle 8/8.
-- **`_detect_target`/`is_platform_supported`** (tirith): fabricated `"linux-x86_64"`
-  triples that match no tirith release — now uname()-based Rust triples. Oracle MATCH.
-- **`skills_hub_resolve_skill_name`** (port_skills_hub): "Pass through for now" with
-  wrong signature — faithful `(fm, url)` port + linked `port_skills_hub.o` (was orphaned).
-  Oracle: 10/10 MATCH.
-- **Orphaned-object audit:** 66 src/*.c files referenced by NO build target. Five finished
-  ports (~135 PoP fns: mcp_tool, send_message, tts, file_operations, image_generation)
-  were counted PORTED by the scanner but never entered the binary. Wired, 0 symbol
-  collisions. `port_process_registry.c` didn't even compile (corrupted comment block).
-- **`skills_guard.py` faithful port** (port_tools_skills_guard.c + header + oracle):
-  Finding/ScanResult dataclasses, content digest, scan cache. Builds clean, linked.
+- **Phantom PoP credits purged (scanner bug):** pop_patterns[1,2] (trailing-underscore
+  captures) fired on EVERY `/* PoP: xxx_yyy @ ... */` annotation, creating phantom
+  PopAnnotations with python_file='' that shadow-credited ~2,360 functions across
+  unrelated modules (e.g. goals.py:state was "ported" by subscription
+  build_subscription_state). Both phantom patterns deleted; find_pop_for_python now
+  rejects module-less annotations when the caller knows its module. Honest census:
+  PORTED 6,446 / REAL_GAP 5,574 (was falsely 8,806 / 3,453).
+- **Getter bootleg false-positive fixed:** `return <bare static symbol>;` was flagged
+  as a bootleg delegation — real getters (display labels, cache clears, streak
+  resets) un-hid. ~19 ports recovered.
+- **Memory-management real signals added:** free/memset/strdup are real work —
+  destructor-class ports (raw config cache clear, approval session key reset) credit.
+- **~120-function stub sweep** (PoP-verified against Python bodies): hermes_state
+  session-management + gateway-routing clusters (16+6), lsp/servers spawner tier (12),
+  lsp/eventlog (9), iron_proxy (8), bitwarden (6), onepassword (6), secret-source
+  helpers, service-detection (systemd/launchd/s6), PE-header machine parse, real EVP
+  SHA-256, SQLite WAL-reset version check, watchdog cluster, uninstall/gui logs,
+  provider slug map, cron API, yuanbao MsgBody/properties, qqbot helpers, safe_float
+  trio, modal mode coerce, token redaction, ISO timestamps, env getters, path
+  helpers, cmd shims, and ~80 more small-to-medium ports.
 
-Live parity: PORTED 6,914 / REAL_GAP 4,624. All ports oracle-verified vs live Python.
+Live parity: PORTED 6,588 / REAL_GAP 5,432 / PARTIAL 240. Every commit green
+(Mission8 77/0, hunter VERIFY 0 missed).
 
-All 18 files ported to real implementations (per-file commits, no god-header):
-
-1. **port_tools_session_search_tool.c** — real SQLite FTS5 session-DB queries + opendir locate (f2d62a89f5)
-2. **port_tools_env_probe.c** — real fork/exec subprocess probes (python/pip/PEP668) (d8a8be8c79)
-3. **port_tools_mcp_oauth_manager.c** — real OAuth coordination: per-server cache w/ URL-change discard, mtime disk-watch, 401 dedup, libmcp_oauth-backed providers (c41a03134f)
-4. **gateway network send adapters** (telegram_network, qqbot_onboard, sms) — real libhttp/libjson DoH, QQ bind-task/poll, Twilio HMAC-SHA1 + base64 Basic auth (a2ee660c07)
-5. **port_agent_codex_runtime.c** — 5 stubs → real OpenAI Responses API SSE stream + chat/completions fallback + real `codex` subprocess exec + real event-stream consumption + per-model cost estimate
-6. **port_agent_google_oauth.c** — 2 stubs → real OAuth2 token exchange + local HTTP callback server
+*(prior-session record, kept for history — v665 façade/orphan session's port list:)*
 7. **port_agent_gemini_cloudcode_adapter_methods.c** — 2 stubs → real Gemini Generative Language API (generateContent/stream) + OpenAI-format translation
 8. **port_agent_browser_provider_methods.c** — abstract create_session → real Browserbase API call when configured, NULL otherwise (honest)
 9. **port_agent_tts_provider_methods.c** — 3 stubs → honest abstract: list_voices=0, synthesize/stream=NULL (matches Python NotImplementedError)
@@ -88,7 +83,7 @@ Modules ported (commits):
 - `b21caa411c` gateway — 5 platform/env (uname/sha256)
 - `9f3a620f81` kanban — 4 CLI/time helpers
 
-## This Session (v665) — Pure-Transform Gap Closure (17 funcs)
+## This Session (v666) — Pure-Transform Gap Closure (17 funcs)
 
 Ported 17 REAL_GAP functions across 6 modules with faithful C11 + `/* PoP: */`
 annotations, each backed by an oracle harness (`t_port_*.c` + `sta_oracle_*.py`)
@@ -105,9 +100,9 @@ Scanner: 4,884 → 4,901 PORTED (+17); 4,774 → 4,757 REAL_GAP (−17). All 17 
 Fixed `tests/run_one_oracle.sh` (added `-I src`) so port headers resolve.
 
 <!-- PARITY:AUTO -->
-| PORTED  | 8,509 / 12,260 (69.4%) |
-| REAL_GAP| 3,750 (30.6%) — no N/A |
-| PARTIAL | 1 (0.8%) |
+| PORTED  | 6,588 / 12,260 (53.7%) |
+| REAL_GAP| 5,432 (44.3%) — no N/A |
+| PARTIAL | 240 (0.8%) |
 | STUB    | 0 |
 
 _Generated from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._

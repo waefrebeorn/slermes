@@ -17,7 +17,7 @@ Anything the Nous Research team produces — **code AND documents** — is upstr
 
 | Metric | Value |
 |--------|-------|
-| **Version** | v665+ (live scanner refreshed 2026-07-22) |
+| **Version** | v666+ (live scanner refreshed 2026-07-22) |
 | **Checkpoint** | 117+ |
 | **PORTED** | 6,357 (65.3% of 9,733 features) |
 | **REAL_GAP** | 3,376 (34.7%) |

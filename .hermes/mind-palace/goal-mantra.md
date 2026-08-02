@@ -1,4 +1,4 @@
-# Goal & Mantra — Slermes C Translation (v665)
+# Goal & Mantra — Slermes C Translation (v666)
 
 ## Core Directive
 All Python functions ported to C — live scanner: 4,884/9,731 (50.2%) PORTED, 4,774 REAL_GAP, 73 PARTIAL. Now: keep closing REAL_GAPs, then build desktop.

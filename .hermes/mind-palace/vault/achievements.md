@@ -273,3 +273,33 @@ even compile (corrupted comment block from a PoP insertion).
 (11,573 total). All oracle suites green.
 **Commits:** 23270444de, 5a508060a8, 3108f961a2 (prior), + v665 skills_guard + walkway.
 **Discipline:** faithful ports, no stubs, no façades; oracles prove behavior == Python.
+
+## v666 — Census Truth + 142-Gap Stub Sweep (2026-08-02)
+
+**What happened:**
+- Purged ~2,360 phantom PoP credits: pop_patterns[1,2] trailing-underscore
+  captures created module-less PopAnnotations that shadow-credited functions
+  across unrelated modules (goals.py:state was "ported" by
+  build_subscription_state). Deleted both patterns; find_pop_for_python now
+  rejects python_file-less annotations when the caller knows its module.
+  Honest census: 6,446 PORTED / 5,574 REAL_GAP (prior "8,806" was inflated).
+- Fixed getter bootleg false-positive: `return <bare static>;` is a getter,
+  not a delegation. ~19 real ports un-hid (display labels, cache clears).
+- Added free/memset/strdup to REAL_SIGNALS — destructor-class ports credit
+  (raw config cache clear src/cli/port_agent_skill_utils.c:28, approval
+  session key reset src/tools/port_approval.c:771).
+- ~120-function stub sweep (PoP-verified vs Python): hermes_state clusters
+  (16 session-management src/agent/hermes_state/hermes_state_misc.c, 6
+  gateway-routing, encoding/lineage 11, conversation-replace 5, deletion 4,
+  messages 5), lsp/servers spawner tier 12 (src/agent/port_lsp_servers.c),
+  lsp/eventlog 9 (src/agent/port_lsp_eventlog.c), iron_proxy 8, bitwarden 6,
+  onepassword 6 (port_secret_sources_helpers.c), service detection
+  (systemd/launchd/s6), PE-header machine parse, EVP SHA-256, SQLite
+  WAL-reset version check, watchdog cluster, provider slug map, cron API,
+  yuanbao MsgBody/properties, qqbot helpers, env getters, path helpers,
+  cmd shims, ~80 more.
+
+**Build:** clean. **Tests:** Mission8 77/0, hunter VERIFY 0 missed / 7,514
+symbols. **New counts:** 6,588 PORTED / 5,432 REAL_GAP / 240 PARTIAL (12,260
+total). Net: +142 honest gaps closed this session; ~2,360 false credits
+removed.
