@@ -723,8 +723,7 @@ class ParityAnalyzer:
     # which are defined OUTSIDE the ported set), its body does no observable
     # work and every remaining internal callee is itself bootleg.
     _REAL_SIGNALS = [
-        r'\bprintf\s*\(', r'\bfprintf\s*\(', r'\bputs\s*\(', r'\bfputs\s*\(',
-        r'\bfwrite\s*\(', r'\bperror\s*\(', r'\bhermes_log\b', r'\blog_',
+        r'\bfwrite\s*\(', r'\bhermes_log\b', r'\blog_',
         r'\bfopen\s*\(', r'\bopen\s*\(', r'\bfclose\s*\(', r'\bclose\s*\(',
         r'\bjson_object_set', r'\bjson_array_append', r'\bjson_set',
         r'\bconfig_py_save', r'\bconfig_py_atomic', r'\bwrite_config',
@@ -782,6 +781,60 @@ class ParityAnalyzer:
     ]
     _REAL_RE = [re.compile(p) for p in _REAL_SIGNALS]
     _CALLEE = re.compile(r'(?<![.\w])([a-zA-Z_]\w*)\s*\(')
+
+    # Output-only calls: NOT observable work. A stub that prints and returns
+    # a constant is still a stub.  Stripped from callee analysis and never
+    # treated as a real-work signal.
+    _OUTPUT_CALLS = frozenset({
+        'printf', 'fprintf', 'puts', 'fputs', 'perror', 'putchar', 'fputc',
+        'fputchar', 'vprintf', 'vfprintf', 'vputs', 'dprintf', 'vdprintf',
+        'printw', 'mvprintw', 'wprintw', 'print',
+    })
+
+    _OUTPUT_STMT = re.compile(
+        r'\b(?:printf|fprintf|puts|fputs|perror|putchar|fputc|fputchar|vprintf|'
+        r'vfprintf|vputs|dprintf|vdprintf|printw|mvprintw|wprintw|print)\s*\([^;]*\)\s*;'
+    )
+
+    def _is_echo_stub(self, body):
+        """True when a body does nothing but emit output and return constants.
+
+        Agnostic: strip every output statement, comments and (void) casts, then
+        require that what remains is only declarations and constant returns.
+        Any remaining call, assignment, control flow, or computed return makes
+        it real.  Cannot be gamed by printing arbitrary text — prints are
+        removed before the check.
+        """
+        cleaned = self._OUTPUT_STMT.sub('', body)
+        cleaned = re.sub(r'/\*.*?\*/', '', cleaned, flags=re.S)
+        cleaned = re.sub(r'//[^\n]*', '', cleaned)
+        cleaned = re.sub(r'\(void\)\s*[a-zA-Z_]\w*\s*;', '', cleaned)
+        # Strip pure null/emptiness guards: `if (!x) return -1;` / `if (!s) return NULL;`
+        # Guards that only short-circuit on missing input do no observable work.
+        cleaned = re.sub(
+            r'\bif\s*\(\s*!\s*[a-zA-Z_]\w*\s*\)\s*return\s+[^;{}]*;', '', cleaned)
+        cleaned = re.sub(r'\bif\s*\(\s*[a-zA-Z_]\w*\s*==\s*NULL\s*\)\s*return\s+[^;{}]*;', '', cleaned)
+        cleaned = re.sub(r'\bif\s*\(\s*[a-zA-Z_]\w*\s*\)\s*\{\s*\}\s*', '', cleaned)
+        cleaned = re.sub(r'\s+', ' ', cleaned).strip(' ;{}')
+        if not cleaned:
+            return True
+        if re.search(r'\b[a-zA-Z_]\w*\s*\(', cleaned):
+            return False
+        if re.search(r'\b(if|for|while|switch|do)\b', cleaned):
+            return False
+        if re.search(r'\b[a-zA-Z_]\w*\s*(=|\+=|-=|\*=|/=)', cleaned):
+            return False
+        for stmt in cleaned.split(';'):
+            s = stmt.strip()
+            if not s:
+                continue
+            if re.match(r'^return\s+[^;]*$', s):
+                continue
+            if re.match(r'^(?:const\s+|unsigned\s+|signed\s+|static\s+|volatile\s+)*[a-zA-Z_]\w*', s):
+                continue
+            return False
+        return True
+
     _FUNC_DEF = re.compile(
         r'(?:static\s+|inline\s+)?(?:const\s+|unsigned\s+)?'
         r'(?:[\w:]+\s+)+?(\*?\w+)\s*\(([^;]*?)\)\s*\{', re.S)
@@ -843,10 +896,15 @@ class ParityAnalyzer:
         body = defined[name]
         if body.strip() in ('{}', ';'):
             memo[name] = True; stack.discard(name); return True
+        # Echo stub: only output + constant returns => no real work.  Checked
+        # BEFORE the real-signal scan so prints can never launder a stub.
+        if self._is_echo_stub(body):
+            memo[name] = True; stack.discard(name); return True
         if any(rx.search(body) for rx in self._REAL_RE):
             memo[name] = False; stack.discard(name); return False
         callees = set(c for c in self._CALLEE.findall(body)
-                      if c not in ('if','while','for','switch','return','sizeof','catch','do'))
+                      if c not in ('if','while','for','switch','return','sizeof','catch','do')
+                      and c not in self._OUTPUT_CALLS)
         internal = [c for c in callees if c in defined]
         if [c for c in callees if c not in defined]:
             memo[name] = False; stack.discard(name); return False

@@ -208,16 +208,18 @@ def extract_funcs(text):
 # ---- callee extraction ----
 CALLEE = re.compile(r'(?<![.\w])([a-zA-Z_]\w*)\s*\(')
 
-# Real-work signals
+# Real-work signals — output calls (printf/fprintf/puts/perror) are NOT real
+# work: an echo stub that only prints and returns a constant is still a stub.
+# They are stripped before classification and never count as observable work.
 REAL_SIGNALS = [
-    r'\bprintf\s*\(', r'\bfprintf\s*\(', r'\bputs\s*\(', r'\bfputs\s*\(',
-    r'\bfwrite\s*\(', r'\bperror\s*\(', r'\bhermes_log\b', r'\blog_',
+    r'\bfwrite\s*\(', r'\bhermes_log\b', r'\blog_',
     r'\bfopen\s*\(', r'\bopen\s*\(', r'\bfclose\s*\(', r'\bclose\s*\(',
     r'\bjson_object_set', r'\bjson_array_append', r'\bjson_set',
     r'\bconfig_py_save', r'\bconfig_py_atomic', r'\bwrite_config',
     r'\bsystem\s*\(', r'\bexecl', r'\bfork\s*\(', r'\bpopen\s*\(',
     r'\bcurl', r'\bhttp_', r'\bsocket\s*\(',
     r'\bmalloc\s*\(', r'\bcalloc\s*\(', r'\brealloc\s*\(',
+    r'\bfree\s*\(', r'\bmemset\s*\(', r'\bstrdup\s*\(',
     r'\bstrcpy', r'\bstrcat', r'\bsnprintf\s*\(', r'\bsprintf\s*\(',
     r'\bfgets\s*\(', r'\bfread\s*\(', r'\bsqlite',
     r'\byaml_', r'\bjson_parse', r'\bjson_new',
@@ -271,6 +273,55 @@ REAL_RE = [re.compile(p) for p in REAL_SIGNALS]
 def has_real_signal(body):
     return any(rx.search(body) for rx in REAL_RE)
 
+# Output-only calls: NOT observable work. A stub that prints and returns a
+# constant is still a stub.  Stripped from callee analysis and never treated
+# as a real-work signal.
+OUTPUT_CALLS = frozenset({
+    'printf', 'fprintf', 'puts', 'fputs', 'perror', 'putchar', 'fputc',
+    'fputchar', 'vprintf', 'vfprintf', 'vputs', 'dprintf', 'vdprintf',
+    'printw', 'mvprintw', 'wprintw', 'print',
+})
+
+_OUTPUT_STMT = re.compile(
+    r'\b(?:printf|fprintf|puts|fputs|perror|putchar|fputc|fputchar|vprintf|'
+    r'vfprintf|vputs|dprintf|vdprintf|printw|mvprintw|wprintw|print)\s*\([^;]*\)\s*;'
+)
+
+def is_echo_stub(body):
+    """True when a body does nothing but emit output and return constants.
+
+    Agnostic: we strip every output statement, comments and (void) casts, then
+    require that what remains is only declarations and constant returns.  Any
+    remaining call, assignment, control flow, or computed return makes it real.
+    This cannot be gamed by printing arbitrary text — the prints are removed
+    before the check.
+    """
+    cleaned = _OUTPUT_STMT.sub('', body)
+    cleaned = re.sub(r'/\*.*?\*/', '', cleaned, flags=re.S)
+    cleaned = re.sub(r'//[^\n]*', '', cleaned)
+    cleaned = re.sub(r'\(void\)\s*[a-zA-Z_]\w*\s*;', '', cleaned)
+    cleaned = re.sub(r'\s+', ' ', cleaned).strip(' ;{}')
+    if not cleaned:
+        return True
+    # Any remaining call (real work), assignment, or control flow => real.
+    if re.search(r'\b[a-zA-Z_]\w*\s*\(', cleaned):
+        return False
+    if re.search(r'\b(if|for|while|switch|do)\b', cleaned):
+        return False
+    if re.search(r'\b[a-zA-Z_]\w*\s*(=|\+=|-=|\*=|/=)', cleaned):
+        return False
+    # Only constant returns / declarations remain.
+    for stmt in cleaned.split(';'):
+        s = stmt.strip()
+        if not s:
+            continue
+        if re.match(r'^return\s+[^;]*$', s):
+            continue
+        if re.match(r'^(?:const\s+|unsigned\s+|signed\s+|static\s+|volatile\s+)*[a-zA-Z_]\w*', s):
+            continue
+        return False
+    return True
+
 def body_nonblank_lines(body):
     lines = []
     for ln in body.split('\n'):
@@ -310,9 +361,16 @@ def classify_bootleg(name, info, defined, memo, stack=None):
         c = cm.group(1)
         if c in ('if','while','for','switch','return','sizeof','catch','do'):
             continue
+        if c in OUTPUT_CALLS:
+            continue  # output is not observable work
         callees.add(c)
     internal = [c for c in callees if c in defined]
     external = [c for c in callees if c not in defined]
+
+    # Echo stub: every statement is output + constant return => no real work,
+    # regardless of the printed text.  Agnostic — not gamed by adding prints.
+    if is_echo_stub(body):
+        memo[name] = True; stack.discard(name); return True
 
     # External callee => this calls a live handler / library => REAL.
     if external:

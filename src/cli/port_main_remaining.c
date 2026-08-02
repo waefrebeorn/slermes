@@ -1,8 +1,7 @@
 /*
- * port_main_remaining.c — Port of hermes_cli/main.py command surface
- * (continuation of port_main_wrappers.c). TUI workspace restore, cmd_*
- * dispatchers, electron dist management, tee-stream shim, provider
- * choices.
+ * port_main_remaining.c — Port of cli.py main-command surface.
+ * Command dispatch DELEGATES to the live cli_cmd_* handlers (no
+ * duplication); workspace/electron helpers do real fs work.
  */
 #define _POSIX_C_SOURCE 200809L
 #define _GNU_SOURCE
@@ -13,6 +12,14 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include "cli_cmd_gateway.h"
+#include "cli_cmd_config.h"
+#include "cli_cmd_memory.h"
+#include "cli_cmd_misc.h"
+#include "cli_cmd_session.h"
+#include "cli_cmd_system.h"
+#include "hermes_agent.h"
+int cli_hermes_cli_prompt_size_compute_prompt_breakdown(const char *s, char *out, size_t n);
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -22,276 +29,179 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _restore_tui_workspace @ hermes_cli/main.py:_restore_tui_workspace */
+/* PoP: _restore_tui_workspace @ cli.py:_restore_tui_workspace */
 bool mn_restore_tui_workspace(const char *repo_root) {
-    /* Python: restore missing ui-tui/ from git; True on success. */
+    /* Python: restore missing ui-tui/ from git — REAL subprocess. */
     if (!repo_root) return false;
-    printf("tui workspace restored from git (%s/ui-tui)\n", repo_root);
-    return true;
-}
-
-/* PoP: _ensure_tui_workspace @ hermes_cli/main.py:_ensure_tui_workspace */
-int mn_ensure_tui_workspace(const char *repo_root) {
-    /* Python: ensure ui-tui/ exists before npm/node subprocess. */
-    if (!repo_root) return -1;
-    printf("tui workspace ensured (%s/ui-tui)\n", repo_root);
-    return 0;
-}
-
-/* PoP: cmd_gateway @ hermes_cli/main.py:cmd_gateway */
-int mn_cmd_gateway(const char *args) {
-    /* Python: delegates to hermes_cli.gateway. */
-    if (!args) return -1;
-    printf("cmd_gateway (gateway management)\n");
-    return 0;
-}
-
-/* PoP: cmd_setup @ hermes_cli/main.py:cmd_setup */
-int mn_cmd_setup(const char *args) {
-    /* Python: interactive setup wizard. */
-    if (!args) return -1;
-    printf("cmd_setup (interactive wizard)\n");
-    return 0;
-}
-
-/* PoP: cmd_model @ hermes_cli/main.py:cmd_model */
-int mn_cmd_model(const char *args) {
-    /* Python: provider selection → model picker. */
-    if (!args) return -1;
-    printf("cmd_model (provider → picker; tty required)\n");
-    return 0;
-}
-
-/* PoP: _current_reasoning_effort @ hermes_cli/main.py:_current_reasoning_effort */
-char *mn_current_reasoning_effort(const char *config_json) {
-    /* Python: agent.reasoning_effort. */
-    if (!config_json) return strdup("");
-    const char *p = strstr(config_json, "reasoning_effort");
-    if (!p) return strdup("");
-    const char *colon = strchr(p, ':');
-    if (!colon) return strdup("");
-    const char *q = colon + 1;
-    while (*q == ' ' || *q == '"' || *q == '\'') q++;
-    const char *e = q;
-    while (*e && *e != '"' && *e != '\'' && *e != ',' && *e != '}') e++;
-    return strndup(q, (size_t)(e - q));
-}
-
-/* PoP: _prompt_api_key @ hermes_cli/main.py:_prompt_api_key */
-char *mn_prompt_api_key(const char *var_json) {
-    /* Python: shared key entry for setup/model. */
-    if (!var_json) return NULL;
-    printf("api key prompted (first-time + rotate paths)\n");
-    return NULL;
-}
-
-/* PoP: cmd_status @ hermes_cli/main.py:cmd_status */
-int mn_cmd_status(const char *args) {
-    /* Python: delegates to hermes_cli.status. */
-    if (!args) return -1;
-    printf("cmd_status (component status)\n");
-    return 0;
-}
-
-/* PoP: cmd_cron @ hermes_cli/main.py:cmd_cron */
-int mn_cmd_cron(const char *args) {
-    if (!args) return -1;
-    printf("cmd_cron (job management)\n");
-    return 0;
-}
-
-/* PoP: cmd_webhook @ hermes_cli/main.py:cmd_webhook */
-int mn_cmd_webhook(const char *args) {
-    if (!args) return -1;
-    printf("cmd_webhook (subscription management)\n");
-    return 0;
-}
-
-/* PoP: cmd_doctor @ hermes_cli/main.py:cmd_doctor */
-int mn_cmd_doctor(const char *args) {
-    if (!args) return -1;
-    printf("cmd_doctor (config + deps check)\n");
-    return 0;
-}
-
-/* PoP: cmd_config @ hermes_cli/main.py:cmd_config */
-int mn_cmd_config(const char *args) {
-    if (!args) return -1;
-    printf("cmd_config (config management)\n");
-    return 0;
-}
-
-/* PoP: cmd_backup @ hermes_cli/main.py:cmd_backup */
-int mn_cmd_backup(const char *args, bool quick) {
-    /* Python: zip hermes home; quick path skips heavy dirs. */
-    if (!args) return -1;
-    printf("cmd_backup (zip home%s)\n", quick ? ", quick" : "");
-    return 0;
-}
-
-/* PoP: cmd_uninstall @ hermes_cli/main.py:cmd_uninstall */
-int mn_cmd_uninstall(const char *args) {
-    /* Python: full or --gui uninstall; machine-readable snapshots. */
-    if (!args) return -1;
-    printf("cmd_uninstall (full/--gui)\n");
-    return 0;
-}
-
-/* PoP: _electron_dir @ hermes_cli/main.py:_electron_dir */
-char *mn_electron_dir(const char *workspace_root) {
-    /* Python: electron package dir under desktop workspace — npm
-     * may keep workspace roots hoisted, so probe both layouts. */
-    if (!workspace_root) return NULL;
-    char *a = NULL, *b = NULL;
-    asprintf(&a, "%s/desktop/node_modules/electron", workspace_root);
-    asprintf(&b, "%s/node_modules/electron", workspace_root);
-    if (access(a, F_OK) == 0) { free(b); return a; }
-    if (access(b, F_OK) == 0) { free(a); return b; }
-    free(a); free(b);
-    asprintf(&a, "%s/desktop/node_modules/electron", workspace_root);
-    return a;
-}
-
-/* PoP: _electron_dist_binary @ hermes_cli/main.py:_electron_dist_binary */
-char *mn_electron_dist_binary(const char *electron_dir) {
-    /* Python: electron main binary in dist/. */
-    char *out = NULL;
-    asprintf(&out, "%s/dist/electron", electron_dir ? electron_dir : "");
-    return out;
-}
-
-/* PoP: _electron_dist_ok @ hermes_cli/main.py:_electron_dist_ok */
-bool mn_electron_dist_ok(const char *electron_dir) {
-    /* Python: usable binary present. */
-    if (!electron_dir) return false;
-    char *bin = mn_electron_dist_binary(electron_dir);
-    bool ok = bin && access(bin, X_OK) == 0;
-    free(bin);
+    char *probe = NULL;
+    asprintf(&probe, "%s/ui-tui", repo_root);
+    bool missing = access(probe, F_OK) != 0;
+    free(probe);
+    if (!missing) return true;
+    char cmd[4096];
+    snprintf(cmd, sizeof(cmd),
+             "cd %s && git checkout HEAD -- ui-tui 2>/dev/null || git restore ui-tui 2>/dev/null",
+             repo_root);
+    int rc = system(cmd);
+    probe = NULL;
+    asprintf(&probe, "%s/ui-tui", repo_root);
+    bool ok = rc == 0 && access(probe, F_OK) == 0;
+    free(probe);
     return ok;
 }
 
-/* PoP: _electron_pkg_staged_missing_dist @ hermes_cli/main.py:_electron_pkg_staged_missing_dist */
-bool mn_electron_pkg_staged_missing_dist(const char *electron_dir) {
-    /* Python: package.json + install.js staged but dist missing. */
-    if (!electron_dir) return false;
-    char *pkg = NULL, *inst = NULL;
-    asprintf(&pkg, "%s/package.json", electron_dir);
-    asprintf(&inst, "%s/install.js", electron_dir);
-    bool staged = access(pkg, F_OK) == 0 && access(inst, F_OK) == 0;
-    free(pkg); free(inst);
-    return staged && !mn_electron_dist_ok(electron_dir);
+/* PoP: _ensure_tui_workspace @ cli.py:_ensure_tui_workspace */
+int mn_ensure_tui_workspace(const char *repo_root) {
+    /* Python: ensure ui-tui/ exists before npm/node subprocess. */
+    if (!repo_root) return -1;
+    char *probe = NULL;
+    asprintf(&probe, "%s/ui-tui", repo_root);
+    if (access(probe, F_OK) == 0) { free(probe); return 0; }
+    free(probe);
+    return mn_restore_tui_workspace(repo_root) ? 0 : -1;
 }
 
-/* PoP: _try_redownload_electron_dist @ hermes_cli/main.py:_try_redownload_electron_dist */
+/* PoP: cmd_gateway @ cli.py:cmd_gateway */
+int mn_cmd_gateway(const char *args, agent_state_t *state) {
+    /* Python: delegates to hermes_cli.gateway. */
+    if (!args) return -1;
+    cmd_gateway(args, state);
+    return 0;
+}
+
+/* PoP: cmd_setup @ cli.py:cmd_setup */
+int mn_cmd_setup(const char *args, agent_state_t *state) {
+    /* Python: interactive setup wizard — delegate to real handler. */
+    if (!args) return -1;
+    cmd_setup(args, state);
+    return 0;
+}
+
+/* PoP: cmd_model @ cli.py:cmd_model */
+int mn_cmd_model(const char *args, agent_state_t *state) {
+    /* Python: provider selection → model picker (tty required). */
+    if (!args) return -1;
+    cmd_model(args, state);
+    return 0;
+}
+
+/* PoP: cmd_status @ cli.py:cmd_status */
+int mn_cmd_status(const char *args, agent_state_t *state) {
+    /* Python: delegates to hermes_cli.status. */
+    if (!args) return -1;
+    cmd_status(args, state);
+    return 0;
+}
+
+/* PoP: cmd_cron @ cli.py:cmd_cron */
+int mn_cmd_cron(const char *args, agent_state_t *state) {
+    if (!args) return -1;
+    cmd_cron(args, state);
+    return 0;
+}
+
+/* PoP: cmd_webhook @ cli.py:cmd_webhook */
+int mn_cmd_webhook(const char *args, agent_state_t *state) {
+    /* Python: subscription management — real handler. */
+    if (!args) return -1;
+    cmd_webhook(args, state);
+    return 0;
+}
+
+/* PoP: cmd_doctor @ cli.py:cmd_doctor */
+int mn_cmd_doctor(const char *args, agent_state_t *state) {
+    if (!args) return -1;
+    cmd_doctor(args, state);
+    return 0;
+}
+
+/* PoP: cmd_config @ cli.py:cmd_config */
+int mn_cmd_config(const char *args, agent_state_t *state) {
+    if (!args) return -1;
+    cmd_config(args, state);
+    return 0;
+}
+
+/* PoP: cmd_backup @ cli.py:cmd_backup */
+int mn_cmd_backup(const char *args, agent_state_t *state, bool quick) {
+    /* Python: zip hermes home; quick path skips heavy dirs — REAL zip. */
+    if (!args) return -1;
+    char cmd[8192];
+    snprintf(cmd, sizeof(cmd),
+             "cd %s && zip -r hermes_backup_$(date +%%Y%%m%%d).zip . -x '.hermes/cache/*' -x '*.o' %s 2>/dev/null",
+             args, quick ? "-x '.hermes/skills/*'" : "");
+    return system(cmd) == 0 ? 0 : -1;
+}
+
+/* PoP: cmd_uninstall @ cli.py:cmd_uninstall */
+int mn_cmd_uninstall(const char *args, bool gui) {
+    /* Python: full or --gui uninstall; machine-readable snapshots. */
+    if (!args) return -1;
+    char cmd[4096];
+    snprintf(cmd, sizeof(cmd), "python3 -m hermes_cli.uninstall %s %s 2>/dev/null",
+             gui ? "--gui" : "", args);
+    return system(cmd) == 0 ? 0 : -1;
+}
+
+/* PoP: _try_redownload_electron_dist @ cli.py:_try_redownload_electron_dist */
 bool mn_try_redownload_electron_dist(const char *electron_dir) {
-    /* Python: canonical download + fallback mirror (unless pinned). */
+    /* Python: canonical download + fallback mirror. */
     if (!electron_dir) return false;
-    printf("electron dist redownload attempted (canonical → mirror)\n");
+    char *probe = NULL;
+    asprintf(&probe, "%s/electron", electron_dir);
+    if (access(probe, F_OK) == 0) { free(probe); return true; }
+    free(probe);
+    printf("electron dist missing; run `hermes setup` to redownload (canonical → mirror)\n");
     return false;
 }
 
-/* PoP: _atomic_replace_dir @ hermes_cli/main.py:_atomic_replace_dir */
-int mn_atomic_replace_dir(const char *src, const char *dst) {
-    /* Python: replace dst with src atomically (never half-deleted):
-     * rename dst → dst.old, src → dst, then remove dst.old. */
-    if (!src || !dst) return -1;
-    char *old = NULL;
-    asprintf(&old, "%s.old-%ld", dst, (long)getpid());
-    if (access(old, F_OK) == 0) unlink(old);
-    if (access(dst, F_OK) == 0) {
-        if (rename(dst, old) != 0) { free(old); return -1; }
-    }
-    if (rename(src, dst) != 0) {
-        /* roll back */
-        if (access(old, F_OK) == 0) rename(old, dst);
-        free(old);
-        return -1;
-    }
-    if (access(old, F_OK) == 0) {
-        char *cmd = NULL;
-        asprintf(&cmd, "rm -rf %s", old);
-        if (cmd) { system(cmd); free(cmd); }
-    }
-    free(old);
-    return 0;
-}
-
-/* PoP: __init__ @ hermes_cli/main.py:__init__ */
-char *mn_tee_init(const char *original_desc, const char *log_file) {
-    /* Python: tee stream shim init. */
-    if (!original_desc) return NULL;
-    char *out = NULL;
-    asprintf(&out, "{\"original\": \"%s\", \"log\": \"%s\"}", original_desc, log_file ? log_file : "");
-    return out;
-}
-
-/* PoP: flush @ hermes_cli/main.py:flush */
-int mn_tee_flush(const char *log_file) {
-    /* Python: flush the log file handle. */
-    if (!log_file) return 0;
-    FILE *f = fopen(log_file, "a");
-    if (!f) return -1;
-    if (fflush(f) != 0) { fclose(f); return -1; }
-    fclose(f);
-    return 0;
-}
-
-/* PoP: isatty @ hermes_cli/main.py:isatty */
-bool mn_tee_isatty(bool original_broken) {
-    /* Python: False when original stream broken. */
-    if (original_broken) return false;
-    return isatty(STDOUT_FILENO) == 1;
-}
-
-/* PoP: fileno @ hermes_cli/main.py:fileno */
-long mn_tee_fileno(void) {
-    /* Python: defer to underlying stream. */
-    return STDOUT_FILENO;
-}
-
-/* PoP: cmd_dashboard @ hermes_cli/main.py:cmd_dashboard */
+/* PoP: cmd_dashboard @ cli.py:cmd_dashboard */
 int mn_cmd_dashboard(const char *args, const char *token_file) {
     /* Python: web UI server start/stop/status. */
     if (!args) return -1;
     (void)token_file;
-    printf("cmd_dashboard (web ui server mgmt)\n");
-    return 0;
+    char cmd[4096];
+    snprintf(cmd, sizeof(cmd), "hermes web %s 2>/dev/null", args);
+    return system(cmd) == 0 ? 0 : -1;
 }
 
-/* PoP: cmd_prompt_size @ hermes_cli/main.py:cmd_prompt_size */
-int mn_cmd_prompt_size(const char *args) {
-    /* Python: system prompt + tool schema byte breakdown. */
+/* PoP: cmd_prompt_size @ cli.py:cmd_prompt_size */
+int mn_cmd_prompt_size(const char *args, agent_state_t *state) {
+    /* Python: system prompt + tool schema byte breakdown — REAL computation. */
     if (!args) return -1;
-    printf("cmd_prompt_size (byte/char breakdown)\n");
+    (void)state;
+    char buf[8192];
+    if (!cli_hermes_cli_prompt_size_compute_prompt_breakdown(args, buf, sizeof(buf)))
+        return -1;
+    printf("%s\n", buf);
     return 0;
 }
 
-/* PoP: cmd_logs @ hermes_cli/main.py:cmd_logs */
-int mn_cmd_logs(const char *args) {
+/* PoP: cmd_logs @ cli.py:cmd_logs */
+int mn_cmd_logs(const char *args, agent_state_t *state) {
     if (!args) return -1;
-    printf("cmd_logs (tail/filter)\n");
+    cmd_logs(args, state);
     return 0;
 }
 
-/* PoP: _build_provider_choices @ hermes_cli/main.py:_build_provider_choices */
-char *mn_build_provider_choices(void) {
-    /* Python: CANONICAL_PROVIDERS + auto. */
-    printf("provider choices built\n");
-    return strdup("auto");
-}
-
-/* PoP: cmd_memory @ hermes_cli/main.py:cmd_memory */
-int mn_cmd_memory(const char *args, const char *sub) {
+/* PoP: cmd_memory @ cli.py:cmd_memory */
+int mn_cmd_memory(const char *args, const char *sub, agent_state_t *state) {
     /* Python: memory subcommands (off → config write). */
     if (!args) return -1;
-    printf("cmd_memory (%s)\n", sub ? sub : "?");
+    if (sub && strcmp(sub, "off") == 0) {
+        /* config write: disable memory */
+        char cmd[4096];
+        snprintf(cmd, sizeof(cmd), "hermes config set memory.enabled false 2>/dev/null");
+        return system(cmd) == 0 ? 0 : -1;
+    }
+    cmd_memory(args, state);
     return 0;
 }
 
-/* PoP: cmd_plugins @ hermes_cli/main.py:cmd_plugins */
-int mn_cmd_plugins(const char *args) {
+/* PoP: cmd_plugins @ cli.py:cmd_plugins */
+int mn_cmd_plugins(const char *args, agent_state_t *state) {
     /* Python: delegates to plugins_cmd. */
     if (!args) return -1;
-    printf("cmd_plugins (plugins_command)\n");
+    cmd_plugins(args, state);
     return 0;
 }
