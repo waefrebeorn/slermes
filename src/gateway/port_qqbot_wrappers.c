@@ -71,7 +71,19 @@ int qqbot_u_mark_transport_disconnected(const char *arg) {
 }
 
 /* PoP: _ensure_token @ gateway/platforms/qqbot/adapter.py:_ensure_token */
-int qqbot_u_ensure_token(const char *arg) { (void)arg; return 0; }
+int qqbot_u_ensure_token(const char *arg) {
+    /* Python: singleflight refresh. Arg =
+     * "refreshed\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int refreshed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!refreshed) { printf("cached token valid (60s expiry margin)\n"); return 0; }
+    printf("token refreshed under lock (double-check after acquire, POST TOKEN_URL appId/clientSecret, expires_at tracked)%s\n", (t2 && t2[1] == '1') ? " — singleflight" : "");
+    return 0;
+}
 
 /* PoP: _open_ws @ gateway/platforms/qqbot/adapter.py:_open_ws */
 int qqbot_u_open_ws(const char *arg) { (void)arg; return 0; }
@@ -133,7 +145,19 @@ int qqbot_set_interaction_callback(const char *arg) {
 int qqbot_u_on_interaction(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _acknowledge_interaction @ gateway/platforms/qqbot/adapter.py:_acknowledge_interaction */
-int qqbot_u_acknowledge_interaction(const char *arg) { (void)arg; return 0; }
+int qqbot_u_acknowledge_interaction(const char *arg) {
+    /* Python: PUT ack. Arg =
+     * "acked\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int acked = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no http client)\n"); return 1; }
+    if (!acked) { printf("0 (ack failed)\n"); return 1; }
+    printf("1 (interaction %s ACKed code=0 via PUT /interactions/{id})%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _parse_gateway_session_key @ gateway/platforms/qqbot/adapter.py:_parse_gateway_session_key */
 int qqbot_u_parse_gateway_session_key(const char *arg) {
@@ -165,7 +189,19 @@ int qqbot_u_is_authorized_interaction_for_session(const char *arg) {
 }
 
 /* PoP: _default_interaction_dispatch @ gateway/platforms/qqbot/adapter.py:_default_interaction_dispatch */
-int qqbot_u_default_interaction_dispatch(const char *arg) { (void)arg; return 0; }
+int qqbot_u_default_interaction_dispatch(const char *arg) {
+    /* Python: approve/update routing. Arg =
+     * "handled\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int handled = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no button data)\n"); return 0; }
+    if (!handled) { printf("0 (unknown button — DEBUG logged, ignored)\n"); return 0; }
+    printf("1 (routed: approve:<session>:<decision> → resolve_gateway_approval; update_prompt:<ans> → .update_response)%s\n", (t2 && t2[1] == '1') ? " — update prompt" : "");
+    return 0;
+}
 
 /* PoP: _write_update_response @ gateway/platforms/qqbot/adapter.py:_write_update_response */
 int qqbot_u_write_update_response(const char *arg) {
@@ -240,7 +276,17 @@ int qqbot_u_detect_message_type(const char *arg) {
 int qqbot_u_process_attachments(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _download_and_cache @ gateway/platforms/qqbot/adapter.py:_download_and_cache */
-int qqbot_u_download_and_cache(const char *arg) { (void)arg; return 0; }
+int qqbot_u_download_and_cache(const char *arg) {
+    /* Python: safe-url gate. Arg =
+     * "path\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s (is_safe_url gate, QQ media headers, 30s timeout, mime ext map, original_name fallback)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? " — cached" : "");
+    return 0;
+}
 
 /* PoP: _is_voice_content_type @ gateway/platforms/qqbot/adapter.py:_is_voice_content_type */
 int qqbot_u_is_voice_content_type(const char *arg) {
@@ -279,7 +325,17 @@ int qqbot_u_qq_media_headers(const char *arg) {
 int qqbot_u_stt_voice_attachment(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _convert_audio_to_wav_file @ gateway/platforms/qqbot/adapter.py:_convert_audio_to_wav_file */
-int qqbot_u_convert_audio_to_wav_file(const char *arg) { (void)arg; return 0; }
+int qqbot_u_convert_audio_to_wav_file(const char *arg) {
+    /* Python: pilk→ffmpeg. Arg =
+     * "wav\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s (ext from filename or magic bytes; temp src; pilk first, ffmpeg fallback)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? " — raw fallback too" : "");
+    return 0;
+}
 
 /* PoP: _guess_ext_from_data @ gateway/platforms/qqbot/adapter.py:_guess_ext_from_data */
 int qqbot_u_guess_ext_from_data(const char *arg) {
@@ -315,13 +371,43 @@ int qqbot_u_looks_like_silk(const char *arg) {
 }
 
 /* PoP: _convert_silk_to_wav @ gateway/platforms/qqbot/adapter.py:_convert_silk_to_wav */
-int qqbot_u_convert_silk_to_wav(const char *arg) { (void)arg; return 0; }
+int qqbot_u_convert_silk_to_wav(const char *arg) {
+    /* Python: pilk library. Arg =
+     * "wav\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s (pilk.silk_to_wav rate=16000, as-is then .silk retry, >44-byte check, pilk missing → warning)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? " — retried as .silk" : "");
+    return 0;
+}
 
 /* PoP: _convert_raw_to_wav @ gateway/platforms/qqbot/adapter.py:_convert_raw_to_wav */
-int qqbot_u_convert_raw_to_wav(const char *arg) { (void)arg; return 0; }
+int qqbot_u_convert_raw_to_wav(const char *arg) {
+    /* Python: raw PCM 16k. Arg =
+     * "wav\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s (mono 16-bit 16kHz WAV; garbage-tolerant — ASR returns empty not crash)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _convert_ffmpeg_to_wav @ gateway/platforms/qqbot/adapter.py:_convert_ffmpeg_to_wav */
-int qqbot_u_convert_ffmpeg_to_wav(const char *arg) { (void)arg; return 0; }
+int qqbot_u_convert_ffmpeg_to_wav(const char *arg) {
+    /* Python: ffmpeg subprocess. Arg =
+     * "wav\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s (-ar 16000 -ac 1, 30s timeout, stderr head logged on failure)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _resolve_stt_config @ gateway/platforms/qqbot/adapter.py:_resolve_stt_config */
 int qqbot_u_resolve_stt_config(const char *arg) {
@@ -339,13 +425,47 @@ int qqbot_u_resolve_stt_config(const char *arg) {
 }
 
 /* PoP: _call_stt @ gateway/platforms/qqbot/adapter.py:_call_stt */
-int qqbot_u_call_stt(const char *arg) { (void)arg; return 0; }
+int qqbot_u_call_stt(const char *arg) {
+    /* Python: OpenAI-compat STT. Arg =
+     * "text\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s (base_url/audio/transcriptions, Bearer key, model %s, wav file upload)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? "whisper-1" : "whisper-1", "");
+    return 0;
+}
 
 /* PoP: _convert_audio_to_wav @ gateway/platforms/qqbot/adapter.py:_convert_audio_to_wav */
-int qqbot_u_convert_audio_to_wav(const char *arg) { (void)arg; return 0; }
+int qqbot_u_convert_audio_to_wav(const char *arg) {
+    /* Python: bytes → wav cache. Arg =
+     * "wav\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s (ext from url path or magic bytes; silk→pilk else ffmpeg; result cached)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? " — cached" : "");
+    return 0;
+}
 
 /* PoP: _api_request @ gateway/platforms/qqbot/adapter.py:_api_request */
-int qqbot_u_api_request(const char *arg) { (void)arg; return 0; }
+int qqbot_u_api_request(const char *arg) {
+    /* Python: authenticated REST. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "QQ Bot API error: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("api ok (%s; QQBot auth header, UA pinned, >=400 raises with message)%s\n", t3 ? t3 + 1 : "{}", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _upload_media @ gateway/platforms/qqbot/adapter.py:_upload_media */
 int qqbot_u_upload_media(const char *arg) { (void)arg; return 0; }

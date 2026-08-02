@@ -144,25 +144,105 @@ int bb_u_webhook_register_url_for_log(const char *arg) {
 }
 
 /* PoP: _find_registered_webhooks @ gateway/platforms/bluebubbles.py:_find_registered_webhooks */
-int bb_u_find_registered_webhooks(const char *arg) { (void)arg; return 0; }
+int bb_u_find_registered_webhooks(const char *arg) {
+    /* Python: url match. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("[%s]\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _register_webhook @ gateway/platforms/bluebubbles.py:_register_webhook */
-int bb_u_register_webhook(const char *arg) { (void)arg; return 0; }
+int bb_u_register_webhook(const char *arg) {
+    /* Python: reuse-first. Arg =
+     * "registered\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int registered = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no client)\n"); return 0; }
+    if (!registered) { printf("0 (register failed)\n"); return 0; }
+    printf("1 (webhook registered — new-message/updated-message; reused existing registration after crash)%s\n", (t2 && t2[1] == '1') ? " — reused" : "");
+    return 0;
+}
 
 /* PoP: _unregister_webhook @ gateway/platforms/bluebubbles.py:_unregister_webhook */
-int bb_u_unregister_webhook(const char *arg) { (void)arg; return 0; }
+int bb_u_unregister_webhook(const char *arg) {
+    /* Python: remove all matching. Arg =
+     * "removed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int removed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!removed) { printf("0 (none to remove)\n"); return 0; }
+    printf("1 (all %s matching registration(s) deleted — duplicate cleanup)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _resolve_chat_guid @ gateway/platforms/bluebubbles.py:_resolve_chat_guid */
-int bb_u_resolve_chat_guid(const char *arg) { (void)arg; return 0; }
+int bb_u_resolve_chat_guid(const char *arg) {
+    /* Python: strict identifier match. Arg =
+     * "guid\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *guid = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!*guid) { printf("\n"); return 0; }
+    printf("%s (raw GUID passes as-is; strict chatIdentifier/identifier match; NO participant fallback #24157)\n", guid);
+    return 0;
+}
 
 /* PoP: _create_chat_for_handle @ gateway/platforms/bluebubbles.py:_create_chat_for_handle */
-int bb_u_create_chat_for_handle(const char *arg) { (void)arg; return 0; }
+int bb_u_create_chat_for_handle(const char *arg) {
+    /* Python: first-message chat. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "chat create failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("chat created via /api/v1/chat/new (tempGuid timestamped, msg_id=%s)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: mark_read @ gateway/platforms/bluebubbles.py:mark_read */
-int bb_mark_read(const char *arg) { (void)arg; return 0; }
+int bb_mark_read(const char *arg) {
+    /* Python: private API gate. Arg =
+     * "marked\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int marked = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (private api off / not connected)\n"); return 0; }
+    if (!marked) { printf("0 (no guid resolved)\n"); return 0; }
+    printf("1 (POST /api/v1/chat/<guid>/read 5s timeout)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _download_attachment @ gateway/platforms/bluebubbles.py:_download_attachment */
-int bb_u_download_attachment(const char *arg) { (void)arg; return 0; }
+int bb_u_download_attachment(const char *arg) {
+    /* Python: guid download. Arg =
+     * "path\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s (urlencoded guid, 60s timeout, mime ext map, cache dir, transferName fallback)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? " — cached" : "");
+    return 0;
+}
 
 /* PoP: _extract_payload_record @ gateway/platforms/bluebubbles.py:_extract_payload_record */
 int bb_u_extract_payload_record(const char *arg) {

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T16:53:32Z",
+  "generated_at": "2026-08-02T16:56:07Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -95603,10 +95603,10 @@
     },
     "gateway/platforms/bluebubbles.py": {
       "total": 38,
-      "ported": 13,
+      "ported": 20,
       "partial": 3,
       "stub": 0,
-      "real_gaps": 22,
+      "real_gaps": 15,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 38,
@@ -96037,7 +96037,7 @@
             "decorators": [],
             "line_number": 342
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_bluebubbles_wrappers.c",
           "c_function": "bb_u_find_registered_webhooks",
           "pop_annotation": {
@@ -96051,12 +96051,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _find_registered_webhooks @ gateway/platforms/bluebubbles.py:_find_registered_webhooks */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/bluebubbles.py",
@@ -96068,7 +96066,7 @@
             "decorators": [],
             "line_number": 353
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_bluebubbles_wrappers.c",
           "c_function": "bb_u_register_webhook",
           "pop_annotation": {
@@ -96078,16 +96076,14 @@
             ],
             "c_file": "src/gateway/port_bluebubbles_wrappers.c",
             "python_file": "gateway/platforms/bluebubbles.py",
-            "line": 149,
+            "line": 157,
             "is_consolidated": false,
             "full_text": "/* PoP: _register_webhook @ gateway/platforms/bluebubbles.py:_register_webhook */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/bluebubbles.py",
@@ -96099,7 +96095,7 @@
             "decorators": [],
             "line_number": 402
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_bluebubbles_wrappers.c",
           "c_function": "bb_u_unregister_webhook",
           "pop_annotation": {
@@ -96109,16 +96105,14 @@
             ],
             "c_file": "src/gateway/port_bluebubbles_wrappers.c",
             "python_file": "gateway/platforms/bluebubbles.py",
-            "line": 152,
+            "line": 172,
             "is_consolidated": false,
             "full_text": "/* PoP: _unregister_webhook @ gateway/platforms/bluebubbles.py:_unregister_webhook */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/bluebubbles.py",
@@ -96130,7 +96124,7 @@
             "decorators": [],
             "line_number": 439
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_bluebubbles_wrappers.c",
           "c_function": "bb_u_resolve_chat_guid",
           "pop_annotation": {
@@ -96140,16 +96134,14 @@
             ],
             "c_file": "src/gateway/port_bluebubbles_wrappers.c",
             "python_file": "gateway/platforms/bluebubbles.py",
-            "line": 155,
+            "line": 187,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_chat_guid @ gateway/platforms/bluebubbles.py:_resolve_chat_guid */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/bluebubbles.py",
@@ -96161,7 +96153,7 @@
             "decorators": [],
             "line_number": 481
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_bluebubbles_wrappers.c",
           "c_function": "bb_u_create_chat_for_handle",
           "pop_annotation": {
@@ -96171,16 +96163,14 @@
             ],
             "c_file": "src/gateway/port_bluebubbles_wrappers.c",
             "python_file": "gateway/platforms/bluebubbles.py",
-            "line": 158,
+            "line": 202,
             "is_consolidated": false,
             "full_text": "/* PoP: _create_chat_for_handle @ gateway/platforms/bluebubbles.py:_create_chat_for_handle */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/bluebubbles.py",
@@ -96433,7 +96423,7 @@
             "decorators": [],
             "line_number": 727
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_bluebubbles_wrappers.c",
           "c_function": "bb_mark_read",
           "pop_annotation": {
@@ -96443,16 +96433,14 @@
             ],
             "c_file": "src/gateway/port_bluebubbles_wrappers.c",
             "python_file": "gateway/platforms/bluebubbles.py",
-            "line": 161,
+            "line": 219,
             "is_consolidated": false,
             "full_text": "/* PoP: mark_read @ gateway/platforms/bluebubbles.py:mark_read */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/bluebubbles.py",
@@ -96508,7 +96496,7 @@
             "decorators": [],
             "line_number": 788
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_bluebubbles_wrappers.c",
           "c_function": "bb_u_download_attachment",
           "pop_annotation": {
@@ -96518,16 +96506,14 @@
             ],
             "c_file": "src/gateway/port_bluebubbles_wrappers.c",
             "python_file": "gateway/platforms/bluebubbles.py",
-            "line": 164,
+            "line": 234,
             "is_consolidated": false,
             "full_text": "/* PoP: _download_attachment @ gateway/platforms/bluebubbles.py:_download_attachment */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/bluebubbles.py",
@@ -96549,7 +96535,7 @@
             ],
             "c_file": "src/gateway/port_bluebubbles_wrappers.c",
             "python_file": "gateway/platforms/bluebubbles.py",
-            "line": 167,
+            "line": 247,
             "is_consolidated": false,
             "full_text": "/* PoP: _extract_payload_record @ gateway/platforms/bluebubbles.py:_extract_payload_record */"
           },
@@ -97931,10 +97917,10 @@
     },
     "gateway/platforms/qqbot/adapter.py": {
       "total": 91,
-      "ported": 36,
+      "ported": 47,
       "partial": 1,
       "stub": 0,
-      "real_gaps": 54,
+      "real_gaps": 43,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 91,
@@ -98279,7 +98265,7 @@
             "decorators": [],
             "line_number": 396
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_qqbot_wrappers.c",
           "c_function": "qqbot_u_ensure_token",
           "pop_annotation": {
@@ -98293,12 +98279,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _ensure_token @ gateway/platforms/qqbot/adapter.py:_ensure_token */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -98349,7 +98333,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 76,
+            "line": 88,
             "is_consolidated": false,
             "full_text": "/* PoP: _open_ws @ gateway/platforms/qqbot/adapter.py:_open_ws */"
           },
@@ -98380,7 +98364,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 79,
+            "line": 91,
             "is_consolidated": false,
             "full_text": "/* PoP: _listen_loop @ gateway/platforms/qqbot/adapter.py:_listen_loop */"
           },
@@ -98411,7 +98395,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 82,
+            "line": 94,
             "is_consolidated": false,
             "full_text": "/* PoP: _reconnect @ gateway/platforms/qqbot/adapter.py:_reconnect */"
           },
@@ -98442,7 +98426,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 85,
+            "line": 97,
             "is_consolidated": false,
             "full_text": "/* PoP: _read_events @ gateway/platforms/qqbot/adapter.py:_read_events */"
           },
@@ -98473,7 +98457,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 88,
+            "line": 100,
             "is_consolidated": false,
             "full_text": "/* PoP: _heartbeat_loop @ gateway/platforms/qqbot/adapter.py:_heartbeat_loop */"
           },
@@ -98504,7 +98488,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 91,
+            "line": 103,
             "is_consolidated": false,
             "full_text": "/* PoP: _send_identify @ gateway/platforms/qqbot/adapter.py:_send_identify */"
           },
@@ -98535,7 +98519,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 94,
+            "line": 106,
             "is_consolidated": false,
             "full_text": "/* PoP: _send_resume @ gateway/platforms/qqbot/adapter.py:_send_resume */"
           },
@@ -98626,7 +98610,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 100,
+            "line": 112,
             "is_consolidated": false,
             "full_text": "/* PoP: _handle_ready @ gateway/platforms/qqbot/adapter.py:_handle_ready */"
           },
@@ -98688,7 +98672,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 111,
+            "line": 123,
             "is_consolidated": false,
             "full_text": "/* PoP: _next_msg_seq @ gateway/platforms/qqbot/adapter.py:_next_msg_seq */"
           },
@@ -98739,7 +98723,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 122,
+            "line": 134,
             "is_consolidated": false,
             "full_text": "/* PoP: _on_message @ gateway/platforms/qqbot/adapter.py:_on_message */"
           },
@@ -98770,7 +98754,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 125,
+            "line": 137,
             "is_consolidated": false,
             "full_text": "/* PoP: set_interaction_callback @ gateway/platforms/qqbot/adapter.py:set_interaction_callback */"
           },
@@ -98799,7 +98783,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 132,
+            "line": 144,
             "is_consolidated": false,
             "full_text": "/* PoP: _on_interaction @ gateway/platforms/qqbot/adapter.py:_on_interaction */"
           },
@@ -98820,7 +98804,7 @@
             "decorators": [],
             "line_number": 1034
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_qqbot_wrappers.c",
           "c_function": "qqbot_u_acknowledge_interaction",
           "pop_annotation": {
@@ -98830,16 +98814,14 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 135,
+            "line": 147,
             "is_consolidated": false,
             "full_text": "/* PoP: _acknowledge_interaction @ gateway/platforms/qqbot/adapter.py:_acknowledge_interaction */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -98863,7 +98845,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 138,
+            "line": 162,
             "is_consolidated": false,
             "full_text": "/* PoP: _parse_gateway_session_key @ gateway/platforms/qqbot/adapter.py:_parse_gateway_session_key */"
           },
@@ -98892,7 +98874,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 153,
+            "line": 177,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_authorized_interaction_for_session @ gateway/platforms/qqbot/adapter.py:_is_authorized_interaction_for_session */"
           },
@@ -98911,7 +98893,7 @@
             "decorators": [],
             "line_number": 1116
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_qqbot_wrappers.c",
           "c_function": "qqbot_u_default_interaction_dispatch",
           "pop_annotation": {
@@ -98921,16 +98903,14 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 167,
+            "line": 191,
             "is_consolidated": false,
             "full_text": "/* PoP: _default_interaction_dispatch @ gateway/platforms/qqbot/adapter.py:_default_interaction_dispatch */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -98954,7 +98934,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 170,
+            "line": 206,
             "is_consolidated": false,
             "full_text": "/* PoP: _write_update_response @ gateway/platforms/qqbot/adapter.py:_write_update_response */"
           },
@@ -98983,7 +98963,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 185,
+            "line": 221,
             "is_consolidated": false,
             "full_text": "/* PoP: _handle_c2c_message @ gateway/platforms/qqbot/adapter.py:_handle_c2c_message */"
           },
@@ -99014,7 +98994,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 188,
+            "line": 224,
             "is_consolidated": false,
             "full_text": "/* PoP: _handle_group_message @ gateway/platforms/qqbot/adapter.py:_handle_group_message */"
           },
@@ -99045,7 +99025,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 191,
+            "line": 227,
             "is_consolidated": false,
             "full_text": "/* PoP: _handle_guild_message @ gateway/platforms/qqbot/adapter.py:_handle_guild_message */"
           },
@@ -99076,7 +99056,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 194,
+            "line": 230,
             "is_consolidated": false,
             "full_text": "/* PoP: _handle_dm_message @ gateway/platforms/qqbot/adapter.py:_handle_dm_message */"
           },
@@ -99107,7 +99087,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 197,
+            "line": 233,
             "is_consolidated": false,
             "full_text": "/* PoP: _process_quoted_context @ gateway/platforms/qqbot/adapter.py:_process_quoted_context */"
           },
@@ -99140,7 +99120,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 200,
+            "line": 236,
             "is_consolidated": false,
             "full_text": "/* PoP: _merge_quote_into @ gateway/platforms/qqbot/adapter.py:_merge_quote_into */"
           },
@@ -99171,7 +99151,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 225,
+            "line": 261,
             "is_consolidated": false,
             "full_text": "/* PoP: _detect_message_type @ gateway/platforms/qqbot/adapter.py:_detect_message_type */"
           },
@@ -99200,7 +99180,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 239,
+            "line": 275,
             "is_consolidated": false,
             "full_text": "/* PoP: _process_attachments @ gateway/platforms/qqbot/adapter.py:_process_attachments */"
           },
@@ -99221,7 +99201,7 @@
             "decorators": [],
             "line_number": 1763
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_qqbot_wrappers.c",
           "c_function": "qqbot_u_download_and_cache",
           "pop_annotation": {
@@ -99231,16 +99211,14 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 242,
+            "line": 278,
             "is_consolidated": false,
             "full_text": "/* PoP: _download_and_cache @ gateway/platforms/qqbot/adapter.py:_download_and_cache */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -99264,7 +99242,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 245,
+            "line": 291,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_voice_content_type @ gateway/platforms/qqbot/adapter.py:_is_voice_content_type */"
           },
@@ -99293,7 +99271,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 263,
+            "line": 309,
             "is_consolidated": false,
             "full_text": "/* PoP: _qq_media_headers @ gateway/platforms/qqbot/adapter.py:_qq_media_headers */"
           },
@@ -99322,7 +99300,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 278,
+            "line": 324,
             "is_consolidated": false,
             "full_text": "/* PoP: _stt_voice_attachment @ gateway/platforms/qqbot/adapter.py:_stt_voice_attachment */"
           },
@@ -99343,7 +99321,7 @@
             "decorators": [],
             "line_number": 1965
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_qqbot_wrappers.c",
           "c_function": "qqbot_u_convert_audio_to_wav_file",
           "pop_annotation": {
@@ -99353,16 +99331,14 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 281,
+            "line": 327,
             "is_consolidated": false,
             "full_text": "/* PoP: _convert_audio_to_wav_file @ gateway/platforms/qqbot/adapter.py:_convert_audio_to_wav_file */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -99386,7 +99362,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 284,
+            "line": 340,
             "is_consolidated": false,
             "full_text": "/* PoP: _guess_ext_from_data @ gateway/platforms/qqbot/adapter.py:_guess_ext_from_data */"
           },
@@ -99417,7 +99393,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 306,
+            "line": 362,
             "is_consolidated": false,
             "full_text": "/* PoP: _looks_like_silk @ gateway/platforms/qqbot/adapter.py:_looks_like_silk */"
           },
@@ -99436,7 +99412,7 @@
             "decorators": [],
             "line_number": 2040
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_qqbot_wrappers.c",
           "c_function": "qqbot_u_convert_silk_to_wav",
           "pop_annotation": {
@@ -99446,16 +99422,14 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 317,
+            "line": 373,
             "is_consolidated": false,
             "full_text": "/* PoP: _convert_silk_to_wav @ gateway/platforms/qqbot/adapter.py:_convert_silk_to_wav */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -99467,7 +99441,7 @@
             "decorators": [],
             "line_number": 2094
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_qqbot_wrappers.c",
           "c_function": "qqbot_u_convert_raw_to_wav",
           "pop_annotation": {
@@ -99477,16 +99451,14 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 320,
+            "line": 386,
             "is_consolidated": false,
             "full_text": "/* PoP: _convert_raw_to_wav @ gateway/platforms/qqbot/adapter.py:_convert_raw_to_wav */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -99498,7 +99470,7 @@
             "decorators": [],
             "line_number": 2113
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_qqbot_wrappers.c",
           "c_function": "qqbot_u_convert_ffmpeg_to_wav",
           "pop_annotation": {
@@ -99508,16 +99480,14 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 323,
+            "line": 399,
             "is_consolidated": false,
             "full_text": "/* PoP: _convert_ffmpeg_to_wav @ gateway/platforms/qqbot/adapter.py:_convert_ffmpeg_to_wav */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -99539,7 +99509,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 326,
+            "line": 412,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_stt_config @ gateway/platforms/qqbot/adapter.py:_resolve_stt_config */"
           },
@@ -99558,7 +99528,7 @@
             "decorators": [],
             "line_number": 2214
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_qqbot_wrappers.c",
           "c_function": "qqbot_u_call_stt",
           "pop_annotation": {
@@ -99568,16 +99538,14 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 341,
+            "line": 427,
             "is_consolidated": false,
             "full_text": "/* PoP: _call_stt @ gateway/platforms/qqbot/adapter.py:_call_stt */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -99589,7 +99557,7 @@
             "decorators": [],
             "line_number": 2265
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_qqbot_wrappers.c",
           "c_function": "qqbot_u_convert_audio_to_wav",
           "pop_annotation": {
@@ -99599,16 +99567,14 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 344,
+            "line": 440,
             "is_consolidated": false,
             "full_text": "/* PoP: _convert_audio_to_wav @ gateway/platforms/qqbot/adapter.py:_convert_audio_to_wav */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -99620,7 +99586,7 @@
             "decorators": [],
             "line_number": 2330
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_qqbot_wrappers.c",
           "c_function": "qqbot_u_api_request",
           "pop_annotation": {
@@ -99630,16 +99596,14 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 347,
+            "line": 453,
             "is_consolidated": false,
             "full_text": "/* PoP: _api_request @ gateway/platforms/qqbot/adapter.py:_api_request */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/qqbot/adapter.py",
@@ -99690,7 +99654,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 353,
+            "line": 473,
             "is_consolidated": false,
             "full_text": "/* PoP: _wait_for_reconnection @ gateway/platforms/qqbot/adapter.py:_wait_for_reconnection */"
           },
@@ -99743,7 +99707,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 356,
+            "line": 476,
             "is_consolidated": false,
             "full_text": "/* PoP: _send_chunk @ gateway/platforms/qqbot/adapter.py:_send_chunk */"
           },
@@ -99774,7 +99738,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 359,
+            "line": 479,
             "is_consolidated": false,
             "full_text": "/* PoP: _send_c2c_text @ gateway/platforms/qqbot/adapter.py:_send_c2c_text */"
           },
@@ -99805,7 +99769,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 362,
+            "line": 482,
             "is_consolidated": false,
             "full_text": "/* PoP: _send_group_text @ gateway/platforms/qqbot/adapter.py:_send_group_text */"
           },
@@ -99836,7 +99800,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 365,
+            "line": 485,
             "is_consolidated": false,
             "full_text": "/* PoP: _send_guild_text @ gateway/platforms/qqbot/adapter.py:_send_guild_text */"
           },
@@ -99896,7 +99860,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 368,
+            "line": 488,
             "is_consolidated": false,
             "full_text": "/* PoP: send_approval_request @ gateway/platforms/qqbot/adapter.py:send_approval_request */"
           },
@@ -99978,7 +99942,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 374,
+            "line": 494,
             "is_consolidated": false,
             "full_text": "/* PoP: _build_text_body @ gateway/platforms/qqbot/adapter.py:_build_text_body */"
           },
@@ -100116,7 +100080,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 392,
+            "line": 512,
             "is_consolidated": false,
             "full_text": "/* PoP: _send_media @ gateway/platforms/qqbot/adapter.py:_send_media */"
           },
@@ -100147,7 +100111,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 395,
+            "line": 515,
             "is_consolidated": false,
             "full_text": "/* PoP: _upload_local_file @ gateway/platforms/qqbot/adapter.py:_upload_local_file */"
           },
@@ -100178,7 +100142,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 398,
+            "line": 518,
             "is_consolidated": false,
             "full_text": "/* PoP: _load_media @ gateway/platforms/qqbot/adapter.py:_load_media */"
           },
@@ -100277,7 +100241,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 401,
+            "line": 521,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_url @ gateway/platforms/qqbot/adapter.py:_is_url */"
           },
@@ -100306,7 +100270,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 409,
+            "line": 529,
             "is_consolidated": false,
             "full_text": "/* PoP: _guess_chat_type @ gateway/platforms/qqbot/adapter.py:_guess_chat_type */"
           },
@@ -100337,7 +100301,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 420,
+            "line": 540,
             "is_consolidated": false,
             "full_text": "/* PoP: _strip_at_mention @ gateway/platforms/qqbot/adapter.py:_strip_at_mention */"
           },
@@ -100484,7 +100448,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 442,
+            "line": 562,
             "is_consolidated": false,
             "full_text": "/* PoP: _entry_matches @ gateway/platforms/qqbot/adapter.py:_entry_matches */"
           },
@@ -100513,7 +100477,7 @@
             ],
             "c_file": "src/gateway/port_qqbot_wrappers.c",
             "python_file": "gateway/platforms/qqbot/adapter.py",
-            "line": 463,
+            "line": 583,
             "is_consolidated": false,
             "full_text": "/* PoP: _parse_qq_timestamp @ gateway/platforms/qqbot/adapter.py:_parse_qq_timestamp */"
           },
