@@ -16,6 +16,7 @@ typedef struct {
     int max_tokens;
 } budget_config_t;
 
+/* PoP: budget_for_agent @ agent/tool_executor.py:_budget_for_agent */
 budget_config_t budget_for_agent(int context_length) {
     budget_config_t budget = {100000, 4096}; /* DEFAULT_BUDGET */
     

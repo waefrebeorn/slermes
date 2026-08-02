@@ -109,6 +109,7 @@ static bool has_turn_aborted_marker(const char *text) {
     return false;
 }
 
+/* PoP: classify_oauth_failure @ agent/transports/codex_app_server_session.py:_classify_oauth_failure */
 static const char *classify_oauth_failure(const char *s1, const char *s2) {
     /* Build a combined lowercase haystack */
     size_t len = (s1 ? strlen(s1) : 0) + (s2 ? strlen(s2) : 0) + 2;
@@ -133,6 +134,7 @@ static const char *classify_oauth_failure(const char *s1, const char *s2) {
     return NULL;
 }
 
+/* PoP: approval_choice_to_codex_decision @ agent/transports/codex_app_server_session.py:_approval_choice_to_codex_decision */
 static const char *approval_choice_to_codex_decision(const char *choice) {
     if (!choice) return "decline";
     if (strcmp(choice, "once") == 0) return "accept";
@@ -143,6 +145,7 @@ static const char *approval_choice_to_codex_decision(const char *choice) {
 
 /* ---- pending file-change cache ---- */
 
+/* PoP: track_pending_file_change @ agent/transports/codex_app_server_session.py:_track_pending_file_change */
 static void track_pending_file_change(codex_session_t *s, const char *notification_json) {
     json_node_t *notif = json_parse(notification_json, NULL);
     if (!notif) return;
@@ -234,6 +237,7 @@ static const char *lookup_pending_file_change(codex_session_t *s, const char *it
 
 /* ---- error formatting with stderr tail ---- */
 
+/* PoP: format_error_with_stderr @ agent/transports/codex_app_server_session.py:_format_error_with_stderr */
 static char *format_error_with_stderr(codex_session_t *s, const char *prefix,
                                        const char *exc_str, int tail_lines) {
     size_t prefix_len = strlen(prefix);
@@ -423,6 +427,7 @@ static void clear_interrupt(codex_session_t *s) {
  *  Internal: issue turn/interrupt
  * ================================================================ */
 
+/* PoP: issue_interrupt @ agent/transports/codex_app_server_session.py:_issue_interrupt */
 static void issue_interrupt(codex_session_t *s, const char *turn_id) {
     if (!s->client || !s->thread_id || !turn_id) return;
     char params[512];
@@ -436,6 +441,7 @@ static void issue_interrupt(codex_session_t *s, const char *turn_id) {
  *  Internal: handle server request (approval bridge)
  * ================================================================ */
 
+/* PoP: handle_server_request @ agent/transports/codex_app_server_session.py:_handle_server_request */
 static void handle_server_request(codex_session_t *s, const char *req_json) {
     if (!s->client || !req_json) return;
 

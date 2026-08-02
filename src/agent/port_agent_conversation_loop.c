@@ -18,6 +18,7 @@ bool stored_prompt_matches_runtime(const char *stored_model, const char *current
 
 
 /* Port of Python: _sync_failover_system_message */
+/* PoP: sync_failover_system_message @ agent/conversation_loop.py:_sync_failover_system_message */
 void sync_failover_system_message(char *api_messages, size_t msg_sz,
                                    const char *active_system_prompt) {
     if (!api_messages || !active_system_prompt) return;

@@ -72,6 +72,7 @@ void normalized_response_free(normalized_response_t *nr)
 
 /* map_finish_reason: mapping is a NULL-terminated array of {raw, normalized}
  * string pairs. Falls back to "stop" for unknown/empty (port of types.map_finish_reason). */
+/* PoP: map_finish_reason @ agent/transports/base.py:map_finish_reason */
 char *map_finish_reason(const char *raw_reason, const char *const *mapping)
 {
     if (!raw_reason || !*raw_reason) return xstrdup("stop");

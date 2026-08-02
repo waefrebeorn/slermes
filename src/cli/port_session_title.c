@@ -133,6 +133,7 @@ char *session_title_get(db_t *db, const char *session_id) {
 /* Walk the compression-continuation parent chain up from descendant_id and
  * report whether ancestor_id is reached. Mirror of _is_compression_ancestor:
  * an edge counts only when the parent ended with end_reason='compression'. */
+/* PoP: is_compression_ancestor @ hermes_state.py:_is_compression_ancestor */
 static bool is_compression_ancestor(db_t *db, const char *ancestor_id,
                                     const char *descendant_id) {
     if (!ancestor_id || !descendant_id || !*ancestor_id || !*descendant_id)
