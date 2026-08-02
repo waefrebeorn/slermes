@@ -153,7 +153,24 @@ int tools_homeassistant_tool_u_handle_list_services(const char *arg) { (void)arg
 int tools_homeassistant_tool_u_check_ha_available(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_registry_register_call @ tools/registry.py:_is_registry_register_call */
-int tools_registry_u_is_registry_register_call(const char *arg) { (void)arg; return 0; }
+int tools_registry_u_is_registry_register_call(const char *arg) {
+    /* Python: an AST expression statement that is exactly
+     * registry.register(...). Text-level mirror: the trimmed statement
+     * starts with "registry.register(" and ends with ")". */
+    if (!arg) return 0;
+    const char *s = arg;
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    if (strncmp(s, "registry.register(", 18) != 0) return 0;
+    const char *e = s + strlen(s);
+    while (e > s && (*e == ' ' || *e == '\t' || *e == '\n' || *e == '\r')) e--;
+    if (e <= s || *e != ')') return 0;
+    /* no statement prefix (assignment, if, etc.) before the call */
+    for (const char *p = s + 18; p < e; p++) {
+        if (*p == '=' && (p == s + 18 || p[-1] != '=' && p[-1] != '!' && p[-1] != '<' && p[-1] != '>'))
+            return 0;
+    }
+    return 1;
+}
 
 /* PoP: _module_registers_tools @ tools/registry.py:_module_registers_tools */
 int tools_registry_u_module_registers_tools(const char *arg) { (void)arg; return 0; }

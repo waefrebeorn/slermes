@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <unistd.h>
 #include "hermes_json.h"
 
 /* PoP: has_process_service_mismatch @ hermes_cli/gateway.py:has_process_service_mismatch */
@@ -468,7 +469,29 @@ int cgw_u_dispatch_via_service_manager_if_s6(const char *arg) { (void)arg; retur
 int cgw_u_dispatch_all_via_service_manager_if_s6(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _maybe_redirect_run_to_s6_supervision @ hermes_cli/gateway.py:_maybe_redirect_run_to_s6_supervision */
-int cgw_u_maybe_redirect_run_to_s6_supervision(const char *arg) { (void)arg; return 0; }
+int cgw_u_maybe_redirect_run_to_s6_supervision(const char *arg) {
+    /* Python: inside an s6 container, bare "gateway run" redirects to the
+     * supervised path. False when HERMES_GATEWAY_NO_SUPERVISE is a truthy
+     * string, when we ARE the supervised child, or when no s6 service
+     * manager is present. */
+    (void)arg;
+    const char *ns = getenv("HERMES_GATEWAY_NO_SUPERVISE");
+    if (ns && *ns) {
+        char low[16];
+        size_t n = strlen(ns);
+        if (n >= sizeof(low)) n = sizeof(low) - 1;
+        for (size_t i = 0; i < n; i++) low[i] = (char)tolower((unsigned char)ns[i]);
+        low[n] = '\0';
+        if (strcmp(low, "1") == 0 || strcmp(low, "true") == 0 || strcmp(low, "yes") == 0)
+            return 0;
+    }
+    if (getenv("HERMES_S6_SUPERVISED_CHILD")) return 0;
+    if (access("/run/s6/services", F_OK) == 0 || access("/run/service", F_OK) == 0) {
+        fprintf(stderr, "gateway run: redirecting to s6-supervised start (set HERMES_GATEWAY_NO_SUPERVISE=1 to opt out)\n");
+        return 1;
+    }
+    return 0;
+}
 
 /* PoP: _block_until_terminated @ hermes_cli/gateway.py:_block_until_terminated */
 int cgw_u_block_until_terminated(const char *arg) { (void)arg; return 0; }

@@ -574,7 +574,14 @@ int main_u_discard_stashed_changes(const char *arg) { (void)arg; return 0; }
 int main_u_is_fork(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _has_upstream_remote @ hermes_cli/main.py:_has_upstream_remote */
-int main_u_has_upstream_remote(const char *arg) { (void)arg; return 0; }
+int main_u_has_upstream_remote(const char *arg) {
+    /* Python: git remote get-url upstream exit 0 == remote exists.
+     * Arg = cwd (default "."). */
+    char cmd[1024];
+    snprintf(cmd, sizeof(cmd), "git -C %s remote get-url upstream >/dev/null 2>&1",
+             (arg && *arg) ? arg : ".");
+    return system(cmd) == 0;
+}
 
 /* PoP: _add_upstream_remote @ hermes_cli/main.py:_add_upstream_remote */
 int main_u_add_upstream_remote(const char *arg) {

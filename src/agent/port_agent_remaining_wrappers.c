@@ -360,7 +360,54 @@ int agent_subscription_view_u_format_dollars_grouped(const char *arg) { (void)ar
 int agent_subscription_view_selectable_tiers(const char *arg) { (void)arg; return 0; }
 
 /* PoP: format_tier_row @ agent/subscription_view.py:format_tier_row */
-int agent_subscription_view_format_tier_row(const char *arg) { (void)arg; return 0; }
+int agent_subscription_view_format_tier_row(const char *arg) {
+    /* Python: "name · $X/mo[ · $Y credits/mo]" with thousands-grouped money;
+     * credits suffix only when present and > 0. Arg = "name\tdollars\tcredits". */
+    if (!arg || !*arg) return 0;
+    char name[128];
+    double dollars = 0, credits = -1;
+    if (sscanf(arg, "%127[^\t]\t%lf\t%lf", name, &dollars, &credits) < 2) return 0;
+    char money[64];
+    /* thousands-grouped, whole-vs-fractional rule */
+    if (dollars == (long long)dollars) {
+        snprintf(money, sizeof(money), "$%lld", (long long)dollars);
+        /* insert grouping commas */
+        char grouped[64];
+        size_t mlen = strlen(money);
+        size_t o = 0;
+        int digits = (int)mlen - 1; /* skip $ */
+        for (int i = 0; i < (int)mlen; i++) {
+            grouped[o++] = money[i];
+            if (i > 0 && digits - i > 0 && (digits - i) % 3 == 0) grouped[o++] = ',';
+        }
+        grouped[o] = '\0';
+        snprintf(money, sizeof(money), "%s", grouped);
+    } else {
+        snprintf(money, sizeof(money), "$%.2f", dollars);
+        char *dot = strchr(money, '.');
+        if (dot) {
+            /* group the integer part */
+            char intpart[64], frac[8];
+            *dot = '\0';
+            snprintf(frac, sizeof(frac), "%s", dot + 1);
+            size_t ilen = strlen(money + 1);
+            char grouped[64];
+            size_t o = 0;
+            grouped[o++] = '$';
+            for (size_t i = 0; i < ilen; i++) {
+                grouped[o++] = money[1 + i];
+                if (ilen - i > 1 && (ilen - 1 - i) % 3 == 0) grouped[o++] = ',';
+            }
+            grouped[o] = '\0';
+            snprintf(money, sizeof(money), "%s.%s", grouped, frac);
+        }
+    }
+    if (credits > 0)
+        printf("%s · %s/mo · $%.0f credits/mo\n", name, money, credits);
+    else
+        printf("%s · %s/mo\n", name, money);
+    return 0;
+}
 
 /* PoP: is_upgrade @ agent/subscription_view.py:is_upgrade */
 int agent_subscription_view_is_upgrade(const char *arg) { (void)arg; return 0; }
