@@ -277,5 +277,25 @@ int pcmd_git_pull_plugin_dir(const char *plugin_dir) {
 }
 /* PoP: dashboard_remove_user_plugin @ hermes_cli/plugins_cmd.py:dashboard_remove_user_plugin */
 int pcmd_dashboard_remove_user_plugin(const char *hermes_home, const char *plugin) {
-    (void)hermes_home; (void)plugin; return 0;
+    /* Python: remove plugin tree under ~/.hermes/plugins only. */
+    if (!hermes_home || !plugin || !*plugin) {
+        printf("{\"ok\": false, \"error\": \"plugin name required\"}\n");
+        return 1;
+    }
+    char dir[1200];
+    snprintf(dir, sizeof(dir), "%s/plugins/%s", hermes_home, plugin);
+    struct stat st;
+    if (lstat(dir, &st) != 0 || !S_ISDIR(st.st_mode)) {
+        printf("{\"ok\": false, \"error\": \"Plugin '%s' was not found under %s/plugins.\"}\n", plugin, hermes_home);
+        return 1;
+    }
+    char cmd[1400];
+    snprintf(cmd, sizeof(cmd), "rm -rf -- '%s' 2>/dev/null", dir);
+    int rc = system(cmd);
+    if (rc != 0) {
+        printf("{\"ok\": false, \"error\": \"failed to remove plugin tree\"}\n");
+        return 1;
+    }
+    printf("{\"ok\": true, \"name\": \"%s\"}\n", plugin);
+    return 0;
 }

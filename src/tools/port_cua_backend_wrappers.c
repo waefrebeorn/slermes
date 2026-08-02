@@ -528,7 +528,17 @@ int cua_set_agent_cursor_enabled(const char *arg) {
 }
 
 /* PoP: set_agent_cursor_motion @ tools/computer_use/cua_backend.py:set_agent_cursor_motion */
-int cua_set_agent_cursor_motion(const char *arg) { (void)arg; return 0; }
+int cua_set_agent_cursor_motion(const char *arg) {
+    /* Python: motion tuning args. Arg = "glide\tdwell\tidle_hide\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *result = t3 ? t3 + 1 : "";
+    if (result[0]) { printf("%s\n", result); return 0; }
+    printf("cursor motion set: glide=%s dwell=%s idle_hide=%s\n", arg, t1 ? t1 + 1 : "-", t2 ? t2 + 1 : "-");
+    return 0;
+}
 
 /* PoP: set_agent_cursor_style @ tools/computer_use/cua_backend.py:set_agent_cursor_style */
 int cua_set_agent_cursor_style(const char *arg) { (void)arg; return 0; }

@@ -120,7 +120,20 @@ int mcpo_suppress_interactive_oauth(const char *arg) {
 }
 
 /* PoP: _can_open_browser @ tools/mcp_oauth.py:_can_open_browser */
-int mcpo_u_can_open_browser(const char *arg) { (void)arg; return 0; }
+int mcpo_u_can_open_browser(const char *arg) {
+    /* Python: SSH -> False; nt/Darwin -> True; DISPLAY/WAYLAND -> True. Arg =
+     * "ssh\tos\tdisplay\twayland". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    if (arg[0] == '1') { printf("0\n"); return 0; }
+    if (t1 && t1[1] == '1') { printf("1\n"); return 0; }
+    if (t2 && t2[1] == '1') { printf("1\n"); return 0; }
+    if (t3 && t3[1] == '1') { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _read_json @ tools/mcp_oauth.py:_read_json */
 int mcpo_u_read_json(const char *arg) {

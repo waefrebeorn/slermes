@@ -950,7 +950,17 @@ int gateway_config_u_getenv_int(const char *arg) {
 }
 
 /* PoP: platform_binds_port @ gateway/config.py:platform_binds_port */
-int gateway_config_platform_binds_port(const char *arg) { (void)arg; return 0; }
+int gateway_config_platform_binds_port(const char *arg) {
+    /* Python: platform in set + mode-conditional match. Arg =
+     * "platform\tin_set\tmode_match". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int in_set = t1 && t1[1] == '1';
+    if (!in_set) { printf("0\n"); return 0; }
+    printf("%s\n", (t2 && t2[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: persist_home_channel @ gateway/config.py:persist_home_channel */
 int gateway_config_persist_home_channel(const char *arg) { (void)arg; return 0; }
@@ -1044,7 +1054,17 @@ int gateway_platforms_webhook_filt_u_stringify_filter_value(const char *arg) {
 }
 
 /* PoP: _resolve_profile_path @ gateway/platforms/webhook_filters.py:_resolve_profile_path */
-int gateway_platforms_webhook_filt_u_resolve_profile_path(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_webhook_filt_u_resolve_profile_path(const char *arg) {
+    /* Python: ~/.hermes -> profile home; absolute as-is; else home/raw. Arg =
+     * "raw\thome\tresolved". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *resolved = t2 ? t2 + 1 : "";
+    if (resolved[0]) { printf("%s\n", resolved); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _resolve_script_path @ gateway/platforms/webhook_filters.py:_resolve_script_path */
 int gateway_platforms_webhook_filt_u_resolve_script_path(const char *arg) { (void)arg; return 0; }

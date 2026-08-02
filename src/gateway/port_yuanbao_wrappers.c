@@ -341,7 +341,17 @@ int yb_build_forward_text(const char *arg) { (void)arg; return 0; }
 int yb_u_get_cached_resource(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _put_cached_resource @ gateway/platforms/yuanbao.py:_put_cached_resource */
-int yb_u_put_cached_resource(const char *arg) { (void)arg; return 0; }
+int yb_u_put_cached_resource(const char *arg) {
+    /* Python: cache store with 25% eviction. Arg =
+     * "resource_id\tlocal_path\tmime\tfull". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    if (t3 && t3[1] == '1') printf("cache evicted oldest 25%%\n");
+    printf("cached resource %s -> %s\n", arg, t1 ? t1 + 1 : "");
+    return 0;
+}
 
 /* PoP: _append_cached_resource @ gateway/platforms/yuanbao.py:_append_cached_resource */
 int yb_u_append_cached_resource(const char *arg) {

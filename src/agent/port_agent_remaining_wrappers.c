@@ -708,7 +708,19 @@ int agent_chat_completion_helpers_u_reset_stale_streak(const char *arg) {
 }
 
 /* PoP: _check_stale_giveup @ agent/chat_completion_helpers.py:_check_stale_giveup */
-int agent_chat_completion_helpers_u_check_stale_giveup(const char *arg) { (void)arg; return 0; }
+int agent_chat_completion_helpers_u_check_stale_giveup(const char *arg) {
+    /* Python: raise when streak >= giveup. Arg = "giveup\tstreak". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    long giveup = strtol(arg, NULL, 10);
+    long streak = tab ? strtol(tab + 1, NULL, 10) : 0;
+    if (giveup > 0 && streak >= giveup) {
+        fprintf(stderr, "Provider has been unresponsive (no response received) for %ld consecutive stale attempts — aborting this call to avoid an indefinite stall. Switch models or start a new session, then retry.\n", streak);
+        return 1;
+    }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _derive_stream_stale_timeout @ agent/chat_completion_helpers.py:_derive_stream_stale_timeout */
 int agent_chat_completion_helpers_u_derive_stream_stale_timeout(const char *arg) { (void)arg; return 0; }

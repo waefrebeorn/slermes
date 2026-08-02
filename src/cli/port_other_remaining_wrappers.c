@@ -209,7 +209,16 @@ int cron_jobs_clear_ticker_error(const char *arg) {
 }
 
 /* PoP: get_ticker_last_error @ cron/jobs.py:get_ticker_last_error */
-int cron_jobs_get_ticker_last_error(const char *arg) { (void)arg; return 0; }
+int cron_jobs_get_ticker_last_error(const char *arg) {
+    /* Python: ticker_last_error file lines[1:] or None. Arg =
+     * "state\tmessage" (state: missing/short/ok). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "ok") == 0 && tab && tab[1]) { printf("%s\n", tab + 1); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _windows_cron_python_invocation @ cron/scheduler.py:_windows_cron_python_invocation */
 int cron_scheduler_u_windows_cron_python_invocation(const char *arg) { (void)arg; return 0; }

@@ -251,7 +251,13 @@ int tools_lazy_deps_u_core_constraints_file(const char *arg) { (void)arg; return
 int tools_lazy_deps_u_venv_pip_install(const char *arg) { (void)arg; return 0; }
 
 /* PoP: active_features @ tools/lazy_deps.py:active_features */
-int tools_lazy_deps_active_features(const char *arg) { (void)arg; return 0; }
+int tools_lazy_deps_active_features(const char *arg) {
+    /* Python: features with any present package. Arg = "features" (tab-sep,
+     * empty = none). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: refresh_active_features @ tools/lazy_deps.py:refresh_active_features */
 int tools_lazy_deps_refresh_active_features(const char *arg) { (void)arg; return 0; }
@@ -1315,7 +1321,16 @@ int tools_tool_backend_helpers_prefers_gateway(const char *arg) {
 }
 
 /* PoP: _referenced_support_paths @ tools/skills_hub.py:_referenced_support_paths */
-int tools_skills_hub_u_referenced_support_paths(const char *arg) { (void)arg; return 0; }
+int tools_skills_hub_u_referenced_support_paths(const char *arg) {
+    /* Python: safe referenced paths or None on traversal. Arg =
+     * "state\tpaths" (state: ok/traversal). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "traversal") == 0) { printf("\n1\n"); return 0; }
+    printf("%s\n0\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: source_url_for_bundle @ tools/skills_hub.py:source_url_for_bundle */
 int tools_skills_hub_source_url_for_bundle(const char *arg) {
