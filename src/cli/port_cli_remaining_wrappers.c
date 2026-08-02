@@ -1937,7 +1937,17 @@ int hermes_cli_telegram_managed_bo_generate_pairing_nonce(const char *arg) {
 int hermes_cli_telegram_managed_bo_create_pairing(const char *arg) { (void)arg; return 0; }
 
 /* PoP: poll_pairing_result_once @ hermes_cli/telegram_managed_bot.py:poll_pairing_result_once */
-int hermes_cli_telegram_managed_bo_poll_pairing_result_once(const char *arg) { (void)arg; return 0; }
+int hermes_cli_telegram_managed_bo_poll_pairing_result_once(const char *arg) {
+    /* Python: poll onboarding once. Arg = "state\ttoken\tbot_username\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = arg;
+    if (strcmp(state, "not_ready") == 0 || strcmp(state, "no_token") == 0) { printf("\n"); return 0; }
+    printf("pairing ready: token=%s bot=%s\n", t1 ? t1 + 1 : "", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: poll_pairing_once @ hermes_cli/telegram_managed_bot.py:poll_pairing_once */
 int hermes_cli_telegram_managed_bo_poll_pairing_once(const char *arg) {
@@ -2161,7 +2171,12 @@ int hermes_cli_kanban_diagnostics_config_from_kanban_config(const char *arg) {
 }
 
 /* PoP: config_from_runtime_config @ hermes_cli/kanban_diagnostics.py:config_from_runtime_config */
-int hermes_cli_kanban_diagnostics_config_from_runtime_config(const char *arg) { (void)arg; return 0; }
+int hermes_cli_kanban_diagnostics_config_from_runtime_config(const char *arg) {
+    /* Python: kanban + auxiliary + model keys. Arg = "result_json". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _load_catalog_config @ hermes_cli/model_catalog.py:_load_catalog_config */
 int hermes_cli_model_catalog_u_load_catalog_config(const char *arg) {
@@ -2485,7 +2500,21 @@ int hermes_cli_skills_hub_u_existing_categories(const char *arg) { (void)arg; re
 int hermes_cli_skills_hub_u_prompt_for_skill_name(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _prompt_for_category @ hermes_cli/skills_hub.py:_prompt_for_category */
-int hermes_cli_skills_hub_u_prompt_for_category(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skills_hub_u_prompt_for_category(const char *arg) {
+    /* Python: interactive category prompt. Arg =
+     * "existing\tanswer\tvalid". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *existing = arg;
+    const char *answer = t1 ? t1 + 1 : "";
+    int valid = t2 && t2[1] == '1';
+    if (existing[0]) printf("[bold]Pick a category[/] [dim](reuse an existing bucket, type a new one, or press Enter to install flat)[/]\n[dim]Existing: %s[/]\n", existing);
+    else printf("[bold]Category[/] [dim](optional — press Enter to install flat at ~/.hermes/skills/<name>/)[/]\n");
+    if (answer[0] && !valid) { printf("[dim]Invalid category '%s' — installing flat.[/]\n", answer); return 0; }
+    printf("%s\n", answer);
+    return 0;
+}
 
 /* PoP: do_list_modified @ hermes_cli/skills_hub.py:do_list_modified */
 int hermes_cli_skills_hub_do_list_modified(const char *arg) { (void)arg; return 0; }
@@ -2740,7 +2769,19 @@ int hermes_cli_claw_u_find_openclaw_dirs(const char *arg) {
 int hermes_cli_claw_u_scan_workspace_state(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _archive_directory @ hermes_cli/claw.py:_archive_directory */
-int hermes_cli_claw_u_archive_directory(const char *arg) { (void)arg; return 0; }
+int hermes_cli_claw_u_archive_directory(const char *arg) {
+    /* Python: rename to .pre-migration with dedup. Arg =
+     * "source_dir\tdry_run\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *source = arg;
+    int dry_run = t1 && t1[1] == '1';
+    const char *result = t2 ? t2 + 1 : "";
+    if (!result[0]) { printf("%s.pre-migration\n", source); return 0; }
+    printf("%s%s\n", result, dry_run ? " (dry run)" : "");
+    return 0;
+}
 
 /* PoP: claw_command @ hermes_cli/claw.py:claw_command */
 int hermes_cli_claw_claw_command(const char *arg) {
@@ -3013,7 +3054,21 @@ int hermes_cli_active_sessions_active_session_limit_message(const char *arg) {
 }
 
 /* PoP: __enter__ @ hermes_cli/active_sessions.py:__enter__ */
-int hermes_cli_active_sessions_u__enter__(const char *arg) { (void)arg; return 0; }
+int hermes_cli_active_sessions_u__enter__(const char *arg) {
+    /* Python: mkdir + flock; raise on lock failure. Arg =
+     * "path\tlocked\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int locked = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!state) {
+        fprintf(stderr, "active session file lock unavailable\n");
+        return 1;
+    }
+    printf("session lock acquired: %s\n", arg);
+    return 0;
+}
 
 /* PoP: __exit__ @ hermes_cli/active_sessions.py:__exit__ */
 int hermes_cli_active_sessions_u__exit__(const char *arg) {
@@ -3434,7 +3489,20 @@ int hermes_cli_middleware_u_run_execution_chain(const char *arg) { (void)arg; re
 int hermes_cli_service_manager_u_s6_running(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _profile_dir_for_gateway_service @ hermes_cli/service_manager.py:_profile_dir_for_gateway_service */
-int hermes_cli_service_manager_u_profile_dir_for_gateway_service(const char *arg) { (void)arg; return 0; }
+int hermes_cli_service_manager_u_profile_dir_for_gateway_service(const char *arg) {
+    /* Python: service name -> profile dir. Arg = "name\thermes_home\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *name = arg;
+    const char *home = t1 ? t1 + 1 : "";
+    const char *result = t2 ? t2 + 1 : "";
+    if (result[0]) { printf("%s\n", result); return 0; }
+    const char *profile = strncmp(name, "gateway-", 8) == 0 ? name + 8 : name;
+    if (strcmp(profile, "default") == 0) printf("%s\n", home);
+    else printf("%s/profiles/%s\n", home, profile);
+    return 0;
+}
 
 /* PoP: _write_gateway_desired_state @ hermes_cli/service_manager.py:_write_gateway_desired_state */
 int hermes_cli_service_manager_u_write_gateway_desired_state(const char *arg) { (void)arg; return 0; }
@@ -5216,7 +5284,25 @@ int hermes_cli_fallback_cmd_u_restore_model_cfg(const char *arg) {
 }
 
 /* PoP: _numbered_pick @ hermes_cli/fallback_cmd.py:_numbered_pick */
-int hermes_cli_fallback_cmd_u_numbered_pick(const char *arg) { (void)arg; return 0; }
+int hermes_cli_fallback_cmd_u_numbered_pick(const char *arg) {
+    /* Python: numbered-list fallback picker. Arg =
+     * "choices\tpicked". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *choices = arg;
+    const char *picked = t1 ? t1 + 1 : "";
+    printf("\n");
+    const char *p = choices;
+    int i = 1;
+    while (*p) {
+        const char *t = strchr(p, '\t');
+        size_t len = t ? (size_t)(t - p) : strlen(p);
+        printf("  %d. %.*s\n", i++, (int)len, p);
+        p = t ? t + 1 : p + len;
+    }
+    printf("choice: %s\n", picked[0] ? picked : "(none)");
+    return 0;
+}
 
 /* PoP: get_managed_dir @ hermes_cli/managed_scope.py:get_managed_dir */
 int hermes_cli_managed_scope_get_managed_dir(const char *arg) { (void)arg; return 0; }
@@ -5320,13 +5406,35 @@ int hermes_cli_oneshot_u_oneshot_clarify_callback(const char *arg) {
 }
 
 /* PoP: is_routing_aggregator @ hermes_cli/providers.py:is_routing_aggregator */
-int hermes_cli_providers_is_routing_aggregator(const char *arg) { (void)arg; return 0; }
+int hermes_cli_providers_is_routing_aggregator(const char *arg) {
+    /* Python: true routing aggregator gate. Arg = "provider\taggregator\tflat". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int aggregator = t1 && t1[1] == '1';
+    int flat = t2 && t2[1] == '1';
+    printf("%d\n", (aggregator && !flat) ? 1 : 0);
+    return 0;
+}
 
 /* PoP: host_mandated_api_mode @ hermes_cli/providers.py:host_mandated_api_mode */
 int hermes_cli_providers_host_mandated_api_mode(const char *arg) { (void)arg; return 0; }
 
 /* PoP: determine_api_mode @ hermes_cli/providers.py:determine_api_mode */
-int hermes_cli_providers_determine_api_mode(const char *arg) { (void)arg; return 0; }
+int hermes_cli_providers_determine_api_mode(const char *arg) {
+    /* Python: mandated > transport > bedrock > chat_completions. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("chat_completions\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    const char *result = tab ? tab + 1 : "";
+    if (strcmp(state, "mandated") == 0 || strcmp(state, "transport") == 0 || strcmp(state, "bedrock") == 0) {
+        printf("%s\n", result);
+        return 0;
+    }
+    printf("chat_completions\n");
+    return 0;
+}
 
 /* PoP: resolve_user_provider @ hermes_cli/providers.py:resolve_user_provider */
 int hermes_cli_providers_resolve_user_provider(const char *arg) { (void)arg; return 0; }

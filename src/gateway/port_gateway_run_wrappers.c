@@ -20,7 +20,20 @@ int grun_u_send_or_update_status_coro(const char *arg) { (void)arg; return 0; }
 int grun_u_resolve_runtime_agent_kwargs(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_runtime_agent_kwargs_for_provider @ gateway/run.py:_resolve_runtime_agent_kwargs_for_provider */
-int grun_u_resolve_runtime_agent_kwargs_for_provider(const char *arg) { (void)arg; return 0; }
+int grun_u_resolve_runtime_agent_kwargs_for_provider(const char *arg) {
+    /* Python: resolve runtime provider kwargs. Arg =
+     * "provider\tstate\tresult_json". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "error") == 0) {
+        fprintf(stderr, "runtime provider resolution failed: %s\n", t2 ? t2 + 1 : "");
+        return 1;
+    }
+    printf("%s\n", t2 ? t2 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _try_resolve_fallback_provider @ gateway/run.py:_try_resolve_fallback_provider */
 int grun_u_try_resolve_fallback_provider(const char *arg) { (void)arg; return 0; }

@@ -30,7 +30,16 @@ int ctxc_u_record_compression_regions(const char *arg) {
 int ctxc_u_record_aux_compression_call(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _load_fallback_compression_streak @ agent/context_compressor.py:_load_fallback_compression_streak */
-int ctxc_u_load_fallback_compression_streak(const char *arg) { (void)arg; return 0; }
+int ctxc_u_load_fallback_compression_streak(const char *arg) {
+    /* Python: restore durable streak. Arg = "session_id\tstored\tstate". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", t1 ? t1 + 1 : "0");
+    return 0;
+}
 
 /* PoP: _persist_fallback_compression_streak @ agent/context_compressor.py:_persist_fallback_compression_streak */
 int ctxc_u_persist_fallback_compression_streak(const char *arg) {

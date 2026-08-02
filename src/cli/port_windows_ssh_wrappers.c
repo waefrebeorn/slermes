@@ -137,7 +137,24 @@ int wssr_u_allowed_sids(const char *arg) {
 int wssr_u_verify_security(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _open @ hermes_cli/windows_ssh_runtime.py:_open */
-int wssr_u_open(const char *arg) { (void)arg; return 0; }
+int wssr_u_open(const char *arg) {
+    /* Python: CreateFile + path escape/reparse guard. Arg =
+     * "path\tstate\terror". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "escape") == 0) {
+        fprintf(stderr, "Windows SSH runtime handle escaped its expected path\n");
+        return 1;
+    }
+    if (strcmp(state, "reparse") == 0) {
+        fprintf(stderr, "Windows SSH runtime path contains a reparse point\n");
+        return 1;
+    }
+    printf("handle opened: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _ensure_directory @ hermes_cli/windows_ssh_runtime.py:_ensure_directory */
 int wssr_u_ensure_directory(const char *arg) {

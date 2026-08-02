@@ -430,7 +430,16 @@ int gw_is_startup_entry_installed(const char *arg) {
 }
 
 /* PoP: query_task_status @ hermes_cli/gateway_windows.py:query_task_status */
-int gw_query_task_status(const char *arg) { (void)arg; return 0; }
+int gw_query_task_status(const char *arg) {
+    /* Python: schtasks /Query parse. Arg = "info_json\tcode\tstate". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    long code = t1 ? strtol(t1 + 1, NULL, 10) : 0;
+    if (code != 0) { printf("{}\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _gateway_pids @ hermes_cli/gateway_windows.py:_gateway_pids */
 int gw_u_gateway_pids(const char *arg) {

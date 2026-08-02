@@ -1958,7 +1958,15 @@ int agent_anthropic_adapter_u_safe_text(const char *arg) {
 }
 
 /* PoP: _ensure_leading_user_turn @ agent/anthropic_adapter.py:_ensure_leading_user_turn */
-int agent_anthropic_adapter_u_ensure_leading_user_turn(const char *arg) { (void)arg; return 0; }
+int agent_anthropic_adapter_u_ensure_leading_user_turn(const char *arg) {
+    /* Python: prepend minimal user turn. Arg = "first_role\tprepended". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *role = arg;
+    if (strcmp(role, "user") == 0) { printf("0\n"); return 0; }
+    printf("1\n");
+    return 0;
+}
 
 /* PoP: _read_battery_uncached @ agent/battery.py:_read_battery_uncached */
 int agent_battery_u_read_battery_uncached(const char *arg) { (void)arg; return 0; }
@@ -2076,7 +2084,16 @@ int agent_display_build_status_phrase(const char *arg) { (void)arg; return 0; }
 int agent_display_u_get_cute_tool_message(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _traces_enabled_and_dir @ agent/moa_trace.py:_traces_enabled_and_dir */
-int agent_moa_trace_u_traces_enabled_and_dir(const char *arg) { (void)arg; return 0; }
+int agent_moa_trace_u_traces_enabled_and_dir(const char *arg) {
+    /* Python: save_traces + trace_dir. Arg = "enabled\tstate\tdir". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int enabled = arg[0] == '1';
+    if (!enabled) { printf("\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "moa-traces dir");
+    return 0;
+}
 
 /* PoP: _slot_trace @ agent/moa_trace.py:_slot_trace */
 int agent_moa_trace_u_slot_trace(const char *arg) { (void)arg; return 0; }

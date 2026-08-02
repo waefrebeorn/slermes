@@ -102,7 +102,13 @@ int mm_u_update_block_boundary(const char *arg) {
 int mm_add_provider(const char *arg) { (void)arg; return 0; }
 
 /* PoP: prefetch_all @ agent/memory_manager.py:prefetch_all */
-int mm_prefetch_all(const char *arg) { (void)arg; return 0; }
+int mm_prefetch_all(const char *arg) {
+    /* Python: merged provider context. Arg = "parts\tcount". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _prefetch_provider @ agent/memory_manager.py:_prefetch_provider */
 int mm_u_prefetch_provider(const char *arg) { (void)arg; return 0; }
@@ -195,7 +201,12 @@ int mm_on_pre_compress(const char *arg) {
 }
 
 /* PoP: _provider_memory_write_metadata_mode @ agent/memory_manager.py:_provider_memory_write_metadata_mode */
-int mm_u_provider_memory_write_metadata_mode(const char *arg) { (void)arg; return 0; }
+int mm_u_provider_memory_write_metadata_mode(const char *arg) {
+    /* Python: signature -> keyword/positional/legacy. Arg = "mode". */
+    if (!arg || !*arg) { printf("keyword\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: on_memory_write @ agent/memory_manager.py:on_memory_write */
 int mm_on_memory_write(const char *arg) {

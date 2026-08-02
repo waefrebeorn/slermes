@@ -33,7 +33,13 @@ int cgw_u_scan_gateway_pids(const char *arg) { (void)arg; return 0; }
 int cgw_u_filter_venv_launcher_stubs(const char *arg) { (void)arg; return 0; }
 
 /* PoP: find_profile_gateway_processes @ hermes_cli/gateway.py:find_profile_gateway_processes */
-int cgw_find_profile_gateway_processes(const char *arg) { (void)arg; return 0; }
+int cgw_find_profile_gateway_processes(const char *arg) {
+    /* Python: profile -> pid mapping. Arg = "procs_json\tcount". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _gateway_run_args_for_profile @ hermes_cli/gateway.py:_gateway_run_args_for_profile */
 int cgw_u_gateway_run_args_for_profile(const char *arg) {

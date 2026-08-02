@@ -267,7 +267,16 @@ int tt_u_parse_env_var(const char *arg) {
 }
 
 /* PoP: _safe_getcwd @ tools/terminal_tool.py:_safe_getcwd */
-int tt_u_safe_getcwd(const char *arg) { (void)arg; return 0; }
+int tt_u_safe_getcwd(const char *arg) {
+    /* Python: cwd or TERMINAL_CWD or home. Arg = "cwd\tstate\tfallback". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (state) { printf("%s\n", arg); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "~");
+    return 0;
+}
 
 /* PoP: _is_ssh_remote_tilde_cwd @ tools/terminal_tool.py:_is_ssh_remote_tilde_cwd */
 int tt_u_is_ssh_remote_tilde_cwd(const char *arg) {

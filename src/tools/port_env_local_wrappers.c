@@ -306,7 +306,23 @@ int envl_u_read_terminal_shell_init_config(const char *arg) {
 int envl_u_resolve_shell_init_files(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _prepend_shell_init @ tools/environments/local.py:_prepend_shell_init */
-int envl_u_prepend_shell_init(const char *arg) { (void)arg; return 0; }
+int envl_u_prepend_shell_init(const char *arg) {
+    /* Python: guarded source lines + cmd. Arg = "files\tcmd" (tab-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *files = arg;
+    const char *cmd = tab ? tab + 1 : "";
+    printf("set +e\n");
+    const char *p = files;
+    while (*p) {
+        const char *t = strchr(p, '\t');
+        size_t len = t ? (size_t)(t - p) : strlen(p);
+        if (len) printf("[ -r '%.*s' ] && . '%.*s' 2>/dev/null || true\n", (int)len, p, (int)len, p);
+        p = t ? t + 1 : p + len;
+    }
+    printf("%s\n", cmd);
+    return 0;
+}
 
 /* PoP: get_temp_dir @ tools/environments/local.py:get_temp_dir */
 int envl_get_temp_dir(const char *arg) { (void)arg; return 0; }
