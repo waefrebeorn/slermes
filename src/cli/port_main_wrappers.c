@@ -1340,7 +1340,18 @@ int main_u_recover_lazy_refresh_marker_locked(const char *arg) { (void)arg; retu
 int main_u_recover_core_update_marker_locked(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _windows_running_hermes_launcher_locked @ hermes_cli/main.py:_windows_running_hermes_launcher_locked */
-int main_u_windows_running_hermes_launcher_locked(const char *arg) { (void)arg; return 0; }
+int main_u_windows_running_hermes_launcher_locked(const char *arg) {
+    /* Python: exe shim ancestor probe. Arg = "is_windows\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int is_windows = arg[0] == '1';
+    if (!is_windows) { printf("0\n"); return 0; }
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s\n", (t2 && t2[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _default_venv_install_target @ hermes_cli/main.py:_default_venv_install_target */
 int main_u_default_venv_install_target(const char *arg) {

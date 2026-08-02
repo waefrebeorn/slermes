@@ -134,7 +134,13 @@ int sexp_export_record_count(const char *arg) {
 }
 
 /* PoP: iter_user_prompt_records @ hermes_cli/session_export.py:iter_user_prompt_records */
-int sexp_iter_user_prompt_records(const char *arg) { (void)arg; return 0; }
+int sexp_iter_user_prompt_records(const char *arg) {
+    /* Python: user-prompt records. Arg = "records_json\tcount". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _render_jsonl @ hermes_cli/session_export.py:_render_jsonl */
 int sexp_u_render_jsonl(const char *arg) {

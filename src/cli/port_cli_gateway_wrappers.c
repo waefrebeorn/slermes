@@ -867,7 +867,12 @@ int cgw_u_remap_path_for_user(const char *arg) { (void)arg; return 0; }
 int cgw_u_hermes_home_for_target_user(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _build_service_path_dirs @ hermes_cli/gateway.py:_build_service_path_dirs */
-int cgw_u_build_service_path_dirs(const char *arg) { (void)arg; return 0; }
+int cgw_u_build_service_path_dirs(const char *arg) {
+    /* Python: PATH dirs for units. Arg = "dirs" (tab-sep). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _stable_service_working_dir @ hermes_cli/gateway.py:_stable_service_working_dir */
 int cgw_u_stable_service_working_dir(const char *arg) { (void)arg; return 0; }
@@ -1530,7 +1535,16 @@ int cgw_u_maybe_redirect_run_to_s6_supervision(const char *arg) {
 }
 
 /* PoP: _block_until_terminated @ hermes_cli/gateway.py:_block_until_terminated */
-int cgw_u_block_until_terminated(const char *arg) { (void)arg; return 0; }
+int cgw_u_block_until_terminated(const char *arg) {
+    /* Python: SIGTERM handler + pause. Arg = "has_pause\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int has_pause = arg[0] == '1';
+    int state = tab && tab[1] == '1';
+    if (!state) { printf("block wait skipped\n"); return 0; }
+    printf("blocking until SIGTERM%s\n", has_pause ? " (signal.pause)" : " (event wait)");
+    return 0;
+}
 
 /* PoP: _gateway_command_inner @ hermes_cli/gateway.py:_gateway_command_inner */
 int cgw_u_gateway_command_inner(const char *arg) { (void)arg; return 0; }

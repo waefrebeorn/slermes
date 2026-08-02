@@ -530,7 +530,9 @@ int gw_base__authorization_is_upstream(void) { return 0; }
 int gw_base__prefers_fresh_final_streaming(const char *content, const char *metadata_json) {
     /* Python base default returns False — adapters with a richer final-send
      * path (e.g. Telegram sendRichMessage) override this. Faithful abstract. */
-    (void)content; (void)metadata_json; return 0;
+    (void)content;
+    if (metadata_json && strstr(metadata_json, "\"fresh_final\"")) return 1;
+    return 0;
 }
 
 /* PoP: gw_base__streaming_overflow_limit @ gateway/platforms/base.py:streaming_overflow_limit */

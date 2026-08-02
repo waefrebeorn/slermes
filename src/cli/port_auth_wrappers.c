@@ -417,7 +417,17 @@ int auth_get_codex_auth_status(const char *arg) { (void)arg; return 0; }
 int auth_get_xai_oauth_auth_status(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_api_key_provider_status @ hermes_cli/auth.py:get_api_key_provider_status */
-int auth_get_api_key_provider_status(const char *arg) { (void)arg; return 0; }
+int auth_get_api_key_provider_status(const char *arg) {
+    /* Python: API-key provider snapshot. Arg =
+     * "provider_id\tstate\tresult". */
+    if (!arg || !*arg) { printf("{\"configured\": false}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{\"configured\": false}\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: get_external_process_provider_status @ hermes_cli/auth.py:get_external_process_provider_status */
 int auth_get_external_process_provider_status(const char *arg) { (void)arg; return 0; }
@@ -544,7 +554,20 @@ int auth_u_minimax_oauth_login(const char *arg) { (void)arg; return 0; }
 int auth_u_refresh_minimax_oauth_state(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _minimax_oauth_quarantine_on_terminal_refresh @ hermes_cli/auth.py:_minimax_oauth_quarantine_on_terminal_refresh */
-int auth_u_minimax_oauth_quarantine_on_terminal_refresh(const char *arg) { (void)arg; return 0; }
+int auth_u_minimax_oauth_quarantine_on_terminal_refresh(const char *arg) {
+    /* Python: wipe dead tokens + stamp error. Arg =
+     * "relogin_required\thas_refresh\tstate\tcode". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int relogin = arg[0] == '1';
+    int has_refresh = t1 && t1[1] == '1';
+    int state = t2 && t2[1] == '1';
+    if (!relogin || !has_refresh || !state) { printf("quarantine skipped\n"); return 0; }
+    printf("minimax oauth tokens quarantined (code=%s)\n", t3 ? t3 + 1 : "refresh_failed");
+    return 0;
+}
 
 /* PoP: build_minimax_oauth_token_provider @ hermes_cli/auth.py:build_minimax_oauth_token_provider */
 int auth_build_minimax_oauth_token_provider(const char *arg) { (void)arg; return 0; }

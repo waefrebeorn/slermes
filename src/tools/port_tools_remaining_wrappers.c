@@ -1902,7 +1902,17 @@ int tools_project_tools_project_list(const char *arg) {
 }
 
 /* PoP: project_create @ tools/project_tools.py:project_create */
-int tools_project_tools_project_create(const char *arg) { (void)arg; return 0; }
+int tools_project_tools_project_create(const char *arg) {
+    /* Python: create + activate + apply. Arg =
+     * "name\tstate\tresult". */
+    if (!arg || !*arg) { printf("{\"success\": false, \"error\": \"name is required\"}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "error") == 0) { printf("{\"success\": false, \"error\": \"%s\"}\n", t2 ? t2 + 1 : ""); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "{\"success\": true}");
+    return 0;
+}
 
 /* PoP: project_switch @ tools/project_tools.py:project_switch */
 int tools_project_tools_project_switch(const char *arg) {

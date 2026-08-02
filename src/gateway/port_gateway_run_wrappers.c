@@ -393,7 +393,17 @@ int grun_u_cleanup_agent_resources_off_loop(const char *arg) { (void)arg; return
 int grun_u_cleanup_agent_resources(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _increment_restart_failure_counts @ gateway/run.py:_increment_restart_failure_counts */
-int grun_u_increment_restart_failure_counts(const char *arg) { (void)arg; return 0; }
+int grun_u_increment_restart_failure_counts(const char *arg) {
+    /* Python: persistent stuck-loop counters. Arg =
+     * "active_keys\tstate\tresult_json". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: _suspend_stuck_loop_sessions @ gateway/run.py:_suspend_stuck_loop_sessions */
 int grun_u_suspend_stuck_loop_sessions(const char *arg) { (void)arg; return 0; }

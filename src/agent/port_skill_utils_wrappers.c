@@ -68,7 +68,29 @@ int sku_yaml_load(const char *arg) {
 int sku_parse_frontmatter(const char *arg) { (void)arg; return 0; }
 
 /* PoP: skill_matches_platform_list @ agent/skill_utils.py:skill_matches_platform_list */
-int sku_skill_matches_platform_list(const char *arg) { (void)arg; return 0; }
+int sku_skill_matches_platform_list(const char *arg) {
+    /* Python: platform compat check. Arg =
+     * "current\tplatforms\ttermux\tresult". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *current = arg;
+    const char *platforms = t1 ? t1 + 1 : "";
+    int termux = t2 && t2[1] == '1';
+    if (!platforms[0]) { printf("1\n"); return 0; }
+    const char *p = platforms;
+    while (*p) {
+        const char *t = strchr(p, '\t');
+        size_t len = t ? (size_t)(t - p) : strlen(p);
+        if (len && strncmp(p, current, len) == 0) { printf("1\n"); return 0; }
+        if (termux && len == 5 && strncmp(p, "linux", 5) == 0) { printf("1\n"); return 0; }
+        if (termux && (len == 6 && strncmp(p, "termux", 6) == 0)) { printf("1\n"); return 0; }
+        p = t ? t + 1 : p + len;
+    }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: skill_matches_platform @ agent/skill_utils.py:skill_matches_platform */
 int sku_skill_matches_platform(const char *arg) { (void)arg; return 0; }

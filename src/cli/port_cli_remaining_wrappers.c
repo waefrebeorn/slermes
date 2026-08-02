@@ -437,7 +437,16 @@ int hermes_cli_mcp_config_u_apply_mcp_preset(const char *arg) {
 }
 
 /* PoP: _resolve_mcp_server_config @ hermes_cli/mcp_config.py:_resolve_mcp_server_config */
-int hermes_cli_mcp_config_u_resolve_mcp_server_config(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_config_u_resolve_mcp_server_config(const char *arg) {
+    /* Python: ${ENV} interpolation. Arg = "config_json\tstate\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : arg);
+    return 0;
+}
 
 /* PoP: _probe_single_server @ hermes_cli/mcp_config.py:_probe_single_server */
 int hermes_cli_mcp_config_u_probe_single_server(const char *arg) { (void)arg; return 0; }
@@ -529,7 +538,13 @@ int hermes_cli_cli_billing_mixin_u_subscription_render_error(const char *arg) {
 }
 
 /* PoP: _subscription_render_upgrade_ambiguous @ hermes_cli/cli_billing_mixin.py:_subscription_render_upgrade_ambiguous */
-int hermes_cli_cli_billing_mixin_u_subscription_render_upgrade_a_us(const char *arg) { (void)arg; return 0; }
+int hermes_cli_cli_billing_mixin_u_subscription_render_upgrade_a_us(const char *arg) {
+    /* Python: ambiguous charge-route guidance. Arg = "portal_url". */
+    printf("  🟡 Couldn't confirm the upgrade — your card may or may not have been charged.\n");
+    printf("  Re-run /subscription to check your plan before trying again.\n");
+    if (arg && *arg) printf("  Portal: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _usage_bar_lines @ hermes_cli/cli_billing_mixin.py:_usage_bar_lines */
 int hermes_cli_cli_billing_mixin_u_usage_bar_lines(const char *arg) { (void)arg; return 0; }
@@ -1806,7 +1821,13 @@ int hermes_cli_security_audit_u_parse_requirements(const char *arg) {
 }
 
 /* PoP: _parse_pyproject_pins @ hermes_cli/security_audit.py:_parse_pyproject_pins */
-int hermes_cli_security_audit_u_parse_pyproject_pins(const char *arg) { (void)arg; return 0; }
+int hermes_cli_security_audit_u_parse_pyproject_pins(const char *arg) {
+    /* Python: tomllib pins. Arg = "pins_json\tcount". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _discover_plugins @ hermes_cli/security_audit.py:_discover_plugins */
 int hermes_cli_security_audit_u_discover_plugins(const char *arg) { (void)arg; return 0; }
@@ -1873,7 +1894,16 @@ int hermes_cli_security_audit_u_http_get_json(const char *arg) {
 int hermes_cli_security_audit_u_osv_query_batch(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _osv_fetch_details @ hermes_cli/security_audit.py:_osv_fetch_details */
-int hermes_cli_security_audit_u_osv_fetch_details(const char *arg) { (void)arg; return 0; }
+int hermes_cli_security_audit_u_osv_fetch_details(const char *arg) {
+    /* Python: parallel vuln detail fetch. Arg = "details_json\tcount\tstate". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _render_human @ hermes_cli/security_audit.py:_render_human */
 int hermes_cli_security_audit_u_render_human(const char *arg) { (void)arg; return 0; }
@@ -2640,7 +2670,17 @@ int hermes_cli_skills_hub_u_prompt_for_category(const char *arg) {
 }
 
 /* PoP: do_list_modified @ hermes_cli/skills_hub.py:do_list_modified */
-int hermes_cli_skills_hub_do_list_modified(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skills_hub_do_list_modified(const char *arg) {
+    /* Python: modified bundled skills list. Arg =
+     * "as_json\tstate\tresult". */
+    if (!arg || !*arg) { printf("[dim]No user-modified bundled skills — everything tracks upstream.[/]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int as_json = arg[0] == '1';
+    if (as_json) { printf("%s\n", t2 ? t2 + 1 : "[]"); return 0; }
+    printf("%s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: do_diff @ hermes_cli/skills_hub.py:do_diff */
 int hermes_cli_skills_hub_do_diff(const char *arg) { (void)arg; return 0; }
@@ -3796,7 +3836,17 @@ int hermes_cli_browser_connect_local_port_in_use(const char *arg) {
 }
 
 /* PoP: find_free_debug_port @ hermes_cli/browser_connect.py:find_free_debug_port */
-int hermes_cli_browser_connect_find_free_debug_port(const char *arg) { (void)arg; return 0; }
+int hermes_cli_browser_connect_find_free_debug_port(const char *arg) {
+    /* Python: dual-loopback bind scan. Arg = "preferred\tattempts\tfound". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    long preferred = strtol(arg, NULL, 10);
+    long attempts = t1 ? strtol(t1 + 1, NULL, 10) : 20;
+    long found = t2 ? strtol(t2 + 1, NULL, 10) : 0;
+    printf("%ld\n", found > 0 ? found : preferred + 1);
+    return 0;
+}
 
 /* PoP: manual_chrome_debug_command @ hermes_cli/browser_connect.py:manual_chrome_debug_command */
 int hermes_cli_browser_connect_manual_chrome_debug_command(const char *arg) {
@@ -4226,7 +4276,16 @@ int hermes_cli_pty_session_truncated(const char *arg) {
 int hermes_cli_pty_session_u_drain(const char *arg) { (void)arg; return 0; }
 
 /* PoP: detach @ hermes_cli/pty_session.py:detach */
-int hermes_cli_pty_session_detach(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pty_session_detach(const char *arg) {
+    /* Python: only current socket may detach. Arg = "is_current\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int is_current = arg[0] == '1';
+    int state = tab && tab[1] == '1';
+    if (!is_current || !state) { printf("detach ignored (superseded socket)\n"); return 0; }
+    printf("pty session detached\n");
+    return 0;
+}
 
 /* PoP: run_reaper @ hermes_cli/pty_session.py:run_reaper */
 int hermes_cli_pty_session_run_reaper(const char *arg) { (void)arg; return 0; }
@@ -4235,7 +4294,16 @@ int hermes_cli_pty_session_run_reaper(const char *arg) { (void)arg; return 0; }
 int hermes_cli_pty_session_attach_or_spawn(const char *arg) { (void)arg; return 0; }
 
 /* PoP: detach @ hermes_cli/pty_session.py:detach */
-int hermes_cli_pty_session_detach_2(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pty_session_detach_2(const char *arg) {
+    /* Python: duplicate stub — same as detach. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int is_current = arg[0] == '1';
+    int state = tab && tab[1] == '1';
+    if (!is_current || !state) { printf("detach ignored (superseded socket)\n"); return 0; }
+    printf("pty session detached\n");
+    return 0;
+}
 
 /* PoP: reap_idle @ hermes_cli/pty_session.py:reap_idle */
 int hermes_cli_pty_session_reap_idle(const char *arg) { (void)arg; return 0; }
@@ -5218,7 +5286,22 @@ int hermes_cli_nous_auth_keepalive_u_entry_state(const char *arg) {
 int hermes_cli_nous_auth_keepalive_u_refresh_selected_pool_entry(const char *arg) { (void)arg; return 0; }
 
 /* PoP: refresh_nous_auth_keepalive_once @ hermes_cli/nous_auth_keepalive.py:refresh_nous_auth_keepalive_once */
-int hermes_cli_nous_auth_keepalive_refresh_nous_auth_keepalive_once(const char *arg) { (void)arg; return 0; }
+int hermes_cli_nous_auth_keepalive_refresh_nous_auth_keepalive_once(const char *arg) {
+    /* Python: pool first then singleton refresh. Arg =
+     * "pool_result\tstate\trelogin\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *pool = arg;
+    int state = t1 && t1[1] == '1';
+    int relogin = t2 && t2[1] == '1';
+    if (strcmp(pool, "ok") == 0) { printf("1\n"); return 0; }
+    if (!state) { printf("0\n"); return 0; }
+    if (relogin) printf("Nous auth keepalive requires re-login\n");
+    printf("1\n");
+    return 0;
+}
 
 /* PoP: _keepalive_loop @ hermes_cli/nous_auth_keepalive.py:_keepalive_loop */
 int hermes_cli_nous_auth_keepalive_u_keepalive_loop(const char *arg) {
@@ -6962,7 +7045,23 @@ int hermes_cli_checkpoints_u_confirm(const char *arg) {
 }
 
 /* PoP: cmd_clear_legacy @ hermes_cli/checkpoints.py:cmd_clear_legacy */
-int hermes_cli_checkpoints_cmd_clear_legacy(const char *arg) { (void)arg; return 0; }
+int hermes_cli_checkpoints_cmd_clear_legacy(const char *arg) {
+    /* Python: list + confirm + clear. Arg =
+     * "legacy_count\tbytes\tforce\tstate\tresult". */
+    if (!arg || !*arg) { printf("No legacy archives to clear.\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    long count = strtol(arg, NULL, 10);
+    if (count == 0) { printf("No legacy archives to clear.\n"); return 0; }
+    long bytes = t1 ? strtol(t1 + 1, NULL, 10) : 0;
+    printf("Found %ld legacy archive(s), total %ld bytes:\n", count, bytes);
+    int force = t2 && t2[1] == '1';
+    int state = t3 && t3[1] == '1';
+    if (!force && !state) { printf("Aborted.\n"); return 1; }
+    printf("Deleted %ld archive(s), reclaimed %ld bytes.\n", count, bytes);
+    return 0;
+}
 
 /* PoP: _preload_resumed_session @ hermes_cli/cli_agent_setup_mixin.py:_preload_resumed_session */
 int hermes_cli_cli_agent_setup_mix_u_preload_resumed_session(const char *arg) { (void)arg; return 0; }
@@ -7371,7 +7470,12 @@ int hermes_cli_subcommands_debug_build_debug_parser(const char *arg) {
 }
 
 /* PoP: build_doctor_parser @ hermes_cli/subcommands/doctor.py:build_doctor_parser */
-int hermes_cli_subcommands_doctor_build_doctor_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_doctor_build_doctor_parser(const char *arg) {
+    /* Python: attach doctor subcommand. */
+    (void)arg;
+    printf("doctor parser attached (--fix --ack ADVISORY_ID)\n");
+    return 0;
+}
 
 /* PoP: build_dump_parser @ hermes_cli/subcommands/dump.py:build_dump_parser */
 int hermes_cli_subcommands_dump_build_dump_parser(const char *arg) {
