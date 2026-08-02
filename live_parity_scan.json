@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T21:41:27Z",
+  "generated_at": "2026-08-02T21:43:39Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -333953,10 +333953,10 @@
     },
     "tools/skill_manager_tool.py": {
       "total": 35,
-      "ported": 30,
+      "ported": 35,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 5,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 35,
@@ -334117,16 +334117,24 @@
             "decorators": [],
             "line_number": 162
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skill_manager_tool_remaining.c",
+          "c_function": "smt_skills_dir",
+          "pop_annotation": {
+            "c_function": "smt_skills_dir",
+            "python_functions": [
+              "_skills_dir"
+            ],
+            "c_file": "src/tools/port_skill_manager_tool_remaining.c",
+            "python_file": "tools/skill_manager_tool.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _skills_dir @ tools/skill_manager_tool.py:_skills_dir */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skill_manager_tool.py",
@@ -334167,16 +334175,24 @@
             "decorators": [],
             "line_number": 202
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skill_manager_tool_remaining.c",
+          "c_function": "smt_is_path_redirect",
+          "pop_annotation": {
+            "c_function": "smt_is_path_redirect",
+            "python_functions": [
+              "_is_path_redirect"
+            ],
+            "c_file": "src/tools/port_skill_manager_tool_remaining.c",
+            "python_file": "tools/skill_manager_tool.py",
+            "line": 35,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_path_redirect @ tools/skill_manager_tool.py:_is_path_redirect */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skill_manager_tool.py",
@@ -334362,16 +334378,24 @@
             "decorators": [],
             "line_number": 508
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skill_manager_tool_remaining.c",
+          "c_function": "smt_validate_name",
+          "pop_annotation": {
+            "c_function": "smt_validate_name",
+            "python_functions": [
+              "_validate_name"
+            ],
+            "c_file": "src/tools/port_skill_manager_tool_remaining.c",
+            "python_file": "tools/skill_manager_tool.py",
+            "line": 43,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _validate_name @ tools/skill_manager_tool.py:_validate_name */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skill_manager_tool.py",
@@ -334818,16 +334842,24 @@
             "decorators": [],
             "line_number": 1188
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skill_manager_tool_remaining.c",
+          "c_function": "smt_write_file",
+          "pop_annotation": {
+            "c_function": "smt_write_file",
+            "python_functions": [
+              "_write_file"
+            ],
+            "c_file": "src/tools/port_skill_manager_tool_remaining.c",
+            "python_file": "tools/skill_manager_tool.py",
+            "line": 54,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _write_file @ tools/skill_manager_tool.py:_write_file */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skill_manager_tool.py",
@@ -334926,16 +334958,24 @@
             "decorators": [],
             "line_number": 1376
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skill_manager_tool_remaining.c",
+          "c_function": "smt_skill_manage",
+          "pop_annotation": {
+            "c_function": "smt_skill_manage",
+            "python_functions": [
+              "skill_manage"
+            ],
+            "c_file": "src/tools/port_skill_manager_tool_remaining.c",
+            "python_file": "tools/skill_manager_tool.py",
+            "line": 75,
+            "is_consolidated": false,
+            "full_text": "/* PoP: skill_manage @ tools/skill_manager_tool.py:skill_manage */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -343532,10 +343572,10 @@
     },
     "tools/skills_tool.py": {
       "total": 31,
-      "ported": 25,
+      "ported": 30,
       "partial": 1,
       "stub": 0,
-      "real_gaps": 5,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 31,
@@ -343580,17 +343620,24 @@
             "decorators": [],
             "line_number": 147
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_tool_remaining.c",
+          "c_function": "skt_skills_dir",
+          "pop_annotation": {
+            "c_function": "skt_skills_dir",
+            "python_functions": [
+              "_skills_dir"
+            ],
+            "c_file": "src/tools/port_skills_tool_remaining.c",
+            "python_file": "tools/skills_tool.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _skills_dir @ tools/skills_tool.py:_skills_dir */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_tool.py",
@@ -343631,17 +343678,24 @@
             "decorators": [],
             "line_number": 206
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_tool_remaining.c",
+          "c_function": "skt_load_env",
+          "pop_annotation": {
+            "c_function": "skt_load_env",
+            "python_functions": [
+              "load_env"
+            ],
+            "c_file": "src/tools/port_skills_tool_remaining.c",
+            "python_file": "tools/skills_tool.py",
+            "line": 36,
+            "is_consolidated": false,
+            "full_text": "/* PoP: load_env @ tools/skills_tool.py:load_env */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_tool.py",
@@ -343653,17 +343707,24 @@
             "decorators": [],
             "line_number": 244
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_tool_remaining.c",
+          "c_function": "skt_set_secret_capture_callback",
+          "pop_annotation": {
+            "c_function": "skt_set_secret_capture_callback",
+            "python_functions": [
+              "set_secret_capture_callback"
+            ],
+            "c_file": "src/tools/port_skills_tool_remaining.c",
+            "python_file": "tools/skills_tool.py",
+            "line": 79,
+            "is_consolidated": false,
+            "full_text": "/* PoP: set_secret_capture_callback @ tools/skills_tool.py:set_secret_capture_callback */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_tool.py",
@@ -344305,17 +344366,24 @@
             "decorators": [],
             "line_number": 785
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_tool_remaining.c",
+          "c_function": "skt_skills_list",
+          "pop_annotation": {
+            "c_function": "skt_skills_list",
+            "python_functions": [
+              "skills_list"
+            ],
+            "c_file": "src/tools/port_skills_tool_remaining.c",
+            "python_file": "tools/skills_tool.py",
+            "line": 87,
+            "is_consolidated": false,
+            "full_text": "/* PoP: skills_list @ tools/skills_tool.py:skills_list */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_tool.py",
@@ -344356,17 +344424,24 @@
             "decorators": [],
             "line_number": 961
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_skills_tool_remaining.c",
+          "c_function": "skt_skill_view",
+          "pop_annotation": {
+            "c_function": "skt_skill_view",
+            "python_functions": [
+              "skill_view"
+            ],
+            "c_file": "src/tools/port_skills_tool_remaining.c",
+            "python_file": "tools/skills_tool.py",
+            "line": 121,
+            "is_consolidated": false,
+            "full_text": "/* PoP: skill_view @ tools/skills_tool.py:skill_view */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skills_tool.py",
