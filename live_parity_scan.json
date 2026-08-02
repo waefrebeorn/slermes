@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:34:38Z",
+  "generated_at": "2026-08-02T20:36:36Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -32730,10 +32730,10 @@
     },
     "agent/insights.py": {
       "total": 18,
-      "ported": 10,
+      "ported": 18,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 8,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 18,
@@ -32749,16 +32749,24 @@
             "decorators": [],
             "line_number": 36
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_insights_remaining.c",
+          "c_function": "ins_estimate_cost",
+          "pop_annotation": {
+            "c_function": "ins_estimate_cost",
+            "python_functions": [
+              "_estimate_cost"
+            ],
+            "c_file": "src/agent/port_insights_remaining.c",
+            "python_file": "agent/insights.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _estimate_cost @ agent/insights.py:_estimate_cost */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/insights.py",
@@ -32770,16 +32778,24 @@
             "decorators": [],
             "line_number": 77
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_insights_remaining.c",
+          "c_function": "ins_bar_chart",
+          "pop_annotation": {
+            "c_function": "ins_bar_chart",
+            "python_functions": [
+              "_bar_chart"
+            ],
+            "c_file": "src/agent/port_insights_remaining.c",
+            "python_file": "agent/insights.py",
+            "line": 28,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _bar_chart @ agent/insights.py:_bar_chart */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/insights.py",
@@ -32791,16 +32807,24 @@
             "decorators": [],
             "line_number": 93
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_insights_remaining.c",
+          "c_function": "ins_init",
+          "pop_annotation": {
+            "c_function": "ins_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_insights_remaining.c",
+            "python_file": "agent/insights.py",
+            "line": 51,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/insights.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/insights.py",
@@ -32812,16 +32836,24 @@
             "decorators": [],
             "line_number": 103
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_insights_remaining.c",
+          "c_function": "ins_generate",
+          "pop_annotation": {
+            "c_function": "ins_generate",
+            "python_functions": [
+              "generate"
+            ],
+            "c_file": "src/agent/port_insights_remaining.c",
+            "python_file": "agent/insights.py",
+            "line": 57,
+            "is_consolidated": false,
+            "full_text": "/* PoP: generate @ agent/insights.py:generate */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/insights.py",
@@ -33123,16 +33155,24 @@
             "decorators": [],
             "line_number": 768
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_insights_remaining.c",
+          "c_function": "ins_compute_activity_patterns",
+          "pop_annotation": {
+            "c_function": "ins_compute_activity_patterns",
+            "python_functions": [
+              "_compute_activity_patterns"
+            ],
+            "c_file": "src/agent/port_insights_remaining.c",
+            "python_file": "agent/insights.py",
+            "line": 65,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _compute_activity_patterns @ agent/insights.py:_compute_activity_patterns */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/insights.py",
@@ -33144,16 +33184,24 @@
             "decorators": [],
             "line_number": 826
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_insights_remaining.c",
+          "c_function": "ins_compute_top_sessions",
+          "pop_annotation": {
+            "c_function": "ins_compute_top_sessions",
+            "python_functions": [
+              "_compute_top_sessions"
+            ],
+            "c_file": "src/agent/port_insights_remaining.c",
+            "python_file": "agent/insights.py",
+            "line": 73,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _compute_top_sessions @ agent/insights.py:_compute_top_sessions */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/insights.py",
@@ -33165,16 +33213,24 @@
             "decorators": [],
             "line_number": 888
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_insights_remaining.c",
+          "c_function": "ins_format_terminal",
+          "pop_annotation": {
+            "c_function": "ins_format_terminal",
+            "python_functions": [
+              "format_terminal"
+            ],
+            "c_file": "src/agent/port_insights_remaining.c",
+            "python_file": "agent/insights.py",
+            "line": 81,
+            "is_consolidated": false,
+            "full_text": "/* PoP: format_terminal @ agent/insights.py:format_terminal */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/insights.py",
@@ -33186,16 +33242,24 @@
             "decorators": [],
             "line_number": 1028
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_insights_remaining.c",
+          "c_function": "ins_format_gateway",
+          "pop_annotation": {
+            "c_function": "ins_format_gateway",
+            "python_functions": [
+              "format_gateway"
+            ],
+            "c_file": "src/agent/port_insights_remaining.c",
+            "python_file": "agent/insights.py",
+            "line": 90,
+            "is_consolidated": false,
+            "full_text": "/* PoP: format_gateway @ agent/insights.py:format_gateway */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -63144,10 +63208,10 @@
     },
     "agent/subdirectory_hints.py": {
       "total": 8,
-      "ported": 0,
+      "ported": 8,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 8,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 8,
@@ -63163,16 +63227,24 @@
             "decorators": [],
             "line_number": 49
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_subdirectory_hints_remaining.c",
+          "c_function": "shi_is_ancestor_or_same",
+          "pop_annotation": {
+            "c_function": "shi_is_ancestor_or_same",
+            "python_functions": [
+              "_is_ancestor_or_same"
+            ],
+            "c_file": "src/agent/port_subdirectory_hints_remaining.c",
+            "python_file": "agent/subdirectory_hints.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_ancestor_or_same @ agent/subdirectory_hints.py:_is_ancestor_or_same */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/subdirectory_hints.py",
@@ -63184,16 +63256,24 @@
             "decorators": [],
             "line_number": 70
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_subdirectory_hints_remaining.c",
+          "c_function": "shi_init",
+          "pop_annotation": {
+            "c_function": "shi_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_subdirectory_hints_remaining.c",
+            "python_file": "agent/subdirectory_hints.py",
+            "line": 34,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/subdirectory_hints.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/subdirectory_hints.py",
@@ -63205,16 +63285,24 @@
             "decorators": [],
             "line_number": 76
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_subdirectory_hints_remaining.c",
+          "c_function": "shi_check_tool_call",
+          "pop_annotation": {
+            "c_function": "shi_check_tool_call",
+            "python_functions": [
+              "check_tool_call"
+            ],
+            "c_file": "src/agent/port_subdirectory_hints_remaining.c",
+            "python_file": "agent/subdirectory_hints.py",
+            "line": 47,
+            "is_consolidated": false,
+            "full_text": "/* PoP: check_tool_call @ agent/subdirectory_hints.py:check_tool_call */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/subdirectory_hints.py",
@@ -63226,16 +63314,24 @@
             "decorators": [],
             "line_number": 100
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_subdirectory_hints_remaining.c",
+          "c_function": "shi_extract_directories",
+          "pop_annotation": {
+            "c_function": "shi_extract_directories",
+            "python_functions": [
+              "_extract_directories"
+            ],
+            "c_file": "src/agent/port_subdirectory_hints_remaining.c",
+            "python_file": "agent/subdirectory_hints.py",
+            "line": 55,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _extract_directories @ agent/subdirectory_hints.py:_extract_directories */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/subdirectory_hints.py",
@@ -63247,16 +63343,24 @@
             "decorators": [],
             "line_number": 120
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_subdirectory_hints_remaining.c",
+          "c_function": "shi_add_path_candidate",
+          "pop_annotation": {
+            "c_function": "shi_add_path_candidate",
+            "python_functions": [
+              "_add_path_candidate"
+            ],
+            "c_file": "src/agent/port_subdirectory_hints_remaining.c",
+            "python_file": "agent/subdirectory_hints.py",
+            "line": 63,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _add_path_candidate @ agent/subdirectory_hints.py:_add_path_candidate */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/subdirectory_hints.py",
@@ -63268,16 +63372,24 @@
             "decorators": [],
             "line_number": 150
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_subdirectory_hints_remaining.c",
+          "c_function": "shi_extract_paths_from_command",
+          "pop_annotation": {
+            "c_function": "shi_extract_paths_from_command",
+            "python_functions": [
+              "_extract_paths_from_command"
+            ],
+            "c_file": "src/agent/port_subdirectory_hints_remaining.c",
+            "python_file": "agent/subdirectory_hints.py",
+            "line": 75,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _extract_paths_from_command @ agent/subdirectory_hints.py:_extract_paths_from_command */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/subdirectory_hints.py",
@@ -63289,16 +63401,24 @@
             "decorators": [],
             "line_number": 169
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_subdirectory_hints_remaining.c",
+          "c_function": "shi_is_valid_subdir",
+          "pop_annotation": {
+            "c_function": "shi_is_valid_subdir",
+            "python_functions": [
+              "_is_valid_subdir"
+            ],
+            "c_file": "src/agent/port_subdirectory_hints_remaining.c",
+            "python_file": "agent/subdirectory_hints.py",
+            "line": 109,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_valid_subdir @ agent/subdirectory_hints.py:_is_valid_subdir */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/subdirectory_hints.py",
@@ -63310,16 +63430,24 @@
             "decorators": [],
             "line_number": 198
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_subdirectory_hints_remaining.c",
+          "c_function": "shi_load_hints_for_directory",
+          "pop_annotation": {
+            "c_function": "shi_load_hints_for_directory",
+            "python_functions": [
+              "_load_hints_for_directory"
+            ],
+            "c_file": "src/agent/port_subdirectory_hints_remaining.c",
+            "python_file": "agent/subdirectory_hints.py",
+            "line": 118,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _load_hints_for_directory @ agent/subdirectory_hints.py:_load_hints_for_directory */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
