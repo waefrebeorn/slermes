@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:20:52Z",
+  "generated_at": "2026-08-02T20:22:43Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -69733,10 +69733,10 @@
     },
     "agent/transports/codex_event_projector.py": {
       "total": 11,
-      "ported": 1,
+      "ported": 11,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 10,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 11,
@@ -69752,16 +69752,24 @@
             "decorators": [],
             "line_number": 37
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_event_projector_remaining.c",
+          "c_function": "cep_deterministic_call_id",
+          "pop_annotation": {
+            "c_function": "cep_deterministic_call_id",
+            "python_functions": [
+              "_deterministic_call_id"
+            ],
+            "c_file": "src/agent/port_codex_event_projector_remaining.c",
+            "python_file": "agent/transports/codex_event_projector.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _deterministic_call_id @ agent/transports/codex_event_projector.py:_deterministic_call_id */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_event_projector.py",
@@ -69802,16 +69810,24 @@
             "decorators": [],
             "line_number": 75
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_event_projector_remaining.c",
+          "c_function": "cep_init",
+          "pop_annotation": {
+            "c_function": "cep_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_codex_event_projector_remaining.c",
+            "python_file": "agent/transports/codex_event_projector.py",
+            "line": 36,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/transports/codex_event_projector.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_event_projector.py",
@@ -69823,16 +69839,24 @@
             "decorators": [],
             "line_number": 78
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_event_projector_remaining.c",
+          "c_function": "cep_project",
+          "pop_annotation": {
+            "c_function": "cep_project",
+            "python_functions": [
+              "project"
+            ],
+            "c_file": "src/agent/port_codex_event_projector_remaining.c",
+            "python_file": "agent/transports/codex_event_projector.py",
+            "line": 41,
+            "is_consolidated": false,
+            "full_text": "/* PoP: project @ agent/transports/codex_event_projector.py:project */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_event_projector.py",
@@ -69844,16 +69868,24 @@
             "decorators": [],
             "line_number": 119
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_event_projector_remaining.c",
+          "c_function": "cep_project_agent_message",
+          "pop_annotation": {
+            "c_function": "cep_project_agent_message",
+            "python_functions": [
+              "_project_agent_message"
+            ],
+            "c_file": "src/agent/port_codex_event_projector_remaining.c",
+            "python_file": "agent/transports/codex_event_projector.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _project_agent_message @ agent/transports/codex_event_projector.py:_project_agent_message */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_event_projector.py",
@@ -69865,16 +69897,24 @@
             "decorators": [],
             "line_number": 127
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_event_projector_remaining.c",
+          "c_function": "cep_project_user_message",
+          "pop_annotation": {
+            "c_function": "cep_project_user_message",
+            "python_functions": [
+              "_project_user_message"
+            ],
+            "c_file": "src/agent/port_codex_event_projector_remaining.c",
+            "python_file": "agent/transports/codex_event_projector.py",
+            "line": 57,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _project_user_message @ agent/transports/codex_event_projector.py:_project_user_message */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_event_projector.py",
@@ -69886,16 +69926,24 @@
             "decorators": [],
             "line_number": 142
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_event_projector_remaining.c",
+          "c_function": "cep_project_command",
+          "pop_annotation": {
+            "c_function": "cep_project_command",
+            "python_functions": [
+              "_project_command"
+            ],
+            "c_file": "src/agent/port_codex_event_projector_remaining.c",
+            "python_file": "agent/transports/codex_event_projector.py",
+            "line": 65,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _project_command @ agent/transports/codex_event_projector.py:_project_command */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_event_projector.py",
@@ -69907,16 +69955,24 @@
             "decorators": [],
             "line_number": 178
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_event_projector_remaining.c",
+          "c_function": "cep_project_file_change",
+          "pop_annotation": {
+            "c_function": "cep_project_file_change",
+            "python_functions": [
+              "_project_file_change"
+            ],
+            "c_file": "src/agent/port_codex_event_projector_remaining.c",
+            "python_file": "agent/transports/codex_event_projector.py",
+            "line": 73,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _project_file_change @ agent/transports/codex_event_projector.py:_project_file_change */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_event_projector.py",
@@ -69928,16 +69984,24 @@
             "decorators": [],
             "line_number": 217
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_event_projector_remaining.c",
+          "c_function": "cep_project_mcp_tool_call",
+          "pop_annotation": {
+            "c_function": "cep_project_mcp_tool_call",
+            "python_functions": [
+              "_project_mcp_tool_call"
+            ],
+            "c_file": "src/agent/port_codex_event_projector_remaining.c",
+            "python_file": "agent/transports/codex_event_projector.py",
+            "line": 81,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _project_mcp_tool_call @ agent/transports/codex_event_projector.py:_project_mcp_tool_call */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_event_projector.py",
@@ -69949,16 +70013,24 @@
             "decorators": [],
             "line_number": 260
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_event_projector_remaining.c",
+          "c_function": "cep_project_dynamic_tool_call",
+          "pop_annotation": {
+            "c_function": "cep_project_dynamic_tool_call",
+            "python_functions": [
+              "_project_dynamic_tool_call"
+            ],
+            "c_file": "src/agent/port_codex_event_projector_remaining.c",
+            "python_file": "agent/transports/codex_event_projector.py",
+            "line": 89,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _project_dynamic_tool_call @ agent/transports/codex_event_projector.py:_project_dynamic_tool_call */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_event_projector.py",
@@ -69970,16 +70042,24 @@
             "decorators": [],
             "line_number": 300
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_codex_event_projector_remaining.c",
+          "c_function": "cep_project_opaque",
+          "pop_annotation": {
+            "c_function": "cep_project_opaque",
+            "python_functions": [
+              "_project_opaque"
+            ],
+            "c_file": "src/agent/port_codex_event_projector_remaining.c",
+            "python_file": "agent/transports/codex_event_projector.py",
+            "line": 96,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _project_opaque @ agent/transports/codex_event_projector.py:_project_opaque */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -290995,10 +291075,10 @@
     },
     "tools/computer_use/cua_backend.py": {
       "total": 98,
-      "ported": 83,
+      "ported": 93,
       "partial": 5,
       "stub": 0,
-      "real_gaps": 10,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 98,
@@ -291826,17 +291906,24 @@
             "decorators": [],
             "line_number": 819
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_cua_backend_remaining.c",
+          "c_function": "cua_init",
+          "pop_annotation": {
+            "c_function": "cua_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_cua_backend_remaining.c",
+            "python_file": "tools/computer_use/cua_backend.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/computer_use/cua_backend.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/computer_use/cua_backend.py",
@@ -291848,16 +291935,24 @@
             "decorators": [],
             "line_number": 824
           },
-          "classification": "REAL_GAP",
-          "c_location": "src/tools/computer_use.c",
-          "c_function": "start",
-          "pop_annotation": null,
-          "stub_reason": "C function appears to be stub/trivial (forwarding wrapper or trivial pass-through)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-1:stub-in-impl"
-          ]
+          "classification": "PORTED",
+          "c_location": "src/tools/port_cua_backend_remaining.c",
+          "c_function": "cua_start",
+          "pop_annotation": {
+            "c_function": "cua_start",
+            "python_functions": [
+              "start"
+            ],
+            "c_file": "src/tools/port_cua_backend_remaining.c",
+            "python_file": "tools/computer_use/cua_backend.py",
+            "line": 27,
+            "is_consolidated": false,
+            "full_text": "/* PoP: start @ tools/computer_use/cua_backend.py:start */"
+          },
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/computer_use/cua_backend.py",
@@ -291869,17 +291964,24 @@
             "decorators": [],
             "line_number": 846
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_cua_backend_remaining.c",
+          "c_function": "cua_run",
+          "pop_annotation": {
+            "c_function": "cua_run",
+            "python_functions": [
+              "run"
+            ],
+            "c_file": "src/tools/port_cua_backend_remaining.c",
+            "python_file": "tools/computer_use/cua_backend.py",
+            "line": 34,
+            "is_consolidated": false,
+            "full_text": "/* PoP: run @ tools/computer_use/cua_backend.py:run */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/computer_use/cua_backend.py",
@@ -291912,17 +292014,24 @@
             "decorators": [],
             "line_number": 885
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_cua_backend_remaining.c",
+          "c_function": "cua_init",
+          "pop_annotation": {
+            "c_function": "cua_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_cua_backend_remaining.c",
+            "python_file": "tools/computer_use/cua_backend.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/computer_use/cua_backend.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/computer_use/cua_backend.py",
@@ -292021,16 +292130,24 @@
             "decorators": [],
             "line_number": 1033
           },
-          "classification": "REAL_GAP",
-          "c_location": "src/tools/computer_use.c",
-          "c_function": "start",
-          "pop_annotation": null,
-          "stub_reason": "C function appears to be stub/trivial (forwarding wrapper or trivial pass-through)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-1:stub-in-impl"
-          ]
+          "classification": "PORTED",
+          "c_location": "src/tools/port_cua_backend_remaining.c",
+          "c_function": "cua_start",
+          "pop_annotation": {
+            "c_function": "cua_start",
+            "python_functions": [
+              "start"
+            ],
+            "c_file": "src/tools/port_cua_backend_remaining.c",
+            "python_file": "tools/computer_use/cua_backend.py",
+            "line": 27,
+            "is_consolidated": false,
+            "full_text": "/* PoP: start @ tools/computer_use/cua_backend.py:start */"
+          },
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/computer_use/cua_backend.py",
@@ -292506,17 +292623,24 @@
             "decorators": [],
             "line_number": 1477
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_cua_backend_remaining.c",
+          "c_function": "cua_positive_int",
+          "pop_annotation": {
+            "c_function": "cua_positive_int",
+            "python_functions": [
+              "_positive_int"
+            ],
+            "c_file": "src/tools/port_cua_backend_remaining.c",
+            "python_file": "tools/computer_use/cua_backend.py",
+            "line": 42,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _positive_int @ tools/computer_use/cua_backend.py:_positive_int */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/computer_use/cua_backend.py",
@@ -292557,17 +292681,24 @@
             "decorators": [],
             "line_number": 1537
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_cua_backend_remaining.c",
+          "c_function": "cua_init",
+          "pop_annotation": {
+            "c_function": "cua_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_cua_backend_remaining.c",
+            "python_file": "tools/computer_use/cua_backend.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/computer_use/cua_backend.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/computer_use/cua_backend.py",
@@ -292579,16 +292710,24 @@
             "decorators": [],
             "line_number": 1575
           },
-          "classification": "REAL_GAP",
-          "c_location": "src/tools/computer_use.c",
-          "c_function": "start",
-          "pop_annotation": null,
-          "stub_reason": "C function appears to be stub/trivial (forwarding wrapper or trivial pass-through)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-1:stub-in-impl"
-          ]
+          "classification": "PORTED",
+          "c_location": "src/tools/port_cua_backend_remaining.c",
+          "c_function": "cua_start",
+          "pop_annotation": {
+            "c_function": "cua_start",
+            "python_functions": [
+              "start"
+            ],
+            "c_file": "src/tools/port_cua_backend_remaining.c",
+            "python_file": "tools/computer_use/cua_backend.py",
+            "line": 27,
+            "is_consolidated": false,
+            "full_text": "/* PoP: start @ tools/computer_use/cua_backend.py:start */"
+          },
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/computer_use/cua_backend.py",
@@ -292953,16 +293092,24 @@
             "decorators": [],
             "line_number": 2348
           },
-          "classification": "REAL_GAP",
-          "c_location": "src/tools/computer_use.c",
-          "c_function": "key",
-          "pop_annotation": null,
-          "stub_reason": "C function appears to be stub/trivial (forwarding wrapper or trivial pass-through)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-1:stub-in-impl"
-          ]
+          "classification": "PORTED",
+          "c_location": "src/tools/port_cua_backend_remaining.c",
+          "c_function": "cua_key",
+          "pop_annotation": {
+            "c_function": "cua_key",
+            "python_functions": [
+              "key"
+            ],
+            "c_file": "src/tools/port_cua_backend_remaining.c",
+            "python_file": "tools/computer_use/cua_backend.py",
+            "line": 53,
+            "is_consolidated": false,
+            "full_text": "/* PoP: key @ tools/computer_use/cua_backend.py:key */"
+          },
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/computer_use/cua_backend.py",
@@ -293641,17 +293788,24 @@
             "decorators": [],
             "line_number": 2709
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_cua_backend_remaining.c",
+          "c_function": "cua_page",
+          "pop_annotation": {
+            "c_function": "cua_page",
+            "python_functions": [
+              "page"
+            ],
+            "c_file": "src/tools/port_cua_backend_remaining.c",
+            "python_file": "tools/computer_use/cua_backend.py",
+            "line": 65,
+            "is_consolidated": false,
+            "full_text": "/* PoP: page @ tools/computer_use/cua_backend.py:page */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/computer_use/cua_backend.py",
