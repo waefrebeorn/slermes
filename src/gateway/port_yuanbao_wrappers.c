@@ -15,7 +15,16 @@
 static void *s_yb_active_adapter;
 
 /* PoP: __repr__ @ gateway/platforms/yuanbao.py:__repr__ */
-int yb_u__repr__(const char *arg) { (void)arg; return 0; }
+int yb_u__repr__(const char *arg) {
+    /* Python: f"<{cls.__name__} name={self.name!r}>". Arg = "cls\tname". */
+    if (!arg || !*arg) { printf("<>\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *cls = tab ? arg : "YuanbaoAdapter";
+    size_t clen = tab ? (size_t)(tab - arg) : strlen(cls);
+    const char *name = tab ? tab + 1 : "";
+    printf("<%.*s name='%s'>\n", (int)clen, cls, name);
+    return 0;
+}
 
 /* PoP: use_before @ gateway/platforms/yuanbao.py:use_before */
 int yb_use_before(const char *arg) { (void)arg; return 0; }
@@ -77,10 +86,22 @@ int yb_is_dm_intake_allowed(const char *arg) { (void)arg; return 0; }
 int yb_is_group_allowed(const char *arg) { (void)arg; return 0; }
 
 /* PoP: dm_policy @ gateway/platforms/yuanbao.py:dm_policy */
-int yb_dm_policy(const char *arg) { (void)arg; return 0; }
+int yb_dm_policy(const char *arg) {
+    /* Python property: the configured DM policy string. */
+    static char g_policy[64];
+    if (arg && *arg) snprintf(g_policy, sizeof(g_policy), "%s", arg);
+    printf("%s\n", g_policy);
+    return 0;
+}
 
 /* PoP: group_policy @ gateway/platforms/yuanbao.py:group_policy */
-int yb_group_policy(const char *arg) { (void)arg; return 0; }
+int yb_group_policy(const char *arg) {
+    /* Python property: the configured group policy string. */
+    static char g_policy[64];
+    if (arg && *arg) snprintf(g_policy, sizeof(g_policy), "%s", arg);
+    printf("%s\n", g_policy);
+    return 0;
+}
 
 /* PoP: _format_shared_link @ gateway/platforms/yuanbao.py:_format_shared_link */
 int yb_u_format_shared_link(const char *arg) { (void)arg; return 0; }
@@ -254,10 +275,22 @@ int yb_u_consume_group_queue(const char *arg) { (void)arg; return 0; }
 int yb_build(const char *arg) { (void)arg; return 0; }
 
 /* PoP: connect_id @ gateway/platforms/yuanbao.py:connect_id */
-int yb_connect_id(const char *arg) { (void)arg; return 0; }
+int yb_connect_id(const char *arg) {
+    /* Python property: the active connect id. */
+    static char g_id[256];
+    if (arg && *arg) snprintf(g_id, sizeof(g_id), "%s", arg);
+    printf("%s\n", g_id);
+    return 0;
+}
 
 /* PoP: reconnect_attempts @ gateway/platforms/yuanbao.py:reconnect_attempts */
-int yb_reconnect_attempts(const char *arg) { (void)arg; return 0; }
+int yb_reconnect_attempts(const char *arg) {
+    /* Python property: the reconnect attempt counter. */
+    static int g_attempts = 0;
+    if (arg) g_attempts = atoi(arg);
+    printf("%d\n", g_attempts);
+    return 0;
+}
 
 /* PoP: _extract_connect_id @ gateway/platforms/yuanbao.py:_extract_connect_id */
 int yb_u_extract_connect_id(const char *arg) { (void)arg; return 0; }
