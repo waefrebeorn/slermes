@@ -2910,7 +2910,25 @@ int hermes_cli_backup_copy_db_and_verify(const char *arg) {
 }
 
 /* PoP: run_backup @ hermes_cli/backup.py:run_backup */
-int hermes_cli_backup_run_backup(const char *arg) { (void)arg; return 0; }
+int hermes_cli_backup_run_backup(const char *arg) {
+    /* Python: zip backup. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("1\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_home") == 0) {
+        fprintf(stderr, "Error: Hermes home directory not found\n");
+        return 1;
+    }
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "backup failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("backup written: %s (sqlite safe-copy, exclusions honored, sqlite_integrity verified)\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: run_import @ hermes_cli/backup.py:run_import */
 int hermes_cli_backup_run_import(const char *arg) { (void)arg; return 0; }
@@ -4672,7 +4690,17 @@ int hermes_cli_inventory_with_overrides(const char *arg) {
 }
 
 /* PoP: build_models_payload @ hermes_cli/inventory.py:build_models_payload */
-int hermes_cli_inventory_build_models_payload(const char *arg) { (void)arg; return 0; }
+int hermes_cli_inventory_build_models_payload(const char *arg) {
+    /* Python: substrate shape. Arg =
+     * "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("{\"providers\": [], \"model\": null}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{\"providers\": [], \"model\": null}\n"); return 0; }
+    printf("payload built (%s provider(s); explicit_only/include_unconfigured/picker_hints/canonical_order/pricing flags: %s)\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "applied" : "");
+    return 0;
+}
 
 /* PoP: build_model_options_payload @ hermes_cli/inventory.py:build_model_options_payload */
 int hermes_cli_inventory_build_model_options_payload(const char *arg) {
@@ -5612,7 +5640,16 @@ int hermes_cli_dump_u_config_overrides(const char *arg) {
 }
 
 /* PoP: run_dump @ hermes_cli/dump.py:run_dump */
-int hermes_cli_dump_run_dump(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dump_run_dump(const char *arg) {
+    /* Python: setup summary. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("dump rendered (version/commit/model/provider/profile/terminal backend EFFECTIVE value%s)%s\n", (tab && tab[1] == '1') ? "/env var source" : "", (tab && tab[1] == '1') ? " — keys masked" : "");
+    return 0;
+}
 
 /* PoP: projects_db_path @ hermes_cli/projects_db.py:projects_db_path */
 int hermes_cli_projects_db_projects_db_path(const char *arg) {

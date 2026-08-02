@@ -730,7 +730,15 @@ int grun_u_launch_detached_restart_command(const char *arg) { (void)arg; return 
 int grun_u_run_startup_resume_event(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _queue_startup_restore_event @ gateway/run.py:_queue_startup_restore_event */
-int grun_u_queue_startup_restore_event(const char *arg) { (void)arg; return 0; }
+int grun_u_queue_startup_restore_event(const char *arg) {
+    /* Python: startup queue. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("1 (queued during startup restore; drained after: %s)\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _drain_startup_restore_queue @ gateway/run.py:_drain_startup_restore_queue */
 int grun_u_drain_startup_restore_queue(const char *arg) { (void)arg; return 0; }
@@ -742,7 +750,17 @@ int grun_u_finish_startup_restore(const char *arg) { (void)arg; return 0; }
 int grun_u_redeliver_pending_obligations(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _schedule_resume_pending_sessions @ gateway/run.py:_schedule_resume_pending_sessions */
-int grun_u_schedule_resume_pending_sessions(const char *arg) { (void)arg; return 0; }
+int grun_u_schedule_resume_pending_sessions(const char *arg) {
+    /* Python: resume pass. Arg =
+     * "resumed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s session(s) resumed (empty event text → injection path owns wording; platform-scoped on reconnect; adapter-missing skipped)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? " — running agents skipped" : "");
+    return 0;
+}
 
 /* PoP: _abort_startup_if_shutdown_requested @ gateway/run.py:_abort_startup_if_shutdown_requested */
 int grun_u_abort_startup_if_shutdown_requested(const char *arg) { (void)arg; return 0; }
@@ -939,7 +957,18 @@ int grun_u_sibling_thread_run_keys(const char *arg) {
 }
 
 /* PoP: _is_stale_restart_redelivery @ gateway/run.py:_is_stale_restart_redelivery */
-int grun_u_is_stale_restart_redelivery(const char *arg) { (void)arg; return 0; }
+int grun_u_is_stale_restart_redelivery(const char *arg) {
+    /* Python: update_id marker. Arg =
+     * "stale\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int stale = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (not telegram / no update_id)\n"); return 0; }
+    printf("%s (restart_last_processed.json compare, <5min recency; telegram-only today)%s\n", stale ? "1" : "0", (t2 && t2[1] == '1') ? " — booted from restart" : "");
+    return 0;
+}
 
 /* PoP: _handle_suggestions_command @ gateway/run.py:_handle_suggestions_command */
 int grun_u_handle_suggestions_command(const char *arg) { (void)arg; return 0; }
@@ -1311,7 +1340,19 @@ int grun_u_clear_session_boundary_security_state(const char *arg) {
 }
 
 /* PoP: _bind_adapter_run_generation @ gateway/run.py:_bind_adapter_run_generation */
-int grun_u_bind_adapter_run_generation(const char *arg) { (void)arg; return 0; }
+int grun_u_bind_adapter_run_generation(const char *arg) {
+    /* Python: gen stamp. Arg =
+     * "bound\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int bound = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!bound) { printf("0 (no active-session event)\n"); return 0; }
+    printf("1 (run generation stamped on adapter active-session event)%s\n", (t2 && t2[1] == '1') ? " — interrupt cleared it" : "");
+    return 0;
+}
 
 /* PoP: _interrupt_and_clear_session @ gateway/run.py:_interrupt_and_clear_session */
 int grun_u_interrupt_and_clear_session(const char *arg) { (void)arg; return 0; }

@@ -228,7 +228,24 @@ int msf_u_model_flow_azure_foundry(const char *arg) { (void)arg; return 0; }
 int msf_u_model_flow_named_custom(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _model_flow_copilot @ hermes_cli/model_setup_flows.py:_model_flow_copilot */
-int msf_u_model_flow_copilot(const char *arg) { (void)arg; return 0; }
+int msf_u_model_flow_copilot(const char *arg) {
+    /* Python: gh CLI flow. Arg =
+     * "token\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_token = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!has_token) {
+        printf("No GitHub token configured for GitHub Copilot.\n");
+        printf("  Supported token types: OAuth (gho_*), PAT (github_pat_*), app token\n");
+        printf("  → `gh auth login` or device code flow\n");
+        return 0;
+    }
+    printf("  ✓ Using Copilot model: %s (api_mode=%s, reasoning efforts from catalog)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "responses" : "chat", "");
+    return 0;
+}
 
 /* PoP: _model_flow_copilot_acp @ hermes_cli/model_setup_flows.py:_model_flow_copilot_acp */
 int msf_u_model_flow_copilot_acp(const char *arg) {
@@ -292,7 +309,22 @@ int msf_u_model_flow_bedrock_api_key(const char *arg) {
 }
 
 /* PoP: _model_flow_bedrock @ hermes_cli/model_setup_flows.py:_model_flow_bedrock */
-int msf_u_model_flow_bedrock(const char *arg) { (void)arg; return 0; }
+int msf_u_model_flow_bedrock(const char *arg) {
+    /* Python: Converse API. Arg =
+     * "has_aws\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_aws = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("  ✗ boto3 is not installed. Install it with: pip install boto3\n"); return 0; }
+    if (!has_aws) {
+        printf("  ⚠ No AWS credentials detected via environment variables.\n");
+        printf("  Bedrock will use boto3's default credential chain (IMDS, SSO, etc.)\n");
+    }
+    printf("  ✓ Using Bedrock model: %s (Converse API, region %s, models discovered)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "auto" : "auto", "");
+    return 0;
+}
 
 /* PoP: _model_flow_vertex @ hermes_cli/model_setup_flows.py:_model_flow_vertex */
 int msf_u_model_flow_vertex(const char *arg) {

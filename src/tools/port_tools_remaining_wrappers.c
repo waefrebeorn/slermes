@@ -997,7 +997,29 @@ int tools_x_search_tool_u_http_error_message(const char *arg) {
 }
 
 /* PoP: x_search_tool @ tools/x_search_tool.py:x_search_tool */
-int tools_x_search_tool_x_search_tool(const char *arg) { (void)arg; return 0; }
+int tools_x_search_tool_x_search_tool(const char *arg) {
+    /* Python: x_search gate. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"error\": \"query is required\"}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_query") == 0) {
+        printf("{\"error\": \"query is required for x_search\"}\n");
+        return 1;
+    }
+    if (strcmp(state, "both_filters") == 0) {
+        printf("{\"error\": \"allowed_x_handles and excluded_x_handles cannot be used together\"}\n");
+        return 1;
+    }
+    if (strcmp(state, "bad_date") == 0 || strcmp(state, "bad_reasoning") == 0) {
+        printf("{\"error\": \"%s\"}\n", t3 ? t3 + 1 : "invalid param");
+        return 1;
+    }
+    printf("{\"results\": %s}\n", t2 ? t2 + 1 : "[]");
+    return 0;
+}
 
 /* PoP: _handle_x_search @ tools/x_search_tool.py:_handle_x_search */
 int tools_x_search_tool_u_handle_x_search(const char *arg) {

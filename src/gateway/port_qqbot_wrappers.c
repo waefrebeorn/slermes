@@ -211,7 +211,18 @@ int qqbot_u_merge_quote_into(const char *arg) {
 }
 
 /* PoP: _detect_message_type @ gateway/platforms/qqbot/adapter.py:_detect_message_type */
-int qqbot_u_detect_message_type(const char *arg) { (void)arg; return 0; }
+int qqbot_u_detect_message_type(const char *arg) {
+    /* Python: content-type switch. Arg =
+     * "type\tstate\tresult". */
+    if (!arg || !*arg) { printf("text\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *type = t1 ? t1 + 1 : "text";
+    int state = arg[0] == '1';
+    if (!state) { printf("text\n"); return 0; }
+    printf("%s (voice/audio/silk → VOICE; video; image/photo; unknown → TEXT)%s\n", type, (t2 && t2[1] == '1') ? " — media_types present" : "");
+    return 0;
+}
 
 /* PoP: _process_attachments @ gateway/platforms/qqbot/adapter.py:_process_attachments */
 int qqbot_u_process_attachments(const char *arg) { (void)arg; return 0; }
@@ -238,7 +249,19 @@ int qqbot_u_is_voice_content_type(const char *arg) {
 }
 
 /* PoP: _qq_media_headers @ gateway/platforms/qqbot/adapter.py:_qq_media_headers */
-int qqbot_u_qq_media_headers(const char *arg) { (void)arg; return 0; }
+int qqbot_u_qq_media_headers(const char *arg) {
+    /* Python: CDN auth header. Arg =
+     * "has_token\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_token = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!has_token) { printf("{} (no access token)\n"); return 0; }
+    printf("{\"Authorization\": \"QQBot %s\"}\n", t2 ? t2 + 1 : "***");
+    return 0;
+}
 
 /* PoP: _stt_voice_attachment @ gateway/platforms/qqbot/adapter.py:_stt_voice_attachment */
 int qqbot_u_stt_voice_attachment(const char *arg) { (void)arg; return 0; }

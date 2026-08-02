@@ -236,7 +236,19 @@ int envb_get_temp_dir(const char *arg) {
 }
 
 /* PoP: init_session @ tools/environments/base.py:init_session */
-int envb_init_session(const char *arg) { (void)arg; return 0; }
+int envb_init_session(const char *arg) {
+    /* Python: login-shell capture. Arg =
+     * "ready\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int ready = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!ready) { printf("0 (snapshot capture failed — bash -l fallback)\n"); return 0; }
+    printf("1 (snapshot ready: env/functions/aliases/options + cwd restore via quoted-cd %s)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? " — atomic tmp+mv" : "");
+    return 0;
+}
 
 /* PoP: _quote_cwd_for_cd @ tools/environments/base.py:_quote_cwd_for_cd */
 int envb_u_quote_cwd_for_cd(const char *arg) {

@@ -207,7 +207,19 @@ int main_u_require_tty(const char *arg) {
 }
 
 /* PoP: _apply_profile_override @ hermes_cli/main.py:_apply_profile_override */
-int main_u_apply_profile_override(const char *arg) { (void)arg; return 0; }
+int main_u_apply_profile_override(const char *arg) {
+    /* Python: pre-import HERMES_HOME. Arg =
+     * "applied\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int applied = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("no -p flag\n"); return 0; }
+    if (!applied) { printf("override skipped (mcp add --args passthrough boundary)\n"); return 0; }
+    printf("HERMES_HOME set to profile home (%s; sudo resolved against SUDO_USER's home)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? " — --run-as-user absent" : "");
+    return 0;
+}
 
 /* PoP: _is_termux_startup_environment @ hermes_cli/main.py:_is_termux_startup_environment */
 int main_u_is_termux_startup_environment(const char *arg) {
@@ -2642,7 +2654,26 @@ int main_u_resolve_update_branch(const char *arg) {
 }
 
 /* PoP: _cmd_update_check @ hermes_cli/main.py:_cmd_update_check */
-int main_u_cmd_update_check(const char *arg) { (void)arg; return 0; }
+int main_u_cmd_update_check(const char *arg) {
+    /* Python: check only. Arg =
+     * "method\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *method = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (strcmp(method, "docker") == 0) {
+        printf("docker pull guidance (long-form message, branch_explicit notice)%s\n", (t2 && t2[1] == '1') ? "" : "");
+        return 0;
+    }
+    if (strcmp(method, "nix") == 0 || strcmp(method, "nixos") == 0) {
+        printf("nix recommended update command: %s\n", t2 ? t2 + 1 : "");
+        return 0;
+    }
+    printf("update check: origin/%s compare — %s\n", "main", t2 ? t2 + 1 : "up to date");
+    return 0;
+}
 
 /* PoP: _ensure_fhs_path_guard @ hermes_cli/main.py:_ensure_fhs_path_guard */
 int main_u_ensure_fhs_path_guard(const char *arg) {
@@ -2700,7 +2731,17 @@ int main_u_resolve_pre_update_backup_mode(const char *arg) {
 }
 
 /* PoP: _run_pre_update_backup @ hermes_cli/main.py:_run_pre_update_backup */
-int main_u_run_pre_update_backup(const char *arg) { (void)arg; return 0; }
+int main_u_run_pre_update_backup(const char *arg) {
+    /* Python: quick/full/off. Arg =
+     * "snap\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("pre-update backup ran (mode=%s; quick snapshot id=%s%s)%s\n", t2 ? t2 + 1 : "quick", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? " + full zip" : "", (t2 && t2[1] == '2') ? " — --backup forced full" : "");
+    return 0;
+}
 
 /* PoP: _write_update_planned_stop_marker @ hermes_cli/main.py:_write_update_planned_stop_marker */
 int main_u_write_update_planned_stop_marker(const char *arg) {

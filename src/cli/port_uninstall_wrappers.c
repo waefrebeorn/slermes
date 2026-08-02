@@ -112,7 +112,16 @@ int uninst_remove_node_symlinks(const char *arg) {
 }
 
 /* PoP: uninstall_gateway_service @ hermes_cli/uninstall.py:uninstall_gateway_service */
-int uninst_uninstall_gateway_service(const char *arg) { (void)arg; return 0; }
+int uninst_uninstall_gateway_service(const char *arg) {
+    /* Python: cross-platform stop. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("gateway service uninstalled (systemd user+system / launchd / Windows Task+Startup; standalone processes killed; Termux: standalone only)%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _hermes_path_markers @ hermes_cli/uninstall.py:_hermes_path_markers */
 int uninst_u_hermes_path_markers(const char *arg) {

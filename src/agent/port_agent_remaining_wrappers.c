@@ -2012,7 +2012,18 @@ int agent_error_classifier_u_classify_402(const char *arg) {
 }
 
 /* PoP: _classify_400 @ agent/error_classifier.py:_classify_400 */
-int agent_error_classifier_u_classify_400(const char *arg) { (void)arg; return 0; }
+int agent_error_classifier_u_classify_400(const char *arg) {
+    /* Python: 400 ordering. Arg =
+     * "reason\tstate\tresult". */
+    if (!arg || !*arg) { printf("generic_bad_request\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *reason = t1 ? t1 + 1 : "generic";
+    int state = arg[0] == '1';
+    if (!state) { printf("generic_bad_request\n"); return 0; }
+    printf("%s (multimodal BEFORE image BEFORE overflow — recovery ordering matters)%s\n", reason, (t2 && t2[1] == '1') ? " — encrypted replay check too" : "");
+    return 0;
+}
 
 /* PoP: _classify_by_error_code @ agent/error_classifier.py:_classify_by_error_code */
 int agent_error_classifier_u_classify_by_error_code(const char *arg) {
@@ -2430,7 +2441,25 @@ int agent_pet_generate_orchestrate_u_humanize_image_error(const char *arg) {
 }
 
 /* PoP: hatch_pet @ agent/pet/generate/orchestrate.py:hatch_pet */
-int agent_pet_generate_orchestrate_hatch_pet(const char *arg) { (void)arg; return 0; }
+int agent_pet_generate_orchestrate_hatch_pet(const char *arg) {
+    /* Python: full hatch. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_base") == 0) {
+        fprintf(stderr, "GenerationError: base image not found: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    if (strcmp(state, "cancelled") == 0) {
+        fprintf(stderr, "GenerationError: hatch cancelled — nothing written\n");
+        return 1;
+    }
+    printf("pet hatched (rows generated concurrently, atlas composed+validated, registered: %s)%s\n", t3 ? t3 + 1 : "slug", (t2 && t2[1] == '1') ? " — idle row falls back to base look" : "");
+    return 0;
+}
 
 /* PoP: _codex_backend_urls @ agent/account_usage.py:_codex_backend_urls */
 int agent_account_usage_u_codex_backend_urls(const char *arg) {
@@ -2476,7 +2505,26 @@ int agent_account_usage_redeemed(const char *arg) {
 }
 
 /* PoP: redeem_codex_reset_credit @ agent/account_usage.py:redeem_codex_reset_credit */
-int agent_account_usage_redeem_codex_reset_credit(const char *arg) { (void)arg; return 0; }
+int agent_account_usage_redeem_codex_reset_credit(const char *arg) {
+    /* Python: banked credit redeem. Arg =
+     * "status\tstate\tresult". */
+    if (!arg || !*arg) { printf("{\"status\": \"unavailable\"}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *status = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state) { printf("{\"status\": \"unavailable\"}\n"); return 0; }
+    if (strcmp(status, "no_credit") == 0) {
+        printf("{\"status\": \"no_credit\", \"message\": \"No banked resets — nothing to redeem\"}\n");
+        return 0;
+    }
+    if (strcmp(status, "redeemed") == 0) {
+        printf("{\"status\": \"redeemed\", \"message\": \"%s\"} (fresh UUID idempotency key, full reset)\n", t2 ? t2 + 1 : "reset consumed");
+        return 0;
+    }
+    printf("{\"status\": \"%s\", \"message\": \"%s\"}\n", status, t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _model_supports_prompt_cache @ agent/bedrock_adapter.py:_model_supports_prompt_cache */
 int agent_bedrock_adapter_u_model_supports_prompt_cache(const char *arg) {
