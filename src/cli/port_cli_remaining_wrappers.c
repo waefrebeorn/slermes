@@ -511,7 +511,20 @@ int hermes_cli_mcp_catalog_u_run_bootstrap(const char *arg) { (void)arg; return 
 int hermes_cli_mcp_catalog_u_do_git_install(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _expand_install_dir @ hermes_cli/mcp_catalog.py:_expand_install_dir */
-int hermes_cli_mcp_catalog_u_expand_install_dir(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_catalog_u_expand_install_dir(const char *arg) {
+    /* Python: replace $INSTALL_DIR token; error when token present but no
+     * install dir. Arg = "value\tinstall_dir" (install_dir empty = none). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && strstr(arg, "${INSTALL_DIR}")) {
+        if (!tab[1]) { printf("\n"); return 1; }
+        printf("%s\n", tab + 1);
+        return 0;
+    }
+    if (tab) printf("%.*s\n", (int)(tab - arg), arg);
+    else printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _prompt_env_vars @ hermes_cli/mcp_catalog.py:_prompt_env_vars */
 int hermes_cli_mcp_catalog_u_prompt_env_vars(const char *arg) { (void)arg; return 0; }
@@ -615,7 +628,17 @@ int hermes_cli_projects_cmd_u_cmd_restore(const char *arg) {
 }
 
 /* PoP: _cmd_bind_board @ hermes_cli/projects_cmd.py:_cmd_bind_board */
-int hermes_cli_projects_cmd_u_cmd_bind_board(const char *arg) { (void)arg; return 0; }
+int hermes_cli_projects_cmd_u_cmd_bind_board(const char *arg) {
+    /* Python: update board_slug; "Bound <slug> -> board <board>" or
+     * "Unbound board from <slug>". Arg = "proj_slug\tboard". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("0\n"); return 1; }
+    printf("%.*s\n", (int)(tab - arg), arg);
+    if (tab[1] && tab[1] != ' ') printf("Bound %.16s -> board %s\n", arg, tab + 1);
+    else printf("Unbound board from %.16s\n", arg);
+    return 0;
+}
 
 /* PoP: _sync_board_default_workdir @ hermes_cli/projects_cmd.py:_sync_board_default_workdir */
 int hermes_cli_projects_cmd_u_sync_board_default_workdir(const char *arg) { (void)arg; return 0; }
@@ -872,7 +895,22 @@ int hermes_cli_telegram_managed_bo_u_api_url(const char *arg) {
 }
 
 /* PoP: _parse_owner_user_id @ hermes_cli/telegram_managed_bot.py:_parse_owner_user_id */
-int hermes_cli_telegram_managed_bo_u_parse_owner_user_id(const char *arg) { (void)arg; return 0; }
+int hermes_cli_telegram_managed_bo_u_parse_owner_user_id(const char *arg) {
+    /* Python: bool -> None; int > 0 -> it; decimal string -> int > 0;
+     * else None. Arg = value text. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    if (strcmp(arg, "true") == 0 || strcmp(arg, "false") == 0) { printf("\n"); return 0; }
+    int decimal = 1;
+    for (const char *p = arg; *p; p++) {
+        if (*p < '0' || *p > '9') { decimal = 0; break; }
+    }
+    if (decimal) {
+        long v = strtol(arg, NULL, 10);
+        if (v > 0) { printf("%ld\n", v); return 0; }
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: render_qr_terminal @ hermes_cli/telegram_managed_bot.py:render_qr_terminal */
 int hermes_cli_telegram_managed_bo_render_qr_terminal(const char *arg) { (void)arg; return 0; }
@@ -2190,7 +2228,16 @@ int hermes_cli_curator_u_idle_days(const char *arg) { (void)arg; return 0; }
 int hermes_cli_curator_u_cmd_prune(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cmd_list_archived @ hermes_cli/curator.py:_cmd_list_archived */
-int hermes_cli_curator_u_cmd_list_archived(const char *arg) { (void)arg; return 0; }
+int hermes_cli_curator_u_cmd_list_archived(const char *arg) {
+    /* Python: print each archived skill name; "curator: no archived skills"
+     * when empty. Arg = names (one per line) or empty. */
+    if (!arg || !*arg) {
+        printf("curator: no archived skills\n");
+        return 0;
+    }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: register_cli @ hermes_cli/onepassword_secrets_cli.py:register_cli */
 int hermes_cli_onepassword_secrets_register_cli(const char *arg) { (void)arg; return 0; }
@@ -2225,7 +2272,12 @@ int hermes_cli_onepassword_secrets_u_op_version(const char *arg) { (void)arg; re
 int hermes_cli_onepassword_secrets_u_op_whoami(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_root @ hermes_cli/security_audit_startup.py:_is_root */
-int hermes_cli_security_audit_star_u_is_root(const char *arg) { (void)arg; return 0; }
+int hermes_cli_security_audit_star_u_is_root(const char *arg) {
+    /* Python: geteuid/getuid == 0; always False on Windows. */
+    (void)arg;
+    printf("%d\n", geteuid() == 0 ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _running_as_root @ hermes_cli/security_audit_startup.py:_running_as_root */
 int hermes_cli_security_audit_star_u_running_as_root(const char *arg) { (void)arg; return 0; }
@@ -2714,7 +2766,20 @@ int hermes_cli_fallback_cmd_u_read_chain(const char *arg) { (void)arg; return 0;
 int hermes_cli_fallback_cmd_u_write_chain(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _snapshot_auth_active_provider @ hermes_cli/fallback_cmd.py:_snapshot_auth_active_provider */
-int hermes_cli_fallback_cmd_u_snapshot_auth_active_provider(const char *arg) { (void)arg; return 0; }
+int hermes_cli_fallback_cmd_u_snapshot_auth_active_provider(const char *arg) {
+    /* Python: auth store "active_provider" or None. Arg = auth JSON. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *store = json_parse(arg, NULL);
+    if (!store || !json_is_object(store)) {
+        if (store) json_free(store);
+        printf("\n");
+        return 0;
+    }
+    const char *ap = json_get_str(store, "active_provider", "");
+    printf("%s\n", ap);
+    json_free(store);
+    return 0;
+}
 
 /* PoP: _restore_auth_active_provider @ hermes_cli/fallback_cmd.py:_restore_auth_active_provider */
 int hermes_cli_fallback_cmd_u_restore_auth_active_provider(const char *arg) { (void)arg; return 0; }
@@ -3386,7 +3451,22 @@ int hermes_cli_stdio_u_default_windows_editor(const char *arg) { (void)arg; retu
 int hermes_cli_stdio_u_augment_path_with_known_tools(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _has_system_browser @ hermes_cli/dep_ensure.py:_has_system_browser */
-int hermes_cli_dep_ensure_u_has_system_browser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dep_ensure_u_has_system_browser(const char *arg) {
+    /* Python: shutil.which() over known browser names. Arg = "system" or
+     * empty (POSIX list). */
+    static const char *posix[] = {"google-chrome", "google-chrome-stable",
+                                  "chromium", "chromium-browser", "chrome"};
+    int is_windows = arg && strncasecmp(arg, "windows", 7) == 0;
+    const char **names = posix;
+    size_t n = sizeof(posix) / sizeof(posix[0]);
+    for (size_t i = 0; i < n; i++) {
+        char which[1400];
+        snprintf(which, sizeof(which), "command -v %s >/dev/null 2>&1", names[i]);
+        if (system(which) == 0) { printf("1\n"); return 0; }
+    }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _has_hermes_agent_browser @ hermes_cli/dep_ensure.py:_has_hermes_agent_browser */
 int hermes_cli_dep_ensure_u_has_hermes_agent_browser(const char *arg) { (void)arg; return 0; }

@@ -286,7 +286,17 @@ int gw_u_wait_for_gateway_ready(const char *arg) { (void)arg; return 0; }
 int gw_u_report_gateway_start(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _print_next_steps @ hermes_cli/gateway_windows.py:_print_next_steps */
-int gw_u_print_next_steps(const char *arg) { (void)arg; return 0; }
+int gw_u_print_next_steps(const char *arg) {
+    /* Python: blank line + "Next steps:" + status + log hints. Arg = hermes
+     * home (optional). */
+    const char *hh = (arg && *arg) ? arg : getenv("HERMES_HOME");
+    if (!hh || !*hh) hh = getenv("HOME");
+    printf("\nNext steps:\n");
+    printf("  hermes gateway status                      # Check status\n");
+    printf("  type %s%slogs%sgateway.log       # View logs\n",
+           hh ? hh : ".", hh ? "\\" : "", hh ? "\\" : "");
+    return 0;
+}
 
 /* PoP: is_task_registered @ hermes_cli/gateway_windows.py:is_task_registered */
 int gw_is_task_registered(const char *arg) {

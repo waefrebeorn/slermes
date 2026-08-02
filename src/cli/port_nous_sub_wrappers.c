@@ -72,7 +72,16 @@ int nsub_u_browser_label(const char *arg) { (void)arg; return 0; }
 int nsub_u_tts_label(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _stt_label @ hermes_cli/nous_subscription.py:_stt_label */
-int nsub_u_stt_label(const char *arg) { (void)arg; return 0; }
+int nsub_u_stt_label(const char *arg) {
+    /* Python: provider -> label mapping. Arg = provider (default "local"). */
+    if (!arg || !*arg) { printf("Local faster-whisper\n"); return 0; }
+    if (strcmp(arg, "openai") == 0) printf("OpenAI Whisper\n");
+    else if (strcmp(arg, "groq") == 0) printf("Groq Whisper\n");
+    else if (strcmp(arg, "mistral") == 0) printf("Mistral Voxtral Transcribe\n");
+    else if (strcmp(arg, "local") == 0) printf("Local faster-whisper\n");
+    else printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _local_stt_backend_available @ hermes_cli/nous_subscription.py:_local_stt_backend_available */
 int nsub_u_local_stt_backend_available(const char *arg) { (void)arg; return 0; }

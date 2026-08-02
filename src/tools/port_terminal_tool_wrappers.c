@@ -67,7 +67,16 @@ int tt_u_get_cached_sudo_password(const char *arg) {
 }
 
 /* PoP: _set_cached_sudo_password @ tools/terminal_tool.py:_set_cached_sudo_password */
-int tt_u_set_cached_sudo_password(const char *arg) { (void)arg; return 0; }
+int tt_u_set_cached_sudo_password(const char *arg) {
+    /* Python: cache password under scope, or evict when empty. Arg =
+     * "scope\tpassword" (password empty = evict). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("0\n"); return 0; }
+    if (tab[1]) printf("cached %.*s\n", (int)(tab - arg), arg);
+    else printf("evicted %.*s\n", (int)(tab - arg), arg);
+    return 0;
+}
 
 /* PoP: _reset_cached_sudo_passwords @ tools/terminal_tool.py:_reset_cached_sudo_passwords */
 int tt_u_reset_cached_sudo_passwords(const char *arg) { (void)arg; return 0; }

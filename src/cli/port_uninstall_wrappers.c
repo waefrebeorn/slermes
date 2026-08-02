@@ -85,7 +85,23 @@ int uninst_remove_hermes_env_vars_windows(const char *arg) { (void)arg; return 0
 int uninst_remove_portable_tooling_windows(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_default_hermes_home @ hermes_cli/uninstall.py:_is_default_hermes_home */
-int uninst_u_is_default_hermes_home(const char *arg) { (void)arg; return 0; }
+int uninst_u_is_default_hermes_home(const char *arg) {
+    /* Python: hermes_home.resolve() == default root. Arg = "home\tdefault"
+     * (resolve via realpath on both). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    char home[1024], dflt[1024];
+    size_t hlen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (hlen >= sizeof(home)) hlen = sizeof(home) - 1;
+    memcpy(home, arg, hlen); home[hlen] = '\0';
+    const char *d = tab ? tab + 1 : "";
+    snprintf(dflt, sizeof(dflt), "%s", d);
+    char rh[1100], rd[1100];
+    if (!realpath(home, rh)) { printf("0\n"); return 0; }
+    if (!realpath(dflt, rd)) { printf("0\n"); return 0; }
+    printf("%d\n", strcmp(rh, rd) == 0 ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _discover_named_profiles @ hermes_cli/uninstall.py:_discover_named_profiles */
 int uninst_u_discover_named_profiles(const char *arg) { (void)arg; return 0; }

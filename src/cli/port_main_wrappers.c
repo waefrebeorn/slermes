@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <time.h>
 #include <sys/stat.h>
 #include <errno.h>
 #include "hermes_json.h"
@@ -839,7 +840,16 @@ int main_u_lazy_refresh_marker_path(const char *arg) {
 }
 
 /* PoP: _write_marker_file @ hermes_cli/main.py:_write_marker_file */
-int main_u_write_marker_file(const char *arg) { (void)arg; return 0; }
+int main_u_write_marker_file(const char *arg) {
+    /* Python: write "started=<epoch>\npid=<pid>\n"; never raises. Arg =
+     * marker path. */
+    if (!arg || !*arg) return 0;
+    FILE *fp = fopen(arg, "w");
+    if (!fp) return 0;
+    fprintf(fp, "started=%ld\npid=%d\n", (long)time(NULL), (int)getpid());
+    fclose(fp);
+    return 0;
+}
 
 /* PoP: _clear_marker_file @ hermes_cli/main.py:_clear_marker_file */
 int main_u_clear_marker_file(const char *arg) {

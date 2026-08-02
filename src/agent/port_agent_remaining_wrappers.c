@@ -83,7 +83,23 @@ int agent_model_metadata_u_is_cjk_token_dense_char(const char *arg) { (void)arg;
 int agent_model_metadata_u_estimate_message_tokens_without_images(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _tool_name_for_cache @ agent/model_metadata.py:_tool_name_for_cache */
-int agent_model_metadata_u_tool_name_for_cache(const char *arg) { (void)arg; return 0; }
+int agent_model_metadata_u_tool_name_for_cache(const char *arg) {
+    /* Python: tool.function.name elif tool.name (str). Arg = tool JSON. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *tool = json_parse(arg, NULL);
+    if (!tool || !json_is_object(tool)) {
+        if (tool) json_free(tool);
+        printf("\n");
+        return 0;
+    }
+    const char *name = "";
+    json_t *fn = json_obj_get(tool, "function");
+    if (fn && json_is_object(fn)) name = json_get_str(fn, "name", "");
+    if (!*name) name = json_get_str(tool, "name", "");
+    printf("%s\n", name);
+    json_free(tool);
+    return 0;
+}
 
 /* PoP: _estimate_tools_tokens_rough @ agent/model_metadata.py:_estimate_tools_tokens_rough */
 int agent_model_metadata_u_estimate_tools_tokens_rough(const char *arg) { (void)arg; return 0; }
@@ -494,7 +510,22 @@ int agent_subscription_view_format_tier_row(const char *arg) {
 int agent_subscription_view_is_upgrade(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _dev_current @ agent/subscription_view.py:_dev_current */
-int agent_subscription_view_u_dev_current(const char *arg) { (void)arg; return 0; }
+int agent_subscription_view_u_dev_current(const char *arg) {
+    /* Python: dev defaults (tier plus, 1000 monthly, 420 remaining) merged
+     * with overrides. Arg = overrides JSON or empty. */
+    printf("tier_id=plus\ntier_name=Plus\nmonthly_credits=1000\n");
+    printf("credits_remaining=420\ncycle_ends_at=2026-07-01\n");
+    if (arg && *arg) {
+        json_t *ov = json_parse(arg, NULL);
+        if (ov && json_is_object(ov)) {
+            const char *v;
+            if ((v = json_get_str(ov, "tier_id", ""))) printf("tier_id=%s\n", v);
+            if ((v = json_get_str(ov, "tier_name", ""))) printf("tier_name=%s\n", v);
+            json_free(ov);
+        } else if (ov) json_free(ov);
+    }
+    return 0;
+}
 
 /* PoP: _dev_tiers @ agent/subscription_view.py:_dev_tiers */
 int agent_subscription_view_u_dev_tiers(const char *arg) { (void)arg; return 0; }
@@ -763,7 +794,15 @@ int agent_rate_limit_tracker_u_safe_float(const char *arg) {
 int agent_rate_limit_tracker_parse_rate_limit_headers(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _fmt_count @ agent/rate_limit_tracker.py:_fmt_count */
-int agent_rate_limit_tracker_u_fmt_count(const char *arg) { (void)arg; return 0; }
+int agent_rate_limit_tracker_u_fmt_count(const char *arg) {
+    /* Python: n>=1e6 -> "%.1fM"; n>=1e3 -> "%.1fK"; else str(n). Arg = n. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    double n = strtod(arg, NULL);
+    if (n >= 1000000.0) printf("%.1fM\n", n / 1000000.0);
+    else if (n >= 1000.0) printf("%.1fK\n", n / 1000.0);
+    else printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _fmt_seconds @ agent/rate_limit_tracker.py:_fmt_seconds */
 int agent_rate_limit_tracker_u_fmt_seconds(const char *arg) { (void)arg; return 0; }

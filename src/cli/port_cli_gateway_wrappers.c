@@ -313,7 +313,14 @@ int cgw_u_user_dbus_socket_path(const char *arg) {
 }
 
 /* PoP: _user_systemd_private_socket_path @ hermes_cli/gateway.py:_user_systemd_private_socket_path */
-int cgw_u_user_systemd_private_socket_path(const char *arg) { (void)arg; return 0; }
+int cgw_u_user_systemd_private_socket_path(const char *arg) {
+    /* Python: XDG_RUNTIME_DIR or /run/user/<uid> + "/systemd/private". */
+    if (arg && *arg) { printf("%s/systemd/private\n", arg); return 0; }
+    const char *xdg = getenv("XDG_RUNTIME_DIR");
+    if (xdg && *xdg) { printf("%s/systemd/private\n", xdg); return 0; }
+    printf("/run/user/%d/systemd/private\n", getuid());
+    return 0;
+}
 
 /* PoP: _user_systemd_socket_ready @ hermes_cli/gateway.py:_user_systemd_socket_ready */
 int cgw_u_user_systemd_socket_ready(const char *arg) { (void)arg; return 0; }

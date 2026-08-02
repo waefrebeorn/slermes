@@ -206,7 +206,26 @@ int tools_homeassistant_tool_u_async_list_entities(const char *arg) { (void)arg;
 int tools_homeassistant_tool_u_async_get_state(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _build_service_payload @ tools/homeassistant_tool.py:_build_service_payload */
-int tools_homeassistant_tool_u_build_service_payload(const char *arg) { (void)arg; return 0; }
+int tools_homeassistant_tool_u_build_service_payload(const char *arg) {
+    /* Python: data dict + entity_id override. Arg = "entity_id\tdata_json"
+     * (entity_id may be empty). */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *data = tab ? tab + 1 : arg;
+    json_t *payload = json_parse(data, NULL);
+    if (!payload || !json_is_object(payload)) {
+        if (payload) json_free(payload);
+        payload = json_object();
+    }
+    if (tab && tab > arg && tab[1]) {
+        json_set(payload, "entity_id", json_string(tab + 1));
+    }
+    char *s = json_dumps(payload, 0);
+    printf("%s\n", s ? s : "{}");
+    free(s);
+    json_free(payload);
+    return 0;
+}
 
 /* PoP: _parse_service_response @ tools/homeassistant_tool.py:_parse_service_response */
 int tools_homeassistant_tool_u_parse_service_response(const char *arg) { (void)arg; return 0; }
@@ -773,7 +792,16 @@ int tools_image_source_u_http_block_reason(const char *arg) { (void)arg; return 
 int tools_image_source_u_download_to_bytes(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_local_terminal_backend @ tools/image_source.py:_is_local_terminal_backend */
-int tools_image_source_u_is_local_terminal_backend(const char *arg) { (void)arg; return 0; }
+int tools_image_source_u_is_local_terminal_backend(const char *arg) {
+    /* Python: TERMINAL_ENV in ("local", "") — mirrors browser_tool. Arg =
+     * TERMINAL_ENV value. */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ' || *p == '\t') p++;
+    if (strncasecmp(p, "local", 5) == 0) { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _media_cache_roots @ tools/image_source.py:_media_cache_roots */
 int tools_image_source_u_media_cache_roots(const char *arg) { (void)arg; return 0; }
@@ -1439,7 +1467,18 @@ int tools_clarify_gateway_resolve_clarify_timeout(const char *arg) { (void)arg; 
 int tools_daemon_pool_u_adjust_thread_count(const char *arg) { (void)arg; return 0; }
 
 /* PoP: log_call @ tools/debug_helpers.py:log_call */
-int tools_debug_helpers_log_call(const char *arg) { (void)arg; return 0; }
+int tools_debug_helpers_log_call(const char *arg) {
+    /* Python: append {timestamp, tool_name, **data} to in-memory log when
+     * enabled. Arg = "enabled\ttool_name\tdata_json". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    int enabled = (arg[0] == '1');
+    if (!enabled) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (t1 && t1[1]) printf("logged %s\n", t1 + 1);
+    (void)t2;
+    return 0;
+}
 
 /* PoP: set_emitter @ tools/desktop_ui.py:set_emitter */
 int tools_desktop_ui_set_emitter(const char *arg) {
@@ -1453,7 +1492,29 @@ int tools_desktop_ui_set_emitter(const char *arg) {
 }
 
 /* PoP: _resolve_host_path @ tools/environments/file_sync.py:_resolve_host_path */
-int tools_environments_file_sync_u_resolve_host_path(const char *arg) { (void)arg; return 0; }
+int tools_environments_file_sync_u_resolve_host_path(const char *arg) {
+    /* Python: first host whose remote == remote_path, else None. Arg =
+     * "remote_path\thost=remote\thost=remote..." */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("\n"); return 0; }
+    size_t rlen = (size_t)(tab - arg);
+    const char *p = tab + 1;
+    while (*p) {
+        const char *eq = strchr(p, '=');
+        const char *t2 = strchr(p, '\t');
+        if (eq && (!t2 || eq < t2)) {
+            size_t remote_len = (t2 ? (size_t)(t2 - eq - 1) : strlen(eq + 1));
+            if (remote_len == rlen && strncmp(eq + 1, arg, rlen) == 0) {
+                printf("%.*s\n", (int)(eq - p), p);
+                return 0;
+            }
+        }
+        p = t2 ? t2 + 1 : p + strlen(p);
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _request @ tools/environments/managed_modal.py:_request */
 int tools_environments_managed_mod_u_request(const char *arg) { (void)arg; return 0; }
