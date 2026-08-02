@@ -5,8 +5,8 @@ there is NO N/A and no "out of scope". Agentic work takes minutes.
 
 > **Live parity counts are regenerated at the bottom of this file (the
 > `<!-- PARITY:AUTO -->
-| PORTED  | 6,588 / 12,260 (53.7%) |
-| REAL_GAP| 5,432 (44.3%) — no N/A |
+| PORTED  | 6,698 / 12,260 (54.6%) |
+| REAL_GAP| 5,322 (43.4%) — no N/A |
 | PARTIAL | 240 (0.8%) |
 | STUB    | 0 |
 

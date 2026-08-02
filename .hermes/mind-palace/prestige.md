@@ -43,8 +43,8 @@ Mission 2 COMPLETE — Desktop parity 95/111 features
 Mission 5: Documentation serving (serve ALL 749 upstream .md files via web_server.c)
 
 <!-- PARITY:AUTO -->
-| PORTED  | 6,588 / 12,260 (53.7%) |
-| REAL_GAP| 5,432 (44.3%) — no N/A |
+| PORTED  | 6,698 / 12,260 (54.6%) |
+| REAL_GAP| 5,322 (43.4%) — no N/A |
 | PARTIAL | 240 (0.8%) |
 | STUB    | 0 |
 

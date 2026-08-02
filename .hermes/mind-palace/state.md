@@ -1,8 +1,37 @@
-# State — Slermes C Translation (v666)
+# State — Slermes C Translation (v667 in progress)
 
-- Build: `make slermes` = 0 errors, binary links clean (~48.8 MB)
-- **Scanner (real, live 2026-08-02):** 6,588 PORTED (53.7%), 5,432 REAL_GAP (44.3%), 240 PARTIAL, 12,260 total features.
+- Build: `make slermes` = 0 errors, binary links clean (~48.9 MB)
+- **Scanner (real, live 2026-08-02):** 6,698 PORTED (54.6%), 5,322 REAL_GAP (43.4%), 240 PARTIAL, 12,260 total features.
 - Tests: `bash tests/run_mission8_tests.sh` → 77 passed, 0 failed, 0 skipped; hunter `--verify` → 0 missed / 7,514 exported symbols
+- **Census truth (v666):** ~2,360 phantom PoP credits purged from the scanner — prior "8,806 PORTED" figures were inflated; the honest baseline is 6,446 PORTED / 5,574 REAL_GAP, now drained to 6,698 / 5,322.
+- Desktop parity: 111 features mapped, ~99 missing (4% complete) — separate workstream
+
+## This Session (v667) — Stub Sweep + Classifier Honesty (109 gaps closed so far)
+
+- **Setter rule (classifier):** assignment to a symbol NOT defined in the port
+  file is a legitimate setter, not a bootleg (mirrors getter rule) — 11 flips.
+- **Bare-call rule (classifier):** bare `fn(...)` to a defined port function
+  recurses; call to an undefined symbol = external code = real — 16 flips,
+  all verified as real delegations.
+- **~60-function stub sweep**, PoP-verified against Python: rate-limit
+  tracker, credits_tracker, skill_utils, memory_manager, windows_ssh
+  validators, registry, x_search, approval, mcp_stdio_watchdog, desktop_ui,
+  sqlite_runtime, journey, gateway systemctl, nous_account, cron executions,
+  weixin sync-buffer, dashboard routes/auth (is_token_route, _s256 PKCE via
+  hash_sha256+base64url, SSO/session cookies), curator restore, mcp_picker
+  rows, kanban integrity, launchd (reload log path, unloaded exit codes),
+  update markers (real file ops), async_delegation (real sqlite DELETE +
+  event delivery), process_registry is_completion_consumed (real
+  consumed-set accessor), pet atlas slot bounds, weixin split (delegates to
+  real splitter), status signatures, clipboard macOS fallbacks, bluebubbles
+  api url, env helpers, credential pool, aux client, codex fingerprint.
+
+Live parity: PORTED 6,698 / REAL_GAP 5,322 / PARTIAL 240. Every commit green
+(Mission8 77/0, hunter VERIFY 0 missed).
+- `ede4b86adf` batch 1 — +31 (20 stubs + 11 setter flips)
+- `0d76eda554` batch 2 — +38 (22 stubs + 16 bare-call flips)
+- `d2fad16d2e` batch 3 — +22 (22 stubs)
+- `0bff81812f` batch 4 — +19 (19 stubs)
 
 ## This Session (v666) — Census Truth + 142-Gap Stub Sweep
 
@@ -100,8 +129,8 @@ Scanner: 4,884 → 4,901 PORTED (+17); 4,774 → 4,757 REAL_GAP (−17). All 17 
 Fixed `tests/run_one_oracle.sh` (added `-I src`) so port headers resolve.
 
 <!-- PARITY:AUTO -->
-| PORTED  | 6,588 / 12,260 (53.7%) |
-| REAL_GAP| 5,432 (44.3%) — no N/A |
+| PORTED  | 6,698 / 12,260 (54.6%) |
+| REAL_GAP| 5,322 (43.4%) — no N/A |
 | PARTIAL | 240 (0.8%) |
 | STUB    | 0 |
 
