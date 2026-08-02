@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:22:43Z",
+  "generated_at": "2026-08-02T20:24:27Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -182983,10 +182983,10 @@
     },
     "hermes_cli/gateway.py": {
       "total": 171,
-      "ported": 161,
+      "ported": 171,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 10,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 171,
@@ -183004,16 +183004,24 @@
             ],
             "line_number": 82
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_gateway_cli_remaining.c",
+          "c_function": "gwc2_running",
+          "pop_annotation": {
+            "c_function": "gwc2_running",
+            "python_functions": [
+              "running"
+            ],
+            "c_file": "src/cli/port_gateway_cli_remaining.c",
+            "python_file": "hermes_cli/gateway.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: running @ hermes_cli/gateway.py:running */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/gateway.py",
@@ -183404,16 +183412,24 @@
             "decorators": [],
             "line_number": 663
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_gateway_cli_remaining.c",
+          "c_function": "gwc2_capture_gateway_argv",
+          "pop_annotation": {
+            "c_function": "gwc2_capture_gateway_argv",
+            "python_functions": [
+              "_capture_gateway_argv"
+            ],
+            "c_file": "src/cli/port_gateway_cli_remaining.c",
+            "python_file": "hermes_cli/gateway.py",
+            "line": 31,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _capture_gateway_argv @ hermes_cli/gateway.py:_capture_gateway_argv */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/gateway.py",
@@ -183454,16 +183470,24 @@
             "decorators": [],
             "line_number": 718
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_gateway_cli_remaining.c",
+          "c_function": "gwc2_launch_detached_gateway_restart_by_cmdline",
+          "pop_annotation": {
+            "c_function": "gwc2_launch_detached_gateway_restart_by_cmdline",
+            "python_functions": [
+              "launch_detached_gateway_restart_by_cmdline"
+            ],
+            "c_file": "src/cli/port_gateway_cli_remaining.c",
+            "python_file": "hermes_cli/gateway.py",
+            "line": 62,
+            "is_consolidated": false,
+            "full_text": "/* PoP: launch_detached_gateway_restart_by_cmdline @ hermes_cli/gateway.py:launch_detached_gateway_restart_by_cmdline */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/gateway.py",
@@ -183504,16 +183528,24 @@
             "decorators": [],
             "line_number": 741
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_gateway_cli_remaining.c",
+          "c_function": "gwc2_spawn_gateway_restart_watcher",
+          "pop_annotation": {
+            "c_function": "gwc2_spawn_gateway_restart_watcher",
+            "python_functions": [
+              "_spawn_gateway_restart_watcher"
+            ],
+            "c_file": "src/cli/port_gateway_cli_remaining.c",
+            "python_file": "hermes_cli/gateway.py",
+            "line": 73,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _spawn_gateway_restart_watcher @ hermes_cli/gateway.py:_spawn_gateway_restart_watcher */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/gateway.py",
@@ -184134,16 +184166,24 @@
             "decorators": [],
             "line_number": 1436
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_gateway_cli_remaining.c",
+          "c_function": "gwc2_gateway_list",
+          "pop_annotation": {
+            "c_function": "gwc2_gateway_list",
+            "python_functions": [
+              "_gateway_list"
+            ],
+            "c_file": "src/cli/port_gateway_cli_remaining.c",
+            "python_file": "hermes_cli/gateway.py",
+            "line": 86,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _gateway_list @ hermes_cli/gateway.py:_gateway_list */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/gateway.py",
@@ -184619,16 +184659,24 @@
             "decorators": [],
             "line_number": 1844
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_gateway_cli_remaining.c",
+          "c_function": "gwc2_str",
+          "pop_annotation": {
+            "c_function": "gwc2_str",
+            "python_functions": [
+              "__str__"
+            ],
+            "c_file": "src/cli/port_gateway_cli_remaining.c",
+            "python_file": "hermes_cli/gateway.py",
+            "line": 93,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __str__ @ hermes_cli/gateway.py:__str__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/gateway.py",
@@ -187221,16 +187269,24 @@
             "decorators": [],
             "line_number": 4624
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_gateway_cli_remaining.c",
+          "c_function": "gwc2_guard_named_profile_under_multiplexer",
+          "pop_annotation": {
+            "c_function": "gwc2_guard_named_profile_under_multiplexer",
+            "python_functions": [
+              "_guard_named_profile_under_multiplexer"
+            ],
+            "c_file": "src/cli/port_gateway_cli_remaining.c",
+            "python_file": "hermes_cli/gateway.py",
+            "line": 104,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _guard_named_profile_under_multiplexer @ hermes_cli/gateway.py:_guard_named_profile_under_multiplexer */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/gateway.py",
@@ -187561,16 +187617,24 @@
             "decorators": [],
             "line_number": 5731
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_gateway_cli_remaining.c",
+          "c_function": "gwc2_setup_weixin",
+          "pop_annotation": {
+            "c_function": "gwc2_setup_weixin",
+            "python_functions": [
+              "_setup_weixin"
+            ],
+            "c_file": "src/cli/port_gateway_cli_remaining.c",
+            "python_file": "hermes_cli/gateway.py",
+            "line": 112,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _setup_weixin @ hermes_cli/gateway.py:_setup_weixin */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/gateway.py",
@@ -187582,16 +187646,24 @@
             "decorators": [],
             "line_number": 5902
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_gateway_cli_remaining.c",
+          "c_function": "gwc2_setup_qqbot",
+          "pop_annotation": {
+            "c_function": "gwc2_setup_qqbot",
+            "python_functions": [
+              "_setup_qqbot"
+            ],
+            "c_file": "src/cli/port_gateway_cli_remaining.c",
+            "python_file": "hermes_cli/gateway.py",
+            "line": 119,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _setup_qqbot @ hermes_cli/gateway.py:_setup_qqbot */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/gateway.py",
@@ -187603,16 +187675,24 @@
             "decorators": [],
             "line_number": 6028
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_gateway_cli_remaining.c",
+          "c_function": "gwc2_setup_signal",
+          "pop_annotation": {
+            "c_function": "gwc2_setup_signal",
+            "python_functions": [
+              "_setup_signal"
+            ],
+            "c_file": "src/cli/port_gateway_cli_remaining.c",
+            "python_file": "hermes_cli/gateway.py",
+            "line": 126,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _setup_signal @ hermes_cli/gateway.py:_setup_signal */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/gateway.py",
