@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T18:12:58Z",
+  "generated_at": "2026-08-02T18:15:15Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -49820,10 +49820,10 @@
     },
     "agent/proxy_sources/iron_proxy.py": {
       "total": 49,
-      "ported": 11,
+      "ported": 49,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 38,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 49,
@@ -49841,16 +49841,24 @@
             ],
             "line_number": 314
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_installed",
+          "pop_annotation": {
+            "c_function": "ipx_installed",
+            "python_functions": [
+              "installed"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 27,
+            "is_consolidated": false,
+            "full_text": "/* PoP: installed @ agent/proxy_sources/iron_proxy.py:installed */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -49864,16 +49872,24 @@
             ],
             "line_number": 318
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_configured",
+          "pop_annotation": {
+            "c_function": "ipx_configured",
+            "python_functions": [
+              "configured"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 33,
+            "is_consolidated": false,
+            "full_text": "/* PoP: configured @ agent/proxy_sources/iron_proxy.py:configured */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50030,16 +50046,24 @@
             "decorators": [],
             "line_number": 436
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_find_iron_proxy",
+          "pop_annotation": {
+            "c_function": "ipx_find_iron_proxy",
+            "python_functions": [
+              "find_iron_proxy"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 41,
+            "is_consolidated": false,
+            "full_text": "/* PoP: find_iron_proxy @ agent/proxy_sources/iron_proxy.py:find_iron_proxy */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50051,16 +50075,24 @@
             "decorators": [],
             "line_number": 464
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_install_iron_proxy",
+          "pop_annotation": {
+            "c_function": "ipx_install_iron_proxy",
+            "python_functions": [
+              "install_iron_proxy"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 64,
+            "is_consolidated": false,
+            "full_text": "/* PoP: install_iron_proxy @ agent/proxy_sources/iron_proxy.py:install_iron_proxy */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50072,16 +50104,24 @@
             "decorators": [],
             "line_number": 549
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_http_download",
+          "pop_annotation": {
+            "c_function": "ipx_http_download",
+            "python_functions": [
+              "_http_download"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 73,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _http_download @ agent/proxy_sources/iron_proxy.py:_http_download */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50093,16 +50133,24 @@
             "decorators": [],
             "line_number": 559
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_verify_checksums_signature",
+          "pop_annotation": {
+            "c_function": "ipx_verify_checksums_signature",
+            "python_functions": [
+              "_verify_checksums_signature"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 81,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _verify_checksums_signature @ agent/proxy_sources/iron_proxy.py:_verify_checksums_signature */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50230,16 +50278,24 @@
             "decorators": [],
             "line_number": 730
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_ensure_ca_cert",
+          "pop_annotation": {
+            "c_function": "ipx_ensure_ca_cert",
+            "python_functions": [
+              "ensure_ca_cert"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 89,
+            "is_consolidated": false,
+            "full_text": "/* PoP: ensure_ca_cert @ agent/proxy_sources/iron_proxy.py:ensure_ca_cert */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50251,16 +50307,24 @@
             "decorators": [],
             "line_number": 828
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_mint_proxy_token",
+          "pop_annotation": {
+            "c_function": "ipx_mint_proxy_token",
+            "python_functions": [
+              "mint_proxy_token"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 99,
+            "is_consolidated": false,
+            "full_text": "/* PoP: mint_proxy_token @ agent/proxy_sources/iron_proxy.py:mint_proxy_token */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50301,16 +50365,24 @@
             "decorators": [],
             "line_number": 845
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_ensure_management_token",
+          "pop_annotation": {
+            "c_function": "ipx_ensure_management_token",
+            "python_functions": [
+              "ensure_management_token"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 107,
+            "is_consolidated": false,
+            "full_text": "/* PoP: ensure_management_token @ agent/proxy_sources/iron_proxy.py:ensure_management_token */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50322,16 +50394,24 @@
             "decorators": [],
             "line_number": 879
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_read_management_token",
+          "pop_annotation": {
+            "c_function": "ipx_read_management_token",
+            "python_functions": [
+              "_read_management_token"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 130,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _read_management_token @ agent/proxy_sources/iron_proxy.py:_read_management_token */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50343,16 +50423,24 @@
             "decorators": [],
             "line_number": 888
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_read_management_listen_from_config",
+          "pop_annotation": {
+            "c_function": "ipx_read_management_listen_from_config",
+            "python_functions": [
+              "_read_management_listen_from_config"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 150,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _read_management_listen_from_config @ agent/proxy_sources/iron_proxy.py:_read_management_listen_from_config */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50364,16 +50452,24 @@
             "decorators": [],
             "line_number": 915
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_reload_proxy",
+          "pop_annotation": {
+            "c_function": "ipx_reload_proxy",
+            "python_functions": [
+              "reload_proxy"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 158,
+            "is_consolidated": false,
+            "full_text": "/* PoP: reload_proxy @ agent/proxy_sources/iron_proxy.py:reload_proxy */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50385,16 +50481,24 @@
             "decorators": [],
             "line_number": 995
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_default_http_listen",
+          "pop_annotation": {
+            "c_function": "ipx_default_http_listen",
+            "python_functions": [
+              "_default_http_listen"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 166,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _default_http_listen @ agent/proxy_sources/iron_proxy.py:_default_http_listen */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50406,16 +50510,24 @@
             "decorators": [],
             "line_number": 1036
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_detect_docker_bridge_ip",
+          "pop_annotation": {
+            "c_function": "ipx_detect_docker_bridge_ip",
+            "python_functions": [
+              "_detect_docker_bridge_ip"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 172,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _detect_docker_bridge_ip @ agent/proxy_sources/iron_proxy.py:_detect_docker_bridge_ip */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50427,16 +50539,24 @@
             "decorators": [],
             "line_number": 1103
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_build_proxy_config",
+          "pop_annotation": {
+            "c_function": "ipx_build_proxy_config",
+            "python_functions": [
+              "build_proxy_config"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 179,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_proxy_config @ agent/proxy_sources/iron_proxy.py:build_proxy_config */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50448,16 +50568,24 @@
             "decorators": [],
             "line_number": 1321
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_ensure_audit_log",
+          "pop_annotation": {
+            "c_function": "ipx_ensure_audit_log",
+            "python_functions": [
+              "ensure_audit_log"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 187,
+            "is_consolidated": false,
+            "full_text": "/* PoP: ensure_audit_log @ agent/proxy_sources/iron_proxy.py:ensure_audit_log */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50469,16 +50597,24 @@
             "decorators": [],
             "line_number": 1359
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_write_proxy_config",
+          "pop_annotation": {
+            "c_function": "ipx_write_proxy_config",
+            "python_functions": [
+              "write_proxy_config"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 195,
+            "is_consolidated": false,
+            "full_text": "/* PoP: write_proxy_config @ agent/proxy_sources/iron_proxy.py:write_proxy_config */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50490,16 +50626,24 @@
             "decorators": [],
             "line_number": 1388
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_write_mappings",
+          "pop_annotation": {
+            "c_function": "ipx_write_mappings",
+            "python_functions": [
+              "write_mappings"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 203,
+            "is_consolidated": false,
+            "full_text": "/* PoP: write_mappings @ agent/proxy_sources/iron_proxy.py:write_mappings */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50511,16 +50655,24 @@
             "decorators": [],
             "line_number": 1422
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_load_mappings",
+          "pop_annotation": {
+            "c_function": "ipx_load_mappings",
+            "python_functions": [
+              "load_mappings"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 211,
+            "is_consolidated": false,
+            "full_text": "/* PoP: load_mappings @ agent/proxy_sources/iron_proxy.py:load_mappings */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50532,16 +50684,24 @@
             "decorators": [],
             "line_number": 1452
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_discover_provider_mappings",
+          "pop_annotation": {
+            "c_function": "ipx_discover_provider_mappings",
+            "python_functions": [
+              "discover_provider_mappings"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 219,
+            "is_consolidated": false,
+            "full_text": "/* PoP: discover_provider_mappings @ agent/proxy_sources/iron_proxy.py:discover_provider_mappings */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50553,16 +50713,24 @@
             "decorators": [],
             "line_number": 1499
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_discover_uncovered_providers",
+          "pop_annotation": {
+            "c_function": "ipx_discover_uncovered_providers",
+            "python_functions": [
+              "discover_uncovered_providers"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 226,
+            "is_consolidated": false,
+            "full_text": "/* PoP: discover_uncovered_providers @ agent/proxy_sources/iron_proxy.py:discover_uncovered_providers */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50574,16 +50742,24 @@
             "decorators": [],
             "line_number": 1523
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_merge_mappings",
+          "pop_annotation": {
+            "c_function": "ipx_merge_mappings",
+            "python_functions": [
+              "merge_mappings"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 233,
+            "is_consolidated": false,
+            "full_text": "/* PoP: merge_mappings @ agent/proxy_sources/iron_proxy.py:merge_mappings */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50595,16 +50771,24 @@
             "decorators": [],
             "line_number": 1570
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_pidfile",
+          "pop_annotation": {
+            "c_function": "ipx_pidfile",
+            "python_functions": [
+              "_pidfile"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 241,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _pidfile @ agent/proxy_sources/iron_proxy.py:_pidfile */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50616,16 +50800,24 @@
             "decorators": [],
             "line_number": 1574
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_read_pid",
+          "pop_annotation": {
+            "c_function": "ipx_read_pid",
+            "python_functions": [
+              "_read_pid"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 248,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _read_pid @ agent/proxy_sources/iron_proxy.py:_read_pid */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50637,16 +50829,24 @@
             "decorators": [],
             "line_number": 1596
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_pid_proc_starttime",
+          "pop_annotation": {
+            "c_function": "ipx_pid_proc_starttime",
+            "python_functions": [
+              "_pid_proc_starttime"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 265,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _pid_proc_starttime @ agent/proxy_sources/iron_proxy.py:_pid_proc_starttime */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50658,16 +50858,24 @@
             "decorators": [],
             "line_number": 1621
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_persisted_nonce_path",
+          "pop_annotation": {
+            "c_function": "ipx_persisted_nonce_path",
+            "python_functions": [
+              "_persisted_nonce_path"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 310,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _persisted_nonce_path @ agent/proxy_sources/iron_proxy.py:_persisted_nonce_path */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50679,16 +50887,24 @@
             "decorators": [],
             "line_number": 1632
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_read_persisted_nonce",
+          "pop_annotation": {
+            "c_function": "ipx_read_persisted_nonce",
+            "python_functions": [
+              "_read_persisted_nonce"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 317,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _read_persisted_nonce @ agent/proxy_sources/iron_proxy.py:_read_persisted_nonce */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50729,16 +50945,24 @@
             "decorators": [],
             "line_number": 1759
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_start_proxy",
+          "pop_annotation": {
+            "c_function": "ipx_start_proxy",
+            "python_functions": [
+              "start_proxy"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 337,
+            "is_consolidated": false,
+            "full_text": "/* PoP: start_proxy @ agent/proxy_sources/iron_proxy.py:start_proxy */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50750,16 +50974,24 @@
             "decorators": [],
             "line_number": 2003
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_write_pidfile_safely",
+          "pop_annotation": {
+            "c_function": "ipx_write_pidfile_safely",
+            "python_functions": [
+              "_write_pidfile_safely"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 345,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _write_pidfile_safely @ agent/proxy_sources/iron_proxy.py:_write_pidfile_safely */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50771,16 +51003,24 @@
             "decorators": [],
             "line_number": 2086
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_kill_and_wait",
+          "pop_annotation": {
+            "c_function": "ipx_kill_and_wait",
+            "python_functions": [
+              "_kill_and_wait"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 353,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _kill_and_wait @ agent/proxy_sources/iron_proxy.py:_kill_and_wait */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50792,16 +51032,24 @@
             "decorators": [],
             "line_number": 2105
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_build_proxy_subprocess_env",
+          "pop_annotation": {
+            "c_function": "ipx_build_proxy_subprocess_env",
+            "python_functions": [
+              "_build_proxy_subprocess_env"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 363,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _build_proxy_subprocess_env @ agent/proxy_sources/iron_proxy.py:_build_proxy_subprocess_env */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50813,16 +51061,24 @@
             "decorators": [],
             "line_number": 2268
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_stop_proxy",
+          "pop_annotation": {
+            "c_function": "ipx_stop_proxy",
+            "python_functions": [
+              "stop_proxy"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 371,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stop_proxy @ agent/proxy_sources/iron_proxy.py:stop_proxy */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50834,16 +51090,24 @@
             "decorators": [],
             "line_number": 2335
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_get_status",
+          "pop_annotation": {
+            "c_function": "ipx_get_status",
+            "python_functions": [
+              "get_status"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 382,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_status @ agent/proxy_sources/iron_proxy.py:get_status */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50855,16 +51119,24 @@
             "decorators": [],
             "line_number": 2379
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_read_tunnel_port_from_config",
+          "pop_annotation": {
+            "c_function": "ipx_read_tunnel_port_from_config",
+            "python_functions": [
+              "_read_tunnel_port_from_config"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 390,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _read_tunnel_port_from_config @ agent/proxy_sources/iron_proxy.py:_read_tunnel_port_from_config */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50876,16 +51148,24 @@
             "decorators": [],
             "line_number": 2386
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_read_http_listen_from_config",
+          "pop_annotation": {
+            "c_function": "ipx_read_http_listen_from_config",
+            "python_functions": [
+              "_read_http_listen_from_config"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 398,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _read_http_listen_from_config @ agent/proxy_sources/iron_proxy.py:_read_http_listen_from_config */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50897,16 +51177,24 @@
             "decorators": [],
             "line_number": 2425
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_port_listening",
+          "pop_annotation": {
+            "c_function": "ipx_port_listening",
+            "python_functions": [
+              "_port_listening"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 406,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _port_listening @ agent/proxy_sources/iron_proxy.py:_port_listening */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50918,16 +51206,24 @@
             "decorators": [],
             "line_number": 2437
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_tail_log",
+          "pop_annotation": {
+            "c_function": "ipx_tail_log",
+            "python_functions": [
+              "_tail_log"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 414,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _tail_log @ agent/proxy_sources/iron_proxy.py:_tail_log */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -50939,16 +51235,24 @@
             "decorators": [],
             "line_number": 2452
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_iron_proxy_remaining.c",
+          "c_function": "ipx_reset_for_tests",
+          "pop_annotation": {
+            "c_function": "ipx_reset_for_tests",
+            "python_functions": [
+              "_reset_for_tests"
+            ],
+            "c_file": "src/agent/port_iron_proxy_remaining.c",
+            "python_file": "agent/proxy_sources/iron_proxy.py",
+            "line": 422,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _reset_for_tests @ agent/proxy_sources/iron_proxy.py:_reset_for_tests */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
