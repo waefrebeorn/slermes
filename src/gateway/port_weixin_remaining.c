@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "hermes_gateway_weixin.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -128,9 +129,10 @@ bool wx2_enforces_own_access_policy(void) {
 
 /* PoP: send @ gateway/platforms/weixin.py:send */
 char *wx2_send(const char *chat_id, const char *content) {
-    /* Python: SendResult via _send_session. */
+    /* Python: SendResult via _send_session — delegates to the real
+     * canonical weixin_send_text. */
     if (!chat_id || !content) return strdup("{\"success\": false, \"error\": \"Not connected\"}");
-    printf("weixin send to %s\n", chat_id);
+    weixin_send_text(chat_id, content, "text");
     return strdup("{\"success\": true}");
 }
 
@@ -151,9 +153,10 @@ int wx2_stop_typing(const char *chat_id) {
 
 /* PoP: send_image @ gateway/platforms/weixin.py:send_image */
 char *wx2_send_image(const char *chat_id, const char *image_url, const char *caption) {
-    /* Python: remote → download, else direct file. */
+    /* Python: remote → download, else direct file — delegates to the
+     * real canonical weixin_send_image. */
     if (!chat_id || !image_url) return strdup("{\"success\": false}");
-    printf("weixin image sent to %s (%s)\n", chat_id, image_url);
+    weixin_send_image(chat_id, image_url, 0, caption ? caption : "");
     return strdup("{\"success\": true}");
 }
 
@@ -167,8 +170,9 @@ char *wx2_send_image_file(const char *chat_id, const char *file_path, const char
 
 /* PoP: send_document @ gateway/platforms/weixin.py:send_document */
 char *wx2_send_document(const char *chat_id, const char *file_path, const char *caption) {
+    /* Delegates to the real canonical weixin_send_file. */
     if (!chat_id || !file_path) return strdup("{\"success\": false}");
-    printf("weixin document sent (%s)\n", file_path);
+    weixin_send_file(chat_id, file_path, caption ? caption : "", "");
     return strdup("{\"success\": true}");
 }
 

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T19:09:06Z",
+  "generated_at": "2026-08-02T19:11:11Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -109802,7 +109802,7 @@
             ],
             "c_file": "src/gateway/port_weixin_remaining.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 22,
+            "line": 23,
             "is_consolidated": false,
             "full_text": "/* PoP: __init__ @ gateway/platforms/weixin.py:__init__ */"
           },
@@ -109873,7 +109873,7 @@
             ],
             "c_file": "src/gateway/port_weixin_remaining.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 30,
+            "line": 31,
             "is_consolidated": false,
             "full_text": "/* PoP: restore @ gateway/platforms/weixin.py:restore */"
           },
@@ -109944,7 +109944,7 @@
             ],
             "c_file": "src/gateway/port_weixin_remaining.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 44,
+            "line": 45,
             "is_consolidated": false,
             "full_text": "/* PoP: _persist @ gateway/platforms/weixin.py:_persist */"
           },
@@ -109973,7 +109973,7 @@
             ],
             "c_file": "src/gateway/port_weixin_remaining.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 22,
+            "line": 23,
             "is_consolidated": false,
             "full_text": "/* PoP: __init__ @ gateway/platforms/weixin.py:__init__ */"
           },
@@ -110805,7 +110805,7 @@
             ],
             "c_file": "src/gateway/port_weixin_remaining.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 59,
+            "line": 60,
             "is_consolidated": false,
             "full_text": "/* PoP: _coerce_bool @ gateway/platforms/weixin.py:_coerce_bool */"
           },
@@ -110834,7 +110834,7 @@
             ],
             "c_file": "src/gateway/port_weixin_remaining.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 75,
+            "line": 76,
             "is_consolidated": false,
             "full_text": "/* PoP: _extract_text @ gateway/platforms/weixin.py:_extract_text */"
           },
@@ -111000,7 +111000,7 @@
             ],
             "c_file": "src/gateway/port_weixin_remaining.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 22,
+            "line": 23,
             "is_consolidated": false,
             "full_text": "/* PoP: __init__ @ gateway/platforms/weixin.py:__init__ */"
           },
@@ -111089,7 +111089,7 @@
             ],
             "c_file": "src/gateway/port_weixin_remaining.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 110,
+            "line": 111,
             "is_consolidated": false,
             "full_text": "/* PoP: connect @ gateway/platforms/weixin.py:connect */"
           },
@@ -111118,7 +111118,7 @@
             ],
             "c_file": "src/gateway/port_weixin_remaining.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 117,
+            "line": 118,
             "is_consolidated": false,
             "full_text": "/* PoP: disconnect @ gateway/platforms/weixin.py:disconnect */"
           },
@@ -111315,7 +111315,7 @@
             ],
             "c_file": "src/gateway/port_weixin_remaining.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 123,
+            "line": 124,
             "is_consolidated": false,
             "full_text": "/* PoP: enforces_own_access_policy @ gateway/platforms/weixin.py:enforces_own_access_policy */"
           },
@@ -111837,7 +111837,7 @@
             ],
             "c_file": "src/gateway/port_weixin_remaining.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 129,
+            "line": 130,
             "is_consolidated": false,
             "full_text": "/* PoP: send @ gateway/platforms/weixin.py:send */"
           },
@@ -111895,7 +111895,7 @@
             ],
             "c_file": "src/gateway/port_weixin_remaining.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 137,
+            "line": 139,
             "is_consolidated": false,
             "full_text": "/* PoP: send_typing @ gateway/platforms/weixin.py:send_typing */"
           },
@@ -111924,7 +111924,7 @@
             ],
             "c_file": "src/gateway/port_weixin_remaining.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 145,
+            "line": 147,
             "is_consolidated": false,
             "full_text": "/* PoP: stop_typing @ gateway/platforms/weixin.py:stop_typing */"
           },
@@ -111953,7 +111953,7 @@
             ],
             "c_file": "src/gateway/port_weixin_remaining.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 152,
+            "line": 154,
             "is_consolidated": false,
             "full_text": "/* PoP: send_image @ gateway/platforms/weixin.py:send_image */"
           },
@@ -111982,7 +111982,7 @@
             ],
             "c_file": "src/gateway/port_weixin_remaining.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 160,
+            "line": 163,
             "is_consolidated": false,
             "full_text": "/* PoP: send_image_file @ gateway/platforms/weixin.py:send_image_file */"
           },
@@ -112011,7 +112011,7 @@
             ],
             "c_file": "src/gateway/port_weixin_remaining.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 168,
+            "line": 171,
             "is_consolidated": false,
             "full_text": "/* PoP: send_document @ gateway/platforms/weixin.py:send_document */"
           },
@@ -112061,7 +112061,7 @@
             ],
             "c_file": "src/gateway/port_weixin_remaining.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 175,
+            "line": 179,
             "is_consolidated": false,
             "full_text": "/* PoP: send_voice @ gateway/platforms/weixin.py:send_voice */"
           },
@@ -112119,7 +112119,7 @@
             ],
             "c_file": "src/gateway/port_weixin_remaining.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 182,
+            "line": 186,
             "is_consolidated": false,
             "full_text": "/* PoP: _send_file @ gateway/platforms/weixin.py:_send_file */"
           },
@@ -112177,7 +112177,7 @@
             ],
             "c_file": "src/gateway/port_weixin_remaining.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 190,
+            "line": 194,
             "is_consolidated": false,
             "full_text": "/* PoP: get_chat_info @ gateway/platforms/weixin.py:get_chat_info */"
           },
@@ -112206,7 +112206,7 @@
             ],
             "c_file": "src/gateway/port_weixin_remaining.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 200,
+            "line": 204,
             "is_consolidated": false,
             "full_text": "/* PoP: format_message @ gateway/platforms/weixin.py:format_message */"
           },
