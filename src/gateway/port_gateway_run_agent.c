@@ -32,14 +32,7 @@ extern char *build_native_content_parts(const char *user_text,
 extern void gw_sanitize_final_response(const char *platform, const char *text,
                                        char *out, size_t out_size);
 
-/* PoP: gateway_runner_apply_session_model_override @ gateway/run.py:GatewayRunner._apply_session_model_override
- *
- * Apply /model session overrides if present. Mutates *io_model to the override
- * model (when set) and merges provider/api_key/base_url/api_mode/credential_pool
- * into runtime_kwargs (skipping NULL fields so partial overrides don't clobber
- * config defaults). credential_pool is derived from provider when an api_key is
- * present but no pool was specified. runtime_kwargs is an owned json_t object;
- * the caller frees it. */
+/* PoP: gateway_runner_apply_session_model_override @ gateway/run.py:_apply_session_model_override */
 /* PoP: gateway_runner_apply_session_model_override @ gateway/run.py:_apply_session_model_override */
 void gateway_runner_apply_session_model_override(GatewayRunner *self,
                                                  const char *session_key,

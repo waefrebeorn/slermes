@@ -12,8 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: update_token_counts @ hermes_state.py:update_token_counts
- * absolute=false -> increment; absolute=true -> set. Ensures row exists. */
+/* PoP: update_token_counts @ hermes_state.py:update_token_counts */
 bool hermes_state_update_token_counts(hermes_state_db_t *db,
                                       const char *session_id,
                                       long long input_tokens,
@@ -55,8 +54,7 @@ bool hermes_state_update_token_counts(hermes_state_db_t *db,
     return ok;
 }
 
-/* PoP: record_auxiliary_usage @ hermes_state.py:record_auxiliary_usage
- * Same sqlite handle as state_usage_db_t ({ sqlite3* }) — delegate, no dup. */
+/* PoP: record_auxiliary_usage @ hermes_state.py:record_auxiliary_usage */
 bool hermes_state_record_auxiliary_usage(hermes_state_db_t *db,
                                          const char *session_id,
                                          const char *task,

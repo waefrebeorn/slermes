@@ -11,8 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: get_conversation_root @ hermes_state.py:get_conversation_root +
- * _session_lineage_root_to_tip (walk parents to root, reversed). */
+/* PoP: get_conversation_root @ hermes_state.py:get_conversation_root */
 char *hermes_state_get_conversation_root(hermes_state_db_t *db,
                                          const char *session_id) {
     if (!db || !session_id || !*session_id) return strdup(session_id ? session_id : "");
@@ -46,9 +45,7 @@ char *hermes_state_get_conversation_root(hermes_state_db_t *db,
     return root;
 }
 
-/* PoP: get_compression_tip @ hermes_state.py:get_compression_tip
- * Walk compression-continuation chain: children of compression-ended parents,
- * exclude branched/delegate/tool children, order by end_reason/recency. */
+/* PoP: get_compression_tip @ hermes_state.py:get_compression_tip */
 char *hermes_state_get_compression_tip(hermes_state_db_t *db,
                                        const char *session_id) {
     if (!db || !session_id || !*session_id) return strdup(session_id ? session_id : "");
@@ -83,8 +80,7 @@ char *hermes_state_get_compression_tip(hermes_state_db_t *db,
     return current;
 }
 
-/* PoP: resolve_resume_session_id @ hermes_state.py:resolve_resume_session_id
- * compression tip first, then forward to descendant with most-recent msgs. */
+/* PoP: resolve_resume_session_id @ hermes_state.py:resolve_resume_session_id */
 char *hermes_state_resolve_resume_session_id(hermes_state_db_t *db,
                                              const char *session_id) {
     if (!db || !session_id || !*session_id) return strdup(session_id ? session_id : "");
@@ -135,8 +131,7 @@ char *hermes_state_resolve_resume_session_id(hermes_state_db_t *db,
     return result;
 }
 
-/* PoP: get_compression_lineage @ hermes_state.py:get_compression_lineage
- * Compression-only chain root->tip as a JSON array. */
+/* PoP: get_compression_lineage @ hermes_state.py:get_compression_lineage */
 char *hermes_state_get_compression_lineage(hermes_state_db_t *db,
                                            const char *session_id) {
     if (!db || !session_id || !*session_id) return strdup("[]");

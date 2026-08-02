@@ -184,9 +184,7 @@ bool file_text_ops_has_bom(const char *text)
 
 /* ---- add_line_numbers --------------------------------------------------- */
 
-/* PoP: file_text_ops_add_line_numbers @ tools/file_operations.py:FileOperations._add_line_numbers
- * Compact `n|content` gutter, no padding; lines longer than max_line_length
- * (when > 0) are truncated with "..." [truncated]. */
+/* PoP: file_text_ops_add_line_numbers @ tools/file_operations.py:_add_line_numbers */
 char *file_text_ops_add_line_numbers(const char *content, int start_line, int max_line_length)
 {
     if (!content) return dup_str("");
@@ -231,8 +229,7 @@ char *file_text_ops_add_line_numbers(const char *content, int start_line, int ma
 
 /* ---- expand_path -------------------------------------------------------- */
 
-/* PoP: file_text_ops_expand_path @ tools/file_operations.py:FileOperations._expand_path
- * Expands a leading "~" to $HOME. */
+/* PoP: file_text_ops_expand_path @ tools/file_operations.py:_expand_path */
 char *file_text_ops_expand_path(const char *path)
 {
     if (!path) return dup_str("");
@@ -249,9 +246,7 @@ char *file_text_ops_expand_path(const char *path)
 
 /* ---- escape_shell_arg --------------------------------------------------- */
 
-/* PoP: file_text_ops_escape_shell_arg @ tools/file_operations.py:FileOperations._escape_shell_arg
- * Faithful to Python: "'" + arg.replace("'", "'\"'\"'") + "'". Embedded single
- * quotes become the shell-safe '"'"' sequence. */
+/* PoP: file_text_ops_escape_shell_arg @ tools/file_operations.py:_escape_shell_arg */
 char *file_text_ops_escape_shell_arg(const char *arg)
 {
     if (!arg) return dup_str("''");

@@ -83,8 +83,7 @@ bool hermes_state_link_child(hermes_state_db_t *db, const char *child_id,
     return ok;
 }
 
-/* PoP: get_session @ hermes_state.py:get_session
- * Returns a malloc'd JSON object string of the row, or NULL when absent. */
+/* PoP: get_session @ hermes_state.py:get_session */
 char *hermes_state_get_session(hermes_state_db_t *db, const char *session_id) {
     if (!db || !session_id || !*session_id) return NULL;
     sqlite3_stmt *st = NULL;

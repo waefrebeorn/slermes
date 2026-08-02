@@ -1904,12 +1904,7 @@ void github_source_check_rate_limit_response(github_source_t *src, int status_co
     }
 }
 
-/* PoP: github_source_github_get @ tools/skills_hub.py:GitHubSource._github_get
- *
- * GET against the GitHub API with retry/backoff on transient failures.
- * Returns malloc'd body text (caller frees) and writes status to *out_status.
- * Returns NULL when every attempt raised a transport error.
- */
+/* PoP: github_source_github_get @ tools/skills_hub.py:_github_get */
 char *github_source_github_get(github_source_t *src, const char *url, int *out_status) {
     if (!src || !url) return NULL;
     if (out_status) *out_status = 0;
@@ -1945,12 +1940,7 @@ char *github_source_github_get(github_source_t *src, const char *url, int *out_s
     return body;
 }
 
-/* PoP: github_source_get_repo_tree @ tools/skills_hub.py:GitHubSource._get_repo_tree
- *
- * Resolve default branch + recursive tree; cache per (repo).
- * Returns false if any API step failed.
- * Caller frees *out_tree with json_free if returned.
- */
+/* PoP: github_source_get_repo_tree @ tools/skills_hub.py:_get_repo_tree */
 /* PoP: github_source_get_repo_tree @ tools/skills_hub.py:GitHubSource._get_repo_tree */
 bool github_source_get_repo_tree(github_source_t *src, const char *repo,
                                   char *out_default_branch, size_t branch_len,
@@ -2008,10 +1998,7 @@ bool github_source_get_repo_tree(github_source_t *src, const char *repo,
     return true;
 }
 
-/* PoP: github_source_find_skill_in_repo_tree @ tools/skills_hub.py:GitHubSource._find_skill_in_repo_tree
- *
- * Return malloc'd identifier ("repo/path/to/skill") or NULL.
- */
+/* PoP: github_source_find_skill_in_repo_tree @ tools/skills_hub.py:_find_skill_in_repo_tree */
 char *github_source_find_skill_in_repo_tree(github_source_t *src, const char *repo, const char *skill_name) {
     if (!src || !repo || !skill_name) return NULL;
     json_node_t *tree = NULL;
@@ -2049,10 +2036,7 @@ char *github_source_find_skill_in_repo_tree(github_source_t *src, const char *re
     return NULL;
 }
 
-/* PoP: github_source_fetch_file_content @ tools/skills_hub.py:GitHubSource._fetch_file_content
- *
- * Fetch a single file's raw content. Caller frees return.
- */
+/* PoP: github_source_fetch_file_content @ tools/skills_hub.py:_fetch_file_content */
 char *github_source_fetch_file_content(github_source_t *src, const char *repo, const char *path) {
     if (!src || !repo || !path) return NULL;
     char url[HERMES_PATH_MAX * 2];
@@ -2064,11 +2048,7 @@ char *github_source_fetch_file_content(github_source_t *src, const char *repo, c
     return body;
 }
 
-/* PoP: github_source_search @ tools/skills_hub.py:GitHubSource.search
- *
- * Walk taps, list skills, filter by query, dedupe by identifier with trust
- * preference. Returns matching metas into `results` (max `limit`).
- */
+/* PoP: github_source_search @ tools/skills_hub.py:search */
 int github_source_search(github_source_t *src, const char *query, int limit,
                           hub_skill_meta_t *results) {
     if (!src || !query || limit <= 0 || !results) return 0;

@@ -348,6 +348,7 @@ hermes_state_db_t *hermes_state_db_open(const char *path) {
 }
 
 /* PoP: apply_telegram_topic_migration @ hermes_state.py:apply_telegram_topic_migration */
+/* PoP: hermes_state_apply_telegram_topic_migration @ hermes_state.py:apply_telegram_topic_migration */
 bool hermes_state_apply_telegram_topic_migration(hermes_state_db_t *db) {
     if (!db || !db->db) return false;
     char *err = NULL;

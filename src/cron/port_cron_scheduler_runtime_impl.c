@@ -155,8 +155,7 @@ int scheduler_confirm_adapter_delivery(const json_t *send_result)
 
 /* ── pure media kind router ────────────────────────────────────────── */
 
-/* PoP: scheduler_route_media @ cron/scheduler.py:_send_media_via_adapter +
- *      gateway/platforms/base.py:should_send_media_as_audio */
+/* PoP: scheduler_route_media @ cron/scheduler.py:_send_media_via_adapter */
 /* Pure routing: extension + platform + voice flag -> adapter method kind.
  * Faithful to base.py:should_send_media_as_audio:
  *   - if should_send_media_as_audio(platform, ext, is_voice) -> VOICE (audio)

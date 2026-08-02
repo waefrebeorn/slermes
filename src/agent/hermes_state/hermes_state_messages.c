@@ -47,8 +47,7 @@ static void emit_message_json(char **buf, size_t *cap, size_t *len, bool first,
     (*buf)[*len] = '\0';
 }
 
-/* PoP: append_message @ hermes_state.py:append_message
- * Appends a row, bumps message_count (+ tool_call_count for tool rows). */
+/* PoP: append_message @ hermes_state.py:append_message */
 long long hermes_state_append_message(hermes_state_db_t *db,
                                       const char *session_id,
                                       const char *role,
@@ -170,8 +169,7 @@ char *hermes_state_get_messages_around(hermes_state_db_t *db,
     return buf;
 }
 
-/* PoP: get_anchored_view @ hermes_state.py:get_anchored_view
- * window (keep user/assistant, anchor preserved) + bookend_start/end. */
+/* PoP: get_anchored_view @ hermes_state.py:get_anchored_view */
 char *hermes_state_get_anchored_view(hermes_state_db_t *db,
                                      const char *session_id,
                                      long long around_message_id,

@@ -9,9 +9,9 @@ configs. Rewriting from scratch in C is the point; there is NO N/A.
 
 State (historical baseline — 2026-07-12; live counts are in the
 `<!-- PARITY:AUTO -->
-| PORTED  | 6,857 / 11,537 (59.4%) |
-| REAL_GAP| 4,445 (38.5%) — no N/A |
-| PARTIAL | 235 (0.8%) |
+| PORTED  | 8,488 / 12,260 (69.2%) |
+| REAL_GAP| 3,771 (30.8%) — no N/A |
+| PARTIAL | 1 (0.8%) |
 | STUB    | 0 |
 
 _Generated from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._

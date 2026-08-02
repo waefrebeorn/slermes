@@ -707,22 +707,19 @@ void gateway_runner_update_runtime_status(GatewayRunner *self,
  * Config loading static methods
  * ════════════════════════════════════════════════════════════════════════ */
 
-/* PoP: gw_load_service_tier_cfg @ gateway/run.py:GatewayRunner._load_service_tier
- * Pure resolver: given config value, return normalized service tier. */
+/* * Pure resolver: given config value, return normalized service tier. */
 const char *gw_load_service_tier_cfg(const char *raw)
 {
     return gw_resolve_service_tier(raw);
 }
 
-/* PoP: gw_load_show_reasoning_cfg @ gateway/run.py:GatewayRunner._load_show_reasoning
- * Pure resolver: given config value, return bool. */
+/* * Pure resolver: given config value, return bool. */
 bool gw_load_show_reasoning_cfg(const char *cfg_val, int is_bool, int bool_val)
 {
     return gw_resolve_show_reasoning(cfg_val, is_bool, bool_val, NULL);
 }
 
-/* PoP: gw_load_busy_input_mode_cfg @ gateway/run.py:GatewayRunner._load_busy_input_mode
- * Pure resolver: given config value, return normalized mode string. */
+/* * Pure resolver: given config value, return normalized mode string. */
 const char *gw_load_busy_input_mode_cfg(const char *cfg_value)
 {
     return gw_resolve_busy_input_mode(cfg_value);

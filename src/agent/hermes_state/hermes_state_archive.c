@@ -68,12 +68,7 @@ bool hermes_state_set_session_pinned(hermes_state_db_t *db,
     return lineage_flag_update(db, session_id, "pinned", pinned);
 }
 
-/* PoP: archive_stale_sessions @ hermes_state.py:archive_stale_sessions
- * Archive lineage tips untouched for >= idle_days (latest message timestamp,
- * falling back to started_at). Guards: pinned (optional), not yet archived,
- * only rows whose end_reason is not 'compression' (tips/standalone). Each
- * stale tip archives its whole chain via set_session_archived. Returns the
- * number archived; <=0 idle_days archives nothing. */
+/* PoP: archive_stale_sessions @ hermes_state.py:archive_stale_sessions */
 int hermes_state_archive_stale_sessions(hermes_state_db_t *db,
                                         double idle_days, bool exclude_pinned) {
     if (!db || idle_days <= 0) return 0;
@@ -105,12 +100,7 @@ int hermes_state_archive_stale_sessions(hermes_state_db_t *db,
     return archived;
 }
 
-/* PoP: list_prune_candidates @ hermes_state.py:list_prune_candidates
- * Dry-run listing: sessions matching the age/source filters, oldest-first by
- * last_active (latest message timestamp, falling back to started_at).
- * Core filter surface: older_than_days (inactivity), source, ended-only,
- * archived flag. Returns malloc'd JSON array of
- * {id,source,title,last_active,ended,message_count,archived}. */
+/* PoP: list_prune_candidates @ hermes_state.py:list_prune_candidates */
 char *hermes_state_list_prune_candidates(hermes_state_db_t *db,
                                          double older_than_days,
                                          const char *source,
@@ -172,9 +162,7 @@ char *hermes_state_list_prune_candidates(hermes_state_db_t *db,
     return buf;
 }
 
-/* PoP: archive_sessions @ hermes_state.py:archive_sessions
- * Bulk-archive every non-archived session matching the filters; each match's
- * whole compression lineage flips as a unit. Returns matches count. */
+/* PoP: archive_sessions @ hermes_state.py:archive_sessions */
 int hermes_state_archive_sessions(hermes_state_db_t *db,
                                   double older_than_days, const char *source) {
     if (!db) return 0;
@@ -199,11 +187,7 @@ int hermes_state_archive_sessions(hermes_state_db_t *db,
     return count;
 }
 
-/* PoP: list_sessions_rich @ hermes_state.py:list_sessions_rich (core surface)
- * Rich listing ordered by last_active DESC. archived_only=true lists archived
- * rows; default hides archived. Compression-projected roots: rows whose
- * end_reason is 'compression' are hidden (their tip represents them).
- * Returns malloc'd JSON array of {id,source,title,last_active,archived}. */
+/* PoP: list_sessions_rich @ hermes_state.py:list_sessions_rich */
 char *hermes_state_list_sessions_rich(hermes_state_db_t *db,
                                       bool archived_only) {
     if (!db) return strdup("[]");

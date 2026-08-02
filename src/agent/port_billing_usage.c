@@ -33,8 +33,7 @@ bool billing_usage_finite(const void *json_value, double *out) {
     return true;
 }
 
-/* PoP: billing_usage__fmt_usd @ agent/billing_usage.py:_fmt_usd
- * Reuse the already-ported account_usage_fmt_usd() (_fmt_usd port). */
+/* PoP: billing_usage__fmt_usd @ agent/billing_usage.py:_fmt_usd */
 void billing_usage_fmt_usd(double value, char *buf, size_t sz) {
     account_usage_fmt_usd(value, buf, sz);
 }

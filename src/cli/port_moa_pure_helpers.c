@@ -310,11 +310,7 @@ static int find_model_index(const char *model, const char **list, int count)
     return -1;
 }
 
-/* PoP: moa_reorder_totem_pole @ tools/online_research.py:reorder_totem_pole_by_research
- *
- * Reorder model list by combining original position score with research scores.
- * Models not in research_scores get 0.5 default.
- * Returns number of models written to out. */
+/* PoP: moa_reorder_totem_pole @ tools/online_research.py:reorder_totem_pole_by_research */
 int moa_reorder_totem_pole(const char * const *current_order, int count,
                             const MoaResearchScore *research_scores, int score_count,
                             double weight,
