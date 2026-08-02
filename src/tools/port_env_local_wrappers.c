@@ -105,7 +105,38 @@ int envl_u_looks_like_msys_spawn_failure(const char *arg) {
 int envl_u_mandatory_aslr_enabled(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _git_root_from_bash @ tools/environments/local.py:_git_root_from_bash */
-int envl_u_git_root_from_bash(const char *arg) { (void)arg; return 0; }
+int envl_u_git_root_from_bash(const char *arg) {
+    /* Python: <root>/bin/bash -> root; <root>/usr/bin/bash -> root.
+     * Arg = bash path (POSIX slash form). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    char path[1024];
+    snprintf(path, sizeof(path), "%s", arg);
+    /* dirname */
+    char *slash = strrchr(path, '/');
+    if (!slash) { printf("\n"); return 0; }
+    *slash = '\0';
+    const char *bin_dir = path[0] ? path : "/";
+    /* basename(bin_dir) */
+    const char *base = strrchr(bin_dir, '/');
+    base = base ? base + 1 : bin_dir;
+    if (strcasecmp(base, "bin") != 0) { printf("%s\n", bin_dir); return 0; }
+    /* parent of bin_dir */
+    char parent[1024];
+    snprintf(parent, sizeof(parent), "%s", bin_dir);
+    char *ps = strrchr(parent, '/');
+    if (!ps) { printf("\n"); return 0; }
+    *ps = '\0';
+    const char *pbase = strrchr(parent, '/');
+    pbase = pbase ? pbase + 1 : parent;
+    if (strcasecmp(pbase, "usr") == 0) {
+        char *pp = strrchr(parent, '/');
+        if (pp) *pp = '\0';
+        printf("%s\n", parent[0] ? parent : "/");
+        return 0;
+    }
+    printf("%s\n", parent[0] ? parent : "/");
+    return 0;
+}
 
 /* PoP: _git_bash_aslr_help @ tools/environments/local.py:_git_bash_aslr_help */
 int envl_u_git_bash_aslr_help(const char *arg) { (void)arg; return 0; }

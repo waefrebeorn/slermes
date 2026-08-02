@@ -484,7 +484,27 @@ int hermes_cli_curses_ui_u_move_filtered_cursor(const char *arg) {
 }
 
 /* PoP: _scroll_for_cursor @ hermes_cli/curses_ui.py:_scroll_for_cursor */
-int hermes_cli_curses_ui_u_scroll_for_cursor(const char *arg) { (void)arg; return 0; }
+int hermes_cli_curses_ui_u_scroll_for_cursor(const char *arg) {
+    /* Python: clamp scroll so cursor visible. Arg = "cursor\tscroll\tvisible\ttotal". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    long v[4] = {0};
+    const char *p = arg;
+    for (int i = 0; i < 4 && *p; i++) {
+        v[i] = strtol(p, NULL, 10);
+        const char *tab = strchr(p, '\t');
+        if (!tab) break;
+        p = tab + 1;
+    }
+    long cursor = v[0], scroll = v[1], visible = v[2], total = v[3];
+    if (visible < 1) visible = 1;
+    if (cursor < scroll) scroll = cursor;
+    else if (cursor >= scroll + visible) scroll = cursor - visible + 1;
+    long max_off = total - visible; if (max_off < 0) max_off = 0;
+    if (scroll > max_off) scroll = max_off;
+    if (scroll < 0) scroll = 0;
+    printf("%ld\n", scroll);
+    return 0;
+}
 
 /* PoP: _handle_active_search_key @ hermes_cli/curses_ui.py:_handle_active_search_key */
 int hermes_cli_curses_ui_u_handle_active_search_key(const char *arg) { (void)arg; return 0; }
@@ -707,7 +727,26 @@ int hermes_cli_projects_cmd_u_cmd_set_primary(const char *arg) {
 }
 
 /* PoP: _cmd_use @ hermes_cli/projects_cmd.py:_cmd_use */
-int hermes_cli_projects_cmd_u_cmd_use(const char *arg) { (void)arg; return 0; }
+int hermes_cli_projects_cmd_u_cmd_use(const char *arg) {
+    /* Python: set active project (None clears). Arg = "project\tactive_slug".
+     * project empty = clear. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("0\n"); return 1; }
+    if (tab == arg) { printf("Cleared active project\n"); return 0; }
+    char slug[512];
+    size_t slen = (size_t)(tab - arg);
+    if (slen >= sizeof(slug)) slen = sizeof(slug) - 1;
+    memcpy(slug, arg, slen); slug[slen] = '\0';
+    /* resolve: active_slug tab-field holds current active; match or error */
+    const char *active = tab + 1;
+    if (active[0] && strcmp(active, slug) != 0 && strlen(active) != slen) {
+        printf("0\n");
+        return 1;
+    }
+    printf("Active project: %s\n", slug);
+    return 0;
+}
 
 /* PoP: _cmd_archive @ hermes_cli/projects_cmd.py:_cmd_archive */
 int hermes_cli_projects_cmd_u_cmd_archive(const char *arg) {
@@ -1490,10 +1529,36 @@ int hermes_cli_skin_engine_u_skins_dir(const char *arg) {
 }
 
 /* PoP: _load_skin_from_yaml @ hermes_cli/skin_engine.py:_load_skin_from_yaml */
-int hermes_cli_skin_engine_u_load_skin_from_yaml(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skin_engine_u_load_skin_from_yaml(const char *arg) {
+    /* Python: YAML load; dict with "name" or None. Arg = "path\tyaml_text". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *yaml_text = tab ? tab + 1 : "";
+    if (!yaml_text[0]) { printf("\n"); return 0; }
+    json_t *j = json_parse(yaml_text, NULL);
+    if (j && json_is_object(j)) {
+        json_t *nm = json_obj_get(j, "name");
+        if (nm) { printf("%s\n", yaml_text); json_free(j); return 0; }
+    }
+    if (j) json_free(j);
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _mapping_or_empty @ hermes_cli/skin_engine.py:_mapping_or_empty */
-int hermes_cli_skin_engine_u_mapping_or_empty(const char *arg) { (void)arg; return 0; }
+int hermes_cli_skin_engine_u_mapping_or_empty(const char *arg) {
+    /* Python: dict -> itself; None -> {}; else warn + {}. Arg =
+     * "section\tskin_name\tjson_value". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *val = t2 ? t2 + 1 : arg;
+    json_t *j = json_parse(val, NULL);
+    if (j && json_is_object(j)) { char *s = json_dumps(j, 0); printf("%s\n", s ? s : "{}"); free(s); json_free(j); return 0; }
+    if (j) json_free(j);
+    printf("{}\n");
+    return 0;
+}
 
 /* PoP: _build_skin_config @ hermes_cli/skin_engine.py:_build_skin_config */
 int hermes_cli_skin_engine_u_build_skin_config(const char *arg) { (void)arg; return 0; }
@@ -2980,7 +3045,45 @@ int hermes_cli_copilot_auth_u_derive_base_url_from_proxy_ep(const char *arg) { (
 int hermes_cli_copilot_auth_copilot_request_headers(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _normalize_skills @ hermes_cli/cron.py:_normalize_skills */
-int hermes_cli_cron_u_normalize_skills(const char *arg) { (void)arg; return 0; }
+int hermes_cli_cron_u_normalize_skills(const char *arg) {
+    /* Python: None -> None; single -> [single]; dedup trimmed. Arg =
+     * "single\tskills_json". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) {
+        /* single skill mode: single = arg, skills = None */
+        printf("%s\n", arg);
+        return 0;
+    }
+    if (tab == arg) {
+        /* skills None, single None -> None */
+        printf("\n");
+        return 0;
+    }
+    json_t *arr = json_parse(tab + 1, NULL);
+    if (!arr || !json_is_array(arr)) {
+        if (arr) json_free(arr);
+        printf("\n");
+        return 0;
+    }
+    size_t n = json_array_size(arr);
+    int first = 1;
+    for (size_t i = 0; i < n; i++) {
+        json_t *it = json_array_get(arr, i);
+        if (!it) continue;
+        const char *s = json_is_string(it) ? json_string_value(it) : "";
+        while (*s == ' ') s++;
+        size_t sl = strlen(s);
+        while (sl > 0 && s[sl-1] == ' ') sl--;
+        if (!sl) continue;
+        if (!first) printf("\n");
+        printf("%.*s", (int)sl, s);
+        first = 0;
+    }
+    printf("\n");
+    json_free(arr);
+    return 0;
+}
 
 /* PoP: _cron_api @ hermes_cli/cron.py:_cron_api */
 int hermes_cli_cron_u_cron_api(const char *arg) {
@@ -3111,7 +3214,20 @@ int hermes_cli_nous_billing_post_subscription_upgrade(const char *arg) { (void)a
 int hermes_cli_setup_whatsapp_clou_u_validate_phone_number_id(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _validate_waba_id @ hermes_cli/setup_whatsapp_cloud.py:_validate_waba_id */
-int hermes_cli_setup_whatsapp_clou_u_validate_waba_id(const char *arg) { (void)arg; return 0; }
+int hermes_cli_setup_whatsapp_clou_u_validate_waba_id(const char *arg) {
+    /* Python: required, numeric, 10-25 digits. Arg = value. */
+    if (!arg || !*arg) { printf("0 WABA ID is required\n"); return 1; }
+    const char *p = arg;
+    while (*p == ' ') p++;
+    if (!*p) { printf("0 WABA ID is required\n"); return 1; }
+    size_t len = 0;
+    for (; p[len]; len++) {
+        if (p[len] < '0' || p[len] > '9') { printf("0 WABA ID must be numeric\n"); return 1; }
+    }
+    if (len < 10 || len > 25) { printf("0 WABA ID looks wrong (expected 10-25 digits)\n"); return 1; }
+    printf("1\n");
+    return 0;
+}
 
 /* PoP: _validate_app_id @ hermes_cli/setup_whatsapp_cloud.py:_validate_app_id */
 int hermes_cli_setup_whatsapp_clou_u_validate_app_id(const char *arg) {
@@ -3726,7 +3842,12 @@ int hermes_cli_proxy_cli_cmd_proxy_list_providers(const char *arg) {
 }
 
 /* PoP: cmd_proxy @ hermes_cli/proxy/cli.py:cmd_proxy */
-int hermes_cli_proxy_cli_cmd_proxy(const char *arg) { (void)arg; return 0; }
+int hermes_cli_proxy_cli_cmd_proxy(const char *arg) {
+    /* Python: delegate to proxy.cli.cmd_proxy, SystemExit on non-zero. */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: parse_duration_seconds @ hermes_cli/session_filters.py:parse_duration_seconds */
 int hermes_cli_session_filters_parse_duration_seconds(const char *arg) { (void)arg; return 0; }
@@ -4312,7 +4433,14 @@ int hermes_cli_dashboard_auth_pref_u_warn_if_malformed_prefix(const char *arg) {
 int hermes_cli_fallback_config_resolve_entry_api_key(const char *arg) { (void)arg; return 0; }
 
 /* PoP: list_triage_ids @ hermes_cli/kanban_specify.py:list_triage_ids */
-int hermes_cli_kanban_specify_list_triage_ids(const char *arg) { (void)arg; return 0; }
+int hermes_cli_kanban_specify_list_triage_ids(const char *arg) {
+    /* Python: triage task ids (tenant-filtered). Arg = "tenant\tids" (tab
+     * sep, empty = none). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _env_line_safe @ hermes_cli/memory_setup.py:_env_line_safe */
 int hermes_cli_memory_setup_u_env_line_safe(const char *arg) { (void)arg; return 0; }

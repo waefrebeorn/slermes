@@ -44,7 +44,13 @@ int cua_u_computer_use_cfg(const char *arg) {
 int cua_u_cua_no_overlay(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cua_telemetry_disabled @ tools/computer_use/cua_backend.py:_cua_telemetry_disabled */
-int cua_u_cua_telemetry_disabled(const char *arg) { (void)arg; return 0; }
+int cua_u_cua_telemetry_disabled(const char *arg) {
+    /* Python: NOT config cua_telemetry (default False -> disabled True).
+     * Arg = "1"/"0" config flag. */
+    if (arg && arg[0] == '1') { printf("0\n"); return 0; }
+    printf("1\n");
+    return 0;
+}
 
 /* PoP: _computer_use_max_image_dimension @ tools/computer_use/cua_backend.py:_computer_use_max_image_dimension */
 int cua_u_computer_use_max_image_dimension(const char *arg) { (void)arg; return 0; }
@@ -343,7 +349,12 @@ int cua_u_clear_active_target(const char *arg) {
 }
 
 /* PoP: _failed_capture @ tools/computer_use/cua_backend.py:_failed_capture */
-int cua_u_failed_capture(const char *arg) { (void)arg; return 0; }
+int cua_u_failed_capture(const char *arg) {
+    /* Python: empty CaptureResult with window_title=message. Arg = message. */
+    if (!arg || !*arg) { printf("0\t0\t\t\t\t\t\n"); return 0; }
+    printf("0\t0\t\t\t\t%s\t\n", arg);
+    return 0;
+}
 
 /* PoP: _call_capture_tool @ tools/computer_use/cua_backend.py:_call_capture_tool */
 int cua_u_call_capture_tool(const char *arg) { (void)arg; return 0; }
@@ -458,13 +469,30 @@ int cua_stop_recording(const char *arg) {
 }
 
 /* PoP: get_recording_state @ tools/computer_use/cua_backend.py:get_recording_state */
-int cua_get_recording_state(const char *arg) { (void)arg; return 0; }
+int cua_get_recording_state(const char *arg) {
+    /* Python: recorder state dict. Arg = "recording\tenabled\toutput_dir\tvideo_active". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    printf("{\"recording\": %s, \"enabled\": %s, \"output_dir\": \"%s\", \"video_active\": %s}\n",
+           (arg[0] == '1') ? "true" : "false",
+           (t1 && t1[1] == '1') ? "true" : "false",
+           t2 ? t2 + 1 : "",
+           (t3 && t3[1] == '1') ? "true" : "false");
+    return 0;
+}
 
 /* PoP: replay_trajectory @ tools/computer_use/cua_backend.py:replay_trajectory */
 int cua_replay_trajectory(const char *arg) { (void)arg; return 0; }
 
 /* PoP: install_ffmpeg @ tools/computer_use/cua_backend.py:install_ffmpeg */
-int cua_install_ffmpeg(const char *arg) { (void)arg; return 0; }
+int cua_install_ffmpeg(const char *arg) {
+    /* Python: session call_tool install_ffmpeg. Arg = result passthrough. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _maybe_attach_element_token @ tools/computer_use/cua_backend.py:_maybe_attach_element_token */
 int cua_u_maybe_attach_element_token(const char *arg) { (void)arg; return 0; }

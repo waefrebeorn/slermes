@@ -106,7 +106,12 @@ int gw_u_launch_elevated_gateway_command(const char *arg) { (void)arg; return 0;
 int gw_u_launch_elevated_install(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _launch_elevated_uninstall @ hermes_cli/gateway_windows.py:_launch_elevated_uninstall */
-int gw_u_launch_elevated_uninstall(const char *arg) { (void)arg; return 0; }
+int gw_u_launch_elevated_uninstall(const char *arg) {
+    /* Python: UAC handoff for uninstall. Arg = "1"/"0" handoff success. */
+    if (arg && arg[0] == '1') { printf("1\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: get_task_name @ hermes_cli/gateway_windows.py:get_task_name */
 int gw_get_task_name(const char *arg) { (void)arg; return 0; }
@@ -363,4 +368,25 @@ int gw_u_windows_stop_drain_timeout(const char *arg) { (void)arg; return 0; }
 int gw_u_force_terminate_known_gateway_pids(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _collect_gateway_stop_pids @ hermes_cli/gateway_windows.py:_collect_gateway_stop_pids */
-int gw_u_collect_gateway_stop_pids(const char *arg) { (void)arg; return 0; }
+int gw_u_collect_gateway_stop_pids(const char *arg) {
+    /* Python: [primary] + others dedup, >0 only. Arg = "primary\tothers"
+     * (tab sep, may be empty). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    long primary = strtol(arg, NULL, 10);
+    int first = 1;
+    if (primary > 0) { printf("%ld", primary); first = 0; }
+    const char *p = tab ? tab + 1 : "";
+    while (*p) {
+        const char *t2 = strchr(p, '\t');
+        long pid = strtol(p, NULL, 10);
+        if (pid > 0 && pid != primary) {
+            if (!first) printf("\n");
+            printf("%ld", pid);
+            first = 0;
+        }
+        p = t2 ? t2 + 1 : p + strlen(p);
+    }
+    printf("\n");
+    return 0;
+}

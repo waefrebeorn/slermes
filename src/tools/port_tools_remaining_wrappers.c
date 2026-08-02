@@ -145,7 +145,15 @@ int tools_lazy_deps_u_format(const char *arg) {
 int tools_lazy_deps_u_python_abi_tag(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _lazy_install_target @ tools/lazy_deps.py:_lazy_install_target */
-int tools_lazy_deps_u_lazy_install_target(const char *arg) { (void)arg; return 0; }
+int tools_lazy_deps_u_lazy_install_target(const char *arg) {
+    /* Python: env var -> Path or None (empty env = None). Arg = env value. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ' || *p == '\t') p++;
+    if (!*p) { printf("\n"); return 0; }
+    printf("%s\n", p);
+    return 0;
+}
 
 /* PoP: _ensure_target_ready @ tools/lazy_deps.py:_ensure_target_ready */
 int tools_lazy_deps_u_ensure_target_ready(const char *arg) { (void)arg; return 0; }

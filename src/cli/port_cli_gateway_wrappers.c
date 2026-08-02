@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <dirent.h>
+#include <pwd.h>
 #include <sys/stat.h>
 #include "hermes_json.h"
 
@@ -577,7 +578,17 @@ int cgw_get_systemd_linger_status(const char *arg) { (void)arg; return 0; }
 int cgw_print_systemd_linger_guidance(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _launchd_user_home @ hermes_cli/gateway.py:_launchd_user_home */
-int cgw_u_launchd_user_home(const char *arg) { (void)arg; return 0; }
+int cgw_u_launchd_user_home(const char *arg) {
+    /* Python: real account home via getpwuid. Arg = HOME override (ignored);
+     * C: getpwuid(uid)->pw_dir. */
+    (void)arg;
+    struct passwd *pw = getpwuid(getuid());
+    if (pw && pw->pw_dir) { printf("%s\n", pw->pw_dir); return 0; }
+    const char *h = getenv("HOME");
+    if (h && *h) { printf("%s\n", h); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: get_launchd_plist_path @ hermes_cli/gateway.py:get_launchd_plist_path */
 int cgw_get_launchd_plist_path(const char *arg) { (void)arg; return 0; }

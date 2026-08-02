@@ -18,7 +18,26 @@ int bb_check_bluebubbles_requirements(const char *arg) {
 }
 
 /* PoP: _normalize_server_url @ gateway/platforms/bluebubbles.py:_normalize_server_url */
-int bb_u_normalize_server_url(const char *arg) { (void)arg; return 0; }
+int bb_u_normalize_server_url(const char *arg) {
+    /* Python: strip, prefix http:// if no scheme, rstrip '/'. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ') p++;
+    size_t len = strlen(p);
+    while (len > 0 && p[len-1] == ' ') len--;
+    if (!len) { printf("\n"); return 0; }
+    char out[1024];
+    size_t w = 0;
+    int has_scheme = 0;
+    if (len >= 8 && strncasecmp(p, "https://", 8) == 0) has_scheme = 1;
+    else if (len >= 7 && strncasecmp(p, "http://", 7) == 0) has_scheme = 1;
+    if (!has_scheme) { memcpy(out, "http://", 7); w = 7; }
+    memcpy(out + w, p, len); w += len;
+    while (w > 0 && out[w-1] == '/') w--;
+    out[w] = '\0';
+    printf("%s\n", out);
+    return 0;
+}
 
 /* PoP: _api_url @ gateway/platforms/bluebubbles.py:_api_url */
 int bb_u_api_url(const char *arg) {

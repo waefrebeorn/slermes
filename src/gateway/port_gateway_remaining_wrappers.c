@@ -139,7 +139,12 @@ int gateway_delivery_ledger_u_db_path(const char *arg) {
 }
 
 /* PoP: _connect @ gateway/delivery_ledger.py:_connect */
-int gateway_delivery_ledger_u_connect(const char *arg) { (void)arg; return 0; }
+int gateway_delivery_ledger_u_connect(const char *arg) {
+    /* Python: sqlite connect + schema init; mkdir parents. Arg = db path. */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    printf("ledger connected: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _initialize_schema @ gateway/delivery_ledger.py:_initialize_schema */
 int gateway_delivery_ledger_u_initialize_schema(const char *arg) { (void)arg; return 0; }

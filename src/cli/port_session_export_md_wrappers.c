@@ -48,7 +48,32 @@ int sexmd_u_frontmatter_line(const char *arg) {
 }
 
 /* PoP: _message_heading @ hermes_cli/session_export_md.py:_message_heading */
-int sexmd_u_message_heading(const char *arg) { (void)arg; return 0; }
+int sexmd_u_message_heading(const char *arg) {
+    /* Python: "### Role" + " — ts" + tool label. Arg =
+     * "role\tname\ttimestamp" (name/timestamp may be empty). */
+    if (!arg || !*arg) { printf("### Message\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    size_t rlen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    const char *role = "message";
+    if (rlen) {
+        /* capitalize */
+        static char buf[64];
+        size_t n = rlen < sizeof(buf) - 1 ? rlen : sizeof(buf) - 1;
+        for (size_t i = 0; i < n; i++) buf[i] = (char)(i == 0 ? toupper((unsigned char)arg[i]) : arg[i]);
+        buf[n] = '\0';
+        role = buf;
+    }
+    const char *name = t1 ? t1 + 1 : "";
+    const char *ts = t2 ? t2 + 1 : "";
+    const char *tool_label = (rlen == 4 && strncmp(arg, "tool", 4) == 0 && name[0]) ? name : NULL;
+    if (tool_label) {
+        printf("### Tool — %s%s%s\n", tool_label, ts[0] ? " — " : "", ts);
+    } else {
+        printf("### %s%s%s\n", role, ts[0] ? " — " : "", ts);
+    }
+    return 0;
+}
 
 /* PoP: _render_content @ hermes_cli/session_export_md.py:_render_content */
 int sexmd_u_render_content(const char *arg) {

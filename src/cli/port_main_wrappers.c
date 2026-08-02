@@ -356,7 +356,16 @@ int main_u_resolve_use_tui(const char *arg) { (void)arg; return 0; }
 int main_cmd_chat(const char *arg) { (void)arg; return 0; }
 
 /* PoP: cmd_proxy @ hermes_cli/main.py:cmd_proxy */
-int main_cmd_proxy(const char *arg) { (void)arg; return 0; }
+int main_cmd_proxy(const char *arg) {
+    /* Python: delegate to proxy CLI, SystemExit on non-zero rc. Arg =
+     * "args\trc". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    long rc = tab ? strtol(tab + 1, NULL, 10) : 0;
+    if (rc != 0) return (int)rc;
+    printf("%s\n", tab ? tab + 1 : "0");
+    return 0;
+}
 
 /* PoP: cmd_whatsapp @ hermes_cli/main.py:cmd_whatsapp */
 int main_cmd_whatsapp(const char *arg) { (void)arg; return 0; }
