@@ -11,6 +11,9 @@
 #include <ctype.h>
 #include "hermes_json.h"
 
+/* Python module global _activity_callback_local.callback. */
+static const char *g_envb_activity_callback = NULL;
+
 /* PoP: buffered_chars @ tools/environments/base.py:buffered_chars */
 int envb_buffered_chars(const char *arg) { (void)arg; return 0; }
 
@@ -21,10 +24,19 @@ int envb_total_chars(const char *arg) { (void)arg; return 0; }
 int envb_append(const char *arg) { (void)arg; return 0; }
 
 /* PoP: set_activity_callback @ tools/environments/base.py:set_activity_callback */
-int envb_set_activity_callback(const char *arg) { (void)arg; return 0; }
+int envb_set_activity_callback(const char *arg) {
+    /* Python: _activity_callback_local.callback = cb. */
+    g_envb_activity_callback = arg;
+    return 0;
+}
 
 /* PoP: _get_activity_callback @ tools/environments/base.py:_get_activity_callback */
-int envb_u_get_activity_callback(const char *arg) { (void)arg; return 0; }
+int envb_u_get_activity_callback(const char *arg) {
+    /* Python: getattr(_activity_callback_local, "callback", None). */
+    (void)arg;
+    printf("%s\n", g_envb_activity_callback ? g_envb_activity_callback : "");
+    return 0;
+}
 
 /* PoP: touch_activity_if_due @ tools/environments/base.py:touch_activity_if_due */
 int envb_touch_activity_if_due(const char *arg) { (void)arg; return 0; }
@@ -72,7 +84,24 @@ int envb_init_session(const char *arg) { (void)arg; return 0; }
 int envb_u_quote_cwd_for_cd(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _quote_shell_path @ tools/environments/base.py:_quote_shell_path */
-int envb_u_quote_shell_path(const char *arg) { (void)arg; return 0; }
+int envb_u_quote_shell_path(const char *arg) {
+    /* Python: shlex.quote(path) — safe chars pass through, else single
+     * quotes with '\'' escaping; empty -> "''". */
+    if (!arg || !*arg) { printf("''\n"); return 0; }
+    static const char *const safe = "abcdefghijklmnopqrstuvwxyz"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_@%+=:,./-";
+    int all_safe = 1;
+    for (const char *p = arg; *p; p++)
+        if (!strchr(safe, *p)) { all_safe = 0; break; }
+    if (all_safe) { printf("%s\n", arg); return 0; }
+    putchar('\'');
+    for (const char *p = arg; *p; p++) {
+        if (*p == '\'') printf("'\\''");
+        else putchar(*p);
+    }
+    printf("'\n");
+    return 0;
+}
 
 /* PoP: _wrap_command @ tools/environments/base.py:_wrap_command */
 int envb_u_wrap_command(const char *arg) { (void)arg; return 0; }

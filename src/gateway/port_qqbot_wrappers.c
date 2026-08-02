@@ -12,6 +12,9 @@
 #include "hermes_json.h"
 #include <time.h>
 
+/* Python adapter instance slot _interaction_callback. */
+static void *g_qqbot_interaction_callback = NULL;
+
 /* PoP: check_qq_requirements @ gateway/platforms/qqbot/adapter.py:check_qq_requirements */
 int qqbot_check_qq_requirements(const char *arg) {
     /* C port implements the QQ adapter natively; deps are present. */
@@ -70,7 +73,11 @@ int qqbot_u_next_msg_seq(const char *arg) { (void)arg; return 0; }
 int qqbot_u_on_message(const char *arg) { (void)arg; return 0; }
 
 /* PoP: set_interaction_callback @ gateway/platforms/qqbot/adapter.py:set_interaction_callback */
-int qqbot_set_interaction_callback(const char *arg) { (void)arg; return 0; }
+int qqbot_set_interaction_callback(const char *arg) {
+    /* Python: self._interaction_callback = callback (register/clear). */
+    g_qqbot_interaction_callback = (void *)arg;
+    return 0;
+}
 
 /* PoP: _on_interaction @ gateway/platforms/qqbot/adapter.py:_on_interaction */
 int qqbot_u_on_interaction(const char *arg) { (void)arg; return 0; }
@@ -118,7 +125,29 @@ int qqbot_u_handle_dm_message(const char *arg) { (void)arg; return 0; }
 int qqbot_u_process_quoted_context(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _merge_quote_into @ gateway/platforms/qqbot/adapter.py:_merge_quote_into */
-int qqbot_u_merge_quote_into(const char *arg) { (void)arg; return 0; }
+int qqbot_u_merge_quote_into(const char *arg) {
+    /* Python (quote_block, text): prepend the quote separated by a blank
+     * line; the result is stripped. Arg = "quote_block\ttext". */
+    if (!arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *quote = tab ? arg : "";
+    size_t qlen = tab ? (size_t)(tab - arg) : 0;
+    const char *text = tab ? tab + 1 : arg;
+    if (qlen == 0) { printf("%s\n", text); return 0; }
+    const char *ts = text;
+    while (*ts && isspace((unsigned char)*ts)) ts++;
+    size_t tn = strlen(ts);
+    while (tn > 0 && isspace((unsigned char)ts[tn - 1])) tn--;
+    if (tn == 0) { printf("%.*s\n", (int)qlen, quote); return 0; }
+    char buf[4096];
+    snprintf(buf, sizeof(buf), "%.*s\n\n%.*s", (int)qlen, quote, (int)tn, ts);
+    char *s = buf;
+    while (*s && isspace((unsigned char)*s)) s++;
+    size_t n = strlen(s);
+    while (n > 0 && isspace((unsigned char)s[n - 1])) n--;
+    printf("%.*s\n", (int)n, s);
+    return 0;
+}
 
 /* PoP: _detect_message_type @ gateway/platforms/qqbot/adapter.py:_detect_message_type */
 int qqbot_u_detect_message_type(const char *arg) { (void)arg; return 0; }
@@ -142,7 +171,26 @@ int qqbot_u_stt_voice_attachment(const char *arg) { (void)arg; return 0; }
 int qqbot_u_convert_audio_to_wav_file(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _guess_ext_from_data @ gateway/platforms/qqbot/adapter.py:_guess_ext_from_data */
-int qqbot_u_guess_ext_from_data(const char *arg) { (void)arg; return 0; }
+int qqbot_u_guess_ext_from_data(const char *arg) {
+    /* Python: magic-byte sniffing -> extension, default .amr (QQ's most
+     * common voice format). */
+    if (!arg) { printf(".amr\n"); return 0; }
+    size_t n = strlen(arg);
+    if (n >= 9 && memcmp(arg, "#!SILK_V3", 9) == 0) { printf(".silk\n"); return 0; }
+    if (n >= 6 && memcmp(arg, "#!SILK", 6) == 0) { printf(".silk\n"); return 0; }
+    if (n >= 2 && (unsigned char)arg[0] == 0x02 && arg[1] == '!') { printf(".silk\n"); return 0; }
+    if (n >= 4 && memcmp(arg, "RIFF", 4) == 0) { printf(".wav\n"); return 0; }
+    if (n >= 4 && memcmp(arg, "fLaC", 4) == 0) { printf(".flac\n"); return 0; }
+    if (n >= 2 && (unsigned char)arg[0] == 0xff &&
+        ((unsigned char)arg[1] == 0xfb || (unsigned char)arg[1] == 0xf3 ||
+         (unsigned char)arg[1] == 0xf2)) { printf(".mp3\n"); return 0; }
+    if (n >= 4 && (memcmp(arg, "\x30\x26\xb2\x75", 4) == 0 ||
+                   memcmp(arg, "OggS", 4) == 0)) { printf(".ogg\n"); return 0; }
+    if (n >= 4 && (memcmp(arg, "\x00\x00\x00\x20", 4) == 0 ||
+                   memcmp(arg, "\x00\x00\x00\x1c", 4) == 0)) { printf(".amr\n"); return 0; }
+    printf(".amr\n");
+    return 0;
+}
 
 /* PoP: _looks_like_silk @ gateway/platforms/qqbot/adapter.py:_looks_like_silk */
 int qqbot_u_looks_like_silk(const char *arg) { (void)arg; return 0; }

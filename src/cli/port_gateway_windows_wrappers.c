@@ -107,7 +107,19 @@ int gw_u_build_startup_launcher(const char *arg) { (void)arg; return 0; }
 int gw_u_write_task_script(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_task_user @ hermes_cli/gateway_windows.py:_resolve_task_user */
-int gw_u_resolve_task_user(const char *arg) { (void)arg; return 0; }
+int gw_u_resolve_task_user(const char *arg) {
+    /* Python: DOMAIN\\USER if available, else bare USERNAME, else None. */
+    (void)arg;
+    const char *u = getenv("USERNAME");
+    if (!u || !*u) u = getenv("USER");
+    if (!u || !*u) u = getenv("LOGNAME");
+    if (!u || !*u) { printf("\n"); return 0; }
+    if (strchr(u, '\\')) { printf("%s\n", u); return 0; }
+    const char *dom = getenv("USERDOMAIN");
+    if (dom && *dom) printf("%s\\%s\n", dom, u);
+    else printf("%s\n", u);
+    return 0;
+}
 
 /* PoP: _build_scheduled_task_xml @ hermes_cli/gateway_windows.py:_build_scheduled_task_xml */
 int gw_u_build_scheduled_task_xml(const char *arg) { (void)arg; return 0; }
@@ -137,7 +149,26 @@ int gw_windowless_gateway_restart_spec(const char *arg) { (void)arg; return 0; }
 int gw_u_spawn_detached(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _install_choice_from_env @ hermes_cli/gateway_windows.py:_install_choice_from_env */
-int gw_u_install_choice_from_env(const char *arg) { (void)arg; return 0; }
+int gw_u_install_choice_from_env(const char *arg) {
+    /* Python: tri-state parse of an env var — {1,true,yes,y,on} -> True,
+     * {0,false,no,n,off} -> False, absent -> None (0 in the shim). */
+    if (!arg || !*arg) return 0;
+    const char *raw = getenv(arg);
+    if (!raw) return 0;
+    const char *v = raw;
+    while (*v && isspace((unsigned char)*v)) v++;
+    size_t n = strlen(v);
+    while (n > 0 && isspace((unsigned char)v[n - 1])) n--;
+    char low[64];
+    if (n >= sizeof(low)) n = sizeof(low) - 1;
+    for (size_t i = 0; i < n; i++) low[i] = (char)tolower((unsigned char)v[i]);
+    low[n] = '\0';
+    static const char *const yes[] = {"1","true","yes","y","on",NULL};
+    static const char *const no[] = {"0","false","no","n","off",NULL};
+    for (int i = 0; yes[i]; i++) if (strcmp(low, yes[i]) == 0) return 1;
+    for (int i = 0; no[i]; i++) if (strcmp(low, no[i]) == 0) return 0;
+    return 0;
+}
 
 /* PoP: _prompt_install_choices @ hermes_cli/gateway_windows.py:_prompt_install_choices */
 int gw_u_prompt_install_choices(const char *arg) { (void)arg; return 0; }
@@ -155,7 +186,13 @@ int gw_u_report_gateway_start(const char *arg) { (void)arg; return 0; }
 int gw_u_print_next_steps(const char *arg) { (void)arg; return 0; }
 
 /* PoP: is_task_registered @ hermes_cli/gateway_windows.py:is_task_registered */
-int gw_is_task_registered(const char *arg) { (void)arg; return 0; }
+int gw_is_task_registered(const char *arg) {
+    /* Python: schtasks /Query /TN <task_name> exits 0 when registered. */
+    if (!arg || !*arg) return 0;
+    char cmd[1024];
+    snprintf(cmd, sizeof(cmd), "schtasks /Query /TN \"%s\" >/dev/null 2>&1", arg);
+    return system(cmd) == 0;
+}
 
 /* PoP: is_startup_entry_installed @ hermes_cli/gateway_windows.py:is_startup_entry_installed */
 int gw_is_startup_entry_installed(const char *arg) { (void)arg; return 0; }

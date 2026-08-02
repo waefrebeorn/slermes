@@ -186,7 +186,33 @@ int auth_u_import_codex_cli_tokens(const char *arg) { (void)arg; return 0; }
 int auth_resolve_codex_runtime_credentials(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_codex_rate_limit_shaped @ hermes_cli/auth.py:_is_codex_rate_limit_shaped */
-int auth_u_is_codex_rate_limit_shaped(const char *arg) { (void)arg; return 0; }
+int auth_u_is_codex_rate_limit_shaped(const char *arg) {
+    /* Python (code, reason, message): 429 or rate_limit/usage_limit/quota
+     * markers in the lowercased reason/message. Arg = "code\treason\tmessage". */
+    if (!arg) return 0;
+    char buf[1024];
+    snprintf(buf, sizeof(buf), "%s", arg);
+    char *save = NULL;
+    char *code_s = strtok_r(buf, "\t", &save);
+    char *reason = strtok_r(NULL, "\t", &save);
+    char *message = strtok_r(NULL, "\t", &save);
+    long code = code_s ? strtol(code_s, NULL, 10) : 0;
+    if (code == 429) return 1;
+    char low[2048];
+    size_t o = 0;
+    const char *src = reason ? reason : "";
+    for (const char *c = src; *c && o + 1 < sizeof(low); c++)
+        low[o++] = (char)tolower((unsigned char)*c);
+    src = message ? message : "";
+    for (const char *c = src; *c && o + 1 < sizeof(low); c++)
+        low[o++] = (char)tolower((unsigned char)*c);
+    low[o] = '\0';
+    static const char *const pats[] = {
+        "rate_limit", "usage_limit", "quota", "rate limit", "usage limit", NULL };
+    for (int i = 0; pats[i]; i++)
+        if (strstr(low, pats[i])) return 1;
+    return 0;
+}
 
 /* PoP: _codex_usage_probe_url @ hermes_cli/auth.py:_codex_usage_probe_url */
 int auth_u_codex_usage_probe_url(const char *arg) { (void)arg; return 0; }

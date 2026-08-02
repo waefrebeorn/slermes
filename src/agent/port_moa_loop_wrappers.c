@@ -66,16 +66,62 @@ int moa_u_reference_messages(const char *arg) { (void)arg; return 0; }
 int moa_u_preset_temperature(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_failed_reference @ agent/moa_loop.py:_is_failed_reference */
-int moa_u_is_failed_reference(const char *arg) { (void)arg; return 0; }
+int moa_u_is_failed_reference(const char *arg) {
+    /* Python: lstrip().lower() startswith "[failed:" or "[skipped:". */
+    if (!arg) return 0;
+    const char *s = arg;
+    while (*s && isspace((unsigned char)*s)) s++;
+    return strncasecmp(s, "[failed:", 8) == 0 || strncasecmp(s, "[skipped:", 9) == 0;
+}
 
 /* PoP: _successful_references @ agent/moa_loop.py:_successful_references */
 int moa_u_successful_references(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _failed_reference_labels @ agent/moa_loop.py:_failed_reference_labels */
-int moa_u_failed_reference_labels(const char *arg) { (void)arg; return 0; }
+int moa_u_failed_reference_labels(const char *arg) {
+    /* Python: labels whose reference text is a failure/skip sentinel.
+     * Arg = JSON array of [label, text] pairs. */
+    if (!arg || !*arg) return 0;
+    json_t *arr = json_parse(arg, NULL);
+    if (!arr || arr->type != JSON_ARRAY) { if (arr) json_free(arr); return 0; }
+    for (size_t i = 0; i < json_len(arr); i++) {
+        json_t *pair = json_get(arr, i);
+        if (!pair || pair->type != JSON_ARRAY || json_len(pair) < 2) continue;
+        json_t *label = json_get(pair, 0);
+        json_t *text = json_get(pair, 1);
+        if (!label || !json_is_string(label) || !text || !json_is_string(text)) continue;
+        const char *s = json_string_value(text);
+        while (*s && isspace((unsigned char)*s)) s++;
+        if (strncasecmp(s, "[failed:", 8) == 0 || strncasecmp(s, "[skipped:", 9) == 0)
+            printf("%s\n", json_string_value(label));
+    }
+    json_free(arr);
+    return 0;
+}
 
 /* PoP: _degraded_notice @ agent/moa_loop.py:_degraded_notice */
-int moa_u_degraded_notice(const char *arg) { (void)arg; return 0; }
+int moa_u_degraded_notice(const char *arg) {
+    /* Python (failed_labels, policy): empty when no labels or policy is
+     * "silent"; else "[Reference models unavailable: <labels>]".
+     * Arg = "labels\tpolicy". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *labels = arg;
+    size_t llen = tab ? (size_t)(tab - arg) : strlen(arg);
+    const char *policy = tab ? tab + 1 : "ask";
+    const char *ls = labels;
+    while (ls < labels + llen && isspace((unsigned char)*ls)) ls++;
+    size_t ln = (size_t)(labels + llen - ls);
+    while (ln > 0 && isspace((unsigned char)ls[ln - 1])) ln--;
+    if (ln == 0) { printf("\n"); return 0; }
+    const char *p = policy;
+    while (*p && isspace((unsigned char)*p)) p++;
+    if (strncasecmp(p, "silent", 6) == 0 && (p[6] == '\0' || isspace((unsigned char)p[6]))) {
+        printf("\n"); return 0;
+    }
+    printf("[Reference models unavailable: %.*s]\n", (int)ln, ls);
+    return 0;
+}
 
 /* PoP: aggregate_moa_context @ agent/moa_loop.py:aggregate_moa_context */
 int moa_aggregate_moa_context(const char *arg) { (void)arg; return 0; }

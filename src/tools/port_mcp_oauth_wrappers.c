@@ -67,13 +67,34 @@ int mcpo_u_read_json(const char *arg) { (void)arg; return 0; }
 int mcpo_u_write_json(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _tokens_path @ tools/mcp_oauth.py:_tokens_path */
-int mcpo_u_tokens_path(const char *arg) { (void)arg; return 0; }
+int mcpo_u_tokens_path(const char *arg) {
+    /* Python: HERMES_HOME/mcp-tokens/<server>.json. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *home = getenv("HERMES_HOME");
+    if (!home || !*home) home = getenv("HOME");
+    printf("%s/mcp-tokens/%s.json\n", home ? home : ".", arg);
+    return 0;
+}
 
 /* PoP: _client_info_path @ tools/mcp_oauth.py:_client_info_path */
-int mcpo_u_client_info_path(const char *arg) { (void)arg; return 0; }
+int mcpo_u_client_info_path(const char *arg) {
+    /* Python: HERMES_HOME/mcp-tokens/<server>.client.json. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *home = getenv("HERMES_HOME");
+    if (!home || !*home) home = getenv("HOME");
+    printf("%s/mcp-tokens/%s.client.json\n", home ? home : ".", arg);
+    return 0;
+}
 
 /* PoP: _meta_path @ tools/mcp_oauth.py:_meta_path */
-int mcpo_u_meta_path(const char *arg) { (void)arg; return 0; }
+int mcpo_u_meta_path(const char *arg) {
+    /* Python: HERMES_HOME/mcp-tokens/<server>.meta.json. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *home = getenv("HERMES_HOME");
+    if (!home || !*home) home = getenv("HOME");
+    printf("%s/mcp-tokens/%s.meta.json\n", home ? home : ".", arg);
+    return 0;
+}
 
 /* PoP: get_tokens @ tools/mcp_oauth.py:get_tokens */
 int mcpo_get_tokens(const char *arg) { (void)arg; return 0; }
