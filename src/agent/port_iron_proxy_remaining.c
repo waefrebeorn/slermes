@@ -11,6 +11,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "hermes_http.h"
 #include <unistd.h>
 #include <signal.h>
 #include <sys/stat.h>
@@ -75,10 +76,16 @@ char *ipx_install_iron_proxy(const char *hermes_home, const char *version) {
 
 /* PoP: _http_download @ agent/proxy_sources/iron_proxy.py:_http_download */
 char *ipx_http_download(const char *url) {
-    /* Python: UA "hermes-agent", timeout-bounded GET. */
+    /* Python: UA "hermes-agent", timeout-bounded GET — REAL http_get. */
     if (!url) return NULL;
-    printf("download: %s (UA hermes-agent)\n", url);
-    return NULL;
+    http_t *h = http_new(60);
+    if (!h) return NULL;
+    http_resp_t *r = http_get(h, url, "User-Agent: hermes-agent");
+    char *out = NULL;
+    if (r && r->status == 200 && r->body) out = strdup(r->body);
+    if (r) http_resp_free(r);
+    http_free(h);
+    return out;
 }
 
 /* PoP: _verify_checksums_signature @ agent/proxy_sources/iron_proxy.py:_verify_checksums_signature */

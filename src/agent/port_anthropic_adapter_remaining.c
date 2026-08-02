@@ -11,6 +11,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "hermes_http.h"
 #include <time.h>
 
 static char *lowerdup(const char *s) {
@@ -259,11 +260,26 @@ bool antr_is_claude_code_token_valid(const char *creds_json, double now_epoch) {
 
 /* PoP: refresh_anthropic_oauth_pure @ agent/anthropic_adapter.py:refresh_anthropic_oauth_pure */
 char *antr_refresh_anthropic_oauth_pure(const char *refresh_token, const char *client_id) {
-    /* Python: POST token refresh; pure (no file mutation). */
+    /* Python: POST token refresh; pure (no file mutation) — REAL POST. */
     if (!refresh_token) { fprintf(stderr, "refresh_token is required\n"); return NULL; }
-    printf("oauth refresh POST (client_id=%s) — pure, no credential mutation\n",
-           client_id ? client_id : "?");
-    return strdup("{\"access_token\": \"...\", \"refresh_token\": \"...\"}");
+    http_t *h = http_new(30);
+    if (!h) return NULL;
+    char *body = NULL;
+    asprintf(&body,
+        "grant_type=refresh_token&refresh_token=%s&client_id=%s",
+        refresh_token, client_id ? client_id : "");
+    char *hdr = NULL;
+    asprintf(&hdr, "Content-Type: application/x-www-form-urlencoded");
+    http_resp_t *r = http_request(h, HTTP_POST,
+                                  "https://console.anthropic.com/api/oauth/token",
+                                  hdr, body, strlen(body));
+    char *out = NULL;
+    if (r && r->body) out = strdup(r->body);
+    if (r) http_resp_free(r);
+    http_free(h);
+    free(hdr);
+    free(body);
+    return out;
 }
 
 /* PoP: _refresh_oauth_token @ agent/anthropic_adapter.py:_refresh_oauth_token */

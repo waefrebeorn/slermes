@@ -11,6 +11,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "hermes_http.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -295,10 +296,16 @@ char *sh_load_catalog_index(int max_items) {
 
 /* PoP: _get_json @ tools/skills_hub.py:_get_json */
 char *sh_get_json(const char *url, double timeout) {
-    /* Python: GET + 200 check + json parse. */
+    /* Python: GET + 200 check + json parse — REAL http_get. */
     if (!url) return NULL;
-    printf("json fetched: %s (timeout %.0fs)\n", url, timeout);
-    return NULL;
+    http_t *h = http_new((int)(timeout > 0 ? timeout : 15));
+    if (!h) return NULL;
+    http_resp_t *r = http_get(h, url, NULL);
+    char *out = NULL;
+    if (r && r->status == 200 && r->body) out = strdup(r->body);
+    if (r) http_resp_free(r);
+    http_free(h);
+    return out;
 }
 
 /* PoP: _resolve_latest_version @ tools/skills_hub.py:_resolve_latest_version */
@@ -342,10 +349,20 @@ char *sh_fetch_index(void) {
 
 /* PoP: _fetch_agent @ tools/skills_hub.py:_fetch_agent */
 char *sh_fetch_agent(const char *agent_id) {
-    /* Python: chat-agents.lobehub.com/{id}.json. */
+    /* Python: chat-agents.lobehub.com/{id}.json — REAL http_get. */
     if (!agent_id) return NULL;
-    printf("lobehub agent fetched: %s.json\n", agent_id);
-    return NULL;
+    char *url = NULL;
+    asprintf(&url, "https://chat-agents.lobehub.com/%s.json", agent_id);
+    if (!url) return NULL;
+    http_t *h = http_new(15);
+    if (!h) { free(url); return NULL; }
+    http_resp_t *r = http_get(h, url, NULL);
+    char *out = NULL;
+    if (r && r->status == 200 && r->body) out = strdup(r->body);
+    if (r) http_resp_free(r);
+    http_free(h);
+    free(url);
+    return out;
 }
 
 /* PoP: _convert_to_skill_md @ tools/skills_hub.py:_convert_to_skill_md */

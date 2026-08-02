@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "hermes_http.h"
 #include <unistd.h>
 
 static char *lowerdup(const char *s) {
@@ -45,9 +46,16 @@ char *bw_find_bws(const char *hermes_home) {
 
 /* PoP: _http_download @ agent/secret_sources/bitwarden.py:_http_download */
 char *bw_http_download(const char *url) {
+    /* Python: UA hermes-agent GET, timeout-bounded — REAL http_get. */
     if (!url) return NULL;
-    printf("download: %s\n", url);
-    return NULL;
+    http_t *h = http_new(30);
+    if (!h) return NULL;
+    http_resp_t *r = http_get(h, url, "User-Agent: hermes-agent");
+    char *out = NULL;
+    if (r && r->status == 200 && r->body) out = strdup(r->body);
+    if (r) http_resp_free(r);
+    http_free(h);
+    return out;
 }
 
 /* PoP: _expected_sha256 @ agent/secret_sources/bitwarden.py:_expected_sha256 */

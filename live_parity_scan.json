@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T18:59:15Z",
+  "generated_at": "2026-08-02T19:01:52Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -2117,7 +2117,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 31,
+            "line": 32,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_claude_model @ agent/anthropic_adapter.py:_is_claude_model */"
           },
@@ -2146,7 +2146,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 41,
+            "line": 42,
             "is_consolidated": false,
             "full_text": "/* PoP: _get_anthropic_max_output @ agent/anthropic_adapter.py:_get_anthropic_max_output */"
           },
@@ -2204,7 +2204,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 57,
+            "line": 58,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_anthropic_messages_max_tokens @ agent/anthropic_adapter.py:_resolve_anthropic_messages_max_tokens */"
           },
@@ -2349,7 +2349,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 65,
+            "line": 66,
             "is_consolidated": false,
             "full_text": "/* PoP: _detect_claude_code_version @ agent/anthropic_adapter.py:_detect_claude_code_version */"
           },
@@ -2378,7 +2378,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 72,
+            "line": 73,
             "is_consolidated": false,
             "full_text": "/* PoP: _get_claude_code_version @ agent/anthropic_adapter.py:_get_claude_code_version */"
           },
@@ -2407,7 +2407,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 80,
+            "line": 81,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_oauth_token @ agent/anthropic_adapter.py:_is_oauth_token */"
           },
@@ -2436,7 +2436,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 89,
+            "line": 90,
             "is_consolidated": false,
             "full_text": "/* PoP: _normalize_base_url_text @ agent/anthropic_adapter.py:_normalize_base_url_text */"
           },
@@ -2465,7 +2465,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 96,
+            "line": 97,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_third_party_anthropic_endpoint @ agent/anthropic_adapter.py:_is_third_party_anthropic_endpoint */"
           },
@@ -2494,7 +2494,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 108,
+            "line": 109,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_kimi_coding_endpoint @ agent/anthropic_adapter.py:_is_kimi_coding_endpoint */"
           },
@@ -2523,7 +2523,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 123,
+            "line": 124,
             "is_consolidated": false,
             "full_text": "/* PoP: _model_name_is_kimi_family @ agent/anthropic_adapter.py:_model_name_is_kimi_family */"
           },
@@ -2552,7 +2552,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 136,
+            "line": 137,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_kimi_family_endpoint @ agent/anthropic_adapter.py:_is_kimi_family_endpoint */"
           },
@@ -2581,7 +2581,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 146,
+            "line": 147,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_deepseek_anthropic_endpoint @ agent/anthropic_adapter.py:_is_deepseek_anthropic_endpoint */"
           },
@@ -2610,7 +2610,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 156,
+            "line": 157,
             "is_consolidated": false,
             "full_text": "/* PoP: _requires_bearer_auth @ agent/anthropic_adapter.py:_requires_bearer_auth */"
           },
@@ -2639,7 +2639,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 171,
+            "line": 172,
             "is_consolidated": false,
             "full_text": "/* PoP: _base_url_needs_context_1m_beta @ agent/anthropic_adapter.py:_base_url_needs_context_1m_beta */"
           },
@@ -2668,7 +2668,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 181,
+            "line": 182,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_minimax_anthropic_endpoint @ agent/anthropic_adapter.py:_is_minimax_anthropic_endpoint */"
           },
@@ -2697,7 +2697,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 191,
+            "line": 192,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_azure_anthropic_endpoint @ agent/anthropic_adapter.py:_is_azure_anthropic_endpoint */"
           },
@@ -2726,7 +2726,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 201,
+            "line": 202,
             "is_consolidated": false,
             "full_text": "/* PoP: _common_betas_for_base_url @ agent/anthropic_adapter.py:_common_betas_for_base_url */"
           },
@@ -2755,7 +2755,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 210,
+            "line": 211,
             "is_consolidated": false,
             "full_text": "/* PoP: _build_anthropic_client_with_bearer_hook @ agent/anthropic_adapter.py:_build_anthropic_client_with_bearer_hook */"
           },
@@ -2784,7 +2784,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 219,
+            "line": 220,
             "is_consolidated": false,
             "full_text": "/* PoP: build_anthropic_client @ agent/anthropic_adapter.py:build_anthropic_client */"
           },
@@ -2813,7 +2813,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 228,
+            "line": 229,
             "is_consolidated": false,
             "full_text": "/* PoP: build_anthropic_bedrock_client @ agent/anthropic_adapter.py:build_anthropic_bedrock_client */"
           },
@@ -2842,7 +2842,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 236,
+            "line": 237,
             "is_consolidated": false,
             "full_text": "/* PoP: _read_claude_code_credentials_from_keychain @ agent/anthropic_adapter.py:_read_claude_code_credentials_from_keychain */"
           },
@@ -2929,7 +2929,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 245,
+            "line": 246,
             "is_consolidated": false,
             "full_text": "/* PoP: is_claude_code_token_valid @ agent/anthropic_adapter.py:is_claude_code_token_valid */"
           },
@@ -2958,7 +2958,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 260,
+            "line": 261,
             "is_consolidated": false,
             "full_text": "/* PoP: refresh_anthropic_oauth_pure @ agent/anthropic_adapter.py:refresh_anthropic_oauth_pure */"
           },
@@ -2987,7 +2987,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 269,
+            "line": 285,
             "is_consolidated": false,
             "full_text": "/* PoP: _refresh_oauth_token @ agent/anthropic_adapter.py:_refresh_oauth_token */"
           },
@@ -3016,7 +3016,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 277,
+            "line": 293,
             "is_consolidated": false,
             "full_text": "/* PoP: _write_claude_code_credentials @ agent/anthropic_adapter.py:_write_claude_code_credentials */"
           },
@@ -3045,7 +3045,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 286,
+            "line": 302,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_claude_code_token_from_credentials @ agent/anthropic_adapter.py:_resolve_claude_code_token_from_credentials */"
           },
@@ -3074,7 +3074,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 294,
+            "line": 310,
             "is_consolidated": false,
             "full_text": "/* PoP: _prefer_refreshable_claude_code_token @ agent/anthropic_adapter.py:_prefer_refreshable_claude_code_token */"
           },
@@ -3132,7 +3132,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 302,
+            "line": 318,
             "is_consolidated": false,
             "full_text": "/* PoP: resolve_anthropic_token @ agent/anthropic_adapter.py:resolve_anthropic_token */"
           },
@@ -3161,7 +3161,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 313,
+            "line": 329,
             "is_consolidated": false,
             "full_text": "/* PoP: run_oauth_setup_token @ agent/anthropic_adapter.py:run_oauth_setup_token */"
           },
@@ -3219,7 +3219,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 320,
+            "line": 336,
             "is_consolidated": false,
             "full_text": "/* PoP: _generate_pkce @ agent/anthropic_adapter.py:_generate_pkce */"
           },
@@ -3248,7 +3248,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 332,
+            "line": 348,
             "is_consolidated": false,
             "full_text": "/* PoP: run_hermes_oauth_login_pure @ agent/anthropic_adapter.py:run_hermes_oauth_login_pure */"
           },
@@ -3277,7 +3277,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 339,
+            "line": 355,
             "is_consolidated": false,
             "full_text": "/* PoP: read_hermes_oauth_credentials @ agent/anthropic_adapter.py:read_hermes_oauth_credentials */"
           },
@@ -3306,7 +3306,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 346,
+            "line": 362,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_bedrock_model_id @ agent/anthropic_adapter.py:_is_bedrock_model_id */"
           },
@@ -3335,7 +3335,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 358,
+            "line": 374,
             "is_consolidated": false,
             "full_text": "/* PoP: normalize_model_name @ agent/anthropic_adapter.py:normalize_model_name */"
           },
@@ -3364,7 +3364,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 377,
+            "line": 393,
             "is_consolidated": false,
             "full_text": "/* PoP: _sanitize_tool_id @ agent/anthropic_adapter.py:_sanitize_tool_id */"
           },
@@ -3393,7 +3393,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 393,
+            "line": 409,
             "is_consolidated": false,
             "full_text": "/* PoP: _normalize_tool_input_schema @ agent/anthropic_adapter.py:_normalize_tool_input_schema */"
           },
@@ -3422,7 +3422,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 401,
+            "line": 417,
             "is_consolidated": false,
             "full_text": "/* PoP: convert_tools_to_anthropic @ agent/anthropic_adapter.py:convert_tools_to_anthropic */"
           },
@@ -3451,7 +3451,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 409,
+            "line": 425,
             "is_consolidated": false,
             "full_text": "/* PoP: _image_source_from_openai_url @ agent/anthropic_adapter.py:_image_source_from_openai_url */"
           },
@@ -3480,7 +3480,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 438,
+            "line": 454,
             "is_consolidated": false,
             "full_text": "/* PoP: _convert_content_part_to_anthropic @ agent/anthropic_adapter.py:_convert_content_part_to_anthropic */"
           },
@@ -3538,7 +3538,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 469,
+            "line": 485,
             "is_consolidated": false,
             "full_text": "/* PoP: _extract_preserved_thinking_blocks @ agent/anthropic_adapter.py:_extract_preserved_thinking_blocks */"
           },
@@ -3567,7 +3567,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 507,
+            "line": 523,
             "is_consolidated": false,
             "full_text": "/* PoP: _convert_content_to_anthropic @ agent/anthropic_adapter.py:_convert_content_to_anthropic */"
           },
@@ -3596,7 +3596,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 516,
+            "line": 532,
             "is_consolidated": false,
             "full_text": "/* PoP: _content_parts_to_anthropic_blocks @ agent/anthropic_adapter.py:_content_parts_to_anthropic_blocks */"
           },
@@ -3712,7 +3712,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 523,
+            "line": 539,
             "is_consolidated": false,
             "full_text": "/* PoP: _convert_assistant_message @ agent/anthropic_adapter.py:_convert_assistant_message */"
           },
@@ -3741,7 +3741,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 531,
+            "line": 547,
             "is_consolidated": false,
             "full_text": "/* PoP: _convert_tool_message_to_result @ agent/anthropic_adapter.py:_convert_tool_message_to_result */"
           },
@@ -3770,7 +3770,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 539,
+            "line": 555,
             "is_consolidated": false,
             "full_text": "/* PoP: _convert_user_message @ agent/anthropic_adapter.py:_convert_user_message */"
           },
@@ -3799,7 +3799,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 547,
+            "line": 563,
             "is_consolidated": false,
             "full_text": "/* PoP: _strip_orphaned_tool_blocks @ agent/anthropic_adapter.py:_strip_orphaned_tool_blocks */"
           },
@@ -3828,7 +3828,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 555,
+            "line": 571,
             "is_consolidated": false,
             "full_text": "/* PoP: _merge_consecutive_roles @ agent/anthropic_adapter.py:_merge_consecutive_roles */"
           },
@@ -3857,7 +3857,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 562,
+            "line": 578,
             "is_consolidated": false,
             "full_text": "/* PoP: _manage_thinking_signatures @ agent/anthropic_adapter.py:_manage_thinking_signatures */"
           },
@@ -3886,7 +3886,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 571,
+            "line": 587,
             "is_consolidated": false,
             "full_text": "/* PoP: _evict_old_screenshots @ agent/anthropic_adapter.py:_evict_old_screenshots */"
           },
@@ -3944,7 +3944,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 580,
+            "line": 596,
             "is_consolidated": false,
             "full_text": "/* PoP: convert_messages_to_anthropic @ agent/anthropic_adapter.py:convert_messages_to_anthropic */"
           },
@@ -3973,7 +3973,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 588,
+            "line": 604,
             "is_consolidated": false,
             "full_text": "/* PoP: build_anthropic_kwargs @ agent/anthropic_adapter.py:build_anthropic_kwargs */"
           },
@@ -4031,7 +4031,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 597,
+            "line": 613,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_stream_unavailable_error @ agent/anthropic_adapter.py:_is_stream_unavailable_error */"
           },
@@ -4060,7 +4060,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 608,
+            "line": 624,
             "is_consolidated": false,
             "full_text": "/* PoP: create_anthropic_message @ agent/anthropic_adapter.py:create_anthropic_message */"
           },
@@ -51387,7 +51387,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 30,
+            "line": 31,
             "is_consolidated": false,
             "full_text": "/* PoP: installed @ agent/proxy_sources/iron_proxy.py:installed */"
           },
@@ -51418,7 +51418,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 36,
+            "line": 37,
             "is_consolidated": false,
             "full_text": "/* PoP: configured @ agent/proxy_sources/iron_proxy.py:configured */"
           },
@@ -51592,7 +51592,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 44,
+            "line": 45,
             "is_consolidated": false,
             "full_text": "/* PoP: find_iron_proxy @ agent/proxy_sources/iron_proxy.py:find_iron_proxy */"
           },
@@ -51621,7 +51621,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 67,
+            "line": 68,
             "is_consolidated": false,
             "full_text": "/* PoP: install_iron_proxy @ agent/proxy_sources/iron_proxy.py:install_iron_proxy */"
           },
@@ -51650,7 +51650,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 76,
+            "line": 77,
             "is_consolidated": false,
             "full_text": "/* PoP: _http_download @ agent/proxy_sources/iron_proxy.py:_http_download */"
           },
@@ -51679,7 +51679,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 84,
+            "line": 91,
             "is_consolidated": false,
             "full_text": "/* PoP: _verify_checksums_signature @ agent/proxy_sources/iron_proxy.py:_verify_checksums_signature */"
           },
@@ -51824,7 +51824,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 92,
+            "line": 99,
             "is_consolidated": false,
             "full_text": "/* PoP: ensure_ca_cert @ agent/proxy_sources/iron_proxy.py:ensure_ca_cert */"
           },
@@ -51853,7 +51853,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 102,
+            "line": 109,
             "is_consolidated": false,
             "full_text": "/* PoP: mint_proxy_token @ agent/proxy_sources/iron_proxy.py:mint_proxy_token */"
           },
@@ -51911,7 +51911,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 110,
+            "line": 117,
             "is_consolidated": false,
             "full_text": "/* PoP: ensure_management_token @ agent/proxy_sources/iron_proxy.py:ensure_management_token */"
           },
@@ -51940,7 +51940,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 133,
+            "line": 140,
             "is_consolidated": false,
             "full_text": "/* PoP: _read_management_token @ agent/proxy_sources/iron_proxy.py:_read_management_token */"
           },
@@ -51969,7 +51969,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 153,
+            "line": 160,
             "is_consolidated": false,
             "full_text": "/* PoP: _read_management_listen_from_config @ agent/proxy_sources/iron_proxy.py:_read_management_listen_from_config */"
           },
@@ -51998,7 +51998,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 161,
+            "line": 168,
             "is_consolidated": false,
             "full_text": "/* PoP: reload_proxy @ agent/proxy_sources/iron_proxy.py:reload_proxy */"
           },
@@ -52027,7 +52027,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 169,
+            "line": 176,
             "is_consolidated": false,
             "full_text": "/* PoP: _default_http_listen @ agent/proxy_sources/iron_proxy.py:_default_http_listen */"
           },
@@ -52056,7 +52056,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 175,
+            "line": 182,
             "is_consolidated": false,
             "full_text": "/* PoP: _detect_docker_bridge_ip @ agent/proxy_sources/iron_proxy.py:_detect_docker_bridge_ip */"
           },
@@ -52085,7 +52085,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 182,
+            "line": 189,
             "is_consolidated": false,
             "full_text": "/* PoP: build_proxy_config @ agent/proxy_sources/iron_proxy.py:build_proxy_config */"
           },
@@ -52114,7 +52114,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 190,
+            "line": 197,
             "is_consolidated": false,
             "full_text": "/* PoP: ensure_audit_log @ agent/proxy_sources/iron_proxy.py:ensure_audit_log */"
           },
@@ -52143,7 +52143,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 198,
+            "line": 205,
             "is_consolidated": false,
             "full_text": "/* PoP: write_proxy_config @ agent/proxy_sources/iron_proxy.py:write_proxy_config */"
           },
@@ -52172,7 +52172,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 206,
+            "line": 213,
             "is_consolidated": false,
             "full_text": "/* PoP: write_mappings @ agent/proxy_sources/iron_proxy.py:write_mappings */"
           },
@@ -52201,7 +52201,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 214,
+            "line": 221,
             "is_consolidated": false,
             "full_text": "/* PoP: load_mappings @ agent/proxy_sources/iron_proxy.py:load_mappings */"
           },
@@ -52230,7 +52230,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 222,
+            "line": 229,
             "is_consolidated": false,
             "full_text": "/* PoP: discover_provider_mappings @ agent/proxy_sources/iron_proxy.py:discover_provider_mappings */"
           },
@@ -52259,7 +52259,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 229,
+            "line": 236,
             "is_consolidated": false,
             "full_text": "/* PoP: discover_uncovered_providers @ agent/proxy_sources/iron_proxy.py:discover_uncovered_providers */"
           },
@@ -52288,7 +52288,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 236,
+            "line": 243,
             "is_consolidated": false,
             "full_text": "/* PoP: merge_mappings @ agent/proxy_sources/iron_proxy.py:merge_mappings */"
           },
@@ -52317,7 +52317,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 244,
+            "line": 251,
             "is_consolidated": false,
             "full_text": "/* PoP: _pidfile @ agent/proxy_sources/iron_proxy.py:_pidfile */"
           },
@@ -52346,7 +52346,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 251,
+            "line": 258,
             "is_consolidated": false,
             "full_text": "/* PoP: _read_pid @ agent/proxy_sources/iron_proxy.py:_read_pid */"
           },
@@ -52375,7 +52375,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 268,
+            "line": 275,
             "is_consolidated": false,
             "full_text": "/* PoP: _pid_proc_starttime @ agent/proxy_sources/iron_proxy.py:_pid_proc_starttime */"
           },
@@ -52404,7 +52404,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 313,
+            "line": 320,
             "is_consolidated": false,
             "full_text": "/* PoP: _persisted_nonce_path @ agent/proxy_sources/iron_proxy.py:_persisted_nonce_path */"
           },
@@ -52433,7 +52433,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 320,
+            "line": 327,
             "is_consolidated": false,
             "full_text": "/* PoP: _read_persisted_nonce @ agent/proxy_sources/iron_proxy.py:_read_persisted_nonce */"
           },
@@ -52491,7 +52491,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 340,
+            "line": 347,
             "is_consolidated": false,
             "full_text": "/* PoP: start_proxy @ agent/proxy_sources/iron_proxy.py:start_proxy */"
           },
@@ -52520,7 +52520,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 348,
+            "line": 355,
             "is_consolidated": false,
             "full_text": "/* PoP: _write_pidfile_safely @ agent/proxy_sources/iron_proxy.py:_write_pidfile_safely */"
           },
@@ -52549,7 +52549,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 356,
+            "line": 363,
             "is_consolidated": false,
             "full_text": "/* PoP: _kill_and_wait @ agent/proxy_sources/iron_proxy.py:_kill_and_wait */"
           },
@@ -52578,7 +52578,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 366,
+            "line": 373,
             "is_consolidated": false,
             "full_text": "/* PoP: _build_proxy_subprocess_env @ agent/proxy_sources/iron_proxy.py:_build_proxy_subprocess_env */"
           },
@@ -52607,7 +52607,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 374,
+            "line": 381,
             "is_consolidated": false,
             "full_text": "/* PoP: stop_proxy @ agent/proxy_sources/iron_proxy.py:stop_proxy */"
           },
@@ -52636,7 +52636,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 385,
+            "line": 392,
             "is_consolidated": false,
             "full_text": "/* PoP: get_status @ agent/proxy_sources/iron_proxy.py:get_status */"
           },
@@ -52665,7 +52665,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 393,
+            "line": 400,
             "is_consolidated": false,
             "full_text": "/* PoP: _read_tunnel_port_from_config @ agent/proxy_sources/iron_proxy.py:_read_tunnel_port_from_config */"
           },
@@ -52694,7 +52694,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 401,
+            "line": 408,
             "is_consolidated": false,
             "full_text": "/* PoP: _read_http_listen_from_config @ agent/proxy_sources/iron_proxy.py:_read_http_listen_from_config */"
           },
@@ -52723,7 +52723,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 409,
+            "line": 416,
             "is_consolidated": false,
             "full_text": "/* PoP: _port_listening @ agent/proxy_sources/iron_proxy.py:_port_listening */"
           },
@@ -52752,7 +52752,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 431,
+            "line": 438,
             "is_consolidated": false,
             "full_text": "/* PoP: _tail_log @ agent/proxy_sources/iron_proxy.py:_tail_log */"
           },
@@ -52781,7 +52781,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 450,
+            "line": 457,
             "is_consolidated": false,
             "full_text": "/* PoP: _reset_for_tests @ agent/proxy_sources/iron_proxy.py:_reset_for_tests */"
           },
@@ -55151,7 +55151,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 23,
+            "line": 24,
             "is_consolidated": false,
             "full_text": "/* PoP: find_bws @ agent/secret_sources/bitwarden.py:find_bws */"
           },
@@ -55267,7 +55267,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 46,
+            "line": 47,
             "is_consolidated": false,
             "full_text": "/* PoP: _http_download @ agent/secret_sources/bitwarden.py:_http_download */"
           },
@@ -55296,7 +55296,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 53,
+            "line": 61,
             "is_consolidated": false,
             "full_text": "/* PoP: _expected_sha256 @ agent/secret_sources/bitwarden.py:_expected_sha256 */"
           },
@@ -55354,7 +55354,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 61,
+            "line": 69,
             "is_consolidated": false,
             "full_text": "/* PoP: _pick_zip_member @ agent/secret_sources/bitwarden.py:_pick_zip_member */"
           },
@@ -55383,7 +55383,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 69,
+            "line": 77,
             "is_consolidated": false,
             "full_text": "/* PoP: _safe_extract_member @ agent/secret_sources/bitwarden.py:_safe_extract_member */"
           },
@@ -55441,7 +55441,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 77,
+            "line": 85,
             "is_consolidated": false,
             "full_text": "/* PoP: _b64e @ agent/secret_sources/bitwarden.py:_b64e */"
           },
@@ -55470,7 +55470,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 100,
+            "line": 108,
             "is_consolidated": false,
             "full_text": "/* PoP: _b64d @ agent/secret_sources/bitwarden.py:_b64d */"
           },
@@ -55499,7 +55499,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 130,
+            "line": 138,
             "is_consolidated": false,
             "full_text": "/* PoP: _derive_encrypted_cache_key @ agent/secret_sources/bitwarden.py:_derive_encrypted_cache_key */"
           },
@@ -55528,7 +55528,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 138,
+            "line": 146,
             "is_consolidated": false,
             "full_text": "/* PoP: _write_encrypted_disk_cache @ agent/secret_sources/bitwarden.py:_write_encrypted_disk_cache */"
           },
@@ -55557,7 +55557,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 145,
+            "line": 153,
             "is_consolidated": false,
             "full_text": "/* PoP: _read_encrypted_disk_cache @ agent/secret_sources/bitwarden.py:_read_encrypted_disk_cache */"
           },
@@ -55586,7 +55586,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 152,
+            "line": 160,
             "is_consolidated": false,
             "full_text": "/* PoP: fetch_bitwarden_secrets @ agent/secret_sources/bitwarden.py:fetch_bitwarden_secrets */"
           },
@@ -55615,7 +55615,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 160,
+            "line": 168,
             "is_consolidated": false,
             "full_text": "/* PoP: _summarize_bws_stderr @ agent/secret_sources/bitwarden.py:_summarize_bws_stderr */"
           },
@@ -55644,7 +55644,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 168,
+            "line": 176,
             "is_consolidated": false,
             "full_text": "/* PoP: _run_bws_list @ agent/secret_sources/bitwarden.py:_run_bws_list */"
           },
@@ -55673,7 +55673,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 176,
+            "line": 184,
             "is_consolidated": false,
             "full_text": "/* PoP: apply_bitwarden_secrets @ agent/secret_sources/bitwarden.py:apply_bitwarden_secrets */"
           },
@@ -55702,7 +55702,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 208,
+            "line": 216,
             "is_consolidated": false,
             "full_text": "/* PoP: override_existing @ agent/secret_sources/bitwarden.py:override_existing */"
           },
@@ -55733,7 +55733,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 214,
+            "line": 222,
             "is_consolidated": false,
             "full_text": "/* PoP: protected_env_vars @ agent/secret_sources/bitwarden.py:protected_env_vars */"
           },
@@ -55762,7 +55762,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 219,
+            "line": 227,
             "is_consolidated": false,
             "full_text": "/* PoP: config_schema @ agent/secret_sources/bitwarden.py:config_schema */"
           },
@@ -55791,7 +55791,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 224,
+            "line": 232,
             "is_consolidated": false,
             "full_text": "/* PoP: fetch @ agent/secret_sources/bitwarden.py:fetch */"
           },
@@ -55820,7 +55820,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 232,
+            "line": 240,
             "is_consolidated": false,
             "full_text": "/* PoP: remediation @ agent/secret_sources/bitwarden.py:remediation */"
           },
@@ -55849,7 +55849,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 240,
+            "line": 248,
             "is_consolidated": false,
             "full_text": "/* PoP: _classify_bws_error @ agent/secret_sources/bitwarden.py:_classify_bws_error */"
           },
@@ -55878,7 +55878,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 259,
+            "line": 267,
             "is_consolidated": false,
             "full_text": "/* PoP: clear_caches @ agent/secret_sources/bitwarden.py:clear_caches */"
           },
@@ -55907,7 +55907,7 @@
             ],
             "c_file": "src/agent/port_bitwarden_remaining.c",
             "python_file": "agent/secret_sources/bitwarden.py",
-            "line": 265,
+            "line": 273,
             "is_consolidated": false,
             "full_text": "/* PoP: _reset_cache_for_tests @ agent/secret_sources/bitwarden.py:_reset_cache_for_tests */"
           },
@@ -328405,7 +328405,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 23,
+            "line": 24,
             "is_consolidated": false,
             "full_text": "/* PoP: _guarded_http_get @ tools/skills_hub.py:_guarded_http_get */"
           },
@@ -329082,7 +329082,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 31,
+            "line": 32,
             "is_consolidated": false,
             "full_text": "/* PoP: _list_skills_in_repo @ tools/skills_hub.py:_list_skills_in_repo */"
           },
@@ -329198,7 +329198,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 39,
+            "line": 40,
             "is_consolidated": false,
             "full_text": "/* PoP: _download_directory @ tools/skills_hub.py:_download_directory */"
           },
@@ -329227,7 +329227,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 47,
+            "line": 48,
             "is_consolidated": false,
             "full_text": "/* PoP: _download_directory_via_tree @ tools/skills_hub.py:_download_directory_via_tree */"
           },
@@ -329256,7 +329256,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 55,
+            "line": 56,
             "is_consolidated": false,
             "full_text": "/* PoP: _download_directory_recursive @ tools/skills_hub.py:_download_directory_recursive */"
           },
@@ -329372,7 +329372,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 63,
+            "line": 64,
             "is_consolidated": false,
             "full_text": "/* PoP: _get_skillsh_groupings @ tools/skills_hub.py:_get_skillsh_groupings */"
           },
@@ -329403,7 +329403,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 71,
+            "line": 72,
             "is_consolidated": false,
             "full_text": "/* PoP: _parse_skillsh_groupings @ tools/skills_hub.py:_parse_skillsh_groupings */"
           },
@@ -330347,7 +330347,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 79,
+            "line": 80,
             "is_consolidated": false,
             "full_text": "/* PoP: _sitemap_catalog @ tools/skills_hub.py:_sitemap_catalog */"
           },
@@ -330376,7 +330376,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 86,
+            "line": 87,
             "is_consolidated": false,
             "full_text": "/* PoP: _featured_skills @ tools/skills_hub.py:_featured_skills */"
           },
@@ -330405,7 +330405,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 93,
+            "line": 94,
             "is_consolidated": false,
             "full_text": "/* PoP: _meta_from_search_item @ tools/skills_hub.py:_meta_from_search_item */"
           },
@@ -330434,7 +330434,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 101,
+            "line": 102,
             "is_consolidated": false,
             "full_text": "/* PoP: _fetch_detail_page @ tools/skills_hub.py:_fetch_detail_page */"
           },
@@ -330463,7 +330463,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 109,
+            "line": 110,
             "is_consolidated": false,
             "full_text": "/* PoP: _parse_detail_page @ tools/skills_hub.py:_parse_detail_page */"
           },
@@ -330492,7 +330492,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 117,
+            "line": 118,
             "is_consolidated": false,
             "full_text": "/* PoP: _discover_identifier @ tools/skills_hub.py:_discover_identifier */"
           },
@@ -330550,7 +330550,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 124,
+            "line": 125,
             "is_consolidated": false,
             "full_text": "/* PoP: _finalize_inspect_meta @ tools/skills_hub.py:_finalize_inspect_meta */"
           },
@@ -330581,7 +330581,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 132,
+            "line": 133,
             "is_consolidated": false,
             "full_text": "/* PoP: _matches_skill_tokens @ tools/skills_hub.py:_matches_skill_tokens */"
           },
@@ -330612,7 +330612,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 140,
+            "line": 141,
             "is_consolidated": false,
             "full_text": "/* PoP: _token_variants @ tools/skills_hub.py:_token_variants */"
           },
@@ -330643,7 +330643,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 148,
+            "line": 149,
             "is_consolidated": false,
             "full_text": "/* PoP: _extract_repo_slug @ tools/skills_hub.py:_extract_repo_slug */"
           },
@@ -330674,7 +330674,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 172,
+            "line": 173,
             "is_consolidated": false,
             "full_text": "/* PoP: _extract_first_match @ tools/skills_hub.py:_extract_first_match */"
           },
@@ -330703,7 +330703,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 180,
+            "line": 181,
             "is_consolidated": false,
             "full_text": "/* PoP: _detail_to_metadata @ tools/skills_hub.py:_detail_to_metadata */"
           },
@@ -330734,7 +330734,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 188,
+            "line": 189,
             "is_consolidated": false,
             "full_text": "/* PoP: _extract_weekly_installs @ tools/skills_hub.py:_extract_weekly_installs */"
           },
@@ -330765,7 +330765,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 196,
+            "line": 197,
             "is_consolidated": false,
             "full_text": "/* PoP: _extract_security_audits @ tools/skills_hub.py:_extract_security_audits */"
           },
@@ -330978,7 +330978,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 204,
+            "line": 205,
             "is_consolidated": false,
             "full_text": "/* PoP: _normalize_tags @ tools/skills_hub.py:_normalize_tags */"
           },
@@ -331009,7 +331009,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 246,
+            "line": 247,
             "is_consolidated": false,
             "full_text": "/* PoP: _coerce_skill_payload @ tools/skills_hub.py:_coerce_skill_payload */"
           },
@@ -331071,7 +331071,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 254,
+            "line": 255,
             "is_consolidated": false,
             "full_text": "/* PoP: _search_score @ tools/skills_hub.py:_search_score */"
           },
@@ -331102,7 +331102,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 265,
+            "line": 266,
             "is_consolidated": false,
             "full_text": "/* PoP: _dedupe_results @ tools/skills_hub.py:_dedupe_results */"
           },
@@ -331131,7 +331131,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 273,
+            "line": 274,
             "is_consolidated": false,
             "full_text": "/* PoP: _exact_slug_meta @ tools/skills_hub.py:_exact_slug_meta */"
           },
@@ -331160,7 +331160,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 281,
+            "line": 282,
             "is_consolidated": false,
             "full_text": "/* PoP: _finalize_search_results @ tools/skills_hub.py:_finalize_search_results */"
           },
@@ -331305,7 +331305,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 289,
+            "line": 290,
             "is_consolidated": false,
             "full_text": "/* PoP: _load_catalog_index @ tools/skills_hub.py:_load_catalog_index */"
           },
@@ -331334,7 +331334,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 296,
+            "line": 297,
             "is_consolidated": false,
             "full_text": "/* PoP: _get_json @ tools/skills_hub.py:_get_json */"
           },
@@ -331363,7 +331363,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 304,
+            "line": 311,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_latest_version @ tools/skills_hub.py:_resolve_latest_version */"
           },
@@ -331392,7 +331392,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 312,
+            "line": 319,
             "is_consolidated": false,
             "full_text": "/* PoP: _extract_files @ tools/skills_hub.py:_extract_files */"
           },
@@ -331421,7 +331421,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 320,
+            "line": 327,
             "is_consolidated": false,
             "full_text": "/* PoP: _download_zip @ tools/skills_hub.py:_download_zip */"
           },
@@ -331684,7 +331684,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 328,
+            "line": 335,
             "is_consolidated": false,
             "full_text": "/* PoP: _fetch_marketplace_index @ tools/skills_hub.py:_fetch_marketplace_index */"
           },
@@ -331858,7 +331858,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 336,
+            "line": 343,
             "is_consolidated": false,
             "full_text": "/* PoP: _fetch_index @ tools/skills_hub.py:_fetch_index */"
           },
@@ -331887,7 +331887,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 343,
+            "line": 350,
             "is_consolidated": false,
             "full_text": "/* PoP: _fetch_agent @ tools/skills_hub.py:_fetch_agent */"
           },
@@ -331918,7 +331918,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 351,
+            "line": 368,
             "is_consolidated": false,
             "full_text": "/* PoP: _convert_to_skill_md @ tools/skills_hub.py:_convert_to_skill_md */"
           },
@@ -332034,7 +332034,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 359,
+            "line": 376,
             "is_consolidated": false,
             "full_text": "/* PoP: _item_to_meta @ tools/skills_hub.py:_item_to_meta */"
           },
@@ -332179,7 +332179,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 367,
+            "line": 384,
             "is_consolidated": false,
             "full_text": "/* PoP: _slug_from_identifier @ tools/skills_hub.py:_slug_from_identifier */"
           },
@@ -332411,7 +332411,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 378,
+            "line": 395,
             "is_consolidated": false,
             "full_text": "/* PoP: _scan_all @ tools/skills_hub.py:_scan_all */"
           },
@@ -332587,7 +332587,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 386,
+            "line": 403,
             "is_consolidated": false,
             "full_text": "/* PoP: load @ tools/skills_hub.py:load */"
           },
@@ -332616,7 +332616,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 394,
+            "line": 411,
             "is_consolidated": false,
             "full_text": "/* PoP: save @ tools/skills_hub.py:save */"
           },
@@ -332790,7 +332790,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 386,
+            "line": 403,
             "is_consolidated": false,
             "full_text": "/* PoP: load @ tools/skills_hub.py:load */"
           },
@@ -332819,7 +332819,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 394,
+            "line": 411,
             "is_consolidated": false,
             "full_text": "/* PoP: save @ tools/skills_hub.py:save */"
           },
@@ -333283,7 +333283,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 402,
+            "line": 419,
             "is_consolidated": false,
             "full_text": "/* PoP: _ensure_loaded @ tools/skills_hub.py:_ensure_loaded */"
           },
@@ -333312,7 +333312,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 409,
+            "line": 426,
             "is_consolidated": false,
             "full_text": "/* PoP: _get_github @ tools/skills_hub.py:_get_github */"
           },
@@ -333517,7 +333517,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 416,
+            "line": 433,
             "is_consolidated": false,
             "full_text": "/* PoP: _find_entry @ tools/skills_hub.py:_find_entry */"
           },
@@ -333548,7 +333548,7 @@
             ],
             "c_file": "src/tools/port_skills_hub_remaining.c",
             "python_file": "tools/skills_hub.py",
-            "line": 424,
+            "line": 441,
             "is_consolidated": false,
             "full_text": "/* PoP: _to_meta @ tools/skills_hub.py:_to_meta */"
           },
