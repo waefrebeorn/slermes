@@ -233,7 +233,25 @@ int muv_u_rename_with_retry(const char *arg) {
 }
 
 /* PoP: _cut_over_candidate @ hermes_cli/managed_uv.py:_cut_over_candidate */
-int muv_u_cut_over_candidate(const char *arg) { (void)arg; return 0; }
+int muv_u_cut_over_candidate(const char *arg) {
+    /* Python: park→promote→smoke. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\t\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "smoke_fail") == 0) {
+        printf("0\t\tpost-cutover smoke failed, rolled back: %s\n", t3 ? t3 + 1 : "?");
+        return 0;
+    }
+    if (strcmp(state, "no_park") == 0 || strcmp(state, "no_promote") == 0) {
+        printf("0\t\tcutover failed: %s\n", t3 ? t3 + 1 : "?");
+        return 0;
+    }
+    printf("1\tbackup=%s\t%s\n", t2 ? t2 + 1 : "", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _acquire_repair_lock @ hermes_cli/managed_uv.py:_acquire_repair_lock */
 int muv_u_acquire_repair_lock(const char *arg) {

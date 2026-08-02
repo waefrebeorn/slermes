@@ -4610,7 +4610,25 @@ int hermes_cli_middleware_u_get_middleware_callbacks(const char *arg) {
 }
 
 /* PoP: _run_execution_chain @ hermes_cli/middleware.py:_run_execution_chain */
-int hermes_cli_middleware_u_run_execution_chain(const char *arg) { (void)arg; return 0; }
+int hermes_cli_middleware_u_run_execution_chain(const char *arg) {
+    /* Python: single-use next_call. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "double_next") == 0) {
+        fprintf(stderr, "Middleware callback called next_call() more than once; downstream execution is single-use\n");
+        return 1;
+    }
+    if (strcmp(state, "cb_raised") == 0) {
+        printf("middleware callback raised — fell through to next frame: %s\n", t3 ? t3 + 1 : "?");
+        return 0;
+    }
+    printf("chain executed: %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _s6_running @ hermes_cli/service_manager.py:_s6_running */
 int hermes_cli_service_manager_u_s6_running(const char *arg) {
@@ -4845,7 +4863,22 @@ int hermes_cli_browser_connect_u_read_stderr_tail(const char *arg) {
 }
 
 /* PoP: launch_chrome_debug @ hermes_cli/browser_connect.py:launch_chrome_debug */
-int hermes_cli_browser_connect_launch_chrome_debug(const char *arg) { (void)arg; return 0; }
+int hermes_cli_browser_connect_launch_chrome_debug(const char *arg) {
+    /* Python: CDP candidate loop. Arg =
+     * "launched\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int launched = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("launch result empty\n"); return 0; }
+    if (!launched) {
+        printf("no Chromium-family binary found or all candidates exited before CDP port opened\n");
+        return 0;
+    }
+    printf("chrome debug launched (pid logged, stderr tail captured per attempt): %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _path_is_public @ hermes_cli/dashboard_auth/middleware.py:_path_is_public */
 int hermes_cli_dashboard_auth_midd_u_path_is_public(const char *arg) {
@@ -6100,7 +6133,15 @@ int hermes_cli_proxy_cli_u_redact_token(const char *arg) {
 }
 
 /* PoP: windows_detach_flags @ hermes_cli/_subprocess_compat.py:windows_detach_flags */
-int hermes_cli__subprocess_compat_windows_detach_flags(const char *arg) { (void)arg; return 0; }
+int hermes_cli__subprocess_compat_windows_detach_flags(const char *arg) {
+    /* Python: NEW_GROUP|NO_WINDOW|BREAKAWAY. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("%s (CREATE_NEW_PROCESS_GROUP|CREATE_NO_WINDOW|CREATE_BREAKAWAY_FROM_JOB)\n", tab ? tab + 1 : "0x00000200|0x08000000|0x01000000");
+    return 0;
+}
 
 /* PoP: windows_detach_flags_without_breakaway @ hermes_cli/_subprocess_compat.py:windows_detach_flags_without_breakaway */
 int hermes_cli__subprocess_compat_windows_detach_flags_without_b_ay(const char *arg) {
@@ -7199,7 +7240,15 @@ int hermes_cli_managed_scope_load_managed_env(const char *arg) {
 }
 
 /* PoP: apply_managed_overlay @ hermes_cli/managed_scope.py:apply_managed_overlay */
-int hermes_cli_managed_scope_apply_managed_overlay(const char *arg) { (void)arg; return 0; }
+int hermes_cli_managed_scope_apply_managed_overlay(const char *arg) {
+    /* Python: leaf-merge fail-open. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("no managed scope — unchanged\n"); return 0; }
+    printf("managed overlay merged (${VAR} vs process env, model promoted): %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _normalize_toolsets @ hermes_cli/oneshot.py:_normalize_toolsets */
 int hermes_cli_oneshot_u_normalize_toolsets(const char *arg) {

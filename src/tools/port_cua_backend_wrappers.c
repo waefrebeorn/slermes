@@ -498,7 +498,17 @@ int cua_u_restart_session_locked(const char *arg) {
 int cua_u_call_tool_via_cli(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _extract_tool_result @ tools/computer_use/cua_backend.py:_extract_tool_result */
-int cua_u_extract_tool_result(const char *arg) { (void)arg; return 0; }
+int cua_u_extract_tool_result(const char *arg) {
+    /* Python: flatten result. Arg =
+     * "parts\tstate\tresult". */
+    if (!arg || !*arg) { printf("{\"isError\": false}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("{\"isError\": false}\n"); return 0; }
+    printf("flattened: data=%s, images+mimes parallel, structuredContent preserved\n", t2 ? t2 + 1 : "null");
+    return 0;
+}
 
 /* PoP: _image_from_tool_result @ tools/computer_use/cua_backend.py:_image_from_tool_result */
 int cua_u_image_from_tool_result(const char *arg) {

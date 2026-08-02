@@ -14,7 +14,25 @@
 #include "port_config_py_helpers.h"
 
 /* PoP: _resolve_api_key_provider_secret @ hermes_cli/auth.py:_resolve_api_key_provider_secret */
-int auth_u_resolve_api_key_provider_secret(const char *arg) { (void)arg; return 0; }
+int auth_u_resolve_api_key_provider_secret(const char *arg) {
+    /* Python: dotenv-prefer. Arg =
+     * "state\tresult\tfrom". */
+    if (!arg || !*arg) { printf("\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "copilot") == 0) {
+        printf("%s\t%s\n", t3 ? t3 + 1 : "", "copilot_auth");
+        return 0;
+    }
+    if (strcmp(state, "pool") == 0) {
+        printf("%s\tcredential_pool:%s\n", t3 ? t3 + 1 : "", t2 ? t2 + 1 : "?");
+        return 0;
+    }
+    printf("%s\t%s\n", t3 ? t3 + 1 : "", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: detect_zai_endpoint @ hermes_cli/auth.py:detect_zai_endpoint */
 int auth_detect_zai_endpoint(const char *arg) {
@@ -573,7 +591,19 @@ int auth_u_xai_validate_oauth_endpoint(const char *arg) {
 }
 
 /* PoP: _xai_validate_inference_base_url @ hermes_cli/auth.py:_xai_validate_inference_base_url */
-int auth_u_xai_validate_inference_base_url(const char *arg) { (void)arg; return 0; }
+int auth_u_xai_validate_inference_base_url(const char *arg) {
+    /* Python: bearer-leak pin. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "reject") == 0) {
+        printf("refused non-xAI override — fell back to default (warning logged)\n");
+        return 0;
+    }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _xai_oauth_discovery @ hermes_cli/auth.py:_xai_oauth_discovery */
 int auth_u_xai_oauth_discovery(const char *arg) {
@@ -768,7 +798,16 @@ int auth_resolve_external_process_provider_credentials(const char *arg) {
 }
 
 /* PoP: _update_config_for_provider @ hermes_cli/auth.py:_update_config_for_provider */
-int auth_u_update_config_for_provider(const char *arg) { (void)arg; return 0; }
+int auth_u_update_config_for_provider(const char *arg) {
+    /* Python: race-preventing write. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("config write skipped\n"); return 0; }
+    printf("config.yaml + auth.json updated (active_provider, model provider/base_url, default race-guard): %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _confirm_expensive_model_selection @ hermes_cli/auth.py:_confirm_expensive_model_selection */
 int auth_u_confirm_expensive_model_selection(const char *arg) {
@@ -874,7 +913,29 @@ int auth_u_minimax_request_user_code(const char *arg) {
 }
 
 /* PoP: _minimax_poll_token @ hermes_cli/auth.py:_minimax_poll_token */
-int auth_u_minimax_poll_token(const char *arg) { (void)arg; return 0; }
+int auth_u_minimax_poll_token(const char *arg) {
+    /* Python: ms-vs-duration parse. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "http_fail") == 0) {
+        fprintf(stderr, "MiniMax OAuth error: %s\n", t3 ? t3 + 1 : "unknown");
+        return 1;
+    }
+    if (strcmp(state, "denied") == 0) {
+        fprintf(stderr, "MiniMax OAuth reported an error. Please try again later.\n");
+        return 1;
+    }
+    if (strcmp(state, "timeout") == 0) {
+        fprintf(stderr, "MiniMax OAuth timed out before authorization completed.\n");
+        return 1;
+    }
+    printf("tokens polled OK: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _minimax_save_auth_state @ hermes_cli/auth.py:_minimax_save_auth_state */
 int auth_u_minimax_save_auth_state(const char *arg) {

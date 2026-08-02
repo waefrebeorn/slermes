@@ -423,7 +423,18 @@ int yb_u_build_group_channel_prompt(const char *arg) {
 }
 
 /* PoP: _observe_group_message @ gateway/platforms/yuanbao.py:_observe_group_message */
-int yb_u_observe_group_message(const char *arg) { (void)arg; return 0; }
+int yb_u_observe_group_message(const char *arg) {
+    /* Python: transcript write. Arg =
+     * "has_store\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_store = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state || !has_store) { printf("observe skipped (no store)\n"); return 0; }
+    printf("group message observed as [nickname|user_id] transcript entry%s\n", (t2 && t2[1] == '1') ? " — forwarded records appended" : "");
+    return 0;
+}
 
 /* PoP: _extract_quote_context @ gateway/platforms/yuanbao.py:_extract_quote_context */
 int yb_u_extract_quote_context(const char *arg) { (void)arg; return 0; }

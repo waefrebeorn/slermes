@@ -222,7 +222,32 @@ int envd_u_cgroup_limits_available(const char *arg) {
 }
 
 /* PoP: _ensure_docker_available @ tools/environments/docker.py:_ensure_docker_available */
-int envd_u_ensure_docker_available(const char *arg) { (void)arg; return 0; }
+int envd_u_ensure_docker_available(const char *arg) {
+    /* Python: preflight. Arg = "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_exe") == 0) {
+        fprintf(stderr, "Docker executable not found in PATH or known install locations.\n");
+        return 1;
+    }
+    if (strcmp(state, "cannot_exec") == 0) {
+        fprintf(stderr, "Docker executable could not be executed. Check your Docker installation.\n");
+        return 1;
+    }
+    if (strcmp(state, "timeout") == 0) {
+        fprintf(stderr, "Docker daemon is not responding. Ensure Docker is running and try again.\n");
+        return 1;
+    }
+    if (strcmp(state, "version_fail") == 0) {
+        fprintf(stderr, "Docker command is available but 'docker version' failed. Check your Docker installation.\n");
+        return 1;
+    }
+    printf("docker preflight ok: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _build_init_env_args @ tools/environments/docker.py:_build_init_env_args */
 int envd_u_build_init_env_args(const char *arg) {

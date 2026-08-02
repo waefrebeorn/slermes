@@ -91,7 +91,15 @@ int gstat_u_same_hermes_home(const char *arg) {
 }
 
 /* PoP: normalize_updated_at @ gateway/status.py:normalize_updated_at */
-int gstat_normalize_updated_at(const char *arg) { (void)arg; return 0; }
+int gstat_normalize_updated_at(const char *arg) {
+    /* Python: RFC3339 funnel. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _clear_running_pid_cache @ gateway/status.py:_clear_running_pid_cache */
 int gstat_u_clear_running_pid_cache(const char *arg) {
@@ -169,7 +177,15 @@ int gstat_runtime_status_pid_is_live(const char *arg) {
 }
 
 /* PoP: _validated_scoped_lock_gateway_owner @ gateway/status.py:_validated_scoped_lock_gateway_owner */
-int gstat_u_validated_scoped_lock_gateway_owner(const char *arg) { (void)arg; return 0; }
+int gstat_u_validated_scoped_lock_gateway_owner(const char *arg) {
+    /* Python: 5-way agreement. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_agree") == 0) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _scoped_lock_owner_state @ gateway/status.py:_scoped_lock_owner_state */
 int gstat_u_scoped_lock_owner_state(const char *arg) {

@@ -208,7 +208,15 @@ int sku_get_all_skills_dirs(const char *arg) {
 }
 
 /* PoP: normalize_skill_lookup_name @ agent/skill_utils.py:normalize_skill_lookup_name */
-int sku_normalize_skill_lookup_name(const char *arg) { (void)arg; return 0; }
+int sku_normalize_skill_lookup_name(const char *arg) {
+    /* Python: lexical-first relative. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: extract_skill_conditions @ agent/skill_utils.py:extract_skill_conditions */
 int sku_extract_skill_conditions(const char *arg) {

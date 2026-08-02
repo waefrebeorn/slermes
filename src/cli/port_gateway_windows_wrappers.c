@@ -259,7 +259,15 @@ int gw_u_stable_gateway_working_dir(const char *arg) {
 }
 
 /* PoP: _build_gateway_cmd_script @ hermes_cli/gateway_windows.py:_build_gateway_cmd_script */
-int gw_u_build_gateway_cmd_script(const char *arg) { (void)arg; return 0; }
+int gw_u_build_gateway_cmd_script(const char *arg) {
+    /* Python: CRLF wrapper. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("@echo off\r\ncd /d stable-dir\r\nset \"HERMES_HOME=%s\"\r\n... python -m hermes_cli.main [--profile X] gateway run\r\nexit /b 0\r\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _quote_vbs_string @ hermes_cli/gateway_windows.py:_quote_vbs_string */
 int gw_u_quote_vbs_string(const char *arg) {

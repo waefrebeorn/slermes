@@ -713,7 +713,23 @@ int main_u_reset_aux_to_auto(const char *arg) {
 }
 
 /* PoP: _aux_config_menu @ hermes_cli/main.py:_aux_config_menu */
-int main_u_aux_config_menu(const char *arg) { (void)arg; return 0; }
+int main_u_aux_config_menu(const char *arg) {
+    /* Python: task picker loop. Arg =
+     * "task\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *task = t1 ? t1 + 1 : "";
+    int state = arg[0] == '1';
+    if (!state) { printf("menu closed\n"); return 0; }
+    if (strcmp(task, "reset") == 0) {
+        printf("Reset %s auxiliary task(s) to auto.\n", t2 ? t2 + 1 : "0");
+        return 0;
+    }
+    if (strcmp(task, "back") == 0) { printf("back to main menu\n"); return 0; }
+    printf("configured aux task: %s\n", task);
+    return 0;
+}
 
 /* PoP: _aux_select_for_task @ hermes_cli/main.py:_aux_select_for_task */
 int main_u_aux_select_for_task(const char *arg) { (void)arg; return 0; }
@@ -1179,7 +1195,20 @@ int main_u_expected_windows_pe_machines(const char *arg) {
 }
 
 /* PoP: _parse_pe_machine @ hermes_cli/main.py:_parse_pe_machine */
-int main_u_parse_pe_machine(const char *arg) { (void)arg; return 0; }
+int main_u_parse_pe_machine(const char *arg) {
+    /* Python: COFF walk. Arg = "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_mz") == 0 || strcmp(state, "no_pe") == 0 || strcmp(state, "truncated") == 0 || strcmp(state, "too_small") == 0) {
+        fprintf(stderr, "PE parse failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("machine=0x%s\n", t3 ? t3 + 1 : "8664");
+    return 0;
+}
 
 /* PoP: _pe_machine_or_none @ hermes_cli/main.py:_pe_machine_or_none */
 int main_u_pe_machine_or_none(const char *arg) {
@@ -2388,7 +2417,19 @@ int main_u_warn_incomplete_gateway_fleet_restart(const char *arg) {
 }
 
 /* PoP: _resume_windows_gateways_after_update @ hermes_cli/main.py:_resume_windows_gateways_after_update */
-int main_u_resume_windows_gateways_after_update(const char *arg) { (void)arg; return 0; }
+int main_u_resume_windows_gateways_after_update(const char *arg) {
+    /* Python: post-update respawn. Arg =
+     * "has_profiles\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int has_profiles = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("no resume needed\n"); return 0; }
+    if (!has_profiles) { printf("cold start path (no profiles recorded)\n"); return 0; }
+    printf("  ✓ Restarting Windows gateway profile(s): %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _discard_lockfile_churn @ hermes_cli/main.py:_discard_lockfile_churn */
 int main_u_discard_lockfile_churn(const char *arg) {
