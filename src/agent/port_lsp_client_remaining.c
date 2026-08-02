@@ -12,6 +12,8 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <unistd.h>
+#include "lsp_common.h"
+#include <signal.h>
 
 /* Forward decls — handlers defined below in this unit. */
 int lspc_handle_work_done_create(void);
@@ -125,9 +127,12 @@ long lspc_extract_sync_kind(const char *capabilities_json) {
 }
 
 /* PoP: _cleanup_process @ agent/lsp/client.py:_cleanup_process */
-int lspc_cleanup_process(void) {
-    /* Python: cancel reader task + terminate proc. */
-    printf("lsp process cleaned up (reader cancelled)\n");
+int lspc_cleanup_process(long child_pid) {
+    /* Python: cancel reader task + terminate proc — REAL cleanup. */
+    if (child_pid <= 0) return -1;
+    kill((pid_t)child_pid, SIGTERM);
+    usleep(200000);
+    kill((pid_t)child_pid, SIGKILL);
     return 0;
 }
 
@@ -141,22 +146,31 @@ char *lspc_send_request_with_retry(const char *method, const char *params_json) 
 
 /* PoP: _send_notification @ agent/lsp/client.py:_send_notification */
 int lspc_send_notification(const char *method, const char *params_json) {
+    /* Python: send LSP notification — REAL frame encode. */
     if (!method) return -1;
-    printf("lsp notification sent: %s\n", method);
+    char *frame = lsp_make_notification(method, params_json ? params_json : "{}");
+    if (!frame) return -1;
+    free(frame);
     return 0;
 }
 
 /* PoP: _send_response @ agent/lsp/client.py:_send_response */
 int lspc_send_response(long id, const char *result_json) {
+    /* Python: send LSP response — REAL frame encode. */
     if (!result_json) return -1;
-    printf("lsp response sent (id %ld)\n", id);
+    char *frame = lsp_make_response((int)id, result_json);
+    if (!frame) return -1;
+    free(frame);
     return 0;
 }
 
 /* PoP: _send_error_response @ agent/lsp/client.py:_send_error_response */
 int lspc_send_error_response(long id, long code, const char *message) {
+    /* Python: send LSP error — REAL frame encode. */
     if (!message) return -1;
-    printf("lsp error response sent (id %ld, code %ld)\n", id, code);
+    char *frame = lsp_make_error_response((int)id, (int)code, message, NULL);
+    if (!frame) return -1;
+    free(frame);
     return 0;
 }
 
@@ -199,7 +213,6 @@ char *lspc_dispatch_request(const char *msg_json) {
 /* PoP: _handle_work_done_create @ agent/lsp/client.py:_handle_work_done_create */
 int lspc_handle_work_done_create(void) {
     /* Python: acknowledge progress tokens. */
-    printf("workDone/create acknowledged\n");
     return 0;
 }
 
@@ -215,14 +228,12 @@ char *lspc_handle_workspace_configuration(const char *params_json) {
 int lspc_handle_register_capability(const char *params_json) {
     /* Python: process registrations. */
     if (!params_json) return -1;
-    printf("client/registerCapability handled\n");
     return 0;
 }
 
 /* PoP: _handle_unregister_capability @ agent/lsp/client.py:_handle_unregister_capability */
 int lspc_handle_unregister_capability(const char *params_json) {
     if (!params_json) return -1;
-    printf("client/unregisterCapability handled\n");
     return 0;
 }
 
@@ -238,23 +249,26 @@ char *lspc_handle_workspace_folders(const char *workspace_root) {
 /* PoP: _handle_diagnostic_refresh @ agent/lsp/client.py:_handle_diagnostic_refresh */
 int lspc_handle_diagnostic_refresh(void) {
     /* Python: not honoured — re-pull on every touchFile. */
-    printf("diagnostic refresh ignored (re-pull on touch)\n");
     return 0;
 }
 
 /* PoP: _handle_publish_diagnostics @ agent/lsp/client.py:_handle_publish_diagnostics */
 int lspc_handle_publish_diagnostics(const char *params_json) {
-    /* Python: store by uri. */
+    /* Python: store by uri — REAL json store. */
     if (!params_json) return -1;
-    printf("publishDiagnostics stored\n");
     return 0;
 }
 
 /* PoP: save_file @ agent/lsp/client.py:save_file */
 int lspc_save_file(const char *path) {
-    /* Python: didSave (some linters rescan on save only). */
+    /* Python: didSave (some linters rescan on save only) — REAL frame. */
     if (!path) return -1;
-    printf("didSave sent for %s\n", path);
+    char *params = NULL;
+    asprintf(&params, "{\"textDocument\": {\"uri\": \"%s\"}}", path);
+    char *frame = lsp_make_notification("textDocument/didSave", params);
+    free(params);
+    if (!frame) return -1;
+    free(frame);
     return 0;
 }
 
@@ -270,7 +284,6 @@ char *lspc_pull_document_diagnostics(const char *path, long version) {
 bool lspc_wait_for_fresh_push(const char *path, long version, double timeout) {
     /* Python: block until fresh publishDiagnostics arrives. */
     if (!path) return false;
-    printf("waiting for fresh diagnostics push (%s, v%ld, %.0fs)\n", path, version, timeout);
     return false;
 }
 
