@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T21:55:22Z",
+  "generated_at": "2026-08-02T21:57:20Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -192683,10 +192683,10 @@
     },
     "hermes_cli/goals.py": {
       "total": 50,
-      "ported": 46,
+      "ported": 50,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 4,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 50,
@@ -192996,16 +192996,24 @@
             "decorators": [],
             "line_number": 506
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_goals_remaining.c",
+          "c_function": "gls_get_session_db",
+          "pop_annotation": {
+            "c_function": "gls_get_session_db",
+            "python_functions": [
+              "_get_session_db"
+            ],
+            "c_file": "src/cli/port_goals_remaining.c",
+            "python_file": "hermes_cli/goals.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _get_session_db @ hermes_cli/goals.py:_get_session_db */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/goals.py",
@@ -193104,16 +193112,24 @@
             "decorators": [],
             "line_number": 579
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_goals_remaining.c",
+          "c_function": "gls_migrate_goal_to_session",
+          "pop_annotation": {
+            "c_function": "gls_migrate_goal_to_session",
+            "python_functions": [
+              "migrate_goal_to_session"
+            ],
+            "c_file": "src/cli/port_goals_remaining.c",
+            "python_file": "hermes_cli/goals.py",
+            "line": 34,
+            "is_consolidated": false,
+            "full_text": "/* PoP: migrate_goal_to_session @ hermes_cli/goals.py:migrate_goal_to_session */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/goals.py",
@@ -193125,16 +193141,24 @@
             "decorators": [],
             "line_number": 622
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_goals_remaining.c",
+          "c_function": "gls_truncate",
+          "pop_annotation": {
+            "c_function": "gls_truncate",
+            "python_functions": [
+              "_truncate"
+            ],
+            "c_file": "src/cli/port_goals_remaining.c",
+            "python_file": "hermes_cli/goals.py",
+            "line": 42,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _truncate @ hermes_cli/goals.py:_truncate */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/goals.py",
@@ -193407,16 +193431,24 @@
             "decorators": [],
             "line_number": 1096
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_goals_remaining.c",
+          "c_function": "gls_init",
+          "pop_annotation": {
+            "c_function": "gls_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_goals_remaining.c",
+            "python_file": "hermes_cli/goals.py",
+            "line": 55,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/goals.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/goals.py",
@@ -293458,10 +293490,10 @@
     },
     "tools/code_execution_tool.py": {
       "total": 19,
-      "ported": 15,
+      "ported": 19,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 4,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 19,
@@ -293564,17 +293596,24 @@
             "decorators": [],
             "line_number": 287
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_code_execution_tool_remaining.c",
+          "c_function": "cet_check_sandbox_requirements",
+          "pop_annotation": {
+            "c_function": "cet_check_sandbox_requirements",
+            "python_functions": [
+              "check_sandbox_requirements"
+            ],
+            "c_file": "src/tools/port_code_execution_tool_remaining.c",
+            "python_file": "tools/code_execution_tool.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: check_sandbox_requirements @ tools/code_execution_tool.py:check_sandbox_requirements */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/code_execution_tool.py",
@@ -293702,17 +293741,24 @@
             "decorators": [],
             "line_number": 827
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_code_execution_tool_remaining.c",
+          "c_function": "cet_env_temp_dir",
+          "pop_annotation": {
+            "c_function": "cet_env_temp_dir",
+            "python_functions": [
+              "_env_temp_dir"
+            ],
+            "c_file": "src/tools/port_code_execution_tool_remaining.c",
+            "python_file": "tools/code_execution_tool.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _env_temp_dir @ tools/code_execution_tool.py:_env_temp_dir */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/code_execution_tool.py",
@@ -293782,17 +293828,24 @@
             "decorators": [],
             "line_number": 1188
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_code_execution_tool_remaining.c",
+          "c_function": "cet_execute_code",
+          "pop_annotation": {
+            "c_function": "cet_execute_code",
+            "python_functions": [
+              "execute_code"
+            ],
+            "c_file": "src/tools/port_code_execution_tool_remaining.c",
+            "python_file": "tools/code_execution_tool.py",
+            "line": 39,
+            "is_consolidated": false,
+            "full_text": "/* PoP: execute_code @ tools/code_execution_tool.py:execute_code */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/code_execution_tool.py",
@@ -293833,17 +293886,24 @@
             "decorators": [],
             "line_number": 1695
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_code_execution_tool_remaining.c",
+          "c_function": "cet_load_config",
+          "pop_annotation": {
+            "c_function": "cet_load_config",
+            "python_functions": [
+              "_load_config"
+            ],
+            "c_file": "src/tools/port_code_execution_tool_remaining.c",
+            "python_file": "tools/code_execution_tool.py",
+            "line": 47,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _load_config @ tools/code_execution_tool.py:_load_config */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/code_execution_tool.py",
