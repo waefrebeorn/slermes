@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T23:23:15Z",
+  "generated_at": "2026-08-02T23:25:58Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -55231,10 +55231,10 @@
     },
     "agent/proxy_sources/iron_proxy.py": {
       "total": 49,
-      "ported": 41,
+      "ported": 48,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 8,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 49,
@@ -55262,7 +55262,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 31,
+            "line": 32,
             "is_consolidated": false,
             "full_text": "/* PoP: installed @ agent/proxy_sources/iron_proxy.py:installed */"
           },
@@ -55293,7 +55293,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 37,
+            "line": 38,
             "is_consolidated": false,
             "full_text": "/* PoP: configured @ agent/proxy_sources/iron_proxy.py:configured */"
           },
@@ -55467,7 +55467,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 45,
+            "line": 46,
             "is_consolidated": false,
             "full_text": "/* PoP: find_iron_proxy @ agent/proxy_sources/iron_proxy.py:find_iron_proxy */"
           },
@@ -55496,7 +55496,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 68,
+            "line": 69,
             "is_consolidated": false,
             "full_text": "/* PoP: install_iron_proxy @ agent/proxy_sources/iron_proxy.py:install_iron_proxy */"
           },
@@ -55525,7 +55525,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 77,
+            "line": 78,
             "is_consolidated": false,
             "full_text": "/* PoP: _http_download @ agent/proxy_sources/iron_proxy.py:_http_download */"
           },
@@ -55544,7 +55544,7 @@
             "decorators": [],
             "line_number": 559
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_iron_proxy_remaining.c",
           "c_function": "ipx_verify_checksums_signature",
           "pop_annotation": {
@@ -55554,16 +55554,14 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 91,
+            "line": 92,
             "is_consolidated": false,
             "full_text": "/* PoP: _verify_checksums_signature @ agent/proxy_sources/iron_proxy.py:_verify_checksums_signature */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -55701,7 +55699,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 99,
+            "line": 102,
             "is_consolidated": false,
             "full_text": "/* PoP: ensure_ca_cert @ agent/proxy_sources/iron_proxy.py:ensure_ca_cert */"
           },
@@ -55730,7 +55728,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 109,
+            "line": 112,
             "is_consolidated": false,
             "full_text": "/* PoP: mint_proxy_token @ agent/proxy_sources/iron_proxy.py:mint_proxy_token */"
           },
@@ -55788,7 +55786,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 117,
+            "line": 120,
             "is_consolidated": false,
             "full_text": "/* PoP: ensure_management_token @ agent/proxy_sources/iron_proxy.py:ensure_management_token */"
           },
@@ -55817,7 +55815,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 140,
+            "line": 143,
             "is_consolidated": false,
             "full_text": "/* PoP: _read_management_token @ agent/proxy_sources/iron_proxy.py:_read_management_token */"
           },
@@ -55846,7 +55844,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 160,
+            "line": 163,
             "is_consolidated": false,
             "full_text": "/* PoP: _read_management_listen_from_config @ agent/proxy_sources/iron_proxy.py:_read_management_listen_from_config */"
           },
@@ -55865,7 +55863,7 @@
             "decorators": [],
             "line_number": 915
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_iron_proxy_remaining.c",
           "c_function": "ipx_reload_proxy",
           "pop_annotation": {
@@ -55875,16 +55873,14 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 168,
+            "line": 171,
             "is_consolidated": false,
             "full_text": "/* PoP: reload_proxy @ agent/proxy_sources/iron_proxy.py:reload_proxy */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -55906,7 +55902,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 176,
+            "line": 189,
             "is_consolidated": false,
             "full_text": "/* PoP: _default_http_listen @ agent/proxy_sources/iron_proxy.py:_default_http_listen */"
           },
@@ -55935,7 +55931,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 182,
+            "line": 195,
             "is_consolidated": false,
             "full_text": "/* PoP: _detect_docker_bridge_ip @ agent/proxy_sources/iron_proxy.py:_detect_docker_bridge_ip */"
           },
@@ -55964,7 +55960,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 189,
+            "line": 202,
             "is_consolidated": false,
             "full_text": "/* PoP: build_proxy_config @ agent/proxy_sources/iron_proxy.py:build_proxy_config */"
           },
@@ -55983,7 +55979,7 @@
             "decorators": [],
             "line_number": 1321
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_iron_proxy_remaining.c",
           "c_function": "ipx_ensure_audit_log",
           "pop_annotation": {
@@ -55993,16 +55989,14 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 197,
+            "line": 210,
             "is_consolidated": false,
             "full_text": "/* PoP: ensure_audit_log @ agent/proxy_sources/iron_proxy.py:ensure_audit_log */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -56014,7 +56008,7 @@
             "decorators": [],
             "line_number": 1359
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_iron_proxy_remaining.c",
           "c_function": "ipx_write_proxy_config",
           "pop_annotation": {
@@ -56024,16 +56018,14 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 205,
+            "line": 223,
             "is_consolidated": false,
             "full_text": "/* PoP: write_proxy_config @ agent/proxy_sources/iron_proxy.py:write_proxy_config */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -56045,7 +56037,7 @@
             "decorators": [],
             "line_number": 1388
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_iron_proxy_remaining.c",
           "c_function": "ipx_write_mappings",
           "pop_annotation": {
@@ -56055,16 +56047,14 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 213,
+            "line": 237,
             "is_consolidated": false,
             "full_text": "/* PoP: write_mappings @ agent/proxy_sources/iron_proxy.py:write_mappings */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -56086,7 +56076,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 221,
+            "line": 251,
             "is_consolidated": false,
             "full_text": "/* PoP: load_mappings @ agent/proxy_sources/iron_proxy.py:load_mappings */"
           },
@@ -56115,7 +56105,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 229,
+            "line": 259,
             "is_consolidated": false,
             "full_text": "/* PoP: discover_provider_mappings @ agent/proxy_sources/iron_proxy.py:discover_provider_mappings */"
           },
@@ -56144,7 +56134,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 236,
+            "line": 266,
             "is_consolidated": false,
             "full_text": "/* PoP: discover_uncovered_providers @ agent/proxy_sources/iron_proxy.py:discover_uncovered_providers */"
           },
@@ -56173,7 +56163,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 243,
+            "line": 273,
             "is_consolidated": false,
             "full_text": "/* PoP: merge_mappings @ agent/proxy_sources/iron_proxy.py:merge_mappings */"
           },
@@ -56202,7 +56192,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 251,
+            "line": 281,
             "is_consolidated": false,
             "full_text": "/* PoP: _pidfile @ agent/proxy_sources/iron_proxy.py:_pidfile */"
           },
@@ -56231,7 +56221,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 258,
+            "line": 288,
             "is_consolidated": false,
             "full_text": "/* PoP: _read_pid @ agent/proxy_sources/iron_proxy.py:_read_pid */"
           },
@@ -56260,7 +56250,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 275,
+            "line": 305,
             "is_consolidated": false,
             "full_text": "/* PoP: _pid_proc_starttime @ agent/proxy_sources/iron_proxy.py:_pid_proc_starttime */"
           },
@@ -56289,7 +56279,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 320,
+            "line": 350,
             "is_consolidated": false,
             "full_text": "/* PoP: _persisted_nonce_path @ agent/proxy_sources/iron_proxy.py:_persisted_nonce_path */"
           },
@@ -56318,7 +56308,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 327,
+            "line": 357,
             "is_consolidated": false,
             "full_text": "/* PoP: _read_persisted_nonce @ agent/proxy_sources/iron_proxy.py:_read_persisted_nonce */"
           },
@@ -56376,7 +56366,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 347,
+            "line": 377,
             "is_consolidated": false,
             "full_text": "/* PoP: start_proxy @ agent/proxy_sources/iron_proxy.py:start_proxy */"
           },
@@ -56395,7 +56385,7 @@
             "decorators": [],
             "line_number": 2003
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_iron_proxy_remaining.c",
           "c_function": "ipx_write_pidfile_safely",
           "pop_annotation": {
@@ -56405,16 +56395,14 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 355,
+            "line": 385,
             "is_consolidated": false,
             "full_text": "/* PoP: _write_pidfile_safely @ agent/proxy_sources/iron_proxy.py:_write_pidfile_safely */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -56436,7 +56424,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 363,
+            "line": 396,
             "is_consolidated": false,
             "full_text": "/* PoP: _kill_and_wait @ agent/proxy_sources/iron_proxy.py:_kill_and_wait */"
           },
@@ -56465,7 +56453,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 373,
+            "line": 410,
             "is_consolidated": false,
             "full_text": "/* PoP: _build_proxy_subprocess_env @ agent/proxy_sources/iron_proxy.py:_build_proxy_subprocess_env */"
           },
@@ -56494,7 +56482,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 381,
+            "line": 418,
             "is_consolidated": false,
             "full_text": "/* PoP: stop_proxy @ agent/proxy_sources/iron_proxy.py:stop_proxy */"
           },
@@ -56523,7 +56511,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 392,
+            "line": 429,
             "is_consolidated": false,
             "full_text": "/* PoP: get_status @ agent/proxy_sources/iron_proxy.py:get_status */"
           },
@@ -56542,7 +56530,7 @@
             "decorators": [],
             "line_number": 2379
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_iron_proxy_remaining.c",
           "c_function": "ipx_read_tunnel_port_from_config",
           "pop_annotation": {
@@ -56552,16 +56540,14 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 400,
+            "line": 437,
             "is_consolidated": false,
             "full_text": "/* PoP: _read_tunnel_port_from_config @ agent/proxy_sources/iron_proxy.py:_read_tunnel_port_from_config */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/proxy_sources/iron_proxy.py",
@@ -56583,7 +56569,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 408,
+            "line": 461,
             "is_consolidated": false,
             "full_text": "/* PoP: _read_http_listen_from_config @ agent/proxy_sources/iron_proxy.py:_read_http_listen_from_config */"
           },
@@ -56612,7 +56598,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 416,
+            "line": 469,
             "is_consolidated": false,
             "full_text": "/* PoP: _port_listening @ agent/proxy_sources/iron_proxy.py:_port_listening */"
           },
@@ -56641,7 +56627,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 438,
+            "line": 491,
             "is_consolidated": false,
             "full_text": "/* PoP: _tail_log @ agent/proxy_sources/iron_proxy.py:_tail_log */"
           },
@@ -56670,7 +56656,7 @@
             ],
             "c_file": "src/agent/port_iron_proxy_remaining.c",
             "python_file": "agent/proxy_sources/iron_proxy.py",
-            "line": 457,
+            "line": 510,
             "is_consolidated": false,
             "full_text": "/* PoP: _reset_for_tests @ agent/proxy_sources/iron_proxy.py:_reset_for_tests */"
           },
@@ -246680,10 +246666,10 @@
     },
     "hermes_cli/setup.py": {
       "total": 56,
-      "ported": 48,
+      "ported": 51,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 8,
+      "real_gaps": 5,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 56,
@@ -246825,7 +246811,7 @@
             ],
             "c_file": "src/cli/port_setup_remaining.c",
             "python_file": "hermes_cli/setup.py",
-            "line": 44,
+            "line": 42,
             "is_consolidated": false,
             "full_text": "/* PoP: _current_reasoning_effort @ hermes_cli/setup.py:_current_reasoning_effort */"
           },
@@ -246883,7 +246869,7 @@
             ],
             "c_file": "src/cli/port_setup_remaining.c",
             "python_file": "hermes_cli/setup.py",
-            "line": 59,
+            "line": 57,
             "is_consolidated": false,
             "full_text": "/* PoP: print_header @ hermes_cli/setup.py:print_header */"
           },
@@ -246912,7 +246898,7 @@
             ],
             "c_file": "src/cli/port_setup_remaining.c",
             "python_file": "hermes_cli/setup.py",
-            "line": 67,
+            "line": 65,
             "is_consolidated": false,
             "full_text": "/* PoP: is_interactive_stdin @ hermes_cli/setup.py:is_interactive_stdin */"
           },
@@ -246941,7 +246927,7 @@
             ],
             "c_file": "src/cli/port_setup_remaining.c",
             "python_file": "hermes_cli/setup.py",
-            "line": 73,
+            "line": 71,
             "is_consolidated": false,
             "full_text": "/* PoP: print_noninteractive_setup_guidance @ hermes_cli/setup.py:print_noninteractive_setup_guidance */"
           },
@@ -246972,7 +246958,7 @@
             ],
             "c_file": "src/cli/port_setup_remaining.c",
             "python_file": "hermes_cli/setup.py",
-            "line": 79,
+            "line": 78,
             "is_consolidated": false,
             "full_text": "/* PoP: prompt @ hermes_cli/setup.py:prompt */"
           },
@@ -247001,7 +246987,7 @@
             ],
             "c_file": "src/cli/port_setup_remaining.c",
             "python_file": "hermes_cli/setup.py",
-            "line": 95,
+            "line": 94,
             "is_consolidated": false,
             "full_text": "/* PoP: _sanitize_pasted_input @ hermes_cli/setup.py:_sanitize_pasted_input */"
           },
@@ -247059,7 +247045,7 @@
             ],
             "c_file": "src/cli/port_setup_remaining.c",
             "python_file": "hermes_cli/setup.py",
-            "line": 108,
+            "line": 107,
             "is_consolidated": false,
             "full_text": "/* PoP: prompt_choice @ hermes_cli/setup.py:prompt_choice */"
           },
@@ -247119,7 +247105,7 @@
             ],
             "c_file": "src/cli/port_setup_remaining.c",
             "python_file": "hermes_cli/setup.py",
-            "line": 116,
+            "line": 115,
             "is_consolidated": false,
             "full_text": "/* PoP: prompt_yes_no @ hermes_cli/setup.py:prompt_yes_no */"
           },
@@ -247148,7 +247134,7 @@
             ],
             "c_file": "src/cli/port_setup_remaining.c",
             "python_file": "hermes_cli/setup.py",
-            "line": 131,
+            "line": 130,
             "is_consolidated": false,
             "full_text": "/* PoP: prompt_checklist @ hermes_cli/setup.py:prompt_checklist */"
           },
@@ -247177,7 +247163,7 @@
             ],
             "c_file": "src/cli/port_setup_remaining.c",
             "python_file": "hermes_cli/setup.py",
-            "line": 139,
+            "line": 138,
             "is_consolidated": false,
             "full_text": "/* PoP: _prompt_api_key @ hermes_cli/setup.py:_prompt_api_key */"
           },
@@ -247196,7 +247182,7 @@
             "decorators": [],
             "line_number": 395
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_setup_remaining.c",
           "c_function": "stp_print_setup_summary",
           "pop_annotation": {
@@ -247206,16 +247192,14 @@
             ],
             "c_file": "src/cli/port_setup_remaining.c",
             "python_file": "hermes_cli/setup.py",
-            "line": 147,
+            "line": 146,
             "is_consolidated": false,
             "full_text": "/* PoP: _print_setup_summary @ hermes_cli/setup.py:_print_setup_summary */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/setup.py",
@@ -247295,7 +247279,7 @@
             ],
             "c_file": "src/cli/port_setup_remaining.c",
             "python_file": "hermes_cli/setup.py",
-            "line": 155,
+            "line": 159,
             "is_consolidated": false,
             "full_text": "/* PoP: _check_espeak_ng @ hermes_cli/setup.py:_check_espeak_ng */"
           },
@@ -247372,7 +247356,7 @@
             "decorators": [],
             "line_number": 882
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_setup_remaining.c",
           "c_function": "stp_xai_oauth_logged_in_for_setup",
           "pop_annotation": {
@@ -247382,16 +247366,14 @@
             ],
             "c_file": "src/cli/port_setup_remaining.c",
             "python_file": "hermes_cli/setup.py",
-            "line": 177,
+            "line": 181,
             "is_consolidated": false,
             "full_text": "/* PoP: _xai_oauth_logged_in_for_setup @ hermes_cli/setup.py:_xai_oauth_logged_in_for_setup */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/setup.py",
@@ -247529,7 +247511,7 @@
             ],
             "c_file": "src/cli/port_setup_remaining.c",
             "python_file": "hermes_cli/setup.py",
-            "line": 184,
+            "line": 193,
             "is_consolidated": false,
             "full_text": "/* PoP: _apply_default_agent_settings @ hermes_cli/setup.py:_apply_default_agent_settings */"
           },
@@ -247732,7 +247714,7 @@
             ],
             "c_file": "src/cli/port_setup_remaining.c",
             "python_file": "hermes_cli/setup.py",
-            "line": 192,
+            "line": 201,
             "is_consolidated": false,
             "full_text": "/* PoP: _setup_telegram @ hermes_cli/setup.py:_setup_telegram */"
           },
@@ -247763,7 +247745,7 @@
             ],
             "c_file": "src/cli/port_setup_remaining.c",
             "python_file": "hermes_cli/setup.py",
-            "line": 198,
+            "line": 208,
             "is_consolidated": false,
             "full_text": "/* PoP: _setup_bluebubbles @ hermes_cli/setup.py:_setup_bluebubbles */"
           },
@@ -247794,7 +247776,7 @@
             ],
             "c_file": "src/cli/port_setup_remaining.c",
             "python_file": "hermes_cli/setup.py",
-            "line": 204,
+            "line": 215,
             "is_consolidated": false,
             "full_text": "/* PoP: _setup_qqbot @ hermes_cli/setup.py:_setup_qqbot */"
           },
@@ -247825,7 +247807,7 @@
             ],
             "c_file": "src/cli/port_setup_remaining.c",
             "python_file": "hermes_cli/setup.py",
-            "line": 211,
+            "line": 222,
             "is_consolidated": false,
             "full_text": "/* PoP: _setup_webhooks @ hermes_cli/setup.py:_setup_webhooks */"
           },
@@ -247902,7 +247884,7 @@
             "decorators": [],
             "line_number": 2229
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_setup_remaining.c",
           "c_function": "stp_model_section_has_credentials",
           "pop_annotation": {
@@ -247912,16 +247894,14 @@
             ],
             "c_file": "src/cli/port_setup_remaining.c",
             "python_file": "hermes_cli/setup.py",
-            "line": 231,
+            "line": 242,
             "is_consolidated": false,
             "full_text": "/* PoP: _model_section_has_credentials @ hermes_cli/setup.py:_model_section_has_credentials */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/setup.py",
@@ -247943,7 +247923,7 @@
             ],
             "c_file": "src/cli/port_setup_remaining.c",
             "python_file": "hermes_cli/setup.py",
-            "line": 238,
+            "line": 252,
             "is_consolidated": false,
             "full_text": "/* PoP: _gateway_platform_short_label @ hermes_cli/setup.py:_gateway_platform_short_label */"
           },

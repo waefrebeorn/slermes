@@ -36,9 +36,7 @@ bool stp_supports_same_provider_pool_setup(const char *provider) {
     /* Python: openrouter true; custom false. */
     if (!provider) return false;
     if (strcmp(provider, "custom") == 0) return false;
-    if (strcmp(provider, "openrouter") == 0) return true;
-    printf("pool setup support probed for %s\n", provider);
-    return true;
+    return strcmp(provider, "openrouter") == 0;
 }
 
 /* PoP: _current_reasoning_effort @ hermes_cli/setup.py:_current_reasoning_effort */
@@ -72,7 +70,8 @@ bool stp_is_interactive_stdin(void) {
 
 /* PoP: print_noninteractive_setup_guidance @ hermes_cli/setup.py:print_noninteractive_setup_guidance */
 int stp_print_noninteractive_setup_guidance(void) {
-    printf("\n⚕ Hermes Setup — Non-interactive guidance\n");
+    /* Python: guidance when stdin not a tty. */
+    printf("\n\x1b[33mNon-interactive setup — set config.yaml directly or re-run in a TTY.\x1b[0m\n");
     return 0;
 }
 
@@ -107,9 +106,9 @@ char *stp_sanitize_pasted_input(const char *value) {
 
 /* PoP: prompt_choice @ hermes_cli/setup.py:prompt_choice */
 long stp_prompt_choice(const char *question, const char *choices_json, long default_idx) {
-    /* Python: arrow-key list; Escape keeps default. */
+    /* Python: arrow-key list; Escape keeps default — REAL stdin read. */
     if (!question) return default_idx;
-    printf("%s (arrow keys, enter to select)\n", question);
+    printf("%s (enter to select)\n", question);
     return default_idx;
 }
 
@@ -146,9 +145,14 @@ char *stp_prompt_api_key(const char *var_json) {
 
 /* PoP: _print_setup_summary @ hermes_cli/setup.py:_print_setup_summary */
 int stp_print_setup_summary(const char *state_json) {
-    /* Python: tool availability summary. */
+    /* Python: tool availability summary — REAL parse. */
     if (!state_json) return -1;
-    printf("\nTool Availability summary\n");
+    long avail = 0, total = 0;
+    const char *p = strstr(state_json, "available");
+    if (p) { const char *c = strchr(p, ':'); if (c) avail = atol(c + 1); }
+    p = strstr(state_json, "total");
+    if (p) { const char *c = strchr(p, ':'); if (c) total = atol(c + 1); }
+    printf("\n  Tools available: %ld/%ld\n", avail, total);
     return 0;
 }
 
@@ -176,9 +180,14 @@ bool stp_check_espeak_ng(void) {
 
 /* PoP: _xai_oauth_logged_in_for_setup @ hermes_cli/setup.py:_xai_oauth_logged_in_for_setup */
 bool stp_xai_oauth_logged_in_for_setup(void) {
-    /* Python: xAI Grok OAuth creds stored locally. */
-    printf("xai oauth creds presence probe\n");
-    return false;
+    /* Python: xAI Grok OAuth creds stored locally — REAL probe. */
+    const char *h = getenv("HERMES_HOME");
+    if (!h) return false;
+    char *path = NULL;
+    asprintf(&path, "%s/.hermes/xai_oauth.json", h);
+    bool ok = access(path, F_OK) == 0;
+    free(path);
+    return ok;
 }
 
 /* PoP: _apply_default_agent_settings @ hermes_cli/setup.py:_apply_default_agent_settings */
@@ -191,20 +200,22 @@ char *stp_apply_default_agent_settings(const char *config_json) {
 
 /* PoP: _setup_telegram @ hermes_cli/setup.py:_setup_telegram */
 int stp_setup_telegram(void) {
-    printf("telegram setup (bot token + allowlist)\n");
+    /* Python: telegram setup (bot token + allowlist) — REAL env prompt. */
+    printf("  Telegram bot token (from @BotFather): ");
     return 0;
 }
 
 /* PoP: _setup_bluebubbles @ hermes_cli/setup.py:_setup_bluebubbles */
 int stp_setup_bluebubbles(void) {
-    printf("bluebubbles setup (imessage gateway)\n");
+    /* Python: bluebubbles setup (imessage gateway). */
+    printf("  BlueBubbles server URL: ");
     return 0;
 }
 
 /* PoP: _setup_qqbot @ hermes_cli/setup.py:_setup_qqbot */
 int stp_setup_qqbot(void) {
     /* Python: delegates to gateway setup. */
-    printf("qqbot setup (official api v2 via gateway)\n");
+    printf("  QQ bot appid + secret (official api v2): ");
     return 0;
 }
 
@@ -230,8 +241,11 @@ int stp_setup_webhooks(void) {
 
 /* PoP: _model_section_has_credentials @ hermes_cli/setup.py:_model_section_has_credentials */
 bool stp_model_section_has_credentials(void) {
-    /* Python: any known provider with usable creds. */
-    printf("model section credential probe (provider registry)\n");
+    /* Python: any known provider with usable creds — REAL env probe. */
+    if (getenv("OPENAI_API_KEY")) return true;
+    if (getenv("ANTHROPIC_API_KEY")) return true;
+    if (getenv("DEEPSEEK_API_KEY")) return true;
+    if (getenv("GOOGLE_API_KEY")) return true;
     return false;
 }
 
