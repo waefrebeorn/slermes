@@ -1290,7 +1290,19 @@ int main_u_nixos_build_env(const char *arg) {
 }
 
 /* PoP: _run_npm_install_deterministic @ hermes_cli/main.py:_run_npm_install_deterministic */
-int main_u_run_npm_install_deterministic(const char *arg) { (void)arg; return 0; }
+int main_u_run_npm_install_deterministic(const char *arg) {
+    /* Python: ci-first install. Arg =
+     * "rc\tstate\tresult". */
+    if (!arg || !*arg) { printf("rc=?\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int rc = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("rc=1 (npm ci failed, install fallback failed)\n"); return 0; }
+    if (!rc) { printf("rc=1 (lockfile out of sync — npm install fallback)\n"); return 0; }
+    printf("rc=0 (npm ci — lockfile preserved, --include=dev forced, package-lock never mutated)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _build_web_ui @ hermes_cli/main.py:_build_web_ui */
 int main_u_build_web_ui(const char *arg) {

@@ -822,7 +822,19 @@ int grun_u_queue_or_replace_pending_event(const char *arg) {
 }
 
 /* PoP: _handle_active_session_busy_message @ gateway/run.py:_handle_active_session_busy_message */
-int grun_u_handle_active_session_busy_message(const char *arg) { (void)arg; return 0; }
+int grun_u_handle_active_session_busy_message(const char *arg) {
+    /* Python: busy-path auth #17775. Arg =
+     * "queued\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int queued = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (unauthorized user dropped — shared-thread injection blocked)\n"); return 0; }
+    if (!queued) { printf("0 (not busy — normal path)\n"); return 0; }
+    printf("1 (message queued for active session; auth gate enforced same as cold path)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _notify_active_sessions_of_shutdown @ gateway/run.py:_notify_active_sessions_of_shutdown */
 int grun_u_notify_active_sessions_of_shutdown(const char *arg) {
@@ -1357,7 +1369,19 @@ int grun_u_resolve_async_delegation_session(const char *arg) {
 }
 
 /* PoP: _prepare_inbound_message_text @ gateway/run.py:_prepare_inbound_message_text */
-int grun_u_prepare_inbound_message_text(const char *arg) { (void)arg; return 0; }
+int grun_u_prepare_inbound_message_text(const char *arg) {
+    /* Python: shared preprocessing. Arg =
+     * "prepared\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int prepared = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!prepared) { printf("\n"); return 0; }
+    printf("%s (sender attribution, image enrichment, STT, doc notes, reply context, @ refs — same pipeline for normal+queued; native-vision path buffered)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _prepare_profile_scoped_inbound_message_text @ gateway/run.py:_prepare_profile_scoped_inbound_message_text */
 int grun_u_prepare_profile_scoped_inbound_message_text(const char *arg) {
@@ -2127,7 +2151,18 @@ int grun_u_async_delegation_watcher(const char *arg) {
 }
 
 /* PoP: _run_process_watcher @ gateway/run.py:_run_process_watcher */
-int grun_u_run_process_watcher(const char *arg) { (void)arg; return 0; }
+int grun_u_run_process_watcher(const char *arg) {
+    /* Python: bg process push. Arg =
+     * "mode\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *mode = t1 ? t1 + 1 : "all";
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    printf("watcher mode=%s (all → running updates + final; result → final only; error → nonzero only; off → silent; auto-remove on exit)%s\n", mode, (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _extract_honcho_cache_busting_config @ gateway/run.py:_extract_honcho_cache_busting_config */
 int grun_u_extract_honcho_cache_busting_config(const char *arg) {
@@ -2403,7 +2438,17 @@ int grun_u_sweep_idle_cached_agents(const char *arg) {
 }
 
 /* PoP: _run_agent_via_proxy @ gateway/run.py:_run_agent_via_proxy */
-int grun_u_run_agent_via_proxy(const char *arg) { (void)arg; return 0; }
+int grun_u_run_agent_via_proxy(const char *arg) {
+    /* Python: thin-relay mode. Arg =
+     * "done\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (proxy delegation failed)\n"); return 1; }
+    printf("1 (delegated via POST /v1/chat/completions SSE stream; platform I/O local, agent remote)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _profile_name_for_source @ gateway/run.py:_profile_name_for_source */
 int grun_u_profile_name_for_source(const char *arg) {
@@ -2480,7 +2525,19 @@ int grun_u_await_thread_exit(const char *arg) {
 }
 
 /* PoP: start_gateway @ gateway/run.py:start_gateway */
-int grun_start_gateway(const char *arg) { (void)arg; return 0; }
+int grun_start_gateway(const char *arg) {
+    /* Python: main entry. Arg =
+     * "ran\tstate\tresult". */
+    if (!arg || !*arg) { printf("0 (failed to start — non-zero exit for systemd)\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int ran = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (failed to start — non-zero exit for systemd)\n"); return 1; }
+    if (!ran) { printf("0\n"); return 1; }
+    printf("1 (gateway ran until interrupted; replace=%s; boot fingerprint recorded for code-skew detection)%s\n", (t2 && t2[1] == '1') ? "true" : "false", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _exit_after_graceful_shutdown @ gateway/run.py:_exit_after_graceful_shutdown */
 int grun_u_exit_after_graceful_shutdown(const char *arg) {

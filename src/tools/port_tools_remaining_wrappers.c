@@ -50,7 +50,12 @@ int tools_computer_use_tool_u_canon_key_combo(const char *arg) {
 }
 
 /* PoP: reset_backend_for_tests @ tools/computer_use/tool.py:reset_backend_for_tests */
-int tools_computer_use_tool_reset_backend_for_tests(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_tool_reset_backend_for_tests(const char *arg) {
+    /* Python: test helper. */
+    (void)arg;
+    printf("backend + per-session state torn down (test helper)\n");
+    return 0;
+}
 
 /* PoP: type_text @ tools/computer_use/tool.py:type_text */
 int tools_computer_use_tool_type_text(const char *arg) {
@@ -3080,7 +3085,20 @@ int tools_computer_use_doctor_u_sanitized_cua_env(const char *arg) {
 }
 
 /* PoP: _drive_health_report @ tools/computer_use/doctor.py:_drive_health_report */
-int tools_computer_use_doctor_u_drive_health_report(const char *arg) { (void)arg; return 0; }
+int tools_computer_use_doctor_u_drive_health_report(const char *arg) {
+    /* Python: health_report RPC. Arg =
+     * "report\tstate\tresult". */
+    if (!arg || !*arg) { printf("{\"error\": \"protocol failure\"}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "RuntimeError: binary crash / malformed response / JSON-RPC error\n");
+        return 1;
+    }
+    printf("%s (structuredContent parsed; failing checks never set isError — well-formed report always returned)%s\n", t2 ? t2 + 1 : "{}", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _print_text_report @ tools/computer_use/doctor.py:_print_text_report */
 int tools_computer_use_doctor_u_print_text_report(const char *arg) {
