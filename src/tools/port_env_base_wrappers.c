@@ -137,7 +137,12 @@ int envb_returncode_2(const char *arg) {
 }
 
 /* PoP: _cwd_marker @ tools/environments/base.py:_cwd_marker */
-int envb_u_cwd_marker(const char *arg) { (void)arg; return 0; }
+int envb_u_cwd_marker(const char *arg) {
+    /* Python: f"__HERMES_CWD_{session_id}__". Arg = session id. */
+    if (!arg || !*arg) { printf("__HERMES_CWD___\n"); return 0; }
+    printf("__HERMES_CWD_%s__\n", arg);
+    return 0;
+}
 
 /* PoP: get_temp_dir @ tools/environments/base.py:get_temp_dir */
 int envb_get_temp_dir(const char *arg) { (void)arg; return 0; }

@@ -66,7 +66,17 @@ int cua_u_select_capture_target(const char *arg) { (void)arg; return 0; }
 int cua_u_resolve_mcp_invocation(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _mcp_args_with_overlay_flag @ tools/computer_use/cua_backend.py:_mcp_args_with_overlay_flag */
-int cua_u_mcp_args_with_overlay_flag(const char *arg) { (void)arg; return 0; }
+int cua_u_mcp_args_with_overlay_flag(const char *arg) {
+    /* Python: args + ["--no-overlay"] when no-overlay configured AND driver
+     * supports it; else args. Arg = "no_overlay_supported\targ\targ...". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int supported = (tab && *arg == '1');
+    const char *args = tab ? tab + 1 : arg;
+    if (supported) printf("%s --no-overlay\n", args);
+    else printf("%s\n", args);
+    return 0;
+}
 
 /* PoP: _cua_driver_supports_no_overlay @ tools/computer_use/cua_backend.py:_cua_driver_supports_no_overlay */
 int cua_u_cua_driver_supports_no_overlay(const char *arg) { (void)arg; return 0; }

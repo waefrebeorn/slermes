@@ -770,7 +770,26 @@ int main_u_should_skip_upstream_prompt(const char *arg) {
 }
 
 /* PoP: _mark_skip_upstream_prompt @ hermes_cli/main.py:_mark_skip_upstream_prompt */
-int main_u_mark_skip_upstream_prompt(const char *arg) { (void)arg; return 0; }
+int main_u_mark_skip_upstream_prompt(const char *arg) {
+    /* Python: touch(get_hermes_home() / ".skip_upstream_prompt"); any
+     * error ignored. Arg = optional hermes home. */
+    char path[1200];
+    if (arg && *arg) snprintf(path, sizeof(path), "%s/.skip_upstream_prompt", arg);
+    else {
+        const char *hh = getenv("HERMES_HOME");
+        if (hh && *hh) snprintf(path, sizeof(path), "%s/.skip_upstream_prompt", hh);
+        else snprintf(path, sizeof(path), "%s/.hermes/.skip_upstream_prompt",
+                      getenv("HOME") ? getenv("HOME") : ".");
+    }
+    FILE *fp = fopen(path, "w");
+    if (fp) {
+        fclose(fp);
+        printf("marker written %s\n", path);
+    } else {
+        printf("marker write failed %s\n", path);
+    }
+    return 0;
+}
 
 /* PoP: _sync_fork_with_upstream @ hermes_cli/main.py:_sync_fork_with_upstream */
 int main_u_sync_fork_with_upstream(const char *arg) { (void)arg; return 0; }

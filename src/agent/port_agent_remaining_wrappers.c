@@ -127,7 +127,37 @@ int agent_pet_generate_atlas_u_slot_crops(const char *arg) { (void)arg; return 0
 int agent_pet_generate_atlas_u_frame_x_ranges(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _significant_subject_boxes @ agent/pet/generate/atlas.py:_significant_subject_boxes */
-int agent_pet_generate_atlas_u_significant_subject_boxes(const char *arg) { (void)arg; return 0; }
+int agent_pet_generate_atlas_u_significant_subject_boxes(const char *arg) {
+    /* Python: boxes with mass >= max(32, max_mass * 0.12) after merging.
+     * Arg = "mass\tmass\t..." — echo the significant masses. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    double max_mass = 0;
+    const char *p = arg;
+    while (*p) {
+        while (*p == ' ' || *p == '\t' || *p == '\n') p++;
+        if (!*p) break;
+        double m = atof(p);
+        if (m > max_mass) max_mass = m;
+        while (*p && *p != ' ' && *p != '\t' && *p != '\n') p++;
+    }
+    double thresh = max_mass * 0.12;
+    if (thresh < 32) thresh = 32;
+    int first = 1;
+    p = arg;
+    while (*p) {
+        while (*p == ' ' || *p == '\t' || *p == '\n') p++;
+        if (!*p) break;
+        double m = atof(p);
+        if (m >= thresh) {
+            if (!first) printf(" ");
+            printf("%.0f", m);
+            first = 0;
+        }
+        while (*p && *p != ' ' && *p != '\t' && *p != '\n') p++;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _validate_extracted_frames @ agent/pet/generate/atlas.py:_validate_extracted_frames */
 int agent_pet_generate_atlas_u_validate_extracted_frames(const char *arg) { (void)arg; return 0; }
@@ -559,7 +589,16 @@ int agent_chat_completion_helpers_u_fallback_entry_is_same_backe_rl(const char *
 int agent_chat_completion_helpers_u_build_partial_stream_stub(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _moa_reference_output_allowed @ agent/agent_init.py:_moa_reference_output_allowed */
-int agent_agent_init_u_moa_reference_output_allowed(const char *arg) { (void)arg; return 0; }
+int agent_agent_init_u_moa_reference_output_allowed(const char *arg) {
+    /* Python: not (platform == "cli" and tool_progress_mode == "off").
+     * Arg = "platform\tprogress_mode". */
+    if (!arg || !*arg) { printf("1\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int cli = (strncmp(arg, "cli", 3) == 0);
+    int off = tab ? (strcmp(tab + 1, "off") == 0) : 0;
+    printf("%d\n", !(cli && off));
+    return 0;
+}
 
 /* PoP: _relay_moa_reference_event @ agent/agent_init.py:_relay_moa_reference_event */
 int agent_agent_init_u_relay_moa_reference_event(const char *arg) { (void)arg; return 0; }
@@ -1107,7 +1146,19 @@ int agent_battery_clear_cache(const char *arg) {
 }
 
 /* PoP: can_change_plan @ agent/billing_view.py:can_change_plan */
-int agent_billing_view_can_change_plan(const char *arg) { (void)arg; return 0; }
+int agent_billing_view_can_change_plan(const char *arg) {
+    /* Python: can_change_plan_raw if not None else is_admin. Arg =
+     * "raw\tis_admin" (raw empty = None). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab > arg) {
+        printf("%d\n", strcmp(arg, "1") == 0 || strcmp(arg, "true") == 0);
+        return 0;
+    }
+    const char *admin = tab ? tab + 1 : arg;
+    printf("%d\n", strcmp(admin, "1") == 0 || strcmp(admin, "true") == 0);
+    return 0;
+}
 
 /* PoP: _parse_auto_reload_card @ agent/billing_view.py:_parse_auto_reload_card */
 int agent_billing_view_u_parse_auto_reload_card(const char *arg) { (void)arg; return 0; }

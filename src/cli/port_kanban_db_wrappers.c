@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include "hermes_json.h"
+#include "sqlite3.h"
 
 /* PoP: _assert_not_delegated_child_mutation @ hermes_cli/kanban_db.py:_assert_not_delegated_child_mutation */
 int kdbport_u_assert_not_delegated_child_mutation(const char *arg) { (void)arg; return 0; }
@@ -59,7 +60,34 @@ int kdbport_u_integrity_messages_ok(const char *arg) {
 }
 
 /* PoP: _run_integrity_check @ hermes_cli/kanban_db.py:_run_integrity_check */
-int kdbport_u_run_integrity_check(const char *arg) { (void)arg; return 0; }
+int kdbport_u_run_integrity_check(const char *arg) {
+    /* Python: PRAGMA integrity_check rows as strings. Arg = db path. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    sqlite3 *conn = NULL;
+    if (sqlite3_open_v2(arg, &conn, SQLITE_OPEN_READONLY, NULL) != SQLITE_OK) {
+        if (conn) sqlite3_close(conn);
+        printf("\n");
+        return 0;
+    }
+    sqlite3_stmt *stmt = NULL;
+    if (sqlite3_prepare_v2(conn, "PRAGMA integrity_check", -1, &stmt, NULL) != SQLITE_OK) {
+        sqlite3_close(conn);
+        printf("\n");
+        return 0;
+    }
+    int first = 1;
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        const unsigned char *v = sqlite3_column_text(stmt, 0);
+        if (!v) continue;
+        if (!first) printf("\n");
+        printf("%s", (const char *)v);
+        first = 0;
+    }
+    printf("\n");
+    sqlite3_finalize(stmt);
+    sqlite3_close(conn);
+    return 0;
+}
 
 /* PoP: _repairable_index_names @ hermes_cli/kanban_db.py:_repairable_index_names */
 int kdbport_u_repairable_index_names(const char *arg) { (void)arg; return 0; }

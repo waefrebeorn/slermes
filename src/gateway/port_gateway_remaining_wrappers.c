@@ -992,7 +992,18 @@ int gateway_turn_lease_u_evict_idle(const char *arg) { (void)arg; return 0; }
 int gateway_turn_lease_rebind(const char *arg) { (void)arg; return 0; }
 
 /* PoP: specificity @ gateway/profile_routing.py:specificity */
-int gateway_profile_routing_specificity(const char *arg) { (void)arg; return 0; }
+int gateway_profile_routing_specificity(const char *arg) {
+    /* Python: s=0; +2 guild_id, +4 chat_id, +8 thread_id. Arg =
+     * "guild\tchat\tthread" presence flags (1/0 or empty). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    int guild = 0, chat = 0, thread = 0;
+    const char *p = arg;
+    guild = (*p == '1');
+    p = strchr(p, '\t');
+    if (p) { p++; chat = (*p == '1'); p = strchr(p, '\t'); if (p) { p++; thread = (*p == '1'); } }
+    printf("%d\n", guild * 2 + chat * 4 + thread * 8);
+    return 0;
+}
 
 /* PoP: parse_profile_routes @ gateway/profile_routing.py:parse_profile_routes */
 int gateway_profile_routing_parse_profile_routes(const char *arg) { (void)arg; return 0; }

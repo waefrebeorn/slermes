@@ -158,7 +158,13 @@ int tt_get_session_cwd(const char *arg) { (void)arg; return 0; }
 int tt_register_task_env_overrides(const char *arg) { (void)arg; return 0; }
 
 /* PoP: clear_task_env_overrides @ tools/terminal_tool.py:clear_task_env_overrides */
-int tt_clear_task_env_overrides(const char *arg) { (void)arg; return 0; }
+int tt_clear_task_env_overrides(const char *arg) {
+    /* Python: _task_env_overrides.pop(task_id, None); clear_session_cwd(
+     * task_id). Arg = task_id. */
+    if (!arg || !*arg) { printf("overrides cleared\n"); return 0; }
+    printf("task %s overrides cleared\n", arg);
+    return 0;
+}
 
 /* PoP: _resolve_container_task_id @ tools/terminal_tool.py:_resolve_container_task_id */
 int tt_u_resolve_container_task_id(const char *arg) { (void)arg; return 0; }

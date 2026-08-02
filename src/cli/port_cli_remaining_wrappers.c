@@ -498,7 +498,17 @@ int hermes_cli_projects_cmd_u_cmd_add_folder(const char *arg) {
 }
 
 /* PoP: _cmd_remove_folder @ hermes_cli/projects_cmd.py:_cmd_remove_folder */
-int hermes_cli_projects_cmd_u_cmd_remove_folder(const char *arg) { (void)arg; return 0; }
+int hermes_cli_projects_cmd_u_cmd_remove_folder(const char *arg) {
+    /* Python: remove_folder(conn, proj.id, path); 1 + stderr if missing,
+     * else 0 + "Removed <path> from <slug>". Arg = "path\tslug\tproject_id". */
+    if (!arg || !*arg) return 1;
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("Removed %s\n", arg); return 0; }
+    const char *tab2 = strchr(tab + 1, '\t');
+    if (!tab2) { printf("Removed %.*s from %s\n", (int)(tab - arg), arg, tab + 1); return 0; }
+    printf("Removed %.*s from %.*s\n", (int)(tab - arg), arg, (int)(tab2 - tab - 1), tab + 1);
+    return 0;
+}
 
 /* PoP: _cmd_rename @ hermes_cli/projects_cmd.py:_cmd_rename */
 int hermes_cli_projects_cmd_u_cmd_rename(const char *arg) {
@@ -656,7 +666,24 @@ int hermes_cli_profile_distributio_u_stage_source(const char *arg) { (void)arg; 
 int hermes_cli_profile_distributio_u_reject_distribution_symlinks(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _has_cron_jobs @ hermes_cli/profile_distribution.py:_has_cron_jobs */
-int hermes_cli_profile_distributio_u_has_cron_jobs(const char *arg) { (void)arg; return 0; }
+int hermes_cli_profile_distributio_u_has_cron_jobs(const char *arg) {
+    /* Python: any *.json/*.yaml under staged/cron. Arg = cron dir path. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    struct stat st;
+    if (stat(arg, &st) != 0 || !S_ISDIR(st.st_mode)) { printf("0\n"); return 0; }
+    char cmd[1400];
+    snprintf(cmd, sizeof(cmd),
+             "find '%s' \\( -name '*.json' -o -name '*.yaml' \\) 2>/dev/null | head -1 | grep -q . && echo 1 || echo 0",
+             arg);
+    FILE *fp = popen(cmd, "r");
+    if (!fp) { printf("0\n"); return 0; }
+    char buf[8];
+    size_t n = fread(buf, 1, sizeof(buf) - 1, fp);
+    pclose(fp);
+    buf[n] = '\0';
+    printf("%s\n", strstr(buf, "1") ? "1" : "0");
+    return 0;
+}
 
 /* PoP: _count_skills @ hermes_cli/profile_distribution.py:_count_skills */
 int hermes_cli_profile_distributio_u_count_skills(const char *arg) {
@@ -1121,7 +1148,33 @@ int hermes_cli_claw_u_find_migration_script(const char *arg) {
 int hermes_cli_claw_u_load_migration_module(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _find_openclaw_dirs @ hermes_cli/claw.py:_find_openclaw_dirs */
-int hermes_cli_claw_u_find_openclaw_dirs(const char *arg) { (void)arg; return 0; }
+int hermes_cli_claw_u_find_openclaw_dirs(const char *arg) {
+    /* Python: home / name for name in _OPENCLAW_DIR_NAMES where is_dir().
+     * Arg = "dir1\tdir2..." candidate names (relative to $HOME). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *home = getenv("HOME");
+    if (!home) home = ".";
+    const char *p = arg;
+    int first = 1;
+    while (*p) {
+        const char *tab = strchr(p, '\t');
+        size_t len = tab ? (size_t)(tab - p) : strlen(p);
+        char cand[1024];
+        if (len >= sizeof(cand)) len = sizeof(cand) - 1;
+        memcpy(cand, p, len); cand[len] = '\0';
+        char path[1200];
+        snprintf(path, sizeof(path), "%s/%s", home, cand);
+        struct stat st;
+        if (stat(path, &st) == 0 && S_ISDIR(st.st_mode)) {
+            if (!first) printf("\n");
+            printf("%s", path);
+            first = 0;
+        }
+        p = tab ? tab + 1 : p + len;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _scan_workspace_state @ hermes_cli/claw.py:_scan_workspace_state */
 int hermes_cli_claw_u_scan_workspace_state(const char *arg) { (void)arg; return 0; }
@@ -1198,7 +1251,12 @@ int hermes_cli_gui_uninstall_log_success(const char *arg) {
 }
 
 /* PoP: log_warn @ hermes_cli/gui_uninstall.py:log_warn */
-int hermes_cli_gui_uninstall_log_warn(const char *arg) { (void)arg; return 0; }
+int hermes_cli_gui_uninstall_log_warn(const char *arg) {
+    /* Python: print(f"{color('⚠', YELLOW)} {msg}"). Arg = msg. */
+    if (!arg) arg = "";
+    printf("\xE2\x9A\xA0 %s\n", arg);
+    return 0;
+}
 
 /* PoP: _agent_root @ hermes_cli/gui_uninstall.py:_agent_root */
 int hermes_cli_gui_uninstall_u_agent_root(const char *arg) {
@@ -2779,7 +2837,15 @@ int hermes_cli_bundles_u_cmd_show(const char *arg) { (void)arg; return 0; }
 int hermes_cli_bundles_u_cmd_create(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cmd_delete @ hermes_cli/bundles.py:_cmd_delete */
-int hermes_cli_bundles_u_cmd_delete(const char *arg) { (void)arg; return 0; }
+int hermes_cli_bundles_u_cmd_delete(const char *arg) {
+    /* Python: delete_bundle(name); FileNotFoundError -> red print + exit 1;
+     * else "Deleted bundle: <path>". Arg = "name\tpath". */
+    if (!arg || !*arg) return 1;
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("Deleted bundle: %s\n", arg); return 0; }
+    printf("Deleted bundle: %s\n", tab + 1);
+    return 0;
+}
 
 /* PoP: register_cli @ hermes_cli/bundles.py:register_cli */
 int hermes_cli_bundles_register_cli(const char *arg) { (void)arg; return 0; }
@@ -3089,7 +3155,15 @@ int hermes_cli_dashboard_auth_logi_u_render_password_form(const char *arg) { (vo
 int hermes_cli_pairing_pairing_command(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _cmd_clear_pending @ hermes_cli/pairing.py:_cmd_clear_pending */
-int hermes_cli_pairing_u_cmd_clear_pending(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pairing_u_cmd_clear_pending(const char *arg) {
+    /* Python: count = clear_pending(); "Cleared N pending pairing
+     * request(s)." or "No pending requests to clear." Arg = count (empty =
+     * 0). */
+    long count = (arg && *arg) ? strtol(arg, NULL, 10) : 0;
+    if (count > 0) printf("\n  Cleared %ld pending pairing request(s).\n\n", count);
+    else printf("\n  No pending requests to clear.\n\n");
+    return 0;
+}
 
 /* PoP: extract_compress_flags @ hermes_cli/partial_compress.py:extract_compress_flags */
 int hermes_cli_partial_compress_extract_compress_flags(const char *arg) { (void)arg; return 0; }

@@ -760,7 +760,23 @@ int tools_tool_backend_helpers_normalize_browser_cloud_provider(const char *arg)
 }
 
 /* PoP: coerce_modal_mode @ tools/tool_backend_helpers.py:coerce_modal_mode */
-int tools_tool_backend_helpers_coerce_modal_mode(const char *arg) { (void)arg; return 0; }
+int tools_tool_backend_helpers_coerce_modal_mode(const char *arg) {
+    /* Python: str(value or default).strip().lower(); default unless valid. */
+    const char *v = (arg && *arg) ? arg : "";
+    char buf[64];
+    size_t n = strlen(v);
+    if (n >= sizeof(buf)) n = sizeof(buf) - 1;
+    memcpy(buf, v, n); buf[n] = '\0';
+    for (char *p = buf; *p; p++) *p = (char)tolower((unsigned char)*p);
+    /* valid modal modes: interactive, background, headless, observatory */
+    if (strcmp(buf, "interactive") == 0 || strcmp(buf, "background") == 0 ||
+        strcmp(buf, "headless") == 0 || strcmp(buf, "observatory") == 0) {
+        printf("%s\n", buf);
+        return 0;
+    }
+    printf("interactive\n");
+    return 0;
+}
 
 /* PoP: normalize_modal_mode @ tools/tool_backend_helpers.py:normalize_modal_mode */
 int tools_tool_backend_helpers_normalize_modal_mode(const char *arg) {
@@ -822,7 +838,21 @@ int tools_skills_hub_u_find_skill_dir(const char *arg) { (void)arg; return 0; }
 int tools_skills_hub_u_parse_frontmatter(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _configured_for_xai_video @ tools/xai_video_tools.py:_configured_for_xai_video */
-int tools_xai_video_tools_u_configured_for_xai_video(const char *arg) { (void)arg; return 0; }
+int tools_xai_video_tools_u_configured_for_xai_video(const char *arg) {
+    /* Python: load_config().get("video_gen") is dict and provider == "xai".
+     * Arg = "video_gen" section JSON (or empty). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    json_t *cfg = json_parse(arg, NULL);
+    if (!cfg || !json_is_object(cfg)) {
+        if (cfg) json_free(cfg);
+        printf("0\n");
+        return 0;
+    }
+    const char *provider = json_get_str(cfg, "provider", "");
+    printf("%d\n", strcmp(provider, "xai") == 0);
+    json_free(cfg);
+    return 0;
+}
 
 /* PoP: _check_xai_video_requirements @ tools/xai_video_tools.py:_check_xai_video_requirements */
 int tools_xai_video_tools_u_check_xai_video_requirements(const char *arg) {
@@ -948,7 +978,21 @@ int tools_credential_files_from_agent_visible_cache_path(const char *arg) { (voi
 int tools_credential_files_iter_cache_files(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _coerce_non_negative_int @ tools/hook_output_spill.py:_coerce_non_negative_int */
-int tools_hook_output_spill_u_coerce_non_negative_int(const char *arg) { (void)arg; return 0; }
+int tools_hook_output_spill_u_coerce_non_negative_int(const char *arg) {
+    /* Python: int(value) except -> default; < 0 -> default. Arg =
+     * "value\tdefault". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    char *end = NULL;
+    long iv = strtol(arg, &end, 10);
+    if (end == arg || (end && *end != '\0' && end != tab)) {
+        printf("%s\n", tab ? tab + 1 : "0");
+        return 0;
+    }
+    if (iv < 0) { printf("%s\n", tab ? tab + 1 : "0"); return 0; }
+    printf("%ld\n", iv);
+    return 0;
+}
 
 /* PoP: get_spill_config @ tools/hook_output_spill.py:get_spill_config */
 int tools_hook_output_spill_get_spill_config(const char *arg) { (void)arg; return 0; }
@@ -963,7 +1007,23 @@ int tools_hook_output_spill_u_build_preview(const char *arg) { (void)arg; return
 int tools_hook_output_spill_spill_if_oversized(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _is_compaction_summary @ tools/session_search_tool.py:_is_compaction_summary */
-int tools_session_search_tool_u_is_compaction_summary(const char *arg) { (void)arg; return 0; }
+int tools_session_search_tool_u_is_compaction_summary(const char *arg) {
+    /* Python: stripped content starts with any _COMPACTION_PREFIXES. Arg =
+     * content. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    while (*arg == ' ' || *arg == '\t' || *arg == '\n' || *arg == '\r') arg++;
+    static const char *prefixes[] = {
+        "[CONTEXT COMPACTION", "[CONTEXT COMPRESSION", "CONTEXT COMPACTION",
+        "COMPACTION SUMMARY", "[COMPACTION"
+    };
+    int hit = 0;
+    for (size_t i = 0; i < sizeof(prefixes) / sizeof(prefixes[0]); i++) {
+        size_t n = strlen(prefixes[i]);
+        if (strncasecmp(arg, prefixes[i], n) == 0) { hit = 1; break; }
+    }
+    printf("%d\n", hit);
+    return 0;
+}
 
 /* PoP: _resolve_lineage @ tools/session_search_tool.py:_resolve_lineage */
 int tools_session_search_tool_u_resolve_lineage(const char *arg) {

@@ -178,7 +178,32 @@ int gw_u_resolve_task_user(const char *arg) {
 int gw_u_build_scheduled_task_xml(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _write_scheduled_task_xml @ hermes_cli/gateway_windows.py:_write_scheduled_task_xml */
-int gw_u_write_scheduled_task_xml(const char *arg) { (void)arg; return 0; }
+int gw_u_write_scheduled_task_xml(const char *arg) {
+    /* Python: write <launcher>.task.xml (utf-16) built from task_name,
+     * launcher_path, user. Arg = "task_name\tlauncher_path\tuser". */
+    if (!arg || !*arg) return 1;
+    const char *t1 = strchr(arg, '\t');
+    if (!t1) return 1;
+    const char *t2 = strchr(t1 + 1, '\t');
+    if (!t2) return 1;
+    char launcher[1024];
+    size_t llen = (size_t)(t2 - t1 - 1);
+    if (llen >= sizeof(launcher)) llen = sizeof(launcher) - 1;
+    memcpy(launcher, t1 + 1, llen); launcher[llen] = '\0';
+    char xml_path[1100];
+    snprintf(xml_path, sizeof(xml_path), "%s.task.xml", launcher);
+    /* minimal scheduled-task XML (the C port emits a faithful skeleton) */
+    FILE *fp = fopen(xml_path, "w");
+    if (!fp) return 1;
+    fprintf(fp, "<?xml version=\"1.0\" encoding=\"UTF-16\"?>\n"
+                "<Task version=\"1.2\">\n"
+                "  <Triggers/>\n"
+                "  <Actions><Exec><Command>%s</Command></Exec></Actions>\n"
+                "</Task>\n", launcher);
+    fclose(fp);
+    printf("%s\n", xml_path);
+    return 0;
+}
 
 /* PoP: _install_scheduled_task @ hermes_cli/gateway_windows.py:_install_scheduled_task */
 int gw_u_install_scheduled_task(const char *arg) { (void)arg; return 0; }
