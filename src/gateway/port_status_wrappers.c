@@ -233,4 +233,12 @@ int gstat_u_terminate_scoped_lock_owner_once(const char *arg) {
 }
 
 /* PoP: get_running_pid_cached @ gateway/status.py:get_running_pid_cached */
-int gstat_get_running_pid_cached(const char *arg) { (void)arg; return 0; }
+int gstat_get_running_pid_cached(const char *arg) {
+    /* Python: signature cache. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}

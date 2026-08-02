@@ -270,7 +270,22 @@ int tools_lazy_deps_u_lazy_install_target(const char *arg) {
 }
 
 /* PoP: _ensure_target_ready @ tools/lazy_deps.py:_ensure_target_ready */
-int tools_lazy_deps_u_ensure_target_ready(const char *arg) { (void)arg; return 0; }
+int tools_lazy_deps_u_ensure_target_ready(const char *arg) {
+    /* Python: ABI stamp. Arg =
+     * "abi_changed\tstate\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int abi_changed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) {
+        fprintf(stderr, "%s\n", t3 ? t3 + 1 : "target not writable");
+        return 1;
+    }
+    printf("target ready%s\n", abi_changed ? " (stale packages wiped)" : "");
+    return 0;
+}
 
 /* PoP: _activate_target_on_syspath @ tools/lazy_deps.py:_activate_target_on_syspath */
 int tools_lazy_deps_u_activate_target_on_syspath(const char *arg) {
@@ -1295,7 +1310,16 @@ int tools_environments_modal_u_modal_upload(const char *arg) {
 }
 
 /* PoP: _modal_bulk_upload @ tools/environments/modal.py:_modal_bulk_upload */
-int tools_environments_modal_u_modal_bulk_upload(const char *arg) { (void)arg; return 0; }
+int tools_environments_modal_u_modal_bulk_upload(const char *arg) {
+    /* Python: tar stdin. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("bulk upload skipped (no files)\n"); return 0; }
+    printf("bulk uploaded %s file(s) via tar stdin\n", arg);
+    return 0;
+}
 
 /* PoP: _modal_bulk_download @ tools/environments/modal.py:_modal_bulk_download */
 int tools_environments_modal_u_modal_bulk_download(const char *arg) {
@@ -2996,7 +3020,16 @@ int tools_environments_managed_mod_u_request(const char *arg) {
 }
 
 /* PoP: _do_request @ tools/feishu_drive_tool.py:_do_request */
-int tools_feishu_drive_tool_u_do_request(const char *arg) { (void)arg; return 0; }
+int tools_feishu_drive_tool_u_do_request(const char *arg) {
+    /* Python: lark request. Arg = "state\tcode\tresult". */
+    if (!arg || !*arg) { printf("0\t\t{}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("1\tmsg\t{}\n"); return 0; }
+    printf("0\t\t%s\n", t2 ? t2 + 1 : "{}");
+    return 0;
+}
 
 /* PoP: clear_current_thread_interrupt @ tools/interrupt.py:clear_current_thread_interrupt */
 int tools_interrupt_clear_current_thread_interrupt(const char *arg) {

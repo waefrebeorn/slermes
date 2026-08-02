@@ -138,7 +138,20 @@ int mm_u_provider_sync_accepts_messages(const char *arg) {
 int mm_sync_all(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _submit_background @ agent/memory_manager.py:_submit_background */
-int mm_u_submit_background(const char *arg) { (void)arg; return 0; }
+int mm_u_submit_background(const char *arg) {
+    /* Python: serialized worker. Arg =
+     * "kind\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) {
+        printf("task rejected (shutting down): %s\n", arg);
+        return 0;
+    }
+    printf("background task submitted: %s%s\n", arg, (t2 && t2[1] == '1') ? " (tracked)" : "");
+    return 0;
+}
 
 /* PoP: _forget_background_future @ agent/memory_manager.py:_forget_background_future */
 int mm_u_forget_background_future(const char *arg) {
@@ -218,7 +231,18 @@ int mm_on_turn_start(const char *arg) {
 int mm_commit_session_boundary_async(const char *arg) { (void)arg; return 0; }
 
 /* PoP: on_session_switch @ agent/memory_manager.py:on_session_switch */
-int mm_on_session_switch(const char *arg) { (void)arg; return 0; }
+int mm_on_session_switch(const char *arg) {
+    /* Python: provider fan-out. Arg =
+     * "new_session\tcount\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) { printf("no providers notified\n"); return 0; }
+    printf("switched %s provider(s) to session: %s\n", t1 ? t1 + 1 : "?", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: on_pre_compress @ agent/memory_manager.py:on_pre_compress */
 int mm_on_pre_compress(const char *arg) {

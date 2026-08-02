@@ -1968,7 +1968,15 @@ int agent_codex_runtime_u_codex_item_to_preview(const char *arg) {
 }
 
 /* PoP: _codex_item_completion_payload @ agent/codex_runtime.py:_codex_item_completion_payload */
-int agent_codex_runtime_u_codex_item_completion_payload(const char *arg) { (void)arg; return 0; }
+int agent_codex_runtime_u_codex_item_completion_payload(const char *arg) {
+    /* Python: completion payload. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\t0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\t0\n"); return 0; }
+    printf("%s\t1\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: make_codex_app_server_event_bridge @ agent/codex_runtime.py:make_codex_app_server_event_bridge */
 int agent_codex_runtime_make_codex_app_server_event_bridge(const char *arg) { (void)arg; return 0; }

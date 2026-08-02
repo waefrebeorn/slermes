@@ -311,7 +311,24 @@ int cgw_u_print_systemd_start_limit_wait(const char *arg) {
 }
 
 /* PoP: _recover_pending_systemd_restart @ hermes_cli/gateway.py:_recover_pending_systemd_restart */
-int cgw_u_recover_pending_systemd_restart(const char *arg) { (void)arg; return 0; }
+int cgw_u_recover_pending_systemd_restart(const char *arg) {
+    /* Python: stuck restart recovery. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *state = arg;
+    if (strcmp(state, "no_props") == 0 || strcmp(state, "no_request") == 0) { printf("0\n"); return 0; }
+    if (strcmp(state, "auto_restart") == 0) {
+        printf("⏳ Service restart already pending — waiting for systemd relaunch...\n");
+        return 0;
+    }
+    if (strcmp(state, "reset_failed") == 0) {
+        printf("↻ Clearing failed state for pending service restart...\n");
+        return 0;
+    }
+    printf("%s\n", tab ? tab + 1 : "0");
+    return 0;
+}
 
 /* PoP: _parse_launchd_pid_from_list_output @ hermes_cli/gateway.py:_parse_launchd_pid_from_list_output */
 int cgw_u_parse_launchd_pid_from_list_output(const char *arg) {

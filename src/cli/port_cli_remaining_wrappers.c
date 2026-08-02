@@ -2232,7 +2232,25 @@ int hermes_cli_security_audit_u_count_components(const char *arg) {
 }
 
 /* PoP: cmd_security_audit @ hermes_cli/security_audit.py:cmd_security_audit */
-int hermes_cli_security_audit_cmd_security_audit(const char *arg) { (void)arg; return 0; }
+int hermes_cli_security_audit_cmd_security_audit(const char *arg) {
+    /* Python: audit CLI. Arg =
+     * "fail_on\tstate\tcode\tresult". */
+    if (!arg || !*arg) { printf("2\n"); return 2; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "bad_fail_on") == 0) {
+        fprintf(stderr, "unknown --fail-on value (choose from: low, moderate, high, critical)\n");
+        return 2;
+    }
+    if (strcmp(state, "audit_fail") == 0) {
+        fprintf(stderr, "audit failed\n");
+        return 2;
+    }
+    printf("%s\n", t3 ? t3 + 1 : "0");
+    return 0;
+}
 
 /* PoP: _api_url @ hermes_cli/telegram_managed_bot.py:_api_url */
 int hermes_cli_telegram_managed_bo_u_api_url(const char *arg) {
@@ -7704,7 +7722,21 @@ int hermes_cli_dashboard_register_u_generate_dashboard_name(const char *arg) {
 int hermes_cli_dashboard_register_u_register_self_hosted_client(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _print_post_register_hint @ hermes_cli/dashboard_register.py:_print_post_register_hint */
-int hermes_cli_dashboard_register_u_print_post_register_hint(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_register_u_print_post_register_hint(const char *arg) {
+    /* Python: gate-engagement caveat. Arg =
+     * "client_id\twrote_portal\tpublic_url\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int state = t3 && t3[1] == '1';
+    if (!state) { printf("register hint skipped\n"); return 0; }
+    printf("  Wrote to env: HERMES_DASHBOARD_OAUTH_CLIENT_ID=%s\n", arg);
+    printf("  Heads up — Nous login only *engages* on a non-loopback bind.\n");
+    printf("  Manage or revoke this dashboard at the portal /local-dashboards\n");
+    return 0;
+}
 
 /* PoP: cmd_dashboard_register @ hermes_cli/dashboard_register.py:cmd_dashboard_register */
 int hermes_cli_dashboard_register_cmd_dashboard_register(const char *arg) { (void)arg; return 0; }
@@ -8258,7 +8290,15 @@ int hermes_cli_relaunch_u_extract_inherited_flags(const char *arg) {
 }
 
 /* PoP: resolve_hermes_bin @ hermes_cli/relaunch.py:resolve_hermes_bin */
-int hermes_cli_relaunch_resolve_hermes_bin(const char *arg) { (void)arg; return 0; }
+int hermes_cli_relaunch_resolve_hermes_bin(const char *arg) {
+    /* Python: argv0 > PATH. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _fmt_pending @ hermes_cli/suggestions_cmd.py:_fmt_pending */
 int hermes_cli_suggestions_cmd_u_fmt_pending(const char *arg) {
@@ -8349,7 +8389,16 @@ int hermes_cli_cli_agent_setup_mix_u_preload_resumed_session(const char *arg) { 
 int hermes_cli_cli_agent_setup_mix_u_display_resumed_history(const char *arg) { (void)arg; return 0; }
 
 /* PoP: render_login_html @ hermes_cli/dashboard_auth/login_page.py:render_login_html */
-int hermes_cli_dashboard_auth_logi_render_login_html(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_logi_render_login_html(const char *arg) {
+    /* Python: login page. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("empty html\n"); return 0; }
+    printf("login html rendered (%s providers): %s\n", arg, t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _render_password_form @ hermes_cli/dashboard_auth/login_page.py:_render_password_form */
 int hermes_cli_dashboard_auth_logi_u_render_password_form(const char *arg) { (void)arg; return 0; }

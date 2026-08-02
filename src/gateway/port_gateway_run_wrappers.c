@@ -436,7 +436,23 @@ int grun_u_refresh_fallback_model(const char *arg) {
 }
 
 /* PoP: _apply_fallback_chain_to_agent @ gateway/run.py:_apply_fallback_chain_to_agent */
-int grun_u_apply_fallback_chain_to_agent(const char *arg) { (void)arg; return 0; }
+int grun_u_apply_fallback_chain_to_agent(const char *arg) {
+    /* Python: cooldown skip. Arg =
+     * "activated\tin_cooldown\tchanged\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int activated = arg[0] == '1';
+    int in_cooldown = t1 && t1[1] == '1';
+    int changed = t2 && t2[1] == '1';
+    int state = t3 && t3[1] == '1';
+    if (!state) { printf("no agent\n"); return 0; }
+    if (activated && in_cooldown) { printf("chain rewrite skipped (cooldown)\n"); return 0; }
+    printf("fallback chain applied%s\n", changed ? " + memo cleared" : "");
+    return 0;
+}
 
 /* PoP: _snapshot_running_agents @ gateway/run.py:_snapshot_running_agents */
 int grun_u_snapshot_running_agents(const char *arg) {

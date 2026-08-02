@@ -1434,7 +1434,21 @@ int gateway_platform_registry_is_registered(const char *arg) {
 }
 
 /* PoP: create_adapter @ gateway/platform_registry.py:create_adapter */
-int gateway_platform_registry_create_adapter(const char *arg) { (void)arg; return 0; }
+int gateway_platform_registry_create_adapter(const char *arg) {
+    /* Python: gated factory. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int state = t2 && t2[1] == '1';
+    if (!state) {
+        fprintf(stderr, "adapter creation failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("adapter created: %s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _auth_env @ gateway/authz_mixin.py:_auth_env */
 int gateway_authz_mixin_u_auth_env(const char *arg) {

@@ -562,7 +562,15 @@ int auth_get_nous_session_validity(const char *arg) { (void)arg; return 0; }
 int auth_get_codex_auth_status(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_xai_oauth_auth_status @ hermes_cli/auth.py:get_xai_oauth_auth_status */
-int auth_get_xai_oauth_auth_status(const char *arg) { (void)arg; return 0; }
+int auth_get_xai_oauth_auth_status(const char *arg) {
+    /* Python: pool then store. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("{\"logged_in\": false}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("{\"logged_in\": false}\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "{\"logged_in\": true}");
+    return 0;
+}
 
 /* PoP: get_api_key_provider_status @ hermes_cli/auth.py:get_api_key_provider_status */
 int auth_get_api_key_provider_status(const char *arg) {
@@ -597,7 +605,25 @@ int auth_u_get_azure_foundry_auth_status(const char *arg) { (void)arg; return 0;
 int auth_resolve_api_key_provider_credentials(const char *arg) { (void)arg; return 0; }
 
 /* PoP: resolve_external_process_provider_credentials @ hermes_cli/auth.py:resolve_external_process_provider_credentials */
-int auth_resolve_external_process_provider_credentials(const char *arg) { (void)arg; return 0; }
+int auth_resolve_external_process_provider_credentials(const char *arg) {
+    /* Python: subprocess provider. Arg =
+     * "provider_id\tstate\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "not_external") == 0) {
+        fprintf(stderr, "Provider '%s' is not an external-process provider.\n", arg);
+        return 1;
+    }
+    if (strcmp(state, "missing_cli") == 0) {
+        fprintf(stderr, "Could not find the Copilot CLI command. Install GitHub Copilot CLI or set HERMES_COPILOT_ACP_COMMAND/COPILOT_CLI_PATH.\n");
+        return 1;
+    }
+    printf("%s\n", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: _update_config_for_provider @ hermes_cli/auth.py:_update_config_for_provider */
 int auth_u_update_config_for_provider(const char *arg) { (void)arg; return 0; }

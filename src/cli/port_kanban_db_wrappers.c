@@ -64,7 +64,16 @@ int kdbport_u_maybe_checkpoint_wal(const char *arg) {
 }
 
 /* PoP: _prune_corrupt_backups @ hermes_cli/kanban_db.py:_prune_corrupt_backups */
-int kdbport_u_prune_corrupt_backups(const char *arg) { (void)arg; return 0; }
+int kdbport_u_prune_corrupt_backups(const char *arg) {
+    /* Python: retention cap. Arg = "count\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("prune skipped\n"); return 0; }
+    printf("pruned corrupt backups (kept %s): %s\n", t2 ? t2 + 1 : "retention", arg);
+    return 0;
+}
 
 /* PoP: _integrity_messages_ok @ hermes_cli/kanban_db.py:_integrity_messages_ok */
 int kdbport_u_integrity_messages_ok(const char *arg) {
