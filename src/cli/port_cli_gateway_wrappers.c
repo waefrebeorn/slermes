@@ -181,7 +181,18 @@ int cgw_u_systemd_unit_is_start_limited(const char *arg) {
 }
 
 /* PoP: _systemd_error_indicates_start_limit @ hermes_cli/gateway.py:_systemd_error_indicates_start_limit */
-int cgw_u_systemd_error_indicates_start_limit(const char *arg) { (void)arg; return 0; }
+int cgw_u_systemd_error_indicates_start_limit(const char *arg) {
+    /* Python: start-limit markers in stderr/stdout/output. Arg = text. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    char low[2400];
+    snprintf(low, sizeof(low), "%s", arg);
+    for (char *p = low; *p; p++) *p = (char)tolower((unsigned char)*p);
+    if (strstr(low, "start-limit-hit") || strstr(low, "start request repeated too quickly") || strstr(low, "start-limit")) {
+        printf("1\n"); return 0;
+    }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _systemd_service_is_start_limited @ hermes_cli/gateway.py:_systemd_service_is_start_limited */
 int cgw_u_systemd_service_is_start_limited(const char *arg) {
@@ -1047,7 +1058,15 @@ int cgw_u_launchd_unsupported_marker_exists(const char *arg) {
 }
 
 /* PoP: _gateway_run_command @ hermes_cli/gateway.py:_gateway_run_command */
-int cgw_u_gateway_run_command(const char *arg) { (void)arg; return 0; }
+int cgw_u_gateway_run_command(const char *arg) {
+    /* Python: [python, -m, hermes_cli.main, --profile X?, gateway, run,
+     * --replace]. Arg = "python\tprofile". */
+    if (!arg || !*arg) { printf("python -m hermes_cli.main gateway run --replace\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab[1]) printf("%s -m hermes_cli.main --profile %s gateway run --replace\n", arg, tab + 1);
+    else printf("%s -m hermes_cli.main gateway run --replace\n", arg);
+    return 0;
+}
 
 /* PoP: _spawn_detached_gateway @ hermes_cli/gateway.py:_spawn_detached_gateway */
 int cgw_u_spawn_detached_gateway(const char *arg) { (void)arg; return 0; }

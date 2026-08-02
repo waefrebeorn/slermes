@@ -487,7 +487,26 @@ int tools_x_search_tool_u_get_x_search_model(const char *arg) {
 }
 
 /* PoP: _get_x_search_reasoning_effort @ tools/x_search_tool.py:_get_x_search_reasoning_effort */
-int tools_x_search_tool_u_get_x_search_reasoning_effort(const char *arg) { (void)arg; return 0; }
+int tools_x_search_tool_u_get_x_search_reasoning_effort(const char *arg) {
+    /* Python: config effort validated against set; ValueError else. Arg =
+     * "raw\tallowed". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *raw = arg;
+    const char *allowed = tab ? tab + 1 : "";
+    const char *p = raw;
+    while (*p == ' ' || *p == '\t') p++;
+    if (!*p) { printf("\n"); return 0; }
+    const char *q = allowed;
+    while (*q) {
+        const char *t = strchr(q, '\t');
+        size_t len = t ? (size_t)(t - q) : strlen(q);
+        if (len == strlen(p) && strncmp(q, p, len) == 0) { printf("%s\n", p); return 0; }
+        q = t ? t + 1 : q + len;
+    }
+    fprintf(stderr, "x_search.reasoning_effort must be one of: %s (got %s)\n", allowed, raw);
+    return 1;
+}
 
 /* PoP: _get_x_search_timeout_seconds @ tools/x_search_tool.py:_get_x_search_timeout_seconds */
 int tools_x_search_tool_u_get_x_search_timeout_seconds(const char *arg) {
@@ -1247,7 +1266,15 @@ int tools_skills_hub_u_fetch_file_bytes(const char *arg) {
 }
 
 /* PoP: _fetch_bytes @ tools/skills_hub.py:_fetch_bytes */
-int tools_skills_hub_u_fetch_bytes(const char *arg) { (void)arg; return 0; }
+int tools_skills_hub_u_fetch_bytes(const char *arg) {
+    /* Python: guarded HTTP GET 200 -> content. Arg = "url\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *result = tab ? tab + 1 : "";
+    if (result[0]) { printf("%s\n", result); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _find_skill_dir @ tools/skills_hub.py:_find_skill_dir */
 int tools_skills_hub_u_find_skill_dir(const char *arg) { (void)arg; return 0; }
@@ -1600,10 +1627,30 @@ int tools_web_tools_u_list_registered_web_providers(const char *arg) {
 }
 
 /* PoP: _probe_worker @ tools/env_probe.py:_probe_worker */
-int tools_env_probe_u_probe_worker(const char *arg) { (void)arg; return 0; }
+int tools_env_probe_u_probe_worker(const char *arg) {
+    /* Python: compute probe line, publish. Arg = "gen\tcurrent_gen\tline". */
+    if (!arg || !*arg) { printf("probe line published\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    long gen = strtol(arg, NULL, 10);
+    long cur = t1 ? strtol(t1 + 1, NULL, 10) : gen;
+    if (gen != cur) { printf("probe discarded (superseded)\n"); return 0; }
+    printf("probe line published: %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _ensure_probe_started @ tools/env_probe.py:_ensure_probe_started */
-int tools_env_probe_u_ensure_probe_started(const char *arg) { (void)arg; return 0; }
+int tools_env_probe_u_ensure_probe_started(const char *arg) {
+    /* Python: start thread unless done/alive. Arg = "done\talive". */
+    if (!arg || !*arg) { printf("probe started\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int done = arg[0] == '1';
+    int alive = tab && tab[1] == '1';
+    if (done) { printf("probe already done\n"); return 0; }
+    if (alive) { printf("probe already running\n"); return 0; }
+    printf("probe started\n");
+    return 0;
+}
 
 /* PoP: warm_environment_probe_async @ tools/env_probe.py:warm_environment_probe_async */
 int tools_env_probe_warm_environment_probe_async(const char *arg) { (void)arg; return 0; }

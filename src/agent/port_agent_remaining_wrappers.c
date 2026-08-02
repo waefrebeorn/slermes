@@ -23,7 +23,15 @@ int agent_model_metadata_u_endpoint_scoped_context_length(const char *arg) { (vo
 int agent_model_metadata_u_skip_persistent_context_cache(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _maybe_cache_local_context_length @ agent/model_metadata.py:_maybe_cache_local_context_length */
-int agent_model_metadata_u_maybe_cache_local_context_length(const char *arg) { (void)arg; return 0; }
+int agent_model_metadata_u_maybe_cache_local_context_length(const char *arg) {
+    /* Python: save only when length >= minimum. Arg = "length\tmin\tsaved". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    long len = strtol(arg, NULL, 10);
+    long min = tab ? strtol(tab + 1, NULL, 10) : 32000;
+    printf("cached %ld (min %ld)%s\n", len, min, len >= min ? "" : " — below min, not cached");
+    return 0;
+}
 
 /* PoP: _reconcile_local_cached_context_length @ agent/model_metadata.py:_reconcile_local_cached_context_length */
 int agent_model_metadata_u_reconcile_local_cached_context_length(const char *arg) { (void)arg; return 0; }
@@ -996,7 +1004,22 @@ int agent_turn_context_compose_user_api_content(const char *arg) { (void)arg; re
 int agent_turn_context_substitute_api_content(const char *arg) { (void)arg; return 0; }
 
 /* PoP: drop_stale_api_content @ agent/turn_context.py:drop_stale_api_content */
-int agent_turn_context_drop_stale_api_content(const char *arg) { (void)arg; return 0; }
+int agent_turn_context_drop_stale_api_content(const char *arg) {
+    /* Python: msg.pop("api_content"). Arg = message JSON. */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    json_t *m = json_parse(arg, NULL);
+    if (!m || !json_is_object(m)) {
+        if (m) json_free(m);
+        printf("%s\n", arg);
+        return 0;
+    }
+    json_obj_del(m, "api_content");
+    char *s = json_dumps(m, 0);
+    printf("%s\n", s ? s : "{}");
+    free(s);
+    json_free(m);
+    return 0;
+}
 
 /* PoP: extract_api_content_sidecar @ agent/turn_context.py:extract_api_content_sidecar */
 int agent_turn_context_extract_api_content_sidecar(const char *arg) {

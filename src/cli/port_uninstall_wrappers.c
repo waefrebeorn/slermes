@@ -60,7 +60,24 @@ int uninst_remove_path_from_shell_configs(const char *arg) { (void)arg; return 0
 int uninst_remove_wrapper_script(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _node_symlink_candidate_dirs @ hermes_cli/uninstall.py:_node_symlink_candidate_dirs */
-int uninst_u_node_symlink_candidate_dirs(const char *arg) { (void)arg; return 0; }
+int uninst_u_node_symlink_candidate_dirs(const char *arg) {
+    /* Python: ~/.local/bin + /usr/local/bin (linux) + $PREFIX/bin (termux).
+     * Arg = "home\tprefix\tplatform". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *home = arg;
+    const char *prefix = t1 ? t1 + 1 : "";
+    const char *platform = t2 ? t2 + 1 : "";
+    int first = 1;
+    char p[1200];
+    snprintf(p, sizeof(p), "%s/.local/bin", home);
+    printf("%s", p); first = 0;
+    if (strcmp(platform, "linux") == 0) { printf("\n/usr/local/bin"); }
+    if (prefix[0] && strstr(prefix, "com.termux")) { printf("\n%s/bin", prefix); }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: remove_node_symlinks @ hermes_cli/uninstall.py:remove_node_symlinks */
 int uninst_remove_node_symlinks(const char *arg) { (void)arg; return 0; }

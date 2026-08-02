@@ -1411,7 +1411,53 @@ int hermes_cli_model_catalog_u_write_disk_cache(const char *arg) { (void)arg; re
 int hermes_cli_model_catalog_u_fetch_provider_override(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _get_provider_block @ hermes_cli/model_catalog.py:_get_provider_block */
-int hermes_cli_model_catalog_u_get_provider_block(const char *arg) { (void)arg; return 0; }
+int hermes_cli_model_catalog_u_get_provider_block(const char *arg) {
+    /* Python: override providers block else catalog block. Arg =
+     * "provider\toverride_json\tcatalog_json". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    size_t plen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    char provider[128];
+    if (plen >= sizeof(provider)) plen = sizeof(provider) - 1;
+    memcpy(provider, arg, plen); provider[plen] = '\0';
+    if (t1 && t1[1]) {
+        json_t *ov = json_parse(t1 + 1, NULL);
+        if (ov && json_is_object(ov)) {
+            json_t *provs = json_obj_get(ov, "providers");
+            if (provs && json_is_object(provs)) {
+                json_t *b = json_obj_get(provs, provider);
+                if (b && json_is_object(b)) {
+                    char *s = json_dumps(b, 0);
+                    printf("%s\n", s ? s : "");
+                    free(s);
+                    json_free(ov);
+                    return 0;
+                }
+            }
+        }
+        if (ov) json_free(ov);
+    }
+    if (t2 && t2[1]) {
+        json_t *cat = json_parse(t2 + 1, NULL);
+        if (cat && json_is_object(cat)) {
+            json_t *provs = json_obj_get(cat, "providers");
+            if (provs && json_is_object(provs)) {
+                json_t *b = json_obj_get(provs, provider);
+                if (b && json_is_object(b)) {
+                    char *s = json_dumps(b, 0);
+                    printf("%s\n", s ? s : "");
+                    free(s);
+                    json_free(cat);
+                    return 0;
+                }
+            }
+        }
+        if (cat) json_free(cat);
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: get_curated_openrouter_models @ hermes_cli/model_catalog.py:get_curated_openrouter_models */
 int hermes_cli_model_catalog_get_curated_openrouter_models(const char *arg) { (void)arg; return 0; }
@@ -1970,7 +2016,18 @@ int hermes_cli_active_sessions_u__enter__(const char *arg) { (void)arg; return 0
 int hermes_cli_active_sessions_u__exit__(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _read_entries @ hermes_cli/active_sessions.py:_read_entries */
-int hermes_cli_active_sessions_u_read_entries(const char *arg) { (void)arg; return 0; }
+int hermes_cli_active_sessions_u_read_entries(const char *arg) {
+    /* Python: read JSON entries list (dicts only; corrupt -> []). Arg =
+     * "path\tstate" (state: missing/corrupt/ok\tentries_json). */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("[]\n"); return 0; }
+    const char *state = arg;
+    const char *entries = tab + 1;
+    if (strcmp(state, "ok") == 0 && entries[0]) { printf("%s\n", entries); return 0; }
+    printf("[]\n");
+    return 0;
+}
 
 /* PoP: _write_entries @ hermes_cli/active_sessions.py:_write_entries */
 int hermes_cli_active_sessions_u_write_entries(const char *arg) {
@@ -2709,7 +2766,15 @@ int hermes_cli_pty_session_detach_2(const char *arg) { (void)arg; return 0; }
 int hermes_cli_pty_session_reap_idle(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _reap_one_idle_or_raise @ hermes_cli/pty_session.py:_reap_one_idle_or_raise */
-int hermes_cli_pty_session_u_reap_one_idle_or_raise(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pty_session_u_reap_one_idle_or_raise(const char *arg) {
+    /* Python: close oldest idle or raise RegistryFull. Arg = "idle_count\toldest". */
+    if (!arg || !*arg) { printf("0 RegistryFull\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    long idle = strtol(arg, NULL, 10);
+    if (idle <= 0) { printf("0 RegistryFull\n"); return 1; }
+    printf("reaped idle session %s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: close_all @ hermes_cli/pty_session.py:close_all */
 int hermes_cli_pty_session_close_all(const char *arg) { (void)arg; return 0; }
@@ -3131,7 +3196,20 @@ int hermes_cli_mcp_picker_u_format_row(const char *arg) {
 }
 
 /* PoP: _enable_disable @ hermes_cli/mcp_picker.py:_enable_disable */
-int hermes_cli_mcp_picker_u_enable_disable(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_picker_u_enable_disable(const char *arg) {
+    /* Python: set server enabled flag + save. Arg =
+     * "name\tenable\tinstalled". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (!t2 || t2[1] != '1') {
+        printf("  '%s' is not installed.\n", arg);
+        return 0;
+    }
+    printf("  ✓ '%s' %s. Start a new Hermes session for changes to take effect.\n",
+           arg, (t1 && t1[1] == '1') ? "enabled" : "disabled");
+    return 0;
+}
 
 /* PoP: _configure_tools @ hermes_cli/mcp_picker.py:_configure_tools */
 int hermes_cli_mcp_picker_u_configure_tools(const char *arg) {
@@ -3944,7 +4022,18 @@ int hermes_cli_codex_models_u_extract_chatgpt_account_id(const char *arg) { (voi
 int hermes_cli_codex_models_u_fetch_models_from_api(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _read_default_model @ hermes_cli/codex_models.py:_read_default_model */
-int hermes_cli_codex_models_u_read_default_model(const char *arg) { (void)arg; return 0; }
+int hermes_cli_codex_models_u_read_default_model(const char *arg) {
+    /* Python: config.toml model value or None. Arg = "path\texists\tmodel". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int exists = t1 && t1[1] == '1';
+    if (!exists) { printf("\n"); return 0; }
+    const char *model = t2 ? t2 + 1 : "";
+    if (model[0]) { printf("%s\n", model); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _read_cache_models @ hermes_cli/codex_models.py:_read_cache_models */
 int hermes_cli_codex_models_u_read_cache_models(const char *arg) { (void)arg; return 0; }

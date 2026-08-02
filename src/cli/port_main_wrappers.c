@@ -277,7 +277,15 @@ int main_u_has_any_provider_configured(const char *arg) {
 int main_u_session_browse_picker(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_last_session @ hermes_cli/main.py:_resolve_last_session */
-int main_u_resolve_last_session(const char *arg) { (void)arg; return 0; }
+int main_u_resolve_last_session(const char *arg) {
+    /* Python: SessionDB search limit 1. Arg = "source\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *result = tab ? tab + 1 : "";
+    if (result[0]) { printf("%s\n", result); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _probe_container @ hermes_cli/main.py:_probe_container */
 int main_u_probe_container(const char *arg) { (void)arg; return 0; }

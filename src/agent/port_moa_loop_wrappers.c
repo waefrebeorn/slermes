@@ -36,7 +36,13 @@ int moa_u_moa_privacy_mode(const char *arg) {
 }
 
 /* PoP: _redact_reference_outputs @ agent/moa_loop.py:_redact_reference_outputs */
-int moa_u_redact_reference_outputs(const char *arg) { (void)arg; return 0; }
+int moa_u_redact_reference_outputs(const char *arg) {
+    /* Python: redact advisor text, keep accounting. Arg = "labels\ttexts"
+     * (tab-sep pairs, text may be redacted already). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("redacted reference outputs: %s\n", arg);
+    return 0;
+}
 
 /* PoP: _redact_trace_messages @ agent/moa_loop.py:_redact_trace_messages */
 int moa_u_redact_trace_messages(const char *arg) { (void)arg; return 0; }

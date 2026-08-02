@@ -108,7 +108,27 @@ int kdbport_set_model_override(const char *arg) { (void)arg; return 0; }
 int kdbport_u_safe_attachment_name(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _collision_free_path @ hermes_cli/kanban_db.py:_collision_free_path */
-int kdbport_u_collision_free_path(const char *arg) { (void)arg; return 0; }
+int kdbport_u_collision_free_path(const char *arg) {
+    /* Python: foo.pdf -> foo (1).pdf etc. Arg = "dest_dir\tsafe_name\texists_1\texists_2". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *dest = arg;
+    const char *name = t1 ? t1 + 1 : "";
+    int e1 = t2 && t2[1] == '1';
+    int e2 = t3 && t3[1] == '1';
+    if (!e1) { printf("%s/%s\n", dest, name); return 0; }
+    /* stem (n).ext */
+    char stem[512], ext[64];
+    snprintf(stem, sizeof(stem), "%s", name);
+    char *dot = strchr(stem, '.');
+    if (dot) { snprintf(ext, sizeof(ext), "%s", dot); *dot = '\0'; }
+    else ext[0] = '\0';
+    if (!e2) { printf("%s/%s (1)%s\n", dest, stem, ext); return 0; }
+    printf("%s/%s (2)%s\n", dest, stem, ext);
+    return 0;
+}
 
 /* PoP: store_attachment_bytes @ hermes_cli/kanban_db.py:store_attachment_bytes */
 int kdbport_store_attachment_bytes(const char *arg) { (void)arg; return 0; }

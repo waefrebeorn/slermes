@@ -473,7 +473,15 @@ int cua_set_agent_cursor_motion(const char *arg) { (void)arg; return 0; }
 int cua_set_agent_cursor_style(const char *arg) { (void)arg; return 0; }
 
 /* PoP: get_agent_cursor_state @ tools/computer_use/cua_backend.py:get_agent_cursor_state */
-int cua_get_agent_cursor_state(const char *arg) { (void)arg; return 0; }
+int cua_get_agent_cursor_state(const char *arg) {
+    /* Python: cursor state structured content. Arg = "cursor_id\tresult". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *result = tab ? tab + 1 : "";
+    if (result[0]) { printf("%s\n", result); return 0; }
+    printf("{\"cursor\": \"%s\"}\n", arg);
+    return 0;
+}
 
 /* PoP: start_recording @ tools/computer_use/cua_backend.py:start_recording */
 int cua_start_recording(const char *arg) { (void)arg; return 0; }

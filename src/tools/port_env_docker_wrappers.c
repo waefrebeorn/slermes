@@ -81,7 +81,35 @@ int envd_u_egress_enforce_on_docker(const char *arg) {
 }
 
 /* PoP: _critical_egress_env_names @ tools/environments/docker.py:_critical_egress_env_names */
-int envd_u_critical_egress_env_names(const char *arg) { (void)arg; return 0; }
+int envd_u_critical_egress_env_names(const char *arg) {
+    /* Python: proxy/CA/env override names + *_API_KEY/_TOKEN. Arg =
+     * "env_overrides" (tab-sep, may be empty). */
+    static const char *fixed[] = {"HTTPS_PROXY", "https_proxy", "HTTP_PROXY", "http_proxy",
+        "NO_PROXY", "no_proxy", "REQUESTS_CA_BUNDLE", "SSL_CERT_FILE", "CURL_CA_BUNDLE",
+        "NODE_EXTRA_CA_CERTS", "NODE_OPTIONS"};
+    int first = 1;
+    for (size_t i = 0; i < sizeof(fixed)/sizeof(fixed[0]); i++) {
+        if (!first) printf("\n");
+        printf("%s", fixed[i]);
+        first = 0;
+    }
+    const char *p = arg ? arg : "";
+    while (*p) {
+        const char *tab = strchr(p, '\t');
+        size_t len = tab ? (size_t)(tab - p) : strlen(p);
+        size_t elen = len;
+        int is_key = (elen >= 8 && strncmp(p + elen - 8, "_API_KEY", 8) == 0) ||
+                     (elen >= 6 && strncmp(p + elen - 6, "_TOKEN", 6) == 0);
+        if (is_key) {
+            if (!first) printf("\n");
+            printf("%.*s", (int)elen, p);
+            first = 0;
+        }
+        p = tab ? tab + 1 : p + len;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _extra_args_egress_collisions @ tools/environments/docker.py:_extra_args_egress_collisions */
 int envd_u_extra_args_egress_collisions(const char *arg) { (void)arg; return 0; }

@@ -61,7 +61,14 @@ int nous_tool_gateway_entitled_for(const char *arg) {
 }
 
 /* PoP: nous_portal_billing_url @ hermes_cli/nous_account.py:nous_portal_billing_url */
-int nous_nous_portal_billing_url(const char *arg) { (void)arg; return 0; }
+int nous_nous_portal_billing_url(const char *arg) {
+    /* Python: portal_base_url or default + /billing. Arg = base_url. */
+    if (!arg || !*arg) { printf("https://portal.nousresearch.com/billing\n"); return 0; }
+    size_t len = strlen(arg);
+    while (len > 0 && arg[len-1] == '/') len--;
+    printf("%.*s/billing\n", (int)len, arg);
+    return 0;
+}
 
 /* PoP: nous_portal_topup_url @ hermes_cli/nous_account.py:nous_portal_topup_url */
 int nous_nous_portal_topup_url(const char *arg) { (void)arg; return 0; }
