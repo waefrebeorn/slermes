@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T20:24:27Z",
+  "generated_at": "2026-08-02T20:26:20Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -253753,10 +253753,10 @@
     },
     "hermes_cli/web_server.py": {
       "total": 559,
-      "ported": 547,
+      "ported": 559,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 12,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 559,
@@ -254325,17 +254325,24 @@
             "decorators": [],
             "line_number": 664
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_web_server_remaining2.c",
+          "c_function": "wbs_init",
+          "pop_annotation": {
+            "c_function": "wbs_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_web_server_remaining2.c",
+            "python_file": "hermes_cli/web_server.py",
+            "line": 23,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/web_server.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/web_server.py",
@@ -254434,17 +254441,24 @@
             "decorators": [],
             "line_number": 692
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_web_server_remaining2.c",
+          "c_function": "wbs_snapshot",
+          "pop_annotation": {
+            "c_function": "wbs_snapshot",
+            "python_functions": [
+              "snapshot"
+            ],
+            "c_file": "src/cli/port_web_server_remaining2.c",
+            "python_file": "hermes_cli/web_server.py",
+            "line": 32,
+            "is_consolidated": false,
+            "full_text": "/* PoP: snapshot @ hermes_cli/web_server.py:snapshot */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/web_server.py",
@@ -256836,17 +256850,24 @@
             "decorators": [],
             "line_number": 3052
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_web_server_remaining2.c",
+          "c_function": "wbs_get_status",
+          "pop_annotation": {
+            "c_function": "wbs_get_status",
+            "python_functions": [
+              "get_status"
+            ],
+            "c_file": "src/cli/port_web_server_remaining2.c",
+            "python_file": "hermes_cli/web_server.py",
+            "line": 38,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_status @ hermes_cli/web_server.py:get_status */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/web_server.py",
@@ -257989,17 +258010,24 @@
             "decorators": [],
             "line_number": 4809
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_web_server_remaining2.c",
+          "c_function": "wbs_get_sessions",
+          "pop_annotation": {
+            "c_function": "wbs_get_sessions",
+            "python_functions": [
+              "get_sessions"
+            ],
+            "c_file": "src/cli/port_web_server_remaining2.c",
+            "python_file": "hermes_cli/web_server.py",
+            "line": 43,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_sessions @ hermes_cli/web_server.py:get_sessions */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/web_server.py",
@@ -259200,17 +259228,24 @@
             "decorators": [],
             "line_number": 6182
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_web_server_remaining2.c",
+          "c_function": "wbs_coerce_bool",
+          "pop_annotation": {
+            "c_function": "wbs_coerce_bool",
+            "python_functions": [
+              "_coerce_bool"
+            ],
+            "c_file": "src/cli/port_web_server_remaining2.c",
+            "python_file": "hermes_cli/web_server.py",
+            "line": 51,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _coerce_bool @ hermes_cli/web_server.py:_coerce_bool */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/web_server.py",
@@ -259744,17 +259779,24 @@
             "decorators": [],
             "line_number": 6561
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_web_server_remaining2.c",
+          "c_function": "wbs_get_schema",
+          "pop_annotation": {
+            "c_function": "wbs_get_schema",
+            "python_functions": [
+              "get_schema"
+            ],
+            "c_file": "src/cli/port_web_server_remaining2.c",
+            "python_file": "hermes_cli/web_server.py",
+            "line": 67,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_schema @ hermes_cli/web_server.py:get_schema */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/web_server.py",
@@ -259795,17 +259837,24 @@
             "decorators": [],
             "line_number": 6589
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_web_server_remaining2.c",
+          "c_function": "wbs_get_model_info",
+          "pop_annotation": {
+            "c_function": "wbs_get_model_info",
+            "python_functions": [
+              "get_model_info"
+            ],
+            "c_file": "src/cli/port_web_server_remaining2.c",
+            "python_file": "hermes_cli/web_server.py",
+            "line": 72,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_model_info @ hermes_cli/web_server.py:get_model_info */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/web_server.py",
@@ -260832,17 +260881,24 @@
             "decorators": [],
             "line_number": 8562
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_web_server_remaining2.c",
+          "c_function": "wbs_catalog_lookup",
+          "pop_annotation": {
+            "c_function": "wbs_catalog_lookup",
+            "python_functions": [
+              "_catalog_lookup"
+            ],
+            "c_file": "src/cli/port_web_server_remaining2.c",
+            "python_file": "hermes_cli/web_server.py",
+            "line": 79,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _catalog_lookup @ hermes_cli/web_server.py:_catalog_lookup */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/web_server.py",
@@ -264363,17 +264419,24 @@
             "decorators": [],
             "line_number": 12543
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_web_server_remaining2.c",
+          "c_function": "wbs_cron_fire_webhook",
+          "pop_annotation": {
+            "c_function": "wbs_cron_fire_webhook",
+            "python_functions": [
+              "cron_fire_webhook"
+            ],
+            "c_file": "src/cli/port_web_server_remaining2.c",
+            "python_file": "hermes_cli/web_server.py",
+            "line": 94,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cron_fire_webhook @ hermes_cli/web_server.py:cron_fire_webhook */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/web_server.py",
@@ -265603,17 +265666,24 @@
             "decorators": [],
             "line_number": 13934
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_web_server_remaining2.c",
+          "c_function": "wbs_run_doctor",
+          "pop_annotation": {
+            "c_function": "wbs_run_doctor",
+            "python_functions": [
+              "run_doctor"
+            ],
+            "c_file": "src/cli/port_web_server_remaining2.c",
+            "python_file": "hermes_cli/web_server.py",
+            "line": 102,
+            "is_consolidated": false,
+            "full_text": "/* PoP: run_doctor @ hermes_cli/web_server.py:run_doctor */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/web_server.py",
@@ -265944,17 +266014,24 @@
             "decorators": [],
             "line_number": 14295
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_web_server_remaining2.c",
+          "c_function": "wbs_list_checkpoints",
+          "pop_annotation": {
+            "c_function": "wbs_list_checkpoints",
+            "python_functions": [
+              "list_checkpoints"
+            ],
+            "c_file": "src/cli/port_web_server_remaining2.c",
+            "python_file": "hermes_cli/web_server.py",
+            "line": 109,
+            "is_consolidated": false,
+            "full_text": "/* PoP: list_checkpoints @ hermes_cli/web_server.py:list_checkpoints */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/web_server.py",
@@ -266956,17 +267033,24 @@
             ],
             "line_number": 15478
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_web_server_remaining2.c",
+          "c_function": "wbs_config_profile_scope",
+          "pop_annotation": {
+            "c_function": "wbs_config_profile_scope",
+            "python_functions": [
+              "_config_profile_scope"
+            ],
+            "c_file": "src/cli/port_web_server_remaining2.c",
+            "python_file": "hermes_cli/web_server.py",
+            "line": 116,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _config_profile_scope @ hermes_cli/web_server.py:_config_profile_scope */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/web_server.py",
