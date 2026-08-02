@@ -11,6 +11,8 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <unistd.h>
+#include <dirent.h>
 #include <sqlite3.h>
 #include "hermes_state_internal.h"
 #include "hermes_json.h"
@@ -1907,4 +1909,161 @@ bool hermes_state_maybe_auto_archive(hermes_state_db_t *db, long long idle_days)
     snprintf(stamp, sizeof(stamp), "%.0f", now);
     hermes_state_set_meta(db, "last_auto_archive_at", stamp);
     return true;
+}
+
+/* ── session deletion ──────────────────────────────────────────────────── */
+
+static void hs_orphan_children_of(hermes_state_db_t *db, const char *parent_id) {
+    sqlite3_stmt *up = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "UPDATE sessions SET parent_session_id = NULL WHERE parent_session_id = ?",
+            -1, &up, NULL) == SQLITE_OK) {
+        sqlite3_bind_text(up, 1, parent_id, -1, SQLITE_TRANSIENT);
+        sqlite3_step(up);
+        sqlite3_finalize(up);
+    }
+}
+
+static void hs_delete_delegate_children_of(hermes_state_db_t *db, const char *parent_id) {
+    sqlite3_stmt *del = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "DELETE FROM sessions WHERE parent_session_id = ? "
+            "AND json_extract(COALESCE(model_config, '{}'), '$._delegate_from') IS NOT NULL",
+            -1, &del, NULL) == SQLITE_OK) {
+        sqlite3_bind_text(del, 1, parent_id, -1, SQLITE_TRANSIENT);
+        sqlite3_step(del);
+        sqlite3_finalize(del);
+    }
+}
+
+static void hs_delete_session_row(hermes_state_db_t *db, const char *session_id) {
+    sqlite3_stmt *d1 = NULL;
+    if (sqlite3_prepare_v2(db->db, "DELETE FROM messages WHERE session_id = ?", -1, &d1, NULL) == SQLITE_OK) {
+        sqlite3_bind_text(d1, 1, session_id, -1, SQLITE_TRANSIENT);
+        sqlite3_step(d1);
+        sqlite3_finalize(d1);
+    }
+    sqlite3_stmt *d2 = NULL;
+    if (sqlite3_prepare_v2(db->db, "DELETE FROM sessions WHERE id = ?", -1, &d2, NULL) == SQLITE_OK) {
+        sqlite3_bind_text(d2, 1, session_id, -1, SQLITE_TRANSIENT);
+        sqlite3_step(d2);
+        sqlite3_finalize(d2);
+    }
+}
+
+/* PoP: hermes_state_prune_sessions @ hermes_state.py:prune_sessions */
+long long hermes_state_prune_sessions(hermes_state_db_t *db, double older_than_days,
+                                      const char *source) {
+    /* Delete ended sessions inactive for older_than_days, optionally
+     * restricted to source; children of deleted parents are orphaned. */
+    if (!db) return 0;
+    double cutoff = older_than_days > 0
+        ? hermes_state_now_epoch() - older_than_days * 86400.0
+        : hermes_state_now_epoch();
+    char sql[1600];
+    snprintf(sql, sizeof(sql),
+        "SELECT id FROM sessions s WHERE s.ended_at IS NOT NULL "
+        "AND COALESCE((SELECT MAX(m.timestamp) FROM messages m WHERE m.session_id = s.id), s.started_at) < ?1 %s",
+        source && *source ? "AND s.source = ?2" : "");
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db, sql, -1, &st, NULL) != SQLITE_OK) return 0;
+    sqlite3_bind_double(st, 1, cutoff);
+    if (source && *source) sqlite3_bind_text(st, 2, source, -1, SQLITE_TRANSIENT);
+    char ids[8192];
+    size_t len = 0;
+    ids[0] = '\0';
+    while (sqlite3_step(st) == SQLITE_ROW) {
+        const unsigned char *id = sqlite3_column_text(st, 0);
+        if (!id) continue;
+        size_t need = len + strlen((const char *)id) + 2;
+        if (need > sizeof(ids)) continue;
+        if (len) { strcat(ids, ","); len++; }
+        strcat(ids, (const char *)id);
+        len += strlen((const char *)id);
+    }
+    sqlite3_finalize(st);
+    if (!len) return 0;
+    sqlite3_exec(db->db, "BEGIN IMMEDIATE", NULL, NULL, NULL);
+    char up[9000];
+    snprintf(up, sizeof(up),
+             "UPDATE sessions SET parent_session_id = NULL WHERE parent_session_id IN (%s)", ids);
+    sqlite3_exec(db->db, up, NULL, NULL, NULL);
+    char dm[9000];
+    snprintf(dm, sizeof(dm), "DELETE FROM messages WHERE session_id IN (%s)", ids);
+    sqlite3_exec(db->db, dm, NULL, NULL, NULL);
+    char ds[9000];
+    snprintf(ds, sizeof(ds), "DELETE FROM sessions WHERE id IN (%s)", ids);
+    sqlite3_stmt *del = NULL;
+    long long n = 0;
+    if (sqlite3_prepare_v2(db->db, ds, -1, &del, NULL) == SQLITE_OK) {
+        sqlite3_step(del);
+        n = sqlite3_changes(db->db);
+        sqlite3_finalize(del);
+    }
+    sqlite3_exec(db->db, "COMMIT", NULL, NULL, NULL);
+    return n;
+}
+
+/* PoP: hermes_state_remove_session_files @ hermes_state.py:_remove_session_files */
+void hermes_state_remove_session_files(const char *home, const char *session_id) {
+    /* Clean up {sid}.json, {sid}.jsonl and request_dump_{sid}_*.json under
+     * the home dir; silently skip missing files. */
+    if (!home || !session_id) return;
+    char p1[1024], p2[1024];
+    snprintf(p1, sizeof(p1), "%s/%s.json", home, session_id);
+    snprintf(p2, sizeof(p2), "%s/%s.jsonl", home, session_id);
+    unlink(p1);
+    unlink(p2);
+    /* request_dump_<sid>_*.json — scan the dir */
+    DIR *dir = opendir(home);
+    if (!dir) return;
+    char prefix[512];
+    snprintf(prefix, sizeof(prefix), "request_dump_%s_", session_id);
+    struct dirent *de;
+    while ((de = readdir(dir)) != NULL) {
+        if (strncmp(de->d_name, prefix, strlen(prefix)) == 0) {
+            const char *dot = strrchr(de->d_name, '.');
+            if (dot && strcmp(dot, ".json") == 0) {
+                char fp[1200];
+                snprintf(fp, sizeof(fp), "%s/%s", home, de->d_name);
+                unlink(fp);
+            }
+        }
+    }
+    closedir(dir);
+}
+
+/* PoP: hermes_state_delete_session @ hermes_state.py:delete_session */
+bool hermes_state_delete_session(hermes_state_db_t *db, const char *session_id) {
+    /* Delegate subagent children cascade-deleted; branch/compression
+     * children orphaned; messages + row removed. */
+    if (!db || !session_id) return false;
+    sqlite3_exec(db->db, "BEGIN IMMEDIATE", NULL, NULL, NULL);
+    hs_delete_delegate_children_of(db, session_id);
+    hs_orphan_children_of(db, session_id);
+    hs_delete_session_row(db, session_id);
+    sqlite3_exec(db->db, "COMMIT", NULL, NULL, NULL);
+    return true;
+}
+
+/* PoP: hermes_state_delete_sessions @ hermes_state.py:delete_sessions */
+long long hermes_state_delete_sessions(hermes_state_db_t *db, const char *session_ids_json) {
+    /* Bulk delete in a single transaction with the per-row contract. */
+    if (!db) return 0;
+    json_t *ids = json_parse(session_ids_json ? session_ids_json : "[]", NULL);
+    if (!ids || ids->type != JSON_ARRAY) { if (ids) json_free(ids); return 0; }
+    sqlite3_exec(db->db, "BEGIN IMMEDIATE", NULL, NULL, NULL);
+    long long n = 0;
+    for (size_t i = 0; i < json_len(ids); i++) {
+        json_t *v = json_get(ids, i);
+        if (!v || !json_is_string(v)) continue;
+        const char *sid = json_string_value(v);
+        hs_delete_delegate_children_of(db, sid);
+        hs_orphan_children_of(db, sid);
+        hs_delete_session_row(db, sid);
+        n++;
+    }
+    sqlite3_exec(db->db, "COMMIT", NULL, NULL, NULL);
+    json_free(ids);
+    return n;
 }
