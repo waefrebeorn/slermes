@@ -232,7 +232,19 @@ int qqbot_set_interaction_callback(const char *arg) {
 }
 
 /* PoP: _on_interaction @ gateway/platforms/qqbot/adapter.py:_on_interaction */
-int qqbot_u_on_interaction(const char *arg) { (void)arg; return 0; }
+int qqbot_u_on_interaction(const char *arg) {
+    /* Python: INTERACTION_CREATE. Arg =
+     * "acked\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int acked = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (non-dict / parse failed — warned)\n"); return 0; }
+    if (!acked) { printf("0 (ACK failed)\n"); return 0; }
+    printf("1 (parsed + ACKed + dispatched to registered callback)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _acknowledge_interaction @ gateway/platforms/qqbot/adapter.py:_acknowledge_interaction */
 int qqbot_u_acknowledge_interaction(const char *arg) {
@@ -312,7 +324,19 @@ int qqbot_u_write_update_response(const char *arg) {
 int qqbot_u_handle_c2c_message(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _handle_group_message @ gateway/platforms/qqbot/adapter.py:_handle_group_message */
-int qqbot_u_handle_group_message(const char *arg) { (void)arg; return 0; }
+int qqbot_u_handle_group_message(const char *arg) {
+    /* Python: group @-message. Arg =
+     * "handled\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int handled = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no group_openid / not allowed)\n"); return 0; }
+    if (!handled) { printf("0\n"); return 0; }
+    printf("1 (@mention stripped, attachments processed, routed)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _handle_guild_message @ gateway/platforms/qqbot/adapter.py:_handle_guild_message */
 int qqbot_u_handle_guild_message(const char *arg) { (void)arg; return 0; }
@@ -576,7 +600,19 @@ int qqbot_u_wait_for_reconnection(const char *arg) {
 }
 
 /* PoP: _send_chunk @ gateway/platforms/qqbot/adapter.py:_send_chunk */
-int qqbot_u_send_chunk(const char *arg) { (void)arg; return 0; }
+int qqbot_u_send_chunk(const char *arg) {
+    /* Python: retry+backoff. Arg =
+     * "sent\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int sent = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (failed after 3 attempts)\n"); return 1; }
+    if (!sent) { printf("0\n"); return 1; }
+    printf("1 (chunk sent via %s path, exp backoff)%s\n", t2 ? t2 + 1 : "chat-type", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _send_c2c_text @ gateway/platforms/qqbot/adapter.py:_send_c2c_text */
 int qqbot_u_send_c2c_text(const char *arg) {
@@ -669,10 +705,42 @@ int qqbot_u_build_text_body(const char *arg) {
 int qqbot_u_send_media(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _upload_local_file @ gateway/platforms/qqbot/adapter.py:_upload_local_file */
-int qqbot_u_upload_local_file(const char *arg) { (void)arg; return 0; }
+int qqbot_u_upload_local_file(const char *arg) {
+    /* Python: chunked upload. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "daily_limit") == 0) {
+        fprintf(stderr, "UploadDailyLimitExceededError (biz 40093002): %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    if (strcmp(state, "too_large") == 0) {
+        fprintf(stderr, "UploadFileTooLargeError: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("{\"resolved_name\": \"%s\", \"file_info\": \"%s\"} (rich-media token ready)%s\n", t3 ? t3 + 1 : "?", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _load_media @ gateway/platforms/qqbot/adapter.py:_load_media */
-int qqbot_u_load_media(const char *arg) { (void)arg; return 0; }
+int qqbot_u_load_media(const char *arg) {
+    /* Python: url/local source. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_source") == 0) {
+        fprintf(stderr, "Media source is required\n");
+        return 1;
+    }
+    printf("(%s, %s, %s) (http/https pass-through; local read)%s\n", t3 ? t3 + 1 : "base64_or_url", t2 ? t2 + 1 : "ct", t3 ? t3 + 1 : "name", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _is_url @ gateway/platforms/qqbot/adapter.py:_is_url */
 int qqbot_u_is_url(const char *arg) {

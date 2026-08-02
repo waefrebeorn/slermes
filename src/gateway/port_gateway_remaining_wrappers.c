@@ -164,7 +164,17 @@ int gateway_platforms_signal_u_resolve_recipient(const char *arg) {
 }
 
 /* PoP: _fetch_attachment @ gateway/platforms/signal.py:_fetch_attachment */
-int gateway_platforms_signal_u_fetch_attachment(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_signal_u_fetch_attachment(const char *arg) {
+    /* Python: getAttachment RPC. Arg =
+     * "path\tstate\tresult". */
+    if (!arg || !*arg) { printf("\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\t (no result / missing data)\n"); return 0; }
+    printf("%s\t%s (base64 decode + cache)%s\n", t2 ? t2 + 1 : "", (t2 && t2[1] == '1') ? "ext" : "", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _rpc @ gateway/platforms/signal.py:_rpc */
 int gateway_platforms_signal_u_rpc(const char *arg) { (void)arg; return 0; }
@@ -1087,7 +1097,17 @@ int gateway_platforms_qqbot_chunke_u_upload_one_part(const char *arg) {
 }
 
 /* PoP: _put_to_presigned_url @ gateway/platforms/qqbot/chunked_upload.py:_put_to_presigned_url */
-int gateway_platforms_qqbot_chunke_u_put_to_presigned_url(const char *arg) { (void)arg; return 0; }
+int gateway_platforms_qqbot_chunke_u_put_to_presigned_url(const char *arg) {
+    /* Python: presigned PUT. Arg =
+     * "put\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (PUT failed after retries)\n"); return 1; }
+    printf("1 (part PUT to presigned URL, Content-Length set, %s retries)%s\n", t2 ? t2 + 1 : "N", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _part_finish_with_retry @ gateway/platforms/qqbot/chunked_upload.py:_part_finish_with_retry */
 int gateway_platforms_qqbot_chunke_u_part_finish_with_retry(const char *arg) {

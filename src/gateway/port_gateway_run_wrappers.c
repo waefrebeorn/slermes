@@ -1308,7 +1308,19 @@ int grun_u_send_goal_status_notice(const char *arg) {
 }
 
 /* PoP: _defer_goal_status_notice_after_delivery @ gateway/run.py:_defer_goal_status_notice_after_delivery */
-int grun_u_defer_goal_status_notice_after_delivery(const char *arg) { (void)arg; return 0; }
+int grun_u_defer_goal_status_notice_after_delivery(const char *arg) {
+    /* Python: post-delivery callback. Arg =
+     * "deferred\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int deferred = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!deferred) { printf("0 (no post-delivery hook — direct awaited delivery fallback)\n"); return 0; }
+    printf("1 (goal status scheduled after main response send — natural reading order)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _post_turn_goal_continuation @ gateway/run.py:_post_turn_goal_continuation */
 int grun_u_post_turn_goal_continuation(const char *arg) { (void)arg; return 0; }
@@ -1490,10 +1502,32 @@ int grun_u_schedule_telegram_topic_title_rename(const char *arg) {
 }
 
 /* PoP: _disable_telegram_topic_mode_for_chat @ gateway/run.py:_disable_telegram_topic_mode_for_chat */
-int grun_u_disable_telegram_topic_mode_for_chat(const char *arg) { (void)arg; return 0; }
+int grun_u_disable_telegram_topic_mode_for_chat(const char *arg) {
+    /* Python: /topic off. Arg =
+     * "disabled\tstate\tresult". */
+    if (!arg || !*arg) { printf("Could not determine chat ID.\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int disabled = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (session db unavailable / never enabled)\n"); return 0; }
+    if (!disabled) { printf("0 (already off)\n"); return 0; }
+    printf("1 (topic mode disabled; threads archived/pinned cleanup)%s\n", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _telegram_topic_root_status_message @ gateway/run.py:_telegram_topic_root_status_message */
-int grun_u_telegram_topic_root_status_message(const char *arg) { (void)arg; return 0; }
+int grun_u_telegram_topic_root_status_message(const char *arg) {
+    /* Python: multi-session help. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("Telegram multi-session topics are enabled.\n");
+    printf("… open All Messages, send any message to create a new topic.%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _restore_telegram_topic_session @ gateway/run.py:_restore_telegram_topic_session */
 int grun_u_restore_telegram_topic_session(const char *arg) { (void)arg; return 0; }

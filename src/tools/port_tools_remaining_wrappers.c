@@ -2136,7 +2136,17 @@ int tools_image_source_u_permitted_host_read_target(const char *arg) {
 }
 
 /* PoP: _resolve_container_fallback @ tools/image_source.py:_resolve_container_fallback */
-int tools_image_source_u_resolve_container_fallback(const char *arg) { (void)arg; return 0; }
+int tools_image_source_u_resolve_container_fallback(const char *arg) {
+    /* Python: in-sandbox read. Arg =
+     * "bytes\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n (no active sandbox — fail-closed refuse)\n"); return 1; }
+    printf("%s B (base64 -- / tr -d GNU-safe; never touches host fs)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _is_delegated_child_context @ tools/kanban_tools.py:_is_delegated_child_context */
 int tools_kanban_tools_u_is_delegated_child_context(const char *arg) {

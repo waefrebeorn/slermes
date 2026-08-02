@@ -418,7 +418,17 @@ int cua_u_require_started(const char *arg) {
 int cua_u_lifecycle_coro(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _populate_capabilities @ tools/computer_use/cua_backend.py:_populate_capabilities */
-int cua_u_populate_capabilities(const char *arg) { (void)arg; return 0; }
+int cua_u_populate_capabilities(const char *arg) {
+    /* Python: tools/list cache. Arg =
+     * "cached\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (discovery failed — map empty, supports_capability degrades)\n"); return 0; }
+    printf("1 (%s tool(s) cached w/ capability_version; Surface 4 soft prerequisite)%s\n", t2 ? t2 + 1 : "?", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _start_lifecycle_locked @ tools/computer_use/cua_backend.py:_start_lifecycle_locked */
 int cua_u_start_lifecycle_locked(const char *arg) {

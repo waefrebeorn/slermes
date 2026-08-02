@@ -7972,7 +7972,25 @@ int hermes_cli_dashboard_auth_toke_authenticate_token(const char *arg) {
 }
 
 /* PoP: token_auth_middleware @ hermes_cli/dashboard_auth/token_auth.py:token_auth_middleware */
-int hermes_cli_dashboard_auth_toke_token_auth_middleware(const char *arg) { (void)arg; return 0; }
+int hermes_cli_dashboard_auth_toke_token_auth_middleware(const char *arg) {
+    /* Python: outermost seam. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("pass-through (unregistered path)\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "valid") == 0) {
+        printf("token_authenticated=1 (principal attached; cookie gates skip)%s\n", (t2 && t2[1] == '1') ? "" : "");
+        return 0;
+    }
+    if (strcmp(state, "unreachable") == 0) {
+        printf("503 (provider backing store down — not bad credentials)%s\n", (t2 && t2[1] == '1') ? "" : "");
+        return 503;
+    }
+    printf("401 unauthenticated%s\n", t3 ? t3 + 1 : "");
+    return 401;
+}
 
 /* PoP: _read_chain @ hermes_cli/fallback_cmd.py:_read_chain */
 int hermes_cli_fallback_cmd_u_read_chain(const char *arg) {

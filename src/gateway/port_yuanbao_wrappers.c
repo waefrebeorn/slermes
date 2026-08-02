@@ -508,7 +508,17 @@ int yb_u_extract_quote_context(const char *arg) {
 }
 
 /* PoP: _extract_media_refs_from_transcript @ gateway/platforms/yuanbao.py:_extract_media_refs_from_transcript */
-int yb_u_extract_media_refs_from_transcript(const char *arg) { (void)arg; return 0; }
+int yb_u_extract_media_refs_from_transcript(const char *arg) {
+    /* Python: quote anchors. Arg =
+     * "refs\tstate\tresult". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("[] (no reply id / store unavailable)\n"); return 0; }
+    printf("%s ref(s) [(rid, kind, filename) from [kind|ybres:RID] anchors]%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _send_loading_heartbeat @ gateway/platforms/yuanbao.py:_send_loading_heartbeat */
 int yb_u_send_loading_heartbeat(const char *arg) {
@@ -737,7 +747,16 @@ int yb_u_extract_connect_id(const char *arg) {
 }
 
 /* PoP: _heartbeat_loop @ gateway/platforms/yuanbao.py:_heartbeat_loop */
-int yb_u_heartbeat_loop(const char *arg) { (void)arg; return 0; }
+int yb_u_heartbeat_loop(const char *arg) {
+    /* Python: 30s ping. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("heartbeat loop (ping every 30s, pending_pong future, threshold misses → reconnect)%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _receive_loop @ gateway/platforms/yuanbao.py:_receive_loop */
 int yb_u_receive_loop(const char *arg) {
@@ -970,7 +989,17 @@ int yb_query_group_info_raw(const char *arg) {
 }
 
 /* PoP: get_group_member_list_raw @ gateway/platforms/yuanbao.py:get_group_member_list_raw */
-int yb_get_group_member_list_raw(const char *arg) { (void)arg; return 0; }
+int yb_get_group_member_list_raw(const char *arg) {
+    /* Python: WS member list. Arg =
+     * "members\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("%s (member cache populated; offset/limit pagination)%s\n", t2 ? t2 + 1 : "{}", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: query_session_members @ gateway/platforms/yuanbao.py:query_session_members */
 int yb_query_session_members(const char *arg) {

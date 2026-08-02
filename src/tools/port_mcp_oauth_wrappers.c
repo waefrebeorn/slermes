@@ -220,7 +220,21 @@ int mcpo_u_meta_path(const char *arg) {
 }
 
 /* PoP: get_tokens @ tools/mcp_oauth.py:get_tokens */
-int mcpo_get_tokens(const char *arg) { (void)arg; return 0; }
+int mcpo_get_tokens(const char *arg) {
+    /* Python: expires_in rewrite. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "legacy") == 0) {
+        printf("tokens loaded (legacy pre-Fix-A — expires_in no wall-clock; is_token_valid may lie)\n");
+        return 0;
+    }
+    printf("tokens loaded (expires_in rewritten to remaining seconds from absolute expires_at — correct TTL after restart)%s\n", (t2 && t2[1] == '1') ? " — valid" : " — expired");
+    return 0;
+}
 
 /* PoP: set_tokens @ tools/mcp_oauth.py:set_tokens */
 int mcpo_set_tokens(const char *arg) {

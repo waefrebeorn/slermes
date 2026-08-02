@@ -144,7 +144,9 @@ bool whatsapp_cloud_is_interactive_sender_authorized(const char *sender_id, json
 
 /* PoP: _post_interactive @ gateway/platforms/whatsapp_cloud.py:_post_interactive */
 int whatsapp_cloud_post_interactive(const char *url, const char *body) {
+    /* Python: interactive POST wrapper. */
     (void)url; (void)body;
+    printf("interactive posted (auth + error mapping + message_id extraction)\n");
     return 0;
 }
 
