@@ -25,6 +25,15 @@ extern void cmd_tools(const char *args, agent_state_t *state);
 extern void cmd_update(const char *args, agent_state_t *state);
 extern void cmd_goal(const char *args, agent_state_t *state);
 extern void cmd_subgoal(const char *args, agent_state_t *state);
+extern void cmd_skin(const char *args, agent_state_t *state);
+extern void cmd_voice(const char *args, agent_state_t *state);
+extern void cmd_background(const char *args, agent_state_t *state);
+extern void cmd_pet(const char *args, agent_state_t *state);
+extern void cmd_personality(const char *args, agent_state_t *state);
+extern int hermes_cli_journey_cmd_journey(const char *arg);
+extern void cmd_copy(const char *args, agent_state_t *state);
+extern void cmd_paste(const char *args, agent_state_t *state);
+extern void cmd_image(const char *args, agent_state_t *state);
 
 /* PoP: _handle_rollback_command @ hermes_cli/cli_commands_mixin.py:_handle_rollback_command */
 int ccm_handle_rollback_command(const char *args) {
@@ -82,19 +91,23 @@ int ccm_handle_agents_command(const char *args) {
 }
 /* PoP: _handle_journey_command @ hermes_cli/cli_commands_mixin.py:_handle_journey_command */
 int ccm_handle_journey_command(const char *args) {
-    (void)args; return 0;
+    hermes_cli_journey_cmd_journey(args ? args : "");
+    return 0;
 }
 /* PoP: _handle_paste_command @ hermes_cli/cli_commands_mixin.py:_handle_paste_command */
 int ccm_handle_paste_command(const char *args) {
-    (void)args; return 0;
+    cmd_paste(args ? args : "", NULL);
+    return 0;
 }
 /* PoP: _handle_copy_command @ hermes_cli/cli_commands_mixin.py:_handle_copy_command */
 int ccm_handle_copy_command(const char *args) {
-    (void)args; return 0;
+    cmd_copy(args ? args : "", NULL);
+    return 0;
 }
 /* PoP: _handle_image_command @ hermes_cli/cli_commands_mixin.py:_handle_image_command */
 int ccm_handle_image_command(const char *args) {
-    (void)args; return 0;
+    cmd_image(args ? args : "", NULL);
+    return 0;
 }
 /* PoP: _handle_tools_command @ hermes_cli/cli_commands_mixin.py:_handle_tools_command */
 int ccm_handle_tools_command(const char *args) {
@@ -128,11 +141,13 @@ int ccm_handle_branch_command(const char *args) {
 }
 /* PoP: _handle_personality_command @ hermes_cli/cli_commands_mixin.py:_handle_personality_command */
 int ccm_handle_personality_command(const char *args) {
-    (void)args; return 0;
+    cmd_personality(args ? args : "", NULL);
+    return 0;
 }
 /* PoP: _handle_pet_command @ hermes_cli/cli_commands_mixin.py:_handle_pet_command */
 int ccm_handle_pet_command(const char *args) {
-    (void)args; return 0;
+    cmd_pet(args ? args : "", NULL);
+    return 0;
 }
 /* PoP: _handle_hatch_command @ hermes_cli/cli_commands_mixin.py:_handle_hatch_command */
 int ccm_handle_hatch_command(const char *args) {
@@ -179,7 +194,8 @@ void ccm_save_write_approval(const char *path, bool approved) {
 }
 /* PoP: _handle_background_command @ hermes_cli/cli_commands_mixin.py:_handle_background_command */
 int ccm_handle_background_command(const char *args) {
-    (void)args; return 0;
+    cmd_background(args ? args : "", NULL);
+    return 0;
 }
 /* PoP: _handle_bundles_command @ hermes_cli/cli_commands_mixin.py:_handle_bundles_command */
 int ccm_handle_bundles_command(const char *args) {
@@ -206,7 +222,8 @@ int ccm_handle_subgoal_command(const char *args) {
 }
 /* PoP: _handle_skin_command @ hermes_cli/cli_commands_mixin.py:_handle_skin_command */
 int ccm_handle_skin_command(const char *args) {
-    (void)args; return 0;
+    cmd_skin(args ? args : "", NULL);
+    return 0;
 }
 /* PoP: _compose_in_editor @ hermes_cli/cli_commands_mixin.py:_compose_in_editor */
 char *ccm_compose_in_editor(const char *initial_text) {
@@ -441,5 +458,6 @@ int ccm_handle_update_command(const char *args) {
 }
 /* PoP: _handle_voice_command @ hermes_cli/cli_commands_mixin.py:_handle_voice_command */
 int ccm_handle_voice_command(const char *args) {
-    (void)args; return 0;
+    cmd_voice(args ? args : "", NULL);
+    return 0;
 }
