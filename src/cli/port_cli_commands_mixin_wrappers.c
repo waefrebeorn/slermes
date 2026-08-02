@@ -14,6 +14,7 @@
 #include "slermes_home.h"
 #include "tools/process_registry.h"
 #include "port_config_py_helpers.h"
+#include "hermes_core_types.h"
 
 /* PoP: _handle_rollback_command @ hermes_cli/cli_commands_mixin.py:_handle_rollback_command */
 int ccm_handle_rollback_command(const char *args) {
@@ -286,15 +287,131 @@ int ccm_handle_timestamps_command(const char *args) {
 }
 /* PoP: _handle_reasoning_command @ hermes_cli/cli_commands_mixin.py:_handle_reasoning_command */
 int ccm_handle_reasoning_command(const char *args) {
-    (void)args; return 0;
+    char arg[64]; arg[0] = '\0';
+    if (args) {
+        const char *p = args;
+        while (*p && isspace((unsigned char)*p)) p++;
+        const char *sp = strchr(p, ' ');
+        size_t l = sp ? (size_t)(sp - p) : strlen(p);
+        if (l >= sizeof(arg)) l = sizeof(arg) - 1;
+        memcpy(arg, p, l); arg[l] = '\0';
+    }
+    int global = 0;
+    char *tok = strtok(arg, " ");
+    char clean[64]; clean[0] = '\0';
+    while (tok) {
+        if (strcmp(tok, "--global") == 0) global = 1;
+        else if (strcmp(tok, "--session") != 0) strncat(clean, tok, sizeof(clean) - strlen(clean) - 1);
+        tok = strtok(NULL, " ");
+    }
+    int current = 0;
+    json_t *cfg = config_py_load_config_readonly();
+    if (cfg) {
+        current = json_bool_value(config_py_get_nested(cfg, "display.show_reasoning"));
+        json_free(cfg);
+    }
+    if (clean[0] == '\0') {
+        printf("  Reasoning display: %s\n", current ? "on" : "off");
+        printf("  Reasoning effort:  medium (default)\n");
+        printf("  Usage: /reasoning <none|minimal|low|medium|high|xhigh|max|ultra|show|hide|full|clamp> [--global]\n");
+        return 0;
+    }
+    if (strcmp(clean, "show") == 0 || strcmp(clean, "on") == 0) {
+        config_py_save_value("display.show_reasoning", json_new_bool(true));
+        printf("  Reasoning display: ON (saved)\n"); return 0;
+    }
+    if (strcmp(clean, "hide") == 0 || strcmp(clean, "off") == 0) {
+        config_py_save_value("display.show_reasoning", json_new_bool(false));
+        printf("  Reasoning display: OFF (saved)\n"); return 0;
+    }
+    if (strcmp(clean, "full") == 0 || strcmp(clean, "all") == 0) {
+        config_py_save_value("display.reasoning_full", json_new_bool(true));
+        printf("  Reasoning display: FULL (saved)\n"); return 0;
+    }
+    if (strcmp(clean, "clamp") == 0 || strcmp(clean, "collapse") == 0 || strcmp(clean, "short") == 0) {
+        config_py_save_value("display.reasoning_full", json_new_bool(false));
+        printf("  Reasoning display: CLAMPED to 10 lines (saved)\n"); return 0;
+    }
+    json_t *val = json_new_string(clean);
+    int rc = global ? config_py_save_value("agent.reasoning_effort", val) : 0;
+    json_free(val);
+    printf("  Reasoning effort set to '%s' (%s)\n", clean, global ? "saved to config" : "this session");
+    (void)rc;
+    return 0;
 }
 /* PoP: _handle_busy_command @ hermes_cli/cli_commands_mixin.py:_handle_busy_command */
 int ccm_handle_busy_command(const char *args) {
-    (void)args; return 0;
+    char arg[64]; arg[0] = '\0';
+    if (args) {
+        const char *p = args;
+        while (*p && isspace((unsigned char)*p)) p++;
+        const char *sp = strchr(p, ' ');
+        size_t l = sp ? (size_t)(sp - p) : strlen(p);
+        if (l >= sizeof(arg)) l = sizeof(arg) - 1;
+        memcpy(arg, p, l); arg[l] = '\0';
+    }
+    char cur[32]; cur[0] = '\0';
+    json_t *cfg = config_py_load_config_readonly();
+    if (cfg) {
+        json_t *v = config_py_get_nested(cfg, "display.busy_input_mode");
+        if (v && v->type == JSON_STRING) snprintf(cur, sizeof(cur), "%s", v->str_val);
+        json_free(cfg);
+    }
+    if (strcmp(arg, "status") == 0 || arg[0] == '\0') {
+        printf("  Busy input mode: %s\n", cur[0] ? cur : "interrupt");
+        printf("  Usage: /busy [queue|steer|interrupt|status]\n");
+        return 0;
+    }
+    if (strcmp(arg, "queue") == 0 || strcmp(arg, "steer") == 0 || strcmp(arg, "interrupt") == 0) {
+        config_py_save_value("display.busy_input_mode", json_new_string(arg));
+        printf("  Busy input mode set to '%s' (saved to config)\n", arg);
+        return 0;
+    }
+    printf("  Unknown argument: %s\n  Usage: /busy [queue|steer|interrupt|status]\n", arg);
+    return 0;
 }
 /* PoP: _handle_fast_command @ hermes_cli/cli_commands_mixin.py:_handle_fast_command */
 int ccm_handle_fast_command(const char *args) {
-    (void)args; return 0;
+    char arg[64]; arg[0] = '\0';
+    if (args) {
+        const char *p = args;
+        while (*p && isspace((unsigned char)*p)) p++;
+        const char *sp = strchr(p, ' ');
+        size_t l = sp ? (size_t)(sp - p) : strlen(p);
+        if (l >= sizeof(arg)) l = sizeof(arg) - 1;
+        memcpy(arg, p, l); arg[l] = '\0';
+    }
+    int global = 0;
+    char *tok = strtok(arg, " ");
+    char clean[64]; clean[0] = '\0';
+    while (tok) {
+        if (strcmp(tok, "--global") == 0) global = 1;
+        else if (strcmp(tok, "--session") != 0) strncat(clean, tok, sizeof(clean) - strlen(clean) - 1);
+        tok = strtok(NULL, " ");
+    }
+    char cur[32]; cur[0] = '\0';
+    json_t *cfg = config_py_load_config_readonly();
+    if (cfg) {
+        json_t *v = config_py_get_nested(cfg, "agent.service_tier");
+        if (v && v->type == JSON_STRING) snprintf(cur, sizeof(cur), "%s", v->str_val);
+        json_free(cfg);
+    }
+    if (strcmp(clean, "status") == 0 || clean[0] == '\0') {
+        printf("  Fast mode: %s\n", (strcmp(cur, "priority") == 0) ? "fast" : "normal");
+        printf("  Usage: /fast [normal|fast|status] [--global]\n");
+        return 0;
+    }
+    const char *saved = NULL;
+    if (strcmp(clean, "fast") == 0 || strcmp(clean, "on") == 0) saved = "fast";
+    else if (strcmp(clean, "normal") == 0 || strcmp(clean, "off") == 0) saved = "normal";
+    else {
+        printf("  Unknown argument: %s\n  Usage: /fast [normal|fast|status] [--global]\n", clean);
+        return 0;
+    }
+    int rc = global ? config_py_save_value("agent.service_tier", json_new_string(saved)) : 0;
+    (void)rc;
+    printf("  Fast mode set to %s (%s)\n", saved, global ? "saved to config" : "this session");
+    return 0;
 }
 /* PoP: _handle_debug_command @ hermes_cli/cli_commands_mixin.py:_handle_debug_command */
 int ccm_handle_debug_command(const char *args) {
