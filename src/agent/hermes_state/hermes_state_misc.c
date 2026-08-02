@@ -1195,3 +1195,255 @@ bool hermes_state_request_handoff(hermes_state_db_t *db, const char *session_id,
     sqlite3_finalize(st);
     return ok;
 }
+
+/* ── session-management updates ────────────────────────────────────────── */
+
+/* PoP: hermes_state_set_expiry_finalized @ hermes_state.py:set_expiry_finalized */
+void hermes_state_set_expiry_finalized(hermes_state_db_t *db, const char *session_id, bool finalized) {
+    if (!db || !session_id) return;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db, "UPDATE sessions SET expiry_finalized = ?1 WHERE id = ?2", -1, &st, NULL) != SQLITE_OK) return;
+    sqlite3_bind_int(st, 1, finalized ? 1 : 0);
+    sqlite3_bind_text(st, 2, session_id, -1, SQLITE_TRANSIENT);
+    sqlite3_step(st);
+    sqlite3_finalize(st);
+}
+
+/* PoP: hermes_state_update_session_meta @ hermes_state.py:update_session_meta */
+void hermes_state_update_session_meta(hermes_state_db_t *db, const char *session_id,
+                                      const char *model_config, const char *model) {
+    /* COALESCE so model=NULL leaves the stored column unchanged. */
+    if (!db || !session_id) return;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "UPDATE sessions SET model_config = ?1, model = COALESCE(?2, model) WHERE id = ?3",
+            -1, &st, NULL) != SQLITE_OK) return;
+    sqlite3_bind_text(st, 1, model_config ? model_config : "", -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(st, 2, model, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(st, 3, session_id, -1, SQLITE_TRANSIENT);
+    sqlite3_step(st);
+    sqlite3_finalize(st);
+}
+
+/* PoP: hermes_state_update_system_prompt @ hermes_state.py:update_system_prompt */
+void hermes_state_update_system_prompt(hermes_state_db_t *db, const char *session_id,
+                                       const char *system_prompt) {
+    if (!db || !session_id) return;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db, "UPDATE sessions SET system_prompt = ?1 WHERE id = ?2", -1, &st, NULL) != SQLITE_OK) return;
+    sqlite3_bind_text(st, 1, system_prompt ? system_prompt : "", -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(st, 2, session_id, -1, SQLITE_TRANSIENT);
+    sqlite3_step(st);
+    sqlite3_finalize(st);
+}
+
+/* PoP: hermes_state_update_session_model @ hermes_state.py:update_session_model */
+void hermes_state_update_session_model(hermes_state_db_t *db, const char *session_id, const char *model) {
+    /* Unconditional set; nulls system_prompt so stale footers cannot lie. */
+    if (!db || !session_id) return;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "UPDATE sessions SET model = ?1, system_prompt = NULL WHERE id = ?2", -1, &st, NULL) != SQLITE_OK) return;
+    sqlite3_bind_text(st, 1, model ? model : "", -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(st, 2, session_id, -1, SQLITE_TRANSIENT);
+    sqlite3_step(st);
+    sqlite3_finalize(st);
+}
+
+/* PoP: hermes_state_update_session_runtime_lock @ hermes_state.py:update_session_runtime_lock */
+void hermes_state_update_session_runtime_lock(hermes_state_db_t *db, const char *session_id,
+                                              const char *provider, const char *model,
+                                              const char *lock_key) {
+    /* Merge browser_model_lock into the existing model_config JSON so
+     * _branched_from/_delegate_from survive; nulls system_prompt. */
+    if (!db || !session_id) return;
+    sqlite3_stmt *sel = NULL;
+    char *config = NULL;
+    if (sqlite3_prepare_v2(db->db, "SELECT model_config FROM sessions WHERE id = ?", -1, &sel, NULL) == SQLITE_OK) {
+        sqlite3_bind_text(sel, 1, session_id, -1, SQLITE_TRANSIENT);
+        if (sqlite3_step(sel) == SQLITE_ROW) {
+            const unsigned char *v = sqlite3_column_text(sel, 0);
+            if (v) config = strdup((const char *)v);
+        }
+        sqlite3_finalize(sel);
+    }
+    json_t *cfg = NULL;
+    if (config && *config) {
+        cfg = json_parse(config, NULL);
+        if (cfg && cfg->type != JSON_OBJECT) { json_free(cfg); cfg = NULL; }
+    }
+    if (!cfg) cfg = json_object();
+    json_t *lock = json_object();
+    if (provider) json_set(lock, "provider", json_string(provider));
+    if (model) json_set(lock, "model", json_string(model));
+    json_set(cfg, lock_key ? lock_key : "browser_model_lock", lock);
+    char *ser = json_serialize(cfg);
+    sqlite3_stmt *up = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "UPDATE sessions SET model_config = ?1, system_prompt = NULL WHERE id = ?2", -1, &up, NULL) == SQLITE_OK) {
+        sqlite3_bind_text(up, 1, ser, -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(up, 2, session_id, -1, SQLITE_TRANSIENT);
+        sqlite3_step(up);
+        sqlite3_finalize(up);
+    }
+    free(ser);
+    json_free(cfg);
+    free(config);
+}
+
+/* PoP: hermes_state_update_session_billing_route @ hermes_state.py:update_session_billing_route */
+void hermes_state_update_session_billing_route(hermes_state_db_t *db, const char *session_id,
+                                               const char *provider, const char *base_url) {
+    if (!db || !session_id) return;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "UPDATE sessions SET billing_provider = ?1, billing_base_url = ?2, system_prompt = NULL WHERE id = ?3",
+            -1, &st, NULL) != SQLITE_OK) return;
+    sqlite3_bind_text(st, 1, provider ? provider : "", -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(st, 2, base_url ? base_url : "", -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(st, 3, session_id, -1, SQLITE_TRANSIENT);
+    sqlite3_step(st);
+    sqlite3_finalize(st);
+}
+
+/* PoP: hermes_state_reopen_session @ hermes_state.py:reopen_session */
+void hermes_state_reopen_session(hermes_state_db_t *db, const char *session_id) {
+    if (!db || !session_id) return;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "UPDATE sessions SET ended_at = NULL, end_reason = NULL WHERE id = ?", -1, &st, NULL) != SQLITE_OK) return;
+    sqlite3_bind_text(st, 1, session_id, -1, SQLITE_TRANSIENT);
+    sqlite3_step(st);
+    sqlite3_finalize(st);
+}
+
+/* PoP: hermes_state_promote_to_session_reset @ hermes_state.py:promote_to_session_reset */
+bool hermes_state_promote_to_session_reset(hermes_state_db_t *db, const char *session_id) {
+    /* Mark live rows (or rows with recoverable accidental end reasons)
+     * as ended by an intentional reset boundary. */
+    if (!db || !session_id) return false;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "UPDATE sessions SET ended_at = ?1, end_reason = 'session_reset' "
+            "WHERE id = ?2 AND (ended_at IS NULL OR end_reason IN ('agent_close', 'ws_orphan_reap'))",
+            -1, &st, NULL) != SQLITE_OK) return false;
+    sqlite3_bind_double(st, 1, hermes_state_now_epoch());
+    sqlite3_bind_text(st, 2, session_id, -1, SQLITE_TRANSIENT);
+    sqlite3_step(st);
+    bool ok = sqlite3_changes(db->db) > 0;
+    sqlite3_finalize(st);
+    return ok;
+}
+
+/* PoP: hermes_state_update_session_cwd @ hermes_state.py:update_session_cwd */
+void hermes_state_update_session_cwd(hermes_state_db_t *db, const char *session_id,
+                                     const char *cwd, const char *git_branch) {
+    if (!db || !session_id) return;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "UPDATE sessions SET cwd = ?1, git_branch = ?2 WHERE id = ?3", -1, &st, NULL) != SQLITE_OK) return;
+    sqlite3_bind_text(st, 1, cwd ? cwd : "", -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(st, 2, git_branch ? git_branch : "", -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(st, 3, session_id, -1, SQLITE_TRANSIENT);
+    sqlite3_step(st);
+    sqlite3_finalize(st);
+}
+
+/* PoP: hermes_state_record_compression_failure_cooldown @ hermes_state.py:record_compression_failure_cooldown */
+void hermes_state_record_compression_failure_cooldown(hermes_state_db_t *db, const char *session_id,
+                                                      double until, const char *error) {
+    if (!db || !session_id) return;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "UPDATE sessions SET compression_failure_cooldown_until = ?1, compression_failure_error = ?2 WHERE id = ?3",
+            -1, &st, NULL) != SQLITE_OK) return;
+    sqlite3_bind_double(st, 1, until);
+    sqlite3_bind_text(st, 2, error ? error : "", -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(st, 3, session_id, -1, SQLITE_TRANSIENT);
+    sqlite3_step(st);
+    sqlite3_finalize(st);
+}
+
+/* PoP: hermes_state_get_compression_failure_cooldown @ hermes_state.py:get_compression_failure_cooldown */
+char *hermes_state_get_compression_failure_cooldown(hermes_state_db_t *db, const char *session_id) {
+    if (!db || !session_id) return NULL;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "SELECT compression_failure_cooldown_until, compression_failure_error FROM sessions WHERE id = ?",
+            -1, &st, NULL) != SQLITE_OK) return NULL;
+    sqlite3_bind_text(st, 1, session_id, -1, SQLITE_TRANSIENT);
+    char *out = NULL;
+    if (sqlite3_step(st) == SQLITE_ROW) {
+        double until = sqlite3_column_double(st, 0);
+        const unsigned char *err = sqlite3_column_text(st, 1);
+        json_t *o = json_object();
+        json_set(o, "cooldown_until", json_number(until));
+        json_set(o, "error", json_string((const char *)(err ? err : (const unsigned char *)"")));
+        out = json_serialize(o);
+        json_free(o);
+    }
+    sqlite3_finalize(st);
+    return out;
+}
+
+/* PoP: hermes_state_clear_compression_failure_cooldown @ hermes_state.py:clear_compression_failure_cooldown */
+void hermes_state_clear_compression_failure_cooldown(hermes_state_db_t *db, const char *session_id) {
+    if (!db || !session_id) return;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "UPDATE sessions SET compression_failure_cooldown_until = NULL, compression_failure_error = NULL WHERE id = ?",
+            -1, &st, NULL) != SQLITE_OK) return;
+    sqlite3_bind_text(st, 1, session_id, -1, SQLITE_TRANSIENT);
+    sqlite3_step(st);
+    sqlite3_finalize(st);
+}
+
+/* PoP: hermes_state_get_compression_fallback_streak @ hermes_state.py:get_compression_fallback_streak */
+long long hermes_state_get_compression_fallback_streak(hermes_state_db_t *db, const char *session_id) {
+    if (!db || !session_id) return 0;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db, "SELECT compression_fallback_streak FROM sessions WHERE id = ?", -1, &st, NULL) != SQLITE_OK) return 0;
+    sqlite3_bind_text(st, 1, session_id, -1, SQLITE_TRANSIENT);
+    long long v = 0;
+    if (sqlite3_step(st) == SQLITE_ROW) v = sqlite3_column_int64(st, 0);
+    sqlite3_finalize(st);
+    return v;
+}
+
+/* PoP: hermes_state_set_compression_fallback_streak @ hermes_state.py:set_compression_fallback_streak */
+void hermes_state_set_compression_fallback_streak(hermes_state_db_t *db, const char *session_id, long long streak) {
+    if (!db || !session_id) return;
+    if (streak < 0) streak = 0;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "UPDATE sessions SET compression_fallback_streak = ?1 WHERE id = ?2", -1, &st, NULL) != SQLITE_OK) return;
+    sqlite3_bind_int64(st, 1, streak);
+    sqlite3_bind_text(st, 2, session_id, -1, SQLITE_TRANSIENT);
+    sqlite3_step(st);
+    sqlite3_finalize(st);
+}
+
+/* PoP: hermes_state_get_compression_ineffective_count @ hermes_state.py:get_compression_ineffective_count */
+long long hermes_state_get_compression_ineffective_count(hermes_state_db_t *db, const char *session_id) {
+    if (!db || !session_id) return 0;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db, "SELECT compression_ineffective_count FROM sessions WHERE id = ?", -1, &st, NULL) != SQLITE_OK) return 0;
+    sqlite3_bind_text(st, 1, session_id, -1, SQLITE_TRANSIENT);
+    long long v = 0;
+    if (sqlite3_step(st) == SQLITE_ROW) v = sqlite3_column_int64(st, 0);
+    sqlite3_finalize(st);
+    return v;
+}
+
+/* PoP: hermes_state_set_compression_ineffective_count @ hermes_state.py:set_compression_ineffective_count */
+void hermes_state_set_compression_ineffective_count(hermes_state_db_t *db, const char *session_id, long long count) {
+    if (!db || !session_id) return;
+    if (count < 0) count = 0;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "UPDATE sessions SET compression_ineffective_count = ?1 WHERE id = ?2", -1, &st, NULL) != SQLITE_OK) return;
+    sqlite3_bind_int64(st, 1, count);
+    sqlite3_bind_text(st, 2, session_id, -1, SQLITE_TRANSIENT);
+    sqlite3_step(st);
+    sqlite3_finalize(st);
+}
