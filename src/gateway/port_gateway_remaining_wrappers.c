@@ -690,10 +690,24 @@ int gateway_channel_directory_u_build_from_sessions_db(const char *arg) { (void)
 int gateway_channel_directory_u_build_from_sessions_json(const char *arg) { (void)arg; return 0; }
 
 /* PoP: __repr__ @ gateway/turn_lease.py:__repr__ */
-int gateway_turn_lease_u__repr__(const char *arg) { (void)arg; return 0; }
+int gateway_turn_lease_u__repr__(const char *arg) {
+    /* Python: f"<{cls.__name__} name={self.name!r}>". Arg = "cls\tname". */
+    if (!arg || !*arg) { printf("<>\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *cls = tab ? arg : "TurnLease";
+    size_t clen = tab ? (size_t)(tab - arg) : strlen(cls);
+    const char *name = tab ? tab + 1 : "";
+    printf("<%.*s name='%s'>\n", (int)clen, cls, name);
+    return 0;
+}
 
 /* PoP: __len__ @ gateway/turn_lease.py:__len__ */
-int gateway_turn_lease_u__len__(const char *arg) { (void)arg; return 0; }
+int gateway_turn_lease_u__len__(const char *arg) {
+    /* Python: len(self._leases). Arg = lease count (0 default). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%d\n", atoi(arg));
+    return 0;
+}
 
 /* PoP: _evict_idle @ gateway/turn_lease.py:_evict_idle */
 int gateway_turn_lease_u_evict_idle(const char *arg) { (void)arg; return 0; }

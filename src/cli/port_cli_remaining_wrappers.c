@@ -406,7 +406,16 @@ int hermes_cli_auth_commands_u_resolve_custom_provider_input(const char *arg) { 
 int hermes_cli_auth_commands_u_provider_base_url(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _oauth_default_label @ hermes_cli/auth_commands.py:_oauth_default_label */
-int hermes_cli_auth_commands_u_oauth_default_label(const char *arg) { (void)arg; return 0; }
+int hermes_cli_auth_commands_u_oauth_default_label(const char *arg) {
+    /* Python: f"{provider}-oauth-{count}". Arg = "provider\tcount". */
+    if (!arg || !*arg) { printf("oauth-0\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *prov = tab ? arg : "provider";
+    size_t plen = tab ? (size_t)(tab - arg) : strlen(prov);
+    const char *count = tab ? tab + 1 : "0";
+    printf("%.*s-oauth-%s\n", (int)plen, prov, count);
+    return 0;
+}
 
 /* PoP: _api_key_default_label @ hermes_cli/auth_commands.py:_api_key_default_label */
 int hermes_cli_auth_commands_u_api_key_default_label(const char *arg) {
@@ -1167,7 +1176,22 @@ int hermes_cli_dump_run_dump(const char *arg) { (void)arg; return 0; }
 int hermes_cli_projects_db_projects_db_path(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _new_project_id @ hermes_cli/projects_db.py:_new_project_id */
-int hermes_cli_projects_db_u_new_project_id(const char *arg) { (void)arg; return 0; }
+int hermes_cli_projects_db_u_new_project_id(const char *arg) {
+    /* Python: "p_" + secrets.token_hex(4) — 8 hex chars from /dev/urandom. */
+    (void)arg;
+    unsigned char buf[4];
+    FILE *fp = fopen("/dev/urandom", "rb");
+    if (fp) {
+        size_t got = fread(buf, 1, 4, fp);
+        fclose(fp);
+        if (got == 4) {
+            printf("p_%02x%02x%02x%02x\n", buf[0], buf[1], buf[2], buf[3]);
+            return 0;
+        }
+    }
+    printf("p_00000000\n");
+    return 0;
+}
 
 /* PoP: _now @ hermes_cli/projects_db.py:_now */
 int hermes_cli_projects_db_u_now(const char *arg) {
@@ -1202,7 +1226,13 @@ int hermes_cli_projects_db_clear_discovered_repos(const char *arg) { (void)arg; 
 int hermes_cli_pty_session_append(const char *arg) { (void)arg; return 0; }
 
 /* PoP: truncated @ hermes_cli/pty_session.py:truncated */
-int hermes_cli_pty_session_truncated(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pty_session_truncated(const char *arg) {
+    /* Python property: whether the PTY transcript was truncated. */
+    static int g_trunc = 0;
+    if (arg && *arg) g_trunc = atoi(arg) != 0;
+    printf("%d\n", g_trunc);
+    return 0;
+}
 
 /* PoP: _drain @ hermes_cli/pty_session.py:_drain */
 int hermes_cli_pty_session_u_drain(const char *arg) { (void)arg; return 0; }
@@ -1364,7 +1394,12 @@ int hermes_cli_dashboard_auth_nati_complete_pending(const char *arg) { (void)arg
 int hermes_cli_dashboard_auth_nati_redeem_code(const char *arg) { (void)arg; return 0; }
 
 /* PoP: is_custom @ hermes_cli/mcp_picker.py:is_custom */
-int hermes_cli_mcp_picker_is_custom(const char *arg) { (void)arg; return 0; }
+int hermes_cli_mcp_picker_is_custom(const char *arg) {
+    /* Python: True when no catalog entry backs this picker row. */
+    if (!arg || !*arg) return 1; /* no entry -> custom */
+    if (strcmp(arg, "none") == 0 || strcmp(arg, "0") == 0) return 1;
+    return 0;
+}
 
 /* PoP: _build_rows @ hermes_cli/mcp_picker.py:_build_rows */
 int hermes_cli_mcp_picker_u_build_rows(const char *arg) { (void)arg; return 0; }
