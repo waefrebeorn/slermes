@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T21:09:07Z",
+  "generated_at": "2026-08-02T21:11:55Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -296515,10 +296515,10 @@
     },
     "tools/computer_use/tool.py": {
       "total": 36,
-      "ported": 24,
+      "ported": 28,
       "partial": 6,
       "stub": 0,
-      "real_gaps": 6,
+      "real_gaps": 2,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 36,
@@ -296534,17 +296534,24 @@
             "decorators": [],
             "line_number": 68
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_computer_use_tool_remaining.c",
+          "c_function": "cut_set_approval_callback",
+          "pop_annotation": {
+            "c_function": "cut_set_approval_callback",
+            "python_functions": [
+              "set_approval_callback"
+            ],
+            "c_file": "src/tools/port_computer_use_tool_remaining.c",
+            "python_file": "tools/computer_use/tool.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: set_approval_callback @ tools/computer_use/tool.py:set_approval_callback */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/computer_use/tool.py",
@@ -296664,17 +296671,24 @@
             "decorators": [],
             "line_number": 199
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_computer_use_tool_remaining.c",
+          "c_function": "cut_init",
+          "pop_annotation": {
+            "c_function": "cut_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_computer_use_tool_remaining.c",
+            "python_file": "tools/computer_use/tool.py",
+            "line": 30,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/computer_use/tool.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/computer_use/tool.py",
@@ -296878,16 +296892,24 @@
             "decorators": [],
             "line_number": 237
           },
-          "classification": "REAL_GAP",
-          "c_location": "src/tools/computer_use.c",
-          "c_function": "key",
-          "pop_annotation": null,
-          "stub_reason": "C function appears to be stub/trivial (forwarding wrapper or trivial pass-through)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-1:stub-in-impl"
-          ]
+          "classification": "PORTED",
+          "c_location": "src/tools/port_computer_use_tool_remaining.c",
+          "c_function": "cut_key",
+          "pop_annotation": {
+            "c_function": "cut_key",
+            "python_functions": [
+              "key"
+            ],
+            "c_file": "src/tools/port_computer_use_tool_remaining.c",
+            "python_file": "tools/computer_use/tool.py",
+            "line": 35,
+            "is_consolidated": false,
+            "full_text": "/* PoP: key @ tools/computer_use/tool.py:key */"
+          },
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/computer_use/tool.py",
@@ -297094,17 +297116,24 @@
             "decorators": [],
             "line_number": 385
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_computer_use_tool_remaining.c",
+          "c_function": "cut_dispatch",
+          "pop_annotation": {
+            "c_function": "cut_dispatch",
+            "python_functions": [
+              "_dispatch"
+            ],
+            "c_file": "src/tools/port_computer_use_tool_remaining.c",
+            "python_file": "tools/computer_use/tool.py",
+            "line": 43,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _dispatch @ tools/computer_use/tool.py:_dispatch */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/computer_use/tool.py",
@@ -323438,10 +323467,10 @@
     },
     "tools/memory_tool.py": {
       "total": 39,
-      "ported": 32,
+      "ported": 38,
       "partial": 1,
       "stub": 0,
-      "real_gaps": 6,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 39,
@@ -323573,17 +323602,24 @@
             "decorators": [],
             "line_number": 167
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_memory_tool_remaining.c",
+          "c_function": "memt_init",
+          "pop_annotation": {
+            "c_function": "memt_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_memory_tool_remaining.c",
+            "python_file": "tools/memory_tool.py",
+            "line": 22,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/memory_tool.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/memory_tool.py",
@@ -323971,17 +324007,24 @@
             "decorators": [],
             "line_number": 451
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_memory_tool_remaining.c",
+          "c_function": "memt_replace",
+          "pop_annotation": {
+            "c_function": "memt_replace",
+            "python_functions": [
+              "replace"
+            ],
+            "c_file": "src/tools/port_memory_tool_remaining.c",
+            "python_file": "tools/memory_tool.py",
+            "line": 27,
+            "is_consolidated": false,
+            "full_text": "/* PoP: replace @ tools/memory_tool.py:replace */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/memory_tool.py",
@@ -323993,17 +324036,24 @@
             "decorators": [],
             "line_number": 522
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_memory_tool_remaining.c",
+          "c_function": "memt_remove",
+          "pop_annotation": {
+            "c_function": "memt_remove",
+            "python_functions": [
+              "remove"
+            ],
+            "c_file": "src/tools/port_memory_tool_remaining.c",
+            "python_file": "tools/memory_tool.py",
+            "line": 74,
+            "is_consolidated": false,
+            "full_text": "/* PoP: remove @ tools/memory_tool.py:remove */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/memory_tool.py",
@@ -324133,17 +324183,24 @@
             "decorators": [],
             "line_number": 704
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_memory_tool_remaining.c",
+          "c_function": "memt_success_response",
+          "pop_annotation": {
+            "c_function": "memt_success_response",
+            "python_functions": [
+              "_success_response"
+            ],
+            "c_file": "src/tools/port_memory_tool_remaining.c",
+            "python_file": "tools/memory_tool.py",
+            "line": 114,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _success_response @ tools/memory_tool.py:_success_response */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/memory_tool.py",
@@ -324155,17 +324212,24 @@
             "decorators": [],
             "line_number": 733
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_memory_tool_remaining.c",
+          "c_function": "memt_render_block",
+          "pop_annotation": {
+            "c_function": "memt_render_block",
+            "python_functions": [
+              "_render_block"
+            ],
+            "c_file": "src/tools/port_memory_tool_remaining.c",
+            "python_file": "tools/memory_tool.py",
+            "line": 119,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _render_block @ tools/memory_tool.py:_render_block */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/memory_tool.py",
@@ -324332,17 +324396,24 @@
             ],
             "line_number": 866
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_memory_tool_remaining.c",
+          "c_function": "memt_write_file",
+          "pop_annotation": {
+            "c_function": "memt_write_file",
+            "python_functions": [
+              "_write_file"
+            ],
+            "c_file": "src/tools/port_memory_tool_remaining.c",
+            "python_file": "tools/memory_tool.py",
+            "line": 130,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _write_file @ tools/memory_tool.py:_write_file */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/memory_tool.py",
