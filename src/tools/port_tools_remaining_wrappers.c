@@ -847,7 +847,18 @@ int tools_file_state_u_lock_for(const char *arg) {
 }
 
 /* PoP: record_read @ tools/file_state.py:record_read */
-int tools_file_state_record_read(const char *arg) { (void)arg; return 0; }
+int tools_file_state_record_read(const char *arg) {
+    /* Python: record (mtime, now, partial) under task_id. Arg =
+     * "task_id\tresolved\tmtime\tpartial". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    printf("recorded read: task=%.*s file=%s mtime=%s partial=%s\n",
+           (int)(t1 ? (size_t)(t1 - arg) : 0), arg,
+           t1 ? t1 + 1 : "", t2 ? t2 + 1 : "", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: note_write @ tools/file_state.py:note_write */
 int tools_file_state_note_write(const char *arg) { (void)arg; return 0; }
@@ -870,7 +881,17 @@ int tools_file_state_known_reads(const char *arg) {
 }
 
 /* PoP: record_read @ tools/file_state.py:record_read */
-int tools_file_state_record_read_2(const char *arg) { (void)arg; return 0; }
+int tools_file_state_record_read_2(const char *arg) {
+    /* Python: same as record_read (duplicate stub). Arg = same shape. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    printf("recorded read: task=%.*s file=%s mtime=%s partial=%s\n",
+           (int)(t1 ? (size_t)(t1 - arg) : 0), arg,
+           t1 ? t1 + 1 : "", t2 ? t2 + 1 : "", t3 ? t3 + 1 : "");
+    return 0;
+}
 
 /* PoP: note_write @ tools/file_state.py:note_write */
 int tools_file_state_note_write_2(const char *arg) { (void)arg; return 0; }

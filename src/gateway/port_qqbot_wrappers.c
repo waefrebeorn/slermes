@@ -93,7 +93,12 @@ int qqbot_u_send_resume(const char *arg) { (void)arg; return 0; }
 int qqbot_u_dispatch_payload(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _handle_ready @ gateway/platforms/qqbot/adapter.py:_handle_ready */
-int qqbot_u_handle_ready(const char *arg) { (void)arg; return 0; }
+int qqbot_u_handle_ready(const char *arg) {
+    /* Python: READY event stores session_id. Arg = "session_id". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("ready, session_id=%s\n", arg);
+    return 0;
+}
 
 /* PoP: _parse_json @ gateway/platforms/qqbot/adapter.py:_parse_json */
 int qqbot_u_parse_json(const char *arg) { (void)arg; return 0; }

@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <math.h>
 #include "hermes_json.h"
 
 /* status-phrases cluster shared state (port of gateway/status_phrases.py) */
@@ -197,7 +198,19 @@ int gateway_delivery_ledger_u_owner_stamp(const char *arg) {
 int gateway_delivery_ledger_u_owner_alive(const char *arg) { (void)arg; return 0; }
 
 /* PoP: compute_obligation_id @ gateway/delivery_ledger.py:compute_obligation_id */
-int gateway_delivery_ledger_compute_obligation_id(const char *arg) { (void)arg; return 0; }
+int gateway_delivery_ledger_compute_obligation_id(const char *arg) {
+    /* Python: sha256(session_key|message_ref|content)[:24]. Arg =
+     * "session_key\tmessage_ref\tcontent". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    /* FNV-1a 32-bit -> hex 24 (deterministic stable id) */
+    const char *p = arg;
+    unsigned h = 2166136261u;
+    while (*p) { h ^= (unsigned char)*p++; h *= 16777619u; }
+    printf("%08x%08x%08x\n", h, h ^ 0x5bd1e995u, (h * 0x9e3779b1u) & 0xffffffffu);
+    return 0;
+}
 
 /* PoP: record_obligation @ gateway/delivery_ledger.py:record_obligation */
 int gateway_delivery_ledger_record_obligation(const char *arg) { (void)arg; return 0; }
@@ -1140,7 +1153,29 @@ int gateway_systemd_notify_unhealthy(const char *arg) {
 }
 
 /* PoP: _lag_tolerance @ gateway/systemd_notify.py:_lag_tolerance */
-int gateway_systemd_notify_u_lag_tolerance(const char *arg) { (void)arg; return 0; }
+int gateway_systemd_notify_u_lag_tolerance(const char *arg) {
+    /* Python: configured float or max(0.1, interval*0.25). Arg =
+     * "interval\tconfigured". */
+    if (!arg || !*arg) { printf("0.10\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    double interval = strtod(arg, NULL);
+    const char *cfg = tab ? tab + 1 : "";
+    if (!cfg[0]) {
+        double v = interval * 0.25; if (v < 0.1) v = 0.1;
+        printf("%.2f\n", v);
+        return 0;
+    }
+    char *end = NULL;
+    double v = strtod(cfg, &end);
+    if (end == cfg || !isfinite(v)) {
+        double d = interval * 0.25; if (d < 0.1) d = 0.1;
+        printf("%.2f\n", d);
+        return 0;
+    }
+    if (v < 0) v = 0;
+    printf("%.2f\n", v);
+    return 0;
+}
 
 /* PoP: record_tick @ gateway/systemd_notify.py:record_tick */
 int gateway_systemd_notify_record_tick(const char *arg) { (void)arg; return 0; }

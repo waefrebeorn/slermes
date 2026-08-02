@@ -413,7 +413,22 @@ int main_u_prompt_provider_choice(const char *arg) { (void)arg; return 0; }
 int main_u_prompt_custom_api_mode_selection(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _custom_provider_api_key_config_value @ hermes_cli/main.py:_custom_provider_api_key_config_value */
-int main_u_custom_provider_api_key_config_value(const char *arg) { (void)arg; return 0; }
+int main_u_custom_provider_api_key_config_value(const char *arg) {
+    /* Python: api_key_ref -> it; key_env (no api_key) -> ${KEY}; else key.
+     * Arg = "api_key_ref\tkey_env\tapi_key\tresolved". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *ref = arg;
+    const char *env = t1 ? t1 + 1 : "";
+    const char *key = t2 ? t2 + 1 : "";
+    const char *resolved = t3 ? t3 + 1 : "";
+    if (ref[0]) { printf("%s\n", ref); return 0; }
+    if (env[0] && !key[0]) { printf("${%s}\n", env); return 0; }
+    printf("%s\n", resolved);
+    return 0;
+}
 
 /* PoP: _custom_provider_base_url_config_value @ hermes_cli/main.py:_custom_provider_base_url_config_value */
 int main_u_custom_provider_base_url_config_value(const char *arg) {
@@ -566,7 +581,16 @@ int main_cmd_version(const char *arg) {
 int main_u_clear_bytecode_cache(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _capture_head_sha @ hermes_cli/main.py:_capture_head_sha */
-int main_u_capture_head_sha(const char *arg) { (void)arg; return 0; }
+int main_u_capture_head_sha(const char *arg) {
+    /* Python: git rev-parse HEAD stdout or None. Arg = "output" (empty =
+     * failure). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ' || *p == '\n' || *p == '\r' || *p == '\t') p++;
+    if (!*p) { printf("\n"); return 0; }
+    printf("%s\n", p);
+    return 0;
+}
 
 /* PoP: _validate_critical_files_syntax @ hermes_cli/main.py:_validate_critical_files_syntax */
 int main_u_validate_critical_files_syntax(const char *arg) { (void)arg; return 0; }
@@ -800,7 +824,18 @@ int main_u_resolve_stash_selector(const char *arg) {
 }
 
 /* PoP: _print_stash_cleanup_guidance @ hermes_cli/main.py:_print_stash_cleanup_guidance */
-int main_u_print_stash_cleanup_guidance(const char *arg) { (void)arg; return 0; }
+int main_u_print_stash_cleanup_guidance(const char *arg) {
+    /* Python: guidance lines. Arg = "stash_selector\tstash_ref" (selector
+     * empty = none). */
+    const char *tab = arg ? strchr(arg, '\t') : NULL;
+    const char *selector = arg && *arg ? arg : "";
+    const char *ref = tab ? tab + 1 : "";
+    printf("  Check `git status` first so you don't accidentally reapply the same change twice.\n");
+    printf("  Find the saved entry with: git stash list --format='%%gd %%H %%s'\n");
+    if (selector[0]) printf("  Remove it with: git stash drop %s\n", selector);
+    else printf("  Look for commit %s, then drop its selector with: git stash drop stash@{N}\n", ref[0] ? ref : "HEAD");
+    return 0;
+}
 
 /* PoP: _stash_apply_failed_only_on_existing_untracked @ hermes_cli/main.py:_stash_apply_failed_only_on_existing_untracked */
 int main_u_stash_apply_failed_only_on_existing_untracked(const char *arg) { (void)arg; return 0; }

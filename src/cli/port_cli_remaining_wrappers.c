@@ -532,7 +532,37 @@ int hermes_cli_curses_ui_u_decode_menu_key(const char *arg) { (void)arg; return 
 int hermes_cli_curses_ui_u_run_curses_menu(const char *arg) { (void)arg; return 0; }
 
 /* PoP: format_radio_item_ansi @ hermes_cli/curses_ui.py:format_radio_item_ansi */
-int hermes_cli_curses_ui_format_radio_item_ansi(const char *arg) { (void)arg; return 0; }
+int hermes_cli_curses_ui_format_radio_item_ansi(const char *arg) {
+    /* Python: string passthrough; (text, style) pairs colored. Arg =
+     * "items_json" (array of strings or [text,style] pairs). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    if (!j) { printf("%s\n", arg); return 0; }
+    if (json_is_string(j)) { printf("%s\n", json_string_value(j)); json_free(j); return 0; }
+    if (json_is_array(j)) {
+        size_t n = json_array_size(j);
+        for (size_t i = 0; i < n; i++) {
+            json_t *it = json_array_get(j, i);
+            if (!it) continue;
+            if (json_is_string(it)) { printf("%s", json_string_value(it)); continue; }
+            if (json_is_array(it) && json_array_size(it) >= 2) {
+                json_t *txt = json_array_get(it, 0);
+                json_t *sty = json_array_get(it, 1);
+                const char *s = txt && json_is_string(txt) ? json_string_value(txt) : "";
+                const char *st = sty && json_is_string(sty) ? json_string_value(sty) : "";
+                if (strcmp(st, "yellow") == 0) printf("\033[33m%s\033[0m", s);
+                else if (strcmp(st, "dim") == 0) printf("\033[2m%s\033[0m", s);
+                else printf("%s", s);
+            }
+        }
+        printf("\n");
+        json_free(j);
+        return 0;
+    }
+    json_free(j);
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _radio_numbered_fallback @ hermes_cli/curses_ui.py:_radio_numbered_fallback */
 int hermes_cli_curses_ui_u_radio_numbered_fallback(const char *arg) { (void)arg; return 0; }
@@ -2207,7 +2237,13 @@ int hermes_cli_middleware_apply_api_request_middleware(const char *arg) {
 }
 
 /* PoP: run_llm_execution_middleware @ hermes_cli/middleware.py:run_llm_execution_middleware */
-int hermes_cli_middleware_run_llm_execution_middleware(const char *arg) { (void)arg; return 0; }
+int hermes_cli_middleware_run_llm_execution_middleware(const char *arg) {
+    /* Python: run execution chain or next_call. Arg = "callbacks\tresult". */
+    if (!arg || !*arg) { printf("next\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", tab ? tab + 1 : "next");
+    return 0;
+}
 
 /* PoP: run_tool_execution_middleware @ hermes_cli/middleware.py:run_tool_execution_middleware */
 int hermes_cli_middleware_run_tool_execution_middleware(const char *arg) { (void)arg; return 0; }
@@ -2862,7 +2898,15 @@ int hermes_cli_onepassword_secrets_u_yn(const char *arg) {
 }
 
 /* PoP: _op_version @ hermes_cli/onepassword_secrets_cli.py:_op_version */
-int hermes_cli_onepassword_secrets_u_op_version(const char *arg) { (void)arg; return 0; }
+int hermes_cli_onepassword_secrets_u_op_version(const char *arg) {
+    /* Python: binary --version first line or "version unknown". Arg = output. */
+    if (!arg || !*arg) { printf("version unknown\n"); return 0; }
+    const char *nl = strchr(arg, '\n');
+    size_t len = nl ? (size_t)(nl - arg) : strlen(arg);
+    if (!len) { printf("version unknown\n"); return 0; }
+    printf("%.*s\n", (int)len, arg);
+    return 0;
+}
 
 /* PoP: _op_whoami @ hermes_cli/onepassword_secrets_cli.py:_op_whoami */
 int hermes_cli_onepassword_secrets_u_op_whoami(const char *arg) { (void)arg; return 0; }
@@ -3437,7 +3481,14 @@ int hermes_cli__early_recovery_u_run_repair_install(const char *arg) { (void)arg
 int hermes_cli__early_recovery_recover_if_needed(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _providers_for_env_var @ hermes_cli/credential_lifecycle.py:_providers_for_env_var */
-int hermes_cli_credential_lifecycl_u_providers_for_env_var(const char *arg) { (void)arg; return 0; }
+int hermes_cli_credential_lifecycl_u_providers_for_env_var(const char *arg) {
+    /* Python: provider ids whose api_key_env_vars include env_var. Arg =
+     * "env_var\tproviders" (tab-sep ids, empty = none). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _prune_env_pool_entries @ hermes_cli/credential_lifecycle.py:_prune_env_pool_entries */
 int hermes_cli_credential_lifecycl_u_prune_env_pool_entries(const char *arg) { (void)arg; return 0; }
@@ -3507,7 +3558,12 @@ int hermes_cli_dashboard_auth_toke_authenticate_token(const char *arg) { (void)a
 int hermes_cli_dashboard_auth_toke_token_auth_middleware(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _read_chain @ hermes_cli/fallback_cmd.py:_read_chain */
-int hermes_cli_fallback_cmd_u_read_chain(const char *arg) { (void)arg; return 0; }
+int hermes_cli_fallback_cmd_u_read_chain(const char *arg) {
+    /* Python: get_fallback_chain normalized list. Arg = chain JSON. */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _write_chain @ hermes_cli/fallback_cmd.py:_write_chain */
 int hermes_cli_fallback_cmd_u_write_chain(const char *arg) {
@@ -4125,7 +4181,24 @@ int hermes_cli_dashboard_register_u_print_post_register_hint(const char *arg) { 
 int hermes_cli_dashboard_register_cmd_dashboard_register(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_flow @ hermes_cli/memory_oauth.py:_resolve_flow */
-int hermes_cli_memory_oauth_u_resolve_flow(const char *arg) { (void)arg; return 0; }
+int hermes_cli_memory_oauth_u_resolve_flow(const char *arg) {
+    /* Python: import plugins.memory.<provider>.oauth_flow or 404. Arg =
+     * "provider\tvalid\tfound". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    size_t plen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    /* isidentifier: [A-Za-z_][A-Za-z0-9_]* */
+    int valid = plen > 0 && (arg[0] == '_' || (arg[0] >= 'A' && arg[0] <= 'Z') || (arg[0] >= 'a' && arg[0] <= 'z'));
+    for (size_t i = 1; valid && i < plen; i++) {
+        char c = arg[i];
+        if (!(c == '_' || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9'))) valid = 0;
+    }
+    if (!valid) { printf("404 unknown memory provider\n"); return 404; }
+    if (t2 && t2[1] == '1') { printf("oauth flow: plugins.memory.%.*s.oauth_flow\n", (int)plen, arg); return 0; }
+    printf("404 %.*s does not support OAuth connect\n", (int)plen, arg);
+    return 404;
+}
 
 /* PoP: _scope_to_profile @ hermes_cli/memory_oauth.py:_scope_to_profile */
 int hermes_cli_memory_oauth_u_scope_to_profile(const char *arg) { (void)arg; return 0; }

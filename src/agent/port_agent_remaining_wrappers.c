@@ -1344,7 +1344,15 @@ int agent_bedrock_adapter_u_model_supports_prompt_cache(const char *arg) {
 }
 
 /* PoP: _safe_text @ agent/bedrock_adapter.py:_safe_text */
-int agent_bedrock_adapter_u_safe_text(const char *arg) { (void)arg; return 0; }
+int agent_bedrock_adapter_u_safe_text(const char *arg) {
+    /* Python: non-whitespace text else placeholder. Arg = text. */
+    if (!arg || !*arg) { printf("[empty text]\n"); return 0; }
+    const char *p = arg;
+    while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+    if (!*p) { printf("[empty text]\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _static_bedrock_context_length @ agent/bedrock_adapter.py:_static_bedrock_context_length */
 int agent_bedrock_adapter_u_static_bedrock_context_length(const char *arg) { (void)arg; return 0; }

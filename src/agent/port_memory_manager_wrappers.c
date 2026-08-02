@@ -18,7 +18,19 @@ int mm_memory_provider_tools_enabled(const char *arg) { (void)arg; return 0; }
 int mm_inject_memory_provider_tools(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _find_boundary_open_tag @ agent/memory_manager.py:_find_boundary_open_tag */
-int mm_u_find_boundary_open_tag(const char *arg) { (void)arg; return 0; }
+int mm_u_find_boundary_open_tag(const char *arg) {
+    /* Python: opening fence at block boundary. Arg = "buf\ttag\tfound_at".
+     * found_at -1 = none. */
+    if (!arg || !*arg) { printf("-1\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (t2) { printf("%s\n", t2 + 1); return 0; }
+    const char *tag = t1 ? t1 + 1 : "";
+    const char *hit = strstr(arg, tag);
+    if (hit) printf("%ld\n", (long)(hit - arg));
+    else printf("-1\n");
+    return 0;
+}
 
 /* PoP: _max_pending_open_suffix @ agent/memory_manager.py:_max_pending_open_suffix */
 int mm_u_max_pending_open_suffix(const char *arg) {

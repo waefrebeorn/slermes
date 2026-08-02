@@ -148,7 +148,22 @@ int mcpo_save_oauth_metadata(const char *arg) {
 }
 
 /* PoP: load_oauth_metadata @ tools/mcp_oauth.py:load_oauth_metadata */
-int mcpo_load_oauth_metadata(const char *arg) { (void)arg; return 0; }
+int mcpo_load_oauth_metadata(const char *arg) {
+    /* Python: parse meta JSON or None on corrupt. Arg = "json" (empty =
+     * missing file). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    if (!j || !json_is_object(j)) {
+        if (j) json_free(j);
+        printf("\n");
+        return 0;
+    }
+    char *s = json_dumps(j, 0);
+    printf("%s\n", s ? s : "");
+    free(s);
+    json_free(j);
+    return 0;
+}
 
 /* PoP: poison_client_registration @ tools/mcp_oauth.py:poison_client_registration */
 int mcpo_poison_client_registration(const char *arg) { (void)arg; return 0; }

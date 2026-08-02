@@ -165,7 +165,23 @@ int gw_u_stable_gateway_working_dir(const char *arg) { (void)arg; return 0; }
 int gw_u_build_gateway_cmd_script(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _quote_vbs_string @ hermes_cli/gateway_windows.py:_quote_vbs_string */
-int gw_u_quote_vbs_string(const char *arg) { (void)arg; return 0; }
+int gw_u_quote_vbs_string(const char *arg) {
+    /* Python: VBS double-quote doubling; refuse newlines. Arg = value. */
+    if (!arg || !*arg) { printf("\"\"\n"); return 0; }
+    if (strchr(arg, '\n') || strchr(arg, '\r')) {
+        fprintf(stderr, "refusing to quote VBScript value containing newline\n");
+        return 1;
+    }
+    printf("\"");
+    const char *p = arg;
+    while (*p) {
+        putchar(*p);
+        if (*p == '"') putchar('"');
+        p++;
+    }
+    printf("\"\n");
+    return 0;
+}
 
 /* PoP: _build_gateway_vbs_script @ hermes_cli/gateway_windows.py:_build_gateway_vbs_script */
 int gw_u_build_gateway_vbs_script(const char *arg) { (void)arg; return 0; }

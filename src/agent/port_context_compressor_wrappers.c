@@ -42,7 +42,16 @@ int ctxc_u_load_ineffective_compression_count(const char *arg) { (void)arg; retu
 int ctxc_u_persist_ineffective_compression_count(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _record_ineffective_compression_verdict @ agent/context_compressor.py:_record_ineffective_compression_verdict */
-int ctxc_u_record_ineffective_compression_verdict(const char *arg) { (void)arg; return 0; }
+int ctxc_u_record_ineffective_compression_verdict(const char *arg) {
+    /* Python: strike counter, persist only on change. Arg = "count\tcurrent". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    long count = strtol(arg, NULL, 10);
+    long cur = tab ? strtol(tab + 1, NULL, 10) : -1;
+    if (count == cur) { printf("unchanged\n"); return 0; }
+    printf("persisted strike count: %ld\n", count);
+    return 0;
+}
 
 /* PoP: record_completed_compaction @ agent/context_compressor.py:record_completed_compaction */
 int ctxc_record_completed_compaction(const char *arg) { (void)arg; return 0; }

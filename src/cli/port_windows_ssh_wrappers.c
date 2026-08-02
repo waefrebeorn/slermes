@@ -9,6 +9,8 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <unistd.h>
+#include <errno.h>
 #include <sys/stat.h>
 #include "hermes_json.h"
 
@@ -178,7 +180,15 @@ int wssr_read_lock(const char *arg) { (void)arg; return 0; }
 int wssr_write_lock(const char *arg) { (void)arg; return 0; }
 
 /* PoP: remove_artifact @ hermes_cli/windows_ssh_runtime.py:remove_artifact */
-int wssr_remove_artifact(const char *arg) { (void)arg; return 0; }
+int wssr_remove_artifact(const char *arg) {
+    /* Python: Windows delete-on-close handle; POSIX unlink analog. Arg =
+     * path. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    if (unlink(arg) == 0) { printf("1\n"); return 0; }
+    if (errno == ENOENT) { printf("0\n"); return 0; }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: process_state @ hermes_cli/windows_ssh_runtime.py:process_state */
 int wssr_process_state(const char *arg) { (void)arg; return 0; }
