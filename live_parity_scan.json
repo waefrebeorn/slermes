@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T19:06:33Z",
+  "generated_at": "2026-08-02T19:09:06Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -3422,7 +3422,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 417,
+            "line": 444,
             "is_consolidated": false,
             "full_text": "/* PoP: convert_tools_to_anthropic @ agent/anthropic_adapter.py:convert_tools_to_anthropic */"
           },
@@ -3451,7 +3451,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 425,
+            "line": 452,
             "is_consolidated": false,
             "full_text": "/* PoP: _image_source_from_openai_url @ agent/anthropic_adapter.py:_image_source_from_openai_url */"
           },
@@ -3480,7 +3480,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 454,
+            "line": 481,
             "is_consolidated": false,
             "full_text": "/* PoP: _convert_content_part_to_anthropic @ agent/anthropic_adapter.py:_convert_content_part_to_anthropic */"
           },
@@ -3538,7 +3538,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 485,
+            "line": 512,
             "is_consolidated": false,
             "full_text": "/* PoP: _extract_preserved_thinking_blocks @ agent/anthropic_adapter.py:_extract_preserved_thinking_blocks */"
           },
@@ -3567,7 +3567,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 523,
+            "line": 550,
             "is_consolidated": false,
             "full_text": "/* PoP: _convert_content_to_anthropic @ agent/anthropic_adapter.py:_convert_content_to_anthropic */"
           },
@@ -3596,7 +3596,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 532,
+            "line": 559,
             "is_consolidated": false,
             "full_text": "/* PoP: _content_parts_to_anthropic_blocks @ agent/anthropic_adapter.py:_content_parts_to_anthropic_blocks */"
           },
@@ -3712,7 +3712,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 539,
+            "line": 566,
             "is_consolidated": false,
             "full_text": "/* PoP: _convert_assistant_message @ agent/anthropic_adapter.py:_convert_assistant_message */"
           },
@@ -3741,7 +3741,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 547,
+            "line": 574,
             "is_consolidated": false,
             "full_text": "/* PoP: _convert_tool_message_to_result @ agent/anthropic_adapter.py:_convert_tool_message_to_result */"
           },
@@ -3770,7 +3770,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 555,
+            "line": 582,
             "is_consolidated": false,
             "full_text": "/* PoP: _convert_user_message @ agent/anthropic_adapter.py:_convert_user_message */"
           },
@@ -3799,7 +3799,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 563,
+            "line": 590,
             "is_consolidated": false,
             "full_text": "/* PoP: _strip_orphaned_tool_blocks @ agent/anthropic_adapter.py:_strip_orphaned_tool_blocks */"
           },
@@ -3828,7 +3828,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 571,
+            "line": 598,
             "is_consolidated": false,
             "full_text": "/* PoP: _merge_consecutive_roles @ agent/anthropic_adapter.py:_merge_consecutive_roles */"
           },
@@ -3857,7 +3857,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 578,
+            "line": 605,
             "is_consolidated": false,
             "full_text": "/* PoP: _manage_thinking_signatures @ agent/anthropic_adapter.py:_manage_thinking_signatures */"
           },
@@ -3886,7 +3886,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 587,
+            "line": 614,
             "is_consolidated": false,
             "full_text": "/* PoP: _evict_old_screenshots @ agent/anthropic_adapter.py:_evict_old_screenshots */"
           },
@@ -3944,7 +3944,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 596,
+            "line": 623,
             "is_consolidated": false,
             "full_text": "/* PoP: convert_messages_to_anthropic @ agent/anthropic_adapter.py:convert_messages_to_anthropic */"
           },
@@ -3973,7 +3973,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 604,
+            "line": 631,
             "is_consolidated": false,
             "full_text": "/* PoP: build_anthropic_kwargs @ agent/anthropic_adapter.py:build_anthropic_kwargs */"
           },
@@ -4031,7 +4031,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 613,
+            "line": 640,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_stream_unavailable_error @ agent/anthropic_adapter.py:_is_stream_unavailable_error */"
           },
@@ -4060,7 +4060,7 @@
             ],
             "c_file": "src/agent/port_anthropic_adapter_remaining.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 624,
+            "line": 651,
             "is_consolidated": false,
             "full_text": "/* PoP: create_anthropic_message @ agent/anthropic_adapter.py:create_anthropic_message */"
           },
@@ -11042,7 +11042,7 @@
             ],
             "c_file": "src/agent/port_bedrock_adapter_remaining.c",
             "python_file": "agent/bedrock_adapter.py",
-            "line": 152,
+            "line": 160,
             "is_consolidated": false,
             "full_text": "/* PoP: call_converse @ agent/bedrock_adapter.py:call_converse */"
           },
@@ -11071,7 +11071,7 @@
             ],
             "c_file": "src/agent/port_bedrock_adapter_remaining.c",
             "python_file": "agent/bedrock_adapter.py",
-            "line": 160,
+            "line": 168,
             "is_consolidated": false,
             "full_text": "/* PoP: call_converse_stream @ agent/bedrock_adapter.py:call_converse_stream */"
           },
@@ -11100,7 +11100,7 @@
             ],
             "c_file": "src/agent/port_bedrock_adapter_remaining.c",
             "python_file": "agent/bedrock_adapter.py",
-            "line": 167,
+            "line": 175,
             "is_consolidated": false,
             "full_text": "/* PoP: reset_discovery_cache @ agent/bedrock_adapter.py:reset_discovery_cache */"
           },
@@ -11158,7 +11158,7 @@
             ],
             "c_file": "src/agent/port_bedrock_adapter_remaining.c",
             "python_file": "agent/bedrock_adapter.py",
-            "line": 173,
+            "line": 181,
             "is_consolidated": false,
             "full_text": "/* PoP: _extract_provider_from_arn @ agent/bedrock_adapter.py:_extract_provider_from_arn */"
           },
@@ -11187,7 +11187,7 @@
             ],
             "c_file": "src/agent/port_bedrock_adapter_remaining.c",
             "python_file": "agent/bedrock_adapter.py",
-            "line": 185,
+            "line": 193,
             "is_consolidated": false,
             "full_text": "/* PoP: is_context_overflow_error @ agent/bedrock_adapter.py:is_context_overflow_error */"
           },
@@ -11216,7 +11216,7 @@
             ],
             "c_file": "src/agent/port_bedrock_adapter_remaining.c",
             "python_file": "agent/bedrock_adapter.py",
-            "line": 197,
+            "line": 205,
             "is_consolidated": false,
             "full_text": "/* PoP: classify_bedrock_error @ agent/bedrock_adapter.py:classify_bedrock_error */"
           },
@@ -11303,7 +11303,7 @@
             ],
             "c_file": "src/agent/port_bedrock_adapter_remaining.c",
             "python_file": "agent/bedrock_adapter.py",
-            "line": 212,
+            "line": 220,
             "is_consolidated": false,
             "full_text": "/* PoP: get_bedrock_context_length @ agent/bedrock_adapter.py:get_bedrock_context_length */"
           },
@@ -29163,7 +29163,7 @@
             ],
             "c_file": "src/agent/port_gemini_native_adapter_remaining.c",
             "python_file": "agent/gemini_native_adapter.py",
-            "line": 109,
+            "line": 146,
             "is_consolidated": false,
             "full_text": "/* PoP: _translate_tool_result_to_gemini @ agent/gemini_native_adapter.py:_translate_tool_result_to_gemini */"
           },
@@ -29192,7 +29192,7 @@
             ],
             "c_file": "src/agent/port_gemini_native_adapter_remaining.c",
             "python_file": "agent/gemini_native_adapter.py",
-            "line": 117,
+            "line": 154,
             "is_consolidated": false,
             "full_text": "/* PoP: _build_gemini_contents @ agent/gemini_native_adapter.py:_build_gemini_contents */"
           },
@@ -29221,7 +29221,7 @@
             ],
             "c_file": "src/agent/port_gemini_native_adapter_remaining.c",
             "python_file": "agent/gemini_native_adapter.py",
-            "line": 125,
+            "line": 162,
             "is_consolidated": false,
             "full_text": "/* PoP: _translate_tools_to_gemini @ agent/gemini_native_adapter.py:_translate_tools_to_gemini */"
           },
@@ -29250,7 +29250,7 @@
             ],
             "c_file": "src/agent/port_gemini_native_adapter_remaining.c",
             "python_file": "agent/gemini_native_adapter.py",
-            "line": 133,
+            "line": 170,
             "is_consolidated": false,
             "full_text": "/* PoP: _translate_tool_choice_to_gemini @ agent/gemini_native_adapter.py:_translate_tool_choice_to_gemini */"
           },
@@ -29279,7 +29279,7 @@
             ],
             "c_file": "src/agent/port_gemini_native_adapter_remaining.c",
             "python_file": "agent/gemini_native_adapter.py",
-            "line": 144,
+            "line": 181,
             "is_consolidated": false,
             "full_text": "/* PoP: _normalize_thinking_config @ agent/gemini_native_adapter.py:_normalize_thinking_config */"
           },
@@ -29308,7 +29308,7 @@
             ],
             "c_file": "src/agent/port_gemini_native_adapter_remaining.c",
             "python_file": "agent/gemini_native_adapter.py",
-            "line": 169,
+            "line": 206,
             "is_consolidated": false,
             "full_text": "/* PoP: build_gemini_request @ agent/gemini_native_adapter.py:build_gemini_request */"
           },
@@ -29337,7 +29337,7 @@
             ],
             "c_file": "src/agent/port_gemini_native_adapter_remaining.c",
             "python_file": "agent/gemini_native_adapter.py",
-            "line": 177,
+            "line": 214,
             "is_consolidated": false,
             "full_text": "/* PoP: _map_gemini_finish_reason @ agent/gemini_native_adapter.py:_map_gemini_finish_reason */"
           },
@@ -29366,7 +29366,7 @@
             ],
             "c_file": "src/agent/port_gemini_native_adapter_remaining.c",
             "python_file": "agent/gemini_native_adapter.py",
-            "line": 190,
+            "line": 227,
             "is_consolidated": false,
             "full_text": "/* PoP: _tool_call_extra_from_part @ agent/gemini_native_adapter.py:_tool_call_extra_from_part */"
           },
@@ -29395,7 +29395,7 @@
             ],
             "c_file": "src/agent/port_gemini_native_adapter_remaining.c",
             "python_file": "agent/gemini_native_adapter.py",
-            "line": 198,
+            "line": 235,
             "is_consolidated": false,
             "full_text": "/* PoP: _empty_response @ agent/gemini_native_adapter.py:_empty_response */"
           },
@@ -29424,7 +29424,7 @@
             ],
             "c_file": "src/agent/port_gemini_native_adapter_remaining.c",
             "python_file": "agent/gemini_native_adapter.py",
-            "line": 207,
+            "line": 244,
             "is_consolidated": false,
             "full_text": "/* PoP: translate_gemini_response @ agent/gemini_native_adapter.py:translate_gemini_response */"
           },
@@ -29453,7 +29453,7 @@
             ],
             "c_file": "src/agent/port_gemini_native_adapter_remaining.c",
             "python_file": "agent/gemini_native_adapter.py",
-            "line": 215,
+            "line": 252,
             "is_consolidated": false,
             "full_text": "/* PoP: _make_stream_chunk @ agent/gemini_native_adapter.py:_make_stream_chunk */"
           },
@@ -29482,7 +29482,7 @@
             ],
             "c_file": "src/agent/port_gemini_native_adapter_remaining.c",
             "python_file": "agent/gemini_native_adapter.py",
-            "line": 223,
+            "line": 260,
             "is_consolidated": false,
             "full_text": "/* PoP: _iter_sse_events @ agent/gemini_native_adapter.py:_iter_sse_events */"
           },
@@ -29511,7 +29511,7 @@
             ],
             "c_file": "src/agent/port_gemini_native_adapter_remaining.c",
             "python_file": "agent/gemini_native_adapter.py",
-            "line": 231,
+            "line": 268,
             "is_consolidated": false,
             "full_text": "/* PoP: translate_stream_event @ agent/gemini_native_adapter.py:translate_stream_event */"
           },
@@ -29540,7 +29540,7 @@
             ],
             "c_file": "src/agent/port_gemini_native_adapter_remaining.c",
             "python_file": "agent/gemini_native_adapter.py",
-            "line": 239,
+            "line": 276,
             "is_consolidated": false,
             "full_text": "/* PoP: gemini_http_error @ agent/gemini_native_adapter.py:gemini_http_error */"
           },
@@ -34206,7 +34206,7 @@
             ],
             "c_file": "src/agent/port_lsp_client_remaining.c",
             "python_file": "agent/lsp/client.py",
-            "line": 30,
+            "line": 31,
             "is_consolidated": false,
             "full_text": "/* PoP: uri_to_path @ agent/lsp/client.py:uri_to_path */"
           },
@@ -34235,7 +34235,7 @@
             ],
             "c_file": "src/agent/port_lsp_client_remaining.c",
             "python_file": "agent/lsp/client.py",
-            "line": 53,
+            "line": 54,
             "is_consolidated": false,
             "full_text": "/* PoP: _end_position @ agent/lsp/client.py:_end_position */"
           },
@@ -34264,7 +34264,7 @@
             ],
             "c_file": "src/agent/port_lsp_client_remaining.c",
             "python_file": "agent/lsp/client.py",
-            "line": 70,
+            "line": 71,
             "is_consolidated": false,
             "full_text": "/* PoP: fresh_push @ agent/lsp/client.py:fresh_push */"
           },
@@ -34293,7 +34293,7 @@
             ],
             "c_file": "src/agent/port_lsp_client_remaining.c",
             "python_file": "agent/lsp/client.py",
-            "line": 76,
+            "line": 77,
             "is_consolidated": false,
             "full_text": "/* PoP: fresh_pull @ agent/lsp/client.py:fresh_pull */"
           },
@@ -34444,7 +34444,7 @@
             ],
             "c_file": "src/agent/port_lsp_client_remaining.c",
             "python_file": "agent/lsp/client.py",
-            "line": 81,
+            "line": 82,
             "is_consolidated": false,
             "full_text": "/* PoP: _win_wrap_cmd @ agent/lsp/client.py:_win_wrap_cmd */"
           },
@@ -34560,7 +34560,7 @@
             ],
             "c_file": "src/agent/port_lsp_client_remaining.c",
             "python_file": "agent/lsp/client.py",
-            "line": 89,
+            "line": 90,
             "is_consolidated": false,
             "full_text": "/* PoP: _initialize @ agent/lsp/client.py:_initialize */"
           },
@@ -34591,7 +34591,7 @@
             ],
             "c_file": "src/agent/port_lsp_client_remaining.c",
             "python_file": "agent/lsp/client.py",
-            "line": 100,
+            "line": 106,
             "is_consolidated": false,
             "full_text": "/* PoP: _extract_sync_kind @ agent/lsp/client.py:_extract_sync_kind */"
           },
@@ -34649,7 +34649,7 @@
             ],
             "c_file": "src/agent/port_lsp_client_remaining.c",
             "python_file": "agent/lsp/client.py",
-            "line": 121,
+            "line": 127,
             "is_consolidated": false,
             "full_text": "/* PoP: _cleanup_process @ agent/lsp/client.py:_cleanup_process */"
           },
@@ -34707,7 +34707,7 @@
             ],
             "c_file": "src/agent/port_lsp_client_remaining.c",
             "python_file": "agent/lsp/client.py",
-            "line": 128,
+            "line": 134,
             "is_consolidated": false,
             "full_text": "/* PoP: _send_request_with_retry @ agent/lsp/client.py:_send_request_with_retry */"
           },
@@ -34736,7 +34736,7 @@
             ],
             "c_file": "src/agent/port_lsp_client_remaining.c",
             "python_file": "agent/lsp/client.py",
-            "line": 136,
+            "line": 142,
             "is_consolidated": false,
             "full_text": "/* PoP: _send_notification @ agent/lsp/client.py:_send_notification */"
           },
@@ -34765,7 +34765,7 @@
             ],
             "c_file": "src/agent/port_lsp_client_remaining.c",
             "python_file": "agent/lsp/client.py",
-            "line": 143,
+            "line": 149,
             "is_consolidated": false,
             "full_text": "/* PoP: _send_response @ agent/lsp/client.py:_send_response */"
           },
@@ -34794,7 +34794,7 @@
             ],
             "c_file": "src/agent/port_lsp_client_remaining.c",
             "python_file": "agent/lsp/client.py",
-            "line": 150,
+            "line": 156,
             "is_consolidated": false,
             "full_text": "/* PoP: _send_error_response @ agent/lsp/client.py:_send_error_response */"
           },
@@ -34852,7 +34852,7 @@
             ],
             "c_file": "src/agent/port_lsp_client_remaining.c",
             "python_file": "agent/lsp/client.py",
-            "line": 157,
+            "line": 163,
             "is_consolidated": false,
             "full_text": "/* PoP: _dispatch_request @ agent/lsp/client.py:_dispatch_request */"
           },
@@ -34910,7 +34910,7 @@
             ],
             "c_file": "src/agent/port_lsp_client_remaining.c",
             "python_file": "agent/lsp/client.py",
-            "line": 193,
+            "line": 199,
             "is_consolidated": false,
             "full_text": "/* PoP: _handle_work_done_create @ agent/lsp/client.py:_handle_work_done_create */"
           },
@@ -34939,7 +34939,7 @@
             ],
             "c_file": "src/agent/port_lsp_client_remaining.c",
             "python_file": "agent/lsp/client.py",
-            "line": 200,
+            "line": 206,
             "is_consolidated": false,
             "full_text": "/* PoP: _handle_workspace_configuration @ agent/lsp/client.py:_handle_workspace_configuration */"
           },
@@ -34968,7 +34968,7 @@
             ],
             "c_file": "src/agent/port_lsp_client_remaining.c",
             "python_file": "agent/lsp/client.py",
-            "line": 208,
+            "line": 214,
             "is_consolidated": false,
             "full_text": "/* PoP: _handle_register_capability @ agent/lsp/client.py:_handle_register_capability */"
           },
@@ -34997,7 +34997,7 @@
             ],
             "c_file": "src/agent/port_lsp_client_remaining.c",
             "python_file": "agent/lsp/client.py",
-            "line": 216,
+            "line": 222,
             "is_consolidated": false,
             "full_text": "/* PoP: _handle_unregister_capability @ agent/lsp/client.py:_handle_unregister_capability */"
           },
@@ -35026,7 +35026,7 @@
             ],
             "c_file": "src/agent/port_lsp_client_remaining.c",
             "python_file": "agent/lsp/client.py",
-            "line": 223,
+            "line": 229,
             "is_consolidated": false,
             "full_text": "/* PoP: _handle_workspace_folders @ agent/lsp/client.py:_handle_workspace_folders */"
           },
@@ -35055,7 +35055,7 @@
             ],
             "c_file": "src/agent/port_lsp_client_remaining.c",
             "python_file": "agent/lsp/client.py",
-            "line": 232,
+            "line": 238,
             "is_consolidated": false,
             "full_text": "/* PoP: _handle_diagnostic_refresh @ agent/lsp/client.py:_handle_diagnostic_refresh */"
           },
@@ -35084,7 +35084,7 @@
             ],
             "c_file": "src/agent/port_lsp_client_remaining.c",
             "python_file": "agent/lsp/client.py",
-            "line": 239,
+            "line": 245,
             "is_consolidated": false,
             "full_text": "/* PoP: _handle_publish_diagnostics @ agent/lsp/client.py:_handle_publish_diagnostics */"
           },
@@ -35142,7 +35142,7 @@
             ],
             "c_file": "src/agent/port_lsp_client_remaining.c",
             "python_file": "agent/lsp/client.py",
-            "line": 247,
+            "line": 253,
             "is_consolidated": false,
             "full_text": "/* PoP: save_file @ agent/lsp/client.py:save_file */"
           },
@@ -35171,7 +35171,7 @@
             ],
             "c_file": "src/agent/port_lsp_client_remaining.c",
             "python_file": "agent/lsp/client.py",
-            "line": 255,
+            "line": 261,
             "is_consolidated": false,
             "full_text": "/* PoP: _pull_document_diagnostics @ agent/lsp/client.py:_pull_document_diagnostics */"
           },
@@ -35229,7 +35229,7 @@
             ],
             "c_file": "src/agent/port_lsp_client_remaining.c",
             "python_file": "agent/lsp/client.py",
-            "line": 263,
+            "line": 269,
             "is_consolidated": false,
             "full_text": "/* PoP: _wait_for_fresh_push @ agent/lsp/client.py:_wait_for_fresh_push */"
           },
@@ -35287,7 +35287,7 @@
             ],
             "c_file": "src/agent/port_lsp_client_remaining.c",
             "python_file": "agent/lsp/client.py",
-            "line": 271,
+            "line": 277,
             "is_consolidated": false,
             "full_text": "/* PoP: _dedupe @ agent/lsp/client.py:_dedupe */"
           },
@@ -35316,7 +35316,7 @@
             ],
             "c_file": "src/agent/port_lsp_client_remaining.c",
             "python_file": "agent/lsp/client.py",
-            "line": 322,
+            "line": 328,
             "is_consolidated": false,
             "full_text": "/* PoP: _diagnostic_key @ agent/lsp/client.py:_diagnostic_key */"
           },
@@ -203111,7 +203111,7 @@
             ],
             "c_file": "src/cli/port_main_remaining.c",
             "python_file": "hermes_cli/main.py",
-            "line": 234,
+            "line": 239,
             "is_consolidated": false,
             "full_text": "/* PoP: isatty @ hermes_cli/main.py:isatty */"
           },
@@ -203140,7 +203140,7 @@
             ],
             "c_file": "src/cli/port_main_remaining.c",
             "python_file": "hermes_cli/main.py",
-            "line": 241,
+            "line": 246,
             "is_consolidated": false,
             "full_text": "/* PoP: fileno @ hermes_cli/main.py:fileno */"
           },
@@ -204097,7 +204097,7 @@
             ],
             "c_file": "src/cli/port_main_remaining.c",
             "python_file": "hermes_cli/main.py",
-            "line": 247,
+            "line": 252,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_dashboard @ hermes_cli/main.py:cmd_dashboard */"
           },
@@ -204213,7 +204213,7 @@
             ],
             "c_file": "src/cli/port_main_remaining.c",
             "python_file": "hermes_cli/main.py",
-            "line": 256,
+            "line": 261,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_prompt_size @ hermes_cli/main.py:cmd_prompt_size */"
           },
@@ -204242,7 +204242,7 @@
             ],
             "c_file": "src/cli/port_main_remaining.c",
             "python_file": "hermes_cli/main.py",
-            "line": 264,
+            "line": 269,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_logs @ hermes_cli/main.py:cmd_logs */"
           },
@@ -204300,7 +204300,7 @@
             ],
             "c_file": "src/cli/port_main_remaining.c",
             "python_file": "hermes_cli/main.py",
-            "line": 271,
+            "line": 276,
             "is_consolidated": false,
             "full_text": "/* PoP: _build_provider_choices @ hermes_cli/main.py:_build_provider_choices */"
           },
@@ -204619,7 +204619,7 @@
             ],
             "c_file": "src/cli/port_main_remaining.c",
             "python_file": "hermes_cli/main.py",
-            "line": 278,
+            "line": 283,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_memory @ hermes_cli/main.py:cmd_memory */"
           },
@@ -204793,7 +204793,7 @@
             ],
             "c_file": "src/cli/port_main_remaining.c",
             "python_file": "hermes_cli/main.py",
-            "line": 286,
+            "line": 291,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_plugins @ hermes_cli/main.py:cmd_plugins */"
           },

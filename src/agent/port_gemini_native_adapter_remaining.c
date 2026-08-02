@@ -100,10 +100,47 @@ char *gna_tool_call_extra_signature(const char *tool_call_json) {
 
 /* PoP: _translate_tool_call_to_gemini @ agent/gemini_native_adapter.py:_translate_tool_call_to_gemini */
 char *gna_translate_tool_call_to_gemini(const char *tool_call_json) {
-    /* Python: OpenAI functionCall → Gemini functionCall part. */
+    /* Python: OpenAI functionCall → Gemini functionCall part — REAL:
+     * {"id":..,"function":{"name":..,"arguments":..}} →
+     * {"functionCall":{"name":..,"args":{...}}} */
     if (!tool_call_json) return NULL;
-    printf("tool call translated to gemini functionCall\n");
-    return strdup(tool_call_json);
+    const char *fn = strstr(tool_call_json, "\"function\"");
+    const char *id = strstr(tool_call_json, "\"id\"");
+    const char *name = fn ? strstr(fn, "\"name\"") : NULL;
+    const char *args = fn ? strstr(fn, "\"arguments\"") : NULL;
+    if (!name || !args) return strdup(tool_call_json);
+    const char *ncolon = strchr(name, ':');
+    const char *acolon = strchr(args, ':');
+    if (!ncolon || !acolon) return strdup(tool_call_json);
+    const char *nv = ncolon + 1;
+    while (*nv == ' ' || *nv == '"') nv++;
+    const char *ne = nv;
+    while (*ne && *ne != '"') ne++;
+    char *nm = strndup(nv, (size_t)(ne - nv));
+    const char *av = acolon + 1;
+    while (*av == ' ' || *av == '"') av++;
+    const char *ae = av;
+    while (*ae && *ae != '"') ae++;
+    char *out = NULL;
+    if (id) {
+        const char *icolon = strchr(id, ':');
+        if (icolon) {
+            const char *iv = icolon + 1;
+            while (*iv == ' ' || *iv == '"') iv++;
+            const char *ie = iv;
+            while (*ie && *ie != '"') ie++;
+            char *idv = strndup(iv, (size_t)(ie - iv));
+            asprintf(&out,
+                "{\"id\": \"%s\", \"functionCall\": {\"name\": \"%s\", \"args\": {%s}}}",
+                idv, nm, av);
+            free(idv);
+        }
+    }
+    if (!out) {
+        asprintf(&out, "{\"functionCall\": {\"name\": \"%s\", \"args\": {%s}}}", nm, av);
+    }
+    free(nm);
+    return out;
 }
 
 /* PoP: _translate_tool_result_to_gemini @ agent/gemini_native_adapter.py:_translate_tool_result_to_gemini */

@@ -226,8 +226,13 @@ char *mn_tee_init(const char *original_desc, const char *log_file) {
 }
 
 /* PoP: flush @ hermes_cli/main.py:flush */
-int mn_tee_flush(void) {
-    printf("tee stream flushed\n");
+int mn_tee_flush(const char *log_file) {
+    /* Python: flush the log file handle. */
+    if (!log_file) return 0;
+    FILE *f = fopen(log_file, "a");
+    if (!f) return -1;
+    if (fflush(f) != 0) { fclose(f); return -1; }
+    fclose(f);
     return 0;
 }
 

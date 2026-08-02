@@ -143,10 +143,18 @@ char *brd_stream_converse_with_callbacks(const char *kwargs_json) {
 
 /* PoP: build_converse_kwargs @ agent/bedrock_adapter.py:build_converse_kwargs */
 char *brd_build_converse_kwargs(const char *model, const char *messages_json, const char *tools_json) {
-    /* Python: modelId + inferenceConfig + toolConfig. */
+    /* Python: modelId + inferenceConfig + toolConfig — REAL. */
     if (!model) return NULL;
-    printf("converse kwargs built (%s)\n", model);
-    return strdup("{}");
+    char *tools = brd_convert_tools_to_converse(tools_json);
+    char *out = NULL;
+    asprintf(&out,
+        "{\"modelId\": \"%s\", \"messages\": %s, \"toolConfig\": {\"tools\": %s}, "
+        "\"inferenceConfig\": {\"maxTokens\": 4096}}",
+        model,
+        messages_json ? messages_json : "[]",
+        tools ? tools : "[]");
+    free(tools);
+    return out;
 }
 
 /* PoP: call_converse @ agent/bedrock_adapter.py:call_converse */

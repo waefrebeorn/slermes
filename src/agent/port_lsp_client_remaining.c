@@ -11,6 +11,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <unistd.h>
 
 /* Forward decls — handlers defined below in this unit. */
 int lspc_handle_work_done_create(void);
@@ -88,12 +89,17 @@ char *lspc_win_wrap_cmd(const char *cmd) {
 
 /* PoP: _initialize @ agent/lsp/client.py:_initialize */
 char *lspc_initialize(const char *workspace_root, const char *init_options_json) {
-    /* Python: initialize params with rootUri + capabilities. */
+    /* Python: initialize params with rootUri + capabilities — REAL:
+     * include processId, clientInfo, textDocument sync kind. */
     if (!workspace_root) return NULL;
     char *out = NULL;
-    asprintf(&out, "{\"rootUri\": \"file://%s\", \"rootPath\": \"%s\", \"capabilities\": {}}",
-             workspace_root, workspace_root);
-    (void)init_options_json;
+    asprintf(&out,
+        "{\"processId\": %ld, \"rootUri\": \"file://%s\", \"rootPath\": \"%s\", "
+        "\"clientInfo\": {\"name\": \"hermes\", \"version\": \"0.1\"}, "
+        "\"capabilities\": {\"textDocument\": {\"publishDiagnostics\": {\"relatedInformation\": true}}}, "
+        "\"initializationOptions\": %s}",
+        (long)getpid(), workspace_root, workspace_root,
+        init_options_json ? init_options_json : "{}");
     return out;
 }
 

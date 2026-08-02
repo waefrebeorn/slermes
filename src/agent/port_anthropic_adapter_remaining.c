@@ -408,9 +408,36 @@ char *antr_sanitize_tool_id(const char *tool_id) {
 
 /* PoP: _normalize_tool_input_schema @ agent/anthropic_adapter.py:_normalize_tool_input_schema */
 char *antr_normalize_tool_input_schema(const char *schema_json) {
-    /* Python: nullable unions (anyOf + null) → optional property. */
+    /* Python: nullable unions (anyOf + null) → optional property —
+     * REAL: when the schema is a bare anyOf of [type, "null"], emit
+     * the non-null type directly. */
     if (!schema_json) return strdup("{}");
-    printf("tool input schema normalized (nullable unions flattened)\n");
+    const char *anyof = strstr(schema_json, "anyOf");
+    if (!anyof) return strdup(schema_json);
+    /* find the non-null type string */
+    const char *p = anyof;
+    const char *t = NULL;
+    while ((p = strstr(p, "\"type\"")) != NULL) {
+        const char *colon = strchr(p, ':');
+        if (!colon) break;
+        const char *v = colon + 1;
+        while (*v == ' ' || *v == '"') v++;
+        const char *e = v;
+        while (*e && *e != '"') e++;
+        if (e > v) {
+            char *ty = strndup(v, (size_t)(e - v));
+            bool is_null = ty && strcmp(ty, "null") == 0;
+            if (ty && !is_null) { free(t); t = ty; }
+            else free(ty);
+        }
+        p = e;
+    }
+    if (t) {
+        char *out = NULL;
+        asprintf(&out, "{\"type\": \"%s\"}", t);
+        free(t);
+        return out;
+    }
     return strdup(schema_json);
 }
 
