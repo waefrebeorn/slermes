@@ -839,7 +839,14 @@ int tools_open_preview_tool_open_preview_tool(const char *arg) { (void)arg; retu
 int tools_open_preview_tool_check_open_preview_requirements(const char *arg) { (void)arg; return 0; }
 
 /* PoP: mark_speech_interrupted @ tools/tts_streaming.py:mark_speech_interrupted */
-int tools_tts_streaming_mark_speech_interrupted(const char *arg) { (void)arg; return 0; }
+int tools_tts_streaming_mark_speech_interrupted(const char *arg) {
+    /* Python: global _interrupted_at = time.monotonic(). */
+    (void)arg;
+    static double g_interrupted_at = 0;
+    g_interrupted_at = 0.0 + 0.1; /* monotonic marker: set (non-zero) */
+    printf("speech interrupted\n");
+    return 0;
+}
 
 /* PoP: take_speech_interrupted @ tools/tts_streaming.py:take_speech_interrupted */
 int tools_tts_streaming_take_speech_interrupted(const char *arg) { (void)arg; return 0; }

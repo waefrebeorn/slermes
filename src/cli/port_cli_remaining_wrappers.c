@@ -1078,7 +1078,11 @@ int hermes_cli_service_manager_u_seed_supervise_skeleton(const char *arg) { (voi
 int hermes_cli_service_manager_u_service_dir(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _service_name @ hermes_cli/service_manager.py:_service_name */
-int hermes_cli_service_manager_u_service_name(const char *arg) { (void)arg; return 0; }
+int hermes_cli_service_manager_u_service_name(const char *arg) {
+    /* Python: f"{S6_SERVICE_PREFIX}{profile}" -> "gateway-<profile>". */
+    printf("gateway-%s\n", arg ? arg : "");
+    return 0;
+}
 
 /* PoP: _render_run_script @ hermes_cli/service_manager.py:_render_run_script */
 int hermes_cli_service_manager_u_render_run_script(const char *arg) { (void)arg; return 0; }
@@ -1369,7 +1373,12 @@ int hermes_cli_onepassword_secrets_cmd_sync(const char *arg) { (void)arg; return
 int hermes_cli_onepassword_secrets_cmd_disable(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _yn @ hermes_cli/onepassword_secrets_cli.py:_yn */
-int hermes_cli_onepassword_secrets_u_yn(const char *arg) { (void)arg; return 0; }
+int hermes_cli_onepassword_secrets_u_yn(const char *arg) {
+    /* Python: "[green]yes[/green]" if b else "[dim]no[/dim]". */
+    if (arg && *arg && strcmp(arg, "0") != 0) printf("[green]yes[/green]\n");
+    else printf("[dim]no[/dim]\n");
+    return 0;
+}
 
 /* PoP: _op_version @ hermes_cli/onepassword_secrets_cli.py:_op_version */
 int hermes_cli_onepassword_secrets_u_op_version(const char *arg) { (void)arg; return 0; }
@@ -1483,7 +1492,12 @@ int hermes_cli_proxy_cli_cmd_disable(const char *arg) { (void)arg; return 0; }
 int hermes_cli_proxy_cli_u_load_env_file_into_environ(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _yn @ hermes_cli/proxy_cli.py:_yn */
-int hermes_cli_proxy_cli_u_yn(const char *arg) { (void)arg; return 0; }
+int hermes_cli_proxy_cli_u_yn(const char *arg) {
+    /* Python: "[green]yes[/green]" if b else "[dim]no[/dim]". */
+    if (arg && *arg && strcmp(arg, "0") != 0) printf("[green]yes[/green]\n");
+    else printf("[dim]no[/dim]\n");
+    return 0;
+}
 
 /* PoP: _redact_token @ hermes_cli/proxy_cli.py:_redact_token */
 int hermes_cli_proxy_cli_u_redact_token(const char *arg) { (void)arg; return 0; }
@@ -2096,7 +2110,18 @@ int hermes_cli_sqlite_runtime_u_version_tuple(const char *arg) { (void)arg; retu
 int hermes_cli_sqlite_runtime_is_sqlite_wal_reset_vulnerable(const char *arg) { (void)arg; return 0; }
 
 /* PoP: wal_reset_vulnerable @ hermes_cli/sqlite_runtime.py:wal_reset_vulnerable */
-int hermes_cli_sqlite_runtime_wal_reset_vulnerable(const char *arg) { (void)arg; return 0; }
+int hermes_cli_sqlite_runtime_wal_reset_vulnerable(const char *arg) {
+    /* Python: version tuple check for SQLite's WAL-reset bug. Arg =
+     * "major.minor.patch". */
+    if (!arg || !*arg) return 0;
+    int maj = 0, min = 0, pat = 0;
+    sscanf(arg, "%d.%d.%d", &maj, &min, &pat);
+    if (maj < 3 || (maj == 3 && min < 7)) return 0;
+    if (maj > 3 || (maj == 3 && min > 51) || (maj == 3 && min == 51 && pat >= 3)) return 0;
+    if (maj == 3 && min == 50 && pat >= 7) return 0; /* 3.50.7 <= v < 3.51.0 */
+    if (maj == 3 && min == 44 && pat >= 6) return 0; /* 3.44.6 <= v < 3.45.0 */
+    return 1;
+}
 
 /* PoP: probe_sqlite_runtime @ hermes_cli/sqlite_runtime.py:probe_sqlite_runtime */
 int hermes_cli_sqlite_runtime_probe_sqlite_runtime(const char *arg) { (void)arg; return 0; }
