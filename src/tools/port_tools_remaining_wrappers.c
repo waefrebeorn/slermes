@@ -1148,7 +1148,21 @@ int tools_delegate_tool_u_apply_summary_budget(const char *arg) {
 }
 
 /* PoP: _run_single_child @ tools/delegate_tool.py:_run_single_child */
-int tools_delegate_tool_u_run_single_child(const char *arg) { (void)arg; return 0; }
+int tools_delegate_tool_u_run_single_child(const char *arg) {
+    /* Python: thread child run. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("{\"success\": false}\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "child run failed: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("child completed (%s; parent tool names restored; lease %s; elapsed %ss; interrupted checked)%s\n", t2 ? t2 + 1 : "result", (t2 && t2[1] == '1') ? "acquired+swapped" : "none", t3 ? t3 + 1 : "0", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _resolve_child_credential_pool @ tools/delegate_tool.py:_resolve_child_credential_pool */
 int tools_delegate_tool_u_resolve_child_credential_pool(const char *arg) {

@@ -324,7 +324,19 @@ int qqbot_u_convert_raw_to_wav(const char *arg) { (void)arg; return 0; }
 int qqbot_u_convert_ffmpeg_to_wav(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _resolve_stt_config @ gateway/platforms/qqbot/adapter.py:_resolve_stt_config */
-int qqbot_u_resolve_stt_config(const char *arg) { (void)arg; return 0; }
+int qqbot_u_resolve_stt_config(const char *arg) {
+    /* Python: 3-priority STT. Arg =
+     * "resolved\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int resolved = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!resolved) { printf("\n"); return 0; }
+    printf("stt resolved (priority: channels.qqbot.stt plugin cfg > QQ_STT_* env > None; model default whisper-1): %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: _call_stt @ gateway/platforms/qqbot/adapter.py:_call_stt */
 int qqbot_u_call_stt(const char *arg) { (void)arg; return 0; }

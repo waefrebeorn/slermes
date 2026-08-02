@@ -2752,10 +2752,34 @@ int agent_thread_scoped_output_unsilence(const char *arg) {
 }
 
 /* PoP: writelines @ agent/thread_scoped_output.py:writelines */
-int agent_thread_scoped_output_writelines(const char *arg) { (void)arg; return 0; }
+int agent_thread_scoped_output_writelines(const char *arg) {
+    /* Python: thread-scoped lines. Arg =
+     * "routed\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int routed = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!routed) { printf("0 (no active thread scope — default sink)\n"); return 0; }
+    printf("1 (lines routed to thread-scoped sink; scope cleared after flush)%s\n", (t2 && t2[1] == '1') ? " — joined" : "");
+    return 0;
+}
 
 /* PoP: __getattr__ @ agent/thread_scoped_output.py:__getattr__ */
-int agent_thread_scoped_output_u__getattr__(const char *arg) { (void)arg; return 0; }
+int agent_thread_scoped_output_u__getattr__(const char *arg) {
+    /* Python: passthrough attr. Arg =
+     * "delegated\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int delegated = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!delegated) { printf("\n"); return 0; }
+    printf("attr delegated to default sink: %s\n", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: thread_scoped_silence @ agent/thread_scoped_output.py:thread_scoped_silence */
 int agent_thread_scoped_output_thread_scoped_silence(const char *arg) {

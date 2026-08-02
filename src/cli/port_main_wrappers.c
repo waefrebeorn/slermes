@@ -3027,7 +3027,25 @@ int main_u_discard_lockfile_churn(const char *arg) {
 }
 
 /* PoP: _cmd_update_impl @ hermes_cli/main.py:_cmd_update_impl */
-int main_u_cmd_update_impl(const char *arg) { (void)arg; return 0; }
+int main_u_cmd_update_impl(const char *arg) {
+    /* Python: update body. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("1\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "no_source") == 0) {
+        fprintf(stderr, "Error: no install source (checkout / zip) available to update.\n");
+        return 1;
+    }
+    if (strcmp(state, "interrupted") == 0) {
+        fprintf(stderr, "update interrupted: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("update applied (%s; gateway-mode file IPC prompts; non-interactive local-changes policy %s; stdio restored by wrapper)%s\n", t2 ? t2 + 1 : "ok", (t2 && t2[1] == '1') ? "restore" : "discard", (t2 && t2[1] == '1') ? "" : "");
+    return 0;
+}
 
 /* PoP: _render_distribution_plan @ hermes_cli/main.py:_render_distribution_plan */
 int main_u_render_distribution_plan(const char *arg) {

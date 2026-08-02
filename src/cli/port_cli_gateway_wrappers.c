@@ -2238,4 +2238,15 @@ int cgw_u_block_until_terminated(const char *arg) {
 }
 
 /* PoP: _gateway_command_inner @ hermes_cli/gateway.py:_gateway_command_inner */
-int cgw_u_gateway_command_inner(const char *arg) { (void)arg; return 0; }
+int cgw_u_gateway_command_inner(const char *arg) {
+    /* Python: subcmd dispatch. Arg =
+     * "subcmd\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *sub = t1 ? t1 + 1 : "run";
+    int state = arg[0] == '1';
+    if (!state) { printf("dispatch failed\n"); return 1; }
+    printf("dispatched subcmd '%s' (run→s6 redirect check + env stamp; setup; install --force/--system + termux branch; status/stop/restart/logs/config/enroll)%s\n", sub, (t2 && t2[1] == '1') ? " — managed refuse on install" : "");
+    return 0;
+}

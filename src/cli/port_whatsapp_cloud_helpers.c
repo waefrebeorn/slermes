@@ -237,8 +237,20 @@ bool whatsapp_cloud_verify_signature(const char *body, const char *signature, co
 
 /* PoP: _dedup_wamid @ gateway/platforms/whatsapp_cloud.py:_dedup_wamid */
 bool whatsapp_cloud_dedup_wamid(const char *wamid) {
-    (void)wamid;
-    return false;
+    /* Python: FIFO dedup cache (WAMID_DEDUP_CACHE_SIZE). */
+    static char *seen[2048];
+    static int n = 0;
+    if (!wamid || !*wamid) return true;  /* no wamid → let through */
+    for (int i = 0; i < n; i++) {
+        if (seen[i] && strcmp(seen[i], wamid) == 0) return false;  /* duplicate */
+    }
+    if (n >= 2048) {
+        free(seen[0]);
+        memmove(seen, seen + 1, (size_t)(n - 1) * sizeof(*seen));
+        n--;
+    }
+    seen[n++] = strdup(wamid);
+    return true;
 }
 
 /* PoP: _dispatch_payload @ gateway/platforms/whatsapp_cloud.py:_dispatch_payload */

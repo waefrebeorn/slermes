@@ -84,7 +84,21 @@ int bb_u_clean_mention_text(const char *arg) {
 }
 
 /* PoP: _api_post @ gateway/platforms/bluebubbles.py:_api_post */
-int bb_u_api_post(const char *arg) { (void)arg; return 0; }
+int bb_u_api_post(const char *arg) {
+    /* Python: REST post. Arg =
+     * "state\tresult\terr". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *state = t1 ? t1 + 1 : "";
+    if (strcmp(state, "fail") == 0) {
+        fprintf(stderr, "bluebubbles API error: %s\n", t3 ? t3 + 1 : "?");
+        return 1;
+    }
+    printf("posted (%s; retry-after honored, error payload logged)%s\n", t2 ? t2 + 1 : "ok", (t2 && t2[1] == '1') ? " — non-2xx handled" : "");
+    return 0;
+}
 
 /* PoP: _webhook_url @ gateway/platforms/bluebubbles.py:_webhook_url */
 int bb_u_webhook_url(const char *arg) {

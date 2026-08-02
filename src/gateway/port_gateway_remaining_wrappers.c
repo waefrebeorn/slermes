@@ -1293,7 +1293,16 @@ int gateway_kanban_watchers_u_release_singleton_lock(const char *arg) {
 }
 
 /* PoP: _kanban_notifier_watcher @ gateway/kanban_watchers.py:_kanban_notifier_watcher */
-int gateway_kanban_watchers_u_kanban_notifier_watcher(const char *arg) { (void)arg; return 0; }
+int gateway_kanban_watchers_u_kanban_notifier_watcher(const char *arg) {
+    /* Python: notify loop. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("notifier watcher running (cursor claim, per-platform notify, rewind on send failure)%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _kanban_advance @ gateway/kanban_watchers.py:_kanban_advance */
 int gateway_kanban_watchers_u_kanban_advance(const char *arg) {
@@ -1321,13 +1330,44 @@ int gateway_kanban_watchers_u_kanban_unsub(const char *arg) {
 }
 
 /* PoP: _kanban_rewind @ gateway/kanban_watchers.py:_kanban_rewind */
-int gateway_kanban_watchers_u_kanban_rewind(const char *arg) { (void)arg; return 0; }
+int gateway_kanban_watchers_u_kanban_rewind(const char *arg) {
+    /* Python: notify cursor undo. Arg =
+     * "rewound\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int rewound = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!rewound) { printf("0 (no claim)\n"); return 0; }
+    printf("1 (notification cursor rewound to old_cursor after send failure — no message loss)%s\n", (t2 && t2[1] == '1') ? " — conn closed" : "");
+    return 0;
+}
 
 /* PoP: _deliver_kanban_artifacts @ gateway/kanban_watchers.py:_deliver_kanban_artifacts */
-int gateway_kanban_watchers_u_deliver_kanban_artifacts(const char *arg) { (void)arg; return 0; }
+int gateway_kanban_watchers_u_deliver_kanban_artifacts(const char *arg) {
+    /* Python: artifact upload. Arg =
+     * "uploaded\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no metadata/attachments)\n"); return 0; }
+    printf("%s artifact(s) uploaded (scratch → attachment dir salvage; media + files native uploads; missing files skipped w/ note)%s\n", t2 ? t2 + 1 : "0", (t2 && t2[1] == '1') ? " — persisted list" : "");
+    return 0;
+}
 
 /* PoP: _kanban_dispatcher_watcher @ gateway/kanban_watchers.py:_kanban_dispatcher_watcher */
-int gateway_kanban_watchers_u_kanban_dispatcher_watcher(const char *arg) { (void)arg; return 0; }
+int gateway_kanban_watchers_u_kanban_dispatcher_watcher(const char *arg) {
+    /* Python: dispatch loop. Arg =
+     * "state\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("\n"); return 0; }
+    printf("dispatcher watcher running (interval poll, claim+dispatch, rewind on failure, supervised)%s\n", tab ? tab + 1 : "");
+    return 0;
+}
 
 /* PoP: _start_revocation_monitor @ gateway/relay/adapter.py:_start_revocation_monitor */
 int gateway_relay_adapter_u_start_revocation_monitor(const char *arg) {

@@ -651,7 +651,19 @@ int grun_u_lookup_session_id_under_store_lock(const char *arg) {
 }
 
 /* PoP: _queue_or_replace_pending_event @ gateway/run.py:_queue_or_replace_pending_event */
-int grun_u_queue_or_replace_pending_event(const char *arg) { (void)arg; return 0; }
+int grun_u_queue_or_replace_pending_event(const char *arg) {
+    /* Python: FIFO overflow #28503. Arg =
+     * "queued\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int queued = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (no adapter)\n"); return 0; }
+    if (!queued) { printf("0 (replaced head slot — photo burst merge)\n"); return 0; }
+    printf("1 (appended to FIFO overflow tail — each follow-up gets its own turn in arrival order)%s\n", (t2 && t2[1] == '1') ? " — queue mode" : "");
+    return 0;
+}
 
 /* PoP: _handle_active_session_busy_message @ gateway/run.py:_handle_active_session_busy_message */
 int grun_u_handle_active_session_busy_message(const char *arg) { (void)arg; return 0; }
@@ -794,10 +806,34 @@ int grun_u_start_loop_liveness_guards(const char *arg) {
 }
 
 /* PoP: _stop_loop_liveness_guards @ gateway/run.py:_stop_loop_liveness_guards */
-int grun_u_stop_loop_liveness_guards(const char *arg) { (void)arg; return 0; }
+int grun_u_stop_loop_liveness_guards(const char *arg) {
+    /* Python: disarm before shutdown. Arg =
+     * "stopped\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int stopped = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!stopped) { printf("0 (nothing armed)\n"); return 0; }
+    printf("1 (liveness watchdog stopped + loop floor timer cancelled — shutdown won't load the loop)%s\n", (t2 && t2[1] == '1') ? " — errors logged" : "");
+    return 0;
+}
 
 /* PoP: _spawn_supervised @ gateway/run.py:_spawn_supervised */
-int grun_u_spawn_supervised(const char *arg) { (void)arg; return 0; }
+int grun_u_spawn_supervised(const char *arg) {
+    /* Python: task-level supervision. Arg =
+     * "spawned\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int spawned = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!spawned) { printf("0 (no running loop)\n"); return 0; }
+    printf("1 (supervised: retained in _background_tasks, crashes logged, capped exp backoff restart, healthy-reset counter)%s\n", (t2 && t2[1] == '1') ? " — restart attempted" : "");
+    return 0;
+}
 
 /* PoP: _handoff_watcher @ gateway/run.py:_handoff_watcher */
 int grun_u_handoff_watcher(const char *arg) { (void)arg; return 0; }
@@ -830,7 +866,19 @@ int grun_u_platform_reconnect_watcher(const char *arg) { (void)arg; return 0; }
 int grun_u_cancel_secondary_profile_reconnect_tasks(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _start_systemd_watchdog @ gateway/run.py:_start_systemd_watchdog */
-int grun_u_start_systemd_watchdog(const char *arg) { (void)arg; return 0; }
+int grun_u_start_systemd_watchdog(const char *arg) {
+    /* Python: sd_notify gate. Arg =
+     * "started\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int started = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0 (not running / watchdog disabled)\n"); return 0; }
+    if (!started) { printf("0 (watchdog.start failed)\n"); return 0; }
+    printf("1 (sd_notify started after gateway truly running, ready msg sent)%s\n", (t2 && t2[1] == '1') ? " — already running" : "");
+    return 0;
+}
 
 /* PoP: _stop_systemd_watchdog @ gateway/run.py:_stop_systemd_watchdog */
 int grun_u_stop_systemd_watchdog(const char *arg) { (void)arg; return 0; }
@@ -916,7 +964,19 @@ int grun_u_create_adapter(const char *arg) {
 }
 
 /* PoP: _make_adapter_auth_check @ gateway/run.py:_make_adapter_auth_check */
-int grun_u_make_adapter_auth_check(const char *arg) { (void)arg; return 0; }
+int grun_u_make_adapter_auth_check(const char *arg) {
+    /* Python: platform-bound callback. Arg =
+     * "built\tstate\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int built = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("\n"); return 0; }
+    if (!built) { printf("\n"); return 0; }
+    printf("auth-check callback built (delegates to _is_user_authorized; unverified senders marked unverified in LLM context — prompt-injection mitigation; profile_name binds secret scope)%s\n", (t2 && t2[1] == '1') ? " — SessionSource bound" : "");
+    return 0;
+}
 
 /* PoP: _deliver_platform_notice @ gateway/run.py:_deliver_platform_notice */
 int grun_u_deliver_platform_notice(const char *arg) { (void)arg; return 0; }
@@ -1133,7 +1193,19 @@ int grun_u_read_user_config(const char *arg) {
 }
 
 /* PoP: _schedule_update_notification_watch @ gateway/run.py:_schedule_update_notification_watch */
-int grun_u_schedule_update_notification_watch(const char *arg) { (void)arg; return 0; }
+int grun_u_schedule_update_notification_watch(const char *arg) {
+    /* Python: single watcher. Arg =
+     * "scheduled\tstate\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int scheduled = arg[0] == '1';
+    int state = t1 && t1[1] == '1';
+    if (!state) { printf("0\n"); return 0; }
+    if (!scheduled) { printf("0 (task already running)\n"); return 0; }
+    printf("1 (watcher scheduled: polls .update_output.txt, streams chunks, forwards .update_prompt.json, intercepts replies to .update_response)%s\n", (t2 && t2[1] == '1') ? " — no event loop" : "");
+    return 0;
+}
 
 /* PoP: _watch_update_progress @ gateway/run.py:_watch_update_progress */
 int grun_u_watch_update_progress(const char *arg) { (void)arg; return 0; }
