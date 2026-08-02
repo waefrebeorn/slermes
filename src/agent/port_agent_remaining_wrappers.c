@@ -512,7 +512,37 @@ int agent_agent_init_u_moa_reference_output_allowed(const char *arg) { (void)arg
 int agent_agent_init_u_relay_moa_reference_event(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _provider_default_routes @ agent/agent_init.py:_provider_default_routes */
-int agent_agent_init_u_provider_default_routes(const char *arg) { (void)arg; return 0; }
+int agent_agent_init_u_provider_default_routes(const char *arg) {
+    /* Python: known exact default routes for a canonical provider id.
+     * C port carries the builtin table; unknown providers -> empty. */
+    static const struct { const char *prov; const char *routes[3]; } TBL[] = {
+        {"openai", {"https://api.openai.com/v1", "", ""}},
+        {"anthropic", {"https://api.anthropic.com/v1", "", ""}},
+        {"google", {"https://generativelanguage.googleapis.com/v1beta", "", ""}},
+        {"azure", {"https://api.openai.azure.com/v1", "", ""}},
+        {"bedrock", {"https://bedrock-runtime.us-east-1.amazonaws.com", "", ""}},
+        {"nvidia_nim", {"https://integrate.api.nvidia.com/v1", "", ""}},
+        {"nous", {"https://api.nousresearch.com/v1", "", ""}},
+        {"openrouter", {"https://openrouter.ai/api/v1", "", ""}},
+        {"xai", {"https://api.x.ai/v1", "", ""}},
+        {"deepseek", {"https://api.deepseek.com/v1", "", ""}},
+        {"gemini", {"https://generativelanguage.googleapis.com/v1beta", "", ""}},
+        {"codex", {"https://api.openai.com/v1", "", ""}},
+        {"", {"", "", ""}},
+    };
+    const char *prov = arg ? arg : "";
+    int printed = 0;
+    for (int i = 0; TBL[i].prov[0]; i++) {
+        if (strcmp(TBL[i].prov, prov) != 0) continue;
+        for (int r = 0; r < 3 && TBL[i].routes[r][0]; r++) {
+            printf("%s\n", TBL[i].routes[r]);
+            printed++;
+        }
+        break;
+    }
+    if (!printed) printf("\n");
+    return 0;
+}
 
 /* PoP: _context_route_mismatch @ agent/agent_init.py:_context_route_mismatch */
 int agent_agent_init_u_context_route_mismatch(const char *arg) { (void)arg; return 0; }

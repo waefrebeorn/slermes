@@ -125,7 +125,14 @@ int tools_homeassistant_tool_u_get_config(const char *arg) {
 }
 
 /* PoP: _get_headers @ tools/homeassistant_tool.py:_get_headers */
-int tools_homeassistant_tool_u_get_headers(const char *arg) { (void)arg; return 0; }
+int tools_homeassistant_tool_u_get_headers(const char *arg) {
+    /* Python (token): Bearer auth headers for the HA REST API. Arg = token
+     * (empty pulls HASS_TOKEN). Prints JSON headers. */
+    const char *token = (arg && *arg) ? arg : getenv("HASS_TOKEN");
+    printf("{\"Authorization\":\"Bearer %s\",\"Content-Type\":\"application/json\"}\n",
+           token ? token : "");
+    return 0;
+}
 
 /* PoP: _filter_and_summarize @ tools/homeassistant_tool.py:_filter_and_summarize */
 int tools_homeassistant_tool_u_filter_and_summarize(const char *arg) { (void)arg; return 0; }

@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 #include <ctype.h>
 #include <unistd.h>
 #include <limits.h>
@@ -427,3 +428,4 @@ char *file_tools_check_cross_profile_path(const char *filepath, const char *task
     free(resolved);
     return NULL;
 }
+
