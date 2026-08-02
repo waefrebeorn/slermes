@@ -33,7 +33,39 @@ int ccm_handle_stop_command(const char *args) {
 }
 /* PoP: _handle_agents_command @ hermes_cli/cli_commands_mixin.py:_handle_agents_command */
 int ccm_handle_agents_command(const char *args) {
-    (void)args; return 0;
+    (void)args;
+    char *raw = process_registry_list(NULL);
+    if (!raw) { printf("  No background process information available.\n"); return 0; }
+    char *jerr = NULL;
+    json_t *arr = json_parse(raw, &jerr);
+    free(jerr);
+    free(raw);
+    int running = 0, finished = 0;
+    if (arr && arr->type == JSON_ARRAY) {
+        size_t n = json_len(arr);
+        for (size_t i = 0; i < n; i++) {
+            json_t *p = json_array_get(arr, i);
+            const char *status = json_get_str(p, "status", "");
+            const char *sid = json_get_str(p, "session_id", "?");
+            const char *cmd = json_get_str(p, "command", "");
+            int up_secs = (int)json_get_num(p, "uptime_seconds", 0);
+            int h = up_secs / 3600, m = (up_secs % 3600) / 60, s = up_secs % 60;
+            char up[32];
+            if (h > 0) snprintf(up, sizeof(up), "%dh%dm", h, m);
+            else if (m > 0) snprintf(up, sizeof(up), "%dm%ds", m, s);
+            else snprintf(up, sizeof(up), "%ds", s);
+            if (strcmp(status, "running") == 0) {
+                running++;
+                printf("    %s · %s · %.80s\n", sid, up, cmd);
+            } else {
+                finished++;
+            }
+        }
+    }
+    if (arr) json_free(arr);
+    printf("  Running processes: %d\n", running);
+    if (finished) printf("  Recently finished: %d\n", finished);
+    return 0;
 }
 /* PoP: _handle_journey_command @ hermes_cli/cli_commands_mixin.py:_handle_journey_command */
 int ccm_handle_journey_command(const char *args) {
