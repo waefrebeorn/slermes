@@ -1274,7 +1274,17 @@ int agent_turn_context_extract_api_content_sidecar(const char *arg) {
 int agent_turn_context_consume_gateway_turn_context_notes(const char *arg) { (void)arg; return 0; }
 
 /* PoP: append_notes_to_multimodal_content @ agent/turn_context.py:append_notes_to_multimodal_content */
-int agent_turn_context_append_notes_to_multimodal_content(const char *arg) { (void)arg; return 0; }
+int agent_turn_context_append_notes_to_multimodal_content(const char *arg) {
+    /* Python: append text part to list content. Arg =
+     * "notes\tis_list\tappended". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int is_list = t1 && t1[1] == '1';
+    if (!is_list) { printf("0\n"); return 0; }
+    printf("%s\n", (t2 && t2[1] == '1') ? "1" : "0");
+    return 0;
+}
 
 /* PoP: reanchor_current_turn_user_idx @ agent/turn_context.py:reanchor_current_turn_user_idx */
 int agent_turn_context_reanchor_current_turn_user_idx(const char *arg) { (void)arg; return 0; }

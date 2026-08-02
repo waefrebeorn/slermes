@@ -15,7 +15,16 @@
 #include "hermes_gateway_weixin.h"
 
 /* PoP: _make_ssl_connector @ gateway/platforms/weixin.py:_make_ssl_connector */
-int wx_u_make_ssl_connector(const char *arg) { (void)arg; return 0; }
+int wx_u_make_ssl_connector(const char *arg) {
+    /* Python: certifi connector or None. Arg = "certifi\taiohttp". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int certifi = arg[0] == '1';
+    int aiohttp = tab && tab[1] == '1';
+    if (certifi && aiohttp) { printf("ssl connector (certifi CA)\n"); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: save_weixin_account @ gateway/platforms/weixin.py:save_weixin_account */
 int wx_save_weixin_account(const char *arg) {

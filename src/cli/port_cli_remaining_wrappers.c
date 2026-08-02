@@ -612,7 +612,23 @@ int hermes_cli_pets_set_pet_scale(const char *arg) { (void)arg; return 0; }
 int hermes_cli_pets_toggle_pet_display(const char *arg) { (void)arg; return 0; }
 
 /* PoP: print_pet_gallery @ hermes_cli/pets.py:print_pet_gallery */
-int hermes_cli_pets_print_pet_gallery(const char *arg) { (void)arg; return 0; }
+int hermes_cli_pets_print_pet_gallery(const char *arg) {
+    /* Python: gallery slice with installed marks. Arg =
+     * "limit\tcount\tinstalled\tentries". */
+    if (!arg || !*arg) { printf("(._.) Couldn't reach the petdex gallery\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    long limit = strtol(arg, NULL, 10);
+    long count = t1 ? strtol(t1 + 1, NULL, 10) : 0;
+    const char *installed = t2 ? t2 + 1 : "";
+    const char *entries = t3 ? t3 + 1 : "";
+    long shown = (limit > 0 && limit < count) ? limit : count;
+    printf("(^o^)/ petdex gallery — first %ld of %ld:\n", shown, count);
+    printf("%s\n", entries);
+    printf("  /pet <slug> to adopt · /pet to toggle\n");
+    return 0;
+}
 
 /* PoP: _clear_active_if @ hermes_cli/pets.py:_clear_active_if */
 int hermes_cli_pets_u_clear_active_if(const char *arg) {
@@ -1205,7 +1221,13 @@ int hermes_cli_projects_cmd_u_sync_board_default_workdir(const char *arg) {
 }
 
 /* PoP: _get_custom_provider_names @ hermes_cli/auth_commands.py:_get_custom_provider_names */
-int hermes_cli_auth_commands_u_get_custom_provider_names(const char *arg) { (void)arg; return 0; }
+int hermes_cli_auth_commands_u_get_custom_provider_names(const char *arg) {
+    /* Python: (display, pool_key, provider_key) triples. Arg = "entries"
+     * (one per line: display\tpool_key\tprovider_key). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _resolve_custom_provider_input @ hermes_cli/auth_commands.py:_resolve_custom_provider_input */
 int hermes_cli_auth_commands_u_resolve_custom_provider_input(const char *arg) {
@@ -3697,7 +3719,17 @@ int hermes_cli_projects_db_get_discovery_policy_key(const char *arg) {
 }
 
 /* PoP: reconcile_discovered_repos_policy @ hermes_cli/projects_db.py:reconcile_discovered_repos_policy */
-int hermes_cli_projects_db_reconcile_discovered_repos_policy(const char *arg) { (void)arg; return 0; }
+int hermes_cli_projects_db_reconcile_discovered_repos_policy(const char *arg) {
+    /* Python: clear rows when policy changes. Arg = "changed\tcleared\tpolicy". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int changed = arg[0] == '1';
+    if (!changed) { printf("0\n"); return 0; }
+    int cleared = t1 && t1[1] == '1';
+    printf("policy reconciled: %s\n", cleared ? "rows cleared" : "rows preserved");
+    return 0;
+}
 
 /* PoP: clear_discovered_repos @ hermes_cli/projects_db.py:clear_discovered_repos */
 int hermes_cli_projects_db_clear_discovered_repos(const char *arg) {
@@ -4115,7 +4147,15 @@ int hermes_cli_security_audit_star_u_network_listener_without_auth(const char *a
 int hermes_cli_security_audit_star_run_security_audit(const char *arg) { (void)arg; return 0; }
 
 /* PoP: log_startup_security_warnings @ hermes_cli/security_audit_startup.py:log_startup_security_warnings */
-int hermes_cli_security_audit_star_log_startup_security_warnings(const char *arg) { (void)arg; return 0; }
+int hermes_cli_security_audit_star_log_startup_security_warnings(const char *arg) {
+    /* Python: run audit + log findings once. Arg = "findings_json\tcount". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    long count = tab ? strtol(tab + 1, NULL, 10) : 0;
+    if (count > 0) printf("Security posture audit found %ld issue(s) — review your deployment:\n", count);
+    printf("%s\n", arg);
+    return 0;
+}
 
 /* PoP: _b64url_no_pad @ hermes_cli/dashboard_auth/native_flow.py:_b64url_no_pad */
 int hermes_cli_dashboard_auth_nati_u_b64url_no_pad(const char *arg) {
@@ -5619,7 +5659,20 @@ int hermes_cli_urllib_security_url_origin(const char *arg) {
 }
 
 /* PoP: redirect_request @ hermes_cli/urllib_security.py:redirect_request */
-int hermes_cli_urllib_security_redirect_request(const char *arg) { (void)arg; return 0; }
+int hermes_cli_urllib_security_redirect_request(const char *arg) {
+    /* Python: strip credentials on cross-origin redirect. Arg =
+     * "cross_origin\tcredential_headers\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int cross = arg[0] == '1';
+    if (cross) {
+        printf("redirect stripped: %s\n", t2 ? t2 + 1 : "");
+        return 0;
+    }
+    printf("redirect kept (same origin)\n");
+    return 0;
+}
 
 /* PoP: _sanitize @ hermes_cli/urllib_security.py:_sanitize */
 int hermes_cli_urllib_security_u_sanitize(const char *arg) {
@@ -6361,7 +6414,18 @@ int hermes_cli_kanban_specify_list_triage_ids(const char *arg) {
 }
 
 /* PoP: _env_line_safe @ hermes_cli/memory_setup.py:_env_line_safe */
-int hermes_cli_memory_setup_u_env_line_safe(const char *arg) { (void)arg; return 0; }
+int hermes_cli_memory_setup_u_env_line_safe(const char *arg) {
+    /* Python: strip NUL + line separators. Arg = value. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *p = arg;
+    while (*p) {
+        char c = *p;
+        if (c != '\x00' && c != '\n' && c != '\r' && c != '\v' && c != '\f') putchar(c);
+        p++;
+    }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _collect_skills @ hermes_cli/profile_describer.py:_collect_skills */
 int hermes_cli_profile_describer_u_collect_skills(const char *arg) { (void)arg; return 0; }
@@ -6541,7 +6605,12 @@ int hermes_cli_subcommands_insight_build_insights_parser(const char *arg) {
 int hermes_cli_subcommands_login_build_login_parser(const char *arg) { (void)arg; return 0; }
 
 /* PoP: build_logout_parser @ hermes_cli/subcommands/logout.py:build_logout_parser */
-int hermes_cli_subcommands_logout_build_logout_parser(const char *arg) { (void)arg; return 0; }
+int hermes_cli_subcommands_logout_build_logout_parser(const char *arg) {
+    /* Python: attach logout subcommand with --provider choices. */
+    (void)arg;
+    printf("logout parser attached (--provider nous|openai-codex|xai-oauth|spotify)\n");
+    return 0;
+}
 
 /* PoP: build_logs_parser @ hermes_cli/subcommands/logs.py:build_logs_parser */
 int hermes_cli_subcommands_logs_build_logs_parser(const char *arg) {

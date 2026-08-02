@@ -912,7 +912,21 @@ int gateway_relay_ws_transport_u_reconnect_loop(const char *arg) { (void)arg; re
 int gateway_config_u_env_multiplex_profiles_override(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _normalize_transport_token @ gateway/config.py:_normalize_transport_token */
-int gateway_config_u_normalize_transport_token(const char *arg) { (void)arg; return 0; }
+int gateway_config_u_normalize_transport_token(const char *arg) {
+    /* Python: bool -> auto/off; str lower or auto. Arg = "type\tvalue". */
+    if (!arg || !*arg) { printf("auto\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *typ = arg;
+    const char *val = tab ? tab + 1 : "";
+    if (strcmp(typ, "bool") == 0) {
+        printf("%s\n", (val[0] == '1' || strcmp(val, "true") == 0) ? "auto" : "off");
+        return 0;
+    }
+    if (strcmp(typ, "none") == 0) { printf("auto\n"); return 0; }
+    if (!val[0]) { printf("auto\n"); return 0; }
+    printf("%s\n", val);
+    return 0;
+}
 
 /* PoP: coerce_systemd_watchdog_seconds @ gateway/config.py:coerce_systemd_watchdog_seconds */
 int gateway_config_coerce_systemd_watchdog_seconds(const char *arg) { (void)arg; return 0; }
@@ -1324,7 +1338,17 @@ int gateway_authz_mixin_u_adapter_profile_for_source(const char *arg) {
 }
 
 /* PoP: _pairing_store_for @ gateway/authz_mixin.py:_pairing_store_for */
-int gateway_authz_mixin_u_pairing_store_for(const char *arg) { (void)arg; return 0; }
+int gateway_authz_mixin_u_pairing_store_for(const char *arg) {
+    /* Python: per-profile store else global. Arg =
+     * "profile\tregistered\tstore". */
+    if (!arg || !*arg) { printf("global pairing store\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int registered = t1 && t1[1] == '1';
+    if (registered) printf("profile pairing store: %s\n", arg);
+    else printf("global pairing store (fallback)\n");
+    return 0;
+}
 
 /* PoP: _probe_state_db @ gateway/readiness.py:_probe_state_db */
 int gateway_readiness_u_probe_state_db(const char *arg) { (void)arg; return 0; }

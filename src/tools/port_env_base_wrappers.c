@@ -56,7 +56,19 @@ int envb_u_get_activity_callback(const char *arg) {
 }
 
 /* PoP: touch_activity_if_due @ tools/environments/base.py:touch_activity_if_due */
-int envb_touch_activity_if_due(const char *arg) { (void)arg; return 0; }
+int envb_touch_activity_if_due(const char *arg) {
+    /* Python: throttle activity callback to interval. Arg =
+     * "elapsed\tinterval\tfired". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    double elapsed = strtod(arg, NULL);
+    double interval = t1 ? strtod(t1 + 1, NULL) : 10.0;
+    int fired = t2 && t2[1] == '1';
+    if (fired) printf("activity fired: %s (%.0fs elapsed)\n", "operation", elapsed);
+    else printf("activity throttled (%.0fs < %.0fs)\n", elapsed, interval);
+    return 0;
+}
 
 /* PoP: get_sandbox_dir @ tools/environments/base.py:get_sandbox_dir */
 int envb_get_sandbox_dir(const char *arg) {

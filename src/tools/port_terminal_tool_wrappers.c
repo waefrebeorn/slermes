@@ -64,7 +64,16 @@ int tt_u_get_approval_callback(const char *arg) {
 }
 
 /* PoP: _get_sudo_password_cache_scope @ tools/terminal_tool.py:_get_sudo_password_cache_scope */
-int tt_u_get_sudo_password_cache_scope(const char *arg) { (void)arg; return 0; }
+int tt_u_get_sudo_password_cache_scope(const char *arg) {
+    /* Python: session/callback/thread scope. Arg = "session_key\tcallback\tthread". */
+    if (!arg || !*arg) { printf("thread:<id>\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (arg[0]) { printf("session:%s\n", arg); return 0; }
+    if (t1 && t1[1]) { printf("callback:%s\n", t1 + 1); return 0; }
+    printf("thread:%s\n", t2 ? t2 + 1 : "<id>");
+    return 0;
+}
 
 /* PoP: _get_cached_sudo_password @ tools/terminal_tool.py:_get_cached_sudo_password */
 int tt_u_get_cached_sudo_password(const char *arg) {

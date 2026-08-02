@@ -139,13 +139,28 @@ int cron_executions_mark_execution_running(const char *arg) {
 }
 
 /* PoP: finish_execution @ cron/executions.py:finish_execution */
-int cron_executions_finish_execution(const char *arg) { (void)arg; return 0; }
+int cron_executions_finish_execution(const char *arg) {
+    /* Python: terminal result once. Arg = "claimable\tstatus\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int claimable = arg[0] == '1';
+    if (!claimable) { printf("\n"); return 0; }
+    printf("execution finished: %s (%s)\n", t1 ? t1 + 1 : "completed", t2 ? t2 + 1 : "");
+    return 0;
+}
 
 /* PoP: recover_interrupted_executions @ cron/executions.py:recover_interrupted_executions */
 int cron_executions_recover_interrupted_executions(const char *arg) { (void)arg; return 0; }
 
 /* PoP: list_executions @ cron/executions.py:list_executions */
-int cron_executions_list_executions(const char *arg) { (void)arg; return 0; }
+int cron_executions_list_executions(const char *arg) {
+    /* Python: newest-first paged rows. Arg = "rows_json\tcount". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("{\"rows\": %s}\n", arg);
+    return 0;
+}
 
 /* PoP: latest_execution @ cron/executions.py:latest_execution */
 int cron_executions_latest_execution(const char *arg) {

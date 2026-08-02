@@ -1064,7 +1064,13 @@ int cgw_u_launchd_error_indicates_unloaded(const char *arg) {
 }
 
 /* PoP: _launchctl_domain_unsupported @ hermes_cli/gateway.py:_launchctl_domain_unsupported */
-int cgw_u_launchctl_domain_unsupported(const char *arg) { (void)arg; return 0; }
+int cgw_u_launchctl_domain_unsupported(const char *arg) {
+    /* Python: returncode in {5, 125}. Arg = "returncode". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    long rc = strtol(arg, NULL, 10);
+    printf("%d\n", (rc == 5 || rc == 125) ? 1 : 0);
+    return 0;
+}
 
 /* PoP: _launchctl_bootstrap @ hermes_cli/gateway.py:_launchctl_bootstrap */
 int cgw_u_launchctl_bootstrap(const char *arg) {

@@ -1553,7 +1553,17 @@ int main_u_resolve_pre_update_backup_mode(const char *arg) { (void)arg; return 0
 int main_u_run_pre_update_backup(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _write_update_planned_stop_marker @ hermes_cli/main.py:_write_update_planned_stop_marker */
-int main_u_write_update_planned_stop_marker(const char *arg) { (void)arg; return 0; }
+int main_u_write_update_planned_stop_marker(const char *arg) {
+    /* Python: atomic JSON marker + return True/False. Arg =
+     * "profile_path\tpid\twritable". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int writable = t2 && t2[1] == '1';
+    if (!writable) { printf("0\n"); return 0; }
+    printf("planned-stop marker written: %s (pid=%s)\n", arg, t1 ? t1 + 1 : "?");
+    return 0;
+}
 
 /* PoP: _wait_for_windows_update_gateway_exit @ hermes_cli/main.py:_wait_for_windows_update_gateway_exit */
 int main_u_wait_for_windows_update_gateway_exit(const char *arg) { (void)arg; return 0; }

@@ -326,7 +326,16 @@ int yb_u_is_at_bot(const char *arg) { (void)arg; return 0; }
 int yb_u_extract_bot_mention_text(const char *arg) { (void)arg; return 0; }
 
 /* PoP: _build_group_channel_prompt @ gateway/platforms/yuanbao.py:_build_group_channel_prompt */
-int yb_u_build_group_channel_prompt(const char *arg) { (void)arg; return 0; }
+int yb_u_build_group_channel_prompt(const char *arg) {
+    /* Python: group chat directive. Arg = "bot_id\tbot_mention". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("You are handling a Yuanbao group chat message.\n");
+    printf("- Your identity: user_id=%s, @-mention name in this group=%s\n", arg, tab ? tab + 1 : "unknown");
+    printf("- Lines in history prefixed with `[nickname|user_id]` are observed group context and are not necessarily addressed to you.\n");
+    printf("- Treat only the current new message as a request explicitly directed at you, and answer it directly.\n");
+    return 0;
+}
 
 /* PoP: _observe_group_message @ gateway/platforms/yuanbao.py:_observe_group_message */
 int yb_u_observe_group_message(const char *arg) { (void)arg; return 0; }

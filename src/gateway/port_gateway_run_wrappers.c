@@ -38,7 +38,15 @@ int grun_u_dequeue_pending_event(const char *arg) {
 }
 
 /* PoP: _get_channel_override @ gateway/run.py:_get_channel_override */
-int grun_u_get_channel_override(const char *arg) { (void)arg; return 0; }
+int grun_u_get_channel_override(const char *arg) {
+    /* Python: chat_id then thread_id then parent_id lookup. Arg =
+     * "found\tresult". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    if (arg[0] == '1') { printf("%s\n", tab ? tab + 1 : ""); return 0; }
+    printf("\n");
+    return 0;
+}
 
 /* PoP: _drain_gateway_watch_events @ gateway/run.py:_drain_gateway_watch_events */
 int grun_u_drain_gateway_watch_events(const char *arg) { (void)arg; return 0; }

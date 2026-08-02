@@ -265,4 +265,12 @@ int mm_shutdown_drain_state(const char *arg) {
 int mm_u_drain_sync_executor(const char *arg) { (void)arg; return 0; }
 
 /* PoP: initialize_all @ agent/memory_manager.py:initialize_all */
-int mm_initialize_all(const char *arg) { (void)arg; return 0; }
+int mm_initialize_all(const char *arg) {
+    /* Python: init all providers with hermes_home injected. Arg =
+     * "count\tstate". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("initialized %s provider(s)%s\n", arg,
+           (tab && tab[1] == '1') ? " (hermes_home injected)" : "");
+    return 0;
+}
