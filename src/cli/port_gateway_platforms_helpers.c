@@ -21,32 +21,38 @@ typedef struct {
     double timestamp;
 } DedupEntry;
 
-static DedupEntry _dedup_seen[MAX_DEDUP_SEEN];
+#include "hive.h"
+static hive_t *_dedup_seen = NULL;   /* of DedupEntry* (heap) */
 static int _dedup_count = 0;
 static double _dedup_ttl = 300.0;
 static int _dedup_max_size = 2000;
 
 /* PoP: helpers_is_duplicate @ gateway/platforms/helpers.py:is_duplicate */
 
-/* Port of Python gateway/platforms/helpers.py:is_duplicate */
-/* Return 1 if msg_id was already seen within the TTL window. */
+/* Port of Python gateway/platforms/helpers.py:is_duplicate
+ * Hive-backed seen-map: only live msg_ids consume memory (was
+ * _dedup_seen[2000] = 265KB of .bss). */
 /* PoP: _is_duplicate @ gateway/platforms/qqbot/adapter.py:_is_duplicate */
 int helpers_is_duplicate(const char *msg_id)
 {
     if (!msg_id || !msg_id[0]) return 0;
 
     double now = (double)time(NULL);
+    if (!_dedup_seen) _dedup_seen = hive_new(32);
 
     /* Check if seen */
-    for (int i = 0; i < _dedup_count; i++) {
-        if (strcmp(_dedup_seen[i].msg_id, msg_id) == 0) {
-            if (now - _dedup_seen[i].timestamp < _dedup_ttl) {
+    hive_iter_t it;
+    hive_iter_begin(_dedup_seen, &it);
+    hive_handle_t hnd;
+    DedupEntry *e;
+    while (hive_iter_next(_dedup_seen, &it, &hnd, (void **)&e)) {
+        if (strcmp(e->msg_id, msg_id) == 0) {
+            if (now - e->timestamp < _dedup_ttl) {
                 return 1; /* Duplicate */
             }
             /* Expired — remove */
-            for (int j = i; j < _dedup_count - 1; j++) {
-                _dedup_seen[j] = _dedup_seen[j + 1];
-            }
+            free(e);
+            hive_erase(_dedup_seen, hnd);
             _dedup_count--;
             break;
         }
@@ -54,23 +60,55 @@ int helpers_is_duplicate(const char *msg_id)
 
     /* Add new entry */
     if (_dedup_count < _dedup_max_size) {
-        strncpy(_dedup_seen[_dedup_count].msg_id, msg_id, 127);
-        _dedup_seen[_dedup_count].msg_id[127] = '\0';
-        _dedup_seen[_dedup_count].timestamp = now;
-        _dedup_count++;
+        DedupEntry *ne = calloc(1, sizeof(DedupEntry));
+        if (ne) {
+            strncpy(ne->msg_id, msg_id, 127);
+            ne->msg_id[127] = '\0';
+            ne->timestamp = now;
+            bool ok = false;
+            hive_insert(_dedup_seen, ne, &ok);
+            if (ok) _dedup_count++;
+            else free(ne);
+        }
     }
 
     /* Prune if over max size */
     if (_dedup_count > _dedup_max_size) {
         double cutoff = now - _dedup_ttl;
-        int write = 0;
-        for (int i = 0; i < _dedup_count; i++) {
-            if (_dedup_seen[i].timestamp > cutoff) {
-                if (write != i) _dedup_seen[write] = _dedup_seen[i];
-                write++;
+        hive_iter_t it2;
+        hive_iter_begin(_dedup_seen, &it2);
+        hive_handle_t h2;
+        DedupEntry *e2;
+        while (hive_iter_next(_dedup_seen, &it2, &h2, (void **)&e2)) {
+            if (e2->timestamp <= cutoff) {
+                free(e2);
+                hive_erase(_dedup_seen, h2);
+                _dedup_count--;
             }
         }
-        _dedup_count = write;
+        /* Python: if TTL pruning alone does not cap the cache (every entry
+         * still fresh), keep the NEWEST max_size entries — the bound must
+         * hold under sustained traffic. Evict oldest live entries. */
+        while (_dedup_count > _dedup_max_size) {
+            hive_handle_t oldest_h = { 0, 0 };
+            DedupEntry *oldest = NULL;
+            double oldest_ts = 1e300;
+            hive_iter_t it3;
+            hive_iter_begin(_dedup_seen, &it3);
+            hive_handle_t h3;
+            DedupEntry *e3;
+            while (hive_iter_next(_dedup_seen, &it3, &h3, (void **)&e3)) {
+                if (e3->timestamp < oldest_ts) {
+                    oldest_ts = e3->timestamp;
+                    oldest_h = h3;
+                    oldest = e3;
+                }
+            }
+            if (!oldest) break;
+            free(oldest);
+            hive_erase(_dedup_seen, oldest_h);
+            _dedup_count--;
+        }
     }
 
     return 0;
@@ -92,15 +130,48 @@ static pthread_mutex_t _batch_lock = PTHREAD_MUTEX_INITIALIZER;
 
 /* PoP: helpers_enqueue @ gateway/platforms/helpers.py:enqueue */
 
-/* Port of Python gateway/platforms/helpers.py:enqueue */
-/* Append event text to the pending batch for key. */
+/* Port of Python gateway/platforms/helpers.py:enqueue
+ * Python: pending is a dict keyed by `key`; a second event for the same
+ * key APPENDS to the existing text with a newline (never a duplicate
+ * entry). Mirror that exactly: find-or-insert by key, merge text. */
 void helpers_enqueue(const char *key, const char *text, int text_len)
 {
     if (!key || !key[0] || !text || text_len <= 0) return;
 
     pthread_mutex_lock(&_batch_lock);
     if (!_batch) _batch = hive_new(16);
-    BatchEntry *e = calloc(1, sizeof(BatchEntry));
+
+    BatchEntry *e = NULL;
+    hive_handle_t hnd = { 0, 0 };
+    hive_iter_t it;
+    hive_iter_begin(_batch, &it);
+    hive_handle_t h;
+    BatchEntry *cand;
+    while (hive_iter_next(_batch, &it, &h, (void **)&cand)) {
+        if (strcmp(cand->key, key) == 0) { e = cand; hnd = h; break; }
+    }
+
+    if (e) {
+        /* existing: text = f"{existing.text}\n{event.text}" */
+        int copy = text_len < (int)sizeof(e->text) - 1 ? text_len : (int)sizeof(e->text) - 1;
+        int used = e->text_len;
+        if (used > 0 && used + 1 + copy < (int)sizeof(e->text)) {
+            e->text[used] = '\n';
+            memcpy(e->text + used + 1, text, copy);
+            e->text[used + 1 + copy] = '\0';
+            e->text_len = used + 1 + copy;
+        } else if (used == 0) {
+            memcpy(e->text, text, copy);
+            e->text[copy] = '\0';
+            e->text_len = copy;
+        }
+        /* else: full — keep as-is (Python has no cap; C buffer-bound) */
+        pthread_mutex_unlock(&_batch_lock);
+        return;
+    }
+
+    /* new entry for this key */
+    e = calloc(1, sizeof(BatchEntry));
     if (e) {
         strncpy(e->key, key, sizeof(e->key) - 1);
         e->key[sizeof(e->key) - 1] = '\0';
