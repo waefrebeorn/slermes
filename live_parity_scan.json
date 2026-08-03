@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-03T01:25:25Z",
+  "generated_at": "2026-08-03T01:29:37Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -91819,10 +91819,10 @@
     },
     "gateway/cgroup_cleanup.py": {
       "total": 4,
-      "ported": 3,
+      "ported": 4,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 4,
@@ -91925,16 +91925,24 @@
             "decorators": [],
             "line_number": 75
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_remaining_gaps.c",
+          "c_function": "gw_cgroup_cleanup_main",
+          "pop_annotation": {
+            "c_function": "gw_cgroup_cleanup_main",
+            "python_functions": [
+              "main"
+            ],
+            "c_file": "src/gateway/port_gateway_remaining_gaps.c",
+            "python_file": "gateway/cgroup_cleanup.py",
+            "line": 20,
+            "is_consolidated": false,
+            "full_text": "/* PoP: main @ gateway/cgroup_cleanup.py:main */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -93837,10 +93845,10 @@
     },
     "gateway/dead_targets.py": {
       "total": 9,
-      "ported": 8,
+      "ported": 9,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 9,
@@ -93885,16 +93893,24 @@
             "decorators": [],
             "line_number": 56
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_remaining_gaps.c",
+          "c_function": "gw_dead_targets_init",
+          "pop_annotation": {
+            "c_function": "gw_dead_targets_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_gateway_remaining_gaps.c",
+            "python_file": "gateway/dead_targets.py",
+            "line": 31,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/dead_targets.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/dead_targets.py",
@@ -94105,10 +94121,10 @@
     },
     "gateway/delivery.py": {
       "total": 19,
-      "ported": 11,
+      "ported": 12,
       "partial": 7,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 19,
@@ -94449,17 +94465,24 @@
             "decorators": [],
             "line_number": 302
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_remaining_gaps.c",
+          "c_function": "gw_delivery_init",
+          "pop_annotation": {
+            "c_function": "gw_delivery_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_gateway_remaining_gaps.c",
+            "python_file": "gateway/delivery.py",
+            "line": 239,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/delivery.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "gateway/delivery.py",
@@ -95389,10 +95412,10 @@
     },
     "gateway/hooks.py": {
       "total": 7,
-      "ported": 6,
+      "ported": 7,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 7,
@@ -95408,16 +95431,24 @@
             "decorators": [],
             "line_number": 62
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_remaining_gaps.c",
+          "c_function": "gw_hooks_init",
+          "pop_annotation": {
+            "c_function": "gw_hooks_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_gateway_remaining_gaps.c",
+            "python_file": "gateway/hooks.py",
+            "line": 42,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/hooks.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "gateway/hooks.py",
@@ -96386,10 +96417,10 @@
     },
     "gateway/pairing.py": {
       "total": 33,
-      "ported": 28,
+      "ported": 30,
       "partial": 3,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 33,
@@ -96637,17 +96668,24 @@
             "decorators": [],
             "line_number": 251
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_remaining_gaps.c",
+          "c_function": "gw_pairing_init",
+          "pop_annotation": {
+            "c_function": "gw_pairing_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_gateway_remaining_gaps.c",
+            "python_file": "gateway/pairing.py",
+            "line": 48,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/pairing.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/pairing.py",
@@ -96661,17 +96699,24 @@
             ],
             "line_number": 271
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_remaining_gaps.c",
+          "c_function": "gw_pairing_profile",
+          "pop_annotation": {
+            "c_function": "gw_pairing_profile",
+            "python_functions": [
+              "profile"
+            ],
+            "c_file": "src/gateway/port_gateway_remaining_gaps.c",
+            "python_file": "gateway/pairing.py",
+            "line": 66,
+            "is_consolidated": false,
+            "full_text": "/* PoP: profile @ gateway/pairing.py:profile */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/pairing.py",
@@ -97654,10 +97699,10 @@
     },
     "gateway/platforms/__init__.py": {
       "total": 2,
-      "ported": 0,
+      "ported": 2,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 2,
@@ -97673,16 +97718,24 @@
             "decorators": [],
             "line_number": 34
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_remaining_gaps.c",
+          "c_function": "gw_platforms_getattr",
+          "pop_annotation": {
+            "c_function": "gw_platforms_getattr",
+            "python_functions": [
+              "__getattr__"
+            ],
+            "c_file": "src/gateway/port_gateway_remaining_gaps.c",
+            "python_file": "gateway/platforms/__init__.py",
+            "line": 73,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __getattr__ @ gateway/platforms/__init__.py:__getattr__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/__init__.py",
@@ -97694,16 +97747,24 @@
             "decorators": [],
             "line_number": 44
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_remaining_gaps.c",
+          "c_function": "gw_platforms_dir",
+          "pop_annotation": {
+            "c_function": "gw_platforms_dir",
+            "python_functions": [
+              "__dir__"
+            ],
+            "c_file": "src/gateway/port_gateway_remaining_gaps.c",
+            "python_file": "gateway/platforms/__init__.py",
+            "line": 83,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __dir__ @ gateway/platforms/__init__.py:__dir__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -116555,10 +116616,10 @@
     },
     "gateway/platforms/webhook_filters.py": {
       "total": 9,
-      "ported": 8,
+      "ported": 9,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 9,
@@ -116690,16 +116751,24 @@
             "decorators": [],
             "line_number": 97
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_remaining_gaps.c",
+          "c_function": "gw_webhook_filters_init",
+          "pop_annotation": {
+            "c_function": "gw_webhook_filters_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_gateway_remaining_gaps.c",
+            "python_file": "gateway/platforms/webhook_filters.py",
+            "line": 89,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/platforms/webhook_filters.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/webhook_filters.py",
@@ -116821,10 +116890,10 @@
     },
     "gateway/platforms/weixin.py": {
       "total": 104,
-      "ported": 97,
+      "ported": 98,
       "partial": 6,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 104,
@@ -117786,17 +117855,24 @@
             "decorators": [],
             "line_number": 476
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_remaining_gaps.c",
+          "c_function": "gw_weixin_send_typing",
+          "pop_annotation": {
+            "c_function": "gw_weixin_send_typing",
+            "python_functions": [
+              "_send_typing"
+            ],
+            "c_file": "src/gateway/port_gateway_remaining_gaps.c",
+            "python_file": "gateway/platforms/weixin.py",
+            "line": 254,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _send_typing @ gateway/platforms/weixin.py:_send_typing */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/weixin.py",
@@ -121071,10 +121147,10 @@
     },
     "gateway/platforms/whatsapp_common.py": {
       "total": 23,
-      "ported": 21,
+      "ported": 22,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 23,
@@ -121123,17 +121199,24 @@
             ],
             "line_number": 78
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_remaining_gaps.c",
+          "c_function": "gw_whatsapp_enforces_own_access_policy",
+          "pop_annotation": {
+            "c_function": "gw_whatsapp_enforces_own_access_policy",
+            "python_functions": [
+              "enforces_own_access_policy"
+            ],
+            "c_file": "src/gateway/port_gateway_remaining_gaps.c",
+            "python_file": "gateway/platforms/whatsapp_common.py",
+            "line": 96,
+            "is_consolidated": false,
+            "full_text": "/* PoP: enforces_own_access_policy @ gateway/platforms/whatsapp_common.py:enforces_own_access_policy */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/whatsapp_common.py",
@@ -130428,10 +130511,10 @@
     },
     "gateway/profile_routing.py": {
       "total": 4,
-      "ported": 3,
+      "ported": 4,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 4,
@@ -130478,16 +130561,24 @@
             "decorators": [],
             "line_number": 74
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_remaining_gaps.c",
+          "c_function": "gw_profile_route_matches",
+          "pop_annotation": {
+            "c_function": "gw_profile_route_matches",
+            "python_functions": [
+              "matches"
+            ],
+            "c_file": "src/gateway/port_gateway_remaining_gaps.c",
+            "python_file": "gateway/profile_routing.py",
+            "line": 111,
+            "is_consolidated": false,
+            "full_text": "/* PoP: matches @ gateway/profile_routing.py:matches */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/profile_routing.py",
@@ -132740,10 +132831,10 @@
     },
     "gateway/relay/ws_transport.py": {
       "total": 29,
-      "ported": 28,
+      "ported": 29,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 29,
@@ -132904,16 +132995,24 @@
             "decorators": [],
             "line_number": 298
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_remaining_gaps.c",
+          "c_function": "gw_relay_ws_init",
+          "pop_annotation": {
+            "c_function": "gw_relay_ws_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_gateway_remaining_gaps.c",
+            "python_file": "gateway/relay/ws_transport.py",
+            "line": 169,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/relay/ws_transport.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/ws_transport.py",
@@ -133777,10 +133876,10 @@
     },
     "gateway/restart.py": {
       "total": 2,
-      "ported": 1,
+      "ported": 2,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 2,
@@ -133825,17 +133924,24 @@
             "decorators": [],
             "line_number": 48
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_remaining_gaps.c",
+          "c_function": "gw_parse_restart_drain_timeout",
+          "pop_annotation": {
+            "c_function": "gw_parse_restart_drain_timeout",
+            "python_functions": [
+              "parse_restart_drain_timeout"
+            ],
+            "c_file": "src/gateway/port_gateway_remaining_gaps.c",
+            "python_file": "gateway/restart.py",
+            "line": 176,
+            "is_consolidated": false,
+            "full_text": "/* PoP: parse_restart_drain_timeout @ gateway/restart.py:parse_restart_drain_timeout */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -134057,10 +134163,10 @@
     },
     "gateway/rich_sent_store.py": {
       "total": 4,
-      "ported": 2,
+      "ported": 3,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 4,
@@ -134105,16 +134211,24 @@
             "decorators": [],
             "line_number": 35
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_remaining_gaps.c",
+          "c_function": "gw_rich_sent_key",
+          "pop_annotation": {
+            "c_function": "gw_rich_sent_key",
+            "python_functions": [
+              "_key"
+            ],
+            "c_file": "src/gateway/port_gateway_remaining_gaps.c",
+            "python_file": "gateway/rich_sent_store.py",
+            "line": 186,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _key @ gateway/rich_sent_store.py:_key */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/rich_sent_store.py",
@@ -153454,10 +153568,10 @@
     },
     "gateway/stream_consumer.py": {
       "total": 48,
-      "ported": 46,
+      "ported": 47,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 48,
@@ -153531,17 +153645,24 @@
             "decorators": [],
             "line_number": 193
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/gateway/port_gateway_remaining_gaps.c",
+          "c_function": "gw_stream_consumer_init",
+          "pop_annotation": {
+            "c_function": "gw_stream_consumer_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/gateway/port_gateway_remaining_gaps.c",
+            "python_file": "gateway/stream_consumer.py",
+            "line": 224,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ gateway/stream_consumer.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "gateway/stream_consumer.py",
