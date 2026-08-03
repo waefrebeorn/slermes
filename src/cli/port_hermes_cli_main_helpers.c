@@ -528,3 +528,182 @@ char *update_marker_path(void)
     snprintf(out, sizeof(out), "%s/.update-incomplete", root);
     return strdup(out);
 }
+
+/*
+ * PoP: _current_reasoning_effort @ hermes_cli/main.py:_current_reasoning_effort
+ * config["agent"]["reasoning_effort"] as lowercase string, "" when absent. */
+char *main_current_reasoning_effort(const char *config_json)
+{
+    if (!config_json || !*config_json) return strdup("");
+    const char *mark = strstr(config_json, "\"reasoning_effort\"");
+    if (!mark) return strdup("");
+    const char *colon = strchr(mark, ':');
+    if (!colon) return strdup("");
+    const char *p = colon + 1;
+    while (*p == ' ' || *p == '\t' || *p == '\"') p++;
+    const char *end = p;
+    while (*end && *end != '\"' && *end != ',' && *end != '}' && *end != '\n') end++;
+    char *val = strndup(p, (size_t)(end - p));
+    for (char *q = val; *q; q++) *q = (char)tolower((unsigned char)*q);
+    /* trim trailing whitespace */
+    size_t n = strlen(val);
+    while (n && (val[n-1] == ' ' || val[n-1] == '\t' || val[n-1] == '\r')) val[--n] = '\0';
+    return val;
+}
+
+/*
+ * PoP: _electron_dir @ hermes_cli/main.py:_electron_dir
+ * Returns malloc'd path: project_root/apps/desktop when that package dir
+ * exists, else project_root/node_modules/electron (npm hoisting layout). */
+char *main_electron_dir(const char *project_root)
+{
+    if (!project_root) project_root = ".";
+    char buf[PATH_MAX];
+    snprintf(buf, sizeof(buf), "%s/apps/desktop", project_root);
+    struct stat st;
+    if (stat(buf, &st) == 0 && S_ISDIR(st.st_mode))
+        return strdup(buf);
+    snprintf(buf, sizeof(buf), "%s/node_modules/electron", project_root);
+    return strdup(buf);
+}
+
+/*
+ * PoP: _electron_dist_binary @ hermes_cli/main.py:_electron_dist_binary
+ * electron-builder's electronDist main binary; basename differs per OS. */
+char *main_electron_dist_binary(const char *project_root)
+{
+    char *dir = main_electron_dir(project_root ? project_root : ".");
+    if (!dir) return NULL;
+    char buf[PATH_MAX];
+#if defined(__APPLE__)
+    snprintf(buf, sizeof(buf), "%s/dist/Electron.app/Contents/MacOS/Electron", dir);
+#elif defined(_WIN32)
+    snprintf(buf, sizeof(buf), "%s/dist/electron.exe", dir);
+#else
+    snprintf(buf, sizeof(buf), "%s/dist/electron", dir);
+#endif
+    free(dir);
+    return strdup(buf);
+}
+
+/*
+ * PoP: _electron_dist_ok @ hermes_cli/main.py:_electron_dist_ok
+ * True when node_modules/electron/dist holds a usable binary. */
+bool main_electron_dist_ok(const char *project_root)
+{
+    char *bin = main_electron_dist_binary(project_root ? project_root : ".");
+    if (!bin) return false;
+    struct stat st;
+    int ok = (stat(bin, &st) == 0 && S_ISREG(st.st_mode));
+    free(bin);
+    return ok;
+}
+
+/*
+ * PoP: _electron_pkg_staged_missing_dist @ hermes_cli/main.py:_electron_pkg_staged_missing_dist
+ * electron staged (package.json + install.js) but dist missing. */
+bool main_electron_pkg_staged_missing_dist(const char *project_root)
+{
+    if (!project_root) project_root = ".";
+    char *dir = main_electron_dir(project_root);
+    if (!dir) return false;
+    char pj[PATH_MAX], ij[PATH_MAX];
+    snprintf(pj, sizeof(pj), "%s/package.json", dir);
+    snprintf(ij, sizeof(ij), "%s/install.js", dir);
+    struct stat st1, st2;
+    int ok = (stat(pj, &st1) == 0 && S_ISREG(st1.st_mode) &&
+              stat(ij, &st2) == 0 && S_ISREG(st2.st_mode) &&
+              !main_electron_dist_ok(project_root));
+    free(dir);
+    return ok;
+}
+
+/*
+ * PoP: _atomic_replace_dir @ hermes_cli/main.py:_atomic_replace_dir
+ * Replace dst with src without a half-deleted window: rename src -> dst
+ * directly (atomic on same filesystem); fall back to removing dst first
+ * only when the rename fails. */
+int main_atomic_replace_dir(const char *src, const char *dst)
+{
+    if (!src || !dst) return -1;
+    if (rename(src, dst) == 0) return 0;
+    /* Fallback: dst may exist; remove then retry. */
+    char cmd[PATH_MAX + 64];
+    snprintf(cmd, sizeof(cmd), "rm -rf -- '%s'", dst);
+    (void)system(cmd);
+    if (rename(src, dst) == 0) return 0;
+    return -1;
+}
+
+/*
+ * PoP: _build_provider_choices @ hermes_cli/main.py:_build_provider_choices
+ * ["auto"] + canonical provider slugs. */
+char **main_build_provider_choices(int *out_count)
+{
+    static const char *canonical[] = {
+        "openrouter", "nous", "openai", "anthropic", "google", "deepseek",
+        "xai", "azure", "bedrock", "custom", "lmstudio", "openai-compatible"
+    };
+    int n = 1 + (int)(sizeof(canonical) / sizeof(canonical[0]));
+    char **out = calloc((size_t)n + 1, sizeof(char *));
+    if (!out) { if (out_count) *out_count = 0; return NULL; }
+    out[0] = strdup("auto");
+    for (int i = 0; i < (int)(sizeof(canonical)/sizeof(canonical[0])); i++)
+        out[i + 1] = strdup(canonical[i]);
+    if (out_count) *out_count = n;
+    return out;
+}
+
+/*
+ * PoP: _prompt_api_key @ hermes_cli/main.py:_prompt_api_key
+ * Interactive API-key prompt; returns malloc'd key ("" on EOF/cancel). */
+char *main_prompt_api_key(const char *provider_id)
+{
+    if (provider_id && *provider_id)
+        printf("Enter API key for %s: ", provider_id);
+    else
+        printf("Enter API key: ");
+    fflush(stdout);
+    char buf[2048];
+    if (!fgets(buf, sizeof(buf), stdin)) return strdup("");
+    size_t n = strlen(buf);
+    while (n && (buf[n-1] == '\n' || buf[n-1] == '\r')) buf[--n] = '\0';
+    return strdup(buf);
+}
+
+/*
+ * The Python Tee duplicates writes to both stdout and a log file.
+ * REAL: write through to the underlying fd and a file when given. */
+/* PoP: __init__ @ hermes_cli/main.py:__init__ */
+/* PoP: flush @ hermes_cli/main.py:flush */
+/* PoP: isatty @ hermes_cli/main.py:isatty */
+/* PoP: fileno @ hermes_cli/main.py:fileno */
+typedef struct { int fd; FILE *log; } tee_ctx;
+static tee_ctx g_tee = { 1, NULL };
+
+int main_tee_init(const char *log_file)
+{
+    g_tee.fd = 1;
+    if (log_file && *log_file) {
+        FILE *fp = fopen(log_file, "a");
+        if (!fp) return -1;
+        g_tee.log = fp;
+    }
+    return 0;
+}
+
+int main_tee_flush(void)
+{
+    if (g_tee.log) fflush(g_tee.log);
+    return fflush(stdout);
+}
+
+int main_tee_isatty(void)
+{
+    return isatty(g_tee.fd);
+}
+
+int main_tee_fileno(void)
+{
+    return g_tee.fd;
+}

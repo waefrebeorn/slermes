@@ -29,7 +29,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _restore_tui_workspace @ cli.py:_restore_tui_workspace */
+/* PoP: _restore_tui_workspace @ hermes_cli/main.py:_restore_tui_workspace */
 bool mn_restore_tui_workspace(const char *repo_root) {
     /* Python: restore missing ui-tui/ from git — REAL subprocess. */
     if (!repo_root) return false;
@@ -50,7 +50,7 @@ bool mn_restore_tui_workspace(const char *repo_root) {
     return ok;
 }
 
-/* PoP: _ensure_tui_workspace @ cli.py:_ensure_tui_workspace */
+/* PoP: _ensure_tui_workspace @ hermes_cli/main.py:_ensure_tui_workspace */
 int mn_ensure_tui_workspace(const char *repo_root) {
     /* Python: ensure ui-tui/ exists before npm/node subprocess. */
     if (!repo_root) return -1;
@@ -61,7 +61,7 @@ int mn_ensure_tui_workspace(const char *repo_root) {
     return mn_restore_tui_workspace(repo_root) ? 0 : -1;
 }
 
-/* PoP: cmd_gateway @ cli.py:cmd_gateway */
+/* PoP: cmd_gateway @ hermes_cli/main.py:cmd_gateway */
 int mn_cmd_gateway(const char *args, agent_state_t *state) {
     /* Python: delegates to hermes_cli.gateway. */
     if (!args) return -1;
@@ -69,7 +69,7 @@ int mn_cmd_gateway(const char *args, agent_state_t *state) {
     return 0;
 }
 
-/* PoP: cmd_setup @ cli.py:cmd_setup */
+/* PoP: cmd_setup @ hermes_cli/main.py:cmd_setup */
 int mn_cmd_setup(const char *args, agent_state_t *state) {
     /* Python: interactive setup wizard — delegate to real handler. */
     if (!args) return -1;
@@ -77,7 +77,7 @@ int mn_cmd_setup(const char *args, agent_state_t *state) {
     return 0;
 }
 
-/* PoP: cmd_model @ cli.py:cmd_model */
+/* PoP: cmd_model @ hermes_cli/main.py:cmd_model */
 int mn_cmd_model(const char *args, agent_state_t *state) {
     /* Python: provider selection → model picker (tty required). */
     if (!args) return -1;
@@ -85,7 +85,7 @@ int mn_cmd_model(const char *args, agent_state_t *state) {
     return 0;
 }
 
-/* PoP: cmd_status @ cli.py:cmd_status */
+/* PoP: cmd_status @ hermes_cli/main.py:cmd_status */
 int mn_cmd_status(const char *args, agent_state_t *state) {
     /* Python: delegates to hermes_cli.status. */
     if (!args) return -1;
@@ -93,14 +93,14 @@ int mn_cmd_status(const char *args, agent_state_t *state) {
     return 0;
 }
 
-/* PoP: cmd_cron @ cli.py:cmd_cron */
+/* PoP: cmd_cron @ hermes_cli/main.py:cmd_cron */
 int mn_cmd_cron(const char *args, agent_state_t *state) {
     if (!args) return -1;
     cmd_cron(args, state);
     return 0;
 }
 
-/* PoP: cmd_webhook @ cli.py:cmd_webhook */
+/* PoP: cmd_webhook @ hermes_cli/main.py:cmd_webhook */
 int mn_cmd_webhook(const char *args, agent_state_t *state) {
     /* Python: subscription management — real handler. */
     if (!args) return -1;
@@ -108,21 +108,21 @@ int mn_cmd_webhook(const char *args, agent_state_t *state) {
     return 0;
 }
 
-/* PoP: cmd_doctor @ cli.py:cmd_doctor */
+/* PoP: cmd_doctor @ hermes_cli/main.py:cmd_doctor */
 int mn_cmd_doctor(const char *args, agent_state_t *state) {
     if (!args) return -1;
     cmd_doctor(args, state);
     return 0;
 }
 
-/* PoP: cmd_config @ cli.py:cmd_config */
+/* PoP: cmd_config @ hermes_cli/main.py:cmd_config */
 int mn_cmd_config(const char *args, agent_state_t *state) {
     if (!args) return -1;
     cmd_config(args, state);
     return 0;
 }
 
-/* PoP: cmd_backup @ cli.py:cmd_backup */
+/* PoP: cmd_backup @ hermes_cli/main.py:cmd_backup */
 int mn_cmd_backup(const char *args, agent_state_t *state, bool quick) {
     /* Python: zip hermes home; quick path skips heavy dirs — REAL zip. */
     if (!args) return -1;
@@ -133,7 +133,7 @@ int mn_cmd_backup(const char *args, agent_state_t *state, bool quick) {
     return system(cmd) == 0 ? 0 : -1;
 }
 
-/* PoP: cmd_uninstall @ cli.py:cmd_uninstall */
+/* PoP: cmd_uninstall @ hermes_cli/main.py:cmd_uninstall */
 int mn_cmd_uninstall(const char *args, bool gui) {
     /* Python: full or --gui uninstall; machine-readable snapshots. */
     if (!args) return -1;
@@ -143,7 +143,7 @@ int mn_cmd_uninstall(const char *args, bool gui) {
     return system(cmd) == 0 ? 0 : -1;
 }
 
-/* PoP: _try_redownload_electron_dist @ cli.py:_try_redownload_electron_dist */
+/* PoP: _try_redownload_electron_dist @ hermes_cli/main.py:_try_redownload_electron_dist */
 bool mn_try_redownload_electron_dist(const char *electron_dir) {
     /* Python: canonical download + fallback mirror. */
     if (!electron_dir) return false;
@@ -155,7 +155,7 @@ bool mn_try_redownload_electron_dist(const char *electron_dir) {
     return false;
 }
 
-/* PoP: cmd_dashboard @ cli.py:cmd_dashboard */
+/* PoP: cmd_dashboard @ hermes_cli/main.py:cmd_dashboard */
 int mn_cmd_dashboard(const char *args, const char *token_file) {
     /* Python: web UI server start/stop/status. */
     if (!args) return -1;
@@ -165,7 +165,7 @@ int mn_cmd_dashboard(const char *args, const char *token_file) {
     return system(cmd) == 0 ? 0 : -1;
 }
 
-/* PoP: cmd_prompt_size @ cli.py:cmd_prompt_size */
+/* PoP: cmd_prompt_size @ hermes_cli/main.py:cmd_prompt_size */
 int mn_cmd_prompt_size(const char *args, agent_state_t *state) {
     /* Python: system prompt + tool schema byte breakdown — REAL computation. */
     if (!args) return -1;
@@ -177,14 +177,14 @@ int mn_cmd_prompt_size(const char *args, agent_state_t *state) {
     return 0;
 }
 
-/* PoP: cmd_logs @ cli.py:cmd_logs */
+/* PoP: cmd_logs @ hermes_cli/main.py:cmd_logs */
 int mn_cmd_logs(const char *args, agent_state_t *state) {
     if (!args) return -1;
     cmd_logs(args, state);
     return 0;
 }
 
-/* PoP: cmd_memory @ cli.py:cmd_memory */
+/* PoP: cmd_memory @ hermes_cli/main.py:cmd_memory */
 int mn_cmd_memory(const char *args, const char *sub, agent_state_t *state) {
     /* Python: memory subcommands (off → config write). */
     if (!args) return -1;
@@ -198,7 +198,7 @@ int mn_cmd_memory(const char *args, const char *sub, agent_state_t *state) {
     return 0;
 }
 
-/* PoP: cmd_plugins @ cli.py:cmd_plugins */
+/* PoP: cmd_plugins @ hermes_cli/main.py:cmd_plugins */
 int mn_cmd_plugins(const char *args, agent_state_t *state) {
     /* Python: delegates to plugins_cmd. */
     if (!args) return -1;
