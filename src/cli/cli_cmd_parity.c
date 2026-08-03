@@ -17,6 +17,7 @@
 #include "cli_cmd_parity.h"
 #include "hermes_cli.h"
 #include "hermes_agent.h"
+#include "hermes_billing.h"
 #include "port_config_py_helpers.h"
 #include "battery.h"
 #include <stdio.h>
@@ -180,21 +181,69 @@ void cmd_codex_runtime(const char *args, agent_state_t *state) {
 
 /* ── /subscription ──────────────────────────────────────────────────── */
 /* PoP: subscription @ hermes_cli/commands.py:subscription
- * PoP: cmd_subscription @ hermes_cli/cli_billing_mixin.py */
+ * PoP: cmd_subscription @ hermes_cli/cli_billing_mixin.py:_show_subscription */
 void cmd_subscription(const char *args, agent_state_t *state) {
     (void)args; (void)state;
-    printf("Nous plan: (see /subscription in the portal)\n");
-    printf("  Run `slermes nous-account` or open the Nous portal to view\n");
-    printf("  your plan and change it in the browser.\n");
+    /* Real billing-state read (build_billing_state fetches the portal's
+     * /api/billing/state). Fail-open like Python: a missing key or portal
+     * hiccup degrades to a clear message, never a crash. */
+    extern billing_state_t build_billing_state(void);
+    extern void billing_format_money(double amount, char *out, size_t out_sz);
+    billing_state_t b = build_billing_state();
+
+    if (!b.logged_in) {
+        printf("  Nous plan: not logged in (%s)\n",
+               b.error[0] ? b.error : "no billing key");
+        printf("  Set NOUS_BILLING_KEY (or NOUS_API_KEY) to view your plan.\n");
+        printf("  Run `slermes nous-account` or open the Nous portal to\n");
+        printf("  manage your subscription in the browser.\n");
+        return;
+    }
+    printf("  Nous plan:\n");
+    if (b.org_name[0])
+        printf("    org:       %s\n", b.org_name);
+    if (b.role[0])
+        printf("    role:      %s\n", b.role);
+    if (b.balance_usd > 0 || b.logged_in) {
+        char amt[64];
+        billing_format_money(b.balance_usd, amt, sizeof(amt));
+        printf("    balance:   %s\n", amt);
+    }
+    if (b.portal_url[0])
+        printf("    portal:    %s\n", b.portal_url);
+    printf("  Manage your subscription in the browser on the portal.\n");
 }
 
 /* ── /topup ─────────────────────────────────────────────────────────── */
 /* PoP: topup @ hermes_cli/commands.py:topup
- * PoP: cmd_topup @ hermes_cli/cli_billing_mixin.py */
+ * PoP: cmd_topup @ hermes_cli/cli_billing_mixin.py:_show_billing */
 void cmd_topup(const char *args, agent_state_t *state) {
     (void)args; (void)state;
-    printf("Nous balance: (see /topup in the portal)\n");
-    printf("  Open the Nous portal to view your balance and manage billing.\n");
+    extern billing_state_t build_billing_state(void);
+    extern void billing_format_money(double amount, char *out, size_t out_sz);
+    billing_state_t b = build_billing_state();
+
+    if (!b.logged_in) {
+        printf("  Nous balance: not logged in (%s)\n",
+               b.error[0] ? b.error : "no billing key");
+        printf("  Set NOUS_BILLING_KEY (or NOUS_API_KEY) to view your balance.\n");
+        printf("  Open the Nous portal to manage billing.\n");
+        return;
+    }
+    char amt[64];
+    billing_format_money(b.balance_usd, amt, sizeof(amt));
+    printf("  Nous balance: %s\n", amt);
+    if (b.auto_reload.enabled) {
+        char thresh[64], top[64];
+        billing_format_money(b.auto_reload.threshold_usd, thresh, sizeof(thresh));
+        billing_format_money(b.auto_reload.reload_to_usd, top, sizeof(top));
+        printf("  Auto top-up:  on (reload to %s when balance < %s)\n", top, thresh);
+    } else {
+        printf("  Auto top-up:  off\n");
+    }
+    if (b.portal_url[0])
+        printf("  portal:    %s\n", b.portal_url);
+    printf("  Open the Nous portal to top up and manage billing.\n");
 }
 
 /* ── /journey ───────────────────────────────────────────────────────── */

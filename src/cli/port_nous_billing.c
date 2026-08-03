@@ -8,6 +8,7 @@
 #define SRC_CLI_PORT_NOUS_BILLING_C
 
 #include "hermes_logger.h"
+#include "libhttp/http.h"
 #include "hermes_json.h"
 #include "hermes_billing.h"
 #include <stdbool.h>
@@ -181,72 +182,28 @@ static char *http_patch(const char *url, const char *auth_header, const char *js
 static char *billing_fetch(const char *url, const char *auth_header) {
     if (!url) return NULL;
 
-    char resp_path[256];
-    snprintf(resp_path, sizeof(resp_path),
-             "/tmp/billing_get_%d_%ld.json", getpid(), (long)time(NULL));
+    /* Use the internal HTTP client (libhttp) — no external curl binary. */
+    http_t *h = http_new(30);
+    if (!h) return strdup("{\"error\":\"http client init failed\"}");
 
-    /* Build curl command */
-    char cmd[8192];
-    int n;
-    if (auth_header && *auth_header) {
-        n = snprintf(cmd, sizeof(cmd),
-            "curl -s -w '\\n%%{http_code}' -X GET '%s' "
-            "-H 'Authorization: %s' "
-            "-H 'Accept: application/json' "
-            "> '%s' 2>/dev/null",
-            url, auth_header, resp_path);
+    char headers[512];
+    if (auth_header && *auth_header)
+        snprintf(headers, sizeof(headers), "Authorization: %s\r\nAccept: application/json", auth_header);
+    else
+        snprintf(headers, sizeof(headers), "Accept: application/json");
+
+    http_resp_t *r = http_get(h, url, headers);
+    http_free(h);
+    if (!r) return strdup("{\"error\":\"http request failed\"}");
+
+    char *out = NULL;
+    if (r->body && r->body[0]) {
+        out = strdup(r->body);
     } else {
-        n = snprintf(cmd, sizeof(cmd),
-            "curl -s -w '\\n%%{http_code}' -X GET '%s' "
-            "-H 'Accept: application/json' "
-            "> '%s' 2>/dev/null",
-            url, resp_path);
+        out = strdup("{\"error\":\"empty response\"}");
     }
-
-    if (n < 0 || (size_t)n >= sizeof(cmd)) {
-        unlink(resp_path);
-        return strdup("{\"error\":\"command too long\"}");
-    }
-
-    int ret = system(cmd);
-    if (ret != 0) {
-        unlink(resp_path);
-        return strdup("{\"error\":\"curl command failed\"}");
-    }
-
-    /* Read response */
-    FILE *f = fopen(resp_path, "r");
-    if (!f) {
-        return strdup("{\"error\":\"failed to read response\"}");
-    }
-
-    fseek(f, 0, SEEK_END);
-    long fsize = ftell(f);
-    fseek(f, 0, SEEK_SET);
-
-    if (fsize <= 0 || fsize > 1024 * 1024) {
-        fclose(f);
-        unlink(resp_path);
-        return strdup("{\"error\":\"invalid response size\"}");
-    }
-
-    char *buf = malloc(fsize + 1);
-    if (!buf) {
-        fclose(f);
-        unlink(resp_path);
-        return strdup("{\"error\":\"oom\"}");
-    }
-    fread(buf, 1, fsize, f);
-    buf[fsize] = '\0';
-    fclose(f);
-    unlink(resp_path);
-
-    /* Split body and HTTP code (last line) */
-    char *last_nl = strrchr(buf, '\n');
-    if (last_nl) {
-        *last_nl = '\0';
-    }
-    return buf;
+    http_resp_free(r);
+    return out;
 }
 
 /* ================================================================
