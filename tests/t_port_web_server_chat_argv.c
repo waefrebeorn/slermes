@@ -39,6 +39,17 @@ int main(int argc, char **argv) {
     json_t *fx = json_parse(buf, NULL);
     if (!fx) return 2;
     const char *op = json_get_str(fx, "op", "");
+    /* The oracle overrides HERMES_HOME from the fixture's "home" field
+     * (default /nonexistent); mirror that so both sides resolve the same
+     * home. @SBX@ is substituted to TMPH by the runner. */
+    {
+        const char *home = json_get_str(fx, "home", NULL);
+        if (home && *home) {
+            setenv("HERMES_HOME", home, 1);
+            setenv("SLERMES_HOME", home, 1);
+            setenv("HOME", home, 1);
+        }
+    }
 
     if (strcmp(op, "profile_dir") == 0) {
         int status = 0;

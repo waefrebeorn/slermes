@@ -95,22 +95,72 @@ static json_t *string_list(const json_t *v) {
 
 /* realpath that tolerates non-existent leaves: resolves the parent and
  * re-appends the leaf (Python Path.resolve(strict=False) semantics for the
- * single-missing-leaf case the sandbox check needs). */
+ * single-missing-leaf case the sandbox check needs). When realpath fails
+ * entirely (e.g. a missing MIDDLE component like scripts/../escape.sh),
+ * collapse ".."/"." segments lexically exactly like pathlib does, so a
+ * "../escape.sh" escape is still detected. */
 static char *resolve_lenient(const char *path) {
-    char *rp = realpath(path, NULL);
-    if (rp) return rp;
-    char *dup = strdup(path);
-    char *slash = strrchr(dup, '/');
-    if (!slash || slash == dup) { free(dup); return strdup(path); }
-    *slash = '\0';
-    char *parent = realpath(dup, NULL);
-    if (!parent) { free(dup); return strdup(path); }
-    size_t need = strlen(parent) + 1 + strlen(slash + 1) + 1;
-    char *out = malloc(need);
-    snprintf(out, need, "%s/%s", parent, slash + 1);
-    free(parent);
-    free(dup);
-    return out;
+    /* Lexically collapse ".", "..", and empty segments across the WHOLE
+     * path first (pathlib.resolve(strict=False) semantics): a path like
+     * "<parent>/scripts/../escape.sh" must reduce to "<parent>/escape.sh"
+     * even when "scripts" does not exist, so the sandbox containment check
+     * still detects "../" escapes. */
+    {
+        size_t plen = strlen(path);
+        char *nb = malloc(plen + 1);
+        if (!nb) return strdup(path);
+        size_t wi = 0;
+        size_t base = 0;
+        if (path[0] == '/') { nb[wi++] = '/'; base = 1; }
+        for (size_t ri = base; ri <= plen; ) {
+            const char *seg = path + ri;
+            size_t sl = strcspn(seg, "/");
+            if (sl == 0) { ri++; continue; }
+            if (sl == 1 && seg[0] == '.') { ri += 1; continue; }
+            if (sl == 2 && seg[0] == '.' && seg[1] == '.') {
+                /* pop last written segment (never below root) */
+                while (wi > 1 && nb[wi - 1] != '/') wi--;
+                if (wi > 1) wi--;  /* drop the slash too */
+                ri += 2;
+                continue;
+            }
+            if (wi > 1 && nb[wi - 1] != '/') nb[wi++] = '/';
+            memcpy(nb + wi, seg, sl);
+            wi += sl;
+            ri += sl;
+        }
+        nb[wi] = '\0';
+        /* Realpath the normalized path; if the whole thing resolves (all
+         * components exist), use it verbatim. Otherwise resolve the longest
+         * existing parent and re-append the remainder — the single-missing-
+         * leaf case. If even the parent cannot be resolved (e.g. the fixture
+         * sandbox home does not exist), return the lexically-normalized
+         * absolute path — pathlib.resolve(strict=False) semantics, which
+         * ALWAYS yields an absolute normalized path regardless of existence. */
+        char *rp = realpath(nb, NULL);
+        if (rp) { free(nb); return rp; }
+        char *dup = strdup(nb);
+        free(nb);
+        char *slash = strrchr(dup, '/');
+        if (!slash || slash == dup) { free(dup); return strdup(path); }
+        *slash = '\0';
+        char *parent = realpath(dup, NULL);
+        if (!parent) {
+            /* Nothing above the leaf resolves: the normalized absolute path
+             * is still the correct answer (Python would return exactly it). */
+            size_t need = strlen(dup) + 1 + strlen(slash + 1) + 1;
+            char *out = malloc(need);
+            if (out) snprintf(out, need, "%s/%s", dup, slash + 1);
+            free(dup);
+            return out ? out : strdup(path);
+        }
+        size_t need = strlen(parent) + 1 + strlen(slash + 1) + 1;
+        char *out = malloc(need);
+        snprintf(out, need, "%s/%s", parent, slash + 1);
+        free(parent);
+        free(dup);
+        return out;
+    }
 }
 
 /* ── _normalize_dashboard_cron_script ───────────────────────────────────── */
