@@ -57,8 +57,10 @@
 
 ### P1 — desktop UX (from pass3 audit, 34/40)
 6. **Right-rail/preview pane** — no terminal/file-preview/agents panel.
-7. **Text selection** — cannot select text to copy.
+7. **Text selection** — cannot select text to copy. ✅ **Copy button + /copy
+   /paste wired to the real clipboard (2026-08-03)**
 8. **Attachment support** — cannot attach files/images to composer.
+   ✅ **Ctrl+O attach (paperclip parity) wired (2026-08-03)**
 9. **Voice input** — no microphone input (P2 but user-visible).
 10. **Disclosure carets / right-sidebar toggle** — audit flags rendering
     (verify draw paths).
