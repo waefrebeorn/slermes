@@ -17,6 +17,8 @@
 #include <fcntl.h>
 #include "json.h"
 #include "yaml.h"
+#include "hermes_agent.h"
+#include "hermes_curator.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -291,9 +293,20 @@ bool cur_should_run_now(const char *config_json, const char *state_json, double 
 
 /* PoP: apply_automatic_transitions @ agent/curator.py:apply_automatic_transitions */
 char *cur_apply_automatic_transitions(void) {
-    /* Python: move active/stale/archived by real activity; pinned untouched. */
-    printf("automatic state transitions applied (pinned skills untouched)\n");
-    return strdup("{}");
+    /* Python: move active/stale/archived by real activity; pinned untouched.
+     * Delegates to the canonical curator.c implementation. */
+    extern curator_transition_counts_t apply_automatic_transitions(void);
+    curator_transition_counts_t counts = apply_automatic_transitions();
+
+    json_t *out = json_object();
+    json_set(out, "checked", json_number(counts.checked));
+    json_set(out, "marked_stale", json_number(counts.marked_stale));
+    json_set(out, "archived", json_number(counts.archived));
+    json_set(out, "reactivated", json_number(counts.reactivated));
+    json_set(out, "seeded", json_number(counts.seeded));
+    char *ser = json_serialize(out);
+    json_free(out);
+    return ser ? ser : strdup("{}");
 }
 
 /* PoP: _reports_root @ agent/curator.py:_reports_root */
@@ -968,16 +981,73 @@ char *cur_resolve_review_model(const char *config_json) {
 
 /* PoP: _run_llm_review @ agent/curator.py:_run_llm_review */
 char *cur_run_llm_review(const char *prompt, const char *runtime_json) {
-    /* Python: AIAgent fork for the review prompt. */
+    /* Python: AIAgent fork for the review prompt. The C agent loop is the
+     * same engine the gateway/api-server use; run one real turn on the
+     * configured agent with the curator review prompt, then return the
+     * response JSON. */
     if (!prompt) return NULL;
-    printf("llm review fork spawned (final response + tool evidence)\n");
-    return strdup("{}");
+    if (!runtime_json) return strdup("{}");
+
+    /* Resolve the review model from the runtime binding. */
+    json_t *rt = json_parse(runtime_json, NULL);
+    const char *provider = rt ? json_get_str(rt, "provider", "") : "";
+    const char *model = rt ? json_get_str(rt, "model", "") : "";
+    const char *api_key = rt ? json_get_str(rt, "api_key", "") : "";
+    const char *base_url = rt ? json_get_str(rt, "base_url", "") : "";
+
+    /* Build a one-off llm_config for the review fork. */
+    extern void llm_resolve_provider_env(llm_config_t *cfg);
+    llm_config_t cfg;
+    memset(&cfg, 0, sizeof(cfg));
+    if (provider[0]) snprintf(cfg.provider, sizeof(cfg.provider), "%s", provider);
+    if (model[0]) snprintf(cfg.model, sizeof(cfg.model), "%s", model);
+    if (api_key[0]) snprintf(cfg.api_key, sizeof(cfg.api_key), "%s", api_key);
+    if (base_url[0]) snprintf(cfg.base_url, sizeof(cfg.base_url), "%s", base_url);
+    if (!cfg.api_key[0] || !cfg.base_url[0]) llm_resolve_provider_env(&cfg);
+
+    message_t *sys = message_new(MSG_SYSTEM,
+        "You are the skill curator. Review the skills below and produce the "
+        "structured consolidation/pruning decisions in a ```yaml block with "
+        "consolidations (from/into/reason) and prunings (name/reason) lists.");
+    message_t *user = message_new(MSG_USER, prompt);
+    const message_t *msgs[2] = {sys, user};
+
+    llm_response_t *resp = llm_chat_completion(&cfg, msgs, 2, NULL);
+    message_free(sys);
+    message_free(user);
+
+    if (rt) json_free(rt);
+    if (!resp) return strdup("{}");
+
+    char *out = NULL;
+    if (resp->content) {
+        json_t *r = json_object();
+        json_set(r, "final_response", json_string(resp->content));
+        json_set(r, "model", json_string(cfg.model));
+        out = json_serialize(r);
+        json_free(r);
+    }
+    llm_response_free(resp);
+    return out ? out : strdup("{}");
 }
 
 /* PoP: maybe_run_curator @ agent/curator.py:maybe_run_curator */
 char *cur_maybe_run_curator(const char *config_json, const char *state_json, double now_epoch) {
-    /* Python: run when gates pass; never raises. */
+    /* Python: run when gates pass; never raises. Delegates to the real
+     * apply_automatic_transitions() (curator.c) when the gates open, then
+     * returns a counts JSON. */
     if (!cur_should_run_now(config_json, state_json, now_epoch)) return NULL;
-    printf("curator run started (all gates passed)\n");
-    return strdup("{}");
+
+    extern curator_transition_counts_t apply_automatic_transitions(void);
+    curator_transition_counts_t counts = apply_automatic_transitions();
+
+    json_t *out = json_object();
+    json_set(out, "checked", json_number(counts.checked));
+    json_set(out, "marked_stale", json_number(counts.marked_stale));
+    json_set(out, "archived", json_number(counts.archived));
+    json_set(out, "reactivated", json_number(counts.reactivated));
+    json_set(out, "seeded", json_number(counts.seeded));
+    char *ser = json_serialize(out);
+    json_free(out);
+    return ser ? ser : strdup("{}");
 }
