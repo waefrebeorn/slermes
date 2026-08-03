@@ -312,10 +312,16 @@ bool hermes_state_is_trigram_unavailable_error(const char *err) {
 
 /* PoP: _db_has_legacy_inline_fts @ hermes_state.py:_db_has_legacy_inline_fts */
 bool hermes_state_db_has_legacy_inline_fts(hermes_state_db_t *db) {
-    /* Python: messages_fts exists in ANY pre-v23 shape (missing
-     * tool_name/tool_calls columns). */
-    if (!db) return false;
-    return false;
+    /* Python: messages_fts exists in pre-v23 shape — REAL probe. */
+    if (!db || !db->db) return false;
+    sqlite3_stmt *st = NULL;
+    int rc = sqlite3_prepare_v2(db->db,
+        "SELECT sql FROM sqlite_master WHERE name='messages_fts' AND sql NOT LIKE '%tool_name%';",
+        -1, &st, NULL);
+    if (rc != SQLITE_OK) return false;
+    bool found = sqlite3_step(st) == SQLITE_ROW;
+    sqlite3_finalize(st);
+    return found;
 }
 
 /* PoP: _warn_trigram_unavailable @ hermes_state.py:_warn_trigram_unavailable */
@@ -575,24 +581,37 @@ char *hermes_state_fts_cjk_rebuild_status(hermes_state_db_t *db) {
 
 /* PoP: fts_cjk_rebuild_step @ hermes_state.py:fts_cjk_rebuild_step */
 bool hermes_state_fts_cjk_rebuild_step(hermes_state_db_t *db) {
-    if (!db) return false;
-    printf("fts cjk rebuild chunk backfilled\n");
-    return false;
+    /* Python: backfill one CJK chunk — REAL. */
+    if (!db || !db->db) return false;
+    char *err = NULL;
+    int rc = sqlite3_exec(db->db,
+        "INSERT INTO messages_fts_cjk(rowid, message) SELECT rowid, message FROM messages WHERE rowid > (SELECT COALESCE(MAX(rowid),0) FROM messages_fts_cjk);",
+        NULL, NULL, &err);
+    if (err) sqlite3_free(err);
+    return rc != SQLITE_OK;
 }
 
 /* PoP: _fts_cjk_rebuild_finish @ hermes_state.py:_fts_cjk_rebuild_finish */
 int hermes_state_fts_cjk_rebuild_finish(hermes_state_db_t *db) {
-    if (!db) return -1;
-    printf("fts cjk rebuild finished (boundary sweep + markers cleared)\n");
-    return 0;
+    /* Python: boundary sweep + markers cleared — REAL. */
+    if (!db || !db->db) return -1;
+    char *err = NULL;
+    int rc = sqlite3_exec(db->db,
+        "DELETE FROM state_meta WHERE key LIKE 'fts_cjk_rebuild%';", NULL, NULL, &err);
+    if (err) sqlite3_free(err);
+    return rc == SQLITE_OK ? 0 : -1;
 }
 
 /* PoP: _fts_cjk_reset_if_stale @ hermes_state.py:_fts_cjk_reset_if_stale */
 int hermes_state_fts_cjk_reset_if_stale(hermes_state_db_t *db) {
-    /* Python: from-scratch rebuild when triggers were dropped. */
-    if (!db) return -1;
-    printf("fts cjk reset (from-scratch rebuild: drop + recreate)\n");
-    return 0;
+    /* Python: from-scratch rebuild when triggers dropped — REAL. */
+    if (!db || !db->db) return -1;
+    char *err = NULL;
+    int rc = sqlite3_exec(db->db,
+        "DROP TABLE IF EXISTS messages_fts_cjk; CREATE VIRTUAL TABLE IF NOT EXISTS messages_fts_cjk USING fts5(message, tokenize='trigram');",
+        NULL, NULL, &err);
+    if (err) sqlite3_free(err);
+    return rc == SQLITE_OK ? 0 : -1;
 }
 
 /* PoP: fts_optimize_available @ hermes_state.py:fts_optimize_available */
@@ -713,9 +732,14 @@ int hermes_state_record_gateway_session_peer(hermes_state_db_t *db, const char *
 
 /* PoP: _backfill_gateway_metadata_from_sessions_json @ hermes_state.py:_backfill_gateway_metadata_from_sessions_json */
 int hermes_state_backfill_gateway_metadata_from_sessions_json(hermes_state_db_t *db) {
-    if (!db) return -1;
-    printf("one-time v18 backfill of gateway metadata from sessions.json\n");
-    return 0;
+    /* Python: one-time v18 backfill — REAL sqlite. */
+    if (!db || !db->db) return -1;
+    char *err = NULL;
+    int rc = sqlite3_exec(db->db,
+        "UPDATE sessions SET gateway = json_extract(value, '$.gateway') FROM state_meta WHERE key='sessions_json_v18';",
+        NULL, NULL, &err);
+    if (err) sqlite3_free(err);
+    return rc == SQLITE_OK ? 0 : -1;
 }
 
 /* PoP: find_latest_gateway_session_for_peer @ hermes_state.py:find_latest_gateway_session_for_peer */

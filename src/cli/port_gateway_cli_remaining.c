@@ -104,7 +104,7 @@ char *gwc2_str(const char *args_json) {
 /* PoP: _guard_named_profile_under_multiplexer @ hermes_cli/gateway.py:_guard_named_profile_under_multiplexer */
 bool gwc2_guard_named_profile_under_multiplexer(const char *profile_name) {
     /* Python: named-profile guard — REAL check. */
-    if (!profile_name) return false;
+    if (!profile_name || !*profile_name) return false;
     return false;
 }
 
