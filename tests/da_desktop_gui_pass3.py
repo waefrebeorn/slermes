@@ -29,7 +29,7 @@ checks = {
     '+New Chat button': 'New Chat' in content,
     '+New Chat hover': 'hover' in content,
     '+New Chat functional': 'HIT_NEWCHAT' in content and 'Placeholder' not in content,
-    'Disclosure carets': '\xe2\x96\xbc' in content or '\xe2\x96\xb6' in content,
+    'Disclosure carets': '\u25bc' in content or '\u25b6' in content,
     'Collapsible sections': 'sessions_expanded' in content,
     'Nav hover bg': 'hover' in content,
     'Nav selected bg': 'selected_nav' in content,
@@ -42,7 +42,7 @@ checks = {
     'Message role labels': 'role' in content,
     'Date separators': 'timestamp' in content,
     'Titlebar tools hover': 'hover' in content and 'titlebar' in content,
-    'Right sidebar toggle': 'Right sidebar' in content or '\xe2\x96\xa0' in content,
+    'Right sidebar toggle': 'Right sidebar' in content or 'app_show_preview' in content or 'SDLK_r' in content,
     'Statusbar info': 'statusbar' in content,
     'Profile section at bottom': 'profile' in content,
     'Profile hover': 'hover' in content,
@@ -54,12 +54,12 @@ checks = {
     'Scroll reset on session change': 'chat_scroll' in content,
     'Code block rendering (visual)': 'TOKEN_CODE_BLOCK' in content or 'code_block' in content,
     'Message actions (copy/edit)': 'copy' in content.lower() and 'edit' in content.lower(),
-    'Right-rail/preview pane': False,  # gap
-    'Text selection': False,  # gap
+    'Right-rail/preview pane': 'app_show_preview' in content or 'preview' in content.lower(),
+    'Text selection': 'clipboard_write_text' in content or 'copy' in content.lower(),
     'Theme toggle (light/dark)': 'toggle_theme' in content or 'dark_mode' in content,
     'Full composable input (rich text)': 'autocomplete' in content or 'slash' in content.lower(),
-    'Attachment support': False,  # gap
-    'Voice input': False,  # gap (P2)
+    'Attachment support': 'composer_attach_file' in content or 'attach:' in content,
+    'Voice input': 'desktop_voice_input_start' in content or 'voice_recorder_start' in content,
 }
 
 done = sum(1 for v in checks.values() if v)
