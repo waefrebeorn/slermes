@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "hermes_tts_registry.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -21,26 +22,24 @@ static char *lowerdup(const char *s) {
 /* PoP: register_provider @ agent/tts_registry.py:register_provider */
 int ttsr_register_provider(const char *name, const char *provider_desc) {
     if (!name) return -1;
-    printf("tts provider registered: %s\n", name);
-    return 0;
+    return tts_register_provider(name, provider_desc) ? 0 : -1;
 }
 
 /* PoP: list_providers @ agent/tts_registry.py:list_providers */
 char *ttsr_list_providers(void) {
-    printf("tts providers listed (sorted)\n");
-    return strdup("[]");
+    return tts_list_providers();
 }
 
 /* PoP: get_provider @ agent/tts_registry.py:get_provider */
 char *ttsr_get_provider(const char *name) {
     /* Python: case-insensitive. */
     if (!name) return NULL;
-    printf("tts provider fetched (case-insensitive): %s\n", name);
-    return NULL;
+    const char *t = tts_get_provider(name);
+    return t ? strdup(t) : NULL;
 }
 
 /* PoP: _reset_for_tests @ agent/tts_registry.py:_reset_for_tests */
 int ttsr_reset_for_tests(void) {
-    printf("tts registry cleared (test-only)\n");
+    tts_reset_for_tests();
     return 0;
 }

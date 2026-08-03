@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "video_gen_registry.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -21,21 +22,23 @@ static char *lowerdup(const char *s) {
 /* PoP: register_provider @ agent/video_gen_registry.py:register_provider */
 int vgr_register_provider(const char *name, const char *provider_desc) {
     if (!name) return -1;
-    printf("video provider registered: %s\n", name);
-    return 0;
+    video_gen_provider_t prov = {0};
+    strncpy(prov.name, name, sizeof(prov.name) - 1);
+    strncpy(prov.display_name, name, sizeof(prov.display_name) - 1);
+    prov.is_available = NULL;
+    return video_gen_register_provider(&prov) ? 0 : -1;
 }
 
 /* PoP: list_providers @ agent/video_gen_registry.py:list_providers */
 char *vgr_list_providers(void) {
-    printf("video providers listed (sorted)\n");
     return strdup("[]");
 }
 
 /* PoP: get_provider @ agent/video_gen_registry.py:get_provider */
 char *vgr_get_provider(const char *name) {
     if (!name) return NULL;
-    printf("video provider fetched: %s\n", name);
-    return NULL;
+    const video_gen_provider_t *p = video_gen_get_provider(name);
+    return p ? strdup(p->name) : NULL;
 }
 
 /* PoP: get_active_provider @ agent/video_gen_registry.py:get_active_provider */
@@ -56,6 +59,6 @@ char *vgr_get_active_provider(const char *config_yaml) {
 
 /* PoP: _reset_for_tests @ agent/video_gen_registry.py:_reset_for_tests */
 int vgr_reset_for_tests(void) {
-    printf("video provider registry cleared (test-only)\n");
+    video_gen_reset_registry();
     return 0;
 }

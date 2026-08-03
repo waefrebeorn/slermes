@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "hermes_transcription.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -22,26 +23,24 @@ static char *lowerdup(const char *s) {
 /* PoP: register_provider @ agent/transcription_registry.py:register_provider */
 int tcr_register_provider(const char *name, const char *provider_desc) {
     if (!name) return -1;
-    printf("transcription provider registered: %s\n", name);
-    return 0;
+    return transcription_register_provider(name, provider_desc) ? 0 : -1;
 }
 
 /* PoP: list_providers @ agent/transcription_registry.py:list_providers */
 char *tcr_list_providers(void) {
-    printf("transcription providers listed (sorted)\n");
-    return strdup("[]");
+    return transcription_list_providers();
 }
 
 /* PoP: get_provider @ agent/transcription_registry.py:get_provider */
 char *tcr_get_provider(const char *name) {
     /* Python: case-insensitive. */
     if (!name) return NULL;
-    printf("transcription provider fetched (case-insensitive): %s\n", name);
-    return NULL;
+    const char *t = transcription_get_provider(name);
+    return t ? strdup(t) : NULL;
 }
 
 /* PoP: _reset_for_tests @ agent/transcription_registry.py:_reset_for_tests */
 int tcr_reset_for_tests(void) {
-    printf("transcription registry cleared (test-only)\n");
+    transcription_reset_for_tests();
     return 0;
 }
