@@ -1330,20 +1330,21 @@ const char *gw_check_unavailable_skill(const char *command_name)
     skill_cmd_scan_filtered(NULL);
 
     int count = 0;
-    const skill_cmd_entry_t *all_skills = skill_cmd_get_all(&count);
+    const skill_cmd_entry_t **all_skills = skill_cmd_get_all(&count);
     if (all_skills && count > 0) {
         for (int i = 0; i < count; i++) {
-            if (!all_skills[i].slug[0]) continue;
+            const skill_cmd_entry_t *sk = all_skills[i];
+            if (!sk || !sk->slug[0]) continue;
             /* Check if slug matches normalized command */
             char slug_norm[256];
-            snprintf(slug_norm, sizeof(slug_norm), "%s", all_skills[i].slug);
+            snprintf(slug_norm, sizeof(slug_norm), "%s", sk->slug);
             for (int j = 0; slug_norm[j]; j++) {
                 if (slug_norm[j] == '_') slug_norm[j] = '-';
                 slug_norm[j] = tolower((unsigned char)slug_norm[j]);
             }
             if (strcmp(slug_norm, normalized) == 0) {
                 /* Check if this skill is disabled */
-                if (skill_cmd_is_disabled(all_skills[i].slug, cfg->skills.disabled)) {
+                if (skill_cmd_is_disabled(sk->slug, cfg->skills.disabled)) {
                     char *msg = malloc(512);
                     if (msg) {
                         snprintf(msg, 512,
@@ -1351,12 +1352,14 @@ const char *gw_check_unavailable_skill(const char *command_name)
                             "Enable it with: `hermes skills config`",
                             command_name);
                     }
+                    free((void *)all_skills);
                     free(cfg);
                     return msg;
                 }
             }
         }
     }
+    free((void *)all_skills);
 
     free(cfg);
     return NULL;

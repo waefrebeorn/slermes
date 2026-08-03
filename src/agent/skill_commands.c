@@ -29,8 +29,8 @@
  *  Internal state
  * ================================================================ */
 
-static skill_cmd_entry_t g_skills[MAX_SKILL_COMMANDS];
-static int g_skill_count = 0;
+#include "hive.h"
+static hive_t *g_skills = NULL;   /* of skill_cmd_entry_t* (heap) */
 static time_t g_last_scan = 0;
 static char g_skills_dir[SKILL_CMD_PATH_MAX];
 static char g_last_platform[64] = "";   /* SK06: platform-scoped cache tracking */
@@ -39,7 +39,16 @@ static char g_last_platform[64] = "";   /* SK06: platform-scoped cache tracking 
  * Called by the gateway when a session's platform changes, or when
  * skill directories are modified. Forces re-scan on next access. */
 static void skill_cache_invalidate(void) {
-    g_skill_count = 0;
+    if (g_skills) {
+        hive_iter_t it;
+        hive_iter_begin(g_skills, &it);
+        hive_handle_t hnd;
+        skill_cmd_entry_t *sk;
+        while (hive_iter_next(g_skills, &it, &hnd, (void **)&sk)) {
+            free(sk);
+            hive_erase(g_skills, hnd);
+        }
+    }
     g_last_scan = 0;
 }
 
@@ -190,63 +199,67 @@ static void skill_config_inject(void) {
     yaml_doc_t *cfg = yaml_parse_file(config_path, &err);
     if (!cfg) { if (err) free(err); return; }
 
-    for (int i = 0; i < g_skill_count; i++) {
-        skill_cmd_entry_t *sk = &g_skills[i];
-        if (sk->config_var_count == 0) continue;
-        for (int j = 0; j < sk->config_var_count; j++) {
-            char lookup[256];
-            snprintf(lookup, sizeof(lookup), "skills.config.%s", sk->config_vars[j].key);
-            const char *val = yaml_get_string(cfg, lookup);
-            if (val && val[0]) {
-                /* SK07: Expand ~ and ${ENV} in path values (matches Python expanduser/expandvars) */
-                if (strstr(val, "~") || strstr(val, "${")) {
-                    char expanded[512];
-                    /* Simple ~ expansion */
-                    if (val[0] == '~' && (val[1] == '/' || val[1] == '\0')) {
-                        const char *homedir = getenv("HOME");
-                        if (!homedir) homedir = "/tmp";
-                        snprintf(expanded, sizeof(expanded), "%s%s", homedir, val + 1);
-                    } else {
-                        strncpy(expanded, val, sizeof(expanded) - 1);
-                        expanded[sizeof(expanded) - 1] = '\0';
-                    }
-                    /* Simple ${VAR} expansion for common vars */
-                    char final_val[512];
-                    char *dst = final_val;
-                    char *src = expanded;
-                    char *dend = final_val + sizeof(final_val) - 1;
-                    while (*src && dst < dend) {
-                        if (src[0] == '$' && src[1] == '{') {
-                            char *end = strchr(src + 2, '}');
-                            if (end && end - src < 64) {
-                                char varname[64];
-                                size_t vlen = end - src - 2;
-                                memcpy(varname, src + 2, vlen);
-                                varname[vlen] = '\0';
-                                const char *vval = getenv(varname);
-                                if (vval) {
-                                    size_t vl = strlen(vval);
-                                    if (dst + vl < dend) {
-                                        memcpy(dst, vval, vl);
-                                        dst += vl;
-                                    }
-                                }
-                                src = end + 1;
-                                continue;
-                            }
+    if (g_skills) {
+        hive_iter_t it;
+        hive_iter_begin(g_skills, &it);
+        skill_cmd_entry_t *sk;
+        while (hive_iter_next(g_skills, &it, NULL, (void **)&sk)) {
+            if (sk->config_var_count == 0) continue;
+            for (int j = 0; j < sk->config_var_count; j++) {
+                char lookup[256];
+                snprintf(lookup, sizeof(lookup), "skills.config.%s", sk->config_vars[j].key);
+                const char *val = yaml_get_string(cfg, lookup);
+                if (val && val[0]) {
+                    /* SK07: Expand ~ and ${ENV} in path values (matches Python expanduser/expandvars) */
+                    if (strstr(val, "~") || strstr(val, "${")) {
+                        char expanded[512];
+                        /* Simple ~ expansion */
+                        if (val[0] == '~' && (val[1] == '/' || val[1] == '\0')) {
+                            const char *homedir = getenv("HOME");
+                            if (!homedir) homedir = "/tmp";
+                            snprintf(expanded, sizeof(expanded), "%s%s", homedir, val + 1);
+                        } else {
+                            strncpy(expanded, val, sizeof(expanded) - 1);
+                            expanded[sizeof(expanded) - 1] = '\0';
                         }
-                        *dst++ = *src++;
+                        /* Simple ${VAR} expansion for common vars */
+                        char final_val[512];
+                        char *dst = final_val;
+                        char *src = expanded;
+                        char *dend = final_val + sizeof(final_val) - 1;
+                        while (*src && dst < dend) {
+                            if (src[0] == '$' && src[1] == '{') {
+                                char *end = strchr(src + 2, '}');
+                                if (end && end - src < 64) {
+                                    char varname[64];
+                                    size_t vlen = end - src - 2;
+                                    memcpy(varname, src + 2, vlen);
+                                    varname[vlen] = '\0';
+                                    const char *vval = getenv(varname);
+                                    if (vval) {
+                                        size_t vl = strlen(vval);
+                                        if (dst + vl < dend) {
+                                            memcpy(dst, vval, vl);
+                                            dst += vl;
+                                        }
+                                    }
+                                    src = end + 1;
+                                    continue;
+                                }
+                            }
+                            *dst++ = *src++;
+                        }
+                        *dst = '\0';
+                        strncpy(sk->config_vars[j].resolved, final_val, sizeof(sk->config_vars[j].resolved) - 1);
+                    } else {
+                        strncpy(sk->config_vars[j].resolved, val, sizeof(sk->config_vars[j].resolved) - 1);
                     }
-                    *dst = '\0';
-                    strncpy(sk->config_vars[j].resolved, final_val, sizeof(sk->config_vars[j].resolved) - 1);
+                } else if (sk->config_vars[j].default_val[0]) {
+                    strncpy(sk->config_vars[j].resolved, sk->config_vars[j].default_val,
+                            sizeof(sk->config_vars[j].resolved) - 1);
                 } else {
-                    strncpy(sk->config_vars[j].resolved, val, sizeof(sk->config_vars[j].resolved) - 1);
+                    sk->config_vars[j].resolved[0] = '\0';
                 }
-            } else if (sk->config_vars[j].default_val[0]) {
-                strncpy(sk->config_vars[j].resolved, sk->config_vars[j].default_val,
-                        sizeof(sk->config_vars[j].resolved) - 1);
-            } else {
-                sk->config_vars[j].resolved[0] = '\0';
             }
         }
     }
@@ -348,15 +361,15 @@ static const char *get_config_path(void) {
 }
 
 /* Scan a single skills directory for SKILL.md entries.
- * Returns number of skills added to g_skills[].
- * Does NOT reset g_skill_count — appends to existing array. */
+ * Returns number of skills added to the hive.
+ * Appends to the existing hive (does NOT clear it first). */
 static int scan_one_skills_dir(const char *sdir) {
     int added = 0;
     DIR *d = opendir(sdir);
     if (!d) return 0;
 
     struct dirent *entry;
-    while ((entry = readdir(d)) != NULL && g_skill_count < MAX_SKILL_COMMANDS) {
+    while ((entry = readdir(d)) != NULL) {
         if (entry->d_name[0] == '.') continue;
 
         char dir_path[SKILL_CMD_PATH_MAX];
@@ -376,8 +389,8 @@ static int scan_one_skills_dir(const char *sdir) {
         FILE *f = fopen(md_path, "r");
         if (!f) continue;
 
-        skill_cmd_entry_t *sk = &g_skills[g_skill_count];
-        memset(sk, 0, sizeof(*sk));
+        skill_cmd_entry_t *sk = calloc(1, sizeof(skill_cmd_entry_t));
+        if (!sk) { fclose(f); continue; }
         snprintf(sk->name, sizeof(sk->name), "%s", entry->d_name);
 
         char line[4096];
@@ -445,7 +458,10 @@ static int scan_one_skills_dir(const char *sdir) {
 
         name_to_slug(sk->name, sk->slug, sizeof(sk->slug));
         snprintf(sk->skill_path, sizeof(sk->skill_path), "%s", dir_path);
-        g_skill_count++;
+        if (!g_skills) g_skills = hive_new(8);
+        bool ok = false;
+        hive_insert(g_skills, sk, &ok);
+        if (!ok) { free(sk); fclose(f); continue; }
         added++;
     }
     closedir(d);
@@ -453,7 +469,7 @@ static int scan_one_skills_dir(const char *sdir) {
 }
 
 static int scan_skills_dir(void) {
-    g_skill_count = 0;
+    skill_cache_invalidate();
     g_last_scan = time(NULL);
 
     const char *sdir = get_skills_dir();
@@ -487,7 +503,7 @@ static int scan_skills_dir(void) {
     /* SK07: Resolve config var values from config.yaml */
     skill_config_inject();
 
-    return g_skill_count;
+    return g_skills ? (int)hive_count(g_skills) : 0;
 }
 
 /* ================================================================
@@ -497,10 +513,10 @@ static int scan_skills_dir(void) {
 /* Port of Python: scan_skill_commands */
 int skill_cmd_scan(void) {
     /* SK06: Lazy scan with platform awareness.
-     * If g_skill_count > 0 and platform hasn't changed, skip rescan.
+     * If skills exist and platform hasn't changed, skip rescan.
      * The platform parameter is optionally set via skill_cmd_set_platform()
      * before the first call. */
-    if (g_skill_count > 0) return g_skill_count;
+    if (g_skills && hive_count(g_skills) > 0) return (int)hive_count(g_skills);
     return scan_skills_dir();
 }
 
@@ -519,23 +535,39 @@ void skill_cmd_invalidate_platform_cache(void) {
 }
 
 const skill_cmd_entry_t *skill_cmd_get(const char *slug) {
-    if (!slug || !g_skill_count) return NULL;
-    for (int i = 0; i < g_skill_count; i++) {
-        if (strcmp(g_skills[i].slug, slug) == 0)
-            return &g_skills[i];
+    if (!slug || !g_skills) return NULL;
+    hive_iter_t it;
+    hive_iter_begin(g_skills, &it);
+    skill_cmd_entry_t *sk;
+    while (hive_iter_next(g_skills, &it, NULL, (void **)&sk)) {
+        if (strcmp(sk->slug, slug) == 0)
+            return sk;
     }
     return NULL;
 }
 
-/* Port of Python: get_skill_commands */
-const skill_cmd_entry_t *skill_cmd_get_all(int *count) {
-    if (count) *count = g_skill_count;
-    return g_skills;
+/* Port of Python: get_skill_commands
+ * Returns a heap array of pointers to the live entries; caller frees.
+ * *out_count receives the number of entries (0 and NULL on empty). */
+const skill_cmd_entry_t **skill_cmd_get_all(int *count) {
+    if (count) *count = 0;
+    if (!g_skills || hive_count(g_skills) == 0) return NULL;
+    size_t n = hive_count(g_skills);
+    const skill_cmd_entry_t **arr = malloc(n * sizeof(const skill_cmd_entry_t *));
+    if (!arr) return NULL;
+    size_t i = 0;
+    hive_iter_t it;
+    hive_iter_begin(g_skills, &it);
+    skill_cmd_entry_t *sk;
+    while (hive_iter_next(g_skills, &it, NULL, (void **)&sk))
+        arr[i++] = sk;
+    if (count) *count = (int)i;
+    return arr;
 }
 
 /* Port of Python: resolve_skill_command_key */
 const char *skill_cmd_resolve(const char *command) {
-    if (!command || !g_skill_count) return NULL;
+    if (!command || !g_skills) return NULL;
 
     /* Strip leading slashes */
     const char *cmd = command;
@@ -556,9 +588,12 @@ const char *skill_cmd_resolve(const char *command) {
     char full_slug[SKILL_CMD_SLUG_MAX];
     snprintf(full_slug, sizeof(full_slug), "/%s", normalized);
 
-    for (int i = 0; i < g_skill_count; i++) {
-        if (strcmp(g_skills[i].slug, full_slug) == 0)
-            return g_skills[i].slug;
+    hive_iter_t it;
+    hive_iter_begin(g_skills, &it);
+    skill_cmd_entry_t *sk;
+    while (hive_iter_next(g_skills, &it, NULL, (void **)&sk)) {
+        if (strcmp(sk->slug, full_slug) == 0)
+            return sk->slug;
     }
     return NULL;
 }
@@ -688,34 +723,53 @@ char *skill_cmd_build_message(const char *slug, const char *user_args) {
 }
 
 int skill_cmd_rescan(int *added, int *removed) {
-    /* Snapshot: save old slugs */
-    char old_slugs[MAX_SKILL_COMMANDS][SKILL_CMD_SLUG_MAX];
-    int old_count = g_skill_count;
-    for (int i = 0; i < old_count; i++)
-        snprintf(old_slugs[i], sizeof(old_slugs[i]), "%s", g_skills[i].slug);
+    /* Snapshot: save old slugs (heap array; sizes are tiny) */
+    size_t old_count = g_skills ? hive_count(g_skills) : 0;
+    char **old_slugs = malloc((old_count ? old_count : 1) * sizeof(char *));
+    if (!old_slugs) { if (added) *added = 0; if (removed) *removed = 0; return 0; }
+    size_t oi = 0;
+    if (g_skills) {
+        hive_iter_t it;
+        hive_iter_begin(g_skills, &it);
+        skill_cmd_entry_t *sk;
+        while (hive_iter_next(g_skills, &it, NULL, (void **)&sk))
+            old_slugs[oi++] = sk->slug;   /* borrowed; valid until scan */
+    }
 
     /* Re-scan */
-    int new_count = scan_skills_dir();
+    scan_skills_dir();
 
     /* Count added: in new but not in old */
     int n_added = 0, n_removed = 0;
-    for (int i = 0; i < new_count; i++) {
-        int found = 0;
-        for (int j = 0; j < old_count; j++) {
-            if (strcmp(g_skills[i].slug, old_slugs[j]) == 0) { found = 1; break; }
+    if (g_skills) {
+        hive_iter_t it;
+        hive_iter_begin(g_skills, &it);
+        skill_cmd_entry_t *sk;
+        while (hive_iter_next(g_skills, &it, NULL, (void **)&sk)) {
+            int found = 0;
+            for (size_t j = 0; j < old_count; j++) {
+                if (old_slugs[j] && strcmp(sk->slug, old_slugs[j]) == 0) { found = 1; break; }
+            }
+            if (!found) n_added++;
         }
-        if (!found) n_added++;
     }
 
     /* Count removed: in old but not in new */
-    for (int j = 0; j < old_count; j++) {
+    for (size_t j = 0; j < old_count; j++) {
+        if (!old_slugs[j]) continue;
         int found = 0;
-        for (int i = 0; i < new_count; i++) {
-            if (strcmp(g_skills[i].slug, old_slugs[j]) == 0) { found = 1; break; }
+        if (g_skills) {
+            hive_iter_t it;
+            hive_iter_begin(g_skills, &it);
+            skill_cmd_entry_t *sk;
+            while (hive_iter_next(g_skills, &it, NULL, (void **)&sk)) {
+                if (strcmp(sk->slug, old_slugs[j]) == 0) { found = 1; break; }
+            }
         }
         if (!found) n_removed++;
     }
 
+    free(old_slugs);
     if (added) *added = n_added;
     if (removed) *removed = n_removed;
     return n_added + n_removed;
@@ -762,19 +816,23 @@ bool skill_cmd_is_disabled(const char *slug, const char *disabled_csv) {
  * Returns the number of active (non-disabled) skill commands found. */
 int skill_cmd_scan_filtered(const char *disabled_csv) {
     int all = scan_skills_dir();
-    if (!disabled_csv || !disabled_csv[0] || all == 0) return g_skill_count;
+    if (!disabled_csv || !disabled_csv[0] || all == 0)
+        return g_skills ? (int)hive_count(g_skills) : 0;
 
-    /* Compact the array by removing disabled entries */
-    int write_idx = 0;
-    for (int read_idx = 0; read_idx < g_skill_count; read_idx++) {
-        if (!skill_cmd_is_disabled(g_skills[read_idx].slug, disabled_csv)) {
-            if (write_idx != read_idx)
-                g_skills[write_idx] = g_skills[read_idx];
-            write_idx++;
+    /* Remove disabled entries from the hive (erase by handle) */
+    if (g_skills) {
+        hive_iter_t it;
+        hive_iter_begin(g_skills, &it);
+        hive_handle_t hnd;
+        skill_cmd_entry_t *sk;
+        while (hive_iter_next(g_skills, &it, &hnd, (void **)&sk)) {
+            if (skill_cmd_is_disabled(sk->slug, disabled_csv)) {
+                free(sk);
+                hive_erase(g_skills, hnd);
+            }
         }
     }
-    g_skill_count = write_idx;
-    return g_skill_count;
+    return g_skills ? (int)hive_count(g_skills) : 0;
 }
 
 /* ================================================================
@@ -799,8 +857,8 @@ int build_preloaded_skills_prompt(const char *skill_identifiers,
     if (!skill_identifiers || !skill_identifiers[0]) return 0;
 
     /* Ensure skills are scanned */
-    if (g_skill_count == 0) skill_cmd_scan();
-    if (g_skill_count == 0) return 0;
+    skill_cmd_scan();
+    if (!g_skills || hive_count(g_skills) == 0) return 0;
 
     /* We'll build prompt parts into this buffer */
     char prompt_buf[65536];
@@ -929,7 +987,7 @@ skill_cmd_payload_t *load_skill_payload(const char *skill_identifier)
     if (!skill_identifier || !skill_identifier[0]) return NULL;
 
     /* Ensure skills are scanned */
-    if (g_skill_count == 0) skill_cmd_scan();
+    skill_cmd_scan();
 
     /* Find the skill by slug or name */
     const skill_cmd_entry_t *sk = NULL;

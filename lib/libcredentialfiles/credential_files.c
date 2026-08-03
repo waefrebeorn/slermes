@@ -21,12 +21,28 @@ static bool _file_exists(const char *path);
 static char *_str_trim(char *s);
 static void _normalize_path(char *out, size_t out_size, const char *base, const char *rel);
 
-/* ── Singleton registry ── */
-static credfiles_registry_t g_registry = { .count = 0 };
+/* ── Singleton registry — hive-backed ── */
+#include "hive.h"
+static hive_t *g_registry = NULL;   /* of credfiles_path_pair_t* (heap) */
 
 credfiles_registry_t *credfiles_get_registry(void)
 {
-    return &g_registry;
+    /* Compatibility snapshot: fills .pairs[] and .count from the hive so
+     * callers that index pairs[i] keep working. The registry itself lives
+     * in the hive; this mirror is a point-in-time view. */
+    static credfiles_registry_t mirror;
+    memset(&mirror, 0, sizeof(mirror));
+    if (g_registry) {
+        hive_iter_t it;
+        hive_iter_begin(g_registry, &it);
+        credfiles_path_pair_t *p;
+        while (hive_iter_next(g_registry, &it, NULL, (void **)&p)) {
+            if (mirror.count >= CREDFILES_MAX_PAIRS) break;
+            mirror.pairs[mirror.count] = *p;
+            mirror.count++;
+        }
+    }
+    return &mirror;
 }
 
 /* ── Internal helpers ── */
@@ -133,16 +149,27 @@ bool credfiles_register_file(const char *relative_path,
     char container_path[CREDFILES_MAX_PATH];
     _normalize_path(container_path, sizeof(container_path), base, relative_path);
 
-    /* Store in registry */
-    credfiles_registry_t *r = credfiles_get_registry();
-    if (r->count >= CREDFILES_MAX_PAIRS)
-        return false;
-
-    memcpy(r->pairs[r->count].host_path, host_path, CREDFILES_MAX_PATH - 1);
-    r->pairs[r->count].host_path[CREDFILES_MAX_PATH - 1] = '\0';
-    memcpy(r->pairs[r->count].container_path, container_path, CREDFILES_MAX_PATH - 1);
-    r->pairs[r->count].container_path[CREDFILES_MAX_PATH - 1] = '\0';
-    r->count++;
+    /* Store in registry (hive of heap pairs) */
+    if (!g_registry) g_registry = hive_new(8);
+    /* Dedupe by container path */
+    if (g_registry) {
+        hive_iter_t it;
+        hive_iter_begin(g_registry, &it);
+        credfiles_path_pair_t *p;
+        while (hive_iter_next(g_registry, &it, NULL, (void **)&p)) {
+            if (strcmp(p->container_path, container_path) == 0)
+                return true;
+        }
+    }
+    credfiles_path_pair_t *p = calloc(1, sizeof(credfiles_path_pair_t));
+    if (!p) return false;
+    memcpy(p->host_path, host_path, CREDFILES_MAX_PATH - 1);
+    p->host_path[CREDFILES_MAX_PATH - 1] = '\0';
+    memcpy(p->container_path, container_path, CREDFILES_MAX_PATH - 1);
+    p->container_path[CREDFILES_MAX_PATH - 1] = '\0';
+    bool ok = false;
+    hive_insert(g_registry, p, &ok);
+    if (!ok) { free(p); return false; }
 
     return true;
 }
@@ -171,21 +198,34 @@ int credfiles_register_files(const char *entries[], int entry_count,
 
 void credfiles_clear(void)
 {
-    g_registry.count = 0;
+    if (g_registry) {
+        hive_iter_t it;
+        hive_iter_begin(g_registry, &it);
+        hive_handle_t hnd;
+        credfiles_path_pair_t *p;
+        while (hive_iter_next(g_registry, &it, &hnd, (void **)&p)) {
+            free(p);
+            hive_erase(g_registry, hnd);
+        }
+    }
 }
 
 credfiles_path_list_t credfiles_get_mounts(void)
 {
     credfiles_path_list_t result;
-    result.count = 0;
+    memset(&result, 0, sizeof(result));
 
     /* Start with skill-registered files */
-    credfiles_registry_t *r = credfiles_get_registry();
-    for (int i = 0; i < r->count; i++) {
-        /* Re-check existence (file may have been deleted since registration) */
-        if (_file_exists(r->pairs[i].host_path)) {
-            result.entries[result.count] = r->pairs[i];
-            result.count++;
+    if (g_registry) {
+        hive_iter_t it;
+        hive_iter_begin(g_registry, &it);
+        credfiles_path_pair_t *p;
+        while (hive_iter_next(g_registry, &it, NULL, (void **)&p)) {
+            /* Re-check existence (file may have been deleted since registration) */
+            if (_file_exists(p->host_path) && result.count < CREDFILES_MAX_PAIRS) {
+                result.entries[result.count] = *p;
+                result.count++;
+            }
         }
     }
 

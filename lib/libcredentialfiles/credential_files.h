@@ -19,9 +19,9 @@ extern "C" {
 
 /* ── Constants ── */
 
-#define CREDFILES_MAX_PATH      4096
-#define CREDFILES_MAX_PAIRS     256   /* max registered credential file pairs */
-#define CREDFILES_MAX_ENTRIES   128   /* max config-based entries */
+#define CREDFILES_MAX_PATH      512    /* real host/container paths are <512 chars (was 4096: 256 pairs × 8KB ≈ 2MB .bss) */
+#define CREDFILES_MAX_PAIRS     64     /* max registered credential file pairs (was 256) */
+#define CREDFILES_MAX_ENTRIES   64   /* max config-based entries */
 #define CREDFILES_MAX_CACHE_DIRS 16   /* max cache directory mounts */
 
 /* Cache subdirectory names matching Python's _CACHE_DIRS */

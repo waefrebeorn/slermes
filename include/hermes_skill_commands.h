@@ -72,8 +72,10 @@ int skill_cmd_scan(void);
 const skill_cmd_entry_t *skill_cmd_get(const char *slug);
 
 /* Get all cached skill commands. Sets *count to number of entries.
- * Returns pointer to internal array (valid until next scan). */
-const skill_cmd_entry_t *skill_cmd_get_all(int *count);
+ * Returns a heap array of pointers to live entries (caller frees with
+ * free()); NULL + count 0 when empty. Entries stay valid until the next
+ * scan invalidates the cache. */
+const skill_cmd_entry_t **skill_cmd_get_all(int *count);
 
 /* Resolve a user-typed /command to its canonical /slug key.
  * Normalizes underscores to hyphens, case-insensitive.
