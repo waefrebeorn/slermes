@@ -23,6 +23,7 @@
 #include "datetime.h"
 #include "cron.h"
 #include "libjson/json.h"
+#include "hermes_logger.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -186,7 +187,16 @@ bool cronjobs_ensure_dirs(void) {
 /* ── Cross-process advisory lock (mirrors _jobs_lock) ─────────────── */
 /* Returns an open fd holding LOCK_EX on <cron>/.jobs.lock, or -1 (degrade to
  * no-lock, matching the Python fall-open behaviour). Release with
- * cronjobs_unlock(). */
+ * cronjobs_unlock().
+ *
+ * #60703 parity: Python polls LOCK_NB against a 30s deadline instead of a
+ * plain blocking flock — a wedged holder must NOT freeze every cron
+ * function (the heartbeat stops and jobs silently die). On timeout, log
+ * loudly and fall through to the same in-process-only degraded mode.
+ * _JOBS_LOCK_TIMEOUT_SECONDS = 30.0 */
+#define CRON_JOBS_LOCK_TIMEOUT_SECS 30.0
+#define CRON_JOBS_LOCK_POLL_MS      100
+
 static int cronjobs_lock(void) {
     cronjobs_ensure_dirs();
     char *lp = cronjobs_jobs_lock_file();
@@ -194,10 +204,29 @@ static int cronjobs_lock(void) {
     int fd = open(lp, O_CREAT | O_RDWR, 0600);
     free(lp);
     if (fd < 0) return -1;
-    if (flock(fd, LOCK_EX) != 0) {
-        /* fall open: keep fd (still gives us a handle to close) */
+
+    struct timespec dl;
+    clock_gettime(CLOCK_MONOTONIC, &dl);
+    double deadline = (double)dl.tv_sec + (double)dl.tv_nsec / 1e9 +
+                      CRON_JOBS_LOCK_TIMEOUT_SECS;
+
+    for (;;) {
+        if (flock(fd, LOCK_EX | LOCK_NB) == 0)
+            return fd;   /* acquired */
+        clock_gettime(CLOCK_MONOTONIC, &dl);
+        double now = (double)dl.tv_sec + (double)dl.tv_nsec / 1e9;
+        if (now >= deadline) {
+            hermes_log(LOG_ERROR, "cron",
+                "Timed out after %.0fs waiting for the cron jobs lock — "
+                "another process is holding it. Proceeding with in-process "
+                "locking only so the scheduler stays alive (#60703).",
+                CRON_JOBS_LOCK_TIMEOUT_SECS);
+            close(fd);
+            return -1;   /* degrade: in-process only */
+        }
+        struct timespec sl = { 0, CRON_JOBS_LOCK_POLL_MS * 1000000L };
+        nanosleep(&sl, NULL);
     }
-    return fd;
 }
 
 static void cronjobs_unlock(int fd) {
@@ -2066,11 +2095,51 @@ json_t *cronjobs_rewrite_skill_refs(const json_t *consolidated, const json_t *pr
 }
 
 /* PoP: _jobs_lock @ cron/jobs.py:_jobs_lock */
+/* Reentrant lock state: depth counter + process mutex + advisory fd.
+ * Mirrors Python's _jobs_lock context manager: nested calls in the same
+ * thread reuse the held lock (depth), and the critical section is also
+ * guarded cross-process by cronjobs_lock()'s bounded flock. */
+static pthread_mutex_t g_cron_lock_mutex = PTHREAD_MUTEX_INITIALIZER;
+static int  g_cron_lock_depth = 0;
+static int  g_cron_lock_fd = -1;
+
+/* Acquire the jobs lock (reentrant). Returns 0 on success. */
+int cron_jobs_lock_acquire(void)
+{
+    pthread_mutex_lock(&g_cron_lock_mutex);
+    if (g_cron_lock_depth > 0) {
+        /* nested: reuse held lock */
+        g_cron_lock_depth++;
+        pthread_mutex_unlock(&g_cron_lock_mutex);
+        return 0;
+    }
+    int fd = cronjobs_lock();   /* bounded flock; -1 degrades to in-process */
+    g_cron_lock_fd = fd;
+    g_cron_lock_depth = 1;
+    pthread_mutex_unlock(&g_cron_lock_mutex);
+    return 0;
+}
+
+/* Release the jobs lock (reentrant). */
+void cron_jobs_lock_release(void)
+{
+    pthread_mutex_lock(&g_cron_lock_mutex);
+    if (g_cron_lock_depth <= 0) {
+        pthread_mutex_unlock(&g_cron_lock_mutex);
+        return;
+    }
+    g_cron_lock_depth--;
+    if (g_cron_lock_depth == 0) {
+        cronjobs_unlock(g_cron_lock_fd);
+        g_cron_lock_fd = -1;
+    }
+    pthread_mutex_unlock(&g_cron_lock_mutex);
+}
+
 int cron_jobs_lock_init(void)
 {
-    static pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
-    (void)pthread_mutex_lock(&m);
-    (void)pthread_mutex_unlock(&m);
+    g_cron_lock_depth = 0;
+    g_cron_lock_fd = -1;
     return 0;
 }
 
