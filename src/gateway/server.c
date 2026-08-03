@@ -429,27 +429,17 @@ static gw_session_source_t *source_cache_get(const char *key);
  * ================================================================ */
 
 /* Look up a source by key. Returns pointer to cached entry or NULL.
- * On hit, moves the entry to MRU position (swap to end of occupied range). */
+ * On hit, moves the entry to MRU position (re-insert at hive tail). */
 static gw_session_source_t *source_cache_get(const char *key) {
-    if (!key) return NULL;
+    if (!key || !g_gw.source_cache) return NULL;
     pthread_mutex_lock(&g_gw.source_cache_mutex);
-    int i;
-    for (i = 0; i < g_gw.source_cache_count; i++) {
-        if (g_gw.source_cache[i].occupied &&
-            strcmp(g_gw.source_cache[i].key, key) == 0) {
-            /* Move to MRU: swap with last occupied slot */
-            if (i != g_gw.source_cache_count - 1) {
-                /* Find last occupied slot */
-                int last = g_gw.source_cache_count - 1;
-                /* Swap */
-                struct { char key[192]; gw_session_source_t source; bool occupied; }
-                    tmp = {0};
-                memcpy(&tmp, &g_gw.source_cache[i], sizeof(tmp));
-                memcpy(&g_gw.source_cache[i], &g_gw.source_cache[last], sizeof(tmp));
-                memcpy(&g_gw.source_cache[last], &tmp, sizeof(tmp));
-                i = last;
-            }
-            gw_session_source_t *result = &g_gw.source_cache[i].source;
+    hive_iter_t it;
+    hive_iter_begin(g_gw.source_cache, &it);
+    hive_handle_t hnd;
+    gw_source_cache_entry_t *e;
+    while (hive_iter_next(g_gw.source_cache, &it, &hnd, (void **)&e)) {
+        if (strcmp(e->key, key) == 0) {
+            gw_session_source_t *result = &e->source;
             pthread_mutex_unlock(&g_gw.source_cache_mutex);
             return result;
         }

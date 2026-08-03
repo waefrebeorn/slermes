@@ -120,42 +120,50 @@ bool gw_session_set_source(const char *platform, const char *chat_id,
 void source_cache_put(const char *key, const gw_session_source_t *source) {
     if (!key || !source) return;
     pthread_mutex_lock(&g_gw.source_cache_mutex);
+    if (!g_gw.source_cache) g_gw.source_cache = hive_new(16);
 
-    /* Check if already present (update in place, move to MRU) */
-    int i;
-    for (i = 0; i < g_gw.source_cache_count; i++) {
-        if (g_gw.source_cache[i].occupied &&
-            strcmp(g_gw.source_cache[i].key, key) == 0) {
-            g_gw.source_cache[i].source = *source;
-            /* Move to MRU */
-            if (i != g_gw.source_cache_count - 1) {
-                int last = g_gw.source_cache_count - 1;
-                struct { char key[192]; gw_session_source_t source; bool occupied; }
-                    tmp = {0};
-                memcpy(&tmp, &g_gw.source_cache[i], sizeof(tmp));
-                memcpy(&g_gw.source_cache[i], &g_gw.source_cache[last], sizeof(tmp));
-                memcpy(&g_gw.source_cache[last], &tmp, sizeof(tmp));
-            }
+    /* Check if already present (update in place) */
+    hive_iter_t it;
+    hive_iter_begin(g_gw.source_cache, &it);
+    hive_handle_t hnd;
+    gw_source_cache_entry_t *e;
+    while (hive_iter_next(g_gw.source_cache, &it, &hnd, (void **)&e)) {
+        if (strcmp(e->key, key) == 0) {
+            e->source = *source;
             pthread_mutex_unlock(&g_gw.source_cache_mutex);
             return;
         }
     }
 
-    /* Evict LRU (index 0) if full */
-    if (g_gw.source_cache_count >= g_gw.source_cache_max) {
-        /* Shift all entries left by 1 (evict index 0) */
-        memmove(&g_gw.source_cache[0], &g_gw.source_cache[1],
-                (g_gw.source_cache_count - 1) * sizeof(g_gw.source_cache[0]));
-        g_gw.source_cache_count--;
+    /* Evict LRU (oldest hive entry) if full */
+    if (hive_count(g_gw.source_cache) >= (size_t)g_gw.source_cache_max) {
+        hive_handle_t lru = { 0, 0 };
+        gw_source_cache_entry_t *victim = NULL;
+        /* The hive preserves insertion order; the first live entry is LRU. */
+        hive_iter_t it2;
+        hive_iter_begin(g_gw.source_cache, &it2);
+        hive_handle_t h2;
+        gw_source_cache_entry_t *e2;
+        if (hive_iter_next(g_gw.source_cache, &it2, &h2, (void **)&e2)) {
+            lru = h2;
+            victim = e2;
+        }
+        if (victim) {
+            free(victim);
+            hive_erase(g_gw.source_cache, lru);
+        }
     }
 
-    /* Insert at MRU position (end) */
-    int idx = g_gw.source_cache_count;
-    strncpy(g_gw.source_cache[idx].key, key, sizeof(g_gw.source_cache[idx].key) - 1);
-    g_gw.source_cache[idx].key[sizeof(g_gw.source_cache[idx].key) - 1] = '\0';
-    g_gw.source_cache[idx].source = *source;
-    g_gw.source_cache[idx].occupied = true;
-    g_gw.source_cache_count++;
+    /* Insert at MRU position (end of hive) */
+    gw_source_cache_entry_t *ne = calloc(1, sizeof(gw_source_cache_entry_t));
+    if (!ne) { pthread_mutex_unlock(&g_gw.source_cache_mutex); return; }
+    strncpy(ne->key, key, sizeof(ne->key) - 1);
+    ne->key[sizeof(ne->key) - 1] = '\0';
+    ne->source = *source;
+    bool ok = false;
+    hive_insert(g_gw.source_cache, ne, &ok);
+    if (!ok) { free(ne); pthread_mutex_unlock(&g_gw.source_cache_mutex); return; }
+    g_gw.source_cache_count = (int)hive_count(g_gw.source_cache);
 
     pthread_mutex_unlock(&g_gw.source_cache_mutex);
 }

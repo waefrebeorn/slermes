@@ -14,6 +14,7 @@
 #include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_http.h"
+#include "hive.h"
 #include <pthread.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -98,6 +99,12 @@ typedef struct {
 /* ================================================================
  *  P102b: Gateway session entry
  * ================================================================ */
+
+/* GW15: Session sources LRU cache entry (hive-backed). */
+typedef struct {
+    char key[192];              /* "platform:chat_id" */
+    gw_session_source_t source; /* cached source metadata */
+} gw_source_cache_entry_t;
 
 /* Each unique platform:chat_id pair gets its own agent session. */
 typedef struct {
@@ -259,12 +266,8 @@ typedef struct {
     /* M13: Configurable max concurrent sessions cap */
     int max_concurrent_sessions;
 
-    /* GW15: Session sources LRU cache */
-    struct {
-        char key[192];              /* "platform:chat_id" */
-        gw_session_source_t source; /* cached source metadata */
-        bool occupied;
-    } source_cache[512];
+    /* GW15: Session sources LRU cache — hive-backed (no landlocked array) */
+    hive_t *source_cache;           /* of gw_source_cache_entry_t* (heap) */
     int source_cache_count;         /* number of occupied entries */
     int source_cache_max;           /* max entries (default 512) */
     pthread_mutex_t source_cache_mutex;
