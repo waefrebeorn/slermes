@@ -84,17 +84,30 @@ char *upr_openrouter_pricing_entry(const char *metadata_json, const char *model_
     if (!metadata_json || !model_id) return NULL;
     const char *p = strstr(metadata_json, model_id);
     if (!p) return NULL;
-    printf("openrouter pricing entry resolved for %s\n", model_id);
-    return strdup("{}");
+    /* Parse the pricing JSON object near the model_id match. */
+    const char *obj_start = p;
+    while (obj_start > metadata_json && *obj_start != '{') obj_start--;
+    if (*obj_start != '{') return strdup("{}");
+    const char *obj_end = p;
+    int depth = 0;
+    while (*obj_end) {
+        if (*obj_end == '{') depth++;
+        else if (*obj_end == '}') { depth--; if (depth == 0) break; }
+        obj_end++;
+    }
+    if (depth != 0) return strdup("{}");
+    size_t len = (size_t)(obj_end - obj_start) + 1;
+    char *out = malloc(len + 1);
+    if (!out) return NULL;
+    memcpy(out, obj_start, len);
+    out[len] = '\0';
+    return out;
 }
 
 /* PoP: _pricing_entry_from_metadata @ agent/usage_pricing.py:_pricing_entry_from_metadata */
 char *upr_pricing_entry_from_metadata(const char *metadata_json, const char *model_id) {
-    if (!metadata_json || !model_id) return NULL;
-    const char *p = strstr(metadata_json, model_id);
-    if (!p) return NULL;
-    printf("pricing entry resolved for %s\n", model_id);
-    return strdup("{}");
+    /* Python: pricing from metadata (same logic, different name). */
+    return upr_openrouter_pricing_entry(metadata_json, model_id);
 }
 
 /* PoP: estimate_usage_cost @ agent/usage_pricing.py:estimate_usage_cost */
