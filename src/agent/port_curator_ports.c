@@ -37,6 +37,9 @@ static bool json_arr_has(const json_t *arr, const char *needle) {
     return false;
 }
 
+/* Forward: defined later in this file. */
+char *cur_render_report_markdown(const char *report_json);
+
 /* PoP: _strip_aux_credential @ agent/curator.py:_strip_aux_credential */
 char *cur_strip_aux_credential(const char *value) {
     /* Python: strip; empty → None. */
@@ -650,33 +653,185 @@ char *cur_reconcile_classification(const char *tool_calls_json, const char *stru
 
 /* PoP: _build_rename_summary @ agent/curator.py:_build_rename_summary */
 char *cur_build_rename_summary(const char *rename_map_json) {
-    /* Python: "where did my skills go?" lines. */
+    /* Python: "where did my skills go?" lines. rename_map_json is a JSON
+     * object {removed_name: {"into": "<umbrella>"|"", "reason": "..."}}.
+     * Empty string when nothing archived. Cap 10 entries. */
     if (!rename_map_json) return strdup("");
-    printf("rename summary lines rendered\n");
-    return strdup("");
+
+    json_t *map = json_parse(rename_map_json, NULL);
+    if (!map || map->type != JSON_OBJECT) {
+        if (map) json_free(map);
+        return strdup("");
+    }
+    if (map->c.count == 0) { json_free(map); return strdup(""); }
+
+    /* Collect removed names sorted. */
+    size_t n = map->c.count;
+    const char **keys = calloc(n, sizeof(char *));
+    size_t ki = 0;
+    for (size_t i = 0; i < map->c.count && ki < n; i++) {
+        keys[ki++] = map->c.keys[i];
+    }
+    /* Simple insertion sort by name. */
+    for (size_t i = 1; i < ki; i++) {
+        const char *k = keys[i];
+        size_t j = i;
+        while (j > 0 && strcmp(keys[j-1], k) > 0) { keys[j] = keys[j-1]; j--; }
+        keys[j] = k;
+    }
+
+    char *out = malloc(8192);
+    if (!out) { free(keys); json_free(map); return strdup(""); }
+    int pos = 0;
+    pos += snprintf(out + pos, 8192 - (size_t)pos,
+                    "archived %zu skill(s):\n", ki);
+    size_t shown = 0;
+    bool any_consolidation = false;
+    for (size_t i = 0; i < ki && shown < 10; i++) {
+        json_t *entry = json_obj_get(map, keys[i]);
+        const char *into = entry ? json_get_str(entry, "into", "") : "";
+        if (into[0]) {
+            pos += snprintf(out + pos, 8192 - (size_t)pos,
+                            "  • %s → %s\n", keys[i], into);
+            any_consolidation = true;
+        } else {
+            const char *reason = entry ? json_get_str(entry, "reason", "stale") : "stale";
+            pos += snprintf(out + pos, 8192 - (size_t)pos,
+                            "  • %s — pruned (%s)\n", keys[i], reason[0] ? reason : "stale");
+        }
+        shown++;
+    }
+    pos += snprintf(out + pos, 8192 - (size_t)pos, "full report: hermes curator status\n");
+    if (any_consolidation)
+        pos += snprintf(out + pos, 8192 - (size_t)pos,
+                        "keep an umbrella stable: hermes curator pin <umbrella>\n");
+
+    free(keys);
+    json_free(map);
+    return out;
 }
 
 /* PoP: _write_run_report @ agent/curator.py:_write_run_report */
 char *cur_write_run_report(const char *report_json) {
-    /* Python: run.json + REPORT.md under logs/curator/{ts}/. */
+    /* Python: run.json + REPORT.md under logs/curator/{ts}/. report_json
+     * carries started_at, duration_seconds, final_summary, etc. Returns
+     * the report directory (or NULL on failure). */
     if (!report_json) return NULL;
-    printf("curator run report written (run.json + REPORT.md)\n");
-    return strdup("logs/curator");
+
+    json_t *report = json_parse(report_json, NULL);
+    if (!report || report->type != JSON_OBJECT) {
+        if (report) json_free(report);
+        return NULL;
+    }
+
+    /* Timestamp dir: use started_at if present, else now. */
+    const char *started = json_get_str(report, "started_at", "");
+    char ts[64];
+    if (started[0]) {
+        snprintf(ts, sizeof(ts), "%s", started);
+        for (char *p = ts; *p; p++) if (*p == ':' || *p == '.') *p = '-';
+    } else {
+        time_t now = time(NULL);
+        struct tm tmv;
+        gmtime_r(&now, &tmv);
+        strftime(ts, sizeof(ts), "%Y%m%d-%H%M%S", &tmv);
+    }
+
+    /* Root: <home>/logs/curator/<ts>/. */
+    const char *home = getenv("HERMES_HOME");
+    char *root = NULL;
+    if (home) asprintf(&root, "%s/logs/curator/%s", home, ts);
+    else asprintf(&root, "%s/.hermes/logs/curator/%s", getenv("HOME") ? getenv("HOME") : ".", ts);
+    if (!root) { json_free(report); return NULL; }
+
+    /* mkdir -p. */
+    char tmp[1200];
+    snprintf(tmp, sizeof(tmp), "%s", root);
+    for (char *p = tmp + 1; *p; p++) {
+        if (*p == '/') {
+            *p = '\0';
+            mkdir(tmp, 0755);
+            *p = '/';
+        }
+    }
+    mkdir(tmp, 0755);
+
+    /* run.json. */
+    char run_path[1300];
+    snprintf(run_path, sizeof(run_path), "%s/run.json", root);
+    FILE *rf = fopen(run_path, "w");
+    if (rf) {
+        char *ser = json_serialize_pretty(report, 2);
+        if (ser) { fputs(ser, rf); free(ser); }
+        fclose(rf);
+    }
+
+    /* REPORT.md. */
+    char md_path[1300];
+    snprintf(md_path, sizeof(md_path), "%s/REPORT.md", root);
+    char *md = cur_render_report_markdown(report_json);
+    if (md) {
+        FILE *mf = fopen(md_path, "w");
+        if (mf) { fputs(md, mf); fclose(mf); }
+        free(md);
+    }
+
+    json_free(report);
+    return root;
 }
 
 /* PoP: _render_report_markdown @ agent/curator.py:_render_report_markdown */
 char *cur_render_report_markdown(const char *report_json) {
-    /* Python: human-readable report. */
+    /* Python: human-readable report: title, model/provider, duration,
+     * agent-created counts, error, auto-transitions, LLM pass summary. */
     if (!report_json) return strdup("");
-    const char *started = strstr(report_json, "started_at");
-    const char *dur = strstr(report_json, "duration_seconds");
-    const char *summary = strstr(report_json, "final_summary");
-    char *out = NULL;
-    asprintf(&out,
-        "# Curator run report\n\n- started_at: %s\n- duration_seconds: %s\n- summary: %s\n",
-        started ? started + 14 : "?",
-        dur ? dur + 20 : "0",
-        summary ? summary + 16 : "");
+
+    json_t *p = json_parse(report_json, NULL);
+    if (!p || p->type != JSON_OBJECT) {
+        if (p) json_free(p);
+        return strdup("");
+    }
+
+    const char *started = json_get_str(p, "started_at", "");
+    double dur = json_get_num(p, "duration_seconds", 0.0);
+    int mins = (int)dur / 60, secs = (int)dur % 60;
+    const char *model = json_get_str(p, "model", "(not resolved)");
+    const char *prov = json_get_str(p, "provider", "(not resolved)");
+    const char *err = json_get_str(p, "llm_error", "");
+
+    char *out = malloc(16384);
+    if (!out) { json_free(p); return strdup(""); }
+    int pos = 0;
+
+    pos += snprintf(out + pos, 16384 - (size_t)pos, "# Curator run — %s\n\n", started[0] ? started : "?");
+    pos += snprintf(out + pos, 16384 - (size_t)pos,
+                    "Model: `%s` via `%s`  ·  Duration: %dm %ds\n\n",
+                    model, prov, mins, secs);
+    if (err[0])
+        pos += snprintf(out + pos, 16384 - (size_t)pos, "> ⚠ LLM pass error: `%s`\n\n", err);
+
+    /* Auto-transitions. */
+    pos += snprintf(out + pos, 16384 - (size_t)pos, "## Auto-transitions (pure, no LLM)\n");
+    json_t *auto_t = json_obj_get(p, "auto_transitions");
+    if (auto_t && auto_t->type == JSON_OBJECT) {
+        double checked = json_get_num(auto_t, "checked", 0);
+        double stale = json_get_num(auto_t, "marked_stale", 0);
+        double arch = json_get_num(auto_t, "archived", 0);
+        double react = json_get_num(auto_t, "reactivated", 0);
+        pos += snprintf(out + pos, 16384 - (size_t)pos,
+                        "- checked: %.0f\n- marked stale: %.0f\n- archived: %.0f\n- reactivated: %.0f\n\n",
+                        checked, stale, arch, react);
+    } else {
+        pos += snprintf(out + pos, 16384 - (size_t)pos, "- checked: 0\n- marked stale: 0\n- archived: 0\n- reactivated: 0\n\n");
+    }
+
+    /* Final summary. */
+    const char *summary = json_get_str(p, "final_summary", "");
+    if (summary[0]) {
+        pos += snprintf(out + pos, 16384 - (size_t)pos, "## Summary\n\n%s\n\n", summary);
+    }
+
+    json_free(p);
     return out;
 }
 
@@ -722,18 +877,93 @@ char *cur_run_curator_review(const char *config_json) {
 
 /* PoP: _resolve_review_runtime @ agent/curator.py:_resolve_review_runtime */
 char *cur_resolve_review_runtime(const char *config_json) {
-    /* Python: provider/model + per-slot credentials. */
+    /* Python: provider/model + per-slot credentials for the curator review
+     * fork. Precedence: auxiliary.curator.{provider,model} (both set
+     * non-auto) → legacy curator.auxiliary.{provider,model} → main
+     * model.{provider,default}. Returns a JSON binding with provider,
+     * model, api_key, base_url. */
     if (!config_json) return strdup("{}");
-    printf("review runtime resolved (auxiliary.curator slot)\n");
-    return strdup("{}");
+
+    json_t *cfg = json_parse(config_json, NULL);
+    if (!cfg || cfg->type != JSON_OBJECT) {
+        if (cfg) json_free(cfg);
+        return strdup("{}");
+    }
+
+    char provider[256] = "", model[256] = "", api_key[512] = "", base_url[512] = "";
+    bool have_slot = false;
+
+    /* 1. auxiliary.curator.* */
+    json_t *aux = json_obj_get(cfg, "auxiliary");
+    json_t *cur_task = (aux && aux->type == JSON_OBJECT) ? json_obj_get(aux, "curator") : NULL;
+    if (cur_task && cur_task->type == JSON_OBJECT) {
+        const char *p = json_get_str(cur_task, "provider", "");
+        const char *m = json_get_str(cur_task, "model", "");
+        if (p[0] && strcmp(p, "auto") != 0 && m[0]) {
+            snprintf(provider, sizeof(provider), "%s", p);
+            snprintf(model, sizeof(model), "%s", m);
+            const char *k = json_get_str(cur_task, "api_key", "");
+            const char *b = json_get_str(cur_task, "base_url", "");
+            if (k[0]) snprintf(api_key, sizeof(api_key), "%s", k);
+            if (b[0]) snprintf(base_url, sizeof(base_url), "%s", b);
+            have_slot = true;
+        }
+    }
+
+    /* 2. Legacy curator.auxiliary.{provider,model}. */
+    if (!have_slot) {
+        json_t *cur = json_obj_get(cfg, "curator");
+        json_t *leg = (cur && cur->type == JSON_OBJECT) ? json_obj_get(cur, "auxiliary") : NULL;
+        if (leg && leg->type == JSON_OBJECT) {
+            const char *p = json_get_str(leg, "provider", "");
+            const char *m = json_get_str(leg, "model", "");
+            if (p[0] && strcmp(p, "auto") != 0 && m[0]) {
+                snprintf(provider, sizeof(provider), "%s", p);
+                snprintf(model, sizeof(model), "%s", m);
+                have_slot = true;
+            }
+        }
+    }
+
+    /* 3. Main model.{provider,default/model}. */
+    if (!have_slot) {
+        json_t *mcfg = json_obj_get(cfg, "model");
+        if (mcfg && mcfg->type == JSON_OBJECT) {
+            const char *p = json_get_str(mcfg, "provider", "auto");
+            const char *m = json_get_str(mcfg, "default", "");
+            if (!m[0]) m = json_get_str(mcfg, "model", "");
+            snprintf(provider, sizeof(provider), "%s", p[0] ? p : "auto");
+            if (m[0]) snprintf(model, sizeof(model), "%s", m);
+        }
+    }
+
+    json_t *out = json_object();
+    json_set(out, "provider", json_string(provider));
+    json_set(out, "model", json_string(model));
+    if (api_key[0]) json_set(out, "api_key", json_string(api_key));
+    if (base_url[0]) json_set(out, "base_url", json_string(base_url));
+    json_free(cfg);
+
+    char *ser = json_serialize(out);
+    json_free(out);
+    return ser ? ser : strdup("{}");
 }
 
 /* PoP: _resolve_review_model @ agent/curator.py:_resolve_review_model */
 char *cur_resolve_review_model(const char *config_json) {
-    /* Python: auxiliary.curator.{provider,model}. */
+    /* Python: returns (provider, model) — encode as a 2-tuple JSON. */
     if (!config_json) return NULL;
-    printf("review model resolved (auxiliary.curator slot)\n");
-    return NULL;
+    char *rt = cur_resolve_review_runtime(config_json);
+    if (!rt) return NULL;
+    json_t *r = json_parse(rt, NULL);
+    free(rt);
+    if (!r) return NULL;
+    const char *p = json_get_str(r, "provider", "");
+    const char *m = json_get_str(r, "model", "");
+    char *out = NULL;
+    asprintf(&out, "[\"%s\", \"%s\"]", p, m);
+    json_free(r);
+    return out;
 }
 
 /* PoP: _run_llm_review @ agent/curator.py:_run_llm_review */
