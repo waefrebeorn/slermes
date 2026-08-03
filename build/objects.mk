@@ -323,6 +323,7 @@ DESKTOP_GUI_OBJ := \
     src/gui_core.o src/desktop_gui.o src/slermes_home.o \
     src/app_state.o src/session_db.o src/sidebar.o src/chat_view.o src/titlebar.o \
     src/event_handling.o src/hud.o src/desktop_controller.o src/pet_ui.o \
+    src/session_switcher.o \
     src/chat_render.o src/chat_composer.o \
     src/desktop_app_common.o src/desktop_sessions.o src/desktop_models.o \
     src/desktop_profiles.o src/desktop_settings.o src/gateway_probe.o src/window_stubs.o \

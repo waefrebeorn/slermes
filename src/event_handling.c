@@ -13,6 +13,7 @@
 #include "session_db.h"
 #include "gui_core.h"
 #include "pet_ui.h"
+#include "session_switcher.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -180,6 +181,7 @@ void event_run(app_state_t *app) {
     
     gc_event_t ev;
     bool shot_done = false;
+    bool switcher_done = false;
     const char *shot_path = getenv("SLERMES_GUI_SCREENSHOT");
     while (app->running) {
         gc_begin_frame(app_get_window(app));
@@ -200,6 +202,7 @@ void event_run(app_state_t *app) {
         chat_view_draw(app);
         statusbar_draw(app);
         pet_ui_draw(app);
+        session_switcher_draw(app);
 
         /* One-shot screenshot capture for headless verification
          * (SLERMES_GUI_SCREENSHOT=/path/out.bmp) — must run AFTER the draw
@@ -207,6 +210,12 @@ void event_run(app_state_t *app) {
         if (shot_path && !shot_done && app->frame_count >= 30) {
             gc_save_screenshot(app_get_window(app), shot_path);
             shot_done = true;
+        }
+        /* Headless switcher demo (SLERMES_GUI_SWITCHER=1) — open the HUD
+         * after a few frames so screenshots can capture it. */
+        if (getenv("SLERMES_GUI_SWITCHER") && !switcher_done && app->frame_count >= 10) {
+            session_switcher_open(app);
+            switcher_done = true;
         }
         app->frame_count++;
         
@@ -222,9 +231,20 @@ void event_handle_resize(app_state_t *app, int w, int h) {
 bool event_handle_key(app_state_t *app, int key, int mod) {
     if (!app) return false;
     
+    /* Session switcher HUD consumes keys while open (except its own
+     * Ctrl+Tab cycle, handled in the switch below). */
+    if (session_switcher_visible(app) &&
+        session_switcher_handle_key(app, key, mod)) {
+        return true;
+    }
+    
     /* Global hotkeys */
     switch (key) {
         case SDLK_ESCAPE:
+            if (session_switcher_visible(app)) {
+                session_switcher_close(app);
+                return true;
+            }
             if (app_pet_show_gallery(app)) {
                 app_set_pet_show_gallery(app, false);
                 return true;
@@ -317,7 +337,16 @@ bool event_handle_key(app_state_t *app, int key, int mod) {
             break;
             
         case SDLK_TAB:
-            /* Cycle through focus areas */
+            /* Ctrl+Tab / Ctrl+Shift+Tab: session switcher HUD. */
+            if (mod & KMOD_CTRL) {
+                if (session_switcher_visible(app)) {
+                    session_switcher_cycle(app, (mod & KMOD_SHIFT) ? -1 : 1);
+                } else {
+                    session_switcher_open(app);
+                }
+                return true;
+            }
+            /* Plain Tab: cycle through focus areas */
             if (app_composer_focused(app)) {
                 app_set_composer_focused(app, false);
                 app_set_search_active(app, true);
