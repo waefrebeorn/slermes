@@ -35,6 +35,16 @@ bool session_db_pin_session(app_state_t *app, int session_idx, bool pin);
 /* Create a new session */
 int session_db_create_session(app_state_t *app, const char *title, const char *source, const char *model);
 
+/* Create a session with an explicit ID (used by session import). The app
+ * pointer may be NULL (no in-memory reload). Returns 1 on success. */
+int session_db_create_named(app_state_t *app, const char *id, const char *title,
+                            const char *source, const char *model);
+
+/* Insert a message into an existing session (used by session import).
+ * Returns 1 on success. */
+int session_db_insert_message(const char *session_id, const char *role,
+                              const char *content, double timestamp);
+
 /* Load skills from filesystem */
 void session_db_load_skills(app_state_t *app);
 

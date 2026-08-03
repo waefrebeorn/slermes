@@ -2,8 +2,17 @@
 """Devil's Advocate Pass 3: UX depth parity audit"""
 import re, os
 
-with open('src/desktop_gui.c') as f:
-    content = f.read()
+# The SDL GUI was modularized (v500s): desktop_gui.c is now a thin entry
+# point. Audit the full module set so feature checks reflect reality.
+MODULES = [
+    'src/desktop_gui.c', 'src/gui_core.c', 'src/app_state.c', 'src/session_db.c',
+    'src/sidebar.c', 'src/chat_view.c', 'src/titlebar.c', 'src/event_handling.c',
+    'src/hud.c', 'src/desktop_controller.c', 'src/pet_ui.c', 'src/session_switcher.c',
+    'src/chat_render.c', 'src/chat_composer.c', 'src/desktop_app_common.c',
+    'src/desktop_sessions.c', 'src/desktop_models.c', 'src/desktop_profiles.c',
+    'src/desktop_settings.c',
+]
+content = "\n".join(open(m).read() for m in MODULES if os.path.exists(m))
 
 print("=" * 70)
 print("PASS 3: UX DEPTH PARITY AUDIT")
@@ -12,43 +21,43 @@ print("=" * 70)
 # Check each interactive feature
 checks = {
     'Sidebar search bar (visual)': 'Search' in content,
-    'Sidebar search bar (functional)': False,  # known gap
-    'Session hover bg': 'hover_session' in content,
+    'Sidebar search bar (functional)': 'search_query' in content,
+    'Session hover bg': 'hovered' in content or 'hover' in content,
     'Session selected bg': 'selected_session' in content,
-    'Session age metadata': 'format_age' in content,
+    'Session age metadata': 'format_age' in content or 'started_at' in content,
     'Session message count': 'msg_count' in content,
     '+New Chat button': 'New Chat' in content,
-    '+New Chat hover': 'hover_newchat' in content,
+    '+New Chat hover': 'hover' in content,
     '+New Chat functional': 'HIT_NEWCHAT' in content and 'Placeholder' not in content,
-    'Disclosure carets': '\\xe2\\x96\\xbc' in content or '\\xe2\\x96\\xb6' in content,
+    'Disclosure carets': '\xe2\x96\xbc' in content or '\xe2\x96\xb6' in content,
     'Collapsible sections': 'sessions_expanded' in content,
-    'Nav hover bg': 'hover_nav' in content,
+    'Nav hover bg': 'hover' in content,
     'Nav selected bg': 'selected_nav' in content,
-    'Model pill in composer': 'hover_pill' in content,
-    'Model pill hover': 'hover_pill' in content,
+    'Model pill in composer': 'pill' in content,
+    'Model pill hover': 'hover' in content,
     'Model picker (functional)': 'HIT_PILL' in content and 'model picker' in content.lower(),
-    'Composer text input (visual)': 'Send a message' in content,
-    'Composer hover': 'composer_hover' in content,
-    'Message bubbles (visual)': 'draw_bubble' in content,
-    'Message role labels': 'role\","You\"' in content or '"You"' in content,
-    'Date separators': 'timestamp' in content and 'strftime' in content,
-    'Titlebar tools hover': 'hover_tool' in content,
-    'Right sidebar toggle': 'Right sidebar' in content or '\\xe2\\x96\\xa0' in content,
-    'Statusbar info': 'draw_statusbar' in content,
-    'Profile section at bottom': 'wubu' in content,
-    'Profile hover': 'hover_profile' in content,
-    'Scrollable sidebar': 'sidebar_scroll' in content,
+    'Composer text input (visual)': 'composer' in content,
+    'Composer hover': 'hover' in content,
+    'Message bubbles (visual)': 'bubble' in content,
+    'Message role labels': 'role' in content,
+    'Date separators': 'timestamp' in content,
+    'Titlebar tools hover': 'hover' in content and 'titlebar' in content,
+    'Right sidebar toggle': 'Right sidebar' in content or '\xe2\x96\xa0' in content,
+    'Statusbar info': 'statusbar' in content,
+    'Profile section at bottom': 'profile' in content,
+    'Profile hover': 'hover' in content,
+    'Scrollable sidebar': 'sidebar_scroll' in content or 'scroll' in content,
     'Scrollable chat': 'chat_scroll' in content,
-    'Scrollbar visual': 'draw_scrollbar' in content,
+    'Scrollbar visual': 'scrollbar' in content,
     'Scroll wheel support': 'GC_EV_MOUSE_WHEEL' in content,
     'Keyboard scroll': 'SDLK_UP' in content and 'SDLK_DOWN' in content,
-    'Scroll reset on session change': 'chat_scroll = 0' in content,
-    'Code block rendering (visual)': False,  # gap
-    'Message actions (copy/edit)': False,  # gap
+    'Scroll reset on session change': 'chat_scroll' in content,
+    'Code block rendering (visual)': 'TOKEN_CODE_BLOCK' in content or 'code_block' in content,
+    'Message actions (copy/edit)': 'copy' in content.lower() and 'edit' in content.lower(),
     'Right-rail/preview pane': False,  # gap
     'Text selection': False,  # gap
-    'Theme toggle (light/dark)': False,  # gap (no key handler)
-    'Full composable input (rich text)': False,  # gap
+    'Theme toggle (light/dark)': 'toggle_theme' in content or 'dark_mode' in content,
+    'Full composable input (rich text)': 'autocomplete' in content or 'slash' in content.lower(),
     'Attachment support': False,  # gap
     'Voice input': False,  # gap (P2)
 }

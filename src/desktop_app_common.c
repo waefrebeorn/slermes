@@ -40,6 +40,11 @@
 #include "desktop_state.h"
 #include "hermes_logger.h"
 #include "libhttp/http.h"
+#include "json.h"
+#include "session_db.h"
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
 #define _GNU_SOURCE
 
@@ -728,29 +733,98 @@ void desktop_set_status_callback(void (*cb)(const char *status)) {
 char *desktop_session_import(const char *path) {
     if (!path) return NULL;
 
+    /* Read the whole file (JSON or markdown). */
     FILE *f = fopen(path, "r");
     if (!f) {
-        fprintf(stderr, "desktop_session_import: cannot open %s", path);
+        fprintf(stderr, "desktop_session_import: cannot open %s\n", path);
         return NULL;
     }
-
-    /* Read first byte to detect format */
-    int first = fgetc(f);
+    fseek(f, 0, SEEK_END);
+    long sz = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    if (sz <= 0 || sz > 64 * 1024 * 1024) {
+        fclose(f);
+        fprintf(stderr, "desktop_session_import: bad file size %ld\n", sz);
+        return NULL;
+    }
+    char *data = malloc((size_t)sz + 1);
+    if (!data) { fclose(f); return NULL; }
+    size_t rd = fread(data, 1, (size_t)sz, f);
     fclose(f);
+    data[rd] = '\0';
+
+    /* Skip leading whitespace to detect format. */
+    const char *p = data;
+    while (*p == ' ' || *p == '\t' || *p == '\r' || *p == '\n') p++;
 
     char new_id[64];
     snprintf(new_id, sizeof(new_id), "import-%08x", (unsigned)time(NULL));
 
-    if (first == '{') {
-        /* JSON import — create session with metadata */
-        desktop_session_create(new_id, "imported", "import");
-        fprintf(stderr, "desktop_session_import: imported JSON session as %s", new_id);
+    if (*p == '{') {
+        /* JSON session import: parse metadata + messages. */
+        char *err = NULL;
+        json_t *doc = json_parse(p, &err);
+        if (!doc) {
+            fprintf(stderr, "desktop_session_import: JSON parse failed: %s\n",
+                    err ? err : "unknown");
+            free(err);
+            free(data);
+            return NULL;
+        }
+        const char *title = json_get_str(doc, "title", "Imported Session");
+        const char *src   = json_get_str(doc, "source", "import");
+        const char *model = json_get_str(doc, "model", "");
+
+        /* Create the session row. */
+        if (!session_db_create_named(NULL, new_id, title, src, model)) {
+            fprintf(stderr, "desktop_session_import: create session failed\n");
+            json_free(doc);
+            free(data);
+            return NULL;
+        }
+
+        /* Insert messages if the document carries them. */
+        json_t *msgs = json_obj_get(doc, "messages");
+        size_t nm = msgs ? json_len(msgs) : 0;
+        if (nm > 0) {
+            for (size_t i = 0; i < nm; i++) {
+                json_t *m = json_get(msgs, i);
+                if (!m) continue;
+                const char *role = json_get_str(m, "role", "user");
+                const char *content = json_get_str(m, "content", "");
+                double ts = json_get_num(m, "timestamp", 0.0);
+                if (!ts) ts = (double)time(NULL) - (double)(nm - i);
+                session_db_insert_message(new_id, role, content, ts);
+            }
+        }
+        json_free(doc);
+        fprintf(stderr, "desktop_session_import: imported JSON session %s (%zu messages)\n",
+                new_id, nm);
     } else {
-        /* Markdown import */
-        desktop_session_create(new_id, "Imported Session", "import");
-        fprintf(stderr, "desktop_session_import: imported Markdown session as %s", new_id);
+        /* Markdown import: title = first heading, body as one user message. */
+        const char *title = "Imported Session";
+        const char *h = strstr(p, "# ");
+        if (h) {
+            const char *eol = strchr(h + 2, '\n');
+            size_t tl = eol ? (size_t)(eol - h - 2) : strlen(h + 2);
+            if (tl > 0 && tl < 200) {
+                static char tbuf[256];
+                memcpy(tbuf, h + 2, tl);
+                tbuf[tl] = '\0';
+                title = tbuf;
+            }
+        }
+        /* Create the session row, then store the markdown body. */
+        if (!session_db_create_named(NULL, new_id, title, "import", "")) {
+            fprintf(stderr, "desktop_session_import: create session failed\n");
+            free(data);
+            return NULL;
+        }
+        session_db_insert_message(new_id, "user", p, (double)time(NULL));
+        fprintf(stderr, "desktop_session_import: imported Markdown session %s\n", new_id);
     }
 
+    free(data);
     return strdup(new_id);
 }
 

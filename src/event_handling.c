@@ -15,6 +15,7 @@
 #include "pet_ui.h"
 #include "session_switcher.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -286,6 +287,54 @@ bool event_handle_key(app_state_t *app, int key, int mod) {
             if (mod & KMOD_CTRL) {
                 session_db_create_session(app, "New Chat", "cli", "");
                 session_db_load_sessions(app);
+                return true;
+            }
+            break;
+
+        case SDLK_s:
+            if (mod & KMOD_CTRL) {
+                /* Export current session (Ctrl+S, v479 parity). */
+                int sel = app_selected_session(app);
+                if (sel >= 0 && sel < app_session_count(app)) {
+                    app_session_entry_t *s = app_get_session(app, sel);
+                    if (s) {
+                        char out_path[1024];
+                        snprintf(out_path, sizeof(out_path), "%s/export-%s.json",
+                                 getenv("HOME") ? getenv("HOME") : "/tmp", s->id);
+                        extern bool desktop_session_export(const char *id,
+                                                          const char *path,
+                                                          const char *format);
+                        if (desktop_session_export(s->id, out_path, "json")) {
+                            printf("Session exported to %s\n", out_path);
+                        } else {
+                            fprintf(stderr, "export failed\n");
+                        }
+                    }
+                }
+                return true;
+            }
+            break;
+
+        case SDLK_i:
+            if (mod & KMOD_CTRL) {
+                /* Import session (Ctrl+I, v479 parity). */
+                extern char *desktop_file_dialog_open(const char *title,
+                                                      const char *filter);
+                extern char *desktop_session_import(const char *path);
+                char *path = desktop_file_dialog_open("Import Session", "*.json");
+                if (path && *path) {
+                    char *new_id = desktop_session_import(path);
+                    if (new_id) {
+                        printf("Session imported: %s\n", new_id);
+                        free(new_id);
+                        session_db_load_sessions(app);
+                    } else {
+                        fprintf(stderr, "import failed\n");
+                    }
+                    free(path);
+                } else {
+                    fprintf(stderr, "import cancelled\n");
+                }
                 return true;
             }
             break;

@@ -1,10 +1,22 @@
 #!/usr/bin/env python3
-"""Devil's Advocate: depth-code audit for desktop_gui.c"""
-import re, sys
+"""Devil's Advocate: depth-code audit for the desktop GUI modules.
 
-with open('src/desktop_gui.c') as f:
-    content = f.read()
-    lines = content.split('\n')
+desktop_gui.c is a thin entry point since the modular refactor — audit the
+full SDL GUI module set so buffer-overflow / stub / include checks reflect
+the real code.
+"""
+import re, sys, os
+
+MODULES = [
+    'src/desktop_gui.c', 'src/gui_core.c', 'src/app_state.c', 'src/session_db.c',
+    'src/sidebar.c', 'src/chat_view.c', 'src/titlebar.c', 'src/event_handling.c',
+    'src/hud.c', 'src/desktop_controller.c', 'src/pet_ui.c', 'src/session_switcher.c',
+    'src/chat_render.c', 'src/chat_composer.c', 'src/desktop_app_common.c',
+    'src/desktop_sessions.c', 'src/desktop_models.c', 'src/desktop_profiles.c',
+    'src/desktop_settings.c',
+]
+content = "\n".join(open(m).read() for m in MODULES if os.path.exists(m))
+lines = content.split('\n')
 
 issues = []
 
@@ -45,14 +57,18 @@ if magic_nums:
     for i, v, ctx in magic_nums:
         issues.append(('MAGIC', i, f'Suspect color constant {v}: {ctx}'))
 
-# 5. Missing includes check
+# 5. Missing includes check — per module (each module has its own headers)
 needed_h = ['stdio.h', 'stdlib.h', 'string.h', 'time.h', 'math.h', 'dirent.h', 'unistd.h', 'sys/stat.h']
-for h in needed_h:
-    if f'#include <{h}>' not in content and f'#include \"{h}\"' not in content:
-        if h != 'sys/stat.h':
-            issues.append(('INCLUDE', 0, f'Missing #include <{h}>'))
-        elif '<sys/stat.h>' not in content:
-            issues.append(('INCLUDE', 0, f'Missing #include <sys/stat.h>'))
+for mod in MODULES:
+    if not os.path.exists(mod):
+        continue
+    mcontent = open(mod).read()
+    for h in needed_h:
+        if f'#include <{h}>' not in mcontent and f'#include "{h}"' not in mcontent:
+            if h != 'sys/stat.h':
+                issues.append(('INCLUDE', 0, f'{mod}: Missing #include <{h}>'))
+            elif '<sys/stat.h>' not in mcontent:
+                issues.append(('INCLUDE', 0, f'{mod}: Missing #include <sys/stat.h>'))
 
 # 6. Function size analysis
 func_pattern = re.compile(r'^(static )?(int|void|bool|char|gc_\w+|const\s+char)\s*\*?\w+\s*\(', re.MULTILINE)

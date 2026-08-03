@@ -204,6 +204,69 @@ int session_db_create_session(app_state_t *app, const char *title, const char *s
     return result;
 }
 
+/* PoP: desktop_session_import @ apps/desktop/src/app/session/index.tsx */
+int session_db_create_named(app_state_t *app, const char *id, const char *title,
+                            const char *source, const char *model) {
+    if (!id || !*id) return 0;
+    double now_t = (double)time(NULL);
+    sqlite3 *db = NULL;
+    int close_db = 0;
+    if (app && app->db) {
+        db = app->db;
+    } else {
+        char db_path[1024];
+        snprintf(db_path, sizeof(db_path), "%s/%s", slermes_home(), SLERMES_FILE_STATE_DB);
+        if (sqlite3_open_v2(db_path, &db, SQLITE_OPEN_READWRITE, NULL) != SQLITE_OK) {
+            if (db) sqlite3_close(db);
+            return 0;
+        }
+        close_db = 1;
+    }
+    char *zErr = NULL;
+    char *sql = sqlite3_mprintf(
+        "INSERT OR REPLACE INTO sessions (id, title, source, model, started_at, message_count, input_tokens) "
+        "VALUES ('%q', '%q', '%q', '%q', %f, 0, 0)",
+        id, title ? title : "", source ? source : "import", model ? model : "", now_t);
+    int ok = 0;
+    if (sql) {
+        sqlite3_exec(db, sql, NULL, NULL, &zErr);
+        sqlite3_free(sql);
+        if (zErr) { sqlite3_free(zErr); }
+        else ok = 1;
+    }
+    if (close_db) sqlite3_close(db);
+    if (ok && app) session_db_load_sessions(app);
+    return ok;
+}
+
+int session_db_insert_message(const char *session_id, const char *role,
+                              const char *content, double timestamp) {
+    if (!session_id || !*session_id || !role) return 0;
+    if (!content) content = "";
+    /* Open a throwaway read-write connection to the state DB. */
+    char db_path[1024];
+    snprintf(db_path, sizeof(db_path), "%s/%s", slermes_home(), SLERMES_FILE_STATE_DB);
+    sqlite3 *db = NULL;
+    if (sqlite3_open_v2(db_path, &db, SQLITE_OPEN_READWRITE, NULL) != SQLITE_OK) {
+        if (db) sqlite3_close(db);
+        return 0;
+    }
+    char *zErr = NULL;
+    char *sql = sqlite3_mprintf(
+        "INSERT INTO messages (session_id, role, content, timestamp) "
+        "VALUES ('%q', '%q', '%q', %f)",
+        session_id, role, content, timestamp);
+    int ok = 0;
+    if (sql) {
+        sqlite3_exec(db, sql, NULL, NULL, &zErr);
+        sqlite3_free(sql);
+        if (zErr) { sqlite3_free(zErr); }
+        else ok = 1;
+    }
+    sqlite3_close(db);
+    return ok;
+}
+
 bool session_db_archive_session(app_state_t *app, int session_idx, bool archive) {
     if (!app || session_idx < 0 || session_idx >= app->session_count) return false;
     
