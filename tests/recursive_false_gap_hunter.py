@@ -380,7 +380,12 @@ def classify_bootleg(name, info, defined, memo, stack=None):
 
     # Echo stub: every statement is output + constant return => no real work,
     # regardless of the printed text.  Agnostic — not gamed by adding prints.
-    if is_echo_stub(body):
+    # BUT if the PoP-annotated Python source is ALSO trivial (abstract base
+    # `pass`, dataclass field, constant accessor), the port is faithful — a
+    # C `printf + return -1` for a Python `pass` is correct, not a lie.
+    # Only flag as bootleg when the Python does real work AND the C body is
+    # just echo.  If Python is trivial (pass/accessor), the echo IS faithful.
+    if is_echo_stub(body) and not python_is_trivial_for(name):
         memo[name] = True; stack.discard(name); return True
 
     # External callee => this calls a live handler / library => REAL.
@@ -480,6 +485,19 @@ def _build_pop_index():
         text = src.read_text(errors='ignore')
         for m in re.finditer(r'/\* PoP: (\S+) @ ([^:]+):(\S+) \*/', text):
             idx.setdefault(m.group(1), []).append((m.group(2), m.group(3)))
+        # Also map the ACTUAL C function name that follows each PoP comment.
+        # The comment's first token is often the Python feature name (e.g.
+        # "connect") while the C wrapper is prefixed ("pb_connect") — the
+        # classifier looks up by C name, so both keys must resolve.
+        for (name, body, s, e) in extract_funcs(text):
+            if name in idx:
+                continue  # already mapped via comment token
+            # nearest PoP comment strictly before this function's start
+            best = None
+            for m in re.finditer(r'/\* PoP: (\S+) @ ([^:]+):(\S+) \*/', text[:s]):
+                best = m
+            if best is not None:
+                idx.setdefault(name, []).append((best.group(2), best.group(3)))
         # Module-aware "Port of Python <mod>.py:<fn>" comments carry the
         # python_file too; without them the hunter cannot cross-check.
         for m in re.finditer(
