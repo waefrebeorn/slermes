@@ -62,6 +62,8 @@
 8. **Attachment support** — cannot attach files/images to composer.
    ✅ **Ctrl+O attach (paperclip parity) wired (2026-08-03)**
 9. **Voice input** — no microphone input (P2 but user-visible).
+   ✅ **Wired to the real ALSA+VAD recorder + whisper transcription
+   (2026-08-03)**
 10. **Disclosure carets / right-sidebar toggle** — audit flags rendering
     (verify draw paths).
 
