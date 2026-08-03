@@ -103,9 +103,11 @@ char *cch_handle_max_iterations(void) {
 
 /* PoP: cleanup_task_resources @ agent/chat_completion_helpers.py:cleanup_task_resources */
 int cch_cleanup_task_resources(const char *task_id) {
-    /* Python: vm + browser cleanup; skips cleanup_vm.
-     * REAL: mark the task's resources released. */
-    if (!task_id) return -1;
+    /* Python: vm + browser cleanup (skips vm when persistent).
+     * REAL: delegate to the canonical cleanup_task_resources. */
+    if (!task_id || !*task_id) return -1;
+    extern void cleanup_task_resources(const char *task_id);
+    cleanup_task_resources(task_id);
     return 0;
 }
 

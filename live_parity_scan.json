@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-03T00:50:40Z",
+  "generated_at": "2026-08-03T00:57:10Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -13148,10 +13148,10 @@
     },
     "agent/chat_completion_helpers.py": {
       "total": 29,
-      "ported": 28,
+      "ported": 29,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 29,
@@ -13921,7 +13921,7 @@
             "decorators": [],
             "line_number": 2214
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_chat_completion_helpers_remaining.c",
           "c_function": "cch_cleanup_task_resources",
           "pop_annotation": {
@@ -13935,12 +13935,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: cleanup_task_resources @ agent/chat_completion_helpers.py:cleanup_task_resources */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/chat_completion_helpers.py",
@@ -13991,7 +13989,7 @@
             ],
             "c_file": "src/agent/port_chat_completion_helpers_remaining.c",
             "python_file": "agent/chat_completion_helpers.py",
-            "line": 112,
+            "line": 114,
             "is_consolidated": false,
             "full_text": "/* PoP: interruptible_streaming_api_call @ agent/chat_completion_helpers.py:interruptible_streaming_api_call */"
           },
@@ -76621,10 +76619,10 @@
     },
     "cli.py": {
       "total": 313,
-      "ported": 310,
+      "ported": 311,
       "partial": 2,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": true,
       "pop_mismatch": false,
       "py_func_count": 313,
@@ -76679,7 +76677,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 24,
+            "line": 26,
             "is_consolidated": false,
             "full_text": "/* PoP: estimate_usage_cost @ cli.py:estimate_usage_cost */"
           },
@@ -76708,7 +76706,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 32,
+            "line": 34,
             "is_consolidated": false,
             "full_text": "/* PoP: format_duration_compact @ cli.py:format_duration_compact */"
           },
@@ -76766,7 +76764,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 47,
+            "line": 49,
             "is_consolidated": false,
             "full_text": "/* PoP: format_token_count_compact @ cli.py:format_token_count_compact */"
           },
@@ -76795,7 +76793,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 58,
+            "line": 60,
             "is_consolidated": false,
             "full_text": "/* PoP: is_table_divider @ cli.py:is_table_divider */"
           },
@@ -76824,7 +76822,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 65,
+            "line": 67,
             "is_consolidated": false,
             "full_text": "/* PoP: looks_like_table_row @ cli.py:looks_like_table_row */"
           },
@@ -76853,7 +76851,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 71,
+            "line": 73,
             "is_consolidated": false,
             "full_text": "/* PoP: realign_markdown_tables @ cli.py:realign_markdown_tables */"
           },
@@ -77926,7 +77924,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 79,
+            "line": 81,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_worktree_base @ cli.py:_resolve_worktree_base */"
           },
@@ -78556,7 +78554,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 87,
+            "line": 89,
             "is_consolidated": false,
             "full_text": "/* PoP: _b @ cli.py:_b */"
           },
@@ -78585,7 +78583,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 99,
+            "line": 101,
             "is_consolidated": false,
             "full_text": "/* PoP: _d @ cli.py:_d */"
           },
@@ -78614,7 +78612,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 110,
+            "line": 112,
             "is_consolidated": false,
             "full_text": "/* PoP: _accent_hex @ cli.py:_accent_hex */"
           },
@@ -79778,7 +79776,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 117,
+            "line": 119,
             "is_consolidated": false,
             "full_text": "/* PoP: get_skill_commands @ cli.py:get_skill_commands */"
           },
@@ -79836,7 +79834,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 123,
+            "line": 125,
             "is_consolidated": false,
             "full_text": "/* PoP: build_preloaded_skills_prompt @ cli.py:build_preloaded_skills_prompt */"
           },
@@ -79865,7 +79863,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 131,
+            "line": 133,
             "is_consolidated": false,
             "full_text": "/* PoP: get_skill_bundles @ cli.py:get_skill_bundles */"
           },
@@ -79894,7 +79892,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 137,
+            "line": 139,
             "is_consolidated": false,
             "full_text": "/* PoP: build_bundle_invocation_message @ cli.py:build_bundle_invocation_message */"
           },
@@ -80300,7 +80298,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 145,
+            "line": 147,
             "is_consolidated": false,
             "full_text": "/* PoP: _schedule_status_bar_unsuppress @ cli.py:_schedule_status_bar_unsuppress */"
           },
@@ -80780,7 +80778,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 152,
+            "line": 154,
             "is_consolidated": false,
             "full_text": "/* PoP: _agent_spacer_height @ cli.py:_agent_spacer_height */"
           },
@@ -82580,7 +82578,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 158,
+            "line": 160,
             "is_consolidated": false,
             "full_text": "/* PoP: show_config @ cli.py:show_config */"
           },
@@ -82696,7 +82694,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 171,
+            "line": 173,
             "is_consolidated": false,
             "full_text": "/* PoP: _notify_session_boundary @ cli.py:_notify_session_boundary */"
           },
@@ -84301,7 +84299,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 179,
+            "line": 181,
             "is_consolidated": false,
             "full_text": "/* PoP: _reload_mcp @ cli.py:_reload_mcp */"
           },
@@ -84330,7 +84328,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 185,
+            "line": 187,
             "is_consolidated": false,
             "full_text": "/* PoP: _reload_skills @ cli.py:_reload_skills */"
           },
@@ -85277,7 +85275,7 @@
             "decorators": [],
             "line_number": 12248
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_cli_remaining2.c",
           "c_function": "cl2_chat",
           "pop_annotation": {
@@ -85287,16 +85285,14 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 191,
+            "line": 193,
             "is_consolidated": false,
             "full_text": "/* PoP: chat @ cli.py:chat */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -85347,7 +85343,7 @@
             ],
             "c_file": "src/cli/port_cli_remaining2.c",
             "python_file": "cli.py",
-            "line": 199,
+            "line": 207,
             "is_consolidated": false,
             "full_text": "/* PoP: _persist_active_session_before_close @ cli.py:_persist_active_session_before_close */"
           },
@@ -298480,10 +298476,10 @@
     },
     "tools/computer_use/tool.py": {
       "total": 36,
-      "ported": 28,
+      "ported": 30,
       "partial": 6,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 36,
@@ -298665,16 +298661,14 @@
             "decorators": [],
             "line_number": 203
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/tools/computer_use.c",
           "c_function": "start",
           "pop_annotation": null,
-          "stub_reason": "C function appears to be stub/trivial (forwarding wrapper or trivial pass-through)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-1:stub-in-impl"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "C stub faithful (trivial python: return True/constant, no IO)",
+          "da_flags": []
         },
         {
           "python_file": "tools/computer_use/tool.py",
@@ -298707,16 +298701,14 @@
             "decorators": [],
             "line_number": 205
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/tools/computer_use.c",
           "c_function": "is_available",
           "pop_annotation": null,
-          "stub_reason": "C function appears to be stub/trivial (forwarding wrapper or trivial pass-through)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-1:stub-in-impl"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "C stub faithful (trivial python: return True/constant, no IO)",
+          "da_flags": []
         },
         {
           "python_file": "tools/computer_use/tool.py",
@@ -310418,10 +310410,10 @@
     },
     "tools/environments/ssh.py": {
       "total": 13,
-      "ported": 12,
+      "ported": 13,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 13,
@@ -310476,7 +310468,7 @@
             ],
             "c_file": "src/tools/port_env_ssh_remaining.c",
             "python_file": "tools/environments/ssh.py",
-            "line": 21,
+            "line": 22,
             "is_consolidated": false,
             "full_text": "/* PoP: __init__ @ tools/environments/ssh.py:__init__ */"
           },
@@ -310737,7 +310729,7 @@
             ],
             "c_file": "src/tools/port_env_ssh_remaining.c",
             "python_file": "tools/environments/ssh.py",
-            "line": 29,
+            "line": 30,
             "is_consolidated": false,
             "full_text": "/* PoP: _before_execute @ tools/environments/ssh.py:_before_execute */"
           },
@@ -310785,7 +310777,7 @@
             "decorators": [],
             "line_number": 355
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/tools/port_env_ssh_remaining.c",
           "c_function": "esh_cleanup",
           "pop_annotation": {
@@ -310795,16 +310787,14 @@
             ],
             "c_file": "src/tools/port_env_ssh_remaining.c",
             "python_file": "tools/environments/ssh.py",
-            "line": 36,
+            "line": 37,
             "is_consolidated": false,
             "full_text": "/* PoP: cleanup @ tools/environments/ssh.py:cleanup */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },

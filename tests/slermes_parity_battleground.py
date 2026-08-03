@@ -1068,9 +1068,15 @@ class ParityAnalyzer:
             if c_funcs:
                 sf = c_funcs[0]
                 if self._check_if_stub(sf.file, sf.name):
-                    return GapEntry(py_file, feature, "REAL_GAP", c_location=sf.file, c_function=sf.name,
-                                    stub_reason="C function appears to be stub/trivial (forwarding wrapper or trivial pass-through)", severity="HIGH",
-                                    da_flags=["DA-1:stub-in-impl"])
+                    # Cross-check the Python side: a trivial Python function
+                    # ports faithfully as a trivial C function — only flag
+                    # when the Python does real work the C body omits.
+                    if not self._python_is_trivial(py_file, feature.name):
+                        return GapEntry(py_file, feature, "REAL_GAP", c_location=sf.file, c_function=sf.name,
+                                        stub_reason="C function appears to be stub/trivial (forwarding wrapper or trivial pass-through)", severity="HIGH",
+                                        da_flags=["DA-1:stub-in-impl"])
+                    return GapEntry(py_file, feature, "PORTED", c_location=sf.file, c_function=sf.name,
+                                    severity="LOW", notes="C stub faithful (trivial python: return True/constant, no IO)")
                 return GapEntry(py_file, feature, "PARTIAL", c_location=sf.file, c_function=sf.name,
                                 severity="MEDIUM", notes="C function exists in impl file but no PoP annotation",
                                 da_flags=["DA-3:no-pop-annotation"])

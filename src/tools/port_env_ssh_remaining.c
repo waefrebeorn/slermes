@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <unistd.h>
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -35,7 +36,16 @@ int esh_before_execute(void) {
 
 /* PoP: cleanup @ tools/environments/ssh.py:cleanup */
 int esh_cleanup(void) {
-    /* Python: sync files from sandbox — REAL: no active sandbox in C
-     * port, cleanup is a no-op success. */
+    /* Python: sync files from sandbox + close ssh control socket.
+     * REAL: terminate the control socket if one exists, unlink it. */
+    const char *home = getenv("HERMES_HOME");
+    char sock[1300];
+    if (home) snprintf(sock, sizeof(sock), "%s/state/ssh_control", home);
+    else snprintf(sock, sizeof(sock), "%s/.hermes/state/ssh_control", getenv("HOME") ? getenv("HOME") : ".");
+    if (access(sock, F_OK) != 0) return 0;
+    char cmd[1600];
+    snprintf(cmd, sizeof(cmd), "ssh -O exit -o ControlPath=%s 2>/dev/null", sock);
+    (void)system(cmd);
+    unlink(sock);
     return 0;
 }

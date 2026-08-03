@@ -12,6 +12,8 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <unistd.h>
+#include "hermes_agent.h"
+#include "hermes_gateway_core.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -190,9 +192,15 @@ int cl2_reload_skills(void) {
 
 /* PoP: chat @ cli.py:chat */
 int cl2_chat(const char *message, const char *session_json) {
-    /* Python: interactive chat — REAL dispatch into the chat loop. */
-    if (!message) return -1;
+    /* Python: interactive chat — REAL dispatch into agent_chat.
+     * Returns 0 when the message was handed to the agent loop. */
+    if (!message || !*message) return -1;
     (void)session_json;
+    char *resp = gateway_agent_chat(message);
+    if (resp) {
+        printf("%s\n", resp);
+        free(resp);
+    }
     return 0;
 }
 
