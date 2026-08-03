@@ -30,7 +30,11 @@ def py_strip_fence(s):
     return fo._strip_terminal_fence_leaks(s)
 def py_detect(s):
     r = fo._detect_line_ending(s)
-    return "lf" if r in (None, "\n") else ("crlf" if r == "\r\n" else "lf")
+    # The C port renders Python's None (undetermined: no line break in the
+    # sample) as "unknown" — mirror that exactly.
+    if r is None:
+        return "unknown"
+    return "crlf" if r == "\r\n" else "lf"
 def py_normalize(s, target):
     return fo._normalize_line_endings(s, target)
 def py_strip_bom(s):

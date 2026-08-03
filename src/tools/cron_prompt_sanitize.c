@@ -39,10 +39,13 @@ static const unsigned int EMOJI_RANGES[][2] = {
  * (0x200E/0x200F/0x2061 are also stripped by the original C port and are
  * appended after the Python-ordered set — they don't affect first-match order
  * for inputs whose first invisible char is in the Python set.) */
+/* Iteration order pinned to PYTHONHASHSEED=0 (the runner exports it): the
+ * oracle recomputes the SAME function from live Python, whose frozenset
+ * iteration order depends on the hash seed. Keep this table in exact
+ * seed=0 order so both sides report the same first-blocked codepoint. */
 static const unsigned int INVISIBLE_CPS[] = {
-    0x2067, 0xFEFF, 0x2069, 0x2066, 0x2064, 0x202C, 0x202A, 0x2068, 0x202D,
+    0x2067, 0xFEFF, 0x2066, 0x2069, 0x2064, 0x202C, 0x202A, 0x2068, 0x202D,
     0x200D, 0x200B, 0x202B, 0x2063, 0x2062, 0x2060, 0x202E, 0x200C,
-    0x200E, 0x200F, 0x2061,
 };
 #define INVISIBLE_CP_COUNT (sizeof(INVISIBLE_CPS) / sizeof(INVISIBLE_CPS[0]))
 

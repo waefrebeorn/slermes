@@ -175,6 +175,11 @@ PY
 # real repo.
 ISO="SLERMES_HOME=$TMPH HERMES_HOME=$TMPH HOME=$TMPH XDG_CONFIG_HOME=$TMPH/.config XDG_DATA_HOME=$TMPH/.local/share"
 ISO="$ISO TMPDIR=$TMPH"
+# Deterministic set iteration: several oracles (plumber_fuzz) depend on the
+# iteration order of Python frozensets (invisible-unicode blocklist), which
+# changes with PYTHONHASHSEED. Pin it to 0 so live-Python order is stable and
+# matches the C port's fixed tables.
+ISO="$ISO PYTHONHASHSEED=0"
 # Real fixture dir: both C harness and Python oracle resolve fixture-relative
 # paths (sample_skill/, *.md) against this. The runner hands both sides a
 # TEMP-substituted copy (FSUB), whose dir is /tmp — relative paths would
