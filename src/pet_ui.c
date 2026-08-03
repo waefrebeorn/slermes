@@ -59,6 +59,18 @@ void pet_ui_init(app_state_t *app) {
     cfg.unicode_cols = 24;
     pet_init(&cfg);
     
+    /* Populate the in-app gallery from the real pet store (~/.slermes/pets/),
+     * so the gallery lists actual installed pets instead of nothing. */
+    pet_installed_t pets[16];
+    int n = pet_installed_pets(pets, 16);
+    for (int i = 0; i < n && i < 16; i++) {
+        snprintf(app->pet_names[i], sizeof(app->pet_names[i]), "%s",
+                 pets[i].display_name[0] ? pets[i].display_name : pets[i].slug);
+    }
+    app->pet_count = n > 16 ? 16 : n;
+    if (app->pet_count > 0 && app->pet_selected >= app->pet_count)
+        app->pet_selected = 0;
+    
     app->pet_active = true;
     app->pet_type = 0;
     app->pet_frame = 0;
@@ -167,7 +179,13 @@ int pet_ui_derive_state(app_state_t *app) {
     bool tool_running = false; /* Would check for running tools */
     bool reasoning = false; /* Would check for reasoning state */
     
-    return pet_state_derive(busy, awaiting, error, celebrate, just_completed, tool_running, reasoning);
+    pet_state_t st = pet_state_derive(busy, awaiting, error, celebrate,
+                                      just_completed, tool_running, reasoning);
+    /* Push into the pet system so pet_info_json / pet_cells_json / TUI RPC
+     * reflect the same state the GUI derives. */
+    pet_update_state(busy, awaiting, error, celebrate,
+                     just_completed, tool_running, reasoning);
+    return st;
 }
 
 bool pet_ui_handle_click(app_state_t *app, int mx, int my) {
@@ -175,6 +193,30 @@ bool pet_ui_handle_click(app_state_t *app, int mx, int my) {
     
     gc_window_t *win = app_get_window(app);
     if (!win) return false;
+    
+    /* Gallery open: clicks select a pet row; clicks outside close it. */
+    if (app_pet_show_gallery(app)) {
+        int gal_x = app_sidebar_w(app) + 20;
+        int gal_y = TITLEBAR_H + 50;
+        int gal_w = app_chat_w(app) - 40;
+        int gal_h = gc_window_h(win) - TITLEBAR_H - STATUSBAR_H - 100;
+        if (mx >= gal_x && mx < gal_x + gal_w && my >= gal_y && my < gal_y + gal_h) {
+            int row = (my - gal_y - 30) / 20;
+            if (row >= 0 && row < app->pet_count) {
+                app->pet_selected = row;
+                if (app->pet_count > 0) {
+                    /* Select the pet in the pet system by slug. */
+                    pet_installed_t pets[16];
+                    int n = pet_installed_pets(pets, 16);
+                    if (row < n) pet_select(pets[row].slug);
+                }
+            }
+            return true;
+        }
+        /* Click outside the gallery closes it. */
+        app_set_pet_show_gallery(app, false);
+        return true;
+    }
     
     float scale = app_pet_scale(app);
     int pet_w = (int)(64 * scale);
@@ -184,7 +226,7 @@ bool pet_ui_handle_click(app_state_t *app, int mx, int my) {
     
     if (mx >= x && mx < x + pet_w && my >= y && my < y + pet_h) {
         /* Clicked on pet - toggle gallery or change pet */
-        app->pet_show_gallery = !app->pet_show_gallery;
+        app_set_pet_show_gallery(app, !app_pet_show_gallery(app));
         /* Apply small impulse */
         app->pet_vx += (float)((rand() % 200) - 100) / 100.0f;
         app->pet_vy += (float)((rand() % 200) - 100) / 100.0f;

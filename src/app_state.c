@@ -444,6 +444,7 @@ void app_set_pet_y(app_state_t *app, float y) { if (app) app->pet_y = y; }
 /* PoP: app_set_pet_scale @ hermes_cli/pets.py:set_pet_scale */
 void app_set_pet_scale(app_state_t *app, float scale) { if (app) app->pet_scale = scale; }
 bool app_pet_show_gallery(app_state_t *app) { return app ? app->pet_show_gallery : false; }
+void app_set_pet_show_gallery(app_state_t *app, bool show) { if (app) app->pet_show_gallery = show; }
 int app_pet_selected(app_state_t *app) { return app ? app->pet_selected : 0; }
 int app_pet_count(app_state_t *app) { return app ? app->pet_count : 0; }
 const char *app_pet_name(app_state_t *app, int idx) {

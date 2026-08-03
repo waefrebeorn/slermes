@@ -208,6 +208,7 @@ void app_set_pet_x(app_state_t *app, float x);
 void app_set_pet_y(app_state_t *app, float y);
 void app_set_pet_scale(app_state_t *app, float scale);
 bool app_pet_show_gallery(app_state_t *app);
+void app_set_pet_show_gallery(app_state_t *app, bool show);
 int app_pet_selected(app_state_t *app);
 int app_pet_count(app_state_t *app);
 const char *app_pet_name(app_state_t *app, int idx);

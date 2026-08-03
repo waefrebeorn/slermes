@@ -116,6 +116,7 @@ int main(int argc, char **argv) {
     }
     
     /* Initialize pet if enabled */
+    pet_ui_init(app);
     if (app_pet_active(app)) {
         app_set_pet_x(app, app_sidebar_w(app) / 2.0f);
         app_set_pet_y(app, TITLEBAR_H + app_sidebar_h(app) / 2.0f);

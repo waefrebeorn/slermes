@@ -182,6 +182,11 @@ void event_run(app_state_t *app) {
     while (app->running) {
         gc_begin_frame(app_get_window(app));
         
+        /* Update pet animation + derive state from live app signals
+         * (busy/api state, composer input). */
+        pet_ui_derive_state(app);
+        pet_ui_update_animation(app);
+        
         /* Poll and process events */
         while (gc_poll_event(app_get_window(app), &ev)) {
             event_process(app, &ev);
@@ -192,6 +197,7 @@ void event_run(app_state_t *app) {
         sidebar_draw(app);
         chat_view_draw(app);
         statusbar_draw(app);
+        pet_ui_draw(app);
         
         gc_end_frame(app_get_window(app));
     }
@@ -199,17 +205,19 @@ void event_run(app_state_t *app) {
 
 void event_handle_resize(app_state_t *app, int w, int h) {
     if (!app || !app_get_window(app)) return;
-    gc_window_t *win = app_get_window(app);
     /* Window size is managed by SDL, just trigger redraw */
     (void)w; (void)h;
 }
-
 bool event_handle_key(app_state_t *app, int key, int mod) {
     if (!app) return false;
     
     /* Global hotkeys */
     switch (key) {
         case SDLK_ESCAPE:
+            if (app_pet_show_gallery(app)) {
+                app_set_pet_show_gallery(app, false);
+                return true;
+            }
             if (app_show_model_picker(app)) {
                 app_set_show_model_picker(app, false);
                 return true;
@@ -270,6 +278,16 @@ bool event_handle_key(app_state_t *app, int key, int mod) {
             if (mod & KMOD_CTRL) {
                 app_set_chat_scroll(app, app_chat_scroll(app) + 30);
                 return true;
+            }
+            break;
+            
+        case SDLK_p:
+            if (mod & KMOD_CTRL) {
+                /* Pet gallery toggle (Ctrl+P) */
+                if (app_pet_active(app)) {
+                    app_set_pet_show_gallery(app, !app_pet_show_gallery(app));
+                    return true;
+                }
             }
             break;
             
@@ -345,6 +363,12 @@ bool event_handle_text(app_state_t *app, const char *text) {
 
 bool event_handle_mouse(app_state_t *app, gc_event_t *ev) {
     if (!app || !ev) return false;
+    
+    /* The pet floats above the UI — a click on it takes precedence over
+     * whatever panel is underneath. */
+    if (ev->type == GC_EV_MOUSE_DOWN && pet_ui_handle_click(app, ev->x, ev->y)) {
+        return true;
+    }
     
     hit_t hit = hit_test(app, ev->x, ev->y);
     
