@@ -180,11 +180,16 @@ bool cron_send_notification(const char *job_name, const char *status,
 
 #define MAX_CHAIN_ENTRIES 64
 
-static struct {
+/* Chain-state registry: dynamic heap array (no 272KB landlocked static).
+ * Entries accumulate for the process lifetime (matches the original fixed
+ * table); capacity grows on demand, still honoring the legacy 64 cap. */
+typedef struct {
     char job_name[128];
     char context_from[128];
     char output[4096];
-} g_chain_state[MAX_CHAIN_ENTRIES];
+} chain_entry_t;
+
+static chain_entry_t *g_chain_state = NULL;
 static int g_chain_count = 0;
 
 bool cron_chain_set_context(const char *job_name, const char *context_from) {
@@ -201,6 +206,9 @@ bool cron_chain_set_context(const char *job_name, const char *context_from) {
 
     /* Add new entry */
     if (g_chain_count >= MAX_CHAIN_ENTRIES) return false;
+    if (!g_chain_state)
+        g_chain_state = calloc(MAX_CHAIN_ENTRIES, sizeof(chain_entry_t));
+    if (!g_chain_state) return false;
     snprintf(g_chain_state[g_chain_count].job_name, sizeof(g_chain_state[0].job_name), "%s", job_name);
     snprintf(g_chain_state[g_chain_count].context_from, sizeof(g_chain_state[0].context_from),
              "%s", context_from ? context_from : "");
@@ -209,7 +217,7 @@ bool cron_chain_set_context(const char *job_name, const char *context_from) {
 }
 
 const char *cron_chain_get_context(const char *job_name) {
-    if (!job_name) return NULL;
+    if (!job_name || !g_chain_state) return NULL;
     for (int i = 0; i < g_chain_count; i++) {
         if (strcmp(g_chain_state[i].job_name, job_name) == 0)
             return g_chain_state[i].context_from;
@@ -218,7 +226,7 @@ const char *cron_chain_get_context(const char *job_name) {
 }
 
 char *cron_chain_get_output(const char *job_name) {
-    if (!job_name) return NULL;
+    if (!job_name || !g_chain_state) return NULL;
     for (int i = 0; i < g_chain_count; i++) {
         if (strcmp(g_chain_state[i].job_name, job_name) == 0 &&
             g_chain_state[i].context_from[0]) {
@@ -234,6 +242,9 @@ char *cron_chain_get_output(const char *job_name) {
 
 void cron_chain_store_output(const char *job_name, const char *output) {
     if (!job_name) return;
+    if (!g_chain_state)
+        g_chain_state = calloc(MAX_CHAIN_ENTRIES, sizeof(chain_entry_t));
+    if (!g_chain_state) return;
 
     for (int i = 0; i < g_chain_count; i++) {
         if (strcmp(g_chain_state[i].job_name, job_name) == 0) {
@@ -265,11 +276,11 @@ typedef struct {
     char params_json[4096];
 } cron_template_t;
 
-static cron_template_t g_templates[MAX_TEMPLATES];
+static cron_template_t *g_templates = NULL;
 static int g_template_count = 0;
 
 bool cron_template_create(const char *name, const char *schedule,
-                           const char *command, const char *params_json)
+                          const char *command, const char *params_json)
 {
     if (!name || !schedule || g_template_count >= MAX_TEMPLATES)
         return false;
@@ -279,6 +290,10 @@ bool cron_template_create(const char *name, const char *schedule,
         if (strcmp(g_templates[i].name, name) == 0)
             return false;
     }
+
+    if (!g_templates)
+        g_templates = calloc(MAX_TEMPLATES, sizeof(cron_template_t));
+    if (!g_templates) return false;
 
     cron_template_t *t = &g_templates[g_template_count++];
     memset(t, 0, sizeof(*t));
@@ -300,10 +315,12 @@ bool cron_template_instantiate(const char *template_name,
 
     /* Find template */
     cron_template_t *t = NULL;
-    for (int i = 0; i < g_template_count; i++) {
-        if (strcmp(g_templates[i].name, template_name) == 0) {
-            t = &g_templates[i];
-            break;
+    if (g_templates) {
+        for (int i = 0; i < g_template_count; i++) {
+            if (strcmp(g_templates[i].name, template_name) == 0) {
+                t = &g_templates[i];
+                break;
+            }
         }
     }
     if (!t) return false;

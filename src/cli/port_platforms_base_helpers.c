@@ -877,7 +877,10 @@ gw_base_send_result_t *gw_base__send_with_retry(const char *chat_id, const char 
 /* PoP: gw_base__text_debounce_store @ gateway/platforms/base.py:_text_debounce_store */
 /* Returns pointer to the shared debounce store (a global map). */
 typedef struct { char session[192]; char text[4096]; double first_ts; double last_ts; int active; } gw_base_debounce_t;
-static gw_base_debounce_t g_debounce[64];
+/* Debounce table — dynamic heap array (no 270KB landlocked static).
+ * Shift-remove compaction semantics preserved; capacity is the legacy
+ * 64-entry cap. */
+static gw_base_debounce_t *g_debounce = NULL;
 static int g_debounce_n = 0;
 gw_base_debounce_t *gw_base__text_debounce_store(void) { return g_debounce; }
 
@@ -908,8 +911,11 @@ int gw_base__queue_text_debounce(const char *session_key, const char *text, cons
     gw_base_init();
     pthread_mutex_lock(&g_gw.lock);
     gw_base_debounce_t *st = NULL;
-    for (int i = 0; i < g_debounce_n; i++) if (strcmp(g_debounce[i].session, session_key?session_key:"") == 0) { st = &g_debounce[i]; break; }
-    if (!st && g_debounce_n < 64) { strncpy(g_debounce[g_debounce_n].session, session_key?session_key:"", 191); st = &g_debounce[g_debounce_n]; g_debounce_n++; }
+    if (!g_debounce) g_debounce = calloc(64, sizeof(gw_base_debounce_t));
+    if (g_debounce) {
+        for (int i = 0; i < g_debounce_n; i++) if (strcmp(g_debounce[i].session, session_key?session_key:"") == 0) { st = &g_debounce[i]; break; }
+        if (!st && g_debounce_n < 64) { strncpy(g_debounce[g_debounce_n].session, session_key?session_key:"", 191); st = &g_debounce[g_debounce_n]; g_debounce_n++; }
+    }
     if (st) {
         if (st->text[0]) { int L = strlen(st->text); if (L < 4000) snprintf(st->text+L, 4096-L, "\n%s", text?text:""); }
         else strncpy(st->text, text?text:"", 4095);
@@ -929,7 +935,9 @@ int gw_base__flush_text_debounce_now(const char *session_key) {
     gw_base_init();
     pthread_mutex_lock(&g_gw.lock);
     int found = -1;
-    for (int i = 0; i < g_debounce_n; i++) if (strcmp(g_debounce[i].session, session_key?session_key:"") == 0) { found = i; break; }
+    if (g_debounce) {
+        for (int i = 0; i < g_debounce_n; i++) if (strcmp(g_debounce[i].session, session_key?session_key:"") == 0) { found = i; break; }
+    }
     if (found < 0) { pthread_mutex_unlock(&g_gw.lock); return 0; }
     /* push into pending map */
     if (g_gw.pending_n < 128) {
