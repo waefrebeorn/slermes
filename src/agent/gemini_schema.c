@@ -128,6 +128,7 @@ static json_t *sanitize_node(json_t *node) {
     }
 }
 
+/* PoP: sanitize_gemini_schema @ agent/gemini_schema.py:sanitize_gemini_schema */
 /* Port of Python agent/gemini_schema.py:sanitize_gemini_schema(). */
 char *sanitize_gemini_schema(const char *schema_json) {
     if (!schema_json || !schema_json[0]) {
@@ -163,6 +164,7 @@ char *sanitize_gemini_schema(const char *schema_json) {
     return result;
 }
 
+/* PoP: sanitize_gemini_tool_parameters @ agent/gemini_schema.py:sanitize_gemini_tool_parameters */
 /* Port of Python agent/gemini_schema.py:sanitize_gemini_tool_parameters(). */
 char *sanitize_gemini_tool_parameters(const char *parameters_json) {
     char *cleaned = sanitize_gemini_schema(parameters_json);

@@ -469,6 +469,13 @@ def _build_pop_index():
         text = src.read_text(errors='ignore')
         for m in re.finditer(r'/\* PoP: (\S+) @ ([^:]+):(\S+) \*/', text):
             idx.setdefault(m.group(1), []).append((m.group(2), m.group(3)))
+        # Module-aware "Port of Python <mod>.py:<fn>" comments carry the
+        # python_file too; without them the hunter cannot cross-check.
+        for m in re.finditer(
+                r'/\*\s*Port of Python\s+([\w/.]+\.py):\s*([\w.]+)',
+                text):
+            fn = m.group(2).split('.')[-1].split('(')[0]
+            idx.setdefault(fn, []).append((m.group(1), fn))
     _POP_INDEX = idx
 
 def python_is_trivial_for(c_name):

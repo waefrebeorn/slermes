@@ -266,6 +266,9 @@ class CIndexer:
             re.compile(r'/\*\s*port of Python[^:]*:?\s*([^*]+)\*/', re.MULTILINE),
             re.compile(r'/\*\s*Port of Python\s+agent/(\w+)\.py\s*\([^)]+\)\s*\*/', re.MULTILINE),
             re.compile(r'\n\s*\*\s*PoP:\s*(\w+)\s*@\s*([\w/.]+):([\w.]+)', re.MULTILINE),
+            # Module-aware "Port of Python <mod>.py:<fn>" (2 groups: py_file, fn)
+            re.compile(r'/\*\s*Port of Python\s+([\w/.]+\.py):\s*([\w.]+)', re.MULTILINE),
+            re.compile(r'\*\s*Port of Python\s+([\w/]+\.py):([\w_]+)\(', re.MULTILINE),
         ]
         wrapper_pattern = re.compile(
             r'/\*\s*\n\s*\*(\w+\.c)\s*—\s*Name parity wrapper for Python agent/(\w+\.py)', re.MULTILINE)
@@ -340,7 +343,11 @@ class CIndexer:
                             line = bisect.bisect_right(self._line_offsets[rel_str], m.start())
                             c_func_name = self._find_annotation_target(content, m.start())
                             python_file = ""
-                            if pattern is pop_pattern or pattern.pattern.startswith(r'/\*[\s\S]*?') or pattern.pattern.startswith(r'/\*\n'):
+                            if len(m.groups()) >= 2 and 'Port of Python' in pattern.pattern and not pattern.pattern.startswith(r'/\*[\s\S]*?'):
+                                # module-aware form: group(1)=python_file, group(2)=fn
+                                python_file = m.group(1).strip()
+                                py_funcs = [m.group(2).strip().split('(')[0]]
+                            elif pattern is pop_pattern or pattern.pattern.startswith(r'/\*[\s\S]*?') or pattern.pattern.startswith(r'/\*\n'):
                                 python_file = m.group(2).strip()
                             self.pop_annotations.append(PopAnnotation(
                                 c_function=c_func_name, python_functions=py_funcs,
