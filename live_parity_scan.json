@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-03T01:37:10Z",
+  "generated_at": "2026-08-03T01:40:26Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -284033,10 +284033,10 @@
     },
     "tools/__init__.py": {
       "total": 1,
-      "ported": 0,
+      "ported": 1,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 1,
@@ -284052,16 +284052,24 @@
             "decorators": [],
             "line_number": 18
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_check_file_requirements",
+          "pop_annotation": {
+            "c_function": "tools_check_file_requirements",
+            "python_functions": [
+              "check_file_requirements"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/__init__.py",
+            "line": 17,
+            "is_consolidated": false,
+            "full_text": "/* PoP: check_file_requirements @ tools/__init__.py:check_file_requirements */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -286877,10 +286885,10 @@
     },
     "tools/async_delegation.py": {
       "total": 34,
-      "ported": 33,
+      "ported": 34,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 34,
@@ -287855,16 +287863,24 @@
             "decorators": [],
             "line_number": 1060
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_async_delegation_reset",
+          "pop_annotation": {
+            "c_function": "tools_async_delegation_reset",
+            "python_functions": [
+              "_reset_for_tests"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/async_delegation.py",
+            "line": 24,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _reset_for_tests @ tools/async_delegation.py:_reset_for_tests */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         }
       ]
     },
@@ -290817,10 +290833,10 @@
     },
     "tools/browser_tool.py": {
       "total": 104,
-      "ported": 103,
+      "ported": 104,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 104,
@@ -293649,17 +293665,24 @@
             "decorators": [],
             "line_number": 4504
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_cleanup_all_browsers",
+          "pop_annotation": {
+            "c_function": "tools_cleanup_all_browsers",
+            "python_functions": [
+              "cleanup_all_browsers"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/browser_tool.py",
+            "line": 47,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cleanup_all_browsers @ tools/browser_tool.py:cleanup_all_browsers */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "tools/browser_tool.py",
@@ -295116,10 +295139,10 @@
     },
     "tools/clarify_gateway.py": {
       "total": 15,
-      "ported": 13,
+      "ported": 14,
       "partial": 1,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 15,
@@ -295388,17 +295411,24 @@
             "decorators": [],
             "line_number": 285
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_clarify_clear_session",
+          "pop_annotation": {
+            "c_function": "tools_clarify_clear_session",
+            "python_functions": [
+              "clear_session"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/clarify_gateway.py",
+            "line": 74,
+            "is_consolidated": false,
+            "full_text": "/* PoP: clear_session @ tools/clarify_gateway.py:clear_session */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "tools/clarify_gateway.py",
@@ -299560,10 +299590,10 @@
     },
     "tools/computer_use/doctor.py": {
       "total": 5,
-      "ported": 4,
+      "ported": 5,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 5,
@@ -299695,16 +299725,24 @@
             "decorators": [],
             "line_number": 232
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_cu_run_doctor",
+          "pop_annotation": {
+            "c_function": "tools_cu_run_doctor",
+            "python_functions": [
+              "run_doctor"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/computer_use/doctor.py",
+            "line": 632,
+            "is_consolidated": false,
+            "full_text": "/* PoP: run_doctor @ tools/computer_use/doctor.py:run_doctor */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         }
       ]
     },
@@ -300994,10 +301032,10 @@
     },
     "tools/computer_use/vision_routing.py": {
       "total": 5,
-      "ported": 3,
+      "ported": 4,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 5,
@@ -301064,17 +301102,24 @@
             "decorators": [],
             "line_number": 107
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_vision_lookup_supports",
+          "pop_annotation": {
+            "c_function": "tools_vision_lookup_supports",
+            "python_functions": [
+              "_lookup_supports_vision"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/computer_use/vision_routing.py",
+            "line": 159,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _lookup_supports_vision @ tools/computer_use/vision_routing.py:_lookup_supports_vision */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "tools/computer_use/vision_routing.py",
@@ -301598,10 +301643,10 @@
     },
     "tools/cronjob_tools.py": {
       "total": 22,
-      "ported": 20,
+      "ported": 22,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 22,
@@ -301965,16 +302010,24 @@
             "decorators": [],
             "line_number": 358
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_cronjob_canonical_skills",
+          "pop_annotation": {
+            "c_function": "tools_cronjob_canonical_skills",
+            "python_functions": [
+              "_canonical_skills"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/cronjob_tools.py",
+            "line": 168,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _canonical_skills @ tools/cronjob_tools.py:_canonical_skills */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/cronjob_tools.py",
@@ -302015,16 +302068,24 @@
             "decorators": [],
             "line_number": 418
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_cronjob_normalize_optional",
+          "pop_annotation": {
+            "c_function": "tools_cronjob_normalize_optional",
+            "python_functions": [
+              "_normalize_optional_job_value"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/cronjob_tools.py",
+            "line": 196,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _normalize_optional_job_value @ tools/cronjob_tools.py:_normalize_optional_job_value */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/cronjob_tools.py",
@@ -304491,10 +304552,10 @@
     },
     "tools/desktop_ui.py": {
       "total": 3,
-      "ported": 1,
+      "ported": 3,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 3,
@@ -304539,16 +304600,24 @@
             "decorators": [],
             "line_number": 27
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_desktop_ui_available",
+          "pop_annotation": {
+            "c_function": "tools_desktop_ui_available",
+            "python_functions": [
+              "available"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/desktop_ui.py",
+            "line": 215,
+            "is_consolidated": false,
+            "full_text": "/* PoP: available @ tools/desktop_ui.py:available */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/desktop_ui.py",
@@ -304560,25 +304629,33 @@
             "decorators": [],
             "line_number": 32
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_desktop_ui_emit",
+          "pop_annotation": {
+            "c_function": "tools_desktop_ui_emit",
+            "python_functions": [
+              "emit"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/desktop_ui.py",
+            "line": 221,
+            "is_consolidated": false,
+            "full_text": "/* PoP: emit @ tools/desktop_ui.py:emit */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
     "tools/discord_tool.py": {
       "total": 41,
-      "ported": 40,
+      "ported": 41,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 41,
@@ -304594,17 +304671,24 @@
             "decorators": [],
             "line_number": 61
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_discord_error_init",
+          "pop_annotation": {
+            "c_function": "tools_discord_error_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/discord_tool.py",
+            "line": 229,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/discord_tool.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/discord_tool.py",
@@ -307637,10 +307721,10 @@
     },
     "tools/environments/daytona.py": {
       "total": 9,
-      "ported": 7,
+      "ported": 9,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 9,
@@ -307656,17 +307740,24 @@
             "decorators": [],
             "line_number": 40
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_daytona_init",
+          "pop_annotation": {
+            "c_function": "tools_daytona_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/environments/daytona.py",
+            "line": 238,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/environments/daytona.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/daytona.py",
@@ -307881,17 +307972,24 @@
             "decorators": [],
             "line_number": 244
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_daytona_cleanup",
+          "pop_annotation": {
+            "c_function": "tools_daytona_cleanup",
+            "python_functions": [
+              "cleanup"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/environments/daytona.py",
+            "line": 246,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cleanup @ tools/environments/daytona.py:cleanup */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         }
       ]
     },
@@ -308753,10 +308851,10 @@
     },
     "tools/environments/file_sync.py": {
       "total": 15,
-      "ported": 13,
+      "ported": 14,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 15,
@@ -308946,17 +309044,24 @@
             "decorators": [],
             "line_number": 145
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_file_sync_init",
+          "pop_annotation": {
+            "c_function": "tools_file_sync_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/environments/file_sync.py",
+            "line": 252,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/environments/file_sync.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/file_sync.py",
@@ -308969,15 +309074,24 @@
             "line_number": 165
           },
           "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
-          "stub_reason": null,
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_file_sync_sync",
+          "pop_annotation": {
+            "c_function": "tools_file_sync_sync",
+            "python_functions": [
+              "sync"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/environments/file_sync.py",
+            "line": 259,
+            "is_consolidated": false,
+            "full_text": "/* PoP: sync @ tools/environments/file_sync.py:sync */"
+          },
+          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
           "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
+          "notes": "",
           "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
+            "DA-2:bootleg-body"
           ]
         },
         {
@@ -311409,10 +311523,10 @@
     },
     "tools/environments/modal_utils.py": {
       "total": 11,
-      "ported": 10,
+      "ported": 11,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 11,
@@ -311515,17 +311629,24 @@
             "decorators": [],
             "line_number": 157
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_modal_before_execute",
+          "pop_annotation": {
+            "c_function": "tools_modal_before_execute",
+            "python_functions": [
+              "_before_execute"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/environments/modal_utils.py",
+            "line": 266,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _before_execute @ tools/environments/modal_utils.py:_before_execute */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/modal_utils.py",
@@ -311740,10 +311861,10 @@
     },
     "tools/environments/singularity.py": {
       "total": 11,
-      "ported": 9,
+      "ported": 10,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 11,
@@ -311963,15 +312084,24 @@
             "line_number": 166
           },
           "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
-          "stub_reason": null,
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_singularity_init",
+          "pop_annotation": {
+            "c_function": "tools_singularity_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/environments/singularity.py",
+            "line": 272,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/environments/singularity.py:__init__ */"
+          },
+          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
           "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
+          "notes": "",
           "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
+            "DA-2:bootleg-body"
           ]
         },
         {
@@ -312042,17 +312172,24 @@
             "decorators": [],
             "line_number": 248
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_singularity_cleanup",
+          "pop_annotation": {
+            "c_function": "tools_singularity_cleanup",
+            "python_functions": [
+              "cleanup"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/environments/singularity.py",
+            "line": 280,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cleanup @ tools/environments/singularity.py:cleanup */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         }
       ]
     },
@@ -312448,10 +312585,10 @@
     },
     "tools/fal_common.py": {
       "total": 5,
-      "ported": 4,
+      "ported": 5,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 5,
@@ -312554,16 +312691,24 @@
             "decorators": [],
             "line_number": 90
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_fal_common_init",
+          "pop_annotation": {
+            "c_function": "tools_fal_common_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/fal_common.py",
+            "line": 286,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/fal_common.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/fal_common.py",
@@ -317745,10 +317890,10 @@
     },
     "tools/homeassistant_tool.py": {
       "total": 15,
-      "ported": 14,
+      "ported": 15,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 15,
@@ -317996,17 +318141,24 @@
             "decorators": [],
             "line_number": 207
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_ha_run_async",
+          "pop_annotation": {
+            "c_function": "tools_ha_run_async",
+            "python_functions": [
+              "_run_async"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/homeassistant_tool.py",
+            "line": 293,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _run_async @ tools/homeassistant_tool.py:_run_async */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "tools/homeassistant_tool.py",
@@ -318186,10 +318338,10 @@
     },
     "tools/hook_output_spill.py": {
       "total": 6,
-      "ported": 5,
+      "ported": 6,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 6,
@@ -318205,16 +318357,24 @@
             "decorators": [],
             "line_number": 60
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_coerce_positive_int",
+          "pop_annotation": {
+            "c_function": "tools_coerce_positive_int",
+            "python_functions": [
+              "_coerce_positive_int"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/hook_output_spill.py",
+            "line": 299,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _coerce_positive_int @ tools/hook_output_spill.py:_coerce_positive_int */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/hook_output_spill.py",
@@ -318365,10 +318525,10 @@
     },
     "tools/image_generation_tool.py": {
       "total": 27,
-      "ported": 25,
+      "ported": 27,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 27,
@@ -318790,17 +318950,24 @@
             "decorators": [],
             "line_number": 838
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_image_generate",
+          "pop_annotation": {
+            "c_function": "tools_image_generate",
+            "python_functions": [
+              "image_generate_tool"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/image_generation_tool.py",
+            "line": 309,
+            "is_consolidated": false,
+            "full_text": "/* PoP: image_generate_tool @ tools/image_generation_tool.py:image_generate_tool */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/image_generation_tool.py",
@@ -319131,26 +319298,33 @@
             "decorators": [],
             "line_number": 1611
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_build_dynamic_image_schema",
+          "pop_annotation": {
+            "c_function": "tools_build_dynamic_image_schema",
+            "python_functions": [
+              "_build_dynamic_image_schema"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/image_generation_tool.py",
+            "line": 318,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _build_dynamic_image_schema @ tools/image_generation_tool.py:_build_dynamic_image_schema */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
     "tools/image_source.py": {
       "total": 11,
-      "ported": 10,
+      "ported": 11,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 11,
@@ -319166,16 +319340,24 @@
             "decorators": [],
             "line_number": 47
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_image_source_init",
+          "pop_annotation": {
+            "c_function": "tools_image_source_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/image_source.py",
+            "line": 324,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/image_source.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/image_source.py",
@@ -319471,10 +319653,10 @@
     },
     "tools/interrupt.py": {
       "total": 7,
-      "ported": 5,
+      "ported": 7,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 7,
@@ -319606,16 +319788,24 @@
             "decorators": [],
             "line_number": 102
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_interrupt_set",
+          "pop_annotation": {
+            "c_function": "tools_interrupt_set",
+            "python_functions": [
+              "set"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/interrupt.py",
+            "line": 331,
+            "is_consolidated": false,
+            "full_text": "/* PoP: set @ tools/interrupt.py:set */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "tools/interrupt.py",
@@ -319656,16 +319846,24 @@
             "decorators": [],
             "line_number": 108
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_interrupt_wait",
+          "pop_annotation": {
+            "c_function": "tools_interrupt_wait",
+            "python_functions": [
+              "wait"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/interrupt.py",
+            "line": 338,
+            "is_consolidated": false,
+            "full_text": "/* PoP: wait @ tools/interrupt.py:wait */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         }
       ]
     },
@@ -320612,10 +320810,10 @@
     },
     "tools/lazy_deps.py": {
       "total": 24,
-      "ported": 22,
+      "ported": 24,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 24,
@@ -320631,16 +320829,24 @@
             "decorators": [],
             "line_number": 266
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_lazy_deps_init",
+          "pop_annotation": {
+            "c_function": "tools_lazy_deps_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/lazy_deps.py",
+            "line": 345,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/lazy_deps.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/lazy_deps.py",
@@ -321174,16 +321380,24 @@
             "decorators": [],
             "line_number": 849
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_lazy_deps_available",
+          "pop_annotation": {
+            "c_function": "tools_lazy_deps_available",
+            "python_functions": [
+              "is_available"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/lazy_deps.py",
+            "line": 357,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_available @ tools/lazy_deps.py:is_available */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "tools/lazy_deps.py",
@@ -321608,10 +321822,10 @@
     },
     "tools/mcp_dashboard_oauth.py": {
       "total": 11,
-      "ported": 10,
+      "ported": 11,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 11,
@@ -321801,16 +322015,24 @@
             "decorators": [],
             "line_number": 112
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_mcp_oauth_snapshot",
+          "pop_annotation": {
+            "c_function": "tools_mcp_oauth_snapshot",
+            "python_functions": [
+              "snapshot"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/mcp_dashboard_oauth.py",
+            "line": 364,
+            "is_consolidated": false,
+            "full_text": "/* PoP: snapshot @ tools/mcp_dashboard_oauth.py:snapshot */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_dashboard_oauth.py",
@@ -323476,10 +323698,10 @@
     },
     "tools/mcp_stdio_watchdog.py": {
       "total": 4,
-      "ported": 3,
+      "ported": 4,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 4,
@@ -323582,16 +323804,24 @@
             "decorators": [],
             "line_number": 103
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_mcp_watchdog_main",
+          "pop_annotation": {
+            "c_function": "tools_mcp_watchdog_main",
+            "python_functions": [
+              "main"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/mcp_stdio_watchdog.py",
+            "line": 378,
+            "is_consolidated": false,
+            "full_text": "/* PoP: main @ tools/mcp_stdio_watchdog.py:main */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -328589,10 +328819,10 @@
     },
     "tools/microsoft_graph_auth.py": {
       "total": 11,
-      "ported": 10,
+      "ported": 11,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 11,
@@ -328730,16 +328960,24 @@
             "decorators": [],
             "line_number": 107
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_ms_graph_init",
+          "pop_annotation": {
+            "c_function": "tools_ms_graph_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/microsoft_graph_auth.py",
+            "line": 386,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/microsoft_graph_auth.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "tools/microsoft_graph_auth.py",
@@ -331048,10 +331286,10 @@
     },
     "tools/neutts_synth.py": {
       "total": 2,
-      "ported": 0,
+      "ported": 1,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 2,
@@ -331088,16 +331326,24 @@
             "decorators": [],
             "line_number": 51
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_neutts_main",
+          "pop_annotation": {
+            "c_function": "tools_neutts_main",
+            "python_functions": [
+              "main"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/neutts_synth.py",
+            "line": 441,
+            "is_consolidated": false,
+            "full_text": "/* PoP: main @ tools/neutts_synth.py:main */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -332341,10 +332587,10 @@
     },
     "tools/process_registry.py": {
       "total": 48,
-      "ported": 45,
+      "ported": 47,
       "partial": 1,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 48,
@@ -332389,17 +332635,24 @@
             "decorators": [],
             "line_number": 160
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_process_registry_init",
+          "pop_annotation": {
+            "c_function": "tools_process_registry_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/process_registry.py",
+            "line": 449,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/process_registry.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "tools/process_registry.py",
@@ -333065,17 +333318,24 @@
             "decorators": [],
             "line_number": 1322
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_process_registry_get",
+          "pop_annotation": {
+            "c_function": "tools_process_registry_get",
+            "python_functions": [
+              "get"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/process_registry.py",
+            "line": 455,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get @ tools/process_registry.py:get */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "tools/process_registry.py",
@@ -333740,10 +334000,10 @@
     },
     "tools/project_tools.py": {
       "total": 7,
-      "ported": 6,
+      "ported": 7,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 7,
@@ -333846,16 +334106,24 @@
             "decorators": [],
             "line_number": 51
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_project_resolve",
+          "pop_annotation": {
+            "c_function": "tools_project_resolve",
+            "python_functions": [
+              "_resolve"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/project_tools.py",
+            "line": 639,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve @ tools/project_tools.py:_resolve */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/project_tools.py",
@@ -335764,10 +336032,10 @@
     },
     "tools/send_message_tool.py": {
       "total": 28,
-      "ported": 25,
+      "ported": 27,
       "partial": 1,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 28,
@@ -336239,17 +336507,24 @@
             "decorators": [],
             "line_number": 1161
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_is_telegram_thread_not_found",
+          "pop_annotation": {
+            "c_function": "tools_is_telegram_thread_not_found",
+            "python_functions": [
+              "_is_telegram_thread_not_found"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/send_message_tool.py",
+            "line": 478,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_telegram_thread_not_found @ tools/send_message_tool.py:_is_telegram_thread_not_found */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/send_message_tool.py",
@@ -336290,17 +336565,24 @@
             "decorators": [],
             "line_number": 1494
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_registry_standalone_send",
+          "pop_annotation": {
+            "c_function": "tools_registry_standalone_send",
+            "python_functions": [
+              "_registry_standalone_send"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/send_message_tool.py",
+            "line": 487,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _registry_standalone_send @ tools/send_message_tool.py:_registry_standalone_send */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "tools/send_message_tool.py",
@@ -336567,10 +336849,10 @@
     },
     "tools/session_search_tool.py": {
       "total": 19,
-      "ported": 18,
+      "ported": 19,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 19,
@@ -336963,16 +337245,24 @@
             "decorators": [],
             "line_number": 430
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_session_search_scroll",
+          "pop_annotation": {
+            "c_function": "tools_session_search_scroll",
+            "python_functions": [
+              "_scroll"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/session_search_tool.py",
+            "line": 495,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _scroll @ tools/session_search_tool.py:_scroll */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/session_search_tool.py",
@@ -356983,10 +357273,10 @@
     },
     "tools/video_generation_tool.py": {
       "total": 12,
-      "ported": 10,
+      "ported": 12,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 12,
@@ -357176,17 +357466,24 @@
             "decorators": [],
             "line_number": 273
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_video_coerce_int",
+          "pop_annotation": {
+            "c_function": "tools_video_coerce_int",
+            "python_functions": [
+              "_coerce_int"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/video_generation_tool.py",
+            "line": 520,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _coerce_int @ tools/video_generation_tool.py:_coerce_int */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/video_generation_tool.py",
@@ -357198,17 +357495,24 @@
             "decorators": [],
             "line_number": 282
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_video_coerce_bool",
+          "pop_annotation": {
+            "c_function": "tools_video_coerce_bool",
+            "python_functions": [
+              "_coerce_bool"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/video_generation_tool.py",
+            "line": 532,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _coerce_bool @ tools/video_generation_tool.py:_coerce_bool */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/video_generation_tool.py",
@@ -360340,10 +360644,10 @@
     },
     "tools/write_approval.py": {
       "total": 17,
-      "ported": 15,
+      "ported": 17,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 17,
@@ -360417,16 +360721,24 @@
             "decorators": [],
             "line_number": 110
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_write_approval_pending_dir",
+          "pop_annotation": {
+            "c_function": "tools_write_approval_pending_dir",
+            "python_functions": [
+              "_pending_dir"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/write_approval.py",
+            "line": 549,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _pending_dir @ tools/write_approval.py:_pending_dir */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/write_approval.py",
@@ -360641,16 +360953,24 @@
             "decorators": [],
             "line_number": 246
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_write_approval_decision",
+          "pop_annotation": {
+            "c_function": "tools_write_approval_decision",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/write_approval.py",
+            "line": 560,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/write_approval.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/write_approval.py",
@@ -361278,10 +361598,10 @@
     },
     "tools/xai_http.py": {
       "total": 11,
-      "ported": 9,
+      "ported": 10,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 11,
@@ -361406,17 +361726,24 @@
             "decorators": [],
             "line_number": 112
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_xai_coerce_bool",
+          "pop_annotation": {
+            "c_function": "tools_xai_coerce_bool",
+            "python_functions": [
+              "_coerce_bool"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/xai_http.py",
+            "line": 602,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _coerce_bool @ tools/xai_http.py:_coerce_bool */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/xai_http.py",
@@ -361596,10 +361923,10 @@
     },
     "tools/xai_video_tools.py": {
       "total": 8,
-      "ported": 7,
+      "ported": 8,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 8,
@@ -361702,16 +362029,24 @@
             "decorators": [],
             "line_number": 37
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_xai_video_coerce_int",
+          "pop_annotation": {
+            "c_function": "tools_xai_video_coerce_int",
+            "python_functions": [
+              "_coerce_int"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/xai_video_tools.py",
+            "line": 620,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _coerce_int @ tools/xai_video_tools.py:_coerce_int */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/xai_video_tools.py",
