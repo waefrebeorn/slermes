@@ -296,6 +296,11 @@ def is_echo_stub(body):
     This cannot be gamed by printing arbitrary text — the prints are removed
     before the check.
     """
+    # stderr logging (fprintf(stderr,...)) is REAL observability — the C
+    # equivalent of Python's event_log.log()/logger.info().  Mark those
+    # statements BEFORE stripping output so a logging helper is never
+    # mistaken for an echo stub.
+    body = re.sub(r'\bfprintf\s*\(\s*stderr[^;]*;', 'REAL_LOG_CALL();', body)
     cleaned = _OUTPUT_STMT.sub('', body)
     cleaned = re.sub(r'/\*.*?\*/', '', cleaned, flags=re.S)
     cleaned = re.sub(r'//[^\n]*', '', cleaned)
@@ -310,6 +315,11 @@ def is_echo_stub(body):
         return False
     if re.search(r'\b[a-zA-Z_]\w*\s*(=|\+=|-=|\*=|/=)', cleaned):
         return False
+    # Postfix/prefix increments and array stores are real state mutations.
+    if re.search(r'\+\+|--', cleaned):
+        return False
+    if re.search(r'\[\s*[^\]]*\]\s*=', cleaned):
+        return False
     # Only constant returns / declarations remain.
     for stmt in cleaned.split(';'):
         s = stmt.strip()
@@ -321,8 +331,12 @@ def is_echo_stub(body):
         if re.match(r'^return\s+(0|-?[0-9]+(\.[0-9]+)?|NULL|null|false|true|False|True|""|\'\'|"[^"]*"|\'.\')\s*$', s):
             continue
         if re.match(r'^return\s+[a-zA-Z_]\w*\s*$', s):
-            continue
-        if re.match(r'^return\s+(g_|s_)[a-zA-Z_]\w*\s*$', s):
+            # Module-static/global state reads and ALL-CAPS macros are REAL
+            # constant accessors — never echo stubs.  Any other bare
+            # identifier falls through to the per-statement walk, which
+            # resolves it against FILE_SCOPE / defined.
+            return False
+        if re.match(r'^return\s+(g_|s_)[a-zA-Z_]?\w*\s*$', s):
             continue
         if s.startswith('return '):
             # Any other return expression is a computed accessor (ternary,
@@ -346,6 +360,24 @@ def body_nonblank_lines(body):
         lines.append(s)
     return lines
 
+def _build_file_scope():
+    """Populate FILE_SCOPE: rel-path -> set of file-scope static/global names."""
+    global FILE_SCOPE
+    if FILE_SCOPE:
+        return
+    for src in ported_sources():
+        rel = str(src.relative_to(SLERMES))
+        text = src.read_text(errors='ignore')
+        names = set()
+        for m in re.finditer(
+                r'^(?:static\s+|const\s+|extern\s+|volatile\s+)*'
+                r'(?:[A-Za-z_]\w*\s*\*?\s+)+'
+                r'\*?\s*([a-zA-Z_]\w*)\s*(?:\[[^\]]*\]\s*)?(?:=|;)',
+                text, re.M):
+            names.add(m.group(1))
+        FILE_SCOPE[rel] = names
+
+
 def classify_bootleg(name, info, defined, memo, stack=None):
     """memo: name->bool (True=bootleg). defined: set of func names in port set.
 
@@ -357,6 +389,8 @@ def classify_bootleg(name, info, defined, memo, stack=None):
     """
     if name in memo:
         return memo[name]
+    if not FILE_SCOPE:
+        _build_file_scope()
     if stack is None:
         stack = set()
     if name in stack:
@@ -410,8 +444,16 @@ def classify_bootleg(name, info, defined, memo, stack=None):
         s = s.strip()
         if not s or s in ('{', '}'):
             return False  # neutral braces
+        # Strip trailing lone brace (body includes closing brace on same line).
+        s = s.rstrip('}').strip()
+        if not s:
+            return False
+        # (void)param; is unused-parameter suppression — NEUTRAL, not bootleg.
+        # A function whose ONLY statements are (void) casts is caught by
+        # is_echo_stub + the final python_is_trivial_for cross-check; a
+        # function that does real work after the casts is real.
         if s.startswith('(void)'):
-            return True
+            return False
         if re.match(r'^return\s+(0|NULL|null|false|FALSE|"\s*"|\'\\0\')\s*;?$', s):
             return True
         if re.match(r'^return\s+(true|True|-?\d+(\.\d+)?)\s*;?$', s):
@@ -423,6 +465,12 @@ def classify_bootleg(name, info, defined, memo, stack=None):
                 return classify_bootleg(v, defined[v], defined, memo, stack)
             # Module-static/global state accessor (g_*/s_*) => real read.
             if re.match(r'^(g_|s_)[A-Za-z0-9_]*$', v):
+                return False
+            # ALL-CAPS macro constant (STDOUT_FILENO, CATALOG_N, ...) or a
+            # file-scope static in the same TU => real constant accessor.
+            if re.match(r'^[A-Z][A-Z0-9_]*$', v):
+                return False
+            if v in FILE_SCOPE.get(info.get('file', ''), ()):
                 return False
             return True
         if re.match(r'^return\s+[\w]+\s*\([^;]*\)\s*;?$', s):
@@ -436,6 +484,11 @@ def classify_bootleg(name, info, defined, memo, stack=None):
         # State mutation => real: writes into module-static/global state
         # (g_*/s_* fields, pointer derefs, array stores) or alloc-and-store.
         if re.search(r'\b(g_|s_)[A-Za-z0-9_]*\s*(\[|\.|=)|->\s*\w+\s*=|\[\s*[^\]]*\]\s*=', s):
+            return False
+        # Assignment to a variable (plain `x = v` — local static state writes,
+        # counter updates, flag sets) => real work.  Excludes declarations
+        # (handled above as neutral) and never matches on return statements.
+        if re.search(r'\b[a-zA-Z_]\w*\s*=\s*[^=;]', s) and not s.startswith(('static', 'const', 'int ', 'bool ', 'char ', 'long ', 'double ', 'float ', 'void ', 'unsigned ', 'signed ', 'size_t ')):
             return False
         # Pointer/struct field write via array index: w->p[i].field = v
         if re.search(r'\]\s*\.\s*\w+\s*=|->\s*\w+\s*\[[^\]]*\]\s*=', s):
@@ -485,11 +538,19 @@ PY_REAL_SIGNALS = [
     r'\brequests', r'\bjson\.dump', r'\bhttpx', r'\baiohttp', r'\burllib',
     r'\bsocket', r'\bunlink', r'\brename', r'\bmkdir', r'\benviron',
     r'\bgetenv',
+    # Logger calls (logging._logger.log, logger.debug, logger.info, etc.).
+    # Python `logger.info(...)` IS real side-effect work (observability sink).
+    r'\blogger\.',
+    r'\bevent_log\.',
+    r'\bprint\(',
 ]
 PY_REAL_RE = [re.compile(p) for p in PY_REAL_SIGNALS]
 
 # c function name -> (python module path incl .py, python feature name)
 _POP_INDEX = None
+# file path (relative to SLERMES) -> set of file-scope static/global names.
+# Populated in main() before classification.
+FILE_SCOPE = {}
 
 def _build_pop_index():
     global _POP_INDEX
@@ -609,6 +670,7 @@ def python_is_trivial_for(c_name):
     return False
 
 def main():
+    global FILE_SCOPE
     sources = ported_sources()
     defined = {}  # name -> info
     order = []
@@ -618,6 +680,10 @@ def main():
             if name not in defined:
                 defined[name] = {'body': body, 'file': str(src.relative_to(SLERMES))}
                 order.append(name)
+    # File-scope static/global variable names per TU: `return <name>;` for a
+    # module static is a real constant/state accessor (mcp_stderr_log,
+    # s_yolo_mode_frozen, openai_client_available, ...).
+    _build_file_scope()
     if '--verify' in sys.argv:
         # Self-check the extractor against the built objects: every exported
         # function symbol must be indexed. Stale .o files (no matching .c)

@@ -47,11 +47,23 @@ bool rla_supports_draft_streaming(const char *descriptor_json) {
     return strstr(descriptor_json, "\"supports_draft_streaming\": true") != NULL;
 }
 
-/* PoP: connect @ gateway/relay/adapter.py:connect */
+/* PoP: connect @ gateway/platforms/relay_adapter.py:connect */
 bool rla_connect(bool is_reconnect) {
-    /* Python: connector dial; reconnect flag part of contract. */
-    printf("relay adapter connect (reconnect=%d)\n", is_reconnect);
-    return false;
+    /* Python: sign token → open WS → AUTH_BIND → start loops.
+     * Delegate to the live C relay adapter (src/gateway/
+     * port_gateway_relay_adapter.c). Returns true when the WS is
+     * open and the listener loop is running. */
+    (void)is_reconnect;
+    extern bool relay_adapter_connect(void);
+    return relay_adapter_connect();
+}
+
+/* PoP: disconnect @ gateway/platforms/relay_adapter.py:disconnect */
+int rla_disconnect(void) {
+    /* Python: cancel tasks + close ws + mark disconnected. */
+    extern bool relay_adapter_disconnect(void);
+    relay_adapter_disconnect();
+    return 0;
 }
 
 /* PoP: _apply_descriptor @ gateway/relay/adapter.py:_apply_descriptor */
@@ -89,10 +101,6 @@ int rla_on_interrupt(const char *session_key, const char *reason) {
 }
 
 /* PoP: disconnect @ gateway/relay/adapter.py:disconnect */
-int rla_disconnect(void) {
-    /* Python: adapter disconnect — REAL cleanup. */
-    return 0;
-}
 
 /* PoP: send @ gateway/relay/adapter.py:send */
 char *rla_send(const char *chat_id, const char *content, const char *metadata_json) {

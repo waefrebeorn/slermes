@@ -11,6 +11,9 @@
 #include <ctype.h>
 #include "hermes_json.h"
 
+/* Forward declaration — defined below (heartbeat sender, line ~1125). */
+int yb_send_heartbeat_once(const char *arg);
+
 /* Active adapter instance (set_active). */
 static void *s_yb_active_adapter;
 
@@ -522,10 +525,10 @@ int yb_u_extract_media_refs_from_transcript(const char *arg) {
 
 /* PoP: _send_loading_heartbeat @ gateway/platforms/yuanbao.py:_send_loading_heartbeat */
 int yb_u_send_loading_heartbeat(const char *arg) {
-    /* Python: best-effort bubble. */
-    (void)arg;
-    printf("loading heartbeat (WS_HEARTBEAT_RUNNING) sent best-effort\n");
-    return 0;
+    /* Python: best-effort bubble — sends WS_HEARTBEAT_RUNNING.
+     * Arg = chat_id; delegate to the real heartbeat sender. */
+    if (!arg || !*arg) { printf("loading heartbeat skipped (no chat_id)\n"); return 0; }
+    return yb_send_heartbeat_once("1\t1\t");
 }
 
 /* PoP: _media_marker @ gateway/platforms/yuanbao.py:_media_marker */

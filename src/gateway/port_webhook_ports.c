@@ -10,6 +10,8 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <pthread.h>
+#include "hermes_gateway_types.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -29,14 +31,27 @@ char *whk_init(const char *config_json) {
 
 /* PoP: connect @ gateway/platforms/webhook.py:connect */
 bool whk_connect(void) {
-    /* Python: reload dynamic routes + validate. */
-    printf("webhook connect (dynamic routes reloaded)\n");
-    return false;
+    /* Python: reload dynamic routes + validate, then run the server.
+     * Delegate to the live C webhook server (src/gateway/platforms/
+     * webhook.c): spawn the listener thread on the configured port.
+     * Returns true once the thread is started. */
+    extern void *thread_webhook(void *arg);
+    const char *port_env = getenv("WEBHOOK_PORT");
+    int port = port_env ? atoi(port_env) : 8787;
+    pthread_t tid;
+    if (pthread_create(&tid, NULL, thread_webhook, &port) != 0)
+        return false;
+    pthread_detach(tid);
+    return true;
 }
 
 /* PoP: disconnect @ gateway/platforms/webhook.py:disconnect */
 int whk_disconnect(void) {
-    printf("webhook disconnected (runner cleaned)\n");
+    /* Python: stop runner, drop subscriptions, clean resources.
+     * The C webhook server loop exits when g_gw.running flips false
+     * (SIGINT/SIGTERM path in gw_pollers.c). */
+    extern gateway_state_t g_gw;
+    g_gw.running = false;
     return 0;
 }
 

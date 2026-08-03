@@ -357,8 +357,11 @@ int tools_interrupt_set(bool state)
 /* PoP: wait @ tools/interrupt.py:wait */
 bool tools_interrupt_wait(double timeout)
 {
+    /* Python: wait() returns current state immediately (is_set()).
+     * Delegate to the real interrupt tracker (lib/libinterrupt). */
     (void)timeout;
-    return false;
+    extern bool interrupt_is_interrupted(void);
+    return interrupt_is_interrupted();
 }
 
 /* PoP: __init__ @ tools/lazy_deps.py:__init__ */

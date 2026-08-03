@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "xai_http.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -36,16 +37,20 @@ char *pxa_display_name(void) {
 
 /* PoP: is_authenticated @ hermes_cli/proxy/adapters/xai.py:is_authenticated */
 bool pxa_is_authenticated(void) {
-    /* Python: pool has available credential. */
-    printf("xai oauth pool auth probe\n");
-    return false;
+    /* Python: pool.has_available() — check the xAI credential pool.
+     * Delegate to the C credential store (lib/libcredential). */
+    extern bool has_xai_credentials(void);
+    return has_xai_credentials();
 }
 
 /* PoP: get_credential @ hermes_cli/proxy/adapters/xai.py:get_credential */
 char *pxa_get_credential(void) {
-    /* Python: pool credential or None. */
-    printf("xai oauth credential fetched from pool\n");
-    return NULL;
+    /* Python: pool.get_credential() — resolve the active xAI credential.
+     * Delegate to the C credential store (lib/libxai_http). */
+    extern bool xai_get_api_key(char out_key[XAI_API_KEY_MAX]);
+    char key[XAI_API_KEY_MAX];
+    if (!xai_get_api_key(key)) return NULL;
+    return strdup(key);
 }
 
 /* PoP: get_retry_credential @ hermes_cli/proxy/adapters/xai.py:get_retry_credential */

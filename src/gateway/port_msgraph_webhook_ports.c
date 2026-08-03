@@ -21,14 +21,23 @@ static char *lowerdup(const char *s) {
 
 /* PoP: connect @ gateway/platforms/msgraph_webhook.py:connect */
 bool msw_connect(void) {
-    /* Python: client state required. */
-    printf("msgraph webhook connect (client state check)\n");
-    return false;
+    /* Python: client state required, then start the webhook runner.
+     * Delegate to the live C implementation (src/gateway/platforms/
+     * msgraph_webhook.c): init the server with env-derived config and
+     * run it. Returns true when a server thread was started. */
+    extern void msgraph_webhook_init(const char *webhook_path,
+                                     const char *health_path, int port);
+    extern void msgraph_webhook_run(void);
+    msgraph_webhook_init(NULL, NULL, 0);
+    msgraph_webhook_run();
+    return true;
 }
 
 /* PoP: disconnect @ gateway/platforms/msgraph_webhook.py:disconnect */
 int msw_disconnect(void) {
-    printf("msgraph webhook disconnected (runner cleaned)\n");
+    /* Python: stop runner + clean resources. */
+    extern void msgraph_webhook_stop(void);
+    msgraph_webhook_stop();
     return 0;
 }
 

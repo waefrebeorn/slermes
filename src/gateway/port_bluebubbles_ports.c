@@ -61,15 +61,26 @@ char *bb_init(const char *config_json) {
 
 /* PoP: connect @ gateway/platforms/bluebubbles.py:connect */
 bool bb_connect(const char *server_url, const char *password) {
-    /* Python: requires server url + password. */
+    /* Python: requires server url + password, then sets up the
+     * HTTP client and registers the webhook.  Delegate to the
+     * live C implementation. */
+    extern void bluebubbles_set_url(const char *url);
+    extern void bluebubbles_set_password(const char *password);
     if (!server_url || !password) return false;
-    printf("bluebubbles connect (%s)\n", server_url);
-    return false;
+    bluebubbles_set_url(server_url);
+    bluebubbles_set_password(password);
+    return true;
 }
 
 /* PoP: disconnect @ gateway/platforms/bluebubbles.py:disconnect */
 int bb_disconnect(void) {
-    printf("bluebubbles disconnected (webhook unregistered)\n");
+    /* Python: unregister webhook + close client + mark disconnected.
+     * The C adapter keeps URL/password state — clear them to
+     * reflect the disconnected state. */
+    extern void bluebubbles_set_url(const char *url);
+    extern void bluebubbles_set_password(const char *password);
+    bluebubbles_set_url(NULL);
+    bluebubbles_set_password(NULL);
     return 0;
 }
 
