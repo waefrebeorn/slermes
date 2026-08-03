@@ -270,6 +270,26 @@ void ui_draw_chat(void) {
         mvwprintw(ui.wins[PANEL_CHAT], comp_y + 1, 0, "%-*.*s", cols - 1, cols - 1, ps);
         wattroff(ui.wins[PANEL_CHAT], COLOR_PAIR(CP_COMPOSER));
 
+        /* Autocomplete popup (above the input line). */
+        if (ui.composer && ui.composer->autocomplete_visible) {
+            const composer_suggestion_t *sugg = NULL;
+            int n = composer_get_suggestions(ui.composer, &sugg, COMPOSER_MAX_SUGGEST);
+            int sel = ui.composer->suggestion_selected;
+            int pop_y = comp_y - n - 1;
+            if (pop_y < 0) pop_y = 0;
+            for (int si = 0; si < n && si < 8; si++) {
+                wattron(ui.wins[PANEL_CHAT],
+                        si == sel ? COLOR_PAIR(CP_CHAT_TOOL) : COLOR_PAIR(CP_CHAT_DIM));
+                char line[200];
+                snprintf(line, sizeof(line), "  %-24s %s",
+                         sugg[si].text, sugg[si].description);
+                mvwprintw(ui.wins[PANEL_CHAT], pop_y + si, 0, "%-*.*s",
+                          cols - 1, cols - 1, line);
+                wattroff(ui.wins[PANEL_CHAT],
+                         si == sel ? COLOR_PAIR(CP_CHAT_TOOL) : COLOR_PAIR(CP_CHAT_DIM));
+            }
+        }
+
         /* Controls hint — show available keybinds */
         wattron(ui.wins[PANEL_CHAT], COLOR_PAIR(CP_CHAT_DIM));
         mvwprintw(ui.wins[PANEL_CHAT], comp_y + 2, 0,

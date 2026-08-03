@@ -49,9 +49,10 @@ tui: $(PHASE5_OBJ) $(TUI_OBJ) src/main.o $(HERMES_CLI_PORT_OBJ) $(HERMES_CLI_POR
 	@echo "slermes-tui built with ncurses TUI support"
 
 # C11 Desktop App build (ncurses-based, replaces Electron/TS shell)
-desktop: $(DESKTOP_APP_OBJ) $(filter-out $(DESKTOP_LIBS_FILTER), $(LIB_OBJ_FILTERED)) $(WHISPER_EXTRA_OBJ)
+desktop: $(DESKTOP_APP_OBJ) $(filter-out $(DESKTOP_LIBS_FILTER), $(LIB_OBJ_FILTERED)) $(WHISPER_EXTRA_OBJ) lib/libdb/sqlite3.o
 	$(CC) $(CFLAGS) -o hermes-desktop $^ $(LDFLAGS) $(PLATFORM_LDFLAGS) $(LIBS) \
 		/usr/lib/x86_64-linux-gnu/libncursesw.so.6 /usr/lib/x86_64-linux-gnu/libtinfo.so.6 -lpanelw -lstdc++ \
+		$(shell pkg-config --libs sdl2 SDL2_ttf 2>/dev/null) -lasound \
 		$(if $(WHISPER_LIBS),$(WHISPER_LIBS))
 	@echo "hermes-desktop built — C11 Desktop App (replaces Electron shell)"
 

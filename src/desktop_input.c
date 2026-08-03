@@ -205,6 +205,24 @@ void ui_handle_overlay(int key) {
                 ui_destroy_overlay();
                 execute_palette_command(act);
             }
+        } else if (ui.composer && ui.composer->autocomplete_visible &&
+                   ui.composer->suggestion_selected >= 0) {
+            /* Apply the selected autocomplete suggestion: replace the
+             * word at the cursor with the suggestion text. */
+            const composer_suggestion_t *sugg = NULL;
+            int n = composer_get_suggestions(ui.composer, &sugg, COMPOSER_MAX_SUGGEST);
+            int sel = ui.composer->suggestion_selected;
+            if (sel >= 0 && sel < n) {
+                /* Backspace the current word, then insert the suggestion. */
+                int word_start = ui.composer->cursor_pos;
+                while (word_start > 0 &&
+                       !isspace((unsigned char)ui.composer->text[word_start - 1]))
+                    word_start--;
+                while (ui.composer->cursor_pos > word_start)
+                    composer_backspace(ui.composer);
+                composer_insert(ui.composer, sugg[sel].text);
+                composer_update_suggestions(ui.composer);
+            }
         }
         break;
     case KEY_BACKSPACE: case 127: case '\b':
@@ -232,6 +250,12 @@ void ui_handle_normal(int key) {
         }
         break;
     case '\t':
+        /* With autocomplete visible, Tab cycles suggestions; otherwise it
+         * toggles the sidebar (the Electron composer behavior). */
+        if (ui.composer && ui.composer->autocomplete_visible) {
+            composer_suggestion_next(ui.composer);
+            break;
+        }
         ui.sidebar_visible = !ui.sidebar_visible;
         ui_resize();
         break;
@@ -470,6 +494,8 @@ void ui_handle_normal(int key) {
         } else if (ui.composer && key >= 32 && key < 127) {
             char ch[2] = { (char)key, '\0' };
             composer_insert(ui.composer, ch);
+            /* Refresh autocomplete suggestions after every input. */
+            composer_update_suggestions(ui.composer);
         }
         break;
     }
