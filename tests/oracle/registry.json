@@ -1115,7 +1115,10 @@
   "web_server_console_theme": {
    "harness": "tests/t_port_web_server_console_theme.c",
    "oracle": "tests/sta_oracle_web_server_console_theme.py",
-   "fixtures": "tests/oracle/fixtures/web_server_console_theme"
+   "fixtures": "tests/oracle/fixtures/web_server_console_theme",
+   "normalize": {
+    "float_int_equal": true
+   }
   },
   "web_server_cron_dash": {
    "harness": "tests/t_port_web_server_cron_dash.c",

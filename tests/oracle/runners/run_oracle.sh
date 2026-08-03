@@ -118,11 +118,42 @@ FAIL=0
 REG_JSON="${REG_JSON:-tests/oracle/registry.json}"
 STRIP_PATTERNS=$(python3 -c "import json,sys; print('\n'.join(json.load(open('$REG_JSON')).get('normalize',{}).get('strip_patterns',[])))" 2>/dev/null)
 STRIP_FIELDS=$(python3 -c "import json,sys; print(' '.join(json.load(open('$REG_JSON')).get('normalize',{}).get('strip_fields',[])))" 2>/dev/null)
+# Per-port float/int canonicalization: C's JSON writer renders integral
+# doubles as "1" while Python emits "1.0"; when the port opts in
+# (normalize.float_int_equal), rewrite integral floats to ints on both sides.
+FLOAT_INT_EQUAL=$(python3 -c "import json,sys; d=json.load(open('$REG_JSON')); print(1 if d.get('ports',{}).get(sys.argv[1],{}).get('normalize',{}).get('float_int_equal') else 0)" "$NAME" 2>/dev/null)
 
 normalize_out() {  # $1 = file
   local f="$1"
   local tmp; tmp="$(mktemp)"
   cp "$f" "$tmp"
+  # float_int_equal: canonicalize integral floats to ints (C's JSON writer
+  # renders 1.0 as "1" via %.0f; Python emits "1.0"). Semantically equal —
+  # normalize so the text diff passes.
+  if [ "$FLOAT_INT_EQUAL" = "1" ]; then
+    tmp2="$(mktemp)"
+    python3 - "$tmp" <<'PY' > "$tmp2"
+import json, sys
+def canon(o):
+    if isinstance(o, float) and o == int(o):
+        return int(o)
+    if isinstance(o, dict):
+        return {k: canon(v) for k, v in o.items()}
+    if isinstance(o, list):
+        return [canon(v) for v in o]
+    return o
+out = []
+for line in open(sys.argv[1], encoding='utf-8', errors='replace'):
+    line = line.strip()
+    if not line: continue
+    try:
+        out.append(json.dumps(canon(json.loads(line))))
+    except Exception:
+        out.append(line)
+sys.stdout.write('\n'.join(out) + '\n')
+PY
+    mv "$tmp2" "$tmp"
+  fi
   # strip_patterns: treat each as a Python regex, remove every match
   if [ -n "$STRIP_PATTERNS" ]; then
     tmp2="$(mktemp)"
@@ -209,8 +240,9 @@ for f in "$FIX"/*.in; do
   # /tmp is universally non-repo and marker-free.
   # Binary fixtures (e.g. session_detail's *.in IS a seeded sqlite DB) must NOT
   # go through sed — placeholder substitution on binary data corrupts it.
-  # Detect via NUL byte in the first 8KB and copy verbatim instead.
-  if head -c 8192 "$f" | grep -q "$(printf '\0')" 2>/dev/null; then
+  # Detect via NUL-byte DENSITY in the first 8KB (a real DB is mostly NULs; a
+  # text fixture may contain at most a stray NUL) and copy verbatim instead.
+  if head -c 8192 "$f" | tr -cd '\0' | wc -c | awk '{exit ($1 > 16) ? 0 : 1}'; then
     cp "$f" "$FSUB"
   else
     sed -e "s#@SBX@#$TMPH#g" -e "s#@NOW@#1700000000.0#g" -e "s#@NOTREPO@#/tmp#g" "$f" > "$FSUB"
