@@ -480,7 +480,7 @@ unsigned char *pet_thumbnail_png(const char *slug, int *out_len) {
     return data;
 }
 
-/* PoP: pet_is_generated @ agent/pet/store.py:generated (InstalledPet.generated) */
+/* PoP: pet_is_generated @ agent/pet/store.py:generated */
 bool pet_is_generated(const char *slug) {
     if (!slug || !*slug) return false;
     pet_installed_t pet;

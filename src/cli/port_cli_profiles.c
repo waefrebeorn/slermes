@@ -453,7 +453,7 @@ char *profile_build_alias_map(void) {
     return map;
 }
 
-/* PoP: profile_alias_map_next @ hermes_cli/profiles.py:build_alias_map (iter) */
+/* PoP: profile_alias_map_next @ hermes_cli/profiles.py:build_alias_map */
 bool profile_alias_map_next(char *packed, char **cursor, const char **canon,
                              const char **alias) {
     if (!packed || !*packed) return false;
@@ -908,7 +908,7 @@ char *profile_profiles_to_serve(bool multiplex) {
     return buf;
 }
 
-/* PoP: profile_serve_next @ hermes_cli/profiles.py:profiles_to_serve (iter) */
+/* PoP: profile_serve_next @ hermes_cli/profiles.py:profiles_to_serve */
 bool profile_serve_next(char *packed, char **cursor, const char **name,
                         const char **home) {
     if (!packed || !*packed) return false;

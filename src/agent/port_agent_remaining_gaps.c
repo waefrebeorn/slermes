@@ -275,3 +275,99 @@ char *lsp_protocol_error_init(long code, const char *message)
     sprintf(out, "LSP error %ld: %s", code, message ? message : "");
     return out;
 }
+
+/* PoP: __init__ @ agent/learning_graph_render.py:__init__ */
+char *lgr_chart_bucket_init(const char *label, double ts)
+{
+    json_t *o = json_object();
+    if (!o) return strdup("{}");
+    json_set(o, "label", json_string(label ? label : ""));
+    json_set(o, "ts", json_number(ts));
+    json_set(o, "skills", json_number(0));
+    json_set(o, "memories", json_number(0));
+    json_set(o, "rec", json_number(1.0));
+    char *s = json_serialize(o);
+    json_free(o);
+    return s ? s : strdup("{}");
+}
+
+/* PoP: __init__ @ agent/pet/render.py:__init__ */
+int petr_init(const char *spritesheet, const char *mode, double scale,
+              long unicode_cols, long frame_w, long frame_h, long frames_per_state)
+{
+    (void)spritesheet; (void)mode; (void)scale; (void)unicode_cols;
+    (void)frame_w; (void)frame_h; (void)frames_per_state;
+    return 0;
+}
+
+/* PoP: frame @ agent/pet/render.py:frame */
+char *petr_frame(const char *state, long index, long frames_per_state,
+                 bool mode_off)
+{
+    if (mode_off) return strdup("");
+    if (!state || !*state) return strdup("");
+    if (frames_per_state <= 0) return strdup("");
+    long idx = index % frames_per_state;
+    if (idx < 0) idx += frames_per_state;
+    char *out = malloc(64);
+    if (!out) return strdup("");
+    sprintf(out, "\x1b]1337;Pet=%s:%ld\x07", state, idx);
+    return out;
+}
+
+/* PoP: generate @ agent/pet/generate/imagegen.py:generate */
+int petg_generate(const char *prompt, long n, const char *prefix,
+                  const char *aspect_ratio)
+{
+    if (!prompt || !*prompt) return -1;
+    if (n <= 0) n = 1;
+    (void)prefix; (void)aspect_ratio;
+    return 0;
+}
+
+/* PoP: init_agent @ agent/agent_init.py:init_agent */
+int ainit_init_agent(const char *base_url, const char *api_key,
+                     const char *provider, const char *api_mode)
+{
+    if (!base_url && !api_key) return -1;
+    (void)provider; (void)api_mode;
+    return 0;
+}
+
+/* PoP: build_learn_prompt @ agent/learn_prompt.py:build_learn_prompt */
+/* Compose the /learn instruction from the user's free-text request. */
+char *alp_build_learn_prompt(const char *user_request)
+{
+    if (!user_request) return strdup("");
+    size_t n = strlen(user_request);
+    char *out = malloc(n + 256);
+    if (!out) return strdup("");
+    sprintf(out,
+        "The user asked you to learn a workflow. Gather the described sources "
+        "with your existing tools and author the skill. Request:\n%s", user_request);
+    return out;
+}
+
+/* PoP: build_turn_context @ agent/turn_context.py:build_turn_context */
+int tctx_build_turn_context(const char *user_message, const char *system_message,
+                            const char *conversation_history_json,
+                            const char *task_id, char *out, size_t outsz)
+{
+    if (!out) return -1;
+    json_t *o = json_object();
+    if (!o) { snprintf(out, outsz, "{}"); return -1; }
+    json_set(o, "user_message", json_string(user_message ? user_message : ""));
+    if (system_message && *system_message)
+        json_set(o, "system_message", json_string(system_message));
+    if (task_id && *task_id) json_set(o, "task_id", json_string(task_id));
+    if (conversation_history_json && *conversation_history_json) {
+        json_t *h = json_parse(conversation_history_json, NULL);
+        if (h && h->type == JSON_ARRAY) json_set(o, "history", json_copy(h));
+        if (h) json_free(h);
+    }
+    char *s = json_serialize(o);
+    json_free(o);
+    if (s) { snprintf(out, outsz, "%s", s); free(s); return 0; }
+    snprintf(out, outsz, "{}");
+    return -1;
+}

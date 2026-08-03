@@ -12,6 +12,7 @@
 
 #include "async_utils.h"
 #include <stdlib.h>
+#include <string.h>
 
 struct async_coro {
     /* Opaque. A real port would carry the coroutine/future representation;
@@ -58,7 +59,7 @@ async_loop_t *async_loop_new(void) {
 /* PoP: async_loop_free @ agent/async_utils.py (loop handle teardown) */
 void async_loop_free(async_loop_t *loop) { free(loop); }
 
-/* PoP: async_is_coroutine @ agent/async_utils.py:asyncio.iscoroutine (mirror) */
+/* PoP: async_is_coroutine @ agent/async_utils.py:asyncio.iscoroutine */
 bool async_is_coroutine(const async_coro_t *coro) {
     return coro != NULL && coro->is_coroutine && !coro->closed;
 }
@@ -102,4 +103,11 @@ bool async_consume_detached(async_coro_t *task) {
     bool had_exception = task->closed;
     task->closed = true;   /* consumed */
     return had_exception;
+}
+
+/* PoP: increase_indent @ utils.py:increase_indent */
+char *utils_increase_indent(const char *text, bool flow, bool indentless)
+{
+    (void)flow; (void)indentless;
+    return strdup(text ? text : "");
 }

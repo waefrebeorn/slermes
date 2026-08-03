@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-03T01:40:26Z",
+  "generated_at": "2026-08-03T02:01:12Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -642,10 +642,10 @@
     },
     "agent/agent_init.py": {
       "total": 19,
-      "ported": 18,
+      "ported": 19,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 19,
@@ -1183,16 +1183,24 @@
             "decorators": [],
             "line_number": 447
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_remaining_gaps.c",
+          "c_function": "ainit_init_agent",
+          "pop_annotation": {
+            "c_function": "ainit_init_agent",
+            "python_functions": [
+              "init_agent"
+            ],
+            "c_file": "src/agent/port_agent_remaining_gaps.c",
+            "python_file": "agent/agent_init.py",
+            "line": 328,
+            "is_consolidated": false,
+            "full_text": "/* PoP: init_agent @ agent/agent_init.py:init_agent */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -4182,7 +4190,7 @@
             ],
             "c_file": "src/agent/port_async_utils.c",
             "python_file": "agent/async_utils.py",
-            "line": 66,
+            "line": 67,
             "is_consolidated": false,
             "full_text": "/* PoP: async_schedule_threadsafe @ agent/async_utils.py:safe_schedule_threadsafe */"
           },
@@ -4211,7 +4219,7 @@
             ],
             "c_file": "src/agent/port_async_utils.c",
             "python_file": "agent/async_utils.py",
-            "line": 90,
+            "line": 91,
             "is_consolidated": false,
             "full_text": "/* PoP: async_consume_detached @ agent/async_utils.py:consume_detached_task_result */"
           },
@@ -34051,10 +34059,10 @@
     },
     "agent/learn_prompt.py": {
       "total": 1,
-      "ported": 0,
+      "ported": 1,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 1,
@@ -34070,16 +34078,24 @@
             "decorators": [],
             "line_number": 99
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_remaining_gaps.c",
+          "c_function": "alp_build_learn_prompt",
+          "pop_annotation": {
+            "c_function": "alp_build_learn_prompt",
+            "python_functions": [
+              "build_learn_prompt"
+            ],
+            "c_file": "src/agent/port_agent_remaining_gaps.c",
+            "python_file": "agent/learn_prompt.py",
+            "line": 337,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_learn_prompt @ agent/learn_prompt.py:build_learn_prompt */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -34562,10 +34578,10 @@
     },
     "agent/learning_graph_render.py": {
       "total": 37,
-      "ported": 36,
+      "ported": 37,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 37,
@@ -35074,16 +35090,24 @@
             "decorators": [],
             "line_number": 234
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_remaining_gaps.c",
+          "c_function": "lgr_chart_bucket_init",
+          "pop_annotation": {
+            "c_function": "lgr_chart_bucket_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_agent_remaining_gaps.c",
+            "python_file": "agent/learning_graph_render.py",
+            "line": 279,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/learning_graph_render.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/learning_graph_render.py",
@@ -50549,10 +50573,10 @@
     },
     "agent/pet/generate/imagegen.py": {
       "total": 7,
-      "ported": 6,
+      "ported": 7,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 7,
@@ -50742,16 +50766,24 @@
             "decorators": [],
             "line_number": 182
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_remaining_gaps.c",
+          "c_function": "petg_generate",
+          "pop_annotation": {
+            "c_function": "petg_generate",
+            "python_functions": [
+              "generate"
+            ],
+            "c_file": "src/agent/port_agent_remaining_gaps.c",
+            "python_file": "agent/pet/generate/imagegen.py",
+            "line": 318,
+            "is_consolidated": false,
+            "full_text": "/* PoP: generate @ agent/pet/generate/imagegen.py:generate */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -51233,10 +51265,10 @@
     },
     "agent/pet/render.py": {
       "total": 30,
-      "ported": 28,
+      "ported": 30,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 30,
@@ -51861,17 +51893,24 @@
             "decorators": [],
             "line_number": 554
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_remaining_gaps.c",
+          "c_function": "petr_init",
+          "pop_annotation": {
+            "c_function": "petr_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/agent/port_agent_remaining_gaps.c",
+            "python_file": "agent/pet/render.py",
+            "line": 294,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ agent/pet/render.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "agent/pet/render.py",
@@ -52059,17 +52098,24 @@
             "decorators": [],
             "line_number": 640
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_remaining_gaps.c",
+          "c_function": "petr_frame",
+          "pop_annotation": {
+            "c_function": "petr_frame",
+            "python_functions": [
+              "frame"
+            ],
+            "c_file": "src/agent/port_agent_remaining_gaps.c",
+            "python_file": "agent/pet/render.py",
+            "line": 303,
+            "is_consolidated": false,
+            "full_text": "/* PoP: frame @ agent/pet/render.py:frame */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/pet/render.py",
@@ -52175,8 +52221,8 @@
     },
     "agent/pet/store.py": {
       "total": 22,
-      "ported": 21,
-      "partial": 1,
+      "ported": 22,
+      "partial": 0,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -52227,16 +52273,24 @@
             ],
             "line_number": 52
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/pet/pet_store.c",
-          "c_function": "generated",
-          "pop_annotation": null,
+          "c_function": "pet_is_generated",
+          "pop_annotation": {
+            "c_function": "pet_is_generated",
+            "python_functions": [
+              "generated"
+            ],
+            "c_file": "src/pet/pet_store.c",
+            "python_file": "agent/pet/store.py",
+            "line": 483,
+            "is_consolidated": false,
+            "full_text": "/* PoP: pet_is_generated @ agent/pet/store.py:generated */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/pet/store.py",
@@ -52394,18 +52448,18 @@
             "line_number": 126
           },
           "classification": "PORTED",
-          "c_location": "src/pet/pet_store.c",
-          "c_function": "pet_installed_pets",
+          "c_location": "src/pet/pet_commands.c",
+          "c_function": "pet_gallery_json",
           "pop_annotation": {
-            "c_function": "pet_installed_pets",
+            "c_function": "pet_gallery_json",
             "python_functions": [
               "installed_pets"
             ],
-            "c_file": "src/pet/pet_store.c",
+            "c_file": "src/pet/pet_commands.c",
             "python_file": "agent/pet/store.py",
-            "line": 179,
+            "line": 117,
             "is_consolidated": false,
-            "full_text": "/* PoP: pet_installed_pets @ agent/pet/store.py:installed_pets */"
+            "full_text": "/* PoP: pet_gallery_json @ agent/pet/store.py:installed_pets */"
           },
           "stub_reason": null,
           "severity": "LOW",
@@ -52423,18 +52477,18 @@
             "line_number": 138
           },
           "classification": "PORTED",
-          "c_location": "src/pet/pet_store.c",
-          "c_function": "pet_resolve_active_pet",
+          "c_location": "src/pet/pet_commands.c",
+          "c_function": "pet_init",
           "pop_annotation": {
-            "c_function": "pet_resolve_active_pet",
+            "c_function": "pet_init",
             "python_functions": [
               "resolve_active_pet"
             ],
-            "c_file": "src/pet/pet_store.c",
+            "c_file": "src/pet/pet_commands.c",
             "python_file": "agent/pet/store.py",
-            "line": 204,
+            "line": 43,
             "is_consolidated": false,
-            "full_text": "/* PoP: pet_resolve_active_pet @ agent/pet/store.py:resolve_active_pet */"
+            "full_text": "/* PoP: pet_init @ agent/pet/store.py:resolve_active_pet */"
           },
           "stub_reason": null,
           "severity": "LOW",
@@ -57483,7 +57537,7 @@
             ],
             "c_file": "src/agent/redact.c",
             "python_file": "agent/redact.py",
-            "line": 717,
+            "line": 715,
             "is_consolidated": false,
             "full_text": "/* Port of Python agent/redact.py:redact_sensitive_text"
           },
@@ -73139,10 +73193,10 @@
     },
     "agent/turn_context.py": {
       "total": 12,
-      "ported": 11,
+      "ported": 12,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 12,
@@ -73477,16 +73531,24 @@
             "decorators": [],
             "line_number": 329
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_agent_remaining_gaps.c",
+          "c_function": "tctx_build_turn_context",
+          "pop_annotation": {
+            "c_function": "tctx_build_turn_context",
+            "python_functions": [
+              "build_turn_context"
+            ],
+            "c_file": "src/agent/port_agent_remaining_gaps.c",
+            "python_file": "agent/turn_context.py",
+            "line": 351,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_turn_context @ agent/turn_context.py:build_turn_context */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -86687,10 +86749,10 @@
     },
     "cron/jobs.py": {
       "total": 64,
-      "ported": 62,
+      "ported": 64,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 64,
@@ -86863,7 +86925,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 123,
+            "line": 125,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_jobs_lock_file @ cron/jobs.py:_jobs_lock_file */"
           },
@@ -86884,16 +86946,24 @@
             ],
             "line_number": 257
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cron/port_cron_jobs.c",
+          "c_function": "cron_jobs_lock_init",
+          "pop_annotation": {
+            "c_function": "cron_jobs_lock_init",
+            "python_functions": [
+              "_jobs_lock"
+            ],
+            "c_file": "src/cron/port_cron_jobs.c",
+            "python_file": "cron/jobs.py",
+            "line": 2068,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _jobs_lock @ cron/jobs.py:_jobs_lock */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cron/jobs.py",
@@ -86915,7 +86985,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 135,
+            "line": 137,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_job_output_dir @ cron/jobs.py:_job_output_dir */"
           },
@@ -86944,7 +87014,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 210,
+            "line": 212,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_normalize_skill_list @ cron/jobs.py:_normalize_skill_list */"
           },
@@ -86973,7 +87043,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 262,
+            "line": 264,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_apply_skill_fields @ cron/jobs.py:_apply_skill_fields */"
           },
@@ -87002,7 +87072,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 281,
+            "line": 283,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_coerce_job_text @ cron/jobs.py:_coerce_job_text */"
           },
@@ -87031,7 +87101,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 296,
+            "line": 298,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_schedule_display_for_job @ cron/jobs.py:_schedule_display_for_job */"
           },
@@ -87060,7 +87130,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 322,
+            "line": 324,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_normalize_job_record @ cron/jobs.py:_normalize_job_record */"
           },
@@ -87089,7 +87159,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 156,
+            "line": 158,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_secure_dir @ cron/jobs.py:_secure_dir */"
           },
@@ -87118,7 +87188,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 161,
+            "line": 163,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_secure_file @ cron/jobs.py:_secure_file */"
           },
@@ -87176,7 +87246,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 167,
+            "line": 169,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_ensure_dirs @ cron/jobs.py:ensure_dirs */"
           },
@@ -87234,7 +87304,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 450,
+            "line": 452,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_parse_schedule @ cron/jobs.py:parse_schedule */"
           },
@@ -87263,7 +87333,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 823,
+            "line": 825,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_ensure_aware @ cron/jobs.py:_ensure_aware */"
           },
@@ -87292,7 +87362,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 1709,
+            "line": 1711,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_timezone_offset_mismatch @ cron/jobs.py:_timezone_offset_mismatch */"
           },
@@ -87321,7 +87391,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 1728,
+            "line": 1730,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_stored_wall_clock_is_future @ cron/jobs.py:_stored_wall_clock_is_future */"
           },
@@ -87350,7 +87420,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 579,
+            "line": 581,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_recoverable_oneshot_run_at @ cron/jobs.py:_recoverable_oneshot_run_at */"
           },
@@ -87379,7 +87449,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 594,
+            "line": 596,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_compute_grace_seconds @ cron/jobs.py:_compute_grace_seconds */"
           },
@@ -87437,7 +87507,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 674,
+            "line": 676,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_atomic_write_epoch @ cron/jobs.py:_atomic_write_epoch */"
           },
@@ -87466,7 +87536,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 696,
+            "line": 698,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_record_ticker_heartbeat @ cron/jobs.py:record_ticker_heartbeat */"
           },
@@ -87495,7 +87565,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 706,
+            "line": 708,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_epoch_file_age @ cron/jobs.py:_epoch_file_age */"
           },
@@ -87524,7 +87594,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 724,
+            "line": 726,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_ticker_heartbeat_age @ cron/jobs.py:get_ticker_heartbeat_age */"
           },
@@ -87553,7 +87623,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 733,
+            "line": 735,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_ticker_success_age @ cron/jobs.py:get_ticker_success_age */"
           },
@@ -87669,7 +87739,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 744,
+            "line": 746,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_load_jobs @ cron/jobs.py:load_jobs */"
           },
@@ -87698,7 +87768,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 780,
+            "line": 782,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_save_jobs @ cron/jobs.py:_save_jobs_unlocked */"
           },
@@ -87727,7 +87797,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 781,
+            "line": 783,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_save_jobs @ cron/jobs.py:save_jobs */"
           },
@@ -87756,7 +87826,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 860,
+            "line": 862,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_normalize_workdir @ cron/jobs.py:_normalize_workdir */"
           },
@@ -87785,7 +87855,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 832,
+            "line": 834,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_resolve_default_model_snapshot @ cron/jobs.py:_resolve_default_model_snapshot */"
           },
@@ -87814,7 +87884,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 893,
+            "line": 895,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_normalize_job_optional_text @ cron/jobs.py:_normalize_job_optional_text */"
           },
@@ -87843,7 +87913,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 839,
+            "line": 841,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_compute_provider_model_snapshots @ cron/jobs.py:_compute_provider_model_snapshots */"
           },
@@ -87872,7 +87942,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 851,
+            "line": 853,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_normalized_inference_axes @ cron/jobs.py:_normalized_inference_axes */"
           },
@@ -87901,7 +87971,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 942,
+            "line": 944,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_create_job @ cron/jobs.py:create_job */"
           },
@@ -87930,7 +88000,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 1110,
+            "line": 1112,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_get_job @ cron/jobs.py:get_job */"
           },
@@ -87949,16 +88019,24 @@
             "decorators": [],
             "line_number": 1408
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cron/port_cron_jobs.c",
+          "c_function": "cron_jobs_ambiguous_init",
+          "pop_annotation": {
+            "c_function": "cron_jobs_ambiguous_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cron/port_cron_jobs.c",
+            "python_file": "cron/jobs.py",
+            "line": 2077,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ cron/jobs.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "cron/jobs.py",
@@ -87980,7 +88058,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 1124,
+            "line": 1126,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_resolve_job_ref @ cron/jobs.py:resolve_job_ref */"
           },
@@ -88009,7 +88087,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 1160,
+            "line": 1162,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_list_jobs @ cron/jobs.py:list_jobs */"
           },
@@ -88038,7 +88116,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 1195,
+            "line": 1197,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_update_job @ cron/jobs.py:update_job */"
           },
@@ -88067,7 +88145,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 1321,
+            "line": 1323,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_pause_job @ cron/jobs.py:pause_job */"
           },
@@ -88096,7 +88174,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 1339,
+            "line": 1341,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_resume_job @ cron/jobs.py:resume_job */"
           },
@@ -88125,7 +88203,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 1358,
+            "line": 1360,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_trigger_job @ cron/jobs.py:trigger_job */"
           },
@@ -88154,7 +88232,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 1394,
+            "line": 1396,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_remove_job @ cron/jobs.py:remove_job */"
           },
@@ -88183,7 +88261,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 1434,
+            "line": 1436,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_mark_job_run @ cron/jobs.py:mark_job_run */"
           },
@@ -88212,7 +88290,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 1508,
+            "line": 1510,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_claim_dispatch @ cron/jobs.py:claim_dispatch */"
           },
@@ -88241,7 +88319,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 1651,
+            "line": 1653,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_heartbeat_run_claim @ cron/jobs.py:heartbeat_run_claim */"
           },
@@ -88270,7 +88348,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 1555,
+            "line": 1557,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_advance_next_run @ cron/jobs.py:advance_next_run */"
           },
@@ -88299,7 +88377,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 1585,
+            "line": 1587,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_machine_id @ cron/jobs.py:_machine_id */"
           },
@@ -88328,7 +88406,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 1601,
+            "line": 1603,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_claim_job_for_fire @ cron/jobs.py:claim_job_for_fire */"
           },
@@ -88357,7 +88435,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 1739,
+            "line": 1741,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_get_due_jobs @ cron/jobs.py:get_due_jobs */"
           },
@@ -88386,7 +88464,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 1740,
+            "line": 1742,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_get_due_jobs @ cron/jobs.py:_get_due_jobs_locked */"
           },
@@ -88415,7 +88493,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 1861,
+            "line": 1863,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_cron_output_keep @ cron/jobs.py:_cron_output_keep */"
           },
@@ -88444,7 +88522,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 1871,
+            "line": 1873,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_prune_job_output @ cron/jobs.py:_prune_job_output */"
           },
@@ -88473,7 +88551,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 1901,
+            "line": 1903,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_save_job_output @ cron/jobs.py:save_job_output */"
           },
@@ -88502,7 +88580,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 1938,
+            "line": 1940,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_referenced_skill_names @ cron/jobs.py:referenced_skill_names */"
           },
@@ -88531,7 +88609,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "cron/jobs.py",
-            "line": 1972,
+            "line": 1974,
             "is_consolidated": false,
             "full_text": "/* PoP: cronjobs_rewrite_skill_refs @ cron/jobs.py:rewrite_skill_refs */"
           },
@@ -90260,17 +90338,17 @@
           },
           "classification": "PORTED",
           "c_location": "src/cron/port_cron_scheduler_runtime_impl.c",
-          "c_function": "scheduler_run_job",
+          "c_function": "scheduler_run_job_no_agent",
           "pop_annotation": {
-            "c_function": "scheduler_run_job",
+            "c_function": "scheduler_run_job_no_agent",
             "python_functions": [
               "run_job"
             ],
             "c_file": "src/cron/port_cron_scheduler_runtime_impl.c",
             "python_file": "cron/scheduler.py",
-            "line": 678,
+            "line": 581,
             "is_consolidated": false,
-            "full_text": "/* PoP: scheduler_run_job @ cron/scheduler.py:run_job */"
+            "full_text": "/* PoP: scheduler_run_job_no_agent @ cron/scheduler.py:run_job */"
           },
           "stub_reason": null,
           "severity": "LOW",
@@ -90777,10 +90855,10 @@
     },
     "cron/scripts/classify_items.py": {
       "total": 6,
-      "ported": 5,
+      "ported": 6,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 6,
@@ -90941,16 +91019,24 @@
             "decorators": [],
             "line_number": 144
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cron/port_cron_jobs.c",
+          "c_function": "cron_classify_items_main",
+          "pop_annotation": {
+            "c_function": "cron_classify_items_main",
+            "python_functions": [
+              "main"
+            ],
+            "c_file": "src/cron/port_cron_jobs.c",
+            "python_file": "cron/scripts/classify_items.py",
+            "line": 2095,
+            "is_consolidated": false,
+            "full_text": "/* PoP: main @ cron/scripts/classify_items.py:main */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         }
       ]
     },
@@ -158660,15 +158746,15 @@
           },
           "classification": "PORTED",
           "c_location": "src/cli/port_provider_registry.c",
-          "c_function": "provider_resolve_alias",
+          "c_function": "",
           "pop_annotation": {
-            "c_function": "provider_resolve_alias",
+            "c_function": "",
             "python_functions": [
               "resolve_provider"
             ],
             "c_file": "src/cli/port_provider_registry.c",
             "python_file": "hermes_cli/auth.py",
-            "line": 397,
+            "line": 361,
             "is_consolidated": false,
             "full_text": "/* PoP: resolve_provider @ hermes_cli/auth.py:resolve_provider */"
           },
@@ -166174,7 +166260,7 @@
             ],
             "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
             "python_file": "hermes_cli/browser_connect.py",
-            "line": 514,
+            "line": 580,
             "is_consolidated": false,
             "full_text": "/* PoP: hint @ hermes_cli/browser_connect.py:hint */"
           },
@@ -166374,7 +166460,7 @@
             ],
             "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
             "python_file": "hermes_cli/bundles.py",
-            "line": 328,
+            "line": 334,
             "is_consolidated": false,
             "full_text": "/* PoP: _cmd_list @ hermes_cli/bundles.py:_cmd_list */"
           },
@@ -170767,7 +170853,7 @@
             ],
             "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
             "python_file": "hermes_cli/codex_runtime_plugin_migration.py",
-            "line": 335,
+            "line": 341,
             "is_consolidated": false,
             "full_text": "/* PoP: summary @ hermes_cli/codex_runtime_plugin_migration.py:summary */"
           },
@@ -171357,10 +171443,10 @@
     },
     "hermes_cli/commands.py": {
       "total": 50,
-      "ported": 48,
+      "ported": 50,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 50,
@@ -172159,17 +172245,24 @@
             "decorators": [],
             "line_number": 1329
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_slash_completer_init",
+          "pop_annotation": {
+            "c_function": "hcli_slash_completer_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/commands.py",
+            "line": 592,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/commands.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/commands.py",
@@ -172752,17 +172845,24 @@
             "decorators": [],
             "line_number": 2079
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_slash_completer_init",
+          "pop_annotation": {
+            "c_function": "hcli_slash_completer_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/commands.py",
+            "line": 592,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/commands.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/commands.py",
@@ -178222,7 +178322,7 @@
             ],
             "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
             "python_file": "hermes_cli/container_boot.py",
-            "line": 263,
+            "line": 269,
             "is_consolidated": false,
             "full_text": "/* PoP: _strip_container_argv_prefix @ hermes_cli/container_boot.py:_strip_container_argv_prefix */"
           },
@@ -178280,7 +178380,7 @@
             ],
             "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
             "python_file": "hermes_cli/container_boot.py",
-            "line": 282,
+            "line": 288,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_dashboard_container @ hermes_cli/container_boot.py:_is_dashboard_container */"
           },
@@ -180987,7 +181087,7 @@
             ],
             "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
             "python_file": "hermes_cli/dashboard_auth/base.py",
-            "line": 394,
+            "line": 400,
             "is_consolidated": false,
             "full_text": "/* PoP: verify_token @ hermes_cli/dashboard_auth/base.py:verify_token */"
           },
@@ -182170,7 +182270,7 @@
             ],
             "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
             "python_file": "hermes_cli/dashboard_auth/native_flow.py",
-            "line": 401,
+            "line": 407,
             "is_consolidated": false,
             "full_text": "/* PoP: _reset_for_tests @ hermes_cli/dashboard_auth/native_flow.py:_reset_for_tests */"
           },
@@ -183523,7 +183623,7 @@
             ],
             "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
             "python_file": "hermes_cli/dashboard_auth/ws_tickets.py",
-            "line": 407,
+            "line": 413,
             "is_consolidated": false,
             "full_text": "/* PoP: _reset_for_tests @ hermes_cli/dashboard_auth/ws_tickets.py:_reset_for_tests */"
           },
@@ -194033,7 +194133,7 @@
             ],
             "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
             "python_file": "hermes_cli/gateway_windows.py",
-            "line": 290,
+            "line": 296,
             "is_consolidated": false,
             "full_text": "/* PoP: _wait_for_gateway_absent @ hermes_cli/gateway_windows.py:_wait_for_gateway_absent */"
           },
@@ -197929,7 +198029,7 @@
             ],
             "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
             "python_file": "hermes_cli/kanban.py",
-            "line": 387,
+            "line": 393,
             "is_consolidated": false,
             "full_text": "/* PoP: _cmd_list @ hermes_cli/kanban.py:_cmd_list */"
           },
@@ -216648,7 +216748,7 @@
             ],
             "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
             "python_file": "hermes_cli/mcp_config.py",
-            "line": 346,
+            "line": 352,
             "is_consolidated": false,
             "full_text": "/* PoP: _prompt @ hermes_cli/mcp_config.py:_prompt */"
           },
@@ -220865,10 +220965,10 @@
     },
     "hermes_cli/model_setup_flows.py": {
       "total": 25,
-      "ported": 24,
+      "ported": 25,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 25,
@@ -221551,7 +221651,7 @@
             "decorators": [],
             "line_number": 2618
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
           "c_function": "hcli_model_flow_api_key",
           "pop_annotation": {
@@ -221561,16 +221661,14 @@
             ],
             "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
             "python_file": "hermes_cli/model_setup_flows.py",
-            "line": 441,
+            "line": 455,
             "is_consolidated": false,
             "full_text": "/* PoP: _model_flow_api_key_provider @ hermes_cli/model_setup_flows.py:_model_flow_api_key_provider */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/model_setup_flows.py",
@@ -227851,10 +227949,10 @@
     },
     "hermes_cli/onepassword_secrets_cli.py": {
       "total": 11,
-      "ported": 10,
+      "ported": 11,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 11,
@@ -227899,7 +227997,7 @@
             "decorators": [],
             "line_number": 117
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
           "c_function": "hcli_opw_cmd_setup",
           "pop_annotation": {
@@ -227909,16 +228007,14 @@
             ],
             "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
             "python_file": "hermes_cli/onepassword_secrets_cli.py",
-            "line": 449,
+            "line": 487,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_setup @ hermes_cli/onepassword_secrets_cli.py:cmd_setup */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/onepassword_secrets_cli.py",
@@ -227940,7 +228036,7 @@
             ],
             "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
             "python_file": "hermes_cli/onepassword_secrets_cli.py",
-            "line": 457,
+            "line": 509,
             "is_consolidated": false,
             "full_text": "/* PoP: cmd_status @ hermes_cli/onepassword_secrets_cli.py:cmd_status */"
           },
@@ -228185,10 +228281,10 @@
     },
     "hermes_cli/oneshot.py": {
       "total": 7,
-      "ported": 6,
+      "ported": 7,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 7,
@@ -228349,7 +228445,7 @@
             "decorators": [],
             "line_number": 313
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
           "c_function": "hcli_oneshot_run_agent",
           "pop_annotation": {
@@ -228359,16 +228455,14 @@
             ],
             "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
             "python_file": "hermes_cli/oneshot.py",
-            "line": 433,
+            "line": 439,
             "is_consolidated": false,
             "full_text": "/* PoP: _run_agent @ hermes_cli/oneshot.py:_run_agent */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/oneshot.py",
@@ -228835,7 +228929,7 @@
             ],
             "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
             "python_file": "hermes_cli/pets.py",
-            "line": 484,
+            "line": 536,
             "is_consolidated": false,
             "full_text": "/* PoP: _cmd_list @ hermes_cli/pets.py:_cmd_list */"
           },
@@ -229038,7 +229132,7 @@
             ],
             "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
             "python_file": "hermes_cli/pets.py",
-            "line": 491,
+            "line": 543,
             "is_consolidated": false,
             "full_text": "/* PoP: _cmd_doctor @ hermes_cli/pets.py:_cmd_doctor */"
           },
@@ -231720,7 +231814,7 @@
             ],
             "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
             "python_file": "hermes_cli/plugins_cmd.py",
-            "line": 308,
+            "line": 314,
             "is_consolidated": false,
             "full_text": "/* PoP: _read_manifest @ hermes_cli/plugins_cmd.py:_read_manifest */"
           },
@@ -235762,7 +235856,7 @@
             ],
             "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
             "python_file": "hermes_cli/projects_cmd.py",
-            "line": 377,
+            "line": 383,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve @ hermes_cli/projects_cmd.py:_resolve */"
           },
@@ -235870,17 +235964,17 @@
           },
           "classification": "PORTED",
           "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
-          "c_function": "hcli_projects_cmd_list",
+          "c_function": "hcli_kanban_cmd_list",
           "pop_annotation": {
-            "c_function": "hcli_projects_cmd_list",
+            "c_function": "hcli_kanban_cmd_list",
             "python_functions": [
               "_cmd_list"
             ],
             "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
             "python_file": "hermes_cli/projects_cmd.py",
-            "line": 497,
+            "line": 391,
             "is_consolidated": false,
-            "full_text": "/* PoP: _cmd_list @ hermes_cli/projects_cmd.py:_cmd_list */"
+            "full_text": "/* PoP: _resolve @ hermes_cli/projects_cmd.py:_cmd_list */"
           },
           "stub_reason": null,
           "severity": "LOW",
@@ -237916,7 +238010,7 @@
             ],
             "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
             "python_file": "hermes_cli/proxy/adapters/__init__.py",
-            "line": 426,
+            "line": 432,
             "is_consolidated": false,
             "full_text": "/* PoP: get_adapter @ hermes_cli/proxy/adapters/__init__.py:get_adapter */"
           },
@@ -249020,7 +249114,7 @@
             ],
             "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
             "python_file": "hermes_cli/setup_whatsapp_cloud.py",
-            "line": 362,
+            "line": 368,
             "is_consolidated": false,
             "full_text": "/* PoP: _prompt @ hermes_cli/setup_whatsapp_cloud.py:_prompt */"
           },
@@ -251303,10 +251397,10 @@
     },
     "hermes_cli/status.py": {
       "total": 6,
-      "ported": 5,
+      "ported": 6,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 6,
@@ -251467,7 +251561,7 @@
             "decorators": [],
             "line_number": 105
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
           "c_function": "hcli_show_status",
           "pop_annotation": {
@@ -251477,16 +251571,14 @@
             ],
             "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
             "python_file": "hermes_cli/status.py",
-            "line": 503,
+            "line": 555,
             "is_consolidated": false,
             "full_text": "/* PoP: show_status @ hermes_cli/status.py:show_status */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -257132,10 +257224,10 @@
     },
     "hermes_cli/urllib_security.py": {
       "total": 7,
-      "ported": 5,
+      "ported": 7,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 7,
@@ -257180,16 +257272,24 @@
             "decorators": [],
             "line_number": 34
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_safe_redirect_init",
+          "pop_annotation": {
+            "c_function": "hcli_safe_redirect_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/urllib_security.py",
+            "line": 604,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/urllib_security.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/urllib_security.py",
@@ -257230,16 +257330,24 @@
             "decorators": [],
             "line_number": 72
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_safe_redirect_init",
+          "pop_annotation": {
+            "c_function": "hcli_safe_redirect_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/urllib_security.py",
+            "line": 604,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ hermes_cli/urllib_security.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/urllib_security.py",
@@ -257332,10 +257440,10 @@
     },
     "hermes_cli/voice.py": {
       "total": 13,
-      "ported": 12,
+      "ported": 13,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 13,
@@ -257670,7 +257778,7 @@
             "decorators": [],
             "line_number": 575
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
           "c_function": "hcli_voice_continuous_on_silence",
           "pop_annotation": {
@@ -257684,12 +257792,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _continuous_on_silence @ hermes_cli/voice.py:_continuous_on_silence */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/voice.py",
@@ -275535,7 +275641,7 @@
             ],
             "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
             "python_file": "hermes_cli/webhook.py",
-            "line": 413,
+            "line": 419,
             "is_consolidated": false,
             "full_text": "/* PoP: _cmd_list @ hermes_cli/webhook.py:_cmd_list */"
           },
@@ -275593,7 +275699,7 @@
             ],
             "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
             "python_file": "hermes_cli/webhook.py",
-            "line": 419,
+            "line": 425,
             "is_consolidated": false,
             "full_text": "/* PoP: _cmd_test @ hermes_cli/webhook.py:_cmd_test */"
           },
@@ -277130,7 +277236,7 @@
             ],
             "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
             "python_file": "hermes_cli/xai_retirement.py",
-            "line": 244,
+            "line": 250,
             "is_consolidated": false,
             "full_text": "/* PoP: _normalize @ hermes_cli/xai_retirement.py:_normalize */"
           },
@@ -279829,9 +279935,9 @@
             ],
             "c_file": "src/agent/hermes_state/hermes_state_lifecycle.c",
             "python_file": "hermes_state.py",
-            "line": 32,
+            "line": 31,
             "is_consolidated": false,
-            "full_text": "/* PoP: hermes_state_end_session @ hermes_state.py:end_session */"
+            "full_text": "/* PoP: end_session @ hermes_state.py:end_session */"
           },
           "stub_reason": null,
           "severity": "LOW",
@@ -284062,7 +284168,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/__init__.py",
-            "line": 17,
+            "line": 19,
             "is_consolidated": false,
             "full_text": "/* PoP: check_file_requirements @ tools/__init__.py:check_file_requirements */"
           },
@@ -287873,7 +287979,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/async_delegation.py",
-            "line": 24,
+            "line": 26,
             "is_consolidated": false,
             "full_text": "/* PoP: _reset_for_tests @ tools/async_delegation.py:_reset_for_tests */"
           },
@@ -288173,10 +288279,10 @@
     },
     "tools/browser_camofox.py": {
       "total": 37,
-      "ported": 36,
+      "ported": 37,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 37,
@@ -288221,17 +288327,24 @@
             "decorators": [],
             "line_number": 83
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_camofox_auth_headers",
+          "pop_annotation": {
+            "c_function": "tools_camofox_auth_headers",
+            "python_functions": [
+              "_auth_headers"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/browser_camofox.py",
+            "line": 32,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _auth_headers @ tools/browser_camofox.py:_auth_headers */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/browser_camofox.py",
@@ -293675,7 +293788,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/browser_tool.py",
-            "line": 47,
+            "line": 48,
             "is_consolidated": false,
             "full_text": "/* PoP: cleanup_all_browsers @ tools/browser_tool.py:cleanup_all_browsers */"
           },
@@ -293862,10 +293975,10 @@
     },
     "tools/budget_config.py": {
       "total": 2,
-      "ported": 1,
+      "ported": 2,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 2,
@@ -293910,16 +294023,24 @@
             "decorators": [],
             "line_number": 84
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_budget_for_context_window",
+          "pop_annotation": {
+            "c_function": "tools_budget_for_context_window",
+            "python_functions": [
+              "budget_for_context_window"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/budget_config.py",
+            "line": 54,
+            "is_consolidated": false,
+            "full_text": "/* PoP: budget_for_context_window @ tools/budget_config.py:budget_for_context_window */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -295579,10 +295700,10 @@
     },
     "tools/clarify_tool.py": {
       "total": 3,
-      "ported": 2,
+      "ported": 3,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 3,
@@ -295598,17 +295719,24 @@
             "decorators": [],
             "line_number": 23
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_flatten_choice",
+          "pop_annotation": {
+            "c_function": "tools_flatten_choice",
+            "python_functions": [
+              "_flatten_choice"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/clarify_tool.py",
+            "line": 81,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _flatten_choice @ tools/clarify_tool.py:_flatten_choice */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/clarify_tool.py",
@@ -299735,7 +299863,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/computer_use/doctor.py",
-            "line": 632,
+            "line": 649,
             "is_consolidated": false,
             "full_text": "/* PoP: run_doctor @ tools/computer_use/doctor.py:run_doctor */"
           },
@@ -299748,10 +299876,10 @@
     },
     "tools/computer_use/permissions.py": {
       "total": 8,
-      "ported": 7,
+      "ported": 8,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 8,
@@ -299825,16 +299953,24 @@
             "decorators": [],
             "line_number": 65
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_perm_run",
+          "pop_annotation": {
+            "c_function": "tools_perm_run",
+            "python_functions": [
+              "_run"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/computer_use/permissions.py",
+            "line": 101,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _run @ tools/computer_use/permissions.py:_run */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/computer_use/permissions.py",
@@ -301032,10 +301168,10 @@
     },
     "tools/computer_use/vision_routing.py": {
       "total": 5,
-      "ported": 4,
+      "ported": 5,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 5,
@@ -301051,17 +301187,24 @@
             "decorators": [],
             "line_number": 56
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_vision_aux_override",
+          "pop_annotation": {
+            "c_function": "tools_vision_aux_override",
+            "python_functions": [
+              "_explicit_aux_vision_override"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/computer_use/vision_routing.py",
+            "line": 137,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _explicit_aux_vision_override @ tools/computer_use/vision_routing.py:_explicit_aux_vision_override */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/computer_use/vision_routing.py",
@@ -301112,7 +301255,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/computer_use/vision_routing.py",
-            "line": 159,
+            "line": 156,
             "is_consolidated": false,
             "full_text": "/* PoP: _lookup_supports_vision @ tools/computer_use/vision_routing.py:_lookup_supports_vision */"
           },
@@ -302020,7 +302163,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/cronjob_tools.py",
-            "line": 168,
+            "line": 165,
             "is_consolidated": false,
             "full_text": "/* PoP: _canonical_skills @ tools/cronjob_tools.py:_canonical_skills */"
           },
@@ -302078,7 +302221,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/cronjob_tools.py",
-            "line": 196,
+            "line": 193,
             "is_consolidated": false,
             "full_text": "/* PoP: _normalize_optional_job_value @ tools/cronjob_tools.py:_normalize_optional_job_value */"
           },
@@ -304610,7 +304753,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/desktop_ui.py",
-            "line": 215,
+            "line": 212,
             "is_consolidated": false,
             "full_text": "/* PoP: available @ tools/desktop_ui.py:available */"
           },
@@ -304639,7 +304782,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/desktop_ui.py",
-            "line": 221,
+            "line": 218,
             "is_consolidated": false,
             "full_text": "/* PoP: emit @ tools/desktop_ui.py:emit */"
           },
@@ -304681,7 +304824,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/discord_tool.py",
-            "line": 229,
+            "line": 226,
             "is_consolidated": false,
             "full_text": "/* PoP: __init__ @ tools/discord_tool.py:__init__ */"
           },
@@ -307750,7 +307893,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/environments/daytona.py",
-            "line": 238,
+            "line": 235,
             "is_consolidated": false,
             "full_text": "/* PoP: __init__ @ tools/environments/daytona.py:__init__ */"
           },
@@ -307982,7 +308125,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/environments/daytona.py",
-            "line": 246,
+            "line": 243,
             "is_consolidated": false,
             "full_text": "/* PoP: cleanup @ tools/environments/daytona.py:cleanup */"
           },
@@ -308851,10 +308994,10 @@
     },
     "tools/environments/file_sync.py": {
       "total": 15,
-      "ported": 14,
+      "ported": 15,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 15,
@@ -309054,7 +309197,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/environments/file_sync.py",
-            "line": 252,
+            "line": 249,
             "is_consolidated": false,
             "full_text": "/* PoP: __init__ @ tools/environments/file_sync.py:__init__ */"
           },
@@ -309073,7 +309216,7 @@
             "decorators": [],
             "line_number": 165
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/tools/port_tools_remaining_gaps.c",
           "c_function": "tools_file_sync_sync",
           "pop_annotation": {
@@ -309083,16 +309226,14 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/environments/file_sync.py",
-            "line": 259,
+            "line": 256,
             "is_consolidated": false,
             "full_text": "/* PoP: sync @ tools/environments/file_sync.py:sync */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/file_sync.py",
@@ -311639,7 +311780,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/environments/modal_utils.py",
-            "line": 266,
+            "line": 280,
             "is_consolidated": false,
             "full_text": "/* PoP: _before_execute @ tools/environments/modal_utils.py:_before_execute */"
           },
@@ -311861,10 +312002,10 @@
     },
     "tools/environments/singularity.py": {
       "total": 11,
-      "ported": 10,
+      "ported": 11,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 11,
@@ -312083,7 +312224,7 @@
             "decorators": [],
             "line_number": 166
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/tools/port_tools_remaining_gaps.c",
           "c_function": "tools_singularity_init",
           "pop_annotation": {
@@ -312093,16 +312234,14 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/environments/singularity.py",
-            "line": 272,
+            "line": 286,
             "is_consolidated": false,
             "full_text": "/* PoP: __init__ @ tools/environments/singularity.py:__init__ */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/environments/singularity.py",
@@ -312182,7 +312321,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/environments/singularity.py",
-            "line": 280,
+            "line": 299,
             "is_consolidated": false,
             "full_text": "/* PoP: cleanup @ tools/environments/singularity.py:cleanup */"
           },
@@ -312701,7 +312840,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/fal_common.py",
-            "line": 286,
+            "line": 305,
             "is_consolidated": false,
             "full_text": "/* PoP: __init__ @ tools/fal_common.py:__init__ */"
           },
@@ -318151,7 +318290,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/homeassistant_tool.py",
-            "line": 293,
+            "line": 312,
             "is_consolidated": false,
             "full_text": "/* PoP: _run_async @ tools/homeassistant_tool.py:_run_async */"
           },
@@ -318367,7 +318506,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/hook_output_spill.py",
-            "line": 299,
+            "line": 318,
             "is_consolidated": false,
             "full_text": "/* PoP: _coerce_positive_int @ tools/hook_output_spill.py:_coerce_positive_int */"
           },
@@ -318960,7 +319099,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/image_generation_tool.py",
-            "line": 309,
+            "line": 328,
             "is_consolidated": false,
             "full_text": "/* PoP: image_generate_tool @ tools/image_generation_tool.py:image_generate_tool */"
           },
@@ -319308,7 +319447,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/image_generation_tool.py",
-            "line": 318,
+            "line": 337,
             "is_consolidated": false,
             "full_text": "/* PoP: _build_dynamic_image_schema @ tools/image_generation_tool.py:_build_dynamic_image_schema */"
           },
@@ -319350,7 +319489,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/image_source.py",
-            "line": 324,
+            "line": 343,
             "is_consolidated": false,
             "full_text": "/* PoP: __init__ @ tools/image_source.py:__init__ */"
           },
@@ -319798,7 +319937,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/interrupt.py",
-            "line": 331,
+            "line": 350,
             "is_consolidated": false,
             "full_text": "/* PoP: set @ tools/interrupt.py:set */"
           },
@@ -319856,7 +319995,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/interrupt.py",
-            "line": 338,
+            "line": 357,
             "is_consolidated": false,
             "full_text": "/* PoP: wait @ tools/interrupt.py:wait */"
           },
@@ -320839,7 +320978,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/lazy_deps.py",
-            "line": 345,
+            "line": 364,
             "is_consolidated": false,
             "full_text": "/* PoP: __init__ @ tools/lazy_deps.py:__init__ */"
           },
@@ -321390,7 +321529,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/lazy_deps.py",
-            "line": 357,
+            "line": 376,
             "is_consolidated": false,
             "full_text": "/* PoP: is_available @ tools/lazy_deps.py:is_available */"
           },
@@ -322025,7 +322164,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/mcp_dashboard_oauth.py",
-            "line": 364,
+            "line": 383,
             "is_consolidated": false,
             "full_text": "/* PoP: snapshot @ tools/mcp_dashboard_oauth.py:snapshot */"
           },
@@ -323814,7 +323953,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/mcp_stdio_watchdog.py",
-            "line": 378,
+            "line": 397,
             "is_consolidated": false,
             "full_text": "/* PoP: main @ tools/mcp_stdio_watchdog.py:main */"
           },
@@ -328970,7 +329109,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/microsoft_graph_auth.py",
-            "line": 386,
+            "line": 405,
             "is_consolidated": false,
             "full_text": "/* PoP: __init__ @ tools/microsoft_graph_auth.py:__init__ */"
           },
@@ -329677,10 +329816,10 @@
     },
     "tools/mixture_of_agents_tool.py": {
       "total": 16,
-      "ported": 14,
+      "ported": 16,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 16,
@@ -329754,17 +329893,24 @@
             "decorators": [],
             "line_number": 487
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_moa_provider_health_init",
+          "pop_annotation": {
+            "c_function": "tools_moa_provider_health_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/mixture_of_agents_tool.py",
+            "line": 413,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/mixture_of_agents_tool.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "tools/mixture_of_agents_tool.py",
@@ -329892,17 +330038,24 @@
             "decorators": [],
             "line_number": 541
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_moa_provider_health_init",
+          "pop_annotation": {
+            "c_function": "tools_moa_provider_health_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/mixture_of_agents_tool.py",
+            "line": 413,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/mixture_of_agents_tool.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "tools/mixture_of_agents_tool.py",
@@ -331286,10 +331439,10 @@
     },
     "tools/neutts_synth.py": {
       "total": 2,
-      "ported": 1,
+      "ported": 2,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 2,
@@ -331305,16 +331458,24 @@
             "decorators": [],
             "line_number": 21
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_neutts_write_wav",
+          "pop_annotation": {
+            "c_function": "tools_neutts_write_wav",
+            "python_functions": [
+              "_write_wav"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/neutts_synth.py",
+            "line": 425,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _write_wav @ tools/neutts_synth.py:_write_wav */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/neutts_synth.py",
@@ -331336,7 +331497,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/neutts_synth.py",
-            "line": 441,
+            "line": 459,
             "is_consolidated": false,
             "full_text": "/* PoP: main @ tools/neutts_synth.py:main */"
           },
@@ -332645,7 +332806,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/process_registry.py",
-            "line": 449,
+            "line": 467,
             "is_consolidated": false,
             "full_text": "/* PoP: __init__ @ tools/process_registry.py:__init__ */"
           },
@@ -333328,7 +333489,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/process_registry.py",
-            "line": 455,
+            "line": 473,
             "is_consolidated": false,
             "full_text": "/* PoP: get @ tools/process_registry.py:get */"
           },
@@ -334116,7 +334277,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/project_tools.py",
-            "line": 639,
+            "line": 656,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve @ tools/project_tools.py:_resolve */"
           },
@@ -334735,10 +334896,10 @@
     },
     "tools/registry.py": {
       "total": 37,
-      "ported": 32,
+      "ported": 34,
       "partial": 3,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 37,
@@ -334841,17 +335002,24 @@
             "decorators": [],
             "line_number": 96
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_registry_entry_init",
+          "pop_annotation": {
+            "c_function": "tools_registry_entry_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/registry.py",
+            "line": 480,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/registry.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/registry.py",
@@ -334921,17 +335089,24 @@
             "decorators": [],
             "line_number": 220
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_registry_entry_init",
+          "pop_annotation": {
+            "c_function": "tools_registry_entry_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/registry.py",
+            "line": 480,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/registry.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/registry.py",
@@ -336517,7 +336692,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/send_message_tool.py",
-            "line": 478,
+            "line": 496,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_telegram_thread_not_found @ tools/send_message_tool.py:_is_telegram_thread_not_found */"
           },
@@ -336575,7 +336750,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/send_message_tool.py",
-            "line": 487,
+            "line": 505,
             "is_consolidated": false,
             "full_text": "/* PoP: _registry_standalone_send @ tools/send_message_tool.py:_registry_standalone_send */"
           },
@@ -337255,7 +337430,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/session_search_tool.py",
-            "line": 495,
+            "line": 513,
             "is_consolidated": false,
             "full_text": "/* PoP: _scroll @ tools/session_search_tool.py:_scroll */"
           },
@@ -338738,7 +338913,7 @@
             ],
             "c_file": "src/cron/port_cron_jobs.c",
             "python_file": "tools/skill_usage.py",
-            "line": 399,
+            "line": 401,
             "is_consolidated": false,
             "full_text": "/* PoP: now_iso @ tools/skill_usage.py:_now_iso */"
           },
@@ -356377,10 +356552,10 @@
     },
     "tools/url_safety.py": {
       "total": 31,
-      "ported": 29,
+      "ported": 31,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 31,
@@ -356773,16 +356948,24 @@
             "decorators": [],
             "line_number": 587
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_url_safety_async_init",
+          "pop_annotation": {
+            "c_function": "tools_url_safety_async_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/url_safety.py",
+            "line": 524,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/url_safety.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "tools/url_safety.py",
@@ -356881,16 +357064,24 @@
             "decorators": [],
             "line_number": 637
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_url_safety_async_init",
+          "pop_annotation": {
+            "c_function": "tools_url_safety_async_init",
+            "python_functions": [
+              "__init__"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/url_safety.py",
+            "line": 524,
+            "is_consolidated": false,
+            "full_text": "/* PoP: __init__ @ tools/url_safety.py:__init__ */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "tools/url_safety.py",
@@ -357476,7 +357667,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/video_generation_tool.py",
-            "line": 520,
+            "line": 538,
             "is_consolidated": false,
             "full_text": "/* PoP: _coerce_int @ tools/video_generation_tool.py:_coerce_int */"
           },
@@ -357505,7 +357696,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/video_generation_tool.py",
-            "line": 532,
+            "line": 550,
             "is_consolidated": false,
             "full_text": "/* PoP: _coerce_bool @ tools/video_generation_tool.py:_coerce_bool */"
           },
@@ -360731,7 +360922,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/write_approval.py",
-            "line": 549,
+            "line": 567,
             "is_consolidated": false,
             "full_text": "/* PoP: _pending_dir @ tools/write_approval.py:_pending_dir */"
           },
@@ -360963,7 +361154,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/write_approval.py",
-            "line": 560,
+            "line": 578,
             "is_consolidated": false,
             "full_text": "/* PoP: __init__ @ tools/write_approval.py:__init__ */"
           },
@@ -361598,10 +361789,10 @@
     },
     "tools/xai_http.py": {
       "total": 11,
-      "ported": 10,
+      "ported": 11,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 11,
@@ -361646,17 +361837,24 @@
             "decorators": [],
             "line_number": 73
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/tools/port_tools_remaining_gaps.c",
+          "c_function": "tools_xai_get_env_value",
+          "pop_annotation": {
+            "c_function": "tools_xai_get_env_value",
+            "python_functions": [
+              "get_env_value"
+            ],
+            "c_file": "src/tools/port_tools_remaining_gaps.c",
+            "python_file": "tools/xai_http.py",
+            "line": 593,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_env_value @ tools/xai_http.py:get_env_value */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/xai_http.py",
@@ -361736,7 +361934,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/xai_http.py",
-            "line": 602,
+            "line": 619,
             "is_consolidated": false,
             "full_text": "/* PoP: _coerce_bool @ tools/xai_http.py:_coerce_bool */"
           },
@@ -362039,7 +362237,7 @@
             ],
             "c_file": "src/tools/port_tools_remaining_gaps.c",
             "python_file": "tools/xai_video_tools.py",
-            "line": 620,
+            "line": 637,
             "is_consolidated": false,
             "full_text": "/* PoP: _coerce_int @ tools/xai_video_tools.py:_coerce_int */"
           },
@@ -362513,10 +362711,10 @@
     },
     "utils.py": {
       "total": 23,
-      "ported": 22,
+      "ported": 23,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 23,
@@ -362793,16 +362991,24 @@
             "decorators": [],
             "line_number": 264
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/agent/port_async_utils.c",
+          "c_function": "utils_increase_indent",
+          "pop_annotation": {
+            "c_function": "utils_increase_indent",
+            "python_functions": [
+              "increase_indent"
+            ],
+            "c_file": "src/agent/port_async_utils.c",
+            "python_file": "utils.py",
+            "line": 108,
+            "is_consolidated": false,
+            "full_text": "/* PoP: increase_indent @ utils.py:increase_indent */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "utils.py",

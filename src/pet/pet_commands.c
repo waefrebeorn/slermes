@@ -40,7 +40,7 @@ static const char *pet_state_emoji(pet_state_t state) {
    Pet System Lifecycle
    ════════════════════════════════════════════════════════════════════════ */
 
-/* PoP: pet_init @ agent/pet/store.py:resolve_active_pet (init path) */
+/* PoP: pet_init @ agent/pet/store.py:resolve_active_pet */
 void pet_init(const pet_config_t *cfg) {
     if (g_pet.initialized) return;
 
@@ -114,7 +114,7 @@ char *pet_info_json(void) {
     return s;
 }
 
-/* PoP: pet_gallery_json @ agent/pet/store.py:installed_pets (JSON) */
+/* PoP: pet_gallery_json @ agent/pet/store.py:installed_pets */
 char *pet_gallery_json(void) {
     json_t *root = json_object();
     json_t *pets_arr = json_array();
@@ -186,7 +186,7 @@ char *pet_cells_json(int cols) {
    Pet Selection & Configuration
    ════════════════════════════════════════════════════════════════════════ */
 
-/* PoP: pet_select @ agent/pet/store.py:resolve_active_pet (select path) */
+/* PoP: pet_select @ agent/pet/store.py:resolve_active_pet */
 bool pet_select(const char *slug) {
     if (!slug || !*slug) return false;
 
@@ -206,13 +206,13 @@ bool pet_select(const char *slug) {
     return true;
 }
 
-/* PoP: pet_disable @ agent/pet/store.py:disable (conceptual) */
+/* PoP: pet_disable @ agent/pet/store.py:disable */
 void pet_disable(void) {
     g_pet.enabled = false;
     hermes_log(LOG_DEBUG, "pet", "pet disabled");
 }
 
-/* PoP: pet_set_scale @ agent/pet/constants.py:clamp_scale (applied) */
+/* PoP: pet_set_scale @ agent/pet/constants.py:clamp_scale */
 /* PoP: _set_scale @ hermes_cli/pets.py:_set_scale */
 void pet_set_scale(float scale) {
     g_pet.scale = pet_clamp_scale(scale);

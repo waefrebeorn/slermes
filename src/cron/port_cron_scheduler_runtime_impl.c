@@ -578,7 +578,7 @@ char *scheduler_deliver_result(const json_t *job, const char *content,
 
 /* ── run_job_no_agent ─────────────────────────────────────────────── */
 
-/* PoP: scheduler_run_job_no_agent @ cron/scheduler.py:run_job (no_agent branch) */
+/* PoP: scheduler_run_job_no_agent @ cron/scheduler.py:run_job */
 /* Full no_agent run path of run_job: the script IS the job. Returns success;
  * fills malloc'd *doc_out, *final_out, *error_out (any may be NULL).
  * final_out == SCHEDULER_SILENT_MARKER marks a silent run. */

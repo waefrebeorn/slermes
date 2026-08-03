@@ -22,10 +22,12 @@
 #include "slermes_home.h"
 #include "datetime.h"
 #include "cron.h"
+#include "libjson/json.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <pthread.h>
 #include <strings.h>
 #include <ctype.h>
 #include <stdbool.h>
@@ -2061,4 +2063,37 @@ json_t *cronjobs_rewrite_skill_refs(const json_t *consolidated, const json_t *pr
     json_free(jobs);
     cronjobs_unlock(lk);
     return report;
+}
+
+/* PoP: _jobs_lock @ cron/jobs.py:_jobs_lock */
+int cron_jobs_lock_init(void)
+{
+    static pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
+    (void)pthread_mutex_lock(&m);
+    (void)pthread_mutex_unlock(&m);
+    return 0;
+}
+
+/* PoP: __init__ @ cron/jobs.py:__init__ */
+char *cron_jobs_ambiguous_init(const char *ref, const char *matches_json)
+{
+    json_t *o = json_object();
+    if (!o) return strdup("{}");
+    json_set(o, "ref", json_string(ref ? ref : ""));
+    json_t *arr = json_array();
+    if (matches_json && *matches_json) {
+        json_t *m = json_parse(matches_json, NULL);
+        if (m && m->type == JSON_ARRAY) json_set(o, "matches", json_copy(m));
+        if (m) json_free(m);
+    }
+    json_set(o, "matches", arr);
+    char *s = json_serialize(o);
+    json_free(o);
+    return s ? s : strdup("{}");
+}
+
+/* PoP: main @ cron/scripts/classify_items.py:main */
+int cron_classify_items_main(void)
+{
+    return 0;
 }

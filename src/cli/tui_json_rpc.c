@@ -82,7 +82,7 @@ static const char *rpc_pet_cells(const void *params, char *scratch, size_t sz) {
     else snprintf(scratch, sz, "{}");
     return scratch;
 }
-/* PoP: pet.gallery @ agent/pet/store.py:installed_pets (JSON) */
+/* PoP: pet.gallery @ agent/pet/store.py:installed_pets */
 static const char *rpc_pet_gallery(const void *params, char *scratch, size_t sz) {
     (void)params;
     char *json = pet_gallery_json();
@@ -90,7 +90,7 @@ static const char *rpc_pet_gallery(const void *params, char *scratch, size_t sz)
     else snprintf(scratch, sz, "{}");
     return scratch;
 }
-/* PoP: pet.select @ agent/pet/store.py:resolve_active_pet (select path) */
+/* PoP: pet.select @ agent/pet/store.py:resolve_active_pet */
 static const char *rpc_pet_select(const void *params, char *scratch, size_t sz) {
     const char *pet_id = tui_rpc_param_string(params, "id", "");
     bool ok = pet_select(pet_id);

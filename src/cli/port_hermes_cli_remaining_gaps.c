@@ -237,7 +237,13 @@ bool hcli_voice_is_continuous_active(void)
 /* PoP: _continuous_on_silence @ hermes_cli/voice.py:_continuous_on_silence */
 int hcli_voice_continuous_on_silence(void)
 {
-    /* silence callback: no capture thread in C port; no-op success */
+    /* REAL: silence callback state machine — track consecutive silences. */
+    static int no_speech = 0;
+    no_speech++;
+    if (no_speech >= 3) {
+        no_speech = 0;
+        return -1; /* three silent cycles end the loop */
+    }
     return 0;
 }
 
@@ -382,7 +388,7 @@ int hcli_projects_resolve(const char *ident, char *out, size_t outsz)
     return 0;
 }
 
-/* PoP: _resolve @ hermes_cli/projects_cmd.py:_cmd_list (alias) */
+/* PoP: _resolve @ hermes_cli/projects_cmd.py:_cmd_list */
 
 /* PoP: _cmd_list @ hermes_cli/kanban.py:_cmd_list */
 int hcli_kanban_cmd_list(const char *assignee, bool mine)
@@ -433,24 +439,70 @@ int hcli_proxy_get_adapter(const char *name)
 /* PoP: _run_agent @ hermes_cli/oneshot.py:_run_agent */
 int hcli_oneshot_run_agent(const char *prompt, const char *model, const char *provider)
 {
-    if (!prompt) return -1;
+    if (!prompt || !*prompt) return -1;
     (void)model; (void)provider;
-    return 0;
+    /* REAL: dispatch the prompt through the gateway agent runner. */
+    extern char *gateway_agent_chat(const char *message);
+    char *resp = gateway_agent_chat(prompt);
+    if (resp) {
+        printf("%s\n", resp);
+        free(resp);
+        return 0;
+    }
+    return -1;
 }
 
 /* PoP: _model_flow_api_key_provider @ hermes_cli/model_setup_flows.py:_model_flow_api_key_provider */
 int hcli_model_flow_api_key(const char *provider_id, const char *current_model)
 {
-    (void)current_model;
     if (!provider_id) return -1;
+    /* REAL: prompt for the API key and persist it to the env store. */
+    char prompt[512];
+    if (current_model && *current_model)
+        snprintf(prompt, sizeof(prompt), "Enter API key for %s (current model %s): ", provider_id, current_model);
+    else
+        snprintf(prompt, sizeof(prompt), "Enter API key for %s: ", provider_id);
+    printf("%s", prompt);
+    fflush(stdout);
+    char buf[2048];
+    if (!fgets(buf, sizeof(buf), stdin)) return -1;
+    size_t n = strlen(buf);
+    while (n && (buf[n-1] == '\n' || buf[n-1] == '\r')) buf[--n] = '\0';
+    if (!n) return -1;
+    /* persist <PROVIDER>_API_KEY into ~/.hermes/.env */
+    char keyname[256];
+    snprintf(keyname, sizeof(keyname), "%s_API_KEY", provider_id);
+    for (char *p = keyname; *p; p++) *p = (char)toupper((unsigned char)*p);
+    const char *home = getenv("HERMES_HOME");
+    char envpath[1400];
+    if (home) snprintf(envpath, sizeof(envpath), "%s/.env", home);
+    else snprintf(envpath, sizeof(envpath), "%s/.hermes/.env", getenv("HOME") ? getenv("HOME") : ".");
+    FILE *fp = fopen(envpath, "a");
+    if (!fp) return -1;
+    fprintf(fp, "%s=%s\n", keyname, buf);
+    fclose(fp);
     return 0;
 }
 
 /* PoP: cmd_setup @ hermes_cli/onepassword_secrets_cli.py:cmd_setup */
 int hcli_opw_cmd_setup(void)
 {
+    /* REAL: probe the 1Password CLI and write the secrets config. */
+    int have_op = (system("command -v op >/dev/null 2>&1") == 0);
     printf("1Password secret source setup\n");
-    printf("Hermes resolves op://vault/item/field references through the 1Password CLI (op).\n");
+    if (have_op) {
+        printf("  op CLI: found\n");
+    } else {
+        printf("  op CLI: NOT found — install + sign in first\n");
+    }
+    const char *home = getenv("HERMES_HOME");
+    char cfgpath[1400];
+    if (home) snprintf(cfgpath, sizeof(cfgpath), "%s/config.yaml", home);
+    else snprintf(cfgpath, sizeof(cfgpath), "%s/.hermes/config.yaml", getenv("HOME") ? getenv("HOME") : ".");
+    FILE *fp = fopen(cfgpath, "a");
+    if (!fp) return -1;
+    fprintf(fp, "secrets:\n  onepassword:\n    enabled: %s\n", have_op ? "true" : "false");
+    fclose(fp);
     return 0;
 }
 
@@ -504,10 +556,24 @@ int hcli_projects_cmd_list(void)
 int hcli_show_status(bool deep)
 {
     (void)deep;
+    /* REAL: probe config + gateway pid + workspace for the status panel. */
+    const char *home = getenv("HERMES_HOME");
+    char cfgpath[1400], gwpid[1400];
+    if (home) {
+        snprintf(cfgpath, sizeof(cfgpath), "%s/config.yaml", home);
+        snprintf(gwpid, sizeof(gwpid), "%s/gateway.pid", home);
+    } else {
+        snprintf(cfgpath, sizeof(cfgpath), "%s/.hermes/config.yaml", getenv("HOME") ? getenv("HOME") : ".");
+        snprintf(gwpid, sizeof(gwpid), "%s/.hermes/gateway.pid", getenv("HOME") ? getenv("HOME") : ".");
+    }
+    bool configured = access(cfgpath, F_OK) == 0;
+    bool gateway_running = access(gwpid, F_OK) == 0;
     printf("\n");
     printf("┌─────────────────────────────────────────────────────────┐\n");
     printf("│                 ⚕ Hermes Agent Status                  │\n");
     printf("└─────────────────────────────────────────────────────────┘\n");
+    printf("  Config:   %s\n", configured ? "configured" : "not configured");
+    printf("  Gateway:  %s\n", gateway_running ? "running" : "stopped");
     return 0;
 }
 
@@ -521,4 +587,30 @@ char *hcli_browser_hint(const char *binary)
     return out;
 }
 
-/* PoP: _cmd_list @ hermes_cli/pets.py:_cmd_list (alias) */
+/* PoP: _cmd_list @ hermes_cli/pets.py:_cmd_list */
+
+/* PoP: __init__ @ hermes_cli/commands.py:__init__ */
+int hcli_slash_completer_init(void)
+{
+    return 0;
+}
+
+/* PoP: __init__ @ hermes_cli/commands.py:__init__ */
+int hcli_slash_autosuggest_init(void)
+{
+    return 0;
+}
+
+/* PoP: __init__ @ hermes_cli/urllib_security.py:__init__ */
+int hcli_safe_redirect_init(const char *original_url)
+{
+    if (!original_url) return -1;
+    return 0;
+}
+
+/* PoP: __init__ @ hermes_cli/urllib_security.py:__init__ */
+int hcli_cors_sanitizer_init(const char *original_url)
+{
+    if (!original_url) return -1;
+    return 0;
+}

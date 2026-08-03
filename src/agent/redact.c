@@ -637,9 +637,7 @@ char *hermes_redact(const char *input) {
     return redact_core(input, false);
 }
 
-/* PoP: redact_sensitive_text(force=True) @ agent/redact.py:redact_sensitive_text
- * Force-redaction path used by compaction summary boundaries (the config
- * opt-out is deliberately overridden — see context_compressor.py:_redact_compaction_text). */
+/* PoP: redact_sensitive_text(force=True) @ agent/redact.py:redact_sensitive_text */
 char *hermes_redact_force(const char *input) {
     return redact_core(input, true);
 }

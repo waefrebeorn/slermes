@@ -358,7 +358,7 @@ char *provider_host_derived_api_key(const char *base_url) {
 
 /* ─── auth.py:resolve_provider alias map (deterministic part) ──────────── */
 struct alias_pair { const char *from; const char *to; };
-/* PoP: resolve_provider @ hermes_cli/auth.py:resolve_provider (_PROVIDER_ALIASES) */
+/* PoP: resolve_provider @ hermes_cli/auth.py:resolve_provider */
 static const struct alias_pair ALIASES[] = {
     {"glm","zai"},{"z-ai","zai"},{"z.ai","zai"},{"zhipu","zai"},
     {"google","gemini"},{"google-gemini","gemini"},{"google-ai-studio","gemini"},

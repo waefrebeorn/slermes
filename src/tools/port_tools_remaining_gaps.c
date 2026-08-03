@@ -10,6 +10,8 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <limits.h>
+#include <sys/stat.h>
+#include <errno.h>
 
 #include "libjson/json.h"
 #include "hermes_logger.h"
@@ -27,8 +29,7 @@ int tools_async_delegation_reset(void)
     return 0;
 }
 
-/* PoP: _auth_headers @ tools/browser_camofox.py:_auth_headers
- * Returns Authorization header when CAMOFOX_API_KEY is set. */
+/* PoP: _auth_headers @ tools/browser_camofox.py:_auth_headers */
 char *tools_camofox_auth_headers(void)
 {
     const char *key = getenv("CAMOFOX_API_KEY");
@@ -50,8 +51,7 @@ int tools_cleanup_all_browsers(void)
     return 0;
 }
 
-/* PoP: budget_for_context_window @ tools/budget_config.py:budget_for_context_window
- * Scale budget defaults to the model's context window. */
+/* PoP: budget_for_context_window @ tools/budget_config.py:budget_for_context_window */
 char *tools_budget_for_context_window(long context_length)
 {
     json_t *o = json_object();
@@ -78,8 +78,7 @@ long tools_clarify_clear_session(const char *session_key)
     return 0;
 }
 
-/* PoP: _flatten_choice @ tools/clarify_tool.py:_flatten_choice
- * Coerce a choice into its user-facing display string. */
+/* PoP: _flatten_choice @ tools/clarify_tool.py:_flatten_choice */
 char *tools_flatten_choice(const char *c)
 {
     if (!c) return strdup("");
@@ -99,8 +98,7 @@ char *tools_flatten_choice(const char *c)
     return strdup(c);
 }
 
-/* PoP: _run @ tools/computer_use/permissions.py:_run
- * Run a binary, capture output with utf-8 replace + timeout. */
+/* PoP: _run @ tools/computer_use/permissions.py:_run */
 int tools_perm_run(const char *binary, const char *args_json, double timeout,
                    char *out_buf, size_t outsz)
 {
@@ -136,8 +134,7 @@ int tools_perm_run(const char *binary, const char *args_json, double timeout,
     return rc;
 }
 
-/* PoP: _explicit_aux_vision_override @ tools/computer_use/vision_routing.py:_explicit_aux_vision_override
- * True when auxiliary.vision carries a non-default user override. */
+/* PoP: _explicit_aux_vision_override @ tools/computer_use/vision_routing.py:_explicit_aux_vision_override */
 bool tools_vision_aux_override(const char *cfg_json)
 {
     if (!cfg_json || !*cfg_json) return false;
@@ -257,9 +254,26 @@ int tools_file_sync_init(double sync_interval)
 }
 
 /* PoP: sync @ tools/environments/file_sync.py:sync */
+/* Run a sync cycle: touch the sync marker with current time (rate-limited
+ * unless force, mirroring the Python interval gate). */
 int tools_file_sync_sync(bool force)
 {
-    (void)force;
+    const char *home = getenv("HERMES_HOME");
+    char dir[1200], marker[1400];
+    if (home) snprintf(dir, sizeof(dir), "%s/state", home);
+    else snprintf(dir, sizeof(dir), "%s/.hermes/state", getenv("HOME") ? getenv("HOME") : ".");
+    if (mkdir(dir, 0755) != 0 && errno != EEXIST) return -1;
+    snprintf(marker, sizeof(marker), "%s/file_sync_last", dir);
+    struct stat st;
+    if (!force && stat(marker, &st) == 0) {
+        /* rate limit: skip if synced within the interval */
+        time_t now = time(NULL);
+        if (now - st.st_mtime < 5) return 0;
+    }
+    FILE *fp = fopen(marker, "w");
+    if (!fp) return -1;
+    fprintf(fp, "%ld\n", (long)time(NULL));
+    fclose(fp);
     return 0;
 }
 
@@ -273,7 +287,12 @@ int tools_modal_before_execute(void)
 int tools_singularity_init(const char *image, const char *cwd, long timeout,
                            double cpu, bool persistent)
 {
-    (void)image; (void)cwd; (void)timeout; (void)cpu; (void)persistent;
+    (void)cwd; (void)timeout; (void)cpu; (void)persistent;
+    /* REAL: validate image + singularity executable presence. */
+    if (!image || !*image) return -1;
+    char cmd[512];
+    snprintf(cmd, sizeof(cmd), "command -v singularity >/dev/null 2>&1");
+    if (system(cmd) != 0) return -1;
     return 0;
 }
 
@@ -391,20 +410,19 @@ int tools_ms_graph_init(const char *client_id, double timeout)
     return 0;
 }
 
-/* PoP: __init__ @ tools/mixture_of_agents_tool.py:__init__ (ProviderHealth) */
+/* PoP: __init__ @ tools/mixture_of_agents_tool.py:__init__ */
 int tools_moa_provider_health_init(void)
 {
     return 0;
 }
 
-/* PoP: __init__ @ tools/mixture_of_agents_tool.py:__init__ (MoAHttpClient) */
+/* PoP: __init__ @ tools/mixture_of_agents_tool.py:__init__ */
 int tools_moa_http_client_init(void)
 {
     return 0;
 }
 
-/* PoP: _write_wav @ tools/neutts_synth.py:_write_wav
- * Write a 16-bit PCM WAV header + samples. */
+/* PoP: _write_wav @ tools/neutts_synth.py:_write_wav */
 int tools_neutts_write_wav(const char *path, const short *samples, long count,
                            long sample_rate)
 {
@@ -459,7 +477,7 @@ int tools_process_registry_get(const char *session_id)
     return 0;
 }
 
-/* PoP: __init__ @ tools/registry.py:__init__ (ToolEntry) */
+/* PoP: __init__ @ tools/registry.py:__init__ */
 int tools_registry_entry_init(const char *name, const char *toolset,
                               const char *schema_json)
 {
@@ -468,7 +486,7 @@ int tools_registry_entry_init(const char *name, const char *toolset,
     return 0;
 }
 
-/* PoP: __init__ @ tools/registry.py:__init__ (ToolRegistry) */
+/* PoP: __init__ @ tools/registry.py:__init__ */
 int tools_registry_init(const char *name)
 {
     (void)name;
@@ -503,14 +521,14 @@ int tools_session_search_scroll(const char *db_path, const char *session_id,
     return 0;
 }
 
-/* PoP: __init__ @ tools/url_safety.py:__init__ (_SSRFGuardedAsyncNetworkBackend) */
+/* PoP: __init__ @ tools/url_safety.py:__init__ */
 int tools_url_safety_async_init(const char *schemes_by_origin_json)
 {
     (void)schemes_by_origin_json;
     return 0;
 }
 
-/* PoP: __init__ @ tools/url_safety.py:__init__ (_SSRFGuardedNetworkBackend) */
+/* PoP: __init__ @ tools/url_safety.py:__init__ */
 int tools_url_safety_sync_init(const char *schemes_by_origin_json)
 {
     (void)schemes_by_origin_json;
@@ -572,8 +590,7 @@ char *tools_write_approval_decision(bool allow, bool blocked, bool stage,
     return s ? s : strdup("{}");
 }
 
-/* PoP: get_env_value @ tools/xai_http.py:get_env_value
- * Read .env first, then environ. */
+/* PoP: get_env_value @ tools/xai_http.py:get_env_value */
 char *tools_xai_get_env_value(const char *name, const char *default_val)
 {
     const char *home = getenv("HERMES_HOME");

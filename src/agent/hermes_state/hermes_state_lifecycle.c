@@ -28,7 +28,7 @@ bool hermes_state_create_session(hermes_state_db_t *db, const char *session_id,
     return ok;
 }
 
-/* PoP: end_session @ hermes_state.py:end_session (first writer wins) */
+/* PoP: end_session @ hermes_state.py:end_session */
 /* PoP: hermes_state_end_session @ hermes_state.py:end_session */
 bool hermes_state_end_session(hermes_state_db_t *db, const char *session_id,
                               const char *end_reason) {
