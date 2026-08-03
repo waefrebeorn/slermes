@@ -16,6 +16,6 @@ static const char *js(const char *s){
 }
 int main(void){
   setvbuf(stdout, NULL, _IONBF, 0);
-  printf("{\"func\":\"skills_hub_is_available\",\"ret\":0}\n", "skills_hub_is_available", (int)skills_hub_is_available());
+  printf("{\"func\":\"skills_hub_is_available\",\"ret\":%d}\n", (int)skills_hub_is_available());
   return 0;
 }

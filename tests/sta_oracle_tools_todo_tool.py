@@ -1,7 +1,7 @@
 """AUTO-GENERATED oracle for tools_todo_tool (gen_oracle.py)."""
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
-from tools.todo_tool import (check_todo_requirements, has_items)
+from tools.todo_tool import (check_todo_requirements, TodoStore)
 
 mism = 0; n = 0
 for line in sys.stdin:
@@ -12,14 +12,19 @@ for line in sys.stdin:
     n += 1
     fn = rec['func']
     ARGS = {
-        'todo_tool_check_requirements': ('check_todo_requirements', []),
-        'todo_tool_has_items': ('has_items', []),
+        'todo_tool_check_requirements': check_todo_requirements,
+        # has_items moved to the TodoStore class method; a fresh store is
+        # empty, matching the C port's statically-initialized empty list.
+        'todo_tool_has_items': TodoStore,
     }
     if fn not in ARGS:
         continue
-    pyf, pargs = ARGS[fn]
+    pyf = ARGS[fn]
     try:
-        exp = pyf(*pargs)
+        if pyf is TodoStore:
+            exp = pyf().has_items()
+        else:
+            exp = pyf()
     except Exception as e:
         print('PYERR', fn, e); continue
     got = rec['ret']

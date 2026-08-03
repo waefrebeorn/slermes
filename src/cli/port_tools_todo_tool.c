@@ -22,7 +22,7 @@ typedef struct {
     char status[16];
 } TodoItem;
 
-static TodoItem _items[MAX_ITEMS];
+static TodoItem *_items = NULL;   /* heap-backed: no 1MB landlocked static */
 static int _item_count = 0;
 
 /* PoP: todo_tool_check_requirements @ tools/todo_tool.py:check_todo_requirements */
@@ -46,7 +46,7 @@ int todo_tool_has_items(void)
 /* Render the todo list for post-compression injection. Returns NULL if empty. */
 char *todo_tool_format_for_injection(void)
 {
-    if (_item_count == 0) return NULL;
+    if (_item_count == 0 || !_items) return NULL;
 
     /* Count active items */
     int active = 0;

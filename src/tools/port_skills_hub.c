@@ -7,6 +7,7 @@
 #include "hermes_logger.h"
 #include "hermes_json.h"
 #include "hermes_skills_hub.h"
+#include "libhttp/http.h"
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -19,6 +20,7 @@
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <time.h>
 
 /* Forward declarations for types defined in skills_hub.c */
 typedef struct github_source github_source_t;
@@ -26,6 +28,25 @@ typedef struct github_auth github_auth_t;
 
 /* Forward declaration for file_ops_read_file_raw from port_file_operations.c */
 extern char *file_ops_read_file_raw(const char *path);
+
+/* Python: HERMES_INDEX_URL — centralized skills index, rebuilt daily by CI. */
+#define HERMES_INDEX_URL "https://hermes-agent.nousresearch.com/docs/api/skills-index.json"
+
+/* mkdir -p helper (self-contained; port_file_operations.c has a static copy). */
+static void sh_mkdir_p(const char *path) {
+    struct stat st;
+    if (stat(path, &st) == 0) return;
+    char tmp[1024];
+    snprintf(tmp, sizeof(tmp), "%s", path);
+    for (char *p = tmp + 1; *p; p++) {
+        if (*p == '/') {
+            *p = 0;
+            mkdir(tmp, 0755);
+            *p = '/';
+        }
+    }
+    mkdir(tmp, 0755);
+}
 
 /* ================================================================
  *  Inspect methods (multiple inspect calls in different contexts)
@@ -637,11 +658,89 @@ char *skills_hub_resolve_skill_md_url(const char *identifier)
  *  Availability checks
  * ================================================================ */
 
-/* Port of Python: is_available (SkillsHub) */
-/* PoP: skills_hub_is_available @ tools/skills_hub.py:SkillsHub.is_available */
+/* Port of Python: is_available (HermesIndexSource) */
+/* PoP: skills_hub_is_available @ tools/skills_hub.py:HermesIndexSource.is_available */
+/* Whether the hermes skills index is available. Mirrors Python
+ * _load_hermes_index(): fresh cache (< 6h TTL) wins, else fetch from the
+ * docs site, else fall back to a stale cache. Returns true only when the
+ * index parses and carries a non-empty "skills" array. */
 bool skills_hub_is_available(void)
 {
-    return true;
+    /* <hermes_home>/skills/.hub/index-cache/hermes-index.json */
+    const char *home = getenv("SLERMES_HOME");
+    if (!home || !*home) home = getenv("HERMES_HOME");
+    if (!home || !*home) home = getenv("HOME");
+    if (!home || !*home) return false;
+    char path[4096];
+    snprintf(path, sizeof(path),
+             "%s/skills/.hub/index-cache/hermes-index.json", home);
+
+    /* Python: json.loads(cache) if age < HERMES_INDEX_TTL (6h) */
+    struct stat st;
+    bool have_cache = stat(path, &st) == 0 && S_ISREG(st.st_mode);
+    if (have_cache && time(NULL) - st.st_mtime < 6 * 3600) {
+        char *content = file_ops_read_file_raw(path);
+        if (content) {
+            json_t *root = json_parse(content, NULL);
+            free(content);
+            if (root) {
+                const json_t *skills = json_obj_get(root, "skills");
+                bool ok = skills && skills->type == JSON_ARRAY &&
+                          json_array_size(skills) > 0;
+                json_free(root);
+                if (ok) return true;
+            }
+        }
+    }
+
+    /* Fetch from docs site (mirrors the httpx.get path). */
+    json_t *fetched = NULL;
+    http_t *h = http_new(15);
+    if (h) {
+        http_resp_t *resp = http_get(h, HERMES_INDEX_URL, NULL);
+        if (resp && resp->status == 200 && resp->body) {
+            fetched = json_parse(resp->body, NULL);
+        }
+        if (resp) http_resp_free(resp);
+        http_free(h);
+    }
+    if (fetched && fetched->type == JSON_OBJECT) {
+        const json_t *skills = json_obj_get(fetched, "skills");
+        bool ok = skills && skills->type == JSON_ARRAY &&
+                  json_array_size(skills) > 0;
+        /* Cache locally (Python writes json.dumps(data)). */
+        if (ok) {
+            char *ser = json_serialize(fetched);
+            if (ser) {
+                char dir[4096];
+                snprintf(dir, sizeof(dir), "%s/skills/.hub/index-cache", home);
+                sh_mkdir_p(dir);
+                FILE *f = fopen(path, "w");
+                if (f) { fputs(ser, f); fclose(f); }
+                free(ser);
+            }
+        }
+        json_free(fetched);
+        return ok;
+    }
+    if (fetched) json_free(fetched);
+
+    /* Fall back to a stale cache (Python _load_stale_index_cache). */
+    if (have_cache) {
+        char *content = file_ops_read_file_raw(path);
+        if (content) {
+            json_t *root = json_parse(content, NULL);
+            free(content);
+            if (root) {
+                const json_t *skills = json_obj_get(root, "skills");
+                bool ok = skills && skills->type == JSON_ARRAY &&
+                          json_array_size(skills) > 0;
+                json_free(root);
+                return ok;
+            }
+        }
+    }
+    return false;
 }
 
 /* Port of Python: _find_entry */

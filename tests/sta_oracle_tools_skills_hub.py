@@ -1,7 +1,7 @@
 """AUTO-GENERATED oracle for tools_skills_hub (gen_oracle.py)."""
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
-from tools.skills_hub import (SkillsHub)
+from tools.skills_hub import (HermesIndexSource, GitHubAuth)
 
 mism = 0; n = 0
 for line in sys.stdin:
@@ -12,13 +12,18 @@ for line in sys.stdin:
     n += 1
     fn = rec['func']
     ARGS = {
-        'skills_hub_is_available': ('SkillsHub', []),
+        'skills_hub_is_available': ('_avail', []),
     }
     if fn not in ARGS:
         continue
     pyf, pargs = ARGS[fn]
     try:
-        exp = pyf(*pargs)
+        # HermesIndexSource.is_available is a property; constructing the
+        # source and reading it mirrors the C port's cache-file check.
+        if pyf == '_avail':
+            exp = HermesIndexSource(GitHubAuth()).is_available
+        else:
+            exp = pyf(*pargs)
     except Exception as e:
         print('PYERR', fn, e); continue
     got = rec['ret']

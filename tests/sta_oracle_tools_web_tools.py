@@ -1,7 +1,7 @@
 """AUTO-GENERATED oracle for tools_web_tools (gen_oracle.py)."""
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
-from tools.computer_use.tool import (_ddgs_package_importable, _ensure_web_plugins_loaded, _get_extract_char_limit, check_web_api_key)
+from tools.web_tools import (_ddgs_package_importable, _ensure_web_plugins_loaded, _get_extract_char_limit, check_web_api_key)
 
 mism = 0; n = 0
 for line in sys.stdin:

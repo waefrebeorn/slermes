@@ -1,7 +1,7 @@
 """AUTO-GENERATED oracle for hermes_cli_mcp_catalog (gen_oracle.py)."""
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
-from hermes_cli.main import (install_ignored_terminal_sequences)
+from hermes_cli.pt_input_extras import (install_ignored_terminal_sequences)
 
 mism = 0; n = 0
 for line in sys.stdin:

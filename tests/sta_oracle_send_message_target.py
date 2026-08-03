@@ -48,7 +48,14 @@ for ln in proc.stdout.splitlines():
             # documented subset: C returns 0, Python may differ — do not assert
             total -= 1
             continue
-        exp_chat, exp_thread, exp_explicit = sm._parse_target_ref(plat, rec["target"])
+        try:
+            exp_chat, exp_thread, exp_explicit = sm._parse_target_ref(plat, rec["target"])
+        except ModuleNotFoundError:
+            # telegram username resolution imports a user-installable plugin
+            # (plugins.platforms.telegram.telegram_ids) not present in the dev
+            # tree — treat as not-assertable, like the unhandled platforms.
+            total -= 1
+            continue
         ok = (rec["explicit"] == (1 if exp_explicit else 0) and
               rec["chat"] == (exp_chat or "") and
               rec["thread"] == (exp_thread or ""))

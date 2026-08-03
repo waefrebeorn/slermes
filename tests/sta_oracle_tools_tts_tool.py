@@ -1,7 +1,7 @@
 """AUTO-GENERATED oracle for tools_tts_tool (gen_oracle.py)."""
 import sys, json, os
 sys.path.insert(0, os.path.expanduser("~/hermes-agent-dev"))
-from tools.tts_tool import (_has_openai_backend, _import_edge_tts, _import_elevenlabs, _import_kittentts, _import_mistral_client, _import_openai_client, _import_piper, _import_sounddevice)
+from tools.tts_tool import (_has_openai_audio_backend, _import_edge_tts, _import_elevenlabs, _import_kittentts, _import_mistral_client, _import_openai_client, _import_piper, _import_sounddevice)
 
 mism = 0; n = 0
 for line in sys.stdin:
@@ -19,7 +19,7 @@ for line in sys.stdin:
         'tts_tool_import_sounddevice': ('_import_sounddevice', []),
         'tts_tool_import_kittentts': ('_import_kittentts', []),
         'tts_tool_import_piper': ('_import_piper', []),
-        'tts_tool_has_openai_audio_backend': ('_has_openai_backend', []),
+        'tts_tool_has_openai_audio_backend': ('_has_openai_audio_backend', []),
     }
     if fn not in ARGS:
         continue

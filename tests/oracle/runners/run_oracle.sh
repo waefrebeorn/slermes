@@ -95,6 +95,10 @@ if [ ! -f "$BUILD_DIR/tt_$NAME" ]; then
   echo "LINK FAILED for $NAME:" >&2
   grep -iE 'error|undefined|multiple' /tmp/oracle_link.log | head -5 >&2
 fi
+# Subprocess-style oracles exec a fixed /tmp/t_port_<name> binary (they
+# re-run the harness themselves and compare against live Python). Point
+# that path at the freshly-built harness so they see current code.
+ln -sfn "$(pwd)/$BUILD_DIR/tt_$NAME" "/tmp/t_port_$NAME" 2>/dev/null || true
 
 FAIL=0
 # Load normalize rules from registry.json (strip_patterns: regex on raw output;

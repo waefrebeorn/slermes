@@ -16,7 +16,7 @@ static const char *js(const char *s){
 }
 int main(void){
   setvbuf(stdout, NULL, _IONBF, 0);
-  printf("{\"func\":\"todo_tool_check_requirements\",\"ret\":0}\n", "todo_tool_check_requirements", (int)todo_tool_check_requirements());
-  printf("{\"func\":\"todo_tool_has_items\",\"ret\":0}\n", "todo_tool_has_items", todo_tool_has_items());
+  printf("{\"func\":\"todo_tool_check_requirements\",\"ret\":%d}\n", (int)todo_tool_check_requirements());
+  printf("{\"func\":\"todo_tool_has_items\",\"ret\":%d}\n", todo_tool_has_items());
   return 0;
 }
