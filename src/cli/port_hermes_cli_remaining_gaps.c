@@ -167,8 +167,7 @@ bool hcli_resolve_persist_behavior(bool is_global, bool is_session, bool is_once
     return true;
 }
 
-/* PoP: group_providers @ hermes_cli/models.py:group_providers
- * Returns JSON array of {name, providers:[...]} groups. */
+/* PoP: group_providers @ hermes_cli/models.py:group_providers */
 char *hcli_group_providers(const char *slugs_json)
 {
     if (!slugs_json) return strdup("[]");
@@ -261,8 +260,7 @@ char *hcli_xai_normalize(const char *model_id)
     return out;
 }
 
-/* PoP: _strip_container_argv_prefix @ hermes_cli/container_boot.py:_strip_container_argv_prefix
- * Strip s6/wrapper prefix off container argv. Input: space-joined argv. */
+/* PoP: _strip_container_argv_prefix @ hermes_cli/container_boot.py:_strip_container_argv_prefix */
 char *hcli_strip_container_argv_prefix(const char *argv_line)
 {
     if (!argv_line) return strdup("");
@@ -307,8 +305,7 @@ bool hcli_wait_for_gateway_absent(double timeout_s, double interval_s)
     return false;
 }
 
-/* PoP: _read_manifest @ hermes_cli/plugins_cmd.py:_read_manifest
- * Read <dir>/plugin.yaml — C port reads plugin.json equivalent. */
+/* PoP: _read_manifest @ hermes_cli/plugins_cmd.py:_read_manifest */
 char *hcli_read_plugin_manifest(const char *plugin_dir)
 {
     if (!plugin_dir) return strdup("{}");

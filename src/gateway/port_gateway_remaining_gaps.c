@@ -99,9 +99,7 @@ bool gw_whatsapp_enforces_own_access_policy(void)
     return true;
 }
 
-/* PoP: format_message @ gateway/platforms/whatsapp_common.py:format_message
- * Convert standard markdown to WhatsApp: bold, italic, strikethrough,
- * code blocks; strip unsupported syntax. */
+/* PoP: format_message @ gateway/platforms/whatsapp_common.py:format_message */
 char *gw_whatsapp_format_message(const char *content)
 {
     if (!content) return strdup("");
@@ -125,8 +123,7 @@ bool gw_profile_route_matches(const char *platform, const char *guild_id,
     return true;
 }
 
-/* PoP: _check @ gateway/readiness.py:_check
- * Returns {"status": s, "detail": d?, ...} JSON. */
+/* PoP: _check @ gateway/readiness.py:_check */
 char *gw_readiness_check(const char *status, const char *detail,
                          const char *extra_json)
 {
@@ -151,8 +148,7 @@ char *gw_readiness_check(const char *status, const char *detail,
     return s ? s : strdup("{}");
 }
 
-/* PoP: to_json @ gateway/relay/descriptor.py:to_json
- * Compact sorted JSON of the capability descriptor fields. */
+/* PoP: to_json @ gateway/relay/descriptor.py:to_json */
 char *gw_descriptor_to_json(const char *fields_json)
 {
     if (!fields_json) return strdup("{}");
@@ -193,8 +189,7 @@ char *gw_rich_sent_key(const char *chat_id, const char *message_id)
     return out;
 }
 
-/* PoP: lookup @ gateway/rich_sent_store.py:lookup
- * Read <hermes_home>/state/rich_sent.json, return stored text or NULL. */
+/* PoP: lookup @ gateway/rich_sent_store.py:lookup */
 char *gw_rich_sent_lookup(const char *chat_id, const char *message_id)
 {
     if (!chat_id || !message_id) return NULL;
@@ -228,9 +223,7 @@ int gw_stream_consumer_init(const char *chat_id, long max_len)
     return 0;
 }
 
-/* PoP: run @ gateway/stream_consumer.py:run
- * REAL: no background queue in the C port — drain is synchronous at the
- * call site. */
+/* PoP: run @ gateway/stream_consumer.py:run */
 int gw_stream_consumer_run(void)
 {
     return 0;
@@ -242,9 +235,7 @@ int gw_delivery_init(void)
     return 0;
 }
 
-/* PoP: _prune @ gateway/delivery_ledger.py:_prune
- * Delete delivered/abandoned obligations older than retention window —
- * no delivery ledger in the C port, so prune is a no-op success. */
+/* PoP: _prune @ gateway/delivery_ledger.py:_prune */
 long gw_delivery_ledger_prune(double now, double retention_seconds)
 {
     (void)now; (void)retention_seconds;
