@@ -32,6 +32,8 @@ test-libs:
 	@gcc -O2 -Wall -Wextra -I lib/libdb lib/libdb/db.c tests/test_db.c -o /tmp/t_db -lm 2>/dev/null; /tmp/t_db 2>&1 || echo "(no test runner)"
 	@echo "=== Testing libpath ==="
 	@gcc -O2 -Wall -Wextra -I lib/libpath lib/libpath/path.c tests/test_path.c -o /tmp/t_path -lm 2>/dev/null; /tmp/t_path 2>&1 || echo "(no test runner)"
+	@echo "=== Testing libhive (skipfield + freelist) ==="
+	@gcc -std=c11 -O2 -Wall -Wextra -I lib/libhive lib/libhive/hive.c lib/libhive/hive_test.c -o /tmp/t_hive 2>/dev/null; /tmp/t_hive 2>&1 || echo "(no test runner)"
 	@echo "=== Testing plugin_llm ==="
 	@gcc -O2 -g -Wall -Wextra -I include -I lib/libjson -I lib/libplugin tests/test_plugin_llm.c src/agent/plugin_llm.o lib/libjson/json.o -o /tmp/t_plugin_llm -lm 2>/dev/null && /tmp/t_plugin_llm 2>&1 || echo "(no test runner)"
 	@echo "=== Testing auxiliary_client ==="

@@ -22,7 +22,7 @@ extern "C" {
 #define SKILL_CMD_DESC_MAX    512
 #define SKILL_CMD_PATH_MAX    4096
 #define SKILL_CMD_SLUG_MAX    128
-#define MAX_SKILL_COMMANDS    256
+#define MAX_SKILL_COMMANDS    64   /* max /slug commands (was 256: 256×17KB skill_cmd_entry_t ≈ 4.3MB .bss) */
 
 /* A single skill command entry (/slug → info) */
 typedef struct {

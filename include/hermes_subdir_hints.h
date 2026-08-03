@@ -22,7 +22,7 @@ extern "C" {
 #endif
 
 /* Max number of directories we track */
-#define SUBDIR_HINTS_MAX_DIRS 256
+#define SUBDIR_HINTS_MAX_DIRS 64   /* loaded subdir dirs (was 256: 256×PATH_MAX ≈ 1MB .bss) */
 
 /* Max hint file content length */
 #define SUBDIR_HINTS_MAX_CHARS 8000

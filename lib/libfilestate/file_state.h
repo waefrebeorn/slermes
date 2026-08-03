@@ -16,9 +16,9 @@ extern "C" {
 #endif
 
 /* Maximum entries tracked */
-#define FS_MAX_PATHS_PER_AGENT  256
+#define FS_MAX_PATHS_PER_AGENT  32   /* paths tracked per agent (was 256: 32 agents × 256 paths × 256B ≈ 2MB .bss) */
 #define FS_MAX_AGENTS           32
-#define FS_MAX_GLOBAL_WRITERS   512
+#define FS_MAX_GLOBAL_WRITERS   64   /* global writers (was 512) */
 
 /* ─── Read stamp ─────────────────────────────────────────── */
 

@@ -27,16 +27,19 @@ extern "C" {
 
 /* ── Types ────────────────────────────────────────────────────── */
 
-/* A single flat key→value entry */
+/* A single flat key→value entry.
+ * Pointers into string-literal tables: the generated locale data is
+ * read-only, so fixed [256]/[4096] char buffers were pure padding
+ * (~4.3KB × 271 entries × 19 languages ≈ 22MB of .bss/.data). */
 typedef struct {
-    char key[I18N_KEY_MAX];
-    char value[I18N_VALUE_MAX];
+    const char *key;
+    const char *value;
 } i18n_entry_t;
 
 /* A loaded locale catalog */
 typedef struct {
     char          lang[I18N_LANG_MAX];
-    i18n_entry_t *entries;
+    const i18n_entry_t *entries;
     size_t        count;
     size_t        capacity;
 } i18n_catalog_t;

@@ -612,7 +612,7 @@ static void compress_prune_tool_results(agent_state_t *state, size_t sys_keep) {
     if (!state || state->message_count <= sys_keep + 2) return;
 
     /* Build tool_call_id -> (tool_name, arguments) index from assistant messages */
-    #define MAX_TOOL_INDEX 256
+    #define MAX_TOOL_INDEX 64   /* tool calls per message batch (was 256: 256×4.3KB ≈ 1.1MB .bss) */
     static struct { char id[64]; char name[128]; char args[4096]; } tool_index[MAX_TOOL_INDEX];
     int idx_count = 0;
 

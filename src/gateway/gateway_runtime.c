@@ -26,7 +26,7 @@
  *  Port of Python _AGENT_CACHE_MAX_SIZE=128, _AGENT_CACHE_IDLE_TTL_SECS=3600
  * ════════════════════════════════════════════════════════════════ */
 
-#define GW_AGENT_CACHE_MAX 128
+#define GW_AGENT_CACHE_MAX 32   /* LRU cache: real usage is 1-3 sessions (was 128: 128×75KB agent_state_t ≈ 9.6MB .bss) */
 #define GW_AGENT_CACHE_IDLE_TTL 3600  /* 1 hour in seconds */
 
 typedef struct {

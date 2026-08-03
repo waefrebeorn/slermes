@@ -372,3 +372,18 @@ lib/libcurses_widget.a: lib/libcurses_widget/curses_widget.o
 # Build all standalone libs
 libs: $(LIB_A)
 	@echo "Standalone libraries built: $(words $(LIB_A)) archives"
+
+# ── libhive shared library (dynamic linking) ─────────────────────────────
+# Pure C11 skipfield+freelist collection as a loadable .so, plus its
+# oracle-style correctness test. Build:  make hive.so   /   make hive-test
+lib/libhive/hive.so: lib/libhive/hive.c lib/libhive/hive.h
+	$(CC) -std=c11 -O2 -fPIC -shared -Wall -Wextra -I lib/libhive -o $@ lib/libhive/hive.c
+	@echo "libhive shared library built: $@"
+
+hive.so: lib/libhive/hive.so
+
+hive-test: lib/libhive/hive.c lib/libhive/hive_test.c lib/libhive/hive.h
+	$(CC) -std=c11 -O2 -Wall -Wextra -I lib/libhive lib/libhive/hive.c lib/libhive/hive_test.c -o /tmp/t_hive
+	/tmp/t_hive
+
+.PHONY: hive.so hive-test

@@ -23,7 +23,7 @@
  *  Vault State
  * ================================================================ */
 
-#define VAULT_MAX_CREDENTIALS 256
+#define VAULT_MAX_CREDENTIALS 128   /* credentials (was 256: 256×2.3KB ≈ 576KB .bss) */
 #define VAULT_HEADER "HERMES_VAULT_V1"
 #define VAULT_DEFAULT_PATH ".slermes/vault.enc"
 

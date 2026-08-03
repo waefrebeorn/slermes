@@ -396,7 +396,7 @@ typedef struct {
 
     /* G33-G34: Steer queue — up to 8 pending steering messages with type + priority */
 #define HERMES_MAX_STEERS 8
-    char steer_queue[HERMES_MAX_STEERS][4096];   /* steer message contents */
+    char steer_queue[HERMES_MAX_STEERS][1024];   /* steer message contents (was 4096: 8×4096×96 states ≈ 3MB .bss) */
     message_role_t steer_roles[HERMES_MAX_STEERS]; /* MSG_SYSTEM, MSG_ASSISTANT, or MSG_USER */
     int steer_count;                              /* number of queued steers */
 

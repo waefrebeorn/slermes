@@ -19,7 +19,7 @@
 #define SKILLS_HUB_SOURCE_ID "browse-sh"
 #define SKILLS_HUB_SOURCE_ID_WELLKNOWN "wellknown"
 #define SKILLS_HUB_MAX_RESULTS 50
-#define SKILLS_HUB_MAX_SKILLS 512
+#define SKILLS_HUB_MAX_SKILLS 64   /* max skills per source catalog (was 512: 512×3.3KB×16 sources ≈ 26MB of .bss) */
 #define SKILLS_HUB_CACHE_TTL_SEC 300 /* 5 min in-memory cache */
 #define SKILLS_HUB_MAX_SOURCES 16   /* max registered skill sources */
 
