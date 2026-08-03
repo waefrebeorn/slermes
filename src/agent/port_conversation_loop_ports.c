@@ -11,6 +11,9 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "json.h"
+#include "hermes_agent.h"
+#include "hermes_gateway_types.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -167,8 +170,35 @@ char *cvl_content_policy_blocked_result(const char *reason) {
 
 /* PoP: run_conversation @ agent/conversation_loop.py:run_conversation */
 char *cvl_run_conversation(const char *kwargs_json) {
-    /* Python: full loop until completion. */
+    /* Python: full loop until completion. kwargs_json carries
+     * {message, system_message} — delegate to the real run_conversation()
+     * (conversation_loop.c) and return its result JSON. */
     if (!kwargs_json) return NULL;
-    printf("conversation loop run (tool calling until completion)\n");
-    return strdup("{}");
+
+    json_t *kw = json_parse(kwargs_json, NULL);
+    if (!kw) return strdup("{\"error\":\"bad kwargs\"}");
+    const char *msg = json_get_str(kw, "message", NULL);
+    if (!msg) msg = json_get_str(kw, "user_message", NULL);
+    const char *sys = json_get_str(kw, "system_message", NULL);
+    if (!sys) sys = json_get_str(kw, "system", NULL);
+    const char *session_key = json_get_str(kw, "session_key", NULL);
+    json_free(kw);
+
+    if (!msg || !*msg) return strdup("{\"error\":\"no message\"}");
+
+    /* Resolve the agent state: session-keyed from the gateway cache when
+     * available, else the gateway's global agent. */
+    extern char *run_conversation(agent_state_t *state,
+                                  const char *user_message,
+                                  const char *system_message);
+    extern agent_state_t *gw_agent_cache_get(const char *session_key);
+    extern gateway_state_t g_gw;
+    agent_state_t *state = NULL;
+    if (session_key && *session_key) {
+        state = gw_agent_cache_get(session_key);
+    }
+    if (!state) state = &g_gw.agent;
+    if (!state) return strdup("{\"error\":\"no agent state\"}");
+
+    return run_conversation(state, msg, sys);
 }

@@ -13,6 +13,8 @@
 #include <time.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include "json.h"
+#include "video_gen_registry.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -44,43 +46,82 @@ char *vgp_display_name(void) {
 
 /* PoP: is_available @ agent/video_gen_provider.py:is_available */
 bool vgp_is_available(void) {
-    /* Python: typically key presence check. */
-    printf("video provider availability probe\n");
+    /* Python: typically key presence check. Any registered provider that
+     * reports available (delegates to the real registry). */
+    extern int video_gen_provider_count(void);
+    extern const video_gen_provider_t *video_gen_get_provider_by_index(int idx);
+    int n = video_gen_provider_count();
+    for (int i = 0; i < n; i++) {
+        const video_gen_provider_t *p = video_gen_get_provider_by_index(i);
+        if (p && p->is_available && p->is_available()) return true;
+    }
     return false;
 }
 
 /* PoP: list_models @ agent/video_gen_provider.py:list_models */
 char *vgp_list_models(void) {
-    /* Python: catalog entries for the picker. */
-    printf("video provider models listed\n");
-    return strdup("[]");
+    /* Python: catalog entries for the picker. Return the registered
+     * provider names as a JSON array of {id, name}. */
+    extern int video_gen_provider_count(void);
+    extern const video_gen_provider_t *video_gen_get_provider_by_index(int idx);
+    int n = video_gen_provider_count();
+    json_t *arr = json_array();
+    for (int i = 0; i < n; i++) {
+        const video_gen_provider_t *p = video_gen_get_provider_by_index(i);
+        if (!p) continue;
+        json_t *entry = json_object();
+        json_set(entry, "id", json_string(p->name));
+        if (p->display_name[0]) json_set(entry, "name", json_string(p->display_name));
+        json_append(arr, entry);
+    }
+    char *ser = json_serialize(arr);
+    json_free(arr);
+    return ser ? ser : strdup("[]");
 }
 
 /* PoP: get_setup_schema @ agent/video_gen_provider.py:get_setup_schema */
 char *vgp_get_setup_schema(void) {
     /* Python: picker metadata. */
-    return strdup("{}");
+    return strdup("{\"fields\": [{\"key\": \"api_key\", \"label\": \"API Key\", "
+                  "\"type\": \"password\"}]}");
 }
 
 /* PoP: default_model @ agent/video_gen_provider.py:default_model */
 char *vgp_default_model(void) {
     /* Python: first model id or None. */
-    printf("default video model resolved\n");
-    return NULL;
+    extern int video_gen_provider_count(void);
+    extern const video_gen_provider_t *video_gen_get_provider_by_index(int idx);
+    int n = video_gen_provider_count();
+    if (n <= 0) return NULL;
+    const video_gen_provider_t *p = video_gen_get_provider_by_index(0);
+    if (!p || !p->name[0]) return NULL;
+    return strdup(p->name);
 }
 
 /* PoP: capabilities @ agent/video_gen_provider.py:capabilities */
 char *vgp_capabilities(void) {
     /* Python: supported feature dict. */
-    return strdup("{\"text_to_video\": false, \"image_to_video\": false}");
+    bool avail = vgp_is_available();
+    json_t *out = json_object();
+    json_set(out, "text_to_video", json_bool(avail));
+    json_set(out, "image_to_video", json_bool(avail));
+    char *ser = json_serialize(out);
+    json_free(out);
+    return ser ? ser : strdup("{\"text_to_video\": false, \"image_to_video\": false}");
 }
 
 /* PoP: generate @ agent/video_gen_provider.py:generate */
 char *vgp_generate(const char *prompt, const char *input_image) {
-    /* Python: text-to-video or image animation. */
+    /* Python: text-to-video or image animation. Delegates to the active
+     * registered provider's generate. */
     if (!prompt) return NULL;
-    printf("video generation invoked (%s)\n", prompt);
-    return strdup("{}");
+
+    extern const video_gen_provider_t *video_gen_get_active_provider(void);
+    const video_gen_provider_t *p = video_gen_get_active_provider();
+    if (!p || !p->generate) return strdup("{}");
+
+    return p->generate(prompt, "16:9", input_image, 5, 0, false, NULL,
+                       input_image ? "image_to_video" : "generate", "720p");
 }
 
 /* PoP: save_b64_video @ agent/video_gen_provider.py:save_b64_video */
