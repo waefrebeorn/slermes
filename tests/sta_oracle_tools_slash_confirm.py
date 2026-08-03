@@ -23,22 +23,34 @@ for line in sys.stdin:
     line = line.strip()
     if not line: continue
     b = json.loads(line)
+    def norm_exp(exp):
+        """Compare only the serializable contract (confirm_id + command) —
+        handler is a live function and created_at is a wall-clock float, so
+        neither is part of the C port's JSON surface."""
+        if exp is None:
+            return None
+        return {"confirm_id": exp.get("confirm_id"), "command": exp.get("command")}
+    def norm_got(got):
+        if got is None:
+            return None
+        o = json.loads(got)
+        return {"confirm_id": o.get("confirm_id"), "command": o.get("command")}
     if b["t"] == "get_none":
-        exp = mod.get_pending("sess1")
-        got = b["out"]
+        exp = norm_exp(mod.get_pending("sess1"))
+        got = norm_got(b["out"])
         if exp != got: mm += 1; print(f"MISMATCH get_none: exp {exp!r} got {got!r}")
     elif b["t"] == "get":
         mod.register("sess1", "cid-1", "reload-mcp", fake_handler)
-        exp = mod.get_pending("sess1")
-        got = b["out"]
+        exp = norm_exp(mod.get_pending("sess1"))
+        got = norm_got(b["out"])
         if exp != got: mm += 1; print(f"MISMATCH get: exp {exp!r} got {got!r}")
     elif b["t"] == "resolve":
         exp = asyncio.get_event_loop().run_until_complete(mod.resolve("sess1", "cid-1", "once"))
         got = b["out"]
         if exp != got: mm += 1; print(f"MISMATCH resolve: exp {exp!r} got {got!r}")
     elif b["t"] == "get_after_resolve":
-        exp = mod.get_pending("sess1")
-        got = b["out"]
+        exp = norm_exp(mod.get_pending("sess1"))
+        got = norm_got(b["out"])
         if exp != got: mm += 1; print(f"MISMATCH get_after_resolve: exp {exp!r} got {got!r}")
     elif b["t"] == "resolve_wrong":
         mod.register("sess2", "cid-A", "reload-mcp", fake_handler)
@@ -47,8 +59,8 @@ for line in sys.stdin:
         if exp != got: mm += 1; print(f"MISMATCH resolve_wrong: exp {exp!r} got {got!r}")
     elif b["t"] == "get_after_clear":
         mod.clear("sess2")
-        exp = mod.get_pending("sess2")
-        got = b["out"]
+        exp = norm_exp(mod.get_pending("sess2"))
+        got = norm_got(b["out"])
         if exp != got: mm += 1; print(f"MISMATCH get_after_clear: exp {exp!r} got {got!r}")
 if mm:
     print(f"oracle: {mm} mismatch(es)"); sys.exit(1)

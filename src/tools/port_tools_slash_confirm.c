@@ -100,11 +100,12 @@ char *tools_slash_confirm_resolve(const char *session_key, const char *confirm_i
     slash_confirm_entry_t *e = lookup(session_key);
     if (!e) return NULL;
     if (strcmp(e->confirm_id, confirm_id) != 0) return NULL;  /* stale confirm_id */
-    /* pop before running handler (prevent double-callback) */
+    /* Snapshot everything BEFORE popping: clear() frees the entry, so any
+     * read after it is a use-after-free. */
     char *cid = e->confirm_id, *cmd = e->command;
     char *(*handler)(const char *) = e->handler;
-    tools_slash_confirm_clear(session_key);
     double created = atof(e->created_at);
+    tools_slash_confirm_clear(session_key);
     if (time(NULL) - created > (timeout > 0 ? timeout : SLASH_CONFIRM_DEFAULT_TIMEOUT)) return NULL;
     if (!handler) return NULL;
     return handler(choice);
