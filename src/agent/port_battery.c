@@ -74,13 +74,15 @@ const char *battery_glyph(const battery_status_t *s) {
 
 /* PoP: battery_format_battery @ agent/battery.py:format_battery */
 char *format_battery(const battery_status_t *s) {
-    if (!battery_status_available(s)) return strdup("");
+    if (!s || !battery_status_available(s)) return strdup("");
     int pct = 0;
     if (!battery_status_percent(s, &pct)) return strdup("");
     const char *glyph = battery_glyph(s);
-    size_t need = strlen(glyph) + 16;
-    char *out = malloc(need);
-    if (!out) return strdup("");
-    snprintf(out, need, "%s %d%%", glyph, pct);
+    char *out = malloc(32);
+    if (!out) return NULL;
+    snprintf(out, 32, "%s %d%%", glyph, pct);
     return out;
 }
+
+/* Alias for callers that used the older name. */
+char *battery_format(const battery_status_t *s) { return format_battery(s); }

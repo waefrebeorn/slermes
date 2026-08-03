@@ -2,11 +2,9 @@
  * hermes-agent/agent/battery.py
  *
  * Compact, colour-coded battery read-out for the CLI/TUI status bar.
- * Pure logic only (no IO/psutil): the reading source (read_battery /
- * _read_battery_uncached / clear_cache) is NOT ported — it reads the host
- * through psutil and a time-based cache, so it remains an honest REAL_GAP.
- * This header exposes the battery_status_t model and the pure classification
- * / formatting helpers that operate on an already-populated status.
+ * The model + pure classification/formatting helpers are ported in
+ * src/agent/port_battery.c; the sysfs reading source (read_battery /
+ * _read_battery_uncached / clear_cache) is ported in src/battery.c.
  *
  * Opaque struct: battery_status_t is defined only in the .c; consumers use
  * the accessors below. Self-contained; minimal includes.
@@ -48,13 +46,20 @@ bool  battery_status_charging(const battery_status_t *s);
 
 /* Bucket a reading into a colour category (returns a string literal). */
 const char *battery_category(const battery_status_t *s);
-
-/* Leading glyph: bolt while charging, else battery. (UTF-8 string literal.) */
+/* Leading glyph: "\u26a1" (bolt) while charging, else "\U0001f50b" (battery).
+ * Returns "" when unavailable. */
 const char *battery_glyph(const battery_status_t *s);
-
-/* Compact label like "🔋 82%" / "⚡ 82%" (empty string "" when N/A).
- * Caller frees. */
+/* Compact label like "🔋 82%" / "⚡ 82%" (empty when N/A). Caller frees. */
 char *format_battery(const battery_status_t *s);
+/* Alias kept for callers that used the older name. */
+char *battery_format(const battery_status_t *s);
+
+/* ── reading source (src/battery.c) ────────────────────────────────────
+ * Read the host battery via sysfs (/sys/class/power_supply/*), with a
+ * time-based cache. Returns a caller-owned battery_status_t (free with
+ * battery_status_free). */
+battery_status_t *battery_read(bool use_cache);
+void battery_clear_cache(void);
 
 #ifdef __cplusplus
 }

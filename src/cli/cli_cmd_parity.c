@@ -16,7 +16,9 @@
 
 #include "cli_cmd_parity.h"
 #include "hermes_cli.h"
+#include "hermes_agent.h"
 #include "port_config_py_helpers.h"
+#include "battery.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -42,6 +44,22 @@ static int set_config_key(const char *key, const char *value) {
     return rc == 0 ? 1 : 0;
 }
 
+/* Read a nested config boolean (string or bool; default false). */
+static int get_config_bool(const char *key) {
+    json_t *cfg = config_py_load_config_readonly();
+    if (!cfg) return 0;
+    json_t *v = config_py_get_config_value(cfg, key, NULL);
+    int on = 0;
+    if (v) {
+        if (v->type == JSON_BOOL) on = v->bool_val ? 1 : 0;
+        else if (v->type == JSON_STRING && v->str_val) {
+            if (strcasecmp(v->str_val, "true") == 0) on = 1;
+        }
+    }
+    json_free(cfg);
+    return on;
+}
+
 /* ── /battery ───────────────────────────────────────────────────────── */
 /* PoP: battery @ hermes_cli/commands.py:battery
  * PoP: cmd_battery @ hermes_cli/cli_commands_mixin.py:_handle_battery_command */
@@ -52,17 +70,40 @@ void cmd_battery(const char *args, agent_state_t *state) {
         while (*args == ' ') args++;
         arg = args;
     }
-    if (arg[0] == '\0' || strcmp(arg, "status") == 0) {
-        printf("Battery indicator: %s\n", "off");
+    int on = get_config_bool("display.battery");
+    battery_status_t *st = battery_read(true);
+
+    if (strcmp(arg, "status") == 0 || strcmp(arg, "show") == 0) {
+        if (battery_status_available(st)) {
+            int pct = 0;
+            bool has_pct = battery_status_percent(st, &pct);
+            if (has_pct) {
+                char *fmt = battery_format(st);
+                printf("Battery indicator %s — currently %s\n",
+                       on ? "on" : "off", fmt ? fmt : "");
+                free(fmt);
+            } else {
+                printf("Battery indicator %s — no battery detected on this machine\n",
+                       on ? "on" : "off");
+            }
+        } else {
+            printf("Battery indicator %s — no battery detected on this machine\n",
+                   on ? "on" : "off");
+        }
         printf("  Usage: /battery [on|off|status]\n");
+        battery_status_free(st);
         return;
     }
-    if (strcmp(arg, "on") == 0) {
+    battery_status_free(st);
+    if (strcmp(arg, "on") == 0 || strcmp(arg, "true") == 0 || strcmp(arg, "yes") == 0) {
         set_config_key("display.battery", "true");
         printf("Battery indicator on.\n");
-    } else if (strcmp(arg, "off") == 0) {
+    } else if (strcmp(arg, "off") == 0 || strcmp(arg, "false") == 0 || strcmp(arg, "no") == 0) {
         set_config_key("display.battery", "false");
         printf("Battery indicator off.\n");
+    } else if (arg[0] == '\0' || strcmp(arg, "toggle") == 0) {
+        set_config_key("display.battery", on ? "false" : "true");
+        printf("Battery indicator %s.\n", on ? "off" : "on");
     } else {
         printf("Unknown argument: %s\n", arg);
         printf("  Usage: /battery [on|off|status]\n");
