@@ -20,9 +20,12 @@ static char *read_all(const char *path){
 
 static json_t *emit_config_coerce_ssl_verify(const json_t *c){
     const char *value = json_get_str(c, "value", "");
-    bool v = (config_coerce_ssl_verify(value) ? true : false);
+    int r = config_coerce_ssl_verify(value);
     json_t *o = json_new_object(); json_set(o, "fn", json_string("config_coerce_ssl_verify"));
-    json_set(o, "out", json_bool(v)); return o;
+    /* Python returns Optional[bool]; None serializes to '' in the oracle.
+     * The C port signals None with -1 (NOT truthy in C) — emit '' for it. */
+    if (r < 0) json_set(o, "out", json_string(""));
+    else json_set(o, "out", json_bool(r ? true : false)); return o;
 }
 
 static json_t *emit_config_coerce_config_version(const json_t *c){

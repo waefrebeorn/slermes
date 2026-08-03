@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern int learning_mutations_parse_node_kind(const char *);
+extern char *learning_mutations_parse_node_kind(const char *);
 
 static char *read_all(const char *path){
     FILE *f = fopen(path, "rb"); if (!f) return NULL;
@@ -18,9 +18,9 @@ static char *read_all(const char *path){
 
 static json_t *emit_learning_mutations_parse_node_kind(const json_t *c){
     const char *value = json_get_str(c, "value", "");
-    long v = (long)learning_mutations_parse_node_kind(value);
+    char *v = learning_mutations_parse_node_kind(value);
     json_t *o = json_new_object(); json_set(o, "fn", json_string("learning_mutations_parse_node_kind"));
-    json_set(o, "out", json_int(v)); return o;
+    json_set(o, "out", json_string(v ? v : "")); free(v); return o;
 }
 
 int main(int argc, char **argv){

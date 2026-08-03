@@ -24,7 +24,7 @@ extern "C" {
 #endif
 
 /* Node-id helpers */
-int                  learning_mutations_parse_node_kind(const char *node_id); /* 1=memory,0=skill */
+char                *learning_mutations_parse_node_kind(const char *node_id); /* "memory"|"skill" */
 int                  learning_mutations_parse_memory_id(const char *node_id,
                                                        char *out_source,
                                                        int *out_gidx,

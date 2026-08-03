@@ -226,10 +226,22 @@ int learning_mutations_write_memory_file(const char *path, char **chunks, int n)
 }
 
 /* PoP: learning_mutations_parse_node_kind @ agent/learning_mutations.py:parse_node_kind */
-int learning_mutations_parse_node_kind(const char *node_id)
+/* Python: return "memory" if node_id.startswith("memory:") else "skill".
+ * Returns a malloc'd string; caller frees. */
+char *learning_mutations_parse_node_kind(const char *node_id)
 {
-    if (!node_id) return 0;
-    return (strncmp(node_id, "memory:", 7) == 0) ? 1 : 0;
+    if (node_id && strncmp(node_id, "memory:", 7) == 0) return strdup("memory");
+    return strdup("skill");
+}
+
+/* Internal convenience: true when the node kind is "memory". Frees the
+ * kind string. */
+static int learning_mutations_parse_node_kind_ismem(const char *node_id)
+{
+    char *kind = learning_mutations_parse_node_kind(node_id);
+    int is_mem = kind && strcmp(kind, "memory") == 0;
+    free(kind);
+    return is_mem;
 }
 
 /* PoP: learning_mutations_parse_memory_id @ agent/learning_mutations.py:_parse_memory_id */
@@ -323,7 +335,7 @@ static char *lm_node_detail(const char *node_id)
     char home[LM_MAX_PATH];
     lm_hermes_home(home, sizeof(home));
 
-    if (learning_mutations_parse_node_kind(node_id)) {
+    if (learning_mutations_parse_node_kind_ismem(node_id)) {
         char source[LM_MAX_FIELD]; int gidx; char err[LM_MAX_FIELD];
         if (learning_mutations_parse_memory_id(node_id, source, &gidx, err, sizeof(err)) != 0)
             return NULL;
@@ -422,7 +434,7 @@ char *learning_mutations_delete_node(const char *node_id)
     lm_hermes_home(home, sizeof(home));
     json_t *r = json_new_object();
 
-    if (learning_mutations_parse_node_kind(node_id)) {
+    if (learning_mutations_parse_node_kind_ismem(node_id)) {
         char source[LM_MAX_FIELD]; int gidx; char err[LM_MAX_FIELD];
         if (learning_mutations_parse_memory_id(node_id, source, &gidx, err, sizeof(err)) != 0) {
             json_object_set(r, "ok", json_bool(0));
@@ -496,7 +508,7 @@ char *learning_mutations_edit_node(const char *node_id, const char *content)
     lm_hermes_home(home, sizeof(home));
     json_t *r = json_new_object();
 
-    if (learning_mutations_parse_node_kind(node_id)) {
+    if (learning_mutations_parse_node_kind_ismem(node_id)) {
         char source[LM_MAX_FIELD]; int gidx; char err[LM_MAX_FIELD];
         if (learning_mutations_parse_memory_id(node_id, source, &gidx, err, sizeof(err)) != 0) {
             json_object_set(r, "ok", json_bool(0));
