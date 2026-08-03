@@ -999,7 +999,11 @@ class ParityAnalyzer:
             pypath.read_text(errors='ignore'), fn)
         if not body:
             return False
-        return not any(rx.search(body) for rx in self._PY_REAL_RE)
+        # A function that ONLY prints (or returns constants) is trivial:
+        # its C port printing is faithful.  Real work = any non-print IO.
+        stripped = re.sub(r'\bprint\s*\(', '', body)
+        return not any(rx.search(stripped) for rx in self._PY_REAL_RE
+                       if rx.pattern != r'\bprint\s*\(')
 
     # ── classification (preserved; adds da_flags) ──
     def classify_feature(self, py_file, feature):

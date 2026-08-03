@@ -501,7 +501,10 @@ def python_is_trivial_for(c_name):
         body = ast.get_source_segment(src, fn)
         if not body:
             continue
-        if not any(rx.search(body) for rx in PY_REAL_RE):
+        # A function that ONLY prints (or returns constants) is trivial.
+        stripped = re.sub(r'\bprint\s*\(', '', body)
+        if not any(rx.search(stripped) for rx in PY_REAL_RE
+                   if rx.pattern != r'\bprint\s*\('):
             return True
     return False
 

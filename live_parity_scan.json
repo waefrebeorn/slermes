@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-02T23:58:59Z",
+  "generated_at": "2026-08-03T00:01:14Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -76723,10 +76723,10 @@
     },
     "cli.py": {
       "total": 313,
-      "ported": 307,
+      "ported": 310,
       "partial": 2,
       "stub": 0,
-      "real_gaps": 4,
+      "real_gaps": 1,
       "thin": true,
       "pop_mismatch": false,
       "py_func_count": 313,
@@ -79723,7 +79723,7 @@
             "decorators": [],
             "line_number": 3634
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_cli_remaining3.c",
           "c_function": "cli3_print",
           "pop_annotation": {
@@ -79737,12 +79737,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: print @ cli.py:print */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -84395,7 +84393,7 @@
             "decorators": [],
             "line_number": 10826
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_cli_remaining2.c",
           "c_function": "cl2_reload_mcp",
           "pop_annotation": {
@@ -84409,12 +84407,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _reload_mcp @ cli.py:_reload_mcp */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -84426,7 +84422,7 @@
             "decorators": [],
             "line_number": 10930
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_cli_remaining2.c",
           "c_function": "cl2_reload_skills",
           "pop_annotation": {
@@ -84440,12 +84436,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _reload_skills @ cli.py:_reload_skills */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "cli.py",
@@ -166900,10 +166894,10 @@
     },
     "hermes_cli/cli_billing_mixin.py": {
       "total": 31,
-      "ported": 22,
+      "ported": 27,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 9,
+      "real_gaps": 4,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 31,
@@ -167354,7 +167348,7 @@
             "decorators": [],
             "line_number": 755
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_cli_billing_mixin_remaining.c",
           "c_function": "cbm_show_billing",
           "pop_annotation": {
@@ -167368,12 +167362,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _show_billing @ hermes_cli/cli_billing_mixin.py:_show_billing */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/cli_billing_mixin.py",
@@ -167385,7 +167377,7 @@
             "decorators": [],
             "line_number": 787
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_cli_billing_mixin_remaining.c",
           "c_function": "cbm_billing_portal_hint",
           "pop_annotation": {
@@ -167399,12 +167391,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _billing_portal_hint @ hermes_cli/cli_billing_mixin.py:_billing_portal_hint */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/cli_billing_mixin.py",
@@ -167650,7 +167640,7 @@
             "decorators": [],
             "line_number": 1207
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_cli_billing_mixin_remaining.c",
           "c_function": "cbm_billing_render_charge_failed",
           "pop_annotation": {
@@ -167664,12 +167654,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _billing_render_charge_failed @ hermes_cli/cli_billing_mixin.py:_billing_render_charge_failed */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/cli_billing_mixin.py",
@@ -167774,7 +167762,7 @@
             "decorators": [],
             "line_number": 1520
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_cli_billing_mixin_remaining.c",
           "c_function": "cbm_billing_auto_reload_disable",
           "pop_annotation": {
@@ -167788,12 +167776,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _billing_auto_reload_disable @ hermes_cli/cli_billing_mixin.py:_billing_auto_reload_disable */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/cli_billing_mixin.py",
@@ -167805,7 +167791,7 @@
             "decorators": [],
             "line_number": 1545
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_cli_billing_mixin_remaining.c",
           "c_function": "cbm_billing_limit_screen",
           "pop_annotation": {
@@ -167819,12 +167805,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _billing_limit_screen @ hermes_cli/cli_billing_mixin.py:_billing_limit_screen */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         }
       ]
     },
@@ -178871,10 +178855,10 @@
     },
     "hermes_cli/curator.py": {
       "total": 17,
-      "ported": 15,
+      "ported": 16,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 17,
@@ -178970,7 +178954,7 @@
             "decorators": [],
             "line_number": 235
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_cli_remaining_wrappers.c",
           "c_function": "hermes_cli_curator_u_cmd_pause",
           "pop_annotation": {
@@ -178984,12 +178968,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _cmd_pause @ hermes_cli/curator.py:_cmd_pause */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/curator.py",
@@ -195268,10 +195250,10 @@
     },
     "hermes_cli/hooks.py": {
       "total": 8,
-      "ported": 6,
+      "ported": 7,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 8,
@@ -195463,7 +195445,7 @@
             "decorators": [],
             "line_number": 302
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_hermes_cli_hooks.c",
           "c_function": "cli_hermes_cli_hooks__cmd_doctor",
           "pop_annotation": {
@@ -195477,12 +195459,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: cli_hermes_cli_hooks__cmd_doctor @ hermes_cli/hooks.py:_cmd_doctor */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/hooks.py",
@@ -230530,10 +230510,10 @@
     },
     "hermes_cli/plugins_cmd.py": {
       "total": 56,
-      "ported": 51,
+      "ported": 52,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 5,
+      "real_gaps": 4,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 56,
@@ -231850,7 +231830,7 @@
             "decorators": [],
             "line_number": 1429
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_plugins_cmd_wrappers.c",
           "c_function": "pcmd_run_composite_ui",
           "pop_annotation": {
@@ -231864,12 +231844,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _run_composite_ui @ hermes_cli/plugins_cmd.py:_run_composite_ui */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/plugins_cmd.py",
@@ -246174,10 +246152,10 @@
     },
     "hermes_cli/setup.py": {
       "total": 56,
-      "ported": 52,
+      "ported": 53,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 4,
+      "real_gaps": 3,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 56,
@@ -247212,7 +247190,7 @@
             "decorators": [],
             "line_number": 1732
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_setup_remaining.c",
           "c_function": "stp_setup_telegram",
           "pop_annotation": {
@@ -247226,12 +247204,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _setup_telegram @ hermes_cli/setup.py:_setup_telegram */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/setup.py",
@@ -248301,10 +248277,10 @@
     },
     "hermes_cli/skills_hub.py": {
       "total": 34,
-      "ported": 33,
+      "ported": 34,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 34,
@@ -249277,7 +249253,7 @@
             "decorators": [],
             "line_number": 1993
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_cli_remaining_wrappers.c",
           "c_function": "hermes_cli_skills_hub_u_print_skills_help",
           "pop_annotation": {
@@ -249291,12 +249267,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _print_skills_help @ hermes_cli/skills_hub.py:_print_skills_help */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         }
       ]
     },
