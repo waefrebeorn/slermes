@@ -142,6 +142,12 @@ json_t *display_config__normalise_node(const char *setting, const json_t *value)
             return json_string(value->bool_val ? "all" : "off");
         char *raw = dc_py_str(value);
         for (char *p = raw; *p; ++p) *p = (char)tolower((unsigned char)*p);
+        /* Match Python _normalise: recognised values pass through;
+         * unrecognised values (including "separate") fall back to "all". */
+        if (strcmp(raw, "off") != 0 && strcmp(raw, "new") != 0 &&
+            strcmp(raw, "all") != 0 && strcmp(raw, "verbose") != 0 &&
+            strcmp(raw, "log") != 0)
+            free(raw), raw = strdup("all");
         json_t *r = json_string(raw);
         free(raw);
         return r;
