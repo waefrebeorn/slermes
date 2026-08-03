@@ -478,6 +478,14 @@ void app_set_show_notifications(app_state_t *app, bool show) { if (app) app->sho
 bool app_show_preview(app_state_t *app) { return app ? app->show_preview : false; }
 const char *app_preview_title(app_state_t *app) { return app ? app->preview_title : ""; }
 const char *app_preview_content(app_state_t *app) { return app ? app->preview_content : ""; }
+void app_set_show_preview(app_state_t *app, bool show) { if (app) app->show_preview = show; }
+void app_set_preview(app_state_t *app, const char *title, const char *content) {
+    if (!app) return;
+    if (title) snprintf(app->preview_title, sizeof(app->preview_title), "%s", title);
+    else app->preview_title[0] = '\0';
+    if (content) snprintf(app->preview_content, sizeof(app->preview_content), "%s", content);
+    else app->preview_content[0] = '\0';
+}
 
 /* Image paste */
 bool app_image_paste_active(app_state_t *app) { return app ? app->image_paste_active : false; }

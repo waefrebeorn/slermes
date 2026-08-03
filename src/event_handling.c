@@ -219,6 +219,16 @@ void event_run(app_state_t *app) {
             session_switcher_open(app);
             switcher_done = true;
         }
+        /* Headless preview demo (SLERMES_GUI_PREVIEW=1) — open the
+         * right-rail preview pane so screenshots can capture it. */
+        if (getenv("SLERMES_GUI_PREVIEW") && !app_show_preview(app) && app->frame_count >= 5) {
+            app_set_preview(app, "File Preview",
+                "This is the right-rail preview pane.\nIt mirrors the Electron "
+                "app's side-by-side preview: select a session or message to "
+                "preview its content here.\n\nPreview content wraps at the panel "
+                "edge and updates live as you navigate.");
+            app_set_show_preview(app, true);
+        }
         app->frame_count++;
         
         gc_end_frame(app_get_window(app));
@@ -273,6 +283,19 @@ bool event_handle_key(app_state_t *app, int key, int mod) {
         case SDLK_t:
             if (mod & KMOD_CTRL) {
                 app_toggle_theme(app);
+                return true;
+            }
+            break;
+
+        case SDLK_r:
+            if (mod & KMOD_CTRL) {
+                /* Toggle the right-rail preview pane (v54x parity). */
+                app_set_show_preview(app, !app_show_preview(app));
+                if (app_show_preview(app) && !app_preview_title(app)[0]) {
+                    app_set_preview(app, "Preview",
+                        "Select a session or message to preview its content here.\n"
+                        "The right rail mirrors the Electron app's side-by-side preview.");
+                }
                 return true;
             }
             break;

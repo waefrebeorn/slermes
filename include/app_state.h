@@ -235,6 +235,8 @@ void app_set_show_notifications(app_state_t *app, bool show);
 bool app_show_preview(app_state_t *app);
 const char *app_preview_title(app_state_t *app);
 const char *app_preview_content(app_state_t *app);
+void app_set_show_preview(app_state_t *app, bool show);
+void app_set_preview(app_state_t *app, const char *title, const char *content);
 
 /* Image paste */
 bool app_image_paste_active(app_state_t *app);

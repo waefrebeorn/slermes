@@ -227,6 +227,32 @@ void chat_view_draw(app_state_t *app) {
         gc_draw_rect(win, btn, 1, t->border);
         gc_draw_text(win, gc_get_font(win), "\xe2\x86\x93", btn_x + 12, btn_y + 8, t->text);
     }
+
+    /* Right-rail preview pane (side-by-side preview, v54x parity).
+     * Draws a panel on the chat's right edge with a title bar + wrapped
+     * content when app_show_preview is set. */
+    if (app_show_preview(app)) {
+        int pw = 260;
+        int px0 = cx + cw - pw;
+        int py0 = cy;
+        gc_rect_t pane = {px0, py0, pw, ch};
+        gc_fill_rect(win, pane, t->bg_secondary);
+        gc_draw_vline(win, px0, cy, ch, t->border_subtle);
+
+        /* Title bar */
+        const char *ptitle = app_preview_title(app);
+        gc_draw_text(win, gc_get_font_small(win), ptitle[0] ? ptitle : "Preview",
+                     px0 + 8, py0 + 6, t->text);
+
+        /* Content (wrapped) */
+        const char *pcontent = app_preview_content(app);
+        if (pcontent[0]) {
+            gc_font_t *psmall = gc_get_font_small(win);
+            int pline_h = gc_font_height(psmall) + 2;
+            gc_draw_text_wrapped(win, psmall, pcontent, px0 + 8, py0 + 28,
+                                 pw - 16, pline_h, 1);
+        }
+    }
 }
 
 /* ══════════════════════════════════════════════════════════════════════
