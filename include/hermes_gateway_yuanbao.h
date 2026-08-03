@@ -20,6 +20,8 @@ bool yuanbao_init(const char *app_id, const char *app_secret,
                   const char *api_domain);
 void yuanbao_start(void);
 void yuanbao_stop(void);
+/* Returns true while the yuanbao WebSocket supervisor loop is running. */
+bool yuanbao_is_running(void);
 
 /* ---- Sticker / messaging ---- */
 int  yuanbao_send_sticker(const char *to_uid, const char *sticker_id,

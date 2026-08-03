@@ -97,7 +97,9 @@ char *envb_execute(const char *cmd_string, bool bounded) {
 
 /* PoP: stop @ tools/environments/base.py:stop */
 int envb_stop(void) {
-    /* Python: cleanup alias. */
-    printf("environment cleaned up\n");
-    return 0;
+    /* Python: cleanup alias — stop() calls cleanup(), which for the
+     * concrete backends releases backend resources. Delegate to the
+     * local environment cleanup (the C local backend). */
+    extern int elc_cleanup(const char *snapshot_path, const char *cwd_file);
+    return elc_cleanup(NULL, NULL);
 }

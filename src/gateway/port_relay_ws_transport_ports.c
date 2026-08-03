@@ -12,6 +12,17 @@
 #include <ctype.h>
 #include <unistd.h>
 
+/* Real relay WebSocket transport (port_gateway_relay_ws_transport.c). */
+typedef struct ws_transport ws_transport_t;
+ws_transport_t *ws_transport_new(const char *url, const char *platform,
+                                 const char *bot_id);
+bool ws_transport_connect(ws_transport_t *t);
+bool ws_transport_disconnect(ws_transport_t *t);
+void ws_transport_free(ws_transport_t *t);
+
+/* Active transport owned by this port surface. */
+static ws_transport_t *g_wst_transport = NULL;
+
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
     char *d = strdup(s);
@@ -59,15 +70,34 @@ char *wst_upgrade_headers(const char *secret) {
 
 /* PoP: connect @ gateway/relay/ws_transport.py:connect */
 bool wst_connect(const char *dial_url, const char *secret) {
-    /* Python: dial + start loops; True on success. */
+    /* Python: dial + start loops; True on success.
+     * Delegate to the real WebSocket transport (libwebsocket-backed):
+     * create a transport for the dial URL and run the handshake. */
     if (!dial_url) return false;
-    printf("relay ws dialing: %s\n", dial_url);
-    return false;
+    if (g_wst_transport) {
+        ws_transport_disconnect(g_wst_transport);
+        ws_transport_free(g_wst_transport);
+        g_wst_transport = NULL;
+    }
+    ws_transport_t *t = ws_transport_new(dial_url, "relay", "");
+    if (!t) return false;
+    if (!ws_transport_connect(t)) {
+        ws_transport_free(t);
+        return false;
+    }
+    g_wst_transport = t;
+    (void)secret;
+    return true;
 }
 
 /* PoP: disconnect @ gateway/relay/ws_transport.py:disconnect */
 int wst_disconnect(void) {
-    printf("relay ws disconnected (supervisor stopped)\n");
+    /* Python: stop loops + close ws. */
+    if (g_wst_transport) {
+        ws_transport_disconnect(g_wst_transport);
+        ws_transport_free(g_wst_transport);
+        g_wst_transport = NULL;
+    }
     return 0;
 }
 

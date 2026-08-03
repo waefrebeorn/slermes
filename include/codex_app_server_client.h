@@ -38,6 +38,9 @@ codex_client_t *codex_client_new(const char *codex_bin,
                                   const char **extra_args,
                                   int extra_args_count);
 
+/* Get the lazily-created per-process client (creates on first call). */
+codex_client_t *codex_client_get_active(void);
+
 /* Lifecycle: initialize handshake. Returns 0 on success. */
 int codex_client_initialize(codex_client_t *c,
                             const char *client_name,

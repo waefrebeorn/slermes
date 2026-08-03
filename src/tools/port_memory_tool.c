@@ -545,6 +545,7 @@ static char *gate_result_staged(memory_write_gate_decision_t *d) {
     return out;
 }
 
+/* PoP: check_memory_requirements @ tools/memory_tool.py:check_memory_requirements */
 int memory_tool_available(void) { return 1; }
 
 /* PoP: memory_tool_missing_old_text_error @ tools/memory_tool.py:_missing_old_text_error */

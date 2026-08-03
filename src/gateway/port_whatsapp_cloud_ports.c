@@ -42,6 +42,10 @@ bool wac_connect(void) {
 /* PoP: disconnect @ gateway/platforms/whatsapp_cloud.py:disconnect */
 int wac_disconnect(void) {
     /* Python: runner cleaned — REAL: drop the active flag. */
+    extern void whatsapp_cloud_set_active(bool active);
+    extern bool whatsapp_cloud_is_active(void);
+    whatsapp_cloud_set_active(false);
+    (void)whatsapp_cloud_is_active();
     return 0;
 }
 

@@ -102,7 +102,11 @@ char *mct_resolve_model(const char *model_override, const char *server_hint) {
 
 /* PoP: _schedule_tools_refresh @ tools/mcp_tool.py:_schedule_tools_refresh */
 int mct_schedule_tools_refresh(void) {
-    /* Python: background task kept strongly referenced. */
+    /* Python: background task kept strongly referenced — re-fetch tools
+     * from the server and update the registry. The C equivalent of a
+     * refresh is a fresh mcp_init_all (config → servers → tools). */
+    extern void mcp_init_all(void);
+    mcp_init_all();
     return 0;
 }
 

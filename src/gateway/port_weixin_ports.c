@@ -110,14 +110,25 @@ char *wx2_extract_text(const char *item_list_json) {
 
 /* PoP: connect @ gateway/platforms/weixin.py:connect */
 int wx2_connect(void) {
-    /* Python: requirement check + startup. */
-    printf("weixin connect (aiohttp + cryptography required)\n");
-    return -1;
+    /* Python: requirement check + startup.
+     * Delegate to the live C implementation (src/gateway/platforms/
+     * weixin.c): init with env-derived config and start the poll thread.
+     * Returns 0 when the platform was started, -1 when config is missing. */
+    const char *token = getenv("WEIXIN_TOKEN");
+    const char *account = getenv("WEIXIN_ACCOUNT_ID");
+    if (!token || !*token || !account || !*account) {
+        fprintf(stderr, "[gateway:weixin] WEIXIN_TOKEN and WEIXIN_ACCOUNT_ID required\n");
+        return -1;
+    }
+    weixin_init(token, account);
+    weixin_start();
+    return 0;
 }
 
 /* PoP: disconnect @ gateway/platforms/weixin.py:disconnect */
 int wx2_disconnect(void) {
-    printf("weixin disconnected (live adapters popped, tasks stopped)\n");
+    /* Python: live adapters popped, tasks stopped. */
+    weixin_stop();
     return 0;
 }
 

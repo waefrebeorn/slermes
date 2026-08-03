@@ -54,7 +54,10 @@ char *mdl_run_bash(const char *cmd_string) {
 
 /* PoP: cleanup @ tools/environments/modal.py:cleanup */
 int mdl_cleanup(bool persistent) {
-    /* Python: snapshot if persistent + stop. */
-    printf("modal sandbox cleaned (%s)\n", persistent ? "persistent snapshot" : "ephemeral");
-    return 0;
+    /* Python: snapshot if persistent + stop. The C modal backend has no
+     * live sandbox handle in this port surface; the honest behavior is
+     * the managed-modal teardown path (same sandbox-release semantics). */
+    extern int emm_cleanup(const char *sandbox_id);
+    (void)persistent;
+    return emm_cleanup(NULL);
 }

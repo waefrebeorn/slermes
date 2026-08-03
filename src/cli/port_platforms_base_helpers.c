@@ -902,8 +902,38 @@ int gw_base__can_merge_text_debounce_events(const char *pa, const char *pb) {
 
 /* PoP: gw_base__text_debounce_delay @ gateway/platforms/base.py:_text_debounce_delay */
 double gw_base__text_debounce_delay(const char *session_key) {
-    (void)session_key;
-    return 0.35; /* HERMES_GATEWAY_BUSY_TEXT_DEBOUNCE_SECONDS default */
+    /* Python: bounded busy-text debounce delay for session_key.
+     * state = store.get(session_key); if None → 0.0.
+     * window_deadline = last_ts + busy_text_debounce_seconds
+     * hard_cap_deadline = first_ts + busy_text_hard_cap_seconds
+     * return max(0, min(window, hard_cap) - now) */
+    gw_base_init();
+    pthread_mutex_lock(&g_gw.lock);
+    double result = 0.0;
+    if (g_debounce && session_key) {
+        for (int i = 0; i < g_debounce_n; i++) {
+            if (g_debounce[i].active && strcmp(g_debounce[i].session, session_key) == 0) {
+                struct timespec ts;
+                clock_gettime(CLOCK_MONOTONIC, &ts);
+                double now = (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
+                const char *debounce_env = getenv("HERMES_GATEWAY_BUSY_TEXT_DEBOUNCE_SECONDS");
+                const char *cap_env = getenv("HERMES_GATEWAY_BUSY_TEXT_HARD_CAP_SECONDS");
+                double debounce_sec = debounce_env && *debounce_env
+                    ? strtod(debounce_env, NULL) : 0.35;
+                double cap_sec = cap_env && *cap_env
+                    ? strtod(cap_env, NULL) : 8.0;
+                double window_deadline = g_debounce[i].last_ts + debounce_sec;
+                double hard_cap_deadline = g_debounce[i].first_ts + cap_sec;
+                double deadline = window_deadline < hard_cap_deadline
+                    ? window_deadline : hard_cap_deadline;
+                result = deadline - now;
+                if (result < 0.0) result = 0.0;
+                break;
+            }
+        }
+    }
+    pthread_mutex_unlock(&g_gw.lock);
+    return result;
 }
 
 /* PoP: gw_base__queue_text_debounce @ gateway/platforms/base.py:_queue_text_debounce */

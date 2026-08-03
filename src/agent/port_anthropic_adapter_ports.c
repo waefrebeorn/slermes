@@ -343,9 +343,28 @@ char *antr_resolve_anthropic_token(const char *env_token, const char *claude_env
 
 /* PoP: run_oauth_setup_token @ agent/anthropic_adapter.py:run_oauth_setup_token */
 char *antr_run_oauth_setup_token(void) {
-    /* Python: spawn `claude setup-token`; check creds/env after. */
-    printf("claude setup-token spawned (sources checked after: creds, env, stdout)\n");
-    return NULL;
+    /* Python: spawn `claude setup-token`; check creds/env after.
+     * Real subprocess spawn: run the claude CLI and report whether the
+     * setup produced a credential (env/creds checked by the caller). */
+    const char *bin = getenv("CLAUDE_BIN");
+    const char *cmd = bin && *bin ? bin : "claude";
+    char full[1200];
+    snprintf(full, sizeof(full), "%s setup-token 2>&1", cmd);
+    FILE *fp = popen(full, "r");
+    if (!fp) return NULL;
+    char buf[1024] = "";
+    size_t n = fread(buf, 1, sizeof(buf) - 1, fp);
+    buf[n] = '\0';
+    int rc = pclose(fp);
+
+    /* After: creds/env checked. Report status as JSON. */
+    char *out = NULL;
+    if (rc == 0)
+        asprintf(&out, "{\"ok\": true, \"output\": \"%s\"}",
+                 buf[0] ? buf : "setup-token completed");
+    else
+        asprintf(&out, "{\"ok\": false, \"error\": \"claude setup-token failed (rc=%d)\"}", rc);
+    return out;
 }
 
 /* PoP: _generate_pkce @ agent/anthropic_adapter.py:_generate_pkce */

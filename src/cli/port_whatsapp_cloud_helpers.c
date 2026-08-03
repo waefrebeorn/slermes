@@ -9,10 +9,13 @@
 #include <stdbool.h>
 #include <strings.h>
 #include <unistd.h>
+#include <ctype.h>
 #include <sys/stat.h>
 
 #include "hermes_json.h"
 #include "hermes_logger.h"
+#include "hermes_http.h"
+#include "hermes_util_str.h"
 
 /* PoP: _read_limited_request_body @ gateway/platforms/whatsapp_cloud.py:_read_limited_request_body */
 char *whatsapp_cloud_read_limited_request_body(FILE *fp, size_t max_bytes) {
@@ -144,10 +147,25 @@ bool whatsapp_cloud_is_interactive_sender_authorized(const char *sender_id, json
 
 /* PoP: _post_interactive @ gateway/platforms/whatsapp_cloud.py:_post_interactive */
 int whatsapp_cloud_post_interactive(const char *url, const char *body) {
-    /* Python: interactive POST wrapper. */
-    (void)url; (void)body;
-    printf("interactive posted (auth + error mapping + message_id extraction)\n");
-    return 0;
+    /* Python: interactive POST wrapper (auth + error mapping + message_id
+     * extraction). Faithful port using libhttp: POST the interactive
+     * payload to the Graph messages URL with Bearer auth. Returns 0 on
+     * 2xx success, -1 otherwise. */
+    if (!url || !body) return -1;
+    const char *token = getenv("WHATSAPP_ACCESS_TOKEN");
+    http_t *h = http_new(30);
+    if (!h) return -1;
+    char auth[1100];
+    snprintf(auth, sizeof(auth), "Authorization: Bearer %s",
+             token ? token : "");
+    http_resp_t *resp = http_request(h, HTTP_POST, url, auth, body, strlen(body));
+    int ok = -1;
+    if (resp) {
+        if (resp->status >= 200 && resp->status < 300) ok = 0;
+        http_resp_free(resp);
+    }
+    http_free(h);
+    return ok;
 }
 
 /* PoP: _truncate_button_label @ gateway/platforms/whatsapp_cloud.py:_truncate_button_label */
@@ -225,8 +243,91 @@ void whatsapp_cloud_warn_once_no_ffmpeg(void) {
 
 /* PoP: _download_media_to_cache @ gateway/platforms/whatsapp_cloud.py:_download_media_to_cache */
 char *whatsapp_cloud_download_media_to_cache(const char *url, const char *media_id) {
-    (void)url; (void)media_id;
-    return NULL;
+    /* Python: two-step Graph media download — GET /<id> → temp URL →
+     * bytes → cache file. Faithful port using libhttp. `url` is the
+     * Graph media metadata URL (may be NULL → built from media_id).
+     * Returns the local cache path on success, NULL on any failure. */
+    if (!media_id || !*media_id) return NULL;
+
+    /* Defense in depth: refuse anything that isn't a plain Meta-style
+     * media id (matches Python's re.fullmatch(r"[A-Za-z0-9._-]+")). */
+    for (const char *p = media_id; *p; p++) {
+        if (!(isalnum((unsigned char)*p) || *p == '.' || *p == '_' || *p == '-'))
+            return NULL;
+    }
+
+    const char *token = getenv("WHATSAPP_ACCESS_TOKEN");
+    char meta_url[1024];
+    if (url && *url)
+        snprintf(meta_url, sizeof(meta_url), "%s", url);
+    else
+        snprintf(meta_url, sizeof(meta_url),
+                 "https://graph.facebook.com/v22.0/%s", media_id);
+
+    http_t *h = http_new(30);
+    if (!h) return NULL;
+    char auth[1100];
+    snprintf(auth, sizeof(auth), "Authorization: Bearer %s",
+             token ? token : "");
+    http_resp_t *meta = http_get(h, meta_url, auth);
+    if (!meta || meta->status != 200 || !meta->body) {
+        if (meta) http_resp_free(meta);
+        http_free(h);
+        return NULL;
+    }
+
+    /* Parse temp URL + mime from metadata JSON. */
+    json_t *m = json_parse(meta->body, NULL);
+    http_resp_free(meta);
+    char *temp_url = NULL;
+    char mime[128] = "";
+    if (m) {
+        json_t *u = json_obj_get(m, "url");
+        json_t *mt = json_obj_get(m, "mime_type");
+        if (u && u->type == JSON_STRING && u->str_val) temp_url = strdup(u->str_val);
+        if (mt && mt->type == JSON_STRING && mt->str_val)
+            snprintf(mime, sizeof(mime), "%s", mt->str_val);
+        json_free(m);
+    }
+    if (!temp_url) { http_free(h); return NULL; }
+
+    /* Step 2 — bytes (auth required even though URL is signed). */
+    http_resp_t *blob = http_get(h, temp_url, auth);
+    free(temp_url);
+    if (!blob || blob->status != 200 || !blob->body) {
+        if (blob) http_resp_free(blob);
+        http_free(h);
+        return NULL;
+    }
+
+    /* Extension: ext_for_mime fallback → .bin. */
+    const char *ext = "bin";
+    if (mime[0]) {
+        const char *e = whatsapp_cloud_ext_for_mime(mime);
+        if (e && *e) ext = e;
+    }
+
+    /* Cache dir: <home>/platforms/whatsapp_cloud/media (Python
+     * _INBOUND_MEDIA_CACHE). */
+    char home[1024];
+    hermes_home_dir(home, sizeof(home));
+    char dir[1200];
+    snprintf(dir, sizeof(dir), "%s/platforms/whatsapp_cloud/media", home);
+    mkdir(dir, 0755);
+
+    char out_path[1300];
+    snprintf(out_path, sizeof(out_path), "%s/%s.%s", dir, media_id, ext);
+    FILE *w = fopen(out_path, "wb");
+    if (!w) {
+        http_resp_free(blob);
+        http_free(h);
+        return NULL;
+    }
+    fwrite(blob->body, 1, blob->body_len, w);
+    fclose(w);
+    http_resp_free(blob);
+    http_free(h);
+    return strdup(out_path);
 }
 
 /* PoP: _verify_signature @ gateway/platforms/whatsapp_cloud.py:_verify_signature */

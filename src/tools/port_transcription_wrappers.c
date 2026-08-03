@@ -12,7 +12,16 @@
 
 /* PoP: _safe_find_spec @ tools/transcription_tools.py:_safe_find_spec */
 const char *tsc_safe_find_spec(const char *module_name) {
-    (void)module_name; return NULL;
+    /* Python: importlib find_spec — module availability probe used for
+     * _HAS_FASTER_WHISPER / _HAS_OPENAI / _HAS_MISTRAL. In C the whisper
+     * engine (faster_whisper analogue) is always compiled in; remote
+     * providers (openai/mistralai) are available via the C LLM client.
+     * Returns the module name when available, NULL otherwise. */
+    if (!module_name) return NULL;
+    if (strcmp(module_name, "faster_whisper") == 0) return module_name;
+    if (strcmp(module_name, "openai") == 0) return module_name;
+    if (strcmp(module_name, "mistralai") == 0) return module_name;
+    return NULL;
 }
 /* PoP: _normalize_local_model @ tools/transcription_tools.py:_normalize_local_model */
 const char *tsc_normalize_local_model(const char *model_name) {

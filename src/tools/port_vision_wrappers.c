@@ -12,7 +12,11 @@
 
 /* PoP: _run_encode_on_cpu_executor @ tools/vision_tools.py:_run_encode_on_cpu_executor */
 char *vi_run_encode_on_cpu_executor(const char *image_path) {
-    (void)image_path; return NULL;
+    /* Python: run the sync encode/resize callable on the bounded CPU
+     * executor. The C encode is synchronous and thread-agnostic, so the
+     * honest port delegates straight to the real image encoder. */
+    extern char *vision_image_to_base64_data_url(const char *path);
+    return vision_image_to_base64_data_url(image_path);
 }
 /* PoP: _validate_image_url_async @ tools/vision_tools.py:_validate_image_url_async */
 bool vi_validate_image_url_async(const char *url) {

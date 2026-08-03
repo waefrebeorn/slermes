@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "hermes_billing.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -137,12 +138,27 @@ int cbm_billing_auto_reload_flow(const char *state_json) {
 
 /* PoP: _billing_auto_reload_disable @ hermes_cli/cli_billing_mixin.py:_billing_auto_reload_disable */
 int cbm_billing_auto_reload_disable(void) {
-    /* Python: PATCH enabled:false. */
-    return 0;
+    /* Python: PATCH enabled:false. Delegate to the real billing client
+     * (port_nous_billing.c patch_auto_top_up). */
+    extern char *patch_auto_top_up(void *ctx, bool enabled, double threshold,
+                                   double top_up_amount);
+    char *result = patch_auto_top_up(NULL, false, 0.0, 0.0);
+    if (!result) return -1;
+    int ok = strstr(result, "\"error\"") == NULL ? 0 : -1;
+    free(result);
+    return ok;
 }
 
 /* PoP: _billing_limit_screen @ hermes_cli/cli_billing_mixin.py:_billing_limit_screen */
 int cbm_billing_limit_screen(void) {
-    /* Python: monthly spend limit, read-only (portal-only cap). */
+    /* Python: monthly spend limit, read-only (portal-only cap).
+     * Renders the monthly cap line from the real billing state. */
+    extern billing_state_t build_billing_state(void);
+    billing_state_t state = build_billing_state();
+    if (state.monthly_cap.limit_usd > 0)
+        printf("  Monthly spend limit: $%.2f (managed on the portal)\n",
+               state.monthly_cap.limit_usd);
+    else
+        printf("  No monthly cap visible (managed on the portal)\n");
     return 0;
 }

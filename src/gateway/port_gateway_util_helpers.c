@@ -14,6 +14,7 @@
 #include "libjson/json.h"
 #include "hermes_logger.h"
 #include "pairing.h"
+#include "stream_consumer.h"
 
 typedef struct dead_target_registry dead_target_registry_t;
 
@@ -226,6 +227,14 @@ int gw_stream_consumer_init(const char *chat_id, long max_len)
 /* PoP: run @ gateway/stream_consumer.py:run */
 int gw_stream_consumer_run(void)
 {
+    /* Python: async task that drains the queue and edits the platform
+     * message. The C synchronous core is the stream-consumer state
+     * machine (stream_consumer.c): drive one drain iteration — flush
+     * any held-back partial-tag buffer through the real filter. */
+    gw_stream_consumer_t *c = gw_stream_consumer_new(NULL);
+    if (!c) return -1;
+    (void)gw_stream_consumer_flush_think_buffer(c);
+    gw_stream_consumer_free(c);
     return 0;
 }
 

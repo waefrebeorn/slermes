@@ -283,6 +283,19 @@ static void dispatch_message(codex_client_t *c, json_node_t *msg) {
 
 /* ---- public API ---- */
 
+/* Lazily-created per-process client (mirrors the Python session's
+ * persistent client). Kept in this module so all codex ports share it. */
+static codex_client_t *s_active_client = NULL;
+
+codex_client_t *codex_client_get_active(void) {
+    if (s_active_client) return s_active_client;
+    const char *bin = getenv("CODEX_BIN");
+    const char *home = getenv("CODEX_HOME");
+    s_active_client = codex_client_new(bin ? bin : "codex",
+                                       home ? home : NULL, NULL, 0);
+    return s_active_client;
+}
+
 codex_client_t *codex_client_new(const char *codex_bin,
                                   const char *codex_home,
                                   const char **extra_args,

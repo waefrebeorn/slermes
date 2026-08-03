@@ -18,6 +18,7 @@
 #include "slermes_home.h"
 #include "gateway_status.h"
 #include "yaml.h"
+#include "hermes_json.h"
 #include "hermes_logger.h"
 #include <unistd.h>
 
@@ -1139,7 +1140,78 @@ void profile_stop_gateway_process(const char *profile_dir) {
 void profile_migrate_honcho_profile_host(const char *old_name,
                                           const char *new_name,
                                           const char *new_dir) {
-    (void)old_name; (void)new_name; (void)new_dir;
+    /* Python: rename Honcho host blocks for a renamed profile without
+     * changing peers. Port of _migrate_honcho_profile_host: for each of
+     * the candidate honcho.json / ~/.honcho/config.json files, move the
+     * `hosts` block keyed `hermes_<old>` (or legacy `hermes.<old>`) to
+     * `hermes_<new>`, seeding `aiPeer` when the block lacks it. */
+    if (!old_name || !new_name) return;
+
+    char old_host[512], legacy_old_host[512], new_host[512];
+    snprintf(old_host, sizeof(old_host), "hermes_%s", old_name);
+    snprintf(legacy_old_host, sizeof(legacy_old_host), "hermes.%s", old_name);
+    snprintf(new_host, sizeof(new_host), "hermes_%s", new_name);
+
+    /* Candidate paths: <new_dir>/honcho.json, default home/honcho.json,
+     * ~/.honcho/config.json. */
+    const char *home = getenv("HOME");
+    const char *def_home = getenv("HERMES_HOME");
+    char cand[3][1024];
+    int ncand = 0;
+    if (new_dir && *new_dir) snprintf(cand[ncand++], sizeof(cand[0]), "%s/honcho.json", new_dir);
+    if (def_home && *def_home) snprintf(cand[ncand++], sizeof(cand[0]), "%s/honcho.json", def_home);
+    if (home && *home) snprintf(cand[ncand++], sizeof(cand[0]), "%s/.honcho/config.json", home);
+
+    for (int i = 0; i < ncand; i++) {
+        char *err = NULL;
+        json_t *raw = json_parse_file(cand[i], &err);
+        if (!raw) { free(err); continue; }
+
+        json_t *hosts = json_obj_get(raw, "hosts");
+        if (!hosts || hosts->type != JSON_OBJECT) { json_free(raw); continue; }
+
+        json_t *block = json_obj_get(hosts, old_host);
+        const char *source_host = old_host;
+        if (!block) {
+            block = json_obj_get(hosts, legacy_old_host);
+            source_host = legacy_old_host;
+        }
+        if (!block) { json_free(raw); continue; }
+
+        if (json_obj_get(hosts, new_host)) {
+            printf("\xe2\x9a\xa0 Honcho host block not migrated: %s already exists in %s\n",
+                   new_host, cand[i]);
+            json_free(raw);
+            continue;
+        }
+
+        if (block->type == JSON_OBJECT && !json_obj_get(block, "aiPeer")) {
+            const char *bare = strncmp(source_host, "hermes_", 7) == 0
+                ? source_host + 7 : source_host;
+            json_set(block, "aiPeer", json_new_string(bare));
+        }
+        json_set(hosts, new_host, json_copy(block));
+        json_obj_del(hosts, source_host);
+
+        char *out = json_serialize_pretty(raw, 2);
+        json_free(raw);
+        if (!out) continue;
+
+        char tmp[1100];
+        snprintf(tmp, sizeof(tmp), "%s.tmp", cand[i]);
+        FILE *w = fopen(tmp, "wb");
+        if (w) {
+            fputs(out, w);
+            fputc('\n', w);
+            fclose(w);
+            rename(tmp, cand[i]);
+        } else {
+            remove(tmp);
+        }
+        free(out);
+        printf("\xe2\x9c\x93 Honcho host updated: %s \xe2\x86\x92 %s\n",
+               source_host, new_host);
+    }
 }
 
 /* ── Archive import/export helpers ────────────────────────────────── */

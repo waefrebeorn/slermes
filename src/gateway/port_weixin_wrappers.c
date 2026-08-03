@@ -347,7 +347,101 @@ int wx_u_download_image(const char *arg) {
 }
 
 /* PoP: _download_video @ gateway/platforms/weixin.py:_download_video */
-int wx_u_download_video(const char *arg) { (void)arg; return 0; }
+int wx_u_download_video(const char *arg) {
+    /* Python: download + decrypt video media to cache. Arg =
+     * "encrypted_query_param\tfull_url\taes_key_b64\tstate".
+     * Builds the CDN download URL (or uses full_url), GETs the bytes via
+     * libhttp, AES-128-ECB-decrypts when a key is present, and caches
+     * the result as video.mp4. Returns 0 on success. */
+    if (!arg || !*arg) return -1;
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    size_t l1 = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    size_t l2 = t2 ? (size_t)(t2 - t1 - 1) : (t1 ? strlen(t1 + 1) : 0);
+    size_t l3 = t3 ? (size_t)(t3 - t2 - 1) : (t2 ? strlen(t2 + 1) : 0);
+
+    char enc[512], full[1024], key[256];
+    if (l1 >= sizeof(enc) || l2 >= sizeof(full) || l3 >= sizeof(key)) return -1;
+    memcpy(enc, arg, l1); enc[l1] = '\0';
+    if (t1) { memcpy(full, t1 + 1, l2); full[l2] = '\0'; } else full[0] = '\0';
+    if (t2) { memcpy(key, t2 + 1, l3); key[l3] = '\0'; } else key[0] = '\0';
+
+    /* Resolve the download URL. */
+    char *url = NULL;
+    extern char *weixin_cdn_download_url(const char *cdn_base_url,
+                                         const char *encrypted_query_param);
+    if (enc[0] && enc[0] != '0') {
+        const char *cdn = getenv("WEIXIN_CDN_BASE_URL");
+        url = weixin_cdn_download_url(cdn && *cdn ? cdn : "https://cdn.weixin.qq.com", enc);
+    } else if (full[0] && strcmp(full, "0") != 0) {
+        url = strdup(full);
+    }
+    if (!url) return -1;
+
+    /* GET the bytes. */
+    extern http_t *http_new(int timeout_sec);
+    extern http_resp_t *http_get(http_t *h, const char *url, const char *headers);
+    extern void http_resp_free(http_resp_t *resp);
+    extern void http_free(http_t *h);
+    http_t *h = http_new(120);
+    if (!h) { free(url); return -1; }
+    http_resp_t *resp = http_get(h, url, NULL);
+    free(url);
+    if (!resp || resp->status != 200 || !resp->body) {
+        if (resp) http_resp_free(resp);
+        http_free(h);
+        return -1;
+    }
+
+    /* AES-128-ECB decrypt when a key is present. */
+    const unsigned char *data = (const unsigned char *)resp->body;
+    size_t len = resp->body_len;
+    unsigned char *plain = NULL;
+    extern int weixin_aes128_ecb_decrypt(const unsigned char *ciphertext, size_t ct_len,
+                                         const unsigned char *key, size_t key_len,
+                                         unsigned char **out, size_t *out_len);
+    extern int weixin_parse_aes_key(const char *aes_key_b64, unsigned char *out,
+                                    size_t *out_len);
+    if (key[0] && strcmp(key, "0") != 0) {
+        unsigned char raw_key[16];
+        size_t raw_len = 0;
+        if (weixin_parse_aes_key(key, raw_key, &raw_len) != 0 || raw_len != 16) {
+            http_resp_free(resp);
+            http_free(h);
+            return -1;
+        }
+        size_t plen = 0;
+        if (weixin_aes128_ecb_decrypt(data, len, raw_key, raw_len, &plain, &plen) != 0) {
+            http_resp_free(resp);
+            http_free(h);
+            return -1;
+        }
+        data = plain;
+        len = plen;
+    }
+
+    /* Cache to <home>/platforms/weixin/media/video.mp4. */
+    extern void hermes_home_dir(char *out, size_t sz);
+    char home[1024];
+    hermes_home_dir(home, sizeof(home));
+    char dir[1200];
+    snprintf(dir, sizeof(dir), "%s/platforms/weixin/media", home);
+    mkdir(dir, 0755);
+    char path[1300];
+    snprintf(path, sizeof(path), "%s/video.mp4", dir);
+    FILE *w = fopen(path, "wb");
+    int rc = -1;
+    if (w) {
+        fwrite(data, 1, len, w);
+        fclose(w);
+        rc = 0;
+    }
+    free(plain);
+    http_resp_free(resp);
+    http_free(h);
+    return rc;
+}
 
 /* PoP: _download_voice @ gateway/platforms/weixin.py:_download_voice */
 int wx_u_download_voice(const char *arg) {

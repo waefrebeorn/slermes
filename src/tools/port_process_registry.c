@@ -717,10 +717,88 @@ void *process_registry_reader_loop(void *arg)
 /* PoP: _env_poller_loop @ tools/process_registry.py:_env_poller_loop */
 /* Port of Python tools/process_registry.py:_env_poller_loop().
  * Background thread: poll a sandbox log file for non-local backends. */
+typedef struct {
+    process_session_t *session;
+    char log_path[1024];
+    char pid_path[1024];
+    char exit_path[1024];
+} env_poller_args_t;
+
 void *process_registry_env_poller_loop(void *arg)
 {
-    /* In C, we'd need a struct with env, session, log_path, pid_path, exit_path */
-    /* Simplified for now */
+    env_poller_args_t *args = (env_poller_args_t *)arg;
+    if (!args || !args->session) return NULL;
+    process_session_t *session = args->session;
+    size_t prev_output_len = 0;
+
+    while (!session->exited) {
+        usleep(2000000);  /* poll every 2s */
+
+        /* Read new output from the log file (Python: cat <log> 2>/dev/null). */
+        char *new_output = NULL;
+        FILE *f = fopen(args->log_path, "rb");
+        if (f) {
+            fseek(f, 0, SEEK_END);
+            long sz = ftell(f);
+            if (sz > 0) {
+                fseek(f, 0, SEEK_SET);
+                new_output = malloc((size_t)sz + 1);
+                if (new_output) {
+                    size_t rd = fread(new_output, 1, (size_t)sz, f);
+                    new_output[rd] = '\0';
+                }
+            }
+            fclose(f);
+        }
+        if (new_output && *new_output) {
+            size_t olen = strlen(new_output);
+            const char *delta = olen > prev_output_len ? new_output + prev_output_len : "";
+            prev_output_len = olen;
+            pthread_mutex_lock(&session->lock);
+            snprintf(session->output_buffer, sizeof(session->output_buffer), "%s", new_output);
+            if (strlen(session->output_buffer) > session->max_output_chars) {
+                size_t keep = session->max_output_chars;
+                if (keep > sizeof(session->output_buffer)) keep = sizeof(session->output_buffer) - 1;
+                memmove(session->output_buffer,
+                        session->output_buffer + strlen(session->output_buffer) - keep,
+                        keep + 1);
+            }
+            pthread_mutex_unlock(&session->lock);
+            if (delta && *delta) {
+                process_registry_check_watch_patterns(session, delta);
+                process_registry_emit_output(session, delta);
+            }
+        }
+        free(new_output);
+
+        /* Check if the process is still running (Python: kill -0 <pid>). */
+        pid_t pid = 0;
+        FILE *pf = fopen(args->pid_path, "r");
+        if (pf) {
+            if (fscanf(pf, "%d", &pid) != 1) pid = 0;
+            fclose(pf);
+        }
+        if (pid > 0 && kill(pid, 0) != 0) {
+            /* Process exited — get exit code captured by the wrapper shell. */
+            int exit_code = -1;
+            FILE *ef = fopen(args->exit_path, "r");
+            if (ef) {
+                if (fscanf(ef, "%d", &exit_code) != 1) exit_code = -1;
+                fclose(ef);
+            }
+            pthread_mutex_lock(&session->lock);
+            session->exit_code = exit_code;
+            session->exited = true;
+            if (strcmp(session->completion_reason, "killed") != 0)
+                strcpy(session->completion_reason, "exited");
+            pthread_mutex_unlock(&session->lock);
+            process_registry_move_to_finished(session);
+            free(args);
+            return NULL;
+        }
+    }
+
+    free(args);
     return NULL;
 }
 

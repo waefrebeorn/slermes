@@ -232,17 +232,38 @@ char *tools_discord_error_init(long status, const char *body)
     return out;
 }
 
+/* Daytona sandbox config state (Python DaytonaEnvironment.__init__:
+ * stores image/cwd/timeout/cpu/persistent before the SDK create call). */
+static struct {
+    char image[512];
+    char cwd[1024];
+    long timeout;
+    long cpu;
+    bool persistent;
+    bool configured;
+} g_daytona_cfg;
+
 /* PoP: __init__ @ tools/environments/daytona.py:__init__ */
 int tools_daytona_init(const char *image, const char *cwd, long timeout,
                        long cpu, bool persistent)
 {
-    (void)image; (void)cwd; (void)timeout; (void)cpu; (void)persistent;
+    /* Python: store sandbox config (the SDK create is N/A in C — the
+     * request-construction layer is the honest port surface). */
+    memset(&g_daytona_cfg, 0, sizeof(g_daytona_cfg));
+    if (image) snprintf(g_daytona_cfg.image, sizeof(g_daytona_cfg.image), "%s", image);
+    if (cwd) snprintf(g_daytona_cfg.cwd, sizeof(g_daytona_cfg.cwd), "%s", cwd);
+    g_daytona_cfg.timeout = timeout;
+    g_daytona_cfg.cpu = cpu;
+    g_daytona_cfg.persistent = persistent;
+    g_daytona_cfg.configured = true;
     return 0;
 }
 
 /* PoP: cleanup @ tools/environments/daytona.py:cleanup */
 int tools_daytona_cleanup(void)
 {
+    /* Python: stop/delete the sandbox. Release the recorded config. */
+    memset(&g_daytona_cfg, 0, sizeof(g_daytona_cfg));
     return 0;
 }
 
@@ -509,8 +530,18 @@ bool tools_is_telegram_thread_not_found(const char *error_text)
 int tools_registry_standalone_send(const char *platform_name, const char *chat_id,
                                    const char *message, const char *thread_id)
 {
-    (void)platform_name; (void)chat_id; (void)message; (void)thread_id;
-    return 0;
+    /* Python: standalone_sender_fn on the platform entry. Delegate to the
+     * real registry sender (src/tools/port_send_message_tool.c). */
+    if (!platform_name || !message) return -1;
+    extern char *registry_standalone_send(const char *platform_name, json_t *pconfig,
+                                          const char *chat_id, const char *message,
+                                          const char *thread_id);
+    char *result = registry_standalone_send(platform_name, NULL, chat_id,
+                                            message, thread_id);
+    if (!result) return -1;
+    int ok = strstr(result, "\"error\"") == NULL ? 0 : -1;
+    free(result);
+    return ok;
 }
 
 /* PoP: _scroll @ tools/session_search_tool.py:_scroll */

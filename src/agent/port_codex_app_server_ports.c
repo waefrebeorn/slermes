@@ -11,6 +11,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <unistd.h>
+#include "codex_app_server_client.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -88,9 +89,17 @@ int cas_send(const char *frame_json, bool closed) {
 
 /* PoP: _read_stdout @ agent/transports/codex_app_server.py:_read_stdout */
 char *cas_read_stdout(void) {
-    /* Python: line reader loop. */
-    printf("codex stdout read loop\n");
-    return NULL;
+    /* Python: line reader loop over the codex subprocess stdout.
+     * The real line framing lives in codex_app_server_client.c
+     * (read + dispatch loop inside codex_client_request /
+     * take_notification). This surface drains one pending notification
+     * from the lazy per-process client, mirroring one iteration of the
+     * Python read loop. Returns NULL when no client is active. */
+    extern codex_client_t *codex_client_get_active(void);
+    extern char *codex_client_take_notification(codex_client_t *c, double timeout_sec);
+    codex_client_t *c = codex_client_get_active();
+    if (!c) return NULL;
+    return codex_client_take_notification(c, 0.0);
 }
 
 /* PoP: _dispatch @ agent/transports/codex_app_server.py:_dispatch */

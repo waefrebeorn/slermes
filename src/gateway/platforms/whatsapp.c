@@ -19,6 +19,17 @@ static char wa_token[1024] = "";
 static char wa_phone_id[256] = "";
 static char wa_verify_token[256] = "";
 static char wa_api_version[32] = DEFAULT_API_VERSION;
+static bool wa_active = false;
+
+/* Returns true while the whatsapp cloud adapter is active. */
+bool whatsapp_cloud_is_active(void) {
+    return wa_active;
+}
+
+/* Mark the adapter active/stopped (Python: _mark_disconnected). */
+void whatsapp_cloud_set_active(bool active) {
+    wa_active = active;
+}
 
 void whatsapp_set_token(const char *token) {
     snprintf(wa_token, sizeof(wa_token), "%s", token);

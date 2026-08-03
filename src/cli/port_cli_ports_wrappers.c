@@ -6153,8 +6153,8 @@ int hermes_cli_pty_session_u_reap_one_idle_or_raise(const char *arg) {
 int hermes_cli_pty_session_close_all(const char *arg) {
     /* Python: close every session. */
     (void)arg;
-    printf("all pty sessions closed (pop+close each)\n");
-    return 0;
+    extern int pty_close_all(void);
+    return pty_close_all();
 }
 
 /* PoP: _subscriptions_path @ hermes_cli/webhook.py:_subscriptions_path */

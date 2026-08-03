@@ -28,14 +28,28 @@ char *sgl_init(const char *config_json) {
 
 /* PoP: connect @ gateway/platforms/signal.py:connect */
 bool sgl_connect(void) {
-    /* Python: signal-cli daemon + SSE listener. */
-    printf("signal connect (signal-cli + sse)\n");
-    return false;
+    /* Python: signal-cli daemon + SSE listener.
+     * Delegate to the live C implementation (src/gateway/platforms/
+     * signal.c): mark the adapter available and running when signal-cli
+     * and the account are configured. */
+    const char *number = getenv("SIGNAL_NUMBER");
+    if (!number || !*number) {
+        fprintf(stderr, "signal connect: SIGNAL_NUMBER required\n");
+        return false;
+    }
+    extern void signal_set_number(const char *number);
+    extern void signal_set_cli_path(const char *path);
+    extern bool signal_connect(void);
+    signal_set_number(number);
+    const char *cli_path = getenv("SIGNAL_CLI_PATH");
+    if (cli_path && *cli_path) signal_set_cli_path(cli_path);
+    return signal_connect();
 }
 
 /* PoP: disconnect @ gateway/platforms/signal.py:disconnect */
 int sgl_disconnect(void) {
     /* Python: stop SSE + cleanup. */
-    printf("signal disconnected (sse stopped)\n");
+    extern void signal_disconnect(void);
+    signal_disconnect();
     return 0;
 }

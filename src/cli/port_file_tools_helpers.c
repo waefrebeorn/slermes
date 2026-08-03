@@ -220,7 +220,13 @@ char *file_tools_truncate_to_char_budget(const char *text, size_t budget)
 /* PoP: _terminal_env_type_for_task @ tools/file_tools.py:_terminal_env_type_for_task */
 const char *file_tools_terminal_env_type_for_task(const char *task_id)
 {
+    /* Python _terminal_env_type_for_task: resolve the active environment
+     * backend type for path-resolution decisions, falling back to the
+     * env config / TERMINAL_ENV, defaulting to "local". */
     (void)task_id;
+    /* No active C environment registry: fall through to config/env. */
+    const char *env = getenv("TERMINAL_ENV");
+    if (env && *env) return env;
     return "local";
 }
 

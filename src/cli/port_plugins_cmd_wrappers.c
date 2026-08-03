@@ -10,10 +10,55 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <dirent.h>
+#include <unistd.h>
 #include <sys/stat.h>
 #include "hermes_json.h"
 /* PoP: _resolve_git_executable @ hermes_cli/plugins_cmd.py:_resolve_git_executable */
 const char *pcmd_resolve_git_executable(void) {
+    /* Python _resolve_git_executable: shutil.which("git") first, then
+     * common Git for Windows install paths and POSIX defaults. */
+    const char *path_env = getenv("PATH");
+    if (path_env) {
+        char *dup = strdup(path_env);
+        if (dup) {
+            char *save = NULL;
+            for (char *dir = strtok_r(dup, ":", &save); dir;
+                 dir = strtok_r(NULL, ":", &save)) {
+                char cand[1024];
+                snprintf(cand, sizeof(cand), "%s/git", dir);
+                if (access(cand, X_OK) == 0) {
+                    free(dup);
+                    return "git";
+                }
+                snprintf(cand, sizeof(cand), "%s/git.exe", dir);
+                if (access(cand, X_OK) == 0) {
+                    free(dup);
+                    return "git.exe";
+                }
+            }
+            free(dup);
+        }
+    }
+    /* Common Git for Windows install paths. */
+    static const char *win_paths[] = {
+        "C:/Program Files/Git/cmd/git.exe",
+        "C:/Program Files (x86)/Git/cmd/git.exe",
+        "C:/Program Files/Git/bin/git.exe",
+        NULL,
+    };
+    for (int i = 0; win_paths[i]; i++) {
+        if (access(win_paths[i], X_OK) == 0)
+            return win_paths[i];
+    }
+    /* POSIX defaults. */
+    static const char *posix_paths[] = {
+        "/usr/bin/git", "/usr/local/bin/git", "/bin/git", "/opt/homebrew/bin/git",
+        NULL,
+    };
+    for (int i = 0; posix_paths[i]; i++) {
+        if (access(posix_paths[i], X_OK) == 0)
+            return posix_paths[i];
+    }
     return "git";
 }
 /* PoP: _plugins_dir @ hermes_cli/plugins_cmd.py:_plugins_dir */

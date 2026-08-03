@@ -742,6 +742,10 @@ void yuanbao_stop(void) {
     g_yb.running = false;
 }
 
+bool yuanbao_is_running(void) {
+    return g_yb.running;
+}
+
 /* Send a sticker via the active WebSocket connection. Returns 0 on success, -1 on error. */
 /* PoP: send_sticker @ gateway/platforms/yuanbao.py:send_sticker */
 /* Port of Python gateway/platforms/yuanbao.py:send_sticker(). */

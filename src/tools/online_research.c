@@ -118,6 +118,25 @@ void moa_research_set_cache_ttl(int ttl_seconds) {
     g_cache_ttl = ttl_seconds > 0 ? ttl_seconds : 3600;
 }
 
+/* Researcher session slot (Python module-global _researcher). The C
+ * researcher is synchronous (moa_research_for_prompt), so the slot
+ * tracks active/cleared state for lifecycle parity. */
+static bool g_researcher_active = false;
+
+/* Port of tools/online_research.py:close_researcher — teardown + clear. */
+void online_research_close_session(void) {
+    g_researcher_active = false;
+}
+
+/* Port of tools/online_research.py:get_researcher — mark session active. */
+void online_research_open_session(void) {
+    g_researcher_active = true;
+}
+
+bool online_research_session_active(void) {
+    return g_researcher_active;
+}
+
 void moa_research_clear_expired_cache() {
     cache_init();
     time_t now = time(NULL);

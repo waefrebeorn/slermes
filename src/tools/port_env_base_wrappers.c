@@ -368,8 +368,8 @@ int envb_u_extract_cwd_from_output(const char *arg) {
 int envb_u__del__(const char *arg) {
     /* Python: try: self.cleanup() except: pass. */
     (void)arg;
-    printf("cleanup\n");
-    return 0;
+    extern int elc_cleanup(const char *snapshot_path, const char *cwd_file);
+    return elc_cleanup(NULL, NULL);
 }
 
 /* PoP: _prepare_command @ tools/environments/base.py:_prepare_command */

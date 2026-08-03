@@ -69,7 +69,14 @@ char *vmd_stop(void) {
 
 /* PoP: shutdown @ tools/voice_mode.py:shutdown */
 int vmd_shutdown(void) {
-    printf("voice mode shut down\n");
+    /* Python: shutdown voice mode — stop playback + release recorder. */
+    extern void stop_playback(void);
+    extern char *voice_recorder_stop(void);
+    extern int voice_close_stream_with_timeout(int timeout_sec);
+    stop_playback();
+    char *path = voice_recorder_stop();
+    free(path);
+    voice_close_stream_with_timeout(2);
     return 0;
 }
 

@@ -101,6 +101,10 @@ char *handle_mixture_of_agents(const char *args_json, const char *task_id);
  * Set research cache TTL in seconds (default 3600).
  */
 void moa_research_set_cache_ttl(int ttl_seconds);
+/* Researcher session lifecycle (port of online_research.py global slot). */
+void online_research_close_session(void);
+void online_research_open_session(void);
+bool online_research_session_active(void);
 
 /**
  * Clear expired cache entries.

@@ -15,6 +15,9 @@
 void signal_set_number(const char *number);
 void signal_set_cli_path(const char *path);
 bool signal_check_available(void);
+bool signal_is_running(void);
+bool signal_connect(void);
+void signal_disconnect(void);
 bool signal_send_message(http_client_t *http, const char *to,
                           const char *text);
 json_node_t *signal_poll_messages(http_client_t *http);

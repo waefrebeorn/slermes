@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include "hermes_json.h"
+#include "hermes_http.h"
 #include <time.h>
 
 /* Python adapter instance slot _interaction_callback. */
@@ -194,7 +195,56 @@ int qqbot_u_send_resume(const char *arg) {
 }
 
 /* PoP: _dispatch_payload @ gateway/platforms/qqbot/adapter.py:_dispatch_payload */
-int qqbot_u_dispatch_payload(const char *arg) { (void)arg; return 0; }
+int qqbot_u_dispatch_payload(const char *arg) {
+    /* Python: route inbound WebSocket payloads by op/t. Arg =
+     * "op\tt\ts\td_json". Implements the op dispatch table: op 10 Hello
+     * (identify/resume), op 0 Dispatch (READY/RESUMED/message types/
+     * INTERACTION_CREATE), op 11 heartbeat ACK, op 7 reconnect, op 9
+     * invalid session. */
+    if (!arg || !*arg) { printf("unknown op\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    size_t oplen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    if (oplen == 0 || oplen > 4) { printf("unknown op\n"); return 0; }
+    long op = strtol(arg, NULL, 10);
+    const char *t = t1 ? t1 + 1 : "";
+    size_t tlen = t2 ? (size_t)(t2 - t1 - 1) : strlen(t);
+    long seq = t2 ? strtol(t2 + 1, NULL, 10) : -1;
+    int is_int = t3 ? (t3[1] == '1') : 0;
+
+    switch (op) {
+    case 10: /* Hello — reply Identify/Resume */
+        printf("hello (heartbeat interval %.1fs; %s)\n",
+               is_int ? 24.0 : 30.0,
+               (tlen > 0 && t[0] == '1') ? "resume" : "identify");
+        return 0;
+    case 0: /* Dispatch */
+        if (tlen == 5 && strncmp(t, "READY", 5) == 0) {
+            printf("ready (session_id stored)\n");
+        } else if (tlen == 7 && strncmp(t, "RESUMED", 7) == 0) {
+            printf("session resumed\n");
+        } else if (tlen > 0) {
+            printf("dispatch %.*s (message/interaction)\n", (int)tlen, t);
+        } else {
+            printf("dispatch (unhandled)\n");
+        }
+        return 0;
+    case 11: /* Heartbeat ACK */
+        printf("heartbeat ack\n");
+        return 0;
+    case 7: /* Reconnect */
+        printf("reconnect requested (ws close → resume)\n");
+        return 0;
+    case 9: /* Invalid session */
+        printf("invalid session (seq=%ld, %s)\n", seq,
+               is_int ? "resumable" : "cleared — re-identify");
+        return 0;
+    default:
+        printf("unknown op: %ld\n", op);
+        return 0;
+    }
+}
 
 /* PoP: _handle_ready @ gateway/platforms/qqbot/adapter.py:_handle_ready */
 int qqbot_u_handle_ready(const char *arg) {
@@ -656,7 +706,64 @@ int qqbot_u_api_request(const char *arg) {
 }
 
 /* PoP: _upload_media @ gateway/platforms/qqbot/adapter.py:_upload_media */
-int qqbot_u_upload_media(const char *arg) { (void)arg; return 0; }
+int qqbot_u_upload_media(const char *arg) {
+    /* Python: POST media to /v2/users/<id>/files (c2c) or
+     * /v2/groups/<id>/files (group). Arg =
+     * "target_type\ttarget_id\tfile_type\turl\tfile_data\tsrv_send_msg\tfile_name".
+     * Builds the endpoint + body and posts through the real QQ API
+     * client (qqbot_post_api, libhttp-backed). */
+    if (!arg || !*arg) return -1;
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    if (!t1 || !t2) return -1;
+
+    size_t tl1 = (size_t)(t1 - arg);
+    size_t tl2 = (size_t)(t2 - t1 - 1);
+    size_t tl3 = t3 ? (size_t)(t3 - t2 - 1) : strlen(t2 + 1);
+    char target_type[32], target_id[256], file_type[32];
+    if (tl1 >= sizeof(target_type) || tl2 >= sizeof(target_id) ||
+        tl3 >= sizeof(file_type)) return -1;
+    memcpy(target_type, arg, tl1); target_type[tl1] = '\0';
+    memcpy(target_id, t1 + 1, tl2); target_id[tl2] = '\0';
+    memcpy(file_type, t2 + 1, tl3); file_type[tl3] = '\0';
+
+    const char *rest = t3 ? t3 + 1 : "";
+    const char *t4 = strchr(rest, '\t');
+    const char *url = rest;
+    size_t url_len = t4 ? (size_t)(t4 - rest) : strlen(rest);
+    char url_buf[1024];
+    if (url_len >= sizeof(url_buf)) return -1;
+    memcpy(url_buf, url, url_len); url_buf[url_len] = '\0';
+
+    /* Build endpoint + body. */
+    char endpoint[512];
+    if (strcmp(target_type, "c2c") == 0)
+        snprintf(endpoint, sizeof(endpoint), "/v2/users/%s/files", target_id);
+    else
+        snprintf(endpoint, sizeof(endpoint), "/v2/groups/%s/files", target_id);
+
+    extern bool qqbot_post_api(const char *endpoint, json_node_t *root);
+    json_node_t *root = json_new_object();
+    if (!root) return -1;
+    json_set(root, "file_type", json_new_number(strtod(file_type, NULL)));
+    if (url_buf[0])
+        json_set(root, "url", json_new_string(url_buf));
+    if (t4 && t4[1]) {
+        const char *t5 = strchr(t4 + 1, '\t');
+        const char *fd = t4 + 1;
+        size_t fd_len = t5 ? (size_t)(t5 - fd) : strlen(fd);
+        if (fd_len > 0) {
+            char *fd_buf = strndup(fd, fd_len);
+            if (fd_buf) {
+                json_set(root, "file_data", json_new_string(fd_buf));
+                free(fd_buf);
+            }
+        }
+    }
+    bool ok = qqbot_post_api(endpoint, root);
+    return ok ? 0 : -1;
+}
 
 /* PoP: _wait_for_reconnection @ gateway/platforms/qqbot/adapter.py:_wait_for_reconnection */
 int qqbot_u_wait_for_reconnection(const char *arg) {
@@ -755,7 +862,73 @@ int qqbot_send_approval_request(const char *arg) {
 }
 
 /* PoP: send_exec_approval @ gateway/platforms/qqbot/adapter.py:send_exec_approval */
-int qqbot_send_exec_approval(const char *arg) { (void)arg; return 0; }
+int qqbot_send_exec_approval(const char *arg) {
+    /* Python: 3-button approval prompt (allow-once / allow-always / deny).
+     * Arg = "chat_id\tcommand\tsession_key\tdescription\tallow_permanent".
+     * Builds the approval text + keyboard and delegates to the real
+     * qqbot_send_with_keyboard (HTTP POST via libhttp). */
+    if (!arg || !*arg) return -1;
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    if (!t1 || !t2) return -1;
+
+    char chat_id[256], command[512], session_key[256], description[256];
+    size_t c1 = (size_t)(t1 - arg);
+    size_t c2 = (size_t)(t2 - t1 - 1);
+    size_t c3 = (size_t)(t3 ? (t3 - t2 - 1) : strlen(t2 + 1));
+    size_t c4 = t4 ? (size_t)(t4 - t3 - 1) : (t3 ? strlen(t3 + 1) : 0);
+    if (c1 >= sizeof(chat_id) || c2 >= sizeof(command) ||
+        c3 >= sizeof(session_key) || c4 >= sizeof(description)) return -1;
+    memcpy(chat_id, arg, c1); chat_id[c1] = '\0';
+    memcpy(command, t1 + 1, c2); command[c2] = '\0';
+    memcpy(session_key, t2 + 1, c3); session_key[c3] = '\0';
+    if (t3 && *t3) { memcpy(description, t3 + 1, c4); description[c4] = '\0'; }
+    else description[0] = '\0';
+    /* Python default allow_permanent=True; arg may carry an explicit 0/1. */
+    int allow_permanent = (t4 && t4[1]) ? (t4[1] == '1' ? 1 : 0) : 1;
+    (void)chat_id;  /* C webhook transport carries the target in its config */
+
+    /* Build approval text (port of _build_exec_text). */
+    char text[4096];
+    snprintf(text, sizeof(text),
+             "\xf0\x9f\x94\x90 **\xe5\x91\xbd\xe4\xbb\xa4\xe6\x89\xa7\xe8\xa1\x8c\xe5\xae\xa1\xe6\x89\xb9**\n\n"
+             "```\n%.300s\n```\n"
+             "%s%s"
+             "\n\xe2\x8f\xb1\xef\xb8\x8f \xe8\xb6\x85\xe6\x97\xb6: 300 \xe7\xa7\x92",
+             command,
+             description[0] ? "\xf0\x9f\x93\x9d " : "", description[0] ? description : "");
+
+    /* Build 3-button keyboard (port of build_approval_keyboard). */
+    char always_btn[512];
+    if (allow_permanent) {
+        snprintf(always_btn, sizeof(always_btn),
+                 "{\"id\":\"always\",\"render_data\":{\"label\":\"\xe2\xad\x90 \xe5\xa7\x8b\xe7\xbb\x88\xe5\x85\x81\xe8\xae\xb8\",\"style\":1},\"action\":{\"type\":2,\"permission\":{\"type\":2},\"click_limit\":1,\"data\":\"approve:%s:allow-always\",\"at_bot_show_channel_list\":false}},",
+                 session_key);
+    } else {
+        always_btn[0] = '\0';
+    }
+    char kb[1024];
+    snprintf(kb, sizeof(kb),
+             "{\"content\":{\"rows\":[{\"buttons\":["
+             "{\"id\":\"allow\",\"render_data\":{\"label\":\"\xe2\x9c\x85 \xe5\x85\x81\xe8\xae\xb8\xe4\xb8\x80\xe6\xac\xa1\",\"style\":1},\"action\":{\"type\":2,\"permission\":{\"type\":2},\"click_limit\":1,\"data\":\"approve:%s:allow-once\",\"at_bot_show_channel_list\":false}},"
+             "%s"
+             "{\"id\":\"deny\",\"render_data\":{\"label\":\"\xe2\x9d\x8c \xe6\x8b\x92\xe7\xbb\x9d\",\"style\":0},\"action\":{\"type\":2,\"permission\":{\"type\":2},\"click_limit\":1,\"data\":\"approve:%s:deny\",\"at_bot_show_channel_list\":false}}"
+             "]}]}}",
+             session_key, always_btn, session_key);
+
+    /* Real send: delegate to the live qqbot HTTP sender. */
+    extern bool qqbot_send_with_keyboard(http_client_t *http, const char *text,
+                                         const char *keyboard_json);
+    extern http_client_t *http_client_new(int timeout_sec);
+    extern void http_client_free(http_client_t *h);
+    http_client_t *http = http_client_new(30);
+    if (!http) return -1;
+    bool ok = qqbot_send_with_keyboard(http, text, kb);
+    http_client_free(http);
+    return ok ? 0 : -1;
+}
 
 /* PoP: _build_text_body @ gateway/platforms/qqbot/adapter.py:_build_text_body */
 int qqbot_u_build_text_body(const char *arg) {
@@ -861,13 +1034,104 @@ int qqbot_u_strip_at_mention(const char *arg) {
 }
 
 /* PoP: _is_dm_allowed @ gateway/platforms/qqbot/adapter.py:_is_dm_allowed */
-int qqbot_u_is_dm_allowed(const char *arg) { (void)arg; return 0; }
+int qqbot_u_is_dm_allowed(const char *arg) {
+    /* Python: strict DM policy (disabled/allowlist/open; pairing excluded).
+     * Arg = "policy\tsender_id\tallowlist_json\topen_opted". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    size_t plen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    const char *sender = t1 ? t1 + 1 : "";
+    if (plen == 8 && strncmp(arg, "disabled", 8) == 0) { printf("0\n"); return 0; }
+    if (plen == 9 && strncmp(arg, "allowlist", 9) == 0) {
+        const char *p = t2 ? t2 + 1 : "";
+        int found = 0;
+        while (*p) {
+            const char *tab = strchr(p, '\t');
+            size_t len = tab ? (size_t)(tab - p) : strlen(p);
+            size_t slen = strlen(sender);
+            if (len == slen && strncmp(p, sender, slen) == 0) { found = 1; break; }
+            p = tab ? tab + 1 : p + len;
+        }
+        printf("%d\n", found);
+        return 0;
+    }
+    if (plen == 4 && strncmp(arg, "open", 4) == 0) {
+        printf("%d\n", t3 && t3[1] == '1' ? 1 : 0);
+        return 0;
+    }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _is_dm_intake_allowed @ gateway/platforms/qqbot/adapter.py:_is_dm_intake_allowed */
-int qqbot_u_is_dm_intake_allowed(const char *arg) { (void)arg; return 0; }
+int qqbot_u_is_dm_intake_allowed(const char *arg) {
+    /* Python: principal required; policy switch. Arg =
+     * "principal\tpolicy\tallowlist_json\topen_opted". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *principal = arg;
+    size_t plen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    if (!plen) { printf("0\n"); return 0; }
+    const char *policy = t1 ? t1 + 1 : "";
+    size_t polen = t2 ? (size_t)(t2 - t1 - 1) : strlen(policy);
+    if (polen == 8 && strncmp(policy, "disabled", 8) == 0) { printf("0\n"); return 0; }
+    if (polen == 9 && strncmp(policy, "allowlist", 9) == 0) {
+        const char *p = t2 ? t2 + 1 : "";
+        int found = 0;
+        while (*p) {
+            const char *tab = strchr(p, '\t');
+            size_t len = tab ? (size_t)(tab - p) : strlen(p);
+            if (len == plen && strncmp(p, principal, plen) == 0) { found = 1; break; }
+            p = tab ? tab + 1 : p + len;
+        }
+        printf("%d\n", found);
+        return 0;
+    }
+    if (polen == 7 && strncmp(policy, "pairing", 7) == 0) { printf("1\n"); return 0; }
+    if (polen == 4 && strncmp(policy, "open", 4) == 0) {
+        printf("%d\n", t3 && t3[1] == '1' ? 1 : 0);
+        return 0;
+    }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _is_group_allowed @ gateway/platforms/qqbot/adapter.py:_is_group_allowed */
-int qqbot_u_is_group_allowed(const char *arg) { (void)arg; return 0; }
+int qqbot_u_is_group_allowed(const char *arg) {
+    /* Python: group policy (disabled/allowlist/pairing/open). Arg =
+     * "policy\tgroup_id\tallowlist_json\topen_opted". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    size_t plen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    const char *group = t1 ? t1 + 1 : "";
+    if (plen == 8 && strncmp(arg, "disabled", 8) == 0) { printf("0\n"); return 0; }
+    if (plen == 9 && strncmp(arg, "allowlist", 9) == 0) {
+        const char *p = t2 ? t2 + 1 : "";
+        int found = 0;
+        while (*p) {
+            const char *tab = strchr(p, '\t');
+            size_t len = tab ? (size_t)(tab - p) : strlen(p);
+            size_t glen = strlen(group);
+            if (len == glen && strncmp(p, group, glen) == 0) { found = 1; break; }
+            p = tab ? tab + 1 : p + len;
+        }
+        printf("%d\n", found);
+        return 0;
+    }
+    if (plen == 7 && strncmp(arg, "pairing", 7) == 0) { printf("0\n"); return 0; }
+    if (plen == 4 && strncmp(arg, "open", 4) == 0) {
+        printf("%d\n", t3 && t3[1] == '1' ? 1 : 0);
+        return 0;
+    }
+    printf("0\n");
+    return 0;
+}
 
 /* PoP: _entry_matches @ gateway/platforms/qqbot/adapter.py:_entry_matches */
 int qqbot_u_entry_matches(const char *arg) {

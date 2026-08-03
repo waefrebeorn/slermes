@@ -1964,9 +1964,12 @@ int tools_online_research_u__aenter__(const char *arg) {
 
 /* PoP: __aexit__ @ tools/online_research.py:__aexit__ */
 int tools_online_research_u__aexit__(const char *arg) {
-    /* Python: close session. */
+    /* Python: close session (teardown). The C researcher has no
+     * persistent session handle; __aexit__ releases the shared
+     * researcher slot the same way Python sets _researcher = None. */
     (void)arg;
-    printf("researcher session closed\n");
+    extern void online_research_close_session(void);
+    online_research_close_session();
     return 0;
 }
 
@@ -2022,9 +2025,10 @@ int tools_online_research_get_researcher(const char *arg) {
 
 /* PoP: close_researcher @ tools/online_research.py:close_researcher */
 int tools_online_research_close_researcher(const char *arg) {
-    /* Python: teardown. */
+    /* Python: teardown + clear the global researcher. */
     (void)arg;
-    printf("researcher closed + cleared (if any)\n");
+    extern void online_research_close_session(void);
+    online_research_close_session();
     return 0;
 }
 

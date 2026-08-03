@@ -16,6 +16,7 @@
 static char g_signal_cli[256] = "signal-cli";
 static char g_signal_number[64] = "";
 static bool g_signal_available = false;
+static bool g_signal_running = false;
 
 void signal_set_number(const char *number) {
     if (number) snprintf(g_signal_number, sizeof(g_signal_number), "%s", number);
@@ -23,6 +24,26 @@ void signal_set_number(const char *number) {
 
 void signal_set_cli_path(const char *path) {
     if (path) snprintf(g_signal_cli, sizeof(g_signal_cli), "%s", path);
+}
+
+/* Returns true while the signal supervisor loop is running. */
+bool signal_is_running(void) {
+    return g_signal_running;
+}
+
+/* Start the signal adapter: mark available when signal-cli + account are
+ * present and the daemon health check passes. Returns true when the
+ * adapter is ready to poll. */
+bool signal_connect(void) {
+    g_signal_available = signal_check_available();
+    g_signal_running = g_signal_available;
+    return g_signal_running;
+}
+
+/* Stop the signal adapter and release the poll loop. */
+void signal_disconnect(void) {
+    g_signal_running = false;
+    g_signal_available = false;
 }
 
 /* Check if signal-cli is available */

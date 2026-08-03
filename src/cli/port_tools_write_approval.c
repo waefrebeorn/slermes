@@ -220,9 +220,12 @@ int cli_tools_write_approval__check_approval(const char *request_id)
 /* PoP: cli_tools_write_approval__store_local_approval @ tools/write_approval.py:_store_local_approval */
 int cli_tools_write_approval__store_local_approval(const char *path, const char *session_key)
 {
-    (void)path; (void)session_key;
     /* Local approval state is represented by the absence of a pending record;
-     * the config module owns the persistent toggle. Nothing to persist here. */
+     * the config module owns the persistent toggle. Log the call so the
+     * write-approval lifecycle is observable. */
+    if (!path || !session_key) return -1;
+    hermes_log(LOG_INFO, "write_approval",
+               "_store_local_approval: path=%s session=%s", path, session_key);
     return 0;
 }
 

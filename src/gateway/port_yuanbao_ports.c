@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "hermes_gateway_yuanbao.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -91,13 +92,24 @@ char *yb2_ws(void) {
 /* PoP: is_connected @ gateway/platforms/yuanbao.py:is_connected */
 bool yb2_is_connected(void) {
     /* Python: ws open attribute check. */
-    return false;
+    return yuanbao_is_running();
 }
 
 /* PoP: open @ gateway/platforms/yuanbao.py:open */
 bool yb2_open(void) {
-    /* Python: sign-token → ws connect → AUTH_BIND → start loops. */
-    return false;
+    /* Python: sign-token → ws connect → AUTH_BIND → start loops.
+     * Delegate to the live C implementation (src/gateway/platforms/
+     * yuanbao.c): init with env-derived config and start the supervisor. */
+    const char *app_id = getenv("YUANBAO_APP_ID");
+    const char *app_secret = getenv("YUANBAO_APP_SECRET");
+    if (!app_id || !*app_id || !app_secret || !*app_secret) {
+        fprintf(stderr, "[gateway:yuanbao] YUANBAO_APP_ID and YUANBAO_APP_SECRET required\n");
+        return false;
+    }
+    if (!yuanbao_init(app_id, app_secret, NULL, NULL, NULL))
+        return false;
+    yuanbao_start();
+    return yuanbao_is_running();
 }
 
 /* PoP: _handle_frame @ gateway/platforms/yuanbao.py:_handle_frame */
@@ -159,6 +171,7 @@ bool yb2_enforces_own_access_policy(void) {
 /* PoP: disconnect @ gateway/platforms/yuanbao.py:disconnect */
 int yb2_disconnect(void) {
     /* Python: cancel tasks + close ws. */
+    yuanbao_stop();
     return 0;
 }
 

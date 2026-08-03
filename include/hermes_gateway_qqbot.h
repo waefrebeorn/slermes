@@ -14,6 +14,9 @@
 
 void qqbot_set_webhook(const char *url);
 void qqbot_set_token(const char *token);
+bool qqbot_is_running(void);
+void qqbot_set_running(bool running);
+void qqbot_stop(void);
 bool qqbot_send_message(http_client_t *http, const char *text);
 bool qqbot_send_markdown(http_client_t *http, const char *text);
 bool qqbot_send_image(http_client_t *http, const char *image_url);

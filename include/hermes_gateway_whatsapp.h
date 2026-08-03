@@ -14,6 +14,8 @@
 
 void whatsapp_set_token(const char *token);
 void whatsapp_set_phone_id(const char *id);
+bool whatsapp_cloud_is_active(void);
+void whatsapp_cloud_set_active(bool active);
 void whatsapp_set_verify_token(const char *token);
 bool whatsapp_send_message(http_client_t *http, const char *to,
                             const char *text);

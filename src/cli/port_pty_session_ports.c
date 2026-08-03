@@ -238,3 +238,21 @@ int pty_close(void) {
     pty_session_free(s);
     return 0;
 }
+
+/* PoP: close_all @ hermes_cli/pty_session.py:close_all */
+int pty_close_all(void) {
+    /* Python: pop + close each session. Closes every session in the
+     * registry: stop drain threads, dispose PTY children, free all. */
+    while (g_sessions) {
+        pthread_mutex_lock(&g_registry_lock);
+        pty_session_t *s = g_sessions;
+        if (s) g_sessions = s->next;
+        pthread_mutex_unlock(&g_registry_lock);
+        if (!s) break;
+        s->drain_stopped = true;
+        if (s->drain_started)
+            pthread_join(s->drain_tid, NULL);
+        pty_session_free(s);
+    }
+    return 0;
+}

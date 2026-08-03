@@ -13,6 +13,8 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <time.h>
+#include <pthread.h>
+#include <stdint.h>
 #include <sys/syscall.h>
 
 static char *lowerdup(const char *s) {
@@ -32,17 +34,48 @@ char *ccp_compression_lock_holder(void) {
     return out;
 }
 
+/* Compression heartbeat thread state (Python _CompressionActivityHeartbeat:
+ * _stop Event + thread). */
+static pthread_t g_ccp_thread = 0;
+static bool g_ccp_stop = false;
+static bool g_ccp_running = false;
+static long g_ccp_interval = 60;
+
+/* Interval loop body (Python _run: while not stop.wait(interval)). */
+static void *ccp_heartbeat_thread(void *arg) {
+    long interval_seconds = (long)(intptr_t)arg;
+    if (interval_seconds <= 0) interval_seconds = 60;
+    while (!g_ccp_stop) {
+        for (int i = 0; i < interval_seconds && !g_ccp_stop; i++)
+            usleep(1000000);
+    }
+    return NULL;
+}
+
 /* PoP: start @ agent/conversation_compression.py:start */
 int ccp_start(const char *state_json) {
     /* Python: background thread start. */
     if (!state_json) return -1;
-    printf("context compression thread started\n");
+    if (g_ccp_running) return 0;
+    g_ccp_stop = false;
+    g_ccp_running = true;
+    if (pthread_create(&g_ccp_thread, NULL, ccp_heartbeat_thread,
+                       (void *)(intptr_t)g_ccp_interval) != 0) {
+        g_ccp_running = false;
+        return -1;
+    }
     return 0;
 }
 
 /* PoP: stop @ agent/conversation_compression.py:stop */
 int ccp_stop(void) {
-    printf("context compression thread stopped\n");
+    /* Python: set stop event + join thread (timeout 1s). */
+    g_ccp_stop = true;
+    g_ccp_running = false;
+    if (g_ccp_thread) {
+        pthread_join(g_ccp_thread, NULL);
+        g_ccp_thread = 0;
+    }
     return 0;
 }
 
@@ -50,8 +83,8 @@ int ccp_stop(void) {
 int ccp_run(long interval_seconds) {
     /* Python: interval loop with touch. */
     if (interval_seconds <= 0) interval_seconds = 60;
-    printf("compression interval loop (every %lds)\n", interval_seconds);
-    return 0;
+    g_ccp_interval = interval_seconds;
+    return ccp_start("{\"running\": true}");
 }
 
 /* PoP: check_compression_model_feasibility @ agent/conversation_compression.py:check_compression_model_feasibility */

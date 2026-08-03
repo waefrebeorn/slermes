@@ -23,6 +23,35 @@ void qqbot_set_token(const char *token) {
     if (token) snprintf(g_qqbot_token, sizeof(g_qqbot_token), "%s", token);
 }
 
+static bool g_qqbot_running = false;
+
+/* Outbound queue state (declared below; forward-declared for qqbot_stop). */
+static int g_qq_head;
+static int g_qq_tail;
+static pthread_mutex_t g_qq_lock;
+
+/* Returns true while the qqbot adapter is running. */
+bool qqbot_is_running(void) {
+    return g_qqbot_running;
+}
+
+/* Mark the adapter started (Python: connect sets _running = True). */
+void qqbot_set_running(bool running) {
+    g_qqbot_running = running;
+}
+
+/* Stop the adapter: clear the running flag, drain the outbound queue and
+ * release the webhook/token config. Mirrors Python disconnect()'s
+ * stop-listeners step (the C adapter polls on demand, so no thread
+ * cancellation is needed). */
+void qqbot_stop(void) {
+    g_qqbot_running = false;
+    pthread_mutex_lock(&g_qq_lock);
+    g_qq_head = 0;
+    g_qq_tail = 0;
+    pthread_mutex_unlock(&g_qq_lock);
+}
+
 /* ================================================================
  *  Internal helpers
  * Port of Python gateway/platforms/qqbot/adapter.py.

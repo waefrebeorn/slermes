@@ -56,13 +56,19 @@ bool qqa_connect(const char *app_id, const char *secret) {
 
 /* PoP: disconnect @ gateway/platforms/qqbot/adapter.py:disconnect */
 int qqa_disconnect(void) {
-    printf("qq connections closed, listeners stopped\n");
+    /* Python: close all connections + stop listeners.
+     * Delegate to the real qqbot adapter lifecycle. */
+    extern void qqbot_stop(void);
+    qqbot_stop();
     return 0;
 }
 
 /* PoP: _cleanup @ gateway/platforms/qqbot/adapter.py:_cleanup */
 int qqa_cleanup(void) {
-    printf("qq ws + http session cleaned up\n");
+    /* Python: ws + http session cleaned up.
+     * Stop the adapter and release the outbound queue. */
+    extern void qqbot_stop(void);
+    qqbot_stop();
     return 0;
 }
 
