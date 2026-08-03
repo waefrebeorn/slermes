@@ -16,6 +16,14 @@ import sys, os, json, tempfile
 sys.path.insert(0, "/home/wubu/hermes-agent-dev")
 from cron import suggestions as S
 
+# Reset the shared store: the C harness already ran and left its final
+# (mutated) state in suggestions.json. Replay Python on a FRESH store so
+# init_empty sees [] exactly like the C side did.
+try:
+    S.SUGGESTIONS_FILE.unlink(missing_ok=True)
+except (OSError, AttributeError):
+    pass
+
 # All C emit_case lines are read from stdin. We replay Python into a parallel
 # stream and compare each named case's store/ret.
 

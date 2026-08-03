@@ -4,6 +4,7 @@
  */
 
 #include "libcrypto/crypto.h"
+#include "hive.h"
 #include "hermes_core_types.h"
 #include "hermes_agent.h"
 #include "hermes_json.h"
@@ -81,8 +82,11 @@ static bool wh_rate_limit_check(gw_rate_limiter_t *rl) {
 static char g_verify_secret[128] = {0};
 static bool g_verify_enabled = false;
 
-/* Subscription table */
-static webhook_subscription_t g_subscriptions[WEBHOOK_SUBS_MAX];
+/* Subscription table — hive-backed (lib/libhive): stable handles, no
+ * 342KB landlocked static. With block_cap=64, block-0 handles 0..31 are
+ * numerically equal to the legacy dense indices, so the public idx-based
+ * API (webhook_subscription_remove/add_header/deliver) keeps its contract. */
+static hive_t *g_subscriptions = NULL;
 static int g_sub_count = 0;
 static pthread_mutex_t g_sub_mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -344,24 +348,19 @@ int webhook_subscription_add(const char *endpoint, const char *secret,
     if (!endpoint || !*endpoint) return -1;
 
     pthread_mutex_lock(&g_sub_mutex);
+    if (!g_subscriptions) g_subscriptions = hive_new(64);
 
-    /* Find a free slot */
-    int idx = -1;
-    for (int i = 0; i < WEBHOOK_SUBS_MAX; i++) {
-        if (!g_subscriptions[i].in_use) {
-            idx = i;
-            break;
-        }
-    }
-
-    if (idx < 0) {
+    if (g_sub_count >= WEBHOOK_SUBS_MAX) {
         pthread_mutex_unlock(&g_sub_mutex);
         printf("[webhook] Subscription table full (%d max)\n", WEBHOOK_SUBS_MAX);
         return -1;
     }
 
-    webhook_subscription_t *sub = &g_subscriptions[idx];
-    memset(sub, 0, sizeof(*sub));
+    webhook_subscription_t *sub = calloc(1, sizeof(*sub));
+    if (!sub) {
+        pthread_mutex_unlock(&g_sub_mutex);
+        return -1;
+    }
 
     strncpy(sub->endpoint, endpoint, sizeof(sub->endpoint) - 1);
     if (secret && *secret) {
@@ -376,24 +375,41 @@ int webhook_subscription_add(const char *endpoint, const char *secret,
     /* Initialize rate limiter: 10 req/s, burst 20 */
     wh_rate_limit_init(&sub->rate_limiter, WEBHOOK_DEFAULT_RATE, WEBHOOK_DEFAULT_BURST);
 
+    bool ok = false;
+    hive_handle_t hnd = hive_insert(g_subscriptions, sub, &ok);
+    if (!ok || hnd.slot >= WEBHOOK_SUBS_MAX || hnd.block != 0) {
+        /* Handle overflowed the legacy idx range: free and reject. */
+        if (ok) hive_erase(g_subscriptions, hnd);
+        free(sub);
+        pthread_mutex_unlock(&g_sub_mutex);
+        printf("[webhook] Subscription table full (%d max)\n", WEBHOOK_SUBS_MAX);
+        return -1;
+    }
+
     g_sub_count++;
     pthread_mutex_unlock(&g_sub_mutex);
 
-    printf("[webhook] Subscription #%d added: %s (retries=%d, backoff=%dms)\n",
-           idx, endpoint, sub->max_retries, sub->backoff_ms);
+    printf("[webhook] Subscription #%zu added: %s (retries=%d, backoff=%dms)\n",
+           hnd.slot, endpoint, sub->max_retries, sub->backoff_ms);
 
-    return idx;
+    return (int)hnd.slot;
 }
 
 bool webhook_subscription_remove(int idx) {
     if (idx < 0 || idx >= WEBHOOK_SUBS_MAX) return false;
 
     pthread_mutex_lock(&g_sub_mutex);
-    if (!g_subscriptions[idx].in_use) {
+    if (!g_subscriptions) {
         pthread_mutex_unlock(&g_sub_mutex);
         return false;
     }
-    memset(&g_subscriptions[idx], 0, sizeof(webhook_subscription_t));
+    webhook_subscription_t *sub = hive_get(g_subscriptions, (hive_handle_t){ 0, (size_t)idx });
+    if (!sub || !sub->in_use) {
+        pthread_mutex_unlock(&g_sub_mutex);
+        return false;
+    }
+    hive_erase(g_subscriptions, (hive_handle_t){ 0, (size_t)idx });
+    free(sub);
     g_sub_count--;
     pthread_mutex_unlock(&g_sub_mutex);
 
@@ -405,8 +421,12 @@ bool webhook_subscription_add_header(int idx, const char *key, const char *value
     if (idx < 0 || idx >= WEBHOOK_SUBS_MAX || !key || !*key) return false;
 
     pthread_mutex_lock(&g_sub_mutex);
-    webhook_subscription_t *sub = &g_subscriptions[idx];
-    if (!sub->in_use || sub->header_count >= WEBHOOK_HEADERS_MAX) {
+    if (!g_subscriptions) {
+        pthread_mutex_unlock(&g_sub_mutex);
+        return false;
+    }
+    webhook_subscription_t *sub = hive_get(g_subscriptions, (hive_handle_t){ 0, (size_t)idx });
+    if (!sub || !sub->in_use || sub->header_count >= WEBHOOK_HEADERS_MAX) {
         pthread_mutex_unlock(&g_sub_mutex);
         return false;
     }
@@ -433,10 +453,14 @@ int webhook_subscription_list(webhook_subscription_t *out, int max_out) {
 
     pthread_mutex_lock(&g_sub_mutex);
     int written = 0;
-    for (int i = 0; i < WEBHOOK_SUBS_MAX && written < max_out; i++) {
-        if (g_subscriptions[i].in_use) {
-            memcpy(&out[written], &g_subscriptions[i], sizeof(webhook_subscription_t));
-            written++;
+    if (g_subscriptions) {
+        for (int i = 0; i < WEBHOOK_SUBS_MAX && written < max_out; i++) {
+            webhook_subscription_t *sub = hive_get(g_subscriptions,
+                                                   (hive_handle_t){ 0, (size_t)i });
+            if (sub && sub->in_use) {
+                memcpy(&out[written], sub, sizeof(webhook_subscription_t));
+                written++;
+            }
         }
     }
     pthread_mutex_unlock(&g_sub_mutex);
@@ -576,8 +600,12 @@ bool webhook_subscription_deliver(int idx, const char *payload) {
     if (idx < 0 || idx >= WEBHOOK_SUBS_MAX || !payload) return false;
 
     pthread_mutex_lock(&g_sub_mutex);
-    webhook_subscription_t *sub = &g_subscriptions[idx];
-    if (!sub->in_use) {
+    if (!g_subscriptions) {
+        pthread_mutex_unlock(&g_sub_mutex);
+        return false;
+    }
+    webhook_subscription_t *sub = hive_get(g_subscriptions, (hive_handle_t){ 0, (size_t)idx });
+    if (!sub || !sub->in_use) {
         pthread_mutex_unlock(&g_sub_mutex);
         return false;
     }
