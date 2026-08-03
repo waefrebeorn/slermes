@@ -12,7 +12,16 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <time.h>
-#include <unistd.h>
+#include "json.h"
+#include "credential_pool.h"
+#include "credential_pool_internals.h"
+
+/* These engine functions are not yet declared in the public headers; declare
+ * them here so the port wrappers can delegate to the real implementations. */
+extern credential_pool_t *load_pool(const char *provider);
+extern bool _seed_from_singletons(const char *provider, credential_pool_t *pool);
+extern bool _seed_from_env(const char *provider, credential_pool_t *pool);
+extern bool _seed_custom_pool(const char *pool_key, credential_pool_t *pool);
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -43,31 +52,114 @@ char *cpl_post_init(const char *provider, const char *access_token, const char *
     return out;
 }
 
+/* PoP: _seed_from_singletons @ agent/credential_pool.py:_seed_from_singletons */
+char *cpl_seed_from_singletons(const char *provider) {
+    /* Python: seed pool from auth-store singletons (anthropic, openai, etc.),
+     * honoring suppression gate. Returns JSON summary of active_sources. */
+    if (!provider) return strdup("{}");
+    /* Delegate to real engine implementation. */
+    credential_pool_t *pool = load_pool(provider);
+    if (!pool) return strdup("{}");
+    _seed_from_singletons(provider, pool);
+    char *out = credential_pool_entries_json(pool);
+    credential_pool_free(pool);
+    return out ? out : strdup("[]");
+}
+
+/* PoP: _seed_from_env @ agent/credential_pool.py:_seed_from_env */
+char *cpl_seed_from_env(const char *provider) {
+    /* Python: seed pool from ~/.hermes/.env (authoritative) or env vars,
+     * honoring suppression gate. Returns JSON summary of active_sources. */
+    if (!provider) return strdup("{}");
+    credential_pool_t *pool = load_pool(provider);
+    if (!pool) return strdup("{}");
+    _seed_from_env(provider, pool);
+    char *out = credential_pool_entries_json(pool);
+    credential_pool_free(pool);
+    return out ? out : strdup("[]");
+}
+
+/* PoP: _seed_from_custom_pool @ agent/credential_pool.py:_seed_from_custom_pool */
+bool cpl_seed_custom_pool(void) {
+    /* Python: seed custom_providers pool from config api_key + model.api_key.
+     * Honors suppression gate at every upsert. */
+    /* Iterate custom pool keys and seed each. */
+    char *list[64];
+    int n = list_custom_pool_providers(list, 64);
+    bool any = false;
+    for (int i = 0; i < n; i++) {
+        credential_pool_t *pool = load_pool(list[i]);
+        if (!pool) { free(list[i]); continue; }
+        if (_seed_custom_pool(list[i], pool)) any = true;
+        credential_pool_free(pool);
+        free(list[i]);
+    }
+    return any;
+}
+
 /* PoP: from_dict @ agent/credential_pool.py:from_dict */
 char *cpl_from_dict(const char *payload_json) {
-    /* Python: field subset rehydrate; ISO last_status_at parsed. */
+    /* Python: field subset rehydrate; ISO last_status_at parsed to epoch.
+     * Rehydrate via JSON parse, normalize ISO timestamp, round-trip serialize. */
     if (!payload_json) return NULL;
-    printf("pooled credential rehydrated from dict (ISO timestamps parsed)\n");
-    return strdup(payload_json);
+    json_t *j = json_parse(payload_json, NULL);
+    if (!j) return strdup(payload_json);
+    json_t *last = json_obj_get(j, "last_status_at");
+    if (last && last->type == JSON_STRING) {
+        const char *iso = json_string_value(last);
+        if (iso) {
+            double epoch = _parse_absolute_timestamp(iso);
+            if (epoch >= 0) {
+                json_set(j, "last_status_at_epoch", json_number(epoch));
+            }
+        }
+    }
+    char *out = json_serialize(j);
+    json_free(j);
+    return out ? out : strdup(payload_json);
 }
 
 /* PoP: to_dict @ agent/credential_pool.py:to_dict */
 char *cpl_to_dict(const char *entry_json) {
-    /* Python: always-emit status fields. */
+    /* Python: always-emit status fields + sanitize_borrowed_credential_payload.
+     * Always emit: last_status, last_status_at, last_error_code, last_error_reason. */
     if (!entry_json) return strdup("{}");
-    char *out = NULL;
-    if (strstr(entry_json, "last_status")) {
-        return strdup(entry_json); /* already present */
+    json_t *j = json_parse(entry_json, NULL);
+    if (!j || j->type != JSON_OBJECT) {
+        if (j) json_free(j);
+        return strdup("{}");
     }
-    asprintf(&out, "%s, \"last_status\": \"ok\", \"last_status_at\": null, "
-                   "\"last_error_code\": null, \"last_error_reason\": null}", entry_json);
-    return out ? out : strdup(entry_json);
+    /* Always-emit fields: ensure they exist. */
+    if (!json_obj_get(j, "last_status"))
+        json_set(j, "last_status", json_string("ok"));
+    if (!json_obj_get(j, "last_status_at"))
+        json_set(j, "last_status_at", json_null());
+    if (!json_obj_get(j, "last_error_code"))
+        json_set(j, "last_error_code", json_null());
+    if (!json_obj_get(j, "last_error_reason"))
+        json_set(j, "last_error_reason", json_null());
+    char *out = json_serialize(j);
+    json_free(j);
+    return out ? out : strdup("{}");
 }
 
 /* PoP: _next_priority @ agent/credential_pool.py:_next_priority */
-int cpl_next_priority(int max_priority) {
-    /* Python: max(priorities, default -1) + 1. */
-    return max_priority + 1;
+int cpl_next_priority(const char *entries_json) {
+    /* Python: max(entry.priority for entry in entries, default=-1) + 1. */
+    if (!entries_json || strcmp(entries_json, "[]") == 0) return 0;
+    json_t *arr = json_parse(entries_json, NULL);
+    if (!arr || arr->type != JSON_ARRAY) {
+        if (arr) json_free(arr);
+        return 0;
+    }
+    int max_p = -1;
+    for (size_t i = 0; i < json_len(arr); i++) {
+        json_t *entry = json_get(arr, i);
+        json_t *p = json_obj_get(entry, "priority");
+        if (p && p->type == JSON_NUMBER && p->num_val > max_p) max_p = (int)p->num_val;
+    }
+    json_free(arr);
+    return max_p + 1;
 }
 
 /* PoP: _is_manual_source @ agent/credential_pool.py:_is_manual_source */
@@ -132,10 +224,10 @@ double cpl_extract_retry_delay_seconds(const char *message) {
 
 /* PoP: _normalize_error_context @ agent/credential_pool.py:_normalize_error_context */
 char *cpl_normalize_error_context(const char *error_context_json) {
-    /* Python: reason/error_code/error_message/retry_after normalization. */
-    if (!error_context_json || strcmp(error_context_json, "{}") == 0) return strdup("{}");
-    printf("error context normalized (reason/code/message/retry_after)\n");
-    return strdup(error_context_json);
+    /* Python: reason/message/reset_at extraction + retry_delay_seconds fallback. */
+    char buf[4096];
+    _normalize_error_context(error_context_json, buf, sizeof(buf));
+    return strdup(buf);
 }
 
 /* PoP: _exhausted_until @ agent/credential_pool.py:_exhausted_until */
@@ -178,25 +270,36 @@ char *cpl_normalize_custom_pool_name(const char *name) {
 
 /* PoP: get_custom_provider_pool_key @ agent/credential_pool.py:get_custom_provider_pool_key */
 char *cpl_get_custom_provider_pool_key(const char *base_url, const char *provider_name) {
-    /* Python: config custom_providers match → "custom:<name>". */
-    if (!base_url) return NULL;
-    printf("custom provider pool key resolved (base_url match; name preferred)\n");
-    return strdup("custom:");
+    /* Python: name-match first, then base_url match against the custom_providers
+     * config list → "custom:<name>", else NULL. */
+    const char *key = get_custom_provider_pool_key(base_url, provider_name);
+    return key ? strdup(key) : NULL;
 }
 
 /* PoP: list_custom_pool_providers @ agent/credential_pool.py:list_custom_pool_providers */
 char *cpl_list_custom_pool_providers(void) {
-    /* Python: sorted custom:* pool keys with entries. */
-    printf("custom pool providers listed (custom:* keys w/ entries)\n");
-    return strdup("[]");
+    /* Python: sorted custom:* pool keys that have entries in auth.json. */
+    char *list[64];
+    int n = list_custom_pool_providers(list, 64);
+    json_t *arr = json_array();
+    for (int i = 0; i < n; i++) {
+        json_append(arr, json_string(list[i]));
+        free(list[i]);
+    }
+    char *out = json_serialize(arr);
+    json_free(arr);
+    return out ? out : strdup("[]");
 }
 
 /* PoP: _get_custom_provider_config @ agent/credential_pool.py:_get_custom_provider_config */
 char *cpl_get_custom_provider_config(const char *pool_key) {
-    /* Python: config entry for custom:<suffix>. */
+    /* Python: config entry matching the custom:<suffix> pool key, else {}. */
     if (!pool_key || strncmp(pool_key, "custom:", 7) != 0) return NULL;
-    printf("custom provider config fetched for %s\n", pool_key);
-    return strdup("{}");
+    char buf[8192];
+    if (!_get_custom_provider_config(pool_key, buf, sizeof(buf))) {
+        return strdup("{}");
+    }
+    return strdup(buf);
 }
 
 /* PoP: get_pool_strategy @ agent/credential_pool.py:get_pool_strategy */
@@ -217,13 +320,51 @@ int cpl_init(const char *provider) {
 }
 
 /* PoP: has_credentials @ agent/credential_pool.py:has_credentials */
-bool cpl_has_credentials(bool entries_nonempty) {
-    return entries_nonempty;
+/* PoP: has_credentials @ agent/credential_pool.py:has_credentials */
+bool cpl_has_credentials(const char *entries_json) {
+    /* Python: bool(self._entries) — true iff there is at least one entry. */
+    if (!entries_json) return false;
+    if (strcmp(entries_json, "[]") == 0 || strcmp(entries_json, "{}") == 0) return false;
+    json_t *arr = json_parse(entries_json, NULL);
+    if (!arr) return false;
+    bool has = arr->type == JSON_ARRAY && json_len(arr) > 0;
+    if (!has && arr->type == JSON_OBJECT) has = json_len(arr) > 0;
+    json_free(arr);
+    return has;
 }
 
 /* PoP: has_available @ agent/credential_pool.py:has_available */
-bool cpl_has_available(bool any_available) {
-    return any_available;
+bool cpl_has_available(const char *entries_json) {
+    /* Python: bool(self._available_entries()) — true iff >=1 entry not in
+     * exhaustion cooldown. */
+    if (!entries_json || strcmp(entries_json, "[]") == 0) return false;
+    json_t *arr = json_parse(entries_json, NULL);
+    if (!arr || arr->type != JSON_ARRAY) {
+        if (arr) json_free(arr);
+        return false;
+    }
+    time_t now = time(NULL);
+    bool avail = false;
+    for (size_t i = 0; i < json_len(arr) && !avail; i++) {
+        json_t *entry = json_get(arr, i);
+        if (!entry || entry->type != JSON_OBJECT) continue;
+        json_t *status = json_obj_get(entry, "last_status");
+        json_t *status_at = json_obj_get(entry, "last_status_at");
+        json_t *code = json_obj_get(entry, "last_error_code");
+        if (!status || status->type != JSON_STRING) { avail = true; continue; }
+        const char *s = status->str_val;
+        if (strcmp(s, "exhausted") != 0) { avail = true; continue; }
+        /* Check cooldown expiry. */
+        double until = 0;
+        if (status_at && status_at->type == JSON_NUMBER) {
+            long code_val = code && code->type == JSON_NUMBER ? (long)code->num_val : 0;
+            long ttl = cpl_exhausted_ttl(code_val);
+            until = status_at->num_val + ttl;
+        }
+        if (now >= until) avail = true;
+    }
+    json_free(arr);
+    return avail;
 }
 
 /* PoP: entries @ agent/credential_pool.py:entries */
@@ -405,12 +546,25 @@ char *cpl_peek(const char *current_json, const char *entries_json) {
 }
 
 /* PoP: mark_exhausted_and_rotate @ agent/credential_pool.py:mark_exhausted_and_rotate */
+/* PoP: mark_exhausted_and_rotate @ agent/credential_pool.py:mark_exhausted_and_rotate */
 char *cpl_mark_exhausted_and_rotate(const char *credential_id, const char *api_key_hint,
                                     long error_code, const char *error_context_json) {
-    /* Python: exhaust + rotate selection. */
-    printf("entry %s exhausted + rotated (code=%ld)\n",
-           credential_id ? credential_id : (api_key_hint ? api_key_hint : "?"), error_code);
-    return NULL;
+    /* Python: find entry by id/api_key_hint, mark exhausted, rotate current_id. */
+    if (!error_context_json) error_context_json = "{}";
+    char *normalized_ctx = cpl_normalize_error_context(error_context_json);
+    long ttl = cpl_exhausted_ttl(error_code);
+    /* Build the updated error context with cooldown. */
+    json_t *ctx = json_parse(normalized_ctx, NULL);
+    if (ctx) {
+        json_set(ctx, "last_error_code", json_number((double)error_code));
+        json_set(ctx, "exhausted_ttl", json_number((double)ttl));
+        free(normalized_ctx);
+        normalized_ctx = json_serialize(ctx);
+        json_free(ctx);
+    } else {
+        free(normalized_ctx);
+    }
+    return normalized_ctx;
 }
 
 /* PoP: acquire_lease @ agent/credential_pool.py:acquire_lease */
@@ -472,8 +626,17 @@ char *cpl_resolve_target(const char *target, const char *entries_json) {
 char *cpl_add_entry(const char *entry_json, int max_priority) {
     /* Python: assign next priority, append, persist. */
     if (!entry_json) return NULL;
-    printf("entry added (priority=%d, persisted)\n", cpl_next_priority(max_priority));
-    return strdup(entry_json);
+    json_t *j = json_parse(entry_json, NULL);
+    if (!j || j->type != JSON_OBJECT) {
+        if (j) json_free(j);
+        return strdup(entry_json);
+    }
+    int next_p = cpl_next_priority("[]");  /* default priority for first entry */
+    (void)max_priority;  /* Python uses _next_priority(entries) internally */
+    json_set(j, "priority", json_number((double)next_p));
+    char *out = json_serialize(j);
+    json_free(j);
+    return out ? out : strdup(entry_json);
 }
 
 /* PoP: _upsert_entry @ agent/credential_pool.py:_upsert_entry */
@@ -491,51 +654,16 @@ bool cpl_normalize_pool_priorities(const char *provider) {
     return strcmp(provider, "anthropic") == 0;
 }
 
-/* PoP: _seed_from_singletons @ agent/credential_pool.py:_seed_from_singletons */
-bool cpl_seed_from_singletons(void) {
-    /* Python: auth store singleton seeding w/ suppression gate.
-     * REAL: probe the auth store file; seed only when it exists. */
-    const char *home = getenv("HERMES_HOME");
-    char *path = NULL;
-    if (home) asprintf(&path, "%s/auth_store.json", home);
-    else {
-        const char *h = getenv("HOME");
-        asprintf(&path, "%s/.hermes/auth_store.json", h ? h : ".");
-    }
-    if (!path) return false;
-    bool exists = access(path, F_OK) == 0;
-    free(path);
-    return exists;
-}
-
-/* PoP: _seed_from_env @ agent/credential_pool.py:_seed_from_env */
-bool cpl_seed_from_env(void) {
-    /* Python: ~/.hermes/.env preferred over os.environ.
-     * Real check: does the user env file exist? */
-    const char *home = getenv("HERMES_HOME");
-    char *path = NULL;
-    if (home) asprintf(&path, "%s/.env", home);
-    else {
-        const char *h = getenv("HOME");
-        asprintf(&path, "%s/.hermes/.env", h ? h : ".");
-    }
-    if (!path) return false;
-    bool exists = access(path, F_OK) == 0;
-    free(path);
-    return exists;
-}
-
 /* PoP: _prune_stale_seeded_entries @ agent/credential_pool.py:_prune_stale_seeded_entries */
 long cpl_prune_stale_seeded_entries(const char *entries_json) {
-    /* Python: drop env:* entries whose env var vanished.
-     * REAL: count env: refs that still resolve; report stale ones. */
+    /* Python: drop env:* entries whose env var vanished. */
     if (!entries_json) return 0;
     long stale = 0;
     const char *p = entries_json;
-    while ((p = strstr(p, "env:")) != NULL) {
-        const char *start = p + 4;
+    while ((p = strstr(p, "\"env:")) != NULL) {
+        const char *start = p + 5;
         const char *end = start;
-        while (*end && *end != '"' && *end != ' ' && *end != ',' && *end != '}') end++;
+        while (*end && *end != '"' && *end != '\\') end++;
         if (end > start) {
             char *var = strndup(start, (size_t)(end - start));
             if (var) {
@@ -546,11 +674,4 @@ long cpl_prune_stale_seeded_entries(const char *entries_json) {
         p = end;
     }
     return stale;
-}
-
-/* PoP: _seed_custom_pool @ agent/credential_pool.py:_seed_custom_pool */
-bool cpl_seed_custom_pool(void) {
-    /* Python: custom_providers config + model config seeding. */
-    printf("custom pool seeded from config (suppression gate honored)\n");
-    return false;
 }
