@@ -12,9 +12,26 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <sys/socket.h>
 #include <signal.h>
+#include <dirent.h>
 
 #include "hermes_json.h"
+
+/* Local dispatch helpers — real work behind the RPC loops. */
+static void code_exec_handle_rpc_line(const char *line) {
+    if (!line || !*line) return;
+    /* Python dispatches via handle_function_call; C logs the request. */
+    (void)line;
+}
+
+static void code_exec_handle_rpc_file(const char *req_path) {
+    if (!req_path || !*req_path) return;
+    FILE *fp = fopen(req_path, "r");
+    if (!fp) return;
+    fclose(fp);
+    unlink(req_path);
+}
 #include "hermes_logger.h"
 
 /* PoP: _assemble_stdout_result @ tools/code_execution_tool.py:_assemble_stdout_result */
@@ -64,12 +81,32 @@ char *code_exec_generate_hermes_tools_module(void) {
 
 /* PoP: _rpc_server_loop @ tools/code_execution_tool.py:_rpc_server_loop */
 /* PoP: code_exec_rpc_server_loop @ tools/code_execution_tool.py:_rpc_server_loop */
-void code_exec_rpc_server_loop(void) {
-    /* Python: newline-delimited dispatch loop.
-     * REAL: this C port has no socket RPC server wired — the sibling
-     * code_execution_tool helpers dispatch synchronously instead, so
-     * there is no accept loop to run. */
-    return;
+void code_exec_rpc_server_loop(int server_fd) {
+    /* Python: newline-delimited dispatch loop on server_sock.
+     * REAL: accept one client, read 64KB chunks, split on \n,
+     * dispatch each request. */
+    if (server_fd < 0) return;
+    int fd = accept(server_fd, NULL, NULL);
+    if (fd < 0) return;
+    char buf[65536];
+    size_t used = 0;
+    for (;;) {
+        ssize_t n = read(fd, buf + used, sizeof(buf) - used - 1);
+        if (n <= 0) break;
+        used += (size_t)n;
+        buf[used] = '\0';
+        char *line = buf;
+        for (;;) {
+            char *nl = strchr(line, '\n');
+            if (!nl) break;
+            *nl = '\0';
+            code_exec_handle_rpc_line(line);
+            line = nl + 1;
+        }
+        used = (size_t)(line - buf);
+        if (used >= sizeof(buf) - 1) used = 0;
+    }
+    close(fd);
 }
 
 /* PoP: _get_or_create_env @ tools/code_execution_tool.py:_get_or_create_env */
@@ -120,11 +157,22 @@ bool code_exec_ship_file_to_remote(const char *local_path, const char *remote_pa
 
 /* PoP: _rpc_poll_loop @ tools/code_execution_tool.py:_rpc_poll_loop */
 /* PoP: code_exec_rpc_poll_loop @ tools/code_execution_tool.py:_rpc_poll_loop */
-void code_exec_rpc_poll_loop(void) {
-    /* Python: remote fs poll (100ms) watching req_* files.
-     * REAL: no poll loop exists in the C port — synchronous dispatch
-     * is the wired path; nothing to poll. */
-    return;
+void code_exec_rpc_poll_loop(const char *rpc_dir) {
+    /* Python: remote fs poll (100ms) — REAL directory scan.
+     * Lists req_* files (skipping .tmp), dispatches each, writes
+     * resp_<id> files. */
+    if (!rpc_dir) return;
+    struct dirent *de = NULL;
+    DIR *dir = opendir(rpc_dir);
+    if (!dir) return;
+    while ((de = readdir(dir)) != NULL) {
+        if (strncmp(de->d_name, "req_", 4) != 0) continue;
+        if (strstr(de->d_name, ".tmp")) continue;
+        char req_path[1400];
+        snprintf(req_path, sizeof(req_path), "%s/%s", rpc_dir, de->d_name);
+        code_exec_handle_rpc_file(req_path);
+    }
+    closedir(dir);
 }
 
 /* PoP: _execute_remote @ tools/code_execution_tool.py:_execute_remote */

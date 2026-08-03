@@ -330,10 +330,11 @@ int muv_u_install_uv(const char *arg) {
 
 /* PoP: _install_uv_posix @ hermes_cli/managed_uv.py:_install_uv_posix */
 int muv_u_install_uv_posix(const char *arg) {
-    /* Python: curl install.sh + sh (two-stage). Arg = "env_state". */
+    /* Python: curl install.sh + sh (two-stage).
+     * REAL: run the official installer via curl | sh. */
     (void)arg;
-    printf("uv posix install: curl -LsSf https://astral.sh/uv/install.sh + sh\n");
-    return 0;
+    int rc = system("curl -LsSf https://astral.sh/uv/install.sh | sh 2>/dev/null");
+    return rc == 0 ? 0 : -1;
 }
 
 /* PoP: _install_uv_windows @ hermes_cli/managed_uv.py:_install_uv_windows */

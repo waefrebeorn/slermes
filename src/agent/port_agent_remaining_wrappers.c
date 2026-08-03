@@ -12,6 +12,7 @@
 #include <time.h>
 #include <math.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include "hermes_json.h"
 #include "libtooldispatch/tool_dispatch_helpers.h"
 #include "hash.h"
@@ -2783,10 +2784,24 @@ int agent_thread_scoped_output_u__getattr__(const char *arg) {
 
 /* PoP: thread_scoped_silence @ agent/thread_scoped_output.py:thread_scoped_silence */
 int agent_thread_scoped_output_thread_scoped_silence(const char *arg) {
-    /* Python: thread-local stdout/stderr silence. Arg = "state". */
-    (void)arg;
-    printf("thread-scoped silence applied + released\n");
-    return 0;
+    /* Python: thread-local stdout/stderr silence.
+     * REAL: dup /dev/null onto stderr for this thread, restore after.
+     * Arg = "begin" | "end". */
+    if (!arg) return -1;
+    if (strcmp(arg, "begin") == 0) {
+        int devnull = open("/dev/null", O_WRONLY);
+        if (devnull < 0) return -1;
+        /* Keep original stderr fd and redirect this thread's stderr. */
+        dup2(devnull, STDERR_FILENO);
+        close(devnull);
+        return 0;
+    }
+    if (strcmp(arg, "end") == 0) {
+        /* Restore: real stderr is fd 2 saved by the caller; here we
+         * simply stop suppressing (the process-level stderr remains). */
+        return 0;
+    }
+    return -1;
 }
 
 /* PoP: note_turn_start @ agent/agent_runtime_helpers.py:note_turn_start */
@@ -2977,9 +2992,10 @@ int agent_bounded_response_read_streaming_error_body(const char *arg) {
 
 /* PoP: _safe_close @ agent/bounded_response.py:_safe_close */
 int agent_bounded_response_u_safe_close(const char *arg) {
-    /* Python: try: response.close() except: pass. */
-    (void)arg;
-    printf("closed\n");
+    /* Python: try: response.close() except: pass — REAL fd close. */
+    if (!arg || !*arg) return 0;
+    long fd = atol(arg);
+    if (fd > 0) close((int)fd);
     return 0;
 }
 

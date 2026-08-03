@@ -1002,9 +1002,38 @@ class ParityAnalyzer:
             return False
         # A function that ONLY prints (or returns constants) is trivial:
         # its C port printing is faithful.  Real work = any non-print IO.
-        stripped = re.sub(r'\bprint\s*\(', '', body)
-        return not any(rx.search(stripped) for rx in self._PY_REAL_RE
-                       if rx.pattern != r'\bprint\s*\(')
+        # Examine the AST for actual CALLS / attribute-access work, so
+        # string literals (help text, docstrings, error messages) never
+        # trigger a false positive.
+        real_sigs = [r for r in self._PY_REAL_RE
+                     if r.pattern != r'\bprint\s*\(']
+        # Build the real-call matcher: func-name calls (open(, Path(,
+        # subprocess, requests, ...), method calls (.read_text, .write_text,
+        # .dump, os.* attribute access).
+        for node in ast.walk(fn):
+            if isinstance(node, ast.Call):
+                f = node.func
+                if isinstance(f, ast.Name):
+                    for rx in real_sigs:
+                        if rx.search(f.id + '('):
+                            return False
+                elif isinstance(f, ast.Attribute):
+                    attr = f.attr
+                    for rx in real_sigs:
+                        # skip attribute-shape regexes like \bopen\s*\(
+                        # and \bsystem\s*\( that target call syntax
+                        if '\\s*\\(' in rx.pattern and not rx.search(attr + '('):
+                            continue
+                        if rx.search(attr):
+                            return False
+            elif isinstance(node, ast.Attribute):
+                # os.<name> / Path(<...>).<method> style access
+                if isinstance(node.value, ast.Name) and \
+                        (node.value.id == 'os' or node.value.id == 'Path'):
+                    for rx in real_sigs:
+                        if rx.search('os.' + node.attr):
+                            return False
+        return True
 
     # ── classification (preserved; adds da_flags) ──
     def classify_feature(self, py_file, feature):

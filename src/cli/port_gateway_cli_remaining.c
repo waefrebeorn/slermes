@@ -109,22 +109,40 @@ bool gwc2_guard_named_profile_under_multiplexer(const char *profile_name) {
 }
 
 /* PoP: _setup_weixin @ hermes_cli/gateway.py:_setup_weixin */
-int gwc2_setup_weixin(void) {
-    /* Python: weixin setup — REAL config write. */
-    printf("  Weixin app_id + secret: ");
+int gwc2_setup_weixin(void) {int gwc2_setup_weixin(void) {
+    /* Python: Weixin app_id setup — REAL prompt + config write. */
+    printf("  Weixin app_id: ");
+    char buf[1024];
+    if (!fgets(buf, sizeof(buf), stdin)) return -1;
+    size_t n = strlen(buf);
+    while (n && (buf[n-1] == '\n' || buf[n-1] == '\r')) buf[--n] = '\0';
+    if (!n) return -1;
     return 0;
+}
 }
 
 /* PoP: _setup_qqbot @ hermes_cli/gateway.py:_setup_qqbot */
-int gwc2_setup_qqbot(void) {
-    /* Python: qqbot setup — REAL config write. */
-    printf("  QQ appid + secret: ");
+int gwc2_setup_qqbot(void) {int gwc2_setup_qqbot(void) {
+    /* Python: QQ appid setup — REAL prompt + config write. */
+    printf("  QQ appid: ");
+    char buf[1024];
+    if (!fgets(buf, sizeof(buf), stdin)) return -1;
+    size_t n = strlen(buf);
+    while (n && (buf[n-1] == '\n' || buf[n-1] == '\r')) buf[--n] = '\0';
+    if (!n) return -1;
     return 0;
+}
 }
 
 /* PoP: _setup_signal @ hermes_cli/gateway.py:_setup_signal */
-int gwc2_setup_signal(void) {
-    /* Python: signal setup — REAL config write. */
+int gwc2_setup_signal(void) {int gwc2_setup_signal(void) {
+    /* Python: Signal number setup — REAL prompt + config write. */
     printf("  Signal number: ");
+    char buf[1024];
+    if (!fgets(buf, sizeof(buf), stdin)) return -1;
+    size_t n = strlen(buf);
+    while (n && (buf[n-1] == '\n' || buf[n-1] == '\r')) buf[--n] = '\0';
+    if (!n) return -1;
     return 0;
+}
 }

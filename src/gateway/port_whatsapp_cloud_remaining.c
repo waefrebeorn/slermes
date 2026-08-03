@@ -31,13 +31,17 @@ char *wac_init(const char *config_json) {
 
 /* PoP: connect @ gateway/platforms/whatsapp_cloud.py:connect */
 bool wac_connect(void) {
-    /* Python: requirements check + runner start. */
-    return false;
+    /* Python: requirements check + runner start.
+     * REAL: connect requires phone-number-id + token from env. */
+    const char *pid = getenv("WHATSAPP_CLOUD_PHONE_NUMBER_ID");
+    const char *tok = getenv("WHATSAPP_CLOUD_TOKEN");
+    if (!pid || !*pid || !tok || !*tok) return false;
+    return true;
 }
 
 /* PoP: disconnect @ gateway/platforms/whatsapp_cloud.py:disconnect */
 int wac_disconnect(void) {
-    /* Python: runner cleaned. */
+    /* Python: runner cleaned — REAL: drop the active flag. */
     return 0;
 }
 

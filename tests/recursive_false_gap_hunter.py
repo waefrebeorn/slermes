@@ -503,9 +503,35 @@ def python_is_trivial_for(c_name):
         if not body:
             continue
         # A function that ONLY prints (or returns constants) is trivial.
-        stripped = re.sub(r'\bprint\s*\(', '', body)
-        if not any(rx.search(stripped) for rx in PY_REAL_RE
-                   if rx.pattern != r'\bprint\s*\('):
+        # Examine the AST for actual CALLS / attribute-access work, so
+        # string literals (help text, docstrings, error messages) never
+        # trigger a false positive.
+        real_sigs = [r for r in PY_REAL_RE
+                     if r.pattern != r'\bprint\s*\(']
+        trivial = True
+        for node in ast.walk(fn):
+            if isinstance(node, ast.Call):
+                f = node.func
+                if isinstance(f, ast.Name):
+                    for rx in real_sigs:
+                        if rx.search(f.id + '('):
+                            trivial = False; break
+                elif isinstance(f, ast.Attribute):
+                    attr = f.attr
+                    for rx in real_sigs:
+                        if '\\s*\\(' in rx.pattern and not rx.search(attr + '('):
+                            continue
+                        if rx.search(attr):
+                            trivial = False; break
+            elif isinstance(node, ast.Attribute):
+                if isinstance(node.value, ast.Name) and \
+                        (node.value.id == 'os' or node.value.id == 'Path'):
+                    for rx in real_sigs:
+                        if rx.search('os.' + node.attr):
+                            trivial = False; break
+            if not trivial:
+                break
+        if trivial:
             return True
     return False
 

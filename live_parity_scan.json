@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-03T00:37:57Z",
+  "generated_at": "2026-08-03T00:45:34Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -395,7 +395,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/account_usage.py",
-            "line": 2498,
+            "line": 2499,
             "is_consolidated": false,
             "full_text": "/* PoP: _codex_backend_urls @ agent/account_usage.py:_codex_backend_urls */"
           },
@@ -453,7 +453,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/account_usage.py",
-            "line": 2515,
+            "line": 2516,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_codex_usage_credentials @ agent/account_usage.py:_resolve_codex_usage_credentials */"
           },
@@ -513,7 +513,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/account_usage.py",
-            "line": 2533,
+            "line": 2534,
             "is_consolidated": false,
             "full_text": "/* PoP: redeemed @ agent/account_usage.py:redeemed */"
           },
@@ -542,7 +542,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/account_usage.py",
-            "line": 2541,
+            "line": 2542,
             "is_consolidated": false,
             "full_text": "/* PoP: redeem_codex_reset_credit @ agent/account_usage.py:redeem_codex_reset_credit */"
           },
@@ -700,7 +700,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/agent_init.py",
-            "line": 1151,
+            "line": 1152,
             "is_consolidated": false,
             "full_text": "/* PoP: _moa_reference_output_allowed @ agent/agent_init.py:_moa_reference_output_allowed */"
           },
@@ -729,7 +729,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/agent_init.py",
-            "line": 1163,
+            "line": 1164,
             "is_consolidated": false,
             "full_text": "/* PoP: _relay_moa_reference_event @ agent/agent_init.py:_relay_moa_reference_event */"
           },
@@ -787,7 +787,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/agent_init.py",
-            "line": 1177,
+            "line": 1178,
             "is_consolidated": false,
             "full_text": "/* PoP: _provider_default_routes @ agent/agent_init.py:_provider_default_routes */"
           },
@@ -816,7 +816,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/agent_init.py",
-            "line": 1210,
+            "line": 1211,
             "is_consolidated": false,
             "full_text": "/* PoP: _context_route_mismatch @ agent/agent_init.py:_context_route_mismatch */"
           },
@@ -845,7 +845,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/agent_init.py",
-            "line": 1221,
+            "line": 1222,
             "is_consolidated": false,
             "full_text": "/* PoP: _normalize_custom_provider_name @ agent/agent_init.py:_normalize_custom_provider_name */"
           },
@@ -874,7 +874,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/agent_init.py",
-            "line": 1239,
+            "line": 1240,
             "is_consolidated": false,
             "full_text": "/* PoP: _custom_provider_runtime_ids @ agent/agent_init.py:_custom_provider_runtime_ids */"
           },
@@ -903,7 +903,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/agent_init.py",
-            "line": 1248,
+            "line": 1249,
             "is_consolidated": false,
             "full_text": "/* PoP: _build_codex_gpt5_autoraise_notice @ agent/agent_init.py:_build_codex_gpt5_autoraise_notice */"
           },
@@ -932,7 +932,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/agent_init.py",
-            "line": 1265,
+            "line": 1266,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_compression_threshold @ agent/agent_init.py:_resolve_compression_threshold */"
           },
@@ -961,7 +961,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/agent_init.py",
-            "line": 1281,
+            "line": 1282,
             "is_consolidated": false,
             "full_text": "/* PoP: _codex_gpt55_autoraise_notice_marker @ agent/agent_init.py:_codex_gpt55_autoraise_notice_marker */"
           },
@@ -990,7 +990,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/agent_init.py",
-            "line": 1289,
+            "line": 1290,
             "is_consolidated": false,
             "full_text": "/* PoP: _codex_gpt55_autoraise_notice_state @ agent/agent_init.py:_codex_gpt55_autoraise_notice_state */"
           },
@@ -1019,7 +1019,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/agent_init.py",
-            "line": 1309,
+            "line": 1310,
             "is_consolidated": false,
             "full_text": "/* PoP: _codex_gpt55_autoraise_notice_seen @ agent/agent_init.py:_codex_gpt55_autoraise_notice_seen */"
           },
@@ -1048,7 +1048,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/agent_init.py",
-            "line": 1321,
+            "line": 1322,
             "is_consolidated": false,
             "full_text": "/* PoP: _record_codex_gpt55_autoraise_notice @ agent/agent_init.py:_record_codex_gpt55_autoraise_notice */"
           },
@@ -1343,7 +1343,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 2792,
+            "line": 2807,
             "is_consolidated": false,
             "full_text": "/* PoP: note_turn_start @ agent/agent_runtime_helpers.py:note_turn_start */"
           },
@@ -1372,7 +1372,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 2810,
+            "line": 2825,
             "is_consolidated": false,
             "full_text": "/* PoP: note_turn_persisted @ agent/agent_runtime_helpers.py:note_turn_persisted */"
           },
@@ -1488,7 +1488,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 2822,
+            "line": 2837,
             "is_consolidated": false,
             "full_text": "/* PoP: sync_credential_pool_entry_id @ agent/agent_runtime_helpers.py:sync_credential_pool_entry_id */"
           },
@@ -3272,7 +3272,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 2833,
+            "line": 2848,
             "is_consolidated": false,
             "full_text": "/* PoP: _get_hermes_oauth_file @ agent/anthropic_adapter.py:_get_hermes_oauth_file */"
           },
@@ -3707,7 +3707,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 2845,
+            "line": 2860,
             "is_consolidated": false,
             "full_text": "/* PoP: _safe_text @ agent/anthropic_adapter.py:_safe_text */"
           },
@@ -3997,7 +3997,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/anthropic_adapter.py",
-            "line": 2864,
+            "line": 2879,
             "is_consolidated": false,
             "full_text": "/* PoP: _ensure_leading_user_turn @ agent/anthropic_adapter.py:_ensure_leading_user_turn */"
           },
@@ -6445,7 +6445,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/auxiliary_client.py",
-            "line": 3167,
+            "line": 3183,
             "is_consolidated": false,
             "full_text": "/* PoP: _try_nvidia_nim @ agent/auxiliary_client.py:_try_nvidia_nim */"
           },
@@ -9666,7 +9666,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/auxiliary_client.py",
-            "line": 3178,
+            "line": 3194,
             "is_consolidated": false,
             "full_text": "/* PoP: _obj_get @ agent/auxiliary_client.py:_obj_get */"
           },
@@ -10463,7 +10463,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/battery.py",
-            "line": 2875,
+            "line": 2890,
             "is_consolidated": false,
             "full_text": "/* PoP: _read_battery_uncached @ agent/battery.py:_read_battery_uncached */"
           },
@@ -10492,7 +10492,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/battery.py",
-            "line": 2887,
+            "line": 2902,
             "is_consolidated": false,
             "full_text": "/* PoP: read_battery @ agent/battery.py:read_battery */"
           },
@@ -10521,7 +10521,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/battery.py",
-            "line": 2899,
+            "line": 2914,
             "is_consolidated": false,
             "full_text": "/* PoP: clear_cache @ agent/battery.py:clear_cache */"
           },
@@ -11027,7 +11027,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/bedrock_adapter.py",
-            "line": 2563,
+            "line": 2564,
             "is_consolidated": false,
             "full_text": "/* PoP: _model_supports_prompt_cache @ agent/bedrock_adapter.py:_model_supports_prompt_cache */"
           },
@@ -11114,7 +11114,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/bedrock_adapter.py",
-            "line": 2585,
+            "line": 2586,
             "is_consolidated": false,
             "full_text": "/* PoP: _safe_text @ agent/bedrock_adapter.py:_safe_text */"
           },
@@ -11549,7 +11549,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/bedrock_adapter.py",
-            "line": 2596,
+            "line": 2597,
             "is_consolidated": false,
             "full_text": "/* PoP: _static_bedrock_context_length @ agent/bedrock_adapter.py:_static_bedrock_context_length */"
           },
@@ -11578,7 +11578,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/bedrock_adapter.py",
-            "line": 2623,
+            "line": 2624,
             "is_consolidated": false,
             "full_text": "/* PoP: probe_bedrock_context_length @ agent/bedrock_adapter.py:probe_bedrock_context_length */"
           },
@@ -12016,7 +12016,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/billing_usage.py",
-            "line": 3190,
+            "line": 3206,
             "is_consolidated": false,
             "full_text": "/* PoP: build_usage_model @ agent/billing_usage.py:build_usage_model */"
           },
@@ -12045,7 +12045,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/billing_usage.py",
-            "line": 3201,
+            "line": 3217,
             "is_consolidated": false,
             "full_text": "/* PoP: _dev_fixture_usage_model @ agent/billing_usage.py:_dev_fixture_usage_model */"
           },
@@ -12271,7 +12271,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/billing_view.py",
-            "line": 2907,
+            "line": 2922,
             "is_consolidated": false,
             "full_text": "/* PoP: can_change_plan @ agent/billing_view.py:can_change_plan */"
           },
@@ -12418,7 +12418,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/billing_view.py",
-            "line": 2922,
+            "line": 2937,
             "is_consolidated": false,
             "full_text": "/* PoP: _parse_auto_reload_card @ agent/billing_view.py:_parse_auto_reload_card */"
           },
@@ -12534,7 +12534,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/billing_view.py",
-            "line": 2950,
+            "line": 2965,
             "is_consolidated": false,
             "full_text": "/* PoP: _dev_fixture_billing_state @ agent/billing_view.py:_dev_fixture_billing_state */"
           },
@@ -12605,10 +12605,10 @@
     },
     "agent/bounded_response.py": {
       "total": 3,
-      "ported": 2,
+      "ported": 3,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 3,
@@ -12634,7 +12634,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/bounded_response.py",
-            "line": 2964,
+            "line": 2979,
             "is_consolidated": false,
             "full_text": "/* PoP: read_streaming_error_body @ agent/bounded_response.py:read_streaming_error_body */"
           },
@@ -12653,7 +12653,7 @@
             "decorators": [],
             "line_number": 128
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_agent_remaining_wrappers.c",
           "c_function": "agent_bounded_response_u_safe_close",
           "pop_annotation": {
@@ -12663,16 +12663,14 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/bounded_response.py",
-            "line": 2978,
+            "line": 2993,
             "is_consolidated": false,
             "full_text": "/* PoP: _safe_close @ agent/bounded_response.py:_safe_close */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/bounded_response.py",
@@ -12694,7 +12692,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/bounded_response.py",
-            "line": 2986,
+            "line": 3002,
             "is_consolidated": false,
             "full_text": "/* PoP: read_error_body_or_default @ agent/bounded_response.py:read_error_body_or_default */"
           },
@@ -12707,10 +12705,10 @@
     },
     "agent/browser_provider.py": {
       "total": 9,
-      "ported": 8,
+      "ported": 9,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 9,
@@ -12791,7 +12789,7 @@
             ],
             "line_number": 77
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_browser_provider_remaining.c",
           "c_function": "brp_is_available",
           "pop_annotation": {
@@ -12805,12 +12803,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: is_available @ agent/browser_provider.py:is_available */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "agent/browser_provider.py",
@@ -13154,10 +13150,10 @@
     },
     "agent/chat_completion_helpers.py": {
       "total": 29,
-      "ported": 27,
+      "ported": 28,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 29,
@@ -13270,7 +13266,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/chat_completion_helpers.py",
-            "line": 962,
+            "line": 963,
             "is_consolidated": false,
             "full_text": "/* PoP: openai_codex_stale_timeout_floor @ agent/chat_completion_helpers.py:openai_codex_stale_timeout_floor */"
           },
@@ -13328,7 +13324,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/chat_completion_helpers.py",
-            "line": 974,
+            "line": 975,
             "is_consolidated": false,
             "full_text": "/* PoP: _provider_preferences_for_agent @ agent/chat_completion_helpers.py:_provider_preferences_for_agent */"
           },
@@ -13386,7 +13382,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/chat_completion_helpers.py",
-            "line": 983,
+            "line": 984,
             "is_consolidated": false,
             "full_text": "/* PoP: _codex_wait_notice_recovery @ agent/chat_completion_helpers.py:_codex_wait_notice_recovery */"
           },
@@ -13415,7 +13411,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/chat_completion_helpers.py",
-            "line": 998,
+            "line": 999,
             "is_consolidated": false,
             "full_text": "/* PoP: _stale_streak @ agent/chat_completion_helpers.py:_stale_streak */"
           },
@@ -13444,7 +13440,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/chat_completion_helpers.py",
-            "line": 1005,
+            "line": 1006,
             "is_consolidated": false,
             "full_text": "/* PoP: _bump_stale_streak @ agent/chat_completion_helpers.py:_bump_stale_streak */"
           },
@@ -13473,7 +13469,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/chat_completion_helpers.py",
-            "line": 1015,
+            "line": 1016,
             "is_consolidated": false,
             "full_text": "/* PoP: _reset_stale_streak @ agent/chat_completion_helpers.py:_reset_stale_streak */"
           },
@@ -13502,7 +13498,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/chat_completion_helpers.py",
-            "line": 1024,
+            "line": 1025,
             "is_consolidated": false,
             "full_text": "/* PoP: _check_stale_giveup @ agent/chat_completion_helpers.py:_check_stale_giveup */"
           },
@@ -13531,7 +13527,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/chat_completion_helpers.py",
-            "line": 1039,
+            "line": 1040,
             "is_consolidated": false,
             "full_text": "/* PoP: _derive_stream_stale_timeout @ agent/chat_completion_helpers.py:_derive_stream_stale_timeout */"
           },
@@ -13560,7 +13556,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/chat_completion_helpers.py",
-            "line": 1050,
+            "line": 1051,
             "is_consolidated": false,
             "full_text": "/* PoP: _bedrock_reasoning_stale_floor @ agent/chat_completion_helpers.py:_bedrock_reasoning_stale_floor */"
           },
@@ -13589,7 +13585,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/chat_completion_helpers.py",
-            "line": 1064,
+            "line": 1065,
             "is_consolidated": false,
             "full_text": "/* PoP: _dispatch_nonstreaming_api_request @ agent/chat_completion_helpers.py:_dispatch_nonstreaming_api_request */"
           },
@@ -13618,7 +13614,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/chat_completion_helpers.py",
-            "line": 1078,
+            "line": 1079,
             "is_consolidated": false,
             "full_text": "/* PoP: should_use_direct_api_call @ agent/chat_completion_helpers.py:should_use_direct_api_call */"
           },
@@ -13647,7 +13643,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/chat_completion_helpers.py",
-            "line": 1095,
+            "line": 1096,
             "is_consolidated": false,
             "full_text": "/* PoP: direct_api_call @ agent/chat_completion_helpers.py:direct_api_call */"
           },
@@ -13821,7 +13817,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/chat_completion_helpers.py",
-            "line": 1110,
+            "line": 1111,
             "is_consolidated": false,
             "full_text": "/* PoP: _fallback_entry_is_same_backend_by_base_url @ agent/chat_completion_helpers.py:_fallback_entry_is_same_backend_by_base_url */"
           },
@@ -13869,7 +13865,7 @@
             "decorators": [],
             "line_number": 1577
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_chat_completion_helpers_remaining.c",
           "c_function": "cch_try_activate_fallback",
           "pop_annotation": {
@@ -13883,12 +13879,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: try_activate_fallback @ agent/chat_completion_helpers.py:try_activate_fallback */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/chat_completion_helpers.py",
@@ -13910,7 +13904,7 @@
             ],
             "c_file": "src/agent/port_chat_completion_helpers_remaining.c",
             "python_file": "agent/chat_completion_helpers.py",
-            "line": 93,
+            "line": 97,
             "is_consolidated": false,
             "full_text": "/* PoP: handle_max_iterations @ agent/chat_completion_helpers.py:handle_max_iterations */"
           },
@@ -13939,7 +13933,7 @@
             ],
             "c_file": "src/agent/port_chat_completion_helpers_remaining.c",
             "python_file": "agent/chat_completion_helpers.py",
-            "line": 100,
+            "line": 104,
             "is_consolidated": false,
             "full_text": "/* PoP: cleanup_task_resources @ agent/chat_completion_helpers.py:cleanup_task_resources */"
           },
@@ -13970,7 +13964,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/chat_completion_helpers.py",
-            "line": 1137,
+            "line": 1138,
             "is_consolidated": false,
             "full_text": "/* PoP: _build_partial_stream_stub @ agent/chat_completion_helpers.py:_build_partial_stream_stub */"
           },
@@ -13999,7 +13993,7 @@
             ],
             "c_file": "src/agent/port_chat_completion_helpers_remaining.c",
             "python_file": "agent/chat_completion_helpers.py",
-            "line": 108,
+            "line": 112,
             "is_consolidated": false,
             "full_text": "/* PoP: interruptible_streaming_api_call @ agent/chat_completion_helpers.py:interruptible_streaming_api_call */"
           },
@@ -14576,7 +14570,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/codex_runtime.py",
-            "line": 2164,
+            "line": 2165,
             "is_consolidated": false,
             "full_text": "/* PoP: _codex_item_to_tool_name @ agent/codex_runtime.py:_codex_item_to_tool_name */"
           },
@@ -14605,7 +14599,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/codex_runtime.py",
-            "line": 2187,
+            "line": 2188,
             "is_consolidated": false,
             "full_text": "/* PoP: _codex_item_to_args @ agent/codex_runtime.py:_codex_item_to_args */"
           },
@@ -14634,7 +14628,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/codex_runtime.py",
-            "line": 2202,
+            "line": 2203,
             "is_consolidated": false,
             "full_text": "/* PoP: _codex_item_to_preview @ agent/codex_runtime.py:_codex_item_to_preview */"
           },
@@ -14663,7 +14657,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/codex_runtime.py",
-            "line": 2216,
+            "line": 2217,
             "is_consolidated": false,
             "full_text": "/* PoP: _codex_item_completion_payload @ agent/codex_runtime.py:_codex_item_completion_payload */"
           },
@@ -14692,7 +14686,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/codex_runtime.py",
-            "line": 2227,
+            "line": 2228,
             "is_consolidated": false,
             "full_text": "/* PoP: make_codex_app_server_event_bridge @ agent/codex_runtime.py:make_codex_app_server_event_bridge */"
           },
@@ -14779,7 +14773,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/codex_runtime.py",
-            "line": 2242,
+            "line": 2243,
             "is_consolidated": false,
             "full_text": "/* PoP: _item_field @ agent/codex_runtime.py:_item_field */"
           },
@@ -19191,7 +19185,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/context_engine.py",
-            "line": 1906,
+            "line": 1907,
             "is_consolidated": false,
             "full_text": "/* PoP: sanitize_memory_context @ agent/context_engine.py:sanitize_memory_context */"
           },
@@ -19220,7 +19214,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/context_engine.py",
-            "line": 1921,
+            "line": 1922,
             "is_consolidated": false,
             "full_text": "/* PoP: automatic_compaction_status_message @ agent/context_engine.py:automatic_compaction_status_message */"
           },
@@ -19343,7 +19337,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/context_engine.py",
-            "line": 1935,
+            "line": 1936,
             "is_consolidated": false,
             "full_text": "/* PoP: should_compress_info @ agent/context_engine.py:should_compress_info */"
           },
@@ -19403,7 +19397,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/context_engine.py",
-            "line": 1944,
+            "line": 1945,
             "is_consolidated": false,
             "full_text": "/* PoP: prune_tool_results_only @ agent/context_engine.py:prune_tool_results_only */"
           },
@@ -19432,7 +19426,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/context_engine.py",
-            "line": 1957,
+            "line": 1958,
             "is_consolidated": false,
             "full_text": "/* PoP: select_context @ agent/context_engine.py:select_context */"
           },
@@ -19461,7 +19455,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/context_engine.py",
-            "line": 1972,
+            "line": 1973,
             "is_consolidated": false,
             "full_text": "/* PoP: on_turn_complete @ agent/context_engine.py:on_turn_complete */"
           },
@@ -19548,7 +19542,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/context_engine.py",
-            "line": 1983,
+            "line": 1984,
             "is_consolidated": false,
             "full_text": "/* PoP: get_automatic_compaction_status_message @ agent/context_engine.py:get_automatic_compaction_status_message */"
           },
@@ -19822,7 +19816,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/context_references.py",
-            "line": 3451,
+            "line": 3467,
             "is_consolidated": false,
             "full_text": "/* PoP: format_reference_value @ agent/context_references.py:format_reference_value */"
           },
@@ -21733,7 +21727,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/conversation_loop.py",
-            "line": 2258,
+            "line": 2259,
             "is_consolidated": false,
             "full_text": "/* PoP: _apply_active_turn_redirect @ agent/conversation_loop.py:_apply_active_turn_redirect */"
           },
@@ -21965,7 +21959,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/conversation_loop.py",
-            "line": 2272,
+            "line": 2273,
             "is_consolidated": false,
             "full_text": "/* PoP: _billing_block_dict @ agent/conversation_loop.py:_billing_block_dict */"
           },
@@ -22139,7 +22133,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/conversation_loop.py",
-            "line": 2285,
+            "line": 2286,
             "is_consolidated": false,
             "full_text": "/* PoP: _invalid_tool_name_error_content @ agent/conversation_loop.py:_invalid_tool_name_error_content */"
           },
@@ -22197,7 +22191,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/conversation_loop.py",
-            "line": 2303,
+            "line": 2304,
             "is_consolidated": false,
             "full_text": "/* PoP: _compression_deferred_result @ agent/conversation_loop.py:_compression_deferred_result */"
           },
@@ -22255,7 +22249,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/conversation_loop.py",
-            "line": 2314,
+            "line": 2315,
             "is_consolidated": false,
             "full_text": "/* PoP: _apply_context_engine_selection @ agent/conversation_loop.py:_apply_context_engine_selection */"
           },
@@ -22284,7 +22278,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/conversation_loop.py",
-            "line": 2329,
+            "line": 2330,
             "is_consolidated": false,
             "full_text": "/* PoP: _notify_context_engine_turn_complete @ agent/conversation_loop.py:_notify_context_engine_turn_complete */"
           },
@@ -22326,10 +22320,10 @@
     },
     "agent/copilot_acp_client.py": {
       "total": 21,
-      "ported": 20,
+      "ported": 21,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 21,
@@ -22838,7 +22832,7 @@
             "decorators": [],
             "line_number": 423
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_copilot_acp_client_remaining2.c",
           "c_function": "cac2_close",
           "pop_annotation": {
@@ -22852,12 +22846,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: close @ agent/copilot_acp_client.py:close */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "agent/copilot_acp_client.py",
@@ -23179,7 +23171,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/credential_pool.py",
-            "line": 1518,
+            "line": 1519,
             "is_consolidated": false,
             "full_text": "/* PoP: _normalize_pool_auth_type @ agent/credential_pool.py:_normalize_pool_auth_type */"
           },
@@ -23794,7 +23786,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/credential_pool.py",
-            "line": 1537,
+            "line": 1538,
             "is_consolidated": false,
             "full_text": "/* PoP: credential_pool_matches_provider @ agent/credential_pool.py:credential_pool_matches_provider */"
           },
@@ -23968,7 +23960,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/credential_pool.py",
-            "line": 1548,
+            "line": 1549,
             "is_consolidated": false,
             "full_text": "/* PoP: _current_unlocked @ agent/credential_pool.py:_current_unlocked */"
           },
@@ -24026,7 +24018,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/credential_pool.py",
-            "line": 1577,
+            "line": 1578,
             "is_consolidated": false,
             "full_text": "/* PoP: entry_id_for_api_key @ agent/credential_pool.py:entry_id_for_api_key */"
           },
@@ -24258,7 +24250,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/credential_pool.py",
-            "line": 1594,
+            "line": 1595,
             "is_consolidated": false,
             "full_text": "/* PoP: _sync_xai_oauth_entry_from_pool_store @ agent/credential_pool.py:_sync_xai_oauth_entry_from_pool_store */"
           },
@@ -24374,7 +24366,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/credential_pool.py",
-            "line": 1605,
+            "line": 1606,
             "is_consolidated": false,
             "full_text": "/* PoP: _single_use_refresh_lock_timeout @ agent/credential_pool.py:_single_use_refresh_lock_timeout */"
           },
@@ -24432,7 +24424,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/credential_pool.py",
-            "line": 1618,
+            "line": 1619,
             "is_consolidated": false,
             "full_text": "/* PoP: _codex_quota_restored_upstream @ agent/credential_pool.py:_codex_quota_restored_upstream */"
           },
@@ -24548,7 +24540,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/credential_pool.py",
-            "line": 1629,
+            "line": 1630,
             "is_consolidated": false,
             "full_text": "/* PoP: _log_no_available_entries @ agent/credential_pool.py:_log_no_available_entries */"
           },
@@ -24751,7 +24743,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/credential_pool.py",
-            "line": 1637,
+            "line": 1638,
             "is_consolidated": false,
             "full_text": "/* PoP: try_refresh_matching @ agent/credential_pool.py:try_refresh_matching */"
           },
@@ -25402,7 +25394,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/credential_sources.py",
-            "line": 3469,
+            "line": 3485,
             "is_consolidated": false,
             "full_text": "/* PoP: _remove_xai_oauth_device_code @ agent/credential_sources.py:_remove_xai_oauth_device_code */"
           },
@@ -25649,7 +25641,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/credits_tracker.py",
-            "line": 3212,
+            "line": 3228,
             "is_consolidated": false,
             "full_text": "/* PoP: has_data @ agent/credits_tracker.py:has_data */"
           },
@@ -25680,7 +25672,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/credits_tracker.py",
-            "line": 3219,
+            "line": 3235,
             "is_consolidated": false,
             "full_text": "/* PoP: age_seconds @ agent/credits_tracker.py:age_seconds */"
           },
@@ -27739,7 +27731,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/display.py",
-            "line": 2994,
+            "line": 3010,
             "is_consolidated": false,
             "full_text": "/* PoP: _display_url @ agent/display.py:_display_url */"
           },
@@ -28667,7 +28659,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/display.py",
-            "line": 3015,
+            "line": 3031,
             "is_consolidated": false,
             "full_text": "/* PoP: build_status_phrase @ agent/display.py:build_status_phrase */"
           },
@@ -29603,7 +29595,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/display.py",
-            "line": 3030,
+            "line": 3046,
             "is_consolidated": false,
             "full_text": "/* PoP: _get_cute_tool_message @ agent/display.py:_get_cute_tool_message */"
           },
@@ -29705,7 +29697,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/error_classifier.py",
-            "line": 1994,
+            "line": 1995,
             "is_consolidated": false,
             "full_text": "/* PoP: classify_api_error @ agent/error_classifier.py:classify_api_error */"
           },
@@ -29734,7 +29726,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/error_classifier.py",
-            "line": 2008,
+            "line": 2009,
             "is_consolidated": false,
             "full_text": "/* PoP: _classify_by_status @ agent/error_classifier.py:_classify_by_status */"
           },
@@ -29763,7 +29755,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/error_classifier.py",
-            "line": 2022,
+            "line": 2023,
             "is_consolidated": false,
             "full_text": "/* PoP: _classify_402 @ agent/error_classifier.py:_classify_402 */"
           },
@@ -29792,7 +29784,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/error_classifier.py",
-            "line": 2036,
+            "line": 2037,
             "is_consolidated": false,
             "full_text": "/* PoP: _classify_400 @ agent/error_classifier.py:_classify_400 */"
           },
@@ -29821,7 +29813,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/error_classifier.py",
-            "line": 2050,
+            "line": 2051,
             "is_consolidated": false,
             "full_text": "/* PoP: _classify_by_error_code @ agent/error_classifier.py:_classify_by_error_code */"
           },
@@ -29850,7 +29842,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/error_classifier.py",
-            "line": 2064,
+            "line": 2065,
             "is_consolidated": false,
             "full_text": "/* PoP: _classify_by_message @ agent/error_classifier.py:_classify_by_message */"
           },
@@ -29937,7 +29929,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/error_classifier.py",
-            "line": 2080,
+            "line": 2081,
             "is_consolidated": false,
             "full_text": "/* PoP: _extract_error_code @ agent/error_classifier.py:_extract_error_code */"
           },
@@ -33381,7 +33373,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/insights.py",
-            "line": 3481,
+            "line": 3497,
             "is_consolidated": false,
             "full_text": "/* PoP: _get_model_usage @ agent/insights.py:_get_model_usage */"
           },
@@ -33817,7 +33809,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/jiter_preload.py",
-            "line": 3491,
+            "line": 3507,
             "is_consolidated": false,
             "full_text": "/* PoP: preload_jiter_native_extension @ agent/jiter_preload.py:preload_jiter_native_extension */"
           },
@@ -33859,7 +33851,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/kanban_stop.py",
-            "line": 2637,
+            "line": 2638,
             "is_consolidated": false,
             "full_text": "/* PoP: kanban_stop_nudge_enabled @ agent/kanban_stop.py:kanban_stop_nudge_enabled */"
           },
@@ -33888,7 +33880,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/kanban_stop.py",
-            "line": 2651,
+            "line": 2652,
             "is_consolidated": false,
             "full_text": "/* PoP: _tool_call_name @ agent/kanban_stop.py:_tool_call_name */"
           },
@@ -33917,7 +33909,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/kanban_stop.py",
-            "line": 2670,
+            "line": 2671,
             "is_consolidated": false,
             "full_text": "/* PoP: session_called_kanban_terminal @ agent/kanban_stop.py:session_called_kanban_terminal */"
           },
@@ -33946,7 +33938,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/kanban_stop.py",
-            "line": 2723,
+            "line": 2724,
             "is_consolidated": false,
             "full_text": "/* PoP: build_kanban_stop_nudge @ agent/kanban_stop.py:build_kanban_stop_nudge */"
           },
@@ -43357,7 +43349,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/memory_provider.py",
-            "line": 2091,
+            "line": 2092,
             "is_consolidated": false,
             "full_text": "/* PoP: queue_prefetch @ agent/memory_provider.py:queue_prefetch */"
           },
@@ -43386,7 +43378,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/memory_provider.py",
-            "line": 2099,
+            "line": 2100,
             "is_consolidated": false,
             "full_text": "/* PoP: sync_turn @ agent/memory_provider.py:sync_turn */"
           },
@@ -43504,7 +43496,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/memory_provider.py",
-            "line": 2108,
+            "line": 2109,
             "is_consolidated": false,
             "full_text": "/* PoP: on_turn_start @ agent/memory_provider.py:on_turn_start */"
           },
@@ -43562,7 +43554,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/memory_provider.py",
-            "line": 2116,
+            "line": 2117,
             "is_consolidated": false,
             "full_text": "/* PoP: on_session_switch @ agent/memory_provider.py:on_session_switch */"
           },
@@ -43591,7 +43583,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/memory_provider.py",
-            "line": 2130,
+            "line": 2131,
             "is_consolidated": false,
             "full_text": "/* PoP: on_pre_compress @ agent/memory_provider.py:on_pre_compress */"
           },
@@ -43620,7 +43612,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/memory_provider.py",
-            "line": 2139,
+            "line": 2140,
             "is_consolidated": false,
             "full_text": "/* PoP: on_delegation @ agent/memory_provider.py:on_delegation */"
           },
@@ -43707,7 +43699,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/memory_provider.py",
-            "line": 2152,
+            "line": 2153,
             "is_consolidated": false,
             "full_text": "/* PoP: on_memory_write @ agent/memory_provider.py:on_memory_write */"
           },
@@ -45385,7 +45377,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/moa_trace.py",
-            "line": 3045,
+            "line": 3061,
             "is_consolidated": false,
             "full_text": "/* PoP: _traces_enabled_and_dir @ agent/moa_trace.py:_traces_enabled_and_dir */"
           },
@@ -45443,7 +45435,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/moa_trace.py",
-            "line": 3057,
+            "line": 3073,
             "is_consolidated": false,
             "full_text": "/* PoP: _slot_trace @ agent/moa_trace.py:_slot_trace */"
           },
@@ -45472,7 +45464,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/moa_trace.py",
-            "line": 3069,
+            "line": 3085,
             "is_consolidated": false,
             "full_text": "/* PoP: save_moa_turn @ agent/moa_trace.py:save_moa_turn */"
           },
@@ -45920,7 +45912,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/model_metadata.py",
-            "line": 19,
+            "line": 20,
             "is_consolidated": false,
             "full_text": "/* PoP: _endpoint_scoped_context_length @ agent/model_metadata.py:_endpoint_scoped_context_length */"
           },
@@ -45949,7 +45941,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/model_metadata.py",
-            "line": 33,
+            "line": 34,
             "is_consolidated": false,
             "full_text": "/* PoP: _skip_persistent_context_cache @ agent/model_metadata.py:_skip_persistent_context_cache */"
           },
@@ -45978,7 +45970,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/model_metadata.py",
-            "line": 44,
+            "line": 45,
             "is_consolidated": false,
             "full_text": "/* PoP: _maybe_cache_local_context_length @ agent/model_metadata.py:_maybe_cache_local_context_length */"
           },
@@ -46007,7 +45999,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/model_metadata.py",
-            "line": 55,
+            "line": 56,
             "is_consolidated": false,
             "full_text": "/* PoP: _reconcile_local_cached_context_length @ agent/model_metadata.py:_reconcile_local_cached_context_length */"
           },
@@ -46065,7 +46057,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/model_metadata.py",
-            "line": 66,
+            "line": 67,
             "is_consolidated": false,
             "full_text": "/* PoP: _localhost_to_ipv4 @ agent/model_metadata.py:_localhost_to_ipv4 */"
           },
@@ -46471,7 +46463,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/model_metadata.py",
-            "line": 85,
+            "line": 86,
             "is_consolidated": false,
             "full_text": "/* PoP: _context_cache_key @ agent/model_metadata.py:_context_cache_key */"
           },
@@ -46850,7 +46842,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/model_metadata.py",
-            "line": 103,
+            "line": 104,
             "is_consolidated": false,
             "full_text": "/* PoP: _query_ollama_api_show_uncached @ agent/model_metadata.py:_query_ollama_api_show_uncached */"
           },
@@ -46995,7 +46987,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/model_metadata.py",
-            "line": 114,
+            "line": 115,
             "is_consolidated": false,
             "full_text": "/* PoP: _query_local_context_length_uncached @ agent/model_metadata.py:_query_local_context_length_uncached */"
           },
@@ -47082,7 +47074,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/model_metadata.py",
-            "line": 128,
+            "line": 129,
             "is_consolidated": false,
             "full_text": "/* PoP: _codex_oauth_token_fingerprint @ agent/model_metadata.py:_codex_oauth_token_fingerprint */"
           },
@@ -47111,7 +47103,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/model_metadata.py",
-            "line": 140,
+            "line": 141,
             "is_consolidated": false,
             "full_text": "/* PoP: _extract_chatgpt_account_id @ agent/model_metadata.py:_extract_chatgpt_account_id */"
           },
@@ -47140,7 +47132,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/model_metadata.py",
-            "line": 151,
+            "line": 152,
             "is_consolidated": false,
             "full_text": "/* PoP: _fetch_codex_oauth_context_lengths_with_source @ agent/model_metadata.py:_fetch_codex_oauth_context_lengths_with_source */"
           },
@@ -47198,7 +47190,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/model_metadata.py",
-            "line": 165,
+            "line": 166,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_codex_oauth_context_length_with_source @ agent/model_metadata.py:_resolve_codex_oauth_context_length_with_source */"
           },
@@ -47343,7 +47335,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/model_metadata.py",
-            "line": 176,
+            "line": 177,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_cjk_token_dense_char @ agent/model_metadata.py:_is_cjk_token_dense_char */"
           },
@@ -47488,7 +47480,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/model_metadata.py",
-            "line": 188,
+            "line": 189,
             "is_consolidated": false,
             "full_text": "/* PoP: _estimate_message_tokens_without_images @ agent/model_metadata.py:_estimate_message_tokens_without_images */"
           },
@@ -47546,7 +47538,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/model_metadata.py",
-            "line": 200,
+            "line": 201,
             "is_consolidated": false,
             "full_text": "/* PoP: _tool_name_for_cache @ agent/model_metadata.py:_tool_name_for_cache */"
           },
@@ -47575,7 +47567,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/model_metadata.py",
-            "line": 219,
+            "line": 220,
             "is_consolidated": false,
             "full_text": "/* PoP: _estimate_tools_tokens_rough @ agent/model_metadata.py:_estimate_tools_tokens_rough */"
           },
@@ -48326,7 +48318,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/moonshot_schema.py",
-            "line": 3499,
+            "line": 3515,
             "is_consolidated": false,
             "full_text": "/* PoP: _ensure_required_array @ agent/moonshot_schema.py:_ensure_required_array */"
           },
@@ -49140,7 +49132,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/oneshot.py",
-            "line": 3084,
+            "line": 3100,
             "is_consolidated": false,
             "full_text": "/* PoP: _commit_message_template @ agent/oneshot.py:_commit_message_template */"
           },
@@ -49169,7 +49161,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/oneshot.py",
-            "line": 3101,
+            "line": 3117,
             "is_consolidated": false,
             "full_text": "/* PoP: render_template @ agent/oneshot.py:render_template */"
           },
@@ -49198,7 +49190,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/oneshot.py",
-            "line": 3111,
+            "line": 3127,
             "is_consolidated": false,
             "full_text": "/* PoP: run_oneshot @ agent/oneshot.py:run_oneshot */"
           },
@@ -49828,7 +49820,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/pet/generate/atlas.py",
-            "line": 232,
+            "line": 233,
             "is_consolidated": false,
             "full_text": "/* PoP: _has_slot_padding @ agent/pet/generate/atlas.py:_has_slot_padding */"
           },
@@ -49857,7 +49849,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/pet/generate/atlas.py",
-            "line": 252,
+            "line": 253,
             "is_consolidated": false,
             "full_text": "/* PoP: _slot_bounds @ agent/pet/generate/atlas.py:_slot_bounds */"
           },
@@ -49944,7 +49936,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/pet/generate/atlas.py",
-            "line": 275,
+            "line": 276,
             "is_consolidated": false,
             "full_text": "/* PoP: _component_crops @ agent/pet/generate/atlas.py:_component_crops */"
           },
@@ -49973,7 +49965,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/pet/generate/atlas.py",
-            "line": 288,
+            "line": 289,
             "is_consolidated": false,
             "full_text": "/* PoP: _sever_expected_gutters @ agent/pet/generate/atlas.py:_sever_expected_gutters */"
           },
@@ -50002,7 +49994,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/pet/generate/atlas.py",
-            "line": 302,
+            "line": 303,
             "is_consolidated": false,
             "full_text": "/* PoP: _slot_crops @ agent/pet/generate/atlas.py:_slot_crops */"
           },
@@ -50060,7 +50052,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/pet/generate/atlas.py",
-            "line": 316,
+            "line": 317,
             "is_consolidated": false,
             "full_text": "/* PoP: _frame_x_ranges @ agent/pet/generate/atlas.py:_frame_x_ranges */"
           },
@@ -50089,7 +50081,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/pet/generate/atlas.py",
-            "line": 327,
+            "line": 328,
             "is_consolidated": false,
             "full_text": "/* PoP: _significant_subject_boxes @ agent/pet/generate/atlas.py:_significant_subject_boxes */"
           },
@@ -50118,7 +50110,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/pet/generate/atlas.py",
-            "line": 360,
+            "line": 361,
             "is_consolidated": false,
             "full_text": "/* PoP: _validate_extracted_frames @ agent/pet/generate/atlas.py:_validate_extracted_frames */"
           },
@@ -50147,7 +50139,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/pet/generate/atlas.py",
-            "line": 378,
+            "line": 379,
             "is_consolidated": false,
             "full_text": "/* PoP: extract_strip_frames @ agent/pet/generate/atlas.py:extract_strip_frames */"
           },
@@ -50234,7 +50226,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/pet/generate/atlas.py",
-            "line": 391,
+            "line": 392,
             "is_consolidated": false,
             "full_text": "/* PoP: normalize_cells @ agent/pet/generate/atlas.py:normalize_cells */"
           },
@@ -50263,7 +50255,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/pet/generate/atlas.py",
-            "line": 404,
+            "line": 405,
             "is_consolidated": false,
             "full_text": "/* PoP: single_frame @ agent/pet/generate/atlas.py:single_frame */"
           },
@@ -50292,7 +50284,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/pet/generate/atlas.py",
-            "line": 414,
+            "line": 415,
             "is_consolidated": false,
             "full_text": "/* PoP: _clear_transparent_rgb @ agent/pet/generate/atlas.py:_clear_transparent_rgb */"
           },
@@ -50321,7 +50313,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/pet/generate/atlas.py",
-            "line": 423,
+            "line": 424,
             "is_consolidated": false,
             "full_text": "/* PoP: mirror_frames @ agent/pet/generate/atlas.py:mirror_frames */"
           },
@@ -50350,7 +50342,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/pet/generate/atlas.py",
-            "line": 432,
+            "line": 433,
             "is_consolidated": false,
             "full_text": "/* PoP: compose_atlas @ agent/pet/generate/atlas.py:compose_atlas */"
           },
@@ -50379,7 +50371,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/pet/generate/atlas.py",
-            "line": 443,
+            "line": 444,
             "is_consolidated": false,
             "full_text": "/* PoP: atlas_to_webp_bytes @ agent/pet/generate/atlas.py:atlas_to_webp_bytes */"
           },
@@ -50408,7 +50400,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/pet/generate/atlas.py",
-            "line": 465,
+            "line": 466,
             "is_consolidated": false,
             "full_text": "/* PoP: validate_atlas @ agent/pet/generate/atlas.py:validate_atlas */"
           },
@@ -50450,7 +50442,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/pet/generate/imagegen.py",
-            "line": 2340,
+            "line": 2341,
             "is_consolidated": false,
             "full_text": "/* PoP: _forced_provider_from_env @ agent/pet/generate/imagegen.py:_forced_provider_from_env */"
           },
@@ -50508,7 +50500,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/pet/generate/imagegen.py",
-            "line": 2359,
+            "line": 2360,
             "is_consolidated": false,
             "full_text": "/* PoP: resolve_provider @ agent/pet/generate/imagegen.py:resolve_provider */"
           },
@@ -50537,7 +50529,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/pet/generate/imagegen.py",
-            "line": 2376,
+            "line": 2377,
             "is_consolidated": false,
             "full_text": "/* PoP: list_sprite_providers @ agent/pet/generate/imagegen.py:list_sprite_providers */"
           },
@@ -50566,7 +50558,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/pet/generate/imagegen.py",
-            "line": 2388,
+            "line": 2389,
             "is_consolidated": false,
             "full_text": "/* PoP: _save_local @ agent/pet/generate/imagegen.py:_save_local */"
           },
@@ -50595,7 +50587,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/pet/generate/imagegen.py",
-            "line": 2416,
+            "line": 2417,
             "is_consolidated": false,
             "full_text": "/* PoP: _rejected_background @ agent/pet/generate/imagegen.py:_rejected_background */"
           },
@@ -50658,7 +50650,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/pet/generate/orchestrate.py",
-            "line": 2428,
+            "line": 2429,
             "is_consolidated": false,
             "full_text": "/* PoP: _harden_transparency @ agent/pet/generate/orchestrate.py:_harden_transparency */"
           },
@@ -50687,7 +50679,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/pet/generate/orchestrate.py",
-            "line": 2440,
+            "line": 2441,
             "is_consolidated": false,
             "full_text": "/* PoP: generate_base_drafts @ agent/pet/generate/orchestrate.py:generate_base_drafts */"
           },
@@ -50716,7 +50708,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/pet/generate/orchestrate.py",
-            "line": 2453,
+            "line": 2454,
             "is_consolidated": false,
             "full_text": "/* PoP: _drafts_failed_reason @ agent/pet/generate/orchestrate.py:_drafts_failed_reason */"
           },
@@ -50745,7 +50737,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/pet/generate/orchestrate.py",
-            "line": 2465,
+            "line": 2466,
             "is_consolidated": false,
             "full_text": "/* PoP: _humanize_image_error @ agent/pet/generate/orchestrate.py:_humanize_image_error */"
           },
@@ -50774,7 +50766,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/pet/generate/orchestrate.py",
-            "line": 2477,
+            "line": 2478,
             "is_consolidated": false,
             "full_text": "/* PoP: hatch_pet @ agent/pet/generate/orchestrate.py:hatch_pet */"
           },
@@ -54879,7 +54871,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/prompt_caching.py",
-            "line": 3230,
+            "line": 3246,
             "is_consolidated": false,
             "full_text": "/* PoP: _can_carry_marker @ agent/prompt_caching.py:_can_carry_marker */"
           },
@@ -54937,7 +54929,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/prompt_caching.py",
-            "line": 3246,
+            "line": 3262,
             "is_consolidated": false,
             "full_text": "/* PoP: _apply_system_cache_markers @ agent/prompt_caching.py:_apply_system_cache_markers */"
           },
@@ -54991,10 +54983,10 @@
     },
     "agent/proxy_sources/iron_proxy.py": {
       "total": 49,
-      "ported": 48,
+      "ported": 49,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 49,
@@ -56406,7 +56398,7 @@
             "decorators": [],
             "line_number": 2452
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_iron_proxy_remaining.c",
           "c_function": "ipx_reset_for_tests",
           "pop_annotation": {
@@ -56420,12 +56412,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _reset_for_tests @ agent/proxy_sources/iron_proxy.py:_reset_for_tests */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         }
       ]
     },
@@ -56485,7 +56475,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/rate_limit_tracker.py",
-            "line": 1334,
+            "line": 1335,
             "is_consolidated": false,
             "full_text": "/* PoP: usage_pct @ agent/rate_limit_tracker.py:usage_pct */"
           },
@@ -56516,7 +56506,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/rate_limit_tracker.py",
-            "line": 1354,
+            "line": 1355,
             "is_consolidated": false,
             "full_text": "/* PoP: remaining_seconds_now @ agent/rate_limit_tracker.py:remaining_seconds_now */"
           },
@@ -56547,7 +56537,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/rate_limit_tracker.py",
-            "line": 1374,
+            "line": 1375,
             "is_consolidated": false,
             "full_text": "/* PoP: has_data @ agent/rate_limit_tracker.py:has_data */"
           },
@@ -56578,7 +56568,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/rate_limit_tracker.py",
-            "line": 1381,
+            "line": 1382,
             "is_consolidated": false,
             "full_text": "/* PoP: age_seconds @ agent/rate_limit_tracker.py:age_seconds */"
           },
@@ -56628,7 +56618,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/rate_limit_tracker.py",
-            "line": 1392,
+            "line": 1393,
             "is_consolidated": false,
             "full_text": "/* PoP: _safe_float @ agent/rate_limit_tracker.py:_safe_float */"
           },
@@ -56657,7 +56647,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/rate_limit_tracker.py",
-            "line": 1409,
+            "line": 1410,
             "is_consolidated": false,
             "full_text": "/* PoP: parse_rate_limit_headers @ agent/rate_limit_tracker.py:parse_rate_limit_headers */"
           },
@@ -56686,7 +56676,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/rate_limit_tracker.py",
-            "line": 1420,
+            "line": 1421,
             "is_consolidated": false,
             "full_text": "/* PoP: _fmt_count @ agent/rate_limit_tracker.py:_fmt_count */"
           },
@@ -56715,7 +56705,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/rate_limit_tracker.py",
-            "line": 1431,
+            "line": 1432,
             "is_consolidated": false,
             "full_text": "/* PoP: _fmt_seconds @ agent/rate_limit_tracker.py:_fmt_seconds */"
           },
@@ -56744,7 +56734,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/rate_limit_tracker.py",
-            "line": 1450,
+            "line": 1451,
             "is_consolidated": false,
             "full_text": "/* PoP: _bar @ agent/rate_limit_tracker.py:_bar */"
           },
@@ -56773,7 +56763,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/rate_limit_tracker.py",
-            "line": 1470,
+            "line": 1471,
             "is_consolidated": false,
             "full_text": "/* PoP: _bucket_line @ agent/rate_limit_tracker.py:_bucket_line */"
           },
@@ -56802,7 +56792,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/rate_limit_tracker.py",
-            "line": 1497,
+            "line": 1498,
             "is_consolidated": false,
             "full_text": "/* PoP: format_rate_limit_display @ agent/rate_limit_tracker.py:format_rate_limit_display */"
           },
@@ -56831,7 +56821,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/rate_limit_tracker.py",
-            "line": 1508,
+            "line": 1509,
             "is_consolidated": false,
             "full_text": "/* PoP: format_rate_limit_compact @ agent/rate_limit_tracker.py:format_rate_limit_compact */"
           },
@@ -57152,7 +57142,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/redact.py",
-            "line": 3260,
+            "line": 3276,
             "is_consolidated": false,
             "full_text": "/* PoP: _canonical_url_param_name @ agent/redact.py:_canonical_url_param_name */"
           },
@@ -57181,7 +57171,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/redact.py",
-            "line": 3293,
+            "line": 3309,
             "is_consolidated": false,
             "full_text": "/* PoP: _redact_strict_url_credentials @ agent/redact.py:_redact_strict_url_credentials */"
           },
@@ -57908,7 +57898,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/runtime_cwd.py",
-            "line": 3534,
+            "line": 3550,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_install_tree @ agent/runtime_cwd.py:_is_install_tree */"
           },
@@ -62675,7 +62665,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/skill_commands.py",
-            "line": 3306,
+            "line": 3322,
             "is_consolidated": false,
             "full_text": "/* PoP: split_stacked_skill_commands @ agent/skill_commands.py:split_stacked_skill_commands */"
           },
@@ -62704,7 +62694,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/skill_commands.py",
-            "line": 3317,
+            "line": 3333,
             "is_consolidated": false,
             "full_text": "/* PoP: build_stacked_skill_invocation_message @ agent/skill_commands.py:build_stacked_skill_invocation_message */"
           },
@@ -64066,10 +64056,10 @@
     },
     "agent/stream_diag.py": {
       "total": 5,
-      "ported": 4,
+      "ported": 5,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 5,
@@ -64172,7 +64162,7 @@
             "decorators": [],
             "line_number": 120
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_stream_diag_remaining.c",
           "c_function": "sdi_log_stream_retry",
           "pop_annotation": {
@@ -64186,12 +64176,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: log_stream_retry @ agent/stream_diag.py:log_stream_retry */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "agent/stream_diag.py",
@@ -64255,7 +64243,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/stream_single_writer.py",
-            "line": 3331,
+            "line": 3347,
             "is_consolidated": false,
             "full_text": "/* PoP: claim_stream_writer @ agent/stream_single_writer.py:claim_stream_writer */"
           },
@@ -64284,7 +64272,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/stream_single_writer.py",
-            "line": 3341,
+            "line": 3357,
             "is_consolidated": false,
             "full_text": "/* PoP: stream_writer_is_current @ agent/stream_single_writer.py:stream_writer_is_current */"
           },
@@ -64596,7 +64584,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/subscription_view.py",
-            "line": 685,
+            "line": 686,
             "is_consolidated": false,
             "full_text": "/* PoP: can_change_plan @ agent/subscription_view.py:can_change_plan */"
           },
@@ -64625,7 +64613,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/subscription_view.py",
-            "line": 696,
+            "line": 697,
             "is_consolidated": false,
             "full_text": "/* PoP: _parse_current @ agent/subscription_view.py:_parse_current */"
           },
@@ -64654,7 +64642,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/subscription_view.py",
-            "line": 705,
+            "line": 706,
             "is_consolidated": false,
             "full_text": "/* PoP: _coalesce @ agent/subscription_view.py:_coalesce */"
           },
@@ -64683,7 +64671,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/subscription_view.py",
-            "line": 724,
+            "line": 725,
             "is_consolidated": false,
             "full_text": "/* PoP: _parse_tier @ agent/subscription_view.py:_parse_tier */"
           },
@@ -64712,7 +64700,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/subscription_view.py",
-            "line": 745,
+            "line": 746,
             "is_consolidated": false,
             "full_text": "/* PoP: subscription_change_preview_from_payload @ agent/subscription_view.py:subscription_change_preview_from_payload */"
           },
@@ -64741,7 +64729,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/subscription_view.py",
-            "line": 754,
+            "line": 755,
             "is_consolidated": false,
             "full_text": "/* PoP: subscription_state_from_payload @ agent/subscription_view.py:subscription_state_from_payload */"
           },
@@ -64770,7 +64758,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/subscription_view.py",
-            "line": 765,
+            "line": 766,
             "is_consolidated": false,
             "full_text": "/* PoP: build_subscription_state @ agent/subscription_view.py:build_subscription_state */"
           },
@@ -64799,7 +64787,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/subscription_view.py",
-            "line": 783,
+            "line": 784,
             "is_consolidated": false,
             "full_text": "/* PoP: subscription_manage_url @ agent/subscription_view.py:subscription_manage_url */"
           },
@@ -64828,7 +64816,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/subscription_view.py",
-            "line": 794,
+            "line": 795,
             "is_consolidated": false,
             "full_text": "/* PoP: _format_dollars_grouped @ agent/subscription_view.py:_format_dollars_grouped */"
           },
@@ -64857,7 +64845,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/subscription_view.py",
-            "line": 806,
+            "line": 807,
             "is_consolidated": false,
             "full_text": "/* PoP: selectable_tiers @ agent/subscription_view.py:selectable_tiers */"
           },
@@ -64886,7 +64874,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/subscription_view.py",
-            "line": 852,
+            "line": 853,
             "is_consolidated": false,
             "full_text": "/* PoP: format_tier_row @ agent/subscription_view.py:format_tier_row */"
           },
@@ -64915,7 +64903,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/subscription_view.py",
-            "line": 902,
+            "line": 903,
             "is_consolidated": false,
             "full_text": "/* PoP: is_upgrade @ agent/subscription_view.py:is_upgrade */"
           },
@@ -64944,7 +64932,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/subscription_view.py",
-            "line": 915,
+            "line": 916,
             "is_consolidated": false,
             "full_text": "/* PoP: _dev_current @ agent/subscription_view.py:_dev_current */"
           },
@@ -64973,7 +64961,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/subscription_view.py",
-            "line": 933,
+            "line": 934,
             "is_consolidated": false,
             "full_text": "/* PoP: _dev_tiers @ agent/subscription_view.py:_dev_tiers */"
           },
@@ -65002,7 +64990,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/subscription_view.py",
-            "line": 951,
+            "line": 952,
             "is_consolidated": false,
             "full_text": "/* PoP: dev_fixture_subscription_state @ agent/subscription_view.py:dev_fixture_subscription_state */"
           },
@@ -65102,7 +65090,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/system_prompt.py",
-            "line": 3554,
+            "line": 3570,
             "is_consolidated": false,
             "full_text": "/* PoP: _tui_embedded_pane_clarifier @ agent/system_prompt.py:_tui_embedded_pane_clarifier */"
           },
@@ -65611,10 +65599,10 @@
     },
     "agent/thread_scoped_output.py": {
       "total": 12,
-      "ported": 11,
+      "ported": 12,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 12,
@@ -65727,7 +65715,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/thread_scoped_output.py",
-            "line": 2743,
+            "line": 2744,
             "is_consolidated": false,
             "full_text": "/* PoP: unsilence @ agent/thread_scoped_output.py:unsilence */"
           },
@@ -65814,7 +65802,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/thread_scoped_output.py",
-            "line": 2754,
+            "line": 2755,
             "is_consolidated": false,
             "full_text": "/* PoP: writelines @ agent/thread_scoped_output.py:writelines */"
           },
@@ -65901,7 +65889,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/thread_scoped_output.py",
-            "line": 2769,
+            "line": 2770,
             "is_consolidated": false,
             "full_text": "/* PoP: __getattr__ @ agent/thread_scoped_output.py:__getattr__ */"
           },
@@ -65951,7 +65939,7 @@
             ],
             "line_number": 126
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_agent_remaining_wrappers.c",
           "c_function": "agent_thread_scoped_output_thread_scoped_silence",
           "pop_annotation": {
@@ -65961,16 +65949,14 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/thread_scoped_output.py",
-            "line": 2784,
+            "line": 2785,
             "is_consolidated": false,
             "full_text": "/* PoP: thread_scoped_silence @ agent/thread_scoped_output.py:thread_scoped_silence */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -66250,7 +66236,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/tool_dispatch_helpers.py",
-            "line": 486,
+            "line": 487,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_destructive_command @ agent/tool_dispatch_helpers.py:_is_destructive_command */"
           },
@@ -66279,7 +66265,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/tool_dispatch_helpers.py",
-            "line": 491,
+            "line": 492,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_mcp_tool_parallel_safe @ agent/tool_dispatch_helpers.py:_is_mcp_tool_parallel_safe */"
           },
@@ -66308,7 +66294,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/tool_dispatch_helpers.py",
-            "line": 496,
+            "line": 497,
             "is_consolidated": false,
             "full_text": "/* PoP: _plan_tool_batch_segments @ agent/tool_dispatch_helpers.py:_plan_tool_batch_segments */"
           },
@@ -66337,7 +66323,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/tool_dispatch_helpers.py",
-            "line": 504,
+            "line": 505,
             "is_consolidated": false,
             "full_text": "/* PoP: _should_parallelize_tool_batch @ agent/tool_dispatch_helpers.py:_should_parallelize_tool_batch */"
           },
@@ -66387,7 +66373,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/tool_dispatch_helpers.py",
-            "line": 517,
+            "line": 518,
             "is_consolidated": false,
             "full_text": "/* PoP: _extract_parallel_scope_path @ agent/tool_dispatch_helpers.py:_extract_parallel_scope_path */"
           },
@@ -66416,7 +66402,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/tool_dispatch_helpers.py",
-            "line": 533,
+            "line": 534,
             "is_consolidated": false,
             "full_text": "/* PoP: _paths_overlap @ agent/tool_dispatch_helpers.py:_paths_overlap */"
           },
@@ -66445,7 +66431,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/tool_dispatch_helpers.py",
-            "line": 548,
+            "line": 549,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_multimodal_tool_result @ agent/tool_dispatch_helpers.py:_is_multimodal_tool_result */"
           },
@@ -66474,7 +66460,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/tool_dispatch_helpers.py",
-            "line": 553,
+            "line": 554,
             "is_consolidated": false,
             "full_text": "/* PoP: _multimodal_text_summary @ agent/tool_dispatch_helpers.py:_multimodal_text_summary */"
           },
@@ -66503,7 +66489,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/tool_dispatch_helpers.py",
-            "line": 561,
+            "line": 562,
             "is_consolidated": false,
             "full_text": "/* PoP: _append_subdir_hint_to_multimodal @ agent/tool_dispatch_helpers.py:_append_subdir_hint_to_multimodal */"
           },
@@ -66532,7 +66518,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/tool_dispatch_helpers.py",
-            "line": 579,
+            "line": 580,
             "is_consolidated": false,
             "full_text": "/* PoP: _extract_file_mutation_targets @ agent/tool_dispatch_helpers.py:_extract_file_mutation_targets */"
           },
@@ -66590,7 +66576,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/tool_dispatch_helpers.py",
-            "line": 598,
+            "line": 599,
             "is_consolidated": false,
             "full_text": "/* PoP: _extract_error_preview @ agent/tool_dispatch_helpers.py:_extract_error_preview */"
           },
@@ -66619,7 +66605,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/tool_dispatch_helpers.py",
-            "line": 619,
+            "line": 620,
             "is_consolidated": false,
             "full_text": "/* PoP: _trajectory_normalize_msg @ agent/tool_dispatch_helpers.py:_trajectory_normalize_msg */"
           },
@@ -66648,7 +66634,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/tool_dispatch_helpers.py",
-            "line": 627,
+            "line": 628,
             "is_consolidated": false,
             "full_text": "/* PoP: make_tool_result_message @ agent/tool_dispatch_helpers.py:make_tool_result_message */"
           },
@@ -66677,7 +66663,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/tool_dispatch_helpers.py",
-            "line": 644,
+            "line": 645,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_untrusted_tool @ agent/tool_dispatch_helpers.py:_is_untrusted_tool */"
           },
@@ -66706,7 +66692,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/tool_dispatch_helpers.py",
-            "line": 649,
+            "line": 650,
             "is_consolidated": false,
             "full_text": "/* PoP: _tool_output_risk_metadata @ agent/tool_dispatch_helpers.py:_tool_output_risk_metadata */"
           },
@@ -66764,7 +66750,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/tool_dispatch_helpers.py",
-            "line": 667,
+            "line": 668,
             "is_consolidated": false,
             "full_text": "/* PoP: _maybe_wrap_untrusted @ agent/tool_dispatch_helpers.py:_maybe_wrap_untrusted */"
           },
@@ -66806,7 +66792,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/tool_executor.py",
-            "line": 3125,
+            "line": 3141,
             "is_consolidated": false,
             "full_text": "/* PoP: _ensure_file_checkpoint @ agent/tool_executor.py:_ensure_file_checkpoint */"
           },
@@ -66864,7 +66850,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/tool_executor.py",
-            "line": 3137,
+            "line": 3153,
             "is_consolidated": false,
             "full_text": "/* PoP: _parse_tool_arguments @ agent/tool_executor.py:_parse_tool_arguments */"
           },
@@ -67241,7 +67227,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/tool_executor.py",
-            "line": 3154,
+            "line": 3170,
             "is_consolidated": false,
             "full_text": "/* PoP: execute_tool_calls_segmented @ agent/tool_executor.py:execute_tool_calls_segmented */"
           },
@@ -67936,7 +67922,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/tool_result_classification.py",
-            "line": 3567,
+            "line": 3583,
             "is_consolidated": false,
             "full_text": "/* PoP: tool_may_have_side_effect @ agent/tool_result_classification.py:tool_may_have_side_effect */"
           },
@@ -67999,7 +67985,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/trace_upload.py",
-            "line": 1791,
+            "line": 1792,
             "is_consolidated": false,
             "full_text": "/* PoP: _now_iso @ agent/trace_upload.py:_now_iso */"
           },
@@ -68049,7 +68035,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/trace_upload.py",
-            "line": 1807,
+            "line": 1808,
             "is_consolidated": false,
             "full_text": "/* PoP: _content_to_blocks @ agent/trace_upload.py:_content_to_blocks */"
           },
@@ -68078,7 +68064,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/trace_upload.py",
-            "line": 1818,
+            "line": 1819,
             "is_consolidated": false,
             "full_text": "/* PoP: _tool_calls_to_blocks @ agent/trace_upload.py:_tool_calls_to_blocks */"
           },
@@ -68107,7 +68093,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/trace_upload.py",
-            "line": 1835,
+            "line": 1836,
             "is_consolidated": false,
             "full_text": "/* PoP: build_trace_jsonl @ agent/trace_upload.py:build_trace_jsonl */"
           },
@@ -68136,7 +68122,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/trace_upload.py",
-            "line": 1848,
+            "line": 1849,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_hf_token @ agent/trace_upload.py:_resolve_hf_token */"
           },
@@ -68165,7 +68151,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/trace_upload.py",
-            "line": 1867,
+            "line": 1868,
             "is_consolidated": false,
             "full_text": "/* PoP: _do_upload @ agent/trace_upload.py:_do_upload */"
           },
@@ -68194,7 +68180,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/trace_upload.py",
-            "line": 1885,
+            "line": 1886,
             "is_consolidated": false,
             "full_text": "/* PoP: load_session_messages @ agent/trace_upload.py:load_session_messages */"
           },
@@ -68223,7 +68209,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/trace_upload.py",
-            "line": 1894,
+            "line": 1895,
             "is_consolidated": false,
             "full_text": "/* PoP: upload_session_trace @ agent/trace_upload.py:upload_session_trace */"
           },
@@ -70264,10 +70250,10 @@
     },
     "agent/transports/codex_app_server.py": {
       "total": 21,
-      "ported": 19,
+      "ported": 20,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 21,
@@ -70362,7 +70348,7 @@
             "decorators": [],
             "line_number": 185
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_codex_app_server_remaining.c",
           "c_function": "cas_close",
           "pop_annotation": {
@@ -70376,12 +70362,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: close @ agent/transports/codex_app_server.py:close */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "agent/transports/codex_app_server.py",
@@ -72961,7 +72945,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/turn_context.py",
-            "line": 1648,
+            "line": 1649,
             "is_consolidated": false,
             "full_text": "/* PoP: compose_user_api_content @ agent/turn_context.py:compose_user_api_content */"
           },
@@ -72990,7 +72974,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/turn_context.py",
-            "line": 1667,
+            "line": 1668,
             "is_consolidated": false,
             "full_text": "/* PoP: substitute_api_content @ agent/turn_context.py:substitute_api_content */"
           },
@@ -73019,7 +73003,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/turn_context.py",
-            "line": 1682,
+            "line": 1683,
             "is_consolidated": false,
             "full_text": "/* PoP: drop_stale_api_content @ agent/turn_context.py:drop_stale_api_content */"
           },
@@ -73048,7 +73032,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/turn_context.py",
-            "line": 1700,
+            "line": 1701,
             "is_consolidated": false,
             "full_text": "/* PoP: extract_api_content_sidecar @ agent/turn_context.py:extract_api_content_sidecar */"
           },
@@ -73077,7 +73061,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/turn_context.py",
-            "line": 1716,
+            "line": 1717,
             "is_consolidated": false,
             "full_text": "/* PoP: consume_gateway_turn_context_notes @ agent/turn_context.py:consume_gateway_turn_context_notes */"
           },
@@ -73106,7 +73090,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/turn_context.py",
-            "line": 1727,
+            "line": 1728,
             "is_consolidated": false,
             "full_text": "/* PoP: append_notes_to_multimodal_content @ agent/turn_context.py:append_notes_to_multimodal_content */"
           },
@@ -73135,7 +73119,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/turn_context.py",
-            "line": 1740,
+            "line": 1741,
             "is_consolidated": false,
             "full_text": "/* PoP: reanchor_current_turn_user_idx @ agent/turn_context.py:reanchor_current_turn_user_idx */"
           },
@@ -73193,7 +73177,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/turn_context.py",
-            "line": 1754,
+            "line": 1755,
             "is_consolidated": false,
             "full_text": "/* PoP: _compression_warrants_another_preflight_pass @ agent/turn_context.py:_compression_warrants_another_preflight_pass */"
           },
@@ -73251,7 +73235,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/turn_context.py",
-            "line": 1768,
+            "line": 1769,
             "is_consolidated": false,
             "full_text": "/* PoP: _should_idle_compact @ agent/turn_context.py:_should_idle_compact */"
           },
@@ -73314,7 +73298,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/turn_finalizer.py",
-            "line": 3355,
+            "line": 3371,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_pure_tool_call_tail @ agent/turn_finalizer.py:_is_pure_tool_call_tail */"
           },
@@ -73343,7 +73327,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/turn_finalizer.py",
-            "line": 3374,
+            "line": 3390,
             "is_consolidated": false,
             "full_text": "/* PoP: _drop_verification_continuation_scaffolding @ agent/turn_finalizer.py:_drop_verification_continuation_scaffolding */"
           },
@@ -75722,7 +75706,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/video_gen_provider.py",
-            "line": 3410,
+            "line": 3426,
             "is_consolidated": false,
             "full_text": "/* PoP: save_url_video @ agent/video_gen_provider.py:save_url_video */"
           },
@@ -75867,7 +75851,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/video_gen_provider.py",
-            "line": 3434,
+            "line": 3450,
             "is_consolidated": false,
             "full_text": "/* PoP: _create_and_poll @ agent/video_gen_provider.py:_create_and_poll */"
           },
@@ -76125,7 +76109,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/web_search_provider.py",
-            "line": 3581,
+            "line": 3597,
             "is_consolidated": false,
             "full_text": "/* PoP: get_provider_env @ agent/web_search_provider.py:get_provider_env */"
           },
@@ -76551,7 +76535,7 @@
             ],
             "c_file": "src/agent/port_agent_remaining_wrappers.c",
             "python_file": "agent/web_search_registry.py",
-            "line": 3593,
+            "line": 3609,
             "is_consolidated": false,
             "full_text": "/* PoP: _disabled_web_plugin_for @ agent/web_search_registry.py:_disabled_web_plugin_for */"
           },
@@ -90176,10 +90160,10 @@
     },
     "cron/scheduler_provider.py": {
       "total": 12,
-      "ported": 11,
+      "ported": 12,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 12,
@@ -90227,7 +90211,7 @@
             "decorators": [],
             "line_number": 42
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cron/port_scheduler_provider_remaining.c",
           "c_function": "schp_is_available",
           "pop_annotation": {
@@ -90241,12 +90225,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: is_available @ cron/scheduler_provider.py:is_available */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "cron/scheduler_provider.py",
@@ -106833,10 +106815,10 @@
     },
     "gateway/platforms/bluebubbles.py": {
       "total": 38,
-      "ported": 34,
+      "ported": 35,
       "partial": 3,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 38,
@@ -106881,7 +106863,7 @@
             "decorators": [],
             "line_number": 91
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_bluebubbles_wrappers.c",
           "c_function": "bb_check_bluebubbles_requirements",
           "pop_annotation": {
@@ -106895,12 +106877,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: check_bluebubbles_requirements @ gateway/platforms/bluebubbles.py:check_bluebubbles_requirements */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/bluebubbles.py",
@@ -113457,10 +113437,10 @@
     },
     "gateway/platforms/signal.py": {
       "total": 50,
-      "ported": 46,
+      "ported": 48,
       "partial": 2,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 50,
@@ -113824,7 +113804,7 @@
             "decorators": [],
             "line_number": 349
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_signal_remaining2.c",
           "c_function": "sgl_connect",
           "pop_annotation": {
@@ -113838,12 +113818,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: connect @ gateway/platforms/signal.py:connect */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/signal.py",
@@ -114410,7 +114388,7 @@
             "decorators": [],
             "line_number": 1125
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_signal_remaining.c",
           "c_function": "sig_send_typing",
           "pop_annotation": {
@@ -114424,12 +114402,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: send_typing @ gateway/platforms/signal.py:send_typing */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/signal.py",
@@ -115373,10 +115349,10 @@
     },
     "gateway/platforms/webhook.py": {
       "total": 25,
-      "ported": 24,
+      "ported": 25,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 25,
@@ -115508,7 +115484,7 @@
             "decorators": [],
             "line_number": 218
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_webhook_remaining.c",
           "c_function": "whk_connect",
           "pop_annotation": {
@@ -115522,12 +115498,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: connect @ gateway/platforms/webhook.py:connect */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/webhook.py",
@@ -116379,10 +116353,10 @@
     },
     "gateway/platforms/weixin.py": {
       "total": 104,
-      "ported": 91,
+      "ported": 92,
       "partial": 10,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 2,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 104,
@@ -118149,7 +118123,7 @@
             "decorators": [],
             "line_number": 1265
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_weixin_remaining.c",
           "c_function": "wx2_connect",
           "pop_annotation": {
@@ -118163,12 +118137,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: connect @ gateway/platforms/weixin.py:connect */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/weixin.py",
@@ -119320,10 +119292,10 @@
     },
     "gateway/platforms/whatsapp_cloud.py": {
       "total": 43,
-      "ported": 41,
+      "ported": 43,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 43,
@@ -119693,7 +119665,7 @@
             "decorators": [],
             "line_number": 405
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_whatsapp_cloud_remaining.c",
           "c_function": "wac_connect",
           "pop_annotation": {
@@ -119707,12 +119679,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: connect @ gateway/platforms/whatsapp_cloud.py:connect */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/whatsapp_cloud.py",
@@ -119724,7 +119694,7 @@
             "decorators": [],
             "line_number": 467
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_whatsapp_cloud_remaining.c",
           "c_function": "wac_disconnect",
           "pop_annotation": {
@@ -119734,16 +119704,14 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 38,
+            "line": 42,
             "is_consolidated": false,
             "full_text": "/* PoP: disconnect @ gateway/platforms/whatsapp_cloud.py:disconnect */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/whatsapp_cloud.py",
@@ -119765,7 +119733,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 44,
+            "line": 48,
             "is_consolidated": false,
             "full_text": "/* PoP: send @ gateway/platforms/whatsapp_cloud.py:send */"
           },
@@ -119794,7 +119762,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 52,
+            "line": 56,
             "is_consolidated": false,
             "full_text": "/* PoP: send_typing @ gateway/platforms/whatsapp_cloud.py:send_typing */"
           },
@@ -119914,7 +119882,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 60,
+            "line": 64,
             "is_consolidated": false,
             "full_text": "/* PoP: send_clarify @ gateway/platforms/whatsapp_cloud.py:send_clarify */"
           },
@@ -119972,7 +119940,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 68,
+            "line": 72,
             "is_consolidated": false,
             "full_text": "/* PoP: send_slash_confirm @ gateway/platforms/whatsapp_cloud.py:send_slash_confirm */"
           },
@@ -120032,7 +120000,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 76,
+            "line": 80,
             "is_consolidated": false,
             "full_text": "/* PoP: get_chat_info @ gateway/platforms/whatsapp_cloud.py:get_chat_info */"
           },
@@ -120148,7 +120116,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 85,
+            "line": 89,
             "is_consolidated": false,
             "full_text": "/* PoP: send_image @ gateway/platforms/whatsapp_cloud.py:send_image */"
           },
@@ -120177,7 +120145,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 93,
+            "line": 97,
             "is_consolidated": false,
             "full_text": "/* PoP: send_image_file @ gateway/platforms/whatsapp_cloud.py:send_image_file */"
           },
@@ -120206,7 +120174,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 101,
+            "line": 105,
             "is_consolidated": false,
             "full_text": "/* PoP: send_video @ gateway/platforms/whatsapp_cloud.py:send_video */"
           },
@@ -120235,7 +120203,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 109,
+            "line": 113,
             "is_consolidated": false,
             "full_text": "/* PoP: send_voice @ gateway/platforms/whatsapp_cloud.py:send_voice */"
           },
@@ -120264,7 +120232,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 117,
+            "line": 121,
             "is_consolidated": false,
             "full_text": "/* PoP: send_document @ gateway/platforms/whatsapp_cloud.py:send_document */"
           },
@@ -120293,7 +120261,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 124,
+            "line": 128,
             "is_consolidated": false,
             "full_text": "/* PoP: _convert_to_opus @ gateway/platforms/whatsapp_cloud.py:_convert_to_opus */"
           },
@@ -120380,7 +120348,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 135,
+            "line": 139,
             "is_consolidated": false,
             "full_text": "/* PoP: _handle_health @ gateway/platforms/whatsapp_cloud.py:_handle_health */"
           },
@@ -120438,7 +120406,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 141,
+            "line": 145,
             "is_consolidated": false,
             "full_text": "/* PoP: _handle_webhook @ gateway/platforms/whatsapp_cloud.py:_handle_webhook */"
           },
@@ -121274,10 +121242,10 @@
     },
     "gateway/platforms/yuanbao.py": {
       "total": 214,
-      "ported": 198,
+      "ported": 199,
       "partial": 15,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 214,
@@ -124658,7 +124626,7 @@
             "decorators": [],
             "line_number": 3416
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_yuanbao_remaining.c",
           "c_function": "yb2_open",
           "pop_annotation": {
@@ -124672,12 +124640,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: open @ gateway/platforms/yuanbao.py:open */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -130781,10 +130747,10 @@
     },
     "gateway/relay/adapter.py": {
       "total": 27,
-      "ported": 25,
+      "ported": 27,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 27,
@@ -131210,7 +131176,7 @@
             "decorators": [],
             "line_number": 341
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_relay_adapter_remaining.c",
           "c_function": "rla_on_interrupt",
           "pop_annotation": {
@@ -131224,12 +131190,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: on_interrupt @ gateway/relay/adapter.py:on_interrupt */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/adapter.py",
@@ -131330,7 +131294,7 @@
             "decorators": [],
             "line_number": 484
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_relay_adapter_remaining.c",
           "c_function": "rla_disconnect",
           "pop_annotation": {
@@ -131340,16 +131304,14 @@
             ],
             "c_file": "src/gateway/port_relay_adapter_remaining.c",
             "python_file": "gateway/relay/adapter.py",
-            "line": 90,
+            "line": 91,
             "is_consolidated": false,
             "full_text": "/* PoP: disconnect @ gateway/relay/adapter.py:disconnect */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/adapter.py",
@@ -131429,7 +131391,7 @@
             ],
             "c_file": "src/gateway/port_relay_adapter_remaining.c",
             "python_file": "gateway/relay/adapter.py",
-            "line": 96,
+            "line": 97,
             "is_consolidated": false,
             "full_text": "/* PoP: send @ gateway/relay/adapter.py:send */"
           },
@@ -131458,7 +131420,7 @@
             ],
             "c_file": "src/gateway/port_relay_adapter_remaining.c",
             "python_file": "gateway/relay/adapter.py",
-            "line": 105,
+            "line": 106,
             "is_consolidated": false,
             "full_text": "/* PoP: edit_message @ gateway/relay/adapter.py:edit_message */"
           },
@@ -131487,7 +131449,7 @@
             ],
             "c_file": "src/gateway/port_relay_adapter_remaining.c",
             "python_file": "gateway/relay/adapter.py",
-            "line": 113,
+            "line": 114,
             "is_consolidated": false,
             "full_text": "/* PoP: send_typing @ gateway/relay/adapter.py:send_typing */"
           },
@@ -131516,7 +131478,7 @@
             ],
             "c_file": "src/gateway/port_relay_adapter_remaining.c",
             "python_file": "gateway/relay/adapter.py",
-            "line": 120,
+            "line": 121,
             "is_consolidated": false,
             "full_text": "/* PoP: stop_typing @ gateway/relay/adapter.py:stop_typing */"
           },
@@ -131545,7 +131507,7 @@
             ],
             "c_file": "src/gateway/port_relay_adapter_remaining.c",
             "python_file": "gateway/relay/adapter.py",
-            "line": 127,
+            "line": 128,
             "is_consolidated": false,
             "full_text": "/* PoP: get_chat_info @ gateway/relay/adapter.py:get_chat_info */"
           },
@@ -131574,7 +131536,7 @@
             ],
             "c_file": "src/gateway/port_relay_adapter_remaining.c",
             "python_file": "gateway/relay/adapter.py",
-            "line": 136,
+            "line": 137,
             "is_consolidated": false,
             "full_text": "/* PoP: send_follow_up @ gateway/relay/adapter.py:send_follow_up */"
           },
@@ -131928,10 +131890,10 @@
     },
     "gateway/relay/transport.py": {
       "total": 10,
-      "ported": 9,
+      "ported": 10,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 10,
@@ -132150,7 +132112,7 @@
             "decorators": [],
             "line_number": 93
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_relay_transport_remaining.c",
           "c_function": "rtr_send_interrupt",
           "pop_annotation": {
@@ -132164,12 +132126,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: send_interrupt @ gateway/relay/transport.py:send_interrupt */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "gateway/relay/transport.py",
@@ -147331,10 +147291,10 @@
     },
     "gateway/session_context.py": {
       "total": 8,
-      "ported": 7,
+      "ported": 8,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 8,
@@ -147524,7 +147484,7 @@
             "decorators": [],
             "line_number": 329
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/gateway/port_gateway_remaining_wrappers.c",
           "c_function": "gateway_session_context_declare_stateless_channel",
           "pop_annotation": {
@@ -147538,12 +147498,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: declare_stateless_channel @ gateway/session_context.py:declare_stateless_channel */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "gateway/session_context.py",
@@ -186425,10 +186383,10 @@
     },
     "hermes_cli/gateway.py": {
       "total": 171,
-      "ported": 168,
+      "ported": 171,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 171,
@@ -191059,7 +191017,7 @@
             "decorators": [],
             "line_number": 5731
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_gateway_cli_remaining.c",
           "c_function": "gwc2_setup_weixin",
           "pop_annotation": {
@@ -191073,12 +191031,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _setup_weixin @ hermes_cli/gateway.py:_setup_weixin */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/gateway.py",
@@ -191090,7 +191046,7 @@
             "decorators": [],
             "line_number": 5902
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_gateway_cli_remaining.c",
           "c_function": "gwc2_setup_qqbot",
           "pop_annotation": {
@@ -191100,16 +191056,14 @@
             ],
             "c_file": "src/cli/port_gateway_cli_remaining.c",
             "python_file": "hermes_cli/gateway.py",
-            "line": 118,
+            "line": 124,
             "is_consolidated": false,
             "full_text": "/* PoP: _setup_qqbot @ hermes_cli/gateway.py:_setup_qqbot */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/gateway.py",
@@ -191121,7 +191075,7 @@
             "decorators": [],
             "line_number": 6028
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_gateway_cli_remaining.c",
           "c_function": "gwc2_setup_signal",
           "pop_annotation": {
@@ -191131,16 +191085,14 @@
             ],
             "c_file": "src/cli/port_gateway_cli_remaining.c",
             "python_file": "hermes_cli/gateway.py",
-            "line": 125,
+            "line": 137,
             "is_consolidated": false,
             "full_text": "/* PoP: _setup_signal @ hermes_cli/gateway.py:_setup_signal */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/gateway.py",
@@ -205531,10 +205483,10 @@
     },
     "hermes_cli/main.py": {
       "total": 285,
-      "ported": 253,
+      "ported": 254,
       "partial": 1,
       "stub": 0,
-      "real_gaps": 31,
+      "real_gaps": 30,
       "thin": true,
       "pop_mismatch": false,
       "py_func_count": 285,
@@ -209767,7 +209719,7 @@
             "decorators": [],
             "line_number": 6718
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_main_wrappers.c",
           "c_function": "main_u_print_curator_recent_run_notice",
           "pop_annotation": {
@@ -209781,12 +209733,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _print_curator_recent_run_notice @ hermes_cli/main.py:_print_curator_recent_run_notice */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/main.py",
@@ -213954,10 +213904,10 @@
     },
     "hermes_cli/managed_uv.py": {
       "total": 28,
-      "ported": 26,
+      "ported": 28,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 28,
@@ -214700,7 +214650,7 @@
             "decorators": [],
             "line_number": 918
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_managed_uv_wrappers.c",
           "c_function": "muv_u_install_uv_posix",
           "pop_annotation": {
@@ -214714,12 +214664,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _install_uv_posix @ hermes_cli/managed_uv.py:_install_uv_posix */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/managed_uv.py",
@@ -214731,7 +214679,7 @@
             "decorators": [],
             "line_number": 942
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_managed_uv_wrappers.c",
           "c_function": "muv_u_install_uv_windows",
           "pop_annotation": {
@@ -214741,16 +214689,14 @@
             ],
             "c_file": "src/cli/port_managed_uv_wrappers.c",
             "python_file": "hermes_cli/managed_uv.py",
-            "line": 339,
+            "line": 340,
             "is_consolidated": false,
             "full_text": "/* PoP: _install_uv_windows @ hermes_cli/managed_uv.py:_install_uv_windows */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/managed_uv.py",
@@ -214772,7 +214718,7 @@
             ],
             "c_file": "src/cli/port_managed_uv_wrappers.c",
             "python_file": "hermes_cli/managed_uv.py",
-            "line": 348,
+            "line": 349,
             "is_consolidated": false,
             "full_text": "/* PoP: rebuild_venv @ hermes_cli/managed_uv.py:rebuild_venv */"
           },
@@ -234476,10 +234422,10 @@
     },
     "hermes_cli/projects_cmd.py": {
       "total": 17,
-      "ported": 14,
+      "ported": 15,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 2,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 17,
@@ -234495,7 +234441,7 @@
             "decorators": [],
             "line_number": 22
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_cli_remaining_wrappers.c",
           "c_function": "hermes_cli_projects_cmd_build_parser",
           "pop_annotation": {
@@ -234509,12 +234455,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: build_parser @ hermes_cli/projects_cmd.py:build_parser */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/projects_cmd.py",
@@ -237526,10 +237470,10 @@
     },
     "hermes_cli/proxy/cli.py": {
       "total": 5,
-      "ported": 4,
+      "ported": 5,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 5,
@@ -237545,7 +237489,7 @@
             "decorators": [],
             "line_number": 21
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_cli_remaining_wrappers.c",
           "c_function": "hermes_cli_proxy_cli_u_print_aiohttp_missing",
           "pop_annotation": {
@@ -237559,12 +237503,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _print_aiohttp_missing @ hermes_cli/proxy/cli.py:_print_aiohttp_missing */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/proxy/cli.py",
@@ -240679,10 +240621,10 @@
     },
     "hermes_cli/secrets_cli.py": {
       "total": 12,
-      "ported": 11,
+      "ported": 12,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 12,
@@ -240698,7 +240640,7 @@
             "decorators": [],
             "line_number": 41
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_cli_remaining_wrappers.c",
           "c_function": "hermes_cli_secrets_cli_register_cli",
           "pop_annotation": {
@@ -240712,12 +240654,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: register_cli @ hermes_cli/secrets_cli.py:register_cli */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/secrets_cli.py",
@@ -245952,10 +245892,10 @@
     },
     "hermes_cli/setup.py": {
       "total": 56,
-      "ported": 55,
+      "ported": 56,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 56,
@@ -246203,7 +246143,7 @@
             "decorators": [],
             "line_number": 182
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_setup_remaining.c",
           "c_function": "stp_print_noninteractive_setup_guidance",
           "pop_annotation": {
@@ -246217,12 +246157,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: print_noninteractive_setup_guidance @ hermes_cli/setup.py:print_noninteractive_setup_guidance */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/setup.py",
@@ -250826,10 +250764,10 @@
     },
     "hermes_cli/subcommands/debug.py": {
       "total": 1,
-      "ported": 0,
+      "ported": 1,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 1,
@@ -250845,7 +250783,7 @@
             "decorators": [],
             "line_number": 13
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_cli_remaining_wrappers.c",
           "c_function": "hermes_cli_subcommands_debug_build_debug_parser",
           "pop_annotation": {
@@ -250859,12 +250797,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: build_debug_parser @ hermes_cli/subcommands/debug.py:build_debug_parser */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         }
       ]
     },
@@ -274671,10 +274607,10 @@
     },
     "hermes_cli/windows_ssh_runtime.py": {
       "total": 29,
-      "ported": 28,
+      "ported": 29,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 29,
@@ -275502,7 +275438,7 @@
             "decorators": [],
             "line_number": 496
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_windows_ssh_runtime_remaining.c",
           "c_function": "wss_main",
           "pop_annotation": {
@@ -275516,12 +275452,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: main @ hermes_cli/windows_ssh_runtime.py:main */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         }
       ]
     },
@@ -282830,10 +282764,10 @@
     },
     "tools/approval.py": {
       "total": 94,
-      "ported": 93,
+      "ported": 94,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 94,
@@ -284502,7 +284436,7 @@
             "decorators": [],
             "line_number": 2048
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/tools/port_approval_remaining2.c",
           "c_function": "apr2_register_gateway_notify",
           "pop_annotation": {
@@ -284516,12 +284450,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: register_gateway_notify @ tools/approval.py:register_gateway_notify */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "tools/approval.py",
@@ -288323,10 +288255,10 @@
     },
     "tools/browser_supervisor.py": {
       "total": 40,
-      "ported": 38,
+      "ported": 39,
       "partial": 1,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 40,
@@ -288719,7 +288651,7 @@
             "decorators": [],
             "line_number": 640
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/tools/port_browser_supervisor_remaining.c",
           "c_function": "bsv_run",
           "pop_annotation": {
@@ -288733,12 +288665,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _run @ tools/browser_supervisor.py:_run */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "tools/browser_supervisor.py",
@@ -294298,10 +294228,10 @@
     },
     "tools/code_execution_tool.py": {
       "total": 19,
-      "ported": 17,
+      "ported": 19,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 19,
@@ -294327,7 +294257,7 @@
             ],
             "c_file": "src/cli/port_code_execution_helpers.c",
             "python_file": "tools/code_execution_tool.py",
-            "line": 20,
+            "line": 37,
             "is_consolidated": false,
             "full_text": "/* PoP: _assemble_stdout_result @ tools/code_execution_tool.py:_assemble_stdout_result */"
           },
@@ -294356,7 +294286,7 @@
             ],
             "c_file": "src/cli/port_code_execution_helpers.c",
             "python_file": "tools/code_execution_tool.py",
-            "line": 31,
+            "line": 48,
             "is_consolidated": false,
             "full_text": "/* PoP: _truncate_stdout_text @ tools/code_execution_tool.py:_truncate_stdout_text */"
           },
@@ -294385,7 +294315,7 @@
             ],
             "c_file": "src/cli/port_code_execution_helpers.c",
             "python_file": "tools/code_execution_tool.py",
-            "line": 44,
+            "line": 61,
             "is_consolidated": false,
             "full_text": "/* PoP: _scrub_child_env @ tools/code_execution_tool.py:_scrub_child_env */"
           },
@@ -294443,7 +294373,7 @@
             ],
             "c_file": "src/cli/port_code_execution_helpers.c",
             "python_file": "tools/code_execution_tool.py",
-            "line": 60,
+            "line": 77,
             "is_consolidated": false,
             "full_text": "/* PoP: generate_hermes_tools_module @ tools/code_execution_tool.py:generate_hermes_tools_module */"
           },
@@ -294462,7 +294392,7 @@
             "decorators": [],
             "line_number": 564
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_code_execution_helpers.c",
           "c_function": "code_exec_rpc_server_loop",
           "pop_annotation": {
@@ -294472,16 +294402,14 @@
             ],
             "c_file": "src/cli/port_code_execution_helpers.c",
             "python_file": "tools/code_execution_tool.py",
-            "line": 65,
+            "line": 82,
             "is_consolidated": false,
             "full_text": "/* PoP: _rpc_server_loop @ tools/code_execution_tool.py:_rpc_server_loop */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/code_execution_tool.py",
@@ -294503,7 +294431,7 @@
             ],
             "c_file": "src/cli/port_code_execution_helpers.c",
             "python_file": "tools/code_execution_tool.py",
-            "line": 75,
+            "line": 112,
             "is_consolidated": false,
             "full_text": "/* PoP: _get_or_create_env @ tools/code_execution_tool.py:_get_or_create_env */"
           },
@@ -294532,7 +294460,7 @@
             ],
             "c_file": "src/cli/port_code_execution_helpers.c",
             "python_file": "tools/code_execution_tool.py",
-            "line": 81,
+            "line": 118,
             "is_consolidated": false,
             "full_text": "/* PoP: _ship_file_to_remote @ tools/code_execution_tool.py:_ship_file_to_remote */"
           },
@@ -294580,7 +294508,7 @@
             "decorators": [],
             "line_number": 843
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/cli/port_code_execution_helpers.c",
           "c_function": "code_exec_rpc_poll_loop",
           "pop_annotation": {
@@ -294590,16 +294518,14 @@
             ],
             "c_file": "src/cli/port_code_execution_helpers.c",
             "python_file": "tools/code_execution_tool.py",
-            "line": 121,
+            "line": 158,
             "is_consolidated": false,
             "full_text": "/* PoP: _rpc_poll_loop @ tools/code_execution_tool.py:_rpc_poll_loop */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/code_execution_tool.py",
@@ -294621,7 +294547,7 @@
             ],
             "c_file": "src/cli/port_code_execution_helpers.c",
             "python_file": "tools/code_execution_tool.py",
-            "line": 130,
+            "line": 178,
             "is_consolidated": false,
             "full_text": "/* PoP: _execute_remote @ tools/code_execution_tool.py:_execute_remote */"
           },
@@ -294679,7 +294605,7 @@
             ],
             "c_file": "src/cli/port_code_execution_helpers.c",
             "python_file": "tools/code_execution_tool.py",
-            "line": 136,
+            "line": 184,
             "is_consolidated": false,
             "full_text": "/* PoP: _kill_process_group @ tools/code_execution_tool.py:_kill_process_group */"
           },
@@ -294737,7 +294663,7 @@
             ],
             "c_file": "src/cli/port_code_execution_helpers.c",
             "python_file": "tools/code_execution_tool.py",
-            "line": 142,
+            "line": 190,
             "is_consolidated": false,
             "full_text": "/* PoP: _get_execution_mode @ tools/code_execution_tool.py:_get_execution_mode */"
           },
@@ -294766,7 +294692,7 @@
             ],
             "c_file": "src/cli/port_code_execution_helpers.c",
             "python_file": "tools/code_execution_tool.py",
-            "line": 148,
+            "line": 196,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_usable_python @ tools/code_execution_tool.py:_is_usable_python */"
           },
@@ -294795,7 +294721,7 @@
             ],
             "c_file": "src/cli/port_code_execution_helpers.c",
             "python_file": "tools/code_execution_tool.py",
-            "line": 162,
+            "line": 210,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_child_python @ tools/code_execution_tool.py:_resolve_child_python */"
           },
@@ -294824,7 +294750,7 @@
             ],
             "c_file": "src/cli/port_code_execution_helpers.c",
             "python_file": "tools/code_execution_tool.py",
-            "line": 171,
+            "line": 219,
             "is_consolidated": false,
             "full_text": "/* PoP: _resolve_child_cwd @ tools/code_execution_tool.py:_resolve_child_cwd */"
           },
@@ -294853,7 +294779,7 @@
             ],
             "c_file": "src/cli/port_code_execution_helpers.c",
             "python_file": "tools/code_execution_tool.py",
-            "line": 177,
+            "line": 225,
             "is_consolidated": false,
             "full_text": "/* PoP: build_execute_code_schema @ tools/code_execution_tool.py:build_execute_code_schema */"
           },
@@ -311432,10 +311358,10 @@
     },
     "tools/file_operations.py": {
       "total": 70,
-      "ported": 68,
+      "ported": 69,
       "partial": 1,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 70,
@@ -313170,7 +313096,7 @@
             "decorators": [],
             "line_number": 1882
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/tools/port_file_operations_remaining.c",
           "c_function": "fo_lsp_local_only",
           "pop_annotation": {
@@ -313184,12 +313110,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _lsp_local_only @ tools/file_operations.py:_lsp_local_only */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -322063,10 +321987,10 @@
     },
     "tools/mcp_tool.py": {
       "total": 132,
-      "ported": 129,
+      "ported": 131,
       "partial": 1,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 132,
@@ -323876,7 +323800,7 @@
             "decorators": [],
             "line_number": 2726
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/tools/port_mcp_tool_remaining.c",
           "c_function": "mct_run_http",
           "pop_annotation": {
@@ -323890,12 +323814,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _run_http @ tools/mcp_tool.py:_run_http */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -325879,7 +325801,7 @@
             "decorators": [],
             "line_number": 6389
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/tools/port_mcp_tool_remaining.c",
           "c_function": "mct_stop_mcp_loop",
           "pop_annotation": {
@@ -325893,12 +325815,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _stop_mcp_loop @ tools/mcp_tool.py:_stop_mcp_loop */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         }
       ]
     },
@@ -329573,10 +329493,10 @@
     },
     "tools/online_research.py": {
       "total": 19,
-      "ported": 18,
+      "ported": 19,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 19,
@@ -329766,7 +329686,7 @@
             "decorators": [],
             "line_number": 98
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/tools/port_tools_remaining_wrappers.c",
           "c_function": "tools_online_research_u__aenter__",
           "pop_annotation": {
@@ -329780,12 +329700,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: __aenter__ @ tools/online_research.py:__aenter__ */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "tools/online_research.py",
@@ -359941,10 +359859,10 @@
     },
     "tools/xai_video_tools.py": {
       "total": 8,
-      "ported": 6,
+      "ported": 7,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 8,
@@ -360068,7 +359986,7 @@
             "decorators": [],
             "line_number": 48
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/tools/port_tools_remaining_wrappers.c",
           "c_function": "tools_xai_video_tools_u_provider_not_configured_error",
           "pop_annotation": {
@@ -360082,12 +360000,10 @@
             "is_consolidated": false,
             "full_text": "/* PoP: _provider_not_configured_error @ tools/xai_video_tools.py:_provider_not_configured_error */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "tools/xai_video_tools.py",

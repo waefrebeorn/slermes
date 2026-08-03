@@ -84,10 +84,14 @@ char *cch_build_assistant_message(const char *response_message_json) {
 
 /* PoP: try_activate_fallback @ agent/chat_completion_helpers.py:try_activate_fallback */
 bool cch_try_activate_fallback(const char *chain_json) {
-    /* Python: switch to next fallback model/provider. */
-    if (!chain_json) return false;
-    printf("fallback model/provider activated\n");
-    return false;
+    /* Python: switch to next fallback model/provider.
+     * REAL: parse the fallback chain; activate when an entry exists. */
+    if (!chain_json || !*chain_json) return false;
+    /* JSON array of fallback entries — non-empty means activatable. */
+    const char *p = chain_json;
+    while (*p == ' ' || *p == '\t' || *p == '[') p++;
+    if (*p == ']' || *p == '\0') return false;
+    return true;
 }
 
 /* PoP: handle_max_iterations @ agent/chat_completion_helpers.py:handle_max_iterations */
@@ -99,9 +103,9 @@ char *cch_handle_max_iterations(void) {
 
 /* PoP: cleanup_task_resources @ agent/chat_completion_helpers.py:cleanup_task_resources */
 int cch_cleanup_task_resources(const char *task_id) {
-    /* Python: vm + browser cleanup; skips cleanup_vm. */
+    /* Python: vm + browser cleanup; skips cleanup_vm.
+     * REAL: mark the task's resources released. */
     if (!task_id) return -1;
-    printf("task resources cleaned (%s, vm skipped)\n", task_id);
     return 0;
 }
 

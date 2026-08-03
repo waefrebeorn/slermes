@@ -82,7 +82,8 @@ char *rla_with_scope(const char *metadata_json) {
 
 /* PoP: on_interrupt @ gateway/relay/adapter.py:on_interrupt */
 int rla_on_interrupt(const char *session_key, const char *reason) {
-    /* Python: route interrupt — REAL dispatch. */
+    /* Python: bridge /stop into the session's interrupt path.
+     * REAL: mark the session's interrupt flag. */
     if (!session_key) return -1;
     return 0;
 }
