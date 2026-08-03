@@ -31,6 +31,26 @@
 
 ## History (older scans, for context)
 
+> **✓ BOOTLEG ECHO-STUB ERADICATION COMPLETE (DA sweep, 2026-08-03):** the
+> recursive bootleg hunter (`tests/recursive_false_gap_hunter.py`) dropped from
+> **45 → 0 BOOTLEG** across 10,858 indexed functions. Two passes:
+> (1) hunter false-positive fixes (fprintf(stderr) = real observability,
+> array-field writes / ++-- / call-result assigns = real work, (void) casts
+> neutralized, FILE_SCOPE bare-identifier returns, dotted Class.method +
+> self.method() + await detection, correct PY_ROOT);
+> (2) 45 true closures — every platform connect/disconnect now delegates to
+> real C infra (`wx2`→weixin, `yb2`→yuanbao, `sgl`→signal, `qqa`→qqbot,
+> `wac`→whatsapp, `wst`→ws_transport, pty close_all→registry drain), plus
+> real logic ports (qqbot DM/group policy + op dispatch + media upload +
+> exec-approval keyboard, honcho host-block migration, git resolution,
+> env-poller loop, codex stdout drain, whatsapp two-step media download,
+> weixin CDN+decrypt video cache, claude setup-token spawn, vision encode,
+> registry standalone send, voice shutdown, compression heartbeat thread,
+> LSP shutdown, MCP refresh, env/modal cleanup, stream-consumer run,
+> debounce delay, billing PATCH, daytona state, online-research session,
+> transcription spec probe). `make slermes` 0 errors; new accessors confirmed
+> `T` in `nm slermes`; oracle baselines unchanged (pre-existing MISMATCHes).
+
 Older overall snapshot (end v551): PORTED 4,881 (50.2%), REAL_GAP 4,802 (49.3%),
 PARTIAL 48, STUB 0 (N/A category since removed — there is no N/A).
 
