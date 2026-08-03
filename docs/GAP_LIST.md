@@ -36,21 +36,24 @@
 
 ## 🔴 Open gaps (ranked)
 
-### P0 — correctness / real behavior
-1. **MOA engine**: `moa_create()` in port_moa_loop_ports.c is a stub
-   (`printf` + `strdup("{}")`). `/moa` delegates to a wrapper that calls it.
-   Port `agent/moa_loop.py:create` for real.
-2. **Pet generation pipeline**: `/hatch` delegates to the wrapper, but the
-   image-model generate step (`agent/pet/generate/orchestrate.py`) has no C
-   backend. `pet_atlas` + `port_pet_prompts` exist; the orchestration +
-   image-gen provider call is missing.
-3. **`cli_u_handle_battery_command` / `cli_u_battery_status_style`**
-   (port_cli_wrappers.c) are `(void)req; return json_object();` stubs.
-4. **`hermes_cli_journey_cmd_journey`** wrapper needs verification that its
-   underlying journey storage read is real (not printf-only).
-5. **nous billing/subscription**: `/subscription` + `/topup` print
-   portal-hint text; real account/balance read not wired (port_nous_billing
-   exists — verify).
+### ✅ Closed 2026-08-03 (P0 batch — verified end-to-end, committed)
+1. **MOA engine** — `moa_create` was `printf` + `strdup("{}")`. Now a real
+   port of `agent/moa_loop.py:create` + `_call_prepared_aggregator`:
+   prepared-request path (aggregator slot → llm_chat_completion) + preset
+   fan-out path (reference advisors → aggregator synthesis with MoA
+   guidance). Verified vs a mock LLM (2 advisor calls + aggregation).
+2. **Pet generation** — `/pet hatch` now runs the real pipeline (prompt via
+   pet_prompts_build_base → image_generate_handler → b64 decode → new
+   pet_install() → select). Also fixed a critical 10MB stack overflow in
+   pet_gallery_json (PET_MAX_PETS×pet_installed_t on the stack). Verified:
+   hatched pet with generated:true.
+3. **Battery stubs** — read_battery REAL_GAP closed with a sysfs reader
+   (src/battery.c); `/battery` toggles + live read-out. Verified: 🔋 94%.
+4. **Nous billing/subscription** — `/subscription` + `/topup` wired to the
+   real build_billing_state() portal fetch; billing_fetch no longer shells
+   out to curl (internal libhttp). Verified: $42.50 / org / role.
+5. **Journey wrapper** — verified real (delegates to the faithful
+   hermes_cli_journey_cmd_journey wrapper; reads the sessions DB).
 
 ### P1 — desktop UX (from pass3 audit, 34/40)
 6. **Right-rail/preview pane** — no terminal/file-preview/agents panel.
