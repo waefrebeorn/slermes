@@ -157,16 +157,20 @@ static hub_skill_meta_t parse_skill_item(json_node_t *item) {
 static int search_catalog(const skills_catalog_t *cat, const char *query,
                            hub_skill_meta_t *results, int limit, int offset) {
     if (!cat || !results || limit <= 0) return 0;
+    if (!cat->skills) return 0;
 
     bool empty_query = (!query || !query[0]);
     int found = 0;
 
-    for (int i = 0; i < cat->count && found < limit; i++) {
+    hive_iter_t it;
+    hive_iter_begin(cat->skills, &it);
+    hub_skill_meta_t *s;
+    while (hive_iter_next(cat->skills, &it, NULL, (void **)&s)) {
+        if (found >= limit) break;
         bool match = false;
         if (empty_query) {
             match = true;
         } else {
-            const hub_skill_meta_t *s = &cat->skills[i];
             if (strcasestr(s->name, query)) match = true;
             else if (strcasestr(s->title, query)) match = true;
             else if (strcasestr(s->description, query)) match = true;
@@ -176,7 +180,7 @@ static int search_catalog(const skills_catalog_t *cat, const char *query,
         }
         if (match) {
             if (offset > 0) { offset--; continue; }
-            results[found++] = cat->skills[i];
+            results[found++] = *s;
         }
     }
     return found;
@@ -216,8 +220,19 @@ static bool fetch_browsesh_source(skill_source_t *src) {
         return false;
     }
 
-    /* Clear existing */
-    memset(&src->catalog, 0, sizeof(src->catalog));
+    /* Clear existing catalog (free hive if present) */
+    if (src->catalog.skills) {
+        hive_iter_t it;
+        hive_iter_begin(src->catalog.skills, &it);
+        hive_handle_t hnd;
+        hub_skill_meta_t *m;
+        while (hive_iter_next(src->catalog.skills, &it, &hnd, (void **)&m)) {
+            free(m);
+            hive_erase(src->catalog.skills, hnd);
+        }
+    }
+    src->catalog.skills = hive_new(16);
+    src->catalog.count = 0;
     snprintf(src->source_id, sizeof(src->source_id), "%s", SKILLS_HUB_SOURCE_ID);
     src->type = SKILLS_HUB_SRC_BROWSESH;
 
@@ -232,7 +247,12 @@ static bool fetch_browsesh_source(skill_source_t *src) {
         for (size_t i = 0; i < n; i++) {
             json_node_t *item = json_get(skills_arr, i);
             if (!item) continue;
-            src->catalog.skills[src->catalog.count] = parse_skill_item(item);
+            hub_skill_meta_t *m = malloc(sizeof(hub_skill_meta_t));
+            if (!m) break;
+            *m = parse_skill_item(item);
+            bool ok = false;
+            hive_insert(src->catalog.skills, m, &ok);
+            if (!ok) { free(m); break; }
             src->catalog.count++;
         }
     }
@@ -306,9 +326,13 @@ bool skills_hub_get_by_slug(const char *slug, hub_skill_meta_t *out) {
 
     /* Search all sources */
     for (int s = 0; s < g_source_count; s++) {
-        for (int i = 0; i < g_sources[s].catalog.count; i++) {
-            if (strcmp(g_sources[s].catalog.skills[i].slug, slug) == 0) {
-                *out = g_sources[s].catalog.skills[i];
+        if (!g_sources[s].catalog.skills) continue;
+        hive_iter_t it;
+        hive_iter_begin(g_sources[s].catalog.skills, &it);
+        hub_skill_meta_t *m;
+        while (hive_iter_next(g_sources[s].catalog.skills, &it, NULL, (void **)&m)) {
+            if (strcmp(m->slug, slug) == 0) {
+                *out = *m;
                 return true;
             }
         }
@@ -319,7 +343,21 @@ bool skills_hub_get_by_slug(const char *slug, hub_skill_meta_t *out) {
 /* Port of Python: index cache clear */
 /* PoP: skills_hub_clear_cache @ tools/skills_hub.py:clear_cache */
 void skills_hub_clear_cache(void) {
-    memset(&g_sources, 0, sizeof(g_sources));
+    for (int s = 0; s < g_source_count; s++) {
+        if (g_sources[s].catalog.skills) {
+            hive_iter_t it;
+            hive_iter_begin(g_sources[s].catalog.skills, &it);
+            hive_handle_t hnd;
+            hub_skill_meta_t *m;
+            while (hive_iter_next(g_sources[s].catalog.skills, &it, &hnd, (void **)&m)) {
+                free(m);
+                hive_erase(g_sources[s].catalog.skills, hnd);
+            }
+            hive_free(g_sources[s].catalog.skills);
+            g_sources[s].catalog.skills = NULL;
+        }
+        g_sources[s].catalog.count = 0;
+    }
     g_source_count = 0;
     g_last_fetch = 0;
 }
@@ -354,20 +392,23 @@ char *skills_hub_summary(void) {
         char seen[32][64];
         int seen_count = 0;
         for (int s = 0; s < g_source_count; s++) {
-            for (int i = 0; i < g_sources[s].catalog.count && i < 1000; i++) {
-                if (!g_sources[s].catalog.skills[i].category[0]) continue;
+            if (!g_sources[s].catalog.skills) continue;
+            hive_iter_t it;
+            hive_iter_begin(g_sources[s].catalog.skills, &it);
+            hub_skill_meta_t *m;
+            while (hive_iter_next(g_sources[s].catalog.skills, &it, NULL, (void **)&m)) {
+                if (!m->category[0]) continue;
                 bool found = false;
                 for (int j = 0; j < seen_count; j++) {
-                    if (strcmp(seen[j], g_sources[s].catalog.skills[i].category) == 0) {
+                    if (strcmp(seen[j], m->category) == 0) {
                         found = true; break;
                     }
                 }
                 if (!found && seen_count < 32) {
-                    snprintf(seen[seen_count], sizeof(seen[0]), "%s",
-                             g_sources[s].catalog.skills[i].category);
+                    snprintf(seen[seen_count], sizeof(seen[0]), "%s", m->category);
                     seen_count++;
                     if (categories[0]) strncat(categories, ", ", sizeof(categories) - strlen(categories) - 1);
-                    strncat(categories, g_sources[s].catalog.skills[i].category, sizeof(categories) - strlen(categories) - 1);
+                    strncat(categories, m->category, sizeof(categories) - strlen(categories) - 1);
                 }
             }
         }
@@ -391,9 +432,15 @@ bool skills_hub_register_static(const hub_skill_meta_t *skills, int count, const
     snprintf(src->source_id, sizeof(src->source_id), "%s", source_id);
     src->type = SKILLS_HUB_SRC_WELLKNOWN;
 
+    src->catalog.skills = hive_new(16);
     int copy_count = count < SKILLS_HUB_MAX_SKILLS ? count : SKILLS_HUB_MAX_SKILLS;
     for (int i = 0; i < copy_count; i++) {
-        src->catalog.skills[i] = skills[i];
+        hub_skill_meta_t *m = malloc(sizeof(hub_skill_meta_t));
+        if (!m) break;
+        *m = skills[i];
+        bool ok = false;
+        hive_insert(src->catalog.skills, m, &ok);
+        if (!ok) { free(m); break; }
     }
     src->catalog.count = copy_count;
     src->catalog.loaded = true;

@@ -8,6 +8,8 @@
 #ifndef HERMES_SKILLS_HUB_H
 #define HERMES_SKILLS_HUB_H
 
+#include "hive.h"
+
 #include <stdbool.h>
 #include <stddef.h>
 #include "hermes_json.h"
@@ -75,7 +77,7 @@ typedef struct {
 } hub_skill_meta_t;
 
 typedef struct {
-    hub_skill_meta_t skills[SKILLS_HUB_MAX_SKILLS];
+    hive_t *skills;    /* hive of hub_skill_meta_t* (heap) — no landlocked array */
     int count;
     bool loaded;
 } skills_catalog_t;
