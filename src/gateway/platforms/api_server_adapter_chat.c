@@ -341,24 +341,52 @@ void api_server_handle_session_chat(api_server_adapter_t *adapter, int client_fd
     json_t *req = json_parse(body, NULL);
     if (!req) { send_error_response(client_fd, 400, "Invalid JSON", NULL); return; }
 
-    /* Handle session chat - send message to the session */
+    /* Extract the user message + optional instructions. */
+    const char *user_message = json_get_str(req, "message", NULL);
+    if (!user_message) user_message = json_get_str(req, "content", NULL);
+    if (!user_message || !*user_message) {
+        json_free(req);
+        send_error_response(client_fd, 400, "message is required", NULL);
+        return;
+    }
+    const char *instructions = json_get_str(req, "instructions", NULL);
+    if (!instructions) instructions = json_get_str(req, "system_message", NULL);
+    const char *model = json_get_str(req, "model", NULL);
+
+    /* Run one real agent turn (mirrors Python's _handle_session_chat:
+     * session chat runs the agent synchronously). */
+    json_t *usage = NULL;
+    char *result = api_server_run_agent(
+        adapter, user_message, NULL, instructions,
+        session_id, NULL, NULL, NULL, NULL, NULL, &usage);
+
+    /* Parse the agent result. */
+    const char *final_text = "";
+    json_t *parsed = result ? json_parse(result, NULL) : NULL;
+    if (parsed) {
+        const char *fr = json_get_str(parsed, "final_response", NULL);
+        if (!fr) fr = json_get_str(parsed, "content", NULL);
+        if (!fr) fr = json_get_str(parsed, "response", NULL);
+        if (fr) final_text = fr;
+    }
+
     json_t *resp = json_object();
     json_set(resp, "object", json_string("hermes.session.chat.completion"));
     json_set(resp, "session_id", json_string(session_id));
+    if (model && *model) json_set(resp, "model", json_string(model));
     json_t *msg = json_object();
     json_set(msg, "role", json_string("assistant"));
-    json_set(msg, "content", json_string("Session chat endpoint active - message received"));
+    json_set(msg, "content", json_string(final_text));
     json_set(resp, "message", msg);
-    json_t *usage = json_object();
-    json_set(usage, "prompt_tokens", json_number(0));
-    json_set(usage, "completion_tokens", json_number(0));
-    json_set(usage, "total_tokens", json_number(0));
-    json_set(resp, "usage", usage);
+    json_t *u = usage ? usage : json_object();
+    json_set(resp, "usage", u);
 
     char *out = json_serialize(resp);
     send_json_response(client_fd, 200, out);
     free(out);
     json_free(resp);
+    if (parsed) json_free(parsed);
+    free(result);
     json_free(req);
 }
 

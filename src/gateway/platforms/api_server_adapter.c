@@ -675,11 +675,69 @@ agent_state_t *api_server_create_agent(
 
 void *agent_run_thread(void *arg) {
     agent_run_args_t *args = (agent_run_args_t *)arg;
-    args->result = strdup("{\"final_response\":\"This is a mock response from C adapter\",\"completed\":true}");
-    *args->usage_out = json_object();
-    json_set(*args->usage_out, "input_tokens", json_number(10));
-    json_set(*args->usage_out, "output_tokens", json_number(20));
-    json_set(*args->usage_out, "total_tokens", json_number(30));
+
+    /* Run the REAL agent on the gateway's agent state — mirrors Python's
+     * _run_agent(): one synchronous turn with the conversation history
+     * injected. The gateway state (g_gw.agent) is configured at gateway
+     * startup; the API server reuses it, serializing turns via the
+     * agent_mutex so concurrent chat requests don't interleave. */
+    extern gateway_state_t g_gw;
+    extern bool agent_inject_history(agent_state_t *state, const char *history_json);
+    extern char *agent_run_conversation(agent_state_t *state,
+                                        const char *user_message,
+                                        const char *system_message);
+
+    agent_state_t *agent = &g_gw.agent;
+
+    pthread_mutex_lock(&g_gw.agent_mutex);
+
+    /* Inject the conversation history (JSON array of {role, content}). */
+    if (args->conversation_history && args->conversation_history[0]) {
+        agent_inject_history(agent, args->conversation_history);
+    }
+
+    /* Run the turn. */
+    char *resp = agent_run_conversation(agent, args->user_message,
+                                        args->ephemeral_system_prompt);
+    if (!resp) resp = strdup("{\"error\":\"agent returned no response\"}");
+
+    /* Extract the final response text. */
+    json_t *parsed = json_parse(resp, NULL);
+    char *final_text = NULL;
+    if (parsed) {
+        const char *fr = json_get_str(parsed, "final_response", NULL);
+        if (!fr) fr = json_get_str(parsed, "content", NULL);
+        if (!fr) fr = json_get_str(parsed, "response", NULL);
+        if (fr) final_text = strdup(fr);
+        json_free(parsed);
+    }
+    free(resp);
+    if (!final_text) final_text = strdup("");
+
+    /* Build the completion-shaped result with proper JSON escaping. */
+    char *out = NULL;
+    {
+        json_t *r = json_object();
+        json_set(r, "final_response", json_string(final_text));
+        json_set(r, "completed", json_bool(true));
+        char *ser = json_serialize(r);
+        json_free(r);
+        free(final_text);
+        final_text = NULL;
+        out = ser ? ser : strdup("{}");
+    }
+
+    /* Usage accounting (best-effort). */
+    if (args->usage_out) {
+        json_t *u = json_object();
+        json_set(u, "input_tokens", json_number(0));
+        json_set(u, "output_tokens", json_number(0));
+        json_set(u, "total_tokens", json_number(0));
+        *args->usage_out = u;
+    }
+
+    pthread_mutex_unlock(&g_gw.agent_mutex);
+    args->result = out;
     return NULL;
 }
 
