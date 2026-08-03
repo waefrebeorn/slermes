@@ -315,8 +315,19 @@ def is_echo_stub(body):
         s = stmt.strip()
         if not s:
             continue
-        if re.match(r'^return\s+[^;]*$', s):
+        # Constant returns: literals, NULL, bare identifiers, g_*/s_* globals.
+        # NOT ternary expressions (b ? b->kind : "") or computed expressions —
+        # those are real accessors reading struct fields.
+        if re.match(r'^return\s+(0|-?[0-9]+(\.[0-9]+)?|NULL|null|false|true|False|True|""|\'\'|"[^"]*"|\'.\')\s*$', s):
             continue
+        if re.match(r'^return\s+[a-zA-Z_]\w*\s*$', s):
+            continue
+        if re.match(r'^return\s+(g_|s_)[a-zA-Z_]\w*\s*$', s):
+            continue
+        if s.startswith('return '):
+            # Any other return expression is a computed accessor (ternary,
+            # field deref, arithmetic) — real work, not an echo stub.
+            return False
         if re.match(r'^(?:const\s+|unsigned\s+|signed\s+|static\s+|volatile\s+)*[a-zA-Z_]\w*', s):
             continue
         return False
