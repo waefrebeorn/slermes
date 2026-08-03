@@ -10,7 +10,7 @@ import sys
 import types
 from pathlib import Path
 
-HERMES = Path("/home/wubu/hermes-agent-dev")  # live upstream tree
+HERMES = Path("/home/wubu/hermes-agent-dev")
 WEB_SERVER = HERMES / "hermes_cli/web_server.py"
 
 
