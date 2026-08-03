@@ -105,7 +105,8 @@ bool gw_session_set_source(const char *platform, const char *chat_id,
     pthread_mutex_lock(&g_gw.session_mutex);
     int idx = session_find(platform, chat_id);
     if (idx >= 0) {
-        g_gw.sessions[idx].source = *source;
+        gw_session_entry_t *se = session_at(idx);
+        if (se) se->source = *source;
         pthread_mutex_unlock(&g_gw.session_mutex);
         /* GW15: Update LRU cache */
         char key[192];
@@ -224,15 +225,38 @@ bool session_should_reset(double session_sec) {
     return false;
 }
 
+/* ── Session hive handle helpers ─────────────────────────────────────────
+ * The int session index doubles as a packed hive handle: block<<8 | slot.
+ * slot < 256 always (hive block cap <= 255). -1 = invalid. */
+
+static inline int sess_pack(hive_handle_t h) {
+    return (int)((h.block << 8) | h.slot);
+}
+static inline hive_handle_t sess_unpack(int idx) {
+    hive_handle_t h;
+    h.block = ((size_t)idx >> 8) & 0xffffff;
+    h.slot  = (size_t)idx & 0xff;
+    return h;
+}
+
+/* Fetch a session entry by packed handle; NULL when dead/out of range. */
+gw_session_entry_t *session_at(int idx) {
+    if (idx < 0 || !g_gw.sessions) return NULL;
+    return hive_get(g_gw.sessions, sess_unpack(idx));
+}
+
 void session_free(int idx) {
-    if (idx < 0 || idx >= GW_SESSIONS_MAX) return;
-    if (!g_gw.sessions[idx].in_use) return;
-    if (g_gw.sessions[idx].db) {
-        db_save(g_gw.sessions[idx].db, g_gw.sessions[idx].session_id, NULL);
-        db_close(g_gw.sessions[idx].db);
+    gw_session_entry_t *se = session_at(idx);
+    if (!se) return;
+    if (!se->in_use) return;
+    if (se->db) {
+        db_save(se->db, se->session_id, NULL);
+        db_close(se->db);
     }
-    agent_free(&g_gw.sessions[idx].agent);
-    memset(&g_gw.sessions[idx], 0, sizeof(g_gw.sessions[idx]));
+    agent_free(&se->agent);
+    free(se);
+    hive_erase(g_gw.sessions, sess_unpack(idx));
+    g_gw.session_count = (int)hive_count(g_gw.sessions);
 }
 
 /* Port of Python gateway/session.py:is_shared_multi_user_session().
@@ -256,11 +280,16 @@ void build_session_key(char *buf, size_t sz,
 }
 
 int session_find(const char *platform, const char *chat_id) {
+    if (!g_gw.sessions) return -1;
     char key[192];
     build_session_key(key, sizeof(key), platform, chat_id);
-    for (int i = 0; i < g_gw.session_count; i++) {
-        if (strcmp(g_gw.sessions[i].key, key) == 0 && g_gw.sessions[i].in_use)
-            return i;
+    hive_iter_t it;
+    hive_iter_begin(g_gw.sessions, &it);
+    hive_handle_t hnd;
+    gw_session_entry_t *se;
+    while (hive_iter_next(g_gw.sessions, &it, &hnd, (void **)&se)) {
+        if (strcmp(se->key, key) == 0 && se->in_use)
+            return sess_pack(hnd);
     }
     return -1;
 }
@@ -269,8 +298,12 @@ int session_create(const char *platform, const char *chat_id) {
     /* M13: Check configurable max concurrent sessions cap */
     if (g_gw.max_concurrent_sessions > 0) {
         int active_count = 0;
-        for (int i = 0; i < g_gw.session_count; i++) {
-            if (g_gw.sessions[i].in_use) active_count++;
+        if (g_gw.sessions) {
+            hive_iter_t it;
+            hive_iter_begin(g_gw.sessions, &it);
+            gw_session_entry_t *se;
+            while (hive_iter_next(g_gw.sessions, &it, NULL, (void **)&se))
+                if (se->in_use) active_count++;
         }
         if (active_count >= g_gw.max_concurrent_sessions) {
             printf("[gateway] Rejecting new session %s:%s: "
@@ -280,35 +313,33 @@ int session_create(const char *platform, const char *chat_id) {
             return -1;
         }
     }
-    if (g_gw.session_count >= GW_SESSIONS_MAX) {
-        /* Evict oldest inactive session */
+
+    /* Evict oldest inactive session when over the hard cap */
+    if (g_gw.sessions && hive_count(g_gw.sessions) >= (size_t)GW_SESSIONS_MAX) {
         int oldest = -1;
         double oldest_time = 1e18;
-        for (int i = 0; i < g_gw.session_count; i++) {
-            if (g_gw.sessions[i].last_active < oldest_time) {
-                oldest_time = g_gw.sessions[i].last_active;
-                oldest = i;
+        hive_iter_t it;
+        hive_iter_begin(g_gw.sessions, &it);
+        hive_handle_t hnd;
+        gw_session_entry_t *se;
+        while (hive_iter_next(g_gw.sessions, &it, &hnd, (void **)&se)) {
+            if (se->last_active < oldest_time) {
+                oldest_time = se->last_active;
+                oldest = sess_pack(hnd);
             }
         }
         if (oldest < 0) return -1;
         /* Save and free */
-        if (g_gw.sessions[oldest].db)
-            agent_save_session(&g_gw.sessions[oldest].agent);
-        agent_free(&g_gw.sessions[oldest].agent);
-        g_gw.sessions[oldest].in_use = false;
+        gw_session_entry_t *old_se = session_at(oldest);
+        if (old_se && old_se->db)
+            agent_save_session(&old_se->agent);
+        session_free(oldest);
     }
 
-    int idx = -1;
-    for (int i = 0; i < GW_SESSIONS_MAX; i++) {
-        if (!g_gw.sessions[i].in_use) {
-            idx = i;
-            break;
-        }
-    }
-    if (idx < 0) idx = g_gw.session_count; /* fallback: use next slot */
+    if (!g_gw.sessions) g_gw.sessions = hive_new(8);
 
-    gw_session_entry_t *se = &g_gw.sessions[idx];
-    memset(se, 0, sizeof(*se));
+    gw_session_entry_t *se = calloc(1, sizeof(gw_session_entry_t));
+    if (!se) return -1;
     build_session_key(se->key, sizeof(se->key), platform, chat_id);
     se->in_use = true;
     se->last_active = gw_mono_time();
@@ -333,58 +364,76 @@ int session_create(const char *platform, const char *chat_id) {
         se->db = db_open(g_gw.session_db_path, NULL);
     }
 
-    if (idx >= g_gw.session_count)
-        g_gw.session_count = idx + 1;
-
-    return idx;
+    bool ok = false;
+    hive_handle_t hnd = hive_insert(g_gw.sessions, se, &ok);
+    if (!ok) { free(se); return -1; }
+    g_gw.session_count = (int)hive_count(g_gw.sessions);
+    return sess_pack(hnd);
 }
 
 int session_get_or_create(const char *platform, const char *chat_id) {
     int idx = session_find(platform, chat_id);
     if (idx >= 0) {
-        double idle = gw_mono_time() - g_gw.sessions[idx].last_active;
-        /* Check auto-continue freshness window first (faster check) */
-        if (g_gw.auto_continue_freshness_secs > 0.0 &&
-            idle > g_gw.auto_continue_freshness_secs) {
-            session_free(idx);
-            return session_create(platform, chat_id);
+        gw_session_entry_t *se = session_at(idx);
+        if (se) {
+            double idle = gw_mono_time() - se->last_active;
+            /* Check auto-continue freshness window first (faster check) */
+            if (g_gw.auto_continue_freshness_secs > 0.0 &&
+                idle > g_gw.auto_continue_freshness_secs) {
+                session_free(idx);
+                return session_create(platform, chat_id);
+            }
+            /* Check configurable reset policy (daily/idle/both/none) */
+            if (session_should_reset(idle)) {
+                session_free(idx);
+                return session_create(platform, chat_id);
+            }
+            se->last_active = gw_mono_time();
+            return idx;
         }
-        /* Check configurable reset policy (daily/idle/both/none) */
-        if (session_should_reset(idle)) {
-            session_free(idx);
-            return session_create(platform, chat_id);
-        }
-        g_gw.sessions[idx].last_active = gw_mono_time();
-        return idx;
     }
     return session_create(platform, chat_id);
 }
 
 /* PoP: _find_gateway_session_row @ gateway/session.py:_find_gateway_session_row */
 int session_find_by_key(const char *session_key) {
-    if (!session_key) return -1;
-    for (int i = 0; i < g_gw.session_count; i++) {
-        if (g_gw.sessions[i].in_use && strcmp(g_gw.sessions[i].key, session_key) == 0)
-            return i;
+    if (!session_key || !g_gw.sessions) return -1;
+    hive_iter_t it;
+    hive_iter_begin(g_gw.sessions, &it);
+    hive_handle_t hnd;
+    gw_session_entry_t *se;
+    while (hive_iter_next(g_gw.sessions, &it, &hnd, (void **)&se)) {
+        if (se->in_use && strcmp(se->key, session_key) == 0)
+            return sess_pack(hnd);
     }
     return -1;
 }
 
 void session_save_all(void) {
-    for (int i = 0; i < g_gw.session_count; i++) {
-        if (g_gw.sessions[i].in_use && g_gw.sessions[i].db) {
-            agent_save_session(&g_gw.sessions[i].agent);
+    if (!g_gw.sessions) return;
+    hive_iter_t it;
+    hive_iter_begin(g_gw.sessions, &it);
+    gw_session_entry_t *se;
+    while (hive_iter_next(g_gw.sessions, &it, NULL, (void **)&se)) {
+        if (se->in_use && se->db) {
+            agent_save_session(&se->agent);
         }
     }
 }
 
 void session_cleanup_idle(void) {
     double now = gw_mono_time();
-    for (int i = 0; i < g_gw.session_count; i++) {
-        if (g_gw.sessions[i].in_use) {
-            double idle = now - g_gw.sessions[i].last_active;
+    if (!g_gw.sessions) return;
+    /* Collect victims first (erase while iterating is safe with handles). */
+    hive_iter_t it;
+    hive_iter_begin(g_gw.sessions, &it);
+    hive_handle_t hnd;
+    gw_session_entry_t *se;
+    while (hive_iter_next(g_gw.sessions, &it, &hnd, (void **)&se)) {
+        if (se->in_use) {
+            double idle = now - se->last_active;
             if (session_should_reset(idle))
-                session_free(i);
+                session_free(sess_pack(hnd));
         }
     }
 }
@@ -506,17 +555,20 @@ const char *active_profile_name(void) {
 
 /* PoP: has_any_sessions @ gateway/session.py:has_any_sessions */
 bool has_any_sessions(void) {
-    for (int i = 0; i < g_gw.session_count; i++) {
-        if (g_gw.sessions[i].in_use) return true;
-    }
+    if (!g_gw.sessions) return false;
+    hive_iter_t it;
+    hive_iter_begin(g_gw.sessions, &it);
+    gw_session_entry_t *se;
+    while (hive_iter_next(g_gw.sessions, &it, NULL, (void **)&se))
+        if (se->in_use) return true;
     return false;
 }
 
 /* PoP: has_platform_message_id @ gateway/session.py:has_platform_message_id */
 bool has_platform_message_id(int session_idx, const char *message_id) {
-    if (session_idx < 0 || session_idx >= g_gw.session_count) return false;
-    if (!g_gw.sessions[session_idx].in_use) return false;
-    const char *last = g_gw.sessions[session_idx].last_message_id;
+    gw_session_entry_t *se = session_at(session_idx);
+    if (!se || !se->in_use) return false;
+    const char *last = se->last_message_id;
     if (!last || !last[0]) return false;
     return strcmp(last, message_id) == 0;
 }
@@ -525,39 +577,55 @@ bool has_platform_message_id(int session_idx, const char *message_id) {
 void set_model_override(const char *session_key, const char *model) {
     int idx = session_find_by_key(session_key);
     if (idx >= 0) {
-        snprintf(g_gw.sessions[idx].model_override,
-                 sizeof(g_gw.sessions[idx].model_override),
-                 "%s", model ? model : "");
+        gw_session_entry_t *se = session_at(idx);
+        if (se)
+            snprintf(se->model_override,
+                     sizeof(se->model_override),
+                     "%s", model ? model : "");
     }
 }
 
 /* PoP: get_model_override @ gateway/session.py:get_model_override */
 const char *get_model_override(const char *session_key) {
     int idx = session_find_by_key(session_key);
-    if (idx >= 0) return g_gw.sessions[idx].model_override;
+    if (idx >= 0) {
+        gw_session_entry_t *se = session_at(idx);
+        if (se) return se->model_override;
+    }
     return NULL;
 }
 
 /* PoP: mark_resume_pending @ gateway/session.py:mark_resume_pending */
 void mark_resume_pending(const char *session_key) {
     int idx = session_find_by_key(session_key);
-    if (idx >= 0) g_gw.sessions[idx].resume_pending = true;
+    if (idx >= 0) {
+        gw_session_entry_t *se = session_at(idx);
+        if (se) se->resume_pending = true;
+    }
 }
 
 /* PoP: clear_resume_pending @ gateway/session.py:clear_resume_pending */
 void clear_resume_pending(const char *session_key) {
     int idx = session_find_by_key(session_key);
-    if (idx >= 0) g_gw.sessions[idx].resume_pending = false;
+    if (idx >= 0) {
+        gw_session_entry_t *se = session_at(idx);
+        if (se) se->resume_pending = false;
+    }
 }
 
 /* PoP: prune_old_entries @ gateway/session.py:prune_old_entries */
 void prune_old_entries(int max_age_secs) {
     double now = gw_mono_time();
-    for (int i = 0; i < g_gw.session_count; i++) {
-        if (g_gw.sessions[i].in_use) {
-            double age = now - g_gw.sessions[i].last_active;
+    if (!g_gw.sessions) return;
+    hive_iter_t it;
+    hive_iter_begin(g_gw.sessions, &it);
+    hive_handle_t hnd;
+    gw_session_entry_t *se;
+    while (hive_iter_next(g_gw.sessions, &it, &hnd, (void **)&se)) {
+        if (se->in_use) {
+            double age = now - se->last_active;
             if (age > (double)max_age_secs) {
-                session_free(i);
+                session_free(sess_pack(hnd));
             }
         }
     }
@@ -566,17 +634,24 @@ void prune_old_entries(int max_age_secs) {
 /* PoP: suspend_session @ gateway/session.py:suspend_session */
 void suspend_session(const char *session_key) {
     int idx = session_find_by_key(session_key);
-    if (idx >= 0) g_gw.sessions[idx].suspended = true;
+    if (idx >= 0) {
+        gw_session_entry_t *se = session_at(idx);
+        if (se) se->suspended = true;
+    }
 }
 
 /* PoP: suspend_recently_active @ gateway/session.py:suspend_recently_active */
 void suspend_recently_active(int max_age_secs) {
     double now = gw_mono_time();
-    for (int i = 0; i < g_gw.session_count; i++) {
-        if (g_gw.sessions[i].in_use) {
-            double age = now - g_gw.sessions[i].last_active;
+    if (!g_gw.sessions) return;
+    hive_iter_t it;
+    hive_iter_begin(g_gw.sessions, &it);
+    gw_session_entry_t *se;
+    while (hive_iter_next(g_gw.sessions, &it, NULL, (void **)&se)) {
+        if (se->in_use) {
+            double age = now - se->last_active;
             if (age < (double)max_age_secs) {
-                g_gw.sessions[i].suspended = true;
+                se->suspended = true;
             }
         }
     }
@@ -610,14 +685,17 @@ int _claim_legacy_slack_key(const char *channel_id) {
 bool _is_session_expired(const char *session_key) {
     int idx = session_find_by_key(session_key);
     if (idx < 0) return true;
-    return session_should_reset(gw_mono_time() - g_gw.sessions[idx].last_active);
+    gw_session_entry_t *se = session_at(idx);
+    if (!se) return true;
+    return session_should_reset(gw_mono_time() - se->last_active);
 }
 
 /* PoP: is_session_finalizable @ gateway/session.py:is_session_finalizable */
 bool is_session_finalizable(const char *session_key) {
     int idx = session_find_by_key(session_key);
     if (idx < 0) return false;
-    return g_gw.sessions[idx].in_use;
+    gw_session_entry_t *se = session_at(idx);
+    return se ? se->in_use : false;
 }
 
 /* PoP: _compression_tip_for_session_id @ gateway/session.py:_compression_tip_for_session_id */
@@ -635,14 +713,19 @@ void _heal_compression_tip_locked(void) {
 /* PoP: _save_sessions_json @ gateway/session.py:_save_sessions_json */
 char *_save_sessions_json(void) {
     json_t *arr = json_array();
-    for (int i = 0; i < g_gw.session_count; i++) {
-        if (g_gw.sessions[i].in_use) {
-            json_t *s = json_object();
-            json_set(s, "key", json_string(g_gw.sessions[i].key));
-            json_set(s, "platform", json_string(g_gw.sessions[i].source.platform));
-            json_set(s, "chat_id", json_string(g_gw.sessions[i].source.chat_id));
-            json_set(s, "last_active", json_int((int64_t)g_gw.sessions[i].last_active));
-            json_array_append(arr, s);
+    if (g_gw.sessions) {
+        hive_iter_t it;
+        hive_iter_begin(g_gw.sessions, &it);
+        gw_session_entry_t *se;
+        while (hive_iter_next(g_gw.sessions, &it, NULL, (void **)&se)) {
+            if (se->in_use) {
+                json_t *s = json_object();
+                json_set(s, "key", json_string(se->key));
+                json_set(s, "platform", json_string(se->source.platform));
+                json_set(s, "chat_id", json_string(se->source.chat_id));
+                json_set(s, "last_active", json_int((int64_t)se->last_active));
+                json_array_append(arr, s);
+            }
         }
     }
     return json_dumps(arr, 0);
@@ -657,7 +740,9 @@ void _save_entries(void) {
 const char *_profile_from_session_key(const char *session_key) {
     int idx = session_find_by_key(session_key);
     if (idx < 0) return NULL;
-    return g_gw.sessions[idx].source.chat_name[0] ? g_gw.sessions[idx].source.chat_name : "default";
+    gw_session_entry_t *se = session_at(idx);
+    if (!se) return NULL;
+    return se->source.chat_name[0] ? se->source.chat_name : "default";
 }
 
 /* PoP: _recovered_row_allowed_for_active_profile @ gateway/session.py:_recovered_row_allowed_for_active_profile */
@@ -698,7 +783,9 @@ json_t *_query_recoverable_session(const char *session_key) {
 void _record_gateway_session_peer(const char *session_key, const char *peer_id) {
     int idx = session_find_by_key(session_key);
     if (idx >= 0 && peer_id) {
-        strncpy(g_gw.sessions[idx].source.user_id, peer_id, sizeof(g_gw.sessions[idx].source.user_id) - 1);
+        gw_session_entry_t *se = session_at(idx);
+        if (se)
+            strncpy(se->source.user_id, peer_id, sizeof(se->source.user_id) - 1);
     }
 }
 
@@ -714,19 +801,23 @@ int get_or_create_session(const char *platform, const char *chat_id) {
 
 /* PoP: lookup_by_session_id @ gateway/session.py:lookup_by_session_id */
 int lookup_by_session_id(const char *session_id) {
-    if (!session_id) return -1;
-    for (int i = 0; i < g_gw.session_count; i++) {
-        if (g_gw.sessions[i].in_use && strcmp(g_gw.sessions[i].session_id, session_id) == 0)
-            return i;
+    if (!session_id || !g_gw.sessions) return -1;
+    hive_iter_t it;
+    hive_iter_begin(g_gw.sessions, &it);
+    hive_handle_t hnd;
+    gw_session_entry_t *se;
+    while (hive_iter_next(g_gw.sessions, &it, &hnd, (void **)&se)) {
+        if (se->in_use && strcmp(se->session_id, session_id) == 0)
+            return sess_pack(hnd);
     }
     return -1;
 }
 
 /* PoP: peek_session_id @ gateway/session.py:peek_session_id */
 const char *peek_session_id(int session_idx) {
-    if (session_idx < 0 || session_idx >= g_gw.session_count) return NULL;
-    if (!g_gw.sessions[session_idx].in_use) return NULL;
-    return g_gw.sessions[session_idx].session_id;
+    gw_session_entry_t *se = session_at(session_idx);
+    if (!se || !se->in_use) return NULL;
+    return se->session_id;
 }
 
 /* PoP: _is_fts_corruption_error @ gateway/session.py:_is_fts_corruption_error */
@@ -738,11 +829,13 @@ bool _is_fts_corruption_error(int sqlite_rc) {
 json_t *get_session_metadata(const char *session_key) {
     int idx = session_find_by_key(session_key);
     if (idx < 0) return json_object();
+    gw_session_entry_t *se = session_at(idx);
+    if (!se) return json_object();
     json_t *meta = json_object();
-    json_set(meta, "key", json_string(g_gw.sessions[idx].key));
-    json_set(meta, "session_id", json_string(g_gw.sessions[idx].session_id));
-    json_set(meta, "last_active", json_int((int64_t)g_gw.sessions[idx].last_active));
-    json_set(meta, "in_use", json_bool(g_gw.sessions[idx].in_use));
+    json_set(meta, "key", json_string(se->key));
+    json_set(meta, "session_id", json_string(se->session_id));
+    json_set(meta, "last_active", json_int((int64_t)se->last_active));
+    json_set(meta, "in_use", json_bool(se->in_use));
     return meta;
 }
 
@@ -750,8 +843,10 @@ json_t *get_session_metadata(const char *session_key) {
 void set_session_metadata(const char *session_key, json_t *meta) {
     int idx = session_find_by_key(session_key);
     if (idx < 0 || !meta) return;
+    gw_session_entry_t *se = session_at(idx);
+    if (!se) return;
     const char *sid = json_get_str(meta, "session_id", NULL);
-    if (sid) snprintf(g_gw.sessions[idx].session_id, sizeof(g_gw.sessions[idx].session_id), "%s", sid);
+    if (sid) snprintf(se->session_id, sizeof(se->session_id), "%s", sid);
 }
 
 /* PoP: __getattr__ @ gateway/session.py:__getattr__ */
@@ -782,7 +877,9 @@ void set_expiry_finalized(const char *session_key) { (void)session_key; }
 /* PoP: _is_session_ended_in_db @ gateway/session.py:_is_session_ended_in_db */
 bool _is_session_ended_in_db(const char *session_key) {
     int idx = session_find_by_key(session_key);
-    return idx < 0 || !g_gw.sessions[idx].in_use;
+    if (idx < 0) return true;
+    gw_session_entry_t *se = session_at(idx);
+    return !se || !se->in_use;
 }
 
 /* PoP: update_session @ gateway/session.py:update_session */
@@ -839,11 +936,13 @@ void rewind_session(const char *session_key, int turn_count) {
 char *build_session_context(const char *session_key) {
     int idx = session_find_by_key(session_key);
     if (idx < 0) return strdup("");
+    gw_session_entry_t *se = session_at(idx);
+    if (!se) return strdup("");
     char ctx[1024];
     snprintf(ctx, sizeof(ctx), "Session: %s (platform: %s, chat: %s)",
-             g_gw.sessions[idx].key,
-             g_gw.sessions[idx].source.platform,
-             g_gw.sessions[idx].source.chat_id);
+             se->key,
+             se->source.platform,
+             se->source.chat_id);
     return strdup(ctx);
 }
 

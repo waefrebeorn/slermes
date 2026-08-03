@@ -13,6 +13,7 @@
 #include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_gateway_core.h"
+#include "gw_server_internals.h"
 #include "hermes_gateway_runtime.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -516,26 +517,31 @@ void gw_notify_sessions_shutdown(const char *reason) {
     if (!reason) reason = "shutdown";
 
     /* Send shutdown notice to all active gateway sessions */
-    for (int i = 0; i < g_gw.session_count; i++) {
-        if (!g_gw.sessions[i].in_use) continue;
-        const char *platform = NULL;
-        const char *chat_id = NULL;
+    if (g_gw.sessions) {
+        hive_iter_t it;
+        hive_iter_begin(g_gw.sessions, &it);
+        gw_session_entry_t *se;
+        while (hive_iter_next(g_gw.sessions, &it, NULL, (void **)&se)) {
+            if (!se->in_use) continue;
+            const char *platform = NULL;
+            const char *chat_id = NULL;
 
-        /* Extract chat info from session agent state */
-        if (g_gw.sessions[i].agent.platform[0])
-            platform = g_gw.sessions[i].agent.platform;
-        else if (g_gw.sessions[i].source.platform[0])
-            platform = g_gw.sessions[i].source.platform;
+            /* Extract chat info from session agent state */
+            if (se->agent.platform[0])
+                platform = se->agent.platform;
+            else if (se->source.platform[0])
+                platform = se->source.platform;
 
-        if (g_gw.sessions[i].agent.chat_id[0])
-            chat_id = g_gw.sessions[i].agent.chat_id;
-        else if (g_gw.sessions[i].source.chat_id[0])
-            chat_id = g_gw.sessions[i].source.chat_id;
+            if (se->agent.chat_id[0])
+                chat_id = se->agent.chat_id;
+            else if (se->source.chat_id[0])
+                chat_id = se->source.chat_id;
 
-        if (platform && chat_id) {
-            char msg[256];
-            snprintf(msg, sizeof(msg), "⚠️ Gateway shutting down: %s", reason);
-            gw_platform_send(platform, chat_id, msg);
+            if (platform && chat_id) {
+                char msg[256];
+                snprintf(msg, sizeof(msg), "⚠️ Gateway shutting down: %s", reason);
+                gw_platform_send(platform, chat_id, msg);
+            }
         }
     }
 }
@@ -617,12 +623,17 @@ bool gw_handoff_save_state(void) {
     json_object_set(root, "platform_count", json_new_number((double)g_gw.platform_count));
 
     json_t *sessions = json_new_array();
-    for (int i = 0; i < g_gw.session_count; i++) {
-        if (!g_gw.sessions[i].in_use) continue;
-        json_t *s = json_object();
-        json_set(s, "key", json_new_string(g_gw.sessions[i].key));
-        json_set(s, "session_id", json_new_string(g_gw.sessions[i].session_id));
-        json_array_append(sessions, s);
+    if (g_gw.sessions) {
+        hive_iter_t it;
+        hive_iter_begin(g_gw.sessions, &it);
+        gw_session_entry_t *se;
+        while (hive_iter_next(g_gw.sessions, &it, NULL, (void **)&se)) {
+            if (!se->in_use) continue;
+            json_t *s = json_object();
+            json_set(s, "key", json_new_string(se->key));
+            json_set(s, "session_id", json_new_string(se->session_id));
+            json_array_append(sessions, s);
+        }
     }
     json_object_set(root, "sessions", sessions);
 
@@ -675,8 +686,11 @@ bool gw_handoff_restore_state(void) {
                 if (sscanf(key, "%63[^:]:%127[^\n]", plat, cid) >= 2) {
                     int idx = session_get_or_create(plat, cid);
                     if (idx >= 0) {
-                        snprintf(g_gw.sessions[idx].key, sizeof(g_gw.sessions[idx].key), "%s", key);
-                        snprintf(g_gw.sessions[idx].session_id, sizeof(g_gw.sessions[idx].session_id), "%s", sid);
+                        gw_session_entry_t *se = session_at(idx);
+                        if (se) {
+                            snprintf(se->key, sizeof(se->key), "%s", key);
+                            snprintf(se->session_id, sizeof(se->session_id), "%s", sid);
+                        }
                     }
                 }
             }

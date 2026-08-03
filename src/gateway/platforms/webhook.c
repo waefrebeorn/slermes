@@ -1262,8 +1262,11 @@ static json_t *wh_render_delivery_extra(json_t *extra, json_t *payload) {
 static bool wh_end_webhook_session(const char *chat_id, const char *end_reason) {
     if (!chat_id || !*chat_id) return false;
     extern gateway_state_t g_gw;
-    for (int i = 0; i < GW_SESSIONS_MAX; i++) {
-        gw_session_entry_t *s = &g_gw.sessions[i];
+    if (!g_gw.sessions) return false;
+    hive_iter_t it;
+    hive_iter_begin(g_gw.sessions, &it);
+    gw_session_entry_t *s;
+    while (hive_iter_next(g_gw.sessions, &it, NULL, (void **)&s)) {
         if (!s->in_use || !s->session_id[0]) continue;
         /* key is "platform:chat_id"; match the chat_id suffix. */
         const char *colon = strchr(s->key, ':');

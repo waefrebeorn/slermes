@@ -750,8 +750,13 @@ static void handle_analytics(int fd) {
     if (root) {
         int active_sessions = 0;
         int total_sessions = g_gw.session_count;
-        for (int i = 0; i < total_sessions && i < GW_SESSIONS_MAX; i++)
-            if (g_gw.sessions[i].in_use) active_sessions++;
+        if (g_gw.sessions) {
+            hive_iter_t it;
+            hive_iter_begin(g_gw.sessions, &it);
+            gw_session_entry_t *se;
+            while (hive_iter_next(g_gw.sessions, &it, NULL, (void **)&se))
+                if (se->in_use) active_sessions++;
+        }
         json_set(root, "active_sessions", json_number((double)active_sessions));
         json_set(root, "total_sessions", json_number((double)total_sessions));
         json_set(root, "platform_count", json_number((double)g_gw.platform_count));
@@ -759,11 +764,14 @@ static void handle_analytics(int fd) {
         /* Session counts per model/provider */
         json_t *models = json_new_object();
         json_t *providers = json_new_object();
-        if (models && providers) {
-            for (int i = 0; i < total_sessions && i < GW_SESSIONS_MAX; i++) {
-                if (!g_gw.sessions[i].in_use) continue;
-                const char *m = g_gw.sessions[i].last_resolved_model;
-                const char *p = g_gw.sessions[i].last_resolved_provider;
+        if (models && providers && g_gw.sessions) {
+            hive_iter_t it;
+            hive_iter_begin(g_gw.sessions, &it);
+            gw_session_entry_t *se;
+            while (hive_iter_next(g_gw.sessions, &it, NULL, (void **)&se)) {
+                if (!se->in_use) continue;
+                const char *m = se->last_resolved_model;
+                const char *p = se->last_resolved_provider;
                 if (m && m[0]) {
                     json_t *existing = json_obj_get(models, m);
                     int count = existing ? (int)json_get_num(existing, "count", 0) + 1 : 1;
@@ -1171,8 +1179,13 @@ static void handle_api(int fd, const http_req_t *req) {
             /* ── 9 MISSING FIELDS FROM DESKTOP StatusResponse ── */
             /* active_sessions: count of in-use sessions */
             int active_sessions = 0;
-            for (int i = 0; i < g_gw.session_count && i < GW_SESSIONS_MAX; i++)
-                if (g_gw.sessions[i].in_use) active_sessions++;
+            if (g_gw.sessions) {
+                hive_iter_t it;
+                hive_iter_begin(g_gw.sessions, &it);
+                gw_session_entry_t *se;
+                while (hive_iter_next(g_gw.sessions, &it, NULL, (void **)&se))
+                    if (se->in_use) active_sessions++;
+            }
             json_set(s, "active_sessions", json_number((double)active_sessions));
 
             /* config_path: resolved config file path */
@@ -1250,37 +1263,44 @@ static void handle_api(int fd, const http_req_t *req) {
     if (is_sessions) {
         json_t *arr = json_new_array();
         if (arr) {
-            for (int i = 0; i < g_gw.session_count && i < 100; i++) {
-                if (g_gw.sessions[i].in_use) {
-                    json_t *s = json_new_object();
-                    const char *key = g_gw.sessions[i].key;
-                    const char *colon = strchr(key, ':');
-                    if (colon) {
-                        char plat[64];
-                        size_t plen = (size_t)(colon - key);
-                        if (plen > 63) plen = 63;
-                        memcpy(plat, key, plen);
-                        plat[plen] = '\0';
-                        json_set(s, "platform", json_string(plat));
-                        json_set(s, "chat_id", json_string(colon + 1));
-                    } else {
-                        json_set(s, "platform", json_string(key));
-                        json_set(s, "chat_id", json_string(""));
+            if (g_gw.sessions) {
+                hive_iter_t it;
+                hive_iter_begin(g_gw.sessions, &it);
+                gw_session_entry_t *se;
+                int listed = 0;
+                while (hive_iter_next(g_gw.sessions, &it, NULL, (void **)&se) && listed < 100) {
+                    if (se->in_use) {
+                        json_t *s = json_new_object();
+                        const char *key = se->key;
+                        const char *colon = strchr(key, ':');
+                        if (colon) {
+                            char plat[64];
+                            size_t plen = (size_t)(colon - key);
+                            if (plen > 63) plen = 63;
+                            memcpy(plat, key, plen);
+                            plat[plen] = '\0';
+                            json_set(s, "platform", json_string(plat));
+                            json_set(s, "chat_id", json_string(colon + 1));
+                        } else {
+                            json_set(s, "platform", json_string(key));
+                            json_set(s, "chat_id", json_string(""));
+                        }
+                        json_set(s, "session_id", json_string(se->session_id));
+                        json_set(s, "model", json_string(se->last_resolved_model));
+                        json_set(s, "provider", json_string(se->last_resolved_provider));
+                        char time_str[32];
+                        double now = 0.0;
+                        struct timespec ts;
+                        if (clock_gettime(CLOCK_MONOTONIC, &ts) == 0)
+                            now = (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
+                        double age = now - se->last_active;
+                        if (age < 60) snprintf(time_str, sizeof(time_str), "%.0fs ago", age);
+                        else if (age < 3600) snprintf(time_str, sizeof(time_str), "%.0fm ago", age / 60);
+                        else snprintf(time_str, sizeof(time_str), "%.1fh ago", age / 3600);
+                        json_set(s, "last_active", json_string(time_str));
+                        json_array_append(arr, s);
+                        listed++;
                     }
-                    json_set(s, "session_id", json_string(g_gw.sessions[i].session_id));
-                    json_set(s, "model", json_string(g_gw.sessions[i].last_resolved_model));
-                    json_set(s, "provider", json_string(g_gw.sessions[i].last_resolved_provider));
-                    char time_str[32];
-                    double now = 0.0;
-                    struct timespec ts;
-                    if (clock_gettime(CLOCK_MONOTONIC, &ts) == 0)
-                        now = (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
-                    double age = now - g_gw.sessions[i].last_active;
-                    if (age < 60) snprintf(time_str, sizeof(time_str), "%.0fs ago", age);
-                    else if (age < 3600) snprintf(time_str, sizeof(time_str), "%.0fm ago", age / 60);
-                    else snprintf(time_str, sizeof(time_str), "%.1fh ago", age / 3600);
-                    json_set(s, "last_active", json_string(time_str));
-                    json_array_append(arr, s);
                 }
             }
             char *j = json_serialize(arr);

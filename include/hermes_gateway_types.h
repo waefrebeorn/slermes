@@ -204,10 +204,10 @@ typedef struct {
     pthread_mutex_t      pool_mutex;
     double               pool_keepalive_expiry;  /* seconds before idle connection freed */
 
-    /* P102: Per-chat session pool */
-    gw_session_entry_t   sessions[GW_SESSIONS_MAX];
-    int                  session_count;
-    pthread_mutex_t      session_mutex;
+    /* P102: Per-chat session pool — hive-backed (no landlocked array) */
+    hive_t *sessions;            /* of gw_session_entry_t* (heap) */
+    int session_count;
+    pthread_mutex_t session_mutex;
     char                 session_db_path[GW_PATH_MAX];  /* where sessions are stored */
 
     /* P103: Platform registry */

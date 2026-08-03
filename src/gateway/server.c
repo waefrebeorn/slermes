@@ -468,7 +468,9 @@ gw_session_source_t *gw_session_get_source(const char *platform, const char *cha
     int idx = session_find(platform, chat_id);
     if (idx >= 0) {
         /* Populate cache */
-        source_cache_put(key, &g_gw.sessions[idx].source);
+        gw_session_entry_t *se = session_at(idx);
+        if (se)
+            source_cache_put(key, &se->source);
         pthread_mutex_unlock(&g_gw.session_mutex);
         /* Return from cache (now MRU) */
         return source_cache_get(key);
@@ -791,11 +793,18 @@ void process_update(const char *platform, const char *chat_id, const char *text)
                      "Error: Could not create session (max sessions reached)");
         return;
     }
-    agent_state_t *session_agent = &g_gw.sessions[sess_idx].agent;
+    agent_state_t *session_agent = NULL;
+    gw_session_entry_t *se = session_at(sess_idx);
+    if (se) session_agent = &se->agent;
     pthread_mutex_unlock(&g_gw.session_mutex);
+    if (!se) {
+        gateway_send(platform, chat_id,
+                     "Error: session lookup failed");
+        return;
+    }
 
     /* M12: Populate agent session context from source metadata */
-    gw_session_source_t *src = &g_gw.sessions[sess_idx].source;
+    gw_session_source_t *src = &se->source;
     snprintf(session_agent->platform, sizeof(session_agent->platform), "%s",
              src->platform[0] ? src->platform : (platform ? platform : ""));
     snprintf(session_agent->chat_id, sizeof(session_agent->chat_id), "%s",
@@ -822,14 +831,14 @@ void process_update(const char *platform, const char *chat_id, const char *text)
      * If the session agent has no model (config cache miss), recover
      * from the per-session last-resolved cache. */
     if (!session_agent->llm.model[0]) {
-        if (g_gw.sessions[sess_idx].last_resolved_model[0]) {
+        if (se->last_resolved_model[0]) {
             snprintf(session_agent->llm.model,
                      sizeof(session_agent->llm.model),
-                     "%s", g_gw.sessions[sess_idx].last_resolved_model);
-            if (g_gw.sessions[sess_idx].last_resolved_provider[0]) {
+                     "%s", se->last_resolved_model);
+            if (se->last_resolved_provider[0]) {
                 snprintf(session_agent->llm.provider,
                          sizeof(session_agent->llm.provider),
-                         "%s", g_gw.sessions[sess_idx].last_resolved_provider);
+                         "%s", se->last_resolved_provider);
             }
             fprintf(stderr, "[gateway] Recovered model from cache: %s\n",
                     session_agent->llm.model);
@@ -850,7 +859,7 @@ void process_update(const char *platform, const char *chat_id, const char *text)
        This tells the agent where messages are coming from and what platforms
        are available for delivery. Mirrors Python build_session_context_prompt(). */
     if (!session_agent->system_message[0]) {
-        char *ctx_prompt = build_session_context_prompt(&g_gw.sessions[sess_idx].source);
+        char *ctx_prompt = build_session_context_prompt(&se->source);
         if (ctx_prompt) {
             context_set_system(session_agent, ctx_prompt);
             free(ctx_prompt);
@@ -859,9 +868,9 @@ void process_update(const char *platform, const char *chat_id, const char *text)
 
     /* P109: Send typing indicator with 30s debounce */
     double now = gw_mono_time();
-    if (now - g_gw.sessions[sess_idx].last_busy_ack > 30.0) {
+    if (now - se->last_busy_ack > 30.0) {
         gateway_send_typing(platform, chat_id);
-        g_gw.sessions[sess_idx].last_busy_ack = now;
+        se->last_busy_ack = now;
     }
 
     /* GAP-5: Wire status callback for tool.started events during agent processing */
@@ -913,8 +922,10 @@ void process_update(const char *platform, const char *chat_id, const char *text)
             memcpy(session_agent->llm.provider, g_gw.agent.llm.provider, sizeof(session_agent->llm.provider));
             session_agent->llm.max_tokens = g_gw.agent.llm.max_tokens;
             session_agent->llm.temperature = g_gw.agent.llm.temperature;
-            g_gw.sessions[sess_idx].last_resolved_model[0] = '\0';
-            g_gw.sessions[sess_idx].last_resolved_provider[0] = '\0';
+            if (se) {
+                se->last_resolved_model[0] = '\0';
+                se->last_resolved_provider[0] = '\0';
+            }
             pthread_mutex_unlock(&g_gw.session_mutex);
             gateway_send(platform, chat_id, "Session reset.");
             free(modified_text);
@@ -1046,12 +1057,12 @@ void process_update(const char *platform, const char *chat_id, const char *text)
         free(redacted);
         free(resp);
         /* GW12: Cache the resolved model/provider for fallback recovery */
-        if (session_agent->llm.model[0]) {
-            snprintf(g_gw.sessions[sess_idx].last_resolved_model,
-                     sizeof(g_gw.sessions[sess_idx].last_resolved_model),
+        if (session_agent->llm.model[0] && se) {
+            snprintf(se->last_resolved_model,
+                     sizeof(se->last_resolved_model),
                      "%s", session_agent->llm.model);
-            snprintf(g_gw.sessions[sess_idx].last_resolved_provider,
-                     sizeof(g_gw.sessions[sess_idx].last_resolved_provider),
+            snprintf(se->last_resolved_provider,
+                     sizeof(se->last_resolved_provider),
                      "%s", session_agent->llm.provider);
         }
     }
@@ -1491,13 +1502,21 @@ cleanup:
     gw_platform_shutdown_all();
     /* P102: Save and free all sessions */
     session_save_all();
-    pthread_mutex_destroy(&g_gw.session_mutex);
-    for (int i = 0; i < g_gw.session_count; i++) {
-        if (g_gw.sessions[i].in_use) {
-            if (g_gw.sessions[i].db) db_close(g_gw.sessions[i].db);
-            agent_free(&g_gw.sessions[i].agent);
+    if (g_gw.sessions) {
+        hive_iter_t it;
+        hive_iter_begin(g_gw.sessions, &it);
+        hive_handle_t hnd;
+        gw_session_entry_t *se;
+        while (hive_iter_next(g_gw.sessions, &it, &hnd, (void **)&se)) {
+            if (se->in_use) {
+                if (se->db) db_close(se->db);
+                agent_free(&se->agent);
+            }
+            free(se);
+            hive_erase(g_gw.sessions, hnd);
         }
     }
+    pthread_mutex_destroy(&g_gw.session_mutex);
     pthread_mutex_destroy(&g_gw.agent_mutex);
     /* P101: Cleanup HTTP pool and queue */
     gw_pool_cleanup();

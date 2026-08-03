@@ -139,6 +139,7 @@ extern char                g_gw_log_path[GW_LOG_PATH_MAX];
     bool discord_tools_loaded(void);
     bool session_should_reset(double session_sec);
     void session_free(int idx);
+    gw_session_entry_t *session_at(int idx);
     bool is_shared_multi_user_session(const gw_session_source_t *src, bool group_sessions_per_user, bool thread_sessions_per_user);
     void build_session_key(char *buf, size_t sz, const char *platform, const char *chat_id);
     int session_find(const char *platform, const char *chat_id);

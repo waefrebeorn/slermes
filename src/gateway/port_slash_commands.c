@@ -251,7 +251,8 @@ json_t *slash_handle_status(void) {
 const char *slash_session_origin_for_id(const char *session_id) {
     int idx = lookup_by_session_id(session_id);
     if (idx < 0) return NULL;
-    return g_gw.sessions[idx].source.platform;
+    gw_session_entry_t *se = session_at(idx);
+    return se ? se->source.platform : NULL;
 }
 
 /* PoP: _resume_target_allowed @ gateway/slash_commands.py:_resume_target_allowed */
@@ -439,19 +440,27 @@ json_t *slash_handle_resume(const char *args) {
     json_t *r = json_object();
     int idx = args ? lookup_by_session_id(args) : -1;
     json_set(r, "ok", json_bool(idx >= 0));
-    if (idx >= 0) json_set(r, "session_key", json_string(g_gw.sessions[idx].key));
+    if (idx >= 0) {
+        gw_session_entry_t *se = session_at(idx);
+        if (se) json_set(r, "session_key", json_string(se->key));
+    }
     return r;
 }
 
 /* PoP: _handle_sessions_command @ gateway/slash_commands.py:_handle_sessions_command */
 json_t *slash_handle_sessions(void) {
     json_t *arr = json_array();
-    for (int i = 0; i < g_gw.session_count; i++) {
-        if (g_gw.sessions[i].in_use) {
-            json_t *s = json_object();
-            json_set(s, "key", json_string(g_gw.sessions[i].key));
-            json_set(s, "session_id", json_string(g_gw.sessions[i].session_id));
-            json_array_append(arr, s);
+    if (g_gw.sessions) {
+        hive_iter_t it;
+        hive_iter_begin(g_gw.sessions, &it);
+        gw_session_entry_t *se;
+        while (hive_iter_next(g_gw.sessions, &it, NULL, (void **)&se)) {
+            if (se->in_use) {
+                json_t *s = json_object();
+                json_set(s, "key", json_string(se->key));
+                json_set(s, "session_id", json_string(se->session_id));
+                json_array_append(arr, s);
+            }
         }
     }
     return arr;
