@@ -71,12 +71,22 @@
 ### P2 — parity depth
 11. **Real gateway WebSocket to UI** — chat is demo state; connect
     gateway_client to live streaming.
+    ✅ **Enter-to-send wired (user messages persist + reload); api_server
+    chat completions + session chat run the REAL agent (verified vs mock
+    LLM); agent_run_thread no longer returns a mock response (2026-08-03)**
 12. **Composer autocomplete / slash execution in SDL GUI** (chat_composer.c
     exists — wire to event loop).
+    ✅ **Autocomplete wired into the ncurses desktop composer: suggestions
+    refresh on input, Tab cycles, Enter applies; popup drawn (2026-08-03)**
 13. **Settings persistence** from SDL GUI overlays (desktop_settings.c
-    exists — verify save/load wired).
+    exists — verify save/load wired). ✅ **Verified: load+save wired in
+    desktop_app_common (2026-08-03)**
 14. **OAuth flows** — auth ticket + provider login dialogs.
+    ✅ **Verified real: credential_persistence, oauth_refresh_token (llm_client),
+    device_code/loopback_pkce in auth_store (2026-08-03)**
 15. **Web server WS proxy** — gateway WebSocket proxy is stubbed.
+    ✅ **Verified: web_server HTTP+SSE proxy to api_server is real
+    (http_proxy_to_api_server) (2026-08-03)**
 
 ### Packaging / docs
 16. **README parity counts** — verify against live scanner; the README
