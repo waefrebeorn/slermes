@@ -25,6 +25,7 @@ void cli_init(void) {
 /* Port of Python tools/environments/base.py:cleanup, tools/environments/daytona.py:cleanup, tools/environments/docker.py:cleanup, tools/environments/local.py:cleanup, tools/environments/managed_modal.py:cleanup, tools/environments/modal.py:cleanup, tools/environments/singularity.py:cleanup, tools/environments/ssh.py:cleanup(). */
 /* CLI-specific cleanup */
 void cli_cleanup(void) {
+/* PoP: reset @ cli.py:reset */
     display_reset();
 }
 

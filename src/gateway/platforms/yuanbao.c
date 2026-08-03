@@ -704,6 +704,7 @@ bool yuanbao_init(const char *app_id, const char *app_secret,
     return *g_yb.app_id && *g_yb.app_secret;
 }
 
+/* PoP: start @ gateway/platforms/yuanbao.py:start */
 void yuanbao_start(void) {
     if (!*g_yb.app_id || !*g_yb.app_secret) {
         fprintf(stderr, "[gateway:yuanbao] app_id and app_secret required\n");
@@ -734,6 +735,8 @@ void yuanbao_start(void) {
     }
 }
 
+/* PoP: stop @ gateway/platforms/yuanbao.py:stop */
+/* PoP: close @ gateway/platforms/yuanbao.py:close */
 void yuanbao_stop(void) {
     g_yb.running = false;
 }
@@ -741,6 +744,7 @@ void yuanbao_stop(void) {
 /* Send a sticker via the active WebSocket connection. Returns 0 on success, -1 on error. */
 /* PoP: send_sticker @ gateway/platforms/yuanbao.py:send_sticker */
 /* Port of Python gateway/platforms/yuanbao.py:send_sticker(). */
+/* PoP: send @ gateway/platforms/yuanbao.py:send */
 int yuanbao_send_sticker(const char *to_uid, const char *sticker_id,
                           const char *sticker_name, const char *package_id,
                           int width, int height) {

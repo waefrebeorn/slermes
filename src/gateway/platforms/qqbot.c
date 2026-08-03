@@ -124,6 +124,7 @@ bool qqbot_send_markdown(http_client_t *http, const char *text) {
  *  P113: Send image message
  *  Uses QQ Bot image: msg_type=3, image with URL
  * ================================================================ */
+/* PoP: send_image @ gateway/platforms/qqbot/adapter.py:send_image */
 bool qqbot_send_image(http_client_t *http, const char *image_url) {
     if (!image_url) return false;
 

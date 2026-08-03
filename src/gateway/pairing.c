@@ -305,6 +305,7 @@ static bool uids_match(pairing_store_t *st, const char *platform, const char *le
 }
 
 /* ── approved ── */
+/* PoP: is_approved @ gateway/pairing.py:is_approved */
 
 bool pairing_is_approved(pairing_store_t *st, const char *platform, const char *user_id) {
     char name[256]; snprintf(name,sizeof(name),"%s-approved.json",platform);
@@ -385,6 +386,7 @@ bool pairing_approve_user(pairing_store_t *st, const char *platform, const char 
     /* allowlist mirror (option i) — best-effort, skipped at store layer */
     return true;
 }
+/* PoP: revoke @ gateway/pairing.py:revoke */
 
 bool pairing_revoke(pairing_store_t *st, const char *platform, const char *user_id) {
     char name[256]; snprintf(name,sizeof(name),"%s-approved.json",platform);
@@ -575,6 +577,7 @@ pairing_result_t *pairing_approve_code(pairing_store_t *st, const char *platform
     free(up); free(pname);
     return r;
 }
+/* PoP: list_pending @ gateway/pairing.py:list_pending */
 
 int pairing_list_pending(pairing_store_t *st, const char *platform, double now, pairing_pending_t **out) {
     pairing_pending_t *arr=NULL; int n=0, cap=0;

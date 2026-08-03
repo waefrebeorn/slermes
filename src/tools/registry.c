@@ -216,6 +216,7 @@ static tool_t *find_unlocked(const char *name) {
 /* ================================================================
  *  Registration
  * ================================================================ */
+/* PoP: register @ tools/registry.py:register */
 
 bool registry_register(const char *name, const char *description,
                         const char *schema_json,
@@ -563,6 +564,7 @@ char *repair_tool_call(const char *tool_name) {
     #undef ADD_VAR
     #undef MAX_VARIANTS
 }
+/* PoP: dispatch @ tools/registry.py:dispatch */
 
 char *registry_dispatch(const char *name, const char *args_json,
                         const char *task_id)
@@ -1083,6 +1085,7 @@ char *registry_get_tool_to_toolset_map(void) {
 }
 
 /* Return the toolset a tool belongs to, or NULL. Caller does not own. */
+/* PoP: get_toolset_for_tool @ tools/registry.py:get_toolset_for_tool */
 const char *registry_get_toolset_for_tool(const char *name) {
     pthread_mutex_lock(&g_registry_mutex);
     const char *ts = NULL;

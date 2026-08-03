@@ -152,6 +152,7 @@ static void ctx_token_save(const char *user_id, const char *token) {
     }
 
     if (!data) data = json_object();
+/* PoP: set @ gateway/platforms/weixin.py:set */
     json_set(data, user_id, json_string(token));
 
     char *json_str = json_serialize(data);
@@ -162,6 +163,7 @@ static void ctx_token_save(const char *user_id, const char *token) {
     }
     json_free(data);
 }
+/* PoP: get @ gateway/platforms/weixin.py:get */
 
 static const char *ctx_token_get(const char *user_id) {
     static char cached_token[512];
@@ -1141,6 +1143,7 @@ bool weixin_is_stale_session_ret(int ret, int errcode, const char *errmsg)
 
 /* PoP: _parse_aes_key @ gateway/platforms/weixin.py:_parse_aes_key */
 /* Decode a base64 AES key; accept 16 raw bytes or a 32-char hex string. */
+/* PoP: _key @ gateway/platforms/weixin.py:_key */
 int weixin_parse_aes_key(const char *aes_key_b64, unsigned char *out, size_t *out_len)
 {
     if (!aes_key_b64 || !out || !out_len) return -1;

@@ -129,6 +129,7 @@ char *skills_tool_category_from_path(const char *skill_path)
 /* ---------------------------------------------------------------------------
  * _parse_tags @ tools/skills_tool.py:_parse_tags
  * ------------------------------------------------------------------------- */
+/* PoP: _parse_tags @ tools/skills_tool.py:_parse_tags */
 char **skills_tool_parse_tags(const char *tags_value, int *out_n)
 {
     char **out = NULL;

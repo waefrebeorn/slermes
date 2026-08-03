@@ -565,6 +565,7 @@ char *tts_list_providers(void) {
 }
 
 /* Port of Python agent/tts_registry.py:get_provider(). */
+/* PoP: _get_provider @ tools/tts_tool.py:_get_provider */
 const char *tts_get_provider(const char *name) {
     if (!name) return NULL;
     char key[64];

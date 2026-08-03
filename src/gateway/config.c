@@ -34,6 +34,7 @@
  * ================================================================ */
 
 /* Port of Python: _coerce_bool */
+/* PoP: _coerce_bool @ gateway/config.py:_coerce_bool */
 bool gateway_config_coerce_bool(const json_node_t *value, bool default_val) {
     if (!value || json_node_is_null(value)) {
         return default_val;
@@ -75,6 +76,7 @@ bool gateway_config_coerce_bool(const json_node_t *value, bool default_val) {
 }
 
 /* Port of Python: _coerce_float */
+/* PoP: _coerce_float @ gateway/config.py:_coerce_float */
 double gateway_config_coerce_float(const json_node_t *value, double default_val) {
     if (!value || json_node_is_null(value)) {
         return default_val;
@@ -99,6 +101,7 @@ double gateway_config_coerce_float(const json_node_t *value, double default_val)
 }
 
 /* Port of Python: _coerce_int */
+/* PoP: _coerce_int @ gateway/config.py:_coerce_int */
 int gateway_config_coerce_int(const json_node_t *value, int default_val) {
     if (!value || json_node_is_null(value)) {
         return default_val;
@@ -123,6 +126,7 @@ int gateway_config_coerce_int(const json_node_t *value, int default_val) {
 }
 
 /* Port of Python: _coerce_optional_positive_int */
+/* PoP: _coerce_optional_positive_int @ gateway/config.py:_coerce_optional_positive_int */
 int gateway_config_coerce_optional_positive_int(const json_node_t *value, const char *key, bool *out_valid) {
     if (!value || json_node_is_null(value)) {
         if (out_valid) *out_valid = true;
@@ -181,6 +185,7 @@ int gateway_config_coerce_optional_positive_int(const json_node_t *value, const 
  * ================================================================ */
 
 /* Port of Python: _normalize_unauthorized_dm_behavior */
+/* PoP: _normalize_unauthorized_dm_behavior @ gateway/config.py:_normalize_unauthorized_dm_behavior */
 const char *gateway_config_normalize_unauthorized_dm_behavior(const char *value, const char *default_val) {
     if (!value) return default_val;
 
@@ -200,6 +205,7 @@ const char *gateway_config_normalize_unauthorized_dm_behavior(const char *value,
 }
 
 /* Port of Python: _normalize_notice_delivery */
+/* PoP: _normalize_notice_delivery @ gateway/config.py:_normalize_notice_delivery */
 const char *gateway_config_normalize_notice_delivery(const char *value, const char *default_val) {
     if (!value) return default_val;
 
@@ -641,6 +647,7 @@ bool gateway_config_load(const char *config_dir, gateway_config_t *out_cfg) {
     }
 
     /* Apply env overrides */
+/* PoP: load_env @ hermes_cli/config.py:load_env */
     hermes_config_load_env(&hcfg);
 
     memset(out_cfg, 0, sizeof(*out_cfg));
@@ -814,6 +821,7 @@ bool gateway_config_validate(const gateway_config_t *cfg, json_node_t *issues_ob
     return valid;
 
 /* Port of Python: _apply_env_overrides */
+/* PoP: _apply_env_overrides @ gateway/config.py:_apply_env_overrides */
 void gateway_config_apply_env_overrides(gateway_config_t *cfg) {
     if (!cfg) return;
 

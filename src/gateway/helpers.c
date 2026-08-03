@@ -307,6 +307,7 @@ bool msg_dedup_is_duplicate(msg_dedup_t *d, const char *msg_id) {
 
     return false;
 }
+/* PoP: clear @ gateway/platforms/helpers.py:clear */
 
 void msg_dedup_clear(msg_dedup_t *d) {
     if (!d) return;
@@ -594,6 +595,7 @@ void thread_tracker_init(thread_tracker_t *t, const char *platform,
     else
         t->state_dir[0] = '\0';
 }
+/* PoP: _load @ gateway/platforms/helpers.py:_load */
 
 void thread_tracker_load(thread_tracker_t *t) {
     if (!t || !t->state_dir[0] || !t->platform[0]) return;

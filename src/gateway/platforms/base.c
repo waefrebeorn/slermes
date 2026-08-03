@@ -62,6 +62,7 @@ size_t utf16_len(const char *s) {
 }
 
 /* Port of Python: _prefix_within_utf16_limit */
+/* PoP: _prefix_within_utf16_limit @ gateway/platforms/base.py:_prefix_within_utf16_limit */
 char *gw_prefix_within_utf16_limit(const char *s, size_t limit) {
     if (!s || limit == 0) return strdup("");
 
@@ -192,6 +193,7 @@ bool looks_like_image(const char *url) {
 
 /* PoP: _build_source @ src/gateway/platforms/base.c:gw_build_source */
 /* Port of Python yuanbao.py:_build_source(). */
+/* PoP: build_source @ gateway/platforms/base.py:build_source */
 json_node_t *gw_build_source(const char *platform, const char *chat_id,
                               const char *chat_name, const char *chat_type,
                               const char *user_id, const char *user_name,
@@ -215,6 +217,7 @@ json_node_t *gw_build_source(const char *platform, const char *chat_id,
  * ================================================================ */
 
 /* Port of Python: format_message */
+/* PoP: format_message @ gateway/platforms/base.py:format_message */
 char *gw_format_message(const char *text, bool markdown) {
     if (!text) return strdup("");
 

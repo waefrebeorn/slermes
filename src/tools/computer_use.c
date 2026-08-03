@@ -45,7 +45,9 @@ typedef struct {
 
 static bool noop_is_available(void) { return true; }
 static bool noop_start(void) { return true; }
+/* PoP: stop @ tools/computer_use/cua_backend.py:stop */
 static void noop_stop(void) {}
+/* PoP: capture @ tools/computer_use/cua_backend.py:capture */
 
 static cu_capture_t *noop_capture(const char *mode, const char *app) {
     (void)mode;
@@ -86,6 +88,7 @@ static cu_action_t *noop_click(int element, int x, int y,
     return noop_make_action("click", true, "clicked at (%d,%d) [%s] x%d",
                              x, y, button ? button : "left", click_count);
 }
+/* PoP: drag @ tools/computer_use/tool.py:drag */
 
 static cu_action_t *noop_drag(int from_e, int to_e,
                                int fx, int fy, int tx, int ty,

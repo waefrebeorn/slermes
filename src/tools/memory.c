@@ -402,6 +402,7 @@ bool memory_storage_plugin_init(memory_storage_t *st, void *plugin_reg, const ch
                      "%s/hermes-agent-dev/C/src/plugins/plugin_honcho.so", home);
             plug = plugin_load(plugin_path);
             if (plug) {
+/* PoP: add @ tools/memory_tool.py:add */
                 plugin_registry_add(reg, plug);
                 /* Initialize */
                 typedef int (*init_fn_t)(void);

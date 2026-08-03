@@ -90,6 +90,7 @@ void response_store_free(response_store_t *store) {
     free(store->db_path);
     free(store);
 }
+/* PoP: get @ gateway/platforms/api_server.py:get */
 
 char *response_store_get(response_store_t *store, const char *response_id) {
     if (!store || !store->conn || !response_id) return NULL;
@@ -457,6 +458,7 @@ bool api_server_adapter_connect(api_server_adapter_t *adapter) {
            adapter->host, adapter->port, adapter->model_name);
     return true;
 }
+/* PoP: disconnect @ gateway/platforms/api_server.py:disconnect */
 
 void api_server_adapter_disconnect(api_server_adapter_t *adapter) {
     if (!adapter) return;
@@ -482,6 +484,7 @@ gw_send_result_t api_server_adapter_send(
     gw_send_result_t result = {false, "API server uses HTTP request/response, not send()"};
     return result;
 }
+/* PoP: get_chat_info @ gateway/platforms/api_server.py:get_chat_info */
 
 json_t *api_server_adapter_get_chat_info(api_server_adapter_t *adapter, const char *chat_id) {
     (void)chat_id;

@@ -377,6 +377,7 @@ static void _cm_drop_oversize(tool_checkpoint_mgr_t *self,
 }
 
 /* Keep only the last max_snapshots commits on the per-project ref. */
+/* PoP: _prune @ tools/checkpoint_manager.py:_prune */
 static void _cm_prune(tool_checkpoint_mgr_t *self,
                        const char *shadow_repo, const char *working_dir,
                        const char *ref) {
@@ -525,6 +526,7 @@ bool checkpoint_manager_ensure(tool_checkpoint_mgr_t *self,
         return false;
     if (_cm_in_dirset(self, abs_dir)) return false;
     _cm_add_dir(self, abs_dir);
+/* PoP: _take @ tools/checkpoint_manager.py:_take */
 
     return checkpoint_manager_take(self, abs_dir, reason ? reason : "auto");
 }
@@ -674,6 +676,7 @@ char *checkpoint_manager_list(tool_checkpoint_mgr_t *self, const char *working_d
     len += snprintf(res + len, cap - len, "]");
     return res;
 }
+/* PoP: diff @ tools/checkpoint_manager.py:diff */
 
 char *checkpoint_manager_diff(tool_checkpoint_mgr_t *self,
                             const char *working_dir, const char *commit_hash) {
@@ -723,6 +726,7 @@ char *checkpoint_manager_diff(tool_checkpoint_mgr_t *self,
              ok_stat ? stat_out : "", ok_diff ? diff_out : "");
     return r;
 }
+/* PoP: restore @ tools/checkpoint_manager.py:restore */
 
 char *checkpoint_manager_restore(tool_checkpoint_mgr_t *self,
                                const char *working_dir, const char *commit_hash,

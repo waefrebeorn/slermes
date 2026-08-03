@@ -212,6 +212,7 @@ char *clarify_handler(const char *args_json, const char *task_id) {
 }
 
 void registry_init_clarify(void) {
+/* PoP: register @ tools/clarify_gateway.py:register */
     registry_register("clarify",
         "Ask the user a question when you need clarification, feedback, or a "
         "decision before proceeding. Supports multiple choice (up to 4 choices) "
