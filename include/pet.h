@@ -181,6 +181,10 @@ int pet_installed_pets(pet_installed_t *out, int max_count);
 /* Resolve active pet: configured slug first, else first installed */
 bool pet_resolve_active_pet(const char *configured_slug, pet_installed_t *out);
 
+/* Install a locally generated pet (spritesheet + pet.json). */
+bool pet_install(const char *slug, const char *display_name,
+                 const char *description, const char *spritesheet_src);
+
 /* Install a pet from the manifest */
 bool pet_install_pet(const char *slug, pet_installed_t *out, bool force);
 

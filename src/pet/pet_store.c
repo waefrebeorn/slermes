@@ -343,6 +343,71 @@ bool pet_remove_pet(const char *slug) {
     return (stat(dir, &st) != 0);
 }
 
+/* PoP: install_generated @ agent/pet/store.py (generation install path)
+ *
+ * Install a LOCALLY GENERATED pet: creates <pets>/<slug>/ with pet.json
+ * (id, displayName, description, spritesheetPath) and copies the
+ * spritesheet file into place. Unlike pet_install_pet (petdex download),
+ * this takes a local file produced by the image-gen pipeline. */
+bool pet_install(const char *slug, const char *display_name,
+                 const char *description, const char *spritesheet_src) {
+    if (!slug || !*slug || !spritesheet_src) return false;
+
+    const char *safe = pet_safe_slug(slug);
+    if (!*safe) return false;
+
+    const char *base = pet_pets_dir();
+    char dir[1024];
+    snprintf(dir, sizeof(dir), "%s/%s", base, safe);
+
+    /* Create the pet directory. */
+    struct stat st;
+    if (stat(dir, &st) != 0) {
+        if (mkdir(dir, 0755) != 0) return false;
+    } else if (!S_ISDIR(st.st_mode)) {
+        return false;
+    }
+
+    /* Determine the spritesheet extension from the source file. */
+    const char *dot = strrchr(spritesheet_src, '.');
+    const char *ext = (dot && dot[1]) ? dot : ".png";
+    char sheet_name[64];
+    snprintf(sheet_name, sizeof(sheet_name), "spritesheet%s", ext);
+
+    /* Copy the spritesheet into place. */
+    char sheet_dst[1100];
+    snprintf(sheet_dst, sizeof(sheet_dst), "%s/%s", dir, sheet_name);
+    FILE *in = fopen(spritesheet_src, "rb");
+    if (!in) return false;
+    FILE *outf = fopen(sheet_dst, "wb");
+    if (!outf) { fclose(in); return false; }
+    char buf[8192];
+    size_t n;
+    while ((n = fread(buf, 1, sizeof(buf), in)) > 0) fwrite(buf, 1, n, outf);
+    fclose(outf);
+    fclose(in);
+
+    /* Write pet.json. */
+    char meta_path[1100];
+    snprintf(meta_path, sizeof(meta_path), "%s/pet.json", dir);
+    json_t *meta = json_object();
+    json_set(meta, "id", json_string(safe));
+    json_set(meta, "displayName", json_string(display_name ? display_name : safe));
+    json_set(meta, "description", json_string(description ? description : ""));
+    json_set(meta, "createdBy", json_string("generator"));
+    json_set(meta, "spritesheetPath", json_string(sheet_name));
+    char *ser = json_serialize_pretty(meta, 2);
+    json_free(meta);
+    if (!ser) return false;
+
+    FILE *mf = fopen(meta_path, "w");
+    if (!mf) { free(ser); return false; }
+    fputs(ser, mf);
+    fclose(mf);
+    free(ser);
+    return true;
+}
+
 /* PoP: pet_rename_pet @ agent/pet/store.py:rename_pet */
 const char *pet_rename_pet(const char *slug, const char *display_name) {
     static char new_slug[PET_MAX_SLUG];

@@ -119,7 +119,13 @@ char *pet_gallery_json(void) {
     json_t *root = json_object();
     json_t *pets_arr = json_array();
 
-    pet_installed_t pets[PET_MAX_PETS];
+    /* Heap-allocate the pet list: PET_MAX_PETS (4096) x pet_installed_t is
+     * ~10MB — a stack array overflows the default thread stack. */
+    pet_installed_t *pets = calloc((size_t)PET_MAX_PETS, sizeof(pet_installed_t));
+    if (!pets) {
+        json_free(root);
+        return strdup("{\"pets\":[],\"error\":\"oom\"}");
+    }
     int count = pet_installed_pets(pets, PET_MAX_PETS);
 
     for (int i = 0; i < count; i++) {
@@ -143,6 +149,7 @@ char *pet_gallery_json(void) {
     json_set(root, "scale", json_new_number(g_pet.scale));
 
     char *s = json_serialize(root);
+    free(pets);
     json_free(root);
     return s;
 }

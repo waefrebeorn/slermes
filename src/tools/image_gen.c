@@ -56,8 +56,12 @@ static char *openai_image_generate(const char *prompt, const char *aspect_ratio,
     snprintf(body + pos, sizeof(body) - pos, "}");
     char auth[1024];
     snprintf(auth, sizeof(auth), "Bearer %s", api_key);
+    /* OPENAI_IMAGE_URL env override (mirrors OPENAI_BASE_URL in the LLM
+     * client) — lets tests/self-hosted point image-gen at any endpoint. */
+    const char *endpoint = getenv("OPENAI_IMAGE_URL");
+    if (!endpoint || !*endpoint) endpoint = OPENAI_IMAGE_URL;
     http_t *h = http_new(120);
-    http_resp_t *resp = http_post_json_auth(h, OPENAI_IMAGE_URL, body, auth);
+    http_resp_t *resp = http_post_json_auth(h, endpoint, body, auth);
     if (!resp) { http_free(h); return strdup("{\"success\":false,\"error\":\"Failed to connect to OpenAI API\"}"); }
     if (resp->status != 200) {
         char err[2048];

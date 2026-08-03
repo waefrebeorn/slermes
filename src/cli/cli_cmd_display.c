@@ -88,6 +88,94 @@ void cmd_pet(const char *args, agent_state_t *state) {
         return;
     }
 
+    if (strcmp(subcmd, "hatch") == 0 || strncmp(subcmd, "hatch ", 6) == 0) {
+        /* Real generation hatch: build the base prompt, call the image-gen
+         * pipeline, install the result as a pet, and select it. Mirrors
+         * agent/pet/generate/orchestrate.py:hatch_pet's non-interactive
+         * single-draft path. */
+        const char *concept = subcmd + 5;
+        while (*concept == ' ') concept++;
+        if (!*concept) concept = NULL;
+
+        printf("\n=== Pet Hatch ===\n");
+        printf("  Generating a new pet%s...\n",
+               concept ? "" : " (no concept given — using a default mascot)");
+
+        /* Build the prompt via the faithful prompts port. */
+        extern char *pet_prompts_build_base(const char *concept, const char *style,
+                                            const char *variation);
+        char *prompt = pet_prompts_build_base(concept, NULL, NULL);
+        if (!prompt) {
+            printf("  Could not build a pet prompt.\n");
+            return;
+        }
+
+        /* Call the real image-gen tool. */
+        extern char *image_generate_handler(const char *args_json, const char *task_id);
+        {
+            size_t need = strlen(prompt) * 2 + 512;
+            char *jargs = malloc(need);
+            if (jargs) {
+                snprintf(jargs, need,
+                         "{\"prompt\":\"%s\",\"aspect_ratio\":\"1:1\","
+                         "\"num_images\":1,\"save_local\":true,\"provider\":\"openai\"}",
+                         prompt);
+                char *result = image_generate_handler(jargs, NULL);
+                free(jargs);
+                free(prompt);
+                if (!result) {
+                    printf("  Image generation failed (no response).\n");
+                    return;
+                }
+                /* Parse the result: {"success":true, "image": <path or b64>} */
+                json_t *r = json_parse(result, NULL);
+                free(result);
+                if (!r) {
+                    printf("  Image generation returned an unparseable response.\n");
+                    return;
+                }
+                bool ok = false;
+                const json_t *succ = json_obj_get(r, "success");
+                if (succ && succ->type == JSON_BOOL) ok = succ->bool_val;
+                if (!ok) {
+                    const char *err = json_get_str(r, "error", "image generation failed");
+                    printf("  Image generation failed: %s\n", err);
+                    json_free(r);
+                    return;
+                }
+                const char *img = json_get_str(r, "image", NULL);
+                if (!img || !*img) {
+                    printf("  Image generation returned no image path.\n");
+                    json_free(r);
+                    return;
+                }
+                /* Copy the image path before freeing the result JSON. */
+                char img_copy[1024];
+                snprintf(img_copy, sizeof(img_copy), "%s", img);
+                json_free(r);
+
+                /* Install the generated sprite as a pet and select it. */
+                char slug[PET_MAX_SLUG];
+                snprintf(slug, sizeof(slug), "hatched-%ld", (long)time(NULL));
+                char *safe_slug = pet_safe_slug(slug);
+                bool installed = pet_install(safe_slug,
+                                             concept ? concept : "Hatched Pet",
+                                             "AI-generated pet", img_copy);
+                if (installed) {
+                    pet_select(safe_slug);
+                    printf("  Hatched and installed '%s'.\n", safe_slug);
+                    printf("  Pet is now active. Run /pet gallery to see it.\n");
+                } else {
+                    printf("  Generated, but could not install the pet.\n");
+                }
+                return;
+            }
+            free(prompt);
+            printf("  Out of memory building the generation request.\n");
+            return;
+        }
+    }
+
     if (strncmp(subcmd, "scale ", 6) == 0) {
         const char *scale_str = subcmd + 6;
         while (*scale_str == ' ') scale_str++;
