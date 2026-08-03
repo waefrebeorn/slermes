@@ -29,9 +29,12 @@ static json_t *emit_aux__is_anthropic_compatible_host(const json_t *c){
 
 static json_t *emit_aux__evict_cached_clients(const json_t *c){
     const char *value = json_get_str(c, "value", "");
-    long v = (long)aux__evict_cached_clients(value);
+    (void)aux__evict_cached_clients(value);
     json_t *o = json_new_object(); json_set(o, "fn", json_string("aux__evict_cached_clients"));
-    json_set(o, "out", json_int(v)); return o;
+    /* Python's _evict_cached_clients is void (returns None); the oracle
+     * serializes None as ''. Emit '' — the eviction itself is side-effect
+     * work, not part of the return contract. */
+    json_set(o, "out", json_string("")); return o;
 }
 
 static json_t *emit_aux__is_openrouter_client(const json_t *c){
@@ -52,7 +55,10 @@ static json_t *emit_aux__task_minimum_context_length(const json_t *c){
     const char *value = json_get_str(c, "value", "");
     long v = (long)aux__task_minimum_context_length(value);
     json_t *o = json_new_object(); json_set(o, "fn", json_string("aux__task_minimum_context_length"));
-    json_set(o, "out", json_int(v)); return o;
+    /* Python returns Optional[int]; None serializes to '' in the oracle.
+     * The C port signals None with -1 — emit '' for parity. */
+    if (v < 0) json_set(o, "out", json_string(""));
+    else json_set(o, "out", json_int(v)); return o;
 }
 
 int main(int argc, char **argv){

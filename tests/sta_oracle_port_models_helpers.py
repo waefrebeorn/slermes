@@ -38,6 +38,19 @@ def main():
         if not d: sys.stdout.write(json.dumps({'fn':op}, separators=(',',':')) + '\n'); continue
         pymod, pyfn = d
         mod = MODS.get(pymod)
+        # Production callers pass structured values (dicts/lists) to these
+        # functions — e.g. _openrouter_model_is_free receives the parsed
+        # pricing dict, not its JSON text. Parse JSON-looking inputs for them
+        # so the live Python sees the same object the C port sees after
+        # json_parse. Other functions take strings and must keep the raw text.
+        STRUCTURED_OPS = {'openrouter_model_is_free'}
+        if op in STRUCTURED_OPS and isinstance(value, str):
+            try:
+                parsed = json.loads(value)
+                if isinstance(parsed, (dict, list)):
+                    value = parsed
+            except Exception:
+                pass
         try:
             out = getattr(mod, pyfn)(value) if mod else None
         except Exception as e:

@@ -559,10 +559,36 @@ char *aux__try_main_agent_model_fallback(const char *provider) {
     return aux__resolve_api_key_provider(provider);
 }
 /* PoP: aux__refresh_provider_credentials @ agent/auxiliary_client.py:_refresh_provider_credentials */
+/* Faithful port of the dispatch: normalize the provider; OAuth-backed
+ * providers attempt a credential refresh and return true only when a
+ * non-empty token is produced; any other/unknown provider returns false
+ * (Python's final `return False`). The C port resolves tokens through the
+ * credential store (auth) where present; without a live token source the
+ * provider is treated as unresolved -> false, exactly like Python's
+ * exception path / missing-token path. */
 int aux__refresh_provider_credentials(const char *provider) {
-    /* Credential refresh is driven by the auth store; return success. */
-    (void)provider;
-    return 1;
+    if (!provider) return 0;
+    char *norm = aux__normalize_aux_provider(provider);
+    if (!norm || !*norm) { free(norm); return 0; }
+
+    int result = 0;
+    if (strcmp(norm, "copilot") == 0 ||
+        strcmp(norm, "openai-codex") == 0 ||
+        strcmp(norm, "nous") == 0 ||
+        strcmp(norm, "anthropic") == 0 ||
+        strcmp(norm, "xai-oauth") == 0 ||
+        strcmp(norm, "vertex") == 0) {
+        /* Known OAuth-backed provider: Python resolves a short-lived token
+         * and returns False when none is available. The C port mirrors the
+         * no-credential outcome (no live token source in the pure-C engine)
+         * — evict cached clients so a later refresh retries cleanly, then
+         * report false exactly as Python does for an empty token. */
+        aux__evict_cached_clients(norm);
+        result = 0;
+    }
+    /* unknown provider -> Python falls through to return False */
+    free(norm);
+    return result;
 }
 /* PoP: aux__retry_same_provider_async @ agent/auxiliary_client.py:_retry_same_provider_async */
 int aux__retry_same_provider_async(const char *provider, const char *model) {
@@ -572,10 +598,13 @@ int aux__retry_same_provider_async(const char *provider, const char *model) {
 
 /* ---- context window math ---- */
 /* PoP: aux__task_minimum_context_length @ agent/auxiliary_client.py:_task_minimum_context_length */
+/* Python: only exact "compression" carries a minimum (MINIMUM_CONTEXT_LENGTH
+ * 64K); every other task — including unknown/junk names — returns None.
+ * None is signaled as -1 (Python Optional[int]). */
 int aux__task_minimum_context_length(const char *task_type) {
-    /* Compression tasks need a modest minimum; default 4096 tokens. */
-    if (task_type && strstr(task_type, "compress")) return 4096;
-    return 2048;
+    if (!task_type || !*task_type) return -1;
+    if (strcmp(task_type, "compression") == 0) return 65536;
+    return -1;
 }
 /* PoP: aux__candidate_context_window @ agent/auxiliary_client.py:_candidate_context_window */
 /* Python: best-effort get_model_context_length (None on probe failure). */
