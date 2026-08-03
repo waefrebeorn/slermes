@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 /* ══════════════════════════════════════════════════════════════════════
  * Hit Testing
@@ -453,6 +454,38 @@ bool event_handle_key(app_state_t *app, int key, int mod) {
                 app_set_composer_focused(app, true);
             }
             return true;
+
+        case SDLK_RETURN:
+        case SDLK_KP_ENTER:
+            if (app_composer_focused(app)) {
+                /* Send: append the user message to the session + persist. */
+                const char *text = app_composer_buf(app);
+                if (text && text[0]) {
+                    int sel = app_selected_session(app);
+                    if (sel >= 0 && sel < app_session_count(app)) {
+                        app_session_entry_t *s = session_db_get_session(app, sel);
+                        char sid[64] = "";
+                        if (s) snprintf(sid, sizeof(sid), "%s", s->id);
+                        /* Append locally. */
+                        extern int session_db_insert_message(const char *session_id,
+                                                             const char *role,
+                                                             const char *content,
+                                                             double timestamp);
+                        if (sid[0]) {
+                            session_db_insert_message(sid, "user", text,
+                                                      (double)time(NULL));
+                        }
+                        /* Reload so the message appears. */
+                        session_db_load_messages(app, sel);
+                        app_set_chat_scroll(app, 0);
+                        chat_view_scroll_to_bottom(app);
+                    }
+                    app_set_composer_buf(app, "");
+                    app_set_composer_pos(app, 0);
+                }
+                return true;
+            }
+            break;
     }
     
     /* Delegate to chat view */
