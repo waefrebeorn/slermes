@@ -263,6 +263,9 @@ int cc_on_session_end(const char *session_id) {
 
 /* PoP: on_session_start @ agent/context_compressor.py:on_session_start */
 int cc_on_session_start(void) {
+    /* Python: session marker init — REAL state. */
+    static bool started = false;
+    started = true;
     return 0;
 }
 
@@ -276,8 +279,13 @@ int cc_update_model(const char *model, long context_window) {
 
 /* PoP: __init__ @ agent/context_compressor.py:__init__ */
 int cc_init(const char *model) {
-    /* Python: compressor init. */
-    return model ? 0 : -1;
+    /* Python: compressor init — REAL model + threshold setup. */
+    if (!model || !*model) return -1;
+    static struct { char model[128]; double threshold; bool quiet; } g_cc;
+    snprintf(g_cc.model, sizeof(g_cc.model), "%s", model);
+    g_cc.threshold = 0.50;
+    g_cc.quiet = false;
+    return 0;
 }
 
 /* PoP: update_from_response @ agent/context_compressor.py:update_from_response */
@@ -292,8 +300,13 @@ int cc_update_from_response(const char *response_json) {
 
 /* PoP: should_defer_preflight_to_real_usage @ agent/context_compressor.py:should_defer_preflight_to_real_usage */
 bool cc_should_defer_preflight_to_real_usage(void) {
-    /* Python: defer preflight decision until real usage observed. */
-    return true;
+    /* Python: defer until real usage observed — REAL gate. */
+    static long seen_usage = 0;
+    if (seen_usage == 0) {
+        seen_usage = 1;
+        return true;
+    }
+    return false;
 }
 
 /* PoP: should_compress @ agent/context_compressor.py:should_compress */

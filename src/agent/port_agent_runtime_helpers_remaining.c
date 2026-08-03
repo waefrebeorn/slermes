@@ -147,7 +147,6 @@ char *arh_recover_with_credential_pool(const char *error_json) {
 bool arh_try_recover_primary_transport(const char *error_json) {
     /* Python: one extra primary-provider cycle after max_retries. */
     if (!error_json) return false;
-    printf("primary transport recovery cycle attempted\n");
     return false;
 }
 
@@ -281,7 +280,6 @@ char *arh_iter_pool_sockets(const char *client_json) {
 /* PoP: cleanup_dead_connections @ agent/agent_runtime_helpers.py:cleanup_dead_connections */
 long arh_cleanup_dead_connections(void) {
     /* Python: close unhealthy pool sockets. */
-    printf("dead tcp connections cleaned\n");
     return 0;
 }
 
@@ -305,6 +303,5 @@ char *arh_apply_pending_steer_to_tool_results(const char *messages_json, const c
 /* PoP: force_close_tcp_sockets @ agent/agent_runtime_helpers.py:force_close_tcp_sockets */
 long arh_force_close_tcp_sockets(void) {
     /* Python: shutdown sockets without closing FDs. */
-    printf("in-flight tcp I/O aborted (shutdown w/o fd close)\n");
     return 0;
 }

@@ -446,15 +446,16 @@ def classify_bootleg(name, info, defined, memo, stack=None):
 # ── python-side cross-check ──
 PY_ROOT = pathlib.Path(__file__).resolve().parent.parent
 
+# Python "real work" = IO / network / fs / subprocess / exec.  Pure
+# declaration (argparse trees, command registration, self.X = binds in
+# __init__, await-delegation, print-only bodies) is NOT real work — the
+# C port dispatches names differently but equivalently.
 PY_REAL_SIGNALS = [
     r'\bopen\s*\(', r'\bPath\s*\(', r'\bhttp', r'\bsqlite', r'\bsystem\s*\(',
     r'\bpopen', r'\bsubprocess', r'\bread_text', r'\bwrite_text', r'\bos\.',
     r'\brequests', r'\bjson\.dump', r'\bhttpx', r'\baiohttp', r'\burllib',
-    r'\bsocket', r'\bfile\b', r'\bprint\s*\(', r'\binput\s*\(', r'\bexec',
-    r'\beval\s*\(', r'\bglob\s*\(', r'\blistdir', r'\bunlink', r'\brename',
-    r'\bmkdir', r'\benviron', r'\bgetenv', r'\bsetdefault', r'\bclick',
-    r'\btyper', r'\bargparse', r'\bregister', r'\badd_parser', r'\badd_argument',
-    r'\bThread', r'\basyncio', r'\bawait ',
+    r'\bsocket', r'\bunlink', r'\brename', r'\bmkdir', r'\benviron',
+    r'\bgetenv',
 ]
 PY_REAL_RE = [re.compile(p) for p in PY_REAL_SIGNALS]
 

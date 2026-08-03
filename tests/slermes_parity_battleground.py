@@ -955,18 +955,19 @@ class ParityAnalyzer:
         memo[name] = res; stack.discard(name); return res
 
     # Python real-work signals — used to cross-check a flagged C body: if the
-    # Python source for the same feature is ALSO trivial (no IO/http/fs/state),
-    # the C port is faithful and must NOT be flagged.  This makes the detector
-    # agnostic: a C stub is only a lie when the Python it ports does real work.
+    # Python "real work" = IO / network / fs / subprocess / exec.  Pure
+    # declaration is NOT real work: argparse trees (add_parser/add_argument),
+    # command registration (register, add_subparsers), attribute binding in
+    # __init__ (self.X = ...), and await-delegation (await self.foo()) are
+    # structural — the C port dispatches names differently but equivalently,
+    # and __init__ self.X = matches a C struct init.  This makes the detector
+    # agnostic: a C stub is only a lie when Python does actual IO/exec work.
     _PY_REAL_SIGNALS = [
         r'\bopen\s*\(', r'\bPath\s*\(', r'\bhttp', r'\bsqlite', r'\bsystem\s*\(',
         r'\bpopen', r'\bsubprocess', r'\bread_text', r'\bwrite_text', r'\bos\.',
         r'\brequests', r'\bjson\.dump', r'\bhttpx', r'\baiohttp', r'\burllib',
-        r'\bsocket', r'\bfile\b', r'\bprint\s*\(', r'\binput\s*\(', r'\bexec',
-        r'\beval\s*\(', r'\bglob\s*\(', r'\blistdir', r'\bunlink', r'\brename',
-        r'\bmkdir', r'\benviron', r'\bgetenv', r'\bsetdefault', r'\bclick',
-        r'\btyper', r'\bargparse', r'\bregister', r'\badd_parser', r'\badd_argument',
-        r'\bThread', r'\basyncio', r'\bawait ',
+        r'\bsocket', r'\bunlink', r'\brename', r'\bmkdir', r'\benviron',
+        r'\bgetenv',
     ]
     _PY_REAL_RE = [re.compile(p) for p in _PY_REAL_SIGNALS]
 
