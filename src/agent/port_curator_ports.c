@@ -13,6 +13,10 @@
 #include <time.h>
 #include <unistd.h>
 #include <dirent.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include "json.h"
+#include "yaml.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -20,6 +24,17 @@ static char *lowerdup(const char *s) {
     if (!d) return NULL;
     for (char *p = d; *p; p++) *p = tolower((unsigned char)*p);
     return d;
+}
+
+/* True if needle appears in the JSON string-array. */
+static bool json_arr_has(const json_t *arr, const char *needle) {
+    if (!arr || arr->type != JSON_ARRAY || !needle) return false;
+    for (size_t i = 0; i < json_len(arr); i++) {
+        json_t *item = json_get(arr, i);
+        if (item && item->type == JSON_STRING && item->str_val &&
+            strcmp(item->str_val, needle) == 0) return true;
+    }
+    return false;
 }
 
 /* PoP: _strip_aux_credential @ agent/curator.py:_strip_aux_credential */
@@ -79,19 +94,50 @@ char *cur_load_state(const char *hermes_home) {
 
 /* PoP: save_state @ agent/curator.py:save_state */
 int cur_save_state(const char *hermes_home, const char *data_json) {
-    /* Python: atomic_json_write indent 2 sort_keys. */
+    /* Python: atomic_json_write(path, data, indent=2, sort_keys=True).
+     * Writes <home>/skills/.curator_state atomically (tmp + rename). */
     if (!hermes_home || !data_json) return -1;
     char *path = cur_state_file(hermes_home);
-    printf("curator state saved to %s (atomic, sorted keys)\n", path);
+
+    /* Ensure the skills dir exists. */
+    char dir[1024];
+    snprintf(dir, sizeof(dir), "%s/skills", hermes_home);
+    struct stat st;
+    if (stat(dir, &st) != 0) {
+        if (mkdir(dir, 0755) != 0) { free(path); return -1; }
+    }
+
+    /* Atomic write: tmp file in the same dir, then rename. */
+    char tmp[1100];
+    snprintf(tmp, sizeof(tmp), "%s.tmp.XXXXXX", path);
+    int fd = mkstemp(tmp);
+    if (fd < 0) { free(path); return -1; }
+    ssize_t w = write(fd, data_json, strlen(data_json));
+    if (w < 0) { close(fd); unlink(tmp); free(path); return -1; }
+    if (fsync(fd) != 0) { close(fd); unlink(tmp); free(path); return -1; }
+    close(fd);
+    if (rename(tmp, path) != 0) { unlink(tmp); free(path); return -1; }
     free(path);
     return 0;
 }
 
 /* PoP: set_paused @ agent/curator.py:set_paused */
 int cur_set_paused(const char *hermes_home, bool paused) {
+    /* Python: load_state, set paused flag, save_state. */
     if (!hermes_home) return -1;
-    printf("curator %s\n", paused ? "paused" : "resumed");
-    return 0;
+    char *st = cur_load_state(hermes_home);
+    if (!st) return -1;
+    /* Parse, set the flag, re-serialize. */
+    json_t *doc = json_parse(st, NULL);
+    free(st);
+    if (!doc) return -1;
+    json_set(doc, "paused", json_bool(paused));
+    char *ser = json_serialize_pretty(doc, 2);
+    json_free(doc);
+    if (!ser) return -1;
+    int rc = cur_save_state(hermes_home, ser);
+    free(ser);
+    return rc;
 }
 
 /* PoP: is_paused @ agent/curator.py:is_paused */
@@ -106,10 +152,27 @@ bool cur_is_paused(const char *hermes_home) {
 
 /* PoP: _load_config @ agent/curator.py:_load_config */
 char *cur_load_config(const char *config_yaml) {
-    /* Python: curator.* from config.yaml; tolerant of missing file. */
+    /* Python: curator.* from config.yaml; tolerant of missing file.
+     * config_yaml is the raw YAML text; extract the `curator:` section
+     * and return it as JSON. Returns "{}" when absent/unparseable. */
     if (!config_yaml) return strdup("{}");
-    printf("curator config loaded\n");
-    return strdup("{}");
+    char *err = NULL;
+    yaml_doc_t *doc = yaml_parse(config_yaml, &err);
+    if (!doc) { free(err); return strdup("{}"); }
+    char *js = yaml_to_json_string(doc, "");
+    yaml_free(doc);
+    if (!js) return strdup("{}");
+    json_t *cfg = json_parse(js, NULL);
+    free(js);
+    if (!cfg) return strdup("{}");
+    /* Extract the curator section. */
+    json_t *cur = json_obj_get(cfg, "curator");
+    char *out = NULL;
+    if (cur && cur->type == JSON_OBJECT) {
+        out = json_serialize(cur);
+    }
+    json_free(cfg);
+    return out ? out : strdup("{}");
 }
 
 /* PoP: is_enabled @ agent/curator.py:is_enabled */
@@ -262,26 +325,327 @@ char *cur_classify_removed_skills(const char *removed_json, const char *absorbed
 
 /* PoP: _parse_structured_summary @ agent/curator.py:_parse_structured_summary */
 char *cur_parse_structured_summary(const char *final_response) {
-    /* Python: fenced yaml block extraction. */
+    /* Python: extract the fenced ```yaml block (consolidations/prunings),
+     * tolerant of missing/malformed blocks → empty lists. */
     if (!final_response) return NULL;
-    printf("structured summary yaml extracted\n");
-    return strdup("{}");
+
+    /* Find ```yaml ... ``` (also ```yml). */
+    const char *open = strstr(final_response, "```yaml");
+    if (!open) open = strstr(final_response, "```yml");
+    if (!open) {
+        /* Case-insensitive fallback. */
+        char *lower = lowerdup(final_response);
+        const char *lo = lower ? strstr(lower, "```yaml") : NULL;
+        if (!lo) lo = lower ? strstr(lower, "```yml") : NULL;
+        if (lo) open = final_response + (lo - lower);
+        free(lower);
+    }
+    if (!open) return strdup("{\"consolidations\": [], \"prunings\": []}");
+
+    const char *body = open + 3;
+    while (*body && *body != '\n') body++;
+    if (*body == '\n') body++;
+    const char *close = strstr(body, "```");
+    if (!close) return strdup("{\"consolidations\": [], \"prunings\": []}");
+
+    /* Parse the YAML body via libyaml → JSON. */
+    size_t blen = (size_t)(close - body);
+    char *yaml_text = strndup(body, blen);
+    if (!yaml_text) return strdup("{\"consolidations\": [], \"prunings\": []}");
+
+    char *err = NULL;
+    yaml_doc_t *doc = yaml_parse(yaml_text, &err);
+    free(yaml_text);
+    if (!doc) { free(err); return strdup("{\"consolidations\": [], \"prunings\": []}"); }
+    char *js = yaml_to_json_string(doc, "");
+    yaml_free(doc);
+    if (!js) return strdup("{\"consolidations\": [], \"prunings\": []}");
+    json_t *data = json_parse(js, NULL);
+    free(js);
+    if (!data) return strdup("{\"consolidations\": [], \"prunings\": []}");
+
+    /* Rebuild with only consolidations + prunings arrays. */
+    json_t *out = json_object();
+    json_t *cons = json_array();
+    json_t *prunes = json_array();
+    const json_t *c_in = json_obj_get(data, "consolidations");
+    if (c_in && c_in->type == JSON_ARRAY) {
+        for (size_t i = 0; i < json_len(c_in); i++) {
+            json_t *item = json_get(c_in, i);
+            if (!item || item->type != JSON_OBJECT) continue;
+            json_t *out_item = json_object();
+            const char *f = json_get_str(item, "from", NULL);
+            const char *into = json_get_str(item, "into", NULL);
+            const char *reason = json_get_str(item, "reason", NULL);
+            if (f) json_set(out_item, "from", json_string(f));
+            if (into) json_set(out_item, "into", json_string(into));
+            if (reason) json_set(out_item, "reason", json_string(reason));
+            json_append(cons, out_item);
+        }
+    }
+    const json_t *p_in = json_obj_get(data, "prunings");
+    if (p_in && p_in->type == JSON_ARRAY) {
+        for (size_t i = 0; i < json_len(p_in); i++) {
+            json_t *item = json_get(p_in, i);
+            if (!item || item->type != JSON_OBJECT) continue;
+            json_t *out_item = json_object();
+            const char *name = json_get_str(item, "name", NULL);
+            const char *reason = json_get_str(item, "reason", NULL);
+            if (name) json_set(out_item, "name", json_string(name));
+            if (reason) json_set(out_item, "reason", json_string(reason));
+            json_append(prunes, out_item);
+        }
+    }
+    json_set(out, "consolidations", cons);
+    json_set(out, "prunings", prunes);
+    json_free(data);
+
+    char *ser = json_serialize(out);
+    json_free(out);
+    return ser ? ser : strdup("{\"consolidations\": [], \"prunings\": []}");
 }
 
 /* PoP: _extract_absorbed_into_declarations @ agent/curator.py:_extract_absorbed_into_declarations */
 char *cur_extract_absorbed_into_declarations(const char *tool_calls_json) {
-    /* Python: skill_manage delete → absorbed_into targets. */
+    /* Python: walk skill_manage(action=delete) calls; the model's own
+     * absorbed_into declaration is authoritative. Returns
+     * {skill_name: {"into": "<umbrella>"|"", "declared": true}}. */
     if (!tool_calls_json) return strdup("{}");
-    printf("absorbed-into declarations extracted from tool calls\n");
-    return strdup("{}");
+
+    json_t *calls = json_parse(tool_calls_json, NULL);
+    if (!calls) return strdup("{}");
+    if (calls->type != JSON_ARRAY) { json_free(calls); return strdup("{}"); }
+
+    json_t *out = json_object();
+    for (size_t i = 0; i < json_len(calls); i++) {
+        json_t *tc = json_get(calls, i);
+        if (!tc || tc->type != JSON_OBJECT) continue;
+        const char *name = json_get_str(tc, "name", NULL);
+        if (!name || strcmp(name, "skill_manage") != 0) continue;
+
+        /* arguments may be a JSON string or an object. */
+        json_t *args = NULL;
+        const json_t *raw = json_obj_get(tc, "arguments");
+        if (!raw) continue;
+        if (raw->type == JSON_STRING) {
+            char *aerr = NULL;
+            args = json_parse(raw->str_val ? raw->str_val : "", &aerr);
+            free(aerr);
+        } else if (raw->type == JSON_OBJECT) {
+            args = json_copy(raw);
+        }
+        if (!args) continue;
+
+        const char *action = json_get_str(args, "action", NULL);
+        const char *skill = json_get_str(args, "name", NULL);
+        if (!action || strcmp(action, "delete") != 0 || !skill || !*skill) {
+            json_free(args);
+            continue;
+        }
+        /* Copy skill name BEFORE freeing args (borrowed pointer). */
+        char skill_copy[256] = "";
+        snprintf(skill_copy, sizeof(skill_copy), "%s", skill);
+        /* absorbed_into must be present (even empty string). Copy the value
+         * BEFORE freeing args (ai is a borrowed pointer). */
+        const json_t *ai = json_obj_get(args, "absorbed_into");
+        char into_copy[256] = "";
+        if (ai) {
+            if (ai->type == JSON_STRING && ai->str_val) {
+                snprintf(into_copy, sizeof(into_copy), "%s", ai->str_val);
+            } else {
+                snprintf(into_copy, sizeof(into_copy), "%s", "");
+            }
+        }
+        json_free(args);
+        if (!ai) continue;
+
+        json_t *entry = json_object();
+        json_set(entry, "into", json_string(into_copy));
+        json_set(entry, "declared", json_bool(true));
+        json_set(out, skill_copy, entry);
+    }
+    json_free(calls);
+
+    char *ser = json_serialize(out);
+    json_free(out);
+    return ser ? ser : strdup("{}");
 }
 
 /* PoP: _reconcile_classification @ agent/curator.py:_reconcile_classification */
 char *cur_reconcile_classification(const char *tool_calls_json, const char *structured_json) {
-    /* Python: heuristic + model block merge (first match wins). */
+    /* Python: merge heuristic (tool-call evidence) with the model's
+     * structured block, authority order: model-declared absorbed_into at
+     * delete time > model consolidation with real destination > heuristic
+     * > prune fallback. The removed set + destinations are derived from
+     * the tool calls + structured block. */
     if (!structured_json) return strdup("{}");
-    printf("classifications reconciled (tool evidence vs structured block)\n");
-    return strdup(structured_json);
+
+    /* Parse the structured block (consolidations/prunings). */
+    json_t *model = json_parse(structured_json, NULL);
+    if (!model || model->type != JSON_OBJECT) {
+        if (model) json_free(model);
+        return strdup("{}");
+    }
+
+    /* Model consolidations + prunings maps. */
+    json_t *model_cons = json_obj_get(model, "consolidations");
+    json_t *model_pruned = json_obj_get(model, "prunings");
+
+    /* Destinations: every "into" in model consolidations + every name in
+     * prunings (they may be referenced). */
+    json_t *destinations = json_array();
+    if (model_cons && model_cons->type == JSON_ARRAY) {
+        for (size_t i = 0; i < json_len(model_cons); i++) {
+            json_t *e = json_get(model_cons, i);
+            const char *into = e ? json_get_str(e, "into", NULL) : NULL;
+            if (into && *into) json_append(destinations, json_string(into));
+        }
+    }
+
+    /* Declarations from tool calls (authoritative). */
+    json_t *declared = json_object();
+    if (tool_calls_json && *tool_calls_json) {
+        char *decl = cur_extract_absorbed_into_declarations(tool_calls_json);
+        if (decl) {
+            json_t *d = json_parse(decl, NULL);
+            free(decl);
+            if (d && d->type == JSON_OBJECT) {
+                json_free(declared);
+                declared = d;
+            } else if (d) {
+                json_free(d);
+            }
+        }
+    }
+
+    /* Removed set: every declared skill + every model-consolidation "from"
+     * + every model-pruning "name". */
+    json_t *removed = json_array();
+    if (declared->type == JSON_OBJECT) {
+        for (size_t i = 0; i < declared->c.count; i++) {
+            json_append(removed, json_string(declared->c.keys[i]));
+        }
+    }
+    if (model_cons && model_cons->type == JSON_ARRAY) {
+        for (size_t i = 0; i < json_len(model_cons); i++) {
+            json_t *e = json_get(model_cons, i);
+            const char *from = e ? json_get_str(e, "from", NULL) : NULL;
+            if (from && *from) {
+                bool found = false;
+                for (size_t k = 0; k < json_len(removed); k++) {
+                    const char *r = (json_get(removed, k) && json_get(removed, k)->type == JSON_STRING) ? json_get(removed, k)->str_val : NULL;
+                    if (r && strcmp(r, from) == 0) { found = true; break; }
+                }
+                if (!found) json_append(removed, json_string(from));
+            }
+        }
+    }
+    if (model_pruned && model_pruned->type == JSON_ARRAY) {
+        for (size_t i = 0; i < json_len(model_pruned); i++) {
+            json_t *e = json_get(model_pruned, i);
+            const char *nm = e ? json_get_str(e, "name", NULL) : NULL;
+            if (nm && *nm) {
+                bool found = false;
+                for (size_t k = 0; k < json_len(removed); k++) {
+                    const char *r = (json_get(removed, k) && json_get(removed, k)->type == JSON_STRING) ? json_get(removed, k)->str_val : NULL;
+                    if (r && strcmp(r, nm) == 0) { found = true; break; }
+                }
+                if (!found) json_append(removed, json_string(nm));
+            }
+        }
+    }
+
+    /* Reconcile each removed skill. */
+    json_t *consolidated = json_array();
+    json_t *pruned = json_array();
+
+    for (size_t i = 0; i < json_len(removed); i++) {
+        const char *name = (json_get(removed, i) && json_get(removed, i)->type == JSON_STRING) ? json_get(removed, i)->str_val : NULL;
+        if (!name) continue;
+
+        /* Model block entry for this skill. */
+        json_t *mc = NULL, *mp = NULL;
+        if (model_cons && model_cons->type == JSON_ARRAY) {
+            for (size_t k = 0; k < json_len(model_cons); k++) {
+                json_t *e = json_get(model_cons, k);
+                const char *f = e ? json_get_str(e, "from", NULL) : NULL;
+                if (f && strcmp(f, name) == 0) { mc = e; break; }
+            }
+        }
+        if (model_pruned && model_pruned->type == JSON_ARRAY) {
+            for (size_t k = 0; k < json_len(model_pruned); k++) {
+                json_t *e = json_get(model_pruned, k);
+                const char *nm = e ? json_get_str(e, "name", NULL) : NULL;
+                if (nm && strcmp(nm, name) == 0) { mp = e; break; }
+            }
+        }
+
+        /* Authoritative: model-declared absorbed_into at delete time. */
+        json_t *dec = json_obj_get(declared, name);
+        if (dec && dec->type == JSON_OBJECT) {
+            const char *into_claim = json_get_str(dec, "into", "");
+            if (into_claim[0] && json_arr_has(destinations, into_claim)) {
+                json_t *entry = json_object();
+                json_set(entry, "name", json_string(name));
+                json_set(entry, "into", json_string(into_claim));
+                json_set(entry, "source", json_string("absorbed_into (model-declared at delete)"));
+                if (mc) {
+                    const char *reason = json_get_str(mc, "reason", "");
+                    if (reason[0]) json_set(entry, "reason", json_string(reason));
+                }
+                json_append(consolidated, entry);
+                continue;
+            }
+            if (into_claim[0] == '\0') {
+                json_t *entry = json_object();
+                json_set(entry, "name", json_string(name));
+                json_set(entry, "source", json_string("absorbed_into=\"\" (model-declared prune)"));
+                if (mp) {
+                    const char *reason = json_get_str(mp, "reason", "");
+                    if (reason[0]) json_set(entry, "reason", json_string(reason));
+                }
+                json_append(pruned, entry);
+                continue;
+            }
+            /* Non-empty claim but target missing — fall through. */
+        }
+
+        /* Model consolidation with real destination. */
+        if (mc) {
+            const char *into = json_get_str(mc, "into", "");
+            if (json_arr_has(destinations, into)) {
+                json_t *entry = json_object();
+                json_set(entry, "name", json_string(name));
+                json_set(entry, "into", json_string(into));
+                json_set(entry, "source", json_string("model"));
+                const char *reason = json_get_str(mc, "reason", "");
+                if (reason[0]) json_set(entry, "reason", json_string(reason));
+                json_append(consolidated, entry);
+                continue;
+            }
+        }
+
+        /* Model says pruned (or no mention). */
+        json_t *entry = json_object();
+        json_set(entry, "name", json_string(name));
+        json_set(entry, "source", json_string(mp ? "model" : "no-evidence fallback"));
+        if (mp) {
+            const char *reason = json_get_str(mp, "reason", "");
+            if (reason[0]) json_set(entry, "reason", json_string(reason));
+        }
+        json_append(pruned, entry);
+    }
+
+    json_t *out = json_object();
+    json_set(out, "consolidated", consolidated);
+    json_set(out, "pruned", pruned);
+    char *ser = json_serialize(out);
+    json_free(out);
+    json_free(model);
+    json_free(declared);
+    json_free(destinations);
+    json_free(removed);
+    return ser ? ser : strdup("{}");
 }
 
 /* PoP: _build_rename_summary @ agent/curator.py:_build_rename_summary */
