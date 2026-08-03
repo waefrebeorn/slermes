@@ -68,7 +68,19 @@ def main():
 
     cb = _load_cb()
     cfg_mod = _load_config_mod()
-    saved = cfg_mod.load_config
+    # The live agent/curator_backup.py does `from hermes_cli.config import
+    # load_config` INSIDE _load_config() — that binds the attribute on the
+    # REAL hermes_cli.config module at call time, not on our spec-loaded
+    # "live_cfg" copy. Register the loaded module under its real name so the
+    # patch actually lands.
+    import importlib
+    import hermes_cli.config as real_cfg
+    importlib.reload(real_cfg)
+    for k in list(sys.modules):
+        if k.startswith("hermes_cli.config") and k != "hermes_cli.config":
+            del sys.modules[k]
+    # Point the real module's load_config at our monkeypatch too.
+    saved = real_cfg.load_config
 
     for doc in docs:
         doc = doc.strip()
@@ -76,11 +88,13 @@ def main():
             continue
         parsed = pyyaml.safe_load(doc) or {}
         cfg_mod.load_config = lambda: parsed
+        real_cfg.load_config = lambda: parsed
         try:
             enabled = bool(cb.is_enabled())
             keep = int(cb.get_keep())
         finally:
             cfg_mod.load_config = saved
+            real_cfg.load_config = saved
         sys.stdout.write(
             '{"enabled":%s,"keep":%d}\n' % ("true" if enabled else "false", keep)
         )

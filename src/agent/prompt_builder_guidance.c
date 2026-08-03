@@ -4,6 +4,8 @@
  *
  * Self-contained module: opaque context, minimal includes, C11 only, no god
  * header. Port of Python agent/prompt_builder.py:computer_use_guidance.
+ * Byte-exact: the emitted string is identical to the live Python function
+ * for the same platform (oracle-verified).
  */
 
 #include "prompt_builder_guidance.h"
@@ -96,13 +98,36 @@ char *prompt_builder_computer_use_guidance(const prompt_builder_guidance_t *ctx,
         "4. After any state-changing action, re-capture to verify. You can "
         "pass `capture_after=true` to get the follow-up screenshot in one "
         "round-trip.\n\n"
+        "## Verify → escalate ladder (background-first, NOT background-only)\n"
+        "Background delivery is the DEFAULT and the co-work path, but it is "
+        "the first rung, not the only one. Read each action's structured "
+        "result and climb only when the driver tells you to:\n"
+        "- `effect: 'confirmed'` + `verified: true` — the driver read the "
+        "result back. Done.\n"
+        "- `effect: 'unverifiable'` — the input was delivered but the driver "
+        "can't confirm it. Re-capture and check the screenshot/tree yourself "
+        "before deciding it worked.\n"
+        "- `effect: 'suspected_noop'`, `code: 'background_unavailable'`, or an "
+        "`escalation.recommended` field — the action did NOT land. Follow "
+        "`escalation.recommended`:\n"
+        "  - `'px'` → re-issue addressing the target by `coordinate=[x,y]` "
+        "read off the screenshot instead of `element`.\n"
+        "  - `'foreground'` (or a pixel click still didn't land) → re-issue "
+        "the SAME action with `delivery_mode='foreground'`. This briefly "
+        "raises the window; it needs its own approval and is only appropriate "
+        "when the user isn't actively working. Common for Electron/Chromium "
+        "consent dialogs, DirectInput games, and raw-input canvases.\n"
+        "- Escalate to foreground as a REACTION to a returned signal, never "
+        "as a prediction from the app being Electron/Chromium/GTK. Do not "
+        "silently retry the same rung expecting a different result, and do "
+        "not conclude 'cua-driver can't drive this app' — climb the ladder.\n\n"
         "## Background mode rules\n"
         "- Do NOT use `raise_window=true` on `focus_app` unless the user "
         "explicitly asked you to bring a window to front. Input routing to "
         "the app works without raising.\n"
         "- When capturing, prefer `app='%s'` (or whichever app the task is "
-        "about) instead of the whole screen — it's less noisy and won't "
-        "leak other windows the user has open.\n"
+        "about) instead of the whole screen — it's less noisy and "
+        "won't leak other windows the user has open.\n"
         "%s"
         "## The agent cursor you'll see on screen\n"
         "Each computer-use run declares a session with cua-driver; that "

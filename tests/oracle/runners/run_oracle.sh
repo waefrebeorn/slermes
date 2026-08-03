@@ -26,7 +26,17 @@ mkdir -p "$BUILD_DIR"
 NAME="${1:?usage: run_oracle.sh <port_name> [fixtures_subdir]}"
 SUB="${2:-$NAME}"
 FIX="tests/oracle/fixtures/$SUB"
+# Prefer the registry's explicit harness path (oracles may map to a
+# differently-named harness, e.g. t_port_error_classifier_upstream.c for the
+# error_classifier port); fall back to the conventional t_port_<name>.c.
 HARNESS="tests/t_port_$NAME.c"
+if command -v jq >/dev/null 2>&1; then
+    REG_HARNESS=$(jq -r ".ports[\"$NAME\"].harness // empty" tests/oracle/registry.json 2>/dev/null)
+    [ -n "$REG_HARNESS" ] && HARNESS="$REG_HARNESS"
+elif [ -f tests/oracle/registry.json ]; then
+    REG_HARNESS=$(python3 -c "import json,sys; d=json.load(open('tests/oracle/registry.json')); print(d.get('ports',{}).get(sys.argv[1],{}).get('harness',''))" "$NAME" 2>/dev/null)
+    [ -n "$REG_HARNESS" ] && HARNESS="$REG_HARNESS"
+fi
 ORACLE="tests/sta_oracle_$NAME.py"
 
 [ -f "$HARNESS" ] || { echo "MISSING $HARNESS"; exit 2; }
