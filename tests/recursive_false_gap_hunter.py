@@ -437,6 +437,15 @@ def classify_bootleg(name, info, defined, memo, stack=None):
         # (g_*/s_* fields, pointer derefs, array stores) or alloc-and-store.
         if re.search(r'\b(g_|s_)[A-Za-z0-9_]*\s*(\[|\.|=)|->\s*\w+\s*=|\[\s*[^\]]*\]\s*=', s):
             return False
+        # Pointer/struct field write via array index: w->p[i].field = v
+        if re.search(r'\]\s*\.\s*\w+\s*=|->\s*\w+\s*\[[^\]]*\]\s*=', s):
+            return False
+        # Increment/decrement of a variable (counter, index) => real work.
+        if re.search(r'\b\w+\s*(\+\+|--)\s*;', s):
+            return False
+        # Assignment of a function-call result: x = foo(...) => real work.
+        if re.search(r'\b\w+\s*=\s*[A-Za-z_]\w*\s*\(', s):
+            return False
         if re.search(r'=\s*(malloc|calloc|strdup|realloc)\s*\(', s):
             return False
         # Control-flow headers defer to their body lines; bare calls invoke

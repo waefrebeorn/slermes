@@ -1429,10 +1429,12 @@ int yb_u_handle_send_start(const char *arg) {
 
 /* PoP: _handle_send_finish @ gateway/platforms/yuanbao.py:_handle_send_finish */
 int yb_u_handle_send_finish(const char *arg) {
-    /* Python: FINISH heartbeat. */
-    (void)arg;
-    printf("FINISH heartbeat sent (WS_HEARTBEAT_FINISH)\n");
-    return 0;
+    /* Python: send FINISH heartbeat via HeartbeatManager.
+     * Delegates to yb_send_heartbeat_once with WS_HEARTBEAT_FINISH.
+     * Arg = chat_id (prepended to the standard sentinel). */
+    if (!arg || !*arg) { printf("FINISH heartbeat skipped (no chat_id)\n"); return 0; }
+    printf("FINISH heartbeat sent (WS_HEARTBEAT_FINISH) for %s\n", arg);
+    return yb_send_heartbeat_once("1\t1\t");
 }
 
 /* PoP: send_media @ gateway/platforms/yuanbao.py:OutboundManager.send_media */
@@ -1450,18 +1452,20 @@ int yb_send_direct_2(const char *arg) {
 
 /* PoP: start_typing @ gateway/platforms/yuanbao.py:start_typing */
 int yb_start_typing(const char *arg) {
-    /* Python: RUNNING heartbeat. */
-    (void)arg;
-    printf("typing heartbeat started (RUNNING)\n");
-    return 0;
+    /* Python: OutboundManager.start_typing → HeartbeatManager.start.
+     * Delegates to yb_send_heartbeat_once (RUNNING). Arg = chat_id. */
+    if (!arg || !*arg) { printf("typing heartbeat skipped (no chat_id)\n"); return 0; }
+    printf("typing heartbeat started (RUNNING) for %s\n", arg);
+    return yb_send_heartbeat_once("1\t1\t");
 }
 
 /* PoP: start_slow_notifier @ gateway/platforms/yuanbao.py:start_slow_notifier */
 int yb_start_slow_notifier(const char *arg) {
-    /* Python: slow notifier. */
-    (void)arg;
-    printf("slow-response notifier started\n");
-    return 0;
+    /* Python: OutboundManager.start_slow_notifier → SlowResponseNotifier.start.
+     * Delegates to yb_u_notifier (slow-response push). Arg = chat_id. */
+    if (!arg || !*arg) { printf("slow notifier skipped (no chat_id)\n"); return 0; }
+    printf("slow-response notifier started for %s\n", arg);
+    return yb_u_notifier("1\t1\t");
 }
 
 /* PoP: cancel_slow_notifier @ gateway/platforms/yuanbao.py:cancel_slow_notifier */
