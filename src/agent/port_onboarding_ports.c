@@ -25,7 +25,6 @@ static char *lowerdup(const char *s) {
 char *obd_busy_input_hint_gateway(const char *mode) {
     /* Python: first-time busy hint, gateway flavor. */
     if (!mode) return strdup("");
-    printf("busy input hint shown (gateway, mode %s)\n", mode);
     return strdup("I'm busy — I'll respond shortly.");
 }
 
@@ -33,7 +32,6 @@ char *obd_busy_input_hint_gateway(const char *mode) {
 char *obd_busy_input_hint_cli(const char *mode) {
     /* Python: plain-text CLI hint. */
     if (!mode) return strdup("");
-    printf("busy input hint shown (cli, mode %s)\n", mode);
     return strdup("(still working…)");
 }
 

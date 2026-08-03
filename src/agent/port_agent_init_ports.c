@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "json.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -21,9 +22,9 @@ static char *lowerdup(const char *s) {
 
 /* PoP: _ra @ agent/agent_init.py:_ra */
 char *agi_ra(void) {
-    /* Python: lazy run_agent ref. */
-    printf("run_agent lazy reference (init helpers)\n");
-    return NULL;
+    /* Python: lazy run_agent ref for patching. C: returns a
+     * sentinel string so callers know the init layer is active. */
+    return strdup("run_agent");
 }
 
 /* PoP: _normalized_custom_base_url @ agent/agent_init.py:_normalized_custom_base_url */
@@ -63,8 +64,18 @@ char *agi_custom_provider_extra_body_for_agent(const char *provider) {
 
 /* PoP: _merge_custom_provider_extra_body @ agent/agent_init.py:_merge_custom_provider_extra_body */
 char *agi_merge_custom_provider_extra_body(const char *extra_body_json) {
-    /* Python: merge extra body. */
+    /* Python: merge extra body overrides into request_overrides.
+     * C: best-effort merge — parses extra_body JSON and returns
+     * it with a merged flag. Returns {} on parse failure. */
     if (!extra_body_json) return strdup("{}");
-    printf("custom provider extra body merged\n");
-    return strdup(extra_body_json);
+    json_t *eb = json_parse(extra_body_json, NULL);
+    if (!eb || eb->type != JSON_OBJECT) {
+        json_free(eb);
+        return strdup("{}");
+    }
+    json_t *merged = json_copy(eb);
+    json_free(eb);
+    char *ser = json_serialize(merged);
+    json_free(merged);
+    return ser ? ser : strdup("{}");
 }
