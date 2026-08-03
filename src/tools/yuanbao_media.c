@@ -27,6 +27,7 @@
 #include "hermes_url_safety.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include <string.h>
 
 /* ================================================================
@@ -134,4 +135,20 @@ char *yuanbao_build_file_msg(const char *url,
     char *result = json_serialize(root);
     json_free(root);
     return result;
+}
+
+/* PoP: get_image_format @ gateway/platforms/yuanbao_media.py:get_image_format */
+/* TIM image format number from mime type; 255 = unknown. */
+long yuanbao_get_image_format(const char *mime_type)
+{
+    if (!mime_type) return 255;
+    char low[64];
+    snprintf(low, sizeof(low), "%s", mime_type);
+    for (char *p = low; *p; p++) *p = (char)tolower((unsigned char)*p);
+    if (strstr(low, "png")) return 1;
+    if (strstr(low, "jpeg") || strstr(low, "jpg")) return 2;
+    if (strstr(low, "gif")) return 3;
+    if (strstr(low, "bmp")) return 4;
+    if (strstr(low, "webp")) return 5;
+    return 255;
 }

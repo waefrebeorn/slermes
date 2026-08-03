@@ -623,6 +623,7 @@ const char **coding_runtime_mode_toolset_selection(
  * PoP: system_blocks @ agent/coding_context.py:system_blocks
  * PoP: coding_system_prompt_parts @ agent/coding_context.py:coding_system_prompt_parts
  */
+/* PoP: system_blocks @ agent/coding_context.py:system_blocks */
 char **coding_runtime_mode_system_blocks(
     const coding_runtime_mode_t *mode, int *out_count) {
 
@@ -860,6 +861,7 @@ int coding_context_read_small(const char *path, char *out, size_t out_size, size
  * agent/coding_context.py:_project_facts
  * Detects manifests, package managers, verify commands, context files for a
  * root and renders them as workspace-snapshot lines into out (malloc'd, caller frees). */
+/* PoP: _project_facts @ agent/coding_context.py:_project_facts */
 char *coding_context_project_facts(const char *root)
 {
     if (!root || !root[0]) return NULL;

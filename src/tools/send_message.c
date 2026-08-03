@@ -767,3 +767,18 @@ void registry_init_send_message(void) {
         "in the message — the platform will deliver it as a native media attachment.",
         SCHEMA, send_message_handler);
 }
+
+/* PoP: _error @ tools/send_message_tool.py:_error */
+/* Build {"error": sanitized} payload via the canonical sanitizer. */
+char *send_message_error(const char *message)
+{
+    json_t *o = json_object();
+    if (!o) return strdup("{\"error\":\"\"}");
+    extern char *sanitize_error_text(const char *text);
+    char *clean = sanitize_error_text(message);
+    json_set(o, "error", json_string(clean ? clean : ""));
+    free(clean);
+    char *s = json_serialize(o);
+    json_free(o);
+    return s ? s : strdup("{\"error\":\"\"}");
+}

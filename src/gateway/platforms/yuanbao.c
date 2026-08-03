@@ -705,6 +705,7 @@ bool yuanbao_init(const char *app_id, const char *app_secret,
 }
 
 /* PoP: start @ gateway/platforms/yuanbao.py:start */
+/* PoP: connect @ gateway/platforms/yuanbao.py:connect */
 void yuanbao_start(void) {
     if (!*g_yb.app_id || !*g_yb.app_secret) {
         fprintf(stderr, "[gateway:yuanbao] app_id and app_secret required\n");

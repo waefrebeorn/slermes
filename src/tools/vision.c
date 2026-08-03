@@ -292,6 +292,7 @@ static bool is_image_size_error(const char *error_text) {
 
 /* PoP: _validate_image_url @ src/tools/vision.c:vision_validate_image_url */
 /* Port of Python vision_tools.py:_validate_image_url(). */
+/* PoP: _validate_image_url @ tools/vision_tools.py:_validate_image_url */
 bool vision_validate_image_url(const char *url) {
     if (!url || !url[0]) return false;
 
@@ -319,6 +320,7 @@ bool vision_validate_image_url(const char *url) {
 
 /* PoP: _supports_media_in_tool_results @ src/tools/vision.c:vision_supports_media_in_tool_results */
 /* Port of Python vision_tools.py:_supports_media_in_tool_results(). */
+/* PoP: _supports_media_in_tool_results @ tools/vision_tools.py:_supports_media_in_tool_results */
 bool vision_supports_media_in_tool_results(const char *provider, const char *model) {
     if (!provider || !provider[0]) return false;
 

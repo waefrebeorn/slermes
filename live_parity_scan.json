@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-03T02:17:47Z",
+  "generated_at": "2026-08-03T02:29:20Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -14906,8 +14906,8 @@
     },
     "agent/coding_context.py": {
       "total": 31,
-      "ported": 29,
-      "partial": 2,
+      "ported": 31,
+      "partial": 0,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -14935,7 +14935,7 @@
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 1131,
+            "line": 1133,
             "is_consolidated": false,
             "full_text": "/* Resolve config.yaml path from the loaded config. */\n    char yaml_path[HERMES_PATH_MAX];\n    if (config->config_path[0]) {\n        snprintf(yaml_path, sizeof(yaml_path), \"%s\", config->config_path);"
           },
@@ -15080,7 +15080,7 @@
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 1187,
+            "line": 1189,
             "is_consolidated": false,
             "full_text": "/* stack of (dir, is_root) \u2014 root + one level deep only */\n    struct { char path[PATH_MAX]; int is_root; } stack[CODE_SCAN_MAX_ENTRIES];\n    int sp = 0;\n    snprintf(stack[sp].path, sizeof(stack[sp]."
           },
@@ -15345,7 +15345,7 @@
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 1100,
+            "line": 1102,
             "is_consolidated": false,
             "full_text": "/* PoP: system_prompt_parts @ agent/coding_context.py:system_prompt_parts */"
           },
@@ -15364,16 +15364,24 @@
             "decorators": [],
             "line_number": 555
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/agent/coding_context.c",
-          "c_function": "system_blocks",
-          "pop_annotation": null,
+          "c_function": "coding_runtime_mode_system_blocks",
+          "pop_annotation": {
+            "c_function": "coding_runtime_mode_system_blocks",
+            "python_functions": [
+              "system_blocks"
+            ],
+            "c_file": "src/agent/coding_context.c",
+            "python_file": "agent/coding_context.py",
+            "line": 626,
+            "is_consolidated": false,
+            "full_text": "/* PoP: system_blocks @ agent/coding_context.py:system_blocks */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/coding_context.py",
@@ -15395,7 +15403,7 @@
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 691,
+            "line": 692,
             "is_consolidated": false,
             "full_text": "/* PoP: compact_skill_categories @ agent/coding_context.py:compact_skill_categories */"
           },
@@ -15482,7 +15490,7 @@
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 1090,
+            "line": 1092,
             "is_consolidated": false,
             "full_text": "/* PoP: coding_selection @ agent/coding_context.py:coding_selection */"
           },
@@ -15511,7 +15519,7 @@
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 1102,
+            "line": 1104,
             "is_consolidated": false,
             "full_text": "/* PoP: coding_system_blocks @ agent/coding_context.py:coding_system_blocks */"
           },
@@ -15540,7 +15548,7 @@
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 1101,
+            "line": 1103,
             "is_consolidated": false,
             "full_text": "/* PoP: coding_system_prompt_parts @ agent/coding_context.py:coding_system_prompt_parts */"
           },
@@ -15569,7 +15577,7 @@
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 1112,
+            "line": 1114,
             "is_consolidated": false,
             "full_text": "/* PoP: coding_compact_skill_categories @ agent/coding_context.py:coding_compact_skill_categories */"
           },
@@ -15598,7 +15606,7 @@
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 1020,
+            "line": 1022,
             "is_consolidated": false,
             "full_text": "/* Get branch info and status counts in one git call */\n            if (coding_context_run_git(root, buf, sizeof(buf), \"status --porcelain=2 --branch\") == 0) {\n                char *parsed = coding_co"
           },
@@ -15619,17 +15627,17 @@
           },
           "classification": "PORTED",
           "c_location": "src/agent/coding_context.c",
-          "c_function": "coding_runtime_mode_free_blocks",
+          "c_function": "coding_runtime_mode_system_blocks",
           "pop_annotation": {
-            "c_function": "coding_runtime_mode_free_blocks",
+            "c_function": "coding_runtime_mode_system_blocks",
             "python_functions": [
               "_git"
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 634,
+            "line": 626,
             "is_consolidated": false,
-            "full_text": "/* Allocate array for up to 3 blocks (prefix/workspace/trailing) */\n    char **blocks = calloc(3, sizeof(char *));\n    if (!blocks) { if (out_count) *out_count = 0; return NULL; }\n\n    int count = 0;\n"
+            "full_text": "/* PoP: system_blocks @ agent/coding_context.py:system_blocks */\nchar **coding_runtime_mode_system_blocks(\n    const coding_runtime_mode_t *mode, int *out_count) {\n\n    if (!mode || !coding_runtime_mo"
           },
           "stub_reason": null,
           "severity": "LOW",
@@ -15656,7 +15664,7 @@
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 740,
+            "line": 741,
             "is_consolidated": false,
             "full_text": "/* vsnprintf consumes %h/%s as float/str from varargs \u2192 use literal \"git\" binary\n     * and pass args via shell so git receives the exact --pretty= format string. */\n    char cmd[2048];\n    snprintf(c"
           },
@@ -15685,7 +15693,7 @@
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 787,
+            "line": 788,
             "is_consolidated": false,
             "full_text": "/* \"# branch.ab +N -M\" */\n            const char *q = line + 12;\n            while (*q == ' ') q++;\n            if (*q == '+') {\n                ahead = strdup(q + 1);\n                char *sp = strch"
           },
@@ -15714,7 +15722,7 @@
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 856,
+            "line": 857,
             "is_consolidated": false,
             "full_text": "/*\n * PoP: detect_project_facts @ agent/coding_context.py:detect_project_facts"
           },
@@ -15733,16 +15741,24 @@
             "decorators": [],
             "line_number": 819
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/agent/coding_context.c",
-          "c_function": "_project_facts",
-          "pop_annotation": null,
+          "c_function": "coding_context_project_facts",
+          "pop_annotation": {
+            "c_function": "coding_context_project_facts",
+            "python_functions": [
+              "_project_facts"
+            ],
+            "c_file": "src/agent/coding_context.c",
+            "python_file": "agent/coding_context.py",
+            "line": 864,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _project_facts @ agent/coding_context.py:_project_facts */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/coding_context.py",
@@ -15785,17 +15801,17 @@
           },
           "classification": "PORTED",
           "c_location": "src/agent/coding_context.c",
-          "c_function": "",
+          "c_function": "coding_context_project_facts",
           "pop_annotation": {
-            "c_function": "",
+            "c_function": "coding_context_project_facts",
             "python_functions": [
               "build_coding_workspace_block"
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 872,
+            "line": 864,
             "is_consolidated": false,
-            "full_text": "/* manifests (excluding context files) */\n    int nm = 0;\n    char manifests[256]; manifests[0] = '\\0';\n    for (int i = 0; PROJECT_MARKERS[i]; i++) {\n        const char *m = PROJECT_MARKERS[i];\n     "
+            "full_text": "/* PoP: _project_facts @ agent/coding_context.py:_project_facts */\nchar *coding_context_project_facts(const char *root)\n{\n    if (!root || !root[0]) return NULL;\n    char line[2048];\n    size_t cap = "
           },
           "stub_reason": null,
           "severity": "LOW",
@@ -94303,14 +94319,14 @@
     },
     "gateway/delivery.py": {
       "total": 19,
-      "ported": 18,
-      "partial": 1,
+      "ported": 19,
+      "partial": 0,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 19,
-      "c_func_count": 37,
+      "c_func_count": 44,
       "gaps": [
         {
           "python_file": "gateway/delivery.py",
@@ -94384,9 +94400,9 @@
           },
           "classification": "PORTED",
           "c_location": "src/gateway/delivery.c",
-          "c_function": "",
+          "c_function": "gw_delivery_parse_target",
           "pop_annotation": {
-            "c_function": "",
+            "c_function": "gw_delivery_parse_target",
             "python_functions": [
               "send"
             ],
@@ -94645,16 +94661,24 @@
             ],
             "line_number": 231
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/delivery.c",
-          "c_function": "parse",
-          "pop_annotation": null,
+          "c_function": "gw_delivery_parse_target",
+          "pop_annotation": {
+            "c_function": "gw_delivery_parse_target",
+            "python_functions": [
+              "parse"
+            ],
+            "c_file": "src/gateway/delivery.c",
+            "python_file": "gateway/delivery.py",
+            "line": 306,
+            "is_consolidated": false,
+            "full_text": "/* PoP: parse @ gateway/delivery.py:parse */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/delivery.py",
@@ -122325,8 +122349,8 @@
     },
     "gateway/platforms/yuanbao.py": {
       "total": 214,
-      "ported": 213,
-      "partial": 1,
+      "ported": 214,
+      "partial": 0,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -122356,7 +122380,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 824,
+            "line": 825,
             "is_consolidated": false,
             "full_text": "/* PoP: yuanbao_md_has_unclosed_fence @ gateway/platforms/yuanbao.py:has_unclosed_fence */"
           },
@@ -122387,7 +122411,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 846,
+            "line": 847,
             "is_consolidated": false,
             "full_text": "/* PoP: yuanbao_md_ends_with_table_row @ gateway/platforms/yuanbao.py:ends_with_table_row */"
           },
@@ -122418,7 +122442,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 871,
+            "line": 872,
             "is_consolidated": false,
             "full_text": "/* PoP: yuanbao_md_split_at_paragraph_boundary @ gateway/platforms/yuanbao.py:split_at_paragraph_boundary */"
           },
@@ -122449,7 +122473,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 947,
+            "line": 948,
             "is_consolidated": false,
             "full_text": "/* PoP: yuanbao_md_is_fence_atom @ gateway/platforms/yuanbao.py:is_fence_atom */"
           },
@@ -122480,7 +122504,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 956,
+            "line": 957,
             "is_consolidated": false,
             "full_text": "/* PoP: yuanbao_md_is_table_atom @ gateway/platforms/yuanbao.py:is_table_atom */"
           },
@@ -122511,7 +122535,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 974,
+            "line": 975,
             "is_consolidated": false,
             "full_text": "/* PoP: yuanbao_md_split_into_atoms @ gateway/platforms/yuanbao.py:split_into_atoms */"
           },
@@ -122542,7 +122566,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 1322,
+            "line": 1323,
             "is_consolidated": false,
             "full_text": "/* PoP: yuanbao_md_chunk_markdown_text @ gateway/platforms/yuanbao.py:chunk_markdown_text */"
           },
@@ -122573,7 +122597,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 1089,
+            "line": 1090,
             "is_consolidated": false,
             "full_text": "/* PoP: yuanbao_md_infer_block_separator @ gateway/platforms/yuanbao.py:infer_block_separator */"
           },
@@ -122604,7 +122628,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 1284,
+            "line": 1285,
             "is_consolidated": false,
             "full_text": "/* PoP: yuanbao_md_merge_block_streaming_fences @ gateway/platforms/yuanbao.py:merge_block_streaming_fences */"
           },
@@ -122635,7 +122659,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 1116,
+            "line": 1117,
             "is_consolidated": false,
             "full_text": "/* PoP: yuanbao_md_strip_outer_markdown_fence @ gateway/platforms/yuanbao.py:strip_outer_markdown_fence */"
           },
@@ -122666,7 +122690,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 1177,
+            "line": 1178,
             "is_consolidated": false,
             "full_text": "/* PoP: yuanbao_md_sanitize_markdown_table @ gateway/platforms/yuanbao.py:sanitize_markdown_table */"
           },
@@ -122697,7 +122721,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 1272,
+            "line": 1273,
             "is_consolidated": false,
             "full_text": "/* PoP: yuanbao_md_markdown_hint_system_prompt @ gateway/platforms/yuanbao.py:markdown_hint_system_prompt */"
           },
@@ -122728,7 +122752,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 1520,
+            "line": 1521,
             "is_consolidated": false,
             "full_text": "/* PoP: yuanbao_get_refresh_lock @ gateway/platforms/yuanbao.py:SignManager.get_refresh_lock */"
           },
@@ -122759,7 +122783,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 1526,
+            "line": 1527,
             "is_consolidated": false,
             "full_text": "/* PoP: yuanbao_compute_signature @ gateway/platforms/yuanbao.py:SignManager.compute_signature */"
           },
@@ -122790,7 +122814,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 1537,
+            "line": 1538,
             "is_consolidated": false,
             "full_text": "/* PoP: yuanbao_build_timestamp @ gateway/platforms/yuanbao.py:SignManager.build_timestamp */"
           },
@@ -122821,7 +122845,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 1551,
+            "line": 1552,
             "is_consolidated": false,
             "full_text": "/* PoP: yuanbao_is_cache_valid @ gateway/platforms/yuanbao.py:SignManager.is_cache_valid */"
           },
@@ -122852,7 +122876,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 1558,
+            "line": 1559,
             "is_consolidated": false,
             "full_text": "/* PoP: yuanbao_clear_locks @ gateway/platforms/yuanbao.py:SignManager.clear_locks */"
           },
@@ -122883,7 +122907,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 1566,
+            "line": 1567,
             "is_consolidated": false,
             "full_text": "/* PoP: yuanbao_purge_expired @ gateway/platforms/yuanbao.py:SignManager.purge_expired */"
           },
@@ -122914,7 +122938,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 1586,
+            "line": 1587,
             "is_consolidated": false,
             "full_text": "/* PoP: yuanbao_fetch @ gateway/platforms/yuanbao.py:SignManager.fetch */"
           },
@@ -122976,7 +123000,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 1755,
+            "line": 1756,
             "is_consolidated": false,
             "full_text": "/* PoP: yuanbao_force_refresh @ gateway/platforms/yuanbao.py:SignManager.force_refresh */"
           },
@@ -125748,7 +125772,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 739,
+            "line": 740,
             "is_consolidated": false,
             "full_text": "/* PoP: close @ gateway/platforms/yuanbao.py:close */"
           },
@@ -126680,7 +126704,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 773,
+            "line": 774,
             "is_consolidated": false,
             "full_text": "/* PoP: query_group_info @ gateway/platforms/yuanbao.py:query_group_info */"
           },
@@ -126854,7 +126878,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 738,
+            "line": 739,
             "is_consolidated": false,
             "full_text": "/* PoP: stop @ gateway/platforms/yuanbao.py:stop */"
           },
@@ -126883,7 +126907,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 739,
+            "line": 740,
             "is_consolidated": false,
             "full_text": "/* PoP: close @ gateway/platforms/yuanbao.py:close */"
           },
@@ -127028,7 +127052,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 739,
+            "line": 740,
             "is_consolidated": false,
             "full_text": "/* PoP: close @ gateway/platforms/yuanbao.py:close */"
           },
@@ -127558,7 +127582,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 739,
+            "line": 740,
             "is_consolidated": false,
             "full_text": "/* PoP: close @ gateway/platforms/yuanbao.py:close */"
           },
@@ -127968,7 +127992,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 739,
+            "line": 740,
             "is_consolidated": false,
             "full_text": "/* PoP: close @ gateway/platforms/yuanbao.py:close */"
           },
@@ -128167,16 +128191,24 @@
             "decorators": [],
             "line_number": 5315
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/platforms/yuanbao.c",
-          "c_function": "connect",
-          "pop_annotation": null,
+          "c_function": "yuanbao_start",
+          "pop_annotation": {
+            "c_function": "yuanbao_start",
+            "python_functions": [
+              "connect"
+            ],
+            "c_file": "src/gateway/platforms/yuanbao.c",
+            "python_file": "gateway/platforms/yuanbao.py",
+            "line": 708,
+            "is_consolidated": false,
+            "full_text": "/* PoP: connect @ gateway/platforms/yuanbao.py:connect */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao.py",
@@ -128227,7 +128259,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 747,
+            "line": 748,
             "is_consolidated": false,
             "full_text": "/* PoP: send @ gateway/platforms/yuanbao.py:send */"
           },
@@ -128372,7 +128404,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 773,
+            "line": 774,
             "is_consolidated": false,
             "full_text": "/* PoP: query_group_info @ gateway/platforms/yuanbao.py:query_group_info */"
           },
@@ -128401,7 +128433,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 786,
+            "line": 787,
             "is_consolidated": false,
             "full_text": "/* PoP: get_group_member_list @ gateway/platforms/yuanbao.py:get_group_member_list */"
           },
@@ -128430,7 +128462,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 799,
+            "line": 800,
             "is_consolidated": false,
             "full_text": "/* PoP: send_dm @ gateway/platforms/yuanbao.py:send_dm */"
           },
@@ -128546,7 +128578,7 @@
             ],
             "c_file": "src/gateway/platforms/yuanbao.c",
             "python_file": "gateway/platforms/yuanbao.py",
-            "line": 745,
+            "line": 746,
             "is_consolidated": false,
             "full_text": "/* PoP: send_sticker @ gateway/platforms/yuanbao.py:send_sticker */"
           },
@@ -128704,14 +128736,14 @@
     },
     "gateway/platforms/yuanbao_media.py": {
       "total": 17,
-      "ported": 16,
-      "partial": 1,
+      "ported": 17,
+      "partial": 0,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 17,
-      "c_func_count": 15,
+      "c_func_count": 20,
       "gaps": [
         {
           "python_file": "gateway/platforms/yuanbao_media.py",
@@ -128781,16 +128813,24 @@
             "decorators": [],
             "line_number": 103
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/yuanbao_media.c",
-          "c_function": "get_image_format",
-          "pop_annotation": null,
+          "c_function": "yuanbao_get_image_format",
+          "pop_annotation": {
+            "c_function": "yuanbao_get_image_format",
+            "python_functions": [
+              "get_image_format"
+            ],
+            "c_file": "src/tools/yuanbao_media.c",
+            "python_file": "gateway/platforms/yuanbao_media.py",
+            "line": 140,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_image_format @ gateway/platforms/yuanbao_media.py:get_image_format */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao_media.py",
@@ -128841,7 +128881,7 @@
             ],
             "c_file": "src/tools/yuanbao_media.c",
             "python_file": "gateway/platforms/yuanbao_media.py",
-            "line": 36,
+            "line": 37,
             "is_consolidated": false,
             "full_text": "/* PoP: generate_file_id @ gateway/platforms/yuanbao_media.py:generate_file_id */"
           },
@@ -167231,7 +167271,7 @@
             ],
             "c_file": "src/tools/browser.c",
             "python_file": "hermes_cli/bundles.py",
-            "line": 1643,
+            "line": 1644,
             "is_consolidated": false,
             "full_text": "/* Port of Python hermes_cli/bundles.py:_console"
           },
@@ -290476,7 +290516,7 @@
             ],
             "c_file": "src/tools/browser.c",
             "python_file": "tools/browser_cdp_tool.py",
-            "line": 1506,
+            "line": 1507,
             "is_consolidated": false,
             "full_text": "/* Port of Python tools/browser_cdp_tool.py:browser_cdp"
           },
@@ -290547,7 +290587,7 @@
             ],
             "c_file": "src/tools/browser.c",
             "python_file": "tools/browser_dialog_tool.py",
-            "line": 1683,
+            "line": 1684,
             "is_consolidated": false,
             "full_text": "/* Port of Python tools/browser_dialog_tool.py:browser_dialog"
           },
@@ -290589,8 +290629,8 @@
     },
     "tools/browser_supervisor.py": {
       "total": 40,
-      "ported": 39,
-      "partial": 1,
+      "ported": 40,
+      "partial": 0,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -291652,16 +291692,24 @@
             "decorators": [],
             "line_number": 1431
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/browser.c",
-          "c_function": "get",
-          "pop_annotation": null,
+          "c_function": "browser_get_current_url",
+          "pop_annotation": {
+            "c_function": "browser_get_current_url",
+            "python_functions": [
+              "get"
+            ],
+            "c_file": "src/tools/browser.c",
+            "python_file": "tools/browser_supervisor.py",
+            "line": 50,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get @ tools/browser_supervisor.py:get */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/browser_supervisor.py",
@@ -293726,7 +293774,7 @@
             ],
             "c_file": "src/tools/browser.c",
             "python_file": "tools/browser_tool.py",
-            "line": 432,
+            "line": 433,
             "is_consolidated": false,
             "full_text": "/* Port of Python tools/browser_tool.py:browser_navigate"
           },
@@ -293755,7 +293803,7 @@
             ],
             "c_file": "src/tools/browser.c",
             "python_file": "tools/browser_tool.py",
-            "line": 503,
+            "line": 504,
             "is_consolidated": false,
             "full_text": "/* Port of Python tools/browser_tool.py:browser_snapshot"
           },
@@ -293784,7 +293832,7 @@
             ],
             "c_file": "src/tools/browser.c",
             "python_file": "tools/browser_tool.py",
-            "line": 832,
+            "line": 833,
             "is_consolidated": false,
             "full_text": "/* Port of Python tools/browser_tool.py:browser_click"
           },
@@ -293813,7 +293861,7 @@
             ],
             "c_file": "src/tools/browser.c",
             "python_file": "tools/browser_tool.py",
-            "line": 953,
+            "line": 954,
             "is_consolidated": false,
             "full_text": "/* Port of Python tools/browser_tool.py:browser_type"
           },
@@ -293842,7 +293890,7 @@
             ],
             "c_file": "src/tools/browser.c",
             "python_file": "tools/browser_tool.py",
-            "line": 997,
+            "line": 998,
             "is_consolidated": false,
             "full_text": "/* Port of Python tools/browser_tool.py:browser_scroll"
           },
@@ -293871,7 +293919,7 @@
             ],
             "c_file": "src/tools/browser.c",
             "python_file": "tools/browser_tool.py",
-            "line": 655,
+            "line": 656,
             "is_consolidated": false,
             "full_text": "/* Port of Python tools/browser_tool.py:browser_back"
           },
@@ -293900,7 +293948,7 @@
             ],
             "c_file": "src/tools/browser.c",
             "python_file": "tools/browser_tool.py",
-            "line": 1224,
+            "line": 1225,
             "is_consolidated": false,
             "full_text": "/* Port of Python tools/browser_tool.py:browser_press"
           },
@@ -293958,7 +294006,7 @@
             ],
             "c_file": "src/tools/browser.c",
             "python_file": "tools/browser_tool.py",
-            "line": 1645,
+            "line": 1646,
             "is_consolidated": false,
             "full_text": "/* PoP: browser_console_handler @ tools/browser_tool.py:browser_console */"
           },
@@ -294422,7 +294470,7 @@
             ],
             "c_file": "src/tools/browser.c",
             "python_file": "tools/browser_tool.py",
-            "line": 1074,
+            "line": 1075,
             "is_consolidated": false,
             "full_text": "/* Port of Python tools/browser_tool.py:browser_get_images"
           },
@@ -294451,7 +294499,7 @@
             ],
             "c_file": "src/tools/browser.c",
             "python_file": "tools/browser_tool.py",
-            "line": 1538,
+            "line": 1539,
             "is_consolidated": false,
             "full_text": "/* Port of Python tools/browser_tool.py:browser_vision"
           },
@@ -294538,7 +294586,7 @@
             ],
             "c_file": "src/tools/browser.c",
             "python_file": "tools/browser_tool.py",
-            "line": 62,
+            "line": 63,
             "is_consolidated": false,
             "full_text": "/* Port of Python tools/browser_tool.py:cleanup_browser"
           },
@@ -297402,7 +297450,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/backend.py",
-            "line": 1638,
+            "line": 1640,
             "is_consolidated": false,
             "full_text": "/* PoP: stop @ tools/computer_use/backend.py:stop */"
           },
@@ -297464,7 +297512,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/backend.py",
-            "line": 1816,
+            "line": 1818,
             "is_consolidated": false,
             "full_text": "/* PoP: capture @ tools/computer_use/backend.py:capture */"
           },
@@ -297495,7 +297543,7 @@
             ],
             "c_file": "src/tools/browser.c",
             "python_file": "tools/computer_use/backend.py",
-            "line": 839,
+            "line": 840,
             "is_consolidated": false,
             "full_text": "/* PoP: browser_click_handler @ tools/computer_use/backend.py:click */"
           },
@@ -297526,7 +297574,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/backend.py",
-            "line": 402,
+            "line": 404,
             "is_consolidated": false,
             "full_text": "/* PoP: x11_drag @ tools/computer_use/backend.py:ComputerUseBackend.drag */"
           },
@@ -297588,7 +297636,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/backend.py",
-            "line": 311,
+            "line": 313,
             "is_consolidated": false,
             "full_text": "/* PoP: x11_type_text @ tools/computer_use/backend.py:ComputerUseBackend.type_text */"
           },
@@ -297650,7 +297698,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/backend.py",
-            "line": 365,
+            "line": 367,
             "is_consolidated": false,
             "full_text": "/* PoP: x11_list_apps @ tools/computer_use/backend.py:ComputerUseBackend.list_apps */"
           },
@@ -297710,7 +297758,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/backend.py",
-            "line": 386,
+            "line": 388,
             "is_consolidated": false,
             "full_text": "/* PoP: x11_focus_app @ tools/computer_use/backend.py:ComputerUseBackend.focus_app */"
           },
@@ -297770,7 +297818,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/backend.py",
-            "line": 1859,
+            "line": 1861,
             "is_consolidated": false,
             "full_text": "/* PoP: wait @ tools/computer_use/backend.py:wait */"
           },
@@ -298218,7 +298266,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/cua_backend.py",
-            "line": 1603,
+            "line": 1605,
             "is_consolidated": false,
             "full_text": "/* PoP: computer_use_select_backend @ tools/computer_use/cua_backend.py:_is_macos */"
           },
@@ -298334,7 +298382,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/cua_backend.py",
-            "line": 1532,
+            "line": 1534,
             "is_consolidated": false,
             "full_text": "/* PoP: cu_register_backend @ tools/computer_use/cua_backend.py:cua_driver_binary_available */"
           },
@@ -298363,7 +298411,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/cua_backend.py",
-            "line": 1548,
+            "line": 1550,
             "is_consolidated": false,
             "full_text": "/* PoP: cu_list_backends @ tools/computer_use/cua_backend.py:cua_driver_update_check */"
           },
@@ -298421,7 +298469,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/cua_backend.py",
-            "line": 1567,
+            "line": 1569,
             "is_consolidated": false,
             "full_text": "/* PoP: cu_clear_backends @ tools/computer_use/cua_backend.py:_maybe_nudge_update */"
           },
@@ -298479,7 +298527,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/cua_backend.py",
-            "line": 1658,
+            "line": 1660,
             "is_consolidated": false,
             "full_text": "/* PoP: cu_action_free @ tools/computer_use/cua_backend.py:_parse_elements_from_tree */"
           },
@@ -299270,7 +299318,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/cua_backend.py",
-            "line": 2034,
+            "line": 2036,
             "is_consolidated": false,
             "full_text": "/* PoP: handle_computer_use @ tools/computer_use/cua_backend.py:CuaDriverBackend.call_tool */"
           },
@@ -299502,7 +299550,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/cua_backend.py",
-            "line": 146,
+            "line": 148,
             "is_consolidated": false,
             "full_text": "/* PoP: make_noop_backend @ tools/computer_use/cua_backend.py:CuaDriverBackend.is_available */"
           },
@@ -299676,7 +299724,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/cua_backend.py",
-            "line": 50,
+            "line": 51,
             "is_consolidated": false,
             "full_text": "/* PoP: capture @ tools/computer_use/cua_backend.py:capture */"
           },
@@ -299734,7 +299782,7 @@
             ],
             "c_file": "src/tools/browser.c",
             "python_file": "tools/computer_use/cua_backend.py",
-            "line": 836,
+            "line": 837,
             "is_consolidated": false,
             "full_text": "/* PoP: browser_click_handler @ tools/computer_use/cua_backend.py:click */"
           },
@@ -299763,7 +299811,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/cua_backend.py",
-            "line": 1954,
+            "line": 1956,
             "is_consolidated": false,
             "full_text": "/* PoP: drag @ tools/computer_use/cua_backend.py:drag */"
           },
@@ -299792,7 +299840,7 @@
             ],
             "c_file": "src/tools/browser.c",
             "python_file": "tools/computer_use/cua_backend.py",
-            "line": 1001,
+            "line": 1002,
             "is_consolidated": false,
             "full_text": "/* PoP: browser_scroll_handler @ tools/computer_use/cua_backend.py:scroll */"
           },
@@ -299821,7 +299869,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/cua_backend.py",
-            "line": 112,
+            "line": 114,
             "is_consolidated": false,
             "full_text": "/* PoP: type_text @ tools/computer_use/cua_backend.py:type_text */"
           },
@@ -299966,7 +300014,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/cua_backend.py",
-            "line": 718,
+            "line": 720,
             "is_consolidated": false,
             "full_text": "/* PoP: focus_app @ tools/computer_use/cua_backend.py:focus_app */"
           },
@@ -300459,7 +300507,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/cua_backend.py",
-            "line": 1627,
+            "line": 1629,
             "is_consolidated": false,
             "full_text": "/* PoP: cu_get_global_backend @ tools/computer_use/cua_backend.py:CuaDriverBackend.get_config */"
           },
@@ -300488,7 +300536,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/cua_backend.py",
-            "line": 1635,
+            "line": 1637,
             "is_consolidated": false,
             "full_text": "/* PoP: cu_reset_global_backend @ tools/computer_use/cua_backend.py:CuaDriverBackend.set_config */"
           },
@@ -300517,7 +300565,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/cua_backend.py",
-            "line": 1650,
+            "line": 1652,
             "is_consolidated": false,
             "full_text": "/* PoP: cu_capture_free @ tools/computer_use/cua_backend.py:CuaDriverBackend.get_accessibility_tree */"
           },
@@ -300575,7 +300623,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/cua_backend.py",
-            "line": 2034,
+            "line": 2036,
             "is_consolidated": false,
             "full_text": "/* PoP: handle_computer_use @ tools/computer_use/cua_backend.py:CuaDriverBackend.call_tool */"
           },
@@ -301078,7 +301126,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/schema.py",
-            "line": 2174,
+            "line": 2176,
             "is_consolidated": false,
             "full_text": "* Port of Python tools/computer_use/schema.py:get_computer_use_schema("
           },
@@ -301091,8 +301139,8 @@
     },
     "tools/computer_use/tool.py": {
       "total": 36,
-      "ported": 34,
-      "partial": 2,
+      "ported": 36,
+      "partial": 0,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -301178,7 +301226,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/tool.py",
-            "line": 1702,
+            "line": 1704,
             "is_consolidated": false,
             "full_text": "/* Port of Python tools/computer_use/tool.py:_is_blocked_type"
           },
@@ -301303,16 +301351,24 @@
             "decorators": [],
             "line_number": 204
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/computer_use.c",
-          "c_function": "stop",
-          "pop_annotation": null,
+          "c_function": "noop_stop",
+          "pop_annotation": {
+            "c_function": "noop_stop",
+            "python_functions": [
+              "stop"
+            ],
+            "c_file": "src/tools/computer_use.c",
+            "python_file": "tools/computer_use/tool.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stop @ tools/computer_use/tool.py:stop */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/computer_use/tool.py",
@@ -301343,16 +301399,24 @@
             "decorators": [],
             "line_number": 207
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/computer_use.c",
-          "c_function": "capture",
-          "pop_annotation": null,
+          "c_function": "noop_capture",
+          "pop_annotation": {
+            "c_function": "noop_capture",
+            "python_functions": [
+              "capture"
+            ],
+            "c_file": "src/tools/computer_use.c",
+            "python_file": "tools/computer_use/tool.py",
+            "line": 53,
+            "is_consolidated": false,
+            "full_text": "/* PoP: capture @ tools/computer_use/tool.py:capture */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/computer_use/tool.py",
@@ -301374,7 +301438,7 @@
             ],
             "c_file": "src/tools/browser.c",
             "python_file": "tools/computer_use/tool.py",
-            "line": 840,
+            "line": 841,
             "is_consolidated": false,
             "full_text": "/* PoP: browser_click_handler @ tools/computer_use/tool.py:click */"
           },
@@ -301403,7 +301467,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/tool.py",
-            "line": 91,
+            "line": 93,
             "is_consolidated": false,
             "full_text": "/* PoP: drag @ tools/computer_use/tool.py:drag */"
           },
@@ -301577,7 +301641,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/tool.py",
-            "line": 126,
+            "line": 128,
             "is_consolidated": false,
             "full_text": "/* PoP: focus_app @ tools/computer_use/tool.py:focus_app */"
           },
@@ -302099,7 +302163,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/tool.py",
-            "line": 2172,
+            "line": 2174,
             "is_consolidated": false,
             "full_text": "/* PoP: get_computer_use_schema @ tools/computer_use/tool.py:get_computer_use_schema */"
           },
@@ -314200,14 +314264,14 @@
     },
     "tools/file_operations.py": {
       "total": 70,
-      "ported": 69,
-      "partial": 1,
+      "ported": 70,
+      "partial": 0,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 70,
-      "c_func_count": 100,
+      "c_func_count": 103,
       "gaps": [
         {
           "python_file": "tools/file_operations.py",
@@ -315569,16 +315633,24 @@
             "decorators": [],
             "line_number": 1070
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/file.c",
-          "c_function": "_unified_diff",
-          "pop_annotation": null,
+          "c_function": "file_ops_unified_diff",
+          "pop_annotation": {
+            "c_function": "file_ops_unified_diff",
+            "python_functions": [
+              "_unified_diff"
+            ],
+            "c_file": "src/tools/file.c",
+            "python_file": "tools/file_operations.py",
+            "line": 916,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _unified_diff @ tools/file_operations.py:_unified_diff */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/file_operations.py",
@@ -316824,7 +316896,7 @@
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 46,
-      "c_func_count": 100,
+      "c_func_count": 103,
       "gaps": [
         {
           "python_file": "tools/file_tools.py",
@@ -324910,14 +324982,14 @@
     },
     "tools/mcp_tool.py": {
       "total": 132,
-      "ported": 131,
-      "partial": 1,
+      "ported": 132,
+      "partial": 0,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 132,
-      "c_func_count": 171,
+      "c_func_count": 172,
       "gaps": [
         {
           "python_file": "tools/mcp_tool.py",
@@ -325861,16 +325933,24 @@
             ],
             "line_number": 1397
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/mcp_tool.c",
-          "c_function": "_error",
-          "pop_annotation": null,
+          "c_function": "mcp_tool_error_data",
+          "pop_annotation": {
+            "c_function": "mcp_tool_error_data",
+            "python_functions": [
+              "_error"
+            ],
+            "c_file": "src/tools/mcp_tool.c",
+            "python_file": "tools/mcp_tool.py",
+            "line": 2072,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _error @ tools/mcp_tool.py:_error */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/mcp_tool.py",
@@ -330600,7 +330680,7 @@
             ],
             "c_file": "src/tools/browser.c",
             "python_file": "tools/microsoft_graph_client.py",
-            "line": 773,
+            "line": 774,
             "is_consolidated": false,
             "full_text": "/* Port of Python tools/microsoft_graph_client.py:_resolve_url"
           },
@@ -333700,8 +333780,8 @@
     },
     "tools/process_registry.py": {
       "total": 48,
-      "ported": 47,
-      "partial": 1,
+      "ported": 48,
+      "partial": 0,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -334325,7 +334405,7 @@
             ],
             "c_file": "src/tools/process_registry.c",
             "python_file": "tools/process_registry.py",
-            "line": 1021,
+            "line": 1022,
             "is_consolidated": false,
             "full_text": "/* Port of Python tools/process_registry.py:is_completion_consumed"
           },
@@ -334547,16 +334627,24 @@
             "decorators": [],
             "line_number": 1482
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/process_registry.c",
-          "c_function": "wait",
-          "pop_annotation": null,
+          "c_function": "",
+          "pop_annotation": {
+            "c_function": "",
+            "python_functions": [
+              "wait"
+            ],
+            "c_file": "src/tools/process_registry.c",
+            "python_file": "tools/process_registry.py",
+            "line": 623,
+            "is_consolidated": false,
+            "full_text": "/* PoP: wait @ tools/process_registry.py:wait */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/process_registry.py",
@@ -334665,7 +334753,7 @@
             ],
             "c_file": "src/tools/process_registry.c",
             "python_file": "tools/process_registry.py",
-            "line": 1058,
+            "line": 1059,
             "is_consolidated": false,
             "full_text": "/* PoP: request_close_terminal @ tools/process_registry.py:ProcessRegistry.request_close_terminal */"
           },
@@ -337183,14 +337271,14 @@
     },
     "tools/send_message_tool.py": {
       "total": 28,
-      "ported": 27,
-      "partial": 1,
+      "ported": 28,
+      "partial": 0,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 28,
-      "c_func_count": 80,
+      "c_func_count": 84,
       "gaps": [
         {
           "python_file": "tools/send_message_tool.py",
@@ -337260,16 +337348,24 @@
             "decorators": [],
             "line_number": 146
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/send_message.c",
-          "c_function": "_error",
-          "pop_annotation": null,
+          "c_function": "send_message_error",
+          "pop_annotation": {
+            "c_function": "send_message_error",
+            "python_functions": [
+              "_error"
+            ],
+            "c_file": "src/tools/send_message.c",
+            "python_file": "tools/send_message_tool.py",
+            "line": 771,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _error @ tools/send_message_tool.py:_error */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/send_message_tool.py",
@@ -358873,8 +358969,8 @@
     },
     "tools/vision_tools.py": {
       "total": 30,
-      "ported": 28,
-      "partial": 2,
+      "ported": 30,
+      "partial": 0,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -359037,16 +359133,24 @@
             "decorators": [],
             "line_number": 207
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/vision.c",
-          "c_function": "_validate_image_url",
-          "pop_annotation": null,
+          "c_function": "vision_validate_image_url",
+          "pop_annotation": {
+            "c_function": "vision_validate_image_url",
+            "python_functions": [
+              "_validate_image_url"
+            ],
+            "c_file": "src/tools/vision.c",
+            "python_file": "tools/vision_tools.py",
+            "line": 295,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _validate_image_url @ tools/vision_tools.py:_validate_image_url */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/vision_tools.py",
@@ -359377,16 +359481,24 @@
             "decorators": [],
             "line_number": 763
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/vision.c",
-          "c_function": "_supports_media_in_tool_results",
-          "pop_annotation": null,
+          "c_function": "vision_supports_media_in_tool_results",
+          "pop_annotation": {
+            "c_function": "vision_supports_media_in_tool_results",
+            "python_functions": [
+              "_supports_media_in_tool_results"
+            ],
+            "c_file": "src/tools/vision.c",
+            "python_file": "tools/vision_tools.py",
+            "line": 323,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _supports_media_in_tool_results @ tools/vision_tools.py:_supports_media_in_tool_results */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/vision_tools.py",
@@ -359613,7 +359725,7 @@
             ],
             "c_file": "src/tools/vision.c",
             "python_file": "tools/vision_tools.py",
-            "line": 613,
+            "line": 615,
             "is_consolidated": false,
             "full_text": "/* Port of Python tools/vision_tools.py:_detect_video_mime_type"
           },
@@ -359642,7 +359754,7 @@
             ],
             "c_file": "src/tools/vision.c",
             "python_file": "tools/vision_tools.py",
-            "line": 637,
+            "line": 639,
             "is_consolidated": false,
             "full_text": "/* Port of Python tools/vision_tools.py:_video_to_base64_data_url"
           },
@@ -363414,8 +363526,8 @@
     },
     "tools/yuanbao_tools.py": {
       "total": 12,
-      "ported": 10,
-      "partial": 2,
+      "ported": 12,
+      "partial": 0,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -363549,16 +363661,24 @@
             "decorators": [],
             "line_number": 208
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/yuanbao_tools.c",
-          "c_function": "send_sticker",
-          "pop_annotation": null,
+          "c_function": "yb_send_sticker_handler",
+          "pop_annotation": {
+            "c_function": "yb_send_sticker_handler",
+            "python_functions": [
+              "send_sticker"
+            ],
+            "c_file": "src/tools/yuanbao_tools.c",
+            "python_file": "tools/yuanbao_tools.py",
+            "line": 309,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_sticker @ tools/yuanbao_tools.py:send_sticker */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/yuanbao_tools.py",
@@ -363570,16 +363690,24 @@
             "decorators": [],
             "line_number": 290
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/yuanbao_tools.c",
-          "c_function": "send_dm",
-          "pop_annotation": null,
+          "c_function": "yb_send_dm_handler",
+          "pop_annotation": {
+            "c_function": "yb_send_dm_handler",
+            "python_functions": [
+              "send_dm"
+            ],
+            "c_file": "src/tools/yuanbao_tools.c",
+            "python_file": "tools/yuanbao_tools.py",
+            "line": 604,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_dm @ tools/yuanbao_tools.py:send_dm */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/yuanbao_tools.py",

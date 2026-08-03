@@ -620,6 +620,7 @@ char* process_registry_poll(const char *session_id) {
 }
 
 /* PoP: wait @ process_registry:ProcessRegistry.wait */
+/* PoP: wait @ tools/process_registry.py:wait */
 char* process_registry_wait(const char *session_id, int timeout_sec) {
     registry_init();
 

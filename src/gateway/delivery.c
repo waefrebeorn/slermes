@@ -302,3 +302,36 @@ char *deliver_to_platform(gw_base_platform_adapter_t *adapter,
     return r;
 }
 
+
+/* PoP: parse @ gateway/delivery.py:parse */
+/* Parse a delivery target string: "origin", "local", "platform", or
+ * "platform:chat_id". Returns malloc'd JSON {target, platform, chat_id}. */
+char *gw_delivery_parse_target(const char *target)
+{
+    json_t *o = json_object();
+    if (!o) return strdup("{}");
+    if (!target) { json_set(o, "target", json_string("")); char *s0 = json_serialize(o); json_free(o); return s0; }
+    const char *t = target;
+    while (*t == ' ' || *t == '\t') t++;
+    char *stripped = strdup(t);
+    size_t n = strlen(stripped);
+    while (n && (stripped[n-1] == ' ' || stripped[n-1] == '\t' || stripped[n-1] == '\n')) stripped[--n] = '\0';
+    json_set(o, "target", json_string(stripped));
+    if (strcmp(stripped, "origin") == 0 || strcmp(stripped, "local") == 0) {
+        json_set(o, "platform", json_string(stripped));
+    } else {
+        const char *colon = strchr(stripped, ':');
+        if (colon) {
+            char *plat = strndup(stripped, (size_t)(colon - stripped));
+            json_set(o, "platform", json_string(plat));
+            json_set(o, "chat_id", json_string(colon + 1));
+            free(plat);
+        } else {
+            json_set(o, "platform", json_string(stripped));
+        }
+    }
+    free(stripped);
+    char *s = json_serialize(o);
+    json_free(o);
+    return s ? s : strdup("{}");
+}

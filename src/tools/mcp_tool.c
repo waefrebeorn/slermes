@@ -2068,3 +2068,16 @@ bool mcp_is_tool_parallel_safe(const char *tool_name) { (void)tool_name; return 
 /* PoP: get_registered_mcp_server_names @ tools/mcp_tool.py:get_registered_mcp_server_names */
 json_t *mcp_get_registered_server_names(void) { return json_array(); }
 
+
+/* PoP: _error @ tools/mcp_tool.py:_error */
+/* Return MCP ErrorData JSON: {"code": <code>, "message": <msg>}. */
+char *mcp_tool_error_data(const char *message, long code)
+{
+    json_t *o = json_object();
+    if (!o) return strdup("{\"code\":-1,\"message\":\"\"}");
+    json_set(o, "code", json_number((double)code));
+    json_set(o, "message", json_string(message ? message : ""));
+    char *s = json_serialize(o);
+    json_free(o);
+    return s ? s : strdup("{\"code\":-1,\"message\":\"\"}");
+}

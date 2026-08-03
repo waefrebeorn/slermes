@@ -306,6 +306,7 @@ static const char *SEND_SCHEMA = "{"
     "},"
     "\"required\":[]"
 "}";
+/* PoP: send_sticker @ tools/yuanbao_tools.py:send_sticker */
 
 static char *yb_send_sticker_handler(const char *args_json, const char *task_id) {
     (void)task_id;
@@ -600,6 +601,7 @@ static const char *SEND_DM_SCHEMA = "{"
     "},"
     "\"required\":[]"
 "}";
+/* PoP: send_dm @ tools/yuanbao_tools.py:send_dm */
 
 static char *yb_send_dm_handler(const char *args_json, const char *task_id) {
     (void)task_id;

@@ -912,3 +912,25 @@ void registry_init_file(void) {
         "Supports sha256 (default), sha1, md5.",
         SCHEMA_HASH, file_hash_handler);
 }
+
+/* PoP: _unified_diff @ tools/file_operations.py:_unified_diff */
+/* Unified diff between old and new content via the canonical difflib. */
+char *file_ops_unified_diff(const char *old_content, const char *new_content,
+                            const char *filename)
+{
+    if (!old_content || !new_content) return strdup("");
+    extern char *difflib_unified_diff(const char *a, const char *b, int context_lines);
+    char *diff = difflib_unified_diff(old_content, new_content, 3);
+    if (!diff) return strdup("");
+    if (filename && *filename) {
+        /* prepend the filename header line the Python emits */
+        size_t fl = strlen(filename);
+        char *out = malloc(fl + strlen(diff) + 8);
+        if (out) {
+            sprintf(out, "--- %s\n+++ %s\n%s", filename, filename, diff);
+            free(diff);
+            return out;
+        }
+    }
+    return diff;
+}

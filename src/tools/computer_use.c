@@ -46,9 +46,11 @@ typedef struct {
 static bool noop_is_available(void) { return true; }
 static bool noop_start(void) { return true; }
 /* PoP: stop @ tools/computer_use/cua_backend.py:stop */
+/* PoP: stop @ tools/computer_use/tool.py:stop */
 static void noop_stop(void) {}
 /* PoP: capture @ tools/computer_use/cua_backend.py:capture */
 
+/* PoP: capture @ tools/computer_use/tool.py:capture */
 static cu_capture_t *noop_capture(const char *mode, const char *app) {
     (void)mode;
     cu_capture_t *cap = (cu_capture_t *)calloc(1, sizeof(cu_capture_t));
