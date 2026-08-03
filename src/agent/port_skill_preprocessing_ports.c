@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "yaml.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -21,12 +22,16 @@ static char *lowerdup(const char *s) {
 
 /* PoP: load_skills_config @ agent/skill_preprocessing.py:load_skills_config */
 char *skp_load_skills_config(const char *config_yaml) {
-    /* Python: skills section, best-effort. */
+    /* Python: skills section dict, best-effort. */
     if (!config_yaml) return strdup("{}");
-    const char *p = strstr(config_yaml, "skills:");
-    if (!p) return strdup("{}");
-    printf("skills config section loaded\n");
-    return strdup("{}");
+    char *err = NULL;
+    yaml_doc_t *doc = yaml_parse(config_yaml, &err);
+    free(err);
+    if (!doc) return strdup("{}");
+    char *json = yaml_to_json_string(doc, "skills");
+    yaml_free(doc);
+    if (!json) return strdup("{}");
+    return json;
 }
 
 /* PoP: substitute_template_vars @ agent/skill_preprocessing.py:substitute_template_vars */

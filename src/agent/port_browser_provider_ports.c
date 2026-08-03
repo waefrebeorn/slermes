@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "browser_provider.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -31,13 +32,23 @@ char *brp_display_name(void) {
 
 /* PoP: is_available @ agent/browser_provider.py:is_available */
 bool brp_is_available(void) {
-    printf("browser provider availability probe\n");
-    return false;
+    /* Python: any registered provider can service calls. */
+    extern int browser_registry_list(const browser_provider_t ***out_list);
+    const browser_provider_t **list = NULL;
+    int n = browser_registry_list(&list);
+    if (n <= 0) return false;
+    bool avail = false;
+    for (int i = 0; i < n && list && list[i]; i++) {
+        if (list[i]->is_available && list[i]->is_available(list[i])) { avail = true; break; }
+    }
+    free((void *)list);
+    return avail;
 }
 
 /* PoP: get_setup_schema @ agent/browser_provider.py:get_setup_schema */
 char *brp_get_setup_schema(void) {
-    return strdup("{}");
+    /* Python: setup schema for the setup wizard. */
+    return strdup("{\"fields\":[{\"key\":\"BROWSER_MANAGED_TOKEN\",\"label\":\"Browser managed-gateway token\",\"secret\":true}]}");
 }
 
 /* PoP: provider_name @ agent/browser_provider.py:provider_name */

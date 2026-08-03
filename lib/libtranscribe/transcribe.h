@@ -77,6 +77,12 @@ bool transcribe_is_supported_format(const char *ext);
  */
 char *transcribe_validate_file(const char *file_path);
 
+/*
+ * True when any STT provider is configured (detect_provider() non-NULL).
+ * Cheap key-presence check; no network calls.
+ */
+bool transcription_is_available(void);
+
 #ifdef __cplusplus
 }
 #endif

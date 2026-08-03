@@ -2068,9 +2068,14 @@ static const char *detect_provider(void) {
     return NULL;
 }
 
+/* Public wrapper: true when any STT provider is configured. */
+bool transcription_is_available(void) {
+    return detect_provider() != NULL;
+}
+
 /* ================================================================
  *  Public API
- * ================================================================ */
+ *  ================================================================ */
 
 /* PoP: transcribe_audio @ lib/libtranscribe/transcribe.c:transcribe_audio */
 /* Port of Python tools/transcription_tools.py:transcribe_audio(). */
