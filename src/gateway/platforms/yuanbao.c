@@ -739,7 +739,8 @@ void yuanbao_stop(void) {
 }
 
 /* Send a sticker via the active WebSocket connection. Returns 0 on success, -1 on error. */
-/* Port of Python gateway/platforms/yuanbao.py:send_sticker() */
+/* PoP: send_sticker @ gateway/platforms/yuanbao.py:send_sticker */
+/* Port of Python gateway/platforms/yuanbao.py:send_sticker(). */
 int yuanbao_send_sticker(const char *to_uid, const char *sticker_id,
                           const char *sticker_name, const char *package_id,
                           int width, int height) {
@@ -765,7 +766,8 @@ int yuanbao_send_sticker(const char *to_uid, const char *sticker_id,
 }
 
 /* Query group info synchronously. Returns JSON string or NULL. Caller must free(). */
-/* Port of Python gateway/platforms/yuanbao.py:query_group_info() */
+/* PoP: query_group_info @ gateway/platforms/yuanbao.py:query_group_info */
+/* Port of Python gateway/platforms/yuanbao.py:query_group_info(). */
 char *yuanbao_query_group_info(const char *group_code, int timeout_sec) {
     if (!g_yb.ws || !g_yb.running || !group_code || !*group_code) return NULL;
     uint32_t seq_no;
@@ -777,7 +779,8 @@ char *yuanbao_query_group_info(const char *group_code, int timeout_sec) {
 }
 
 /* Query group members synchronously. Returns JSON string or NULL. Caller must free(). */
-/* Port of Python gateway/platforms/yuanbao.py:get_group_member_list() */
+/* PoP: get_group_member_list @ gateway/platforms/yuanbao.py:get_group_member_list */
+/* Port of Python gateway/platforms/yuanbao.py:get_group_member_list(). */
 char *yuanbao_get_group_member_list(const char *group_code, uint32_t offset, uint32_t limit, int timeout_sec) {
     if (!g_yb.ws || !g_yb.running || !group_code || !*group_code) return NULL;
     uint32_t seq_no;
@@ -789,7 +792,8 @@ char *yuanbao_get_group_member_list(const char *group_code, uint32_t offset, uin
 }
 
 /* Send a DM (C2C text message). Returns JSON string or NULL. Caller must free(). */
-/* Port of Python gateway/platforms/yuanbao.py:send_dm() */
+/* PoP: send_dm @ gateway/platforms/yuanbao.py:send_dm */
+/* Port of Python gateway/platforms/yuanbao.py:send_dm(). */
 char *yuanbao_send_dm(const char *to_uid, const char *text) {
     if (!g_yb.ws || !g_yb.running || !to_uid || !*to_uid || !text) return NULL;
     int64_t now_ms;

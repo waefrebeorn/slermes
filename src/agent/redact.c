@@ -508,8 +508,10 @@ static bool redact_is_enabled(void) {
  * AG26: Port of Python agent/redact.py:_has_known_prefix_substring()
  * AG26: Port of Python agent/redact.py:_has_http_method_substring()
  */
-/* Port of Python gateway/platforms/bluebubbles.py:_redact() */
-/* Port of Python hermes_cli/dump.py:_redact() */
+/* PoP: _redact @ gateway/platforms/bluebubbles.py:_redact */
+/* Port of Python gateway/platforms/bluebubbles.py:_redact(). */
+/* PoP: _redact @ hermes_cli/dump.py:_redact */
+/* Port of Python hermes_cli/dump.py:_redact(). */
 /* Core redaction routine. When force is false, honors the security.redact_secrets
  * opt-out (returns a copy unchanged). When force is true, always redacts —
  * faithful to Python redact_sensitive_text(force=True), used for persistence

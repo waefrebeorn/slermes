@@ -605,7 +605,8 @@ void weixin_send_markdown(const char *chat_id, const char *text,
     send_markdown(chat_id, text, context_token);
 }
 
-/* Port of Python gateway/platforms/weixin.py:send_image() */
+/* PoP: send_image @ gateway/platforms/weixin.py:send_image */
+/* Port of Python gateway/platforms/weixin.py:send_image(). */
 void weixin_send_image(const char *chat_id, const char *image_data,
                         int image_type, const char *context_token) {
     if (!chat_id || !image_data) return;

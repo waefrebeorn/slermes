@@ -81,7 +81,8 @@ int wecom_xml_extract_tag(const char *xml, const char *tag,
 
 /* ─── User app key (corp_id:user_id) ───────────────────── */
 
-/* Port of Python gateway/platforms/wecom_callback.py:_user_app_key() */
+/* PoP: _user_app_key @ gateway/platforms/wecom_callback.py:_user_app_key */
+/* Port of Python gateway/platforms/wecom_callback.py:_user_app_key(). */
 int wecom_callback_user_app_key(const char *corp_id, const char *user_id,
                                 char *out, size_t out_size)
 {
@@ -121,7 +122,8 @@ int wecom_callback_user_app_key(const char *corp_id, const char *user_id,
  * @param corp_id     WeCom corp ID for scoping
  * @param event       Output event structure (caller-allocated)
  * @return 0 on success, -1 if XML could not be parsed */
-/* Port of Python gateway/platforms/wecom_callback.py:_build_event() */
+/* PoP: _build_event @ gateway/platforms/wecom_callback.py:_build_event */
+/* Port of Python gateway/platforms/wecom_callback.py:_build_event(). */
 int wecom_callback_build_event(const char *xml_text, const char *corp_id,
                                 wecom_callback_event_t *event)
 {

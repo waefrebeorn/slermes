@@ -606,7 +606,8 @@ char *feishu_upload_image(http_client_t *http, const char *image_path) {
 }
 
 /* Send an image by image_key to a specific receive_id via Open API. */
-/* Port of Python gateway/platforms/feishu.py:send_image() */
+/* PoP: send_image @ gateway/platforms/feishu.py:send_image */
+/* Port of Python gateway/platforms/feishu.py:send_image(). */
 bool feishu_send_image(http_client_t *http, const char *receive_id,
                         const char *image_key) {
     if (!image_key || !*image_key) return false;

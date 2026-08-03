@@ -298,7 +298,8 @@ char *tool_result_obj(const char *first_key, ...)
     return buf;
 }
 
-/* Port of Python agent/tool_executor.py:_cancelled_tool_result() */
+/* PoP: _cancelled_tool_result @ agent/tool_executor.py:_cancelled_tool_result */
+/* Port of Python agent/tool_executor.py:_cancelled_tool_result(). */
 char *cancelled_tool_result(const char *reason) {
     if (!reason || !*reason) reason = "user interrupt";
     return tool_error("Tool execution cancelled by %s", reason);

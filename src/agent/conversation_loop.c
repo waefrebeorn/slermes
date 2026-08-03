@@ -1599,7 +1599,8 @@ bool agent_snapshot_restore(agent_state_t *state) {
 }
 
 /* Simple chat interface */
-/* Port of Python cli.py:chat() */
+/* PoP: chat @ cli.py:chat */
+/* Port of Python cli.py:chat(). */
 char *agent_chat(agent_state_t *state, const char *message) {
     return run_conversation(state, message, NULL);
 }

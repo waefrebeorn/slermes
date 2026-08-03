@@ -485,7 +485,8 @@ static bool models_dev_is_noise(const char *model_id) {
 
 /* Port of Python agent/models_dev.py:ModelCapabilities.format_cost().
  * Build human-readable cost string. Returns malloc'd string, caller must free(). */
-/* Port of Python agent/models_dev.py:format_cost() */
+/* PoP: format_cost @ agent/models_dev.py:format_cost */
+/* Port of Python agent/models_dev.py:format_cost(). */
 static char *models_dev_format_cost(json_t *entry) {
     if (!models_dev_has_cost_data(entry))
         return strdup("unknown");
@@ -510,7 +511,8 @@ static char *models_dev_format_cost(json_t *entry) {
 
 /* Port of Python agent/models_dev.py:ModelCapabilities.format_capabilities().
  * Build human-readable capabilities string. Returns malloc'd string, caller must free(). */
-/* Port of Python agent/models_dev.py:format_capabilities() */
+/* PoP: format_capabilities @ agent/models_dev.py:format_capabilities */
+/* Port of Python agent/models_dev.py:format_capabilities(). */
 static char *models_dev_format_capabilities(json_t *entry) {
     if (!entry || entry->type != JSON_OBJECT) return strdup("basic");
 

@@ -56,7 +56,8 @@ static const char *shell_escape(const char *s) {
 /* ------------------------------------------------------------------
  * Basic single-message send (original API)
  * ------------------------------------------------------------------ */
-/* Port of Python gateway/platforms/signal.py:send_message() */
+/* PoP: send_message @ gateway/platforms/signal.py:send_message */
+/* Port of Python gateway/platforms/signal.py:send_message(). */
 bool signal_send_message(http_client_t *http, const char *to, const char *text) {
     (void)http;
     if (!to || !text || !g_signal_available) return false;
@@ -97,7 +98,8 @@ bool signal_send_group_message(http_client_t *http,
  *   signal-cli -a <number> send-reaction -e <emoji> \
  *     --target-author <author> --target-timestamp <ts> <recipient>
  * ------------------------------------------------------------------ */
-/* Port of Python gateway/platforms/signal.py:send_reaction() */
+/* PoP: send_reaction @ gateway/platforms/signal.py:send_reaction */
+/* Port of Python gateway/platforms/signal.py:send_reaction(). */
 bool signal_send_reaction(http_client_t *http,
                            const char *recipient,
                            const char *target_author,
@@ -152,8 +154,10 @@ bool signal_send_quote_reply(http_client_t *http,
  *   signal-cli -a <number> send -a <file_path> -m "<text>" <recipient>
  * If text is NULL or empty, sends the attachment without a text caption.
  * ------------------------------------------------------------------ */
-/* Port of Python gateway/platforms/signal.py:_send_attachment() */
-/* Port of Python gateway/platforms/signal.py:send_attachment() */
+/* PoP: _send_attachment @ gateway/platforms/signal.py:_send_attachment */
+/* Port of Python gateway/platforms/signal.py:_send_attachment(). */
+/* PoP: send_attachment @ gateway/platforms/signal.py:send_attachment */
+/* Port of Python gateway/platforms/signal.py:send_attachment(). */
 bool signal_send_attachment(http_client_t *http,
                              const char *recipient,
                              const char *text,

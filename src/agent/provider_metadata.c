@@ -552,14 +552,16 @@ const char *models_dev_resolve_hermes_provider(const char *provider) {
 
 /* Port of Python agent/models_dev.py:ModelCapabilities.has_cost_data().
  * Check if a model entry has meaningful cost data. */
-/* Port of Python agent/models_dev.py:has_cost_data() */
+/* PoP: has_cost_data @ agent/models_dev.py:has_cost_data */
+/* Port of Python agent/models_dev.py:has_cost_data(). */
 
 /* Port of Python agent/models_dev.py:ModelCapabilities.supports_vision().
  * Check if model entry has vision capability (attachment flag or "image" in input_modalities). */
 
 /* Port of Python agent/models_dev.py:ModelCapabilities.supports_pdf().
  * Check if "pdf" is in input_modalities. */
-/* Port of Python agent/models_dev.py:supports_pdf() */
+/* PoP: supports_pdf @ agent/models_dev.py:supports_pdf */
+/* Port of Python agent/models_dev.py:supports_pdf(). */
 
 /* Port of Python agent/models_dev.py:_parse_provider_info().
  * Logic inlined in models_dev_get_provider_info_json() above. */

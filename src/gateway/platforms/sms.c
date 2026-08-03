@@ -115,7 +115,8 @@ static bool sms_send_via_curl(const char *to, const char *text,
     return system(cmd) == 0;
 }
 
-/* Port of Python gateway/platforms/sms.py:send_message() */
+/* PoP: send_message @ gateway/platforms/sms.py:send_message */
+/* Port of Python gateway/platforms/sms.py:send_message(). */
 bool sms_send_message(http_client_t *http, const char *to, const char *text) {
     (void)http;
     /* Include status callback URL if configured */
@@ -369,8 +370,10 @@ void sms_queue_message(const char *chat_id, const char *text,
 }
 
 /* Handle incoming Twilio webhook POST. Parses body and queues message. */
-/* Port of Python gateway/platforms/sms.py:_handle_webhook() */
-/* Port of Python gateway/platforms/sms.py:handle_webhook() */
+/* PoP: _handle_webhook @ gateway/platforms/sms.py:_handle_webhook */
+/* Port of Python gateway/platforms/sms.py:_handle_webhook(). */
+/* PoP: handle_webhook @ gateway/platforms/sms.py:handle_webhook */
+/* Port of Python gateway/platforms/sms.py:handle_webhook(). */
 void sms_handle_webhook(const char *body) {
     if (!body || !body[0]) return;
 

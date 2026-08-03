@@ -294,7 +294,8 @@ typedef struct {
     char thread_id[64];
 } gw_home_channel_t;
 
-/* Port of Python gateway/config.py:to_dict() */
+/* PoP: to_dict @ gateway/config.py:to_dict */
+/* Port of Python gateway/config.py:to_dict(). */
 bool gw_home_channel_to_json(const gw_home_channel_t *hc, json_node_t *obj) {
     if (!hc || !obj) return false;
     json_object_set(obj, "platform", json_int(hc->platform));
@@ -306,7 +307,8 @@ bool gw_home_channel_to_json(const gw_home_channel_t *hc, json_node_t *obj) {
     return true;
 }
 
-/* Port of Python gateway/config.py:from_dict() */
+/* PoP: from_dict @ gateway/config.py:from_dict */
+/* Port of Python gateway/config.py:from_dict(). */
 bool gw_home_channel_from_json(const json_node_t *obj, gw_home_channel_t *hc) {
     if (!hc || !obj || !json_node_is_object(obj)) return false;
 
@@ -351,7 +353,8 @@ typedef struct {
     char notify_exclude_platforms[256]; /* comma-separated */
 } gw_session_reset_policy_t;
 
-/* Port of Python gateway/config.py:to_dict() */
+/* PoP: to_dict @ gateway/config.py:to_dict */
+/* Port of Python gateway/config.py:to_dict(). */
 bool gw_session_reset_policy_to_json(const gw_session_reset_policy_t *p, json_node_t *obj) {
     if (!p || !obj) return false;
     json_object_set(obj, "mode", json_string(gw_reset_mode_strings[p->mode]));
@@ -370,7 +373,8 @@ gw_reset_mode_t gw_reset_mode_from_string(const char *s) {
     return GW_RESET_MODE_BOTH;
 }
 
-/* Port of Python gateway/config.py:from_dict() */
+/* PoP: from_dict @ gateway/config.py:from_dict */
+/* Port of Python gateway/config.py:from_dict(). */
 bool gw_session_reset_policy_from_json(const json_node_t *obj, gw_session_reset_policy_t *p) {
     if (!p || !obj || !json_node_is_object(obj)) return false;
 
@@ -406,7 +410,8 @@ typedef struct {
     json_node_t *extra; /* extra platform-specific settings */
 } gw_platform_config_t;
 
-/* Port of Python gateway/config.py:to_dict() */
+/* PoP: to_dict @ gateway/config.py:to_dict */
+/* Port of Python gateway/config.py:to_dict(). */
 bool gw_platform_config_to_json(const gw_platform_config_t *pc, json_node_t *obj) {
     if (!pc || !obj) return false;
 
@@ -430,7 +435,8 @@ bool gw_platform_config_to_json(const gw_platform_config_t *pc, json_node_t *obj
     return true;
 }
 
-/* Port of Python gateway/config.py:from_dict() */
+/* PoP: from_dict @ gateway/config.py:from_dict */
+/* Port of Python gateway/config.py:from_dict(). */
 bool gw_platform_config_from_json(const json_node_t *obj, gw_platform_config_t *pc) {
     if (!pc || !obj || !json_node_is_object(obj)) return false;
 
@@ -490,7 +496,8 @@ typedef struct {
     double fresh_final_after_seconds;
 } gw_streaming_config_t;
 
-/* Port of Python gateway/config.py:to_dict() */
+/* PoP: to_dict @ gateway/config.py:to_dict */
+/* Port of Python gateway/config.py:to_dict(). */
 bool gw_streaming_config_to_json(const gw_streaming_config_t *sc, json_node_t *obj) {
     if (!sc || !obj) return false;
     json_object_set(obj, "enabled", json_bool(sc->enabled));
@@ -510,7 +517,8 @@ gw_stream_transport_t gw_stream_transport_from_string(const char *s) {
     return GW_STREAM_TRANSPORT_AUTO;
 }
 
-/* Port of Python gateway/config.py:from_dict() */
+/* PoP: from_dict @ gateway/config.py:from_dict */
+/* Port of Python gateway/config.py:from_dict(). */
 bool gw_streaming_config_from_json(const json_node_t *obj, gw_streaming_config_t *sc) {
     if (!sc || !obj || !json_node_is_object(obj)) return false;
 
@@ -885,7 +893,8 @@ bool gateway_config_platform_connected(const gateway_config_t *cfg, int platform
 
 /* Port of Python: get_connected_platforms
  * Returns a JSON array of connected platform names. */
-/* Port of Python gateway/config.py:get_connected_platforms() */
+/* PoP: get_connected_platforms @ gateway/config.py:get_connected_platforms */
+/* Port of Python gateway/config.py:get_connected_platforms(). */
 json_node_t *gateway_config_get_connected_platforms(const gateway_config_t *cfg)
 {
     if (!cfg) return json_array();
@@ -907,7 +916,8 @@ json_node_t *gateway_config_get_connected_platforms(const gateway_config_t *cfg)
     return arr;
 }
 
-/* Port of Python gateway/config.py:_is_platform_connected() */
+/* PoP: _is_platform_connected @ gateway/config.py:_is_platform_connected */
+/* Port of Python gateway/config.py:_is_platform_connected(). */
 bool gateway_config_is_platform_connected(const gateway_config_t *cfg, int platform_idx)
 {
     return gateway_config_platform_connected(cfg, platform_idx);
@@ -915,7 +925,8 @@ bool gateway_config_is_platform_connected(const gateway_config_t *cfg, int platf
 
 /* Port of Python: get_home_channel
  * Get the home channel for a platform. Returns malloc'd JSON, caller must free. */
-/* Port of Python gateway/config.py:get_home_channel() */
+/* PoP: get_home_channel @ gateway/config.py:get_home_channel */
+/* Port of Python gateway/config.py:get_home_channel(). */
 json_node_t *gateway_config_get_home_channel(const gateway_config_t *cfg, int platform_idx)
 {
     if (!cfg || platform_idx < 0 || platform_idx >= cfg->platform_count) {
@@ -936,7 +947,8 @@ json_node_t *gateway_config_get_home_channel(const gateway_config_t *cfg, int pl
 
 /* Port of Python: get_reset_policy
  * Get the session reset policy as JSON. Returns malloc'd JSON, caller must free. */
-/* Port of Python gateway/config.py:get_reset_policy() */
+/* PoP: get_reset_policy @ gateway/config.py:get_reset_policy */
+/* Port of Python gateway/config.py:get_reset_policy(). */
 json_node_t *gateway_config_get_reset_policy(const gateway_config_t *cfg)
 {
     if (!cfg) return NULL;
@@ -948,7 +960,8 @@ json_node_t *gateway_config_get_reset_policy(const gateway_config_t *cfg)
     return obj;
 }
 
-/* Port of Python gateway/config.py:get_unauthorized_dm_behavior() */
+/* PoP: get_unauthorized_dm_behavior @ gateway/config.py:get_unauthorized_dm_behavior */
+/* Port of Python gateway/config.py:get_unauthorized_dm_behavior(). */
 const char *gateway_config_get_unauthorized_dm_behavior(const gateway_config_t *cfg)
 {
     if (!cfg) return "pair";
@@ -966,7 +979,8 @@ const char *gateway_config_get_unauthorized_dm_behavior(const gateway_config_t *
     return "pair";
 }
 
-/* Port of Python gateway/config.py:get_notice_delivery() */
+/* PoP: get_notice_delivery @ gateway/config.py:get_notice_delivery */
+/* Port of Python gateway/config.py:get_notice_delivery(). */
 const char *gateway_config_get_notice_delivery(const gateway_config_t *cfg)
 {
     if (!cfg) return "public";

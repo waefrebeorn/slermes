@@ -209,7 +209,8 @@ bool remove_index(credential_pool_t *pool, int index) {
 }
 
 /* Port of Python agent/credential_pool.py:resolve_target(). */
-/* Port of Python hermes_cli/send_cmd.py:_resolve_target() */
+/* PoP: _resolve_target @ hermes_cli/send_cmd.py:_resolve_target */
+/* Port of Python hermes_cli/send_cmd.py:_resolve_target(). */
 int resolve_target(const credential_pool_t *pool, const char *target) {
     if (!pool || !target || !*target) return -1;
     

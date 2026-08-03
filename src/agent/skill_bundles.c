@@ -240,7 +240,8 @@ int skill_bundle_apply(const skill_bundle_t *bundle, char *error_out, size_t err
 }
 
 /* Port of Python: list_bundles */
-/* Port of Python cli.py:print() */
+/* PoP: print @ cli.py:print */
+/* Port of Python cli.py:print(). */
 /* PoP: skill_bundles_print @ hermes_cli/pets.py:_print */
 void skill_bundles_print(const skill_bundle_registry_t *reg) {
     if (!reg) return;

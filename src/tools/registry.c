@@ -768,7 +768,8 @@ const char *registry_get_toolset(const char *name) {
 }
 
 /* S14 gap #16: Rich query API — get tool schema JSON */
-/* Port of Python tools/registry.py:get_schema() */
+/* PoP: get_schema @ tools/registry.py:get_schema */
+/* Port of Python tools/registry.py:get_schema(). */
 const char *registry_get_schema(const char *name) {
     if (!name) return "";
     pthread_mutex_lock(&g_registry_mutex);
@@ -784,7 +785,8 @@ const char *registry_get_schema(const char *name) {
 }
 
 /* Rich query: return display emoji for a tool, or default (⚡) if unset */
-/* Port of Python tools/registry.py:get_emoji() */
+/* PoP: get_emoji @ tools/registry.py:get_emoji */
+/* Port of Python tools/registry.py:get_emoji(). */
 const char *registry_get_emoji(const char *name, const char *default_emoji) {
     if (!name) return default_emoji ? default_emoji : "\xE2\x9A\xA1";
     pthread_mutex_lock(&g_registry_mutex);
@@ -800,7 +802,8 @@ const char *registry_get_emoji(const char *name, const char *default_emoji) {
 }
 
 /* S14 gap #16: Rich query API — check if any tool in a toolset is available */
-/* Port of Python tools/registry.py:is_toolset_available() */
+/* PoP: is_toolset_available @ tools/registry.py:is_toolset_available */
+/* Port of Python tools/registry.py:is_toolset_available(). */
 bool registry_is_toolset_available(const char *toolset) {
     if (!toolset) return false;
     pthread_mutex_lock(&g_registry_mutex);
@@ -967,7 +970,8 @@ void registry_refresh_availability(void) {
 }
 
 /* S14 gap #11: Deregister a tool by name. Removes from array by shifting. */
-/* Port of Python tools/registry.py:deregister() */
+/* PoP: deregister @ tools/registry.py:deregister */
+/* Port of Python tools/registry.py:deregister(). */
 bool registry_deregister(const char *name) {
     if (!name) return false;
     pthread_mutex_lock(&g_registry_mutex);

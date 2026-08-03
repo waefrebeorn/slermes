@@ -54,7 +54,8 @@ static const char *mirror_sessions_index(void) {
  *  Port of Python _find_session_id()
  * ================================================================ */
 
-/* Port of Python gateway/mirror.py:_find_session_id() */
+/* PoP: _find_session_id @ gateway/mirror.py:_find_session_id */
+/* Port of Python gateway/mirror.py:_find_session_id(). */
 static char *mirror_find_session_id(const char *platform,
                                      const char *chat_id,
                                      const char *thread_id,

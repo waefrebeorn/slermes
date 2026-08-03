@@ -46,7 +46,8 @@ static bool str_in_array(const char *needle, const char *const *haystack)
     return false;
 }
 
-/* Port of Python agent/ssl_guard.py:_skip_ssl_guard_enabled() */
+/* PoP: _skip_ssl_guard_enabled @ agent/ssl_guard.py:_skip_ssl_guard_enabled */
+/* Port of Python agent/ssl_guard.py:_skip_ssl_guard_enabled(). */
 bool ssl_guard_skip_enabled(void)
 {
     const char *val = getenv("HERMES_SKIP_SSL_GUARD");
@@ -77,7 +78,8 @@ static hermes_error_t ssl_err(hermes_error_code_t code, const char *message)
     return e;
 }
 
-/* Port of Python agent/ssl_guard.py:_validate_bundle_path() */
+/* PoP: _validate_bundle_path @ agent/ssl_guard.py:_validate_bundle_path */
+/* Port of Python agent/ssl_guard.py:_validate_bundle_path(). */
 static hermes_error_t validate_bundle_path(const char *label, const char *value, bool require_substantial)
 {
     struct stat st;
@@ -119,7 +121,8 @@ static hermes_error_t validate_bundle_path(const char *label, const char *value,
  *  Public API
  * ================================================================ */
 
-/* Port of Python agent/ssl_guard.py:verify_ca_bundle() */
+/* PoP: verify_ca_bundle @ agent/ssl_guard.py:verify_ca_bundle */
+/* Port of Python agent/ssl_guard.py:verify_ca_bundle(). */
 hermes_error_t ssl_guard_verify_ca_bundle(void)
 {
     if (ssl_guard_skip_enabled()) {
@@ -157,7 +160,8 @@ hermes_error_t ssl_guard_verify_ca_bundle(void)
     return (hermes_error_t){HERMES_OK, {0}, {0}};
 }
 
-/* Port of Python agent/ssl_guard.py:verify_ca_bundle_with_fallback() */
+/* PoP: verify_ca_bundle_with_fallback @ agent/ssl_guard.py:verify_ca_bundle_with_fallback */
+/* Port of Python agent/ssl_guard.py:verify_ca_bundle_with_fallback(). */
 hermes_error_t ssl_guard_verify_ca_bundle_with_fallback(void)
 {
     /* Python's verify_ca_bundle_with_fallback() tries the primary bundle first,

@@ -120,7 +120,8 @@ char *error_text(int status_code, const char *msg, const char *body, const char 
     return retry_utils_error_text(&err);
 }
 
-/* Port of Python retry_utils.py:is_zai_coding_overload_error() */
+/* PoP: is_zai_coding_overload_error @ retry_utils.py:is_zai_coding_overload_error */
+/* Port of Python retry_utils.py:is_zai_coding_overload_error(). */
 bool retry_utils_is_zai_coding_overload_error(const char *base_url, const char *model, const retry_utils_err_t *err)
 {
     if (!err) return false;
@@ -196,7 +197,8 @@ char *retry_utils_adaptive_rate_limit_backoff(int attempt, const char *base_url,
     return strdup(buf);
 }
 
-/* Port of Python retry_utils.py:zai_coding_overload_retry_ceiling() */
+/* PoP: zai_coding_overload_retry_ceiling @ retry_utils.py:zai_coding_overload_retry_ceiling */
+/* Port of Python retry_utils.py:zai_coding_overload_retry_ceiling(). */
 int retry_utils_zai_coding_overload_retry_ceiling(int short_attempts)
 {
     static const double LONG_BACKOFF[] = { 30.0, 60.0, 90.0, 120.0 };

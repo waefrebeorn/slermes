@@ -603,7 +603,8 @@ char **render_account_usage_lines(const account_usage_snapshot_t *snap,
 /* Port of Python: AccountUsageSnapshot.available (property)
  * Returns true if snapshot has usable data (windows/details) and no unavailable_reason. */
 /* AG26: Port of Python agent/account_usage.py:AccountUsageSnapshot.available() */
-/* Port of Python agent/account_usage.py:available() */
+/* PoP: available @ agent/account_usage.py:available */
+/* Port of Python agent/account_usage.py:available(). */
 bool account_usage_available(const account_usage_snapshot_t *snap) {
     if (!snap) return false;
     /* Python: return bool(self.windows or self.details) and not self.unavailable_reason */

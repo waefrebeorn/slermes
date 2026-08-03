@@ -250,7 +250,8 @@ next_array:
  *  Main generation
  * ══════════════════════════════════════════════════════════════ */
 
-/* Port of Python agent/insights.py:generate() */
+/* PoP: generate @ agent/insights.py:generate */
+/* Port of Python agent/insights.py:generate(). */
 insights_report_t *insights_generate(db_t *db, int days, const char *source_filter) {
     if (!db) return NULL;
 
@@ -738,7 +739,8 @@ static void bar_string(char *out, size_t out_size, int value, int max_value, int
     out[pos] = '\0';
 }
 
-/* Port of Python agent/insights.py:format_terminal() */
+/* PoP: format_terminal @ agent/insights.py:format_terminal */
+/* Port of Python agent/insights.py:format_terminal(). */
 char *insights_format_terminal(const insights_report_t *r) {
     if (!r) return strdup("No insights data available.\n");
 
@@ -1019,7 +1021,8 @@ char *insights_format_terminal(const insights_report_t *r) {
  *  Formatting — Gateway (Markdown)
  * ══════════════════════════════════════════════════════════════ */
 
-/* Port of Python agent/insights.py:format_gateway() */
+/* PoP: format_gateway @ agent/insights.py:format_gateway */
+/* Port of Python agent/insights.py:format_gateway(). */
 char *insights_format_gateway(const insights_report_t *r) {
     if (!r) return strdup("No insights data available.");
 

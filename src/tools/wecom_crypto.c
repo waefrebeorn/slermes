@@ -187,7 +187,8 @@ int wecom_crypto_init(wecom_crypto_t *ctx,
     return 0;
 }
 
-/* Port of Python gateway/platforms/wecom_crypto.py:verify_url() */
+/* PoP: verify_url @ gateway/platforms/wecom_crypto.py:verify_url */
+/* Port of Python gateway/platforms/wecom_crypto.py:verify_url(). */
 int wecom_crypto_verify_url(wecom_crypto_t *ctx,
                              const char *msg_signature,
                              const char *timestamp,

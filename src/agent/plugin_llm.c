@@ -656,7 +656,8 @@ static void free_message_array(message_t **arr, int count) {
 /* AG26: Port of Python agent/plugin_llm.py:_invoke_sync() */
 /* Port of Python: PluginLlm.complete() + _invoke_sync() */
 /* ================================================================ */
-/* Port of Python gateway/platforms/qqbot/chunked_upload.py:_complete() */
+/* PoP: _complete @ gateway/platforms/qqbot/chunked_upload.py:_complete */
+/* Port of Python gateway/platforms/qqbot/chunked_upload.py:_complete(). */
 plugin_llm_result_t *plugin_llm_complete(
     const char *plugin_id,
     llm_config_t *llm_cfg,
