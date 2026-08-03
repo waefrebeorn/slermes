@@ -35,7 +35,7 @@ int esh_before_execute(void) {
 
 /* PoP: cleanup @ tools/environments/ssh.py:cleanup */
 int esh_cleanup(void) {
-    /* Python: sync files from sandbox. */
-    printf("ssh cleanup: files synced from sandbox\n");
+    /* Python: sync files from sandbox — REAL: no active sandbox in C
+     * port, cleanup is a no-op success. */
     return 0;
 }

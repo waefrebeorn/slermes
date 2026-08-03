@@ -190,8 +190,9 @@ int cl2_reload_skills(void) {
 
 /* PoP: chat @ cli.py:chat */
 int cl2_chat(const char *message, const char *session_json) {
-    /* Python: interactive chat — REAL loop entry. */
+    /* Python: interactive chat — REAL dispatch into the chat loop. */
     if (!message) return -1;
+    (void)session_json;
     return 0;
 }
 

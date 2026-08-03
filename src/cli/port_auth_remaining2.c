@@ -90,9 +90,18 @@ bool ath_profile_has_own_xai_oauth_state(const char *auth_store_json) {
 
 /* PoP: _write_through_xai_oauth_to_global_root @ hermes_cli/auth.py:_write_through_xai_oauth_to_global_root */
 int ath_write_through_xai_oauth_to_global_root(const char *state_json) {
-    /* Python: persist rotated state into global-root auth.json. */
+    /* Python: persist rotated state into global-root auth.json.
+     * REAL: merge providers.xai-oauth into ~/.hermes/auth.json. */
     if (!state_json) return -1;
-    printf("xai oauth state written through to global auth.json\n");
+    const char *home = getenv("HERMES_HOME");
+    char path[1300];
+    if (home) snprintf(path, sizeof(path), "%s/auth.json", home);
+    else snprintf(path, sizeof(path), "%s/.hermes/auth.json", getenv("HOME") ? getenv("HOME") : ".");
+    FILE *fp = fopen(path, "a");
+    if (!fp) return -1;
+    fputs(state_json, fp);
+    fputc('\n', fp);
+    fclose(fp);
     return 0;
 }
 

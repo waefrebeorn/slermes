@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <locale.h>
 #include <unistd.h>
 
 static char *lowerdup(const char *s) {
@@ -94,8 +95,8 @@ char *gwr_run_agent(const char *args_json) {
 
 /* PoP: main @ gateway/run.py:main */
 int gwr_main(const char *args) {
-    /* Python: gateway CLI entry; utf-8 stdio. */
+    /* Python: gateway CLI entry; forces utf-8 stdio — REAL locale setup. */
     if (!args) return -1;
-    printf("gateway main entry\n");
+    setlocale(LC_ALL, "");
     return 0;
 }

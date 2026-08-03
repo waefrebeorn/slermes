@@ -266,7 +266,12 @@ char *bw_classify_bws_error(const char *error) {
 
 /* PoP: clear_caches @ agent/secret_sources/bitwarden.py:clear_caches */
 int bw_clear_caches(void) {
-    printf("bitwarden caches cleared\n");
+    /* Python: clear cached vault/status — REAL fs cache remove. */
+    const char *home = getenv("HERMES_HOME");
+    char path[1400];
+    if (home) snprintf(path, sizeof(path), "%s/cache/bw_vault.json", home);
+    else snprintf(path, sizeof(path), "%s/.hermes/cache/bw_vault.json", getenv("HOME") ? getenv("HOME") : ".");
+    if (access(path, F_OK) == 0) unlink(path);
     return 0;
 }
 

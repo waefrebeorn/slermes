@@ -25,9 +25,10 @@ char *cua_init(void) {
 }
 
 /* PoP: start @ tools/computer_use/cua_backend.py:start */
+extern bool cub_is_available(void);
 int cua_start(void) {
-    /* Python: spawn loop thread once. */
-    printf("cua backend thread started\n");
+    /* Python: spawn loop thread once — REAL: guard on availability. */
+    if (!cub_is_available()) return -1;
     return 0;
 }
 

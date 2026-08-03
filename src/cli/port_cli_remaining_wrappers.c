@@ -11,6 +11,7 @@
 #include <ctype.h>
 #include <time.h>
 #include <unistd.h>
+#include <sys/file.h>
 #include <sys/ioctl.h>
 #include <signal.h>
 #include <sys/stat.h>
@@ -4604,9 +4605,13 @@ int hermes_cli_active_sessions_u__enter__(const char *arg) {
 
 /* PoP: __exit__ @ hermes_cli/active_sessions.py:__exit__ */
 int hermes_cli_active_sessions_u__exit__(const char *arg) {
-    /* Python: release lock + close fh. */
-    if (arg) { /* lock fh tracked at open */ }
-    return 0;
+    /* Python: release lock + close fh — REAL: unlock the session file. */
+    if (!arg || !*arg) return 0;
+    long fd = atol(arg);
+    if (fd > 0) {
+        flock((int)fd, LOCK_UN);
+        close((int)fd);
+    }
     return 0;
 }
 

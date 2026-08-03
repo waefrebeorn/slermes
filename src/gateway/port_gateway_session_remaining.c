@@ -70,8 +70,10 @@ char *gss_entry_to_dict(const char *entry_json) {
 
 /* PoP: _discord_tools_loaded @ gateway/session.py:_discord_tools_loaded */
 bool gss_discord_tools_loaded(void) {
-    /* Python: agent will have Discord tools this session. */
-    printf("discord tools loaded probe\n");
+    /* Python: discord/discord_admin toolset enabled check.
+     * REAL: probe the toolset config flag. */
+    const char *ts = getenv("HERMES_TOOLSETS");
+    if (ts && (strstr(ts, "discord") || strstr(ts, "all"))) return true;
     return false;
 }
 

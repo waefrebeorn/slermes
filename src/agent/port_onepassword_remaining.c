@@ -83,10 +83,24 @@ char *opw_fetch_onepassword_secrets(const char *refs_json) {
 
 /* PoP: apply_onepassword_secrets @ agent/secret_sources/onepassword.py:apply_onepassword_secrets */
 long opw_apply_onepassword_secrets(const char *refs_json) {
-    /* Python: set os.environ from op:// refs. */
-    if (!refs_json) return 0;
-    printf("onepassword secrets applied to env\n");
-    return 0;
+    /* Python: set os.environ from op:// refs.
+     * REAL: parse "VAR=op://vault/item/field" pairs, export each. */
+    if (!refs_json || !*refs_json) return 0;
+    long applied = 0;
+    const char *p = refs_json;
+    while ((p = strstr(p, "\"")) != NULL) {
+        const char *eq = strchr(p + 1, '=');
+        const char *end = strchr(p + 1, '\"');
+        if (!eq || !end) break;
+        if (eq < end) {
+            char *var = strndup(p + 1, (size_t)(eq - p - 1));
+            char *val = strndup(eq + 1, (size_t)(end - eq - 1));
+            if (var && val && *var) { setenv(var, val, 1); applied++; }
+            free(var); free(val);
+        }
+        p = end + 1;
+    }
+    return applied;
 }
 
 /* PoP: override_existing @ agent/secret_sources/onepassword.py:override_existing */

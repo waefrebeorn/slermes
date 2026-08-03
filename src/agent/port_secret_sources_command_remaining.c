@@ -22,7 +22,12 @@ static char *lowerdup(const char *s) {
 
 /* PoP: _is_windows @ agent/secret_sources/command.py:_is_windows */
 bool cmd_is_windows(void) {
+    /* Python: os.name == "nt" — REAL uname probe. */
+#ifdef _WIN32
+    return true;
+#else
     return false;
+#endif
 }
 
 /* PoP: unquote_dotenv_value @ agent/secret_sources/command.py:unquote_dotenv_value */

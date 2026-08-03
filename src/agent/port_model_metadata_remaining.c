@@ -107,9 +107,13 @@ char *mmd_load_context_cache(void) {
 
 /* PoP: _invalidate_cached_context_length @ agent/model_metadata.py:_invalidate_cached_context_length */
 int mmd_invalidate_cached_context_length(const char *key) {
-    /* Python: drop stale entry. */
-    if (!key) return -1;
-    printf("context cache entry invalidated: %s\n", key);
+    /* Python: drop stale cache entry — REAL: remove the cache file. */
+    if (!key || !*key) return -1;
+    const char *home = getenv("HERMES_HOME");
+    char path[1400];
+    if (home) snprintf(path, sizeof(path), "%s/state/ctx_cache_%s", home, key);
+    else snprintf(path, sizeof(path), "%s/.hermes/state/ctx_cache_%s", getenv("HOME") ? getenv("HOME") : ".", key);
+    if (access(path, F_OK) == 0) unlink(path);
     return 0;
 }
 

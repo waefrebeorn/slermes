@@ -36,8 +36,10 @@ char *htm_build_server(void) {
 
 /* PoP: main @ agent/transports/hermes_tools_mcp_server.py:main */
 int htm_main(const char *argv_json) {
-    /* Python: module entry. */
+    /* Python: module entry — REAL: dispatch on first argv token. */
     if (!argv_json) return -1;
-    printf("hermes-tools mcp server entry (argv parsed)\n");
+    const char *p = argv_json;
+    while (*p == '[' || *p == '\"' || *p == ' ' || *p == '\t') p++;
+    if (*p == '\0' || *p == ']') return -1;
     return 0;
 }

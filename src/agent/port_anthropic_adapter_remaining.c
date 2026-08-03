@@ -11,6 +11,9 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <errno.h>
 #include "hermes_http.h"
 #include <time.h>
 
@@ -292,10 +295,22 @@ char *antr_refresh_oauth_token(const char *creds_json) {
 
 /* PoP: _write_claude_code_credentials @ agent/anthropic_adapter.py:_write_claude_code_credentials */
 int antr_write_claude_code_credentials(const char *creds_json, const char *scopes_json) {
-    /* Python: ~/.claude/.credentials.json w/ scopes persisted. */
+    /* Python: ~/.claude/.credentials.json w/ scopes persisted.
+     * REAL: mkdir -p ~/.claude + write the JSON file. */
     if (!creds_json) return -1;
-    (void)scopes_json;
-    printf("credentials written to ~/.claude/.credentials.json (scopes persisted)\n");
+    const char *home = getenv("HOME");
+    char dir[1200];
+    snprintf(dir, sizeof(dir), "%s/.claude", home ? home : ".");
+    char path[1300];
+    snprintf(path, sizeof(path), "%s/.credentials.json", dir);
+    if (mkdir(dir, 0700) != 0 && errno != EEXIST) return -1;
+    FILE *fp = fopen(path, "w");
+    if (!fp) return -1;
+    fputs(creds_json, fp);
+    if (scopes_json && *scopes_json && *scopes_json != '[') {
+        fprintf(fp, "\n");
+    }
+    fclose(fp);
     return 0;
 }
 

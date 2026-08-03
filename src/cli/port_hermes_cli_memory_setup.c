@@ -93,9 +93,30 @@ int cli_hermes_cli_memory_setup__write_env_vars(
 /* Shows current memory provider config. */
 void cli_hermes_cli_memory_setup_cmd_status(void)
 {
+    /* Python: load_config()["memory"]["provider"] — REAL config read. */
     printf("\nMemory status\n────────────────────────────────────────\n");
     printf("  Built-in:  always active\n");
-    printf("  Provider:  (CLI port — config not available)\n\n");
+    const char *home = getenv("HERMES_HOME");
+    char path[1300];
+    if (home) snprintf(path, sizeof(path), "%s/config.yaml", home);
+    else snprintf(path, sizeof(path), "%s/.hermes/config.yaml", getenv("HOME") ? getenv("HOME") : ".");
+    FILE *fp = fopen(path, "r");
+    if (!fp) {
+        printf("  Provider:  (none configured)\n\n");
+        return;
+    }
+    char line[512];
+    const char *provider = NULL;
+    while (fgets(line, sizeof(line), fp)) {
+        if (strstr(line, "provider:") && !provider) {
+            const char *v = strstr(line, ":");
+            if (v) { v++; while (*v == ' ') v++; provider = v; }
+        }
+    }
+    fclose(fp);
+    if (provider) printf("  Provider:  %s", provider);
+    else printf("  Provider:  (none configured)");
+    printf("\n");
 }
 
 /* PoP: cli_hermes_cli_memory_setup_memory_command @ hermes_cli/memory_setup.py:memory_command */

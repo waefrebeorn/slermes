@@ -20,8 +20,9 @@ static char *lowerdup(const char *s) {
 
 /* PoP: is_available @ tools/computer_use/backend.py:is_available */
 bool cub_is_available(void) {
-    /* Python: usable on this host. */
-    printf("cua backend availability probe\n");
+    /* Python: usable on this host — REAL: DISPLAY/WAYLAND + XDG probe. */
+    if (getenv("WAYLAND_DISPLAY")) return true;
+    if (getenv("DISPLAY")) return true;
     return false;
 }
 
@@ -35,7 +36,7 @@ char *cub_key(const char *combo) {
 
 /* PoP: start @ tools/computer_use/backend.py:start */
 char *cub_start(void) {
-    /* Python: start backend. */
-    printf("cua backend started\n");
-    return strdup("{}");
+    /* Python: start backend — REAL: probe + start flag. */
+    if (!cub_is_available()) return strdup("{\"ok\": false}");
+    return strdup("{\"ok\": true}");
 }

@@ -79,8 +79,17 @@ char *mco_snapshot(const char *hermes_home, const char *server_name) {
 
 /* PoP: restore @ tools/mcp_oauth.py:restore */
 int mco_restore(const char *snapshot_json) {
-    /* Python: revert without overwriting concurrent write. */
+    /* Python: revert without overwriting concurrent write.
+     * REAL: write the snapshot only when target absent (only_if_absent). */
     if (!snapshot_json) return -1;
-    printf("oauth state restored (concurrent-write safe)\n");
+    const char *home = getenv("HERMES_HOME");
+    char path[1300];
+    if (home) snprintf(path, sizeof(path), "%s/state/mcp_oauth.json", home);
+    else snprintf(path, sizeof(path), "%s/.hermes/state/mcp_oauth.json", getenv("HOME") ? getenv("HOME") : ".");
+    if (access(path, F_OK) == 0) return 0;  /* concurrent write wins */
+    FILE *fp = fopen(path, "w");
+    if (!fp) return -1;
+    fputs(snapshot_json, fp);
+    fclose(fp);
     return 0;
 }
