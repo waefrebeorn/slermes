@@ -62,7 +62,7 @@ static const char *ENV_AZURE[]       = { "AZURE_FOUNDRY_API_KEY", NULL };
 static const char *ENV_NONE[]        = { NULL };
 
 /* PoP: PROVIDER_REGISTRY @ hermes_cli/auth.py:PROVIDER_REGISTRY */
-static const provider_config_t CATALOG[] = {
+static const catalog_provider_t CATALOG[] = {
     { "nous", "Nous Portal", "oauth_device_code", D_NOUS_PORTAL, D_NOUS_INFER, D_NOUS_CLIENT, D_NOUS_SCOPE, "", ENV_NONE },
     { "openai-codex", "OpenAI Codex", "oauth_external", "", D_CODEX_BASE, "", "", "", ENV_NONE },
     { "openai-api", "OpenAI API", "api_key", "", "https://api.openai.com/v1", "", "", "OPENAI_BASE_URL", ENV_OPENAI },
@@ -100,14 +100,14 @@ static const provider_config_t CATALOG[] = {
 };
 static const int CATALOG_N = (int)(sizeof(CATALOG) / sizeof(CATALOG[0]));
 
-const provider_config_t *provider_registry_get(const char *id) {
+const catalog_provider_t *provider_registry_get(const char *id) {
     if (!id || !*id) return NULL;
     for (int i = 0; i < CATALOG_N; i++)
         if (strcmp(CATALOG[i].id, id) == 0) return &CATALOG[i];
     return NULL;
 }
 int provider_registry_count(void) { return CATALOG_N; }
-const provider_config_t *provider_registry_at(int i) {
+const catalog_provider_t *provider_registry_at(int i) {
     return (i >= 0 && i < CATALOG_N) ? &CATALOG[i] : NULL;
 }
 

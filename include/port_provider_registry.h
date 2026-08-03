@@ -34,17 +34,17 @@ typedef struct {
     const char *scope;
     const char *base_url_env_var;
     const char *const *api_key_env_vars;   /* NULL-terminated, or NULL */
-} provider_config_t;
+} catalog_provider_t;
 
 /* Look up a built-in provider by exact id. Returns a borrowed pointer into the
  * static catalog, or NULL when the id is not a known built-in. */
-const provider_config_t *provider_registry_get(const char *id);
+const catalog_provider_t *provider_registry_get(const char *id);
 
 /* Number of built-in providers in the catalog. */
 int provider_registry_count(void);
 
 /* Borrowed pointer to entry i (0-based, in declaration order), or NULL. */
-const provider_config_t *provider_registry_at(int i);
+const catalog_provider_t *provider_registry_at(int i);
 
 /* Faithful port of utils.base_url_hostname: lowercased hostname of a base URL,
  * trailing dot stripped. Returns a malloc'd string ("" when absent). */

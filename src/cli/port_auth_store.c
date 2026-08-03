@@ -574,7 +574,7 @@ char *get_auth_provider_display_name(const char *provider_id)
 {
     char norm[128];
     lc_copy(norm, sizeof(norm), provider_id);
-    const provider_config_t *pc = provider_registry_get(norm);
+    const catalog_provider_t *pc = provider_registry_get(norm);
     if (pc && pc->name) return strdup(pc->name);
     for (int i = 0; i < SERVICE_PROVIDERS_N; i++)
         if (strcmp(SERVICE_PROVIDERS[i].id, norm) == 0)
@@ -894,7 +894,7 @@ bool is_provider_explicitly_configured(const char *provider_id)
     }
 
     /* 3. provider-specific env vars (excluding CLAUDE_CODE_OAUTH_TOKEN) */
-    const provider_config_t *pc = provider_registry_get(norm);
+    const catalog_provider_t *pc = provider_registry_get(norm);
     if (pc && pc->auth_type && strcmp(pc->auth_type, "api_key") == 0 && pc->api_key_env_vars) {
         for (int i = 0; pc->api_key_env_vars[i]; i++) {
             const char *var = pc->api_key_env_vars[i];
@@ -997,7 +997,7 @@ void deactivate_provider(void)
 /* PoP: get_anthropic_key @ hermes_cli/auth.py:get_anthropic_key */
 char *get_anthropic_key(void)
 {
-    const provider_config_t *pc = provider_registry_get("anthropic");
+    const catalog_provider_t *pc = provider_registry_get("anthropic");
     if (pc && pc->api_key_env_vars) {
         for (int i = 0; pc->api_key_env_vars[i]; i++) {
             char *val = config_py_get_env_value_prefer_dotenv(pc->api_key_env_vars[i]);
