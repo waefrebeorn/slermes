@@ -14,6 +14,7 @@
 
 #include "chat_composer.h"
 #include "hermes_core_types.h"
+#include "clipboard.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -612,19 +613,39 @@ static slash_result_t slash_redo_handler(slash_context_t *ctx, const char *arg) 
 
 static slash_result_t slash_copy_handler(slash_context_t *ctx, const char *arg) {
     (void)arg;
-    (void)ctx;
-    if (ctx) {
+    if (!ctx || !ctx->composer) return SLASH_RESULT_ERROR;
+    /* Copy the composer text (or last response) to the system clipboard. */
+    const char *text = composer_get_text(ctx->composer);
+    if (text && text[0]) {
+        if (clipboard_write_text(text)) {
+            snprintf(ctx->result_msg, sizeof(ctx->result_msg),
+                     "Copied to clipboard.");
+            return SLASH_RESULT_OK;
+        }
         snprintf(ctx->result_msg, sizeof(ctx->result_msg),
-                 "Last response copied to clipboard.");
+                 "Copy failed — no clipboard tool.");
+        return SLASH_RESULT_OK;
     }
+    snprintf(ctx->result_msg, sizeof(ctx->result_msg),
+             "Nothing to copy — composer is empty.");
     return SLASH_RESULT_OK;
 }
 
 static slash_result_t slash_paste_handler(slash_context_t *ctx, const char *arg) {
     (void)arg;
     if (!ctx || !ctx->composer) return SLASH_RESULT_ERROR;
+    /* Read the system clipboard and insert it at the cursor. */
+    char *text = clipboard_read_text();
+    if (text && text[0]) {
+        composer_insert(ctx->composer, text);
+        free(text);
+        snprintf(ctx->result_msg, sizeof(ctx->result_msg),
+                 "Pasted from clipboard.");
+        return SLASH_RESULT_OK;
+    }
+    free(text);
     snprintf(ctx->result_msg, sizeof(ctx->result_msg),
-             "Pasted from clipboard.");
+             "Clipboard is empty or unavailable.");
     return SLASH_RESULT_OK;
 }
 

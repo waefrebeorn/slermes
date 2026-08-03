@@ -10,6 +10,7 @@
 #include "session_db.h"
 #include "gui_core.h"
 #include "chat_render.h"
+#include "clipboard.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -251,6 +252,46 @@ bool chat_view_handle_click(app_state_t *app, int mx, int my) {
         if (mx >= btn_x && mx < btn_x + 40 && my >= btn_y && my < btn_y + 40) {
             chat_view_scroll_to_bottom(app);
             return true;
+        }
+    }
+
+    /* Copy button on the hovered message: copies the message content to the
+     * system clipboard (the Electron copy action — clipboard_write_text). */
+    {
+        int hm = app_hover_message(app);
+        if (hm >= 0) {
+            message_entry_t *msg = app_get_message(app, hm);
+            if (msg) {
+                /* Recompute the bubble geometry to find the copy button. */
+                gc_window_t *win = app_get_window(app);
+                int pad = 10;
+                int bubble_w = cw - pad * 2;
+                int small_h = gc_font_height(gc_get_font_small(win));
+                int body_h = gc_font_height(gc_get_font(win));
+                int line_h = body_h + 3;
+                int cur_y = cy + 8;
+                for (int i = 0; i <= hm; i++) {
+                    message_entry_t *m = app_get_message(app, i);
+                    if (!m) break;
+                    int text_h = gc_draw_text_wrapped(win, gc_get_font(win),
+                        m->content, 0, 0, bubble_w - pad * 2, line_h, 0);
+                    if (text_h < line_h) text_h = line_h;
+                    int total_h = pad + small_h + 6 + text_h + pad;
+                    if (i == hm) {
+                        int ax = cx + 8 + bubble_w - 90, ay = cur_y + 12;
+                        if (mx >= ax && mx < ax + 38 && my >= ay && my < ay + 20) {
+                            if (clipboard_write_text(msg->content)) {
+                                app_set_api_status(app, "Message copied to clipboard");
+                            } else {
+                                app_set_api_status(app, "Copy failed — no clipboard tool");
+                            }
+                            return true;
+                        }
+                        break;
+                    }
+                    cur_y += total_h + BUBBLE_GAP;
+                }
+            }
         }
     }
     
