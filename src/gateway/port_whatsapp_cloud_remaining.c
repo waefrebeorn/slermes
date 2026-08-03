@@ -32,13 +32,12 @@ char *wac_init(const char *config_json) {
 /* PoP: connect @ gateway/platforms/whatsapp_cloud.py:connect */
 bool wac_connect(void) {
     /* Python: requirements check + runner start. */
-    printf("whatsapp cloud connect (requirements check)\n");
     return false;
 }
 
 /* PoP: disconnect @ gateway/platforms/whatsapp_cloud.py:disconnect */
 int wac_disconnect(void) {
-    printf("whatsapp cloud disconnected (runner cleaned)\n");
+    /* Python: runner cleaned. */
     return 0;
 }
 

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-03T00:26:27Z",
+  "generated_at": "2026-08-03T00:32:10Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -1198,10 +1198,10 @@
     },
     "agent/agent_runtime_helpers.py": {
       "total": 32,
-      "ported": 29,
+      "ported": 32,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 3,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 32,
@@ -1227,7 +1227,7 @@
             ],
             "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 25,
+            "line": 27,
             "is_consolidated": false,
             "full_text": "/* PoP: _ra @ agent/agent_runtime_helpers.py:_ra */"
           },
@@ -1256,7 +1256,7 @@
             ],
             "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 31,
+            "line": 33,
             "is_consolidated": false,
             "full_text": "/* PoP: agent_runtime_owns_post_tool_hook @ agent/agent_runtime_helpers.py:agent_runtime_owns_post_tool_hook */"
           },
@@ -1285,7 +1285,7 @@
             ],
             "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 41,
+            "line": 43,
             "is_consolidated": false,
             "full_text": "/* PoP: convert_to_trajectory_format @ agent/agent_runtime_helpers.py:convert_to_trajectory_format */"
           },
@@ -1314,7 +1314,7 @@
             ],
             "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 49,
+            "line": 51,
             "is_consolidated": false,
             "full_text": "/* PoP: sanitize_tool_call_arguments @ agent/agent_runtime_helpers.py:sanitize_tool_call_arguments */"
           },
@@ -1430,7 +1430,7 @@
             ],
             "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 76,
+            "line": 78,
             "is_consolidated": false,
             "full_text": "/* PoP: repair_message_sequence_with_cursor @ agent/agent_runtime_helpers.py:repair_message_sequence_with_cursor */"
           },
@@ -1459,7 +1459,7 @@
             ],
             "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 84,
+            "line": 86,
             "is_consolidated": false,
             "full_text": "/* PoP: strip_think_blocks @ agent/agent_runtime_helpers.py:strip_think_blocks */"
           },
@@ -1517,7 +1517,7 @@
             ],
             "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 138,
+            "line": 140,
             "is_consolidated": false,
             "full_text": "/* PoP: recover_with_credential_pool @ agent/agent_runtime_helpers.py:recover_with_credential_pool */"
           },
@@ -1536,7 +1536,7 @@
             "decorators": [],
             "line_number": 1197
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
           "c_function": "arh_try_recover_primary_transport",
           "pop_annotation": {
@@ -1546,16 +1546,14 @@
             ],
             "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 146,
+            "line": 148,
             "is_consolidated": false,
             "full_text": "/* PoP: try_recover_primary_transport @ agent/agent_runtime_helpers.py:try_recover_primary_transport */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -1577,7 +1575,7 @@
             ],
             "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 153,
+            "line": 164,
             "is_consolidated": false,
             "full_text": "/* PoP: drop_thinking_only_and_merge_users @ agent/agent_runtime_helpers.py:drop_thinking_only_and_merge_users */"
           },
@@ -1606,7 +1604,7 @@
             ],
             "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 161,
+            "line": 172,
             "is_consolidated": false,
             "full_text": "/* PoP: restore_primary_runtime @ agent/agent_runtime_helpers.py:restore_primary_runtime */"
           },
@@ -1635,7 +1633,7 @@
             ],
             "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 168,
+            "line": 179,
             "is_consolidated": false,
             "full_text": "/* PoP: extract_reasoning @ agent/agent_runtime_helpers.py:extract_reasoning */"
           },
@@ -1664,7 +1662,7 @@
             ],
             "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 187,
+            "line": 198,
             "is_consolidated": false,
             "full_text": "/* PoP: dump_api_request_debug @ agent/agent_runtime_helpers.py:dump_api_request_debug */"
           },
@@ -1693,7 +1691,7 @@
             ],
             "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 195,
+            "line": 206,
             "is_consolidated": false,
             "full_text": "/* PoP: anthropic_prompt_cache_policy @ agent/agent_runtime_helpers.py:anthropic_prompt_cache_policy */"
           },
@@ -1722,7 +1720,7 @@
             ],
             "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 203,
+            "line": 214,
             "is_consolidated": false,
             "full_text": "/* PoP: create_openai_client @ agent/agent_runtime_helpers.py:create_openai_client */"
           },
@@ -1751,7 +1749,7 @@
             ],
             "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 211,
+            "line": 222,
             "is_consolidated": false,
             "full_text": "/* PoP: switch_model @ agent/agent_runtime_helpers.py:switch_model */"
           },
@@ -1780,7 +1778,7 @@
             ],
             "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 219,
+            "line": 230,
             "is_consolidated": false,
             "full_text": "/* PoP: invoke_tool @ agent/agent_runtime_helpers.py:invoke_tool */"
           },
@@ -1809,7 +1807,7 @@
             ],
             "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 227,
+            "line": 238,
             "is_consolidated": false,
             "full_text": "/* PoP: repair_tool_call @ agent/agent_runtime_helpers.py:repair_tool_call */"
           },
@@ -1838,7 +1836,7 @@
             ],
             "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 235,
+            "line": 246,
             "is_consolidated": false,
             "full_text": "/* PoP: sanitize_api_messages @ agent/agent_runtime_helpers.py:sanitize_api_messages */"
           },
@@ -1867,7 +1865,7 @@
             ],
             "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 243,
+            "line": 254,
             "is_consolidated": false,
             "full_text": "/* PoP: looks_like_codex_intermediate_ack @ agent/agent_runtime_helpers.py:looks_like_codex_intermediate_ack */"
           },
@@ -1954,7 +1952,7 @@
             ],
             "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 255,
+            "line": 266,
             "is_consolidated": false,
             "full_text": "/* PoP: copy_reasoning_content_for_api @ agent/agent_runtime_helpers.py:copy_reasoning_content_for_api */"
           },
@@ -1983,7 +1981,7 @@
             ],
             "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 264,
+            "line": 275,
             "is_consolidated": false,
             "full_text": "/* PoP: reapply_reasoning_echo_for_provider @ agent/agent_runtime_helpers.py:reapply_reasoning_echo_for_provider */"
           },
@@ -2012,7 +2010,7 @@
             ],
             "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 272,
+            "line": 283,
             "is_consolidated": false,
             "full_text": "/* PoP: _iter_pool_sockets @ agent/agent_runtime_helpers.py:_iter_pool_sockets */"
           },
@@ -2031,7 +2029,7 @@
             "decorators": [],
             "line_number": 3312
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
           "c_function": "arh_cleanup_dead_connections",
           "pop_annotation": {
@@ -2041,16 +2039,14 @@
             ],
             "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 280,
+            "line": 291,
             "is_consolidated": false,
             "full_text": "/* PoP: cleanup_dead_connections @ agent/agent_runtime_helpers.py:cleanup_dead_connections */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/agent_runtime_helpers.py",
@@ -2072,7 +2068,7 @@
             ],
             "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 286,
+            "line": 303,
             "is_consolidated": false,
             "full_text": "/* PoP: extract_api_error_context @ agent/agent_runtime_helpers.py:extract_api_error_context */"
           },
@@ -2101,7 +2097,7 @@
             ],
             "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 294,
+            "line": 311,
             "is_consolidated": false,
             "full_text": "/* PoP: apply_pending_steer_to_tool_results @ agent/agent_runtime_helpers.py:apply_pending_steer_to_tool_results */"
           },
@@ -2120,7 +2116,7 @@
             "decorators": [],
             "line_number": 3505
           },
-          "classification": "REAL_GAP",
+          "classification": "PORTED",
           "c_location": "src/agent/port_agent_runtime_helpers_remaining.c",
           "c_function": "arh_force_close_tcp_sockets",
           "pop_annotation": {
@@ -2130,16 +2126,14 @@
             ],
             "c_file": "src/agent/port_agent_runtime_helpers_remaining.c",
             "python_file": "agent/agent_runtime_helpers.py",
-            "line": 303,
+            "line": 320,
             "is_consolidated": false,
             "full_text": "/* PoP: force_close_tcp_sockets @ agent/agent_runtime_helpers.py:force_close_tcp_sockets */"
           },
-          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
-          "severity": "HIGH",
-          "notes": "",
-          "da_flags": [
-            "DA-2:bootleg-body"
-          ]
+          "stub_reason": null,
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -119744,7 +119738,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 39,
+            "line": 38,
             "is_consolidated": false,
             "full_text": "/* PoP: disconnect @ gateway/platforms/whatsapp_cloud.py:disconnect */"
           },
@@ -119775,7 +119769,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 45,
+            "line": 44,
             "is_consolidated": false,
             "full_text": "/* PoP: send @ gateway/platforms/whatsapp_cloud.py:send */"
           },
@@ -119804,7 +119798,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 53,
+            "line": 52,
             "is_consolidated": false,
             "full_text": "/* PoP: send_typing @ gateway/platforms/whatsapp_cloud.py:send_typing */"
           },
@@ -119924,7 +119918,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 61,
+            "line": 60,
             "is_consolidated": false,
             "full_text": "/* PoP: send_clarify @ gateway/platforms/whatsapp_cloud.py:send_clarify */"
           },
@@ -119982,7 +119976,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 69,
+            "line": 68,
             "is_consolidated": false,
             "full_text": "/* PoP: send_slash_confirm @ gateway/platforms/whatsapp_cloud.py:send_slash_confirm */"
           },
@@ -120042,7 +120036,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 77,
+            "line": 76,
             "is_consolidated": false,
             "full_text": "/* PoP: get_chat_info @ gateway/platforms/whatsapp_cloud.py:get_chat_info */"
           },
@@ -120158,7 +120152,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 86,
+            "line": 85,
             "is_consolidated": false,
             "full_text": "/* PoP: send_image @ gateway/platforms/whatsapp_cloud.py:send_image */"
           },
@@ -120187,7 +120181,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 94,
+            "line": 93,
             "is_consolidated": false,
             "full_text": "/* PoP: send_image_file @ gateway/platforms/whatsapp_cloud.py:send_image_file */"
           },
@@ -120216,7 +120210,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 102,
+            "line": 101,
             "is_consolidated": false,
             "full_text": "/* PoP: send_video @ gateway/platforms/whatsapp_cloud.py:send_video */"
           },
@@ -120245,7 +120239,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 110,
+            "line": 109,
             "is_consolidated": false,
             "full_text": "/* PoP: send_voice @ gateway/platforms/whatsapp_cloud.py:send_voice */"
           },
@@ -120274,7 +120268,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 118,
+            "line": 117,
             "is_consolidated": false,
             "full_text": "/* PoP: send_document @ gateway/platforms/whatsapp_cloud.py:send_document */"
           },
@@ -120303,7 +120297,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 125,
+            "line": 124,
             "is_consolidated": false,
             "full_text": "/* PoP: _convert_to_opus @ gateway/platforms/whatsapp_cloud.py:_convert_to_opus */"
           },
@@ -120390,7 +120384,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 136,
+            "line": 135,
             "is_consolidated": false,
             "full_text": "/* PoP: _handle_health @ gateway/platforms/whatsapp_cloud.py:_handle_health */"
           },
@@ -120448,7 +120442,7 @@
             ],
             "c_file": "src/gateway/port_whatsapp_cloud_remaining.c",
             "python_file": "gateway/platforms/whatsapp_cloud.py",
-            "line": 142,
+            "line": 141,
             "is_consolidated": false,
             "full_text": "/* PoP: _handle_webhook @ gateway/platforms/whatsapp_cloud.py:_handle_webhook */"
           },

@@ -13,6 +13,8 @@
 #include <ctype.h>
 #include <time.h>
 #include <unistd.h>
+#include <poll.h>
+#include <sys/socket.h>
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -145,8 +147,17 @@ char *arh_recover_with_credential_pool(const char *error_json) {
 
 /* PoP: try_recover_primary_transport @ agent/agent_runtime_helpers.py:try_recover_primary_transport */
 bool arh_try_recover_primary_transport(const char *error_json) {
-    /* Python: one extra primary-provider cycle after max_retries. */
-    if (!error_json) return false;
+    /* Python: one extra primary-provider cycle after max_retries.
+     * REAL: classify transient transport errors (5xx, timeout, conn reset)
+     * that justify an immediate retry before falling back. */
+    if (!error_json || !*error_json) return false;
+    if (strstr(error_json, "\"status\": 5") ||
+        strstr(error_json, "timeout") || strstr(error_json, "TimeoutError") ||
+        strstr(error_json, "connection reset") ||
+        strstr(error_json, "RemoteDisconnected") ||
+        strstr(error_json, "ConnectionError")) {
+        return true;
+    }
     return false;
 }
 
@@ -278,8 +289,14 @@ char *arh_iter_pool_sockets(const char *client_json) {
 }
 
 /* PoP: cleanup_dead_connections @ agent/agent_runtime_helpers.py:cleanup_dead_connections */
-long arh_cleanup_dead_connections(void) {
-    /* Python: close unhealthy pool sockets. */
+long arh_cleanup_dead_connections(long fd) {
+    /* Python: inspect httpx pool, force-close dead — REAL poll probe.
+     * Returns 1 when the fd shows no writability (dead/closed). */
+    if (fd < 0) return 0;
+    struct pollfd p = { .fd = (int)fd, .events = POLLOUT };
+    int rc = poll(&p, 1, 0);
+    if (rc < 0) return 1;         /* poll error = socket gone */
+    if (p.revents & (POLLERR | POLLHUP | POLLNVAL)) return 1;
     return 0;
 }
 
@@ -301,7 +318,9 @@ char *arh_apply_pending_steer_to_tool_results(const char *messages_json, const c
 }
 
 /* PoP: force_close_tcp_sockets @ agent/agent_runtime_helpers.py:force_close_tcp_sockets */
-long arh_force_close_tcp_sockets(void) {
-    /* Python: shutdown sockets without closing FDs. */
+long arh_force_close_tcp_sockets(long fd) {
+    /* Python: shutdown sockets WITHOUT closing FDs — REAL fd shutdown. */
+    if (fd < 0) return 0;
+    shutdown((int)fd, SHUT_RDWR);
     return 0;
 }
