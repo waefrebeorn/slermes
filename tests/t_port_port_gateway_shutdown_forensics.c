@@ -20,7 +20,10 @@ static json_t *emit_cli_gateway_shutdown_forensics__parse_systemd_duration_to_us
     const char *value = json_get_str(c, "value", "");
     long v = (long)cli_gateway_shutdown_forensics__parse_systemd_duration_to_us(value);
     json_t *o = json_new_object(); json_set(o, "fn", json_string("cli_gateway_shutdown_forensics__parse_systemd_duration_to_us"));
-    json_set(o, "out", json_int(v)); return o;
+    /* Python returns Optional[int]; None serializes to '' in the oracle.
+     * The C port signals None with -1 — emit '' for parity. */
+    if (v < 0) json_set(o, "out", json_string(""));
+    else json_set(o, "out", json_int(v)); return o;
 }
 
 int main(int argc, char **argv){

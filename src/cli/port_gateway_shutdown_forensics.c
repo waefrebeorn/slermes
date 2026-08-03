@@ -229,27 +229,62 @@ json_node_t* cli_gateway_shutdown_forensics_check_systemd_timing_alignment(doubl
 }
 
 /* PoP: cli_gateway_shutdown_forensics__parse_systemd_duration_to_us @ gateway/shutdown_forensics.py:_parse_systemd_duration_to_us */
+/* Faithful port of the Python tokenizer: digits/'.' accumulate a number,
+ * alpha accumulates a unit token; on whitespace the pending (digits, unit)
+ * pair is applied. Units: us/ms/s/sec/min/h/hr. A bare number (no unit)
+ * means SECONDS. Unknown unit, empty input, or total==0 => None, which we
+ * signal as -1 (the Python return type is Optional[int]). */
 long cli_gateway_shutdown_forensics__parse_systemd_duration_to_us(const char *raw) {
-    if (!raw || !*raw) return 0;
-    long total_us = 0;
-    const char *p = raw;
-    while (*p) {
-        while (*p == ' ' || *p == '\t') p++;
-        if (!*p) break;
-        char *end;
-        double val = strtod(p, &end);
-        if (end == p) { p++; continue; }
-        p = end;
-        while (*p == ' ' || *p == '\t') p++;
-        long mult = 1000000;
-        if (strncmp(p, "ms", 2) == 0) { mult = 1000; p += 2; }
-        else if (strncmp(p, "us", 2) == 0) { mult = 1; p += 2; }
-        else if (strncmp(p, "min", 3) == 0) { mult = 60000000; p += 3; }
-        else if (strncmp(p, "sec", 3) == 0) { mult = 1000000; p += 3; }
-        else if (strncmp(p, "h", 1) == 0) { mult = 3600000000L; p += 1; }
-        else if (strncmp(p, "hr", 2) == 0) { mult = 3600000000L; p += 2; }
-        else if (*p == 's') { mult = 1000000; p += 1; }
-        total_us += (long)(val * mult);
+    if (!raw || !*raw) return -1;
+    static const struct { const char *u; long mult; } UNITS[] = {
+        { "us", 1 }, { "ms", 1000 }, { "s", 1000000 }, { "sec", 1000000 },
+        { "min", 60000000 }, { "h", 3600000000L }, { "hr", 3600000000L },
+    };
+    double total_us = 0;
+    char digits[128] = "";   /* pending number text (digits + '.') */
+    size_t dn = 0;
+    char token[32] = "";     /* pending unit text (alpha) */
+    size_t tn = 0;
+
+    for (const char *p = raw; ; p++) {
+        char ch = *p;
+        int is_digit = (ch >= '0' && ch <= '9');
+        int is_alpha = (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
+        if (is_digit || ch == '.') {
+            if (tn > 0) {
+                /* End previous unit, start new number. */
+                if (dn == 0) return -1;
+                long mult = -1;
+                for (size_t i = 0; i < sizeof(UNITS)/sizeof(UNITS[0]); i++) {
+                    if (strcmp(token, UNITS[i].u) == 0) { mult = UNITS[i].mult; break; }
+                }
+                if (mult < 0) return -1;  /* unknown unit */
+                double num = atof(digits);
+                total_us += num * (double)mult;
+                dn = 0; tn = 0;
+            }
+            if (dn < sizeof(digits) - 1) digits[dn++] = ch;
+            digits[dn] = '\0';
+        } else if (is_alpha) {
+            if (tn < sizeof(token) - 1) token[tn++] = (char)(ch >= 'A' && ch <= 'Z' ? ch + 32 : ch);
+            token[tn] = '\0';
+        } else if (dn > 0 && tn > 0) {
+            /* whitespace / other: apply pending (digits, unit) */
+            long mult = -1;
+            for (size_t i = 0; i < sizeof(UNITS)/sizeof(UNITS[0]); i++) {
+                if (strcmp(token, UNITS[i].u) == 0) { mult = UNITS[i].mult; break; }
+            }
+            if (mult < 0) return -1;
+            double num = atof(digits);
+            total_us += num * (double)mult;
+            dn = 0; tn = 0;
+        } else if (dn > 0 && tn == 0) {
+            /* Bare number = seconds */
+            double num = atof(digits);
+            total_us += num * 1000000.0;
+            dn = 0;
+        }
+        if (ch == '\0') break;
     }
-    return total_us > 0 ? total_us : 0;
+    return total_us > 0 ? (long)total_us : -1;
 }
