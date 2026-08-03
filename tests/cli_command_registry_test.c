@@ -19,7 +19,7 @@ static int checks = 0, failures = 0;
     if (!_h || !_n || strstr(_h,_n)==NULL) { failures++; printf("FAIL: %s\n  missing=%s\n", msg, _n?_n:"(null)"); } } while (0)
 
 static void test_resolve_command(void) {
-    const command_def_t *c;
+    const cli_command_def_t *c;
     c = cli_resolve_command("goal");
     CHECK(c && strcmp(c->name, "goal") == 0, "resolve 'goal'");
     c = cli_resolve_command("/goal");
@@ -41,7 +41,7 @@ static void test_indexes(void) {
     /* should equal number of non-gateway commands (+ aliases) */
     size_t non_gw = 0, aliases = 0;
     for (size_t i = 0; i < CLI_COMMAND_REGISTRY_COUNT; i++) {
-        const command_def_t *c = CLI_COMMAND_REGISTRY[i];
+        const cli_command_def_t *c = CLI_COMMAND_REGISTRY[i];
         if (!c) continue;
         if (c->gateway_only) continue;
         non_gw++;
@@ -76,7 +76,7 @@ static void test_completion_walk(void) {
     for (size_t i = 0; tree[i]; i++) n++;
     size_t non_gw = 0;
     for (size_t i = 0; i < CLI_COMMAND_REGISTRY_COUNT; i++) {
-        const command_def_t *c = CLI_COMMAND_REGISTRY[i];
+        const cli_command_def_t *c = CLI_COMMAND_REGISTRY[i];
         if (c && !c->gateway_only) non_gw++;
     }
     CHECK(n == non_gw, "walk node count == non-gateway commands");

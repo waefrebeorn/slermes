@@ -56,7 +56,7 @@ static const char *k73_aliases[] = {"gateway", NULL};
 static const char *k79_aliases[] = {"v", NULL};
 static const char *k81_aliases[] = {"exit", NULL};
 
-static const command_def_t CLI_COMMANDS[] = {
+static const cli_command_def_t CLI_COMMANDS[] = {
     { "start", "Acknowledge platform start pings without a reply", "Session", NULL, "", NULL, true },
     { "new", "Start a new session (fresh session ID + history)", "Session", k1_aliases, "[name]", NULL, false },
     { "topic", "Enable or inspect Telegram DM topic sessions", "Session", NULL, "[off|help|session-id]", NULL, true },
@@ -141,7 +141,7 @@ static const command_def_t CLI_COMMANDS[] = {
     { "quit", "Exit the CLI (use --delete to also remove session history)", "Exit", k81_aliases, "[--delete]", NULL, false },
 };
 
-const command_def_t *const CLI_COMMAND_REGISTRY[] = {
+const cli_command_def_t *const CLI_COMMAND_REGISTRY[] = {
     &CLI_COMMANDS[0],
     &CLI_COMMANDS[1],
     &CLI_COMMANDS[2],
@@ -230,7 +230,7 @@ size_t CLI_COMMAND_REGISTRY_COUNT = 82;
 
 /* PoP: resolve_command @ hermes_cli/commands.py:resolve_command */
 /* ── resolve_command (mirrors commands.py:resolve_command) ───────────────── */
-const command_def_t *cli_resolve_command(const char *name) {
+const cli_command_def_t *cli_resolve_command(const char *name) {
     if (!name) return NULL;
     /* strip leading slash + lowercase */
     char buf[128];
@@ -242,7 +242,7 @@ const command_def_t *cli_resolve_command(const char *name) {
     }
     buf[j] = '\0';
     for (size_t i = 0; i < CLI_COMMAND_REGISTRY_COUNT; i++) {
-        const command_def_t *c = CLI_COMMAND_REGISTRY[i];
+        const cli_command_def_t *c = CLI_COMMAND_REGISTRY[i];
         if (!c) continue;
         if (strcasecmp(c->name, buf) == 0) return c;
         for (const char *const *a = c->aliases; a && *a; a++) {
@@ -260,7 +260,7 @@ static cli_index_entry_t *build_index(bool subcommands_mode) {
     /* Pass 1: count required entries. */
     size_t need = 0;
     for (size_t i = 0; i < CLI_COMMAND_REGISTRY_COUNT; i++) {
-        const command_def_t *c = CLI_COMMAND_REGISTRY[i];
+        const cli_command_def_t *c = CLI_COMMAND_REGISTRY[i];
         if (!c || c->gateway_only) continue;
         if (subcommands_mode) {
             if (!c->subcommands || !c->subcommands[0]) continue;
@@ -274,7 +274,7 @@ static cli_index_entry_t *build_index(bool subcommands_mode) {
     if (!idx) return NULL;
     size_t n = 0;
     for (size_t i = 0; i < CLI_COMMAND_REGISTRY_COUNT; i++) {
-        const command_def_t *c = CLI_COMMAND_REGISTRY[i];
+        const cli_command_def_t *c = CLI_COMMAND_REGISTRY[i];
         if (!c || c->gateway_only) continue;
         if (subcommands_mode) {
             if (!c->subcommands || !c->subcommands[0]) continue;
@@ -336,14 +336,14 @@ struct completion_node_t **completion_walk(
     /* count non-gateway top-level commands */
     size_t n = 0;
     for (size_t i = 0; i < CLI_COMMAND_REGISTRY_COUNT; i++) {
-        const command_def_t *c = CLI_COMMAND_REGISTRY[i];
+        const cli_command_def_t *c = CLI_COMMAND_REGISTRY[i];
         if (c && !c->gateway_only) n++;
     }
     struct completion_node_t **tree = calloc(n + 1, sizeof(*tree));
     if (!tree) return NULL;
     size_t k = 0;
     for (size_t i = 0; i < CLI_COMMAND_REGISTRY_COUNT; i++) {
-        const command_def_t *c = CLI_COMMAND_REGISTRY[i];
+        const cli_command_def_t *c = CLI_COMMAND_REGISTRY[i];
         if (!c || c->gateway_only) continue;
 
         const char *help = c->description;

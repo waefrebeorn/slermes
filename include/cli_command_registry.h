@@ -33,8 +33,10 @@
 extern "C" {
 #endif
 
-/* A command definition (mirrors CommandDef). */
-typedef struct command_def_t {
+/* A command definition (mirrors CommandDef). Distinct name from the live
+ * dispatch's command_def_t (hermes_cli.h) so both can coexist in one TU:
+ * this is the faithful data-model port (aliases array, no handler). */
+typedef struct cli_command_def_t {
     const char *name;          /* canonical, no slash: "background" */
     const char *description;   /* human-readable */
     const char *category;      /* "Session", "Configuration", ... */
@@ -42,16 +44,16 @@ typedef struct command_def_t {
     const char *args_hint;     /* "<prompt>", "[name]", "[on|off|tts|status]" */
     const char *const *subcommands; /* NULL-terminated */
     bool gateway_only;         /* only in gateway/messaging */
-} command_def_t;
+} cli_command_def_t;
 
 /* The canonical registry (mirrors COMMAND_REGISTRY). NULL-terminated.
  * Populated in cli_command_registry.c. */
-extern const command_def_t *const CLI_COMMAND_REGISTRY[];
+extern const cli_command_def_t *const CLI_COMMAND_REGISTRY[];
 extern size_t CLI_COMMAND_REGISTRY_COUNT;
 
 /* Resolve a command name or alias to its CommandDef. Accepts names with or
  * without a leading slash, case-insensitive. Returns NULL if not found. */
-const command_def_t *cli_resolve_command(const char *name);
+const cli_command_def_t *cli_resolve_command(const char *name);
 
 /* Build a flat "/name" -> description index over non-gateway commands.
  * Returns a heap array of (key, value) pairs, NULL-terminated. Caller frees

@@ -18,6 +18,8 @@
 #include "cli_cmd_tools.h"
 #include "cli_cmd_mcp.h"
 #include "cli_cmd_kanban.h"
+#include "cli_cmd_parity.h"
+#include "cli_command_registry.h"
 #include "cli_cmd_security.h"
 #include "cli_cmd_memory.h"
 #include "cli_cmd_display.h"
@@ -495,6 +497,21 @@ const command_def_t COMMANDS[] = {
     {.name="/key", .alias=NULL, .description="Manage API keys: list, set, show, unset", .category="Security", .args_hint="[list|set <provider>|show <provider>|unset <provider>]", .subcommands="list,set,show,unset", .handler=cmd_key},
     {.name="/deps", .alias=NULL, .description="Install third-party Python bridge dependencies", .category="System", .args_hint=NULL, .subcommands=NULL, .handler=cmd_deps, .cli_only=true, .gateway_only=false},
     {.name="/pet", .alias=NULL, .description="Petdex: info, gallery, select, remove, disable, scale", .category="Display", .args_hint="[info|gallery|select <slug>|remove <slug>|disable|scale <n>]", .subcommands="info,gallery,select,remove,disable,scale", .handler=cmd_pet},
+    /* ── Command-surface parity (Python COMMAND_REGISTRY 1:1) ── */
+    {.name="/battery", .alias=NULL, .description="Toggle a color-coded battery indicator in the status bar", .category="Configuration", .args_hint="[on|off|status]", .subcommands="on,off,status", .handler=cmd_battery, .cli_only=true, .gateway_only=false},
+    {.name="/blueprint", .alias="/bp", .description="Set up an automation from a blueprint template", .category="Tools & Skills", .args_hint="[name] [slot=value ...]", .subcommands=NULL, .handler=cmd_blueprint},
+    {.name="/codex-runtime", .alias="/codex_runtime", .description="Toggle codex app-server runtime for OpenAI/Codex models", .category="Configuration", .args_hint="[auto|codex_app_server]", .subcommands=NULL, .handler=cmd_codex_runtime},
+    {.name="/egress", .alias=NULL, .description="Show Docker egress proxy status", .category="Session", .args_hint="[status]", .subcommands="status", .handler=cmd_egress},
+    {.name="/hatch", .alias="/generate-pet", .description="Generate a new petdex pet from a description", .category="Tools & Skills", .args_hint="[description]", .subcommands=NULL, .handler=cmd_hatch, .cli_only=true, .gateway_only=false},
+    {.name="/journey", .alias="/learning", .description="Open the learning journey timeline", .category="Session", .args_hint="[list|delete <id>|edit <id>]", .subcommands="list,delete,edit", .handler=cmd_journey, .cli_only=true, .gateway_only=false},
+    {.name="/learn", .alias=NULL, .description="Learn a reusable skill from anything you describe", .category="Tools & Skills", .args_hint="<what to learn from>", .subcommands=NULL, .handler=cmd_learn},
+    {.name="/moa", .alias=NULL, .description="Run one prompt through the default Mixture of Agents preset, then restore your model", .category="Session", .args_hint="<prompt>", .subcommands=NULL, .handler=cmd_moa},
+    {.name="/prompt", .alias=NULL, .description="Compose your next prompt in $EDITOR (markdown), then send it", .category="Session", .args_hint=NULL, .subcommands=NULL, .handler=cmd_prompt},
+    {.name="/start", .alias=NULL, .description="Acknowledge platform start pings without a reply", .category="Session", .args_hint=NULL, .subcommands=NULL, .handler=cmd_start},
+    {.name="/subscription", .alias="/upgrade", .description="View your Nous plan and change it in the browser", .category="Info", .args_hint=NULL, .subcommands=NULL, .handler=cmd_subscription, .cli_only=true, .gateway_only=false},
+    {.name="/suggestions", .alias="/suggest", .description="Review suggested automations (accept/dismiss)", .category="Tools & Skills", .args_hint="[accept|dismiss N|catalog|clear]", .subcommands="accept,dismiss,catalog,clear", .handler=cmd_suggestions},
+    {.name="/timestamps", .alias="/ts", .description="Toggle [HH:MM] timestamps on messages and /history", .category="Configuration", .args_hint="[on|off|status]", .subcommands="on,off,status", .handler=cmd_timestamps, .cli_only=true, .gateway_only=false},
+    {.name="/topup", .alias=NULL, .description="Show your Nous balance and manage billing on the portal", .category="Info", .args_hint=NULL, .subcommands=NULL, .handler=cmd_topup},
     {.name=NULL, .alias=NULL, .description=NULL, .category=NULL, .args_hint=NULL, .subcommands=NULL, .handler=NULL},
 };
 
@@ -536,6 +553,24 @@ const command_def_t *commands_resolve(const char *input) {
     /* Only return if exactly one match (no ambiguity) */
     if (partial_count == 1 && first_partial)
         return first_partial;
+
+    /* Multi-alias fallback: the faithful COMMAND_REGISTRY port carries the
+     * full alias sets (journey→learning/memory-graph, new→reset,
+     * background→bg/btw, ...). Resolve the bare name there and map the
+     * canonical name back to a live handler. */
+    {
+        const char *bare = input;
+        if (bare[0] == '/') bare++;
+        const cli_command_def_t *reg = cli_resolve_command(bare);
+        if (reg) {
+            char canonical[256];
+            snprintf(canonical, sizeof(canonical), "/%s", reg->name);
+            for (int i = 0; COMMANDS[i].name; i++) {
+                if (strcasecmp(COMMANDS[i].name, canonical) == 0)
+                    return &COMMANDS[i];
+            }
+        }
+    }
 
     return NULL;
 }
@@ -600,8 +635,13 @@ bool commands_dispatch(const char *input, agent_state_t *state) {
     /* Skip gateway-only commands in CLI mode */
     if (cmd->gateway_only) return false;
 
-    /* Extract args (text after command name) */
-    const char *args = input + strlen(cmd->name);
+    /* Extract args (text after command name). The input may match an
+     * ALIAS whose length differs from the canonical name (e.g. "/learning"
+     * resolves to "/journey"), so skip the actual input token rather than
+     * strlen(cmd->name). */
+    const char *args = input;
+    while (*args == '/') args++;
+    while (*args && *args != ' ') args++;
     while (*args == ' ') args++;
     cmd->handler(args, state);
     return true;

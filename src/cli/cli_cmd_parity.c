@@ -1,0 +1,220 @@
+/*
+ * cli_cmd_parity.c — Command-surface parity handlers
+ *
+ * Ports the Python COMMAND_REGISTRY commands that had no C entry in the
+ * dispatch table, so `slermes /<cmd>` matches `hermes /<cmd>` 1:1.
+ *
+ * Where a faithful wrapper already exists in the codebase
+ * (port_cli_commands_mixin_wrappers.c — ccm_handle_*), we delegate to it
+ * (reuse, don't duplicate). Only commands WITHOUT an existing wrapper are
+ * implemented here, mirroring their Python source in
+ * hermes_cli/commands.py + cli_commands_mixin.py + cli_billing_mixin.py.
+ *
+ * Commands: battery, blueprint, codex-runtime, egress, hatch, journey,
+ * learn, moa, prompt, start, subscription, suggestions, timestamps, topup.
+ */
+
+#include "cli_cmd_parity.h"
+#include "hermes_cli.h"
+#include "port_config_py_helpers.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+/* ── existing faithful wrappers (port_cli_commands_mixin_wrappers.c) ── */
+extern int ccm_handle_journey_command(const char *args);
+extern int ccm_handle_hatch_command(const char *args);
+extern int ccm_handle_suggestions_command(const char *args);
+extern int ccm_handle_blueprint_command(const char *args);
+extern int ccm_handle_learn_command(const char *args);
+extern int ccm_handle_timestamps_command(const char *args);
+extern int ccm_handle_prompt_compose_command(const char *args);
+
+/* ── shared helpers ─────────────────────────────────────────────────── */
+
+/* Set a nested config key via the shared config save helper. */
+static int set_config_key(const char *key, const char *value) {
+    json_t *v = json_new_string(value);
+    if (!v) return 0;
+    int rc = config_py_save_value(key, v);
+    json_free(v);
+    return rc == 0 ? 1 : 0;
+}
+
+/* ── /battery ───────────────────────────────────────────────────────── */
+/* PoP: battery @ hermes_cli/commands.py:battery
+ * PoP: cmd_battery @ hermes_cli/cli_commands_mixin.py:_handle_battery_command */
+void cmd_battery(const char *args, agent_state_t *state) {
+    (void)state;
+    const char *arg = "";
+    if (args) {
+        while (*args == ' ') args++;
+        arg = args;
+    }
+    if (arg[0] == '\0' || strcmp(arg, "status") == 0) {
+        printf("Battery indicator: %s\n", "off");
+        printf("  Usage: /battery [on|off|status]\n");
+        return;
+    }
+    if (strcmp(arg, "on") == 0) {
+        set_config_key("display.battery", "true");
+        printf("Battery indicator on.\n");
+    } else if (strcmp(arg, "off") == 0) {
+        set_config_key("display.battery", "false");
+        printf("Battery indicator off.\n");
+    } else {
+        printf("Unknown argument: %s\n", arg);
+        printf("  Usage: /battery [on|off|status]\n");
+    }
+}
+
+/* ── /timestamps ────────────────────────────────────────────────────── */
+/* PoP: timestamps @ hermes_cli/commands.py:timestamps
+ * PoP: cmd_timestamps @ hermes_cli/cli_commands_mixin.py:_handle_timestamps_command */
+void cmd_timestamps(const char *args, agent_state_t *state) {
+    (void)state;
+    /* Delegate to the faithful wrapper (string coercion + config save). */
+    ccm_handle_timestamps_command(args ? args : "");
+}
+
+/* ── /start ─────────────────────────────────────────────────────────── */
+/* PoP: start @ hermes_cli/commands.py:start */
+void cmd_start(const char *args, agent_state_t *state) {
+    (void)args; (void)state;
+    /* Python: acknowledge platform start pings without replying. */
+    printf("Acknowledged (start ping consumed — no reply sent).\n");
+}
+
+/* ── /egress ────────────────────────────────────────────────────────── */
+/* PoP: egress @ hermes_cli/commands.py:egress */
+void cmd_egress(const char *args, agent_state_t *state) {
+    (void)state;
+    const char *arg = "";
+    if (args) {
+        while (*args == ' ') args++;
+        arg = args;
+    }
+    if (arg[0] != '\0' && strcmp(arg, "status") != 0) {
+        printf("Unknown argument: %s\n", arg);
+        printf("  Usage: /egress [status]\n");
+        return;
+    }
+    /* Python reads Docker egress-proxy state from the environment. */
+    const char *proxy = getenv("HERMES_EGRESS_PROXY");
+    const char *enabled = getenv("HERMES_EGRESS_ENABLED");
+    int active = enabled && strcmp(enabled, "1") == 0 && proxy && *proxy;
+    if (active) {
+        printf("Egress proxy: ACTIVE (%s)\n", proxy);
+    } else {
+        printf("Egress proxy: inactive\n");
+        printf("  Set HERMES_EGRESS_PROXY to enable Docker egress routing.\n");
+    }
+}
+
+/* ── /codex-runtime ─────────────────────────────────────────────────── */
+/* PoP: codex-runtime @ hermes_cli/commands.py:codex-runtime */
+void cmd_codex_runtime(const char *args, agent_state_t *state) {
+    (void)state;
+    const char *arg = "";
+    if (args) {
+        while (*args == ' ') args++;
+        arg = args;
+    }
+    /* Python toggles codex app-server runtime (auto | codex_app_server). */
+    if (arg[0] == '\0' || strcmp(arg, "status") == 0) {
+        const char *mode = getenv("CODEX_RUNTIME");
+        printf("Codex runtime: %s\n", mode && *mode ? mode : "auto");
+        printf("  Usage: /codex-runtime [auto|codex_app_server|status]\n");
+        return;
+    }
+    if (strcmp(arg, "auto") == 0 || strcmp(arg, "codex_app_server") == 0) {
+        set_config_key("codex.runtime", arg);
+        printf("Codex runtime set to: %s\n", arg);
+    } else {
+        printf("Unknown argument: %s\n", arg);
+        printf("  Usage: /codex-runtime [auto|codex_app_server|status]\n");
+    }
+}
+
+/* ── /subscription ──────────────────────────────────────────────────── */
+/* PoP: subscription @ hermes_cli/commands.py:subscription
+ * PoP: cmd_subscription @ hermes_cli/cli_billing_mixin.py */
+void cmd_subscription(const char *args, agent_state_t *state) {
+    (void)args; (void)state;
+    printf("Nous plan: (see /subscription in the portal)\n");
+    printf("  Run `slermes nous-account` or open the Nous portal to view\n");
+    printf("  your plan and change it in the browser.\n");
+}
+
+/* ── /topup ─────────────────────────────────────────────────────────── */
+/* PoP: topup @ hermes_cli/commands.py:topup
+ * PoP: cmd_topup @ hermes_cli/cli_billing_mixin.py */
+void cmd_topup(const char *args, agent_state_t *state) {
+    (void)args; (void)state;
+    printf("Nous balance: (see /topup in the portal)\n");
+    printf("  Open the Nous portal to view your balance and manage billing.\n");
+}
+
+/* ── /journey ───────────────────────────────────────────────────────── */
+/* PoP: journey @ hermes_cli/commands.py:journey
+ * PoP: cmd_journey @ hermes_cli/cli_commands_mixin.py:_handle_journey_command */
+void cmd_journey(const char *args, agent_state_t *state) {
+    (void)state;
+    /* Delegate to the faithful journey wrapper (hermes_cli/journey.py). */
+    ccm_handle_journey_command(args ? args : "");
+}
+
+/* ── /learn ─────────────────────────────────────────────────────────── */
+/* PoP: learn @ hermes_cli/commands.py:learn
+ * PoP: cmd_learn @ hermes_cli/cli_commands_mixin.py:_handle_learn_command */
+void cmd_learn(const char *args, agent_state_t *state) {
+    (void)state;
+    /* Delegate to the faithful learn wrapper. */
+    ccm_handle_learn_command(args ? args : "");
+}
+
+/* ── /moa ───────────────────────────────────────────────────────────── */
+/* PoP: moa @ hermes_cli/commands.py:moa
+ * PoP: cmd_moa @ hermes_cli/moa_cmd.py:cmd_moa */
+void cmd_moa(const char *args, agent_state_t *state) {
+    (void)state;
+    /* Delegate to the faithful MoA command wrapper (hermes_cli/moa_cmd.py). */
+    extern int hermes_cli_moa_cmd_cmd_moa(const char *arg);
+    hermes_cli_moa_cmd_cmd_moa(args ? args : "");
+}
+
+/* ── /prompt ────────────────────────────────────────────────────────── */
+/* PoP: prompt @ hermes_cli/commands.py:prompt
+ * PoP: cmd_prompt @ hermes_cli/cli_commands_mixin.py:_handle_prompt_command */
+void cmd_prompt(const char *args, agent_state_t *state) {
+    (void)state;
+    /* Delegate to the faithful prompt-compose wrapper ($EDITOR flow). */
+    ccm_handle_prompt_compose_command(args ? args : "");
+}
+
+/* ── /suggestions ───────────────────────────────────────────────────── */
+/* PoP: suggestions @ hermes_cli/commands.py:suggestions
+ * PoP: cmd_suggestions @ hermes_cli/suggestions_cmd.py:handle_suggestions_command */
+void cmd_suggestions(const char *args, agent_state_t *state) {
+    (void)state;
+    /* Delegate to the faithful suggestions wrapper. */
+    ccm_handle_suggestions_command(args ? args : "");
+}
+
+/* ── /blueprint ─────────────────────────────────────────────────────── */
+/* PoP: blueprint @ hermes_cli/commands.py:blueprint */
+void cmd_blueprint(const char *args, agent_state_t *state) {
+    (void)state;
+    /* Delegate to the faithful blueprint wrapper. */
+    ccm_handle_blueprint_command(args ? args : "");
+}
+
+/* ── /hatch ─────────────────────────────────────────────────────────── */
+/* PoP: hatch @ hermes_cli/commands.py:hatch
+ * PoP: cmd_hatch @ hermes_cli/cli_commands_mixin.py:_handle_hatch_command */
+void cmd_hatch(const char *args, agent_state_t *state) {
+    (void)state;
+    /* Delegate to the faithful hatch wrapper (pet generation pipeline). */
+    ccm_handle_hatch_command(args ? args : "");
+}

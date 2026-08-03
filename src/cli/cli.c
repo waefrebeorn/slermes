@@ -745,31 +745,30 @@ int cli_main(int argc, char **argv) {
                  * Skip the one-shot message processing, go directly to interactive loop. */
                 goto start_interactive;
             }
-            static const char *known_subcmds[] = {
-                "status", "dump", "logs", "tools", "plugins", "secrets",
-                "cron", "skills", "help", "commands", "model", "config",
-                "history", "sessions", "usage", "insights", "copy", NULL
-            };
-            for (int i = 0; known_subcmds[i]; i++) {
-                if (strcasecmp(cmd, known_subcmds[i]) == 0) {
-                    /* Build full slash command string */
-                    char cmd_input[8192];
-                    snprintf(cmd_input, sizeof(cmd_input), "/%s", known_subcmds[i]);
-                    /* Append remaining args */
-                    for (int j = arg_start + 1; j < argc; j++) {
-                        size_t clen = strlen(cmd_input);
-                        snprintf(cmd_input + clen, sizeof(cmd_input) - clen, " %s", argv[j]);
-                    }
-                    commands_dispatch(cmd_input, &g_cli.agent);
-                    /* Also try skill command if dispatch failed */
-                    if (!commands_try_skill(cmd_input, &g_cli.agent)) {
-                        /* CL13: Try user-defined quick command */
-                        commands_try_quick(cmd_input, &g_cli.agent);
-                    }
-                    agent_close_db(&g_cli.agent);
-                    agent_free(&g_cli.agent);
-                    return 0;
+            /* Any command in the full COMMANDS[] table (plus its aliases)
+             * dispatches as a slash command — no hardcoded subset. This is
+             * the name-parity surface: every Python COMMAND_REGISTRY entry
+             * with a C handler works as `slermes /<cmd>`. */
+            char slash_cmd[512];
+            snprintf(slash_cmd, sizeof(slash_cmd), "/%s", cmd);
+            if (commands_resolve(slash_cmd)) {
+                /* Build full slash command string */
+                char cmd_input[8192];
+                snprintf(cmd_input, sizeof(cmd_input), "/%s", cmd);
+                /* Append remaining args */
+                for (int j = arg_start + 1; j < argc; j++) {
+                    size_t clen = strlen(cmd_input);
+                    snprintf(cmd_input + clen, sizeof(cmd_input) - clen, " %s", argv[j]);
                 }
+                commands_dispatch(cmd_input, &g_cli.agent);
+                /* Also try skill command if dispatch failed */
+                if (!commands_try_skill(cmd_input, &g_cli.agent)) {
+                    /* CL13: Try user-defined quick command */
+                    commands_try_quick(cmd_input, &g_cli.agent);
+                }
+                agent_close_db(&g_cli.agent);
+                agent_free(&g_cli.agent);
+                return 0;
             }
         }
 
