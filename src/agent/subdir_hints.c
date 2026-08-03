@@ -26,9 +26,9 @@
  *  State
  * ================================================================ */
 
-/* Tracked directories */
-static char g_loaded_dirs[SUBDIR_HINTS_MAX_DIRS][PATH_MAX];
-static int g_loaded_count = 0;
+/* Tracked directories — hive-backed (no landlocked static) */
+#include "hive.h"
+static hive_t *g_loaded_dirs = NULL;
 
 /* Working directory */
 static char g_working_dir[PATH_MAX] = {0};
@@ -57,18 +57,23 @@ static const char *HINT_FILENAMES[] = {
  * ================================================================ */
 
 static bool is_dir_loaded(const char *dir) {
-    for (int i = 0; i < g_loaded_count; i++) {
-        if (strcmp(g_loaded_dirs[i], dir) == 0)
-            return true;
-    }
+    if (!g_loaded_dirs) return false;
+    hive_iter_t it;
+    hive_iter_begin(g_loaded_dirs, &it);
+    char *d;
+    while (hive_iter_next(g_loaded_dirs, &it, NULL, (void **)&d))
+        if (strcmp(d, dir) == 0) return true;
     return false;
 }
 
 static bool add_loaded_dir(const char *dir) {
-    if (g_loaded_count >= SUBDIR_HINTS_MAX_DIRS) return false;
-    if (is_dir_loaded(dir)) return false;
-    snprintf(g_loaded_dirs[g_loaded_count], PATH_MAX, "%s", dir);
-    g_loaded_count++;
+    if (!dir || is_dir_loaded(dir)) return false;
+    if (!g_loaded_dirs) g_loaded_dirs = hive_new(8);
+    char *copy = strdup(dir);
+    if (!copy) return false;
+    bool ok = false;
+    hive_insert(g_loaded_dirs, copy, &ok);
+    if (!ok) { free(copy); return false; }
     return true;
 }
 
@@ -223,7 +228,16 @@ static void extract_cmd_paths(const char *cmd, char paths[][PATH_MAX], int *coun
 void subdir_hints_init(const char *working_dir) {
     pthread_mutex_lock(&g_lock);
 
-    g_loaded_count = 0;
+    if (g_loaded_dirs) {
+        hive_iter_t it;
+        hive_iter_begin(g_loaded_dirs, &it);
+        hive_handle_t hnd;
+        char *d;
+        while (hive_iter_next(g_loaded_dirs, &it, &hnd, (void **)&d)) {
+            free(d);
+            hive_erase(g_loaded_dirs, hnd);
+        }
+    }
 
     if (working_dir && working_dir[0]) {
         char *resolved = realpath(working_dir, NULL);
@@ -245,7 +259,16 @@ void subdir_hints_init(const char *working_dir) {
 
 void subdir_hints_cleanup(void) {
     pthread_mutex_lock(&g_lock);
-    g_loaded_count = 0;
+    if (g_loaded_dirs) {
+        hive_iter_t it;
+        hive_iter_begin(g_loaded_dirs, &it);
+        hive_handle_t hnd;
+        char *d;
+        while (hive_iter_next(g_loaded_dirs, &it, &hnd, (void **)&d)) {
+            free(d);
+            hive_erase(g_loaded_dirs, hnd);
+        }
+    }
     g_working_dir[0] = '\0';
     pthread_mutex_unlock(&g_lock);
 }

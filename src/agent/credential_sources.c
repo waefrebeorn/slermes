@@ -51,26 +51,33 @@ void removal_result_free(removal_result_t *r) {
 }
 
 /* ================================================================
- *  Registry
+ *  Registry — hive-backed (no landlocked static array)
  * ================================================================ */
 
-static removal_step_t g_registry[REMOVAL_MAX_STEPS];
-static int g_registry_count = 0;
+#include "hive.h"
+static hive_t *g_registry = NULL;
 
 /* Port of Python agent/credential_sources.py:register(). */
 void credential_sources_register(const removal_step_t *step) {
-    if (!step || g_registry_count >= REMOVAL_MAX_STEPS) return;
-    memcpy(&g_registry[g_registry_count], step, sizeof(removal_step_t));
-    g_registry_count++;
+    if (!step) return;
+    if (!g_registry) g_registry = hive_new(8);
+    removal_step_t *copy = malloc(sizeof(removal_step_t));
+    if (!copy) return;
+    memcpy(copy, step, sizeof(removal_step_t));
+    bool ok = false;
+    hive_insert(g_registry, copy, &ok);
+    if (!ok) free(copy);
 }
 
 /* Find the first matching removal step for a provider+source pair.
  * Port of Python agent/credential_sources.py:find_removal_step().
  * * Port of Python credential_sources.py:RemovalStep.matches() */
 const removal_step_t *find_removal_step(const char *provider, const char *source) {
-    if (!provider || !source) return NULL;
-    for (int i = 0; i < g_registry_count; i++) {
-        const removal_step_t *s = &g_registry[i];
+    if (!provider || !source || !g_registry) return NULL;
+    hive_iter_t it;
+    hive_iter_begin(g_registry, &it);
+    removal_step_t *s;
+    while (hive_iter_next(g_registry, &it, NULL, (void **)&s)) {
         /* Provider match: exact or wildcard "*" */
         if (strcmp(s->provider, "*") != 0 && strcasecmp(s->provider, provider) != 0)
             continue;

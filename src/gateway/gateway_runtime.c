@@ -22,43 +22,49 @@
 #include <unistd.h>
 
 /* ════════════════════════════════════════════════════════════════
- *  1. AGENT CACHE (LRU, 128 max, 1h TTL)
+ *  1. AGENT CACHE (LRU, 1h TTL) — hive-backed
  *  Port of Python _AGENT_CACHE_MAX_SIZE=128, _AGENT_CACHE_IDLE_TTL_SECS=3600
+ *
+ *  The cache is a hive of heap-allocated entries: only LIVE sessions
+ *  consume memory (no landlocked static array). Entries are stable
+ *  handles; erase returns slots to the hive freelist.
  * ════════════════════════════════════════════════════════════════ */
 
-#define GW_AGENT_CACHE_MAX 32   /* LRU cache: real usage is 1-3 sessions (was 128: 128×75KB agent_state_t ≈ 9.6MB .bss) */
+#define GW_AGENT_CACHE_MAX 32   /* LRU cap: real usage is 1-3 sessions */
 #define GW_AGENT_CACHE_IDLE_TTL 3600  /* 1 hour in seconds */
 
 typedef struct {
     char session_key[192];        /* "platform:chat_id" */
     agent_state_t agent;          /* cached agent state */
     time_t last_access;           /* monotonic time of last access */
-    bool occupied;
 } gw_agent_cache_entry_t;
 
-static gw_agent_cache_entry_t g_agent_cache[GW_AGENT_CACHE_MAX];
-static int g_agent_cache_count = 0;
+#include "hive.h"
+static hive_t *g_agent_cache = NULL;
 static pthread_mutex_t g_agent_cache_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 /* Initialize agent cache */
 void gw_agent_cache_init(void) {
     pthread_mutex_lock(&g_agent_cache_mutex);
-    memset(g_agent_cache, 0, sizeof(g_agent_cache));
-    g_agent_cache_count = 0;
+    if (!g_agent_cache) g_agent_cache = hive_new(8);
+    else hive_clear(g_agent_cache);
     pthread_mutex_unlock(&g_agent_cache_mutex);
 }
 
 /* Find a cached agent by session key. Returns pointer to agent or NULL.
  * Updates last_access time (LRU promotion). */
 agent_state_t *gw_agent_cache_get(const char *session_key) {
-    if (!session_key || !session_key[0]) return NULL;
+    if (!session_key || !session_key[0] || !g_agent_cache) return NULL;
     pthread_mutex_lock(&g_agent_cache_mutex);
-    for (int i = 0; i < GW_AGENT_CACHE_MAX; i++) {
-        if (g_agent_cache[i].occupied &&
-            strcmp(g_agent_cache[i].session_key, session_key) == 0) {
-            g_agent_cache[i].last_access = time(NULL);
+    hive_iter_t it;
+    hive_iter_begin(g_agent_cache, &it);
+    hive_handle_t hnd;
+    gw_agent_cache_entry_t *e;
+    while (hive_iter_next(g_agent_cache, &it, &hnd, (void **)&e)) {
+        if (strcmp(e->session_key, session_key) == 0) {
+            e->last_access = time(NULL);
             pthread_mutex_unlock(&g_agent_cache_mutex);
-            return &g_agent_cache[i].agent;
+            return &e->agent;
         }
     }
     pthread_mutex_unlock(&g_agent_cache_mutex);
@@ -69,65 +75,71 @@ agent_state_t *gw_agent_cache_get(const char *session_key) {
  * Returns true on success, false if cache full. */
 bool gw_agent_cache_put(const char *session_key, const agent_state_t *agent) {
     if (!session_key || !session_key[0] || !agent) return false;
+    if (!g_agent_cache) g_agent_cache = hive_new(8);
 
     pthread_mutex_lock(&g_agent_cache_mutex);
 
     /* Try to update existing entry */
-    for (int i = 0; i < GW_AGENT_CACHE_MAX; i++) {
-        if (g_agent_cache[i].occupied &&
-            strcmp(g_agent_cache[i].session_key, session_key) == 0) {
-            memcpy(&g_agent_cache[i].agent, agent, sizeof(agent_state_t));
-            g_agent_cache[i].last_access = time(NULL);
+    hive_iter_t it;
+    hive_iter_begin(g_agent_cache, &it);
+    hive_handle_t hnd;
+    gw_agent_cache_entry_t *e;
+    while (hive_iter_next(g_agent_cache, &it, &hnd, (void **)&e)) {
+        if (strcmp(e->session_key, session_key) == 0) {
+            memcpy(&e->agent, agent, sizeof(agent_state_t));
+            e->last_access = time(NULL);
             pthread_mutex_unlock(&g_agent_cache_mutex);
             return true;
         }
     }
 
-    /* Find empty slot or LRU victim */
-    int lru_idx = -1;
-    time_t lru_time = (time_t)-1;
-
-    for (int i = 0; i < GW_AGENT_CACHE_MAX; i++) {
-        if (!g_agent_cache[i].occupied) {
-            lru_idx = i;
-            break;
+    /* Enforce cap: evict LRU while over the limit */
+    while (hive_count(g_agent_cache) >= (size_t)GW_AGENT_CACHE_MAX) {
+        hive_handle_t victim = { 0, 0 };
+        gw_agent_cache_entry_t *v = NULL;
+        time_t oldest = (time_t)-1;
+        hive_iter_t it2;
+        hive_iter_begin(g_agent_cache, &it2);
+        hive_handle_t h2;
+        gw_agent_cache_entry_t *e2;
+        while (hive_iter_next(g_agent_cache, &it2, &h2, (void **)&e2)) {
+            if (e2->last_access < oldest) {
+                oldest = e2->last_access;
+                victim = h2;
+                v = e2;
+            }
         }
-        if (g_agent_cache[i].last_access < lru_time) {
-            lru_time = g_agent_cache[i].last_access;
-            lru_idx = i;
-        }
+        if (!v) break;
+        agent_free(&v->agent);
+        free(v);
+        hive_erase(g_agent_cache, victim);
     }
 
-    if (lru_idx < 0) {
-        pthread_mutex_unlock(&g_agent_cache_mutex);
-        return false;
-    }
-
-    /* Free old agent state if any */
-    if (g_agent_cache[lru_idx].occupied) {
-        agent_free(&g_agent_cache[lru_idx].agent);
-    }
-
-    snprintf(g_agent_cache[lru_idx].session_key,
-             sizeof(g_agent_cache[lru_idx].session_key), "%s", session_key);
-    memcpy(&g_agent_cache[lru_idx].agent, agent, sizeof(agent_state_t));
-    g_agent_cache[lru_idx].last_access = time(NULL);
-    g_agent_cache[lru_idx].occupied = true;
-    g_agent_cache_count++;
+    /* Insert a new heap entry into the hive. */
+    gw_agent_cache_entry_t *ne = calloc(1, sizeof(gw_agent_cache_entry_t));
+    if (!ne) { pthread_mutex_unlock(&g_agent_cache_mutex); return false; }
+    snprintf(ne->session_key, sizeof(ne->session_key), "%s", session_key);
+    memcpy(&ne->agent, agent, sizeof(agent_state_t));
+    ne->last_access = time(NULL);
+    bool ok = false;
+    hive_insert(g_agent_cache, ne, &ok);
     pthread_mutex_unlock(&g_agent_cache_mutex);
-    return true;
+    return ok;
 }
 
 /* Evict a specific session from the cache. */
 void gw_agent_cache_remove(const char *session_key) {
-    if (!session_key || !session_key[0]) return;
+    if (!session_key || !session_key[0] || !g_agent_cache) return;
     pthread_mutex_lock(&g_agent_cache_mutex);
-    for (int i = 0; i < GW_AGENT_CACHE_MAX; i++) {
-        if (g_agent_cache[i].occupied &&
-            strcmp(g_agent_cache[i].session_key, session_key) == 0) {
-            agent_free(&g_agent_cache[i].agent);
-            g_agent_cache[i].occupied = false;
-            g_agent_cache_count--;
+    hive_iter_t it;
+    hive_iter_begin(g_agent_cache, &it);
+    hive_handle_t hnd;
+    gw_agent_cache_entry_t *e;
+    while (hive_iter_next(g_agent_cache, &it, &hnd, (void **)&e)) {
+        if (strcmp(e->session_key, session_key) == 0) {
+            agent_free(&e->agent);
+            free(e);
+            hive_erase(g_agent_cache, hnd);
             break;
         }
     }
@@ -141,13 +153,18 @@ int gw_agent_cache_sweep_idle(void) {
     int evicted = 0;
 
     pthread_mutex_lock(&g_agent_cache_mutex);
-    for (int i = 0; i < GW_AGENT_CACHE_MAX; i++) {
-        if (g_agent_cache[i].occupied &&
-            (now - g_agent_cache[i].last_access) > GW_AGENT_CACHE_IDLE_TTL) {
-            agent_free(&g_agent_cache[i].agent);
-            g_agent_cache[i].occupied = false;
-            g_agent_cache_count--;
-            evicted++;
+    if (g_agent_cache) {
+        hive_iter_t it;
+        hive_iter_begin(g_agent_cache, &it);
+        hive_handle_t hnd;
+        gw_agent_cache_entry_t *e;
+        while (hive_iter_next(g_agent_cache, &it, &hnd, (void **)&e)) {
+            if ((now - e->last_access) > GW_AGENT_CACHE_IDLE_TTL) {
+                agent_free(&e->agent);
+                free(e);
+                hive_erase(g_agent_cache, hnd);
+                evicted++;
+            }
         }
     }
     pthread_mutex_unlock(&g_agent_cache_mutex);
@@ -159,21 +176,28 @@ int gw_agent_cache_sweep_idle(void) {
 int gw_agent_cache_enforce_cap(void) {
     int evicted = 0;
     pthread_mutex_lock(&g_agent_cache_mutex);
+    if (!g_agent_cache) { pthread_mutex_unlock(&g_agent_cache_mutex); return 0; }
 
-    while (g_agent_cache_count > GW_AGENT_CACHE_MAX) {
+    while (hive_count(g_agent_cache) > (size_t)GW_AGENT_CACHE_MAX) {
         /* Find the LRU entry (oldest access) */
-        int lru_idx = -1;
+        hive_handle_t victim = { 0, 0 };
+        gw_agent_cache_entry_t *v = NULL;
         time_t oldest = (time_t)-1;
-        for (int i = 0; i < GW_AGENT_CACHE_MAX; i++) {
-            if (g_agent_cache[i].occupied && g_agent_cache[i].last_access < oldest) {
-                oldest = g_agent_cache[i].last_access;
-                lru_idx = i;
+        hive_iter_t it;
+        hive_iter_begin(g_agent_cache, &it);
+        hive_handle_t hnd;
+        gw_agent_cache_entry_t *e;
+        while (hive_iter_next(g_agent_cache, &it, &hnd, (void **)&e)) {
+            if (e->last_access < oldest) {
+                oldest = e->last_access;
+                victim = hnd;
+                v = e;
             }
         }
-        if (lru_idx < 0) break;
-        agent_free(&g_agent_cache[lru_idx].agent);
-        g_agent_cache[lru_idx].occupied = false;
-        g_agent_cache_count--;
+        if (!v) break;
+        agent_free(&v->agent);
+        free(v);
+        hive_erase(g_agent_cache, victim);
         evicted++;
     }
     pthread_mutex_unlock(&g_agent_cache_mutex);
@@ -183,7 +207,7 @@ int gw_agent_cache_enforce_cap(void) {
 /* Get current cache size */
 int gw_agent_cache_size(void) {
     pthread_mutex_lock(&g_agent_cache_mutex);
-    int n = g_agent_cache_count;
+    int n = g_agent_cache ? (int)hive_count(g_agent_cache) : 0;
     pthread_mutex_unlock(&g_agent_cache_mutex);
     return n;
 }
@@ -460,20 +484,25 @@ void gw_drain_active_agents(int timeout_sec) {
     /* For each cached agent, save session state and free resources */
     pthread_mutex_lock(&g_agent_cache_mutex);
     time_t deadline = time(NULL) + timeout_sec;
-    for (int i = 0; i < GW_AGENT_CACHE_MAX; i++) {
-        if (!g_agent_cache[i].occupied) continue;
-        if (time(NULL) > deadline) break;
+    if (g_agent_cache) {
+        hive_iter_t it;
+        hive_iter_begin(g_agent_cache, &it);
+        hive_handle_t hnd;
+        gw_agent_cache_entry_t *e;
+        while (hive_iter_next(g_agent_cache, &it, &hnd, (void **)&e)) {
+            if (time(NULL) > deadline) break;
 
-        /* Save session if possible */
-        agent_state_t *a = &g_agent_cache[i].agent;
-        if (a->db) {
-            char session_key[256];
-            snprintf(session_key, sizeof(session_key), "%s:%s", a->platform, a->chat_id);
-            /* db_save_session(a->db, session_key, a); — wire to session save */
+            /* Save session if possible */
+            agent_state_t *a = &e->agent;
+            if (a->db) {
+                char session_key[256];
+                snprintf(session_key, sizeof(session_key), "%s:%s", a->platform, a->chat_id);
+                /* db_save_session(a->db, session_key, a); — wire to session save */
+            }
+            agent_free(a);
+            free(e);
+            hive_erase(g_agent_cache, hnd);
         }
-        agent_free(a);
-        g_agent_cache[i].occupied = false;
-        g_agent_cache_count--;
     }
     pthread_mutex_unlock(&g_agent_cache_mutex);
 }

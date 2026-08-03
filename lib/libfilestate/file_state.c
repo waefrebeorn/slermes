@@ -16,29 +16,37 @@
 
 /* ─── Internal state ─────────────────────────────────────── */
 
-/* Per-agent read stamps: reads[agent_idx][path_idx] */
-static struct {
-    char            task_id[64];
-    int             count;
-    char            paths[FS_MAX_PATHS_PER_AGENT][256];
-    fs_read_stamp_t stamps[FS_MAX_PATHS_PER_AGENT];
-} g_reads[FS_MAX_AGENTS];
+/* Per-agent read stamps: agents live in a hive (dynamic, no landlocked
+ * array); each agent's path list is a growable heap array. */
+typedef struct {
+    char  task_id[64];
+    int   count, cap;
+    char  (*paths)[256];
+    fs_read_stamp_t *stamps;
+} fs_agent_t;
+
+#include "hive.h"
+static hive_t *g_agents = NULL;       /* of fs_agent_t* */
 static int g_agent_count = 0;
 
-/* Global last-writer map: by path index */
-static struct {
-    int     count;
-    char    paths[FS_MAX_GLOBAL_WRITERS][256];
-    char    task_ids[FS_MAX_GLOBAL_WRITERS][64];
-    double  timestamps[FS_MAX_GLOBAL_WRITERS];
-} g_writers;
+/* Global last-writer map: dynamic growable arrays (no landlocked static). */
+typedef struct {
+    int     count, cap;
+    char    (*paths)[256];
+    char    (*task_ids)[64];
+    double  *timestamps;
+} fs_writers_t;
 
-/* Per-path locks */
-static struct {
-    int             count;
-    char            paths[FS_MAX_GLOBAL_WRITERS][256];
-    pthread_mutex_t mutexes[FS_MAX_GLOBAL_WRITERS];
-} g_path_locks;
+static fs_writers_t g_writers = { 0, 0, NULL, NULL, NULL };
+
+/* Per-path locks: dynamic growable arrays. */
+typedef struct {
+    int             count, cap;
+    char            (*paths)[256];
+    pthread_mutex_t *mutexes;
+} fs_path_locks_t;
+
+static fs_path_locks_t g_path_locks = { 0, 0, NULL, NULL };
 
 static pthread_mutex_t g_state_lock = PTHREAD_MUTEX_INITIALIZER;
 static pthread_mutex_t g_meta_lock  = PTHREAD_MUTEX_INITIALIZER;
@@ -46,41 +54,116 @@ static bool g_initialized = false;
 
 /* ─── Helpers ────────────────────────────────────────────── */
 
-static int find_agent(const char *task_id) {
-    for (int i = 0; i < g_agent_count; i++)
-        if (strcmp(g_reads[i].task_id, task_id) == 0)
-            return i;
+static fs_agent_t *find_agent(const char *task_id) {
+    if (!g_agents) return NULL;
+    hive_iter_t it;
+    hive_iter_begin(g_agents, &it);
+    fs_agent_t *a;
+    while (hive_iter_next(g_agents, &it, NULL, (void **)&a))
+        if (strcmp(a->task_id, task_id) == 0) return a;
+    return NULL;
+}
+
+static fs_agent_t *add_agent(const char *task_id) {
+    if (!g_agents) g_agents = hive_new(4);
+    fs_agent_t *a = calloc(1, sizeof(fs_agent_t));
+    if (!a) return NULL;
+    strncpy(a->task_id, task_id, sizeof(a->task_id) - 1);
+    a->task_id[sizeof(a->task_id) - 1] = '\0';
+    a->cap = 8;
+    a->paths  = malloc((size_t)a->cap * 256);
+    a->stamps = calloc((size_t)a->cap, sizeof(fs_read_stamp_t));
+    if (!a->paths || !a->stamps) {
+        free(a->paths); free(a->stamps); free(a);
+        return NULL;
+    }
+    bool ok = false;
+    hive_insert(g_agents, a, &ok);
+    if (!ok) { free(a->paths); free(a->stamps); free(a); return NULL; }
+    g_agent_count++;
+    return a;
+}
+
+static int find_agent_path(fs_agent_t *a, const char *path) {
+    for (int i = 0; i < a->count; i++)
+        if (strcmp(a->paths[i], path) == 0) return i;
     return -1;
 }
 
-static int add_agent(const char *task_id) {
-    if (g_agent_count >= FS_MAX_AGENTS) return -1;
-    int idx = g_agent_count++;
-    strncpy(g_reads[idx].task_id, task_id, sizeof(g_reads[idx].task_id) - 1);
-    g_reads[idx].task_id[sizeof(g_reads[idx].task_id) - 1] = '\0';
-    g_reads[idx].count = 0;
-    return idx;
+static void agent_grow(fs_agent_t *a) {
+    if (a->count < a->cap) return;
+    int ncap = a->cap * 2;
+    char (*np)[256] = realloc(a->paths, (size_t)ncap * 256);
+    fs_read_stamp_t *ns = realloc(a->stamps, (size_t)ncap * sizeof(fs_read_stamp_t));
+    if (!np || !ns) { free(np); free(ns); return; }  /* keep old on OOM */
+    a->paths = np;
+    a->stamps = ns;
+    a->cap = ncap;
 }
 
-static int find_agent_path(int agent_idx, const char *path) {
-    for (int i = 0; i < g_reads[agent_idx].count; i++)
-        if (strcmp(g_reads[agent_idx].paths[i], path) == 0)
-            return i;
-    return -1;
+static int agent_touch_path(fs_agent_t *a, const char *path) {
+    int pidx = find_agent_path(a, path);
+    if (pidx < 0) {
+        agent_grow(a);
+        if (a->count >= a->cap) return -1;   /* OOM: drop this read */
+        pidx = a->count;
+        strncpy(a->paths[pidx], path, sizeof(a->paths[pidx]) - 1);
+        a->paths[pidx][sizeof(a->paths[pidx]) - 1] = '\0';
+        a->count++;
+    }
+    return pidx;
 }
 
 static int find_writer(const char *path) {
     for (int i = 0; i < g_writers.count; i++)
-        if (strcmp(g_writers.paths[i], path) == 0)
-            return i;
+        if (strcmp(g_writers.paths[i], path) == 0) return i;
     return -1;
+}
+
+static void writers_grow(void) {
+    if (g_writers.count < g_writers.cap) return;
+    int ncap = g_writers.cap ? g_writers.cap * 2 : 8;
+    char (*np)[256] = realloc(g_writers.paths, (size_t)ncap * 256);
+    char (*nt)[64]  = realloc(g_writers.task_ids, (size_t)ncap * 64);
+    double *nts     = realloc(g_writers.timestamps, (size_t)ncap * sizeof(double));
+    if (!np || !nt || !nts) { free(np); free(nt); free(nts); return; }
+    g_writers.paths = np;
+    g_writers.task_ids = nt;
+    g_writers.timestamps = nts;
+    g_writers.cap = ncap;
+}
+
+static int writer_touch(const char *path, const char *task_id, double ts) {
+    int widx = find_writer(path);
+    if (widx < 0) {
+        writers_grow();
+        if (g_writers.count >= g_writers.cap) return -1;
+        widx = g_writers.count++;
+        strncpy(g_writers.paths[widx], path, sizeof(g_writers.paths[widx]) - 1);
+        g_writers.paths[widx][sizeof(g_writers.paths[widx]) - 1] = '\0';
+    }
+    strncpy(g_writers.task_ids[widx], task_id, sizeof(g_writers.task_ids[widx]) - 1);
+    g_writers.task_ids[widx][sizeof(g_writers.task_ids[widx]) - 1] = '\0';
+    g_writers.timestamps[widx] = ts;
+    return widx;
 }
 
 static int find_path_lock(const char *path) {
     for (int i = 0; i < g_path_locks.count; i++)
-        if (strcmp(g_path_locks.paths[i], path) == 0)
-            return i;
+        if (strcmp(g_path_locks.paths[i], path) == 0) return i;
     return -1;
+}
+
+static void path_locks_grow(void) {
+    if (g_path_locks.count < g_path_locks.cap) return;
+    int ncap = g_path_locks.cap ? g_path_locks.cap * 2 : 8;
+    char (*np)[256] = realloc(g_path_locks.paths, (size_t)ncap * 256);
+    pthread_mutex_t *nm = realloc(g_path_locks.mutexes,
+                                  (size_t)ncap * sizeof(pthread_mutex_t));
+    if (!np || !nm) { free(np); free(nm); return; }
+    g_path_locks.paths = np;
+    g_path_locks.mutexes = nm;
+    g_path_locks.cap = ncap;
 }
 
 static bool get_mtime(const char *path, double *out) {
@@ -94,18 +177,6 @@ static double now_ts(void) {
     struct timespec ts;
     clock_gettime(CLOCK_REALTIME, &ts);
     return (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
-}
-
-/* When an agent path array fills up, the NEXT add overwrites index 0
-   (oldest). No shift needed — linear scan means overwrite is fine.
-   This function exists for the principle of bounded growth but is a no-op
-   when count naturally stays <= MAX. */
-static void cap_agent_paths(int agent_idx) {
-    (void)agent_idx;
-}
-
-/* Same no-op logic as cap_agent_paths — writers use ring-buffer overwrite. */
-static void cap_writers(void) {
 }
 
 /* ─── Initialization ─────────────────────────────────────── */
@@ -130,28 +201,17 @@ void fs_record_read(const char *task_id, const char *path, bool partial, double 
 
     pthread_mutex_lock(&g_state_lock);
 
-    int aidx = find_agent(task_id);
-    if (aidx < 0) aidx = add_agent(task_id);
-    if (aidx < 0) { pthread_mutex_unlock(&g_state_lock); return; }
+    fs_agent_t *a = find_agent(task_id);
+    if (!a) a = add_agent(task_id);
+    if (!a) { pthread_mutex_unlock(&g_state_lock); return; }
 
-    int pidx = find_agent_path(aidx, path);
-    if (pidx < 0) {
-        pidx = g_reads[aidx].count;
-        if (pidx >= FS_MAX_PATHS_PER_AGENT) {
-            /* Replace oldest */
-            pidx = 0;
-        }
-        strncpy(g_reads[aidx].paths[pidx], path, sizeof(g_reads[aidx].paths[pidx]) - 1);
-        g_reads[aidx].paths[pidx][sizeof(g_reads[aidx].paths[pidx]) - 1] = '\0';
-        if (pidx == g_reads[aidx].count && g_reads[aidx].count < FS_MAX_PATHS_PER_AGENT)
-            g_reads[aidx].count++;
-    }
+    int pidx = agent_touch_path(a, path);
+    if (pidx < 0) { pthread_mutex_unlock(&g_state_lock); return; }
 
-    g_reads[aidx].stamps[pidx].mtime   = mtime;
-    g_reads[aidx].stamps[pidx].read_ts = ts;
-    g_reads[aidx].stamps[pidx].partial = partial;
+    a->stamps[pidx].mtime   = mtime;
+    a->stamps[pidx].read_ts = ts;
+    a->stamps[pidx].partial = partial;
 
-    cap_agent_paths(aidx);
     pthread_mutex_unlock(&g_state_lock);
 }
 
@@ -166,39 +226,20 @@ void fs_note_write(const char *task_id, const char *path, double mtime) {
     pthread_mutex_lock(&g_state_lock);
 
     /* Update global last-writer */
-    int widx = find_writer(path);
-    if (widx < 0) {
-        widx = g_writers.count;
-        if (widx >= FS_MAX_GLOBAL_WRITERS) widx = 0; /* overwrite oldest */
-        strncpy(g_writers.paths[widx], path, sizeof(g_writers.paths[widx]) - 1);
-        g_writers.paths[widx][sizeof(g_writers.paths[widx]) - 1] = '\0';
-        if (widx == g_writers.count && g_writers.count < FS_MAX_GLOBAL_WRITERS)
-            g_writers.count++;
-    }
-    strncpy(g_writers.task_ids[widx], task_id, sizeof(g_writers.task_ids[widx]) - 1);
-    g_writers.task_ids[widx][sizeof(g_writers.task_ids[widx]) - 1] = '\0';
-    g_writers.timestamps[widx] = ts;
+    writer_touch(path, task_id, ts);
 
     /* Writer's own read stamp is now up-to-date */
-    int aidx = find_agent(task_id);
-    if (aidx < 0) aidx = add_agent(task_id);
-    if (aidx >= 0) {
-        int pidx = find_agent_path(aidx, path);
-        if (pidx < 0) {
-            pidx = g_reads[aidx].count;
-            if (pidx >= FS_MAX_PATHS_PER_AGENT) pidx = 0;
-            strncpy(g_reads[aidx].paths[pidx], path, sizeof(g_reads[aidx].paths[pidx]) - 1);
-            g_reads[aidx].paths[pidx][sizeof(g_reads[aidx].paths[pidx]) - 1] = '\0';
-            if (pidx == g_reads[aidx].count && g_reads[aidx].count < FS_MAX_PATHS_PER_AGENT)
-                g_reads[aidx].count++;
+    fs_agent_t *a = find_agent(task_id);
+    if (!a) a = add_agent(task_id);
+    if (a) {
+        int pidx = agent_touch_path(a, path);
+        if (pidx >= 0) {
+            a->stamps[pidx].mtime   = mtime;
+            a->stamps[pidx].read_ts = ts;
+            a->stamps[pidx].partial = false;
         }
-        g_reads[aidx].stamps[pidx].mtime   = mtime;
-        g_reads[aidx].stamps[pidx].read_ts = ts;
-        g_reads[aidx].stamps[pidx].partial = false;
     }
 
-    cap_writers();
-    if (aidx >= 0) cap_agent_paths(aidx);
     pthread_mutex_unlock(&g_state_lock);
 }
 
@@ -207,8 +248,8 @@ char *fs_check_stale(const char *task_id, const char *path) {
 
     pthread_mutex_lock(&g_state_lock);
 
-    int aidx = find_agent(task_id);
-    int pidx = (aidx >= 0) ? find_agent_path(aidx, path) : -1;
+    fs_agent_t *a = find_agent(task_id);
+    int pidx = a ? find_agent_path(a, path) : -1;
     int widx = find_writer(path);
 
     /* Case: never read AND no writer record — net-new file */
@@ -229,8 +270,8 @@ char *fs_check_stale(const char *task_id, const char *path) {
     pthread_mutex_lock(&g_state_lock);
 
     /* Re-read after stat (state may have changed) */
-    aidx = find_agent(task_id);
-    pidx = (aidx >= 0) ? find_agent_path(aidx, path) : -1;
+    a = find_agent(task_id);
+    pidx = a ? find_agent_path(a, path) : -1;
     widx = find_writer(path);
 
     char *result = NULL;
@@ -240,7 +281,7 @@ char *fs_check_stale(const char *task_id, const char *path) {
         const char *writer_tid = g_writers.task_ids[widx];
         double writer_ts = g_writers.timestamps[widx];
         if (strcmp(writer_tid, task_id) != 0) {
-            double read_ts = g_reads[aidx].stamps[pidx].read_ts;
+            double read_ts = a->stamps[pidx].read_ts;
             if (writer_ts > read_ts) {
                 char buf[512];
                 snprintf(buf, sizeof(buf),
@@ -271,8 +312,8 @@ char *fs_check_stale(const char *task_id, const char *path) {
 
     /* Case 2: external/unknown modification (mtime drifted) */
     if (pidx >= 0) {
-        double read_mtime = g_reads[aidx].stamps[pidx].mtime;
-        bool partial = g_reads[aidx].stamps[pidx].partial;
+        double read_mtime = a->stamps[pidx].mtime;
+        bool partial = a->stamps[pidx].partial;
         if (current_mtime != read_mtime) {
             result = strdup(
                 "File was modified on disk since you last read it. "
@@ -309,13 +350,15 @@ void fs_lock_path(const char *path) {
 
     int idx = find_path_lock(path);
     if (idx < 0) {
-        idx = g_path_locks.count;
-        if (idx >= FS_MAX_GLOBAL_WRITERS) idx = 0; /* should not happen */
+        path_locks_grow();
+        if (g_path_locks.count >= g_path_locks.cap) {
+            pthread_mutex_unlock(&g_meta_lock);
+            return;   /* OOM: skip locking this path */
+        }
+        idx = g_path_locks.count++;
         strncpy(g_path_locks.paths[idx], path, sizeof(g_path_locks.paths[idx]) - 1);
         g_path_locks.paths[idx][sizeof(g_path_locks.paths[idx]) - 1] = '\0';
         pthread_mutex_init(&g_path_locks.mutexes[idx], NULL);
-        if (idx == g_path_locks.count && g_path_locks.count < FS_MAX_GLOBAL_WRITERS)
-            g_path_locks.count++;
     }
 
     pthread_mutex_t *lock = &g_path_locks.mutexes[idx];
@@ -379,10 +422,10 @@ void fs_known_reads(const char *task_id, char out[][256], int *out_count) {
 
     pthread_mutex_lock(&g_state_lock);
 
-    int aidx = find_agent(task_id);
-    if (aidx >= 0) {
-        for (int i = 0; i < g_reads[aidx].count; i++) {
-            strncpy(out[i], g_reads[aidx].paths[i], 255);
+    fs_agent_t *a = find_agent(task_id);
+    if (a) {
+        for (int i = 0; i < a->count; i++) {
+            strncpy(out[i], a->paths[i], 255);
             out[i][255] = '\0';
             (*out_count)++;
         }
@@ -393,6 +436,18 @@ void fs_known_reads(const char *task_id, char out[][256], int *out_count) {
 
 void fs_clear(void) {
     pthread_mutex_lock(&g_state_lock);
+    if (g_agents) {
+        hive_iter_t it;
+        hive_iter_begin(g_agents, &it);
+        hive_handle_t hnd;
+        fs_agent_t *a;
+        while (hive_iter_next(g_agents, &it, &hnd, (void **)&a)) {
+            free(a->paths);
+            free(a->stamps);
+            free(a);
+            hive_erase(g_agents, hnd);
+        }
+    }
     g_agent_count = 0;
     g_writers.count = 0;
     pthread_mutex_unlock(&g_state_lock);

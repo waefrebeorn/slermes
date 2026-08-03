@@ -67,7 +67,8 @@ typedef struct {
     bool    orchestrator;
 } delegate_child_t;
 
-static delegate_child_t g_children[MAX_CHILDREN];
+#include "hive.h"
+static hive_t *g_children = NULL;
 static int g_next_delegate_id = 1;
 static int g_max_concurrent_default = 3;
 static int g_max_spawn_depth_default = 1;
@@ -111,23 +112,35 @@ static const char *g_delegation_blocked_tools[] = {
 };
 
 static int find_free_child_slot(void) {
-    for (int i = 0; i < MAX_CHILDREN; i++)
-        if (g_children[i].session_id == 0) return i;
-    return -1;
+    /* With a hive there is no hard slot limit; return 1 when a spawn is
+     * allowed (capacity is governed by max_concurrent checks). */
+    if (!g_children) return 0;
+    return 0;
 }
 
-static int find_child_by_session(int session_id) {
-    for (int i = 0; i < MAX_CHILDREN; i++)
-        if (g_children[i].session_id == session_id) return i;
-    return -1;
+/* Find a child entry by session id; returns the heap entry or NULL. */
+static delegate_child_t *find_child_by_session(int session_id) {
+    if (!g_children || session_id <= 0) return NULL;
+    hive_iter_t it;
+    hive_iter_begin(g_children, &it);
+    hive_handle_t hnd;
+    delegate_child_t *c;
+    while (hive_iter_next(g_children, &it, &hnd, (void **)&c))
+        if (c->session_id == session_id) return c;
+    return NULL;
 }
 
 static void reap_children(void) {
-    for (int i = 0; i < MAX_CHILDREN; i++) {
-        if (g_children[i].session_id > 0 && g_children[i].running) {
+    if (!g_children) return;
+    hive_iter_t it;
+    hive_iter_begin(g_children, &it);
+    hive_handle_t hnd;
+    delegate_child_t *c;
+    while (hive_iter_next(g_children, &it, &hnd, (void **)&c)) {
+        if (c->session_id > 0 && c->running) {
             /* Check if child process would have completed (timeout) */
-            if (time(NULL) - g_children[i].start_time > g_children[i].child_max_turns * 2) {
-                g_children[i].running = false;
+            if (time(NULL) - c->start_time > c->child_max_turns * 2) {
+                c->running = false;
             }
         }
     }
@@ -149,18 +162,18 @@ static void delegate_start(const char *goal, const char *context, json_node_t *s
                            json_node_t *result) {
     reap_children();
 
-    int slot = find_free_child_slot();
-    if (slot < 0) {
-        json_object_set(result, "error", json_new_string("Max concurrent children reached"));
-        return;
-    }
+    if (!g_children) g_children = hive_new(8);
 
     if (!goal || !goal[0]) {
         json_object_set(result, "error", json_new_string("Missing goal"));
         return;
     }
 
-    delegate_child_t *child = &g_children[slot];
+    delegate_child_t *child = calloc(1, sizeof(delegate_child_t));
+    if (!child) {
+        json_object_set(result, "error", json_new_string("Out of memory"));
+        return;
+    }
     child->session_id = g_next_delegate_id++;
     snprintf(child->goal, sizeof(child->goal), "%s", goal);
     snprintf(child->context, sizeof(child->context), "%s", context ? context : "");
@@ -180,7 +193,7 @@ static void delegate_start(const char *goal, const char *context, json_node_t *s
                 const char *desc = json_get_str(st, "description", "");
                 if (!desc || !desc[0]) {
                     json_object_set(result, "error", json_new_string("Subtask missing description"));
-                    child->session_id = 0;
+                    free(child);
                     return;
                 }
             }
@@ -189,13 +202,24 @@ static void delegate_start(const char *goal, const char *context, json_node_t *s
 
     /* Count running children to enforce max_concurrent */
     int running_count = 0;
-    for (int i = 0; i < MAX_CHILDREN; i++) {
-        if (g_children[i].session_id > 0 && g_children[i].running)
-            running_count++;
+    if (g_children) {
+        hive_iter_t it;
+        hive_iter_begin(g_children, &it);
+        delegate_child_t *c;
+        while (hive_iter_next(g_children, &it, NULL, (void **)&c))
+            if (c->session_id > 0 && c->running) running_count++;
     }
     if (running_count >= child->max_concurrent) {
         json_object_set(result, "error", json_new_string("Max concurrent children reached"));
-        child->session_id = 0;
+        free(child);
+        return;
+    }
+
+    bool ok = false;
+    hive_insert(g_children, child, &ok);
+    if (!ok) {
+        json_object_set(result, "error", json_new_string("Out of memory"));
+        free(child);
         return;
     }
 
@@ -214,13 +238,12 @@ static void delegate_start(const char *goal, const char *context, json_node_t *s
 /* PoP: list_active_subagents @ src/tools/delegate.c:delegate_status */
 /* Port of Python tools/delegate_tool.py:list_active_subagents(). */
 static void delegate_status(int session_id, json_node_t *result) {
-    int slot = find_child_by_session(session_id);
-    if (slot < 0) {
+    delegate_child_t *child = find_child_by_session(session_id);
+    if (!child) {
         json_object_set(result, "error", json_new_string("Delegation not found"));
         return;
     }
 
-    delegate_child_t *child = &g_children[slot];
     json_object_set(result, "session_id", json_new_number((double)child->session_id));
     json_object_set(result, "goal", json_new_string(child->goal));
     json_object_set(result, "status", json_new_string(child->running ? "running" : "completed"));
@@ -233,13 +256,24 @@ static void delegate_status(int session_id, json_node_t *result) {
 /* PoP: delegate_kill @ tools/delegate_tool.py:kill */
 /* PoP: delegate_kill @ environments/base:kill */
 static void delegate_kill(int session_id, json_node_t *result) {
-    int slot = find_child_by_session(session_id);
-    if (slot < 0) {
+    if (!g_children) {
+        json_object_set(result, "error", json_new_string("Delegation not found"));
+        return;
+    }
+    /* find handle + entry */
+    hive_iter_t it;
+    hive_iter_begin(g_children, &it);
+    hive_handle_t hnd;
+    delegate_child_t *child = NULL;
+    while (hive_iter_next(g_children, &it, &hnd, (void **)&child)) {
+        if (child->session_id == session_id) break;
+        child = NULL;
+    }
+    if (!child) {
         json_object_set(result, "error", json_new_string("Delegation not found"));
         return;
     }
 
-    delegate_child_t *child = &g_children[slot];
     if (child->running) {
         child->running = false;
         json_object_set(result, "status", json_new_string("killed"));
@@ -254,16 +288,21 @@ static void delegate_kill(int session_id, json_node_t *result) {
 void delegate_list(json_node_t *result) {
     json_node_t *children = json_new_array();
     int count = 0;
-    for (int i = 0; i < MAX_CHILDREN; i++) {
-        if (g_children[i].session_id > 0) {
-            json_node_t *c = json_new_object();
-            json_object_set(c, "session_id", json_new_number((double)g_children[i].session_id));
-            json_object_set(c, "goal", json_new_string(g_children[i].goal));
-            json_object_set(c, "status", json_new_string(g_children[i].running ? "running" : "completed"));
-            json_object_set(c, "orchestrator", json_new_bool(g_children[i].orchestrator));
-            json_object_set(c, "elapsed_seconds", json_new_number((double)(time(NULL) - g_children[i].start_time)));
-            json_array_append(children, c);
-            count++;
+    if (g_children) {
+        hive_iter_t it;
+        hive_iter_begin(g_children, &it);
+        delegate_child_t *c;
+        while (hive_iter_next(g_children, &it, NULL, (void **)&c)) {
+            if (c->session_id > 0) {
+                json_node_t *entry = json_new_object();
+                json_object_set(entry, "session_id", json_new_number((double)c->session_id));
+                json_object_set(entry, "goal", json_new_string(c->goal));
+                json_object_set(entry, "status", json_new_string(c->running ? "running" : "completed"));
+                json_object_set(entry, "orchestrator", json_new_bool(c->orchestrator));
+                json_object_set(entry, "elapsed_seconds", json_new_number((double)(time(NULL) - c->start_time)));
+                json_array_append(children, entry);
+                count++;
+            }
         }
     }
     json_object_set(result, "children", children);
@@ -284,10 +323,15 @@ static void delegate_pause(bool paused, json_node_t *result) {
 /* Port of Python tools/delegate_tool.py:list_active_subagents(). */
 static void delegate_health(json_node_t *result) {
     int running = 0, completed = 0;
-    for (int i = 0; i < MAX_CHILDREN; i++) {
-        if (g_children[i].session_id > 0) {
-            if (g_children[i].running) running++;
-            else completed++;
+    if (g_children) {
+        hive_iter_t it;
+        hive_iter_begin(g_children, &it);
+        delegate_child_t *c;
+        while (hive_iter_next(g_children, &it, NULL, (void **)&c)) {
+            if (c->session_id > 0) {
+                if (c->running) running++;
+                else completed++;
+            }
         }
     }
     json_object_set(result, "status", json_new_string("healthy"));

@@ -204,10 +204,10 @@ static bool copy_dir_tree(const char *src, const char *dst)
     return ok;
 }
 
-/* ─── Session-scoped registry ────────────────────────────────────────── */
+/* ─── Session-scoped registry — hive-backed ─────────────────────────── */
 
-static credential_mount_t g_registry[CREDENTIAL_MAX_FILES];
-static int g_registry_count = 0;
+#include "hive.h"
+static hive_t *g_registry = NULL;
 
 /* Temp dir for symlink-safe skills copies */
 static char g_safe_tempdir[CREDENTIAL_MAX_PATH] = "";
@@ -239,21 +239,24 @@ bool register_credential_file(const char *relative_path,
              "%s/%s", container_base, relative_path);
 
     /* Check if already registered */
-    for (int i = 0; i < g_registry_count; i++) {
-        if (strcmp(g_registry[i].container_path, container_path) == 0)
-            return true;
+    if (g_registry) {
+        hive_iter_t it;
+        hive_iter_begin(g_registry, &it);
+        credential_mount_t *m;
+        while (hive_iter_next(g_registry, &it, NULL, (void **)&m)) {
+            if (strcmp(m->container_path, container_path) == 0)
+                return true;
+        }
     }
 
-    if (g_registry_count >= CREDENTIAL_MAX_FILES)
-        return false;
-
-    snprintf(g_registry[g_registry_count].host_path,
-             sizeof(g_registry[g_registry_count].host_path),
-             "%s", resolved);
-    snprintf(g_registry[g_registry_count].container_path,
-             sizeof(g_registry[g_registry_count].container_path),
-             "%s", container_path);
-    g_registry_count++;
+    if (!g_registry) g_registry = hive_new(8);
+    credential_mount_t *m = calloc(1, sizeof(credential_mount_t));
+    if (!m) return false;
+    snprintf(m->host_path, sizeof(m->host_path), "%s", resolved);
+    snprintf(m->container_path, sizeof(m->container_path), "%s", container_path);
+    bool ok = false;
+    hive_insert(g_registry, m, &ok);
+    if (!ok) { free(m); return false; }
     return true;
 }
 
@@ -282,11 +285,17 @@ int credential_get_mounts(credential_mount_t *mounts, int cap)
     if (!mounts || cap <= 0) return 0;
 
     int written = 0;
-    for (int i = 0; i < g_registry_count && written < cap; i++) {
-        /* Re-check existence */
-        if (file_exists(g_registry[i].host_path)) {
-            memcpy(&mounts[written], &g_registry[i], sizeof(credential_mount_t));
-            written++;
+    if (g_registry) {
+        hive_iter_t it;
+        hive_iter_begin(g_registry, &it);
+        credential_mount_t *m;
+        while (hive_iter_next(g_registry, &it, NULL, (void **)&m)) {
+            if (written >= cap) break;
+            /* Re-check existence */
+            if (file_exists(m->host_path)) {
+                memcpy(&mounts[written], m, sizeof(credential_mount_t));
+                written++;
+            }
         }
     }
     return written;
@@ -521,7 +530,16 @@ int iter_cache_files(const char *container_base,
 
 void credential_clear(void)
 {
-    g_registry_count = 0;
+    if (g_registry) {
+        hive_iter_t it;
+        hive_iter_begin(g_registry, &it);
+        hive_handle_t hnd;
+        credential_mount_t *m;
+        while (hive_iter_next(g_registry, &it, &hnd, (void **)&m)) {
+            free(m);
+            hive_erase(g_registry, hnd);
+        }
+    }
 }
 
 void credential_shutdown(void)
