@@ -12,7 +12,7 @@ import re as _re
 import sys
 from pathlib import Path
 
-WEB_SERVER = Path.home() / ".hermes/hermes-agent/hermes_cli/web_server.py"
+WEB_SERVER = Path("/home/wubu/hermes-agent-dev/hermes_cli/web_server.py")
 
 WANT_FUNCS = {
     "_is_sensitive_filename",

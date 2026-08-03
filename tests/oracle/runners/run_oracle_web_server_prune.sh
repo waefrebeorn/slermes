@@ -4,7 +4,7 @@
 set -uo pipefail
 cd "$(dirname "$0")/../../.."
 
-FIX=tests/oracle/fixtures/web_server_prune/cases.in
+FIX_GLOB=tests/oracle/fixtures/web_server_prune/cases_*.in
 HARNESS=/tmp/tt_wsprune
 ORACLE=tests/sta_oracle_web_server_prune.py
 
@@ -102,7 +102,7 @@ sys.exit(0 if c == p else 1)
     echo "  C : $(cat /tmp/wsprune_c.out)"
     echo "  Py: $(cat /tmp/wsprune_py.out)"
   fi
-done < "$FIX"
+done < <(cat $FIX_GLOB)
 rm -rf "$SBX"
 echo "=== web_server_prune oracle: $i cases, $fails failures ==="
 [ "$fails" -eq 0 ]

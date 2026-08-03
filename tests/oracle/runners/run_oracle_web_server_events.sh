@@ -3,7 +3,7 @@
 set -uo pipefail
 cd "$(dirname "$0")/../../.."
 
-FIX=tests/oracle/fixtures/web_server_events/cases.in
+FIX_GLOB=tests/oracle/fixtures/web_server_events/cases_*.in
 HARNESS=/tmp/tt_wse
 ORACLE=tests/sta_oracle_web_server_events.py
 
@@ -28,6 +28,6 @@ while IFS= read -r line; do
     echo "  C : $c_out"
     echo "  Py: $py_out"
   fi
-done < "$FIX"
+done < <(cat $FIX_GLOB)
 echo "=== web_server_events oracle: $i cases, $fails failures ==="
 [ "$fails" -eq 0 ]

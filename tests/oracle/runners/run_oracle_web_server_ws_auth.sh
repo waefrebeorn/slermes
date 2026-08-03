@@ -3,7 +3,7 @@
 set -uo pipefail
 cd "$(dirname "$0")/../../.."
 
-FIX=tests/oracle/fixtures/web_server_ws_auth/cases.in
+FIX_GLOB=tests/oracle/fixtures/web_server_ws_auth/cases_*.in
 HARNESS=/tmp/tt_wsauth
 ORACLE=tests/sta_oracle_web_server_ws_auth.py
 
@@ -36,6 +36,6 @@ sys.exit(0 if c == p else 1)
     echo "  C : $(cat /tmp/wsauth_c.out)"
     echo "  Py: $(cat /tmp/wsauth_py.out)"
   fi
-done < "$FIX"
+done < <(cat $FIX_GLOB)
 echo "=== web_server_ws_auth oracle: $i cases, $fails failures ==="
 [ "$fails" -eq 0 ]

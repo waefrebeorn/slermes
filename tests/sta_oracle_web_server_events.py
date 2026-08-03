@@ -9,7 +9,7 @@ import sys
 import urllib.parse
 from pathlib import Path
 
-WEB_SERVER = Path.home() / ".hermes/hermes-agent/hermes_cli/web_server.py"
+WEB_SERVER = Path("/home/wubu/hermes-agent-dev/hermes_cli/web_server.py")
 
 WANT_FUNCS = {"_ws_close_reason", "_resolve_client_ws_host",
               "_build_gateway_ws_url", "_build_sidecar_url"}

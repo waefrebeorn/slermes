@@ -7,7 +7,7 @@ import json
 import sys
 from pathlib import Path
 
-HERMES = Path.home() / ".hermes/hermes-agent"
+HERMES = Path("/home/wubu/hermes-agent-dev")  # live upstream tree (not the stale ~/.hermes/hermes-agent checkout)
 sys.path.insert(0, str(HERMES))
 from hermes_state import SessionDB  # noqa: E402
 

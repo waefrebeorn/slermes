@@ -6,7 +6,7 @@
 set -uo pipefail
 cd "$(dirname "$0")/../../.."
 
-FIX=tests/oracle/fixtures/web_server_sessions_admin/cases.in
+FIX_GLOB=tests/oracle/fixtures/web_server_sessions_admin/cases_*.in
 HARNESS=/tmp/tt_wssess
 ORACLE=tests/sta_oracle_web_server_sessions_admin.py
 
@@ -81,7 +81,7 @@ sys.exit(0 if c == p else 1)
     echo "  C : $(cat /tmp/wssess_c.out)"
     echo "  Py: $(cat /tmp/wssess_py.out)"
   fi
-done < "$FIX"
+done < <(cat $FIX_GLOB)
 rm -rf "$SBX"
 echo "=== web_server_sessions_admin oracle: $i cases, $fails failures ==="
 [ "$fails" -eq 0 ]

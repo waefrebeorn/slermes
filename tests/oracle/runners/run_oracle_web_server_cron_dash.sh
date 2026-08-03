@@ -4,7 +4,7 @@
 set -uo pipefail
 cd "$(dirname "$0")/../../.."
 
-FIX=tests/oracle/fixtures/web_server_cron_dash/cases.in
+FIX_GLOB=tests/oracle/fixtures/web_server_cron_dash/cases_*.in
 HARNESS=/tmp/tt_wscron
 ORACLE=tests/sta_oracle_web_server_cron_dash.py
 
@@ -45,7 +45,7 @@ sys.exit(0 if c == p else 1)
     echo "  C : $(cat /tmp/wscron_c.out)"
     echo "  Py: $(cat /tmp/wscron_py.out)"
   fi
-done < "$FIX"
+done < <(cat $FIX_GLOB)
 rm -rf "$SBX"
 echo "=== web_server_cron_dash oracle: $i cases, $fails failures ==="
 [ "$fails" -eq 0 ]

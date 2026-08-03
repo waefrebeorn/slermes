@@ -4,7 +4,7 @@
 set -uo pipefail
 cd "$(dirname "$0")/../../.."
 
-FIX=tests/oracle/fixtures/web_server_chat_argv/cases.in
+FIX_GLOB=tests/oracle/fixtures/web_server_chat_argv/cases_*.in
 HARNESS=/tmp/tt_wschat
 ORACLE=tests/sta_oracle_web_server_chat_argv.py
 
@@ -48,7 +48,7 @@ while IFS= read -r line; do
   [ -z "$line" ] && continue
   i=$((i+1))
   case "$line" in
-    *'"op":"profile_dir"'*) line="${line%\}},\"home\":\"$SBX/home\"}" ;;
+    *'"op": "profile_dir"'*|*'"op":"profile_dir"'*) line="${line%\}},\"home\":\"$SBX/home\"}" ;;
   esac
   printf '%s' "${line//@DB@/$DB}" > /tmp/wschat_case.json
   "$HARNESS" /tmp/wschat_case.json > /tmp/wschat_c.out 2>/dev/null
@@ -69,7 +69,7 @@ sys.exit(0 if c == p else 1)
     echo "  C : $(cat /tmp/wschat_c.out)"
     echo "  Py: $(cat /tmp/wschat_py.out)"
   fi
-done < "$FIX"
+done < <(cat $FIX_GLOB)
 rm -rf "$SBX"
 echo "=== web_server_chat_argv oracle: $i cases, $fails failures ==="
 [ "$fails" -eq 0 ]

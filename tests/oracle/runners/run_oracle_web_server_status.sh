@@ -6,7 +6,7 @@ set -uo pipefail
 cd "$(dirname "$0")/../../.."
 ROOT="$(pwd)"
 FIXDIR="$ROOT/tests/oracle/fixtures/web_server_status"
-CASES="$FIXDIR/cases.in"
+CASES_GLOB="$FIXDIR"/cases_*.in
 HARNESS="/tmp/tt_wss"
 PYORACLE="$ROOT/tests/sta_oracle_web_server_status.py"
 TMPD="$(mktemp -d /tmp/wss_oracle.XXXXXX)"
@@ -75,7 +75,7 @@ PY
         echo "  PY: $(cat "$py_out")"
     fi
     total=$((total+1))
-done < "$CASES"
+done < <(cat $CASES_GLOB)
 
 rm -rf "$TMPD"
 echo "=== web_server_status oracle: $total cases, $failures failures ==="

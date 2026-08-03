@@ -9,7 +9,7 @@ import sys
 import types
 from pathlib import Path
 
-HERMES = Path.home() / ".hermes/hermes-agent"
+HERMES = Path("/home/wubu/hermes-agent-dev")  # live upstream tree
 WEB_SERVER = HERMES / "hermes_cli/web_server.py"
 
 WANT = {

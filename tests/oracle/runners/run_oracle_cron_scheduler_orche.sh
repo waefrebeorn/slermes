@@ -11,13 +11,26 @@ set -uo pipefail
 cd "$(dirname "$0")/../../.."   # slermes root
 ROOT="$(pwd)"
 FIXDIR="$ROOT/tests/oracle/fixtures/cron_scheduler_orche"
-CASES="$FIXDIR/cases.in"
+# Fixtures are split as cases_01.in..cases_NN.in; concatenate them in
+# order into a single stream (each line is one case JSON).
+CASES_GLOB="$FIXDIR"/cases_*.in
 HARNESS="/tmp/tt_cronorchestr"
 PYORACLE="$ROOT/tests/sta_oracle_cron_scheduler_orchestr.py"
 TMPD="$(mktemp -d /tmp/cronoracle.XXXXXX)"
 
-[ -x "$HARNESS" ] || { echo "MISSING harness $HARNESS (build it first)"; exit 2; }
+[ -x "$HARNESS" ] || {
+  # Build the C harness (mirrors the link in build/objects.mk CRON_OBJ).
+  gcc -std=c11 -O2 -g -I include -I src -I lib -I lib/libjson -I lib/libhive \
+    tests/t_port_cron_scheduler_orchestr.c \
+    src/cron/port_cron_scheduler_runtime_impl.o src/cron/port_cron_scheduler_delivery.o \
+    src/cron/port_cron_jobs.o src/cron/port_cron_scheduler_helpers.o \
+    src/cron/scheduler.o src/cron/jobs.o \
+    lib/libjson/json.o lib/libhive/hive.o lib/libdatetime/datetime.o \
+    -o "$HARNESS" -lm -lpthread \
+    || { echo "C harness build failed"; exit 3; }
+}
 [ -f "$PYORACLE" ] || { echo "MISSING $PYORACLE"; exit 2; }
+ls $CASES_GLOB >/dev/null 2>&1 || { echo "MISSING $CASES_GLOB"; exit 2; }
 
 # Ensure the oracle python can import cron.scheduler
 export PYTHONPATH="/home/wubu/.hermes/hermes-agent:${PYTHONPATH:-}"
@@ -59,7 +72,7 @@ PY
         echo "  C:   $(cat "$c_out")"
         echo "  PY:  $(cat "$py_out")"
     fi
-done < "$CASES"
+done < <(cat $CASES_GLOB)
 
 rm -rf "$TMPD"
 echo "=== cron scheduler orchestration oracle: $total cases, $failures failures ==="

@@ -4,7 +4,7 @@
 set -uo pipefail
 cd "$(dirname "$0")/../../.."
 
-FIX=tests/oracle/fixtures/web_git_base/cases.in
+FIX_GLOB=tests/oracle/fixtures/web_git_base/cases_*.in
 HARNESS=/tmp/tt_wgb
 ORACLE=tests/sta_oracle_web_git_base.py
 
@@ -46,7 +46,7 @@ while IFS= read -r line; do
     echo "  C : $c_out"
     echo "  Py: $py_out"
   fi
-done < "$FIX"
+done < <(cat $FIX_GLOB)
 rm -rf "$SBX"
 echo "=== web_git_base oracle: $i cases, $fails failures ==="
 [ "$fails" -eq 0 ]

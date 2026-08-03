@@ -423,34 +423,21 @@ json_t *ws_prune_endpoint(const char *db_path, const json_t *body) {
         if (nr > 0) {
             json_t *first = json_get(rows, 0);
             json_t *last = json_get(rows, nr - 1);
-            json_set(out, "oldest_last_active",
-                     json_copy(json_object_get(first, "last_active")));
-            json_set(out, "newest_last_active",
-                     json_copy(json_object_get(last, "last_active")));
-            double mn = 0, mx = 0;
-            for (size_t i = 0; i < nr; i++) {
-                json_t *r = json_get(rows, i);
-                json_t *sv = json_object_get(r, "started_at");
-                double v = sv && sv->type == JSON_NUMBER ? sv->num_val : 0;
-                if (i == 0 || v < mn) mn = v;
-                if (i == 0 || v > mx) mx = v;
-            }
-            json_set(out, "oldest_started_at", json_number(mn));
-            json_set(out, "newest_started_at", json_number(mx));
+            json_set(out, "oldest_started_at",
+                     json_copy(json_object_get(first, "started_at")));
+            json_set(out, "newest_started_at",
+                     json_copy(json_object_get(last, "started_at")));
         } else {
-            json_set(out, "oldest_last_active", json_null());
-            json_set(out, "newest_last_active", json_null());
             json_set(out, "oldest_started_at", json_null());
             json_set(out, "newest_started_at", json_null());
         }
         json_t *sessions = json_array();
         static const char *keep[] = {"id", "source", "title", "model",
-                                     "started_at", "last_active",
-                                     "message_count"};
+                                         "started_at", "message_count"};
         for (size_t i = 0; i < nr; i++) {
             json_t *r = json_get(rows, i);
             json_t *slim = json_object();
-            for (int k = 0; k < 7; k++) {
+            for (int k = 0; k < 6; k++) {
                 json_t *v = json_object_get(r, keep[k]);
                 json_set(slim, keep[k], v ? json_copy(v) : json_null());
             }

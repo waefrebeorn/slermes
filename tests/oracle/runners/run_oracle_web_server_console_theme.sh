@@ -4,7 +4,7 @@
 set -uo pipefail
 cd "$(dirname "$0")/../../.."
 
-FIX=tests/oracle/fixtures/web_server_console_theme/cases.in
+FIX_GLOB=tests/oracle/fixtures/web_server_console_theme/cases_*.in
 HARNESS=/tmp/tt_wsct
 ORACLE=tests/sta_oracle_web_server_console_theme.py
 
@@ -76,7 +76,7 @@ sys.exit(0 if c == p else 1)
     echo "  C : $(tr -d ' \n' < /tmp/wsct_c.out)"
     echo "  Py: $(tr -d ' \n' < /tmp/wsct_py.out)"
   fi
-done < "$FIX"
+done < <(cat $FIX_GLOB)
 rm -rf "$SBX"
 echo "=== web_server_console_theme oracle: $i cases, $fails failures ==="
 [ "$fails" -eq 0 ]

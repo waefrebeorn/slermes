@@ -5,7 +5,7 @@ import json
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path.home() / ".hermes/hermes-agent"))
+sys.path.insert(0, str(Path("/home/wubu/hermes-agent-dev")  # live upstream tree))
 from hermes_cli import web_git  # noqa: E402
 
 

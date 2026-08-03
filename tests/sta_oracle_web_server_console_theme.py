@@ -11,7 +11,7 @@ import json
 import sys
 from pathlib import Path
 
-WEB_SERVER = Path.home() / ".hermes/hermes-agent/hermes_cli/web_server.py"
+WEB_SERVER = Path("/home/wubu/hermes-agent-dev/hermes_cli/web_server.py")
 
 WANT_FUNCS = {
     "_console_json_payload", "_console_send", "_console_send_result",
