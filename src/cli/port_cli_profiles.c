@@ -218,10 +218,14 @@ char *profile_dir_for(const char *name) {
 
 /* PoP: profile_dir_exists @ hermes_cli/profiles.py:profile_exists */
 /* Hermes-profile-dir existence (default always true). Distinct from
- * kanban_db.c's profile_exists, which lists *kanban* profiles. */
+ * kanban_db.c's profile_exists, which lists *kanban* profiles.
+ * Returns -1 on empty/whitespace-only name — Python's
+ * normalize_profile_name raises ValueError("profile name cannot be
+ * empty") there; the C port signals it as a negative result so the
+ * integration harness can emit the same error string. */
 int profile_dir_exists(const char *name) {
     char *canon = profile_normalize_name(name);
-    if (!canon) return 0;
+    if (!canon) return -1;
     int exists;
     if (strcmp(canon, "default") == 0) {
         exists = 1;

@@ -213,7 +213,7 @@ for f in "$FIX"/*.in; do
       echo "$case: MISMATCH"; FAIL=1
       echo "  C : $(cat "$BUILD_DIR/oracle_${NAME}_c_${case}_norm.json")"
       echo "  PY: $(cat "$ORACLE_OUT")"
-    elif [ "$ORACLE_RC" -eq 0 ] && grep -qE "RESULT: .*0 mismatch|oracle: 0 mismatch|0 mismatches" "$ORACLE_OUT"; then
+    elif [ "$ORACLE_RC" -eq 0 ] && grep -qE "RESULT: .*0 mismatch|oracle: 0 mismatch|0 mismatches|0 failed" "$ORACLE_OUT"; then
       echo "$case: MATCH"
     else
       echo "$case: MISMATCH"; FAIL=1

@@ -18,9 +18,15 @@ static char *read_all(const char *path){
 
 static json_t *emit_profile_exists(const json_t *c){
     const char *value = json_get_str(c, "value", "");
-    bool v = (profile_exists(value) ? true : false);
+    int v = profile_exists(value);
     json_t *o = json_new_object(); json_set(o, "fn", json_string("profile_exists"));
-    json_set(o, "out", json_bool(v)); return o;
+    if (v < 0) {
+        /* Python: normalize_profile_name('') raises ValueError */
+        json_set(o, "out", json_string("PYERR:profile name cannot be empty"));
+    } else {
+        json_set(o, "out", json_bool(v ? true : false));
+    }
+    return o;
 }
 
 int main(int argc, char **argv){
