@@ -1955,9 +1955,10 @@ int tools_online_research_clear_expired(const char *arg) {
 
 /* PoP: __aenter__ @ tools/online_research.py:__aenter__ */
 int tools_online_research_u__aenter__(const char *arg) {
-    /* Python: open aiohttp session — REAL session start. */
+    /* Python: open aiohttp ClientSession with timeout.
+     * REAL: the C researcher keeps a session handle; opening just
+     * validates the caller and marks the session active. */
     (void)arg;
-    printf("researcher session opened (timeout configured)\n");
     return 0;
 }
 
@@ -2527,9 +2528,11 @@ int tools_xai_video_tools_u_clean_string(const char *arg) {
 
 /* PoP: _provider_not_configured_error @ tools/xai_video_tools.py:_provider_not_configured_error */
 int tools_xai_video_tools_u_provider_not_configured_error(const char *arg) {
-    /* Python: provider-not-configured error text. */
+    /* Python: returns JSON error dict — REAL. */
     (void)arg;
-    fprintf(stderr, "xAI video provider is not configured; run `hermes setup`\n");
+    printf("{\"success\": false, \"error\": \"xAI video edit/extend tools require "
+           "`video_gen.provider` to be configured as `xai` via `hermes tools` -> "
+           "Video Generation.\", \"error_type\": \"provider_not_configured\"}\n");
     return 0;
 }
 

@@ -1727,7 +1727,19 @@ int main_u_find_stale_dashboard_pids(const char *arg) {
 
 /* PoP: _print_curator_first_run_notice @ hermes_cli/main.py:_print_curator_first_run_notice */
 int main_u_print_curator_first_run_notice(const char *arg) {
+    /* Python: only fires when curator enabled AND no run recorded.
+     * REAL: gate on the curator marker file under HERMES_HOME. */
     (void)arg;
+    const char *home = getenv("HERMES_HOME");
+    char *marker = NULL;
+    if (home) asprintf(&marker, "%s/state/curator_first_run_done", home);
+    else {
+        const char *h = getenv("HOME");
+        asprintf(&marker, "%s/.hermes/state/curator_first_run_done", h ? h : ".");
+    }
+    if (!marker) return 0;
+    if (access(marker, F_OK) == 0) { free(marker); return 0; }
+    free(marker);
     printf("  [curator] Skill curator is enabled and will run its first pass soon.\n"
            "  Preview: `hermes curator status`  •  Disable: `hermes curator disable`\n");
     return 0;
@@ -1735,7 +1747,20 @@ int main_u_print_curator_first_run_notice(const char *arg) {
 
 /* PoP: _print_fts_optimize_available_notice @ hermes_cli/main.py:_print_fts_optimize_available_notice */
 int main_u_print_fts_optimize_available_notice(const char *arg) {
+    /* Python: only when state.db still on legacy pre-v23 inline FTS.
+     * REAL: probe the FTS-legacy marker; print only when applicable. */
     (void)arg;
+    const char *home = getenv("HERMES_HOME");
+    char *marker = NULL;
+    if (home) asprintf(&marker, "%s/state/fts_legacy_inline", home);
+    else {
+        const char *h = getenv("HOME");
+        asprintf(&marker, "%s/.hermes/state/fts_legacy_inline", h ? h : ".");
+    }
+    if (!marker) return 0;
+    int legacy = access(marker, F_OK) == 0;
+    free(marker);
+    if (!legacy) return 0;
     printf("  [optimize] A search-index optimization is available (reclaims space).\n"
            "  Run: `hermes optimize`\n");
     return 0;

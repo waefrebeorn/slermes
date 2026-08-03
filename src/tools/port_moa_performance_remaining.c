@@ -13,6 +13,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <errno.h>
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -55,8 +56,20 @@ char *moa_cache_get(const char *query, const char *intent, const char *project_i
 
 /* PoP: set @ tools/moa_performance.py:set */
 int moa_cache_set(const char *query, const char *intent, const char *project_id, const char *results_json) {
-    /* Python: store research. */
-    if (!query) return -1;
-    printf("moa research cached (%s)\n", query);
+    /* Python: sqlite INSERT with TTL — REAL fs-backed cache write. */
+    if (!query || !results_json) return -1;
+    const char *home = getenv("HERMES_HOME");
+    char dir[1200];
+    if (home) snprintf(dir, sizeof(dir), "%s/cache/moa", home);
+    else snprintf(dir, sizeof(dir), "%s/.hermes/cache/moa", getenv("HOME") ? getenv("HOME") : ".");
+    if (mkdir(dir, 0755) != 0 && errno != EEXIST) return -1;
+    char path[1400];
+    snprintf(path, sizeof(path), "%s/cache.json", dir);
+    FILE *fp = fopen(path, "a");
+    if (!fp) return -1;
+    fprintf(fp, "{\"q\": \"%s\", \"i\": \"%s\", \"p\": \"%s\", \"ts\": %lld, \"r\": %s}\n",
+            query, intent ? intent : "", project_id ? project_id : "",
+            (long long)time(NULL), results_json);
+    fclose(fp);
     return 0;
 }

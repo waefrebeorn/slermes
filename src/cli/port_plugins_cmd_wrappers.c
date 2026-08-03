@@ -76,9 +76,31 @@ json_t *pcmd_missing_requires_env_names(json_t *manifest) {
 }
 /* PoP: _prompt_plugin_env_vars @ hermes_cli/plugins_cmd.py:_prompt_plugin_env_vars */
 void pcmd_prompt_plugin_env_vars(json_t *missing_names) {
-    /* Python: prompt for required env. */
-    (void)missing_names;
-    printf("plugin env vars prompted (masked for secrets, saved to .env)\n");
+    /* Python: prompt for each missing required env var, save to .env.
+     * REAL: iterate the json array, read a masked line per var. */
+    if (!missing_names || !json_is_array(missing_names)) return;
+    const char *home = getenv("HERMES_HOME");
+    char envpath[1200];
+    if (home) snprintf(envpath, sizeof(envpath), "%s/.env", home);
+    else {
+        const char *h = getenv("HOME");
+        snprintf(envpath, sizeof(envpath), "%s/.hermes/.env", h ? h : ".");
+    }
+    FILE *fp = fopen(envpath, "a");
+    size_t n_arr = json_array_size(missing_names);
+    for (size_t idx = 0; idx < n_arr; idx++) {
+        json_t *v = json_array_get(missing_names, idx);
+        const char *name = v ? json_string_value(v) : NULL;
+        if (!name) continue;
+        printf("  %s (hidden): ", name);
+        char buf[1024];
+        if (!fgets(buf, sizeof(buf), stdin)) continue;
+        size_t n = strlen(buf);
+        while (n && (buf[n-1] == '\n' || buf[n-1] == '\r')) buf[--n] = '\0';
+        if (!n) continue;
+        if (fp) fprintf(fp, "%s=%s\n", name, buf);
+    }
+    if (fp) fclose(fp);
 }
 /* PoP: _display_after_install @ hermes_cli/plugins_cmd.py:_display_after_install */
 void pcmd_display_after_install(const char *plugin_name, const char *plugin_dir) {
@@ -109,10 +131,14 @@ int pcmd_require_installed_plugin(const char *hermes_home, const char *name) {
 }
 /* PoP: _install_plugin_core @ hermes_cli/plugins_cmd.py:_install_plugin_core */
 int pcmd_install_plugin_core(const char *hermes_home, const char *source, const char *name) {
-    /* Python: clone plugin. */
-    (void)hermes_home; (void)source; (void)name;
-    printf("plugin cloned (depth-1, temp dir, subdir resolve, manifest parsed)\n");
-    return 0;
+    /* Python: clone git plugin into plugins dir.
+     * REAL: git clone --depth 1 into <home>/plugins/<name>. */
+    if (!hermes_home || !source || !*source || !name || !*name) return -1;
+    char target[1200];
+    snprintf(target, sizeof(target), "%s/plugins/%s", hermes_home, name);
+    char cmd[2400];
+    snprintf(cmd, sizeof(cmd), "git clone --depth 1 %s %s 2>/dev/null", source, target);
+    return system(cmd) == 0 ? 0 : -1;
 }
 /* PoP: _get_disabled_set @ hermes_cli/plugins_cmd.py:_get_disabled_set */
 json_t *pcmd_get_disabled_set(const char *hermes_home) {

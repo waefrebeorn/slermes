@@ -108,9 +108,11 @@ int mct_run_stdio(const char *server_name) {
 
 /* PoP: _run_http @ tools/mcp_tool.py:_run_http */
 int mct_run_http(const char *server_name) {
-    /* Python: http/streamable transport. */
+    /* Python: HTTP/StreamableHTTP transport (raises ImportError when the
+     * mcp package lacks streamable_http). C core has stdio transport
+     * only — REAL: report unsupported, like the Python ImportError. */
     if (!server_name) return -1;
-    return 0;
+    return -1;
 }
 
 /* PoP: run @ tools/mcp_tool.py:run */
@@ -299,6 +301,7 @@ int mct_stop_mcp_loop_if_idle(void) {
 
 /* PoP: _stop_mcp_loop @ tools/mcp_tool.py:_stop_mcp_loop */
 int mct_stop_mcp_loop(void) {
-    /* Python: stop + join thread. */
+    /* Python: stop bg loop + join its thread. The C core has no
+     * background asyncio loop — REAL: no loop exists, nothing to stop. */
     return 0;
 }

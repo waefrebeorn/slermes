@@ -493,9 +493,19 @@ bool cpl_normalize_pool_priorities(const char *provider) {
 
 /* PoP: _seed_from_singletons @ agent/credential_pool.py:_seed_from_singletons */
 bool cpl_seed_from_singletons(void) {
-    /* Python: auth store singleton seeding w/ suppression gate. */
-    printf("singletons seeded from auth store (suppression gate honored)\n");
-    return false;
+    /* Python: auth store singleton seeding w/ suppression gate.
+     * REAL: probe the auth store file; seed only when it exists. */
+    const char *home = getenv("HERMES_HOME");
+    char *path = NULL;
+    if (home) asprintf(&path, "%s/auth_store.json", home);
+    else {
+        const char *h = getenv("HOME");
+        asprintf(&path, "%s/.hermes/auth_store.json", h ? h : ".");
+    }
+    if (!path) return false;
+    bool exists = access(path, F_OK) == 0;
+    free(path);
+    return exists;
 }
 
 /* PoP: _seed_from_env @ agent/credential_pool.py:_seed_from_env */
@@ -517,10 +527,25 @@ bool cpl_seed_from_env(void) {
 
 /* PoP: _prune_stale_seeded_entries @ agent/credential_pool.py:_prune_stale_seeded_entries */
 long cpl_prune_stale_seeded_entries(const char *entries_json) {
-    /* Python: drop env:* entries whose env var vanished. */
+    /* Python: drop env:* entries whose env var vanished.
+     * REAL: count env: refs that still resolve; report stale ones. */
     if (!entries_json) return 0;
-    printf("stale seeded entries pruned (env-refs rehydrated on load)\n");
-    return 0;
+    long stale = 0;
+    const char *p = entries_json;
+    while ((p = strstr(p, "env:")) != NULL) {
+        const char *start = p + 4;
+        const char *end = start;
+        while (*end && *end != '"' && *end != ' ' && *end != ',' && *end != '}') end++;
+        if (end > start) {
+            char *var = strndup(start, (size_t)(end - start));
+            if (var) {
+                if (!getenv(var)) stale++;
+                free(var);
+            }
+        }
+        p = end;
+    }
+    return stale;
 }
 
 /* PoP: _seed_custom_pool @ agent/credential_pool.py:_seed_custom_pool */

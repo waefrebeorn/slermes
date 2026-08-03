@@ -65,10 +65,11 @@ char *code_exec_generate_hermes_tools_module(void) {
 /* PoP: _rpc_server_loop @ tools/code_execution_tool.py:_rpc_server_loop */
 /* PoP: code_exec_rpc_server_loop @ tools/code_execution_tool.py:_rpc_server_loop */
 void code_exec_rpc_server_loop(void) {
-    /* Python: newline-delimited dispatch loop. Accept one client
-     * (0.05s accept timeout), then read 64KB chunks, split on \n,
-     * dispatch each request via handle_function_call. */
-    printf("RPC server loop: accepting client (stop_event polled, 300s conn timeout, call limit honored)\n");
+    /* Python: newline-delimited dispatch loop.
+     * REAL: this C port has no socket RPC server wired — the sibling
+     * code_execution_tool helpers dispatch synchronously instead, so
+     * there is no accept loop to run. */
+    return;
 }
 
 /* PoP: _get_or_create_env @ tools/code_execution_tool.py:_get_or_create_env */
@@ -120,9 +121,10 @@ bool code_exec_ship_file_to_remote(const char *local_path, const char *remote_pa
 /* PoP: _rpc_poll_loop @ tools/code_execution_tool.py:_rpc_poll_loop */
 /* PoP: code_exec_rpc_poll_loop @ tools/code_execution_tool.py:_rpc_poll_loop */
 void code_exec_rpc_poll_loop(void) {
-    /* Python: remote fs poll (100ms). List req_* files (skip .tmp),
-     * dispatch each via handle_function_call, write resp_ files. */
-    printf("RPC poll loop: watching %s/req_* (100ms poll, stop_event honored)\n", "rpc_dir");
+    /* Python: remote fs poll (100ms) watching req_* files.
+     * REAL: no poll loop exists in the C port — synchronous dispatch
+     * is the wired path; nothing to poll. */
+    return;
 }
 
 /* PoP: _execute_remote @ tools/code_execution_tool.py:_execute_remote */

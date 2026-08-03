@@ -207,9 +207,38 @@ int stp_setup_telegram(void) {
 
 /* PoP: _setup_bluebubbles @ hermes_cli/setup.py:_setup_bluebubbles */
 int stp_setup_bluebubbles(void) {
-    /* Python: bluebubbles setup (imessage gateway). */
+    /* Python: prompt for BLUEBUBBLES_SERVER_URL + api key, write .env.
+     * REAL: read the url and append to .env (skip if already set). */
+    const char *home = getenv("HERMES_HOME");
+    char envpath[1200];
+    if (home) snprintf(envpath, sizeof(envpath), "%s/.env", home);
+    else {
+        const char *h = getenv("HOME");
+        snprintf(envpath, sizeof(envpath), "%s/.hermes/.env", h ? h : ".");
+    }
+    if (getenv("BLUEBUBBLES_SERVER_URL")) {
+        printf("BlueBubbles already configured\n");
+        return 0;
+    }
     printf("  BlueBubbles server URL: ");
-    return 0;
+    char url[1024];
+    if (!fgets(url, sizeof(url), stdin)) return 0;
+    size_t n = strlen(url);
+    while (n && (url[n-1] == '\n' || url[n-1] == '\r')) url[--n] = '\0';
+    if (!n) return 0;
+    printf("  BlueBubbles API key (hidden): ");
+    char key[1024];
+    if (!fgets(key, sizeof(key), stdin)) return 0;
+    n = strlen(key);
+    while (n && (key[n-1] == '\n' || key[n-1] == '\r')) key[--n] = '\0';
+    FILE *fp = fopen(envpath, "a");
+    if (fp) {
+        fprintf(fp, "BLUEBUBBLES_SERVER_URL=%s\n", url);
+        if (n) fprintf(fp, "BLUEBUBBLES_API_KEY=%s\n", key);
+        fclose(fp);
+        return 0;
+    }
+    return -1;
 }
 
 /* PoP: _setup_qqbot @ hermes_cli/setup.py:_setup_qqbot */
