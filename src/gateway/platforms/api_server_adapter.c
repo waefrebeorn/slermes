@@ -435,8 +435,10 @@ bool api_server_adapter_connect(api_server_adapter_t *adapter) {
         addr.sin_family = AF_INET;
         addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
         addr.sin_port = htons(adapter->port);
+/* PoP: connect @ gateway/platforms/api_server.py:connect */
         if (connect(sock, (struct sockaddr *)&addr, sizeof(addr)) == 0) {
             fprintf(stderr, "[api-server-adapter] Port %d already in use\n", adapter->port);
+/* PoP: close @ gateway/platforms/api_server.py:close */
             close(sock);
             return false;
         }
@@ -476,6 +478,7 @@ gw_send_result_t api_server_adapter_send(
     const json_t *metadata
 ) {
     (void)adapter; (void)chat_id; (void)content; (void)reply_to; (void)metadata;
+/* PoP: send @ gateway/platforms/api_server.py:send */
     gw_send_result_t result = {false, "API server uses HTTP request/response, not send()"};
     return result;
 }

@@ -249,6 +249,7 @@ static bool mirror_append_to_db(const char *session_id, json_node_t *message) {
  *  or error occurred. All errors are caught — this is never fatal.
  * ================================================================ */
 
+/* PoP: mirror_to_session @ gateway/mirror.py:mirror_to_session */
 bool mirror_to_session(const char *platform,
                         const char *chat_id,
                         const char *message_text,

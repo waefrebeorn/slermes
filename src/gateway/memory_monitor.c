@@ -29,6 +29,7 @@
  * Port of Python gateway/memory_monitor.py _get_rss_mb().
  * AG26: Port of Python gateway/memory_monitor.py:_get_rss_mb().
  * Returns RSS in MB, or 0 if unavailable. */
+/* PoP: _get_rss_mb @ gateway/memory_monitor.py:_get_rss_mb */
 int get_rss_mb(void) {
     FILE *f = fopen("/proc/self/statm", "r");
     if (!f) return 0;
@@ -64,6 +65,7 @@ bool gw_memory_monitor_is_running(void) {
  * Port of Python gateway/memory_monitor.py log_memory_usage().
  * AG26: Port of Python gateway/memory_monitor.py:log_memory_usage().
  */
+/* PoP: log_memory_usage @ gateway/memory_monitor.py:log_memory_usage */
 void log_memory_usage(const char *prefix) {
     int rss = get_rss_mb();
     if (rss > 0) {
@@ -97,6 +99,7 @@ static void *memory_monitor_loop(void *arg) {
  * Port of Python start_memory_monitoring().
  * AG26: Port of Python gateway/memory_monitor.py:start_memory_monitoring().
  */
+/* PoP: start_memory_monitoring @ gateway/memory_monitor.py:start_memory_monitoring */
 bool start_memory_monitoring(double interval_seconds) {
     pthread_mutex_lock(&g_memory_monitor_mutex);
     if (g_memory_monitor_running) { pthread_mutex_unlock(&g_memory_monitor_mutex); return false; }

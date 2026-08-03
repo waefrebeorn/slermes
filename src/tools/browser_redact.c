@@ -30,6 +30,7 @@
 #include <ctype.h>
 
 /* ---- token masking (mirrors agent.redact._mask_token -> mask_secret) ---- */
+/* PoP: _mask_token @ agent/redact.py:_mask_token */
 static char *mask_token(const char *tok)
 {
     if (!tok || !*tok) return strdup("***");

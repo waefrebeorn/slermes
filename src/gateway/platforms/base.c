@@ -111,6 +111,7 @@ char *gw_prefix_within_utf16_limit(const char *s, size_t limit) {
 }
 
 /* Port of Python: _custom_unit_to_cp */
+/* PoP: _custom_unit_to_cp @ gateway/platforms/base.py:_custom_unit_to_cp */
 int custom_unit_to_cp(const char *s, int len, int budget,
                        int (*len_fn)(const char *, int)) {
     if (!s || len <= 0 || budget <= 0) return 0;
@@ -138,6 +139,7 @@ int custom_unit_to_cp(const char *s, int len, int budget,
  * ================================================================ */
 
 /* Port of Python: _float_env */
+/* PoP: _float_env @ gateway/platforms/base.py:_float_env */
 double float_env(const char *name, double default_value) {
     if (!name) return default_value;
 

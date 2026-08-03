@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-03T02:01:12Z",
+  "generated_at": "2026-08-03T02:13:59Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -14906,8 +14906,8 @@
     },
     "agent/coding_context.py": {
       "total": 31,
-      "ported": 27,
-      "partial": 4,
+      "ported": 29,
+      "partial": 2,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -14935,7 +14935,7 @@
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 1129,
+            "line": 1131,
             "is_consolidated": false,
             "full_text": "/* Resolve config.yaml path from the loaded config. */\n    char yaml_path[HERMES_PATH_MAX];\n    if (config->config_path[0]) {\n        snprintf(yaml_path, sizeof(yaml_path), \"%s\", config->config_path);"
           },
@@ -15080,7 +15080,7 @@
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 1185,
+            "line": 1187,
             "is_consolidated": false,
             "full_text": "/* stack of (dir, is_root) \u2014 root + one level deep only */\n    struct { char path[PATH_MAX]; int is_root; } stack[CODE_SCAN_MAX_ENTRIES];\n    int sp = 0;\n    snprintf(stack[sp].path, sizeof(stack[sp]."
           },
@@ -15306,16 +15306,24 @@
             "decorators": [],
             "line_number": 505
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/agent/coding_context.c",
-          "c_function": "toolset_selection",
-          "pop_annotation": null,
+          "c_function": "coding_runtime_mode_toolset_selection",
+          "pop_annotation": {
+            "c_function": "coding_runtime_mode_toolset_selection",
+            "python_functions": [
+              "toolset_selection"
+            ],
+            "c_file": "src/agent/coding_context.c",
+            "python_file": "agent/coding_context.py",
+            "line": 601,
+            "is_consolidated": false,
+            "full_text": "/* PoP: toolset_selection @ agent/coding_context.py:toolset_selection */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/coding_context.py",
@@ -15337,7 +15345,7 @@
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 1098,
+            "line": 1100,
             "is_consolidated": false,
             "full_text": "/* PoP: system_prompt_parts @ agent/coding_context.py:system_prompt_parts */"
           },
@@ -15377,16 +15385,24 @@
             "decorators": [],
             "line_number": 564
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/agent/coding_context.c",
-          "c_function": "compact_skill_categories",
-          "pop_annotation": null,
+          "c_function": "coding_runtime_mode_compact_skill_categories",
+          "pop_annotation": {
+            "c_function": "coding_runtime_mode_compact_skill_categories",
+            "python_functions": [
+              "compact_skill_categories"
+            ],
+            "c_file": "src/agent/coding_context.c",
+            "python_file": "agent/coding_context.py",
+            "line": 691,
+            "is_consolidated": false,
+            "full_text": "/* PoP: compact_skill_categories @ agent/coding_context.py:compact_skill_categories */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/coding_context.py",
@@ -15466,7 +15482,7 @@
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 1088,
+            "line": 1090,
             "is_consolidated": false,
             "full_text": "/* PoP: coding_selection @ agent/coding_context.py:coding_selection */"
           },
@@ -15495,7 +15511,7 @@
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 1100,
+            "line": 1102,
             "is_consolidated": false,
             "full_text": "/* PoP: coding_system_blocks @ agent/coding_context.py:coding_system_blocks */"
           },
@@ -15524,7 +15540,7 @@
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 1099,
+            "line": 1101,
             "is_consolidated": false,
             "full_text": "/* PoP: coding_system_prompt_parts @ agent/coding_context.py:coding_system_prompt_parts */"
           },
@@ -15553,7 +15569,7 @@
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 1110,
+            "line": 1112,
             "is_consolidated": false,
             "full_text": "/* PoP: coding_compact_skill_categories @ agent/coding_context.py:coding_compact_skill_categories */"
           },
@@ -15582,7 +15598,7 @@
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 1018,
+            "line": 1020,
             "is_consolidated": false,
             "full_text": "/* Get branch info and status counts in one git call */\n            if (coding_context_run_git(root, buf, sizeof(buf), \"status --porcelain=2 --branch\") == 0) {\n                char *parsed = coding_co"
           },
@@ -15611,7 +15627,7 @@
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 633,
+            "line": 634,
             "is_consolidated": false,
             "full_text": "/* Allocate array for up to 3 blocks (prefix/workspace/trailing) */\n    char **blocks = calloc(3, sizeof(char *));\n    if (!blocks) { if (out_count) *out_count = 0; return NULL; }\n\n    int count = 0;\n"
           },
@@ -15640,7 +15656,7 @@
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 738,
+            "line": 740,
             "is_consolidated": false,
             "full_text": "/* vsnprintf consumes %h/%s as float/str from varargs \u2192 use literal \"git\" binary\n     * and pass args via shell so git receives the exact --pretty= format string. */\n    char cmd[2048];\n    snprintf(c"
           },
@@ -15669,7 +15685,7 @@
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 785,
+            "line": 787,
             "is_consolidated": false,
             "full_text": "/* \"# branch.ab +N -M\" */\n            const char *q = line + 12;\n            while (*q == ' ') q++;\n            if (*q == '+') {\n                ahead = strdup(q + 1);\n                char *sp = strch"
           },
@@ -15698,7 +15714,7 @@
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 854,
+            "line": 856,
             "is_consolidated": false,
             "full_text": "/*\n * PoP: detect_project_facts @ agent/coding_context.py:detect_project_facts"
           },
@@ -15777,7 +15793,7 @@
             ],
             "c_file": "src/agent/coding_context.c",
             "python_file": "agent/coding_context.py",
-            "line": 870,
+            "line": 872,
             "is_consolidated": false,
             "full_text": "/* manifests (excluding context files) */\n    int nm = 0;\n    char manifests[256]; manifests[0] = '\\0';\n    for (int i = 0; PROJECT_MARKERS[i]; i++) {\n        const char *m = PROJECT_MARKERS[i];\n     "
           },
@@ -57197,8 +57213,8 @@
     },
     "agent/redact.py": {
       "total": 19,
-      "ported": 18,
-      "partial": 1,
+      "ported": 19,
+      "partial": 0,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -57245,16 +57261,24 @@
             "decorators": [],
             "line_number": 373
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/browser_redact.c",
           "c_function": "mask_token",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "mask_token",
+            "python_functions": [
+              "_mask_token"
+            ],
+            "c_file": "src/tools/browser_redact.c",
+            "python_file": "agent/redact.py",
+            "line": 33,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _mask_token @ agent/redact.py:_mask_token */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "agent/redact.py",
@@ -76936,8 +76960,8 @@
     },
     "cli.py": {
       "total": 313,
-      "ported": 311,
-      "partial": 2,
+      "ported": 312,
+      "partial": 1,
       "stub": 0,
       "real_gaps": 0,
       "thin": true,
@@ -86027,16 +86051,24 @@
             "decorators": [],
             "line_number": 16132
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/main.c",
           "c_function": "main",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "main",
+            "python_functions": [
+              "main"
+            ],
+            "c_file": "src/main.c",
+            "python_file": "cli.py",
+            "line": 129,
+            "is_consolidated": false,
+            "full_text": "/* PoP: main @ cli.py:main */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -94207,8 +94239,8 @@
     },
     "gateway/delivery.py": {
       "total": 19,
-      "ported": 12,
-      "partial": 7,
+      "ported": 18,
+      "partial": 1,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -94226,16 +94258,24 @@
             "decorators": [],
             "line_number": 43
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/delivery.c",
           "c_function": "is_silence_narration",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "is_silence_narration",
+            "python_functions": [
+              "_is_silence_narration"
+            ],
+            "c_file": "src/gateway/delivery.c",
+            "python_file": "gateway/delivery.py",
+            "line": 79,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_silence_narration @ gateway/delivery.py:_is_silence_narration */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/delivery.py",
@@ -94278,16 +94318,24 @@
             "decorators": [],
             "line_number": 74
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/delivery.c",
-          "c_function": "send",
-          "pop_annotation": null,
+          "c_function": "",
+          "pop_annotation": {
+            "c_function": "",
+            "python_functions": [
+              "send"
+            ],
+            "c_file": "src/gateway/delivery.c",
+            "python_file": "gateway/delivery.py",
+            "line": 287,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send @ gateway/delivery.py:send */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/delivery.py",
@@ -94357,16 +94405,24 @@
             "decorators": [],
             "line_number": 150
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/delivery.c",
           "c_function": "looks_like_int",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "looks_like_int",
+            "python_functions": [
+              "_looks_like_int"
+            ],
+            "c_file": "src/gateway/delivery.c",
+            "python_file": "gateway/delivery.py",
+            "line": 47,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _looks_like_int @ gateway/delivery.py:_looks_like_int */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/delivery.py",
@@ -94378,16 +94434,24 @@
             "decorators": [],
             "line_number": 160
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/delivery.c",
           "c_function": "send_result_failed",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "send_result_failed",
+            "python_functions": [
+              "_send_result_failed"
+            ],
+            "c_file": "src/gateway/delivery.c",
+            "python_file": "gateway/delivery.py",
+            "line": 60,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _send_result_failed @ gateway/delivery.py:_send_result_failed */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/delivery.py",
@@ -94399,16 +94463,24 @@
             "decorators": [],
             "line_number": 166
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/delivery.c",
           "c_function": "send_result_error",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "send_result_error",
+            "python_functions": [
+              "_send_result_error"
+            ],
+            "c_file": "src/gateway/delivery.c",
+            "python_file": "gateway/delivery.py",
+            "line": 111,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _send_result_error @ gateway/delivery.py:_send_result_error */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/delivery.py",
@@ -94420,16 +94492,24 @@
             "decorators": [],
             "line_number": 174
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/delivery.c",
           "c_function": "is_thread_not_found_delivery_error",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "is_thread_not_found_delivery_error",
+            "python_functions": [
+              "_is_thread_not_found_delivery_error"
+            ],
+            "c_file": "src/gateway/delivery.c",
+            "python_file": "gateway/delivery.py",
+            "line": 136,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_thread_not_found_delivery_error @ gateway/delivery.py:_is_thread_not_found_delivery_error */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/delivery.py",
@@ -94451,7 +94531,7 @@
             ],
             "c_file": "src/gateway/delivery.c",
             "python_file": "gateway/delivery.py",
-            "line": 160,
+            "line": 165,
             "is_consolidated": false,
             "full_text": "/* PoP: send_result_error_kind @ gateway/delivery.py:_send_result_error_kind */"
           },
@@ -94480,7 +94560,7 @@
             ],
             "c_file": "src/gateway/delivery.c",
             "python_file": "gateway/delivery.py",
-            "line": 181,
+            "line": 186,
             "is_consolidated": false,
             "full_text": "/* PoP: classify_dead_from_error_text @ gateway/delivery.py:_classify_dead_from_error_text */"
           },
@@ -94677,7 +94757,7 @@
             ],
             "c_file": "src/gateway/delivery.c",
             "python_file": "gateway/delivery.py",
-            "line": 199,
+            "line": 204,
             "is_consolidated": false,
             "full_text": "/* PoP: filter_silence_narration_enabled @ gateway/delivery.py:_filter_silence_narration_enabled */"
           },
@@ -94706,7 +94786,7 @@
             ],
             "c_file": "src/gateway/delivery.c",
             "python_file": "gateway/delivery.py",
-            "line": 235,
+            "line": 240,
             "is_consolidated": false,
             "full_text": "/* PoP: deliver_to_platform @ gateway/delivery.py:_deliver_to_platform */"
           },
@@ -95198,8 +95278,8 @@
     },
     "gateway/display_config.py": {
       "total": 2,
-      "ported": 1,
-      "partial": 1,
+      "ported": 2,
+      "partial": 0,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -95217,16 +95297,24 @@
             "decorators": [],
             "line_number": 187
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/display_config.c",
           "c_function": "resolve_display_setting",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "resolve_display_setting",
+            "python_functions": [
+              "resolve_display_setting"
+            ],
+            "c_file": "src/gateway/display_config.c",
+            "python_file": "gateway/display_config.py",
+            "line": 121,
+            "is_consolidated": false,
+            "full_text": "/* PoP: resolve_display_setting @ gateway/display_config.py:resolve_display_setting */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/display_config.py",
@@ -95998,8 +96086,8 @@
     },
     "gateway/memory_monitor.py": {
       "total": 6,
-      "ported": 3,
-      "partial": 3,
+      "ported": 6,
+      "partial": 0,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -96017,16 +96105,24 @@
             "decorators": [],
             "line_number": 52
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/memory_monitor.c",
           "c_function": "get_rss_mb",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "get_rss_mb",
+            "python_functions": [
+              "_get_rss_mb"
+            ],
+            "c_file": "src/gateway/memory_monitor.c",
+            "python_file": "gateway/memory_monitor.py",
+            "line": 32,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _get_rss_mb @ gateway/memory_monitor.py:_get_rss_mb */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/memory_monitor.py",
@@ -96038,16 +96134,24 @@
             "decorators": [],
             "line_number": 83
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/memory_monitor.c",
           "c_function": "log_memory_usage",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "log_memory_usage",
+            "python_functions": [
+              "log_memory_usage"
+            ],
+            "c_file": "src/gateway/memory_monitor.c",
+            "python_file": "gateway/memory_monitor.py",
+            "line": 68,
+            "is_consolidated": false,
+            "full_text": "/* PoP: log_memory_usage @ gateway/memory_monitor.py:log_memory_usage */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/memory_monitor.py",
@@ -96069,7 +96173,7 @@
             ],
             "c_file": "src/gateway/memory_monitor.c",
             "python_file": "gateway/memory_monitor.py",
-            "line": 76,
+            "line": 78,
             "is_consolidated": false,
             "full_text": "/* Port of Python gateway/memory_monitor.py:_monitor_loop"
           },
@@ -96088,16 +96192,24 @@
             "decorators": [],
             "line_number": 139
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/memory_monitor.c",
           "c_function": "start_memory_monitoring",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "start_memory_monitoring",
+            "python_functions": [
+              "start_memory_monitoring"
+            ],
+            "c_file": "src/gateway/memory_monitor.c",
+            "python_file": "gateway/memory_monitor.py",
+            "line": 102,
+            "is_consolidated": false,
+            "full_text": "/* PoP: start_memory_monitoring @ gateway/memory_monitor.py:start_memory_monitoring */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/memory_monitor.py",
@@ -96119,7 +96231,7 @@
             ],
             "c_file": "src/gateway/memory_monitor.c",
             "python_file": "gateway/memory_monitor.py",
-            "line": 118,
+            "line": 121,
             "is_consolidated": false,
             "full_text": "/* Port of Python gateway/memory_monitor.py:stop_memory_monitoring"
           },
@@ -96148,7 +96260,7 @@
             ],
             "c_file": "src/gateway/memory_monitor.c",
             "python_file": "gateway/memory_monitor.py",
-            "line": 52,
+            "line": 53,
             "is_consolidated": false,
             "full_text": "/* PoP: gw_memory_monitor_is_running @ gateway/memory_monitor.py:is_running */"
           },
@@ -96348,8 +96460,8 @@
     },
     "gateway/mirror.py": {
       "total": 3,
-      "ported": 2,
-      "partial": 1,
+      "ported": 3,
+      "partial": 0,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -96367,16 +96479,24 @@
             "decorators": [],
             "line_number": 25
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/mirror.c",
           "c_function": "mirror_to_session",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "mirror_to_session",
+            "python_functions": [
+              "mirror_to_session"
+            ],
+            "c_file": "src/gateway/mirror.c",
+            "python_file": "gateway/mirror.py",
+            "line": 252,
+            "is_consolidated": false,
+            "full_text": "/* PoP: mirror_to_session @ gateway/mirror.py:mirror_to_session */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/mirror.py",
@@ -97906,8 +98026,8 @@
     },
     "gateway/platforms/api_server.py": {
       "total": 147,
-      "ported": 141,
-      "partial": 6,
+      "ported": 144,
+      "partial": 3,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -97993,7 +98113,7 @@
             ],
             "c_file": "src/gateway/platforms/api_server_adapter.c",
             "python_file": "gateway/platforms/api_server.py",
-            "line": 569,
+            "line": 572,
             "is_consolidated": false,
             "full_text": "/* Port of Python gateway/platforms/api_server.py:_coerce_port"
           },
@@ -98022,7 +98142,7 @@
             ],
             "c_file": "src/gateway/platforms/api_server_adapter.c",
             "python_file": "gateway/platforms/api_server.py",
-            "line": 578,
+            "line": 581,
             "is_consolidated": false,
             "full_text": "/* Port of Python gateway/platforms/api_server.py:_coerce_request_bool"
           },
@@ -98671,16 +98791,24 @@
             "decorators": [],
             "line_number": 795
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/platforms/api_server_adapter.c",
-          "c_function": "close",
-          "pop_annotation": null,
+          "c_function": "api_server_adapter_disconnect",
+          "pop_annotation": {
+            "c_function": "api_server_adapter_disconnect",
+            "python_functions": [
+              "close"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 441,
+            "is_consolidated": false,
+            "full_text": "/* PoP: close @ gateway/platforms/api_server.py:close */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -99087,7 +99215,7 @@
             ],
             "c_file": "src/gateway/platforms/api_server_adapter.c",
             "python_file": "gateway/platforms/api_server.py",
-            "line": 612,
+            "line": 615,
             "is_consolidated": false,
             "full_text": "/* Port of Python gateway/platforms/api_server.py:_make_request_fingerprint"
           },
@@ -99116,7 +99244,7 @@
             ],
             "c_file": "src/gateway/platforms/api_server_adapter.c",
             "python_file": "gateway/platforms/api_server.py",
-            "line": 591,
+            "line": 594,
             "is_consolidated": false,
             "full_text": "/* Port of Python gateway/platforms/api_server.py:_derive_chat_session_id"
           },
@@ -99619,7 +99747,7 @@
             ],
             "c_file": "src/gateway/platforms/api_server_adapter.c",
             "python_file": "gateway/platforms/api_server.py",
-            "line": 493,
+            "line": 496,
             "is_consolidated": false,
             "full_text": "/* Port of Python gateway/platforms/api_server.py:_check_auth"
           },
@@ -99855,7 +99983,7 @@
             ],
             "c_file": "src/gateway/platforms/api_server_adapter.c",
             "python_file": "gateway/platforms/api_server.py",
-            "line": 511,
+            "line": 514,
             "is_consolidated": false,
             "full_text": "/* Port of Python gateway/platforms/api_server.py:_parse_session_key_header"
           },
@@ -100420,7 +100548,7 @@
             ],
             "c_file": "src/gateway/platforms/api_server_adapter.c",
             "python_file": "gateway/platforms/api_server.py",
-            "line": 650,
+            "line": 653,
             "is_consolidated": false,
             "full_text": "/* Port of Python gateway/platforms/api_server.py:_create_agent"
           },
@@ -101809,7 +101937,7 @@
             ],
             "c_file": "src/gateway/platforms/api_server_adapter.c",
             "python_file": "gateway/platforms/api_server.py",
-            "line": 680,
+            "line": 683,
             "is_consolidated": false,
             "full_text": "/* Port of Python gateway/platforms/api_server.py:_run_agent"
           },
@@ -102120,16 +102248,24 @@
             "decorators": [],
             "line_number": 6650
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/platforms/api_server_adapter.c",
-          "c_function": "connect",
-          "pop_annotation": null,
+          "c_function": "api_server_adapter_disconnect",
+          "pop_annotation": {
+            "c_function": "api_server_adapter_disconnect",
+            "python_functions": [
+              "connect"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 438,
+            "is_consolidated": false,
+            "full_text": "/* PoP: connect @ gateway/platforms/api_server.py:connect */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -102162,16 +102298,24 @@
             "decorators": [],
             "line_number": 6835
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/platforms/api_server_adapter.c",
-          "c_function": "send",
-          "pop_annotation": null,
+          "c_function": "api_server_adapter_get_chat_info",
+          "pop_annotation": {
+            "c_function": "api_server_adapter_get_chat_info",
+            "python_functions": [
+              "send"
+            ],
+            "c_file": "src/gateway/platforms/api_server_adapter.c",
+            "python_file": "gateway/platforms/api_server.py",
+            "line": 481,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send @ gateway/platforms/api_server.py:send */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/api_server.py",
@@ -102198,8 +102342,8 @@
     },
     "gateway/platforms/base.py": {
       "total": 178,
-      "ported": 173,
-      "partial": 5,
+      "ported": 175,
+      "partial": 3,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -102246,16 +102390,24 @@
             "decorators": [],
             "line_number": 46
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/platforms/base.c",
           "c_function": "float_env",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "float_env",
+            "python_functions": [
+              "_float_env"
+            ],
+            "c_file": "src/gateway/platforms/base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 142,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _float_env @ gateway/platforms/base.py:_float_env */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -102433,16 +102585,24 @@
             "decorators": [],
             "line_number": 188
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/platforms/base.c",
           "c_function": "custom_unit_to_cp",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "custom_unit_to_cp",
+            "python_functions": [
+              "_custom_unit_to_cp"
+            ],
+            "c_file": "src/gateway/platforms/base.c",
+            "python_file": "gateway/platforms/base.py",
+            "line": 114,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _custom_unit_to_cp @ gateway/platforms/base.py:_custom_unit_to_cp */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/base.py",
@@ -102464,7 +102624,7 @@
             ],
             "c_file": "src/gateway/platforms/base.c",
             "python_file": "gateway/platforms/base.py",
-            "line": 348,
+            "line": 350,
             "is_consolidated": false,
             "full_text": "/* PoP: is_network_accessible @ gateway/platforms/base.py:is_network_accessible */"
           },
@@ -102580,7 +102740,7 @@
             ],
             "c_file": "src/gateway/platforms/base.c",
             "python_file": "gateway/platforms/base.py",
-            "line": 234,
+            "line": 236,
             "is_consolidated": false,
             "full_text": "/* PoP: no_proxy_entry_matches @ gateway/platforms/base.py:_no_proxy_entry_matches */"
           },
@@ -102725,7 +102885,7 @@
             ],
             "c_file": "src/gateway/platforms/base.c",
             "python_file": "gateway/platforms/base.py",
-            "line": 278,
+            "line": 280,
             "is_consolidated": false,
             "full_text": "/* PoP: is_host_excluded_by_no_proxy @ gateway/platforms/base.py:is_host_excluded_by_no_proxy */"
           },
@@ -102754,7 +102914,7 @@
             ],
             "c_file": "src/gateway/platforms/base.c",
             "python_file": "gateway/platforms/base.py",
-            "line": 303,
+            "line": 305,
             "is_consolidated": false,
             "full_text": "/* PoP: safe_url_for_log @ gateway/platforms/base.py:safe_url_for_log */"
           },
@@ -102841,7 +103001,7 @@
             ],
             "c_file": "src/gateway/platforms/base.c",
             "python_file": "gateway/platforms/base.py",
-            "line": 409,
+            "line": 411,
             "is_consolidated": false,
             "full_text": "/* PoP: get_inbound_media_max_bytes @ gateway/platforms/base.py:get_inbound_media_max_bytes */"
           },
@@ -102870,7 +103030,7 @@
             ],
             "c_file": "src/gateway/platforms/base.c",
             "python_file": "gateway/platforms/base.py",
-            "line": 420,
+            "line": 422,
             "is_consolidated": false,
             "full_text": "/* PoP: validate_inbound_media_size @ gateway/platforms/base.py:validate_inbound_media_size */"
           },
@@ -107378,7 +107538,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/base.py",
-            "line": 1617,
+            "line": 1618,
             "is_consolidated": false,
             "full_text": "/* PoP: truncate_message @ gateway/platforms/base.py:truncate_message */"
           },
@@ -108518,8 +108678,8 @@
     },
     "gateway/platforms/helpers.py": {
       "total": 23,
-      "ported": 18,
-      "partial": 5,
+      "ported": 20,
+      "partial": 3,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -108819,16 +108979,24 @@
             "decorators": [],
             "line_number": 196
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/helpers.c",
           "c_function": "strip_markdown",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "strip_markdown",
+            "python_functions": [
+              "strip_markdown"
+            ],
+            "c_file": "src/gateway/helpers.c",
+            "python_file": "gateway/platforms/helpers.py",
+            "line": 385,
+            "is_consolidated": false,
+            "full_text": "/* PoP: strip_markdown @ gateway/platforms/helpers.py:strip_markdown */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/helpers.py",
@@ -109027,16 +109195,24 @@
             "decorators": [],
             "line_number": 284
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/helpers.c",
           "c_function": "redact_phone",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "redact_phone",
+            "python_functions": [
+              "redact_phone"
+            ],
+            "c_file": "src/gateway/helpers.c",
+            "python_file": "gateway/platforms/helpers.py",
+            "line": 439,
+            "is_consolidated": false,
+            "full_text": "/* PoP: redact_phone @ gateway/platforms/helpers.py:redact_phone */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/helpers.py",
@@ -116984,8 +117160,8 @@
     },
     "gateway/platforms/weixin.py": {
       "total": 104,
-      "ported": 98,
-      "partial": 6,
+      "ported": 99,
+      "partial": 5,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -117013,7 +117189,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 1132,
+            "line": 1133,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_stale_session_ret @ gateway/platforms/weixin.py:_is_stale_session_ret */"
           },
@@ -117071,7 +117247,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 749,
+            "line": 750,
             "is_consolidated": false,
             "full_text": "/* PoP: _check_weixin_requirements @ gateway/platforms/weixin.py:check_weixin_requirements */"
           },
@@ -117100,7 +117276,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 716,
+            "line": 717,
             "is_consolidated": false,
             "full_text": "/* PoP: _safe_id @ gateway/platforms/weixin.py:_safe_id */"
           },
@@ -117129,7 +117305,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 756,
+            "line": 757,
             "is_consolidated": false,
             "full_text": "/* PoP: _json_dumps @ gateway/platforms/weixin.py:_json_dumps */"
           },
@@ -117158,7 +117334,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 633,
+            "line": 634,
             "is_consolidated": false,
             "full_text": "/* PoP: _pkcs7_pad @ gateway/platforms/weixin.py:_pkcs7_pad */"
           },
@@ -117187,7 +117363,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 654,
+            "line": 655,
             "is_consolidated": false,
             "full_text": "/* PoP: _aes128_ecb_encrypt @ gateway/platforms/weixin.py:_aes128_ecb_encrypt */"
           },
@@ -117216,7 +117392,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 683,
+            "line": 684,
             "is_consolidated": false,
             "full_text": "/* PoP: _aes128_ecb_decrypt @ gateway/platforms/weixin.py:_aes128_ecb_decrypt */"
           },
@@ -117245,7 +117421,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 648,
+            "line": 649,
             "is_consolidated": false,
             "full_text": "/* PoP: _aes_padded_size @ gateway/platforms/weixin.py:_aes_padded_size */"
           },
@@ -117274,7 +117450,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 731,
+            "line": 732,
             "is_consolidated": false,
             "full_text": "/* PoP: _random_wechat_uin @ gateway/platforms/weixin.py:_random_wechat_uin */"
           },
@@ -117303,7 +117479,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 764,
+            "line": 765,
             "is_consolidated": false,
             "full_text": "/* PoP: _base_info @ gateway/platforms/weixin.py:_base_info */"
           },
@@ -117332,7 +117508,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 1029,
+            "line": 1030,
             "is_consolidated": false,
             "full_text": "/* PoP: _headers @ gateway/platforms/weixin.py:_headers */"
           },
@@ -117361,7 +117537,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 774,
+            "line": 775,
             "is_consolidated": false,
             "full_text": "/* PoP: _account_dir @ gateway/platforms/weixin.py:_account_dir */"
           },
@@ -117390,7 +117566,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 787,
+            "line": 788,
             "is_consolidated": false,
             "full_text": "/* PoP: _account_file @ gateway/platforms/weixin.py:_account_file */"
           },
@@ -117506,7 +117682,7 @@
             ],
             "c_file": "src/tools/skills.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 66,
+            "line": 67,
             "is_consolidated": false,
             "full_text": "/* Port of Python gateway/platforms/weixin.py:_path"
           },
@@ -117727,7 +117903,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 802,
+            "line": 803,
             "is_consolidated": false,
             "full_text": "/* PoP: _cdn_download_url @ gateway/platforms/weixin.py:_cdn_download_url */"
           },
@@ -117756,7 +117932,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 819,
+            "line": 820,
             "is_consolidated": false,
             "full_text": "/* PoP: _cdn_upload_url @ gateway/platforms/weixin.py:_cdn_upload_url */"
           },
@@ -117785,7 +117961,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 1141,
+            "line": 1142,
             "is_consolidated": false,
             "full_text": "/* PoP: _parse_aes_key @ gateway/platforms/weixin.py:_parse_aes_key */"
           },
@@ -117814,7 +117990,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 1179,
+            "line": 1180,
             "is_consolidated": false,
             "full_text": "/* PoP: _guess_chat_type @ gateway/platforms/weixin.py:_guess_chat_type */"
           },
@@ -118104,7 +118280,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 981,
+            "line": 982,
             "is_consolidated": false,
             "full_text": "/* PoP: _assert_weixin_cdn_url @ gateway/platforms/weixin.py:_assert_weixin_cdn_url */"
           },
@@ -118133,7 +118309,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 1353,
+            "line": 1354,
             "is_consolidated": false,
             "full_text": "/* PoP: _media_reference @ gateway/platforms/weixin.py:_media_reference */"
           },
@@ -118191,7 +118367,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 835,
+            "line": 836,
             "is_consolidated": false,
             "full_text": "/* PoP: weixin_mime_from_filename @ gateway/platforms/weixin.py:_mime_from_filename */"
           },
@@ -118220,7 +118396,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 859,
+            "line": 860,
             "is_consolidated": false,
             "full_text": "/* PoP: _split_table_row @ gateway/platforms/weixin.py:_split_table_row */"
           },
@@ -118249,7 +118425,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 1363,
+            "line": 1364,
             "is_consolidated": false,
             "full_text": "/* PoP: _normalize_markdown_blocks @ gateway/platforms/weixin.py:_normalize_markdown_blocks */"
           },
@@ -118278,7 +118454,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 1491,
+            "line": 1492,
             "is_consolidated": false,
             "full_text": "/* PoP: _wrap_copy_friendly_lines_for_weixin @ gateway/platforms/weixin.py:_wrap_copy_friendly_lines_for_weixin */"
           },
@@ -118307,7 +118483,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 1229,
+            "line": 1230,
             "is_consolidated": false,
             "full_text": "/* PoP: _split_markdown_blocks @ gateway/platforms/weixin.py:_split_markdown_blocks */"
           },
@@ -118336,7 +118512,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 1561,
+            "line": 1562,
             "is_consolidated": false,
             "full_text": "/* PoP: _split_delivery_units_for_weixin @ gateway/platforms/weixin.py:_split_delivery_units_for_weixin */"
           },
@@ -118365,7 +118541,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 915,
+            "line": 916,
             "is_consolidated": false,
             "full_text": "/* PoP: _looks_like_chatty_line_for_weixin @ gateway/platforms/weixin.py:_looks_like_chatty_line_for_weixin */"
           },
@@ -118394,7 +118570,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 892,
+            "line": 893,
             "is_consolidated": false,
             "full_text": "/* PoP: _looks_like_heading_line_for_weixin @ gateway/platforms/weixin.py:_looks_like_heading_line_for_weixin */"
           },
@@ -118423,7 +118599,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 1455,
+            "line": 1456,
             "is_consolidated": false,
             "full_text": "/* PoP: _should_split_short_chat_block_for_weixin @ gateway/platforms/weixin.py:_should_split_short_chat_block_for_weixin */"
           },
@@ -118452,7 +118628,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 1742,
+            "line": 1743,
             "is_consolidated": false,
             "full_text": "/* PoP: _pack_markdown_blocks_for_weixin @ gateway/platforms/weixin.py:_pack_markdown_blocks_for_weixin */"
           },
@@ -118481,7 +118657,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 1793,
+            "line": 1794,
             "is_consolidated": false,
             "full_text": "/* PoP: _split_text_for_weixin_delivery @ gateway/platforms/weixin.py:_split_text_for_weixin_delivery */"
           },
@@ -118568,7 +118744,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 1203,
+            "line": 1204,
             "is_consolidated": false,
             "full_text": "/* PoP: _message_type_from_media @ gateway/platforms/weixin.py:_message_type_from_media */"
           },
@@ -118626,7 +118802,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 1007,
+            "line": 1008,
             "is_consolidated": false,
             "full_text": "/* PoP: _load_sync_buf @ gateway/platforms/weixin.py:_load_sync_buf */"
           },
@@ -118742,7 +118918,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 935,
+            "line": 936,
             "is_consolidated": false,
             "full_text": "/* PoP: _coerce_float_extra @ gateway/platforms/weixin.py:_coerce_float_extra */"
           },
@@ -118773,7 +118949,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 1049,
+            "line": 1050,
             "is_consolidated": false,
             "full_text": "/* PoP: _coerce_list @ gateway/platforms/weixin.py:_coerce_list */"
           },
@@ -118918,7 +119094,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 434,
+            "line": 435,
             "is_consolidated": false,
             "full_text": "/* Port of Python gateway/platforms/weixin.py:_process_message"
           },
@@ -118976,7 +119152,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 943,
+            "line": 944,
             "is_consolidated": false,
             "full_text": "/* PoP: _is_dm_allowed @ gateway/platforms/weixin.py:_is_dm_allowed */"
           },
@@ -119355,7 +119531,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 1080,
+            "line": 1081,
             "is_consolidated": false,
             "full_text": "/* PoP: _rate_limit_cooldown_remaining @ gateway/platforms/weixin.py:_rate_limit_cooldown_remaining */"
           },
@@ -119384,7 +119560,7 @@
             ],
             "c_file": "src/gateway/platforms/weixin.c",
             "python_file": "gateway/platforms/weixin.py",
-            "line": 995,
+            "line": 996,
             "is_consolidated": false,
             "full_text": "/* PoP: _rate_limit_error @ gateway/platforms/weixin.py:_rate_limit_error */"
           },
@@ -119751,16 +119927,24 @@
             "decorators": [],
             "line_number": 2043
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/platforms/weixin.c",
           "c_function": "send_video",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "send_video",
+            "python_functions": [
+              "send_video"
+            ],
+            "c_file": "src/gateway/platforms/weixin.c",
+            "python_file": "gateway/platforms/weixin.py",
+            "line": 304,
+            "is_consolidated": false,
+            "full_text": "/* PoP: send_video @ gateway/platforms/weixin.py:send_video */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/weixin.py",
@@ -128240,8 +128424,8 @@
     },
     "gateway/platforms/yuanbao_media.py": {
       "total": 17,
-      "ported": 15,
-      "partial": 2,
+      "ported": 16,
+      "partial": 1,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -128367,16 +128551,24 @@
             "decorators": [],
             "line_number": 113
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/yuanbao_media.c",
-          "c_function": "generate_file_id",
-          "pop_annotation": null,
+          "c_function": "yuanbao_generate_file_id",
+          "pop_annotation": {
+            "c_function": "yuanbao_generate_file_id",
+            "python_functions": [
+              "generate_file_id"
+            ],
+            "c_file": "src/tools/yuanbao_media.c",
+            "python_file": "gateway/platforms/yuanbao_media.py",
+            "line": 36,
+            "is_consolidated": false,
+            "full_text": "/* PoP: generate_file_id @ gateway/platforms/yuanbao_media.py:generate_file_id */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/platforms/yuanbao_media.py",
@@ -134757,7 +134949,7 @@
             ],
             "c_file": "src/gateway/helpers.c",
             "python_file": "gateway/run.py",
-            "line": 491,
+            "line": 493,
             "is_consolidated": false,
             "full_text": "/* PoP: gateway_provider_error_reply @ gateway/run.py:_gateway_provider_error_reply */"
           },
@@ -134786,7 +134978,7 @@
             ],
             "c_file": "src/gateway/helpers.c",
             "python_file": "gateway/run.py",
-            "line": 478,
+            "line": 480,
             "is_consolidated": false,
             "full_text": "/* PoP: gateway_looks_like_provider_error @ gateway/run.py:_looks_like_gateway_provider_error */"
           },
@@ -134815,7 +135007,7 @@
             ],
             "c_file": "src/gateway/helpers.c",
             "python_file": "gateway/run.py",
-            "line": 521,
+            "line": 523,
             "is_consolidated": false,
             "full_text": "/* PoP: gateway_sanitize_response @ gateway/run.py:_sanitize_gateway_final_response */"
           },
@@ -134844,7 +135036,7 @@
             ],
             "c_file": "src/gateway/helpers.c",
             "python_file": "gateway/run.py",
-            "line": 545,
+            "line": 547,
             "is_consolidated": false,
             "full_text": "/* PoP: gateway_prepare_status_message @ gateway/run.py:_prepare_gateway_status_message */"
           },
@@ -145189,8 +145381,8 @@
     },
     "gateway/runtime_footer.py": {
       "total": 5,
-      "ported": 3,
-      "partial": 2,
+      "ported": 5,
+      "partial": 0,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -145208,16 +145400,24 @@
             "decorators": [],
             "line_number": 35
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/runtime_footer.c",
           "c_function": "home_relative_cwd",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "home_relative_cwd",
+            "python_functions": [
+              "_home_relative_cwd"
+            ],
+            "c_file": "src/gateway/runtime_footer.c",
+            "python_file": "gateway/runtime_footer.py",
+            "line": 31,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _home_relative_cwd @ gateway/runtime_footer.py:_home_relative_cwd */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/runtime_footer.py",
@@ -145229,16 +145429,24 @@
             "decorators": [],
             "line_number": 49
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/runtime_footer.c",
           "c_function": "model_short",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "model_short",
+            "python_functions": [
+              "_model_short"
+            ],
+            "c_file": "src/gateway/runtime_footer.c",
+            "python_file": "gateway/runtime_footer.py",
+            "line": 53,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _model_short @ gateway/runtime_footer.py:_model_short */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/runtime_footer.py",
@@ -145260,7 +145468,7 @@
             ],
             "c_file": "src/gateway/runtime_footer.c",
             "python_file": "gateway/runtime_footer.py",
-            "line": 86,
+            "line": 88,
             "is_consolidated": false,
             "full_text": "/* PoP: resolve_footer_config @ gateway/runtime_footer.py:resolve_footer_config */"
           },
@@ -145289,7 +145497,7 @@
             ],
             "c_file": "src/gateway/runtime_footer.c",
             "python_file": "gateway/runtime_footer.py",
-            "line": 129,
+            "line": 131,
             "is_consolidated": false,
             "full_text": "/* PoP: format_runtime_footer @ gateway/runtime_footer.py:format_runtime_footer */"
           },
@@ -145318,7 +145526,7 @@
             ],
             "c_file": "src/gateway/runtime_footer.c",
             "python_file": "gateway/runtime_footer.py",
-            "line": 195,
+            "line": 197,
             "is_consolidated": false,
             "full_text": "/* PoP: build_footer_line @ gateway/runtime_footer.py:build_footer_line */"
           },
@@ -149180,8 +149388,8 @@
     },
     "gateway/slash_access.py": {
       "total": 9,
-      "ported": 2,
-      "partial": 7,
+      "ported": 9,
+      "partial": 0,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -149199,16 +149407,24 @@
             "decorators": [],
             "line_number": 69
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/slash_access.c",
-          "c_function": "is_admin",
-          "pop_annotation": null,
+          "c_function": "slash_policy_is_admin",
+          "pop_annotation": {
+            "c_function": "slash_policy_is_admin",
+            "python_functions": [
+              "is_admin"
+            ],
+            "c_file": "src/gateway/slash_access.c",
+            "python_file": "gateway/slash_access.py",
+            "line": 60,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_admin @ gateway/slash_access.py:is_admin */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/slash_access.py",
@@ -149220,16 +149436,24 @@
             "decorators": [],
             "line_number": 79
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/slash_access.c",
-          "c_function": "can_run",
-          "pop_annotation": null,
+          "c_function": "slash_policy_can_run",
+          "pop_annotation": {
+            "c_function": "slash_policy_can_run",
+            "python_functions": [
+              "can_run"
+            ],
+            "c_file": "src/gateway/slash_access.c",
+            "python_file": "gateway/slash_access.py",
+            "line": 73,
+            "is_consolidated": false,
+            "full_text": "/* PoP: can_run @ gateway/slash_access.py:can_run */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/slash_access.py",
@@ -149241,16 +149465,24 @@
             "decorators": [],
             "line_number": 94
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/slash_access.c",
           "c_function": "coerce_id_list",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "coerce_id_list",
+            "python_functions": [
+              "_coerce_id_list"
+            ],
+            "c_file": "src/gateway/slash_access.c",
+            "python_file": "gateway/slash_access.py",
+            "line": 103,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _coerce_id_list @ gateway/slash_access.py:_coerce_id_list */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/slash_access.py",
@@ -149262,16 +149494,24 @@
             "decorators": [],
             "line_number": 117
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/slash_access.c",
           "c_function": "coerce_command_list",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "coerce_command_list",
+            "python_functions": [
+              "_coerce_command_list"
+            ],
+            "c_file": "src/gateway/slash_access.c",
+            "python_file": "gateway/slash_access.py",
+            "line": 166,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _coerce_command_list @ gateway/slash_access.py:_coerce_command_list */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/slash_access.py",
@@ -149283,16 +149523,24 @@
             "decorators": [],
             "line_number": 140
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/slash_access.c",
           "c_function": "scope_for_chat_type",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "scope_for_chat_type",
+            "python_functions": [
+              "_scope_for_chat_type"
+            ],
+            "c_file": "src/gateway/slash_access.c",
+            "python_file": "gateway/slash_access.py",
+            "line": 212,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _scope_for_chat_type @ gateway/slash_access.py:_scope_for_chat_type */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/slash_access.py",
@@ -149304,16 +149552,24 @@
             "decorators": [],
             "line_number": 146
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/slash_access.c",
           "c_function": "platform_extra",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "platform_extra",
+            "python_functions": [
+              "_platform_extra"
+            ],
+            "c_file": "src/gateway/slash_access.c",
+            "python_file": "gateway/slash_access.py",
+            "line": 251,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _platform_extra @ gateway/slash_access.py:_platform_extra */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/slash_access.py",
@@ -149325,16 +149581,24 @@
             "decorators": [],
             "line_number": 163
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/slash_access.c",
           "c_function": "keys_for_scope",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "keys_for_scope",
+            "python_functions": [
+              "_keys_for_scope"
+            ],
+            "c_file": "src/gateway/slash_access.c",
+            "python_file": "gateway/slash_access.py",
+            "line": 229,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _keys_for_scope @ gateway/slash_access.py:_keys_for_scope */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/slash_access.py",
@@ -151155,8 +151419,8 @@
     },
     "gateway/status.py": {
       "total": 77,
-      "ported": 45,
-      "partial": 32,
+      "ported": 77,
+      "partial": 0,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -151493,16 +151757,24 @@
             "decorators": [],
             "line_number": 245
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
-          "c_function": "terminate_pid",
-          "pop_annotation": null,
+          "c_function": "gwstatus_terminate_pid",
+          "pop_annotation": {
+            "c_function": "gwstatus_terminate_pid",
+            "python_functions": [
+              "terminate_pid"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 146,
+            "is_consolidated": false,
+            "full_text": "/* PoP: terminate_pid @ gateway/status.py:terminate_pid */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -151514,16 +151786,24 @@
             "decorators": [],
             "line_number": 278
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
           "c_function": "scope_hash",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "scope_hash",
+            "python_functions": [
+              "_scope_hash"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 154,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _scope_hash @ gateway/status.py:_scope_hash */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -151535,16 +151815,24 @@
             "decorators": [],
             "line_number": 282
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
           "c_function": "get_scope_lock_path",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "get_scope_lock_path",
+            "python_functions": [
+              "_get_scope_lock_path"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 1025,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _get_scope_lock_path @ gateway/status.py:_get_scope_lock_path */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -151566,7 +151854,7 @@
             ],
             "c_file": "src/gateway/status.c",
             "python_file": "gateway/status.py",
-            "line": 162,
+            "line": 164,
             "is_consolidated": false,
             "full_text": "/* PoP: gwstatus_get_process_start_time @ gateway/status.py:_get_process_start_time */"
           },
@@ -151595,7 +151883,7 @@
             ],
             "c_file": "src/gateway/status.c",
             "python_file": "gateway/status.py",
-            "line": 163,
+            "line": 165,
             "is_consolidated": false,
             "full_text": "/* PoP: gwstatus_get_process_start_time @ gateway/status.py:get_process_start_time */"
           },
@@ -151614,16 +151902,24 @@
             "decorators": [],
             "line_number": 326
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
           "c_function": "read_process_cmdline",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "read_process_cmdline",
+            "python_functions": [
+              "_read_process_cmdline"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 232,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _read_process_cmdline @ gateway/status.py:_read_process_cmdline */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -151635,16 +151931,24 @@
             "decorators": [],
             "line_number": 368
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
           "c_function": "gateway_command_subcommand",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "gateway_command_subcommand",
+            "python_functions": [
+              "_gateway_command_subcommand"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 321,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _gateway_command_subcommand @ gateway/status.py:_gateway_command_subcommand */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -151656,16 +151960,24 @@
             "decorators": [],
             "line_number": 442
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
-          "c_function": "looks_like_gateway_command_line",
-          "pop_annotation": null,
+          "c_function": "gwstatus_looks_like_gateway_command_line",
+          "pop_annotation": {
+            "c_function": "gwstatus_looks_like_gateway_command_line",
+            "python_functions": [
+              "looks_like_gateway_command_line"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 390,
+            "is_consolidated": false,
+            "full_text": "/* PoP: looks_like_gateway_command_line @ gateway/status.py:looks_like_gateway_command_line */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -151677,16 +151989,24 @@
             "decorators": [],
             "line_number": 447
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
-          "c_function": "looks_like_gateway_runtime_command_line",
-          "pop_annotation": null,
+          "c_function": "gwstatus_looks_like_gateway_runtime_command_line",
+          "pop_annotation": {
+            "c_function": "gwstatus_looks_like_gateway_runtime_command_line",
+            "python_functions": [
+              "looks_like_gateway_runtime_command_line"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 399,
+            "is_consolidated": false,
+            "full_text": "/* PoP: looks_like_gateway_runtime_command_line @ gateway/status.py:looks_like_gateway_runtime_command_line */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -151698,16 +152018,24 @@
             "decorators": [],
             "line_number": 461
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
           "c_function": "looks_like_gateway_process",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "looks_like_gateway_process",
+            "python_functions": [
+              "_looks_like_gateway_process"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 408,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _looks_like_gateway_process @ gateway/status.py:_looks_like_gateway_process */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -151719,16 +152047,24 @@
             "decorators": [],
             "line_number": 469
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
           "c_function": "record_looks_like_gateway",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "record_looks_like_gateway",
+            "python_functions": [
+              "_record_looks_like_gateway"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 540,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _record_looks_like_gateway @ gateway/status.py:_record_looks_like_gateway */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -151779,7 +152115,7 @@
             ],
             "c_file": "src/gateway/status.c",
             "python_file": "gateway/status.py",
-            "line": 585,
+            "line": 595,
             "is_consolidated": false,
             "full_text": "/* strip a trailing slash for a stable basename/parent split */\n    char tmp[1200];\n    snprintf(tmp, sizeof(tmp), \"%s\", profile_home);\n    size_t L = strlen(tmp);\n    while (L > 1 && tmp[L - 1] == '/"
           },
@@ -151798,16 +152134,24 @@
             "decorators": [],
             "line_number": 532
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
           "c_function": "record_matches_live_gateway_pid",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "record_matches_live_gateway_pid",
+            "python_functions": [
+              "_record_matches_live_gateway_pid"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 569,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _record_matches_live_gateway_pid @ gateway/status.py:_record_matches_live_gateway_pid */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -151829,7 +152173,7 @@
             ],
             "c_file": "src/gateway/status.c",
             "python_file": "gateway/status.py",
-            "line": 457,
+            "line": 465,
             "is_consolidated": false,
             "full_text": "/* PoP: build_pid_record @ gateway/status.py:_build_pid_record */"
           },
@@ -151848,16 +152192,24 @@
             "decorators": [],
             "line_number": 578
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
           "c_function": "build_runtime_status_record",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "build_runtime_status_record",
+            "python_functions": [
+              "_build_runtime_status_record"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 930,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _build_runtime_status_record @ gateway/status.py:_build_runtime_status_record */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -151879,7 +152231,7 @@
             ],
             "c_file": "src/gateway/status.c",
             "python_file": "gateway/status.py",
-            "line": 413,
+            "line": 421,
             "is_consolidated": false,
             "full_text": "/* PoP: _read_json_file @ gateway/status.py:_read_json_file */"
           },
@@ -151908,7 +152260,7 @@
             ],
             "c_file": "src/gateway/status.c",
             "python_file": "gateway/status.py",
-            "line": 437,
+            "line": 445,
             "is_consolidated": false,
             "full_text": "/* PoP: write_json_file @ gateway/status.py:_write_json_file */"
           },
@@ -151937,7 +152289,7 @@
             ],
             "c_file": "src/gateway/status.c",
             "python_file": "gateway/status.py",
-            "line": 493,
+            "line": 501,
             "is_consolidated": false,
             "full_text": "/* PoP: read_pid_record @ gateway/status.py:_read_pid_record */"
           },
@@ -151966,7 +152318,7 @@
             ],
             "c_file": "src/gateway/status.c",
             "python_file": "gateway/status.py",
-            "line": 637,
+            "line": 647,
             "is_consolidated": false,
             "full_text": "/* Default/root profile: bare (no profile flag). Reject if the command\n     * advertises some OTHER profile or a conflicting explicit HERMES_HOME. */\n    if (strstr(command_lc, \"--profile \") || strstr"
           },
@@ -151995,7 +152347,7 @@
             ],
             "c_file": "src/gateway/status.c",
             "python_file": "gateway/status.py",
-            "line": 479,
+            "line": 487,
             "is_consolidated": false,
             "full_text": "/* PoP: pid_from_record @ gateway/status.py:_pid_from_record */"
           },
@@ -152111,7 +152463,7 @@
             ],
             "c_file": "src/gateway/status.c",
             "python_file": "gateway/status.py",
-            "line": 679,
+            "line": 689,
             "is_consolidated": false,
             "full_text": "/* -----------------------------------------------------------------------\n * PoP: cleanup_invalid_pid_path @ gateway/status.py:_cleanup_invalid_pid_path"
           },
@@ -152140,7 +152492,7 @@
             ],
             "c_file": "src/gateway/status.c",
             "python_file": "gateway/status.py",
-            "line": 660,
+            "line": 670,
             "is_consolidated": false,
             "full_text": "/* -----------------------------------------------------------------------\n * PoP: write_gateway_lock_record @ gateway/status.py:_write_gateway_lock_record"
           },
@@ -152169,7 +152521,7 @@
             ],
             "c_file": "src/gateway/status.c",
             "python_file": "gateway/status.py",
-            "line": 717,
+            "line": 729,
             "is_consolidated": false,
             "full_text": "/* PoP: gwstatus_is_gateway_runtime_lock_active @ gateway/status.py:_try_acquire_file_lock */"
           },
@@ -152188,16 +152540,24 @@
             "decorators": [],
             "line_number": 733
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
-          "c_function": "_pid_exists",
-          "pop_annotation": null,
+          "c_function": "gwstatus_pid_exists",
+          "pop_annotation": {
+            "c_function": "gwstatus_pid_exists",
+            "python_functions": [
+              "_pid_exists"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 203,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _pid_exists @ gateway/status.py:_pid_exists */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -152219,7 +152579,7 @@
             ],
             "c_file": "src/gateway/status.c",
             "python_file": "gateway/status.py",
-            "line": 718,
+            "line": 730,
             "is_consolidated": false,
             "full_text": "/* PoP: gwstatus_is_gateway_runtime_lock_active @ gateway/status.py:_release_file_lock */"
           },
@@ -152238,16 +152598,24 @@
             "decorators": [],
             "line_number": 863
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
-          "c_function": "acquire_gateway_runtime_lock",
-          "pop_annotation": null,
+          "c_function": "gwstatus_acquire_gateway_runtime_lock",
+          "pop_annotation": {
+            "c_function": "gwstatus_acquire_gateway_runtime_lock",
+            "python_functions": [
+              "acquire_gateway_runtime_lock"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 702,
+            "is_consolidated": false,
+            "full_text": "/* PoP: acquire_gateway_runtime_lock @ gateway/status.py:acquire_gateway_runtime_lock */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -152259,16 +152627,24 @@
             "decorators": [],
             "line_number": 900
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
-          "c_function": "release_gateway_runtime_lock",
-          "pop_annotation": null,
+          "c_function": "gwstatus_release_gateway_runtime_lock",
+          "pop_annotation": {
+            "c_function": "gwstatus_release_gateway_runtime_lock",
+            "python_functions": [
+              "release_gateway_runtime_lock"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 719,
+            "is_consolidated": false,
+            "full_text": "/* PoP: release_gateway_runtime_lock @ gateway/status.py:release_gateway_runtime_lock */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -152290,7 +152666,7 @@
             ],
             "c_file": "src/gateway/status.c",
             "python_file": "gateway/status.py",
-            "line": 716,
+            "line": 728,
             "is_consolidated": false,
             "full_text": "/* PoP: gwstatus_is_gateway_runtime_lock_active @ gateway/status.py:is_gateway_runtime_lock_active */"
           },
@@ -152309,16 +152685,24 @@
             "decorators": [],
             "line_number": 949
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
-          "c_function": "write_pid_file",
-          "pop_annotation": null,
+          "c_function": "gwstatus_write_pid_file",
+          "pop_annotation": {
+            "c_function": "gwstatus_write_pid_file",
+            "python_functions": [
+              "write_pid_file"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 758,
+            "is_consolidated": false,
+            "full_text": "/* PoP: write_pid_file @ gateway/status.py:write_pid_file */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -152330,16 +152714,24 @@
             "decorators": [],
             "line_number": 975
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
-          "c_function": "write_runtime_status",
-          "pop_annotation": null,
+          "c_function": "gwstatus_write_runtime_status",
+          "pop_annotation": {
+            "c_function": "gwstatus_write_runtime_status",
+            "python_functions": [
+              "write_runtime_status"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 944,
+            "is_consolidated": false,
+            "full_text": "/* PoP: write_runtime_status @ gateway/status.py:write_runtime_status */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -152351,16 +152743,24 @@
             "decorators": [],
             "line_number": 1026
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
-          "c_function": "read_runtime_status",
-          "pop_annotation": null,
+          "c_function": "gwstatus_read_runtime_status",
+          "pop_annotation": {
+            "c_function": "gwstatus_read_runtime_status",
+            "python_functions": [
+              "read_runtime_status"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 1011,
+            "is_consolidated": false,
+            "full_text": "/* PoP: read_runtime_status @ gateway/status.py:read_runtime_status */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -152459,16 +152859,24 @@
             "decorators": [],
             "line_number": 1104
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
-          "c_function": "derive_gateway_busy",
-          "pop_annotation": null,
+          "c_function": "gwstatus_derive_gateway_busy",
+          "pop_annotation": {
+            "c_function": "gwstatus_derive_gateway_busy",
+            "python_functions": [
+              "derive_gateway_busy"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 913,
+            "is_consolidated": false,
+            "full_text": "/* PoP: derive_gateway_busy @ gateway/status.py:derive_gateway_busy */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -152519,9 +152927,9 @@
             ],
             "c_file": "src/gateway/status.c",
             "python_file": "gateway/status.py",
-            "line": 692,
+            "line": 702,
             "is_consolidated": false,
-            "full_text": "/* Port of Python: acquire_gateway_runtime_lock */\nbool gwstatus_acquire_gateway_runtime_lock(void) {\n    if (g_gateway_lock_fd >= 0) return true;  /* already held */\n    char path[1200];\n    get_gate"
+            "full_text": "/* PoP: acquire_gateway_runtime_lock @ gateway/status.py:acquire_gateway_runtime_lock */\n/* Port of Python: acquire_gateway_runtime_lock */\nbool gwstatus_acquire_gateway_runtime_lock(void) {\n    if (g"
           },
           "stub_reason": null,
           "severity": "LOW",
@@ -152538,16 +152946,24 @@
             "decorators": [],
             "line_number": 1185
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
-          "c_function": "remove_pid_file",
-          "pop_annotation": null,
+          "c_function": "gwstatus_remove_pid_file",
+          "pop_annotation": {
+            "c_function": "gwstatus_remove_pid_file",
+            "python_functions": [
+              "remove_pid_file"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 770,
+            "is_consolidated": false,
+            "full_text": "/* PoP: remove_pid_file @ gateway/status.py:remove_pid_file */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -152559,16 +152975,24 @@
             "decorators": [],
             "line_number": 1210
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
-          "c_function": "acquire_scoped_lock",
-          "pop_annotation": null,
+          "c_function": "gwstatus_acquire_scoped_lock",
+          "pop_annotation": {
+            "c_function": "gwstatus_acquire_scoped_lock",
+            "python_functions": [
+              "acquire_scoped_lock"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 1065,
+            "is_consolidated": false,
+            "full_text": "/* PoP: acquire_scoped_lock @ gateway/status.py:acquire_scoped_lock */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -152580,16 +153004,24 @@
             "decorators": [],
             "line_number": 1346
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
-          "c_function": "release_scoped_lock",
-          "pop_annotation": null,
+          "c_function": "gwstatus_release_scoped_lock",
+          "pop_annotation": {
+            "c_function": "gwstatus_release_scoped_lock",
+            "python_functions": [
+              "release_scoped_lock"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 1172,
+            "is_consolidated": false,
+            "full_text": "/* PoP: release_scoped_lock @ gateway/status.py:release_scoped_lock */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -152601,16 +153033,24 @@
             "decorators": [],
             "line_number": 1362
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
-          "c_function": "release_all_scoped_locks",
-          "pop_annotation": null,
+          "c_function": "gwstatus_release_all_scoped_locks",
+          "pop_annotation": {
+            "c_function": "gwstatus_release_all_scoped_locks",
+            "python_functions": [
+              "release_all_scoped_locks"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 1187,
+            "is_consolidated": false,
+            "full_text": "/* PoP: release_all_scoped_locks @ gateway/status.py:release_all_scoped_locks */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -152680,16 +153120,24 @@
             "decorators": [],
             "line_number": 1448
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
           "c_function": "marker_is_stale",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "marker_is_stale",
+            "python_functions": [
+              "_marker_is_stale"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 1219,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _marker_is_stale @ gateway/status.py:_marker_is_stale */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -152701,16 +153149,24 @@
             "decorators": [],
             "line_number": 1457
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
           "c_function": "consume_pid_marker_for_self",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "consume_pid_marker_for_self",
+            "python_functions": [
+              "_consume_pid_marker_for_self"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 1236,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _consume_pid_marker_for_self @ gateway/status.py:_consume_pid_marker_for_self */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -152722,16 +153178,24 @@
             "decorators": [],
             "line_number": 1534
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
-          "c_function": "write_takeover_marker",
-          "pop_annotation": null,
+          "c_function": "gwstatus_write_takeover_marker",
+          "pop_annotation": {
+            "c_function": "gwstatus_write_takeover_marker",
+            "python_functions": [
+              "write_takeover_marker"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 1289,
+            "is_consolidated": false,
+            "full_text": "/* PoP: write_takeover_marker @ gateway/status.py:write_takeover_marker */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -152743,16 +153207,24 @@
             "decorators": [],
             "line_number": 1578
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
-          "c_function": "consume_takeover_marker_for_self",
-          "pop_annotation": null,
+          "c_function": "gwstatus_consume_takeover_marker_for_self",
+          "pop_annotation": {
+            "c_function": "gwstatus_consume_takeover_marker_for_self",
+            "python_functions": [
+              "consume_takeover_marker_for_self"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 1308,
+            "is_consolidated": false,
+            "full_text": "/* PoP: consume_takeover_marker_for_self @ gateway/status.py:consume_takeover_marker_for_self */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -152764,16 +153236,24 @@
             "decorators": [],
             "line_number": 1597
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
-          "c_function": "clear_takeover_marker",
-          "pop_annotation": null,
+          "c_function": "gwstatus_clear_takeover_marker",
+          "pop_annotation": {
+            "c_function": "gwstatus_clear_takeover_marker",
+            "python_functions": [
+              "clear_takeover_marker"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 1317,
+            "is_consolidated": false,
+            "full_text": "/* PoP: clear_takeover_marker @ gateway/status.py:clear_takeover_marker */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -152988,16 +153468,24 @@
             "decorators": [],
             "line_number": 1905
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
-          "c_function": "write_planned_stop_marker",
-          "pop_annotation": null,
+          "c_function": "gwstatus_write_planned_stop_marker",
+          "pop_annotation": {
+            "c_function": "gwstatus_write_planned_stop_marker",
+            "python_functions": [
+              "write_planned_stop_marker"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 1325,
+            "is_consolidated": false,
+            "full_text": "/* PoP: write_planned_stop_marker @ gateway/status.py:write_planned_stop_marker */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -153009,16 +153497,24 @@
             "decorators": [],
             "line_number": 1926
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
-          "c_function": "consume_planned_stop_marker_for_self",
-          "pop_annotation": null,
+          "c_function": "gwstatus_consume_planned_stop_marker_for_self",
+          "pop_annotation": {
+            "c_function": "gwstatus_consume_planned_stop_marker_for_self",
+            "python_functions": [
+              "consume_planned_stop_marker_for_self"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 1343,
+            "is_consolidated": false,
+            "full_text": "/* PoP: consume_planned_stop_marker_for_self @ gateway/status.py:consume_planned_stop_marker_for_self */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -153030,16 +153526,24 @@
             "decorators": [],
             "line_number": 1936
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
-          "c_function": "planned_stop_marker_targets_self",
-          "pop_annotation": null,
+          "c_function": "gwstatus_planned_stop_marker_targets_self",
+          "pop_annotation": {
+            "c_function": "gwstatus_planned_stop_marker_targets_self",
+            "python_functions": [
+              "planned_stop_marker_targets_self"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 1352,
+            "is_consolidated": false,
+            "full_text": "/* PoP: planned_stop_marker_targets_self @ gateway/status.py:planned_stop_marker_targets_self */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -153051,16 +153555,24 @@
             "decorators": [],
             "line_number": 1998
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
-          "c_function": "clear_planned_stop_marker",
-          "pop_annotation": null,
+          "c_function": "gwstatus_clear_planned_stop_marker",
+          "pop_annotation": {
+            "c_function": "gwstatus_clear_planned_stop_marker",
+            "python_functions": [
+              "clear_planned_stop_marker"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 1391,
+            "is_consolidated": false,
+            "full_text": "/* PoP: clear_planned_stop_marker @ gateway/status.py:clear_planned_stop_marker */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -153072,16 +153584,24 @@
             "decorators": [],
             "line_number": 2006
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/gateway/status.c",
-          "c_function": "get_running_pid",
-          "pop_annotation": null,
+          "c_function": "gwstatus_get_running_pid",
+          "pop_annotation": {
+            "c_function": "gwstatus_get_running_pid",
+            "python_functions": [
+              "get_running_pid"
+            ],
+            "c_file": "src/gateway/status.c",
+            "python_file": "gateway/status.py",
+            "line": 783,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_running_pid @ gateway/status.py:get_running_pid */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "gateway/status.py",
@@ -154254,7 +154774,7 @@
             ],
             "c_file": "src/gateway/platforms/api_server_adapter.c",
             "python_file": "gateway/stream_consumer.py",
-            "line": 946,
+            "line": 949,
             "is_consolidated": false,
             "full_text": "/* PoP: finish @ gateway/stream_consumer.py:finish */"
           },
@@ -242327,7 +242847,7 @@
             ],
             "c_file": "src/tools/checkpoint_manager.c",
             "python_file": "hermes_cli/secrets_cli.py",
-            "line": 870,
+            "line": 872,
             "is_consolidated": false,
             "full_text": "/* PoP: _list_projects @ hermes_cli/secrets_cli.py:_list_projects */"
           },
@@ -294046,8 +294566,8 @@
     },
     "tools/checkpoint_manager.py": {
       "total": 43,
-      "ported": 37,
-      "partial": 6,
+      "ported": 39,
+      "partial": 4,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -294568,7 +295088,7 @@
             ],
             "c_file": "src/tools/checkpoint_manager.c",
             "python_file": "tools/checkpoint_manager.py",
-            "line": 869,
+            "line": 871,
             "is_consolidated": false,
             "full_text": "/* PoP: _list_projects @ tools/checkpoint_manager.py:_list_projects */"
           },
@@ -295166,16 +295686,24 @@
             "decorators": [],
             "line_number": 1724
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/checkpoint_manager.c",
           "c_function": "maybe_auto_prune_checkpoints",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "maybe_auto_prune_checkpoints",
+            "python_functions": [
+              "maybe_auto_prune_checkpoints"
+            ],
+            "c_file": "src/tools/checkpoint_manager.c",
+            "python_file": "tools/checkpoint_manager.py",
+            "line": 830,
+            "is_consolidated": false,
+            "full_text": "/* PoP: maybe_auto_prune_checkpoints @ tools/checkpoint_manager.py:maybe_auto_prune_checkpoints */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/checkpoint_manager.py",
@@ -295197,7 +295725,7 @@
             ],
             "c_file": "src/tools/checkpoint_manager.c",
             "python_file": "tools/checkpoint_manager.py",
-            "line": 836,
+            "line": 837,
             "is_consolidated": false,
             "full_text": "/* PoP: store_status @ tools/checkpoint_manager.py:store_status */"
           },
@@ -295216,16 +295744,24 @@
             "decorators": [],
             "line_number": 1879
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/checkpoint_manager.c",
           "c_function": "clear_all",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "clear_all",
+            "python_functions": [
+              "clear_all"
+            ],
+            "c_file": "src/tools/checkpoint_manager.c",
+            "python_file": "tools/checkpoint_manager.py",
+            "line": 848,
+            "is_consolidated": false,
+            "full_text": "/* PoP: clear_all @ tools/checkpoint_manager.py:clear_all */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/checkpoint_manager.py",
@@ -296447,8 +296983,8 @@
     },
     "tools/computer_use/backend.py": {
       "total": 15,
-      "ported": 12,
-      "partial": 3,
+      "ported": 15,
+      "partial": 0,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -296528,16 +297064,24 @@
             ],
             "line_number": 118
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/computer_use.c",
-          "c_function": "stop",
-          "pop_annotation": null,
+          "c_function": "cu_capture_free",
+          "pop_annotation": {
+            "c_function": "cu_capture_free",
+            "python_functions": [
+              "stop"
+            ],
+            "c_file": "src/tools/computer_use.c",
+            "python_file": "tools/computer_use/backend.py",
+            "line": 1635,
+            "is_consolidated": false,
+            "full_text": "/* PoP: stop @ tools/computer_use/backend.py:stop */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/computer_use/backend.py",
@@ -296582,16 +297126,24 @@
             ],
             "line_number": 129
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/computer_use.c",
-          "c_function": "capture",
-          "pop_annotation": null,
+          "c_function": "dispatch_action",
+          "pop_annotation": {
+            "c_function": "dispatch_action",
+            "python_functions": [
+              "capture"
+            ],
+            "c_file": "src/tools/computer_use.c",
+            "python_file": "tools/computer_use/backend.py",
+            "line": 1813,
+            "is_consolidated": false,
+            "full_text": "/* PoP: capture @ tools/computer_use/backend.py:capture */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/computer_use/backend.py",
@@ -296880,23 +297432,31 @@
             "decorators": [],
             "line_number": 216
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/computer_use.c",
-          "c_function": "wait",
-          "pop_annotation": null,
+          "c_function": "",
+          "pop_annotation": {
+            "c_function": "",
+            "python_functions": [
+              "wait"
+            ],
+            "c_file": "src/tools/computer_use.c",
+            "python_file": "tools/computer_use/backend.py",
+            "line": 1856,
+            "is_consolidated": false,
+            "full_text": "/* PoP: wait @ tools/computer_use/backend.py:wait */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
     "tools/computer_use/cua_backend.py": {
       "total": 98,
-      "ported": 93,
-      "partial": 5,
+      "ported": 94,
+      "partial": 4,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -297591,7 +298151,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/cua_backend.py",
-            "line": 1654,
+            "line": 1655,
             "is_consolidated": false,
             "full_text": "/* PoP: cu_action_free @ tools/computer_use/cua_backend.py:_parse_elements_from_tree */"
           },
@@ -298366,7 +298926,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/cua_backend.py",
-            "line": 2027,
+            "line": 2031,
             "is_consolidated": false,
             "full_text": "/* PoP: handle_computer_use @ tools/computer_use/cua_backend.py:CuaDriverBackend.call_tool */"
           },
@@ -298833,16 +299393,24 @@
             "decorators": [],
             "line_number": 2250
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/computer_use.c",
-          "c_function": "drag",
-          "pop_annotation": null,
+          "c_function": "",
+          "pop_annotation": {
+            "c_function": "",
+            "python_functions": [
+              "drag"
+            ],
+            "c_file": "src/tools/computer_use.c",
+            "python_file": "tools/computer_use/cua_backend.py",
+            "line": 1951,
+            "is_consolidated": false,
+            "full_text": "/* PoP: drag @ tools/computer_use/cua_backend.py:drag */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/computer_use/cua_backend.py",
@@ -299589,7 +300157,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/cua_backend.py",
-            "line": 1646,
+            "line": 1647,
             "is_consolidated": false,
             "full_text": "/* PoP: cu_capture_free @ tools/computer_use/cua_backend.py:CuaDriverBackend.get_accessibility_tree */"
           },
@@ -299647,7 +300215,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/cua_backend.py",
-            "line": 2027,
+            "line": 2031,
             "is_consolidated": false,
             "full_text": "/* PoP: handle_computer_use @ tools/computer_use/cua_backend.py:CuaDriverBackend.call_tool */"
           },
@@ -300150,9 +300718,9 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/schema.py",
-            "line": 2165,
+            "line": 2171,
             "is_consolidated": false,
-            "full_text": "/* PoP: computer_use_get_computer_use_schema @ tools/computer_use/schema.py:get_computer_use_schema */"
+            "full_text": "* Port of Python tools/computer_use/schema.py:get_computer_use_schema("
           },
           "stub_reason": null,
           "severity": "LOW",
@@ -300163,8 +300731,8 @@
     },
     "tools/computer_use/tool.py": {
       "total": 36,
-      "ported": 32,
-      "partial": 4,
+      "ported": 33,
+      "partial": 3,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -300250,7 +300818,7 @@
             ],
             "c_file": "src/tools/computer_use.c",
             "python_file": "tools/computer_use/tool.py",
-            "line": 1698,
+            "line": 1699,
             "is_consolidated": false,
             "full_text": "/* Port of Python tools/computer_use/tool.py:_is_blocked_type"
           },
@@ -301153,16 +301721,24 @@
             "decorators": [],
             "line_number": 1021
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/computer_use.c",
-          "c_function": "get_computer_use_schema",
-          "pop_annotation": null,
+          "c_function": "computer_use_get_computer_use_schema",
+          "pop_annotation": {
+            "c_function": "computer_use_get_computer_use_schema",
+            "python_functions": [
+              "get_computer_use_schema"
+            ],
+            "c_file": "src/tools/computer_use.c",
+            "python_file": "tools/computer_use/tool.py",
+            "line": 2169,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_computer_use_schema @ tools/computer_use/tool.py:get_computer_use_schema */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -313784,7 +314360,7 @@
             ],
             "c_file": "src/tools/skills.c",
             "python_file": "tools/file_operations.py",
-            "line": 118,
+            "line": 119,
             "is_consolidated": false,
             "full_text": "/* Port of Python tools/file_operations.py:write_file"
           },
@@ -314859,7 +315435,7 @@
             ],
             "c_file": "src/tools/skills.c",
             "python_file": "tools/file_operations.py",
-            "line": 118,
+            "line": 119,
             "is_consolidated": false,
             "full_text": "/* Port of Python tools/file_operations.py:write_file"
           },
@@ -328742,7 +329318,7 @@
             ],
             "c_file": "src/tools/skills.c",
             "python_file": "tools/memory_tool.py",
-            "line": 117,
+            "line": 118,
             "is_consolidated": false,
             "full_text": "/* Port of Python tools/memory_tool.py:_write_file"
           },
@@ -338745,8 +339321,8 @@
     },
     "tools/skill_usage.py": {
       "total": 46,
-      "ported": 45,
-      "partial": 1,
+      "ported": 46,
+      "partial": 0,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -338793,16 +339369,24 @@
             "decorators": [],
             "line_number": 81
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/skills.c",
           "c_function": "skills_dir",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "skills_dir",
+            "python_functions": [
+              "_skills_dir"
+            ],
+            "c_file": "src/tools/skills.c",
+            "python_file": "tools/skill_usage.py",
+            "line": 49,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _skills_dir @ tools/skill_usage.py:_skills_dir */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/skill_usage.py",
@@ -351093,8 +351677,8 @@
     },
     "tools/todo_tool.py": {
       "total": 10,
-      "ported": 9,
-      "partial": 1,
+      "ported": 10,
+      "partial": 0,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -351141,16 +351725,24 @@
             "decorators": [],
             "line_number": 59
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/todo.c",
-          "c_function": "write",
-          "pop_annotation": null,
+          "c_function": "",
+          "pop_annotation": {
+            "c_function": "",
+            "python_functions": [
+              "write"
+            ],
+            "c_file": "src/tools/todo.c",
+            "python_file": "tools/todo_tool.py",
+            "line": 259,
+            "is_consolidated": false,
+            "full_text": "/* PoP: write @ tools/todo_tool.py:write */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/todo_tool.py",
@@ -351292,7 +351884,7 @@
             ],
             "c_file": "src/tools/skills.c",
             "python_file": "tools/todo_tool.py",
-            "line": 391,
+            "line": 392,
             "is_consolidated": false,
             "full_text": "/* Port of Python tools/todo_tool.py:_validate"
           },
@@ -352129,8 +352721,8 @@
     },
     "tools/tool_search.py": {
       "total": 23,
-      "ported": 18,
-      "partial": 5,
+      "ported": 23,
+      "partial": 0,
       "stub": 0,
       "real_gaps": 0,
       "thin": false,
@@ -352382,16 +352974,24 @@
             "decorators": [],
             "line_number": 234
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/tool_search.c",
-          "c_function": "should_activate",
-          "pop_annotation": null,
+          "c_function": "tool_search_should_activate",
+          "pop_annotation": {
+            "c_function": "tool_search_should_activate",
+            "python_functions": [
+              "should_activate"
+            ],
+            "c_file": "src/tools/tool_search.c",
+            "python_file": "tools/tool_search.py",
+            "line": 331,
+            "is_consolidated": false,
+            "full_text": "/* PoP: should_activate @ tools/tool_search.py:should_activate */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/tool_search.py",
@@ -352403,16 +353003,24 @@
             "decorators": [],
             "line_number": 283
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/tool_search.c",
-          "c_function": "_tokenize",
-          "pop_annotation": null,
+          "c_function": "tool_search_tokenize",
+          "pop_annotation": {
+            "c_function": "tool_search_tokenize",
+            "python_functions": [
+              "_tokenize"
+            ],
+            "c_file": "src/tools/tool_search.c",
+            "python_file": "tools/tool_search.py",
+            "line": 59,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _tokenize @ tools/tool_search.py:_tokenize */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/tool_search.py",
@@ -352453,16 +353061,24 @@
             "decorators": [],
             "line_number": 307
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/tool_search.c",
           "c_function": "classify_source",
-          "pop_annotation": null,
+          "pop_annotation": {
+            "c_function": "classify_source",
+            "python_functions": [
+              "_classify_source"
+            ],
+            "c_file": "src/tools/tool_search.c",
+            "python_file": "tools/tool_search.py",
+            "line": 114,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _classify_source @ tools/tool_search.py:_classify_source */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/tool_search.py",
@@ -352474,16 +353090,24 @@
             "decorators": [],
             "line_number": 321
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/tool_search.c",
-          "c_function": "build_catalog",
-          "pop_annotation": null,
+          "c_function": "tool_search_build_catalog",
+          "pop_annotation": {
+            "c_function": "tool_search_build_catalog",
+            "python_functions": [
+              "build_catalog"
+            ],
+            "c_file": "src/tools/tool_search.c",
+            "python_file": "tools/tool_search.py",
+            "line": 132,
+            "is_consolidated": false,
+            "full_text": "/* PoP: build_catalog @ tools/tool_search.py:build_catalog */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/tool_search.py",
@@ -352495,16 +353119,24 @@
             "decorators": [],
             "line_number": 347
           },
-          "classification": "PARTIAL",
+          "classification": "PORTED",
           "c_location": "src/tools/tool_search.c",
-          "c_function": "_bm25_score",
-          "pop_annotation": null,
+          "c_function": "tool_search_bm25_score",
+          "pop_annotation": {
+            "c_function": "tool_search_bm25_score",
+            "python_functions": [
+              "_bm25_score"
+            ],
+            "c_file": "src/tools/tool_search.c",
+            "python_file": "tools/tool_search.py",
+            "line": 197,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _bm25_score @ tools/tool_search.py:_bm25_score */"
+          },
           "stub_reason": null,
-          "severity": "MEDIUM",
-          "notes": "C function exists in impl file but no PoP annotation",
-          "da_flags": [
-            "DA-3:no-pop-annotation"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "tools/tool_search.py",

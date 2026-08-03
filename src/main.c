@@ -126,6 +126,7 @@ static void print_banner(void) {
     printf("Build: %s %s\n", __DATE__, __TIME__);
 }
 
+/* PoP: main @ cli.py:main */
 int main(int argc, char **argv) {
     /* L03: Install crash-resistant stdio before any output */
     install_safe_stdio();

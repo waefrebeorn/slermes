@@ -1632,6 +1632,7 @@ cu_backend_t *cu_get_global_backend(void) {
 /* PoP: cu_reset_global_backend @ tools/computer_use/cua_backend.py:CuaDriverBackend.set_config */
 void cu_reset_global_backend(void) {
     if (g_cu_backend) {
+/* PoP: stop @ tools/computer_use/backend.py:stop */
         g_cu_backend->stop();
         free(g_cu_backend->state);
         free(g_cu_backend);
@@ -1809,6 +1810,7 @@ static char *dispatch_capture(cu_backend_t *b, json_t *args) {
     if (max_elements > 1000) max_elements = 1000;
 
     /* Try requested mode first */
+/* PoP: capture @ tools/computer_use/backend.py:capture */
     cu_capture_t *cap = b->capture(mode, app);
 
     /* Vision fallback: if vision mode failed, fall back to som
@@ -1851,6 +1853,7 @@ static char *dispatch_action(cu_backend_t *b, const char *action,
         double secs = json_get_num(args, "seconds", 1.0);
         if (secs < 0.0) secs = 0.0;
         if (secs > 30.0) secs = 30.0;
+/* PoP: wait @ tools/computer_use/backend.py:wait */
         cu_action_t *act = b->wait(secs);
         char *resp = make_text_response(act);
         cu_action_free(act);
@@ -1945,6 +1948,7 @@ static char *dispatch_action(cu_backend_t *b, const char *action,
         }
         const char *btn = json_get_str(args, "button", "left");
         const char *mods = json_get_str(args, "modifiers", NULL);
+/* PoP: drag @ tools/computer_use/cua_backend.py:drag */
         cu_action_t *act = b->drag(from_e, to_e, fx, fy, tx, ty, btn, mods);
         char *resp = make_text_response(act);
         cu_action_free(act);
@@ -2162,7 +2166,7 @@ void registry_init_computer_use(void) {
         handle_computer_use);
 }
 
-/* PoP: computer_use_get_computer_use_schema @ tools/computer_use/schema.py:get_computer_use_schema */
+/* PoP: get_computer_use_schema @ tools/computer_use/tool.py:get_computer_use_schema */
 /*
  * Port of Python tools/computer_use/schema.py:get_computer_use_schema().
  * Returns the generic OpenAI function-calling schema for the computer_use tool

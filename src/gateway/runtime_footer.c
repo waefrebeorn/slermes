@@ -28,6 +28,7 @@
  * Port of Python gateway/runtime_footer.py _home_relative_cwd().
  * AG26: Port of Python gateway/runtime_footer.py:_home_relative_cwd().
  */
+/* PoP: _home_relative_cwd @ gateway/runtime_footer.py:_home_relative_cwd */
 char *home_relative_cwd(const char *cwd) {
     if (!cwd || !*cwd) return strdup("");
     const char *home = getenv("HOME");
@@ -49,6 +50,7 @@ char *home_relative_cwd(const char *cwd) {
  * Port of Python gateway/runtime_footer.py _model_short().
  * AG26: Port of Python gateway/runtime_footer.py:_model_short().
  */
+/* PoP: _model_short @ gateway/runtime_footer.py:_model_short */
 char *model_short(const char *model) {
     if (!model || !*model) return strdup("");
     const char *slash = strrchr(model, '/');

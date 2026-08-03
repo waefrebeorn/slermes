@@ -598,6 +598,7 @@ const char *coding_runtime_mode_model(const coding_runtime_mode_t *mode) {
     return mode ? mode->model : "";
 }
 
+/* PoP: toolset_selection @ agent/coding_context.py:toolset_selection */
 /* AG26: Port of Python agent/coding_context.py:toolset_selection() */
 const char **coding_runtime_mode_toolset_selection(
     const coding_runtime_mode_t *mode, const hermes_config_t *config) {
@@ -687,6 +688,7 @@ void coding_runtime_mode_free_blocks(char **blocks, int count) {
     free(blocks);
 }
 
+/* PoP: compact_skill_categories @ agent/coding_context.py:compact_skill_categories */
 /* AG26: Port of Python agent/coding_context.py:compact_skill_categories() */
 const char **coding_runtime_mode_compact_skill_categories(const coding_runtime_mode_t *mode) {
     if (!mode || !coding_runtime_mode_is_coding(mode) ||

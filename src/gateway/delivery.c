@@ -44,6 +44,7 @@ bool looks_like_telegram_private_chat_id(const char *chat_id) {
  * Port of Python gateway/delivery.py _looks_like_int().
  * AG26: Port of Python gateway/delivery.py:_looks_like_int().
  */
+/* PoP: _looks_like_int @ gateway/delivery.py:_looks_like_int */
 bool looks_like_int(const char *value) {
     if (!value || !*value) return false;
     char *end = NULL;
@@ -56,6 +57,7 @@ bool looks_like_int(const char *value) {
  * Port of Python gateway/delivery.py _send_result_failed().
  * AG26: Port of Python gateway/delivery.py:_send_result_failed().
  */
+/* PoP: _send_result_failed @ gateway/delivery.py:_send_result_failed */
 bool send_result_failed(const char *result_json) {
     if (!result_json) return true;
     char *jerr = NULL;
@@ -74,6 +76,7 @@ bool send_result_failed(const char *result_json) {
  * Port of Python gateway/delivery.py _is_silence_narration().
  * AG26: Port of Python gateway/delivery.py:_is_silence_narration().
  */
+/* PoP: _is_silence_narration @ gateway/delivery.py:_is_silence_narration */
 bool is_silence_narration(const char *content) {
     if (!content || !*content) return false;
     size_t len = strlen(content);
@@ -105,6 +108,7 @@ bool is_silence_narration(const char *content) {
  * AG26: Port of Python gateway/delivery.py:_send_result_error().
  * result_json is a JSON string from a send operation.
  * Returns malloc'd error string or NULL (caller must free). */
+/* PoP: _send_result_error @ gateway/delivery.py:_send_result_error */
 char *send_result_error(const char *result_json) {
     if (!result_json || !*result_json) return NULL;
     char *jerr = NULL;
@@ -129,6 +133,7 @@ char *send_result_error(const char *result_json) {
  * Port of Python gateway/delivery.py _is_thread_not_found_delivery_error().
  * AG26: Port of Python gateway/delivery.py:_is_thread_not_found_delivery_error().
  */
+/* PoP: _is_thread_not_found_delivery_error @ gateway/delivery.py:_is_thread_not_found_delivery_error */
 bool is_thread_not_found_delivery_error(const char *result_json) {
     char *error = send_result_error(result_json);
     if (!error) return false;
@@ -279,6 +284,7 @@ char *deliver_to_platform(gw_base_platform_adapter_t *adapter,
         free(jerr);
     }
 
+/* PoP: send @ gateway/delivery.py:send */
     gw_send_result_t res = adapter->send(adapter, chat_id, to_send, NULL, meta);
     if (meta) json_free(meta);
     free(truncated);

@@ -301,6 +301,7 @@ static int send_markdown(const char *to_user_id, const char *text,
                           const char *context_token);
 /* Port of Python gateway/platforms/base.py:send_video(). */
 /* sendVideo (G20) */
+/* PoP: send_video @ gateway/platforms/weixin.py:send_video */
 static int send_video(const char *to_user_id, const char *video_url,
                        const char *context_token);
 /* Port of Python gateway/platforms/weixin.py:_send_file(). */

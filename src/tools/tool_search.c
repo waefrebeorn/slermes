@@ -56,6 +56,7 @@ int tool_search_estimate_tokens(const char *schema_json) {
  *  Tokenization
  * ═════════════════════════════════════════════════════════════════════ */
 
+/* PoP: _tokenize @ tools/tool_search.py:_tokenize */
 /* Port of Python: _tokenize() — extract lowercase alphanumeric tokens */
 int tool_search_tokenize(const char *text, char tokens[][64], int max_tokens) {
     if (!text || max_tokens <= 0) return 0;
@@ -110,6 +111,7 @@ void tool_search_entry_text(const char *name, const char *description,
 }
 
 /* Classify tool source by name — Port of Python: _classify_source() */
+/* PoP: _classify_source @ tools/tool_search.py:_classify_source */
 static catalog_source_t classify_source(const char *name, char *source_name, size_t sn_size) {
     if (!name) return CATALOG_SOURCE_OTHER;
     tool_t *t = registry_find(name);
@@ -127,6 +129,7 @@ static catalog_source_t classify_source(const char *name, char *source_name, siz
     return CATALOG_SOURCE_OTHER;
 }
 
+/* PoP: build_catalog @ tools/tool_search.py:build_catalog */
 /* Port of Python: build_catalog() */
 int tool_search_build_catalog(const char *tool_schemas[], int schema_count,
                               tool_catalog_t *catalog) {
@@ -191,6 +194,7 @@ int tool_search_build_catalog(const char *tool_schemas[], int schema_count,
  *  BM25 scoring
  * ═════════════════════════════════════════════════════════════════════ */
 
+/* PoP: _bm25_score @ tools/tool_search.py:_bm25_score */
 /* Port of Python: _bm25_score() */
 double tool_search_bm25_score(const char *query_tokens[], int query_count,
                               const catalog_entry_t *entry,
@@ -324,6 +328,7 @@ int tool_search_query(const tool_catalog_t *catalog, const char *query,
  *  Threshold gate
  * ═════════════════════════════════════════════════════════════════════ */
 
+/* PoP: should_activate @ tools/tool_search.py:should_activate */
 /* Port of Python: should_activate() */
 bool tool_search_should_activate(const tool_search_config_t *config,
                                  int deferrable_tokens,

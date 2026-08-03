@@ -382,6 +382,7 @@ static char *apply_rule(const char *text, const md_rule_t *rule) {
  * This is a simplified C port of Python's regex-based strip_markdown().
  * AG26: Port of Python gateway/platforms/helpers.py:strip_markdown().
  */
+/* PoP: strip_markdown @ gateway/platforms/helpers.py:strip_markdown */
 char *strip_markdown(const char *text) {
     if (!text) return NULL;
 
@@ -435,6 +436,7 @@ char *strip_markdown(const char *text) {
  * AG26: Port of Python gateway/platforms/helpers.py:redact_phone().
  * ================================================================ */
 
+/* PoP: redact_phone @ gateway/platforms/helpers.py:redact_phone */
 char *redact_phone(const char *phone) {
     if (!phone) return strdup("<none>");
     if (strcmp(phone, "<none>") == 0) return strdup("<none>");

@@ -118,6 +118,7 @@ char *normalise_display_value(const char *setting, const char *value) {
  * Returns a char* (caller must free). NULL if fallback was NULL.
  * AG26: Port of Python gateway/display_config.py:resolve_display_setting().
  */
+/* PoP: resolve_display_setting @ gateway/display_config.py:resolve_display_setting */
 char *resolve_display_setting(json_node_t *user_config,
                                const char *platform_key,
                                const char *setting,

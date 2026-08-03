@@ -827,6 +827,7 @@ bool prune_checkpoints(const char *store, const char *working_dir, int keep) {
     return true;
 }
 
+/* PoP: maybe_auto_prune_checkpoints @ tools/checkpoint_manager.py:maybe_auto_prune_checkpoints */
 void maybe_auto_prune_checkpoints(const char *store, const char *working_dir) {
     (void)store; (void)working_dir;
     /* Real pruning runs after each _take via _cm_prune / _cm_enforce_size_cap.
@@ -844,6 +845,7 @@ char *store_status(const char *checkpoint_base) {
     return r;
 }
 
+/* PoP: clear_all @ tools/checkpoint_manager.py:clear_all */
 char *clear_all(const char *checkpoint_base) {
     char store[MAX_PATH];
     _store_path(NULL, store, sizeof(store));

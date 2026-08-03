@@ -33,7 +33,7 @@
  *  generate_file_id — 32 hex chars from 16 random bytes
  *  Port of Python yuanbao_media.generate_file_id().
  * ================================================================ */
-
+/* PoP: generate_file_id @ gateway/platforms/yuanbao_media.py:generate_file_id */
 char *yuanbao_generate_file_id(void)
 {
     unsigned char buf[16];

@@ -46,6 +46,7 @@ static int             g_curator_stale_days = SKILL_CURATOR_DEFAULT_STALE_DAYS;
  *  Path utilities
  * ================================================================ */
 
+/* PoP: _skills_dir @ tools/skill_usage.py:_skills_dir */
 static void skills_dir(char *buf, size_t sz) {
     const char *home = getenv("HERMES_HOME");
     if (!home) home = getenv("HOME");

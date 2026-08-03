@@ -57,6 +57,7 @@ static bool id_in_list(const char *list, const char *user_id) {
     return false;
 }
 
+/* PoP: is_admin @ gateway/slash_access.py:is_admin */
 /* ================================================================
  *  Check if user is admin
  *  Port of Python SlashAccessPolicy.is_admin()
@@ -69,6 +70,7 @@ bool slash_policy_is_admin(const slash_policy_t *policy, const char *user_id) {
     return id_in_list(policy->admin_user_ids, user_id);
 }
 
+/* PoP: can_run @ gateway/slash_access.py:can_run */
 /* ================================================================
  *  Check if user can run a specific slash command
  *  Port of Python SlashAccessPolicy.can_run()
@@ -98,6 +100,7 @@ bool slash_policy_can_run(const slash_policy_t *policy,
  *  Returns malloc'd sorted comma-separated string, or "" on empty.
  * ================================================================ */
 
+/* PoP: _coerce_id_list @ gateway/slash_access.py:_coerce_id_list */
 static char *coerce_id_list(json_node_t *raw) {
     char buf[4096] = {0};
     size_t pos = 0;
@@ -160,6 +163,7 @@ static char *coerce_id_list(json_node_t *raw) {
  *  Lowercase canonicalization. Returns malloc'd comma-separated string.
  * ================================================================ */
 
+/* PoP: _coerce_command_list @ gateway/slash_access.py:_coerce_command_list */
 static char *coerce_command_list(json_node_t *raw) {
     char buf[4096] = {0};
     size_t pos = 0;
@@ -205,6 +209,7 @@ static char *coerce_command_list(json_node_t *raw) {
  *  AG26: Port of Python gateway/slash_access.py:_scope_for_chat_type().
  * ================================================================ */
 
+/* PoP: _scope_for_chat_type @ gateway/slash_access.py:_scope_for_chat_type */
 static const char *scope_for_chat_type(const char *chat_type) {
     if (!chat_type || !*chat_type) return "dm";
 
@@ -221,6 +226,7 @@ static const char *scope_for_chat_type(const char *chat_type) {
  *  AG26: Port of Python gateway/slash_access.py:_keys_for_scope().
  * ================================================================ */
 
+/* PoP: _keys_for_scope @ gateway/slash_access.py:_keys_for_scope */
 static void keys_for_scope(const char *scope,
                             const char **admin_key,
                             const char **cmd_key) {
@@ -242,6 +248,7 @@ static void keys_for_scope(const char *scope,
  *  "extra" sub-object. Defensively handles NULL and non-object shapes.
  * ================================================================ */
 
+/* PoP: _platform_extra @ gateway/slash_access.py:_platform_extra */
 static json_node_t *platform_extra(json_node_t *platform_config) {
     if (!platform_config) return json_new_object();
     if (platform_config->type != JSON_OBJECT)
