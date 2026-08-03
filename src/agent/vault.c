@@ -33,7 +33,8 @@ typedef struct {
     char value[2048];
 } vault_entry_t;
 
-static vault_entry_t g_vault[VAULT_MAX_CREDENTIALS];
+#include "hive.h"
+static hive_t *g_vault = NULL;   /* of vault_entry_t* (heap) */
 static int g_vault_count = 0;
 static bool g_vault_unlocked = false;
 static char g_vault_path[4096] = {0};
@@ -130,12 +131,17 @@ static char *vault_serialize(void) {
     json_set(root, "created_at", json_number((double)time(NULL)));
 
     json_t *entries = json_array();
-    for (int i = 0; i < g_vault_count; i++) {
-        json_t *entry = json_object();
-        json_set(entry, "service", json_string(g_vault[i].service));
-        json_set(entry, "key", json_string(g_vault[i].key));
-        json_set(entry, "value", json_string(g_vault[i].value));
-        json_append(entries, entry);
+    if (g_vault) {
+        hive_iter_t it;
+        hive_iter_begin(g_vault, &it);
+        vault_entry_t *e;
+        while (hive_iter_next(g_vault, &it, NULL, (void **)&e)) {
+            json_t *entry = json_object();
+            json_set(entry, "service", json_string(e->service));
+            json_set(entry, "key", json_string(e->key));
+            json_set(entry, "value", json_string(e->value));
+            json_append(entries, entry);
+        }
     }
     json_set(root, "entries", entries);
 
@@ -161,6 +167,16 @@ static bool vault_deserialize(const char *json_str) {
         return false;
     }
 
+    if (g_vault) {
+        hive_iter_t it;
+        hive_iter_begin(g_vault, &it);
+        hive_handle_t hnd;
+        vault_entry_t *e;
+        while (hive_iter_next(g_vault, &it, &hnd, (void **)&e)) {
+            free(e);
+            hive_erase(g_vault, hnd);
+        }
+    }
     g_vault_count = 0;
     size_t n = json_len(entries);
     for (size_t i = 0; i < n && g_vault_count < VAULT_MAX_CREDENTIALS; i++) {
@@ -172,9 +188,15 @@ static bool vault_deserialize(const char *json_str) {
         const char *value = json_get_str(entry, "value", "");
 
         if (service[0] && key[0]) {
-            snprintf(g_vault[g_vault_count].service, sizeof(g_vault[0].service), "%s", service);
-            snprintf(g_vault[g_vault_count].key, sizeof(g_vault[0].key), "%s", key);
-            snprintf(g_vault[g_vault_count].value, sizeof(g_vault[0].value), "%s", value);
+            vault_entry_t *e = calloc(1, sizeof(vault_entry_t));
+            if (!e) break;
+            snprintf(e->service, sizeof(e->service), "%s", service);
+            snprintf(e->key, sizeof(e->key), "%s", key);
+            snprintf(e->value, sizeof(e->value), "%s", value);
+            if (!g_vault) g_vault = hive_new(8);
+            bool ok = false;
+            hive_insert(g_vault, e, &ok);
+            if (!ok) { free(e); break; }
             g_vault_count++;
         }
     }
@@ -297,20 +319,31 @@ bool vault_store(const char *service, const char *key, const char *value) {
     if (!service || !key || !value) return false;
 
     /* Check for existing entry and update */
-    for (int i = 0; i < g_vault_count; i++) {
-        if (strcmp(g_vault[i].service, service) == 0 &&
-            strcmp(g_vault[i].key, key) == 0) {
-            snprintf(g_vault[i].value, sizeof(g_vault[i].value), "%s", value);
-            return true;
+    if (g_vault) {
+        hive_iter_t it;
+        hive_iter_begin(g_vault, &it);
+        vault_entry_t *e;
+        while (hive_iter_next(g_vault, &it, NULL, (void **)&e)) {
+            if (strcmp(e->service, service) == 0 &&
+                strcmp(e->key, key) == 0) {
+                snprintf(e->value, sizeof(e->value), "%s", value);
+                return true;
+            }
         }
     }
 
     /* Add new entry */
     if (g_vault_count >= VAULT_MAX_CREDENTIALS) return false;
+    if (!g_vault) g_vault = hive_new(8);
 
-    snprintf(g_vault[g_vault_count].service, sizeof(g_vault[0].service), "%s", service);
-    snprintf(g_vault[g_vault_count].key, sizeof(g_vault[0].key), "%s", key);
-    snprintf(g_vault[g_vault_count].value, sizeof(g_vault[0].value), "%s", value);
+    vault_entry_t *e = calloc(1, sizeof(vault_entry_t));
+    if (!e) return false;
+    snprintf(e->service, sizeof(e->service), "%s", service);
+    snprintf(e->key, sizeof(e->key), "%s", key);
+    snprintf(e->value, sizeof(e->value), "%s", value);
+    bool ok = false;
+    hive_insert(g_vault, e, &ok);
+    if (!ok) { free(e); return false; }
     g_vault_count++;
     return true;
 }
@@ -318,12 +351,15 @@ bool vault_store(const char *service, const char *key, const char *value) {
 /* Retrieve a credential. Returns NULL if not found. */
 const char *vault_retrieve(const char *service, const char *key) {
     if (!service || !key) return NULL;
-    if (!g_vault_unlocked) return NULL;
+    if (!g_vault_unlocked || !g_vault) return NULL;
 
-    for (int i = 0; i < g_vault_count; i++) {
-        if (strcmp(g_vault[i].service, service) == 0 &&
-            strcmp(g_vault[i].key, key) == 0) {
-            return g_vault[i].value;
+    hive_iter_t it;
+    hive_iter_begin(g_vault, &it);
+    vault_entry_t *e;
+    while (hive_iter_next(g_vault, &it, NULL, (void **)&e)) {
+        if (strcmp(e->service, service) == 0 &&
+            strcmp(e->key, key) == 0) {
+            return e->value;
         }
     }
     return NULL;
@@ -331,14 +367,18 @@ const char *vault_retrieve(const char *service, const char *key) {
 
 /* Delete a credential */
 bool vault_delete(const char *service, const char *key) {
-    if (!service || !key) return false;
+    if (!service || !key || !g_vault) return false;
 
-    for (int i = 0; i < g_vault_count; i++) {
-        if (strcmp(g_vault[i].service, service) == 0 &&
-            strcmp(g_vault[i].key, key) == 0) {
-            /* Remove by swapping with last */
-            g_vault[i] = g_vault[--g_vault_count];
-            memset(&g_vault[g_vault_count], 0, sizeof(vault_entry_t));
+    hive_iter_t it;
+    hive_iter_begin(g_vault, &it);
+    hive_handle_t hnd;
+    vault_entry_t *e;
+    while (hive_iter_next(g_vault, &it, &hnd, (void **)&e)) {
+        if (strcmp(e->service, service) == 0 &&
+            strcmp(e->key, key) == 0) {
+            free(e);
+            hive_erase(g_vault, hnd);
+            g_vault_count--;
             return true;
         }
     }
@@ -407,18 +447,23 @@ int vault_list_services(char services[][128], int max_count) {
     if (!services) return 0;
 
     int count = 0;
-    for (int i = 0; i < g_vault_count && count < max_count; i++) {
-        /* Check for duplicates */
-        bool dup = false;
-        for (int j = 0; j < count; j++) {
-            if (strcmp(services[j], g_vault[i].service) == 0) {
-                dup = true;
-                break;
+    if (g_vault) {
+        hive_iter_t it;
+        hive_iter_begin(g_vault, &it);
+        vault_entry_t *e;
+        while (hive_iter_next(g_vault, &it, NULL, (void **)&e) && count < max_count) {
+            /* Check for duplicates */
+            bool dup = false;
+            for (int j = 0; j < count; j++) {
+                if (strcmp(services[j], e->service) == 0) {
+                    dup = true;
+                    break;
+                }
             }
-        }
-        if (!dup) {
-            snprintf(services[count], 128, "%s", g_vault[i].service);
-            count++;
+            if (!dup) {
+                snprintf(services[count], 128, "%s", e->service);
+                count++;
+            }
         }
     }
     return count;

@@ -79,16 +79,15 @@ int helpers_is_duplicate(const char *msg_id)
 /* ─── Text Batch Aggregation ───────────────────────────────────────────── */
 
 /* Real pending batch: each enqueued (key, text) fragment is appended to a
- * bounded ring buffer; flush/cancel operate on this buffer. */
-#define HELPERS_BATCH_MAX 256
+ * hive; flush/cancel operate on the live entries. */
 typedef struct {
     char key[128];
     char text[2048];
     int text_len;
 } BatchEntry;
 
-static BatchEntry _batch[HELPERS_BATCH_MAX];
-static int _batch_count = 0;
+#include "hive.h"
+static hive_t *_batch = NULL;   /* of BatchEntry* (heap) */
 static pthread_mutex_t _batch_lock = PTHREAD_MUTEX_INITIALIZER;
 
 /* PoP: helpers_enqueue @ gateway/platforms/helpers.py:enqueue */
@@ -100,29 +99,43 @@ void helpers_enqueue(const char *key, const char *text, int text_len)
     if (!key || !key[0] || !text || text_len <= 0) return;
 
     pthread_mutex_lock(&_batch_lock);
-    if (_batch_count < HELPERS_BATCH_MAX) {
-        BatchEntry *e = &_batch[_batch_count++];
+    if (!_batch) _batch = hive_new(16);
+    BatchEntry *e = calloc(1, sizeof(BatchEntry));
+    if (e) {
         strncpy(e->key, key, sizeof(e->key) - 1);
         e->key[sizeof(e->key) - 1] = '\0';
         int copy = text_len < (int)sizeof(e->text) - 1 ? text_len : (int)sizeof(e->text) - 1;
         memcpy(e->text, text, copy);
         e->text[copy] = '\0';
         e->text_len = copy;
+        bool ok = false;
+        hive_insert(_batch, e, &ok);
+        if (!ok) free(e);
     }
     pthread_mutex_unlock(&_batch_lock);
 
-    hermes_log(LOG_DEBUG, "helpers", "Enqueued text for key=%s len=%d (batch=%d)", key, text_len, _batch_count);
+    hermes_log(LOG_DEBUG, "helpers", "Enqueued text for key=%s len=%d (batch=%zu)", key, text_len, _batch ? hive_count(_batch) : 0);
 }
 
 /* PoP: helpers_cancel_all @ gateway/platforms/helpers.py:cancel_all */
 
 /* Port of Python gateway/platforms/helpers.py:cancel_all */
-/* Cancel all pending flush tasks by clearing the batch buffer. */
+/* Cancel all pending flush tasks by clearing the batch hive. */
 void helpers_cancel_all(void)
 {
     pthread_mutex_lock(&_batch_lock);
-    int cleared = _batch_count;
-    _batch_count = 0;
+    int cleared = 0;
+    if (_batch) {
+        cleared = (int)hive_count(_batch);
+        hive_iter_t it;
+        hive_iter_begin(_batch, &it);
+        hive_handle_t hnd;
+        BatchEntry *e;
+        while (hive_iter_next(_batch, &it, &hnd, (void **)&e)) {
+            free(e);
+            hive_erase(_batch, hnd);
+        }
+    }
     pthread_mutex_unlock(&_batch_lock);
 
     hermes_log(LOG_DEBUG, "helpers", "Cancelled all pending flush tasks (%d cleared)", cleared);
@@ -134,7 +147,7 @@ typedef struct {
     char thread_id[128];
 } ThreadEntry;
 
-static ThreadEntry _threads[MAX_THREADS];
+static hive_t *_threads = NULL;   /* of ThreadEntry* (heap) */
 static int _thread_count = 0;
 
 /* PoP: helpers_mark @ gateway/platforms/helpers.py:mark */
@@ -146,16 +159,29 @@ void helpers_mark(const char *thread_id)
     if (!thread_id || !thread_id[0]) return;
 
     /* Check if already tracked */
-    for (int i = 0; i < _thread_count; i++) {
-        if (strcmp(_threads[i].thread_id, thread_id) == 0) return;
+    if (_threads) {
+        hive_iter_t it;
+        hive_iter_begin(_threads, &it);
+        ThreadEntry *t;
+        while (hive_iter_next(_threads, &it, NULL, (void **)&t)) {
+            if (strcmp(t->thread_id, thread_id) == 0) return;
+        }
     }
 
     /* Add new thread */
-    if (_thread_count < MAX_THREADS) {
-        strncpy(_threads[_thread_count].thread_id, thread_id, 127);
-        _threads[_thread_count].thread_id[127] = '\0';
-        _thread_count++;
-        hermes_log(LOG_DEBUG, "helpers", "Marked thread %s (total: %d)", thread_id, _thread_count);
+    if (!_threads) _threads = hive_new(16);
+    ThreadEntry *t = calloc(1, sizeof(ThreadEntry));
+    if (t) {
+        strncpy(t->thread_id, thread_id, 127);
+        t->thread_id[127] = '\0';
+        bool ok = false;
+        hive_insert(_threads, t, &ok);
+        if (ok) {
+            _thread_count++;
+            hermes_log(LOG_DEBUG, "helpers", "Marked thread %s (total: %d)", thread_id, _thread_count);
+        } else {
+            free(t);
+        }
     }
 
     /* Persist to file (simplified) */
@@ -166,9 +192,16 @@ void helpers_mark(const char *thread_id)
     FILE *f = fopen(path, "w");
     if (f) {
         fprintf(f, "[");
-        for (int i = 0; i < _thread_count; i++) {
-            if (i > 0) fprintf(f, ",");
-            fprintf(f, "\"%s\"", _threads[i].thread_id);
+        int first = 1;
+        if (_threads) {
+            hive_iter_t it;
+            hive_iter_begin(_threads, &it);
+            ThreadEntry *t;
+            while (hive_iter_next(_threads, &it, NULL, (void **)&t)) {
+                if (!first) fprintf(f, ",");
+                fprintf(f, "\"%s\"", t->thread_id);
+                first = 0;
+            }
         }
         fprintf(f, "]");
         fclose(f);
@@ -182,9 +215,13 @@ void helpers_mark(const char *thread_id)
 int helpers___contains__(const char *thread_id)
 {
     if (!thread_id || !thread_id[0]) return 0;
+    if (!_threads) return 0;
 
-    for (int i = 0; i < _thread_count; i++) {
-        if (strcmp(_threads[i].thread_id, thread_id) == 0) return 1;
+    hive_iter_t it;
+    hive_iter_begin(_threads, &it);
+    ThreadEntry *t;
+    while (hive_iter_next(_threads, &it, NULL, (void **)&t)) {
+        if (strcmp(t->thread_id, thread_id) == 0) return 1;
     }
     return 0;
 }

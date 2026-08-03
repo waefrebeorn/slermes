@@ -41,34 +41,54 @@ int mct_server_task_init(const char *server_name, long max_rpm, double timeout) 
 }
 
 /* PoP: _check_rate_limit @ tools/mcp_tool.py:_check_rate_limit */
+#include "hive.h"
 bool mct_check_rate_limit(const char *server_name) {
     /* Python: sliding 60s window; True when allowed. */
     if (!server_name) return true;
-    static char names[16][128];
-    static double stamps[16][4096];
-    static long counts[16];
-    static long next_slot = 0;
-    /* find slot for this server */
-    long slot = -1;
-    for (long i = 0; i < next_slot; i++)
-        if (strcmp(names[i], server_name) == 0) { slot = i; break; }
-    if (slot < 0) {
-        if (next_slot < 16) {
-            slot = next_slot++;
-            snprintf(names[slot], sizeof(names[slot]), "%s", server_name);
-            counts[slot] = 0;
-        } else {
-            return true;
-        }
+    /* Hive-backed per-server sliding window: only live servers allocate,
+     * and each window caps at 60 stamps (60 rpm). */
+    typedef struct {
+        char   name[128];
+        double *stamps;   /* growable; live count = count */
+        long   cap;
+        long   count;
+    } mct_limiter_t;
+    static hive_t *limiters = NULL;   /* of mct_limiter_t* */
+    if (!limiters) limiters = hive_new(4);
+
+    mct_limiter_t *lim = NULL;
+    hive_iter_t it;
+    hive_iter_begin(limiters, &it);
+    mct_limiter_t *cand;
+    while (hive_iter_next(limiters, &it, NULL, (void **)&cand)) {
+        if (strcmp(cand->name, server_name) == 0) { lim = cand; break; }
+    }
+    if (!lim) {
+        lim = calloc(1, sizeof(mct_limiter_t));
+        if (!lim) return true;
+        snprintf(lim->name, sizeof(lim->name), "%s", server_name);
+        lim->cap = 16;
+        lim->stamps = malloc((size_t)lim->cap * sizeof(double));
+        if (!lim->stamps) { free(lim); return true; }
+        bool ok = false;
+        hive_insert(limiters, lim, &ok);
+        if (!ok) { free(lim->stamps); free(lim); return true; }
     }
     double now = (double)time(NULL);
     /* prune stamps older than 60s */
     long kept = 0;
-    for (long i = 0; i < counts[slot]; i++)
-        if (now - stamps[slot][i] < 60.0) stamps[slot][kept++] = stamps[slot][i];
-    counts[slot] = kept;
+    for (long i = 0; i < lim->count; i++)
+        if (now - lim->stamps[i] < 60.0) lim->stamps[kept++] = lim->stamps[i];
+    lim->count = kept;
     if (kept >= 60) return false;  /* 60 rpm cap */
-    stamps[slot][counts[slot]++] = now;
+    /* grow if needed */
+    if (lim->count >= lim->cap) {
+        long ncap = lim->cap * 2;
+        double *ns = realloc(lim->stamps, (size_t)ncap * sizeof(double));
+        if (ns) { lim->stamps = ns; lim->cap = ncap; }
+    }
+    if (lim->count < lim->cap)
+        lim->stamps[lim->count++] = now;
     return true;
 }
 
