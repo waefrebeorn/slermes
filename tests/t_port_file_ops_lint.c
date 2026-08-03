@@ -15,6 +15,7 @@ char *file_ops_delete_path(const char *path);
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 /* minimal hermes_log stub so the test links without the full logger */
 void hermes_log(int level, const char *fmt, ...) { (void)level; (void)fmt; }
@@ -30,6 +31,10 @@ static void emit_bool2(const char *fn, const char *a, const char *b, int v)
 
 int main(void)
 {
+    /* Self-contained: create the sandbox dirs the write-deny test needs
+     * (the runner does not pre-create them). */
+    mkdir("/tmp/hermes-lint-test-home", 0755);
+    mkdir("/tmp/hermes-lint-test-root", 0755);
     file_safety_set_test_paths("/tmp/hermes-lint-test-home", "/tmp/hermes-lint-test-root");
 
     /* ---- looks_like_linter_unusable (mirrors test_install_and_lint_fixes.py) ---- */

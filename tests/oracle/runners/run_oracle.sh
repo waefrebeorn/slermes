@@ -72,7 +72,7 @@ TMPH="$(pwd)/$BUILD_DIR/home_$NAME"
 # include roots + version-macro fixes) so harness edits actually take effect
 # and the linked binary is never a stale object from a prior run.
 mkdir -p "$BUILD_DIR/obj/tests"
-COMPILE="gcc -c $HARNESS -o $BUILD_DIR/obj/tests/t_port_$NAME.o $LIBINCS $SRCINCS -D_XOPEN_SOURCE=700 -D_GNU_SOURCE"
+COMPILE="gcc -c $HARNESS -o $BUILD_DIR/obj/tests/t_port_$NAME.o -I include $LIBINCS $SRCINCS -D_XOPEN_SOURCE=700 -D_GNU_SOURCE"
 COMPILE=$(echo "$COMPILE" | sed -E 's#-DHERMES_VERSION=[^ ]*#-DHERMES_VERSION=0#g; s#-DHERMES_RELEASE_DATE=[^ ]*#-DHERMES_RELEASE_DATE=0#g; s#-DATADIR=[^ ]*#-DATADIR="/share/slermes/docs"#g')
 # Always rebuild the harness from the current object closure (never reuse a
 # stale binary from a prior run with a different object set).

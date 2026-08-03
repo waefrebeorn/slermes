@@ -247,20 +247,59 @@ static yaml_entry_t *parse_map(yaml_line_t *lines, size_t count,
     *consumed = 0;
 
     size_t i = 0;
+    bool saw_key = false;   /* saw a key: entry at this level */
+    bool saw_seq = false;   /* saw a "- " item at this level (pure list) */
     while (i < count) {
         yaml_line_t *ln = &lines[i];
         if (ln->indent <= parent_indent) break;
         if (ln->line[0] == '\0') { i++; continue; }
 
+        /* Document markers: PyYAML's yaml.parse accepts multi-document
+         * streams ("---" / "..." separators). Skip them. */
+        if (strcmp(ln->line, "---") == 0 || strcmp(ln->line, "...") == 0) {
+            i++;
+            continue;
+        }
+
         char *colon = strchr(ln->line, ':');
         if (!colon) {
             if (ln->line[0] == '-' && (ln->line[1] == ' ' || ln->line[1] == '\0')) {
+                /* A "- " sequence item at this level. PyYAML forbids mixing
+                 * block-sequence items and block-mapping keys at the same
+                 * indentation ("while parsing a block collection"). */
+                if (saw_key) {
+                    if (err) *err = xstrdup("ParserError: while parsing a block collection");
+                    free_entry(map);
+                    return NULL;
+                }
+                saw_seq = true;
                 i++;
                 continue;
             }
             if (err) *err = xstrdup("expected ':' in YAML line");
             free_entry(map);
             return NULL;
+        }
+        /* PyYAML forbids mixing block-sequence items and block-mapping keys
+         * at the same indentation, in either order. */
+        if (saw_seq) {
+            if (err) *err = xstrdup("ParserError: while parsing a block collection");
+            free_entry(map);
+            return NULL;
+        }
+        saw_key = true;
+
+        /* PyYAML rejects an empty mapping key (`: value`) with a
+         * ParserError while parsing a block mapping. */
+        {
+            size_t klen = (size_t)(colon - ln->line);
+            size_t k = 0;
+            while (k < klen && ln->line[k] == ' ') k++;
+            if (k == klen) {
+                if (err) *err = xstrdup("ParserError: while parsing a block mapping");
+                free_entry(map);
+                return NULL;
+            }
         }
 
         size_t key_len = (size_t)(colon - ln->line);
@@ -275,6 +314,38 @@ static yaml_entry_t *parse_map(yaml_line_t *lines, size_t count,
         if (!child) { free_entry(map); return NULL; }
 
         const char *val = colon + 1;
+        /* PyYAML: only a BARE key (`a:` with nothing after the colon) may
+         * open a nested block; any inline value token (even `""`) makes a
+         * deeper-indented key line an error ("while parsing a block mapping"
+         * / "mapping values are not allowed here"). */
+        const char *val_scan = val;
+        while (*val_scan == ' ') val_scan++;
+        bool has_inline_value = (*val_scan != '\0');
+
+        /* PyYAML rejects a plain (unquoted) scalar containing ": " —
+         * "mapping values are not allowed here". Quoted/flow values keep
+         * colons fine (e.g. `a: "b: c"`, `a: http://x`). A colon is only
+         * illegal when followed by whitespace or EOL outside quotes/flow. */
+        if (has_inline_value && *val_scan != '"' && *val_scan != '\'' &&
+            *val_scan != '[' && *val_scan != '{') {
+            bool flow = false;
+            for (const char *q = val_scan; *q; q++) {
+                if (*q == '"' || *q == '\'') { /* skip quoted span */
+                    char quote = *q;
+                    q++;
+                    while (*q && *q != quote) q++;
+                    if (!*q) break;
+                    continue;
+                }
+                if (*q == '[' || *q == '{') flow = true;
+                else if (*q == ']' || *q == '}') flow = false;
+                else if (*q == ':' && (q[1] == ' ' || q[1] == '\0') && !flow) {
+                    if (err) *err = xstrdup("ScannerError: mapping values are not allowed here");
+                    free_entry(map);
+                    return NULL;
+                }
+            }
+        }
         parse_inline(child, val);
 
         if (child->type == YVAL_STRING) {
@@ -357,6 +428,45 @@ static yaml_entry_t *parse_map(yaml_line_t *lines, size_t count,
                 size_t k = i + 1;
                 while (k < count && lines[k].line[0] == '\0') k++;
                 if (k < count && lines[k].indent > ln->indent) {
+                    /* PyYAML rejects an inline value followed by a
+                     * deeper-indented key (`a: 1\n  b: 2`): "mapping values
+                     * are not allowed here" / "while parsing a block mapping".
+                     * Only a BARE key (no inline value) may open a nested
+                     * block. Exceptions: unbalanced flow containers
+                     * (`a: [1,\n  2]`) and block scalar indicators
+                     * (`a: |\n  text`, `a: >\n  folded`) legitimately
+                     * continue on deeper lines. */
+                    bool flow_open = false;
+                    bool block_ind = false;
+                    const char *vs = val;
+                    while (*vs == ' ') vs++;
+                    if (*vs == '[' || *vs == '{') {
+                        int depth = 0;
+                        for (const char *q = vs; *q; q++) {
+                            if (*q == '[' || *q == '{') depth++;
+                            else if (*q == ']' || *q == '}') depth--;
+                        }
+                        flow_open = (depth > 0);
+                    } else if (*vs == '|' || *vs == '>') {
+                        /* block scalar indicator: |, |-, |+, >, >-, >+, |2, ... */
+                        const char *q = vs + 1;
+                        while (*q == '-' || *q == '+' || (*q >= '1' && *q <= '9')) q++;
+                        while (*q == ' ') q++;
+                        block_ind = (*q == '\0');
+                    }
+                    if (has_inline_value && !flow_open && !block_ind) {
+                        if (err) *err = xstrdup("ScannerError: mapping values are not allowed here");
+                        free_entry(map);
+                        return NULL;
+                    }
+                    if (flow_open || block_ind) {
+                        /* Consume the deeper-indented continuation lines as
+                         * part of this value: flow content (`a: [1,\n  2]`)
+                         * or literal/folded block scalar lines
+                         * (`a: |\n  text`). PyYAML accepts both. */
+                        while (k < count && lines[k].indent > ln->indent) k++;
+                        i = k - 1;
+                    } else {
                     free(child->str_val);
                     child->str_val = NULL;
                     child->type = YVAL_MAP;
@@ -369,6 +479,7 @@ static yaml_entry_t *parse_map(yaml_line_t *lines, size_t count,
                         free(submap->key);
                         free(submap);
                         i = k + child_consumed - 1;
+                    }
                     }
                 }
             }

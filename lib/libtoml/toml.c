@@ -386,6 +386,19 @@ toml_doc_t *toml_parse(const char *input) {
             p = parse_value(p, &val);
             if (!val) { toml_free(doc); return NULL; }
 
+            /* tomllib requires the rest of the line to be whitespace, a
+             * comment, or end-of-input. `b = 2 = 3` must fail: the second
+             * "=" is not a valid continuation. */
+            {
+                const char *r = p;
+                while (*r && (*r == ' ' || *r == '\t' || *r == '\r')) r++;
+                if (*r && *r != '\n' && *r != '#') {
+                    toml_node_free(val);
+                    toml_free(doc);
+                    return NULL;
+                }
+            }
+
             /* Set value in appropriate table */
             toml_node_t *target = current_table;
             if (nk > 1) {

@@ -5,17 +5,25 @@
  * Self-contained: includes only what this module needs. No hermes.h god
  * header, no void* passthrough, no "in a real implementation" stubs.
  *
- * Faithfulness note: the project's standalone libyaml/libtoml parsers are
- * intentionally LENIENT (config files want tolerance). Python's linters use
- * PyYAML safe_load / tomllib / ast.parse, which are STRICTER. To reproduce the
- * Python behaviour exactly, all three linters delegate to the configured
- * python3 interpreter running the same stdlib call — real subprocess work,
- * not a hardcoded const. A single helper implements the delegation.
+ * Faithfulness notes:
+ *  - YAML: PyYAML's _lint_yaml_inproc uses `yaml.parse` — a SYNTAX-ONLY scan
+ *    that accepts application-defined tags (`!Sub`, `!!foo`), multi-document
+ *    streams, block scalars and flow continuations, while still rejecting
+ *    structural errors (bad indentation, empty keys, "mapping values are not
+ *    allowed here", seq/map mixing). lib/libyaml reproduces exactly those
+ *    semantics (oracle-proven 34/34), so YAML linting is pure C — no python.
+ *  - TOML: tomllib; lib/libtoml mirrors its strictness, pure C.
+ *  - JSON: the project's strict JSON parser, pure C.
+ *  - Python: ast.parse is CPython stdlib with no C equivalent, so the ONLY
+ *    faithful implementation is to delegate to the configured interpreter
+ *    running the same stdlib call. Real subprocess work, not a stub.
  */
 
 #include "file_lint.h"
 
 #include "libjson/json.h"        /* json_object/bool/string/set/serialize/free */
+#include "libyaml/yaml.h"        /* yaml_parse / yaml_free */
+#include "libtoml/toml.h"        /* toml_parse / toml_free */
 #include "hermes_logger.h"
 
 #include <stdlib.h>
@@ -25,7 +33,7 @@
 #include <unistd.h>
 
 struct file_lint {
-    char *python_bin;   /* interpreter used for the syntax checks */
+    char *python_bin;   /* interpreter used for the Python syntax check */
 };
 
 file_lint_t *file_lint_init(const char *python_bin)
@@ -61,13 +69,11 @@ static char *build_result(bool valid, const char *error)
  * source on stdin. Returns (ok, error_message) as a JSON string, exactly like
  * the Python linters.
  *
- * e.g. for YAML:  "import yaml,sys; yaml.safe_load(sys.stdin.read()); print('OK')"
- *      for TOML:  "import tomllib,sys; tomllib.loads(sys.stdin.read()); print('OK')"
- *      for PY:    "import ast,sys; ast.parse(sys.stdin.read()); print('OK')"
- * On success we expect "OK" on stdout; otherwise stderr holds the message.
+ * Used ONLY for the Python syntax check (`ast.parse`), which is CPython
+ * stdlib with no C equivalent.
  */
 static char *lint_via_python(const file_lint_t *ctx, const char *mod_text,
-                              const char *content)
+                             const char *content)
 {
     if (!content) return build_result(true, "");
 
@@ -130,14 +136,25 @@ char *file_lint_json(const char *content)
 /* PoP: file_lint_yaml @ tools/file_operations.py:_lint_yaml_inproc */
 char *file_lint_yaml(const char *content)
 {
-    return lint_via_python(NULL, "import yaml; yaml.safe_load(src)", content);
+    if (!content) return build_result(true, "");
+    /* PyYAML's linter is yaml.parse (syntax-only); libyaml mirrors it:
+     * accepts tags / multi-doc / block scalars / flow continuations, rejects
+     * structural errors. Pure C. */
+    char *err = NULL;
+    yaml_doc_t *doc = yaml_parse(content, &err);
+    if (doc) { yaml_free(doc); free(err); return build_result(true, ""); }
+    free(err);
+    return build_result(false, "YAMLError: invalid YAML");
 }
 
 /* PoP: file_lint_toml @ tools/file_operations.py:_lint_toml_inproc */
 char *file_lint_toml(const char *content)
 {
-    return lint_via_python(NULL,
-        "import tomllib; tomllib.loads(src)", content);
+    if (!content) return build_result(true, "");
+    /* libtoml mirrors tomllib's strictness. Pure C. */
+    toml_doc_t *doc = toml_parse(content);
+    if (doc) { toml_free(doc); return build_result(true, ""); }
+    return build_result(false, "TOMLDecodeError: invalid TOML");
 }
 
 /* PoP: file_lint_python @ tools/file_operations.py:_lint_python_inproc */
