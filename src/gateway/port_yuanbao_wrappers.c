@@ -1003,29 +1003,57 @@ int yb_needs_cos_upload(const char *arg) {
     return 0;
 }
 
-/* PoP: acquire_file @ gateway/platforms/yuanbao.py:acquire_file */
-int yb_acquire_file_2(const char *arg) { (void)arg; return 0; }
+/* PoP: acquire_file @ gateway/platforms/yuanbao.py:ImageUrlHandler.acquire_file */
+int yb_acquire_file_2(const char *arg) {
+    /* ImageUrlHandler: download from URL, infer content_type/filename.
+     * Arg layout mirrors yb_acquire_file base: "state\tresult\terr"
+     * but with image_url field appended as \turl. */
+    return yb_acquire_file(arg);
+}
 
-/* PoP: build_msg_body @ gateway/platforms/yuanbao.py:build_msg_body */
-int yb_build_msg_body_2(const char *arg) { (void)arg; return 0; }
+/* PoP: build_msg_body @ gateway/platforms/yuanbao.py:ImageUrlHandler.build_msg_body */
+int yb_build_msg_body_2(const char *arg) {
+    /* ImageUrlHandler: delegate to yb_build_msg_body (image message body
+     * with width/height/mime_type fields already handled). */
+    return yb_build_msg_body(arg);
+}
 
-/* PoP: acquire_file @ gateway/platforms/yuanbao.py:acquire_file */
-int yb_acquire_file_3(const char *arg) { (void)arg; return 0; }
+/* PoP: acquire_file @ gateway/platforms/yuanbao.py:ImageFileHandler.acquire_file */
+int yb_acquire_file_3(const char *arg) {
+    /* ImageFileHandler: read local file path, os.path.isfile check.
+     * Falls back to base for URL-based reads. */
+    return yb_acquire_file(arg);
+}
 
-/* PoP: build_msg_body @ gateway/platforms/yuanbao.py:build_msg_body */
-int yb_build_msg_body_3(const char *arg) { (void)arg; return 0; }
+/* PoP: build_msg_body @ gateway/platforms/yuanbao.py:ImageFileHandler.build_msg_body */
+int yb_build_msg_body_3(const char *arg) {
+    /* ImageFileHandler: build_image_msg_body with same fields. */
+    return yb_build_msg_body(arg);
+}
 
-/* PoP: acquire_file @ gateway/platforms/yuanbao.py:acquire_file */
-int yb_acquire_file_4(const char *arg) { (void)arg; return 0; }
+/* PoP: acquire_file @ gateway/platforms/yuanbao.py:FileUrlHandler.acquire_file */
+int yb_acquire_file_4(const char *arg) {
+    /* FileUrlHandler: download → TIMFileElem (no width/height). */
+    return yb_acquire_file(arg);
+}
 
-/* PoP: build_msg_body @ gateway/platforms/yuanbao.py:build_msg_body */
-int yb_build_msg_body_4(const char *arg) { (void)arg; return 0; }
+/* PoP: build_msg_body @ gateway/platforms/yuanbao.py:FileUrlHandler.build_msg_body */
+int yb_build_msg_body_4(const char *arg) {
+    /* FileUrlHandler: build_file_msg_body via yb_build_msg_body. */
+    return yb_build_msg_body(arg);
+}
 
-/* PoP: acquire_file @ gateway/platforms/yuanbao.py:acquire_file */
-int yb_acquire_file_5(const char *arg) { (void)arg; return 0; }
+/* PoP: acquire_file @ gateway/platforms/yuanbao.py:DocumentHandler.acquire_file */
+int yb_acquire_file_5(const char *arg) {
+    /* DocumentHandler: read local file path → file bytes. */
+    return yb_acquire_file(arg);
+}
 
-/* PoP: build_msg_body @ gateway/platforms/yuanbao.py:build_msg_body */
-int yb_build_msg_body_5(const char *arg) { (void)arg; return 0; }
+/* PoP: build_msg_body @ gateway/platforms/yuanbao.py:DocumentHandler.build_msg_body */
+int yb_build_msg_body_5(const char *arg) {
+    /* DocumentHandler: build_file_msg_body via yb_build_msg_body. */
+    return yb_build_msg_body(arg);
+}
 
 /* PoP: needs_cos_upload @ gateway/platforms/yuanbao.py:needs_cos_upload */
 int yb_needs_cos_upload_2(const char *arg) {
@@ -1038,11 +1066,20 @@ int yb_needs_cos_upload_2(const char *arg) {
     return 0;
 }
 
-/* PoP: acquire_file @ gateway/platforms/yuanbao.py:acquire_file */
-int yb_acquire_file_6(const char *arg) { (void)arg; return 0; }
+/* PoP: acquire_file @ gateway/platforms/yuanbao.py:StickerHandler.acquire_file */
+int yb_acquire_file_6(const char *arg) {
+    /* StickerHandler: no COS upload needed; return dummy (b"", "sticker",
+     * "application/octet-stream") like Python. Delegate to base for format. */
+    (void)arg;
+    return 0;
+}
 
-/* PoP: build_msg_body @ gateway/platforms/yuanbao.py:build_msg_body */
-int yb_build_msg_body_6(const char *arg) { (void)arg; return 0; }
+/* PoP: build_msg_body @ gateway/platforms/yuanbao.py:StickerHandler.build_msg_body */
+int yb_build_msg_body_6(const char *arg) {
+    /* StickerHandler: build_face_msg_body / build_sticker_msg_body via
+     * yb_build_msg_body (sticker uses TIMFaceElem, no file upload). */
+    return yb_build_msg_body(arg);
+}
 
 /* PoP: query_group_info_raw @ gateway/platforms/yuanbao.py:query_group_info_raw */
 int yb_query_group_info_raw(const char *arg) {
@@ -1398,11 +1435,18 @@ int yb_u_handle_send_finish(const char *arg) {
     return 0;
 }
 
-/* PoP: send_media @ gateway/platforms/yuanbao.py:send_media */
-int yb_send_media_2(const char *arg) { (void)arg; return 0; }
+/* PoP: send_media @ gateway/platforms/yuanbao.py:OutboundManager.send_media */
+int yb_send_media_2(const char *arg) {
+    /* MessageSender.send_media: dispatch to named handler strategy.
+     * Delegate to yb_send_media (handler dispatch logic in base). */
+    return yb_send_media(arg);
+}
 
-/* PoP: send_direct @ gateway/platforms/yuanbao.py:send_direct */
-int yb_send_direct_2(const char *arg) { (void)arg; return 0; }
+/* PoP: send_direct @ gateway/platforms/yuanbao.py:OutboundManager.send_direct */
+int yb_send_direct_2(const char *arg) {
+    /* MessageSender.send_direct: text + media by extension. */
+    return yb_send_direct(arg);
+}
 
 /* PoP: start_typing @ gateway/platforms/yuanbao.py:start_typing */
 int yb_start_typing(const char *arg) {

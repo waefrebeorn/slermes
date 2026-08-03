@@ -460,7 +460,11 @@ def classify_bootleg(name, info, defined, memo, stack=None):
     memo[name] = True; stack.discard(name); return True
 
 # ── python-side cross-check ──
-PY_ROOT = pathlib.Path(__file__).resolve().parent.parent
+# The Python tree is the SIBLING of the slermes repo (repo layout:
+# hermes-agent-dev/  ← Python sources (gateway/, agent/, tools/, ...)
+# hermes-agent-dev/slermes/  ← this C port).  __file__ is slermes/tests/,
+# so parent.parent = slermes; one more .parent lands on the Python root.
+PY_ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 
 # Python "real work" = IO / network / fs / subprocess / exec.  Pure
 # declaration (argparse trees, command registration, self.X = binds in
@@ -507,6 +511,16 @@ def _build_pop_index():
             idx.setdefault(fn, []).append((m.group(1), fn))
     _POP_INDEX = idx
 
+def _enclosing_class(node, tree):
+    """Return the name of the ClassDef enclosing *node*, or None."""
+    for n in ast.walk(tree):
+        if isinstance(n, ast.ClassDef):
+            for child in ast.walk(n):
+                if child is node:
+                    return n.name
+    return None
+
+
 def python_is_trivial_for(c_name):
     """True when the PoP-annotated Python source for c_name does no real work.
 
@@ -527,10 +541,18 @@ def python_is_trivial_for(c_name):
             tree = ast.parse(src)
         except (OSError, SyntaxError):
             continue
+        # Accept both bare "fn" and dotted "Class.fn" names.
+        bare = py_name.rsplit('.', 1)[-1]
         fn = None
         for node in ast.walk(tree):
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) \
-                    and node.name == py_name:
+                    and node.name == bare:
+                # For dotted names, verify the enclosing class matches.
+                if '.' in py_name and node.col_offset > 0:
+                    cls_name = py_name.rsplit('.', 1)[0]
+                    enclosing = _enclosing_class(node, tree)
+                    if enclosing != cls_name:
+                        continue
                 fn = node
                 break
         if fn is None:
@@ -549,14 +571,17 @@ def python_is_trivial_for(c_name):
             if isinstance(node, ast.Call):
                 f = node.func
                 if isinstance(f, ast.Name):
+                    # Known real-signal function names (open, Path, http, etc.)
                     for rx in real_sigs:
-                        if rx.search(f.id + '('):
+                        if rx.search(f.id):
                             trivial = False; break
                 elif isinstance(f, ast.Attribute):
                     attr = f.attr
+                    # self.method() / cls.method() — delegation to another
+                    # component that may do real work (IO, network, etc.).
+                    if isinstance(f.value, ast.Name) and f.value.id in ('self', 'cls'):
+                        trivial = False; break
                     for rx in real_sigs:
-                        if '\\s*\\(' in rx.pattern and not rx.search(attr + '('):
-                            continue
                         if rx.search(attr):
                             trivial = False; break
             elif isinstance(node, ast.Attribute):
@@ -565,6 +590,9 @@ def python_is_trivial_for(c_name):
                     for rx in real_sigs:
                         if rx.search('os.' + node.attr):
                             trivial = False; break
+            # Any 'await' expression is real async work (network/IO).
+            if isinstance(node, ast.Await):
+                trivial = False
             if not trivial:
                 break
         if trivial:
