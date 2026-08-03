@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <time.h>
+#include <unistd.h>
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
