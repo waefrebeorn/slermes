@@ -329,9 +329,11 @@ DESKTOP_GUI_OBJ := \
     src/desktop_profiles.o src/desktop_settings.o src/gateway_probe.o src/window_stubs.o \
     src/hermes_env_keys.o src/file_ops.o \
     src/agent/logger.o src/pty.o src/clipboard.o \
+    src/tools/voice_mode.o src/tools/transcribe.o src/tools/transcribe_helpers.o src/tools/registry.o src/tools/tool_result.o \
+    lib/libtranscribe/transcribe.o \
     lib/libdb/sqlite3.o lib/libhttp/http.o lib/libjson/json.o lib/libbase64/base64.o lib/libcrypto/crypto.o
 DESKTOP_GUI_CFLAGS := $(shell pkg-config --cflags sdl2 SDL2_ttf 2>/dev/null)
-DESKTOP_GUI_LIBS := $(shell pkg-config --libs sdl2 SDL2_ttf 2>/dev/null) -lm -lssl -lcrypto -lz
+DESKTOP_GUI_LIBS := $(shell pkg-config --libs sdl2 SDL2_ttf 2>/dev/null) -lm -lssl -lcrypto -lz -lasound -lpthread
 
 # Phase targets (each adds its objects)
 DEPS_OBJ = src/hermes_error.o src/secrets.o src/hermes_tokenizer.o src/xai_retirement.o src/skills_hub.o src/mcp_serve.o src/api_server.o src/hermes_env_keys.o src/web_dashboard.o src/jiter_preload.o src/util_str.o lib/libwubuoffice/src/wubuzip/crc.o lib/libwubuoffice/src/wubuzip/zip.o lib/libwubuoffice/src/wubuzip/reader.o lib/libwubuoffice/src/wubuzip/bit.o lib/libwubuoffice/src/wubuzip/bitw.o lib/libwubuoffice/src/wubuzip/canon.o lib/libwubuoffice/src/wubuzip/huffman.o lib/libwubuoffice/src/wubuzip/fixed.o lib/libwubuoffice/src/wubuzip/fixedcode.o lib/libwubuoffice/src/wubuzip/limitcode.o lib/libwubuoffice/src/wubuzip/lz77.o lib/libwubuoffice/src/wubuzip/deflate.o lib/libwubuoffice/src/wubuzip/block.o lib/libwubuoffice/src/wubuzip/inflate.o lib/libwubuoffice/src/wubuoxml/package.o lib/libwubuoffice/src/wubuoxml/rels_path.o lib/libwubuoffice/src/wubuoxml/reader.o lib/libwubuoffice/src/wubuoxml/docx_text.o

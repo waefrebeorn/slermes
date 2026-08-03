@@ -856,15 +856,42 @@ static voice_input_cb g_voice_cb = NULL;
 
 bool desktop_voice_input_start(voice_input_cb cb) {
     if (g_voice_active) return false;
+    /* Delegate to the real voice recorder (voice_mode.c: ALSA capture +
+     * VAD state machine, mirrors AudioRecorder). If no audio backend is
+     * present, fail-open with a clear message. */
+    extern const char *voice_import_audio(void);
+    extern void voice_recorder_start(void (*on_silence_stop)(void));
+    if (!voice_import_audio()) {
+        fprintf(stderr, "desktop_voice_input_start: no audio capture backend\n");
+        return false;
+    }
     g_voice_cb = cb;
     g_voice_active = true;
-    fprintf(stderr, "desktop_voice_input_start: voice input started (stub)");
+    voice_recorder_start(NULL);
     return true;
 }
 
 bool desktop_voice_input_stop(void) {
     if (!g_voice_active) return false;
+    extern char *voice_recorder_stop(void);
+    extern char *transcribe_recording(const char *file_path, const char *model,
+                                      int chunk_seconds);
     g_voice_active = false;
+    char *wav = voice_recorder_stop();
+    if (wav && wav[0] && g_voice_cb) {
+        /* Transcribe and deliver the transcript. */
+        char *result = transcribe_recording(wav, NULL, 30);
+        if (result) {
+            json_t *j = json_parse(result, NULL);
+            if (j) {
+                const char *text = json_get_str(j, "transcript", "");
+                if (text && *text) g_voice_cb(text, true);
+                json_free(j);
+            }
+            free(result);
+        }
+    }
+    free(wav);
     g_voice_cb = NULL;
     return true;
 }
