@@ -21,7 +21,10 @@ static json_t *emit_cli_gateway_platforms_signal_rate_limit__extract_retry_after
     const char *value = json_get_str(c, "value", "");
     long v = (long)cli_gateway_platforms_signal_rate_limit__extract_retry_after_seconds(value);
     json_t *o = json_new_object(); json_set(o, "fn", json_string("cli_gateway_platforms_signal_rate_limit__extract_retry_after_seconds"));
-    json_set(o, "out", json_int(v)); return o;
+    /* Python returns Optional[int]; None serializes to '' in the oracle.
+     * The C port signals None with -1 — emit '' for parity. */
+    if (v < 0) json_set(o, "out", json_string(""));
+    else json_set(o, "out", json_int(v)); return o;
 }
 
 static json_t *emit_cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error(const json_t *c){

@@ -13,24 +13,98 @@
 #include <string.h>
 #include <time.h>
 
+/* Port of _RETRY_AFTER_RE: "Retry after (\d+(?:\.\d+)?)\s*second" (IGNORECASE) */
+static int extract_retry_after_regex(const char *msg);
+
 /* PoP: cli_gateway_platforms_signal_rate_limit__extract_retry_after_seconds @ gateway/platforms/signal_rate_limit.py:_extract_retry_after_seconds */
+/* Faithful port: tries two sources, in order —
+ *   1. structured field: err.data.response.results[*].retryAfterSeconds
+ *      (signal-cli >= v0.14.3) -> float(max(candidates))
+ *   2. "Retry after N seconds" regex over the message (libsignal-net's
+ *      RetryLaterException wrapped as AttachmentInvalidException).
+ * Returns None (-1) when neither yields. Returns microseconds-agnostic
+ * SECONDS as a double; the caller casts as needed. */
 int cli_gateway_platforms_signal_rate_limit__extract_retry_after_seconds(const char *retry_after_header) {
-    /*
-     * Parse the Retry-After header value (seconds) from an HTTP response.
-     * Returns the number of seconds to wait, or -1 if parsing fails.
-     */
     if (!retry_after_header || !retry_after_header[0]) {
         hermes_log(LOG_DEBUG, "signal_rl", "_extract_retry_after: NULL header");
         return -1;
     }
-    char *endptr = NULL;
-    long seconds = strtol(retry_after_header, &endptr, 10);
-    if (endptr == retry_after_header || *endptr != '\0' || seconds < 0) {
-        hermes_log(LOG_WARNING, "signal_rl", "_extract_retry_after: invalid value '%s'", retry_after_header);
+    /* Path 1: JSON object with data.response.results[*].retryAfterSeconds */
+    char *parse_err = NULL;
+    json_t *doc = json_parse(retry_after_header, &parse_err);
+    if (parse_err) free(parse_err);
+    if (doc) {
+        json_t *data = json_obj_get(doc, "data");
+        json_t *response = data ? json_obj_get(data, "response") : NULL;
+        json_t *results = response ? json_obj_get(response, "results") : NULL;
+        if (results && results->type == JSON_ARRAY) {
+            double best = -1.0;
+            size_t nres = json_len(results);
+            for (size_t k = 0; k < nres; k++) {
+                json_t *r = json_get(results, (int)k);
+                if (!r || r->type != JSON_OBJECT) continue;
+                json_t *ras = json_obj_get(r, "retryAfterSeconds");
+                if (ras && ras->type == JSON_NUMBER && ras->num_val > 0) {
+                    if (ras->num_val > best) best = ras->num_val;
+                }
+            }
+            if (best >= 0) {
+                json_free(doc);
+                return (int)best;
+            }
+        }
+        /* fall through to message regex */
+        const char *m = json_get_str(doc, "message", NULL);
+        if (m) {
+            int r = extract_retry_after_regex(m);
+            json_free(doc);
+            return r;
+        }
+        json_free(doc);
         return -1;
     }
-    hermes_log(LOG_DEBUG, "signal_rl", "_extract_retry_after: %ld seconds", seconds);
-    return (int)seconds;
+    /* Path 2: plain string message */
+    return extract_retry_after_regex(retry_after_header);
+}
+
+/* Port of _RETRY_AFTER_RE: "Retry after (\d+(?:\.\d+)?)\s*second" (IGNORECASE) */
+static int extract_retry_after_regex(const char *msg) {
+    if (!msg) return -1;
+    const char *p = msg;
+    while (*p) {
+        /* case-insensitive "retry after" */
+        if ((p[0]=='r'||p[0]=='R') && (p[1]=='e'||p[1]=='E') &&
+            (p[2]=='t'||p[2]=='T') && (p[3]=='r'||p[3]=='R') &&
+            (p[4]=='y'||p[4]=='Y') &&
+            (p[5]==' '||p[5]=='\t') &&
+            (p[6]=='a'||p[6]=='A') && (p[7]=='f'||p[7]=='F') &&
+            (p[8]=='t'||p[8]=='T') && (p[9]=='e'||p[9]=='E') &&
+            (p[10]=='r'||p[10]=='R') &&
+            (p[11]==' '||p[11]=='\t')) {
+            const char *q = p + 12;
+            while (*q == ' ' || *q == '\t') q++;
+            /* digits (and optional fraction) */
+            if (*q >= '0' && *q <= '9') {
+                double val = 0;
+                while (*q >= '0' && *q <= '9') { val = val * 10 + (*q - '0'); q++; }
+                if (*q == '.') {
+                    q++;
+                    double frac = 0.1;
+                    while (*q >= '0' && *q <= '9') { val += (*q - '0') * frac; frac *= 0.1; q++; }
+                }
+                /* \s*second (case-insensitive) */
+                const char *s = q;
+                while (*s == ' ' || *s == '\t') s++;
+                if ((s[0]=='s'||s[0]=='S') && (s[1]=='e'||s[1]=='E') &&
+                    (s[2]=='c'||s[2]=='C') && (s[3]=='o'||s[3]=='O') &&
+                    (s[4]=='n'||s[4]=='N') && (s[5]=='d'||s[5]=='D')) {
+                    return (int)val;
+                }
+            }
+        }
+        p++;
+    }
+    return -1;
 }
 
 /* PoP: cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error @ gateway/platforms/signal_rate_limit.py:_is_signal_rate_limit_error */
