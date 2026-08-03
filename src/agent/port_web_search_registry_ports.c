@@ -10,6 +10,8 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "web_search_registry.h"
+#include "json.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -23,23 +25,34 @@ static char *lowerdup(const char *s) {
 int wsr_register_provider(const char *name, const char *provider_desc) {
     /* Python: overwrite on same name. */
     if (!name) return -1;
-    printf("web provider registered: %s\n", name);
-    return 0;
+    web_search_provider_t prov = {0};
+    strncpy(prov.name, name, sizeof(prov.name) - 1);
+    strncpy(prov.display_name, name, sizeof(prov.display_name) - 1);
+    prov.is_available = NULL;
+    prov.capabilities = WEB_CAP_SEARCH | WEB_CAP_EXTRACT;
+    return web_search_register_provider(&prov) ? 0 : -1;
 }
 
 /* PoP: list_providers @ agent/web_search_registry.py:list_providers */
 char *wsr_list_providers(void) {
     /* Python: sorted by name. */
-    printf("web providers listed (sorted)\n");
-    return strdup("[]");
+    int n = web_search_provider_count();
+    json_t *arr = json_array();
+    for (int i = 0; i < n; i++) {
+        const web_search_provider_t *p = web_search_get_provider_by_index(i);
+        if (p) json_append(arr, json_string(p->name));
+    }
+    char *ser = json_serialize(arr);
+    json_free(arr);
+    return ser ? ser : strdup("[]");
 }
 
 /* PoP: get_provider @ agent/web_search_registry.py:get_provider */
 char *wsr_get_provider(const char *name) {
     /* Python: provider or None. */
     if (!name) return NULL;
-    printf("web provider fetched: %s\n", name);
-    return NULL;
+    const web_search_provider_t *p = web_search_get_provider(name);
+    return p ? strdup(p->name) : NULL;
 }
 
 /* PoP: _read_config_key @ agent/web_search_registry.py:_read_config_key */
@@ -76,6 +89,6 @@ char *wsr_resolve(const char *capability, const char *config_yaml) {
 
 /* PoP: _reset_for_tests @ agent/web_search_registry.py:_reset_for_tests */
 int wsr_reset_for_tests(void) {
-    printf("web provider registry cleared (test-only)\n");
+    web_search_reset_registry();
     return 0;
 }
