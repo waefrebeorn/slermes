@@ -7,6 +7,7 @@
 #define _GNU_SOURCE
 #include "event_handling.h"
 #include "app_state_internal.h"
+#include "chat_composer.h"
 #include "sidebar.h"
 #include "chat_view.h"
 #include "titlebar.h"
@@ -335,6 +336,29 @@ bool event_handle_key(app_state_t *app, int key, int mod) {
                 } else {
                     fprintf(stderr, "import cancelled\n");
                 }
+                return true;
+            }
+            break;
+
+        case SDLK_o:
+            if (mod & KMOD_CTRL) {
+                /* Attach a file (Ctrl+O, paperclip parity): the file dialog
+                 * picks a path, which is inserted into the composer as the
+                 * attachment marker (matches the Electron paperclip flow). */
+                extern char *desktop_file_dialog_open(const char *title,
+                                                      const char *filter);
+                char *path = desktop_file_dialog_open("Attach a file", NULL);
+                if (path && path[0]) {
+                    /* Append " [attach:<path>]" to the composer buffer. */
+                    char buf[4600];
+                    snprintf(buf, sizeof(buf), "%s [attach:%s]",
+                             app_composer_buf(app), path);
+                    app_set_composer_buf(app, buf);
+                    app_set_composer_pos(app, (int)strlen(buf));
+                    app_set_composer_focused(app, true);
+                    app_set_api_status(app, "File attached");
+                }
+                free(path);
                 return true;
             }
             break;
