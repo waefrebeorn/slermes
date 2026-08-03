@@ -2748,3 +2748,5 @@
 {"commit":"5373397305c2645ae6d7ffac57e86405f28bdd2f","port":"hermes_cli_browser_connect","verdict":"pass","timestamp":"2026-07-31T23:01:53-04:00"}
 {"commit":"5373397305c2645ae6d7ffac57e86405f28bdd2f","port":"hermes_cli_callbacks","verdict":"pass","timestamp":"2026-07-31T23:01:54-04:00"}
 {"commit":"5373397305c2645ae6d7ffac57e86405f28bdd2f","port":"hermes_cli_checkpoints","verdict":"pass","timestamp":"2026-07-31T23:01:54-04:00"}
+{"commit":"3cdb1ae8c7fe267f926a3d0abfa12ffbf6bf3be9","port":"da_pass3","verdict":"fail","timestamp":"2026-08-03T11:05:11-04:00"}
+{"commit":"3cdb1ae8c7fe267f926a3d0abfa12ffbf6bf3be9","port":"parity","verdict":"fail","timestamp":"2026-08-03T11:05:41-04:00"}
