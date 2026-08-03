@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "json.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -19,12 +20,64 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
+static json_t *_msc_repair_node(json_t *node, bool is_schema);
+
 /* PoP: _repair_schema @ agent/moonshot_schema.py:_repair_schema */
 char *msc_repair_schema(const char *node_json, bool is_schema) {
-    /* Python: recursive repairs. */
+    /* Python: recursive JSON-Schema repairs (missing type, anyOf parent).
+     * Returns a repaired JSON string, or the original when not parseable. */
     if (!node_json) return strdup("{}");
-    printf("moonshot schema repairs applied\n");
-    return strdup(node_json);
+    json_t *node = json_parse(node_json, NULL);
+    if (!node) return strdup(node_json);
+
+    json_t *repaired = _msc_repair_node(node, is_schema);
+    json_free(node);
+    if (!repaired) return strdup(node_json);
+
+    char *ser = json_serialize(repaired);
+    json_free(repaired);
+    return ser ? ser : strdup(node_json);
+}
+
+static json_t *_msc_repair_node(json_t *node, bool is_schema) {
+    if (!node) return NULL;
+    if (node->type == JSON_ARRAY) {
+        for (size_t i = 0; i < json_len(node); i++) {
+            json_t *item = json_get(node, i);
+            if (item && item->type == JSON_OBJECT)
+                _msc_repair_node(item, true);
+        }
+        return node;
+    }
+    if (node->type != JSON_OBJECT) return node;
+
+    /* Missing-type inference for schema nodes. */
+    if (is_schema && !json_obj_get(node, "type")) {
+        if (json_obj_get(node, "properties"))
+            json_set(node, "type", json_string("object"));
+        else if (json_obj_get(node, "items"))
+            json_set(node, "type", json_string("array"));
+        else if (json_obj_get(node, "enum"))
+            json_set(node, "type", json_string("string"));
+        else
+            json_set(node, "type", json_string("string"));
+    }
+
+    /* Recurse into sub-schemas. */
+    const char *keys[] = {"properties", "items", "anyOf", "oneOf", "allOf", NULL};
+    for (int k = 0; keys[k]; k++) {
+        json_t *child = json_obj_get(node, keys[k]);
+        if (child && child->type == JSON_OBJECT)
+            _msc_repair_node(child, true);
+        else if (child && child->type == JSON_ARRAY) {
+            for (size_t i = 0; i < json_len(child); i++) {
+                json_t *elt = json_get(child, i);
+                if (elt && elt->type == JSON_OBJECT)
+                    _msc_repair_node(elt, true);
+            }
+        }
+    }
+    return node;
 }
 
 /* PoP: _fill_missing_type @ agent/moonshot_schema.py:_fill_missing_type */
@@ -48,10 +101,44 @@ char *msc_sanitize_moonshot_tool_parameters(const char *params_json) {
 
 /* PoP: sanitize_moonshot_tools @ agent/moonshot_schema.py:sanitize_moonshot_tools */
 char *msc_sanitize_moonshot_tools(const char *tools_json) {
-    /* Python: every tool's parameters. */
+    /* Python: apply sanitize_moonshot_tool_parameters to every tool's
+     * parameters. Returns a sanitized JSON array string. */
     if (!tools_json) return strdup("[]");
-    printf("moonshot tool parameters sanitized\n");
-    return strdup(tools_json);
+    json_t *tools = json_parse(tools_json, NULL);
+    if (!tools || tools->type != JSON_ARRAY) {
+        json_free(tools);
+        return strdup(tools_json);
+    }
+
+    json_t *sanitized = json_array();
+    if (!sanitized) { json_free(tools); return strdup(tools_json); }
+
+    for (size_t i = 0; i < json_len(tools); i++) {
+        json_t *tool = json_get(tools, i);
+        if (!tool || tool->type != JSON_OBJECT) {
+            json_append(sanitized, json_copy(tool));
+            continue;
+        }
+        json_t *fn = json_obj_get(tool, "function");
+        if (!fn || fn->type != JSON_OBJECT) {
+            json_append(sanitized, json_copy(tool));
+            continue;
+        }
+        json_t *params = json_obj_get(fn, "parameters");
+        if (params && params->type == JSON_OBJECT) {
+            json_t *repaired = _msc_repair_node(json_copy(params), true);
+            if (repaired) {
+                json_set(fn, "parameters", repaired);
+                json_free(repaired);
+            }
+        }
+        json_append(sanitized, json_copy(tool));
+    }
+
+    json_free(tools);
+    char *ser = json_serialize(sanitized);
+    json_free(sanitized);
+    return ser ? ser : strdup(tools_json);
 }
 
 /* PoP: is_moonshot_model @ agent/moonshot_schema.py:is_moonshot_model */
