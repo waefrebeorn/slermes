@@ -145,13 +145,13 @@ struct app_state {
     int         pet_type;
     int         pet_frame;
     int         pet_frame_tick;
-    float       pet_x, pet_y;
-    float       pet_vx, pet_vy;
+    float       pet_x, pet_y, pet_vx, pet_vy;
+    float       pet_scale;
     bool        pet_show_gallery;
-    char        pet_names[16][32];
     int         pet_count;
     int         pet_selected;
-    float       pet_scale;
+    char        pet_names[16][32];
+    long        frame_count;
 
     /* Voice */
     bool        voice_active;

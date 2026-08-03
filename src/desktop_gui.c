@@ -120,7 +120,8 @@ int main(int argc, char **argv) {
     if (app_pet_active(app)) {
         app_set_pet_x(app, app_sidebar_w(app) / 2.0f);
         app_set_pet_y(app, TITLEBAR_H + app_sidebar_h(app) / 2.0f);
-        app_set_pet_scale(app, 0.33f);
+        /* Scale is set by pet_ui_init (1.0f for the GUI sprite) — don't
+         * clobber it with the terminal default. */
     }
     
     /* Mark boot as ready */

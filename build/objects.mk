@@ -313,7 +313,8 @@ PET_OBJ = \
     src/pet/pet_render.o \
     src/pet/atlas.o \
     src/pet/pet_commands.o \
-    src/pet/port_pet_prompts.o
+    src/pet/port_pet_prompts.o \
+    lib/libpngdec/pngdec.o
 
 # Custom GUI desktop (SDL2-based)
 # Full SDL GUI application object set (mirrors DESKTOP_APP_OBJ but uses the

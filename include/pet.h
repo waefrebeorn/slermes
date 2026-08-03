@@ -234,6 +234,24 @@ pet_render_mode_t pet_resolve_mode(const char *configured, bool is_tty);
 /* Get frame count for a state row (padding-trimmed) */
 int pet_state_frame_count(const char *spritesheet_path, pet_state_t state);
 
+/* ── Decoded sprite frames (from-scratch PNG decoder) ───────────────── */
+
+/* One decoded RGBA frame cropped from a spritesheet state row. */
+typedef struct {
+    int           width;      /* PET_FRAME_W */
+    int           height;     /* PET_FRAME_H */
+    unsigned char *rgba;      /* w*h*4, non-premultiplied; caller frees */
+} pet_frame_t;
+
+/* Decode the real (padding-trimmed) frames for one state row of a
+ * spritesheet. Returns malloc'd array (caller frees with free()); *out_count
+ * gets the frame count. Returns NULL on decode failure. */
+pet_frame_t *pet_sprite_frames(const char *spritesheet_path, pet_state_t state,
+                               int *out_count);
+
+/* Get the active pet's spritesheet path (static buffer, empty if none). */
+const char *pet_active_spritesheet(void);
+
 /* Build a kitty image ID from slug */
 int pet_kitty_image_id(const char *slug);
 

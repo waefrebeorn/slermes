@@ -83,6 +83,7 @@ app_state_t *app_state_create(void) {
     app->pet_count = 0;
     app->pet_selected = 0;
     app->pet_scale = 0.33f;
+    app->frame_count = 0;
     app->voice_active = false;
     app->voice_recording = false;
     app->voice_tts_pending = 0;

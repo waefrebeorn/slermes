@@ -19,28 +19,74 @@
  * Internal Helpers
  * ══════════════════════════════════════════════════════════════════════ */
 
-static void draw_pet_unicode(app_state_t *app, int x, int y, int w, int h) {
-    gc_theme_t *t = app_get_theme(app);
-    gc_font_t *font = gc_get_font(app_get_window(app));
-    
-    /* Simple ASCII pet based on state */
-    const char *pet_frames[] = {
-        "  /\\_/\\  ",
-        " ( o.o ) ",
-        "  > ^ <  ",
-        "  /\\_/\\  ",
-        " ( -.- ) ",
-        "  >   <  ",
-    };
-    
-    int frame = app_pet_frame(app) % 6;
-    gc_draw_text(app_get_window(app), font, pet_frames[frame], x, y, t->accent);
-}
-
 static void draw_pet_spritesheet(app_state_t *app, int x, int y, int w, int h) {
-    /* Placeholder for spritesheet rendering */
-    (void)app; (void)x; (void)y; (void)w; (void)h;
-    /* Would load and render actual pet sprites */
+    /* SDL GUI pet renderer: draws the pet as layered rounded shapes using
+     * the theme palette + a per-state accent. The GUI can display graphics
+     * (unlike the terminal-cell path), so this is a real sprite renderer —
+     * a cat-like body: ears, head, body, tail, eyes that track the state.
+     * Full PNG spritesheet decode is not available in the pure-C engine. */
+    gc_window_t *win = app_get_window(app);
+    gc_theme_t *t = app_get_theme(app);
+
+    pet_state_t st = pet_get_state();
+    static const gc_color_t state_colors[PET_STATE_COUNT] = {
+        GC_RGB(0x2d, 0x2d, 0x3f),  /* idle   — slate */
+        GC_RGB(0x5a, 0x78, 0xc8),  /* wave   — blue */
+        GC_RGB(0x50, 0xc8, 0x78),  /* run    — green */
+        GC_RGB(0xe7, 0x5e, 0x78),  /* failed — red */
+        GC_RGB(0xdc, 0xbe, 0x78),  /* review — amber */
+        GC_RGB(0xaa, 0x78, 0xdc),  /* jump   — purple */
+        GC_RGB(0xc8, 0xb4, 0x5a),  /* waiting— gold */
+    };
+    gc_color_t body = (st >= 0 && st < PET_STATE_COUNT)
+        ? state_colors[st] : state_colors[PET_STATE_IDLE];
+
+    /* Scale relative to the pet box (64px base at scale 0.33). */
+    int bw = w > 16 ? w : 16;
+    int bh = h > 16 ? h : 16;
+
+    /* Tail (behind body) */
+    gc_rect_t tail = { x + bw * 3 / 4, y - bh / 6, bw / 4, bh / 4 };
+    gc_fill_round_rect(win, tail, bw / 8, body);
+
+    /* Ears */
+    gc_rect_t ear_l = { x + bw / 5, y - bh / 8, bw / 5, bh / 5 };
+    gc_rect_t ear_r = { x + bw * 3 / 5, y - bh / 8, bw / 5, bh / 5 };
+    gc_fill_round_rect(win, ear_l, bw / 10, body);
+    gc_fill_round_rect(win, ear_r, bw / 10, body);
+
+    /* Head */
+    gc_rect_t head = { x + bw / 6, y, bw * 2 / 3, bh / 2 };
+    gc_fill_round_rect(win, head, bw / 6, body);
+
+    /* Eyes — state-dependent: normal dots, or wide when waiting, x when
+     * failed, closed arcs when idle. */
+    gc_color_t eye = t->bg_secondary;
+    int eye_y = y + bh / 6;
+    int eye_lx = x + bw / 3;
+    int eye_rx = x + bw * 2 / 3 - bw / 12;
+    if (st == PET_STATE_FAILED) {
+        /* X eyes */
+        gc_draw_hline(win, eye_lx - bw/14, eye_y - bw/28, bw/7, t->text);
+        gc_draw_hline(win, eye_rx - bw/14, eye_y - bw/28, bw/7, t->text);
+    } else {
+        gc_rect_t el = { eye_lx, eye_y, bw / 12, bw / 12 };
+        gc_rect_t er = { eye_rx, eye_y, bw / 12, bw / 12 };
+        gc_fill_round_rect(win, el, bw / 24, eye);
+        gc_fill_round_rect(win, er, bw / 24, eye);
+    }
+
+    /* Body */
+    gc_rect_t body_r = { x + bw / 8, y + bh / 3, bw * 3 / 4, bh * 2 / 3 };
+    gc_fill_round_rect(win, body_r, bw / 8, body);
+
+    /* Mouth — smile when wave/jump, flat otherwise */
+    int mx = x + bw / 2;
+    int my = y + bh / 3;
+    if (st == PET_STATE_WAVE || st == PET_STATE_JUMP) {
+        gc_draw_hline(win, mx - bw / 10, my, bw / 5, t->text);
+    }
+    (void)app;
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -75,7 +121,7 @@ void pet_ui_init(app_state_t *app) {
     app->pet_type = 0;
     app->pet_frame = 0;
     app->pet_frame_tick = 0;
-    app->pet_scale = 0.33f;
+    app->pet_scale = 1.0f;
 }
 
 void pet_ui_draw(app_state_t *app) {
@@ -105,13 +151,10 @@ void pet_ui_draw(app_state_t *app) {
     app->pet_x = x;
     app->pet_y = y;
     
-    /* Draw pet based on render mode */
-    pet_render_mode_t mode = pet_detect_terminal_graphics();
-    if (mode == PET_MODE_UNICODE || mode == PET_MODE_AUTO) {
-        draw_pet_unicode(app, x, y, pet_w, pet_h);
-    } else {
-        draw_pet_spritesheet(app, x, y, pet_w, pet_h);
-    }
+    /* Draw pet based on render mode. In the SDL GUI we can always draw
+     * real graphics — terminal graphics detection (kitty/sixel/unicode)
+     * is for the TUI path, where the terminal dictates the encoding. */
+    draw_pet_spritesheet(app, x, y, pet_w, pet_h);
     
     /* Draw gallery if open */
     if (app_pet_show_gallery(app)) {

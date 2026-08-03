@@ -59,7 +59,16 @@ desktop: $(DESKTOP_APP_OBJ) $(filter-out $(DESKTOP_LIBS_FILTER), $(LIB_OBJ_FILTE
 # Mirrors the ncurses `desktop` target: full SDL GUI application object set +
 # the shared lib objects, so all app_state/session_db/sidebar/chat_view/titlebar/
 # event_handling/hud/desktop_controller/pet_ui symbols resolve.
-desktop-gui: $(DESKTOP_GUI_OBJ) $(PET_OBJ) $(filter-out $(DESKTOP_LIBS_FILTER), $(LIB_OBJ_FILTERED)) $(WHISPER_EXTRA_OBJ)
+# The pet subsystem's from-scratch PNG decoder (libpngdec) rides on wubuzip's
+# DEFLATE inflate + CRC32 — those objects are in DEPS_OBJ, so the GUI links
+# them explicitly.
+WUBUZIP_OBJ = lib/libwubuoffice/src/wubuzip/inflate.o lib/libwubuoffice/src/wubuzip/huffman.o \
+    lib/libwubuoffice/src/wubuzip/crc.o lib/libwubuoffice/src/wubuzip/bit.o \
+    lib/libwubuoffice/src/wubuzip/block.o lib/libwubuoffice/src/wubuzip/fixed.o \
+    lib/libwubuoffice/src/wubuzip/canon.o lib/libwubuoffice/src/wubuzip/fixedcode.o \
+    lib/libwubuoffice/src/wubuzip/limitcode.o
+
+desktop-gui: $(DESKTOP_GUI_OBJ) $(PET_OBJ) $(WUBUZIP_OBJ) $(filter-out $(DESKTOP_LIBS_FILTER), $(LIB_OBJ_FILTERED)) $(WHISPER_EXTRA_OBJ)
 	$(CC) $(CFLAGS) $(DESKTOP_GUI_CFLAGS) -o slermes-desktop-gui $^ $(LDFLAGS) $(PLATFORM_LDFLAGS) $(LIBS) \
 		$(DESKTOP_GUI_LIBS) -lstdc++ \
 		$(if $(NCURSES_LIBS),$(NCURSES_LIBS),-lncursesw) $(if $(PANEL_LIBS),$(PANEL_LIBS)) $(if $(TINFO_LIBS),$(TINFO_LIBS),-ltinfo) \

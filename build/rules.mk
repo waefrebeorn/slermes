@@ -48,6 +48,11 @@ lib/libglob/glob.o: lib/libglob/glob.c lib/libglob/hermes_glob.h
 lib/libwubuoffice/%.o: lib/libwubuoffice/%.c
 	$(CC) $(CFLAGS) -D_POSIX_C_SOURCE=200809L -I lib/libwubuoffice/src/wubuzip -I lib/libwubuoffice/src/wubuoxml -c $< -o $@
 
+# PNG decoder (from-scratch, libpngdec): rides on wubuzip's DEFLATE inflate
+# + CRC32 — needs that include root for "wubuzip/inflate.h".
+lib/libpngdec/pngdec.o: lib/libpngdec/pngdec.c lib/libpngdec/pngdec.h
+	$(CC) $(CFLAGS) -I lib/libwubuoffice/src -c $< -o $@
+
 # The read_extract port consumes the same wubuoxml headers via
 # "wubuoxml/reader.h" / "wubuoxml/docx_text.h", which live under
 # lib/libwubuoffice/src. Add that include root for this one TU.

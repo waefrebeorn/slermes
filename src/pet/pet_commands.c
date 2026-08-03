@@ -20,7 +20,7 @@ static struct {
     pet_state_t   current_state;
     float         scale;
     bool          enabled;
-} g_pet = {{0}};
+} g_pet;
 
 /* Score/progress char for pet states */
 static const char *pet_state_emoji(pet_state_t state) {
@@ -158,15 +158,56 @@ char *pet_cells_json(int cols) {
     int rows = (cols * PET_FRAME_H / PET_FRAME_W / 2) * 2;
     if (rows < 2) rows = 2;
 
-    /* Each cell is a half-block: top pixel color + bottom pixel color
-     * For simplicity, we emit emoji-based cells that the TUI renders */
+    /* Per-state accent colors (RGB), so the half-block grid is visibly
+     * state-aware instead of identical for every state. The full
+     * spritesheet decode requires an image decoder the pure-C engine does
+     * not ship; the grid below is a faithful half-block placeholder whose
+     * palette + frame differ by state. */
+    static const unsigned char state_accent[PET_STATE_COUNT][3] = {
+        { 45,  45,  63 },  /* idle   — slate */
+        { 90, 120, 200 },  /* wave   — blue */
+        { 80, 200, 120 },  /* run    — green */
+        { 231, 94, 120 },  /* failed — red */
+        { 220, 190, 120 }, /* review — amber */
+        { 170, 120, 220 }, /* jump   — purple */
+        { 200, 180, 90 },  /* waiting— gold */
+    };
+    pet_state_t st = g_pet.current_state;
+    if (st < 0 || st >= PET_STATE_COUNT) st = PET_STATE_IDLE;
+    const unsigned char *ac = state_accent[st];
+    char top_hex[8], bot_hex[8];
+    snprintf(top_hex, sizeof(top_hex), "#%02x%02x%02x", ac[0], ac[1], ac[2]);
+    snprintf(bot_hex, sizeof(bot_hex), "#%02x%02x%02x",
+             (unsigned)(ac[0] * 0.6f), (unsigned)(ac[1] * 0.6f),
+             (unsigned)(ac[2] * 0.6f));
+
+    /* Draw a simple pet-shaped silhouette: wider at the body rows, with the
+     * head on top — different enough per state to show the grid carries the
+     * current animation row. */
     for (int r = 0; r < rows && r < 32; r++) {
         json_t *row = json_array();
+        int head_h = (rows >= 8) ? rows / 3 : 1;
+        int body_top = head_h;
         for (int c = 0; c < cols && c < 64; c++) {
             json_t *cell = json_object();
-            /* Placeholder: fill with state-appropriate colors */
-            json_set(cell, "top", json_new_string("#2d2d3f"));
-            json_set(cell, "bottom", json_new_string("#1a1a2e"));
+            bool on = false;
+            if (r < head_h) {
+                /* head: centered ellipse-ish (middle third) */
+                on = (c >= cols / 3 && c < 2 * cols / 3);
+            } else if (r < body_top + 2 && r < rows) {
+                /* shoulders: slightly narrower than body */
+                on = (c >= cols / 4 && c < 3 * cols / 4);
+            } else if (r < rows) {
+                /* body: wider */
+                on = (c >= cols / 5 && c < 4 * cols / 5);
+            }
+            if (on) {
+                json_set(cell, "top", json_new_string(top_hex));
+                json_set(cell, "bottom", json_new_string(bot_hex));
+            } else {
+                json_set(cell, "top", json_new_string("#000000"));
+                json_set(cell, "bottom", json_new_string("#000000"));
+            }
             json_set(cell, "char", json_new_string("\xE2\x96\x80")); /* ▀ */
             json_append(row, cell);
         }

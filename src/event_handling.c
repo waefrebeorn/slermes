@@ -179,6 +179,8 @@ void event_run(app_state_t *app) {
     if (!app) return;
     
     gc_event_t ev;
+    bool shot_done = false;
+    const char *shot_path = getenv("SLERMES_GUI_SCREENSHOT");
     while (app->running) {
         gc_begin_frame(app_get_window(app));
         
@@ -198,6 +200,15 @@ void event_run(app_state_t *app) {
         chat_view_draw(app);
         statusbar_draw(app);
         pet_ui_draw(app);
+
+        /* One-shot screenshot capture for headless verification
+         * (SLERMES_GUI_SCREENSHOT=/path/out.bmp) — must run AFTER the draw
+         * calls (gc_begin_frame clears the backbuffer). */
+        if (shot_path && !shot_done && app->frame_count >= 30) {
+            gc_save_screenshot(app_get_window(app), shot_path);
+            shot_done = true;
+        }
+        app->frame_count++;
         
         gc_end_frame(app_get_window(app));
     }
