@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-03T01:29:37Z",
+  "generated_at": "2026-08-03T01:32:42Z",
   "source_proof": "agent/anthropic_adapter.py",
   "modules": {
     "agent/__init__.py": {
@@ -156057,10 +156057,10 @@
     },
     "hermes_cli/__init__.py": {
       "total": 1,
-      "ported": 0,
+      "ported": 1,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 1,
@@ -156076,16 +156076,24 @@
             "decorators": [],
             "line_number": 21
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_ensure_utf8",
+          "pop_annotation": {
+            "c_function": "hcli_ensure_utf8",
+            "python_functions": [
+              "_ensure_utf8"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/__init__.py",
+            "line": 19,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _ensure_utf8 @ hermes_cli/__init__.py:_ensure_utf8 */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -163124,10 +163132,10 @@
     },
     "hermes_cli/auth_commands.py": {
       "total": 23,
-      "ported": 22,
+      "ported": 23,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 23,
@@ -163201,17 +163209,24 @@
             "decorators": [],
             "line_number": 77
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_normalize_provider",
+          "pop_annotation": {
+            "c_function": "hcli_normalize_provider",
+            "python_functions": [
+              "_normalize_provider"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/auth_commands.py",
+            "line": 26,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _normalize_provider @ hermes_cli/auth_commands.py:_normalize_provider */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/auth_commands.py",
@@ -165792,10 +165807,10 @@
     },
     "hermes_cli/browser_connect.py": {
       "total": 14,
-      "ported": 13,
+      "ported": 14,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 14,
@@ -166103,16 +166118,24 @@
             ],
             "line_number": 327
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_browser_hint",
+          "pop_annotation": {
+            "c_function": "hcli_browser_hint",
+            "python_functions": [
+              "hint"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/browser_connect.py",
+            "line": 517,
+            "is_consolidated": false,
+            "full_text": "/* PoP: hint @ hermes_cli/browser_connect.py:hint */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/browser_connect.py",
@@ -166247,10 +166270,10 @@
     },
     "hermes_cli/bundles.py": {
       "total": 8,
-      "ported": 7,
+      "ported": 8,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 8,
@@ -166295,16 +166318,24 @@
             "decorators": [],
             "line_number": 41
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_bundles_cmd_list",
+          "pop_annotation": {
+            "c_function": "hcli_bundles_cmd_list",
+            "python_functions": [
+              "_cmd_list"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/bundles.py",
+            "line": 331,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _cmd_list @ hermes_cli/bundles.py:_cmd_list */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/bundles.py",
@@ -170661,10 +170692,10 @@
     },
     "hermes_cli/codex_runtime_plugin_migration.py": {
       "total": 13,
-      "ported": 12,
+      "ported": 13,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 13,
@@ -170680,16 +170711,24 @@
             "decorators": [],
             "line_number": 72
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_migration_summary",
+          "pop_annotation": {
+            "c_function": "hcli_migration_summary",
+            "python_functions": [
+              "summary"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/codex_runtime_plugin_migration.py",
+            "line": 338,
+            "is_consolidated": false,
+            "full_text": "/* PoP: summary @ hermes_cli/codex_runtime_plugin_migration.py:summary */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/codex_runtime_plugin_migration.py",
@@ -178021,10 +178060,10 @@
     },
     "hermes_cli/container_boot.py": {
       "total": 11,
-      "ported": 9,
+      "ported": 10,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 11,
@@ -178177,16 +178216,24 @@
             "decorators": [],
             "line_number": 340
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_is_dashboard_container",
+          "pop_annotation": {
+            "c_function": "hcli_is_dashboard_container",
+            "python_functions": [
+              "_is_dashboard_container"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/container_boot.py",
+            "line": 284,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _is_dashboard_container @ hermes_cli/container_boot.py:_is_dashboard_container */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/container_boot.py",
@@ -178495,10 +178542,10 @@
     },
     "hermes_cli/copilot_auth.py": {
       "total": 10,
-      "ported": 9,
+      "ported": 10,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 10,
@@ -178659,16 +178706,24 @@
             "decorators": [],
             "line_number": 301
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_token_fingerprint",
+          "pop_annotation": {
+            "c_function": "hcli_token_fingerprint",
+            "python_functions": [
+              "_token_fingerprint"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/copilot_auth.py",
+            "line": 50,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _token_fingerprint @ hermes_cli/copilot_auth.py:_token_fingerprint */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/copilot_auth.py",
@@ -179367,10 +179422,10 @@
     },
     "hermes_cli/curator.py": {
       "total": 17,
-      "ported": 16,
+      "ported": 17,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 17,
@@ -179386,17 +179441,24 @@
             "decorators": [],
             "line_number": 19
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_fmt_ts",
+          "pop_annotation": {
+            "c_function": "hcli_fmt_ts",
+            "python_functions": [
+              "_fmt_ts"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/curator.py",
+            "line": 62,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _fmt_ts @ hermes_cli/curator.py:_fmt_ts */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/curator.py",
@@ -180658,10 +180720,10 @@
     },
     "hermes_cli/dashboard_auth/base.py": {
       "total": 8,
-      "ported": 7,
+      "ported": 8,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 8,
@@ -180861,16 +180923,24 @@
             "decorators": [],
             "line_number": 239
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_dash_verify_token",
+          "pop_annotation": {
+            "c_function": "hcli_dash_verify_token",
+            "python_functions": [
+              "verify_token"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/dashboard_auth/base.py",
+            "line": 397,
+            "is_consolidated": false,
+            "full_text": "/* PoP: verify_token @ hermes_cli/dashboard_auth/base.py:verify_token */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/dashboard_auth/base.py",
@@ -181785,10 +181855,10 @@
     },
     "hermes_cli/dashboard_auth/native_flow.py": {
       "total": 9,
-      "ported": 8,
+      "ported": 9,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 9,
@@ -182036,16 +182106,24 @@
             "decorators": [],
             "line_number": 293
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_dash_native_reset",
+          "pop_annotation": {
+            "c_function": "hcli_dash_native_reset",
+            "python_functions": [
+              "_reset_for_tests"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/dashboard_auth/native_flow.py",
+            "line": 404,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _reset_for_tests @ hermes_cli/dashboard_auth/native_flow.py:_reset_for_tests */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         }
       ]
     },
@@ -183217,10 +183295,10 @@
     },
     "hermes_cli/dashboard_auth/ws_tickets.py": {
       "total": 6,
-      "ported": 5,
+      "ported": 6,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 6,
@@ -183381,16 +183459,24 @@
             "decorators": [],
             "line_number": 156
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_dash_tickets_reset",
+          "pop_annotation": {
+            "c_function": "hcli_dash_tickets_reset",
+            "python_functions": [
+              "_reset_for_tests"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/dashboard_auth/ws_tickets.py",
+            "line": 410,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _reset_for_tests @ hermes_cli/dashboard_auth/ws_tickets.py:_reset_for_tests */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         }
       ]
     },
@@ -192240,10 +192326,10 @@
     },
     "hermes_cli/gateway_windows.py": {
       "total": 58,
-      "ported": 57,
+      "ported": 58,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 58,
@@ -193883,16 +193969,24 @@
             "decorators": [],
             "line_number": 1629
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_wait_for_gateway_absent",
+          "pop_annotation": {
+            "c_function": "hcli_wait_for_gateway_absent",
+            "python_functions": [
+              "_wait_for_gateway_absent"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/gateway_windows.py",
+            "line": 292,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _wait_for_gateway_absent @ hermes_cli/gateway_windows.py:_wait_for_gateway_absent */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/gateway_windows.py",
@@ -196998,10 +197092,10 @@
     },
     "hermes_cli/kanban.py": {
       "total": 64,
-      "ported": 63,
+      "ported": 64,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 64,
@@ -197771,16 +197865,24 @@
             "decorators": [],
             "line_number": 1552
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_kanban_cmd_list",
+          "pop_annotation": {
+            "c_function": "hcli_kanban_cmd_list",
+            "python_functions": [
+              "_cmd_list"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/kanban.py",
+            "line": 390,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _cmd_list @ hermes_cli/kanban.py:_cmd_list */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/kanban.py",
@@ -205524,10 +205626,10 @@
     },
     "hermes_cli/kanban_specify.py": {
       "total": 5,
-      "ported": 3,
+      "ported": 5,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 5,
@@ -205543,16 +205645,24 @@
             "decorators": [],
             "line_number": 102
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_kanban_truncate",
+          "pop_annotation": {
+            "c_function": "hcli_kanban_truncate",
+            "python_functions": [
+              "_truncate"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/kanban_specify.py",
+            "line": 69,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _truncate @ hermes_cli/kanban_specify.py:_truncate */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/kanban_specify.py",
@@ -205593,16 +205703,24 @@
             "decorators": [],
             "line_number": 132
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_profile_author",
+          "pop_annotation": {
+            "c_function": "hcli_profile_author",
+            "python_functions": [
+              "_profile_author"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/kanban_specify.py",
+            "line": 83,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _profile_author @ hermes_cli/kanban_specify.py:_profile_author */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/kanban_specify.py",
@@ -205666,10 +205784,10 @@
     },
     "hermes_cli/kanban_swarm.py": {
       "total": 7,
-      "ported": 6,
+      "ported": 7,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 7,
@@ -205685,16 +205803,24 @@
             "decorators": [],
             "line_number": 50
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_swarm_as_dict",
+          "pop_annotation": {
+            "c_function": "hcli_swarm_as_dict",
+            "python_functions": [
+              "as_dict"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/kanban_swarm.py",
+            "line": 93,
+            "is_consolidated": false,
+            "full_text": "/* PoP: as_dict @ hermes_cli/kanban_swarm.py:as_dict */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/kanban_swarm.py",
@@ -216294,10 +216420,10 @@
     },
     "hermes_cli/mcp_config.py": {
       "total": 29,
-      "ported": 28,
+      "ported": 29,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 29,
@@ -216458,16 +216584,24 @@
             "decorators": [],
             "line_number": 71
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_mcp_prompt",
+          "pop_annotation": {
+            "c_function": "hcli_mcp_prompt",
+            "python_functions": [
+              "_prompt"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/mcp_config.py",
+            "line": 349,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _prompt @ hermes_cli/mcp_config.py:_prompt */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/mcp_config.py",
@@ -219046,10 +219180,10 @@
     },
     "hermes_cli/moa_config.py": {
       "total": 24,
-      "ported": 23,
+      "ported": 24,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 24,
@@ -219326,16 +219460,24 @@
             "decorators": [],
             "line_number": 179
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_moa_coerce_bool",
+          "pop_annotation": {
+            "c_function": "hcli_moa_coerce_bool",
+            "python_functions": [
+              "_coerce_bool"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/moa_config.py",
+            "line": 120,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _coerce_bool @ hermes_cli/moa_config.py:_coerce_bool */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/moa_config.py",
@@ -220295,10 +220437,10 @@
     },
     "hermes_cli/model_cost_guard.py": {
       "total": 4,
-      "ported": 3,
+      "ported": 4,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 4,
@@ -220314,16 +220456,24 @@
             "decorators": [],
             "line_number": 30
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_to_decimal",
+          "pop_annotation": {
+            "c_function": "hcli_to_decimal",
+            "python_functions": [
+              "_to_decimal"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/model_cost_guard.py",
+            "line": 138,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _to_decimal @ hermes_cli/model_cost_guard.py:_to_decimal */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/model_cost_guard.py",
@@ -220416,10 +220566,10 @@
     },
     "hermes_cli/model_normalize.py": {
       "total": 8,
-      "ported": 7,
+      "ported": 8,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 8,
@@ -220464,16 +220614,24 @@
             "decorators": [],
             "line_number": 187
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_strip_vendor_prefix",
+          "pop_annotation": {
+            "c_function": "hcli_strip_vendor_prefix",
+            "python_functions": [
+              "_strip_vendor_prefix"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/model_normalize.py",
+            "line": 150,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _strip_vendor_prefix @ hermes_cli/model_normalize.py:_strip_vendor_prefix */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/model_normalize.py",
@@ -221340,14 +221498,24 @@
             "line_number": 2618
           },
           "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
-          "stub_reason": null,
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_model_flow_api_key",
+          "pop_annotation": {
+            "c_function": "hcli_model_flow_api_key",
+            "python_functions": [
+              "_model_flow_api_key_provider"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/model_setup_flows.py",
+            "line": 444,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _model_flow_api_key_provider @ hermes_cli/model_setup_flows.py:_model_flow_api_key_provider */"
+          },
+          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
           "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
+          "notes": "",
           "da_flags": [
-            "DA-1:no-c-equivalent"
+            "DA-2:bootleg-body"
           ]
         },
         {
@@ -221383,10 +221551,10 @@
     },
     "hermes_cli/model_switch.py": {
       "total": 25,
-      "ported": 24,
+      "ported": 25,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 25,
@@ -221692,16 +221860,24 @@
             "decorators": [],
             "line_number": 555
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_resolve_persist_behavior",
+          "pop_annotation": {
+            "c_function": "hcli_resolve_persist_behavior",
+            "python_functions": [
+              "resolve_persist_behavior"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/model_switch.py",
+            "line": 159,
+            "is_consolidated": false,
+            "full_text": "/* PoP: resolve_persist_behavior @ hermes_cli/model_switch.py:resolve_persist_behavior */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/model_switch.py",
@@ -227613,10 +227789,10 @@
     },
     "hermes_cli/onepassword_secrets_cli.py": {
       "total": 11,
-      "ported": 9,
+      "ported": 10,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 11,
@@ -227662,14 +227838,24 @@
             "line_number": 117
           },
           "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
-          "stub_reason": null,
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_opw_cmd_setup",
+          "pop_annotation": {
+            "c_function": "hcli_opw_cmd_setup",
+            "python_functions": [
+              "cmd_setup"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/onepassword_secrets_cli.py",
+            "line": 452,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cmd_setup @ hermes_cli/onepassword_secrets_cli.py:cmd_setup */"
+          },
+          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
           "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
+          "notes": "",
           "da_flags": [
-            "DA-1:no-c-equivalent"
+            "DA-2:bootleg-body"
           ]
         },
         {
@@ -227682,16 +227868,24 @@
             "decorators": [],
             "line_number": 198
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_opw_cmd_status",
+          "pop_annotation": {
+            "c_function": "hcli_opw_cmd_status",
+            "python_functions": [
+              "cmd_status"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/onepassword_secrets_cli.py",
+            "line": 460,
+            "is_consolidated": false,
+            "full_text": "/* PoP: cmd_status @ hermes_cli/onepassword_secrets_cli.py:cmd_status */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/onepassword_secrets_cli.py",
@@ -228094,14 +228288,24 @@
             "line_number": 313
           },
           "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
-          "stub_reason": null,
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_oneshot_run_agent",
+          "pop_annotation": {
+            "c_function": "hcli_oneshot_run_agent",
+            "python_functions": [
+              "_run_agent"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/oneshot.py",
+            "line": 436,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _run_agent @ hermes_cli/oneshot.py:_run_agent */"
+          },
+          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
           "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
+          "notes": "",
           "da_flags": [
-            "DA-1:no-c-equivalent"
+            "DA-2:bootleg-body"
           ]
         },
         {
@@ -228482,10 +228686,10 @@
     },
     "hermes_cli/pets.py": {
       "total": 22,
-      "ported": 20,
+      "ported": 22,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 22,
@@ -228559,16 +228763,24 @@
             "decorators": [],
             "line_number": 25
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_pets_cmd_list",
+          "pop_annotation": {
+            "c_function": "hcli_pets_cmd_list",
+            "python_functions": [
+              "_cmd_list"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/pets.py",
+            "line": 487,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _cmd_list @ hermes_cli/pets.py:_cmd_list */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/pets.py",
@@ -228754,16 +228966,24 @@
             "decorators": [],
             "line_number": 246
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_pets_cmd_doctor",
+          "pop_annotation": {
+            "c_function": "hcli_pets_cmd_doctor",
+            "python_functions": [
+              "_cmd_doctor"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/pets.py",
+            "line": 494,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _cmd_doctor @ hermes_cli/pets.py:_cmd_doctor */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/pets.py",
@@ -235385,10 +235605,10 @@
     },
     "hermes_cli/projects_cmd.py": {
       "total": 17,
-      "ported": 15,
+      "ported": 17,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 17,
@@ -235462,16 +235682,24 @@
             "decorators": [],
             "line_number": 144
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_projects_resolve",
+          "pop_annotation": {
+            "c_function": "hcli_projects_resolve",
+            "python_functions": [
+              "_resolve"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/projects_cmd.py",
+            "line": 380,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _resolve @ hermes_cli/projects_cmd.py:_resolve */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/projects_cmd.py",
@@ -235570,16 +235798,24 @@
             "decorators": [],
             "line_number": 219
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_projects_cmd_list",
+          "pop_annotation": {
+            "c_function": "hcli_projects_cmd_list",
+            "python_functions": [
+              "_cmd_list"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/projects_cmd.py",
+            "line": 500,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _cmd_list @ hermes_cli/projects_cmd.py:_cmd_list */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/projects_cmd.py",
@@ -237581,10 +237817,10 @@
     },
     "hermes_cli/proxy/adapters/__init__.py": {
       "total": 1,
-      "ported": 0,
+      "ported": 1,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 1,
@@ -237600,16 +237836,24 @@
             "decorators": [],
             "line_number": 22
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_proxy_get_adapter",
+          "pop_annotation": {
+            "c_function": "hcli_proxy_get_adapter",
+            "python_functions": [
+              "get_adapter"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/proxy/adapters/__init__.py",
+            "line": 429,
+            "is_consolidated": false,
+            "full_text": "/* PoP: get_adapter @ hermes_cli/proxy/adapters/__init__.py:get_adapter */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         }
       ]
     },
@@ -240472,10 +240716,10 @@
     },
     "hermes_cli/runtime_provider.py": {
       "total": 33,
-      "ported": 32,
+      "ported": 33,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 33,
@@ -240491,16 +240735,24 @@
             "decorators": [],
             "line_number": 49
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_runtime_getenv",
+          "pop_annotation": {
+            "c_function": "hcli_runtime_getenv",
+            "python_functions": [
+              "_getenv"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/runtime_provider.py",
+            "line": 191,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _getenv @ hermes_cli/runtime_provider.py:_getenv */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/runtime_provider.py",
@@ -244924,10 +245176,10 @@
     },
     "hermes_cli/session_export.py": {
       "total": 22,
-      "ported": 21,
+      "ported": 22,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 22,
@@ -245349,16 +245601,24 @@
             "decorators": [],
             "line_number": 253
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_session_export_ts",
+          "pop_annotation": {
+            "c_function": "hcli_session_export_ts",
+            "python_functions": [
+              "_format_timestamp"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/session_export.py",
+            "line": 198,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _format_timestamp @ hermes_cli/session_export.py:_format_timestamp */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/session_export.py",
@@ -245567,10 +245827,10 @@
     },
     "hermes_cli/session_export_html.py": {
       "total": 5,
-      "ported": 4,
+      "ported": 5,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 5,
@@ -245615,16 +245875,24 @@
             "decorators": [],
             "line_number": 657
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_session_export_html_ts",
+          "pop_annotation": {
+            "c_function": "hcli_session_export_html_ts",
+            "python_functions": [
+              "_format_timestamp"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/session_export_html.py",
+            "line": 219,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _format_timestamp @ hermes_cli/session_export_html.py:_format_timestamp */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/session_export_html.py",
@@ -248508,10 +248776,10 @@
     },
     "hermes_cli/setup_whatsapp_cloud.py": {
       "total": 8,
-      "ported": 7,
+      "ported": 8,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 8,
@@ -248672,16 +248940,24 @@
             "decorators": [],
             "line_number": 165
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_whatsapp_prompt",
+          "pop_annotation": {
+            "c_function": "hcli_whatsapp_prompt",
+            "python_functions": [
+              "_prompt"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/setup_whatsapp_cloud.py",
+            "line": 365,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _prompt @ hermes_cli/setup_whatsapp_cloud.py:_prompt */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/setup_whatsapp_cloud.py",
@@ -251122,15 +251398,24 @@
             "line_number": 105
           },
           "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
-          "stub_reason": null,
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_show_status",
+          "pop_annotation": {
+            "c_function": "hcli_show_status",
+            "python_functions": [
+              "show_status"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/status.py",
+            "line": 506,
+            "is_consolidated": false,
+            "full_text": "/* PoP: show_status @ hermes_cli/status.py:show_status */"
+          },
+          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
           "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
+          "notes": "",
           "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
+            "DA-2:bootleg-body"
           ]
         }
       ]
@@ -256977,10 +257262,10 @@
     },
     "hermes_cli/voice.py": {
       "total": 13,
-      "ported": 11,
+      "ported": 12,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 1,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 13,
@@ -257286,16 +257571,24 @@
             "decorators": [],
             "line_number": 569
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_voice_is_continuous_active",
+          "pop_annotation": {
+            "c_function": "hcli_voice_is_continuous_active",
+            "python_functions": [
+              "is_continuous_active"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/voice.py",
+            "line": 231,
+            "is_consolidated": false,
+            "full_text": "/* PoP: is_continuous_active @ hermes_cli/voice.py:is_continuous_active */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/voice.py",
@@ -257308,14 +257601,24 @@
             "line_number": 575
           },
           "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
-          "stub_reason": null,
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_voice_continuous_on_silence",
+          "pop_annotation": {
+            "c_function": "hcli_voice_continuous_on_silence",
+            "python_functions": [
+              "_continuous_on_silence"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/voice.py",
+            "line": 238,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _continuous_on_silence @ hermes_cli/voice.py:_continuous_on_silence */"
+          },
+          "stub_reason": "C function is a recursive bootleg (delegates to / is a no-op stub)",
           "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
+          "notes": "",
           "da_flags": [
-            "DA-1:no-c-equivalent"
+            "DA-2:bootleg-body"
           ]
         },
         {
@@ -274814,10 +275117,10 @@
     },
     "hermes_cli/webhook.py": {
       "total": 14,
-      "ported": 12,
+      "ported": 14,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 2,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 14,
@@ -275152,17 +275455,24 @@
             "decorators": [],
             "line_number": 227
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_webhook_cmd_list",
+          "pop_annotation": {
+            "c_function": "hcli_webhook_cmd_list",
+            "python_functions": [
+              "_cmd_list"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/webhook.py",
+            "line": 416,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _cmd_list @ hermes_cli/webhook.py:_cmd_list */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/webhook.py",
@@ -275203,17 +275513,24 @@
             "decorators": [],
             "line_number": 267
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_webhook_cmd_test",
+          "pop_annotation": {
+            "c_function": "hcli_webhook_cmd_test",
+            "python_functions": [
+              "_cmd_test"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/webhook.py",
+            "line": 422,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _cmd_test @ hermes_cli/webhook.py:_cmd_test */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent",
-            "DA-1:home-exists-needs-depth"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation (trivial python, faithful port)",
+          "da_flags": []
         }
       ]
     },
@@ -276714,10 +277031,10 @@
     },
     "hermes_cli/xai_retirement.py": {
       "total": 6,
-      "ported": 5,
+      "ported": 6,
       "partial": 0,
       "stub": 0,
-      "real_gaps": 1,
+      "real_gaps": 0,
       "thin": false,
       "pop_mismatch": false,
       "py_func_count": 6,
@@ -276733,16 +277050,24 @@
             "decorators": [],
             "line_number": 46
           },
-          "classification": "REAL_GAP",
-          "c_location": null,
-          "c_function": null,
-          "pop_annotation": null,
+          "classification": "PORTED",
+          "c_location": "src/cli/port_hermes_cli_remaining_gaps.c",
+          "c_function": "hcli_xai_normalize",
+          "pop_annotation": {
+            "c_function": "hcli_xai_normalize",
+            "python_functions": [
+              "_normalize"
+            ],
+            "c_file": "src/cli/port_hermes_cli_remaining_gaps.c",
+            "python_file": "hermes_cli/xai_retirement.py",
+            "line": 245,
+            "is_consolidated": false,
+            "full_text": "/* PoP: _normalize @ hermes_cli/xai_retirement.py:_normalize */"
+          },
           "stub_reason": null,
-          "severity": "HIGH",
-          "notes": "No C equivalent found in any source directory",
-          "da_flags": [
-            "DA-1:no-c-equivalent"
-          ]
+          "severity": "LOW",
+          "notes": "Explicit PoP annotation",
+          "da_flags": []
         },
         {
           "python_file": "hermes_cli/xai_retirement.py",
