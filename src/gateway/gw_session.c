@@ -123,7 +123,7 @@ void source_cache_put(const char *key, const gw_session_source_t *source) {
     pthread_mutex_lock(&g_gw.source_cache_mutex);
     if (!g_gw.source_cache) g_gw.source_cache = hive_new(16);
 
-    /* Check if already present (update in place) */
+    /* Check if already present (update in place + LRU promotion to tail) */
     hive_iter_t it;
     hive_iter_begin(g_gw.source_cache, &it);
     hive_handle_t hnd;
@@ -131,6 +131,11 @@ void source_cache_put(const char *key, const gw_session_source_t *source) {
     while (hive_iter_next(g_gw.source_cache, &it, &hnd, (void **)&e)) {
         if (strcmp(e->key, key) == 0) {
             e->source = *source;
+            /* Move to MRU (hive tail) — matches original swap-to-end. */
+            hive_erase(g_gw.source_cache, hnd);
+            bool ok2 = false;
+            hive_insert(g_gw.source_cache, e, &ok2);
+            if (!ok2) { free(e); }
             pthread_mutex_unlock(&g_gw.source_cache_mutex);
             return;
         }

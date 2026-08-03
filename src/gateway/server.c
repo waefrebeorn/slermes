@@ -439,6 +439,13 @@ static gw_session_source_t *source_cache_get(const char *key) {
     gw_source_cache_entry_t *e;
     while (hive_iter_next(g_gw.source_cache, &it, &hnd, (void **)&e)) {
         if (strcmp(e->key, key) == 0) {
+            /* LRU promotion: move to MRU (hive tail) — matches the
+             * original C swap-to-end semantics on get-hit. Erase then
+             * reinsert; the heap entry stays valid (owned by us). */
+            hive_erase(g_gw.source_cache, hnd);
+            bool ok = false;
+            hive_insert(g_gw.source_cache, e, &ok);
+            if (!ok) { free(e); pthread_mutex_unlock(&g_gw.source_cache_mutex); return NULL; }
             gw_session_source_t *result = &e->source;
             pthread_mutex_unlock(&g_gw.source_cache_mutex);
             return result;
