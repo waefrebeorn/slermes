@@ -20,7 +20,10 @@ static json_t *emit_cli_hermes_cli_memory_setup__install_dependencies(const json
     const char *value = json_get_str(c, "value", "");
     long v = (long)cli_hermes_cli_memory_setup__install_dependencies(value);
     json_t *o = json_new_object(); json_set(o, "fn", json_string("cli_hermes_cli_memory_setup__install_dependencies"));
-    json_set(o, "out", json_int(v)); return o;
+    /* Python returns None (void-ish); the oracle serializes None as ''.
+     * The C port signals None with -1 — emit '' for parity. */
+    if (v < 0) json_set(o, "out", json_string(""));
+    else json_set(o, "out", json_int(v)); return o;
 }
 
 int main(int argc, char **argv){

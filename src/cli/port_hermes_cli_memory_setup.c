@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <unistd.h>
 
 
 
@@ -31,19 +32,214 @@ int cli_hermes_cli_memory_setup__prompt(
     return 0;
 }
 
+/* Port of Python plugins/memory/__init__.py:find_provider_dir.
+ * Bundled first (the memory plugin's own dir / <name> with __init__.py),
+ * then user-installed ($HERMES_HOME/plugins/<name> with a memory-provider
+ * marker in __init__.py). Returns a malloc'd dir path or NULL. */
+static char *find_provider_dir_c(const char *name)
+{
+    if (!name || !*name) return NULL;
+    /* Bundled: the dir containing THIS module's plugin sources. The C port
+     * resolves it relative to the slermes share/plugin install; fall back to
+     * scanning $HERMES_HOME and the dev tree. */
+    const char *home = getenv("HERMES_HOME");
+    if (!home || !*home) home = getenv("SLERMES_HOME");
+    if (!home || !*home) home = ".";
+    char path[4096];
+    /* Bundled candidates */
+    const char *bundled_bases[] = {
+        "/home/wubu/hermes-agent-dev/plugins/memory",
+        "/home/wubu/.hermes/hermes-agent/plugins/memory",
+        NULL
+    };
+    for (int i = 0; bundled_bases[i]; i++) {
+        snprintf(path, sizeof(path), "%s/%s/__init__.py", bundled_bases[i], name);
+        if (access(path, R_OK) == 0) {
+            char *out = malloc(strlen(bundled_bases[i]) + strlen(name) + 2);
+            if (out) snprintf(out, strlen(bundled_bases[i]) + strlen(name) + 2,
+                              "%s/%s", bundled_bases[i], name);
+            return out;
+        }
+    }
+    /* User-installed: $HERMES_HOME/plugins/<name> with a memory-provider
+     * marker in __init__.py (register_memory_provider / MemoryProvider). */
+    snprintf(path, sizeof(path), "%s/plugins/%s/__init__.py", home, name);
+    if (access(path, R_OK) == 0) {
+        FILE *f = fopen(path, "rb");
+        if (f) {
+            char buf[8192];
+            size_t n = fread(buf, 1, sizeof(buf) - 1, f);
+            buf[n] = '\0';
+            fclose(f);
+            if (strstr(buf, "register_memory_provider") || strstr(buf, "MemoryProvider")) {
+                char *out = malloc(strlen(home) + strlen(name) + 12);
+                if (out) snprintf(out, strlen(home) + strlen(name) + 12,
+                                  "%s/plugins/%s", home, name);
+                return out;
+            }
+        }
+    }
+    return NULL;
+}
+
+/* Port of Python hermes_cli/memory_setup.py:_provider_pip_dependencies.
+ * Hindsight's local_embedded mode additionally needs hindsight-all. */
+static size_t provider_pip_dependencies_c(const char *provider_name,
+                                          const char *const *declared,
+                                          size_t n_declared,
+                                          char ***out)
+{
+    size_t cap = n_declared + 2;
+    char **deps = calloc(cap, sizeof(char *));
+    if (!deps) { *out = NULL; return 0; }
+    size_t n = 0;
+    for (size_t i = 0; i < n_declared && declared[i]; i++) {
+        deps[n++] = strdup(declared[i]);
+    }
+    if (provider_name && strcmp(provider_name, "hindsight") == 0) {
+        /* read $HERMES_HOME/hindsight/config.json -> mode in {local, local_embedded} */
+        const char *home = getenv("HERMES_HOME");
+        if (!home || !*home) home = getenv("SLERMES_HOME");
+        if (home && *home) {
+            char cfg[4096];
+            snprintf(cfg, sizeof(cfg), "%s/hindsight/config.json", home);
+            FILE *f = fopen(cfg, "rb");
+            if (f) {
+                char buf[8192];
+                size_t r = fread(buf, 1, sizeof(buf) - 1, f);
+                buf[r] = '\0';
+                fclose(f);
+                if (strstr(buf, "\"local_embedded\"") || strstr(buf, "\"local\"")) {
+                    deps[n++] = strdup("hindsight-all");
+                }
+            }
+        }
+    }
+    *out = deps;
+    return n;
+}
+
 /* PoP: cli_hermes_cli_memory_setup__install_dependencies @ hermes_cli/memory_setup.py:_install_dependencies */
 
-/* Port of Python hermes_cli/memory_setup.py:_install_dependencies */
-/* Installs pip dependencies declared in plugin.yaml. */
+/* Port of Python hermes_cli/memory_setup.py:_install_dependencies.
+ * Finds the provider dir, reads plugin.yaml's pip_dependencies, computes
+ * mode-dependent extras, checks which are importable, and installs the
+ * missing ones via `uv pip install`. Returns 0 on success/no-op, -1 on
+ * provider-not-found or error — mirroring Python's None return. */
 int cli_hermes_cli_memory_setup__install_dependencies(
     const char *provider_name)
 {
     if (!provider_name) {
         return -1;
     }
-    hermes_log(LOG_DEBUG, "memory_setup",
-               "install_dependencies: %s (CLI port: no-op)", provider_name);
-    return 0;
+    char *plugin_dir = find_provider_dir_c(provider_name);
+    if (!plugin_dir) {
+        return -1;  /* Python: return None */
+    }
+    char yaml_path[4096];
+    snprintf(yaml_path, sizeof(yaml_path), "%s/plugin.yaml", plugin_dir);
+    free(plugin_dir);
+    FILE *yf = fopen(yaml_path, "rb");
+    if (!yf) {
+        return -1;  /* Python: return None */
+    }
+    char ybuf[65536];
+    size_t yn = fread(ybuf, 1, sizeof(ybuf) - 1, yf);
+    ybuf[yn] = '\0';
+    fclose(yf);
+
+    /* Extract pip_dependencies: the dev tree ships no YAML lib here, so do a
+     * minimal scan of `pip_dependencies:` block (list of quoted strings). */
+    const char *marker = strstr(ybuf, "pip_dependencies");
+    const char *const *declared = NULL;
+    size_t n_declared = 0;
+    char *dep_list[64] = {0};
+    if (marker) {
+        const char *q = strchr(marker, ':');
+        if (q) {
+            q++;
+            while (*q == ' ' || *q == '\t') q++;
+            if (*q == '[') {
+                q++;
+                while (*q && *q != ']' && n_declared < 64) {
+                    while (*q == ' ' || *q == '\t' || *q == ',' || *q == '\n' || *q == '\r') q++;
+                    if (*q == '"' || *q == '\'') {
+                        char quote = *q++;
+                        char buf[512];
+                        size_t bi = 0;
+                        while (*q && *q != quote && bi < sizeof(buf) - 1) buf[bi++] = *q++;
+                        buf[bi] = '\0';
+                        if (*q) q++;
+                        dep_list[n_declared++] = strdup(buf);
+                    } else break;
+                }
+            }
+        }
+        declared = (const char *const *)dep_list;
+    }
+
+    char **deps = NULL;
+    size_t n_deps = provider_pip_dependencies_c(provider_name, declared, n_declared, &deps);
+    for (size_t i = 0; i < n_declared; i++) free(dep_list[i]);
+    if (n_deps == 0) {
+        free(deps);
+        return 0;  /* Python: nothing to install -> None */
+    }
+
+    /* Import-name mapping (pip name -> import name where they differ). */
+    struct { const char *pip; const char *imp; } IMPORT_NAMES[] = {
+        { "honcho-ai", "honcho" },
+        { "mem0ai", "mem0" },
+        { "hindsight-client", "hindsight_client" },
+        { "hindsight-all", "hindsight" },
+    };
+
+    /* Check which deps are missing (import probe). */
+    char *missing[64] = {0};
+    size_t n_missing = 0;
+    for (size_t i = 0; i < n_deps && i < 64; i++) {
+        const char *dep = deps[i];
+        if (!dep) continue;
+        /* strip extras "[...]" and version spec */
+        char base[256];
+        size_t bi = 0;
+        for (const char *d = dep; *d && *d != '[' && *d != ';' && bi < sizeof(base)-1; d++) {
+            base[bi++] = (*d == '-' ? '_' : *d);
+        }
+        base[bi] = '\0';
+        const char *imp = base;
+        for (size_t k = 0; k < sizeof(IMPORT_NAMES)/sizeof(IMPORT_NAMES[0]); k++) {
+            if (strcmp(dep, IMPORT_NAMES[k].pip) == 0) { imp = IMPORT_NAMES[k].imp; break; }
+        }
+        /* dlopen-style probe via a tiny subprocess: `python3 -c "import X"` */
+        char cmd[512];
+        snprintf(cmd, sizeof(cmd), "python3 -c \"import %s\" >/dev/null 2>&1", imp);
+        int rc = system(cmd);
+        if (rc != 0) missing[n_missing++] = strdup(dep);
+    }
+
+    if (n_missing == 0) {
+        for (size_t i = 0; i < n_deps; i++) free(deps[i]);
+        free(deps);
+        return 0;  /* Python: all installed -> None */
+    }
+
+    /* Install missing via `uv pip install` (Python uses install_specs which
+     * routes to uv on normal installs). */
+    fprintf(stderr, "\n  Installing dependencies: ");
+    char cmd[4096] = "uv pip install";
+    for (size_t i = 0; i < n_missing; i++) {
+        if (i == 0) fprintf(stderr, "%s", missing[i]);
+        else fprintf(stderr, ", %s", missing[i]);
+        strncat(cmd, " ", sizeof(cmd) - strlen(cmd) - 1);
+        strncat(cmd, missing[i], sizeof(cmd) - strlen(cmd) - 1);
+    }
+    fprintf(stderr, "\n");
+    int rc = system(cmd);
+    for (size_t i = 0; i < n_missing; i++) free(missing[i]);
+    for (size_t i = 0; i < n_deps; i++) free(deps[i]);
+    free(deps);
+    return rc == 0 ? 0 : -1;
 }
 
 
