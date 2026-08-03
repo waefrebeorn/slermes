@@ -11,6 +11,8 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "json.h"
+#include "yaml.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -52,14 +54,82 @@ char *pll_coerce_allowlist(const char *yaml_list) {
 
 /* PoP: _resolve_trust_policy @ agent/plugin_llm.py:_resolve_trust_policy */
 char *pll_resolve_trust_policy(const char *config_yaml, const char *plugin_id) {
-    /* Python: plugins.entries.<id>.llm from config; missing → allow all. */
-    if (!plugin_id) return strdup("{\"allow_any\": true}");
-    if (!config_yaml) return strdup("{\"allow_any\": true}");
-    char needle[256];
-    snprintf(needle, sizeof(needle), "\"%s\"", plugin_id);
-    if (strstr(config_yaml, needle) == NULL) return strdup("{\"allow_any\": true}");
-    printf("trust policy resolved for plugin %s\n", plugin_id);
-    return strdup("{\"allow_any\": true}");
+    /* Python: plugins.entries.<id>.llm from config; missing config →
+     * fully restrictive default-deny. The policy is resolved per-call so
+     * config edits take effect without restarting. Returns
+     * {allow_any, allow_provider_override, allowed_providers,
+     *  allow_model_override, allowed_models}. */
+    if (!plugin_id) return strdup("{\"allow_any\": false, \"entries\": []}");
+    if (!config_yaml) return strdup("{\"allow_any\": false, \"entries\": []}");
+
+    /* Parse the YAML config → JSON. */
+    char *err = NULL;
+    yaml_doc_t *doc = yaml_parse(config_yaml, &err);
+    if (!doc) { free(err); return strdup("{\"allow_any\": false, \"entries\": []}"); }
+    char *js = yaml_to_json_string(doc, "");
+    yaml_free(doc);
+    if (!js) return strdup("{\"allow_any\": false, \"entries\": []}");
+    json_t *cfg = json_parse(js, NULL);
+    free(js);
+    if (!cfg) return strdup("{\"allow_any\": false, \"entries\": []}");
+
+    /* plugins.entries.<plugin_id>.llm */
+    json_t *plugins = json_obj_get(cfg, "plugins");
+    json_t *entries = (plugins && plugins->type == JSON_OBJECT) ? json_obj_get(plugins, "entries") : NULL;
+    json_t *entry = (entries && entries->type == JSON_OBJECT) ? json_obj_get(entries, plugin_id) : NULL;
+    json_t *llm = (entry && entry->type == JSON_OBJECT) ? json_obj_get(entry, "llm") : NULL;
+    json_free(cfg);
+    if (!llm || llm->type != JSON_OBJECT) {
+        /* Missing config → default deny. */
+        return strdup("{\"allow_any\": false, \"entries\": []}");
+    }
+
+    json_t *out = json_object();
+    bool allow_provider = json_get_bool(llm, "allow_provider_override", false);
+    bool allow_model = json_get_bool(llm, "allow_model_override", false);
+    json_set(out, "allow_provider_override", json_bool(allow_provider));
+    json_set(out, "allow_model_override", json_bool(allow_model));
+
+    /* allowed_providers + allow_any_provider. */
+    json_t *ap = json_obj_get(llm, "allowed_providers");
+    json_t *ap_arr = json_array();
+    bool any_provider = false;
+    if (ap) {
+        if (ap->type == JSON_ARRAY) {
+            json_t *copy = json_copy(ap);
+            json_free(ap_arr);
+            ap_arr = copy;
+        } else if (ap->type == JSON_STRING && ap->str_val &&
+                   strcmp(ap->str_val, "*") == 0) {
+            any_provider = true;
+        }
+    }
+    if (!any_provider && json_len(ap_arr) == 0) any_provider = allow_provider;
+    json_set(out, "allowed_providers", ap_arr);
+    json_set(out, "allow_any_provider", json_bool(any_provider));
+
+    /* allowed_models + allow_any_model. */
+    json_t *am = json_obj_get(llm, "allowed_models");
+    json_t *am_arr = json_array();
+    bool any_model = false;
+    if (am) {
+        if (am->type == JSON_ARRAY) {
+            json_t *copy = json_copy(am);
+            json_free(am_arr);
+            am_arr = copy;
+        } else if (am->type == JSON_STRING && am->str_val &&
+                   strcmp(am->str_val, "*") == 0) {
+            any_model = true;
+        }
+    }
+    if (!any_model && json_len(am_arr) == 0) any_model = allow_model;
+    json_set(out, "allowed_models", am_arr);
+    json_set(out, "allow_any_model", json_bool(any_model));
+
+    json_set(out, "allow_any", json_bool(any_provider && any_model));
+    char *ser = json_serialize(out);
+    json_free(out);
+    return ser ? ser : strdup("{\"allow_any\": false, \"entries\": []}");
 }
 
 /* PoP: _check_overrides @ agent/plugin_llm.py:_check_overrides */
@@ -119,7 +189,6 @@ char *pll_parse_structured_text(const char *text) {
     if (*p == '{' || *p == '[') {
         /* crude json validity: ends with } or ] */
         size_t n = strlen(p);
-        char last = p[n-1];
         while (n > 0 && (p[n-1] == ' ' || p[n-1] == '\n' || p[n-1] == '\r')) n--;
         if (p[n-1] == '}' || p[n-1] == ']')
             asprintf(&out, "%s\tjson", p);
