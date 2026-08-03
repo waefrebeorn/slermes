@@ -89,7 +89,7 @@ int main(int argc, char **argv) {
         bool ok = ws_sess_set_title(db, "sessB", "New Beta Title", &err);
         char *got = ws_sess_get_title(db, "sessB");
         char *d = json_dumps(json_bool(ok), 0);
-        char *g = json_dumps(json_string(got ? got : ""), 0);
+        char *g = json_dumps(got ? json_string(got) : json_null(), 0);
         char *ed = json_dumps(err ? json_string(err) : json_null(), 0);
         printf("{\"op\":\"set_title\",\"out\":%s,\"title\":%s,\"err\":%s}\n", d, g, ed ? ed : "null");
         free(got); free(err); free(d); free(g); free(ed);

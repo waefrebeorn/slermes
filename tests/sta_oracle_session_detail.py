@@ -67,37 +67,44 @@ def main():
     # 8. export_session
     print(j({"op": "export", "out": db.export_session("sessA")}))
 
-    # 9. latest_descendant
-    rows = []
-    conn = getattr(db, "conn", None) or getattr(db, "_conn", None)
-    raw = conn.execute(
-        "WITH RECURSIVE descendants(id, parent_session_id, started_at) AS ("
-        "  SELECT id, parent_session_id, started_at FROM sessions WHERE id = ? "
-        "  UNION "
-        "  SELECT s.id, s.parent_session_id, s.started_at FROM sessions s "
-        "  JOIN descendants d ON s.parent_session_id = d.id) "
-        "SELECT id, parent_session_id, started_at FROM descendants", ("sessA",)
-    ).fetchall()
-    for row in raw:
-        rows.append({"id": row["id"], "parent_session_id": row["parent_session_id"],
-                     "started_at": row["started_at"]})
-    children = {}
-    for row in rows:
-        rid = row["id"]; parent = row["parent_session_id"]
-        if rid and parent:
-            children.setdefault(parent, []).append(row)
-    def started(row):
-        try: return float(row.get("started_at") or 0)
-        except Exception: return 0.0
-    current = "sessA"; path = ["sessA"]; seen = {"sessA"}
-    while children.get(current):
-        cands = [r for r in children[current] if r["id"] not in seen]
-        if not cands: break
-        cands.sort(key=started, reverse=True)
-        current = cands[0]["id"]; path.append(current); seen.add(current)
-    print(j({"op": "latest_descendant", "out": {
-        "requested_session_id": "sessA", "session_id": current, "path": path,
-        "changed": bool(path and current != "sessA")}}))
+    # 9. latest_descendant — mirror the LIVE _session_latest_descendant:
+    # if the session is missing (or resolve fails), return (None, []) which
+    # the endpoint turns into a 404.
+    sid = db.resolve_session_id("sessA")
+    if not sid or not db.get_session(sid):
+        print(j({"op": "latest_descendant", "out": {
+            "status": 404, "detail": "Session not found"}}))
+    else:
+        rows = []
+        conn = getattr(db, "conn", None) or getattr(db, "_conn", None)
+        raw = conn.execute(
+            "WITH RECURSIVE descendants(id, parent_session_id, started_at) AS ("
+            "  SELECT id, parent_session_id, started_at FROM sessions WHERE id = ? "
+            "  UNION "
+            "  SELECT s.id, s.parent_session_id, s.started_at FROM sessions s "
+            "  JOIN descendants d ON s.parent_session_id = d.id) "
+            "SELECT id, parent_session_id, started_at FROM descendants", (sid,)
+        ).fetchall()
+        for row in raw:
+            rows.append({"id": row["id"], "parent_session_id": row["parent_session_id"],
+                         "started_at": row["started_at"]})
+        children = {}
+        for row in rows:
+            rid = row["id"]; parent = row["parent_session_id"]
+            if rid and parent:
+                children.setdefault(parent, []).append(row)
+        def started(row):
+            try: return float(row.get("started_at") or 0)
+            except Exception: return 0.0
+        current = sid; path = [sid]; seen = {sid}
+        while children.get(current):
+            cands = [r for r in children[current] if r["id"] not in seen]
+            if not cands: break
+            cands.sort(key=started, reverse=True)
+            current = cands[0]["id"]; path.append(current); seen.add(current)
+        print(j({"op": "latest_descendant", "out": {
+            "requested_session_id": "sessA", "session_id": current, "path": path,
+            "changed": bool(path and current != "sessA")}}))
 
     # 10. delete_session
     ok = db.delete_session("sessB")

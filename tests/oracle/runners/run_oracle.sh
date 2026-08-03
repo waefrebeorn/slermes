@@ -202,7 +202,14 @@ for f in "$FIX"/*.in; do
   # markers (so functions that probe cwd/git return deterministic empty output
   # instead of leaking the developer's real repo root / branch / commit hashes).
   # /tmp is universally non-repo and marker-free.
-  sed -e "s#@SBX@#$TMPH#g" -e "s#@NOW@#1700000000.0#g" -e "s#@NOTREPO@#/tmp#g" "$f" > "$FSUB"
+  # Binary fixtures (e.g. session_detail's *.in IS a seeded sqlite DB) must NOT
+  # go through sed — placeholder substitution on binary data corrupts it.
+  # Detect via NUL byte in the first 8KB and copy verbatim instead.
+  if head -c 8192 "$f" | grep -q "$(printf '\0')" 2>/dev/null; then
+    cp "$f" "$FSUB"
+  else
+    sed -e "s#@SBX@#$TMPH#g" -e "s#@NOW@#1700000000.0#g" -e "s#@NOTREPO@#/tmp#g" "$f" > "$FSUB"
+  fi
   # The C engine resolves its home via SLERMES_HOME (kanban_home()), while the
   # Python profiles module resolves via HERMES_HOME (get_default_hermes_root()).
   # They honor DIFFERENT env vars, so we export BOTH to the same temp dir for
