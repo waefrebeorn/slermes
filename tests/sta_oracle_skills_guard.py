@@ -49,7 +49,7 @@ def main():
         sys.stderr.write("usage: sta_oracle_skills_guard.py <cases.in>\n")
         return 2
     fixture = sys.argv[1]
-    base = os.path.dirname(os.path.abspath(fixture))
+    base = os.environ.get("ORACLE_FIXDIR") or os.path.dirname(os.path.abspath(fixture))
     import pathlib
 
     def rp(p):

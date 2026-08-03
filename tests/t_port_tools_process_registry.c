@@ -5,7 +5,7 @@
 #include "port_process_registry.c"
 
 static const char *js(const char *s){
-  static char b[4][4096]; static int t=0; char *q=b[t]; t=(t+1)&3; *q++='"';
+  static char b[4][4096]; static int t=0; t=(t+1)&3; char *q=b[t]; *q++='"';
   if(s) for(const char *p=s;*p&&(q-b[t])<4000;p++){unsigned char c=*p;
     if(c=='"'||c=='\\'){*q++='\\';*q++=c;}
     else if(c=='\n'){*q++='\\';*q++='n';}
@@ -17,7 +17,7 @@ static const char *js(const char *s){
 int main(void){
   setvbuf(stdout, NULL, _IONBF, 0);
   process_registry_write_checkpoint();
-  printf("{\"func\":\"process_registry_count_running\",\"ret\":0}\n", "process_registry_count_running", process_registry_count_running());
-  printf("{\"func\":\"process_registry_recover_from_checkpoint\",\"ret\":0}\n", "process_registry_recover_from_checkpoint", process_registry_recover_from_checkpoint());
+  printf("{\"func\":\"process_registry_count_running\",\"ret\":%d}\n", process_registry_count_running());
+  printf("{\"func\":\"process_registry_recover_from_checkpoint\",\"ret\":%d}\n", process_registry_recover_from_checkpoint());
   return 0;
 }

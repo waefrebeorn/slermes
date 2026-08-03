@@ -62,11 +62,18 @@ static int read_line(FILE *fp, char *buf, size_t sz) {
 
 int main(int argc, char **argv) {
     if (argc < 2) { fprintf(stderr, "usage: %s <cases.in>\n", argv[0]); return 2; }
-    /* Capture fixture directory for relative-path resolution. */
+    /* Capture fixture directory for relative-path resolution. The runner
+     * passes a TEMP-substituted copy (FSUB) as argv[1], so derive the real
+     * fixture dir from ORACLE_FIXDIR when set, else fall back to argv[1]'s dir. */
     {
-        const char *slash = strrchr(argv[1], '/');
-        if (slash) { size_t bl = (size_t)(slash - argv[1]); memcpy(g_base, argv[1], bl); g_base[bl] = '\0'; }
-        else snprintf(g_base, sizeof(g_base), ".");
+        const char *fixdir = getenv("ORACLE_FIXDIR");
+        if (fixdir && *fixdir) {
+            snprintf(g_base, sizeof(g_base), "%s", fixdir);
+        } else {
+            const char *slash = strrchr(argv[1], '/');
+            if (slash) { size_t bl = (size_t)(slash - argv[1]); memcpy(g_base, argv[1], bl); g_base[bl] = '\0'; }
+            else snprintf(g_base, sizeof(g_base), ".");
+        }
     }
     FILE *fp = fopen(argv[1], "r");
     if (!fp) { fprintf(stderr, "cannot open %s\n", argv[1]); return 2; }

@@ -165,6 +165,11 @@ PY
 # real repo.
 ISO="SLERMES_HOME=$TMPH HERMES_HOME=$TMPH HOME=$TMPH XDG_CONFIG_HOME=$TMPH/.config XDG_DATA_HOME=$TMPH/.local/share"
 ISO="$ISO TMPDIR=$TMPH"
+# Real fixture dir: both C harness and Python oracle resolve fixture-relative
+# paths (sample_skill/, *.md) against this. The runner hands both sides a
+# TEMP-substituted copy (FSUB), whose dir is /tmp — relative paths would
+# resolve to nothing. ORACLE_FIXDIR points both sides at the real fixtures dir.
+ISO="$ISO ORACLE_FIXDIR=$(pwd)/$FIX"
 # Clear only leak-prone NETWORK/PROXY vars that can change a function's real
 # behavior. Do NOT blank credential/CI vars (AWS_PROFILE, SSH_AUTH_SOCK,
 # GOOGLE_APPLICATION_CREDENTIALS, CI, ...) — several python modules read those
