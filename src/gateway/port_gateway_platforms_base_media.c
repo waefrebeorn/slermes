@@ -706,6 +706,28 @@ int base_platform_format_choice_page(
 }
 
 /* ================================================================
+ *  _truncate_preview
+ *  Faithful to: truncate text to budget chars, append suffix when cut.
+ * ================================================================ */
+
+/* PoP: _truncate_preview @ gateway/platforms/base.py:_truncate_preview */
+char *base_platform_truncate_preview(const char *text, int budget, const char *suffix)
+{
+    if (!text) text = "";
+    if (!suffix) suffix = "...";
+    size_t tlen = strlen(text);
+    size_t slen = strlen(suffix);
+    if ((int)tlen <= budget) {
+        return strdup(text);
+    }
+    char *out = malloc(budget + slen + 1);
+    if (!out) return NULL;
+    memcpy(out, text, budget);
+    memcpy(out + budget, suffix, slen + 1);
+    return out;
+}
+
+/* ================================================================
  *  build_auto_tts_output_path
  *  Faithful to: unique temp output path for gateway auto-TTS.
  *  Platforms in OPUS_VOICE_PLATFORMS (tools/tts_tool.py) get .ogg,
