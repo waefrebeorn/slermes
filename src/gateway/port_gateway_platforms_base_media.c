@@ -679,6 +679,77 @@ char *base_platform_resolve_extensionless_candidate(const char *path)
 }
 
 /* ================================================================
+ *  _format_choice_page (static method of BasePlatformAdapter)
+ *  Faithful to: clamp page, slice options, build pagination meta.
+ *  Returns page_options slice + meta via out-params.
+ * ================================================================ */
+
+/* PoP: _format_choice_page @ gateway/platforms/base.py:_format_choice_page */
+int base_platform_format_choice_page(
+    int total, int page, int per_page,
+    int *out_start, int *out_end,
+    int *out_page, int *out_total_pages)
+{
+    int total_pages = (total <= 0) ? 1 : (total + per_page - 1) / per_page;
+    if (total_pages < 1) total_pages = 1;
+    int p = page;
+    if (p < 0) p = 0;
+    if (p > total_pages - 1) p = total_pages - 1;
+    int start = p * per_page;
+    int end = start + per_page;
+    if (end > total) end = total;
+    if (out_start) *out_start = start;
+    if (out_end) *out_end = end;
+    if (out_page) *out_page = p;
+    if (out_total_pages) *out_total_pages = total_pages;
+    return end - start; /* number of options on this page */
+}
+
+/* ================================================================
+ *  build_auto_tts_output_path
+ *  Faithful to: unique temp output path for gateway auto-TTS.
+ *  Platforms in OPUS_VOICE_PLATFORMS (tools/tts_tool.py) get .ogg,
+ *  everything else .mp3. Path: $TMPDIR/hermes_voice/tts_reply_<12hex>.<ext>
+ * ================================================================ */
+
+/* PoP: build_auto_tts_output_path @ gateway/platforms/base.py:build_auto_tts_output_path */
+char *base_platform_build_auto_tts_output_path(const char *platform_name)
+{
+    static const char *const OPUS_VOICE_PLATFORMS[] = {
+        "telegram", "matrix", "feishu", "whatsapp", "signal", NULL
+    };
+    const char *ext = "mp3";
+    if (platform_name) {
+        for (int i = 0; OPUS_VOICE_PLATFORMS[i]; i++) {
+            if (strcmp(platform_name, OPUS_VOICE_PLATFORMS[i]) == 0) {
+                ext = "ogg";
+                break;
+            }
+        }
+    }
+    /* uuid hex: use /dev/urandom for 6 bytes -> 12 hex chars */
+    unsigned char rnd[6];
+    FILE *f = fopen("/dev/urandom", "rb");
+    if (!f) return NULL;
+    size_t got = fread(rnd, 1, sizeof(rnd), f);
+    fclose(f);
+    if (got != sizeof(rnd)) return NULL;
+    char hex[13];
+    for (int i = 0; i < 6; i++)
+        snprintf(hex + 2 * i, 3, "%02x", rnd[i]);
+
+    const char *tmpdir = getenv("TMPDIR");
+    if (!tmpdir || !*tmpdir) tmpdir = "/tmp";
+    char dir[1024];
+    snprintf(dir, sizeof(dir), "%s/hermes_voice", tmpdir);
+    mkdir(dir, 0755);
+    char *out = malloc(strlen(dir) + 32);
+    if (!out) return NULL;
+    snprintf(out, strlen(dir) + 32, "%s/tts_reply_%s.%s", dir, hex, ext);
+    return out;
+}
+
+/* ================================================================
  *  _strip_media_tag_directives
  *  Faithful to: remove [[audio_as_voice]] / [[as_document]] markers,
  *  remove MEDIA: tags with extensions (via regex-equivalent scan),
