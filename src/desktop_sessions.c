@@ -3,6 +3,9 @@
  * Self-contained, operates on shared g_desktop (desktop_state.h), C11.
  */
 
+/* strcasestr and friends are GNU extensions — musl (alpine) needs
+ * _GNU_SOURCE to declare them; glibc exposes them by default. */
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

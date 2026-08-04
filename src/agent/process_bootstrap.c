@@ -13,6 +13,9 @@
  * Self-contained: includes only core types + the proxy/http it needs.
  */
 
+/* strcasestr and friends are GNU extensions — musl (alpine) needs
+ * _GNU_SOURCE to declare them; glibc exposes them by default. */
+#define _GNU_SOURCE
 #include "process_bootstrap.h"
 #include "hermes_proxy_utils.h"
 #include "hermes_http.h"

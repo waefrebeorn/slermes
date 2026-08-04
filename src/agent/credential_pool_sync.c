@@ -6,6 +6,9 @@ shared across the split modules are declared in include/credential_pool_internal
 No god headers — only the minimal includes each module requires. C11 only.
 */
 
+/* strcasestr and friends are GNU extensions — musl (alpine) needs
+ * _GNU_SOURCE to declare them; glibc exposes them by default. */
+#define _GNU_SOURCE
 #include "credential_pool.h"
 #include "credential_pool_internals.h"
 #include "credential_persistence.h"

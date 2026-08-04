@@ -23,6 +23,9 @@
  *    calls these helpers — that orchestration is not ported here as a unit.)
  */
 
+/* strcasestr and friends are GNU extensions — musl (alpine) needs
+ * _GNU_SOURCE to declare them; glibc exposes them by default. */
+#define _GNU_SOURCE
 #include "blueprint_cmd.h"
 #include "blueprint_catalog_common.h"
 #include "hermes_json.h"

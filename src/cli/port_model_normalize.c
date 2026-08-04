@@ -21,6 +21,9 @@
  * PoP: hermes_cli/model_normalize.py
  */
 
+/* strcasestr and friends are GNU extensions — musl (alpine) needs
+ * _GNU_SOURCE to declare them; glibc exposes them by default. */
+#define _GNU_SOURCE
 #include "model_catalog.h"   /* model_normalize_provider() */
 #include "hermes_json.h"
 #include <stdbool.h>

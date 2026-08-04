@@ -13,6 +13,9 @@
  * hermes_config_load(), hermes_redact(), json_node_t (hermes_json.h), getenv().
  */
 
+/* strcasestr and friends are GNU extensions — musl (alpine) needs
+ * _GNU_SOURCE to declare them; glibc exposes them by default. */
+#define _GNU_SOURCE
 #include "gateway_run_pure2.h"
 
 #include <ctype.h>

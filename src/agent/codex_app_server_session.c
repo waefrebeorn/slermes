@@ -16,6 +16,9 @@
  *                 (turn orchestration in codex_session_run_turn)
  */
 
+/* strcasestr and friends are GNU extensions — musl (alpine) needs
+ * _GNU_SOURCE to declare them; glibc exposes them by default. */
+#define _GNU_SOURCE
 #include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "codex_app_server_session.h"

@@ -4,6 +4,9 @@
  * Supports: chat completions, tool calls, streaming (optional), reasoning.
  */
 
+/* strcasestr and friends are GNU extensions — musl (alpine) needs
+ * _GNU_SOURCE to declare them; glibc exposes them by default. */
+#define _GNU_SOURCE
 #include "hermes_agent.h"
 #include "hermes_core_types.h"
 #include "hermes_json.h"

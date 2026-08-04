@@ -8,6 +8,9 @@
  * all reproduced. No behaviour is stubbed.
  */
 
+/* strcasestr and friends are GNU extensions — musl (alpine) needs
+ * _GNU_SOURCE to declare them; glibc exposes them by default. */
+#define _GNU_SOURCE
 #include "port_web_git.h"
 
 #include <stdio.h>

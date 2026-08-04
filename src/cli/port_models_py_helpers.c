@@ -3,6 +3,9 @@
  * helpers (REAL_GAP set). See include/port_models_py_helpers.h.
  */
 
+/* strcasestr and friends are GNU extensions — musl (alpine) needs
+ * _GNU_SOURCE to declare them; glibc exposes them by default. */
+#define _GNU_SOURCE
 #include "port_models_py_helpers.h"
 
 #include <ctype.h>

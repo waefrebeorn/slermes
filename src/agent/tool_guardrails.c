@@ -5,6 +5,9 @@
  * MIT License — WuBu Slermes Project
  * ================================================================ */
 
+/* strcasestr and friends are GNU extensions — musl (alpine) needs
+ * _GNU_SOURCE to declare them; glibc exposes them by default. */
+#define _GNU_SOURCE
 #include "hermes_tool_guardrails.h"
 #include <stdio.h>
 #include <stdlib.h>

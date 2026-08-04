@@ -26,6 +26,9 @@
  * Port of Python agent/image_gen_provider.py:image_gen.provider config key — N/A, C uses config.yaml directly
  */
 
+/* strcasestr and friends are GNU extensions — musl (alpine) needs
+ * _GNU_SOURCE to declare them; glibc exposes them by default. */
+#define _GNU_SOURCE
 #include "image_gen_provider.h"
 #include "hermes_core_types.h"
 #include <string.h>

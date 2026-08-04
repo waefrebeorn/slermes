@@ -12,6 +12,10 @@
  * v323: multi-source architecture; v324: install/uninstall lock.
  * v326: hub lock/taps/audit; v543+: full parity sweep.
  */
+/* strcasestr is a GNU extension — musl (alpine) needs _GNU_SOURCE to
+ * declare it; glibc exposes it by default. Without this the Docker
+ * (alpine) build fails with -Werror=implicit-function-declaration. */
+#define _GNU_SOURCE
 #include "hermes_skills_hub.h"
 #include "hermes_http.h"
 #include "hermes_json.h"

@@ -6,6 +6,9 @@
  * Functions that require the config/auth/network subsystems are deferred.
  */
 
+/* strcasestr and friends are GNU extensions — musl (alpine) needs
+ * _GNU_SOURCE to declare them; glibc exposes them by default. */
+#define _GNU_SOURCE
 #include "hermes_logger.h"
 #include "libjson/json.h"
 #include <stdio.h>

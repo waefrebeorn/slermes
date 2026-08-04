@@ -5,6 +5,9 @@
  * Split from system_prompt.c in v376 for module parity.
  */
 
+/* strcasestr and friends are GNU extensions — musl (alpine) needs
+ * _GNU_SOURCE to declare them; glibc exposes them by default. */
+#define _GNU_SOURCE
 #include "hermes_skills.h"
 #include "hermes_system_prompt.h"
 #include "hermes_json.h"
