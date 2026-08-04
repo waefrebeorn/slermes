@@ -1,3 +1,20 @@
+# Slermes Parity — Sync Checkpoint (v668)
+
+**Date:** 2026-08-04 · **Phase:** PORT (auto-flipped — new quarry to port)
+
+## v668 Upstream Sync (stash→pull→fix→pop, executed 2026-08-04)
+
+- **Python quarry:** merged 3,401 upstream commits (`ff2fcaba17`) — parent
+  behind=0, ahead=526; slermes upstream ref: **1,201 ahead / 1,115 behind**
+- **Quarry growth:** 12,274 → **14,045 features** (+1,771 Python to port)
+- **Parity re-scan:** 12,085 PORTED (86.0%) · 1,958 REAL_GAP · 2 PARTIAL ·
+  7 BOOTLEG — the REAL_GAP rise is the honest new-quarry delta
+- **Build:** `make slermes` = 0 errors
+- Live counts + sync numbers are machine-owned (sentinel blocks, `make
+  parity-walkway`); full history below is legacy context.
+
+---
+
 # Slermes Parity — Vault Checkpoint (v621)
 
 **Date:** 2026-07-23
