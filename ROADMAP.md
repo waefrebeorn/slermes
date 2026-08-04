@@ -6,7 +6,7 @@
 
 > **v668 PORT phase:** live scanner 2026-08-04: 12,085 / 14,045 (86.0%) PORTED · 1,958 REAL_GAP · 2 PARTIAL. The C11 binary is the deliverable.
 >
-> **Upstream sync checkpoint:** 1,201 ahead / 1,115 behind upstream/main (last merge 2026-08-03 (upstream fetched)) — the behind-count is the staleness timer; re-port the delta with the stash→pull→fix→pop workflow after each sync.
+> **Upstream sync checkpoint:** 1,204 ahead / 1,119 behind upstream/main (last merge 2026-08-04 (upstream fetched)) — the behind-count is the staleness timer; re-port the delta with the stash→pull→fix→pop workflow after each sync.
 <!-- /PARITY:AUTO -->
 
 > "Mission 1-8 complete" doesn't mean done — it means the foundation is laid.  

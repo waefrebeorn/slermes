@@ -5,15 +5,14 @@
 <!-- PARITY:AUTO -->
 **v668 phase — PORT:** the C11 binary is the deliverable — faithful, oracle-verified, usable standalone across operating systems. Live parity counts live in the PARITY:AUTO sentinel blocks owned by `make parity-walkway`; never hand-edit a count.
 
-**Upstream sync checkpoint:** 1,201 ahead / 1,115 behind upstream/main (last merge 2026-08-03 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
+**Upstream sync checkpoint:** 1,204 ahead / 1,119 behind upstream/main (last merge 2026-08-04 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
 <!-- /PARITY:AUTO -->
 
 Slermes is a C11 translation of the Hermes Python agent, maintained as a
 **fork** of `NousResearch/hermes-agent` at `waefrebeorn/slermes`. The
 forking model means slermes diverges from upstream Python — it does NOT
 share git history with the upstream repo. The divergent count is the
-snapshot timer of the last sync point.` sentinel blocks owned by
-`make parity-walkway`; never hand-edit a count.
+snapshot timer of the last sync point.
 
 ## Stash → Pull → Fix → Pop Workflow
 

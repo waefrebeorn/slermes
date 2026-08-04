@@ -133,9 +133,15 @@ def compute():
     ahead = behind = -1
     last_merge = "unknown"
     try:
+        # Refresh upstream/main FIRST — the whole point of the checkpoint is
+        # to match GitHub's live ahead/behind badge, which compares against
+        # the CURRENT upstream tip. A stale local ref stamps stale numbers
+        # (measured bug: gate said 1201/1115, GitHub truth was 1204/1119 —
+        # exactly the 4 commits the stale ref was missing).
+        rf = run(["git", "fetch", "upstream", "main"])
         rb = run(["git", "rev-list", "--count", "HEAD..upstream/main"])
         ra = run(["git", "rev-list", "--count", "upstream/main..HEAD"])
-        if rb.returncode == 0 and ra.returncode == 0:
+        if rf.returncode == 0 and rb.returncode == 0 and ra.returncode == 0:
             behind = int(rb.stdout.strip())
             ahead = int(ra.stdout.strip())
         # "last gathered" = when the upstream ref was last updated (the
