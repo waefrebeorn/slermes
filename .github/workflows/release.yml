@@ -39,6 +39,7 @@ jobs:
           sudo apt-get install -y -qq build-essential gcc libssl-dev \
             libncurses-dev libwayland-dev libasound2-dev libpcre2-dev \
             libxkbcommon-dev libgbm-dev libegl1-mesa-dev libgles2-mesa-dev \
+            libsdl2-dev libsdl2-ttf-dev \
             pkg-config file unzip 2>&1 || true
       - name: Fetch SQLite amalgamation
         run: |
@@ -76,7 +77,7 @@ jobs:
       - name: Install deps
         run: |
           brew update >/dev/null 2>&1
-          brew install pkg-config openssl file unzip || true
+          brew install pkg-config openssl sdl2 sdl2_ttf file unzip || true
       - name: Fetch SQLite amalgamation
         run: |
           if [ ! -f lib/libdb/sqlite3.h ]; then
@@ -109,7 +110,7 @@ jobs:
       - name: Install toolchain
         run: |
           sudo apt-get update -qq 2>&1 || true
-          sudo apt-get install -y -qq gcc-aarch64-linux-gnu libssl-dev libasound2-dev libpcre2-dev file unzip
+          sudo apt-get install -y -qq gcc-aarch64-linux-gnu libssl-dev libasound2-dev libpcre2-dev libsdl2-dev file unzip
       - name: Fetch SQLite amalgamation
         run: |
           if [ ! -f lib/libdb/sqlite3.h ]; then
@@ -144,7 +145,7 @@ jobs:
       - name: Install toolchain
         run: |
           sudo apt-get update -qq 2>&1 || true
-          sudo apt-get install -y -qq gcc-arm-linux-gnueabihf libssl-dev libasound2-dev libpcre2-dev file unzip
+          sudo apt-get install -y -qq gcc-arm-linux-gnueabihf libssl-dev libasound2-dev libpcre2-dev libsdl2-dev file unzip
       - name: Fetch SQLite amalgamation
         run: |
           if [ ! -f lib/libdb/sqlite3.h ]; then
@@ -180,7 +181,7 @@ jobs:
       - name: Install mingw
         run: |
           sudo apt-get update -qq 2>&1 || true
-          sudo apt-get install -y -qq mingw-w64 libssl-dev file unzip
+          sudo apt-get install -y -qq mingw-w64 libssl-dev libsdl2-dev file unzip
       - name: Fetch SQLite amalgamation
         run: |
           if [ ! -f lib/libdb/sqlite3.h ]; then

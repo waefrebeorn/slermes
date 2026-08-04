@@ -17,6 +17,8 @@ RUN apk add --no-cache \
     libxkbcommon-dev \
     mesa-dev \
     pcre2-dev \
+    sdl2-dev \
+    sdl2_ttf-dev \
     zlib-dev \
     zlib-static \
     pkgconf \
