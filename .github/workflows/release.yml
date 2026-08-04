@@ -37,7 +37,9 @@ jobs:
         run: |
           sudo apt-get update -qq 2>&1 || true
           sudo apt-get install -y -qq build-essential gcc libssl-dev \
-            libncurses-dev libwayland-dev pkg-config file unzip 2>&1 || true
+            libncurses-dev libwayland-dev libasound2-dev libpcre2-dev \
+            libxkbcommon-dev libgbm-dev libegl1-mesa-dev libgles2-mesa-dev \
+            pkg-config file unzip 2>&1 || true
       - name: Fetch SQLite amalgamation
         run: |
           if [ ! -f lib/libdb/sqlite3.h ]; then
@@ -107,7 +109,7 @@ jobs:
       - name: Install toolchain
         run: |
           sudo apt-get update -qq 2>&1 || true
-          sudo apt-get install -y -qq gcc-aarch64-linux-gnu libssl-dev file unzip
+          sudo apt-get install -y -qq gcc-aarch64-linux-gnu libssl-dev libasound2-dev libpcre2-dev file unzip
       - name: Fetch SQLite amalgamation
         run: |
           if [ ! -f lib/libdb/sqlite3.h ]; then
@@ -142,7 +144,7 @@ jobs:
       - name: Install toolchain
         run: |
           sudo apt-get update -qq 2>&1 || true
-          sudo apt-get install -y -qq gcc-arm-linux-gnueabihf libssl-dev file unzip
+          sudo apt-get install -y -qq gcc-arm-linux-gnueabihf libssl-dev libasound2-dev libpcre2-dev file unzip
       - name: Fetch SQLite amalgamation
         run: |
           if [ ! -f lib/libdb/sqlite3.h ]; then
@@ -191,7 +193,7 @@ jobs:
       - name: Cross-compile (bypasses Make 4.3 pattern-rule bug)
         run: |
           CC=x86_64-w64-mingw32-gcc AR=x86_64-w64-mingw32-ar \
-            MAKE_OPTS="CFLAGS_EXTRA='-D_WIN32_WINNT=0x0A00 -Wno-pointer-sign'" \
+            MAKE_OPTS='CFLAGS_EXTRA=-D_WIN32_WINNT=0x0A00\ -Wno-pointer-sign' \
             bash ci-build.sh 2>&1
           ls -la slermes slermes.exe 2>/dev/null || true
           mv slermes slermes-windows-x86_64.exe 2>/dev/null || \

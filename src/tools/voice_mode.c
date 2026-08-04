@@ -28,7 +28,12 @@
 #include <ctype.h>
 #include <math.h>
 #include <pthread.h>
+#ifdef _WIN32
+/* No ALSA on Windows — recorder functions are compiled out (see below). */
+#define SLERMES_NO_ALSA 1
+#else
 #include <alsa/asoundlib.h>
+#endif
 
 /* Forward declaration (defined later in this file as voice_write_wav). */
 int voice_write_wav(const char *file_path, const void *data, size_t data_len,
@@ -375,6 +380,7 @@ static void voice_vad_step(double rms, int *fire) {
 static int16_t *g_capture_buf = NULL;
 static size_t g_capture_len = 0;   /* samples (per-channel already interleaved) */
 
+#ifndef SLERMES_NO_ALSA
 static void *record_thread(void *arg) {
     (void)arg;
     snd_pcm_t *pcm = NULL;
@@ -440,6 +446,7 @@ static void *record_thread(void *arg) {
     pthread_mutex_unlock(&g_recorder.mutex);
     return NULL;
 }
+#endif /* !SLERMES_NO_ALSA */
 
 /* PoP: create_audio_recorder @ tools/voice_mode.py:create_audio_recorder */
 /* Port of Python tools/voice_mode.py:create_audio_recorder(). */
@@ -525,6 +532,7 @@ int voice_ensure_stream(void) {
 
 /* Start recording with optional silence-stop callback. Mirrors
  * AudioRecorder.start(on_silence_stop=...). */
+#ifndef SLERMES_NO_ALSA
 void voice_recorder_start(void (*on_silence_stop)(void)) {
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
@@ -555,6 +563,16 @@ void voice_recorder_start(void (*on_silence_stop)(void)) {
     g_recorder.recording = 1;
     pthread_mutex_unlock(&g_recorder.mutex);
 }
+#endif /* !SLERMES_NO_ALSA */
+#ifdef SLERMES_NO_ALSA
+/* Windows/macOS fallback: no ALSA capture device — recorder is a no-op. */
+static void *record_thread(void *arg) { (void)arg; return NULL; }
+void voice_recorder_start(void (*on_silence_stop)(void)) {
+    (void)on_silence_stop;
+    fprintf(stderr, "voice: recording unsupported on this platform (no ALSA)\n");
+}
+#endif /* SLERMES_NO_ALSA */
+
 
 /* Stop recording and write WAV. Returns malloc'd path or NULL. Mirrors
  * AudioRecorder.stop(): keeps the stream alive, discards very short or
