@@ -617,6 +617,7 @@ class ParityAnalyzer:
             "tools/flux3_video_tool.py":"src/tools/port_tools_flux3_video.c",
             "tools/web_tools.py":"src/tools/web.c","tools/website_policy.py":"src/tools/website_policy.c",
             "tools/write_approval.py":"src/tools/write_approval.c",
+            "tools/environments/vercel_sandbox.py":"src/tools/port_tools_vercel_sandbox.c",
             "agent/redact.py":"src/tools/browser_redact.c","tools/x_search_tool.py":"src/tools/x_search.c",
             "agent/monitoring/gateway_health_export.py":"src/agent/port_agent_monitoring_health_export.c",
             "tools/xai_http.py":"src/tools/xai_http.c","tools/yuanbao_tools.py":"src/tools/yuanbao_tools.c",
