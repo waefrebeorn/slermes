@@ -15,47 +15,53 @@ forking model means slermes diverges from upstream Python — it does NOT
 share git history with the upstream repo. The divergent count is the
 snapshot timer of the last sync point.
 
-## Stash → Pull → Fix → Pop Workflow
+## Fork Sync Workflow (canonical, v669)
 
-This is the **exact workflow** used every time upstream gets new updates:
+This is the **exact workflow** used every time upstream gets new updates —
+pull the hermes code, slap slermes back on, stamp the banner checkpoint:
 
 ```bash
-# 1. STASH — save our local work before pulling
-git stash
-
-# 2. PULL — fetch upstream changes (rebase or merge)
+# STEP 1 — PULL the hermes (Python) code into OUR fork (parent = Python quarry)
+cd /home/wubu/hermes-agent-dev
 git fetch upstream main
-git rebase upstream/main    # or: git merge upstream/main
+git merge upstream/main --no-edit            # conflicts: upstream wins (quarry)
+git rev-list --count HEAD..upstream/main      # must be 0
+# ⚠️ Do NOT push the parent — its origin/main is the same physical GitHub repo
+#    as slermes (fork-object-sharing hazard). Keep the quarry sync local.
 
-# 3. FIX — resolve any conflicts, re-run tests
-make clean && make
-bash tests/oracle/run_oracles.sh --check
+# STEP 2 — SLAP SLERMES BACK ON: upstream/main becomes an ancestor, C11 tree kept
+cd /home/wubu/hermes-agent-dev/slermes
+git branch -f backup-pre-forkfix HEAD         # safety net
+git fetch upstream main
+git merge -s ours upstream/main --no-edit     # behind=0, tree byte-identical
+git rev-list --count HEAD..upstream/main      # must be 0
 
-# 4. POP — restore our stashed work on top
-git stash pop
-
-# 5. VERIFY — confirm everything still works
-make clean && make
-bash tests/oracle/run_oracles.sh --check
-
-# 6. PUSH — push to our fork
+# STEP 3 — BANNER CHECKPOINT + PUSH
+make parity-walkway    # stamps "X ahead / 0 behind … up to date with upstream"
+git add BANNER.md ROADMAP.md docs/parity-summary.md scripts/gen_parity_walkway.py .hermes/
+git commit -m "vNNN: behind=0 reconciliation — fork-base merge, banner up to date"
 git push origin main
 ```
+
+Verify: `gh api repos/waefrebeorn/slermes/compare/NousResearch:main...main` →
+`behind_by: 0`. The banner says "up to date" only when behind==0 (the generator
+stamps that phrase automatically; never hand-edit it).
 
 ## The Divergent Count
 
 The divergent count between `origin/main` (our fork) and `upstream/main`
 (the Hermes Python quarry) is the **snapshot timer** of the last sync.
 
-- **0 commits ahead of origin/main, 0 commits behind** — our fork is
-  perfectly synced with our own pushed state
-- **N commits behind upstream/main** — this is expected and represents
-  the delta between the Python quarry and our C11 port since the last
-  pull. This is NOT a defect — it's the measure of work remaining.
+- **0 commits behind upstream/main** — the goal state after every sync.
+  Achieved via the canonical fork-sync flow above (`-s ours` fork-base
+  merge makes upstream/main an ancestor; our C11 tree stays byte-identical).
+  GitHub then reports `behind_by: 0` and the banner says "up to date".
+- **N commits ahead of upstream/main** — our C11 work on top of the
+  Python quarry. This is expected and normal fork state.
 
-After a stash→pull→pop cycle, the diverging count resets to reflect the
-new upstream state. The count going down over time means we're closing
-the gap.
+If the behind-count is ever non-zero, the sync was not completed — re-run
+the canonical 3-step flow (it is idempotent; the `-s ours` merge returns
+behind to 0 and the banner re-stamps).
 
 ## Key Files
 
