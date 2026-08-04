@@ -8,12 +8,13 @@
  * REAL_GAP pending the gateway async-runtime port — porting them here would
  * force stubs, which is forbidden.
  *
- * Closed here (5 functions):
+ * Closed here (6 functions):
  *   - _status_template_to_regex         (pure regex-source builder)
  *   - _gateway_compression_progress_notices_enabled (gateway.yaml bool)
  *   - _csv_or_list_to_set               (config normalize)
  *   - _slack_parent_channel_id          (pure chat-id split)
  *   - _profile_runtime_scope            (contextmanager → enter/exit binder)
+ *   - gw_retry_ordinal                  (metrics retry count extractor)
  *
  * Reuses: lib/libyaml (config reads), lib/libjson, secret_scope_*
  * (port_agent_secret_scope.c), hermes_get_home (slermes_home).
@@ -299,4 +300,19 @@ bool gw_is_slack_ignored_channel(
     }
     gw_strset_free(ignored);
     return result;
+}
+
+/* PoP: _retry_ordinal @ hermes_cli/observability/relay_shared_metrics.py:_retry_ordinal
+ * Extract retry_count from event dict, validate it's a non-negative int.
+ * (Python's dict.get + isinstance + value >= 0 check)
+ */
+int gw_retry_ordinal(const json_t *event)
+{
+    json_t *val = json_object_get(event, "retry_count");
+    if (!json_is_number(val))
+        return -1;  /* None equivalent */
+    double d = json_number_value(val);
+    if (d < 0 || d != (double)(int)d)
+        return -1;
+    return (int)d;
 }

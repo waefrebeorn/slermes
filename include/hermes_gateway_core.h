@@ -116,6 +116,9 @@ int custom_unit_to_cp(const char *s, int len, int budget,
  * Returns default_value on missing, empty, or unparseable input. */
 double float_env(const char *name, double default_value);
 
+/* Port of Python hermes_cli/observability/relay_shared_metrics.py _retry_ordinal */
+int gw_retry_ordinal(const json_t *event);
+
 /* ================================================================
  *  E44-E47: Gateway error handling
  * ================================================================ */
