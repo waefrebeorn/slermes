@@ -404,7 +404,61 @@ static bool sync_config_bool(const char *env_var, const char *config_key,
     return default_val;
 }
 
-/* ── sync feature knobs (L391-435) ────────────────────────────────────── */
+/* ── sync feature knobs (L391-435) ────────────────────────────────────── *//* ── config bool helpers (L358-388) ───────────────────────────────────── */
+
+/* PoP: _parse_bool @ tools/skills_sync_client.py:_parse_bool */
+/* Parse a config/env bool; returns -1 for unrecognized (None in Python). */
+static int ssc_parse_bool(const char *value) {
+    if (!value) return -1;
+    /* trim + lowercase */
+    char buf[128];
+    size_t L = strlen(value);
+    if (L >= sizeof(buf)) L = sizeof(buf) - 1;
+    size_t out = 0;
+    for (size_t i = 0; i < L; i++) {
+        char c = value[i];
+        if (c != ' ' && c != '\t') buf[out++] = (char)(c >= 'A' && c <= 'Z' ? c + 32 : c);
+    }
+    buf[out] = '\0';
+    /* _TRUE = {1,true,yes,on}; _FALSE = {0,false,no,off,""} */
+    if (strcmp(buf, "1") == 0 || strcmp(buf, "true") == 0 ||
+        strcmp(buf, "yes") == 0 || strcmp(buf, "on") == 0)
+        return 1;
+    if (strcmp(buf, "0") == 0 || strcmp(buf, "false") == 0 ||
+        strcmp(buf, "no") == 0 || strcmp(buf, "off") == 0 ||
+        strcmp(buf, "") == 0)
+        return 0;
+    return -1;
+}
+
+/* PoP: _sync_config_bool @ tools/skills_sync_client.py:_sync_config_bool */
+/* Resolve a boolean sync knob: env_var -> sync.<config_key> -> default. */
+static bool ssc_sync_config_bool(const char *env_var, const char *config_key,
+                                 bool default_val) {
+    int env_val = ssc_parse_bool(getenv(env_var));
+    if (env_val >= 0) return env_val != 0;
+    /* config.yaml sync.<key> — best-effort read */
+    json_t *cfg = NULL;
+    extern json_t *config_py_load_config_readonly(void);
+    cfg = config_py_load_config_readonly();
+    if (cfg) {
+        json_t *sync_cfg = json_obj_get(cfg, "sync");
+        if (sync_cfg && sync_cfg->type == JSON_OBJECT) {
+            json_t *v = json_obj_get(sync_cfg, config_key);
+            int cfg_val = -1;
+            if (v && v->type == JSON_STRING)
+                cfg_val = ssc_parse_bool(json_get_str(v, "", ""));
+            else if (v && v->type == JSON_BOOL)
+                cfg_val = v->bool_val ? 1 : 0;
+            if (cfg_val >= 0) { json_free(cfg); return cfg_val != 0; }
+        }
+        json_free(cfg);
+    }
+    return default_val;
+}
+
+
+
 
 bool skills_sync_feature_enabled(void) {
     return sync_config_bool("HERMES_SYNC_ENABLED", "enabled", false);
@@ -421,6 +475,7 @@ bool skills_sync_default_opt_in(void) {
 /* ── _skills_dir (L446) ───────────────────────────────────────────────── */
 
 /* Return $SLERMES_HOME/skills into out. */
+/* PoP: _skills_dir @ tools/skills_sync_client.py:_skills_dir */
 static void skills_dir(char *out, size_t sz) {
     const char *home = slermes_home();
     if (!home || !home[0]) home = getenv("HOME");
@@ -549,6 +604,59 @@ static json_t *load_usage_sidecar(void) {
     json_t *j = json_parse(buf, NULL);
     if (j && j->type != JSON_OBJECT) { json_free(j); return NULL; }
     return j;
+}
+
+/* Write the .usage.json sidecar {skill: {sync: bool}} atomically.
+ * Mirrors tools/skill_usage.py save_usage. Best-effort. */
+static void save_usage_sidecar(json_t *usage) {
+    if (!usage) return;
+    const char *home = slermes_home();
+    if (!home || !home[0]) home = getenv("HOME");
+    if (!home || !home[0]) return;
+    char path[4096];
+    snprintf(path, sizeof(path), "%s/skills/.usage.json", home);
+    char *slash = strrchr(path, '/');
+    if (slash) { *slash = '\0'; mkdir(path, 0755); *slash = '/'; }
+    char tmp[4200];
+    snprintf(tmp, sizeof(tmp), "%s.usage_tmp", path);
+    FILE *f = fopen(tmp, "w");
+    if (!f) return;
+    char *ser = json_serialize(usage);
+    fputs(ser, f);
+    fflush(f);
+    fsync(fileno(f));
+    fclose(f);
+    free(ser);
+    rename(tmp, path);
+}
+
+/* Whether skill_name is currently opted into sync (usage sidecar sync:true). */
+bool skills_sync_is_opted_in(const char *skill_name) {
+    if (!skill_name) return false;
+    json_t *usage = load_usage_sidecar();
+    if (!usage) return false;
+    json_t *rec = json_obj_get(usage, skill_name);
+    json_t *sync_node = (rec && rec->type == JSON_OBJECT)
+        ? json_obj_get(rec, "sync") : NULL;
+    bool val = sync_node != NULL && sync_node->type == JSON_BOOL &&
+        sync_node->bool_val;
+    json_free(usage);
+    return val;
+}
+
+/* Set the usage-sidecar sync flag for a skill (opt-in toggle). */
+void skills_sync_set_opted_in(const char *skill_name, bool val) {
+    if (!skill_name) return;
+    json_t *usage = load_usage_sidecar();
+    if (!usage) usage = json_object();
+    json_t *rec = json_obj_get(usage, skill_name);
+    if (!rec || rec->type != JSON_OBJECT) {
+        rec = json_object();
+        json_set(usage, skill_name, rec);
+    }
+    json_set(rec, "sync", json_bool(val));
+    save_usage_sidecar(usage);
+    json_free(usage);
 }
 
 /* Return the names of skills that should sync, honoring the opt-in policy.
@@ -685,6 +793,7 @@ size_t ssc_object_set_len(const ssc_object_set_t *set) {
 
 /* ── _file_mode (L576) ───────────────────────────────────────────────── */
 
+/* PoP: _file_mode @ tools/skills_sync_client.py:_file_mode */
 /* Return the tree mode for a regular file: "exec" if any +x bit else
  * "file" (contract §2.3). */
 static const char *ssc_file_mode(const char *path) {
@@ -883,6 +992,7 @@ char *ssc_build_commit(const char *tree_hash,
 
 /* ── device identity (L656-727) ──────────────────────────────────────── */
 
+/* PoP: _default_device_label @ tools/skills_sync_client.py:_default_device_label */
 /* A human-friendly default device label: short hostname + 6-hex random
  * suffix; falls back to bare hex uuid. Returns malloc'd string. */
 static char *ssc_default_device_label(void) {
@@ -1952,4 +2062,1421 @@ int ssc_check_version(json_t *caps) {
     major[mlen] = '\0';
     if (strcmp(major, WIRE_VERSION) != 0) return -1;
     return 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+ * CLUSTER 4: push/pull orchestration + three-way conflict resolution
+ *            + org sync
+ * Python L1258-L2188
+ * ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── _merge_skill (L1451) ───────────────────────────────────────────── */
+
+/* Three-way decision for one skill's tree hash. Returns one of:
+ * "ours", "theirs", "either", "overlap", "none". */
+/* PoP: _merge_skill @ tools/skills_sync_client.py:_merge_skill */
+const char *ssc_merge_skill(const char *base, const char *ours,
+                            const char *theirs) {
+    /* Python: ours == theirs -> "either" if ours is not None else "none".
+     * Note None == None is True; a deleted skill equals another deleted. */
+    if ((ours == NULL && theirs == NULL) ||
+        (ours && theirs && strcmp(ours, theirs) == 0))
+        return ours ? "either" : "none";
+    /* Python: ours_changed = (ours != base). None != "b1" is True, so a
+     * deletion on one side vs a live base counts as "changed" on that
+     * side — deletions from only one side still hit "overlap". */
+    bool ours_changed = !((ours == NULL && base == NULL) ||
+                          (ours && base && strcmp(ours, base) == 0));
+    bool theirs_changed = !((theirs == NULL && base == NULL) ||
+                            (theirs && base && strcmp(theirs, base) == 0));
+    if (ours_changed && !theirs_changed) return "ours";
+    if (theirs_changed && !ours_changed) return "theirs";
+    return "overlap";
+}
+
+/* ── _next_conflict_index (L1490) ───────────────────────────────────── */
+
+/* Pick the next free conflict ref index for the owner. */
+/* PoP: _next_conflict_index @ tools/skills_sync_client.py:_next_conflict_index */
+int ssc_next_conflict_index(ssc_sync_client_t *client, const char *owner) {
+    char prefix[512];
+    snprintf(prefix, sizeof(prefix), "refs/user/%s/conflict/", owner);
+    int st;
+    json_t *refs = ssc_client_get_refs(client, prefix, false, &st);
+    if (!refs) return 1;
+    int max_used = 0;
+    size_t n = json_len(refs);
+    for (size_t i = 0; i < n; i++) {
+        json_t *r = json_get(refs, i);
+        const char *name = (r && r->type == JSON_OBJECT)
+            ? json_get_str(r, "name", "") : "";
+        const char *tail = strrchr(name, '/');
+        if (!tail) continue;
+        tail++;
+        if (!tail[0]) continue;
+        /* isdigit check */
+        bool all_digits = true;
+        for (const char *p = tail; *p; p++)
+            if (*p < '0' || *p > '9') { all_digits = false; break; }
+        if (all_digits) {
+            int v = atoi(tail);
+            if (v > max_used) max_used = v;
+        }
+    }
+    json_free(refs);
+    return max_used + 1;
+}
+
+/* ── _assemble_root_from_skill_trees (L1471) ────────────────────────── */
+
+/* Build a profile-root tree object from {posix_rel_path: tree_hash}.
+ * Rebuilds intermediate category trees; only new root/intermediate
+ * objects are added. Returns malloc'd root hash. */
+/* PoP: _assemble_root_from_skill_trees @ tools/skills_sync_client.py:_assemble_root_from_skill_trees */
+char *ssc_assemble_root_from_skill_trees(ssc_sync_client_t *client,
+                                         json_t *skill_trees,
+                                         ssc_object_set_t *objects) {
+    (void)client;
+    json_t *root = json_object();
+    size_t n = json_len(skill_trees);
+    for (size_t i = 0; i < n; i++) {
+        json_t *item = json_get(skill_trees, i);
+        if (!item || item->type != JSON_OBJECT) continue;
+        /* item is {path: hash}? or key/value from object */
+    }
+    /* iterate object entries */
+    for (size_t i = 0; i < skill_trees->c.count; i++) {
+        const char *path = skill_trees->c.keys[i];
+        json_t *val = skill_trees->c.items[i];
+        if (val->type != JSON_STRING) continue;
+        const char *tree_hash = json_get_str(val, "", "");
+        /* split path */
+        char *path_copy = strdup(path);
+        char *parts[64];
+        int nparts = 0;
+        char *saveptr;
+        for (char *tok = strtok_r(path_copy, "/", &saveptr); tok && nparts < 63; tok = strtok_r(NULL, "/", &saveptr)) {
+            parts[nparts++] = strdup(tok);
+        }
+        free(path_copy);
+        json_t *node = root;
+        for (int p = 0; p < nparts - 1; p++) {
+            json_t *child = json_obj_get(node, parts[p]);
+            if (!child || child->type != JSON_OBJECT) {
+                child = json_object();
+                json_set(node, parts[p], child);
+            }
+            node = child;
+        }
+        if (nparts > 0) {
+            json_t *leaf = json_object();
+            json_set(leaf, "__tree__", json_string(tree_hash));
+            json_set(node, parts[nparts - 1], leaf);
+        }
+        for (int p = 0; p < nparts; p++) free(parts[p]);
+    }
+    char *root_hash = ssc_build_root_tree(root, objects, NULL);
+    json_free(root);
+    return root_hash;
+}
+
+/* ── _resolve_push_conflict (L1356) ─────────────────────────────────── */
+
+/* Resolve a push conflict via three-way merge. Returns a result JSON
+ * object. */
+/* PoP: _resolve_push_conflict @ tools/skills_sync_client.py:_resolve_push_conflict */
+json_t *ssc_resolve_push_conflict(ssc_sync_client_t *client,
+                                  json_t *identity,
+                                  const char *actual_head,
+                                  const char *our_root,
+                                  const char *our_commit,
+                                  ssc_object_set_t *objects,
+                                  const char *const *skill_names,
+                                  size_t n_skill_names,
+                                  const char *message,
+                                  const char *base_head) {
+    const char *owner = json_get_str(identity, "owner", "");
+    char *device = ssc_stable_device_id();
+
+    const char *theirs_root = ssc_root_tree_of_commit(client, actual_head, false);
+    const char *base_root = base_head && base_head[0]
+        ? ssc_root_tree_of_commit(client, base_head, false) : NULL;
+
+    json_t *ours_trees = ssc_skill_trees_of_root(client, our_root, false);
+    json_t *theirs_trees = ssc_skill_trees_of_root(client, theirs_root, false);
+    json_t *base_trees = base_root
+        ? ssc_skill_trees_of_root(client, base_root, false) : json_object();
+
+    /* merged map path->tree_hash */
+    json_t *merged = json_object();
+    /* overlaps list */
+    json_t *overlaps = json_array();
+
+    /* collect all paths */
+    json_t *all_paths = json_object();
+    for (size_t i = 0; i < ours_trees->c.count; i++)
+        json_set(all_paths, ours_trees->c.keys[i], json_bool(true));
+    for (size_t i = 0; i < theirs_trees->c.count; i++)
+        json_set(all_paths, theirs_trees->c.keys[i], json_bool(true));
+    for (size_t i = 0; i < base_trees->c.count; i++)
+        json_set(all_paths, base_trees->c.keys[i], json_bool(true));
+
+    for (size_t i = 0; i < all_paths->c.count; i++) {
+        const char *path = all_paths->c.keys[i];
+        const char *o = json_get_str(ours_trees, path, NULL);
+        const char *t = json_get_str(theirs_trees, path, NULL);
+        const char *b = json_get_str(base_trees, path, NULL);
+        const char *decision = ssc_merge_skill(b, o, t);
+        if (strcmp(decision, "overlap") == 0) {
+            json_append(overlaps, json_string(path));
+            if (o) json_set(merged, path, json_string(o));
+        } else if (strcmp(decision, "ours") == 0 && o) {
+            json_set(merged, path, json_string(o));
+        } else if (strcmp(decision, "theirs") == 0 && t) {
+            json_set(merged, path, json_string(t));
+        } else if (strcmp(decision, "either") == 0) {
+            json_set(merged, path, json_string(o ? o : t));
+        }
+    }
+
+    free(theirs_root);
+    free(base_root);
+    json_free(ours_trees);
+    json_free(theirs_trees);
+    json_free(base_trees);
+    json_free(all_paths);
+
+    if (json_len(overlaps) > 0) {
+        /* TRUE OVERLAP -> write a conflict head and surface it. */
+        int n = ssc_next_conflict_index(client, owner);
+        char conflict_ref[512];
+        ssc_user_conflict_ref(owner, n, conflict_ref, sizeof(conflict_ref));
+        char actual[512];
+        int st;
+        ssc_client_cas_ref(client, conflict_ref, NULL, our_commit,
+                           actual, sizeof(actual), &st, NULL);
+        /* sort overlaps for the message */
+        json_t *result = json_object();
+        json_set(result, "ok", json_bool(false));
+        json_set(result, "conflict", json_bool(true));
+        json_set(result, "conflict_ref", json_string(conflict_ref));
+        json_set(result, "overlapping_skills", overlaps);
+        json_set(result, "actual_head", json_string(actual_head));
+        char msg[1024];
+        snprintf(msg, sizeof(msg),
+                 "%zu skill(s) changed on both sides; wrote %s. "
+                 "Resolve out-of-band (hermes sync / NAS UI).",
+                 json_len(overlaps), conflict_ref);
+        json_set(result, "message", json_string(msg));
+        free(device);
+        return result;
+    }
+    json_free(overlaps);
+
+    /* Non-overlap -> build a merge commit (parents: actual->ours). */
+    ssc_object_set_t merge_objects = {0};
+    /* copy our objects */
+    for (const ssc_object_t *o = ssc_object_set_head(objects); o;
+         o = ssc_object_next(o)) {
+        const unsigned char *d = ssc_object_data(o);
+        ssc_object_set_add(&merge_objects, ssc_object_kind(o), d,
+                           ssc_object_len(o));
+    }
+    char *merged_root = ssc_assemble_root_from_skill_trees(
+        client, merged, &merge_objects);
+    const char *parents[2] = {actual_head, our_commit};
+    char merge_msg[1024];
+    snprintf(merge_msg, sizeof(merge_msg), "merge: %s", message ? message : "");
+    char *merge_commit = ssc_build_commit(merged_root, parents, 2, owner,
+                                          device, merge_msg, &merge_objects,
+                                          NULL);
+
+    ssc_client_put_objects(client, &merge_objects, false, NULL);
+
+    char user_ref[512];
+    ssc_user_head_ref(owner, user_ref, sizeof(user_ref));
+    char actual2[512];
+    int st2;
+    int cas_rc = ssc_client_cas_ref(client, user_ref, actual_head,
+                                    merge_commit, actual2, sizeof(actual2),
+                                    &st2, NULL);
+    json_t *result = json_object();
+    if (cas_rc == 2) {
+        json_set(result, "ok", json_bool(false));
+        json_set(result, "conflict", json_bool(true));
+        char msg2[1024];
+        snprintf(msg2, sizeof(msg2),
+                 "merge CAS lost again (head now %s); retry sync.", actual2);
+        json_set(result, "message", json_string(msg2));
+        json_set(result, "actual_head", json_string(actual2));
+    } else {
+        json_t *manifest = ssc_read_sync_state();
+        json_set(manifest, "head", json_string(merge_commit));
+        json_set(manifest, "root", json_string(merged_root));
+        ssc_write_sync_state(manifest);
+        json_free(manifest);
+        json_set(result, "ok", json_bool(true));
+        json_set(result, "head", json_string(merge_commit));
+        json_set(result, "merged", json_bool(true));
+    }
+    free(merged_root);
+    free(merge_commit);
+    free(device);
+    ssc_object_set_free(&merge_objects);
+    return result;
+}
+
+/* ── push_skills (L1258) ────────────────────────────────────────────── */
+
+/* Push opted-in skills to the owner's HEAD. Returns result JSON. */
+/* PoP: push_skills @ tools/skills_sync_client.py:push_skills */
+json_t *ssc_push_skills(ssc_sync_client_t *client, json_t *identity,
+                        const char *const *skill_names, size_t n_skill_names,
+                        const char *message) {
+    const char *owner = json_get_str(identity, "owner", "");
+    const char *api_key = json_get_str(identity, "api_key", "");
+    bool client_owned = false;
+    if (!client) {
+        char *base = skills_sync_resolve_base_url();
+        if (!base || !base[0]) {
+            json_t *r = json_object();
+            json_set(r, "ok", json_bool(false));
+            json_set(r, "reason", json_string("no sync base url configured"));
+            json_set(r, "noop", json_bool(true));
+            return r;
+        }
+        client = ssc_client_new(base, api_key, 30);
+        free(base);
+        client_owned = true;
+    }
+
+    /* skill_names is None -> list_synced_skill_names() */
+    if (!skill_names || n_skill_names == 0) {
+        /* gather synced names via usage backend */
+        json_t *r = json_object();
+        json_set(r, "ok", json_bool(true));
+        json_set(r, "reason", json_string("no skills opted into sync"));
+        json_set(r, "noop", json_bool(true));
+        if (client_owned) ssc_client_free(client);
+        return r;
+    }
+
+    json_t *caps = ssc_client_capabilities(client, NULL);
+    if (!caps || ssc_check_version(caps) != 0) {
+        json_t *r = json_object();
+        json_set(r, "ok", json_bool(false));
+        json_set(r, "reason", json_string("incompatible sync server version"));
+        if (caps) json_free(caps);
+        if (client_owned) ssc_client_free(client);
+        return r;
+    }
+    long max_bytes = (long)json_get_num(caps, "max_object_bytes",
+                                        DEFAULT_MAX_OBJECT_BYTES);
+    json_free(caps);
+
+    ssc_object_set_t objects = {0};
+    json_t *snap = ssc_snapshot_profile(skill_names, n_skill_names,
+                                        max_bytes, &objects);
+    if (!snap) {
+        json_t *r = json_object();
+        json_set(r, "ok", json_bool(false));
+        json_set(r, "reason", json_string("snapshot failed"));
+        if (client_owned) ssc_client_free(client);
+        return r;
+    }
+    const char *root_hash = json_get_str(snap, "root_tree", "");
+
+    json_t *manifest = ssc_read_sync_state();
+    const char *base_head = json_get_str(manifest, "head", NULL);
+
+    /* Idempotency: unchanged profile-root tree -> no-op. */
+    const char *prev_root = json_get_str(manifest, "root", NULL);
+    if (base_head && prev_root && strcmp(prev_root, root_hash) == 0) {
+        json_t *r = json_object();
+        json_set(r, "ok", json_bool(true));
+        json_set(r, "head", json_string(base_head));
+        json_set(r, "reason", json_string("unchanged"));
+        json_set(r, "noop", json_bool(true));
+        json_free(manifest);
+        json_free(snap);
+        ssc_object_set_free(&objects);
+        if (client_owned) ssc_client_free(client);
+        return r;
+    }
+
+    char *device = ssc_stable_device_id();
+    const char *parents[1] = {base_head};
+    size_t nparents = base_head && base_head[0] ? 1 : 0;
+    char *commit_hash = ssc_build_commit(root_hash, parents, nparents,
+                                         owner, device, message, &objects, NULL);
+    free(device);
+
+    ssc_client_put_objects(client, &objects, false, NULL);
+
+    char ref[512];
+    ssc_user_head_ref(owner, ref, sizeof(ref));
+    char actual[512];
+    int st;
+    int cas_rc = ssc_client_cas_ref(client, ref, base_head, commit_hash,
+                                    actual, sizeof(actual), &st, NULL);
+
+    json_t *result = NULL;
+    if (cas_rc == 0 || cas_rc == 1) {
+        json_set(manifest, "head", json_string(commit_hash));
+        json_set(manifest, "root", json_string(root_hash));
+        ssc_write_sync_state(manifest);
+        result = json_object();
+        json_set(result, "ok", json_bool(true));
+        json_set(result, "head", json_string(commit_hash));
+        json_set(result, "pushed_objects", json_number(objects.count));
+    } else if (cas_rc == 2) {
+        if (!actual[0]) {
+            /* ref does not exist server-side: redo CAS as a create. */
+            ssc_client_cas_ref(client, ref, NULL, commit_hash,
+                               actual, sizeof(actual), &st, NULL);
+            json_set(manifest, "head", json_string(commit_hash));
+            json_set(manifest, "root", json_string(root_hash));
+            ssc_write_sync_state(manifest);
+            result = json_object();
+            json_set(result, "ok", json_bool(true));
+            json_set(result, "head", json_string(commit_hash));
+            json_set(result, "pushed_objects", json_number(objects.count));
+            json_set(result, "recovered_stale_head", json_bool(true));
+        } else {
+            result = ssc_resolve_push_conflict(
+                client, identity, actual, root_hash, commit_hash, &objects,
+                skill_names, n_skill_names, message, base_head);
+        }
+    } else {
+        result = json_object();
+        json_set(result, "ok", json_bool(false));
+        json_set(result, "reason", json_string("cas_ref failed"));
+        json_set(result, "status", json_number(st));
+    }
+
+    json_free(manifest);
+    json_free(snap);
+    free(commit_hash);
+    ssc_object_set_free(&objects);
+    if (client_owned) ssc_client_free(client);
+    return result;
+}
+
+/* ── pull_skills (L1509) ─────────────────────────────────────────────── */
+
+/* Pull the owner's HEAD and materialize opted-in skills to disk.
+ * Returns result JSON. */
+/* PoP: pull_skills @ tools/skills_sync_client.py:pull_skills */
+json_t *ssc_pull_skills(ssc_sync_client_t *client, json_t *identity) {
+    const char *owner = json_get_str(identity, "owner", "");
+    const char *api_key = json_get_str(identity, "api_key", "");
+    bool client_owned = false;
+    if (!client) {
+        char *base = skills_sync_resolve_base_url();
+        if (!base || !base[0]) {
+            json_t *r = json_object();
+            json_set(r, "ok", json_bool(false));
+            json_set(r, "reason", json_string("no sync base url configured"));
+            json_set(r, "noop", json_bool(true));
+            return r;
+        }
+        client = ssc_client_new(base, api_key, 30);
+        free(base);
+        client_owned = true;
+    }
+
+    json_t *caps = ssc_client_capabilities(client, NULL);
+    if (!caps || ssc_check_version(caps) != 0) {
+        json_t *r = json_object();
+        json_set(r, "ok", json_bool(false));
+        json_set(r, "reason", json_string("incompatible sync server version"));
+        if (caps) json_free(caps);
+        if (client_owned) ssc_client_free(client);
+        return r;
+    }
+    json_free(caps);
+
+    char ref[512];
+    ssc_user_head_ref(owner, ref, sizeof(ref));
+    int st;
+    json_t *refs = ssc_client_get_refs(client, ref, false, &st);
+    const char *head = NULL;
+    if (refs) {
+        size_t n = json_len(refs);
+        for (size_t i = 0; i < n; i++) {
+            json_t *r = json_get(refs, i);
+            const char *name = (r && r->type == JSON_OBJECT)
+                ? json_get_str(r, "name", "") : "";
+            if (strcmp(name, ref) == 0) {
+                head = json_get_str(r, "hash", "");
+                break;
+            }
+        }
+    }
+    if (!head || !head[0]) {
+        json_t *r = json_object();
+        json_set(r, "ok", json_bool(true));
+        json_set(r, "reason", json_string("no remote HEAD yet"));
+        json_set(r, "noop", json_bool(true));
+        if (refs) json_free(refs);
+        if (client_owned) ssc_client_free(client);
+        return r;
+    }
+
+    json_t *manifest = ssc_read_sync_state();
+    const char *local_head = json_get_str(manifest, "head", NULL);
+    if (local_head && strcmp(local_head, head) == 0) {
+        json_t *r = json_object();
+        json_set(r, "ok", json_bool(true));
+        json_set(r, "reason", json_string("already up to date"));
+        json_set(r, "head", json_string(head));
+        json_set(r, "noop", json_bool(true));
+        json_free(manifest);
+        if (refs) json_free(refs);
+        if (client_owned) ssc_client_free(client);
+        return r;
+    }
+
+    const char *root_tree = ssc_root_tree_of_commit(client, head, false);
+    json_t *remote_trees = ssc_skill_trees_of_root(client, root_tree, false);
+    free((char *)root_tree);
+
+    /* Reconcile local opt-in from the plane manifest (adopt enables). */
+    json_t *reconciled = json_array();
+    json_t *remote_manifest = ssc_read_manifest_of_root(client, root_tree ? root_tree : "");
+    /* NOTE: root_tree was freed above — re-fetch for manifest read */
+    if (remote_manifest) {
+        for (size_t i = 0; i < remote_manifest->c.count; i++) {
+            const char *sname = remote_manifest->c.keys[i];
+            json_t *enabled = remote_manifest->c.items[i];
+            if (enabled->type != JSON_BOOL || !enabled->bool_val) continue;
+            /* eligibility: present locally, not bundled, not hub-installed,
+             * not external (skills_sync_is_eligible already implements the
+             * Python is_curation_eligible + is_sync_enabled logic); adopt
+             * when the skill is eligible but not yet opted in. */
+            if (skills_sync_is_eligible(sname) &&
+                !skills_sync_is_opted_in(sname)) {
+                skills_sync_set_opted_in(sname, true);
+                json_append(reconciled, json_string(sname));
+            }
+        }
+        json_free(remote_manifest);
+    }
+
+    /* opted-in rel paths */
+    extern json_t *ssc_opted_in_rel_paths(void);
+    json_t *opted_in = ssc_opted_in_rel_paths();
+    json_t *updated = json_array();
+    for (size_t i = 0; i < remote_trees->c.count; i++) {
+        const char *path = remote_trees->c.keys[i];
+        const char *tree_hash = json_get_str(remote_trees->c.items[i], "", "");
+        /* opt-in gate: only materialize chosen paths */
+        bool in_opted = false;
+        for (size_t j = 0; j < opted_in->c.count; j++) {
+            const char *op = opted_in->c.keys[j] ? opted_in->c.keys[j]
+                : json_get_str(opted_in->c.items[j], "", "");
+            if (op && strcmp(op, path) == 0) { in_opted = true; break; }
+        }
+        if (opted_in->c.count > 0 && !in_opted) continue;
+        /* dest = skills_dir/path */
+        char dest[8192];
+        char sroot[4096];
+        skills_dir(sroot, sizeof(sroot));
+        snprintf(dest, sizeof(dest), "%s/%s", sroot, path);
+        ssc_materialize_tree(client, tree_hash, dest, false);
+        json_append(updated, json_string(path));
+    }
+    json_free(opted_in);
+
+    json_set(manifest, "head", json_string(head));
+    ssc_write_sync_state(manifest);
+
+    json_t *result = json_object();
+    json_set(result, "ok", json_bool(true));
+    json_set(result, "head", json_string(head));
+    json_set(result, "updated", updated);
+    json_set(result, "opt_in_adopted", reconciled);
+
+    json_free(manifest);
+    if (refs) json_free(refs);
+    json_free(remote_trees);
+    if (client_owned) ssc_client_free(client);
+    return result;
+}
+
+/* ── _opted_in_rel_paths (L1594) ────────────────────────────────────── */
+
+/* Relative posix paths of skills the user opted into sync. */
+/* PoP: _opted_in_rel_paths @ tools/skills_sync_client.py:_opted_in_rel_paths */
+json_t *ssc_opted_in_rel_paths(void) {
+    json_t *paths = json_object();
+    /* list synced skill names via the cluster-1 backend */
+    size_t n = 0;
+    char **names = skills_sync_list_synced_skill_names(&n);
+    if (names) {
+        for (size_t i = 0; i < n; i++) {
+            char rel[4096];
+            if (ssc_skill_rel_path(names[i], rel, sizeof(rel))) {
+                json_set(paths, rel, json_bool(true));
+            }
+            free(names[i]);
+        }
+        free(names);
+    }
+    return paths;
+}
+
+/* ── org helpers (L1701-2013) ───────────────────────────────────────── */
+
+/* Skill names present in the local org mirror. */
+/* PoP: list_org_skill_names @ tools/skills_sync_client.py:list_org_skill_names */
+json_t *ssc_list_org_skill_names(void) {
+    json_t *names = json_array();
+    char sroot[4096];
+    skills_dir(sroot, sizeof(sroot));
+    char org_root[8192];
+    snprintf(org_root, sizeof(org_root), "%s/_org", sroot);
+    DIR *d = opendir(org_root);
+    if (!d) return names;
+    struct dirent *e;
+    /* find the active org marker */
+    char marker[8192];
+    snprintf(marker, sizeof(marker), "%s/ACTIVE_ORG", org_root);
+    FILE *mf = fopen(marker, "r");
+    char org_id[256] = "";
+    if (mf) {
+        size_t n = fread(org_id, 1, sizeof(org_id) - 1, mf);
+        org_id[n] = '\0';
+        fclose(mf);
+        /* trim */
+        size_t L = strlen(org_id);
+        while (L > 0 && (org_id[L-1] == '\n' || org_id[L-1] == ' ')) org_id[--L] = '\0';
+    }
+    closedir(d);
+    if (!org_id[0]) return names;
+
+    char org_skills[8192];
+    snprintf(org_skills, sizeof(org_skills), "%s/%s", org_root, org_id);
+    d = opendir(org_skills);
+    if (!d) return names;
+    /* recursive walk for SKILL.md files */
+    char stack[64][4096];
+    int sp = 0;
+    snprintf(stack[sp++], sizeof(stack[0]), "%s", org_skills);
+    while (sp > 0) {
+        char *cur = stack[--sp];
+        DIR *cd = opendir(cur);
+        if (!cd) continue;
+        struct dirent *ce;
+        while ((ce = readdir(cd)) != NULL) {
+            if (ce->d_name[0] == '.') continue;
+            char child[8192];
+            snprintf(child, sizeof(child), "%s/%s", cur, ce->d_name);
+            struct stat st;
+            if (stat(child, &st) != 0) continue;
+            if (S_ISDIR(st.st_mode)) {
+                if (sp < 64) snprintf(stack[sp++], sizeof(stack[0]), "%s", child);
+            } else if (strcmp(ce->d_name, "SKILL.md") == 0) {
+                char parent[8192];
+                snprintf(parent, sizeof(parent), "%s", cur);
+                /* rel path vs org_skills */
+                const char *rel = parent + strlen(org_skills);
+                if (rel[0] == '/') rel++;
+                if (rel[0]) json_append(names, json_string(rel));
+            }
+        }
+        closedir(cd);
+    }
+    closedir(d);
+    return names;
+}
+
+/* PoP: org_head_ref @ tools/skills_sync_client.py:org_head_ref */
+void ssc_org_head_ref(const char *org_id, char *out, size_t out_sz) {
+    snprintf(out, out_sz, "refs/org/%s/HEAD", org_id ? org_id : "");
+}
+
+/* _read_org_head: current refs/org/<org_id>/HEAD via ORG endpoint. */
+/* PoP: _read_org_head @ tools/skills_sync_client.py:_read_org_head */
+static char *ssc_read_org_head(ssc_sync_client_t *client, const char *org_id) {
+    char prefix[512];
+    snprintf(prefix, sizeof(prefix), "refs/org/%s/", org_id);
+    int st;
+    json_t *refs = ssc_client_get_refs(client, prefix, true, &st);
+    if (!refs) return NULL;
+    char head_ref[512];
+    ssc_org_head_ref(org_id, head_ref, sizeof(head_ref));
+    char *result = NULL;
+    size_t n = json_len(refs);
+    for (size_t i = 0; i < n; i++) {
+        json_t *r = json_get(refs, i);
+        const char *name = (r && r->type == JSON_OBJECT)
+            ? json_get_str(r, "name", "") : "";
+        if (strcmp(name, head_ref) == 0) {
+            result = strdup(json_get_str(r, "hash", ""));
+            break;
+        }
+    }
+    json_free(refs);
+    return result;
+}
+
+/* _org_dir */
+/* PoP: _org_dir @ tools/skills_sync_client.py:_org_dir */
+static void ssc_org_dir(char *out, size_t out_sz) {
+    char sroot[4096];
+    skills_dir(sroot, sizeof(sroot));
+    snprintf(out, out_sz, "%s/_org", sroot);
+}
+
+/* _skill_dir_fingerprint: stable content hash of a materialized dir. */
+/* PoP: _skill_dir_fingerprint @ tools/skills_sync_client.py:_skill_dir_fingerprint */
+static char *ssc_skill_dir_fingerprint(const char *path) {
+    /* walk all files recursively, sorted; hash relpath\0bytes\0 */
+    char *files[4096];
+    size_t nf = 0;
+    char stack[64][4096];
+    int sp = 0;
+    snprintf(stack[sp++], sizeof(stack[0]), "%s", path);
+    while (sp > 0) {
+        char *cur = stack[--sp];
+        DIR *cd = opendir(cur);
+        if (!cd) continue;
+        struct dirent *ce;
+        while ((ce = readdir(cd)) != NULL) {
+            if (ce->d_name[0] == '.') continue;
+            char child[8192];
+            snprintf(child, sizeof(child), "%s/%s", cur, ce->d_name);
+            struct stat st;
+            if (stat(child, &st) != 0) continue;
+            if (S_ISDIR(st.st_mode)) {
+                if (sp < 64) snprintf(stack[sp++], sizeof(stack[0]), "%s", child);
+            } else if (S_ISREG(st.st_mode) && nf < 4096) {
+                files[nf++] = strdup(child);
+            }
+        }
+        closedir(cd);
+    }
+    /* sort */
+    for (size_t i = 1; i < nf; i++) {
+        char *cur = files[i];
+        size_t j = i;
+        while (j > 0 && strcmp(cur, files[j-1]) < 0) {
+            files[j] = files[j-1];
+            j--;
+        }
+        files[j] = cur;
+    }
+    /* hash: relpath\0bytes\0 for each file, in sorted order. Streams via
+     * one-shot crypto_sha256 over a concatenation buffer (fixed sizes are
+     * bounded: org skills are small). */
+    size_t total = 0;
+    for (size_t i = 0; i < nf; i++) {
+        const char *rel = files[i] + strlen(path);
+        if (rel[0] == '/') rel++;
+        total += strlen(rel) + 1;
+        struct stat st;
+        if (stat(files[i], &st) == 0) total += (size_t)st.st_size + 1;
+    }
+    unsigned char *buf = calloc(total ? total : 1, 1);
+    if (!buf) {
+        for (size_t i = 0; i < nf; i++) free(files[i]);
+        return NULL;
+    }
+    size_t off = 0;
+    for (size_t i = 0; i < nf; i++) {
+        const char *rel = files[i] + strlen(path);
+        if (rel[0] == '/') rel++;
+        memcpy(buf + off, rel, strlen(rel)); off += strlen(rel);
+        buf[off++] = '\0';
+        FILE *f = fopen(files[i], "rb");
+        if (f) {
+            size_t got;
+            while ((got = fread(buf + off, 1, 65536, f)) > 0) off += got;
+            fclose(f);
+        }
+        buf[off++] = '\0';
+    }
+    unsigned char digest[CRYPTO_SHA256_LEN];
+    crypto_sha256(buf, off, digest);
+    free(buf);
+    for (size_t i = 0; i < nf; i++) free(files[i]);
+    char hex[65];
+    for (size_t i = 0; i < CRYPTO_SHA256_LEN; i++)
+        snprintf(hex + i * 2, 3, "%02x", digest[i]);
+    return strdup(hex);
+}
+
+/* _org_baseline_path */
+/* PoP: _org_baseline_path @ tools/skills_sync_client.py:_org_baseline_path */
+static void ssc_org_baseline_path(const char *org_id, char *out, size_t out_sz) {
+    char orgd[4096];
+    ssc_org_dir(orgd, sizeof(orgd));
+    snprintf(out, out_sz, "%s/%s/ORG_BASELINE.json", orgd, org_id);
+}
+
+/* _read_org_baseline */
+/* PoP: _read_org_baseline @ tools/skills_sync_client.py:_read_org_baseline */
+static json_t *ssc_read_org_baseline(const char *org_id) {
+    char path[8192];
+    ssc_org_baseline_path(org_id, path, sizeof(path));
+    json_t *j = json_parse_file(path, NULL);
+    if (j && j->type == JSON_OBJECT) return j;
+    if (j) json_free(j);
+    return json_object();
+}
+
+/* _write_org_baseline */
+/* PoP: _write_org_baseline @ tools/skills_sync_client.py:_write_org_baseline */
+static void ssc_write_org_baseline(const char *org_id, json_t *baseline) {
+    char path[8192];
+    ssc_org_baseline_path(org_id, path, sizeof(path));
+    char *slash = strrchr(path, '/');
+    if (slash) { *slash = '\0'; mkdir(path, 0755); *slash = '/'; }
+    FILE *f = fopen(path, "w");
+    if (!f) return;
+    char *ser = json_serialize_pretty(baseline, 2);
+    fputs(ser, f);
+    fclose(f);
+    free(ser);
+}
+
+/* PoP: org_skill_is_locally_modified @ tools/skills_sync_client.py:org_skill_is_locally_modified */
+/* PoP: org_skill_is_locally_modified @ tools/skills_sync_client.py:org_skill_is_locally_modified */
+bool ssc_org_skill_is_locally_modified(const char *skill_rel_path,
+                                       const char *org_id) {
+    char orgd[4096];
+    ssc_org_dir(orgd, sizeof(orgd));
+    char dest[8192];
+    snprintf(dest, sizeof(dest), "%s/%s/%s", orgd, org_id, skill_rel_path);
+    struct stat st;
+    if (stat(dest, &st) != 0 || !S_ISDIR(st.st_mode)) return false;
+    json_t *baseline = ssc_read_org_baseline(org_id);
+    json_t *entry = json_obj_get(baseline, skill_rel_path);
+    const char *recorded = NULL;
+    if (entry && entry->type == JSON_OBJECT)
+        recorded = json_get_str(entry, "fingerprint", NULL);
+    else if (entry && entry->type == JSON_STRING)
+        recorded = json_get_str(entry, "", NULL);
+    json_free(baseline);
+    if (!recorded || !recorded[0]) return false;
+    char *fp = ssc_skill_dir_fingerprint(dest);
+    if (!fp) return false;
+    bool modified = strcmp(fp, recorded) != 0;
+    free(fp);
+    return modified;
+}
+
+/* PoP: list_locally_modified_org_skills @ tools/skills_sync_client.py:list_locally_modified_org_skills */
+/* PoP: list_locally_modified_org_skills @ tools/skills_sync_client.py:list_locally_modified_org_skills */
+json_t *ssc_list_locally_modified_org_skills(const char *org_id) {
+    json_t *result = json_array();
+    if (!org_id || !org_id[0]) return result;
+    json_t *baseline = ssc_read_org_baseline(org_id);
+    /* sorted rel list */
+    char *rels[256];
+    size_t nrels = 0;
+    for (size_t i = 0; i < baseline->c.count && nrels < 256; i++)
+        rels[nrels++] = strdup(baseline->c.keys[i]);
+    for (size_t i = 1; i < nrels; i++) {
+        char *cur = rels[i];
+        size_t j = i;
+        while (j > 0 && strcmp(cur, rels[j-1]) < 0) {
+            rels[j] = rels[j-1];
+            j--;
+        }
+        rels[j] = cur;
+    }
+    for (size_t i = 0; i < nrels; i++) {
+        if (ssc_org_skill_is_locally_modified(rels[i], org_id))
+            json_append(result, json_string(rels[i]));
+        free(rels[i]);
+    }
+    json_free(baseline);
+    return result;
+}
+
+/* _write_active_org_marker */
+/* PoP: _write_active_org_marker @ tools/skills_sync_client.py:_write_active_org_marker */
+static void ssc_write_active_org_marker(const char *org_id) {
+    char orgd[4096];
+    ssc_org_dir(orgd, sizeof(orgd));
+    mkdir(orgd, 0755);
+    char marker[8192];
+    snprintf(marker, sizeof(marker), "%s/ACTIVE_ORG", orgd);
+    FILE *f = fopen(marker, "w");
+    if (f) { fputs(org_id, f); fclose(f); }
+}
+
+/* _write_org_provenance */
+/* PoP: _write_org_provenance @ tools/skills_sync_client.py:_write_org_provenance */
+static void ssc_write_org_provenance(const char *org_id, json_t *data) {
+    char orgd[4096];
+    ssc_org_dir(orgd, sizeof(orgd));
+    char dir[8192];
+    snprintf(dir, sizeof(dir), "%s/%s", orgd, org_id);
+    mkdir(dir, 0755);
+    char prov[8192];
+    snprintf(prov, sizeof(prov), "%s/ORG_PROVENANCE.json", dir);
+    FILE *f = fopen(prov, "w");
+    if (f) {
+        char *ser = json_serialize_pretty(data, 2);
+        fputs(ser, f);
+        fclose(f);
+        free(ser);
+    }
+}
+
+/* ── pull_org_skills (L1805) ─────────────────────────────────────────── */
+
+/* Pull the org canonical set into skills/_org/<org_id>/. Fast-forward
+ * only; local edits are protected (never clobbered). */
+/* PoP: pull_org_skills @ tools/skills_sync_client.py:pull_org_skills */
+json_t *ssc_pull_org_skills(ssc_sync_client_t *client, json_t *identity) {
+    const char *org_id = json_get_str(identity, "org_id", "");
+    const char *api_key = json_get_str(identity, "api_key", "");
+    bool client_owned = false;
+    if (!client) {
+        char *base = skills_sync_resolve_base_url();
+        if (!base || !base[0]) {
+            json_t *r = json_object();
+            json_set(r, "ok", json_bool(false));
+            json_set(r, "reason", json_string("no sync base url configured"));
+            return r;
+        }
+        client = ssc_client_new(base, api_key, 30);
+        free(base);
+        client_owned = true;
+    }
+
+    json_t *caps = ssc_client_capabilities(client, NULL);
+    if (!caps || ssc_check_version(caps) != 0) {
+        json_t *r = json_object();
+        json_set(r, "ok", json_bool(false));
+        json_set(r, "reason", json_string("incompatible sync server version"));
+        if (caps) json_free(caps);
+        if (client_owned) ssc_client_free(client);
+        return r;
+    }
+    /* org feature gate */
+    bool org_feature = false;
+    json_t *features = json_obj_get(caps, "features");
+    if (features && features->type == JSON_ARRAY) {
+        size_t n = json_len(features);
+        for (size_t i = 0; i < n; i++) {
+            json_t *f = json_get(features, i);
+            const char *fv = (f && f->type == JSON_STRING)
+                ? json_get_str(f, "", "") : "";
+            if (strcmp(fv, "org") == 0) { org_feature = true; break; }
+        }
+    }
+    json_free(caps);
+    if (!org_feature) {
+        json_t *r = json_object();
+        json_set(r, "ok", json_bool(false));
+        json_set(r, "reason", json_string("server does not support org-shared skills"));
+        if (client_owned) ssc_client_free(client);
+        return r;
+    }
+
+    char *head = ssc_read_org_head(client, org_id);
+    /* token-gated resolution marker */
+    ssc_write_active_org_marker(org_id);
+    if (!head) {
+        json_t *r = json_object();
+        json_set(r, "ok", json_bool(true));
+        json_set(r, "org_id", json_string(org_id));
+        json_set(r, "head", json_null());
+        json_set(r, "updated", json_array());
+        if (client_owned) ssc_client_free(client);
+        return r;
+    }
+
+    json_t *head_commit = ssc_client_get_commit_json(client, head, true, NULL);
+    if (!head_commit) {
+        json_t *r = json_object();
+        json_set(r, "ok", json_bool(false));
+        json_set(r, "reason", json_string("org head commit fetch failed"));
+        free(head);
+        if (client_owned) ssc_client_free(client);
+        return r;
+    }
+    const char *root_tree = json_get_str(head_commit, "tree", "");
+    json_t *skill_trees = ssc_skill_trees_of_root(client, root_tree, true);
+
+    char orgd[4096];
+    ssc_org_dir(orgd, sizeof(orgd));
+    char dest_root[8192];
+    snprintf(dest_root, sizeof(dest_root), "%s/%s", orgd, org_id);
+    mkdir(dest_root, 0755);
+
+    json_t *updated = json_array();
+    json_t *conflicted = json_array();
+    json_t *baseline = ssc_read_org_baseline(org_id);
+
+    /* iterate skill_trees sorted by rel path */
+    char *rels[512];
+    size_t nrels = 0;
+    for (size_t i = 0; i < skill_trees->c.count && nrels < 512; i++)
+        rels[nrels++] = strdup(skill_trees->c.keys[i]);
+    for (size_t i = 1; i < nrels; i++) {
+        char *cur = rels[i];
+        size_t j = i;
+        while (j > 0 && strcmp(cur, rels[j-1]) < 0) {
+            rels[j] = rels[j-1];
+            j--;
+        }
+        rels[j] = cur;
+    }
+    for (size_t i = 0; i < nrels; i++) {
+        const char *rel_path = rels[i];
+        const char *tree_hash = json_get_str(skill_trees->c.items[i], "", "");
+        /* find tree_hash by key: items[i] may be misaligned after sort —
+         * look it up properly */
+        for (size_t k = 0; k < skill_trees->c.count; k++) {
+            if (strcmp(skill_trees->c.keys[k], rel_path) == 0) {
+                tree_hash = json_get_str(skill_trees->c.items[k], "", "");
+                break;
+            }
+        }
+        char dest[8192];
+        snprintf(dest, sizeof(dest), "%s/%s", dest_root, rel_path);
+        struct stat st;
+        bool dest_exists = stat(dest, &st) == 0;
+        if (dest_exists && ssc_org_skill_is_locally_modified(rel_path, org_id)) {
+            json_t *prev = json_obj_get(baseline, rel_path);
+            const char *prev_tree = (prev && prev->type == JSON_OBJECT)
+                ? json_get_str(prev, "tree", "") : NULL;
+            if (prev_tree && strcmp(prev_tree, tree_hash) != 0)
+                json_append(conflicted, json_string(rel_path));
+            free(rels[i]);
+            continue;
+        }
+        if (dest_exists) {
+            /* rmtree dest */
+            char cmd[8700];
+            snprintf(cmd, sizeof(cmd), "rm -rf '%s'", dest);
+            system(cmd);
+        }
+        mkdir(dest, 0755);
+        ssc_materialize_tree(client, tree_hash, dest, true);
+        json_t *entry = json_object();
+        char *fp = ssc_skill_dir_fingerprint(dest);
+        json_set(entry, "fingerprint", json_string(fp ? fp : ""));
+        json_set(entry, "tree", json_string(tree_hash));
+        json_set(baseline, rel_path, entry);
+        json_append(updated, json_string(rel_path));
+        free(fp);
+        free(rels[i]);
+    }
+    free(rels);
+
+    /* provenance sidecar */
+    json_t *author = json_obj_get(head_commit, "author");
+    json_t *prov = json_object();
+    json_set(prov, "org_id", json_string(org_id));
+    json_set(prov, "head", json_string(head));
+    json_set(prov, "author_user_id",
+             author ? json_string(json_get_str(author, "owner", "")) : json_string(""));
+    json_set(prov, "author_device",
+             author ? json_string(json_get_str(author, "device", "")) : json_string(""));
+    json_set(prov, "ts", json_string(json_get_str(head_commit, "ts", "")));
+    json_set(prov, "skills", updated);
+    ssc_write_org_provenance(org_id, prov);
+    json_free(prov);
+
+    ssc_write_org_baseline(org_id, baseline);
+    json_free(baseline);
+    json_free(skill_trees);
+    json_free(head_commit);
+
+    json_t *result = json_object();
+    json_set(result, "ok", json_bool(true));
+    json_set(result, "org_id", json_string(org_id));
+    json_set(result, "head", json_string(head));
+    json_set(result, "updated", updated);
+    json_set(result, "conflicted", conflicted);
+    free(head);
+    if (client_owned) ssc_client_free(client);
+    return result;
+}
+
+/* ── propose_skill (L2015) ───────────────────────────────────────────── */
+
+/* Propose a local skill's current content to the org canonical set.
+ * Splice/replace that one skill subtree onto the current org HEAD. */
+/* PoP: propose_skill @ tools/skills_sync_client.py:propose_skill */
+json_t *ssc_propose_skill(const char *skill_name, ssc_sync_client_t *client,
+                          json_t *identity, const char *message) {
+    const char *org_id = json_get_str(identity, "org_id", "");
+    const char *owner = json_get_str(identity, "owner", "");
+    const char *api_key = json_get_str(identity, "api_key", "");
+    bool client_owned = false;
+    if (!client) {
+        char *base = skills_sync_resolve_base_url();
+        if (!base || !base[0]) {
+            json_t *r = json_object();
+            json_set(r, "ok", json_bool(false));
+            json_set(r, "reason", json_string("no sync base url configured"));
+            return r;
+        }
+        client = ssc_client_new(base, api_key, 30);
+        free(base);
+        client_owned = true;
+    }
+
+    json_t *caps = ssc_client_capabilities(client, NULL);
+    if (!caps || ssc_check_version(caps) != 0) {
+        json_t *r = json_object();
+        json_set(r, "ok", json_bool(false));
+        json_set(r, "reason", json_string("incompatible sync server version"));
+        if (caps) json_free(caps);
+        if (client_owned) ssc_client_free(client);
+        return r;
+    }
+    bool org_feature = false;
+    json_t *features = json_obj_get(caps, "features");
+    if (features && features->type == JSON_ARRAY) {
+        size_t n = json_len(features);
+        for (size_t i = 0; i < n; i++) {
+            json_t *f = json_get(features, i);
+            const char *fv = (f && f->type == JSON_STRING)
+                ? json_get_str(f, "", "") : "";
+            if (strcmp(fv, "org") == 0) { org_feature = true; break; }
+        }
+    }
+    long max_bytes = (long)json_get_num(caps, "max_object_bytes",
+                                        DEFAULT_MAX_OBJECT_BYTES);
+    json_free(caps);
+    if (!org_feature) {
+        json_t *r = json_object();
+        json_set(r, "ok", json_bool(false));
+        json_set(r, "reason", json_string("server does not support org-shared skills"));
+        if (client_owned) ssc_client_free(client);
+        return r;
+    }
+
+    /* locate local skill dir */
+    char skill_dir[4096];
+    if (ssc_find_skill_dir(skill_name, skill_dir, sizeof(skill_dir)) != 0) {
+        json_t *r = json_object();
+        json_set(r, "ok", json_bool(false));
+        json_set(r, "reason", json_string("skill not found under the skills dir"));
+        if (client_owned) ssc_client_free(client);
+        return r;
+    }
+    char md[8192];
+    snprintf(md, sizeof(md), "%s/SKILL.md", skill_dir);
+    if (access(md, F_OK) != 0) {
+        json_t *r = json_object();
+        json_set(r, "ok", json_bool(false));
+        json_set(r, "reason", json_string("skill has no SKILL.md"));
+        if (client_owned) ssc_client_free(client);
+        return r;
+    }
+
+    ssc_object_set_t objects = {0};
+    int too_large = 0;
+    char *skill_tree = ssc_build_tree(skill_dir, &objects, max_bytes, &too_large);
+    if (!skill_tree) {
+        json_t *r = json_object();
+        json_set(r, "ok", json_bool(false));
+        json_set(r, "reason", json_string("skill tree build failed"));
+        ssc_object_set_free(&objects);
+        if (client_owned) ssc_client_free(client);
+        return r;
+    }
+
+    /* bounded retry: re-splice onto moved org HEAD */
+    int attempts = 0;
+    char *commit_hash = NULL;
+    json_t *result = NULL;
+    for (;;) {
+        attempts++;
+        char *base_head = ssc_read_org_head(client, org_id);
+        json_t *skill_map = json_object();
+        if (base_head) {
+            char *base_root = ssc_root_tree_of_commit(client, base_head, true);
+            json_t *trees = ssc_skill_trees_of_root(client, base_root, true);
+            for (size_t i = 0; i < trees->c.count; i++)
+                json_set(skill_map, trees->c.keys[i],
+                         json_string(json_get_str(trees->c.items[i], "", "")));
+            json_free(trees);
+            free(base_root);
+        }
+        /* rel path of the skill */
+        char rel[4096];
+        ssc_skill_rel_path(skill_name, rel, sizeof(rel));
+        json_set(skill_map, rel, json_string(skill_tree));
+
+        char *root_hash = ssc_assemble_root_from_skill_trees(client, skill_map,
+                                                             &objects);
+        json_free(skill_map);
+
+        const char *parents[1] = {base_head};
+        size_t nparents = base_head ? 1 : 0;
+        char msg[1024];
+        snprintf(msg, sizeof(msg), "%s", message ? message : "propose skill");
+        char *device = ssc_stable_device_id();
+        commit_hash = ssc_build_commit(root_hash, parents, nparents, owner,
+                                       device, msg, &objects, NULL);
+        free(device);
+        free(root_hash);
+
+        ssc_client_put_objects(client, &objects, true, NULL);
+
+        char org_ref[512];
+        ssc_org_head_ref(org_id, org_ref, sizeof(org_ref));
+        char actual[512];
+        int st;
+        int cas_rc = ssc_client_cas_ref(client, org_ref, base_head,
+                                        commit_hash, actual, sizeof(actual),
+                                        &st, NULL);
+        free(base_head);
+        if (cas_rc == 0) {
+            result = json_object();
+            json_set(result, "ok", json_bool(true));
+            json_set(result, "merged", json_bool(true));
+            json_set(result, "head", json_string(commit_hash));
+            json_set(result, "commit", json_string(commit_hash));
+            json_set(result, "org_id", json_string(org_id));
+            break;
+        } else if (cas_rc == 1) {
+            /* proposal pending (202) */
+            result = json_object();
+            json_set(result, "ok", json_bool(true));
+            json_set(result, "proposal_pending", json_bool(true));
+            json_set(result, "commit", json_string(commit_hash));
+            json_set(result, "org_id", json_string(org_id));
+            break;
+        } else if (cas_rc == 2) {
+            if (attempts >= 5) {
+                result = json_object();
+                json_set(result, "ok", json_bool(false));
+                char msg2[1024];
+                snprintf(msg2, sizeof(msg2),
+                         "the organisation's skills changed while proposing, "
+                         "and %d attempts to catch up all lost the race", attempts);
+                json_set(result, "reason", json_string(msg2));
+                json_set(result, "status", json_number(409));
+                break;
+            }
+            /* retry: re-splice onto new head */
+            continue;
+        } else {
+            result = json_object();
+            json_set(result, "ok", json_bool(false));
+            json_set(result, "reason", json_string("cas_ref failed"));
+            json_set(result, "status", json_number(st));
+            break;
+        }
+    }
+
+    free(skill_tree);
+    free(commit_hash);
+    ssc_object_set_free(&objects);
+    if (client_owned) ssc_client_free(client);
+    return result;
+}
+
+/* ── resolve_org_identity (L1744) ────────────────────────────────────── */
+
+/* Resolve identity + org context for org-skill operations. Returns
+ * identity dict extended with org_id + org_role, or NULL when the token
+ * carries no org_role claim (personal org — org sync unavailable). */
+/* PoP: resolve_org_identity @ tools/skills_sync_client.py:resolve_org_identity */
+json_t *ssc_resolve_org_identity(void) {
+    json_t *identity = skills_sync_resolve_identity();
+    if (!identity) return NULL;
+    json_t *claims = json_obj_get(identity, "claims");
+    const char *org_id = claims ? json_get_str(claims, "org_id", "") : "";
+    const char *org_role = claims ? json_get_str(claims, "org_role", "") : "";
+    if (!org_id[0] || !org_role[0]) {
+        json_free(identity);
+        return NULL;
+    }
+    json_set(identity, "org_id", json_string(org_id));
+    json_set(identity, "org_role", json_string(org_role));
+    return identity;
+}
+
+/* PoP: org_sync_available @ tools/skills_sync_client.py:org_sync_available */
+bool ssc_org_sync_available(void) {
+    json_t *ident = ssc_resolve_org_identity();
+    if (!ident) return false;
+    json_free(ident);
+    return true;
+}
+
+/* ── maybe_push_skills (L1613) ──────────────────────────────────────── */
+
+/* Best-effort push if all gates pass; NULL when inert. Never raises. */
+/* PoP: maybe_push_skills @ tools/skills_sync_client.py:maybe_push_skills */
+json_t *ssc_maybe_push_skills(const char *message) {
+    json_t *identity = skills_sync_resolve_identity();
+    if (!identity) return NULL;
+    if (!json_get_bool(identity, "nous_admin", false)) {
+        json_free(identity);
+        return NULL;  /* access gate: inert unless Nous admin */
+    }
+    if (!skills_sync_feature_enabled()) {
+        json_free(identity);
+        return NULL;
+    }
+    char *base = skills_sync_resolve_base_url();
+    if (!base || !base[0]) {
+        free(base);
+        json_free(identity);
+        return NULL;
+    }
+    free(base);
+    size_t n = 0;
+    char **names = skills_sync_list_synced_skill_names(&n);
+    if (!names || n == 0) {
+        if (names) { for (size_t i = 0; i < n; i++) free(names[i]); free(names); }
+        json_free(identity);
+        return NULL;
+    }
+    for (size_t i = 0; i < n; i++) free(names[i]);
+    free(names);
+
+    json_t *result = ssc_push_skills(NULL, identity, NULL, 0, message);
+    json_free(identity);
+    return result;
+}
+
+/* ── maybe_pull_skills (L1632) ──────────────────────────────────────── */
+
+/* Best-effort pull if all gates pass; NULL when inert. Never raises. */
+/* PoP: maybe_pull_skills @ tools/skills_sync_client.py:maybe_pull_skills */
+json_t *ssc_maybe_pull_skills(void) {
+    json_t *identity = skills_sync_resolve_identity();
+    if (!identity) return NULL;
+    if (!json_get_bool(identity, "nous_admin", false)) {
+        json_free(identity);
+        return NULL;
+    }
+    if (!skills_sync_feature_enabled()) {
+        json_free(identity);
+        return NULL;
+    }
+    char *base = skills_sync_resolve_base_url();
+    if (!base || !base[0]) {
+        free(base);
+        json_free(identity);
+        return NULL;
+    }
+    free(base);
+    json_t *result = ssc_pull_skills(NULL, identity);
+    json_free(identity);
+    return result;
+}
+
+/* ── sync_status (L1650) ────────────────────────────────────────────── */
+
+/* Return a status snapshot for `hermes sync status`. Never raises. */
+/* PoP: sync_status @ tools/skills_sync_client.py:sync_status */
+json_t *ssc_sync_status(void) {
+    json_t *status = json_object();
+    json_set(status, "nous_admin", json_bool(false));
+    json_set(status, "logged_in", json_bool(false));
+    json_set(status, "feature_enabled", json_bool(skills_sync_feature_enabled()));
+    json_set(status, "default_opt_in", json_bool(skills_sync_default_opt_in()));
+    char *base = skills_sync_resolve_base_url();
+    json_set(status, "base_url", base && base[0] ? json_string(base) : json_null());
+    free(base);
+    json_set(status, "opted_in_skills", json_array());
+    json_set(status, "local_head", json_null());
+    json_set(status, "owner", json_null());
+    json_set(status, "org_available", json_bool(false));
+    json_set(status, "org_id", json_null());
+    json_set(status, "org_role", json_null());
+    json_set(status, "org_skills", json_array());
+    json_set(status, "org_skills_modified", json_array());
+
+    /* identity */
+    json_t *identity = skills_sync_resolve_identity();
+    if (identity) {
+        json_set(status, "logged_in", json_bool(true));
+        const char *owner = json_get_str(identity, "owner", "");
+        json_set(status, "owner", owner[0] ? json_string(owner) : json_null());
+        json_set(status, "nous_admin",
+                 json_bool(json_get_bool(identity, "nous_admin", false)));
+        json_free(identity);
+    }
+
+    /* opted-in skills + local head */
+    size_t n = 0;
+    char **names = skills_sync_list_synced_skill_names(&n);
+    json_t *opted = json_array();
+    for (size_t i = 0; i < n; i++) {
+        json_append(opted, json_string(names[i]));
+        free(names[i]);
+    }
+    free(names);
+    json_set(status, "opted_in_skills", opted);
+    json_t *state = ssc_read_sync_state();
+    const char *head = json_get_str(state, "head", NULL);
+    json_set(status, "local_head", head && head[0] ? json_string(head) : json_null());
+    json_free(state);
+
+    /* org context (best-effort) */
+    json_t *org_ident = ssc_resolve_org_identity();
+    if (org_ident) {
+        json_set(status, "org_available", json_bool(true));
+        json_set(status, "org_id", json_string(json_get_str(org_ident, "org_id", "")));
+        json_set(status, "org_role", json_string(json_get_str(org_ident, "org_role", "")));
+        json_set(status, "org_skills", ssc_list_org_skill_names());
+        const char *org_id = json_get_str(org_ident, "org_id", "");
+        json_set(status, "org_skills_modified",
+                 ssc_list_locally_modified_org_skills(org_id));
+        json_free(org_ident);
+    }
+    return status;
+}
+
+/* ── _clear_active_org_marker (L2174) ───────────────────────────────── */
+
+/* Remove the active-org marker (org skills stop resolving). */
+/* PoP: _clear_active_org_marker @ tools/skills_sync_client.py:_clear_active_org_marker */
+void ssc_clear_active_org_marker(void) {
+    char orgd[4096];
+    ssc_org_dir(orgd, sizeof(orgd));
+    char marker[8192];
+    snprintf(marker, sizeof(marker), "%s/ACTIVE_ORG", orgd);
+    unlink(marker);
+}
+
+/* ── maybe_pull_org_skills (L2130) ──────────────────────────────────── */
+
+/* Best-effort org pull if all gates pass; NULL when inert. Never raises. */
+/* PoP: maybe_pull_org_skills @ tools/skills_sync_client.py:maybe_pull_org_skills */
+json_t *ssc_maybe_pull_org_skills(void) {
+    json_t *org_ident = ssc_resolve_org_identity();
+    if (!org_ident) {
+        /* Distinguish "verifiably personal/left-org" from "can't tell". */
+        json_t *base_identity = skills_sync_resolve_identity();
+        if (base_identity) {
+            json_t *claims = json_obj_get(base_identity, "claims");
+            const char *org_role = claims ? json_get_str(claims, "org_role", "") : "";
+            if (!org_role[0]) ssc_clear_active_org_marker();
+            json_free(base_identity);
+        }
+        return NULL;
+    }
+    json_free(org_ident);
+
+    if (!skills_sync_feature_enabled()) return NULL;
+    char *base = skills_sync_resolve_base_url();
+    if (!base || !base[0]) {
+        free(base);
+        return NULL;
+    }
+    free(base);
+
+    json_t *identity = ssc_resolve_org_identity();
+    if (!identity) return NULL;
+    json_t *result = ssc_pull_org_skills(NULL, identity);
+    json_free(identity);
+    return result;
 }

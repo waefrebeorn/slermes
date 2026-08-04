@@ -158,4 +158,62 @@ json_t *ssc_read_manifest_of_root(ssc_sync_client_t *client,
 int ssc_check_version(json_t *caps);
 
 
+/* ── Cluster 4: push/pull + three-way conflict + org sync ─────────────
+ * Port of tools/skills_sync_client.py (L1258-L2188). */
+
+/* PoP: _merge_skill @ tools/skills_sync_client.py:_merge_skill */
+const char *ssc_merge_skill(const char *base, const char *ours,
+                            const char *theirs);
+/* PoP: _next_conflict_index @ tools/skills_sync_client.py:_next_conflict_index */
+int ssc_next_conflict_index(ssc_sync_client_t *client, const char *owner);
+/* PoP: _assemble_root_from_skill_trees @ tools/skills_sync_client.py:_assemble_root_from_skill_trees */
+char *ssc_assemble_root_from_skill_trees(ssc_sync_client_t *client,
+                                         json_t *skill_trees,
+                                         ssc_object_set_t *objects);
+/* PoP: _resolve_push_conflict @ tools/skills_sync_client.py:_resolve_push_conflict */
+json_t *ssc_resolve_push_conflict(ssc_sync_client_t *client,
+                                  json_t *identity, const char *actual_head,
+                                  const char *our_root, const char *our_commit,
+                                  ssc_object_set_t *objects,
+                                  const char *const *skill_names,
+                                  size_t n_skill_names, const char *message,
+                                  const char *base_head);
+/* PoP: push_skills @ tools/skills_sync_client.py:push_skills */
+json_t *ssc_push_skills(ssc_sync_client_t *client, json_t *identity,
+                        const char *const *skill_names, size_t n_skill_names,
+                        const char *message);
+/* PoP: pull_skills @ tools/skills_sync_client.py:pull_skills */
+json_t *ssc_pull_skills(ssc_sync_client_t *client, json_t *identity);
+/* PoP: _opted_in_rel_paths @ tools/skills_sync_client.py:_opted_in_rel_paths */
+json_t *ssc_opted_in_rel_paths(void);
+/* PoP: list_org_skill_names @ tools/skills_sync_client.py:list_org_skill_names */
+json_t *ssc_list_org_skill_names(void);
+/* PoP: org_head_ref @ tools/skills_sync_client.py:org_head_ref */
+void ssc_org_head_ref(const char *org_id, char *out, size_t out_sz);
+/* PoP: org_skill_is_locally_modified @ tools/skills_sync_client.py:org_skill_is_locally_modified */
+bool ssc_org_skill_is_locally_modified(const char *skill_rel_path,
+                                       const char *org_id);
+/* PoP: list_locally_modified_org_skills @ tools/skills_sync_client.py:list_locally_modified_org_skills */
+json_t *ssc_list_locally_modified_org_skills(const char *org_id);
+/* PoP: pull_org_skills @ tools/skills_sync_client.py:pull_org_skills */
+json_t *ssc_pull_org_skills(ssc_sync_client_t *client, json_t *identity);
+/* PoP: propose_skill @ tools/skills_sync_client.py:propose_skill */
+json_t *ssc_propose_skill(const char *skill_name, ssc_sync_client_t *client,
+                          json_t *identity, const char *message);
+/* PoP: resolve_org_identity @ tools/skills_sync_client.py:resolve_org_identity */
+json_t *ssc_resolve_org_identity(void);
+/* PoP: org_sync_available @ tools/skills_sync_client.py:org_sync_available */
+bool ssc_org_sync_available(void);
+/* PoP: maybe_push_skills @ tools/skills_sync_client.py:maybe_push_skills */
+json_t *ssc_maybe_push_skills(const char *message);
+/* PoP: maybe_pull_skills @ tools/skills_sync_client.py:maybe_pull_skills */
+json_t *ssc_maybe_pull_skills(void);
+/* PoP: sync_status @ tools/skills_sync_client.py:sync_status */
+json_t *ssc_sync_status(void);
+/* PoP: _clear_active_org_marker @ tools/skills_sync_client.py:_clear_active_org_marker */
+void ssc_clear_active_org_marker(void);
+/* PoP: maybe_pull_org_skills @ tools/skills_sync_client.py:maybe_pull_org_skills */
+json_t *ssc_maybe_pull_org_skills(void);
+
+
 #endif /* PORT_SKILLS_SYNC_CLIENT_H */
