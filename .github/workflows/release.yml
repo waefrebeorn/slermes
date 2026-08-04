@@ -84,8 +84,8 @@ jobs:
             cp /tmp/sqlite/sqlite-amalgamation-3490100/sqlite3.c lib/libdb/
             rm -rf /tmp/sqlite.zip /tmp/sqlite/
           fi
-      - name: Build
-        run: make -j$(sysctl -n hw.logicalcpu) 2>&1
+      - name: Build (bypasses Make 4.3 pattern-rule bug)
+        run: bash ci-build.sh 2>&1
       - name: Verify
         run: |
           file slermes
