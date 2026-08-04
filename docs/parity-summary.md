@@ -4,6 +4,18 @@
 
 ## Overall Numbers (live)
 
+<!-- PARITY:AUTO -->
+| Classification | Count | Percentage | Meaning |
+|----------------|-------|------------|---------|
+| **PORTED** | 12,252 | 99.8% | C11 implementation with PoP annotation |
+| **REAL_GAP** | 22 | 0.2% | Honest gaps (not yet ported — IO/network/DB/logic; NOT faked) |
+| **PARTIAL** | 0 | 0.0% | All C fns now carry PoP annotations |
+| **BOOTLEG** | 0 | — | No-work echo stubs (recursive_false_gap_hunter.py) |
+| **TOTAL** | 12,274 | 100% | All Python functions/methods scanned |
+
+> **Generated 2026-08-04T01:19:23Z by `make parity-walkway` from the live scanner.** The PORT phase (v398→v667) is legacy — this table is the single source of truth for completeness. Do not hand-edit.
+<!-- /PARITY:AUTO -->
+
 | Classification | Count | Percentage | Meaning |
 |----------------|-------|------------|---------|
 | **PORTED** | 6,975 | 59.4% | C11 implementation with PoP annotation |
@@ -21,8 +33,6 @@
 > v666). v622 plan remains: close ~1,000 REAL_GAP via port_*/lib reuse
 > (REUSE_GAP_PLAN_v622.md). First faithful reuse-port landed v667:
 > `agent/billing_links.py` (5/5, oracle-verified).
-
-
 
 > **This is a partial port, ~two-thirds done.** REAL_GAP is the honest count of Python
 > features not yet reimplemented in C — it is not zero and the docs do not claim

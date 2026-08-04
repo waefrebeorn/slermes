@@ -14,29 +14,18 @@ Anything the Nous Research team produces — **code AND documents** — is upstr
 ---
 
 ## Current State
-
 | Metric | Value |
 |--------|-------|
-| **Version** | v666+ (live scanner refreshed 2026-07-22) |
-| **Checkpoint** | 117+ |
-| **PORTED** | 6,357 (65.3% of 9,733 features) |
-| **REAL_GAP** | 3,376 (34.7%) |
+| **Version** | v668 (MATCH phase, live scanner 2026-08-04) |
+| **PORTED** | 12,252 (99.8% of 12,274 features) |
+| **REAL_GAP** | 22 (0.2%) |
 | **PARTIAL** | 0 |
-| **Build** | Clean, 0 errors (slermes ~45 MB) |
-| **Tests** | Mission 8: 36 pass / 0 fail / 35 skip |
-| Binary | 45 MB (slermes) + slermes-desktop-gui + web_server |
-| **C source files** | 1,100+ files, ~500K LOC |
-| **Web Endpoints** | ~50 REST, 100+ JSON-RPC (registered) |
-| **Desktop Features** | tracked separately (see Desktop Feature Parity table) |
-| **Skills** | parsed via C-side SKILL.md parser |
-| **Distribution** | AppImage, Homebrew, NSIS, Docker, Nix, make install |
-| **Platform Backends** | Linux ✅, Win32 ✅, macOS ✅ |
+| **BOOTLEG** | 0 (recursive_false_gap_hunter.py) |
+| **Build** | Clean, 0 errors (slermes ~37 MB) |
+| **Tests** | Mission 8: 65 pass / 0 fail (state_db 27, API 17, UI 12, CLI 9) |
+| **Upstream Sync** | 1,200 ahead / 1,113 behind upstream/main (last merge 2026-07-30 (Merge upstream/main (21 commits); keep C11 fork deletions)) |
 
-> Parity counts above are the live scanner output
-> (`python3 tests/slermes_parity_battleground.py --json`) as of 2026-07-22.
-> The authoritative, always-regenerated block lives in `state.md` /
-> `battleship.md` via `make parity-walkway`; this table is a manually-curated
-> snapshot and should be re-synced on each gap-closure pass (barnacle hunt).
+> Live counts: `make parity-walkway` (sentinel PARITY:AUTO). Do not hand-edit — regenerated from the live scanner on every run.
 
 ---
 

@@ -1,13 +1,16 @@
-# Plan — Slermes C Translation (v666)
+# Plan — Slermes C Translation (v668)
 
 ## Current State (HISTORICAL — v666 baseline; see live block at bottom)
 
 > The `<!-- PARITY:AUTO -->
-| PORTED  | 6,798 / 12,260 (55.4%) |
-| REAL_GAP| 5,222 (42.6%) — no N/A |
-| PARTIAL | 240 (2.0%) |
+| PORTED  | 12,252 / 12,274 (99.8%) |
+| REAL_GAP| 22 (0.2%) — no N/A |
+| PARTIAL | 0 (0.0%) |
+| BOOTLEG | 0 (recursive_false_gap_hunter.py) |
 
-**Phase (v667):** PARITY project — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.
+**Phase (v668):** MATCH phase — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. PORT phase (v398→v667) is legacy — complete; every function does real observable work and matches the Python original.
 
-_Generated 2026-08-02T10:21:52Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
+**Upstream sync checkpoint:** 1,200 ahead / 1,113 behind upstream/main (last merge 2026-07-30 (Merge upstream/main (21 commits); keep C11 fork deletions)). The behind-count is the staleness timer — run the stash→pull→fix→pop workflow, then re-port the delta.
+
+_Generated 2026-08-04T01:19:23Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
 <!-- /PARITY:AUTO -->
