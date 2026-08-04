@@ -123,4 +123,39 @@ const unsigned char *ssc_object_data(const ssc_object_t *o);
 size_t ssc_object_len(const ssc_object_t *o);
 const ssc_object_t *ssc_object_next(const ssc_object_t *o);
 
+/* ── Cluster 3: sync state + materialize + snapshot + refs ─────────────
+ * Port of tools/skills_sync_client.py (L946-L1252). */
+
+/* PoP: read_sync_state @ tools/skills_sync_client.py:read_sync_state */
+json_t *ssc_read_sync_state(void);
+/* PoP: write_sync_state @ tools/skills_sync_client.py:write_sync_state */
+int ssc_write_sync_state(json_t *data);
+/* PoP: materialize_tree @ tools/skills_sync_client.py:materialize_tree */
+int ssc_materialize_tree(ssc_sync_client_t *client, const char *tree_hash,
+                         const char *dest, bool org_scope);
+/* PoP: _skill_rel_path @ tools/skills_sync_client.py:_skill_rel_path */
+const char *ssc_skill_rel_path(const char *skill_name, char *out, size_t out_sz);
+/* PoP: snapshot_profile @ tools/skills_sync_client.py:snapshot_profile */
+json_t *ssc_snapshot_profile(const char *const *skill_names, size_t n_names,
+                             long max_object_bytes, ssc_object_set_t *objects);
+/* PoP: _build_root_tree @ tools/skills_sync_client.py:_build_root_tree */
+char *ssc_build_root_tree(json_t *node, ssc_object_set_t *objects,
+                          const char *manifest_hash);
+/* PoP: user_head_ref @ tools/skills_sync_client.py:user_head_ref */
+void ssc_user_head_ref(const char *owner, char *out, size_t out_sz);
+/* PoP: user_conflict_ref @ tools/skills_sync_client.py:user_conflict_ref */
+void ssc_user_conflict_ref(const char *owner, int n, char *out, size_t out_sz);
+/* PoP: _root_tree_of_commit @ tools/skills_sync_client.py:_root_tree_of_commit */
+const char *ssc_root_tree_of_commit(ssc_sync_client_t *client,
+                                    const char *commit_hash, bool org_scope);
+/* PoP: _skill_trees_of_root @ tools/skills_sync_client.py:_skill_trees_of_root */
+json_t *ssc_skill_trees_of_root(ssc_sync_client_t *client,
+                                const char *root_tree_hash, bool org_scope);
+/* PoP: read_manifest_of_root @ tools/skills_sync_client.py:read_manifest_of_root */
+json_t *ssc_read_manifest_of_root(ssc_sync_client_t *client,
+                                  const char *root_tree_hash);
+/* PoP: _check_version @ tools/skills_sync_client.py:_check_version */
+int ssc_check_version(json_t *caps);
+
+
 #endif /* PORT_SKILLS_SYNC_CLIENT_H */

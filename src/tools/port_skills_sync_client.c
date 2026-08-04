@@ -621,6 +621,7 @@ char **skills_sync_list_synced_skill_names(size_t *out_count) {
 #define MODE_DIR    "dir"
 #define ARTIFACT_TYPE_SKILL "skill"
 #define DEFAULT_MAX_OBJECT_BYTES (25 * 1024 * 1024)
+#define WIRE_VERSION "1"
 
 /* ── ObjectSet (L558) ────────────────────────────────────────────────── */
 
@@ -1325,3 +1326,630 @@ const char *ssc_object_kind(const ssc_object_t *o) { return o ? o->kind : NULL; 
 const unsigned char *ssc_object_data(const ssc_object_t *o) { return o ? o->data : NULL; }
 size_t ssc_object_len(const ssc_object_t *o) { return o ? o->data_len : 0; }
 const ssc_object_t *ssc_object_next(const ssc_object_t *o) { return o ? o->next : NULL; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+ * CLUSTER 3: Sync state + materialize_tree + profile snapshot +
+ *            ref naming + read_manifest_of_root + _check_version
+ * Python L946-L1252
+ * ═══════════════════════════════════════════════════════════════════════ */
+
+/* skill_usage backend: find a skill's directory under the skills root. */
+extern char *su_find_skill_dir(const char *hermes_home, const char *name);
+
+/* ── sync state path helpers (L946-951) ────────────────────────────── */
+
+/* PoP: _sync_state_path @ tools/skills_sync_client.py:_sync_state_path */
+static void ssc_sync_state_path(char *out, size_t out_sz) {
+    char root[4096];
+    skills_dir(root, sizeof(root));
+    snprintf(out, out_sz, "%s/.sync_state", root);
+}
+
+/* PoP: _legacy_sync_state_path @ tools/skills_sync_client.py:_legacy_sync_state_path */
+static void ssc_legacy_sync_state_path(char *out, size_t out_sz) {
+    char root[4096];
+    skills_dir(root, sizeof(root));
+    snprintf(out, out_sz, "%s/.sync_manifest", root);
+}
+
+/* PoP: read_sync_state @ tools/skills_sync_client.py:read_sync_state */
+/* Read the local sync state; migrate legacy .sync_manifest on first
+ * read. Returns a malloc'd JSON object (caller frees) or NULL on
+ * total failure (returns {"head":null,"skills":{}} as JSON). */
+json_t *ssc_read_sync_state(void) {
+    char path[4096], legacy[4096];
+    ssc_sync_state_path(path, sizeof(path));
+    ssc_legacy_sync_state_path(legacy, sizeof(legacy));
+
+    /* new path exists? */
+    json_t *j = json_parse_file(path, NULL);
+    if (j && j->type == JSON_OBJECT) {
+        json_set(j, "head", json_null());
+        json_set(j, "skills", json_object());
+        return j;
+    }
+    if (j) json_free(j);
+
+    /* migrate legacy */
+    FILE *lf = fopen(legacy, "r");
+    if (lf) {
+        fclose(lf);
+        json_t *j = json_parse_file(legacy, NULL);
+        if (j && j->type == JSON_OBJECT) {
+            json_set(j, "head", json_null());
+            json_set(j, "skills", json_object());
+            /* write to new path */
+            FILE *wf = fopen(path, "w");
+            if (wf) {
+                char *ser = json_serialize(j);
+                fputs(ser, wf);
+                fclose(wf);
+                free(ser);
+            }
+            /* best-effort unlink legacy */
+            unlink(legacy);
+            return j;
+        }
+        if (j) json_free(j);
+    }
+
+    json_t *def = json_object();
+    json_set(def, "head", json_null());
+    json_set(def, "skills", json_object());
+    return def;
+}
+
+/* PoP: write_sync_state @ tools/skills_sync_client.py:write_sync_state */
+/* Write sync state atomically (tempfile + os.replace). Best-effort;
+ * returns 0 on success, -1 on failure. */
+int ssc_write_sync_state(json_t *data) {
+    if (!data) return -1;
+    char path[4096];
+    ssc_sync_state_path(path, sizeof(path));
+    char dir[4096];
+    snprintf(dir, sizeof(dir), "%s", path);
+    char *slash = strrchr(dir, '/');
+    if (slash) { *slash = '\0'; mkdir(dir, 0755); }
+
+    char tmp[4096];
+    snprintf(tmp, sizeof(tmp), "%s.sync_state_tmp", path);
+    FILE *f = fopen(tmp, "w");
+    if (!f) return -1;
+    char *ser = json_serialize(data);
+    if (ser) {
+        fputs(ser, f);
+        fflush(f);
+        fsync(fileno(f));
+        free(ser);
+    }
+    fclose(f);
+    int rc = rename(tmp, path) == 0 ? 0 : -1;
+    if (rc != 0) unlink(tmp);
+    return rc;
+}
+
+/* ── materialize_tree (L1021) ───────────────────────────────────────── */
+
+/* Write tree at tree_hash into dest (created if needed). Blobs -> files
+ * (restored exec bit for MODE_EXEC), nested trees -> subdirs.
+ * Path traversal entries ("..", "/") are skipped. Returns 0 on success,
+ * -1 on error. */
+/* PoP: materialize_tree @ tools/skills_sync_client.py:materialize_tree */
+int ssc_materialize_tree(ssc_sync_client_t *client, const char *tree_hash,
+                             const char *dest, bool org_scope) {
+    if (!client || !tree_hash || !dest) return -1;
+    char url[1024];
+    ssc_client_url(client, "objects/", url, sizeof(url));
+    size_t ul = strlen(url);
+    snprintf(url + ul, sizeof(url) - ul, "%s", tree_hash);
+
+    char auth[4200];
+    ssc_auth_header(client, auth, sizeof(auth));
+    http_resp_t *r = http_get(client->h, url, auth);
+    if (!r || r->status != 200) {
+        if (r) http_resp_free(r);
+        return -1;
+    }
+    json_t *tree = json_parse(r->body, NULL);
+    http_resp_free(r);
+    if (!tree || tree->type != JSON_OBJECT) {
+        if (tree) json_free(tree);
+        return -1;
+    }
+
+    /* mkdir dest */
+    mkdir(dest, 0755);
+
+    json_t *entries = json_obj_get(tree, "entries");
+    if (!entries || entries->type != JSON_ARRAY) {
+        json_free(tree);
+        return -1;
+    }
+
+    int rc = 0;
+    size_t n = json_len(entries);
+    for (size_t i = 0; i < n && rc == 0; i++) {
+        json_t *e = json_get(entries, i);
+        const char *name = (e && e->type == JSON_OBJECT)
+            ? json_get_str(e, "name", "") : "";
+        if (!name[0] || strchr(name, '/') ||
+            strcmp(name, ".") == 0 || strcmp(name, "..") == 0) {
+            continue;  /* skip unsafe names */
+        }
+        const char *kind = (e && e->type == JSON_OBJECT)
+            ? json_get_str(e, "kind", "") : "";
+        const char *mode = (e && e->type == JSON_OBJECT)
+            ? json_get_str(e, "mode", "") : "";
+        const char *hash = (e && e->type == JSON_OBJECT)
+            ? json_get_str(e, "hash", "") : "";
+
+        char target[8192];
+        snprintf(target, sizeof(target), "%s/%s", dest, name);
+
+        if (strcmp(kind, KIND_TREE) == 0) {
+            rc = ssc_materialize_tree(client, hash, target, org_scope);
+        } else if (strcmp(kind, KIND_BLOB) == 0) {
+            /* fetch blob */
+            char burl[1024];
+            ssc_client_url(client, "objects/", burl, sizeof(burl));
+            size_t bul = strlen(burl);
+            snprintf(burl + bul, sizeof(burl) - bul, "%s", hash);
+            char bauth[4200];
+            ssc_auth_header(client, bauth, sizeof(bauth));
+            http_resp_t *br = http_get(client->h, burl, bauth);
+            if (!br || br->status != 200) {
+                if (br) http_resp_free(br);
+                rc = -1;
+                continue;
+            }
+            FILE *wf = fopen(target, "wb");
+            if (!wf) { http_resp_free(br); rc = -1; continue; }
+            fwrite(br->body, 1, br->body_len, wf);
+            fclose(wf);
+            http_resp_free(br);
+            /* restore exec bit */
+            if (strcmp(mode, MODE_EXEC) == 0) {
+                struct stat st;
+                if (stat(target, &st) == 0)
+                    chmod(target, st.st_mode | S_IXUSR | S_IXGRP | S_IXOTH);
+            }
+        }
+    }
+    json_free(tree);
+    return rc;
+}
+
+/* ── _skill_rel_path (L1061) ────────────────────────────────────────── */
+
+/* Return the skill's path relative to the skills dir (posix), or NULL. */
+/* Recursive skill-dir finder (Python _find_skill_dir): walk the skills
+ * root, read each SKILL.md frontmatter name, match. Returns 0 + out dir
+ * on hit, -1 on miss. */
+static int ssc_find_skill_dir_rec(const char *base, const char *skill_name,
+                                  char *out, size_t out_sz) {
+    DIR *d = opendir(base);
+    if (!d) return -1;
+    struct dirent *e;
+    int rc = -1;
+    while ((e = readdir(d)) != NULL) {
+        if (e->d_name[0] == '.') continue;
+        char child[4096];
+        snprintf(child, sizeof(child), "%s/%s", base, e->d_name);
+        struct stat st;
+        if (stat(child, &st) != 0) continue;
+        if (S_ISDIR(st.st_mode)) {
+            /* check for SKILL.md here */
+            char md[4096];
+            snprintf(md, sizeof(md), "%s/SKILL.md", child);
+            if (access(md, F_OK) == 0) {
+                /* read frontmatter name */
+                char name[256] = "";
+                FILE *f = fopen(md, "r");
+                if (f) {
+                    char line[512];
+                    while (fgets(line, sizeof(line), f)) {
+                        if (line[0] == '\n' || line[0] == '\r') break;
+                        if (strncmp(line, "name:", 5) == 0) {
+                            char *v = line + 5;
+                            while (*v == ' ' || *v == '\t') v++;
+                            size_t L = strlen(v);
+                            while (L > 0 && (v[L-1] == '\n' || v[L-1] == '\r' || v[L-1] == ' ')) v[--L] = '\0';
+                            snprintf(name, sizeof(name), "%s", v);
+                            break;
+                        }
+                    }
+                    fclose(f);
+                }
+                if (name[0] && strcmp(name, skill_name) == 0) {
+                    snprintf(out, out_sz, "%s", child);
+                    rc = 0;
+                    break;
+                }
+                /* fallback: dir name matches */
+                if (strcmp(e->d_name, skill_name) == 0) {
+                    snprintf(out, out_sz, "%s", child);
+                    rc = 0;
+                    break;
+                }
+            }
+            /* recurse into non-matching dirs */
+            if (rc != 0 && ssc_find_skill_dir_rec(child, skill_name, out, out_sz) == 0) {
+                rc = 0;
+                break;
+            }
+        }
+    }
+    closedir(d);
+    return rc;
+}
+
+static int ssc_find_skill_dir(const char *skill_name, char *out, size_t out_sz) {
+    char root[4096];
+    skills_dir(root, sizeof(root));
+    return ssc_find_skill_dir_rec(root, skill_name, out, out_sz);
+}
+
+/* PoP: _skill_rel_path @ tools/skills_sync_client.py:_skill_rel_path */
+const char *ssc_skill_rel_path(const char *skill_name, char *out, size_t out_sz) {
+    char skill_dir[4096];
+    if (ssc_find_skill_dir(skill_name, skill_dir, sizeof(skill_dir)) != 0)
+        return NULL;
+    /* compute relative path vs the skills root */
+    char root[4096];
+    skills_dir(root, sizeof(root));
+    size_t rlen = strlen(root);
+    if (strncmp(skill_dir, root, rlen) != 0) return NULL;
+    const char *rel = skill_dir + rlen;
+    if (rel[0] == '/') rel++;
+    if (rel[0] == '\0') return NULL;
+    snprintf(out, out_sz, "%s", rel);
+    return out;
+}
+
+/* ── snapshot_profile (L1077) ───────────────────────────────────────── */
+
+/* Build all objects for skill_names + the profile-root tree.
+ * Returns a JSON object with keys "objects" (addr), "root_tree" (addr),
+ * and "skill_tree_map" (json_t* mapping name->tree_hash). */
+/* Forward decl: defined below in _build_root_tree section. */
+char *ssc_build_root_tree(json_t *node, ssc_object_set_t *objects,
+                          const char *manifest_hash);
+
+/* PoP: snapshot_profile @ tools/skills_sync_client.py:snapshot_profile */
+json_t *ssc_snapshot_profile(const char *const *skill_names, size_t n_names,
+                                 long max_object_bytes, ssc_object_set_t *objects) {
+    json_t *root = json_object();
+    json_t *skill_tree_map = json_object();
+
+    for (size_t i = 0; i < n_names; i++) {
+        const char *name = skill_names[i];
+        char rel[4096];
+        if (!ssc_skill_rel_path(name, rel, sizeof(rel))) continue;
+        char skill_dir[4096];
+        if (ssc_find_skill_dir(name, skill_dir, sizeof(skill_dir)) != 0)
+            continue;
+
+        int too_large = 0;
+        char *tree_hash = ssc_build_tree(skill_dir, objects, max_object_bytes, &too_large);
+        if (!tree_hash) continue;
+
+        json_set(skill_tree_map, name, json_string(tree_hash));
+
+        /* Insert into nested root structure by relative path parts.
+         * strdup each part — parts[] outlive rel_copy. */
+        char *rel_copy = strdup(rel);
+        char *parts[64];
+        int nparts = 0;
+        char *saveptr;
+        for (char *tok = strtok_r(rel_copy, "/", &saveptr); tok && nparts < 63; tok = strtok_r(NULL, "/", &saveptr)) {
+            parts[nparts++] = strdup(tok);
+        }
+        free(rel_copy);
+
+        json_t *node = root;
+        for (int p = 0; p < nparts - 1; p++) {
+            json_t *child = json_obj_get(node, parts[p]);
+            if (!child || child->type != JSON_OBJECT) {
+                child = json_object();
+                json_set(node, parts[p], child);
+            }
+            node = child;
+        }
+        if (nparts > 0) {
+            json_t *leaf = json_object();
+            json_set(leaf, "__tree__", json_string(tree_hash));
+            json_set(node, parts[nparts - 1], leaf);
+        }
+        for (int p = 0; p < nparts; p++) free(parts[p]);
+        free(tree_hash);
+    }
+
+    /* sync-manifest blob: record opt-in state (all pushed skills enabled). */
+    size_t mt = skill_tree_map->c.count;
+    const char **names = calloc(mt ? mt : 1, sizeof(char *));
+    bool *enabled = calloc(mt ? mt : 1, sizeof(bool));
+    if (names && enabled) {
+        size_t k = 0;
+        for (size_t i = 0; i < mt; i++) {
+            names[k] = skill_tree_map->c.keys[i];
+            enabled[k] = true;
+            k++;
+        }
+        size_t mlen = 0;
+        char *manifest_bytes = skills_sync_build_manifest_bytes(names, enabled, k, &mlen);
+        if (manifest_bytes) {
+            char *manifest_hash = ssc_object_set_add(objects, KIND_BLOB,
+                                                     (const unsigned char *)manifest_bytes, mlen);
+            free(manifest_bytes);
+            if (manifest_hash) {
+                /* Rebuild root with manifest attached at top level. */
+                char *root_hash = ssc_build_root_tree(root, objects, manifest_hash);
+                json_t *result = json_object();
+                json_set(result, "root_tree", json_string(root_hash ? root_hash : ""));
+                json_set(result, "skill_tree_map", skill_tree_map);
+                free(root_hash);
+                free(manifest_hash);
+                free(names); free(enabled);
+                json_free(root);
+                return result;
+            }
+        }
+    }
+    free(names); free(enabled);
+
+    char *root_hash = ssc_build_root_tree(root, objects, NULL);
+    json_t *result = json_object();
+    json_set(result, "root_tree", json_string(root_hash ? root_hash : ""));
+    json_set(result, "skill_tree_map", skill_tree_map);
+    free(root_hash);
+    json_free(root);
+    return result;
+}
+
+/* ── _build_root_tree (L1134) ───────────────────────────────────────── */
+
+/* Recursively canonicalize the nested root structure into trees.
+ * manifest_hash (top-level only) adds a root-level sync-manifest BLOB
+ * entry alongside skill subtrees. */
+static char *ssc_build_root_tree_rec(json_t *node, ssc_object_set_t *objects,
+                                         const char *manifest_hash) {
+    /* Collect entries into a C array first for sorting. */
+    typedef struct { char *name; char *kind; char *hash; const char *mode; } rte_t;
+    size_t cap = node->c.count + (manifest_hash && manifest_hash[0] ? 1 : 0);
+    rte_t *arr = calloc(cap ? cap : 1, sizeof(rte_t));
+    size_t n = 0;
+    for (size_t i = 0; i < node->c.count; i++) {
+        const char *key = node->c.keys[i];
+        json_t *val = node->c.items[i];
+        if (val->type != JSON_OBJECT) continue;
+        json_t *tree_marker = json_obj_get(val, "__tree__");
+        if (tree_marker && val->c.count == 1) {
+            /* leaf: a skill tree */
+            arr[n].name = strdup(key);
+            arr[n].kind = strdup(KIND_TREE);
+            arr[n].hash = strdup(json_get_str(val, "__tree__", ""));
+            arr[n].mode = MODE_DIR;
+            n++;
+        } else {
+            /* intermediate category tree */
+            char *sub_hash = ssc_build_root_tree_rec(val, objects, NULL);
+            arr[n].name = strdup(key);
+            arr[n].kind = strdup(KIND_TREE);
+            arr[n].hash = sub_hash ? sub_hash : strdup("");
+            arr[n].mode = MODE_DIR;
+            n++;
+        }
+    }
+    /* sync-manifest blob at root level */
+    if (manifest_hash && manifest_hash[0]) {
+        arr[n].name = strdup(SYNC_MANIFEST_ENTRY_NAME);
+        arr[n].kind = strdup(KIND_BLOB);
+        arr[n].hash = strdup(manifest_hash);
+        arr[n].mode = MODE_FILE;
+        n++;
+    }
+    /* sort by name (insertion sort) */
+    for (size_t i = 1; i < n; i++) {
+        rte_t cur = arr[i];
+        size_t j = i;
+        while (j > 0 && strcmp(cur.name, arr[j-1].name) < 0) {
+            arr[j] = arr[j-1];
+            j--;
+        }
+        arr[j] = cur;
+    }
+    json_t *entries = json_array();
+    for (size_t i = 0; i < n; i++) {
+        json_t *ent = json_object();
+        json_set(ent, "hash", json_string(arr[i].hash));
+        json_set(ent, "kind", json_string(arr[i].kind));
+        json_set(ent, "mode", json_string(arr[i].mode));
+        json_set(ent, "name", json_string(arr[i].name));
+        json_append(entries, ent);
+        free(arr[i].name); free(arr[i].kind); free(arr[i].hash);
+    }
+    free(arr);
+    json_t *tree_obj = json_object();
+    json_set(tree_obj, "entries", entries);
+    json_set(tree_obj, "type", json_string(KIND_TREE));
+
+    char *ser = skills_sync_canonical_json_bytes(tree_obj, NULL);
+    json_free(tree_obj);
+    char *tree_addr = ser ? ssc_object_set_add(objects, KIND_TREE,
+                                                     (const unsigned char *)ser,
+                                                     strlen(ser)) : NULL;
+    free(ser);
+    return tree_addr;
+}
+
+char *ssc_build_root_tree(json_t *node, ssc_object_set_t *objects,
+                              const char *manifest_hash) {
+    return ssc_build_root_tree_rec(node, objects, manifest_hash);
+}
+
+/* ── ref naming (L1172-1177) ────────────────────────────────────────── */
+
+/* PoP: user_head_ref @ tools/skills_sync_client.py:user_head_ref */
+void ssc_user_head_ref(const char *owner, char *out, size_t out_sz) {
+    snprintf(out, out_sz, "refs/user/%s/HEAD", owner ? owner : "");
+}
+
+/* PoP: user_conflict_ref @ tools/skills_sync_client.py:user_conflict_ref */
+void ssc_user_conflict_ref(const char *owner, int n, char *out, size_t out_sz) {
+    snprintf(out, out_sz, "refs/user/%s/conflict/%d", owner ? owner : "", n);
+}
+
+/* ── _root_tree_of_commit (L1180) ───────────────────────────────────── */
+
+/* Return the tree hash referenced by a commit. */
+/* PoP: _root_tree_of_commit @ tools/skills_sync_client.py:_root_tree_of_commit */
+const char *ssc_root_tree_of_commit(ssc_sync_client_t *client, const char *commit_hash,
+                                        bool org_scope) {
+    json_t *commit = ssc_client_get_commit_json(client, commit_hash, org_scope, NULL);
+    if (!commit) return NULL;
+    const char *tree = json_get_str(commit, "tree", "");
+    char *copy = strdup(tree);
+    json_free(commit);
+    return copy;
+}
+
+/* ── _skill_trees_of_root (L1187) ───────────────────────────────────── */
+
+/* Flatten a profile-root tree into {posix_rel_path: tree_hash}.
+ * A subtree containing a SKILL.md blob is a skill leaf. */
+/* PoP: _skill_trees_of_root @ tools/skills_sync_client.py:_skill_trees_of_root */
+json_t *ssc_skill_trees_of_root(ssc_sync_client_t *client, const char *root_tree_hash,
+                                     bool org_scope) {
+    json_t *result = json_object();
+    if (!root_tree_hash || !root_tree_hash[0]) return result;
+
+    /* recursive walk */
+    char *stack[64];
+    char *stack_hash[64];
+    int sp = 0;
+    stack[sp] = strdup("");
+    stack_hash[sp] = strdup(root_tree_hash);
+    sp = 1;
+
+    while (sp > 0) {
+        sp--;
+        char *prefix = stack[sp];
+        char *tree_hash = stack_hash[sp];
+
+        json_t *tree = ssc_client_get_tree_json(client, tree_hash, org_scope, NULL);
+        if (!tree) { free(tree_hash); free(prefix); continue; }
+
+        json_t *entries = json_obj_get(tree, "entries");
+        size_t n = entries ? json_len(entries) : 0;
+        int has_skill_md = 0;
+        for (size_t i = 0; i < n; i++) {
+            json_t *e = json_get(entries, i);
+            const char *name = (e && e->type == JSON_OBJECT)
+                ? json_get_str(e, "name", "") : "";
+            const char *kind = (e && e->type == JSON_OBJECT)
+                ? json_get_str(e, "kind", "") : "";
+            if (strcmp(name, "SKILL.md") == 0 && strcmp(kind, KIND_BLOB) == 0) {
+                has_skill_md = 1;
+            }
+        }
+        if (has_skill_md && prefix[0]) {
+            json_set(result, prefix, json_string(tree_hash));
+            json_free(tree);
+            free(prefix);
+            continue;
+        }
+        for (size_t i = 0; i < n; i++) {
+            json_t *e = json_get(entries, i);
+            const char *name = (e && e->type == JSON_OBJECT)
+                ? json_get_str(e, "name", "") : "";
+            const char *kind = (e && e->type == JSON_OBJECT)
+                ? json_get_str(e, "kind", "") : "";
+            const char *hash = (e && e->type == JSON_OBJECT)
+                ? json_get_str(e, "hash", "") : "";
+            if (strcmp(kind, KIND_TREE) == 0 && sp < 64) {
+                char *new_prefix;
+                if (prefix[0])
+                    new_prefix = malloc(strlen(prefix) + 1 + strlen(name) + 1);
+                else
+                    new_prefix = malloc(strlen(name) + 1);
+                if (new_prefix) {
+                    if (prefix[0])
+                        sprintf(new_prefix, "%s/%s", prefix, name);
+                    else
+                        sprintf(new_prefix, "%s", name);
+                    stack[sp] = new_prefix;
+                    stack_hash[sp] = strdup(hash);
+                    sp++;
+                }
+            }
+        }
+        json_free(tree);
+        free(tree_hash);
+        free(prefix);
+    }
+    return result;
+}
+
+/* ── read_manifest_of_root (L1216) ──────────────────────────────────── */
+
+/* Read the sync-manifest blob at the root of root_tree_hash.
+ * Returns {name: enabled} dict, or NULL if absent/malformed. */
+/* PoP: read_manifest_of_root @ tools/skills_sync_client.py:read_manifest_of_root */
+json_t *ssc_read_manifest_of_root(ssc_sync_client_t *client, const char *root_tree_hash) {
+    if (!client || !root_tree_hash) return NULL;
+    json_t *tree = ssc_client_get_tree_json(client, root_tree_hash, false, NULL);
+    if (!tree) return NULL;
+
+    json_t *entries = json_obj_get(tree, "entries");
+    size_t n = entries ? json_len(entries) : 0;
+    for (size_t i = 0; i < n; i++) {
+        json_t *e = json_get(entries, i);
+        const char *name = (e && e->type == JSON_OBJECT)
+            ? json_get_str(e, "name", "") : "";
+        const char *kind = (e && e->type == JSON_OBJECT)
+            ? json_get_str(e, "kind", "") : "";
+        if (strcmp(name, SYNC_MANIFEST_ENTRY_NAME) == 0 && strcmp(kind, KIND_BLOB) == 0) {
+            const char *hash = (e && e->type == JSON_OBJECT)
+                ? json_get_str(e, "hash", "") : "";
+            char *kind_out = NULL;
+            unsigned char *data = NULL;
+            size_t len = 0;
+            int st;
+            if (hash && hash[0] &&
+                ssc_client_get_object(client, hash, false, &kind_out,
+                                      &data, &len, &st) == 0 &&
+                kind_out && strcmp(kind_out, KIND_BLOB) == 0) {
+                json_t *parsed = json_parse((const char *)data, NULL);
+                free(kind_out);
+                free(data);
+                json_free(tree);
+                return parsed;
+            }
+            free(kind_out);
+            free(data);
+            break;
+        }
+    }
+    json_free(tree);
+    return NULL;
+}
+
+/* ── _check_version (L1243) ─────────────────────────────────────────── */
+
+/* Reject an incompatible server major version (sync contract).
+ * Returns 0 if compatible, -1 if incompatible (raises SyncError in Python). */
+/* PoP: _check_version @ tools/skills_sync_client.py:_check_version */
+int ssc_check_version(json_t *caps) {
+    if (!caps) return -1;
+    const char *ver = json_get_str(caps, "hsp_version", "");
+    if (!ver[0]) return -1;
+    /* major version must match WIRE_VERSION ("1") */
+    char major[16];
+    const char *dot = strchr(ver, '.');
+    size_t mlen = dot ? (size_t)(dot - ver) : strlen(ver);
+    if (mlen >= sizeof(major)) return -1;
+    memcpy(major, ver, mlen);
+    major[mlen] = '\0';
+    if (strcmp(major, WIRE_VERSION) != 0) return -1;
+    return 0;
+}
