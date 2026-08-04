@@ -187,8 +187,8 @@ def count_block(d):
         f"{'PORT phase (v398→v667) is legacy — complete; every function does real observable work and matches the Python original.' if d['phase'] == 'MATCH' else 'Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.'}\n"
         f"\n"
         f"**Upstream sync checkpoint:** {ahead:,} ahead / {behind:,} behind "
-        f"upstream/main (last merge {d['last_merge']}). The behind-count is the "
-        f"staleness timer — run the stash→pull→fix→pop workflow, then re-port the delta.\n"
+        f"upstream/main (last merge {d['last_merge']}). "
+        f"{'The repo is up to date with upstream.' if behind == 0 else 'The behind-count is the staleness timer — run the stash→pull→fix→pop workflow, then re-port the delta.'}\n"
         f"\n"
         f"_Generated {d['stamp']} from live scanner "
         f"`{os.path.relpath(SCANNER, REPO)}` — "
@@ -221,8 +221,8 @@ def banner_block(d):
     return (
         phase_txt + "\n\n"
         f"**Upstream sync checkpoint:** {ahead:,} ahead / {behind:,} behind "
-        f"upstream/main (last merge {d['last_merge']}). The behind-count is the "
-        f"staleness timer — see the stash→pull→fix→pop workflow below."
+        f"upstream/main (last merge {d['last_merge']}). "
+        f"{'The repo is up to date with upstream.' if behind == 0 else 'The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.'}\n"
     )
 
 
@@ -256,9 +256,8 @@ def roadmap_block(d):
         f"**Last updated:** {d['stamp'][:10]}\n\n"
         + phase_txt + "\n>\n"
         f"> **Upstream sync checkpoint:** {ahead:,} ahead / {behind:,} behind "
-        f"upstream/main (last merge {d['last_merge']}) — the behind-count is the "
-        f"staleness timer; re-port the delta with the stash→pull→fix→pop "
-        f"workflow after each sync."
+        f"upstream/main (last merge {d['last_merge']}). "
+        f"{'The repo is up to date with upstream.' if behind == 0 else 'The behind-count is the staleness timer; re-port the delta with the stash→pull→fix→pop workflow after each sync.'}"
     )
 
 
