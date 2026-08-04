@@ -247,6 +247,7 @@ PORT_OBJ = \
         src/cli/port_web_git.o \
         src/cli/port_web_git_routes.o \
         src/cli/port_web_update.o \
+        src/cli/port_hermes_cli_update_cmd.o \
         src/gateway/port_api_server.o \
         src/gateway/port_base.o \
         src/gateway/port_signal.o \
