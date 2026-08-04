@@ -231,7 +231,7 @@ bool dingtalk_send_image_by_url(http_client_t *http, const char *image_url) {
 
 typedef struct {
     char chat_id[128];
-    char text[4096];
+    char *text;          /* heap-allocated; enqueue strdups, slot freed on reuse */
     char sender_id[128];
     time_t timestamp;
 } dingtalk_msg_t;
@@ -248,7 +248,8 @@ void dingtalk_queue_message(const char *chat_id, const char *text,
     int next = (g_msg_tail + 1) % DINGTALK_QUEUE_MAX;
     if (next != g_msg_head) { /* not full */
         snprintf(g_msg_queue[g_msg_tail].chat_id, sizeof(g_msg_queue[g_msg_tail].chat_id), "%s", chat_id ? chat_id : "dingtalk");
-        snprintf(g_msg_queue[g_msg_tail].text, sizeof(g_msg_queue[g_msg_tail].text), "%s", text ? text : "");
+        free(g_msg_queue[g_msg_tail].text);
+    g_msg_queue[g_msg_tail].text = strdup(text ? text : "");
         snprintf(g_msg_queue[g_msg_tail].sender_id, sizeof(g_msg_queue[g_msg_tail].sender_id), "%s", sender_id ? sender_id : "");
         g_msg_queue[g_msg_tail].timestamp = time(NULL);
         g_msg_tail = next;

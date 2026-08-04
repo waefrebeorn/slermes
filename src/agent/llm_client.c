@@ -613,7 +613,10 @@ static void compress_prune_tool_results(agent_state_t *state, size_t sys_keep) {
 
     /* Build tool_call_id -> (tool_name, arguments) index from assistant messages */
     #define MAX_TOOL_INDEX 64   /* tool calls per message batch (was 256: 256×4.3KB ≈ 1.1MB .bss) */
-    static struct { char id[64]; char name[128]; char args[4096]; } tool_index[MAX_TOOL_INDEX];
+    /* args is a pointer into the message's own arguments buffer (the
+     * messages stay alive for the whole function) — was char[4096] per
+     * entry: 64×4.2KB ≈ 263KB .bss → 64×200B ≈ 13KB. */
+    static struct { char id[64]; char name[128]; const char *args; } tool_index[MAX_TOOL_INDEX];
     int idx_count = 0;
 
     for (size_t i = sys_keep; i < state->message_count && idx_count < MAX_TOOL_INDEX; i++) {
@@ -624,8 +627,7 @@ static void compress_prune_tool_results(agent_state_t *state, size_t sys_keep) {
             tool_index[idx_count].id[sizeof(tool_index[idx_count].id) - 1] = '\0';
             memcpy(tool_index[idx_count].name, msg->tool_calls[j].name, sizeof(tool_index[idx_count].name) - 1);
             tool_index[idx_count].name[sizeof(tool_index[idx_count].name) - 1] = '\0';
-            memcpy(tool_index[idx_count].args, msg->tool_calls[j].arguments, sizeof(tool_index[idx_count].args) - 1);
-            tool_index[idx_count].args[sizeof(tool_index[idx_count].args) - 1] = '\0';
+            tool_index[idx_count].args = msg->tool_calls[j].arguments;
             idx_count++;
         }
     }

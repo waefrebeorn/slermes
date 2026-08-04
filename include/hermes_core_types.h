@@ -1162,13 +1162,13 @@ typedef struct {
     bool exclusive_bot_mentions;     /* gateway.platforms.telegram.exclusive_bot_mentions */
     bool guest_mode;                 /* gateway.platforms.telegram.guest_mode */
     bool observe_unmentioned;        /* gateway.platforms.telegram.observe_unmentioned_group_messages */
-    char allowed_chats[2048];        /* comma-separated whitelist */
-    char group_allowed_chats[2048];  /* comma-separated group whitelist */
-    char observe_allowed_chats[2048]; /* computed intersection of allowed+group */
+    char allowed_chats[1024];        /* comma-separated whitelist */
+    char group_allowed_chats[1024];  /* comma-separated group whitelist */
+    char observe_allowed_chats[1024]; /* computed intersection of allowed+group */
     char allowed_topics[1024];       /* comma-separated topic IDs */
     char ignored_threads[1024];      /* comma-separated thread IDs (integers) */
-    char free_response_chats[2048];  /* comma-separated free-response chat IDs */
-    char mention_patterns[2048];     /* JSON array or line-separated regex patterns */
+    char free_response_chats[1024];  /* comma-separated free-response chat IDs */
+    char mention_patterns[1024];     /* JSON array or line-separated regex patterns */
     bool telegram_fields_loaded;     /* true when telegram fields have been loaded */
 } hermes_platform_cfg_t;
 

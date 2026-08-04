@@ -8,6 +8,7 @@
  */
 #include <stdio.h>
 #include "hermes_gateway_core.h"
+#include "hive.h"
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -36,44 +37,63 @@ typedef struct {
 } relay_chat_info_t;
 
 /* ── Scope tracking ──────────────────────────────────────────────────── */
-#define MAX_SCOPES 256
+/* Hive-backed set registry (dedup by chat_id) — was 256 × 576B ≈ 144KB
+ * .bss. Entries are heap-allocated. */
 typedef struct {
     char chat_id[256];
     char guild_id[256];
 } scope_entry_t;
 
-static scope_entry_t scope_table[MAX_SCOPES];
-static int scope_count = 0;
+static hive_t *g_scope_table = NULL;
 static pthread_mutex_t scope_lock = PTHREAD_MUTEX_INITIALIZER;
 
 static void scope_add(const char *chat_id, const char *guild_id) {
+    if (!chat_id) return;
     pthread_mutex_lock(&scope_lock);
-    for (int i = 0; i < scope_count; i++) {
-        if (strcmp(scope_table[i].chat_id, chat_id) == 0) {
-            strncpy(scope_table[i].guild_id, guild_id, 255);
-            pthread_mutex_unlock(&scope_lock);
-            return;
+    if (!g_scope_table) g_scope_table = hive_new(HIVE_DEFAULT_BLOCK_CAP);
+    if (g_scope_table) {
+        scope_entry_t *found = NULL;
+        hive_handle_t hnd = { 0, 0 };
+        hive_iter_t it = HIVE_ITER_INIT;
+        hive_iter_begin(g_scope_table, &it);
+        while (hive_iter_next(g_scope_table, &it, &hnd, (void **)&found)) {
+            if (strcmp(found->chat_id, chat_id) == 0) {
+                snprintf(found->guild_id, sizeof(found->guild_id), "%s", guild_id ? guild_id : "");
+                pthread_mutex_unlock(&scope_lock);
+                return;
+            }
         }
-    }
-    if (scope_count < MAX_SCOPES) {
-        strncpy(scope_table[scope_count].chat_id, chat_id, 255);
-        strncpy(scope_table[scope_count].guild_id, guild_id, 255);
-        scope_count++;
+        scope_entry_t *e = calloc(1, sizeof(*e));
+        if (e) {
+            snprintf(e->chat_id, sizeof(e->chat_id), "%s", chat_id);
+            snprintf(e->guild_id, sizeof(e->guild_id), "%s", guild_id ? guild_id : "");
+            bool ok = false;
+            hive_insert(g_scope_table, e, &ok);
+            if (!ok) free(e);
+        }
     }
     pthread_mutex_unlock(&scope_lock);
 }
 
 static const char *scope_lookup(const char *chat_id) {
+    if (!chat_id) return NULL;
     pthread_mutex_lock(&scope_lock);
-    for (int i = 0; i < scope_count; i++) {
-        if (strcmp(scope_table[i].chat_id, chat_id) == 0) {
-            const char *result = scope_table[i].guild_id;
-            pthread_mutex_unlock(&scope_lock);
-            return result;
+    static __thread char s_result[256];  /* thread-local: caller may hold across calls */
+    s_result[0] = '\0';
+    if (g_scope_table) {
+        scope_entry_t *found = NULL;
+        hive_handle_t hnd = { 0, 0 };
+        hive_iter_t it = HIVE_ITER_INIT;
+        hive_iter_begin(g_scope_table, &it);
+        while (hive_iter_next(g_scope_table, &it, &hnd, (void **)&found)) {
+            if (strcmp(found->chat_id, chat_id) == 0) {
+                snprintf(s_result, sizeof(s_result), "%s", found->guild_id);
+                break;
+            }
         }
     }
     pthread_mutex_unlock(&scope_lock);
-    return NULL;
+    return s_result[0] ? s_result : NULL;
 }
 
 /* ── Capability descriptor (mirrors Python CapabilityDescriptor) ─────── */

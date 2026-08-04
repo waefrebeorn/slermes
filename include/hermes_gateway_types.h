@@ -45,9 +45,11 @@
 typedef struct {
     char platform[32];
     char chat_id[128];
-    char text[4096];
-    char thread_id[64];     /* Telegram topic / Discord thread */
-    double timestamp;        /* monotonic time when queued */
+    char *text;          /* heap-allocated; caller frees (ring buffer keeps
+                          * FIFO order, only the fixed 4096-byte inline
+                          * buffer is removed — was 256×4336B = 1.08MB bss) */
+    char thread_id[64];  /* Telegram topic / Discord thread */
+    double timestamp;    /* monotonic time when queued */
 } gateway_msg_t;
 
 /* ================================================================

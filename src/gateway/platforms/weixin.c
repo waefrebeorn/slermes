@@ -38,6 +38,49 @@
 #define MAX_PATH 4096
 #define MAX_BODY 16384
 
+/* secret_scope_* helpers live in src/agent/port_agent_secret_scope.c
+ * (port of agent/secret_scope.py). They are exported there but not yet
+ * gathered into a public header; declare what we need here. */
+extern json_t *secret_scope_current_secret_scope(void);
+extern bool secret_scope_is_multiplex_active(void);
+extern bool secret_scope_is_global_env_fn(const char *name);
+
+/* PoP: _wx_secret @ gateway/platforms/weixin.py:_wx_secret */
+/* Scope-aware WEIXIN_* read with the default-profile startup fallback.
+ * Mirrors Python: try get_secret(name, default); on UnscopedSecretError
+ * (multiplex active, no profile scope installed) fall back to
+ * os.getenv(name, default). */
+const char *wx_secret(const char *name, const char *default_val)
+{
+    if (!name) return default_val;
+
+    /* 1. Genuinely-global vars always read os.environ */
+    if (secret_scope_is_global_env_fn(name)) {
+        const char *val = getenv(name);
+        return val ? val : default_val;
+    }
+
+    /* 2. Secret scope installed (multiplexed turn): scope is authoritative */
+    json_t *scope = secret_scope_current_secret_scope();
+    if (scope && scope->type == JSON_OBJECT) {
+        json_t *val_node = json_object_get(scope, name);
+        if (val_node && val_node->type == JSON_STRING) {
+            return json_node_get_string(val_node);
+        }
+        /* Absent key: under multiplexing return default (no cross-profile
+         * borrow). Multiplex off: scope is an overlay; fall through. */
+        if (secret_scope_is_multiplex_active()) return default_val;
+        const char *val = getenv(name);
+        return val ? val : default_val;
+    }
+
+    /* 3. No scope installed: Python raises UnscopedSecretError when
+     * multiplexing is on, and _wx_secret catches it and falls back to
+     * os.getenv(name, default). Multiplex off reads os.environ directly. */
+    const char *val = getenv(name);
+    return val ? val : default_val;
+}
+
 /* ================================================================
  *  State
  * ================================================================ */

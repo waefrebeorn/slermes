@@ -19,6 +19,7 @@
 #include "provider_metadata.h"
 #include "provider.h"
 #include "provider_profile.h"
+#include "port_web_update.h"
 #include "base64.h"
 #include "uuid.h"
 #include <stdio.h>
@@ -47,6 +48,9 @@ static volatile bool g_dash_running = false;
 static pthread_t g_dash_thread;
 static int g_dash_fd = -1;
 static char g_response_buf[65536] = "";
+/* Raw request line (method + target incl. query) of the request currently
+ * being dispatched — lets handlers read query params (e.g. update force). */
+static char g_req_raw[8192] = "";
 
 /* Port of Python hermes_cli/web_server.py:_SESSION_TOKEN
  * Random token generated on start, checked via X-Hermes-Session-Token header.
@@ -798,16 +802,89 @@ static void handle_analytics(int fd) {
 
 /* ── Update endpoints ── */
 
+/* PoP: check_hermes_update @ hermes_cli/web_server.py:check_hermes_update */
+/* Real online update check: git fetch origin main + commit-behind count,
+ * 6h-cached, full dashboard payload (install_method / behind / commits /
+ * message). The `force` query param busts the cache ("Check now" button). */
 static void handle_update_check(int fd) {
-    send_json(fd, 200, "OK",
-        "{\"update_available\":false,\"current_version\":\"" HERMES_VERSION "\","
-        "\"latest_version\":\"" HERMES_VERSION "\"}");
+    int force = 0;
+    const char *qmark = strchr(g_req_raw, '?');
+    if (qmark) {
+        const char *f = strstr(qmark, "force=");
+        if (f) {
+            f += 6;
+            force = (strncmp(f, "1", 1) == 0 || strncmp(f, "true", 4) == 0);
+        }
+    }
+    char *payload = web_update_check_json(force);
+    if (!payload) payload = strdup("{\"error\":\"update check failed\"}");
+    send_json(fd, 200, "OK", payload);
+    free(payload);
 }
 
+/* PoP: update_hermes @ hermes_cli/web_server.py:update_hermes */
+/* Kick off the real update in the background. Mirrors Python: managed /
+ * docker / nix short-circuits report guidance; a git install acquires the
+ * update lock and spawns the updater detached. */
 static void handle_update_apply(int fd) {
-    (void)fd;
-    send_json(fd, 200, "OK",
-        "{\"success\":true,\"message\":\"Update check: no update needed\"}");
+    /* Reuse the same install-method short-circuits as the check endpoint. */
+    char *check = web_update_check_json(0);
+    json_t *j = check ? json_parse(check, NULL) : NULL;
+    free(check);
+    const char *method = j ? json_get_str(j, "install_method", "unknown") : "unknown";
+    int can_apply = j ? json_bool_value(json_obj_get(j, "can_apply")) : 0;
+    json_free(j);
+
+    if (!can_apply) {
+        char body[1024];
+        if (strcmp(method, "managed-runtime") == 0) {
+            snprintf(body, sizeof body,
+                "{\"ok\":false,\"pid\":null,\"name\":\"hermes-update\","
+                "\"error\":\"dashboard_update_managed_externally\","
+                "\"message\":\"Slermes updates are managed outside this dashboard in containerized environments.\"}");
+        } else if (strcmp(method, "docker") == 0) {
+            snprintf(body, sizeof body,
+                "{\"ok\":false,\"pid\":null,\"name\":\"hermes-update\","
+                "\"error\":\"docker_update_unsupported\","
+                "\"message\":\"Updates are applied by pulling the published image: docker pull ghcr.io/waefrebeorn/slermes:latest\","
+                "\"update_command\":\"docker pull ghcr.io/waefrebeorn/slermes:latest\"}");
+        } else {
+            snprintf(body, sizeof body,
+                "{\"ok\":false,\"pid\":null,\"name\":\"hermes-update\","
+                "\"error\":\"update_not_applyable\","
+                "\"message\":\"Update out-of-band for this install method.\"}");
+        }
+        send_json(fd, 200, "OK", body);
+        return;
+    }
+
+    /* Update lock: refuse when another live updater holds the marker. */
+    if (!web_update_lock_acquire()) {
+        send_json(fd, 409, "Conflict",
+            "{\"ok\":false,\"pid\":null,\"name\":\"hermes-update\","
+            "\"error\":\"update_in_progress\","
+            "\"message\":\"Another update is already in progress.\"}");
+        return;
+    }
+
+    /* Spawn `slermes update` detached (mirrors _spawn_hermes_action). */
+    pid_t pid = fork();
+    if (pid < 0) {
+        web_update_lock_release();
+        send_json(fd, 500, "Error",
+            "{\"ok\":false,\"pid\":null,\"name\":\"hermes-update\","
+            "\"error\":\"spawn_failed\",\"message\":\"Could not start update.\"}");
+        return;
+    }
+    if (pid == 0) {
+        /* Child: run the updater, then drop the marker. */
+        execlp("slermes", "slermes", "update", "--yes", (char *)NULL);
+        _exit(127);
+    }
+    char body[512];
+    snprintf(body, sizeof body,
+        "{\"ok\":true,\"pid\":%ld,\"name\":\"hermes-update\"}", (long)pid);
+    send_json(fd, 200, "OK", body);
 }
 
 /* ── Gateway lifecycle endpoints ── */
@@ -857,6 +934,8 @@ static int parse_req(int fd, http_req_t *req, uint32_t client_ip) {
     sscanf(line, "%15s %1023s", req->method, req->path);
     char *q = strchr(req->path, '?');
     if (q) *q = '\0';
+    /* Preserve the raw request line (with query) for handlers that need it. */
+    snprintf(g_req_raw, sizeof(g_req_raw), "%s", line);
 
     line = end + 2;
     while (line && *line && *line != '\r') {

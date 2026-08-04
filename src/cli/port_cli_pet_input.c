@@ -49,7 +49,11 @@ typedef struct {
     int redraw_pending;
     int should_exit;
     char input_buffer[8192];
-    char pending_input[64][8192];   /* interrupt queue drained to pending */
+    /* Staging queue for interrupt-queued input (write-only in this port —
+     * the TUI drains it via its own pending prompt list). Shrunk from
+     * 64×8192 (512KB bss) to 16×1024: 16 pending drafts is far beyond any
+     * real use and the content is capped at 1KB per draft. */
+    char pending_input[16][1024];   /* interrupt queue drained to pending */
     int pending_count;
     int active_overlays;
 } cli_pet_input_state_t;
@@ -325,9 +329,9 @@ int cli__submit_editor_buffer(const char *buffer_text) {
     if (is_slash) {
         g_cli.should_exit = 1;  /* process_command path sets should_exit */
     } else {
-        if (g_cli.pending_count < 64) {
-            strncpy(g_cli.pending_input[g_cli.pending_count], p, 8191);
-            g_cli.pending_input[g_cli.pending_count][8191] = '\0';
+        if (g_cli.pending_count < 16) {
+            strncpy(g_cli.pending_input[g_cli.pending_count], p, 1023);
+            g_cli.pending_input[g_cli.pending_count][1023] = '\0';
             g_cli.pending_count++;
         }
     }

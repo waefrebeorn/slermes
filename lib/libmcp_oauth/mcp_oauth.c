@@ -1024,7 +1024,8 @@ bool mcp_oauth_remove_tokens(const char *server_name) {
 typedef struct {
     char   server_name[128];
     time_t last_mtime;     /* last-seen st_mtime of tokens file, 0 = uninitialized */
-    char   cached_token_json[8192]; /* last returned token JSON */
+    char  *cached_token_json; /* heap-allocated token JSON cache (variable
+                               * length; was char[8192] × 32 ≈ 260KB .bss) */
     bool   has_cached;
 } mcp_oauth_entry_t;
 
@@ -1206,8 +1207,8 @@ char *mcp_oauth_manager_get_token(const char *server_name,
             /* Cache the result */
             json_t *j = json_parse(token_result, NULL);
             if (j) {
-                snprintf(entry->cached_token_json, sizeof(entry->cached_token_json),
-                         "%s", token_result);
+                free(entry->cached_token_json);
+                entry->cached_token_json = strdup(token_result);
                 entry->has_cached = true;
                 json_free(j);
             }
@@ -1222,8 +1223,8 @@ char *mcp_oauth_manager_get_token(const char *server_name,
             if (j) {
                 bool success = json_get_bool(j, "success", false);
                 if (success) {
-                    snprintf(entry->cached_token_json, sizeof(entry->cached_token_json),
-                             "%s", auth_result);
+                    free(entry->cached_token_json);
+                    entry->cached_token_json = strdup(auth_result);
                     entry->has_cached = true;
                     /* Update mtime since we just wrote tokens */
                     entry->last_mtime = get_token_file_mtime(server_name);
@@ -1259,7 +1260,8 @@ char *mcp_oauth_manager_reauthorize(const char *server_name,
     if (entry) {
         entry->has_cached = false;
         entry->last_mtime = 0;
-        entry->cached_token_json[0] = '\0';
+        free(entry->cached_token_json);
+        entry->cached_token_json = NULL;
     }
 
     /* Run full OAuth flow */

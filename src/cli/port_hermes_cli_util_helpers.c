@@ -7,6 +7,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <time.h>
+#include "slermes_home.h"
 #include <unistd.h>
 #include <ctype.h>
 #include <limits.h>
@@ -296,13 +297,16 @@ bool hcli_is_dashboard_container(const char *argv_line)
 /* PoP: _wait_for_gateway_absent @ hermes_cli/gateway_windows.py:_wait_for_gateway_absent */
 bool hcli_wait_for_gateway_absent(double timeout_s, double interval_s)
 {
-    /* REAL: poll for the gateway pid file absence until timeout. */
+    /* REAL: poll for the gateway pid file absence until timeout.
+ * SLERMES IDENTITY: gateway.pid lives in the slermes root,
+ * never in the Python project's ~/.hermes. */
     double waited = 0.0;
     while (waited < timeout_s) {
-        const char *home = getenv("HERMES_HOME");
+        const char *root = slermes_home();
+        if (!root || !root[0]) root = getenv("HOME");
+        if (!root || !root[0]) root = "/tmp";
         char path[1400];
-        if (home) snprintf(path, sizeof(path), "%s/gateway.pid", home);
-        else snprintf(path, sizeof(path), "%s/.hermes/gateway.pid", getenv("HOME") ? getenv("HOME") : ".");
+        snprintf(path, sizeof(path), "%s/.slermes/gateway.pid", root);
         if (access(path, F_OK) != 0) return true;
         struct timespec ts = { (time_t)interval_s, 0 };
         nanosleep(&ts, NULL);
@@ -469,14 +473,16 @@ int hcli_model_flow_api_key(const char *provider_id, const char *current_model)
     size_t n = strlen(buf);
     while (n && (buf[n-1] == '\n' || buf[n-1] == '\r')) buf[--n] = '\0';
     if (!n) return -1;
-    /* persist <PROVIDER>_API_KEY into ~/.hermes/.env */
+    /* persist <PROVIDER>_API_KEY into ~/.slermes/.env
+     * SLERMES IDENTITY: .env lives in the slermes root. */
     char keyname[256];
     snprintf(keyname, sizeof(keyname), "%s_API_KEY", provider_id);
     for (char *p = keyname; *p; p++) *p = (char)toupper((unsigned char)*p);
-    const char *home = getenv("HERMES_HOME");
+    const char *root = slermes_home();
+    if (!root || !root[0]) root = getenv("HOME");
+    if (!root || !root[0]) root = "/tmp";
     char envpath[1400];
-    if (home) snprintf(envpath, sizeof(envpath), "%s/.env", home);
-    else snprintf(envpath, sizeof(envpath), "%s/.hermes/.env", getenv("HOME") ? getenv("HOME") : ".");
+    snprintf(envpath, sizeof(envpath), "%s/.slermes/.env", root);
     FILE *fp = fopen(envpath, "a");
     if (!fp) return -1;
     fprintf(fp, "%s=%s\n", keyname, buf);
@@ -495,10 +501,12 @@ int hcli_opw_cmd_setup(void)
     } else {
         printf("  op CLI: NOT found — install + sign in first\n");
     }
-    const char *home = getenv("HERMES_HOME");
+    /* SLERMES IDENTITY: config.yaml lives in the slermes root. */
+    const char *root = slermes_home();
+    if (!root || !root[0]) root = getenv("HOME");
+    if (!root || !root[0]) root = "/tmp";
     char cfgpath[1400];
-    if (home) snprintf(cfgpath, sizeof(cfgpath), "%s/config.yaml", home);
-    else snprintf(cfgpath, sizeof(cfgpath), "%s/.hermes/config.yaml", getenv("HOME") ? getenv("HOME") : ".");
+    snprintf(cfgpath, sizeof(cfgpath), "%s/.slermes/config.yaml", root);
     FILE *fp = fopen(cfgpath, "a");
     if (!fp) return -1;
     fprintf(fp, "secrets:\n  onepassword:\n    enabled: %s\n", have_op ? "true" : "false");
@@ -556,16 +564,14 @@ int hcli_projects_cmd_list(void)
 int hcli_show_status(bool deep)
 {
     (void)deep;
-    /* REAL: probe config + gateway pid + workspace for the status panel. */
-    const char *home = getenv("HERMES_HOME");
+    /* REAL: probe config + gateway pid + workspace for the status panel.
+     * SLERMES IDENTITY: all state lives in the slermes root. */
+    const char *root = slermes_home();
+    if (!root || !root[0]) root = getenv("HOME");
+    if (!root || !root[0]) root = "/tmp";
     char cfgpath[1400], gwpid[1400];
-    if (home) {
-        snprintf(cfgpath, sizeof(cfgpath), "%s/config.yaml", home);
-        snprintf(gwpid, sizeof(gwpid), "%s/gateway.pid", home);
-    } else {
-        snprintf(cfgpath, sizeof(cfgpath), "%s/.hermes/config.yaml", getenv("HOME") ? getenv("HOME") : ".");
-        snprintf(gwpid, sizeof(gwpid), "%s/.hermes/gateway.pid", getenv("HOME") ? getenv("HOME") : ".");
-    }
+    snprintf(cfgpath, sizeof(cfgpath), "%s/.slermes/config.yaml", root);
+    snprintf(gwpid, sizeof(gwpid), "%s/.slermes/gateway.pid", root);
     bool configured = access(cfgpath, F_OK) == 0;
     bool gateway_running = access(gwpid, F_OK) == 0;
     printf("\n");

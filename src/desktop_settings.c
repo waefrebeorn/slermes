@@ -14,7 +14,7 @@
 
 typedef struct {
     char key[256];
-    char value[2048];
+    char *value;  /* heap-allocated (was char[2048] × 128 ≈ 288KB .bss) */
 } safe_entry_t;
 
 #define MAX_SAFE_ENTRIES 128
@@ -44,14 +44,21 @@ bool desktop_settings_get(const char *key, char *value, size_t value_size) {
 bool desktop_settings_set(const char *key, const char *value) {
     desktop_setting_t *s = find_setting(key);
     if (s) {
-        strncpy(s->value.s, value, sizeof(s->value.s) - 1);
+        if (s->type == SETTING_STRING) {
+            free(s->value.s);
+            s->value.s = strdup(value ? value : "");
+        } else {
+            /* Type changed from numeric to string — safe to assign. */
+            s->type = SETTING_STRING;
+            s->value.s = strdup(value ? value : "");
+        }
         return true;
     }
     if (g_desktop.setting_count >= DESKTOP_MAX_SETTINGS) return false;
     s = &g_desktop.settings[g_desktop.setting_count++];
     strncpy(s->key, key, sizeof(s->key) - 1);
     s->type = SETTING_STRING;
-    strncpy(s->value.s, value, sizeof(s->value.s) - 1);
+    s->value.s = strdup(value ? value : "");
     return true;
 }
 
@@ -241,7 +248,7 @@ void safe_storage_load(void) {
             if (g_safe.count < MAX_SAFE_ENTRIES) {
                 safe_entry_t *e = &g_safe.entries[g_safe.count++];
                 strncpy(e->key, key, sizeof(e->key) - 1);
-                strncpy(e->value, val, sizeof(e->value) - 1);
+                e->value = strdup(val);
             }
         }
     }
@@ -264,7 +271,8 @@ bool desktop_safe_storage_set(const char *key, const char *value) {
     safe_storage_load();
     for (int i = 0; i < g_safe.count; i++) {
         if (strcmp(g_safe.entries[i].key, key) == 0) {
-            strncpy(g_safe.entries[i].value, value, sizeof(g_safe.entries[i].value) - 1);
+            free(g_safe.entries[i].value);
+            g_safe.entries[i].value = strdup(value ? value : "");
             safe_storage_save();
             return true;
         }
@@ -272,7 +280,7 @@ bool desktop_safe_storage_set(const char *key, const char *value) {
     if (g_safe.count >= MAX_SAFE_ENTRIES) return false;
     safe_entry_t *e = &g_safe.entries[g_safe.count++];
     strncpy(e->key, key, sizeof(e->key) - 1);
-    strncpy(e->value, value, sizeof(e->value) - 1);
+    e->value = strdup(value ? value : "");
     safe_storage_save();
     return true;
 }
@@ -292,6 +300,7 @@ bool desktop_safe_storage_delete(const char *key) {
     safe_storage_load();
     for (int i = 0; i < g_safe.count; i++) {
         if (strcmp(g_safe.entries[i].key, key) == 0) {
+            free(g_safe.entries[i].value);
             memmove(&g_safe.entries[i], &g_safe.entries[i + 1],
                     (g_safe.count - i - 1) * sizeof(safe_entry_t));
             g_safe.count--;

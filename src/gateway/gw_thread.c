@@ -57,7 +57,9 @@ bool gw_queue_push(const char *platform, const char *chat_id,
     gateway_msg_t *slot = &g_gw.msg_queue[g_gw.msg_queue_head];
     snprintf(slot->platform, sizeof(slot->platform), "%s", platform);
     snprintf(slot->chat_id, sizeof(slot->chat_id), "%s", chat_id);
-    snprintf(slot->text, sizeof(slot->text), "%s", text);
+    /* Drop any stale text (oldest dropped message slot) before overwrite. */
+    free(slot->text);
+    slot->text = strdup(text ? text : "");
     if (thread_id)
         snprintf(slot->thread_id, sizeof(slot->thread_id), "%s", thread_id);
     else
@@ -81,6 +83,8 @@ bool gw_queue_pop(gateway_msg_t *msg) {
     }
 
     *msg = g_gw.msg_queue[g_gw.msg_queue_tail];
+    /* Caller owns a copy of the heap text. */
+    msg->text = strdup(msg->text ? msg->text : "");
     g_gw.msg_queue_tail = (g_gw.msg_queue_tail + 1) % GW_QUEUE_MAX;
     pthread_mutex_unlock(&g_gw.queue_mutex);
     return true;
@@ -102,8 +106,11 @@ void gw_queue_drain_all(void) {
         g_gw.msg_queue_tail = (g_gw.msg_queue_tail + 1) % GW_QUEUE_MAX;
     }
     pthread_mutex_unlock(&g_gw.queue_mutex);
-    for (int i = 0; i < count; i++)
+    for (int i = 0; i < count; i++) {
         process_update(msgs[i].platform, msgs[i].chat_id, msgs[i].text);
+        free(msgs[i].text);
+        msgs[i].text = NULL;
+    }
 }
 
 void gw_set_keepalive(int plat_idx, double keepalive_sec) {

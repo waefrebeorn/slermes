@@ -220,11 +220,12 @@ int gw_agent_cache_size(void) {
 
 /* Max prefill messages we can hold */
 #define GW_MAX_PREFILL_MSGS 32
-#define GW_PREFILL_MAX_LEN 4096
 
+/* content is heap-allocated (variable-length JSON string, mirrors Python's
+ * list of dicts) — was char[4096] × 32 ≈ 128KB .bss. */
 typedef struct {
     char role[32];
-    char content[GW_PREFILL_MAX_LEN];
+    char *content;
     bool occupied;
 } gw_prefill_msg_t;
 
@@ -277,8 +278,7 @@ void gw_load_prefill_messages(void) {
         if (role[0] && content[0]) {
             snprintf(g_prefill_msgs[g_prefill_count].role,
                      sizeof(g_prefill_msgs[g_prefill_count].role), "%s", role);
-            snprintf(g_prefill_msgs[g_prefill_count].content,
-                     sizeof(g_prefill_msgs[g_prefill_count].content), "%s", content);
+            g_prefill_msgs[g_prefill_count].content = strdup(content);
             g_prefill_msgs[g_prefill_count].occupied = true;
             g_prefill_count++;
         }

@@ -8,6 +8,7 @@
  */
 
 #include "credential_sources.h"
+#include "slermes_home.h"
 #include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_logger.h"
@@ -100,12 +101,15 @@ const removal_step_t *find_removal_step(const char *provider, const char *source
 static bool clear_auth_store_provider(const char *provider) {
     if (!provider || !*provider) return false;
 
-    const char *home = getenv("HERMES_HOME");
-    if (!home) home = getenv("HOME");
-    if (!home) return false;
+    /* SLERMES IDENTITY: auth.json lives in the slermes root,
+     * never in the Python project's ~/.hermes. */
+    const char *cred_root = getenv("SLERMES_HOME");
+    if (!cred_root || !cred_root[0]) cred_root = slermes_home();
+    if (!cred_root || !cred_root[0]) cred_root = getenv("HOME");
+    if (!cred_root || !cred_root[0]) return false;
 
     char path[1024];
-    snprintf(path, sizeof(path), "%s/.hermes/auth.json", home);
+    snprintf(path, sizeof(path), "%s/.slermes/auth.json", cred_root);
 
     /* Load existing auth store */
     FILE *f = fopen(path, "r");
@@ -175,12 +179,14 @@ static bool clear_auth_store_provider(const char *provider) {
 void suppress_credential_source(const char *provider, const char *source) {
     if (!provider || !source) return;
 
-    const char *home = getenv("HERMES_HOME");
-    if (!home) home = getenv("HOME");
-    if (!home) return;
+    /* SLERMES IDENTITY: auth.json lives in the slermes root. */
+    const char *cred_root = getenv("SLERMES_HOME");
+    if (!cred_root || !cred_root[0]) cred_root = slermes_home();
+    if (!cred_root || !cred_root[0]) cred_root = getenv("HOME");
+    if (!cred_root || !cred_root[0]) return;
 
     char path[1024];
-    snprintf(path, sizeof(path), "%s/.hermes/auth.json", home);
+    snprintf(path, sizeof(path), "%s/.slermes/auth.json", cred_root);
 
     FILE *f = fopen(path, "r");
     if (!f) return;
@@ -246,12 +252,14 @@ void suppress_credential_source(const char *provider, const char *source) {
 bool remove_env_value(const char *env_var) {
     if (!env_var || !*env_var) return false;
 
-    const char *home = getenv("HERMES_HOME");
-    if (!home) home = getenv("HOME");
-    if (!home) return false;
+    /* SLERMES IDENTITY: .env lives in the slermes root. */
+    const char *cred_root = getenv("SLERMES_HOME");
+    if (!cred_root || !cred_root[0]) cred_root = slermes_home();
+    if (!cred_root || !cred_root[0]) cred_root = getenv("HOME");
+    if (!cred_root || !cred_root[0]) return false;
 
     char path[1024];
-    snprintf(path, sizeof(path), "%s/.hermes/.env", home);
+    snprintf(path, sizeof(path), "%s/.slermes/.env", cred_root);
 
     FILE *f = fopen(path, "r");
     if (!f) return false;
@@ -321,13 +329,15 @@ static removal_result_t remove_env_source(const char *provider, const char *sour
     const char *val = getenv(env_var);
     bool env_in_process = (val && *val);
 
-    /* Check if var is in .env file */
+    /* Check if var is in .env file — slermes identity: .env lives
+     * in the slermes root, never in the Python project's ~/.hermes. */
     bool env_in_dotenv = false;
-    const char *home = getenv("HERMES_HOME");
-    if (!home) home = getenv("HOME");
-    if (home) {
+    const char *root = getenv("SLERMES_HOME");
+    if (!root || !root[0]) root = slermes_home();
+    if (!root || !root[0]) root = getenv("HOME");
+    if (root) {
         char path[1024];
-        snprintf(path, sizeof(path), "%s/.hermes/.env", home);
+        snprintf(path, sizeof(path), "%s/.slermes/.env", root);
         FILE *f = fopen(path, "r");
         if (f) {
             char line[1024];
@@ -357,7 +367,7 @@ static removal_result_t remove_env_source(const char *provider, const char *sour
     if (shell_exported) {
         char hint[512];
         snprintf(hint, sizeof(hint),
-            "Note: %s is still set in your shell environment (not in ~/.hermes/.env).", env_var);
+            "Note: %s is still set in your shell environment (not in ~/.slermes/.env).", env_var);
         removal_result_add_hint(&result, hint);
         removal_result_add_hint(&result,
             "  Unset it there (shell profile, systemd EnvironmentFile, launchd plist, etc.) or it will keep being visible to Hermes.");
@@ -392,12 +402,14 @@ static removal_result_t remove_hermes_pkce(const char *provider, const char *sou
     removal_result_t result;
     removal_result_init(&result);
 
-    const char *home = getenv("HERMES_HOME");
-    if (!home) home = getenv("HOME");
-    if (!home) return result;
+    /* SLERMES IDENTITY: credential files live in the slermes root. */
+    const char *root = getenv("SLERMES_HOME");
+    if (!root || !root[0]) root = slermes_home();
+    if (!root || !root[0]) root = getenv("HOME");
+    if (!root || !root[0]) return result;
 
     char path[1024];
-    snprintf(path, sizeof(path), "%s/.hermes/.anthropic_oauth.json", home);
+    snprintf(path, sizeof(path), "%s/.slermes/.anthropic_oauth.json", root);
 
     if (access(path, F_OK) == 0) {
         if (unlink(path) == 0) {
@@ -576,7 +588,7 @@ void credential_sources_init(void) {
         .provider = "anthropic",
         .source_id = "hermes_pkce",
         .remove_fn = remove_hermes_pkce,
-        .description = "~/.hermes/.anthropic_oauth.json"
+        .description = "~/.slermes/.anthropic_oauth.json"
     });
 
     /* Nous device_code */

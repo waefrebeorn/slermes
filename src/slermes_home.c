@@ -62,39 +62,14 @@ static const char *resolve_home(void) {
         return s_slermes_home;
     }
 
-    /* Docker / custom deployment: HERMES_HOME outside native home. */
-    size_t el = strlen(env_home);
-    if (el > 0) {
-        /* strip trailing slash */
-        while (el > 1 && env_home[el - 1] == '/') el--;
-        /* if the immediate parent dir is "profiles", root = grandparent */
-        const char *last_slash = NULL;
-        for (const char *p = env_home; p < env_home + el; p++)
-            if (*p == '/') last_slash = p;
-        if (last_slash) {
-            const char *parent = last_slash + 1;
-            size_t plen = (size_t)(env_home + el - parent);
-            if (plen == 8 && strncmp(parent, "profiles", 8) == 0) {
-                /* root = grandparent */
-                const char *prev_slash = NULL;
-                for (const char *p = env_home; p < last_slash; p++)
-                    if (*p == '/') prev_slash = p;
-                size_t glen = prev_slash ? (size_t)(prev_slash - env_home)
-                                         : (size_t)(last_slash - env_home);
-                if (glen == 0) {
-                    snprintf(s_slermes_home, sizeof(s_slermes_home), "/");
-                } else {
-                    memcpy(s_slermes_home, env_home, glen);
-                    s_slermes_home[glen] = '\0';
-                }
-                return s_slermes_home;
-            }
-        }
-        /* not a profile path: HERMES_HOME itself is the root */
-        snprintf(s_slermes_home, sizeof(s_slermes_home), "%.*s", (int)el, env_home);
-        return s_slermes_home;
-    }
-
+    /* SLERMES IDENTITY (hard rule): HERMES_HOME is the PYTHON PROJECT's home
+     * (~/.hermes) — it must NEVER become the slermes root. The Python dev
+     * environment exports HERMES_HOME, and honoring it here made slermes
+     * read/write its state (state.db, sessions, gateway.pid, cron, kanban,
+     * config.yaml, .env) inside the Python project's home, colliding with a
+     * live hermes install. Containers set SLERMES_HOME explicitly
+     * (Dockerfile: ENV SLERMES_HOME=/opt/data), so no HERMES_HOME fallback
+     * is needed. */
     snprintf(s_slermes_home, sizeof(s_slermes_home), "%s", native);
     return s_slermes_home;
 }

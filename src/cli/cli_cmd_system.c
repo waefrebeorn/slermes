@@ -10,6 +10,8 @@
 #include "hermes_cdp.h"
 #include "hermes_agent.h"
 #include "hermes_display.h"
+#include "port_web_update.h"
+#include "port_web_server_paths.h"
 
 /* cron_cmd_handler is defined in cron/cron_cli.c (no header); it lazy-inits
  * the job store and returns a malloc'd JSON with a "jobs" array (each job
@@ -1674,84 +1676,97 @@ void cmd_toolsets(const char *args, agent_state_t *state) {
     }
 }
 
-/* /update: Update Hermes Agent — git pull + rebuild */
-/* PoP: cmd_update @ hermes_cli/main.py:cmd_update */
+/* /update: Update Hermes Agent — git pull + rebuild.
+ * Port of hermes_cli/main.py:cmd_update + update_cmd._cmd_update_check:
+ *   --check   dry-run: fetch and report whether an update is available
+ *             (mirrors _cmd_update_check; no mutation of the checkout)
+ *   --yes     non-interactive (assume yes, used by the dashboard spawn)
+ * Also performs install-method detection (docker/nix bail with guidance)
+ * and takes the shared update lock so concurrent updaters refuse instead
+ * of corrupting the checkout (update_lock.UpdateLock). */
 void cmd_update(const char *args, agent_state_t *state) {
-    (void)args; (void)state;
+    (void)state;
+    const char *a = args ? args : "";
+
+    int check_only = strstr(a, "--check") != NULL;
+    (void)strstr(a, "--yes");   /* --yes accepted for dashboard spawn parity */
+
+    /* Install-method detection: docker / nix installs can't git-pull. */
+    char *repo_root = web_update_repo_root();
+    const char *install_method = detect_install_method(repo_root);
+    if (strcmp(install_method, "docker") == 0) {
+        printf("Slermes image updates are applied by pulling the published image:\n");
+        printf("  docker pull ghcr.io/waefrebeorn/slermes:latest\n");
+        free(repo_root);
+        return;
+    }
+    if (strcmp(install_method, "nix") == 0 || strcmp(install_method, "nixos") == 0) {
+        printf("Update Slermes through the Nix source that installed it\n");
+        printf("(e.g. nix profile upgrade, or update your flake input and rebuild).\n");
+        free(repo_root);
+        return;
+    }
+
+    if (!repo_root) {
+        printf("✗ Not a git repository — cannot update.\n");
+        printf("  Reinstall from the slermes repo: https://github.com/waefrebeorn/slermes\n");
+        return;
+    }
+
+    /* --check: dry-run — report behind count, do not pull. */
+    if (check_only) {
+        printf("→ Fetching from origin...\n");
+        int behind = web_update_behind(1);   /* force: --check must be fresh */
+        if (behind == WEB_UPDATE_BEHIND_FAILED) {
+            printf("✗ Network error — cannot reach the remote repository.\n");
+        } else if (behind == WEB_UPDATE_BEHIND_UP_TO_DATE) {
+            printf("✓ Already up to date.\n");
+        } else if (behind == WEB_UPDATE_BEHIND_NO_COUNT) {
+            printf("⚕ Update available (behind origin/main).\n");
+            printf("  Run 'slermes update' to install.\n");
+        } else {
+            printf("⚕ Update available: %d commit(s) behind origin/main.\n", behind);
+            printf("  Run 'slermes update' to install.\n");
+        }
+        free(repo_root);
+        return;
+    }
+
+    /* Update lock: refuse when another live updater holds the marker. */
+    if (!web_update_lock_acquire()) {
+        printf("✗ Another update is already in progress — try again later.\n");
+        free(repo_root);
+        return;
+    }
+
     printf("Updating Hermes Agent...\n");
 
-    /* Determine repo root: walk up from CWD until .git found */
-    char cwd[4096];
-    char repo_root[4096] = "";
-    if (getcwd(cwd, sizeof(cwd))) {
-        memcpy(repo_root, cwd, sizeof(repo_root) - 1);
-        repo_root[sizeof(repo_root) - 1] = '\0';
-        while (repo_root[0]) {
-            char git_dir[4096];
-            snprintf(git_dir, sizeof(git_dir), "%s/.git", repo_root);
-            struct stat st;
-            if (stat(git_dir, &st) == 0 && S_ISDIR(st.st_mode))
-                break;
-            /* Go up one directory */
-            char *slash = strrchr(repo_root, '/');
-            if (!slash || slash == repo_root) { repo_root[0] = '\0'; break; }
-            *slash = '\0';
-        }
-    }
-
-    if (!repo_root[0]) {
-        printf("Error: not inside a git repository.\n");
+    /* Real online loop: scoped fetch + behind count (banner.check_for_updates). */
+    int behind = web_update_behind(0);
+    if (behind == WEB_UPDATE_BEHIND_FAILED) {
+        printf("  Couldn't reach the update source — try again later.\n");
+        web_update_lock_release();
+        free(repo_root);
         return;
     }
-
-    /* Fetch latest */
-    {
-        char cmd[4096];
-        snprintf(cmd, sizeof(cmd), "cd '%s' && git fetch --quiet origin 2>&1", repo_root);
-        FILE *fp = popen(cmd, "r");
-        if (fp) {
-            char err[1024];
-            size_t n = 0;
-            while (fgets(err, sizeof(err), fp)) {
-                if (n == 0) printf("  Fetch: ");
-                printf("%s", err);
-                n++;
-            }
-            int rc = pclose(fp);
-            if (rc != 0) {
-                printf("  Git fetch failed (exit %d). Aborting.\n", rc);
-                return;
-            }
-        }
-    }
-
-    /* Check if behind */
-    char behind_buf[64] = "0";
-    {
-        char cmd[4096];
-        snprintf(cmd, sizeof(cmd),
-                 "cd '%s' && git rev-list --count HEAD..origin/$(git rev-parse --abbrev-ref HEAD 2>/dev/null) 2>/dev/null || echo 0",
-                 repo_root);
-        FILE *fp = popen(cmd, "r");
-        if (fp) {
-            if (!fgets(behind_buf, sizeof(behind_buf), fp)) behind_buf[0] = '0';
-            size_t blen = strlen(behind_buf);
-            if (blen > 0 && behind_buf[blen-1] == '\n') behind_buf[blen-1] = '\0';
-            pclose(fp);
-        }
-    }
-
-    int behind = atoi(behind_buf);
-    if (behind == 0) {
+    if (behind == WEB_UPDATE_BEHIND_UP_TO_DATE) {
         printf("  Already up to date (%s).\n", repo_root);
+        web_update_lock_release();
+        free(repo_root);
         return;
     }
-    printf("  %d commit(s) behind. Pulling...\n", behind);
+    if (behind == WEB_UPDATE_BEHIND_NO_COUNT) {
+        printf("  Update available (behind origin/main).\n");
+    } else {
+        printf("  %d commit(s) behind. Pulling...\n", behind);
+    }
 
     /* Get current commit before pull */
     char old_commit[128] = "(unknown)";
     {
-        FILE *fp = popen("git rev-parse --short=8 HEAD 2>/dev/null", "r");
+        char cmd[512];
+        snprintf(cmd, sizeof(cmd), "git -C '%s' rev-parse --short=8 HEAD 2>/dev/null", repo_root);
+        FILE *fp = popen(cmd, "r");
         if (fp) {
             if (!fgets(old_commit, sizeof(old_commit), fp)) old_commit[0] = '\0';
             size_t olen = strlen(old_commit);
@@ -1760,10 +1775,10 @@ void cmd_update(const char *args, agent_state_t *state) {
         }
     }
 
-    /* Pull */
+    /* Pull (fast-forward only — a divergent checkout is surfaced, not clobbered) */
     {
         char cmd[4096];
-        snprintf(cmd, sizeof(cmd), "cd '%s' && git pull --ff-only origin 2>&1", repo_root);
+        snprintf(cmd, sizeof(cmd), "cd '%s' && git pull --ff-only origin main 2>&1", repo_root);
         FILE *fp = popen(cmd, "r");
         if (fp) {
             char line[1024];
@@ -1772,6 +1787,8 @@ void cmd_update(const char *args, agent_state_t *state) {
             int rc = pclose(fp);
             if (rc != 0) {
                 printf("  Git pull failed (exit %d). Resolve conflicts manually.\n", rc);
+                web_update_lock_release();
+                free(repo_root);
                 return;
             }
         }
@@ -1780,7 +1797,9 @@ void cmd_update(const char *args, agent_state_t *state) {
     /* Get new commit */
     char new_commit[128] = "(unknown)";
     {
-        FILE *fp = popen("git rev-parse --short=8 HEAD 2>/dev/null", "r");
+        char cmd[512];
+        snprintf(cmd, sizeof(cmd), "git -C '%s' rev-parse --short=8 HEAD 2>/dev/null", repo_root);
+        FILE *fp = popen(cmd, "r");
         if (fp) {
             if (!fgets(new_commit, sizeof(new_commit), fp)) new_commit[0] = '\0';
             size_t nlen = strlen(new_commit);
@@ -1793,7 +1812,9 @@ void cmd_update(const char *args, agent_state_t *state) {
     /* Rebuild */
     printf("  Rebuilding...\n");
     {
-        FILE *fp = popen("make -j$(nproc) 2>&1", "r");
+        char cmd[512];
+        snprintf(cmd, sizeof(cmd), "cd '%s' && make -j$(nproc) 2>&1", repo_root);
+        FILE *fp = popen(cmd, "r");
         if (fp) {
             char line[1024];
             while (fgets(line, sizeof(line), fp)) {
@@ -1809,6 +1830,9 @@ void cmd_update(const char *args, agent_state_t *state) {
                 printf("  Build failed (exit %d).\n", rc);
         }
     }
+
+    web_update_lock_release();
+    free(repo_root);
 }
 
 void cmd_verbose(const char *args, agent_state_t *state) {

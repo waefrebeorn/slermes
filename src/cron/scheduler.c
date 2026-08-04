@@ -15,6 +15,7 @@
 #include "hermes_skills.h"
 #include "hermes_json.h"
 #include "hermes_skill_commands.h"
+#include "slermes_home.h"
 #include "../cron/scheduler.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -200,11 +201,11 @@ int cron_run_agent_job(cron_job_t *job) {
     {
         hermes_config_t cfg;
         memset(&cfg, 0, sizeof(cfg));
-        const char *home = getenv("HERMES_HOME");
+        const char *home = slermes_home();
         if (!home) home = getenv("HOME");
         if (!home) home = "/tmp";
         char cfg_dir[4096];
-        snprintf(cfg_dir, sizeof(cfg_dir), "%s/.hermes", home);
+        snprintf(cfg_dir, sizeof(cfg_dir), "%s/.slermes", home);
         if (hermes_config_load(&cfg, cfg_dir)) {
             agent_configure_from_config(&agent, &cfg);
         }

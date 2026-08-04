@@ -233,7 +233,7 @@ bool qqbot_send_with_at(http_client_t *http, const char *text,
 
 typedef struct {
     char chat_id[128];
-    char text[4096];
+    char *text;          /* heap-allocated; enqueue strdups, slot freed on reuse */
     char sender_id[128];
     time_t timestamp;
 } qq_msg_t;
@@ -249,7 +249,8 @@ void qqbot_queue_message(const char *chat_id, const char *text,
     int next = (g_qq_tail + 1) % QQ_QUEUE_MAX;
     if (next != g_qq_head) {
         snprintf(g_qq_queue[g_qq_tail].chat_id, sizeof(g_qq_queue[g_qq_tail].chat_id), "%s", chat_id ? chat_id : "qqbot");
-        snprintf(g_qq_queue[g_qq_tail].text, sizeof(g_qq_queue[g_qq_tail].text), "%s", text ? text : "");
+        free(g_qq_queue[g_qq_tail].text);
+    g_qq_queue[g_qq_tail].text = strdup(text ? text : "");
         snprintf(g_qq_queue[g_qq_tail].sender_id, sizeof(g_qq_queue[g_qq_tail].sender_id), "%s", sender_id ? sender_id : "");
         g_qq_queue[g_qq_tail].timestamp = time(NULL);
         g_qq_tail = next;

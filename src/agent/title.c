@@ -5,6 +5,7 @@
  */
 
 #include "hermes_agent.h"
+#include "slermes_home.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -92,12 +93,13 @@ static void *auto_title_thread_fn(void *arg) {
     auto_title_thread_arg_t *args = (auto_title_thread_arg_t *)arg;
     if (!args) return NULL;
 
-    /* Open session DB */
-    const char *home = getenv("HERMES_HOME");
+    /* Open session DB — slermes identity: sessions live in
+     * $SLERMES_HOME/sessions, never in the Python project's home. */
+    const char *home = slermes_home();
     if (!home) home = getenv("HOME");
     if (!home) home = "/tmp";
     char db_dir[4096];
-    snprintf(db_dir, sizeof(db_dir), "%s/.hermes/sessions", home);
+    snprintf(db_dir, sizeof(db_dir), "%s/.slermes/sessions", home);
     db_t *db = db_open(db_dir, NULL);
 
     if (!db) {

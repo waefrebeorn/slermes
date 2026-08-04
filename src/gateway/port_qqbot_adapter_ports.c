@@ -11,12 +11,56 @@
 #include <stdbool.h>
 #include <ctype.h>
 
+#include "hermes_json.h"
+
+/* secret_scope_* helpers live in src/agent/port_agent_secret_scope.c
+ * (port of agent/secret_scope.py). Exported there; declare here. */
+extern json_t *secret_scope_current_secret_scope(void);
+extern bool secret_scope_is_multiplex_active(void);
+extern bool secret_scope_is_global_env_fn(const char *name);
+
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
     char *d = strdup(s);
     if (!d) return NULL;
     for (char *p = d; *p; p++) *p = tolower((unsigned char)*p);
     return d;
+}
+
+/* PoP: _resolve_qq_secret @ gateway/platforms/qqbot/adapter.py:_resolve_qq_secret */
+/* Resolve a per-profile QQ_* setting honoring the active secret scope.
+ * Mirrors Python: try get_secret(name, default); on UnscopedSecretError
+ * (multiplex active, no profile scope installed) fall back to
+ * os.getenv(name). */
+const char *qqa_resolve_qq_secret(const char *name, const char *default_val)
+{
+    if (!name) return default_val;
+
+    /* 1. Genuinely-global vars always read os.environ */
+    if (secret_scope_is_global_env_fn(name)) {
+        const char *val = getenv(name);
+        return val ? val : default_val;
+    }
+
+    /* 2. Secret scope installed (multiplexed turn): scope is authoritative */
+    json_t *scope = secret_scope_current_secret_scope();
+    if (scope && scope->type == JSON_OBJECT) {
+        json_t *val_node = json_object_get(scope, name);
+        if (val_node && val_node->type == JSON_STRING) {
+            return json_node_get_string(val_node);
+        }
+        /* Absent key: under multiplexing return default (no cross-profile
+         * borrow). Multiplex off: scope is an overlay; fall through. */
+        if (secret_scope_is_multiplex_active()) return default_val;
+        const char *val = getenv(name);
+        return val ? val : default_val;
+    }
+
+    /* 3. No scope installed: Python raises UnscopedSecretError when
+     * multiplexing is on, and _resolve_qq_secret catches it and falls back
+     * to os.getenv(name). Multiplex off reads os.environ directly. */
+    const char *val = getenv(name);
+    return val ? val : default_val;
 }
 
 /* PoP: __init__ @ gateway/platforms/qqbot/adapter.py:__init__ */

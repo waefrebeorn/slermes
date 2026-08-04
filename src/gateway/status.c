@@ -891,6 +891,203 @@ bool gwstatus_is_gateway_running(const char *pid_path, bool cleanup_stale) {
     return gwstatus_get_running_pid(pid_path, cleanup_stale) > 0;
 }
 
+/* ── Cached running-pid probe (Python get_running_pid_cached) ────────── */
+
+/* get_running_pid() probes the runtime lock by briefly opening and locking
+ * gateway.lock. That is the right authoritative check for control paths, but
+ * high-frequency read-only HTTP polling can call it hundreds of times per
+ * minute. Mirror the Python TTL cache: 1.0s window, invalidated when any of
+ * the pid / lock / (unscoped) runtime-status files change signature
+ * (exists, mtime_ns, size). */
+
+#define RUNNING_PID_CACHE_TTL_NS (1000000000LL)   /* 1.0 s */
+
+typedef struct {
+    char        pid_path[1200];   /* "" = unscoped (default home) */
+    bool        cleanup_stale;
+    bool        include_runtime_status;
+    bool        valid;
+    struct timespec cached_at;
+    bool        sig_exists[3];
+    long        sig_mtime_ns[3];
+    long        sig_size[3];
+    pid_t       pid;
+} running_pid_cache_t;
+
+static running_pid_cache_t g_pid_cache;
+
+/* Mirror Python _file_cache_signature: (exists, mtime_ns, size). */
+static void file_cache_signature(const char *path, bool *exists,
+                                 long *mtime_ns, long *size) {
+    struct stat st;
+    if (path && stat(path, &st) == 0) {
+        *exists = true;
+        *mtime_ns = (long)st.st_mtime * 1000000000L + (long)st.st_mtim.tv_nsec;
+        *size = (long)st.st_size;
+    } else {
+        *exists = false;
+        *mtime_ns = 0;
+        *size = 0;
+    }
+}
+
+static pid_t cached_get_running_pid(const char *pid_path, bool cleanup_stale) {
+    char resolved[1200];
+    if (!pid_path) get_pid_path(resolved, sizeof(resolved));
+    else {
+        snprintf(resolved, sizeof(resolved), "%s", pid_path);
+    }
+    bool include_runtime_status = (pid_path == NULL);
+
+    char lock_path[1200];
+    get_gateway_lock_path(resolved, lock_path, sizeof(lock_path));
+    char state_path[1200];
+    get_runtime_status_path(state_path, sizeof(state_path));
+
+    struct timespec now;
+    clock_gettime(CLOCK_MONOTONIC, &now);
+
+    bool sig_ok = true;
+    const char *files[3] = { resolved, lock_path,
+                             include_runtime_status ? state_path : NULL };
+    bool sig_exists[3];
+    long sig_mtime[3], sig_size[3];
+    for (int i = 0; i < 3; i++) {
+        if (!files[i]) { sig_exists[i] = false; sig_mtime[i] = 0; sig_size[i] = 0; continue; }
+        file_cache_signature(files[i], &sig_exists[i], &sig_mtime[i], &sig_size[i]);
+    }
+
+    if (g_pid_cache.valid &&
+        strcmp(g_pid_cache.pid_path, resolved) == 0 &&
+        g_pid_cache.cleanup_stale == cleanup_stale &&
+        g_pid_cache.include_runtime_status == include_runtime_status) {
+        long age_ns = (now.tv_sec - g_pid_cache.cached_at.tv_sec) * 1000000000LL
+                    + (now.tv_nsec - g_pid_cache.cached_at.tv_nsec);
+        if (age_ns >= 0 && age_ns < RUNNING_PID_CACHE_TTL_NS) {
+            for (int i = 0; i < 3 && sig_ok; i++) {
+                if (g_pid_cache.sig_exists[i] != sig_exists[i] ||
+                    g_pid_cache.sig_mtime_ns[i] != sig_mtime[i] ||
+                    g_pid_cache.sig_size[i] != sig_size[i])
+                    sig_ok = false;
+            }
+            if (sig_ok) return g_pid_cache.pid;
+        }
+    }
+
+    pid_t pid = gwstatus_get_running_pid(pid_path, cleanup_stale);
+    g_pid_cache.valid = true;
+    g_pid_cache.cached_at = now;
+    snprintf(g_pid_cache.pid_path, sizeof(g_pid_cache.pid_path), "%s", resolved);
+    g_pid_cache.cleanup_stale = cleanup_stale;
+    g_pid_cache.include_runtime_status = include_runtime_status;
+    for (int i = 0; i < 3; i++) {
+        g_pid_cache.sig_exists[i] = sig_exists[i];
+        g_pid_cache.sig_mtime_ns[i] = sig_mtime[i];
+        g_pid_cache.sig_size[i] = sig_size[i];
+    }
+    g_pid_cache.pid = pid;
+    return pid;
+}
+
+/* PoP: resolve_gateway_liveness @ gateway/status.py:resolve_gateway_liveness */
+/* Single source of truth for "is the gateway up?" across dashboard surfaces.
+ * Mirrors Python gateway/status.py:resolve_gateway_liveness():
+ *   1. PID file + runtime lock (scoped to profile_dir when non-NULL),
+ *      TTL-cached when use_cache is true.
+ *   2. HTTP health probe (health_probe may be NULL; when non-NULL it is
+ *      called as health_probe(&body) and returns true when the gateway is
+ *      alive, storing a malloc'd serialized body for the caller to free).
+ *   3. Runtime status PID validated against the live process table with
+ *      expected_home=profile_dir.
+ * runtime_json may be pre-read state (caller owns it); NULL means "not yet
+ * read" and the resolver reads it itself. Returns false only on invalid
+ * arguments; the ladder result lands in *out. */
+bool gwstatus_resolve_gateway_liveness(
+    const char *profile_dir,
+    const char *runtime_json,
+    bool use_cache,
+    bool (*health_probe)(char **out_body),
+    gwstatus_liveness_t *out)
+{
+    if (!out) return false;
+    out->running = false;
+    out->pid = -1;
+    out->source = "none";
+    out->health_body = NULL;
+    out->probe_error = false;
+
+    /* Rung 1: PID file + runtime lock (scoped to profile_dir). */
+    char pid_path_buf[1200];
+    char *pid_path = NULL;
+    if (profile_dir && profile_dir[0]) {
+        snprintf(pid_path_buf, sizeof(pid_path_buf), "%s/%s",
+                 profile_dir, PID_FILENAME);
+        pid_path = pid_path_buf;
+    }
+
+    pid_t pid = use_cache ? cached_get_running_pid(pid_path, true)
+                          : gwstatus_get_running_pid(pid_path, true);
+    if (pid > 0) {
+        out->running = true;
+        out->pid = pid;
+        out->source = "pid";
+        return true;
+    }
+
+    /* Rung 2: HTTP health probe (caller-supplied). A non-NULL body from a
+     * failed probe is carried through to the final result, mirroring the
+     * Python behavior of returning health_body on every ladder exit. */
+    if (health_probe) {
+        char *body = NULL;
+        bool alive = health_probe(&body);
+        if (alive) {
+            pid_t remote_pid = -1;
+            if (body) {
+                json_t *parsed = json_parse(body, NULL);
+                if (parsed && parsed->type == JSON_OBJECT) {
+                    json_t *p = json_obj_get(parsed, "pid");
+                    if (p && p->type == JSON_NUMBER)
+                        remote_pid = (pid_t)p->num_val;
+                }
+                if (parsed) json_free(parsed);
+            }
+            out->running = true;
+            out->pid = remote_pid;
+            out->source = "health";
+            out->health_body = body;   /* caller frees; may be NULL */
+            return true;
+        }
+        out->health_body = body;       /* carry through; caller frees */
+    }
+
+    /* Rung 3: runtime status PID validated against the live process table. */
+    char *owned_runtime = NULL;
+    const char *runtime = runtime_json;
+    if (!runtime) {
+        char state_path[1200];
+        if (profile_dir && profile_dir[0])
+            snprintf(state_path, sizeof(state_path), "%s/%s",
+                     profile_dir, RUNTIME_STATUS_FILE);
+        else
+            get_runtime_status_path(state_path, sizeof(state_path));
+        owned_runtime = gwstatus_read_runtime_status(state_path);
+        runtime = owned_runtime;
+        if (!runtime) out->probe_error = true;
+    }
+    pid_t runtime_pid = gwstatus_get_runtime_status_running_pid(runtime,
+                                                                profile_dir);
+    if (owned_runtime) free(owned_runtime);
+    if (runtime_pid > 0) {
+        out->running = true;
+        out->pid = runtime_pid;
+        out->source = "runtime_status";
+        return true;
+    }
+
+    /* Rung 4: not running. */
+    return true;
+}
+
 /* ── Runtime health status JSON ──────────────────────────────────────── */
 
 /* PoP: parse_active_agents @ gateway/status.py:parse_active_agents */

@@ -183,6 +183,18 @@ int main(int argc, char **argv) {
         return 0;
     }
 
+    if (argc > 1 && strcmp(argv[1], "update") == 0) {
+        /* Top-level updater (mirrors `hermes update`). The dashboard's
+         * update button spawns `slermes update --yes` detached; --check is
+         * the dry-run "any new commits?" path. cmd_update lives in
+         * cli_cmd_system.c and is also registered as the /update slash
+         * command. */
+        extern void cmd_update(const char *args, void *state);
+        const char *rest = (argc > 2) ? argv[2] : "";
+        cmd_update(rest, NULL);
+        return 0;
+    }
+
     if (argc > 1 && strcmp(argv[1], "completions") == 0) {
         /* Print shell completion script */
         if (argc > 2) {

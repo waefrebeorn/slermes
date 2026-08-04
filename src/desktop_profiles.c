@@ -56,7 +56,7 @@ bool desktop_profile_create(const char *name, const char *clone_from) {
             desktop_profile_t *src = &g_desktop.profiles[src_idx];
             strncpy(p->model, src->model, sizeof(p->model) - 1);
             strncpy(p->provider, src->provider, sizeof(p->provider) - 1);
-            strncpy(p->soul, src->soul, sizeof(p->soul) - 1);
+            if (src->soul) p->soul = strdup(src->soul);
             p->skill_count = src->skill_count;
             p->scope = src->scope;
         }
@@ -91,9 +91,14 @@ bool desktop_profile_delete(const char *name, bool confirm) {
     /* Remove profile directory */
     file_delete(g_desktop.profiles[idx].path);
 
+    /* Free heap soul before the struct copy shifts pointers */
+    free(g_desktop.profiles[idx].soul);
+    g_desktop.profiles[idx].soul = NULL;
+
     /* Shift remaining */
     for (int i = idx; i < g_desktop.profile_count - 1; i++) {
         g_desktop.profiles[i] = g_desktop.profiles[i + 1];
+        g_desktop.profiles[i + 1].soul = NULL;  /* ownership moved; clear dup */
     }
     g_desktop.profile_count--;
 
@@ -143,7 +148,8 @@ bool desktop_profile_set_soul(const char *name, const char *soul_content) {
     if (idx < 0) return false;
 
     desktop_profile_t *p = &g_desktop.profiles[idx];
-    strncpy(p->soul, soul_content, sizeof(p->soul) - 1);
+    free(p->soul);
+    p->soul = soul_content ? strdup(soul_content) : NULL;
 
     /* Write SOUL.md */
     char soul_path[1024];
@@ -168,7 +174,7 @@ bool desktop_profile_get_soul(const char *name, char *out, size_t out_size) {
         strncpy(out, content, out_size - 1);
         free(content);
     } else {
-        strncpy(out, p->soul, out_size - 1);
+        strncpy(out, p->soul ? p->soul : "", out_size - 1);
     }
     out[out_size - 1] = '\0';
     return true;

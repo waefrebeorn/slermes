@@ -11,6 +11,7 @@
 #include "acp/events.h"
 #include "acp/server.h"
 #include "hermes_json.h"
+#include "hive.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,54 +28,56 @@ typedef struct {
     bool  active;
 } acp_tool_call_entry_t;
 
-static acp_tool_call_entry_t g_tool_call_ids[ACP_EVENTS_MAX_TOOL_CALLS];
+/* Hive-backed tool-call registry — no landlocked static array (was
+ * 512 × 258B ≈ 129KB .bss). Entries are heap-allocated; register inserts,
+ * pop erases by handle. */
+static hive_t *g_tool_call_ids = NULL;  /* of acp_tool_call_entry_t* */
 static int g_tool_call_counter = 0;
 
 const char *acp_tool_call_id_register(const char *session_id, const char *tool_name) {
     if (!session_id || !tool_name) return NULL;
+    if (!g_tool_call_ids) g_tool_call_ids = hive_new(HIVE_DEFAULT_BLOCK_CAP);
+    if (!g_tool_call_ids) return NULL;
 
-    /* Find free slot */
-    int slot = -1;
-    for (int i = 0; i < ACP_EVENTS_MAX_TOOL_CALLS; i++) {
-        if (!g_tool_call_ids[i].active) {
-            slot = i;
-            break;
-        }
-    }
-    if (slot < 0) return NULL;
+    acp_tool_call_entry_t *e = calloc(1, sizeof(*e));
+    if (!e) return NULL;
 
     /* Generate unique call ID */
     g_tool_call_counter++;
-    snprintf(g_tool_call_ids[slot].call_id, sizeof(g_tool_call_ids[slot].call_id),
+    snprintf(e->call_id, sizeof(e->call_id),
              "tc-%s-%d-%d", tool_name, g_tool_call_counter, (int)time(NULL));
 
-    snprintf(g_tool_call_ids[slot].session_id, sizeof(g_tool_call_ids[slot].session_id),
-             "%s", session_id);
-    snprintf(g_tool_call_ids[slot].tool_name, sizeof(g_tool_call_ids[slot].tool_name),
-             "%s", tool_name);
-    g_tool_call_ids[slot].active = true;
+    snprintf(e->session_id, sizeof(e->session_id), "%s", session_id);
+    snprintf(e->tool_name, sizeof(e->tool_name), "%s", tool_name);
+    e->active = true;
 
-    return g_tool_call_ids[slot].call_id;
+    bool ok = false;
+    hive_insert(g_tool_call_ids, e, &ok);
+    if (!ok) { free(e); return NULL; }
+
+    return e->call_id;
 }
 
 char *acp_tool_call_id_pop(const char *session_id, const char *tool_name) {
-    if (!session_id || !tool_name) return NULL;
+    if (!session_id || !tool_name || !g_tool_call_ids) return NULL;
 
-    /* Find matching entry (FIFO: oldest first) */
-    int slot = -1;
-    for (int i = 0; i < ACP_EVENTS_MAX_TOOL_CALLS; i++) {
-        if (g_tool_call_ids[i].active &&
-            strcmp(g_tool_call_ids[i].session_id, session_id) == 0 &&
-            strcmp(g_tool_call_ids[i].tool_name, tool_name) == 0) {
-            slot = i;
-            break;
+    /* Find matching entry (FIFO: oldest first — hive iterates in
+     * insertion order within a block). */
+    hive_handle_t hnd = { 0, 0 };
+    acp_tool_call_entry_t *found = NULL;
+    hive_iter_t it = HIVE_ITER_INIT;
+    hive_iter_begin(g_tool_call_ids, &it);
+    while (hive_iter_next(g_tool_call_ids, &it, &hnd, (void **)&found)) {
+        if (found->active &&
+            strcmp(found->session_id, session_id) == 0 &&
+            strcmp(found->tool_name, tool_name) == 0) {
+            char *call_id = strdup(found->call_id);
+            hive_erase(g_tool_call_ids, hnd);
+            free(found);
+            return call_id;
         }
     }
-    if (slot < 0) return NULL;
-
-    char *call_id = strdup(g_tool_call_ids[slot].call_id);
-    g_tool_call_ids[slot].active = false;
-    return call_id;
+    return NULL;
 }
 
 /* ================================================================

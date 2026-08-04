@@ -116,7 +116,8 @@ typedef struct {
     int    skill_count;
     char   model[256];
     char   provider[64];
-    char   soul[65536];  /* SOUL.md content */
+    char  *soul;  /* SOUL.md content — heap-allocated (variable length;
+                   * was char[65536] × 64 profiles ≈ 4.3MB .bss) */
     profile_scope_t scope; /* LOCAL / WORKSPACE / GLOBAL */
 } desktop_profile_t;
 
@@ -147,7 +148,8 @@ typedef struct {
     char          key[256];
     setting_type_t type;
     union {
-        char   s[1024];
+        char  *s;   /* heap-allocated string (was char[1024] × 512
+                     * settings ≈ 640KB .bss) */
         int    i;
         bool   b;
         double d;

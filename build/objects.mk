@@ -246,6 +246,7 @@ PORT_OBJ = \
         src/cli/port_web_server_schema_path.o \
         src/cli/port_web_git.o \
         src/cli/port_web_git_routes.o \
+        src/cli/port_web_update.o \
         src/gateway/port_api_server.o \
         src/gateway/port_base.o \
         src/gateway/port_signal.o \

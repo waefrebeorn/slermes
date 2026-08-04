@@ -22,6 +22,40 @@
 #include <stddef.h>
 #include <sys/types.h>   /* pid_t */
 
+
+/* ── Unified liveness resolver (Python resolve_gateway_liveness) ──────── */
+
+/* Result of the liveness ladder. source is one of "pid", "health",
+ * "runtime_status", "none". health_body is a malloc'd serialized JSON string
+ * (or NULL) that the caller must free. pid is -1 when no PID was found. */
+typedef struct {
+    bool running;
+    pid_t pid;
+    const char *source;
+    char *health_body;
+    bool probe_error;
+} gwstatus_liveness_t;
+
+/* Single source of truth for "is the gateway up?" across dashboard surfaces.
+ * Mirrors Python gateway/status.py:resolve_gateway_liveness():
+ *   1. PID file + runtime lock (scoped to profile_dir when non-NULL),
+ *      TTL-cached when use_cache is true.
+ *   2. HTTP health probe (health_probe may be NULL; when non-NULL it is
+ *      called as health_probe(&body) and returns true when the gateway is
+ *      alive, storing a malloc'd serialized body for the caller to free).
+ *   3. Runtime status PID validated against the live process table with
+ *      expected_home=profile_dir.
+ * runtime_json may be pre-read state (caller owns it); NULL means "not yet
+ * read" and the resolver reads it itself. Returns false only on invalid
+ * arguments; the ladder result lands in *out. */
+
+
+bool gwstatus_resolve_gateway_liveness(
+    const char *profile_dir,
+    const char *runtime_json,
+    bool use_cache,
+    bool (*health_probe)(char **out_body),
+    gwstatus_liveness_t *out);
 #ifdef __cplusplus
 extern "C" {
 #endif

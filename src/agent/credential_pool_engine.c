@@ -8,6 +8,7 @@ No god headers — only the minimal includes each module requires. C11 only.
 
 #include "credential_pool.h"
 #include "credential_pool_internals.h"
+#include "slermes_home.h"
 #include "hermes_json.h"
 #include "hermes_yaml.h"
 #include "hermes_auth.h"
@@ -457,13 +458,16 @@ credential_pool_t *load_pool(const char *provider) {
     credential_pool_t *pool = credential_pool_create(provider);
     if (!pool) return NULL;
     
-    /* Load entries from auth.json */
-    const char *home = getenv("HERMES_HOME");
-    if (!home) home = getenv("HOME");
-    if (!home) return pool;
-    
+    /* Load entries from auth.json — slermes identity: credential
+     * files live in the slermes root, never in the Python project's
+     * ~/.hermes (which is a different project's home). */
+    const char *cred_root = getenv("SLERMES_HOME");
+    if (!cred_root || !cred_root[0]) cred_root = slermes_home();
+    if (!cred_root || !cred_root[0]) cred_root = getenv("HOME");
+    if (!cred_root || !cred_root[0]) return pool;
+
     char path[1024];
-    snprintf(path, sizeof(path), "%s/.hermes/auth.json", home);
+    snprintf(path, sizeof(path), "%s/.slermes/auth.json", cred_root);
     
     FILE *f = fopen(path, "r");
     if (!f) return pool;

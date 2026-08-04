@@ -41,7 +41,8 @@ static const char *checkpoint_path(void) {
 typedef struct {
     pid_t   pid;
     int     session_id;
-    char    command[4096];
+    char   *command;      /* heap-allocated (variable-length shell command;
+                           * was char[4096] × 32 ≈ 130KB .bss) */
     char   *output;       /* accumulated output */
     size_t  output_len;
     size_t  output_cap;
@@ -152,7 +153,8 @@ static void proc_start(const char *command, const char *env_str, int timeout_sec
     close(stdin_pipe[0]); /* close read end */
     g_procs[slot].pid = pid;
     g_procs[slot].session_id = g_next_session++;
-    snprintf(g_procs[slot].command, sizeof(g_procs[slot].command), "%s", command);
+    free(g_procs[slot].command);
+    g_procs[slot].command = strdup(command ? command : "");
     g_procs[slot].output = NULL;
     g_procs[slot].output_len = 0;
     g_procs[slot].output_cap = 0;
@@ -307,7 +309,8 @@ static void proc_load_checkpoint(void) {
         g_procs[slot].output_cap = 0;
 
         const char *cmd = json_get_str(p, "command", "");
-        snprintf(g_procs[slot].command, sizeof(g_procs[slot].command), "%s", cmd);
+        free(g_procs[slot].command);
+        g_procs[slot].command = strdup(cmd ? cmd : "");
 
         /* Track highest session ID */
         if ((int)sid >= g_next_session)

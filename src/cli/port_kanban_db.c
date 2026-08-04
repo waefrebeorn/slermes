@@ -7,6 +7,7 @@
 #include "hermes_logger.h"
 #include "hermes_json.h"
 #include "kanban_db.h"
+#include "slermes_home.h"
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -327,17 +328,17 @@ const char* _nearest_existing_path(const char* path)
 #define KB_DEFAULT_RATE_LIMIT_COOLDOWN_SECONDS 300
 #define KB_DEFAULT_BOARD "default"
 
-/* Resolve the shared Hermes root anchoring the kanban board. */
+/* Resolve the shared Hermes root anchoring the kanban board.
+ * SLERMES IDENTITY: never fall back to the Python home (~/.hermes) — the
+ * kanban board is slermes state and must live under the slermes root. */
 static void kanban_root_dir(char *out, size_t sz)
 {
     const char *override = getenv("HERMES_KANBAN_HOME");
     if (override && override[0]) { snprintf(out, sz, "%s", override); return; }
-    const char *home = getenv("HERMES_HOME");
+    const char *home = slermes_home();
     if (home && home[0]) { snprintf(out, sz, "%s", home); return; }
-    const char *sl = getenv("SLERMES_HOME");
-    if (sl && sl[0]) { snprintf(out, sz, "%s", sl); return; }
     const char *h = getenv("HOME");
-    snprintf(out, sz, "%s/.hermes", h ? h : ".");
+    snprintf(out, sz, "%s/.slermes", h ? h : ".");
 }
 
 /*

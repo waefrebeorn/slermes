@@ -1119,7 +1119,7 @@ bool desktop_get_default_project_dir(char *path, size_t size) {
 /* PoP: env_vars @ apps/desktop/src/app/settings/index.tsx */
 typedef struct {
     char key[256];
-    char value[1024];
+    char *value;  /* heap-allocated (was char[1024] × 128 ≈ 160KB .bss) */
 } env_entry_t;
 
 static env_entry_t g_env_vars[128];
@@ -1131,14 +1131,15 @@ bool desktop_env_set(const char *key, const char *value) {
     /* Update existing */
     for (int i = 0; i < g_env_count; i++) {
         if (strcmp(g_env_vars[i].key, key) == 0) {
-            strncpy(g_env_vars[i].value, value, 1023);
+            free(g_env_vars[i].value);
+            g_env_vars[i].value = strdup(value);
             return true;
         }
     }
 
     if (g_env_count >= 128) return false;
     strncpy(g_env_vars[g_env_count].key, key, 255);
-    strncpy(g_env_vars[g_env_count].value, value, 1023);
+    g_env_vars[g_env_count].value = strdup(value);
     g_env_count++;
     return true;
 }
@@ -1156,8 +1157,10 @@ bool desktop_env_delete(const char *key) {
     if (!key) return false;
     for (int i = 0; i < g_env_count; i++) {
         if (strcmp(g_env_vars[i].key, key) == 0) {
+            free(g_env_vars[i].value);
             for (int j = i; j < g_env_count - 1; j++) {
                 g_env_vars[j] = g_env_vars[j + 1];
+                g_env_vars[j + 1].value = NULL;  /* ownership moved */
             }
             g_env_count--;
             return true;
@@ -1354,7 +1357,7 @@ const char *desktop_oauth_token(const char *provider) {
 
 /* PoP: file_watch @ apps/desktop/src/app/file/index.tsx */
 typedef struct {
-    char path[1024];
+    char *path;  /* heap-allocated (was char[1024] × 64 ≈ 64KB .bss) */
     file_watch_cb cb;
 } file_watch_entry_t;
 
@@ -1373,7 +1376,7 @@ bool desktop_file_watch_add(const char *path, file_watch_cb cb) {
     }
 
     file_watch_entry_t *entry = &g_file_watches[g_file_watch_count++];
-    strncpy(entry->path, path, sizeof(entry->path) - 1);
+    entry->path = strdup(path);
     entry->cb = cb;
     return true;
 }
@@ -1382,8 +1385,10 @@ bool desktop_file_watch_remove(const char *path) {
     if (!path) return false;
     for (int i = 0; i < g_file_watch_count; i++) {
         if (strcmp(g_file_watches[i].path, path) == 0) {
+            free(g_file_watches[i].path);
             for (int j = i; j < g_file_watch_count - 1; j++) {
                 g_file_watches[j] = g_file_watches[j + 1];
+                g_file_watches[j + 1].path = NULL;  /* ownership moved */
             }
             g_file_watch_count--;
             return true;
@@ -1393,6 +1398,8 @@ bool desktop_file_watch_remove(const char *path) {
 }
 
 void desktop_file_watch_clear(void) {
+    for (int i = 0; i < g_file_watch_count; i++)
+        free(g_file_watches[i].path);
     g_file_watch_count = 0;
 }
 

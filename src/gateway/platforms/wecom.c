@@ -334,7 +334,7 @@ bool wecom_send_taskcard(http_client_t *http,
 
 typedef struct {
     char chat_id[128];
-    char text[4096];
+    char *text;          /* heap-allocated; enqueue strdups, slot freed on reuse */
     char sender_id[128];
     time_t timestamp;
 } wecom_msg_t;
@@ -351,7 +351,8 @@ void wecom_queue_message(const char *chat_id, const char *text,
     int next = (g_wx_tail + 1) % WECOM_QUEUE_MAX;
     if (next != g_wx_head) {
         snprintf(g_wx_queue[g_wx_tail].chat_id, sizeof(g_wx_queue[g_wx_tail].chat_id), "%s", chat_id ? chat_id : "wecom");
-        snprintf(g_wx_queue[g_wx_tail].text, sizeof(g_wx_queue[g_wx_tail].text), "%s", text ? text : "");
+        free(g_wx_queue[g_wx_tail].text);
+    g_wx_queue[g_wx_tail].text = strdup(text ? text : "");
         snprintf(g_wx_queue[g_wx_tail].sender_id, sizeof(g_wx_queue[g_wx_tail].sender_id), "%s", sender_id ? sender_id : "");
         g_wx_queue[g_wx_tail].timestamp = time(NULL);
         g_wx_tail = next;
