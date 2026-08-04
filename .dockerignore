@@ -1,0 +1,43 @@
+# ── Slermes .dockerignore ──────────────────────────────────────────
+# The repo is ~1GB (fork-base history + Python quarry) — never send
+# .git or the Python tree into the Docker build context. The image
+# only needs the C11 sources + Makefile + build/*.mk to compile.
+
+# VCS / history
+.git
+.gitignore
+.gitattributes
+
+# Build artifacts (objects are compiled in the image; don't upload ours)
+*.o
+*.a
+*.so
+*.exe
+slermes
+slermes-static
+slermes-desktop-gui
+hermes-desktop
+dist/
+*.AppImage
+a.out
+t_update_test
+
+# Python quarry (source we port FROM — never shipped)
+hermes-agent/
+*.pyc
+__pycache__/
+venv/
+.venv/
+
+# Tests / CI / docs that add no runtime value to the build
+tests/
+docs/
+.github/
+packaging/appimage/
+*.md
+
+# Local state
+.env
+*.log
+.slermes/
+.hermes/
