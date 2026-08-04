@@ -28,11 +28,12 @@
 #include <ctype.h>
 #include <math.h>
 #include <pthread.h>
-#ifdef _WIN32
-/* No ALSA on Windows — recorder functions are compiled out (see below). */
-#define SLERMES_NO_ALSA 1
-#else
+#ifdef __linux__
 #include <alsa/asoundlib.h>
+#else
+/* No ALSA outside Linux (Windows/macOS) — recorder functions are
+ * compiled out (see below). */
+#define SLERMES_NO_ALSA 1
 #endif
 
 /* Forward declaration (defined later in this file as voice_write_wav). */

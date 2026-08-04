@@ -35,7 +35,11 @@
 #ifndef _DEFAULT_SOURCE
 #define _DEFAULT_SOURCE
 #endif
+#ifdef __APPLE__
+#include <util.h>   /* forkpty/openpty live here on macOS */
+#else
 #include <pty.h>
+#endif
 #ifdef __linux__
 #include <sys/vfs.h>
 #endif

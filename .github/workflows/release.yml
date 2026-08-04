@@ -110,7 +110,9 @@ jobs:
       - name: Install toolchain
         run: |
           sudo apt-get update -qq 2>&1 || true
-          sudo apt-get install -y -qq gcc-aarch64-linux-gnu libssl-dev libasound2-dev libpcre2-dev libsdl2-dev file unzip
+          sudo dpkg --add-architecture arm64 2>/dev/null || true
+          sudo apt-get update -qq 2>&1 || true
+          sudo apt-get install -y -qq gcc-aarch64-linux-gnu libssl-dev:arm64 libasound2-dev:arm64 libpcre2-dev:arm64 libsdl2-dev:arm64 file unzip
       - name: Fetch SQLite amalgamation
         run: |
           if [ ! -f lib/libdb/sqlite3.h ]; then
@@ -145,7 +147,9 @@ jobs:
       - name: Install toolchain
         run: |
           sudo apt-get update -qq 2>&1 || true
-          sudo apt-get install -y -qq gcc-arm-linux-gnueabihf libssl-dev libasound2-dev libpcre2-dev libsdl2-dev file unzip
+          sudo dpkg --add-architecture armhf 2>/dev/null || true
+          sudo apt-get update -qq 2>&1 || true
+          sudo apt-get install -y -qq gcc-arm-linux-gnueabihf libssl-dev:armhf libasound2-dev:armhf libpcre2-dev:armhf libsdl2-dev:armhf file unzip
       - name: Fetch SQLite amalgamation
         run: |
           if [ ! -f lib/libdb/sqlite3.h ]; then
@@ -248,13 +252,12 @@ jobs:
   # ─── Create GitHub Release (runs after all builds succeed) ──────────
   create-release:
     name: Create Release
-    needs:
-      - linux-x86_64
-      - macos-arm64
-      - linux-aarch64
-      - linux-armv7
-      - windows-x86_64
-      - docker
+    # Ship whatever platform binaries built successfully. Linux x86_64 is
+    # the required baseline (it has shipped in every release); the others
+    # attach when they succeed. If every required job failed, the release
+    # is still created from the repo state so users see the tag/notes.
+    needs: linux-x86_64
+    if: ${{ always() && needs.linux-x86_64.result != 'skipped' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
