@@ -323,6 +323,8 @@ json_node_t *qqbot_poll_messages(http_client_t *http) {
         json_node_t *msg = json_new_object();
         json_set(msg, "chat_id", json_string(g_qq_queue[g_qq_head].chat_id));
         json_set(msg, "text", json_string(g_qq_queue[g_qq_head].text));
+        free(g_qq_queue[g_qq_head].text);
+        g_qq_queue[g_qq_head].text = NULL;
         json_set(msg, "sender_id", json_string(g_qq_queue[g_qq_head].sender_id));
         json_append(results, msg);
         g_qq_head = (g_qq_head + 1) % QQ_QUEUE_MAX;

@@ -538,7 +538,7 @@ void config_py_recommended_update_command_for_method(const char *method, char *o
         return;
     }
     if (method && strcmp(method, "docker") == 0) {
-        snprintf(out, out_size, "docker pull nousresearch/hermes-agent:latest");
+        snprintf(out, out_size, "docker pull ghcr.io/waefrebeorn/slermes:latest");
         return;
     }
     snprintf(out, out_size, "hermes update");

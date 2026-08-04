@@ -294,7 +294,7 @@ char *browser_format_timeout_error(const char *command, int timeout, const char 
         len += strlen(hint);
     } else if (strcmp(command, "open") == 0 && browser_is_local_mode()) {
         if (browser_running_in_docker()) {
-            const char *hint = "\nThe browser daemon may still be starting or Chromium may be missing. Pull the latest image: docker pull ghcr.io/nousresearch/hermes-agent:latest";
+            const char *hint = "\nThe browser daemon may still be starting or Chromium may be missing. Pull the latest image: docker pull ghcr.io/waefrebeorn/slermes:latest";
             size_t need = len + strlen(hint) + 1;
             if (need >= cap) {
                 cap = need + 256;

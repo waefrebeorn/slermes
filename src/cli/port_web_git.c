@@ -44,12 +44,14 @@ int web_git_run(const char *cwd, char **out, size_t *out_len,
     *out = NULL;
     if (out_len) *out_len = 0;
     /* Build command string, cd-ing into cwd first (mirrors Python
-     * subprocess(cwd=...)). Shell-quote cwd for safety. */
-    size_t cap = strlen(cwd) + 32;
+     * subprocess(cwd=...)). cwd may be NULL for repo-less git ops
+     * (ls-remote, clone) — then no cd is emitted. Shell-quote cwd. */
+    size_t cap = (cwd ? strlen(cwd) + 32 : 32);
     for (size_t i = 0; i < nargs; i++) cap += strlen(args[i]) + 4;
     char *cmd = malloc(cap);
     if (!cmd) return 1;
-    int p = snprintf(cmd, cap, "cd \"%s\" && git", cwd);
+    int p = cwd ? snprintf(cmd, cap, "cd \"%s\" && git", cwd)
+                : snprintf(cmd, cap, "git");
     for (size_t i = 0; i < nargs; i++) {
         const char *a = args[i];
         bool need_q = (a[0] == '\0');

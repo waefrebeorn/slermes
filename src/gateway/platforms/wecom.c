@@ -352,7 +352,7 @@ void wecom_queue_message(const char *chat_id, const char *text,
     if (next != g_wx_head) {
         snprintf(g_wx_queue[g_wx_tail].chat_id, sizeof(g_wx_queue[g_wx_tail].chat_id), "%s", chat_id ? chat_id : "wecom");
         free(g_wx_queue[g_wx_tail].text);
-    g_wx_queue[g_wx_tail].text = strdup(text ? text : "");
+        g_wx_queue[g_wx_tail].text = strdup(text ? text : "");
         snprintf(g_wx_queue[g_wx_tail].sender_id, sizeof(g_wx_queue[g_wx_tail].sender_id), "%s", sender_id ? sender_id : "");
         g_wx_queue[g_wx_tail].timestamp = time(NULL);
         g_wx_tail = next;
@@ -414,6 +414,8 @@ json_node_t *wecom_poll_messages(http_client_t *http) {
         json_node_t *msg = json_new_object();
         json_set(msg, "chat_id", json_string(g_wx_queue[g_wx_head].chat_id));
         json_set(msg, "text", json_string(g_wx_queue[g_wx_head].text));
+        free(g_wx_queue[g_wx_head].text);
+        g_wx_queue[g_wx_head].text = NULL;
         json_set(msg, "sender_id", json_string(g_wx_queue[g_wx_head].sender_id));
         json_append(results, msg);
         g_wx_head = (g_wx_head + 1) % WECOM_QUEUE_MAX;

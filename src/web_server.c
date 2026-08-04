@@ -16,6 +16,7 @@
 #include <errno.h>
 #include <time.h>
 #include "slermes_home.h"
+#include "port_web_update.h"
 #include "skills_parser.h"
 #include "sqlite3.h"
 #include <sys/socket.h>
@@ -1959,17 +1960,44 @@ static void h_dash_font(void) {
 }
 static void h_update_check(void) {
     RESET();
-    JSON("{"
-        "\"install_method\":\"local\","
-        "\"current_version\":\"1.0.0-slermes\","
-        "\"behind\":0,"
-        "\"update_available\":false,"
-        "\"can_apply\":false,"
-        "\"update_command\":\"git pull && make -j$(nproc)\","
-        "\"message\":\"You are on the latest version\","
-        "\"release_notes_url\":\"https://github.com/nousresearch/hermes/releases\","
-        "\"last_check\":%ld"
-    "}", (long)time(NULL));
+    /* SLERMES IDENTITY: the releases endpoint runs the REAL online update
+     * loop (port_web_update.c → web_update_check_json), never a hardcoded
+     * stub. The Python original's hardcoded payload pointed at the Python
+     * repo's releases page; the C port must point at the slermes repo and
+     * report the live behind count / install method. */
+    char *payload = web_update_check_json(0);
+    if (payload) {
+        /* append release_notes_url (slermes repo releases page) */
+        size_t L = strlen(payload);
+        if (L > 1 && payload[L - 1] == '}') {
+            char extra[256];
+            snprintf(extra, sizeof extra,
+                     ",\"release_notes_url\":\"https://github.com/waefrebeorn/slermes/releases\",\"last_check\":%ld}",
+                     (long)time(NULL));
+            size_t need = L + strlen(extra) + 1;
+            if (need < sizeof(json_buf) - json_len - 1) {
+                memcpy(json_buf + json_len, payload, L - 1);
+                json_len += (int)(L - 1);
+                memcpy(json_buf + json_len, extra, strlen(extra) + 1);
+                json_len += (int)strlen(extra) - 1;
+            } else {
+                /* payload too big for the static buffer — emit it verbatim */
+                snprintf(json_buf + json_len, sizeof(json_buf) - json_len - 1,
+                         "%.*s", (int)(sizeof(json_buf) - json_len - 32), payload);
+                json_len = (int)strlen(json_buf);
+            }
+            free(payload);
+            return;
+        }
+        snprintf(json_buf + json_len, sizeof(json_buf) - json_len - 1, "%s", payload);
+        json_len = (int)strlen(json_buf);
+        free(payload);
+    } else {
+        JSON("{\"install_method\":\"unknown\",\"current_version\":\"%s\","
+             "\"behind\":null,\"update_available\":false,\"can_apply\":false,"
+             "\"update_command\":\"slermes update\",\"message\":\"Update check unavailable\"}",
+             HERMES_VERSION);
+    }
 }
 static void h_hub_sources(void) {
     RESET();

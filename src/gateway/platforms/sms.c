@@ -412,6 +412,8 @@ json_node_t *sms_poll_messages(http_client_t *http) {
         json_node_t *msg = json_new_object();
         json_set(msg, "chat_id", json_string(g_sms_queue[g_sms_head].chat_id));
         json_set(msg, "text", json_string(g_sms_queue[g_sms_head].text));
+        free(g_sms_queue[g_sms_head].text);
+        g_sms_queue[g_sms_head].text = NULL;
         json_set(msg, "sender_id", json_string(g_sms_queue[g_sms_head].sender_id));
         json_append(results, msg);
         g_sms_head = (g_sms_head + 1) % SMS_QUEUE_MAX;

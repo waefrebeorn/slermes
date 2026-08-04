@@ -272,7 +272,9 @@ void composer_update_suggestions(composer_t *c) {
             strncmp(word, builtin_suggestions[i].text, word_len) == 0) {
             composer_suggestion_t *s = &c->suggestions[c->suggestion_count++];
             strncpy(s->text, builtin_suggestions[i].text, sizeof(s->text) - 1);
+            s->text[sizeof(s->text) - 1] = '\0';
             strncpy(s->description, builtin_suggestions[i].desc, sizeof(s->description) - 1);
+            s->description[sizeof(s->description) - 1] = '\0';
             s->score = 100 - c->suggestion_count;
         }
     }
@@ -422,6 +424,7 @@ int composer_attach_file(composer_t *c, const char *path, const char *mime) {
     if (!basename) basename = path;
     else basename++;
     strncpy(att->alt_text, basename, sizeof(att->alt_text) - 1);
+    att->alt_text[sizeof(att->alt_text) - 1] = '\0';
 
     return c->attachment_count++;
 }
@@ -461,8 +464,10 @@ int composer_attach_image(composer_t *c, const char *image_path, const char *alt
     att->data_size = 0;
     if (alt_text) {
         strncpy(att->alt_text, alt_text, sizeof(att->alt_text) - 1);
+        att->alt_text[sizeof(att->alt_text) - 1] = '\0';
     } else {
         strncpy(att->alt_text, "image", sizeof(att->alt_text) - 1);
+        att->alt_text[sizeof(att->alt_text) - 1] = '\0';
     }
 
     return c->attachment_count++;

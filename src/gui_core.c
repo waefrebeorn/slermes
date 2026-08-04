@@ -329,6 +329,7 @@ gc_window_t *gc_create_window(const char *title, int w, int h,
     }
 
     strncpy(win->title, title ? title : "Slermes Agent", sizeof(win->title)-1);
+    win->title[sizeof(win->title)-1] = '\0';
     win->running = true;
     win->frame_delay_ms = 16;
     return win;
@@ -354,6 +355,7 @@ void gc_set_theme(gc_window_t *win, const gc_theme_t *theme) {
 void gc_set_title(gc_window_t *win, const char *title) {
     if (title) {
         strncpy(win->title, title, sizeof(win->title)-1);
+        win->title[sizeof(win->title)-1] = '\0';
         SDL_SetWindowTitle(win->sdl_win, title);
     }
 }

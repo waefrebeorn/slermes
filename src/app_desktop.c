@@ -170,6 +170,7 @@ void app_desktop_toggle_model_picker(app_desktop_state_t *app_state) {
 
 void app_desktop_notify(app_desktop_state_t *app_state, const char *msg, int duration_sec) {
     strncpy(app_state->notification, msg, sizeof(app_state->notification) - 1);
+    app_state->notification[sizeof(app_state->notification) - 1] = '\0';
     app_state->notification_time = time(NULL);
     app_state->notification_duration_sec = duration_sec;
     app_desktop_push_notif(app_state, msg, duration_sec, false);
@@ -184,6 +185,7 @@ void app_desktop_push_notif(app_desktop_state_t *app_state, const char *msg, int
     }
     int idx = app_state->notif_count++;
     strncpy(app_state->notifications[idx].message, msg, sizeof(app_state->notifications[idx].message) - 1);
+    app_state->notifications[idx].message[sizeof(app_state->notifications[idx].message) - 1] = '\0';
     app_state->notifications[idx].timestamp = time(NULL);
     app_state->notifications[idx].duration_sec = duration_sec;
     app_state->notifications[idx].urgent = urgent;
@@ -216,6 +218,7 @@ void app_desktop_rename_session_open(app_desktop_state_t *app_state) {
         app_state->session_sel >= app_state->session_count) return;
     strncpy(app_state->rename_buf, app_state->session_titles[app_state->session_sel],
             sizeof(app_state->rename_buf) - 1);
+    app_state->rename_buf[sizeof(app_state->rename_buf) - 1] = '\0';
     app_state->rename_len = (int)strlen(app_state->rename_buf);
     app_state->rename_active = true;
     ui_create_dialog(7, 50);

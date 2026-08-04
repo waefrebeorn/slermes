@@ -451,8 +451,11 @@ static void load_sessions(void) {
     /* Add a default welcome session */
     desktop_session_entry_t *s = &g_app.sessions[g_app.session_count++];
     strncpy(s->id, "default", sizeof(s->id) - 1);
+    s->id[sizeof(s->id) - 1] = '\0';
     strncpy(s->title, "Welcome", sizeof(s->title) - 1);
+    s->title[sizeof(s->title) - 1] = '\0';
     strncpy(s->last_message, "Start a new conversation", sizeof(s->last_message) - 1);
+    s->last_message[sizeof(s->last_message) - 1] = '\0';
     s->updated_at = time(NULL);
     g_app.active_session = 0;
     
@@ -509,7 +512,9 @@ static void add_chat_message(const char *role, const char *content) {
     
     chat_message_t *msg = &g_app.messages[g_app.message_count++];
     strncpy(msg->role, role, sizeof(msg->role) - 1);
+    msg->role[sizeof(msg->role) - 1] = '\0';
     strncpy(msg->content, content, sizeof(msg->content) - 1);
+    msg->content[sizeof(msg->content) - 1] = '\0';
     msg->timestamp = time(NULL);
     
     /* Force redraw */
@@ -541,6 +546,7 @@ static void send_message(void) {
     if (g_app.active_session >= 0 && g_app.active_session < g_app.session_count) {
         desktop_session_entry_t *s = &g_app.sessions[g_app.active_session];
         strncpy(s->last_message, text, sizeof(s->last_message) - 1);
+        s->last_message[sizeof(s->last_message) - 1] = '\0';
         s->updated_at = time(NULL);
         update_session_list();
     }

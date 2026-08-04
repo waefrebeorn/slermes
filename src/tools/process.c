@@ -391,6 +391,7 @@ char *process_handler(const char *args_json, const char *task_id) {
             }
             if ((now - g_procs[i].start_time) >= max_age) {
                 free(g_procs[i].output);
+                free(g_procs[i].command);  /* heap string — was leaked by memset */
                 memset(&g_procs[i], 0, sizeof(g_procs[i]));
                 removed++;
             }

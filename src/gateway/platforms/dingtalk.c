@@ -371,6 +371,8 @@ json_node_t *dingtalk_poll_messages(http_client_t *http) {
         json_node_t *msg = json_new_object();
         json_set(msg, "chat_id", json_string(g_msg_queue[g_msg_head].chat_id));
         json_set(msg, "text", json_string(g_msg_queue[g_msg_head].text));
+        free(g_msg_queue[g_msg_head].text);
+        g_msg_queue[g_msg_head].text = NULL;
         json_set(msg, "sender_id", json_string(g_msg_queue[g_msg_head].sender_id));
         json_append(results, msg);
         g_msg_head = (g_msg_head + 1) % DINGTALK_QUEUE_MAX;

@@ -71,7 +71,11 @@ bool desktop_settings_get_int(const char *key, int *value) {
 
 bool desktop_settings_set_int(const char *key, int value) {
     desktop_setting_t *s = find_setting(key);
-    if (s) { s->value.i = value; s->type = SETTING_INT; return true; }
+    if (s) {
+        if (s->type == SETTING_STRING) { free(s->value.s); s->value.s = NULL; }
+        s->value.i = value; s->type = SETTING_INT;
+        return true;
+    }
     if (g_desktop.setting_count >= DESKTOP_MAX_SETTINGS) return false;
     s = &g_desktop.settings[g_desktop.setting_count++];
     strncpy(s->key, key, sizeof(s->key) - 1);
@@ -89,7 +93,11 @@ bool desktop_settings_get_bool(const char *key, bool *value) {
 
 bool desktop_settings_set_bool(const char *key, bool value) {
     desktop_setting_t *s = find_setting(key);
-    if (s) { s->value.b = value; s->type = SETTING_BOOL; return true; }
+    if (s) {
+        if (s->type == SETTING_STRING) { free(s->value.s); s->value.s = NULL; }
+        s->value.b = value; s->type = SETTING_BOOL;
+        return true;
+    }
     if (g_desktop.setting_count >= DESKTOP_MAX_SETTINGS) return false;
     s = &g_desktop.settings[g_desktop.setting_count++];
     strncpy(s->key, key, sizeof(s->key) - 1);

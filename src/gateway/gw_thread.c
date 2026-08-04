@@ -50,7 +50,11 @@ bool gw_queue_push(const char *platform, const char *chat_id,
     /* Check if queue is full */
     int next = (g_gw.msg_queue_head + 1) % GW_QUEUE_MAX;
     if (next == g_gw.msg_queue_tail) {
-        /* Queue full — drop oldest */
+        /* Queue full — drop oldest. Free the dropped slot's heap text
+         * NOW (not deferred until head wraps) to avoid a bounded leak
+         * of up to GW_QUEUE_MAX stale messages. */
+        free(g_gw.msg_queue[g_gw.msg_queue_tail].text);
+        g_gw.msg_queue[g_gw.msg_queue_tail].text = NULL;
         g_gw.msg_queue_tail = (g_gw.msg_queue_tail + 1) % GW_QUEUE_MAX;
     }
 
@@ -83,8 +87,11 @@ bool gw_queue_pop(gateway_msg_t *msg) {
     }
 
     *msg = g_gw.msg_queue[g_gw.msg_queue_tail];
-    /* Caller owns a copy of the heap text. */
+    /* Caller owns a copy of the heap text; the queue slot's original
+     * text is freed here (it will never be read again). */
     msg->text = strdup(msg->text ? msg->text : "");
+    free(g_gw.msg_queue[g_gw.msg_queue_tail].text);
+    g_gw.msg_queue[g_gw.msg_queue_tail].text = NULL;
     g_gw.msg_queue_tail = (g_gw.msg_queue_tail + 1) % GW_QUEUE_MAX;
     pthread_mutex_unlock(&g_gw.queue_mutex);
     return true;
@@ -103,6 +110,9 @@ void gw_queue_drain_all(void) {
     pthread_mutex_lock(&g_gw.queue_mutex);
     while (g_gw.msg_queue_head != g_gw.msg_queue_tail && count < GW_QUEUE_MAX) {
         msgs[count++] = g_gw.msg_queue[g_gw.msg_queue_tail];
+        /* Ownership of the heap text moved to msgs[] — NULL the queue
+         * slot so a later push can't double-free it. */
+        g_gw.msg_queue[g_gw.msg_queue_tail].text = NULL;
         g_gw.msg_queue_tail = (g_gw.msg_queue_tail + 1) % GW_QUEUE_MAX;
     }
     pthread_mutex_unlock(&g_gw.queue_mutex);
