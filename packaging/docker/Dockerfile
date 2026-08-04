@@ -14,6 +14,9 @@ RUN apk add --no-cache \
     ncurses-static \
     wayland-dev \
     wayland-libs-client \
+    libxkbcommon-dev \
+    mesa-dev \
+    pcre2-dev \
     zlib-dev \
     zlib-static \
     pkgconf \
