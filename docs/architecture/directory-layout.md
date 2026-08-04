@@ -6,7 +6,7 @@
 
 | File | Purpose |
 |------|---------|
-| `commands.c` | 95 slash command handlers + dispatch table |
+| `port_cli_command_registry.c` | 82 slash command handlers + dispatch table |
 | `config.c` | YAML config load/save/diff/merge |
 | `display.c` | Terminal output formatting |
 | `display_core.c` | Core display routines |

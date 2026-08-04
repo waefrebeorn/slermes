@@ -1,6 +1,6 @@
 # CLI Commands — Reference
 
-Slermes has **95 slash commands**, all implemented as real C11 handlers in `src/cli/commands.c`. Zero stubs.
+Slermes has **82 slash commands**, all implemented as real C11 handlers in `src/cli/port_cli_command_registry.c`. Zero stubs.
 
 ## Quick Reference Table
 

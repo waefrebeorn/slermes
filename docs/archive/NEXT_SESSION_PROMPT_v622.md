@@ -22,7 +22,7 @@ BANNER/STATE/parity-summary, and (c) push. v622's recovery step:
   kanban_diagnostics, moa_config, azure_detect, fallback_cmd, session_recap,
   middleware, lazy_deps, curses_ui, security_audit, doctor) — net 75 RG closed.
 - Live parity (this session): **PORTED 11,537 / REAL_GAP 1 / PARTIAL 0**
-  (total 11,744). Build: clean. mission8: 77/0/0 (color-support test fixed
+  (total ). Build: clean. mission8: 77/0/0 (color-support test fixed
   to soft-pass on TERM=dumb/unset, matching real color-gating behavior).
 - Oracle harness restored: registry.json now wires all 89 runnable ports
   (had regressed to 2). Runner include-path fixed so libjson/json.h etc.
