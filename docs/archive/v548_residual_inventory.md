@@ -12,7 +12,6 @@ FACADE_FRAUD / NORET_DORMANT / THIN_REVIEW must be HUMAN-CONFIRMED before any
 
 .c file is touched. No .c file has been modified by this pass.
 
-
 ## Totals
 
 | Verdict | Count | Action |
@@ -39,7 +38,6 @@ FACADE_FRAUD / NORET_DORMANT / THIN_REVIEW must be HUMAN-CONFIRMED before any
   tree (google_oauth.py, gateway/platforms/sms.py, wecom_callback.py,
 
   mixture_of_agents_tool.py, ...) — those ports reference non-existent sources.
-
 
 ## FACADE_FRAUD (demote to REAL_GAP) (109)
 

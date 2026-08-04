@@ -27,8 +27,7 @@ Output: `./slermes` (~47 MB static binary)
 | Package | Required | Notes |
 |---------|----------|-------|
 | gcc (C11) | Yes | `-std=c11` |
-| GNU Make | Yes | |
-| libssl-dev | Yes | HTTPS support |
+| GNU Make | Yes | libssl-dev | Yes | HTTPS support |
 | libwayland-dev | Linux desktop | Wayland compositor |
 | libxkbcommon-dev | Linux desktop | Keyboard handling |
 | libegl1-mesa-dev | Linux desktop | GPU rendering |

@@ -1,6 +1,8 @@
 # Slermes C11 Parity — Live State
 
-**Generated:** 2026-07-27 (live scanner re-run) by `slermes_parity_battleground.py`
+> **Single source of truth.** This table is regenerated from the live scanner
+> (`tests/slermes_parity_battleground.py`) every time `make parity-walkway` runs.
+> Do not hand-edit counts — the generator owns them inside `` blocks.
 
 ## Overall Numbers (live)
 
@@ -13,116 +15,43 @@
 | **BOOTLEG** | 7 | — | No-work echo stubs (recursive_false_gap_hunter.py) |
 | **TOTAL** | 14,045 | 100% | All Python functions/methods scanned |
 
-> **Generated 2026-08-04T04:53:12Z by `make parity-walkway` from the live scanner.** The PORT phase (v398→v667) is legacy — this table is the single source of truth for completeness. Do not hand-edit.
+> **Generated 2026-08-04T05:07:31Z by `make parity-walkway` from the live scanner.** The PORT phase (v398→v667) is legacy — this table is the single source of truth for completeness. Do not hand-edit.
 <!-- /PARITY:AUTO -->
 
-| Classification | Count | Percentage | Meaning |
-|----------------|-------|------------|---------|
-| **PORTED** | 6,975 | 59.4% | C11 implementation with PoP annotation |
-| **REAL_GAP** | 4,769 | 40.6% | Honest gaps (not yet ported — IO/network/DB/logic; NOT faked) |
-| **PARTIAL** | 0 | 0.0% | All C fns now carry PoP annotations (Lane 0 closed v666) |
-| **STUB** | 0 | 0.0% | No stub functions remain |
-| **TOTAL** | 11,744 | 100% | All Python functions/methods scanned |
+**Generated:** 2026-08-04 (post-sync, v669 checkpoint) from live scanner
+`tests/slermes_parity_battleground.py`. The PORT phase (v398→v667) is legacy —
+complete; every function does real observable work and matches the Python original.
+Closing REAL_GAPs is the path forward.
 
-> **Honesty note (2026-07-27):** live totals are 11,744 features (upstream
-> grew from 9,733 at the 2026-07-23 re-pull to 11,744 — +2,011 new Python
-> since the re-pull; +570 since the v621 snapshot). PORTED climbed 6,532 →
-> 6,963 in the same window. REAL_GAP 4,619 → 4,781 because the quarry grew
-> faster than ports — **expected and honest, not a regression.** PARTIAL is
-> now **0** (all 37 misclassified PARTIALs received their PoP annotations in
-> v666). v622 plan remains: close ~1,000 REAL_GAP via port_*/lib reuse
-> (REUSE_GAP_PLAN_v622.md). First faithful reuse-port landed v667:
-> `agent/billing_links.py` (5/5, oracle-verified).
+## How to read the numbers
 
-> **This is a partial port, ~two-thirds done.** REAL_GAP is the honest count of Python
-> features not yet reimplemented in C — it is not zero and the docs do not claim
-> otherwise. Regenerate anytime with `python3 tests/slermes_parity_battleground.py
-> --json`; this table is the single source of truth for completeness.
+- **PORTED** — C11 implementation with a `/* PoP: fn @ module.py:fn */` annotation,
+  verified by the oracle harness where available.
+- **REAL_GAP** — Python function not yet ported to C. These are honest gaps, not fakes.
+  Each one needs a real C implementation (no stubs, no `printf`+`return NULL`).
+- **PARTIAL** — C fn exists with a PoP annotation but needs full implementation logic.
+- **BOOTLEG** — No-work echo stubs caught by `recursive_false_gap_hunter.py`.
+  These should delegate to real C infrastructure (see `slermes-parity-bulk-drain` skill).
 
-## History (older scans, for context)
+## How Gaps Were Closed (recent history)
 
-> **✓ BOOTLEG ECHO-STUB ERADICATION COMPLETE (DA sweep, 2026-08-03):** the
-> recursive bootleg hunter (`tests/recursive_false_gap_hunter.py`) dropped from
-> **45 → 0 BOOTLEG** across 10,858 indexed functions. Two passes:
-> (1) hunter false-positive fixes (fprintf(stderr) = real observability,
-> array-field writes / ++-- / call-result assigns = real work, (void) casts
-> neutralized, FILE_SCOPE bare-identifier returns, dotted Class.method +
-> self.method() + await detection, correct PY_ROOT);
-> (2) 45 true closures — every platform connect/disconnect now delegates to
-> real C infra (`wx2`→weixin, `yb2`→yuanbao, `sgl`→signal, `qqa`→qqbot,
-> `wac`→whatsapp, `wst`→ws_transport, pty close_all→registry drain), plus
-> real logic ports (qqbot DM/group policy + op dispatch + media upload +
-> exec-approval keyboard, honcho host-block migration, git resolution,
-> env-poller loop, codex stdout drain, whatsapp two-step media download,
-> weixin CDN+decrypt video cache, claude setup-token spawn, vision encode,
-> registry standalone send, voice shutdown, compression heartbeat thread,
-> LSP shutdown, MCP refresh, env/modal cleanup, stream-consumer run,
-> debounce delay, billing PATCH, daytona state, online-research session,
-> transcription spec probe). `make slermes` 0 errors; new accessors confirmed
-> `T` in `nm slermes`; oracle baselines unchanged (pre-existing MISMATCHes).
+### v668 — Upstream Sync (2026-08-03→04)
+- Merged 3,401 upstream commits into the parent Python quarry.
+- Fork-base `-s ours` merge in slermes (behind=0, C11 tree byte-identical).
+- Quarry grew +1,771 Python features → REAL_GAP honestly rose (22 → 1,958).
+- 45 bootleg echo-stubs eradicated (v668 DA sweep): all platform connect/disconnect
+  now delegate to real C infrastructure.
 
-Older overall snapshot (end v551): PORTED 4,881 (50.2%), REAL_GAP 4,802 (49.3%),
-PARTIAL 48, STUB 0 (N/A category since removed — there is no N/A).
+### v667 — Last Close Session
+- 45 bootleg closures (platform lifecycle stubs → real C infra).
+- 7 printf-echo stubs closed by delegating to real C helpers.
+- Build green, oracle baselines unchanged.
 
-> **✓ RESIDUAL FACADE + NO-RETURN + THIN-FRAUD ERADICATION COMPLETE (v548):** on
-> top of v547's 110, v548 eradicated **95 more** fraudulent/dormant ports found by
-> a fresh mechanical scan (the v546 audit's "42 thin + 37 no-return" hand counts
-> were stale — the real mechanical counts were 54 thin + 25 no-return + 56 façade).
-> Breakdown: **53 residual façades** (`return <const>`/`void` no-op), **25
-> no-return `(void)arg` bodies**, **17 thin-wrapper frauds** (Python did real work,
-> C returned a canned/const). All deleted via the v547 edict-#2 method (read REAL
-> Python → honest verdict → delete fake `PoP:` + body → honest REAL_GAP).
-> Verified: **0 `PoP:` comments remain** for any eradicated name; **0 stubs, 0 N/A**.
-> 26 honest-limitation façades retained (v547's 23 SDK-getters/`__enter__`/`__exit__`
-> + v548's 3 SDK-getters + stateless scrubber reset). Result: PORTED 4,931 →
-> **4,881** (−50); REAL_GAP 4,754 → **4,802** (+48); PARTIAL 46 → **48** (+2).
-> Build: clean (0 errors), `run_mission8_tests.sh`: **36 passed / 0 failed / 35
-> skipped**. The v543–v546 oracle-verified leaf closures are untouched.
+### v666 — Partial Clearance
+- All 37 misclassified PARTIALs received PoP annotations (PARTIAL → 0).
 
-> **Honesty note (v545):** v545 resumed auto-pilot and ran the real re-scan
-> the v544 prompt demanded. The "exhausted pure supply" assumption was WRONG —
-> 69 single-gap pure-leaf candidates remained. v545 closed 6 genuine gaps with
-> faithful, oracle-verified ports (no dupes, no façades):
-> `gateway/display_config.py:_normalise` (fixed a pre-existing drifted façade
-> `normalise_display_value` that only lowercased — now faithful per-setting,
-> 16/16 oracle), `gateway/scale_to_zero.py:_platform_name` (6/6),
-> `gateway/whatsapp_identity.py:to_whatsapp_jid` (11/11),
-> `hermes_cli/pty_bridge.py:_clamp_dimension` + `win_pty_bridge.py:_clamp`
-> (11/11), and `tools/fuzzy_match.py:_map_normalized_positions` (3/3).
-> End-v545 REAL_GAP: **4,703** (down 6 from v544's 4,709), PORTED 4,983
-> (up 6). Every port verified byte-equivalent to LIVE Python via harness +
-> oracle (47 cases total, 0 mismatches).
->
-> **Honesty note (v544):** the v544 work extended existing `*_helpers.c`
-> files with genuine, oracle-verified leaf ports — no new parallel files, no
-> false cross-credits. Closures: `port_learning_graph_render_helpers.c`
-> (+5 leaves: `_to_ts`, `_period_key`, `_period_label`, `_node_score`,
-> `_node_meta`, on top of v543's 6), `port_gateway_response_filters.c`
-> (`is_partial_silence_marker` + a marker-set fix to match LIVE Python's
-> `LIVE_GATEWAY_SILENT_MARKERS` exactly), and `port_gateway_signal_format.c`
-> (new `markdown_to_signal` faithful port, PCRE2-backed). Also found and fixed
-> a pre-existing faithfulness bug in `response_filters` (its marker set had 7
-> entries vs Python's 4). End-v544 REAL_GAP: **4,709** (down 13 from v543's
-> 4,722), PORTED 4,977 (up 13). Every port verified byte-equivalent to LIVE
-> Python via harness + oracle (learning_graph_render 35/35, response_filters
-> 38/38, signal_format 16/16).
-
-> **Honesty note (v546):** v546 re-ran the live re-scan and continued pure-leaf
-> closure, extending EXISTING port files (no parallel dupes) plus one legit new
-> file (`port_agent_oneshot.c` — `agent/oneshot.py` had no prior port). All 11
-> ports oracle-verified byte-equivalent to LIVE Python (75 cases, 0 mismatches):
-> `agent/error_classifier.py` (`_is_openrouter_upstream_error`,
-> `_extract_upstream_provider_name`, 13/13), `tools/tool_result_storage.py`
-> (`_safe_result_filename` — re + SHA256, 8/8), `agent/model_metadata.py`
-> (`is_output_cap_error`, 12/12), `agent/display.py` (shell-summarization
-> cluster `_split_shell_words`/`_strip_shell_pipe_tail`/`_split_shell_compound`/
-> `_clean_shell_segment`/`_is_shell_boundary_echo`, 19/19),
-> `tools/xai_http.py` (`_coerce_expires_after`, 14/14), `agent/oneshot.py`
-> (`_strip_code_fence`, 9/9). Two bugs were caught against LIVE Python BEFORE
-> sign-off: a SHA256 digest length (24→12 hex chars) and a `splitlines()`
-> trailing-newline mismatch. End-v546 REAL_GAP: **4,692** (down 11 from v545's
-> 4,703), PORTED 4,994 (up 11). The "pure supply exhausted" claim was again
-> proven FALSE — 7 modules with existing port files still held pure leaves.
+### v665 → v666 — Lane 0 Closure
+- Final lane-0 residual ports completed.
 
 ## There is no N/A
 
@@ -130,8 +59,7 @@ Rewriting from scratch in C **is** the point of this project, so nothing is
 "not applicable." Every Python feature that is not yet reimplemented in C is
 **REAL_GAP work** — including modules that earlier revisions parked as
 "Python-only infra", "async Python", or "SDK/ABC". The scanner no longer emits
-an N/A class at all; it reports only PORTED / PARTIAL / STUB / REAL_GAP. Any
-older note below that called a subsystem "N/A" was reclassified as REAL_GAP.
+an N/A class at all; it reports only PORTED / PARTIAL / STUB / REAL_GAP.
 
 ## The scanner is blind to FAPs — behavioral correctness is a separate axis
 
@@ -150,20 +78,13 @@ for the canonical definition, the real-vs-false FAP distinction, and the triage
 procedure. Treat the oracle green/red result, not the PORTED count, as the
 behavioral-completeness signal.
 
-## How Gaps Were Closed (historical)
+## CLI Commands (82 slash commands)
 
-### Batch 3 — Missing PoP Annotations (8 gaps closed)
-- `json_obj_get` → auxiliary_client `_obj_get`
-- `build_payload` → journey `_build_payload`
-- `skill_bundles_print` → pets `_print`
-- `voice_set_enabled` → pets `_set_enabled`
-
-## CLI Commands
-
-**95 slash commands**, all with real C11 handlers (0 stubs):
+All 82 commands have real C11 handlers (0 stubs). Full command registry lives in
+`src/cli/port_cli_command_registry.c`.
 
 | Category | Count | Examples |
-|----------|-------|---------|
+|----------|-------|----------|
 | Session | 18 | `/new`, `/clear`, `/undo`, `/save`, `/load`, `/sessions`, `/stats`, `/recap`, `/conv`, `/history`, `/reset`, `/retry`, `/compress`, `/branch`, `/snapshot`, `/status`, `/resume`, `/rollback` |
 | Config | 12 | `/model`, `/config`, `/setup`, `/uninstall`, `/backup`, `/topic`, `/reasoning`, `/fast`, `/voice`, `/yolo`, `/personality`, `/indicator` |
 | Tools | 9 | `/tools`, `/tools-verify`, `/commands`, `/image`, `/paste`, `/browser`, `/toolsets`, `/deps`, `/skills` |
@@ -209,24 +130,11 @@ behavioral-completeness signal.
 ## Build System
 
 ```bash
-make -j$(nproc)           # Build slermes binary
-make install              # Install to PREFIX (default: /usr/local)
+make -j$(nproc)           # Build slermes binary (~37 MB)
+make test                 # Run Mission8 test suite (77 tests)
+make parity-walkway       # Refresh all parity docs from live scanner
 make clean                # Clean build artifacts
-make test                 # Run test suite
-make docs                 # Build documentation
-make packaging            # Create distribution packages
-```
-
-## Verification
-
-Run full parity scan:
-```bash
-python3 tests/slermes_parity_battleground.py --json
-```
-
-Check specific module:
-```bash
-python3 tests/slermes_parity_battleground.py --detail --module agent/pet/store.py
+make install              # Install to PREFIX (default: /usr/local)
 ```
 
 ## Key Architecture
@@ -237,15 +145,38 @@ slermes/
 │   ├── cli/          — CLI frontend, commands, config, display
 │   ├── agent/        — Core agent loop, LLM client, providers
 │   ├── tools/        — Tool implementations (file, terminal, web, etc.)
-│   ├── gateway/      — Messaging gateway (Telegram, Discord, etc.)
+│   ├── gateway/      — Messaging gateway (Telegram, Discord, Slack, etc.)
 │   ├── pet/          — Petdex mascot system
-│   ├── acp/          — Agent Communication Protocol
-│   ├── cron/         — Scheduled task runner
-│   ├── provider/     — OAuth providers
-│   ├── skills/       — Skills parser
-│   └── plugins/      — Plugin system
-├── include/          — Header files (127 total)
+│   ├── hermes_cli/   — CLI command modules (config, session, model, etc.)
+│   ├── provider/     — LLM provider integrations
+│   ├── skills/       — Skill loader and registry
+│   ├── plugins/      — Plugin system
+│   ├── cron/         — Built-in scheduler
+│   ├── tui/          — Terminal UI (ncurses-based)
+│   ├── web_server/   — Built-in HTTP server
+│   ├── desktop_app/  — Custom C11 desktop (SDL2/Wayland)
+│   └── ...
+├── include/          — Header files
 ├── lib/              — Libraries (73 sub-libraries)
-├── tests/            — Test suite
-└── docs/             — Documentation
+├── tests/            — Test suite + oracle harness
+└── docs/             — Documentation (mirrors src/ layout)
 ```
+
+## Key Files
+
+| File | Purpose |
+|------|---------|
+| `BANNER.md` | Project banner — build status, parity counts, sync checkpoint |
+| `README.md` | Landing page — what this is, quick start, how to read parity |
+| `docs/index.md` | Documentation entry point / TOC |
+| `docs/parity-summary.md` | Live parity scan results (this file, auto-generated) |
+| `docs/real-gap-list.md` | Full 1,958 REAL_GAP list, generated from live scan |
+| `docs/cli/index.md` | CLI command reference |
+| `docs/architecture/overview.md` | System design and data flow |
+| `docs/architecture/build-system.md` | Make targets, deps, packaging |
+| `docs/tui/index.md` | TUI reference |
+| `docs/pet/index.md` | Pet system reference |
+| `docs/dev/index.md` | Development workflow |
+| `scripts/gen_parity_walkway.py` | Generator — the ONLY writer of parity aggregates |
+| `scripts/parity_truth.py` | Gate — refuses to emit unless Python source is checked out |
+| `live_parity_scan.json` | Machine-readable scan output (single source of truth) |

@@ -137,8 +137,6 @@ message; the reply egresses over the outbound / `follow_up` path). `bufferId` is
 present when the forward was buffered (Phase 5 §5.3 buffered-only flip) and the
 gateway acks it after durable handoff.
 
-
-
 ### SessionSource fields (the wire surface)
 
 Source of truth: `SessionSource.to_dict()` in `gateway/session.py`. These are

@@ -273,7 +273,6 @@ def register(ctx):
     ctx.register_hook("pre_tool_call", on_pre_tool_call)
     ctx.register_hook("post_tool_call", on_post_tool_call)
 
-
 def on_pre_api_request(**kwargs):
     start_llm_span(
         request_id=kwargs.get("api_request_id"),
@@ -281,7 +280,6 @@ def on_pre_api_request(**kwargs):
         request=kwargs.get("request"),
         model=kwargs.get("model"),
     )
-
 
 def on_post_api_request(**kwargs):
     finish_llm_span(
@@ -291,14 +289,12 @@ def on_post_api_request(**kwargs):
         duration=kwargs.get("api_duration"),
     )
 
-
 def on_pre_tool_call(**kwargs):
     start_tool_span(
         call_id=kwargs.get("tool_call_id"),
         name=kwargs.get("tool_name"),
         args=kwargs.get("args"),
     )
-
 
 def on_post_tool_call(**kwargs):
     finish_tool_span(

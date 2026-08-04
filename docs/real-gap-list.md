@@ -10,7 +10,6 @@
 
 > (see slermes-gap-closure skill). Never hand-edit; regenerate via the scanner.
 
-
 ## Top modules by REAL_GAP
 
 | REAL_GAP | Total | PORTED | PARTIAL | Python module |

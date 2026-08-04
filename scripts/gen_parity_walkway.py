@@ -12,6 +12,9 @@ piece of derived state:
   - upstream sync checkpoint              <- git rev-list (ahead/behind/last merge)
   - version headers + phase labels        <- scripts/version.txt (single source)
   - BANNER / ROADMAP / parity-summary     <- sentinel-owned derived paragraphs
+  - README header + sync checkpoint       <- programmatic
+  - docs/index TOC + status table         <- programmatic
+  - stale-claim purge across ALL docs     <- programmatic
 
 Nothing is hand-copied. Run `make parity-walkway` after every scanner run —
 it refreshes every owned section in every file. Hand-edited numbers are
@@ -24,6 +27,10 @@ Sentinel convention: every owned section is wrapped in
 get a block appended (so future runs regenerate it). Version headers in
 walkway titles are fixed by regex on the first line (`vNNN` -> current, phase
 label normalized) — no per-file hand-tuning.
+
+Stale-claim purge: every run strips hand-transcribed counts, version refs,
+completion percentages, and N/A claims from all docs outside sentinels,
+so re-runs converge (idempotent).
 """
 import json
 import os
@@ -58,8 +65,6 @@ WALKWAY_FILES = [
     os.path.expanduser("~/.hermes/mind-palace/plan.md"),
     os.path.expanduser("~/.hermes/mind-palace/overnight.md"),
     os.path.expanduser("~/.hermes/mind-palace/INDEX.md"),
-    os.path.expanduser("~/.hermes/mind-palace/battleship.md"),
-    os.path.expanduser("~/.hermes/mind-palace/goal-mantra.md"),
 ] + sorted(
     os.path.expanduser(os.path.join("~/.hermes/walkway", f))
     for f in os.listdir(os.path.expanduser("~/.hermes/walkway"))
@@ -71,6 +76,37 @@ DOC_FILES = [
     os.path.join(REPO, "BANNER.md"),
     os.path.join(REPO, "ROADMAP.md"),
     os.path.join(REPO, "docs", "parity-summary.md"),
+    os.path.join(REPO, "README.md"),
+]
+
+# Root docs with derived TOC / index blocks (programmatic).
+INDEX_FILES = [
+    os.path.join(REPO, "docs", "index.md"),
+]
+
+# Stale-claim patterns to purge from all docs (outside sentinels).
+STALE_PATTERNS = [
+    # Old version claims that drift as versions advance
+    (r"\*\*v\d+\*\*.*?(?:phase|port|PARITY|MATCH|COMPLETE|PORT phase)",
+     "stale version/phase claim"),
+    # Old total counts that drift as upstream grows
+    (r"\|\s*TOTAL\s*\|\s*\d{4,5}\s*\|",
+     "stale TOTAL count row"),
+    # Old "X/Y (Z%) PORTED" inline counts
+    (r"\d{1,3}(?:,\d{3})*\s*/\s*\d{1,3}(?:,\d{3})*\s*\(\s*\d{1,3}\.\d+%\s*\)\s*(?:PORTED|ported|port)",
+     "stale inline PORTED ratio"),
+    # "99.8%" completion claim (the classic barnacle)
+    (r"99\.8%",
+     "stale 99.8% completion claim"),
+    # "100%" module coverage claim (module-map era)
+    (r"100%\s*(?:module|coverage|complete)",
+     "stale 100% coverage claim"),
+    # Old function counts from older scans
+    (r"\b(?:8,688|12,274|11,744|12,252|4,881|4,802|4,781|4,769|4,703|4,709|4,692|4,754|4,702)\b",
+     "stale function count from older scan"),
+    # Old "N/A by design" / "N/A category" references
+    (r"\bN/A\b.*(?:by design|category|not applicable)",
+     "stale N/A claim"),
 ]
 
 
@@ -188,7 +224,7 @@ def count_block(d):
         f"\n"
         f"**Upstream sync checkpoint:** {ahead:,} ahead / {behind:,} behind "
         f"upstream/main (last merge {d['last_merge']}). "
-        f"{'The repo is up to date with upstream.' if behind == 0 else 'The behind-count is the staleness timer — run the stash→pull→fix→pop workflow, then re-port the delta.'}\n"
+        f"{'The repo is up to date with upstream.' if behind == 0 else 'The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.'}\n"
         f"\n"
         f"_Generated {d['stamp']} from live scanner "
         f"`{os.path.relpath(SCANNER, REPO)}` — "
@@ -204,7 +240,7 @@ def banner_block(d):
         phase_txt = (
             f"**{d['version']} MATCH phase:** the C11 binary is the deliverable — "
             f"faithful, oracle-verified, usable standalone across operating "
-            f"systems. The PORT phase (99.8% ported, 0 bootlegs) is legacy; the "
+            f"systems. The PORT phase (v398→v667) is legacy; the "
             f"remaining work is behavioral fidelity — every function does real "
             f"observable work and matches the Python original. The AGI-OS "
             f"integration consumes the compiled binary, not the Python tree. "
@@ -345,6 +381,84 @@ def strip_plain(txt):
     return txt
 
 
+def purge_stale_claims(path):
+    """Remove stale derived claims from a doc file (outside sentinels).
+
+    These are the barnacles that caused the 8,688/8,688 100% fiction:
+    hand-transcribed counts that drifted as upstream grew. The purge
+    runs on every `make parity-walkway` pass so re-runs converge
+    (idempotent). Returns True if the file changed.
+    """
+    if not os.path.exists(path):
+        return False
+    txt = open(path, encoding="utf-8").read()
+    orig = txt
+
+    # Split into sentinel regions (kept verbatim) and plain regions (purged).
+    parts = txt.split(SENT_OPEN)
+    out = [purge_plain(parts[0])]  # region before any sentinel — purge too
+    for i, seg in enumerate(parts[1:]):
+        if SENT_CLOSE in seg:
+            head, tail = seg.split(SENT_CLOSE, 1)
+            out.append(SENT_OPEN + head + SENT_CLOSE)  # sentinel verbatim
+            out.append(purge_plain(tail))
+        else:
+            out.append(purge_plain(seg))
+    txt = "".join(out)
+
+    # Collapse 3+ blank lines left by the purges.
+    txt = re.sub(r"\n{3,}", "\n\n", txt)
+    if txt != orig:
+        open(path, "w", encoding="utf-8").write(txt)
+        return True
+    return False
+
+
+def purge_plain(txt):
+    """Strip stale derived claims from a non-sentinel region."""
+    for pattern, _label in STALE_PATTERNS:
+        txt = re.sub(pattern, "", txt, flags=re.MULTILINE)
+    # Clean up orphaned table rows left by TOTAL purge (e.g. a row
+    # like "| OLD_TOTAL | 11,744 | 100% | All functions scanned |"
+    # becomes "|  |  |  |" — collapse it).
+    txt = re.sub(r"\|\s*\|[\s|]*\n", "", txt)
+    return txt
+
+
+def readme_header_block(d):
+    """README.md derived header (version + phase + sync checkpoint)."""
+    ahead = d['ahead'] if d['ahead'] >= 0 else "?"
+    behind = d['behind'] if d['behind'] >= 0 else "?"
+    return (
+        f"**Version:** {d['version']} ({d['phase']} phase)  \n"
+        f"**Last updated:** {d['stamp'][:10]}\n\n"
+        f"> Live counts from `make parity-walkway` (sentinel PARITY:AUTO). "
+        f"Do not hand-edit — regenerated from the live scanner on every run.\n\n"
+        f"**Upstream sync checkpoint:** {ahead:,} ahead / {behind:,} behind "
+        f"upstream/main (last merge {d['last_merge']}). "
+        f"{'The repo is up to date with upstream.' if behind == 0 else 'The behind-count is the staleness timer.'}\n"
+    )
+
+
+def index_toc_block(d):
+    """docs/index.md derived TOC (mirrors src/ layout, counts from scanner)."""
+    b = d['bootleg'] if d['bootleg'] is not None else "?"
+    return (
+        f"## Project Status\n\n"
+        f"| Metric | Value |\n"
+        f"|--------|-------|\n"
+        f"| **Version** | {d['version']} ({d['phase']} phase) |\n"
+        f"| **PORTED** | {d['ported']:,} ({d['pct']:.1f}% of {d['total']:,}) |\n"
+        f"| **REAL_GAP** | {d['real']:,} ({100.0 * d['real'] / d['total']:.1f}%) |\n"
+        f"| **PARTIAL** | {d['partial']:,} |\n"
+        f"| **BOOTLEG** | {b} |\n"
+        f"| **Upstream Sync** | {d['ahead']:,} ahead / {d['behind']:,} behind |\n"
+        f"\n"
+        f"> Live counts: `make parity-walkway` (sentinel PARITY:AUTO). "
+        f"Do not hand-edit — regenerated from the live scanner on every run."
+    )
+
+
 def inject(path, inner, insert_after=None):
     """Replace the sentinel block content, or append one."""
     if not os.path.exists(path):
@@ -370,8 +484,8 @@ def inject(path, inner, insert_after=None):
 def fix_title_version(path, d):
     """Fix the vNNN + phase label in the first line of walkway files.
 
-    Agnostic regex: first line of the form `# ... (vNNN, X phase)` or
-    `# ... vNNN ...` gets the current version and phase label. Only touches
+    Agnostic regex: first line of the form `# Title (vNNN, X phase)` or
+    `# Title vNNN ...` gets the current version and phase label. Only touches
     the FIRST line (the title), never historical references in the body.
     """
     if not os.path.exists(path):
@@ -428,6 +542,17 @@ def index_state_block(d):
     )
 
 
+def strip_stale_claims(path):
+    """Remove stale derived claims from a doc file (outside sentinels).
+
+    These are the barnacles that caused the 8,688/8,688 100% fiction:
+    hand-transcribed counts that drifted as upstream grew. The purge
+    runs on every `make parity-walkway` pass so re-runs converge
+    (idempotent). Returns True if the file changed.
+    """
+    return purge_stale_claims(path)
+
+
 def main():
     bump = "--bump" in sys.argv
     if bump:
@@ -440,12 +565,13 @@ def main():
         ok2 = fix_title_version(f, d)
         print(f"{'OK  ' if ok or ok2 else 'MISS'} {f}")
 
-    # Root docs: BANNER phase/sync, ROADMAP header, parity-summary table.
+    # Root docs: BANNER phase/sync, ROADMAP header, parity-summary table, README header.
     # strip_stale_owned runs first so stale hand-era paragraphs outside the
     # sentinel are removed and re-runs converge (idempotent).
     for doc in [os.path.join(REPO, "BANNER.md"),
                 os.path.join(REPO, "ROADMAP.md"),
-                os.path.join(REPO, "docs", "parity-summary.md")]:
+                os.path.join(REPO, "docs", "parity-summary.md"),
+                os.path.join(REPO, "README.md")]:
         strip_stale_owned(doc)
     ok = inject(os.path.join(REPO, "BANNER.md"), banner_block(d),
                 insert_after="## Core Principle")
@@ -457,34 +583,76 @@ def main():
                 parity_summary_block(d),
                 insert_after="## Overall Numbers (live)")
     print(f"{'OK  ' if ok else 'MISS'} docs/parity-summary.md")
+    # README.md: version/phase header + sync checkpoint (programmatic).
+    readme_path = os.path.join(REPO, "README.md")
+    strip_stale_claims(readme_path)
+    # Remove any existing "**Version:**" or "**Last updated:**" header block
+    # in README before injecting the fresh one (idempotent re-run).
+    if os.path.exists(readme_path):
+        rtxt = open(readme_path, encoding="utf-8").read()
+        rtxt = re.sub(
+            r"(## What this is\n\n)(?:\|.*?\|\n)+.*?(?=\n## )",
+            r"\1", rtxt, count=1, flags=re.DOTALL)
+        open(readme_path, "w", encoding="utf-8").write(rtxt)
+    ok = inject(readme_path, readme_header_block(d),
+                insert_after="## What this is")
+    print(f"{'OK  ' if ok else 'MISS'} README.md (header)")
+    # docs/index.md: programmatic TOC + status table (mirrors src/ layout).
+    idx_path = os.path.join(REPO, "docs", "index.md")
+    strip_stale_claims(idx_path)
+    if os.path.exists(idx_path):
+        itxt = open(idx_path, encoding="utf-8").read()
+        if "## Project Status" in itxt:
+            itxt = re.sub(
+                r"## Project Status\n\n.*?(?=\n## )",
+                "## Project Status\n\n" + index_toc_block(d) + "\n",
+                itxt, count=1, flags=re.DOTALL)
+        else:
+            itxt = itxt.rstrip() + "\n\n" + index_toc_block(d) + "\n"
+        open(idx_path, "w", encoding="utf-8").write(itxt)
+        print(f"OK   {idx_path} (TOC + status)")
+    # Purge stale claims across ALL docs (outside sentinels).
+    all_docs = []
+    for root, _dirs, files in os.walk(os.path.join(REPO, "docs")):
+        for fn in files:
+            if fn.endswith(".md"):
+                all_docs.append(os.path.join(root, fn))
+    all_docs.append(os.path.join(REPO, "README.md"))
+    all_docs.append(os.path.join(REPO, "BANNER.md"))
+    all_docs.append(os.path.join(REPO, "ROADMAP.md"))
+    purged = 0
+    for doc in all_docs:
+        if purge_stale_claims(doc):
+            purged += 1
+    if purged:
+        print(f"PURGE {purged} docs (stale claims removed)")
     # User-level INDEX.md battleship line.
-    idx = os.path.expanduser("~/.hermes/mind-palace/INDEX.md")
-    if os.path.exists(idx):
-        txt = open(idx, encoding="utf-8").read()
-        txt2 = re.sub(r"^- \*\*battleship\.md\*\*.*$",
-                      index_line(d), txt, count=1, flags=re.M)
-        if txt2 != txt:
-            open(idx, "w", encoding="utf-8").write(txt2)
-            print(f"OK   {idx}")
+    idx_user = os.path.expanduser("~/.hermes/mind-palace/INDEX.md")
+    if os.path.exists(idx_user):
+        utxt = open(idx_user, encoding="utf-8").read()
+        utxt2 = re.sub(r"^- \*\*battleship\.md\*\*.*$",
+                        index_line(d), utxt, count=1, flags=re.M)
+        if utxt2 != utxt:
+            open(idx_user, "w", encoding="utf-8").write(utxt2)
+            print(f"OK   {idx_user}")
 
     # Battleship index (project-level): replace the hand-curated
     # "## Current State" table with the generated one.
     bindex = os.path.join(REPO, ".hermes", "mind-palace", "index.md")
     if os.path.exists(bindex):
-        txt = open(bindex, encoding="utf-8").read()
-        m = re.search(r"## Current State\n(.*?)\n---", txt, re.S)
+        btxt = open(bindex, encoding="utf-8").read()
+        m = re.search(r"## Current State\n(.*?)\n---", btxt, re.S)
         if m:
-            txt2 = (txt[:m.start(1)] + index_state_block(d) + "\n" +
-                    txt[m.end(1):])
-            if txt2 != txt:
-                open(bindex, "w", encoding="utf-8").write(txt2)
+            btxt2 = (btxt[:m.start(1)] + index_state_block(d) + "\n" +
+                     btxt[m.end(1):])
+            if btxt2 != btxt:
+                open(bindex, "w", encoding="utf-8").write(btxt2)
                 print(f"OK   {bindex} (current-state table)")
     print(
         f"Live: PORTED {d['ported']:,} REAL_GAP {d['real']:,} "
         f"PARTIAL {d['partial']:,} BOOTLEG {d['bootleg']} "
         f"(total {d['total']:,}) · sync {d['ahead']}/{d['behind']} · "
-        f"{d['version']} {d['phase']} phase"
-    )
+        f"{d['version']} {d['phase']} phase")
 
 
 if __name__ == "__main__":

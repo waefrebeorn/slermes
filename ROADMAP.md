@@ -6,7 +6,7 @@
 
 > **v669 PORT phase:** live scanner 2026-08-04: 12,085 / 14,045 (86.0%) PORTED · 1,958 REAL_GAP · 2 PARTIAL. The C11 binary is the deliverable.
 >
-> **Upstream sync checkpoint:** 1,208 ahead / 0 behind upstream/main (last merge 2026-08-04 (upstream fetched)). The repo is up to date with upstream.
+> **Upstream sync checkpoint:** 1,209 ahead / 0 behind upstream/main (last merge 2026-08-04 (upstream fetched)). The repo is up to date with upstream.
 <!-- /PARITY:AUTO -->
 
 > "Mission 1-8 complete" doesn't mean done — it means the foundation is laid.  

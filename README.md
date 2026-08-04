@@ -6,15 +6,15 @@ We took Hermes Agent — Nous Research's Python/Electron AI agent — and **SLER
 
 ## What this is
 
-<table>
-<tr><td><b>A real terminal interface</b></td><td>Full TUI with multiline editing, slash-command autocomplete, conversation history, interrupt-and-redirect, and streaming tool output.</td></tr>
-<tr><td><b>Lives where you do</b></td><td>Telegram, Discord, Slack, WhatsApp, Signal, and CLI — all from a single gateway process. Voice memo transcription, cross-platform conversation continuity.</td></tr>
-<tr><td><b>A closed learning loop</b></td><td>Agent-curated memory with periodic nudges. Autonomous skill creation after complex tasks. Skills self-improve during use. FTS5 session search with LLM summarization for cross-session recall. <a href="https://github.com/plastic-labs/honcho">Honcho</a> dialectic user modeling. Compatible with the <a href="https://agentskills.io">agentskills.io</a> open standard.</td></tr>
-<tr><td><b>Scheduled automations</b></td><td>Built-in cron scheduler with delivery to any platform. Daily reports, nightly backups, weekly audits — all in natural language, running unattended.</td></tr>
-<tr><td><b>Delegates and parallelizes</b></td><td>Spawn isolated subagents for parallel workstreams. Write Python scripts that call tools via RPC, collapsing multi-step pipelines into zero-context-cost turns.</td></tr>
-<tr><td><b>Runs anywhere, not just your laptop</b></td><td>Seven terminal backends — local, Docker, SSH, Singularity, Modal, Daytona, and Vercel Sandbox. Daytona and Modal offer serverless persistence — your agent's environment hibernates when idle and wakes on demand, costing nearly nothing between sessions. Run it on a $5 VPS or a GPU cluster.</td></tr>
-<tr><td><b>Research-ready</b></td><td>Batch trajectory generation, trajectory compression for training the next generation of tool-calling models.</td></tr>
-</table>
+<!-- PARITY:AUTO -->
+**Version:** v669 (PORT phase)  
+**Last updated:** 2026-08-04
+
+> Live counts from `make parity-walkway` (sentinel PARITY:AUTO). Do not hand-edit — regenerated from the live scanner on every run.
+
+**Upstream sync checkpoint:** 1,209 ahead / 0 behind upstream/main (last merge 2026-08-04 (upstream fetched)). The repo is up to date with upstream.
+
+<!-- /PARITY:AUTO -->
 
 ## Quick Start
 
@@ -29,71 +29,36 @@ make -j$(nproc)
 
 ## Documentation
 
-| Docs | Description |
-|------|-------------|
-| **[Getting Started](docs/getting-started.md)** | Build, configure, run in 2 minutes |
-| **[Architecture](docs/architecture/overview.md)** | System design, data flow, directory layout |
-| **[CLI Commands](docs/cli/index.md)** | Slash commands with examples |
-| **[TUI Reference](docs/tui/index.md)** | Terminal UI layout, shortcuts, RPC methods |
-| **[Pet System](docs/pet/index.md)** | Petdex mascot install, configure, animate |
-| **[Build System](docs/architecture/build-system.md)** | Make targets, dependencies, packaging |
-| **[Development](docs/dev/index.md)** | Building, testing, contributing |
-| **[Parity Summary](docs/parity-summary.md)** | Live parity scan results (what's ported vs. not) |
+| Doc | Description |
+|-----|-------------|
+| [Getting Started](docs/getting-started.md) | Build, configure, run in 2 minutes |
+| [Architecture](docs/architecture/overview.md) | System design, data flow, directory layout |
+| [CLI Commands](docs/cli/index.md) | Slash commands with examples |
+| [TUI Reference](docs/tui/index.md) | Terminal UI layout, shortcuts, RPC methods |
+| [Pet System](docs/pet/index.md) | Petdex mascot install, configure, animate |
+| [Build System](docs/architecture/build-system.md) | Make targets, dependencies, packaging |
+| [Development](docs/dev/index.md) | Building, testing, contributing |
+| [Parity Summary](docs/parity-summary.md) | Live parity scan results (what's ported vs. not) |
+| [Real Gap List](docs/real-gap-list.md) | 1,958 honest REAL_GAPs across 230 modules |
 
-## Features
+## How to read the parity numbers
 
-- **Pure C11** — Zero Python, zero C++, zero interpreter
-- **CLI + TUI** — Full terminal interface with split-pane layout
-- **Desktop GUI** — Custom C11 Wayland/EGL desktop app
-- **14 Messaging Platforms** — Telegram, Discord, Slack, Signal, WhatsApp, Matrix, etc.
-- **40+ Tools** — Terminal, file, web search, browser, image gen, voice, code exec
-- **Slash Commands** — Session management, config, tools, security, gateway
-- **Petdex Mascots** — Animated pixel-art pets that react to agent state
-- **Skills System** — Markdown-based skill definitions
-- **MCP Support** — Model Context Protocol servers
-- **Cron Scheduler** — Recurring task execution
-- **Plugin System** — Loadable C plugins
-- **Web Dashboard** — Built-in HTTP dashboard
-- **Multi-Platform** — Linux, macOS, Windows (cross-compile)
+The live scanner (`tests/slermes_parity_battleground.py`) is the single source of truth for completion. Run `make parity-walkway` to refresh all walkway files. Any number not from the scanner is stale — trust the scanner, not prose.
 
-> Feature coverage is partial and evolving. Some features above are fully
-> ported, others are in progress — check [Parity Summary](docs/parity-summary.md)
-> for the current per-module state before relying on any one of them.
+**Current state (v669, post-sync):**
 
-## Build Targets
+| Classification | Count | Percentage | Meaning |
+|----------------|-------|------------|---------|
+| PORTED | 12,085 | 86.0% | C11 implementation with PoP annotation |
+| REAL_GAP | 1,958 | 13.9% | Honest gaps (not yet ported — IO/network/DB/logic; NOT faked) |
+| PARTIAL | 2 | 0.0% | C fns carry PoP but need full implementation |
+| BOOTLEG | 7 | — | No-work echo stubs (recursive_false_gap_hunter.py) |
+| TOTAL | 14,045 | 100% | All Python functions/methods scanned |
 
-```bash
-make              # Build slermes binary
-make install      # Install to /usr/local
-make clean        # Clean artifacts
-make test         # Run tests
-make packaging    # Create distribution packages
-```
+## Fork sync
 
-## Quick Examples
-
-```bash
-# Session management
-./slermes
-/new
-/model list
-/model set gpt-4
-
-# Pet mascot
-/pet gallery
-/pet select niko
-
-# Configuration
-/config display.pet.scale 0.5
-/config display.pet.enabled true
-```
-
----
+Slermes is an independent C11 fork of Hermes Agent. We pull Python source from upstream (`NousResearch/hermes-agent`) and port features to C. The fork-base merge keeps upstream as an ancestor (`behind=0`) while our C11 tree stays byte-identical. See `BANNER.md` for the canonical sync workflow.
 
 ## License
 
-This project is licensed under the **Waefrebeorn Umbrella License v3.0**.
-See the [LICENSE](LICENSE) file for the full license text.
-
-The Waefrebeorn Umbrella License is a custom source-available license.
-It is not OSI-approved and not FSF-approved.
+Waefrebeorn Umbrella License v3.0 — custom source-available license. Not OSI-approved, not FSF-approved. See the [LICENSE](LICENSE) file.

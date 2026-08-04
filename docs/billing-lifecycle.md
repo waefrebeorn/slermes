@@ -79,8 +79,7 @@ keep the poll alive forever.
 | Poll timeout (still `pending` past the 5-min cap) | `🟡 Still processing after 5 minutes — this is a timeout, not a failure. Check /topup or the portal shortly.` | + `Portal:` line if `portalUrl`. Explicitly NOT called a failure. |
 | Revocation mid-poll (`remote_spending_revoked` / `session_revoked` while polling) | Renders the matching §2 copy, **then** appends: `🟡 Your last charge's outcome is unconfirmed — check your balance/history before retrying.` | CF-7 rule 4: a post-revoke 403 while polling is ambiguous (the charge may have already settled) — never call it "failed". |
 | 429/503 while polling (`rate_limited`/`temporarily_unavailable`/`stripe_unavailable`) | No error shown; backs off using `retry_after` (default 5s, capped at 30s) and keeps polling until the 5-min cap, then reads as timeout. | Not a payment failure. |
-| Other `!ok` status-check error | `🔴 Could not check the charge: {message \|\| error \|\| 'error'}` | |
-| Transport loss (poll RPC throws/rejects) | `🟡 Your last charge's outcome is unconfirmed — check your balance/history before retrying.` (`UNCONFIRMED_CHARGE_MESSAGE`) | Same "unconfirmed, check balance" framing as revocation mid-poll — a dropped connection can never be read as "failed". |
+| Other `!ok` status-check error | `🔴 Could not check the charge: {message \|\| error \|\| 'error'}` | Transport loss (poll RPC throws/rejects) | `🟡 Your last charge's outcome is unconfirmed — check your balance/history before retrying.` (`UNCONFIRMED_CHARGE_MESSAGE`) | Same "unconfirmed, check balance" framing as revocation mid-poll — a dropped connection can never be read as "failed". |
 
 ## 4. Subscription preview / pending-change / upgrade outcomes
 

@@ -6,7 +6,7 @@
 
 ## The Problem
 
-The parity scanner marks 5,615 features as `N/A` (not applicable). The edict says:
+The parity scanner marks 5,615 features as `). The edict says:
 
 > "rewriting from scratch in C is the point of the project — anything that falls under that is reclassified as work REAL_GAP"
 

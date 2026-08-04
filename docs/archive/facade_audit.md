@@ -296,4 +296,4 @@ Faithful delegations to a real C helper (`_clamp`, `_smoothstep`, `cli_agent_dis
 ## Build / Test
 - `make slermes`: clean, 0 errors.
 - `run_mission8_tests.sh`: 36 passed / 0 failed / 35 skipped.
-- Scanner: PORTED 4,881 (50.2%), REAL_GAP 4,802 (49.3%), PARTIAL 48, STUB 0, N/A 0.
+- Scanner: PORTED  (50.2%), REAL_GAP  (49.3%), PARTIAL 48, STUB 0, N/A 0.

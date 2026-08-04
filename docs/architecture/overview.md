@@ -10,24 +10,21 @@ slermes/
 │   ├── cli/          — CLI frontend, commands, config, display, TUI
 │   ├── agent/        — Core agent loop, LLM client, provider adapters
 │   ├── tools/        — Tool implementations (terminal, file, web, browser, etc.)
-│   ├── gateway/      — Messaging gateway (telegram, discord, slack, signal...)
+│   ├── gateway/      — Messaging gateway (telegram, discord, slack, signal, etc.)
 │   │   └── platforms/  — 14+ messaging platform adapters
 │   ├── pet/          — Petdex mascot system (6 files)
 │   ├── acp/          — Agent Communication Protocol
 │   ├── cron/         — Scheduled task runner
 │   ├── provider/     — OAuth/token exchange providers
 │   ├── skills/       — Skills markdown parser
-│   └── plugins/      — Plugin loader
-├── include/          — 127 header files
-├── lib/              — 73 internal libraries
-│   ├── libjson/      — JSON parser/generator
-│   ├── libhttp/      — HTTP client
-│   ├── libtui/       — Terminal UI framework
-│   ├── libdb/        — SQLite wrapper
-│   ├── libyaml/      — YAML parser
-│   ├── libproc/      — Process management
-│   └── ...           — 66 more
-├── tests/            — Python test suite
+│   ├── plugins/      — Plugin loader
+│   ├── tui/          — Terminal UI (ncurses)
+│   ├── web_server/   — Built-in HTTP server + API endpoints
+│   ├── desktop_app/  — Custom C11 desktop (SDL2/Wayland)
+│   └── ...
+├── include/          — Header files
+├── lib/              — 73 internal libraries (libjson, libhttp, libtui, libdb, libyaml, libproc, libsignal, libpngdec, ...)
+├── tests/            — Test suite + oracle harness
 └── docs/             — Documentation
 ```
 
@@ -45,25 +42,26 @@ User Input → CLI/TUI/Gateway → Agent Loop → LLM Call → Tool Execution �
 ## Key Subsystems
 
 ### CLI (`src/cli/`)
-- 95 slash command handlers in `commands.c`
-- Config system (YAML-based, `config.c`)
-- TUI display system (`display.c`, `display_core.c`)
-- Doctor/diagnostics (`doctor.c`)
+- 82 slash command handlers registered in `port_cli_command_registry.c`
+- Config system (YAML-based, `cli_cmd_config.c`)
+- TUI display system (`cli_cmd_display.c`)
+- Doctor/diagnostics (`cli_cmd_system.c`)
 
 ### Agent (`src/agent/`)
 - Agent loop (`agent_loop.c`)
 - LLM provider layer (`provider.c`, `provider_openai.c`, etc.)
-- Context management (`context.c`, `context_engine.c`)
-- System prompt building (`system_prompt.c`)
+- Context management (`context_compressor.c`, `context.c`)
+- System prompt building (`prompt_builder.c`)
+- Memory (FTS5 session search, LLM summarization)
 
 ### Tools (`src/tools/`)
 - 40+ tool handlers
-- Terminal, file, web search, browser, image gen, voice, etc.
-- Each tool has a handler function registered in `registry.c`
+- Terminal, file, web search, browser, image gen, voice, code exec
+- Each tool has a handler function registered in the tool registry
 
 ### Gateway (`src/gateway/`)
 - 14+ messaging platforms in C
-- Telegram, Discord, Slack, Signal, WhatsApp, Matrix, etc.
+- Telegram, Discord, Slack, Signal, WhatsApp, Matrix, QQ Bot, WeChat, Yuanbao, relay adapters
 - Session management, delivery, streaming
 
 ### Pet System (`src/pet/`)

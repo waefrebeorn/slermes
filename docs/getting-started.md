@@ -10,7 +10,7 @@ cd slermes
 make -j$(nproc)
 ```
 
-This produces a single binary: `./slermes` (~47 MB).
+This produces a single binary: `./slermes` (~37 MB).
 
 ## Run
 
@@ -44,6 +44,7 @@ Or set `HERMES_OPENAI_API_KEY` in `~/.slermes/.env`.
 ```
 
 Or non-interactive:
+
 ```bash
 /setup --quick
 ```
@@ -53,3 +54,4 @@ Or non-interactive:
 - [CLI Commands](cli/index.md) — Full command reference
 - [Pet System](pet/index.md) — Install a mascot
 - [Architecture](architecture/index.md) — How it works
+- [Parity Summary](parity-summary.md) — What's ported vs. not

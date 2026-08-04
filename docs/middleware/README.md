@@ -150,7 +150,6 @@ This plugin tags provider requests and records a middleware trace entry:
 def register(ctx):
     ctx.register_middleware("llm_request", tag_llm_request)
 
-
 def tag_llm_request(**kwargs):
     request = dict(kwargs["request"])
     extra_body = dict(request.get("extra_body") or {})
@@ -174,7 +173,6 @@ This plugin constrains `terminal` calls to a known working directory:
 def register(ctx):
     ctx.register_middleware("tool_request", normalize_terminal_workdir)
 
-
 def normalize_terminal_workdir(**kwargs):
     if kwargs.get("tool_name") != "terminal":
         return None
@@ -197,10 +195,8 @@ This plugin wraps the provider call and preserves the raw provider response:
 ```python
 import time
 
-
 def register(ctx):
     ctx.register_middleware("llm_execution", time_llm_execution)
-
 
 def time_llm_execution(**kwargs):
     started = time.monotonic()
@@ -221,7 +217,6 @@ This plugin wraps tool execution while preserving the tool result:
 ```python
 def register(ctx):
     ctx.register_middleware("tool_execution", annotate_tool_execution)
-
 
 def annotate_tool_execution(**kwargs):
     result = kwargs["next_call"](kwargs["args"])

@@ -4,9 +4,9 @@ Animated sprites that display alongside the agent's status in the TUI. Built ent
 
 ## Overview
 
-The pet system provides a visual indicator of the agent's state through animated pixel-art sprites. Pets are downloaded from [petdex.dev](https://petdex.dev) or installed from local files.
+The pet system provides a visual indicator of the agent's state through animated pixel-art sprites. Pets are downloaded from petdex.dev or installed from local files.
 
-**Files:** `src/pet/` (6 C files, 1 header, 1,500+ lines)
+**Files:** `src/pet/` (6 C files, 1 header)
 
 ## Commands
 
@@ -49,10 +49,10 @@ In `~/.slermes/config.yaml`:
 display:
   pet:
     enabled: true
-    slug: "niko"           # Active pet slug
-    render_mode: "auto"    # auto, kitty, iterm, sixel, unicode, off
-    scale: 0.33            # Display scale
-    unicode_cols: 24       # Unicode fallback columns
+    slug: "niko"
+    render_mode: "auto"
+    scale: 0.33
+    unicode_cols: 24
 ```
 
 Or via CLI:
@@ -80,44 +80,16 @@ Auto-detection:
 - `ghostty` → kitty mode
 - No detection → unicode fallback
 
-## Installing Pets
-
-### From petdex.dev (default)
-```
-/pet select niko
-```
-Downloads and installs automatically.
-
-### From local files
-```bash
-# Copy spritesheet to ~/.slermes/pets/<slug>/spritesheet.png
-# Create ~/.slermes/pets/<slug>/pet.json with metadata
-```
-
 ## Architecture
 
 ```
-pet_commands.c         pet_store.c
-     |                      |
-     v                      v
-pet_state.c  →  pet_render.c  →  Terminal
+pet_commands.c  →  pet_store.c  →  pet_state.c  →  pet_render.c  →  Terminal
      |
      v
-pet_constants.c   (scale, frame geometry, aliases)
-
-pet_manifest.c ← petdex.dev (HTTP fetch, TTL cache)
+pet_manifest.c  ←  petdex.dev (HTTP fetch, TTL cache)
+pet_constants.c  (scale, frame geometry, aliases)
 ```
 
 ## API Functions
 
-See `include/pet.h` for the complete API (265 lines).
-
-Key functions:
-- `pet_init(cfg)` — Initialize from config
-- `pet_select(slug)` — Set active pet
-- `pet_info_json()` — Active pet JSON
-- `pet_gallery_json()` — Installed pets JSON
-- `pet_cells_json(cols)` — TUI frame cells
-- `pet_install_pet(slug, force)` — Download and install
-- `pet_fetch_manifest(out, max, force)` — Fetch petdex catalog
-- `pet_thumbnail_png(slug, len)` — Get thumbnail bytes
+See `include/pet.h` for the complete API. Key functions: `pet_init()`, `pet_select(slug)`, `pet_info_json()`, `pet_gallery_json()`, `pet_cells_json(cols)`.
