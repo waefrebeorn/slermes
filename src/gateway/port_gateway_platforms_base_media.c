@@ -628,6 +628,57 @@ bool base_platform_path_lacks_deliverable_extension(const char *path)
 }
 
 /* ================================================================
+ *  _merge_spans
+ *  Faithful to: merge overlapping/nested (start, end) spans.
+ * ================================================================ */
+
+/* Span type for _merge_spans — (start, end) offsets into scanned text. */
+typedef struct {
+    int start;
+    int end;
+} base_span_t;
+
+/* PoP: _merge_spans @ gateway/platforms/base.py:_merge_spans */
+void base_platform_merge_spans(base_span_t *spans, int *count)
+{
+    if (!spans || !count || *count <= 1) return;
+    /* Sort by start (insertion sort — small N, stable) */
+    for (int i = 1; i < *count; i++) {
+        base_span_t key = spans[i];
+        int j = i - 1;
+        while (j >= 0 && spans[j].start > key.start) {
+            spans[j + 1] = spans[j];
+            j--;
+        }
+        spans[j + 1] = key;
+    }
+    /* Merge overlapping/nested */
+    int w = 0;
+    for (int i = 1; i < *count; i++) {
+        if (spans[w].end >= spans[i].start) {
+            if (spans[i].end > spans[w].end)
+                spans[w].end = spans[i].end;
+        } else {
+            w++;
+            spans[w] = spans[i];
+        }
+    }
+    *count = w + 1;
+}
+
+/* ================================================================
+ *  _resolve_extensionless_candidate
+ *  Faithful to: validate a bare extensionless-branch path.
+ * ================================================================ */
+
+/* PoP: _resolve_extensionless_candidate @ gateway/platforms/base.py:_resolve_extensionless_candidate */
+char *base_platform_resolve_extensionless_candidate(const char *path)
+{
+    if (!path || !*path) return NULL;
+    return validate_media_delivery_path(path);
+}
+
+/* ================================================================
  *  _strip_media_tag_directives
  *  Faithful to: remove [[audio_as_voice]] / [[as_document]] markers,
  *  remove MEDIA: tags with extensions (via regex-equivalent scan),
