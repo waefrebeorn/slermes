@@ -53,4 +53,74 @@ char **skills_sync_list_synced_skill_names(size_t *out_count);
 /* PoP: _all_local_skill_names @ tools/skills_sync_client.py:_all_local_skill_names */
 char **skills_sync_all_local_skill_names(size_t *out_count);
 
+/* ── Cluster 2: ObjectSet + tree/commit + device ID + wire client ──────
+ * Port of tools/skills_sync_client.py (L558-L928). */
+
+typedef struct ssc_object ssc_object_t;
+typedef struct {
+    ssc_object_t *head;
+    size_t count;
+} ssc_object_set_t;
+
+typedef struct ssc_sync_client ssc_sync_client_t;
+
+/* PoP: add @ tools/skills_sync_client.py:add */
+char *ssc_object_set_add(ssc_object_set_t *set, const char *kind,
+                         const unsigned char *data, size_t len);
+void ssc_object_set_free(ssc_object_set_t *set);
+/* PoP: __len__ @ tools/skills_sync_client.py:__len__ */
+size_t ssc_object_set_len(const ssc_object_set_t *set);
+
+/* PoP: build_tree @ tools/skills_sync_client.py:build_tree */
+char *ssc_build_tree(const char *dir_path, ssc_object_set_t *objects,
+                     long max_object_bytes, int *too_large);
+/* PoP: build_commit @ tools/skills_sync_client.py:build_commit */
+char *ssc_build_commit(const char *tree_hash,
+                       const char *const *parents, size_t nparents,
+                       const char *owner, const char *device,
+                       const char *message, ssc_object_set_t *objects,
+                       const char *ts);
+/* PoP: stable_device_id @ tools/skills_sync_client.py:stable_device_id */
+char *ssc_stable_device_id(void);
+/* PoP: set_device_name @ tools/skills_sync_client.py:set_device_name */
+int ssc_set_device_name(const char *name, char *out, size_t out_sz);
+
+/* PoP: __init__ @ tools/skills_sync_client.py:__init__ */
+ssc_sync_client_t *ssc_client_new(const char *base_url, const char *api_key,
+                                  int timeout_sec);
+void ssc_client_free(ssc_sync_client_t *c);
+/* PoP: capabilities @ tools/skills_sync_client.py:capabilities */
+json_t *ssc_client_capabilities(ssc_sync_client_t *c, int *out_status);
+/* PoP: get_refs @ tools/skills_sync_client.py:get_refs */
+json_t *ssc_client_get_refs(ssc_sync_client_t *c, const char *prefix,
+                            bool org_scope, int *out_status);
+/* PoP: get_object @ tools/skills_sync_client.py:get_object */
+int ssc_client_get_object(ssc_sync_client_t *c, const char *obj_hash,
+                          bool org_scope, char **out_kind,
+                          unsigned char **out_data, size_t *out_len,
+                          int *out_status);
+/* PoP: get_commit_json @ tools/skills_sync_client.py:get_commit_json */
+json_t *ssc_client_get_commit_json(ssc_sync_client_t *c, const char *hash,
+                                   bool org_scope, int *out_status);
+/* PoP: get_tree_json @ tools/skills_sync_client.py:get_tree_json */
+json_t *ssc_client_get_tree_json(ssc_sync_client_t *c, const char *hash,
+                                 bool org_scope, int *out_status);
+/* PoP: put_objects @ tools/skills_sync_client.py:put_objects */
+int ssc_client_put_objects(ssc_sync_client_t *c, const ssc_object_set_t *set,
+                           bool org_scope, int *out_status);
+/* PoP: cas_ref @ tools/skills_sync_client.py:cas_ref */
+int ssc_client_cas_ref(ssc_sync_client_t *c, const char *name,
+                       const char *from_hash, const char *to_hash,
+                       char *out_actual, size_t actual_sz,
+                       int *out_status, json_t **out_body);
+
+
+/* Oracle/test accessors for the object set. */
+ssc_object_t *ssc_object_set_head(const ssc_object_set_t *set);
+const char *ssc_object_addr(const ssc_object_t *o);
+const char *ssc_object_kind(const ssc_object_t *o);
+const unsigned char *ssc_object_data(const ssc_object_t *o);
+size_t ssc_object_len(const ssc_object_t *o);
+const ssc_object_t *ssc_object_next(const ssc_object_t *o);
+
 #endif /* PORT_SKILLS_SYNC_CLIENT_H */
