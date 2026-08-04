@@ -566,6 +566,7 @@ class ParityAnalyzer:
         def add(py, c): M[py] = c
         # agent/
         add("agent/pet/constants.py","src/pet/pet_constants.c")
+        add("hermes_state.py","src/agent/hermes_state/port_hermes_state.c")
         add("agent/pet/state.py","src/pet/pet_state.c")
         add("agent/pet/manifest.py","src/pet/pet_manifest.c")
         add("agent/pet/store.py","src/pet/pet_store.c")
