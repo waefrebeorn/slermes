@@ -618,6 +618,7 @@ class ParityAnalyzer:
             "tools/web_tools.py":"src/tools/web.c","tools/website_policy.py":"src/tools/website_policy.c",
             "tools/write_approval.py":"src/tools/write_approval.c",
             "agent/redact.py":"src/tools/browser_redact.c","tools/x_search_tool.py":"src/tools/x_search.c",
+            "agent/monitoring/gateway_health_export.py":"src/agent/port_agent_monitoring_health_export.c",
             "tools/xai_http.py":"src/tools/xai_http.c","tools/yuanbao_tools.py":"src/tools/yuanbao_tools.c",
             "tools/kanban_tools.py":"src/tools/kanban_tools.c","tools/mcp_oauth.py":"src/tools/mcp_oauth.c",
             "tools/registry.py":"src/tools/registry.c","tools/web_tools.py":"src/tools/web.c",
