@@ -16,14 +16,14 @@ Anything the Nous Research team produces — **code AND documents** — is upstr
 ## Current State
 | Metric | Value |
 |--------|-------|
-| **Version** | v668 (PORT phase, live scanner 2026-08-04) |
+| **Version** | v669 (PORT phase, live scanner 2026-08-04) |
 | **PORTED** | 12,085 (86.0% of 14,045 features) |
 | **REAL_GAP** | 1,958 (13.9%) |
 | **PARTIAL** | 2 |
 | **BOOTLEG** | 7 (recursive_false_gap_hunter.py) |
 | **Build** | Clean, 0 errors (slermes ~37 MB) |
 | **Tests** | Mission 8: 65 pass / 0 fail (state_db 27, API 17, UI 12, CLI 9) |
-| **Upstream Sync** | 1,206 ahead / 0 behind upstream/main (last merge 2026-08-04 (upstream fetched)) |
+| **Upstream Sync** | 1,208 ahead / 0 behind upstream/main (last merge 2026-08-04 (upstream fetched)) |
 
 > Live counts: `make parity-walkway` (sentinel PARITY:AUTO). Do not hand-edit — regenerated from the live scanner on every run.
 

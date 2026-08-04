@@ -303,3 +303,31 @@ even compile (corrupted comment block from a PoP insertion).
 symbols. **New counts:** 6,588 PORTED / 5,432 REAL_GAP / 240 PARTIAL (12,260
 total). Net: +142 honest gaps closed this session; ~2,360 false credits
 removed.
+
+## v669 — Fork Reconciliation (behind=0) + Post-Sync Gap List (2026-08-04)
+
+**What happened:**
+- Fixed the broken GitHub state: slermes was `ahead=1205 behind=1119 diverged`
+  vs upstream; the banner lied (1,201/1,115 vs live 1,204/1,119 — stale-ref bug).
+- Parent quarry sync: merged 4 pending upstream commits (termux nemo-relay fix,
+  uv.lock) → parent `behind=0` (kept local, never pushed — fork-object-sharing).
+- **Fork-base `-s ours` merge** in slermes: upstream/main became an ancestor,
+  `behind=0`, C11 tree byte-identical (verified `git diff --stat <pre> HEAD` empty).
+- Generator fix: `gen_parity_walkway.py` now fetches upstream/main FIRST
+  (kills the stale-ref bug class) + renders "The repo is up to date with
+  upstream." when behind==0 in all three checkpoint blocks.
+- BANNER.md: replaced obsolete stash→pull→fix→pop with the canonical 3-step
+  fork-sync flow; divergent-count section now states behind=0 is the goal.
+- Skills: `slermes-setup-and-sync` → "THE CANONICAL FLOW — Github Magic Fork
+  Sync (v669)" + `references/v669-behind-zero-reconciliation.md` (verified
+  transcript); `slermes-upstream-boundary` Method A marked PROVEN v669.
+- **Fresh gap list:** `docs/real-gap-list.md` — 1,958 REAL_GAP across 230
+  modules (75 fully unported). Top: skills_sync_client 79, update_cmd 76,
+  wake_word 63, relay_runtime 58, gateway/run.py 45, hermes_state 36,
+  relay/adapter 36. DA-verified: file existence ✓, Python def counts match
+  scanner totals ✓, no dedicated C port for the top unported modules ✓.
+
+**Build:** clean (no C changes — walkway/skills/docs only). **GitHub:** behind=0,
+status=ahead, banner "up to date with upstream". **New counts:** 12,085 PORTED /
+1,958 REAL_GAP / 2 PARTIAL / 7 BOOTLEG (14,045 total) — post-sync honest numbers
+(quarry grew +1,771 features at v668).
