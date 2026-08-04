@@ -265,7 +265,7 @@ int cleanup_image_cache(int max_age_hours) {
     return removed;
 }
 
-/* Port of Python: gateway.platforms.base.cleanup_audio_cache */
+/* PoP: cleanup_audio_cache @ gateway/platforms/base.py:cleanup_audio_cache */
 int cleanup_audio_cache(int max_age_hours) {
     char *cache_dir = get_cache_dir("audio", "audio_cache");
     int removed = 0;
@@ -293,7 +293,7 @@ int cleanup_audio_cache(int max_age_hours) {
     return removed;
 }
 
-/* Port of Python: gateway.platforms.base.cleanup_video_cache */
+/* PoP: cleanup_video_cache @ gateway/platforms/base.py:cleanup_video_cache */
 int cleanup_video_cache(int max_age_hours) {
     char *cache_dir = get_cache_dir("videos", "video_cache");
     int removed = 0;
@@ -324,6 +324,39 @@ int cleanup_video_cache(int max_age_hours) {
 /* Port of Python: gateway.platforms.base.cleanup_document_cache */
 int cleanup_document_cache(int max_age_hours) {
     char *cache_dir = get_cache_dir("documents", "document_cache");
+    int removed = 0;
+
+    DIR *d = opendir(cache_dir);
+    if (d) {
+        struct dirent *entry;
+        time_t cutoff = time(NULL) - (max_age_hours * 3600);
+        while ((entry = readdir(d))) {
+            if (entry->d_type == DT_REG) {
+                size_t path_len = strlen(cache_dir) + 1 + strlen(entry->d_name) + 1;
+                char *path = malloc(path_len);
+                snprintf(path, path_len, "%s/%s", cache_dir, entry->d_name);
+                struct stat st;
+                if (stat(path, &st) == 0 && st.st_mtime < cutoff) {
+                    if (unlink(path) == 0) removed++;
+                }
+                free(path);
+            }
+        }
+        closedir(d);
+    }
+
+    free(cache_dir);
+    return removed;
+}
+
+/* PoP: get_screenshot_cache_dir @ gateway/platforms/base.py:get_screenshot_cache_dir */
+char *get_screenshot_cache_dir(void) {
+    return get_cache_dir("screenshots", "browser_screenshots");
+}
+
+/* PoP: cleanup_screenshot_cache @ gateway/platforms/base.py:cleanup_screenshot_cache */
+int cleanup_screenshot_cache(int max_age_hours) {
+    char *cache_dir = get_screenshot_cache_dir();
     int removed = 0;
 
     DIR *d = opendir(cache_dir);

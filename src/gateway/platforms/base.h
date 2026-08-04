@@ -78,6 +78,12 @@ int cleanup_video_cache(int max_age_hours);
 /* Port of Python: cleanup_document_cache */
 int cleanup_document_cache(int max_age_hours);
 
+/* Port of Python: get_screenshot_cache_dir */
+char *get_screenshot_cache_dir(void);
+
+/* Port of Python: cleanup_screenshot_cache */
+int cleanup_screenshot_cache(int max_age_hours);
+
 /* ================================================================
  *  Session/source helpers
  * ================================================================ */
