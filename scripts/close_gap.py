@@ -94,10 +94,12 @@ def real_gaps(mods):
         cport = c_port_for(k)
         fix = fixture_for(k)
         harn = harness_for(k)
+        pure = sum(1 for g in gaps if is_pure_gap(g))
         rows.append(
             {
                 "module": k,
                 "rg": len(gaps),
+                "pure": pure,
                 "cport": cport,
                 "fixture": fix,
                 "harness": harn,
@@ -109,25 +111,39 @@ def real_gaps(mods):
     return rows
 
 
+def is_pure_gap(gap):
+    """A gap is 'pure' if it's a plain non-async helper with no class/decorators.
+
+    Pure gaps are the mechanical closes: small functions with no IO/network
+    deps that can be ported and oracle-verified in minutes.
+    """
+    feat = gap.get("python_feature", {})
+    if feat.get("is_async") or feat.get("parent_class") or feat.get("decorators"):
+        return False
+    return True
+
+
 def cmd_report(mods):
     rows = real_gaps(mods)
     closeable = [r for r in rows if r["cport"]]
     verifiable = [r for r in closeable if r["harness"]]
+    total_pure = sum(r["pure"] for r in rows)
     print("=== close_gap report ===")
     print("modules with REAL_GAP : %d" % len(rows))
+    print("  pure-leaf gaps (mechanical closes) : %d" % total_pure)
     print("  closeable here (C port exists) : %d" % len(closeable))
     print("    verifiable (oracle harness present) : %d" % len(verifiable))
     print()
-    print("%-42s rg  cport?  oracle?" % "module")
+    print("%-42s rg  pure  cport?  oracle?" % "module")
     print("-" * 72)
     for r in rows:
         c = "Y" if r["cport"] else "-"
         o = "Y" if r["harness"] else "-"
-        print("%-42s %2d   %s      %s" % (r["module"][:42], r["rg"], c, o))
+        print("%-42s %2d  %4d    %s      %s" % (r["module"][:42], r["rg"], r["pure"], c, o))
     print()
     print("Top closeable+verifiable targets:")
     for r in verifiable[:12]:
-        print("  %s  (%d gaps)" % (r["module"], r["rg"]))
+        print("  %s  (%d gaps, %d pure)" % (r["module"], r["rg"], r["pure"]))
     return 0
 
 

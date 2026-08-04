@@ -101,6 +101,11 @@ parity:
 	@python3 scripts/parity_truth.py
 	@python3 scripts/gen_parity_walkway.py
 
+# Rank REAL_GAP modules by closure value (pure-leaf ratio + oracle + size).
+# Use this to pick the next module to port — highest score = best first.
+gap-triage:
+	@python3 scripts/gap_triage.py --top 25
+
 # Rebase/PoP commit path: after pulling fresh Python from upstream
 # (git checkout upstream/main -- agent tools gateway cli.py hermes_cli cron),
 # reset the drift baseline so future `make parity` reports drift vs the new

@@ -6,7 +6,7 @@ Animated sprites that display alongside the agent's status in the TUI. Built ent
 
 The pet system provides a visual indicator of the agent's state through animated pixel-art sprites. Pets are downloaded from petdex.dev or installed from local files.
 
-**Files:** `src/pet/` (6 C files, 1 header)
+**Files:** `src/pet/` (8 C files, 1 header)
 
 ## Commands
 

@@ -317,4 +317,4 @@ turns, provider requests, and tool calls.
 The bundled NeMo Relay plugin maps the same generic observer contract to NeMo
 Relay scopes, LLM spans, tool spans, marks, ATOF streams, and ATIF exports.
 NeMo Relay-specific configuration and examples live in
-[`plugins/observability/nemo_relay/README.md`](../../plugins/observability/nemo_relay/README.md).
+[relay shared metrics](../observability/relay-shared-metrics.md).

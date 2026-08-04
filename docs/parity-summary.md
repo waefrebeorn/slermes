@@ -15,7 +15,7 @@
 | **BOOTLEG** | 7 | — | No-work echo stubs (recursive_false_gap_hunter.py) |
 | **TOTAL** | 14,045 | 100% | All Python functions/methods scanned |
 
-> **Generated 2026-08-04T05:18:24Z by `make parity-walkway` from the live scanner.** The PORT phase (v398→v667) is legacy — this table is the single source of truth for completeness. Do not hand-edit.
+> **Generated 2026-08-04T05:30:26Z by `make parity-walkway` from the live scanner.** The PORT phase (v398→v667) is legacy — this table is the single source of truth for completeness. Do not hand-edit.
 <!-- /PARITY:AUTO -->
 
 **Generated:** 2026-08-04 (post-sync, v669 checkpoint) from live scanner
@@ -157,7 +157,7 @@ slermes/
 │   ├── desktop_app/  — Custom C11 desktop (SDL2/Wayland)
 │   └── ...
 ├── include/          — Header files
-├── lib/              — Libraries (73 sub-libraries)
+├── lib/              — Libraries (77 sub-libraries)
 ├── tests/            — Test suite + oracle harness
 └── docs/             — Documentation (mirrors src/ layout)
 ```

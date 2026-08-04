@@ -459,6 +459,51 @@ def index_toc_block(d):
     )
 
 
+def real_gap_list_block(d):
+    """docs/real-gap-list.md — function-level gap list (programmatic).
+
+    Regenerated every walkway run so it can never rot like the old
+    hand-transcribed gap lists. The block lists every REAL_GAP function
+    grouped by module, so the file doubles as the forward work plan.
+    """
+    scan_path = os.path.join(REPO, "live_parity_scan.json")
+    if not os.path.exists(scan_path):
+        return None
+    with open(scan_path, encoding="utf-8") as f:
+        scan = json.load(f)
+    mods = scan.get("modules", {})
+    lines = []
+    total_gaps = 0
+    module_count = 0
+    for key in sorted(mods):
+        gaps = [g for g in mods[key].get("gaps", [])
+                if g.get("classification") == "REAL_GAP"]
+        if not gaps:
+            continue
+        module_count += 1
+        total_gaps += len(gaps)
+        lines.append(f"\n### {key} ({len(gaps)} gaps)\n")
+        for g in sorted(gaps, key=lambda x: x.get("python_feature", {}).get("line_number", 0)):
+            feat = g.get("python_feature", {})
+            name = feat.get("name", "?")
+            kind = feat.get("kind", "fn")
+            parent = feat.get("parent_class")
+            qual = f"{parent}.{name}" if parent else name
+            async_mark = "async " if feat.get("is_async") else ""
+            lines.append(f"- {async_mark}{qual} ({kind})")
+    return (
+        f"# Slermes REAL_GAP List — Function Level (live scanner)\n\n"
+        f"> Generated {d['stamp']} from `live_parity_scan.json` by "
+        f"`make parity-walkway`. **{total_gaps:,} REAL_GAP across "
+        f"{module_count} modules** (of {d['total']:,} total functions).\n\n"
+        f"> This is the forward work plan. Each entry is a Python function "
+        f"not yet ported to C. Close by implementing real C + a single-line "
+        f"`/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure "
+        f"skill). Never hand-edit — regenerate via the scanner.\n"
+        + "\n".join(lines) + "\n"
+    )
+
+
 def inject(path, inner, insert_after=None):
     """Replace the sentinel block content, or append one."""
     if not os.path.exists(path):
@@ -583,6 +628,18 @@ def main():
                 parity_summary_block(d),
                 insert_after="## Overall Numbers (live)")
     print(f"{'OK  ' if ok else 'MISS'} docs/parity-summary.md")
+    # docs/real-gap-list.md: full function-level gap list (programmatic).
+    rgl = real_gap_list_block(d)
+    if rgl is not None:
+        rgl_path = os.path.join(REPO, "docs", "real-gap-list.md")
+        old_rgl = ""
+        if os.path.exists(rgl_path):
+            old_rgl = open(rgl_path, encoding="utf-8").read()
+        if old_rgl != rgl:
+            open(rgl_path, "w", encoding="utf-8").write(rgl)
+            print(f"OK   docs/real-gap-list.md ({d['real']:,} gaps listed)")
+        else:
+            print("SAME docs/real-gap-list.md")
     # README.md: version/phase header + sync checkpoint (programmatic).
     readme_path = os.path.join(REPO, "README.md")
     strip_stale_claims(readme_path)

@@ -229,7 +229,7 @@ payload to later middleware and the base tool dispatcher.
 
 Plugin-specific examples should live with the plugin that owns the behavior.
 For NeMo Relay adaptive execution middleware, see
-[`plugins/observability/nemo_relay/README.md`](../../plugins/observability/nemo_relay/README.md).
+[relay shared metrics](../observability/relay-shared-metrics.md).
 
 ## Safety Notes
 

@@ -53,5 +53,5 @@ Or non-interactive:
 
 - [CLI Commands](cli/index.md) — Full command reference
 - [Pet System](pet/index.md) — Install a mascot
-- [Architecture](architecture/index.md) — How it works
+- [Architecture](architecture/overview.md) — How it works
 - [Parity Summary](parity-summary.md) — What's ported vs. not

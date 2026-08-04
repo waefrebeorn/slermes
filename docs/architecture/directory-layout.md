@@ -152,7 +152,7 @@
 
 ## Library Files (`lib/`)
 
-73 internal libraries:
+77 internal libraries:
 
 | Library | Purpose |
 |---------|---------|

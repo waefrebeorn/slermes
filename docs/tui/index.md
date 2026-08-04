@@ -54,7 +54,7 @@ Shows token usage, context size, current mode, and pet animation.
 
 ## JSON-RPC Methods
 
-The TUI communicates with the agent backend via JSON-RPC methods. See the [Gateway Commands](cli/gateway.md) reference for the full method list.
+The TUI communicates with the agent backend via JSON-RPC methods. See the [Gateway Commands](../cli/gateway.md) reference for the full method list.
 
 ### Pet Methods
 

@@ -112,4 +112,4 @@ Slermes has **82 slash commands**, all implemented as real C11 handlers in `src/
 - [Display Commands](display.md) — `/redraw`, `/skin`, `/verbose`, etc.
 - [Skills Commands](skills.md) — `/skills`, `/skills-hub`, `/bundles`, etc.
 - [MCP Commands](mcp.md) — `/mcp`, `/reload-mcp`
-- [Pet Command](pet.md) — `/pet`
+- [Pet System](../pet/index.md) — `/pet` mascot

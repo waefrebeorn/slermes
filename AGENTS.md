@@ -76,7 +76,7 @@ src/
 ├── desktop_app/  — Custom C11 desktop (SDL2/Wayland)
 └── ...
 include/          — Header files
-lib/              — 73 internal libraries (libjson, libhttp, libtui,
+lib/              — 77 internal libraries (libjson, libhttp, libtui,
                     libdb, libyaml, libproc, libhive, libregex, ...)
 tests/            — Test suite + oracle harness + parity scanner
 docs/             — Documentation (mirrors src/ layout)

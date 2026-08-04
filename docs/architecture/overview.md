@@ -12,7 +12,7 @@ slermes/
 │   ├── tools/        — Tool implementations (terminal, file, web, browser, etc.)
 │   ├── gateway/      — Messaging gateway (telegram, discord, slack, signal, etc.)
 │   │   └── platforms/  — 14+ messaging platform adapters
-│   ├── pet/          — Petdex mascot system (6 files)
+│   ├── pet/          — Petdex mascot system (8 files)
 │   ├── acp/          — Agent Communication Protocol
 │   ├── cron/         — Scheduled task runner
 │   ├── provider/     — OAuth/token exchange providers
@@ -23,7 +23,7 @@ slermes/
 │   ├── desktop_app/  — Custom C11 desktop (SDL2/Wayland)
 │   └── ...
 ├── include/          — Header files
-├── lib/              — 73 internal libraries (libjson, libhttp, libtui, libdb, libyaml, libproc, libsignal, libpngdec, ...)
+├── lib/              — 77 internal libraries (libjson, libhttp, libtui, libdb, libyaml, libproc, libsignal, libpngdec, ...)
 ├── tests/            — Test suite + oracle harness
 └── docs/             — Documentation
 ```
