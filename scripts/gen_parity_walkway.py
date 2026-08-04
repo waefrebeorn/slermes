@@ -138,10 +138,13 @@ def compute():
         if rb.returncode == 0 and ra.returncode == 0:
             behind = int(rb.stdout.strip())
             ahead = int(ra.stdout.strip())
-        rm = run(["git", "log", "-1", "--format=%ad (%s)", "--date=short",
-                  "--merges", "upstream/main..HEAD"])
-        if rm.returncode == 0 and rm.stdout.strip():
-            last_merge = rm.stdout.strip()
+        # "last gathered" = when the upstream ref was last updated (the
+        # freshness of the Python quarry), NOT the last merge commit in our
+        # own history (which predates the fetch).
+        rt = run(["git", "log", "-1", "--format=%ad", "--date=short",
+                  "upstream/main"])
+        if rt.returncode == 0 and rt.stdout.strip():
+            last_merge = rt.stdout.strip() + " (upstream fetched)"
     except Exception:
         pass
 

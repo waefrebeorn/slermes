@@ -3,9 +3,9 @@
 ## Core Principle
 
 <!-- PARITY:AUTO -->
-**v668 MATCH phase:** the C11 binary is the deliverable — faithful, oracle-verified, usable standalone across operating systems. The PORT phase (99.8% ported, 0 bootlegs) is legacy; the remaining work is behavioral fidelity — every function does real observable work and matches the Python original. The AGI-OS integration consumes the compiled binary, not the Python tree. Live parity counts live in the PARITY:AUTO sentinel blocks owned by `make parity-walkway`; never hand-edit a count.
+**v668 phase — PORT:** the C11 binary is the deliverable — faithful, oracle-verified, usable standalone across operating systems. Live parity counts live in the PARITY:AUTO sentinel blocks owned by `make parity-walkway`; never hand-edit a count.
 
-**Upstream sync checkpoint:** 1,200 ahead / 1,113 behind upstream/main (last merge 2026-07-30 (Merge upstream/main (21 commits); keep C11 fork deletions)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
+**Upstream sync checkpoint:** 1,201 ahead / 1,115 behind upstream/main (last merge 2026-08-03 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
 <!-- /PARITY:AUTO -->
 
 Slermes is a C11 translation of the Hermes Python agent, maintained as a

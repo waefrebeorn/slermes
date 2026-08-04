@@ -1,4 +1,4 @@
-# State — Slermes C Translation (v668, MATCH phase)
+# State — Slermes C Translation (v668, PORT phase)
 
 - Build: `make slermes` = 0 errors, binary links clean (~48.9 MB)
 - **Scanner (real, live 2026-08-02):** 6,798 PORTED (55.4%), 5,222 REAL_GAP (42.6%), 240 PARTIAL — counts owned by `make parity-walkway` sentinel blocks
@@ -130,14 +130,14 @@ Scanner: 4,884 → 4,901 PORTED (+17); 4,774 → 4,757 REAL_GAP (−17). All 17 
 Fixed `tests/run_one_oracle.sh` (added `-I src`) so port headers resolve.
 
 <!-- PARITY:AUTO -->
-| PORTED  | 12,252 / 12,274 (99.8%) |
-| REAL_GAP| 22 (0.2%) — no N/A |
-| PARTIAL | 0 (0.0%) |
-| BOOTLEG | 0 (recursive_false_gap_hunter.py) |
+| PORTED  | 12,085 / 14,045 (86.0%) |
+| REAL_GAP| 1,958 (13.9%) — no N/A |
+| PARTIAL | 2 (0.0%) |
+| BOOTLEG | 7 (recursive_false_gap_hunter.py) |
 
-**Phase (v668):** MATCH phase — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. PORT phase (v398→v667) is legacy — complete; every function does real observable work and matches the Python original.
+**Phase (v668):** PORT phase — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.
 
-**Upstream sync checkpoint:** 1,200 ahead / 1,113 behind upstream/main (last merge 2026-07-30 (Merge upstream/main (21 commits); keep C11 fork deletions)). The behind-count is the staleness timer — run the stash→pull→fix→pop workflow, then re-port the delta.
+**Upstream sync checkpoint:** 1,201 ahead / 1,115 behind upstream/main (last merge 2026-08-03 (upstream fetched)). The behind-count is the staleness timer — run the stash→pull→fix→pop workflow, then re-port the delta.
 
-_Generated 2026-08-04T01:19:23Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
+_Generated 2026-08-04T01:44:16Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
 <!-- /PARITY:AUTO -->

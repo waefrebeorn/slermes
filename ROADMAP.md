@@ -1,12 +1,12 @@
 # 🗺️ Slermes Roadmap — What's Next
 
 <!-- PARITY:AUTO -->
-**Version:** 0.19.0-slermes (v668, MATCH phase)  
+**Version:** 0.19.0-slermes (v668, PORT phase)  
 **Last updated:** 2026-08-04
 
-> **v668 MATCH phase:** the PORT phase (v398→v667) is **legacy — complete**. Live scanner 2026-08-04: **12,252 / 12,274 (99.8%) PORTED · 22 REAL_GAP · 0 PARTIAL · 0 BOOTLEG**. The C11 binary is the deliverable — faithful, oracle-verified, usable standalone on any operating system. What remains is *behavioral fidelity*: every function does real observable work and matches the Python original. Forward integration target: the AGI operating system consumes the compiled binary, not the Python tree. All generated docs carry live counts from `make parity-walkway` (sentinel PARITY:AUTO blocks).
+> **v668 PORT phase:** live scanner 2026-08-04: 12,085 / 14,045 (86.0%) PORTED · 1,958 REAL_GAP · 2 PARTIAL. The C11 binary is the deliverable.
 >
-> **Upstream sync checkpoint:** 1,200 ahead / 1,113 behind upstream/main (last merge 2026-07-30 (Merge upstream/main (21 commits); keep C11 fork deletions)) — the behind-count is the staleness timer; re-port the delta with the stash→pull→fix→pop workflow after each sync.
+> **Upstream sync checkpoint:** 1,201 ahead / 1,115 behind upstream/main (last merge 2026-08-03 (upstream fetched)) — the behind-count is the staleness timer; re-port the delta with the stash→pull→fix→pop workflow after each sync.
 <!-- /PARITY:AUTO -->
 
 > "Mission 1-8 complete" doesn't mean done — it means the foundation is laid.  
