@@ -714,7 +714,7 @@ class ParityAnalyzer:
             "hermes_cli/suggestions_cmd.py":"src/cli/suggestions_cmd.c","hermes_cli/telegram_managed_bot.py":"src/cli/telegram_managed_bot.c",
             "hermes_cli/timeouts.py":"src/cli/timeouts.c","hermes_cli/tips.py":"src/cli/tips.c",
             "hermes_cli/tools_config.py":"src/cli/tools_config.c","hermes_cli/uninstall.py":"src/cli/uninstall.c",
-            "hermes_cli/voice.py":"src/cli/voice.c","hermes_cli/web_server.py":"src/cli/web_server.c",
+            "hermes_cli/update_cmd.py":"src/cli/port_hermes_cli_update_cmd.c","hermes_cli/voice.py":"src/cli/voice.c","hermes_cli/web_server.py":"src/cli/web_server.c",
             "hermes_cli/webhook.py":"src/cli/webhook.c","hermes_cli/win_pty_bridge.py":"src/cli/win_pty_bridge.c",
             "hermes_cli/write_approval_commands.py":"src/cli/write_approval_commands.c",
         }.items():
