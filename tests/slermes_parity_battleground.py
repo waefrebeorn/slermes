@@ -613,6 +613,7 @@ class ParityAnalyzer:
             "tools/tool_search.py":"src/tools/tool_search.c","tools/transcription_tools.py":"src/tools/transcribe.c",
             "tools/tts_tool.py":"src/tools/tts.c","tools/video_generation_tool.py":"src/tools/video_gen.c",
             "tools/vision_tools.py":"src/tools/vision.c","tools/voice_mode.py":"src/tools/voice.c",
+            "tools/wake_word.py":"src/tools/port_tools_wake_word.c",
             "tools/web_tools.py":"src/tools/web.c","tools/website_policy.py":"src/tools/website_policy.c",
             "tools/write_approval.py":"src/tools/write_approval.c",
             "agent/redact.py":"src/tools/browser_redact.c","tools/x_search_tool.py":"src/tools/x_search.c",
