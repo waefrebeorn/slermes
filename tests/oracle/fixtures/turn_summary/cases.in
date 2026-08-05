@@ -1,0 +1,3 @@
+# agent/turn_summary.py oracle cases are generated internally by
+# tests/t_port_turn_summary.c (self-contained per-turn accounting exercises).
+# Placeholder so the oracle runner has a fixture to iterate; the harness ignores it.
