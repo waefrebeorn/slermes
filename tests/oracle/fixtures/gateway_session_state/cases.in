@@ -1,0 +1,4 @@
+# gateway/session_state.py oracle cases are generated internally by
+# tests/t_port_gateway_session_state.c (self-contained state-container exercises).
+# This file exists so the oracle runner has a fixture to iterate; the harness
+# ignores its contents and emits its own JSON cases to stdout.
