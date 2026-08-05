@@ -385,10 +385,16 @@ lib/libhive/hive.so: lib/libhive/hive.c lib/libhive/hive.h
 	$(CC) -std=c11 -O2 -fPIC -shared -Wall -Wextra -I lib/libhive -o $@ lib/libhive/hive.c
 	@echo "libhive shared library built: $@"
 
+# ── libomap correctness test ─────────────────────────────────────────────
+# Insertion-ordered string map (Python dict semantics). Run:  make omap-test
+omap-test: lib/libomap/omap.c lib/libomap/omap_test.c lib/libomap/omap.h
+	$(CC) -std=c11 -O2 -Wall -Wextra -fsanitize=address,undefined -I lib/libomap lib/libomap/omap.c lib/libomap/omap_test.c -o /tmp/t_omap
+	/tmp/t_omap
+
 hive.so: lib/libhive/hive.so
 
 hive-test: lib/libhive/hive.c lib/libhive/hive_test.c lib/libhive/hive.h
 	$(CC) -std=c11 -O2 -Wall -Wextra -I lib/libhive lib/libhive/hive.c lib/libhive/hive_test.c -o /tmp/t_hive
 	/tmp/t_hive
 
-.PHONY: hive.so hive-test
+.PHONY: hive.so hive-test omap-test
