@@ -1,0 +1,3 @@
+# hermes_cli/prompt_stash.py oracle cases are generated internally by
+# tests/t_port_prompt_stash.c (self-contained Ctrl+S stash state-machine exercises).
+# This placeholder lets the oracle runner iterate; the harness ignores its contents.
