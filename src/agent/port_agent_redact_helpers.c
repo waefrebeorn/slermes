@@ -10,6 +10,7 @@
 #include <string.h>
 #include <strings.h>
 #include <ctype.h>
+#include "port_agent_redact_helpers.h"
 #include "../tools/browser_redact.h"
 
 /* Literal credential prefixes derived from _PREFIX_PATTERNS via
@@ -169,4 +170,128 @@ char *agent_redact_redact_terminal_output(const char *output, const char *comman
     out[len] = '\0';
     free(redacted);
     return out;
+}
+
+/* ── _is_word_start ─────────────────────────────────────────────────────── */
+/* PoP: agent_redact__is_word_start @ agent/redact.py:_is_word_start */
+bool agent_redact_is_word_start(const char *s, size_t i)
+{
+    if (!s) return false;
+    if (i == 0) return true;
+    char prev = s[i - 1];
+    char cur = s[i];
+    if (!isalpha((unsigned char)prev)) return true;
+    if (isupper((unsigned char)cur) && islower((unsigned char)prev)) return true;
+    if (isupper((unsigned char)cur) && isupper((unsigned char)prev) &&
+        i + 1 < strlen(s) && islower((unsigned char)s[i + 1])) return true;
+    return false;
+}
+
+/* ── _is_word_end ───────────────────────────────────────────────────────── */
+/* PoP: agent_redact__is_word_end @ agent/redact.py:_is_word_end */
+bool agent_redact_is_word_end(const char *s, size_t j, bool allow_plural)
+{
+    if (!s) return false;
+    size_t len = strlen(s);
+    if (j >= len) return true;
+    char cur = s[j];
+    if (!isalpha((unsigned char)cur)) return true;
+    if (isupper((unsigned char)cur) && islower((unsigned char)s[j - 1])) return true;
+    if (allow_plural && (cur == 's' || cur == 'S')) {
+        return agent_redact_is_word_end(s, j + 1, false);
+    }
+    return false;
+}
+
+/* ── _KEY_KEYWORD_RE match helper ───────────────────────────────────────── */
+/* Python: _KEY_KEYWORD_RE = re.compile(
+ *     r"(?:api|auth|access|refresh|session|secret)[ _.\-]?(?:key|token)"
+ *     r"|token|secret|passwd|password|credential|auth", re.IGNORECASE)
+ * Returns a pointer into `s` at the start of the next match after `from`,
+ * or NULL if no match. Sets *match_len to the matched length. */
+static const char *next_keyword_match(const char *s, size_t from, size_t *match_len)
+{
+    static const char *COMPOUND_PREFIXES[] = {
+        "api", "auth", "access", "refresh", "session", "secret", NULL
+    };
+    static const char *COMPOUND_SUFFIXES[] = {
+        "key", "token", NULL
+    };
+    static const char *SIMPLE[] = {
+        "token", "secret", "passwd", "password", "credential", "auth", NULL
+    };
+
+    size_t len = strlen(s);
+    for (size_t i = from; i < len; i++) {
+        /* Try compound forms: prefix[+sep]? + suffix */
+        for (int p = 0; COMPOUND_PREFIXES[p]; p++) {
+            size_t plen = strlen(COMPOUND_PREFIXES[p]);
+            if (i + plen > len) continue;
+            /* case-insensitive compare */
+            if (strncasecmp(s + i, COMPOUND_PREFIXES[p], plen) != 0) continue;
+            /* after prefix, check if next char is a separator or directly a suffix */
+            size_t pos = i + plen;
+            bool has_sep = false;
+            if (pos < len && (s[pos] == ' ' || s[pos] == '_' || s[pos] == '.' || s[pos] == '-')) {
+                has_sep = true;
+                pos++;
+            }
+            for (int suf = 0; COMPOUND_SUFFIXES[suf]; suf++) {
+                size_t slen = strlen(COMPOUND_SUFFIXES[suf]);
+                if (pos + slen <= len && strncasecmp(s + pos, COMPOUND_SUFFIXES[suf], slen) == 0) {
+                    *match_len = pos + slen - i;
+                    return s + i;
+                }
+            }
+        }
+        /* Try simple keywords */
+        for (int k = 0; SIMPLE[k]; k++) {
+            size_t klen = strlen(SIMPLE[k]);
+            if (i + klen <= len && strncasecmp(s + i, SIMPLE[k], klen) == 0) {
+                *match_len = klen;
+                return s + i;
+            }
+        }
+    }
+    return NULL;
+}
+
+/* ── _key_has_secret_keyword ────────────────────────────────────────────── */
+/* PoP: agent_redact__key_has_secret_keyword @ agent/redact.py:_key_has_secret_keyword */
+/* Faithful port: returns true if key contains a secret keyword at a word boundary.
+ * All-caps keys short-circuit to legacy embedded-match behavior. */
+bool agent_redact_key_has_secret_keyword(const char *key)
+{
+    if (!key || !*key) return false;
+
+    /* Check if all alpha chars are uppercase → legacy embedded match */
+    bool all_upper = true;
+    bool has_alpha = false;
+    for (const char *p = key; *p; p++) {
+        if (isalpha((unsigned char)*p)) {
+            has_alpha = true;
+            if (!isupper((unsigned char)*p)) {
+                all_upper = false;
+                break;
+            }
+        }
+    }
+    if (has_alpha && all_upper) return true;
+
+    /* Otherwise, scan for keywords at word boundaries */
+    size_t keylen = strlen(key);
+    size_t from = 0;
+    size_t match_len;
+    const char *match;
+    while ((match = next_keyword_match(key, from, &match_len)) != NULL) {
+        size_t match_start = (size_t)(match - key);
+        size_t match_end = match_start + match_len;
+
+        if (agent_redact_is_word_start(key, match_start) &&
+            agent_redact_is_word_end(key, match_end, true)) {
+            return true;
+        }
+        from = match_start + 1;
+    }
+    return false;
 }

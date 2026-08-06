@@ -240,4 +240,10 @@ int gateway_runner_connect_adapter(GatewayRunner *self,
 void gateway_runner_disconnect_adapter(GatewayRunner *self,
                                         const char *platform_name);
 
+/* Number of connected platform adapters (borrowed view). */
+int gateway_runner_adapter_count(const GatewayRunner *self);
+
+/* Borrowed adapter handle at index (NULL when out of range). */
+void *gateway_runner_adapter_at(const GatewayRunner *self, int index);
+
 #endif /* HERMES_GATEWAY_RUNNER_H */

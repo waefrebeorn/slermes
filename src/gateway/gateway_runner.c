@@ -552,6 +552,18 @@ void gateway_runner_disconnect_adapter(GatewayRunner *self,
     /* TODO */
 }
 
+/* Borrowed view of the connected adapter list (opaque accessor). */
+int gateway_runner_adapter_count(const GatewayRunner *self)
+{
+    return self ? self->adapter_count : 0;
+}
+
+void *gateway_runner_adapter_at(const GatewayRunner *self, int index)
+{
+    if (!self || index < 0 || index >= self->adapter_count) return NULL;
+    return self->adapters[index];
+}
+
 /* ════════════════════════════════════════════════════════════════════════
  * Small accessors — batch port of remaining GatewayRunner methods
  * ════════════════════════════════════════════════════════════════════════ */

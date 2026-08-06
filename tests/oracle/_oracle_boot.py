@@ -33,6 +33,11 @@ def _is_nondev_source(p):
     # Keep the venv site-packages (third-party deps like yaml/pyyaml).
     if "/venv/" in rp or rp.endswith("/venv"):
         return False
+    # Keep the runtime stdlib (a hermetic CPython under
+    # .hermes/hermes-agent/.hermes-runtime/...) — stripping it kills
+    # pkgutil and every other stdlib module.
+    if ".hermes-runtime/" in rp:
+        return False
     return True
 
 

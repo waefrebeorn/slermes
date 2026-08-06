@@ -35,6 +35,9 @@ char *format_runtime_footer(const char *model,
 
 /* Top-level entry point. Returns footer text (empty when disabled/no data).
  * Caller must free. */
+/* Humanize a turn duration: "<1s", "22s", "1m05s". */
+const char *format_latency(double seconds);
+
 char *build_footer_line(json_node_t *user_config,
                          const char *platform_key,
                          const char *model,

@@ -1,0 +1,25 @@
+backup_mode -no-backup-
+backup_mode -backup-
+backup_mode raw=true
+backup_mode raw=false
+backup_mode raw=quick
+backup_mode raw=off
+backup_mode raw=full
+backup_mode raw=zip
+backup_mode raw=none
+backup_mode raw=disabled
+backup_mode raw=unknown_mode
+backup_mode
+is_android
+web_toolchain_roots web
+web_toolchain_roots /repo/web
+web_toolchain_roots /repo/web/src
+venv_holders
+venv_holders 1234|python.exe|hermes serve --dashboard
+venv_holders 1234|python.exe|hermes gw run;5678|pythonw.exe|hermes serve
+venv_holders 1234|python.exe|hermes serve;5678|pythonw.exe|hermes dashboard;9012|python.exe|hermes tool
+venv_holders 1234|python.exe|hermes serve;5678|pythonw.exe|hermes dashboard;9012|python.exe|hermes tool;3456|python.exe|hermes cli;7890|python.exe|hermes cron;1111|python.exe|hermes bg
+numstat_paths 10\t5\tsrc/main.py
+numstat_paths 3\t0\tsrc/main.py\n0\t2\tsrc/cli/cmd.py\n1\t1\tlib/shared.py
+numstat_paths \t\t\t
+numstat_paths 0\t0\tREADME.md

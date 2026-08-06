@@ -17,6 +17,7 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <math.h>
 #include <pthread.h>
 
 /* ================================================================
@@ -126,6 +127,19 @@ json_node_t *resolve_footer_config(json_node_t *user_config,
     }
 
     return resolved;
+}
+
+/* PoP: _format_latency @ gateway/runtime_footer.py:_format_latency */
+const char *format_latency(double seconds)
+{
+    static char buf[16];
+    if (seconds < 1.0) return "<1s";
+    int total = (int)round(seconds);
+    if (total < 60) { snprintf(buf, sizeof(buf), "%ds", total); return buf; }
+    int m = total / 60;
+    int s = total % 60;
+    snprintf(buf, sizeof(buf), "%dm%02ds", m, s);
+    return buf;
 }
 
 /* PoP: format_runtime_footer @ gateway/runtime_footer.py:format_runtime_footer */

@@ -1,0 +1,38 @@
+norm_provider	 openai	
+norm_provider	 OpenAI	
+norm_provider	 OPENAI/	
+norm_provider	
+norm_model	 GPT-4	
+norm_model	
+norm_base_url	 https://api.openai.com/	
+norm_base_url	 https://api.Example.COM///	
+norm_base_url	
+classify_failure_scope	auth error
+classify_failure_scope	rate limit
+classify_failure_scope	timestamp mismatch
+classify_failure_scope	
+is_word_start	apiKey	0
+is_word_start	apiKey	3
+is_word_start	apiKey	4
+is_word_start	APIKey	0
+is_word_start	APIKey	2
+is_word_end	apiKey	3
+is_word_end	apiKey	6
+is_word_end	APIKey	2
+is_word_end	tokens	3	true
+is_word_end	tokens	3	false
+is_word_end	tokens	6	true
+key_has_secret_keyword	api_key
+key_has_secret_keyword	Authorization
+key_has_secret_keyword	credential_value
+key_has_secret_keyword	password_field
+key_has_secret_keyword	auth
+key_has_secret_keyword	ACCESS_TOKEN
+key_has_secret_keyword	model_name
+key_has_secret_keyword	secret_service
+key_has_secret_keyword	MY_API_KEY
+key_has_secret_keyword	refresh_token
+key_has_secret_keyword	non_secret
+key_has_secret_keyword	sessionKey
+key_has_secret_keyword	secretToken
+key_has_secret_keyword	API_TOKEN_EXTRA

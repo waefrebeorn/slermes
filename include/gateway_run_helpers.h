@@ -11,6 +11,9 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include "hermes_json.h"
+/* Opaque GatewayRunner handle (defined in hermes_gateway_runner.h). */
+typedef struct GatewayRunner GatewayRunner;
 
 #ifdef __cplusplus
 extern "C" {
@@ -188,6 +191,163 @@ void gw_gateway_config_home(char *out, size_t out_size);
 void gw_parse_session_key(const char *session_key,
                            char *platform_out, size_t platform_size,
                            char *id_out, size_t id_size);
+
+/* ── Remaining gateway/run.py REAL_GAP ports ──────────────────── */
+
+/* _record_hygiene_cooldown — persist compression cooldown per session */
+void gw_record_hygiene_cooldown(GatewayRunner *self, const char *session_key,
+                                double cooldown_seconds);
+
+/* _seed_hygiene_system_prompt — seed system prompt for hygiene compression */
+bool gw_seed_hygiene_system_prompt(GatewayRunner *self, const char *session_key,
+                                    const char *system_prompt);
+
+/* _startup_restore_drain_timeout_secs — env var for drain timeout */
+double gw_startup_restore_drain_timeout_secs(void);
+
+/* _stamp_hygiene_compression_provenance — log provenance stamp */
+void gw_stamp_hygiene_compression_provenance(GatewayRunner *self,
+                                              const char *session_key,
+                                              const char *desc);
+
+/* _reap_gateway_turn_processes — kill stale gateway turn processes */
+int gw_reap_gateway_turn_processes(GatewayRunner *self, const char *session_key,
+                                    const char *source, bool is_still_current);
+
+/* _abandon_timed_out_gateway_turn — interrupt a timed-out running agent */
+bool gw_abandon_timed_out_gateway_turn(GatewayRunner *self, const char *session_key,
+                                        const char *source, bool is_still_current);
+
+/* _watch_gateway_turn_inactivity — watchdog thread for idle agents */
+void *gw_watch_gateway_turn_inactivity(void *arg);
+
+/* progress_callback hook */
+void gw_progress_callback(GatewayRunner *self, const char *event_type,
+                            const char *tool_name, const char *preview);
+
+/* send_progress_messages — flush pending progress to session adapter */
+void gw_send_progress_messages(GatewayRunner *self, const char *session_key);
+
+/* voice_ack_callback — voice ack for voice channels */
+void gw_voice_ack_callback(GatewayRunner *self, const char *session_key,
+                             const char *call_id, const char *tool_name);
+
+/* _step_callback_sync — emit agent:step hook */
+void gw_step_callback_sync(GatewayRunner *self, const char *session_key,
+                             int iteration, const char *tool_names_json);
+
+/* _event_callback_sync — emit generic event hook */
+void gw_event_callback_sync(GatewayRunner *self, const char *session_key,
+                              const char *event_type, const char *context_json);
+
+/* _status_callback_sync — emit status update to session adapter */
+void gw_status_callback_sync(GatewayRunner *self, const char *session_key,
+                               const char *event_type, const char *message);
+
+/* run_sync — main agent run loop (delegates to Python) */
+int gw_run_sync(GatewayRunner *self, const char *session_key, const char *event_json);
+
+/* _sessions_map — get or create the _sessions JSON map */
+json_t *gw_sessions_map(GatewayRunner *self);
+
+/* _session_state — get or create session state object */
+json_t *gw_session_state(GatewayRunner *self, const char *session_key);
+
+/* _peek_session_state — read-only session state lookup */
+json_t *gw_peek_session_state(GatewayRunner *self, const char *session_key);
+
+/* _is_session_running — check if session has a running agent */
+bool gw_is_session_running(GatewayRunner *self, const char *session_key);
+
+/* _running_agent_items — list [session_key, agent] pairs for all running agents */
+json_t *gw_running_agent_items(GatewayRunner *self);
+
+/* _load_restart_after_turn_timeout — env var, default 30s */
+double gw_load_restart_after_turn_timeout(void);
+
+/* _prepare_busy_steer_text — transcribe voice for busy steer */
+const char *gw_prepare_busy_steer_text(GatewayRunner *self, const char *event_json);
+
+/* _await_active_work_before_restart — wait for in-flight work before stop */
+bool gw_await_active_work_before_restart(GatewayRunner *self, double timeout_secs);
+
+/* _log_background_resume_result — done-callback for boot-resume tasks */
+void gw_log_background_resume_result(const char *task_name, bool cancelled,
+                                       const char *error);
+
+/* _session_stall_timeout_seconds — env var, default 300s */
+double gw_session_stall_timeout_seconds(GatewayRunner *self);
+
+/* _iter_gateway_adapters — iterate all gateway adapters */
+json_t *gw_iter_gateway_adapters(GatewayRunner *self);
+
+/* _session_activity_for_stall — get activity summary for stall detection */
+json_t *gw_session_activity_for_stall(GatewayRunner *self, const char *session_key);
+
+/* _check_session_stalls — check all sessions for stall conditions */
+int gw_check_session_stalls(GatewayRunner *self, double timeout_seconds);
+
+/* _session_stall_watcher — periodic stall detection thread */
+void *gw_session_stall_watcher(void *arg);
+
+/* _make_default_profile_message_handler — message handler for default profile */
+void *gw_make_default_profile_message_handler(GatewayRunner *self);
+
+/* _primary_message_handler — return primary message handler */
+void *gw_primary_message_handler(GatewayRunner *self);
+
+/* _adapter_credential_claim — claim exclusive credential resource */
+json_t *gw_adapter_credential_claim(GatewayRunner *self, const char *platform,
+                                      const char *adapter_json);
+
+/* _adapter_listener_claim — claim exclusive listener resource */
+json_t *gw_adapter_listener_claim(GatewayRunner *self, const char *platform,
+                                    const char *adapter_json);
+
+/* _dispatch_busy_slash_command — dispatch slash command while agent running */
+const char *gw_dispatch_busy_slash_command(GatewayRunner *self, const char *session_key,
+                                             const char *command_name, const char *args);
+
+/* _busy_start_command — /start handler (platform ping) */
+const char *gw_busy_start_command(GatewayRunner *self, const char *session_key);
+
+/* _busy_egress_command — gateway status text */
+const char *gw_busy_egress_command(GatewayRunner *self, const char *session_key);
+
+/* _busy_stop_command — /stop handler */
+const char *gw_busy_stop_command(GatewayRunner *self, const char *session_key);
+
+/* _busy_new_command — /new handler */
+const char *gw_busy_new_command(GatewayRunner *self, const char *session_key);
+
+/* _busy_queue_command — /queue handler */
+const char *gw_busy_queue_command(GatewayRunner *self, const char *session_key,
+                                    const char *prompt);
+
+/* _busy_steer_command — /steer handler */
+const char *gw_busy_steer_command(GatewayRunner *self, const char *session_key,
+                                    const char *prompt);
+
+/* _busy_goal_command — /goal handler */
+const char *gw_busy_goal_command(GatewayRunner *self, const char *session_key,
+                                   const char *args);
+
+/* _prepare_clarify_reply_text — build clarify reply for ambiguous messages */
+const char *gw_prepare_clarify_reply_text(GatewayRunner *self, const char *event_json);
+
+/* _is_relay_discord_channel_lane — check if Discord source is a channel lane */
+bool gw_is_relay_discord_channel_lane(GatewayRunner *self, const char *source_json);
+
+/* _relay_auto_thread_info — get auto-thread info for Discord relay */
+json_t *gw_relay_auto_thread_info(GatewayRunner *self, const char *source_json);
+
+/* _build_stream_consumer_config — build stream consumer config JSON */
+json_t *gw_build_stream_consumer_config(GatewayRunner *self, const char *source_json,
+                                          const char *scfg_json, const char *adapter_json,
+                                          const char *on_missing_cursor);
+
+/* _shutdown_gateway_health_export — shutdown OTLP health export runtime */
+void gw_shutdown_health_export(GatewayRunner *self);
 
 #ifdef __cplusplus
 }
