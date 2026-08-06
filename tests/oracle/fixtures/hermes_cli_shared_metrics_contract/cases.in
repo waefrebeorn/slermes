@@ -1,0 +1,101 @@
+# shared_metrics_contract oracle fixtures
+# Format: op|arg0|arg1|...
+# Each line tests one function call
+
+# ── duration_bucket ──
+duration_bucket|-1
+duration_bucket|0
+duration_bucket|500
+duration_bucket|1000
+duration_bucket|4999
+duration_bucket|5000
+duration_bucket|29999
+duration_bucket|30000
+duration_bucket|119999
+duration_bucket|120000
+duration_bucket|599999
+duration_bucket|600000
+duration_bucket|99999999
+
+# ── count_bucket ──
+count_bucket|0
+count_bucket|1
+count_bucket|2
+count_bucket|3
+count_bucket|5
+count_bucket|6
+count_bucket|10
+count_bucket|11
+count_bucket|100
+
+# ── execution_surface ──
+execution_surface|cli
+execution_surface|telegram
+execution_surface|api_server
+execution_surface|cron
+execution_surface|discord
+execution_surface|unknown
+execution_surface|web
+execution_surface|
+
+# ── task_entrypoint ──
+task_entrypoint|interactive|cli|false|false
+task_entrypoint||gateway|false|false
+task_entrypoint||desktop|false|false
+task_entrypoint||tui|false|false
+task_entrypoint||scheduled_task|false|false
+task_entrypoint||python|false|false
+task_entrypoint|api|cli|false|false
+task_entrypoint|delegated|cli|true|false
+task_entrypoint|unknown|unknown|false|false
+
+# ── task_start_fields ──
+task_start_fields|interactive|cli
+task_start_fields||telegram
+task_start_fields||cron
+
+# ── task_terminal_fields ──
+task_terminal_fields|interactive|cli|5000|5|3|1
+task_terminal_fields||telegram|600000|100|20|5
+
+# ── task_terminal_state ──
+task_terminal_state|completed|false|true|false
+task_terminal_state|cancelled|true|false|false
+task_terminal_state|timeout|false|false|false
+task_terminal_state|max_iterations|false|false|false
+task_terminal_state|approval_denied|false|false|false
+task_terminal_state|guardrail|false|false|false
+task_terminal_state|system_aborted|false|false|false
+task_terminal_state||false|false|false
+task_terminal_state|some_error|false|false|true
+
+# ── model_family ──
+model_family||gpt-4o|
+model_family||claude-opus-4|
+model_family|claude|some-model|
+model_family||deepseek/deepseek-r1|
+model_family|unknown|some-random-model|
+model_family|||
+
+# ── model_call_outcome ──
+model_call_outcome|success
+model_call_outcome|failed
+model_call_outcome|cancelled
+model_call_outcome|unknown
+model_call_outcome|
+
+# ── provider_family ──
+provider_family|openai
+provider_family|anthropic
+provider_family|ollama
+provider_family|moa
+provider_family|custom
+provider_family|lmstudio
+provider_family|
+
+# ── counter_dimensions_are_valid ──
+counter_dims_valid|hermes.model_call.count|call_role=primary|locality=remote|model_family=gpt|outcome=success|provider_family=direct
+counter_dims_valid|hermes.model_call.count|call_role=primary|locality=invalid|model_family=gpt|outcome=success|provider_family=direct
+counter_dims_valid|hermes.task_run.started|entrypoint=interactive|execution_surface=cli
+counter_dims_valid|hermes.task_run.finished|duration_bucket=5s_to_30s|end_reason=completed|entrypoint=interactive|execution_surface=cli|model_call_count_bucket=5|outcome=success|retry_count_bucket=1|termination=none|tool_call_count_bucket=3
+counter_dims_valid|unknown.metric|key=value

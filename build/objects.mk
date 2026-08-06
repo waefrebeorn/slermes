@@ -261,7 +261,8 @@ PORT_OBJ = \
         src/agent/anthropic_adapter.o src/agent/port_anthropic_adapter_ports.o \
         src/cli/port_plugin_manifest.o \
         src/cli/port_tools_config_helpers.o \
-        src/cli/port_cli_command_registry.o
+        src/cli/port_cli_command_registry.o \
+        src/cli/port_hermes_cli_shared_metrics_contract.o
 
 # Desktop app parity objects (v465-v468)
 # Desktop app parity objects (core — always needed for main binary)
