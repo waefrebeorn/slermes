@@ -26,6 +26,9 @@
 #include <stdbool.h>
 #include <stddef.h>
 
+/* Callback form of Python's `run_in_session(session, callback, *args)`. */
+typedef void *(*relay_session_cb)(void *user);
+
 /* ── Contract constants (mirror the Python module's globals) ──────────── */
 
 #define RELAY_SESSION_SCOPE          "hermes.session"
@@ -89,6 +92,51 @@ typedef struct relay_backend {
      * NULL hook == Python's "not callable" branch. */
     char *(*tools_request_intercepts)(void *ctx, const char *tool_name,
                                       const char *args_json);
+
+    /* llm.execute(name, relay_request_json, invoke_callback, invoke_user,
+     *   handle=parent, metadata_json, model_name, codec, response_codec) ->
+     * returns managed JSON result via out_result (malloc'd, caller frees).
+     * `invoke_callback` is called on the session thread with `invoke_user`;
+     * it must return a malloc'd JSON string (the result of the provider callback).
+     * NULL hook => execute() degrades to direct callback invocation (no Relay). */
+    bool (*llm_execute)(void *ctx, const char *name,
+                        const char *relay_request_json,
+                        relay_session_cb invoke_callback, void *invoke_user,
+                        relay_handle_t parent,
+                        const char *metadata_json,
+                        const char *model_name,
+                        const char *codec, const char *response_codec,
+                        char **out_result);
+
+    /* llm.stream_execute(name, relay_request_json, provider_stream_cb,
+     *   provider_stream_user, observe_chunk_cb, observe_chunk_user,
+     *   finalizer_cb, finalizer_user,
+     *   handle=parent, metadata_json, model_name, codec, response_codec) ->
+     * returns a stream handle (opaque, backend-owned) via out_handle.
+     * Each callback is relay_session_cb-style (void* user -> void* ret);
+     *   provider_stream_cb runs as an async generator (yields JSON strings,
+     *   NULL-terminated **out_chunk for synchronous pull).
+     * NULL hook => stream() degrades to direct stream-factory invocation. */
+    bool (*llm_stream_execute)(void *ctx, const char *name,
+                               const char *relay_request_json,
+                               relay_session_cb provider_stream_cb,
+                               void *provider_stream_user,
+                               relay_session_cb observe_chunk_cb,
+                               void *observe_chunk_user,
+                               relay_session_cb finalizer_cb,
+                               void *finalizer_user,
+                               relay_handle_t parent,
+                               const char *metadata_json,
+                               const char *model_name,
+                               const char *codec, const char *response_codec,
+                               void **out_handle);
+
+    /* llm_stream_next(handle, out_chunk_json) -> true if a chunk was produced,
+     * false on end-of-stream or error. Caller frees *out_chunk_json. */
+    bool (*llm_stream_next)(void *ctx, void *handle, char **out_chunk_json);
+
+    /* llm_stream_close(handle) — release backend stream resources. */
+    void (*llm_stream_close)(void *ctx, void *handle);
 } relay_backend_t;
 
 /* Install the process-wide backend used by every runtime created afterwards
@@ -140,9 +188,6 @@ void relay_runtime_unregister_subagent(relay_runtime_t *rt, const char *child_se
 relay_session_t *relay_runtime_get_session(relay_runtime_t *rt, const char *session_id);
 /* PoP: relay_runtime_get_session_handle @ agent/relay_runtime.py:get_session_handle */
 relay_handle_t   relay_runtime_get_session_handle(relay_runtime_t *rt, const char *session_id);
-
-/* Callback form of Python's `run_in_session(session, callback, *args)`. */
-typedef void *(*relay_session_cb)(void *user);
 
 /* PoP: relay_runtime_run_in_session @ agent/relay_runtime.py:run_in_session */
 bool relay_runtime_run_in_session(relay_runtime_t *rt, relay_session_t *session,
@@ -236,6 +281,9 @@ relay_lease_t  *relay_turn_lease(relay_turn_t *turn);
 /* Logical LLM child scopes tracked on a turn (turn.logical_llm_calls). */
 bool relay_turn_add_logical_call(relay_turn_t *turn, const char *request_id,
                                  relay_handle_t handle);
+relay_handle_t relay_turn_get_logical_call(const relay_turn_t *turn,
+                                           const char *request_id);
+void relay_turn_remove_logical_call(relay_turn_t *turn, const char *request_id);
 size_t relay_turn_logical_call_count(relay_turn_t *turn);
 
 /* ── RelaySessionCoordinator ──────────────────────────────────────────── */

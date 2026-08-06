@@ -934,6 +934,19 @@ bool relay_turn_add_logical_call(relay_turn_t *t, const char *request_id, relay_
     return omap_set(t->logical_calls, request_id, h);
 }
 
+relay_handle_t relay_turn_get_logical_call(const relay_turn_t *t,
+                                           const char *request_id)
+{
+    if (!t || !request_id || !*request_id) return NULL;
+    return omap_get(t->logical_calls, request_id);
+}
+
+void relay_turn_remove_logical_call(relay_turn_t *t, const char *request_id)
+{
+    if (!t || !request_id || !*request_id) return;
+    omap_pop(t->logical_calls, request_id);
+}
+
 size_t relay_turn_logical_call_count(relay_turn_t *t)
 {
     return t ? omap_size(t->logical_calls) : 0;
