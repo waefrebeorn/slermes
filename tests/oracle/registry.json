@@ -42,6 +42,11 @@
       "oracle": "tests/sta_oracle_flux3_video_tool.py",
       "fixtures": "tests/oracle/fixtures/flux3_video_tool"
     },
+    "transcription_tools_pure": {
+      "harness": "tests/t_port_transcription_tools_pure.c",
+      "oracle": "tests/sta_oracle_transcription_tools_pure.py",
+      "fixtures": "tests/oracle/fixtures/transcription_tools_pure"
+    },
     "agent_display": {
       "harness": "tests/t_port_agent_display.c",
       "oracle": "tests/sta_oracle_agent_display.py",

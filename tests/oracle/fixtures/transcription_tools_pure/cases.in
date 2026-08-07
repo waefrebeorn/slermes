@@ -1,0 +1,16 @@
+[
+  {"op": "ts_is_local_stt_provider", "value": "local"},
+  {"op": "ts_is_local_stt_provider", "value": "local_command"},
+  {"op": "ts_is_local_stt_provider", "value": "openai"},
+  {"op": "ts_is_local_stt_provider", "value": "LOCAL"},
+  {"op": "ts_is_local_stt_provider", "value": "local_whisper"},
+  {"op": "ts_is_local_or_private_url", "value": "http://localhost:8080"},
+  {"op": "ts_is_local_or_private_url", "value": "https://127.0.0.1:8000"},
+  {"op": "ts_is_local_or_private_url", "value": "https://api.openai.com/v1/audio/transcriptions"},
+  {"op": "ts_is_local_or_private_url", "value": "http://192.168.1.100:8080"},
+  {"op": "ts_is_local_or_private_url", "value": "https://example.lan/path"},
+  {"op": "ts_is_local_or_private_url", "value": "https://10.0.0.5:8000"},
+  {"op": "ts_is_local_or_private_url", "value": "http://[::1]/test"},
+  {"op": "ts_command_stt_env_passthrough", "value": {"env_passthrough": ["MY_API_KEY", "  EXTRA_KEY  ", ""]}},
+  {"op": "ts_command_stt_env_passthrough", "value": {}}
+]
