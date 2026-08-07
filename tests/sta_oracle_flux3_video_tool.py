@@ -1,6 +1,5 @@
-"""Oracle for tools/flux3_video_tool.py pure helpers.
-
-Tests against LIVE Python source.
+"""Oracle for tools/flux3_video_tool.py.
+Tests _still_generating, _resolve_destination, _free_path against Python.
 """
 import json, os, sys
 
@@ -8,40 +7,25 @@ DEV_ROOT = os.environ.get("HERMES_DEV_ROOT") or os.path.expanduser("~/.hermes/he
 if DEV_ROOT not in sys.path:
     sys.path.insert(0, DEV_ROOT)
 
-from tools.flux3_video_tool import (
-    _looks_like_local_path,
-    _display_path,
-    _filename_from_url,
-    _is_transport_error,
-    _poll_is_finished,
-    _retry_after_seconds,
-    _still_generating,
-    _without_media,
-    _submit_args,
-)
+from tools.flux3_video_tool import _still_generating, _resolve_destination, _free_path
 
 
 def run(c):
     op = c.get("op")
-    if op == "_looks_like_local_path":
-        return _looks_like_local_path(c["value"])
-    if op == "_display_path":
-        return _display_path(c["value"])
-    if op == "_filename_from_url":
-        return _filename_from_url(c["value"])
-    if op == "_is_transport_error":
-        return _is_transport_error(c["raw"])
-    if op == "_poll_is_finished":
-        return _poll_is_finished(c["raw"])
-    if op == "_retry_after_seconds":
-        r = _retry_after_seconds(c["raw"])
-        return r if r is not None else 0
     if op == "_still_generating":
         return _still_generating(c["job_id"])
-    if op == "_without_media":
-        return _without_media(c.get("args"))
-    if op == "_submit_args":
-        return _submit_args(c.get("mode", "text_to_video"), c.get("args"))
+    if op == "_resolve_destination":
+        save_to = c.get("save_to")
+        filename = c.get("filename", "flux3-video.mp4")
+        from pathlib import Path
+        result = _resolve_destination(save_to, filename)
+        return str(result)
+    if op == "_free_path":
+        directory = c.get("directory", "/tmp")
+        name = c.get("name", "flux3-video.mp4")
+        from pathlib import Path
+        result = _free_path(Path(directory) / name)
+        return str(result)
     return None
 
 

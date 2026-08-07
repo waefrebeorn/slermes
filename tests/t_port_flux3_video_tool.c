@@ -1,5 +1,8 @@
 /*
- * Oracle harness for tools/flux3_video_tool.py pure helpers.
+ * Oracle harness for tools/flux3_video_tool.py.
+ * Tests: _still_generating, _resolve_destination, _free_path.
+ * (The 8 pure helpers are ported by port_tools_flux3_video.c and tested
+ * via the f3_* symbol names; this file complements, not duplicates.)
  */
 #define _GNU_SOURCE
 #include <stdio.h>
@@ -30,43 +33,23 @@ int main(int argc, char **argv) {
         json_t *opj = json_obj_get(c, "op");
         const char *name = opj && opj->type == JSON_STRING ? opj->str_val : "";
 
-        if (strcmp(name, "_looks_like_local_path") == 0) {
-            const char *v = json_get_str(c, "value", "");
-            bool r = flux3_looks_like_local_path(v);
-            printf(r ? "true\n" : "false\n");
-        } else if (strcmp(name, "_display_path") == 0) {
-            const char *p = json_get_str(c, "value", "");
-            char *r = flux3_display_path(p);
-            printf("%s\n", r ? r : "null"); free(r);
-        } else if (strcmp(name, "_filename_from_url") == 0) {
-            const char *u = json_get_str(c, "value", "");
-            char *r = flux3_filename_from_url(u);
-            printf("%s\n", r ? r : "null"); free(r);
-        } else if (strcmp(name, "_is_transport_error") == 0) {
-            const char *r = json_get_str(c, "raw", "{}");
-            bool v = flux3_is_transport_error(r);
-            printf(v ? "true\n" : "false\n");
-        } else if (strcmp(name, "_poll_is_finished") == 0) {
-            const char *r = json_get_str(c, "raw", "{}");
-            bool v = flux3_poll_is_finished(r);
-            printf(v ? "true\n" : "false\n");
-        } else if (strcmp(name, "_retry_after_seconds") == 0) {
-            const char *r = json_get_str(c, "raw", "{}");
-            double v = flux3_retry_after_seconds(r);
-            printf("%g\n", v);
-        } else if (strcmp(name, "_still_generating") == 0) {
+        if (strcmp(name, "_still_generating") == 0) {
             const char *j = json_get_str(c, "job_id", "abc");
             char *r = flux3_still_generating(j);
             printf("%s\n", r ? r : "null"); free(r);
-        } else if (strcmp(name, "_without_media") == 0) {
-            json_t *vj = json_obj_get(c, "args");
-            json_t *r = flux3_without_media(vj);
-            char *s = json_serialize(r); printf("%s\n", s); free(s); json_free(r);
-        } else if (strcmp(name, "_submit_args") == 0) {
-            json_t *vj = json_obj_get(c, "args");
-            const char *mode = json_get_str(c, "mode", "text_to_video");
-            json_t *r = flux3_submit_args(mode, vj);
-            char *s = json_serialize(r); printf("%s\n", s); free(s); json_free(r);
+        } else if (strcmp(name, "_resolve_destination") == 0) {
+            const char *save_to = json_obj_get(c, "save_to");
+            save_to = save_to ? json_get_str(c, "save_to", "") : "";
+            const char *filename = json_obj_get(c, "filename");
+            char *r = flux3_resolve_destination(
+                json_has(c, "save_to") ? json_get_str(c, "save_to", "") : NULL,
+                json_has(c, "filename") ? json_get_str(c, "filename", "") : NULL);
+            printf("%s\n", r ? r : "null"); free(r);
+        } else if (strcmp(name, "_free_path") == 0) {
+            const char *dir = json_get_str(c, "directory", "/tmp");
+            const char *name2 = json_get_str(c, "name", "test.mp4");
+            char *r = flux3_free_path(dir, name2);
+            printf("%s\n", r ? r : "null"); free(r);
         } else {
             printf("unknown op\n");
         }
