@@ -72,6 +72,32 @@ char *ai_claude_rule_to_command_pattern(const char *rule);
 void ai_sanitize_mcp_env(const char *env_json,
                          char **out_kept, char ***out_stripped);
 
+/* PoP: load_yaml_file @ hermes_cli/agent_import.py:load_yaml_file */
+/* Parse a YAML string into a JSON string. Mirrors Python's yaml.safe_load:
+ * returns "{}" for empty/non-dict input, parses YAML into JSON. */
+char *ai_load_yaml_from_string(const char *yaml_text);
+
+/* PoP: dump_yaml_file @ hermes_cli/agent_import.py:dump_yaml_file */
+/* Serialize a JSON dict to YAML string. Mirrors Python's
+ * yaml.safe_dump(data, default_flow_style=False, sort_keys=False,
+ * allow_unicode=True). Produces block-style YAML. */
+char *ai_dump_yaml_to_string(const char *json_dict);
+
+/* PoP: default_source_dir @ hermes_cli/agent_import.py:default_source_dir */
+/* Build the default source dir for an agent:
+ * claude-code → "<home>/.claude", codex → "<home>/.codex" */
+char *ai_default_source_dir(const char *agent, const char *home);
+
+/* PoP: detect_agents @ hermes_cli/agent_import.py:detect_agents */
+/* Return list of agents whose default dirs exist under home.
+ * Returns malloc'd NULL-terminated array of malloc'd strings. */
+char **ai_detect_agents(const char *home);
+
+/* PoP: backup_memory_file @ hermes_cli/agent_import.py:backup_memory_file */
+/* Build a backup path: "<path>.bak.<unix_ts>".
+ * Returns NULL if the source file doesn't exist. */
+char *ai_backup_path(const char *path, long unix_ts);
+
 #ifdef __cplusplus
 }
 #endif

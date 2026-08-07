@@ -23,5 +23,16 @@
   {"op": "parse_existing_memory_entries", "arg": ""},
   {"op": "merge_entries", "arg": {"existing": [], "incoming": ["hello world", "Hello World", "third entry"], "limit": 1000}},
   {"op": "merge_entries", "arg": {"existing": ["old entry"], "incoming": ["old entry", "new entry"], "limit": 1000}},
-  {"op": "merge_entries", "arg": {"existing": [], "incoming": ["short"], "limit": 3}}
+  {"op": "merge_entries", "arg": {"existing": [], "incoming": ["short"], "limit": 3}},
+  {"op": "load_yaml_file", "arg": "provider: claude-3-5-sonnet-20241022\nmodel: anthropic\n"},
+  {"op": "load_yaml_file", "arg": "command_allowlist:\n  - git diff *\n  - npm run build\n"},
+  {"op": "load_yaml_file", "arg": "not: a: valid: yaml"},
+  {"op": "load_yaml_file", "arg": ""},
+  {"op": "dump_yaml_file", "arg": "{\"provider\": \"claude-3-5-sonnet-20241022\", \"model\": \"anthropic\"}"},
+  {"op": "dump_yaml_file", "arg": "{\"command_allowlist\": [\"git diff *\", \"npm run build\"]}"},
+  {"op": "default_source_dir", "arg": "claude-code"},
+  {"op": "default_source_dir", "arg": "codex"},
+  {"op": "detect_agents", "arg": "dummy"},
+  {"op": "backup_memory_file", "arg": "@SBX@/memories/MEMORY.md"},
+  {"op": "backup_memory_file", "arg": "@SBX@/nonexistent.md"},
 ]

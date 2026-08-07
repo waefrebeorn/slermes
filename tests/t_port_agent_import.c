@@ -167,6 +167,33 @@ int main(int argc, char **argv) {
             json_free(out);
             free(ex_json);
             free(in_json);
+        } else if (strcmp(op, "load_yaml_file") == 0) {
+            const char *s = (arg && arg->type == JSON_STRING) ? arg->str_val : "";
+            char *r = ai_load_yaml_from_string(s);
+            printf("%s\n", r);
+            free(r);
+        } else if (strcmp(op, "dump_yaml_file") == 0) {
+            const char *s = (arg && arg->type == JSON_STRING) ? arg->str_val : "";
+            char *r = ai_dump_yaml_to_string(s);
+            print_str(r); printf("\n");
+            free(r);
+        } else if (strcmp(op, "default_source_dir") == 0) {
+            const char *s = (arg && arg->type == JSON_STRING) ? arg->str_val : "";
+            char *r = ai_default_source_dir(s, "@SBX@");
+            if (r) { printf("\"%s\"\n", r); free(r); }
+            else { printf("null\n"); }
+        } else if (strcmp(op, "detect_agents") == 0) {
+            char **r = ai_detect_agents("@SBX@");
+            print_str_array(r);
+            if (r) {
+                for (size_t j = 0; r[j]; j++) free(r[j]);
+                free(r);
+            }
+        } else if (strcmp(op, "backup_memory_file") == 0) {
+            const char *s = (arg && arg->type == JSON_STRING) ? arg->str_val : "";
+            char *r = ai_backup_path(s, 1700000000);
+            if (r) { printf("\"%s\"\n", r); free(r); }
+            else { printf("null\n"); }
         } else {
             printf("UNKNOWN_OP\n");
         }

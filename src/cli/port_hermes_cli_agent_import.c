@@ -11,12 +11,14 @@
 #define _POSIX_C_SOURCE 200809L
 #define _GNU_SOURCE
 #include "port_hermes_cli_agent_import.h"
-#include "libjson/json.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <sys/stat.h>
+#include "libyaml/yaml.h"
+#include "libjson/json.h"
 
 #define AI_ENTRY_DELIMITER "\n\xC2\xA7\n" /* "\n§\n" (UTF-8) */
 
@@ -641,4 +643,295 @@ char **ai_merge_entries(const char *existing_json, const char *incoming_json,
     if (in) json_free(in);
     ai_strarr_free(seen);
     return merged;
+}
+
+/* ── YAML helpers ──────────────────────────────────────────── */
+
+/* Simple growable buffer for YAML emission */
+struct ai_yaml_buf {
+    char *buf;
+    size_t len;
+    size_t cap;
+};
+
+static void ai_buf_init(struct ai_yaml_buf *b) {
+    b->buf = NULL; b->len = 0; b->cap = 0;
+}
+
+static void ai_buf_putc(struct ai_yaml_buf *b, char c) {
+    if (b->len + 2 > b->cap) {
+        b->cap = b->cap ? b->cap * 2 + 64 : 128;
+        b->buf = realloc(b->buf, b->cap);
+    }
+    b->buf[b->len++] = c;
+    b->buf[b->len] = '\0';
+}
+
+static void ai_buf_puts(struct ai_yaml_buf *b, const char *s) {
+    if (!s) return;
+    size_t slen = strlen(s);
+    if (b->len + slen + 1 > b->cap) {
+        b->cap = (b->len + slen + 1) * 2;
+        b->buf = realloc(b->buf, b->cap);
+    }
+    memcpy(b->buf + b->len, s, slen);
+    b->len += slen;
+    b->buf[b->len] = '\0';
+}
+
+/* PoP: load_yaml_file @ hermes_cli/agent_import.py:load_yaml_file */
+/* Parse a YAML string into a JSON string. Mirrors Python's
+ * yaml.safe_load: returns "{}" for empty/non-dict input. */
+char *ai_load_yaml_from_string(const char *yaml_text) {
+    if (!yaml_text || !*yaml_text) {
+        char *empty = strdup("{}");
+        return empty;
+    }
+    char *err = NULL;
+    yaml_doc_t *doc = yaml_parse(yaml_text, &err);
+    if (err) free(err);
+    if (!doc) {
+        char *empty = strdup("{}");
+        return empty;
+    }
+    char *json_str = yaml_to_json_string(doc, "");
+    yaml_free(doc);
+    if (!json_str) {
+        char *empty = strdup("{}");
+        return empty;
+    }
+    return json_str;
+}
+
+/* PoP: dump_yaml_file @ hermes_cli/agent_import.py:dump_yaml_file */
+/* Serialize a JSON dict to YAML string. Mirrors Python's
+ * yaml.safe_dump(data, default_flow_style=False, sort_keys=False,
+ * allow_unicode=True). Produces block-style YAML. */
+/* Recursive YAML value emitter. Appends block-style YAML for a json_t
+ * value at the given indent level into the output buffer. */
+static void ai_yaml_emit_value(struct ai_yaml_buf *b, const json_t *val, int indent);
+
+static void ai_yaml_emit_scalar(struct ai_yaml_buf *b, const char *s, int indent) {
+    bool needs_quote = false;
+    if (!s || !*s) needs_quote = true;
+    else {
+        for (const char *p = s; *p; p++) {
+            if (*p == ':' || *p == '#' || *p == '\'' || *p == '"' ||
+                *p == '\n' || *p == '\t' || *p == '{' || *p == '}' ||
+                *p == '[' || *p == ']' || *p == ',' || *p == '&' || *p == '*' ||
+                (isspace((unsigned char)*p))) {
+                needs_quote = true; break;
+            }
+        }
+    }
+    for (int i = 0; i < indent; i++) ai_buf_putc(b, ' ');
+    if (needs_quote) {
+        ai_buf_putc(b, '"');
+        for (const char *p = s; p && *p; p++) {
+            if (*p == '"') { ai_buf_putc(b, '\\'); ai_buf_putc(b, '"'); }
+            else ai_buf_putc(b, *p);
+        }
+        ai_buf_putc(b, '"');
+    } else {
+        for (const char *p = s; p && *p; p++) ai_buf_putc(b, *p);
+    }
+    ai_buf_putc(b, '\n');
+}
+
+static void ai_yaml_emit_value(struct ai_yaml_buf *b, const json_t *val, int indent) {
+    if (!val) {
+        ai_yaml_emit_scalar(b, "null", indent);
+        return;
+    }
+    switch (val->type) {
+        case JSON_STRING:
+            ai_yaml_emit_scalar(b, val->str_val, indent);
+            break;
+        case JSON_NUMBER: {
+            double num = val->num_val;
+            char nb[64];
+            if (num == (double)(long long)num && num > -1e15 && num < 1e15)
+                snprintf(nb, sizeof(nb), "%lld", (long long)num);
+            else
+                snprintf(nb, sizeof(nb), "%g", num);
+            ai_yaml_emit_scalar(b, nb, indent);
+            break;
+        }
+        case JSON_BOOL:
+            ai_yaml_emit_scalar(b, val->bool_val ? "true" : "false", indent);
+            break;
+        case JSON_NULL:
+            ai_yaml_emit_scalar(b, "null", indent);
+            break;
+        case JSON_ARRAY:
+            if (val->c.count == 0) {
+                for (int i = 0; i < indent; i++) ai_buf_putc(b, ' ');
+                ai_buf_puts(b, "[]\n");
+            } else {
+                for (size_t i = 0; i < val->c.count; i++) {
+                    for (int j = 0; j < indent; j++) ai_buf_putc(b, ' ');
+                    ai_buf_putc(b, '-'); ai_buf_putc(b, ' ');
+                    /* Emit inline for scalars, nested for containers */
+                    json_t *item = val->c.items[i];
+                    if (item && (item->type == JSON_OBJECT || item->type == JSON_ARRAY)) {
+                        ai_buf_putc(b, '\n');
+                        ai_yaml_emit_value(b, item, indent + 2);
+                    } else if (item && item->type == JSON_STRING) {
+                        ai_buf_puts(b, item->str_val);
+                        ai_buf_putc(b, '\n');
+                    } else {
+                        char *serialized = json_serialize(item);
+                        ai_buf_puts(b, serialized ? serialized : "null");
+                        ai_buf_putc(b, '\n');
+                        free(serialized);
+                    }
+                }
+            }
+            break;
+        case JSON_OBJECT:
+            if (val->c.count == 0) {
+                for (int i = 0; i < indent; i++) ai_buf_putc(b, ' ');
+                ai_buf_puts(b, "{}\n");
+            } else {
+                for (size_t i = 0; i < val->c.count; i++) {
+                    const char *key = val->c.keys[i];
+                    json_t *item = val->c.items[i];
+                    for (int j = 0; j < indent; j++) ai_buf_putc(b, ' ');
+                    ai_buf_puts(b, key);
+                    ai_buf_puts(b, ": ");
+                    if (item && (item->type == JSON_OBJECT || item->type == JSON_ARRAY)) {
+                        if (item->type == JSON_ARRAY && item->c.count == 0) {
+                            ai_buf_puts(b, "[]\n");
+                        } else if (item->type == JSON_OBJECT && item->c.count == 0) {
+                            ai_buf_puts(b, "{}\n");
+                        } else if (item->type == JSON_ARRAY) {
+                            ai_buf_putc(b, '\n');
+                            ai_yaml_emit_value(b, item, indent + 2);
+                        } else {
+                            ai_buf_putc(b, '\n');
+                            ai_yaml_emit_value(b, item, indent + 2);
+                        }
+                    } else if (item && item->type == JSON_STRING) {
+                        ai_buf_puts(b, item->str_val);
+                        ai_buf_putc(b, '\n');
+                    } else {
+                        char *serialized = json_serialize(item);
+                        ai_buf_puts(b, serialized ? serialized : "null");
+                        ai_buf_putc(b, '\n');
+                        free(serialized);
+                    }
+                }
+            }
+            break;
+    }
+}
+
+char *ai_dump_yaml_to_string(const char *json_dict) {
+    if (!json_dict || !*json_dict) {
+        char *empty = strdup("");
+        return empty;
+    }
+    char *err = NULL;
+    json_t *data = json_parse(json_dict, &err);
+    if (err) free(err);
+    if (!data || data->type != JSON_OBJECT) {
+        if (data) json_free(data);
+        char *empty = strdup("");
+        return empty;
+    }
+    struct ai_yaml_buf b;
+    ai_buf_init(&b);
+    for (size_t i = 0; i < data->c.count; i++) {
+        const char *key = data->c.keys[i];
+        json_t *val = data->c.items[i];
+        ai_buf_puts(&b, key);
+        ai_buf_puts(&b, ": ");
+        if (val && (val->type == JSON_OBJECT || val->type == JSON_ARRAY)) {
+            if (val->type == JSON_ARRAY && val->c.count == 0) {
+                ai_buf_puts(&b, "[]\n");
+            } else if (val->type == JSON_OBJECT && val->c.count == 0) {
+                ai_buf_puts(&b, "{}\n");
+            } else {
+                ai_buf_putc(&b, '\n');
+                ai_yaml_emit_value(&b, val, 2);
+            }
+        } else if (val && val->type == JSON_STRING) {
+            ai_buf_puts(&b, val->str_val);
+            ai_buf_putc(&b, '\n');
+        } else {
+            char *serialized = json_serialize(val);
+            ai_buf_puts(&b, serialized ? serialized : "null");
+            ai_buf_putc(&b, '\n');
+            free(serialized);
+        }
+    }
+    json_free(data);
+    if (!b.buf) b.buf = strdup("");
+    return b.buf;
+}
+
+/* ── default_source_dir ─────────────────────────────────────── */
+
+/* PoP: default_source_dir @ hermes_cli/agent_import.py:default_source_dir */
+/* Build the default source dir path for an agent.
+ * claude-code → "<home>/.claude"
+ * codex → "<home>/.codex" */
+char *ai_default_source_dir(const char *agent, const char *home) {
+    if (!agent || !home) return NULL;
+    const char *suffix = NULL;
+    if (strcmp(agent, "claude-code") == 0) suffix = ".claude";
+    else if (strcmp(agent, "codex") == 0) suffix = ".codex";
+    else return NULL;
+    size_t len = strlen(home) + 1 + strlen(suffix) + 1;
+    char *path = malloc(len);
+    if (!path) return NULL;
+    sprintf(path, "%s/%s", home, suffix);
+    return path;
+}
+
+/* ── detect_agents ──────────────────────────────────────────── */
+
+/* PoP: detect_agents @ hermes_cli/agent_import.py:detect_agents */
+/* Return list of agents whose default dirs exist under home.
+ * Returns malloc'd NULL-terminated array of malloc'd strings. */
+char **ai_detect_agents(const char *home) {
+    char **result = calloc(1, sizeof(char *));
+    size_t n = 0, cap = 0;
+    if (!home) return result;
+    const char *agents[] = {"claude-code", "codex", NULL};
+    for (int i = 0; agents[i]; i++) {
+        char *dir = ai_default_source_dir(agents[i], home);
+        if (dir) {
+            struct stat st;
+            if (stat(dir, &st) == 0 && S_ISDIR(st.st_mode)) {
+                ai_strarr_push(&result, &n, &cap, strdup(agents[i]));
+            }
+            free(dir);
+        }
+    }
+    return result;
+}
+
+/* ── backup_memory_file ─────────────────────────────────────── */
+
+/* PoP: backup_memory_file @ hermes_cli/agent_import.py:backup_memory_file */
+/* Build a backup path: "<path>.bak.<unix_ts>".
+ * Returns NULL if path doesn't exist. The caller provides the
+ * unix timestamp via ai_backup_path (no time() calls for test
+ * determinism). */
+char *ai_backup_path(const char *path, long unix_ts) {
+    if (!path) return NULL;
+    struct stat st;
+    if (stat(path, &st) != 0) return NULL;
+    size_t plen = strlen(path);
+    const char *dot = strrchr(path, '.');
+    const char *slash = strrchr(path, '/');
+    const char *ext = (dot && (!slash || dot > slash)) ? dot : NULL;
+    size_t prefix_len = ext ? (size_t)(ext - path) : plen;
+    size_t need = prefix_len + 32 + 5; /* .bak.<ts>\0 */
+    char *backup = malloc(need);
+    if (!backup) return NULL;
+    memcpy(backup, path, prefix_len);
+    sprintf(backup + prefix_len, ".bak.%ld", unix_ts);
+    return backup;
 }
