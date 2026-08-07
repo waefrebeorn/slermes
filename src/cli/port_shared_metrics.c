@@ -55,8 +55,8 @@ void sm_utc_now(struct sm_datetime *out) {
     out->sec    = g.tm_sec;
 }
 
-/* PoP: _isoformat @ hermes_cli/observability/shared_metrics.py:_isoformat
- * Format a datetime as ISO-8601 with 'Z' suffix (UTC). Returns malloc'd
+/* PoP: _isoformat @ hermes_cli/observability/shared_metrics.py:_isoformat */
+/* Format a datetime as ISO-8601 with 'Z' suffix (UTC). Returns malloc'd
  * string. */
 char *sm_isoformat(const struct sm_datetime *dt) {
     char *out = NULL;

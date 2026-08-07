@@ -21,8 +21,8 @@ typedef struct {
 /* PoP: _utc_now @ hermes_cli/observability/shared_metrics.py:_utc_now */
 void sm_utc_now(struct sm_datetime *out);
 
-/* PoP: _isoformat @ hermes_cli/observability/shared_metrics.py:_isoformat
- * Caller frees. */
+/* PoP: _isoformat @ hermes_cli/observability/shared_metrics.py:_isoformat */
+/* Caller frees. */
 char *sm_isoformat(const struct sm_datetime *dt);
 
 /* PoP: _ensure_private_directory @ hermes_cli/observability/shared_metrics.py:_ensure_private_directory */
