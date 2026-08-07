@@ -126,6 +126,12 @@ int main(int argc, char **argv) {
             bool val = a && a->type == JSON_BOOL ? a->bool_val : false;
             mark_audio_output_active(val);
             printf("%s\n", is_audio_output_active() ? "true" : "false");
+        } else if (strcmp(name, "audio_recorder_max_duration_reached") == 0) {
+            json_t *capj = json_obj_get(c, "cap");
+            json_t *elj = json_obj_get(c, "elapsed");
+            double capv = capj && capj->type == JSON_NUMBER ? capj->num_val : 0.0;
+            double elv = elj && elj->type == JSON_NUMBER ? elj->num_val : 0.0;
+            printf("%s\n", audio_recorder_max_duration_reached(capv, elv) ? "true" : "false");
         }
     }
     free(root);

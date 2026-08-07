@@ -89,6 +89,17 @@ def run(c):
         active = c.get("active", False)
         voice_mode.mark_audio_output_active(active)
         return voice_mode.is_audio_output_active()
+    if op == "audio_recorder_max_duration_reached":
+        cap = c.get("cap", 0.0)
+        elapsed = c.get("elapsed", 0.0)
+        # AudioRecorder() may trigger heavy imports; fall back to a bare object
+        # that borrows the real _max_duration_reached method.
+        try:
+            rec = voice_mode.AudioRecorder.__new__(voice_mode.AudioRecorder)
+        except Exception:
+            rec = object.__new__(object)
+        rec._max_recording_seconds = cap
+        return voice_mode.AudioRecorder._max_duration_reached(rec, elapsed)
     return None
 
 

@@ -32,5 +32,9 @@
   {"op": "thinking_sound_enabled", "voice_cfg": null},
   {"op": "mark_audio_output_active", "active": true},
   {"op": "mark_audio_output_active", "active": false},
-  {"op": "mark_audio_output_active", "active": true}
+  {"op": "mark_audio_output_active", "active": true},
+  {"op": "audio_recorder_max_duration_reached", "cap": 30.0, "elapsed": 25.0},
+  {"op": "audio_recorder_max_duration_reached", "cap": 30.0, "elapsed": 35.0},
+  {"op": "audio_recorder_max_duration_reached", "cap": 0.0, "elapsed": 100.0},
+  {"op": "audio_recorder_max_duration_reached", "cap": -1.0, "elapsed": 5.0}
 ]

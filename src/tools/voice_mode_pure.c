@@ -229,3 +229,10 @@ bool is_audio_output_active(void) {
     pthread_mutex_unlock(&g_audio_output_lock);
     return r;
 }
+
+/* PoP: _max_duration_reached @ tools/voice_mode.py:_max_duration_reached */
+/* Whether the configured hard recording-length cap has elapsed.
+ * cap: voice.max_recording_seconds (0 or <=0 disables). elapsed: seconds. */
+bool audio_recorder_max_duration_reached(double cap, double elapsed) {
+    return cap > 0 && elapsed >= cap;
+}

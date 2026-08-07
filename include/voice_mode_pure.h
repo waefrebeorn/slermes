@@ -75,4 +75,8 @@ void mark_audio_output_active(bool active);
  * True while TTS/file audio is actively playing. */
 bool is_audio_output_active(void);
 
+/* PoP: _max_duration_reached @ tools/voice_mode.py:_max_duration_reached
+ * cap: voice.max_recording_seconds (0 or <=0 disables). elapsed: seconds. */
+bool audio_recorder_max_duration_reached(double cap, double elapsed);
+
 #endif /* VOICE_MODE_PURE_H */
