@@ -44,6 +44,11 @@ void url_reset_allow_private(void);
  * g_allow_private). Mirrors Python _global_allow_private_urls() result. */
 bool url_allow_private_enabled(void);
 
+/* PoP: _resolve_allow_private_urls @ tools/url_safety.py:_resolve_allow_private_urls */
+/* Resolve the effective private-URL toggle from env var then config.
+ * input: full config JSON string. Returns true/false. */
+bool url_resolve_allow_private_urls(const char *config_json);
+
 /* ================================================================
  *  P160: Website Blocklist API
  * ================================================================ */

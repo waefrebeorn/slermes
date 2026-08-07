@@ -10,6 +10,7 @@
 
 #include "hermes_core_types.h"
 #include "hermes_url_safety.h"
+#include "libjson/json.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -42,6 +43,66 @@ void url_reset_allow_private(void) {
  * via url_set_allow_private / config load). */
 bool url_allow_private_enabled(void) {
     return g_allow_private;
+}
+
+/* PoP: _resolve_allow_private_urls @ tools/url_safety.py:_resolve_allow_private_urls
+ * Resolve the effective private-URL toggle from env var (highest priority) then
+ * config. input: full config JSON string. Returns true/false. */
+bool url_resolve_allow_private_urls(const char *config_json)
+{
+    /* 1. Env var override (highest priority) */
+    const char *env_val = getenv("HERMES_ALLOW_PRIVATE_URLS");
+    if (env_val && *env_val) {
+        char buf[32];
+        strncpy(buf, env_val, sizeof(buf) - 1);
+        buf[sizeof(buf) - 1] = '\0';
+        for (char *p = buf; *p; p++) *p = (char)tolower((unsigned char)*p);
+        if (strcmp(buf, "true") == 0 || strcmp(buf, "1") == 0 || strcmp(buf, "yes") == 0)
+            return true;
+        if (strcmp(buf, "false") == 0 || strcmp(buf, "0") == 0 || strcmp(buf, "no") == 0)
+            return false;
+    }
+
+    /* 2. Config file */
+    if (config_json) {
+        char *err = NULL;
+        json_t *cfg = json_parse(config_json, &err);
+        if (err) free(err);
+        if (cfg && cfg->type == JSON_OBJECT) {
+            json_t *sec = json_obj_get(cfg, "security");
+            if (sec && sec->type == JSON_OBJECT) {
+                json_t *v = json_obj_get(sec, "allow_private_urls");
+                if (v) {
+                    bool val = false;
+                    if (v->type == JSON_BOOL) val = v->bool_val;
+                    else if (v->type == JSON_NUMBER) val = v->num_val != 0;
+                    else if (v->type == JSON_STRING && v->str_val) {
+                        if (strcasecmp(v->str_val, "true") == 0 || strcasecmp(v->str_val, "1") == 0 || strcasecmp(v->str_val, "yes") == 0 || strcasecmp(v->str_val, "on") == 0)
+                            val = true;
+                    }
+                    json_free(cfg);
+                    return val;
+                }
+            }
+            json_t *browser = json_obj_get(cfg, "browser");
+            if (browser && browser->type == JSON_OBJECT) {
+                json_t *v = json_obj_get(browser, "allow_private_urls");
+                if (v) {
+                    bool val = false;
+                    if (v->type == JSON_BOOL) val = v->bool_val;
+                    else if (v->type == JSON_NUMBER) val = v->num_val != 0;
+                    else if (v->type == JSON_STRING && v->str_val) {
+                        if (strcasecmp(v->str_val, "true") == 0 || strcasecmp(v->str_val, "1") == 0 || strcasecmp(v->str_val, "yes") == 0 || strcasecmp(v->str_val, "on") == 0)
+                            val = true;
+                    }
+                    json_free(cfg);
+                    return val;
+                }
+            }
+        }
+        if (cfg) json_free(cfg);
+    }
+    return false;
 }
 
 /* ================================================================
