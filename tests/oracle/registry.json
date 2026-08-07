@@ -1314,6 +1314,11 @@
       "harness": "tests/t_port_cua_backend_helpers.c",
       "oracle": "tests/sta_oracle_cua_backend_helpers.py",
       "fixtures": "tests/oracle/fixtures/cua_backend_helpers"
+    },
+    "approvals_suggest_parse_indices": {
+      "harness": "tests/t_port_approvals_parse_indices.c",
+      "oracle": "tests/sta_oracle_approvals_parse_indices.py",
+      "fixtures": "tests/oracle/fixtures/approvals_suggest_parse_indices"
     }
   },
   "normalize": {

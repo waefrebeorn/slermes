@@ -277,6 +277,46 @@ char *approval_normalize_command(const char *command) {
 
 /* ── approvals_suggest.py ports ──────────────────────────────── */
 
+/* PoP: parse_apply_indices @ hermes_cli/approvals_suggest.py:parse_apply_indices */
+/* Parse "1,3" into validated zero-based indices. On error (invalid
+ * integer, out of range, or no valid selections), returns -1. */
+int approval_parse_apply_indices(const char *spec, int total, int *out, int max_out) {
+    if (!out) return -1;
+    int count = 0;
+    const char *p = spec ? spec : "";
+    while (*p) {
+        /* Skip leading whitespace and commas */
+        while (*p == ' ' || *p == '\t' || *p == ',') p++;
+        if (!*p) break;
+        /* Find end of this token */
+        const char *tok_start = p;
+        while (*p && *p != ',' && *p != ' ' && *p != '\t') p++;
+        int tok_len = (int)(p - tok_start);
+        if (tok_len == 0) continue;
+        /* Parse as integer */
+        char buf[32];
+        if (tok_len >= (int)sizeof(buf)) return -1; /* too long for int */
+        memcpy(buf, tok_start, tok_len);
+        buf[tok_len] = '\0';
+        char *endptr = NULL;
+        long n = strtol(buf, &endptr, 10);
+        if (endptr != buf + tok_len) return -1; /* not a valid integer */
+        if (n < 1 || n > total) return -1; /* out of range */
+        int zero_based = (int)n - 1;
+        /* Dedup */
+        bool seen = false;
+        for (int i = 0; i < count; i++) {
+            if (out[i] == zero_based) { seen = true; break; }
+        }
+        if (!seen) {
+            if (count >= max_out) return -1; /* too many */
+            out[count++] = zero_based;
+        }
+    }
+    if (count == 0) return -1; /* no valid selections */
+    return count;
+}
+
 /* The full Python _UNSAFE_CLASS_PATTERNS list as plain substrings.
  * Python uses re.search with IGNORECASE; we simulate with strcasestr.
  * The Python patterns use \b word boundaries; we approximate with
