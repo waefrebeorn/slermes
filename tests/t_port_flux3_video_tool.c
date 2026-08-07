@@ -37,6 +37,10 @@ int main(int argc, char **argv) {
             const char *j = json_get_str(c, "job_id", "abc");
             char *r = flux3_still_generating(j);
             printf("%s\n", r ? r : "null"); free(r);
+        } else if (strcmp(name, "_shared_submit_properties") == 0) {
+            json_t *r = flux3_shared_submit_properties();
+            char *s = json_serialize(r);
+            printf("%s\n", s); free(s); json_free(r);
         } else if (strcmp(name, "_resolve_destination") == 0) {
             const char *save_to = json_obj_get(c, "save_to");
             save_to = save_to ? json_get_str(c, "save_to", "") : "";

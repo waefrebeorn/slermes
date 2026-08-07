@@ -7,7 +7,7 @@ DEV_ROOT = os.environ.get("HERMES_DEV_ROOT") or os.path.expanduser("~/.hermes/he
 if DEV_ROOT not in sys.path:
     sys.path.insert(0, DEV_ROOT)
 
-from tools.flux3_video_tool import _still_generating, _resolve_destination, _free_path
+from tools.flux3_video_tool import _still_generating, _resolve_destination, _free_path, _shared_submit_properties
 
 
 def run(c):
@@ -26,6 +26,8 @@ def run(c):
         from pathlib import Path
         result = _free_path(Path(directory) / name)
         return str(result)
+    if op == "_shared_submit_properties":
+        return _shared_submit_properties()
     return None
 
 

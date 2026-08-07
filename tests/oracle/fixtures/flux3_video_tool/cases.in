@@ -3,5 +3,6 @@
   {"op": "_free_path", "directory": "/tmp", "name": "flux3_nonexist_1.mp4"},
   {"op": "_free_path", "directory": "/tmp", "name": "flux3_nonexist_2.mp4"},
   {"op": "_resolve_destination", "save_to": "/tmp", "filename": "flux3_dest.mp4"},
-  {"op": "_resolve_destination", "save_to": "/tmp/existing_file.mp4", "filename": "clip.mp4"}
+  {"op": "_resolve_destination", "save_to": "/tmp/existing_file.mp4", "filename": "clip.mp4"},
+  {"op": "_shared_submit_properties"}
 ]
