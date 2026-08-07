@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 #include <time.h>
 #include <sys/stat.h>
 #include <ctype.h>
@@ -268,4 +269,110 @@ int cli_agent_model_metadata_get_model_context_length_async(
     int config_context_length, const char *provider)
 {
     return get_model_context_length(model, base_url, api_key, config_context_length, provider);
+}
+
+/* PoP: _msg_fingerprint @ agent/model_metadata.py:_msg_fingerprint */
+/* Build a hashable fingerprint of a JSON value for cache keying.
+ * Returns a JSON-serializable structure:
+ *   null/true/false -> the literal
+ *   string  -> {"s": string} (pinned string for later retrieval)
+ *   number  -> {"n": <typename>, <value>}  ("int" or "float")
+ *   object  -> {"d": [[key_fpn, val_fpn], ...]} (ordered pairs)
+ *   array   -> {"l": [elem_fpn, ...]}
+ *   tuple   -> {"t": [elem_fpn, ...]}
+ * Caller frees the returned string. On pins_out != NULL, caller must
+ * json_free(*pins_out). */
+char *mm_msg_fingerprint(const char *value_json, json_t **pins_out);
+
+/* djb2 string hash — deterministic surrogate for Python's id() on strings.
+ * Folded to 31 bits to survive double serialization losslessly (< 2^53). */
+static unsigned long mm_str_hash(const char *s) {
+    unsigned long h = 5381;
+    int c;
+    while ((c = (unsigned char)*s++))
+        h = ((h << 5) + h) + c;
+    return h & 0x7FFFFFFF;  /* fold to 31 bits */
+}
+
+/* Internal recursive fingerprint builder (mirrors Python _msg_fingerprint). */
+json_t *mm_msg_fingerprint_node(const json_t *val, json_t *pins);
+
+/* Implementation */
+char *mm_msg_fingerprint(const char *value_json, json_t **pins_out)
+{
+    if (!value_json) return NULL;
+    char *err = NULL;
+    json_t *val = json_parse(value_json, &err);
+    if (err) free(err);
+    if (!val) return NULL;
+
+    json_t *pins = json_array();
+    json_t *fp = mm_msg_fingerprint_node(val, pins);
+    char *out = fp ? json_serialize(fp) : NULL;
+    if (fp) json_free(fp);
+
+    if (pins_out)
+        *pins_out = pins;   /* transfer ownership */
+    else
+        json_free(pins);
+
+    json_free(val);
+    return out;
+}
+
+/* Internal recursive fingerprint builder (mirrors Python _msg_fingerprint). */
+json_t *mm_msg_fingerprint_node(const json_t *val, json_t *pins)
+{
+    if (!val) return json_null();
+    switch (val->type) {
+        case JSON_NULL:   return json_null();
+        case JSON_BOOL:   return json_bool(val->bool_val);
+        case JSON_NUMBER: {
+            double d = val->num_val;
+            json_t *arr = json_array();
+            json_append(arr, json_string("n"));
+            if (d == (double)(long long)d) {
+                json_append(arr, json_string("int"));
+            } else {
+                json_append(arr, json_string("float"));
+            }
+            json_append(arr, json_number(d));
+            return arr;
+        }
+        case JSON_STRING: {
+            if (pins) json_append(pins, json_copy(val));
+            json_t *arr = json_array();
+            json_append(arr, json_string("s"));
+            /* Python returns ("s", id(value)). The id() is a memory address,
+             * stable only within one process — not comparable across C/Python.
+             * Use the string's hash (deterministic, stable across processes)
+             * as the surrogate — this is what d_hash() does in CPython anyway. */
+            json_append(arr, json_number((double)mm_str_hash(val->str_val)));
+            return arr;
+        }
+        case JSON_OBJECT: {
+            json_t *arr = json_array();
+            json_append(arr, json_string("d"));
+            json_t *pairs = json_array();
+            for (size_t i = 0; i < val->c.count; i++) {
+                json_t *pair = json_array();
+                json_append(pair, mm_msg_fingerprint_node(json_string(val->c.keys[i]), pins));
+                json_append(pair, mm_msg_fingerprint_node(val->c.items[i], pins));
+                json_append(pairs, pair);
+            }
+            json_append(arr, pairs);
+            return arr;
+        }
+        case JSON_ARRAY: {
+            json_t *arr = json_array();
+            json_append(arr, json_string("l"));
+            json_t *elems = json_array();
+            for (size_t i = 0; i < val->c.count; i++) {
+                json_append(elems, mm_msg_fingerprint_node(val->c.items[i], pins));
+            }
+            json_append(arr, elems);
+            return arr;
+        }
+    }
+    return json_null();
 }

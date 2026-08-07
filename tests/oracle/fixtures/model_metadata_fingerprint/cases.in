@@ -1,0 +1,17 @@
+[
+  {"op": "mm_msg_fingerprint", "value": null},
+  {"op": "mm_msg_fingerprint", "value": true},
+  {"op": "mm_msg_fingerprint", "value": false},
+  {"op": "mm_msg_fingerprint", "value": "hello world"},
+  {"op": "mm_msg_fingerprint", "value": 42},
+  {"op": "mm_msg_fingerprint", "value": 3.14},
+  {"op": "mm_msg_fingerprint", "value": -17},
+  {"op": "mm_msg_fingerprint", "value": 0},
+  {"op": "mm_msg_fingerprint", "value": [1, 2, 3]},
+  {"op": "mm_msg_fingerprint", "value": [1, [2, 3], {"a": 4}]},
+  {"op": "mm_msg_fingerprint", "value": {"key": "value", "num": 42}},
+  {"op": "mm_msg_fingerprint", "value": {"nested": {"deep": [true, null, "x"]}}},
+  {"op": "mm_msg_fingerprint", "value": ""},
+  {"op": "mm_msg_fingerprint", "value": 1000000},
+  {"op": "mm_msg_fingerprint", "value": [1.5, 2.5, 3]}
+]
