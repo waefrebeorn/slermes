@@ -169,7 +169,7 @@ void credits_tracker_evaluate_notices(const credits_state_t *state,
 
 /* ── Latch initialization ─────────────────────────────────────────────── */
 
-/** Initialize a credits_latch_t to default state. */
+/* PoP: new_credits_latch @ agent/credits_tracker.py:new_credits_latch */
 void credits_latch_init(credits_latch_t *latch);
 
 /* ── Dev fixture ──────────────────────────────────────────────────────── */

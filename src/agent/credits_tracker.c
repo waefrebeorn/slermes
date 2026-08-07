@@ -556,6 +556,10 @@ void credits_tracker_evaluate_notices(const credits_state_t *state,
 
 /* ── Latch init ───────────────────────────────────────────────────────── */
 
+/* PoP: new_credits_latch @ agent/credits_tracker.py:new_credits_latch */
+/* Initialize a credits_latch_t to the fresh notice latch shape that
+ * evaluate_credits_notices expects: active=empty, seen_below_90=false,
+ * usage_band=unset(-1), seen_grant_unspent=false. */
 void credits_latch_init(credits_latch_t *latch) {
     if (!latch) return;
     memset(latch, 0, sizeof(*latch));
