@@ -9,16 +9,16 @@
 <!-- PARITY:AUTO -->
 | Classification | Count | Percentage | Meaning |
 |----------------|-------|------------|---------|
-| **PORTED** | 12,085 | 86.0% | C11 implementation with PoP annotation |
-| **REAL_GAP** | 1,958 | 13.9% | Honest gaps (not yet ported — IO/network/DB/logic; NOT faked) |
-| **PARTIAL** | 2 | 0.0% | All C fns now carry PoP annotations |
-| **BOOTLEG** | 7 | — | No-work echo stubs (recursive_false_gap_hunter.py) |
+| **PORTED** | 12,695 | 90.4% | C11 implementation with PoP annotation |
+| **REAL_GAP** | 1,346 | 9.6% | Honest gaps (not yet ported — IO/network/DB/logic; NOT faked) |
+| **PARTIAL** | 4 | 0.0% | All C fns now carry PoP annotations |
+| **BOOTLEG** | 24 | — | No-work echo stubs (recursive_false_gap_hunter.py) |
 | **TOTAL** | 14,045 | 100% | All Python functions/methods scanned |
 
-> **Generated 2026-08-04T05:30:26Z by `make parity-walkway` from the live scanner.** The PORT phase (v398→v667) is legacy — this table is the single source of truth for completeness. Do not hand-edit.
+> **Generated 2026-08-07T01:41:25Z by `make parity-walkway` from the live scanner.** The PORT phase (v398→v667) is legacy — this table is the single source of truth for completeness. Do not hand-edit.
 <!-- /PARITY:AUTO -->
 
-**Generated:** 2026-08-04 (post-sync, v669 checkpoint) from live scanner
+**Generated:** 2026-08-07 (post-sync, v670 checkpoint) from live scanner
 `tests/slermes_parity_battleground.py`. The PORT phase (v398→v667) is legacy —
 complete; every function does real observable work and matches the Python original.
 Closing REAL_GAPs is the path forward.
@@ -170,7 +170,7 @@ slermes/
 | `README.md` | Landing page — what this is, quick start, how to read parity |
 | `docs/index.md` | Documentation entry point / TOC |
 | `docs/parity-summary.md` | Live parity scan results (this file, auto-generated) |
-| `docs/real-gap-list.md` | Full 1,958 REAL_GAP list, generated from live scan |
+| `docs/real-gap-list.md` | Full 1,346 REAL_GAP list, generated from live scan |
 | `docs/cli/index.md` | CLI command reference |
 | `docs/architecture/overview.md` | System design and data flow |
 | `docs/architecture/build-system.md` | Make targets, deps, packaging |

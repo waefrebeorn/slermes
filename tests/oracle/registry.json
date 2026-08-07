@@ -1027,6 +1027,11 @@
       "oracle": "tests/sta_oracle_tools_tts_tool.py",
       "fixtures": "tests/oracle/fixtures/tools_tts_tool"
     },
+    "tools_tts_text_normalize": {
+      "harness": "tests/t_port_tools_tts_text_normalize.c",
+      "oracle": "tests/sta_oracle_tools_tts_text_normalize.py",
+      "fixtures": "tests/oracle/fixtures/tools_tts_text_normalize"
+    },
     "tools_url_safety": {
       "harness": "tests/t_port_tools_url_safety.c",
       "oracle": "tests/sta_oracle_tools_url_safety.py",

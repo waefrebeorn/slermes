@@ -107,6 +107,16 @@ STALE_PATTERNS = [
     # Old "N/A by design" / "N/A category" references
     (r"\bN/A\b.*(?:by design|category|not applicable)",
      "stale N/A claim"),
+    # Stale "**Current state (vNNN, ...):**" prose count-table block that
+    # exists OUTSIDE sentinels in README.md / docs/index.md (the hand-edit
+    # barnacle). Two formats appear in the wild:
+    #  (a) markdown-table form: header + blank lines + | Classification |... table
+    #  (b) inline-count form: "**Current state (vNNN...):** NNN PORTED / ..."
+    # Both are purged so re-runs converge (idempotent).
+    (r"\*\*Current state \(v\d+[^)]*\):\*\*\n*\|\s*Classification[^\n]*\n\|\s*-[^\n]*\n(?:\|[^\n]*\n)+",
+     "stale prose count table (markdown form) outside sentinel"),
+    (r"\*\*Current state \(v\d+[^)]*\):\*\*[^\n]*\n",
+     "stale prose count line (inline form) outside sentinel"),
 ]
 
 

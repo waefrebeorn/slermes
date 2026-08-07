@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-06T07:14:01Z from `live_parity_scan.json` by `make parity-walkway`. **1,423 REAL_GAP across 219 modules** (of 14,045 total functions).
+> Generated 2026-08-07T01:41:25Z from `live_parity_scan.json` by `make parity-walkway`. **1,346 REAL_GAP across 211 modules** (of 14,045 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -186,10 +186,6 @@
 - async LSPService._idle_reaper_loop (method)
 - async LSPService._reap_idle_once (method)
 
-### agent/memory_manager.py (1 gaps)
-
-- build_memory_context_block (function)
-
 ### agent/memory_provider.py (1 gaps)
 
 - is_trivial_prompt (function)
@@ -256,9 +252,8 @@
 - GatewayDiagnosticEvent.to_dict (method)
 - CronExecutionEvent.to_dict (method)
 
-### agent/monitoring/gateway_health.py (3 gaps)
+### agent/monitoring/gateway_health.py (2 gaps)
 
-- build_gateway_health_snapshot (function)
 - GatewayDiagnosticLogHandler.__init__ (method)
 - GatewayDiagnosticLogHandler.emit (method)
 
@@ -329,14 +324,12 @@
 - _completed_transaction_endpoint_indexes (function)
 - build_prompt_cache_plan (function)
 
-### agent/relay_llm.py (33 gaps)
+### agent/relay_llm.py (17 gaps)
 
-- execute (function)
 - async execute_async (function)
 - execute_current (function)
 - async execute_current_async (function)
 - _has_running_event_loop (function)
-- stream_current (function)
 - stream (function)
 - ManagedLlmStream.__init__ (method)
 - ManagedLlmStream.__iter__ (method)
@@ -349,20 +342,6 @@
 - AnthropicStreamAccumulator.observe (method)
 - AnthropicStreamAccumulator.finalize (method)
 - AnthropicStreamAccumulator.response (method)
-- _logical_parent (function)
-- _complete_logical (function)
-- _recover_successful_callback (function)
-- _is_cancellation (function)
-- complete_logical_call (function)
-- _provider_request (function)
-- _relay_request_body (function)
-- _restore_provider_message_extensions (function)
-- _codec_round_trip_request_body (function)
-- _provider_request_body (function)
-- _codec (function)
-- _jsonable (function)
-- _namespace (function)
-- _json_equal (function)
 - _run_awaitable (function)
 
 ### agent/relay_tools.py (4 gaps)
@@ -399,9 +378,8 @@
 - is_org_mirror_path (function)
 - org_id_of_path (function)
 
-### agent/subagent_lifecycle.py (2 gaps)
+### agent/subagent_lifecycle.py (1 gaps)
 
-- SubagentLifecycleService._cleanup_locked (method)
 - SubagentLifecycleService._run (method)
 
 ### agent/subdirectory_hints.py (2 gaps)
@@ -523,7 +501,7 @@
 - mark_exited (function)
 - read_prior_exit_label (function)
 
-### gateway/pairing.py (11 gaps)
+### gateway/pairing.py (10 gaps)
 
 - _platform_uses_whatsapp_identity (function)
 - _read_allowlist_env (function)
@@ -531,7 +509,6 @@
 - _adapter_platform_name (function)
 - _purge_allowlist_entries (function)
 - _sync_live_adapter_allowlist_remove (function)
-- _secure_write (function)
 - PairingStore._finish_approval (method)
 - PairingStore.looks_like_request_id (method)
 - PairingStore.approve_request (method)
@@ -681,11 +658,6 @@
 - is_container_restart_context (function)
 - parse_restart_after_turn_timeout (function)
 - resolve_restart_exit_wait_budget (function)
-
-### gateway/run.py (2 gaps)
-
-- async GatewayRunner._handle_message (method)
-- GatewayRunner._check_slash_access (method)
 
 ### gateway/session.py (2 gaps)
 
@@ -893,12 +865,11 @@
 
 - is_interrupt_then_dispatch (function)
 
-### hermes_cli/config.py (9 gaps)
+### hermes_cli/config.py (8 gaps)
 
 - _raw_config_has_explicit_version (function)
 - read_user_config_raw (function)
 - read_raw_config_readonly (function)
-- _sanitize_env_lines (function)
 - _cron_model_drift_axis_for_config_key (function)
 - cron_model_drift_guard_enabled (function)
 - _cron_fleet_default_covers_axis (function)
@@ -942,18 +913,6 @@
 - _cmd_list_unmanaged (function)
 - _cmd_adopt (function)
 
-### hermes_cli/dashboard_auth/middleware.py (1 gaps)
-
-- _client_ip (function)
-
-### hermes_cli/dashboard_auth/routes.py (1 gaps)
-
-- _client_ip (function)
-
-### hermes_cli/dashboard_auth/token_auth.py (1 gaps)
-
-- _client_ip (function)
-
 ### hermes_cli/dashboard_procs.py (4 gaps)
 
 - _m (function)
@@ -974,17 +933,6 @@
 - _hydrate_profile_secret_sources (function)
 - _reapply_terminal_config_bridge (function)
 - _process_hermes_home (function)
-
-### hermes_cli/focus_view.py (8 gaps)
-
-- normalize_tool_progress_mode (function)
-- resolve_focus_arg (function)
-- effective_tool_progress_mode (function)
-- would_display_tool_line (function)
-- format_hidden_line (function)
-- focus_statusbar_segment (function)
-- format_focus_status (function)
-- format_focus_toggle_message (function)
 
 ### hermes_cli/gateway.py (3 gaps)
 
@@ -1205,26 +1153,13 @@
 - SharedMetricsStore._export_pending_packages (method)
 - SharedMetricsStore._prune_expired_history (method)
 
-### hermes_cli/observability/shared_metrics_contract.py (18 gaps)
+### hermes_cli/observability/shared_metrics_contract.py (5 gaps)
 
-- counter_dimensions_are_valid (function)
 - model_call_dimensions (function)
 - task_counter (function)
-- execution_surface (function)
-- task_start_fields (function)
-- task_entrypoint (function)
-- task_terminal_fields (function)
-- task_terminal_state (function)
-- duration_bucket (function)
-- count_bucket (function)
-- provider_family (function)
 - _provider_metadata (function)
 - _known_provider_ids (function)
-- model_locality (function)
 - _model_locality (function)
-- model_call_fields (function)
-- model_family (function)
-- model_call_outcome (function)
 
 ### hermes_cli/observability/shared_metrics_subscriber.py (3 gaps)
 
@@ -1352,17 +1287,6 @@
 - _repair_cua_driver_autostart_windows (function)
 - _enable_recently_shipped_toolsets (function)
 - _configure_stt_model (function)
-
-### hermes_cli/update_cmd.py (8 gaps)
-
-- _wait_for_windows_update_gateway_exit (function)
-- _detect_venv_python_processes (function)
-- _venv_launcher_ancestors (function)
-- _leftover_pausable_gateway_pids (function)
-- _pause_windows_gateways_for_update (function)
-- _cold_start_windows_gateway_after_update (function)
-- _resume_windows_gateways_after_update (function)
-- _service_restart_sec (function)
 
 ### hermes_cli/update_lock.py (11 gaps)
 
@@ -1914,25 +1838,6 @@
 - _index_active_skills (function)
 - _recover_renamed_skill (function)
 
-### tools/skills_sync_client.py (16 gaps)
-
-- build_sync_manifest_bytes (function)
-- parse_sync_manifest (function)
-- wire_address (function)
-- canonical_json_bytes (function)
-- _decode_jwt_payload_unverified (function)
-- resolve_identity (function)
-- dev_gate_open (function)
-- resolve_sync_base_url (function)
-- sync_feature_enabled (function)
-- sync_org_auto_propose (function)
-- sync_default_opt_in (function)
-- is_sync_eligible (function)
-- list_synced_skill_names (function)
-- _all_local_skill_names (function)
-- build_commit (function)
-- _build_root_tree (function)
-
 ### tools/skills_tool.py (4 gaps)
 
 - _skill_view_fingerprint (function)
@@ -2004,15 +1909,9 @@
 - async XAIStreamer._drain_async (method)
 - async XAIStreamer._async_frames (method)
 
-### tools/tts_text_normalize.py (7 gaps)
+### tools/tts_text_normalize.py (1 gaps)
 
-- strip_markdown_for_tts (function)
 - _normalize_temperature_ranges (function)
-- normalize_symbols_for_tts (function)
-- smooth_whitespace_for_tts (function)
-- strip_nonspoken_blocks (function)
-- flatten_newlines_for_payload (function)
-- prepare_spoken_text (function)
 
 ### tools/tts_tool.py (16 gaps)
 

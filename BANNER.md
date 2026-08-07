@@ -3,9 +3,9 @@
 ## Core Principle
 
 <!-- PARITY:AUTO -->
-**v669 phase — PORT:** the C11 binary is the deliverable — faithful, oracle-verified, usable standalone across operating systems. Live parity counts live in the PARITY:AUTO sentinel blocks owned by `make parity-walkway`; never hand-edit a count.
+**v670 phase — PORT:** the C11 binary is the deliverable — faithful, oracle-verified, usable standalone across operating systems. Live parity counts live in the PARITY:AUTO sentinel blocks owned by `make parity-walkway`; never hand-edit a count.
 
-**Upstream sync checkpoint:** 1,211 ahead / 4 behind upstream/main (last merge 2026-08-03 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
+**Upstream sync checkpoint:** 1,252 ahead / 276 behind upstream/main (last merge 2026-08-06 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
 
 <!-- /PARITY:AUTO -->
 
@@ -15,7 +15,7 @@ forking model means slermes diverges from upstream Python — it does NOT
 share git history with the upstream repo. The divergent count is the
 snapshot timer of the last sync point.
 
-## Fork Sync Workflow (canonical, v669)
+## Fork Sync Workflow (canonical, v670)
 
 This is the **exact workflow** used every time upstream gets new updates —
 pull the hermes code, slap slermes back on, stamp the banner checkpoint:

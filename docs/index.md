@@ -11,13 +11,11 @@
 - **[Pet System](pet/index.md)** — Petdex mascot install, configure, animate
 - **[Development](dev/index.md)** — Building, testing, contributing
 - **[Parity Summary](parity-summary.md)** — Live parity scan results (what's ported vs. not)
-- **[Real Gap List](real-gap-list.md)** — 1,958 honest REAL_GAPs across 230 modules
+- **[Real Gap List](real-gap-list.md)** — 1,346 honest REAL_GAPs across 230 modules
 
 ## How to read the parity numbers
 
 The live scanner (`tests/slermes_parity_battleground.py`) is the single source of truth for completion. Run `make parity-walkway` to refresh all walkway files. Any number not from the scanner is stale — trust the scanner, not prose.
-
-**Current state (v669, post-sync):** 12,085 PORTED / 1,958 REAL_GAP / 2 PARTIAL / 7 BOOTLEG (14,045 total).
 
 ## Project structure
 
@@ -63,9 +61,9 @@ See `BANNER.md` for the full project workflow, sync instructions, and fork recon
 
 | Metric | Value |
 |--------|-------|
-| **Version** | v669 (PORT phase) |
-| **PORTED** | 12,085 (86.0% of 14,045) |
-| **REAL_GAP** | 1,958 (13.9%) |
+| **Version** | v670 (PORT phase) |
+| **PORTED** | 12,695 (90.4% of 14,045) |
+| **REAL_GAP** | 1,346 (9.6%) |
 | **PARTIAL** | 2 |
 | **BOOTLEG** | 7 |
 | **Upstream Sync** | 1,209 ahead / 0 behind |

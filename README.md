@@ -7,12 +7,12 @@ We took Hermes Agent — Nous Research's Python/Electron AI agent — and **SLER
 ## What this is
 
 <!-- PARITY:AUTO -->
-**Version:** v669 (PORT phase)  
-**Last updated:** 2026-08-06
+**Version:** v670 (PORT phase)  
+**Last updated:** 2026-08-07
 
 > Live counts from `make parity-walkway` (sentinel PARITY:AUTO). Do not hand-edit — regenerated from the live scanner on every run.
 
-**Upstream sync checkpoint:** 1,250 ahead / 254 behind upstream/main (last merge 2026-08-05 (upstream fetched)). The behind-count is the staleness timer.
+**Upstream sync checkpoint:** 1,252 ahead / 276 behind upstream/main (last merge 2026-08-06 (upstream fetched)). The behind-count is the staleness timer.
 
 <!-- /PARITY:AUTO -->
 
@@ -39,21 +39,11 @@ make -j$(nproc)
 | [Build System](docs/architecture/build-system.md) | Make targets, dependencies, packaging |
 | [Development](docs/dev/index.md) | Building, testing, contributing |
 | [Parity Summary](docs/parity-summary.md) | Live parity scan results (what's ported vs. not) |
-| [Real Gap List](docs/real-gap-list.md) | 1,958 honest REAL_GAPs across 230 modules |
+| [Real Gap List](docs/real-gap-list.md) | 1,346 honest REAL_GAPs across 230 modules |
 
 ## How to read the parity numbers
 
 The live scanner (`tests/slermes_parity_battleground.py`) is the single source of truth for completion. Run `make parity-walkway` to refresh all walkway files. Any number not from the scanner is stale — trust the scanner, not prose.
-
-**Current state (v669, post-sync):**
-
-| Classification | Count | Percentage | Meaning |
-|----------------|-------|------------|---------|
-| PORTED | 12,085 | 86.0% | C11 implementation with PoP annotation |
-| REAL_GAP | 1,958 | 13.9% | Honest gaps (not yet ported — IO/network/DB/logic; NOT faked) |
-| PARTIAL | 2 | 0.0% | C fns carry PoP but need full implementation |
-| BOOTLEG | 7 | — | No-work echo stubs (recursive_false_gap_hunter.py) |
-| TOTAL | 14,045 | 100% | All Python functions/methods scanned |
 
 ## Fork sync
 

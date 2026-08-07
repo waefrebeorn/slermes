@@ -1,4 +1,4 @@
-# Goal & Mantra — Slermes C Translation (v669)
+# Goal & Mantra — Slermes C Translation (v670)
 
 ## Core Directive
 All Python functions ported to C — live scanner: 4,884/9,731 (50.2%) PORTED, 4,774 REAL_GAP, 73 PARTIAL. Now: keep closing REAL_GAPs, then build desktop.
@@ -20,14 +20,14 @@ No façades. No stubs. No placeholders. Triple-check: plumber, painter, devil.
 ⏳ MCP client wiring to cua-driver (macOS only)
 
 <!-- PARITY:AUTO -->
-| PORTED  | 12,085 / 14,045 (86.0%) |
-| REAL_GAP| 1,958 (13.9%) — no N/A |
-| PARTIAL | 2 (0.0%) |
-| BOOTLEG | 7 (recursive_false_gap_hunter.py) |
+| PORTED  | 12,695 / 14,045 (90.4%) |
+| REAL_GAP| 1,346 (9.6%) — no N/A |
+| PARTIAL | 4 (0.0%) |
+| BOOTLEG | 24 (recursive_false_gap_hunter.py) |
 
-**Phase (v669):** PORT phase — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.
+**Phase (v670):** PORT phase — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.
 
-**Upstream sync checkpoint:** 1,211 ahead / 4 behind upstream/main (last merge 2026-08-03 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
+**Upstream sync checkpoint:** 1,252 ahead / 276 behind upstream/main (last merge 2026-08-06 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
 
-_Generated 2026-08-04T05:30:26Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
+_Generated 2026-08-07T01:41:25Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
 <!-- /PARITY:AUTO -->
