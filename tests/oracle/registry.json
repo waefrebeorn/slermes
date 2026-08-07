@@ -1334,6 +1334,11 @@
       "harness": "tests/t_port_approvals_suggest_proposals.c",
       "oracle": "tests/sta_oracle_approvals_suggest_build_proposals.py",
       "fixtures": "tests/oracle/fixtures/approvals_suggest_build_proposals"
+    },
+    "cli_status_pure": {
+      "harness": "tests/t_port_cli_status_pure.c",
+      "oracle": "tests/sta_oracle_cli_status_pure.py",
+      "fixtures": "tests/oracle/fixtures/cli_status_pure"
     }
   },
   "normalize": {

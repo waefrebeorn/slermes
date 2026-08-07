@@ -1,0 +1,13 @@
+[
+  {"op": "_status_bar_goal_segment", "snapshot": "{\"goal_active\": true, \"goal_turns_used\": 3, \"goal_max_turns\": 20}"},
+  {"op": "_status_bar_goal_segment", "snapshot": "{\"goal_active\": false}"},
+  {"op": "_status_bar_goal_segment", "snapshot": "{\"goal_active\": true, \"goal_turns_used\": 0, \"goal_max_turns\": 0}"},
+  {"op": "_status_bar_goal_segment", "snapshot": "{\"goal_active\": true, \"goal_turns_used\": 7}"},
+  {"op": "_fmt_stash_age", "delta_secs": 5.0},
+  {"op": "_fmt_stash_age", "delta_secs": 45.0},
+  {"op": "_fmt_stash_age", "delta_secs": 120.0},
+  {"op": "_fmt_stash_age", "delta_secs": 3700.0},
+  {"op": "_fmt_stash_age", "delta_secs": 0.0},
+  {"op": "_fmt_stash_age", "delta_secs": 89.5},
+  {"op": "_fmt_stash_age", "delta_secs": 3599.0}
+]
