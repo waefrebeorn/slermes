@@ -40,17 +40,23 @@ char *ai_normalize_text(const char *text);
  * malloc'd strings. */
 char **ai_extract_markdown_entries(const char *text);
 
+/* PoP: parse_existing_memory_entries @ hermes_cli/agent_import.py:parse_existing_memory_entries */
+/* Split a memory store on ENTRY_DELIMITER (\n§\n), returning non-empty
+ * stripped entries. Takes file CONTENTS (not a path). Returns a malloc'd
+ * NULL-terminated array of malloc'd strings; caller frees each + array. */
+char **ai_parse_existing_memory_entries(const char *file_contents);
+
 /* PoP: merge_entries @ hermes_cli/agent_import.py:merge_entries */
 /* Merge incoming entries into existing entries under a byte limit.
- * existing: NULL-terminated array of strings (or NULL for none).
- * incoming: NULL-terminated array of strings.
- * limit: max total bytes of the joined result.
+ * existing_json: JSON array of existing entry strings.
+ * incoming_json: JSON array of incoming entry strings.
+ * limit: max total bytes of the ENTRY_DELIMITER-joined result.
  * out_added/out_duplicates/out_overflowed: optional stats counters.
- * Returns a malloc'd NULL-terminated array of merged entries. */
-char **ai_merge_entries(const char **existing, const char **incoming,
-                        size_t limit,
-                        size_t *out_added, size_t *out_duplicates,
-                        size_t *out_overflowed);
+ * Returns a malloc'd NULL-terminated array of merged entry strings.
+ * Caller frees each element + array. */
+char **ai_merge_entries(const char *existing_json, const char *incoming_json,
+                        long limit, size_t *out_added,
+                        size_t *out_duplicates, size_t *out_overflowed);
 
 /* PoP: claude_rule_to_command_pattern @ hermes_cli/agent_import.py:claude_rule_to_command_pattern */
 /* Convert a Claude Code Bash(...) permission rule into a Hermes glob:

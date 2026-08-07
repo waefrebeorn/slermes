@@ -20,47 +20,44 @@
 
 #define AI_ENTRY_DELIMITER "\n\xC2\xA7\n" /* "\n§\n" (UTF-8) */
 
+/* ── is_secret_key ───────────────────────────────────────────── */
+
 /* PoP: is_secret_key @ hermes_cli/agent_import.py:is_secret_key */
 bool ai_is_secret_key(const char *key)
 {
-    if (!key) return false;
-    /* Case-insensitive regex approximation:
-     * (^|_)(API[_-]?KEY|APIKEY|TOKEN|SECRET|PASSWORD|PASSWD|CREDENTIALS?|
-     *         AUTH|PRIVATE[_-]?KEY|ACCESS[_-]?KEY)(_|$)  OR  KEY$
-     */
-    const char *p = key;
-    size_t len = strlen(p);
+    if (!key || !*key) return false;
 
-    /* KEY$ suffix check */
+    /* Case-insensitive regex approximation:
+     * (^|_)(API_KEY|APIKEY|TOKEN|SECRET|PASSWORD|PASSWD|CREDENTIALS?|
+     *         AUTH|PRIVATE_KEY|ACCESS_KEY)(_|$)  OR  KEY$
+     *
+     * We scan the uppercase copy for keywords bounded by start/_/-. */
+    size_t len = strlen(key);
+    char *upper = malloc(len + 1);
+    if (!upper) return false;
+    for (size_t i = 0; i < len; i++)
+        upper[i] = (char)toupper((unsigned char)key[i]);
+    upper[len] = '\0';
+
+    /* KEY$ suffix */
     if (len >= 3) {
         size_t i = len - 3;
-        if (tolower((unsigned char)p[i]) == 'k' &&
-            tolower((unsigned char)p[i + 1]) == 'e' &&
-            tolower((unsigned char)p[i + 2]) == 'y') {
+        if (upper[i] == 'K' && upper[i + 1] == 'E' && upper[i + 2] == 'Y') {
+            free(upper);
             return true;
         }
     }
 
-    /* Tokenize by _ and - (and case-insensitive keyword scan) */
-    /* Build an uppercase copy to simplify matching */
-    char *upper = malloc(len + 1);
-    if (!upper) return false;
-    for (size_t i = 0; i < len; i++)
-        upper[i] = (char)toupper((unsigned char)p[i]);
-    upper[len] = '\0';
-
     bool secret = false;
-    /* Scan for keywords bounded by start/end or _ (or -) */
     const char *kws[] = {
         "API_KEY", "API-KEY", "APIKEY", "TOKEN", "SECRET", "PASSWORD",
         "PASSWD", "CREDENTIAL", "CREDENTIALS", "AUTH", "PRIVATE_KEY",
         "PRIVATE-KEY", "ACCESS_KEY", "ACCESS-KEY", NULL,
     };
     for (int k = 0; kws[k] && !secret; k++) {
-        const char *found = upper;
         size_t kwlen = strlen(kws[k]);
+        const char *found = upper;
         while ((found = strstr(found, kws[k])) != NULL) {
-            /* boundary: previous char is start, '_', or '-' */
             bool left_ok = (found == upper) ||
                            found[-1] == '_' || found[-1] == '-';
             bool right_ok = (found[kwlen] == '\0') ||
@@ -73,11 +70,12 @@ bool ai_is_secret_key(const char *key)
     return secret;
 }
 
+/* ── normalize_text ─────────────────────────────────────────── */
+
 /* PoP: normalize_text @ hermes_cli/agent_import.py:normalize_text */
 char *ai_normalize_text(const char *text)
 {
     if (!text) return strdup("");
-    /* strip + collapse whitespace + lowercase */
     size_t len = strlen(text);
     size_t start = 0, end = len;
     while (start < end && isspace((unsigned char)text[start])) start++;
@@ -96,13 +94,35 @@ char *ai_normalize_text(const char *text)
             in_space = false;
         }
     }
-    /* trim trailing space introduced by collapse */
     while (j > 0 && out[j - 1] == ' ') j--;
     out[j] = '\0';
     return out;
 }
 
-/* --- markdown entry extraction --- */
+/* ── str array helpers ───────────────────────────────────────── */
+
+static void ai_strarr_free(char **arr)
+{
+    if (!arr) return;
+    for (size_t i = 0; arr[i]; i++) free(arr[i]);
+    free(arr);
+}
+
+/* Push a malloc'd string into a NULL-terminated array (grows + 1 slot).
+ * cap may be NULL (auto-managed local capacity). */
+static void ai_strarr_push(char ***arr, size_t *n, size_t *cap, char *val)
+{
+    size_t local_cap = cap ? *cap : 0;
+    if (*n + 1 >= local_cap) {
+        local_cap = local_cap ? local_cap * 2 : 8;
+        *arr = realloc(*arr, (local_cap + 1) * sizeof(char *));
+        if (cap) *cap = local_cap;
+    }
+    (*arr)[(*n)++] = val;
+    (*arr)[*n] = NULL;
+}
+
+/* ── markdown entry extraction ──────────────────────────────── */
 
 static bool ai_md_is_banned_heading(const char *h)
 {
@@ -113,9 +133,7 @@ static bool ai_md_is_banned_heading(const char *h)
         size_t kwlen = strlen(kws[k]);
         const char *p = h;
         while ((p = strstr(p, kws[k])) != NULL) {
-            /* \b before */
             bool left_ok = (p == h) || !(isalnum((unsigned char)p[-1]) || p[-1] == '_');
-            /* ".md" after */
             bool md_ok = (p[kwlen] == '.') &&
                          tolower((unsigned char)p[kwlen + 1]) == 'm' &&
                          tolower((unsigned char)p[kwlen + 2]) == 'd';
@@ -128,202 +146,179 @@ static bool ai_md_is_banned_heading(const char *h)
     return false;
 }
 
+/* Build a context prefix: filtered heading chain joined by " > ".
+ * Returns malloc'd string or NULL if no headings. */
+static char *ai_md_context_prefix(char **headings, size_t n_headings)
+{
+    size_t pn = 0;
+    for (size_t i = 0; i < n_headings; i++)
+        if (!ai_md_is_banned_heading(headings[i])) pn++;
+    if (pn == 0) return NULL;
+
+    size_t cap = 0;
+    char *prefix = NULL;
+    size_t n = 0;
+    for (size_t i = 0; i < n_headings; i++) {
+        if (ai_md_is_banned_heading(headings[i])) continue;
+        size_t hlen = strlen(headings[i]);
+        if (n == 0) {
+            cap = hlen + 16;
+            prefix = malloc(cap);
+            memcpy(prefix, headings[i], hlen);
+            n = hlen;
+            prefix[n] = '\0';
+        } else {
+            /* append " > " + heading[i]; separator is " > " (3 chars) */
+            size_t need = n + 3 + hlen + 1;
+            if (need > cap) { cap = need + 16; prefix = realloc(prefix, cap); }
+            prefix[n] = ' '; prefix[n+1] = '>'; prefix[n+2] = ' ';
+            memcpy(prefix + n + 3, headings[i], hlen);
+            n += 3 + hlen;
+            prefix[n] = '\0';
+        }
+    }
+    return prefix;
+}
+
+/* Free paragraph lines array contents, then the array itself. */
+static void ai_para_clear(char ***paragraph, size_t *n)
+{
+    if (paragraph && *paragraph) {
+        for (size_t i = 0; i < *n; i++) free((*paragraph)[i]);
+        /* do NOT free the array itself — caller manages capacity */
+        *n = 0;
+    }
+}
+
+/* Flush accumulated paragraph lines into an entry (with context prefix). */
+static void ai_flush_paragraph(char ***entries, size_t *n_ent, size_t *cap_ent,
+                               char **paragraph, size_t n_para,
+                               char **headings, size_t n_headings)
+{
+    if (n_para == 0) return;
+
+    /* block = " ".join(paragraph).strip() */
+    size_t total = 1;
+    for (size_t i = 0; i < n_para; i++) total += strlen(paragraph[i]) + 1;
+    char *block = malloc(total);
+    block[0] = '\0';
+    for (size_t i = 0; i < n_para; i++) {
+        if (i) strcat(block, " ");
+        strcat(block, paragraph[i]);
+    }
+    /* strip block */
+    size_t bs = 0, be = strlen(block);
+    while (bs < be && isspace((unsigned char)block[bs])) bs++;
+    while (be > bs && isspace((unsigned char)block[be - 1])) be--;
+    block[be] = '\0';
+    if (bs > 0) memmove(block, block + bs, be - bs + 1);
+
+    char *prefix = ai_md_context_prefix(headings, n_headings);
+    char *entry;
+    if (prefix && *prefix) {
+        size_t plen = strlen(prefix);
+        size_t blen = strlen(block);
+        entry = malloc(plen + 3 + blen + 1);  /* "prefix: block" */
+        memcpy(entry, prefix, plen);
+        entry[plen] = ':'; entry[plen + 1] = ' ';
+        memcpy(entry + plen + 2, block, blen);
+        entry[plen + 2 + blen] = '\0';
+    } else if (block[0]) {
+        entry = strdup(block);
+    } else {
+        entry = NULL;
+    }
+    free(prefix);
+    free(block);
+
+    if (entry) ai_strarr_push(entries, n_ent, cap_ent, entry);
+}
+
 /* PoP: extract_markdown_entries @ hermes_cli/agent_import.py:extract_markdown_entries */
 char **ai_extract_markdown_entries(const char *text)
 {
+    if (!text) text = "";
+
     char **entries = NULL;
-    size_t n_entries = 0, cap_entries = 0;
+    size_t n_ent = 0, cap_ent = 0;
     char **headings = NULL;
     size_t n_headings = 0, cap_headings = 0;
     char **paragraph = NULL;
     size_t n_para = 0, cap_para = 0;
-
-    if (!text) text = "";
+    bool in_code = false;
 
     char *copy = strdup(text);
     if (!copy) return NULL;
-
     const char *it = copy;
-    bool in_code = false;
-
-    /* context_prefix() — filtered heading chain */
-    /* flush_paragraph() — joins paragraph lines into an entry */
-    /* (implemented as macros via helper below) */
 
     while (*it) {
-        /* next line */
         const char *eol = strchr(it, '\n');
         size_t linelen = eol ? (size_t)(eol - it) : strlen(it);
+
+        /* line = it[:linelen]; stripped = line.strip() */
         char *line = malloc(linelen + 1);
         memcpy(line, it, linelen);
         line[linelen] = '\0';
+
         /* rstrip */
         size_t rl = linelen;
         while (rl > 0 && isspace((unsigned char)line[rl - 1])) rl--;
         line[rl] = '\0';
-        /* strip */
-        size_t s = 0, e = rl;
-        while (s < e && isspace((unsigned char)line[s])) s++;
-        while (e > s && isspace((unsigned char)line[e - 1])) e--;
-        char *stripped = malloc(e - s + 1);
-        memcpy(stripped, line + s, e - s);
-        stripped[e - s] = '\0';
 
+        /* lstrip */
+        size_t s = 0;
+        while (s < rl && isspace((unsigned char)line[s])) s++;
+        char *stripped = malloc(rl - s + 1);
+        memcpy(stripped, line + s, rl - s);
+        stripped[rl - s] = '\0';
+
+        it = eol ? eol + 1 : it + strlen(it);
+
+        /* code fence toggle */
         if (strncmp(stripped, "```", 3) == 0) {
-            /* flush paragraph */
-            if (n_para > 0) {
-                size_t total = 0;
-                for (size_t i = 0; i < n_para; i++)
-                    total += strlen(paragraph[i]) + 1;
-                char *block = malloc(total + 1);
-                block[0] = '\0';
-                for (size_t i = 0; i < n_para; i++) {
-                    if (i) strcat(block, " ");
-                    strcat(block, paragraph[i]);
-                }
-                /* trim */
-                size_t bs = 0, be = strlen(block);
-                while (bs < be && isspace((unsigned char)block[bs])) bs++;
-                while (be > bs && isspace((unsigned char)block[be - 1])) be--;
-                block[be] = '\0';
-                /* context prefix */
-                char *prefix = NULL;
-                size_t pn = 0;
-                for (size_t i = 0; i < n_headings; i++) {
-                    if (!ai_md_is_banned_heading(headings[i])) {
-                        size_t hlen = strlen(headings[i]);
-                        if (pn == 0) {
-                            prefix = malloc(hlen + 1);
-                            memcpy(prefix, headings[i], hlen);
-                            prefix[hlen] = '\0';
-                        } else {
-                            size_t old = strlen(prefix);
-                            prefix = realloc(prefix, old + 3 + hlen + 1);
-                            prefix[old] = '>';
-                            memcpy(prefix + old + 2, headings[i], hlen);
-                            prefix[old + 2 + hlen] = '\0';
-                        }
-                        pn++;
-                    }
-                }
-                /* build entry */
-                size_t blen = strlen(block);
-                if (prefix && *prefix) {
-                    size_t plen = strlen(prefix);
-                    char *entry = malloc(plen + 3 + blen + 1);
-                    memcpy(entry, prefix, plen);
-                    entry[plen] = ':'; entry[plen + 1] = ' ';
-                    memcpy(entry + plen + 2, block, blen);
-                    entry[plen + 2 + blen] = '\0';
-                    if (n_entries >= cap_entries) {
-                        cap_entries = cap_entries ? cap_entries * 2 : 8;
-                        entries = realloc(entries, cap_entries * sizeof(char *));
-                    }
-                    entries[n_entries++] = entry;
-                } else if (blen > 0) {
-                    if (n_entries >= cap_entries) {
-                        cap_entries = cap_entries ? cap_entries * 2 : 8;
-                        entries = realloc(entries, cap_entries * sizeof(char *));
-                    }
-                    entries[n_entries++] = strdup(block);
-                }
-                free(prefix);
-                free(block);
-                for (size_t i = 0; i < n_para; i++) free(paragraph[i]);
-                n_para = 0;
-            }
+            ai_flush_paragraph(&entries, &n_ent, &cap_ent,
+                               paragraph, n_para, headings, n_headings);
+            ai_para_clear(&paragraph, &n_para);
             in_code = !in_code;
             free(line); free(stripped);
-            it = eol ? eol + 1 : it + linelen;
             continue;
         }
-        if (in_code) { free(line); free(stripped); it = eol ? eol + 1 : it + linelen; continue; }
+        if (in_code) { free(line); free(stripped); continue; }
 
-        /* heading: ^(#{1,6})\s+(.*\S)\s*$ on stripped */
+        /* heading: re.match(r"^(#{1,6})\s+(.*\S)\s*$", stripped) */
         if (stripped[0] == '#') {
             size_t hlevel = 0;
-            while (stripped[hlevel] == '#') hlevel++;
-            if (hlevel >= 1 && hlevel <= 6 && stripped[hlevel] == ' ' && stripped[hlevel + 1]) {
-                /* flush paragraph */
-                if (n_para > 0) { /* same flush as above — simplified */
-                    size_t total = 0;
-                    for (size_t i = 0; i < n_para; i++)
-                        total += strlen(paragraph[i]) + 1;
-                    char *block = malloc(total + 1);
-                    block[0] = '\0';
-                    for (size_t i = 0; i < n_para; i++) {
-                        if (i) strcat(block, " ");
-                        strcat(block, paragraph[i]);
-                    }
-                    size_t bs = 0, be = strlen(block);
-                    while (bs < be && isspace((unsigned char)block[bs])) bs++;
-                    while (be > bs && isspace((unsigned char)block[be - 1])) be--;
-                    block[be] = '\0';
-                    char *prefix = NULL;
-                    size_t pn = 0;
-                    for (size_t i = 0; i < n_headings; i++) {
-                        if (!ai_md_is_banned_heading(headings[i])) {
-                            size_t hlen = strlen(headings[i]);
-                            if (pn == 0) {
-                                prefix = malloc(hlen + 1);
-                                memcpy(prefix, headings[i], hlen);
-                                prefix[hlen] = '\0';
-                            } else {
-                                size_t old = strlen(prefix);
-                                prefix = realloc(prefix, old + 3 + hlen + 1);
-                                prefix[old] = '>';
-                                memcpy(prefix + old + 2, headings[i], hlen);
-                                prefix[old + 2 + hlen] = '\0';
-                            }
-                            pn++;
-                        }
-                    }
-                    size_t blen = strlen(block);
-                    if (prefix && *prefix) {
-                        size_t plen = strlen(prefix);
-                        char *entry = malloc(plen + 3 + blen + 1);
-                        memcpy(entry, prefix, plen);
-                        entry[plen] = ':'; entry[plen + 1] = ' ';
-                        memcpy(entry + plen + 2, block, blen);
-                        entry[plen + 2 + blen] = '\0';
-                        if (n_entries >= cap_entries) {
-                            cap_entries = cap_entries ? cap_entries * 2 : 8;
-                            entries = realloc(entries, cap_entries * sizeof(char *));
-                        }
-                        entries[n_entries++] = entry;
-                    } else if (blen > 0) {
-                        if (n_entries >= cap_entries) {
-                            cap_entries = cap_entries ? cap_entries * 2 : 8;
-                            entries = realloc(entries, cap_entries * sizeof(char *));
-                        }
-                        entries[n_entries++] = strdup(block);
-                    }
-                    free(prefix);
-                    free(block);
-                    for (size_t i = 0; i < n_para; i++) free(paragraph[i]);
-                    n_para = 0;
-                }
-                /* pop headings while len >= level */
-                char *value = stripped + hlevel + 1;
+            while (hlevel < 6 && stripped[hlevel] == '#') hlevel++;
+            if (hlevel >= 1 && hlevel <= 6 &&
+                stripped[hlevel] == ' ' && stripped[hlevel + 1]) {
+                size_t vlen = strlen(stripped + hlevel + 1);
+                char *value = strndup(stripped + hlevel + 1, vlen);
+                /* strip trailing whitespace from value */
+                size_t v = strlen(value);
+                while (v > 0 && isspace((unsigned char)value[v-1])) v--;
+                value[v] = '\0';
+
+                ai_flush_paragraph(&entries, &n_ent, &cap_ent,
+                                   paragraph, n_para, headings, n_headings);
+                ai_para_clear(&paragraph, &n_para);
+
+                /* pop headings while len >= level (1-indexed) */
                 while (n_headings >= hlevel) {
-                    if (n_headings > 0) free(headings[--n_headings]);
-                    else break;
+                    free(headings[--n_headings]);
                 }
-                if (n_headings >= cap_headings) {
-                    cap_headings = cap_headings ? cap_headings * 2 : 4;
-                    headings = realloc(headings, cap_headings * sizeof(char *));
-                }
-                headings[n_headings++] = strdup(value);
+                ai_strarr_push(&headings, &n_headings, &cap_headings, value);
+
                 free(line); free(stripped);
-                it = eol ? eol + 1 : it + linelen;
                 continue;
             }
         }
 
-        /* bullet: ^\s*(?:[-*]|\d+\.)\s+(.*\S)\s*$ on line */
-        if (line[0] == '-' || line[0] == '*' || isdigit((unsigned char)line[0])) {
+        /* bullet: re.match(r"^\s*(?:[-*]|\d+\.)\s+(.*\S)\s*$", line) */
+        /* Check on the raw line (not stripped), per Python: bullet_match = re.match(..., line) */
+        if (line[0] && (line[0] == '-' || line[0] == '*' ||
+                        (isdigit((unsigned char)line[0])))) {
             size_t bi = 0;
-            while (bi < rl && isspace((unsigned char)line[bi])) bi++;
+            while (bi < strlen(line) && isspace((unsigned char)line[bi])) bi++;
             bool is_bullet = false;
             size_t content_start = 0;
             if (line[bi] == '-' || line[bi] == '*') {
@@ -331,479 +326,119 @@ char **ai_extract_markdown_entries(const char *text)
                 content_start = bi + 1;
             } else if (isdigit((unsigned char)line[bi])) {
                 size_t di = bi;
-                while (di < rl && isdigit((unsigned char)line[di])) di++;
-                if (di < rl && line[di] == '.') { is_bullet = true; content_start = di + 1; }
+                while (isdigit((unsigned char)line[di])) di++;
+                if (di < strlen(line) && line[di] == '.') { is_bullet = true; content_start = di + 1; }
             }
             if (is_bullet) {
-                while (content_start < rl && isspace((unsigned char)line[content_start]))
+                /* bullet content = re.match group(1).strip() */
+                while (content_start < rl &&
+                       isspace((unsigned char)line[content_start]))
                     content_start++;
                 if (content_start < rl) {
-                    /* flush paragraph */
-                    if (n_para > 0) { /* same flush — simplified */
-                        size_t total = 0;
-                        for (size_t i = 0; i < n_para; i++)
-                            total += strlen(paragraph[i]) + 1;
-                        char *block = malloc(total + 1);
-                        block[0] = '\0';
-                        for (size_t i = 0; i < n_para; i++) {
-                            if (i) strcat(block, " ");
-                            strcat(block, paragraph[i]);
-                        }
-                        size_t bs = 0, be = strlen(block);
-                        while (bs < be && isspace((unsigned char)block[bs])) bs++;
-                        while (be > bs && isspace((unsigned char)block[be - 1])) be--;
-                        block[be] = '\0';
-                        char *prefix = NULL;
-                        size_t pn = 0;
-                        for (size_t i = 0; i < n_headings; i++) {
-                            if (!ai_md_is_banned_heading(headings[i])) {
-                                size_t hlen = strlen(headings[i]);
-                                if (pn == 0) {
-                                    prefix = malloc(hlen + 1);
-                                    memcpy(prefix, headings[i], hlen);
-                                    prefix[hlen] = '\0';
-                                } else {
-                                    size_t old = strlen(prefix);
-                                    prefix = realloc(prefix, old + 3 + hlen + 1);
-                                    prefix[old] = '>';
-                                    memcpy(prefix + old + 2, headings[i], hlen);
-                                    prefix[old + 2 + hlen] = '\0';
-                                }
-                                pn++;
-                            }
-                        }
-                        size_t blen = strlen(block);
-                        if (prefix && *prefix) {
-                            size_t plen = strlen(prefix);
-                            char *entry = malloc(plen + 3 + blen + 1);
-                            memcpy(entry, prefix, plen);
-                            entry[plen] = ':'; entry[plen + 1] = ' ';
-                            memcpy(entry + plen + 2, block, blen);
-                            entry[plen + 2 + blen] = '\0';
-                            if (n_entries >= cap_entries) {
-                                cap_entries = cap_entries ? cap_entries * 2 : 8;
-                                entries = realloc(entries, cap_entries * sizeof(char *));
-                            }
-                            entries[n_entries++] = entry;
-                        } else if (blen > 0) {
-                            if (n_entries >= cap_entries) {
-                                cap_entries = cap_entries ? cap_entries * 2 : 8;
-                                entries = realloc(entries, cap_entries * sizeof(char *));
-                            }
-                            entries[n_entries++] = strdup(block);
-                        }
-                        free(prefix);
-                        free(block);
-                        for (size_t i = 0; i < n_para; i++) free(paragraph[i]);
-                        n_para = 0;
-                    }
-                    /* append bullet content entry */
+                    /* Flush paragraph before bullet */
+                    ai_flush_paragraph(&entries, &n_ent, &cap_ent,
+                                       paragraph, n_para, headings, n_headings);
+                    ai_para_clear(&paragraph, &n_para);
+
                     size_t clen = rl - content_start;
-                    char *content = malloc(clen + 1);
-                    memcpy(content, line + content_start, clen);
-                    content[clen] = '\0';
-                    size_t cs = 0, ce = clen;
+                    char *content = strndup(line + content_start, clen);
+                    /* strip content */
+                    size_t cs = 0, ce = strlen(content);
                     while (cs < ce && isspace((unsigned char)content[cs])) cs++;
-                    while (ce > cs && isspace((unsigned char)content[ce - 1])) ce--;
+                    while (ce > cs && isspace((unsigned char)content[ce-1])) ce--;
                     content[ce] = '\0';
-                    char *prefix = NULL;
-                    size_t pn = 0;
-                    for (size_t i = 0; i < n_headings; i++) {
-                        if (!ai_md_is_banned_heading(headings[i])) {
-                            size_t hlen = strlen(headings[i]);
-                            if (pn == 0) {
-                                prefix = malloc(hlen + 1);
-                                memcpy(prefix, headings[i], hlen);
-                                prefix[hlen] = '\0';
-                            } else {
-                                size_t old = strlen(prefix);
-                                prefix = realloc(prefix, old + 3 + hlen + 1);
-                                prefix[old] = '>';
-                                memcpy(prefix + old + 2, headings[i], hlen);
-                                prefix[old + 2 + hlen] = '\0';
-                            }
-                            pn++;
-                        }
-                    }
-                    size_t blen = strlen(content);
+                    if (cs > 0) memmove(content, content + cs, ce - cs + 1);
+
+                    char *prefix = ai_md_context_prefix(headings, n_headings);
+                    char *entry;
                     if (prefix && *prefix) {
                         size_t plen = strlen(prefix);
-                        char *entry = malloc(plen + 3 + blen + 1);
+                        size_t blen = strlen(content);
+                        entry = malloc(plen + 3 + blen + 1);
                         memcpy(entry, prefix, plen);
                         entry[plen] = ':'; entry[plen + 1] = ' ';
                         memcpy(entry + plen + 2, content, blen);
                         entry[plen + 2 + blen] = '\0';
-                        if (n_entries >= cap_entries) {
-                            cap_entries = cap_entries ? cap_entries * 2 : 8;
-                            entries = realloc(entries, cap_entries * sizeof(char *));
-                        }
-                        entries[n_entries++] = entry;
-                    } else if (blen > 0) {
-                        if (n_entries >= cap_entries) {
-                            cap_entries = cap_entries ? cap_entries * 2 : 8;
-                            entries = realloc(entries, cap_entries * sizeof(char *));
-                        }
-                        entries[n_entries++] = strdup(content);
+                    } else {
+                        entry = content;
+                        content = NULL;
                     }
                     free(prefix);
                     free(content);
+                    if (entry) ai_strarr_push(&entries, &n_ent, &cap_ent, entry);
                 }
                 free(line); free(stripped);
-                it = eol ? eol + 1 : it + linelen;
                 continue;
             }
         }
 
-        /* blank line */
-        if (n_para > 0 && stripped[0] == '\0') {
-            /* flush paragraph — same as above (simplified inline) */
-            size_t total = 0;
-            for (size_t i = 0; i < n_para; i++)
-                total += strlen(paragraph[i]) + 1;
-            char *block = malloc(total + 1);
-            block[0] = '\0';
-            for (size_t i = 0; i < n_para; i++) {
-                if (i) strcat(block, " ");
-                strcat(block, paragraph[i]);
-            }
-            size_t bs = 0, be = strlen(block);
-            while (bs < be && isspace((unsigned char)block[bs])) bs++;
-            while (be > bs && isspace((unsigned char)block[be - 1])) be--;
-            block[be] = '\0';
-            char *prefix = NULL;
-            size_t pn = 0;
-            for (size_t i = 0; i < n_headings; i++) {
-                if (!ai_md_is_banned_heading(headings[i])) {
-                    size_t hlen = strlen(headings[i]);
-                    if (pn == 0) {
-                        prefix = malloc(hlen + 1);
-                        memcpy(prefix, headings[i], hlen);
-                        prefix[hlen] = '\0';
-                    } else {
-                        size_t old = strlen(prefix);
-                        prefix = realloc(prefix, old + 3 + hlen + 1);
-                        prefix[old] = '>';
-                        memcpy(prefix + old + 2, headings[i], hlen);
-                        prefix[old + 2 + hlen] = '\0';
-                    }
-                    pn++;
-                }
-            }
-            size_t blen = strlen(block);
-            if (prefix && *prefix) {
-                size_t plen = strlen(prefix);
-                char *entry = malloc(plen + 3 + blen + 1);
-                memcpy(entry, prefix, plen);
-                entry[plen] = ':'; entry[plen + 1] = ' ';
-                memcpy(entry + plen + 2, block, blen);
-                entry[plen + 2 + blen] = '\0';
-                if (n_entries >= cap_entries) {
-                    cap_entries = cap_entries ? cap_entries * 2 : 8;
-                    entries = realloc(entries, cap_entries * sizeof(char *));
-                }
-                entries[n_entries++] = entry;
-            } else if (blen > 0) {
-                if (n_entries >= cap_entries) {
-                    cap_entries = cap_entries ? cap_entries * 2 : 8;
-                    entries = realloc(entries, cap_entries * sizeof(char *));
-                }
-                entries[n_entries++] = strdup(block);
-            }
-            free(prefix);
-            free(block);
-            for (size_t i = 0; i < n_para; i++) free(paragraph[i]);
-            n_para = 0;
+        /* blank line forces paragraph flush */
+        if (stripped[0] == '\0') {
+            ai_flush_paragraph(&entries, &n_ent, &cap_ent,
+                               paragraph, n_para, headings, n_headings);
+            ai_para_clear(&paragraph, &n_para);
             free(line); free(stripped);
-            it = eol ? eol + 1 : it + linelen;
+            it = eol ? eol + 1 : it + strlen(it);
             continue;
         }
 
-        /* table line */
-        if (stripped[0] == '|' && stripped[e - s - 1] == '|') {
-            /* flush paragraph */
-            if (n_para > 0) { /* same flush — simplified */
-                size_t total = 0;
-                for (size_t i = 0; i < n_para; i++)
-                    total += strlen(paragraph[i]) + 1;
-                char *block = malloc(total + 1);
-                block[0] = '\0';
-                for (size_t i = 0; i < n_para; i++) {
-                    if (i) strcat(block, " ");
-                    strcat(block, paragraph[i]);
-                }
-                size_t bs = 0, be = strlen(block);
-                while (bs < be && isspace((unsigned char)block[bs])) bs++;
-                while (be > bs && isspace((unsigned char)block[be - 1])) be--;
-                block[be] = '\0';
-                char *prefix = NULL;
-                size_t pn = 0;
-                for (size_t i = 0; i < n_headings; i++) {
-                    if (!ai_md_is_banned_heading(headings[i])) {
-                        size_t hlen = strlen(headings[i]);
-                        if (pn == 0) {
-                            prefix = malloc(hlen + 1);
-                            memcpy(prefix, headings[i], hlen);
-                            prefix[hlen] = '\0';
-                        } else {
-                            size_t old = strlen(prefix);
-                            prefix = realloc(prefix, old + 3 + hlen + 1);
-                            prefix[old] = '>';
-                            memcpy(prefix + old + 2, headings[i], hlen);
-                            prefix[old + 2 + hlen] = '\0';
-                        }
-                        pn++;
-                    }
-                }
-                size_t blen = strlen(block);
-                if (prefix && *prefix) {
-                    size_t plen = strlen(prefix);
-                    char *entry = malloc(plen + 3 + blen + 1);
-                    memcpy(entry, prefix, plen);
-                    entry[plen] = ':'; entry[plen + 1] = ' ';
-                    memcpy(entry + plen + 2, block, blen);
-                    entry[plen + 2 + blen] = '\0';
-                    if (n_entries >= cap_entries) {
-                        cap_entries = cap_entries ? cap_entries * 2 : 8;
-                        entries = realloc(entries, cap_entries * sizeof(char *));
-                    }
-                    entries[n_entries++] = entry;
-                } else if (blen > 0) {
-                    if (n_entries >= cap_entries) {
-                        cap_entries = cap_entries ? cap_entries * 2 : 8;
-                        entries = realloc(entries, cap_entries * sizeof(char *));
-                    }
-                    entries[n_entries++] = strdup(block);
-                }
-                free(prefix);
-                free(block);
-                for (size_t i = 0; i < n_para; i++) free(paragraph[i]);
-                n_para = 0;
-            }
+        /* table line: stripped.startswith("|") and stripped.endswith("|") */
+        if (stripped[0] == '|' && strlen(stripped) > 0 &&
+            stripped[strlen(stripped) - 1] == '|') {
+            ai_flush_paragraph(&entries, &n_ent, &cap_ent,
+                               paragraph, n_para, headings, n_headings);
+            ai_para_clear(&paragraph, &n_para);
             free(line); free(stripped);
-            it = eol ? eol + 1 : it + linelen;
             continue;
         }
 
-        /* paragraph line */
-        if (n_para >= cap_para) {
-            cap_para = cap_para ? cap_para * 2 : 8;
-            paragraph = realloc(paragraph, cap_para * sizeof(char *));
-        }
-        paragraph[n_para++] = strdup(stripped);
+        /* paragraph line: accumulate */
+        ai_strarr_push(&paragraph, &n_para, &cap_para, strdup(stripped));
 
         free(line); free(stripped);
-        it = eol ? eol + 1 : it + linelen;
     }
     free(copy);
 
-    /* final flush_paragraph() */
-    if (n_para > 0) {
-        size_t total = 0;
-        for (size_t i = 0; i < n_para; i++)
-            total += strlen(paragraph[i]) + 1;
-        char *block = malloc(total + 1);
-        block[0] = '\0';
-        for (size_t i = 0; i < n_para; i++) {
-            if (i) strcat(block, " ");
-            strcat(block, paragraph[i]);
-        }
-        size_t bs = 0, be = strlen(block);
-        while (bs < be && isspace((unsigned char)block[bs])) bs++;
-        while (be > bs && isspace((unsigned char)block[be - 1])) be--;
-        block[be] = '\0';
-        char *prefix = NULL;
-        size_t pn = 0;
-        for (size_t i = 0; i < n_headings; i++) {
-            if (!ai_md_is_banned_heading(headings[i])) {
-                size_t hlen = strlen(headings[i]);
-                if (pn == 0) {
-                    prefix = malloc(hlen + 1);
-                    memcpy(prefix, headings[i], hlen);
-                    prefix[hlen] = '\0';
-                } else {
-                    size_t old = strlen(prefix);
-                    prefix = realloc(prefix, old + 3 + hlen + 1);
-                    prefix[old] = '>';
-                    memcpy(prefix + old + 2, headings[i], hlen);
-                    prefix[old + 2 + hlen] = '\0';
-                }
-                pn++;
-            }
-        }
-        size_t blen = strlen(block);
-        if (prefix && *prefix) {
-            size_t plen = strlen(prefix);
-            char *entry = malloc(plen + 3 + blen + 1);
-            memcpy(entry, prefix, plen);
-            entry[plen] = ':'; entry[plen + 1] = ' ';
-            memcpy(entry + plen + 2, block, blen);
-            entry[plen + 2 + blen] = '\0';
-            if (n_entries >= cap_entries) {
-                cap_entries = cap_entries ? cap_entries * 2 : 8;
-                entries = realloc(entries, cap_entries * sizeof(char *));
-            }
-            entries[n_entries++] = entry;
-        } else if (blen > 0) {
-            if (n_entries >= cap_entries) {
-                cap_entries = cap_entries ? cap_entries * 2 : 8;
-                entries = realloc(entries, cap_entries * sizeof(char *));
-            }
-            entries[n_entries++] = strdup(block);
-        }
-        free(prefix);
-        free(block);
+    /* Final flush */
+    ai_flush_paragraph(&entries, &n_ent, &cap_ent,
+                       paragraph, n_para, headings, n_headings);
+    /* Free remaining paragraph elements + array */
+    if (paragraph) {
         for (size_t i = 0; i < n_para; i++) free(paragraph[i]);
-        n_para = 0;
+        free(paragraph);
     }
-    free(paragraph);
+    ai_strarr_free(headings);
 
-    /* Dedup by normalized text */
-    char **deduped = NULL;
-    size_t n_dedup = 0, cap_dedup = 0;
-    char **seen_norms = NULL;
-    size_t n_seen = 0, cap_seen = 0;
-    for (size_t i = 0; i < n_entries; i++) {
+    /* Dedup by normalize_text (mirrors Python's deduped loop) */
+    /* Python: for entry in entries: normalized = normalize_text(entry);
+     *   if not normalized or normalized in seen: skip; seen.add(normalized);
+     *   deduped.append(entry.strip()) */
+    char **deduped = calloc(1, sizeof(char *));
+    size_t n_dedup = 0;
+    char **seen = calloc(1, sizeof(char *));
+    size_t n_seen = 0;
+    for (size_t i = 0; entries && entries[i]; i++) {
         char *norm = ai_normalize_text(entries[i]);
-        if (!norm || !*norm) { free(norm); free(entries[i]); continue; }
+        if (!norm || !*norm) { free(norm); continue; }
         bool dup = false;
         for (size_t j = 0; j < n_seen; j++) {
-            if (strcmp(seen_norms[j], norm) == 0) { dup = true; break; }
+            if (strcmp(seen[j], norm) == 0) { dup = true; break; }
         }
-        if (dup) { free(norm); free(entries[i]); continue; }
-        if (n_seen >= cap_seen) {
-            cap_seen = cap_seen ? cap_seen * 2 : 8;
-            seen_norms = realloc(seen_norms, cap_seen * sizeof(char *));
-        }
-        seen_norms[n_seen++] = norm;
-        if (n_dedup >= cap_dedup) {
-            cap_dedup = cap_dedup ? cap_dedup * 2 : 8;
-            deduped = realloc(deduped, cap_dedup * sizeof(char *));
-        }
-        /* entry.strip() — trim whitespace */
+        if (dup) { free(norm); continue; }
+        ai_strarr_push(&seen, &n_seen, /*cap*/NULL, norm);
+        /* entry.strip() */
         char *e = entries[i];
         size_t es = 0, ee = strlen(e);
         while (es < ee && isspace((unsigned char)e[es])) es++;
         while (ee > es && isspace((unsigned char)e[ee - 1])) ee--;
-        char *stripped = malloc(ee - es + 1);
-        memcpy(stripped, e + es, ee - es);
-        stripped[ee - es] = '\0';
-        deduped[n_dedup++] = stripped;
-        free(entries[i]);
+        ai_strarr_push(&deduped, &n_dedup, /*cap*/NULL, strndup(e + es, ee - es));
     }
-    free(entries);
-    free(seen_norms);
-    if (n_dedup >= cap_dedup) {
-        cap_dedup = cap_dedup ? cap_dedup * 2 : 8;
-        deduped = realloc(deduped, cap_dedup * sizeof(char *));
-    }
-    deduped[n_dedup] = NULL;
+    ai_strarr_free(entries);
+    ai_strarr_free(seen);
     return deduped;
 }
 
-/* --- merge_entries --- */
-
-static size_t ai_strarr_len(const char **arr)
-{
-    if (!arr) return 0;
-    size_t n = 0;
-    while (arr[n]) n++;
-    return n;
-}
-
-static void ai_strarr_free(char **arr)
-{
-    if (!arr) return;
-    for (size_t i = 0; arr[i]; i++) free(arr[i]);
-    free(arr);
-}
-
-/* PoP: merge_entries @ hermes_cli/agent_import.py:merge_entries */
-char **ai_merge_entries(const char **existing, const char **incoming,
-                        size_t limit,
-                        size_t *out_added, size_t *out_duplicates,
-                        size_t *out_overflowed)
-{
-    size_t n_existing = ai_strarr_len(existing);
-    size_t n_incoming = ai_strarr_len(incoming);
-
-    /* merged = list(existing) */
-    char **merged = NULL;
-    size_t n_merged = 0, cap_merged = n_existing ? n_existing : 8;
-    merged = malloc(cap_merged * sizeof(char *));
-    if (!merged) return NULL;
-    for (size_t i = 0; i < n_existing; i++)
-        merged[n_merged++] = strdup(existing[i]);
-
-    /* seen = {normalize_text(e) for e in existing if e.strip()} */
-    char **seen = NULL;
-    size_t n_seen = 0, cap_seen = 8;
-    seen = malloc(cap_seen * sizeof(char *));
-    if (!seen) { ai_strarr_free(merged); return NULL; }
-    for (size_t i = 0; i < n_existing; i++) {
-        const char *e = existing[i];
-        if (!e || !*e) continue;
-        char *norm = ai_normalize_text(e);
-        if (norm && *norm) {
-            if (n_seen >= cap_seen) {
-                cap_seen *= 2;
-                seen = realloc(seen, cap_seen * sizeof(char *));
-            }
-            seen[n_seen++] = norm;
-        } else {
-            free(norm);
-        }
-    }
-
-    size_t stats_added = 0, stats_duplicates = 0, stats_overflowed = 0;
-
-    /* current_len = len(ENTRY_DELIMITER.join(merged)) if merged else 0 */
-    size_t current_len = 0;
-    if (n_merged > 0) {
-        current_len = strlen(merged[0]);
-        for (size_t i = 1; i < n_merged; i++)
-            current_len += strlen(AI_ENTRY_DELIMITER) + strlen(merged[i]);
-    }
-
-    for (size_t i = 0; i < n_incoming; i++) {
-        const char *entry = incoming[i];
-        if (!entry) continue;
-        char *normalized = ai_normalize_text(entry);
-        if (!normalized || !*normalized) { free(normalized); continue; }
-        bool dup = false;
-        for (size_t j = 0; j < n_seen; j++) {
-            if (strcmp(seen[j], normalized) == 0) { dup = true; break; }
-        }
-        if (dup) { stats_duplicates++; free(normalized); continue; }
-        size_t entry_len = strlen(entry);
-        size_t candidate_len = (n_merged == 0) ? entry_len
-            : current_len + strlen(AI_ENTRY_DELIMITER) + entry_len;
-        if (candidate_len > limit) { stats_overflowed++; free(normalized); continue; }
-        if (n_merged >= cap_merged) {
-            cap_merged *= 2;
-            merged = realloc(merged, cap_merged * sizeof(char *));
-        }
-        merged[n_merged++] = strdup(entry);
-        if (n_seen >= cap_seen) {
-            cap_seen *= 2;
-            seen = realloc(seen, cap_seen * sizeof(char *));
-        }
-        seen[n_seen++] = normalized;
-        current_len = candidate_len;
-        stats_added++;
-    }
-    free(seen);
-
-    if (n_merged >= cap_merged) {
-        cap_merged = n_merged + 1;
-        merged = realloc(merged, cap_merged * sizeof(char *));
-    }
-    merged[n_merged] = NULL;
-
-    if (out_added) *out_added = stats_added;
-    if (out_duplicates) *out_duplicates = stats_duplicates;
-    if (out_overflowed) *out_overflowed = stats_overflowed;
-    return merged;
-}
+/* ── claude_rule_to_command_pattern ──────────────────────────── */
 
 /* PoP: claude_rule_to_command_pattern @ hermes_cli/agent_import.py:claude_rule_to_command_pattern */
 char *ai_claude_rule_to_command_pattern(const char *rule)
@@ -832,6 +467,8 @@ char *ai_claude_rule_to_command_pattern(const char *rule)
     return inner;
 }
 
+/* ── sanitize_mcp_env ────────────────────────────────────────── */
+
 /* PoP: sanitize_mcp_env @ hermes_cli/agent_import.py:sanitize_mcp_env */
 void ai_sanitize_mcp_env(const char *env_json,
                          char **out_kept, char ***out_stripped)
@@ -839,9 +476,11 @@ void ai_sanitize_mcp_env(const char *env_json,
     char *kept = strdup("{}");
     char **stripped = NULL;
     size_t n_stripped = 0, cap_stripped = 0;
+    char *err = NULL;
 
     if (env_json) {
-        json_t *env = json_parse(env_json, NULL);
+        json_t *env = json_parse(env_json, &err);
+        if (err) free(err);
         if (env && env->type == JSON_OBJECT) {
             json_t *kept_obj = json_object();
             for (size_t i = 0; i < env->c.count; i++) {
@@ -849,7 +488,7 @@ void ai_sanitize_mcp_env(const char *env_json,
                 if (ai_is_secret_key(key)) {
                     if (n_stripped >= cap_stripped) {
                         cap_stripped = cap_stripped ? cap_stripped * 2 : 4;
-                        stripped = realloc(stripped, cap_stripped * sizeof(char *));
+                        stripped = realloc(stripped, (cap_stripped + 1) * sizeof(char *));
                     }
                     stripped[n_stripped++] = strdup(key);
                 } else {
@@ -862,12 +501,144 @@ void ai_sanitize_mcp_env(const char *env_json,
         }
         if (env) json_free(env);
     }
+    /* NULL-terminate stripped */
     if (n_stripped >= cap_stripped) {
         cap_stripped = n_stripped + 1;
-        stripped = realloc(stripped, cap_stripped * sizeof(char *));
+        stripped = realloc(stripped, (cap_stripped + 1) * sizeof(char *));
     }
     stripped[n_stripped] = NULL;
 
     if (out_kept) *out_kept = kept; else free(kept);
     if (out_stripped) *out_stripped = stripped; else ai_strarr_free(stripped);
+}
+
+/* ── parse_existing_memory_entries ─────────────────────────── */
+
+/* PoP: parse_existing_memory_entries @ hermes_cli/agent_import.py:parse_existing_memory_entries */
+char **ai_parse_existing_memory_entries(const char *file_contents)
+{
+    char **entries = calloc(1, sizeof(char *));
+    size_t n = 0, cap = 0;
+
+    if (!file_contents || !*file_contents)
+        return entries;
+
+    const char *cur = file_contents;
+    const size_t dlen = strlen(AI_ENTRY_DELIMITER);
+
+    while (*cur) {
+        char *next = strstr(cur, AI_ENTRY_DELIMITER);
+        char *seg;
+        if (next) {
+            size_t slen = (size_t)(next - cur);
+            seg = strndup(cur, slen);
+            cur = next + dlen;
+        } else {
+            seg = strdup(cur);
+            cur = cur + strlen(cur);  /* advance past end -> loop exits */
+        }
+
+        /* strip + skip empty: [e.strip() for e in raw.split(DELIM) if e.strip()] */
+        size_t sl = strlen(seg);
+        size_t si = 0;
+        while (si < sl && isspace((unsigned char)seg[si])) si++;
+        size_t se = sl;
+        while (se > si && isspace((unsigned char)seg[se - 1])) se--;
+        if (si < se) {
+            char *entry = strndup(seg + si, se - si);
+            ai_strarr_push(&entries, &n, &cap, entry);
+        }
+        free(seg);
+
+        if (!next) break;
+    }
+    return entries;
+}
+
+/* ── merge_entries ──────────────────────────────────────────── */
+
+/* PoP: merge_entries @ hermes_cli/agent_import.py:merge_entries */
+char **ai_merge_entries(const char *existing_json, const char *incoming_json,
+                        long limit, size_t *out_added,
+                        size_t *out_duplicates, size_t *out_overflowed)
+{
+    if (out_added) *out_added = 0;
+    if (out_duplicates) *out_duplicates = 0;
+    if (out_overflowed) *out_overflowed = 0;
+
+    char **merged = calloc(1, sizeof(char *));
+    size_t n_merged = 0, cap_merged = 0;
+    char **seen = calloc(1, sizeof(char *));
+    size_t n_seen = 0, cap_seen = 0;
+
+    char *err = NULL;
+    json_t *ex = json_parse(existing_json ? existing_json : "[]", &err);
+    if (err) free(err);
+    json_t *in = json_parse(incoming_json ? incoming_json : "[]", &err);
+    if (err) free(err);
+
+    /* merged = list(existing); seen = {normalize_text(e) for e in existing if e.strip()} */
+    if (ex && ex->type == JSON_ARRAY) {
+        for (size_t i = 0; i < ex->c.count; i++) {
+            json_t *e = ex->c.items[i];
+            char *s = e ? (e->type == JSON_STRING ? strdup(e->str_val)
+                                                  : json_serialize(e)) : strdup("");
+            /* strip check like Python's `if e.strip()` */
+            size_t sl = strlen(s);
+            size_t si = 0;
+            while (si < sl && isspace((unsigned char)s[si])) si++;
+            size_t se = sl;
+            while (se > si && isspace((unsigned char)s[se-1])) se--;
+            if (si < se) {
+                char *norm = ai_normalize_text(s);
+                if (norm && *norm) ai_strarr_push(&seen, &n_seen, &cap_seen, norm);
+                else free(norm);
+            }
+            ai_strarr_push(&merged, &n_merged, &cap_merged, s);
+        }
+    }
+
+    /* current_len = len(ENTRY_DELIMITER.join(merged)) if merged else 0 */
+    size_t current_len = 0;
+    if (n_merged > 0) {
+        current_len = strlen(merged[0]);
+        for (size_t k = 1; k < n_merged; k++)
+            current_len += strlen(AI_ENTRY_DELIMITER) + strlen(merged[k]);
+    }
+
+    if (in && in->type == JSON_ARRAY) {
+        for (size_t i = 0; i < in->c.count; i++) {
+            json_t *e = in->c.items[i];
+            char *entry = e ? (e->type == JSON_STRING ? strdup(e->str_val)
+                                                      : json_serialize(e)) : strdup("");
+            char *normalized = ai_normalize_text(entry);
+            if (!normalized || !*normalized) { free(normalized); free(entry); continue; }
+            bool dup = false;
+            for (size_t j = 0; j < n_seen; j++)
+                if (strcmp(seen[j], normalized) == 0) { dup = true; break; }
+            if (dup) {
+                if (out_duplicates) (*out_duplicates)++;
+                free(normalized); free(entry);
+                continue;
+            }
+            /* candidate_len = len(entry) if not merged else current_len + dlen + len(entry) */
+            size_t cand_len = n_merged
+                ? current_len + strlen(AI_ENTRY_DELIMITER) + strlen(entry)
+                : strlen(entry);
+            if (cand_len > (size_t)limit) {
+                if (out_overflowed) (*out_overflowed)++;
+                free(normalized); free(entry);
+                continue;
+            }
+            ai_strarr_push(&merged, &n_merged, &cap_merged, entry);
+            ai_strarr_push(&seen, &n_seen, &cap_seen, normalized);
+            current_len = cand_len;
+            if (out_added) (*out_added)++;
+        }
+    }
+
+    if (ex) json_free(ex);
+    if (in) json_free(in);
+    ai_strarr_free(seen);
+    return merged;
 }
