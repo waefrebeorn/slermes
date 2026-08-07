@@ -12,6 +12,11 @@
       "oracle": "tests/sta_oracle_agent_relay_llm.py",
       "fixtures": "tests/oracle/fixtures/relay_llm"
     },
+    "tools_voice_mode_pure": {
+      "harness": "tests/t_port_tools_voice_mode_pure.c",
+      "oracle": "tests/sta_oracle_tools_voice_mode_pure.py",
+      "fixtures": "tests/oracle/fixtures/tools_voice_mode_pure"
+    },
     "account_usage": {
       "harness": "tests/t_port_account_usage.c",
       "oracle": "tests/sta_oracle_account_usage.py",
