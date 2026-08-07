@@ -339,14 +339,18 @@ int managed_vendor_endpoints(const char *hermes_home, const char *vendor,
                               char *base_url, size_t base_sz,
                               char *upload_url, size_t upload_sz)
 {
-    managed_gateway_config_t cfg;
-    if (!managed_gw_resolve(hermes_home, vendor, &cfg)) return -1;
+    (void)hermes_home;
+    if (!vendor || !*vendor || !base_url || !upload_url) return -1;
+    char origin[GW_URL_MAX];
+    managed_gw_build_url("tool", origin, sizeof(origin));
     char base_path[256];
     managed_vendor_base_path(vendor, base_path, sizeof(base_path));
     char upload_path[256];
     managed_vendor_upload_path(vendor, upload_path, sizeof(upload_path));
-    snprintf(base_url, base_sz, "%s%s", cfg.gateway_origin, base_path);
-    snprintf(upload_url, upload_sz, "%s%s", cfg.gateway_origin, upload_path);
+    snprintf(base_url, base_sz, "%s%s", origin, base_path);
+    /* Python managed_vendor_endpoints returns upload_path as the relative
+     * path only (not origin + upload_path). */
+    snprintf(upload_url, upload_sz, "%s", upload_path);
     return 0;
 }
 

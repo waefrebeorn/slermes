@@ -46,6 +46,9 @@ json_t *flux3_submit_args(const char *mode, json_t *args);
 /* PoP: _shared_submit_properties @ tools/flux3_video_tool.py:_shared_submit_properties */
 json_t *flux3_shared_submit_properties(void);
 
+/* PoP: _endpoints @ tools/flux3_video_tool.py:_endpoints */
+json_t *flux3_endpoints(void);
+
 /* PoP: _resolve_destination @ tools/flux3_video_tool.py:_resolve_destination */
 char *flux3_resolve_destination(const char *save_to, const char *filename);
 

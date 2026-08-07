@@ -17,6 +17,11 @@
 #include <stdbool.h>
 #include <sys/stat.h>
 
+#include "managed_gateway.h"
+#include "tool_backend.h"
+
+/* Vendor name for BFL gateway routes (PoP: _VENDOR @ tools/flux3_video_tool.py:_VENDOR) */
+
 /* PoP: _still_generating @ tools/flux3_video_tool.py:_still_generating */
 char *flux3_still_generating(const char *job_id)
 {
@@ -166,6 +171,25 @@ json_t *flux3_shared_submit_properties(void)
     json_set(ver, "type", json_string("string"));
     json_set(ver, "description", json_string("Model version pin. Defaults to \"latest\"."));
     json_set(props, "version", ver);
-
     return props;
+}
+
+/* PoP: _endpoints @ tools/flux3_video_tool.py:_endpoints
+ * Python: return managed_vendor_endpoints(_VENDOR)  ("bfl").
+ * Delegates to managed_gateway lib. Returns NULL when unreachable. */
+json_t *flux3_endpoints(void)
+{
+    char base_url[512], upload_path[512];
+    if (managed_vendor_endpoints(NULL, "bfl", base_url, sizeof(base_url),
+                                 upload_path, sizeof(upload_path)) != 0)
+        return NULL;
+    char *r = json_object();
+        char origin[GW_URL_MAX];
+        managed_gw_build_url("tool", origin, sizeof(origin));
+        json_set(r, "origin", json_string(origin));
+        json_set(r, "base_url", json_string(base_url));
+        /* Python managed_vendor_endpoints returns upload_path as the
+         * RELATIVE path (managed_vendor_upload_path), not the full URL. */
+        json_set(r, "upload_path", json_string(upload_path));
+        return r;
 }
