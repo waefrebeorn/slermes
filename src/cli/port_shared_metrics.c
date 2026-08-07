@@ -66,8 +66,8 @@ char *sm_isoformat(const struct sm_datetime *dt) {
     return out;
 }
 
-/* PoP: _ensure_private_directory @ hermes_cli/observability/shared_metrics.py:_ensure_private_directory
- * Create directory (mkdir -p) with mode 0700. chmod 0700 on any failure. */
+/* PoP: _ensure_private_directory @ hermes_cli/observability/shared_metrics.py:_ensure_private_directory */
+/* Create directory (mkdir -p) with mode 0700. chmod 0700 on any failure. */
 int sm_ensure_private_directory(const char *path) {
     if (!path || !*path) return -1;
     /* mkdir -p: walk components */
@@ -92,8 +92,8 @@ int sm_ensure_private_directory(const char *path) {
     return 0;
 }
 
-/* PoP: _ensure_private_file @ hermes_cli/observability/shared_metrics.py:_ensure_private_file
- * touch(mode=0600) + chmod 0600 (ignore chmod errors on non-owner). */
+/* PoP: _ensure_private_file @ hermes_cli/observability/shared_metrics.py:_ensure_private_file */
+/* touch(mode=0600) + chmod 0600 (ignore chmod errors on non-owner). */
 int sm_ensure_private_file(const char *path) {
     if (!path || !*path) return -1;
     int fd = open(path, O_WRONLY | O_CREAT | O_NOFOLLOW, 0600);

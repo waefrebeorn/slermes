@@ -62,8 +62,8 @@ static int get_config_bool(const char *key) {
 }
 
 /* ── /battery ───────────────────────────────────────────────────────── */
-/* PoP: battery @ hermes_cli/commands.py:battery
- * PoP: cmd_battery @ hermes_cli/cli_commands_mixin.py:_handle_battery_command */
+/* PoP: battery @ hermes_cli/commands.py:battery */
+/* PoP: cmd_battery @ hermes_cli/cli_commands_mixin.py:_handle_battery_command */
 void cmd_battery(const char *args, agent_state_t *state) {
     (void)state;
     const char *arg = "";
@@ -112,8 +112,8 @@ void cmd_battery(const char *args, agent_state_t *state) {
 }
 
 /* ── /timestamps ────────────────────────────────────────────────────── */
-/* PoP: timestamps @ hermes_cli/commands.py:timestamps
- * PoP: cmd_timestamps @ hermes_cli/cli_commands_mixin.py:_handle_timestamps_command */
+/* PoP: timestamps @ hermes_cli/commands.py:timestamps */
+/* PoP: cmd_timestamps @ hermes_cli/cli_commands_mixin.py:_handle_timestamps_command */
 void cmd_timestamps(const char *args, agent_state_t *state) {
     (void)state;
     /* Delegate to the faithful wrapper (string coercion + config save). */
@@ -180,8 +180,8 @@ void cmd_codex_runtime(const char *args, agent_state_t *state) {
 }
 
 /* ── /subscription ──────────────────────────────────────────────────── */
-/* PoP: subscription @ hermes_cli/commands.py:subscription
- * PoP: cmd_subscription @ hermes_cli/cli_billing_mixin.py:_show_subscription */
+/* PoP: subscription @ hermes_cli/commands.py:subscription */
+/* PoP: cmd_subscription @ hermes_cli/cli_billing_mixin.py:_show_subscription */
 void cmd_subscription(const char *args, agent_state_t *state) {
     (void)args; (void)state;
     /* Real billing-state read (build_billing_state fetches the portal's
@@ -215,8 +215,8 @@ void cmd_subscription(const char *args, agent_state_t *state) {
 }
 
 /* ── /topup ─────────────────────────────────────────────────────────── */
-/* PoP: topup @ hermes_cli/commands.py:topup
- * PoP: cmd_topup @ hermes_cli/cli_billing_mixin.py:_show_billing */
+/* PoP: topup @ hermes_cli/commands.py:topup */
+/* PoP: cmd_topup @ hermes_cli/cli_billing_mixin.py:_show_billing */
 void cmd_topup(const char *args, agent_state_t *state) {
     (void)args; (void)state;
     extern billing_state_t build_billing_state(void);
@@ -247,8 +247,8 @@ void cmd_topup(const char *args, agent_state_t *state) {
 }
 
 /* ── /journey ───────────────────────────────────────────────────────── */
-/* PoP: journey @ hermes_cli/commands.py:journey
- * PoP: cmd_journey @ hermes_cli/cli_commands_mixin.py:_handle_journey_command */
+/* PoP: journey @ hermes_cli/commands.py:journey */
+/* PoP: cmd_journey @ hermes_cli/cli_commands_mixin.py:_handle_journey_command */
 void cmd_journey(const char *args, agent_state_t *state) {
     (void)state;
     /* Delegate to the faithful journey wrapper (hermes_cli/journey.py). */
@@ -256,8 +256,8 @@ void cmd_journey(const char *args, agent_state_t *state) {
 }
 
 /* ── /learn ─────────────────────────────────────────────────────────── */
-/* PoP: learn @ hermes_cli/commands.py:learn
- * PoP: cmd_learn @ hermes_cli/cli_commands_mixin.py:_handle_learn_command */
+/* PoP: learn @ hermes_cli/commands.py:learn */
+/* PoP: cmd_learn @ hermes_cli/cli_commands_mixin.py:_handle_learn_command */
 void cmd_learn(const char *args, agent_state_t *state) {
     (void)state;
     /* Delegate to the faithful learn wrapper. */
@@ -265,8 +265,8 @@ void cmd_learn(const char *args, agent_state_t *state) {
 }
 
 /* ── /moa ───────────────────────────────────────────────────────────── */
-/* PoP: moa @ hermes_cli/commands.py:moa
- * PoP: cmd_moa @ hermes_cli/moa_cmd.py:cmd_moa */
+/* PoP: moa @ hermes_cli/commands.py:moa */
+/* PoP: cmd_moa @ hermes_cli/moa_cmd.py:cmd_moa */
 void cmd_moa(const char *args, agent_state_t *state) {
     (void)state;
     /* Delegate to the faithful MoA command wrapper (hermes_cli/moa_cmd.py). */
@@ -275,8 +275,8 @@ void cmd_moa(const char *args, agent_state_t *state) {
 }
 
 /* ── /prompt ────────────────────────────────────────────────────────── */
-/* PoP: prompt @ hermes_cli/commands.py:prompt
- * PoP: cmd_prompt @ hermes_cli/cli_commands_mixin.py:_handle_prompt_command */
+/* PoP: prompt @ hermes_cli/commands.py:prompt */
+/* PoP: cmd_prompt @ hermes_cli/cli_commands_mixin.py:_handle_prompt_command */
 void cmd_prompt(const char *args, agent_state_t *state) {
     (void)state;
     /* Delegate to the faithful prompt-compose wrapper ($EDITOR flow). */
@@ -284,8 +284,8 @@ void cmd_prompt(const char *args, agent_state_t *state) {
 }
 
 /* ── /suggestions ───────────────────────────────────────────────────── */
-/* PoP: suggestions @ hermes_cli/commands.py:suggestions
- * PoP: cmd_suggestions @ hermes_cli/suggestions_cmd.py:handle_suggestions_command */
+/* PoP: suggestions @ hermes_cli/commands.py:suggestions */
+/* PoP: cmd_suggestions @ hermes_cli/suggestions_cmd.py:handle_suggestions_command */
 void cmd_suggestions(const char *args, agent_state_t *state) {
     (void)state;
     /* Delegate to the faithful suggestions wrapper. */
@@ -301,8 +301,8 @@ void cmd_blueprint(const char *args, agent_state_t *state) {
 }
 
 /* ── /hatch ─────────────────────────────────────────────────────────── */
-/* PoP: hatch @ hermes_cli/commands.py:hatch
- * PoP: cmd_hatch @ hermes_cli/cli_commands_mixin.py:_handle_hatch_command */
+/* PoP: hatch @ hermes_cli/commands.py:hatch */
+/* PoP: cmd_hatch @ hermes_cli/cli_commands_mixin.py:_handle_hatch_command */
 void cmd_hatch(const char *args, agent_state_t *state) {
     (void)state;
     /* Delegate to the faithful hatch wrapper (pet generation pipeline). */

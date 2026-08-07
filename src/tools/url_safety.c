@@ -45,9 +45,9 @@ bool url_allow_private_enabled(void) {
     return g_allow_private;
 }
 
-/* PoP: _resolve_allow_private_urls @ tools/url_safety.py:_resolve_allow_private_urls
- * Resolve the effective private-URL toggle from env var (highest priority) then
- * config. input: full config JSON string. Returns true/false. */
+/* PoP: _resolve_allow_private_urls @ tools/url_safety.py:_resolve_allow_private_urls */
+/* Resolve the effective private-URL toggle from env var (highest priority) then */
+/* config. input: full config JSON string. Returns true/false. */
 bool url_resolve_allow_private_urls(const char *config_json)
 {
     /* 1. Env var override (highest priority) */

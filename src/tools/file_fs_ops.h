@@ -29,8 +29,8 @@ bool file_fs_ops_delete_path(const char *path);
 /* PoP: file_fs_ops_python_delete @ tools/file_operations.py:_python_delete */
 bool file_fs_ops_python_delete(const char *path);
 
-/* PoP: file_fs_ops_patch_replace @ tools/file_operations.py:patch_replace
- * (primitive: first-occurrence replace; Python's full method is fuzzy + guarded) */
+/* PoP: file_fs_ops_patch_replace @ tools/file_operations.py:patch_replace */
+/* (primitive: first-occurrence replace; Python's full method is fuzzy + guarded) */
 char *file_fs_ops_patch_replace(const char *content, const char *old_text,
                                 const char *new_text);
 

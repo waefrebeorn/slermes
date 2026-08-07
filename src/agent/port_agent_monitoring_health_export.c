@@ -150,10 +150,10 @@ char *he_logs_endpoint(const char *endpoint)
     return strdup(endpoint);
 }
 
-/* PoP: _resolve_headers @ agent/monitoring/gateway_health_export.py:_resolve_headers
- * Resolve headers from env-var-name mapping. input: JSON object
- * {"header_name": "ENV_VAR"}; output: JSON object {"header_name": value}. Only
- * headers whose ENV_VAR is set to a non-empty string are included. malloc'd. */
+/* PoP: _resolve_headers @ agent/monitoring/gateway_health_export.py:_resolve_headers */
+/* Resolve headers from env-var-name mapping. input: JSON object */
+/* {"header_name": "ENV_VAR"}; output: JSON object {"header_name": value}. Only */
+/* headers whose ENV_VAR is set to a non-empty string are included. malloc'd. */
 char *he_resolve_headers(const char *headers_env_json)
 {
     if (!headers_env_json) return strdup("{}");

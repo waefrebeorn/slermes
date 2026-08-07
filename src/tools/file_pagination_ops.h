@@ -33,10 +33,10 @@ bool file_pagination_ops_is_line_oriented_newline_error(const char *error);
 /* PoP: file_pagination_ops_pattern_has_regex_newline @ tools/file_operations.py:_pattern_has_regex_newline */
 bool file_pagination_ops_pattern_has_regex_newline(const char *pattern);
 
-/* PoP: file_pagination_ops_maybe_warn_line_oriented_newline_pattern @ tools/file_operations.py:_maybe_warn_line_oriented_newline_pattern
- * Mutates result: only when total_count==0 AND pattern has a regex newline AND
- * (no error OR error is the line-oriented error), it clears error and sets the
- * warning string. Returns result unchanged otherwise. */
+/* PoP: file_pagination_ops_maybe_warn_line_oriented_newline_pattern @ tools/file_operations.py:_maybe_warn_line_oriented_newline_pattern */
+/* Mutates result: only when total_count==0 AND pattern has a regex newline AND */
+/* (no error OR error is the line-oriented error), it clears error and sets the */
+/* warning string. Returns result unchanged otherwise. */
 json_t *file_pagination_ops_maybe_warn_line_oriented_newline_pattern(json_t *result, const char *pattern);
 
 #endif /* SLERMES_FILE_PAGINATION_OPS_H */

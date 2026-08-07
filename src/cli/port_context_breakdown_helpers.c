@@ -375,8 +375,8 @@ long context_breakdown_bytes_to_tokens(long size)
     return (size + 3) / 4;
 }
 
-/* PoP: render_context_grid @ agent/context_breakdown.py:render_context_grid
- * 100 cells (5x20), one percent of the context window each. */
+/* PoP: render_context_grid @ agent/context_breakdown.py:render_context_grid */
+/* 100 cells (5x20), one percent of the context window each. */
 char **context_breakdown_render_grid(const char *payload_json, size_t *out_lines)
 {
     static const char *CATEGORY_GLYPHS[] = {

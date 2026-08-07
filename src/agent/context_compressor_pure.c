@@ -1148,12 +1148,11 @@ char *_render_micro_marker_content(const char *summary_text) {
 
 /* ── _merge_adjacent_user_turns ────────────────────────────────────────── */
 
-/* PoP: _merge_adjacent_user_turns @ agent/context_compressor.py:_merge_adjacent_user_turns
- *
- * Faithful port: builds a new list merging consecutive plain-text user turns
- * (\n\n-joined), skipping tool/summary messages. Drops the api_content sidecar
- * on merged messages (drop_stale_api_content). Returns the new count. The
- * caller frees the returned array via json_free. */
+/* PoP: _merge_adjacent_user_turns @ agent/context_compressor.py:_merge_adjacent_user_turns */
+/* Faithful port: builds a new list merging consecutive plain-text user turns */
+/* (\n\n-joined), skipping tool/summary messages. Drops the api_content sidecar */
+/* on merged messages (drop_stale_api_content). Returns the new count. The */
+/* caller frees the returned array via json_free. */
 int _merge_adjacent_user_turns(json_t *result, json_t **out_merged) {
     *out_merged = json_array();
     if (!result || result->type != JSON_ARRAY) return 0;

@@ -180,9 +180,9 @@ json_t *flux3_shared_submit_properties(void)
     return props;
 }
 
-/* PoP: _endpoints @ tools/flux3_video_tool.py:_endpoints
- * Python: return managed_vendor_endpoints(_VENDOR)  ("bfl").
- * Delegates to managed_gateway lib. Returns NULL when unreachable. */
+/* PoP: _endpoints @ tools/flux3_video_tool.py:_endpoints */
+/* Python: return managed_vendor_endpoints(_VENDOR)  ("bfl"). */
+/* Delegates to managed_gateway lib. Returns NULL when unreachable. */
 json_t *flux3_endpoints(void)
 {
     char base_url[512], upload_path[512];

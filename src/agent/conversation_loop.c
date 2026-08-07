@@ -1779,11 +1779,10 @@ char *ollama_context_limit_error(bool has_tools, int ollama_num_ctx,
     return strdup(buf);
 }
 
-/* PoP: run_conversation @ agent/run_agent.py:run_agent
- *
- * Header-declared alias for run_conversation() — the API-server/gateway
- * path uses the agent_run_ prefix (name parity with the Python-facing
- * surface); run_conversation is the canonical implementation. */
+/* PoP: run_conversation @ agent/run_agent.py:run_agent */
+/* Header-declared alias for run_conversation() — the API-server/gateway */
+/* path uses the agent_run_ prefix (name parity with the Python-facing */
+/* surface); run_conversation is the canonical implementation. */
 char *agent_run_conversation(agent_state_t *state,
                              const char *user_message,
                              const char *system_message) {

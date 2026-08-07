@@ -583,12 +583,12 @@ char *kanban_db_path(const char *board)
 /* True iff a profile directory named `name` exists on disk. Shared by all
  * kanban concern modules (decompose, util) — promoted from a static helper so
  * there is a single source of truth. */
-/* PoP: profile_exists @ hermes_cli/profiles.py:profile_exists
- * Python's kanban_db.py imports this from hermes_cli.profiles — it is
- * the SAME canonical profile-dir existence check, NOT a kanban-profile
- * listing. Delegate to the canonical implementation (port_cli_profiles.c
- * profile_dir_exists) so both spellings stay in lockstep with Python.
- * Returns -1 on empty name (Python raises ValueError there). */
+/* PoP: profile_exists @ hermes_cli/profiles.py:profile_exists */
+/* Python's kanban_db.py imports this from hermes_cli.profiles — it is */
+/* the SAME canonical profile-dir existence check, NOT a kanban-profile */
+/* listing. Delegate to the canonical implementation (port_cli_profiles.c */
+/* profile_dir_exists) so both spellings stay in lockstep with Python. */
+/* Returns -1 on empty name (Python raises ValueError there). */
 extern int profile_dir_exists(const char *name); /* port_cli_profiles.c */
 int profile_exists(const char *name)
 {

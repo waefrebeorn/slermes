@@ -302,10 +302,9 @@ bool gw_is_slack_ignored_channel(
     return result;
 }
 
-/* PoP: _retry_ordinal @ hermes_cli/observability/relay_shared_metrics.py:_retry_ordinal
- * Extract retry_count from event dict, validate it's a non-negative int.
- * (Python's dict.get + isinstance + value >= 0 check)
- */
+/* PoP: _retry_ordinal @ hermes_cli/observability/relay_shared_metrics.py:_retry_ordinal */
+/* Extract retry_count from event dict, validate it's a non-negative int. */
+/* (Python's dict.get + isinstance + value >= 0 check) */
 int gw_retry_ordinal(const json_t *event)
 {
     json_t *val = json_object_get(event, "retry_count");
