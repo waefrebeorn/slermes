@@ -187,6 +187,17 @@ void approval_save_allowlist(void) {
     free(ser);
 }
 
+/* Dump the permanent allowlist entries to stdout (approvals list/suggest). */
+void approval_dump_allowlist(void) {
+    int shown = 0;
+    for (int i = 0; i < g_approval_count; i++) {
+        if (!g_approval_cache[i].permanent) continue;
+        printf("  - %s\n", g_approval_cache[i].command);
+        shown++;
+    }
+    if (shown == 0) printf("  (empty)\n");
+}
+
 /* PoP: reset_session @ src/tools/approval.c:approval_reset_session */
 /* Port of Python session.py:reset_session(). */
 /* AG26: Port of Python tools/approval.py:clear_session() (session reset). */
