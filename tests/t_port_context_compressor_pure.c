@@ -4,11 +4,11 @@
  * {"op":<cfunc>, ...args...}. Emits one JSON result per line.
  *
  * Verified C -> Python mapping:
- *   cc_template_visible_role      -> context_compressor._template_visible_role
- *   cc_reasoning_details_text_chars -> context_compressor._reasoning_details_text_chars
- *   cc_rolling_summary_from_marker -> context_compressor.ContextCompressor._rolling_summary_from_marker
- *   cc_render_micro_marker_content -> context_compressor.ContextCompressor._render_micro_marker_content
- *   cc_merge_adjacent_user_turns  -> context_compressor.ContextCompressor._merge_adjacent_user_turns
+ *   _template_visible_role       -> context_compressor._template_visible_role
+ *   _reasoning_details_text_chars -> context_compressor._reasoning_details_text_chars
+ *   _rolling_summary_from_marker -> context_compressor.ContextCompressor._rolling_summary_from_marker
+ *   _render_micro_marker_content -> context_compressor.ContextCompressor._render_micro_marker_content
+ *   _merge_adjacent_user_turns   -> context_compressor.ContextCompressor._merge_adjacent_user_turns
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -42,22 +42,22 @@ int main(int argc, char **argv){
         json_set(out, "op", json_string(op));
 
         if (strcmp(op, "template_visible_role") == 0) {
-            const char *r = cc_template_visible_role(json_obj_get(c, "msg"));
+            const char *r = _template_visible_role(json_obj_get(c, "msg"));
             json_set(out, "value", r ? json_string(r) : json_null());
         } else if (strcmp(op, "reasoning_details_text_chars") == 0) {
-            long r = cc_reasoning_details_text_chars(json_obj_get(c, "value"));
+            long r = _reasoning_details_text_chars(json_obj_get(c, "value"));
             json_set(out, "value", json_number((double)r));
         } else if (strcmp(op, "rolling_summary_from_marker") == 0) {
-            char *r = cc_rolling_summary_from_marker(json_get_str(c, "content", ""));
+            char *r = _rolling_summary_from_marker(json_get_str(c, "content", ""));
             json_set(out, "value", r ? json_string(r) : json_null());
             free(r);
         } else if (strcmp(op, "render_micro_marker_content") == 0) {
-            char *r = cc_render_micro_marker_content(json_get_str(c, "summary", ""));
+            char *r = _render_micro_marker_content(json_get_str(c, "summary", ""));
             json_set(out, "value", r ? json_string(r) : json_null());
             free(r);
         } else if (strcmp(op, "merge_adjacent_user_turns") == 0) {
             json_t *merged = NULL;
-            int n = cc_merge_adjacent_user_turns(json_obj_get(c, "messages"), &merged);
+            int n = _merge_adjacent_user_turns(json_obj_get(c, "messages"), &merged);
             (void)n;
             json_set(out, "value", merged ? json_copy(merged) : json_null());
             json_free(merged);

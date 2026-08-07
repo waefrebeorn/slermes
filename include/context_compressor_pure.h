@@ -154,27 +154,27 @@ char *cc_with_summary_prefix(const char *summary);   /* caller frees */
 /* Role as counted by strict chat-template alternation checks. Returns NULL for
  * tool messages and assistant messages carrying tool_calls (exempt from
  * alternation). Returns a borrowed pointer into message. */
-const char *cc_template_visible_role(const json_t *message);
+const char *_template_visible_role(const json_t *message);
 
 /* ── _reasoning_details_text_chars ───────────────────────────────────── */
 /* Textual thinking chars inside a reasoning_details envelope (thinking/text/
  * summary fields only; envelope blobs are skipped). */
-long cc_reasoning_details_text_chars(const json_t *value);
+long _reasoning_details_text_chars(const json_t *value);
 
 /* ── _rolling_summary_from_marker ────────────────────────────────────── */
 /* Recover rolling-summary text from a summary marker's content (caller frees). */
-char *cc_rolling_summary_from_marker(const char *content);
+char *_rolling_summary_from_marker(const char *content);
 
 /* ── _render_micro_marker_content ────────────────────────────────────── */
 /* Assemble the marker content wrapper around summary_text (caller frees). */
-char *cc_render_micro_marker_content(const char *summary_text);
+char *_render_micro_marker_content(const char *summary_text);
 
 /* ── _merge_adjacent_user_turns ───────────────────────────────────────── */
 /* Build a new list merging consecutive plain-text user turns (\n\n-joined),
  * skipping tool/summary messages; drops api_content on merged entries.
  * Returns the new count; *out_merged is the result array (caller frees via
  * json_free). */
-int cc_merge_adjacent_user_turns(json_t *result, json_t **out_merged);
+int _merge_adjacent_user_turns(json_t *result, json_t **out_merged);
 
 /* ── batch 3: summary classification + user-turn predicates + threshold math ─ */
 

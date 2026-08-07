@@ -1058,8 +1058,8 @@ static int cc_str_is_blank(const char *s) {
     return 1;
 }
 
-/* PoP: cc_template_visible_role @ agent/context_compressor.py:_template_visible_role */
-const char *cc_template_visible_role(const json_t *message) {
+/* PoP: _template_visible_role @ agent/context_compressor.py:_template_visible_role */
+const char *_template_visible_role(const json_t *message) {
     if (!message || message->type != JSON_OBJECT) return NULL;
     const char *role = json_get_str(message, "role", NULL);
     if (!role) return NULL;
@@ -1073,8 +1073,8 @@ const char *cc_template_visible_role(const json_t *message) {
 
 /* ── _reasoning_details_text_chars ────────────────────────────────────── */
 
-/* PoP: cc_reasoning_details_text_chars @ agent/context_compressor.py:_reasoning_details_text_chars */
-long cc_reasoning_details_text_chars(const json_t *value) {
+/* PoP: _reasoning_details_text_chars @ agent/context_compressor.py:_reasoning_details_text_chars */
+long _reasoning_details_text_chars(const json_t *value) {
     if (!value) return 0;
     if (value->type == JSON_STRING) return (long)strlen(value->str_val);
     long total = 0;
@@ -1108,8 +1108,8 @@ long cc_reasoning_details_text_chars(const json_t *value) {
 
 /* ── _rolling_summary_from_marker ─────────────────────────────────────── */
 
-/* PoP: cc_rolling_summary_from_marker @ agent/context_compressor.py:_rolling_summary_from_marker */
-char *cc_rolling_summary_from_marker(const char *content) {
+/* PoP: _rolling_summary_from_marker @ agent/context_compressor.py:_rolling_summary_from_marker */
+char *_rolling_summary_from_marker(const char *content) {
     /* Python: if not isinstance(content, str) or not content.strip(): return "" */
     if (!content || cc_str_is_blank(content)) return strdup("");
     const char *body = content;
@@ -1131,8 +1131,8 @@ char *cc_rolling_summary_from_marker(const char *content) {
 
 /* ── _render_micro_marker_content ─────────────────────────────────────── */
 
-/* PoP: cc_render_micro_marker_content @ agent/context_compressor.py:_render_micro_marker_content */
-char *cc_render_micro_marker_content(const char *summary_text) {
+/* PoP: _render_micro_marker_content @ agent/context_compressor.py:_render_micro_marker_content */
+char *_render_micro_marker_content(const char *summary_text) {
     char *stripped = cc_str_strip(strdup(summary_text ? summary_text : ""));
     if (!stripped) stripped = strdup("");
     size_t len = strlen(CC_SUMMARY_PREFIX) + 2 + strlen(CC_HISTORICAL_TASK_HEADING) + 1
@@ -1148,13 +1148,13 @@ char *cc_render_micro_marker_content(const char *summary_text) {
 
 /* ── _merge_adjacent_user_turns ────────────────────────────────────────── */
 
-/* PoP: cc_merge_adjacent_user_turns @ agent/context_compressor.py:_merge_adjacent_user_turns
+/* PoP: _merge_adjacent_user_turns @ agent/context_compressor.py:_merge_adjacent_user_turns
  *
  * Faithful port: builds a new list merging consecutive plain-text user turns
  * (\n\n-joined), skipping tool/summary messages. Drops the api_content sidecar
  * on merged messages (drop_stale_api_content). Returns the new count. The
  * caller frees the returned array via json_free. */
-int cc_merge_adjacent_user_turns(json_t *result, json_t **out_merged) {
+int _merge_adjacent_user_turns(json_t *result, json_t **out_merged) {
     *out_merged = json_array();
     if (!result || result->type != JSON_ARRAY) return 0;
     json_t *merged = *out_merged;
