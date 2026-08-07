@@ -15,6 +15,7 @@ from tools.transcription_tools import (
     _confidence_thresholds,
     _is_hallucinated_segment,
 )
+from tools.tts_tool import _command_provider_env_passthrough
 
 
 def run(c):
@@ -28,6 +29,14 @@ def run(c):
         if isinstance(cfg, str):
             cfg = json.loads(cfg)
         result = _command_stt_env_passthrough(cfg)
+        if not result:
+            return "[]"
+        return "[" + ", ".join(result) + "]"
+    if op == "tts_command_provider_env_passthrough":
+        cfg = c.get("value", {})
+        if isinstance(cfg, str):
+            cfg = json.loads(cfg)
+        result = _command_provider_env_passthrough(cfg)
         if not result:
             return "[]"
         return "[" + ", ".join(result) + "]"

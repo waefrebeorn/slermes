@@ -237,3 +237,10 @@ bool ts_is_hallucinated_segment(const char *segment_json,
     json_free(seg);
     return false;
 }
+
+/* PoP: _command_provider_env_passthrough @ tools/tts_tool.py:_command_provider_env_passthrough
+ * Identical logic to the STT variant — one owner for env_passthrough. */
+char **tts_command_provider_env_passthrough(const char *config_json, int *out_count)
+{
+    return ts_command_stt_env_passthrough(config_json, out_count);
+}

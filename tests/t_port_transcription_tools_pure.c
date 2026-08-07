@@ -38,14 +38,19 @@ int main(int argc, char **argv) {
             const char *v = json_get_str(c, "value", "");
             bool r = ts_is_local_or_private_url(v);
             printf(r ? "true\n" : "false\n");
-        } else if (strcmp(name, "ts_command_stt_env_passthrough") == 0) {
+        } else if (strcmp(name, "ts_command_stt_env_passthrough") == 0 ||
+                   strcmp(name, "tts_command_provider_env_passthrough") == 0) {
             json_t *vj = json_obj_get(c, "value");
             char *json_str = NULL;
-            int cnt;
             if (vj && vj->type == JSON_OBJECT) {
                 json_str = json_serialize(vj);
             }
-            char **r = ts_command_stt_env_passthrough(json_str ? json_str : "{}", &cnt);
+            int cnt;
+            char **r;
+            if (strcmp(name, "tts_command_provider_env_passthrough") == 0)
+                r = tts_command_provider_env_passthrough(json_str ? json_str : "{}", &cnt);
+            else
+                r = ts_command_stt_env_passthrough(json_str ? json_str : "{}", &cnt);
             if (json_str) free(json_str);
             if (!r || cnt == 0) { printf("[]\n"); }
             else {

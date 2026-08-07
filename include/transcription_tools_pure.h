@@ -12,6 +12,10 @@ bool ts_is_local_stt_provider(const char *provider, const char *stt_config_json)
 /* PoP: _command_stt_env_passthrough @ tools/transcription_tools.py:_command_stt_env_passthrough */
 char **ts_command_stt_env_passthrough(const char *config_json, int *out_count);
 
+/* PoP: _command_provider_env_passthrough @ tools/tts_tool.py:_command_provider_env_passthrough
+ * Shared logic (identical to STT variant — one owner for env_passthrough). */
+char **tts_command_provider_env_passthrough(const char *config_json, int *out_count);
+
 /* PoP: _is_local_or_private_url @ tools/transcription_tools.py:_is_local_or_private_url */
 bool ts_is_local_or_private_url(const char *url);
 
