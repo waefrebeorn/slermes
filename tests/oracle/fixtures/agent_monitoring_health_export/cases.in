@@ -1,0 +1,8 @@
+[
+  {"op": "he_resolve_headers", "value": {}, "env": {}},
+  {"op": "he_resolve_headers", "value": {"X-API-Key": "HERMES_TEST_API_KEY"}, "env": {"HERMES_TEST_API_KEY": "secret123"}},
+  {"op": "he_resolve_headers", "value": {"Authorization": "HERMES_TEST_AUTH"}, "env": {"HERMES_TEST_AUTH": ""}},
+  {"op": "he_resolve_headers", "value": {"X-Key-1": "ENV1", "X-Key-2": "ENV2", "X-Key-3": "ENV3"}, "env": {"ENV1": "val1", "ENV3": "val3"}},
+  {"op": "he_resolve_headers", "value": {"X-Empty": "HERMES_TEST_EMPTY"}, "env": {"HERMES_TEST_EMPTY": ""}},
+  {"op": "he_resolve_headers", "value": {"X-Unset": "HERMES_TEST_UNSET"}, "env": {}}
+]

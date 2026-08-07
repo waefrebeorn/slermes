@@ -1289,6 +1289,11 @@
       "harness": "tests/t_port_message_sanitization_pure.c",
       "oracle": "tests/sta_oracle_message_sanitization_pure.py",
       "fixtures": "tests/oracle/fixtures/message_sanitization_pure"
+    },
+    "agent_monitoring_health_export": {
+      "harness": "tests/t_port_agent_monitoring_health_export.c",
+      "oracle": "tests/sta_oracle_agent_monitoring_health_export.py",
+      "fixtures": "tests/oracle/fixtures/agent_monitoring_health_export"
     }
   },
   "normalize": {

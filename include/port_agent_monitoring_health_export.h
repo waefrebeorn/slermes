@@ -49,6 +49,11 @@ char *he_metric_endpoint(const char *endpoint);
  * "/v1/logs"; unchanged otherwise. */
 char *he_logs_endpoint(const char *endpoint);
 
+/* PoP: _resolve_headers @ agent/monitoring/gateway_health_export.py:_resolve_headers
+ * Resolve headers from env-var-name mapping. input: JSON object; output: JSON
+ * object with header names whose ENV_VAR resolves to a non-empty string. malloc'd. */
+char *he_resolve_headers(const char *headers_env_json);
+
 /* PoP: _severity_number @ agent/monitoring/gateway_health_export.py:_severity_number */
 /* OTel severity number: critical/fatal->21(FATAL), error->17(ERROR),
  * info/information->9(INFO), debug->5(DEBUG), else 13(WARN).

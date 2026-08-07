@@ -150,6 +150,40 @@ char *he_logs_endpoint(const char *endpoint)
     return strdup(endpoint);
 }
 
+/* PoP: _resolve_headers @ agent/monitoring/gateway_health_export.py:_resolve_headers
+ * Resolve headers from env-var-name mapping. input: JSON object
+ * {"header_name": "ENV_VAR"}; output: JSON object {"header_name": value}. Only
+ * headers whose ENV_VAR is set to a non-empty string are included. malloc'd. */
+char *he_resolve_headers(const char *headers_env_json)
+{
+    if (!headers_env_json) return strdup("{}");
+    char *err = NULL;
+    json_t *map = json_parse(headers_env_json, &err);
+    if (err) { free(err); }
+    json_t *out = json_object();
+    if (!map || map->type != JSON_OBJECT) {
+        if (map) json_free(map);
+        char *s = json_serialize(out);
+        json_free(out);
+        return s;
+    }
+    /* Iterate object keys directly (json_t::c.keys + c.count) */
+    for (size_t i = 0; i < map->c.count; i++) {
+        const char *hk = map->c.keys[i];
+        json_t *vj = map->c.items[i];
+        if (!vj || vj->type != JSON_STRING || !vj->str_val || !*vj->str_val)
+            continue;
+        const char *env_val = getenv(vj->str_val);
+        if (env_val && *env_val) {
+            json_set(out, hk, json_string(env_val));
+        }
+    }
+    json_free(map);
+    char *s = json_serialize(out);
+    json_free(out);
+    return s;
+}
+
 /* PoP: _severity_number @ agent/monitoring/gateway_health_export.py:_severity_number */
 int he_severity_number(const char *severity)
 {
