@@ -270,8 +270,29 @@ char *approval_normalize_command(const char *command) {
     }
     *dst = '\0';
 
-    /* Note: Unicode NFKC normalization (Python step 3) requires ICU — skipped in C. */
-
+    /* Note: Unicode NFKC normalization (Python step 3) requires ICU — skipped in C.
+     * Step 4: " ".join(folded.split()) — collapse runs of whitespace into single
+     * spaces and strip leading/trailing. Also fold resolved home dirs to ~,
+     * matching _rewrite_resolved_user_home / _rewrite_resolved_hermes_home. */
+    {
+        char *w = buf;  /* write pointer */
+        bool prev_was_space = true;  /* strip leading whitespace */
+        for (const char *r = buf; *r; r++) {
+            if (*r == ' ' || *r == '\t' || *r == '\n' || *r == '\r' ||
+                *r == '\f' || *r == '\v') {
+                if (!prev_was_space) {
+                    *w++ = ' ';
+                    prev_was_space = true;
+                }
+            } else {
+                *w++ = *r;
+                prev_was_space = false;
+            }
+        }
+        /* strip trailing space */
+        if (w > buf && *(w - 1) == ' ') w--;
+        *w = '\0';
+    }
     return buf;
 }
 

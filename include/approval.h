@@ -61,12 +61,16 @@ bool apr_has_allowlist_shell_operator(const char *command);
 /* Returns count, or -1 on ValueError (invalid/out of range/no valid). */
 int approval_parse_apply_indices(const char *spec, int total, int *out, int max_out);
 
-/* PoP: is_unsafe_class @ hermes_cli/approvals_suggest.py:is_unsafe_class */
-bool approval_is_unsafe_class(const char *description);
-
 /* PoP: derive_glob @ hermes_cli/approvals_suggest.py:derive_glob */
 /* Returns a malloc'd command glob, or NULL for compound/unsafe commands. */
 char *approval_derive_glob(const char *normalized);
+
+/* PoP: normalize_command @ hermes_cli/approvals_suggest.py:normalize_command */
+/* Returns a malloc'd ANI/NFKC-stripped, whitespace-collapsed command. */
+char *approval_normalize_command(const char *command);
+
+/* PoP: is_unsafe_class @ hermes_cli/approvals_suggest.py:is_unsafe_class */
+bool approval_is_unsafe_class(const char *description);
 
 #ifdef __cplusplus
 }

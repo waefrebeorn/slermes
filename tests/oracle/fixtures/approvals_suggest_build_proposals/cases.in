@@ -1,0 +1,12 @@
+[
+  {"op": "build_proposals", "records": [["git push origin main", "git push"], ["git push origin/dev", "git push"], ["git push origin master", "git push"], ["git push origin main", "git push"], ["git push origin main", "git push"], ["git pull", "git pull"], ["git pull", "git pull"]], "existing": [], "min_count": 2, "limit": 20},
+  {"op": "build_proposals", "records": [["git push origin main", "git push"], ["git push origin/dev", "git push"], ["sudo apt update", "system update"], ["rm -rf build", "delete"]], "existing": [], "min_count": 2, "limit": 20},
+  {"op": "build_proposals", "records": [["git push origin main", "git push"]], "existing": ["git push *"], "min_count": 2, "limit": 20},
+  {"op": "build_proposals", "records": [["docker restart myapp", "service restart"], ["docker restart myapp", "service restart"], ["docker restart myapp", "service restart"], ["git push origin main", "git push"]], "existing": [], "min_count": 2, "limit": 20},
+  {"op": "build_proposals", "records": [["git push origin main", "git push"]], "existing": [], "min_count": 2, "limit": 5},
+  {"op": "build_proposals", "records": [], "existing": [], "min_count": 2, "limit": 20},
+  {"op": "add_example", "examples": ["git push origin main", "git push origin main", "git push origin/dev"]},
+  {"op": "add_example", "examples": ["git push origin main", "git push very-very-very-very-very-very-very-very-long-branch-name", "git commit"]},
+  {"op": "normalize_command", "command": "git  push   origin:main"},
+  {"op": "normalize_command", "command": "  sudo apt update  "}
+]
