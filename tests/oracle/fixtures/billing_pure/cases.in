@@ -1,0 +1,11 @@
+[
+  {"op": "ts_parse_payment_method", "value": {"kind": "card", "brand": "Visa", "last4": "4242", "resolvedVia": "Billing Portal"}},
+  {"op": "ts_parse_payment_method", "value": {"kind": "card", "brand": "Mastercard", "last4": "1234", "wallet": "google_pay"}},
+  {"op": "ts_parse_payment_method", "value": {"kind": "link", "email": "user@example.com"}},
+  {"op": "ts_parse_payment_method", "value": {"kind": "link"}},
+  {"op": "ts_parse_payment_method", "value": {"kind": "ach", "resolvedVia": "manual"}},
+  {"op": "ts_parse_payment_method", "value": {"kind": "card", "brand": "Visa"}},
+  {"op": "ts_parse_payment_method", "value": {"kind": 42}},
+  {"op": "ts_parse_payment_method", "value": "not a dict"},
+  {"op": "ts_parse_payment_method", "value": {}}
+]
