@@ -275,7 +275,106 @@ char *approval_normalize_command(const char *command) {
     return buf;
 }
 
-/* Check if a terminal command is dangerous. Normalizes first. */
+/* ── approvals_suggest.py ports ──────────────────────────────── */
+
+/* The full Python _UNSAFE_CLASS_PATTERNS list as plain substrings.
+ * Python uses re.search with IGNORECASE; we simulate with strcasestr.
+ * The Python patterns use \b word boundaries; we approximate with
+ * substring matching (conservative: more matches, which is safe for
+ * an allowlist-style "must never propose" check). */
+static const char *UNSAFE_CLASS_PATTERNS[] = {
+    "delete", "rm", "rmdir", "unlink", "wipe", "format",
+    "disk", "block device", "fork bomb", "kill all", "kill process",
+    "self-termination", "sudo", "privilege", "credential",
+    "ssh", "shell.rc", "system config", "system file", "sql",
+    "chown", "chmod", "writable", "overwrite", "in-place edit",
+    "pipe", "obfuscation", "remote content", "remote script", "heredoc",
+    "encoded", "command substitution", "process substitution", "dd",
+    "shutdown", "reboot", "hardline",
+    NULL,
+};
+
+/* PoP: _unsafe_root_binary @ hermes_cli/approvals_suggest.py:_unsafe_root_binary */
+static bool is_unsafe_root_binary(const char *token) {
+    if (!token) return false;
+    /* tok = token.lower().rsplit("/", 1)[-1] */
+    char lower[256];
+    size_t len = strlen(token);
+    if (len >= sizeof(lower)) len = sizeof(lower) - 1;
+    for (size_t i = 0; i < len; i++) lower[i] = tolower((unsigned char)token[i]);
+    lower[len] = '\0';
+    /* Find last "/" */
+    const char *slash = strrchr(lower, '/');
+    const char *base = slash ? slash + 1 : lower;
+    /* _UNSAFE_ROOT_BINARIES set */
+    static const char *binaries[] = {
+        "rm", "rmdir", "unlink", "shred", "dd", "fdisk", "parted", "wipefs",
+        "sudo", "doas", "su", "chmod", "chown", "chgrp",
+        "kill", "killall", "pkill",
+        "halt", "shutdown", "reboot", "poweroff", "init",
+        "del", "format", "truncate", "mkswap", NULL
+    };
+    for (int i = 0; binaries[i]; i++) {
+        if (strcmp(base, binaries[i]) == 0) return true;
+    }
+    /* _UNSAFE_ROOT_PREFIXES: ("mkfs",) */
+    if (strncmp(base, "mkfs", 4) == 0) return true;
+    return false;
+}
+
+/* PoP: is_unsafe_class @ hermes_cli/approvals_suggest.py:is_unsafe_class */
+bool approval_is_unsafe_class(const char *description) {
+    if (!description || !*description) return false;
+    for (int i = 0; UNSAFE_CLASS_PATTERNS[i]; i++) {
+        if (strcasestr(description, UNSAFE_CLASS_PATTERNS[i]))
+            return true;
+    }
+    return false;
+}
+
+/* PoP: derive_glob @ hermes_cli/approvals_suggest.py:derive_glob */
+/* Returns a malloc'd command glob string, or NULL for compound/unsafe commands. */
+char *approval_derive_glob(const char *normalized) {
+    if (!normalized || !*normalized) return NULL;
+    /* If compound (has shell operators), return None */
+    if (apr_has_allowlist_shell_operator(normalized)) return NULL;
+    /* Tokenize by whitespace */
+    char *work = strdup(normalized);
+    if (!work) return NULL;
+    /* Split into tokens */
+    char *tok = work;
+    char *tokens[64];
+    int ntok = 0;
+    char *p = work;
+    while (*p) {
+        while (*p == ' ' || *p == '\t') p++;
+        if (!*p) break;
+        tokens[ntok++] = p;
+        if (ntok >= 64) break;
+        while (*p && *p != ' ' && *p != '\t') p++;
+        if (*p) { *p = '\0'; p++; }
+    }
+    if (ntok == 0) { free(work); return NULL; }
+    /* Check unsafe root binary */
+    if (is_unsafe_root_binary(tokens[0])) { free(work); return NULL; }
+    char *result = NULL;
+    if (ntok == 1) {
+        result = strdup(tokens[0]);
+    } else {
+        char *second = tokens[1];
+        if (second[0] == '-' || strpbrk(second, "*?[$")) {
+            result = malloc(strlen(tokens[0]) + 3);
+            if (result) sprintf(result, "%s *", tokens[0]);
+        } else {
+            /* "cmd second *" → len + 1 (space) + len + 1 (space) + 1 (*) + 1 (null) = +3... actually +3 */
+            result = malloc(strlen(tokens[0]) + strlen(second) + 4);
+            if (result) sprintf(result, "%s %s *", tokens[0], second);
+        }
+    }
+    free(work);
+    return result;
+}
+
 /* AG26: Port of Python tools/approval.py:detect_dangerous_command(). */
 bool approval_is_terminal_dangerous(const char *command) {
     if (!command) return false;

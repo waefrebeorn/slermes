@@ -1,0 +1,16 @@
+[
+  {"op": "is_unsafe_class", "value": "rm -rf /"},
+  {"op": "is_unsafe_class", "value": "sudo apt install"},
+  {"op": "is_unsafe_class", "value": "list files"},
+  {"op": "is_unsafe_class", "value": "SQL injection attack"},
+  {"op": "is_unsafe_class", "value": "format disk"},
+  {"op": "is_unsafe_class", "value": null},
+  {"op": "derive_glob", "value": "git push"},
+  {"op": "derive_glob", "value": "git commit -m test"},
+  {"op": "derive_glob", "value": "git push origin main"},
+  {"op": "derive_glob", "value": "rm -rf /"},
+  {"op": "derive_glob", "value": ""},
+  {"op": "derive_glob", "value": "git push && make install"},
+  {"op": "derive_glob", "value": "git push --force"},
+  {"op": "derive_glob", "value": "git push master"}
+]
