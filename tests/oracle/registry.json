@@ -27,6 +27,11 @@
       "oracle": "tests/sta_oracle_agent_delegation_context.py",
       "fixtures": "tests/oracle/fixtures/agent_delegation_context"
     },
+    "shared_metrics": {
+      "harness": "tests/t_port_shared_metrics.c",
+      "oracle": "tests/sta_oracle_shared_metrics.py",
+      "fixtures": "tests/oracle/fixtures/shared_metrics"
+    },
     "agent_display": {
       "harness": "tests/t_port_agent_display.c",
       "oracle": "tests/sta_oracle_agent_display.py",

@@ -87,6 +87,7 @@ PORT_OBJ = \
     src/cli/port_models_pure.o \
     src/cli/port_models_validate.o \
     src/cli/port_status_helpers.o \
+    src/cli/port_shared_metrics.o \
     src/cli/port_managed_scope_helpers.o \
     src/cli/port_context_breakdown_helpers.o \
     src/cli/port_verification_stop_helpers.o \

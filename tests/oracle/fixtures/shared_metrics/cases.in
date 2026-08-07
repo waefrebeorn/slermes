@@ -1,0 +1,9 @@
+[
+  {"op": "_isoformat", "dt": {"year": 2024, "mon": 1, "day": 15, "hour": 12, "min": 30, "sec": 45}},
+  {"op": "_isoformat", "dt": {"year": 2023, "mon": 6, "day": 1, "hour": 0, "min": 0, "sec": 0}},
+  {"op": "_isoformat", "dt": {"year": 2024, "mon": 12, "day": 31, "hour": 23, "min": 59, "sec": 59}},
+  {"op": "_ensure_private_directory", "path": "/tmp/sm_test_dir_1"},
+  {"op": "_ensure_private_directory", "path": "/tmp/sm_test_nested/dir/sub"},
+  {"op": "_ensure_private_file", "path": "/tmp/sm_test_dir_1/test_file.json"},
+  {"op": "_ensure_private_file", "path": "/tmp/sm_test_nested/dir/sub/other.txt"}
+]
