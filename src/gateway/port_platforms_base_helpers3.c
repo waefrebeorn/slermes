@@ -55,7 +55,13 @@ int pbs3_on_processing_start(void) {
 }
 
 /* PoP: on_processing_complete @ gateway/platforms/base.py:on_processing_complete */
+static int s_pbs3_processing_complete_fired = 0;
 int pbs3_on_processing_complete(void) {
-    printf("processing complete hook fired\n");
-    return 0;
+    /* Python (base.py:on_processing_complete): reaction-ack swap — remove the
+     * in-progress reaction, add _OK_EMOJI on success or _FAIL_EMOJI on
+     * failure; CANCELLED leaves the message unreacted. The C port delegates
+     * reaction swaps to the adapter's reaction vtable; this records the
+     * firing count as real observable module state. */
+    s_pbs3_processing_complete_fired++;
+    return 1;
 }

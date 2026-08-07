@@ -199,8 +199,8 @@ FACADE_FRAUD / NORET_DORMANT / THIN_REVIEW must be HUMAN-CONFIRMED before any
 
 | C name | Python source | C returns | Evidence |
 |---|---|---|---|
-| `aux_interrupt_protection` | `agent/auxiliary_client.py:aux_interrupt_protection` | `aux_interrupt_protected()` | Python does real work; verify C wrapper covers it |
-| `secret_scope_get_secret` | `agent/secret_scope.py:get_secret` | `secret_scope_get_current()` | Python does real work; verify C wrapper covers it |
+| `aux_interrupt_protection` | `agent/auxiliary_client.py:aux_interrupt_protection` | `aux_interrupt_protected` | Python does real work; verify C wrapper covers it |
+| `secret_scope_get_secret` | `agent/secret_scope.py:get_secret` | `secret_scope_get_current` | Python does real work; verify C wrapper covers it |
 | `cli_agent_anthropic_adapter__supports_adaptive_thinking` | `agent/anthropic_adapter.py:_supports_adaptive_thinking` | `-1` | Python does real work; verify C wrapper covers it |
 | `cli_agent_anthropic_adapter_sanitize_anthropic_kwargs` | `agent/anthropic_adapter.py:sanitize_anthropic_kwargs` | `-1` | Python does real work; verify C wrapper covers it |
 | `cli_agent_bedrock_adapter__get_bedrock_control_client` | `agent/bedrock_adapter.py:_get_bedrock_control_client` | `-1` | Python does real work; verify C wrapper covers it |
@@ -217,7 +217,7 @@ FACADE_FRAUD / NORET_DORMANT / THIN_REVIEW must be HUMAN-CONFIRMED before any
 | `cli_agent_display__split_shell_compound` | `agent/display.py:_split_shell_compound` | `_cli_strip_shell_pipe_tail(segment)` | Python does real work; verify C wrapper covers it |
 | `cli_agent_display__strip_shell_pipe_tail` | `agent/display.py:_strip_shell_pipe_tail` | `_cli_split_shell_words(segment, count)` | Python does real work; verify C wrapper covers it |
 | `cli_agent_image_gen_provider_default_model` | `agent/image_gen_provider.py:default_model` | `strdup("{" "\"type\":\"object\"," "\"properties\":{" "\"api_key\":{\"type\":\"string\",\"description\":\"FAL API key\"}," "\"model\":{\"type\":\"string\",\"description\":\"Model ID\"}," "\"queue_run_origin\":{\"type\":\"string\",\"description\":\"Queue origin URL\"}" "}," "\"required\":[\"api_key\"]" "}")` | Python does real work; verify C wrapper covers it |
-| `cli_insights__get_tool_usage` | `agent/insights.py:_get_tool_usage` | `json_new_array()` | Python does real work; verify C wrapper covers it |
+| `cli_insights__get_tool_usage` | `agent/insights.py:_get_tool_usage` | `json_new_array` | Python does real work; verify C wrapper covers it |
 | `cli_agent_model_metadata__load_model_metadata_disk_cache` | `agent/model_metadata.py:_load_model_metadata_disk_cache` | `-1` | Python does real work; verify C wrapper covers it |
 | `cli_agent_model_metadata__model_metadata_disk_cache_age_seconds` | `agent/model_metadata.py:_model_metadata_disk_cache_age_seconds` | `-1` | Python does real work; verify C wrapper covers it |
 | `cli_agent_plugin_llm__invoke_async` | `agent/plugin_llm.py:_invoke_async` | `strdup("{\"error\":\"acomplete_structured requires at least one input block\"}")` | Python does real work; verify C wrapper covers it |
@@ -289,20 +289,20 @@ FACADE_FRAUD / NORET_DORMANT / THIN_REVIEW must be HUMAN-CONFIRMED before any
 | `cli_tools_skills_guard_format_scan_report` | `tools/skills_guard.py:format_scan_report` | `-1` | Python does real work; verify C wrapper covers it |
 | `todo_tool_format_for_injection` | `tools/todo_tool.py:format_for_injection` | `_item_count > 0` | Python does real work; verify C wrapper covers it |
 | `cli_tools_tool_search_load_config` | `tools/tool_search.py:load_config` | `-1` | Python does real work; verify C wrapper covers it |
-| `cli_tools_video_generation_tool__read_configured_video_provider` | `tools/video_generation_tool.py:_read_configured_video_provider` | `json_new_object()` | Python does real work; verify C wrapper covers it |
+| `cli_tools_video_generation_tool__read_configured_video_provider` | `tools/video_generation_tool.py:_read_configured_video_provider` | `json_new_object` | Python does real work; verify C wrapper covers it |
 | `voice_mode__termux_api_app_installed` | `tools/voice_mode.py:_termux_api_app_installed` | `strdup(cmd)` | Python does real work; verify C wrapper covers it |
 | `cli_tools_website_policy_invalidate_cache` | `tools/website_policy.py:invalidate_cache` | `-1` | Python does real work; verify C wrapper covers it |
-| `cli_tools_write_approval_discard_pending` | `tools/write_approval.py:discard_pending` | `json_new_array()` | Python does real work; verify C wrapper covers it |
-| `_get_chat_argv_lock` | `hermes_cli/web_server.py:_get_chat_argv_lock` | `resolve_restart_drain_timeout()` | Python does real work; verify C wrapper covers it |
+| `cli_tools_write_approval_discard_pending` | `tools/write_approval.py:discard_pending` | `json_new_array` | Python does real work; verify C wrapper covers it |
+| `_get_chat_argv_lock` | `hermes_cli/web_server.py:_get_chat_argv_lock` | `resolve_restart_drain_timeout` | Python does real work; verify C wrapper covers it |
 | `oauth_provider_disconnect_command` | `hermes_cli/web_server.py:_oauth_provider_disconnect_command` | `profile ? strdup(profile) : strdup("default")` | Python does real work; verify C wrapper covers it |
 | `resolve_chat_argv_async` | `hermes_cli/web_server.py:_resolve_chat_argv_async` | `memory_provider_payload_fn(provider)` | Python does real work; verify C wrapper covers it |
-| `encode_push_ack` | `gateway/platforms/yuanbao_proto.py:encode_push_ack` | `yuanbao_proto_encode_conn_msg_full(CT_REQUEST, CMD_PING, yuanbao_proto_next_seq_no(), msg_id, MOD_CONN_ACCESS, NULL, 0, 0, out_len)` | Python does real work; verify C wrapper covers it |
+| `encode_push_ack` | `gateway/platforms/yuanbao_proto.py:encode_push_ack` | `yuanbao_proto_encode_conn_msg_full(CT_REQUEST, CMD_PING, yuanbao_proto_next_seq_no, msg_id, MOD_CONN_ACCESS, NULL, 0, 0, out_len)` | Python does real work; verify C wrapper covers it |
 | `_extract_screenshot_path_from_text` | `tools/browser_tool.py:_extract_screenshot_path_from_text` | `strdup(candidates[i])` | Python does real work; verify C wrapper covers it |
 | `_get_dialog_policy_config` | `tools/browser_tool.py:_get_dialog_policy_config` | `browser_resolve_cdp_override(env_override)` | Python does real work; verify C wrapper covers it |
 | `browser_allow_unsafe_browser_evaluate` | `tools/browser_tool.py:_allow_unsafe_browser_evaluate` | `strdup(current_url)` | Python does real work; verify C wrapper covers it |
 | `browser_current_page_private_url` | `tools/browser_tool.py:_current_page_private_url` | `url` | Python does real work; verify C wrapper covers it |
 | `browser_current_page_private_url` | `tools/browser_tool.py:_current_page_private_url` | `url` | Python does real work; verify C wrapper covers it |
-| `browser_expression_targets_private_url` | `tools/browser_tool.py:_expression_targets_private_url` | `(!browser_is_local_backend() && !browser_is_local_sidecar_key(effective_task_id) && !browser_allow_private_urls())` | Python does real work; verify C wrapper covers it |
+| `browser_expression_targets_private_url` | `tools/browser_tool.py:_expression_targets_private_url` | `(!browser_is_local_backend && !browser_is_local_sidecar_key(effective_task_id) && !browser_allow_private_urls)` | Python does real work; verify C wrapper covers it |
 | `handle_list_comments` | `hermes_cli/kanban_db.py:list_comments` | `strdup("{\"error\": \"missing fields\"}")` | Python does real work; verify C wrapper covers it |
 | `file_ops_exec` | `tools/file_operations.py:_exec` | `file_ops_normalize_read_pagination(offset, limit, default_limit)` | Python does real work; verify C wrapper covers it |
 | `file_ops_lint_python_inproc` | `tools/file_operations.py:_lint_python_inproc` | `strdup("{\"valid\":true}")` | Python does real work; verify C wrapper covers it |
@@ -384,7 +384,7 @@ FACADE_FRAUD / NORET_DORMANT / THIN_REVIEW must be HUMAN-CONFIRMED before any
 | `cli_hermes_cli_skills_config__list_all_skills` | `hermes_cli/skills_config.py:_list_all_skills` | `-1` | thin delegation, no SDK/IO -> honest |
 | `cli_hermes_cli_write_approval_commands__resolve_one` | `hermes_cli/write_approval_commands.py:_resolve_one` | `cli_hermes_cli_write_approval_commands__fmt_pending_list( subsystem, output, output_size)` | thin delegation, no SDK/IO -> honest |
 | `is_idle` | `gateway/scale_to_zero.py:is_idle` | `(enabled != 0) && (relay_only_or_absent != 0) && (wake_url && wake_url[0])` | thin delegation, no SDK/IO -> honest |
-| `cli_tools_credential_files__resolve_hermes_home` | `tools/credential_files.py:_resolve_hermes_home` | `json_new_object()` | thin delegation, no SDK/IO -> honest |
+| `cli_tools_credential_files__resolve_hermes_home` | `tools/credential_files.py:_resolve_hermes_home` | `json_new_object` | thin delegation, no SDK/IO -> honest |
 | `cli_tools_environments_modal_utils__cancel_modal_exec` | `tools/environments/modal_utils.py:_cancel_modal_exec` | `cli_tools_environments_modal_utils__error_result("NULL sandbox_id or exec_id")` | thin delegation, no SDK/IO -> honest |
 | `cli_tools_environments_ssh__ensure_ssh_available` | `tools/environments/ssh.py:_ensure_ssh_available` | `-1` | thin delegation, no SDK/IO -> honest |
 | `cli_tools_feishu_drive_tool__check_feishu` | `tools/feishu_drive_tool.py:_check_feishu` | `_feishu_local.client` | thin delegation, no SDK/IO -> honest |

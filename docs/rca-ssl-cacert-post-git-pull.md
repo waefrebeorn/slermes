@@ -25,7 +25,7 @@ When the venv is partially refreshed, or when one of those env vars points at a 
 
 1. Checks explicit CA bundle env vars and reports the exact broken variable/path,
 2. Verifies `certifi` is importable,
-3. Verifies `certifi.where()` points at an existing file of plausible size,
+3. Verifies `certifi.where` points at an existing file of plausible size,
 4. Builds an `ssl.SSLContext` from each checked bundle,
 5. Raises a typed `SSLConfigurationError` with a repair hint before httpx/OpenAI can raise a raw low-level error.
 

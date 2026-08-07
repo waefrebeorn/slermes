@@ -49,7 +49,7 @@ incoming `MessageEvent` and used for routing, isolation, and context injection.
 
 - **`description`** (property: `str`) — Human-readable summary e.g. `"DM with Alice"`,
   `"group: My Group, thread: 12345"`.
-- **`to_dict()` / `from_dict()`** — Serialization round-trip for persistence in `sessions.json`.
+- **`to_dict` / `from_dict`** — Serialization round-trip for persistence in `sessions.json`.
 
 ---
 
@@ -91,8 +91,8 @@ behavior on the next access.
 | `reset_had_activity` | `bool` | `False` | Whether the expired session had any messages (`total_tokens > 0`). |
 | `is_fresh_reset` | `bool` | `False` | Set by explicit `/new` or `/reset`. Triggers topic/channel skill re-injection on first message. Distinguished from `was_auto_reset` to avoid misleading "session expired" notices. |
 | `expiry_finalized` | `bool` | `False` | Set by background expiry watcher after invoking `on_session_finalize` hooks, cleaning tool resources, and evicting the cached agent. Prevents redundant finalization across restarts. |
-| `suspended` | `bool` | `False` | Hard force-wipe signal. Set by `/stop` or stuck-loop escalation (3+ consecutive restart failures). On next `get_or_create_session()`, forces a new `session_id` regardless of `resume_pending`. |
-| `resume_pending` | `bool` | `False` | Soft recovery marker. Set by `suspend_recently_active()` (crash recovery) or drain timeout. On next access, preserves the existing `session_id` — the user continues on the same transcript. Cleared after the next successful turn completes. |
+| `suspended` | `bool` | `False` | Hard force-wipe signal. Set by `/stop` or stuck-loop escalation (3+ consecutive restart failures). On next `get_or_create_session`, forces a new `session_id` regardless of `resume_pending`. |
+| `resume_pending` | `bool` | `False` | Soft recovery marker. Set by `suspend_recently_active` (crash recovery) or drain timeout. On next access, preserves the existing `session_id` — the user continues on the same transcript. Cleared after the next successful turn completes. |
 | `resume_reason` | `Optional[str]` | `None` | Why resume was marked: `"restart_timeout"`, `"shutdown_timeout"`, `"restart_interrupted"`. |
 | `last_resume_marked_at` | `Optional[datetime]` | `None` | Timestamp of the last resume-pending marking. |
 
@@ -133,7 +133,7 @@ behavior on the next access.
               └──────────────────────┘
 ```
 
-**Priority order in `get_or_create_session()`:**
+**Priority order in `get_or_create_session`:**
 1. `suspended=True` → always force-reset (hard wipe)
 2. `resume_pending=True` → preserve session_id (soft recovery)
 3. Policy expiry (idle/daily) → auto-reset
@@ -168,12 +168,12 @@ SessionStore(sessions_dir: Path, config: GatewayConfig, has_active_processes_fn=
 | `switch_session(session_key, target_session_id)` | Switch to a different existing session ID (from `/resume`). Ends current SQLite session, reopens target. |
 | `suspend_session(session_key)` | Mark session as `suspended=True` (from `/stop`). Forces auto-reset on next access. |
 | `mark_resume_pending(session_key, reason)` | Mark session as `resume_pending=True` (from drain timeout). Preserves session_id on next access. Will NOT override `suspended=True`. |
-| `clear_resume_pending(session_key)` | Clear `resume_pending` after a successful resumed turn. Called from gateway after `run_conversation()` returns. |
+| `clear_resume_pending(session_key)` | Clear `resume_pending` after a successful resumed turn. Called from gateway after `run_conversation` returns. |
 | `suspend_recently_active(max_age_seconds=120)` | Crash recovery: mark recently-active sessions as `resume_pending=True`. Skips already-pending and already-suspended entries. Called on startup after unclean shutdown. |
 | `prune_old_entries(max_age_days)` | Drop entries older than `max_age_days` (based on `updated_at`). Skips `suspended` entries and sessions with active processes. |
 | `list_sessions(active_minutes=None)` | Return all sessions, optionally filtered by recent activity. Sorted by `updated_at` descending. |
 | `lookup_by_session_id(session_id)` | Find the active `SessionEntry` for a persisted session ID. |
-| `has_any_sessions()` | Check if any sessions have ever been created (uses SQLite for history, not just in-memory dict). |
+| `has_any_sessions` | Check if any sessions have ever been created (uses SQLite for history, not just in-memory dict). |
 | `append_to_transcript(session_id, message, skip_db=False)` | Append a message to SQLite transcript. `skip_db=True` prevents duplicate writes when the agent already persisted. |
 | `rewrite_transcript(session_id, messages)` | Full replacement of session transcript (used by `/retry`, `/undo`, `/compress`). |
 | `load_transcript(session_id)` | Load all messages from a session's SQLite transcript. |
@@ -181,9 +181,9 @@ SessionStore(sessions_dir: Path, config: GatewayConfig, has_active_processes_fn=
 
 ### Internal Helpers
 
-- `_ensure_loaded()` / `_ensure_loaded_locked()` — Load `sessions.json` into `_entries` dict.
-- `_save()` — Atomic write to `sessions.json` via temp file + `atomic_replace`.
-- `_generate_session_key(source)` — Delegates to `build_session_key()` with config params.
+- `_ensure_loaded` / `_ensure_loaded_locked` — Load `sessions.json` into `_entries` dict.
+- `_save` — Atomic write to `sessions.json` via temp file + `atomic_replace`.
+- `_generate_session_key(source)` — Delegates to `build_session_key` with config params.
 - `_is_session_expired(entry)` — Policy check from entry alone (no source needed). Used by
   background expiry watcher.
 - `_should_reset(entry, source)` — Policy check returning `"idle"`, `"daily"`, or `None`.
@@ -252,7 +252,7 @@ agent:main:{platform}:{chat_type}[:{chat_id}][:{thread_id}][:{participant_id}]
 
 ### Special Case: WhatApp
 
-WhatsApp phone numbers go through `canonical_whatsapp_identifier()` which strips the
+WhatsApp phone numbers go through `canonical_whatsapp_identifier` which strips the
 `@s.whatsapp.net` suffix and normalizes to E.164 format. This prevents session fragmentation
 when the bridge returns different alias forms of the same phone number.
 
@@ -320,7 +320,7 @@ if entry.updated_at < today_reset: return "daily"
 
 ### Per-Platform/Per-Type Policies
 
-Reset policies are configurable per platform and session type via `config.get_reset_policy()`.
+Reset policies are configurable per platform and session type via `config.get_reset_policy`.
 This allows different platforms to have different expiry rules (e.g., Telegram DMs reset
 after 24h idle, but Slack groups persist indefinitely).
 
@@ -361,12 +361,12 @@ Gateway starts
        ▼
 ┌───────────────────────────────┐
 │ session_store                 │── Marks sessions updated within
-│ .suspend_recently_active()    │   last 120 seconds as resume_pending
+│ .suspend_recently_active    │   last 120 seconds as resume_pending
 └───────────────────────────────┘
        │
        ▼
 ┌───────────────────────────────┐
-│ _suspend_stuck_loop_sessions()│── Suspends sessions that have been
+│ _suspend_stuck_loop_sessions│── Suspends sessions that have been
 │                               │   active across 3+ restarts
 └───────────────────────────────┘
        │
@@ -405,7 +405,7 @@ gets a clean slate.
 
 ### Drain-Timeout Marking
 
-On graceful shutdown/restart, the drain system calls `mark_resume_pending()` for any
+On graceful shutdown/restart, the drain system calls `mark_resume_pending` for any
 session that was mid-turn when the drain timeout fired. Reasons:
 
 - `"restart_timeout"` — killed during restart drain
@@ -416,13 +416,13 @@ All three reasons are in `_AUTO_RESUME_REASONS` and eligible for startup auto-re
 
 ### Auto-Resume on Next Access
 
-When `get_or_create_session()` encounters `resume_pending=True`:
+When `get_or_create_session` encounters `resume_pending=True`:
 
 1. It returns the existing entry **without** creating a new `session_id`.
 2. The existing transcript is loaded intact.
 3. The marking is not cleared here — it survives until the next successful turn
-   completes (`clear_resume_pending()` is called from the gateway after
-   `run_conversation()` returns a real response).
+   completes (`clear_resume_pending` is called from the gateway after
+   `run_conversation` returns a real response).
 4. If the resumed turn is interrupted again, the `resume_pending` flag remains set,
    and the next restart will retry. The stuck-loop counter handles terminal escalation
    (3 retries → suspended).
@@ -431,7 +431,7 @@ When `get_or_create_session()` encounters `resume_pending=True`:
 
 Written at the end of a graceful shutdown. On next startup:
 
-- If present: skip `suspend_recently_active()` entirely. Active agents were already
+- If present: skip `suspend_recently_active` entirely. Active agents were already
   drained, so no sessions are stuck.
 - Then delete the marker.
 
@@ -518,7 +518,7 @@ def build_session_context(source, config, session_entry=None) -> SessionContext
 
 1. Collects connected platforms from config.
 2. Collects home channels for each platform.
-3. Determines `shared_multi_user_session` via `is_shared_multi_user_session()`.
+3. Determines `shared_multi_user_session` via `is_shared_multi_user_session`.
 4. Attaches session metadata (key, id, timestamps) if `session_entry` is provided.
 
 ### PII Redaction (`build_session_context_prompt`)
@@ -542,7 +542,7 @@ The `_session_expiry_watcher` task runs in the gateway event loop every 300 seco
 
 ### Responsibilities
 
-1. **Finalize expired sessions** — For each entry where `_is_session_expired()` returns
+1. **Finalize expired sessions** — For each entry where `_is_session_expired` returns
    True and `expiry_finalized` is False:
    - Invoke `on_session_finalize` plugin hooks (cleanup, notifications).
    - Clean up cached AIAgent resources (close tool resources, shut down memory provider).
@@ -550,11 +550,11 @@ The `_session_expiry_watcher` task runs in the gateway event loop every 300 seco
    - Clear per-session overrides (`_session_model_overrides`, reasoning overrides, etc.).
    - Mark `expiry_finalized=True` and persist.
 
-2. **Sweep idle cached agents** — Calls `_sweep_idle_cached_agents()` to evict agents that
+2. **Sweep idle cached agents** — Calls `_sweep_idle_cached_agents` to evict agents that
    have been idle beyond `_AGENT_CACHE_IDLE_TTL_SECS` (3600s / 1h), regardless of session
    reset policy. This prevents unbounded memory growth in gateways with long-lived sessions.
 
-3. **Prune stale entries** — Calls `session_store.prune_old_entries()` hourly based on
+3. **Prune stale entries** — Calls `session_store.prune_old_entries` hourly based on
    `config.session_store_max_age_days`. Prevents `sessions.json` from growing unbounded.
 
 ### Failure Handling
@@ -583,18 +583,18 @@ preserve prompt caching across turns.
 Message arrives
     │
     ▼
-get_or_create_session()  →  session_key obtained
+get_or_create_session  →  session_key obtained
     │
     ▼
 Lookup _agent_cache[session_key]
     │
-    ├── Hit → move_to_end(), reuse AIAgent (preserves prompt cache)
+    ├── Hit → move_to_end, reuse AIAgent (preserves prompt cache)
     │
     └── Miss → create new AIAgent, store in cache
                 (if at capacity, popitem(last=False) evicts LRU entry)
     │
     ▼
-run_conversation()  →  agent processes message
+run_conversation  →  agent processes message
     │
     ▼
 Session expiry watcher evicts agent when session finalizes

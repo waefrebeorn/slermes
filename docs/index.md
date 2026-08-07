@@ -61,7 +61,7 @@ See `BANNER.md` for the full project workflow, sync instructions, and fork recon
 
 | Metric | Value |
 |--------|-------|
-| **Version** | v670 (PORT phase) |
+| **Version** | v671 (PORT phase) |
 | **PORTED** | 12,695 (90.4% of 14,045) |
 | **REAL_GAP** | 1,346 (9.6%) |
 | **PARTIAL** | 2 |

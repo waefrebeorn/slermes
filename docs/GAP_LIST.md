@@ -44,13 +44,13 @@
    guidance). Verified vs a mock LLM (2 advisor calls + aggregation).
 2. **Pet generation** — `/pet hatch` now runs the real pipeline (prompt via
    pet_prompts_build_base → image_generate_handler → b64 decode → new
-   pet_install() → select). Also fixed a critical 10MB stack overflow in
+   pet_install → select). Also fixed a critical 10MB stack overflow in
    pet_gallery_json (PET_MAX_PETS×pet_installed_t on the stack). Verified:
    hatched pet with generated:true.
 3. **Battery stubs** — read_battery REAL_GAP closed with a sysfs reader
    (src/battery.c); `/battery` toggles + live read-out. Verified: 🔋 94%.
 4. **Nous billing/subscription** — `/subscription` + `/topup` wired to the
-   real build_billing_state() portal fetch; billing_fetch no longer shells
+   real build_billing_state portal fetch; billing_fetch no longer shells
    out to curl (internal libhttp). Verified: $42.50 / org / role.
 5. **Journey wrapper** — verified real (delegates to the faithful
    hermes_cli_journey_cmd_journey wrapper; reads the sessions DB).

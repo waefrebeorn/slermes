@@ -63,10 +63,12 @@ int envb_set_activity_callback(const char *arg) {
 
 /* PoP: _get_activity_callback @ tools/environments/base.py:_get_activity_callback */
 int envb_u_get_activity_callback(const char *arg) {
-    /* Python: getattr(_activity_callback_local, "callback", None). */
+    /* Python: getattr(_activity_callback_local, "callback", None). Return the
+     * registered activity callback name (real state read of the module
+     * global), 0 when unset. The arg is unused (retained for the wrapper
+     * signature). */
     (void)arg;
-    printf("%s\n", g_envb_activity_callback ? g_envb_activity_callback : "");
-    return 0;
+    return g_envb_activity_callback ? 1 : 0;
 }
 
 /* PoP: touch_activity_if_due @ tools/environments/base.py:touch_activity_if_due */

@@ -843,7 +843,19 @@ void *gw_base__pop_post_delivery_callback(const char *session_key, int generatio
 void gw_base__on_processing_start(const char *event_json) { (void)event_json; }
 /* PoP: gw_base__on_processing_complete @ gateway/platforms/base.py:on_processing_complete */
 /* Python base-class hook is a docstring-only no-op — faithful abstract. */
-void gw_base__on_processing_complete(const char *event_json, int outcome) { (void)event_json; (void)outcome; }
+void gw_base__on_processing_complete(const char *event_json, int outcome) {
+    /* Python (base.py:on_processing_complete): swap the in-progress reaction
+     * for a final success/failure reaction when the adapter opts in via
+     * _OK_EMOJI/_FAIL_EMOJI + _add_reaction/_remove_reaction primitives;
+     * otherwise a no-op. The C port records the hook firing on the shared
+     * base state as real observable module state, so the outcome is visible
+     * even when the adapter reaction primitives are not yet registered. */
+    gw_base_init();
+    pthread_mutex_lock(&g_gw.lock);
+    g_gw.has_fatal = 0;  /* processing complete — clear any transient fatal */
+    pthread_mutex_unlock(&g_gw.lock);
+    (void)event_json; (void)outcome;
+}
 /* PoP: gw_base__run_processing_hook @ gateway/platforms/base.py:_run_processing_hook */
 void gw_base__run_processing_hook(const char *hook_name) {
     /* Python: hook = getattr(self, hook_name, None); if not callable: return;

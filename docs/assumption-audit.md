@@ -7,7 +7,7 @@
 
 ## Category 1: Desktop API Endpoints Returning Stub Data
 
-The desktop Electron app calls 23 REST endpoints via `window.hermesDesktop.api()` → `web_dashboard.c`. These pass through to C handlers, but **20 of 23 return hardcoded stub data** instead of real data from the running system.
+The desktop Electron app calls 23 REST endpoints via `window.hermesDesktop.api` → `web_dashboard.c`. These pass through to C handlers, but **20 of 23 return hardcoded stub data** instead of real data from the running system.
 
 ### Boot-critical (desktop won't finish booting without them):
 
@@ -40,7 +40,7 @@ The desktop Electron app calls 23 REST endpoints via `window.hermesDesktop.api()
 | `GET /api/analytics/usage` | Empty stub | Analytics page |
 
 ### Root cause:
-`web_dashboard.c:handle_api()` routes these endpoints but the handlers were added as **stubs during initial API scaffolding** — they assume "a valid JSON response is enough" but the desktop actually renders UI from this data.
+`web_dashboard.c:handle_api` routes these endpoints but the handlers were added as **stubs during initial API scaffolding** — they assume "a valid JSON response is enough" but the desktop actually renders UI from this data.
 
 ---
 
@@ -53,7 +53,7 @@ The C codebase uses `N/A` to skip features that it assumes are Python-only, but 
 | `src/tools/tts_provider.c` | 13 LOC N/A stub | Desktop calls `/api/audio/speak` and `/api/audio/elevenlabs/voices` — needs TTS provider |
 | `src/tools/tts_registry.c` | 13 LOC N/A stub | Desktop calls `/api/audio/elevenlabs/voices` — needs voice listing |
 | `src/agent/transcription_provider.c` | 13 LOC N/A stub | Desktop calls `/api/audio/transcribe` — needs STT provider |
-| `src/agent/models_dev.c` | `list_dev_models()` → N/A | Desktop calls `/api/model/options` and `/api/model/info` |
+| `src/agent/models_dev.c` | `list_dev_models` → N/A | Desktop calls `/api/model/options` and `/api/model/info` |
 | `src/agent/async_utils.c` | 13 LOC N/A stub | Genuinely N/A (sync C) — correct |
 | `src/agent/audio/context_engine.c` | N/A (correct) | Genuinely N/A |
 
@@ -63,10 +63,10 @@ The C codebase uses `N/A` to skip features that it assumes are Python-only, but 
 
 | Issue | C behavior | Desktop expects |
 |-------|-----------|----------------|
-| Session messages not served | `web_dashboard.c` has no `/api/sessions/{id}/messages` handler | Desktop calls `getSessionMessages()` to render chat history |
-| Session search not implemented | Returns empty `{"sessions":[],"total":0}` | Desktop calls `searchSessions()` for FTS search |
-| Session PATCH (rename/archive) | No dedicated handler | Desktop calls `renameSession()` and `setSessionArchived()` |
-| Session DELETE | No dedicated handler | Desktop calls `deleteSession()` |
+| Session messages not served | `web_dashboard.c` has no `/api/sessions/{id}/messages` handler | Desktop calls `getSessionMessages` to render chat history |
+| Session search not implemented | Returns empty `{"sessions":[],"total":0}` | Desktop calls `searchSessions` for FTS search |
+| Session PATCH (rename/archive) | No dedicated handler | Desktop calls `renameSession` and `setSessionArchived` |
+| Session DELETE | No dedicated handler | Desktop calls `deleteSession` |
 
 ---
 

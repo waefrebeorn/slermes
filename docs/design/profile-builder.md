@@ -42,14 +42,14 @@ These are load-bearing — they change the implementation, not just the polish.
 ### Seam #1 — hub-skill install cannot use the HERMES_HOME override
 
 `tools/skills_hub.py` binds `SKILLS_DIR = HERMES_HOME / "skills"` at **module
-import time**. The context-local `set_hermes_home_override()` swap (which makes
+import time**. The context-local `set_hermes_home_override` swap (which makes
 `_write_profile_model` and the MCP write land in the target profile) does NOT
 retroactively rebind that already-imported module global. So a data-layer wrap
 of hub install would write into the dashboard's *own* active profile, not the
 new one.
 
 The correct mechanism is the existing subprocess path: `_spawn_hermes_action`
-runs `python -m hermes_cli.main <subcommand>`, and `_apply_profile_override()`
+runs `python -m hermes_cli.main <subcommand>`, and `_apply_profile_override`
 re-reads `sys.argv` at import in the fresh child. Prepend `-p <profile>`:
 
 ```python
@@ -67,7 +67,7 @@ and can be part of the create call. Hub installs are long-running git fetches
 spawned detached (`_spawn_hermes_action` returns a PID immediately). So the
 create flow is:
 
-1. `create_profile()` — make the dir (synchronous)
+1. `create_profile` — make the dir (synchronous)
 2. write model (synchronous, HERMES_HOME override)
 3. write selected MCP servers (synchronous, HERMES_HOME override)
 4. seed/enable selected built-in + optional skills (synchronous)

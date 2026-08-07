@@ -59,7 +59,7 @@ tts:
 | xai         | WebSocket (`wss://api.x.ai/v1/tts`)   | yes         | xAI OAuth or `XAI_API_KEY` |
 | edge, piper, kitten, neutts, mistral, minimax, deepinfra, … | — | no (per-sentence sync fallback) | as usual |
 
-All credential lookups go through `resolve_provider_secret()`
+All credential lookups go through `resolve_provider_secret`
 (config > env/.env > credential pool) — never bare env reads. Streamed bodies
 are capped at 16 MiB per sentence, mirroring the sync providers' bounded
 upstream-body invariant.
@@ -68,7 +68,7 @@ upstream-body invariant.
 
 1. Subclass `StreamingTTSProvider` in `tools/tts_streaming.py`
 2. Set `sample_rate` (and `channels` / `sample_width` if not int16 mono)
-3. Implement `available()` (a pure probe — never install anything) and
+3. Implement `available` (a pure probe — never install anything) and
    `stream(self, text) -> Iterator[bytes]` yielding raw PCM chunks
 4. Decorate with `@register("yourname")`
 5. Add tests in `tests/tools/test_tts_streaming.py`

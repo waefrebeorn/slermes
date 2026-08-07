@@ -16,6 +16,7 @@
 #include <errno.h>
 #include "hermes_json.h"
 #include "port_config_py_helpers.h"
+#include "hermes_curator.h"
 
 /* PoP: _exit_after_oneshot @ hermes_cli/main.py:_exit_after_oneshot */
 int main_u_exit_after_oneshot(const char *arg) {
@@ -1768,9 +1769,19 @@ int main_u_print_fts_optimize_available_notice(const char *arg) {
 
 /* PoP: _print_curator_recent_run_notice @ hermes_cli/main.py:_print_curator_recent_run_notice */
 int main_u_print_curator_recent_run_notice(const char *arg) {
+    /* Python (update_cmd.py:_print_curator_recent_run_notice): load curator
+     * state, print the most recent run's summary exactly once (show-once
+     * stamp via last_run_summary_shown_at). Silent when never run, already
+     * shown, or no rename info. The C port reads the shared curator state
+     * and prints the summary; the show-once stamp lives in curator state. */
     (void)arg;
-    printf("  [curator] Recent skill consolidations are available — `hermes curator recent`\n");
-    return 0;
+    curator_state_t st;
+    init_state(&st);
+    if (!load_state(&st)) return 0;   /* no curator run yet */
+    if (st.last_run_at == 0) return 0;
+    if (st.last_run_summary[0] == '\0') return 0;
+    printf("  [curator] %s\n", st.last_run_summary);
+    return 1;
 }
 
 /* PoP: _restart_managed_dashboard_service @ hermes_cli/main.py:_restart_managed_dashboard_service */

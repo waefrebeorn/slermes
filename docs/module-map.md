@@ -8,8 +8,8 @@ Files in `src/agent/` marked `(wrapper)` are name-parity wrappers with includes/
 | Python `agent/` | C Location | Status | Notes |
 |---|---|---|---|
 | `__init__.py` | — | N/A | Package marker |
-| `conversation_loop.py` | `src/agent/conversation_loop.c` | ✅ Ported | run_conversation(), tool dispatch, snapshots |
-| `turn_finalizer.py` | `src/agent/turn_finalizer.c` | ✅ Ported | finalize_turn() — post-loop finalization |
+| `conversation_loop.py` | `src/agent/conversation_loop.c` | ✅ Ported | run_conversation, tool dispatch, snapshots |
+| `turn_finalizer.py` | `src/agent/turn_finalizer.c` | ✅ Ported | finalize_turn — post-loop finalization |
 | `prompt_builder.py` | `src/agent/prompt_builder.c` | ✅ Ported | Context files, platform hints, environment, skills, CWD |
 | `agent_init.py` | `src/agent/agent_init.c` | ✅ Ported | 5/5 functions ported |
 | `title_generator.py` | `src/agent/title_generator.c` | ✅ Ported | Thin wrapper over title.c |

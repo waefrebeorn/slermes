@@ -247,7 +247,7 @@ function body from all 233 `port_*.c` files and classified its *shape*:
 `THIN_SHAPE` (returns expr), `REAL` (anything else). For every non-REAL candidate
 the REAL Python body was read and an honest verdict rendered.
 
-**Critical tooling bug caught & fixed:** the first `associate()` read the
+**Critical tooling bug caught & fixed:** the first `associate` read the
 *preceding* function's body when a `PoP:` comment sat above its function (the
 bridge convention). This falsely flagged genuine implementations (e.g.
 `_resolve_positive_anthropic_max_tokens`, a real floor-to-positive-int) as

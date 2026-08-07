@@ -20,7 +20,7 @@ below.
 create/update/pause/resume/remove a cron job (agent side)
   │
   ▼
-ChronosCronScheduler.reconcile()        ── agent computes next_run_at
+ChronosCronScheduler.reconcile        ── agent computes next_run_at
   │  POST {portal}/api/agent-cron/provision   (auth: agent's Nous access token)
   ▼
 NAS arms a one-shot for fire_at         ── NAS owns the scheduler + its creds
@@ -163,7 +163,7 @@ callback through to the verifier. (Also registered on the optional
 ## Reconcile (self-healing)
 
 The agent reconciles desired (`jobs.json`) vs armed on:
-- `start()` (gateway boot / wake),
+- `start` (gateway boot / wake),
 - every successful job mutation (`on_jobs_changed`),
 - piggybacked after each fire (re-arm).
 
@@ -185,12 +185,12 @@ credentials. For hosted agents NAS sets these at provision time:
 | `cron.chronos.nas_jwks_url` | NAS JWKS for verifying the fire JWT |
 
 If `callback_url` / `portal_url` is blank or the agent has no Nous login,
-`is_available()` returns False and the resolver falls back to the built-in
+`is_available` returns False and the resolver falls back to the built-in
 in-process ticker — cron never loses its trigger.
 
 ## Escape hatch (not default)
 
-The inbound `/api/cron/fire` verifier is pluggable (`get_fire_verifier()`). If
+The inbound `/api/cron/fire` verifier is pluggable (`get_fire_verifier`). If
 relay volume through NAS ever saturates, a direct scheduler→agent mode with a
 per-job NAS-minted cron-key can replace the NAS-JWT verifier with **no change to
 the webhook handler**. NAS-mediated (this contract) is the default.

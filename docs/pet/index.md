@@ -92,4 +92,4 @@ pet_constants.c  (scale, frame geometry, aliases)
 
 ## API Functions
 
-See `include/pet.h` for the complete API. Key functions: `pet_init()`, `pet_select(slug)`, `pet_info_json()`, `pet_gallery_json()`, `pet_cells_json(cols)`.
+See `include/pet.h` for the complete API. Key functions: `pet_init`, `pet_select(slug)`, `pet_info_json`, `pet_gallery_json`, `pet_cells_json(cols)`.

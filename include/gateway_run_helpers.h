@@ -288,6 +288,7 @@ json_t *gw_session_activity_for_stall(GatewayRunner *self, const char *session_k
 int gw_check_session_stalls(GatewayRunner *self, double timeout_seconds);
 
 /* _session_stall_watcher — periodic stall detection thread */
+void gw_session_stall_watcher_set_runner(GatewayRunner *runner);
 void *gw_session_stall_watcher(void *arg);
 
 /* _make_default_profile_message_handler — message handler for default profile */

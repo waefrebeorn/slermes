@@ -21,7 +21,7 @@ connector owns all platform-specific socket/identity logic.
 ## 1. Handshake
 
 1. Gateway opens the transport (`connect`).
-2. Gateway calls `handshake()`; connector returns a `CapabilityDescriptor`
+2. Gateway calls `handshake`; connector returns a `CapabilityDescriptor`
    (section 2) describing the platform this adapter instance fronts.
 3. Gateway configures the adapter from the descriptor (char limit, length unit,
    draft/edit/thread/markdown capabilities) and registers an inbound handler.
@@ -66,7 +66,7 @@ The connector normalizes each platform wire event into a `MessageEvent`
 (`gateway/platforms/base.py`) and delivers it to the gateway. **Inbound is
 delivered over the gateway's OUTBOUND `/relay` WebSocket** (see the transport
 note below) — the connector pushes an `inbound` frame down the socket the
-gateway already dialed. The gateway keys the session via `build_session_key()`
+gateway already dialed. The gateway keys the session via `build_session_key`
 from the embedded `SessionSource` — so populating the right discriminators is
 the single highest-correctness responsibility of the connector.
 
@@ -139,7 +139,7 @@ gateway acks it after durable handoff.
 
 ### SessionSource fields (the wire surface)
 
-Source of truth: `SessionSource.to_dict()` in `gateway/session.py`. These are
+Source of truth: `SessionSource.to_dict` in `gateway/session.py`. These are
 every key the gateway accepts on the wire. `platform`, `chat_id`, `chat_type`,
 `user_id`, `user_name`, `thread_id`, `chat_name`, and `chat_topic` are always
 present (may be `null`); the rest are included only when set.
@@ -162,8 +162,8 @@ present (may be `null`); the rest are included only when set.
 
 > `is_bot` (author-is-a-bot/webhook classification) exists on the gateway-side
 > dataclass but is **intentionally NOT on the wire** in v1 — it is not part of
-> `to_dict()`. Do not add it to the connector's `SessionSource` until it is
-> first added here and to `to_dict()` (additive bump).
+> `to_dict`. Do not add it to the connector's `SessionSource` until it is
+> first added here and to `to_dict` (additive bump).
 
 ### SessionSource discriminators per platform
 
@@ -173,7 +173,7 @@ present (may be `null`); the rest are included only when set.
 | **Telegram** | chat id | `dm`/`group`/`forum` | from id | forum topic id (forums) | — |
 
 **Get Discord's `guild_id` wrong and two servers collide into one session.**
-This is the #1 High-severity risk. The gateway's `build_session_key()` is the
+This is the #1 High-severity risk. The gateway's `build_session_key` is the
 conformance oracle: for a given `SessionSource`, the connector's normalization
 must produce the same key the Python adapter would. (The Phase-1 stub tests
 assert known-input → known-key.)
@@ -655,7 +655,7 @@ behaviour knobs (`require_mention`, `free_response_channels`,
 gateway projects those knobs into a **platform-agnostic** policy and POSTs it to
 `POST /relay/policy` at boot (after its per-gateway secret is resolved).
 
-Body (`gateway/relay/__init__.py` `relay_relevance_policy()` → `send_relay_policy()`):
+Body (`gateway/relay/__init__.py` `relay_relevance_policy` → `send_relay_policy`):
 
 | Field | Type | Projected from | Meaning |
 | --- | --- | --- | --- |

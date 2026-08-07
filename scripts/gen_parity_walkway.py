@@ -99,8 +99,8 @@ STALE_PATTERNS = [
     (r"99\.8%",
      "stale 99.8% completion claim"),
     # "100%" module coverage claim (module-map era)
-    (r"100%\s*(?:module|coverage|complete)",
-     "stale 100% coverage claim"),
+    (r"100%\s*(?:module|coverage|complete|PORTED|ported)",
+     "stale 100% coverage/PORTED claim"),
     # Old function counts from older scans
     (r"\b(?:8,688|12,274|11,744|12,252|4,881|4,802|4,781|4,769|4,703|4,709|4,692|4,754|4,702)\b",
      "stale function count from older scan"),
@@ -372,7 +372,17 @@ def strip_stale_owned(path):
 
 
 def strip_plain(txt):
-    """Strip stale derived paragraphs from a non-sentinel region."""
+    """Strip stale derived paragraphs from a non-sentinel region.
+
+    This runs on ALL non-sentinel regions of ALL processed files (walkway +
+    docs), so it must be safe for user-level prose. It removes:
+      - stale version/phase claim lines (vNNN, phase labels)
+      - stale sync checkpoint / Version / Last updated lines
+      - stale **Current state (vNNN):** count-claim lines + table blocks
+      - stale count-claim lines containing percentages (99.8% fiction)
+    All via purge_plain() which applies STALE_PATTERNS. Count-block rows
+    inside PARITY:AUTO sentinels are never seen here.
+    """
     # Stale "**vNNN phase — PARITY project:** ..." multi-line paragraphs
     # (the v398-v667 era phase blurb), both plain and blockquote forms.
     txt = re.sub(
@@ -381,13 +391,27 @@ def strip_plain(txt):
     # Any standalone "**vNNN phase — X:**" one-liner outside the sentinel.
     txt = re.sub(r"\n\*\*v\d+ phase[^\n]*\*\*\n", "\n", txt)
     # Stale "**Upstream sync checkpoint:** ..." lines outside the sentinel.
-    txt = re.sub(r"\n\*\*Upstream sync checkpoint:\*\*[^\n]*\n", "\n", txt)
+    txt = re.sub(r"\n-?\s*\*\*Upstream sync checkpoint:\*\*[^\n]*\n", "\n", txt)
     # Stale "**Version:** x.y.z-slermes (vNNN, ...)" OR "**Version:** vNNN"
     # lines outside the sentinel (standalone or inline after **Build:**).
     txt = re.sub(r"\n\*\*Version:\*\*[^\n]*v\d+[^\n]*\n", "\n", txt)
-    txt = re.sub(r"\*\*Version:\*\*[^\n]*v\d+[^\n]*", "", txt)
+    txt = re.sub(r"\*\*Version:\*\*[^\n]*v\d[^\n]*", "", txt)
     # Stale "**Last updated:** ..." lines outside the sentinel.
     txt = re.sub(r"\n\*\*Last updated:\*\*[^\n]*\n", "\n", txt)
+    # Stale "**Phase philosophy (vNNN):** ..." one-liner (user-level
+    # state.md carries v668-era prose outside sentinels).
+    txt = re.sub(r"\n-?\s*\*\*Phase philosophy \(v\d+\):\*\*[^\n]*\n", "\n", txt)
+    # Apply STALE_PATTERNS purge (99.8% fiction, stale counts, N/A claims,
+    # stale prose count tables/lines) across ALL non-sentinel regions —
+    # including user-level walkway files that never see purge_stale_claims.
+    # Remove stale count-claim lines without percentages (e.g.
+    # "Scanner now 4,700 PORTED / 4,989 REAL_GAP / 42 PARTIAL").
+    # These have a classification keyword + comma-number on the same line.
+    # Legitimate prose (e.g. "45 bootleg closures") has no comma-number.
+    txt = re.sub(
+        r"[^\n]*\b(?:PORTED|REAL_GAP|PARTIAL|BOOTLEG|STUB)\b[^\n]*\d,\d{3}[^\n]*\n",
+        "", txt, flags=re.IGNORECASE)
+    txt = purge_plain(txt)
     return txt
 
 
@@ -432,6 +456,9 @@ def purge_plain(txt):
     # like "| OLD_TOTAL | 11,744 | 100% | All functions scanned |"
     # becomes "|  |  |  |" — collapse it).
     txt = re.sub(r"\|\s*\|[\s|]*\n", "", txt)
+    # Clean up empty "()"" fragments left when 100% PORTED or similar
+    # inside parens is stripped (e.g. "Scanner features:  ()" -> "").
+    txt = re.sub(r"\s*\(\)", "", txt)
     return txt
 
 

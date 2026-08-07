@@ -239,7 +239,7 @@ string attributes that could touch user input must pass through
 ### Adding a new subsystem (a new family of signals)
 
 Mirror the cron pattern (`cron_health.py` + its wiring): put the read/projection
-logic in its own module, expose one `build_<subsystem>_health_snapshot()` that
+logic in its own module, expose one `build_<subsystem>_health_snapshot` that
 returns bounded `GatewayMetric`s (and events if any), and extend it into
 `_read_runtime_snapshot` with the same best-effort try/except-WARNING guard.
 Then do the "adding a metric" checklist for each new name, and the "adding an

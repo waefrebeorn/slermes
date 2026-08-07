@@ -12,10 +12,10 @@
 | **PORTED** | 12,695 | 90.4% | C11 implementation with PoP annotation |
 | **REAL_GAP** | 1,346 | 9.6% | Honest gaps (not yet ported — IO/network/DB/logic; NOT faked) |
 | **PARTIAL** | 4 | 0.0% | All C fns now carry PoP annotations |
-| **BOOTLEG** | 24 | — | No-work echo stubs (recursive_false_gap_hunter.py) |
+| **BOOTLEG** | 0 | — | No-work echo stubs (recursive_false_gap_hunter.py) |
 | **TOTAL** | 14,045 | 100% | All Python functions/methods scanned |
 
-> **Generated 2026-08-07T01:41:25Z by `make parity-walkway` from the live scanner.** The PORT phase (v398→v667) is legacy — this table is the single source of truth for completeness. Do not hand-edit.
+> **Generated 2026-08-07T04:00:21Z by `make parity-walkway` from the live scanner.** The PORT phase (v398→v667) is legacy — this table is the single source of truth for completeness. Do not hand-edit.
 <!-- /PARITY:AUTO -->
 
 **Generated:** 2026-08-07 (post-sync, v670 checkpoint) from live scanner
@@ -38,7 +38,6 @@ Closing REAL_GAPs is the path forward.
 ### v668 — Upstream Sync (2026-08-03→04)
 - Merged 3,401 upstream commits into the parent Python quarry.
 - Fork-base `-s ours` merge in slermes (behind=0, C11 tree byte-identical).
-- Quarry grew +1,771 Python features → REAL_GAP honestly rose (22 → 1,958).
 - 45 bootleg echo-stubs eradicated (v668 DA sweep): all platform connect/disconnect
   now delegate to real C infrastructure.
 
@@ -64,7 +63,6 @@ an N/A class at all; it reports only PORTED / PARTIAL / STUB / REAL_GAP.
 ## The scanner is blind to FAPs — behavioral correctness is a separate axis
 
 The table above is a **static** count of *missing or shaped-wrong* functions.
-It can report `PORTED 11,500+ / REAL_GAP 0 / PARTIAL 0` (build green) while
 **real behavioral FAPs still exist** — C functions that are ported and compile
 but produce output that diverges from LIVE Python Hermes. Examples found by the
 oracle harness: a C provider-auth table with different membership than Python's
@@ -103,29 +101,29 @@ All 82 commands have real C11 handlers (0 stubs). Full command registry lives in
 
 | Function | Python Source | Purpose |
 |----------|---------------|---------|
-| `pet_init()` | — | Initialize pet system from config |
-| `pet_get_state()` | — | Current animation state |
-| `pet_update_state()` | state.py | Update from agent signals |
-| `pet_info_json()` | — | Active pet info as JSON |
-| `pet_gallery_json()` | — | Installed pets as JSON |
-| `pet_cells_json()` | — | Frame cells for TUI |
-| `pet_select()` | store.py:resolve_active_pet | Select active pet |
-| `pet_disable()` | — | Disable pet display |
-| `pet_set_scale()` | constants.py | Set scale factor |
-| `pet_fetch_manifest()` | manifest.py | Fetch petdex manifest |
-| `pet_find_entry()` | manifest.py | Find manifest entry by slug |
-| `pet_load_pet()` | store.py:load_pet | Load installed pet |
-| `pet_installed_pets()` | store.py:installed_pets | List installed |
-| `pet_install_pet()` | store.py:install_pet | Install from manifest |
-| `pet_remove_pet()` | store.py:remove_pet | Remove installed |
-| `pet_thumbnail_png()` | store.py:thumbnail_png | Get thumbnail bytes |
-| `pet_thumbs_dir()` | store.py:_thumbs_dir | Thumbnail cache directory |
-| `pet_is_petdex_host()` | store.py:_is_petdex_host | URL host check |
-| `pet_download_json()` | store.py:_download_json | HTTP JSON download |
-| `pet_write_spritesheet()` | store.py:_write_spritesheet | Binary file copy |
-| `pet_register_local_pet()` | store.py:register_local_pet | Register from local files |
-| `pet_is_generated()` | store.py:generated | Check AI-generated flag |
-| `pet_export_pet()` | store.py:export_pet | Export spritesheet bytes |
+| `pet_init` | — | Initialize pet system from config |
+| `pet_get_state` | — | Current animation state |
+| `pet_update_state` | state.py | Update from agent signals |
+| `pet_info_json` | — | Active pet info as JSON |
+| `pet_gallery_json` | — | Installed pets as JSON |
+| `pet_cells_json` | — | Frame cells for TUI |
+| `pet_select` | store.py:resolve_active_pet | Select active pet |
+| `pet_disable` | — | Disable pet display |
+| `pet_set_scale` | constants.py | Set scale factor |
+| `pet_fetch_manifest` | manifest.py | Fetch petdex manifest |
+| `pet_find_entry` | manifest.py | Find manifest entry by slug |
+| `pet_load_pet` | store.py:load_pet | Load installed pet |
+| `pet_installed_pets` | store.py:installed_pets | List installed |
+| `pet_install_pet` | store.py:install_pet | Install from manifest |
+| `pet_remove_pet` | store.py:remove_pet | Remove installed |
+| `pet_thumbnail_png` | store.py:thumbnail_png | Get thumbnail bytes |
+| `pet_thumbs_dir` | store.py:_thumbs_dir | Thumbnail cache directory |
+| `pet_is_petdex_host` | store.py:_is_petdex_host | URL host check |
+| `pet_download_json` | store.py:_download_json | HTTP JSON download |
+| `pet_write_spritesheet` | store.py:_write_spritesheet | Binary file copy |
+| `pet_register_local_pet` | store.py:register_local_pet | Register from local files |
+| `pet_is_generated` | store.py:generated | Check AI-generated flag |
+| `pet_export_pet` | store.py:export_pet | Export spritesheet bytes |
 
 ## Build System
 

@@ -28,7 +28,7 @@ Total confirmado: **21 call sites**.
 Os módulos usam o seguinte padrão:
 
 ```python
-with _connect() as conn:
+with _connect as conn:
     ...
 ```
 
@@ -36,7 +36,7 @@ O context manager de `sqlite3.Connection` controla a transação:
 
 - sucesso: commit;
 - exceção: rollback;
-- saída do bloco: não executa `conn.close()`.
+- saída do bloco: não executa `conn.close`.
 
 Consequentemente, o bloco `with` transmite uma falsa impressão de gerenciamento completo do recurso. A transação termina, mas o lifecycle da conexão não termina de forma determinística.
 
@@ -50,9 +50,9 @@ Em processo curto, encerramento ou coleta rápida pode mascarar o defeito. Em ga
 
 ## Relação com #69567 e PR #69594
 
-[Issue #69567](https://github.com/NousResearch/hermes-agent/issues/69567) encontrou a mesma falha em `cron/executions.py`. Uma execução normal de cron abre conexões em `create_execution()`, `mark_execution_running()` e `finish_execution()`. O relato mediu crescimento de descritores até atingir limite do processo.
+[Issue #69567](https://github.com/NousResearch/hermes-agent/issues/69567) encontrou a mesma falha em `cron/executions.py`. Uma execução normal de cron abre conexões em `create_execution`, `mark_execution_running` e `finish_execution`. O relato mediu crescimento de descritores até atingir limite do processo.
 
-[PR #69594](https://github.com/NousResearch/hermes-agent/pull/69594) propõe um `_transaction()` que:
+[PR #69594](https://github.com/NousResearch/hermes-agent/pull/69594) propõe um `_transaction` que:
 
 1. abre a conexão;
 2. preserva commit/rollback com `with conn:`;
@@ -93,24 +93,24 @@ Cada módulo recebe um context manager equivalente a:
 
 ```python
 @contextmanager
-def _transaction() -> Iterator[sqlite3.Connection]:
-    conn = _connect()
+def _transaction -> Iterator[sqlite3.Connection]:
+    conn = _connect
     try:
         with conn:
             yield conn
     finally:
-        conn.close()
+        conn.close
 ```
 
-Além disso, `_connect()` passa a fechar a conexão caso PRAGMA ou inicialização de schema falhe depois de `sqlite3.connect()` ter retornado com sucesso.
+Além disso, `_connect` passa a fechar a conexão caso PRAGMA ou inicialização de schema falhe depois de `sqlite3.connect` ter retornado com sucesso.
 
 ### Pontos corretos
 
 - fechamento determinístico em sucesso, early return e exceção;
 - commit e rollback continuam delegados ao context manager nativo;
 - locking existente é preservado;
-- `_transaction()` não adquire `_DB_LOCK`, evitando lock nesting novo;
-- `_prune()` em `delivery_ledger` continua lock-free;
+- `_transaction` não adquire `_DB_LOCK`, evitando lock nesting novo;
+- `_prune` em `delivery_ledger` continua lock-free;
 - contrato schema-on-connect é mantido;
 - todos os 21 call sites são migrados;
 - nenhuma configuração, schema de ferramenta ou superfície core nova é adicionada.
@@ -119,13 +119,13 @@ Nenhum defeito funcional foi identificado no patch analisado.
 
 ## Minimal fix recomendado
 
-Solução do PR é pequena no comportamento de produção e resolve a causa raiz. Recomendação: manter `_transaction()` local em cada módulo.
+Solução do PR é pequena no comportamento de produção e resolve a causa raiz. Recomendação: manter `_transaction` local em cada módulo.
 
 Não criar agora um helper SQLite global compartilhado. Isso aumentaria escopo, acoplamento e risco para resolver três módulos independentes. Uma abstração compartilhada só deve surgir após demanda concreta e contrato comum comprovado.
 
 Possíveis reduções sem mudar o desenho:
 
-- encurtar docstrings repetidas dos três `_transaction()`;
+- encurtar docstrings repetidas dos três `_transaction`;
 - compartilhar fixture de tracking apenas se já existir local apropriado na suíte;
 - evitar refatorações adjacentes.
 
@@ -141,7 +141,7 @@ O PR adiciona testes para:
 - falha durante inicialização do schema;
 - igualdade entre número de conexões abertas e fechadas.
 
-Os testes usam conexões SQLite reais envolvidas por um proxy que registra chamadas a `close()`. Isso valida diretamente o contrato quebrado e evita depender do timing do garbage collector.
+Os testes usam conexões SQLite reais envolvidas por um proxy que registra chamadas a `close`. Isso valida diretamente o contrato quebrado e evita depender do timing do garbage collector.
 
 ### Melhoria opcional
 
@@ -194,7 +194,7 @@ Após merge dos fixes urgentes, abrir tarefa separada de auditoria dirigida:
 
 1. localizar `with sqlite3.connect(...)`, `with connect(...)` e `with _connect(...)`;
 2. classificar conexões por lifecycle: per-operation ou long-lived;
-3. exigir `contextlib.closing`, `try/finally close()` ou helper transacional para conexões per-operation;
+3. exigir `contextlib.closing`, `try/finally close` ou helper transacional para conexões per-operation;
 4. adicionar teste de regressão somente para call paths reais;
 5. documentar em guia interno que `sqlite3.Connection` context manager não fecha a conexão.
 

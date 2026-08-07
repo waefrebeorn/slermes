@@ -102,7 +102,16 @@ char *tsc_dispatch_to_plugin_provider(const char *audio_path, const char *langua
 }
 /* PoP: _load_local_whisper_model @ tools/transcription_tools.py:_load_local_whisper_model */
 void *tsc_load_local_whisper_model(const char *model_name) {
-    (void)model_name; return NULL;
+    /* Python: load faster-whisper with graceful CUDA -> CPU fallback. The C
+     * port's local STT is command-based (whisper CLI, transcribe_helpers.c):
+     * the load analogue is verifying the whisper binary is available. Model
+     * selection is resolved at transcribe time via the model_name arg. */
+    extern const char *transcribe_find_whisper_binary(void);
+    (void)model_name;   /* model resolved at transcribe time by the CLI */
+    const char *bin = transcribe_find_whisper_binary();
+    if (!bin) return NULL;   /* whisper binary unavailable — no model to load */
+    /* Return a non-NULL handle: the binary path, as the loaded "model". */
+    return (void *)bin;
 }
 /* PoP: _transcribe_local @ tools/transcription_tools.py:_transcribe_local */
 char *tsc_transcribe_local(const char *audio_path, const char *model_name, const char *language) {

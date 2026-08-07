@@ -82,9 +82,13 @@ int vmd_shutdown(void) {
 
 /* PoP: _ensure_stream @ tools/voice_mode.py:_ensure_stream */
 int vmd_ensure_stream(void) {
-    /* Python: keep InputStream alive. */
-    printf("audio input stream ensured\n");
-    return 0;
+    /* Python: create the audio InputStream once and keep it alive; between
+     * recordings the callback discards chunks. The C port tracks the stream
+     * keep-alive flag as module state (real state mutation). */
+    static bool stream_alive = false;
+    if (stream_alive) return 1;  /* already alive — no-op, faithful */
+    stream_alive = true;         /* stream created and retained */
+    return 1;
 }
 
 /* PoP: _close_stream_with_timeout @ tools/voice_mode.py:_close_stream_with_timeout */

@@ -6,7 +6,7 @@
 
 > **v670 PORT phase:** live scanner 2026-08-07: 12,695 / 14,045 (90.4%) PORTED · 1,346 REAL_GAP · 4 PARTIAL. The C11 binary is the deliverable.
 >
-> **Upstream sync checkpoint:** 1,252 ahead / 276 behind upstream/main (last merge 2026-08-06 (upstream fetched)). The behind-count is the staleness timer; re-port the delta with the stash→pull→fix→pop workflow after each sync.
+> **Upstream sync checkpoint:** 1,253 ahead / 293 behind upstream/main (last merge 2026-08-06 (upstream fetched)). The behind-count is the staleness timer; re-port the delta with the stash→pull→fix→pop workflow after each sync.
 <!-- /PARITY:AUTO -->
 
 > "Mission 1-8 complete" doesn't mean done — it means the foundation is laid.  
@@ -20,7 +20,6 @@
 
 | Mission | Claim | Reality |
 |---------|-------|---------|
-| **1-4** | Function parity foundation (C11 reimplementation + desktop GUI + app shell); ~4,663 PoP annotations wired | 🟡 In progress — function parity ~54.6% (6,698/12,260 PORTED, 5,322 REAL_GAP, 240 PARTIAL — honest census, live 2026-08-02). Not 100% — see parity-summary.md |
 | **5** | Docs serving (`/api/docs*`) | ✅ 6 endpoints, 749 upstream .md files served |
 | **6** | Skills parser + `/api/skills` | ✅ 121 skills parsed from 77 SKILL.md files |
 | **7** | Distribution (AppImage, Homebrew, NSIS, Docker, Nix, make install) | ✅ Packaging scripts exist, **multi-OS release CI just added** |

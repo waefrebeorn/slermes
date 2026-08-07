@@ -199,9 +199,9 @@ def register(ctx):
     ctx.register_middleware("llm_execution", time_llm_execution)
 
 def time_llm_execution(**kwargs):
-    started = time.monotonic()
+    started = time.monotonic
     response = kwargs["next_call"](kwargs["request"])
-    elapsed_ms = int((time.monotonic() - started) * 1000)
+    elapsed_ms = int((time.monotonic - started) * 1000)
     print(f"llm_execution elapsed_ms={elapsed_ms}")
     return response
 ```

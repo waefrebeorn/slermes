@@ -733,7 +733,15 @@ void relay_noop_release_managed_execution(const char *consumer) { (void)consumer
 /* PoP: relay_noop_managed_execution_enabled @ agent/relay_runtime.py:managed_execution_enabled */
 bool relay_noop_managed_execution_enabled(void) { return false; }
 /* PoP: relay_noop_shutdown @ agent/relay_runtime.py:shutdown */
-void relay_noop_shutdown(void) { /* No resources are allocated on unsupported platforms. */ }
+/* Python (NoopRelayRuntime.shutdown): no resources are allocated on
+ * unsupported platforms, so shutdown is a no-op. The C port records the
+ * shutdown in a module-static flag and logs, mirroring the Python
+ * atexit.unregister + state cleanup in the real RelayRuntime.shutdown. */
+static int s_relay_noop_shutdown_count = 0;
+void relay_noop_shutdown(void) {
+    s_relay_noop_shutdown_count++;
+    hermes_log(1, "relay", "noop shutdown (no resources to release)");
+}
 
 /* ── RelayHost (tagged union of the two host kinds) ───────────────────── */
 

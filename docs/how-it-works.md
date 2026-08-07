@@ -14,22 +14,22 @@ user, and how every component assembles into a working system.
 ## 1. Entry Point & Startup
 
 ```
-main()                         [src/cli/main.c]
+main                         [src/cli/main.c]
   ├─ parse args (getopt_long)
   ├─ init paths                [src/cli/paths.c]
   ├─ load config               [src/cli/config.c]
   ├─ init agent                [src/agent/agent_init.c]
   ├─ init display              [src/cli/display.c]
   ├─ ─ TUI mode? ──
-  │    YES → tui_entry_run()   [src/cli/tui_entry.c]
+  │    YES → tui_entry_run   [src/cli/tui_entry.c]
   │              └─ ncurses full-screen TUI
-  │    NO  → cli_main_loop()   [src/cli/cli.c]
+  │    NO  → cli_main_loop   [src/cli/cli.c]
   └─ cleanup & exit
 ```
 
 ### Startup Sequence
 
-1. **Argument parsing** (`cli_main()` in main.c): Uses `getopt_long()` for
+1. **Argument parsing** (`cli_main` in main.c): Uses `getopt_long` for
    `--session`, `--model`, `--provider`, `--json`, `--tui`, `--help`, `--version`.
 
 2. **Path resolution** (`paths.c`): Resolves `SLERMES_HOME` / `~/.slermes` /
@@ -80,7 +80,7 @@ type-ahead buffer. When the LLM returns, the buffered input is injected into
 the line editor so the user's next message is already typed out:
 
 ```
-LLM thinking...  ──→  Type-ahead thread   ──→  line_edit_set_text()
+LLM thinking...  ──→  Type-ahead thread   ──→  line_edit_set_text
                        (captures keystrokes       (pre-populates editor
                         to type_ahead_buf)         on next read)
 ```
@@ -208,10 +208,10 @@ fallback: if "/model" not found, try alias matching
 ### Layered Architecture
 
 ```
-cli_display_response()         [src/cli/display.c]
-  └─ display_printf()          [src/cli/display_core.c]
-       ├─ display_set_fg()
-       ├─ display_set_style()
+cli_display_response         [src/cli/display.c]
+  └─ display_printf          [src/cli/display_core.c]
+       ├─ display_set_fg
+       ├─ display_set_style
        └─ ansi escape codes    [lib/libansi/ansi.c]
 ```
 
@@ -233,15 +233,15 @@ with LLM output.
 
 | Function | Purpose |
 |----------|---------|
-| `cli_display_response()` | Render assistant response (content + reasoning) |
-| `cli_display_error()` | Red bold "Error:" prefix |
-| `cli_display_status()` | Blue dim status line |
-| `cli_display_thinking()` | "thinking..." yellow dim indicator |
-| `display_print_info()` | Dim info line |
-| `display_print_success()` | Green ✓ success |
-| `display_print_warning()` | Yellow ⚠ warning |
-| `display_print_error()` | Red ✗ error |
-| `display_print_error_rich()` | Error + suggestion text |
+| `cli_display_response` | Render assistant response (content + reasoning) |
+| `cli_display_error` | Red bold "Error:" prefix |
+| `cli_display_status` | Blue dim status line |
+| `cli_display_thinking` | "thinking..." yellow dim indicator |
+| `display_print_info` | Dim info line |
+| `display_print_success` | Green ✓ success |
+| `display_print_warning` | Yellow ⚠ warning |
+| `display_print_error` | Red ✗ error |
+| `display_print_error_rich` | Error + suggestion text |
 
 ---
 
@@ -256,11 +256,11 @@ for tool/skill/settings configuration.
 
 | Widget | Purpose | Input Keys |
 |--------|---------|-----------|
-| `cw_checklist()` | Multi-select with checkboxes | ↑↓ navigate, Space toggle, Enter confirm, / search, ESC/q cancel |
-| `cw_radiolist()` | Single-select radio list | Same, with fuzzy search support |
-| `cw_picker()` | Single-select with cancel row | Same, Enter to select, ESC/q to cancel |
-| `cw_confirm()` | Yes/No dialog | ↑↓ to switch, Enter to confirm, ESC to cancel |
-| `cw_fallback_*()` | Numbered text fallbacks | Always available when curses isn't |
+| `cw_checklist` | Multi-select with checkboxes | ↑↓ navigate, Space toggle, Enter confirm, / search, ESC/q cancel |
+| `cw_radiolist` | Single-select radio list | Same, with fuzzy search support |
+| `cw_picker` | Single-select with cancel row | Same, Enter to select, ESC/q to cancel |
+| `cw_confirm` | Yes/No dialog | ↑↓ to switch, Enter to confirm, ESC to cancel |
+| `cw_fallback_*` | Numbered text fallbacks | Always available when curses isn't |
 
 **Search:** Press `/` to open fuzzy search. Type a query — items are filtered
 by multi-token subsequence matching with camelCase boundary detection.
@@ -279,9 +279,9 @@ keybindings, history search, tab completion, type-ahead.
 
 ```
 User input
-  → agent_run_conversation()    [src/agent/conversation_loop.c]
-    → build_prompt()            [src/agent/prompt_builder.c]
-    → provider.chat()           [src/agent/provider_openai.c etc.]
+  → agent_run_conversation    [src/agent/conversation_loop.c]
+    → build_prompt            [src/agent/prompt_builder.c]
+    → provider.chat           [src/agent/provider_openai.c etc.]
     → stream response           [src/agent/stream_diag.c]
     → tool call? ──YES──
     │              → tool_executor.c
@@ -296,7 +296,7 @@ User input
 ```
 provider config (yaml)
   → provider_metadata.c        (resolve provider name)
-  → provider_select()          (pick by availability, fallback)
+  → provider_select          (pick by availability, fallback)
   → provider_openai.c          (OpenAI API)
   → provider_anthropic.c       (Anthropic API)
   → provider_google.c          (Google AI API)
@@ -322,17 +322,17 @@ tool_call received from LLM
 ### Architecture
 
 ```
-tui_entry_run()               [src/cli/tui_entry.c]
-  ├─ tui_fullscreen_init()    [src/cli/tui_fullscreen.c]
-  │   ├─ ncurses initscr()
+tui_entry_run               [src/cli/tui_entry.c]
+  ├─ tui_fullscreen_init    [src/cli/tui_fullscreen.c]
+  │   ├─ ncurses initscr
   │   ├─ theme init
   │   └─ subsystem init (eventpub, layout, render)
   ├─ main event loop
-  │   ├─ tui_eventpub_fetch()   [src/cli/tui_eventpub.c]
-  │   ├─ tui_layout_update()    [src/cli/tui_layout.c]
-  │   ├─ tui_render_draw()      [src/cli/tui_render.c]
-  │   └─ agent_step()
-  └─ tui_fullscreen_shutdown()
+  │   ├─ tui_eventpub_fetch   [src/cli/tui_eventpub.c]
+  │   ├─ tui_layout_update    [src/cli/tui_layout.c]
+  │   ├─ tui_render_draw      [src/cli/tui_render.c]
+  │   └─ agent_step
+  └─ tui_fullscreen_shutdown
 ```
 
 ### Communication
@@ -347,9 +347,9 @@ tui_json_rpc.c  ──→  tui_transport.c  ──→  tui_websocket.c  ──�
 
 ```
 tui_slash_worker.c
-  └─ tui_slash_worker_run()
-       └─ commands_resolve()  (same dispatch as CLI)
-            └─ cmd_xxx()      (same handlers)
+  └─ tui_slash_worker_run
+       └─ commands_resolve  (same dispatch as CLI)
+            └─ cmd_xxx      (same handlers)
 ```
 
 ---
@@ -360,7 +360,7 @@ tui_slash_worker.c
 
 ```
 CLI (cli.c)                     Gateway (gateway/)
-  ├─ agent_loop()                ├─ server.c (main loop)
+  ├─ agent_loop                ├─ server.c (main loop)
   ├─ slash commands              ├─ run.c (platform dispatch)
   ├─ display output              ├─ session.c (session management)
   └─ config/paths                ├─ platforms/ (telegram, discord, etc.)

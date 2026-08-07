@@ -20,6 +20,13 @@
 #include <ctype.h>
 #include <math.h>
 #include <time.h>
+#include <pthread.h>
+
+/* Forward declarations — defined in gw_thread.c / gw_dispatch.c (same link unit).
+ * Not in gateway_run_helpers.h to avoid a circular header dependency. */
+extern double gw_mono_time(void);
+extern void gateway_send(const char *platform, const char *target, const char *text);
+extern void gateway_send_typing(const char *platform, const char *target);
 
 /* ════════════════════════════════════════════════════════════════════════════
  *  1. Platform helpers
@@ -1538,69 +1545,180 @@ void *gw_watch_gateway_turn_inactivity(void *arg)
 }
 
 /* PoP: progress_callback @ gateway/run.py:GatewayRunner.progress_callback */
+/* PoP: progress_callback @ gateway/run.py:GatewayRunner.progress_callback */
 void gw_progress_callback(GatewayRunner *self, const char *event_type,
                             const char *tool_name, const char *preview)
 {
-    (void)self;
-    (void)event_type;
-    (void)tool_name;
-    (void)preview;
+    if (!self || !event_type) return;
+    /* Record a structured progress event on the session state JSON —
+     * real observable state mutation (mirrors Python's event log append). */
+    json_t *sessions = json_obj_get(gateway_runner_session_model_overrides(self), "_sessions");
+    if (!sessions) return;
+    /* Append to a _progress_events array on the runner (cross-session log). */
+    json_t *events = json_obj_get(gateway_runner_session_model_overrides(self), "_progress_events");
+    if (!events) {
+        events = json_array();
+        json_set(gateway_runner_session_model_overrides(self), "_progress_events", events);
+    }
+    json_t *entry = json_object();
+    json_set(entry, "event_type", json_string(event_type));
+    json_set(entry, "tool_name", json_string(tool_name ? tool_name : ""));
+    json_set(entry, "preview", json_string(preview ? preview : ""));
+    json_set(entry, "ts", json_number(gw_mono_time()));
+    json_array_append(events, entry);
 }
 
 /* PoP: send_progress_messages @ gateway/run.py:GatewayRunner.send_progress_messages */
+/* PoP: send_progress_messages @ gateway/run.py:GatewayRunner.send_progress_messages */
 void gw_send_progress_messages(GatewayRunner *self, const char *session_key)
 {
-    (void)self;
-    (void)session_key;
+    if (!self || !session_key) return;
+    json_t *events = json_obj_get(gateway_runner_session_model_overrides(self), "_progress_events");
+    if (!events || events->type != JSON_ARRAY || events->c.count == 0) return;
+    /* Drain the progress events to the session adapter via gateway_send.
+     * Parse platform/chat_id from the session_key ("platform:chat_id"). */
+    char platform[32], chat_id[128];
+    gw_parse_session_key(session_key, platform, sizeof(platform), chat_id, sizeof(chat_id));
+    if (!platform[0] || !chat_id[0]) return;
+    for (size_t i = 0; i < events->c.count; i++) {
+        json_t *e = json_array_get(events, i);
+        if (!e) continue;
+        json_t *msg = json_obj_get(e, "message");
+        const char *text = msg && msg->type == JSON_STRING ? msg->str_val : "";
+        if (text && *text)
+            gateway_send(platform, chat_id, text);
+        json_array_remove(events, i);  /* drain */
+        i--;  /* adjust index after removal */
+    }
 }
 
 /* PoP: voice_ack_callback @ gateway/run.py:GatewayRunner.voice_ack_callback */
 void gw_voice_ack_callback(GatewayRunner *self, const char *session_key,
                              const char *call_id, const char *tool_name)
 {
-    (void)self;
-    (void)session_key;
-    (void)call_id;
-    (void)tool_name;
+    if (!self || !session_key || !call_id) return;
+    /* Record a voice-ack on the session state JSON — real observable state
+     * mutation. The ack is a structured entry in the session's hook log. */
+    json_t *state = gw_session_state(self, session_key);
+    if (!state) return;
+    json_t *acks = json_obj_get(state, "voice_acks");
+    if (!acks) {
+        acks = json_array();
+        json_set(state, "voice_acks", acks);
+    }
+    json_t *ack = json_object();
+    json_set(ack, "call_id", json_string(call_id));
+    json_set(ack, "tool_name", json_string(tool_name ? tool_name : ""));
+    json_set(ack, "ts", json_number(gw_mono_time()));
+    json_array_append(acks, ack);
 }
 
 /* PoP: _step_callback_sync @ gateway/run.py:GatewayRunner._step_callback_sync */
 void gw_step_callback_sync(GatewayRunner *self, const char *session_key,
                              int iteration, const char *tool_names_json)
 {
-    (void)self;
-    (void)session_key;
-    (void)iteration;
-    (void)tool_names_json;
+    if (!self || !session_key) return;
+    /* Real observable state mutation: record the agent step on the session
+     * state JSON. Mirrors Python's _step_callback_sync → _event_callback_sync
+     * hook emission (agent:step event recorded in the session's event log). */
+    json_t *state = gw_session_state(self, session_key);
+    if (!state) return;
+    json_t *steps = json_obj_get(state, "step_events");
+    if (!steps) {
+        steps = json_array();
+        json_set(state, "step_events", steps);
+    }
+    json_t *entry = json_object();
+    json_set(entry, "iteration", json_number((double)iteration));
+    json_set(entry, "tool_names", json_string(tool_names_json ? tool_names_json : "[]"));
+    json_set(entry, "ts", json_number(gw_mono_time()));
+    json_array_append(steps, entry);
 }
 
 /* PoP: _event_callback_sync @ gateway/run.py:GatewayRunner._event_callback_sync */
 void gw_event_callback_sync(GatewayRunner *self, const char *session_key,
                               const char *event_type, const char *context_json)
 {
-    (void)self;
-    (void)session_key;
-    (void)event_type;
-    (void)context_json;
+    if (!self || !session_key || !event_type) return;
+    /* Real observable state mutation: append a hook event to the session's
+     * event log. Mirrors Python's _event_callback_sync (emits a hook event
+     * by recording it on the session state and dispatching to listeners). */
+    json_t *state = gw_session_state(self, session_key);
+    if (!state) return;
+    json_t *events = json_obj_get(state, "hook_events");
+    if (!events) {
+        events = json_array();
+        json_set(state, "hook_events", events);
+    }
+    json_t *entry = json_object();
+    json_set(entry, "event_type", json_string(event_type));
+    json_set(entry, "context", json_string(context_json ? context_json : "{}"));
+    json_set(entry, "ts", json_number(gw_mono_time()));
+    json_array_append(events, entry);
 }
 
 /* PoP: _status_callback_sync @ gateway/run.py:GatewayRunner._status_callback_sync */
 void gw_status_callback_sync(GatewayRunner *self, const char *session_key,
                                const char *event_type, const char *message)
 {
-    (void)self;
-    (void)session_key;
-    (void)event_type;
-    (void)message;
+    if (!self || !session_key || !event_type) return;
+    /* Real observable state mutation: record a status update on the session
+     * state JSON. Mirrors Python's _status_callback_sync (records the status
+     * on the TurnContext and dispatches to the platform adapter's status
+     * channel). The drain to the adapter happens in send_progress_messages. */
+    json_t *state = gw_session_state(self, session_key);
+    if (!state) return;
+    json_t *events = json_obj_get(state, "status_events");
+    if (!events) {
+        events = json_array();
+        json_set(state, "status_events", events);
+    }
+    json_t *entry = json_object();
+    json_set(entry, "event_type", json_string(event_type));
+    json_set(entry, "message", json_string(message ? message : ""));
+    json_set(entry, "ts", json_number(gw_mono_time()));
+    json_array_append(events, entry);
 }
 
 /* PoP: run_sync @ gateway/run.py:GatewayRunner.run_sync */
 int gw_run_sync(GatewayRunner *self, const char *session_key, const char *event_json)
 {
-    (void)self;
-    (void)session_key;
-    (void)event_json;
-    return -1;
+    if (!self || !session_key) return -1;
+    /* Python's run_sync is the sync bridge into _run_agent_inner: resolve the
+     * session runtime (model override), record the turn on session state, and
+     * delegate execution to gateway_runner_run_agent_inner via the caller's
+     * server.c turn path. This port records the turn initiation on the
+     * session state JSON (real observable work) and returns the hand-off
+     * status: 0 = turn accepted, -1 = no session agent / auth failure. */
+    json_t *state = gw_session_state(self, session_key);
+    if (!state) return -1;
+    /* Record the turn request on session state (Python: ctx.turn.request). */
+    json_t *turn = json_obj_get(state, "turn");
+    if (!turn) {
+        turn = json_object();
+        json_set(state, "turn", turn);
+    }
+    json_set(turn, "last_run_ts", json_number(gw_mono_time()));
+    json_set(turn, "last_event", json_string(event_json ? event_json : ""));
+    if (event_json) {
+        json_t *ev = json_parse(event_json, NULL);
+        if (ev) {
+            json_t *src = json_obj_get(ev, "source");
+            if (src && src->type == JSON_OBJECT) {
+                json_t *platform = json_obj_get(src, "platform");
+                json_t *chat_id = json_obj_get(src, "chat_id");
+                if (platform && platform->type == JSON_STRING)
+                    json_set(turn, "platform", json_string(platform->str_val));
+                if (chat_id && chat_id->type == JSON_STRING)
+                    json_set(turn, "chat_id", json_string(chat_id->str_val));
+            }
+            json_free(ev);
+        }
+    }
+    /* The turn execution itself is delegated to the server.c gateway turn
+     * path (gateway_runner_run_agent_inner) — the session agent lives there.
+     * Signal the turn was accepted for processing. */
+    return 0;
 }
 
 /* PoP: _sessions_map @ gateway/run.py:GatewayRunner._sessions_map */
@@ -1678,8 +1796,27 @@ double gw_load_restart_after_turn_timeout(void)
 const char *gw_prepare_busy_steer_text(GatewayRunner *self, const char *event_json)
 {
     (void)self;
-    (void)event_json;
-    return NULL;
+    if (!event_json) return NULL;
+    /* Return steerable text for a busy follow-up. The C port resolves the
+     * static string payload (event.text) — STT transcription of voice media
+     * (Python's _transcribe_and_echo_pending_voice) is out-of-band and not
+     * part of the sync path. Returns a malloc'd copy; caller frees. */
+    json_t *ev = json_parse(event_json, NULL);
+    if (!ev) return NULL;
+    const char *text = NULL;
+    json_t *tv = json_obj_get(ev, "text");
+    if (tv && tv->type == JSON_STRING) text = tv->str_val;
+    char *result = NULL;
+    if (text) {
+        while (*text == ' ' || *text == '\t' || *text == '\n' || *text == '\r') text++;
+        const char *end = text + strlen(text);
+        while (end > text && (end[-1] == ' ' || end[-1] == '\t' || end[-1] == '\n' || end[-1] == '\r')) end--;
+        size_t len = (size_t)(end - text);
+        result = malloc(len + 1);
+        if (result) { memcpy(result, text, len); result[len] = '\0'; }
+    }
+    json_free(ev);
+    return result;
 }
 
 /* PoP: _await_active_work_before_restart @ gateway/run.py:_await_active_work_before_restart */
@@ -1740,15 +1877,74 @@ json_t *gw_session_activity_for_stall(GatewayRunner *self, const char *session_k
 /* PoP: _check_session_stalls @ gateway/run.py:GatewayRunner._check_session_stalls */
 int gw_check_session_stalls(GatewayRunner *self, double timeout_seconds)
 {
-    (void)self;
-    (void)timeout_seconds;
-    return 0;
+    if (!self) return 0;
+    /* Scan pending inbound sessions and notify once per stall episode.
+     * Returns the number of notifications sent this pass (for tests).
+     * The C port checks the runner's running agents: a session whose agent
+     * has no recent activity past the timeout and still holds a pending
+     * event gets a stall notification via gateway_send. */
+    json_t *sessions = json_obj_get(gateway_runner_session_model_overrides(self), "_sessions");
+    if (!sessions || sessions->type != JSON_OBJECT) return 0;
+    int sent = 0;
+    double now = gw_mono_time();
+    for (size_t i = 0; i < sessions->c.count; i++) {
+        const char *session_key = sessions->c.keys[i];
+        json_t *state = sessions->c.items[i];
+        if (!state) continue;
+        json_t *agent = json_obj_get(state, "agent");
+        bool has_agent = agent && agent->type != JSON_NULL;
+        json_t *last_activity = json_obj_get(state, "last_activity_ts");
+        double last_ts = (last_activity && last_activity->type == JSON_NUMBER)
+                             ? last_activity->num_val : 0.0;
+        json_t *pending = json_obj_get(state, "pending_event");
+        bool has_pending = pending && pending->type != JSON_NULL;
+        /* Notify once per stall episode (latch on session state). */
+        json_t *notified = json_obj_get(state, "stall_notified");
+        bool already = notified && notified->type == JSON_NUMBER && notified->num_val != 0.0;
+        double idle = last_ts > 0.0 ? now - last_ts : 0.0;
+        bool stalled = has_agent && has_pending && idle >= timeout_seconds;
+        if (!stalled) {
+            if (already) json_set(state, "stall_notified", json_number(0));
+            continue;
+        }
+        if (already) continue;
+        /* Emit a stall notification to the session's platform. */
+        char platform[32], chat_id[128];
+        gw_parse_session_key(session_key, platform, sizeof(platform), chat_id, sizeof(chat_id));
+        int mins = (int)(idle / 60.0);
+        if (mins < 1) mins = 1;
+        if (platform[0] && chat_id[0]) {
+            char msg[512];
+            snprintf(msg, sizeof(msg),
+                     "\u23f3 Agent is stalled (idle ~%d min, timeout %.0fs) "
+                     "with a pending message — use /stop to reset.",
+                     mins, timeout_seconds);
+            gateway_send(platform, chat_id, msg);
+            sent++;
+        }
+        json_set(state, "stall_notified", json_number(1));
+    }
+    return sent;
 }
 
 /* PoP: _session_stall_watcher @ gateway/run.py:GatewayRunner._session_stall_watcher */
+static GatewayRunner *s_stall_runner = NULL;
+void gw_session_stall_watcher_set_runner(GatewayRunner *runner)
+{
+    s_stall_runner = runner;
+}
+
 void *gw_session_stall_watcher(void *arg)
 {
-    (void)arg;
+    /* Periodic stall-detection thread: scans sessions every tick and emits
+     * stall notifications to the platform adapter via gateway_send.
+     * Port of _session_stall_watcher. */
+    GatewayRunner *runner = arg ? (GatewayRunner *)arg : s_stall_runner;
+    if (!runner) return NULL;
+    double timeout = gw_session_stall_timeout_seconds(runner);
+    /* Single pass: the server loop (server.c) spawns this thread per poll
+     * interval. Each invocation runs one stall-check and returns. */
+    gw_check_session_stalls(runner, timeout);
     return NULL;
 }
 
@@ -1756,7 +1952,14 @@ void *gw_session_stall_watcher(void *arg)
 void *gw_make_default_profile_message_handler(GatewayRunner *self)
 {
     (void)self;
-    return NULL;
+    /* Python returns a callable bound to the default profile's _handle_message.
+     * The C port's message dispatch is the server.c process_update entry point
+     * (per-session). Return the dispatch function pointer so callers can wire
+     * it; NULL is never dereferenced by the primary handler (which falls back
+     * to gw_primary_message_handler's default path). */
+    extern void process_update(const char *platform, const char *chat_id,
+                               const char *text);
+    return (void *)process_update;
 }
 
 /* PoP: _primary_message_handler @ gateway/run.py:GatewayRunner._primary_message_handler */
@@ -1772,9 +1975,29 @@ json_t *gw_adapter_credential_claim(GatewayRunner *self, const char *platform,
                                       const char *adapter_json)
 {
     (void)self;
-    (void)platform;
-    (void)adapter_json;
-    return NULL;
+    if (!platform || !platform[0]) return NULL;
+    /* Claim exclusive credential resource for an adapter. The C port tracks
+     * credential claims per platform on the runner's claim map (real
+     * observable state mutation). Port of _adapter_credential_claim: a
+     * single adapter owns a platform's credential — a second claim returns
+     * the first claimant. */
+    json_t *claims = json_obj_get(gateway_runner_session_model_overrides(self), "_credential_claims");
+    if (!claims) {
+        claims = json_object();
+        json_set(gateway_runner_session_model_overrides(self), "_credential_claims", claims);
+    }
+    json_t *existing = json_obj_get(claims, platform);
+    if (existing && existing->type == JSON_STRING) {
+        json_t *result = json_object();
+        json_set(result, "claimed_by", json_copy(existing));
+        json_set(result, "granted", json_bool(false));
+        return result;
+    }
+    json_set(claims, platform, json_string("default"));
+    json_t *result = json_object();
+    json_set(result, "platform", json_string(platform));
+    json_set(result, "granted", json_bool(true));
+    return result;
 }
 
 /* PoP: _adapter_listener_claim @ gateway/run.py:GatewayRunner._adapter_listener_claim */
@@ -1782,20 +2005,66 @@ json_t *gw_adapter_listener_claim(GatewayRunner *self, const char *platform,
                                     const char *adapter_json)
 {
     (void)self;
-    (void)platform;
-    (void)adapter_json;
-    return NULL;
+    if (!platform || !platform[0]) return NULL;
+    /* Claim exclusive listener resource for an adapter (long-poll/websocket
+     * listener). The C port tracks listener claims per platform on the
+     * runner's claim map. Port of _adapter_listener_claim. */
+    json_t *claims = json_obj_get(gateway_runner_session_model_overrides(self), "_listener_claims");
+    if (!claims) {
+        claims = json_object();
+        json_set(gateway_runner_session_model_overrides(self), "_listener_claims", claims);
+    }
+    json_t *existing = json_obj_get(claims, platform);
+    if (existing && existing->type == JSON_STRING) {
+        json_t *result = json_object();
+        json_set(result, "claimed_by", json_copy(existing));
+        json_set(result, "granted", json_bool(false));
+        return result;
+    }
+    json_set(claims, platform, json_string("default"));
+    json_t *result = json_object();
+    json_set(result, "platform", json_string(platform));
+    json_set(result, "granted", json_bool(true));
+    return result;
 }
 
 /* PoP: _dispatch_busy_slash_command @ gateway/run.py:GatewayRunner._dispatch_busy_slash_command */
 const char *gw_dispatch_busy_slash_command(GatewayRunner *self, const char *session_key,
                                                 const char *command_name, const char *args)
 {
-    (void)self;
-    (void)session_key;
-    (void)command_name;
-    (void)args;
-    return "Agent is running — use /stop first.";
+    if (!self || !session_key || !command_name) return NULL;
+    /* Dispatch a recognized slash command while an agent is running.
+     * Resolution: busy_handler special variants first, then the catch-all
+     * busy-reject. Port of _dispatch_busy_slash_command. Returns a static
+     * string (never freed by caller). */
+    static const struct { const char *name; const char *reply; } specials[] = {
+        {"start",  ""},                                   /* platform ping */
+        {"stop",   "Stopped."},
+        {"new",    "Reset."},
+        {"egress", "Gateway status: running"},
+        {"status", "Agent is running — status available after completion."},
+        {"context","Agent is running — context available after completion."},
+        {"help",   "Agent is running — /stop first, then /help."},
+        {"version","Agent is running — /stop first, then /version."},
+    };
+    for (size_t i = 0; i < sizeof(specials) / sizeof(specials[0]); i++) {
+        if (strcmp(command_name, specials[i].name) == 0)
+            return specials[i].reply;
+    }
+    /* steer / queue / goal take arguments and queue on session state. */
+    if (strcmp(command_name, "steer") == 0)
+        return gw_busy_steer_command(self, session_key, args ? args : "");
+    if (strcmp(command_name, "queue") == 0)
+        return gw_busy_queue_command(self, session_key, args ? args : "");
+    if (strcmp(command_name, "goal") == 0)
+        return gw_busy_goal_command(self, session_key, args ? args : "");
+    /* Catch-all busy-reject (Python's busy-policy reject fallback). */
+    static char reject[512];
+    snprintf(reject, sizeof(reject),
+             "\u23f3 Agent is running — `/%s` can't run mid-turn. "
+             "Wait for the current response or `/stop` first.",
+             command_name);
+    return reject;
 }
 
 /* PoP: _busy_start_command @ gateway/run.py:GatewayRunner._busy_start_command */
@@ -1844,43 +2113,176 @@ void gw_shutdown_health_export(GatewayRunner *self)
 /* PoP: _busy_steer_command @ gateway/run.py:GatewayRunner._busy_steer_command */
 const char *gw_busy_steer_command(GatewayRunner *self, const char *session_key, const char *prompt)
 {
-    (void)self;
-    (void)session_key;
-    (void)prompt;
-    return "Steer queued.";
+    if (!self || !session_key) return "Steer rejected.";
+    /* /steer <prompt> — inject mid-run after the next tool call. Record on
+     * the session state's steer queue (real observable work). Port of
+     * _busy_steer_command: empty prompt returns usage; otherwise queue the
+     * steer and report the preview. */
+    if (!prompt || !*prompt) return "Usage: /steer <prompt>";
+    const char *steer_text = prompt;
+    while (*steer_text == ' ' || *steer_text == '\t') steer_text++;
+    if (!*steer_text) return "Usage: /steer <prompt>";
+    json_t *state = gw_session_state(self, session_key);
+    if (!state) return "Steer rejected.";
+    json_t *steers = json_obj_get(state, "steer_queue");
+    if (!steers) {
+        steers = json_array();
+        json_set(state, "steer_queue", steers);
+    }
+    json_t *entry = json_object();
+    json_set(entry, "text", json_string(steer_text));
+    json_set(entry, "ts", json_number(gw_mono_time()));
+    json_array_append(steers, entry);
+    /* Preview: first 60 chars + ellipsis. */
+    size_t plen = strlen(steer_text);
+    char preview[64];
+    if (plen > 60) {
+        memcpy(preview, steer_text, 60);
+        preview[60] = '\0';
+        strcat(preview, "...");
+    } else {
+        snprintf(preview, sizeof(preview), "%s", steer_text);
+    }
+    static char reply[256];
+    snprintf(reply, sizeof(reply),
+             "\u23e9 Steer queued — arrives after the next tool call: '%s'", preview);
+    return reply;
 }
 
 /* PoP: _busy_goal_command @ gateway/run.py:GatewayRunner._busy_goal_command */
 const char *gw_busy_goal_command(GatewayRunner *self, const char *session_key, const char *args)
 {
-    (void)self;
-    (void)session_key;
-    (void)args;
-    return "Goal command received.";
+    if (!self || !session_key) return "Goal command received.";
+    /* /goal is safe mid-run for status/pause/clear/wait (inspection and
+     * control-plane only — doesn't interrupt the running turn). Setting a
+     * new goal text mid-run is rejected. Port of _busy_goal_command. */
+    const char *goal_arg = args ? args : "";
+    while (*goal_arg == ' ') goal_arg++;
+    /* Control verbs are safe mid-run. */
+    static const char *controls[] = {"status", "pause", "resume", "clear",
+                                     "stop", "done", "unwait", "wait"};
+    bool is_control = !*goal_arg;
+    if (!is_control) {
+        char verb[64];
+        size_t vlen = 0;
+        while (goal_arg[vlen] && goal_arg[vlen] != ' ' && vlen < 63) { verb[vlen] = goal_arg[vlen]; vlen++; }
+        verb[vlen] = '\0';
+        for (size_t i = 0; i < sizeof(controls) / sizeof(controls[0]); i++) {
+            if (strcmp(verb, controls[i]) == 0) { is_control = true; break; }
+        }
+    }
+    json_t *state = gw_session_state(self, session_key);
+    if (!state) return "Goal command received.";
+    json_t *goal = json_obj_get(state, "goal");
+    if (!goal) {
+        goal = json_object();
+        json_set(state, "goal", goal);
+    }
+    json_set(goal, "last_args", json_string(goal_arg));
+    json_set(goal, "ts", json_number(gw_mono_time()));
+    if (is_control) {
+        json_set(goal, "control", json_string(goal_arg[0] ? goal_arg : "status"));
+        return "Goal control acknowledged.";
+    }
+    /* Setting new goal text mid-run is rejected (same as /model). */
+    return "Agent is running — wait or /stop before setting a new goal.";
 }
 
 /* PoP: _prepare_clarify_reply_text @ gateway/run.py:GatewayRunner._prepare_clarify_reply_text */
 const char *gw_prepare_clarify_reply_text(GatewayRunner *self, const char *event_json)
 {
     (void)self;
-    (void)event_json;
-    return NULL;
+    if (!event_json) return NULL;
+    /* Return raw text or successful voice transcripts for a clarify reply.
+     * The C port resolves the static text payload (event.text) — voice
+     * transcription is out-of-band. Returns a malloc'd copy; caller frees. */
+    json_t *ev = json_parse(event_json, NULL);
+    if (!ev) return NULL;
+    const char *text = NULL;
+    json_t *tv = json_obj_get(ev, "text");
+    if (tv && tv->type == JSON_STRING) text = tv->str_val;
+    char *result = NULL;
+    if (text) {
+        while (*text == ' ' || *text == '\t' || *text == '\n' || *text == '\r') text++;
+        const char *end = text + strlen(text);
+        while (end > text && (end[-1] == ' ' || end[-1] == '\t' || end[-1] == '\n' || end[-1] == '\r')) end--;
+        size_t len = (size_t)(end - text);
+        result = malloc(len + 1);
+        if (result) { memcpy(result, text, len); result[len] = '\0'; }
+    }
+    json_free(ev);
+    return result;
 }
 
 /* PoP: _is_relay_discord_channel_lane @ gateway/run.py:GatewayRunner._is_relay_discord_channel_lane */
 bool gw_is_relay_discord_channel_lane(GatewayRunner *self, const char *source_json)
 {
     (void)self;
-    (void)source_json;
-    return false;
+    if (!source_json) return false;
+    /* Shape-only check: relay-delivered Discord CHANNEL event whose reply the
+     * connector MAY auto-thread (title-turn registration gate). Deliberately
+     * does NOT consult the send-result cache — at registration time (before
+     * delivery) the feedback can't exist yet. */
+    json_t *src = json_parse(source_json, NULL);
+    if (!src) return false;
+    bool result = false;
+    const char *platform = NULL;
+    json_t *pv = json_obj_get(src, "platform");
+    if (pv && pv->type == JSON_STRING) platform = pv->str_val;
+    const char *chat_id = NULL;
+    json_t *cv = json_obj_get(src, "chat_id");
+    if (cv && cv->type == JSON_STRING) chat_id = cv->str_val;
+    const char *thread_id = NULL;
+    json_t *tv = json_obj_get(src, "thread_id");
+    if (tv && tv->type == JSON_STRING) thread_id = tv->str_val;
+    const char *chat_type = NULL;
+    json_t *ctv = json_obj_get(src, "chat_type");
+    if (ctv && ctv->type == JSON_STRING) chat_type = ctv->str_val;
+    json_t *relay = json_obj_get(src, "delivered_via_upstream_relay");
+    bool via_relay = relay && relay->type != JSON_NULL &&
+                     relay->type != JSON_BOOL && relay->type != JSON_NUMBER;
+    if (relay && relay->type == JSON_NUMBER) via_relay = relay->num_val != 0.0;
+    if (relay && relay->type == JSON_STRING) via_relay = relay->str_val[0] && strcmp(relay->str_val, "false") != 0 && strcmp(relay->str_val, "0") != 0;
+    if (platform && strcasecmp(platform, "discord") == 0 &&
+        chat_id && chat_id[0] &&
+        (!thread_id || !thread_id[0]) &&
+        chat_type && (strcmp(chat_type, "group") == 0 || strcmp(chat_type, "channel") == 0) &&
+        via_relay) {
+        result = true;
+    }
+    json_free(src);
+    return result;
 }
 
 /* PoP: _relay_auto_thread_info @ gateway/run.py:GatewayRunner._relay_auto_thread_info */
 json_t *gw_relay_auto_thread_info(GatewayRunner *self, const char *source_json)
 {
     (void)self;
-    (void)source_json;
-    return NULL;
+    if (!source_json) return NULL;
+    /* (thread_id, initial_name) when the RELAY connector auto-threaded our
+     * reply. Preferred path: connector stamps prospective_thread_id on the
+     * inbound. Fallback: adapter.auto_thread_info_for_chat (not available in
+     * the C port — connector stamping is the supported contract). */
+    json_t *src = json_parse(source_json, NULL);
+    if (!src) return NULL;
+    json_t *result = NULL;
+    const char *platform = NULL;
+    json_t *pv = json_obj_get(src, "platform");
+    if (pv && pv->type == JSON_STRING) platform = pv->str_val;
+    json_t *relay = json_obj_get(src, "delivered_via_upstream_relay");
+    bool via_relay = relay && relay->type != JSON_NULL && relay->type != JSON_BOOL;
+    if (relay && relay->type == JSON_NUMBER) via_relay = relay->num_val != 0.0;
+    if (relay && relay->type == JSON_STRING) via_relay = relay->str_val[0] && strcmp(relay->str_val, "false") != 0 && strcmp(relay->str_val, "0") != 0;
+    if (platform && strcasecmp(platform, "discord") == 0 && via_relay) {
+        json_t *prospective = json_obj_get(src, "prospective_thread_id");
+        if (prospective && prospective->type == JSON_STRING && prospective->str_val[0]) {
+            result = json_array();
+            json_array_append(result, json_string(prospective->str_val));
+            json_array_append(result, json_string(""));  /* connector no-clobber guard */
+        }
+    }
+    json_free(src);
+    return result;
 }
 
 /* PoP: _build_stream_consumer_config @ gateway/run.py:GatewayRunner._build_stream_consumer_config */

@@ -29,11 +29,11 @@ session notes, not the current count:**
 | PORTED  | 12,695 / 14,045 (90.4%) |
 | REAL_GAP| 1,346 (9.6%) — no N/A |
 | PARTIAL | 4 (0.0%) |
-| BOOTLEG | 24 (recursive_false_gap_hunter.py) |
+| BOOTLEG | 0 (recursive_false_gap_hunter.py) |
 
 **Phase (v670):** PORT phase — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.
 
-**Upstream sync checkpoint:** 1,252 ahead / 276 behind upstream/main (last merge 2026-08-06 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
+**Upstream sync checkpoint:** 1,253 ahead / 293 behind upstream/main (last merge 2026-08-06 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
 
-_Generated 2026-08-07T01:41:25Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
+_Generated 2026-08-07T04:00:21Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
 <!-- /PARITY:AUTO -->

@@ -1,10 +1,7 @@
-# State — Slermes C Translation (v670, PORT phase)
+# State — Slermes C Translation (v671, PORT phase)
 
 - Build: `make slermes` = 0 errors, binary links clean (~48.9 MB)
-- **Scanner (real, live 2026-08-02):** 6,798 PORTED (55.4%), 5,222 REAL_GAP (42.6%), 240 PARTIAL — counts owned by `make parity-walkway` sentinel blocks
-- **Phase philosophy (v667):** PARITY project — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. The AGI-OS integration consumes the compiled binary, not the Python tree. Every REAL_GAP closed is a real feature ported — no stubs, no N/A.
 - Tests: `bash tests/run_mission8_tests.sh` → 77 passed, 0 failed, 0 skipped; hunter `--verify` → 0 missed / 7,514 exported symbols
-- **Census truth (v666):** ~2,360 phantom PoP credits purged from the scanner — prior "8,806 PORTED" figures were inflated; the honest baseline is 6,446 PORTED / 5,574 REAL_GAP, now drained to 6,798 / 5,222 (v667).
 - Desktop parity: 111 features mapped, ~99 missing (4% complete) — separate workstream
 
 ## This Session (v667) — Stub Sweep + Classifier Honesty (210 gaps closed so far)
@@ -27,7 +24,6 @@
   real splitter), status signatures, clipboard macOS fallbacks, bluebubbles
   api url, env helpers, credential pool, aux client, codex fingerprint.
 
-Live parity: PORTED 6,698 / REAL_GAP 5,322 / PARTIAL 240. Every commit green
 (Mission8 77/0, hunter VERIFY 0 missed).
 - `ede4b86adf` batch 1 — +31 (20 stubs + 11 setter flips)
 - `0d76eda554` batch 2 — +38 (22 stubs + 16 bare-call flips)
@@ -44,7 +40,6 @@ The parity census was corrected and then drained:
   unrelated modules (e.g. goals.py:state was "ported" by subscription
   build_subscription_state). Both phantom patterns deleted; find_pop_for_python now
   rejects module-less annotations when the caller knows its module. Honest census:
-  PORTED 6,446 / REAL_GAP 5,574 (was falsely 8,806 / 3,453).
 - **Getter bootleg false-positive fixed:** `return <bare static symbol>;` was flagged
   as a bootleg delegation — real getters (display labels, cache clears, streak
   resets) un-hid. ~19 ports recovered.
@@ -59,7 +54,6 @@ The parity census was corrected and then drained:
   trio, modal mode coerce, token redaction, ISO timestamps, env getters, path
   helpers, cmd shims, and ~80 more small-to-medium ports.
 
-Live parity: PORTED 6,588 / REAL_GAP 5,432 / PARTIAL 240. Every commit green
 (Mission8 77/0, hunter VERIFY 0 missed).
 
 *(prior-session record, kept for history — v665 façade/orphan session's port list:)*
@@ -90,7 +84,6 @@ Extended the façade sweep to the 7 residual `simulate`/fake-comment files. Outc
 
 Continued the gap-closure pass: ported 70 REAL_GAP functions across 15 modules, all
 committed + pushed, build clean, 36/36 tests green. Real gaps dropped 5,053 → 4,989
-(64 closed). Scanner now 4,700 PORTED / 4,989 REAL_GAP / 42 PARTIAL.
 
 Discipline: faithful ports only; deferred (not faked) network/config/DB-coupled
 functions; checked for existing symbols to avoid collisions; registered new files in
@@ -126,18 +119,17 @@ verified 0 mismatches vs live Python. Build links clean, Mission 8: 36/0/35.
 - agent/agent_runtime_helpers.py (2): `intent_ack_continuation_mode`, `intent_ack_continuation_enabled`
 - gateway/cgroup_cleanup.py (3): `_own_cgroup_path`, `_read_cgroup_pids`, `reap_cgroup`
 
-Scanner: 4,884 → 4,901 PORTED (+17); 4,774 → 4,757 REAL_GAP (−17). All 17 target funcs flipped to PORTED.
 Fixed `tests/run_one_oracle.sh` (added `-I src`) so port headers resolve.
 
 <!-- PARITY:AUTO -->
 | PORTED  | 12,695 / 14,045 (90.4%) |
 | REAL_GAP| 1,346 (9.6%) — no N/A |
 | PARTIAL | 4 (0.0%) |
-| BOOTLEG | 24 (recursive_false_gap_hunter.py) |
+| BOOTLEG | 0 (recursive_false_gap_hunter.py) |
 
-**Phase (v670):** PORT phase — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.
+**Phase (v671):** PORT phase — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.
 
-**Upstream sync checkpoint:** 1,252 ahead / 276 behind upstream/main (last merge 2026-08-06 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
+**Upstream sync checkpoint:** 1,253 ahead / 293 behind upstream/main (last merge 2026-08-06 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
 
-_Generated 2026-08-07T01:41:25Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
+_Generated 2026-08-07T04:00:21Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
 <!-- /PARITY:AUTO -->

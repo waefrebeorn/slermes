@@ -26,9 +26,6 @@ Mission 2 COMPLETE — Desktop parity 95/111 features
 
 | Metric | Value |
 |--------|-------|
-| PORTED (2026-07-12) | 4,924 / 9,731 (50.6%) |
-| REAL_GAP (2026-07-12) | 4,732 (48.6%) — every un-ported feature, no NA |
-| PARTIAL (2026-07-12) | 75 (0.8%) |
 | Build | Clean, 0 errors |
 | Tests | 36/36 mission8 pass |
 | Binary | 46 MB (slermes) + 5.4 MB (slermes-desktop-gui) + 5 MB (web-server) |
@@ -46,11 +43,11 @@ Mission 5: Documentation serving (serve ALL 749 upstream .md files via web_serve
 | PORTED  | 12,695 / 14,045 (90.4%) |
 | REAL_GAP| 1,346 (9.6%) — no N/A |
 | PARTIAL | 4 (0.0%) |
-| BOOTLEG | 24 (recursive_false_gap_hunter.py) |
+| BOOTLEG | 0 (recursive_false_gap_hunter.py) |
 
 **Phase (v670):** PORT phase — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.
 
-**Upstream sync checkpoint:** 1,252 ahead / 276 behind upstream/main (last merge 2026-08-06 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
+**Upstream sync checkpoint:** 1,253 ahead / 293 behind upstream/main (last merge 2026-08-06 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
 
-_Generated 2026-08-07T01:41:25Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
+_Generated 2026-08-07T04:00:21Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
 <!-- /PARITY:AUTO -->
