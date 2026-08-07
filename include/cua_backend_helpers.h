@@ -32,4 +32,10 @@ static inline void cua_free_modifiers(char **mods, int n)
     free(mods);
 }
 
+/* PoP: _wsl_windows_path_to_posix @ tools/computer_use/cua_backend.py:_wsl_windows_path_to_posix */
+/* Translate a Windows path (C:\\Users\\foo) to DrvFS POSIX (/mnt/c/Users/foo).
+ * Callers pass is_wsl=1 when on WSL; non-Windows paths returned unchanged.
+ * Caller frees result. */
+char *cua_wsl_windows_path_to_posix(const char *path, int is_wsl);
+
 #endif /* CUA_BACKEND_HELPERS_H */

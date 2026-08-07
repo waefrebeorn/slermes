@@ -137,3 +137,71 @@ char *cua_parse_key_combo(const char *keys, char ***out_modifiers, int *out_nmod
     *out_nmods = nmods;
     return key;
 }
+
+/* PoP: _wsl_windows_path_to_posix @ tools/computer_use/cua_backend.py:_wsl_windows_path_to_posix */
+/* Port of Python:
+ *   if not re.match(r"^[A-Za-z]:[\\/]", path): return path
+ *   from hermes_constants import is_wsl
+ *   if not is_wsl(): return path
+ *   win = PureWindowsPath(path)
+ *   drive = (win.drive or "").rstrip(":").lower()
+ *   if not drive: return path
+ *   return os.path.join("/mnt", drive, *(str(part) for part in win.parts[1:]))
+ * The is_wsl check is the caller's responsibility; we just do the transform. */
+char *cua_wsl_windows_path_to_posix(const char *path, int is_wsl) {
+    if (!path || !*path) return strdup(path ? path : "");
+    /* Check for Windows drive letter: ^[A-Za-z]:[\\/] */
+    if (!((path[0] >= 'A' && path[0] <= 'Z') || (path[0] >= 'a' && path[0] <= 'z')))
+        return strdup(path);
+    if (path[1] != ':') return strdup(path);
+    if (path[2] != '\\' && path[2] != '/') return strdup(path);
+    if (!is_wsl) return strdup(path);
+
+    /* drive letter, lowercased */
+    char drive[4] = {0};
+    drive[0] = (path[0] >= 'A' && path[0] <= 'Z') ? path[0] + 32 : path[0];
+
+    /* Split remaining path into parts (after drive + separator) */
+    const char *rest = path + 3;  /* skip X:\ or X:/ */
+    /* Collect non-empty segments split by \ or / */
+    char *parts[128];
+    int nparts = 0;
+    char buf[4096];
+    size_t blen = strlen(rest);
+    if (blen >= sizeof(buf)) blen = sizeof(buf) - 1;
+    memcpy(buf, rest, blen);
+    buf[blen] = '\0';
+
+    char *tok = buf;
+    char *saveptr = NULL;
+    char *sep = "/\\";
+    char *p = strtok_r(tok, sep, &saveptr);
+    while (p && nparts < 127) {
+        parts[nparts++] = strdup(p);
+        p = strtok_r(NULL, sep, &saveptr);
+    }
+
+    /* Build /mnt/<drive>/<parts...> */
+    size_t total = 6 + 1 + 2 + 1;  /* "/mnt/" + drive + "/" + trailing null */
+    for (int i = 0; i < nparts; i++) total += strlen(parts[i]) + 1;
+    char *result = (char *)malloc(total);
+    if (!result) {
+        for (int i = 0; i < nparts; i++) free(parts[i]);
+        return strdup(path);
+    }
+    char *pos = result;
+    *pos++ = '/'; *pos++ = 'm'; *pos++ = 'n'; *pos++ = 't'; *pos++ = '/';
+    *pos++ = drive[0]; *pos++ = '/';
+    for (int i = 0; i < nparts; i++) {
+        size_t slen = strlen(parts[i]);
+        memcpy(pos, parts[i], slen);
+        pos += slen;
+        *pos++ = '/';
+    }
+    /* Remove trailing slash if we added segments */
+    if (nparts > 0 && pos > result + 7 && *(pos - 1) == '/') pos--;
+    *pos = '\0';
+
+    for (int i = 0; i < nparts; i++) free(parts[i]);
+    return result;
+}

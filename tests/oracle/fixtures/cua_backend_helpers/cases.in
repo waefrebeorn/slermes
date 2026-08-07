@@ -1,0 +1,8 @@
+[
+  {"op": "wsl_windows_path_to_posix", "value": "/already/posix/path", "is_wsl": true},
+  {"op": "wsl_windows_path_to_posix", "value": "C:\\Users\\foo\\bar", "is_wsl": true},
+  {"op": "wsl_windows_path_to_posix", "value": "D:/Projects/cua-driver", "is_wsl": true},
+  {"op": "wsl_windows_path_to_posix", "value": "C:\\Users\\foo", "is_wsl": false},
+  {"op": "wsl_windows_path_to_posix", "value": "relative/path", "is_wsl": true},
+  {"op": "wsl_windows_path_to_posix", "value": "C:/Users/foo bar/baz", "is_wsl": true}
+]
