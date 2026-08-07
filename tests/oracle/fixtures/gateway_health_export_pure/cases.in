@@ -1,0 +1,14 @@
+[
+  {"op": "_redact_string", "raw": "password=secret123", "limit": 100},
+  {"op": "_redact_string", "raw": "user@example.com", "limit": 500},
+  {"op": "_redact_string", "raw": "550e8400-e29b-41d4-a716-446655440000", "limit": 500},
+  {"op": "_redact_string", "raw": 12345, "limit": 500},
+  {"op": "_safe_resource_attributes", "raw_json": "{\"service.name\": \"hermes-gateway\", \"service.version\": \"1.2.3\", \"custom.key\": \"bad\"}"},
+  {"op": "_safe_resource_attributes", "raw_json": "{\"service.name\": \"hermes-gateway\", \"bad key!\": \"val\"}"},
+  {"op": "_safe_resource_attributes", "raw_json": "{}"},
+  {"op": "_safe_resource_attributes", "raw_json": "not a dict"},
+  {"op": "_version"},
+  {"op": "_profile"},
+  {"op": "_supervision_mode"},
+  {"op": "_install_id", "config": {"monitoring": {"install_id": "abc-123-def"}}}
+]

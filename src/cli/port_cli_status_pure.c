@@ -3,7 +3,7 @@
  *
  * Faithful ports of the deterministic, I/O-free static helpers:
  *   - _status_bar_goal_segment(snapshot) -> str
- *   - _fmt_stash_age(stashed_at)          -> str
+ *   - _fmt_stash_age(stashed_at, now)    -> str
  *
  * Both are @staticmethod-style pure functions on cli.py used by the TUI
  * status bar and the prompt-stash panel. They take plain data (a dict
@@ -69,9 +69,9 @@ char *cli_status_goal_segment(const char *snapshot_json)
 /* ── _fmt_stash_age ──────────────────────────────────────────── */
 
 /* PoP: _fmt_stash_age @ cli.py:_fmt_stash_age */
-/* Human-readable age for a stash entry, given seconds-since-stash
- * (stashed_at is a time.monotonic() value and now_mono is the caller's
- * current monotonic clock; the delta is what matters). Caller frees. */
+/* Human-readable age for a stash entry, given seconds-since-stash.
+ * stashed_at is a time.monotonic() value and now_mono is the caller's
+ * current monotonic clock; the delta is what matters. Caller frees. */
 char *cli_status_fmt_stash_age(double stashed_at, double now_mono)
 {
     /* secs = int(now_monotonic() - stashed_at) */

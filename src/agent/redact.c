@@ -154,31 +154,37 @@ static const char *find_key_value(const char *text, const char *key,
  * Returns the number of characters replaced. */
 static size_t redact_value(char *text, const char *val_start, size_t val_len,
                            size_t max_show) {
+    (void)max_show;
     if (!text || !val_start || val_len == 0) return 0;
 
     size_t offset = (size_t)(val_start - text);
-    size_t show = max_show < val_len ? max_show : val_len / 4;
-    if (show > 32) show = 32;
 
-    char redacted[512];
-    int n;
-    if (show > 0) {
-        n = snprintf(redacted, sizeof(redacted), "%.*s***REDACTED***",
-                     (int)show, val_start);
+    /* Faithful to Python's _mask_token → mask_secret(value, head=6, tail=4, floor=18).
+     * If len < 18: return "***" (which _SECRET_LITERAL_RE later → "[redacted]").
+     * If len >= 18: return "{first6}...{last4}". */
+    char masked[256];
+    if (val_len < 18) {
+        snprintf(masked, sizeof(masked), "***");
     } else {
-        n = snprintf(redacted, sizeof(redacted), "***REDACTED***");
+        size_t head = val_len >= 6 ? 6 : val_len;
+        size_t tail = val_len >= 4 ? 4 : val_len;
+        /* Avoid overlap between head and tail windows */
+        if (head + tail > val_len) tail = 0;
+        if (tail > 0)
+            snprintf(masked, sizeof(masked), "%.*s...%.*s",
+                     (int)head, val_start, (int)tail, val_start + val_len - tail);
+        else
+            snprintf(masked, sizeof(masked), "%.*s...", (int)head, val_start);
     }
 
-    size_t redacted_len = (size_t)n;
+    size_t redacted_len = strlen(masked);
     size_t remaining = strlen(text + offset + val_len) + 1;
 
-    /* Check buffer bounds */
     if (offset + redacted_len + remaining > 65536)
         return 0;
 
-    /* Shift and replace */
     memmove(text + offset + redacted_len, text + offset + val_len, remaining);
-    memcpy(text + offset, redacted, redacted_len);
+    memcpy(text + offset, masked, redacted_len);
 
     return redacted_len > val_len ? redacted_len - val_len : 0;
 }

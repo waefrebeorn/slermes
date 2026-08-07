@@ -18,7 +18,8 @@ _HCLI = cli_mod.HermesCLI
 for c in cases:
     op = c.get("op", "")
     if op == "_status_bar_goal_segment":
-        print(json.dumps(_HCLI._status_bar_goal_segment(json.loads(c.get("snapshot", "{}")))))
+        snap = json.loads(c.get("snapshot", "{}"))
+        print(json.dumps(_HCLI._status_bar_goal_segment(snap)))
     elif op == "_fmt_stash_age":
         delta = c.get("delta_secs", 60.0)
         stashed_at = _time.monotonic() - delta
