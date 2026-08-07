@@ -1,0 +1,22 @@
+[
+  {"op": "ms_family_rule", "family": "kimi"},
+  {"op": "ms_family_rule", "family": "deepseek"},
+  {"op": "ms_family_rule", "family": "mimo"},
+  {"op": "ms_family_rule", "family": "bogus"},
+  {"op": "ms_matches_reasoning_echo_family", "family": "kimi", "provider": "kimi-coding", "model": "kimi", "base_url": "https://api.kimi.com/v1"},
+  {"op": "ms_matches_reasoning_echo_family", "family": "deepseek", "provider": "deepseek", "model": "deepseek-chat", "base_url": "https://api.deepseek.com/v1"},
+  {"op": "ms_matches_reasoning_echo_family", "family": "mimo", "provider": "openai", "model": "mimo-v", "base_url": "https://api.xiaomimimo.com/v1"},
+  {"op": "ms_matches_reasoning_echo_family", "family": "kimi", "provider": "openai", "model": "gpt-4", "base_url": "https://api.openai.com/v1"},
+  {"op": "ms_matches_reasoning_echo_family", "family": "deepseek", "provider": "anthropic", "model": "claude-3", "base_url": "https://api.anthropic.com"},
+  {"op": "ms_reasoning_echo_family", "provider": "kimi-coding", "model": "kimi", "base_url": "https://api.kimi.com/v1"},
+  {"op": "ms_reasoning_echo_family", "provider": "openai", "model": "gpt-4", "base_url": "https://api.openai.com/v1"},
+  {"op": "ms_needs_reasoning_echo", "provider": "kimi-coding-cn", "model": "kimi", "base_url": "https://moonshot.ai/v1"},
+  {"op": "ms_needs_reasoning_echo", "provider": "openai", "model": "gpt-4", "base_url": "https://api.openai.com/v1"},
+  {"op": "ms_deterministic_call_id", "fn_name": "browser_navigate", "arguments": "{\"url\":\"https://example.com\"}", "index": 0},
+  {"op": "ms_deterministic_call_id", "fn_name": "browser_click", "arguments": "{\"ref\":\"@e5\"}", "index": 1},
+  {"op": "ms_deterministic_call_id", "fn_name": "web_search", "arguments": "{\"query\":\"hello world\"}", "index": 0},
+  {"op": "ms_coalesce_tool_call_id", "value": {"call_id": "call_abc", "id": "id_xyz"}},
+  {"op": "ms_coalesce_tool_call_id", "value": {"id": "call_def"}},
+  {"op": "ms_coalesce_tool_call_id", "value": {"call_id": "", "id": ""}},
+  {"op": "ms_coalesce_tool_call_id", "value": {}}
+]
