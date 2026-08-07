@@ -1,0 +1,16 @@
+[
+  {"op": "cb_bytes_to_tokens", "value": 100},
+  {"op": "cb_bytes_to_tokens", "value": 101},
+  {"op": "cb_bytes_to_tokens", "value": 0},
+  {"op": "cb_bytes_to_tokens", "value": 1},
+  {"op": "cb_bytes_to_tokens", "value": null},
+  {"op": "cb_render_grid", "payload": {"context_max": 200000, "categories": [{"id": "system_prompt", "tokens": 5000}, {"id": "memory", "tokens": 3000}, {"id": "unknown_cat", "tokens": 100}]}},
+  {"op": "cb_render_grid", "payload": {"context_max": 0, "categories": [{"id": "system_prompt", "tokens": 5000}]}},
+  {"op": "cb_render_grid", "payload": {}},
+  {"op": "cb_render_category_lines", "payload": {"context_max": 200000, "estimated_total": 8100, "categories": [{"id": "system_prompt", "label": "System prompt", "tokens": 5000}, {"id": "memory", "label": "Memory", "tokens": 3000}]}},
+  {"op": "cb_render_category_lines", "payload": {"context_max": 0, "estimated_total": 0, "categories": []}},
+  {"op": "cb_render_details_lines", "details": {"toolsets": [{"toolset": "terminal", "tool_count": 12, "schema_tokens": 4500}, {"toolset": "file", "tool_count": 8, "schema_tokens": 2100}], "skills": [{"name": "hermes-agent", "index_tokens": 300, "skill_md_tokens": 12000}, {"name": "a-very-long-skill-name-that-exceeds-twenty-eight-characters", "index_tokens": 150, "skill_md_tokens": null}]}},
+  {"op": "cb_render_details_lines", "details": {}},
+  {"op": "cb_render_lines", "payload": {"context_max": 200000, "context_used": 8100, "context_percent": 4, "categories": [{"id": "system_prompt", "label": "System prompt", "tokens": 5000}]}, "details": null, "grid": true},
+  {"op": "cb_render_lines", "payload": {"context_max": 200000, "context_used": 8100, "context_percent": 4, "categories": [{"id": "system_prompt", "label": "System prompt", "tokens": 5000}]}, "details": {"skills": [{"name": "hermes-agent", "index_tokens": 300, "skill_md_tokens": 12000}]}, "grid": false}
+]

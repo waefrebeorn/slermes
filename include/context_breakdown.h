@@ -67,6 +67,25 @@ void context_breakdown_result_free(context_breakdown_result_t *res);
 context_breakdown_agent_t *context_breakdown_agent_create(void);
 void context_breakdown_agent_destroy(context_breakdown_agent_t *agent);
 
+/* ── Pure renderers (ported from agent/context_breakdown.py) ───────────────
+ * All take/return malloc'd JSON strings / line arrays (caller frees). */
+
+/* PoP: _bytes_to_tokens @ agent/context_breakdown.py:_bytes_to_tokens */
+long context_breakdown_bytes_to_tokens(long size);
+
+/* PoP: render_context_grid @ agent/context_breakdown.py:render_context_grid */
+char **context_breakdown_render_grid(const char *payload_json, size_t *out_lines);
+
+/* PoP: render_context_category_lines @ agent/context_breakdown.py:render_context_category_lines */
+char **context_breakdown_render_category_lines(const char *payload_json, size_t *out_lines);
+
+/* PoP: render_context_details_lines @ agent/context_breakdown.py:render_context_details_lines */
+char **context_breakdown_render_details_lines(const char *details_json, size_t *out_lines);
+
+/* PoP: render_context_breakdown_lines @ agent/context_breakdown.py:render_context_breakdown_lines */
+char **context_breakdown_render_lines(const char *payload_json, const char *details_json,
+                                      int grid, size_t *out_lines);
+
 #ifdef __cplusplus
 }
 #endif

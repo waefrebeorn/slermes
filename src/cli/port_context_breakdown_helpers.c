@@ -347,3 +347,299 @@ void context_breakdown__memory_blocks(const agent_state_t *agent,
     if (user_block_out) *user_block_out = user_block ? user_block : strdup("");
     else free(user_block);
 }
+
+/* ── Pure renderers (CLI + gateway) ─────────────────────────────────────── */
+
+/* Format a long with thousands separators into buf (Python f"{n:,}"). */
+static void format_with_commas(char *buf, size_t bufsz, long n)
+{
+    char tmp[64];
+    snprintf(tmp, sizeof(tmp), "%ld", n);
+    size_t len = strlen(tmp);
+    int neg = (tmp[0] == '-');
+    size_t digits = len - (neg ? 1 : 0);
+    size_t out = 0;
+    if (neg) buf[out++] = '-';
+    for (size_t i = 0; i < digits; i++) {
+        if (i > 0 && (digits - i) % 3 == 0) buf[out++] = ',';
+        buf[out++] = tmp[neg + i];
+    }
+    buf[out] = '\0';
+    (void)bufsz;
+}
+
+/* PoP: _bytes_to_tokens @ agent/context_breakdown.py:_bytes_to_tokens */
+long context_breakdown_bytes_to_tokens(long size)
+{
+    if (size < 0) return -1;   /* None -> -1 sentinel */
+    return (size + 3) / 4;
+}
+
+/* PoP: render_context_grid @ agent/context_breakdown.py:render_context_grid
+ * 100 cells (5x20), one percent of the context window each. */
+char **context_breakdown_render_grid(const char *payload_json, size_t *out_lines)
+{
+    static const char *CATEGORY_GLYPHS[] = {
+        "system_prompt", "\xe2\x96\xa0", "tool_definitions", "\xe2\x96\xa3",
+        "rules", "\xe2\x96\xa9", "skills", "\xe2\x96\xa4", "mcp", "\xe2\x96\xa5",
+        "subagent_definitions", "\xe2\x96\xa6", "memory", "\xe2\x96\xa7",
+        "conversation", "\xe2\x96\xa8",
+    };
+    static const char FREE_GLYPH[] = "\xc2\xb7";  /* · */
+    static const char DEFAULT_GLYPH[] = "\xe2\x96\xaa";  /* ▪ */
+    enum { GRID_COLUMNS = 20, GRID_ROWS = 5, TOTAL = GRID_COLUMNS * GRID_ROWS };
+
+    char *cells[TOTAL];
+    size_t ncell = 0;
+
+    char *err = NULL;
+    json_t *payload = json_parse(payload_json ? payload_json : "{}", &err);
+    if (err) { free(err); }
+    if (!payload) { if (out_lines) *out_lines = 0; return NULL; }
+
+    long context_max = json_get_num(payload, "context_max", 0);
+    json_t *cats = json_obj_get(payload, "categories");
+
+    if (context_max > 0 && cats && cats->type == JSON_ARRAY) {
+        for (size_t i = 0; i < cats->c.count && ncell < TOTAL; i++) {
+            json_t *cat = json_get(cats, i);
+            long tokens = json_get_num(cat, "tokens", 0);
+            double n = (double)tokens / (double)context_max * (double)TOTAL;
+            /* Python round() = banker's rounding (round half to even) */
+            long count = (long)n;
+            double frac = n - (double)count;
+            if (frac > 0.5 || (frac == 0.5 && (count & 1))) count++;
+            if (tokens > 0 && count == 0) count = 1;
+            const char *id = json_get_str(cat, "id", "");
+            const char *glyph = DEFAULT_GLYPH;
+            for (size_t g = 0; g < sizeof(CATEGORY_GLYPHS) / sizeof(CATEGORY_GLYPHS[0]); g += 2) {
+                if (strcmp(CATEGORY_GLYPHS[g], id) == 0) { glyph = CATEGORY_GLYPHS[g + 1]; break; }
+            }
+            while (count-- > 0 && ncell < TOTAL) cells[ncell++] = (char *)glyph;
+        }
+    }
+    while (ncell < TOTAL) cells[ncell++] = (char *)FREE_GLYPH;
+
+    char **lines = malloc(sizeof(char *) * GRID_ROWS);
+    for (int row = 0; row < GRID_ROWS; row++) {
+        /* join cells[row*20 .. row*20+19] with spaces */
+        size_t need = 1;
+        for (int col = 0; col < GRID_COLUMNS; col++)
+            need += strlen(cells[row * GRID_COLUMNS + col]) + (col ? 1 : 0);
+        lines[row] = malloc(need);
+        char *p = lines[row];
+        *p = '\0';
+        for (int col = 0; col < GRID_COLUMNS; col++) {
+            if (col) *p++ = ' ';
+            const char *c = cells[row * GRID_COLUMNS + col];
+            strcpy(p, c);
+            p += strlen(c);
+        }
+        *p = '\0';
+    }
+    json_free(payload);
+    if (out_lines) *out_lines = GRID_ROWS;
+    return lines;
+}
+
+/* PoP: render_context_category_lines @ agent/context_breakdown.py:render_context_category_lines */
+char **context_breakdown_render_category_lines(const char *payload_json, size_t *out_lines)
+{
+    static const char FREE_GLYPH[] = "\xc2\xb7";
+    static const char DEFAULT_GLYPH[] = "\xe2\x96\xaa";
+
+    char *err = NULL;
+    json_t *payload = json_parse(payload_json ? payload_json : "{}", &err);
+    if (err) { free(err); }
+    if (!payload) { if (out_lines) *out_lines = 0; return NULL; }
+
+    json_t *cats = json_obj_get(payload, "categories");
+    long context_max = json_get_num(payload, "context_max", 0);
+    long estimated_total = json_get_num(payload, "estimated_total", 0);
+    long denom = context_max ? context_max : estimated_total;
+
+    size_t cap = (cats && cats->type == JSON_ARRAY) ? cats->c.count + 2 : 3;
+    char **lines = malloc(sizeof(char *) * cap);
+    size_t n = 0;
+    lines[n++] = strdup("Estimated usage by category");
+    if (!cats || cats->type != JSON_ARRAY || cats->c.count == 0) {
+        lines[n++] = strdup("  (no data yet — send a message first)");
+        json_free(payload);
+        if (out_lines) *out_lines = n;
+        return lines;
+    }
+
+    /* width = max label width, min "Free space" (9) */
+    size_t width = strlen("Free space");
+    for (size_t i = 0; i < cats->c.count; i++) {
+        json_t *cat = json_get(cats, i);
+        const char *label = json_get_str(cat, "label", "");
+        if (!*label) label = json_get_str(cat, "id", "");
+        size_t w = strlen(label);
+        if (w > width) width = w;
+    }
+
+    char buf[1024];
+    for (size_t i = 0; i < cats->c.count && n < cap; i++) {
+        json_t *cat = json_get(cats, i);
+        long tokens = json_get_num(cat, "tokens", 0);
+        const char *id = json_get_str(cat, "id", "");
+        const char *glyph = DEFAULT_GLYPH;
+        static const char *GLYPHS[] = {
+            "system_prompt", "\xe2\x96\xa0", "tool_definitions", "\xe2\x96\xa3",
+            "rules", "\xe2\x96\xa9", "skills", "\xe2\x96\xa4", "mcp", "\xe2\x96\xa5",
+            "subagent_definitions", "\xe2\x96\xa6", "memory", "\xe2\x96\xa7",
+            "conversation", "\xe2\x96\xa8",
+        };
+        for (size_t g = 0; g < sizeof(GLYPHS) / sizeof(GLYPHS[0]); g += 2) {
+            if (strcmp(GLYPHS[g], id) == 0) { glyph = GLYPHS[g + 1]; break; }
+        }
+        const char *label = json_get_str(cat, "label", "");
+        if (!*label) label = json_get_str(cat, "id", "");
+        double pct = denom ? (double)tokens / (double)denom * 100.0 : 0.0;
+        char tokbuf[32];
+        format_with_commas(tokbuf, sizeof(tokbuf), tokens);
+        snprintf(buf, sizeof(buf), "%s %-*s %9s tokens %5.1f%%", glyph, (int)width, label, tokbuf, pct);
+        lines[n++] = strdup(buf);
+    }
+    if (context_max > 0) {
+        long free_tokens = context_max - estimated_total;
+        if (free_tokens < 0) free_tokens = 0;
+        double pct = (double)free_tokens / (double)context_max * 100.0;
+        char tokbuf[32];
+        format_with_commas(tokbuf, sizeof(tokbuf), free_tokens);
+        snprintf(buf, sizeof(buf), "%s %-*s %9s tokens %5.1f%%", FREE_GLYPH, (int)width, "Free space", tokbuf, pct);
+        lines[n++] = strdup(buf);
+    }
+    json_free(payload);
+    if (out_lines) *out_lines = n;
+    return lines;
+}
+
+/* PoP: render_context_details_lines @ agent/context_breakdown.py:render_context_details_lines */
+char **context_breakdown_render_details_lines(const char *details_json, size_t *out_lines)
+{
+    enum { LIMIT = 15 };
+    char *err = NULL;
+    json_t *details = json_parse(details_json ? details_json : "{}", &err);
+    if (err) { free(err); }
+    if (!details) { if (out_lines) *out_lines = 0; return NULL; }
+
+    char **lines = malloc(sizeof(char *) * 64);
+    size_t n = 0;
+
+    json_t *toolsets = json_obj_get(details, "toolsets");
+    if (toolsets && toolsets->type == JSON_ARRAY && toolsets->c.count > 0) {
+        lines[n++] = strdup("Toolsets by schema cost (largest first)");
+        size_t shown = toolsets->c.count < LIMIT ? toolsets->c.count : LIMIT;
+        char buf[512];
+        for (size_t i = 0; i < shown; i++) {
+            json_t *g = json_get(toolsets, i);
+            const char *ts = json_get_str(g, "toolset", "");
+            long tc = json_get_num(g, "tool_count", 0);
+            long st = json_get_num(g, "schema_tokens", 0);
+            char tokbuf[32];
+            format_with_commas(tokbuf, sizeof(tokbuf), st);
+            snprintf(buf, sizeof(buf), "  %-24s %3ld tools %8s tokens", ts, tc, tokbuf);
+            lines[n++] = strdup(buf);
+        }
+        if (toolsets->c.count > LIMIT) {
+            snprintf(buf, sizeof(buf), "  … and %zu more", toolsets->c.count - LIMIT);
+            lines[n++] = strdup(buf);
+        }
+    }
+
+    json_t *skills = json_obj_get(details, "skills");
+    if (skills && skills->type == JSON_ARRAY && skills->c.count > 0) {
+        if (n > 0) lines[n++] = strdup("");
+        lines[n++] = strdup("Skills by cost (index = always-on; SKILL.md = cost when loaded)");
+        size_t shown = skills->c.count < LIMIT ? skills->c.count : LIMIT;
+        char buf[512];
+        for (size_t i = 0; i < shown; i++) {
+            json_t *e = json_get(skills, i);
+            const char *name = json_get_str(e, "name", "");
+            char name_buf[64];
+            if (strlen(name) > 28) {
+                memcpy(name_buf, name, 27);
+                name_buf[27] = '\xe2';  /* … */
+                name_buf[28] = '\x80';
+                name_buf[29] = '\xa6';
+                name_buf[30] = '\0';
+                name = name_buf;
+            }
+            long idx = json_get_num(e, "index_tokens", 0);
+            char idxbuf[32], mdstr[32];
+            format_with_commas(idxbuf, sizeof(idxbuf), idx);
+            json_t *mdj = json_obj_get(e, "skill_md_tokens");
+            if (mdj && mdj->type == JSON_NUMBER) {
+                long md = (long)mdj->num_val;
+                format_with_commas(mdstr, sizeof(mdstr), md);
+                snprintf(buf, sizeof(buf), "  %-28s index %6s  SKILL.md %8s tokens", name, idxbuf, mdstr);
+            } else {
+                snprintf(buf, sizeof(buf), "  %-28s index %6s  SKILL.md %8s tokens", name, idxbuf, "n/a");
+            }
+            lines[n++] = strdup(buf);
+        }
+        if (skills->c.count > LIMIT) {
+            snprintf(buf, sizeof(buf), "  … and %zu more", skills->c.count - LIMIT);
+            lines[n++] = strdup(buf);
+        }
+    }
+
+    json_free(details);
+    if (out_lines) *out_lines = n;
+    return lines;
+}
+
+/* PoP: render_context_breakdown_lines @ agent/context_breakdown.py:render_context_breakdown_lines */
+char **context_breakdown_render_lines(const char *payload_json, const char *details_json, int grid, size_t *out_lines)
+{
+    char **lines = malloc(sizeof(char *) * 96);
+    size_t n = 0;
+
+    if (grid) {
+        size_t gl = 0;
+        char **g = context_breakdown_render_grid(payload_json, &gl);
+        for (size_t i = 0; i < gl; i++) lines[n++] = g[i];
+        free(g);
+        lines[n++] = strdup("");
+    }
+
+    size_t cl = 0;
+    char **c = context_breakdown_render_category_lines(payload_json, &cl);
+    for (size_t i = 0; i < cl; i++) lines[n++] = c[i];
+    free(c);
+
+    char *err = NULL;
+    json_t *payload = json_parse(payload_json ? payload_json : "{}", &err);
+    if (err) { free(err); }
+    long context_max = payload ? json_get_num(payload, "context_max", 0) : 0;
+    long context_used = payload ? json_get_num(payload, "context_used", 0) : 0;
+    long pct = payload ? json_get_num(payload, "context_percent", 0) : 0;
+    if (payload) json_free(payload);
+
+    if (context_max > 0) {
+        char buf[256], ub[32], mb[32];
+        format_with_commas(ub, sizeof(ub), context_used);
+        format_with_commas(mb, sizeof(mb), context_max);
+        snprintf(buf, sizeof(buf), "Context window: %s / %s tokens (%ld%%)", ub, mb, pct);
+        lines[n++] = strdup("");
+        lines[n++] = strdup(buf);
+    }
+
+    if (details_json) {
+        size_t dl = 0;
+        char **d = context_breakdown_render_details_lines(details_json, &dl);
+        if (dl > 0) {
+            lines[n++] = strdup("");
+            for (size_t i = 0; i < dl; i++) lines[n++] = d[i];
+        }
+        free(d);
+    } else {
+        lines[n++] = strdup("");
+        lines[n++] = strdup("Use /context all for per-skill and per-toolset costs.");
+    }
+
+    if (out_lines) *out_lines = n;
+    return lines;
+}
