@@ -2,6 +2,11 @@
   "version": 1,
   "description": "Agnostic oracle registry \u2014 maps port names to their harness/oracle/fixture trio. The runner iterates this file instead of requiring per-module shell scripts.",
   "ports": {
+    "relay_llm": {
+      "harness": "tests/t_port_agent_relay_llm.c",
+      "oracle": "tests/sta_oracle_agent_relay_llm.py",
+      "fixtures": "tests/oracle/fixtures/relay_llm"
+    },
     "account_usage": {
       "harness": "tests/t_port_account_usage.c",
       "oracle": "tests/sta_oracle_account_usage.py",

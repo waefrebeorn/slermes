@@ -24,7 +24,8 @@ extern "C" {
 /* ── Pure helpers (no Relay dependency) ────────────────────────────────── */
 
 /* PoP: _jsonable @ agent/relay_llm.py:_jsonable */
-/* Returns a malloc'd json_t (caller frees with json_free). */
+/* Returns a malloc'd json_t (caller frees with json_free). NULL input
+ * yields a JSON null node. */
 json_t *relay_llm_jsonable(const void *value);
 
 /* PoP: _namespace @ agent/relay_llm.py:_namespace */
@@ -47,6 +48,14 @@ bool relay_llm_json_equal(const void *left, const void *right);
 /* PoP: _is_cancellation @ agent/relay_llm.py:_is_cancellation */
 bool relay_llm_is_cancellation(const char *error_kind);
 
+/* PoP: _has_running_event_loop @ agent/relay_llm.py:_has_running_event_loop */
+bool relay_llm_has_running_event_loop(void);
+
+/* PoP: _run_awaitable @ agent/relay_llm.py:_run_awaitable */
+/* C has no awaitables; the value is returned unchanged (the runtime's
+ * run_in_session_async already runs the operation off the caller's stack). */
+void *relay_llm_run_awaitable(void *value);
+
 /* ── Request-shaping helpers ──────────────────────────────────────────── */
 
 /* PoP: _provider_request @ agent/relay_llm.py:_provider_request */
@@ -62,9 +71,13 @@ json_t *relay_llm_provider_request(const json_t *original,
 json_t *relay_llm_relay_request_body(const json_t *request, const json_t *metadata);
 
 /* PoP: _restore_provider_message_extensions @ agent/relay_llm.py:_restore_provider_message_extensions */
-json_t *relay_llm_restore_provider_message_extensions(const json_t *provider_response,
-                                                      const json_t *relay_request_body,
-                                                      const json_t *codec_baseline_body);
+/* Restore provider wire fields (reasoning_content/reasoning_details) that
+ * Relay's typed codec cannot represent. Mutates `final` in place; returns
+ * `final` for chaining. */
+json_t *relay_llm_restore_provider_message_extensions(const json_t *original,
+                                                      json_t *final,
+                                                      const json_t *baseline,
+                                                      const json_t *intercepted);
 
 /* PoP: _codec_round_trip_request_body @ agent/relay_llm.py:_codec_round_trip_request_body */
 json_t *relay_llm_codec_round_trip_request_body(const json_t *backend_codec,
@@ -73,8 +86,7 @@ json_t *relay_llm_codec_round_trip_request_body(const json_t *backend_codec,
                                                 const json_t *metadata);
 
 /* PoP: _codec @ agent/relay_llm.py:_codec */
-/* Returns the codec name string (e.g. "OpenAIChatCodec") or NULL.
- * `codec_out` receives a malloc'd name when non-NULL. */
+/* Returns the codec name string (e.g. "OpenAIChatCodec") or NULL. */
 char *relay_llm_codec(const json_t *metadata);
 
 /* PoP: _provider_request_body @ agent/relay_llm.py:_provider_request_body */
@@ -84,7 +96,8 @@ json_t *relay_llm_provider_request_body(const json_t *content, const json_t *met
 
 /* PoP: _logical_parent @ agent/relay_llm.py:_logical_parent */
 /* Returns true when a logical scope was found/created on `turn`.
- * Sets *out_handle and *out_request_id (both caller-freed). */
+ * Sets *out_turn, *out_handle and *out_request_id (request id malloc'd,
+ * caller frees). */
 bool relay_llm_logical_parent(relay_runtime_t *runtime,
                               relay_session_t *session,
                               relay_handle_t parent,
@@ -137,18 +150,68 @@ json_t *relay_llm_execute(const json_t *request_json,
                           const char *metadata_json,
                           bool defer_logical_completion);
 
-/* PoP: stream_current @ agent/relay_llm.py:stream_current */
-/* Returns a malloc'd json_t (caller frees) or NULL. */
-json_t *relay_llm_stream_current(const json_t *request_json,
-                                 void *(*stream_factory)(void *user), void *sf_user,
-                                 const char *name, const char *model_name,
-                                 const char *metadata_json);
+/* PoP: execute_async @ agent/relay_llm.py:execute_async */
+/* C has no async; the runtime runs the operation on a worker thread and
+ * joins, which is the faithful equivalent of awaiting inside the session. */
+json_t *relay_llm_execute_async(const json_t *request_json,
+                                relay_llm_provider_callback callback, void *cb_user,
+                                const char *session_id,
+                                const char *name, const char *model_name,
+                                const char *metadata_json,
+                                bool defer_logical_completion);
+
+/* PoP: execute_current @ agent/relay_llm.py:execute_current */
+/* Runs a provider attempt under the inherited Hermes turn when present. */
+json_t *relay_llm_execute_current(const json_t *request_json,
+                                  relay_llm_provider_callback callback, void *cb_user,
+                                  const char *name, const char *model_name,
+                                  const char *metadata_json,
+                                  bool defer_logical_completion);
+
+/* PoP: execute_current_async @ agent/relay_llm.py:execute_current_async */
+json_t *relay_llm_execute_current_async(const json_t *request_json,
+                                        relay_llm_provider_callback callback, void *cb_user,
+                                        const char *name, const char *model_name,
+                                        const char *metadata_json,
+                                        bool defer_logical_completion);
 
 /* ── ManagedLlmStream ──────────────────────────────────────────────────── */
 
 typedef struct relay_llm_managed_stream relay_llm_managed_stream_t;
+typedef struct anthropic_stream_accumulator anthropic_stream_accumulator_t;
 
-/* PoP: ManagedLlmStream.__init__ @ agent/relay_llm.py:ManagedLlmStream.__init__ */
+/* PoP: stream_current @ agent/relay_llm.py:stream_current */
+/* Runs a provider stream under the inherited Hermes turn when present, else
+ * returns the raw factory result. When `completed_response_predicate` is set
+ * and the factory returns a complete response instead of an iterator, the
+ * completed response is returned directly (Python's unwrap). The managed
+ * stream is returned when the factory produces a real stream. */
+relay_llm_managed_stream_t *relay_llm_stream_current(
+    const json_t *request_json,
+    void *(*stream_factory)(void *user), void *sf_user,
+    const char *name, const char *model_name,
+    void (*finalizer)(void *user), void *fin_user,
+    bool (*completed_response_predicate)(const json_t *raw_stream),
+    const char *metadata_json,
+    bool defer_logical_completion);
+
+/* ── ManagedLlmStream ──────────────────────────────────────────────────── */
+
+/* stream @ agent/relay_llm.py:stream — see the typedef above. */
+relay_llm_managed_stream_t *relay_llm_stream(
+    const json_t *request,
+    void *(*stream_factory)(void *user), void *sf_user,
+    const char *session_id, const char *name, const char *model_name,
+    void (*finalizer)(void *user), void *fin_user,
+    void (*on_stream_created)(void *user, void *raw_stream), void *osc_user,
+    void (*on_chunk)(void *user, const json_t *chunk), void *oc_user,
+                    void *(*chunk_adapter)(const json_t *chunk),
+    bool (*accept_chunk)(const json_t *chunk),
+    bool (*completed_response_predicate)(const json_t *raw_stream),
+    const char *metadata_json,
+    bool defer_logical_completion);
+
+/* PoP: __init__ @ agent/relay_llm.py:ManagedLlmStream.__init__ */
 relay_llm_managed_stream_t *relay_llm_managed_stream_new(
     const json_t *request,
     void *(*stream_factory)(void *user), void *sf_user,
@@ -162,32 +225,47 @@ relay_llm_managed_stream_t *relay_llm_managed_stream_new(
     const char *metadata_json,
     bool defer_logical_completion);
 
-void relay_llm_managed_stream_free(relay_llm_managed_stream_t *s);
+/* PoP: __iter__ @ agent/relay_llm.py:ManagedLlmStream.__iter__ */
+relay_llm_managed_stream_t *relay_llm_managed_stream_iter(relay_llm_managed_stream_t *s);
 
-/* PoP: ManagedLlmStream.__next__ @ agent/relay_llm.py:ManagedLlmStream.__next__ */
+/* PoP: __next__ @ agent/relay_llm.py:ManagedLlmStream.__next__ */
 /* Returns true + malloc'd json_t when a chunk is available, false on end. */
 bool relay_llm_managed_stream_next(relay_llm_managed_stream_t *s, json_t **out_chunk);
 
-/* PoP: ManagedLlmStream.close @ agent/relay_llm.py:ManagedLlmStream.close */
+/* PoP: close @ agent/relay_llm.py:ManagedLlmStream.close */
 void relay_llm_managed_stream_close(relay_llm_managed_stream_t *s);
+
+/* PoP: _close @ agent/relay_llm.py:ManagedLlmStream._close */
+void relay_llm_managed_stream_shutdown(relay_llm_managed_stream_t *s,
+                                       const char *logical_outcome);
+
+/* PoP: _preserve_pending_provider_chunks @ agent/relay_llm.py:ManagedLlmStream._preserve_pending_provider_chunks */
+void relay_llm_managed_stream_preserve_pending(relay_llm_managed_stream_t *s);
+
+/* The completed response captured when the factory returned a full response
+ * instead of an iterator (Python's `final_response`). NULL when streaming. */
+json_t *relay_llm_managed_stream_final_response(const relay_llm_managed_stream_t *s);
+
+/* PoP: __del__ @ agent/relay_llm.py:ManagedLlmStream.__del__ */
+void relay_llm_managed_stream_free(relay_llm_managed_stream_t *s);
 
 /* ── AnthropicStreamAccumulator ────────────────────────────────────────── */
 
-typedef struct anthropic_stream_accumulator anthropic_stream_accumulator_t;
+/* __init__ @ agent/relay_llm.py:AnthropicStreamAccumulator.__init__ — typedef above. */
 
-/* PoP: AnthropicStreamAccumulator.__init__ @ agent/relay_llm.py:AnthropicStreamAccumulator.__init__ */
+/* PoP: __init__ @ agent/relay_llm.py:AnthropicStreamAccumulator.__init__ */
 anthropic_stream_accumulator_t *anthropic_stream_accumulator_new(void);
 void anthropic_stream_accumulator_free(anthropic_stream_accumulator_t *acc);
 
-/* PoP: AnthropicStreamAccumulator.observe @ agent/relay_llm.py:AnthropicStreamAccumulator.observe */
+/* PoP: observe @ agent/relay_llm.py:AnthropicStreamAccumulator.observe */
 void anthropic_stream_accumulator_observe(anthropic_stream_accumulator_t *acc, const json_t *event);
 
-/* PoP: AnthropicStreamAccumulator.finalize @ agent/relay_llm.py:AnthropicStreamAccumulator.finalize */
+/* PoP: finalize @ agent/relay_llm.py:AnthropicStreamAccumulator.finalize */
 json_t *anthropic_stream_accumulator_finalize(const anthropic_stream_accumulator_t *acc);
 
-/* PoP: AnthropicStreamAccumulator.response @ agent/relay_llm.py:AnthropicStreamAccumulator.response */
-relay_llm_namespace_t *anthropic_stream_accumulator_response(const anthropic_stream_accumulator_t *acc,
-                                                             const json_t *base);
+/* PoP: response @ agent/relay_llm.py:AnthropicStreamAccumulator.response */
+json_t *anthropic_stream_accumulator_response(const anthropic_stream_accumulator_t *acc,
+                                              const json_t *base);
 
 #ifdef __cplusplus
 }

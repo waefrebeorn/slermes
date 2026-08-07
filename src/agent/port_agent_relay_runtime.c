@@ -82,6 +82,19 @@ bool relay_runtime_backend_available(void)
     return have;
 }
 
+/* Snapshot the installed backend vtable for direct hook driving (relay_llm's
+ * llm_execute / llm_stream_execute paths). */
+bool relay_runtime_backend_snapshot(relay_backend_t *out)
+{
+    if (!out) return false;
+    pthread_mutex_lock(&g_backend_lock);
+    bool have = g_backend_set;
+    if (have) *out = g_backend;
+    pthread_mutex_unlock(&g_backend_lock);
+    if (!have) memset(out, 0, sizeof(*out));
+    return have;
+}
+
 /* Snapshot the backend so a concurrent swap cannot tear a call in flight. */
 static bool rr_backend(relay_backend_t *out)
 {
@@ -251,6 +264,16 @@ relay_handle_t relay_runtime_scope_push(relay_runtime_t *rt, const char *name,
     relay_handle_t h = be.scope_push(be.ctx, name, type, parent, data_json, meta);
     free(meta);
     return h;
+}
+
+/* Pop a scope through the installed backend (relay.scope.pop analogue). */
+bool relay_runtime_scope_pop(relay_runtime_t *rt, relay_handle_t handle,
+                             const char *output_json, const char *metadata_json)
+{
+    (void)rt;
+    relay_backend_t be;
+    if (!rr_backend(&be) || !be.scope_pop) return false;
+    return be.scope_pop(be.ctx, handle, output_json, metadata_json);
 }
 
 /* Flush the subscribers store through the installed backend (the C analogue
@@ -508,10 +531,20 @@ typedef struct {
     void            *result;
 } rr_async_arg_t;
 
+/* True on the thread that runs an async session callback. This is the C
+ * analogue of Python's `_has_running_event_loop()`: a thread executing a
+ * managed provider callback IS on the relay session's event loop, so a nested
+ * ManagedLlmStream built there must degrade to the direct factory result. */
+static _Thread_local bool rr_in_async_worker = false;
+
+bool relay_runtime_in_async_worker(void) { return rr_in_async_worker; }
+
 static void *rr_async_trampoline(void *p)
 {
     rr_async_arg_t *a = (rr_async_arg_t *)p;
+    rr_in_async_worker = true;
     a->result = a->callback(a->user);
+    rr_in_async_worker = false;
     return NULL;
 }
 

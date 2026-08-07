@@ -148,6 +148,11 @@ void relay_runtime_set_backend(const relay_backend_t *backend);
 /* True when a backend is installed. */
 bool relay_runtime_backend_available(void);
 
+/* Snapshot the installed backend vtable (NULL-safe: returns false when no
+ * backend is installed and zeroes `out`). relay_llm uses this to drive the
+ * backend's llm_execute / llm_stream_execute hooks. */
+bool relay_runtime_backend_snapshot(relay_backend_t *out);
+
 /* ── RelaySession accessors ───────────────────────────────────────────── */
 
 const char     *relay_session_id(const relay_session_t *session);
@@ -177,6 +182,12 @@ relay_handle_t relay_runtime_scope_push(relay_runtime_t *rt, const char *name,
                                         relay_handle_t parent,
                                         const char *data_json,
                                         const char *metadata_json);
+
+/* Pop a scope through the installed backend (relay.scope.pop analogue).
+ * `output_json` and `metadata_json` are JSON object strings (may be NULL).
+ * Returns false on failure (missing backend hook or backend rejection). */
+bool relay_runtime_scope_pop(relay_runtime_t *rt, relay_handle_t handle,
+                             const char *output_json, const char *metadata_json);
 
 /* Flush the subscribers store (relay.subscribers.flush analogue). */
 bool relay_runtime_subscribers_flush(relay_runtime_t *rt);
@@ -408,6 +419,11 @@ const char *relay_session_id_of_event(const char *session_id_or_null);
 
 /* PoP: relay_reset_for_tests @ agent/relay_runtime.py:_reset_for_tests */
 void relay_reset_for_tests(void);
+
+/* True on the thread currently executing an async session callback (the C
+ * analogue of Python's `_has_running_event_loop()`). relay_llm uses this to
+ * degrade nested managed streams exactly like Python does. */
+bool relay_runtime_in_async_worker(void);
 
 /* Process-exit hook: closes every profile host (Python's atexit registration
  * inside RelayRuntime.__init__). */
