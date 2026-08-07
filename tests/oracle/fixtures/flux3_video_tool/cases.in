@@ -8,5 +8,7 @@
   {"op": "_endpoints"},
   {"op": "_warm_nous_token"},
   {"op": "_has_nous_credential"},
-  {"op": "check_bfl_requirements"}
+  {"op": "check_bfl_requirements"},
+  {"op": "_delivers_as_an_attachment"},
+  {"op": "_default_directory"}
 ]

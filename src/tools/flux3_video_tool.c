@@ -22,6 +22,8 @@
 #include "tool_backend.h"
 #include "port_auth_store.h"  /* get_provider_auth_state */
 #include "hermes_billing.h"  /* peek/read_nous_access_token */
+#include "hermes_gateway_session_context.h"  /* gw_session_is_messaging_surface */
+#include "slermes_home.h"  /* slermes_home */
 
 /* Vendor name for BFL gateway routes (PoP: _VENDOR @ tools/flux3_video_tool.py:_VENDOR) */
 
@@ -55,14 +57,15 @@ char *flux3_resolve_destination(const char *save_to, const char *filename)
             return strdup(save_to);
         }
     } else {
-        const char *home = getenv("HOME");
-        if (home)
-            snprintf(dir, sizeof(dir), "%s/Downloads", home);
-        else
+        /* Python: directory, name = _default_directory(), filename */
+        char *dd = flux3_default_directory();
+        if (dd) {
+            strncpy(dir, dd, sizeof(dir) - 1);
+            dir[sizeof(dir) - 1] = '\0';
+            free(dd);
+        } else {
             strcpy(dir, ".");
-        struct stat st;
-        if (stat(dir, &st) != 0 || !S_ISDIR(st.st_mode))
-            strcpy(dir, ".");
+        }
     }
     return flux3_free_path(dir, filename);
 }
@@ -238,4 +241,33 @@ bool flux3_check_bfl_requirements(void)
     if (!ep) return false;
     json_free(ep);
     return flux3_has_nous_credential();
+}
+
+/* PoP: _delivers_as_an_attachment @ tools/flux3_video_tool.py:_delivers_as_an_attachment */
+bool flux3_delivers_as_an_attachment(void)
+{
+    return gw_session_is_messaging_surface();
+}
+
+/* PoP: _default_directory @ tools/flux3_video_tool.py:_default_directory */
+char *flux3_default_directory(void)
+{
+    if (gw_session_is_messaging_surface()) {
+        const char *h = slermes_home();
+        if (h && *h) {
+            char buf[4096];
+            snprintf(buf, sizeof(buf), "%s/cache/videos", h);
+            return strdup(buf);
+        }
+    }
+    /* Non-messaging: Downloads/ if exists, else cwd. */
+    const char *home = getenv("HOME");
+    if (home) {
+        char dl[4096];
+        snprintf(dl, sizeof(dl), "%s/Downloads", home);
+        struct stat st;
+        if (stat(dl, &st) == 0 && S_ISDIR(st.st_mode))
+            return strdup(dl);
+    }
+    return strdup(".");
 }

@@ -58,6 +58,12 @@ bool flux3_has_nous_credential(void);
 /* PoP: check_bfl_requirements @ tools/flux3_video_tool.py:check_bfl_requirements */
 bool flux3_check_bfl_requirements(void);
 
+/* PoP: _delivers_as_an_attachment @ tools/flux3_video_tool.py:_delivers_as_an_attachment */
+bool flux3_delivers_as_an_attachment(void);
+
+/* PoP: _default_directory @ tools/flux3_video_tool.py:_default_directory */
+char *flux3_default_directory(void);
+
 /* PoP: _resolve_destination @ tools/flux3_video_tool.py:_resolve_destination */
 char *flux3_resolve_destination(const char *save_to, const char *filename);
 

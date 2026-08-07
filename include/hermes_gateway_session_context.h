@@ -24,4 +24,9 @@ int gw_session_context_engaged(void);
  * Returns 1 unless the active session was bound by a stateless adapter. */
 int gw_session_async_delivery_supported(void);
 
+/* Whether this turn is delivered over a human messaging channel.
+ * Resolves HERMES_PLATFORM env, then HERMES_SESSION_PLATFORM env/context,
+ * reporting True when any names a surface outside the non-messaging set. */
+bool gw_session_is_messaging_surface(void);
+
 #endif /* HERMES_GATEWAY_SESSION_CONTEXT_H */

@@ -179,3 +179,41 @@ int gw_session_async_delivery_supported(void)
     if (_session_async_delivery < 0) return 1;
     return _session_async_delivery ? 1 : 0;
 }
+
+/* ============================================================ */
+
+/* Surfaces where the user is NOT in a chat channel — files land on a disk
+ * the user owns directly, and delivery tags would be read as chat noise.
+ * Faithful to Python NON_MESSAGING_SESSION_SURFACES. */
+static bool _is_non_messaging_surface(const char *s)
+{
+    if (!s || !*s) return true;  /* "" is non-messaging */
+    static const char *non_msg[] = {
+        "api_server", "local", "webhook", "gateway", "tui", "tool",
+        "kanban", "msgraph_webhook", "cli", "codex", "desktop", NULL
+    };
+    char buf[64];
+    size_t i, n = strlen(s); if (n >= sizeof(buf)) n = sizeof(buf) - 1;
+    for (i = 0; i < n; i++) buf[i] = (char)tolower((unsigned char)s[i]);
+    buf[n] = '\0';
+    for (i = 0; non_msg[i]; i++) {
+        if (strcmp(buf, non_msg[i]) == 0) return true;
+    }
+    return false;
+}
+
+/* PoP: session_is_messaging_surface @ gateway/session_context.py:session_is_messaging_surface */
+bool gw_session_is_messaging_surface(void)
+{
+    const char *platform = getenv("HERMES_PLATFORM");
+    if (platform && *platform) {
+        const char *id = platform;
+        while (*id == ' ' || *id == '\t') id++;
+        if (!_is_non_messaging_surface(id)) return true;
+    }
+    platform = getenv("HERMES_SESSION_PLATFORM");
+    if (platform && *platform) {
+        if (!_is_non_messaging_surface(platform)) return true;
+    }
+    return false;
+}

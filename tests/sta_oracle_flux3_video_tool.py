@@ -7,7 +7,7 @@ DEV_ROOT = os.environ.get("HERMES_DEV_ROOT") or os.path.expanduser("~/.hermes/he
 if DEV_ROOT not in sys.path:
     sys.path.insert(0, DEV_ROOT)
 
-from tools.flux3_video_tool import _still_generating, _resolve_destination, _free_path, _shared_submit_properties, _endpoints, _warm_nous_token, _has_nous_credential, check_bfl_requirements
+from tools.flux3_video_tool import _still_generating, _resolve_destination, _free_path, _shared_submit_properties, _endpoints, _warm_nous_token, _has_nous_credential, check_bfl_requirements, _delivers_as_an_attachment, _default_directory
 
 
 def run(c):
@@ -40,6 +40,11 @@ def run(c):
         return _has_nous_credential()
     if op == "check_bfl_requirements":
         return check_bfl_requirements()
+    if op == "_delivers_as_an_attachment":
+        return _delivers_as_an_attachment()
+    if op == "_default_directory":
+        r = _default_directory()
+        return str(r)
     return None
 
 

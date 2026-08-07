@@ -55,6 +55,12 @@ int main(int argc, char **argv) {
         } else if (strcmp(name, "check_bfl_requirements") == 0) {
             bool r = flux3_check_bfl_requirements();
             printf(r ? "true\n" : "false\n");
+        } else if (strcmp(name, "_delivers_as_an_attachment") == 0) {
+            bool r = flux3_delivers_as_an_attachment();
+            printf(r ? "true\n" : "false\n");
+        } else if (strcmp(name, "_default_directory") == 0) {
+            char *r = flux3_default_directory();
+            printf("%s\n", r ? r : "null"); free(r);
         } else if (strcmp(name, "_resolve_destination") == 0) {
             const char *save_to = json_obj_get(c, "save_to");
             save_to = save_to ? json_get_str(c, "save_to", "") : "";
