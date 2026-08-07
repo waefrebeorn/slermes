@@ -37,6 +37,11 @@
       "oracle": "tests/sta_oracle_managed_tool_gateway.py",
       "fixtures": "tests/oracle/fixtures/managed_tool_gateway"
     },
+    "flux3_video_tool": {
+      "harness": "tests/t_port_flux3_video_tool.c",
+      "oracle": "tests/sta_oracle_flux3_video_tool.py",
+      "fixtures": "tests/oracle/fixtures/flux3_video_tool"
+    },
     "agent_display": {
       "harness": "tests/t_port_agent_display.c",
       "oracle": "tests/sta_oracle_agent_display.py",

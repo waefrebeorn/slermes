@@ -1,0 +1,23 @@
+[
+  {"op": "_looks_like_local_path", "value": "/home/user/video.mp4"},
+  {"op": "_looks_like_local_path", "value": "~/Downloads/clip.mp4"},
+  {"op": "_looks_like_local_path", "value": "https://example.com/video.mp4"},
+  {"op": "_looks_like_local_path", "value": "file:///tmp/test.mp4"},
+  {"op": "_looks_like_local_path", "value": "flux3-video.mp4"},
+  {"op": "_display_path", "value": "/tmp/clip.mp4"},
+  {"op": "_display_path", "value": "a/very/long/path/that/exceeds/200/characters/"},
+  {"op": "_filename_from_url", "value": "https://example.com/path/to/my-video.mp4"},
+  {"op": "_filename_from_url", "value": "https://cdn.example.com/generations/abc123/result.mp4"},
+  {"op": "_filename_from_url", "value": "https://example.com/no-extension"},
+  {"op": "_is_transport_error", "raw": "{\"error\": \"timeout\", \"transport_error\": true}"},
+  {"op": "_is_transport_error", "raw": "{\"error\": \"refused\"}"},
+  {"op": "_poll_is_finished", "raw": "{\"details\": {\"status\": \"Ready\"}}"},
+  {"op": "_poll_is_finished", "raw": "{\"details\": {\"status\": \"Generating\"}}"},
+  {"op": "_poll_is_finished", "raw": "{\"error\": \"something\"}"},
+  {"op": "_retry_after_seconds", "raw": "{\"error\": {\"message\": \"rate limited\"}, \"details\": {\"retryAfterSeconds\": 15}}"},
+  {"op": "_retry_after_seconds", "raw": "{\"details\": {\"status\": \"Ready\"}}"},
+  {"op": "_still_generating", "job_id": "abc123"},
+  {"op": "_without_media", "args": {"prompt": "hello", "input_image": "base64data", "input_video": "clip"}},
+  {"op": "_without_media", "args": {"prompt": "hello", "mode": "text_to_video"}},
+  {"op": "_submit_args", "mode": "text_to_video", "args": {"prompt": "hello", "input_image": null, "duration": 10}}
+]
