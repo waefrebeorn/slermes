@@ -7,7 +7,7 @@ DEV_ROOT = os.environ.get("HERMES_DEV_ROOT") or os.path.expanduser("~/.hermes/he
 if DEV_ROOT not in sys.path:
     sys.path.insert(0, DEV_ROOT)
 
-from tools.flux3_video_tool import _still_generating, _resolve_destination, _free_path, _shared_submit_properties, _endpoints
+from tools.flux3_video_tool import _still_generating, _resolve_destination, _free_path, _shared_submit_properties, _endpoints, _warm_nous_token, _has_nous_credential, check_bfl_requirements
 
 
 def run(c):
@@ -32,8 +32,14 @@ def run(c):
         r = _endpoints()
         if r is None:
             return "null"
-        from pathlib import Path
         return {k: str(v) if not isinstance(v, bool) else v for k, v in r.items()}
+    if op == "_warm_nous_token":
+        _warm_nous_token()
+        return "done"
+    if op == "_has_nous_credential":
+        return _has_nous_credential()
+    if op == "check_bfl_requirements":
+        return check_bfl_requirements()
     return None
 
 

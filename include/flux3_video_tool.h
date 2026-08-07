@@ -49,6 +49,15 @@ json_t *flux3_shared_submit_properties(void);
 /* PoP: _endpoints @ tools/flux3_video_tool.py:_endpoints */
 json_t *flux3_endpoints(void);
 
+/* PoP: _warm_nous_token @ tools/flux3_video_tool.py:_warm_nous_token */
+void flux3_warm_nous_token(void);
+
+/* PoP: _has_nous_credential @ tools/flux3_video_tool.py:_has_nous_credential */
+bool flux3_has_nous_credential(void);
+
+/* PoP: check_bfl_requirements @ tools/flux3_video_tool.py:check_bfl_requirements */
+bool flux3_check_bfl_requirements(void);
+
 /* PoP: _resolve_destination @ tools/flux3_video_tool.py:_resolve_destination */
 char *flux3_resolve_destination(const char *save_to, const char *filename);
 

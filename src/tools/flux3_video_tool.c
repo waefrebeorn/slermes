@@ -16,9 +16,12 @@
 #include <string.h>
 #include <stdbool.h>
 #include <sys/stat.h>
+#include <ctype.h>
 
 #include "managed_gateway.h"
 #include "tool_backend.h"
+#include "port_auth_store.h"  /* get_provider_auth_state */
+#include "hermes_billing.h"  /* peek/read_nous_access_token */
 
 /* Vendor name for BFL gateway routes (PoP: _VENDOR @ tools/flux3_video_tool.py:_VENDOR) */
 
@@ -192,4 +195,47 @@ json_t *flux3_endpoints(void)
          * RELATIVE path (managed_vendor_upload_path), not the full URL. */
         json_set(r, "upload_path", json_string(upload_path));
         return r;
+}
+
+/* PoP: _warm_nous_token @ tools/flux3_video_tool.py:_warm_nous_token */
+/* Python: read_nous_access_token() with exception swallowed. Delegates to
+ * the already-ported managed_tool_gateway read_nous_access_token wrapper. */
+void flux3_warm_nous_token(void)
+{
+    char tok[2048];
+    /* Returns 0 on success, -1 when no token. Python swallows on exception. */
+    (void)cli_tools_managed_tool_gateway_read_nous_access_token(tok, sizeof(tok));
+}
+
+/* PoP: _has_nous_credential @ tools/flux3_video_tool.py:_has_nous_credential */
+/* Faithful to Python: True if peek_nous_access_token() succeeds OR if
+ * get_provider_auth_state("nous") has a non-empty access_token. */
+bool flux3_has_nous_credential(void)
+{
+    char tok[2048];
+    if (cli_tools_managed_tool_gateway_peek_nous_access_token(tok, sizeof(tok)) == 0 && tok[0])
+        return true;
+    json_t *state = get_provider_auth_state("nous");
+    if (!state) return false;
+    json_t *token = json_obj_get(state, "access_token");
+    bool r = false;
+    if (token && token->type == JSON_STRING && token->str_val && token->str_val[0]) {
+        /* Check strip() equivalent: non-whitespace content */
+        const char *s = token->str_val;
+        for (const char *p = s; *p; p++) {
+            if (!isspace((unsigned char)*p)) { r = true; break; }
+        }
+    }
+    json_free(state);
+    return r;
+}
+
+/* PoP: check_bfl_requirements @ tools/flux3_video_tool.py:check_bfl_requirements */
+/* True if _endpoints() resolves AND _has_nous_credential(). */
+bool flux3_check_bfl_requirements(void)
+{
+    json_t *ep = flux3_endpoints();
+    if (!ep) return false;
+    json_free(ep);
+    return flux3_has_nous_credential();
 }

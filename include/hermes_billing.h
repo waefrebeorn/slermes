@@ -150,6 +150,10 @@ char *billing_json_get_string(const char *json, const char *key);
  * then auth.json provider state). Returns 0 on success, -1 if none. */
 int cli_tools_managed_tool_gateway_peek_nous_access_token(char *buf, size_t bufsize);
 
+/* Read-and-refresh variant: resolves a token, refreshing if needed.
+ * Returns 0 on success, -1 if none. */
+int cli_tools_managed_tool_gateway_read_nous_access_token(char *buf, size_t bufsize);
+
 /* Build the canonical "not logged in" billing auth error as malloc'd JSON
  * (status=401, error="invalid_token"). Caller frees. */
 char *billing_not_logged_in_json(void);

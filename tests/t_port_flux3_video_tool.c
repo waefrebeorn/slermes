@@ -46,6 +46,15 @@ int main(int argc, char **argv) {
             if (!r) { printf("null\n"); continue; }
             char *s = json_serialize(r);
             printf("%s\n", s); free(s); json_free(r);
+        } else if (strcmp(name, "_warm_nous_token") == 0) {
+            flux3_warm_nous_token();
+            printf("done\n");
+        } else if (strcmp(name, "_has_nous_credential") == 0) {
+            bool r = flux3_has_nous_credential();
+            printf(r ? "true\n" : "false\n");
+        } else if (strcmp(name, "check_bfl_requirements") == 0) {
+            bool r = flux3_check_bfl_requirements();
+            printf(r ? "true\n" : "false\n");
         } else if (strcmp(name, "_resolve_destination") == 0) {
             const char *save_to = json_obj_get(c, "save_to");
             save_to = save_to ? json_get_str(c, "save_to", "") : "";
