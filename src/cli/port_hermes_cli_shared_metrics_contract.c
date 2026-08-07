@@ -55,6 +55,14 @@ const char *smc_execution_surfaces[] = {
 const size_t smc_execution_surfaces_count =
     sizeof(smc_execution_surfaces) / sizeof(smc_execution_surfaces[0]);
 
+/* PoP: is_valid_execution_surface @ agent/shared_metrics_contract.py:is_valid_execution_surface */
+bool smc_is_valid_execution_surface(const char *s) {
+    if (!s) return false;
+    for (size_t i = 0; i < smc_execution_surfaces_count; i++)
+        if (strcmp(s, smc_execution_surfaces[i]) == 0) return true;
+    return false;
+}
+
 const char *smc_provider_families[] = {
     "aggregator", "custom", "direct", "local", "unknown",
 };

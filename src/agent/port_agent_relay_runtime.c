@@ -233,6 +233,36 @@ bool relay_runtime_managed_execution_enabled(relay_runtime_t *rt)
     return on;
 }
 
+/* Push a scope through the installed backend (the C analogue of
+ * relay.scope.push used by the shared-metrics runtime). Returns NULL on
+ * failure. */
+static char *rr_scope_metadata(const char *metadata_json, const char *runtime_id,
+                               bool is_subagent);
+relay_handle_t relay_runtime_scope_push(relay_runtime_t *rt, const char *name,
+                                        relay_scope_type_t type,
+                                        relay_handle_t parent,
+                                        const char *data_json,
+                                        const char *metadata_json)
+{
+    (void)rt;
+    relay_backend_t be;
+    if (!rr_backend(&be) || !be.scope_push) return NULL;
+    char *meta = rr_scope_metadata(metadata_json, NULL, false);
+    relay_handle_t h = be.scope_push(be.ctx, name, type, parent, data_json, meta);
+    free(meta);
+    return h;
+}
+
+/* Flush the subscribers store through the installed backend (the C analogue
+ * of relay.subscribers.flush()). Returns false on failure. */
+bool relay_runtime_subscribers_flush(relay_runtime_t *rt)
+{
+    (void)rt;
+    relay_backend_t be;
+    if (!rr_backend(&be) || !be.subscribers_flush) return false;
+    return be.subscribers_flush(be.ctx);
+}
+
 /* Build the scope metadata object Python assembles inline:
  *   {**(metadata or {}), SCHEMA_KEY: SCHEMA_VERSION, INSTANCE_KEY: runtime_id}
  * plus the optional subagent role. Caller-provided `metadata_json` must be a

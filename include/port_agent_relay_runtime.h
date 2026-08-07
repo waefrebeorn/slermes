@@ -171,6 +171,16 @@ void relay_runtime_release_managed_execution(relay_runtime_t *rt, const char *co
 /* PoP: relay_runtime_managed_execution_enabled @ agent/relay_runtime.py:managed_execution_enabled */
 bool relay_runtime_managed_execution_enabled(relay_runtime_t *rt);
 
+/* Push a scope through the installed backend (relay.scope.push analogue). */
+relay_handle_t relay_runtime_scope_push(relay_runtime_t *rt, const char *name,
+                                        relay_scope_type_t type,
+                                        relay_handle_t parent,
+                                        const char *data_json,
+                                        const char *metadata_json);
+
+/* Flush the subscribers store (relay.subscribers.flush analogue). */
+bool relay_runtime_subscribers_flush(relay_runtime_t *rt);
+
 /* PoP: relay_runtime_ensure_session @ agent/relay_runtime.py:ensure_session */
 relay_session_t *relay_runtime_ensure_session(relay_runtime_t *rt,
                                               const char *session_id,
