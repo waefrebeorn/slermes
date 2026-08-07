@@ -1027,3 +1027,185 @@ int cc_effective_protect_first_n(int compression_count, int has_previous_summary
     if (compression_count >= 1 || has_previous_summary) return 0;
     return protect_first_n > 0 ? protect_first_n : 0;
 }
+
+/* ── _template_visible_role ───────────────────────────────────────────── */
+
+static char *cc_str_strip(char *s) {
+    if (!s) return NULL;
+    char *start = s;
+    while (*start && isspace((unsigned char)*start)) start++;
+    if (*start == '\0') { s[0] = '\0'; return s; }
+    char *end = start + strlen(start) - 1;
+    while (end > start && isspace((unsigned char)*end)) { *end = '\0'; end--; }
+    if (start != s) memmove(s, start, strlen(start) + 1);
+    return s;
+}
+
+static const char *cc_rfind_substr(const char *hay, const char *needle) {
+    if (!hay || !needle || !*needle) return NULL;
+    size_t hlen = strlen(hay), nlen = strlen(needle);
+    if (nlen > hlen) return NULL;
+    const char *r = NULL;
+    for (const char *p = hay; *p; p++) {
+        if (strncmp(p, needle, nlen) == 0) r = p;
+    }
+    return r;
+}
+
+static int cc_str_is_blank(const char *s) {
+    if (!s) return 1;
+    for (const char *p = s; *p; p++) if (!isspace((unsigned char)*p)) return 0;
+    return 1;
+}
+
+/* PoP: cc_template_visible_role @ agent/context_compressor.py:_template_visible_role */
+const char *cc_template_visible_role(const json_t *message) {
+    if (!message || message->type != JSON_OBJECT) return NULL;
+    const char *role = json_get_str(message, "role", NULL);
+    if (!role) return NULL;
+    if (strcmp(role, "tool") == 0) return NULL;
+    if (strcmp(role, "assistant") == 0) {
+        json_t *tc = json_obj_get(message, "tool_calls");
+        if (tc) return NULL;
+    }
+    return role;
+}
+
+/* ── _reasoning_details_text_chars ────────────────────────────────────── */
+
+/* PoP: cc_reasoning_details_text_chars @ agent/context_compressor.py:_reasoning_details_text_chars */
+long cc_reasoning_details_text_chars(const json_t *value) {
+    if (!value) return 0;
+    if (value->type == JSON_STRING) return (long)strlen(value->str_val);
+    long total = 0;
+    /* Python: isinstance(value, dict) -> [value]; list/tuple/set -> iterate.
+     * A bare dict is treated as a single part. */
+    if (value->type == JSON_OBJECT) {
+        const char *text = NULL;
+        json_t *t = json_obj_get(value, "thinking");
+        if (t && t->type == JSON_STRING) text = t->str_val;
+        if (!text) { t = json_obj_get(value, "text"); if (t && t->type == JSON_STRING) text = t->str_val; }
+        if (!text) { t = json_obj_get(value, "summary"); if (t && t->type == JSON_STRING) text = t->str_val; }
+        if (text) total += (long)strlen(text);
+    } else if (value->type == JSON_ARRAY) {
+        for (size_t i = 0; i < value->c.count; i++) {
+            json_t *part = json_get(value, i);
+            if (!part) continue;
+            if (part->type == JSON_STRING) {
+                total += (long)strlen(part->str_val);
+            } else if (part->type == JSON_OBJECT) {
+                const char *text = NULL;
+                json_t *t = json_obj_get(part, "thinking");
+                if (t && t->type == JSON_STRING) text = t->str_val;
+                if (!text) { t = json_obj_get(part, "text"); if (t && t->type == JSON_STRING) text = t->str_val; }
+                if (!text) { t = json_obj_get(part, "summary"); if (t && t->type == JSON_STRING) text = t->str_val; }
+                if (text) total += (long)strlen(text);
+            }
+        }
+    }
+    return total;
+}
+
+/* ── _rolling_summary_from_marker ─────────────────────────────────────── */
+
+/* PoP: cc_rolling_summary_from_marker @ agent/context_compressor.py:_rolling_summary_from_marker */
+char *cc_rolling_summary_from_marker(const char *content) {
+    /* Python: if not isinstance(content, str) or not content.strip(): return "" */
+    if (!content || cc_str_is_blank(content)) return strdup("");
+    const char *body = content;
+    const char *idx = cc_rfind_substr(body, CC_HISTORICAL_TASK_HEADING);
+    if (idx) body = idx + strlen(CC_HISTORICAL_TASK_HEADING);
+    const char *end = strstr(body, CC_SUMMARY_END_MARKER);
+    char *r;
+    if (end) {
+        size_t blen = (size_t)(end - body);
+        r = (char *)malloc(blen + 1);
+        if (!r) return NULL;
+        memcpy(r, body, blen); r[blen] = '\0';
+    } else {
+        r = strdup(body);
+    }
+    if (!r) return NULL;
+    return cc_str_strip(r);
+}
+
+/* ── _render_micro_marker_content ─────────────────────────────────────── */
+
+/* PoP: cc_render_micro_marker_content @ agent/context_compressor.py:_render_micro_marker_content */
+char *cc_render_micro_marker_content(const char *summary_text) {
+    char *stripped = cc_str_strip(strdup(summary_text ? summary_text : ""));
+    if (!stripped) stripped = strdup("");
+    size_t len = strlen(CC_SUMMARY_PREFIX) + 2 + strlen(CC_HISTORICAL_TASK_HEADING) + 1
+                 + strlen(stripped) + 2 + 1 + strlen(CC_SUMMARY_END_MARKER) + 1;
+    char *r = (char *)malloc(len);
+    if (!r) { free(stripped); return NULL; }
+    snprintf(r, len, "%s\n\n%s\n%s\n\n%s",
+             CC_SUMMARY_PREFIX, CC_HISTORICAL_TASK_HEADING, stripped,
+             CC_SUMMARY_END_MARKER);
+    free(stripped);
+    return r;
+}
+
+/* ── _merge_adjacent_user_turns ────────────────────────────────────────── */
+
+/* PoP: cc_merge_adjacent_user_turns @ agent/context_compressor.py:_merge_adjacent_user_turns
+ *
+ * Faithful port: builds a new list merging consecutive plain-text user turns
+ * (\n\n-joined), skipping tool/summary messages. Drops the api_content sidecar
+ * on merged messages (drop_stale_api_content). Returns the new count. The
+ * caller frees the returned array via json_free. */
+int cc_merge_adjacent_user_turns(json_t *result, json_t **out_merged) {
+    *out_merged = json_array();
+    if (!result || result->type != JSON_ARRAY) return 0;
+    json_t *merged = *out_merged;
+    long prev_content_len = 0;
+    const char *prev_content = NULL;
+    int prev_mergeable = 0;
+    for (size_t i = 0; i < result->c.count; i++) {
+        json_t *msg = json_get(result, i);
+        if (!msg || msg->type != JSON_OBJECT) continue;
+        const char *role = json_get_str(msg, "role", "");
+        int is_user = (strcmp(role, "user") == 0);
+        int is_summary = json_obj_get(msg, CC_COMPRESSED_SUMMARY_METADATA_KEY) != NULL;
+        json_t *mc = json_obj_get(msg, "content");
+        int is_plain_text = mc && mc->type == JSON_STRING;
+        /* Python merge condition: both user, no summary metadata, both content
+         * are str. prev_content_len tracks the prev's content string (may be
+         * empty but non-NULL — Python isinstance check, not truthiness). */
+        if (is_user && !is_summary && is_plain_text && prev_mergeable) {
+            /* merge into previous */
+            json_t *last = json_get(merged, merged->c.count - 1);
+            /* drop_stale_api_content: pop the api_content sidecar */
+            json_obj_del(last, "api_content");
+            const char *new_c = mc->str_val;
+            char *joined;
+            /* Python: prev_content + "\n\n" + new_content if both truthy,
+             * else (prev_content or new_content). */
+            if (prev_content_len > 0 && new_c && *new_c) {
+                joined = malloc(prev_content_len + strlen(new_c) + 3);
+                snprintf(joined, prev_content_len + strlen(new_c) + 3,
+                         "%s\n\n%s", prev_content, new_c);
+            } else {
+                joined = strdup(prev_content_len > 0 ? prev_content
+                                                     : (new_c ? new_c : ""));
+            }
+            json_set(last, "content", json_string(joined));
+            free(joined);
+            prev_content = json_get_str(last, "content", "");
+            prev_content_len = prev_content ? strlen(prev_content) : 0;
+            /* prev_mergeable stays true (still a user plain-text msg) */
+        } else {
+            json_append(merged, json_copy(msg));
+            prev_mergeable = is_user && !is_summary && is_plain_text;
+            if (prev_mergeable) {
+                prev_content = json_get_str(msg, "content", "");
+                prev_content_len = prev_content ? strlen(prev_content) : 0;
+            } else {
+                prev_content = NULL;
+                prev_content_len = 0;
+            }
+        }
+    }
+    return (int)merged->c.count;
+}
+

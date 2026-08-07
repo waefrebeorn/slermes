@@ -14,8 +14,10 @@ DEV_ROOT = os.environ.get("HERMES_DEV_ROOT") or os.path.expanduser("~/.hermes/he
 PYAGENT = os.path.join(DEV_ROOT, "agent")
 if PYAGENT not in sys.path:
     sys.path.insert(0, PYAGENT)
+if DEV_ROOT not in sys.path:
+    sys.path.insert(0, DEV_ROOT)
 
-from hermes.agent.relay_llm import (  # noqa: E402
+from agent.relay_llm import (  # noqa: E402
     _jsonable, _json_equal, _namespace, _is_cancellation, _codec,
     _provider_request_body, _relay_request_body, _provider_request,
     _PROVIDER_MESSAGE_EXTENSION_KEYS, _RELAY_INTERNAL_PROVIDER_HEADERS,

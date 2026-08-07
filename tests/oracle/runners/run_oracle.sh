@@ -127,15 +127,18 @@ normalize_out() {  # $1 = file
   local f="$1"
   local tmp; tmp="$(mktemp)"
   cp "$f" "$tmp"
-  # float_int_equal: canonicalize integral floats to ints (C's JSON writer
-  # renders 1.0 as "1" via %.0f; Python emits "1.0"). Semantically equal —
-  # normalize so the text diff passes.
-  if [ "$FLOAT_INT_EQUAL" = "1" ]; then
-    tmp2="$(mktemp)"
-    python3 - "$tmp" <<'PY' > "$tmp2"
+  # Canonicalize every JSON line: JSON object key order is semantically
+  # irrelevant, but C's serializer emits insertion order while Python's
+  # json.dumps may sort (or preserve dict order). Always re-serialize with
+  # sort_keys=True so both sides compare on sorted keys (byte-identical diff).
+  # float_int_equal additionally coerces integral floats to ints (C's JSON
+  # writer renders 1.0 as "1" via %.0f; Python emits "1.0").
+  tmp2="$(mktemp)"
+  python3 - "$tmp" "$FLOAT_INT_EQUAL" <<'PY' > "$tmp2"
 import json, sys
+FLOAT_INT_EQUAL = sys.argv[2] == "1"
 def canon(o):
-    if isinstance(o, float) and o == int(o):
+    if FLOAT_INT_EQUAL and isinstance(o, float) and o == int(o):
         return int(o)
     if isinstance(o, dict):
         return {k: canon(v) for k, v in o.items()}
@@ -147,13 +150,12 @@ for line in open(sys.argv[1], encoding='utf-8', errors='replace'):
     line = line.strip()
     if not line: continue
     try:
-        out.append(json.dumps(canon(json.loads(line))))
+        out.append(json.dumps(canon(json.loads(line)), sort_keys=True))
     except Exception:
         out.append(line)
 sys.stdout.write('\n'.join(out) + '\n')
 PY
-    mv "$tmp2" "$tmp"
-  fi
+  mv "$tmp2" "$tmp"
   # strip_patterns: treat each as a Python regex, remove every match
   if [ -n "$STRIP_PATTERNS" ]; then
     tmp2="$(mktemp)"

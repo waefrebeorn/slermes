@@ -2,6 +2,11 @@
   "version": 1,
   "description": "Agnostic oracle registry \u2014 maps port names to their harness/oracle/fixture trio. The runner iterates this file instead of requiring per-module shell scripts.",
   "ports": {
+    "context_compressor_pure": {
+      "harness": "tests/t_port_context_compressor_pure.c",
+      "oracle": "tests/sta_oracle_context_compressor_pure.py",
+      "fixtures": "tests/oracle/fixtures/context_compressor_pure"
+    },
     "relay_llm": {
       "harness": "tests/t_port_agent_relay_llm.c",
       "oracle": "tests/sta_oracle_agent_relay_llm.py",
