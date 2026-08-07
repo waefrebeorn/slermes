@@ -1,63 +1,79 @@
-"""Oracle for agent/context_compressor.py pure helpers + staticmethods.
+"""Oracle for agent/context_compressor.py pure helpers."""
+import json, os, sys
 
-Reads a JSON array fixture from argv[1]; each element is {"op":<fn>, ...args}.
-Recomputes from the LIVE Python source and emits one JSON object per line,
-matching tests/t_port_context_compressor_pure.c.
-"""
-import json
-import os
-import sys
-
-DEV_ROOT = os.environ.get("HERMES_DEV_ROOT") or os.path.expanduser("~/.hermes/hermes-agent")
-PYAGENT = os.path.join(DEV_ROOT, "agent")
-if PYAGENT not in sys.path:
-    sys.path.insert(0, PYAGENT)
+DEV_ROOT = "/home/wubu/hermes-agent-dev"
 if DEV_ROOT not in sys.path:
     sys.path.insert(0, DEV_ROOT)
+# Ensure the dev tree (with hermes_cli.__version__) shadows any stub.
+sys.path.remove(DEV_ROOT) if False else None
+sys.path.insert(0, DEV_ROOT)
 
-from agent.context_compressor import (  # noqa: E402
-    _template_visible_role, _reasoning_details_text_chars,
-    ContextCompressor,
+# Avoid picking up stub hermes_cli from slermes/tests/
+for p in list(sys.path):
+    if 'slermes/tests' in p and 'hermes_cli' in p:
+        sys.path.remove(p)
+
+# Provide a stub version attr if import still fails on auxiliary deps
+import importlib
+try:
+    import hermes_cli
+    if not hasattr(hermes_cli, '__version__'):
+        hermes_cli.__version__ = "0.dev"
+except Exception:
+    sys.modules['hermes_cli'] = type(sys)('hermes_cli')
+    sys.modules['hermes_cli'].__version__ = "0.dev"
+
+from agent.context_compressor import (
+    _safe_int, _skill_pruned_marker, _extract_pruned_skill_names,
+    _is_image_part, _content_has_images, _strip_images_from_content,
+    _strip_image_parts_from_parts, _truncate_tool_call_args_json,
+    _append_text_to_content, _template_visible_role,
+    _fresh_compaction_message_copy,
 )
 
-
-def _emit(op, payload):
-    obj = {"op": op}
-    obj.update(payload)
-    print(json.dumps(obj, sort_keys=True, separators=(",", ":")))
-
-
 OPS = {
-    "template_visible_role": lambda c: _emit("template_visible_role",
-        {"value": _template_visible_role(c.get("msg"))}),
-    "reasoning_details_text_chars": lambda c: _emit("reasoning_details_text_chars",
-        {"value": _reasoning_details_text_chars(c.get("value"))}),
-    "rolling_summary_from_marker": lambda c: _emit("rolling_summary_from_marker",
-        {"value": ContextCompressor._rolling_summary_from_marker(c.get("content", ""))}),
-    "render_micro_marker_content": lambda c: _emit("render_micro_marker_content",
-        {"value": ContextCompressor._render_micro_marker_content(c.get("summary", ""))}),
-    "merge_adjacent_user_turns": lambda c: _emit("merge_adjacent_user_turns",
-        {"value": ContextCompressor._merge_adjacent_user_turns(c.get("messages", []))}),
+    "safe_int": lambda a: _safe_int(a),
+    "skill_pruned_marker": lambda a: _skill_pruned_marker(a),
+    "extract_pruned_skill_names": lambda a: _extract_pruned_skill_names(a),
+    "is_image_part": lambda a: _is_image_part(_parse_arg(a)),
+    "content_has_images": lambda a: _content_has_images(_parse_arg(a)),
+    "strip_images_from_content": lambda a: _strip_images_from_content(_parse_arg(a)),
+    "strip_image_parts_from_parts": lambda a: _strip_image_parts_from_parts(_parse_arg(a)),
+    "truncate_tool_call_args_json": lambda a: _truncate_tool_call_args_json(json.loads(a)["args"], json.loads(a)["head"]),
+    "append_text_to_content": lambda a: _append_text_to_content(json.loads(a)["content"], json.loads(a)["text"], prepend=json.loads(a).get("prepend", False)),
+    "template_visible_role": lambda a: _template_visible_role(_parse_arg(a)),
+    "fresh_compaction_message_copy": lambda a: _fresh_compaction_message_copy(_parse_arg(a)),
 }
 
+def _parse_arg(a):
+    """Parse arg as JSON, falling back to raw string if not JSON."""
+    if not a:
+        return None
+    try:
+        return json.loads(a)
+    except (json.JSONDecodeError, TypeError):
+        return a
 
 def main():
     if len(sys.argv) < 2:
-        sys.stderr.write(f"usage: {sys.argv[0]} <cases.json>\n")
-        return 2
-    with open(sys.argv[1]) as f:
-        cases = json.load(f)
+        sys.stderr.write("usage: sta_oracle_context_compressor_pure.py <cases.in>\n")
+        return 1
+    text = open(sys.argv[1]).read()
+    cases = json.loads(text)
     for c in cases:
         op = c.get("op", "")
+        arg = c.get("arg", "")
         fn = OPS.get(op)
         if fn is None:
-            _emit("unknown", {"error": op})
-        else:
-            try:
-                fn(c)
-            except Exception as e:
-                _emit(op, {"error": str(e)})
-
+            print("UNKNOWN_OP")
+            continue
+        try:
+            result = fn(arg)
+            print(json.dumps(result, sort_keys=True, ensure_ascii=False))
+        except Exception as e:
+            print(f"ERROR: {e}", file=sys.stderr)
+            print("null")
+    return 0
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

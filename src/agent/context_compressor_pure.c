@@ -500,7 +500,7 @@ int cc_safe_int(const json_t *value, int *out) {
     if (!value || value->type == JSON_NULL) { if (out) *out = 0; return 0; }
     if (value->type == JSON_NUMBER) { if (out) *out = (int)value->num_val; return 1; }
     if (value->type == JSON_STRING) {
-        const char *s = json_get_str(value, "", "");
+        const char *s = value->str_val;
         char *end = NULL;
         long v = strtol(s, &end, 10);
         if (end != s && *end == '\0') { if (out) *out = (int)v; return 1; }
@@ -527,14 +527,16 @@ int cc_extract_pruned_skill_names(const char *text, char **out_names, int *out_c
     if (!text || !out_names || !out_count) return 0;
     *out_count = 0;
     /* marker: "[SKILL_PRUNED: ... reload with skill_view(name='NAME')]" */
-    hregex_t *re = regex_compile("^\\[SKILL_PRUNED:.*reload with skill_view\\(name='([^']+)'\\)\\]",
+    hregex_t *re = regex_compile("\\[SKILL_PRUNED:[^]]*reload with skill_view\\(name='([^']+)'\\)\\]",
                                  0);
     if (!re) return 0;
     int count = 0;
     const char *p = text;
     regex_match_t *m;
     while (count < limit && (m = regex_search(re, p)) != NULL && m->matched) {
-        const char *name = (m->group_count > 1) ? m->groups[1] : NULL;
+        /* group_count is never set by hermes_regex; check groups[1] directly */
+        const char *name = (m->groups[1] != NULL) ? m->groups[1] : NULL;
+        size_t match_len = m->groups[0] ? strlen(m->groups[0]) : 1;
         if (name) {
             int dup = 0;
             for (int i = 0; i < count; i++)
@@ -542,8 +544,8 @@ int cc_extract_pruned_skill_names(const char *text, char **out_names, int *out_c
             if (!dup) out_names[count++] = strdup(name);
         }
         regex_match_free(m);
-        /* advance past this match */
-        p = p + (m->groups[0] ? strlen(m->groups[0]) : 1);
+        /* advance past this match (must use match_len saved before free) */
+        p = p + match_len;
         if (*p == '\0') break;
     }
     regex_free(re);
@@ -633,12 +635,12 @@ int cc_content_has_images(const json_t *content) {
 
 /* PoP: cc_strip_images_from_content @ agent/context_compressor.py:_strip_images_from_content */
 json_t *cc_strip_images_from_content(const json_t *content) {
-    if (!content || content->type != JSON_ARRAY) return NULL; /* caller keeps original */
+    if (!content || content->type != JSON_ARRAY) return (json_t *)content;
     int n = (int)json_len(content);
     int has = 0;
     for (int i = 0; i < n; i++)
         if (cc_is_image_part(json_get(content, (size_t)i))) { has = 1; break; }
-    if (!has) return NULL;
+    if (!has) return (json_t *)content;
     json_t *out = json_array();
     for (int i = 0; i < n; i++) {
         json_t *p = json_get(content, (size_t)i);

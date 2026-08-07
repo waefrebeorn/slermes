@@ -7,6 +7,11 @@
       "oracle": "tests/sta_oracle_agent_import.py",
       "fixtures": "tests/oracle/fixtures/agent_import"
     },
+    "agent_import": {
+      "harness": "tests/t_port_agent_import.c",
+      "oracle": "tests/sta_oracle_agent_import.py",
+      "fixtures": "tests/oracle/fixtures/agent_import"
+    },
     "context_compressor_pure": {
       "harness": "tests/t_port_context_compressor_pure.c",
       "oracle": "tests/sta_oracle_context_compressor_pure.py",

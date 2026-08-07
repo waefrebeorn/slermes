@@ -12,6 +12,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "libjson/json.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -118,24 +119,29 @@ char *cc_collect_path_mentions(const char *text, long limit) {
 
 /* PoP: _append_text_to_content @ agent/context_compressor.py:_append_text_to_content */
 char *cc_append_text_to_content(const char *content_json, const char *text, bool prepend) {
-    /* Python: safe append/prepend to content (string or parts list). */
-    if (!text) return strdup(content_json ? content_json : "");
-    if (!content_json || strcmp(content_json, "[]") == 0 || strcmp(content_json, "\"\"") == 0) {
+    /* Python: safe append/prepend to content (string, list, or None). */
+    if (!text) text = "";
+    if (!content_json || strcmp(content_json, "[]") == 0 ||
+        strcmp(content_json, "\"\"") == 0 || strcmp(content_json, "null") == 0) {
+        /* No content: Python wraps text as a plain string when content is
+         * None; as a text-block dict when content is []. For a JSON string
+         * arg that is null/empty, return the text as a JSON string. */
         char *out = NULL;
-        asprintf(&out, "{\"type\": \"text\", \"text\": \"%s\"}", text);
+        asprintf(&out, "\"%s\"", text);
         return out;
     }
     if (content_json[0] == '[') {
-        /* append a text part inside the list */
+        /* append a text part inside the list — serialize the text as a
+         * JSON string element to preserve non-dict items as-is */
         size_t len = strlen(content_json);
         char *out = malloc(len + strlen(text) + 64);
         if (!out) return strdup(content_json);
         if (prepend) {
             snprintf(out, len + strlen(text) + 64,
-                     "[{\"type\": \"text\", \"text\": \"%s\"},%s", text, content_json + 1);
+                     "[{\"type\":\"text\",\"text\":\"%s\"},%s", text, content_json + 1);
         } else {
             snprintf(out, len + strlen(text) + 64,
-                     "%.*s,{\"type\": \"text\", \"text\": \"%s\"}]",
+                     "%.*s,{\"type\":\"text\",\"text\":\"%s\"}]",
                      (int)(len - 1), content_json, text);
         }
         return out;
@@ -145,9 +151,9 @@ char *cc_append_text_to_content(const char *content_json, const char *text, bool
         char *out = malloc(len + strlen(text) + 8);
         if (!out) return strdup(content_json);
         if (prepend)
-            snprintf(out, len + strlen(text) + 8, "\"%s %.*s\"", text, (int)(len - 2), content_json + 1);
+            snprintf(out, len + strlen(text) + 8, "\"%s%.*s\"", text, (int)(len - 2), content_json + 1);
         else
-            snprintf(out, len + strlen(text) + 8, "\"%.*s %s\"", (int)(len - 2), content_json + 1, text);
+            snprintf(out, len + strlen(text) + 8, "\"%.*s%s\"", (int)(len - 2), content_json + 1, text);
         return out;
     }
     return strdup(content_json);
@@ -155,10 +161,48 @@ char *cc_append_text_to_content(const char *content_json, const char *text, bool
 
 /* PoP: _strip_image_parts_from_parts @ agent/context_compressor.py:_strip_image_parts_from_parts */
 char *cc_strip_image_parts_from_parts(const char *parts_json) {
-    /* Python: remove image parts from list. */
-    if (!parts_json) return strdup("[]");
-    printf("image parts stripped from parts list\n");
-    return strdup(parts_json);
+    /* Python: remove image parts from list, return new list with text
+     * placeholders where image parts were. Returns NULL (printed as null)
+     * if no images were found. */
+    if (!parts_json || !*parts_json) return strdup("[]");
+    char *err = NULL;
+    json_t *parts = json_parse(parts_json, &err);
+    if (err || !parts) {
+        if (err) free(err);
+        return strdup(parts_json);
+    }
+    bool had_image = false;
+    json_t *out = json_array();
+    if (parts->type == JSON_ARRAY) {
+        for (size_t i = 0; i < parts->c.count; i++) {
+            json_t *p = parts->c.items[i];
+            if (p && p->type == JSON_OBJECT) {
+                json_t *type_val = json_obj_get(p, "type");
+                const char *t = type_val && type_val->type == JSON_STRING ? type_val->str_val : "";
+                if (t && (strcmp(t, "image") == 0 || strcmp(t, "image_url") == 0 ||
+                          strcmp(t, "input_image") == 0)) {
+                    had_image = true;
+                    json_t *ph = json_object();
+                    json_set(ph, "type", json_string("text"));
+                    json_set(ph, "text", json_string("[screenshot removed to save context]"));
+                    json_append(out, ph);
+                } else {
+                    json_append(out, json_copy(p));
+                }
+            } else {
+                json_append(out, json_copy(p));
+            }
+        }
+        if (had_image) {
+            char *result = json_serialize(out);
+            json_free(out);
+            json_free(parts);
+            return result;
+        }
+    }
+    json_free(out);
+    json_free(parts);
+    return NULL;
 }
 
 /* PoP: _truncate_tool_call_args_json @ agent/context_compressor.py:_truncate_tool_call_args_json */
@@ -168,10 +212,10 @@ char *cc_truncate_tool_call_args_json(const char *args, long head_chars) {
     if (head_chars <= 0) head_chars = 200;
     size_t n = strlen(args);
     if (n <= (size_t)head_chars) return strdup(args);
-    char *out = malloc((size_t)head_chars + 4);
+    char *out = malloc((size_t)head_chars + 16);
     if (!out) return NULL;
     memcpy(out, args, (size_t)head_chars);
-    strcpy(out + head_chars, "...");
+    strcpy(out + head_chars, "...[truncated]");
     return out;
 }
 

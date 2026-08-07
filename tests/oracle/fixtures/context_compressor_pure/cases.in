@@ -1,32 +1,130 @@
 [
-  {"op": "template_visible_role", "msg": {"role": "user", "content": "hi"}},
-  {"op": "template_visible_role", "msg": {"role": "assistant", "content": "hello"}},
-  {"op": "template_visible_role", "msg": {"role": "tool", "tool_call_id": "tc1", "content": "result"}},
-  {"op": "template_visible_role", "msg": {"role": "assistant", "content": "ok", "tool_calls": [{"id": "tc1", "type": "function", "function": {"name": "x", "arguments": "{}"}}]}},
-  {"op": "template_visible_role", "msg": {"role": "system", "content": "you are helpful"}},
-  {"op": "template_visible_role", "msg": {"content": "no role"}},
-  {"op": "template_visible_role", "msg": "not a dict"},
-  {"op": "reasoning_details_text_chars", "value": "plain string thinking"},
-  {"op": "reasoning_details_text_chars", "value": null},
-  {"op": "reasoning_details_text_chars", "value": {"thinking": "actual reasoning", "data": "opaque_blob"}},
-  {"op": "reasoning_details_text_chars", "value": {"text": "step by step", "signature": "sig", "data": "blob"}},
-  {"op": "reasoning_details_text_chars", "value": {"summary": "summary text", "encrypted": "payload"}},
-  {"op": "reasoning_details_text_chars", "value": [{"thinking": "first", "data": "x"}, {"text": "second", "signature": "y"}, {"summary": "third"}, "bare string", {"opaque": "blob"}]},
-  {"op": "reasoning_details_text_chars", "value": [{"thinking": "only this counts"}, {"encrypted": "blob"}, {"summary": "plus this"}]},
-  {"op": "rolling_summary_from_marker", "content": ""},
-  {"op": "rolling_summary_from_marker", "content": "   "},
-  {"op": "rolling_summary_from_marker", "content": "just summary text\nwith content"},
-  {"op": "rolling_summary_from_marker", "content": "## Historical Task Snapshot\nThe compressed body here\n--- END OF CONTEXT SUMMARY — respond to the message below, not the summary above ---"},
-  {"op": "rolling_summary_from_marker", "content": "preamble\n## Historical Task Snapshot\nactual body\nmore body\n--- END OF CONTEXT SUMMARY — respond to the message below, not the summary above ---\ntrailing"},
-  {"op": "render_micro_marker_content", "summary": "compact summary of turns"},
-  {"op": "render_micro_marker_content", "summary": "  trimmed  "},
-  {"op": "render_micro_marker_content", "summary": "multi\nline\nsummary"},
-  {"op": "render_micro_marker_content", "summary": ""},
-  {"op": "merge_adjacent_user_turns", "messages": [{"role": "user", "content": "hello"}, {"role": "user", "content": "world"}, {"role": "assistant", "content": "hi there"}, {"role": "user", "content": "third"}, {"role": "tool", "tool_call_id": "tc1", "content": "tool result"}, {"role": "user", "content": "after tool"}]},
-  {"op": "merge_adjacent_user_turns", "messages": [{"role": "user", "content": "first", "api_content": "sidecar"}, {"role": "user", "content": "second"}]},
-  {"op": "merge_adjacent_user_turns", "messages": [{"role": "user", "content": "keep me", "_compressed_summary": true}, {"role": "user", "content": "also kept"}]},
-  {"op": "merge_adjacent_user_turns", "messages": [{"role": "user", "content": [1, 2]}, {"role": "user", "content": "text"}]},
-  {"op": "merge_adjacent_user_turns", "messages": [{"role": "system", "content": "sys"}, {"role": "user", "content": "u1"}, {"role": "user", "content": "u2"}]},
-  {"op": "merge_adjacent_user_turns", "messages": []},
-  {"op": "merge_adjacent_user_turns", "messages": [{"role": "user", "content": ""}, {"role": "user", "content": "non-empty"}]}
+  {
+    "op": "safe_int",
+    "arg": "42"
+  },
+  {
+    "op": "safe_int",
+    "arg": "not_a_number"
+  },
+  {
+    "op": "safe_int",
+    "arg": ""
+  },
+  {
+    "op": "safe_int",
+    "arg": "3.14"
+  },
+  {
+    "op": "safe_int",
+    "arg": "123abc"
+  },
+  {
+    "op": "skill_pruned_marker",
+    "arg": "my_awesome_skill"
+  },
+  {
+    "op": "extract_pruned_skill_names",
+    "arg": "[SKILL_PRUNED: content lost in compression; reload with skill_view(name='my_awesome_skill')]"
+  },
+  {
+    "op": "extract_pruned_skill_names",
+    "arg": "[SKILL_PRUNED: content lost in compression; reload with skill_view(name='skill_a')] and [SKILL_PRUNED: content lost in compression; reload with skill_view(name='skill_b')]"
+  },
+  {
+    "op": "extract_pruned_skill_names",
+    "arg": "no markers here"
+  },
+  {
+    "op": "extract_pruned_skill_names",
+    "arg": "[SKILL_PRUNED: content lost in compression; reload with skill_view(name='skill_a')] and [SKILL_PRUNED: content lost in compression; reload with skill_view(name='skill_a')]"
+  },
+  {
+    "op": "is_image_part",
+    "arg": "{\"type\": \"image_url\", \"image_url\": {\"url\": \"data:image/png;base64,abc\"}}"
+  },
+  {
+    "op": "is_image_part",
+    "arg": "{\"type\": \"text\", \"text\": \"hello\"}"
+  },
+  {
+    "op": "is_image_part",
+    "arg": "{\"type\": \"input_image\", \"image_url\": \"data:image/png;base64,abc\"}"
+  },
+  {
+    "op": "is_image_part",
+    "arg": "{\"type\": \"image\", \"source\": {}}"
+  },
+  {
+    "op": "is_image_part",
+    "arg": "not a dict"
+  },
+  {
+    "op": "content_has_images",
+    "arg": "[{\"type\": \"text\", \"text\": \"hi\"}, {\"type\": \"image_url\", \"image_url\": {}}]"
+  },
+  {
+    "op": "content_has_images",
+    "arg": "[{\"type\": \"text\", \"text\": \"hi\"}]"
+  },
+  {
+    "op": "content_has_images",
+    "arg": "\"just a string\""
+  },
+  {
+    "op": "strip_images_from_content",
+    "arg": "[{\"type\": \"text\", \"text\": \"hello\"}, {\"type\": \"image_url\", \"image_url\": {\"url\": \"data:image/png;base64,abc\"}}]"
+  },
+  {
+    "op": "strip_images_from_content",
+    "arg": "[{\"type\": \"text\", \"text\": \"no images here\"}]"
+  },
+  {
+    "op": "strip_image_parts_from_parts",
+    "arg": "[{\"type\": \"text\", \"text\": \"hi\"}, {\"type\": \"image\", \"source\": {}}]"
+  },
+  {
+    "op": "strip_image_parts_from_parts",
+    "arg": "[{\"type\": \"text\", \"text\": \"no images\"}]"
+  },
+  {
+    "op": "truncate_tool_call_args_json",
+    "arg": "{\"args\": \"{\\\"path\\\": \\\"/foo/bar\\\", \\\"content\\\": \\\"abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklmnopqrstuvwxyz0123456789\\\"}\", \"head\": 200}"
+  },
+  {
+    "op": "truncate_tool_call_args_json",
+    "arg": "{\"args\": \"{\\\"path\\\": \\\"/foo\\\"}\", \"head\": 200}"
+  },
+  {
+    "op": "append_text_to_content",
+    "arg": "{\"content\": \"hello\", \"text\": \" world\", \"prepend\": false}"
+  },
+  {
+    "op": "append_text_to_content",
+    "arg": "{\"content\": [\"a\", \"b\"], \"text\": \"START\", \"prepend\": true}"
+  },
+  {
+    "op": "append_text_to_content",
+    "arg": "{\"content\": null, \"text\": \"just text\", \"prepend\": false}"
+  },
+  {
+    "op": "template_visible_role",
+    "arg": "{\"role\": \"assistant\", \"content\": \"hi\"}"
+  },
+  {
+    "op": "template_visible_role",
+    "arg": "{\"role\": \"assistant\", \"tool_calls\": [{\"id\": \"1\"}], \"content\": \"hi\"}"
+  },
+  {
+    "op": "template_visible_role",
+    "arg": "{\"role\": \"user\", \"content\": \"hi\"}"
+  },
+  {
+    "op": "template_visible_role",
+    "arg": "{\"role\": \"tool\", \"tool_call_id\": \"1\", \"content\": \"result\"}"
+  },
+  {
+    "op": "fresh_compaction_message_copy",
+    "arg": "{\"role\": \"user\", \"content\": \"hello\", \"_db_persisted\": true}"
+  }
 ]

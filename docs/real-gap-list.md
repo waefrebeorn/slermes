@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-07T14:27:15Z from `live_parity_scan.json` by `make parity-walkway`. **1,081 REAL_GAP across 204 modules** (of 14,045 total functions).
+> Generated 2026-08-07T21:21:17Z from `live_parity_scan.json` by `make parity-walkway`. **1,020 REAL_GAP across 199 modules** (of 14,045 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -28,10 +28,6 @@
 - _call_llm_impl (function)
 - async _async_call_llm_impl (function)
 
-### agent/billing_view.py (1 gaps)
-
-- _parse_payment_method (function)
-
 ### agent/chat_completion_helpers.py (3 gaps)
 
 - _context_thread_target (function)
@@ -43,16 +39,11 @@
 - is_coding_context (function)
 - project_facts_for (function)
 
-### agent/context_breakdown.py (6 gaps)
+### agent/context_breakdown.py (1 gaps)
 
-- _bytes_to_tokens (function)
 - compute_context_details (function)
-- render_context_grid (function)
-- render_context_category_lines (function)
-- render_context_details_lines (function)
-- render_context_breakdown_lines (function)
 
-### agent/context_compressor.py (24 gaps)
+### agent/context_compressor.py (23 gaps)
 
 - ContextCompressor._emit_init_summary_once (method)
 - ContextCompressor._resolve_context_length (method)
@@ -77,7 +68,6 @@
 - ContextCompressor._emit_micro_compaction_telemetry (method)
 - ContextCompressor._sync_micro_compact_to_db (method)
 - ContextCompressor._splice_micro_compact_result (method)
-- ContextCompressor._merge_adjacent_user_turns (method)
 
 ### agent/conversation_compression.py (18 gaps)
 
@@ -118,10 +108,6 @@
 - CredentialPool._refresh_pending_entries (method)
 - CredentialPool._acquire_lease_under_lock (method)
 
-### agent/credits_tracker.py (1 gaps)
-
-- new_credits_latch (function)
-
 ### agent/curator_backup.py (1 gaps)
 
 - _unstage (function)
@@ -157,24 +143,12 @@
 
 - is_trivial_prompt (function)
 
-### agent/message_sanitization.py (9 gaps)
-
-- deterministic_call_id (function)
-- coalesce_tool_call_id (function)
-- uniquify_tool_call_ids (function)
-- _family_rule (function)
-- matches_reasoning_echo_family (function)
-- reasoning_echo_family (function)
-- needs_reasoning_echo (function)
-- apply_reasoning_content_policy (function)
-- reapply_reasoning_echo (function)
-
 ### agent/moa_loop.py (2 gaps)
 
 - _completed_response_as_stream_chunk (function)
 - peel_reference_guidance (function)
 
-### agent/model_metadata.py (14 gaps)
+### agent/model_metadata.py (13 gaps)
 
 - _ensure_requests (function)
 - __getattr__ (function)
@@ -187,7 +161,6 @@
 - _local_probe_disk_get (function)
 - _local_probe_disk_put (function)
 - _warn_context_length_fallback (function)
-- _msg_fingerprint (function)
 - _estimate_message_tokens_cached (function)
 - _wire_message_shadow (function)
 
@@ -224,18 +197,10 @@
 - GatewayDiagnosticLogHandler.__init__ (method)
 - GatewayDiagnosticLogHandler.emit (method)
 
-### agent/monitoring/gateway_health_export.py (25 gaps)
+### agent/monitoring/gateway_health_export.py (17 gaps)
 
-- _redact_string (function)
-- _safe_resource_attributes (function)
-- _runtime_resource_attributes (function)
 - GatewayHealthExportRuntime.shutdown (method)
 - _require_metrics_sdk (function)
-- _resolve_headers (function)
-- _version (function)
-- _profile (function)
-- _install_id (function)
-- _supervision_mode (function)
 - _read_gateway_snapshot (function)
 - _read_cron_snapshot (function)
 - _read_background_work_count (function)
@@ -252,21 +217,17 @@
 - _gateway_health_event (function)
 - start_gateway_health_export (function)
 
-### agent/monitoring/otlp_exporter.py (14 gaps)
+### agent/monitoring/otlp_exporter.py (10 gaps)
 
 - _require_sdk (function)
-- _resolve_headers (function)
-- _otlp_config (function)
 - build_exporter (function)
 - _resource_attributes (function)
 - _make_provider (function)
-- _span_attrs (function)
 - export_batch (function)
 - OTLPStreamer.__init__ (method)
 - OTLPStreamer.__call__ (method)
 - OTLPStreamer.shutdown (method)
 - is_available (function)
-- is_enabled (function)
 - start_streaming (function)
 
 ### agent/monitoring/policy.py (1 gaps)
@@ -365,7 +326,7 @@
 - _add_prompt_cache_key (function)
 - _is_openai_api_base_url (function)
 
-### cli.py (25 gaps)
+### cli.py (23 gaps)
 
 - _worktree_merge_cache_path (function)
 - _load_worktree_merge_cache (function)
@@ -375,8 +336,6 @@
 - HermesCLI._turn_summary_begin (method)
 - HermesCLI._turn_summary_record (method)
 - HermesCLI._turn_summary_emit (method)
-- HermesCLI._status_bar_goal_segment (method)
-- HermesCLI._fmt_stash_age (method)
 - HermesCLI._render_stash_panel (method)
 - HermesCLI._restore_session_yolo (method)
 - HermesCLI._should_handle_background_command_inline (method)
@@ -424,10 +383,6 @@
 ### gateway/authz_mixin.py (1 gaps)
 
 - _platform_gate_env (function)
-
-### gateway/channel_directory.py (1 gaps)
-
-- _normalize_adapter_channels (function)
 
 ### gateway/kanban_watchers.py (2 gaps)
 
@@ -496,22 +451,9 @@
 
 - _get_scoped_secret (function)
 
-### gateway/platforms/helpers.py (14 gaps)
+### gateway/platforms/helpers.py (1 gaps)
 
 - compile_mention_patterns (function)
-- text_has_unclosed_fence (function)
-- text_ends_with_table_row (function)
-- is_fence_atom (function)
-- is_table_atom (function)
-- split_at_paragraph_boundary (function)
-- split_markdown_atoms (function)
-- infer_block_separator (function)
-- merge_streaming_fences (function)
-- balance_fences_across_chunks (function)
-- greedy_pack_blocks (function)
-- split_text_fence_aware (function)
-- _chunk_markdown_paragraphs (function)
-- _chunk_newline_preferred (function)
 
 ### gateway/platforms/media_cache.py (4 gaps)
 
@@ -663,11 +605,10 @@
 - summarize_holders (function)
 - release_orphaned_leases (function)
 
-### hermes_cli/agent_import.py (25 gaps)
+### hermes_cli/agent_import.py (24 gaps)
 
 - load_yaml_file (function)
 - dump_yaml_file (function)
-- parse_existing_memory_entries (function)
 - backup_memory_file (function)
 - default_source_dir (function)
 - detect_agents (function)
@@ -696,19 +637,13 @@
 - _effective_mode (function)
 - run_approval_mode_command (function)
 
-### hermes_cli/approvals_suggest.py (15 gaps)
+### hermes_cli/approvals_suggest.py (9 gaps)
 
-- Proposal.add_example (method)
 - default_db_path (function)
 - _connect_readonly (function)
 - _iter_terminal_calls (function)
 - _blocked_tool_call_ids (function)
 - scan_approval_history (function)
-- is_unsafe_class (function)
-- _unsafe_root_binary (function)
-- derive_glob (function)
-- build_proposals (function)
-- parse_apply_indices (function)
 - apply_proposals (function)
 - _render_text (function)
 - suggest_command (function)
@@ -1329,9 +1264,8 @@
 - ComputerUseBackend.typed_browser_prepare (method)
 - ComputerUseBackend.typed_browser_action (method)
 
-### tools/computer_use/cua_backend.py (15 gaps)
+### tools/computer_use/cua_backend.py (14 gaps)
 
-- _wsl_windows_path_to_posix (function)
 - _EmbeddedCuaDaemon.child_env (method)
 - _EmbeddedCuaDaemon._drain_stderr (method)
 - _EmbeddedCuaDaemon.proxy_invocation (method)
@@ -1606,13 +1540,11 @@
 - _available_source_summary (function)
 - validate_deferred_call_args (function)
 
-### tools/transcription_tools.py (19 gaps)
+### tools/transcription_tools.py (14 gaps)
 
 - _resolve_provider_key (function)
 - _resolve_stt_language (function)
 - _transcode_audio_for_stt (function)
-- _is_local_stt_provider (function)
-- _command_stt_env_passthrough (function)
 - _unregistered_stt_provider_error (function)
 - _validate_audio_file_size (function)
 - _validate_audio_source_file (function)
@@ -1620,12 +1552,9 @@
 - _sysctl_value (function)
 - _should_force_faster_whisper_cpu (function)
 - build_local_transcribe_kwargs (function)
-- _confidence_thresholds (function)
-- _is_hallucinated_segment (function)
 - _join_confident_segments (function)
 - _convert_caf_to_wav (function)
 - _transcribe_prepared_audio (function)
-- _is_local_or_private_url (function)
 - transcribe_audio_local_fallback (function)
 
 ### tools/tts_streaming.py (7 gaps)
@@ -1642,7 +1571,7 @@
 
 - _normalize_temperature_ranges (function)
 
-### tools/tts_tool.py (16 gaps)
+### tools/tts_tool.py (15 gaps)
 
 - _resolve_provider_key (function)
 - _elevenlabs_environment_kwargs (function)
@@ -1652,7 +1581,6 @@
 - _read_tts_response_json (function)
 - _write_tts_response_to_file (function)
 - _resolve_minimax_tts_runtime (function)
-- _command_provider_env_passthrough (function)
 - _ffmpeg_transcode_to_opus (function)
 - _sniff_audio_container (function)
 - _repair_ogg_container (function)
@@ -1660,10 +1588,6 @@
 - _SyncSentencePipeline.__init__ (method)
 - _SyncSentencePipeline._synthesize_to_tmp (method)
 - _SyncSentencePipeline._drain (method)
-
-### tools/url_safety.py (1 gaps)
-
-- _resolve_allow_private_urls (function)
 
 ### tools/vision_tools.py (1 gaps)
 
