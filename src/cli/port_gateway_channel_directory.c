@@ -111,6 +111,124 @@ static void apply_channel_aliases(json_t *platforms)
     json_free(aliases);
 }
 
+/* PoP: _normalize_adapter_channels @ gateway/channel_directory.py:_normalize_adapter_channels */
+/* Validate and dedupe channel entries from an adapter's list_channels().
+ * Input: JSON array of channel objects. Output: malloc'd JSON array of
+ * {id, name, type, [thread_id], [guild]} entries, deduped by id. */
+json_t *normalize_adapter_channels(const char *raw_json)
+{
+    json_t *out = json_array();
+    if (!raw_json) return out;
+    char *err = NULL;
+    json_t *raw = json_parse(raw_json, &err);
+    if (err) free(err);
+    if (!raw || raw->type != JSON_ARRAY) {
+        if (raw) json_free(raw);
+        return out;
+    }
+    json_t *seen = json_object();  /* dedup by channel id */
+    size_t n = json_array_size(raw);
+    for (size_t i = 0; i < n; i++) {
+        json_t *c = json_array_get(raw, i);
+        if (!c || c->type != JSON_OBJECT) continue;
+        /* id = str(raw.get("id") or "").strip() */
+        json_t *vid = json_obj_get(c, "id");
+        char id_buf[256] = "";
+        if (vid && vid->type == JSON_STRING) {
+            strncpy(id_buf, vid->str_val, sizeof(id_buf) - 1);
+            id_buf[sizeof(id_buf)-1] = '\0';
+        }
+        /* strip whitespace */
+        char *id_s = id_buf;
+        while (*id_s == ' ' || *id_s == '\t' || *id_s == '\n' || *id_s == '\r') id_s++;
+        char *id_e = id_s + strlen(id_s);
+        while (id_e > id_s && (id_e[-1] == ' ' || id_e[-1] == '\t' || id_e[-1] == '\n' || id_e[-1] == '\r')) id_e--;
+        int id_len = (int)(id_e - id_s);
+        if (id_len <= 0) continue;
+
+        /* name = str(raw.get("name") or channel_id).strip() */
+        json_t *vnm = json_obj_get(c, "name");
+        char nm_buf[256] = "";
+        if (vnm) {
+            if (vnm->type == JSON_STRING && vnm->str_val) {
+                strncpy(nm_buf, vnm->str_val, sizeof(nm_buf) - 1);
+                nm_buf[sizeof(nm_buf)-1] = '\0';
+            } else if (vnm->type == JSON_NUMBER) {
+                snprintf(nm_buf, sizeof(nm_buf), "%g", vnm->num_val);
+            }
+        }
+        /* If name key is absent/null and we didn't fill anything, default
+         * to channel_id (Python: raw.get("name") or channel_id). */
+        if (!vnm || (vnm->type == JSON_NULL)) {
+            snprintf(nm_buf, sizeof(nm_buf), "%.*s", (int)id_len, id_s);
+        }
+        char *nm_s = nm_buf;
+        while (*nm_s == ' ' || *nm_s == '\t' || *nm_s == '\n' || *nm_s == '\r') nm_s++;
+        char *nm_e = nm_s + strlen(nm_s);
+        while (nm_e > nm_s && (nm_e[-1] == ' ' || nm_e[-1] == '\t' || nm_e[-1] == '\n' || nm_e[-1] == '\r')) nm_e--;
+        int name_len = (int)(nm_e - nm_s);
+        /* Python: empty name after strip -> skip entry (not channel_id).
+         * Only absent/null name falls back to channel_id (done above). */
+        if (name_len <= 0) continue;  /* skip: name empty after strip */
+
+        /* type = str(raw.get("type") or "dm") */
+        json_t *vty = json_obj_get(c, "type");
+        const char *type_val = "dm";
+        if (vty && vty->type == JSON_STRING && vty->str_val && *vty->str_val)
+            type_val = vty->str_val;
+
+        /* seen_ids check */
+        if (json_obj_get(seen, id_s) != NULL) continue;
+        json_set(seen, id_s, json_bool(1));
+
+        json_t *e = json_object();
+        /* build id string from stripped range */
+        char id_str[256];
+        int l = (id_len < 255) ? id_len : 255;
+        memcpy(id_str, id_s, l); id_str[l] = '\0';
+        json_set(e, "id", json_string(id_str));
+
+        char nm_str[256];
+        int nl = (int)(nm_e - nm_s); if (nl > 255) nl = 255;
+        memcpy(nm_str, nm_s, nl); nm_str[nl] = '\0';
+        json_set(e, "name", json_string(nm_str));
+
+        json_set(e, "type", json_string(type_val));
+
+        /* thread_id (optional): str(raw.get("thread_id")) */
+        json_t *vth = json_obj_get(c, "thread_id");
+        if (vth) {
+            if (vth->type == JSON_STRING && vth->str_val)
+                json_set(e, "thread_id", json_string(vth->str_val));
+            else if (vth->type == JSON_NUMBER) {
+                /* str(number) in Python: int without trailing .0 */
+                double d = vth->num_val;
+                if (d == (double)(long long)d) {
+                    char buf[64];
+                    snprintf(buf, sizeof(buf), "%lld", (long long)d);
+                    json_set(e, "thread_id", json_string(buf));
+                } else {
+                    json_set(e, "thread_id", json_string(json_dumps(vth, 0)));
+                }
+            } else if (vth->type == JSON_BOOL)
+                json_set(e, "thread_id", json_string(vth->bool_val ? "True" : "False"));
+            else if (vth->type == JSON_NULL)
+                ; /* skip */
+            else
+                json_set(e, "thread_id", json_copy(vth));
+        }
+        /* guild (optional) */
+        json_t *vg = json_obj_get(c, "guild");
+        if (vg && vg->type == JSON_STRING && vg->str_val)
+            json_set(e, "guild", json_string(vg->str_val));
+
+        json_append(out, e);
+    }
+    json_free(seen);
+    json_free(raw);
+    return out;
+}
+
 /*
  * PoP: _normalize_channel_query @ gateway/channel_directory.py:_normalize_channel_query */
 static void normalize_channel_query(const char *value, char *out, size_t outsz)

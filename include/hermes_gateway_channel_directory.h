@@ -48,4 +48,9 @@ char *normalize_channel_query(const char *value);
  * Returns malloc'd string ("chat_id:thread_id" or "chat_id"). Caller must free. */
 char *session_entry_id(const char *chat_id, const char *thread_id);
 
+/* PoP: _normalize_adapter_channels @ gateway/channel_directory.py:_normalize_adapter_channels */
+/* Validate and dedupe channel entries from adapter list_channels() JSON.
+ * Returns malloc'd JSON array of {id, name, type, [thread_id], [guild]}. */
+json_t *normalize_adapter_channels(const char *raw_json);
+
 #endif /* HERMES_GATEWAY_CHANNEL_DIRECTORY_H */

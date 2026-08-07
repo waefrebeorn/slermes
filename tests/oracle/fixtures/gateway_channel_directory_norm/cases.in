@@ -1,0 +1,14 @@
+[
+  {"op": "normalize_adapter_channels", "value": []},
+  {"op": "normalize_adapter_channels", "value": "not a list"},
+  {"op": "normalize_adapter_channels", "value": [42, "string", null]},
+  {"op": "normalize_adapter_channels", "value": [{"id": "C1", "name": "General", "type": "channel"}]},
+  {"op": "normalize_adapter_channels", "value": [{"id": "C2", "type": "dm"}]},
+  {"op": "normalize_adapter_channels", "value": [{"name": "NoID"}]},
+  {"op": "normalize_adapter_channels", "value": [{"id": "", "name": "Empty"}]},
+  {"op": "normalize_adapter_channels", "value": [{"id": "C1", "name": "First"}, {"id": "C1", "name": "Duplicate"}]},
+  {"op": "normalize_adapter_channels", "value": [{"id": "C3", "name": "  Spaced  ", "type": "forum", "guild": "MyGuild", "thread_id": "T99"}]},
+  {"op": "normalize_adapter_channels", "value": [{"id": "C4", "name": "ThrInt", "thread_id": 12345}]},
+  {"op": "normalize_adapter_channels", "value": [{"id": "C5", "name": "NoType"}]},
+  {"op": "normalize_adapter_channels", "value": [{"id": "C6", "name": "  "}, {"id": "C7", "name": "OK"}]}
+]
