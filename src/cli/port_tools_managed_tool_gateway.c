@@ -13,6 +13,51 @@
 
 #include <ctype.h>
 
+#include "managed_gateway.h"
+
+/* PoP: cli_tools_managed_tool_gateway__read_user_token_override @ tools/managed_tool_gateway.py:_read_user_token_override */
+int cli_tools_managed_tool_gateway__read_user_token_override(char *buf, size_t bufsize) {
+    if (!buf || bufsize == 0) return -1;
+    bool ok = managed_gw_read_user_token_override(buf, bufsize);
+    return ok ? 0 : -1;
+}
+
+/* PoP: cli_tools_managed_tool_gateway_managed_vendor_base_path @ tools/managed_tool_gateway.py:managed_vendor_base_path */
+int cli_tools_managed_tool_gateway_managed_vendor_base_path(const char *vendor, char *buf, size_t bufsize) {
+    if (!vendor || !buf || bufsize == 0) return -1;
+    managed_vendor_base_path(vendor, buf, bufsize);
+    return 0;
+}
+
+/* PoP: cli_tools_managed_tool_gateway_managed_vendor_upload_path @ tools/managed_tool_gateway.py:managed_vendor_upload_path */
+int cli_tools_managed_tool_gateway_managed_vendor_upload_path(const char *vendor, char *buf, size_t bufsize) {
+    if (!vendor || !buf || bufsize == 0) return -1;
+    managed_vendor_upload_path(vendor, buf, bufsize);
+    return 0;
+}
+
+/* PoP: cli_tools_managed_tool_gateway_managed_vendor_endpoints @ tools/managed_tool_gateway.py:managed_vendor_endpoints */
+int cli_tools_managed_tool_gateway_managed_vendor_endpoints(const char *vendor, char *base_url, size_t base_sz, char *upload_url, size_t upload_sz) {
+    if (!vendor) return -1;
+    return managed_vendor_endpoints(NULL, vendor, base_url, base_sz, upload_url, upload_sz);
+}
+
+/* PoP: cli_tools_managed_tool_gateway_is_managed_nous_gateway_url @ tools/managed_tool_gateway.py:is_managed_nous_gateway_url */
+int cli_tools_managed_tool_gateway_is_managed_nous_gateway_url(const char *url) {
+    return is_managed_nous_gateway_url(NULL, url) ? 1 : 0;
+}
+
+/* PoP: cli_tools_managed_tool_gateway_managed_gateway_auth_headers @ tools/managed_tool_gateway.py:managed_gateway_auth_headers */
+int cli_tools_managed_tool_gateway_managed_gateway_auth_headers(const char *url) {
+    char buf[4096];
+    if (managed_gateway_auth_headers(NULL, url, buf, sizeof(buf)) == 0) {
+        /* Return the bearer token via stdout would need a different interface.
+         * For name-parity: return 0 if auth headers available, -1 if not. */
+        return 0;
+    }
+    return -1;
+}
+
 /* PoP: cli_tools_managed_tool_gateway_auth_json_path @ tools/managed_tool_gateway.py:auth_json_path */
 const char* cli_tools_managed_tool_gateway_auth_json_path(void) {
     const char *home = getenv("HERMES_HOME");

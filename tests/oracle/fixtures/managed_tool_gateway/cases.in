@@ -1,0 +1,13 @@
+[
+  {"op": "managed_vendor_base_path", "vendor": "bfl"},
+  {"op": "managed_vendor_base_path", "vendor": "fal"},
+  {"op": "managed_vendor_upload_path", "vendor": "bfl"},
+  {"op": "managed_vendor_upload_path", "vendor": "fal"},
+  {"op": "managed_vendor_base_path", "vendor": "bad/vendor"},
+  {"op": "is_managed_nous_gateway_url", "url": "https://tool-gateway.nousresearch.com/api/bfl"},
+  {"op": "is_managed_nous_gateway_url", "url": "https://evil.example.com/api/bfl"},
+  {"op": "is_managed_nous_gateway_url", "url": "not a url"},
+  {"op": "is_managed_nous_gateway_url", "url": "http://tool-gateway.nousresearch.com/generations"},
+  {"op": "managed_gateway_auth_headers", "url": "https://evil.example.com/api/bfl"},
+  {"op": "_read_user_token_override"}
+]

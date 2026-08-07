@@ -97,6 +97,31 @@ bool managed_gw_resolve(const char *hermes_home,
  */
 bool managed_gw_is_ready(const char *hermes_home, const char *vendor);
 
+/* ─── Vendor paths ────────────────────────────────────────── */
+
+/* Base path for a managed vendor's REST routes: "/api/<vendor>". */
+void managed_vendor_base_path(const char *vendor, char *buf, size_t sz);
+
+/* Media upload endpoint: "/api/uploads/<vendor>". */
+void managed_vendor_upload_path(const char *vendor, char *buf, size_t sz);
+
+/* Resolve absolute URLs for a managed vendor. -1 if no origin. */
+int managed_vendor_endpoints(const char *hermes_home, const char *vendor,
+                              char *base_url, size_t base_sz,
+                              char *upload_url, size_t upload_sz);
+
+/* True when url is on the Nous tool-gateway origin this client builds. */
+bool is_managed_nous_gateway_url(const char *hermes_home, const char *url);
+
+/* Live auth headers. Writes "Bearer <token>" into out_buf (0 on success, -1 no token). */
+int managed_gateway_auth_headers(const char *hermes_home, const char *url,
+                                  char *out_buf, size_t sz);
+
+/* ─── Access token override ─────────────────────────────── */
+
+/* Read the TOOL_GATEWAY_USER_TOKEN env override (honors secret scope). */
+bool managed_gw_read_user_token_override(char *buf, size_t sz);
+
 #ifdef __cplusplus
 }
 #endif

@@ -32,6 +32,11 @@
       "oracle": "tests/sta_oracle_shared_metrics.py",
       "fixtures": "tests/oracle/fixtures/shared_metrics"
     },
+    "managed_tool_gateway": {
+      "harness": "tests/t_port_managed_tool_gateway.c",
+      "oracle": "tests/sta_oracle_managed_tool_gateway.py",
+      "fixtures": "tests/oracle/fixtures/managed_tool_gateway"
+    },
     "agent_display": {
       "harness": "tests/t_port_agent_display.c",
       "oracle": "tests/sta_oracle_agent_display.py",
