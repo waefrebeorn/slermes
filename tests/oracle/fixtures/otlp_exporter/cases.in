@@ -1,0 +1,13 @@
+[
+  {"op": "_otlp_config", "value": "{\"monitoring\": {\"export\": {\"otlp\": {\"enabled\": true, \"endpoint\": \"http://localhost:4318/v1/traces\"}}}}"},
+  {"op": "_otlp_config", "value": "{\"monitoring\": {}}"},
+  {"op": "_resolve_headers", "value": "{\"Authorization\": \"OTLP_AUTH_TOKEN\"}"},
+  {"op": "_resolve_headers", "value": "{}"},
+  {"op": "_span_attrs", "value": "{\"event\": \"gateway_health\", \"name\": \"gateway\", \"exit_reason\": null, \"active_agents\": 3, \"gateway_busy\": true, \"platform_count\": 2}"},
+  {"op": "_span_attrs", "value": "{\"event\": \"gateway_diagnostic\", \"name\": \"diag\", \"error_code\": 500, \"severity\": \"error\"}"},
+  {"op": "_span_attrs", "value": "{\"event\": \"cron_execution\", \"job_key\": \"cleanup\", \"status\": \"ok\", \"duration_ms\": 1250}"},
+  {"op": "_span_attrs", "value": "{\"event\": \"unknown\"}"},
+  {"op": "is_enabled", "value": "{\"monitoring\": {\"export\": {\"otlp\": {\"enabled\": true, \"endpoint\": \"http://localhost:4318/v1/traces\"}}}}"},
+  {"op": "is_enabled", "value": "{\"monitoring\": {\"export\": {\"otlp\": {\"enabled\": false}}}}"},
+  {"op": "is_enabled", "value": "{}"}
+]
