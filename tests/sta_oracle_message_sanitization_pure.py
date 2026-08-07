@@ -1,8 +1,9 @@
 """Oracle for agent/message_sanitization.py pure helpers."""
 import json, os, sys
 
-DEV_ROOT = os.environ.get("HERMES_DEV_ROOT") or os.path.expanduser("~/.hermes/hermes-agent")
-sys.path.insert(0, DEV_ROOT)
+DEV_ROOT = os.environ.get("HERMES_DEV_ROOT")
+if DEV_ROOT:
+    sys.path.insert(0, DEV_ROOT)
 
 from agent.message_sanitization import (
     _family_rule,
@@ -11,6 +12,9 @@ from agent.message_sanitization import (
     needs_reasoning_echo,
     deterministic_call_id,
     coalesce_tool_call_id,
+    apply_reasoning_content_policy,
+    reapply_reasoning_echo,
+    uniquify_tool_call_ids,
 )
 
 
@@ -39,6 +43,21 @@ def run(c):
     if op == "ms_coalesce_tool_call_id":
         r = coalesce_tool_call_id(c.get("value"))
         return r if r else ""
+    if op == "ms_apply_reasoning_content_policy":
+        src = dict(c.get("source", {}))
+        api = dict(c.get("api", {}))
+        ntp = c.get("needs_thinking_pad", False)
+        apply_reasoning_content_policy(src, api, ntp)
+        return json.dumps(api, sort_keys=True)
+    if op == "ms_reapply_reasoning_echo":
+        msgs = json.loads(json.dumps(c.get("messages", [])))
+        ntp = c.get("needs_thinking_pad", False)
+        changed = reapply_reasoning_echo(msgs, ntp)
+        return f"{changed}\n{json.dumps(msgs, sort_keys=True)}"
+    if op == "ms_uniquify_tool_call_ids":
+        tcs = json.loads(json.dumps(c.get("value", [])))
+        uniquify_tool_call_ids(tcs)
+        return json.dumps(tcs, sort_keys=True)
     return None
 
 

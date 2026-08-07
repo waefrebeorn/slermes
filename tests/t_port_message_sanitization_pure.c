@@ -57,6 +57,46 @@ int main(int argc, char **argv) {
             json_t *vj = json_obj_get(c, "value");
             const char *r = msg_sanitize_coalesce_tool_call_id(vj);
             printf("%s\n", r);
+        } else if (strcmp(name, "ms_apply_reasoning_content_policy") == 0) {
+            char *src = NULL, *api = NULL;
+            json_t *vj = json_obj_get(c, "source");
+            if (vj) src = json_serialize(vj);
+            vj = json_obj_get(c, "api");
+            if (vj) api = json_serialize(vj);
+            int ntp = json_get_bool(c, "needs_thinking_pad", false);
+            json_t *src_obj = src ? json_parse(src, NULL) : NULL;
+            json_t *api_obj = api ? json_parse(api, NULL) : NULL;
+            msg_sanitize_apply_reasoning_content_policy(src_obj, api_obj, ntp);
+            char *out = api_obj ? json_serialize(api_obj) : strdup("{}");
+            printf("%s\n", out);
+            free(out);
+            if (src) free(src);
+            if (api) free(api);
+            if (src_obj) json_free(src_obj);
+            if (api_obj) json_free(api_obj);
+        } else if (strcmp(name, "ms_reapply_reasoning_echo") == 0) {
+            char *msgs = NULL;
+            json_t *vj = json_obj_get(c, "messages");
+            if (vj) msgs = json_serialize(vj);
+            int ntp = json_get_bool(c, "needs_thinking_pad", false);
+            json_t *arr = msgs ? json_parse(msgs, NULL) : NULL;
+            int changed = msg_sanitize_reapply_reasoning_echo(arr, ntp);
+            char *out = arr ? json_serialize(arr) : strdup("[]");
+            printf("%d\n%s\n", changed, out);
+            free(out);
+            if (msgs) free(msgs);
+            if (arr) json_free(arr);
+        } else if (strcmp(name, "ms_uniquify_tool_call_ids") == 0) {
+            char *tcs = NULL;
+            json_t *vj = json_obj_get(c, "value");
+            if (vj) tcs = json_serialize(vj);
+            json_t *arr = tcs ? json_parse(tcs, NULL) : NULL;
+            msg_sanitize_uniquify_tool_call_ids(arr);
+            char *out = arr ? json_serialize(arr) : strdup("[]");
+            printf("%s\n", out);
+            free(out);
+            if (tcs) free(tcs);
+            if (arr) json_free(arr);
         }
     }
     json_free(root);

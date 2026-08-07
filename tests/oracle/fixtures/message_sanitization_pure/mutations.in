@@ -1,0 +1,16 @@
+[
+  {"op": "ms_apply_reasoning_content_policy", "source": {"role": "assistant", "reasoning_content": ""}, "api": {}, "needs_thinking_pad": true},
+  {"op": "ms_apply_reasoning_content_policy", "source": {"role": "assistant", "reasoning_content": "thinking thoughts"}, "api": {}, "needs_thinking_pad": true},
+  {"op": "ms_apply_reasoning_content_policy", "source": {"role": "assistant", "reasoning_content": "thinking thoughts"}, "api": {}, "needs_thinking_pad": false},
+  {"op": "ms_apply_reasoning_content_policy", "source": {"role": "user"}, "api": {}, "needs_thinking_pad": true},
+  {"op": "ms_apply_reasoning_content_policy", "source": {"role": "assistant", "tool_calls": [{"id": "a"}], "reasoning": "hidden thoughts"}, "api": {}, "needs_thinking_pad": true},
+  {"op": "ms_apply_reasoning_content_policy", "source": {"role": "assistant", "reasoning": "visible thoughts"}, "api": {}, "needs_thinking_pad": true},
+  {"op": "ms_apply_reasoning_content_policy", "source": {"role": "assistant", "reasoning": "visible thoughts"}, "api": {}, "needs_thinking_pad": false},
+  {"op": "ms_apply_reasoning_content_policy", "source": {"role": "assistant"}, "api": {}, "needs_thinking_pad": true},
+  {"op": "ms_apply_reasoning_content_policy", "source": {"role": "assistant", "reasoning_content": null}, "api": {"reasoning_content": " "}, "needs_thinking_pad": false},
+  {"op": "ms_reapply_reasoning_echo", "messages": [{"role": "assistant", "reasoning_content": "x"}, {"role": "user"}, {"role": "assistant"}], "needs_thinking_pad": false},
+  {"op": "ms_reapply_reasoning_echo", "messages": [{"role": "assistant"}, {"role": "user"}, {"role": "assistant", "reasoning_content": " "}], "needs_thinking_pad": true},
+  {"op": "ms_uniquify_tool_call_ids", "value": [{"id": "call_a"}, {"id": "call_a"}, {"id": "call_b"}, {"id": "call_a|fc_1"}]},
+  {"op": "ms_uniquify_tool_call_ids", "value": [{"id": "x"}, {"id": "y"}, {"id": "z"}]},
+  {"op": "ms_uniquify_tool_call_ids", "value": [{"call_id": "call_a"}, {"call_id": "call_a"}]}
+]

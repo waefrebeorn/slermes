@@ -148,8 +148,8 @@ bool msg_sanitize_needs_reasoning_echo(
     return msg_sanitize_reasoning_echo_family(provider, model, base_url) != NULL;
 }
 
-/* PoP: deterministic_call_id @ agent/message_sanitization.py:deterministic_call_id
- * Returns "call_" + first 12 hex chars of sha256("fn_name:arguments:index"). */
+/* PoP: deterministic_call_id @ agent/message_sanitization.py:deterministic_call_id */
+/* Returns "call_" + first 12 hex chars of sha256("fn:args:index"). */
 char *msg_sanitize_deterministic_call_id(const char *fn_name,
                                           const char *arguments,
                                           int index) {
@@ -198,4 +198,199 @@ const char *msg_sanitize_coalesce_tool_call_id(const json_t *tc) {
         }
     }
     return "";
+}
+
+/* PoP: apply_reasoning_content_policy @ agent/message_sanitization.py:apply_reasoning_content_policy */
+/* Mutates api_msg JSON object in place following the 5-case policy. */
+int msg_sanitize_apply_reasoning_content_policy(json_t *source_msg, json_t *api_msg, int needs_thinking_pad)
+{
+    if (!source_msg || !api_msg || source_msg->type != JSON_OBJECT || api_msg->type != JSON_OBJECT)
+        return 0;
+
+    const char *role = json_get_str(source_msg, "role", "");
+    if (strcmp(role, "assistant") != 0)
+        return 0;
+
+    json_t *existing = json_obj_get(source_msg, "reasoning_content");
+    int changed = 0;
+
+    if (existing && existing->type == JSON_STRING) {
+        const char *val = existing->str_val;
+        if (!needs_thinking_pad) {
+            if (json_obj_get(api_msg, "reasoning_content")) {
+                json_obj_del(api_msg, "reasoning_content");
+                changed = 1;
+            }
+        } else if (val && strcmp(val, "") == 0) {
+            json_set(api_msg, "reasoning_content", json_string(" "));
+            changed = 1;
+        } else {
+            json_set(api_msg, "reasoning_content", json_string(val));
+            changed = 1;
+        }
+        return changed;
+    }
+
+    /* Case 2: cross-provider poisoned history */
+    json_t *reasoning = json_obj_get(source_msg, "reasoning");
+    json_t *tool_calls = json_obj_get(source_msg, "tool_calls");
+    if (needs_thinking_pad && tool_calls && tool_calls->type == JSON_ARRAY &&
+        tool_calls->c.count > 0 && reasoning && reasoning->type == JSON_STRING &&
+        reasoning->str_val && *reasoning->str_val) {
+        json_set(api_msg, "reasoning_content", json_string(" "));
+        return 1;
+    }
+
+    /* Case 3: promote 'reasoning' field to 'reasoning_content' */
+    if (reasoning && reasoning->type == JSON_STRING && reasoning->str_val && *reasoning->str_val) {
+        if (needs_thinking_pad) {
+            json_set(api_msg, "reasoning_content", json_string(reasoning->str_val));
+            changed = 1;
+        } else {
+            if (json_obj_get(api_msg, "reasoning_content")) {
+                json_obj_del(api_msg, "reasoning_content");
+                changed = 1;
+            }
+        }
+        return changed;
+    }
+
+    /* Case 4: inject single space for thinking-mode providers */
+    if (needs_thinking_pad) {
+        json_set(api_msg, "reasoning_content", json_string(" "));
+        return 1;
+    }
+
+    /* Case 5: not a string (e.g. None after compaction) */
+    if (json_obj_get(api_msg, "reasoning_content")) {
+        json_obj_del(api_msg, "reasoning_content");
+        changed = 1;
+    }
+    return changed;
+}
+
+/* PoP: reapply_reasoning_echo @ agent/message_sanitization.py:reapply_reasoning_echo */
+int msg_sanitize_reapply_reasoning_echo(json_t *api_messages, int needs_thinking_pad)
+{
+    if (!api_messages || api_messages->type != JSON_ARRAY)
+        return 0;
+
+    int changed = 0;
+    for (size_t i = 0; i < api_messages->c.count; i++) {
+        json_t *msg = json_get(api_messages, i);
+        if (!msg || msg->type != JSON_OBJECT) continue;
+        const char *role = json_get_str(msg, "role", "");
+        if (strcmp(role, "assistant") != 0) continue;
+
+        if (needs_thinking_pad) {
+            const char *rc = json_get_str(msg, "reasoning_content", "");
+            if (rc && *rc) continue;  /* already has reasoning_content */
+            msg_sanitize_apply_reasoning_content_policy(msg, msg, needs_thinking_pad);
+            const char *now = json_get_str(msg, "reasoning_content", "");
+            if (now && *now) changed++;
+        } else {
+            if (json_obj_get(msg, "reasoning_content")) {
+                json_obj_del(msg, "reasoning_content");
+                changed++;
+            }
+        }
+    }
+    return changed;
+}
+
+/* PoP: uniquify_tool_call_ids @ agent/message_sanitization.py:uniquify_tool_call_ids */
+/* Mutates tool_calls array in place (dicts get _d<n> suffixes on collision). */
+json_t *msg_sanitize_uniquify_tool_call_ids(json_t *tool_calls)
+{
+    if (!tool_calls || tool_calls->type != JSON_ARRAY)
+        return tool_calls;
+
+    /* Collect seen IDs (simple linked list of strdup'd strings). */
+    char *seen[256];
+    size_t nseen = 0;
+
+    for (size_t i = 0; i < tool_calls->c.count; i++) {
+        json_t *tc = json_get(tool_calls, i);
+        if (!tc || tc->type != JSON_OBJECT) continue;
+
+        /* Extract raw id */
+        const char *raw = NULL;
+        json_t *call_id = json_obj_get(tc, "call_id");
+        json_t *id = json_obj_get(tc, "id");
+        if (call_id && call_id->type == JSON_STRING && call_id->str_val)
+            raw = call_id->str_val;
+        else if (id && id->type == JSON_STRING && id->str_val)
+            raw = id->str_val;
+
+        if (!raw || !*raw) continue;
+
+        char *raw_copy = strdup(raw);
+        /* strip */
+        char *end = raw_copy + strlen(raw_copy);
+        while (end > raw_copy && isspace((unsigned char)*(end-1))) *--end = '\0';
+        char *start = raw_copy;
+        while (*start && isspace((unsigned char)*start)) start++;
+        memmove(raw_copy, start, strlen(start) + 1);
+
+        if (!*raw_copy) { free(raw_copy); continue; }
+
+        /* Composite id: split on | */
+        char *cid = raw_copy;
+        char *pipe = strchr(cid, '|');
+        if (pipe) *pipe = '\0';  /* cid = first part */
+
+        if (!*cid) { free(raw_copy); continue; }
+
+        /* Check if cid is already seen */
+        int found = 0;
+        for (size_t s = 0; s < nseen; s++) {
+            if (strcmp(cid, seen[s]) == 0) { found = 1; break; }
+        }
+        if (!found) {
+            if (nseen < 256) seen[nseen++] = strdup(cid);
+            free(raw_copy);
+            continue;
+        }
+
+        /* Collision — generate _d<n> suffix, increment until unique */
+        long n_suf = 2;
+        char new_id[256];
+        while (1) {
+            snprintf(new_id, sizeof(new_id), "%s_d%ld", cid, n_suf);
+            int hit = 0;
+            for (size_t s = 0; s < nseen; s++) {
+                if (strcmp(new_id, seen[s]) == 0) { hit = 1; break; }
+            }
+            if (!hit) break;
+            n_suf++;
+        }
+
+        if (nseen < 256) seen[nseen++] = strdup(new_id);
+
+        /* Apply rename — preserve composite suffix */
+        char *renamed = strdup(new_id);
+        if (pipe) {
+            /* Reconstruct: new_id|second_part */
+            char *recon = malloc(strlen(new_id) + 1 + strlen(pipe + 1) + 1);
+            sprintf(recon, "%s|%s", new_id, pipe + 1);
+            free(renamed);
+            renamed = recon;
+        }
+
+        /* Set on tc */
+        if (id) {
+            json_set(tc, "id", json_string(renamed));
+        } else {
+            json_set(tc, "id", json_string(renamed));
+        }
+        if (call_id) {
+            json_set(tc, "call_id", json_string(new_id));
+        }
+
+        free(renamed);
+        free(raw_copy);
+    }
+
+    for (size_t s = 0; s < nseen; s++) free(seen[s]);
+    return tool_calls;
 }

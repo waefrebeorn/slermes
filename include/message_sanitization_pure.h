@@ -31,4 +31,17 @@ char *msg_sanitize_deterministic_call_id(const char *fn_name,
 /* PoP: coalesce_tool_call_id @ agent/message_sanitization.py:coalesce_tool_call_id */
 const char *msg_sanitize_coalesce_tool_call_id(const json_t *tc);
 
+/* PoP: apply_reasoning_content_policy @ agent/message_sanitization.py:apply_reasoning_content_policy */
+/* Mutates api_msg JSON object in place. Returns 1 if reasoning_content added/changed, 0 otherwise. */
+int msg_sanitize_apply_reasoning_content_policy(json_t *source_msg, json_t *api_msg, int needs_thinking_pad);
+
+/* PoP: reapply_reasoning_echo @ agent/message_sanitization.py:reapply_reasoning_echo */
+/* Reconciles assistant turns' reasoning_content for the active provider.
+ * Mutates api_messages array in place. Returns count of changed turns. */
+int msg_sanitize_reapply_reasoning_echo(json_t *api_messages, int needs_thinking_pad);
+
+/* PoP: uniquify_tool_call_ids @ agent/message_sanitization.py:uniquify_tool_call_ids */
+/* Mutates tool_calls array in place. Returns the list (unchanged pointer). */
+json_t *msg_sanitize_uniquify_tool_call_ids(json_t *tool_calls);
+
 #endif

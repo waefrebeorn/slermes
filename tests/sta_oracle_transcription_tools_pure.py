@@ -4,8 +4,8 @@ Tests against LIVE Python source.
 """
 import json, os, sys
 
-DEV_ROOT = os.environ.get("HERMES_DEV_ROOT") or os.path.expanduser("~/.hermes/hermes-agent")
-if DEV_ROOT not in sys.path:
+DEV_ROOT = os.environ.get("HERMES_DEV_ROOT")
+if DEV_ROOT and DEV_ROOT not in sys.path:
     sys.path.insert(0, DEV_ROOT)
 
 from tools.transcription_tools import (
