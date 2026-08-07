@@ -12,6 +12,8 @@ from tools.transcription_tools import (
     _is_local_stt_provider,
     _command_stt_env_passthrough,
     _is_local_or_private_url,
+    _confidence_thresholds,
+    _is_hallucinated_segment,
 )
 
 
@@ -29,6 +31,19 @@ def run(c):
         if not result:
             return "[]"
         return "[" + ", ".join(result) + "]"
+    if op == "ts_confidence_thresholds":
+        cfg = c.get("value", {})
+        if isinstance(cfg, str):
+            cfg = json.loads(cfg)
+        nsp, lp = _confidence_thresholds(cfg)
+        return f"{nsp:.17g},{lp:.17g}"
+    if op == "ts_is_hallucinated_segment":
+        seg = c.get("value", {})
+        if isinstance(seg, str):
+            seg = json.loads(seg)
+        nsp = c.get("no_speech_threshold", 0.6)
+        lp = c.get("logprob_threshold", -1.0)
+        return _is_hallucinated_segment(seg, nsp, lp)
     return None
 
 

@@ -15,4 +15,13 @@ char **ts_command_stt_env_passthrough(const char *config_json, int *out_count);
 /* PoP: _is_local_or_private_url @ tools/transcription_tools.py:_is_local_or_private_url */
 bool ts_is_local_or_private_url(const char *url);
 
+/* PoP: _confidence_thresholds @ tools/transcription_tools.py:_confidence_thresholds */
+void ts_confidence_thresholds(const char *stt_config_json,
+                               double *no_speech_out, double *logprob_out);
+
+/* PoP: _is_hallucinated_segment @ tools/transcription_tools.py:_is_hallucinated_segment */
+bool ts_is_hallucinated_segment(const char *segment_json,
+                                 double no_speech_threshold,
+                                 double logprob_threshold);
+
 #endif

@@ -57,6 +57,25 @@ int main(int argc, char **argv) {
                 for (int j = 0; j < cnt; j++) free(r[j]);
                 free(r);
             }
+        } else if (strcmp(name, "ts_confidence_thresholds") == 0) {
+            json_t *vj = json_obj_get(c, "value");
+            char *json_str = NULL;
+            if (vj && vj->type == JSON_OBJECT) {
+                json_str = json_serialize(vj);
+            }
+            double nsp, lp;
+            ts_confidence_thresholds(json_str ? json_str : "{}", &nsp, &lp);
+            if (json_str) free(json_str);
+            printf("%.17g,%.17g\n", nsp, lp);
+        } else if (strcmp(name, "ts_is_hallucinated_segment") == 0) {
+            json_t *vj = json_obj_get(c, "value");
+            char *json_str = NULL;
+            if (vj) json_str = json_serialize(vj);
+            double nsp = json_get_num(c, "no_speech_threshold", 0.6);
+            double lp = json_get_num(c, "logprob_threshold", -1.0);
+            bool r = ts_is_hallucinated_segment(json_str ? json_str : "{}", nsp, lp);
+            if (json_str) free(json_str);
+            printf(r ? "true\n" : "false\n");
         }
     }
     free(root);

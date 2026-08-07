@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <errno.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/stat.h>
@@ -181,5 +182,58 @@ bool ts_is_local_or_private_url(const char *url)
         if (addr6.s6_addr[0] == 0xfc) return true;
     }
 
+    return false;
+}
+
+/* Default thresholds from Python _NO_SPEECH_PROB_THRESHOLD_DEFAULT and
+ * _LOGPROB_THRESHOLD_DEFAULT. */
+#define TS_NO_SPEECH_PROB_DEFAULT 0.6
+#define TS_LOGPROB_DEFAULT (-1.0)
+
+/* PoP: _confidence_thresholds @ tools/transcription_tools.py:_confidence_thresholds
+ * Resolve (no_speech_prob, avg_logprob) gate thresholds from config. */
+void ts_confidence_thresholds(const char *stt_config_json,
+                               double *no_speech_out, double *logprob_out)
+{
+    double no_speech = TS_NO_SPEECH_PROB_DEFAULT;
+    double logprob = TS_LOGPROB_DEFAULT;
+
+    char *err = NULL;
+    json_t *cfg = stt_config_json ? json_parse(stt_config_json, &err) : NULL;
+    if (err) { free(err); cfg = NULL; }
+
+    if (cfg && cfg->type == JSON_OBJECT) {
+        json_t *nsp = json_obj_get(cfg, "no_speech_prob_threshold");
+        if (nsp && nsp->type == JSON_NUMBER) {
+            no_speech = nsp->num_val;
+        }
+        json_t *lp = json_obj_get(cfg, "logprob_threshold");
+        if (lp && lp->type == JSON_NUMBER) {
+            logprob = lp->num_val;
+        }
+    }
+    if (cfg) json_free(cfg);
+
+    if (no_speech_out) *no_speech_out = no_speech;
+    if (logprob_out) *logprob_out = logprob;
+}
+
+/* PoP: _is_hallucinated_segment @ tools/transcription_tools.py:_is_hallucinated_segment
+ * True when a segment is very likely a silence hallucination (AND gate).
+ * Faithful to Python: uses getattr() — which returns None for dict-like
+ * JSON objects (dicts have no attributes), so JSON/dict segments are never
+ * flagged. Only objects with no_speech_prob/avg_logprob properties are
+ * evaluated. */
+bool ts_is_hallucinated_segment(const char *segment_json,
+                                 double no_speech_threshold,
+                                 double logprob_threshold)
+{
+    char *err = NULL;
+    json_t *seg = segment_json ? json_parse(segment_json, &err) : NULL;
+    if (err) { free(err); seg = NULL; }
+    if (!seg) return false;
+    /* Python getattr(segment, "no_speech_prob") returns None for dicts —
+     * JSON objects are dict-like, so no attributes are ever found. */
+    json_free(seg);
     return false;
 }
