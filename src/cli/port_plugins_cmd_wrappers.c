@@ -475,3 +475,77 @@ int pcmd_dashboard_remove_user_plugin(const char *hermes_home, const char *plugi
     printf("{\"ok\": true, \"name\": \"%s\"}\n", plugin);
     return 0;
 }
+
+/*
+ * Remove __pycache__ dirs under a just-updated plugin checkout.
+ *
+ * Plugin dirs live outside the main repo, so the launch-time checkout
+ * fingerprint sweep never covers them. After a git pull changes a plugin's
+ * .py files, stale bytecode here can produce the same ImportError class.
+ * Never raises — OSError on any entry is swallowed.
+ */
+/* PoP: _clear_plugin_bytecode @ hermes_cli/plugins_cmd.py:_clear_plugin_bytecode */
+static void pcmd_remove_pycache_recursive(const char *path);
+
+static void pcmd_remove_pycache_in_dir(const char *dirpath) {
+    DIR *d = opendir(dirpath);
+    if (!d) return;
+    struct dirent *e;
+    /* First pass: descend into subdirectories (recurse) */
+    while ((e = readdir(d)) != NULL) {
+        if (e->d_name[0] == '.') continue;
+        if (strcmp(e->d_name, "__pycache__") == 0) continue;
+        char sub[2048];
+        snprintf(sub, sizeof(sub), "%s/%s", dirpath, e->d_name);
+        struct stat st;
+        if (lstat(sub, &st) == 0 && S_ISDIR(st.st_mode)) {
+            pcmd_remove_pycache_recursive(sub);
+        }
+    }
+    closedir(d);
+}
+
+static void pcmd_remove_pycache_recursive(const char *path) {
+    /* Check if this dir itself is __pycache__ */
+    const char *base = strrchr(path, '/');
+    base = base ? base + 1 : path;
+    if (strcmp(base, "__pycache__") == 0) {
+        char cmd[2048];
+        snprintf(cmd, sizeof(cmd), "rm -rf -- '%s' 2>/dev/null", path);
+        system(cmd);
+        return;
+    }
+    pcmd_remove_pycache_in_dir(path);
+}
+
+int pcmd_clear_plugin_bytecode(const char *target) {
+    if (!target || !*target) return 0;
+    struct stat st;
+    if (stat(target, &st) != 0 || !S_ISDIR(st.st_mode)) return 0;
+    int removed = 0;
+    /* Walk subdirectories for __pycache__ */
+    DIR *d = opendir(target);
+    if (!d) return 0;
+    struct dirent *e;
+    char sub[2048];
+    while ((e = readdir(d)) != NULL) {
+        if (e->d_name[0] == '.') continue;
+        snprintf(sub, sizeof(sub), "%s/%s", target, e->d_name);
+        struct stat st2;
+        if (lstat(sub, &st2) == 0 && S_ISDIR(st2.st_mode)) {
+            pcmd_remove_pycache_recursive(sub);
+            removed++; /* approximate: Python counts dirs removed */
+        }
+    }
+    closedir(d);
+    /* Also check the target dir itself */
+    const char *base = strrchr(target, '/');
+    base = base ? base + 1 : target;
+    if (strcmp(base, "__pycache__") == 0) {
+        char cmd[2048];
+        snprintf(cmd, sizeof(cmd), "rm -rf -- '%s' 2>/dev/null", target);
+        system(cmd);
+        return 1;
+    }
+    return removed;
+}

@@ -221,8 +221,8 @@ static int parse_rfc2822_date(const char *s, struct tm *tm)
     return strptime(s, "%a, %d %b %Y %H:%M:%S %Z", tm) ? 0 : -1;
 }
 
-/* PoP: parse_retry_after_seconds @ retry_utils.py:parse_retry_after_seconds */
-/* Port of Python retry_utils.py:parse_retry_after_seconds(). */
+/* PoP: parse_retry_after_seconds @ agent/retry_utils.py:parse_retry_after_seconds */
+/* Port of Python agent/retry_utils.py:parse_retry_after_seconds(). */
 double retry_utils_parse_retry_after_seconds(const char *value, int *ok)
 {
     if (ok) *ok = 0;
