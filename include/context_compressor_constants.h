@@ -34,6 +34,14 @@
 #define CC_SMALL_CTX_THRESHOLD_PERCENT 0.75
 #define CC_MIN_CTX_TRIGGER_RATIO 0.85
 #define CC_RESTART_HANDOFF_PROBE_EXTRA_MESSAGES 4
+/* ── Content truncation + tool-arg bounds (context_compressor.py _CONTENT_*) ─ */
+#define CC_CONTENT_CONTENT_MAX 6000
+#define CC_CONTENT_CONTENT_HEAD 4000
+#define CC_CONTENT_CONTENT_TAIL 1500
+#define CC_TOOL_ARGS_MAX 1500
+#define CC_TOOL_ARGS_HEAD 1200
+#define CC_FALLBACK_TURN_MAX_CHARS 700
+#define CC_MAX_TAIL_MESSAGE_FLOOR 8
 
 extern const char *cc_historical_summary_prefixes[];
 extern const size_t cc_num_historical_prefixes;

@@ -7,6 +7,12 @@
 #include "hermes_core_types.h"   /* message_t */
 #include "hermes_json.h"         /* json_t, json_node_t */
 
+/* Strip <thinking>, <reasoning>, and other inline think/reasoning blocks
+ * and tool-call XML from text.  Returns a malloc'd string; caller frees.
+ * NULL on NULL input.  Declared here (not static in agent_message_sanitize.c)
+ * so the context_compressor _serialize_for_summary port can reuse it. */
+char *strip_think_blocks(const char *text);
+
 /* Replace lone UTF-8 surrogate code points (U+D800-U+DFFF) with U+FFFD.
  * Returns a malloc'd string (caller frees); returns NULL on OOM/empty. */
 char *sanitize_surrogates(const char *text);

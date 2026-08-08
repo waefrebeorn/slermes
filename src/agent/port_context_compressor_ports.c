@@ -13,6 +13,9 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include "libjson/json.h"
+#include "context_compressor_constants.h"
+#include "context_compressor_pure.h"
+#include "hermes_sanitize.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -384,11 +387,181 @@ long cc_compute_summary_budget(const char *messages_json, long context_window) {
 }
 
 /* PoP: _serialize_for_summary @ agent/context_compressor.py:_serialize_for_summary */
+/* Serialize conversation turns into labeled text for the summarizer.
+ * Includes tool call arguments + result content (truncated to _CONTENT_MAX),
+ * redacts secrets, strips inline thinking/reasoning blocks from assistant
+ * content, and labels image parts.  Reuses the pure helpers
+ * (cc_redact_compaction_text, cc_image_part_label). */
 char *cc_serialize_for_summary(const char *messages_json) {
-    /* Python: compact serialization for the summarizer. */
-    if (!messages_json) return strdup("[]");
-    printf("messages serialized for summary\n");
-    return strdup(messages_json);
+    if (!messages_json) return strdup("");
+    char *err = NULL;
+    json_t *msgs = json_parse(messages_json, &err);
+    if (err || !msgs || msgs->type != JSON_ARRAY) {
+        if (err) free(err);
+        json_free(msgs);
+        return strdup("");
+    }
+    size_t cap = 16384;
+    char *out = malloc(cap);
+    if (!out) { json_free(msgs); return strdup(""); }
+    out[0] = '\0';
+    size_t out_len = 0;
+    size_t n = json_len(msgs);
+    for (size_t i = 0; i < n; i++) {
+        json_t *msg = json_get(msgs, i);
+        if (!msg || msg->type != JSON_OBJECT) continue;
+        json_t *role_v = json_obj_get(msg, "role");
+        const char *role = role_v && role_v->type == JSON_STRING ? role_v->str_val : "unknown";
+        /* Build content string from str or list. */
+        char *content_str = NULL;
+        json_t *content = json_obj_get(msg, "content");
+        if (content && content->type == JSON_STRING) {
+            content_str = strdup(content->str_val ? content->str_val : "");
+        } else if (content && content->type == JSON_ARRAY) {
+            /* Flatten multimodal parts. */
+            size_t tcap = 4096;
+            char *tbuf = malloc(tcap);
+            size_t tlen = 0;
+            tbuf[0] = '\0';
+            for (size_t j = 0; j < json_len(content); j++) {
+                json_t *part = json_get(content, j);
+                if (!part || part->type != JSON_OBJECT) continue;
+                json_t *ptype = json_obj_get(part, "type");
+                const char *t = ptype && ptype->type == JSON_STRING ? ptype->str_val : NULL;
+                if (t && strcmp(t, "text") == 0) {
+                    json_t *txt = json_obj_get(part, "text");
+                    if (txt && txt->type == JSON_STRING && txt->str_val) {
+                        size_t plen = strlen(txt->str_val);
+                        if (tlen + plen + 2 > tcap) {
+                            tcap = (tlen + plen + 2) * 2;
+                            char *nb = realloc(tbuf, tcap);
+                            if (!nb) { free(tbuf); tbuf = NULL; break; }
+                            tbuf = nb;
+                        }
+                        memcpy(tbuf + tlen, txt->str_val, plen);
+                        tlen += plen;
+                        tbuf[tlen++] = '\n';
+                        tbuf[tlen] = '\0';
+                    }
+                } else if (t && (strcmp(t, "image") == 0 || strcmp(t, "image_url") == 0 || strcmp(t, "input_image") == 0)) {
+                    char *label = cc_image_part_label(part);
+                    if (label) {
+                        size_t plen = strlen(label);
+                        if (tlen + plen + 2 > tcap) {
+                            tcap = (tlen + plen + 2) * 2;
+                            char *nb = realloc(tbuf, tcap);
+                            if (!nb) { free(tbuf); break; }
+                            tbuf = nb;
+                        }
+                        memcpy(tbuf + tlen, label, plen);
+                        tlen += plen;
+                        tbuf[tlen++] = '\n';
+                        tbuf[tlen] = '\0';
+                        free(label);
+                    }
+                } else {
+                    /* Unknown part type marker. */
+                    const char *marker = t ? t : "attachment";
+                    size_t plen = strlen(marker) + 3;
+                    if (tlen + plen + 2 > tcap) {
+                        tcap = (tlen + plen + 2) * 2;
+                        char *nb = realloc(tbuf, tcap);
+                        if (!nb) { free(tbuf); break; }
+                        tbuf = nb;
+                    }
+                    tbuf[tlen++] = '[';
+                    memcpy(tbuf + tlen, marker, plen - 3);
+                    tlen += plen - 3;
+                    tbuf[tlen++] = ']';
+                    tbuf[tlen] = '\0';
+                }
+            }
+            if (tbuf) { content_str = tbuf; }
+        } else {
+            content_str = strdup("");
+        }
+
+        /* Redact secrets. */
+        char *redacted = cc_redact_compaction_text(content_str);
+        free(content_str);
+        /* Truncate to _CONTENT_MAX (head + tail). */
+        long clen = redacted ? (long)strlen(redacted) : 0;
+        char *final_content = redacted;
+        if (clen > CC_CONTENT_CONTENT_MAX) {
+            final_content = malloc(CC_CONTENT_CONTENT_HEAD + CC_CONTENT_CONTENT_TAIL + 32);
+            if (final_content) {
+                memcpy(final_content, redacted, CC_CONTENT_CONTENT_HEAD);
+                strcpy(final_content + CC_CONTENT_CONTENT_HEAD, "\n...[truncated]...\n");
+                strcat(final_content + CC_CONTENT_CONTENT_HEAD,
+                       redacted + clen - CC_CONTENT_CONTENT_TAIL);
+            }
+            free(redacted);
+        }
+
+        /* Strip inline thinking blocks from assistant content (strip_think_blocks). */
+        if (strcmp(role, "assistant") == 0 && final_content) {
+            char *stripped = strip_think_blocks(final_content);
+            if (stripped) { free(final_content); final_content = stripped; }
+        }
+
+        /* Tool result: label by tool_call_id. */
+        if (strcmp(role, "tool") == 0) {
+            json_t *tcid = json_obj_get(msg, "tool_call_id");
+            const char *tid = tcid && tcid->type == JSON_STRING ? tcid->str_val : "";
+            long need = out_len + 32 + strlen(role) + (final_content ? strlen(final_content) : 0);
+            if (need > (long)cap) { cap = (size_t)need * 2; out = realloc(out, cap); }
+            out_len += (size_t)snprintf(out + out_len, cap - out_len, "[TOOL RESULT %s]: %s\n",
+                         tid ? tid : "", final_content ? final_content : "");
+        }
+        /* Assistant: include tool calls. */
+        else if (strcmp(role, "assistant") == 0) {
+            json_t *tcs = json_obj_get(msg, "tool_calls");
+            if (tcs && tcs->type == JSON_ARRAY) {
+                size_t tcn = json_len(tcs);
+                long need = out_len + 32 + (final_content ? strlen(final_content) : 0) + 128;
+                for (size_t j = 0; j < tcn; j++) {
+                    json_t *tc = json_get(tcs, j);
+                    if (!tc || tc->type != JSON_OBJECT) continue;
+                    json_t *fn = json_obj_get(tc, "function");
+                    const char *name = "?";
+                    const char *args = "";
+                    if (fn && fn->type == JSON_OBJECT) {
+                        json_t *n = json_obj_get(fn, "name");
+                        if (n && n->type == JSON_STRING) name = n->str_val;
+                        json_t *a = json_obj_get(fn, "arguments");
+                        if (a && a->type == JSON_STRING) args = a->str_val;
+                    }
+                    char *redact_args = cc_redact_compaction_text(args ? args : "");
+                    long alen = redact_args ? (long)strlen(redact_args) : 0;
+                    long trunc = alen > CC_TOOL_ARGS_MAX ? CC_TOOL_ARGS_HEAD : alen;
+                    char *ta = redact_args ? strndup(redact_args, (size_t)trunc) : strdup("");
+                    need += strlen(name) + strlen(ta) + 32;
+                    if (need > (long)cap) { cap = (size_t)need * 2; out = realloc(out, cap); }
+                    out_len += (size_t)snprintf(out + out_len, cap - out_len, "  %s(%s)",
+                        name, ta);
+                    free(ta);
+                    free(redact_args);
+                }
+                if (need > (long)cap) { cap = (size_t)need * 2; out = realloc(out, cap); }
+                out_len += (size_t)snprintf(out + out_len, cap - out_len, "\n");
+            }
+            long need2 = out_len + 32 + (final_content ? strlen(final_content) : 0);
+            if (need2 > (long)cap) { cap = (size_t)need2 * 2; out = realloc(out, cap); }
+            out_len += (size_t)snprintf(out + out_len, cap - out_len, "[%s]: %s\n",
+                role, final_content ? final_content : "");
+        }
+        else {
+            long need = out_len + 32 + (final_content ? strlen(final_content) : 0);
+            if (need > (long)cap) { cap = (size_t)need * 2; out = realloc(out, cap); }
+            out_len += (size_t)snprintf(out + out_len, cap - out_len, "[%s]: %s\n",
+                role, final_content ? final_content : "");
+        }
+        free(final_content);
+    }
+    char *result = strdup(out);
+    free(out);
+    json_free(msgs);
+    return result;
 }
 
 /* PoP: _generate_summary @ agent/context_compressor.py:_generate_summary */

@@ -83,8 +83,10 @@ static int find_close_for(const char *text, int text_len, int pos, int tag_idx) 
 
 /* Port of Python agent/agent_runtime_helpers.py:strip_think_blocks().
  * Strip all think/reasoning blocks and tool-call XML from text.
- * Returns malloc'd string; caller must free. Returns NULL on NULL input. */
-static char *strip_think_blocks(const char *text) {
+ * Returns malloc'd string; caller must free. Returns NULL on NULL input.
+ * Declared extern so other port files (e.g. port_context_compressor_ports.c
+ * _serialize_for_summary) can reuse it without duplicating the scrubbing logic. */
+char *strip_think_blocks(const char *text) {
     if (!text) return NULL;
 
     int text_len = (int)strlen(text);

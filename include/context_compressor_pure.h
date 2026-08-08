@@ -107,6 +107,11 @@ double cc_resolve_model_threshold(const char *model,
                                   int threshold_count,
                                   double default_threshold);
 
+/* Serialize message list text for the LM summarizer (compact form).
+ * Reuses redaction, truncation, tool-call flattening, image labels.
+ * Caller frees. */
+char *cc_serialize_for_summary(const char *messages_json);
+
 /* ── batch 2: string/summary/image constants + helpers ────────────────── */
 
 /* Runtime constant arrays (mirror Python module-level literals). */
