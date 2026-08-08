@@ -410,3 +410,79 @@ char *cub_summarize_backups(void) {
     free(rows);
     return out;
 }
+
+/*
+ * Move staged entries back to their original paths.
+ *
+ * shutil.move moves *into* an existing destination directory rather than
+ * replacing it, so a partially-completed extract leaves debris that would
+ * bury the user's real skill one level deeper. Clear whatever the failed
+ * extract created at each original path first, then move the staged copy
+ * back.
+ *
+ * Returns a JSON array string of names that could not be restored, so the
+ * caller can report an incomplete recovery instead of claiming success.
+ */
+typedef struct {
+    char *orig;   /* original destination path */
+    char *dest;   /* staged copy path */
+} unstage_move_t;
+
+/* PoP: _unstage @ agent/curator_backup.py:_unstage */
+char *cub_unstage(unstage_move_t *moved, int n_moves) {
+    char *failed_buf = strdup("");
+    size_t failed_cap = 1;
+    int failed_count = 0;
+
+    for (int i = 0; i < n_moves; i++) {
+        const char *orig = moved[i].orig;
+        const char *dest = moved[i].dest;
+        if (!orig || !dest) continue;
+
+        struct stat st;
+        bool orig_is_dir = (stat(orig, &st) == 0 && S_ISDIR(st.st_mode));
+        bool orig_is_symlink = (lstat(orig, &st) == 0 && S_ISLNK(st.st_mode));
+
+        /* Clear whatever the failed extract created at orig */
+        if (orig_is_dir && !orig_is_symlink) {
+            /* rmtree equivalent: use system rm -rf */
+            char *cmd = NULL;
+            asprintf(&cmd, "rm -rf %s", orig);
+            if (cmd) { system(cmd); free(cmd); }
+        } else if (orig_is_symlink || stat(orig, &st) == 0) {
+            /* unlink equivalent */
+            unlink(orig);
+        }
+
+        /* Move the staged copy back to orig */
+        /* shutil.move(str(dest), str(orig)) */
+        char *cmd = NULL;
+        asprintf(&cmd, "mv %s %s", dest, orig);
+        if (cmd) {
+            int rc = system(cmd);
+            free(cmd);
+            if (rc != 0) {
+                /* Could not restore — record the name */
+                const char *base = strrchr(orig, '/');
+                const char *name = base ? base + 1 : orig;
+                size_t name_len = strlen(name);
+                size_t need = strlen(failed_buf) + name_len + 4; /* ,"" */
+                if (need > failed_cap) {
+                    failed_cap = need * 2;
+                    failed_buf = realloc(failed_buf, failed_cap);
+                }
+                if (failed_count > 0) strcat(failed_buf, ",");
+                strcat(failed_buf, "\"");
+                strcat(failed_buf, name);
+                strcat(failed_buf, "\"");
+                failed_count++;
+            }
+        }
+    }
+
+    /* Wrap in JSON array */
+    char *result = NULL;
+    asprintf(&result, "[%s]", failed_buf ? failed_buf : "");
+    free(failed_buf);
+    return result;
+}

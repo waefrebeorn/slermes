@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-07T21:21:17Z from `live_parity_scan.json` by `make parity-walkway`. **1,020 REAL_GAP across 199 modules** (of 14,045 total functions).
+> Generated 2026-08-08T21:38:30Z from `live_parity_scan.json` by `make parity-walkway`. **1,008 REAL_GAP across 195 modules** (of 14,045 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -108,10 +108,6 @@
 - CredentialPool._refresh_pending_entries (method)
 - CredentialPool._acquire_lease_under_lock (method)
 
-### agent/curator_backup.py (1 gaps)
-
-- _unstage (function)
-
 ### agent/display.py (1 gaps)
 
 - prepare_tool_preview (function)
@@ -127,10 +123,6 @@
 ### agent/interrupt_compat.py (1 gaps)
 
 - request_hard_interrupt (function)
-
-### agent/lsp/eventlog.py (1 gaps)
-
-- log_reaped (function)
 
 ### agent/lsp/manager.py (4 gaps)
 
@@ -262,10 +254,6 @@
 ### agent/retry_utils.py (1 gaps)
 
 - parse_retry_after_seconds (function)
-
-### agent/secret_scope.py (1 gaps)
-
-- _strip_inline_comment (function)
 
 ### agent/secret_sources/base.py (3 gaps)
 
@@ -605,17 +593,10 @@
 - summarize_holders (function)
 - release_orphaned_leases (function)
 
-### hermes_cli/agent_import.py (24 gaps)
+### hermes_cli/agent_import.py (16 gaps)
 
-- load_yaml_file (function)
-- dump_yaml_file (function)
-- backup_memory_file (function)
-- default_source_dir (function)
-- detect_agents (function)
 - AgentImporter.__init__ (method)
-- AgentImporter.record (method)
 - AgentImporter.load_target_config (method)
-- AgentImporter.build_report (method)
 - AgentImporter.run (method)
 - AgentImporter._run_claude_code (method)
 - AgentImporter._run_codex (method)
@@ -625,7 +606,6 @@
 - AgentImporter.import_context_file (method)
 - AgentImporter.import_memories_dir (method)
 - AgentImporter._merge_memory_entries (method)
-- AgentImporter.import_permission_allowlist (method)
 - AgentImporter.import_permission_denylist (method)
 - AgentImporter.import_mcp_servers (method)
 - AgentImporter.import_skills (method)
@@ -1566,10 +1546,6 @@
 - XAIStreamer._collect_async (method)
 - async XAIStreamer._drain_async (method)
 - async XAIStreamer._async_frames (method)
-
-### tools/tts_text_normalize.py (1 gaps)
-
-- _normalize_temperature_ranges (function)
 
 ### tools/tts_tool.py (15 gaps)
 

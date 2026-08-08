@@ -430,6 +430,24 @@ test-tts:
 	    | grep -E 'MISMATCH' && echo "(tts oracle FAILED)" \
 	    || echo "tts oracle: all cases MATCH"
 
+# Retry utils (agent/retry_utils.py: is_zai_coding_overload_error +
+# parse_retry_after_seconds). Oracle-verified: C functions vs LIVE Python
+# across all fixtures under tests/oracle/fixtures/agent_retry_utils/.
+test-retry-utils:
+	@bash tests/oracle/runners/run_oracle.sh agent_retry_utils 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(agent_retry_utils oracle FAILED)" \
+	    || echo "agent_retry_utils oracle: all cases MATCH"
+
+# TTS text normalization pure helpers (faithful port of tools/tts_text_normalize.py).
+# Oracle-verified: strip_markdown_for_tts, normalize_symbols_for_tts,
+# _normalize_temperature_ranges, smooth_whitespace_for_tts,
+# strip_nonspoken_blocks, flatten_newlines_for_payload, prepare_spoken_text
+# vs LIVE Python across all fixtures.
+test-tts-text-normalize:
+	@bash tests/oracle/runners/run_oracle.sh tools_tts_text_normalize 2>&1 \
+	    | grep -E 'MISMATCH' && echo "(tools_tts_text_normalize oracle FAILED)" \
+	    || echo "tools_tts_text_normalize oracle: all cases MATCH"
+
 # Voice recognition: Whisper-hallucination filter + VAD RMS math
 # (faithful port of tools/voice_mode.py). Oracle-verified: exact-set +
 # repeat-regex hallucination detection and sqrt(mean(x^2)) RMS match the
@@ -810,6 +828,14 @@ test-lsp-range-shift: src/agent/port_lsp_range_shift.o lib/libjson/json.o
 test-kanban-format: src/hermes_cli/kanban_format.o
 	@gcc -O2 -g -Wall -Wextra -I include -I src tests/test_kanban_format.c src/hermes_cli/kanban_format.o -o /tmp/t_kanban 2>&1 \
 	    && /tmp/t_kanban 2>&1 || echo "(kanban-format test failed)"
+
+# TTS text normalization pure helpers (faithful port of tools/tts_text_normalize.py).
+# Oracle-verified: strip_markdown_for_tts, normalize_symbols_for_tts,
+# _normalize_temperature_ranges, smooth_whitespace_for_tts,
+# strip_nonspoken_blocks, flatten_newlines_for_payload, prepare_spoken_text
+# vs LIVE Python across all fixtures.
+test-tts-text-normalize:
+	@bash tests/oracle/runners/run_oracle.sh tools_tts_text_normalize 2>&1 \	    | grep -E 'MISMATCH' && echo "(tools_tts_text_normalize oracle FAILED)" \	    || echo "tools_tts_text_normalize oracle: all cases MATCH"
 
 # Combined check - lint, build, test suite
 check:

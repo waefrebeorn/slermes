@@ -1,1 +1,20 @@
-single
+[
+  {"func": "is_zai_coding_overload_error", "status": 429, "base": "https://api.z.ai/api/coding/paas/v4", "model": "glm-5.2", "text": "code 1305 the service may be temporarily overloaded"},
+  {"func": "is_zai_coding_overload_error", "status": 429, "base": "https://api.z.ai/api/coding/paas/v4", "model": "glm-5.2", "text": "quota exceeded"},
+  {"func": "is_zai_coding_overload_error", "status": 429, "base": "https://api.openai.com/v1", "model": "glm-5.2", "text": "code 1305 temporarily overloaded"},
+  {"func": "is_zai_coding_overload_error", "status": 429, "base": "https://api.z.ai/api/coding/paas/v4", "model": "gpt-4o", "text": "code 1305 temporarily overloaded"},
+  {"func": "is_zai_coding_overload_error", "status": 200, "base": "https://api.z.ai/api/coding/paas/v4", "model": "glm-5.2", "text": "code 1305 temporarily overloaded"},
+  {"func": "is_zai_coding_overload_error", "status": 429, "base": "https://api.z.ai/api/coding/paas/v4", "model": "glm-5.2", "text": "temporarily overloaded please retry"},
+  {"func": "is_zai_coding_overload_error", "status": 500, "base": "https://api.z.ai/api/coding/paas/v4", "model": "glm-5.2", "text": "temporarily overloaded"},
+  {"func": "parse_retry_after_seconds", "value": "120"},
+  {"func": "parse_retry_after_seconds", "value": "  120  "},
+  {"func": "parse_retry_after_seconds", "value": "0"},
+  {"func": "parse_retry_after_seconds", "value": "0.5"},
+  {"func": "parse_retry_after_seconds", "value": "-5"},
+  {"func": "parse_retry_after_seconds", "value": ""},
+  {"func": "parse_retry_after_seconds", "value": "invalid"},
+  {"func": "parse_retry_after_seconds", "numeric": 120},
+  {"func": "parse_retry_after_seconds", "numeric": 0.5},
+  {"func": "parse_retry_after_seconds", "numeric": -3},
+  {"func": "parse_retry_after_seconds", "numeric": null}
+]

@@ -3,6 +3,8 @@
  * Python equivalent: agent/retry_utils.py
  */
 
+#define _GNU_SOURCE  /* strptime, timegm */
+
 #include "hermes_retry_utils.h"
 #include "hermes_core_types.h"
 #include <ctype.h>
@@ -203,4 +205,73 @@ int retry_utils_zai_coding_overload_retry_ceiling(int short_attempts)
 {
     static const double LONG_BACKOFF[] = { 30.0, 60.0, 90.0, 120.0 };
     return short_attempts + (int)(sizeof(LONG_BACKOFF) / sizeof(LONG_BACKOFF[0])) + 1;
+}
+
+/* ------------------------------------------------------------------ */
+/* HTTP-date parsing for parse_retry_after_seconds                    */
+/* ------------------------------------------------------------------ */
+
+/* RFC 2822 / RFC 7231 IMF-fixdate parser — faithful to Python's
+ * email.utils.parsedate_to_datetime. Returns 0 on success (tm filled,
+ * UTC assumed), -1 on parse failure.
+ * Handles: "Wed, 21 Oct 2015 07:28:00 GMT" (RFC 1123 IMF-fixdate). */
+static int parse_rfc2822_date(const char *s, struct tm *tm)
+{
+    memset(tm, 0, sizeof(*tm));
+    return strptime(s, "%a, %d %b %Y %H:%M:%S %Z", tm) ? 0 : -1;
+}
+
+/* PoP: parse_retry_after_seconds @ retry_utils.py:parse_retry_after_seconds */
+/* Port of Python retry_utils.py:parse_retry_after_seconds(). */
+double retry_utils_parse_retry_after_seconds(const char *value, int *ok)
+{
+    if (ok) *ok = 0;
+    if (!value) return 0.0;
+
+    /* Skip leading/trailing whitespace (Python: .strip()) */
+    const char *start = value;
+    while (*start == ' ' || *start == '\t' || *start == '\r' || *start == '\n')
+        start++;
+    char *stripped = NULL;
+    size_t slen = strlen(start);
+    /* trim trailing whitespace */
+    while (slen > 0 && (start[slen-1] == ' ' || start[slen-1] == '\t' ||
+                        start[slen-1] == '\r' || start[slen-1] == '\n'))
+        slen--;
+    if (slen == 0) return 0.0;
+    if (start != value) {
+        stripped = (char *)malloc(slen + 1);
+        if (!stripped) return 0.0;
+        memcpy(stripped, start, slen);
+        stripped[slen] = '\0';
+        start = stripped;
+    }
+
+    /* Try numeric seconds first (Python: float(text)) */
+    char *end = NULL;
+    double seconds = strtod(start, &end);
+    if (end != start && *end == '\0') {
+        if (ok) *ok = 1;
+        double r = seconds > 0.0 ? seconds : 0.0;
+        if (stripped) free(stripped);
+        return r;
+    }
+
+    /* Try HTTP-date form (RFC 7231): seconds until that instant, clamped >= 0 */
+    struct tm tm;
+    if (parse_rfc2822_date(start, &tm) == 0) {
+        time_t then = timegm(&tm);
+        if (then != (time_t)-1) {
+            time_t now = time(NULL);
+            double diff = difftime(then, now);
+            if (ok) *ok = 1;
+            double r = diff > 0.0 ? diff : 0.0;
+            if (stripped) free(stripped);
+            return r;
+        }
+    }
+
+    /* Unparseable — Python returns None */
+    if (stripped) free(stripped);
+    return 0.0;
 }

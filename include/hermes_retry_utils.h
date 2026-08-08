@@ -40,6 +40,17 @@ char *retry_utils_adaptive_rate_limit_backoff(int attempt,
 /* Retry-loop ceiling so the full Z.AI long-backoff schedule is reachable. */
 int retry_utils_zai_coding_overload_retry_ceiling(int short_attempts);
 
+/* Parse a Retry-After value into non-negative seconds.
+ * Python: retry_utils.parse_retry_after_seconds(value_or_headers).
+ *
+ * - `value` is a NUL-terminated string header value (numeric seconds or
+ *   RFC 7231 HTTP-date). `ok` is set to 1 on success, 0 when the value is
+ *   absent/unparseable (Python returns None in that case).
+ * - When `value` is a numeric string, returns max(0.0, float(value)).
+ * - When `value` is an HTTP-date, returns seconds-until-then clamped to >= 0.
+ * - Empty/NULL `value` or unparseable text -> *ok = 0, returns 0.0. */
+double retry_utils_parse_retry_after_seconds(const char *value, int *ok);
+
 #ifdef __cplusplus
 }
 #endif

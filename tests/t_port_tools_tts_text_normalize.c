@@ -271,8 +271,10 @@ static void run_one(const char *func, const char *in)
     if (strcmp(func, "strip_markdown_for_tts") == 0)
         out = tts_strip_markdown(in, &out_len);
     else if (strcmp(func, "normalize_symbols_for_tts") == 0)
-        out = tts_normalize_symbols(in, &out_len);
-    else if (strcmp(func, "smooth_whitespace_for_tts") == 0)
+     out = tts_normalize_symbols(in, &out_len);
+ else if (strcmp(func, "_normalize_temperature_ranges") == 0)
+     out = tts_normalize_temperature_ranges(in, &out_len);
+ else if (strcmp(func, "smooth_whitespace_for_tts") == 0)
         out = tts_smooth_whitespace(in, &out_len);
     else if (strcmp(func, "strip_nonspoken_blocks") == 0)
         out = tts_strip_nonspoken_blocks(in, &out_len);

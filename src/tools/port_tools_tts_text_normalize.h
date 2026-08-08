@@ -34,6 +34,12 @@ char *tts_strip_markdown(const char *text, size_t *out_len);
 char *tts_normalize_symbols(const char *text, size_t *out_len);
 
 /**
+ * Normalize temperature ranges ("11–17 °C" -> "11 to 17 degrees Celsius").
+ * Python: _normalize_temperature_ranges(text)
+ */
+char *tts_normalize_temperature_ranges(const char *text, size_t *out_len);
+
+/**
  * Collapse visual formatting into calm spoken paragraphs.
  * Python: smooth_whitespace_for_tts(text)
  */

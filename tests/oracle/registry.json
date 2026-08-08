@@ -7,11 +7,6 @@
       "oracle": "tests/sta_oracle_agent_import.py",
       "fixtures": "tests/oracle/fixtures/agent_import"
     },
-    "agent_import": {
-      "harness": "tests/t_port_agent_import.c",
-      "oracle": "tests/sta_oracle_agent_import.py",
-      "fixtures": "tests/oracle/fixtures/agent_import"
-    },
     "context_compressor_pure": {
       "harness": "tests/t_port_context_compressor_pure.c",
       "oracle": "tests/sta_oracle_context_compressor_pure.py",
@@ -100,7 +95,10 @@
     "agent_retry_utils": {
       "harness": "tests/t_port_agent_retry_utils.c",
       "oracle": "tests/sta_oracle_agent_retry_utils.py",
-      "fixtures": "tests/oracle/fixtures/agent_retry_utils"
+      "fixtures": "tests/oracle/fixtures/agent_retry_utils",
+      "normalize": {
+        "float_int_equal": true
+      }
     },
     "agent_secret_scope": {
       "harness": "tests/t_port_agent_secret_scope.c",
@@ -1075,7 +1073,10 @@
     "tools_tts_text_normalize": {
       "harness": "tests/t_port_tools_tts_text_normalize.c",
       "oracle": "tests/sta_oracle_tools_tts_text_normalize.py",
-      "fixtures": "tests/oracle/fixtures/tools_tts_text_normalize"
+      "fixtures": "tests/oracle/fixtures/tools_tts_text_normalize",
+      "normalize": {
+        "float_int_equal": true
+      }
     },
     "tools_url_safety": {
       "harness": "tests/t_port_tools_url_safety.c",

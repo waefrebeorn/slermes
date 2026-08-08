@@ -32,6 +32,7 @@ tp = _load()
 DISPATCH = {
     "strip_markdown_for_tts":        tp.strip_markdown_for_tts,
     "normalize_symbols_for_tts":     tp.normalize_symbols_for_tts,
+    "_normalize_temperature_ranges": tp._normalize_temperature_ranges,
     "smooth_whitespace_for_tts":     tp.smooth_whitespace_for_tts,
     "strip_nonspoken_blocks":        tp.strip_nonspoken_blocks,
     "flatten_newlines_for_payload":  tp.flatten_newlines_for_payload,

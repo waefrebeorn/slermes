@@ -176,6 +176,118 @@ const char *secret_scope_get_secret(const char *name, const char *default_val)
 
 /* ── .env file parsing ────────────────────────────────────────────────── */
 
+/* PoP: _strip_inline_comment @ agent/secret_scope.py:_strip_inline_comment */
+/*
+ * Strip a dotenv-style inline comment from a raw .env value.
+ *
+ * Mirrors python-dotenv (1.2.2) semantics:
+ *  - Quoted values: scan for the matching close quote (backslash-escape-aware
+ *    for double quotes). Everything through the close quote is kept; a trailing
+ *    # ... remainder after it is discarded. Unterminated quote: leave as-is.
+ *  - Unquoted values: truncate only at a # PRECEDED BY WHITESPACE.
+ *    A value that starts with # is kept.
+ *  - Returns a newly-allocated string (caller frees).
+ */
+static char *secret_scope_strip_inline_comment(const char *value)
+{
+    if (!value) return strdup("");
+    /* value.strip() */
+    while (*value && isspace((unsigned char)*value)) value++;
+    if (!*value) return strdup("");
+
+    size_t len = strlen(value);
+    /* strip trailing whitespace */
+    while (len > 0 && isspace((unsigned char)value[len - 1])) len--;
+
+    char quote = value[0];
+    if (quote == '\'' || quote == '"') {
+        /* Quoted value: scan for matching close quote */
+        for (size_t i = 1; i < len; i++) {
+            char ch = value[i];
+            if (quote == '"' && ch == '\\' && i + 1 < len) {
+                i++; /* skip escaped char */
+                continue;
+            }
+            if (ch == quote) {
+                /* Found close quote at position i */
+                /* Check if remainder (after close quote) starts with # */
+                size_t j = i + 1;
+                while (j < len && isspace((unsigned char)value[j])) j++;
+                if (j < len && value[j] == '#') {
+                    /* Return value[:i+1] (through and including close quote) */
+                    return strndup(value, i + 1);
+                }
+                /* Non-comment trailing junk: return whole value as-is */
+                return strndup(value, len);
+            }
+        }
+        /* Unterminated quote: leave as-is */
+        return strndup(value, len);
+    }
+
+    /* Unquoted: truncate at # preceded by whitespace */
+    /* re.split(r"\s+#", value, maxsplit=1)[0].strip() */
+    for (size_t i = 1; i < len; i++) {
+        if (value[i] == '#' && isspace((unsigned char)value[i - 1])) {
+            return strndup(value, i);
+        }
+    }
+    /* No comment found */
+    return strndup(value, len);
+}
+
+/*
+ * Parse the small .env value subset Hermes writes itself.
+ * Mirrors hermes_cli.config._parse_env_value:
+ *  - Double-quoted: unescape \" and \\ (backslash-escape-aware)
+ *  - Single-quoted: strip outer quotes
+ *  - Unquoted: return as-is (after strip)
+ *  - Returns a newly-allocated string (caller frees).
+ */
+static char *secret_scope_parse_env_value(const char *raw_value)
+{
+    if (!raw_value) return strdup("");
+
+    /* value.strip() */
+    while (*raw_value && isspace((unsigned char)*raw_value)) raw_value++;
+
+    if (!*raw_value) return strdup("");
+
+    size_t len = strlen(raw_value);
+    /* strip trailing whitespace */
+    while (len > 0 && isspace((unsigned char)raw_value[len - 1])) len--;
+
+    if (len >= 2 && raw_value[0] == '"' && raw_value[len - 1] == '"') {
+        /* Double-quoted: unescape */
+        const char *quoted = raw_value + 1;
+        size_t q_len = len - 2;
+        char *out = malloc(q_len + 1);
+        if (!out) return strdup("");
+        size_t o = 0;
+        for (size_t i = 0; i < q_len; i++) {
+            if (quoted[i] == '\\' && i + 1 < q_len) {
+                char next = quoted[i + 1];
+                if (next == '"' || next == '\\') {
+                    out[o++] = next;
+                    i++;
+                    continue;
+                }
+            }
+            out[o++] = quoted[i];
+        }
+        out[o] = '\0';
+        return out;
+    }
+
+    if (len >= 2 && raw_value[0] == '\'' && raw_value[len - 1] == '\'') {
+        /* Single-quoted: strip outer quotes only */
+        return strndup(raw_value + 1, len - 2);
+    }
+
+    /* Unquoted: return stripped as-is */
+    return strndup(raw_value, len);
+}
+
 static void secret_scope_parse_env_line(const char *line, char *key_out, size_t key_sz, char *val_out, size_t val_sz)
 {
     char *eq = strchr(line, '=');
@@ -187,19 +299,17 @@ static void secret_scope_parse_env_line(const char *line, char *key_out, size_t 
     key_out[key_len] = '\0';
 
     const char *val = eq + 1;
-    /* Strip matching quotes */
-    if (strlen(val) >= 2 && val[0] == val[strlen(val)-1] && (val[0] == '"' || val[0] == '\'')) {
-        val++;
-        size_t val_len = strlen(val) - 1;
-        if (val_len >= val_sz) val_len = val_sz - 1;
-        memcpy(val_out, val, val_len);
-        val_out[val_len] = '\0';
-    } else {
-        size_t val_len = strlen(val);
-        if (val_len >= val_sz) val_len = val_sz - 1;
-        memcpy(val_out, val, val_len);
-        val_out[val_len] = '\0';
-    }
+    /* Python: _parse_env_value(_strip_inline_comment(value)) */
+    char *stripped = secret_scope_strip_inline_comment(val);
+    if (!stripped) { val_out[0] = '\0'; return; }
+    char *parsed = secret_scope_parse_env_value(stripped);
+    free(stripped);
+    if (!parsed) { val_out[0] = '\0'; return; }
+    size_t val_len = strlen(parsed);
+    if (val_len >= val_sz) val_len = val_sz - 1;
+    memcpy(val_out, parsed, val_len);
+    val_out[val_len] = '\0';
+    free(parsed);
 }
 
 /* PoP: secret_scope_load_env_file @ agent/secret_scope.py:load_env_file */

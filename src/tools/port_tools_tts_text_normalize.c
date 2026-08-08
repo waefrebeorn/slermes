@@ -370,6 +370,8 @@ static char *tts_sub_fn(const char *pat, tts_repl_fn fn, void *ctx,
 /* Length-aware cores used by prepare_spoken_text (defined later in file). */
 static char *tts_normalize_symbols_len(const char *text, size_t tlen,
                                        size_t *out_len);
+static char *tts_normalize_temperature_ranges_len(const char *text, size_t tlen,
+                                                  size_t *out_len);
 static char *tts_smooth_whitespace_len(const char *text, size_t total,
                                        size_t *out_len);
 
@@ -501,6 +503,38 @@ static void tts_repl_temp_f(const char *text, PCRE2_SIZE *ov, int ngroup,
     free(g1); free(g2); free(h1); free(h2);
 }
 
+/* ------------------------------------------------------------------ */
+/* _normalize_temperature_ranges                                       */
+/* ------------------------------------------------------------------ */
+
+/* Rewritten as a standalone function so it is reusable and PoP-annotated.
+ * Python: _normalize_temperature_ranges(text) -> str
+ *   11–17 °C -> "11 to 17 degrees Celsius" (en/em dash or hyphen as separator).
+ * Python rewrites U+2212 (minus) inside each captured number to hyphen. */
+static char *tts_normalize_temperature_ranges_len(const char *text, size_t tlen,
+                                                  size_t *out_len)
+{
+    if (out_len) *out_len = 0;
+    char *cur = NULL, *nxt = NULL;
+    size_t cl = 0, nl = 0;
+    tts_pcre2_subn(
+        "(?<!\\w)([-+\\x{2212}]?\\d+(?:\\.\\d+)?)\\s*[\\x{2013}\\x{2014}-]\\s*([-+\\x{2212}]?\\d+(?:\\.\\d+)?)\\s*\\x{B0}\\s*C\\b",
+        tts_repl_temp_c, NULL, text, tlen, PCRE2_CASELESS, &cur, &cl);
+    tts_pcre2_subn(
+        "(?<!\\w)([-+\\x{2212}]?\\d+(?:\\.\\d+)?)\\s*[\\x{2013}\\x{2014}-]\\s*([-+\\x{2212}]?\\d+(?:\\.\\d+)?)\\s*\\x{B0}\\s*F\\b",
+        tts_repl_temp_f, NULL, cur, cl, PCRE2_CASELESS, &nxt, &nl);
+    free(cur);
+    if (out_len) *out_len = nl;
+    return nxt;
+}
+
+/* PoP: _normalize_temperature_ranges @ tools/tts_text_normalize.py:_normalize_temperature_ranges */
+char *tts_normalize_temperature_ranges(const char *text, size_t *out_len)
+{
+    if (!text) { if (out_len) *out_len = 0; return strdup(""); }
+    return tts_normalize_temperature_ranges_len(text, strlen(text), out_len);
+}
+
 /* PoP: normalize_symbols_for_tts @ tools/tts_text_normalize.py:normalize_symbols_for_tts */
 char *tts_normalize_symbols(const char *text, size_t *out_len)
 {
@@ -522,12 +556,8 @@ static char *tts_normalize_symbols_len(const char *text, size_t tlen, size_t *ou
     tts_pcre2_sub(_MINUS_SIGN_RE, "-", cur, cl, 0, &nxt, &nl); free(cur); cur = nxt; cl = nl;
     tts_pcre2_sub(_ELLIPSIS_RE, "...", cur, cl, 0, &nxt, &nl); free(cur); cur = nxt; cl = nl;
 
-    tts_pcre2_subn(
-        "(?<!\\w)([-+\\x{2212}]?\\d+(?:\\.\\d+)?)\\s*[\\x{2013}\\x{2014}-]\\s*([-+\\x{2212}]?\\d+(?:\\.\\d+)?)\\s*\\x{B0}\\s*C\\b",
-        tts_repl_temp_c, NULL, cur, cl, PCRE2_CASELESS, &nxt, &nl); free(cur); cur = nxt; cl = nl;
-    tts_pcre2_subn(
-        "(?<!\\w)([-+\\x{2212}]?\\d+(?:\\.\\d+)?)\\s*[\\x{2013}\\x{2014}-]\\s*([-+\\x{2212}]?\\d+(?:\\.\\d+)?)\\s*\\x{B0}\\s*F\\b",
-        tts_repl_temp_f, NULL, cur, cl, PCRE2_CASELESS, &nxt, &nl); free(cur); cur = nxt; cl = nl;
+    char *t = tts_normalize_temperature_ranges_len(cur, cl, &nl);
+    free(cur); cur = t; cl = nl;
 
     tts_pcre2_sub("(?<!\\w)([-+]?\\d+(?:\\.\\d+)?)\\s*\\x{B0}\\s*C\\b",
                   "\\1 degrees Celsius", cur, cl, PCRE2_CASELESS, &nxt, &nl); free(cur); cur = nxt; cl = nl;

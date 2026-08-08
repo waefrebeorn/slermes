@@ -65,3 +65,8 @@ char *agent_retry_utils_adaptive_rate_limit_backoff(int attempt,
     }
     return label;
 }
+
+double agent_retry_utils_parse_retry_after_seconds(const char *value, int *ok)
+{
+    return retry_utils_parse_retry_after_seconds(value, ok);
+}

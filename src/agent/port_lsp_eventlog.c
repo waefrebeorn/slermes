@@ -143,3 +143,51 @@ void lsp_log_server_error(const char *server_id, const char *file_path, const ch
     el_emit(server_id, "WARNING", msg);
     free(sp);
 }
+
+/*
+ * Clear the log_active announce cache for the given keys.
+ * Mirrors Python's ``_announced_active.discard(key)`` under the announce lock.
+ */
+static void el_discard_announced_active(const char *key) {
+    if (!key) return;
+    for (int i = 0; i < g_na; i++) {
+        if (g_announced_active[i] && strcmp(g_announced_active[i], key) == 0) {
+            free(g_announced_active[i]);
+            g_announced_active[i] = NULL;
+        }
+    }
+}
+
+/* PoP: log_reaped @ agent/lsp/eventlog.py:log_reaped */
+void lsp_log_reaped(const char **keys, int n_keys, double idle_timeout) {
+    /* Clear the log_active announce cache for reaped keys so a later
+       respawn re-announces at INFO instead of logging a misleading DEBUG
+       "reused client". */
+    for (int i = 0; i < n_keys; i++) {
+        if (keys[i]) el_discard_announced_active(keys[i]);
+    }
+
+    /* Build summary: "sid (root), sid (root), ..." */
+    char summary[2048] = "";
+    for (int i = 0; i < n_keys; i++) {
+        if (!keys[i]) continue;
+        const char *sep = (i > 0 && summary[0]) ? ", " : "";
+        /* keys[i] is "sid|root" format; split on | */
+        const char *p = strchr(keys[i], '|');
+        char entry[512];
+        if (p) {
+            snprintf(entry, sizeof(entry), "%.*s (%s)",
+                     (int)(p - keys[i]), keys[i], p + 1);
+        } else {
+            snprintf(entry, sizeof(entry), "%s", keys[i]);
+        }
+        snprintf(summary + strlen(summary), sizeof(summary) - strlen(summary),
+                 "%s%s", sep, entry);
+    }
+
+    char msg[2048];
+    snprintf(msg, sizeof(msg),
+             "reaped %d idle client(s) after %.0fs: %s",
+             n_keys, idle_timeout, summary);
+    el_emit("reaper", "INFO", msg);
+}
