@@ -10,6 +10,7 @@
  */
 #define _GNU_SOURCE
 #include "conversation_compression.h"
+#include "hermes_json.h"
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -68,10 +69,16 @@ static double cc_monotonic(void) {
 /* ── CompressionCommitFence ──────────────────────────────────────────── */
 
 struct cc_commit_fence {
-    pthread_mutex_t lock;
-    bool cancelled;
-    bool commit_started;
-    double last_progress; /* atomic-enough double store, mirrors CPython */
+    pthread_mutex_t lock;              /* _lock: fencing mutex            */
+    bool cancelled;                    /* _cancelled: cancel won pre-commit */
+    bool commit_started;               /* _commit_started: inside boundary */
+    bool commit_phase;                 /* _commit_phase Event (lock-free read) */
+    bool admission_revoked;            /* _admission_revoked (lock-free)   */
+    double last_progress;              /* _last_progress monotonic seconds */
+    /* Holder-qualified durable-lock release hook (#76354 F4) */
+    pthread_mutex_t release_guard;     /* _lock_release_guard              */
+    void (*cancelled_lock_release)(void); /* _cancelled_lock_release hook  */
+    bool cancelled_lock_release_requested; /* _cancelled_lock_release_requested */
 };
 
 /* PoP: cc_commit_fence_new @ agent/conversation_compression.py:__init__ */
@@ -79,8 +86,13 @@ cc_commit_fence_t *cc_commit_fence_new(void) {
     cc_commit_fence_t *f = calloc(1, sizeof(*f));
     if (!f) return NULL;
     pthread_mutex_init(&f->lock, NULL);
+    pthread_mutex_init(&f->release_guard, NULL);
     f->cancelled = false;
     f->commit_started = false;
+    f->commit_phase = false;
+    f->admission_revoked = false;
+    f->cancelled_lock_release = NULL;
+    f->cancelled_lock_release_requested = false;
     f->last_progress = cc_monotonic();
     return f;
 }
@@ -88,6 +100,7 @@ cc_commit_fence_t *cc_commit_fence_new(void) {
 void cc_commit_fence_free(cc_commit_fence_t *f) {
     if (!f) return;
     pthread_mutex_destroy(&f->lock);
+    pthread_mutex_destroy(&f->release_guard);
     free(f);
 }
 
@@ -136,18 +149,141 @@ int cc_commit_fence_try_cancel_before_commit(cc_commit_fence_t *f) {
 bool cc_commit_fence_begin_commit(cc_commit_fence_t *f) {
     if (!f) return false;
     pthread_mutex_lock(&f->lock);
-    if (f->cancelled) {
+    if (f->cancelled || f->admission_revoked) {
         pthread_mutex_unlock(&f->lock);
+        if (f->admission_revoked) {
+            /* Round-2 #1: a revoke that lost the fence-lock race to this very
+             * begin_commit deferred its lease release; the commit was refused,
+             * so the release is safe (and idempotent with the worker's own
+             * holder-qualified cleanup) right now. */
+            cc_commit_fence_release_cancelled_compression_lock(f);
+        }
         return false;
     }
     f->commit_started = true;
+    /* Set while the fence lock is held so observers can never see
+     * commit_in_flight=true for a commit that lost to cancellation. */
+    f->commit_phase = true;
     /* lock intentionally HELD across the commit boundary */
     return true;
 }
 
 /* PoP: cc_commit_fence_finish_commit @ agent/conversation_compression.py:finish_commit */
 void cc_commit_fence_finish_commit(cc_commit_fence_t *f) {
+    if (!f) return;
+    f->commit_phase = false;
+    pthread_mutex_unlock(&f->lock);
+    if (f->admission_revoked) {
+        /* Round-2 #1: a revoke that arrived while THIS commit was in flight
+         * deferred its durable-lease release rather than freeing the lock out
+         * from under an active SessionDB mutation. The commit is now fully
+         * complete, so perform the deferred release here — promptly, without
+         * relying on the (possibly parked) worker thread's outer cleanup.
+         * Idempotent with that cleanup: the DB release is holder-qualified. */
+        cc_commit_fence_release_cancelled_compression_lock(f);
+    }
+}
+
+/* PoP: cc_commit_fence_commit_in_flight @ agent/conversation_compression.py:commit_in_flight */
+bool cc_commit_fence_commit_in_flight(cc_commit_fence_t *f) {
+    /* Lock-free read: an admitted commit has begun and not yet finished.
+     * Safe to call from the host while the worker holds the fence lock for
+     * the whole commit (a hung SessionDB write). */
+    if (!f) return false;
+    return f->commit_phase;
+}
+
+/* PoP: cc_commit_fence_is_cancelled @ agent/conversation_compression.py:is_cancelled */
+bool cc_commit_fence_is_cancelled(cc_commit_fence_t *f) {
+    /* True after cancellation won before the commit boundary. */
+    if (!f) return false;
+    return f->cancelled || f->admission_revoked;
+}
+
+/* PoP: cc_commit_fence_revoke_commit_admission @ agent/conversation_compression.py:revoke_commit_admission */
+void cc_commit_fence_revoke_commit_admission(cc_commit_fence_t *f) {
+    if (!f) return;
+    /* Lock-free flag store (atomic-enough bool): a commit that is ALREADY in
+     * flight cannot be safely abandoned (invariant "commit never abandoned
+     * mid-mutation" holds), but no NEW commit will be admitted after this
+     * call — begin_commit re-checks the flag under the fence lock. */
+    f->admission_revoked = true;
+    if (pthread_mutex_trylock(&f->lock) == 0) {
+        /* No commit is in flight (an admitted commit RETAINS the lock until
+         * finish_commit), so the lease is released immediately, while still
+         * holding the lock so a concurrent begin_commit cannot slip in
+         * between the check and the release (it would be refused anyway —
+         * the flag is already set). */
+        cc_commit_fence_release_cancelled_compression_lock(f);
+        pthread_mutex_unlock(&f->lock);
+    }
+    /* else: deferred — finish_commit()/begin_commit() re-check
+     * admission_revoked and perform the release once no commit can be
+     * mid-mutation. */
+}
+
+/* PoP: cc_commit_fence_begin_lock_setup @ agent/conversation_compression.py:begin_lock_setup */
+bool cc_commit_fence_begin_lock_setup(cc_commit_fence_t *f) {
+    /* Fence durable-lock acquisition and release-hook publication. The caller
+     * keeps the fence until it has either published the exact holder-qualified
+     * release hook or established that no lock was acquired. */
+    if (!f) return false;
+    pthread_mutex_lock(&f->lock);
+    if (f->cancelled || f->admission_revoked) {
+        pthread_mutex_unlock(&f->lock);
+        return false;
+    }
+    return true;
+}
+
+/* PoP: cc_commit_fence_finish_lock_setup @ agent/conversation_compression.py:finish_lock_setup */
+void cc_commit_fence_finish_lock_setup(cc_commit_fence_t *f) {
+    /* Leave a lock setup boundary entered by begin_lock_setup. */
     if (f) pthread_mutex_unlock(&f->lock);
+}
+
+/* PoP: cc_commit_fence_register_cancelled_lock_release @ agent/conversation_compression.py:register_cancelled_lock_release */
+bool cc_commit_fence_register_cancelled_lock_release(cc_commit_fence_t *f,
+                                                     void (*release)(void)) {
+    /* Publish the timed-out worker's holder-qualified lock release.
+     * Returns whether cancellation cleanup was requested before publication.
+     * In that race, the release runs synchronously before this method returns. */
+    if (!f) return false;
+    bool requested;
+    pthread_mutex_lock(&f->release_guard);
+    f->cancelled_lock_release = release;
+    requested = f->cancelled_lock_release_requested;
+    pthread_mutex_unlock(&f->release_guard);
+    if (requested && release)
+        release();
+    return requested;
+}
+
+/* PoP: cc_commit_fence_clear_cancelled_lock_release @ agent/conversation_compression.py:clear_cancelled_lock_release */
+void cc_commit_fence_clear_cancelled_lock_release(cc_commit_fence_t *f,
+                                                  void (*release)(void)) {
+    /* Forget `release` after the worker's normal cleanup finishes. */
+    if (!f) return;
+    pthread_mutex_lock(&f->release_guard);
+    if (f->cancelled_lock_release == release)
+        f->cancelled_lock_release = NULL;
+    pthread_mutex_unlock(&f->release_guard);
+}
+
+/* PoP: cc_commit_fence_release_cancelled_compression_lock @ agent/conversation_compression.py:release_cancelled_compression_lock */
+void cc_commit_fence_release_cancelled_compression_lock(cc_commit_fence_t *f) {
+    /* Release the cancelled worker's lock without finalizing its clients.
+     * Callers invoke this only after cancellation won (fence cancelled or
+     * admission revoked). A request that races ahead of lock-hook publication
+     * is retained and fulfilled synchronously when the worker publishes. */
+    if (!f) return;
+    void (*release)(void);
+    pthread_mutex_lock(&f->release_guard);
+    f->cancelled_lock_release_requested = true;
+    release = f->cancelled_lock_release;
+    pthread_mutex_unlock(&f->release_guard);
+    if (release)
+        release();
 }
 
 /* ── Lock-skip signal ────────────────────────────────────────────────── */
@@ -714,7 +850,52 @@ json_t *cc_supported_compression_kwargs(bool has_memory_context,
     return out;
 }
 
-/* ── _CompactionActivityHeartbeat._touch ─────────────────────────────── */
+/* ── _CompressionActivityHeartbeat ──────────────────────────────────── */
+
+/* The in-flight heartbeat state. Mirrors the Python
+ * _CompressionActivityHeartbeat: agent touch callback + commit fence +
+ * suppressed latch. */
+typedef struct cc_heartbeat {
+    void (*touch_activity)(const char *desc); /* agent._touch_activity */
+    cc_commit_fence_t *fence;                /* commit fence (or NULL)     */
+    bool suppressed;                         /* _suppressed latch           */
+} cc_heartbeat_t;
+
+cc_heartbeat_t *cc_heartbeat_new(void (*touch_activity)(const char *),
+                                  cc_commit_fence_t *fence) {
+    cc_heartbeat_t *h = calloc(1, sizeof(*h));
+    if (!h) return NULL;
+    h->touch_activity = touch_activity;
+    h->fence = fence;
+    h->suppressed = false;
+    return h;
+}
+
+void cc_heartbeat_free(cc_heartbeat_t *h) {
+    free(h); /* fence is owned by the caller */
+}
+
+/* PoP: _fence_cancelled @ agent/conversation_compression.py:_CompressionActivityHeartbeat._fence_cancelled */
+bool cc_heartbeat_fence_cancelled(const cc_heartbeat_t *h) {
+    /* fence is not None and fence.is_cancelled */
+    if (!h || !h->fence) return false;
+    return cc_commit_fence_is_cancelled(h->fence);
+}
+
+/* PoP: _should_suppress @ agent/conversation_compression.py:_CompressionActivityHeartbeat._should_suppress */
+bool cc_heartbeat_should_suppress(cc_heartbeat_t *h) {
+    /* Latched once host cancel/timeout wins or a terminal stamp is observed,
+     * so a later UNKNOWN rewrite cannot re-arm a detached zombie heartbeat. */
+    if (!h) return false;
+    if (h->suppressed) return true;
+    if (cc_heartbeat_fence_cancelled(h)) {
+        h->suppressed = true;
+        return true;
+    }
+    return false;
+}
+
+/* ── _CompressionActivityHeartbeat._touch ─────────────────────────────── */
 
 /* PoP: _touch @ agent/conversation_compression.py:_CompressionActivityHeartbeat._touch */
 /* Touches the agent's forward-progress heartbeat so a hung compressor doesn't
@@ -848,3 +1029,632 @@ static json_t *cc_codex_result(json_t *messages, char *prompt) {
 const char *CC_COMPACTION_STATUS =
     "\xF0\x9F\x94\x84 Compacting conversation history...";
 
+
+/* ── Bounded compression-pool admission (#76354 F6) ──────────────────── */
+
+/* The stdlib executor queue is unbounded: with all four workers wedged in
+ * hung summaries, a fifth compression would queue silently, wait out its
+ * whole timeout without ever starting, and remain eligible to run as a stale
+ * job whenever a worker recovered. Admission is therefore capped at the
+ * worker count — when every slot is occupied (running OR admitted-not-started)
+ * submission FAILS FAST and the caller continues without compression. */
+#define CC_COMPRESS_EXECUTOR_MAX_WORKERS 4
+
+static pthread_mutex_t g_cc_admission_lock = PTHREAD_MUTEX_INITIALIZER;
+static int g_cc_admitted_count = 0;
+
+/* PoP: _try_admit_compression_job @ agent/conversation_compression.py:_try_admit_compression_job */
+bool cc_try_admit_compression_job(void) {
+    /* Reserve one bounded compression-pool admission slot (F6). */
+    bool ok;
+    pthread_mutex_lock(&g_cc_admission_lock);
+    if (g_cc_admitted_count >= CC_COMPRESS_EXECUTOR_MAX_WORKERS) {
+        ok = false;
+    } else {
+        g_cc_admitted_count += 1;
+        ok = true;
+    }
+    pthread_mutex_unlock(&g_cc_admission_lock);
+    return ok;
+}
+
+/* PoP: _release_compression_admission @ agent/conversation_compression.py:_release_compression_admission */
+void cc_release_compression_admission(void) {
+    /* Free an admission slot (future done-callback or failed submit). */
+    pthread_mutex_lock(&g_cc_admission_lock);
+    if (g_cc_admitted_count > 0)
+        g_cc_admitted_count -= 1;
+    pthread_mutex_unlock(&g_cc_admission_lock);
+}
+
+/* PoP: resolve_context_compression_timeouts @ agent/conversation_compression.py:resolve_context_compression_timeouts */
+void cc_resolve_context_compression_timeouts(const char *compression_cfg_json,
+                                             double *out_idle,
+                                             double *out_ceiling) {
+    /* Return (idle_timeout_seconds, total_ceiling_seconds).
+     * idle_timeout_seconds <= 0 disables the owned progress-aware wrapper.
+     * The ceiling is clamped to at least one idle window when the idle budget
+     * is positive, matching gateway hygiene semantics. */
+    double idle = 120.0;      /* DEFAULT_CONTEXT_TIMEOUT_SECONDS */
+    double ceiling = 600.0;   /* DEFAULT_CONTEXT_TOTAL_CEILING_SECONDS */
+
+    if (compression_cfg_json && *compression_cfg_json) {
+        json_t *cfg = json_parse(compression_cfg_json, NULL);
+        if (cfg && cfg->type == JSON_OBJECT) {
+            const json_t *raw_idle = json_obj_get(cfg, "context_timeout_seconds");
+            if (raw_idle && raw_idle->type == JSON_NUMBER) {
+                /* Explicit 0/negative disables; positive values win. */
+                idle = raw_idle->num_val;
+            }
+            const json_t *raw_ceiling =
+                json_obj_get(cfg, "context_total_ceiling_seconds");
+            if (raw_ceiling && raw_ceiling->type == JSON_NUMBER) {
+                double parsed = raw_ceiling->num_val;
+                if (parsed > 0)
+                    ceiling = parsed;
+            }
+        }
+        json_free(cfg);
+    }
+    if (idle > 0)
+        ceiling = ceiling > idle ? ceiling : idle;
+    if (out_idle) *out_idle = idle;
+    if (out_ceiling) *out_ceiling = ceiling;
+}
+
+/* ── Compressor attempt-state snapshot/restore ──────────────────────── */
+
+/* The allow-list of mutable bookkeeping fields owned by one compression
+ * attempt. Mirrors Python _COMPRESSOR_ATTEMPT_STATE_FIELDS exactly. */
+static const char *CC_COMPRESSOR_ATTEMPT_STATE_FIELDS[] = {
+    "_previous_summary",
+    "_summary_has_user_turn",
+    "compression_count",
+    "_last_compression_savings_pct",
+    "_ineffective_compression_count",
+    "_anti_thrash_recovery_deadline",
+    "_fallback_compression_streak",
+    "_verify_compaction_cleared_threshold",
+    "_last_compression_made_progress",
+    "_summary_failure_cooldown_until",
+    "_cooldown_persist_failed",
+    "_last_summary_error",
+    "_consecutive_timeout_failures",
+    "_last_summary_dropped_count",
+    "_last_summary_fallback_used",
+    "_last_compress_aborted",
+    "_last_summary_auth_failure",
+    "_last_summary_network_failure",
+    "_last_aux_model_failure_error",
+    "_last_aux_model_failure_model",
+    "_summary_model_fallen_back",
+    "summary_model",
+    "_last_compression_telemetry",
+    "_active_compression_telemetry",
+    "_compression_telemetry_seed",
+    NULL,
+};
+
+/* PoP: _snapshot_compressor_attempt_state @ agent/conversation_compression.py:_snapshot_compressor_attempt_state */
+json_t *cc_snapshot_compressor_attempt_state(const json_t *state) {
+    /* Copy only mutable bookkeeping owned by one compression attempt.
+     * The explicit allow-list avoids copying provider clients, session DB
+     * handles, locks, and plugin resources. Missing fields are ignored. */
+    if (!state || state->type != JSON_OBJECT)
+        return json_object();
+    json_t *out = json_object();
+    if (!out) return NULL;
+    for (size_t i = 0; CC_COMPRESSOR_ATTEMPT_STATE_FIELDS[i]; i++) {
+        const char *name = CC_COMPRESSOR_ATTEMPT_STATE_FIELDS[i];
+        json_t *val = json_obj_get(state, name);
+        if (val)
+            json_object_set(out, name, json_copy(val));
+    }
+    return out;
+}
+
+/* PoP: _restore_compressor_attempt_state @ agent/conversation_compression.py:_restore_compressor_attempt_state */
+void cc_restore_compressor_attempt_state(json_t *state,
+                                         const json_t *snapshot,
+                                         bool durable_cooldown_authoritative,
+                                         const json_t *durable_cooldown_state,
+                                         hermes_state_db_t *db,
+                                         const char *session_id) {
+    /* Restore the safe per-attempt snapshot after a pre-commit hard cancel.
+     * On the cooling path: a successful summary clears the durable cooldown
+     * before the outer commit boundary. Recreate (or clear) that row before
+     * restoring exact in-memory values, otherwise the next refresh overwrites
+     * this rollback. Unknown durable state and intentionally unpersisted local
+     * cooldowns are never converted into destructive DB writes during cancellation. */
+    if (state && state->type != JSON_OBJECT) return;
+    if (!snapshot || snapshot->type != JSON_OBJECT) return;
+
+    /* Cooldown restore path (only when snapshot has _summary_failure_cooldown_until
+     * and durable_cooldown_authoritative != FALSE and either authoritative or
+     * cooldown-persist did not fail). */
+    const json_t *cd_field = json_obj_get(snapshot, "_summary_failure_cooldown_until");
+    bool cd_in_snapshot = cd_field && cd_field->type != JSON_NULL;
+    if (cd_in_snapshot && state) {
+        bool persist_failed_val = false;
+        const json_t *pf = json_obj_get(snapshot, "_cooldown_persist_failed");
+        if (pf && pf->type == JSON_BOOL)
+            persist_failed_val = !pf->bool_val;
+        if (durable_cooldown_authoritative || persist_failed_val) {
+            if (db && session_id && session_id[0]) {
+                if (durable_cooldown_authoritative) {
+                    /* Authoritative restore: call DB restore with deep-copied
+                     * durable_state. */
+                    if (durable_cooldown_state &&
+                        durable_cooldown_state->type == JSON_OBJECT) {
+                        json_t *dc_copy = json_copy(durable_cooldown_state);
+                        char *snap_str = json_dumps(dc_copy, 0);
+                        json_free(dc_copy);
+                        if (snap_str) {
+                            hermes_state_restore_compression_failure_cooldown_row(
+                                db, session_id, snap_str);
+                            free(snap_str);
+                        }
+                    }
+                } else {
+                    /* Non-authoritative, persist-failed path: recompute the
+                     * remaining durable time and either re-record or clear the
+                     * cooldown row. */
+                    double deadline = 0.0;
+                    const json_t *until = json_obj_get(snapshot,
+                                                       "_summary_failure_cooldown_until");
+                    if (until && (until->type == JSON_NUMBER ||
+                                  until->type == JSON_STRING)) {
+                        deadline = until->type == JSON_NUMBER ?
+                                   until->num_val : 0.0;
+                    }
+                    double remaining = deadline > 0.0 ?
+                        (deadline - cc_monotonic()) : 0.0;
+                    double durable_deadline = cc_monotonic() + (remaining > 0 ? remaining : 0.0);
+                    const char *durable_error = NULL;
+                    const json_t *err = json_obj_get(snapshot, "_last_summary_error");
+                    if (err && err->type == JSON_STRING)
+                        durable_error = err->str_val;
+                    if (remaining > 0) {
+                        hermes_state_record_compression_failure_cooldown(
+                            db, session_id, durable_deadline, durable_error);
+                    } else {
+                        hermes_state_clear_compression_failure_cooldown(
+                            db, session_id);
+                    }
+                }
+            }
+        }
+    }
+
+    /* Restore exact in-memory values: deep-copy the snapshot into state. */
+    if (state && state->type == JSON_OBJECT &&
+        snapshot && snapshot->type == JSON_OBJECT) {
+        size_t n = json_len(snapshot);
+        for (size_t i = 0; i < n; i++) {
+            const char *k = json_object_get_key_at(snapshot, i);
+            json_t *v = json_object_get_at(snapshot, i);
+            if (k && v)
+                json_object_set(state, k, json_copy(v));
+        }
+    }
+}
+
+/* PoP: _capture_authoritative_cooldown_under_lease @ agent/conversation_compression.py:_capture_authoritative_cooldown_under_lease */
+void cc_capture_authoritative_cooldown_under_lease(json_t *state,
+                                                   json_t *attempt_snapshot,
+                                                   hermes_state_db_t *db,
+                                                   const char *session_id,
+                                                   bool *out_authoritative,
+                                                   json_t **out_durable_state) {
+    /* Refresh + snapshot built-in durable cooldown state under the lease.
+     * Third-party compressors are deliberately not invoked here: arbitrary
+     * plugin callbacks must not run while the session lease is held.
+     * A durable read failure returns False so rollback cannot mistake unknown
+     * durable state for an authoritative empty row and clear it; an unavailable
+     * legacy API returns None and preserves the compatibility path.
+     *
+     * In C, the compressor state is always our built-in type, so we always
+     * capture authoritatively when the DB/session are available.
+     * out_durable_state receives a deep-copied durable-state object (caller
+     * frees) when authoritative is true. */
+    if (out_authoritative) *out_authoritative = false;
+    if (out_durable_state) *out_durable_state = NULL;
+    if (!state || state->type != JSON_OBJECT) return;
+    if (!db || !session_id || !session_id[0]) return;
+
+    /* Read the exact persisted representation (raw, unfiltered by expiry
+     * — cannot serve as a lossless rollback snapshot). */
+    char *row_json = hermes_state_get_compression_failure_cooldown_row(db, session_id);
+    json_t *durable_state = row_json ? json_parse(row_json, NULL) : NULL;
+    free(row_json);
+    if (!durable_state || durable_state->type != JSON_OBJECT) {
+        json_free(durable_state);
+        return;
+    }
+
+    /* Capture the cooldown state fields into the attempt snapshot. */
+    static const char *COOLDOWN_STATE_FIELDS[] = {
+        "_summary_failure_cooldown_until",
+        "_last_summary_error",
+        "_cooldown_persist_failed",
+        NULL,
+    };
+    for (size_t i = 0; COOLDOWN_STATE_FIELDS[i]; i++) {
+        json_t *val = json_obj_get(state, COOLDOWN_STATE_FIELDS[i]);
+        if (val)
+            json_object_set(attempt_snapshot, COOLDOWN_STATE_FIELDS[i],
+                            json_copy(val));
+    }
+    if (out_authoritative) *out_authoritative = true;
+    if (out_durable_state) *out_durable_state = durable_state;
+    else json_free(durable_state);
+}
+
+
+/* ── Compress-timeout executor pool (#76354 F6) ────────────────────── */
+/*
+ * Process-wide bounded daemon thread pool (4 workers) for sync
+ * run_in_executor-style compression calls. Faithful C11 port of
+ * tools/daemon_pool.py:DaemonThreadPoolExecutor: daemon threads so a
+ * fence-cancelled hung worker cannot block process exit; max_workers=4
+ * so compress is rare/heavy but overlapping calls are allowed.
+ */
+
+typedef struct cc_pool_job {
+    void (*fn)(void *);
+    void *arg;
+    struct cc_pool_job *next;
+} cc_pool_job_t;
+
+typedef struct cc_compress_pool {
+    pthread_mutex_t mutex;      /* guards job_queue, shutdown, active   */
+    pthread_cond_t  job_cond;   /* signal: job enqueued or shutdown     */
+    cc_pool_job_t  *job_queue;  /* FIFO of pending jobs                  */
+    cc_pool_job_t  *job_tail;
+    int  active;              /* running OR admitted-not-started       */
+    bool shutting_down;
+    pthread_t workers[CC_COMPRESS_EXECUTOR_MAX_WORKERS];
+    bool  alive[CC_COMPRESS_EXECUTOR_MAX_WORKERS];
+} cc_compress_pool_t;
+
+static cc_compress_pool_t *g_cc_pool = NULL;
+static pthread_once_t g_cc_pool_once = PTHREAD_ONCE_INIT;
+
+static void *cc_pool_worker_main(void *arg) {
+    (void)arg;
+    for (;;) {
+        pthread_mutex_lock(&g_cc_pool->mutex);
+        while (!g_cc_pool->shutting_down && !g_cc_pool->job_queue)
+            pthread_cond_wait(&g_cc_pool->job_cond, &g_cc_pool->mutex);
+        if (g_cc_pool->shutting_down) {
+            pthread_mutex_unlock(&g_cc_pool->mutex);
+            return NULL;
+        }
+        cc_pool_job_t *job = g_cc_pool->job_queue;
+        g_cc_pool->job_queue = job->next;
+        if (g_cc_pool->job_tail == job)
+            g_cc_pool->job_tail = NULL;
+        pthread_mutex_unlock(&g_cc_pool->mutex);
+        if (job->fn)
+            job->fn(job->arg);
+        free(job);
+    }
+    return NULL;
+}
+
+static void cc_pool_init_once(void) {
+    if (g_cc_pool) return;
+    g_cc_pool = calloc(1, sizeof(*g_cc_pool));
+    if (!g_cc_pool) return;
+    pthread_mutex_init(&g_cc_pool->mutex, NULL);
+    pthread_cond_init(&g_cc_pool->job_cond, NULL);
+    for (int i = 0; i < CC_COMPRESS_EXECUTOR_MAX_WORKERS; i++) {
+        if (pthread_create(&g_cc_pool->workers[i], NULL,
+                           cc_pool_worker_main, NULL) != 0) {
+            g_cc_pool->alive[i] = false;
+        } else {
+            /* Detach: daemon-like semantics — the thread does not need to be
+             * joined at process shutdown (mirrors DaemonThreadPoolExecutor). */
+            pthread_detach(g_cc_pool->workers[i]);
+            g_cc_pool->alive[i] = true;
+        }
+    }
+}
+
+/* PoP: _get_compress_timeout_executor @ agent/conversation_compression.py:_get_compress_timeout_executor */
+cc_compress_pool_t *cc_get_compress_timeout_executor(void) {
+    /* Return the process-wide compress-timeout DaemonThreadPoolExecutor.
+     * Lazily created on first call; never shut down per-call (a timed-out
+     * worker may still be winding down after fence cancel). */
+    static pthread_mutex_t init_lock = PTHREAD_MUTEX_INITIALIZER;
+    pthread_mutex_lock(&init_lock);
+    if (!g_cc_pool)
+        cc_pool_init_once();
+    pthread_mutex_unlock(&init_lock);
+    return g_cc_pool;
+}
+
+/* ── Progress-aware timeout runner ──────────────────────────────────── */
+
+/* Shared job result container for the single-submission pattern. */
+typedef struct cc_compress_run_ctx {
+    void (*worker_fn)(void *);   /* the compression worker callable       */
+    void *worker_arg;           /* forwarded to worker_fn                */
+    cc_commit_fence_t *fence;   /* reuse existing or create new          */
+    bool  fence_owned;          /* true: we created the fence            */
+    double idle_timeout;        /* idle budget (seconds)                 */
+    double ceiling;             /* total ceiling (seconds)               */
+    void (*on_timeout)(double idle, double waited, double since_progress);
+    void (*on_commit_overrun)(double waited, double ceiling);
+    /* Result */
+    bool completed;             /* worker finished                        */
+    bool has_result;
+    char *result_text;          /* the worker's message/fallback          */
+    int  exit_code;             /* 0 = success, 1 = timeout, -1 = saturated */
+    pthread_mutex_t mutex;
+    pthread_cond_t  done;       /* signaled when worker finishes          */
+} cc_compress_run_ctx_t;
+
+static void cc_compress_job_fn(void *arg) {
+    cc_compress_run_ctx_t *ctx = (cc_compress_run_ctx_t *)arg;
+    if (ctx->fence_owned && cc_commit_fence_is_cancelled(ctx->fence)) {
+        /* F6: skip stale job — fence already cancelled before start. */
+        pthread_mutex_lock(&ctx->mutex);
+        ctx->completed = true;
+        pthread_mutex_unlock(&ctx->mutex);
+        pthread_cond_signal(&ctx->done);
+        return;
+    }
+    if (ctx->worker_fn)
+        ctx->worker_fn(ctx->worker_arg);
+    pthread_mutex_lock(&ctx->mutex);
+    ctx->completed = true;
+    pthread_mutex_unlock(&ctx->mutex);
+    pthread_cond_signal(&ctx->done);
+}
+
+cc_compress_pool_t *cc_get_compress_timeout_executor(void);
+
+/*
+ * Run worker(fence) under a sync progress-aware timeout.
+ *
+ * Faithful port of Python run_compress_context_with_progress_timeout.
+ * - idle budget: inactivity-based (progress via cc_commit_fence_touch_progress
+ *   extends the wait).
+ * - total ceiling: hard bound on the pre-commit wait.
+ * - fence_cancelled on timeout prevents a late commit from mutating session
+ *   state; the worker is detached and its durable lease is released.
+ * - commit phase (begin_commit entered) is NOT fence-cancelled — logged +
+ *   surfaced via on_commit_overrun if it exceeds the ceiling, then waited on
+ *   in bounded slices until it completes.
+ *
+ * worker_fn receives the commit fence via worker_arg. On timeout returns
+ * fallback_prompt (caller-provided string).
+ */
+/* PoP: run_compress_context_with_progress_timeout @ agent/conversation_compression.py:run_compress_context_with_progress_timeout */
+char *cc_run_compress_context_with_progress_timeout(
+    void (*worker_fn)(void *),
+    void *worker_arg,
+    const char *fallback_prompt,
+    double idle_timeout_seconds,
+    double total_ceiling_seconds,
+    void (*on_timeout)(double idle, double waited, double since_progress),
+    void (*on_commit_overrun)(double waited, double ceiling),
+    cc_commit_fence_t *fence) {
+
+    if (idle_timeout_seconds <= 0) {
+        fprintf(stderr,
+            "run_compress_context_with_progress_timeout requires "
+            "idle_timeout_seconds > 0; call compress_context directly to disable\n");
+        return NULL;
+    }
+
+    /* Bounded admission (#76354 F6): refuse rather than queue when every pool
+     * slot is occupied. _try_admit_compression_job returns false WITHOUT
+     * incrementing the counter, so no release is needed on the failure path. */
+    if (!cc_try_admit_compression_job()) {
+        fprintf(stderr,
+            "Context compression pool saturated (%d workers busy) — refusing "
+            "new compression this cycle and continuing without compression.\n",
+            CC_COMPRESS_EXECUTOR_MAX_WORKERS);
+        return strdup(fallback_prompt ? fallback_prompt : "");
+    }
+
+    cc_compress_run_ctx_t *ctx = calloc(1, sizeof(*ctx));
+    if (!ctx) {
+        cc_release_compression_admission();
+        return strdup(fallback_prompt ? fallback_prompt : "");
+    }
+    pthread_mutex_init(&ctx->mutex, NULL);
+    pthread_cond_init(&ctx->done, NULL);
+
+    ctx->worker_fn = worker_fn;
+    ctx->worker_arg = worker_arg;
+    ctx->idle_timeout = idle_timeout_seconds;
+    ctx->ceiling = total_ceiling_seconds > idle_timeout_seconds ?
+                    total_ceiling_seconds : idle_timeout_seconds;
+    ctx->on_timeout = on_timeout;
+    ctx->on_commit_overrun = on_commit_overrun;
+    ctx->fence_owned = (fence == NULL);
+    ctx->fence = fence ? fence : cc_commit_fence_new();
+    ctx->exit_code = -1;
+
+    /* Submit the job. */
+    cc_pool_job_t *job = calloc(1, sizeof(*job));
+    if (!job) {
+        if (ctx->fence_owned) cc_commit_fence_free(ctx->fence);
+        pthread_mutex_destroy(&ctx->mutex);
+        pthread_cond_destroy(&ctx->done);
+        free(ctx);
+        cc_release_compression_admission();
+        return strdup(fallback_prompt ? fallback_prompt : "");
+    }
+    job->fn = cc_compress_job_fn;
+    job->arg = ctx;
+
+    cc_compress_pool_t *pool = cc_get_compress_timeout_executor();
+    if (!pool) {
+        if (job) free(job);
+        if (ctx->fence_owned) cc_commit_fence_free(ctx->fence);
+        pthread_mutex_destroy(&ctx->mutex);
+        pthread_cond_destroy(&ctx->done);
+        free(ctx);
+        cc_release_compression_admission();
+        return strdup(fallback_prompt ? fallback_prompt : "");
+    }
+
+    pthread_mutex_lock(&pool->mutex);
+    if (pool->job_tail)
+        pool->job_tail->next = job;
+    else
+        pool->job_queue = job;
+    pool->job_tail = job;
+    pthread_cond_signal(&pool->job_cond);
+    pthread_mutex_unlock(&pool->mutex);
+
+    /* Wait loop: progress-aware polling against idle + ceiling. */
+    double wait_started = cc_monotonic();
+    bool handled_exit = false;
+
+    for (;;) {
+        double waited = cc_monotonic() - wait_started;
+        double remaining_ceiling = ctx->ceiling - waited;
+        if (remaining_ceiling <= 0)
+            break;
+
+        double since_progress =
+            cc_commit_fence_seconds_since_progress(ctx->fence);
+        double wait_slice = idle_timeout_seconds - since_progress;
+        if (wait_slice < 0.005) wait_slice = 0.005;
+        if (wait_slice > remaining_ceiling) wait_slice = remaining_ceiling;
+
+        /* Use monotonic deadline; poll completion in small increments since
+         * pthread condvar uses CLOCK_REALTIME (clock-domain mismatch). */
+        bool done = false;
+        double deadline = cc_monotonic() + wait_slice;
+        while (cc_monotonic() < deadline) {
+            pthread_mutex_lock(&ctx->mutex);
+            if (ctx->completed) {
+                done = true;
+            }
+            pthread_mutex_unlock(&ctx->mutex);
+            if (done) break;
+            /* Small spin to check progress + completion without blocking the
+             * condvar clock-domain issue. */
+            struct timespec req = {0, 5 * 1000000}; /* 5ms */
+            nanosleep(&req, NULL);
+        }
+
+        pthread_mutex_lock(&ctx->mutex);
+        if (ctx->completed) {
+            handled_exit = true;
+            pthread_mutex_unlock(&ctx->mutex);
+            /* Worker returned its result — success path. */
+            ctx->exit_code = 0;
+            break;
+        }
+        pthread_mutex_unlock(&ctx->mutex);
+
+        /* TimeoutError path: check if idle budget exhausted. */
+        waited = cc_monotonic() - wait_started;
+        since_progress = cc_commit_fence_seconds_since_progress(ctx->fence);
+        if (since_progress < idle_timeout_seconds && waited < ctx->ceiling) {
+            fprintf(stderr,
+                "Context compression still streaming after %.0fs (last progress "
+                "%.1fs ago) — extending wait (ceiling %.0fs)\n",
+                waited, since_progress, ctx->ceiling);
+            continue;
+        }
+        break;  /* ceiling or idle exhausted — fall through to fence cancel */
+    }
+
+    /* Not completed within budget. */
+    pthread_mutex_lock(&ctx->mutex);
+    bool was_completed = ctx->completed;
+    pthread_mutex_unlock(&ctx->mutex);
+    if (was_completed) {
+        /* Worker finished just now — treat as success. */
+        cc_release_compression_admission();
+        char *ret = ctx->result_text;
+        if (!ret) ret = strdup(fallback_prompt ? fallback_prompt : "");
+        pthread_mutex_destroy(&ctx->mutex);
+        pthread_cond_destroy(&ctx->done);
+        if (ctx->fence_owned) cc_commit_fence_free(ctx->fence);
+        free(ctx);
+        return ret;
+    }
+
+    /* F6: cancel the future so a not-started future doesn't linger as a stale
+     * queued job. For a running worker, the fence handles the cancel path. */
+    /* (In our model, if the worker is still running, the fence cancel below
+     *  prevents any late commit. We cannot pthread_cancel a running job safely
+     *  in C11, so we rely on the worker checking the fence — matching Python's
+     *  fence-cancel model.) */
+
+    /* Check commit phase: if begin_commit won, we must WAIT for the commit
+     * to finish (cannot fence-cancel a mid-mutation commit). */
+    bool commit_in_flight = cc_commit_fence_commit_in_flight(ctx->fence);
+    cc_release_compression_admission();
+
+    if (!commit_in_flight) {
+        /* Pre-commit: cancellation won before the commit boundary. */
+        cc_commit_fence_release_cancelled_compression_lock(ctx->fence);
+        double waited = cc_monotonic() - wait_started;
+        double since_progress =
+            cc_commit_fence_seconds_since_progress(ctx->fence);
+        if (ctx->on_timeout) {
+            ctx->on_timeout(idle_timeout_seconds, waited, since_progress);
+        } else {
+            fprintf(stderr,
+                "Context compression made no progress for %.1fs (total wait "
+                "%.1fs, ceiling %.1fs); continuing without compression\n",
+                since_progress, waited, ctx->ceiling);
+        }
+        char *ret = strdup(fallback_prompt ? fallback_prompt : "");
+        pthread_mutex_destroy(&ctx->mutex);
+        pthread_cond_destroy(&ctx->done);
+        if (ctx->fence_owned) cc_commit_fence_free(ctx->fence);
+        free(ctx);
+        return ret;
+    }
+
+    /* Commit in-flight: wait in bounded slices until it completes. */
+    int overrun_reports = 0;
+    bool overrun_surfaced = false;
+    for (;;) {
+        double waited = cc_monotonic() - wait_started;
+        double remaining = ctx->ceiling - waited;
+        if (remaining <= 0) {
+            remaining = 30.0;  /* _COMMIT_OVERRUN_WAIT_SLICE_SECONDS */
+            if (ctx->ceiling > 0 && remaining > ctx->ceiling)
+                remaining = ctx->ceiling;
+            if (remaining < 0.05) remaining = 0.05;
+            overrun_reports++;
+            fprintf(stderr,
+                "Context compression SessionDB commit still running %.1fs "
+                "past the total ceiling (waited %.1fs, ceiling %.1fs); "
+                "commit cannot be abandoned mid-flight — continuing to wait\n",
+                waited - ctx->ceiling, waited, ctx->ceiling);
+            if (!overrun_surfaced && ctx->on_commit_overrun) {
+                overrun_surfaced = true;
+                ctx->on_commit_overrun(waited, ctx->ceiling);
+            }
+        }
+        /* Wait for the worker to finish (bounded by remaining slice). */
+        struct timespec req = {0, 5 * 1000000}; /* 5ms spin */
+        pthread_mutex_lock(&ctx->mutex);
+        bool done_now = ctx->completed;
+        pthread_mutex_unlock(&ctx->mutex);
+        if (done_now) break;
+        nanosleep(&req, NULL);
+    }
+
+    /* Worker completed post-commit. */
+    char *ret = ctx->result_text;
+    if (!ret) ret = strdup(fallback_prompt ? fallback_prompt : "");
+    pthread_mutex_destroy(&ctx->mutex);
+    pthread_cond_destroy(&ctx->done);
+    if (ctx->fence_owned) cc_commit_fence_free(ctx->fence);
+    free(ctx);
+    return ret;
+}

@@ -270,4 +270,19 @@ int hermes_state_publish_compression_child(hermes_state_db_t *db,
 }
 #endif
 
+/* ── Compression failure cooldown rows ────────────────────────────────── */
+/* These live in hermes_state_misc.c but are declared here so the
+ * conversation_compression port can call them through the opaque handle. */
+char *hermes_state_get_compression_failure_cooldown_row(hermes_state_db_t *db,
+                                                        const char *session_id);
+int hermes_state_restore_compression_failure_cooldown_row(hermes_state_db_t *db,
+                                                          const char *session_id,
+                                                          const char *snapshot_json);
+void hermes_state_record_compression_failure_cooldown(hermes_state_db_t *db,
+                                                      const char *session_id,
+                                                      double cooldown_until,
+                                                      const char *error);
+void hermes_state_clear_compression_failure_cooldown(hermes_state_db_t *db,
+                                                     const char *session_id);
+
 #endif /* SLERMES_HERMES_STATE_DB_H */

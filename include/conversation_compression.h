@@ -25,7 +25,8 @@ extern const char *CC_CONTINUATION_USER_CONTENT;
 extern const char *CC_LEGACY_CONTINUATION_USER_CONTENT;
 
 /* ── CompressionCommitFence ──────────────────────────────────────────── */
-/* Opaque: pthread mutex + cancelled/commit_started + monotonic progress. */
+/* Opaque: fencing mutex + cancelled/commit_started/commit_phase +
+ * admission_revoked + release-guard mutex + monotonic progress. */
 typedef struct cc_commit_fence cc_commit_fence_t;
 
 cc_commit_fence_t *cc_commit_fence_new(void);
@@ -39,6 +40,86 @@ int cc_commit_fence_try_cancel_before_commit(cc_commit_fence_t *f);
 /* true = entered the commit boundary; false = cancellation already won. */
 bool cc_commit_fence_begin_commit(cc_commit_fence_t *f);
 void cc_commit_fence_finish_commit(cc_commit_fence_t *f);
+/* commit_in_flight: lock-free read of the commit-phase marker. */
+bool cc_commit_fence_commit_in_flight(cc_commit_fence_t *f);
+/* is_cancelled: cancelled || admission_revoked. */
+bool cc_commit_fence_is_cancelled(cc_commit_fence_t *f);
+/* revoke_commit_admission: lock-free flag; releases durable lease when the
+ * fence is free, defers to finish/begin_commit otherwise. */
+void cc_commit_fence_revoke_commit_admission(cc_commit_fence_t *f);
+/* begin_lock_setup / finish_lock_setup: fence durable-lock acquisition. */
+bool cc_commit_fence_begin_lock_setup(cc_commit_fence_t *f);
+void cc_commit_fence_finish_lock_setup(cc_commit_fence_t *f);
+/* register_cancelled_lock_release: publish holder-qualified release hook;
+ * returns whether cleanup was already requested (hook runs synchronously). */
+bool cc_commit_fence_register_cancelled_lock_release(cc_commit_fence_t *f,
+                                                     void (*release)(void));
+/* clear_cancelled_lock_release: forget `release` after normal cleanup. */
+void cc_commit_fence_clear_cancelled_lock_release(cc_commit_fence_t *f,
+                                                  void (*release)(void));
+/* release_cancelled_compression_lock: request + run the cancelled worker's
+ * lock release (retained and fulfilled synchronously if hook unpublished). */
+void cc_commit_fence_release_cancelled_compression_lock(cc_commit_fence_t *f);
+
+/* ── Bounded compression-pool admission (#76354 F6) ──────────────────── */
+/* Reserve one bounded admission slot; false when every pool slot is taken. */
+bool cc_try_admit_compression_job(void);
+/* Free an admission slot (future done-callback or failed submit). */
+void cc_release_compression_admission(void);
+
+/* resolve_context_compression_timeouts: parse the compression config json
+ * (may be NULL) into (idle_timeout_seconds, total_ceiling_seconds).
+ * Defaults 120.0 / 600.0; ceiling clamped to >= idle when idle > 0. */
+void cc_resolve_context_compression_timeouts(const char *compression_cfg_json,
+                                             double *out_idle,
+                                             double *out_ceiling);
+
+/* ── Compressor attempt-state snapshot/restore ────────────────────── */
+/* _snapshot_compressor_attempt_state: copy only allow-listed mutable
+ * bookkeeping from the compressor's vars/state dict. Caller frees. */
+json_t *cc_snapshot_compressor_attempt_state(const json_t *state);
+/* _restore_compressor_attempt_state: restore snapshot into state after a
+ * pre-commit hard cancel, with durable cooldown rollback via the SessionDB.
+ * durable_cooldown_authoritative=false with cooldown_persist_failed=true
+ * triggers a recompute-and-re-record path. */
+void cc_restore_compressor_attempt_state(json_t *state,
+                                         const json_t *snapshot,
+                                         bool durable_cooldown_authoritative,
+                                         const json_t *durable_cooldown_state,
+                                         hermes_state_db_t *db,
+                                         const char *session_id);
+/* _capture_authoritative_cooldown_under_lease: refresh + snapshot the built-in
+ * durable cooldown state under the session lease. Returns authoritative flag
+ * and a fresh durable-state object (caller frees *out_durable_state). */
+void cc_capture_authoritative_cooldown_under_lease(json_t *state,
+                                                   json_t *attempt_snapshot,
+                                                   hermes_state_db_t *db,
+                                                   const char *session_id,
+                                                   bool *out_authoritative,
+                                                   json_t **out_durable_state);
+
+/* ── Compress-timeout executor pool (#76354 F6) ────────────────────── */
+/* _get_compress_timeout_executor: process-wide bounded daemon pool (4 workers).
+ * The pool type is opaque; use cc_run_compress_context_with_progress_timeout
+ * to submit compression jobs through it. */
+typedef struct cc_compress_pool cc_compress_pool_t;
+cc_compress_pool_t *cc_get_compress_timeout_executor(void);
+
+/* run_compress_context_with_progress_timeout: faithful port of Python's
+ * run_compress_context_with_progress_timeout. Runs worker_fn(worker_arg)
+ * under a progress-aware idle timeout bounded by a total ceiling. The fence
+ * prevents late commits from mutating session state on cancellation.
+ * Returns the worker's result string, or fallback_prompt on timeout.
+ * fence may be NULL (a transient one is created and destroyed internally). */
+char *cc_run_compress_context_with_progress_timeout(
+    void (*worker_fn)(void *),
+    void *worker_arg,
+    const char *fallback_prompt,
+    double idle_timeout_seconds,
+    double total_ceiling_seconds,
+    void (*on_timeout)(double idle, double waited, double since_progress),
+    void (*on_commit_overrun)(double waited, double ceiling),
+    cc_commit_fence_t *fence);
 
 /* ── Lock-skip signal (#69870) ───────────────────────────────────────── */
 /* Type-pinned read: skipped iff flag set (holder may be NULL = bare True). */
@@ -131,6 +212,17 @@ json_t *cc_supported_compression_kwargs(bool has_memory_context,
                                         bool force);
 void cc_activity_heartbeat_touch(void (*touch_activity)(const char *desc),
                                  const char *desc);
+
+/* ── _CompressionActivityHeartbeat ──────────────────────────────────── */
+typedef struct cc_heartbeat cc_heartbeat_t;
+
+cc_heartbeat_t *cc_heartbeat_new(void (*touch_activity)(const char *),
+                                  cc_commit_fence_t *fence);
+void cc_heartbeat_free(cc_heartbeat_t *h);
+/* _fence_cancelled: fence is not None and fence.is_cancelled. */
+bool cc_heartbeat_fence_cancelled(const cc_heartbeat_t *h);
+/* _should_suppress: latched once a fence-cancel is observed. */
+bool cc_heartbeat_should_suppress(cc_heartbeat_t *h);
 
 /* ── Codex app-server compaction route ───────────────────────────────── */
 
