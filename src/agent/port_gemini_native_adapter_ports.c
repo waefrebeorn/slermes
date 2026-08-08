@@ -281,3 +281,24 @@ char *gna_gemini_http_error(long status, const char *body_text) {
              body_text ? body_text : "gemini http error");
     return out;
 }
+
+/* PoP: is_standard_key_auth_error @ agent/gemini_native_adapter.py:is_standard_key_auth_error */
+/*
+ * Return True when a Gemini 401 indicates Google rejected the key TYPE.
+ *
+ * Google began rejecting unrestricted legacy "Standard" Google Cloud API
+ * keys on the Gemini API on June 19, 2026, ALL Standard keys stop working
+ * in September 2026. The rejection surfaces as a misleading 401 telling
+ * the user to supply an OAuth 2 access token, optionally carrying
+ * google.rpc.ErrorInfo reason ACCESS_TOKEN_TYPE_UNSUPPORTED.
+ */
+bool gna_is_standard_key_auth_error(int status, const char *error_message, const char *reason) {
+    if (status != 401) return false;
+    if (reason && strcmp(reason, "ACCESS_TOKEN_TYPE_UNSUPPORTED") == 0) return true;
+    if (!error_message) return false;
+    char *lower = lowerdup(error_message);
+    if (!lower) return false;
+    bool r = strstr(lower, "expected oauth 2 access token") != NULL;
+    free(lower);
+    return r;
+}

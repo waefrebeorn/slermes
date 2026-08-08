@@ -243,3 +243,74 @@ int rly_register_relay_adapter(void) {
     printf("relay platform registered (generic adapter)\n");
     return 1;
 }
+
+/* PoP: relay_display_name @ gateway/relay/__init__.py:relay_display_name */
+char *rly_relay_display_name(void) {
+    /* Env first: GATEWAY_RELAY_DISPLAY_NAME */
+    const char *env_val = getenv("GATEWAY_RELAY_DISPLAY_NAME");
+    char *value = NULL;
+
+    if (env_val && *env_val) {
+        /* strip whitespace */
+        const char *s = env_val;
+        while (*s && isspace((unsigned char)*s)) s++;
+        value = strdup(s);
+        if (value) {
+            size_t len = strlen(value);
+            while (len > 0 && isspace((unsigned char)value[len - 1])) {
+                value[--len] = '\0';
+            }
+        }
+    }
+
+    /* If no env value, try the skin's branded agent name (late import
+       equivalent — gracefully no-op if skin engine unavailable, matching
+       Python's except Exception: value = "") */
+    if (!value || !*value) {
+        free(value);
+        /* Python: get_active_skin().get_branding("agent_name", "")
+           In C, try the branding hook via hermes_skin_get_branding */
+#ifdef HERMES_SKIN_ENABLED
+        extern const char *hermes_skin_get_branding(const char *key, const char *fallback);
+        const char *branded = hermes_skin_get_branding("agent_name", "");
+        if (branded && *branded) {
+            value = strdup(branded);
+        }
+#else
+        const char *branded = getenv("HERMES_AGENT_BRANDING_NAME");
+        if (branded && *branded) {
+            value = strdup(branded);
+        }
+#endif
+        if (!value) value = strdup("");
+    }
+
+    /* Strip whitespace again for the skin path */
+    if (value) {
+        const char *s = value;
+        while (*s && isspace((unsigned char)*s)) s++;
+        if (s != value) memmove(value, s, strlen(s) + 1);
+        size_t len = strlen(value);
+        while (len > 0 && isspace((unsigned char)value[len - 1])) {
+            value[--len] = '\0';
+        }
+    }
+
+    /* Stock brand name — skip (would shadow owner identity in multi-agent scope) */
+    if (value && strcmp(value, "Hermes Agent") == 0) {
+        free(value);
+        value = strdup("");
+    }
+
+    /* Truncate to 64 chars (mirror connector ingest sanitization) */
+    if (value && strlen(value) > 64) {
+        value[64] = '\0';
+    }
+
+    /* Python: return value[:64] or None — NULL if empty */
+    if (!value || !*value) {
+        free(value);
+        return NULL;
+    }
+    return value;
+}

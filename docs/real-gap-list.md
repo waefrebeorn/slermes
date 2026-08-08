@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-08T21:38:30Z from `live_parity_scan.json` by `make parity-walkway`. **1,008 REAL_GAP across 195 modules** (of 14,045 total functions).
+> Generated 2026-08-08T21:51:47Z from `live_parity_scan.json` by `make parity-walkway`. **1,006 REAL_GAP across 193 modules** (of 14,045 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -111,10 +111,6 @@
 ### agent/display.py (1 gaps)
 
 - prepare_tool_preview (function)
-
-### agent/gemini_native_adapter.py (1 gaps)
-
-- is_standard_key_auth_error (function)
 
 ### agent/insights.py (1 gaps)
 
@@ -459,10 +455,6 @@
 
 - _get_wsecret (function)
 - WhatsAppBehaviorMixin._live_dm_allow_from (method)
-
-### gateway/relay/__init__.py (1 gaps)
-
-- relay_display_name (function)
 
 ### gateway/relay/command_manifest.py (2 gaps)
 
