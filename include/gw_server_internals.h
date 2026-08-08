@@ -82,6 +82,8 @@ typedef struct {
 } gw_status_ctx_t;
 
 /* Definitions live in server.c. */
+typedef struct GatewayRunner GatewayRunner;
+extern GatewayRunner *g_runner;   /* shared GatewayRunner (defined in server.c) */
 extern gw_clarify_state_t  g_gw_clarify;
 extern gw_approval_state_t g_gw_approval;
 extern gw_hooks_t          gw_hooks;
@@ -96,6 +98,12 @@ extern char                g_gw_log_path[GW_LOG_PATH_MAX];
     bool gw_queue_pop(gateway_msg_t *msg);
     int gw_queue_depth(void);
     void gw_queue_drain_all(void);
+    /* Graceful-shutdown request (port of GatewayRunner.stop()): signal
+     * handler / programmatic trigger records the reason and wakes the main
+     * thread, which runs notify → bounded drain → interrupt → stop. */
+    void gw_request_shutdown(const char *reason);
+    const char *gw_shutdown_reason(void);
+    void gw_wait_for_shutdown_request(void);
     void gw_clarify_set_poll(char *(*fn)(const char *chat_id), int interval_sec);
     void gw_clarify_begin(const char *platform, const char *chat_id, const char *session_key, const char *clarify_id, const char (*choices)[256], int n_choices);
     bool gw_clarify_match(const char *platform, const char *chat_id, const char *text);

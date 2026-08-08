@@ -13,6 +13,7 @@
 #include "hermes_core_types.h"
 #include "hermes_json.h"
 #include "hermes_gateway_core.h"
+#include "hermes_gateway_runner.h"
 #include "gw_server_internals.h"
 #include "hermes_gateway_runtime.h"
 #include <stdio.h>
@@ -481,31 +482,51 @@ void gw_runtime_init(void) {
  * ════════════════════════════════════════════════════════════════ */
 
 /* PoP: gw_drain_active_agents @ gateway/run.py:_drain_active_agents */
-void gw_drain_active_agents(int timeout_sec) {
-    /* For each cached agent, save session state and free resources */
-    pthread_mutex_lock(&g_agent_cache_mutex);
-    time_t deadline = time(NULL) + timeout_sec;
-    if (g_agent_cache) {
-        hive_iter_t it;
-        hive_iter_begin(g_agent_cache, &it);
-        hive_handle_t hnd;
-        gw_agent_cache_entry_t *e;
-        while (hive_iter_next(g_agent_cache, &it, &hnd, (void **)&e)) {
-            if (time(NULL) > deadline) break;
+/* Port of Python _drain_active_agents(timeout): snapshot the active work
+ * counts (running agents / in-flight cron jobs / queued messages), then
+ * wait in 0.1s polls while any remain, up to the deadline. In-flight turns
+ * are NOT interrupted here — that happens in _interrupt_running_agents()
+ * only when the deadline passes. Returns true iff the deadline passed with
+ * work still active (Python's `timed_out`). */
+bool gw_drain_active_agents(int timeout_sec)
+{
+    if (timeout_sec < 0) timeout_sec = 0;
 
-            /* Save session if possible */
-            agent_state_t *a = &e->agent;
-            if (a->db) {
-                char session_key[256];
-                snprintf(session_key, sizeof(session_key), "%s:%s", a->platform, a->chat_id);
-                /* db_save_session(a->db, session_key, a); — wire to session save */
-            }
-            agent_free(a);
-            free(e);
-            hive_erase(g_agent_cache, hnd);
-        }
+    int active = g_runner ? gateway_runner_running_agent_count(g_runner) : 0;
+    int cron = g_runner ? gateway_runner_active_cron_job_count(g_runner) : 0;
+
+    /* Python _drain_active_agents: if nothing is running, drain is
+     * trivially complete (NOTE: does NOT include queue depth — the
+     * poll threads drain the queue themselves; counting it here would
+     * loop forever as long as inbound events arrive during shutdown). */
+    if (active <= 0 && cron <= 0)
+        return false;
+
+    printf("[gateway] Draining: waiting up to %ds for %d active turn(s), "
+           "%d cron job(s)...\n",
+           timeout_sec, active, cron);
+
+    double deadline = gw_mono_time() + (double)timeout_sec;
+    while (gw_mono_time() < deadline) {
+        /* Python: await asyncio.sleep(0.1) inside the drain loop. */
+        usleep(100000);
+        active = g_runner ? gateway_runner_running_agent_count(g_runner) : 0;
+        cron = g_runner ? gateway_runner_active_cron_job_count(g_runner) : 0;
+        if (active <= 0 && cron <= 0)
+            break;
     }
-    pthread_mutex_unlock(&g_agent_cache_mutex);
+
+    active = g_runner ? gateway_runner_running_agent_count(g_runner) : 0;
+    cron = g_runner ? gateway_runner_active_cron_job_count(g_runner) : 0;
+    bool timed_out = (active > 0 || cron > 0);
+    if (timed_out) {
+        printf("[gateway] Drain timed out after %ds — %d turn(s), %d cron "
+               "job(s) still active; interrupting\n",
+               timeout_sec, active, cron);
+    } else {
+        printf("[gateway] Drain complete — all in-flight work finished\n");
+    }
+    return timed_out;
 }
 
 /* External: defined in server.c or helpers.c */

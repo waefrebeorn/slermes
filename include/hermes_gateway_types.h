@@ -181,6 +181,11 @@ typedef struct {
     hermes_config_t config;
     http_client_t  *http;           /* Default HTTP client (for gateway_send) */
     bool            running;
+    /* Graceful-shutdown drain flag (Python GatewayRunner._draining).
+     * Set by the main thread at the start of the shutdown sequence; poll
+     * threads refuse NEW turns while it is true but let in-flight turns
+     * finish (port of gateway/run.py stop()). */
+    volatile bool   draining;
     int             poll_interval;  /* seconds between polls */
     int             platform_count;
     char            platforms[GW_MAX_PLATFORMS][32]; /* Active platform names */

@@ -72,6 +72,25 @@ int    gateway_runner_goal_max_turns(const GatewayRunner *self);
 bool   gateway_runner_should_echo_stt_transcripts(const GatewayRunner *self);
 bool   gateway_runner_startup_should_abort(const GatewayRunner *self);
 
+/* ─── Running-agent registry (port of GatewayRunner._running_agents) ─── */
+
+/* Register a session turn as in-flight. Python sets
+ * _running_agents[session_key] = agent before the turn and clears it in a
+ * finally; the C port does the same around run_conversation() so
+ * _drain_active_agents() can wait for real in-flight work. Also clears the
+ * agent's interrupted flag so a /stop on a previous turn can't abort the
+ * next one (Python constructs a fresh Agent per turn). */
+void gateway_runner_note_turn_begin(GatewayRunner *self,
+                                    const char *session_key, void *agent);
+void gateway_runner_note_turn_end(GatewayRunner *self,
+                                  const char *session_key);
+
+/* Port of GatewayRunner._interrupt_running_agents — request_hard_interrupt
+ * on every registered in-flight agent (sets agent->interrupted so the
+ * conversation loop unwinds). Called after the drain window times out. */
+void gateway_runner_interrupt_running_agents(GatewayRunner *self,
+                                             const char *reason);
+
 /* ─── Session model / reasoning override state ────────────────────── */
 
 bool gateway_runner_is_intentional_model_switch(const GatewayRunner *self,
@@ -214,6 +233,10 @@ bool gateway_runner_session_is_active(const GatewayRunner *self,
 
 /* Get the number of active sessions. */
 int  gateway_runner_active_session_count(const GatewayRunner *self);
+/* Active cron job count (from scheduler). */
+int  gateway_runner_active_cron_job_count(const GatewayRunner *self);
+/* Active API-server run count (0 in C — adapter work folds into the runner). */
+int  gateway_runner_active_api_run_count(const GatewayRunner *self);
 
 /* ─── Message handling ────────────────────────────────────────────── */
 

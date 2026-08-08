@@ -84,6 +84,11 @@ json_t *gateway_runner_run_agent_inner(GatewayRunner *self,
     const char *session_key = in->session_key ? in->session_key : "";
     const char *platform = in->platform ? in->platform : "";
 
+    /* Register the turn as in-flight (Python: _running_agents[session_key]
+     * = agent before awaiting the turn; cleared on every exit path below so
+     * _drain_active_agents() can wait for real in-flight work). */
+    if (self) gateway_runner_note_turn_begin(self, session_key, agent);
+
     /* ── 1. Apply /model session override ─────────────────────────────── */
     char *effective_model =
         strdup(agent->llm.model[0] ? agent->llm.model : "");
@@ -148,6 +153,7 @@ json_t *gateway_runner_run_agent_inner(GatewayRunner *self,
     /* ── 5. Run-generation staleness guard (pre-run) ──────────────────── */
     if (!gateway_runner_is_session_run_current(self, session_key,
                                                in->run_generation)) {
+        if (self) gateway_runner_note_turn_end(self, session_key);
         if (api_message_owned) free(api_run_message);
         free(run_message);
         free(effective_model);
@@ -165,6 +171,7 @@ json_t *gateway_runner_run_agent_inner(GatewayRunner *self,
     /* ── 5b. Run-generation staleness guard (post-run) ────────────────── */
     if (!gateway_runner_is_session_run_current(self, session_key,
                                                in->run_generation)) {
+        if (self) gateway_runner_note_turn_end(self, session_key);
         free(raw_response);
         if (api_message_owned) free(api_run_message);
         free(run_message);
@@ -254,6 +261,7 @@ json_t *gateway_runner_run_agent_inner(GatewayRunner *self,
         json_free(sidecar);
 
     /* cleanup */
+    if (self) gateway_runner_note_turn_end(self, session_key);
     free(final_with_media);
     free(normalized);
     free(raw_response);

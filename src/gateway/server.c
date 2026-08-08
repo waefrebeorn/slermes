@@ -18,6 +18,7 @@
 #include "hermes_telegram_filter.h"
 #include "hermes_gateway_runner.h"
 #include "port_gateway_run_agent.h"
+#include "hermes_gateway_runtime.h"
 #include "hermes_gateway.h"
 #include "approval.h"
 #include "hermes_cdp.h"
@@ -104,7 +105,7 @@ gateway_state_t g_gw;
  * overrides, run-generation tokens, sidecar notes, native images) that the
  * turn core (gateway_runner_run_agent_inner) reads. Created in
  * hermes_gateway_main, used by process_update. */
-static GatewayRunner *g_runner = NULL;
+GatewayRunner *g_runner = NULL;   /* shared GatewayRunner — extern in gw_server_internals.h */
 
 /* Promoted gateway globals (declared extern in gw_server_internals.h).
  * server.c owns the definitions; the extracted gateway modules reference
@@ -729,6 +730,16 @@ gw_platform_t *gw_platform_find(const char *name) {
 
 void process_update(const char *platform, const char *chat_id, const char *text) {
     if (!platform || !chat_id || !text || !*text) return;
+
+    /* Drain guard (Python GatewayRunner.stop()/_draining): once graceful
+     * shutdown begins, refuse NEW turns; in-flight turns are allowed to
+     * finish (that is the drain). Adapters are still connected here, so
+     * reply with a short notice instead of silently dropping. */
+    if (g_gw.draining) {
+        gateway_send(platform, chat_id,
+                     "⚠️ Gateway is shutting down — please try again shortly.");
+        return;
+    }
 
     /* SK06: Update platform scope — invalidates skill cache if platform changed */
     skill_cmd_set_platform(platform);
@@ -1431,9 +1442,17 @@ int hermes_gateway_main(int argc, char **argv) {
     printf("[gateway] %d platform(s) running, %s configured\n",
            g_gw.platform_count, platforms_buf);
 
-    /* Setup signal handler */
-    signal(SIGINT, handle_signal);
-    signal(SIGTERM, handle_signal);
+    /* Setup signal handler — sigaction without SA_RESTART so the
+     * blocking read() in gw_wait_for_shutdown_request is interrupted
+     * (signal() on glibc would auto-restart it, hiding the self-pipe byte). */
+    gw_shutdown_seam_init();
+    struct sigaction sa;
+    memset(&sa, 0, sizeof(sa));
+    sa.sa_handler = handle_signal;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;  /* NO SA_RESTART — let syscalls (read) fail with EINTR */
+    sigaction(SIGINT, &sa, NULL);
+    sigaction(SIGTERM, &sa, NULL);
 
     /* Wire cron notifications through gateway */
     cron_notify_set_send_fn(gw_platform_send);
@@ -1494,6 +1513,46 @@ int hermes_gateway_main(int argc, char **argv) {
 
     printf("[gateway] %d platform(s) running. Press Ctrl+C to stop\n",
            g_gw.platform_count);
+
+    /* ── Graceful shutdown (port of gateway/run.py stop()) ──────────────
+     * The signal handler / restart trigger only records the request; the
+     * main thread runs the drain sequence here: refuse new turns → notify
+     * active chats → bounded drain of in-flight work → interrupt on
+     * timeout → stop the poll loops. This mirrors Python's stop():
+     * _notify_active_sessions_of_shutdown() → _drain_active_agents(
+     * restart_drain_timeout) → _interrupt_running_agents() when timed
+     * out (with a 5s grace wait for the interrupts to unwind). */
+    gw_wait_for_shutdown_request();
+    const char *shutdown_reason = gw_shutdown_reason();
+    printf("[gateway] Shutdown requested (%s) — beginning drain\n",
+           shutdown_reason ? shutdown_reason : "unknown");
+
+    /* 1. Flip to draining: poll threads refuse NEW turns, in-flight turns
+     * keep running (Python: self._running = False; self._draining = True). */
+    g_gw.draining = true;
+    if (g_runner) gateway_runner_request_stop(g_runner, shutdown_reason);
+
+    /* 2. Notify active sessions BEFORE the drain wait — adapters are
+     * still connected so the notices can be delivered. */
+    gw_notify_sessions_shutdown(shutdown_reason);
+
+    /* 3. Bounded drain — Python: _drain_active_agents(timeout). */
+    double drain_timeout = g_runner
+        ? gateway_runner_restart_drain_timeout(g_runner) : 30.0;
+    bool drained_clean = !gw_drain_active_agents((int)drain_timeout);
+
+    /* 4. On timeout, interrupt the remaining turns and give them a short
+     * grace to unwind (Python waits up to 5s more after interrupting). */
+    if (!drained_clean) {
+        if (g_runner) {
+            gateway_runner_interrupt_running_agents(g_runner,
+                                                    shutdown_reason);
+        }
+        gw_drain_active_agents(5);
+    }
+
+    /* 5. Stop the poll loops — each thread exits after its current turn. */
+    g_gw.running = false;
 
     /* Wait for all threads */
     for (int i = 0; i < g_gw.platform_count; i++)

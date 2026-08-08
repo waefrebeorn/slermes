@@ -118,6 +118,14 @@ struct GatewayRunner {
     pthread_mutex_t completion_delivery_lock;
 };
 
+/* Running-agent registry entry — the C port of Python's
+ * _running_agents[session_key] -> running_agent dict. Backed by a
+ * compact dynamic array (strdup'd keys, borrowed agent pointers). */
+typedef struct {
+    char *key;
+    agent_state_t *agent;
+} gw_running_agent_entry_t;
+
 /* ════════════════════════════════════════════════════════════════════════
  * Construction / Destruction
  * ════════════════════════════════════════════════════════════════════════ */
@@ -184,6 +192,15 @@ void gateway_runner_destroy(GatewayRunner *self)
     for (int i = 0; i < self->agent_cache_count; i++)
         free(self->agent_cache[i].key);
     free(self->agent_cache);
+    /* Free the running-agent registry (keys are strdup'd; agents are
+     * borrowed from the session pool and freed by their owner). */
+    {
+        gw_running_agent_entry_t *arr =
+            (gw_running_agent_entry_t *)self->running_agents;
+        for (int i = 0; i < self->running_agent_count; i++)
+            free(arr[i].key);
+        free(arr);
+    }
     pthread_mutex_destroy(&self->lock);
     pthread_mutex_destroy(&self->agent_cache_lock);
     pthread_mutex_destroy(&self->completion_delivery_lock);
@@ -806,7 +823,71 @@ bool gateway_runner_session_is_active(const GatewayRunner *self,
 void gateway_runner_interrupt_running_agents(GatewayRunner *self,
                                               const char *reason)
 {
-    (void)self; (void)reason;
+    (void)reason;
+    if (!self) return;
+    pthread_mutex_lock(&self->lock);
+    gw_running_agent_entry_t *arr = (gw_running_agent_entry_t *)self->running_agents;
+    for (int i = 0; i < self->running_agent_count; i++) {
+        if (arr[i].agent) {
+            /* request_hard_interrupt(agent, reason) — the conversation
+             * loop checks ->interrupted between iterations and unwinds. */
+            arr[i].agent->interrupted = true;
+        }
+    }
+    pthread_mutex_unlock(&self->lock);
+}
+
+/* ─── Running-agent registry (_running_agents port) ──────────────────── */
+
+/* PoP: gateway_runner_note_turn_begin @ gateway/run.py:GatewayRunner._track_running_agent */
+void gateway_runner_note_turn_begin(GatewayRunner *self,
+                                    const char *session_key, void *agent)
+{
+    if (!self || !session_key || !session_key[0]) return;
+    pthread_mutex_lock(&self->lock);
+    gw_running_agent_entry_t *arr = (gw_running_agent_entry_t *)self->running_agents;
+    for (int i = 0; i < self->running_agent_count; i++) {
+        if (strcmp(arr[i].key, session_key) == 0) {
+            /* Session already has an in-flight turn — update the agent. */
+            arr[i].agent = (agent_state_t *)agent;
+            if (arr[i].agent) arr[i].agent->interrupted = false;
+            pthread_mutex_unlock(&self->lock);
+            return;
+        }
+    }
+    /* Fresh entry. Python: _running_agents[session_key] = agent. */
+    gw_running_agent_entry_t *grown = realloc(
+        arr, (size_t)(self->running_agent_count + 1) * sizeof(*grown));
+    if (!grown) {
+        pthread_mutex_unlock(&self->lock);
+        return;
+    }
+    self->running_agents = grown;
+    grown[self->running_agent_count].key = strdup(session_key);
+    grown[self->running_agent_count].agent = (agent_state_t *)agent;
+    self->running_agent_count++;
+    if (agent) ((agent_state_t *)agent)->interrupted = false;
+    pthread_mutex_unlock(&self->lock);
+}
+
+/* PoP: gateway_runner_note_turn_end @ gateway/run.py:GatewayRunner._release_running_agent_state */
+void gateway_runner_note_turn_end(GatewayRunner *self,
+                                  const char *session_key)
+{
+    if (!self || !session_key || !session_key[0]) return;
+    pthread_mutex_lock(&self->lock);
+    gw_running_agent_entry_t *arr = (gw_running_agent_entry_t *)self->running_agents;
+    for (int i = 0; i < self->running_agent_count; i++) {
+        if (strcmp(arr[i].key, session_key) == 0) {
+            free(arr[i].key);
+            /* Swap-with-last removal keeps the array compact. */
+            arr[i] = arr[self->running_agent_count - 1];
+            self->running_agent_count--;
+            pthread_mutex_unlock(&self->lock);
+            return;
+        }
+    }
+    pthread_mutex_unlock(&self->lock);
 }
 
 /* PoP: gateway_runner_cache_session_source @ gateway/run.py:GatewayRunner._cache_session_source */

@@ -935,3 +935,193 @@ char *ai_backup_path(const char *path, long unix_ts) {
     sprintf(backup + prefix_len, ".bak.%ld", unix_ts);
     return backup;
 }
+
+/* ── record / build_report ──────────────────────────────────── */
+
+/* PoP: record @ hermes_cli/agent_import.py:AgentImporter.record */
+/* Build a JSON item dict from import fields.
+ * kind, source, destination: strings (may be NULL → null in JSON)
+ * status: string (imported/skipped/conflict/error)
+ * reason: string (may be NULL)
+ * details_json: optional JSON object string to merge in (may be NULL)
+ * Returns malloc'd JSON string. */
+char *ai_record(const char *kind, const char *source,
+                const char *destination, const char *status,
+                const char *reason, const char *details_json) {
+    json_t *item = json_object();
+    if (kind) json_set(item, "kind", json_string(kind));
+    if (source) json_set(item, "source", json_string(source));
+    if (destination) json_set(item, "destination", json_string(destination));
+    if (status) json_set(item, "status", json_string(status));
+    if (reason) json_set(item, "reason", json_string(reason));
+    if (details_json) {
+        char *err = NULL;
+        json_t *details = json_parse(details_json, &err);
+        if (err) free(err);
+        if (details && details->type == JSON_OBJECT) {
+            for (size_t i = 0; i < details->c.count; i++)
+                json_set(item, details->c.keys[i], json_copy(details->c.items[i]));
+        }
+        if (details) json_free(details);
+    }
+    char *out = json_serialize(item);
+    json_free(item);
+    return out;
+}
+
+/* PoP: build_report @ hermes_cli/agent_import.py:AgentImporter.build_report */
+/* Build a JSON report from import items.
+ * agent: string
+ * source_path: string
+ * target_path: string
+ * execute: 0 = dry run, 1 = real
+ * items_json: JSON array of item dicts
+ * stripped_secrets_json: JSON array of secret-path strings (may be NULL)
+ * Returns malloc'd JSON string. */
+char *ai_build_report(const char *agent, const char *source_path,
+                      const char *target_path, int execute,
+                      const char *items_json, const char *stripped_secrets_json) {
+    json_t *report = json_object();
+    if (agent) json_set(report, "agent", json_string(agent));
+    if (source_path) json_set(report, "source", json_string(source_path));
+    if (target_path) json_set(report, "target", json_string(target_path));
+    json_set(report, "dry_run", json_bool(!execute));
+
+    /* items */
+    json_t *items = json_array();
+    if (items_json) {
+        char *err = NULL;
+        json_t *arr = json_parse(items_json, &err);
+        if (err) free(err);
+        if (arr && arr->type == JSON_ARRAY) {
+            for (size_t i = 0; i < arr->c.count; i++)
+                json_append(items, json_copy(arr->c.items[i]));
+        }
+        if (arr) json_free(arr);
+    }
+    json_set(report, "items", items);
+
+    /* summary: count by status */
+    json_t *summary = json_object();
+    json_set(summary, "imported", json_number(0));
+    json_set(summary, "skipped", json_number(0));
+    json_set(summary, "conflict", json_number(0));
+    json_set(summary, "error", json_number(0));
+    if (items && items->c.count) {
+        for (size_t i = 0; i < items->c.count; i++) {
+            json_t *item = items->c.items[i];
+            if (!item || item->type != JSON_OBJECT) continue;
+            json_t *st = json_obj_get(item, "status");
+            const char *status = st && st->type == JSON_STRING ? st->str_val : "skipped";
+            json_t *cur = json_obj_get(summary, status);
+            double val = cur && cur->type == JSON_NUMBER ? cur->num_val : 0;
+            json_set(summary, status, json_number(val + 1));
+        }
+    }
+    json_set(report, "summary", summary);
+
+    /* stripped_secrets: sorted dedup'd */
+    if (stripped_secrets_json && *stripped_secrets_json) {
+        char *err = NULL;
+        json_t *arr = json_parse(stripped_secrets_json, &err);
+        if (err) free(err);
+        if (arr && arr->type == JSON_ARRAY) {
+            /* Collect, sort, dedup */
+            char **names = calloc(arr->c.count + 1, sizeof(char *));
+            size_t n = 0;
+            for (size_t i = 0; i < arr->c.count; i++) {
+                json_t *e = arr->c.items[i];
+                if (e && e->type == JSON_STRING)
+                    names[n++] = strdup(e->str_val);
+            }
+            /* Simple insertion sort */
+            for (size_t i = 1; i < n; i++) {
+                char *key = names[i];
+                size_t j = i;
+                while (j > 0 && strcmp(names[j-1], key) > 0) {
+                    names[j] = names[j-1]; j--;
+                }
+                names[j] = key;
+            }
+            /* Dedup */
+            json_t *sorted = json_array();
+            for (size_t i = 0; i < n; i++) {
+                if (i > 0 && strcmp(names[i-1], names[i]) == 0) continue;
+                json_append(sorted, json_string(names[i]));
+            }
+            if (n > 0) {
+                json_set(report, "stripped_secrets", sorted);
+            } else {
+                json_free(sorted);
+            }
+            for (size_t i = 0; i < n; i++) free(names[i]);
+            free(names);
+        }
+        if (arr) json_free(arr);
+    }
+
+    char *out = json_serialize(report);
+    json_free(report);
+    return out;
+}
+
+/* ── permission list import ─────────────────────────────────── */
+
+/* PoP: import_permission_allowlist @ hermes_cli/agent_import.py:import_permission_allowlist */
+/* Convert a list of Claude Code Bash permission rules into Hermes command
+ * patterns. Mirrors the pure core of import_permission_allowlist (without
+ * the file I/O / config merging).
+ * rules_json: JSON array of rule strings
+ * Returns malloc'd JSON array string of sorted unique patterns. */
+char *ai_import_permission_patterns(const char *rules_json) {
+    if (!rules_json || !*rules_json) {
+        char *r = strdup("[]");
+        return r;
+    }
+    char *err = NULL;
+    json_t *rules = json_parse(rules_json, &err);
+    if (err) free(err);
+    json_t *patterns = json_array();
+    if (rules && rules->type == JSON_ARRAY) {
+        /* Collect unique patterns (dict.fromkeys preserves order, then sorted) */
+        char **seen = calloc(rules->c.count + 1, sizeof(char *));
+        size_t n_seen = 0;
+        for (size_t i = 0; i < rules->c.count; i++) {
+            json_t *rule = rules->c.items[i];
+            if (!rule || rule->type != JSON_STRING) continue;
+            char *pattern = ai_claude_rule_to_command_pattern(rule->str_val);
+            if (pattern && *pattern) {
+                /* Check for duplicate */
+                bool dup = false;
+                for (size_t j = 0; j < n_seen; j++)
+                    if (strcmp(seen[j], pattern) == 0) { dup = true; break; }
+                if (!dup) {
+                    if (n_seen < rules->c.count) seen[n_seen++] = pattern;
+                    else free(pattern);
+                } else {
+                    free(pattern);
+                }
+            } else {
+                free(pattern);
+            }
+        }
+        /* Sort */
+        for (size_t i = 1; i < n_seen; i++) {
+            char *key = seen[i];
+            size_t j = i;
+            while (j > 0 && strcmp(seen[j-1], key) > 0) {
+                seen[j] = seen[j-1]; j--;
+            }
+            seen[j] = key;
+        }
+        /* Build JSON array */
+        for (size_t i = 0; i < n_seen; i++)
+            json_append(patterns, json_string(seen[i]));
+        for (size_t i = 0; i < n_seen; i++) free(seen[i]);
+        free(seen);
+    }
+    if (rules) json_free(rules);
+    char *out = json_serialize(patterns);
+    json_free(patterns);
+    return out;
+}

@@ -46,8 +46,21 @@ bool gw_notify_mentions_only(void);
 void gw_runtime_init(void);
 
 /* ═══ 7. Stop/Drain ═══ */
-void gw_drain_active_agents(int timeout_sec);
+/* Port of gateway/run.py:_drain_active_agents — wait (0.1s polls) up to
+ * timeout_sec for in-flight turns / cron jobs / queued messages to finish.
+ * Returns true iff the deadline passed with work still active. */
+bool gw_drain_active_agents(int timeout_sec);
 void gw_notify_sessions_shutdown(const char *reason);
+
+/* Graceful-shutdown request seam (port of GatewayRunner.stop()).
+ * Signal-safe: may be called from a signal handler. The main thread
+ * (which blocks in gw_wait_for_shutdown_request) is woken via a
+ * self-pipe so the cond_wait returns and the drain sequence runs. */
+void gw_request_shutdown(const char *reason);   /* signal-safe */
+bool gw_shutdown_requested(void);
+const char *gw_shutdown_reason(void);
+void gw_wait_for_shutdown_request(void);        /* blocks main thread */
+void gw_shutdown_seam_init(void);               /* bootstrap self-pipe */
 
 /* ═══ 8. Systemd Integration ═══ */
 void gw_systemd_notify(const char *state);
