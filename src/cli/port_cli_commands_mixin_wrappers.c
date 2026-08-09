@@ -18,6 +18,7 @@
 #include "blueprint_cmd.h"
 #include "cron_suggestions.h"
 #include "port_hermes_cli_focus_view.h"
+#include "tools/port_working_diff.h"
 
 /* Real command handlers (cli_cmd_*.c / commands.c) — state-safe (ignore agent_state_t). */
 extern void cmd_cron(const char *args, agent_state_t *state);
@@ -795,22 +796,23 @@ int ccm_handle_init_command(const char *args) {
 }
 
 /* ── /diff ──────────────────────────────────────────────────────────── */
-/* PoP: _handle_diff_command @ hermes_cli/cli_commands_mixin.py:_handle_diff_command
- * PoP: _print_session_diff @ hermes_cli/cli_commands_mixin.py:_print_session_diff
- * PoP: _print_diff_text @ hermes_cli/cli_commands_mixin.py:_print_diff_text */
-/* Session-diff mode reuses hermes_state checkpoint_diff (ported). Working-tree
- * diff mode would need tools/working_diff.py:collect_working_diff (4/4 gaps,
- * not yet ported) — surfaced as a not-yet-available notice rather than a
- * stub that returns empty. */
+/* PoP: _print_diff_text @ hermes_cli/cli_commands_mixin.py:_print_diff_text */
 void ccm_print_diff_text(const char *text) {
     if (!text || !*text) return;
-    printf("  %s\n", text);
+    /* Python: prints each line indented two spaces under the section label. */
+    char *save = NULL;
+    for (char *line = strtok_r((char *)text, "\n", &save); line;
+         line = strtok_r(NULL, "\n", &save)) {
+        printf("  %s\n", line);
+    }
 }
+/* PoP: _print_session_diff @ hermes_cli/cli_commands_mixin.py:_print_session_diff */
 void ccm_print_session_diff(const char *cwd, bool stat_only) {
     (void)stat_only;
     printf("  /diff session (cwd: %s) — checkpoint diff not wired for this session.\n",
            cwd ? cwd : ".");
 }
+/* PoP: _handle_diff_command @ hermes_cli/cli_commands_mixin.py:_handle_diff_command */
 int ccm_handle_diff_command(const char *args) {
     const char *p = args ? args : "";
     while (*p == ' ') p++;
@@ -820,29 +822,52 @@ int ccm_handle_diff_command(const char *args) {
     /* Minimal arg parse: --stat / mode keyword / paths. */
     bool stat_only = false;
     char mode[16] = "working";
-    char paths[192] = "";
+    char *paths[8];
+    int path_count = 0;
     char *tok, *save = NULL;
     char work[256];
     snprintf(work, sizeof(work), "%s", buf);
     for (tok = strtok_r(work, " ", &save); tok; tok = strtok_r(NULL, " ", &save)) {
         char *low = tok;
         if (strcmp(low,"--stat")==0 || strcmp(low,"stat")==0) stat_only = true;
-        else if (strcmp(low,"staged")==0||strcmp(low,"--staged")==0||strcmp(low,"cached")==0) strcpy(mode,"staged");
+        else if (strcmp(low,"staged")==0||strcmp(low,"--staged")==0||strcmp(low,"cached")==0||strcmp(low,"--cached")==0) strcpy(mode,"staged");
         else if (strcmp(low,"--all")==0||strcmp(low,"all")==0||strcmp(low,"head")==0) strcpy(mode,"all");
         else if (strcmp(low,"session")==0) strcpy(mode,"session");
-        else { if (paths[0]) strncat(paths, " ", sizeof(paths)-strlen(paths)-1);
-               strncat(paths, tok, sizeof(paths)-strlen(paths)-1); }
+        else { if (path_count < 8) paths[path_count++] = tok; }
     }
     const char *cwd = getenv("TERMINAL_CWD");
-    if (!cwd) cwd = ".";
+    if (!cwd || !*cwd) cwd = ".";
     if (strcmp(mode,"session")==0) {
         ccm_print_session_diff(cwd, stat_only);
         return 0;
     }
-    /* Working-tree diff requires tools/working_diff.py:collect_working_diff
-     * (not yet C-ported). Surface the limitation honestly. */
-    printf("  /diff %s%s%s — working-tree diff available in the desktop/CLI; "
-           "native C port of tools/working_diff.py not yet wired.\n",
-           mode, (stat_only ? " (stat)" : ""), (paths[0] ? paths : ""));
+    /* Real working-tree diff via port of tools/working_diff.py. */
+    wd_diff_result_t res = wd_collect_working_diff(cwd, mode, paths, path_count);
+    if (!res.success) {
+        printf("  %s\n", res.error ? res.error : "Could not generate diff");
+        wd_diff_result_free(&res);
+        return 0;
+    }
+    if (res.empty || (!res.stat[0] && !res.diff[0] && res.untracked_count == 0)) {
+        printf("  No changes.\n");
+        wd_diff_result_free(&res);
+        return 0;
+    }
+    const char *label = strcmp(mode,"staged")==0 ? "Staged" :
+                        strcmp(mode,"all")==0 ? "All (vs HEAD)" : "Unstaged";
+    if (res.stat[0]) {
+        printf("\n  %s:\n", label);
+        ccm_print_diff_text(res.stat);
+    }
+    if (res.diff[0]) {
+        printf("\n  %s (full diff):\n", label);
+        ccm_print_diff_text(res.diff);
+    }
+    if (res.untracked_count > 0) {
+        printf("\n  Untracked files:\n");
+        for (int i = 0; i < res.untracked_count; i++)
+            printf("    %s\n", res.untracked[i]);
+    }
+    wd_diff_result_free(&res);
     return 0;
 }

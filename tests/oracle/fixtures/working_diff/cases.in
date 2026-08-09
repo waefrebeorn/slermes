@@ -1,0 +1,8 @@
+REPO working
+REPO staged
+REPO all
+REPO working --stat
+REPO working base.txt
+REPO all new.txt
+REPO bogus
+/nonexistent working
