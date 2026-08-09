@@ -23,6 +23,13 @@ void approval_set_yolo(bool enabled);
 /* True when YOLO mode is active for the current session. */
 bool approval_is_yolo_enabled(void);
 
+/* True when process-scoped YOLO mode was frozen at startup (HERMES_YOLO_MODE
+ * read once at import — a mid-process skill cannot flip it). */
+bool is_yolo_mode_frozen(void);
+
+/* _get_approval_mode — approvals.mode config accessor, default "ask". */
+const char *get_approval_mode(void);
+
 /* Load the permanent allowlist of pre-approved command patterns. */
 void approval_load_allowlist(void);
 
@@ -71,6 +78,30 @@ char *approval_normalize_command(const char *command);
 
 /* PoP: is_unsafe_class @ hermes_cli/approvals_suggest.py:is_unsafe_class */
 bool approval_is_unsafe_class(const char *description);
+
+/* ---- denial-breaker + bypass helpers (tools/approval.py) ----
+ * Co-located in port_approval_helpers2.c. */
+
+/* _is_cron_approval_context — true inside a cron session. */
+bool apr2_is_cron_approval_context(void);
+/* _get_denial_breaker_threshold — approvals.denial_breaker_threshold, default 3. */
+int apr2_get_denial_breaker_threshold(void);
+/* _record_denial — increment + return the session's consecutive-denial count. */
+int apr2_record_denial(const char *session_key);
+/* _reset_denials — clear the session's consecutive-denial tally. */
+void apr2_reset_denials(const char *session_key);
+/* _denial_breaker_addendum — escalated hard-stop text when the breaker trips. */
+char *apr2_denial_breaker_addendum(const char *session_key);
+/* is_approval_bypass_active_for_session — collapsed three-source bypass check. */
+bool apr2_is_approval_bypass_active_for_session(const char *session_key);
+/* _release_permission_mode_dependents — drop YOLO-derived per-session resources. */
+void apr2_release_permission_mode_dependents(const char *session_key);
+/* _get_smart_policy — approvals.smart_policy text (stripped), default "". */
+char *apr2_get_smart_policy(void);
+/* _mask_quoted_newlines — replace newlines inside quotes with a space. */
+char *apr2_mask_quoted_newlines(const char *command);
+/* _save_blocked_payload — persist a parser-limit-blocked command as a script. */
+char *apr2_save_blocked_payload(const char *command);
 
 #ifdef __cplusplus
 }
