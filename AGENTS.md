@@ -111,10 +111,17 @@ make desktop-gui           # Desktop app
 
 ## Current State
 
-Live scanner (v671): **13,335 PORTED / 705 REAL_GAP / 5 PARTIAL / 3 BOOTLEG**
-(14,045 total, 94.9%). Upstream sync: **1,310 ahead / 856 behind** vs
-`upstream/main` (fetched live — see `make parity-walkway`).
-See `docs/parity-summary.md` and `docs/real-gap-list.md`.
+Live scanner state is machine-owned and re-stamped by `make parity-walkway`
+from the live scanner — never transcribe counts into this file (they drift).
+Read the current truth in:
+
+- `docs/parity-summary.md` — overall PORTED / REAL_GAP / PARTIAL / BOOTLEG
+- `docs/real-gap-list.md` — function-level gap list
+- `scripts/version.txt` — current scanner version
+- Upstream sync checkpoint is stamped into `BANNER.md` / `README.md` by the
+  walkway from `git rev-list` vs `upstream/main`.
+
+To refresh everything: `make parity-walkway`.
 
 ## Fork Sync
 
