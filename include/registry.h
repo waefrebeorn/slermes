@@ -148,6 +148,15 @@ bool registry_register_ex(const char *name, const char *description,
                            const char *schema_json, const char *toolset,
                            char *(*handler)(const char *args_json, const char *task_id));
 
+/* ── Discovery cache + check_fn verdict cache (port of registry.py module fns) */
+char *discovery_cache_path(void);
+json_t *load_discovery_cache(void);
+void save_discovery_cache(const json_t *cache);
+char *check_fn_cache_scope(void);
+bool get_cached_check_fn_result(void *fn, bool *hit, bool default_value);
+bool check_fn_cached(bool (*fn)(void));
+void invalidate_check_fn_cache(void);
+
 #ifdef __cplusplus
 }
 #endif
