@@ -27,8 +27,8 @@
 #include <sys/stat.h>
 
 /* ── _LockCookie ─────────────────────────────────────────── */
-/* PoP: _LockCookie.__init__ @ tools/mcp_tool.py:_LockCookie.__init__ */
-/* PoP: _LockCookie.release @ tools/mcp_tool.py:_LockCookie.release */
+/* PoP: __init__ @ tools/mcp_tool.py:_LockCookie.__init__ */
+/* PoP: release @ tools/mcp_tool.py:_LockCookie.release */
 struct mcp_lock_cookie {
     int fd;
     bool held;
