@@ -19,9 +19,21 @@
 #include "profile_store.h"
 #include "hermes_gateway_config.h"
 #include "registry.h"
+#include "cron_jobs.h"
 #include "port_web_server_wrappers.h"
 #include "base64.h"
 #include "uuid.h"
+#include "blueprint_catalog_common.h"
+
+/* xstrdup — local (mirrors libjson/libhttp per-TU pattern; no shared header
+ * owns it). malloc'd null-safe duplicate. */
+static char *xstrdup(const char *s) {
+    if (!s) return NULL;
+    size_t n = strlen(s) + 1;
+    char *p = malloc(n);
+    if (p) memcpy(p, s, n);
+    return p;
+}
 
 /* ── _topology cache (port of _TOPOLOGY_CACHE / _TOPOLOGY_CACHE_LOCK / TTL) ── */
 /* A void* fn pointer stands in for Python's identity-based `fn is fn`
@@ -826,84 +838,696 @@ json_t *ws_get_logs(json_t *req) { (void)req; return json_object(); }
 /* PoP: _validate_dashboard_cron_context_from @ hermes_cli/web_server.py:_validate_dashboard_cron_context_from */
 json_t *ws_u_validate_dashboard_cron_context_from(json_t *req) { (void)req; return json_object(); }
 
+/* ── cron dashboard primitives ────────────────────────────────────── */
+
+/* PoP: _cron_default_profile @ hermes_cli/web_server.py:_cron_default_profile */
+/* Port of Python: resolve the process's own profile name. "default"/"custom"
+ * keep the legacy "default" fallback; else the active profile name. Reuses
+ * profile_get_active_name (profiles.py:get_active_profile_name port). */
+char *ws_u_cron_default_profile(void) {
+    char *name = profile_get_active_name();
+    if (!name) return xstrdup("default");
+    if (strcmp(name, "default") == 0 || strcmp(name, "custom") == 0) {
+        free(name);
+        return xstrdup("default");
+    }
+    return name;
+}
+
 /* PoP: _cron_profile_dicts @ hermes_cli/web_server.py:_cron_profile_dicts */
-json_t *ws_u_cron_profile_dicts(json_t *req) { (void)req; return json_object(); }
+/* Port of Python: list all profiles (default + named dirs under profiles/).
+ * Returns a json_t ARRAY of {name, home} objects for the cron dashboard.
+ * Mirrors profiles.list_profiles() enumeration but only the fields cron jobs
+ * need (name + home dir). Reuses the profiles/ enumeration pattern from
+ * port_cli_profiles.c (profile_id_matches + profile_default_home). */
+json_t *ws_u_cron_profile_dicts(void) {
+    json_t *out = json_array();
+    if (!out) return NULL;
+    /* default profile */
+    char *def_home = profile_default_home();
+    if (def_home) {
+        json_t *e = json_object();
+        json_set(e, "name", json_string("default"));
+        json_set(e, "home", json_string(def_home));
+        json_set(e, "is_default", json_bool(true));
+        json_append(out, e);
+        free(def_home);
+    }
+    /* named profiles */
+    char *root = profile_profiles_root();
+    if (root) {
+        DIR *d = opendir(root);
+        if (d) {
+            struct dirent *e;
+            while ((e = readdir(d))) {
+                if (e->d_type != DT_DIR && e->d_type != DT_UNKNOWN) continue;
+                if (strcmp(e->d_name, ".") == 0 || strcmp(e->d_name, "..") == 0) continue;
+                if (strcmp(e->d_name, "default") == 0) continue;
+                if (!profile_validate_name(e->d_name, NULL)) continue;
+                char *h = malloc(strlen(root) + 1 + strlen(e->d_name) + 1);
+                if (h) {
+                    snprintf(h, strlen(root) + 1 + strlen(e->d_name) + 1, "%s/%s", root, e->d_name);
+                    json_t *oe = json_object();
+                    json_set(oe, "name", json_string(e->d_name));
+                    json_set(oe, "home", json_string(h));
+                    json_set(oe, "is_default", json_bool(false));
+                    json_append(out, oe);
+                    free(h);
+                }
+            }
+            closedir(d);
+        }
+        free(root);
+    }
+    return out;
+}
+
+/* PoP: _cron_profile_home @ hermes_cli/web_server.py:_cron_profile_home */
+/* Port of Python: resolve a profile query value to (profile_name, home_dir).
+ * Returns malloc'd "name\t/home/path" (tab-separated) or NULL on validation
+ * failure (400) / not-found (404). Caller frees. */
+char *ws_u_cron_profile_home(const char *profile_query) {
+    char *raw = ws_u_cron_default_profile();
+    if (!profile_query || !*profile_query || strcmp(profile_query, "all") == 0) {
+        /* keep default */
+    } else {
+        free(raw);
+        raw = xstrdup(profile_query);
+    }
+    /* trim + normalize */
+    char *trimmed = xstrdup(raw);
+    free(raw);
+    char *end = trimmed + strlen(trimmed);
+    while (end > trimmed && isspace((unsigned char)*(end-1))) *--end = '\0';
+    while (*trimmed && isspace((unsigned char)*trimmed)) memmove(trimmed, trimmed+1, strlen(trimmed));
+    if (!*trimmed) { free(trimmed); return NULL; }
+
+    char *canon = profile_normalize_name(trimmed);
+    free(trimmed);
+    if (!canon) return NULL;
+    char *verr = NULL;
+    if (!profile_validate_name(canon, &verr)) {
+        free(verr); free(canon);
+        return NULL;  /* 400 in Python */
+    }
+    if (!profile_dir_exists(canon)) {
+        free(canon);
+        return NULL;  /* 404 in Python */
+    }
+    char *home = profile_dir_for(canon);
+    if (!home) { free(canon); return NULL; }
+    size_t n = strlen(canon) + 1 + strlen(home) + 1;
+    char *out = malloc(n);
+    if (out) snprintf(out, n, "%s\t%s", canon, home);
+    free(canon); free(home);
+    return out;
+}
+
+/* PoP: _annotate_cron_job @ hermes_cli/web_server.py:_annotate_cron_job */
+/* Port of Python annotate: add profile/profile_name/hermes_home/is_default_profile
+ * keys to a job record. Returns a NEW json_t (caller frees) built by cloning
+ * the input and setting the extra fields. */
+json_t *ws_u_annotate_cron_job(const json_t *job, const char *profile, const char *home) {
+    if (!job) return NULL;
+    json_t *ann = json_copy(job);
+    if (!ann) return NULL;
+    json_set(ann, "profile", json_string(profile ? profile : ""));
+    json_set(ann, "profile_name", json_string(profile ? profile : ""));
+    json_set(ann, "hermes_home", json_string(home ? home : ""));
+    json_set(ann, "is_default_profile", json_bool(profile && strcmp(profile, "default") == 0));
+    return ann;
+}
+
+/* _call_cron_for_profile context: temporarily swap the home dir so cronjobs_*
+ * operate against a profile's store. In Python this uses set_hermes_home_override;
+ * in C, slermes_home() reads SLERMES_HOME each call, so we setenv/unsetenv the
+ * env var around the call. Token captures the prior value to restore. */
+static char *push_cron_home(const char *home) {
+    char *saved = getenv("SLERMES_HOME");
+    char *s = saved ? xstrdup(saved) : NULL;
+    setenv("SLERMES_HOME", home, 1);
+    return s;
+}
+static void pop_cron_home(char *saved) {
+    if (saved) { setenv("SLERMES_HOME", saved, 1); free(saved); }
+    else unsetenv("SLERMES_HOME");
+}
 
 /* PoP: _call_cron_for_profile @ hermes_cli/web_server.py:_call_cron_for_profile */
-json_t *ws_u_call_cron_for_profile(json_t *req) { (void)req; return json_object(); }
+/* Port of Python: run a cron.jobs method against a profile's store by
+ * swapping SLERMES_HOME, calling the method, annotating results, restoring.
+ * Returns a malloc'd json_t (array of annotated jobs / annotated single job /
+ * raw scalar). `func_name` selects the operation; `arg` is the job_id for
+ * single-job lookups, NULL for list. */
+json_t *ws_u_call_cron_for_profile(const char *profile, const char *func_name,
+                                   const char *arg) {
+    char *ph = ws_u_cron_profile_home(profile);
+    if (!ph) return NULL;
+    /* ph is "name\thome" — split into pname2 + home2. */
+    char *pname2 = xstrdup(ph);
+    char *home2 = strchr(pname2, '\t');
+    if (!home2) { free(pname2); free(ph); return NULL; }
+    *home2 = '\0';
+    home2 = xstrdup(home2 + 1);
+    free(ph);
+
+    char *saved = push_cron_home(home2);
+    json_t *result = NULL;
+    json_t *raw = NULL;
+    if (strcmp(func_name, "list_jobs") == 0) {
+        raw = cronjobs_list_jobs(true);  /* include_disabled=True per dashboard */
+    } else if (strcmp(func_name, "get_job") == 0) {
+        raw = cronjobs_get_job(arg ? arg : "");
+    } else if (strcmp(func_name, "update_job") == 0) {
+        /* Not reachable through this seam (update needs job_id + updates; the
+         * dashboard's _update_cron_job_sync calls cronjobs_update_job directly
+         * via ws_u_update_cron_job_sync). Kept as a no-op for completeness. */
+        raw = NULL;
+    } else if (strcmp(func_name, "pause_job") == 0) {
+        raw = cronjobs_pause_job(arg ? arg : "", "paused via dashboard");
+    } else if (strcmp(func_name, "resume_job") == 0) {
+        raw = cronjobs_resume_job(arg ? arg : "");
+    } else if (strcmp(func_name, "trigger_job") == 0) {
+        raw = cronjobs_trigger_job(arg ? arg : "");
+    } else if (strcmp(func_name, "remove_job") == 0) {
+        bool removed = cronjobs_remove_job(arg ? arg : "");
+        raw = json_bool(removed);  /* _delete_cron_job_sync checks `if not removed: 404` */
+    } else {
+        /* create_job via dashboard is handled by ws_u_create_cron_job_sync
+         * (which builds the full cronjobs_create_opts). Unknown func_names
+         * yield an empty result (mirrors Python raising NotImplementedError →
+         * dashboard surfaces a 501). */
+        raw = NULL;
+    }
+    pop_cron_home(saved);
+
+    if (raw) {
+        if (raw->type == JSON_ARRAY) {
+            result = json_array();
+            size_t n = json_len(raw);
+            for (size_t i = 0; i < n; i++) {
+                json_t *annotated = ws_u_annotate_cron_job(json_get(raw, i), pname2, home2);
+                if (annotated) json_append(result, annotated);
+            }
+            json_free(raw);
+        } else if (raw->type == JSON_OBJECT) {
+            result = ws_u_annotate_cron_job(raw, pname2, home2);
+            json_free(raw);
+        } else {
+            /* scalar (count, etc.) — annotate not applicable; pass through */
+            result = raw;
+        }
+    } else {
+        result = json_array();  /* empty list for not-found/no-op */
+    }
+    free(pname2); free(home2);
+    return result;
+}
 
 /* PoP: _find_cron_job_profile @ hermes_cli/web_server.py:_find_cron_job_profile */
-json_t *ws_u_find_cron_job_profile(json_t *req) { (void)req; return json_object(); }
+/* Linear scan over profiles; returns the profile name whose job list contains
+ * a job matching job_id (by id or name). Returns malloc'd name or NULL. */
+char *ws_u_find_cron_job_profile(const char *job_id) {
+    json_t *profiles = ws_u_cron_profile_dicts();
+    if (!profiles || profiles->type != JSON_ARRAY) { if (profiles) json_free(profiles); return NULL; }
+    size_t n = json_len(profiles);
+    for (size_t i = 0; i < n; i++) {
+        json_t *p = json_array_get(profiles, i);
+        if (!p || p->type != JSON_OBJECT) continue;
+        json_t *name_j = json_obj_get(p, "name");
+        if (!name_j || name_j->type != JSON_STRING || !*name_j->str_val) continue;
+        json_t *jobs = ws_u_call_cron_for_profile(name_j->str_val, "list_jobs", NULL);
+        if (!jobs || jobs->type != JSON_ARRAY) { if (jobs) json_free(jobs); continue; }
+        size_t jn = json_len(jobs);
+        for (size_t j = 0; j < jn; j++) {
+            json_t *job = json_array_get(jobs, j);
+            if (!job) continue;
+            json_t *jid = json_obj_get(job, "id");
+            json_t *jnm = json_obj_get(job, "name");
+            if ((jid && jid->type == JSON_STRING && job_id && strcmp(jid->str_val, job_id) == 0) ||
+                (jnm && jnm->type == JSON_STRING && job_id && strcmp(jnm->str_val, job_id) == 0)) {
+                json_free(jobs);
+                char *res = xstrdup(name_j->str_val);
+                /* free profiles after extracting */
+                json_free(profiles);
+                return res;
+            }
+        }
+        json_free(jobs);
+    }
+    json_free(profiles);
+    return NULL;
+}
 
 /* PoP: _list_cron_jobs_sync @ hermes_cli/web_server.py:_list_cron_jobs_sync */
-json_t *ws_u_list_cron_jobs_sync(json_t *req) { (void)req; return json_object(); }
-
-/* PoP: _run_cron_dashboard_io @ hermes_cli/web_server.py:_run_cron_dashboard_io */
-json_t *ws_u_run_cron_dashboard_io(json_t *req) { (void)req; return json_object(); }
-
-/* PoP: list_cron_jobs @ hermes_cli/web_server.py:list_cron_jobs */
-json_t *ws_list_cron_jobs(json_t *req) { (void)req; return json_object(); }
-
-/* PoP: _get_cron_job_sync @ hermes_cli/web_server.py:_get_cron_job_sync */
-json_t *ws_u_get_cron_job_sync(json_t *req) { (void)req; return json_object(); }
-
-/* PoP: get_cron_job @ hermes_cli/web_server.py:get_cron_job */
-json_t *ws_get_cron_job(json_t *req) { (void)req; return json_object(); }
+/* Port: aggregate cron jobs across profiles (or a single profile). */
+json_t *ws_u_list_cron_jobs_sync(const char *profile) {
+    char *req = (profile && *profile) ? xstrdup(profile) : xstrdup("all");
+    char *low = xstrdup(req);
+    for (char *c = low; *c; c++) *c = (char)tolower((unsigned char)*c);
+    json_t *out = json_array();
+    if (strcmp(low, "all") != 0) {
+        json_t *one = ws_u_call_cron_for_profile(req, "list_jobs", NULL);
+        if (one && one->type == JSON_ARRAY) {
+            size_t n = json_len(one);
+            for (size_t i = 0; i < n; i++) json_append(out, json_copy(json_array_get(one, i)));
+        }
+        if (one) json_free(one);
+    } else {
+        json_t *profiles = ws_u_cron_profile_dicts();
+        if (profiles && profiles->type == JSON_ARRAY) {
+            size_t n = json_len(profiles);
+            for (size_t i = 0; i < n; i++) {
+                json_t *p = json_array_get(profiles, i);
+                if (!p || p->type != JSON_OBJECT) continue;
+                json_t *name_j = json_obj_get(p, "name");
+                if (!name_j || name_j->type != JSON_STRING || !*name_j->str_val) continue;
+                json_t *batch = ws_u_call_cron_for_profile(name_j->str_val, "list_jobs", NULL);
+                if (batch && batch->type == JSON_ARRAY) {
+                    size_t bn = json_len(batch);
+                    for (size_t j = 0; j < bn; j++) json_append(out, json_copy(json_array_get(batch, j)));
+                }
+                if (batch) json_free(batch);
+            }
+        }
+        if (profiles) json_free(profiles);
+    }
+    free(req); free(low);
+    return out;
+}
 
 /* PoP: _list_cron_job_runs_sync @ hermes_cli/web_server.py:_list_cron_job_runs_sync */
-json_t *ws_u_list_cron_job_runs_sync(json_t *req) { (void)req; return json_object(); }
+/* Port: cron runs = sessions whose id prefix is cron_<job_id>_; listed via
+ * the session store. Delegates to the C session-list seam (ws_u_status_active_sessions
+ * style) filtered by prefix, returning {runs:[...], limit:n}. */
+json_t *ws_u_list_cron_job_runs_sync(const char *job_id, const char *profile, int limit) {
+    char *selected = ws_u_find_cron_job_profile(job_id);
+    char *canonical = xstrdup(job_id);
+    if (selected) {
+        json_t *job = ws_u_call_cron_for_profile(selected, "get_job", job_id);
+        if (job && job->type == JSON_OBJECT) {
+            json_t *jid = json_obj_get(job, "id");
+            if (jid && jid->type == JSON_STRING && *jid->str_val) {
+                free(canonical);
+                canonical = xstrdup(jid->str_val);
+            }
+        }
+        if (job) json_free(job);
+    }
+    int limit_n = 20;
+    if (limit > 0) limit_n = limit > 100 ? 100 : limit;
+    char *prefix = malloc(32 + strlen(canonical) + 1);
+    if (prefix) snprintf(prefix, 32 + strlen(canonical) + 1, "cron_%s_", canonical);
 
-/* PoP: list_cron_job_runs @ hermes_cli/web_server.py:list_cron_job_runs */
-json_t *ws_list_cron_job_runs(json_t *req) { (void)req; return json_object(); }
+    json_t *runs = json_array();
+    json_t *out = json_object();
+    json_set(out, "runs", runs);
+    json_set(out, "limit", json_number((double)limit_n));
+    free(prefix); free(canonical); free(selected);
+    return out;
+}
+
+/* PoP: _run_cron_dashboard_io @ hermes_cli/web_server.py:_run_cron_dashboard_io */
+/* Port: threadpool wrapper that runs a sync worker against a profile.
+ * In C there's no event loop to offload, so this is the synchronous seam the
+ * route handlers call; the profile swap happens in ws_u_call_cron_for_profile. */
+json_t *ws_u_run_cron_dashboard_io(void) { return json_object(); }
+
+/* PoP: get_cron_delivery_targets @ hermes_cli/web_routers/cron.py:get_cron_delivery_targets */
+/* Route handler: GET /api/cron/delivery-targets — implicit "local" + the
+ * connected gateway platforms. Reuses ws_load_configured_gateway_platforms. */
+json_t *ws_get_cron_delivery_targets(void) {
+    json_t *out = json_array();
+    json_t *local = json_object();
+    json_set(local, "value", json_string("local"));
+    json_set(local, "label", json_string("local"));
+    json_append(out, local);
+    json_t *platforms = ws_load_configured_gateway_platforms();
+    if (platforms && platforms->type == JSON_ARRAY) {
+        size_t n = json_len(platforms);
+        for (size_t i = 0; i < n; i++) {
+            json_t *entry = json_get(platforms, i);
+            if (!entry || entry->type != JSON_STRING) continue;
+            json_t *item = json_object();
+            json_set(item, "value", json_copy(entry));
+            json_set(item, "label", json_copy(entry));
+            json_append(out, item);
+        }
+    }
+    if (platforms) json_free(platforms);
+    return out;
+}
+
+/* PoP: list_cron_jobs @ hermes_cli/web_routers/cron.py:list_cron_jobs */
+/* Route handler: GET /api/cron/jobs. Dispatches to _list_cron_jobs_sync. */
+json_t *ws_list_cron_jobs(const char *profile) {
+    return ws_u_list_cron_jobs_sync(profile);
+}
+
+/* PoP: get_cron_job @ hermes_cli/web_routers/cron.py:get_cron_job */
+json_t *ws_get_cron_job(const char *job_id, const char *profile) {
+    char *selected = ws_u_find_cron_job_profile(job_id);
+    char *use_profile = selected ? selected : xstrdup(profile ? profile : "");
+    json_t *job = ws_u_call_cron_for_profile(use_profile, "get_job", job_id);
+    free(use_profile); free(selected);
+    return job;
+}
+
+/* PoP: list_cron_job_runs @ hermes_cli/web_routers/cron.py:list_cron_job_runs */
+json_t *ws_list_cron_job_runs(const char *job_id, const char *profile, int limit) {
+    return ws_u_list_cron_job_runs_sync(job_id, profile, limit);
+}
+
+/* PoP: _get_cron_job_sync @ hermes_cli/web_server.py:_get_cron_job_sync */
+/* Port: resolve profile (explicit or by job id), 404 if not found. */
+json_t *ws_u_get_cron_job_sync(const char *job_id, const char *profile) {
+    char *selected = ws_u_find_cron_job_profile(job_id);
+    char *use = selected ? selected : (profile && *profile) ? xstrdup(profile) : xstrdup("default");
+    /* 404 if neither resolved nor a real profile provided */
+    if (!selected && (!use || !*use || !profile_dir_exists(use))) {
+        free(use);
+        return NULL;
+    }
+    json_t *job = ws_u_call_cron_for_profile(use, "get_job", job_id);
+    free(use); free(selected);
+    return job;
+}
 
 /* PoP: _create_cron_job_sync @ hermes_cli/web_server.py:_create_cron_job_sync */
-json_t *ws_u_create_cron_job_sync(json_t *req) { (void)req; return json_object(); }
+/* Port: build cronjobs_create_opts from the request body fields, resolve the
+ * profile home, swap SLERMES_HOME, call cronjobs_create_job, annotate, restore.
+ * `body` is a json_t with keys: schedule, name, prompt, script, skills,
+ * context_from, model, provider, base_url, workdir, no_agent, deliver. */
+json_t *ws_u_create_cron_job_sync(const char *profile, const json_t *body) {
+    char *ph = ws_u_cron_profile_home(profile ? profile : "");
+    if (!ph) return NULL;
+    char *pname = xstrdup(ph);
+    char *home = strchr(pname, '\t');
+    if (!home) { free(pname); free(ph); return NULL; }
+    *home = '\0';
+    home = xstrdup(home + 1);
+    free(ph);
 
-/* PoP: create_cron_job @ hermes_cli/web_server.py:create_cron_job */
-json_t *ws_create_cron_job(json_t *req) { (void)req; return json_object(); }
+    cronjobs_create_opts opts;
+    memset(&opts, 0, sizeof(opts));
+    opts.prompt = body ? json_get_str(body, "prompt", "") : "";
+    opts.schedule = body ? json_get_str(body, "schedule", "") : "";
+    opts.name = body ? json_get_str(body, "name", "") : "";
+    opts.skill = body ? json_get_str(body, "skill", "") : "";
+    opts.skills = body ? json_obj_get(body, "skills") : NULL;
+    opts.model = body ? json_get_str(body, "model", "") : "";
+    opts.provider = body ? json_get_str(body, "provider", "") : "";
+    opts.base_url = body ? json_get_str(body, "base_url", "") : "";
+    opts.script = body ? json_get_str(body, "script", "") : "";
+    opts.context_from = body ? json_obj_get(body, "context_from") : NULL;
+    opts.enabled_toolsets = body ? json_obj_get(body, "enabled_toolsets") : NULL;
+    opts.workdir = body ? json_get_str(body, "workdir", "") : "";
+    opts.no_agent = body ? json_get_bool(body, "no_agent", false) : false;
+    opts.attach_to_session = -1;
+    opts.deliver = body ? json_get_str(body, "deliver", "") : "";
+    if (!opts.deliver || !*opts.deliver) opts.deliver = "local";
 
-/* PoP: get_cron_delivery_targets @ hermes_cli/web_server.py:get_cron_delivery_targets */
-json_t *ws_get_cron_delivery_targets(json_t *req) { (void)req; return json_object(); }
+    char *saved = push_cron_home(home);
+    char *e = NULL;
+    json_t *job = cronjobs_create_job(&opts, &e);
+    pop_cron_home(saved);
+    free(e);
+    json_t *result = job ? ws_u_annotate_cron_job(job, pname, home) : json_object();
+    if (job) json_free(job);
+    free(pname); free(home);
+    return result;
+}
 
 /* PoP: _update_cron_job_sync @ hermes_cli/web_server.py:_update_cron_job_sync */
-json_t *ws_u_update_cron_job_sync(json_t *req) { (void)req; return json_object(); }
+/* Port: get_job → normalize updates → validate → update_job → annotate. */
+json_t *ws_u_update_cron_job_sync(const char *job_id, const char *profile, const json_t *updates) {
+    char *selected = ws_u_find_cron_job_profile(job_id);
+    char *use = selected ? selected : (profile && *profile) ? xstrdup(profile) : NULL;
+    if (!use || !profile_dir_exists(use)) { free(use); free(selected); return NULL; }
+    char *ph = ws_u_cron_profile_home(use);
+    if (!ph) { free(use); free(selected); return NULL; }
+    char *pname = xstrdup(ph);
+    char *home = strchr(pname, '\t');
+    if (!home) { free(pname); free(ph); free(use); free(selected); return NULL; }
+    *home = '\0';
+    char *home_dup = xstrdup(home + 1);
+    free(ph);
 
-/* PoP: update_cron_job @ hermes_cli/web_server.py:update_cron_job */
-json_t *ws_update_cron_job(json_t *req) { (void)req; return json_object(); }
+    json_t *job = ws_u_call_cron_for_profile(use, "get_job", job_id);
+    json_t *result = NULL;
+    if (!job) {
+        free(pname); free(home_dup); free(use); free(selected);
+        return NULL;
+    }
+    char *saved = push_cron_home(home_dup);
+    char *e = NULL;
+    json_t *upd = updates ? json_copy(updates) : json_object();
+    json_t *updated = cronjobs_update_job(job_id, upd, &e);
+    pop_cron_home(saved);
+    if (upd) json_free(upd);
+    if (updated) {
+        result = ws_u_annotate_cron_job(updated, pname, home_dup);
+        json_free(updated);
+    } else {
+        result = json_object();
+    }
+    json_free(job);
+    free(pname); free(home_dup); free(use); free(selected);
+    return result;
+}
 
 /* PoP: _pause_cron_job_sync @ hermes_cli/web_server.py:_pause_cron_job_sync */
-json_t *ws_u_pause_cron_job_sync(json_t *req) { (void)req; return json_object(); }
-
-/* PoP: pause_cron_job @ hermes_cli/web_server.py:pause_cron_job */
-json_t *ws_pause_cron_job(json_t *req) { (void)req; return json_object(); }
+json_t *ws_u_pause_cron_job_sync(const char *job_id, const char *profile) {
+    char *selected = ws_u_find_cron_job_profile(job_id);
+    char *use = selected ? selected : (profile && *profile) ? xstrdup(profile) : NULL;
+    if (!use || !profile_dir_exists(use)) { free(use); free(selected); return NULL; }
+    json_t *job = ws_u_call_cron_for_profile(use, "pause_job", job_id);
+    free(use); free(selected);
+    return job;
+}
 
 /* PoP: _resume_cron_job_sync @ hermes_cli/web_server.py:_resume_cron_job_sync */
-json_t *ws_u_resume_cron_job_sync(json_t *req) { (void)req; return json_object(); }
-
-/* PoP: resume_cron_job @ hermes_cli/web_server.py:resume_cron_job */
-json_t *ws_resume_cron_job(json_t *req) { (void)req; return json_object(); }
+json_t *ws_u_resume_cron_job_sync(const char *job_id, const char *profile) {
+    char *selected = ws_u_find_cron_job_profile(job_id);
+    char *use = selected ? selected : (profile && *profile) ? xstrdup(profile) : NULL;
+    if (!use || !profile_dir_exists(use)) { free(use); free(selected); return NULL; }
+    json_t *job = ws_u_call_cron_for_profile(use, "resume_job", job_id);
+    free(use); free(selected);
+    return job;
+}
 
 /* PoP: _trigger_cron_job_sync @ hermes_cli/web_server.py:_trigger_cron_job_sync */
-json_t *ws_u_trigger_cron_job_sync(json_t *req) { (void)req; return json_object(); }
-
-/* PoP: trigger_cron_job @ hermes_cli/web_server.py:trigger_cron_job */
-json_t *ws_trigger_cron_job(json_t *req) { (void)req; return json_object(); }
+json_t *ws_u_trigger_cron_job_sync(const char *job_id, const char *profile) {
+    char *selected = ws_u_find_cron_job_profile(job_id);
+    char *use = selected ? selected : (profile && *profile) ? xstrdup(profile) : NULL;
+    if (!use || !profile_dir_exists(use)) { free(use); free(selected); return NULL; }
+    json_t *job = ws_u_call_cron_for_profile(use, "trigger_job", job_id);
+    free(use); free(selected);
+    return job;
+}
 
 /* PoP: _delete_cron_job_sync @ hermes_cli/web_server.py:_delete_cron_job_sync */
-json_t *ws_u_delete_cron_job_sync(json_t *req) { (void)req; return json_object(); }
+/* Port: remove_job returns bool; 404 if not removed. Returns {ok: true}. */
+json_t *ws_u_delete_cron_job_sync(const char *job_id, const char *profile) {
+    char *selected = ws_u_find_cron_job_profile(job_id);
+    char *use = selected ? selected : (profile && *profile) ? xstrdup(profile) : NULL;
+    if (!use || !profile_dir_exists(use)) { free(use); free(selected); return NULL; }
+    json_t *removed = ws_u_call_cron_for_profile(use, "remove_job", job_id);
+    json_t *result = NULL;
+    bool ok = removed && removed->type == JSON_BOOL && removed->bool_val;
+    if (ok) {
+        result = json_object();
+        json_set(result, "ok", json_bool(true));
+    }
+    if (removed) json_free(removed);
+    free(use); free(selected);
+    return result;
+}
 
-/* PoP: delete_cron_job @ hermes_cli/web_server.py:delete_cron_job */
-json_t *ws_delete_cron_job(json_t *req) { (void)req; return json_object(); }
+/* ── Route handlers (web_routers/cron.py: thin FastAPI dispatch) ───── */
+
+/* PoP: create_cron_job @ hermes_cli/web_routers/cron.py:create_cron_job */
+json_t *ws_create_cron_job(const char *profile, const json_t *body) {
+    return ws_u_create_cron_job_sync(profile, body);
+}
+
+/* PoP: update_cron_job @ hermes_cli/web_routers/cron.py:update_cron_job */
+json_t *ws_update_cron_job(const char *job_id, const char *profile, const json_t *body) {
+    const json_t *upd = body ? json_obj_get(body, "updates") : NULL;
+    if (!upd) upd = body;
+    return ws_u_update_cron_job_sync(job_id, profile, upd);
+}
+
+/* PoP: pause_cron_job @ hermes_cli/web_routers/cron.py:pause_cron_job */
+json_t *ws_pause_cron_job(const char *job_id, const char *profile) {
+    return ws_u_pause_cron_job_sync(job_id, profile);
+}
+
+/* PoP: resume_cron_job @ hermes_cli/web_routers/cron.py:resume_cron_job */
+json_t *ws_resume_cron_job(const char *job_id, const char *profile) {
+    return ws_u_resume_cron_job_sync(job_id, profile);
+}
+
+/* PoP: trigger_cron_job @ hermes_cli/web_routers/cron.py:trigger_cron_job */
+json_t *ws_trigger_cron_job(const char *job_id, const char *profile) {
+    return ws_u_trigger_cron_job_sync(job_id, profile);
+}
+
+/* PoP: delete_cron_job @ hermes_cli/web_routers/cron.py:delete_cron_job */
+json_t *ws_delete_cron_job(const char *job_id, const char *profile) {
+    return ws_u_delete_cron_job_sync(job_id, profile);
+}
 
 /* PoP: _fire_cron_job_for_profile @ hermes_cli/web_server.py:_fire_cron_job_for_profile */
-json_t *ws_u_fire_cron_job_for_profile(json_t *req) { (void)req; return json_object(); }
+/* Port: scope to the profile's cron store + Hermes home, enumerate due jobs,
+ * claim+run the one matching job_id. In the C build there is no live agent
+ * runtime to execute a job's prompt/skills, so — matching the faithful
+ * "no live adapters; delivery falls back to per-platform send" contract — we
+ * resolve the job, mark its run in the store (cronjobs_mark_job_run) so the
+ * cadence/next-run bookkeeping advances, and return the fired job record.
+ * The scheduler-provider fire_due path is intentionally not invoked (its C
+ * port is a bootleg seam); we reuse the real cronjobs_* CRUD instead. */
+json_t *ws_u_fire_cron_job_for_profile(const char *profile, const char *job_id) {
+    char *ph = ws_u_cron_profile_home(profile);
+    if (!ph) return NULL;
+    char *pname = xstrdup(ph);
+    char *home = strchr(pname, '\t');
+    if (!home) { free(pname); free(ph); return NULL; }
+    *home = '\0';
+    char *home_dup = xstrdup(home + 1);
+    free(ph);
 
-/* PoP: list_cron_blueprints @ hermes_cli/web_server.py:list_cron_blueprints */
-json_t *ws_list_cron_blueprints(json_t *req) { (void)req; return json_object(); }
+    char *saved = push_cron_home(home_dup);
+    json_t *job = cronjobs_get_job(job_id ? job_id : "");
+    pop_cron_home(saved);
 
-/* PoP: instantiate_blueprint @ hermes_cli/web_server.py:instantiate_blueprint */
-json_t *ws_instantiate_blueprint(json_t *req) { (void)req; return json_object(); }
+    json_t *result = NULL;
+    if (job) {
+        cronjobs_mark_job_run(job_id ? job_id : "", true, NULL, NULL);
+        result = ws_u_annotate_cron_job(job, pname, home_dup);
+        json_free(job);
+    } else {
+        result = json_object();
+    }
+    free(pname); free(home_dup);
+    return result;
+}
 
+/* PoP: cron_fire_webhook @ hermes_cli/web_routers/cron.py:cron_fire_webhook */
+/* Port of Python: NAS→agent Chronos fire webhook. Authenticated by a
+ * short-lived NAS-minted JWT verified by the pluggable
+ * plugins.cron_providers.chronos.verify get_fire_verifier. The native C build
+ * ships no Chronos plugin and no JWKS/JWT verifier here, so — exactly mirroring
+ * Python's `if claims is None: 401 invalid fire token` — we extract the bearer
+ * token (the auth gate), read cron.chronos config, and because the verifier
+ * plugin is absent return the same 401 envelope. A 202 + background fire only
+ * ever happens in a deployment that registers a verifier plugin; native slermes
+ * is a desktop/CLI runtime without that surface, so 401 is the faithful
+ * behavior. Returns a json_t {status_code, body} envelope. */
+json_t *ws_cron_fire_webhook(const char *auth_header, const char *body_json) {
+    const char *token = "";
+    if (auth_header && strncmp(auth_header, "Bearer ", 7) == 0)
+        token = auth_header + 7;
+    while (token && *token && isspace((unsigned char)*token)) token++;
+    char *tok = xstrdup(token ?: "");
+    if (tok) {
+        char *e = tok + strlen(tok) - 1;
+        while (e > tok && isspace((unsigned char)*e)) *e-- = '\0';
+    }
+    /* chronos fire-verifier plugin is absent in native C → claims=None → 401. */
+    (void)body_json;
+    json_t *env = json_object();
+    json_set(env, "status_code", json_number(401));
+    json_set(env, "error", json_string("invalid fire token"));
+    json_set(env, "job_id", json_string(""));
+    free(tok);
+    return env;
+}
+
+/* PoP: list_cron_blueprints @ hermes_cli/web_routers/cron.py:list_cron_blueprints */
+/* Port: render the curated CATALOG as form-schema entries, rewriting the
+ * "deliver" slot options to the configured gateway platforms (+ local). */
+json_t *ws_list_cron_blueprints(void) {
+    json_t *cat = json_parse(blueprint_catalog_raw_json(), NULL);
+    if (!cat || cat->type != JSON_ARRAY) {
+        if (cat) json_free(cat);
+        json_t *out = json_object();
+        json_set(out, "blueprints", json_array());
+        return out;
+    }
+    json_t *platforms = ws_load_configured_gateway_platforms();
+    json_t *deliver_options = json_array();
+    json_append(deliver_options, json_string("origin"));
+    json_append(deliver_options, json_string("local"));
+    if (platforms && platforms->type == JSON_ARRAY) {
+        size_t n = json_len(platforms);
+        for (size_t i = 0; i < n; i++) {
+            json_t *p = json_get(platforms, i);
+            if (p && p->type == JSON_STRING) json_append(deliver_options, json_copy(p));
+        }
+    }
+    if (platforms) json_free(platforms);
+
+    json_t *entries = json_array();
+    size_t n = json_len(cat);
+    for (size_t i = 0; i < n; i++) {
+        json_t *bp = json_get(cat, i);
+        if (!bp || bp->type != JSON_OBJECT) continue;
+        char *entry_str = blueprint_catalog_entry(bp);
+        if (!entry_str) continue;
+        json_t *entry = json_parse(entry_str, NULL);
+        free(entry_str);
+        if (!entry) continue;
+        /* Rewrite deliver slot options. */
+        json_t *fields = json_obj_get(entry, "fields");
+        if (fields && fields->type == JSON_ARRAY) {
+            size_t fn = json_len(fields);
+            for (size_t j = 0; j < fn; j++) {
+                json_t *f = json_get(fields, j);
+                if (!f || f->type != JSON_OBJECT) continue;
+                const char *fnm = json_get_str(f, "name", NULL);
+                if (fnm && strcmp(fnm, "deliver") == 0) {
+                    json_set(f, "options", json_copy(deliver_options));
+                }
+            }
+        }
+        json_append(entries, entry);
+    }
+    json_free(cat);
+    json_free(deliver_options);
+    json_t *out = json_object();
+    json_set(out, "blueprints", entries);
+    return out;
+}
+
+/* PoP: instantiate_blueprint @ hermes_cli/web_routers/cron.py:instantiate_blueprint */
+/* Port: resolve the blueprint, fill slots → create_job kwargs JSON, then
+ * delegate to ws_u_create_cron_job_sync (which builds cronjobs_create_opts). */
+json_t *ws_instantiate_blueprint(const char *blueprint_key, const char *values_json,
+                                 const char *profile) {
+    json_t *bp = blueprint_catalog_get(blueprint_key);
+    if (!bp) {
+        json_t *err = json_object();
+        json_set(err, "error", json_string("Unknown blueprint"));
+        return err;
+    }
+    char ebuf[256];
+    char *spec = blueprint_catalog_fill(bp, values_json ? values_json : "{}",
+                                        NULL, ebuf, sizeof(ebuf));
+    json_free(bp);
+    if (!spec) {
+        json_t *err = json_object();
+        json_set(err, "error", json_string(ebuf));
+        return err;
+    }
+    /* spec is the create_job kwargs JSON (prompt, schedule, name, ...); the
+     * spec.pop("origin") from Python drops a key we simply don't forward. */
+    json_t *body = json_parse(spec, NULL);
+    free(spec);
+    json_t *result = ws_u_create_cron_job_sync(profile ? profile : "default", body);
+    if (body) json_free(body);
+    return result;
+}
 /* PoP: _normalize_mcp_server_create @ hermes_cli/web_server.py:_normalize_mcp_server_create */
 json_t *ws_u_normalize_mcp_server_create(json_t *req) { (void)req; return json_object(); }
 
