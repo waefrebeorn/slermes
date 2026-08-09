@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-09T07:38:25Z from `live_parity_scan.json` by `make parity-walkway`. **710 REAL_GAP across 155 modules** (of 14,045 total functions).
+> Generated 2026-08-09T08:21:45Z from `live_parity_scan.json` by `make parity-walkway`. **705 REAL_GAP across 155 modules** (of 14,045 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -836,14 +836,9 @@
 - is_approval_bypass_active_for_session (function)
 - _get_smart_policy (function)
 
-### tools/async_delegation.py (11 gaps)
+### tools/async_delegation.py (6 gaps)
 
-- active_for_session (function)
-- active_task_count (function)
 - _matches_session_selectors (function)
-- has_live_for_session (function)
-- _begin_finalization (function)
-- _finish_finalization (function)
 - _push_batch_completion_event (function)
 - _ensure_stale_monitor (function)
 - _stale_monitor_loop (function)

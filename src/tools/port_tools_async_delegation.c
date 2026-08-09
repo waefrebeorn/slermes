@@ -28,8 +28,13 @@ typedef struct async_delegation_rec {
     char *role;
     char *model;
     char *session_key;
+    char *origin_ui_session_id;
+    char *origin_session_id;
+    char *parent_session_id;
+    char **goals;             /* batch goal list (NULL-terminated, or NULL) */
+    int n_goals;
     int is_batch;
-    char *status;             /* "running" | "completed" | "error" | "cancelled" */
+    char *status;             /* "running" | "stalling" | "finalizing" | "completed" | "error" | "cancelled" */
     double dispatched_at;
     double completed_at;
     async_delegation_runner_t runner;
@@ -38,6 +43,13 @@ typedef struct async_delegation_rec {
     int done;                 /* worker finished (for tests/await) */
     pthread_t thread;
     struct async_delegation_rec *next;  /* intrusive list */
+    /* stall-monitor state (Python: progress_fn sampling) */
+    char *progress_token;     /* last sampled progress token (strdup'd) */
+    double progress_ts;       /* last refresh timestamp */
+    double interrupted_at;     /* when status flipped to stalling */
+    double stall_quiet_seconds;
+    double stall_threshold_seconds;
+    int stall_in_tool;
 } async_delegation_rec_t;
 
 /* ---- module state ---------------------------------------------------- */
@@ -61,13 +73,44 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
+/* Free all heap-owned fields of a record (does NOT free `rec` itself or its
+ * thread; used by prune/shutdown/reset). Caller must hold g_lock if freeing
+ * struct, but this only touches heap fields so it's lock-agnostic. */
+static void free_record_contents(async_delegation_rec_t *r) {
+    if (!r) return;
+    free(r->delegation_id);
+    free(r->goal);
+    free(r->context);
+    free(r->role);
+    free(r->model);
+    free(r->session_key);
+    free(r->origin_ui_session_id);
+    free(r->origin_session_id);
+    free(r->parent_session_id);
+    if (r->toolsets) {
+        for (int i = 0; i < r->n_toolsets; i++) free(r->toolsets[i]);
+        free(r->toolsets);
+        r->toolsets = NULL;
+        r->n_toolsets = 0;
+    }
+    if (r->goals) {
+        for (int i = 0; i < r->n_goals; i++) free(r->goals[i]);
+        free(r->goals);
+        r->goals = NULL;
+        r->n_goals = 0;
+    }
+    free(r->status);
+    free(r->progress_token);
+}
+
 /* ---- helpers --------------------------------------------------------- */
 
 /* Caller must hold g_lock. Count running records. */
 static int running_count_locked(void) {
     int n = 0;
     for (async_delegation_rec_t *r = g_head; r; r = r->next)
-        if (strcmp(r->status, "running") == 0) n++;
+        if (strcmp(r->status, "running") == 0 || strcmp(r->status, "stalling") == 0
+            || strcmp(r->status, "finalizing") == 0) n++;
     return n;
 }
 
@@ -107,6 +150,14 @@ static char **copy_toolsets(const char *const *ts) {
     return out;
 }
 
+/* Duplicate a NULL-terminated string array into a json array of strings. */
+static json_node_t *dup_string_array(char **arr, int n) {
+    json_node_t *ja = json_new_array();
+    for (int i = 0; i < n; i++)
+        json_array_append(ja, json_string(arr[i] ? arr[i] : ""));
+    return ja;
+}
+
 /* ---- finalize + completion event ------------------------------------ */
 
 static void build_and_emit_event(async_delegation_rec_t *rec, json_node_t *result, const char *status) {
@@ -114,6 +165,9 @@ static void build_and_emit_event(async_delegation_rec_t *rec, json_node_t *resul
     json_object_set(evt, "type", json_string("async_delegation"));
     json_object_set(evt, "delegation_id", json_string(rec->delegation_id));
     json_object_set(evt, "session_key", json_string(rec->session_key ? rec->session_key : ""));
+    json_object_set(evt, "origin_ui_session_id", json_string(rec->origin_ui_session_id ? rec->origin_ui_session_id : ""));
+    json_object_set(evt, "origin_session_id", json_string(rec->origin_session_id ? rec->origin_session_id : ""));
+    json_object_set(evt, "parent_session_id", rec->parent_session_id ? json_string(rec->parent_session_id) : json_null());
     json_object_set(evt, "goal", json_string(rec->goal ? rec->goal : ""));
     json_object_set(evt, "context", rec->context ? json_string(rec->context) : json_null());
     if (rec->toolsets) {
@@ -128,6 +182,7 @@ static void build_and_emit_event(async_delegation_rec_t *rec, json_node_t *resul
     json_object_set(evt, "model", json_string(rmodel ? rmodel : (rec->model ? rec->model : "")));
     json_object_set(evt, "status", json_string(status));
     if (rec->is_batch) json_object_set(evt, "is_batch", json_bool(1));
+    json_object_set(evt, "goals", rec->goals ? dup_string_array(rec->goals, rec->n_goals) : json_new_array());
     const char *summary = result ? json_get_str(result, "summary", NULL) : NULL;
     json_object_set(evt, "summary", summary ? json_string(summary) : json_null());
     const char *error = result ? json_get_str(result, "error", NULL) : NULL;
@@ -153,23 +208,108 @@ static void build_and_emit_event(async_delegation_rec_t *rec, json_node_t *resul
     json_free(evt);
 }
 
+/* ---- finalization helpers (Python: _begin_finalization / _finish_finalization) */
+
+/* Caller must hold g_lock. Atomically claim terminal delivery while keeping
+ * the record active. Returns a shallow copy of the record at claim time
+ * (ownership of heap fields transferred to caller), or NULL if no record
+ * exists or its status is not running/stalling. */
+/* PoP: _begin_finalization @ tools/async_delegation.py:_begin_finalization */
+static async_delegation_rec_t *begin_finalization(const char *delegation_id) {
+    if (!delegation_id) return NULL;
+    pthread_mutex_lock(&g_lock);
+    async_delegation_rec_t *r = NULL;
+    for (async_delegation_rec_t *p = g_head; p; p = p->next) {
+        if (p->delegation_id && strcmp(p->delegation_id, delegation_id) == 0) { r = p; break; }
+    }
+    if (!r || (strcmp(r->status, "running") != 0 && strcmp(r->status, "stalling") != 0)) {
+        pthread_mutex_unlock(&g_lock);
+        return NULL;
+    }
+    /* Stay active until durable persistence and queue publication finish. */
+    free(r->status);
+    r->status = xstrdup("finalizing");
+    r->completed_at = now_sec();
+    r->interrupt_fn = NULL;       /* child is done */
+    r->progress_token = NULL;     /* stop stale-monitor sampling */
+
+    /* Shallow-copy the claim the caller owns (so finalize can emit + free). */
+    async_delegation_rec_t *claim = calloc(1, sizeof(*claim));
+    claim->delegation_id = xstrdup(r->delegation_id);
+    claim->goal = xstrdup(r->goal);
+    claim->context = xstrdup(r->context);
+    claim->role = xstrdup(r->role);
+    claim->model = xstrdup(r->model);
+    claim->session_key = xstrdup(r->session_key);
+    claim->origin_ui_session_id = xstrdup(r->origin_ui_session_id);
+    claim->origin_session_id = xstrdup(r->origin_session_id);
+    claim->parent_session_id = xstrdup(r->parent_session_id);
+    claim->is_batch = r->is_batch;
+    claim->dispatched_at = r->dispatched_at;
+    claim->completed_at = r->completed_at;
+    if (r->goals) {
+        claim->n_goals = r->n_goals;
+        claim->goals = malloc((r->n_goals + 1) * sizeof(char *));
+        for (int i = 0; i < r->n_goals; i++) claim->goals[i] = xstrdup(r->goals[i]);
+        claim->goals[r->n_goals] = NULL;
+    }
+    if (r->toolsets) {
+        claim->toolsets = malloc((r->n_toolsets + 1) * sizeof(char *));
+        for (int i = 0; i < r->n_toolsets; i++) claim->toolsets[i] = xstrdup(r->toolsets[i]);
+        claim->toolsets[r->n_toolsets] = NULL;
+        claim->n_toolsets = r->n_toolsets;
+    }
+    pthread_mutex_unlock(&g_lock);
+    return claim;
+}
+
+/* Mark the record terminal and prune. Caller does NOT hold the lock. */
+/* PoP: _finish_finalization @ tools/async_delegation.py:_finish_finalization */
+static void finish_finalization(const char *delegation_id, const char *status) {
+    pthread_mutex_lock(&g_lock);
+    for (async_delegation_rec_t *p = g_head; p; p = p->next) {
+        if (p->delegation_id && strcmp(p->delegation_id, delegation_id) == 0) {
+            free(p->status);
+            p->status = xstrdup(status);
+            break;
+        }
+    }
+    prune_completed_locked();
+    pthread_cond_broadcast(&g_done_cond);
+    pthread_mutex_unlock(&g_lock);
+}
+
+/* Match a record against optional session selectors (OR semantics, like Python). */
+static int matches_session_selectors(const async_delegation_rec_t *r,
+                                      const char *session_key,
+                                      const char *origin_ui_session_id,
+                                      const char *parent_session_id) {
+    if (origin_ui_session_id && *origin_ui_session_id
+        && r->origin_ui_session_id && strcmp(r->origin_ui_session_id, origin_ui_session_id) == 0) return 1;
+    if (session_key && *session_key
+        && r->session_key && strcmp(r->session_key, session_key) == 0) return 1;
+    if (parent_session_id && *parent_session_id
+        && r->parent_session_id && strcmp(r->parent_session_id, parent_session_id) == 0) return 1;
+    return 0;
+}
+
+/* Caller must hold g_lock. True if status is running/stalling/finalizing. */
+static int is_live_status(const char *status) {
+    return status
+        && (strcmp(status, "running") == 0
+            || strcmp(status, "stalling") == 0
+            || strcmp(status, "finalizing") == 0);
+}
+
 /* PoP: finalize @ tools/async_delegation.py:_finalize */
 /* PoP: finalize @ tools/image_source.py:_finalize */
 static void finalize(async_delegation_rec_t *rec, json_node_t *result, const char *status) {
-    double completed_at = now_sec();
-    pthread_mutex_lock(&g_lock);
-    if (rec->status && strcmp(rec->status, "running") == 0) {
-        free(rec->status);
-        rec->status = xstrdup(status);
-    }
-    rec->completed_at = completed_at;
-    rec->interrupt_fn = NULL; /* child is done */
-    prune_completed_locked();
-    rec->done = 1;
-    pthread_cond_broadcast(&g_done_cond);
-    pthread_mutex_unlock(&g_lock);
-
-    build_and_emit_event(rec, result, status);
+    async_delegation_rec_t *claim = begin_finalization(rec->delegation_id);
+    if (!claim) return;
+    build_and_emit_event(claim, result, status);
+    free_record_contents(claim);
+    free(claim);
+    finish_finalization(rec->delegation_id, status);
     if (result) json_free(result);
 }
 
@@ -210,10 +350,7 @@ void async_delegation_shutdown(void) {
     async_delegation_rec_t *r = g_head;
     while (r) {
         async_delegation_rec_t *nx = r->next;
-        free(r->delegation_id); free(r->goal); free(r->context);
-        free(r->role); free(r->model); free(r->session_key);
-        if (r->toolsets) { for (int i = 0; i < r->n_toolsets; i++) free(r->toolsets[i]); free(r->toolsets); }
-        free(r->status);
+        free_record_contents(r);
         free(r);
         r = nx;
     }
@@ -240,6 +377,8 @@ char *async_delegation_new_id(void) {
 json_node_t *async_delegation_dispatch(
     const char *goal, const char *context, const char *const *toolsets,
     const char *role, const char *model, const char *session_key,
+    const char *origin_ui_session_id, const char *origin_session_id,
+    const char *parent_session_id,
     async_delegation_runner_t runner, async_delegation_interrupt_t interrupt_fn,
     async_delegation_sink_t sink, int max_async_children)
 {
@@ -254,6 +393,9 @@ json_node_t *async_delegation_dispatch(
     rec->role = xstrdup(role ? role : "");
     rec->model = xstrdup(model ? model : "");
     rec->session_key = xstrdup(session_key ? session_key : "");
+    rec->origin_ui_session_id = xstrdup(origin_ui_session_id ? origin_ui_session_id : "");
+    rec->origin_session_id = xstrdup(origin_session_id ? origin_session_id : "");
+    rec->parent_session_id = xstrdup(parent_session_id ? parent_session_id : "");
     rec->is_batch = 0;
     rec->status = xstrdup("running");
     rec->dispatched_at = now_sec();
@@ -275,10 +417,8 @@ json_node_t *async_delegation_dispatch(
         json_object_set(reject, "status", json_string("rejected"));
         json_object_set(reject, "error", json_string(buf));
         pthread_mutex_unlock(&g_lock);
-        free(rec->delegation_id); free(rec->goal); free(rec->context);
-        free(rec->role); free(rec->model); free(rec->session_key);
-        if (rec->toolsets) { for (int i = 0; i < rec->n_toolsets; i++) free(rec->toolsets[i]); free(rec->toolsets); }
-        free(rec->status); free(rec);
+        free_record_contents(rec);
+        free(rec);
         return reject;
     }
     rec->next = g_head;
@@ -294,10 +434,8 @@ json_node_t *async_delegation_dispatch(
         json_node_t *rj = json_new_object();
         json_object_set(rj, "status", json_string("rejected"));
         json_object_set(rj, "error", json_string("Failed to schedule async delegation"));
-        free(rec->delegation_id); free(rec->goal); free(rec->context);
-        free(rec->role); free(rec->model); free(rec->session_key);
-        if (rec->toolsets) { for (int i = 0; i < rec->n_toolsets; i++) free(rec->toolsets[i]); free(rec->toolsets); }
-        free(rec->status); free(rec);
+        free_record_contents(rec);
+        free(rec);
         return rj;
     }
 
@@ -310,9 +448,10 @@ json_node_t *async_delegation_dispatch(
 json_node_t *async_delegation_dispatch_batch(
     const char *const *goals, int n_goals, const char *context,
     const char *const *toolsets, const char *role, const char *model,
-    const char *session_key, async_delegation_runner_t runner,
-    async_delegation_interrupt_t interrupt_fn, async_delegation_sink_t sink,
-    int max_async_children)
+    const char *session_key, const char *origin_ui_session_id,
+    const char *origin_session_id, const char *parent_session_id,
+    async_delegation_runner_t runner, async_delegation_interrupt_t interrupt_fn,
+    async_delegation_sink_t sink, int max_async_children)
 {
     if (max_async_children <= 0) max_async_children = ASYNC_DELEGATION_DEFAULT_MAX_CHILDREN;
     async_delegation_rec_t *rec = calloc(1, sizeof(*rec));
@@ -338,6 +477,15 @@ json_node_t *async_delegation_dispatch_batch(
     rec->role = xstrdup(role ? role : "");
     rec->model = xstrdup(model ? model : "");
     rec->session_key = xstrdup(session_key ? session_key : "");
+    rec->origin_ui_session_id = xstrdup(origin_ui_session_id ? origin_ui_session_id : "");
+    rec->origin_session_id = xstrdup(origin_session_id ? origin_session_id : "");
+    rec->parent_session_id = xstrdup(parent_session_id ? parent_session_id : "");
+    /* Keep the full goal list for active_task_count()/listings (Python: goals). */
+    if (n_goals > 0) {
+        rec->goals = calloc((size_t)n_goals + 1, sizeof(char *));
+        for (int i = 0; i < n_goals; i++) rec->goals[i] = xstrdup(goals[i] ? goals[i] : "");
+        rec->n_goals = n_goals;
+    }
     rec->is_batch = 1;
     rec->status = xstrdup("running");
     rec->dispatched_at = now_sec();
@@ -358,10 +506,8 @@ json_node_t *async_delegation_dispatch_batch(
         json_object_set(reject, "status", json_string("rejected"));
         json_object_set(reject, "error", json_string(buf));
         pthread_mutex_unlock(&g_lock);
-        free(rec->delegation_id); free(rec->goal); free(rec->context);
-        free(rec->role); free(rec->model); free(rec->session_key);
-        if (rec->toolsets) { for (int i = 0; i < rec->n_toolsets; i++) free(rec->toolsets[i]); free(rec->toolsets); }
-        free(rec->status); free(rec);
+        free_record_contents(rec);
+        free(rec);
         return reject;
     }
     rec->next = g_head;
@@ -377,10 +523,8 @@ json_node_t *async_delegation_dispatch_batch(
         json_node_t *rj = json_new_object();
         json_object_set(rj, "status", json_string("rejected"));
         json_object_set(rj, "error", json_string("Failed to schedule async delegation batch"));
-        free(rec->delegation_id); free(rec->goal); free(rec->context);
-        free(rec->role); free(rec->model); free(rec->session_key);
-        if (rec->toolsets) { for (int i = 0; i < rec->n_toolsets; i++) free(rec->toolsets[i]); free(rec->toolsets); }
-        free(rec->status); free(rec);
+        free_record_contents(rec);
+        free(rec);
         return rj;
     }
 
@@ -406,10 +550,20 @@ json_node_t *async_delegation_list(void) {
         json_object_set(o, "role", json_string(r->role ? r->role : ""));
         json_object_set(o, "model", json_string(r->model ? r->model : ""));
         json_object_set(o, "session_key", json_string(r->session_key ? r->session_key : ""));
+        json_object_set(o, "origin_ui_session_id", json_string(r->origin_ui_session_id ? r->origin_ui_session_id : ""));
+        json_object_set(o, "origin_session_id", json_string(r->origin_session_id ? r->origin_session_id : ""));
+        if (r->parent_session_id)
+            json_object_set(o, "parent_session_id", json_string(r->parent_session_id));
         json_object_set(o, "status", json_string(r->status ? r->status : ""));
         json_object_set(o, "dispatched_at", json_number(r->dispatched_at));
         json_object_set(o, "completed_at", json_number(r->completed_at));
         if (r->is_batch) json_object_set(o, "is_batch", json_bool(1));
+        if (r->is_batch && r->goals) {
+            json_node_t *g = json_new_array();
+            for (int i = 0; i < r->n_goals; i++)
+                json_array_append(g, json_string(r->goals[i] ? r->goals[i] : ""));
+            json_object_set(o, "goals", g);
+        }
         json_array_append(arr, o);
     }
     pthread_mutex_unlock(&g_lock);
@@ -422,7 +576,7 @@ int async_delegation_interrupt_all(const char *reason) {
     int n = 0;
     pthread_mutex_lock(&g_lock);
     for (async_delegation_rec_t *r = g_head; r; r = r->next) {
-        if (strcmp(r->status, "running") == 0) {
+        if (is_live_status(r->status)) {
             if (r->interrupt_fn) r->interrupt_fn();
             free(r->status);
             r->status = xstrdup("cancelled");
@@ -453,13 +607,87 @@ void async_delegation_reset_for_tests(void) {
     async_delegation_rec_t *r = g_head;
     while (r) {
         async_delegation_rec_t *nx = r->next;
-        free(r->delegation_id); free(r->goal); free(r->context);
-        free(r->role); free(r->model); free(r->session_key);
-        if (r->toolsets) { for (int i = 0; i < r->n_toolsets; i++) free(r->toolsets[i]); free(r->toolsets); }
-        free(r->status);
+        free_record_contents(r);
         free(r);
         r = nx;
     }
     g_head = NULL;
     pthread_mutex_unlock(&g_lock);
+}
+
+/* ── Session-scoped queries + interrupt (async_delegation.py gaps) ── */
+
+/* PoP: active_for_session @ tools/async_delegation.py:active_for_session */
+int async_delegation_active_for_session(const char *session_key,
+                                        const char *origin_ui_session_id,
+                                        const char *parent_session_id) {
+    if ((!session_key || !*session_key)
+        && (!origin_ui_session_id || !*origin_ui_session_id)
+        && (!parent_session_id || !*parent_session_id)) return 0;
+    int n = 0;
+    pthread_mutex_lock(&g_lock);
+    for (async_delegation_rec_t *r = g_head; r; r = r->next)
+        if (is_live_status(r->status)
+            && matches_session_selectors(r, session_key, origin_ui_session_id, parent_session_id)) n++;
+    pthread_mutex_unlock(&g_lock);
+    return n;
+}
+
+/* PoP: active_task_count @ tools/async_delegation.py:active_task_count */
+int async_delegation_active_task_count(void) {
+    int total = 0;
+    pthread_mutex_lock(&g_lock);
+    for (async_delegation_rec_t *r = g_head; r; r = r->next) {
+        if (!is_live_status(r->status)) continue;
+        if (r->is_batch) {
+            total += (r->n_goals > 0) ? r->n_goals : 1;
+        } else {
+            total += 1;
+        }
+    }
+    pthread_mutex_unlock(&g_lock);
+    return total;
+}
+
+/* PoP: has_live_for_session @ tools/async_delegation.py:has_live_for_session */
+bool async_delegation_has_live_for_session(const char *session_key,
+                                           const char *origin_ui_session_id,
+                                           const char *parent_session_id) {
+    if ((!session_key || !*session_key)
+        && (!origin_ui_session_id || !*origin_ui_session_id)
+        && (!parent_session_id || !*parent_session_id)) return false;
+    bool found = false;
+    pthread_mutex_lock(&g_lock);
+    for (async_delegation_rec_t *r = g_head; r; r = r->next) {
+        if (is_live_status(r->status)
+            && matches_session_selectors(r, session_key, origin_ui_session_id, parent_session_id)) {
+            found = true;
+            break;
+        }
+    }
+    pthread_mutex_unlock(&g_lock);
+    return found;
+}
+
+/* PoP: interrupt_for_session @ tools/async_delegation.py:interrupt_for_session */
+int async_delegation_interrupt_for_session(const char *session_key,
+                                           const char *origin_ui_session_id,
+                                           const char *parent_session_id) {
+    int n = 0;
+    pthread_mutex_lock(&g_lock);
+    for (async_delegation_rec_t *r = g_head; r; r = r->next) {
+        if (is_live_status(r->status)
+            && matches_session_selectors(r, session_key, origin_ui_session_id, parent_session_id)) {
+            if (r->interrupt_fn) r->interrupt_fn();
+            free(r->status);
+            r->status = xstrdup("cancelled");
+            r->completed_at = now_sec();
+            r->interrupt_fn = NULL;
+            r->done = 1;
+            n++;
+        }
+    }
+    pthread_cond_broadcast(&g_done_cond);
+    pthread_mutex_unlock(&g_lock);
+    return n;
 }

@@ -111,8 +111,9 @@ make desktop-gui           # Desktop app
 
 ## Current State
 
-Live scanner (v670): **12,695 PORTED / 1,346 REAL_GAP / 4 PARTIAL / 24 BOOTLEG**
-(14,045 total, 86.0%). Upstream sync: **0 behind** — repo is up to date.
+Live scanner (v671): **13,335 PORTED / 705 REAL_GAP / 5 PARTIAL / 3 BOOTLEG**
+(14,045 total, 94.9%). Upstream sync: **1,310 ahead / 856 behind** vs
+`upstream/main` (fetched live — see `make parity-walkway`).
 See `docs/parity-summary.md` and `docs/real-gap-list.md`.
 
 ## Fork Sync
