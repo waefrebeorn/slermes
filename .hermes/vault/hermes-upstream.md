@@ -89,3 +89,21 @@ Latest full audit: live binary test, 18-pattern stub hunt (0 stubs), AST-level P
 2. `yb_query_group_info`, `yb_query_group_members`, `yb_search_sticker`, `yb_send_dm`, `yb_send_sticker`
 
 ### 33 Total Gaps (S0 integration 4, S1 missing tools 7, S2 tool depth 13, S3 lib 1, S4 gateway 1, S5 infra 2, S6 tests 5)
+
+## Upstream Checkpoint v671 (2026-08-09)
+
+**Sync state:** 1,306 commits ahead / 842 behind upstream/main (last merge 2026-08-08).
+The behind-count is the staleness timer — the stash→pull→fix→pop workflow re-ports
+the delta after each sync.
+
+**This session's upstream-facing closure:** `tools/terminal_tool.py` env registry was
+structurally unported (C stubs returned hardcoded `{}`/`true`/no-op). The full env
+registry layer is now a real C module (`terminal_env_registry.c`): session-cwd map,
+task-env-override map, active-envs map, `_resolve_container_task_id` isolation gate,
+`resolve_task_overrides` raw-first lookup, `_get_env_config` (docker/ssh/modal/daytona/
+vercel/vercel_sandbox backends), `check_terminal_requirements` (real docker binary +
+version probe), cleanup lifecycle. terminal_tool.py: 61/64 (95.3%), 3 REAL_GAPs.
+
+**Remaining upstream delta to re-port (842 behind):** captured live in
+`docs/real-gap-list.md` (742 REAL_GAPs) — the ROADMAP + battleship mission table are
+the working re-port plan. No upstream module is N/A; everything in the delta is work.

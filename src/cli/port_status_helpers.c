@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include "port_hermes_cli_timefmt.h"
 #include "hermes_yaml.h"
 
 /* PoP: sta_format_iso_timestamp @ hermes_cli/status.py:_format_iso_timestamp */
@@ -156,4 +157,11 @@ void sta_effective_provider_label(char out[256])
     snprintf(label, sizeof(label), "%s", effective);
     label[0] = (char)toupper((unsigned char)label[0]);
     snprintf(out, 256, "%s", label);
+}
+
+/* PoP: _format_relative_ts @ hermes_cli/status.py:_format_relative_ts */
+/* Format an epoch timestamp as short relative age for status output.
+ * Delegates to tf_relative_time (port of hermes_cli.timefmt:relative_time). */
+char *sta_format_relative_ts(double ts) {
+    return tf_relative_time(ts);
 }

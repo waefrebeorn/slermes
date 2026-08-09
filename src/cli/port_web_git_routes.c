@@ -34,7 +34,7 @@ static json_t *git_op_error(const char *detail) {
 }
 
 /* ── git_status_route ───────────────────────────────────────────────────────
- * PoP: git_status_route @ hermes_cli/web_server.py:git_status_route
+ * PoP: git_status_route @ hermes_cli/web_routers/git.py:git_status_route
  * Python: return await _git_op(_web_git.repo_status, _git_path(path)) */
 json_t *git_status_route(const char *path) {
     char *cwd = ws_fs_path(path);
@@ -45,7 +45,7 @@ json_t *git_status_route(const char *path) {
 }
 
 /* ── git_worktrees_route ─────────────────────────────────────────────────────
- * PoP: git_worktrees_route @ hermes_cli/web_server.py:git_worktrees_route
+ * PoP: git_worktrees_route @ hermes_cli/web_routers/git.py:git_worktrees_route
  * Python: return {"worktrees": await _git_op(_web_git.worktree_list, _git_path(path))} */
 json_t *git_worktrees_route(const char *path) {
     char *cwd = ws_fs_path(path);
@@ -58,7 +58,7 @@ json_t *git_worktrees_route(const char *path) {
 }
 
 /* ── git_branches_route ───────────────────────────────────────────────────────
- * PoP: git_branches_route @ hermes_cli/web_server.py:git_branches_route
+ * PoP: git_branches_route @ hermes_cli/web_routers/git.py:git_branches_route
  * Python: return {"branches": await _git_op(_web_git.branch_list, _git_path(path))} */
 json_t *git_branches_route(const char *path) {
     char *cwd = ws_fs_path(path);
@@ -71,7 +71,7 @@ json_t *git_branches_route(const char *path) {
 }
 
 /* ── git_base_branches_route ─────────────────────────────────────────────────
- * PoP: git_base_branches_route @ hermes_cli/web_server.py:git_base_branches_route
+ * PoP: git_base_branches_route @ hermes_cli/web_routers/git.py:git_base_branches_route
  * Python: return {"branches": await _git_op(_web_git.base_branch_list, _git_path(path))} */
 json_t *git_base_branches_route(const char *path) {
     char *cwd = ws_fs_path(path);
@@ -84,7 +84,7 @@ json_t *git_base_branches_route(const char *path) {
 }
 
 /* ── git_review_list_route ────────────────────────────────────────────────────
- * PoP: git_review_list_route @ hermes_cli/web_server.py:git_review_list_route
+ * PoP: git_review_list_route @ hermes_cli/web_routers/git.py:git_review_list_route
  * Python: return await _git_op(_web_git.review_list, _git_path(path), scope, base) */
 json_t *git_review_list_route(const char *path, const char *scope, const char *base) {
     char *cwd = ws_fs_path(path);
@@ -95,7 +95,7 @@ json_t *git_review_list_route(const char *path, const char *scope, const char *b
 }
 
 /* ── git_review_diff_route ─────────────────────────────────────────────────────
- * PoP: git_review_diff_route @ hermes_cli/web_server.py:git_review_diff_route
+ * PoP: git_review_diff_route @ hermes_cli/web_routers/git.py:git_review_diff_route
  * Python: return {"diff": await _git_op(_web_git.review_diff, _git_path(path), file, scope, base, staged)} */
 json_t *git_review_diff_route(const char *path, const char *file, const char *scope,
                               const char *base, bool staged) {
@@ -110,7 +110,7 @@ json_t *git_review_diff_route(const char *path, const char *file, const char *sc
 }
 
 /* ── git_file_diff_route ───────────────────────────────────────────────────────
- * PoP: git_file_diff_route @ hermes_cli/web_server.py:git_file_diff_route
+ * PoP: git_file_diff_route @ hermes_cli/web_routers/git.py:git_file_diff_route
  * Python: return {"diff": await _git_op(_web_git.file_diff_vs_head, _git_path(path), file)} */
 json_t *git_file_diff_route(const char *path, const char *file) {
     char *cwd = ws_fs_path(path);
@@ -124,7 +124,7 @@ json_t *git_file_diff_route(const char *path, const char *file) {
 }
 
 /* ── git_commit_context_route ───────────────────────────────────────────────────
- * PoP: git_commit_context_route @ hermes_cli/web_server.py:git_commit_context_route
+ * PoP: git_commit_context_route @ hermes_cli/web_routers/git.py:git_commit_context_route
  * Python: return await _git_op(_web_git.review_commit_context, _git_path(path)) */
 json_t *git_commit_context_route(const char *path) {
     char *cwd = ws_fs_path(path);
@@ -135,7 +135,7 @@ json_t *git_commit_context_route(const char *path) {
 }
 
 /* ── git_rev_parse_route ────────────────────────────────────────────────────────
- * PoP: git_rev_parse_route @ hermes_cli/web_server.py:git_rev_parse_route
+ * PoP: git_rev_parse_route @ hermes_cli/web_routers/git.py:git_rev_parse_route
  * Python: return {"sha": await _git_op(_web_git.review_rev_parse, _git_path(path), ref)} */
 json_t *git_rev_parse_route(const char *path, const char *ref) {
     char *cwd = ws_fs_path(path);
@@ -149,7 +149,7 @@ json_t *git_rev_parse_route(const char *path, const char *ref) {
 }
 
 /* ── git_ship_info_route ────────────────────────────────────────────────────────
- * PoP: git_ship_info_route @ hermes_cli/web_server.py:git_ship_info_route
+ * PoP: git_ship_info_route @ hermes_cli/web_routers/git.py:git_ship_info_route
  * Python: return await _git_op(_web_git.review_ship_info, _git_path(path)) */
 json_t *git_ship_info_route(const char *path) {
     char *cwd = ws_fs_path(path);
@@ -160,7 +160,7 @@ json_t *git_ship_info_route(const char *path) {
 }
 
 /* ── git_stage_route ────────────────────────────────────────────────────────────
- * PoP: git_stage_route @ hermes_cli/web_server.py:git_stage_route
+ * PoP: git_stage_route @ hermes_cli/web_routers/git.py:git_stage_route
  * Python: return await _git_op(_web_git.review_stage, _git_path(body.path), body.file) */
 json_t *git_stage_route(const char *path, const char *file) {
     char *cwd = ws_fs_path(path);
@@ -171,7 +171,7 @@ json_t *git_stage_route(const char *path, const char *file) {
 }
 
 /* ── git_unstage_route ───────────────────────────────────────────────────────────
- * PoP: git_unstage_route @ hermes_cli/web_server.py:git_unstage_route
+ * PoP: git_unstage_route @ hermes_cli/web_routers/git.py:git_unstage_route
  * Python: return await _git_op(_web_git.review_unstage, _git_path(body.path), body.file) */
 json_t *git_unstage_route(const char *path, const char *file) {
     char *cwd = ws_fs_path(path);
@@ -182,7 +182,7 @@ json_t *git_unstage_route(const char *path, const char *file) {
 }
 
 /* ── git_revert_route ─────────────────────────────────────────────────────────────
- * PoP: git_revert_route @ hermes_cli/web_server.py:git_revert_route
+ * PoP: git_revert_route @ hermes_cli/web_routers/git.py:git_revert_route
  * Python: return await _git_op(_web_git.review_revert, _git_path(body.path), body.file) */
 json_t *git_revert_route(const char *path, const char *file) {
     char *cwd = ws_fs_path(path);
@@ -193,7 +193,7 @@ json_t *git_revert_route(const char *path, const char *file) {
 }
 
 /* ── git_commit_route ─────────────────────────────────────────────────────────────
- * PoP: git_commit_route @ hermes_cli/web_server.py:git_commit_route
+ * PoP: git_commit_route @ hermes_cli/web_routers/git.py:git_commit_route
  * Python: return await _git_op(_web_git.review_commit, _git_path(body.path), body.message, body.push) */
 json_t *git_commit_route(const char *path, const char *message, bool push) {
     char *cwd = ws_fs_path(path);
@@ -204,7 +204,7 @@ json_t *git_commit_route(const char *path, const char *message, bool push) {
 }
 
 /* ── git_push_route ────────────────────────────────────────────────────────────────
- * PoP: git_push_route @ hermes_cli/web_server.py:git_push_route
+ * PoP: git_push_route @ hermes_cli/web_routers/git.py:git_push_route
  * Python: return await _git_op(_web_git.review_push, _git_path(body.path)) */
 json_t *git_push_route(const char *path) {
     char *cwd = ws_fs_path(path);
@@ -215,7 +215,7 @@ json_t *git_push_route(const char *path) {
 }
 
 /* ── git_create_pr_route ──────────────────────────────────────────────────────────
- * PoP: git_create_pr_route @ hermes_cli/web_server.py:git_create_pr_route
+ * PoP: git_create_pr_route @ hermes_cli/web_routers/git.py:git_create_pr_route
  * Python: return await _git_op(_web_git.review_create_pr, _git_path(body.path)) */
 json_t *git_create_pr_route(const char *path) {
     char *cwd = ws_fs_path(path);
@@ -226,7 +226,7 @@ json_t *git_create_pr_route(const char *path) {
 }
 
 /* ── git_worktree_add_route ────────────────────────────────────────────────────────
- * PoP: git_worktree_add_route @ hermes_cli/web_server.py:git_worktree_add_route
+ * PoP: git_worktree_add_route @ hermes_cli/web_routers/git.py:git_worktree_add_route
  * Python: opts = {k:v for k,v in {name,branch,base,existingBranch}.items() if v}
  *          return await _git_op(_web_git.worktree_add, _git_path(body.path), options) */
 json_t *git_worktree_add_route(const char *path, const char *name, const char *branch,
@@ -239,7 +239,7 @@ json_t *git_worktree_add_route(const char *path, const char *name, const char *b
 }
 
 /* ── git_worktree_remove_route ──────────────────────────────────────────────────────
- * PoP: git_worktree_remove_route @ hermes_cli/web_server.py:git_worktree_remove_route
+ * PoP: git_worktree_remove_route @ hermes_cli/web_routers/git.py:git_worktree_remove_route
  * Python: await _git_op(_web_git.worktree_remove, _git_path(body.path), body.worktreePath, body.force) */
 json_t *git_worktree_remove_route(const char *path, const char *worktree_path, bool force) {
     char *cwd = ws_fs_path(path);
@@ -250,7 +250,7 @@ json_t *git_worktree_remove_route(const char *path, const char *worktree_path, b
 }
 
 /* ── git_branch_switch_route ────────────────────────────────────────────────────────
- * PoP: git_branch_switch_route @ hermes_cli/web_server.py:git_branch_switch_route
+ * PoP: git_branch_switch_route @ hermes_cli/web_routers/git.py:git_branch_switch_route
  * Python: await _git_op(_web_git.branch_switch, _git_path(body.path), body.branch) */
 json_t *git_branch_switch_route(const char *path, const char *branch) {
     char *cwd = ws_fs_path(path);

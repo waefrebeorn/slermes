@@ -358,3 +358,49 @@ Build: clean. Tests: 49/49 pass.
 - **All sectors:** 0 GAPS verified across AG/TO/GW/TU/NP/PL/CLI
 - **Build:** 0 errors, 0 warnings. Tests: 4/4 pass.
 - **Commit:** v353
+
+## v670→v671 — Terminal env registry (real impl, no stubs) + crash-session port recovery + form-not-function stub hunt
+
+**What happened:** Two sessions' work vaulted as one: (1) the crash-session CLI/tool ports
+(slash_exec, npm_engine, timefmt, update_lock, config_migrations, terminal_hints, agent_import
+fix, ai_record_item fix) recovered and committed; (2) a detailed form-not-function stub hunt
+found the terminal env layer was structurally FAKE and closed it with a real C port.
+
+**Stub hunt findings (form-not-function class):**
+- `terminal.c`: `check_terminal_requirements` returned `true` ("Always returns true in C core"),
+  `_get_env_config` returned hardcoded `{"backend":"local"}`, `get_active_env` returned `"{}"`,
+  `_cleanup_inactive_envs` was a no-op, `is_persistent_env` always false, `cleanup_all_environments`
+  + `cleanup_vm` no-ops — all with excuse comments claiming "actual checks done at Python layer".
+- `terminal_tool.c`: same six functions stubbed the same way.
+- `port_terminal_tool_wrappers.c`: `tt_record_session_cwd`, `tt_get_session_cwd`,
+  `tt_register_task_env_overrides`, `tt_clear_task_env_overrides`, `tt_u_resolve_container_task_id`,
+  `tt_resolve_task_overrides` were printf-echo stubs with ZERO state.
+- `port_terminal_tool_ports.c`: `ttm_set_sudo_password_callback`, `ttm_set_approval_callback`,
+  `ttm_clear_session_cwd` printf-echo stubs.
+- Dead drafts deleted: `port_terminal_tool.c` (uncompiled, mis-PoP'd to image_source.py),
+  `port_process_registry.c` (uncompiled, superseded by real process_registry.c).
+
+**New module — `terminal_env_registry.c`/`.h` (faithful C11 port of tools/terminal_tool.py env registry):**
+- Stateful, mutex-guarded maps mirroring Python's `_session_cwd`, `_task_env_overrides`,
+  `_active_environments`, `_last_activity` module dicts.
+- Implements: record/get/clear_session_cwd, register/clear_task_env_overrides,
+  `_resolve_container_task_id` (isolation-keys gate), `resolve_task_overrides` (raw-first lookup),
+  `_is_unusable_container_cwd`, `_get_env_config` (full TERMINAL_* env → config port incl. docker/
+  ssh/modal/daytona/vercel backends), `_create_environment`, `get_active_env`, `is_persistent_env`,
+  `_cleanup_inactive_envs`, `cleanup_all_environments`, `cleanup_vm`, `check_terminal_requirements`
+  (real docker-binary + `docker version` check), `_atexit_cleanup`/shutdown.
+- All six fake stubs in terminal.c + terminal_tool.c now delegate to the registry.
+- All tt_*/ttm_* echo wrappers now delegate to the real registry (no printf-only paths).
+
+**Double-work audit (user's "correct directories" question):**
+- Exactly one slermes checkout exists (`/home/wubu/hermes-agent-dev/slermes`) — no duplicate tree.
+- Duplicate basenames across src/ (port_base, port_gateway_platforms_helpers, etc.) have disjoint
+  symbols — legitimate splits, no double-coding.
+- `file_tools_is_blocked_device_path` appears twice but with DIFFERENT signatures (static 1-arg
+  private helper in tools/ vs public 2-arg PoP in cli/) — no collision, no double-work.
+
+**Impact:** PORTED 12,695 → 13,286 (94.6%); REAL_GAP 1,346 → 742; PARTIAL 4→17; BOOTLEG 24→3.
+terminal_tool.py: 61/64 (95.3%), 3 REAL_GAPs remain.
+
+**Build:** clean (0 errors). All registry + wired-stub symbols verified `T` in binary via nm.
+**Commit:** bf0a8e12ef

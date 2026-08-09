@@ -44,7 +44,15 @@ typedef struct cli_command_def_t {
     const char *args_hint;     /* "<prompt>", "[name]", "[on|off|tts|status]" */
     const char *const *subcommands; /* NULL-terminated */
     bool gateway_only;         /* only in gateway/messaging */
+    const char *busy_policy;   /* "dispatch" | "reject" | "interrupt_then_dispatch" */
+    const char *busy_handler;  /* handler key when busy_policy != "dispatch" */
 } cli_command_def_t;
+
+/* PoP: is_interrupt_then_dispatch @ hermes_cli/commands.py:is_interrupt_then_dispatch */
+/* Return true when command_name must interrupt a running agent first.
+ * True for commands whose busy_policy is "interrupt_then_dispatch"
+ * (the /stop, /new, /reset class). Accepts aliases. */
+bool cli_is_interrupt_then_dispatch(const char *command_name);
 
 /* The canonical registry (mirrors COMMAND_REGISTRY). NULL-terminated.
  * Populated in cli_command_registry.c. */

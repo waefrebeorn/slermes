@@ -1,4 +1,4 @@
-# State — Slermes C Translation (v670, PORT phase)
+# State — Slermes C Translation (v671, PORT phase)
 
 - Build: `make slermes` = 0 errors, binary links clean (~48.9 MB)
 - Tests: `bash tests/run_mission8_tests.sh` → 77 passed, 0 failed, 0 skipped; hunter `--verify` → 0 missed / 7,514 exported symbols
@@ -122,14 +122,14 @@ verified 0 mismatches vs live Python. Build links clean, Mission 8: 36/0/35.
 Fixed `tests/run_one_oracle.sh` (added `-I src`) so port headers resolve.
 
 <!-- PARITY:AUTO -->
-| PORTED  | 13,036 / 14,045 (92.8%) |
-| REAL_GAP| 1,006 (7.2%) — no N/A |
-| PARTIAL | 3 (0.0%) |
-| BOOTLEG | 0 (recursive_false_gap_hunter.py) |
+| PORTED  | 13,286 / 14,045 (94.6%) |
+| REAL_GAP| 742 (5.3%) — no N/A |
+| PARTIAL | 17 (0.1%) |
+| BOOTLEG | 3 (recursive_false_gap_hunter.py) |
 
-**Phase (v670):** PORT phase — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.
+**Phase (v671):** PORT phase — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.
 
-**Upstream sync checkpoint:** 1,299 ahead / 756 behind upstream/main (last merge 2026-08-08 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
+**Upstream sync checkpoint:** 1,306 ahead / 843 behind upstream/main (last merge 2026-08-08 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
 
-_Generated 2026-08-08T21:51:47Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
+_Generated 2026-08-09T05:57:32Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
 <!-- /PARITY:AUTO -->

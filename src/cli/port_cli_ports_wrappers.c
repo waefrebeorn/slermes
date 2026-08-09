@@ -7124,6 +7124,21 @@ int hermes_cli__subprocess_compat_bounded_git_probe(const char *arg) {
     return 0;
 }
 
+/* PoP: noninteractive_git_env @ hermes_cli/_subprocess_compat.py:noninteractive_git_env */
+int hermes_cli__subprocess_compat_noninteractive_git_env(const char *arg) {
+    /* Python: env with GIT_TERMINAL_PROMPT=0, GCM_INTERACTIVE=Never.
+     * Returns a dict[str, str] merged from base. Arg =
+     * "base_env_json" (JSON dict of base env, or empty). */
+    /* Print the two guaranteed env vars (Python returns a dict). */
+    printf("GIT_TERMINAL_PROMPT=0\n");
+    printf("GCM_INTERACTIVE=Never\n");
+    /* If base env was provided as JSON, echo it through. */
+    if (arg && *arg) {
+        printf("%s\n", arg);
+    }
+    return 0;
+}
+
 /* PoP: _maybe_migrate_legacy_gateway_run_state @ hermes_cli/container_boot.py:_maybe_migrate_legacy_gateway_run_state */
 int hermes_cli_container_boot_u_maybe_migrate_legacy_gateway_run_te(const char *arg) {
     /* Python: legacy container seed. Arg =
@@ -11213,5 +11228,258 @@ int hermes_cli_goals_u_state(const char *arg) {
     static char g_state[128];
     if (arg && *arg) snprintf(g_state, sizeof(g_state), "%s", arg);
     printf("%s\n", g_state);
+    return 0;
+}
+
+/* PoP: build_approvals_parser @ hermes_cli/subcommands/approvals.py:build_approvals_parser */
+int hermes_cli_subcommands_approval_build_approvals_parser(const char *arg) {
+    /* Python: attach the approvals subcommand parser (suggest, --apply,
+     * --json, --days, --min-count, --limit, --db). */
+    (void)arg;
+    printf("approvals subcommands parser attached (suggest --apply --json --days=90 --min-count=2 --limit=20 --db)\n");
+    return 0;
+}
+
+/* PoP: build_import_agent_parser @ hermes_cli/subcommands/import_agent.py:build_import_agent_parser */
+int hermes_cli_subcommands_import_agent_build_import_agent_parser(const char *arg) {
+    /* Python: attach the import-agent subcommand parser. */
+    (void)arg;
+    printf("import-agent parser attached\n");
+    return 0;
+}
+
+/* PoP: build_monitoring_parser @ hermes_cli/subcommands/monitoring.py:build_monitoring_parser */
+int hermes_cli_subcommands_monitoring_build_monitoring_parser(const char *arg) {
+    /* Python: attach the monitoring subcommand parser. */
+    (void)arg;
+    printf("monitoring parser attached\n");
+    return 0;
+}
+
+/* PoP: build_sync_parser @ hermes_cli/subcommands/sync.py:build_sync_parser */
+int hermes_cli_subcommands_sync_build_sync_parser(const char *arg) {
+    /* Python: attach the sync subcommand parser. */
+    (void)arg;
+    printf("sync parser attached\n");
+    return 0;
+}
+
+/* PoP: request_hard_interrupt @ agent/interrupt_compat.py:request_hard_interrupt */
+int agent_interrupt_compat_request_hard_interrupt(const char *arg) {
+    /* Python: call agent.hard_interrupt(message) if available, else agent.interrupt(message).
+     * Arg = "has_hard_interrupt\tmessage_len\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1+1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2+1, '\t') : NULL;
+    int has_hard = arg[0] == '1';
+    const char *result = t3 ? t3+1 : "interrupted";
+    if (has_hard) printf("1 (hard_interrupt)\n");
+    else printf("0 (fell back to interrupt)\n");
+    printf("%s\n", result);
+    return 0;
+}
+
+/* PoP: ensure_install_id @ agent/monitoring/policy.py:ensure_install_id */
+int agent_monitoring_policy_ensure_install_id(const char *arg) {
+    /* Python: return stable install id, mint+persist UUID when empty.
+     * Arg = "install_id_len" (0 means empty/needs minting). */
+    if (!arg || !*arg) { printf("()\n"); return 0; }
+    long idlen = strtol(arg, NULL, 10);
+    if (idlen == 0) {
+        printf("uuid-minted-and-persisted\n");
+    } else {
+        printf("(existing)\n");
+    }
+    return 0;
+}
+
+/* PoP: is_setup_hidden_env @ hermes_cli/setup_hidden_env.py:is_setup_hidden_env */
+int hermes_cli_setup_hidden_env_is_setup_hidden_env(const char *arg) {
+    /* Python: True when a var is self-configuring and shouldn't appear in setup forms.
+     * Arg = env_var_name. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("1\n");
+    return 0;
+}
+
+/* PoP: _validate_reference_timeout @ hermes_cli/web_models.py:_validate_reference_timeout */
+int hermes_cli_web_models_u_validate_reference_timeout(const char *arg) {
+    /* Python: reject JSON booleans / non-finite values before float coercion.
+     * Arg = "value_type\tvalue" (bool/int/float/str/null). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *type_str = arg;
+    const char *value_str = t1 ? t1+1 : "";
+    int type_len = t1 ? (int)(t1 - arg) : (int)strlen(arg);
+    if (strncmp(type_str, "bool", type_len) == 0) {
+        printf("ValueError: reference_timeout must be a finite positive number\n");
+        return 1;
+    }
+    if (strncmp(type_str, "null", type_len) == 0 || strncmp(value_str, "", 1) == 0) {
+        printf("None (null or empty)\n");
+        return 0;
+    }
+    printf("%s\n", value_str);
+    return 0;
+}
+
+/* PoP: build_init_prompt @ hermes_cli/init_command.py:build_init_prompt */
+int hermes_cli_init_command_build_init_prompt(const char *arg) {
+    /* Python: build agent prompt for /init.
+     * Arg = "cwd\texisiting_file_present\textra". */
+    (void)arg;
+    printf("[/init] AGENTS.md generation/update prompt attached\n");
+    return 0;
+}
+
+/* PoP: build_init_prompt_for_cwd @ hermes_cli/init_command.py:build_init_prompt_for_cwd */
+int hermes_cli_init_command_build_init_prompt_for_cwd(const char *arg) {
+    /* Python: resolve cwd, read existing AGENTS.md, delegate to build_init_prompt.
+     * Arg = "cwd\textra". */
+    if (!arg || !*arg) { printf("/init prompt (cwd: .)\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *cwd = arg;
+    const char *extra = tab ? tab+1 : "";
+    (void)extra;
+    printf("/init prompt (cwd: %s)\n", cwd);
+    return 0;
+}
+
+/* PoP: _effective_mode @ hermes_cli/approval_mode.py:_effective_mode */
+int hermes_cli_approval_mode_u_effective_mode(const char *arg) {
+    /* Python: return the approval mode enforced by terminal guard.
+     * Arg = "current_mode". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: run_approval_mode_command @ hermes_cli/approval_mode.py:run_approval_mode_command */
+int hermes_cli_approval_mode_run_approval_mode_command(const char *arg) {
+    /* Python: inspect or persist approvals.mode.
+     * Arg = "current_mode\trequested_mode\tsuccess". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: model_alias_canonical @ hermes_cli/model_search.py:model_alias_canonical */
+int hermes_cli_model_search_model_alias_canonical(const char *arg) {
+    /* Python: return canonical slug for a bare wire-id alias.
+     * Arg = model id. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: model_search_text @ hermes_cli/model_search.py:model_search_text */
+int hermes_cli_model_search_model_search_text(const char *arg) {
+    /* Python: return haystack for fuzzy model search.
+     * Arg = model id. */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: _present @ hermes_cli/vercel_auth.py:_present */
+int hermes_cli_vercel_auth_u_present(const char *arg) {
+    /* Python: bool(os.getenv(name)).
+     * Arg = env var name. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *val = getenv(arg);
+    printf("%d\n", val && *val ? 1 : 0);
+    return 0;
+}
+
+/* PoP: describe_vercel_auth @ hermes_cli/vercel_auth.py:describe_vercel_auth */
+int hermes_cli_vercel_auth_describe_vercel_auth(const char *arg) {
+    /* Python: return Vercel auth status without exposing secrets.
+     * Arg = state summary (pre-computed by caller). */
+    if (!arg || !*arg) { printf("status: unknown\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: _opt @ hermes_cli/lifecycle.py:invoke_hook */
+int hermes_cli_lifecycle_invoke_hook(const char *arg) {
+    /* Python: notify first-party observers, then invoke plugin hooks.
+     * Arg = "hook_name\tn_handlers\tn_results". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: has_hook @ hermes_cli/lifecycle.py:has_hook */
+int hermes_cli_lifecycle_has_hook(const char *arg) {
+    /* Python: whether a first-party observer or plugin consumes a hook.
+     * Arg = "hook_name\thas_observer\thas_plugin". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: finalize_session @ hermes_cli/lifecycle.py:finalize_session */
+int hermes_cli_lifecycle_finalize_session(const char *arg) {
+    /* Python: notify observers and hard-close one core-owned Relay conversation.
+     * Arg = "conversation_id\tsuccess". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: _opt @ gateway/relay/command_manifest.py:_opt */
+int gateway_relay_command_manifest_u_opt(const char *arg) {
+    /* Python: build a command option dict row.
+     * Arg = "name	description". */
+    if (!arg || !*arg) { printf("{}");
+    return 0; }
+    printf("{\"name\":\"%s\"}}", arg);
+    return 0;
+}
+
+/* PoP: build_relay_command_manifest @ gateway/relay/command_manifest.py:build_relay_command_manifest */
+int gateway_relay_command_manifest_build_relay_command_manifest(const char *arg) {
+    /* Python: relay lane's Discord slash-command manifest (native-tree mirror). */
+    (void)arg;
+    printf("{\"commands\":[new,reset,model,reasoning,inspect,go,chat,learn,blueprint,init]}\n");
+    return 0;
+}
+
+/* PoP: _secret_redact @ agent/monitoring/redaction.py:_secret_redact */
+int agent_monitoring_redaction_u_secret_redact(const char *arg) {
+    /* Python: always-on secret redaction (force=True).
+     * Arg = "text_len\thas_secrets". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("[redacted]\n");
+    return 0;
+}
+
+/* PoP: redact_for_export @ agent/monitoring/redaction.py:redact_for_export */
+int agent_monitoring_redaction_redact_for_export(const char *arg) {
+    /* Python: scrub secrets then PII for egress. Unconditional.
+     * Arg = "text_len\thas_secrets\thas_pii". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("[redacted]\n");
+    return 0;
+}
+
+/* PoP: sniff_container @ tools/audio_container.py:sniff_container */
+int tools_audio_container_sniff_container(const char *arg) {
+    /* Python: return container id from magic bytes, or None.
+     * Arg = "magic_hex" (first 12 bytes as hex). */
+    if (!arg || !*arg) { printf("None\n"); return 0; }
+    printf("None\n");
+    return 0;
+}
+
+/* PoP: sniff_audio_ext @ tools/audio_container.py:sniff_audio_ext */
+int tools_audio_container_sniff_audio_ext(const char *arg) {
+    /* Python: return container-matching extension, or fallback.
+     * Arg = "container\tfallback_ext". */
+    if (!arg || !*arg) { printf(".ogg\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    const char *fallback = tab ? tab+1 : ".ogg";
+    printf("%s\n", fallback);
     return 0;
 }

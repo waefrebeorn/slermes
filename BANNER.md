@@ -3,9 +3,9 @@
 ## Core Principle
 
 <!-- PARITY:AUTO -->
-**v670 phase — PORT:** the C11 binary is the deliverable — faithful, oracle-verified, usable standalone across operating systems. Live parity counts live in the PARITY:AUTO sentinel blocks owned by `make parity-walkway`; never hand-edit a count.
+**v671 phase — PORT:** the C11 binary is the deliverable — faithful, oracle-verified, usable standalone across operating systems. Live parity counts live in the PARITY:AUTO sentinel blocks owned by `make parity-walkway`; never hand-edit a count.
 
-**Upstream sync checkpoint:** 1,299 ahead / 756 behind upstream/main (last merge 2026-08-08 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
+**Upstream sync checkpoint:** 1,306 ahead / 843 behind upstream/main (last merge 2026-08-08 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
 
 <!-- /PARITY:AUTO -->
 

@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-08T21:51:47Z from `live_parity_scan.json` by `make parity-walkway`. **1,006 REAL_GAP across 193 modules** (of 14,045 total functions).
+> Generated 2026-08-09T05:57:32Z from `live_parity_scan.json` by `make parity-walkway`. **742 REAL_GAP across 156 modules** (of 14,045 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -43,53 +43,6 @@
 
 - compute_context_details (function)
 
-### agent/context_compressor.py (23 gaps)
-
-- ContextCompressor._emit_init_summary_once (method)
-- ContextCompressor._resolve_context_length (method)
-- ContextCompressor.context_length (method)
-- ContextCompressor.context_length (method)
-- ContextCompressor.threshold_tokens (method)
-- ContextCompressor.threshold_tokens (method)
-- ContextCompressor.tail_token_budget (method)
-- ContextCompressor.tail_token_budget (method)
-- ContextCompressor.max_summary_tokens (method)
-- ContextCompressor.max_summary_tokens (method)
-- ContextCompressor.record_timeout_failure (method)
-- ContextCompressor._resolve_compact_cursor (method)
-- ContextCompressor._find_one_exchange (method)
-- ContextCompressor._serialize_one_exchange (method)
-- ContextCompressor._build_micro_summary_prompt (method)
-- ContextCompressor._micro_summarize_one (method)
-- ContextCompressor._needs_defrag (method)
-- ContextCompressor._defrag_rolling_summary (method)
-- ContextCompressor._micro_compact (method)
-- ContextCompressor._cursor_after_splice (method)
-- ContextCompressor._emit_micro_compaction_telemetry (method)
-- ContextCompressor._sync_micro_compact_to_db (method)
-- ContextCompressor._splice_micro_compact_result (method)
-
-### agent/conversation_compression.py (18 gaps)
-
-- _snapshot_compressor_attempt_state (function)
-- _restore_compressor_attempt_state (function)
-- _capture_authoritative_cooldown_under_lease (function)
-- CompressionCommitFence.commit_in_flight (method)
-- CompressionCommitFence.is_cancelled (method)
-- CompressionCommitFence.revoke_commit_admission (method)
-- CompressionCommitFence.begin_lock_setup (method)
-- CompressionCommitFence.finish_lock_setup (method)
-- CompressionCommitFence.register_cancelled_lock_release (method)
-- CompressionCommitFence.clear_cancelled_lock_release (method)
-- CompressionCommitFence.release_cancelled_compression_lock (method)
-- _try_admit_compression_job (function)
-- _release_compression_admission (function)
-- _get_compress_timeout_executor (function)
-- resolve_context_compression_timeouts (function)
-- run_compress_context_with_progress_timeout (function)
-- _CompressionActivityHeartbeat._fence_cancelled (method)
-- _CompressionActivityHeartbeat._should_suppress (method)
-
 ### agent/conversation_loop.py (8 gaps)
 
 - _is_copilot_provider (function)
@@ -116,10 +69,6 @@
 
 - InsightsEngine.get_usage_breakdown (method)
 
-### agent/interrupt_compat.py (1 gaps)
-
-- request_hard_interrupt (function)
-
 ### agent/lsp/manager.py (4 gaps)
 
 - async LSPService._start_idle_reaper (method)
@@ -135,22 +84,6 @@
 
 - _completed_response_as_stream_chunk (function)
 - peel_reference_guidance (function)
-
-### agent/model_metadata.py (13 gaps)
-
-- _ensure_requests (function)
-- __getattr__ (function)
-- _endpoint_host_key (function)
-- _note_endpoint_blackholed (function)
-- _endpoint_blackholed (function)
-- _is_connect_timeout (function)
-- _local_probe_disk_cache_path (function)
-- _load_local_probe_disk_cache (function)
-- _local_probe_disk_get (function)
-- _local_probe_disk_put (function)
-- _warn_context_length_fallback (function)
-- _estimate_message_tokens_cached (function)
-- _wire_message_shadow (function)
 
 ### agent/models_dev.py (6 gaps)
 
@@ -185,26 +118,6 @@
 - GatewayDiagnosticLogHandler.__init__ (method)
 - GatewayDiagnosticLogHandler.emit (method)
 
-### agent/monitoring/gateway_health_export.py (17 gaps)
-
-- GatewayHealthExportRuntime.shutdown (method)
-- _require_metrics_sdk (function)
-- _read_gateway_snapshot (function)
-- _read_cron_snapshot (function)
-- _read_background_work_count (function)
-- _read_background_delegations_count (function)
-- _read_runtime_snapshot (function)
-- _emit_snapshot_events (function)
-- _start_metric_provider (function)
-- GatewayDiagnosticLogStreamer.__init__ (method)
-- GatewayDiagnosticLogStreamer.__call__ (method)
-- GatewayDiagnosticLogStreamer.shutdown (method)
-- _start_diagnostic_log_streamer (function)
-- _start_snapshot_thread (function)
-- _attach_log_handler (function)
-- _gateway_health_event (function)
-- start_gateway_health_export (function)
-
 ### agent/monitoring/otlp_exporter.py (10 gaps)
 
 - _require_sdk (function)
@@ -217,15 +130,6 @@
 - OTLPStreamer.shutdown (method)
 - is_available (function)
 - start_streaming (function)
-
-### agent/monitoring/policy.py (1 gaps)
-
-- ensure_install_id (function)
-
-### agent/monitoring/redaction.py (2 gaps)
-
-- _secret_redact (function)
-- redact_for_export (function)
 
 ### agent/outbound_webhooks.py (1 gaps)
 
@@ -240,16 +144,16 @@
 - _completed_transaction_endpoint_indexes (function)
 - build_prompt_cache_plan (function)
 
+### agent/proxy_sources/iron_proxy.py (1 gaps)
+
+- _pid_alive (function)
+
 ### agent/relay_tools.py (4 gaps)
 
 - execute (function)
 - _jsonable (function)
 - _json_equal (function)
 - _run_awaitable (function)
-
-### agent/retry_utils.py (1 gaps)
-
-- parse_retry_after_seconds (function)
 
 ### agent/secret_sources/base.py (3 gaps)
 
@@ -309,32 +213,6 @@
 - _static_prompt_instructions (function)
 - _add_prompt_cache_key (function)
 - _is_openai_api_base_url (function)
-
-### cli.py (23 gaps)
-
-- _worktree_merge_cache_path (function)
-- _load_worktree_merge_cache (function)
-- _save_worktree_merge_cache (function)
-- HermesCLI._spinner_token_flow (method)
-- HermesCLI._turn_summary_is_active (method)
-- HermesCLI._turn_summary_begin (method)
-- HermesCLI._turn_summary_record (method)
-- HermesCLI._turn_summary_emit (method)
-- HermesCLI._render_stash_panel (method)
-- HermesCLI._restore_session_yolo (method)
-- HermesCLI._should_handle_background_command_inline (method)
-- HermesCLI.handle_bang_shell (method)
-- HermesCLI._persist_session_yolo (method)
-- HermesCLI._show_context_breakdown (method)
-- HermesCLI._voice_stt_provider (method)
-- HermesCLI._voice_full_duplex_listener (method)
-- HermesCLI._typed_voice_stop (method)
-- HermesCLI._maybe_start_wake_word (method)
-- HermesCLI._start_wake_word_listener (method)
-- HermesCLI._stop_wake_word_listener (method)
-- HermesCLI._on_wake_word (method)
-- HermesCLI._start_wake_watchdog (method)
-- HermesCLI._show_wake_word_status (method)
 
 ### cron/executions.py (1 gaps)
 
@@ -408,29 +286,6 @@
 - _clear_turn_process_ownership (function)
 - APIServerAdapter._expected_api_key (method)
 
-### gateway/platforms/base.py (20 gaps)
-
-- streaming_tts_turn_key (function)
-- streaming_tts_should_skip_whole_file (function)
-- _cleanup_cache_dir (function)
-- _sniff_audio_ext (function)
-- _match_extensionless_path (function)
-- BasePlatformAdapter.max_message_length_for_chat (method)
-- BasePlatformAdapter.message_len_fn_for_chat (method)
-- BasePlatformAdapter.format_tool_preview (method)
-- BasePlatformAdapter._history_media_paths_for_session (method)
-- BasePlatformAdapter._ea_escape (method)
-- BasePlatformAdapter._format_exec_approval (method)
-- BasePlatformAdapter.supports_streaming_tts (method)
-- async BasePlatformAdapter.begin_streaming_tts (method)
-- async BasePlatformAdapter.write_streaming_tts (method)
-- async BasePlatformAdapter.finish_streaming_tts (method)
-- async BasePlatformAdapter.abort_streaming_tts (method)
-- BasePlatformAdapter._streaming_tts_turn_key (method)
-- BasePlatformAdapter._mark_streaming_tts_completed_turn (method)
-- BasePlatformAdapter._streaming_tts_turn_completed (method)
-- async BasePlatformAdapter._notify_media_delivery_failure (method)
-
 ### gateway/platforms/bluebubbles.py (1 gaps)
 
 - _get_scoped_secret (function)
@@ -455,11 +310,6 @@
 
 - _get_wsecret (function)
 - WhatsAppBehaviorMixin._live_dm_allow_from (method)
-
-### gateway/relay/command_manifest.py (2 gaps)
-
-- _opt (function)
-- build_relay_command_manifest (function)
 
 ### gateway/relay/descriptor.py (1 gaps)
 
@@ -532,29 +382,10 @@
 - GatewayStreamConsumer._record_turn_final_payload (method)
 - GatewayStreamConsumer.delivered_final_matches (method)
 
-### gateway/streaming_tts_consumer.py (21 gaps)
+### gateway/streaming_tts_consumer.py (2 gaps)
 
-- StreamingTTSConsumer.__init__ (method)
-- StreamingTTSConsumer.active (method)
-- StreamingTTSConsumer.completed (method)
-- StreamingTTSConsumer.partial (method)
-- StreamingTTSConsumer.started (method)
-- StreamingTTSConsumer.audible (method)
-- StreamingTTSConsumer.dropped (method)
-- StreamingTTSConsumer.suppress_whole_file (method)
-- StreamingTTSConsumer.done (method)
-- StreamingTTSConsumer.on_delta (method)
-- StreamingTTSConsumer.finish (method)
-- StreamingTTSConsumer._enqueue_done (method)
-- StreamingTTSConsumer.start (method)
-- async StreamingTTSConsumer._run (method)
-- async StreamingTTSConsumer._synthesise_and_write (method)
 - async StreamingTTSConsumer._iter_stream_chunks (method)
 - StreamingTTSConsumer._next_stream_chunk (method)
-- StreamingTTSConsumer._strip_markdown_for_tts (method)
-- async StreamingTTSConsumer._safe_abort (method)
-- StreamingTTSConsumer.abort (method)
-- async StreamingTTSConsumer.wait_complete (method)
 
 ### hermes_cli/_early_recovery.py (1 gaps)
 
@@ -575,39 +406,11 @@
 - print_fast_version_info (function)
 - try_fast_version (function)
 
-### hermes_cli/_subprocess_compat.py (1 gaps)
-
-- noninteractive_git_env (function)
-
 ### hermes_cli/active_sessions.py (3 gaps)
 
 - format_age (function)
 - summarize_holders (function)
 - release_orphaned_leases (function)
-
-### hermes_cli/agent_import.py (16 gaps)
-
-- AgentImporter.__init__ (method)
-- AgentImporter.load_target_config (method)
-- AgentImporter.run (method)
-- AgentImporter._run_claude_code (method)
-- AgentImporter._run_codex (method)
-- AgentImporter._load_claude_settings (method)
-- AgentImporter._claude_mcp_servers (method)
-- AgentImporter._load_codex_config (method)
-- AgentImporter.import_context_file (method)
-- AgentImporter.import_memories_dir (method)
-- AgentImporter._merge_memory_entries (method)
-- AgentImporter.import_permission_denylist (method)
-- AgentImporter.import_mcp_servers (method)
-- AgentImporter.import_skills (method)
-- import_agent_command (function)
-- print_import_report (function)
-
-### hermes_cli/approval_mode.py (2 gaps)
-
-- _effective_mode (function)
-- run_approval_mode_command (function)
 
 ### hermes_cli/approvals_suggest.py (9 gaps)
 
@@ -675,10 +478,6 @@
 - is_remote_shell_session (function)
 - write_clipboard_text (function)
 
-### hermes_cli/commands.py (1 gaps)
-
-- is_interrupt_then_dispatch (function)
-
 ### hermes_cli/config.py (8 gaps)
 
 - _raw_config_has_explicit_version (function)
@@ -689,25 +488,6 @@
 - _cron_fleet_default_covers_axis (function)
 - _load_cron_jobs_for_config_warning (function)
 - warn_unpinned_cron_jobs_after_model_config_change (function)
-
-### hermes_cli/config_migrations.py (16 gaps)
-
-- support_floor_message (function)
-- _cfg (function)
-- _migrate_to_12 (function)
-- _migrate_to_13 (function)
-- _migrate_to_14 (function)
-- _migrate_to_15 (function)
-- _migrate_to_16 (function)
-- _migrate_to_17 (function)
-- _migrate_to_21 (function)
-- _migrate_to_23 (function)
-- _migrate_to_25 (function)
-- _migrate_to_29 (function)
-- _migrate_to_31 (function)
-- _migrate_to_32 (function)
-- _migrate_to_33 (function)
-- run_migrations (function)
 
 ### hermes_cli/container_boot.py (1 gaps)
 
@@ -754,11 +534,6 @@
 - _get_restart_after_turn_timeout (function)
 - _get_restart_exit_wait_budget (function)
 
-### hermes_cli/init_command.py (2 gaps)
-
-- build_init_prompt (function)
-- build_init_prompt_for_cwd (function)
-
 ### hermes_cli/inventory.py (3 gaps)
 
 - build_aux_picker_rows (function)
@@ -776,12 +551,6 @@
 - _decode_notify_delivery_metadata (function)
 - _notify_profile_filter (function)
 - count_notify_subs (function)
-
-### hermes_cli/lifecycle.py (3 gaps)
-
-- invoke_hook (function)
-- has_hook (function)
-- finalize_session (function)
 
 ### hermes_cli/managed_uv.py (9 gaps)
 
@@ -819,11 +588,6 @@
 
 - _spawn_catalog_swr_refresh (function)
 
-### hermes_cli/model_search.py (2 gaps)
-
-- model_alias_canonical (function)
-- model_search_text (function)
-
 ### hermes_cli/model_setup_flows.py (2 gaps)
 
 - _existing_api_key_for_model_flow (function)
@@ -851,21 +615,6 @@
 - _spawn_swr_refresh (function)
 - _fetch_ai_gateway_models (function)
 
-### hermes_cli/npm_engine.py (12 gaps)
-
-- is_ebadengine (function)
-- _iter_required_blocks (function)
-- required_npm_range (function)
-- actual_npm_version (function)
-- _repo_npm_range (function)
-- managed_npm_prefix (function)
-- _upgrade_env (function)
-- upgrade_managed_npm (function)
-- _probe_version (function)
-- _print_manual_fix (function)
-- _provision_managed_npm (function)
-- maybe_repair_npm_engine (function)
-
 ### hermes_cli/observability/__init__.py (3 gaps)
 
 - observe_lifecycle (function)
@@ -889,10 +638,6 @@
 ### hermes_cli/plugins.py (1 gaps)
 
 - PluginContext.subagent_lifecycle (method)
-
-### hermes_cli/plugins_cmd.py (1 gaps)
-
-- _clear_plugin_bytecode (function)
 
 ### hermes_cli/prompt_size.py (4 gaps)
 
@@ -939,22 +684,6 @@
 - _read_nearest_vercel_project (function)
 - setup_telemetry (function)
 
-### hermes_cli/setup_hidden_env.py (1 gaps)
-
-- is_setup_hidden_env (function)
-
-### hermes_cli/slash_exec.py (9 gaps)
-
-- _exec_version (function)
-- _exec_egress (function)
-- _exec_profile (function)
-- _exec_bundles (function)
-- _exec_help (function)
-- _exec_commands (function)
-- resolve_executor (function)
-- run_execute (function)
-- execute_command (function)
-
 ### hermes_cli/sqlite_safe_read.py (13 gaps)
 
 - _key (function)
@@ -971,30 +700,6 @@
 - read_header_bytes_preopen (function)
 - offline_file_access (function)
 
-### hermes_cli/status.py (1 gaps)
-
-- _format_relative_ts (function)
-
-### hermes_cli/subcommands/approvals.py (1 gaps)
-
-- build_approvals_parser (function)
-
-### hermes_cli/subcommands/import_agent.py (1 gaps)
-
-- build_import_agent_parser (function)
-
-### hermes_cli/subcommands/monitoring.py (1 gaps)
-
-- build_monitoring_parser (function)
-
-### hermes_cli/subcommands/sync.py (1 gaps)
-
-- build_sync_parser (function)
-
-### hermes_cli/timefmt.py (1 gaps)
-
-- relative_time (function)
-
 ### hermes_cli/tools_config.py (9 gaps)
 
 - _homeassistant_credentials_present (function)
@@ -1007,34 +712,11 @@
 - _enable_recently_shipped_toolsets (function)
 - _configure_stt_model (function)
 
-### hermes_cli/update_lock.py (11 gaps)
-
-- update_marker_path (function)
-- _pid_alive (function)
-- _handoff_pid (function)
-- _is_ancestor_pid (function)
-- read_live_update (function)
-- describe_holder (function)
-- UpdateLock.__init__ (method)
-- UpdateLock.acquire (method)
-- UpdateLock.release (method)
-- UpdateLock.__enter__ (method)
-- UpdateLock.__exit__ (method)
-
-### hermes_cli/vercel_auth.py (2 gaps)
-
-- _present (function)
-- describe_vercel_auth (function)
-
 ### hermes_cli/voice.py (3 gaps)
 
 - set_voice_busy_probe (function)
 - _voice_activity_held (function)
 - _speak_text_streaming (function)
-
-### hermes_cli/web_models.py (1 gaps)
-
-- _MoaReferenceControls._validate_reference_timeout (method)
 
 ### hermes_cli/web_routers/cron.py (13 gaps)
 
@@ -1051,28 +733,6 @@
 - async cron_fire_webhook (function)
 - async list_cron_blueprints (function)
 - async instantiate_blueprint (function)
-
-### hermes_cli/web_routers/git.py (19 gaps)
-
-- async git_status_route (function)
-- async git_worktrees_route (function)
-- async git_branches_route (function)
-- async git_base_branches_route (function)
-- async git_review_list_route (function)
-- async git_review_diff_route (function)
-- async git_file_diff_route (function)
-- async git_commit_context_route (function)
-- async git_rev_parse_route (function)
-- async git_ship_info_route (function)
-- async git_stage_route (function)
-- async git_unstage_route (function)
-- async git_revert_route (function)
-- async git_commit_route (function)
-- async git_push_route (function)
-- async git_create_pr_route (function)
-- async git_worktree_add_route (function)
-- async git_worktree_remove_route (function)
-- async git_branch_switch_route (function)
 
 ### hermes_cli/web_routers/mcp.py (11 gaps)
 
@@ -1190,11 +850,6 @@
 - _finalize_stalled (function)
 - _children_activity_from_token (function)
 
-### tools/audio_container.py (2 gaps)
-
-- sniff_container (function)
-- sniff_audio_ext (function)
-
 ### tools/browser_supervisor.py (5 gaps)
 
 - PendingDialog.to_dict (method)
@@ -1293,7 +948,7 @@
 
 - resolve_passthrough_value (function)
 
-### tools/environments/base.py (7 gaps)
+### tools/environments/base.py (8 gaps)
 
 - _BoundedOutputCollector._maybe_spill (method)
 - _BoundedOutputCollector.close_spill (method)
@@ -1302,6 +957,7 @@
 - BaseEnvironment._additional_profile_scoped_passthrough_names (method)
 - BaseEnvironment._snapshot_excluded_passthrough_names (method)
 - BaseEnvironment._finalize_wait_result (method)
+- BaseEnvironment._kill_process (method)
 
 ### tools/environments/docker.py (6 gaps)
 
@@ -1317,10 +973,11 @@
 - FileSyncManager._sync_transaction (method)
 - FileSyncManager._sync_back_transaction (method)
 
-### tools/environments/local.py (2 gaps)
+### tools/environments/local.py (3 gaps)
 
 - build_subprocess_env (function)
 - _managed_runtime_path_entries (function)
+- LocalEnvironment._kill_process (method)
 
 ### tools/file_operations.py (2 gaps)
 
@@ -1334,31 +991,15 @@
 - _check_not_found_cache (function)
 - _record_not_found (function)
 
-### tools/flux3_video_tool.py (14 gaps)
-
-- async _call_gateway (function)
-- async _wait_between_looks (function)
-- async _prepare_media (function)
-- async _deliver_media (function)
-- async _save_if_ready (function)
-- async _download_video (function)
-- async _submit (function)
-- async _handle_text_to_video (function)
-- async _handle_image_to_video (function)
-- async _handle_keyframes_to_video (function)
-- async _handle_video_continuation (function)
-- async _poll_until_done (function)
-- async _handle_get_result (function)
-- async _handle_prompting_guide (function)
-
 ### tools/fuzzy_match.py (3 gaps)
 
 - is_already_applied (function)
 - _format_match_locations (function)
 - _visualize_whitespace (function)
 
-### tools/image_source.py (1 gaps)
+### tools/image_source.py (2 gaps)
 
+- _get_active_env (function)
 - _detect_video_mime (function)
 
 ### tools/kanban_tools.py (1 gaps)
@@ -1412,10 +1053,40 @@
 - _cache_get (function)
 - _cache_put (function)
 
-### tools/process_registry.py (2 gaps)
+### tools/process_registry.py (32 gaps)
 
+- ProcessRegistry._emit_output (method)
+- ProcessRegistry._global_watch_admit (method)
+- ProcessRegistry._is_host_pid_alive (method)
+- ProcessRegistry._safe_host_start_time (method)
+- ProcessRegistry._host_pid_is_ours (method)
+- ProcessRegistry._refresh_detached_session (method)
+- ProcessRegistry._proc_alive (method)
+- ProcessRegistry._daemon_term_grace_seconds (method)
+- ProcessRegistry._terminate_host_pid (method)
+- ProcessRegistry._env_temp_dir (method)
+- ProcessRegistry.spawn_via_env (method)
+- ProcessRegistry._reader_loop (method)
+- ProcessRegistry._env_poller_loop (method)
+- ProcessRegistry._pty_reader_loop (method)
+- ProcessRegistry.is_session_waiting (method)
+- ProcessRegistry._drain_should_skip (method)
+- ProcessRegistry.read_log (method)
+- ProcessRegistry.kill_process (method)
+- ProcessRegistry.write_stdin (method)
+- ProcessRegistry.submit_stdin (method)
+- ProcessRegistry.close_stdin (method)
+- ProcessRegistry.list_sessions (method)
+- ProcessRegistry.has_active_processes (method)
+- ProcessRegistry.has_any_active (method)
 - ProcessRegistry.snapshot_running_ids (method)
 - ProcessRegistry.kill_started_since (method)
+- ProcessRegistry._prune_if_needed (method)
+- _format_age (function)
+- _format_async_delegation (function)
+- format_process_notification (function)
+- _redact_process_result (function)
+- _handle_process (function)
 
 ### tools/react_to_message_tool.py (3 gaps)
 
@@ -1480,17 +1151,6 @@
 - _check_skill_view_dedup (function)
 - reset_skill_view_dedup (function)
 
-### tools/terminal_hints.py (8 gaps)
-
-- _hint_gh_unknown_json_field (function)
-- _hint_command_not_found (function)
-- _hint_module_not_found (function)
-- _hint_merge_conflict (function)
-- _hint_already_exists (function)
-- _hint_gh_rate_limit (function)
-- _hint_permission_denied (function)
-- annotate_failure (function)
-
 ### tools/terminal_tool.py (3 gaps)
 
 - _is_supported_vercel_runtime (function)
@@ -1512,50 +1172,15 @@
 - _available_source_summary (function)
 - validate_deferred_call_args (function)
 
-### tools/transcription_tools.py (14 gaps)
-
-- _resolve_provider_key (function)
-- _resolve_stt_language (function)
-- _transcode_audio_for_stt (function)
-- _unregistered_stt_provider_error (function)
-- _validate_audio_file_size (function)
-- _validate_audio_source_file (function)
-- _prepare_audio_for_transcription (function)
-- _sysctl_value (function)
-- _should_force_faster_whisper_cpu (function)
-- build_local_transcribe_kwargs (function)
-- _join_confident_segments (function)
-- _convert_caf_to_wav (function)
-- _transcribe_prepared_audio (function)
-- transcribe_audio_local_fallback (function)
-
 ### tools/tts_streaming.py (7 gaps)
 
 - _resolve_key (function)
-- _try_instantiate (function)
+- register (function)
 - _openai_config_api_key (function)
 - _capped (function)
 - XAIStreamer._collect_async (method)
 - async XAIStreamer._drain_async (method)
 - async XAIStreamer._async_frames (method)
-
-### tools/tts_tool.py (15 gaps)
-
-- _resolve_provider_key (function)
-- _elevenlabs_environment_kwargs (function)
-- _response_has_explicit_stream (function)
-- _close_response (function)
-- _read_tts_response_bytes (function)
-- _read_tts_response_json (function)
-- _write_tts_response_to_file (function)
-- _resolve_minimax_tts_runtime (function)
-- _ffmpeg_transcode_to_opus (function)
-- _sniff_audio_container (function)
-- _repair_ogg_container (function)
-- _tts_cache_get_or_load (function)
-- _SyncSentencePipeline.__init__ (method)
-- _SyncSentencePipeline._synthesize_to_tmp (method)
-- _SyncSentencePipeline._drain (method)
 
 ### tools/vision_tools.py (1 gaps)
 

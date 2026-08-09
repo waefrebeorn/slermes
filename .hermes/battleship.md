@@ -1,4 +1,4 @@
-# Battleship v670 — REAL_GAP Elimination Battleground
+# Battleship v671 — REAL_GAP Elimination Battleground
 
 **Build:** Clean · 
 
@@ -8,16 +8,16 @@
 > authoritative sentinel (do not hand-edit).
 
 <!-- PARITY:AUTO -->
-| PORTED  | 13,036 / 14,045 (92.8%) |
-| REAL_GAP| 1,006 (7.2%) — no N/A |
-| PARTIAL | 3 (0.0%) |
-| BOOTLEG | 0 (recursive_false_gap_hunter.py) |
+| PORTED  | 13,286 / 14,045 (94.6%) |
+| REAL_GAP| 742 (5.3%) — no N/A |
+| PARTIAL | 17 (0.1%) |
+| BOOTLEG | 3 (recursive_false_gap_hunter.py) |
 
-**Phase (v670):** PORT phase — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.
+**Phase (v671):** PORT phase — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.
 
-**Upstream sync checkpoint:** 1,299 ahead / 756 behind upstream/main (last merge 2026-08-08 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
+**Upstream sync checkpoint:** 1,306 ahead / 843 behind upstream/main (last merge 2026-08-08 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
 
-_Generated 2026-08-08T21:51:47Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
+_Generated 2026-08-09T05:57:32Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
 <!-- /PARITY:AUTO -->
 
 **Rewriting from scratch in C is the point.** Stubs = REAL_GAP.
@@ -29,23 +29,29 @@ _Generated 2026-08-08T21:51:47Z from live scanner `tests/slermes_parity_battlegr
 
 ## Missions
 
-### M1: CLI Core (2,632 REAL_GAPs, 161 modules)
+> Mission counts below are computed from the live scanner (2026-08-09, v671) —
+> per-directory REAL_GAP totals. Port files are the C homes for each mission.
+
+### M1: CLI Core (283 REAL_GAPs, CLI + hermes_cli dirs)
 **Priority: HIGHEST** — User-facing CLI commands
 **Port files:** src/cli/hermes_cli_*.c, src/cli/port_cli.c
+**Top modules:** hermes_cli/web_routers/profiles.py (15), sessions.py (14), cron.py (13),
+sqlite_safe_read.py (13), skills.py (12), tools.py (12)
 
-### M2: Gateway Platforms (1,854 REAL_GAPs, 56 modules)
+### M2: Gateway Platforms (79 REAL_GAPs, gateway dir)
 **Priority: HIGH** — Platform adapters
-**Port files:** src/cli/port_gateway_*.c
+**Port files:** src/cli/port_gateway_*.c, src/gateway/
 
-### M3: Tools (1,491 REAL_GAPs, 95 modules)
+### M3: Tools (246 REAL_GAPs, tools dir)
 **Priority: MEDIUM** — Tool implementations
-**Port files:** src/cli/port_tools_*.c
+**Port files:** src/cli/port_tools_*.c, src/tools/
+**Top modules:** tools/process_registry.py (32), cua_backend.py (14), doctor.py (14)
 
-### M4: Agent (363 REAL_GAPs, 59 modules)
+### M4: Agent (114 REAL_GAPs, agent dir)
 **Priority: MEDIUM** — Agent runtime
 **Port files:** src/cli/port_agent_*.c
 
-### M5: Cron (86 REAL_GAPs, 6 modules)
+### M5: Cron (19 REAL_GAPs, cron dir)
 **Priority: LOW** — Cron management
 **Port files:** src/cli/port_cron_*.c
 

@@ -215,6 +215,9 @@ int config_py_require_readable_config_before_write(const char *config_path);
 /* PoP: _persist_migration @ hermes_cli/config.py:_persist_migration */
 int config_py_persist_migration(const json_t *config);
 
+/* Read raw config.yaml (no defaults merged). NULL if absent/empty. */
+json_t *config_py_read_raw_config(void);
+
 /* _load_config_impl — load + deep-merge + normalize + expand env refs. */
 /* PoP: _load_config_impl @ hermes_cli/config.py:_load_config_impl */
 json_t *config_py_load_config_impl(int want_deepcopy);

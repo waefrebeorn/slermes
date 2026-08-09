@@ -58,7 +58,7 @@ static const char *k81_aliases[] = {"exit", NULL};
 
 static const cli_command_def_t CLI_COMMANDS[] = {
     { "start", "Acknowledge platform start pings without a reply", "Session", NULL, "", NULL, true },
-    { "new", "Start a new session (fresh session ID + history)", "Session", k1_aliases, "[name]", NULL, false },
+    { "new", "Start a new session (fresh session ID + history)", "Session", k1_aliases, "[name]", NULL, false, "interrupt_then_dispatch", "new" },
     { "topic", "Enable or inspect Telegram DM topic sessions", "Session", NULL, "[off|help|session-id]", NULL, true },
     { "clear", "Clear screen and start a new session", "Session", NULL, "", NULL, false },
     { "redraw", "Force a full UI repaint (recovers from terminal drift)", "Session", NULL, "", NULL, false },
