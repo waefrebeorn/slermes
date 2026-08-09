@@ -73,6 +73,7 @@ PORT_OBJ = \
     src/cli/port_hermes_cli_main_gaps.o \
     src/cli/port_turn_summary_cli.o \
     src/cli/port_hermes_cli_main_cmds.o \
+    src/hermes_cli/port_approvals_suggest.o \
     src/cli/port_checkpoints_format.o \
     src/cli/port_hermes_cli_backup.o \
     src/cli/port_pty_clamp_helpers.o \

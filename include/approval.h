@@ -33,6 +33,15 @@ const char *get_approval_mode(void);
 /* Load the permanent allowlist of pre-approved command patterns. */
 void approval_load_allowlist(void);
 
+/* Permanent allowlist enumeration + bulk persistence (tools/approval.py
+ * load_permanent_allowlist / save_permanent_allowlist / load_permanent). */
+/* List permanent allowlist command strings (malloc'd NULL-term array, caller frees). */
+char **approval_permanent_allowlist_list(size_t *out_n);
+/* Replace the permanent allowlist with the given patterns and persist. */
+int approval_save_permanent_allowlist(const char **patterns, size_t n);
+/* Reload permanent entries from disk (see new entries in a live process). */
+void approval_load_permanent(const char **patterns, size_t n);
+
 /* Register (or clear, with NULL fn) the gateway-send approval callback. */
 void approval_set_gateway_send(bool (*fn)(const char *, const char *, const char *),
                                const char *platform, const char *chat_id);
@@ -75,6 +84,11 @@ char *approval_derive_glob(const char *normalized);
 /* PoP: normalize_command @ hermes_cli/approvals_suggest.py:normalize_command */
 /* Returns a malloc'd ANI/NFKC-stripped, whitespace-collapsed command. */
 char *approval_normalize_command(const char *command);
+
+/* Dangerous-command classification (tools/approval.py). Returns a malloc'd
+ * tab-separated string "true|false\t<key>\t<description>" or NULL on OOM. */
+char *apr_detect_dangerous_command(const char *command);
+char *approval_detect_hardline_command(const char *command);
 
 /* PoP: is_unsafe_class @ hermes_cli/approvals_suggest.py:is_unsafe_class */
 bool approval_is_unsafe_class(const char *description);

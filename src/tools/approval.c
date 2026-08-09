@@ -187,6 +187,61 @@ void approval_save_allowlist(void) {
     free(ser);
 }
 
+/* ---- allowlist enumeration + bulk set/merge (tools/approval.py ports) ---- */
+
+/* List permanent allowlist command strings. Returns a malloc'd NULL-terminated
+ * array (caller frees each entry + the array). Sets *out_n. */
+/* PoP: list_permanent_allowlist_patterns @ tools/approval.py:load_permanent_allowlist */
+char **approval_permanent_allowlist_list(size_t *out_n) {
+    if (out_n) *out_n = 0;
+    size_t n = 0, cap = 0;
+    char **out = NULL;
+    for (int i = 0; i < g_approval_count; i++) {
+        if (!g_approval_cache[i].permanent) continue;
+        if (n >= cap) {
+            cap = cap ? cap * 2 : 8;
+            char **t = (char **)realloc(out, (cap + 1) * sizeof(*out));
+            if (!t) { for (size_t j = 0; j < n; j++) free(out[j]); free(out); return NULL; }
+            out = t;
+        }
+        out[n++] = strdup(g_approval_cache[i].command);
+    }
+    if (out) out[n] = NULL;
+    if (out_n) *out_n = n;
+    return out;
+}
+
+/* PoP: save_permanent_allowlist @ tools/approval.py:save_permanent_allowlist */
+int approval_save_permanent_allowlist(const char **patterns, size_t n) {
+    int write = 0;
+    for (int i = 0; i < g_approval_count; i++) {
+        if (g_approval_cache[i].permanent) {
+            for (int j = i; j < g_approval_count - 1; j++)
+                g_approval_cache[j] = g_approval_cache[j + 1];
+            g_approval_count--;
+            i--;
+            write = 1;
+        }
+    }
+    for (size_t k = 0; k < n && g_approval_count < MAX_APPROVED; k++) {
+        if (!patterns[k] || !*patterns[k]) continue;
+        bool dup = false;
+        for (int i = 0; i < g_approval_count; i++)
+            if (strcmp(g_approval_cache[i].command, patterns[k]) == 0) { dup = true; break; }
+        if (dup) continue;
+        snprintf(g_approval_cache[g_approval_count].tool,
+                 sizeof(g_approval_cache[0].tool), "%s", "terminal");
+        snprintf(g_approval_cache[g_approval_count].command,
+                 sizeof(g_approval_cache[0].command), "%s", patterns[k]);
+        g_approval_cache[g_approval_count].approved = true;
+        g_approval_cache[g_approval_count].permanent = true;
+        g_approval_count++;
+        write = 1;
+    }
+    if (write) approval_save_allowlist();
+    return 0;
+}
+
 /* Dump the permanent allowlist entries to stdout (approvals list/suggest). */
 void approval_dump_allowlist(void) {
     int shown = 0;
