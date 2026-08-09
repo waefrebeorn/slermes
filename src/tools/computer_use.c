@@ -814,11 +814,21 @@ static cu_backend_t *make_wayland_backend(void) {
 #ifdef __APPLE__
 
 /* ── State ────────────────────────────────────────────────────────── */
+/* PoP: macos_state_t @ tools/computer_use/cua_backend.py:CuaDriverBackend (macos_state) */
+/* Note: the async Python CuaDriverBackend holds _session/_bridge/_embedded_daemon;
+ * the C macos_state is the synchronous mcp_server_t equivalent. The session-
+ * bound real-gap methods (_browser_route, typed_browser_*, _run_input_action,
+ * _revive_declared_session_once) are bridged here via mcp_call. */
+typedef struct cua_typed_browser_route_s cua_typed_browser_route_t;
 typedef struct {
-    mcp_server_t *srv;
-    int           active_pid;
-    int           active_window_id;
-    char          last_app[256];
+    mcp_server_t          *srv;
+    int                    active_pid;
+    int                    active_window_id;
+    char                   last_app[256];
+    char                   session_id[128];  /* cua_backend session_id */
+    cua_typed_browser_route_t *typed_browser;  /* lazy-cached _browser_route */
+    bool                   started;
+    bool                   has_bring_to_front;  /* capability probe cached */
 } macos_state_t;
 
 /* ── MCP call helper ──────────────────────────────────────────────── */
@@ -885,6 +895,183 @@ static void macos_stop(void *state) {
     mcp_server_disconnect(st->srv);
     mcp_server_free(st->srv);
     st->srv = NULL;
+    st->started = false;
+    if (st->typed_browser) {
+        cua_typed_browser_route_free(st->typed_browser);
+        st->typed_browser = NULL;
+    }
+}
+
+/* ── Browser route bridge callbacks (mcp_call <-> cua_typed_browser_route) ─ */
+/* The C typed-browser route expects call_tool(name, args json_t*) -> json_t* and
+ * has_tool(name) -> bool. Bridge them over mcp_server_call_tool(json_serialize). */
+static json_t *macos_browser_call_tool(const char *name, const json_t *args, void *ctx) {
+    macos_state_t *st = (macos_state_t *)ctx;
+    if (!st || !st->srv || !name) return NULL;
+    char *ser = json_serialize(args);
+    char *res = mcp_server_call_tool(st->srv, name, ser ? ser : "{}");
+    free(ser);
+    if (!res) return NULL;
+    json_t *out = json_parse(res);
+    free(res);
+    return out;
+}
+static bool macos_browser_has_tool(const char *name, void *ctx) {
+    (void)name;
+    macos_state_t *st = (macos_state_t *)ctx;
+    /* cua-driver advertises all tools after tools/list; we don't track the
+     * exact set, so return true conservatively (matches Python's best-effort
+     * when capabilities not yet discovered: supports_input_property fails
+     * closed, but has_tool here is only used post-start). */
+    return st && st->srv && name && name[0];
+}
+
+/* ── _browser_route / typed_browser_* (PoP: _browser_route / typed_browser_*) ─ */
+/* _browser_route returns the cached route, constructing it on first access.
+ * Mirrors Python: getattr(self,"_typed_browser",None) -> if None, construct. */
+static cua_typed_browser_route_t *macos_browser_route(macos_state_t *st) {
+    if (!st) return NULL;
+    if (!st->typed_browser) {
+        st->typed_browser = cua_typed_browser_route_new(
+            st->session_id[0] ? st->session_id : "hermes-macos",
+            macos_browser_call_tool, st,
+            macos_browser_has_tool, st);
+    }
+    return st->typed_browser;
+}
+
+/* typed_browser_state = self._browser_route().observe(**kwargs) */
+static char *macos_typed_browser_state(macos_state_t *st, json_t *args) {
+    cua_typed_browser_route_t *route = macos_browser_route(st);
+    if (!route) return strdup("{}");
+    json_t *out = cua_typed_browser_route_observe(route, args);
+    char *ser = json_serialize(out);
+    json_free(out);
+    return ser ? ser : strdup("{}");
+}
+/* typed_browser_prepare = self._browser_route().prepare(**kwargs) */
+static char *macos_typed_browser_prepare(macos_state_t *st, json_t *args) {
+    cua_typed_browser_route_t *route = macos_browser_route(st);
+    if (!route) return strdup("{}");
+    json_t *out = cua_typed_browser_route_prepare(route, args);
+    char *ser = json_serialize(out);
+    json_free(out);
+    return ser ? ser : strdup("{}");
+}
+/* typed_browser_action = self._browser_route().mutate(driver_tool, tab_id=, args=) */
+static char *macos_typed_browser_action(macos_state_t *st, const char *driver_tool,
+                                        const char *tab_id, json_t *args) {
+    cua_typed_browser_route_t *route = macos_browser_route(st);
+    if (!route || !driver_tool) return strdup("{}");
+    if (tab_id && *tab_id) {
+        json_set(args, "tab_id", json_string(tab_id));
+    }
+    json_t *out = cua_typed_browser_route_mutate(route, driver_tool, args);
+    char *ser = json_serialize(out);
+    json_free(out);
+    return ser ? ser : strdup("{}");
+}
+
+/* ── _run_input_action ──────────────────────────────────────────────── */
+/* Apply one delivery rung, optionally focusing via bring_to_front first.
+ * Returns a cu_action_t* (the C ActionResult equivalent). */
+static cu_action_t *macos_run_input_action(macos_state_t *st,
+                                           const char *action, json_t *args,
+                                           const char *delivery_mode,
+                                           bool bring_to_front) {
+    /* _apply_delivery: foreground gate. In the C port the delivery surface
+     * is the cu_backend vtable; delivery_mode is always foreground for input
+     * actions, so we proceed (mirrors Python's foreground-capable path). */
+    if (bring_to_front) {
+        if (delivery_mode && strcmp(delivery_mode, "foreground") != 0) {
+            cu_action_t *ref = (cu_action_t *)calloc(1, sizeof(cu_action_t));
+            if (ref) {
+                ref->ok = false;
+                snprintf(ref->action, sizeof(ref->action), "%s", action);
+                snprintf(ref->message, sizeof(ref->message),
+                         "bring_to_front requires delivery_mode='foreground'.");
+            }
+            return ref;
+        }
+        /* bring_to_front capability gate */
+        if (!st->has_bring_to_front) {
+            cu_action_t *ref = (cu_action_t *)calloc(1, sizeof(cu_action_t));
+            if (ref) {
+                ref->ok = false;
+                snprintf(ref->action, sizeof(ref->action), "%s", action);
+                snprintf(ref->message, sizeof(ref->message),
+                         "The connected cua-driver does not advertise the standalone bring_to_front tool.");
+            }
+            return ref;
+        }
+        if (st->active_pid == 0 || st->active_window_id == 0) {
+            cu_action_t *ref = (cu_action_t *)calloc(1, sizeof(cu_action_t));
+            if (ref) {
+                ref->ok = false;
+                snprintf(ref->action, sizeof(ref->action), "%s", action);
+                snprintf(ref->message, sizeof(ref->message),
+                         "Capture an exact target before requesting persistent foreground focus.");
+            }
+            return ref;
+        }
+        /* call bring_to_front via MCP — on failure return the negative result */
+        char bargs[256];
+        snprintf(bargs, sizeof(bargs),
+                 "{\"pid\":%d,\"window_id\":%d}", st->active_pid, st->active_window_id);
+        cu_action_t *focused = macos_action_call(st, "bring_to_front", bargs);
+        if (!focused) {
+            cu_action_t *neg = (cu_action_t *)calloc(1, sizeof(cu_action_t));
+            if (neg) { neg->ok = false; snprintf(neg->action, sizeof(neg->action), "%s", action); }
+            return neg;
+        }
+        if (!focused->ok)
+            return focused;  /* propagate the negative focus result */
+        free(focused);
+    }
+    /* _action(action, args) — serialize args to MCP call args */
+    char *ser = json_serialize(args);
+    cu_action_t *result = macos_action_call(st, action, ser ? ser : "{}");
+    free(ser);
+    if (result && bring_to_front && result->ok) {
+        /* Attach foreground_focus metadata marker for parity with Python's
+         * ActionResult.meta["foreground_focus"] = {"invoked": True, ...}.
+         * We encode it as a message suffix since cu_action_t has no meta field. */
+        char *aug = (char *)malloc(strlen(result->message) + 96);
+        if (aug) {
+            snprintf(aug, strlen(result->message) + 96,
+                     "%s | foreground_focus:{invoked:true,tool:bring_to_front}",
+                     result->message);
+            snprintf(result->message, sizeof(result->message), "%s", aug);
+            free(aug);
+        }
+    }
+    return result;
+}
+
+/* ── _revive_declared_session_once ────────────────────────────────────── */
+/* If the session ended during a tool call, revive it and retry once.
+ * This is the sync C equivalent: on an ended-session error, call
+ * start_session again, then re-issue the original tool call. */
+static char *macos_revive_declared_session_once(macos_state_t *st,
+                                                const char *tool, const char *args_json) {
+    if (!st || !st->srv || !tool) return NULL;
+    char *res = mcp_server_call_tool(st->srv, tool, args_json ? args_json : "{}");
+    if (!res) return NULL;
+    json_t *out = json_parse(res);
+    free(res);
+    if (!out || !cua_session_is_ended_session_result(out)) {
+        /* not an ended-session error — return as-is */
+        if (out) { char *ser = json_serialize(out); json_free(out); return ser; }
+        return NULL;
+    }
+    json_free(out);
+    /* revive: re-declare the session identity */
+    char start_args[128];
+    snprintf(start_args, sizeof(start_args), "{\"session\":\"%s\"}", st->session_id);
+    char *probe = mcp_server_call_tool(st->srv, "start_session", start_args);
+    if (probe) free(probe);
+    /* retry the original call once */
+    return mcp_server_call_tool(st->srv, tool, args_json ? args_json : "{}");
 }
 
 /* ── Window list helpers ──────────────────────────────────────────── */
