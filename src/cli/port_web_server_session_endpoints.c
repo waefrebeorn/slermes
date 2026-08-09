@@ -31,6 +31,7 @@ static json_t *err_obj(int status, const char *detail) {
 }
 
 /* PoP: ws_sess_detail_endpoint @ hermes_cli/web_server.py:get_session_detail */
+/* PoP: ws_sess_detail_endpoint @ hermes_cli/web_routers/sessions.py:get_session_detail */
 json_t *ws_sess_detail_endpoint(const char *db_path, const char *session_id) {
     json_t *sess = ws_sess_get_session(db_path, session_id);
     if (!sess) return err_obj(404, "Session not found");
@@ -38,6 +39,7 @@ json_t *ws_sess_detail_endpoint(const char *db_path, const char *session_id) {
 }
 
 /* PoP: ws_sess_messages_endpoint @ hermes_cli/web_server.py:get_session_messages */
+/* PoP: ws_sess_messages_endpoint @ hermes_cli/web_routers/sessions.py:get_session_messages */
 json_t *ws_sess_messages_endpoint(const char *db_path, const char *session_id,
                                   bool has_limit, int limit, int offset) {
     char *sid = strdup(session_id ? session_id : "");
@@ -60,6 +62,7 @@ json_t *ws_sess_messages_endpoint(const char *db_path, const char *session_id,
 }
 
 /* PoP: ws_sess_delete_endpoint @ hermes_cli/web_server.py:delete_session_endpoint */
+/* PoP: ws_sess_delete_endpoint @ hermes_cli/web_routers/sessions.py:delete_session_endpoint */
 json_t *ws_sess_delete_endpoint(const char *db_path, const char *session_id) {
     /* Exact-id (prefix resolution handled by routing layer). Ghost ids are
      * idempotent success. */
@@ -71,6 +74,7 @@ json_t *ws_sess_delete_endpoint(const char *db_path, const char *session_id) {
 }
 
 /* PoP: ws_sess_rename_endpoint @ hermes_cli/web_server.py:rename_session_endpoint */
+/* PoP: ws_sess_rename_endpoint @ hermes_cli/web_routers/sessions.py:rename_session_endpoint */
 json_t *ws_sess_rename_endpoint(const char *db_path, const char *session_id,
                                 const json_t *body) {
     json_t *sess = ws_sess_get_session(db_path, session_id);
@@ -116,6 +120,7 @@ json_t *ws_sess_rename_endpoint(const char *db_path, const char *session_id,
 }
 
 /* PoP: ws_sess_export_endpoint @ hermes_cli/web_server.py:export_session_endpoint */
+/* PoP: ws_sess_export_endpoint @ hermes_cli/web_routers/sessions.py:export_session_endpoint */
 json_t *ws_sess_export_endpoint(const char *db_path, const char *session_id) {
     json_t *data = ws_sess_export_session(db_path, session_id);
     if (!data) return err_obj(404, "Session not found");

@@ -359,12 +359,18 @@ json_t *ws_get_action_status(json_t *req) { (void)req; return json_object(); }
 json_t *ws_u_strip_session_list_rows(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: get_profiles_sessions @ hermes_cli/web_server.py:get_profiles_sessions */
+/* PoP: get_profiles_sessions @ hermes_cli/web_routers/profiles.py:get_profiles_sessions */
+/* PoP: get_profiles_sessions @ hermes_cli/web_routers/profiles.py:get_profiles_sessions */
 json_t *ws_get_profiles_sessions(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: get_profiles_sessions_sidebar @ hermes_cli/web_server.py:get_profiles_sessions_sidebar */
+/* PoP: get_profiles_sessions_sidebar @ hermes_cli/web_routers/profiles.py:get_profiles_sessions_sidebar */
+/* PoP: get_profiles_sessions_sidebar @ hermes_cli/web_routers/profiles.py:get_profiles_sessions_sidebar */
 json_t *ws_get_profiles_sessions_sidebar(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: search_sessions @ hermes_cli/web_server.py:search_sessions */
+/* PoP: search_sessions @ hermes_cli/web_routers/sessions.py:search_sessions */
+/* PoP: search_sessions @ hermes_cli/web_routers/sessions.py:search_sessions */
 json_t *ws_search_sessions(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: _provider_field_entry @ hermes_cli/web_server.py:_provider_field_entry */
@@ -806,15 +812,23 @@ json_t *ws_u_read_session_import_body(json_t *req) { (void)req; return json_obje
 json_t *ws_u_import_sessions_for_profile(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: bulk_delete_sessions_endpoint @ hermes_cli/web_server.py:bulk_delete_sessions_endpoint */
+/* PoP: bulk_delete_sessions_endpoint @ hermes_cli/web_routers/sessions.py:bulk_delete_sessions_endpoint */
+/* PoP: bulk_delete_sessions_endpoint @ hermes_cli/web_routers/sessions.py:bulk_delete_sessions_endpoint */
 json_t *ws_bulk_delete_sessions_endpoint(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: import_sessions_endpoint @ hermes_cli/web_server.py:import_sessions_endpoint */
+/* PoP: import_sessions_endpoint @ hermes_cli/web_routers/sessions.py:import_sessions_endpoint */
+/* PoP: import_sessions_endpoint @ hermes_cli/web_routers/sessions.py:import_sessions_endpoint */
 json_t *ws_import_sessions_endpoint(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: count_empty_sessions_endpoint @ hermes_cli/web_server.py:count_empty_sessions_endpoint */
+/* PoP: count_empty_sessions_endpoint @ hermes_cli/web_routers/sessions.py:count_empty_sessions_endpoint */
+/* PoP: count_empty_sessions_endpoint @ hermes_cli/web_routers/sessions.py:count_empty_sessions_endpoint */
 json_t *ws_count_empty_sessions_endpoint(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: delete_empty_sessions_endpoint @ hermes_cli/web_server.py:delete_empty_sessions_endpoint */
+/* PoP: delete_empty_sessions_endpoint @ hermes_cli/web_routers/sessions.py:delete_empty_sessions_endpoint */
+/* PoP: delete_empty_sessions_endpoint @ hermes_cli/web_routers/sessions.py:delete_empty_sessions_endpoint */
 json_t *ws_delete_empty_sessions_endpoint(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: _open_session_db_for_profile @ hermes_cli/web_server.py:_open_session_db_for_profile */
@@ -827,9 +841,13 @@ json_t *ws_u_maybe_auto_archive_for_profile(json_t *req) { (void)req; return jso
 json_t *ws_u_auto_archive_ticker_loop(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: get_session_latest_descendant @ hermes_cli/web_server.py:get_session_latest_descendant */
+/* PoP: get_session_latest_descendant @ hermes_cli/web_routers/sessions.py:get_session_latest_descendant */
+/* PoP: get_session_latest_descendant @ hermes_cli/web_routers/sessions.py:get_session_latest_descendant */
 json_t *ws_get_session_latest_descendant(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: prune_sessions_endpoint @ hermes_cli/web_server.py:prune_sessions_endpoint */
+/* PoP: prune_sessions_endpoint @ hermes_cli/web_routers/sessions.py:prune_sessions_endpoint */
+/* PoP: prune_sessions_endpoint @ hermes_cli/web_routers/sessions.py:prune_sessions_endpoint */
 json_t *ws_prune_sessions_endpoint(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: get_logs @ hermes_cli/web_server.py:get_logs */
@@ -1532,18 +1550,28 @@ json_t *ws_instantiate_blueprint(const char *blueprint_key, const char *values_j
 json_t *ws_u_normalize_mcp_server_create(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: list_mcp_servers @ hermes_cli/web_server.py:list_mcp_servers */
+/* PoP: list_mcp_servers @ hermes_cli/web_routers/mcp.py:list_mcp_servers */
+/* PoP: list_mcp_servers @ hermes_cli/web_routers/mcp.py:list_mcp_servers */
 json_t *ws_list_mcp_servers(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: add_mcp_server @ hermes_cli/web_server.py:add_mcp_server */
+/* PoP: add_mcp_server @ hermes_cli/web_routers/mcp.py:add_mcp_server */
+/* PoP: add_mcp_server @ hermes_cli/web_routers/mcp.py:add_mcp_server */
 json_t *ws_add_mcp_server(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: replace_mcp_servers @ hermes_cli/web_server.py:replace_mcp_servers */
+/* PoP: replace_mcp_servers @ hermes_cli/web_routers/mcp.py:replace_mcp_servers */
+/* PoP: replace_mcp_servers @ hermes_cli/web_routers/mcp.py:replace_mcp_servers */
 json_t *ws_replace_mcp_servers(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: remove_mcp_server @ hermes_cli/web_server.py:remove_mcp_server */
+/* PoP: remove_mcp_server @ hermes_cli/web_routers/mcp.py:remove_mcp_server */
+/* PoP: remove_mcp_server @ hermes_cli/web_routers/mcp.py:remove_mcp_server */
 json_t *ws_remove_mcp_server(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: test_mcp_server @ hermes_cli/web_server.py:test_mcp_server */
+/* PoP: test_mcp_server @ hermes_cli/web_routers/mcp.py:test_mcp_server */
+/* PoP: test_mcp_server @ hermes_cli/web_routers/mcp.py:test_mcp_server */
 json_t *ws_test_mcp_server(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: _gc_mcp_oauth_flows @ hermes_cli/web_server.py:_gc_mcp_oauth_flows */
@@ -1562,21 +1590,33 @@ json_t *ws_u_mcp_oauth_transaction(json_t *req) { (void)req; return json_object(
 json_t *ws_u_run_dashboard_mcp_oauth(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: auth_mcp_server @ hermes_cli/web_server.py:auth_mcp_server */
+/* PoP: auth_mcp_server @ hermes_cli/web_routers/mcp.py:auth_mcp_server */
+/* PoP: auth_mcp_server @ hermes_cli/web_routers/mcp.py:auth_mcp_server */
 json_t *ws_auth_mcp_server(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: mcp_oauth_flow_status @ hermes_cli/web_server.py:mcp_oauth_flow_status */
+/* PoP: mcp_oauth_flow_status @ hermes_cli/web_routers/mcp.py:mcp_oauth_flow_status */
+/* PoP: mcp_oauth_flow_status @ hermes_cli/web_routers/mcp.py:mcp_oauth_flow_status */
 json_t *ws_mcp_oauth_flow_status(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: mcp_oauth_callback @ hermes_cli/web_server.py:mcp_oauth_callback */
+/* PoP: mcp_oauth_callback @ hermes_cli/web_routers/mcp.py:mcp_oauth_callback */
+/* PoP: mcp_oauth_callback @ hermes_cli/web_routers/mcp.py:mcp_oauth_callback */
 json_t *ws_mcp_oauth_callback(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: set_mcp_server_enabled @ hermes_cli/web_server.py:set_mcp_server_enabled */
+/* PoP: set_mcp_server_enabled @ hermes_cli/web_routers/mcp.py:set_mcp_server_enabled */
+/* PoP: set_mcp_server_enabled @ hermes_cli/web_routers/mcp.py:set_mcp_server_enabled */
 json_t *ws_set_mcp_server_enabled(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: list_mcp_catalog @ hermes_cli/web_server.py:list_mcp_catalog */
+/* PoP: list_mcp_catalog @ hermes_cli/web_routers/mcp.py:list_mcp_catalog */
+/* PoP: list_mcp_catalog @ hermes_cli/web_routers/mcp.py:list_mcp_catalog */
 json_t *ws_list_mcp_catalog(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: install_mcp_catalog_entry @ hermes_cli/web_server.py:install_mcp_catalog_entry */
+/* PoP: install_mcp_catalog_entry @ hermes_cli/web_routers/mcp.py:install_mcp_catalog_entry */
+/* PoP: install_mcp_catalog_entry @ hermes_cli/web_routers/mcp.py:install_mcp_catalog_entry */
 json_t *ws_install_mcp_catalog_entry(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: _mcp_install_action_name @ hermes_cli/web_server.py:_mcp_install_action_name */
@@ -1679,12 +1719,18 @@ json_t *ws_u_profile_cli_args(json_t *req) { (void)req; return json_object(); }
 json_t *ws_u_hub_action_name(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: install_skill_hub @ hermes_cli/web_server.py:install_skill_hub */
+/* PoP: install_skill_hub @ hermes_cli/web_routers/skills.py:install_skill_hub */
+/* PoP: install_skill_hub @ hermes_cli/web_routers/skills.py:install_skill_hub */
 json_t *ws_install_skill_hub(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: uninstall_skill_hub @ hermes_cli/web_server.py:uninstall_skill_hub */
+/* PoP: uninstall_skill_hub @ hermes_cli/web_routers/skills.py:uninstall_skill_hub */
+/* PoP: uninstall_skill_hub @ hermes_cli/web_routers/skills.py:uninstall_skill_hub */
 json_t *ws_uninstall_skill_hub(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: update_skills_hub @ hermes_cli/web_server.py:update_skills_hub */
+/* PoP: update_skills_hub @ hermes_cli/web_routers/skills.py:update_skills_hub */
+/* PoP: update_skills_hub @ hermes_cli/web_routers/skills.py:update_skills_hub */
 json_t *ws_update_skills_hub(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: _skill_meta_to_payload @ hermes_cli/web_server.py:_skill_meta_to_payload */
@@ -1694,15 +1740,23 @@ json_t *ws_u_skill_meta_to_payload(json_t *req) { (void)req; return json_object(
 json_t *ws_u_installed_hub_identifiers(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: list_skills_hub_sources @ hermes_cli/web_server.py:list_skills_hub_sources */
+/* PoP: list_skills_hub_sources @ hermes_cli/web_routers/skills.py:list_skills_hub_sources */
+/* PoP: list_skills_hub_sources @ hermes_cli/web_routers/skills.py:list_skills_hub_sources */
 json_t *ws_list_skills_hub_sources(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: search_skills_hub @ hermes_cli/web_server.py:search_skills_hub */
+/* PoP: search_skills_hub @ hermes_cli/web_routers/skills.py:search_skills_hub */
+/* PoP: search_skills_hub @ hermes_cli/web_routers/skills.py:search_skills_hub */
 json_t *ws_search_skills_hub(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: preview_skill_hub @ hermes_cli/web_server.py:preview_skill_hub */
+/* PoP: preview_skill_hub @ hermes_cli/web_routers/skills.py:preview_skill_hub */
+/* PoP: preview_skill_hub @ hermes_cli/web_routers/skills.py:preview_skill_hub */
 json_t *ws_preview_skill_hub(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: scan_skill_hub @ hermes_cli/web_server.py:scan_skill_hub */
+/* PoP: scan_skill_hub @ hermes_cli/web_routers/skills.py:scan_skill_hub */
+/* PoP: scan_skill_hub @ hermes_cli/web_routers/skills.py:scan_skill_hub */
 json_t *ws_scan_skill_hub(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: _profile_attr @ hermes_cli/web_server.py:_profile_attr */
@@ -1727,69 +1781,111 @@ json_t *ws_u_write_profile_mcp_servers(json_t *req) { (void)req; return json_obj
 json_t *ws_u_disable_unselected_skills(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: list_profiles_endpoint @ hermes_cli/web_server.py:list_profiles_endpoint */
+/* PoP: list_profiles_endpoint @ hermes_cli/web_routers/profiles.py:list_profiles_endpoint */
+/* PoP: list_profiles_endpoint @ hermes_cli/web_routers/profiles.py:list_profiles_endpoint */
 json_t *ws_list_profiles_endpoint(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: create_profile_endpoint @ hermes_cli/web_server.py:create_profile_endpoint */
+/* PoP: create_profile_endpoint @ hermes_cli/web_routers/profiles.py:create_profile_endpoint */
+/* PoP: create_profile_endpoint @ hermes_cli/web_routers/profiles.py:create_profile_endpoint */
 json_t *ws_create_profile_endpoint(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: get_active_profile_endpoint @ hermes_cli/web_server.py:get_active_profile_endpoint */
+/* PoP: get_active_profile_endpoint @ hermes_cli/web_routers/profiles.py:get_active_profile_endpoint */
+/* PoP: get_active_profile_endpoint @ hermes_cli/web_routers/profiles.py:get_active_profile_endpoint */
 json_t *ws_get_active_profile_endpoint(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: set_active_profile_endpoint @ hermes_cli/web_server.py:set_active_profile_endpoint */
+/* PoP: set_active_profile_endpoint @ hermes_cli/web_routers/profiles.py:set_active_profile_endpoint */
+/* PoP: set_active_profile_endpoint @ hermes_cli/web_routers/profiles.py:set_active_profile_endpoint */
 json_t *ws_set_active_profile_endpoint(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: get_profile_setup_command @ hermes_cli/web_server.py:get_profile_setup_command */
+/* PoP: get_profile_setup_command @ hermes_cli/web_routers/profiles.py:get_profile_setup_command */
+/* PoP: get_profile_setup_command @ hermes_cli/web_routers/profiles.py:get_profile_setup_command */
 json_t *ws_get_profile_setup_command(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: open_profile_terminal_endpoint @ hermes_cli/web_server.py:open_profile_terminal_endpoint */
+/* PoP: open_profile_terminal_endpoint @ hermes_cli/web_routers/profiles.py:open_profile_terminal_endpoint */
+/* PoP: open_profile_terminal_endpoint @ hermes_cli/web_routers/profiles.py:open_profile_terminal_endpoint */
 json_t *ws_open_profile_terminal_endpoint(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: rename_profile_endpoint @ hermes_cli/web_server.py:rename_profile_endpoint */
+/* PoP: rename_profile_endpoint @ hermes_cli/web_routers/profiles.py:rename_profile_endpoint */
+/* PoP: rename_profile_endpoint @ hermes_cli/web_routers/profiles.py:rename_profile_endpoint */
 json_t *ws_rename_profile_endpoint(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: delete_profile_endpoint @ hermes_cli/web_server.py:delete_profile_endpoint */
+/* PoP: delete_profile_endpoint @ hermes_cli/web_routers/profiles.py:delete_profile_endpoint */
+/* PoP: delete_profile_endpoint @ hermes_cli/web_routers/profiles.py:delete_profile_endpoint */
 json_t *ws_delete_profile_endpoint(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: get_profile_soul @ hermes_cli/web_server.py:get_profile_soul */
+/* PoP: get_profile_soul @ hermes_cli/web_routers/profiles.py:get_profile_soul */
+/* PoP: get_profile_soul @ hermes_cli/web_routers/profiles.py:get_profile_soul */
 json_t *ws_get_profile_soul(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: update_profile_soul @ hermes_cli/web_server.py:update_profile_soul */
+/* PoP: update_profile_soul @ hermes_cli/web_routers/profiles.py:update_profile_soul */
+/* PoP: update_profile_soul @ hermes_cli/web_routers/profiles.py:update_profile_soul */
 json_t *ws_update_profile_soul(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: update_profile_description_endpoint @ hermes_cli/web_server.py:update_profile_description_endpoint */
+/* PoP: update_profile_description_endpoint @ hermes_cli/web_routers/profiles.py:update_profile_description_endpoint */
+/* PoP: update_profile_description_endpoint @ hermes_cli/web_routers/profiles.py:update_profile_description_endpoint */
 json_t *ws_update_profile_description_endpoint(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: update_profile_model_endpoint @ hermes_cli/web_server.py:update_profile_model_endpoint */
+/* PoP: update_profile_model_endpoint @ hermes_cli/web_routers/profiles.py:update_profile_model_endpoint */
+/* PoP: update_profile_model_endpoint @ hermes_cli/web_routers/profiles.py:update_profile_model_endpoint */
 json_t *ws_update_profile_model_endpoint(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: describe_profile_auto_endpoint @ hermes_cli/web_server.py:describe_profile_auto_endpoint */
+/* PoP: describe_profile_auto_endpoint @ hermes_cli/web_routers/profiles.py:describe_profile_auto_endpoint */
+/* PoP: describe_profile_auto_endpoint @ hermes_cli/web_routers/profiles.py:describe_profile_auto_endpoint */
 json_t *ws_describe_profile_auto_endpoint(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: get_skills @ hermes_cli/web_server.py:get_skills */
+/* PoP: get_skills @ hermes_cli/web_routers/skills.py:get_skills */
+/* PoP: get_skills @ hermes_cli/web_routers/skills.py:get_skills */
 json_t *ws_get_skills(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: toggle_skill @ hermes_cli/web_server.py:toggle_skill */
+/* PoP: toggle_skill @ hermes_cli/web_routers/skills.py:toggle_skill */
+/* PoP: toggle_skill @ hermes_cli/web_routers/skills.py:toggle_skill */
 json_t *ws_toggle_skill(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: _clear_skills_prompt_cache @ hermes_cli/web_server.py:_clear_skills_prompt_cache */
 json_t *ws_u_clear_skills_prompt_cache(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: get_skill_content @ hermes_cli/web_server.py:get_skill_content */
+/* PoP: get_skill_content @ hermes_cli/web_routers/skills.py:get_skill_content */
+/* PoP: get_skill_content @ hermes_cli/web_routers/skills.py:get_skill_content */
 json_t *ws_get_skill_content(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: create_skill @ hermes_cli/web_server.py:create_skill */
+/* PoP: create_skill @ hermes_cli/web_routers/skills.py:create_skill */
+/* PoP: create_skill @ hermes_cli/web_routers/skills.py:create_skill */
 json_t *ws_create_skill(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: update_skill_content @ hermes_cli/web_server.py:update_skill_content */
+/* PoP: update_skill_content @ hermes_cli/web_routers/skills.py:update_skill_content */
+/* PoP: update_skill_content @ hermes_cli/web_routers/skills.py:update_skill_content */
 json_t *ws_update_skill_content(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: get_toolsets @ hermes_cli/web_server.py:get_toolsets */
+/* PoP: get_toolsets @ hermes_cli/web_routers/tools.py:get_toolsets */
+/* PoP: get_toolsets @ hermes_cli/web_routers/tools.py:get_toolsets */
 json_t *ws_get_toolsets(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: toggle_toolset @ hermes_cli/web_server.py:toggle_toolset */
+/* PoP: toggle_toolset @ hermes_cli/web_routers/tools.py:toggle_toolset */
+/* PoP: toggle_toolset @ hermes_cli/web_routers/tools.py:toggle_toolset */
 json_t *ws_toggle_toolset(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: get_toolset_config @ hermes_cli/web_server.py:get_toolset_config */
+/* PoP: get_toolset_config @ hermes_cli/web_routers/tools.py:get_toolset_config */
+/* PoP: get_toolset_config @ hermes_cli/web_routers/tools.py:get_toolset_config */
 json_t *ws_get_toolset_config(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: _resolve_toolset_model_plugin @ hermes_cli/web_server.py:_resolve_toolset_model_plugin */
@@ -1802,18 +1898,28 @@ json_t *ws_u_toolset_model_catalog(json_t *req) { (void)req; return json_object(
 json_t *ws_u_find_toolset_provider_row(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: get_toolset_models @ hermes_cli/web_server.py:get_toolset_models */
+/* PoP: get_toolset_models @ hermes_cli/web_routers/tools.py:get_toolset_models */
+/* PoP: get_toolset_models @ hermes_cli/web_routers/tools.py:get_toolset_models */
 json_t *ws_get_toolset_models(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: select_toolset_model @ hermes_cli/web_server.py:select_toolset_model */
+/* PoP: select_toolset_model @ hermes_cli/web_routers/tools.py:select_toolset_model */
+/* PoP: select_toolset_model @ hermes_cli/web_routers/tools.py:select_toolset_model */
 json_t *ws_select_toolset_model(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: select_toolset_provider @ hermes_cli/web_server.py:select_toolset_provider */
+/* PoP: select_toolset_provider @ hermes_cli/web_routers/tools.py:select_toolset_provider */
+/* PoP: select_toolset_provider @ hermes_cli/web_routers/tools.py:select_toolset_provider */
 json_t *ws_select_toolset_provider(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: save_toolset_env @ hermes_cli/web_server.py:save_toolset_env */
+/* PoP: save_toolset_env @ hermes_cli/web_routers/tools.py:save_toolset_env */
+/* PoP: save_toolset_env @ hermes_cli/web_routers/tools.py:save_toolset_env */
 json_t *ws_save_toolset_env(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: run_toolset_post_setup @ hermes_cli/web_server.py:run_toolset_post_setup */
+/* PoP: run_toolset_post_setup @ hermes_cli/web_routers/tools.py:run_toolset_post_setup */
+/* PoP: run_toolset_post_setup @ hermes_cli/web_routers/tools.py:run_toolset_post_setup */
 json_t *ws_run_toolset_post_setup(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: _terminal_cfg_value @ hermes_cli/web_server.py:_terminal_cfg_value */
@@ -1838,12 +1944,18 @@ json_t *ws_u_probe_daytona_backend(json_t *req) { (void)req; return json_object(
 json_t *ws_u_probe_terminal_backend(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: get_terminal_backends @ hermes_cli/web_server.py:get_terminal_backends */
+/* PoP: get_terminal_backends @ hermes_cli/web_routers/tools.py:get_terminal_backends */
+/* PoP: get_terminal_backends @ hermes_cli/web_routers/tools.py:get_terminal_backends */
 json_t *ws_get_terminal_backends(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: get_computer_use_status @ hermes_cli/web_server.py:get_computer_use_status */
+/* PoP: get_computer_use_status @ hermes_cli/web_routers/tools.py:get_computer_use_status */
+/* PoP: get_computer_use_status @ hermes_cli/web_routers/tools.py:get_computer_use_status */
 json_t *ws_get_computer_use_status(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: grant_computer_use_permissions @ hermes_cli/web_server.py:grant_computer_use_permissions */
+/* PoP: grant_computer_use_permissions @ hermes_cli/web_routers/tools.py:grant_computer_use_permissions */
+/* PoP: grant_computer_use_permissions @ hermes_cli/web_routers/tools.py:grant_computer_use_permissions */
 json_t *ws_grant_computer_use_permissions(json_t *req) { (void)req; return json_object(); }
 
 /* PoP: get_config_raw @ hermes_cli/web_server.py:get_config_raw */

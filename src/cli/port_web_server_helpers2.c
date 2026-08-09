@@ -41,6 +41,7 @@ char *wbs_get_status(void) {
 }
 
 /* PoP: get_sessions @ hermes_cli/web_server.py:get_sessions */
+/* PoP: get_sessions @ hermes_cli/web_routers/sessions.py:get_sessions */
 char *wbs_get_sessions(bool archived, const char *index_json) {
     /* Python: list sessions; archived controls soft-archive handling. */
     if (!index_json) return strdup("[]");
@@ -92,6 +93,7 @@ char *wbs_catalog_lookup(const char *platform_id, const char *catalog_json) {
 }
 
 /* PoP: cron_fire_webhook @ hermes_cli/web_server.py:cron_fire_webhook */
+/* PoP: cron_fire_webhook @ hermes_cli/web_routers/cron.py:cron_fire_webhook */
 char *wbs_cron_fire_webhook(const char *job_id) {
     /* Python: fire cron webhook. */
     if (!job_id) return strdup("{\"success\": false}");

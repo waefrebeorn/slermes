@@ -210,6 +210,7 @@ int ws_sessions_session_count(const char *db_path,
 
 /* ── get_session_stats ──────────────────────────────────────────────────── */
 /* PoP: ws_sessions_stats @ hermes_cli/web_server.py:get_session_stats */
+/* PoP: ws_sessions_stats @ hermes_cli/web_routers/sessions.py:get_session_stats */
 json_t *ws_sessions_stats(const char *db_path) {
     ws_session_count_opts_t all = {.include_archived = true};
     ws_session_count_opts_t store = {.include_archived = false};
