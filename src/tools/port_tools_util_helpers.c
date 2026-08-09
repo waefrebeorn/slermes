@@ -488,19 +488,6 @@ int tools_neutts_main(const char *text, const char *out_path,
     return 0;
 }
 
-/* PoP: __init__ @ tools/process_registry.py:__init__ */
-int tools_process_registry_init(void)
-{
-    return 0;
-}
-
-/* PoP: get @ tools/process_registry.py:get */
-int tools_process_registry_get(const char *session_id)
-{
-    if (!session_id) return -1;
-    return 0;
-}
-
 /* PoP: __init__ @ tools/registry.py:__init__ */
 int tools_registry_entry_init(const char *name, const char *toolset,
                               const char *schema_json)

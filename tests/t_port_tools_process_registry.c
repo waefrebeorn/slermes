@@ -2,7 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "port_process_registry.c"
+#include "hermes_core_types.h"
+#include "hermes_json.h"
+#include "process_registry.h"
 
 static const char *js(const char *s){
   static char b[4][4096]; static int t=0; t=(t+1)&3; char *q=b[t]; *q++='"';
