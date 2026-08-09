@@ -40,6 +40,8 @@ typedef struct async_delegation_rec {
     async_delegation_runner_t runner;
     async_delegation_interrupt_t interrupt_fn;
     async_delegation_sink_t sink;
+    async_delegation_progress_t progress_fn;
+    void *progress_ctx;
     int done;                 /* worker finished (for tests/await) */
     pthread_t thread;
     struct async_delegation_rec *next;  /* intrusive list */
@@ -58,6 +60,17 @@ static pthread_mutex_t g_lock = PTHREAD_MUTEX_INITIALIZER;
 static async_delegation_rec_t *g_head = NULL;   /* running + retained completed */
 static int g_max_retained = ASYNC_DELEGATION_MAX_RETAINED_COMPLETED;
 static pthread_cond_t g_done_cond = PTHREAD_COND_INITIALIZER;
+
+/* Stale-delegation monitor (Python: _ensure_stale_monitor / _stale_monitor_loop). */
+static pthread_t g_monitor_thread;
+static pthread_mutex_t g_monitor_lock = PTHREAD_MUTEX_INITIALIZER;
+static pthread_cond_t g_monitor_stop = PTHREAD_COND_INITIALIZER;
+static int g_monitor_running = 0;
+static int g_monitor_stop_flag = 0;
+static const double STALE_CHECK_INTERVAL = 30.0;
+static const double STALE_IDLE_SECONDS = 450.0;
+static const double STALE_IN_TOOL_SECONDS = 1200.0;
+static const double STALL_GRACE_SECONDS = 120.0;
 
 static double now_sec(void) {
     struct timespec ts;
@@ -280,6 +293,7 @@ static void finish_finalization(const char *delegation_id, const char *status) {
 }
 
 /* Match a record against optional session selectors (OR semantics, like Python). */
+/* PoP: _matches_session_selectors @ tools/async_delegation.py:_matches_session_selectors */
 static int matches_session_selectors(const async_delegation_rec_t *r,
                                       const char *session_key,
                                       const char *origin_ui_session_id,
@@ -337,6 +351,20 @@ void async_delegation_init(void) { /* mutex/cond statically initialized */ }
 
 void async_delegation_shutdown(void) {
     async_delegation_interrupt_all("shutdown");
+    /* Stop the stale-delegation monitor thread. */
+    pthread_mutex_lock(&g_monitor_lock);
+    if (g_monitor_running) {
+        g_monitor_stop_flag = 1;
+        pthread_cond_signal(&g_monitor_stop);
+        pthread_mutex_unlock(&g_monitor_lock);
+        pthread_join(g_monitor_thread, NULL);
+        pthread_mutex_lock(&g_monitor_lock);
+        g_monitor_running = 0;
+        g_monitor_stop_flag = 0;
+        pthread_mutex_unlock(&g_monitor_lock);
+    } else {
+        pthread_mutex_unlock(&g_monitor_lock);
+    }
     pthread_t threads[64];
     int n = 0;
     pthread_mutex_lock(&g_lock);
@@ -380,6 +408,7 @@ json_node_t *async_delegation_dispatch(
     const char *origin_ui_session_id, const char *origin_session_id,
     const char *parent_session_id,
     async_delegation_runner_t runner, async_delegation_interrupt_t interrupt_fn,
+    async_delegation_progress_t progress_fn, void *progress_ctx,
     async_delegation_sink_t sink, int max_async_children)
 {
     if (max_async_children <= 0) max_async_children = ASYNC_DELEGATION_DEFAULT_MAX_CHILDREN;
@@ -401,6 +430,8 @@ json_node_t *async_delegation_dispatch(
     rec->dispatched_at = now_sec();
     rec->runner = runner;
     rec->interrupt_fn = interrupt_fn;
+    rec->progress_fn = progress_fn;
+    rec->progress_ctx = progress_ctx;
     rec->sink = sink;
     rec->done = 0;
 
@@ -451,6 +482,7 @@ json_node_t *async_delegation_dispatch_batch(
     const char *session_key, const char *origin_ui_session_id,
     const char *origin_session_id, const char *parent_session_id,
     async_delegation_runner_t runner, async_delegation_interrupt_t interrupt_fn,
+    async_delegation_progress_t progress_fn, void *progress_ctx,
     async_delegation_sink_t sink, int max_async_children)
 {
     if (max_async_children <= 0) max_async_children = ASYNC_DELEGATION_DEFAULT_MAX_CHILDREN;
@@ -491,6 +523,8 @@ json_node_t *async_delegation_dispatch_batch(
     rec->dispatched_at = now_sec();
     rec->runner = runner;
     rec->interrupt_fn = interrupt_fn;
+    rec->progress_fn = progress_fn;
+    rec->progress_ctx = progress_ctx;
     rec->sink = sink;
     rec->done = 0;
 
@@ -592,6 +626,20 @@ int async_delegation_interrupt_all(const char *reason) {
 }
 
 void async_delegation_reset_for_tests(void) {
+    /* Stop the stale-delegation monitor thread first. */
+    pthread_mutex_lock(&g_monitor_lock);
+    if (g_monitor_running) {
+        g_monitor_stop_flag = 1;
+        pthread_cond_signal(&g_monitor_stop);
+        pthread_mutex_unlock(&g_monitor_lock);
+        pthread_join(g_monitor_thread, NULL);
+        pthread_mutex_lock(&g_monitor_lock);
+        g_monitor_running = 0;
+        g_monitor_stop_flag = 0;
+        pthread_mutex_unlock(&g_monitor_lock);
+    } else {
+        pthread_mutex_unlock(&g_monitor_lock);
+    }
     /* Snapshot live worker threads, release the lock, THEN join (a worker's
      * finalize needs g_lock, so we must not hold it while joining). */
     pthread_t threads[64];
@@ -690,4 +738,231 @@ int async_delegation_interrupt_for_session(const char *session_key,
     pthread_cond_broadcast(&g_done_cond);
     pthread_mutex_unlock(&g_lock);
     return n;
+}
+
+/* ── Stale-delegation monitor (tools/async_delegation.py: _ensure_stale_monitor et al.) ── */
+
+/* Forward declarations: stale monitor uses finalize_stalled; finalize_stalled
+ * uses begin/finish_finalization + build_and_emit_event (all above). */
+static void finalize_stalled(const char *delegation_id);
+
+/* PoP: _push_batch_completion_event @ tools/async_delegation.py:_push_batch_completion_event */
+/* Build the combined async-delegation batch completion event and deliver to sink. */
+static void push_batch_completion_event(async_delegation_rec_t *rec,
+                                        json_node_t *combined, const char *status) {
+    json_node_t *evt = json_new_object();
+    json_object_set(evt, "type", json_string("async_delegation"));
+    json_object_set(evt, "delegation_id", json_string(rec->delegation_id));
+    json_object_set(evt, "session_key", json_string(rec->session_key ? rec->session_key : ""));
+    json_object_set(evt, "origin_ui_session_id", json_string(rec->origin_ui_session_id ? rec->origin_ui_session_id : ""));
+    json_object_set(evt, "origin_session_id", json_string(rec->origin_session_id ? rec->origin_session_id : ""));
+    if (rec->parent_session_id)
+        json_object_set(evt, "parent_session_id", json_string(rec->parent_session_id));
+    json_object_set(evt, "goal", json_string(rec->goal ? rec->goal : ""));
+    json_object_set(evt, "goals", rec->goals ? dup_string_array(rec->goals, rec->n_goals) : json_new_array());
+    json_object_set(evt, "context", rec->context ? json_string(rec->context) : json_null());
+    json_object_set(evt, "role", json_string(rec->role ? rec->role : ""));
+    json_object_set(evt, "model", json_string(rec->model ? rec->model : ""));
+    json_object_set(evt, "status", json_string(status));
+    json_object_set(evt, "is_batch", json_bool(1));
+    json_node_t *results = combined ? json_object_get(combined, "results") : NULL;
+    json_object_set(evt, "results", results ? json_copy(results) : json_new_array());
+    json_object_set(evt, "error", combined ? (json_get_str(combined, "error", NULL)
+        ? json_string(json_get_str(combined, "error", NULL)) : json_null()) : json_null());
+    double td = combined ? json_get_num(combined, "total_duration_seconds", -1) : -1;
+    if (td < 0) td = rec->completed_at - rec->dispatched_at;
+    json_object_set(evt, "total_duration_seconds", json_number(td));
+    json_object_set(evt, "dispatched_at", json_number(rec->dispatched_at));
+    json_object_set(evt, "completed_at", json_number(rec->completed_at));
+    /* Structured stall metadata (#51690) — additive. */
+    static const char *const stall_keys[] = {
+        "stalled_after_quiet_seconds", "stall_threshold_seconds",
+        "stall_grace_seconds", NULL };
+    for (int ki = 0; stall_keys[ki]; ki++) {
+        double v = combined ? json_get_num(combined, stall_keys[ki], -1) : -1;
+        if (v >= 0) json_object_set(evt, stall_keys[ki], json_number(v));
+    }
+
+    if (rec->sink) rec->sink(evt);
+    json_free(evt);
+}
+
+/* PoP: _stale_monitor_loop @ tools/async_delegation.py:_stale_monitor_loop */
+static void *stale_monitor_loop(void *arg) {
+    (void)arg;
+    while (1) {
+        /* Sleep STALE_CHECK_INTERVAL, but wake instantly on shutdown signal. */
+        pthread_mutex_lock(&g_monitor_lock);
+        if (g_monitor_stop_flag) { pthread_mutex_unlock(&g_monitor_lock); return NULL; }
+        struct timespec ts;
+        clock_gettime(CLOCK_REALTIME, &ts);
+        ts.tv_sec += (time_t)STALE_CHECK_INTERVAL;
+        int rc = pthread_cond_timedwait(&g_monitor_stop, &g_monitor_lock, &ts);
+        if (g_monitor_stop_flag) { pthread_mutex_unlock(&g_monitor_lock); return NULL; }
+        (void)rc;
+        pthread_mutex_unlock(&g_monitor_lock);
+
+        double now = now_sec();
+        async_delegation_rec_t *stalled[128];
+        async_delegation_rec_t *expired[128];
+        int n_stalled = 0, n_expired = 0;
+        int any_monitorable = 0;
+
+        pthread_mutex_lock(&g_lock);
+        for (async_delegation_rec_t *r = g_head; r; r = r->next) {
+            if (!is_live_status(r->status)) continue;
+            if (strcmp(r->status, "running") != 0) { any_monitorable = 1; continue; }
+            if (!r->progress_fn) continue;
+            any_monitorable = 1;
+
+            int in_tool = 0;
+            int token = r->progress_fn(r->progress_ctx, &in_tool);
+
+            /* A changed token refreshes the record's progress timestamp. */
+            char tok_buf[32];
+            snprintf(tok_buf, sizeof(tok_buf), "%d", token);
+            int refreshed = (r->progress_token == NULL) || (strcmp(r->progress_token, tok_buf) != 0);
+            free(r->progress_token);
+            r->progress_token = strdup(tok_buf);
+
+            if (refreshed) {
+                r->progress_ts = now;
+            } else {
+                /* token unchanged from last sample — check staleness */
+                double quiet_for = now - r->progress_ts;
+                double limit = in_tool ? STALE_IN_TOOL_SECONDS : STALE_IDLE_SECONDS;
+                if (quiet_for >= limit) {
+                    free(r->status);
+                    r->status = xstrdup("stalling");
+                    r->interrupted_at = now;
+                    r->stall_quiet_seconds = quiet_for;
+                    r->stall_threshold_seconds = limit;
+                    r->stall_in_tool = in_tool;
+                    if (n_stalled < 128) stalled[n_stalled++] = r;
+                }
+            }
+            /* stalling records past grace → expired */
+            if (strcmp(r->status, "stalling") == 0) {
+                double interrupted_at = r->interrupted_at ? r->interrupted_at : now;
+                if (now - interrupted_at >= STALL_GRACE_SECONDS) {
+                    if (n_expired < 128) expired[n_expired++] = r;
+                }
+            }
+        }
+        pthread_mutex_unlock(&g_lock);
+
+        /* Interrupt stalled records (outside lock, like Python). */
+        for (int i = 0; i < n_stalled; i++) {
+            pthread_mutex_lock(&g_lock);
+            async_delegation_rec_t *r = NULL;
+            for (async_delegation_rec_t *p = g_head; p; p = p->next)
+                if (p == stalled[i]) { r = p; break; }
+            async_delegation_interrupt_t ifn = r ? r->interrupt_fn : NULL;
+            pthread_mutex_unlock(&g_lock);
+            if (ifn) ifn();
+        }
+        for (int i = 0; i < n_expired; i++)
+            finalize_stalled(expired[i]->delegation_id);
+
+        if (!any_monitorable) {
+            /* No monitorable records remain — exit (Python: return). */
+            pthread_mutex_lock(&g_monitor_lock);
+            int stop = g_monitor_stop_flag;
+            pthread_mutex_unlock(&g_monitor_lock);
+            if (!stop) {
+                /* Loop ends; if still no monitorable records next sweep, exit. */
+                pthread_mutex_lock(&g_lock);
+                int live = 0;
+                for (async_delegation_rec_t *r = g_head; r; r = r->next)
+                    if (r->progress_fn) { live = 1; break; }
+                pthread_mutex_unlock(&g_lock);
+                if (!live) return NULL;
+            }
+        }
+    }
+    return NULL;
+}
+
+/* PoP: _ensure_stale_monitor @ tools/async_delegation.py:_ensure_stale_monitor */
+void async_delegation_ensure_stale_monitor(void) {
+    pthread_mutex_lock(&g_monitor_lock);
+    if (g_monitor_running) { pthread_mutex_unlock(&g_monitor_lock); return; }
+    g_monitor_stop_flag = 0;
+    g_monitor_running = 1;
+    if (pthread_create(&g_monitor_thread, NULL, stale_monitor_loop, NULL) == 0) {
+        pthread_mutex_unlock(&g_monitor_lock);
+        return;
+    }
+    g_monitor_running = 0;
+    pthread_mutex_unlock(&g_monitor_lock);
+}
+
+/* PoP: _finalize_stalled @ tools/async_delegation.py:_finalize_stalled */
+/* Force-finalize a stalling delegation whose runner never returned, with stall
+ * metadata. Reuses finalize() which goes through begin/finish_finalization. */
+static void finalize_stalled(const char *delegation_id) {
+    pthread_mutex_lock(&g_lock);
+    async_delegation_rec_t *rec = NULL;
+    for (async_delegation_rec_t *p = g_head; p; p = p->next)
+        if (p->delegation_id && strcmp(p->delegation_id, delegation_id) == 0) { rec = p; break; }
+    if (!rec || !is_live_status(rec->status)) { pthread_mutex_unlock(&g_lock); return; }
+    async_delegation_rec_t *claim = begin_finalization(rec->delegation_id);
+    pthread_mutex_unlock(&g_lock);
+    if (!claim) return;
+
+    double completed_at = now_sec();
+    double duration = completed_at - (claim->dispatched_at > 0 ? claim->dispatched_at : completed_at);
+    double quiet = claim->stall_quiet_seconds;
+    double threshold = claim->stall_threshold_seconds;
+    int in_tool = claim->stall_in_tool;
+
+    json_node_t *result = json_new_object();
+    json_object_set(result, "status", json_string("stalled"));
+    json_object_set(result, "summary", json_null());
+    json_object_set(result, "error", json_string(
+        "Async delegation stalled: the detached subagent stopped making progress "
+        "(no new API calls, tool activity, or streamed tokens), did not respond "
+        "to interruption, and never produced a completion event. The worker may "
+        "be wedged inside a model API call — re-dispatch if still needed."));
+    json_object_set(result, "api_calls", json_number(0));
+    json_object_set(result, "duration_seconds", json_number(duration));
+    json_object_set(result, "exit_reason", json_string("stalled"));
+    json_object_set(result, "stalled_after_quiet_seconds", json_number(quiet));
+    json_object_set(result, "stall_threshold_seconds", json_number(threshold));
+    json_object_set(result, "stall_phase", json_string(in_tool ? "in_tool" : "idle"));
+    json_object_set(result, "stall_grace_seconds", json_number(STALL_GRACE_SECONDS));
+
+    build_and_emit_event(claim, result, "stalled");
+    free_record_contents(claim);
+    free(claim);
+    finish_finalization(delegation_id, "stalled");
+    if (result) json_free(result);
+}
+
+/* PoP: _children_activity_from_token @ tools/async_delegation.py:_children_activity_from_token */
+/* Python parses a per-child (api_calls, current_tool, last_activity_ts) tuple.
+ * In the in-memory C registry the token is opaque to the registry (mirrors
+ * Python's comment: "the token contract is intentionally opaque"). We expose
+ * the structured fields the monitor needs via the result dict when the runner
+ * embeds them under a known key. Returns the raw token integer for activity. */
+int async_delegation_children_activity_from_token(const char *token_json,
+                                                  int *out_api_calls,
+                                                  char *out_tool_buf,
+                                                  size_t out_tool_cap,
+                                                  double *out_activity_ts) {
+    if (!token_json || !token_json[0]) return 0;
+    json_node_t *t = json_parse(token_json, NULL);
+    if (!t || t->type != JSON_OBJECT) { if (t) json_free(t); return 0; }
+    int api = (int)json_get_num(t, "api_calls", 0);
+    const char *tool = json_get_str(t, "current_tool", NULL);
+    double ts = json_get_num(t, "last_activity_ts", 0.0);
+    if (out_api_calls) *out_api_calls = api;
+    if (out_tool_buf && out_tool_cap && tool) {
+        snprintf(out_tool_buf, out_tool_cap, "%s", tool);
+    } else if (out_tool_buf && out_tool_cap) {
+        out_tool_buf[0] = '\0';
+    }
+    if (out_activity_ts) *out_activity_ts = ts;
+    json_free(t);
+    return api;
 }

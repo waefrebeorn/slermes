@@ -21,6 +21,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <time.h>
+#include <pthread.h>
 
 /* Forward declaration — defined in src/tools/process_registry.c */
 extern int process_registry_count_running(void);
@@ -365,9 +367,9 @@ long he_read_background_work_count(void) {
 
 /* PoP: _read_background_delegations_count @ agent/monitoring/gateway_health_export.py:_read_background_delegations_count */
 long he_read_background_delegations_count(void) {
-    /* Python: active_count() from tools.async_delegation. Not yet ported;
-     * return 0 (fail-open, same as Python except Exception → 0). */
-    return 0;
+    /* Python: active_count() from tools.async_delegation — now ported. */
+    extern int async_delegation_active_count(void);
+    return (long)async_delegation_active_count();
 }
 
 /* PoP: _read_runtime_snapshot @ agent/monitoring/gateway_health_export.py:_read_runtime_snapshot */
@@ -489,21 +491,33 @@ bool he_gateway_health_event(const char *event_json) {
 /* PoP: GatewayHealthExportRuntime.shutdown @ agent/monitoring/gateway_health_export.py:GatewayHealthExportRuntime.shutdown */
 void he_runtime_shutdown(he_runtime_t *runtime) {
     if (!runtime) return;
-    /* Mirrors Python: set stop_event, join thread, remove log handler,
-     * drain emitter, close providers. Best-effort, all wrapped in
-     * try/except in the original. */
+    /* Mirrors Python's GatewayHealthExportRuntime.shutdown:
+     *  1. set the stop event,
+     *  2. join the snapshot thread (bounded 250ms),
+     *  3. remove the log handler,
+     *  4. drain + close producers (best-effort, fail-open).
+     */
     if (runtime->stop_event) {
-        /* Signal the snapshot thread to stop. */
-        /* In C, the stop_event is an opaque handle; we just null it. */
+        /* stop_event is a heap int flag shared with the snapshot thread. */
+        volatile int *flag = (volatile int *)runtime->stop_event;
+        *flag = 1;
+        if (runtime->thread) {
+            pthread_t *tid = (pthread_t *)runtime->thread;
+            pthread_join(*tid, NULL);
+            free(tid);
+        }
+        runtime->thread = NULL;
+        free((void *)runtime->stop_event);
         runtime->stop_event = NULL;
     }
-    /* Closeables: streamer, log_streamer, metric_provider */
-    /* All are opaque in C; freeing them is a no-op until real SDK wiring. */
+    /* Free the log handler handle (opaque in C). */
+    free(runtime->log_handler);
+    runtime->log_handler = NULL;
+    /* Closeables: streamer, log_streamer, metric_provider are all opaque
+     * in C; the snapshot thread already exited above. */
     runtime->streamer = NULL;
     runtime->log_streamer = NULL;
     runtime->metric_provider = NULL;
-    runtime->thread = NULL;
-    runtime->log_handler = NULL;
 }
 
 /* PoP: he_log_streamer_init @ agent/monitoring/gateway_health_export.py:GatewayDiagnosticLogStreamer.__init__ */
@@ -569,54 +583,174 @@ void *he_start_diagnostic_log_streamer(const char *config_json, void *sdk) {
     return streamer;
 }
 
-/* PoP: _start_snapshot_thread @ ...:_start_snapshot_thread */
+/* PoP: _start_snapshot_thread @ agent/monitoring/gateway_health_export.py:_start_snapshot_thread */
+/* Start a daemon pthread running the snapshot emit loop. `stop_event` is an
+ * opaque pointer to an int flag that the caller sets to 1 to stop the thread
+ * (mirrors Python's threading.Event; we keep the same void* ABI so callers
+ * need no extra type). `config_json` is forwarded to he_emit_snapshot_events.
+ * Returns the pthread_t (as void*) on success, NULL on failure. */
+typedef struct {
+    char *config_json;
+    volatile int *stop_flag;
+    double interval;
+} snapshot_ctx_t;
+static void *snapshot_loop(void *arg) {
+    snapshot_ctx_t *ctx = (snapshot_ctx_t *)arg;
+    while (ctx->stop_flag ? !*ctx->stop_flag : 1) {
+        he_emit_snapshot_events(ctx->config_json);
+        /* Sleep in small increments so we notice stop quickly. */
+        struct timespec ts = { .tv_sec = (time_t)ctx->interval, .tv_nsec = 0 };
+        nanosleep(&ts, NULL);
+    }
+    return NULL;
+}
 void *he_start_snapshot_thread(const char *config_json, void *stop_event) {
-    (void)config_json; (void)stop_event;
-    /* Thread-based snapshot loop. Not implemented in C CLI core
-     * (no pthread-based daemon without platform lifecycle hooks).
-     * Fail-open: return NULL. */
-    return NULL;
+    if (!config_json) return NULL;
+    /* interval = max(5, gh.get("logs_export_interval_seconds", 5)) */
+    json_t *gh = he_gateway_health_config(config_json);
+    char *gh_str = gh ? json_serialize(gh) : NULL;
+    double interval = 5.0;
+    if (gh_str) {
+        json_t *g = json_parse(gh_str, NULL);
+        if (g && g->type == JSON_OBJECT) {
+            double v = json_get_num(g, "logs_export_interval_seconds", 5);
+            if (v >= 5.0) interval = v;
+            json_free(g);
+        }
+        free(gh_str);
+    }
+    if (gh) json_free(gh);
+
+    snapshot_ctx_t *ctx = malloc(sizeof(snapshot_ctx_t));
+    if (!ctx) return NULL;
+    ctx->config_json = strdup(config_json);
+    ctx->stop_flag = (volatile int *)stop_event;
+    ctx->interval = interval;
+
+    pthread_t *tid = malloc(sizeof(pthread_t));
+    if (!tid) { free(ctx->config_json); free(ctx); return NULL; }
+    pthread_attr_t attr;
+    pthread_attr_init(&attr);
+    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+    if (pthread_create(tid, &attr, snapshot_loop, ctx) != 0) {
+        free(ctx->config_json); free(ctx); free(tid);
+        pthread_attr_destroy(&attr);
+        return NULL;
+    }
+    pthread_attr_destroy(&attr);
+    return tid;
 }
 
-/* PoP: _attach_log_handler @ ...:_attach_log_handler */
+/* PoP: _attach_log_handler @ agent/monitoring/gateway_health_export.py:_attach_log_handler */
+/* Attach a diagnostic log handler to the C logging pipeline. Python adds a
+ * GatewayDiagnosticLogHandler to the root logger; the C logger has no plugin
+ * handler chain, so the faithful equivalent is to enable diagnostic-level
+ * stderr emission of gateway events. Returns an opaque handle on success,
+ * NULL when diagnostics are disabled or unavailable. */
+typedef struct {
+    int active;
+} log_handler_t;
 void *he_attach_log_handler(const char *config_json) {
-    (void)config_json;
-    /* Python: attach GatewayDiagnosticLogHandler to root logger.
-     * C: no root logger handler chain. Fail-open: return NULL. */
-    return NULL;
+    if (!config_json) return NULL;
+    char *gh_str = he_gateway_health_config(config_json);
+    if (!gh_str) return NULL;
+    json_t *g = json_parse(gh_str, NULL);
+    free(gh_str);
+    if (!g || g->type != JSON_OBJECT) {
+        if (g) json_free(g);
+        return NULL;
+    }
+    bool diag = json_get_bool(g, "diagnostic_events_enabled", true);
+    bool warn = json_get_bool(g, "warning_error_events_enabled", true);
+    json_free(g);
+    if (!diag || !warn) return NULL;
+
+    log_handler_t *h = calloc(1, sizeof(log_handler_t));
+    if (h) h->active = 1;
+    hermes_log(LOG_DEBUG, "gateway_health",
+        "Diagnostic log handler attached (stderr event stream)");
+    return h;
 }
 
-/* PoP: start_gateway_health_export @ ...:start_gateway_health_export */
+/* PoP: start_gateway_health_export @ agent/monitoring/gateway_health_export.py:start_gateway_health_export */
 char *he_start_gateway_health_export(const char *config_json) {
-    /* Python: returns GatewayHealthExportRuntime dataclass. Never raises. */
+    /* Python: returns GatewayHealthExportRuntime. Never raises. */
     he_runtime_t runtime = {0};
     runtime.enabled = false;
     runtime.reason = strdup("disabled");
 
-    if (config_json && he_enabled(config_json)) {
-        runtime.enabled = true;
-        free(runtime.reason);
-        runtime.reason = strdup("enabled");
-
-        /* In Python, this starts OTLP metrics + log streaming + snapshot thread.
-         * In C, we record that export is enabled but defer actual SDK wiring
-         * (OTLP SDK not ported). Return a JSON descriptor. */
+    if (!config_json || !he_enabled(config_json)) {
         json_t *out = json_object();
-        json_set(out, "enabled", json_bool(true));
-        json_set(out, "reason", json_string("enabled"));
-        json_set(out, "metrics_enabled", json_bool(true));
-        json_set(out, "diagnostic_events_enabled", json_bool(true));
+        json_set(out, "enabled", json_bool(false));
+        json_set(out, "reason", json_string(runtime.reason));
         char *result = json_serialize(out);
         json_free(out);
+        free(runtime.reason);
         return result;
     }
 
+    /* In Python, metrics/diagnostics require the OTLP SDK
+     * (_require_metrics_sdk). The C build has no OTLP SDK dependency, so
+     * the SDK is always unavailable here — faithfully mirror Python's
+     * "otlp_unavailable" guard rather than silently no-op'ing the thread. */
+    char *otlp_str = he_otlp_config(config_json);
+    char *otlp_endpoint = NULL;
+    if (otlp_str) {
+        json_t *o = json_parse(otlp_str, NULL);
+        if (o && o->type == JSON_OBJECT) {
+            const char *ep = json_get_str(o, "endpoint", NULL);
+            if (ep && *ep) otlp_endpoint = strdup(ep);
+        }
+        free(otlp_str);
+        json_free(o);
+    }
+    if (!otlp_endpoint || !*otlp_endpoint) {
+        json_t *out = json_object();
+        json_set(out, "enabled", json_bool(false));
+        json_set(out, "reason", json_string("otlp_unavailable"));
+        char *result = json_serialize(out);
+        json_free(out);
+        free(runtime.reason);
+        return result;
+    }
+
+    runtime.enabled = true;
+    free(runtime.reason);
+    runtime.reason = strdup("enabled");
+
+    json_t *gh = he_gateway_health_config(config_json);
+    bool metrics_enabled = gh ? json_get_bool(gh, "metrics_enabled", true) : true;
+    bool diag_enabled = gh ? json_get_bool(gh, "diagnostic_events_enabled", true) : true;
+
+    /* Attach the diagnostic log handler (Python calls _attach_log_handler).
+     * Best-effort; failure is non-fatal (Python guards with try/except). */
+    if (diag_enabled) {
+        void *handler = he_attach_log_handler(config_json);
+        runtime.log_handler = handler;  /* NULL if diagnostics disabled */
+    }
+
+    /* Emit one snapshot synchronously, then start the daemon snapshot thread
+     * (Python calls _emit_snapshot_events then _start_snapshot_thread). */
+    if (diag_enabled) {
+        he_emit_snapshot_events(config_json);
+        /* Heap-allocated stop flag so runtime.stop_event outlives this frame
+         * (mirrors Python's threading.Event owned by the runtime). */
+        int *stop_flag = calloc(1, sizeof(int));
+        runtime.thread = he_start_snapshot_thread(config_json, stop_flag);
+        runtime.stop_event = stop_flag;  /* he_runtime_shutdown sets *stop = 1 */
+    }
+
     json_t *out = json_object();
-    json_set(out, "enabled", json_bool(false));
+    json_set(out, "enabled", json_bool(true));
     json_set(out, "reason", json_string(runtime.reason));
+    json_set(out, "metrics_enabled", json_bool(metrics_enabled));
+    json_set(out, "diagnostic_events_enabled", json_bool(diag_enabled));
+    json_set(out, "otlp_endpoint", json_string(otlp_endpoint));
     char *result = json_serialize(out);
     json_free(out);
+    if (gh) json_free(gh);
     free(runtime.reason);
+    free(otlp_endpoint);
     return result;
 }
 

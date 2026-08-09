@@ -41,6 +41,12 @@ typedef json_node_t *(*async_delegation_runner_t)(void);
 /* Optional interrupt callback (signals the child to stop). */
 typedef void (*async_delegation_interrupt_t)(void);
 
+/* Progress sampler for the stale-delegation monitor. Returns a non-negative
+ * count of "interesting activity tokens" and sets *in_tool. The contract is
+ * intentionally opaque to the registry (mirrors Python's opaque `token`):
+ * a changed return value refreshes the record's progress timestamp. */
+typedef int (*async_delegation_progress_t)(void *progress_ctx, int *in_tool);
+
 /* Completion sink: receives the finished event record. The registry owns
  * `event` and frees it after the sink returns. */
 typedef void (*async_delegation_sink_t)(json_node_t *event);
@@ -65,13 +71,18 @@ int async_delegation_active_count(void);
  * `origin_ui_session_id`/`origin_session_id`/`parent_session_id` route the
  * completion event back to the originating session (mirrors Python's
  * session-key/origin_ui_session_id/origin_session_id/parent_session_id).
- * `sink` receives the completion event when the child finishes. */
+ * `runner` is the child; `interrupt_fn` signals it to stop.
+ * `progress_fn(progress_ctx, &in_tool)` is sampled by the stale-delegation
+ * monitor; it returns an activity-token integer (changes refresh the
+ * timestamp) and sets *in_tool so the monitor can apply the right idle/grace
+ * threshold. `sink` receives the completion event when the child finishes. */
 json_node_t *async_delegation_dispatch(
     const char *goal, const char *context, const char *const *toolsets,
     const char *role, const char *model, const char *session_key,
     const char *origin_ui_session_id, const char *origin_session_id,
     const char *parent_session_id,
     async_delegation_runner_t runner, async_delegation_interrupt_t interrupt_fn,
+    async_delegation_progress_t progress_fn, void *progress_ctx,
     async_delegation_sink_t sink, int max_async_children);
 
 /* Fan-out batch: `runner` runs the WHOLE batch as ONE background unit and
@@ -82,6 +93,7 @@ json_node_t *async_delegation_dispatch_batch(
     const char *session_key, const char *origin_ui_session_id,
     const char *origin_session_id, const char *parent_session_id,
     async_delegation_runner_t runner, async_delegation_interrupt_t interrupt_fn,
+    async_delegation_progress_t progress_fn, void *progress_ctx,
     async_delegation_sink_t sink, int max_async_children);
 
 /* List all delegations (running + recently completed) as a json array of
@@ -116,6 +128,21 @@ int async_delegation_interrupt_all(const char *reason);
 
 /* Test helper: drop all records (running + completed) without running threads. */
 void async_delegation_reset_for_tests(void);
+
+/* Start (once) the stale-delegation monitor thread for the given record.
+ * Idempotent; the monitor exits on its own when no monitorable records
+ * remain. Call after dispatching a delegation that carries progress_fn. */
+/* PoP: _ensure_stale_monitor @ tools/async_delegation.py:_ensure_stale_monitor */
+void async_delegation_ensure_stale_monitor(void);
+
+/* PoP: _children_activity_from_token @ tools/async_delegation.py:_children_activity_from_token */
+/* Best-effort parse of a progress token into per-child activity fields.
+ * Returns api_calls count; fills optional out params. Returns 0 on failure. */
+int async_delegation_children_activity_from_token(const char *token_json,
+                                                  int *out_api_calls,
+                                                  char *out_tool_buf,
+                                                  size_t out_tool_cap,
+                                                  double *out_activity_ts);
 
 #ifdef __cplusplus
 }

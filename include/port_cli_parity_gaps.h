@@ -55,6 +55,10 @@ void cli_on_wake_word(void);
 void cli_start_wake_watchdog(void);
 /* PoP: _show_wake_word_status @ cli.py:_show_wake_word_status */
 void cli_show_wake_word_status(void);
+/* Grace-period re-arm scheduled by cli_on_wake_word (no public Python
+ * equivalent — C only, since the CLI has no session/voice hooks to call). */
+#define WW_WAKE_REARM_GRACE_SECONDS 3
+void cli_schedule_wake_rearm(int grace_seconds);
 /* PoP: _voice_full_duplex_listener @ cli.py:_voice_full_duplex_listener */
 void cli_voice_full_duplex_listener(void);
 

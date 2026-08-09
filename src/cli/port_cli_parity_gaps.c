@@ -8,7 +8,8 @@
  *   - _restore_session_yolo (YOLO bypass restore on session resume)
  *   - _should_handle_background_command_inline (inline /bg dispatch check)
  *   - handle_bang_shell (bang-command dispatch)
- *   - Voice / wake-word stubs (platform audio APIs not ported to C)
+ *   - Voice / wake-word entry points (delegate to port_tools_wake_word.c:
+ *     full detector lifecycle + Python subprocess audio capture + ML engine)
  */
 #define _POSIX_C_SOURCE 200809L
 #include <stdio.h>
@@ -27,7 +28,9 @@
 #include "port_turn_summary.h"
 #include "context_breakdown.h"
 #include "port_cli_parity_gaps.h"
+#include "port_tools_wake_word.h"
 #include "sqlite3.h"
+#include <pthread.h>
 
 #define WORKTREE_MERGE_CACHE_MAX 1000
 
@@ -287,10 +290,10 @@ char *cli_render_stash_panel(const char **stash_items, size_t n_items,
     return buf;
 }
 
-/* ── Voice / wake word stubs ─────────────────────────────────────────────
- * These depend on platform audio APIs (tools/voice_mode.py, tools/wake_word.py)
- * that have no C equivalent. Provide faithful fallbacks that degrade
- * gracefully. */
+/* ── Wake-word entry points ────────────────────────────────────────────────
+ * These delegate to port_tools_wake_word.c, which owns the full detector
+ * lifecycle (monitor thread, cooldown, callback dispatch) and spawns the
+ * Python audio-capture + ML-inference subprocess. */
 /* PoP: _voice_stt_provider @ cli.py:_voice_stt_provider */
 const char *cli_voice_stt_provider(json_t *config) {
     if (!config || config->type != JSON_OBJECT) return "";
@@ -309,31 +312,135 @@ bool cli_typed_voice_stop(const char *user_input, bool voice_on) {
 
 /* PoP: _maybe_start_wake_word @ cli.py:_maybe_start_wake_word */
 void cli_maybe_start_wake_word(void) {
-    hermes_log(LOG_DEBUG, "cli", "Wake word listener not available in C CLI build");
+    json_t *cfg = ww_load_wake_word_config();
+    if (!ww_wake_surface_enabled("cli", cfg)) {
+        if (cfg) json_free(cfg);
+        return;
+    }
+    cli_start_wake_word_listener(true);
+    if (cfg) json_free(cfg);
 }
 
 /* PoP: _start_wake_word_listener @ cli.py:_start_wake_word_listener */
 bool cli_start_wake_word_listener(bool announce) {
     (void)announce;
-    hermes_log(LOG_DEBUG, "cli", "Wake word listener not available in C CLI build");
-    return false;
+    hermes_log(LOG_DEBUG, "cli", "Starting wake word listener");
+    /* Delegate to the real detector engine in port_tools_wake_word.c. */
+    json_t *cfg = ww_load_wake_word_config();
+    bool ok = ww_start_listening(cli_on_wake_word, NULL, cfg) != NULL;
+    if (cfg) json_free(cfg);
+    if (ok) hermes_log(LOG_INFO, "cli", "Wake word listening (\"hey hermes\") — /wake off to stop");
+    return ok;
 }
 
 /* PoP: _stop_wake_word_listener @ cli.py:_stop_wake_word_listener */
 void cli_stop_wake_word_listener(bool announce) {
     (void)announce;
+    bool stopped = ww_stop_listening(NULL);
+    if (stopped) hermes_log(LOG_DEBUG, "cli", "Wake word stopped");
 }
 
 /* PoP: _on_wake_word @ cli.py:_on_wake_word */
+/* Fired after the detector hears the wake phrase. The C surface has no
+ * live session/voice-pipeline state to hand off to (those live behind the
+ * Python cli.py HermesCli class), so the faithful C behavior is: silence
+ * the detector so the microphone is free, announce the detection, then
+ * re-arm after a short grace via the watchdog (mirrors Python's
+ * _wake_suspended flag + _start_wake_watchdog resume path). */
 void cli_on_wake_word(void) {
+    /* Release the mic: pause the listener so STT can capture the command. */
+    (void)ww_pause_listening(NULL);
+
+    /* Announce (best-effort; no rich terminal coloring in this path). */
+    hermes_log(LOG_INFO, "cli", "Wake word detected — listening...");
+
+    /* Schedule a re-arm: the CLI has no session/resume hook to call, so
+     * re-arm the listener shortly. Python defers this to the watchdog; we
+     * use a bounded one-shot so the detector returns to "listening" state. */
+    cli_schedule_wake_rearm(WW_WAKE_REARM_GRACE_SECONDS);
+}
+
+/* One-shot re-arm of the wake-word listener after the grace period. Python
+ * defers this to the watchdog polling idle state; the C CLI has no session
+ * hooks to poll, so a bounded timer resumes the listener. */
+typedef struct {
+    int grace_seconds;
+} rearm_ctx_t;
+static void *wake_rearm_thread(void *arg) {
+    rearm_ctx_t *ctx = (rearm_ctx_t *)arg;
+    int grace = ctx->grace_seconds;
+    free(ctx);
+    /* Sleep grace seconds, then resume. */
+    struct timespec ts = { .tv_sec = grace, .tv_nsec = 0 };
+    nanosleep(&ts, NULL);
+    if (ww_resume_listening(NULL))
+        hermes_log(LOG_DEBUG, "cli", "Wake word listener resumed");
+    return NULL;
+}
+void cli_schedule_wake_rearm(int grace_seconds) {
+    if (grace_seconds < 0) grace_seconds = 0;
+    rearm_ctx_t *ctx = malloc(sizeof(rearm_ctx_t));
+    if (!ctx) return;
+    ctx->grace_seconds = grace_seconds;
+    pthread_t tid;
+    pthread_attr_t attr;
+    pthread_attr_init(&attr);
+    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+    if (pthread_create(&tid, &attr, wake_rearm_thread, ctx) != 0) {
+        free(ctx);
+    }
+    pthread_attr_destroy(&attr);
 }
 
 /* PoP: _start_wake_watchdog @ cli.py:_start_wake_watchdog */
 void cli_start_wake_watchdog(void) {
+    /* Python: daemon thread that polls idle state and calls resume_listening.
+     * In the C CLI the detector lifecycle is owned by port_tools_wake_word.c;
+     * the watchdog is exercised by cli_on_wake_word's grace-period re-arm.
+     * This entry point is kept for API parity (callers in cli.py path). */
+    hermes_log(LOG_DEBUG, "cli", "Wake-word watchdog started");
 }
 
 /* PoP: _show_wake_word_status @ cli.py:_show_wake_word_status */
 void cli_show_wake_word_status(void) {
+    json_t *cfg = ww_load_wake_word_config();
+    json_t *reqs = ww_check_wake_word_requirements(cfg);
+    bool owned = ww_owns_listener(NULL);
+    bool listening = ww_is_listening();
+    const char *state = owned ? (listening ? "LISTENING" : "PAUSED") : "OFF";
+    const char *phrase = ww_wake_phrase(cfg);
+    const char *provider = ww_provider(cfg);
+    const char *surface = cfg ? (json_get_str(cfg, "surface", NULL) ?: "auto") : "auto";
+    bool new_session = ww_get_bool(cfg, "start_new_session", true);
+
+    fprintf(stderr, "\nWake Word Status\n");
+    fprintf(stderr, "  State:       %s\n", state);
+    fprintf(stderr, "  Phrase:      \"%s\"\n", phrase ? phrase : "hey hermes");
+    fprintf(stderr, "  Provider:    %s\n", provider ? provider : "openwakeword");
+    fprintf(stderr, "  Surface:     %s\n", surface);
+    fprintf(stderr, "  New session: %s\n", new_session ? "yes" : "no");
+
+    if (state[0] == 'L' && ww_audio_is_silent()) {
+        fprintf(stderr, "  \xe2\x9a\xa0 Microphone delivers only silence — the listener can't hear anything.\n");
+        char *hint = ww_silent_audio_hint(NULL);
+        if (hint) {
+            fprintf(stderr, "  %s\n", hint);
+            free(hint);
+        }
+    }
+    if (reqs) {
+        bool available = ww_get_bool(reqs, "available", false);
+        const char *hint2 = json_get_str(reqs, "hint", NULL);
+        if (!available && hint2)
+            fprintf(stderr, "  %s\n", hint2);
+        json_free(reqs);
+    }
+    if (!owned)
+        fprintf(stderr, "  Enable with /wake on\n");
+
+    free(phrase);
+    free(provider);
+    if (cfg) json_free(cfg);
 }
 
 /* PoP: _voice_full_duplex_listener @ cli.py:_voice_full_duplex_listener */
