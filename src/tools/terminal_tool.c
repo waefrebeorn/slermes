@@ -13,6 +13,7 @@
 #include "file_sync.h"
 #include "file_state.h"
 #include "tool_output.h"
+#include "terminal_env_registry.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -156,26 +157,50 @@ void _maybe_reap_docker_orphans(const char *container_config_json) {
 
 /* PoP: _get_env_config @ tools/terminal_tool.py:_get_env_config */
 char* _get_env_config(void) {
-    return strdup("{\"backend\":\"local\"}");
+    json_t *cfg = term_get_env_config();
+    return json_serialize(cfg);   /* caller owns; NULL if empty */
 }
 
 /* PoP: _create_environment @ tools/terminal_tool.py:_create_environment */
 char* _create_environment(const char *env_type, const char *image, const char *cwd,
                           int timeout, const char *task_id, const char *env_vars_json) {
-    (void)env_type; (void)image; (void)cwd; (void)timeout; (void)task_id; (void)env_vars_json;
-    return strdup("{\"status\":\"created\",\"type\":\"local\"}");
+    (void)image; (void)env_vars_json;
+    json_t *cfg = json_object();
+    json_set(cfg, "status", json_string("created"));
+    json_set(cfg, "env_type", json_string(env_type ? env_type : "local"));
+    json_set(cfg, "timeout", json_number(timeout > 0 ? timeout : 180));
+    if (cwd) json_set(cfg, "cwd", json_string(cwd));
+    if (task_id) json_set(cfg, "task_id", json_string(task_id));
+    char *out = json_serialize(cfg);
+    /* Record this env as active under task_id so get_active_env finds it. */
+    if (task_id && *task_id) {
+        json_t *entry = json_object();
+        if (cwd) json_set(entry, "cwd", json_string(cwd));
+        json_set(entry, "persistent_filesystem", json_bool(false));
+        term_env_set_active(task_id, entry);
+        json_free(entry);
+    }
+    json_free(cfg);
+    return out;
 }
 
 /* PoP: _cleanup_inactive_envs @ tools/terminal_tool.py:_cleanup_inactive_envs */
 void _cleanup_inactive_envs(int lifetime_seconds) {
-    (void)lifetime_seconds;
-    /* No-op in C - cleanup handled by tool caller */
+    if (lifetime_seconds <= 0) lifetime_seconds = 300;
+    term_cleanup_inactive_envs(lifetime_seconds);
 }
 
 /* PoP: get_active_env @ tools/terminal_tool.py:get_active_env */
 char* get_active_env(const char *task_id) {
-    (void)task_id;
-    return strdup("{}");
+    json_t *env = term_get_active_env(task_id);
+    if (!env) return strdup("{}");
+    char *out = json_serialize(env);
+    json_free(env);
+    return out;
+}
+
+bool is_persistent_env_port(const char *task_id) {
+    return term_is_persistent_env(task_id);
 }
 
 

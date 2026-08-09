@@ -16,6 +16,7 @@
 #include "tool_output.h"
 #include "env_passthrough.h"
 #include "file_sync.h"
+#include "terminal_env_registry.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -2047,37 +2048,29 @@ char *terminal_handler(const char *args_json, const char *task_id) {
 }
 
 /* PoP: check_terminal_requirements @ tools/terminal_tool.py:check_terminal_requirements */
-/* Verify terminal execution environment is available.
- * PoP: check_terminal_requirements @ tools/terminal_tool.py:check_terminal_requirements
- * Always returns true in C core - actual checks done at Python layer. */
+/* Verify terminal execution environment is available. Delegates to the real
+ * env registry which mirrors Python's check_terminal_requirements(). */
 bool check_terminal_requirements(void) {
-    return true;
+    return term_check_terminal_requirements();
 }
 
 /* PoP: is_persistent_env @ tools/terminal_tool.py:is_persistent_env */
-/* Check if task has a persistent environment.
- * C core doesn't manage persistent environments - returns false. */
+/* Check if task has a persistent environment (cross-turn persistence). */
 bool is_persistent_env(const char *task_id) {
-    (void)task_id;
-    return false;
+    return term_is_persistent_env(task_id);
 }
 
 /* PoP: cleanup_all_environments @ tools/terminal_tool.py:cleanup_all_environments */
-/* Clean up all environment containers/VMs.
- * C core doesn't manage environments - no-op. */
-/* PoP: cleanup_all_environments @ tools/terminal_tool.py:cleanup_all_environments */
-void cleanup_all_environments(void) {
-    /* No-op in C core */
+/* Clean up ALL active environment containers/VMs. */
+int cleanup_all_environments(void) {
+    return term_cleanup_all_environments();
 }
 
 /* PoP: cleanup_vm @ tools/terminal_tool.py:cleanup_vm */
-/* Clean up a specific VM environment.
- * C core doesn't manage VMs - no-op. */
-/* PoP: cleanup_vm @ tools/terminal_tool.py:cleanup_vm */
+/* Clean up a specific VM environment by task_id. force_remove honors the
+ * session-lifecycle persist-mode preference (default false). */
 void cleanup_vm(const char *task_id, bool force_remove) {
-    (void)task_id;
-    (void)force_remove;
-    /* No-op in C core */
+    term_cleanup_vm(task_id, force_remove);
 }
 
 /* PoP: _looks_like_help_or_version_command @ tools/terminal_tool.py:_looks_like_help_or_version_command */

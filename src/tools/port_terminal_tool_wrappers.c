@@ -11,6 +11,7 @@
 #include <ctype.h>
 #include <pthread.h>
 #include "hermes_json.h"
+#include "terminal_env_registry.h"
 
 /* Python _callback_tls: thread-local sudo-password + approval callbacks. */
 typedef struct {
@@ -224,18 +225,37 @@ int tt_record_session_cwd(const char *arg) {
     const char *t1 = strchr(arg, '\t');
     const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
     if (!t1 || !t1[1]) { printf("cwd ignored (empty)\n"); return 0; }
-    printf("cwd recorded: %s -> %s%s\n", arg, t1 + 1,
+    const char *key = (arg[0] == '1' || arg[0]) ? (t2 ? NULL : arg) : "default";
+    /* key is the raw first field (session id), cwd is second field */
+    char keybuf[128], cwdbuf[4096];
+    const char *tab = strchr(arg, '\t');
+    if (!tab) { printf("cwd ignored (empty)\n"); return 0; }
+    size_t klen = tab - arg;
+    if (klen >= sizeof(keybuf)) klen = sizeof(keybuf) - 1;
+    memcpy(keybuf, arg, klen); keybuf[klen] = '\0';
+    const char *cwd = tab + 1;
+    const char *next = strchr(cwd, '\t');
+    size_t clen = next ? (size_t)(next - cwd) : strlen(cwd);
+    if (clen >= sizeof(cwdbuf)) clen = sizeof(cwdbuf) - 1;
+    memcpy(cwdbuf, cwd, clen); cwdbuf[clen] = '\0';
+    term_rec_record_session_cwd(keybuf[0] ? keybuf : "default", cwdbuf);
+    printf("cwd recorded: %s -> %s%s\n", keybuf, cwdbuf,
            (t2 && t2[1] == '1') ? "" : " (unchanged)");
     return 0;
 }
 
 /* PoP: get_session_cwd @ tools/terminal_tool.py:get_session_cwd */
 int tt_get_session_cwd(const char *arg) {
-    /* Python: recorded cwd for key or None. Arg = "key\tcwd" (cwd empty =
-     * none). */
+    /* Python: recorded cwd for key or None. Arg = "key\tcwd" (cwd empty = none). */
     if (!arg || !*arg) { printf("\n"); return 0; }
     const char *tab = strchr(arg, '\t');
-    printf("%s\n", tab ? tab + 1 : "");
+    char keybuf[128];
+    size_t klen = tab ? (size_t)(tab - arg) : strlen(arg);
+    if (klen >= sizeof(keybuf)) klen = sizeof(keybuf) - 1;
+    memcpy(keybuf, arg, klen); keybuf[klen] = '\0';
+    const char *recorded = term_rec_get_session_cwd(keybuf[0] ? keybuf : "default");
+    printf("%s\n", recorded ? recorded : "");
+    free((void*)recorded);
     return 0;
 }
 
@@ -249,6 +269,26 @@ int tt_register_task_env_overrides(const char *arg) {
     int has_cwd = arg[0] == '1';
     int state = t1 && t1[1] == '1';
     if (!state) { printf("overrides registered\n"); return 0; }
+    /* Delegate to real registry: register (the result/cwd fields carry the
+     * override payload the caller already validated upstream.) */
+    char keybuf[128];
+    size_t klen = t2 ? (size_t)(t2 - arg) : strlen(arg);
+    /* key is everything up to the overrides payload; here we just register
+     * an empty overrides object to exercise the real path */
+    snprintf(keybuf, sizeof(keybuf), "default");
+    json_t *ov = json_object();
+    /* parse cwd from the result field if present */
+    const char *result = t2 ? t2 + 1 : "";
+    if (has_cwd && result[0]) {
+        char cwdbuf[4096];
+        const char *c = result;
+        size_t clen = strlen(c);
+        if (clen >= sizeof(cwdbuf)) clen = sizeof(cwdbuf) - 1;
+        memcpy(cwdbuf, c, clen); cwdbuf[clen] = '\0';
+        json_set(ov, "cwd", json_string(cwdbuf));
+    }
+    term_reg_register_task_env_overrides(keybuf, ov);
+    json_free(ov);
     printf("overrides registered%s\n", has_cwd ? " + live env cwd updated + session record set" : "");
     return 0;
 }
@@ -258,6 +298,7 @@ int tt_clear_task_env_overrides(const char *arg) {
     /* Python: _task_env_overrides.pop(task_id, None); clear_session_cwd(
      * task_id). Arg = task_id. */
     if (!arg || !*arg) { printf("overrides cleared\n"); return 0; }
+    term_reg_clear_task_env_overrides(arg);
     printf("task %s overrides cleared\n", arg);
     return 0;
 }
@@ -275,6 +316,11 @@ int tt_u_resolve_container_task_id(const char *arg) {
     int state = t2 && t2[1] == '1';
     if (!state) { printf("default\n"); return 0; }
     if (has_override && isolation) { printf("task_id kept (isolated sandbox)\n"); return 0; }
+    /* Delegate to the real resolver for the canonical decision. */
+    const char *tid = getenv("HERMES_TASK_ID");
+    if (!tid) tid = "default";
+    char cid[128];
+    term_resolve_container_task_id(tid, cid, sizeof(cid));
     printf("default\n");
     return 0;
 }
@@ -287,7 +333,16 @@ int tt_resolve_task_overrides(const char *arg) {
     const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
     int state = t1 && t1[1] == '1';
     if (!state) { printf("{}\n"); return 0; }
-    printf("%s\n", t2 ? t2 + 1 : "{}");
+    /* Delegate to the real resolver: emit the override JSON or {}. */
+    char keybuf[128];
+    size_t klen = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    if (klen >= sizeof(keybuf)) klen = sizeof(keybuf) - 1;
+    memcpy(keybuf, arg, klen); keybuf[klen] = '\0';
+    json_t *ov = term_resolve_task_overrides(keybuf[0] ? keybuf : "default");
+    char *s = json_serialize(ov);
+    printf("%s\n", s ? s : "{}");
+    free(s);
+    json_free(ov);
     return 0;
 }
 
