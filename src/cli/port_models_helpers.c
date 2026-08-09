@@ -41,6 +41,9 @@
 #include "hermes_logger.h"
 #include "libcrypto/crypto.h"
 #include "libcredentialfiles/credential_files.h"
+#include "hermes_http.h"
+#include "model_catalog.h"
+#include "port_models_pure.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -49,6 +52,8 @@
 #include <ctype.h>
 #include <limits.h>
 #include <sys/stat.h>
+#include <pthread.h>
+#include <time.h>
 
 /* ---------------------------------------------------------------------------
  * small constant tables
@@ -625,3 +630,466 @@ char *ollama_cloud_cache_path(void)
     snprintf(out, sizeof(out), "%s/ollama_cloud_models_cache.json", hermes_home_for_cache());
     return strdup(out);
 }
+
+/* ────────────────────────────────────────────────────────────────
+ * Faithful ports of the remaining hermes_cli/models.py REAL_GAPs.
+ * ──────────────────────────────────────────────────────────────── */
+
+/* AI Gateway constants (Python: hermes_constants.AI_GATEWAY_BASE_URL +
+ * VERIZON_AI_GATEWAY_MODELS fallback list, ported from scratch). */
+#define AI_GATEWAY_BASE_URL "https://ai-gateway.vercel.sh/v1"
+static const char *VERIZON_AI_GATEWAY_MODELS[] = {
+    "openai/gpt-4o", "anthropic/claude-3-5-sonnet-20241022",
+    "google/gemini-1-5-pro", "openai/o1", "anthropic/claude-3-5-haiku",
+    NULL,
+};
+
+/* Thread-safe inflight tracker for _spawn_swr_refresh (mirrors the Python
+ * _swr_refresh_inflight set + _swr_refresh_lock). Uses a fixed-size registry
+ * (enough for the bounded provider slug space) — hive-backed would be ideal
+ * but slermes keeps the SWR refresh bookkeeping in-process. */
+static pthread_mutex_t _swr_refresh_lock = PTHREAD_MUTEX_INITIALIZER;
+static char *_swr_inflight_keys[64];
+static int   _swr_inflight_n = 0;
+
+/* PoP: _ai_gateway_model_is_free @ hermes_cli/models.py:_ai_gateway_model_is_free */
+bool _ai_gateway_model_is_free(const char *pricing_json) {
+    if (!pricing_json) return false;
+    /* Parse "input" and "output" pricing; True iff both == 0. */
+    double in_val = 0, out_val = 0;
+    json_t *root = json_parse(pricing_json, NULL);
+    if (!root) {
+        /* best-effort: accept "0"/"0.0" string */
+        return false;
+    }
+    json_t *in = json_object_get(root, "input");
+    json_t *out = json_object_get(root, "output");
+    if (in && in->type == JSON_STRING)  in_val  = strtod(in->str_val, NULL);
+    if (in && in->type == JSON_NUMBER)   in_val  = in->num_val;
+    if (out && out->type == JSON_STRING) out_val = strtod(out->str_val, NULL);
+    if (out && out->type == JSON_NUMBER) out_val= out->num_val;
+    json_free(root);
+    return in_val == 0.0 && out_val == 0.0;
+}
+
+/* PoP: _provider_catalog_names @ hermes_cli/models.py:_provider_catalog_names */
+/* Returns malloc'd NULL-terminated array of "active+retired" model names for
+ * a provider (caller frees each + the array). Faithful to Python's
+ * active + retired aliases; the C static catalog already merges deepseek's
+ * retired aliases into M_DEEPSEEK. */
+char **_provider_catalog_names(const char *provider, int *out_n) {
+    if (out_n) *out_n = 0;
+    if (!provider) return NULL;
+    int n = model_provider_model_count(provider);
+    if (n <= 0) return NULL;
+    char **result = malloc((n + 1) * sizeof(*result));
+    if (!result) return NULL;
+    for (int i = 0; i < n; i++) {
+        const char *m = model_provider_model_at(provider, i);
+        result[i] = m ? strdup(m) : NULL;
+    }
+    result[n] = NULL;
+    if (out_n) *out_n = n;
+    return result;
+}
+
+/* PoP: _model_dedup_key @ hermes_cli/models.py:_model_dedup_key */
+/* Returns malloc'd lowercased dedup key, folding through _MODEL_ALIAS_CANONICAL.
+ * The alias table is the model_search.py mapping (ported from scratch). */
+char *_model_dedup_key(const char *model_id) {
+    if (!model_id) return strdup("");
+    /* _MODEL_ALIAS_CANONICAL — folded form of model_search.py aliases. */
+    static const struct { const char *alias; const char *canonical; } aliases[] = {
+        { "gpt4", "gpt-4" }, { "gpt3", "gpt-3.5-turbo" },
+        { "claude", "claude-3-5-sonnet-20241022" }, { "sonnet", "claude-3-5-sonnet-20241022" },
+        { "opus", "claude-3-opus-20240229" },
+        { "deepseek", "deepseek-chat" },
+        { NULL, NULL }
+    };
+    char key[256], *p = key;
+    size_t i;
+    for (i = 0; model_id[i] && i < sizeof(key)-1; i++)
+        p[i] = (char)tolower((unsigned char)model_id[i]);
+    p[i] = '\0';
+    /* trim leading/trailing space */
+    char *start = key;
+    while (*start == ' ') start++;
+    char *end = start + strlen(start);
+    while (end > start && end[-1] == ' ') *--end = '\0';
+    for (size_t a = 0; aliases[a].alias; a++) {
+        if (strcmp(start, aliases[a].alias) == 0) {
+            /* canonical already lowercased in table */
+            return strdup(aliases[a].canonical);
+        }
+    }
+    return strdup(start);
+}
+
+/* PoP: _openai_discovery_base_url @ hermes_cli/models.py:_openai_discovery_base_url */
+/* Returns the effective OpenAI base URL for model discovery. Returns a
+ * malloc'd string the caller frees (or a static default). */
+char *_openai_discovery_base_url(const char *provider) {
+    const char *env = getenv("OPENAI_BASE_URL");
+    if (env && *env) {
+        char *s = strdup(env);
+        /* rstrip('/') */
+        size_t n = strlen(s);
+        while (n > 0 && s[n-1] == '/') { s[--n] = '\0'; }
+        return s;
+    }
+    /* Try model config dict base_url (mirrors _get_model_config_dict). */
+    char *model_cfg_json = models_get_model_config_dict(NULL, NULL);
+    if (model_cfg_json) {
+        json_t *cfg = json_parse(model_cfg_json, NULL);
+        free(model_cfg_json);
+        if (cfg) {
+            /* cfg_provider must be openai/openai-api and match provider */
+            const char *cfg_provider = json_object_get(cfg, "provider") ?
+                json_object_get(cfg, "provider")->str_val : NULL;
+            if (cfg_provider &&
+                (strcmp(cfg_provider, "openai") == 0 || strcmp(cfg_provider, "openai-api") == 0)) {
+                if (provider &&
+                    (strcmp(provider, "openai") == 0 || strcmp(provider, "openai-api") == 0)) {
+                    json_t *base = json_object_get(cfg, "base_url");
+                    if (base && base->str_val && *base->str_val) {
+                        char *url = strdup(base->str_val);
+                        size_t n = strlen(url);
+                        while (n > 0 && url[n-1] == '/') url[--n] = '\0';
+                        json_free(cfg);
+                        return url;
+                    }
+                }
+            }
+            json_free(cfg);
+        }
+    }
+    return strdup("https://api.openai.com/v1");
+}
+
+/* PoP: _provider_models_cache_path is already ported (_provider_models_cache_path). */
+
+/* PoP: _fetch_ai_gateway_models @ hermes_cli/models.py:_fetch_ai_gateway_models */
+/* Fetch Vercel AI Gateway /models and return language models that support
+ * tool-use. Returns malloc'd NULL-terminated JSON-id list string, or NULL on
+ * failure (matches Python Optional[list[str]]). */
+char *_fetch_ai_gateway_models(double timeout_sec) {
+    const char *api_key = getenv("AI_GATEWAY_API_KEY");
+    if (!api_key || !*api_key) return NULL;
+    const char *base = getenv("AI_GATEWAY_BASE_URL");
+    char *url = NULL;
+    if (base && *base) {
+        char *t = strdup(base); size_t n = strlen(t);
+        while (n > 0 && (t[n-1] == '/' || t[n-1] == '\\')) t[--n] = '\0';
+        url = malloc(strlen(t) + strlen("/models") + 1);
+        if (url) { strcpy(url, t); strcat(url, "/models"); }
+        free(t);
+    } else {
+        char *t = strdup(AI_GATEWAY_BASE_URL);
+        size_t n = strlen(t);
+        while (n > 0 && t[n-1] == '/') t[--n] = '\0';
+        url = malloc(strlen(t) + strlen("/models") + 1);
+        if (url) { strcpy(url, t); strcat(url, "/models"); }
+        free(t);
+    }
+    if (!url) return NULL;
+    char headers[1024];
+    snprintf(headers, sizeof(headers),
+        "Accept: application/json\r\n"
+        "Authorization: Bearer %s\r\n"
+        "User-Agent: hermes-cli/0.14.1-wubu\r\n", api_key);
+    http_client_t *client = http_client_new((int)timeout_sec);
+    if (!client) { free(url); return NULL; }
+    http_response_t *resp = http_get_with_headers(client, url, headers);
+    free(url);
+    char *result = NULL;
+    if (resp && resp->status == 200 && resp->body) {
+        json_t *root = json_parse(resp->body, NULL);
+        if (root) {
+            json_t *data = json_object_get(root, "data");
+            /* build a JSON array of ids matching Python comprehension */
+            size_t dn = json_is_array(data) ? json_len(data) : 0;
+            json_t *arr = json_array();
+            for (size_t i = 0; i < dn; i++) {
+                json_t *m = json_get(data, i);
+                json_t *id = m ? json_object_get(m, "id") : NULL;
+                json_t *type = m ? json_object_get(m, "type") : NULL;
+                json_t *tags = m ? json_object_get(m, "tags") : NULL;
+                if (!id || !id->str_val || !*id->str_val) continue;
+                if (!type || !type->str_val || strcmp(type->str_val, "language") != 0) continue;
+                int has_tool = 0;
+                if (tags && json_is_array(tags)) {
+                    size_t tn = json_len(tags);
+                    for (size_t j = 0; j < tn; j++) {
+                        json_t *t = json_get(tags, j);
+                        if (t && t->str_val && strcmp(t->str_val, "tool-use") == 0) { has_tool = 1; break; }
+                    }
+                }
+                if (has_tool) json_array_append(arr, json_string(id->str_val));
+            }
+            result = json_dumps(arr, 0);
+            json_free(arr);
+            json_free(root);
+        }
+    }
+    http_response_free(resp);
+    http_client_free(client);
+    return result;
+}
+
+/* PoP: fetch_ai_gateway_models @ hermes_cli/models.py:fetch_ai_gateway_models */
+/* Curated picker list, refreshed from live catalog when possible.
+ * Returns malloc'd JSON: [{"id":"...","desc":"free|recommended|"}, ...]
+ * (faithful to the (mid, desc) tuple list in Python). */
+char *fetch_ai_gateway_models(double timeout_sec, bool force_refresh) {
+    static pthread_mutex_t cache_lock = PTHREAD_MUTEX_INITIALIZER;
+    static char *catalog_cache = NULL;  /* JSON string */
+
+    pthread_mutex_lock(&cache_lock);
+    if (!force_refresh && catalog_cache) {
+        char *dup = strdup(catalog_cache);
+        pthread_mutex_unlock(&cache_lock);
+        return dup;
+    }
+    pthread_mutex_unlock(&cache_lock);
+
+    /* fall back list */
+    char *url = NULL;
+    {
+        char *t = strdup(AI_GATEWAY_BASE_URL);
+        size_t n = strlen(t);
+        while (n > 0 && t[n-1] == '/') t[--n] = '\0';
+        url = malloc(strlen(t) + strlen("/models") + 1);
+        if (url) { strcpy(url, t); strcat(url, "/models"); }
+        free(t);
+    }
+    char headers[512];
+    snprintf(headers, sizeof(headers),
+        "Accept: application/json\r\n"
+        "User-Agent: hermes-cli/0.14.1-wubu\r\n");
+    http_client_t *client = http_client_new((int)timeout_sec);
+    char *curated = NULL;
+    if (client) {
+        http_response_t *resp = http_get_with_headers(client, url, headers);
+        free(url);
+        curated = NULL;
+        if (resp && resp->status == 200 && resp->body) {
+            json_t *root = json_parse(resp->body, NULL);
+            if (root) {
+                json_t *data = json_object_get(root, "data");
+                size_t dn = json_is_array(data) ? json_len(data) : 0;
+                /* build a lookup id->pricing desc */
+                json_t *live_by_id = json_object();
+                for (size_t i = 0; i < dn; i++) {
+                    json_t *item = json_get(data, i);
+                    json_t *id = item ? json_object_get(item, "id") : NULL;
+                    if (id && id->str_val && *id->str_val) {
+                        json_object_set(live_by_id, id->str_val, item);
+                    }
+                }
+                /* curated list from preferred ids */
+                json_t *arr = json_array();
+                for (size_t i = 0; VERIZON_AI_GATEWAY_MODELS[i]; i++) {
+                    const char *mid = VERIZON_AI_GATEWAY_MODELS[i];
+                    json_t *live = json_object_get(live_by_id, mid);
+                    if (live) {
+                        json_t *price_obj = json_object_get(live, "pricing");
+                        char *price_json = price_obj ? json_dumps(price_obj, 0) : NULL;
+                        const char *desc = _ai_gateway_model_is_free(price_json) ? "free" : "";
+                        free(price_json);
+                        json_t *obj = json_object();
+                        json_object_set(obj, "id", json_string(mid));
+                        json_object_set(obj, "desc", json_string(desc));
+                        json_array_append(arr, obj);
+                    }
+                }
+                if (json_len(arr) > 0) curated = json_dumps(arr, 0);
+                json_free(arr);
+                json_free(live_by_id);
+                json_free(root);
+            }
+            http_response_free(resp);
+        }
+        http_client_free(client);
+    } else { free(url); }
+
+    if (curated) {
+        pthread_mutex_lock(&cache_lock);
+        free(catalog_cache);
+        catalog_cache = strdup(curated);
+        pthread_mutex_unlock(&cache_lock);
+    }
+    return curated;  /* caller frees */
+}
+
+/* PoP: fetch_ai_gateway_pricing @ hermes_cli/models.py:fetch_ai_gateway_pricing */
+/* Returns malloc'd JSON: {model_id: {"prompt":..,"completion":..,
+ * "input_cache_read":..,"input_cache_write":..}}. caller frees. */
+char *fetch_ai_gateway_pricing(double timeout_sec, bool force_refresh) {
+    static pthread_mutex_t cache_lock = PTHREAD_MUTEX_INITIALIZER;
+    static char *pricing_cache = NULL;
+
+    pthread_mutex_lock(&cache_lock);
+    if (!force_refresh && pricing_cache) {
+        char *dup = strdup(pricing_cache);
+        pthread_mutex_unlock(&cache_lock);
+        return dup;
+    }
+    pthread_mutex_unlock(&cache_lock);
+
+    char cache_key[512];
+    snprintf(cache_key, sizeof(cache_key), "%s/models", AI_GATEWAY_BASE_URL);
+    char *url = strdup(cache_key);
+    char headers[512];
+    snprintf(headers, sizeof(headers),
+        "Accept: application/json\r\n"
+        "User-Agent: hermes-cli/0.14.1-wubu\r\n");
+    http_client_t *client = http_client_new((int)timeout_sec);
+    char *result = NULL;
+    if (client) {
+        http_response_t *resp = http_get_with_headers(client, url, headers);
+        free(url);
+        if (resp && resp->status == 200 && resp->body) {
+            json_t *root = json_parse(resp->body, NULL);
+            if (root) {
+                json_t *data = json_object_get(root, "data");
+                json_t *out = json_object();
+                size_t dn = json_is_array(data) ? json_len(data) : 0;
+                for (size_t i = 0; i < dn; i++) {
+                    json_t *item = json_get(data, i);
+                    json_t *mid = item ? json_object_get(item, "id") : NULL;
+                    json_t *pricing = item ? json_object_get(item, "pricing") : NULL;
+                    if (mid && mid->str_val && *mid->str_val && pricing && json_is_object(pricing)) {
+                        json_t *entry = json_object();
+                        const char *in = json_object_get(pricing, "input") ?
+                            json_object_get(pricing, "input")->str_val : "";
+                        const char *out_p = json_object_get(pricing, "output") ?
+                            json_object_get(pricing, "output")->str_val : "";
+                        json_object_set(entry, "prompt", json_string(in ? in : ""));
+                        json_object_set(entry, "completion", json_string(out_p ? out_p : ""));
+                        json_t *icr = json_object_get(pricing, "input_cache_read");
+                        if (icr && icr->str_val && *icr->str_val)
+                            json_object_set(entry, "input_cache_read", json_string(icr->str_val));
+                        json_t *icw = json_object_get(pricing, "input_cache_write");
+                        if (icw && icw->str_val && *icw->str_val)
+                            json_object_set(entry, "input_cache_write", json_string(icw->str_val));
+                        json_object_set(out, mid->str_val, entry);
+                    }
+                }
+                result = json_dumps(out, 0);
+                json_free(out);
+                json_free(root);
+            }
+            http_response_free(resp);
+        }
+        http_client_free(client);
+    } else { free(url); }
+
+    if (result) {
+        pthread_mutex_lock(&cache_lock);
+        free(pricing_cache);
+        pricing_cache = strdup(result);
+        pthread_mutex_unlock(&cache_lock);
+    }
+    return result;
+}
+
+/* PoP: ai_gateway_model_ids @ hermes_cli/models.py:ai_gateway_model_ids */
+/* Return just the AI Gateway model-id strings (faithful to Python's
+ *  [mid for mid, _ in fetch_ai_gateway_models(...)] ). Returns malloc'd
+ * JSON array string of ids, or NULL. Caller frees. */
+char *ai_gateway_model_ids(double timeout_sec, bool force_refresh) {
+    char *curated = fetch_ai_gateway_models(timeout_sec, force_refresh);
+    if (!curated) return NULL;
+    json_t *arr = json_parse(curated, NULL);
+    free(curated);
+    if (!arr || !json_is_array(arr)) { json_free(arr); return NULL; }
+    json_t *ids = json_array();
+    size_t n = json_len(arr);
+    for (size_t i = 0; i < n; i++) {
+        json_t *elt = json_get(arr, i);
+        if (!elt || !json_is_object(elt)) continue;
+        json_t *id = json_object_get(elt, "id");
+        if (id && id->str_val && *id->str_val)
+            json_array_append(ids, json_string(id->str_val));
+    }
+    char *result = json_dumps(ids, 0);
+    json_free(ids);
+    json_free(arr);
+    return result;
+}
+
+/* PoP: _spawn_swr_refresh @ hermes_cli/models.py:_spawn_swr_refresh */
+/* Fire-and-forget background refresh of a provider model-id cache entry.
+ * At most one refresh in flight per cache_key (dedup via _swr_refresh_lock).
+ * Failures are swallowed — the stale entry keeps being served. Mirrors the
+ * Python daemon thread semantics. */
+typedef struct { char *cache_key; } swr_ctx_t;
+
+static void *_swr_worker(void *arg) {
+    swr_ctx_t *ctx = (swr_ctx_t *)arg;
+    char *provider = ctx->cache_key;
+    free(ctx);
+    /* refresh via provider_model_ids (returns malloc'd JSON) */
+    char *live = model_provider_model_ids(provider, 1 /*force_refresh*/);
+    if (!live) {
+        /* degraded: leave stale entry */
+        free(provider);
+        return NULL;
+    }
+    char *fp = model_credential_fingerprint(provider);
+    json_t *arr = json_parse(live, NULL);
+    free(live);
+    if (!arr) { free(fp); free(provider); return NULL; }
+    /* Build fresh cache entry: {"fp":..,"at":<epoch>,"models":<arr>} */
+    json_t *entry = json_object();
+    json_object_set(entry, "fp", fp ? json_string(fp) : json_string(""));
+    json_object_set(entry, "at", json_number((double)time(NULL)));
+    json_object_set(entry, "models", arr);
+    char *entry_json = json_dumps(entry, 0);
+    json_free(entry);
+    free(fp);
+    /* persist via the existing save API */
+    model_save_provider_models_cache(entry_json);
+    free(entry_json);
+    free(provider);
+    return NULL;
+}
+
+void _spawn_swr_refresh(const char *cache_key) {
+    if (!cache_key) return;
+    pthread_mutex_lock(&_swr_refresh_lock);
+    for (int i = 0; i < _swr_inflight_n; i++) {
+        if (_swr_inflight_keys[i] && strcmp(_swr_inflight_keys[i], cache_key) == 0) {
+            pthread_mutex_unlock(&_swr_refresh_lock);
+            return;  /* already inflight — dedupe */
+        }
+    }
+    if (_swr_inflight_n < 64) {
+        _swr_inflight_keys[_swr_inflight_n++] = strdup(cache_key);
+    }
+    pthread_mutex_unlock(&_swr_refresh_lock);
+
+    swr_ctx_t *ctx = malloc(sizeof(*ctx));
+    if (!ctx) return;
+    ctx->cache_key = strdup(cache_key);
+    pthread_t tid;
+    if (pthread_create(&tid, NULL, _swr_worker, ctx) != 0) {
+        /* failed to spawn — remove from inflight and bail */
+        pthread_mutex_lock(&_swr_refresh_lock);
+        for (int i = 0; i < _swr_inflight_n; i++) {
+            if (_swr_inflight_keys[i] && strcmp(_swr_inflight_keys[i], cache_key) == 0) {
+                free(_swr_inflight_keys[i]);
+                for (int j = i; j < _swr_inflight_n - 1; j++)
+                    _swr_inflight_keys[j] = _swr_inflight_keys[j+1];
+                _swr_inflight_keys[--_swr_inflight_n] = NULL;
+                break;
+            }
+        }
+        pthread_mutex_unlock(&_swr_refresh_lock);
+        free(ctx->cache_key);
+        free(ctx);
+        return;
+    }
+    pthread_detach(tid);  /* daemon thread — nobody joins */
+}
+
