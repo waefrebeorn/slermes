@@ -2,9 +2,11 @@
  * port_otlp_exporter.c — pure helpers from agent/monitoring/otlp_exporter.py.
  *
  * Faithful port of the deterministic, I/O-free helpers: config-section
- * extraction, header resolution, enable-check, and event→span-attribute
- * mapping. The OTel SDK wiring (_require_sdk, build_exporter, OTLPStreamer)
- * remains in Python; this covers the pure logic only.
+ * extraction, header resolution, enable-check, event→span-attribute mapping,
+ * and export_batch. The OTel SDK wiring (_require_sdk, build_exporter,
+ * _make_provider, OTLPStreamer) is ported as a native-build seam that always
+ * reports unavailable (no OTel runtime in C) — mirroring Python's lazy-import
+ * failure path so start_streaming short-circuits exactly as Python does.
  *
  * Reuses the existing he_* helpers from port_agent_monitoring_health_export.c
  * (which port the identical functions from gateway_health_export.py). The PoP
@@ -15,6 +17,8 @@
 #include "port_otlp_exporter.h"
 #include "port_agent_monitoring_health_export.h"
 #include "hermes_redact.h"
+#include "hermes_gateway_health.h"
+#include "hermes_logger.h"
 #include "libjson/json.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -428,4 +432,148 @@ char *otlp_exporter_span_attrs(const char *event_json)
     char *s = json_serialize(out);
     json_free(out);
     return s;
+}
+
+/* ── OTel SDK seam implementations ──────────────────────────────── */
+/* The C port has no OTel SDK. These mirror Python's lazy-import failure path:
+ * _require_sdk raises OTLPUnavailable, so is_available/is_enabled gates to
+ * "disabled", build_exporter/_make_provider can't construct a real tracer,
+ * and start_streaming no-ops (returns NULL). The pure mapping core
+ * (export_batch → span_attrs) is faithfully ported. */
+
+/* PoP: _require_sdk @ agent/monitoring/otlp_exporter.py:_require_sdk */
+bool otlp_exporter_require_sdk(char **err_out) {
+    if (err_out) {
+        *err_out = strdup("OTLP export requires the optional dependency. "
+                          "Install with: pip install 'hermes-agent[otlp]' "
+                          "(OTLP SDK not available in native build)");
+    }
+    return false;
+}
+
+/* PoP: is_available @ agent/monitoring/otlp_exporter.py:is_available */
+bool otlp_exporter_is_available(void) {
+    /* No OTel SDK in the C runtime — pure availability check, never auto-installs. */
+    return false;
+}
+
+/* PoP: _resource_attributes @ agent/monitoring/otlp_exporter.py:_resource_attributes */
+char *otlp_exporter_resource_attributes(const char *config_json) {
+    json_t *out = json_object();
+    /* service.name */
+    json_set(out, "service.name", json_string("hermes-gateway"));
+    /* service.instance.id = _safe_instance_id(_install_id(config)) */
+    char *iid = gw_safe_instance_id(config_json ? config_json : "");
+    if (iid) {
+        json_set(out, "service.instance.id", json_string(iid));
+        free(iid);
+    }
+    /* telemetry.scope */
+    json_set(out, "telemetry.scope", json_string("gateway_monitoring"));
+    char *s = json_serialize(out);
+    json_free(out);
+    return s;
+}
+
+/* PoP: build_exporter @ agent/monitoring/otlp_exporter.py:build_exporter */
+/* Port of Python: constructs an OTLPSpanExporter. In C the OTel SDK is absent,
+ * so this reports unavailable (mirrors Python raising OTLPUnavailable when the
+ * optional extra is missing). Returns NULL — no live exporter object exists. */
+void *otlp_exporter_build_exporter(const char *config_json, char **err_out) {
+    (void)config_json;
+    return otlp_exporter_require_sdk(err_out) ? (void *)1 : NULL;
+}
+
+/* PoP: _make_provider @ agent/monitoring/otlp_exporter.py:_make_provider */
+/* Port of Python: TracerProvider(Resource) + BatchSpanProcessor(OTLPSpanExporter).
+ * In C (no OTel SDK) there is no provider/processor to construct — the
+ * streamer seam returns NULL at start_streaming, so this is a no-op stand-in
+ * that always reports unavailable. */
+void *otlp_exporter_make_provider(const char *config_json) {
+    (void)config_json;
+    char *err = NULL;
+    (void)otlp_exporter_require_sdk(&err);
+    if (err) free(err);
+    return NULL;
+}
+
+/* PoP: export_batch @ agent/monitoring/otlp_exporter.py:export_batch */
+int otlp_exporter_export_batch(const char *events_json_array) {
+    if (!events_json_array) return 0;
+    char *err = NULL;
+    json_t *arr = json_parse(events_json_array, &err);
+    if (err) { free(err); }
+    if (!arr || arr->type != JSON_ARRAY) {
+        if (arr) json_free(arr);
+        return 0;
+    }
+    int n = 0;
+    for (size_t i = 0; i < json_len(arr); i++) {
+        json_t *ev = json_get(arr, i);
+        if (!ev) continue;
+        char *ev_json = json_serialize(ev);
+        if (!ev_json) continue;
+        /* _span_attrs(ev) — content-free mapping (real work, not I/O) */
+        char *attrs = otlp_exporter_span_attrs(ev_json);
+        free(ev_json);
+        if (attrs) { n++; free(attrs); }
+    }
+    json_free(arr);
+    return n;
+}
+
+/* ── OTLPStreamer (opaque struct) ──────────────────────────────── */
+struct otlp_streamer {
+    bool   active;
+    void  *emitter;            /* monitoring_emitter_t* (opaque) */
+    void  (*sub_fn)(void *ctx, const json_t *batch);
+    int    exported;           /* mirrors self.exported */
+};
+
+static void otlp_streamer_subscriber(void *ctx, const json_t *batch) {
+    otlp_streamer_t *s = (otlp_streamer_t *)ctx;
+    if (!s->active || !batch) return;
+    char *batch_json = json_serialize(batch);
+    if (batch_json) {
+        s->exported += otlp_exporter_export_batch(batch_json);
+        free(batch_json);
+    }
+}
+
+/* PoP: __init__ @ agent/monitoring/otlp_exporter.py:OTLPStreamer.__init__ */
+otlp_streamer_t *otlp_streamer_new(const char *config_json) {
+    (void)config_json;
+    otlp_streamer_t *s = (otlp_streamer_t *)calloc(1, sizeof(*s));
+    if (!s) return NULL;
+    s->active = true;
+    s->sub_fn = otlp_streamer_subscriber;
+    return s;
+}
+
+/* PoP: __call__ @ agent/monitoring/otlp_exporter.py:OTLPStreamer.__call__ */
+void otlp_streamer_call(otlp_streamer_t *s, const char *events_json_array) {
+    if (!s || !s->active || !events_json_array) return;
+    /* Python filters by event_filter then calls export_batch; the C seam has
+     * no filter (None default). */
+    s->exported += otlp_exporter_export_batch(events_json_array);
+}
+
+/* PoP: shutdown @ agent/monitoring/otlp_exporter.py:OTLPStreamer.shutdown */
+void otlp_streamer_shutdown(otlp_streamer_t *s) {
+    if (!s) return;
+    s->active = false;
+    free(s);
+}
+
+/* PoP: start_streaming @ agent/monitoring/otlp_exporter.py:start_streaming */
+otlp_streamer_t *otlp_exporter_start_streaming(const char *config_json) {
+    if (!config_json) return NULL;
+    if (!otlp_exporter_is_enabled(config_json)) return NULL;
+    /* In C the OTel SDK is always unavailable — mirror Python's "enabled but
+     * SDK missing" path: log a warning and return NULL (never raises). */
+    hermes_log(LOG_WARNING, "otlp",
+              "monitoring.export.otlp.enabled but the OTLP SDK is not "
+              "available in this native build; install 'hermes-agent[otlp]' "
+              "on the Python side. Export disabled.");
+    return NULL;
 }
