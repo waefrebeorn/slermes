@@ -37,6 +37,13 @@ elif [ -f tests/oracle/registry.json ]; then
     REG_HARNESS=$(python3 -c "import json,sys; d=json.load(open('tests/oracle/registry.json')); print(d.get('ports',{}).get(sys.argv[1],{}).get('harness',''))" "$NAME" 2>/dev/null)
     [ -n "$REG_HARNESS" ] && HARNESS="$REG_HARNESS"
 fi
+# Fixture setup: some fixtures need a git repo / binary blob / seeded DB that
+# cannot be committed (nested .git, binary artifacts). A gen_fixture.sh in the
+# fixture dir, when present and executable, (re)materializes the fixture in
+# place. Run it only if repo/.git is absent — cheap and idempotent.
+if [ -x "$FIX/gen_fixture.sh" ] && [ ! -d "$FIX/repo/.git" ]; then
+    bash "$FIX/gen_fixture.sh"
+fi
 ORACLE="tests/sta_oracle_$NAME.py"
 
 [ -f "$HARNESS" ] || { echo "MISSING $HARNESS"; exit 2; }
