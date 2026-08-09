@@ -77,7 +77,10 @@ static bool is_loopback_client(uint32_t client_ip) {
 }
 
 /* Generate a session token using UUID v4.
- * Port of Python: secrets.token_urlsafe(32) */
+ * Port of Python hermes_cli/web_server.py:_resolve_session_token:
+ *   `os.environ.get("HERMES_DASHBOARD_SESSION_TOKEN") or secrets.token_urlsafe(32)`
+ * First try env; otherwise a UUID v4 (fallback: pid-timestamp hash). */
+/* PoP: _resolve_session_token @ hermes_cli/web_server.py:_resolve_session_token */
 static void generate_session_token(void) {
     /* First try HERMES_DASHBOARD_SESSION_TOKEN from env */
     const char *env_token = getenv("HERMES_DASHBOARD_SESSION_TOKEN");

@@ -244,6 +244,9 @@ void gateway_config_apply_env_overrides(gateway_config_t *cfg);
 
 /** Check if a platform is sufficiently configured to be considered "connected" */
 bool gateway_config_platform_connected(const gateway_config_t *cfg, int platform_idx);
+/* Port of Python gateway/config.py: get_connected_platforms / _is_platform_connected. */
+json_node_t *gateway_config_get_connected_platforms(const gateway_config_t *cfg);
+bool gateway_config_is_platform_connected(const gateway_config_t *cfg, int platform_idx);
 
 /** Resolve a platform name string to enum value (Port of Python Platform._missing_). Returns -1 if unknown. */
 int gateway_config_platform_missing(const char *value);

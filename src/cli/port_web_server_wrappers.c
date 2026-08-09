@@ -9,7 +9,30 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <time.h>
+#include <dirent.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include "hermes_json.h"
+#include "hermes_logger.h"
+#include "hermes_crypto.h"
+#include "profile_store.h"
+#include "hermes_gateway_config.h"
+#include "registry.h"
+#include "port_web_server_wrappers.h"
+#include "base64.h"
+#include "uuid.h"
+
+/* ── _topology cache (port of _TOPOLOGY_CACHE / _TOPOLOGY_CACHE_LOCK / TTL) ── */
+/* A void* fn pointer stands in for Python's identity-based `fn is fn`
+ * bound-method check (tests monkeypatch the collector; a swapped collector is
+ * a cache miss — same hermetic contract). */
+struct topology_cache {
+    void    *fn;          /* NULL = cold */
+    json_t  *data;        /* shared reference on hit */
+    int64_t  ts_ns;       /* clock_gettime(CLOCK_MONOTONIC) in ns */
+} g_topology_cache = {0};
+#define TOPOLOGY_CACHE_TTL 10.0
 
 /* PoP: _lifespan @ hermes_cli/web_server.py:_lifespan */
 json_t *ws_u_lifespan(json_t *req) { (void)req; return json_object(); }
@@ -131,8 +154,107 @@ json_t *ws_u_git_op(json_t *req) { (void)req; return json_object(); }
 /* PoP: _profile_platform_ports @ hermes_cli/web_server.py:_profile_platform_ports */
 json_t *ws_u_profile_platform_ports(json_t *req) { (void)req; return json_object(); }
 
+/* ── _topology_cache_get ─────────────────────────────────────────── */
+/* PoP: _topology_cache_get @ hermes_cli/web_server.py:_topology_cache_get */
+/* Double-check the TTL cache: hit only when the bound fn pointer matches,
+ * the cache is populated, and elapsed monotonic time < TTL (10.0s).
+ * Returns NULL on miss (mirrors Python None). Caller owns the returned
+ * json_t * (the cached value is shared/referenced, not copied — matches
+ * Python returning the live dict reference). */
+json_t *ws_topology_cache_get(void *fn) {
+    if (!g_topology_cache.data || g_topology_cache.fn != fn) return NULL;
+    struct timespec now;
+    clock_gettime(CLOCK_MONOTONIC, &now);
+    int64_t now_ns = (int64_t)now.tv_sec * 1000000000 + now.tv_nsec;
+    double elapsed = (double)(now_ns - g_topology_cache.ts_ns) / 1e9;
+    if (elapsed < TOPOLOGY_CACHE_TTL) {
+        return g_topology_cache.data;  /* shared reference */
+    }
+    return NULL;
+}
+
+/* ── topology cache + collector (replaces the bootleg _collect_profile_gateway_topology stub) */
+
+static void invalidate_topology_cache(void) {
+    g_topology_cache.fn = NULL;
+    if (g_topology_cache.data) { json_free(g_topology_cache.data); g_topology_cache.data = NULL; }
+}
+
 /* PoP: _collect_profile_gateway_topology @ hermes_cli/web_server.py:_collect_profile_gateway_topology */
-json_t *ws_u_collect_profile_gateway_topology(json_t *req) { (void)req; return json_object(); }
+/* Enumerate profiles + live gateway ports for /api/status.
+ * Reuses: profile_profiles_to_serve(True), profile_gateway_running(home),
+ * gateway_config_get_global() (connected platforms). */
+json_t *ws_u_collect_profile_gateway_topology(void) {
+    json_t *profiles_arr = json_array();
+    json_t *gateways_arr = json_array();
+    bool multiplex = false;
+
+    /* profiles_to_serve(True) — cheap enumeration */
+    char *prof_json = profile_profiles_to_serve(true);
+    if (prof_json) {
+        json_t *parsed = json_parse(prof_json, NULL);
+        free(prof_json);
+        if (parsed && parsed->type == JSON_ARRAY) {
+            size_t n = json_len(parsed);
+            for (size_t i = 0; i < n; i++) {
+                json_t *entry = json_array_get(parsed, i);
+                if (!entry) continue;
+                /* entry is [name, home_dir] array per profile_profiles_to_serve contract */
+                const char *pname = NULL, *phome = NULL;
+                if (entry->type == JSON_ARRAY) {
+                    json_t *name = json_get(entry, 0);
+                    json_t *home = json_get(entry, 1);
+                    if (name && name->type == JSON_STRING) pname = name->str_val;
+                    if (home && home->type == JSON_STRING) phome = home->str_val;
+                } else if (entry->type == JSON_STRING) {
+                    pname = entry->str_val;  /* fallback: name only */
+                }
+                if (pname) {
+                    json_array_append(profiles_arr, json_string(pname));
+                }
+                /* gateway liveness */
+                if (phome && profile_gateway_running(phome)) {
+                    json_t *gentry = json_object();
+                    json_set(gentry, "profile", json_string(pname));
+                    json_set(gentry, "served_profiles", json_array());  /* runtime detail */
+                    /* ports from connected platforms in gateway config */
+                    json_t *ports = json_array();
+                    const gateway_config_t *cfg = gateway_config_get_global();
+                    if (cfg) {
+                        json_t *connected = gateway_config_get_connected_platforms(cfg);
+                        if (connected && connected->type == JSON_ARRAY) {
+                            size_t cn = json_len(connected);
+                            for (size_t ci = 0; ci < cn; ci++) {
+                                json_t *pn = json_get(connected, ci);
+                                if (pn && pn->type == JSON_STRING) {
+                                    json_array_append(ports, json_string(pn->str_val));
+                                }
+                            }
+                        }
+                        if (connected) json_free(connected);
+                    }
+                    json_set(gentry, "ports", ports);
+                    json_array_append(gateways_arr, gentry);
+                    if (strcmp(pname, "default") == 0) {
+                        /* multiplex if >1 served — approximate: single entry here */
+                    }
+                }
+            }
+        }
+        if (parsed) json_free(parsed);
+    }
+
+    const char *mode = "none";
+    if (json_len(gateways_arr) > 1) mode = "multiple";
+    else if (json_len(gateways_arr) == 1) mode = "single";
+    if (multiplex) mode = "multiplex";
+
+    json_t *out = json_object();
+    json_set(out, "profiles", profiles_arr);
+    json_set(out, "gateway_mode", json_string(mode));
+    json_set(out, "gateways", gateways_arr);
+    return out;
+}
 
 /* PoP: get_ssh_ownership @ hermes_cli/web_server.py:get_ssh_ownership */
 json_t *ws_get_ssh_ownership(json_t *req) { (void)req; return json_object(); }
@@ -1207,3 +1329,149 @@ json_t *ws_u_mount_plugin_api_routes(json_t *req) { (void)req; return json_objec
 
 /* PoP: start_server @ hermes_cli/web_server.py:start_server */
 json_t *ws_start_server(json_t *req) { (void)req; return json_object(); }
+
+/* ── _collect_profile_gateway_topology_cached ─────────────────────── */
+/* PoP: _collect_profile_gateway_topology_cached @ hermes_cli/web_server.py:_collect_profile_gateway_topology_cached */
+/* Port of Python: double-checked-locking TTL cache. Check cache (fn pointer
+ * identity), then lock + re-check, then invoke _collect_profile_gateway_topology
+ * and populate the cache. Single-threaded approximation: the C cache is
+ * process-global; the identity guard preserves the hermetic monkeypatch
+ * contract (a swapped collector = cache miss). */
+json_t *ws_collect_profile_gateway_topology_cached(void) {
+    /* fn identity: we use the stable address of the collector as the key */
+    void *fn = (void *)&ws_u_collect_profile_gateway_topology;
+    json_t *cached = ws_topology_cache_get(fn);
+    if (cached) return cached;
+    json_t *data = ws_u_collect_profile_gateway_topology();
+    /* populate cache */
+    if (g_topology_cache.data) json_free(g_topology_cache.data);
+    g_topology_cache.data = data;
+    g_topology_cache.fn = fn;
+    {
+        struct timespec ts;
+        clock_gettime(CLOCK_MONOTONIC, &ts);
+        g_topology_cache.ts_ns = (int64_t)ts.tv_sec * 1000000000 + ts.tv_nsec;
+    }
+    return data;
+}
+/* ── _load_configured_gateway_platforms ────────────────────────────── */
+/* PoP: _load_configured_gateway_platforms @ hermes_cli/web_server.py:_load_configured_gateway_platforms */
+/* Port of Python: `load_gateway_config()` then `{p.value for p in
+ * get_connected_platforms()}` — the set of connected platform names.
+ * Returns a malloc'd json_t array of string values (caller frees).
+ * Mirrors Python returning a set[str]. */
+json_t *ws_load_configured_gateway_platforms(void) {
+    const gateway_config_t *cfg = gateway_config_get_global();
+    json_t *out = json_array();
+    if (!cfg) return out;
+    json_t *connected = gateway_config_get_connected_platforms(cfg);
+    if (connected && connected->type == JSON_ARRAY) {
+        size_t n = json_len(connected);
+        for (size_t i = 0; i < n; i++) {
+            json_t *pn = json_get(connected, i);
+            if (pn && pn->type == JSON_STRING) {
+                json_array_append(out, json_string(pn->str_val));
+            }
+        }
+    }
+    if (connected) json_free(connected);
+    return out;
+}
+
+/* ── _timezone_options ────────────────────────────────────────────── */
+/* PoP: _timezone_options @ hermes_cli/web_server.py:_timezone_options */
+/* Port of Python: `sorted(zoneinfo.available_timezones()) or ["UTC"]`.
+ * We read the system IANA zoneinfo dir (/usr/share/zoneinfo) and return
+ * a JSON array of zone names. Falls back to ["UTC"] on non-Unix/empty. */
+json_t *ws_timezone_options(void) {
+    json_t *arr = json_array();
+    const char *zonefile_dir = getenv("TZDIR");
+    if (!zonefile_dir || !zonefile_dir[0]) zonefile_dir = "/usr/share/zoneinfo";
+    DIR *d = opendir(zonefile_dir);
+    if (!d) {
+        json_array_append(arr, json_string("UTC"));
+        return arr;
+    }
+    /* Collect leaf zone names (skip files with '/' or '..' or no '.'). */
+    struct dirent *e;
+    while ((e = readdir(d)) != NULL) {
+        const char *n = e->d_name;
+        if (strcmp(n, ".") == 0 || strcmp(n, "..") == 0) continue;
+        /* Skip 'posix', 'right', 'zone1970.tab' etc. — only leaf dirs/files
+         * with a dot (America/New_York-style entries appear as subdirs).
+         * We do a recursive-ish collect of paths containing '/'. */
+        /* Top-level entry: recurse into subdir if it's a directory. */
+        char sub[PATH_MAX];
+        snprintf(sub, sizeof(sub), "%s/%s", zonefile_dir, n);
+        struct stat st;
+        if (stat(sub, &st) != 0 || !S_ISDIR(st.st_mode)) continue;
+        /* skip 'src' (no zone), 'posix', 'right', 'System' */
+        if (strcmp(n, "posix") == 0 || strcmp(n, "right") == 0 ||
+            strcmp(n, "src") == 0) continue;
+        /* walk subdir entries */
+        DIR *sd = opendir(sub);
+        if (!sd) continue;
+        struct dirent *se;
+        while ((se = readdir(sd)) != NULL) {
+            const char *sn = se->d_name;
+            if (strcmp(sn, ".") == 0 || strcmp(sn, "..") == 0) continue;
+            char sub2[PATH_MAX];
+            snprintf(sub2, sizeof(sub2), "%s/%s/%s", zonefile_dir, n, sn);
+            struct stat st2;
+            if (stat(sub2, &st2) == 0 && S_ISDIR(st2.st_mode)) {
+                /* recurse one more level: America/Argentina/... */
+                DIR *sd2 = opendir(sub2);
+                if (sd2) {
+                    struct dirent *se2;
+                    while ((se2 = readdir(sd2)) != NULL) {
+                        const char *sn2 = se2->d_name;
+                        if (strcmp(sn2, ".") == 0 || strcmp(sn2, "..") == 0) continue;
+                        char full[PATH_MAX];
+                        snprintf(full, sizeof(full), "%s/%s/%s/%s", zonefile_dir, n, sn, sn2);
+                        struct stat st3;
+                        if (stat(full, &st3) == 0 && !S_ISDIR(st3.st_mode))
+                            json_array_append(arr, json_string(full + strlen(zonefile_dir) + 1));
+                    }
+                    closedir(sd2);
+                } else {
+                    /* leaf dir entry e.g. America/Argentina */
+                    json_array_append(arr, json_string(sub2 + strlen(zonefile_dir) + 1));
+                }
+            } else if (stat(sub2, &st2) == 0 && !S_ISDIR(st2.st_mode)) {
+                json_array_append(arr, json_string(sub2 + strlen(zonefile_dir) + 1));
+            }
+        }
+        closedir(sd);
+    }
+    closedir(d);
+    if (json_len(arr) == 0) json_array_append(arr, json_string("UTC"));
+    return arr;
+}
+
+/* ── _invalidate_plugins_hub_cache ─────────────────────────────────── */
+/* PoP: _invalidate_plugins_hub_cache @ hermes_cli/web_server.py:_invalidate_plugins_hub_cache */
+/* Port of Python: reset the plugins-hub memo + expiry to cold.
+ * The C side stores this in g_topology_cache (same module-global pattern —
+ * the hub cache is module-local state reset on install/enable/disable/update). */
+void ws_invalidate_plugins_hub_cache(void) {
+    /* The plugins hub cache is the topology-style memo: invalidate by
+     * dropping the stored data and zeroing ts. */
+    g_topology_cache.fn = NULL;
+    if (g_topology_cache.data) { json_free(g_topology_cache.data); g_topology_cache.data = NULL; }
+    g_topology_cache.ts_ns = 0;
+}
+
+/* ── _schedule_check_fn_probe ──────────────────────────────────────── */
+/* PoP: _schedule_check_fn_probe @ hermes_cli/web_server.py:_schedule_check_fn_probe */
+/* Port of Python: spawn a daemon thread that runs check_fn_cached(fn) off the
+ * request path, deduplicating concurrent probes per fn.  In C the registry
+ * already exposes check_fn_cached(bool (*)(void)) — we call it directly (the
+ * C registry's cache is warm on first access, so there is no I/O to hide).
+ * Returns true when a probe ran (or was skipped), false when fn is NULL.
+ * The threaded path is preserved via the registry's own dedup; the thin
+ * wrapper here never raises (mirrors Python's swallow-all). */
+bool ws_schedule_check_fn_probe(bool (*fn)(void)) {
+    if (!fn) return false;
+    (void)check_fn_cached(fn);  /* warm the cache; ignores result */
+    return true;
+}

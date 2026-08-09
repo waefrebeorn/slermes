@@ -314,12 +314,11 @@ ws_path_status_t ws_canonical_path(const char *raw, bool require_exists,
     return WS_PATH_PARSE_FAILED;
 }
 
-/* ─────────────────── ws_path_is_under ───────────────────────────────────
- * PoP: _path_is_under @ hermes_cli/web_server.py:_path_is_under
- * `target == root or root in target.parents`. Both args must be
- * canonical (realpath'd). Implementation: walk the parents of target
- * via dirname() loops; equality, then string-prefix-with-trailing-slash
- * check. */
+/* ─────────────────── ws_path_is_under ─────────────────────────────────── */
+/* PoP: _path_is_under @ hermes_cli/web_server.py:_path_is_under */
+/* `target == root or root in target.parents`. Both args must be canonical
+ * (realpath'd). Implementation: walk parents of target via dirname() loops;
+ * equality, then string-prefix-with-trailing-slash check. */
 bool ws_path_is_under(const char *root, const char *target) {
     if (!root || !target) return false;
     if (strcmp(root, target) == 0) return true;
@@ -452,10 +451,10 @@ ws_path_status_t ws_decode_data_url(const char *data_url,
     return WS_PATH_OK;
 }
 
-/* ── ws_fs_mime_type ───────────────────────────────────────────────────────
- * PoP: _fs_mime_type @ hermes_cli/web_server.py:_fs_mime_type
- *     Python: suffix-lowercased; if in `_FS_MIME_TYPES` return that;
- *     else `mimetypes.guess_type(str(path))[0] or "application/octet-stream"`.
+/* ── ws_fs_mime_type ─────────────────────────────────────────────────────── */
+/* PoP: _fs_mime_type @ hermes_cli/web_server.py:_fs_mime_type */
+/* Python: suffix-lowercased; if in `_FS_MIME_TYPES` return that;
+ * else `mimetypes.guess_type(str(path))[0] or "application/octet-stream"`.
  * We mirror that exactly: first the hardcoded dashboard table, then a small
  * fallback for the common types Python's mimetypes module knows inline
  * (txt, html, htm, css, js, json, xml, pdf, md, gz, tgz, tar, csv),
