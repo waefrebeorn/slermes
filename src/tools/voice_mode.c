@@ -15,6 +15,7 @@
 #include "hermes_agent.h"
 #include "hermes_json.h"
 #include "transcribe.h"
+#include "voice_mode_pure.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -1390,4 +1391,308 @@ void registry_init_voice(void) {
         "},"
         "\"required\":[\"file_path\"]"
         "}", transcribe_audio_handler);
+}
+
+/* ---- module globals for the thinking-sound daemon ---- */
+static pthread_t g_thinking_thread = 0;
+static int g_thinking_stop_flag = 0;
+static pthread_mutex_t g_thinking_lock = PTHREAD_MUTEX_INITIALIZER;
+
+/* PoP: _import_numpy @ tools/voice_mode.py:_import_numpy */
+/* Lazy-import numpy availability probe. The C port does NOT require numpy
+ * (tones are synthesized natively); this only resolves whether a numpy
+ * backend exists so callers can branch. Probes the filesystem directly
+ * (site-packages / PYTHONPATH) instead of shelling out to the interpreter. */
+int voice_import_numpy(void) {
+    const char *def_paths[] = {
+        "/usr/lib/python3/dist-packages/numpy",
+        "/usr/local/lib/python3.11/dist-packages/numpy",
+        "/usr/local/lib/python3.12/dist-packages/numpy",
+        NULL
+    };
+    const char *pp = getenv("PYTHONPATH");
+    if (pp && *pp) {
+        char buf[4096];
+        snprintf(buf, sizeof(buf), "%s", pp);
+        char *save = NULL;
+        char *tok = strtok_r(buf, ":", &save);
+        while (tok) {
+            char cand[4196];
+            snprintf(cand, sizeof(cand), "%s/numpy", tok);
+            if (access(cand, F_OK) == 0) return 0;
+            tok = strtok_r(NULL, ":", &save);
+        }
+    }
+    for (int i = 0; def_paths[i]; i++)
+        if (access(def_paths[i], F_OK) == 0) return 0;
+    return -1;
+}
+
+/* PoP: _default_input_samplerate @ tools/voice_mode.py:_default_input_samplerate */
+int voice_default_input_samplerate(void) {
+    return VOICE_SAMPLE_RATE;
+}
+
+/* PoP: _play_int16_via_tempfile @ tools/voice_mode.py:_play_int16_via_tempfile */
+void voice_play_int16_via_tempfile(const int16_t *samples, size_t n, int sample_rate) {
+    if (!samples || n == 0) return;
+    char tmp_path[256];
+    snprintf(tmp_path, sizeof(tmp_path), "/tmp/hermes_voice/blip_%ld.wav", (long)time(NULL));
+    mkdir("/tmp/hermes_voice", 0755);
+    if (voice_write_wav(tmp_path, samples, n * sizeof(int16_t),
+                        sample_rate ? sample_rate : VOICE_SAMPLE_RATE,
+                        1 /* mono */, 16) == 0) {
+        play_audio_file(tmp_path);
+    }
+    unlink(tmp_path);
+}
+
+/* PoP: _synth_thinking_blip @ tools/voice_mode.py:_synth_thinking_blip */
+/* One soft 'blub': short sine with a downward pitch glide + smooth
+ * attack/decay envelope (no clicks), low-volume. Returns sample count in
+ * *out_n. Caller frees the returned int16 buffer. */
+int16_t *voice_synth_thinking_blip(float frequency, size_t *out_n) {
+    if (!out_n) return NULL;
+    const double duration = 0.16;
+    const int sr = VOICE_SAMPLE_RATE;
+    const int n = (int)(sr * duration + 0.5);
+    *out_n = (size_t)n;
+    if (n <= 0) return NULL;
+    int16_t *samples = (int16_t *)malloc((size_t)n * sizeof(int16_t));
+    if (!samples) { *out_n = 0; return NULL; }
+    double vol = voice_get_beep_volume(NULL) * 0.5;
+    int attack = (int)(0.02 * sr);
+    if (attack < 1) attack = 1;
+    double two_pi = 2.0 * M_PI;
+    double phase = 0.0;
+    for (int i = 0; i < n; i++) {
+        double t = (double)i / (double)sr;
+        double glide = 1.0 - 0.28 * ((double)i / (double)n);
+        double inst_f = frequency * glide;
+        phase += two_pi * inst_f / (double)sr;
+        if (phase > two_pi) phase -= two_pi;
+        double tone = sin(phase) * 0.8 + 0.2 * sin(phase / 2.0);
+        double env = 1.0;
+        if (i < attack) env = (double)i / (double)attack;
+        env *= exp(-t * 14.0);
+        double v = tone * env * vol * 32767.0;
+        if (v > 32767.0) v = 32767.0; if (v < -32767.0) v = -32767.0;
+        samples[i] = (int16_t)(v);
+    }
+    return samples;
+}
+
+/* PoP: _thinking_sound_loop @ tools/voice_mode.py:_thinking_sound_loop */
+static void *voice_thinking_sound_loop(void *arg) {
+    (void)arg;
+    float pitches[2] = {392.0f, 329.6f};
+    int idx = 0;
+    const double sr = (double)VOICE_SAMPLE_RATE;
+    for (;;) {
+        if (__atomic_load_n(&g_thinking_stop_flag, __ATOMIC_ACQUIRE)) break;
+        if (!thinking_sound_enabled(NULL)) break;
+        size_t n = 0;
+        int16_t *blip = voice_synth_thinking_blip(pitches[idx % 2], &n);
+        if (blip && n) voice_play_int16_via_tempfile(blip, n, (int)sr);
+        free(blip);
+        idx++;
+        for (int w = 0; w < 1200 && !__atomic_load_n(&g_thinking_stop_flag, __ATOMIC_ACQUIRE); w++)
+            nanosleep(&(struct timespec){0, 1000000}, NULL);
+    }
+    return NULL;
+}
+
+/* PoP: start_thinking_sound @ tools/voice_mode.py:start_thinking_sound */
+bool voice_start_thinking_sound(void) {
+    if (!thinking_sound_enabled(NULL)) return false;
+    pthread_mutex_lock(&g_thinking_lock);
+    int already = g_thinking_thread && pthread_kill(g_thinking_thread, 0) == 0;
+    if (!already) {
+        __atomic_store_n(&g_thinking_stop_flag, 0, __ATOMIC_RELEASE);
+        pthread_create(&g_thinking_thread, NULL, voice_thinking_sound_loop, NULL);
+    }
+    pthread_mutex_unlock(&g_thinking_lock);
+    return true;
+}
+
+/* PoP: stop_thinking_sound @ tools/voice_mode.py:stop_thinking_sound */
+void voice_stop_thinking_sound(void) {
+    pthread_mutex_lock(&g_thinking_lock);
+    __atomic_store_n(&g_thinking_stop_flag, 1, __ATOMIC_RELEASE);
+    pthread_t t = g_thinking_thread;
+    g_thinking_thread = 0;
+    pthread_mutex_unlock(&g_thinking_lock);
+    if (t) pthread_join(t, NULL);
+}
+
+/* PoP: _play_audio_file_impl @ tools/voice_mode.py:_play_audio_file_impl */
+bool voice_play_audio_file_impl(const char *file_path) {
+    if (!file_path || !*file_path) return false;
+    struct stat st;
+    if (stat(file_path, &st) != 0) return false;
+    const char *ext = strrchr(file_path, '.');
+    char cmd[2048];
+    if (ext && (strcasecmp(ext, ".wav") == 0 || strcasecmp(ext, ".ogg") == 0 ||
+               strcasecmp(ext, ".flac") == 0 || strcasecmp(ext, ".mp3") == 0 ||
+               strcasecmp(ext, ".m4a") == 0)) {
+#ifdef __APPLE__
+        snprintf(cmd, sizeof(cmd), "afplay %s", file_path);
+        if (system(cmd) == 0) return true;
+#endif
+        if (access("ffplay", X_OK) == 0 || access("/usr/bin/ffplay", F_OK) == 0) {
+            snprintf(cmd, sizeof(cmd), "ffplay -nodisp -autoexit -loglevel quiet '%s'", file_path);
+            return system(cmd) == 0;
+        }
+        if (access("aplay", X_OK) == 0) {
+            snprintf(cmd, sizeof(cmd), "aplay -q '%s'", file_path);
+            return system(cmd) == 0;
+        }
+    }
+    return play_audio_file(file_path) == 0;
+}
+
+/* PoP: full_duplex_listen @ tools/voice_mode.py:full_duplex_listen */
+char *voice_full_duplex_listen(int (*should_stop)(void),
+                               bool (*is_playing)(void),
+                               void (*on_trigger)(const char *phase),
+                               double multiplier,
+                               int sustained_ms, int calibration_ms, int grace_ms,
+                               int pre_roll_ms, int endpoint_silence_ms,
+                               int max_utterance_ms) {
+#ifdef SLERMES_NO_ALSA
+    (void)should_stop;(void)is_playing;(void)on_trigger;(void)multiplier;
+    (void)sustained_ms;(void)calibration_ms;(void)grace_ms;(void)pre_roll_ms;
+    (void)endpoint_silence_ms;(void)max_utterance_ms;
+    return NULL;
+#else
+    snd_pcm_t *pcm = NULL;
+    if (snd_pcm_open(&pcm, g_voice_device, SND_PCM_STREAM_CAPTURE, 0) < 0) return NULL;
+    snd_pcm_set_params(pcm, SND_PCM_FORMAT_S16_LE, SND_PCM_ACCESS_RW_INTERLEAVED,
+                       VOICE_CHANNELS, VOICE_SAMPLE_RATE, 1, 20000);
+    int block = VOICE_BLOCK_FRAMES;
+    int calib_blocks = calibration_ms > 0 ? calibration_ms / 30 : 14;
+    int trip_blocks  = sustained_ms > 0 ? sustained_ms / 30 : 10;
+    int trip_needed  = (int)ceil((double)trip_blocks * 0.8);
+    if (trip_needed < 1) trip_needed = 1;
+    int grace_blocks = grace_ms > 0 ? grace_ms / 30 : 0;
+    int endpoint_blocks = endpoint_silence_ms > 0 ? endpoint_silence_ms / 30 : 42;
+    int max_blocks = max_utterance_ms > 0 ? max_utterance_ms / 30 : 1000;
+    double mult = multiplier > 0.0 ? multiplier : 2.5;
+    double *ambient = (double *)calloc(calib_blocks > 0 ? calib_blocks : 1, sizeof(double));
+    int amb_n = 0;
+    int pre_roll_blocks = pre_roll_ms > 0 ? pre_roll_ms / 30 : 40;
+    int16_t **pre_roll = (int16_t **)calloc(pre_roll_blocks > 0 ? pre_roll_blocks : 1, sizeof(int16_t *));
+    int pre_roll_head = 0, pre_roll_count = 0;
+    int *recent_above = (int *)calloc(trip_blocks > 0 ? trip_blocks : 1, sizeof(int));
+    int recent_n = 0;
+    double quiet_floor = (double)VOICE_SILENCE_RMS_THRESHOLD;
+    double floor_locked = 0.0;
+    bool playing_prev = false;
+    int grace_remaining = 0, blocks_since_playback = 999999;
+    char *out_path = NULL;
+    for (int block_idx = 0; ; block_idx++) {
+        if (should_stop && should_stop()) break;
+        int16_t chunk[block * 8];
+        snd_pcm_uframes_t got = snd_pcm_readi(pcm, chunk, block);
+        if (got == (snd_pcm_uframes_t)-EPIPE) { snd_pcm_recover(pcm, -EPIPE, 1); continue; }
+        if (got <= 0) continue;
+        double rms = voice_block_rms(chunk, got * VOICE_CHANNELS);
+        if (pre_roll_blocks > 0) {
+            int16_t *cp = (int16_t *)malloc((size_t)got * VOICE_CHANNELS * sizeof(int16_t));
+            if (cp) {
+                memcpy(cp, chunk, (size_t)got * VOICE_CHANNELS * sizeof(int16_t));
+                if (pre_roll[pre_roll_head]) free(pre_roll[pre_roll_head]);
+                pre_roll[pre_roll_head] = cp;
+                pre_roll_head = (pre_roll_head + 1) % (pre_roll_blocks > 0 ? pre_roll_blocks : 1);
+                if (pre_roll_count < pre_roll_blocks) pre_roll_count++;
+            }
+        }
+        bool playing = is_playing ? is_playing() : false;
+        if (playing) blocks_since_playback = 0; else blocks_since_playback++;
+        if (playing_prev != playing && !playing_prev && playing)
+            if (blocks_since_playback >= 33) grace_remaining = grace_blocks;
+        playing_prev = playing;
+        if (grace_remaining > 0) grace_remaining--;
+        if (!floor_locked && !playing) {
+            if (amb_n < calib_blocks) { if (amb_n < calib_blocks) ambient[amb_n++] = rms; }
+            if (amb_n >= calib_blocks || playing) {
+                double tmp[256]; int tn = amb_n < 256 ? amb_n : 255;
+                memcpy(tmp, ambient, tn * sizeof(double));
+                for (int i = 0; i < tn; i++) for (int j = i+1; j < tn; j++)
+                    if (tmp[j] < tmp[i]) { double t = tmp[i]; tmp[i] = tmp[j]; tmp[j] = t; }
+                int pi = (int)(tn * 0.9); if (pi < 1) pi = 1;
+                double pct90 = tmp[pi];
+                quiet_floor = pct90 > (double)VOICE_SILENCE_RMS_THRESHOLD ? pct90 : (double)VOICE_SILENCE_RMS_THRESHOLD;
+                floor_locked = 1.0;
+            }
+            if (!floor_locked) continue;
+        }
+        double trigger = quiet_floor * mult;
+        if (trigger < 3.0 * (double)VOICE_SILENCE_RMS_THRESHOLD) trigger = 3.0 * (double)VOICE_SILENCE_RMS_THRESHOLD;
+        if (grace_remaining > 0) trigger = (double)VOICE_SILENCE_RMS_THRESHOLD * 9999.0;
+        bool above = (rms >= trigger);
+        if (recent_n < trip_blocks) recent_above[recent_n++] = (int)above;
+        else { for (int i = 1; i < trip_blocks; i++) recent_above[i-1] = recent_above[i]; recent_above[trip_blocks-1] = (int)above; }
+        int above_count = 0; for (int i = 0; i < recent_n; i++) above_count += recent_above[i];
+        int trip_now = 0;
+        if (floor_locked && !grace_remaining) trip_now = (above_count >= trip_needed && above);
+        if (trip_now) {
+            if (on_trigger) on_trigger(playing ? "playback" : "generation");
+            if (!pre_roll_blocks) { out_path = strdup("/tmp/hermes_voice/barge_full.wav"); break; }
+            size_t cap = (size_t)(pre_roll_count + max_blocks) * block * VOICE_CHANNELS + 1024;
+            int16_t *frames = (int16_t *)malloc(cap * sizeof(int16_t));
+            size_t flen = 0;
+            if (frames) {
+                for (int i = 0; i < pre_roll_count; i++) {
+                    int idx = (pre_roll_head - pre_roll_count + i);
+                    idx = (idx % (pre_roll_blocks > 0 ? pre_roll_blocks : 1) + (pre_roll_blocks > 0 ? pre_roll_blocks : 1)) % (pre_roll_blocks > 0 ? pre_roll_blocks : 1);
+                    int16_t *b = pre_roll[idx];
+                    if (b) { size_t bsz = (size_t)got * VOICE_CHANNELS; if (flen + bsz <= cap) { memcpy(frames + flen, b, bsz * sizeof(int16_t)); flen += bsz; } }
+                }
+                int quiet = 0;
+                for (int k = 0; k < max_blocks; k++) {
+                    if (should_stop && should_stop()) break;
+                    int16_t live[block * 8];
+                    snd_pcm_uframes_t g2 = snd_pcm_readi(pcm, live, block);
+                    if (g2 == (snd_pcm_uframes_t)-EPIPE) { snd_pcm_recover(pcm, -EPIPE, 1); continue; }
+                    if (g2 <= 0) continue;
+                    size_t bsz = (size_t)g2 * VOICE_CHANNELS;
+                    if (flen + bsz <= cap) { memcpy(frames + flen, live, bsz * sizeof(int16_t)); flen += bsz; }
+                    double lr = voice_block_rms(live, g2 * VOICE_CHANNELS);
+                    quiet = (lr < (double)VOICE_SILENCE_RMS_THRESHOLD) ? quiet + 1 : 0;
+                    if (quiet >= endpoint_blocks) break;
+                }
+                char wav_path[1024];
+                snprintf(wav_path, sizeof(wav_path), "/tmp/hermes_voice/barge_%ld.wav", (long)time(NULL));
+                mkdir("/tmp/hermes_voice", 0755);
+                if (voice_write_wav(wav_path, frames, flen * sizeof(int16_t),
+                                    VOICE_SAMPLE_RATE, VOICE_CHANNELS, 16) == 0)
+                    out_path = strdup(wav_path);
+                free(frames);
+            }
+            break;
+        }
+    }
+    snd_pcm_drain(pcm); snd_pcm_close(pcm);
+    free(ambient); free(pre_roll); free(recent_above);
+    return out_path;
+#endif
+}
+
+/* PoP: _check_plugin_stt_provider @ tools/voice_mode.py:_check_plugin_stt_provider */
+bool voice_check_plugin_stt_provider(const char *provider) {
+    if (!provider || !*provider) return false;
+    char key[64]; size_t k = 0;
+    for (size_t i = 0; provider[i] && k < sizeof(key)-1; i++)
+        key[k++] = (char)tolower((unsigned char)provider[i]);
+    key[k] = '\0';
+    if (strcmp(key, "none") == 0) return false;
+    if (strcmp(key, "openai") == 0 || strcmp(key, "groq") == 0 ||
+        strcmp(key, "whisper") == 0 || strcmp(key, "local") == 0) return false;
+#ifdef HERMES_PLUGIN_HOST
+    extern bool hermes_stt_plugin_available(const char *key);
+    return hermes_stt_plugin_available(key);
+#else
+    return false;
+#endif
 }

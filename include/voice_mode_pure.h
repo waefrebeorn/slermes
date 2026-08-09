@@ -79,4 +79,41 @@ bool is_audio_output_active(void);
  * cap: voice.max_recording_seconds (0 or <=0 disables). elapsed: seconds. */
 bool audio_recorder_max_duration_reached(double cap, double elapsed);
 
+/* ---- final voice_mode.py REAL_GAP closures (tools/voice_mode.py) ---- */
+
+/* PoP: _import_numpy @ tools/voice_mode.py:_import_numpy — 0 if numpy importable. */
+int voice_import_numpy(void);
+
+/* PoP: _default_input_samplerate @ tools/voice_mode.py:_default_input_samplerate */
+int voice_default_input_samplerate(void);
+
+/* PoP: _play_int16_via_tempfile @ tools/voice_mode.py:_play_int16_via_tempfile */
+void voice_play_int16_via_tempfile(const int16_t *samples, size_t n, int sample_rate);
+
+/* PoP: _synth_thinking_blip @ tools/voice_mode.py:_synth_thinking_blip */
+int16_t *voice_synth_thinking_blip(float frequency, size_t *out_n);
+
+/* PoP: start_thinking_sound @ tools/voice_mode.py:start_thinking_sound */
+bool voice_start_thinking_sound(void);
+
+/* PoP: stop_thinking_sound @ tools/voice_mode.py:stop_thinking_sound */
+void voice_stop_thinking_sound(void);
+
+/* PoP: _play_audio_file_impl @ tools/voice_mode.py:_play_audio_file_impl */
+bool voice_play_audio_file_impl(const char *file_path);
+
+/* PoP: full_duplex_listen @ tools/voice_mode.py:full_duplex_listen
+ * phase callback receives "generation" or "playback". Returns malloc'd wav path
+ * or NULL. */
+char *voice_full_duplex_listen(int (*should_stop)(void),
+                               bool (*is_playing)(void),
+                               void (*on_trigger)(const char *phase),
+                               double multiplier,
+                               int sustained_ms, int calibration_ms, int grace_ms,
+                               int pre_roll_ms, int endpoint_silence_ms,
+                               int max_utterance_ms);
+
+/* PoP: _check_plugin_stt_provider @ tools/voice_mode.py:_check_plugin_stt_provider */
+bool voice_check_plugin_stt_provider(const char *provider);
+
 #endif /* VOICE_MODE_PURE_H */
