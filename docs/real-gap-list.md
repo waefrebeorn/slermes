@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-09T06:16:13Z from `live_parity_scan.json` by `make parity-walkway`. **742 REAL_GAP across 156 modules** (of 14,045 total functions).
+> Generated 2026-08-09T07:38:25Z from `live_parity_scan.json` by `make parity-walkway`. **710 REAL_GAP across 155 modules** (of 14,045 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -1052,41 +1052,6 @@
 
 - _cache_get (function)
 - _cache_put (function)
-
-### tools/process_registry.py (32 gaps)
-
-- ProcessRegistry._emit_output (method)
-- ProcessRegistry._global_watch_admit (method)
-- ProcessRegistry._is_host_pid_alive (method)
-- ProcessRegistry._safe_host_start_time (method)
-- ProcessRegistry._host_pid_is_ours (method)
-- ProcessRegistry._refresh_detached_session (method)
-- ProcessRegistry._proc_alive (method)
-- ProcessRegistry._daemon_term_grace_seconds (method)
-- ProcessRegistry._terminate_host_pid (method)
-- ProcessRegistry._env_temp_dir (method)
-- ProcessRegistry.spawn_via_env (method)
-- ProcessRegistry._reader_loop (method)
-- ProcessRegistry._env_poller_loop (method)
-- ProcessRegistry._pty_reader_loop (method)
-- ProcessRegistry.is_session_waiting (method)
-- ProcessRegistry._drain_should_skip (method)
-- ProcessRegistry.read_log (method)
-- ProcessRegistry.kill_process (method)
-- ProcessRegistry.write_stdin (method)
-- ProcessRegistry.submit_stdin (method)
-- ProcessRegistry.close_stdin (method)
-- ProcessRegistry.list_sessions (method)
-- ProcessRegistry.has_active_processes (method)
-- ProcessRegistry.has_any_active (method)
-- ProcessRegistry.snapshot_running_ids (method)
-- ProcessRegistry.kill_started_since (method)
-- ProcessRegistry._prune_if_needed (method)
-- _format_age (function)
-- _format_async_delegation (function)
-- format_process_notification (function)
-- _redact_process_result (function)
-- _handle_process (function)
 
 ### tools/react_to_message_tool.py (3 gaps)
 
