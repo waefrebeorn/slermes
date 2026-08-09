@@ -29,6 +29,7 @@
 #include "context_breakdown.h"
 #include "port_cli_parity_gaps.h"
 #include "port_tools_wake_word.h"
+#include "port_config_py_helpers.h"
 #include "sqlite3.h"
 #include <pthread.h>
 
@@ -481,4 +482,80 @@ bool cli_restore_session_yolo(json_t *session_meta, const char *session_key) {
     if (!session_key) session_key = "default";
     hermes_log(LOG_INFO, "cli", "YOLO mode restored for session %s", session_key);
     return true;
+}
+
+/* ── /wake subcommand (cli_commands_mixin.py:_handle_wake_command + _persist_wake_word_enabled) */
+
+/* PoP: _persist_wake_word_enabled @ hermes_cli/cli_commands_mixin.py:_persist_wake_word_enabled */
+/* Port of Python: save ``wake_word.enabled`` to config.yaml so the /wake
+ * toggle persists. If the on-disk value already equals `enabled`, no-op
+ * (don't rewrite config or re-announce). Delegates to the C wake-word config
+ * port (ww_load_wake_word_config) + config_py_save_value. */
+bool cli_persist_wake_word_enabled(bool enabled) {
+    json_t *cfg = ww_load_wake_word_config();
+    bool already = false;
+    if (cfg) {
+        json_t *cur = json_obj_get(cfg, "enabled");
+        already = cur && cur->type == JSON_BOOL && cur->bool_val == enabled;
+        json_free(cfg);
+    }
+    if (already) return false;
+    if (config_py_save_value("wake_word.enabled", json_bool(enabled)) == 0) {
+        hermes_log(LOG_INFO, "cli", "Wake word %s in config (wake_word.enabled: %s)",
+                   enabled ? "enabled" : "disabled", enabled ? "true" : "false");
+        return true;
+    }
+    hermes_log(LOG_WARNING, "cli", "Could not persist wake_word.enabled=%s",
+               enabled ? "true" : "false");
+    return false;
+}
+
+/* PoP: _handle_wake_command @ hermes_cli/cli_commands_mixin.py:_handle_wake_command */
+/* Port of Python /wake [on|off|status]: toggles the wake-word listener and
+ * persists wake_word.enabled. Reuses cli_start/stop_wake_word_listener and
+ * cli_show_wake_word_status (the listener lifecycle already lives in this
+ * translation unit). Returns 0 on success, 1 on unknown subcommand. */
+int cli_handle_wake_command(const char *command) {
+    char *sub = NULL;
+    if (command && *command) {
+        /* skip the leading "/wake" token */
+        const char *p = command;
+        while (*p && isspace((unsigned char)*p)) p++;
+        while (*p && !isspace((unsigned char)*p)) p++;  /* skip /wake */
+        while (*p && isspace((unsigned char)*p)) p++;   /* skip spaces */
+        sub = strdup(p);
+        char *nl = sub ? strpbrk(sub, "\n\r") : NULL;
+        if (nl) *nl = '\0';
+        /* lowercase */
+        if (sub) {
+            char *lc = sub;
+            while (*lc) { *lc = (char)tolower((unsigned char)*lc); lc++; }
+        }
+    }
+    int rc = 0;
+    if (!sub || !*sub || strcmp(sub, "status") == 0) {
+        if (!sub || !*sub) {
+            /* bare /wake toggles */
+            if (ww_is_listening()) {
+                cli_stop_wake_word_listener(true);
+                cli_persist_wake_word_enabled(false);
+            } else if (cli_start_wake_word_listener(true)) {
+                cli_persist_wake_word_enabled(true);
+            }
+        } else {
+            cli_show_wake_word_status();
+        }
+    } else if (strcmp(sub, "on") == 0) {
+        if (cli_start_wake_word_listener(true)) {
+            cli_persist_wake_word_enabled(true);
+        }
+    } else if (strcmp(sub, "off") == 0) {
+        cli_stop_wake_word_listener(true);
+        cli_persist_wake_word_enabled(false);
+    } else {
+        hermes_log(LOG_WARNING, "cli", "Unknown wake subcommand: %s (Usage: /wake [on|off|status])", sub);
+        rc = 1;
+    }
+    free(sub);
+    return rc;
 }
