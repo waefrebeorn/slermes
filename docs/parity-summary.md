@@ -15,7 +15,7 @@
 | **BOOTLEG** | 3 | — | No-work echo stubs (recursive_false_gap_hunter.py) |
 | **TOTAL** | 14,045 | 100% | All Python functions/methods scanned |
 
-> **Generated 2026-08-09T05:57:32Z by `make parity-walkway` from the live scanner.** The PORT phase (v398→v667) is legacy — this table is the single source of truth for completeness. Do not hand-edit.
+> **Generated 2026-08-09T06:16:13Z by `make parity-walkway` from the live scanner.** The PORT phase (v398→v667) is legacy — this table is the single source of truth for completeness. Do not hand-edit.
 <!-- /PARITY:AUTO -->
 
 **Generated:** 2026-08-07 (post-sync, v670 checkpoint) from live scanner
