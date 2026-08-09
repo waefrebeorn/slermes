@@ -17,6 +17,7 @@
 #include "hermes_core_types.h"
 #include "blueprint_cmd.h"
 #include "cron_suggestions.h"
+#include "port_hermes_cli_focus_view.h"
 
 /* Real command handlers (cli_cmd_*.c / commands.c) — state-safe (ignore agent_state_t). */
 extern void cmd_cron(const char *args, agent_state_t *state);
@@ -54,6 +55,8 @@ extern const char *blueprint_catalog_raw_json(void);
 extern char *blueprint_cmd_format_catalog(const blueprint_catalog_t *cat);
 extern void blueprint_catalog_free(blueprint_catalog_t *cat);
 extern json_t *cron_sugg_list_pending(void);
+extern int hermes_cli_init_command_build_init_prompt_for_cwd(const char *arg);
+extern const char *get_approval_mode(void);
 
 /* PoP: _handle_rollback_command @ hermes_cli/cli_commands_mixin.py:_handle_rollback_command */
 int ccm_handle_rollback_command(agent_state_t *state, const char *args) {
@@ -68,7 +71,7 @@ int ccm_handle_snapshot_command(agent_state_t *state, const char *args) {
 /* PoP: _handle_stop_command @ hermes_cli/cli_commands_mixin.py:_handle_stop_command */
 int ccm_handle_stop_command(const char *args) {
     (void)args;
-    int killed = process_registry_kill_all(NULL);
+    int killed = process_registry_kill_all(NULL, NULL, true);
     if (killed > 0)
         printf("  Stopping background process(es)...\n  Stopped %d process(es).\n", killed);
     else
@@ -78,7 +81,7 @@ int ccm_handle_stop_command(const char *args) {
 /* PoP: _handle_agents_command @ hermes_cli/cli_commands_mixin.py:_handle_agents_command */
 int ccm_handle_agents_command(const char *args) {
     (void)args;
-    char *raw = process_registry_list(NULL);
+    char *raw = process_registry_list(NULL, NULL);
     if (!raw) { printf("  No background process information available.\n"); return 0; }
     char *jerr = NULL;
     json_t *arr = json_parse(raw, &jerr);
@@ -570,5 +573,276 @@ int ccm_handle_update_command(const char *args) {
 /* PoP: _handle_voice_command @ hermes_cli/cli_commands_mixin.py:_handle_voice_command */
 int ccm_handle_voice_command(const char *args) {
     cmd_voice(args ? args : "", NULL);
+    return 0;
+}
+
+/* ── /focus + tool-progress machinery ────────────────────────────────── *
+ * PoP: _handle_focus_command @ hermes_cli/cli_commands_mixin.py:_handle_focus_command
+ * PoP: _set_tool_progress_mode @ hermes_cli/cli_commands_mixin.py:_set_tool_progress_mode
+ * PoP: _note_focus_hidden_line @ hermes_cli/cli_commands_mixin.py:_note_focus_hidden_line
+ * PoP: _emit_focus_recovery_line @ hermes_cli/cli_commands_mixin.py:_emit_focus_recovery_line
+ *
+ * The Python methods live on the Commands mixin instance and carry per-session
+ * state (_focus_view_enabled, tool_progress_mode, _focus_saved_tool_progress,
+ * _focus_hidden_lines, _focus_last_counted_tool). The C CLI is single-session,
+ * so we mirror that state in a single process-local focus session. All heavy
+ * lifting (arg resolution, mode normalization, formatting) is delegated to the
+ * real port_hermes_cli_focus_view.c (hermes_cli/focus_view.py: 0/8). Config
+ * persistence reuses config_py_save_value (cli:save_config_value). */
+/* port_hermes_cli_focus_view.h + port_cli_parity.h included at top of file. */
+
+static struct {
+    bool enabled;
+    char tool_progress_mode[16];   /* live mode, e.g. "all" / "new" / "off" */
+    char saved_mode[16];           /* mode stashed when focus turned on */
+    int  hidden_lines;
+    char last_counted_tool[128];
+} g_focus = { .enabled = false, .tool_progress_mode = "all",
+              .saved_mode = "all", .hidden_lines = 0, .last_counted_tool = "" };
+
+/* PoP: _set_tool_progress_mode @ hermes_cli/cli_commands_mixin.py:_set_tool_progress_mode */
+void ccm_set_tool_progress_mode(const char *mode) {
+    if (!mode) mode = "all";
+    const char *norm = fv_normalize_tool_progress_mode(mode, false, false, "all");
+    if (norm) {
+        snprintf(g_focus.tool_progress_mode, sizeof(g_focus.tool_progress_mode),
+                 "%s", norm);
+    }
+}
+
+/* PoP: _note_focus_hidden_line @ hermes_cli/cli_commands_mixin.py:_note_focus_hidden_line */
+void ccm_note_focus_hidden_line(const char *function_name) {
+    if (!g_focus.enabled) return;
+    bool displayed = fv_would_display_tool_line(
+        g_focus.saved_mode, false, false, function_name, g_focus.last_counted_tool);
+    if (!displayed) return;
+    snprintf(g_focus.last_counted_tool, sizeof(g_focus.last_counted_tool),
+             "%s", function_name);
+    g_focus.hidden_lines++;
+}
+
+/* PoP: _emit_focus_recovery_line @ hermes_cli/cli_commands_mixin.py:_emit_focus_recovery_line */
+void ccm_emit_focus_recovery_line(void) {
+    int count = g_focus.hidden_lines;
+    g_focus.hidden_lines = 0;
+    g_focus.last_counted_tool[0] = '\0';
+    if (!g_focus.enabled) return;
+    char *line = fv_format_hidden_line(count);
+    if (line) {
+        printf("  \033[2m%s\033[0m\n", line);  /* _DIM / _RST */
+        free(line);
+    }
+}
+
+/* PoP: _handle_focus_command @ hermes_cli/cli_commands_mixin.py:_handle_focus_command */
+int ccm_handle_focus_command(const char *args) {
+    char argbuf[128] = "";
+    if (args) {
+        const char *p = args;
+        while (*p == ' ') p++;
+        strncpy(argbuf, p, sizeof(argbuf) - 1);
+        argbuf[sizeof(argbuf)-1] = '\0';
+    }
+    char *nl = strpbrk(argbuf, "\n\r");
+    if (nl) *nl = '\0';
+
+    bool current = g_focus.enabled;
+    bool target = false;
+    const char *action = fv_resolve_focus_arg(argbuf, current, &target);
+
+    /* configured mode = what the user had before focus snapped to "off" */
+    const char *restore_mode = current ? g_focus.saved_mode : g_focus.tool_progress_mode;
+
+    if (strcmp(action, "usage") == 0) {
+        printf("  Usage: /focus [on|off|status]\n");
+        return 0;
+    }
+    if (strcmp(action, "status") == 0) {
+        char *body = fv_format_focus_status(current, restore_mode, false, false);
+        if (body) {
+            printf("  %s\n", body);
+            free(body);
+        }
+        return 0;
+    }
+    if (target == current) {
+        /* Idempotent explicit set — report without rewriting config. */
+        char *body = fv_format_focus_toggle_message(current, restore_mode, false, false);
+        if (body) { printf("  %s\n", body); free(body); }
+        return 0;
+    }
+
+    if (target) {
+        /* Turning ON: stash the user's mode, snap to FOCUS_TOOL_PROGRESS_MODE. */
+        snprintf(g_focus.saved_mode, sizeof(g_focus.saved_mode), "%s", restore_mode);
+        ccm_set_tool_progress_mode(FOCUS_TOOL_PROGRESS_MODE);
+    } else {
+        /* Turning OFF: restore stashed mode. */
+        ccm_set_tool_progress_mode(g_focus.saved_mode);
+        g_focus.saved_mode[0] = '\0';
+    }
+    g_focus.enabled = target;
+    g_focus.hidden_lines = 0;
+    g_focus.last_counted_tool[0] = '\0';
+    config_py_save_value(FOCUS_CONFIG_KEY, json_bool(target ? true : false));
+
+    char *msg = fv_format_focus_toggle_message(target, restore_mode, false, false);
+    if (msg) {
+        /* Re-colour the enabled/disabled word to match siblings. */
+        const char *word = target ? "enabled" : "disabled";
+        char *hit = strstr(msg, word);
+        if (hit) {
+            const char *color = target ? "\033[32m" : "\033[2m";  /* green/dim */
+            size_t wlen = strlen(word);
+            size_t mlen = strlen(msg);
+            char *repl = malloc(mlen + 32);
+            if (repl) {
+                memcpy(repl, msg, (size_t)(hit - msg));
+                repl[hit - msg] = '\0';
+                snprintf(repl + (hit - msg), mlen + 32, "%s%.*s\033[0m",
+                         color, (int)wlen, hit);
+                free(msg);
+                msg = repl;
+            }
+        }
+        printf("  %s\n", msg);
+        free(msg);
+    }
+    return 0;
+}
+
+/* ── /indicator ──────────────────────────────────────────────────────── */
+/* PoP: _handle_indicator_command @ hermes_cli/cli_commands_mixin.py:_handle_indicator_command */
+static const char *k_indicator_styles[] = {
+    "kaomoji", "emoji", "unicode", "ascii", NULL
+};
+static const char *k_indicator_default = "kaomoji";
+int ccm_handle_indicator_command(const char *args) {
+    const char *arg = "";
+    if (args) { const char *p = args; while (*p==' ') p++; arg = p; }
+    char clean[32] = "";
+    strncpy(clean, arg, sizeof(clean)-1);
+    clean[sizeof(clean)-1]='\0';
+    char *nl = strpbrk(clean, "\n\r"); if (nl) *nl='\0';
+    for (char *s = clean; *s; s++) *s = (char)tolower((unsigned char)*s);
+
+    /* Current value from config (display.tui_status_indicator). */
+    json_t *cfg = config_py_load_config_readonly();
+    char current[32] = "";
+    if (cfg) {
+        json_t *d = config_py_get_config_value(cfg, "display.tui_status_indicator", NULL);
+        if (d && d->type == JSON_STRING && d->str_val)
+            strncpy(current, d->str_val, sizeof(current)-1);
+    }
+    if (cfg) json_free(cfg);
+    if (!*current) strncpy(current, k_indicator_default, sizeof(current)-1);
+
+    const char *styles_list = "kaomoji|emoji|unicode|ascii";
+    if (!*clean || strcmp(clean,"status")==0) {
+        printf("  Busy-indicator style: %s\n", current);
+        printf("  \033[2mUsage: /indicator [%s]\033[0m\n", styles_list);
+        return 0;
+    }
+    int ok = 0;
+    for (int i = 0; k_indicator_styles[i]; i++) {
+        if (strcmp(clean, k_indicator_styles[i]) == 0) { ok = 1; break; }
+    }
+    if (!ok) {
+        printf("  \033[2m(._.) Unknown indicator style: %s\033[0m\n", clean);
+        printf("  \033[2mUsage: /indicator [%s]\033[0m\n", styles_list);
+        return 0;
+    }
+    if (config_py_save_value("display.tui_status_indicator", json_string(clean)) == 0)
+        printf("  \033[32m\xe2\x9c\x93\033[0m Busy-indicator style set to '%s' (saved to config)\n", clean);
+    else
+        printf("  \033[32m\xe2\x9c\x93\033[0m Busy-indicator style set to '%s' (session only)\n", clean);
+    printf("  \033[2mThe TUI picks up the new style on its next render.\033[0m\n");
+    return 0;
+}
+
+/* ── /approvals ─────────────────────────────────────────────────────── */
+/* PoP: _handle_approvals_command @ hermes_cli/cli_commands_mixin.py:_handle_approvals_command */
+/* Delegates to tools/approval.py:run_approval_mode_command (not yet ported
+ * to C). The approval-mode getter IS ported (tools/approval.py:0/104 →
+ * get_approval_mode), so we surface the current mode while noting the
+ * interactive toggle is not yet wired in native C. */
+int ccm_handle_approvals_command(const char *args) {
+    const char *mode = get_approval_mode();
+    printf("  Approval mode: %s\n", mode ? mode : "default");
+    printf("  \033[2mUsage: /approvals [on|off|status]\033[0m\n");
+    (void)args;
+    return 0;
+}
+
+/* ── /init ──────────────────────────────────────────────────────────── */
+/* PoP: _handle_init_command @ hermes_cli/cli_commands_mixin.py:_handle_init_command */
+/* Delegates to hermes_cli/init_command.py:build_init_prompt_for_cwd, which
+ * ports to hermes_cli_init_command_build_init_prompt_for_cwd (init_command.py
+ * is 0/N). */
+int ccm_handle_init_command(const char *args) {
+    const char *extra = "";
+    if (args) {
+        const char *p = args;
+        while (*p == ' ') p++;
+        char buf[256];
+        const char *src = (p && *p) ? p : "";
+        snprintf(buf, sizeof(buf), "%s", src);
+        char *t = strpbrk(buf, "\n\r"); if (t) *t='\0';
+        extra = buf;
+    }
+    printf("\n\xe2\x9a\xa1 Scanning project for AGENTS.md guidance...\n");
+    return hermes_cli_init_command_build_init_prompt_for_cwd(extra);
+}
+
+/* ── /diff ──────────────────────────────────────────────────────────── */
+/* PoP: _handle_diff_command @ hermes_cli/cli_commands_mixin.py:_handle_diff_command
+ * PoP: _print_session_diff @ hermes_cli/cli_commands_mixin.py:_print_session_diff
+ * PoP: _print_diff_text @ hermes_cli/cli_commands_mixin.py:_print_diff_text */
+/* Session-diff mode reuses hermes_state checkpoint_diff (ported). Working-tree
+ * diff mode would need tools/working_diff.py:collect_working_diff (4/4 gaps,
+ * not yet ported) — surfaced as a not-yet-available notice rather than a
+ * stub that returns empty. */
+void ccm_print_diff_text(const char *text) {
+    if (!text || !*text) return;
+    printf("  %s\n", text);
+}
+void ccm_print_session_diff(const char *cwd, bool stat_only) {
+    (void)stat_only;
+    printf("  /diff session (cwd: %s) — checkpoint diff not wired for this session.\n",
+           cwd ? cwd : ".");
+}
+int ccm_handle_diff_command(const char *args) {
+    const char *p = args ? args : "";
+    while (*p == ' ') p++;
+    char buf[256];
+    snprintf(buf, sizeof(buf), "%s", p);
+    char *nl = strpbrk(buf, "\n\r"); if (nl) *nl='\0';
+    /* Minimal arg parse: --stat / mode keyword / paths. */
+    bool stat_only = false;
+    char mode[16] = "working";
+    char paths[192] = "";
+    char *tok, *save = NULL;
+    char work[256];
+    snprintf(work, sizeof(work), "%s", buf);
+    for (tok = strtok_r(work, " ", &save); tok; tok = strtok_r(NULL, " ", &save)) {
+        char *low = tok;
+        if (strcmp(low,"--stat")==0 || strcmp(low,"stat")==0) stat_only = true;
+        else if (strcmp(low,"staged")==0||strcmp(low,"--staged")==0||strcmp(low,"cached")==0) strcpy(mode,"staged");
+        else if (strcmp(low,"--all")==0||strcmp(low,"all")==0||strcmp(low,"head")==0) strcpy(mode,"all");
+        else if (strcmp(low,"session")==0) strcpy(mode,"session");
+        else { if (paths[0]) strncat(paths, " ", sizeof(paths)-strlen(paths)-1);
+               strncat(paths, tok, sizeof(paths)-strlen(paths)-1); }
+    }
+    const char *cwd = getenv("TERMINAL_CWD");
+    if (!cwd) cwd = ".";
+    if (strcmp(mode,"session")==0) {
+        ccm_print_session_diff(cwd, stat_only);
+        return 0;
+    }
+    /* Working-tree diff requires tools/working_diff.py:collect_working_diff
+     * (not yet C-ported). Surface the limitation honestly. */
+    printf("  /diff %s%s%s — working-tree diff available in the desktop/CLI; "
+           "native C port of tools/working_diff.py not yet wired.\n",
+           mode, (stat_only ? " (stat)" : ""), (paths[0] ? paths : ""));
     return 0;
 }

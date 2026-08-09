@@ -862,7 +862,7 @@ char *goal_judge_render_background_block(const char *const *json_processes) {
  * string the caller frees. Never raises: any registry failure yields "[]".
  */
 char *goal_gather_background_processes(const char *task_id) {
-    char *raw = process_registry_list(task_id);
+    char *raw = process_registry_list(task_id, NULL);
     if (!raw) return strdup("[]");
 
     json_t *doc = json_parse(raw, NULL);
