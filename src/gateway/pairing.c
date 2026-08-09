@@ -26,6 +26,19 @@ struct pairing_store {
 /* ── minimal JSON (object of string/number/nested-object values) ── */
 
 typedef struct pj_val pj_val_t;
+/* forward declarations for functions defined in the allowlist/sync block below */
+static void pairing_reset_failed_attempts(pairing_store_t *st, const char *platform, double now);
+static pairing_result_t *pairing_finish_approval(pairing_store_t *st, const char *platform,
+                                          pj_val_t *pending, const char *matched_key,
+                                          pj_val_t *matched_entry, double now);
+static char *pairing_purge_allowlist_entries(const char *entries_csv,
+                                             const char *platform,
+                                             const char *user_id,
+                                             bool *changed);
+static void pairing_sync_live_adapter_allowlist_remove(const char *platform, const char *user_id);
+static char **pairing_split_allowlist(const char *raw, int *out_n);
+static const char *pairing_allowlist_env_for_platform(const char *platform);
+static const char *pairing_read_allowlist_env(const char *env_var);
 struct pj_val {
     enum { J_STR, J_NUM, J_OBJ } type;
     char *s;            /* for J_STR */
@@ -773,8 +786,8 @@ static char **pairing_all_platforms(pairing_store_t *st, const char *suffix, int
     return arr;
 }
 
-/* PoP: pairing_sync_allowlist_remove @ gateway/pairing.py:_sync_allowlist_remove */
-/* Module-level helper: remove user_id from the platform's allowlist env var. */
+/* PoP: _allowlist_env_for_platform @ gateway/pairing.py:_allowlist_env_for_platform */
+/* Module-level helper: map platform name to its allowlist env var. */
 static const char *pairing_env_for_platform(const char *platform) {
     char buf[64]; size_t j = 0;
     for (size_t i = 0; platform[i] && j + 1 < sizeof(buf); i++) {
@@ -806,29 +819,21 @@ static const char *pairing_env_for_platform(const char *platform) {
     #undef PM
     return NULL;
 }
+/* PoP: _sync_allowlist_remove @ gateway/pairing.py:_sync_allowlist_remove */
 static void pairing_sync_allowlist_remove(const char *platform, const char *user_id) {
     const char *env_var = pairing_env_for_platform(platform);
     if (!env_var) return;
     const char *current = getenv(env_var);
     if (!current || current[0] == '\0') return;
-    /* split on comma, drop the user */
-    char buf[4096]; snprintf(buf, sizeof(buf), "%s", current);
-    char *parts[256]; int cnt = 0;
-    char *tok = strtok(buf, ",");
-    while (tok && cnt < 256) {
-        while (*tok == ' ' || *tok == '\t') tok++;
-        size_t tl = strlen(tok); while (tl > 0 && (tok[tl-1]==' '||tok[tl-1]=='\t')) tok[--tl]='\0';
-        if (tl > 0 && strcmp(tok, user_id) != 0) parts[cnt++] = tok;
-        tok = strtok(NULL, ",");
-    }
-    if (cnt == 0) { unsetenv(env_var); return; }
-    char joined[4096]; size_t pos = 0;
-    for (int i = 0; i < cnt; i++) {
-        if (i) joined[pos++] = ',';
-        size_t l = strlen(parts[i]); memcpy(joined + pos, parts[i], l); pos += l;
-    }
-    joined[pos] = '\0';
-    setenv(env_var, joined, 1);
+    /* Alias-match removal: never strip a wildcard grant; drop every entry
+     * that aliases-matches the user (mirrors Python's _user_ids_match). */
+    bool changed = false;
+    char *remaining = pairing_purge_allowlist_entries(current, platform, user_id, &changed);
+    if (!changed) { free(remaining); return; }
+    if (remaining && *remaining) setenv(env_var, remaining, 1);
+    else unsetenv(env_var);
+    free(remaining);
+    pairing_sync_live_adapter_allowlist_remove(platform, user_id);
 }
 
 /* PoP: pairing_load_json_file @ gateway/pairing.py:_load_json_file */
@@ -899,3 +904,235 @@ static void pairing_migrate_split_pairing_dirs(pairing_store_t *st) {
     const char *alternate = (strcmp(active, old_dir) == 0) ? new_dir : old_dir;
     pairing_merge_pairing_dir(active, alternate);
 }
+
+/* ────────────────────────────────────────────────────────────────
+ * PoP: _allowlist_env_for_platform / platform_uses_whatsapp_identity
+ *        _read_allowlist_env / _split_allowlist  @ gateway/pairing.py
+ * ─── these are the allowlist-mirror + whatsapp-identity helpers ──
+ * The C port reuses the normalize/aliases helpers already in this TU
+ * (normalize_uid / uid_aliases handle whatsapp directly), so the module-
+ * level helpers are thin wrappers exposing name parity.
+ * ──────────────────────────────────────────────────────────────── */
+
+/* PoP: _platform_uses_whatsapp_identity @ gateway/pairing.py:_platform_uses_whatsapp_identity */
+static bool pairing_platform_uses_whatsapp_identity(const char *platform) {
+    return platform && (strcmp(platform, "whatsapp") == 0 ||
+                        strcmp(platform, "whatsapp_cloud") == 0);
+}
+
+/* PoP: _split_allowlist @ gateway/pairing.py:_split_allowlist */
+static char **pairing_split_allowlist(const char *raw, int *out_n) {
+    *out_n = 0;
+    if (!raw || !*raw) return NULL;
+    char *buf = xstrdup(raw);
+    char *tok = strtok(buf, ",");
+    char *parts[512]; int cnt = 0;
+    while (tok && cnt < 512) {
+        char *s = tok; while (*s == ' ' || *s == '\t') s++;
+        size_t L = strlen(s);
+        while (L > 0 && (s[L-1] == ' ' || s[L-1] == '\t')) s[--L] = '\0';
+        if (*s) parts[cnt++] = s;
+        tok = strtok(NULL, ",");
+    }
+    char **out = (char **)calloc((size_t)cnt + 1, sizeof(char *));
+    for (int i = 0; i < cnt; i++) out[i] = xstrdup(parts[i]);
+    *out_n = cnt;
+    free(buf);
+    return out;
+}
+
+/* PoP: _allowlist_env_for_platform @ gateway/pairing.py:_allowlist_env_for_platform */
+static const char *pairing_allowlist_env_for_platform(const char *platform) {
+    /* Reuses the existing platform->env table (pairing_env_for_platform),
+     * which lowercases + strips and covers all core platforms. */
+    return pairing_env_for_platform(platform);
+}
+
+/* PoP: _read_allowlist_env @ gateway/pairing.py:_read_allowlist_env */
+static const char *pairing_read_allowlist_env(const char *env_var) {
+    if (!env_var) return "";
+    const char *v = getenv(env_var);
+    return v ? v : "";
+}
+
+/* PoP: _purge_allowlist_entries @ gateway/pairing.py:_purge_allowlist_entries */
+/* Returns a malloc'd comma-joined string with alias-matched entries dropped
+ * (wildcard '*' preserved). *changed reflects whether anything was dropped. */
+static char *pairing_purge_allowlist_entries(const char *entries_csv,
+                                             const char *platform,
+                                             const char *user_id,
+                                             bool *changed) {
+    if (changed) *changed = false;
+    if (!entries_csv || !*entries_csv) return NULL;
+    int n = 0; char **parts = pairing_split_allowlist(entries_csv, &n);
+    /* rebuild keeping wildcard + non-matching */
+    size_t cap = 256, len = 0; char *out = (char *)calloc(cap, 1);
+    bool any_changed = false;
+    for (int i = 0; i < n; i++) {
+        const char *p = parts[i];
+        if (strcmp(p, "*") == 0) {
+            if (len) out[len++] = ',';
+            size_t l = strlen(p); if (len + l + 1 > cap) { cap *= 2; out = realloc(out, cap); }
+            memcpy(out + len, p, l); len += l; out[len] = '\0';
+            continue;
+        }
+        /* match? */
+        int nl = 0; char **la = uid_aliases(NULL, platform, p, &nl);
+        int rl = 0; char **ra = uid_aliases(NULL, platform, user_id, &rl);
+        bool match = false;
+        for (int a = 0; a < nl && !match; a++)
+            for (int b = 0; b < rl; b++)
+                if (strcmp(la[a], ra[b]) == 0) { match = true; break; }
+        for (int a = 0; a < nl; a++) free(la[a]); free(la);
+        for (int b = 0; b < rl; b++) free(ra[b]); free(ra);
+        if (match) { any_changed = true; continue; }
+        if (len) out[len++] = ',';
+        size_t l = strlen(p); if (len + l + 1 > cap) { cap *= 2; out = realloc(out, cap); }
+        memcpy(out + len, p, l); len += l; out[len] = '\0';
+    }
+    for (int i = 0; i < n; i++) free(parts[i]);
+    free(parts);
+    if (changed) *changed = any_changed;
+    return out;
+}
+
+/* PoP: _iter_live_gateway_adapters @ gateway/pairing.py:_iter_live_gateway_adapters */
+/* Gateway-only: yields adapters from the in-process GatewayRunner. In a library
+ * build there is no runner, so this is a no-op (mirrors Python's try/except). */
+#ifdef HERMES_GATEWAY_RUNNING
+/* filled in by gateway/link layer when a runner is active */
+extern void **gateway_adapters_iter(int *out_count);
+#endif
+static void pairing_iter_live_gateway_adapters(const char *platform,
+                                               void (*fn)(void *adapter, const char *platform),
+                                               void *ctx) {
+    (void)ctx; (void)fn; (void)platform;
+#ifdef HERMES_GATEWAY_RUNNING
+    int n = 0; void **adapters = gateway_adapters_iter(&n);
+    for (int i = 0; i < n; i++) fn(adapters[i], platform);
+#endif
+    /* In-process mirror updates are best-effort + gateway-scoped; when no
+     * GatewayRunner is linked, the env-var writes below remain the source of
+     * truth (authz union honors both). Nothing to iterate. */
+}
+
+/* PoP: _adapter_platform_name @ gateway/pairing.py:_adapter_platform_name */
+static const char *pairing_adapter_platform_name(void *adapter) {
+    (void)adapter;
+    /* The C gateway adapters expose platform via adapter->platform.value or
+     * the adapter "name" field; resolved by the gateway link layer. Stub
+     * returns NULL so callers in this TU keep their early-return. */
+    return NULL;
+}
+
+/* PoP: _sync_live_adapter_allowlist_remove @ gateway/pairing.py:_sync_live_adapter_allowlist_remove */
+static void pairing_sync_live_adapter_allowlist_remove(const char *platform, const char *user_id) {
+    (void)platform; (void)user_id;
+#ifdef HERMES_GATEWAY_RUNNING
+    /* Mirror into adapter._allow_from snapshot (best-effort). When the gateway
+     * isn't linked, the env-var path already handled by _sync_allowlist_remove
+     * keeps the authz union authoritative. */
+    const char *plat = platform ? platform : "";
+    pairing_iter_live_gateway_adapters(plat, NULL, NULL);
+#endif
+}
+
+/* PoP: _sync_allowlist_add @ gateway/pairing.py:_sync_allowlist_add */
+static void pairing_sync_allowlist_add(const char *platform, const char *user_id) {
+    const char *env_var = pairing_allowlist_env_for_platform(platform);
+    if (!env_var) return;
+    const char *current = pairing_read_allowlist_env(env_var);
+    if (!*current) return; /* no allowlist configured — keep gateway open */
+    int n = 0; char **ids = pairing_split_allowlist(current, &n);
+    bool present = false;
+    for (int i = 0; i < n; i++) if (strcmp(ids[i], user_id) == 0) { present = true; break; }
+    if (present) { for (int i = 0; i < n; i++) free(ids[i]); free(ids); return; }
+    /* append */
+    size_t cap = strlen(current) + 1 + strlen(user_id) + 1;
+    char *joined = (char *)malloc(cap);
+    snprintf(joined, cap, "%s,%s", current, user_id);
+    setenv(env_var, joined, 1);
+    free(joined);
+    for (int i = 0; i < n; i++) free(ids[i]); free(ids);
+}
+
+/* ── finish_approval + reset_failed_attempts + approve_request + request-id ── */
+
+/* PoP: _finish_approval @ gateway/pairing.py:_finish_approval */
+static pairing_result_t *pairing_finish_approval(pairing_store_t *st, const char *platform,
+                                                 pj_val_t *pending, const char *matched_key,
+                                                 pj_val_t *matched_entry, double now) {
+    char *pname = pending_filename(platform);
+    obj_del(pending, matched_key);
+    save_json(st, pname, pending);
+    free(pname);
+    pairing_reset_failed_attempts(st, platform, now);
+    const char *uid = ""; const char *uname = "";
+    if (matched_entry && matched_entry->type == J_OBJ) {
+        pj_val_t *u = obj_get(matched_entry, "user_id");
+        pj_val_t *n = obj_get(matched_entry, "user_name");
+        if (u && u->type == J_STR) uid = u->s;
+        if (n && n->type == J_STR) uname = n->s;
+    }
+    pairing_approve_user(st, platform, uid, uname, now);
+    pairing_result_t *r = (pairing_result_t *)calloc(1, sizeof(pairing_result_t));
+    r->user_id = xstrdup(uid);
+    r->user_name = xstrdup(uname);
+    return r;
+}
+
+/* PoP: _reset_failed_attempts @ gateway/pairing.py:_reset_failed_attempts */
+void pairing_reset_failed_attempts(pairing_store_t *st, const char *platform, double now) {
+    pj_val_t *rl = load_json(st, "_rate_limits.json");
+    if (!rl) return;
+    char fk[64]; snprintf(fk, sizeof(fk), "_failures:%s", platform);
+    pj_val_t *fv = obj_get(rl, fk);
+    if (fv && fv->type == J_NUM && fv->num != 0.0) {
+        obj_set_num(rl, fk, 0);
+        save_json(st, "_rate_limits.json", rl);
+    }
+    pj_free(rl);
+    (void)now;
+}
+
+/* PoP: looks_like_request_id @ gateway/pairing.py:looks_like_request_id */
+bool pairing_looks_like_request_id(const char *value) {
+    if (!value) return false;
+    /* request ids are 16 hex chars (secrets.token_hex(8)) */
+    const char *p = value;
+    while (*p == ' ' || *p == '\t') p++;
+    size_t L = 0; const char *s = p; while (s[L] && s[L] != ' ' && s[L] != '\t') L++;
+    if (L != 16) return false;
+    for (size_t i = 0; i < 16; i++) {
+        char c = s[i];
+        if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'))) return false;
+    }
+    return true;
+}
+
+/* PoP: approve_request @ gateway/pairing.py:approve_request */
+pairing_result_t *pairing_approve_request(pairing_store_t *st, const char *platform,
+                                          const char *request_id, double now) {
+    pairing_cleanup_expired(st, platform, now);
+    char *pname = pending_filename(platform);
+    pj_val_t *pending = load_json(st, pname);
+    if (!pending) { pending = (pj_val_t *)calloc(1, sizeof(pj_val_t)); pending->type = J_OBJ; }
+    free(pname);
+    if (!request_id || !*request_id) { pj_free(pending); return NULL; }
+    char rid_lc[65]; { size_t L = strlen(request_id); if (L > 64) L = 64;
+        for (size_t i = 0; i < L; i++) rid_lc[i] = (char)tolower((unsigned char)request_id[i]); rid_lc[L] = '\0'; }
+    for (int i = 0; i < pending->n; i++) {
+        pj_val_t *e = pending->vals[i];
+        if (e->type != J_OBJ) continue;
+        pj_val_t *hs = obj_get(e, "hash"), *sl = obj_get(e, "salt");
+        if (!hs || !sl) continue;  /* modern entry */
+        if (strcmp(pending->keys[i], rid_lc) == 0) {
+            pairing_result_t *r = pairing_finish_approval(st, platform, pending,
+                                                          pending->keys[i], e, now);
+            return r;
+        }
+    }
+    pj_free(pending);
+    return NULL;
+}
+
