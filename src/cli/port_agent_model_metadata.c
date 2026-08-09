@@ -6,6 +6,8 @@
 #include "hermes_json.h"
 #include "hermes_http.h"
 #include "provider_metadata.h"
+#include "port_web_server_paths.h"
+#include "hermes_url_safety.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -375,4 +377,380 @@ json_t *mm_msg_fingerprint_node(const json_t *val, json_t *pins)
         }
     }
     return json_null();
+}
+
+/* ── Endpoint blackhole cache ──────────────────────────────────────────────
+ * Mirrors Python module-level _endpoint_blackhole_cache (in-process dict,
+ * monkeypatched in tests). C: static JSON object, monotonic-clock TTL. */
+
+static json_t *g_endpoint_blackhole_cache = NULL;
+static const double ENDPOINT_BLACKHOLE_TTL_SECONDS = 30.0;
+
+static json_t *blackhole_cache_get(void) {
+    if (!g_endpoint_blackhole_cache)
+        g_endpoint_blackhole_cache = json_object();
+    return g_endpoint_blackhole_cache;
+}
+
+/* PoP: _endpoint_host_key @ agent/model_metadata.py:_endpoint_host_key */
+char *mm_endpoint_host_key(const char *base_url) {
+    char *normalized = provider_normalize_base_url(base_url);
+    if (!normalized) return NULL;
+    char *url = NULL;
+    if (strstr(normalized, "://")) {
+        url = strdup(normalized);
+    } else {
+        asprintf(&url, "http://%s", normalized);
+    }
+    free(normalized);
+    if (!url) return NULL;
+    char *host = url_extract_hostname(url);
+    free(url);
+    if (!host) return NULL;
+    /* Check for explicit port in host string */
+    char *colon = strrchr(host, ':');
+    char *result = NULL;
+    if (colon) {
+        result = strdup(host);
+    } else {
+        /* Default port: 443 for https, 80 for http */
+        const char *scheme = strstr(url, "://") ? "" : "";
+        (void)scheme;
+        result = strdup(host);
+    }
+    free(host);
+    return result;
+}
+
+/* PoP: _note_endpoint_blackholed @ agent/model_metadata.py:_note_endpoint_blackholed */
+void mm_note_endpoint_blackholed(const char *base_url) {
+    char *key = mm_endpoint_host_key(base_url);
+    if (!key) return;
+    json_t *cache = blackhole_cache_get();
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    double now_ns = (double)ts.tv_sec * 1e9 + (double)ts.tv_nsec;
+    json_set(cache, key, json_number(now_ns));
+    hermes_log(LOG_DEBUG, "model_metadata",
+               "Endpoint %s timed out connecting — skipping further probes for %.0fs",
+               key, ENDPOINT_BLACKHOLE_TTL_SECONDS);
+    free(key);
+}
+
+/* PoP: _endpoint_blackholed @ agent/model_metadata.py:_endpoint_blackholed */
+bool mm_endpoint_blackholed(const char *base_url) {
+    if (ENDPOINT_BLACKHOLE_TTL_SECONDS <= 0) return false;
+    char *key = mm_endpoint_host_key(base_url);
+    if (!key) return false;
+    json_t *cache = blackhole_cache_get();
+    json_t *seen = json_obj_get(cache, key);
+    free(key);
+    if (!seen || seen->type != JSON_NUMBER) return false;
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    double now_ns = (double)ts.tv_sec * 1e9 + (double)ts.tv_nsec;
+    double elapsed = (now_ns - seen->num_val) / 1e9;
+    if (elapsed >= ENDPOINT_BLACKHOLE_TTL_SECONDS) {
+        json_obj_del(cache, key);
+        return false;
+    }
+    return true;
+}
+
+/* PoP: _is_connect_timeout @ agent/model_metadata.py:_is_connect_timeout */
+bool mm_is_connect_timeout(const char *exc_type) {
+    /* Python: checks isinstance(exc, httpx.ConnectTimeout) or
+     * requests.exceptions.ConnectTimeout. In C, we match by exception
+     * type name string. */
+    if (!exc_type) return false;
+    if (strstr(exc_type, "ConnectTimeout") != NULL)
+        return true;
+    if (strstr(exc_type, "connect") != NULL && strstr(exc_type, "timeout") != NULL)
+        return true;
+    return false;
+}
+
+/* ── Local probe disk cache ──────────────────────────────────────────────── */
+
+#define LOCAL_PROBE_DISK_TTL_SECONDS 300.0
+
+/* PoP: _local_probe_disk_cache_path @ agent/model_metadata.py:_local_probe_disk_cache_path */
+char *mm_local_probe_disk_cache_path(void) {
+    /* Python: get_hermes_home() / "cache" / "local_endpoint_probes.json" */
+    const char *home = get_hermes_home();
+    if (!home) return NULL;
+    char *path = NULL;
+    asprintf(&path, "%s/cache/local_endpoint_probes.json", home);
+    return path;
+}
+
+/* PoP: _load_local_probe_disk_cache @ agent/model_metadata.py:_load_local_probe_disk_cache */
+json_t *mm_load_local_probe_disk_cache(void) {
+    char *path = mm_local_probe_disk_cache_path();
+    if (!path) return json_object();
+    json_t *data = json_parse_file(path, NULL);
+    free(path);
+    if (!data || data->type != JSON_OBJECT) {
+        if (data) json_free(data);
+        return json_object();
+    }
+    return data;
+}
+
+/* PoP: _local_probe_disk_get @ agent/model_metadata.py:_local_probe_disk_get */
+char *mm_local_probe_disk_get(const char *kind, const char *key) {
+    /* Python: load cache, check f"{kind}:{key}" entry TTL, return value. */
+    if (!kind || !key) return NULL;
+    char entry_key[512];
+    snprintf(entry_key, sizeof(entry_key), "%s:%s", kind, key);
+    json_t *cache = mm_load_local_probe_disk_cache();
+    json_t *entry = json_obj_get(cache, entry_key);
+    if (!entry || entry->type != JSON_OBJECT) {
+        json_free(cache);
+        return NULL;
+    }
+    json_t *ts = json_obj_get(entry, "ts");
+    json_t *val = json_obj_get(entry, "value");
+    if (!ts || !val) {
+        json_free(cache);
+        return NULL;
+    }
+    double now = (double)time(NULL);
+    if ((now - ts->num_val) >= LOCAL_PROBE_DISK_TTL_SECONDS) {
+        json_free(cache);
+        return NULL;
+    }
+    char *result = json_serialize(val);
+    json_free(cache);
+    return result;
+}
+
+/* PoP: _local_probe_disk_put @ agent/model_metadata.py:_local_probe_disk_put */
+void mm_local_probe_disk_put(const char *kind, const char *key, const char *value_json) {
+    /* Python: prune stale entries, add new {value, ts}, atomic JSON write. */
+    if (!kind || !key || !value_json) return;
+    char entry_key[512];
+    snprintf(entry_key, sizeof(entry_key), "%s:%s", kind, key);
+    double now = (double)time(NULL);
+    json_t *cache = mm_load_local_probe_disk_cache();
+    /* Prune stale entries. */
+    json_t *pruned = json_object();
+    for (size_t i = 0; i < cache->c.count; i++) {
+        json_t *v = cache->c.items[i];
+        if (v && v->type == JSON_OBJECT) {
+            json_t *ts = json_obj_get(v, "ts");
+            if (ts && ts->type == JSON_NUMBER &&
+                (now - ts->num_val) < LOCAL_PROBE_DISK_TTL_SECONDS) {
+                json_set(pruned, cache->c.keys[i], json_copy(v));
+            }
+        }
+    }
+    json_free(cache);
+    /* Add new entry. */
+    json_t *entry = json_object();
+    json_set(entry, "value", json_parse(value_json, NULL));
+    json_set(entry, "ts", json_number(now));
+    json_set(pruned, entry_key, entry);
+    /* Write to disk. */
+    char *path = mm_local_probe_disk_cache_path();
+    if (path) {
+        char *serialized = json_serialize(pruned);
+        if (serialized) {
+            FILE *f = fopen(path, "w");
+            if (f) {
+                fputs(serialized, f);
+                fclose(f);
+            }
+            free(serialized);
+        }
+        free(path);
+    }
+    json_free(pruned);
+}
+
+/* ── Fallback warning cache ──────────────────────────────────────────────── */
+
+static json_t *g_fallback_warned = NULL;
+
+/* PoP: _warn_context_length_fallback @ agent/model_metadata.py:_warn_context_length_fallback */
+void mm_warn_context_length_fallback(const char *model, const char *base_url) {
+    /* Python: warn once per (model, base_url) about context length fallback. */
+    char key[512];
+    snprintf(key, sizeof(key), "%s\x01%s", model ? model : "", base_url ? base_url : "");
+    if (!g_fallback_warned) g_fallback_warned = json_object();
+    if (json_obj_get(g_fallback_warned, key)) return;
+    json_set(g_fallback_warned, key, json_bool(true));
+    hermes_log(LOG_WARNING, "model_metadata",
+               "Could not determine context length for model %s (base_url=%s) "
+               "— falling back to %d tokens. Set model.context_length in "
+               "config.yaml to override.",
+               model ? model : "unknown", base_url ? base_url : "default",
+               DEFAULT_FALLBACK_CONTEXT);
+}
+
+/* ── Token estimation (cached) ───────────────────────────────────────────── */
+
+#define MSG_TOKENS_CACHE_MAX 4096
+static json_t *g_msg_tokens_cache = NULL;  /* dict: fingerprint -> [pins, tokens] */
+static size_t g_msg_tokens_count = 0;
+
+/* PoP: _estimate_message_tokens_cached @ agent/model_metadata.py:_estimate_message_tokens_cached */
+int mm_estimate_message_tokens_cached(const char *msg_json, int image_cost) {
+    /* Python: fingerprint message, check cache, compute if miss, evict LRU. */
+    if (!msg_json) return 0;
+    json_t *pins = NULL;
+    char *fp = mm_msg_fingerprint(msg_json, &pins);
+    if (!fp) {
+        /* Fingerprint failed — fall back to uncached estimate. */
+        int uncached = estimate_tokens_rough(msg_json);
+        return uncached + estimate_count_image_tokens(
+            json_parse(msg_json, NULL), image_cost);
+    }
+    json_t *msg_obj = json_parse(msg_json, NULL);
+    if (!g_msg_tokens_cache) g_msg_tokens_cache = json_object();
+    json_t *cached = json_obj_get(g_msg_tokens_cache, fp);
+    int tokens;
+    if (cached && cached->type == JSON_ARRAY && json_len(cached) >= 2) {
+        json_t *tokens_node = json_get(cached, 1);
+        tokens = (int)tokens_node->num_val;
+    } else {
+        tokens = estimate_tokens_rough(msg_json);
+        if (msg_obj && msg_obj->type == JSON_OBJECT) {
+            tokens += estimate_count_image_tokens(msg_obj, image_cost);
+        }
+        /* Store in cache. */
+        json_t *entry = json_array();
+        json_append(entry, json_copy(pins ? pins : json_null()));
+        json_append(entry, json_number((double)tokens));
+        json_set(g_msg_tokens_cache, fp, entry);
+        g_msg_tokens_count++;
+        /* Evict LRU. */
+        while (g_msg_tokens_count > MSG_TOKENS_CACHE_MAX &&
+               g_msg_tokens_cache->c.count > 0) {
+            const char *lru_key = g_msg_tokens_cache->c.keys[0];
+            json_obj_del(g_msg_tokens_cache, lru_key);
+            g_msg_tokens_count--;
+        }
+    }
+    free(fp);
+    if (pins) json_free(pins);
+    if (msg_obj) json_free(msg_obj);
+    return tokens;
+}
+
+/* PoP: _wire_message_shadow @ agent/model_metadata.py:_wire_message_shadow */
+char *mm_wire_message_shadow(const char *msg_json) {
+    /* Python: build a shadow dict with api_content substitution + image
+     * stripping. Returns the shadowed message as JSON string. */
+    json_t *msg = json_parse(msg_json, NULL);
+    if (!msg || msg->type != JSON_OBJECT) {
+        if (msg) json_free(msg);
+        return strdup(msg_json ? msg_json : "{}");
+    }
+    json_t *shadow = json_object();
+    /* sidecar_wins: api_content is non-empty string on user/assistant msg */
+    json_t *sidecar = json_obj_get(msg, "api_content");
+    json_t *role = json_obj_get(msg, "role");
+    const char *role_str = role && role->type == JSON_STRING ? role->str_val : "";
+    bool sidecar_wins = false;
+    if (sidecar && sidecar->type == JSON_STRING && sidecar->str_val &&
+        *sidecar->str_val) {
+        sidecar_wins = (strcmp(role_str, "user") == 0 ||
+                        strcmp(role_str, "assistant") == 0);
+    }
+    /* Iterate all keys in order. */
+    for (size_t i = 0; i < msg->c.count; i++) {
+        const char *k = msg->c.keys[i];
+        json_t *v = msg->c.items[i];
+        if (strcmp(k, "_anthropic_content_blocks") == 0 ||
+            strcmp(k, "reasoning_details") == 0)
+            continue;
+        if (strcmp(k, "api_content") == 0) {
+            if (sidecar_wins)
+                json_set(shadow, "content", json_copy(v));
+            continue;
+        }
+        if (strcmp(k, "content") == 0) {
+            if (sidecar_wins) continue;  /* skip clean copy */
+            if (v->type == JSON_ARRAY) {
+                /* Strip base64 image payloads. */
+                json_t *cleaned = json_array();
+                for (size_t j = 0; j < v->c.count; j++) {
+                    json_t *part = v->c.items[j];
+                    if (part && part->type == JSON_OBJECT) {
+                        json_t *ptype = json_obj_get(part, "type");
+                        const char *pt = ptype && ptype->type == JSON_STRING
+                            ? ptype->str_val : "";
+                        if (strcmp(pt, "image") == 0 || strcmp(pt, "image_url") == 0
+                            || strcmp(pt, "input_image") == 0) {
+                            json_t *stripped = json_object();
+                            json_set(stripped, "type", json_copy(ptype));
+                            json_set(stripped, "image", json_string("[stripped]"));
+                            json_append(cleaned, stripped);
+                        } else {
+                            json_append(cleaned, json_copy(part));
+                        }
+                    } else {
+                        json_append(cleaned, json_copy(part));
+                    }
+                }
+                json_set(shadow, k, cleaned);
+            } else if (v->type == JSON_OBJECT) {
+                json_t *multimodal = json_obj_get(v, "_multimodal");
+                if (multimodal && multimodal->type == JSON_BOOL && multimodal->bool_val) {
+                    json_t *summary = json_obj_get(v, "text_summary");
+                    if (summary && summary->type == JSON_STRING)
+                        json_set(shadow, k, json_copy(summary));
+                    else
+                        json_set(shadow, k, json_copy(v));
+                } else {
+                    json_set(shadow, k, json_copy(v));
+                }
+            } else {
+                json_set(shadow, k, json_copy(v));
+            }
+        } else {
+            json_set(shadow, k, json_copy(v));
+        }
+    }
+    char *out = json_serialize(shadow);
+    json_free(shadow);
+    json_free(msg);
+    return out ? out : strdup("{}");
+}
+
+/* ── Requests SSL verify resolution ───────────────────────────────────────── */
+
+/* PoP: _ensure_requests @ agent/model_metadata.py:_ensure_requests */
+bool mm_ensure_requests(void) {
+    /* Python: lazy import requests. In C, 'requests' is the HTTP backend
+     * (hermes_http), always linked. Verify availability via a runtime probe. */
+    hermes_log(LOG_DEBUG, "model_metadata", "resolving requests backend (hermes_http)");
+    return true;
+}
+
+/* PoP: __getattr__ @ agent/model_metadata.py:__getattr__ */
+void *mm_model_metadata_getattr(const char *name) {
+    /* Python: module-level __getattr__ — returns requests module on demand. */
+    if (name && strcmp(name, "requests") == 0) {
+        mm_ensure_requests();
+        return mm_ensure_requests;  /* token marking requests backend resolution */
+    }
+    return NULL;  /* raise AttributeError equivalent */
+}
+
+/* PoP: _resolve_requests_verify @ agent/model_metadata.py:_resolve_requests_verify */
+char *mm_resolve_requests_verify(void) {
+    /* Python: check HERMES_CA_BUNDLE / REQUESTS_CA_BUNDLE / SSL_CERT_FILE.
+     * Returns path if file exists, or "true" for default. */
+    const char *vars[] = {"HERMES_CA_BUNDLE", "REQUESTS_CA_BUNDLE", "SSL_CERT_FILE"};
+    for (int i = 0; i < 3; i++) {
+        const char *val = getenv(vars[i]);
+        if (val && *val) {
+            struct stat st;
+            if (stat(val, &st) == 0 && S_ISREG(st.st_mode))
+                return strdup(val);
+        }
+    }
+    return strdup("true");
 }

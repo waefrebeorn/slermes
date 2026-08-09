@@ -71,6 +71,7 @@ PORT_OBJ = \
     src/cli/model_catalog.o \
     src/cli/port_hermes_cli_main_helpers.o \
     src/cli/port_hermes_cli_main_gaps.o \
+    src/cli/port_turn_summary_cli.o \
     src/cli/port_hermes_cli_main_cmds.o \
     src/cli/port_checkpoints_format.o \
     src/cli/port_hermes_cli_backup.o \
@@ -381,4 +382,4 @@ PHASE1_OBJ = $(DEPS_OBJ) $(CLI_PORT_NEW2)
 PHASE2_OBJ = $(PHASE1_OBJ) src/main.o $(AGENT_OBJ) $(CLI_OBJ)
 PHASE3_OBJ = $(PHASE2_OBJ) $(TOOLS_OBJ)
 PHASE4_OBJ = $(PHASE3_OBJ) $(GATEWAY_OBJ)
-PHASE5_OBJ = $(PHASE4_OBJ) $(CRON_OBJ) $(AGENT_PORT_REGEN) $(TOOLS_PORT_REGEN) $(GATEWAY_PORT_REGEN)
+PHASE5_OBJ = $(PHASE4_OBJ) $(CRON_OBJ) $(AGENT_PORT_REGEN) $(TOOLS_PORT_REGEN) $(GATEWAY_PORT_REGEN) src/cli/port_turn_summary_cli.o src/cli/port_cli_parity_gaps.o

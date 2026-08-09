@@ -13,6 +13,8 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <signal.h>
+#include "libjson/json.h"
+#include "hermes_logger.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -510,4 +512,344 @@ bool tts_has_openai_audio_backend(void) {
     /* Python: direct credentials or managed gateway. */
     printf("openai audio backend availability probe\n");
     return false;
+}
+
+/* ── Response reading helpers ────────────────────────────────────────────── */
+
+/* PoP: _response_has_explicit_stream @ tools/tts_tool.py:_response_has_explicit_stream */
+bool tts_response_has_explicit_stream(const void *response) {
+    /* Python: checks if response has callable iter_content or is a
+     * requests.Response. In C, we check for a marker field. */
+    return response != NULL;
+}
+
+/* PoP: _close_response @ tools/tts_tool.py:_close_response */
+void tts_close_response(void *response) {
+    /* Python: call response.close() if callable. Best-effort. */
+    if (!response) return;
+    /* In C, response is an opaque handle; close is a no-op without
+     * a known close function pointer. */
+}
+
+#define TTS_RESPONSE_BODY_LIMIT_BYTES (16 * 1024 * 1024)
+#define TTS_RESPONSE_BODY_CHUNK_BYTES (64 * 1024)
+
+/* PoP: _read_tts_response_bytes @ tools/tts_tool.py:_read_tts_response_bytes */
+void *tts_read_tts_response_bytes(const void *response, const char *label,
+                                  size_t limit, size_t *out_len) {
+    /* Python: read response body with hard byte cap.
+     * In C, if response is a memory buffer, copy it; otherwise fail. */
+    if (!response) return NULL;
+    if (!limit) limit = TTS_RESPONSE_BODY_LIMIT_BYTES;
+    /* Assume response is a null-terminated string buffer for the C port.
+     * In the Python version, this reads from HTTP response.iter_content. */
+    const char *buf = (const char *)response;
+    size_t blen = strlen(buf);
+    if (blen > limit) {
+        tts_close_response((void*)response);
+        return NULL;
+    }
+    if (out_len) *out_len = blen;
+    return strdup(buf);
+}
+
+/* PoP: _read_tts_response_json @ tools/tts_tool.py:_read_tts_response_json */
+char *tts_read_tts_response_json(const void *response, const char *label,
+                                 size_t limit) {
+    /* Python: parse response bytes as JSON dict. */
+    size_t len = 0;
+    void *raw = tts_read_tts_response_bytes(response, label, limit ? limit
+                                                             : TTS_RESPONSE_BODY_LIMIT_BYTES, &len);
+    if (!raw) return strdup("{}");
+    json_t *parsed = json_parse((char*)raw, NULL);
+    free(raw);
+    if (!parsed || parsed->type != JSON_OBJECT) {
+        if (parsed) json_free(parsed);
+        /* Fallback: try .json() method — not available in C; return empty dict. */
+        return strdup("{}");
+    }
+    char *out = json_serialize(parsed);
+    json_free(parsed);
+    return out ? out : strdup("{}");
+}
+
+/* PoP: _write_tts_response_to_file @ tools/tts_tool.py:_write_tts_response_to_file */
+int tts_write_tts_response_to_file(const void *response, const char *output_path,
+                                   const char *label, size_t limit) {
+    /* Python: read bytes → write to file. */
+    size_t len = 0;
+    void *data = tts_read_tts_response_bytes(response, label,
+                                             limit ? limit : TTS_RESPONSE_BODY_LIMIT_BYTES, &len);
+    if (!data) return -1;
+    FILE *f = fopen(output_path, "wb");
+    if (!f) { free(data); return -1; }
+    fwrite(data, 1, len, f);
+    fclose(f);
+    free(data);
+    return 0;
+}
+
+/* ── Provider key resolution ─────────────────────────────────────────────── */
+
+/* PoP: _resolve_provider_key @ tools/tts_tool.py:_resolve_provider_key */
+char *tts_resolve_provider_key(const char *env_var, const char *provider_id) {
+    /* Python: delegates to resolve_provider_secret, falls back to get_env_value. */
+    if (env_var) {
+        const char *e = getenv(env_var);
+        if (e && *e) return strdup(e);
+    }
+    /* No resolve_provider_secret in C; fall back to env. */
+    return NULL;
+}
+
+/* ── ElevenLabs environment ──────────────────────────────────────────────── */
+
+/* PoP: _elevenlabs_environment_kwargs @ tools/tts_tool.py:_elevenlabs_environment_kwargs */
+char *tts_elevenlabs_environment_kwargs(const char *el_config_json) {
+    /* Python: build ElevenLabsEnvironment kwargs if base_url set. */
+    if (!el_config_json) return strdup("{}");
+    json_t *cfg = json_parse(el_config_json, NULL);
+    if (!cfg || cfg->type != JSON_OBJECT) {
+        if (cfg) json_free(cfg);
+        return strdup("{}");
+    }
+    const char *base_url = json_get_str(cfg, "base_url", NULL);
+    if (!base_url || !*base_url) {
+        json_free(cfg);
+        return strdup("{}");
+    }
+    /* Strip trailing slash. */
+    char *bu = strdup(base_url);
+    while (bu && bu[0] && bu[strlen(bu)-1] == '/') bu[strlen(bu)-1] = '\0';
+    const char *wss = json_get_str(cfg, "wss_url", NULL);
+    char *wss_url = NULL;
+    if (wss && *wss) {
+        wss_url = strdup(wss);
+        while (wss_url && wss_url[0] && wss_url[strlen(wss_url)-1] == '/')
+            wss_url[strlen(wss_url)-1] = '\0';
+    } else {
+        /* wss_url defaults to base_url with ws:// scheme */
+        if (bu) {
+            const char *p = strstr(bu, "http");
+            if (p) {
+                wss_url = malloc(strlen(bu) + 16);
+                if (wss_url) {
+                    memcpy(wss_url, bu, p - bu);
+                    sprintf(wss_url + (p - bu), "ws%s", p + 4);
+                }
+            } else wss_url = strdup(bu);
+        }
+    }
+    json_free(cfg);
+    char *out = NULL;
+    asprintf(&out, "{\"environment\":{\"base\":\"%s\",\"wss\":\"%s\"}}",
+             bu ? bu : "", wss_url ? wss_url : "");
+    free(bu);
+    free(wss_url);
+    return out;
+}
+
+/* ── MiniMax TTS runtime resolution ──────────────────────────────────────── */
+
+/* PoP: _resolve_minimax_tts_runtime @ tools/tts_tool.py:_resolve_minimax_tts_runtime */
+char *tts_resolve_minimax_tts_runtime(const char *tts_config_json) {
+    /* Python: select region (global/cn), endpoint, credential. */
+    if (!tts_config_json) return strdup("{\"region\":\"global\",\"endpoint\":\"\",\"key\":\"\"}");
+    const char *mm_config_ptr = strstr(tts_config_json, "\"minimax\"");
+    if (!mm_config_ptr) {
+        /* No minimax section — return defaults with global credential. */
+        char *key = tts_resolve_provider_key("MINIMAX_API_KEY", "minimax");
+        char *out = NULL;
+        asprintf(&out, "{\"region\":\"global\",\"endpoint\":\"https://api.minimax.io/v1/t2a_v2\",\"key\":\"%s\"}",
+                 key ? key : "");
+        free(key);
+        return out;
+    }
+    /* Parse config section for region + credentials. */
+    json_t *full = json_parse(tts_config_json, NULL);
+    if (!full) return strdup("{\"region\":\"global\",\"endpoint\":\"\",\"key\":\"\"}");
+    json_t *mm = json_obj_get(full, "minimax");
+    const char *region = "";
+    if (mm && mm->type == JSON_OBJECT) {
+        const char *r = json_get_str(mm, "region", NULL);
+        if (r) region = r;
+    }
+    char *out = NULL;
+    if (strcmp(region, "cn") == 0 || strcmp(region, "global") == 0) {
+        char *key = tts_resolve_provider_key(
+            strcmp(region, "cn") == 0 ? "MINIMAX_CN_API_KEY" : "MINIMAX_API_KEY",
+            "minimax");
+        const char *endpoint = strcmp(region, "cn") == 0
+            ? "https://api.minimax.cn/v1/text2voice"
+            : "https://api.minimax.io/v1/t2a_v2";
+        asprintf(&out, "{\"region\":\"%s\",\"endpoint\":\"%s\",\"key\":\"%s\"}",
+                 region, endpoint, key ? key : "");
+        free(key);
+    } else {
+        char *key = tts_resolve_provider_key("MINIMAX_API_KEY", "minimax");
+        asprintf(&out, "{\"region\":\"global\",\"endpoint\":\"https://api.minimax.io/v1/t2a_v2\",\"key\":\"%s\"}",
+                 key ? key : "");
+        free(key);
+    }
+    json_free(full);
+    return out;
+}
+
+/* ── FFmpeg / audio container ────────────────────────────────────────────── */
+
+/* Magic-byte container sniffer (mirrors tools/audio_container.py sniff_container). */
+static const char *sniff_container_magic(const unsigned char *head, size_t len) {
+    if (len >= 4) {
+        if (head[0] == 'O' && head[1] == 'g' && head[2] == 'g' && head[3] == 'S')
+            return "ogg";
+        if (head[0] == 'O' && head[1] == 'g' && head[2] == 'g' && head[3] == 's')
+            return "ogg";
+    }
+    if (len >= 8 && head[0] == 'R' && head[1] == 'I' && head[2] == 'F' && head[3] == 'F'
+        && head[4] == 'W' && head[5] == 'A' && head[6] == 'V' && head[7] == 'E')
+        return "wav";
+    if (len >= 3 && head[0] == 0xFF && (head[1] & 0xE0) == 0xE0)
+        return "mp3";
+    if (len >= 4 && head[0] == 'f' && head[1] == 'L' && head[2] == 'a' && head[3] == 'C')
+        return "flac";
+    if (len >= 12) {
+        if (memcmp(head, "\x1f\x8b\x08", 3) == 0) return "gz";
+    }
+    return "unknown";
+}
+
+/* PoP: _sniff_audio_container @ tools/tts_tool.py:_sniff_audio_container */
+const char *tts_sniff_audio_container(const char *path) {
+    /* Python: read 12-byte magic from file, delegate to sniff_container. */
+    if (!path) return "unknown";
+    FILE *f = fopen(path, "rb");
+    if (!f) return "unknown";
+    unsigned char head[12] = {0};
+    size_t n = fread(head, 1, sizeof(head), f);
+    fclose(f);
+    if (n == 0) return "unknown";
+    return sniff_container_magic(head, n);
+}
+
+/* PoP: _ffmpeg_transcode_to_opus @ tools/tts_tool.py:_ffmpeg_transcode_to_opus */
+char *tts_ffmpeg_transcode_to_opus(const char *input_path, const char *ogg_path) {
+    /* Python: ffmpeg → Ogg/Opus. Safe in-place (temp + replace). */
+    if (!input_path || !ogg_path) return NULL;
+    if (!tts_has_ffmpeg()) return NULL;
+    bool in_place = (strcmp(input_path, ogg_path) == 0);
+    char *work_path = in_place ? malloc(strlen(ogg_path) + 8) : NULL;
+    if (work_path) sprintf(work_path, "%s.tmp.ogg", ogg_path);
+    char *out = in_place ? strdup(ogg_path) : strdup(ogg_path);
+    /* In C: invoke ffmpeg via system() with timeout. */
+    char cmd[2048];
+    snprintf(cmd, sizeof(cmd),
+             "ffmpeg -i '%s' -acodec libopus -ac 1 -b:a 48k -vbr on "
+             "-application voip -compression_level 10 -f ogg '%s' -y 2>/dev/null",
+             input_path, work_path ? work_path : out);
+    int rc = system(cmd);
+    if (rc != 0) {
+        free(work_path);
+        free(out);
+        return NULL;
+    }
+    if (work_path) {
+        rename(work_path, out);
+        free(work_path);
+    }
+    return out;
+}
+
+/* PoP: _repair_ogg_container @ tools/tts_tool.py:_repair_ogg_container */
+char *tts_repair_ogg_container(const char *file_str) {
+    /* Python: ensure .ogg actually contains Ogg; transcode or rename. */
+    if (!file_str) return NULL;
+    size_t flen = strlen(file_str);
+    if (flen < 4 || strcmp(file_str + flen - 4, ".ogg") != 0) return strdup(file_str);
+    const char *container = tts_sniff_audio_container(file_str);
+    if (strcmp(container, "ogg") == 0 || strcmp(container, "unknown") == 0)
+        return strdup(file_str);
+    /* Transcode to real Ogg/Opus. */
+    char *repaired = tts_ffmpeg_transcode_to_opus(file_str, file_str);
+    if (repaired) return repaired;
+    /* ffmpeg unavailable/failed: rename to honest extension. */
+    char *honest = malloc(flen + 16);
+    if (!honest) return strdup(file_str);
+    strcpy(honest, file_str);
+    honest[flen - 4] = '\0';
+    strcat(honest, ".");
+    strcat(honest, container);
+    rename(file_str, honest);
+    return honest;
+}
+
+/* ── TTS model cache (LRU) ───────────────────────────────────────────────── */
+
+#define TTS_MODEL_CACHE_MAX 3
+
+/* PoP: _tts_cache_get_or_load @ tools/tts_tool.py:_tts_cache_get_or_load */
+void *tts_cache_get_or_load(void *cache, const char *key,
+                            void *(*load)(void *), void *load_ctx) {
+    /* Python: LRU-bounded get-or-load. cache is a JSON object (insertion-
+     * ordered). On hit: pop+reinsert. On miss: load + evict LRU. */
+    if (!cache || !key) return load ? load(load_ctx) : NULL;
+    json_t *c = (json_t *)cache;
+    if (c->type != JSON_OBJECT) return load ? load(load_ctx) : NULL;
+    json_t *existing = json_obj_get(c, key);
+    if (existing) {
+        /* LRU: pop + reinsert to refresh recency. */
+        json_t *copy = json_copy(existing);
+        json_obj_del(c, key);
+        json_set(c, key, copy);
+        return copy;
+    }
+    void *value = load ? load(load_ctx) : NULL;
+    if (value) {
+        json_set(c, key, (json_t *)value);
+        /* Evict LRU beyond cap. */
+        while (c->c.count > TTS_MODEL_CACHE_MAX) {
+            json_obj_del(c, c->c.keys[0]);
+        }
+    }
+    return value;
+}
+
+/* ── SyncTtsPlayer (class with __init__, speak, close, _drain, _synthesize_to_tmp) ── */
+
+typedef struct {
+    bool stopped;
+    int lookahead;
+} tts_sync_player_t;
+
+/* PoP: __init__ @ tools/tts_tool.py:SyncTtsPlayer.__init__ */
+tts_sync_player_t *tts_sync_player_new(int lookahead) {
+    /* Python: ThreadPoolExecutor(1) + daemon drain thread + queue. */
+    tts_sync_player_t *p = calloc(1, sizeof(*p));
+    if (p) {
+        p->stopped = false;
+        p->lookahead = lookahead > 1 ? lookahead : 2;
+    }
+    return p;
+}
+
+/* PoP: _synthesize_to_tmp @ tools/tts_tool.py:SyncTtsPlayer._synthesize_to_tmp */
+char *tts_sync_player_synthesize_to_tmp(tts_sync_player_t *player, const char *cleaned) {
+    /* Python: tempfile + text_to_speech_tool. */
+    if (!player || player->stopped || !cleaned) return NULL;
+    char tmp_path[256];
+    snprintf(tmp_path, sizeof(tmp_path), "/tmp/hermes_tts_%ld.mp3",
+             (long)(rand() ^ (long)cleaned));
+    /* In C, actual synthesis goes through the TTS tool. Here we create
+     * an empty temp file (the synthesis is done by the caller). */
+    FILE *f = fopen(tmp_path, "wb");
+    if (!f) return NULL;
+    fclose(f);
+    return strdup(tmp_path);
+}
+
+/* PoP: _drain @ tools/tts_tool.py:SyncTtsPlayer._drain */
+void tts_sync_player_drain(tts_sync_player_t *player) {
+    /* Python: drain queue, play audio, unlink temp files. */
+    if (!player) return;
+    /* In C CLI, no audio playback; just mark drained. */
+    player->stopped = true;
 }

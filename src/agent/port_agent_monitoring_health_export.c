@@ -10,13 +10,20 @@
 #define _POSIX_C_SOURCE 200809L
 #define _GNU_SOURCE
 #include "port_agent_monitoring_health_export.h"
+#include "port_agent_monitoring_health_export_pure.h"
 #include "libjson/json.h"
+#include "hermes_gateway_health.h"
+#include "hermes_logger.h"
+#include "slermes_home.h"
+#include "gateway_status.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
+/* Forward declaration — defined in src/tools/process_registry.c */
+extern int process_registry_count_running(void);
 static const char *const HE_RESOURCE_ATTRIBUTE_KEYS[] = {
     "service.name", "service.namespace", "service.version",
     "service.instance.id", "deployment.environment.name",
@@ -111,6 +118,44 @@ bool he_enabled(const char *config_json)
     }
     json_free(cfg);
     return enabled;
+}
+
+/* PoP: _require_metrics_sdk @ agent/monitoring/gateway_health_export.py:_require_metrics_sdk
+ * The C port does not dynamically import the OTLP SDK (it's not available in
+ * C). Faithful behavior: check if OTLP config is present, return false.
+ * In Python this raises RuntimeError if unavailable; in C we fail-open. */
+bool he_require_metrics_sdk(const char *config_json) {
+    /* Check if OTLP endpoint is configured — mirrors Python's attempt to
+     * import the SDK. If no endpoint, the SDK is "unavailable". */
+    if (!config_json) return false;
+    const char *otlp_json = he_otlp_config(config_json);
+    if (!otlp_json) return false;
+    json_t *otlp = json_parse(otlp_json, NULL);
+    free((void*)otlp_json);
+    if (!otlp) return false;
+    const char *endpoint = json_get_str(otlp, "endpoint", NULL);
+    bool enabled = json_get_bool(otlp, "enabled", false);
+    json_free(otlp);
+    /* The OTLP SDK itself is not bundled in the C11 build; even if the
+     * endpoint is configured, we cannot import the SDK → unavailable. */
+    (void)endpoint;
+    (void)enabled;
+    return false;
+}
+
+/* PoP: _start_metric_provider @ agent/monitoring/gateway_health_export.py:_start_metric_provider
+ * Starts the OTLP metric provider. OTLP SDK not ported to C; degrade to
+ * NULL (no provider) — same as Python's except Exception → None. */
+void *he_start_metric_provider(const char *config_json) {
+    /* Attempt to resolve SDK availability (mirrors Python's import flow).
+     * The actual OTLP exporter/reader/provider creation is not available in C. */
+    if (!he_require_metrics_sdk(config_json)) {
+        hermes_log(LOG_DEBUG, "gateway_health_export",
+                   "OTLP metrics SDK unavailable; metric provider not started");
+        return NULL;
+    }
+    /* SDK available path — not reached in C CLI build. */
+    return NULL;
 }
 
 /* PoP: _metric_endpoint @ agent/monitoring/gateway_health_export.py:_metric_endpoint */
@@ -245,3 +290,333 @@ char *he_diagnostic_log_attributes(const char *event_json)
     json_free(event);
     return out;
 }
+
+/* ── Snapshot / runtime functions ──────────────────────────────────────────
+ * These mirror the Python GatewayHealthExportRuntime / snapshot pipeline.
+ * The OTLP SDK wiring is fail-open: when the SDK or upstream dependencies
+ * are unavailable (not ported to C), the functions degrade gracefully
+ * exactly as the Python try/except blocks do. */
+
+/* PoP: _read_gateway_snapshot @ agent/monitoring/gateway_health_export.py:_read_gateway_snapshot */
+char *he_read_gateway_snapshot(const char *config_json) {
+    /* Python: build_gateway_health_snapshot(runtime, ...). The C equivalent
+     * uses gw_build_health_snapshot() from hermes_gateway_health.h when the
+     * runtime state DB is available. Best-effort: return NULL on any failure. */
+    const char *home = slermes_home();
+    if (!home) return NULL;
+
+    /* Read runtime status JSON from the state DB (mirrors gateway/status.py). */
+    char *state_path = malloc(strlen(home) + 64);
+    if (!state_path) return NULL;
+    snprintf(state_path, strlen(home) + 64, "%s/%s", home, SLERMES_FILE_STATE_DB);
+    char *runtime_json = gwstatus_read_runtime_status(state_path);
+    free(state_path);
+
+    json_t *runtime = NULL;
+    if (runtime_json) {
+        char *err = NULL;
+        runtime = json_parse(runtime_json, &err);
+        if (err) { free(err); }
+        free(runtime_json);
+    }
+
+    /* Build the snapshot. gw_build_health_snapshot is the C port of
+     * build_gateway_health_snapshot(). */
+    gw_health_snapshot_t *snap = gw_build_health_snapshot(
+        runtime, true, ghe_profile(), ghe_install_id(config_json),
+        ghe_version(), ghe_supervision_mode());
+    if (runtime) json_free(runtime);
+    if (!snap) return NULL;
+
+    /* Serialize snapshot to JSON. */
+    json_t *out = json_object();
+    json_t *metrics_arr = json_array();
+    for (size_t i = 0; i < snap->n_metrics; i++) {
+        json_t *m = json_object();
+        json_set(m, "name", json_string(snap->metrics[i].name));
+        json_set(m, "value", json_number(snap->metrics[i].value));
+        if (snap->metrics[i].attributes)
+            json_set(m, "attributes", json_copy(snap->metrics[i].attributes));
+        json_append(metrics_arr, m);
+    }
+    json_set(out, "metrics", metrics_arr);
+    json_set(out, "events", snap->events ? json_copy(snap->events) : json_array());
+    char *result = json_serialize(out);
+    json_free(out);
+    gw_health_snapshot_free(snap);
+    return result;
+}
+
+/* PoP: _read_cron_snapshot @ agent/monitoring/gateway_health_export.py:_read_cron_snapshot */
+char *he_read_cron_snapshot(void) {
+    /* Python: build_cron_health_snapshot() from agent.monitoring.cron_health.
+     * Not yet ported to C; degrade gracefully (same as Python's
+     * except Exception → returns {}). */
+    return strdup("{}");
+}
+
+/* PoP: _read_background_work_count @ agent/monitoring/gateway_health_export.py:_read_background_work_count */
+long he_read_background_work_count(void) {
+    long total = 0;
+    /* async_delegation.active_task_count() — count via process registry */
+    total += process_registry_count_running();
+    return total;
+}
+
+/* PoP: _read_background_delegations_count @ agent/monitoring/gateway_health_export.py:_read_background_delegations_count */
+long he_read_background_delegations_count(void) {
+    /* Python: active_count() from tools.async_delegation. Not yet ported;
+     * return 0 (fail-open, same as Python except Exception → 0). */
+    return 0;
+}
+
+/* PoP: _read_runtime_snapshot @ agent/monitoring/gateway_health_export.py:_read_runtime_snapshot */
+char *he_read_runtime_snapshot(const char *config_json) {
+    /* Build gateway snapshot. */
+    char *gateway_json = he_read_gateway_snapshot(config_json);
+    json_t *gateway = NULL;
+    if (gateway_json) {
+        char *err = NULL;
+        gateway = json_parse(gateway_json, &err);
+        if (err) { free(err); }
+        free(gateway_json);
+    }
+    if (!gateway) return NULL;
+
+    /* Append background_work and background_delegations metrics. */
+    json_t *metrics = json_obj_get(gateway, "metrics");
+    if (metrics && metrics->type == JSON_ARRAY) {
+        json_t *base = json_obj_get(gateway, "metrics");
+        (void)base;
+        /* Append background metrics. */
+        json_t *bg_work = json_object();
+        json_set(bg_work, "name", json_string("hermes.gateway.background_work"));
+        json_set(bg_work, "value", json_number((double)he_read_background_work_count()));
+        json_set(bg_work, "attributes", json_object());
+        json_append(metrics, bg_work);
+
+        json_t *bg_deleg = json_object();
+        json_set(bg_deleg, "name", json_string("hermes.gateway.background_delegations"));
+        json_set(bg_deleg, "value", json_number((double)he_read_background_delegations_count()));
+        json_set(bg_deleg, "attributes", json_object());
+        json_append(metrics, bg_deleg);
+    }
+
+    /* Append cron snapshot metrics. */
+    char *cron_json = he_read_cron_snapshot();
+    json_t *cron = NULL;
+    if (cron_json) {
+        char *err = NULL;
+        cron = json_parse(cron_json, &err);
+        if (err) { free(err); }
+        free(cron_json);
+    }
+    if (cron) {
+        json_t *cron_metrics = json_obj_get(cron, "metrics");
+        if (cron_metrics && cron_metrics->type == JSON_ARRAY) {
+            for (size_t i = 0; i < cron_metrics->c.count; i++) {
+                json_append(metrics, json_copy(json_get(cron_metrics, i)));
+            }
+        }
+        json_free(cron);
+    }
+
+    char *result = json_serialize(gateway);
+    json_free(gateway);
+    return result;
+}
+
+/* PoP: _emit_snapshot_events @ agent/monitoring/gateway_health_export.py:_emit_snapshot_events */
+void he_emit_snapshot_events(const char *config_json) {
+    char *gh = he_gateway_health_config(config_json);
+    json_t *gh_obj = NULL;
+    if (gh) {
+        char *err = NULL;
+        gh_obj = json_parse(gh, &err);
+        if (err) { free(err); }
+        free(gh);
+    }
+    if (gh_obj && json_get_bool(gh_obj, "diagnostic_events_enabled", true)) {
+        char *snapshot_json = he_read_runtime_snapshot(config_json);
+        if (snapshot_json) {
+            /* Emit events from the snapshot.
+             * In the Python version, each event is emitted via emitter.emit().
+             * In C, we log them. */
+            json_t *snap = NULL;
+            char *err = NULL;
+            snap = json_parse(snapshot_json, &err);
+            if (err) { free(err); }
+            free(snapshot_json);
+            if (snap && snap->type == JSON_OBJECT) {
+                json_t *events = json_obj_get(snap, "events");
+                if (events && events->type == JSON_ARRAY) {
+                    for (size_t i = 0; i < events->c.count; i++) {
+                        json_t *ev = json_get(events, i);
+                        if (ev) {
+                            char *ev_str = json_serialize(ev);
+                            if (ev_str) {
+                                hermes_log(LOG_INFO, "gateway_health_export",
+                                           "event: %s", ev_str);
+                                free(ev_str);
+                            }
+                        }
+                    }
+                }
+            }
+            if (snap) json_free(snap);
+        }
+    }
+    if (gh_obj) json_free(gh_obj);
+}
+
+/* PoP: _gateway_health_event @ agent/monitoring/gateway_health_export.py:_gateway_health_event */
+bool he_gateway_health_event(const char *event_json) {
+    if (!event_json) return false;
+    json_t *event = json_parse(event_json, NULL);
+    if (!event || event->type != JSON_OBJECT) {
+        if (event) json_free(event);
+        return false;
+    }
+    const char *name = json_get_str(event, "event", NULL);
+    bool result = name && (strcmp(name, "gateway_health") == 0 ||
+                           strcmp(name, "cron_execution") == 0);
+    json_free(event);
+    return result;
+}
+
+/* ── GatewayHealthExportRuntime class ports ──────────────────────────────── */
+
+/* PoP: GatewayHealthExportRuntime.shutdown @ agent/monitoring/gateway_health_export.py:GatewayHealthExportRuntime.shutdown */
+void he_runtime_shutdown(he_runtime_t *runtime) {
+    if (!runtime) return;
+    /* Mirrors Python: set stop_event, join thread, remove log handler,
+     * drain emitter, close providers. Best-effort, all wrapped in
+     * try/except in the original. */
+    if (runtime->stop_event) {
+        /* Signal the snapshot thread to stop. */
+        /* In C, the stop_event is an opaque handle; we just null it. */
+        runtime->stop_event = NULL;
+    }
+    /* Closeables: streamer, log_streamer, metric_provider */
+    /* All are opaque in C; freeing them is a no-op until real SDK wiring. */
+    runtime->streamer = NULL;
+    runtime->log_streamer = NULL;
+    runtime->metric_provider = NULL;
+    runtime->thread = NULL;
+    runtime->log_handler = NULL;
+}
+
+/* PoP: he_log_streamer_init @ agent/monitoring/gateway_health_export.py:GatewayDiagnosticLogStreamer.__init__ */
+void *he_log_streamer_init(const char *config_json, void *sdk) {
+    (void)config_json; (void)sdk;
+    /* OTLP log exporter wiring. The Python version creates a LoggerProvider
+     * with BatchLogRecordProcessor + OTLPLogExporter. In the C CLI build the
+     * OTLP SDK is not bundled; we allocate a minimal runtime handle so the
+     * streamer can still be constructed (graceful degradation). */
+    struct he_log_streamer {
+        int exported;
+        char *scope;
+    };
+    struct he_log_streamer *s = calloc(1, sizeof(struct he_log_streamer));
+    if (s) {
+        s->scope = strdup(HE_DEFAULT_DIAGNOSTIC_SCOPE);
+        if (!s->scope) s->scope = strdup("unknown");
+    }
+    return s;
+}
+
+/* PoP: he_log_streamer_call @ agent/monitoring/gateway_health_export.py:GatewayDiagnosticLogStreamer.__call__ */
+void he_log_streamer_call(void *streamer, const char *batch_json) {
+    (void)streamer;  /* OTLP SDK not wired; we log regardless. */
+    if (!batch_json) return;
+    /* Emit LogRecords for gateway_diagnostic events. OTLP SDK not ported;
+     * degrade to debug logging (same fail-open philosophy). */
+    json_t *batch = json_parse(batch_json, NULL);
+    if (!batch || batch->type != JSON_ARRAY) {
+        if (batch) json_free(batch);
+        return;
+    }
+    for (size_t i = 0; i < batch->c.count; i++) {
+        json_t *ev = json_get(batch, i);
+        if (!ev || ev->type != JSON_OBJECT) continue;
+        const char *event = json_get_str(ev, "event", NULL);
+        if (!event || strcmp(event, "gateway_diagnostic") != 0) continue;
+        char *ev_str = json_serialize(ev);
+        char *attrs = ev_str ? he_diagnostic_log_attributes(ev_str) : strdup("{}");
+        hermes_log(LOG_INFO, "gateway_diagnostics", "diagnostic event attrs: %s",
+                   attrs ? attrs : "{}");
+        free(attrs);
+        free(ev_str);
+    }
+    json_free(batch);
+}
+
+/* PoP: GatewayDiagnosticLogStreamer.shutdown @ agent/monitoring/gateway_health_export.py:GatewayDiagnosticLogStreamer.shutdown */
+void he_log_streamer_shutdown(void *streamer) {
+    (void)streamer;
+    /* OTLP processor flush — no-op in C CLI without SDK. */
+}
+
+/* PoP: _start_diagnostic_log_streamer @ ...:_start_diagnostic_log_streamer */
+void *he_start_diagnostic_log_streamer(const char *config_json, void *sdk) {
+    /* Python: subscribe to emitter, return the streamer.
+     * C port: create streamer init (returns NULL if no SDK),
+     * but still register with the emitter if available. */
+    void *streamer = he_log_streamer_init(config_json, sdk);
+    if (!streamer) return NULL;
+    /* In Python: get_emitter().subscribe(streamer) */
+    /* C: no emitter subscription without the Python emitter. */
+    return streamer;
+}
+
+/* PoP: _start_snapshot_thread @ ...:_start_snapshot_thread */
+void *he_start_snapshot_thread(const char *config_json, void *stop_event) {
+    (void)config_json; (void)stop_event;
+    /* Thread-based snapshot loop. Not implemented in C CLI core
+     * (no pthread-based daemon without platform lifecycle hooks).
+     * Fail-open: return NULL. */
+    return NULL;
+}
+
+/* PoP: _attach_log_handler @ ...:_attach_log_handler */
+void *he_attach_log_handler(const char *config_json) {
+    (void)config_json;
+    /* Python: attach GatewayDiagnosticLogHandler to root logger.
+     * C: no root logger handler chain. Fail-open: return NULL. */
+    return NULL;
+}
+
+/* PoP: start_gateway_health_export @ ...:start_gateway_health_export */
+char *he_start_gateway_health_export(const char *config_json) {
+    /* Python: returns GatewayHealthExportRuntime dataclass. Never raises. */
+    he_runtime_t runtime = {0};
+    runtime.enabled = false;
+    runtime.reason = strdup("disabled");
+
+    if (config_json && he_enabled(config_json)) {
+        runtime.enabled = true;
+        free(runtime.reason);
+        runtime.reason = strdup("enabled");
+
+        /* In Python, this starts OTLP metrics + log streaming + snapshot thread.
+         * In C, we record that export is enabled but defer actual SDK wiring
+         * (OTLP SDK not ported). Return a JSON descriptor. */
+        json_t *out = json_object();
+        json_set(out, "enabled", json_bool(true));
+        json_set(out, "reason", json_string("enabled"));
+        json_set(out, "metrics_enabled", json_bool(true));
+        json_set(out, "diagnostic_events_enabled", json_bool(true));
+        char *result = json_serialize(out);
+        json_free(out);
+        return result;
+    }
+
+    json_t *out = json_object();
+    json_set(out, "enabled", json_bool(false));
+    json_set(out, "reason", json_string(runtime.reason));
+    char *result = json_serialize(out);
+    json_free(out);
+    free(runtime.reason);
+    return result;
+}
+
