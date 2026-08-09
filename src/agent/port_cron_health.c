@@ -15,6 +15,9 @@
 #include "hermes_regex.h"
 #include "datetime.h"
 #include "hermes_logger.h"
+#include "cron_jobs.h"
+#include "cron_scheduler_runtime.h"
+#include "port_monitoring_emitter.h"
 
 #include <stdbool.h>
 #include <ctype.h>
@@ -29,6 +32,15 @@
 #define KNOWN_STATUSES  {"claimed","running","completed","failed","unknown"}
 #define CRON_KNOWN_SOURCES {"builtin","direct","external"}
 #define CRON_KNOWN_DELIVERY_OUTCOMES {"delivered","failed","suppressed","not_configured"}
+
+/* ── _now ────────────────────────────────────────────────────────── */
+/* PoP: _now @ agent/monitoring/cron_health.py:_now */
+/* Faithful port of `_hermes_now()`: wall-clock epoch seconds as double. */
+double cron_now(void) {
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    return (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
+}
 
 /* ── _job_key ────────────────────────────────────────────────────── */
 /* PoP: _job_key @ agent/monitoring/cron_health.py:_job_key */
@@ -50,9 +62,8 @@ char *cron_job_key(const char *raw) {
 }
 
 /* ── classify_cron_error ────────────────────────────────────────── */
-/* PoP: classify_cron_error @ agent/monitoring/cron_health.py:classify_cron_error
- *
- * Faithful port of the Python regex cascade. Each branch compiles to a POSIX
+/* PoP: classify_cron_error @ agent/monitoring/cron_health.py:classify_cron_error */
+/* Faithful port of the Python regex cascade. Each branch compiles to a POSIX
  * extended regex; matches are case-insensitive (Python .lower() applied first). */
 const char *classify_cron_error(const char *raw) {
     /* mirror: text = str(raw or "").lower() */
@@ -113,9 +124,8 @@ const char *classify_cron_error(const char *raw) {
 }
 
 /* ── _parse_time ─────────────────────────────────────────────────── */
-/* PoP: _parse_time @ agent/monitoring/cron_health.py:_parse_time
- *
- * Parse an ISO-8601 timestamp to epoch seconds (fractional, double).
+/* PoP: _parse_time @ agent/monitoring/cron_health.py:_parse_time */
+/* Parse an ISO-8601 timestamp to epoch seconds (fractional, double).
  * Returns -1.0 on failure (mirrors None).  Uses datetime_parse_iso8601 for
  * the integer-seconds component, then layers fractional-second parsing so
  * duration_ms retains sub-second precision like Python's total_seconds(). */
@@ -244,4 +254,171 @@ void cron_execution_event_free(struct cron_execution_event *ev) {
     free(ev->status); free(ev->job_key); free(ev->source);
     free(ev->delivery_outcome); free(ev->error_class);
     memset(ev, 0, sizeof(*ev));
+}
+
+/* ── event-to-JSON serialization ─────────────────────────────────── */
+/* Python: CronExecutionEvent.to_dict() → {"event":"cron_execution", ...} */
+json_t *cron_execution_event_to_json(const struct cron_execution_event *ev) {
+    if (!ev) return NULL;
+    json_t *d = json_object();
+    json_set(d, "event", json_string("cron_execution"));
+    json_set(d, "status", json_string(ev->status));
+    json_set(d, "job_key", json_string(ev->job_key));
+    json_set(d, "source", json_string(ev->source));
+    if (ev->duration_ms >= 0)
+        json_set(d, "duration_ms", json_number((double)ev->duration_ms));
+    else
+        json_set(d, "duration_ms", json_new_null());
+    if (ev->delivery_outcome)
+        json_set(d, "delivery_outcome", json_string(ev->delivery_outcome));
+    else
+        json_set(d, "delivery_outcome", json_new_null());
+    if (ev->error_class && ev->error_class[0])
+        json_set(d, "error_class", json_string(ev->error_class));
+    else
+        json_set(d, "error_class", json_new_null());
+    json_set(d, "ts_ns", json_number((double)ev->ts_ns));
+    return d;
+}
+
+/* ── _is_overdue ──────────────────────────────────────────────────── */
+/* PoP: _is_overdue @ agent/monitoring/cron_health.py:_is_overdue */
+bool cron_is_overdue(const json_t *job, double now_epoch) {
+    if (!job || job->type != JSON_OBJECT) return false;
+    /* if not job.get("enabled", True): return False — default True */
+    bool enabled = true;
+    json_t *en = json_obj_get(job, "enabled");
+    if (en && en->type == JSON_BOOL) enabled = en->bool_val;
+    if (!enabled) return false;
+
+    json_t *nra = json_obj_get(job, "next_run_at");
+    const char *next_run_str = NULL;
+    if (nra && nra->type == JSON_STRING) next_run_str = nra->str_val;
+    double next_run = cron_parse_time(next_run_str);
+    if (next_run < 0.0) return false;
+
+    json_t *sched = json_obj_get(job, "schedule");
+    if (!sched || sched->type != JSON_OBJECT) return false;
+
+    /* grace window */
+    int grace = cronjobs_compute_grace_seconds(sched);
+    double lateness = now_epoch - next_run;
+    return lateness > (double)grace;
+}
+
+/* ── emit_execution_state ─────────────────────────────────────────── */
+/* PoP: emit_execution_state @ agent/monitoring/cron_health.py:emit_execution_state */
+void cron_emit_execution_state(const json_t *record, const char *delivery_outcome) {
+    if (!record) return;
+    struct cron_execution_event ev = project_execution_event(record, delivery_outcome);
+    json_t *event = cron_execution_event_to_json(&ev);
+    cron_execution_event_free(&ev);
+    if (!event) return;
+    monitoring_emitter_t *target = monitoring_emitter_get();
+    if (!target) { json_free(event); return; }
+    bool terminal = (strcmp(ev.status, "completed") == 0 ||
+                     strcmp(ev.status, "failed") == 0 ||
+                     strcmp(ev.status, "unknown") == 0);
+    cron_execution_event_free(&ev);
+    monitoring_emitter_emit(target, event);
+    /* terminal states synchronously cross the queue barrier (flush timeout 1.0) */
+    if (terminal) {
+        monitoring_emitter_flush(target, 1.0);
+    }
+    json_free(event);
+}
+
+/* ── build_cron_health_snapshot ────────────────────────────────────── */
+/* PoP: build_cron_health_snapshot @ agent/monitoring/cron_health.py:build_cron_health_snapshot */
+json_t *cron_build_health_snapshot(void) {
+    json_t *metrics = json_array();
+    if (!metrics) return NULL;
+
+    /* hermes.cron.scheduler.heartbeat_age_seconds / last_success_age_seconds */
+    double hb_age = 0.0;
+    double succ_age = 0.0;
+    {
+        bool have_hb = false, have_succ = false;
+        double v = cronjobs_ticker_heartbeat_age();
+        if (v >= 0.0) { have_hb = true; hb_age = v; }
+        v = cronjobs_ticker_success_age();
+        if (v >= 0.0) { have_succ = true; succ_age = v; }
+        if (have_hb) {
+            json_t *m = json_object();
+            json_set(m, "name", json_string("hermes.cron.scheduler.heartbeat_age_seconds"));
+            json_set(m, "value", json_number(hb_age >= 0.0 ? hb_age : 0.0));
+            json_set(m, "attributes", json_object());
+            json_array_append(metrics, m);
+        }
+        if (have_succ) {
+            json_t *m = json_object();
+            json_set(m, "name", json_string("hermes.cron.scheduler.last_success_age_seconds"));
+            json_set(m, "value", json_number(succ_age >= 0.0 ? succ_age : 0.0));
+            json_set(m, "attributes", json_object());
+            json_array_append(metrics, m);
+        }
+    }
+
+    /* hermes.cron.scheduler.catch_up_occurrences */
+    {
+        double cu = 0.0; /* would call get_catch_up_occurrence_count() if ported */
+        json_t *m = json_object();
+        json_set(m, "name", json_string("hermes.cron.scheduler.catch_up_occurrences"));
+        json_set(m, "value", json_number(cu));
+        json_set(m, "attributes", json_object());
+        json_array_append(metrics, m);
+    }
+
+    /* hermes.cron.jobs.enabled / .overdue */
+    {
+        char *err = NULL;
+        json_t *jobs = cronjobs_load_jobs(&err);
+        if (err) free(err);
+        if (jobs) {
+            size_t n = json_len(jobs);
+            int enabled_count = 0, overdue_count = 0;
+            double now = cron_now();
+            for (size_t i = 0; i < n; i++) {
+                json_t *job = json_array_get(jobs, i);
+                if (cron_is_overdue(job, now)) overdue_count++;
+                /* enabled count */
+                bool jen = true;
+                json_t *en = json_obj_get(job, "enabled");
+                if (en && en->type == JSON_BOOL) jen = en->bool_val;
+                if (jen) enabled_count++;
+            }
+            json_t *m1 = json_object();
+            json_set(m1, "name", json_string("hermes.cron.jobs.enabled"));
+            json_set(m1, "value", json_number((double)enabled_count));
+            json_set(m1, "attributes", json_object());
+            json_array_append(metrics, m1);
+            json_t *m2 = json_object();
+            json_set(m2, "name", json_string("hermes.cron.jobs.overdue"));
+            json_set(m2, "value", json_number((double)overdue_count));
+            json_set(m2, "attributes", json_object());
+            json_array_append(metrics, m2);
+            json_free(jobs);
+        }
+    }
+
+    /* hermes.cron.jobs.running */
+    {
+        size_t nrun = 0;
+        char **ids = scheduler_get_running_job_ids(&nrun);
+        json_t *m = json_object();
+        json_set(m, "name", json_string("hermes.cron.jobs.running"));
+        json_set(m, "value", json_number((double)nrun));
+        json_set(m, "attributes", json_object());
+        json_array_append(metrics, m);
+        /* free the ids array (strings are malloc'd by the scheduler) */
+        if (ids) {
+            for (size_t i = 0; i < nrun; i++) free(ids[i]);
+            free(ids);
+        }
+    }
+
+    json_t *snapshot = json_object();
+    json_set(snapshot, "metrics", metrics);
+    json_set(snapshot, "events", json_array());
+    return snapshot;
 }
