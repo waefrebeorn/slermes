@@ -44,9 +44,6 @@ char *pca_apply_cache_marker(const char *message_json, const char *ttl) {
 }
 
 /* PoP: apply_anthropic_cache_control @ agent/prompt_caching.py:apply_anthropic_cache_control */
-char *pca_apply_anthropic_cache_control(const char *messages_json, bool static_system_prompt) {
-    /* Python: markers on messages. */
-    if (!messages_json) return NULL;
-    printf("anthropic cache control applied (static_system=%d)\n", static_system_prompt);
-    return strdup(messages_json);
-}
+/* Real json_t*-based implementation lives in port_prompt_caching_plan.c
+ * (pca_apply_anthropic_cache_control).  The previous string-based echo stub
+ * here was a BOOTLEG placeholder; removed in favour of the faithful port. */
