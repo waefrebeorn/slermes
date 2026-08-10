@@ -12,28 +12,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include "hermes_json.h"
-
-extern double skill_usage_latest_activity_at(const void *record);
-extern json_t *skill_usage_read_bundled_manifest_names(const char *hermes_home);
-extern json_t *skill_usage_read_hub_installed_names(const char *hermes_home);
-extern bool skill_usage_prune_builtins_enabled(void);
-extern const char *skill_usage_suppressed_file(const char *hermes_home, char *out, size_t sz);
-extern void skill_usage_write_suppressed_names(const char *hermes_home, json_t *names);
-extern void skill_usage_add_suppressed_name(const char *hermes_home, const char *name);
-extern void skill_usage_remove_suppressed_name(const char *hermes_home, const char *name);
-extern json_t *skill_usage_list_agent_created_names(const char *hermes_home);
-extern json_t *skill_usage_list_archived_names(const char *hermes_home);
-extern bool skill_usage_is_agent_created(const void *record);
-extern bool skill_usage_is_hub_installed(const void *record);
-extern bool skill_usage_is_bundled(const void *record);
-extern const char *skill_usage_external_read_only_message(const char *skill_name);
-extern bool skill_usage_is_curation_eligible(const void *record);
-extern bool skill_usage_is_curator_managed_record(const void *record);
-extern char *skill_usage_find_external_skill_dir(const char *hermes_home, const char *name);
-extern json_t *skill_usage_agent_created_report(const char *hermes_home);
-extern json_t *skill_usage_usage_report(const char *hermes_home);
-extern int skill_usage_archive_skill_by_name(const char *hermes_home, const char *name);
-extern int skill_usage_restore_skill_by_name(const char *hermes_home, const char *name);
+#include "skill_usage.h"
 
 /* PoP: latest_activity_at @ tools/skill_usage.py:latest_activity_at */
 double su_latest_activity_at(const void *record) {
@@ -112,12 +91,10 @@ int su_restore_skill(const char *hermes_home, const char *name) {
 
 /* PoP: is_protected_builtin @ tools/skill_usage.py:is_protected_builtin */
 bool su_is_protected_builtin(const char *name) {
-    extern bool skill_usage_is_protected_builtin(const char *name);
     return skill_usage_is_protected_builtin(name);
 }
 /* PoP: _usage_file @ tools/skill_usage.py:_usage_file */
 const char *su_usage_file(const char *hermes_home, char *out, size_t sz) {
-    extern const char *skill_usage_file_path(const char *hermes_home, char *out_path);
     return skill_usage_file_path(hermes_home, out);
 }
 /* PoP: _usage_file_lock @ tools/skill_usage.py:_usage_file_lock */
@@ -127,7 +104,6 @@ const char *su_usage_file_lock(const char *hermes_home, char *out, size_t sz) {
 }
 /* PoP: _archive_dir @ tools/skill_usage.py:_archive_dir */
 const char *su_archive_dir(const char *hermes_home, char *out, size_t sz) {
-    extern const char *skill_usage_archive_dir(const char *hermes_home, char *out_path);
     return skill_usage_archive_dir(hermes_home, out);
 }
 /* PoP: _parse_iso_timestamp @ tools/skill_usage.py:_parse_iso_timestamp */
@@ -158,7 +134,6 @@ double su_parse_iso_timestamp(const char *iso) {
 }
 /* PoP: activity_count @ tools/skill_usage.py:activity_count */
 int su_activity_count(const void *record) {
-    extern int skill_usage_activity_count(const void *record);
     return skill_usage_activity_count(record);
 }
 /* PoP: _empty_record @ tools/skill_usage.py:_empty_record */
@@ -168,17 +143,14 @@ void su_empty_record(void *out) {
 /* PoP: load_usage @ tools/skill_usage.py:load_usage */
 /* PoP: su_load_usage @ tools/skill_usage.py:load_usage */
 void su_load_usage(const char *hermes_home, void *out_map) {
-    extern void skill_usage_load(const char *hermes_home, void *out_map);
     skill_usage_load(hermes_home, out_map);
 }
 /* PoP: save_usage @ tools/skill_usage.py:save_usage */
 int su_save_usage(const char *hermes_home, const void *map) {
-    extern int skill_usage_save(const char *hermes_home, const void *map);
     return skill_usage_save(hermes_home, map);
 }
 /* PoP: get_record @ tools/skill_usage.py:get_record */
 void su_get_record(const void *map, const char *name, void *out_record) {
-    extern void skill_usage_get_record(const void *map, const char *name, void *out);
     skill_usage_get_record(map, name, out_record);
 }
 /* PoP: seed_record_if_missing @ tools/skill_usage.py:seed_record_if_missing */
@@ -204,32 +176,211 @@ int su_mutate(const char *hermes_home, const char *name, void (*fn)(void *, void
 }
 /* PoP: bump_view @ tools/skill_usage.py:bump_view */
 int su_bump_view(const char *hermes_home, const char *name) {
-    extern int skill_usage_bump_view(const char *hermes_home, const char *name);
     return skill_usage_bump_view(hermes_home, name);
 }
 /* PoP: bump_use @ tools/skill_usage.py:bump_use */
 int su_bump_use(const char *hermes_home, const char *name) {
-    extern int skill_usage_bump_use(const char *hermes_home, const char *name);
     return skill_usage_bump_use(hermes_home, name);
 }
 /* PoP: bump_patch @ tools/skill_usage.py:bump_patch */
 int su_bump_patch(const char *hermes_home, const char *name) {
-    extern int skill_usage_bump_patch(const char *hermes_home, const char *name);
     return skill_usage_bump_patch(hermes_home, name);
 }
 /* PoP: mark_agent_created @ tools/skill_usage.py:mark_agent_created */
 int su_mark_agent_created(const char *hermes_home, const char *name) {
-    extern int skill_usage_mark_agent_created(const char *hermes_home, const char *name);
     return skill_usage_mark_agent_created(hermes_home, name);
 }
 /* PoP: set_pinned @ tools/skill_usage.py:set_pinned */
 int su_set_pinned(const char *hermes_home, const char *name, bool val) {
-    extern int skill_usage_set_pinned(const char *hermes_home, const char *name, bool val);
     return skill_usage_set_pinned(hermes_home, name, val);
 }
 /* PoP: _find_skill_dir @ tools/skill_usage.py:_find_skill_dir */
 /* PoP: su_find_skill_dir @ tools/skills_hub.py:_find_skill_dir */
 char *su_find_skill_dir(const char *hermes_home, const char *name) {
-    extern char *skill_usage_find_external_skill_dir(const char *hermes_home, const char *name);
     return skill_usage_find_external_skill_dir(hermes_home, name);
+}
+
+/* ---- 7 REAL_GAP closures ---- */
+
+/* PoP: is_curator_managed @ tools/skill_usage.py:is_curator_managed */
+bool su_is_curator_managed(const char *hermes_home, const char *skill_name) {
+    /* Python: _is_curator_managed_record(load_usage().get(skill_name)) */
+    if (!skill_name) return false;
+    skill_usage_map_t map;
+    skill_usage_load(hermes_home, &map);
+    skill_usage_record_t rec;
+    skill_usage_get_record(&map, skill_name, &rec);
+    return skill_usage_is_curator_managed_record(&rec);
+}
+
+/* PoP: list_unmanaged_skill_names @ tools/skill_usage.py:list_unmanaged_skill_names */
+json_t *su_list_unmanaged_skill_names(const char *hermes_home) {
+    /* Python: walk SKILL.md files, filter out hub/bundled/protected/curator-managed,
+     * require is_curation_eligible, return sorted set as list. */
+    /* Reuse the existing iteration infrastructure from list_agent_created_skill_names */
+    return skill_usage_list_unmanaged_names(hermes_home);
+}
+
+/* PoP: unmanaged_report @ tools/skill_usage.py:unmanaged_report */
+json_t *su_unmanaged_report(const char *hermes_home) {
+    /* Python: for each name in list_unmanaged_skill_names, build a row with
+     * full record + has_provenance_key + has_record + last_activity_at +
+     * activity_count. */
+    json_t *names = skill_usage_list_unmanaged_names(hermes_home);
+    if (!names || names->type != JSON_ARRAY) return json_array();
+
+    json_t *rows = json_array();
+    skill_usage_map_t map;
+    skill_usage_load(hermes_home, &map);
+
+    for (size_t i = 0; i < names->c.count; i++) {
+        json_t *name_val = names->c.items[i];
+        const char *name = name_val->str_val;
+
+        json_t *row = json_object();
+
+        skill_usage_record_t rec;
+        memset(&rec, 0, sizeof(rec));
+        /* Check if record exists in map */
+        int idx = skill_usage_find(&map, name);
+        bool has_record = (idx >= 0);
+        if (idx >= 0) {
+            memcpy(&rec, &map.records[idx], sizeof(rec));
+        }
+
+        /* has_provenance_key: "created_by" present in raw record */
+        bool has_provenance_key = has_record && rec.created_by[0];
+
+        /* Build row: name + all record fields + metadata */
+        json_set(row, "name", json_string(name));
+        json_set(row, "use_count", json_number(rec.use_count));
+        json_set(row, "view_count", json_number(rec.view_count));
+        json_set(row, "patch_count", json_number(rec.patch_count));
+        if (rec.created_by[0])
+            json_set(row, "created_by", json_string(rec.created_by));
+        if (rec.last_used_at[0])
+            json_set(row, "last_used_at", json_string(rec.last_used_at));
+        if (rec.last_viewed_at[0])
+            json_set(row, "last_viewed_at", json_string(rec.last_viewed_at));
+        if (rec.last_patched_at[0])
+            json_set(row, "last_patched_at", json_string(rec.last_patched_at));
+        if (rec.state[0])
+            json_set(row, "state", json_string(rec.state));
+        json_set(row, "pinned", json_bool(rec.pinned));
+        if (rec.archived_at[0])
+            json_set(row, "archived_at", json_string(rec.archived_at));
+
+        json_set(row, "has_provenance_key", json_bool(has_provenance_key));
+        json_set(row, "has_record", json_bool(has_record));
+
+        /* last_activity_at + activity_count */
+        char activity_buf[SKILL_USAGE_MAX_VALUE];
+        const char *last = skill_usage_latest_activity(&rec, activity_buf);
+        json_set(row, "last_activity_at", json_string(last ? last : ""));
+        json_set(row, "activity_count", json_number(skill_usage_activity_count(&rec)));
+
+        json_append(rows, row);
+    }
+    json_free(names);
+    return rows;
+}
+
+/* PoP: adopt_skill @ tools/skill_usage.py:adopt_skill */
+char *su_adopt_skill(const char *hermes_home, const char *skill_name) {
+    /* Python: checks protected/hub/bundled/external, then mark_agent_created. */
+    if (!skill_name || !*skill_name) return strdup("no skill name given");
+    if (skill_usage_is_protected_builtin(skill_name))
+        return strdup("skill is a protected built-in; the curator never manages it");
+    if (skill_usage_is_hub_installed_by_name(hermes_home, skill_name))
+        return strdup("skill is hub-installed; its upstream owns it");
+    if (skill_usage_is_bundled_by_name(hermes_home, skill_name))
+        return strdup("skill is a bundled built-in — governed by curator.prune_builtins, not adoption");
+    /* Check if already managed */
+    if (su_is_curator_managed(hermes_home, skill_name))
+        return NULL; /* already managed — caller checks */
+    int rc = skill_usage_mark_agent_created(hermes_home, skill_name);
+    if (rc == 0) return NULL; /* success — caller checks via is_curator_managed */
+    return strdup("could not mark skill as curator-managed");
+}
+
+/* PoP: set_sync @ tools/skill_usage.py:set_sync */
+int su_set_sync(const char *hermes_home, const char *skill_name, bool sync) {
+    /* Python: _mutate(skill_name, rec -> rec["sync"]=bool(sync),
+     *                 require_curation_eligible=True) */
+    if (!skill_name || !*skill_name) return -1;
+    /* Check curation eligibility first */
+    skill_usage_map_t map;
+    skill_usage_load(hermes_home, &map);
+    skill_usage_record_t rec;
+    skill_usage_get_record(&map, skill_name, &rec);
+    if (!skill_usage_is_curation_eligible(&rec))
+        return -1;
+    return skill_usage_set_sync(hermes_home, skill_name, sync);
+}
+
+/* PoP: is_sync_enabled @ tools/skill_usage.py:is_sync_enabled */
+bool su_is_sync_enabled(const char *hermes_home, const char *skill_name) {
+    /* Python: get_record(skill_name).get("sync") is True */
+    if (!skill_name || !*skill_name) return false;
+    return skill_usage_is_sync_enabled(hermes_home, skill_name);
+}
+
+/* PoP: curated_report @ tools/skill_usage.py:curated_report */
+json_t *su_curated_report(const char *hermes_home) {
+    /* Python: for each name in list_agent_created_skill_names, build row with
+     * full record + provenance + _persisted + last_activity_at + activity_count. */
+    json_t *names = skill_usage_list_agent_created_names(hermes_home);
+    if (!names || names->type != JSON_ARRAY) return json_array();
+
+    json_t *rows = json_array();
+    skill_usage_map_t map;
+    skill_usage_load(hermes_home, &map);
+
+    for (size_t i = 0; i < names->c.count; i++) {
+        json_t *name_val = names->c.items[i];
+        const char *name = name_val->str_val;
+
+        json_t *row = json_object();
+
+        skill_usage_record_t rec;
+        memset(&rec, 0, sizeof(rec));
+        int idx = skill_usage_find(&map, name);
+        bool persisted = (idx >= 0);
+        if (idx >= 0)
+            memcpy(&rec, &map.records[idx], sizeof(rec));
+
+        /* Fill defaults for missing fields */
+        const char *state = rec.state[0] ? rec.state : SKILL_USAGE_STATE_ACTIVE;
+        const char *created_by = rec.created_by[0] ? rec.created_by : "";
+        const char *last_used = rec.last_used_at[0] ? rec.last_used_at : "";
+        const char *last_viewed = rec.last_viewed_at[0] ? rec.last_viewed_at : "";
+        const char *last_patched = rec.last_patched_at[0] ? rec.last_patched_at : "";
+        const char *created_at = rec.created_at[0] ? rec.created_at : "";
+        const char *archived_at = rec.archived_at[0] ? rec.archived_at : "";
+
+        json_set(row, "name", json_string(name));
+        json_set(row, "provenance", json_string(skill_usage_provenance_by_name(hermes_home, name)));
+        json_set(row, "state", json_string(state));
+        json_set(row, "pinned", json_bool(rec.pinned));
+        json_set(row, "sync", json_bool(rec.sync));
+        json_set(row, "created_by", json_string(created_by));
+        json_set(row, "use_count", json_number(rec.use_count));
+        json_set(row, "view_count", json_number(rec.view_count));
+        json_set(row, "patch_count", json_number(rec.patch_count));
+        json_set(row, "last_used_at", json_string(last_used));
+        json_set(row, "last_viewed_at", json_string(last_viewed));
+        json_set(row, "last_patched_at", json_string(last_patched));
+        json_set(row, "created_at", json_string(created_at));
+        json_set(row, "archived_at", json_string(archived_at));
+        json_set(row, "_persisted", json_bool(persisted));
+
+        char activity_buf[SKILL_USAGE_MAX_VALUE];
+        const char *last = skill_usage_latest_activity(&rec, activity_buf);
+        json_set(row, "last_activity_at", json_string(last ? last : ""));
+        json_set(row, "activity_count", json_number(skill_usage_activity_count(&rec)));
+
+        json_append(rows, row);
+    }
+    json_free(names);
+    return rows;
 }

@@ -55,6 +55,7 @@ typedef struct {
     char    state[SKILL_USAGE_MAX_FIELD];    /**< Lifecycle state: active/stale/archived */
     bool    pinned;                          /**< Opt-out from auto transitions */
     char    archived_at[SKILL_USAGE_MAX_VALUE];     /**< ISO-8601 or NULL */
+    bool    sync;                        /**< Sync opt-in flag for sync plane */
 } skill_usage_record_t;
 
 /**
@@ -222,6 +223,14 @@ json_t *skill_usage_agent_created_report(const char *hermes_home);
 json_t *skill_usage_usage_report(const char *hermes_home);
 int skill_usage_archive_skill_by_name(const char *hermes_home, const char *name);
 int skill_usage_restore_skill_by_name(const char *hermes_home, const char *name);
+int skill_usage_set_sync(const char *hermes_home, const char *name, bool sync);
+bool skill_usage_is_sync_enabled(const char *hermes_home, const char *name);
+
+/* Name-based provenance lookups (port of tools/skill_usage.py helpers) */
+bool skill_usage_is_hub_installed_by_name(const char *hermes_home, const char *name);
+bool skill_usage_is_bundled_by_name(const char *hermes_home, const char *name);
+const char *skill_usage_provenance_by_name(const char *hermes_home, const char *name);
+json_t *skill_usage_list_unmanaged_names(const char *hermes_home);
 
 #ifdef __cplusplus
 }

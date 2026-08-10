@@ -23,6 +23,7 @@
 #include <fcntl.h>
 #include <time.h>
 #include <dirent.h>
+#include <strings.h>
 #include <errno.h>
 
 /* ================================================================
@@ -82,6 +83,8 @@ static void record_from_json(const json_t *j, skill_usage_record_t *r)
 
     val = json_get_str(j, "archived_at", NULL);
     if (val) strncpy(r->archived_at, val, sizeof(r->archived_at) - 1);
+
+    r->sync = json_get_bool(j, "sync", false);
 }
 
 /* Serialize a skill_usage_record_t to a JSON object */
@@ -110,6 +113,9 @@ static json_t *record_to_json(const skill_usage_record_t *r)
 
     if (r->archived_at[0])
         json_set(j, "archived_at", json_string(r->archived_at));
+
+    if (r->sync)
+        json_set(j, "sync", json_bool(true));
 
     return j;
 }
@@ -884,11 +890,6 @@ void skill_usage_remove_suppressed_name(const char *hermes_home, const char *nam
     (void)hermes_home; (void)name;
 }
 
-/* PoP: list_agent_created_skill_names @ tools/skill_usage.py:list_agent_created_skill_names */
-json_t *skill_usage_list_agent_created_names(const char *hermes_home) {
-    (void)hermes_home; return json_array();
-}
-
 /* PoP: list_archived_skill_names @ tools/skill_usage.py:list_archived_skill_names */
 json_t *skill_usage_list_archived_names(const char *hermes_home) {
     (void)hermes_home; return json_array();
@@ -922,7 +923,241 @@ bool skill_usage_is_curation_eligible(const skill_usage_record_t *record) {
 
 /* PoP: _is_curator_managed_record @ tools/skill_usage.py:_is_curator_managed_record */
 bool skill_usage_is_curator_managed_record(const skill_usage_record_t *record) {
-    (void)record; return false;
+    return record && record->created_by[0] &&
+           strcmp(record->created_by, "agent") == 0;
+}
+
+/* PoP: set_sync @ tools/skill_usage.py:set_sync */
+int skill_usage_set_sync(const char *hermes_home, const char *skill_name,
+                          bool sync) {
+    skill_usage_map_t map;
+    int idx = _mutate_load(hermes_home, &map, skill_name);
+    if (idx < 0) return -1;
+    map.records[idx].sync = sync;
+    return _mutate_save(hermes_home, &map, idx);
+}
+
+/* PoP: is_sync_enabled @ tools/skill_usage.py:is_sync_enabled */
+bool skill_usage_is_sync_enabled(const char *hermes_home, const char *skill_name) {
+    if (!skill_name) return false;
+    skill_usage_map_t map;
+    skill_usage_load(hermes_home, &map);
+    int idx = skill_usage_find(&map, skill_name);
+    if (idx < 0) return false;
+    return map.records[idx].sync;
+}
+
+/* Shared walker for list_agent_created_skill_names / list_unmanaged_skill_names.
+ * Walks hermes_home/skills/SKILL.md files, reads each skill name, filters per
+ * the Python logic, and returns a sorted JSON array of names.
+ */
+static bool _name_in_json_array(json_t *arr, const char *name) {
+    if (!arr || arr->type != JSON_ARRAY || !name) return false;
+    for (size_t i = 0; i < arr->c.count; i++) {
+        json_t *item = arr->c.items[i];
+        if (item && item->type == JSON_STRING &&
+            strcmp(item->str_val, name) == 0)
+            return true;
+    }
+    return false;
+}
+
+static json_t *_skill_usage_collect_names(const char *hermes_home,
+                                           bool curator_managed, bool include_unmanaged) {
+    (void)include_unmanaged;
+    json_t *result = json_array();
+    if (!result || !hermes_home) return result;
+
+    char skills_dir[SKILL_USAGE_MAX_PATH];
+    snprintf(skills_dir, sizeof(skills_dir), "%s/skills", hermes_home);
+
+    struct stat st;
+    if (stat(skills_dir, &st) != 0 || !S_ISDIR(st.st_mode))
+        return result;
+
+    json_t *hub_names = skill_usage_read_hub_installed_names(hermes_home);
+    json_t *bundled_names = skill_usage_read_bundled_manifest_names(hermes_home);
+    skill_usage_map_t usage_map;
+    skill_usage_load(hermes_home, &usage_map);
+
+    char names_buf[SKILL_USAGE_MAX_SKILLS][SKILL_USAGE_MAX_NAME];
+    int n_names = 0;
+
+    DIR *d = opendir(skills_dir);
+    if (d) {
+        struct dirent *entry;
+        while ((entry = readdir(d)) != NULL && n_names < SKILL_USAGE_MAX_SKILLS) {
+            if (entry->d_name[0] == '.') continue;
+            char full[SKILL_USAGE_MAX_PATH];
+            snprintf(full, sizeof(full), "%s/%s", skills_dir, entry->d_name);
+            if (stat(full, &st) != 0 || !S_ISDIR(st.st_mode)) continue;
+            char skill_md[SKILL_USAGE_MAX_PATH];
+            snprintf(skill_md, sizeof(skill_md), "%s/SKILL.md", full);
+            if (stat(skill_md, &st) != 0 || !S_ISREG(st.st_mode)) continue;
+
+            char name[SKILL_USAGE_MAX_NAME];
+            strncpy(name, entry->d_name, sizeof(name) - 1);
+            name[sizeof(name)-1] = '\0';
+
+            /* Try to read name from SKILL.md frontmatter (YAML or JSON) */
+            FILE *fh = fopen(skill_md, "r");
+            if (fh) {
+                char line[512];
+                bool in_fm = false;
+                json_t *jmd = NULL; char *jerr = NULL;
+                if ((jmd = json_parse_file(skill_md, &jerr))) {
+                    const char *nm = json_get_str(jmd, "name", NULL);
+                    if (!nm) nm = json_get_str(jmd, "skill_name", NULL);
+                    if (nm) { strncpy(name, nm, sizeof(name)-1); name[sizeof(name)-1]='\0'; }
+                    json_free(jmd);
+                    if (jerr) free(jerr);
+                } else {
+                    /* YAML frontmatter: parse 'name:' line */
+                    while (fgets(line, sizeof(line), fh)) {
+                        char *s = line;
+                        while (*s == ' ' || *s == '\t') s++;
+                        if (strcmp(s, "---\n") == 0 || strcmp(s, "---\r\n") == 0) {
+                            in_fm = !in_fm; continue;
+                        }
+                        if (!in_fm) break;
+                        if (strncmp(s, "name:", 5) == 0) {
+                            char *v = s + 5;
+                            while (*v == ' ' || *v == '\t' || *v == '\"' || *v == '\'') v++;
+                            char *e = v;
+                            while (*e && *e != '\"' && *e != '\'' && *e != '\n' && *e != '\r') e++;
+                            if (e > v) {
+                                int len = (int)(e - v);
+                                if (len >= (int)sizeof(name)) len = (int)sizeof(name) - 1;
+                                memcpy(name, v, len); name[len] = '\0';
+                            }
+                        }
+                    }
+                }
+                if (jerr) free(jerr);
+                fclose(fh);
+            }
+
+            /* Apply filters (mirror Python list_agent_created_skill_names) */
+            if (_name_in_json_array(hub_names, name)) continue;
+            if (_name_in_json_array(bundled_names, name)) {
+                if (curator_managed) continue;
+                /* unmanaged: built-ins are excluded from curation candidates */
+                continue;
+            }
+            if (skill_usage_is_protected_builtin(name)) continue;
+
+            int idx = skill_usage_find(&usage_map, name);
+            bool managed = (idx >= 0) && skill_usage_is_curator_managed_record(&usage_map.records[idx]);
+
+            if (curator_managed) {
+                if (!managed) continue;
+            } else {
+                if (managed) continue;
+                if (idx >= 0 && !skill_usage_is_curation_eligible(&usage_map.records[idx])) continue;
+            }
+
+            /* Dedupe + add */
+            bool dup = false;
+            for (int i = 0; i < n_names; i++)
+                if (strcmp(names_buf[i], name) == 0) { dup = true; break; }
+            if (!dup) {
+                strncpy(names_buf[n_names], name, sizeof(names_buf[0]) - 1);
+                names_buf[n_names][sizeof(names_buf[0]) - 1] = '\0';
+                n_names++;
+            }
+        }
+        closedir(d);
+    }
+
+    /* Sort (case-insensitive) */
+    for (int i = 1; i < n_names; i++) {
+        char key[SKILL_USAGE_MAX_NAME];
+        strcpy(key, names_buf[i]);
+        int j = i - 1;
+        while (j >= 0 && strcasecmp(names_buf[j], key) > 0) {
+            strcpy(names_buf[j+1], names_buf[j]); j--;
+        }
+        strcpy(names_buf[j+1], key);
+    }
+
+    for (int i = 0; i < n_names; i++)
+        json_append(result, json_string(names_buf[i]));
+
+    json_free(hub_names);
+    json_free(bundled_names);
+    return result;
+}
+
+/* PoP: list_agent_created_skill_names @ tools/skill_usage.py:list_agent_created_skill_names */
+json_t *skill_usage_list_agent_created_names(const char *hermes_home) {
+    /* Python: walk SKILL.md files, filter out hub/bundled/protected, require
+     * _is_curator_managed_record on the usage record, return sorted list. */
+    /* Delegates to the shared walker: _skill_usage_collect_names handles the
+     * directory traversal + filtering, with a predicate for curator-managed. */
+    return _skill_usage_collect_names(hermes_home, /*curator_managed=*/true, /*include_unmanaged=*/false);
+}
+
+/* PoP: list_unmanaged_skill_names @ tools/skill_usage.py:list_unmanaged_skill_names */
+json_t *skill_usage_list_unmanaged_names(const char *hermes_home) {
+    /* Python: walk SKILL.md files, filter out hub/bundled/protected/curator-managed,
+     * require is_curation_eligible, return sorted list. */
+    return _skill_usage_collect_names(hermes_home, /*curator_managed=*/false, /*include_unmanaged=*/true);
+}
+
+/* PoP: _is_curator_managed @ tools/skill_usage.py:is_curator_managed */
+bool skill_usage_is_curator_managed(const char *hermes_home, const char *skill_name) {
+    if (!skill_name) return false;
+    skill_usage_map_t map;
+    skill_usage_load(hermes_home, &map);
+    int idx = skill_usage_find(&map, skill_name);
+    if (idx < 0) return false;
+    return skill_usage_is_curator_managed_record(&map.records[idx]);
+}
+
+/* PoP: is_hub_installed @ tools/skill_usage.py:is_hub_installed */
+bool skill_usage_is_hub_installed_by_name(const char *hermes_home, const char *skill_name) {
+    if (!skill_name) return false;
+    json_t *hub_names = skill_usage_read_hub_installed_names(hermes_home);
+    if (!hub_names) return false;
+    bool found = false;
+    if (hub_names->type == JSON_ARRAY) {
+        for (size_t i = 0; i < hub_names->c.count; i++) {
+            json_t *item = hub_names->c.items[i];
+            if (item && item->type == JSON_STRING &&
+                strcmp(item->str_val, skill_name) == 0) {
+                found = true; break;
+            }
+        }
+    }
+    json_free(hub_names);
+    return found;
+}
+
+/* PoP: is_bundled @ tools/skill_usage.py:is_bundled */
+bool skill_usage_is_bundled_by_name(const char *hermes_home, const char *skill_name) {
+    if (!skill_name) return false;
+    json_t *bundled = skill_usage_read_bundled_manifest_names(hermes_home);
+    if (!bundled) return false;
+    bool found = false;
+    if (bundled->type == JSON_ARRAY) {
+        for (size_t i = 0; i < bundled->c.count; i++) {
+            json_t *item = bundled->c.items[i];
+            if (item && item->type == JSON_STRING &&
+                strcmp(item->str_val, skill_name) == 0) {
+                found = true; break;
+            }
+        }
+    }
+    json_free(bundled);
+    return found;
+}
+
+/* PoP: provenance @ tools/skill_usage.py:provenance */
+const char *skill_usage_provenance_by_name(const char *hermes_home, const char *skill_name) {
+    if (!skill_name) return "agent";
+    if (skill_usage_is_hub_installed_by_name(hermes_home, skill_name)) return "hub";
+    if (skill_usage_is_bundled_by_name(hermes_home, skill_name)) return "bundled";
+    return "agent";
 }
 
 /* PoP: _find_external_skill_dir @ tools/skill_usage.py:_find_external_skill_dir */
