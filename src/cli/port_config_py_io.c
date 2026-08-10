@@ -20,10 +20,13 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <errno.h>
+#include <pthread.h>
+#include <inttypes.h>
 
 #include "libyaml/yaml.h"
 #include "hermes_logger.h"
 #include "hermes_core_types.h"
+#include "cron_jobs.h"
 
 /* ---- local helpers ---- */
 
@@ -550,4 +553,236 @@ static const char *json_string_value_or_empty(const json_t *n, const char *key) 
     json_t *v = json_object_get(n, key);
     if (v && v->type == JSON_STRING) return v->str_val;
     return "";
+}
+
+/* ============================================================
+ * Ports of the remaining hermes_cli/config.py REAL_GAPs:
+ * raw-config freshness/version, readonly caching, and the cron
+ * model-drift-guard warning family.
+ * ============================================================ */
+
+/* ---- _RAW_CONFIG_CACHE: (mtime_ns, size, dict) keyed by config path ---- */
+typedef struct {
+    char  path[HERMES_PATH_MAX];
+    int64_t mtime_ns;
+    size_t  size;
+    json_t *dict;          /* cached raw dict (identity-invariant) */
+} raw_cache_entry_t;
+
+static raw_cache_entry_t _RAW_CONFIG_CACHE[8];
+static int                _RAW_CONFIG_CACHE_N = 0;
+
+/* ---- small accessors reused below ---- */
+static json_t *raw_cfg_lookup_or_load(const char *path, int want_deepcopy);
+
+/* PoP: _raw_config_has_explicit_version @ hermes_cli/config.py:_raw_config_has_explicit_version */
+/* True iff config.yaml exists, parses, and carries a _config_version key. */
+bool _raw_config_has_explicit_version(void) {
+    char path[HERMES_PATH_MAX];
+    config_path(path, sizeof path);
+    struct stat st;
+    if (stat(path, &st) != 0) return false;
+    json_t *cfg = raw_cfg_lookup_or_load(path, 0);
+    if (!cfg) return false;
+    bool has = json_has(cfg, "_config_version");
+    json_free(cfg);
+    return has;
+}
+
+/* PoP: read_user_config_raw @ hermes_cli/config.py:read_user_config_raw */
+	/* Read config.yaml EXACTLY as written on disk (no defaults merge, no env
+ * expansion, no migration, no caching). cfg_path param is profile-aware.
+ * Returns malloc'd json_t object (caller frees); missing/unparseable →
+ * empty object. */
+json_t *read_user_config_raw(const char *cfg_path) {
+    char path[HERMES_PATH_MAX];
+    if (cfg_path) {
+        strncpy(path, cfg_path, HERMES_PATH_MAX - 1);
+        path[HERMES_PATH_MAX - 1] = '\0';
+    } else {
+        config_path(path, sizeof path);
+    }
+    struct stat st;
+    if (stat(path, &st) != 0) return json_new_object();
+    char *err = NULL;
+    yaml_doc_t *yp = yaml_parse_file(path, &err);
+    if (!yp) { free(err); return json_new_object(); }
+    char *js = yaml_to_json_string(yp, "");
+    yaml_free(yp);
+    if (!js) return json_new_object();
+    json_t *doc = json_parse(js, NULL);
+    free(js);
+    if (!doc || doc->type != JSON_OBJECT) { if (doc) json_free(doc); return json_new_object(); }
+    return doc;
+}
+
+/* PoP: read_raw_config_readonly @ hermes_cli/config.py:read_raw_config_readonly */
+	/* Fast-path: return cached raw config without deepcopy. Identity-invariant
+ * (first caller sees the exact dict later cache hits return). Best-effort:
+ * on any failure returns empty object (caller must not mutate). */
+json_t *read_raw_config_readonly(void) {
+    char path[HERMES_PATH_MAX];
+    config_path(path, sizeof path);
+    return raw_cfg_lookup_or_load(path, 0);
+}
+
+static json_t *raw_cfg_lookup_or_load(const char *path, int want_deepcopy) {
+    struct stat st;
+    int64_t mtime_ns = 0, size = 0;
+    int present = 0;
+    if (stat(path, &st) == 0) {
+        present = 1;
+        /* best-effort ns precision */
+#ifdef st_mtime
+        mtime_ns = (int64_t)st.st_mtime * 1000000000LL;
+#endif
+        size = (size_t)st.st_size;
+    }
+    /* cache hit? */
+    for (int i = 0; i < _RAW_CONFIG_CACHE_N; i++) {
+        if (strcmp(_RAW_CONFIG_CACHE[i].path, path) == 0 &&
+            _RAW_CONFIG_CACHE[i].mtime_ns == mtime_ns &&
+            _RAW_CONFIG_CACHE[i].size == size) {
+            return want_deepcopy ? json_copy(_RAW_CONFIG_CACHE[i].dict)
+                                 : _RAW_CONFIG_CACHE[i].dict;
+        }
+    }
+    if (!present) return json_new_object();  /* missing → {} */
+    /* reload: mirrors read_raw_config_file but caches */
+    char *err = NULL;
+    yaml_doc_t *yp = yaml_parse_file(path, &err);
+    if (!yp) { free(err); return json_new_object(); }
+    char *js = yaml_to_json_string(yp, "");
+    yaml_free(yp);
+    if (!js) return json_new_object();
+    json_t *cfg = json_parse(js, NULL);
+    free(js);
+    json_t *obj = (cfg && cfg->type == JSON_OBJECT) ? cfg : json_new_object();
+    if (cfg && cfg != obj) json_free(cfg);
+    if (_RAW_CONFIG_CACHE_N >= 8) {
+        json_free(_RAW_CONFIG_CACHE[0].dict);
+        memmove(&_RAW_CONFIG_CACHE[0], &_RAW_CONFIG_CACHE[1],
+                (8 - 1) * sizeof(raw_cache_entry_t));
+        _RAW_CONFIG_CACHE_N--;
+    }
+    raw_cache_entry_t *e = &_RAW_CONFIG_CACHE[_RAW_CONFIG_CACHE_N++];
+    snprintf(e->path, sizeof e->path, "%s", path);
+    e->mtime_ns = mtime_ns; e->size = size; e->dict = obj;
+    return want_deepcopy ? json_copy(obj) : obj;
+}
+
+/* PoP: _cron_model_drift_axis_for_config_key @ hermes_cli/config.py:_cron_model_drift_axis_for_config_key */
+	/* Return the cron drift-guard axis affected by a config key, or NULL. */
+const char *_cron_model_drift_axis_for_config_key(const char *key) {
+    if (!key) return NULL;
+    char norm[256];
+    snprintf(norm, sizeof norm, "%s", key);
+    for (char *p = norm; *p; p++) *p = (char)tolower((unsigned char)*p);
+    /* strip inline */
+    char *end = norm + strlen(norm);
+    while (end > norm && (end[-1]==' '||end[-1]=='\t')) *--end = '\0';
+    if (strcmp(norm, "model") == 0 || strcmp(norm, "model.default") == 0 ||
+        strcmp(norm, "model.model") == 0 || strcmp(norm, "model.name") == 0)
+        return "model";
+    if (strcmp(norm, "model.provider") == 0 || strcmp(norm, "provider") == 0)
+        return "provider";
+    return NULL;
+}
+
+/* PoP: cron_model_drift_guard_enabled @ hermes_cli/config.py:cron_model_drift_guard_enabled */
+	/* Only the literal YAML boolean false disables the guard; missing/malformed
+ * stay fail-closed. When config is NULL the active merged config is loaded. */
+bool cron_model_drift_guard_enabled(json_t *config) {
+    if (!config) config = config_py_load_config_impl(0);
+    if (!config || config->type != JSON_OBJECT) return true;
+    json_t *cron = json_object_get(config, "cron");
+    if (!cron || cron->type != JSON_OBJECT) return true;
+    json_t *v = json_object_get(cron, "model_drift_guard");
+    if (!v) return true;
+    if (v->type == JSON_BOOL) return v->num_val != 0.0;
+    return true;  /* non-boolean → fail-closed */
+}
+
+/* PoP: _cron_fleet_default_covers_axis @ hermes_cli/config.py:_cron_fleet_default_covers_axis */
+	/* True iff the explicit cron.fleet default (cron.model / cron.model_provider)
+ * covers *axis*. */
+bool _cron_fleet_default_covers_axis(const char *axis, json_t *config) {
+    if (!axis) return false;
+    if (!config) config = config_py_load_config_impl(0);
+    if (!config || config->type != JSON_OBJECT) return false;
+    json_t *cron = json_object_get(config, "cron");
+    if (!cron || cron->type != JSON_OBJECT) return false;
+    const char *key = (strcmp(axis, "model") == 0) ? "model" : "model_provider";
+    json_t *v = json_object_get(cron, key);
+    if (!v || v->type != JSON_STRING) return false;
+    return v->str_val && strlen(v->str_val) > 0;
+}
+
+/* PoP: _load_cron_jobs_for_config_warning @ hermes_cli/config.py:_load_cron_jobs_for_config_warning */
+	/* Best-effort read of the active profile's cron jobs database. Delegates to
+ * cron.jobs.load_jobs (cronjobs_load_jobs) to reuse BOM/corruption handling.
+ * Returns a json_t array (caller frees) — empty on any failure. */
+json_t *_load_cron_jobs_for_config_warning(void) {
+    char *err = NULL;
+    json_t *jobs = cronjobs_load_jobs(&err);
+    if (err) free(err);
+    if (!jobs) return json_new_array();
+    if (jobs->type != JSON_ARRAY) { json_free(jobs); return json_new_array(); }
+    return jobs;
+}
+
+/* PoP: warn_unpinned_cron_jobs_after_model_config_change @ hermes_cli/config.py:warn_unpinned_cron_jobs_after_model_config_change */
+	/* Warn when a global model/provider change will trip cron's drift guard. */
+void warn_unpinned_cron_jobs_after_model_config_change(
+        const char *key, const char *value, json_t *config) {
+    const char *axis = _cron_model_drift_axis_for_config_key(key);
+    if (!axis) return;
+    if (!cron_model_drift_guard_enabled(config)) return;
+    if (_cron_fleet_default_covers_axis(axis, config)) return;
+    char new_value[256];
+    snprintf(new_value, sizeof new_value, "%s", value ? value : "");
+    for (char *p = new_value; *p; p++) *p = (char)tolower((unsigned char)*p);
+    char *sp = new_value + strlen(new_value);
+    while (sp > new_value && (sp[-1]==' '||sp[-1]=='\t')) *--sp = '\0';
+    if (*new_value == '\0') return;
+
+    const char *pinned_field = axis;
+    char snapshot_field[64];
+    snprintf(snapshot_field, sizeof snapshot_field, "%s_snapshot", axis);
+
+    int affected = 0;
+    json_t *jobs = _load_cron_jobs_for_config_warning();
+    size_t n = json_len(jobs);
+    for (size_t i = 0; i < n; i++) {
+        json_t *job = json_get(jobs, i);
+        if (!job || job->type != JSON_OBJECT) continue;
+        json_t *enabled = json_object_get(job, "enabled");
+        if (enabled && enabled->type == JSON_BOOL && enabled->num_val == 0.0) continue;
+        json_t *no_agent = json_object_get(job, "no_agent");
+        if (no_agent && no_agent->type == JSON_BOOL && no_agent->num_val != 0.0) continue;
+        json_t *pin = json_object_get(job, pinned_field);
+        if (pin && pin->type == JSON_STRING && strlen(pin->str_val) > 0) continue;
+        json_t *snap = json_object_get(job, snapshot_field);
+        const char *s = (snap && snap->type == JSON_STRING) ? snap->str_val : "";
+        if (s && *s) {
+            /* case-insensitive compare */
+            char sv[256];
+            snprintf(sv, sizeof sv, "%s", s);
+            for (char *p = sv; *p; p++) *p = (char)tolower((unsigned char)*p);
+            char *se = sv + strlen(sv);
+            while (se > sv && (se[-1]==' '||se[-1]=='\t')) *--se = '\0';
+            if (*sv && strcmp(sv, new_value) != 0) affected++;
+        }
+    }
+    json_free(jobs);
+    if (affected <= 0) return;
+    const char *noun = (affected == 1) ? "job" : "jobs";
+    const char *verb = (affected == 1) ? "has" : "have";
+    fprintf(stderr,
+        "⚠️  %d enabled unpinned cron %s %s stored %s values that differ "
+        "from the new global %s. They will fail closed on their next run "
+        "instead of silently using the changed model/provider. Inspect with "
+        "`hermes cron list`, then pin the intended values with "
+        "`cronjob action=update job_id=<job_id> %s=<value>`.\n",
+        affected, noun, verb, snapshot_field, axis, pinned_field);
 }
