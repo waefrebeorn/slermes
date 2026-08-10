@@ -689,6 +689,52 @@ bool _git_branch_exists(const char *repo_root, const char *branch_name);
 /* Walk up to the nearest existing path. Caller frees. */
 const char *_nearest_existing_path(const char *path);
 
+/* ---- Notify metadata / profile filter / probe (kanban_notify.c) ---- */
+
+/* Serialize platform send metadata (JSON object) for storage: keeps only
+ * scalar values, sorts keys, compact separators. Returns malloc'd compact
+ * JSON or NULL when empty/non-object. Caller frees. */
+char *kdb_encode_notify_delivery_metadata(const char *metadata_json);
+/* Parse stored delivery metadata back to a scalar-only JSON object string
+ * ("{}" for empty/unparseable). Caller frees. */
+char *kdb_decode_notify_delivery_metadata(const char *raw);
+/* Build the notifier-profile ownership predicate + params. Returns malloc'd
+ * clause; NULL when notifier_profiles is NULL (no filter); "0" FALSE
+ * predicate when profiles are empty and include_unowned is off. Params are a
+ * NULL-terminated array (free with kdb_strv_free) via *out_params/*out_n. */
+char *kdb_notify_profile_filter(char **notifier_profiles, int include_unowned,
+                                char ***out_params, int *out_n);
+/* Read-only COUNT(*) probe: never creates/migrates the DB; missing DB or a
+ * legacy DB without the subs table counts as zero; -1 when an existing DB
+ * cannot be read. db_path explicit wins, else board via kanban_db_path. */
+int  kdb_count_notify_subs(const char *db_path, const char *board,
+                           char **notifier_profiles, int include_unowned,
+                           const char *platform, const char *chat_id,
+                           const char *thread_id);
+/* Copy gateway notify subs from parents to a child, caught up to the child's
+ * current event cursor. parents is a NULL-terminated array. Returns 0 on
+ * success, -1 on sqlite failure. */
+int  kdb_inherit_notify_subs(sqlite3 *conn, const char *child_id,
+                             char **parents, long created_at);
+
+/* ---- Comment / reasoning-effort / worker-retag gaps (kanban_tasks.c) ---- */
+
+/* Comments on task_id with id > after_id, ascending by id. Returns a
+ * malloc'd NULL-terminated array (free with kdb_comment_list_free). */
+kanban_comment_t **kdb_list_comments_after(sqlite3 *conn, const char *task_id,
+                                           long after_id, int *out_n);
+/* Normalize a per-task reasoning effort ("none" + VALID_REASONING_EFFORTS,
+ * case-insensitive). Returns malloc'd normalized level or NULL; *invalid_out
+ * = 1 when the value must be rejected (Python raises ValueError). */
+char *kdb_normalize_reasoning_effort(const char *effort, int *invalid_out);
+/* Set/clear per-task reasoning_effort. 1 success, 0 task missing,
+ * -1 archived (RuntimeError), -2 invalid effort (ValueError). */
+int  kdb_set_reasoning_effort(sqlite3 *conn, const char *task_id,
+                              const char *effort);
+/* Best-effort, gated reclaim of pre-tag worker rows in state.db. Never
+ * raises; keeps an in-process dedupe set. */
+void kdb_retag_legacy_worker_sessions(const char *workspaces_root);
+
 #ifdef __cplusplus
 }
 #endif

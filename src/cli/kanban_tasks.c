@@ -18,11 +18,13 @@
 
 #include "kanban_db.h"
 #include "hermes_json.h"
+#include "hermes_state_db.h"   /* hermes_state_db_t for retag externs */
 
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <time.h>
+#include <ctype.h>
 
 /* Reuse the canonical-assignee normaliser already ported elsewhere would
  * require hermes_cli.profiles; we keep a faithful local lowercasing normaliser
@@ -729,4 +731,166 @@ char *kdb_latest_summary(sqlite3 *conn, const char *task_id)
     }
     sqlite3_finalize(st);
     return out;
+}
+
+/* =========================================================================
+ * Comment / reasoning-effort / worker-retag gap closures
+ * (hermes_cli/kanban_db.py)
+ * ========================================================================= */
+
+/* ---- list_comments_after ---- */
+/* Python: comments on task_id with id > after_id, ascending by id (the
+ * monotonic rowid — same-second bursts can't be skipped). Returns a
+ * malloc'd NULL-terminated array (caller frees with kdb_comment_list_free);
+ * *out_n receives the count. */
+/* PoP: kdb_list_comments_after @ hermes_cli/kanban_db.py:list_comments_after */
+kanban_comment_t **kdb_list_comments_after(sqlite3 *conn, const char *task_id,
+                                           long after_id, int *out_n)
+{
+    if (out_n) *out_n = 0;
+    if (!conn || !task_id) return NULL;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(conn,
+            "SELECT * FROM task_comments WHERE task_id = ? AND id > ? ORDER BY id ASC",
+            -1, &st, NULL) != SQLITE_OK) return NULL;
+    sqlite3_bind_text(st, 1, task_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_int64(st, 2, after_id);
+    kanban_comment_t **out = NULL; int cap = 0, cnt = 0;
+    while (sqlite3_step(st) == SQLITE_ROW) {
+        if (cnt >= cap) { cap = cap ? cap*2 : 8; out = realloc(out, sizeof(*out)*(size_t)(cap+1)); }
+        out[cnt++] = kdb_comment_from_row(st);
+    }
+    sqlite3_finalize(st);
+    if (out) out[cnt] = NULL;
+    if (out_n) *out_n = cnt;
+    return out;
+}
+
+/* ---- normalize_reasoning_effort ---- */
+/* Python: accept "none" + VALID_REASONING_EFFORTS case-insensitively;
+ * empty/None -> NULL (inherit profile); anything else -> invalid (the
+ * Python raises ValueError). Returns a malloc'd normalized level, or NULL
+ * with *invalid_out=1 for a rejected value. Caller frees the result. */
+/* PoP: kdb_normalize_reasoning_effort @ hermes_cli/kanban_db.py:normalize_reasoning_effort */
+char *kdb_normalize_reasoning_effort(const char *effort, int *invalid_out)
+{
+    if (invalid_out) *invalid_out = 0;
+    if (!effort || !effort[0]) return NULL;   /* empty/None -> inherit */
+    /* strip + lowercase */
+    const char *p = effort;
+    while (*p && isspace((unsigned char)*p)) p++;
+    size_t len = strlen(p);
+    while (len > 0 && isspace((unsigned char)p[len - 1])) len--;
+    if (len == 0) return NULL;
+    char *low = malloc(len + 1);
+    for (size_t i = 0; i < len; i++)
+        low[i] = (char)tolower((unsigned char)p[i]);
+    low[len] = '\0';
+    if (strcmp(low, "none") == 0) return low;
+    /* hermes_constants.VALID_REASONING_EFFORTS */
+    static const char *const VALID[] = {
+        "minimal", "low", "medium", "high", "xhigh", "max", "ultra", NULL
+    };
+    for (int i = 0; VALID[i]; i++) {
+        if (strcmp(low, VALID[i]) == 0) return low;
+    }
+    free(low);
+    if (invalid_out) *invalid_out = 1;   /* raise ValueError */
+    return NULL;
+}
+
+/* ---- set_reasoning_effort ---- */
+/* Python: set/clear per-task reasoning_effort. effort=NULL/empty clears the
+ * override; "none" pins thinking OFF; invalid values are rejected. Returns 1
+ * on success, 0 when the task does not exist, -1 for an archived task
+ * (Python raises RuntimeError), -2 for an invalid effort (raises ValueError).
+ * Independent of the model override. */
+/* PoP: kdb_set_reasoning_effort @ hermes_cli/kanban_db.py:set_reasoning_effort */
+int kdb_set_reasoning_effort(sqlite3 *conn, const char *task_id,
+                             const char *effort)
+{
+    if (!conn || !task_id) return 0;
+    int invalid = 0;
+    char *norm = kdb_normalize_reasoning_effort(effort, &invalid);
+    if (invalid) return -2;
+    if (kdb_write_begin(conn) != 0) { free(norm); return 0; }
+    int result = 0;
+    sqlite3_stmt *row = NULL;
+    if (sqlite3_prepare_v2(conn, "SELECT status FROM tasks WHERE id = ?",
+                           -1, &row, NULL) == SQLITE_OK) {
+        sqlite3_bind_text(row, 1, task_id, -1, SQLITE_TRANSIENT);
+        if (sqlite3_step(row) == SQLITE_ROW) {
+            const char *status = (const char *)sqlite3_column_text(row, 0);
+            if (status && strcmp(status, "archived") == 0) {
+                result = -1;   /* RuntimeError: archived task */
+            } else {
+                sqlite3_stmt *up = NULL;
+                if (sqlite3_prepare_v2(conn,
+                        "UPDATE tasks SET reasoning_effort = ? WHERE id = ?",
+                        -1, &up, NULL) == SQLITE_OK) {
+                    if (norm)
+                        sqlite3_bind_text(up, 1, norm, -1, SQLITE_TRANSIENT);
+                    else
+                        sqlite3_bind_null(up, 1);
+                    sqlite3_bind_text(up, 2, task_id, -1, SQLITE_TRANSIENT);
+                    if (sqlite3_step(up) == SQLITE_DONE) {
+                        /* _append_event(conn, task_id, "reasoning_effort_set", {..}) */
+                        char payload2[512];
+                        if (norm)
+                            snprintf(payload2, sizeof(payload2),
+                                     "{\"reasoning_effort\":\"%s\"}", norm);
+                        else
+                            snprintf(payload2, sizeof(payload2),
+                                     "{\"reasoning_effort\":null}");
+                        kdb_append_event(conn, task_id, -1,
+                                         "reasoning_effort_set", payload2);
+                        result = 1;
+                    }
+                    sqlite3_finalize(up);
+                }
+            }
+        }
+        sqlite3_finalize(row);
+    }
+    kdb_write_end(conn, 1);
+    free(norm);
+    return result;
+}
+
+/* ---- _retag_legacy_worker_sessions ---- */
+/* Python: best-effort, gated — the durable state_meta gate lives in
+ * retag_kanban_worker_sessions (hermes_state); the in-process set keeps a
+ * busy dispatcher from reopening state.db on every spawn. A dispatcher tick
+ * must never fail because the session DB was busy or missing. The C port
+ * keeps the same in-process dedupe and swallows all failures. */
+/* PoP: kdb_retag_legacy_worker_sessions @ hermes_cli/kanban_db.py:_retag_legacy_worker_sessions */
+extern char *hermes_state_default_db_path(void);
+extern hermes_state_db_t *hermes_state_db_open(const char *path);
+extern void hermes_state_db_close(hermes_state_db_t *db);
+extern int hermes_state_retag_kanban_worker_sessions(hermes_state_db_t *db,
+                                                     const char *workspaces_root);
+void kdb_retag_legacy_worker_sessions(const char *workspaces_root)
+{
+    if (!workspaces_root || !workspaces_root[0]) return;
+    /* In-process dedupe set (heap-backed, grows on demand — no landlocked
+     * static array). */
+    static char **seen = NULL;
+    static size_t seen_n = 0;
+    for (size_t i = 0; i < seen_n; i++)
+        if (strcmp(seen[i], workspaces_root) == 0) return;
+    char *path = hermes_state_default_db_path();
+    if (!path) return;
+    hermes_state_db_t *db = hermes_state_db_open(path);
+    free(path);
+    if (!db) return;
+    int ok = hermes_state_retag_kanban_worker_sessions(db, workspaces_root);
+    hermes_state_db_close(db);
+    if (ok >= 0) {
+        char **grown = realloc(seen, sizeof(char *) * (seen_n + 1));
+        if (grown) {
+            seen = grown;
+            seen[seen_n] = strdup(workspaces_root);
+            if (seen[seen_n]) seen_n++;
+        }
+    }
 }
