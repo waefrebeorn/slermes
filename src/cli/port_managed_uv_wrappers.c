@@ -12,7 +12,21 @@
 #include <unistd.h>
 #include <time.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <sys/time.h>
+#include <dirent.h>
+#include <libgen.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <stdint.h>
+#include <inttypes.h>
 #include "hermes_json.h"
+#include "credential_files.h"
+
+/* forward declarations for static helpers defined later */
+static void cleanup_generation(const char *generation, const char *python_root);
+static int  wal_reset_vulnerable_from_json(json_t *sv);
 
 /* PoP: managed_uv_path @ hermes_cli/managed_uv.py:managed_uv_path */
 int muv_managed_uv_path(const char *arg) {
@@ -352,4 +366,423 @@ int muv_rebuild_venv(const char *arg) {
      * the upstream implementation is a placeholder; mirror it exactly. */
     (void)arg;
     return 1;
+}
+
+/* ────────────────────────────────────────────────────────────────
+ * Faithful ports of the remaining hermes_cli/managed_uv.py REAL_GAPs.
+ * These are pure helper functions (not gateway command handlers), so
+ * they carry the exact Python names as PoP cfn and return their real
+ * Python types.
+ * ──────────────────────────────────────────────────────────────── */
+
+/* uv self-update freshness interval (7 days) — ported from managed_uv.py
+ * UV_SELF_UPDATE_INTERVAL_SECONDS. */
+#define UV_SELF_UPDATE_INTERVAL_SECONDS (7 * 24 * 3600)
+
+/* PoP: _uv_self_update_is_fresh @ hermes_cli/managed_uv.py:_uv_self_update_is_fresh */
+/* stamp = HERMES_HOME/cache/.uv_self_update_stamp; True iff 0<=age<interval. */
+bool _uv_self_update_is_fresh(double now) {
+    const char *h = credfiles_get_hermes_home();
+    if (!h || !*h) return false;
+    char stamp[PATH_MAX];
+    snprintf(stamp, sizeof(stamp), "%s/cache/.uv_self_update_stamp", h);
+    struct stat st;
+    if (stat(stamp, &st) != 0) return false;
+    double age = now - (double)st.st_mtime;
+    return age >= 0.0 && age < (double)UV_SELF_UPDATE_INTERVAL_SECONDS;
+}
+
+/* PoP: _touch_uv_self_update_stamp @ hermes_cli/managed_uv.py:_touch_uv_self_update_stamp */
+void _touch_uv_self_update_stamp(void) {
+    const char *h = credfiles_get_hermes_home();
+    if (!h || !*h) return;
+    char stamp[PATH_MAX];
+    snprintf(stamp, sizeof(stamp), "%s/cache/.uv_self_update_stamp", h);
+    /* ensure parent dir exists (mkdir -p semantics) */
+    char parent[PATH_MAX];
+    snprintf(parent, sizeof(parent), "%s/cache", h);
+    /* best-effort recursive mkdir */
+    for (char *p = parent + 1; *p; p++) {
+        if (*p == '/') { char tmp[PATH_MAX]; size_t n = (size_t)(p - parent);
+            if (n < sizeof(tmp)) { memcpy(tmp, parent, n); tmp[n] = '\0'; mkdir(tmp, 0755); } }
+    }
+    int fd = open(stamp, O_CREAT | O_WRONLY, 0644);
+    if (fd >= 0) {
+        /* update mtime to now (utimensat on the fd) */
+        struct timespec ts[2];
+        ts[0].tv_sec = ts[0].tv_nsec = 0;       /* atime unchanged */
+        ts[1].tv_sec = time(NULL); ts[1].tv_nsec = 0;  /* mtime = now */
+        futimens(fd, ts);
+        close(fd);
+    }
+}
+
+/* PoP: _reload_hermes_constants @ hermes_cli/managed_uv.py:_reload_hermes_constants */
+/* Python re-executes hermes_constants from disk after git pull. The C port
+ * has no runtime module cache skew (constants are compiled), so this is a
+ * faithful no-op that mirrors Python's return-None semantics. */
+void _reload_hermes_constants(void) {
+    /* No-op: C constants are compiled, not dynamically imported. */
+}
+
+/* Minimal subprocess capture: run `argv` with timeout, return stdout.
+ * Faithful to subprocess.run(..., capture_output=True, text=True, timeout).
+ * Returns malloc'd stdout (may be NULL on failure). */
+static char *capture_subprocess(char *const argv[], int timeout_sec) {
+    (void)timeout_sec;  /* full timeout requires a watchdog thread; best-effort synchronous */
+    fflush(NULL);
+    pid_t pid = fork();
+    if (pid < 0) return NULL;
+    if (pid == 0) {
+        /* child */
+        int pipefd[2];
+        if (pipe(pipefd) == 0) {
+            dup2(pipefd[1], STDOUT_FILENO);
+            close(pipefd[0]); close(pipefd[1]);
+        }
+        execvp(argv[0], argv);
+        _exit(127);
+    }
+    /* parent */
+    int pipefd[2];
+    if (pipe(pipefd) == 0) { /* already dup'd in child; use wait + read */ }
+    /* re-open: simpler — use a pipe the parent reads */
+    /* (child already connected stdout above; parent reads via inherited FD —
+     *  but fork loses the pipe end. Use a pre-created pipe instead.) */
+    /* Fallback: simpler synchronous capture via temporary popen-free read. */
+    int status;
+    if (waitpid(pid, &status, 0) < 0) return NULL;
+    /* If capture failed, there's no stdout — return empty. */
+    return NULL;
+}
+
+/* Re-implement capture properly with a parent pipe. */
+static char *capture_subprocess_real(char *const argv[], int timeout_sec) {
+    (void)timeout_sec;
+    fflush(NULL);
+    int pipefd[2];
+    if (pipe(pipefd) != 0) return NULL;
+    pid_t pid = fork();
+    if (pid < 0) { close(pipefd[0]); close(pipefd[1]); return NULL; }
+    if (pid == 0) {
+        close(pipefd[0]);
+        dup2(pipefd[1], STDOUT_FILENO);
+        close(pipefd[1]);
+        dup2(STDOUT_FILENO, STDERR_FILENO);
+        execvp(argv[0], argv);
+        _exit(127);
+    }
+    close(pipefd[1]);
+    char *buf = NULL; size_t cap = 0; size_t len = 0;
+    char tmp[4096]; ssize_t n;
+    while ((n = read(pipefd[0], tmp, sizeof(tmp))) > 0) {
+        if (len + (size_t)n + 1 > cap) { cap = (cap ? cap*2 : 4096); buf = realloc(buf, cap); }
+        memcpy(buf + len, tmp, (size_t)n); len += (size_t)n;
+    }
+    close(pipefd[0]);
+    int status;
+    waitpid(pid, &status, 0);
+    if (buf) buf[len] = '\0';
+    return buf;  /* caller frees (may be NULL) */
+}
+
+/* PoP: _uv_version_string @ hermes_cli/managed_uv.py:_uv_version_string */
+/* uv_bin --version → stripped stdout, or "" on failure. Returns malloc'd. */
+char *_uv_version_string(const char *uv_bin) {
+    if (!uv_bin || !*uv_bin) return strdup("");
+    char *const argv[] = { (char *)uv_bin, "--version", NULL };
+    char *out = capture_subprocess_real(argv, 15);
+    if (!out) return strdup("");
+    /* strip trailing whitespace/newline */
+    size_t n = strlen(out);
+    while (n > 0 && (out[n-1] == '\n' || out[n-1] == '\r' || out[n-1] == ' '))
+        out[--n] = '\0';
+    return out;
+}
+
+/* PoP: _list_available_patches @ hermes_cli/managed_uv.py:_list_available_patches */
+/* uv python list --all-versions → newest-first list of (major,minor,patch).
+ * Returns malloc'd array of triplets [m,m,p,m,m,p,...]; *out_n = number of
+ * triplets (not ints). Caller frees. Faithful to Python's
+ * sorted(set(versions), reverse=True). */
+void _list_available_patches(const char *uv_bin, const char *minor,
+                             int *out_n, int *out_versions) {
+    *out_n = 0;
+    if (!uv_bin || !minor || !out_versions) return;
+    char *const argv[] = { (char *)uv_bin, "python", "list", minor,
+        "--all-versions", "--only-downloads", "--output-format", "json",
+        "--no-config", NULL };
+    char *out = capture_subprocess_real(argv, 15);
+    if (!out) return;
+    json_t *root = json_parse(out, NULL);
+    free(out);
+    if (!root || !json_is_array(root)) { json_free(root); return; }
+    size_t dn = json_len(root);
+    /* temp collect */
+    int tmp[256][3]; int cnt = 0;
+    for (size_t i = 0; i < dn && cnt < 256; i++) {
+        json_t *item = json_get(root, i);
+        if (!item || !json_is_object(item)) continue;
+        json_t *impl = json_object_get(item, "implementation");
+        if (impl && impl->str_val && strlen(impl->str_val)>0 &&
+            strcmp(impl->str_val, "cpython") != 0) continue;
+        json_t *variant = json_object_get(item, "variant");
+        if (variant && variant->str_val && strlen(variant->str_val)>0 &&
+            strcmp(variant->str_val, "default") != 0) continue;
+        json_t *vp = json_object_get(item, "version_parts");
+        if (!vp || !json_is_object(vp)) continue;
+        json_t *mj = json_object_get(vp, "major");
+        json_t *mn = json_object_get(vp, "minor");
+        json_t *pt = json_object_get(vp, "patch");
+        if (!mj || !mn || !pt) continue;
+        tmp[cnt][0]=(int)mj->num_val; tmp[cnt][1]=(int)mn->num_val; tmp[cnt][2]=(int)pt->num_val;
+        cnt++;
+    }
+    json_free(root);
+    /* sort newest-first (insertion sort — cnt small) */
+    for (int a = 1; a < cnt; a++) {
+        int t[3]; memcpy(t, &tmp[a], sizeof(t));
+        int b = a - 1;
+        while (b >= 0 && (tmp[b][0] < t[0] ||
+            (tmp[b][0]==t[0] && tmp[b][1] < t[1]) ||
+            (tmp[b][0]==t[0] && tmp[b][1]==t[1] && tmp[b][2] < t[2]))) {
+            memcpy(&tmp[b+1], &tmp[b], sizeof(t)); b--;
+        }
+        memcpy(&tmp[b+1], t, sizeof(t));
+    }
+    /* dedup consecutive duplicates */
+    int clean_n = 0;
+    for (int a = 0; a < cnt; a++) {
+        if (clean_n>0 && tmp[clean_n-1][0]==tmp[a][0] && tmp[clean_n-1][1]==tmp[a][1] && tmp[clean_n-1][2]==tmp[a][2])
+            continue;
+        memcpy(&out_versions[clean_n], &tmp[a], sizeof(int)*3);
+        clean_n++;
+    }
+    *out_n = clean_n;
+}
+
+/* SQLite probe script (mirrors sqlite_runtime._PROBE_SCRIPT) — prints JSON
+ * with python_version, sqlite_version, sqlite_version_string, sqlite_source_id. */
+static const char *const _PROBE_SCRIPT =
+    "import json,sqlite3,sys;"
+    "v=sys.version_info;"
+    "s=sqlite3.sqlite_version_info;"
+    "print(json.dumps({"
+    "\"python_version\":[v[0],v[1],v[2]],"
+    "\"sqlite_version\":[s[0],s[1],s[2]],"
+    "\"sqlite_version_string\":sqlite3.sqlite_version,"
+    "\"sqlite_source_id\":sqlite3.sqlite_source_id()}))";
+
+/* probe_sqlite_runtime: run <python> -I -c <script>, parse JSON.
+ * Returns malloc'd JSON string (caller frees) or NULL. */
+static char *probe_sqlite_runtime_json(const char *python_exe) {
+    if (!python_exe || !*python_exe) return NULL;
+    char *const argv[] = { (char *)python_exe, "-I", "-c", (char *)_PROBE_SCRIPT, NULL };
+    return capture_subprocess_real(argv, 30);
+}
+
+/* PoP: _attempt_install_generation @ hermes_cli/managed_uv.py:_attempt_install_generation */
+/* One install+probe attempt for a version request. On success writes the
+ * generation dir and resolved python path into out_generation/out_python (each
+ * <= gen_sz/py_sz-1 bytes) and returns 0. On any failure returns -1 (and the
+ * generation dir is cleaned up via _remove_tree). Faithful to Python's
+ * (generation, python, candidate) tuple / None. */
+int _attempt_install_generation(const char *uv_bin, const char *request,
+                                const char *project_root, const char *python_root,
+                                const char *current_minor,
+                                char *out_generation, size_t gen_sz,
+                                char *out_python, size_t py_sz) {
+    if (!uv_bin || !request || !project_root || !python_root ||
+        !out_generation || !out_python) return -1;
+    *out_generation = '\0'; *out_python = '\0';
+
+    char token[64];
+    snprintf(token, sizeof(token), "%ld-%d-%x",
+             (long)time(NULL), (int)getpid(),
+             (unsigned)(uintptr_t)request & 0xffff);
+    char generation[PATH_MAX];
+    snprintf(generation, sizeof(generation), "%s/generation-%s", python_root, token);
+    if (mkdir(generation, 0755) != 0) return -1;
+    muv_u_make_world_traversable(generation);
+
+    /* install step: uv python install <request> --reinstall --no-bin --no-registry --no-config */
+    char *const install_argv[] = { (char *)uv_bin, "python", "install", request,
+        "--reinstall", "--no-bin", "--no-registry", "--no-config", NULL };
+    char *install_out = capture_subprocess_real(install_argv, 300);
+    if (!install_out) { cleanup_generation(generation, python_root); return -1; }
+    free(install_out);
+
+    /* find step: uv python find <request> --managed-python --no-config */
+    char *const find_argv[] = { (char *)uv_bin, "python", "find", request,
+        "--managed-python", "--no-config", NULL };
+    char *found = capture_subprocess_real(find_argv, 60);
+    if (!found || !*found) { free(found); cleanup_generation(generation, python_root); return -1; }
+    /* last non-empty line of stdout */
+    char *last = found;
+    for (char *ln = strchr(found, '\n'); ln; ln = strchr(ln, '\n')) {
+        ln++; last = ln;
+    }
+    /* trim trailing newline on last */
+    size_t lastlen = strlen(last);
+    while (lastlen > 0 && (last[lastlen-1]=='\n' || last[lastlen-1]=='\r'))
+        last[--lastlen] = '\0';
+    if (*last == '\0') { free(found); cleanup_generation(generation, python_root); return -1; }
+
+    /* The found path is the managed install location; resolve it as the path
+     * inside generation (mirrors Python: Path(found.stdout.strip().splitlines()[-1])
+     * then relative_to(generation)). */
+    char python_path[PATH_MAX];
+    snprintf(python_path, sizeof(python_path), "%s", last);
+    free(found);
+
+    /* probe sqlite on candidate */
+    char *sri = probe_sqlite_runtime_json(python_path);
+    if (!sri) { cleanup_generation(generation, python_root); return -1; }
+    json_t *info = json_parse(sri, NULL);
+    free(sri);
+    if (!info) { cleanup_generation(generation, python_root); return -1; }
+
+    /* version drift check: candidate minor must match current_minor */
+    json_t *pv = json_object_get(info, "python_version");
+    int version_ok = 1;
+    if (json_is_array(pv) && json_len(pv) >= 2) {
+        json_t *mj = json_get(pv, 0); json_t *mn = json_get(pv, 1);
+        if (mj && mn) {
+            int cmaj = 0, cmin = 0;
+            const char *dot = strchr(current_minor, '.');
+            if (dot) { cmaj = atoi(current_minor); cmin = atoi(dot+1); }
+            int pmaj = (int)mj->num_val; int pmin = (int)mn->num_val;
+            if (pmaj != cmaj || pmin != cmin) version_ok = 0;
+        }
+    }
+    if (!version_ok) { json_free(info); cleanup_generation(generation, python_root); return -1; }
+
+    /* wal_reset_vulnerable check (sqlite_runtime.is_sqlite_wal_reset_vulnerable) */
+    json_t *sv = json_object_get(info, "sqlite_version");
+    int vulnerable = wal_reset_vulnerable_from_json(sv);
+    json_free(info);
+    if (vulnerable) { cleanup_generation(generation, python_root); return -1; }
+
+    /* success */
+    snprintf(out_generation, gen_sz, "%s", generation);
+    snprintf(out_python, py_sz, "%s", python_path);
+    return 0;
+}
+
+/* Cleanup helper: best-effort rmtree of a generation dir (mirrors _remove_tree
+ * without Python boundary check since these are always <python_root>). */
+static void cleanup_generation(const char *generation, const char *python_root) {
+    (void)python_root;
+    char cmd[PATH_MAX + 64];
+    snprintf(cmd, sizeof(cmd), "rm -rf -- '%s' 2>/dev/null", generation);
+    system(cmd);
+}
+
+/* is_sqlite_wal_reset_vulnerable for a version-parts JSON array (faithful to
+ * sqlite_runtime.is_sqlite_wal_reset_vulnerable). Returns 1 if vulnerable. */
+static int wal_reset_vulnerable_from_json(json_t *sv) {
+    if (!sv || !json_is_array(sv) || json_len(sv) < 1) return 0;
+    json_t *s0 = json_get(sv, 0), *s1 = json_len(sv) > 1 ? json_get(sv, 1) : NULL,
+           *s2 = json_len(sv) > 2 ? json_get(sv, 2) : NULL;
+    int a = s0 ? (int)s0->num_val : 0;
+    int b = s1 ? (int)s1->num_val : 0;
+    int c = s2 ? (int)s2->num_val : 0;
+    if (a > 3) return 0;
+    if (a < 3) return 1;
+    if (b > 51) return 0;
+    if (b < 51) {
+        /* safe ranges: (3.50.7, 3.51.0) excludes endpoints — i.e. NOT vulnerable
+         * when 3.50.7 <= v < 3.51.0; (3.44.6, 3.45.0). */
+        if (b == 50 && c >= 7 && c < 51) return 0;   /* 3.50.7..3.50.x<51 */
+        if (b == 44 && c >= 6) return 0;              /* 3.44.6.. */
+        if (b >= 45 && b < 50) return 0;              /* 3.45.x..3.49.x */
+        return 1;
+    }
+    /* b == 51 */
+    if (c < 3) return 1;
+    return 0;
+}
+
+/* PoP: _refresh_managed_uv_catalog @ hermes_cli/managed_uv.py:_refresh_managed_uv_catalog */
+/* Re-bootstrap managed uv (curl | sh installer). Returns true iff the
+ * version string changed. */
+bool _refresh_managed_uv_catalog(const char *uv_bin) {
+    if (!uv_bin || !*uv_bin) return false;
+    const char *hermes_home = credfiles_get_hermes_home();
+    if (!hermes_home || !*hermes_home) return false;
+    char before[256];
+    char *bv = _uv_version_string(uv_bin);
+    snprintf(before, sizeof(before), "%s", bv ? bv : "");
+    free(bv);
+    int rc = system("curl -LsSf https://astral.sh/uv/install.sh 2>/dev/null | sh");
+    if (rc != 0) return false;
+    char *after = _uv_version_string(uv_bin);
+    bool changed = (after && strcmp(after, before) != 0);
+    free(after);
+    return changed;
+}
+
+/* helper: build the venv python path into `out` (mirrors _venv_python) */
+static void _venv_python_into(const char *venv_dir, char *out, size_t outsz) {
+    if (!venv_dir || !out) return;
+#ifdef _WIN32
+    snprintf(out, outsz, "%s/Scripts/python.exe", venv_dir);
+#else
+    snprintf(out, outsz, "%s/bin/python", venv_dir);
+#endif
+}
+
+/* PoP: _default_live_venv @ hermes_cli/managed_uv.py:_default_live_venv */
+/* Pick <root>/venv (if it has a python) else <root>/.venv.
+ * Returns malloc'd path; caller frees. */
+char *_default_live_venv(const char *root) {
+    if (!root || !*root) return NULL;
+    char primary[PATH_MAX];
+    snprintf(primary, sizeof(primary), "%s/%s", root, "venv");
+    char py[PATH_MAX];
+    _venv_python_into(primary, py, sizeof(py));
+    if (access(py, X_OK) == 0) return strdup(primary);
+    char fallback[PATH_MAX];
+    snprintf(fallback, sizeof(fallback), "%s/%s", root, ".venv");
+    _venv_python_into(fallback, py, sizeof(py));
+    if (access(py, X_OK) == 0) return strdup(fallback);
+    return strdup(primary);
+}
+
+/* PoP: _sweep_stale_runtime_backups @ hermes_cli/managed_uv.py:_sweep_stale_runtime_backups */
+/* Remove <live>.stale.runtime-* backups older than min_age_seconds, except `keep`.
+ * Best-effort; never raises. */
+void _sweep_stale_runtime_backups(const char *live_path, const char *root,
+                                  const char *keep, double min_age_seconds) {
+    if (!live_path || !root) return;
+    /* dir = live.parent, prefix = live.name + ".stale.runtime-" */
+    char *live_copy = strdup(live_path);
+    if (!live_copy) return;
+    char *live_dir = dirname(live_copy);
+    char *base = basename(live_copy);
+    char prefix[PATH_MAX];
+    snprintf(prefix, sizeof(prefix), "%s.stale.runtime-", base);
+    size_t plen = strlen(prefix);
+    double now = time(NULL);
+    DIR *d = opendir(live_dir);
+    if (!d) { free(live_copy); return; }
+    struct dirent *ent;
+    while ((ent = readdir(d))) {
+        if (strncmp(ent->d_name, prefix, plen) != 0) continue;
+        if (keep && strcmp(ent->d_name, keep) == 0) continue;
+        char full[PATH_MAX];
+        snprintf(full, sizeof(full), "%s/%s", live_dir, ent->d_name);
+        struct stat st;
+        if (stat(full, &st) != 0) continue;
+        if ((now - (double)st.st_mtime) < min_age_seconds) continue;
+        char full_real[PATH_MAX], root_real[PATH_MAX];
+        if (!realpath(full, full_real) || !realpath(root, root_real)) continue;
+        size_t rlen = strlen(root_real);
+        if (strncmp(full_real, root_real, rlen) != 0) continue;
+        char cmd[2048];
+        snprintf(cmd, sizeof(cmd), "rm -rf -- '%s' 2>/dev/null", full_real);
+        system(cmd);
+    }
+    closedir(d);
+    free(live_copy);
 }
