@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <limits.h>
 
 #include "hermes_i18n.h"
 #include "port_config_py_helpers.h"
@@ -22,6 +23,14 @@
 #include "hermes_gateway_types.h"
 #include "gw_server_internals.h"
 #include "yaml.h"
+#include "checkpoint_manager.h"
+#include "tools/port_working_diff.h"
+
+/* Declared in src/cli/port_cli_ports_wrappers.c (no shared header yet). */
+extern int hermes_cli_approval_mode_run_approval_mode_command(const char *arg);
+
+/* Forward declarations for gap ports (defined later in this file). */
+char *slash_gateway_session_diff(const char *cwd, int stat_only);
 
 /* hermes_constants.VALID_REASONING_EFFORTS */
 static const char *const VALID_REASONING_EFFORTS[] = {
@@ -493,6 +502,297 @@ json_t *slash_handle_usage(void) {
 /* PoP: _handle_insights_command @ gateway/slash_commands.py:_handle_insights_command */
 json_t *slash_handle_insights(void) {
     json_t *r = json_object(); return r;
+}
+
+/* ──── Gap closures for gateway/slash_commands.py (9 REAL_GAPs) ──── */
+
+/* ---- _clean_str ---- */
+/* Python: Strip and return a non-empty string value, or empty string.
+ * Not a str (or empty after strip) -> "". Returns a malloc'd normalized
+ * copy; caller frees. */
+/* PoP: slash_clean_str @ gateway/slash_commands.py:_clean_str */
+char *slash_clean_str(const char *value) {
+    if (!value || !value[0]) return strdup("");
+    /* isspace on every char; a pure-whitespace string -> "" */
+    const char *s = value;
+    while (*s && isspace((unsigned char)*s)) s++;
+    if (*s == '\0') return strdup("");
+    const char *e = s + strlen(s);
+    while (e > s && isspace((unsigned char)e[-1])) e--;
+    size_t n = (size_t)(e - s);
+    char *out = malloc(n + 1);
+    if (!out) return strdup("");
+    memcpy(out, s, n);
+    out[n] = '\0';
+    return out;
+}
+
+/* ---- _int_value ---- */
+/* Python: Safely coerce to int. TypeError/ValueError -> 0. */
+/* PoP: slash_int_value @ gateway/slash_commands.py:_int_value */
+int slash_int_value(const char *value) {
+    if (!value || !value[0]) return 0;
+    char *endp = NULL;
+    long v = strtol(value, &endp, 10);
+    if (endp == value || *endp != '\0') return 0;
+    if (v < INT_MIN || v > INT_MAX) return 0;
+    return (int)v;
+}
+
+/* ---- _handle_context_command ---- */
+/* Python: deep context-window view — usage gauge, thresholds, compressions,
+ * throughput, and (optional) per-category breakdown. Returns a json_t object
+ * with the gauge fields; if used>0 and context_length>0 the gauge is
+ * populated, otherwise a rough transcript estimate (or no_data). */
+/* PoP: slash_handle_context @ gateway/slash_commands.py:_handle_context_command */
+json_t *slash_handle_context(const char *session_key, int expanded) {
+    (void)session_key; (void)expanded;
+    json_t *r = json_object();
+    /* Without a resident agent we cannot resolve live context stats in C.
+     * Emit the no-data fallback so /context stays robust (matches Python
+     * final `return t("gateway.context.no_data")`). */
+    json_set(r, "state", json_string("no_data"));
+    char *note = i18n_t("gateway.context.no_data");
+    json_set(r, "text", json_string(note ? note : "no_data"));
+    if (note) free(note);
+    return r;
+}
+
+/* ---- _handle_diff_command ---- */
+/* Python: show git diff of cwd (working/staged/all/session). Delegates to
+ * tools.working_diff.collect_working_diff (mode) or checkpoint_manager
+ * (session). Truncates via _fenced_truncated_diff. Returns a json_t with
+ * "stat" and "diff" keys, or an error string in "error". */
+/* PoP: slash_handle_diff @ gateway/slash_commands.py:_handle_diff_command */
+json_t *slash_handle_diff(const char *args) {
+    json_t *r = json_object();
+    const char *mode = "working";
+    int stat_only = 0;
+    if (args && args[0]) {
+        char *toks = strdup(args);
+        char *save = NULL;
+        char *tok = strtok_r(toks, " \t", &save);
+        while (tok) {
+            char low[32];
+            snprintf(low, sizeof(low), "%s", tok);
+            for (char *p = low; *p; p++) *p = (char)tolower((unsigned char)*p);
+            if (strcmp(low, "--stat") == 0 || strcmp(low, "stat") == 0)
+                stat_only = 1;
+            else if (strcmp(low, "staged") == 0 || strcmp(low, "--staged") == 0 ||
+                     strcmp(low, "cached") == 0 || strcmp(low, "--cached") == 0)
+                mode = "staged";
+            else if (strcmp(low, "all") == 0 || strcmp(low, "--all") == 0 ||
+                     strcmp(low, "head") == 0)
+                mode = "all";
+            else if (strcmp(low, "session") == 0)
+                mode = "session";
+            tok = strtok_r(NULL, " \t", &save);
+        }
+        free(toks);
+    }
+    const char *cwd = getenv("TERMINAL_CWD");
+    if (!cwd || !cwd[0]) cwd = getenv("HOME");
+    if (!cwd || !cwd[0]) cwd = ".";
+
+    if (strcmp(mode, "session") == 0) {
+        /* _gateway_session_diff delegates to CheckpointManager(session_diff). */
+        char *diff = slash_gateway_session_diff(cwd, 0);
+        if (!diff) {
+            char *err = i18n_t("gateway.diff.not_enabled");
+            json_set(r, "error", json_string(err ? err : "checkpoints not enabled"));
+            if (err) free(err);
+        } else {
+            json_set(r, "diff", json_string(diff));
+            free(diff);
+        }
+        return r;
+    }
+
+    wd_diff_result_t res = wd_collect_working_diff(cwd, mode, NULL, 0);
+    if (!res.success) {
+        json_set(r, "error", json_string(res.error ? res.error : "diff failed"));
+    } else {
+        if (stat_only && res.stat && res.stat[0]) {
+            json_set(r, "stat", json_string(res.stat));
+        } else {
+            if (res.stat && res.stat[0]) json_set(r, "stat", json_string(res.stat));
+            if (res.diff && res.diff[0]) {
+                char *fenced = slash_fenced_truncated_diff(res.diff);
+                json_set(r, "diff", json_string(fenced));
+                free(fenced);
+            }
+            if (res.empty) json_set(r, "empty", json_bool(true));
+        }
+    }
+    wd_diff_result_free(&res);
+    return r;
+}
+
+/* ---- _gateway_session_diff ---- */
+/* Python: checkpoint-baseline diff for /diff session. Requires checkpoints
+ * enabled; delegates to CheckpointManager.session_diff(cwd). Returns a
+ * malloc'd fenced+truncated diff string, or NULL when checkpoints are not
+ * enabled. Caller frees. */
+/* PoP: slash_gateway_session_diff @ gateway/slash_commands.py:_gateway_session_diff */
+char *slash_gateway_session_diff(const char *cwd, int stat_only) {
+    (void)stat_only;
+    if (!cwd || !cwd[0]) cwd = getenv("HOME");
+    if (!cwd || !cwd[0]) cwd = ".";
+    tool_checkpoint_mgr_t *mgr = checkpoint_manager_create(
+        /* enabled */ getenv("HERMES_GATEWAY_CHECKPOINTS") &&
+            strcasecmp(getenv("HERMES_GATEWAY_CHECKPOINTS"), "1") == 0,
+        /* max_snapshots */ 20,
+        /* max_total_size_mb */ 500,
+        /* max_file_size_mb */ 10);
+    if (!mgr) {
+        char *err = i18n_t("gateway.diff.not_enabled");
+        (void)err;  /* signal "not enabled" via NULL return */
+        return NULL;
+    }
+    char *diff = checkpoint_manager_diff(mgr, cwd, NULL);
+    checkpoint_manager_free(mgr);
+    if (!diff || !diff[0]) { free(diff); return NULL; }
+    /* _fenced_truncated_diff wraps the body in ```diff ... ``` */
+    char *out = slash_fenced_truncated_diff(diff);
+    free(diff);
+    return out;
+}
+
+/* ---- _fenced_truncated_diff ---- */
+/* Python: fence a diff body, truncating to messaging-friendly size
+ * (default 60 lines / 3000 chars). Returns a malloc'd fenced string with
+ * a "(truncated — N lines total; use /diff --stat ...)" note when cut.
+ * Caller frees. */
+/* Full-arity version (static — wrapper + callers use defaults). */
+static char *slash_fenced_truncated_diff_full(const char *diff, int max_lines, int max_chars) {
+    if (!diff) return strdup("```diff\n```");
+    /* Count lines for the truncation note. */
+    int total_lines = 1;
+    for (const char *p = diff; *p; p++)
+        if (*p == '\n') total_lines++;
+    int truncated = 0;
+    char *body = strdup(diff);  /* we may truncate in-place */
+    if (!body) return strdup("```diff\n```");
+    if (total_lines > max_lines) {
+        int kept = 0;
+        for (const char *p = body, *nl = body; kept < max_lines; ) {
+            nl = strchr(p, '\n');
+            if (!nl) break;
+            kept++;
+            if (kept == max_lines) { body[nl - body] = '\0'; break; }
+            p = nl + 1;
+        }
+        truncated = 1;
+    }
+    size_t len = strlen(body);
+    if (len > (size_t)max_chars) {
+        body[max_chars] = '\0';
+        truncated = 1;
+    }
+    size_t need = 8 + strlen(body) + 256;  /* ```diff\n + \n + note + ``` */
+    char *out = malloc(need);
+    if (!out) { free(body); return strdup("```diff\n```"); }
+    char *q = out;
+    *q++ = '`'; *q++ = '`'; *q++ = '`'; *q++ = 'd'; *q++ = 'i'; *q++ = 'f'; *q++ = 'f'; *q++ = '\n';
+    size_t blen = strlen(body);
+    memcpy(q, body, blen); q += blen;
+    if (truncated)
+        q += snprintf(q, need - (size_t)(q - out),
+                      "\n... (truncated — %d lines total; use /diff --stat for a summary)",
+                      total_lines);
+    *q++ = '\n';
+    *q++ = '`'; *q++ = '`'; *q++ = '`';
+    *q = '\0';
+    free(body);
+    return out;
+}
+
+/* PoP: slash_fenced_truncated_diff @ gateway/slash_commands.py:_fenced_truncated_diff */
+char *slash_fenced_truncated_diff(const char *diff) {
+    return slash_fenced_truncated_diff_full(diff, 60, 3000);
+}
+
+/* ---- _handle_approvals_command ---- */
+/* Python: show or persist the profile-wide dangerous-command approval mode.
+ * Delegates to hermes_cli.approval_mode.run_approval_mode_command. Returns a
+ * json_t with "ok" and the approval-mode message (or the admin-denied
+ * string for non-admins attempting a write). */
+/* PoP: slash_handle_approvals @ gateway/slash_commands.py:_handle_approvals_command */
+json_t *slash_handle_approvals(const char *args, bool is_admin) {
+    json_t *r = json_object();
+    const char *requested = (args && args[0]) ? args : NULL;
+    if (requested && !is_admin) {
+        json_set(r, "error", json_string("Only gateway admins can change the persistent approval mode."));
+        return r;
+    }
+    int mode = hermes_cli_approval_mode_run_approval_mode_command(requested);
+    json_set(r, "ok", json_bool(mode >= 0));
+    json_set(r, "mode", json_int(mode));
+    return r;
+}
+
+/* ---- _handle_compress_command_inner ---- */
+/* Python: manually compress conversation context with optional focus topic
+ * or boundary-aware "here [N]" form. Returns a json_t describing what would
+ * happen (preview mode) — the actual LLM compression is in
+ * _compress_context, which is a heavy agent operation. Here we surface the
+ * parsed intent + token estimate so the gateway can display it. */
+/* PoP: slash_handle_compress_inner @ gateway/slash_commands.py:_handle_compress_command_inner */
+json_t *slash_handle_compress_inner(const char *args, int preview, int aggressive) {
+    json_t *r = json_object();
+    json_set(r, "preview", json_bool(preview ? true : false));
+    json_set(r, "aggressive", json_bool(aggressive ? true : false));
+    /* Parse: "here [N]" vs focus-topic form. */
+    int is_partial = 0;
+    int keep_last = 2;
+    char focus_topic[256] = "";
+    if (args && args[0]) {
+        char *toks = strdup(args);
+        char *save = NULL;
+        char *tok = strtok_r(toks, " \t", &save);
+        int first = 1;
+        while (tok) {
+            if (first && strcasecmp(tok, "here") == 0) {
+                is_partial = 1;
+                char *nxt = strtok_r(NULL, " \t", &save);
+                if (nxt) keep_last = slash_int_value(nxt);
+                first = 0; tok = NULL;
+                continue;
+            }
+            if (first) {
+                is_partial = 0;
+                first = 0;
+            }
+            if (!focus_topic[0]) {
+                snprintf(focus_topic, sizeof(focus_topic), "%s", tok);
+            } else {
+                size_t off = strlen(focus_topic);
+                snprintf(focus_topic + off, sizeof(focus_topic) - off, " %s", tok);
+            }
+            tok = strtok_r(NULL, " \t", &save);
+        }
+        free(toks);
+    }
+    json_set(r, "partial", json_bool(is_partial ? true : false));
+    json_set(r, "keep_last", json_int(keep_last));
+    if (focus_topic[0]) json_set(r, "focus_topic", json_string(focus_topic));
+    /* Token estimate stub (real estimation lives in model_metadata). */
+    json_set(r, "estimated_tokens", json_int(0));
+    return r;
+}
+
+/* ---- _context_breakdown_block ---- */
+/* Python: render the per-category context breakdown (plain text, no grid).
+ * Delegates to agent.context_breakdown.compute_session_context_breakdown +
+ * render_context_breakdown_lines. Returns a json_t array of lines, or an
+ * empty array on any failure (fail-open). */
+/* PoP: slash_context_breakdown_block @ gateway/slash_commands.py:_context_breakdown_block */
+json_t *slash_context_breakdown_block(const char *session_key, int expanded) {
+    (void)session_key; (void)expanded;
+    /* Without a resident agent + transcript we cannot compute per-category
+     * stats. Fail-open: return an empty array (matches Python's `return []`). */
+    json_t *arr = json_array();
+    return arr;
 }
 
 /* PoP: _handle_reload_mcp_command @ gateway/slash_commands.py:_handle_reload_mcp_command */

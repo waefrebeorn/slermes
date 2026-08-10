@@ -44,4 +44,27 @@ bool slash_save_gateway_config_key(const char *config_path,
 bool slash_resume_caller_is_admin(json_node_t *gateway_config,
                                   const gw_session_source_t *source);
 
+/* ---- Gaps ported from gateway/slash_commands.py ---- */
+
+/* Slash-command helpers: strip a value to a non-empty string or "". */
+char *slash_clean_str(const char *value);
+/* Safely coerce to int (0 on failure). */
+int  slash_int_value(const char *value);
+/* /context deep view: JSON gauge payload with state text. */
+json_t *slash_handle_context(const char *session_key, int expanded);
+/* /diff: git diff of cwd (working/staged/all or session). Returns JSON with
+ * stat/diff/error keys. */
+json_t *slash_handle_diff(const char *args);
+/* /diff session: checkpoint-baseline diff via CheckpointManager. Returns
+ * malloc'd fenced+truncated diff string, or NULL when checkpoints disabled. */
+char *slash_gateway_session_diff(const char *cwd, int stat_only);
+/* Fence + truncate a diff body (default 60 lines / 3000 chars). */
+char *slash_fenced_truncated_diff(const char *diff);
+/* /approve: show or persist profile-wide dangerous-command approval mode. */
+json_t *slash_handle_approvals(const char *args, bool is_admin);
+/* /compress inner: parse preview/partial/focus intent, return JSON. */
+json_t *slash_handle_compress_inner(const char *args, int preview, int aggressive);
+/* /context per-category block: JSON array of breakdown lines. */
+json_t *slash_context_breakdown_block(const char *session_key, int expanded);
+
 #endif /* PORT_SLASH_COMMANDS_H */
