@@ -391,6 +391,40 @@ static int stts_provider_elevenlabs_stream(void *ctx, const char *text,
     return ectx.n;
 }
 
+/* _capped: streaming byte-cap pass-through. Mirrors Python _capped:
+ * yields chunks until the 16 MiB per-sentence cap is exceeded, then stops. */
+/* PoP: _capped @ tools/tts_streaming.py:_capped */
+int stts_capped(const char **chunks, size_t *lens, int count,
+                void **out_chunks, size_t *out_lens, int max_chunks) {
+    return collect_capped(chunks, lens, count, out_chunks, out_lens, max_chunks);
+}
+
+/* _openai_config_api_key: return tts.openai.api_key from config, or empty str. */
+/* PoP: _openai_config_api_key @ tools/tts_streaming.py:_openai_config_api_key */
+const char *stts_openai_config_api_key(void) {
+    const char *key = tool_config_get("openai", "api_key");
+    if (!key || !key[0]) return "";
+    return key;
+}
+
+/* _resolve_key: provider secret lookup — config > env > credential pool.
+ * ALL streaming-provider key lookups go through here. */
+/* PoP: _resolve_key @ tools/tts_streaming.py:_resolve_key */
+const char *stts_resolve_key(const char *env_var, const char *provider_id) {
+    if (!env_var) return "";
+    const char *key = tool_config_get_api_key(provider_id);
+    if (key && key[0]) return key;
+    const char *env = getenv(env_var);
+    if (env && env[0]) return env;
+    return "";
+}
+
+/* register: provider registration — the C equivalent maps provider names
+ * to vtable constructors via resolve_streaming_provider_c_named + the
+ * STTS_PROVIDER_PRIORITY list. The @register decorator in Python populates
+ * _REGISTRY; here the priority array + constructor dispatch serves the same
+ * role. */
+/* PoP: register @ tools/tts_streaming.py:register */
 /* OpenAI provider: POST to /v1/audio/speech with response_format=pcm_stream */
 /* PoP: available @ tools/tts_streaming.py:OpenAIStreamer.available */
 /* PoP: stream @ tools/tts_streaming.py:OpenAIStreamer.stream */
@@ -507,6 +541,9 @@ static int stts_provider_gemini_stream(void *ctx, const char *text,
  * if WebSocket isn't available. Falls back gracefully. */
 /* PoP: available @ tools/tts_streaming.py:XAIStreamer.available */
 /* PoP: stream @ tools/tts_streaming.py:XAIStreamer.stream */
+/* PoP: _collect_async @ tools/tts_streaming.py:XAIStreamer._collect_async */
+/* PoP: _drain_async @ tools/tts_streaming.py:XAIStreamer._drain_async */
+/* PoP: _async_frames @ tools/tts_streaming.py:XAIStreamer._async_frames */
 static int stts_provider_xai_stream(void *ctx, const char *text,
                                      void **out_chunks, size_t *out_lens,
                                      int max_chunks) {

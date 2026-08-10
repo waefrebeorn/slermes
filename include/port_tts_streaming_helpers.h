@@ -65,4 +65,13 @@ bool stts_provider_xai_available(void);
 char *tts_strip_markdown_simple(const char *text);
 char *(*resolve_tts_strip_markdown(void))(const char *text);
 
+/* ── Gap closures for tools/tts_streaming.py ────────────────────────────── */
+/* _capped: streaming byte-cap (16 MiB per sentence) */
+int stts_capped(const char **chunks, size_t *lens, int count,
+                void **out_chunks, size_t *out_lens, int max_chunks);
+/* _openai_config_api_key: return tts.openai.api_key from config, or "" */
+const char *stts_openai_config_api_key(void);
+/* _resolve_key: provider secret lookup — config > env > credential pool */
+const char *stts_resolve_key(const char *env_var, const char *provider_id);
+
 #endif /* PORT_TTS_STREAMING_HELPERS_H */
