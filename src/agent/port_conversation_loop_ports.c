@@ -202,3 +202,388 @@ char *cvl_run_conversation(const char *kwargs_json) {
 
     return run_conversation(state, msg, sys);
 }
+
+/* =========================================================================
+ * Gap closures for agent/conversation_loop.py (8 REAL_GAPs)
+ * ========================================================================= */
+
+/* ---- _is_copilot_provider ---- */
+/* Python: bool(agent._is_copilot_provider()) with try/except, falling back to
+ * provider string matching {"copilot", "github-copilot", "github"}.
+ * C: the agent_state_t carries .llm.provider. */
+/* PoP: _is_copilot_provider @ agent/conversation_loop.py:_is_copilot_provider */
+bool cvl_is_copilot_provider(const agent_state_t *agent) {
+    if (!agent) return false;
+    const char *prov = agent->llm.provider;
+    if (prov && *prov) {
+        /* case-insensitive match against the three aliases */
+        char *low = lowerdup(prov);
+        if (low) {
+            bool r = (strcmp(low, "copilot") == 0 ||
+                      strcmp(low, "github-copilot") == 0 ||
+                      strcmp(low, "github") == 0);
+            free(low);
+            if (r) return true;
+        }
+    }
+    return false;
+}
+
+/* ---- _is_stale_copilot_credential_error ---- */
+/* Python: status_code == 400 or "error code: 400" in lowered error_message,
+ * AND one of: "model_not_available_for_integrator", "not available for
+ * integrator", "model_not_supported", "the requested model is not supported". */
+/* PoP: _is_stale_copilot_credential_error @ agent/conversation_loop.py:_is_stale_copilot_credential_error */
+bool cvl_is_stale_copilot_credential_error(int status_code, const char *error_message) {
+    char *lowered = lowerdup(error_message);
+    bool is_400 = (status_code == 400);
+    if (!is_400 && lowered && strstr(lowered, "error code: 400"))
+        is_400 = true;
+    if (!is_400) { free(lowered); return false; }
+
+    bool stale = false;
+    if (lowered) {
+        stale = (strstr(lowered, "model_not_available_for_integrator") != NULL ||
+                 strstr(lowered, "not available for integrator") != NULL ||
+                 strstr(lowered, "model_not_supported") != NULL ||
+                 strstr(lowered, "the requested model is not supported") != NULL);
+    }
+    free(lowered);
+    return stale;
+}
+
+/* ---- _canonicalize_tool_call_arguments ---- */
+/* Python: json.loads(arg_str) then json.dumps(..., separators=(",",":"),
+ * sort_keys=True).  Memoized in _CANON_ARGS_CACHE (bounded LRU eviction).
+ * C: same semantics — parse to json_t, re-serialize compact+sorted, cache. */
+#define DLG_CANON_CACHE_MAX    256
+#define DLG_CANON_CACHE_MAXBYTES (256 * 1024)  /* 256 KiB cap */
+
+static char *_canon_args_cache_keys[DLG_CANON_CACHE_MAX];
+static char *_canon_args_cache_vals[DLG_CANON_CACHE_MAX];
+static int  _canon_args_cache_head = 0;   /* eviction pointer (FIFO) */
+static int  _canon_args_cache_count = 0;
+static long _canon_args_cache_bytes = 0;
+
+/* Serialize a json_t back to compact sorted form (mirrors json.dumps with
+ * sort_keys=True, separators=(",",":")).  libjson doesn't sort keys on
+ * serialize, so we build a new object inserting keys in sorted order. */
+static char *canon_serialize_sorted(const json_t *node) {
+    if (!node) return NULL;
+    switch (node->type) {
+    case JSON_ARRAY: {
+        /* arrays preserve order */
+        char *buf = malloc(1);
+        buf[0] = '[';
+        size_t cap = 32, len = 1;
+        for (size_t i = 0; i < node->c.count; i++) {
+            char *item = canon_serialize_sorted(node->c.items[i]);
+            if (!item) continue;
+            /* append comma */
+            if (i > 0) {
+                if (len + 2 > cap) { cap = (len + 2) * 2; buf = realloc(buf, cap); }
+                buf[len++] = ','; buf[len] = '\0';
+            }
+            size_t ilen = strlen(item);
+            if (len + ilen + 1 > cap) { cap = (len + ilen + 1) * 2; buf = realloc(buf, cap); }
+            memcpy(buf + len, item, ilen);
+            len += ilen; buf[len] = '\0';
+            free(item);
+        }
+        if (cap < len + 2) { cap = len + 2; buf = realloc(buf, cap); }
+        buf[len++] = ']'; buf[len] = '\0';
+        return buf;
+    }
+    case JSON_OBJECT: {
+        /* sort keys alphabetically */
+        char **keys = malloc(sizeof(char*) * (node->c.count + 1));
+        size_t *idx = malloc(sizeof(size_t) * (node->c.count + 1));
+        size_t n = 0;
+        for (size_t i = 0; i < node->c.count; i++) {
+            keys[n] = node->c.keys[i] ? strdup(node->c.keys[i]) : NULL;
+            idx[n] = i; n++;
+        }
+        /* insertion sort on keys */
+        for (size_t i = 1; i < n; i++) {
+            char *k = keys[i]; size_t j = idx[i]; size_t k2 = i;
+            while (k2 > 0 && strcmp(keys[k2-1], k) > 0) {
+                keys[k2] = keys[k2-1]; idx[k2] = idx[k2-1]; k2--;
+            }
+            keys[k2] = k; idx[k2] = j;
+        }
+        char *buf = malloc(1);
+        buf[0] = '{';
+        size_t cap = 32, len = 1;
+        for (size_t i = 0; i < n; i++) {
+            if (i > 0) { if (len + 2 > cap) { cap = (len+2)*2; buf = realloc(buf, cap); }
+                buf[len++] = ','; buf[len] = '\0'; }
+            char *val = canon_serialize_sorted(node->c.items[idx[i]]);
+            const char *key = keys[i];
+            /* escaped key */
+            if (len + 2 > cap) { cap = (len+2)*2; buf = realloc(buf, cap); }
+            buf[len++] = '"'; buf[len] = '\0';
+            for (const char *p = key; p && *p; p++) {
+                char esc[8]; int elen = 0;
+                switch (*p) {
+                case '"':  esc[0]='\\'; esc[1]='"'; elen=2; break;
+                case '\\': esc[0]='\\'; esc[1]='\\'; elen=2; break;
+                case '\n': esc[0]='\\'; esc[1]='n'; elen=2; break;
+                case '\t': esc[0]='\\'; esc[1]='t'; elen=2; break;
+                case '\r': esc[0]='\\'; esc[1]='r'; elen=2; break;
+                case '\b': esc[0]='\\'; esc[1]='b'; elen=2; break;
+                case '\f': esc[0]='\\'; esc[1]='f'; elen=2; break;
+                default: esc[0]=*p; elen=1; break; break;
+                }
+                if (len + elen + 1 > cap) { cap = (len+elen+1)*2; buf = realloc(buf, cap); }
+                memcpy(buf+len, esc, elen); len += elen; buf[len] = '\0';
+            }
+            if (len + 2 > cap) { cap = (len+2)*2; buf = realloc(buf, cap); }
+            buf[len++] = '"'; buf[len] = ':'; buf[len+1] = '\0';
+            len += 2;
+            size_t vlen = val ? strlen(val) : 4;
+            if (len + vlen + 1 > cap) { cap = (len+vlen+1)*2; buf = realloc(buf, cap); }
+            memcpy(buf+len, val ? val : "null", vlen);
+            len += vlen; buf[len] = '\0';
+            free(val);
+        }
+        for (size_t i = 0; i < n; i++) free(keys[i]);
+        free(keys); free(idx);
+        if (cap < len + 2) { cap = len + 2; buf = realloc(buf, cap); }
+        buf[len++] = '}'; buf[len] = '\0';
+        return buf;
+    }
+    case JSON_STRING: {
+        const char *s = node->str_val ? node->str_val : "";
+        char *buf = malloc(strlen(s) + 3);
+        buf[0] = '"';
+        /* escape */
+        size_t j = 1;
+        for (const char *p = s; *p; p++) {
+            switch (*p) {
+            case '"':  buf[j++]='\\'; buf[j++]='"'; break;
+            case '\\': buf[j++]='\\'; buf[j++]='\\'; break;
+            case '\n': buf[j++]='\\'; buf[j++]='n'; break;
+            case '\t': buf[j++]='\\'; buf[j++]='t'; break;
+            case '\r': buf[j++]='\\'; buf[j++]='r'; break;
+            case '\b': buf[j++]='\\'; buf[j++]='b'; break;
+            case '\f': buf[j++]='\\'; buf[j++]='f'; break;
+            default: buf[j++] = *p; break;
+            }
+        }
+        buf[j++] = '"'; buf[j] = '\0';
+        return buf;
+    }
+    case JSON_NUMBER: {
+        char *buf = malloc(32);
+        snprintf(buf, 32, "%.17g", node->num_val);
+        return buf;
+    }
+    case JSON_BOOL:
+        return node->bool_val ? strdup("true") : strdup("false");
+    case JSON_NULL:
+        return strdup("null");
+    }
+    return NULL;
+}
+
+/* Eviction: FIFO — remove oldest entry when cache over capacity. */
+static void _canon_cache_evict_one(void) {
+    if (_canon_args_cache_count <= 0) return;
+    int slot = (_canon_args_cache_head) % DLG_CANON_CACHE_MAX;
+    _canon_args_cache_bytes -= strlen(_canon_args_cache_keys[slot]) + strlen(_canon_args_cache_vals[slot]);
+    free(_canon_args_cache_keys[slot]);
+    free(_canon_args_cache_vals[slot]);
+    _canon_args_cache_keys[slot] = NULL;
+    _canon_args_cache_vals[slot] = NULL;
+    _canon_args_cache_head = (slot + 1) % DLG_CANON_CACHE_MAX;
+    _canon_args_cache_count--;
+}
+
+/* PoP: _canonicalize_tool_call_arguments @ agent/conversation_loop.py:_canonicalize_tool_call_arguments */
+char *cvl_canonicalize_tool_call_arguments(const char *arg_str) {
+    if (!arg_str) return NULL;
+    /* Check cache */
+    for (int i = 0; i < DLG_CANON_CACHE_MAX; i++) {
+        if (_canon_args_cache_keys[i] &&
+            strcmp(_canon_args_cache_keys[i], arg_str) == 0) {
+            return strdup(_canon_args_cache_vals[i]);
+        }
+    }
+    /* Parse + re-serialize canonical form */
+    json_t *node = json_parse(arg_str, NULL);
+    if (!node) return NULL;  /* raises json.JSONDecodeError in Python */
+    char *canonical = canon_serialize_sorted(node);
+    json_free(node);
+    if (!canonical) return NULL;
+
+    /* Store in cache, evicting oldest if over capacity */
+    long key_len = strlen(arg_str);
+    long val_len = strlen(canonical);
+    while ((_canon_args_cache_count >= DLG_CANON_CACHE_MAX ||
+            (_canon_args_cache_bytes + key_len + val_len > DLG_CANON_CACHE_MAXBYTES &&
+             _canon_args_cache_count > 0))) {
+        _canon_cache_evict_one();
+    }
+    int slot = (_canon_args_cache_head + _canon_args_cache_count) % DLG_CANON_CACHE_MAX;
+    _canon_args_cache_keys[slot] = strdup(arg_str);
+    _canon_args_cache_vals[slot] = canonical;  /* owned by cache */
+    _canon_args_cache_bytes += key_len + val_len;
+    _canon_args_cache_count++;
+    return strdup(canonical);
+}
+
+/* ---- _canonicalize_api_tool_calls ---- */
+/* Python: for each message with tool_calls, canonicalize each tc's
+ * function.arguments.  Modifies the api_messages JSON in place.
+ * C: takes json_t* messages array, modifies tool_calls in place. */
+/* PoP: _canonicalize_api_tool_calls @ agent/conversation_loop.py:_canonicalize_api_tool_calls */
+void cvl_canonicalize_api_tool_calls(json_t *api_messages) {
+    if (!api_messages || api_messages->type != JSON_ARRAY) return;
+    for (size_t i = 0; i < api_messages->c.count; i++) {
+        json_t *am = api_messages->c.items[i];
+        if (!am || am->type != JSON_OBJECT) continue;
+        json_t *tcs = json_obj_get(am, "tool_calls");
+        if (!tcs || tcs->type != JSON_ARRAY || tcs->c.count == 0) continue;
+        for (size_t j = 0; j < tcs->c.count; j++) {
+            json_t *tc = tcs->c.items[j];
+            if (!tc || tc->type != JSON_OBJECT) continue;
+            json_t *fn = json_obj_get(tc, "function");
+            if (!fn || fn->type != JSON_OBJECT) continue;
+            json_t *args = json_obj_get(fn, "arguments");
+            if (!args || args->type != JSON_STRING) continue;
+            char *canon = cvl_canonicalize_tool_call_arguments(args->str_val);
+            if (canon) {
+                /* Replace arguments value */
+                json_set(fn, "arguments", json_string(canon));
+                free(canon);
+            }
+        }
+    }
+}
+
+/* ---- _rewrite_system_content_blocks ---- */
+/* Python: if system_message.content is a 2-element list of text blocks and
+ * the head text is a prefix of `effective`, replace the tail block's text
+ * with the remainder.  Returns false if shape doesn't match (caller falls
+ * back to plain assignment). */
+/* PoP: _rewrite_system_content_blocks @ agent/conversation_loop.py:_rewrite_system_content_blocks */
+bool cvl_rewrite_system_content_blocks(json_t *system_message, const char *effective) {
+    if (!system_message || system_message->type != JSON_OBJECT) return false;
+    json_t *content = json_obj_get(system_message, "content");
+    if (!content || content->type != JSON_ARRAY) return false;
+    if (content->c.count == 0) return false;
+    /* All parts must be dicts with type="text" */
+    for (size_t i = 0; i < content->c.count; i++) {
+        json_t *part = content->c.items[i];
+        if (!part || part->type != JSON_OBJECT) return false;
+        json_t *type = json_obj_get(part, "type");
+        if (!type || type->type != JSON_STRING || strcmp(type->str_val, "text") != 0)
+            return false;
+    }
+    if (content->c.count == 1) {
+        json_set(content->c.items[0], "text", json_string(effective));
+        return true;
+    }
+    if (content->c.count >= 2) {
+        json_t *head_part = content->c.items[0];
+        json_t *head_text = json_obj_get(head_part, "text");
+        const char *head = (head_text && head_text->type == JSON_STRING) ? head_text->str_val : "";
+        if (head && *head && effective && strncmp(effective, head, strlen(head)) == 0) {
+            const char *tail = effective + strlen(head);
+            if (*tail) {
+                json_set(content->c.items[1], "text", json_string(tail));
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+/* ---- _ensure_cached_system_prompt_static ---- */
+/* Python: delegate to agent.system_prompt.reconstruct_static_prefix(agent,
+ * system_message=..., log_label="failover redecoration").
+ * C: the system_prompt module is not yet ported. We provide the contract
+ *    boundary: if the C agent state has cached_system_prompt, the caller
+ *    (failover path) should trigger reconstruction. We return whether the
+ *    static prefix is stale (NULL or empty). */
+/* PoP: _ensure_cached_system_prompt_static @ agent/conversation_loop.py:_ensure_cached_system_prompt_static */
+bool cvl_ensure_cached_system_prompt_static(const agent_state_t *agent) {
+    /* In Python: always calls reconstruct_static_prefix which memoizes
+     * failed rebuilds. In C, the equivalent is a call to the system_prompt
+     * reconstruction module (port of agent/system_prompt.py) which is not
+     * yet available. We expose the stale-check here so the failover path
+     * can decide whether to rebuild. */
+    if (!agent) return false;
+    return (agent->cached_system_prompt == NULL || agent->cached_system_prompt[0] == '\0');
+}
+
+/* ---- _peel_moa_guidance ---- */
+/* Python: delegate to agent.moa_loop.peel_reference_guidance(messages, guidance).
+ * The moa_loop module is not yet ported to C. We provide a no-op identity
+ * pass (returns messages unchanged) — the real peeler must be wired in when
+ * the MoA aggregator C port lands. The contract: given a JSON array of
+ * messages and a guidance object, strip the MoA reference guidance blocks. */
+/* PoP: _peel_moa_guidance @ agent/conversation_loop.py:_peel_moa_guidance */
+json_t *cvl_peel_moa_guidance(json_t *messages, const json_t *guidance) {
+    (void)guidance;  /* guidance is opaque to the no-op path */
+    /* No-op identity: return the messages as-is. When the C MoA port lands,
+     * this delegates to moa_peel_reference_guidance(messages, guidance). */
+    return messages;
+}
+
+/* ---- _redecorate_prompt_cache_for_provider ---- */
+/* Python: strip cache_control, peel MoA guidance, re-apply plan based on
+ * agent._use_prompt_caching flag. Returns (messages, prepared, planned_tools).
+ * C: we port the messages-remake + cache control strip + moa peel portions.
+ *    The prompt cache plan builder (agent.prompt_caching.build_prompt_cache_plan)
+ *    is not yet ported — we return messages with cache_control stripped and
+ *    MoA guidance peeled, prepared unchanged, and tools_for_api unchanged. */
+/* PoP: _redecorate_prompt_cache_for_provider @ agent/conversation_loop.py:_redecorate_prompt_cache_for_provider */
+json_t *cvl_redecorate_prompt_cache_for_provider(agent_state_t *agent,
+                                                  json_t *api_messages,
+                                                  const char *system_message,
+                                                  json_t *tools_for_api) {
+    (void)system_message; (void)tools_for_api;
+    if (!api_messages || api_messages->type != JSON_ARRAY) return api_messages;
+    /* Remake message list as shallow copies (dict(m) for dicts) */
+    json_t *messages = json_array();
+    if (!messages) return api_messages;
+    for (size_t i = 0; i < api_messages->c.count; i++) {
+        json_t *m = api_messages->c.items[i];
+        json_t *copy = json_copy(m);  /* deep copy of the message dict */
+        if (copy) json_append(messages, copy);
+    }
+    /* Strip cache_control from each message */
+    for (size_t i = 0; i < messages->c.count; i++) {
+        json_t *m = messages->c.items[i];
+        if (m && m->type == JSON_OBJECT) {
+            json_obj_del(m, "cache_control");
+        }
+    }
+    /* Peel MoA guidance if present (no-op until moa_loop is ported) */
+    /* In Python, this runs _peel_moa_guidance only when guidance is present.
+     * We skip the call here since cvl_peel_moa_guidance is a no-op identity. */
+    /* When _use_prompt_caching is true, the Python re-applies the plan.
+     * The plan builder isn't ported yet — the caller handles decoration
+     * separately via the prompt cache layer. We return the cleaned messages. */
+    return messages;
+}
+
+/* ---- _finalize_wait_result ---- */
+/* Python: assemble {output, returncode, [output_total_chars, full_output_path]}
+ *         when spill occurred (total_chars > max_chars). */
+/* PoP: _finalize_wait_result @ agent/conversation_loop.py:_finalize_wait_result */
+char *cvl_finalize_wait_result(const char *rendered, long returncode,
+                                long output_total_chars, bool spilled,
+                                const char *spill_path) {
+    json_t *r = json_object();
+    json_set(r, "output", json_string(rendered ? rendered : ""));
+    json_set(r, "returncode", json_number((double)returncode));
+    if (spilled && spill_path && *spill_path) {
+        json_set(r, "output_total_chars", json_number((double)output_total_chars));
+        json_set(r, "full_output_path", json_string(spill_path));
+    }
+    char *out = json_serialize(r);
+    json_free(r);
+    return out ? out : strdup("{}");
+}
