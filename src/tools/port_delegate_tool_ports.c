@@ -24,21 +24,17 @@
 
 /* ---- Cross-TU dependencies ---- */
 /* These may be provided by the agent runtime (slermes C agent runtime port).
- * If absent, the linker fills them from the weak fallback stubs below. */
-extern char *agent_model_tools_last_resolved_snapshot(void);
-extern int  agent_build_child_agent(const char *task_json);
-extern void agent_model_tools_restore_last_resolved(const char *snapshot);
-extern void agent_child_set_delegate_saved_tool_names(const char *names_json);
-extern char *dlg_run_single_child(int task_index, const char *goal,
-                                  const char *child_json);
+ * Weak definitions act as fallback stubs so this object links standalone;
+ * the real agent runtime provides strong overrides. */
 
-/* Weak fallback stubs for runtime hooks not yet ported to C.
- * They log + no-op so the library links standalone. */
+/* _build_child_preserving_parent_tools deps */
 __attribute__((weak))
 char *agent_model_tools_last_resolved_snapshot(void) { return strdup("[]"); }
 __attribute__((weak))
 int agent_build_child_agent(const char *task_json) {
-    (void)task_json; printf("child agent constructed (C stub)\n"); return 0;
+    (void)task_json;
+    printf("child agent constructed (C stub)\n");
+    return 0;
 }
 __attribute__((weak))
 void agent_model_tools_restore_last_resolved(const char *snapshot) {
@@ -48,6 +44,8 @@ __attribute__((weak))
 void agent_child_set_delegate_saved_tool_names(const char *names_json) {
     (void)names_json;
 }
+
+/* _run_child_lifecycle deps */
 __attribute__((weak))
 char *dlg_run_single_child(int task_index, const char *goal,
                            const char *child_json) {
