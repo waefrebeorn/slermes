@@ -221,3 +221,123 @@ int cli_tools_osv_check__parse_pypi_package(
 }
 
 
+
+/* PoP: cli_tools_osv_check__cache_get @ tools/osv_check.py:_cache_get */
+/* PoP: cli_tools_osv_check__cache_put @ tools/osv_check.py:_cache_put */
+
+/* In-memory advisory cache with TTL (mirrors Python _cache dict + lock).
+ * Fixed-size table; entries evict oldest-first once full. */
+#define OSV_CACHE_MAX_ENTRIES 256
+
+typedef struct osv_cache_entry {
+    char key[512];
+    char *result;              /* NULL = cached None */
+    double expiry;             /* monotonic() deadline */
+    int used;
+    struct osv_cache_entry *next;
+} osv_cache_entry_t;
+
+static osv_cache_entry_t *g_osv_cache = NULL;
+static int g_osv_cache_count = 0;
+
+static double osv_now_monotonic(void) {
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
+}
+
+/* Return (hit, result): 1/0 hit; result is malloc'd copy (caller frees)
+ * for hits, NULL otherwise. */
+int cli_tools_osv_check__cache_get(const char *key, char **out_result)
+{
+    if (out_result) *out_result = NULL;
+    if (!key) return 0;
+
+    double now = osv_now_monotonic();
+    osv_cache_entry_t **pp = &g_osv_cache;
+    while (*pp) {
+        osv_cache_entry_t *e = *pp;
+        if (strcmp(e->key, key) == 0) {
+            if (now >= e->expiry) {
+                /* expired — remove */
+                *pp = e->next;
+                free(e->result);
+                free(e);
+                g_osv_cache_count--;
+                return 0;
+            }
+            e->used++;
+            if (out_result && e->result)
+                *out_result = strdup(e->result);
+            return 1;
+        }
+        pp = &e->next;
+    }
+    return 0;
+}
+
+void cli_tools_osv_check__cache_put(const char *key, const char *result)
+{
+    if (!key) return;
+
+    double ttl = 3600.0;  /* OSV_CHECK_CACHE_TTL default */
+    const char *env = getenv("OSV_CHECK_CACHE_TTL");
+    if (env && *env) {
+        double v = atof(env);
+        if (v > 0) ttl = v;
+    }
+
+    double now = osv_now_monotonic();
+
+    /* If the key exists, refresh in place. */
+    osv_cache_entry_t *e = g_osv_cache;
+    while (e) {
+        if (strcmp(e->key, key) == 0) {
+            free(e->result);
+            e->result = result ? strdup(result) : NULL;
+            e->expiry = now + ttl;
+            e->used++;
+            return;
+        }
+        e = e->next;
+    }
+
+    /* Evict expired entries first. */
+    osv_cache_entry_t **pp = &g_osv_cache;
+    while (*pp) {
+        osv_cache_entry_t *c = *pp;
+        if (now >= c->expiry) {
+            *pp = c->next;
+            free(c->result);
+            free(c);
+            g_osv_cache_count--;
+        } else {
+            pp = &c->next;
+        }
+    }
+
+    /* If still at cap, evict least-recently-used. */
+    if (g_osv_cache_count >= OSV_CACHE_MAX_ENTRIES) {
+        osv_cache_entry_t *lru = g_osv_cache, *prev = NULL, *lp = NULL;
+        for (osv_cache_entry_t *c = g_osv_cache, *cp = NULL; c; cp = c, c = c->next) {
+            if (c->used < lru->used) { lru = c; lp = cp; }
+        }
+        if (lru) {
+            if (lp) lp->next = lru->next;
+            else g_osv_cache = lru->next;
+            free(lru->result);
+            free(lru);
+            g_osv_cache_count--;
+        }
+    }
+
+    osv_cache_entry_t *ne = calloc(1, sizeof(osv_cache_entry_t));
+    if (!ne) return;
+    snprintf(ne->key, sizeof(ne->key), "%s", key);
+    ne->result = result ? strdup(result) : NULL;
+    ne->expiry = now + ttl;
+    ne->used = 1;
+    ne->next = g_osv_cache;
+    g_osv_cache = ne;
+    g_osv_cache_count++;
+}

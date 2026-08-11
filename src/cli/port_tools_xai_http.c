@@ -319,3 +319,18 @@ char *cli_tools_xai_http_maybe_mark_xai_storage_notice_seen(const char *section_
     if (f) { fprintf(f, "seen\n"); fclose(f); }
     return notice;
 }
+
+/* PoP: cli_tools_xai_http_hermes_xai_default_headers @ tools/xai_http.py:hermes_xai_default_headers */
+
+/* Return default headers for xAI traffic: {"User-Agent": Hermes-Agent/<ver>}.
+ * Returns a malloc'd JSON object string; caller frees. */
+char *cli_tools_xai_http_hermes_xai_default_headers(void)
+{
+    char *ua = cli_tools_xai_http_hermes_xai_user_agent();
+    if (!ua) ua = strdup("Hermes-Agent/unknown");
+    size_t need = strlen("{\"User-Agent\":\"") + strlen(ua) + strlen("\"}") + 1;
+    char *out = malloc(need);
+    if (out) snprintf(out, need, "{\"User-Agent\":\"%s\"}", ua);
+    free(ua);
+    return out ? out : strdup("{\"User-Agent\":\"Hermes-Agent/unknown\"}");
+}

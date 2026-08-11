@@ -13,6 +13,7 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <errno.h>
+#include <limits.h>
 #include <sys/stat.h>
 
 static char *lowerdup(const char *s) {
@@ -217,4 +218,79 @@ bool util_model_forces_max_completion_tokens(const char *model) {
              strstr(l, "o4") || strstr(l, "gpt-5.1");
     free(l);
     return r;
+}
+
+/* PoP: util_atomic_write_text @ utils.py:atomic_write_text */
+
+/* Write content to path via temp file + fsync + atomic rename.
+ * Creates parent dirs (mkdir -p semantics). Never leaves a partially
+ * written target if the process dies. Returns 0 on success, -1 on error. */
+int util_atomic_write_text(const char *path, const char *content, const char *tmp_prefix)
+{
+    if (!path || !content) return -1;
+
+    /* mkdir -p parents (Python: path.parent.mkdir(parents=True, exist_ok=True)) */
+    char *parent = strdup(path);
+    if (!parent) return -1;
+    char *slash = strrchr(parent, '/');
+    if (slash) {
+        *slash = '\0';
+        if (parent[0] && *parent) {
+            /* walk components, mkdir each */
+            char *p = parent;
+            while (*p) {
+                while (*p == '/') p++;
+                if (!*p) break;
+                char *seg = p;
+                while (*p && *p != '/') p++;
+                char saved = *p;
+                *p = '\0';
+                if (seg[0]) mkdir(parent, 0755);
+                *p = saved;
+            }
+        }
+    }
+    free(parent);
+
+    const char *pfx = tmp_prefix && *tmp_prefix ? tmp_prefix : ".tmp_";
+
+    /* mkstemp in the file's directory (Python: tempfile.mkstemp(dir=parent,
+     * prefix, suffix=".tmp")) */
+    char dir[PATH_MAX];
+    {
+        size_t pl = strlen(path);
+        size_t i = pl;
+        while (i > 0 && path[i-1] != '/') i--;
+        size_t dlen = i > 0 ? i - 1 : 0;
+        if (dlen == 0) { snprintf(dir, sizeof(dir), "."); }
+        else { memcpy(dir, path, dlen); dir[dlen] = '\0'; }
+    }
+    char tmpl2[PATH_MAX];
+    snprintf(tmpl2, sizeof(tmpl2), "%s/%sXXXXXX.tmp", dir, pfx);
+    char tmp_path[PATH_MAX];
+    snprintf(tmp_path, sizeof(tmp_path), "%s", tmpl2);
+
+    int fd = mkstemp(tmp_path);
+    if (fd < 0) return -1;
+
+    int rc = 0;
+    FILE *w = fdopen(fd, "w");
+    if (!w) { close(fd); unlink(tmp_path); return -1; }
+    if (fwrite(content, 1, strlen(content), w) != strlen(content)) rc = -1;
+    if (fflush(w) != 0) rc = -1;
+    if (fsync(fileno(w)) != 0) rc = -1;
+    if (fclose(w) != 0) rc = -1;
+    if (rc == 0) {
+        if (rename(tmp_path, path) != 0) rc = -1;
+    }
+    if (rc != 0) unlink(tmp_path);
+    return rc;
+}
+
+/* helper: return the directory portion of path (malloc'd) */
+static char *path_dir(const char *path) {
+    const char *slash = strrchr(path, '/');
+    if (!slash) return strdup(".");
+    if (slash == path) return strdup("/");
+    return strndup(path, (size_t)(slash - path));
 }

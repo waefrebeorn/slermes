@@ -149,3 +149,83 @@ int cli_gateway_response_filters_is_partial_silence_marker(const char *text)
     free(canonical);
     return found;
 }
+
+/* PoP: cli_gateway_response_filters_is_autonomous_silence_response @ gateway/response_filters.py:is_autonomous_silence_response */
+
+/* Loose silence matcher for autonomous lanes (cron, webhook).
+ * Suppresses when a marker is the whole response, sits on its own first or
+ * last non-empty line, or the bracketed sentinel opens the response
+ * ("[SILENT] No changes detected"). A token buried mid-sentence is delivered. */
+int cli_gateway_response_filters_is_autonomous_silence_response(const char *response)
+{
+    if (!response) return 0;
+
+    /* strip() */
+    const char *s = response;
+    while (*s && isspace((unsigned char)*s)) s++;
+    if (!*s) return 0;
+    size_t sl = strlen(s);
+    while (sl > 0 && isspace((unsigned char)s[sl - 1])) sl--;
+    if (sl == 0) return 0;
+
+    /* Whole response is exactly a marker. */
+    {
+        char *tmp = strndup(s, sl);
+        char *canon = cli_gateway_response_filters__canonical_silence_candidate(tmp);
+        int whole = 0;
+        if (canon) {
+            for (int i = 0; SILENT_MARKERS[i]; i++) {
+                if (strcmp(canon, SILENT_MARKERS[i]) == 0) { whole = 1; break; }
+            }
+            free(canon);
+        }
+        free(tmp);
+        if (whole) return 1;
+    }
+
+    /* Marker on its own first or last non-empty line. */
+    {
+        char *copy = strndup(s, sl);
+        /* first non-empty line token */
+        char *save1 = NULL;
+        char *tok = strtok_r(copy, "\n", &save1);
+        while (tok && !*tok) tok = strtok_r(NULL, "\n", &save1);
+        if (tok) {
+            char *c1 = cli_gateway_response_filters__canonical_silence_candidate(tok);
+            if (c1) {
+                for (int i = 0; SILENT_MARKERS[i]; i++) {
+                    if (strcmp(c1, SILENT_MARKERS[i]) == 0) { free(c1); free(copy); return 1; }
+                }
+                free(c1);
+            }
+        }
+        /* last non-empty line token */
+        char *last = NULL, *prev = NULL;
+        char *save2 = NULL;
+        char *t2 = strtok_r(copy, "\n", &save2);
+        while (t2) {
+            if (*t2) prev = last, last = t2;
+            t2 = strtok_r(NULL, "\n", &save2);
+        }
+        if (last && last != tok) {
+            char *c2 = cli_gateway_response_filters__canonical_silence_candidate(last);
+            if (c2) {
+                for (int i = 0; SILENT_MARKERS[i]; i++) {
+                    if (strcmp(c2, SILENT_MARKERS[i]) == 0) { free(c2); free(copy); return 1; }
+                }
+                free(c2);
+            }
+        }
+        (void)prev;
+        free(copy);
+    }
+
+    /* Bracketed sentinel prefix: stripped.upper().startswith("[SILENT]"). */
+    if (sl >= 7) {
+        if ((s[0] == '[' || s[0] == '[') &&
+            strncasecmp(s, "[SILENT]", 8) == 0)
+            return 1;
+    }
+
+    return 0;
+}
