@@ -10868,6 +10868,15 @@ int hermes_cli_route_identity_should_clear_context_pin(const char *arg) {
     return 0;
 }
 
+/* PoP: should_clear_context_pin_async @ hermes_cli/route_identity.py:should_clear_context_pin_async */
+int hermes_cli_route_identity_should_clear_context_pin_async(const char *arg) {
+    /* Python: async wrapper — offloads the sync should_clear_context_pin to
+     * a worker thread via asyncio.to_thread.  C has no event loop, so this
+     * is a direct delegation to the sync port (the cache-only resolution
+     * chain in C contains no blocking disk I/O that needs offloading). */
+    return hermes_cli_route_identity_should_clear_context_pin(arg);
+}
+
 /* PoP: query_session_listing @ hermes_cli/session_listing.py:query_session_listing */
 int hermes_cli_session_listing_query_session_listing(const char *arg) {
     /* Python: listing policy. Arg = "state\tresult". */
