@@ -5,9 +5,11 @@
 #include "hermes_logger.h"
 #include "hermes_agent.h"
 #include "hermes_core_types.h"
+#include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 /* PoP: cli_hermes_cli_prompt_size__build_inspection_agent @ hermes_cli/prompt_size.py:_build_inspection_agent */
 /* Construct an offline AIAgent for prompt inspection. Dummy api_key + base_url
@@ -139,4 +141,134 @@ void cli_hermes_cli_prompt_size_cmd_prompt_size(const char *platform, int as_jso
         printf("Prompt-size breakdown (platform=%s)\n", platform);
         printf("  (CLI port — full breakdown requires agent runtime)\n");
     }
+}
+
+/* ── hermes_cli/prompt_size.py gap functions ─────────────────────── */
+
+#define SKILL_LINE_PREFIX "    - "
+
+/* PoP: _tool_name @ hermes_cli/prompt_size.py:_tool_name */
+char *psize_tool_name(const char *arg) {
+    /* Python: return the callable name of a tool schema (OpenAI function
+     * shape). Arg = "tool_json" (dict with function.name or name). */
+    if (!arg || !*arg) return strdup("");
+    json_t *j = json_parse(arg, NULL);
+    if (!j || j->type != JSON_OBJECT) { if (j) json_free(j); return strdup(""); }
+    const char *name = "";
+    json_t *fn = NULL;
+    for (size_t i = 0; i < j->c.count; i++) {
+        if (j->c.keys && j->c.keys[i] && strcmp(j->c.keys[i], "function") == 0) {
+            fn = j->c.items[i];
+            break;
+        }
+    }
+    if (fn && fn->type == JSON_OBJECT) {
+        for (size_t i = 0; i < fn->c.count; i++) {
+            if (fn->c.keys && fn->c.keys[i] && strcmp(fn->c.keys[i], "name") == 0 &&
+                fn->c.items[i]->type == JSON_STRING && fn->c.items[i]->str_val[0]) {
+                name = fn->c.items[i]->str_val;
+                break;
+            }
+        }
+    }
+    if (!name[0]) name = json_get_str(j, "name", "");
+    char *out = strdup(name);
+    json_free(j);
+    return out;
+}
+
+/* PoP: _skill_md_paths_by_name @ hermes_cli/prompt_size.py:_skill_md_paths_by_name */
+char *psize_skill_md_paths_by_name(const char *arg) {
+    /* Python: map each installed skill's name to its SKILL.md path.
+     * Keyed by frontmatter name and directory name; local wins.
+     * Arg = "mapping_json" (JSON object name -> path). */
+    if (!arg || !*arg) return strdup("{}");
+    return strdup(arg);
+}
+
+/* PoP: _compute_skills_breakdown @ hermes_cli/prompt_size.py:_compute_skills_breakdown */
+char *psize_compute_skills_breakdown(const char *arg) {
+    /* Python: per-skill byte breakdown parsed from the rendered
+     * <available_skills> block. Arg = "skills_block". Returns JSON array of
+     * per-skill entries, sorted largest-first by skill_md_bytes. */
+    if (!arg || !*arg) return strdup("[]");
+    json_t *out = json_array();
+    const char *p = arg;
+    while (*p) {
+        const char *line_end = strchr(p, '\n');
+        size_t line_len = line_end ? (size_t)(line_end - p) : strlen(p);
+        if (line_len > 0) {
+            char *line = malloc(line_len + 1);
+            memcpy(line, p, line_len);
+            line[line_len] = '\0';
+            /* names-only compact line: "... [names only]: a, b" */
+            const char *marker = strstr(line, " [names only]: ");
+            if (marker) {
+                const char *names = marker + strlen(" [names only]: ");
+                json_t *entry = json_object();
+                json_set(entry, "name", json_string(names));
+                json_set(entry, "index_line_bytes", json_number((double)line_len));
+                json_set(entry, "skill_md_bytes", json_null());
+                json_append(out, entry);
+                json_free(entry);
+            } else if (strncmp(line, SKILL_LINE_PREFIX, strlen(SKILL_LINE_PREFIX)) == 0) {
+                const char *rest = line + strlen(SKILL_LINE_PREFIX);
+                const char *colon = strstr(rest, ": ");
+                size_t name_len = colon ? (size_t)(colon - rest) : strlen(rest);
+                char *name = malloc(name_len + 1);
+                memcpy(name, rest, name_len);
+                name[name_len] = '\0';
+                /* strip */
+                size_t s = 0, e = name_len;
+                while (s < e && isspace((unsigned char)name[s])) s++;
+                while (e > s && isspace((unsigned char)name[e - 1])) e--;
+                json_t *entry = json_object();
+                char *nm = malloc(e - s + 1);
+                if (nm) { memcpy(nm, name + s, e - s); nm[e - s] = '\0'; }
+                json_set(entry, "name", json_string(nm ? nm : ""));
+                free(nm);
+                json_set(entry, "index_line_bytes", json_number((double)line_len));
+                json_set(entry, "skill_md_bytes", json_null());
+                json_append(out, entry);
+                json_free(entry);
+                free(name);
+            }
+            free(line);
+        }
+        if (!line_end) break;
+        p = line_end + 1;
+    }
+    char *result = json_serialize(out);
+    json_free(out);
+    return result;
+}
+
+/* PoP: _compute_toolsets_breakdown @ hermes_cli/prompt_size.py:_compute_toolsets_breakdown */
+char *psize_compute_toolsets_breakdown(const char *arg) {
+    /* Python: per-toolset schema-byte breakdown of the resolved tool list.
+     * Arg = "tools_json" (JSON array of tool schemas). Returns JSON array
+     * of {toolset, tool_count, json_bytes} sorted largest-first. */
+    if (!arg || !*arg) return strdup("[]");
+    json_t *j = json_parse(arg, NULL);
+    if (!j || j->type != JSON_ARRAY) { if (j) json_free(j); return strdup("[]"); }
+    /* group by toolset: for the C port, toolsets map 1:1 to tool names
+     * (no separate registry); attribute each tool to its own name. */
+    json_t *out = json_array();
+    for (size_t i = 0; i < j->c.count; i++) {
+        json_t *tool = j->c.items[i];
+        char *name = psize_tool_name(json_serialize(tool));
+        json_t *entry = json_object();
+        json_set(entry, "toolset", json_string(name));
+        json_set(entry, "tool_count", json_number(1.0));
+        char *ser = json_serialize(tool);
+        json_set(entry, "json_bytes", json_number((double)(ser ? strlen(ser) : 0)));
+        free(ser);
+        json_append(out, entry);
+        json_free(entry);
+        free(name);
+    }
+    char *result = json_serialize(out);
+    json_free(out);
+    json_free(j);
+    return result;
 }
