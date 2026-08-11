@@ -35,10 +35,17 @@ int kdb_add_notify_sub(sqlite3 *conn, const char *task_id, const char *platform,
     if (kdb_write_begin(conn) != 0) return 0;
     int ok = 0;
     sqlite3_stmt *st = NULL;
+    /* Port of Python add_notify_sub: new subscriptions start "caught up" —
+     * last_event_id snaps to MAX(task_events.id) for the task, NOT the
+     * schema default 0. A cursor of 0 would make the notifier replay all
+     * historical terminal events on its next tick. */
     if (sqlite3_prepare_v2(conn,
             "INSERT OR IGNORE INTO kanban_notify_subs "
-            "(task_id, platform, chat_id, thread_id, user_id, notifier_profile, created_at) "
-            "VALUES (?,?,?,?,?,?,?)", -1, &st, NULL) == SQLITE_OK) {
+            "(task_id, platform, chat_id, thread_id, user_id, notifier_profile, "
+            " created_at, last_event_id) "
+            "VALUES (?,?,?,?,?,?,?,"
+            "COALESCE((SELECT MAX(id) FROM task_events WHERE task_id = ?), 0))",
+            -1, &st, NULL) == SQLITE_OK) {
         sqlite3_bind_text(st, 1, task_id, -1, SQLITE_TRANSIENT);
         sqlite3_bind_text(st, 2, platform, -1, SQLITE_TRANSIENT);
         sqlite3_bind_text(st, 3, chat_id, -1, SQLITE_TRANSIENT);
@@ -46,6 +53,7 @@ int kdb_add_notify_sub(sqlite3 *conn, const char *task_id, const char *platform,
         sqlite3_bind_text(st, 5, user_id ? user_id : NULL, -1, SQLITE_TRANSIENT);
         sqlite3_bind_text(st, 6, notifier_profile ? notifier_profile : NULL, -1, SQLITE_TRANSIENT);
         sqlite3_bind_int64(st, 7, now);
+        sqlite3_bind_text(st, 8, task_id, -1, SQLITE_TRANSIENT);
         ok = (sqlite3_step(st) == SQLITE_DONE);
         sqlite3_finalize(st);
     }

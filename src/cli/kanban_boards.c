@@ -88,7 +88,8 @@ static char *build_metadata(const char *slug, const char *name,
                             const char *description, const char *icon,
                             const char *color, const char *default_workdir,
                             int has_archived, int archived,
-                            const char *db_path, long created_at)
+                            const char *db_path, const char *project_id,
+                            long created_at)
 {
     char *buf = malloc(1024); size_t len = 0, cap = 1024;
     len += (size_t)snprintf(buf + len, cap - len, "{\"slug\":");
@@ -113,7 +114,12 @@ static char *build_metadata(const char *slug, const char *name,
     if (default_workdir && *default_workdir) js_str(&buf, &len, &cap, default_workdir);
     else len += (size_t)snprintf(buf + len, cap - len, "null");
     buf[len++] = ',';
-    len += (size_t)snprintf(buf + len, cap - len, "\"created_at\":");
+    /* project_id — always present (Python: None -> null). Read from existing
+     * metadata on update, NULL on fresh create. */
+    len += (size_t)snprintf(buf + len, cap - len, "\"project_id\":");
+    if (project_id && *project_id) js_str(&buf, &len, &cap, project_id);
+    else len += (size_t)snprintf(buf + len, cap - len, "null");
+    len += (size_t)snprintf(buf + len, cap - len, ",\"created_at\":");
     if (created_at > 0) len += (size_t)snprintf(buf + len, cap - len, "%ld", created_at);
     else len += (size_t)snprintf(buf + len, cap - len, "null");
     buf[len++] = ',';
@@ -199,7 +205,7 @@ char *kdb_read_board_metadata(const char *board)
     char *jp = board_metadata_path(slug);
 
     char *name = NULL, *description = NULL, *icon = NULL, *color = NULL,
-         *default_workdir = NULL;
+         *default_workdir = NULL, *project_id = NULL;
     int has_archived = 0, archived = 0; long created_at = 0;
     int has_dw = 0;
 
@@ -216,6 +222,7 @@ char *kdb_read_board_metadata(const char *board)
                 color = meta_get_str(raw, "color");
                 default_workdir = meta_get_str(raw, "default_workdir");
                 has_dw = (default_workdir != NULL);
+                project_id = meta_get_str(raw, "project_id");
                 created_at = meta_get_long(raw, "created_at", 0);
                 const char *a = strstr(raw, "\"archived\"");
                 if (a) { has_archived = 1; archived = (strncmp(a + 10, ":true", 5) == 0); }
@@ -231,9 +238,9 @@ char *kdb_read_board_metadata(const char *board)
 
     char *out = build_metadata(slug, name, description, icon, color,
                                has_dw ? default_workdir : NULL,
-                               has_archived, archived, dbp, created_at);
+                               has_archived, archived, dbp, project_id, created_at);
     free(name); free(description); free(icon); free(color); free(default_workdir);
-    free(dbp); free(slug);
+    free(project_id); free(dbp); free(slug);
     return out;
 }
 
@@ -250,7 +257,7 @@ char *kdb_write_board_metadata(const char *board,
     /* Start from existing metadata, then overlay provided fields. */
     char *cur = kdb_read_board_metadata(slug);
     char *c_name = NULL, *c_desc = NULL, *c_icon = NULL, *c_color = NULL,
-         *c_dw = NULL; int has_dw = 0;
+         *c_dw = NULL, *c_pid = NULL; int has_dw = 0;
     int has_arch = 0, arch = 0; long created = 0;
     if (cur) {
         c_name = meta_get_str(cur, "name");
@@ -258,6 +265,7 @@ char *kdb_write_board_metadata(const char *board,
         c_icon = meta_get_str(cur, "icon");
         c_color = meta_get_str(cur, "color");
         c_dw = meta_get_str(cur, "default_workdir"); has_dw = (c_dw != NULL);
+        c_pid = meta_get_str(cur, "project_id");
         created = meta_get_long(cur, "created_at", 0);
         const char *a = strstr(cur, "\"archived\"");
         if (a) { has_arch = 1; arch = (strncmp(a + 10, ":true", 5) == 0); }
@@ -276,7 +284,7 @@ char *kdb_write_board_metadata(const char *board,
     char *bd = board_dir(slug);
     if (bd) { ensure_dir(bd); free(bd); }
     char *out = build_metadata(slug, use_name, use_desc, use_icon, use_color,
-                               use_dw, 1, use_arch, NULL, created);
+                               use_dw, 1, use_arch, NULL, c_pid, created);
     if (jp) {
         FILE *f = fopen(jp, "wb");
         if (f) {
@@ -286,7 +294,7 @@ char *kdb_write_board_metadata(const char *board,
         free(jp);
     }
     free(c_name); free(c_desc); free(c_icon); free(c_color); free(c_dw);
-    free(slug);
+    free(c_pid); free(slug);
     return out; /* db_path omitted from written file; matches Python */
 }
 
