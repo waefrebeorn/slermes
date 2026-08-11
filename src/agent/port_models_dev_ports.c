@@ -14,6 +14,11 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include "hermes_http.h"
+#include "hermes_logger.h"
+#include "hermes_json.h"
+#include <pthread.h>
+
+#define MODELS_DEV_URL "https://models.dev/api.json"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -383,4 +388,135 @@ char *mdv_get_model_info(const char *registry_json, const char *provider, const 
     char *entry = mdv_find_model_entry(models ? models : "{}", model);
     free(models);
     return entry;
+}
+
+/* ── env_loader gap functions ────────────────────────────────────── */
+/* These are internal Python helpers; PoP annotations mark them ported. */
+
+#define MODELS_DEV_RETRY_DELAY 300  /* 5 minutes */
+#define MODELS_DEV_CACHE_TTL 3600  /* 1 hour — matches Python */
+
+/* Extern: cache state from provider_metadata.c */
+extern json_t *g_models_dev_cache;
+extern time_t  g_models_dev_cache_time;
+
+/* Module-level refresh + retry state */
+static pthread_mutex_t g_mdv_refresh_lock = PTHREAD_MUTEX_INITIALIZER;
+static bool g_mdv_refresh_in_flight = false;
+static time_t g_mdv_retry_after = 0;
+
+/* PoP: _fetch_models_dev_from_network @ agent/models_dev.py:_fetch_models_dev_from_network */
+char *mdv_fetch_models_dev_from_network(void) {
+    /* Fetch live models.dev registry without touching local caches.
+     * Returns malloc'd JSON string or NULL on failure. */
+    http_t *h = http_new(15);
+    if (!h) return NULL;
+    http_resp_t *r = http_get(h, MODELS_DEV_URL,
+                              "User-Agent: hermes-agent\r\n"
+                              "Accept: application/json\r\n");
+    char *result = NULL;
+    if (r && r->status == 200 && r->body) {
+        /* Validate it's a JSON dict */
+        json_t *parsed = json_parse(r->body, NULL);
+        if (parsed && parsed->type == JSON_OBJECT) {
+            result = strdup(r->body);
+        }
+        if (parsed) json_free(parsed);
+    }
+    if (r) http_resp_free(r);
+    http_free(h);
+    return result;
+}
+
+/* PoP: _mark_stale_cache_grace @ agent/models_dev.py:_mark_stale_cache_grace */
+void mdv_mark_stale_cache_grace(void) {
+    /* Give stale cache data a short in-memory grace (5 min retry delay)
+     * before retrying refresh. Only moves forward. */
+    time_t grace_time = (time_t)(time(NULL) - MODELS_DEV_CACHE_TTL + MODELS_DEV_RETRY_DELAY);
+    if (grace_time > g_models_dev_cache_time) {
+        g_models_dev_cache_time = grace_time;
+    }
+}
+
+/* PoP: _commit_registry @ agent/models_dev.py:_commit_registry */
+void mdv_commit_registry(const char *registry_json, const char *where) {
+    /* Persist freshly fetched registry: disk + in-mem + clear backoff. */
+    if (!registry_json) return;
+    /* Save to disk — construct cache path locally */
+    const char *home = getenv("XDG_CONFIG_HOME");
+    if (!home || !home[0]) home = getenv("HOME");
+    char cache_path[4096];
+    if (home && home[0]) {
+        snprintf(cache_path, sizeof(cache_path), "%s/.hermes/models_dev_cache.json", home);
+        mdv_save_disk_cache(cache_path, registry_json);
+    }
+    /* Update in-memory cache */
+    if (g_models_dev_cache) json_free(g_models_dev_cache);
+    g_models_dev_cache = json_parse(registry_json, NULL);
+    g_models_dev_cache_time = time(NULL);
+    g_mdv_retry_after = 0;
+    hermes_log(LOG_DEBUG, "models_dev",
+               "Refreshed models.dev registry (%s)",
+               where ? where : "unknown");
+}
+
+/* PoP: _note_refresh_failure @ agent/models_dev.py:_note_refresh_failure */
+void mdv_note_refresh_failure(const char *error, const char *where) {
+    /* Record failed refresh: arm process-wide 5-min backoff. */
+    g_mdv_retry_after = time(NULL) + MODELS_DEV_RETRY_DELAY;
+    hermes_log(LOG_DEBUG, "models_dev",
+               "models.dev refresh failed (%s); retry suppressed for %ds: %s",
+               where ? where : "unknown", MODELS_DEV_RETRY_DELAY,
+               error ? error : "");
+}
+
+/* PoP: _background_refresh_models_dev @ agent/models_dev.py:_background_refresh_models_dev */
+void mdv_background_refresh_models_dev(void) {
+    /* Best-effort refresh after serving stale cache data. */
+    pthread_mutex_lock(&g_mdv_refresh_lock);
+    g_mdv_refresh_in_flight = true;
+    pthread_mutex_unlock(&g_mdv_refresh_lock);
+
+    char *data = mdv_fetch_models_dev_from_network();
+    if (data) {
+        mdv_commit_registry(data, "background");
+        free(data);
+    } else {
+        mdv_note_refresh_failure("network or parsing error", "background");
+    }
+
+    pthread_mutex_lock(&g_mdv_refresh_lock);
+    g_mdv_refresh_in_flight = false;
+    pthread_mutex_unlock(&g_mdv_refresh_lock);
+}
+
+/* PoP: _start_background_refresh_models_dev @ agent/models_dev.py:_start_background_refresh_models_dev */
+static void *mdv_thread_bg_refresh_cb(void *arg);
+void mdv_start_background_refresh_models_dev(void) {
+    /* Start one daemon refresh worker if none running. Honors failure backoff. */
+    if (time(NULL) < g_mdv_retry_after) return;
+    pthread_mutex_lock(&g_mdv_refresh_lock);
+    if (g_mdv_refresh_in_flight) {
+        pthread_mutex_unlock(&g_mdv_refresh_lock);
+        return;
+    }
+    g_mdv_refresh_in_flight = true;
+    pthread_mutex_unlock(&g_mdv_refresh_lock);
+
+    pthread_t tid;
+    if (pthread_create(&tid, NULL, (void *(*)(void *))mdv_thread_bg_refresh_cb, NULL) != 0) {
+        pthread_mutex_lock(&g_mdv_refresh_lock);
+        g_mdv_refresh_in_flight = false;
+        pthread_mutex_unlock(&g_mdv_refresh_lock);
+        hermes_log(LOG_DEBUG, "models_dev", "Failed to start models.dev refresh thread");
+        return;
+    }
+    pthread_detach(tid);
+}
+
+/* Thread wrapper for mdv_background_refresh_models_dev */
+void *mdv_thread_bg_refresh_cb(void *arg) {
+    (void)arg;
+    mdv_background_refresh_models_dev();
+    return NULL;
 }

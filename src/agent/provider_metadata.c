@@ -29,8 +29,8 @@
 #define MODELS_DEV_CACHE_FILE "models_dev_cache.json"
 
 /* In-memory cache */
-static json_t *g_models_dev_cache = NULL;
-static time_t  g_models_dev_cache_time = 0;
+json_t *g_models_dev_cache = NULL;
+time_t  g_models_dev_cache_time = 0;
 
 /* Parse a capability name string (e.g. "vision", "streaming") into a bitmask.
  * Returns 0 on unknown. Comma-separated or space-separated multiple values. */
