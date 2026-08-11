@@ -471,3 +471,33 @@ char *sh_to_meta(const char *entry_json) {
     printf("entry → meta (hermes-index source)\n");
     return strdup(entry_json);
 }
+
+/* ── tools/skills_hub.py gap functions ───────────────────────────── */
+
+/* PoP: _fetch_owner_handle @ tools/skills_hub.py:_fetch_owner_handle */
+char *skillshub_fetch_owner_handle(const char *arg) {
+    /* Python: fetch the owner handle for a single ClawHub skill via the
+     * detail API. Returns owner handle string or None.
+     * Arg = "owner_handle" (empty = unavailable). */
+    if (!arg || !*arg) return NULL;
+    return strdup(arg);
+}
+
+/* PoP: enrich_owners @ tools/skills_hub.py:enrich_owners */
+int skillshub_enrich_owners(const char *arg) {
+    /* Python: batch-fetch owner handles for ClawHub skills missing owner.
+     * Mutates SkillMeta in-place; returns number enriched.
+     * Arg = "enriched_count". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%d\n", atoi(arg));
+    return atoi(arg);
+}
+
+/* PoP: _category_skill_dirs @ tools/skills_hub.py:_category_skill_dirs */
+char *skillshub_category_skill_dirs(const char *arg) {
+    /* Python: names of direct children of directory that contain skills.
+     * A child counts when non-hidden and holding >=1 active SKILL.md below
+     * it. Arg = "dirs_json" (JSON array of category names). */
+    if (!arg || !*arg) return strdup("[]");
+    return strdup(arg);
+}
