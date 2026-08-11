@@ -16,7 +16,14 @@ def _load(rel):
             return mod
         except Exception:
             continue
-    return None
+    # Package-aware fallback: agent/tool_executor.py does `from agent.display import ...`,
+    # which fails when loaded standalone via spec_from_file_location (parent package
+    # context missing). Import it as a real package member instead.
+    try:
+        import importlib
+        return importlib.import_module(rel[:-3].replace('/', '.'))
+    except Exception:
+        return None
 MODS['agent.tool_executor'] = _load('agent/tool_executor.py')
 
 DISPATCH = {

@@ -352,7 +352,15 @@ def gen_oracle(mod, funcs):
     L.append("            return mod")
     L.append("        except Exception:")
     L.append("            continue")
-    L.append("    return None")
+    # Package-aware fallback: a module that does `from agent.display import ...`
+    # (e.g. agent/tool_executor.py) cannot be loaded standalone via
+    # spec_from_file_location — its parent package context is missing. Import it
+    # as a real package member so relative/absolute intra-package imports resolve.
+    L.append("    try:")
+    L.append("        import importlib")
+    L.append("        return importlib.import_module(rel[:-3].replace('/', '.'))")
+    L.append("    except Exception:")
+    L.append("        return None")
     for m in mods:
         L.append("MODS[%r] = _load(%r)" % (m, m.replace(".", "/") + ".py"))
     L.append("")

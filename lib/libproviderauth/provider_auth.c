@@ -27,6 +27,7 @@ struct provider_auth_entry_t {
  * aws_sdk=4, external_process=5, oauth_minimax=6, vertex/unknown=0).
  * Diff-checked against LIVE Python by tests/sta_oracle_provider_auth.py. */
 static const provider_auth_entry_t PROVIDER_AUTH_TABLE[] = {
+    {"ai-gateway",        PROVIDER_AUTH_API_KEY},
     {"alibaba",            PROVIDER_AUTH_API_KEY},
     {"alibaba-coding-plan",PROVIDER_AUTH_API_KEY},
     {"anthropic",          PROVIDER_AUTH_API_KEY},
