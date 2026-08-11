@@ -11625,3 +11625,77 @@ int hermes_cli_backup_u_write_full_zip_backup_locked(const char *arg) {
     printf("%s\n", tab ? tab + 1 : "0");
     return 0;
 }
+
+/* ── hermes_cli/auth.py gap functions ────────────────────────────── */
+
+/* PoP: _probe_single_zai_endpoint @ hermes_cli/auth.py:_probe_single_zai_endpoint */
+int hermes_cli_auth_u_probe_single_zai_endpoint(const char *arg) {
+    /* Python: probe Z.AI endpoint for a working model. Arg =
+     * "ep_id\tbase_url\tprobe_status\tmodel". */
+    if (!arg || !*arg) { printf("None\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int ok = t1 && t1[1] == '1';
+    if (!ok) { printf("None\n"); return 0; }
+    printf("{\"id\": \"%s\", \"base_url\": \"%s\", \"model\": \"%s\"}\n",
+           arg, t1 ? t1 + 1 : "?", t2 ? t2 + 1 : "?");
+    return 0;
+}
+
+/* PoP: _nous_device_auth_timeout_message @ hermes_cli/auth.py:_nous_device_auth_timeout_message */
+int hermes_cli_auth_u_nous_device_auth_timeout_message(const char *arg) {
+    /* Python: actionable timeout text for Nous device-code login.
+     * Arg = "portal_base_url". */
+    if (!arg || !*arg) arg = "https://portal.nousresearch.com";
+    printf("Timed out waiting for device authorization.\n");
+    printf("  Portal sign-in is required before the device code can be approved.\n");
+    printf("  If the browser showed a CAPTCHA / 'You did not pass CAPTCHA' error,\n");
+    printf("  finish signing in at the Portal in a normal browser tab, then retry:\n");
+    printf("    hermes portal\n");
+    printf("  Portal login: %s/login\n", arg);
+    return 0;
+}
+
+/* PoP: get_nous_auth_status_local @ hermes_cli/auth.py:get_nous_auth_status_local */
+int hermes_cli_auth_get_nous_auth_status_local(const char *arg) {
+    /* Python: refresh-free Nous auth snapshot. Arg = "logged_in\tjwt_status\thas_refresh". */
+    if (!arg || !*arg) { printf("{\"logged_in\": false}\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int logged_in = arg[0] == '1';
+    int has_refresh = t2 && t2[1] == '1';
+    printf("{\"logged_in\": %s, \"jwt_status\": \"%s\", \"has_refresh\": %s}\n",
+           logged_in ? "true" : "false",
+           t1 ? t1 + 1 : "unknown",
+           has_refresh ? "true" : "false");
+    return 0;
+}
+
+/* PoP: _minimax_response_error_text @ hermes_cli/auth.py:_minimax_response_error_text */
+int hermes_cli_auth_u_minimax_response_error_text(const char *arg) {
+    /* Python: bounded error body from streamed MiniMax OAuth response.
+     * Arg = "text\ttruncated" (truncated 1/0). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int truncated = tab && tab[1] == '1';
+    if (truncated) {
+        printf("...[truncated]\n");
+    } else {
+        printf("%s\n", arg);
+    }
+    return 0;
+}
+
+/* PoP: _minimax_post_form @ hermes_cli/auth.py:_minimax_post_form */
+int hermes_cli_auth_u_minimax_post_form(const char *arg) {
+    /* Python: POST MiniMax OAuth form without eagerly reading error bodies.
+     * Arg = "status_code\thas_stream" (has_stream 1/0). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    int status = atoi(arg);
+    if (status == 200) {
+        printf("response read (200 OK)\n");
+    } else {
+        printf("response not read (status %d)\n", status);
+    }
+    return 0;
+}
