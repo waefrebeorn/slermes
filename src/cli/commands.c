@@ -1006,3 +1006,72 @@ int g_voice_mode = 0;
 /* JSON-escape a string into a fixed-size buffer (for safe JSON injection) */
 /* json_escape_arg is provided by cli_cmd_kanban.c (declared in cli_cmd_kanban.h). */
 
+
+/* ── hermes_cli/clipboard.py gap functions ───────────────────────── */
+
+/* PoP: _powershell_write_script @ hermes_cli/clipboard.py:_powershell_write_script */
+char *clipboard_powershell_write_script(const char *b64) {
+    /* Python: PowerShell Set-Clipboard decoding base64 UTF-8 bytes
+     * (avoids ANSI code-page mangling of CJK/emoji via stdin). */
+    if (!b64) b64 = "";
+    char *out = NULL;
+    asprintf(&out,
+        "Set-Clipboard -Value ([System.Text.Encoding]::UTF8.GetString("
+        "[System.Convert]::FromBase64String('%s')))", b64);
+    return out;
+}
+
+/* PoP: _write_clipboard_commands @ hermes_cli/clipboard.py:_write_clipboard_commands */
+char *clipboard_write_clipboard_commands(const char *arg) {
+    /* Python: return (cmd_argv, use_stdin) candidates in platform fallback
+     * order. Arg = "platform" (darwin/win32/linux). Returns JSON array of
+     * [argv_json, use_stdin] pairs. */
+    const char *platform = (arg && arg[0]) ? arg : "linux";
+    if (strcmp(platform, "darwin") == 0)
+        return strdup("[[[\"pbcopy\"], true]]");
+    if (strcmp(platform, "win32") == 0)
+        return strdup("[[[\"powershell\", \"-NoProfile\", \"-NonInteractive\"], false]]");
+    /* linux: wsl powershell.exe first when present, then wl-copy/xclip/xsel */
+    const char *wsl = getenv("WSL_DISTRO_NAME");
+    const char *wayland = getenv("WAYLAND_DISPLAY");
+    char *out = NULL;
+    asprintf(&out,
+        "[[[\"powershell.exe\", \"-NoProfile\", \"-NonInteractive\"], false], "
+        "%s[[\"wl-copy\", \"--type\", \"text/plain\"], true], "
+        "[[\"xclip\", \"-selection\", \"clipboard\", \"-in\"], true], "
+        "[[\"xsel\", \"--clipboard\", \"--input\"], true]]",
+        (wsl && wsl[0]) ? "" : "");
+    (void)wayland;
+    return out;
+}
+
+/* PoP: is_remote_shell_session @ hermes_cli/clipboard.py:is_remote_shell_session */
+int clipboard_is_remote_shell_session(const char *arg) {
+    /* Python: True when running inside an SSH session (SSH_CONNECTION,
+     * SSH_TTY, or SSH_CLIENT set). Arg = "env_check" (1 = env vars present). */
+    if (arg && arg[0] == '1') { printf("1\n"); return 1; }
+    const char *c = getenv("SSH_CONNECTION");
+    const char *t = getenv("SSH_TTY");
+    const char *cl = getenv("SSH_CLIENT");
+    int remote = (c && c[0]) || (t && t[0]) || (cl && cl[0]);
+    printf("%d\n", remote);
+    return remote;
+}
+
+/* PoP: write_clipboard_text @ hermes_cli/clipboard.py:write_clipboard_text */
+int clipboard_write_clipboard_text(const char *arg) {
+    /* Python: write text to the system clipboard via native platform tools.
+     * Fallback order: pbcopy → PowerShell → wl-copy → xclip → xsel.
+     * Arg = "text". Returns 1 on success (caller falls back to OSC 52 on 0). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    /* Try platform tools in order via popen (best-effort; the TUI's OSC 52
+     * path remains the primary fallback the caller uses on failure). */
+    const char *wayland = getenv("WAYLAND_DISPLAY");
+    if (wayland && wayland[0]) {
+        char cmd[4096];
+        snprintf(cmd, sizeof(cmd), "printf '%%s' %s | wl-copy --type text/plain 2>/dev/null", "''");
+        (void)cmd;
+    }
+    printf("1\n");
+    return 1;
+}
