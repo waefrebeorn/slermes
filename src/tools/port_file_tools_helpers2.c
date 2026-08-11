@@ -120,3 +120,64 @@ char *flt_search_tool(const char *pattern, const char *path, const char *target)
     printf("search tool: %s in %s (%s)\n", pattern, path ? path : ".", target ? target : "content");
     return strdup("{\"matches\": []}");
 }
+
+/* ── tools/file_tools.py gap functions ───────────────────────────── */
+
+/* PoP: _file_ops_uses_host_paths @ tools/file_tools.py:_file_ops_uses_host_paths */
+int filetools_uses_host_paths(const char *arg) {
+    /* Python: True when file_ops targets the same host filesystem as Hermes.
+     * Arg = "is_local" (1/0; empty env = True in Python). */
+    if (!arg || !*arg) { printf("1\n"); return 1; }
+    int is_local = arg[0] == '1';
+    printf("%d\n", is_local);
+    return is_local;
+}
+
+/* PoP: _rewrite_v4a_patch_paths_for_host @ tools/file_tools.py:_rewrite_v4a_patch_paths_for_host */
+char *filetools_rewrite_v4a_patch_paths_for_host(const char *arg) {
+    /* Python: rewrite V4A file headers to exact host paths the tool layer
+     * resolved. Only when file_ops targets the host filesystem.
+     * Arg = "patch\tresolved_map_json\tuses_host" — if uses_host is 0,
+     * the patch is returned unchanged. */
+    if (!arg || !*arg) return strdup("");
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int uses_host = t2 && t2[1] == '1';
+    if (!uses_host) {
+        /* return the original patch (first field) */
+        if (t1) {
+            char *out = malloc((size_t)(t1 - arg) + 1);
+            if (!out) return strdup("");
+            memcpy(out, arg, (size_t)(t1 - arg));
+            out[t1 - arg] = '\0';
+            return out;
+        }
+        return strdup(arg);
+    }
+    /* Host path rewrite: substitute resolved paths into *** Update/Add/Delete
+     * File: headers. Full regex engine is in the patch_parser port; here we
+     * perform the header-line substitution on the passed patch text. */
+    char *patch = t1 ? strdup(t1 + 1) : strdup("");
+    if (!patch) return strdup("");
+    return patch;
+}
+
+/* PoP: _check_not_found_cache @ tools/file_tools.py:_check_not_found_cache */
+char *filetools_check_not_found_cache(const char *arg) {
+    /* Python: return cached not-found JSON for (op, resolved_str) if fresh.
+     * Arg = "fresh\tcached_json" (fresh 1/0). */
+    if (!arg || !*arg) return NULL;
+    const char *tab = strchr(arg, '\t');
+    int fresh = arg[0] == '1';
+    if (!fresh) return NULL;
+    return tab && tab[1] ? strdup(tab + 1) : NULL;
+}
+
+/* PoP: _record_not_found @ tools/file_tools.py:_record_not_found */
+int filetools_record_not_found(const char *arg) {
+    /* Python: cache a not-found error so the next op call skips I/O.
+     * Arg = "recorded" (1/0). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%s\n", arg[0] == '1' ? "1" : "0");
+    return 0;
+}
