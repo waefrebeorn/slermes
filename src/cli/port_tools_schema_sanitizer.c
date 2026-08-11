@@ -535,3 +535,229 @@ char *cli_tools_schema_sanitizer__strip_slash_enum(const char *tools_json, int *
     if (out_stripped) *out_stripped = stripped;
     return r ? r : strdup("[]");
 }
+
+/* ── property-key sanitization (tools/schema_sanitizer.py) ────────── */
+
+/* PoP: sanitize_property_key @ tools/schema_sanitizer.py:sanitize_property_key */
+char *cli_tools_schema_sanitizer_sanitize_property_key(const char *key)
+{
+    /* Python: _PROP_KEY_BAD_CHARS.sub("_", key)[:64], or "param" if empty.
+     * Bad chars = [^a-zA-Z0-9_.-]. */
+    if (!key || !*key) return strdup("param");
+
+    char *out = malloc(strlen(key) + 65);
+    if (!out) return strdup("param");
+    size_t j = 0;
+    for (size_t i = 0; key[i] && j < 64; i++) {
+        char c = key[i];
+        if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+            (c >= '0' && c <= '9') || c == '_' || c == '.' || c == '-') {
+            out[j++] = c;
+        } else {
+            out[j++] = '_';
+        }
+    }
+    out[j] = '\0';
+    if (j == 0) {
+        free(out);
+        return strdup("param");
+    }
+    char *shrunk = realloc(out, j + 1);
+    return shrunk ? shrunk : out;
+}
+
+/* PoP: _rename_property_keys @ tools/schema_sanitizer.py:_rename_property_keys */
+char *cli_tools_schema_sanitizer__rename_property_keys(const char *props_json,
+                                                         const char *path)
+{
+    /* Python: return {original_key: conforming_key} for one properties dict.
+     * Identity entries omitted. Collisions deduped with numeric suffixes. */
+    (void)path;
+    json_t *out = json_object();
+    if (!out) return strdup("{}");
+
+    if (!props_json || !*props_json) {
+        char *s = json_serialize(out);
+        json_free(out);
+        return s ? s : strdup("{}");
+    }
+
+    json_t *props = json_parse(props_json, NULL);
+    if (!props || props->type != JSON_OBJECT) {
+        if (props) json_free(props);
+        char *s = json_serialize(out);
+        json_free(out);
+        return s ? s : strdup("{}");
+    }
+
+    /* taken = {k for k in props if _PROP_KEY_RE.match(k)} */
+    /* _PROP_KEY_RE = ^[a-zA-Z0-9_.-]{1,64}$ */
+    char **taken = NULL;
+    size_t taken_n = 0;
+
+    for (size_t i = 0; i < props->c.count; i++) {
+        const char *key = props->c.keys[i];
+        if (!key) continue;
+        bool conforms = true;
+        size_t klen = strlen(key);
+        if (klen < 1 || klen > 64) conforms = false;
+        else {
+            for (size_t k = 0; k < klen; k++) {
+                char c = key[k];
+                if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+                      (c >= '0' && c <= '9') || c == '_' || c == '.' || c == '-')) {
+                    conforms = false; break;
+                }
+            }
+        }
+        if (conforms) {
+            taken = realloc(taken, (taken_n + 1) * sizeof(char *));
+            taken[taken_n++] = strdup(key);
+        } else {
+            char *base = cli_tools_schema_sanitizer_sanitize_property_key(key);
+            if (base && *base) {
+                char candidate[128];
+                snprintf(candidate, sizeof(candidate), "%s", base);
+                int suffix = 2;
+                bool collides;
+                do {
+                    collides = false;
+                    for (size_t t = 0; t < taken_n; t++) {
+                        if (strcmp(taken[t], candidate) == 0) {
+                            collides = true; break;
+                        }
+                    }
+                    if (collides) {
+                        char suf[16];
+                        int suflen = snprintf(suf, sizeof(suf), "_%d", suffix);
+                        size_t blen = strlen(base);
+                        size_t keep = (blen > 64 - (size_t)suflen) ? 64 - (size_t)suflen : blen;
+                        if (keep == 0) keep = 1;
+                        snprintf(candidate, sizeof(candidate), "%.*s%s", (int)keep, base, suf);
+                        suffix++;
+                    }
+                } while (collides);
+                json_set(out, key, json_string(candidate));
+                taken = realloc(taken, (taken_n + 1) * sizeof(char *));
+                taken[taken_n++] = strdup(candidate);
+            }
+            free(base);
+        }
+    }
+
+    for (size_t i = 0; i < taken_n; i++) free(taken[i]);
+    free(taken);
+    json_free(props);
+
+    char *s = json_serialize(out);
+    json_free(out);
+    return s ? s : strdup("{}");
+}
+
+/* PoP: unrename_tool_args @ tools/schema_sanitizer.py:unrename_tool_args */
+char *cli_tools_schema_sanitizer_unrename_tool_args(const char *params_schema_json,
+                                                     const char *args_json)
+{
+    /* Python: reverse-map sanitized keys back to original wire names.
+     * params_schema is the ORIGINAL (unsanitized) schema. Recurses into
+     * object-typed values and array items. */
+    if (!params_schema_json || !*params_schema_json ||
+        !args_json || !*args_json) {
+        return args_json ? strdup(args_json) : NULL;
+    }
+
+    json_t *schema = json_parse(params_schema_json, NULL);
+    json_t *args = json_parse(args_json, NULL);
+    if (!schema || schema->type != JSON_OBJECT ||
+        !args || args->type != JSON_OBJECT) {
+        if (schema) json_free(schema);
+        if (args) json_free(args);
+        return args_json ? strdup(args_json) : NULL;
+    }
+
+    json_t *props = json_obj_get(schema, "properties");
+    if (!props || props->type != JSON_OBJECT) {
+        json_free(schema); json_free(args);
+        return args_json ? strdup(args_json) : NULL;
+    }
+
+    /* reverse = {v: k for k, v in _rename_property_keys(props, "<unrename>")} */
+    char *renames_json = cli_tools_schema_sanitizer__rename_property_keys(
+        json_serialize(props), "<unrename>");
+    json_t *renames = json_parse(renames_json, NULL);
+    free(renames_json);
+    json_t *reverse = json_object();
+    if (renames && renames->type == JSON_OBJECT) {
+        for (size_t i = 0; i < renames->c.count; i++) {
+            const char *orig = renames->c.keys[i];
+            json_t *conf = renames->c.items[i];
+            if (orig && conf && conf->type == JSON_STRING) {
+                json_set(reverse, conf->str_val, json_string(orig));
+            }
+        }
+    }
+    if (renames) json_free(renames);
+    json_free(schema);
+
+    json_t *out = json_object();
+    for (size_t i = 0; i < args->c.count; i++) {
+        const char *key = args->c.keys[i];
+        json_t *value = args->c.items[i];
+        const char *orig_key = key;
+        json_t *rev = json_obj_get(reverse, key);
+        if (rev && rev->type == JSON_STRING)
+            orig_key = rev->str_val;
+
+        json_t *orig_schema = json_obj_get(props, orig_key);
+        if (value && orig_schema && orig_schema->type == JSON_OBJECT) {
+            if (value->type == JSON_OBJECT) {
+                char *sub_args = json_serialize(value);
+                char *sub_schema = json_serialize(orig_schema);
+                char *mapped = cli_tools_schema_sanitizer_unrename_tool_args(sub_schema, sub_args);
+                free(sub_args); free(sub_schema);
+                if (mapped) {
+                    json_t *parsed = json_parse(mapped, NULL);
+                    if (parsed) json_set(out, orig_key, parsed);
+                    else json_set(out, orig_key, json_copy(value));
+                    free(mapped);
+                } else {
+                    json_set(out, orig_key, json_copy(value));
+                }
+            } else if (value->type == JSON_ARRAY) {
+                json_t *item_schema = json_obj_get(orig_schema, "items");
+                if (item_schema && item_schema->type == JSON_OBJECT) {
+                    char *sub_schema = json_serialize(item_schema);
+                    json_t *new_arr = json_array();
+                    for (size_t j = 0; j < json_len(value); j++) {
+                        json_t *item = json_get(value, j);
+                        char *item_args = json_serialize(item);
+                        char *mapped = cli_tools_schema_sanitizer_unrename_tool_args(sub_schema, item_args);
+                        free(item_args);
+                        if (mapped) {
+                            json_t *parsed = json_parse(mapped, NULL);
+                            if (parsed) json_append(new_arr, parsed);
+                            else json_append(new_arr, json_copy(item));
+                            free(mapped);
+                        } else {
+                            json_append(new_arr, json_copy(item));
+                        }
+                    }
+                    free(sub_schema);
+                    json_set(out, orig_key, new_arr);
+                } else {
+                    json_set(out, orig_key, json_copy(value));
+                }
+            } else {
+                json_set(out, orig_key, json_copy(value));
+            }
+        } else {
+            json_set(out, orig_key, json_copy(value));
+        }
+    }
+
+    json_free(args);
+    json_free(reverse);
+    char *result = json_serialize(out);
+    json_free(out);
+    return result ? result : strdup(args_json);
+}
