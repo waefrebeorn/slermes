@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 
 /* Forward declarations — defined in src/tools/curator_backup.c (port of
  * agent/curator_backup.py). Avoid pulling hermes_curator.h (libdb chain). */
@@ -42,9 +43,18 @@ int main(int argc, char **argv)
     size_t rn = fread(buf, 1, (size_t)sz, f); buf[rn] = '\0';
     fclose(f);
 
-    const char *home = getenv("HERMES_HOME");
-    if (!home) home = getenv("HOME");
-    if (!home) home = "/tmp";
+    /* Use an isolated temp HOME so the C functions read only our test YAML,
+     * not the real $HERMES_HOME/.hermes/config.yaml (which would pollute
+     * results the way the PY oracle avoids via load_config monkeypatching). */
+    char tmphome[4096];
+    snprintf(tmphome, sizeof(tmphome), "/tmp/slermes_cb_%d", getpid());
+    mkdir(tmphome, 0700);
+    char hermes_dir[4096];
+    snprintf(hermes_dir, sizeof(hermes_dir), "%s/.hermes", tmphome);
+    mkdir(hermes_dir, 0700);
+    setenv("HERMES_HOME", tmphome, 1);
+    setenv("HOME", tmphome, 1);
+    const char *home = tmphome;
 
     /* split on lines that are exactly "---" */
     char *cur = buf;
