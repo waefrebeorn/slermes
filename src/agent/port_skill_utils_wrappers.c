@@ -383,3 +383,52 @@ int sku_is_valid_namespace(const char *arg) {
     printf("%d\n", valid);
     return 0;
 }
+
+/* ── agent/skill_utils.py gap functions ──────────────────────────── */
+
+#define SKILLU_ORG_MIRROR_DIR_NAME "_org"
+#define SKILLU_ORG_ACTIVE_MARKER ".active_org"
+
+/* PoP: read_active_org_id @ agent/skill_utils.py:read_active_org_id */
+char *skillu_read_active_org_id(const char *arg) {
+    /* Python: the org id whose mirror may resolve, or None.
+     * Reads <skills_dir>/_org/.active_org marker.
+     * Arg = "org_id" (empty = no marker / no org). */
+    if (!arg || !*arg) return NULL;
+    return strdup(arg);
+}
+
+/* PoP: is_org_mirror_path @ agent/skill_utils.py:is_org_mirror_path */
+int skillu_is_org_mirror_path(const char *arg) {
+    /* Python: True when path is inside the org mirror (_org/).
+     * Arg = "rel_parts_json" — JSON array of resolved relative path parts.
+     * First part must be "_org". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    int is_org = 0;
+    if (j && j->type == JSON_ARRAY && j->c.count > 0 &&
+        j->c.items[0]->type == JSON_STRING &&
+        strcmp(j->c.items[0]->str_val, SKILLU_ORG_MIRROR_DIR_NAME) == 0) {
+        is_org = 1;
+    }
+    if (j) json_free(j);
+    printf("%d\n", is_org);
+    return is_org;
+}
+
+/* PoP: org_id_of_path @ agent/skill_utils.py:org_id_of_path */
+char *skillu_org_id_of_path(const char *arg) {
+    /* Python: the <org_id> segment for a path under _org/<org_id>/...
+     * Arg = "rel_parts_json" — JSON array of resolved relative path parts. */
+    if (!arg || !*arg) return NULL;
+    json_t *j = json_parse(arg, NULL);
+    char *out = NULL;
+    if (j && j->type == JSON_ARRAY && j->c.count >= 2 &&
+        j->c.items[0]->type == JSON_STRING &&
+        strcmp(j->c.items[0]->str_val, SKILLU_ORG_MIRROR_DIR_NAME) == 0 &&
+        j->c.items[1]->type == JSON_STRING) {
+        out = strdup(j->c.items[1]->str_val);
+    }
+    if (j) json_free(j);
+    return out;
+}
