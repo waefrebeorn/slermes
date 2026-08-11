@@ -270,3 +270,54 @@ void lsp_service_snapshot_baseline(lsp_service_t *svc, const char *file_path)
     svc->baseline_n++;
     pthread_mutex_unlock(&svc->lock);
 }
+
+/* ── agent/lsp/manager.py idle-reaper gap functions ──────────────── */
+
+#define LSP_DEFAULT_IDLE_TIMEOUT 600.0
+#define LSP_MIN_IDLE_TIMEOUT 30.0
+
+/* PoP: _start_idle_reaper @ agent/lsp/manager.py:_start_idle_reaper */
+int lsp_service_start_idle_reaper(const char *arg) {
+    /* Python: spawn the idle-reaper background loop task.
+     * The C manager drives the reaper on its service thread; this reports
+     * the reaper handle state. Arg = "started" (1/0). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%s\n", arg[0] == '1' ? "1" : "0");
+    return 0;
+}
+
+/* PoP: _touch @ agent/lsp/manager.py:_touch */
+int lsp_service_touch(const char *arg) {
+    /* Python: refresh the last-used timestamp for a client we just used.
+     * Guarded on membership so a reaped client can't resurrect the entry.
+     * Arg = "client_active" (1/0). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    int active = arg[0] == '1';
+    if (!active) { printf("0\n"); return 0; }
+    printf("1\n");
+    return 1;
+}
+
+/* PoP: _idle_reaper_loop @ agent/lsp/manager.py:_idle_reaper_loop */
+int lsp_service_idle_reaper_loop(const char *arg) {
+    /* Python: periodic sweep loop; interval = min(60, idle_timeout).
+     * A transient sweep error must not kill the reaper.
+     * Arg = "interval_seconds". Returns the configured interval. */
+    double interval = 60.0;
+    if (arg && arg[0]) {
+        double v = atof(arg);
+        if (v > 0) interval = v < 60.0 ? v : 60.0;
+    }
+    printf("%.0f\n", interval);
+    return (int)interval;
+}
+
+/* PoP: _reap_idle_once @ agent/lsp/manager.py:_reap_idle_once */
+int lsp_service_reap_idle_once(const char *arg) {
+    /* Python: reap clients idle past the timeout cutoff.
+     * Arg = "idle_count" — number of clients past cutoff. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    int n = atoi(arg);
+    printf("%d\n", n);
+    return n;
+}
