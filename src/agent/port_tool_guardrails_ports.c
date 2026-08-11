@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "hermes_json.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -199,4 +200,56 @@ long tg_positive_int(const char *value, long default_value) {
     long v = strtol(value, &end, 10);
     if (end == value || *end != '\0') return default_value;
     return v > 0 ? v : default_value;
+}
+
+/* ── agent/tool_guardrails.py gap functions ──────────────────────── */
+
+/* PoP: _check_loop_cap @ agent/tool_guardrails.py:_check_loop_cap */
+int guarrd_check_loop_cap(const char *arg) {
+    /* Python: enforce per-turn runaway-loop counters.
+    * Returns "block" decision (1) when cap reached, else increments and
+    * returns 0 (None — allowed). Arg = "count\tcap" (cap 0 disables). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    int count = atoi(arg);
+    int cap = t1 ? atoi(t1 + 1) : 0;
+    if (cap > 0 && count >= cap) {
+        printf("BLOCKED loop_cap reached\n");
+        return 1;
+    }
+    printf("0\n");
+    return 0;
+}
+
+/* PoP: _non_negative_int @ agent/tool_guardrails.py:_non_negative_int */
+int guarrd_non_negative_int(const char *arg) {
+    /* Python: parse a session-cap value; 0 = disable; negatives/junk -> default.
+    * Arg = "value\tdefault". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    int default_value = t1 ? atoi(t1 + 1) : 0;
+    if (!t1 || !t1[1] || (t1[1] == 'n')) { printf("%d\n", default_value); return default_value; }
+    char *end = NULL;
+    long v = strtol(t1 + 1, &end, 10);
+    if (end && *end == '\0' && v >= 0) {
+        printf("%ld\n", v);
+        return (int)v;
+    }
+    printf("%d\n", default_value);
+    return default_value;
+}
+
+/* PoP: _subagent_spawn_count @ agent/tool_guardrails.py:_subagent_spawn_count */
+int guarrd_subagent_spawn_count(const char *arg) {
+    /* Python: how many subagents a single delegate_task call spawns.
+    * Batch (tasks non-empty list) → len(tasks); otherwise 1.
+    * Arg = "tasks_json" (JSON array) or empty. */
+    if (!arg || !*arg) { printf("1\n"); return 1; }
+    json_t *j = json_parse(arg, NULL);
+    int count = 1;
+    if (j && j->type == JSON_ARRAY && j->c.count > 0)
+        count = (int)j->c.count;
+    if (j) json_free(j);
+    printf("%d\n", count);
+    return count;
 }
