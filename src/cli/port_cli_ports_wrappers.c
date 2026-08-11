@@ -9432,7 +9432,14 @@ int hermes_cli_mcp_startup_ensure_mcp_discovery_before_agent_build(const char *a
 }
 
 /* PoP: _default_reference_models @ hermes_cli/moa_config.py:_default_reference_models */
-int hermes_cli_moa_config_u_default_reference_models(const char *arg) { (void)arg; return 0; }
+/* Python: [slot | "enabled": True for slot in DEFAULT_MOA_REFERENCE_MODELS].
+ * Returns JSON array on stdout: [{"provider":"openai-codex","model":"gpt-5.5","enabled":true},...]. */
+int hermes_cli_moa_config_u_default_reference_models(const char *arg) {
+    (void)arg;
+    printf("[{\"provider\":\"openai-codex\",\"model\":\"gpt-5.5\",\"enabled\":true},"
+           "{\"provider\":\"openrouter\",\"model\":\"deepseek/deepseek-v4-pro\",\"enabled\":true}]");
+    return 0;
+}
 
 /* PoP: _coerce_reference_timeout @ hermes_cli/moa_config.py:_coerce_reference_timeout */
 int hermes_cli_moa_config_u_coerce_reference_timeout(const char *arg) {

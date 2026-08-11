@@ -1131,7 +1131,10 @@ void approval_disable_session_yolo(void) { approval_set_yolo(false); }
 int approval_is_current_session_yolo_enabled(void) { return approval_is_yolo_enabled() ? 1 : 0; }
 
 /* PoP: approval_load_permanent @ tools/approval.py:load_permanent */
-void approval_load_permanent(void) { approval_load_allowlist(); }
+/* Python: _permanent_approved.update(patterns). Calls the real merge+save. */
+void approval_load_permanent(const char **patterns, size_t n) {
+    approval_save_permanent_allowlist(patterns, n);
+}
 
 /* PoP: approval_unregister_gateway_notify @ tools/approval.py:unregister_gateway_notify */
 void approval_unregister_gateway_notify(void) {

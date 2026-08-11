@@ -211,6 +211,7 @@ char **approval_permanent_allowlist_list(size_t *out_n) {
     return out;
 }
 
+
 /* PoP: save_permanent_allowlist @ tools/approval.py:save_permanent_allowlist */
 int approval_save_permanent_allowlist(const char **patterns, size_t n) {
     int write = 0;
