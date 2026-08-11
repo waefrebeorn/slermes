@@ -8092,6 +8092,38 @@ int hermes_cli__early_recovery_recover_if_needed(const char *arg) {
     return 0;
 }
 
+/* PoP: _pytest_owns_live_checkout @ hermes_cli/_early_recovery.py:_pytest_owns_live_checkout */
+int hermes_cli__early_recovery_u_pytest_owns_live_checkout(const char *root) {
+    /* Python: True when running under pytest AND root is this module's own
+     * checkout (the one whose venv is executing the suite right now).
+     *   PYTEST_CURRENT_TEST in os.environ
+     *   and root == Path(__file__).resolve().parent.parent
+     * The module lives at hermes_cli/_early_recovery.py, so the checkout
+     * root is two levels up from the file: the parent repo root. */
+    if (!root || !*root) { printf("0\n"); return 0; }
+    if (!getenv("PYTEST_CURRENT_TEST")) { printf("0\n"); return 0; }
+    /* Resolve the slermes checkout root: <repo>/src/cli -> <repo>.
+     * The Python module lives in hermes_cli/ so the checkout root is
+     * <repo> (parent.parent of hermes_cli/_early_recovery.py). */
+    char resolved[4096];
+    if (!realpath(root, resolved)) { printf("0\n"); return 0; }
+    /* The C port lives in src/cli/ — the hermes checkout root is three
+     * levels up (src/cli/<file> -> src/ -> <repo>). Python's
+     * hermes_cli/_early_recovery.py resolves to <repo>/hermes_cli/ so
+     * parent.parent = <repo>. Same anchor. Use __FILE__ to locate the
+     * checkout root regardless of build directory. */
+    char self_root[4096];
+    snprintf(self_root, sizeof(self_root), "%s/../../..", __FILE__);
+    char self_root_resolved[4096];
+    if (realpath(self_root, self_root_resolved) &&
+        strcmp(resolved, self_root_resolved) == 0) {
+        printf("1\n");
+        return 0;
+    }
+    printf("0\n");
+    return 0;
+}
+
 /* PoP: _providers_for_env_var @ hermes_cli/credential_lifecycle.py:_providers_for_env_var */
 int hermes_cli_credential_lifecycl_u_providers_for_env_var(const char *arg) {
     /* Python: provider ids whose api_key_env_vars include env_var. Arg =

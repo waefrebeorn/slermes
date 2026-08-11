@@ -82,6 +82,7 @@ static char *find_provider_dir_c(const char *name)
     return NULL;
 }
 
+/* PoP: provider_pip_dependencies_c @ hermes_cli/memory_setup.py:_provider_pip_dependencies */
 /* Port of Python hermes_cli/memory_setup.py:_provider_pip_dependencies.
  * Hindsight's local_embedded mode additionally needs hindsight-all. */
 static size_t provider_pip_dependencies_c(const char *provider_name,

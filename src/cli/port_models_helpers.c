@@ -42,6 +42,7 @@
 #include "libcrypto/crypto.h"
 #include "libcredentialfiles/credential_files.h"
 #include "hermes_http.h"
+#include "http.h"
 #include "model_catalog.h"
 #include "port_models_pure.h"
 #include <stdio.h>
@@ -1091,5 +1092,85 @@ void _spawn_swr_refresh(const char *cache_key) {
         return;
     }
     pthread_detach(tid);  /* daemon thread — nobody joins */
+}
+
+/* ---- _spawn_catalog_swr_refresh (hermes_cli/model_catalog.py) ---- */
+/* Thread-safe inflight guard (separate from the provider-model SWR inflight
+ * set, mirroring Python's _catalog_swr_inflight + _catalog_swr_lock). */
+static pthread_mutex_t _catalog_swr_lock = PTHREAD_MUTEX_INITIALIZER;
+static bool _catalog_swr_inflight = false;
+
+typedef struct { char *url; } catalog_swr_ctx_t;
+
+/* Catalog SWR worker — fire-and-forget. Fetches the manifest URL and
+ * writes fresh JSON to the provider-models cache on success. Degrades
+ * silently (stale cache kept) on any failure, mirroring Python's
+ * except-logger.debug + finally-claim-release semantics. */
+static void *_catalog_swr_worker(void *arg) {
+    catalog_swr_ctx_t *ctx = (catalog_swr_ctx_t *)arg;
+    char *url = ctx->url;
+    free(ctx);
+
+    http_t *h = http_new(8);
+    if (h) {
+        http_resp_t *r = http_get(h, url, NULL);
+        if (r && r->status == 200 && r->body && r->body[0]) {
+            /* Persist the fresh manifest via the existing cache API. */
+            model_save_provider_models_cache(r->body);
+        }
+        if (r) http_resp_free(r);
+        http_free(h);
+    }
+
+    /* Release the inflight claim (finally block in Python). */
+    pthread_mutex_lock(&_catalog_swr_lock);
+    _catalog_swr_inflight = false;
+    pthread_mutex_unlock(&_catalog_swr_lock);
+    free(url);
+    return NULL;
+}
+
+/* PoP: _spawn_catalog_swr_refresh @ hermes_cli/model_catalog.py:_spawn_catalog_swr_refresh */
+/* Port of Python _spawn_catalog_swr_refresh: refresh the catalog manifest
+ * off-thread (fire-and-forget, deduped via _catalog_swr_inflight). The
+ * refreshed manifest lands on disk; the next get_catalog() picks it up
+ * via the mtime/age check. Failures swallowed — stale entry kept. */
+void _spawn_catalog_swr_refresh(const char *url) {
+    if (!url || !*url) return;
+    pthread_mutex_lock(&_catalog_swr_lock);
+    if (_catalog_swr_inflight) {
+        pthread_mutex_unlock(&_catalog_swr_lock);
+        return;  /* already inflight — dedupe */
+    }
+    _catalog_swr_inflight = true;
+    pthread_mutex_unlock(&_catalog_swr_lock);
+
+    catalog_swr_ctx_t *ctx = malloc(sizeof(*ctx));
+    if (!ctx) {
+        pthread_mutex_lock(&_catalog_swr_lock);
+        _catalog_swr_inflight = false;
+        pthread_mutex_unlock(&_catalog_swr_lock);
+        return;
+    }
+    ctx->url = strdup(url);
+    if (!ctx->url) {
+        free(ctx);
+        pthread_mutex_lock(&_catalog_swr_lock);
+        _catalog_swr_inflight = false;
+        pthread_mutex_unlock(&_catalog_swr_lock);
+        return;
+    }
+
+    pthread_t tid;
+    if (pthread_create(&tid, NULL, _catalog_swr_worker, ctx) != 0) {
+        /* Spawn failed — release claim and bail (failure swallowed). */
+        pthread_mutex_lock(&_catalog_swr_lock);
+        _catalog_swr_inflight = false;
+        pthread_mutex_unlock(&_catalog_swr_lock);
+        free(ctx->url);
+        free(ctx);
+        return;
+    }
+    pthread_detach(tid);  /* daemon thread */
 }
 
