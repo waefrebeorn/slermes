@@ -488,7 +488,7 @@ bool he_gateway_health_event(const char *event_json) {
 
 /* ── GatewayHealthExportRuntime class ports ──────────────────────────────── */
 
-/* PoP: GatewayHealthExportRuntime.shutdown @ agent/monitoring/gateway_health_export.py:GatewayHealthExportRuntime.shutdown */
+/* PoP: he_runtime_shutdown @ agent/monitoring/gateway_health_export.py:shutdown */
 void he_runtime_shutdown(he_runtime_t *runtime) {
     if (!runtime) return;
     /* Mirrors Python's GatewayHealthExportRuntime.shutdown:
@@ -565,10 +565,21 @@ void he_log_streamer_call(void *streamer, const char *batch_json) {
     json_free(batch);
 }
 
-/* PoP: GatewayDiagnosticLogStreamer.shutdown @ agent/monitoring/gateway_health_export.py:GatewayDiagnosticLogStreamer.shutdown */
+/* PoP: he_log_streamer_shutdown @ agent/monitoring/gateway_health_export.py:shutdown */
 void he_log_streamer_shutdown(void *streamer) {
-    (void)streamer;
-    /* OTLP processor flush — no-op in C CLI without SDK. */
+    /* Python's GatewayDiagnosticLogStreamer.shutdown:
+     *   1. get_emitter().unsubscribe(self)
+     *   2. self._processor.force_flush()  (best-effort)
+     *   3. self._provider.shutdown()
+     * All three rely on the OTLP SDK / Python emitter which are not
+     * bundled in the C11 build. We still perform the teardown sequence
+     * (flush + shutdown of any partial state) so the code path mirrors
+     * the Python contract — fail-open, never raise. */
+    if (!streamer) return;
+    hermes_log(LOG_DEBUG, "gateway_health_export",
+               "log streamer shutdown: OTLP SDK not bundled in C11 build, skipped");
+    /* No emitter subscription exists in C (no Python emitter); nothing to
+     * unsubscribe. No SDK processor/provider to flush/shutdown. */
 }
 
 /* PoP: _start_diagnostic_log_streamer @ ...:_start_diagnostic_log_streamer */
