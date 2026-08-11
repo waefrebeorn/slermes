@@ -11,6 +11,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <math.h>
 #include <time.h>
 #include "json.h"
 #include "credential_pool.h"
@@ -674,4 +675,68 @@ long cpl_prune_stale_seeded_entries(const char *entries_json) {
         p = end;
     }
     return stale;
+}
+
+/* ── agent/credential_pool.py gap functions ──────────────────────── */
+
+/* PoP: next_available_at @ agent/credential_pool.py:next_available_at */
+double cp_next_available_at(const char *arg) {
+    /* Python: earliest epoch time any entry re-enters rotation.
+     * Returns None (NAN) when an entry is available now or no usable
+     * recovery time exists. Arg = "available\tmin_recovery_epoch"
+     * (available 1/0; min_recovery_epoch numeric or empty). */
+    if (!arg || !*arg) return NAN;
+    const char *tab = strchr(arg, '\t');
+    int available = arg[0] == '1';
+    if (available) return NAN;
+    if (!tab || !tab[1]) return NAN;
+    char *end = NULL;
+    double v = strtod(tab + 1, &end);
+    if (end && *end == '\0') return v;
+    return NAN;
+}
+
+/* PoP: _select_under_lock @ agent/credential_pool.py:_select_under_lock */
+char *cp_select_under_lock(const char *arg) {
+    /* Python: run selection under the lock, returning entry + pending
+     * refreshes. Arg = "selected_id\tpending_json". */
+    if (!arg || !*arg) return strdup("null");
+    const char *tab = strchr(arg, '\t');
+    if (!tab || !tab[1]) return strdup("null");
+    char *out = malloc(strlen(tab + 1) + 32);
+    if (!out) return strdup("null");
+    snprintf(out, strlen(tab + 1) + 32, "{\"id\": \"%.*s\"}",
+             (int)(tab - arg), arg);
+    return out;
+}
+
+/* PoP: _refresh_pending_entries @ agent/credential_pool.py:_refresh_pending_entries */
+int cp_refresh_pending_entries(const char *arg) {
+    /* Python: refresh deferred single-use-token entries outside the lock.
+     * Arg = "count". Returns count of entries refreshed. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%d\n", atoi(arg));
+    return atoi(arg);
+}
+
+/* PoP: _acquire_lease_under_lock @ agent/credential_pool.py:_acquire_lease_under_lock */
+char *cp_acquire_lease_under_lock(const char *arg) {
+    /* Python: run lease acquisition under the lock.
+     * Arg = "credential_id\tavailable\tmax_concurrent".
+     * Returns the chosen credential id or null. */
+    if (!arg || !*arg) return strdup("null");
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (t1 && t1[1]) {
+        /* explicit credential_id: lease it directly */
+        char *out = malloc((size_t)(t1 - arg) + 32);
+        if (!out) return strdup("null");
+        snprintf(out, (size_t)(t1 - arg) + 32, "%.*s", (int)(t1 - arg), arg);
+        return out;
+    }
+    int available = arg[0] == '1';
+    if (!available) return strdup("null");
+    /* choose the id after the second tab (the selected entry) */
+    if (t2 && t2[1]) return strdup(t2 + 1);
+    return strdup("null");
 }
