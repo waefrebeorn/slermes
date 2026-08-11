@@ -48,3 +48,58 @@ int ttm_clear_session_cwd(const char *session_id) {
     hermes_log(LOG_DEBUG, "terminal", "terminal session cwd dropped (%s)", session_id);
     return 0;
 }
+
+/* ── tools/terminal_tool.py gap functions ────────────────────────── */
+
+#define SUPPORTED_VERCEL_RUNTIMES "node24", "node22", "python3.13"
+static const char *SUPPORTED_VERCEL_RUNTIME_LIST[] = {
+    "node24", "node22", "python3.13", NULL
+};
+#define WORKDIR_SAFE_ASCII_CHARS "/\\:_-.~ +@=,"
+
+/* PoP: _is_supported_vercel_runtime @ tools/terminal_tool.py:_is_supported_vercel_runtime */
+int termtool_is_supported_vercel_runtime(const char *runtime) {
+    /* Python: not runtime or runtime in _SUPPORTED_VERCEL_RUNTIMES. */
+    if (!runtime || !runtime[0]) { printf("1\n"); return 1; }
+    for (int i = 0; SUPPORTED_VERCEL_RUNTIME_LIST[i]; i++) {
+        if (strcmp(runtime, SUPPORTED_VERCEL_RUNTIME_LIST[i]) == 0) {
+            printf("1\n");
+            return 1;
+        }
+    }
+    printf("0\n");
+    return 0;
+}
+
+/* PoP: _check_vercel_sandbox_requirements @ tools/terminal_tool.py:_check_vercel_sandbox_requirements */
+int termtool_check_vercel_sandbox_requirements(const char *arg) {
+    /* Python: validate Vercel Sandbox terminal backend requirements.
+     * Checks runtime support, container_disk in {0, 51200}, and creds.
+     * Arg = "runtime\tdisk\tcredentials_ok" (credentials_ok 1/0). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *runtime = arg;
+    int disk = t1 ? atoi(t1 + 1) : 51200;
+    int creds_ok = t2 && t2[1] == '1';
+    if (!termtool_is_supported_vercel_runtime(runtime)) { printf("0\n"); return 0; }
+    if (disk != 0 && disk != 51200) { printf("0\n"); return 0; }
+    if (!creds_ok) { printf("0\n"); return 0; }
+    printf("1\n");
+    return 1;
+}
+
+/* PoP: _is_safe_workdir_char @ tools/terminal_tool.py:_is_safe_workdir_char */
+int termtool_is_safe_workdir_char(const char *arg) {
+    /* Python: allowlist check — reject control chars/NUL; accept alnum +
+     * safe ASCII. Arg = single char (as string). */
+    if (!arg || !arg[0]) { printf("0\n"); return 0; }
+    unsigned char ch = (unsigned char)arg[0];
+    if (ch < 32 || ch == 127) { printf("0\n"); return 0; }
+    if (isalnum(ch)) { printf("1\n"); return 1; }
+    for (const char *p = WORKDIR_SAFE_ASCII_CHARS; *p; p++) {
+        if (ch == (unsigned char)*p) { printf("1\n"); return 1; }
+    }
+    printf("0\n");
+    return 0;
+}
