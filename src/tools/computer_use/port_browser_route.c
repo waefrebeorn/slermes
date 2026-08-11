@@ -260,6 +260,20 @@ json_t *browser_route_refusal(const char *code, const char *message,
 }
 
 /* ---- adapter ---- */
+
+/* PoP: _typed_browser_unavailable @ tools/computer_use/backend.py:_typed_browser_unavailable */
+/* Port of Python _typed_browser_unavailable: the native-only backends fail
+ * closed — return the standard refusal payload. Caller frees. */
+json_t *browser_route_typed_browser_unavailable(void) {
+    json_t *obj = json_object();
+    json_set(obj, "ok",          json_bool(false));
+    json_set(obj, "status",      json_string("refused"));
+    json_set(obj, "code",        json_string("typed_browser_unavailable"));
+    json_set(obj, "message",     json_string("This computer-use backend has no typed browser route; use native capture/input."));
+    json_set(obj, "native_fallback_required", json_bool(true));
+    return obj;
+}
+
 struct cua_typed_browser_route {
     char *session_id;
     browser_route_call_fn call_tool; void *call_ctx;

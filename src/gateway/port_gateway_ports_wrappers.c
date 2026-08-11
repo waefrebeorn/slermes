@@ -1482,6 +1482,12 @@ int gateway_kanban_watchers_u_resolve_auto_decompose_settings(const char *arg) {
     return 0;
 }
 
+/* ---- Dispatcher lock ownership tracking ----
+ * Mirrors GatewayKanbanWatchersMixin._kanban_dispatcher_lock_handle on the
+ * C GatewayRunner. */
+static bool g_kanban_lock_owned = false;
+static char g_kanban_lock_handle[256] = "";
+
 /* PoP: _acquire_singleton_lock @ gateway/kanban_watchers.py:_acquire_singleton_lock */
 int gateway_kanban_watchers_u_acquire_singleton_lock(const char *arg) {
     /* Python: advisory flock. Arg =
@@ -1505,7 +1511,48 @@ int gateway_kanban_watchers_u_release_singleton_lock(const char *arg) {
      * path (or empty = None). */
     if (!arg || !*arg) { printf("0\n"); return 0; }
     printf("released %s\n", arg);
+
+    /* Clear notifier-visible ownership if this handle was held. */
+    if (arg && *arg && strcmp(arg, g_kanban_lock_handle) == 0) {
+        g_kanban_lock_owned = false;
+        g_kanban_lock_handle[0] = '\0';
+    }
     return 0;
+}
+
+/* PoP: _owns_kanban_dispatcher_lock @ gateway/kanban_watchers.py:_owns_kanban_dispatcher_lock */
+/* PoP: gateway_kanban_watchers_u_owns_lock @ gateway/kanban_watchers.py:_owns_kanban_dispatcher_lock */
+
+/* Port of Python _owns_kanban_dispatcher_lock: return whether this gateway
+ * currently owns the singleton dispatcher lock (handle non-None). */
+bool gateway_kanban_watchers_u_owns_lock(void)
+{
+    return g_kanban_lock_owned && g_kanban_lock_handle[0] != '\0';
+}
+
+/* PoP: _release_kanban_dispatcher_lock @ gateway/kanban_watchers.py:_release_kanban_dispatcher_lock */
+/* PoP: gateway_kanban_watchers_u_release_kanban_lock @ gateway/kanban_watchers.py:_release_kanban_dispatcher_lock */
+
+/* Port of Python _release_kanban_dispatcher_lock: clear notifier-visible
+ * ownership before releasing the OS lock. Releases whatever handle is
+ * currently held (best-effort, never raises). */
+void gateway_kanban_watchers_u_release_kanban_lock(void)
+{
+    if (g_kanban_lock_owned && g_kanban_lock_handle[0]) {
+        /* Delegate to _release_singleton_lock path (best-effort). */
+        gateway_kanban_watchers_u_release_singleton_lock(g_kanban_lock_handle);
+    }
+    g_kanban_lock_owned = false;
+    g_kanban_lock_handle[0] = '\0';
+}
+
+/* Claim ownership (called after a successful _acquire_singleton_lock). */
+void gateway_kanban_watchers_u_claim_lock(const char *handle)
+{
+    if (!handle || !*handle) { g_kanban_lock_owned = false; g_kanban_lock_handle[0] = '\0'; return; }
+    g_kanban_lock_owned = true;
+    strncpy(g_kanban_lock_handle, handle, sizeof(g_kanban_lock_handle) - 1);
+    g_kanban_lock_handle[sizeof(g_kanban_lock_handle) - 1] = '\0';
 }
 
 /* PoP: _kanban_notifier_watcher @ gateway/kanban_watchers.py:_kanban_notifier_watcher */

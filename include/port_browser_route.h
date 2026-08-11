@@ -73,6 +73,10 @@ char *browser_route_refusal_code(const json_t *payload);
 /* _refusal */
 json_t *browser_route_refusal(const char *code, const char *message, bool native_fallback, const json_t *extra);
 
+/* _typed_browser_unavailable (backend.py) — native-only backends fail closed.
+ * Returns a fresh refusal payload (caller frees); NULL on OOM. */
+json_t *browser_route_typed_browser_unavailable(void);
+
 /* --- the adapter --- */
 typedef struct cua_typed_browser_route cua_typed_browser_route_t;
 

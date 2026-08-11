@@ -1571,3 +1571,63 @@ int cli_pt_input_extras_install_ignored_terminal_sequences(void)
     return changed;
 }
 
+/* Key-alias registry — mirrors prompt_toolkit's ANSI_SEQUENCES map for
+ * Cmd+Backspace / Cmd+ForwardDelete. The C terminal stack has no live
+ * readline registry to mutate, so we keep our own table (sequence -> action)
+ * that the TUI layer consults; consumers should call this once at startup. */
+typedef enum {
+    CUA_KEY_DEFAULT = 0,
+    CUA_KEY_CTRL_U,   /* kill backward to start of line (unix-line-discard) */
+    CUA_KEY_CTRL_K,   /* kill forward to end of line (kill-line)            */
+} cua_key_action_t;
+
+typedef struct cua_key_alias {
+    const char *seq;
+    cua_key_action_t action;
+} cua_key_alias_t;
+
+/* Fixed set from Python install_cmd_backspace_alias. */
+static cua_key_alias_t g_key_aliases[5];
+static int g_key_alias_count = 0;
+
+/* PoP: install_cmd_backspace_alias @ hermes_cli/pt_input_extras.py:install_cmd_backspace_alias */
+/* Port of Python install_cmd_backspace_alias(): map Cmd+Backspace /
+ * Cmd+ForwardDelete terminal sequences to the readline kill bindings.
+ * Returns the number of sequences whose mapping was *changed*
+ * (newly registered) — faithful to the Python return where a setdefault
+ * only counts first-time insertions. */
+int cli_pt_input_extras_install_cmd_backspace_alias(void)
+{
+    static const struct { const char *seq; cua_key_action_t action; } aliases[] = {
+        { "\x1b[127;9u",  CUA_KEY_CTRL_U },   /* Kitty CSI-u, super    */
+        { "\x1b[127;10u", CUA_KEY_CTRL_U },   /* Kitty CSI-u, super+shift */
+        { "\x1b[27;9;127~", CUA_KEY_CTRL_U }, /* xterm modifyOtherKeys */
+        { "\x1b[3;9~",  CUA_KEY_CTRL_K },     /* xterm CSI tilde, super    */
+        { "\x1b[3;10~", CUA_KEY_CTRL_K },     /* xterm CSI tilde, super+shift */
+    };
+    int changed = 0;
+    for (int i = 0; i < 5; i++) {
+        bool found = false;
+        for (int j = 0; j < g_key_alias_count; j++) {
+            if (strcmp(g_key_aliases[j].seq, aliases[i].seq) == 0) { found = true; break; }
+        }
+        if (!found && g_key_alias_count < 5) {
+            g_key_aliases[g_key_alias_count].seq = aliases[i].seq;
+            g_key_aliases[g_key_alias_count].action = aliases[i].action;
+            g_key_alias_count++;
+            changed++;
+        }
+    }
+    return changed;
+}
+
+/* Lookup the registered action for a byte sequence. */
+cua_key_action_t cli_pt_input_extras_key_action(const char *seq)
+{
+    if (!seq) return CUA_KEY_DEFAULT;
+    for (int i = 0; i < g_key_alias_count; i++)
+        if (strcmp(g_key_aliases[i].seq, seq) == 0)
+            return g_key_aliases[i].action;
+    return CUA_KEY_DEFAULT;
+}
+

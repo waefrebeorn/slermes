@@ -38,6 +38,7 @@
 
 #include "hermes_insights.h"
 #include "hermes_db.h"
+#include "hermes_json.h"
 #include "usage_pricing.h"
 
 /* ══════════════════════════════════════════════════════════════
@@ -1187,4 +1188,50 @@ char *insights_quick_stats(db_t *db, int days) {
 
     insights_report_free(r);
     return result;
+}
+
+/* PoP: get_usage_breakdown @ agent/insights.py:get_usage_breakdown */
+
+/* Port of Python InsightsEngine.get_usage_breakdown: return the analytics
+ * usage payload ({"tools": [...], "skills": [...]}) without running a full
+ * generate() — only the per-tool and per-skill breakdowns the dashboard
+ * route consumes. Returns malloc'd JSON, caller frees. */
+char *insights_get_usage_breakdown(db_t *db, int days, const char *source) {
+    if (!db) return NULL;
+    if (days <= 0) days = 30;
+    insights_report_t *r = insights_generate(db, days, source);
+    if (!r) return NULL;
+
+    json_t *obj = json_object();
+
+    /* tools: [{"tool": name, "count": n, "percentage": p}] */
+    json_t *tools = json_array();
+    for (int i = 0; i < r->tool_count && i < INSIGHTS_MAX_TOOLS; i++) {
+        json_t *t = json_object();
+        json_set(t, "tool", json_string(r->tools[i].tool));
+        json_set(t, "count", json_number(r->tools[i].count));
+        json_set(t, "percentage", json_number(r->tools[i].percentage));
+        json_append(tools, t);
+    }
+    json_set(obj, "tools", tools);
+
+    /* skills: [{"skill": name, "viewCount": n, "manageCount": n,
+     *           "totalCount": n, "percentage": p, "lastUsedAt": ts}] */
+    json_t *skills = json_array();
+    for (int i = 0; i < r->skill_count && i < INSIGHTS_MAX_SKILLS; i++) {
+        json_t *s = json_object();
+        json_set(s, "skill", json_string(r->skills[i].skill));
+        json_set(s, "viewCount", json_number(r->skills[i].view_count));
+        json_set(s, "manageCount", json_number(r->skills[i].manage_count));
+        json_set(s, "totalCount", json_number(r->skills[i].total_count));
+        json_set(s, "percentage", json_number(r->skills[i].percentage));
+        json_set(s, "lastUsedAt", json_number(r->skills[i].last_used_at));
+        json_append(skills, s);
+    }
+    json_set(obj, "skills", skills);
+
+    insights_report_free(r);
+    char *out = json_serialize(obj);
+    json_free(obj);
+    return out;
 }

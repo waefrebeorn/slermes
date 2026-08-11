@@ -39,6 +39,7 @@
 
 #include "hermes_core_types.h"
 #include "hermes_yaml.h"
+#include "hermes_json.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -1298,3 +1299,92 @@ char *coding_context_coding_instructions(const hermes_config_t *config)
  * Port of Python agent/coding_context.py:coding_system_blocks
  * Port of Python agent/coding_context.py:coding_compact_skill_categories
  */
+
+/* PoP: is_coding_context @ agent/coding_context.py:is_coding_context */
+/* PoP: coding_context_is_coding_context @ agent/coding_context.py:is_coding_context */
+
+/* Port of Python is_coding_context: whether Hermes should operate in its
+ * coding posture right now. Thin wrapper over resolve_runtime_mode().is_coding. */
+int coding_context_is_coding_context(const char *platform, const char *cwd,
+                                     const hermes_config_t *config) {
+    coding_runtime_mode_t *mode = coding_context_resolve_runtime_mode(
+        platform, cwd, (const void *)config, NULL);
+    if (!mode) return 0;
+    bool is_coding = coding_runtime_mode_is_coding(mode);
+    coding_runtime_mode_destroy(mode);
+    return is_coding ? 1 : 0;
+}
+
+/* PoP: project_facts_for @ agent/coding_context.py:project_facts_for */
+
+/* Port of Python project_facts_for: structured project facts for cwd
+ * (root, manifests, packageManagers, verifyCommands, contextFiles) as a
+ * JSON object — NULL outside a workspace. Caller frees the result. */
+char *coding_context_project_facts_for(const char *cwd) {
+    char resolved[PATH_MAX];
+    coding_context_resolve_cwd(NULL, resolved, sizeof(resolved));
+
+    char root[PATH_MAX];
+    if (!coding_context_find_git_root(resolved, root, sizeof(root))) {
+        if (!coding_context_find_marker_root(resolved, root, sizeof(root))) {
+            return NULL;   /* outside a workspace — Python returns None */
+        }
+    }
+
+    /* Reuse the line-rendering facts helper, then wrap into JSON. */
+    char *facts_lines = coding_context_project_facts(root);
+    if (!facts_lines) {
+        json_t *obj = json_object();
+        json_set(obj, "root", json_string(root));
+        json_set(obj, "manifests", json_array());
+        json_set(obj, "packageManagers", json_array());
+        json_set(obj, "verifyCommands", json_array());
+        json_set(obj, "contextFiles", json_array());
+        char *out = json_serialize(obj);
+        json_free(obj);
+        return out;
+    }
+
+    /* Parse the line rendering back into structured fields. The line
+     * format from coding_context_project_facts is "Manifests: a, b",
+     * "Package managers: ...", "Verify commands: ...", "Context files: ...".
+     * Extract after the colon. */
+    json_t *obj = json_object();
+    json_set(obj, "root", json_string(root));
+    json_set(obj, "manifests", json_array());
+    json_set(obj, "packageManagers", json_array());
+    json_set(obj, "verifyCommands", json_array());
+    json_set(obj, "contextFiles", json_array());
+
+    char *save = NULL;
+    char *line = strtok_r(facts_lines, "\n", &save);
+    while (line) {
+        char *colon = strchr(line, ':');
+        if (colon) {
+            *colon = '\0';
+            char *vals = colon + 1;
+            json_t *arr = NULL;
+            if (strstr(line, "Manifests")) arr = json_obj_get(obj, "manifests");
+            else if (strstr(line, "Package manager")) arr = json_obj_get(obj, "packageManagers");
+            else if (strstr(line, "Verify")) arr = json_obj_get(obj, "verifyCommands");
+            else if (strstr(line, "Context")) arr = json_obj_get(obj, "contextFiles");
+            if (arr) {
+                char *vsave = NULL;
+                char *item = strtok_r(vals, ",", &vsave);
+                while (item) {
+                    while (*item == ' ' || *item == '\t') item++;
+                    char *e = item + strlen(item);
+                    while (e > item && (e[-1] == ' ' || e[-1] == '\t')) *--e = '\0';
+                    if (item[0]) json_append(arr, json_string(item));
+                    item = strtok_r(NULL, ",", &vsave);
+                }
+            }
+        }
+        line = strtok_r(NULL, "\n", &save);
+    }
+    free(facts_lines);
+
+    char *out = json_serialize(obj);
+    json_free(obj);
+    return out;
+}
