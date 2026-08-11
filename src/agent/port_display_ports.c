@@ -23,9 +23,15 @@ static char *lowerdup(const char *s) {
 }
 
 /* PoP: _diff_ansi @ agent/display.py:_diff_ansi */
+/* Python: RGB truecolor ANSI escapes resolved from the active skin; when no
+ * skin / on import failure, falls back to dark-terminal defaults. The C port
+ * returns the exact dark-terminal fallback dict (skin engine not wired). */
 char *disp_diff_ansi(void) {
-    /* Python: ANSI escapes from active skin (cached). */
-    return strdup("\x1b[32m\x1b[31m\x1b[36m");
+    return strdup("{\"dim\":\"\\033[38;2;150;150;150m\","
+                  "\"file\":\"\\033[38;2;180;160;255m\","
+                  "\"hunk\":\"\\033[38;2;120;120;140m\","
+                  "\"minus\":\"\\033[38;2;255;255;255;48;2;120;20;20m\","
+                  "\"plus\":\"\\033[38;2;255;255;255;48;2;20;90;20m\"}");
 }
 
 /* PoP: set_tool_preview_max_len @ agent/display.py:set_tool_preview_max_len */
@@ -309,19 +315,26 @@ int disp_render_edit_diff_with_delta(const char *tool_name, const char *result, 
 }
 
 /* PoP: get_waiting_faces @ agent/display.py:get_waiting_faces */
+/* Python: active-skin spinner.waiting_faces or KAWAII_WAITING fallback.
+ * C returns the exact KAWAII_WAITING list (skin engine not wired), newline-
+ * joined to match this file's list-as-string convention. */
 char *disp_get_waiting_faces(void) {
-    /* Python: skin faces or KAWAII_WAITING fallback. */
-    return strdup("(。・ω・。)\n(´･ω･`)\n(>_<)");
+    return strdup("(｡◕‿◕｡)\n(◕‿◕✿)\n٩(◕‿◕｡)۶\n(✿◠‿◠)\n( ˘▽˘)っ\n"
+                  "♪(´ε` )\n(◕ᴗ◕✿)\nヾ(＾∇＾)\n(≧◡≦)\n(★ω★)");
 }
 
 /* PoP: get_thinking_faces @ agent/display.py:get_thinking_faces */
 char *disp_get_thinking_faces(void) {
-    return strdup("(￣ω￣)\n(￣～￣)\n(￣ρ￣)");
+    return strdup("(｡•́︿•̀｡)\n(◔_◔)\n(¬‿¬)\n( •_•)>⌐■-■\n(⌐■_■)\n"
+                  "(´･_･`)\n◉_◉\n(°ロ°)\n( ˘⌣˘)♡\nヽ(>∀<☆)☆\n"
+                  "٩(๑❛ᴗ❛๑)۶\n(⊙_⊙)\n(¬_¬)\n( ͡° ͜ʖ ͡°)\nಠ_ಠ");
 }
 
 /* PoP: get_thinking_verbs @ agent/display.py:get_thinking_verbs */
 char *disp_get_thinking_verbs(void) {
-    return strdup("thinking\npondering\nwondering");
+    return strdup("pondering\ncontemplating\nmusing\ncogitating\nruminating\n"
+                  "deliberating\nmulling\nreflecting\nprocessing\nreasoning\n"
+                  "analyzing\ncomputing\nsynthesizing\nformulating\nbrainstorming");
 }
 
 /* PoP: __init__ @ agent/display.py:__init__ */

@@ -346,6 +346,14 @@ bool resolve_task(const hermes_config_t *cfg,
                              const char *task_name,
                              llm_config_t *out);
 
+/**
+ * Query whether auxiliary interrupt protection is currently active.
+ * Port of Python _aux_interrupt_protected() / aux_interrupt_protection.
+ * Returns true between aux_interrupt_protected_inc() and _dec() calls
+ * (the streaming layer sets this around SIGINT-delicate requests).
+ */
+bool aux_interrupt_protected(void);
+
 #ifdef __cplusplus
 }
 #endif

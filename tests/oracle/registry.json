@@ -1355,6 +1355,36 @@
       "harness": "tests/t_port_gateway_health_export_pure.c",
       "oracle": "tests/sta_oracle_gateway_health_export_pure.py",
       "fixtures": "tests/oracle/fixtures/gateway_health_export_pure"
+    },
+    "turn_summary": {
+      "harness": "tests/t_port_turn_summary.c",
+      "oracle": "tests/sta_oracle_turn_summary.py",
+      "fixtures": "tests/oracle/fixtures/turn_summary"
+    },
+    "prompt_stash": {
+      "harness": "tests/t_port_prompt_stash.c",
+      "oracle": "tests/sta_oracle_prompt_stash.py",
+      "fixtures": "tests/oracle/fixtures/prompt_stash"
+    },
+    "monitoring_emitter": {
+      "harness": "tests/t_port_monitoring_emitter.c",
+      "oracle": "tests/sta_oracle_monitoring_emitter.py",
+      "fixtures": "tests/oracle/fixtures/monitoring_emitter"
+    },
+    "agent_relay_runtime": {
+      "harness": "tests/t_port_agent_relay_runtime.c",
+      "oracle": "tests/sta_oracle_agent_relay_runtime.py",
+      "fixtures": "tests/oracle/fixtures/agent_relay_runtime"
+    },
+    "gateway_session_state": {
+      "harness": "tests/t_port_gateway_session_state.c",
+      "oracle": "tests/sta_oracle_gateway_session_state.py",
+      "fixtures": "tests/oracle/fixtures/gateway_session_state"
+    },
+    "working_diff": {
+      "harness": "tests/t_port_working_diff.c",
+      "oracle": "tests/sta_oracle_working_diff.py",
+      "fixtures": "tests/oracle/fixtures/working_diff"
     }
   },
   "normalize": {

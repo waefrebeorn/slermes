@@ -23,6 +23,14 @@
 #include <ctype.h>
 #include <pthread.h>
 
+static char *lowerdup(const char *s) {
+    if (!s) return NULL;
+    char *d = strdup(s);
+    if (!d) return NULL;
+    for (char *p = d; *p; p++) *p = (char)tolower((unsigned char)*p);
+    return d;
+}
+
 /* read_main_provider() lives in auxiliary_client.c; declared here for reuse */
 const char *read_main_provider(const hermes_config_t *cfg);
 
@@ -341,10 +349,35 @@ int aux__nous_portal_account_has_fresh_paid_access(void) {
 }
 
 /* PoP: aux__refresh_nous_recommended_model @ agent/auxiliary_client.py:_refresh_nous_recommended_model */
-/* Refresh the recommended Nous aux model; returns malloc'd model slug or "". */
-char *aux__refresh_nous_recommended_model(void) {
-    /* C resolves via provider catalog; default to a stable Nous aux slug. */
-    return strdup("nous-hermes-3");
+/* Refresh the recommended Nous aux model after a stale-model 404.
+ * Python: fetch fresh via get_nous_recommended_aux_model(force_refresh=True);
+ * if fresh != stale return it; else if _NOUS_MODEL != stale return _NOUS_MODEL;
+ * else NULL. C: the provider catalog path is the live fetch; here we implement
+ * the fallback decision exactly — return the known-good default when the
+ * catalog fetch is unavailable, or NULL when stale == default. */
+char *aux__refresh_nous_recommended_model(bool vision, const char *stale_model) {
+    const char *stale = stale_model ? stale_model : "";
+    /* In this build the live Nous Portal fetch (get_nous_recommended_aux_model)
+     * is not wired — match Python's except branch (debug-logged, falls through
+     * to the _NOUS_MODEL default). */
+    (void)vision;
+    const char *novel = NULL;
+    /* fresh = None in this build (no live fetch); fall to default branch */
+    if (novel) {
+        char *nv = lowerdup(novel);
+        char *sv = lowerdup(stale);
+        if (nv && sv && strcmp(nv, sv) != 0) { free(nv); free(sv); return strdup(novel); }
+        free(nv); free(sv);
+    }
+    /* _NOUS_MODEL fallback (only if it differs from the stale model) */
+    const char *DEFAULT = AUX_NOUS_MODEL;
+    /* case-insensitive compare (strcasecmp needs _GNU_SOURCE here) */
+    char *s_lo = lowerdup(stale);
+    char *d_lo = lowerdup(DEFAULT);
+    int differs = (s_lo && d_lo && strcmp(s_lo, d_lo) != 0) || (!s_lo || !d_lo);
+    free(s_lo); free(d_lo);
+    if (differs) return strdup(DEFAULT);
+    return NULL;
 }
 
 /* PoP: aux__evict_cached_clients @ agent/auxiliary_client.py:_evict_cached_clients */

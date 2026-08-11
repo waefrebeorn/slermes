@@ -470,17 +470,40 @@ billing_route_t usage_pricing_resolve_billing_route(const char *model_name,
                strcmp(pbuf, "minimax") == 0 ||
                strcmp(pbuf, "minimax-cn") == 0) {
         route.mode = BILLING_DOCS_SNAPSHOT;
-    } else if (strcmp(pbuf, "vertex") == 0 ||
-               base_url_host_matches(base_url, "aiplatform.googleapis.com")) {
-        /* Vertex hosts the same Gemini models as Google AI Studio. */
-        snprintf(route.provider, sizeof(route.provider), "gemini");
-        /* strip "google/" vendor prefix so pricing key matches */
-        const char *slash = strchr(mbuf, '/');
+    } else if (strcmp(pbuf, "google") == 0 ||
+               strcmp(pbuf, "gemini") == 0 ||
+               strcmp(pbuf, "vertex") == 0 ||
+               strcmp(pbuf, "google-gemini") == 0 ||
+               strcmp(pbuf, "google-ai-studio") == 0 ||
+               strcmp(pbuf, "google-vertex") == 0 ||
+               strcmp(pbuf, "vertex-ai") == 0 ||
+               base_url_host_matches(base_url, "aiplatform.googleapis.com") ||
+               base_url_host_matches(base_url, "generativelanguage.googleapis.com")) {
+        /* Google AI Studio (Gemini), Vertex AI, and Google-flavored hosts all
+         * price off the same snapshot — the pricing keys are keyed on
+         * provider='google', so normalize every Google-flavored provider name
+         * onto "google" (faithful to agent/usage_pricing.py). */
+        snprintf(route.provider, sizeof(route.provider), "google");
+        /* strip "google/" vendor prefix (Vertex OpenAI-compat endpoint) +
+         * strip leading region scope (us./global./eu./apac./au.) so the bare
+         * model id matches the pricing key. */
+        const char *stripped = mbuf;
+        const char *dot = strchr(mbuf, '.');
+        if (dot && (strncmp(mbuf, "us.", 3) == 0 ||
+                    strncmp(mbuf, "global.", 7) == 0 ||
+                    strncmp(mbuf, "eu.", 3) == 0 ||
+                    strncmp(mbuf, "apac.", 5) == 0 ||
+                    strncmp(mbuf, "au.", 3) == 0)) {
+            stripped = dot + 1;
+        }
+        const char *slash = strchr(stripped, '/');
         if (slash) {
             size_t rest = strlen(slash + 1);
             if (rest >= sizeof(mbuf)) rest = sizeof(mbuf) - 1;
             memmove(mbuf, slash + 1, rest + 1);
             snprintf(route.model_name, sizeof(route.model_name), "%s", mbuf);
+        } else {
+            snprintf(route.model_name, sizeof(route.model_name), "%s", stripped);
         }
         route.mode = BILLING_DOCS_SNAPSHOT;
     } else if (strcmp(pbuf, "custom") == 0 ||

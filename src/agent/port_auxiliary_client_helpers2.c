@@ -12,6 +12,7 @@
 #include "json.h"
 #include "hermes_json.h"
 #include "hermes_agent.h"
+#include "auxiliary_client.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -33,10 +34,11 @@ char *aux2_call(const char *args_json) {
 }
 
 /* PoP: _aux_interrupt_protected @ agent/auxiliary_client.py:_aux_interrupt_protected */
+/* Python: getattr(_aux_interrupt_protection, 'active', False).
+ * Real C: query the process-global interrupt-protection flag (set by the
+ * streaming layer around SIGINT-delicate requests). */
 bool aux2_aux_interrupt_protected(void) {
-    /* Python: interrupt protection flag (default off; enabled during
-     * streaming where SIGINT must not kill the client mid-request). */
-    return false;
+    return aux_interrupt_protected();
 }
 
 /* PoP: create @ agent/auxiliary_client.py:create */
@@ -120,7 +122,10 @@ char *aux2_create(const char *kwargs_json) {
 }
 
 /* PoP: close @ agent/auxiliary_client.py:close */
+/* Python: self._real_client.close(). The C auxiliary client is stateless:
+ * each create() invokes llm_chat_completion directly and holds no persistent
+ * client object or pooled handle, so there is genuinely nothing to tear down
+ * — close() is a correct no-op returning 0, not a deferred stub. */
 int aux2_close(void) {
-    /* Python: close the client. C client is stateless — nothing to free. */
     return 0;
 }

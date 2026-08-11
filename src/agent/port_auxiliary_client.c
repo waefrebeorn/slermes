@@ -294,9 +294,11 @@ char *auxc_normalize_main_runtime(const char *runtime_json) {
 }
 
 /* PoP: _get_provider_chain @ agent/auxiliary_client.py:_get_provider_chain */
+/* Python: ordered chain built at call time — openrouter, nous, local/custom,
+ * api-key. openai-codex deliberately excluded. Returns malloc'd
+ * comma-joined label list. */
 char *auxc_get_provider_chain(void) {
-    /* Python: ordered chain, built at call time; openai-codex excluded. */
-    return strdup("nous,openrouter,deepinfra,openai,anthropic,deepseek,gemini");
+    return strdup("openrouter,nous,local/custom,api-key");
 }
 
 /* PoP: _normalize_chain_label @ agent/auxiliary_client.py:_normalize_chain_label */
