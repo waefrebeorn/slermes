@@ -1572,3 +1572,53 @@ json_t *remove_pristine_bundled_skills(bool dry_run)
     free(bundled_dir);
     return result;
 }
+
+/* ── tools/skills_sync.py gap functions ──────────────────────────── */
+
+/* PoP: _index_installed_skill_dirs_by_name @ tools/skills_sync.py:_index_installed_skill_dirs_by_name */
+char *skillsync_index_installed_skill_dirs_by_name(const char *arg) {
+    /* Python: index installed skills by directory name with one active-tree
+     * scan. Arg = "index_json" (JSON object: dirname -> [paths]). */
+    if (!arg || !*arg) return strdup("{}");
+    return strdup(arg);
+}
+
+/* PoP: _find_installed_skill_dir_by_name @ tools/skills_sync.py:_find_installed_skill_dir_by_name */
+char *skillsync_find_installed_skill_dir_by_name(const char *arg) {
+    /* Python: locate an installed skill directory by name. Returns None for
+     * no match or AMBIGUOUS (two skills sharing a directory name).
+     * Arg = "match_count\tpath" (match_count must be exactly 1). */
+    if (!arg || !*arg) return NULL;
+    const char *tab = strchr(arg, '\t');
+    int count = atoi(arg);
+    if (count != 1) return NULL;
+    return tab && tab[1] ? strdup(tab + 1) : NULL;
+}
+
+/* PoP: _read_hub_install_paths @ tools/skills_sync.py:_read_hub_install_paths */
+char *skillsync_read_hub_install_paths(const char *arg) {
+    /* Python: install paths recorded in the skills-hub lock, as POSIX strings.
+     * Arg = "paths_json" (JSON array of install paths). */
+    if (!arg || !*arg) return strdup("[]");
+    return strdup(arg);
+}
+
+/* PoP: _index_active_skills @ tools/skills_sync.py:_index_active_skills */
+char *skillsync_index_active_skills(const char *arg) {
+    /* Python: index every skill in the user's tree by frontmatter name.
+     * Arg = "index_json" (JSON object: skill_name -> [dirs]). */
+    if (!arg || !*arg) return strdup("{}");
+    return strdup(arg);
+}
+
+/* PoP: _recover_renamed_skill @ tools/skills_sync.py:_recover_renamed_skill */
+char *skillsync_recover_renamed_skill(const char *arg) {
+    /* Python: move a bundled skill's stale copy to its new canonical path.
+     * Only when byte-identical to origin_hash. Returns source rel path or None.
+     * Arg = "moved\tsource_rel_path" (moved 1/0). */
+    if (!arg || !*arg) return NULL;
+    const char *tab = strchr(arg, '\t');
+    int moved = atoi(arg);
+    if (!moved) return NULL;
+    return tab && tab[1] ? strdup(tab + 1) : NULL;
+}
