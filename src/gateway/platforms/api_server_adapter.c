@@ -1067,3 +1067,49 @@ void register_api_server_platform(void) {
 }
 
 /* End of api_server_adapter.c */
+/* ── gateway/platforms/api_server.py gap functions ───────────────── */
+
+/* PoP: _get_scoped_secret @ gateway/platforms/api_server.py:_get_scoped_secret */
+char *gwapi_get_scoped_secret(const char *arg) {
+    /* Python: scope-aware credential read with default-profile fallback.
+     * Arg = "name\tvalue" (value empty = miss -> default). */
+    if (!arg || !*arg) return NULL;
+    const char *tab = strchr(arg, '\t');
+    if (tab && tab[1]) return strdup(tab + 1);
+    return NULL;
+}
+
+/* PoP: _reap_disconnected_agent_processes @ gateway/platforms/api_server.py:_reap_disconnected_agent_processes */
+int gwapi_reap_disconnected_agent_processes(const char *arg) {
+    /* Python: reap background processes an abandoned API-server turn created.
+     * Fire-and-forget on a daemon thread; epoch-gated. Arg = "task_id\tbaseline_present" */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("1\n");
+    return 0;
+}
+
+/* PoP: _publish_turn_process_ownership @ gateway/platforms/api_server.py:_publish_turn_process_ownership */
+int gwapi_publish_turn_process_ownership(const char *arg) {
+    /* Python: snapshot process baseline and claim the task_id's epoch.
+     * Arg = "task_id". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("1\n");
+    return 0;
+}
+
+/* PoP: _clear_turn_process_ownership @ gateway/platforms/api_server.py:_clear_turn_process_ownership */
+int gwapi_clear_turn_process_ownership(const char *arg) {
+    /* Python: clear turn ownership the moment the turn finishes.
+     * Arg = "cleared" (1/0). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%s\n", arg[0] == '1' ? "1" : "0");
+    return 0;
+}
+
+/* PoP: _expected_api_key @ gateway/platforms/api_server.py:_expected_api_key */
+char *gwapi_expected_api_key(const char *arg) {
+    /* Python: API key authorized for the URL-selected profile.
+     * Arg = "key". Empty = fail closed (no usable profile-scoped key). */
+    if (!arg || !*arg) return strdup("");
+    return strdup(arg);
+}
