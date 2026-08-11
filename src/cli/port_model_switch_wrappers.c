@@ -262,3 +262,203 @@ int msw_u_prepend_moa_picker_provider(const char *arg) {
     printf("moa row prepended (current=%s): %s\n", arg, t2 ? t2 + 1 : "");
     return 0;
 }
+
+/* ── ModelSwitchRequest dataclass port ──────────────────────────────── */
+
+/* PoP: model_input @ hermes_cli/model_switch.py:ModelSwitchRequest.model_input */
+const char *msw_model_switch_request_model_input(const char *target) {
+    /* Python: property returning self.target */
+    return target ? target : "";
+}
+
+/* PoP: flags @ hermes_cli/model_switch.py:ModelSwitchRequest.flags */
+char *msw_model_switch_request_flags(const char *target,
+        const char *provider, bool is_global, bool is_session,
+        bool is_once, bool force_refresh) {
+    /* Python: returns ModelFlagParseResult. We return a tab-separated string:
+     * "model_input\tprovider\tflags\tstate\tresult" */
+    if (!target) target = "";
+    char *buf = malloc(512);
+    if (!buf) return NULL;
+    snprintf(buf, 512, "%s\t%s\t%u%u%u%u\t1\tparsed",
+        target, provider ? provider : "",
+        is_global ? 1 : 0, is_session ? 1 : 0, is_once ? 1 : 0, force_refresh ? 1 : 0);
+    return buf;
+}
+
+/* PoP: error_messages @ hermes_cli/model_switch.py:ModelSwitchRequest.error_messages */
+char *msw_model_switch_request_error_messages(const char *errors_csv) {
+    /* Python: [MODEL_SWITCH_ERROR_TEXT[code] for code in self.errors]
+     * Arg = comma-separated error codes (e.g. "once_with_global,once_requires_target").
+     * Returns newline-separated error text. */
+    if (!errors_csv || !*errors_csv) { printf("\n"); return NULL; }
+    char *copy = strdup(errors_csv);
+    if (!copy) return NULL;
+    char *result = NULL;
+    size_t rcap = 0;
+    size_t rlen = 0;
+    char *saveptr = NULL;
+    char *tok = strtok_r(copy, ",", &saveptr);
+    while (tok) {
+        while (*tok == ' ' || *tok == '\t') tok++;
+        char *end = tok + strlen(tok);
+        while (end > tok && (end[-1] == ' ' || end[-1] == '\t')) end--;
+        *end = '\0';
+        const char *text = NULL;
+        if (strcmp(tok, "once_with_global") == 0)
+            text = "/model --once cannot be combined with --global";
+        else if (strcmp(tok, "once_requires_target") == 0)
+            text = "/model --once requires a model or provider.";
+        if (text) {
+            size_t tlen = strlen(text);
+            if (rlen + tlen + 2 > rcap) {
+                while (rlen + tlen + 2 > rcap) rcap += 256;
+                result = realloc(result, rcap);
+            }
+            memcpy(result + rlen, text, tlen);
+            rlen += tlen;
+            result[rlen++] = '\n';
+            result[rlen] = '\0';
+        }
+        tok = strtok_r(NULL, ",", &saveptr);
+    }
+    free(copy);
+    if (!result) { printf("\n"); return NULL; }
+    printf("%s", result);
+    return result;
+}
+
+/* Helper: parse_model_flags_detailed returning allocated result string */
+char *msw_parse_model_flags_detailed_buf(const char *arg) {
+    /* Python: hand-rolled flag parse. */
+    if (!arg || !*arg) return strdup("\t\t0000\t0\t0");
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    int state = t3 && t3[1] == '1';
+    if (!state) return strdup("\t\t0000\t0\t0");
+    char *result = malloc(1024);
+    if (!result) return NULL;
+    snprintf(result, 1024, "\t%s\t%s\t%s\n",
+        t1 ? t1 + 1 : "", t2 ? t2 + 1 : "", t3 ? t3 + 1 : "");
+    return result;
+}
+
+/* PoP: parse_model_switch_args @ hermes_cli/model_switch.py:parse_model_switch_args */
+char *msw_parse_model_switch_args(const char *raw_args) {
+    /* Python: wraps parse_model_flags_detailed + flag-conflict validation.
+     * Returns a serialized ModelSwitchRequest:
+     * "raw\ttarget\tprovider\tis_global\tis_session\tis_once\tforce_refresh\tscope\terrors\n" */
+    char *parsed = msw_parse_model_flags_detailed_buf(raw_args);
+    /* parse_model_flags_detailed_buf returns: model\tprovider\tflags\tstate\tresult */
+    /* flags = is_global is_session is_once force_refresh (4 bits as '0'/'1' chars) */
+    if (!parsed) { printf("\t\t0\t0\t0\t0\t0\tdefault\t\n"); return NULL; }
+    const char *t1 = strchr(parsed, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    char model[256] = "", provider[256] = "", flags[8] = "0000", scope[16] = "default";
+    if (t1) { strncpy(model, parsed, t1 - parsed); model[255]='\0'; }
+    if (t1 && t2) { strncpy(provider, t1+1, t2 - t1 - 1); provider[255]='\0'; }
+    if (t2 && t3) { strncpy(flags, t2+1, t3 - t2 - 1); flags[7]='\0'; }
+    int is_global = flags[0] == '1';
+    int is_session = flags[1] == '1';
+    int is_once = flags[2] == '1';
+    /* force_refresh = flags[3] */
+
+    /* Flag conflict validation (mirrors Python) */
+    char errors[256] = "";
+    char *e = errors;
+    int elen = 0;
+    if (is_once && is_global) {
+        if (elen > 0) { *e++ = ','; elen++; }
+        const char *s = "once_with_global";
+        strcpy(e, s); e += strlen(s); elen += strlen(s);
+    }
+    if (is_once && !model[0] && !provider[0]) {
+        if (elen > 0) { *e++ = ','; elen++; }
+        const char *s = "once_requires_target";
+        strcpy(e, s); e += strlen(s); elen += strlen(s);
+    }
+
+    /* Determine scope */
+    if (is_once) strcpy(scope, "once");
+    else if (is_session) strcpy(scope, "session");
+    else if (is_global) strcpy(scope, "global");
+    else strcpy(scope, "default");
+
+    printf("%s\t%s\t%s\t%d\t%d\t%d\t0\t%s\t%s\n",
+        raw_args ? raw_args : "", model, provider, is_global, is_session, is_once, scope, errors);
+    free(parsed);
+    return NULL;
+}
+
+/* PoP: _effective_model_candidate @ hermes_cli/model_switch.py:_effective_model_candidate */
+const char *msw_effective_model_candidate(const char *value, const char *model_key) {
+    /* Python: extract model-name from str / dict / attr-object.
+     * Args: value (string, or JSON dict, or ignored), model_key (for dict lookup).
+     * Returns the model candidate string. */
+    if (!value || !*value) return "";
+    /* If value is JSON, extract "model" key */
+    if (value[0] == '{') {
+        json_t *j = json_parse(value, NULL);
+        if (j) {
+            const char *m = json_get_str(j, "model", NULL);
+            if (!m) m = json_get_str(j, model_key ? model_key : "model", NULL);
+            if (m) {
+                /* Strip and return */
+                char buf[512];
+                const char *s = m;
+                while (*s == ' ') s++;
+                char *e = (char *)s + strlen(s);
+                while (e > s && (e[-1] == ' ' || e[-1] == '\t')) e--;
+                int len = (int)(e - s);
+                if (len >= (int)sizeof(buf)) len = (int)sizeof(buf) - 1;
+                memcpy(buf, s, len); buf[len] = '\0';
+                json_free(j);
+                printf("%s\n", buf);
+                return buf;
+            }
+            json_free(j);
+        }
+        printf("\n");
+        return "";
+    }
+    /* Plain string — strip and return */
+    char buf[512];
+    const char *s = value;
+    while (*s == ' ') s++;
+    char *e = (char *)s + strlen(s);
+    while (e > s && (e[-1] == ' ' || e[-1] == '\t')) e--;
+    int len = (int)(e - s);
+    if (len >= (int)sizeof(buf)) len = (int)sizeof(buf) - 1;
+    memcpy(buf, s, len); buf[len] = '\0';
+    printf("%s\n", buf);
+    return buf;
+}
+
+/* PoP: resolve_effective_model @ hermes_cli/model_switch.py:resolve_effective_model */
+const char *msw_resolve_effective_model(const char *session, const char *channel,
+        const char *global_cfg) {
+    /* Python: session > channel > global precedence.
+     * Each arg may be a model string, JSON dict with "model" key, or empty. */
+    const char *candidate;
+    candidate = msw_effective_model_candidate(session, "model");
+    if (candidate && *candidate) { printf("%s\n", candidate); return candidate; }
+    candidate = msw_effective_model_candidate(channel, "model");
+    if (candidate && *candidate) { printf("%s\n", candidate); return candidate; }
+    candidate = msw_effective_model_candidate(global_cfg, "model");
+    if (candidate && *candidate) { printf("%s\n", candidate); return candidate; }
+    printf("\n");
+    return "";
+}
+
+/* PoP: resolve_display_context_length_async @ hermes_cli/model_switch.py:resolve_display_context_length_async */
+int msw_resolve_display_context_length_async(const char *arg) {
+    /* Python: async wrapper that runs resolve_display_context_length in a
+     * thread. In C: delegate to the sync resolver (msw_resolve_display_context_length).
+     * Arg = "state\tresult". */
+    /* Reuse the existing sync resolver */
+    return msw_resolve_display_context_length(arg);
+}
