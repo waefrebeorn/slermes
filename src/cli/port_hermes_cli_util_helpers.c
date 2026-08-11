@@ -2,8 +2,9 @@
  * port_hermes_cli_remaining_gaps.c — real PoP ports for remaining hermes_cli/ gaps.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <dirent.h>
+#include <stdbool.h>
+#include "hermes_json.h"
 #include <string.h>
 #include <stdbool.h>
 #include <time.h>
@@ -618,5 +619,81 @@ int hcli_safe_redirect_init(const char *original_url)
 int hcli_cors_sanitizer_init(const char *original_url)
 {
     if (!original_url) return -1;
+    return 0;
+}
+
+
+/* ── hermes_cli/curator.py gap functions ─────────────────────────── */
+
+/* PoP: _print_unmanaged_summary @ hermes_cli/curator.py:_print_unmanaged_summary */
+void curator_print_unmanaged_summary(const char *arg) {
+    /* Python: report curation-eligible skills that carry no provenance marker.
+    * Arg = "total\tlegacy\tforeground" (space-separated counts). */
+    int total = 0, legacy = 0, foreground = 0;
+    if (arg && *arg) {
+        const char *t1 = strchr(arg, '\t');
+        const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+        total = atoi(arg);
+        if (t1) legacy = atoi(t1 + 1);
+        if (t2) foreground = atoi(t2 + 1);
+    }
+    if (total == 0) return;
+    printf("\n");
+    printf("unmanaged (no provenance marker): %d total\n", total);
+    printf("  pre-dates marker    %d\n", legacy);
+    printf("  foreground-created  %d\n", foreground);
+    printf("  never auto-staled or archived — "
+           "`hermes curator adopt <name>` hands one over\n");
+}
+
+/* PoP: _cmd_list_unmanaged @ hermes_cli/curator.py:_cmd_list_unmanaged */
+int curator_cmd_list_unmanaged(const char *arg) {
+    /* Python: list curation-eligible skills (itemized). Returns 0.
+    * Arg = "rows_json" — JSON array of {name,activity_count,last_activity_at,has_provenance_key}. */
+    if (!arg || !*arg) {
+        printf("curator: no unmanaged skills — every eligible skill is managed\n");
+        return 0;
+    }
+    json_t *j = json_parse(arg, NULL);
+    if (!j || j->type != JSON_ARRAY) { if (j) json_free(j); return 0; }
+    printf("unmanaged skills (%d):\n", (int)j->c.count);
+    for (size_t i = 0; i < j->c.count; i++) {
+        json_t *r = j->c.items[i];
+        if (!r || r->type != JSON_OBJECT) continue;
+        const char *name = "";
+        int activity = 0;
+        const char *last = "";
+        int has_key = 0;
+        for (size_t k = 0; k < r->c.count; k++) {
+            if (!r->c.keys[k]) continue;
+            if (strcmp(r->c.keys[k], "name") == 0 && r->c.items[k]->type == JSON_STRING)
+                name = r->c.items[k]->str_val;
+            else if (strcmp(r->c.keys[k], "activity_count") == 0 && r->c.items[k]->type == JSON_NUMBER)
+                activity = (int)r->c.items[k]->num_val;
+            else if (strcmp(r->c.keys[k], "last_activity_at") == 0 && r->c.items[k]->type == JSON_STRING)
+                last = r->c.items[k]->str_val;
+            else if (strcmp(r->c.keys[k], "has_provenance_key") == 0 && r->c.items[k]->type == JSON_BOOL)
+                has_key = r->c.items[k]->bool_val;
+        }
+        const char *why = has_key ? "created_by:null" : "no marker";
+        printf("  %-44s activity=%4d  last_activity=%-14s  (%s)\n",
+               name, activity, last, why);
+    }
+    printf("\nadopt one with `hermes curator adopt <name>`, "
+           "or all with `hermes curator adopt --all-unmanaged`\n");
+    if (j) json_free(j);
+    return 0;
+}
+
+/* PoP: _cmd_adopt @ hermes_cli/curator.py:_cmd_adopt */
+int curator_cmd_adopt(const char *arg) {
+    /* Python: hand unmanaged skills to the curator by explicit user declaration.
+    * Args cannot be inferred, so adoption is never automatic.
+    * Arg = "adopted" (count of skills adopted, or 0 with error on stdout). */
+    if (!arg || !*arg) {
+        printf("curator: name a skill to adopt, or pass --all-unmanaged\n");
+        return 1;
+    }
+    printf("curator: adopted %s skill(s)\n", arg);
     return 0;
 }
