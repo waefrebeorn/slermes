@@ -69,7 +69,12 @@ double rtu_adaptive_rate_limit_backoff(const char *provider, const char *error) 
 }
 
 /* PoP: zai_coding_overload_retry_ceiling @ agent/retry_utils.py:zai_coding_overload_retry_ceiling */
-long rtu_zai_coding_overload_retry_ceiling(void) {
-    /* Python: ceiling for full overload schedule. */
-    return 10;
+/* Python: ceiling = short_attempts + len(LONG_BACKOFF) + 1.
+ * With defaults (short_attempts=3, len(LONG_BACKOFF)=4) => 8.
+ * The +1 accounts for the retry-count>=ceiling check running before the
+ * backoff is computed, so every long-tier entry is reachable. */
+long rtu_zai_coding_overload_retry_ceiling(int short_attempts) {
+    if (short_attempts < 0) short_attempts = 3;
+    static const double LONG_BACKOFF[] = {30.0, 60.0, 90.0, 120.0};
+    return short_attempts + (int)(sizeof(LONG_BACKOFF) / sizeof(LONG_BACKOFF[0])) + 1;
 }

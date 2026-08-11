@@ -2390,7 +2390,19 @@ int gateway_wake_u_self_post_chat_completion(const char *arg) {
 }
 
 /* PoP: _truthy_env @ gateway/cwd_placeholder.py:_truthy_env */
-int gateway_cwd_placeholder_u_truthy_env(const char *arg) { (void)arg; return 0; }
+/* Python: (value or "").strip().lower() in {"true","1","yes"}. */
+int gateway_cwd_placeholder_u_truthy_env(const char *arg) {
+    if (!arg) return 0;
+    /* strip + lowercase into a small stack buffer */
+    char buf[64];
+    char *q = buf;
+    for (const char *p = arg; *p && q < buf + sizeof(buf) - 1; p++) {
+        if (*p == ' ' || *p == '\\t' || *p == '\\n' || *p == '\\r') continue;
+        *q++ = (char)tolower((unsigned char)*p);
+    }
+    *q = '\\0';
+    return strcmp(buf, "true") == 0 || strcmp(buf, "1") == 0 || strcmp(buf, "yes") == 0;
+}
 
 /* PoP: resolve_placeholder_terminal_cwd @ gateway/cwd_placeholder.py:resolve_placeholder_terminal_cwd */
 int gateway_cwd_placeholder_resolve_placeholder_terminal_cwd(const char *arg) {

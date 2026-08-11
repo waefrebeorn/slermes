@@ -1,6 +1,6 @@
 {
-  "total": 158,
-  "real": 134,
+  "total": 137,
+  "real": 113,
   "stub": 0,
   "partial": 24,
   "stub_file_count": 0,
@@ -29,19 +29,9 @@
       "lines": 36
     },
     {
-      "file": "src/gateway/port_gateway_relay_adapter.c",
-      "func": "relay_adapter_apply_descriptor",
-      "lines": 35
-    },
-    {
       "file": "src/agent/port_agent_antigravity_code_assist.c",
       "func": "antigravity_load_code_assist",
       "lines": 33
-    },
-    {
-      "file": "src/gateway/port_gateway_relay_adapter.c",
-      "func": "relay_adapter_send_follow_up",
-      "lines": 31
     },
     {
       "file": "src/agent/port_agent_antigravity_code_assist.c",
@@ -72,11 +62,6 @@
       "file": "src/cli/port_kanban_db.c",
       "func": "_git_current_branch",
       "lines": 28
-    },
-    {
-      "file": "src/gateway/port_gateway_relay_adapter.c",
-      "func": "relay_adapter_capture_scope",
-      "lines": 27
     },
     {
       "file": "src/cli/port_gateway.c",
@@ -154,9 +139,24 @@
       "lines": 17
     },
     {
-      "file": "src/tools/port_terminal_tool.c",
-      "func": "read_shell_token",
+      "file": "src/gateway/port_gateway_relay_ws_transport.c",
+      "func": "ws_transport_get_chat_info",
       "lines": 16
+    },
+    {
+      "file": "src/agent/port_agent_antigravity_code_assist.c",
+      "func": "antigravity_is_recommended_sort",
+      "lines": 15
+    },
+    {
+      "file": "src/agent/port_agent_auxiliary_client.c",
+      "func": "resolve_nous_pool_runtime_api",
+      "lines": 15
+    },
+    {
+      "file": "src/agent/port_agent_display.c",
+      "func": "truncate_preview",
+      "lines": 15
     }
   ],
   "undefined_calls": [
@@ -173,11 +173,16 @@
     {
       "file": "src/cli/port_auth_na.c",
       "func": "_codex_pool_rate_limit_status",
-      "undefined": "json_new_object"
+      "undefined": "json_object_get"
     },
     {
       "file": "src/cli/port_auth_na.c",
       "func": "_codex_pool_rate_limit_status",
+      "undefined": "json_new_object"
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_xai_oauth_state_from_store",
       "undefined": "json_object_get"
     },
     {
@@ -188,12 +193,7 @@
     {
       "file": "src/cli/port_auth_na.c",
       "func": "_xai_oauth_state_from_store",
-      "undefined": "json_new_string"
-    },
-    {
-      "file": "src/cli/port_auth_na.c",
-      "func": "_xai_oauth_state_from_store",
-      "undefined": "json_object_get"
+      "undefined": "json_array_get"
     },
     {
       "file": "src/cli/port_auth_na.c",
@@ -208,7 +208,7 @@
     {
       "file": "src/cli/port_auth_na.c",
       "func": "_xai_oauth_state_from_store",
-      "undefined": "json_array_get"
+      "undefined": "json_new_string"
     },
     {
       "file": "src/cli/port_auth_na.c",
@@ -223,12 +223,12 @@
     {
       "file": "src/cli/port_auth_na.c",
       "func": "_write_through_xai_oauth_to_global_root",
-      "undefined": "json_new_object"
+      "undefined": "json_object_get"
     },
     {
       "file": "src/cli/port_auth_na.c",
       "func": "_write_through_xai_oauth_to_global_root",
-      "undefined": "json_object_get"
+      "undefined": "json_new_object"
     },
     {
       "file": "src/cli/port_auth_na.c",
@@ -239,11 +239,6 @@
       "file": "src/cli/port_auth_na.c",
       "func": "_auth_file_cache_key",
       "undefined": "json_new_object"
-    },
-    {
-      "file": "src/cli/port_auth_na.c",
-      "func": "_auth_file_cache_key",
-      "undefined": "json_new_string"
     },
     {
       "file": "src/cli/port_auth_na.c",
@@ -254,6 +249,11 @@
       "file": "src/cli/port_auth_na.c",
       "func": "_auth_file_cache_key",
       "undefined": "json_new_number"
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_auth_file_cache_key",
+      "undefined": "json_new_string"
     },
     {
       "file": "src/cli/port_auth_na.c",
@@ -283,12 +283,12 @@
     {
       "file": "src/cli/port_config.c",
       "func": "clear_model_endpoint_credentials",
-      "undefined": "json_new_string"
+      "undefined": "json_object_set"
     },
     {
       "file": "src/cli/port_config.c",
       "func": "clear_model_endpoint_credentials",
-      "undefined": "json_object_set"
+      "undefined": "json_new_string"
     },
     {
       "file": "src/cli/port_config.c",
@@ -333,17 +333,17 @@
     {
       "file": "src/cli/port_kanban_db_na.c",
       "func": "_dispatch_once_locked",
-      "undefined": "json_new_string"
-    },
-    {
-      "file": "src/cli/port_kanban_db_na.c",
-      "func": "_dispatch_once_locked",
       "undefined": "json_object_set"
     },
     {
       "file": "src/cli/port_kanban_db_na.c",
       "func": "_dispatch_once_locked",
       "undefined": "json_new_number"
+    },
+    {
+      "file": "src/cli/port_kanban_db_na.c",
+      "func": "_dispatch_once_locked",
+      "undefined": "json_new_string"
     },
     {
       "file": "src/cli/port_main.c",
