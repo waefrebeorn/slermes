@@ -558,3 +558,39 @@ void secret_registry_shutdown(void)
     secret_registry_free(g_secret_registry);
     g_secret_registry = NULL;
 }
+
+/* ── Per-fetch environment view (port of base._SOURCE_ENVIRONMENT) ────── */
+/* Python: _SOURCE_ENVIRONMENT = ContextVar(..., default=None); the
+ * orchestrator installs a per-fetch env view so a source's subprocess
+ * never sees the caller's mutated environ mid-pass. C11 equivalent: a
+ * thread-local char** view with a token carrying the previous value. */
+
+typedef struct secret_env_token {
+    char **previous;
+} secret_env_token_t;
+
+static _Thread_local char **tl_source_environment = NULL;
+
+/* PoP: set_source_environment @ agent/secret_sources/base.py:set_source_environment */
+secret_env_token_t *secret_set_source_environment(char **environ_view)
+{
+    secret_env_token_t *tok = calloc(1, sizeof(*tok));
+    if (!tok) return NULL;
+    tok->previous = tl_source_environment;
+    tl_source_environment = environ_view;
+    return tok;
+}
+
+/* PoP: reset_source_environment @ agent/secret_sources/base.py:reset_source_environment */
+void secret_reset_source_environment(secret_env_token_t *token)
+{
+    if (!token) return;
+    tl_source_environment = token->previous;
+    free(token);
+}
+
+/* PoP: get_source_environment @ agent/secret_sources/base.py:get_source_environment */
+char **secret_get_source_environment(void)
+{
+    return tl_source_environment ? tl_source_environment : environ;
+}

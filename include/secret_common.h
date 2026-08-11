@@ -24,6 +24,7 @@ typedef struct secret_registry secret_registry_t;
 typedef struct secret_source secret_source_t;
 typedef struct fetch_result fetch_result_t;
 typedef struct apply_report apply_report_t;
+typedef struct secret_env_token secret_env_token_t;
 
 /* Result of one orchestrated apply pass (port of registry.ApplyReport). */
 struct apply_report {
@@ -108,6 +109,14 @@ int run_secret_cli(char *const argv[], const char *const *allow_env,
 char *scrub_ansi(const char *text);
 /* True when name is a legal env-var name. */
 bool is_valid_env_name(const char *name);
+
+/* ── Per-fetch environment view (port of base._SOURCE_ENVIRONMENT) ─────── */
+/* Install a per-fetch env view without touching the process environ.
+ * Returns a token (owned) for reset_source_environment. */
+secret_env_token_t *secret_set_source_environment(char **environ_view);
+void secret_reset_source_environment(secret_env_token_t *token);
+/* Active per-fetch view, or the process environ when none installed. */
+char **secret_get_source_environment(void);
 
 /* ── Registry + apply orchestrator (port of registry.py) ─────────────────── */
 secret_registry_t *secret_registry_create(void);
