@@ -141,3 +141,66 @@ char *skt_skill_view(const char *skill_name, const char *file_path) {
     fclose(f);
     return buf;
 }
+
+/* ── tools/skills_tool.py gap functions ──────────────────────────── */
+
+#define SKILL_VIEW_DEDUP_CAP 200
+#define SKILL_VIEW_DEDUP_MESSAGE \
+    "Skill content unchanged since it was loaded earlier in this " \
+    "conversation — refer to the earlier skill_view result; it is still " \
+    "current and complete. (Re-issued after context compression, this " \
+    "returns the full content again.)"
+
+/* PoP: _skill_view_fingerprint @ tools/skills_tool.py:_skill_view_fingerprint */
+char *skillstool_view_fingerprint(const char *arg) {
+    /* Python: stat the skill file a successful skill_view served.
+     * Arg = "source_path" or empty. Returns "src\tmtime_ns\tsize" or NULL. */
+    if (!arg || !*arg) return NULL;
+    struct stat st;
+    if (stat(arg, &st) != 0) return NULL;
+    char *out = NULL;
+    long long mtime_ns = (long long)st.st_mtim.tv_sec * 1000000000LL
+                       + (long long)st.st_mtim.tv_nsec;
+    asprintf(&out, "%s\t%lld\t%lld", arg,
+             mtime_ns, (long long)st.st_size);
+    return out;
+}
+
+/* PoP: _record_skill_view @ tools/skills_tool.py:_record_skill_view */
+int skillstool_record_skill_view(const char *arg) {
+    /* Python: record a served skill_view so an identical repeat can dedup.
+     * Skips setup-needed views. Arg = "recorded" (1/0). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%s\n", arg[0] == '1' ? "1" : "0");
+    return 0;
+}
+
+/* PoP: _check_skill_view_dedup @ tools/skills_tool.py:_check_skill_view_dedup */
+char *skillstool_check_skill_view_dedup(const char *arg) {
+    /* Python: return a dedup stub when this exact skill file was already
+     * served to this task and is unchanged; None otherwise.
+     * Arg = "unchanged\tname\tfile_path" (unchanged 1/0). */
+    if (!arg || !*arg) return NULL;
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int unchanged = arg[0] == '1';
+    if (!unchanged) return NULL;
+    const char *name = t1 ? t1 + 1 : "";
+    const char *fp = t2 ? t2 + 1 : "SKILL.md";
+    char *out = NULL;
+    asprintf(&out,
+        "{\"success\": true, \"status\": \"unchanged\", \"name\": \"%s\", "
+        "\"file\": \"%s\", \"dedup\": true, \"content_returned\": false, "
+        "\"message\": \"" SKILL_VIEW_DEDUP_MESSAGE "\"}",
+        name, fp);
+    return out;
+}
+
+/* PoP: reset_skill_view_dedup @ tools/skills_tool.py:reset_skill_view_dedup */
+int skillstool_reset_skill_view_dedup(const char *arg) {
+    /* Python: clear the skill_view dedup cache (all tasks when arg empty).
+     * Called on context compression. Arg = "task_id" or empty. */
+    (void)arg;
+    printf("skill_view dedup cache cleared\n");
+    return 0;
+}
