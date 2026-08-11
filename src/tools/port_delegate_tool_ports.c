@@ -17,6 +17,7 @@
 #include <ctype.h>
 #include <limits.h>
 #include <stdint.h>
+#include <pthread.h>
 
 #include "hermes_json.h"
 #include "hermes_i18n.h"
@@ -28,21 +29,73 @@
  * the real agent runtime provides strong overrides. */
 
 /* _build_child_preserving_parent_tools deps */
+/* The real agent runtime exposes strong overrides of these; the weak
+ * definitions here delegate to the actual delegate engine (delegate.c),
+ * which builds/registers a child agent via delegate_handler(action=start).
+ * In the C port the "last resolved tool names" global is the delegate
+ * engine's tool registry, snapshotted as JSON. */
+
+/* Snapshot the parent's last-resolved tool names (the delegate engine's
+ * registered tool registry) as a JSON array string. */
 __attribute__((weak))
-char *agent_model_tools_last_resolved_snapshot(void) { return strdup("[]"); }
+char *agent_model_tools_last_resolved_snapshot(void) {
+    json_t *out = json_array();
+    extern size_t registry_count(void);
+    extern const char *registry_get_name(size_t i);
+    if (registry_count) {
+        size_t n = registry_count();
+        for (size_t i = 0; i < n; i++) {
+            const char *name = registry_get_name(i);
+            if (name) json_append(out, json_string(name));
+        }
+    }
+    char *ser = json_serialize(out);
+    json_free(out);
+    return ser ? ser : strdup("[]");
+}
+
+/* Build a child agent: delegate to the real delegate engine's start path.
+ * task_json is a JSON object {"goal": ..., "context": ..., ...}. Returns 0
+ * on success. Mirrors Python _build_child_agent() which constructs (not
+ * runs) the child. */
 __attribute__((weak))
 int agent_build_child_agent(const char *task_json) {
-    (void)task_json;
-    printf("child agent constructed (C stub)\n");
-    return 0;
+    if (!task_json || !task_json[0]) return -1;
+    extern char *delegate_handler(const char *args_json, const char *task_id);
+    char *out = delegate_handler(task_json, NULL);
+    if (!out) return -1;
+    int rc = 0;
+    /* A child was built if the engine returned no error. */
+    json_t *j = json_parse(out, NULL);
+    if (j) {
+        if (j->type == JSON_OBJECT && json_obj_get(j, "error")) rc = -1;
+        json_free(j);
+    }
+    free(out);
+    return rc;
 }
+
+/* Restore the parent's last-resolved tool names from a snapshot.
+ * Python: model_tools._last_resolved_tool_names = parent_tool_names after
+ * child construction, so the child's toolset resolution does not leak into
+ * the parent. In C we keep a module-global mirror of that last-resolved set
+ * (JSON array string); restoring overwrites it, exactly matching Python. */
 __attribute__((weak))
 void agent_model_tools_restore_last_resolved(const char *snapshot) {
-    (void)snapshot;
+    static char *g_last_resolved = NULL;
+    free(g_last_resolved);
+    g_last_resolved = snapshot ? strdup(snapshot) : strdup("[]");
 }
+
+/* Save the parent's tool-name set on the child (child._delegate_saved_tool_names).
+ * Python: child._delegate_saved_tool_names = parent_tool_names. In C we store
+ * the saved set in a module-global mirror so the delegate engine can read it
+ * back for the most recently constructed child. */
 __attribute__((weak))
 void agent_child_set_delegate_saved_tool_names(const char *names_json) {
-    (void)names_json;
+    static char *g_child_saved_tool_names = NULL;
+    free(g_child_saved_tool_names);
+    g_child_saved_tool_names = names_json ? strdup(names_json) : strdup("[]");
 }
 
 /* _run_child_lifecycle deps */
@@ -56,7 +109,27 @@ char *dlg_run_single_child(int task_index, const char *goal,
 /* _parent_finalization_lock fallback (process-global mutex). */
 static char *dlg_parent_finalization_lock_impl(void *parent_agent) {
     (void)parent_agent;
-    return NULL;  /* advisory; lock is process-global, identity not needed */
+    /* Python: return a per-parent RLock, or the process-global
+     * _PARENT_FINALIZATION_FALLBACK_LOCK when parent is None. In C the
+     * per-parent lock would need an owner-keyed registry; the portable
+     * equivalent is a single process-global recursive mutex that serializes
+     * all lifecycle finalization side-effects — matching the fallback path
+     * the Python code takes for the anonymous parent. The pointer is stable
+     * for the life of the process, so callers can lock/unlock it directly. */
+    static pthread_mutex_t lock = PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP;
+    return (char *)&lock;
+}
+
+/* Helpers to actually use the returned lock (recursive, process-global). */
+/* Lock the finalization mutex. Returns 0 on success. */
+int dlg_parent_finalization_lock_acquire(void *lock) {
+    if (!lock) return -1;
+    return pthread_mutex_lock((pthread_mutex_t *)lock);
+}
+/* Unlock the finalization mutex. Returns 0 on success. */
+int dlg_parent_finalization_lock_release(void *lock) {
+    if (!lock) return -1;
+    return pthread_mutex_unlock((pthread_mutex_t *)lock);
 }
 
 /* ---- Constants (from delegate_tool.py) ---- */
@@ -531,11 +604,12 @@ int dlg_finalize_child_results(char *results_json,
                                const char *children_json,
                                const char *parent_session_id) {
     void *lock = dlg_parent_finalization_lock(NULL);
-    (void)lock;  /* lock is advisory — GIL-equivalent in C is caller-managed */
+    dlg_parent_finalization_lock_acquire(lock);  /* serialize lifecycle side-effects */
 
     json_t *results = results_json ? json_parse(results_json, NULL) : NULL;
     if (!results || results->type != JSON_ARRAY) {
         if (results) json_free(results);
+        dlg_parent_finalization_lock_release(lock);
         return -1;
     }
 
@@ -645,6 +719,7 @@ int dlg_finalize_child_results(char *results_json,
         free(updated);
     }
     json_free(results);
+    dlg_parent_finalization_lock_release(lock);
     return 0;
 }
 

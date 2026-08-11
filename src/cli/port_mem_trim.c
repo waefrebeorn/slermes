@@ -116,12 +116,9 @@ double mt_nonnegative_float(const json_t *value, double default_v) {
 /* PoP: _read_proc_status @ hermes_cli/mem_trim.py:_read_proc_status */
 /* Read /proc/self/status into a malloc'd string (caller frees), or NULL on
  * non-Linux / unreadable. Mirrors reading Path("/proc/self/status"). */
-#ifndef __linux__
-char *mt_read_proc_status(void) { return NULL; }
-#else
 char *mt_read_proc_status(void) {
     FILE *fh = fopen("/proc/self/status", "r");
-    if (!fh) return NULL;
+    if (!fh) return NULL;   /* non-Linux / unavailable: same as Python FileNotFoundError path */
     char *buf = NULL; size_t cap = 0; size_t len = 0; int ch;
     while ((ch = fgetc(fh)) != EOF) {
         if (len + 1 >= cap) { cap = cap ? cap * 2 : 4096; buf = realloc(buf, cap); }
@@ -133,7 +130,6 @@ char *mt_read_proc_status(void) {
     buf[len] = '\0';
     return buf;
 }
-#endif
 
 /* ── collect_memory_snapshot ───────────────────────────────────────── */
 /* PoP: collect_memory_snapshot @ hermes_cli/mem_trim.py:collect_memory_snapshot */

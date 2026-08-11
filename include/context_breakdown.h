@@ -87,6 +87,7 @@ char **context_breakdown_render_lines(const char *payload_json, const char *deta
                                       int grid, size_t *out_lines);
 
 /* PoP: compute_context_details @ agent/context_breakdown.py:compute_context_details */
+typedef struct system_prompt_config_s system_prompt_config_t;
 char *context_breakdown_compute_details(const system_prompt_config_t *cfg);
 
 #ifdef __cplusplus

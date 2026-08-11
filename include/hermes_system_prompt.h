@@ -130,7 +130,7 @@ char *build_environment_hints(void);
  * ================================================================ */
 
 /* Configuration for building a system prompt */
-typedef struct {
+typedef struct system_prompt_config_s {
     /* Stable tier flags */
     bool     use_soul;          /* true = try SOUL.md, false = use DEFAULT_IDENTITY */
     bool     has_memory;        /* inject MEMORY_GUIDANCE if memory tool available */

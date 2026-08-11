@@ -78,6 +78,10 @@ bool checkpoint_validate_commit_hash(const char *commit_hash);
 /* Validate a file path (non-empty, no ".." traversal). */
 bool checkpoint_validate_file_path(const char *file_path,
                                  const char *working_dir);
+/* ---- port_tools_checkpoint_manager.c session diff (CLI /diff session) ---- */
+/* Cumulative checkpoint-baseline diff for a working dir. Returns malloc'd
+ * JSON {"success":bool,"stat":str,"diff":str,"empty":bool,"error":str?}. */
+char *cli_tools_checkpoint_manager_session_diff(const char *working_dir);
 
 /* Normalize a path via realpath (falls back to the input). Caller frees. */
 char *checkpoint_normalize_path(const char *path_value);

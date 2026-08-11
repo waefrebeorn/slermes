@@ -14,6 +14,7 @@
 #include "slermes_home.h"
 #include "tools/process_registry.h"
 #include "port_config_py_helpers.h"
+#include "checkpoint_manager.h"
 #include "hermes_core_types.h"
 #include "blueprint_cmd.h"
 #include "cron_suggestions.h"
@@ -808,9 +809,80 @@ void ccm_print_diff_text(const char *text) {
 }
 /* PoP: _print_session_diff @ hermes_cli/cli_commands_mixin.py:_print_session_diff */
 void ccm_print_session_diff(const char *cwd, bool stat_only) {
-    (void)stat_only;
-    printf("  /diff session (cwd: %s) — checkpoint diff not wired for this session.\n",
-           cwd ? cwd : ".");
+    /* Python: mgr = self.agent._checkpoint_mgr; if not mgr.enabled: print
+     * guidance and return. Then mgr.session_diff(cwd) -> {success, stat,
+     * diff, empty, error}. */
+    hermes_config_t cfg;
+    memset(&cfg, 0, sizeof(cfg));
+    hermes_config_load(&cfg, NULL);
+    if (!cfg.checkpoints.enabled) {
+        printf("  Checkpoints are not enabled, so there's no session baseline.\n");
+        printf("  Enable with: hermes --checkpoints\n");
+        printf("  Or in config.yaml: checkpoints: { enabled: true }\n");
+        printf("  (Plain /diff still works — it uses git directly.)\n");
+        return;
+    }
+
+    char *result = cli_tools_checkpoint_manager_session_diff(cwd ? cwd : ".");
+    if (!result) {
+        printf("  Could not generate diff\n");
+        return;
+    }
+    json_t *j = json_parse(result, NULL);
+    free(result);
+    if (!j || j->type != JSON_OBJECT) {
+        if (j) json_free(j);
+        printf("  Could not generate diff\n");
+        return;
+    }
+
+    json_t *jsucc = json_obj_get(j, "success");
+    if (!jsucc || (jsucc->type == JSON_BOOL && !jsucc->bool_val)) {
+        json_t *jerr = json_obj_get(j, "error");
+        const char *err = jerr && jerr->type == JSON_STRING ? jerr->str_val : "Could not generate diff";
+        printf("  %s\n", err);
+        json_free(j);
+        return;
+    }
+
+    json_t *jstat = json_obj_get(j, "stat");
+    json_t *jdiff = json_obj_get(j, "diff");
+    json_t *jempty = json_obj_get(j, "empty");
+    const char *stat = jstat && jstat->type == JSON_STRING ? jstat->str_val : "";
+    const char *diff = jdiff && jdiff->type == JSON_STRING ? jdiff->str_val : "";
+    bool empty = jempty && jempty->type == JSON_BOOL && jempty->bool_val;
+
+    if (empty || (!stat[0] && !diff[0])) {
+        printf("  No changes — Hermes hasn't edited any files here yet.\n");
+        json_free(j);
+        return;
+    }
+
+    if (stat[0]) {
+        printf("\n%s\n", stat);
+    }
+    if (stat_only || !diff[0]) {
+        json_free(j);
+        return;
+    }
+
+    /* Truncate long diffs at 400 lines, matching Python. */
+    int shown = 0;
+    const char *line = diff;
+    while (*line && shown < 400) {
+        const char *nl = strchr(line, '\n');
+        size_t len = nl ? (size_t)(nl - line) : strlen(line);
+        printf("  %.*s\n", (int)len, line);
+        shown++;
+        if (!nl) break;
+        line = nl + 1;
+    }
+    int remaining = 0;
+    while (*line) { if (*line == '\n') remaining++; line++; }
+    if (remaining > 0)
+        printf("\n  ... (%d more lines — run `hermes --diff session` to see them all)\n", remaining);
+
+    json_free(j);
 }
 /* PoP: _handle_diff_command @ hermes_cli/cli_commands_mixin.py:_handle_diff_command */
 int ccm_handle_diff_command(const char *args) {

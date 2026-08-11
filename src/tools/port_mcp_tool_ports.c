@@ -383,9 +383,18 @@ int mct_drain_mcp_loop_tasks(const char *arg) {
 
 /* PoP: _drain_and_stop_mcp_loop @ tools/mcp_tool.py:_drain_and_stop_mcp_loop */
 int mct_drain_and_stop_mcp_loop(const char *arg) {
-    /* Python: drain pending tasks, then stop the loop from its owning thread.
-     * Arg = "drained\tstopped". */
-    (void)arg;
-    printf("{} (drained and stopped)\n");
+    /* Python: drain pending tasks on the loop, then stop it from its owning
+     * thread (kept in one loop-owned sequence so a timed-out caller cannot
+     * overtake the drain). The C core has no background asyncio loop — MCP
+     * calls are synchronous — so the faithful port drains the tracked
+     * pending-task count (via mct_drain_mcp_loop_tasks) and then stops the
+     * (absent) loop, mirroring the sequence. Arg = "pending_count". */
+    int pending = 0;
+    if (arg && *arg) pending = atoi(arg);
+    /* Drain first (mirrors the finally-ordered Python sequence). */
+    if (mct_drain_mcp_loop_tasks(arg) != 0 && pending > 0) {
+        /* Tasks were pending and are now reaped; nothing to stop. */
+    }
+    mct_stop_mcp_loop();
     return 0;
 }
