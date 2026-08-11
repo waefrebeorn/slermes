@@ -728,3 +728,766 @@ int tool_search_scoped_names(const char *tool_schemas[], int schema_count,
 void tool_search_catalog_free(tool_catalog_t *catalog) {
     (void)catalog;
 }
+
+/* ═════════════════════════════════════════════════════════════════════
+ *  Listing budget + helpers
+ * ═════════════════════════════════════════════════════════════════════ */
+
+/* PoP: listing_token_budget @ tools/tool_search.py:listing_token_budget */
+/* Port of Python: listing_token_budget() — min(listing_max_tokens, pct% of context) */
+int tool_search_listing_token_budget(const tool_search_config_t *config,
+                                     int context_length) {
+    if (!config) return 4000;
+    int pct_leg;
+    if (context_length && context_length > 0) {
+        pct_leg = (int)((double)context_length * (config->threshold_pct / 100.0));
+    } else {
+        pct_leg = 10000;
+    }
+    int result = pct_leg;
+    if (result > config->listing_max_tokens) result = config->listing_max_tokens;
+    if (result < 0) result = 0;
+    return result;
+}
+
+/* PoP: _short_desc @ tools/tool_search.py:_short_desc */
+/* Port of Python: _short_desc() — first sentence, clipped to max_chars */
+void tool_search_short_desc(const char *description, int max_chars,
+                            char *out, size_t out_size) {
+    if (!out || out_size == 0) return;
+    out[0] = '\0';
+    if (!description || !*description) return;
+    if (max_chars <= 0) max_chars = 60;
+
+    /* Whitespace collapse */
+    char collapsed[1024];
+    size_t cl = 0;
+    const char *p = description;
+    while (*p && cl < sizeof(collapsed) - 2) {
+        if (isspace((unsigned char)*p)) {
+            if (cl > 0 && collapsed[cl - 1] != ' ') {
+                collapsed[cl++] = ' ';
+            }
+            while (*p && isspace((unsigned char)*p)) p++;
+            continue;
+        }
+        collapsed[cl++] = *p++;
+    }
+    collapsed[cl] = '\0';
+
+    /* Find first sentence end (skip leading spaces) */
+    char *sp = collapsed;
+    while (*sp == ' ') sp++;
+    char trunc[1024];
+    size_t tl = 0;
+    const char *src = sp;
+    while (*src && tl < sizeof(trunc) - 1) {
+        if (*src == '.' || *src == '!' || *src == '?' || *src == '\n') {
+            trunc[tl++] = *src; /* include the sentence-ending char if '.' */
+            src++;
+            break;
+        }
+        trunc[tl++] = *src++;
+    }
+    trunc[tl] = '\0';
+
+    /* If over budget, clip at max_chars, never mid-word */
+    if ((int)tl > max_chars) {
+        trunc[max_chars] = '\0';
+        /* Find last space */
+        char *last_sp = NULL;
+        for (char *c = trunc; c < trunc + max_chars; c++) {
+            if (*c == ' ') last_sp = c;
+        }
+        if (last_sp) {
+            *last_sp = '\0';
+        }
+        /* Strip trailing comma/colon/space */
+        char *end = trunc + strlen(trunc);
+        while (end > trunc && strchr(",;: ", end[-1])) { *--end = '\0'; }
+        /* Add ellipsis */
+        size_t elen = strlen(trunc);
+        if (elen + 2 < sizeof(trunc)) {
+            trunc[elen] = '.'; trunc[elen + 1] = '.'; trunc[elen + 2] = '\0';
+        }
+    }
+
+    snprintf(out, out_size, "%s", trunc);
+}
+
+/* PoP: _listing_group_label @ tools/tool_search.py:_listing_group_label */
+/* Port of Python: _listing_group_label() — mcp-foo → foo */
+void tool_search_listing_group_label(const char *source_name,
+                                     char *out, size_t out_size) {
+    if (!out || out_size == 0) return;
+    const char *label = source_name && source_name[0] ? source_name : "other";
+    if (strncmp(label, "mcp-", 4) == 0) {
+        label += 4;
+    }
+    snprintf(out, out_size, "%s", label);
+}
+
+/* PoP: build_catalog_listing @ tools/tool_search.py:build_catalog_listing */
+/* Port of Python: build_catalog_listing() — skills-style grouped listing */
+char *tool_search_build_catalog_listing(const tool_catalog_t *catalog,
+                                        int max_tokens,
+                                        const char *search_name,
+                                        const char *describe_name,
+                                        const char *call_name) {
+    if (!catalog || catalog->count == 0) return NULL;
+    if (max_tokens <= 0) max_tokens = 4000;
+    if (!search_name) search_name = TOOL_SEARCH_NAME;
+    if (!describe_name) describe_name = TOOL_DESCRIBE_NAME;
+    if (!call_name) call_name = TOOL_CALL_NAME;
+
+    char header[512];
+    snprintf(header, sizeof(header),
+        "Deferred tool catalog (call schemas via `%s`, invoke via `%s`):",
+        describe_name, call_name);
+
+    /* Group entries by source label */
+    char groups[CATALOG_MAX_ENTRIES][128];  /* group label per entry */
+    int gcount = 0;
+    char glabels[CATALOG_MAX_ENTRIES][128];
+    int ngroups = 0;
+    for (int i = 0; i < catalog->count; i++) {
+        char label[128];
+        tool_search_listing_group_label(catalog->entries[i].source_name,
+                                        label, sizeof(label));
+        /* Map to group index */
+        int gi = -1;
+        for (int g = 0; g < ngroups; g++) {
+            if (strcmp(glabels[g], label) == 0) { gi = g; break; }
+        }
+        if (gi < 0) {
+            gi = ngroups;
+            if (ngroups < CATALOG_MAX_ENTRIES) {
+                strncpy(glabels[ngroups], label, 127);
+                glabels[ngroups][127] = '\0';
+                ngroups++;
+            }
+        }
+        strncpy(groups[i], label, 127);
+        groups[i][127] = '\0';
+    }
+
+    /* Build full listing text */
+    char full_text[8192];
+    full_text[0] = '\0';
+    size_t foff = 0;
+
+    /* Append header */
+    size_t hlen = strlen(header);
+    if (foff + hlen + 1 < sizeof(full_text)) {
+        memcpy(full_text + foff, header, hlen);
+        foff += hlen;
+        full_text[foff++] = '\n';
+        full_text[foff] = '\0';
+    }
+
+    /* Sort: groups by label, then tools within group by name */
+    /* Use simple insertion sort on a local index array */
+    int sorted_idx[CATALOG_MAX_ENTRIES];
+    for (int i = 0; i < catalog->count; i++) sorted_idx[i] = i;
+    for (int i = 1; i < catalog->count; i++) {
+        int key = sorted_idx[i];
+        int j = i - 1;
+        char key_grp[128], key_name[128];
+        strncpy(key_grp, groups[key], 127); key_grp[127] = '\0';
+        strncpy(key_name, catalog->entries[key].name, 127); key_name[127] = '\0';
+        while (j >= 0) {
+            char cmp_grp[128], cmp_name[128];
+            strncpy(cmp_grp, groups[sorted_idx[j]], 127); cmp_grp[127] = '\0';
+            strncpy(cmp_name, catalog->entries[sorted_idx[j]].name, 127); cmp_name[127] = '\0';
+            int cmp = strcmp(cmp_grp, key_grp);
+            if (cmp < 0 || (cmp == 0 && strcmp(cmp_name, key_name) < 0)) break;
+            sorted_idx[j + 1] = sorted_idx[j];
+            j--;
+        }
+        sorted_idx[j + 1] = key;
+    }
+
+    /* Render groups */
+    int gi = 0;
+    while (gi < ngroups && gcount < catalog->count) {
+        char grp_line[256];
+        int grp_count = 0;
+        /* Count tools in this group */
+        for (int i = 0; i < catalog->count; i++) {
+            if (strcmp(groups[sorted_idx[i]], glabels[gi]) == 0) grp_count++;
+        }
+        snprintf(grp_line, sizeof(grp_line), "%s tools (%d):", glabels[gi], grp_count);
+        size_t gllen = strlen(grp_line);
+        if (foff + gllen + 1 < sizeof(full_text)) {
+            memcpy(full_text + foff, grp_line, gllen);
+            foff += gllen;
+            full_text[foff++] = '\n';
+            full_text[foff] = '\0';
+        }
+        /* Full listing: name: short_desc */
+        for (int i = 0; i < catalog->count; i++) {
+            int ei = sorted_idx[i];
+            if (strcmp(groups[ei], glabels[gi]) != 0) continue;
+            char short_d[64];
+            char desc_trunc[512];
+            snprintf(desc_trunc, sizeof(desc_trunc), "%.500s",
+                     catalog->entries[ei].description);
+            tool_search_short_desc(desc_trunc, 60, short_d, sizeof(short_d));
+            char tool_line[256];
+            if (short_d[0]) {
+                snprintf(tool_line, sizeof(tool_line), "- %s: %s",
+                         catalog->entries[ei].name, short_d);
+            } else {
+                snprintf(tool_line, sizeof(tool_line), "- %s",
+                         catalog->entries[ei].name);
+            }
+            size_t tllen = strlen(tool_line);
+            if (foff + tllen + 1 < sizeof(full_text)) {
+                memcpy(full_text + foff, tool_line, tllen);
+                foff += tllen;
+                full_text[foff++] = '\n';
+                full_text[foff] = '\0';
+            }
+            gcount++;
+        }
+        gi++;
+    }
+    full_text[foff] = '\0';
+
+    /* Check token budget — for simplicity, use char count / CHARS_PER_TOKEN */
+    int text_tokens = (int)ceil((double)foff / CHARS_PER_TOKEN);
+    if (text_tokens <= max_tokens) {
+        return strdup(full_text);
+    }
+
+    /* Fallback: names-only (still grouped) */
+    char names_text[8192];
+    names_text[0] = '\0';
+    size_t noff = 0;
+    size_t nhlen = strlen(header);
+    if (noff + nhlen + 1 < sizeof(names_text)) {
+        memcpy(names_text + noff, header, nhlen);
+        noff += nhlen;
+        names_text[noff++] = '\n';
+        names_text[noff] = '\0';
+    }
+    gi = 0;
+    while (gi < ngroups) {
+        int grp_count = 0;
+        for (int i = 0; i < catalog->count; i++) {
+            if (strcmp(groups[sorted_idx[i]], glabels[gi]) == 0) grp_count++;
+        }
+        char grp_line[256];
+        snprintf(grp_line, sizeof(grp_line), "%s tools (%d):", glabels[gi], grp_count);
+        /* Build the names-only group */
+        char group_buf[4096];
+        group_buf[0] = '\0';
+        size_t goff = 0;
+        size_t gllen = strlen(grp_line);
+        if (goff + gllen + 1 < sizeof(group_buf)) {
+            memcpy(group_buf + goff, grp_line, gllen);
+            goff += gllen;
+            group_buf[goff++] = '\n';
+            group_buf[goff] = '\0';
+        }
+        char names[2048];
+        names[0] = '\0';
+        size_t nlen = 0;
+        for (int i = 0; i < catalog->count; i++) {
+            int ei = sorted_idx[i];
+            if (strcmp(groups[ei], glabels[gi]) != 0) continue;
+            size_t namelen = strlen(catalog->entries[ei].name);
+            if (nlen + namelen + 2 < sizeof(names)) {
+                if (nlen > 0) { names[nlen++] = ','; names[nlen++] = ' '; names[nlen] = '\0'; }
+                memcpy(names + nlen, catalog->entries[ei].name, namelen);
+                nlen += namelen;
+                names[nlen] = '\0';
+            }
+        }
+        size_t nmlen = strlen(names);
+        if (goff + nmlen + 1 < sizeof(group_buf)) {
+            memcpy(group_buf + goff, names, nmlen);
+            goff += nmlen;
+            group_buf[goff] = '\0';
+        }
+        size_t golen = strlen(group_buf);
+        if (noff + golen + 1 < sizeof(names_text)) {
+            memcpy(names_text + noff, group_buf, golen);
+            noff += golen;
+            names_text[noff++] = '\n';
+            names_text[noff] = '\0';
+        }
+        gi++;
+    }
+    names_text[noff] = '\0';
+    int names_tokens = (int)ceil((double)noff / CHARS_PER_TOKEN);
+    if (names_tokens <= max_tokens) {
+        return strdup(names_text);
+    }
+
+    /* Fallback: groups-only summary */
+    char groups_text[8192];
+    groups_text[0] = '\0';
+    size_t goff2 = 0;
+    size_t h2len = strlen(header);
+    if (goff2 + h2len + 1 < sizeof(groups_text)) {
+        memcpy(groups_text + goff2, header, h2len);
+        goff2 += h2len;
+        groups_text[goff2++] = '\n';
+        groups_text[goff2] = '\0';
+    }
+    gi = 0;
+    while (gi < ngroups) {
+        int grp_count = 0;
+        for (int i = 0; i < catalog->count; i++) {
+            if (strcmp(groups[sorted_idx[i]], glabels[gi]) == 0) grp_count++;
+        }
+        char grp_line[256];
+        snprintf(grp_line, sizeof(grp_line),
+            "%s (%d tools — names not listed; discover via `%s`)",
+            glabels[gi], grp_count, search_name);
+        size_t gllen = strlen(grp_line);
+        if (goff2 + gllen + 1 < sizeof(groups_text)) {
+            memcpy(groups_text + goff2, grp_line, gllen);
+            goff2 += gllen;
+            groups_text[goff2++] = '\n';
+            groups_text[goff2] = '\0';
+        }
+        gi++;
+    }
+    groups_text[goff2] = '\0';
+    return strdup(groups_text);
+}
+
+/* PoP: build_catalog_listing_with_form @ tools/tool_search.py:build_catalog_listing_with_form */
+/* Port of Python: build_catalog_listing_with_form() — returns (text, form) */
+char *tool_search_build_catalog_listing_with_form(const tool_catalog_t *catalog,
+                                                    int max_tokens,
+                                                    const char *search_name,
+                                                    const char *describe_name,
+                                                    const char *call_name,
+                                                    char *out_form, size_t form_size) {
+    if (out_form) *out_form = '\0';
+    if (!catalog || catalog->count == 0) {
+        if (out_form) snprintf(out_form, form_size, "none");
+        return NULL;
+    }
+
+    /* Build group counts */
+    char glabels[CATALOG_MAX_ENTRIES][128];
+    int gcounts[CATALOG_MAX_ENTRIES];
+    int ngroups = 0;
+    char groups[CATALOG_MAX_ENTRIES][128];
+    for (int i = 0; i < catalog->count; i++) {
+        char label[128];
+        tool_search_listing_group_label(catalog->entries[i].source_name,
+                                        label, sizeof(label));
+        int gi = -1;
+        for (int g = 0; g < ngroups; g++) {
+            if (strcmp(glabels[g], label) == 0) { gi = g; break; }
+        }
+        if (gi < 0) {
+            gi = ngroups;
+            strncpy(glabels[ngroups], label, 127);
+            glabels[ngroups][127] = '\0';
+            gcounts[ngroups] = 0;
+            ngroups++;
+        }
+        strncpy(groups[i], label, 127);
+        groups[i][127] = '\0';
+        gcounts[gi]++;
+    }
+
+    char header[512];
+    snprintf(header, sizeof(header),
+        "Deferred tool catalog (call schemas via `%s`, invoke via `%s`):",
+        describe_name ? describe_name : TOOL_DESCRIBE_NAME,
+        call_name ? call_name : TOOL_CALL_NAME);
+
+    /* Per-server degradation: try full, then names, then summary per group.
+     * For each group, compute token sizes and decide form. */
+    char full_text[8192];
+    full_text[0] = '\0';
+    size_t foff = 0;
+    size_t hlen = strlen(header);
+    if (foff + hlen + 1 < sizeof(full_text)) {
+        memcpy(full_text + foff, header, hlen);
+        foff += hlen;
+        full_text[foff++] = '\n';
+        full_text[foff] = '\0';
+    }
+
+    int group_mode[CATALOG_MAX_ENTRIES]; /* 0=full, 1=names, 2=summary */
+    for (int g = 0; g < ngroups; g++) group_mode[g] = 0;
+
+    /* Sort indices */
+    int sorted_idx[CATALOG_MAX_ENTRIES];
+    for (int i = 0; i < catalog->count; i++) sorted_idx[i] = i;
+    for (int i = 1; i < catalog->count; i++) {
+        int key = sorted_idx[i];
+        int j = i - 1;
+        char key_grp[128], key_name[128];
+        strncpy(key_grp, groups[key], 127); key_grp[127] = '\0';
+        strncpy(key_name, catalog->entries[key].name, 127); key_name[127] = '\0';
+        while (j >= 0) {
+            char cmp_grp[128], cmp_name[128];
+            strncpy(cmp_grp, groups[sorted_idx[j]], 127); cmp_grp[127] = '\0';
+            strncpy(cmp_name, catalog->entries[sorted_idx[j]].name, 127); cmp_name[127] = '\0';
+            int cmp = strcmp(cmp_grp, key_grp);
+            if (cmp < 0 || (cmp == 0 && strcmp(cmp_name, key_name) < 0)) break;
+            sorted_idx[j + 1] = sorted_idx[j];
+            j--;
+        }
+        sorted_idx[j + 1] = key;
+    }
+
+    /* Try full listing */
+    char full_buf[8192];
+    full_buf[0] = '\0';
+    size_t fboff = 0;
+    size_t fhlen = strlen(header);
+    if (fboff + fhlen + 1 < sizeof(full_buf)) {
+        memcpy(full_buf + fboff, header, fhlen);
+        fboff += fhlen;
+        full_buf[fboff++] = '\n';
+        full_buf[fboff] = '\0';
+    }
+    for (int g = 0; g < ngroups; g++) {
+        char grp_line[256];
+        snprintf(grp_line, sizeof(grp_line), "%s tools (%d):", glabels[g], gcounts[g]);
+        size_t gllen = strlen(grp_line);
+        if (fboff + gllen + 1 < sizeof(full_buf)) {
+            memcpy(full_buf + fboff, grp_line, gllen);
+            fboff += gllen;
+            full_buf[fboff++] = '\n';
+            full_buf[fboff] = '\0';
+        }
+        for (int i = 0; i < catalog->count; i++) {
+            int ei = sorted_idx[i];
+            if (strcmp(groups[ei], glabels[g]) != 0) continue;
+            char short_d[64];
+            char desc_trunc[512];
+            snprintf(desc_trunc, sizeof(desc_trunc), "%.500s",
+                     catalog->entries[ei].description);
+            tool_search_short_desc(desc_trunc, 60, short_d, sizeof(short_d));
+            char tool_line[256];
+            if (short_d[0]) {
+                snprintf(tool_line, sizeof(tool_line), "- %s: %s",
+                         catalog->entries[ei].name, short_d);
+            } else {
+                snprintf(tool_line, sizeof(tool_line), "- %s",
+                         catalog->entries[ei].name);
+            }
+            size_t tllen = strlen(tool_line);
+            if (fboff + tllen + 1 < sizeof(full_buf)) {
+                memcpy(full_buf + fboff, tool_line, tllen);
+                fboff += tllen;
+                full_buf[fboff++] = '\n';
+                full_buf[fboff] = '\0';
+            }
+        }
+    }
+    full_buf[fboff] = '\0';
+    int full_tokens = (int)ceil((double)fboff / CHARS_PER_TOKEN);
+    if (full_tokens <= max_tokens) {
+        if (out_form) snprintf(out_form, form_size, "full");
+        return strdup(full_buf);
+    }
+
+    /* Try names-only */
+    char names_buf[8192];
+    names_buf[0] = '\0';
+    size_t noff = 0;
+    size_t nhlen = strlen(header);
+    if (noff + nhlen + 1 < sizeof(names_buf)) {
+        memcpy(names_buf + noff, header, nhlen);
+        noff += nhlen;
+        names_buf[noff++] = '\n';
+        names_buf[noff] = '\0';
+    }
+    for (int g = 0; g < ngroups; g++) {
+        char grp_line[256];
+        snprintf(grp_line, sizeof(grp_line), "%s tools (%d):", glabels[g], gcounts[g]);
+        size_t gllen = strlen(grp_line);
+        if (noff + gllen + 1 < sizeof(names_buf)) {
+            memcpy(names_buf + noff, grp_line, gllen);
+            noff += gllen;
+            names_buf[noff++] = '\n';
+            names_buf[noff] = '\0';
+        }
+        int first = 1;
+        for (int i = 0; i < catalog->count; i++) {
+            int ei = sorted_idx[i];
+            if (strcmp(groups[ei], glabels[g]) != 0) continue;
+            size_t namelen = strlen(catalog->entries[ei].name);
+            if (noff + namelen + 2 < sizeof(names_buf)) {
+                if (!first) { names_buf[noff++] = ','; names_buf[noff++] = ' '; }
+                memcpy(names_buf + noff, catalog->entries[ei].name, namelen);
+                noff += namelen;
+                names_buf[noff] = '\0';
+                first = 0;
+            }
+        }
+        names_buf[noff++] = '\n';
+        names_buf[noff] = '\0';
+    }
+    names_buf[noff] = '\0';
+    int names_tokens = (int)ceil((double)noff / CHARS_PER_TOKEN);
+    if (names_tokens <= max_tokens) {
+        if (out_form) snprintf(out_form, form_size, "names");
+        return strdup(names_buf);
+    }
+
+    /* Per-server degradation: collapse largest groups to summary first */
+    int mode2[CATALOG_MAX_ENTRIES];
+    for (int g = 0; g < ngroups; g++) mode2[g] = 0; /* 0=full, 2=summary */
+    /* Estimate size per group */
+    int grp_sizes[CATALOG_MAX_ENTRIES];
+    for (int g = 0; g < ngroups; g++) {
+        int sz = (int)strlen(glabels[g]) + 20; /* " tools (N):\n" */
+        for (int i = 0; i < catalog->count; i++) {
+            int ei = sorted_idx[i];
+            if (strcmp(groups[ei], glabels[g]) != 0) continue;
+            sz += (int)strlen(catalog->entries[ei].name) + 60;
+        }
+        grp_sizes[g] = sz;
+    }
+    /* Sort groups by size descending */
+    int grp_order[CATALOG_MAX_ENTRIES];
+    for (int g = 0; g < ngroups; g++) grp_order[g] = g;
+    for (int i = 1; i < ngroups; i++) {
+        int key = grp_order[i];
+        int j = i - 1;
+        while (j >= 0 && grp_sizes[grp_order[j]] < grp_sizes[key]) {
+            grp_order[j + 1] = grp_order[j];
+            j--;
+        }
+        grp_order[j + 1] = key;
+    }
+    /* Collapse largest to summary until it fits */
+    for (int k = 0; k < ngroups; k++) {
+        mode2[grp_order[k]] = 2; /* summary */
+        /* Rebuild text */
+        char mixed_buf[8192];
+        mixed_buf[0] = '\0';
+        size_t moff = 0;
+        size_t mhlen = strlen(header);
+        if (moff + mhlen + 1 < sizeof(mixed_buf)) {
+            memcpy(mixed_buf + moff, header, mhlen);
+            moff += mhlen;
+            mixed_buf[moff++] = '\n';
+            mixed_buf[moff] = '\0';
+        }
+        for (int g = 0; g < ngroups; g++) {
+            char grp_line[256];
+            if (mode2[g] == 2) { /* summary */
+                snprintf(grp_line, sizeof(grp_line),
+                    "%s (%d tools — names not listed; discover via `%s`)",
+                    glabels[g], gcounts[g], search_name);
+            } else {
+                snprintf(grp_line, sizeof(grp_line), "%s tools (%d):",
+                    glabels[g], gcounts[g]);
+            }
+            size_t gllen = strlen(grp_line);
+            if (moff + gllen + 1 < sizeof(mixed_buf)) {
+                memcpy(mixed_buf + moff, grp_line, gllen);
+                moff += gllen;
+                mixed_buf[moff++] = '\n';
+                mixed_buf[moff] = '\0';
+            }
+            if (mode2[g] != 2) {
+                int first = 1;
+                for (int i = 0; i < catalog->count; i++) {
+                    int ei = sorted_idx[i];
+                    if (strcmp(groups[ei], glabels[g]) != 0) continue;
+                    size_t namelen = strlen(catalog->entries[ei].name);
+                    if (moff + namelen + 2 < sizeof(mixed_buf)) {
+                        if (!first) { mixed_buf[moff++] = ','; mixed_buf[moff++] = ' '; }
+                        memcpy(mixed_buf + moff, catalog->entries[ei].name, namelen);
+                        moff += namelen;
+                        mixed_buf[moff] = '\0';
+                        first = 0;
+                    }
+                }
+                mixed_buf[moff++] = '\n';
+                mixed_buf[moff] = '\0';
+            }
+        }
+        mixed_buf[moff] = '\0';
+        int mixed_tokens = (int)ceil((double)moff / CHARS_PER_TOKEN);
+        if (mixed_tokens <= max_tokens) {
+            /* Determine form: groups if all summary, mixed otherwise */
+            int all_summary = 1;
+            for (int g = 0; g < ngroups; g++) {
+                if (mode2[g] != 2) { all_summary = 0; break; }
+            }
+            if (out_form) snprintf(out_form, form_size, all_summary ? "groups" : "mixed");
+            return strdup(mixed_buf);
+        }
+    }
+
+    /* Everything over budget */
+    if (out_form) snprintf(out_form, form_size, "none");
+    return NULL;
+}
+
+/* PoP: _available_source_summary @ tools/tool_search.py:_available_source_summary */
+/* Port of Python: _available_source_summary() — compact per-source tool counts */
+char *tool_search_available_source_summary(const tool_catalog_t *catalog) {
+    if (!catalog || catalog->count == 0) return NULL;
+
+    char glabels[CATALOG_MAX_ENTRIES][128];
+    int gcounts[CATALOG_MAX_ENTRIES];
+    int ngroups = 0;
+
+    for (int i = 0; i < catalog->count; i++) {
+        char label[128];
+        tool_search_listing_group_label(catalog->entries[i].source_name,
+                                        label, sizeof(label));
+        int gi = -1;
+        for (int g = 0; g < ngroups; g++) {
+            if (strcmp(glabels[g], label) == 0) { gi = g; break; }
+        }
+        if (gi < 0) {
+            gi = ngroups;
+            strncpy(glabels[ngroups], label, 127);
+            glabels[ngroups][127] = '\0';
+            gcounts[ngroups] = 0;
+            ngroups++;
+        }
+        gcounts[gi]++;
+    }
+
+    /* Sort labels for deterministic output */
+    char sorted_labels[CATALOG_MAX_ENTRIES][128];
+    int sorted_counts[CATALOG_MAX_ENTRIES];
+    for (int i = 0; i < ngroups; i++) {
+        strncpy(sorted_labels[i], glabels[i], 127);
+        sorted_labels[i][127] = '\0';
+        sorted_counts[i] = gcounts[i];
+    }
+    for (int i = 1; i < ngroups; i++) {
+        char key[128];
+        strncpy(key, sorted_labels[i], 127); key[127] = '\0';
+        int key_count = sorted_counts[i];
+        int j = i - 1;
+        while (j >= 0 && strcmp(sorted_labels[j], key) > 0) {
+            strncpy(sorted_labels[j + 1], sorted_labels[j], 127);
+            sorted_labels[j + 1][127] = '\0';
+            sorted_counts[j + 1] = sorted_counts[j];
+            j--;
+        }
+        strncpy(sorted_labels[j + 1], key, 127);
+        sorted_labels[j + 1][127] = '\0';
+        sorted_counts[j + 1] = key_count;
+    }
+
+    json_node_t *arr = json_array();
+    for (int i = 0; i < ngroups; i++) {
+        json_node_t *obj = json_object();
+        json_set(obj, "name", json_string(sorted_labels[i]));
+        json_set(obj, "tool_count", json_number((double)sorted_counts[i]));
+        json_array_append(arr, obj);
+    }
+    char *result = json_serialize(arr);
+    json_free(arr);
+    return result;
+}
+
+/* PoP: validate_deferred_call_args @ tools/tool_search.py:validate_deferred_call_args */
+/* Port of Python: validate_deferred_call_args() — probe required args before dispatch */
+char *tool_search_validate_deferred_call(const char *name,
+                                         const char *args_json,
+                                         const char *schema_json) {
+    /* Python: returns None when call should dispatch, or a JSON error string
+     * when a required argument is missing. */
+    if (!name || !name[0] || !args_json || !schema_json) return NULL;
+
+    char *schema_err = NULL;
+    json_node_t *schema = json_parse(schema_json, &schema_err);
+    if (!schema) {
+        if (schema_err) free(schema_err);
+        return NULL;
+    }
+
+    json_node_t *fn = json_obj_get(schema, "function");
+    json_node_t *params = NULL;
+    if (fn && fn->type == JSON_OBJECT) {
+        params = json_obj_get(fn, "parameters");
+    } else if (schema->type == JSON_OBJECT) {
+        params = json_obj_get(schema, "parameters");
+    }
+    if (!params || params->type != JSON_OBJECT) {
+        json_free(schema);
+        return NULL;
+    }
+
+    json_node_t *required = json_obj_get(params, "required");
+    if (!required || !json_is_array(required) || json_len(required) == 0) {
+        json_free(schema);
+        return NULL;
+    }
+
+    /* Parse args */
+    char *args_err = NULL;
+    json_node_t *args = json_parse(args_json, &args_err);
+    if (args_err) free(args_err);
+    if (!args || args->type != JSON_OBJECT) {
+        if (args) json_free(args);
+        json_free(schema);
+        /* All required args are missing */
+        json_node_t *missing_arr = json_array();
+        size_t rlen = json_len(required);
+        for (size_t i = 0; i < rlen; i++) {
+            json_node_t *ri = json_array_get(required, i);
+            if (ri && ri->type == JSON_STRING) {
+                json_array_append(missing_arr, ri);
+            }
+        }
+        json_node_t *result = json_object();
+        char hint_msg[1024];
+        snprintf(hint_msg, sizeof(hint_msg),
+            "tool_call to '%s' is missing required argument(s). The tool was NOT invoked.", name);
+        json_set(result, "error", json_string(hint_msg));
+        json_set(result, "missing_arguments", missing_arr);
+        json_set(result, "parameters", params);
+        json_set(result, "hint", json_string(
+            "Retry tool_call with 'arguments' matching the parameters schema."));
+        char *ret = json_serialize(result);
+        json_free(result);
+        return ret;
+    }
+
+    /* Check each required arg */
+    json_node_t *missing = json_array();
+    size_t rlen = json_len(required);
+    for (size_t i = 0; i < rlen; i++) {
+        json_node_t *ri = json_array_get(required, i);
+        if (!ri || ri->type != JSON_STRING) continue;
+        const char *rname = ri->str_val;
+        json_node_t *val = json_obj_get(args, rname);
+        if (!val) {
+            json_array_append(missing, ri);
+        }
+    }
+
+    json_free(args);
+    json_free(schema);
+
+    if (json_len(missing) == 0) {
+        json_free(missing);
+        return NULL; /* all present — dispatch */
+    }
+
+    json_node_t *result = json_object();
+    char hint_msg[1024];
+    snprintf(hint_msg, sizeof(hint_msg),
+        "tool_call to '%s' is missing required argument(s). The tool was NOT invoked.", name);
+    json_set(result, "error", json_string(hint_msg));
+    json_set(result, "missing_arguments", missing);
+    json_set(result, "hint", json_string(
+        "Retry tool_call with 'arguments' matching the tool's parameter schema."));
+    char *ret = json_serialize(result);
+    json_free(result);
+    return ret;
+}

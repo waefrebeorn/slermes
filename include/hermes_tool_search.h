@@ -94,11 +94,13 @@ typedef struct {
     double threshold_pct;            /* 0..100 */
     int search_default_limit;        /* default results per query */
     int max_search_limit;            /* max results per query */
+    char listing[16];               /* "auto" | "on" | "off" */
+    int listing_max_tokens;         /* absolute cap on listing (default 4000) */
 } tool_search_config_t;
 
-/* Default config: auto, 10% threshold, limit 5/20 */
+/* Default config: auto, 10% threshold, limit 5/20, listing auto, 4000 max */
 #define TOOL_SEARCH_CONFIG_DEFAULT \
-    { TOOL_SEARCH_AUTO, 10.0, 5, 20 }
+    { TOOL_SEARCH_AUTO, 10.0, 5, 20, "auto", 4000 }
 
 /* ─────────────────────────────────────────────────────────────────────
  *  Assembly result
@@ -266,6 +268,70 @@ int tool_search_scoped_names(const char *tool_schemas[], int schema_count,
  * Free the catalog (no-op for static catalog, useful if entries become dynamic).
  */
 void tool_search_catalog_free(tool_catalog_t *catalog);
+
+/* ── Listing helpers (port of tools/tool_search.py listing functions) ── */
+
+/**
+ * Effective token budget for the embedded catalog listing.
+ * Port of Python: listing_token_budget().
+ * Returns min(listing_max_tokens, threshold_pct% of context).
+ */
+int tool_search_listing_token_budget(const tool_search_config_t *config,
+                                     int context_length);
+
+/**
+ * First sentence of a tool description, clipped to max_chars.
+ * Port of Python: _short_desc().
+ */
+void tool_search_short_desc(const char *description, int max_chars,
+                            char *out, size_t out_size);
+
+/**
+ * Human-facing group heading: mcp-github -> github.
+ * Port of Python: _listing_group_label().
+ */
+void tool_search_listing_group_label(const char *source_name,
+                                     char *out, size_t out_size);
+
+/**
+ * Render a skills-style grouped listing of the deferred catalog.
+ * Port of Python: build_catalog_listing().
+ * Returns malloc'd string, or NULL. Caller must free.
+ */
+char *tool_search_build_catalog_listing(const tool_catalog_t *catalog,
+                                        int max_tokens,
+                                        const char *search_name,
+                                        const char *describe_name,
+                                        const char *call_name);
+
+/**
+ * Like build_catalog_listing but also reports the form used:
+ * "full" | "names" | "mixed" | "groups" | "none".
+ * Port of Python: build_catalog_listing_with_form().
+ */
+char *tool_search_build_catalog_listing_with_form(const tool_catalog_t *catalog,
+                                                    int max_tokens,
+                                                    const char *search_name,
+                                                    const char *describe_name,
+                                                    const char *call_name,
+                                                    char *out_form, size_t form_size);
+
+/**
+ * Compact per-source tool counts as JSON array.
+ * Port of Python: _available_source_summary().
+ * Returns malloc'd JSON string. Caller must free.
+ */
+char *tool_search_available_source_summary(const tool_catalog_t *catalog);
+
+/**
+ * Probe-validate tool_call arguments against the deferred tool's schema.
+ * Port of Python: validate_deferred_call_args().
+ * Returns NULL if the call should dispatch, or a malloc'd JSON error string
+ * when a required argument is missing.
+ */
+char *tool_search_validate_deferred_call(const char *name,
+                                         const char *args_json,
+                                         const char *schema_json);
 
 #ifdef __cplusplus
 }
