@@ -5,6 +5,10 @@
  */
 
 #include "hermes_logger.h"
+#include "managed_gateway.h"
+#include "http.h"
+#include "hermes_json.h"
+#include "slermes_home.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,8 +16,6 @@
 #include <sys/stat.h>
 
 #include <ctype.h>
-
-#include "managed_gateway.h"
 
 /* PoP: cli_tools_managed_tool_gateway__read_user_token_override @ tools/managed_tool_gateway.py:_read_user_token_override */
 int cli_tools_managed_tool_gateway__read_user_token_override(char *buf, size_t bufsize) {
@@ -239,4 +241,160 @@ int cli_tools_managed_tool_gateway_is_managed_tool_gateway_ready(const char *ven
     int ready = (rc == 0 && gateway[0] && token[0]);
     hermes_log(LOG_DEBUG, "managed_tg", "is_managed_tool_gateway_ready: vendor=%s ready=%d", vendor, ready);
     return ready;
+}
+
+/* PoP: _describe_media_upload_refusal @ tools/managed_tool_gateway.py:_describe_media_upload_refusal */
+char *cli_tools_managed_tool_gateway__describe_media_upload_refusal(
+    const char *response_body, long http_status) {
+    /* Python: surface error.message from the gateway's 4xx body verbatim
+     * (rate-limit waits, size caps), else a generic status-code message. */
+    if (response_body && response_body[0]) {
+        char *err_msg = NULL;
+        json_t *payload = json_parse(response_body, NULL);
+        if (payload) {
+            json_t *err = json_obj_get(payload, "error");
+            const char *msg = err ? json_get_str(err, "message", "") : "";
+            if (msg && msg[0]) {
+                /* Python: message.strip() */
+                const char *s = msg;
+                while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+                size_t len = strlen(s);
+                while (len > 0 && (s[len-1] == ' ' || s[len-1] == '\t' ||
+                                    s[len-1] == '\n' || s[len-1] == '\r')) len--;
+                if (len > 0) {
+                    err_msg = strndup(s, len);
+                }
+            }
+            json_free(payload);
+        }
+        if (err_msg) return err_msg;
+    }
+    char *out = NULL;
+    asprintf(&out, "the gateway refused the upload (HTTP %ld)", http_status);
+    return out;
+}
+
+/* PoP: build_managed_media_uploader @ tools/managed_tool_gateway.py:build_managed_media_uploader */
+
+/* Port of Python build_managed_media_uploader — one-shot uploader for a
+ * managed vendor's media upload protocol:
+ *   1. POST origin+upload_path with contentType/contentLength (auth headers).
+ *   2. PUT the bytes to the returned presigned uploadUrl.
+ *   3. Return "nous-upload:<token>" (or NULL with reason in *reason_out).
+ * Returns 0 on success (token in token_out), -1 on refusal (reason in
+ * *reason_out when non-NULL), -2 when the endpoint is unusable (not managed). */
+int cli_tools_managed_tool_gateway_build_managed_media_uploader(
+    const char *server_url, const char *upload_path,
+    const unsigned char *data, size_t data_len, const char *mime,
+    char *token_out, size_t token_size,
+    char *reason_out, size_t reason_size) {
+    if (reason_out && reason_size > 0) reason_out[0] = '\0';
+    if (!server_url || !upload_path || !data || !mime) return -2;
+
+    /* Python: is_managed_nous_gateway_url gate + upload_path must start with /. */
+    if (!is_managed_nous_gateway_url(NULL, server_url)) return -2;
+    if (upload_path[0] != '/') return -2;
+
+    /* origin = scheme://netloc */
+    char origin[2048];
+    origin[0] = '\0';
+    const char *scheme_end = strstr(server_url, "://");
+    if (!scheme_end) return -2;
+    const char *host_start = scheme_end + 3;
+    const char *path_start = strchr(host_start, '/');
+    size_t host_len = path_start ? (size_t)(path_start - host_start) : strlen(host_start);
+    snprintf(origin, sizeof(origin), "%.*s://%.*s",
+             (int)(scheme_end - server_url), server_url,
+             (int)host_len, host_start);
+
+    char presign_url[4096];
+    snprintf(presign_url, sizeof(presign_url), "%s%s", origin, upload_path);
+
+    /* Auth headers (managed_gateway_auth_headers). */
+    char auth_buf[4096];
+    const char *hermes_home = slermes_home();
+    if (managed_gateway_auth_headers(hermes_home, server_url,
+                                     auth_buf, sizeof(auth_buf)) != 0 || !auth_buf[0]) {
+        if (reason_out) snprintf(reason_out, reason_size,
+                                 "no Nous credential is available for the upload");
+        return -1;
+    }
+
+    /* 1. Presign POST. */
+    char headers[8192];
+    snprintf(headers, sizeof(headers), "Authorization: %s\r\nContent-Type: application/json",
+             auth_buf);
+    char body[1024];
+    snprintf(body, sizeof(body),
+             "{\"contentType\":\"%s\",\"contentLength\":%zu}", mime, data_len);
+
+    http_t *h = http_new(30);
+    if (!h) {
+        if (reason_out) snprintf(reason_out, reason_size,
+                                 "the gateway refused the upload (transport)");
+        return -1;
+    }
+    http_resp_t *presign = http_post_json_auth(h, presign_url, body, headers);
+    if (!presign) {
+        if (reason_out) snprintf(reason_out, reason_size,
+                                 "the gateway refused the upload (transport)");
+        http_free(h);
+        return -1;
+    }
+    if (presign->status != 200) {
+        char *desc = cli_tools_managed_tool_gateway__describe_media_upload_refusal(
+            presign->body, presign->status);
+        if (reason_out) snprintf(reason_out, reason_size, "%s", desc);
+        free(desc);
+        http_resp_free(presign);
+        http_free(h);
+        return -1;
+    }
+
+    /* 2. Parse uploadUrl + token. */
+    json_t *payload = json_parse(presign->body, NULL);
+    http_resp_free(presign);
+    http_free(h);
+    if (!payload) {
+        if (reason_out) snprintf(reason_out, reason_size,
+                                 "the gateway's upload response was malformed");
+        return -1;
+    }
+    const char *upload_url = json_get_str(payload, "uploadUrl", "");
+    const char *token = json_get_str(payload, "token", "");
+    if (!upload_url[0] || !token[0]) {
+        json_free(payload);
+        if (reason_out) snprintf(reason_out, reason_size,
+                                 "the gateway's upload response was malformed");
+        return -1;
+    }
+
+    /* 3. PUT bytes to the presigned URL (direct to storage). */
+    char put_headers[512];
+    snprintf(put_headers, sizeof(put_headers), "Content-Type: %s", mime);
+    http_t *hp = http_new(60);
+    if (!hp) {
+        json_free(payload);
+        if (reason_out) snprintf(reason_out, reason_size,
+                                 "storage refused the upload (transport)");
+        return -1;
+    }
+    http_resp_t *put = http_request(hp, HTTP_PUT, upload_url, put_headers,
+                                    (const char *)data, data_len);
+    if (!put || put->status != 200) {
+        long code = put ? put->status : 0;
+        if (put) http_resp_free(put);
+        http_free(hp);
+        json_free(payload);
+        if (reason_out) snprintf(reason_out, reason_size,
+                                 "storage refused the upload (HTTP %ld)", code);
+        return -1;
+    }
+    http_resp_free(put);
+    http_free(hp);
+    json_free(payload);
+
+    /* 4. Return "nous-upload:<token>". */
+    snprintf(token_out, token_size, "nous-upload:%s", token);
+    return 0;
 }

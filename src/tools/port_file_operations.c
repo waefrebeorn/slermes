@@ -320,3 +320,352 @@ bool file_ops_pattern_has_regex_newline(const char *pattern)
 {
     return file_pagination_ops_pattern_has_regex_newline(pattern);
 }
+
+/* ================================================================\
+ *  Search recovery helpers
+ * =============================================================== */
+
+/* Return true if *pattern* contains any regex metacharacter that the
+ * Python _zero_match_probe checks for. */
+static bool fops_pattern_has_metachars(const char *pattern) {
+    if (!pattern) return false;
+    /* . [ ] ( ) { } ? * + ^ $ |  (Python regex: [.\[\](){}?*+^$\|) */
+    return strpbrk(pattern, ".[]{}?*+^$|\\") != NULL;
+}
+
+/* Trim leading/trailing whitespace (Python .strip()). */
+static char *fops_strip(char *s) {
+    if (!s) return s;
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    char *e = s + strlen(s);
+    while (e > s && (*(e-1) == ' ' || *(e-1) == '\t' || *(e-1) == '\n' || *(e-1) == '\r')) {
+        *--e = '\0';
+    }
+    return s;
+}
+
+/* Parse rg --count-matches output lines, summing the trailing count per
+ * file. Returns total matches and file count via out_* params. */
+static void fops_parse_rg_count(const char *out, int *out_total, int *out_files) {
+    *out_total = 0;
+    *out_files = 0;
+    char *lines = strdup(out ? out : "");
+    char *save = NULL;
+    char *line = strtok_r(lines, "\n", &save);
+    while (line) {
+        line = fops_strip(line);
+        if (line[0]) {
+            char *colon = strrchr(line, ':');
+            if (colon && colon[1]) {
+                char *end = NULL;
+                long n = strtol(colon + 1, &end, 10);
+                if (end && *end == '\0' && n > 0) {
+                    *out_total += (int)n;
+                    (*out_files)++;
+                }
+            }
+        }
+        line = strtok_r(NULL, "\n", &save);
+    }
+    free(lines);
+}
+
+/* PoP: _zero_match_probe @ tools/file_operations.py:_zero_match_probe */
+char *file_ops_zero_match_probe(const char *pattern, const char *path,
+                                  const char *file_glob) {
+    /* Python: run ONE cheap case-insensitive count probe; if it hits, say so.
+     * If the pattern contains regex metacharacters, also probe as fixed string.
+     * Bounded: two rg invocations max, count-only output. */
+    if (!pattern || !path) return NULL;
+    if (!file_ops_has_command("rg")) return NULL;
+
+    char *escaped_pat = file_ops_escape_shell_arg(pattern);
+    char *escaped_path = file_ops_escape_shell_arg(path);
+
+    /* Build glob expression and probe command. */
+    char glob_expr[512];
+    glob_expr[0] = '\0';
+    if (file_glob && file_glob[0]) {
+        char *esc_glob = file_ops_escape_shell_arg(file_glob);
+        snprintf(glob_expr, sizeof(glob_expr), " --glob %s", esc_glob);
+        free(esc_glob);
+    }
+
+    char cmd[2048];
+    snprintf(cmd, sizeof(cmd),
+        "rg -i --count-matches%s %s %s 2>/dev/null | head -50",
+        glob_expr, escaped_pat, escaped_path);
+
+    char *probe = file_ops_exec(cmd, NULL);
+    int ci_total = 0, ci_files = 0;
+    fops_parse_rg_count(probe, &ci_total, &ci_files);
+    free(probe);
+    free(escaped_pat);
+    free(escaped_path);
+
+    if (ci_total > 0) {
+        char *hint = NULL;
+        asprintf(&hint,
+            "0 exact matches, but %d case-insensitive match(es) "
+            "in %d file(s) — the pattern's casing may be wrong.",
+            ci_total, ci_files);
+        return hint;
+    }
+
+    /* Hidden/ignored probe: rg skips dotdirs and .gitignore'd files by default. */
+    escaped_pat = file_ops_escape_shell_arg(pattern);
+    escaped_path = file_ops_escape_shell_arg(path);
+    snprintf(cmd, sizeof(cmd),
+        "rg --hidden --no-ignore --count-matches%s %s %s 2>/dev/null | head -50",
+        glob_expr, escaped_pat, escaped_path);
+    probe = file_ops_exec(cmd, NULL);
+    int h_total = 0, h_files = 0;
+    fops_parse_rg_count(probe, &h_total, &h_files);
+    free(probe);
+
+    if (h_total > 0) {
+        char *hint = NULL;
+        asprintf(&hint,
+            "0 matches in visible files, but %d match(es) in "
+            "%d hidden or gitignored file(s) — these are excluded "
+            "by default. Search the hidden path explicitly to include them.",
+            h_total, h_files);
+        free(escaped_pat); free(escaped_path);
+        return hint;
+    }
+
+    /* If pattern has metachars, probe as fixed string. */
+    if (fops_pattern_has_metachars(pattern)) {
+        free(escaped_pat); free(escaped_path);
+        escaped_pat = file_ops_escape_shell_arg(pattern);
+        escaped_path = file_ops_escape_shell_arg(path);
+        snprintf(cmd, sizeof(cmd),
+            "rg -F --count-matches%s %s %s 2>/dev/null | head -50",
+            glob_expr, escaped_pat, escaped_path);
+        probe = file_ops_exec(cmd, NULL);
+        int f_total = 0, f_files = 0;
+        fops_parse_rg_count(probe, &f_total, &f_files);
+        free(probe);
+        free(escaped_pat); free(escaped_path);
+
+        if (f_total > 0) {
+            char *hint = NULL;
+            asprintf(&hint,
+                "0 regex matches, but %d literal match(es) — the "
+                "pattern contains regex metacharacters that likely need "
+                "escaping (or pass a simpler substring).", f_total);
+            return hint;
+        }
+    }
+
+    free(escaped_pat); free(escaped_path);
+    return NULL;  /* Python: return None */
+}
+
+/* PoP: _try_multi_path_search @ tools/file_operations.py:_try_multi_path_search */
+
+/* Port of Python _search_files_rg: find files by name pattern via rg.
+ * Returns space-newline-separated list (caller parses), or empty string. */
+static char *fops_rg_search_files(const char *pattern, const char *path,
+                                      int limit, int offset) {
+    char *escaped_pat = file_ops_escape_shell_arg(pattern);
+    char *escaped_path = file_ops_escape_shell_arg(path);
+    char cmd[2048];
+    /* rg -l gives filenames; paginate with tail/head */
+    snprintf(cmd, sizeof(cmd),
+        "rg -l --null %s %s 2>/dev/null | "
+        "tail -n +%d | head -n %d",
+        escaped_pat, escaped_path, offset + 1, limit);
+    char *out = file_ops_exec(cmd, NULL);
+    free(escaped_pat); free(escaped_path);
+    return out;
+}
+
+/* Port of Python _search_files: find files by name pattern.
+ * Tries rg first, falls back to find. Returns json array of paths. */
+json_t *file_ops_try_multi_search_files(const char *pattern, const char *path,
+                                          int limit, int offset) {
+    if (!pattern || !path) return json_array();
+    json_t *files = json_array();
+    if (!files) return NULL;
+
+    if (file_ops_has_command("rg")) {
+        char *out = fops_rg_search_files(pattern, path, limit, offset);
+        if (out) {
+            char *save = NULL;
+            char *tok = strtok_r(out, "\n", &save);
+            while (tok && json_len(files) < (size_t)limit) {
+                char *clean = fops_strip(tok);
+                if (clean[0]) {
+                    json_append(files, json_string(clean));
+                }
+                tok = strtok_r(NULL, "\n", &save);
+            }
+            free(out);
+        }
+        return files;
+    }
+
+    /* Fallback: find */
+    if (!file_ops_has_command("find")) {
+        json_free(files);
+        return json_array();
+    }
+    char *escaped_path = file_ops_escape_shell_arg(path);
+    char *escaped_pat = file_ops_escape_shell_arg(pattern);
+    char cmd[2048];
+    snprintf(cmd, sizeof(cmd),
+        "find %s -not -path '*/.*' -type f -name %s 2>/dev/null | "
+        "sort -rn | tail -n +%d | head -n %d",
+        escaped_path, escaped_pat, offset + 1, limit);
+    char *out = file_ops_exec(cmd, NULL);
+    if (out) {
+        char *save = NULL;
+        char *tok = strtok_r(out, "\n", &save);
+        while (tok && json_len(files) < (size_t)limit) {
+            char *clean = fops_strip(tok);
+            if (clean[0]) json_append(files, json_string(clean));
+            tok = strtok_r(NULL, "\n", &save);
+        }
+        free(out);
+    }
+    free(escaped_path); free(escaped_pat);
+    return files;
+}
+
+/* Port of Python _try_multi_path_search.
+ * Recover a not-found path that is really several paths in one string.
+ * Splits on whitespace/commas; searches existing paths, merges results,
+ * notes skipped missing parts. Returns a JSON result object or NULL. */
+json_t *file_ops_try_multi_path_search(const char *pattern, const char *path,
+                                         const char *target, const char *file_glob,
+                                         int limit, int offset,
+                                         const char *output_mode, int context) {
+    (void)file_glob; (void)output_mode; (void)context;
+    if (!pattern || !path) return NULL;
+
+    /* Split on commas, then whitespace (Python: [p for chunk in path.split(",") for p in chunk.split() if p.strip()]) */
+    char *path_copy = strdup(path);
+    if (!path_copy) return NULL;
+
+    char *existing[64];
+    char *missing[64];
+    int n_existing = 0, n_missing = 0;
+    int n_parts = 0;
+
+    char *semicolon = strchr(path_copy, ',');
+    /* First split on commas */
+    char *comma_save = NULL;
+    char *chunk = strtok_r(path_copy, ",", &comma_save);
+    while (chunk) {
+        /* Then split on whitespace */
+        char *ws_save = NULL;
+        char *part = strtok_r(chunk, " \t", &ws_save);
+        while (part) {
+            n_parts++;
+            char *expanded = file_ops_expand_path(part);
+            struct stat st;
+            if (expanded && stat(expanded, &st) == 0) {
+                if (n_existing < 64) existing[n_existing++] = strdup(expanded);
+            } else {
+                if (n_missing < 64) missing[n_missing++] = strdup(expanded ? expanded : part);
+            }
+            if (expanded) free(expanded);
+            part = strtok_r(NULL, " \t", &ws_save);
+        }
+        chunk = strtok_r(NULL, ",", &comma_save);
+    }
+    free(path_copy);
+
+    /* Python: if len(parts) < 2: return None */
+    if (n_parts < 2 || n_existing == 0) {
+        for (int i = 0; i < n_existing; i++) free(existing[i]);
+        for (int i = 0; i < n_missing; i++) free(missing[i]);
+        return NULL;
+    }
+
+    /* Search each existing path and merge. */
+    json_t *merged = json_object();
+    json_t *matches_arr = json_array();   /* only relevant for content search */
+    json_t *files_arr = json_array();
+    int total_count = 0;
+
+    for (int i = 0; i < n_existing; i++) {
+        const char *p = existing[i];
+        if (target && strcmp(target, "files") == 0) {
+            json_t *sub = file_ops_try_multi_search_files(pattern, p, limit, offset);
+            if (sub) {
+                /* append file paths to files_arr */
+                size_t n = json_len(sub);
+                for (size_t j = 0; j < n; j++) {
+                    json_t *item = json_get(sub, j);
+                    if (item) json_append(files_arr, json_copy(item));
+                }
+                total_count += (int)n;
+                json_free(sub);
+            }
+        } else {
+            /* content search via rg -i */
+            char *escaped_pat = file_ops_escape_shell_arg(pattern);
+            char *escaped_path = file_ops_escape_shell_arg(p);
+            char glob_expr[512];
+            glob_expr[0] = '\0';
+            if (file_glob && file_glob[0]) {
+                char *esc_g = file_ops_escape_shell_arg(file_glob);
+                snprintf(glob_expr, sizeof(glob_expr), " --glob %s", esc_g);
+                free(esc_g);
+            }
+            char cmd[2048];
+            snprintf(cmd, sizeof(cmd),
+                "rg -i%s %s %s 2>/dev/null | head -n %d",
+                glob_expr, escaped_pat, escaped_path, limit);
+            char *out = file_ops_exec(cmd, NULL);
+            if (out) {
+                /* each line is a match */
+                char *save = NULL;
+                char *line = strtok_r(out, "\n", &save);
+                while (line && json_len(files_arr) < (size_t)limit) {
+                    char *clean = fops_strip(line);
+                    if (clean[0]) {
+                        json_append(files_arr, json_string(clean));
+                        total_count++;
+                    }
+                    line = strtok_r(NULL, "\n", &save);
+                }
+                free(out);
+            }
+            free(escaped_pat); free(escaped_path);
+        }
+    }
+
+    json_set(merged, "files", files_arr);
+    json_set(merged, "total_count", json_number((double)total_count));
+    json_set(merged, "files_count", json_number((double)json_len(files_arr)));
+
+    /* Build warning note. */
+    char note[1024];
+    char *missing_str = NULL;
+    if (n_missing > 0) {
+        missing_str = malloc(512); missing_str[0] = '\0';
+        for (int i = 0; i < n_missing && i < 3; i++) {
+            if (i > 0) strcat(missing_str, ", ");
+            strcat(missing_str, missing[i]);
+        }
+    }
+    snprintf(note, sizeof(note),
+        "path contained %d entries; searched %d that exist%s%s",
+        n_parts, n_existing,
+        missing_str ? "; skipped missing: " : "",
+        missing_str ? missing_str : "");
+    if (missing_str && n_missing > 3) {
+        char extra[64];
+        snprintf(extra, sizeof(extra), " (+%d more)", n_missing - 3);
+        strcat(note, extra);
+    }
+    json_set(merged, "warning", json_string(note));
+
+    for (int i = 0; i < n_existing; i++) free(existing[i]);
+    for (int i = 0; i < n_missing; i++) free(missing[i]);
+    free(missing_str);
+    return merged;
+}

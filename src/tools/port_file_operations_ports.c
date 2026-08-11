@@ -13,6 +13,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include "hermes_json.h"
 #include <dirent.h>
 
 static char *lowerdup(const char *s) {
@@ -237,3 +238,13 @@ char *fo_search_with_grep(const char *pattern, const char *path) {
     printf("grep fallback search: %s (-rnH)\n", pattern);
     return strdup("[]");
 }
+
+/* PoP: _zero_match_probe @ tools/file_operations.py:_zero_match_probe */
+char *file_ops_zero_match_probe(const char *pattern, const char *path,
+                                  const char *file_glob);
+
+/* PoP: _try_multi_path_search @ tools/file_operations.py:_try_multi_path_search */
+json_t *file_ops_try_multi_path_search(const char *pattern, const char *path,
+                                         const char *target, const char *file_glob,
+                                         int limit, int offset,
+                                         const char *output_mode, int context);

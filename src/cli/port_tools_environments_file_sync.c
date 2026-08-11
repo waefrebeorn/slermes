@@ -232,6 +232,43 @@ int cli_tools_environments_file_sync__sync_back_impl(const char *hermes_home,
     return rc;
 }
 
+/* PoP: cli_tools_environments_file_sync__sync_transaction @ tools/environments/file_sync.py:_sync_transaction */
+int cli_tools_environments_file_sync__sync_transaction(
+    file_sync_get_files_fn get_files_fn, void *get_files_ctx,
+    file_sync_bulk_upload_fn bulk_upload_fn, void *bulk_upload_ctx,
+    file_sync_upload_fn upload_fn, void *upload_ctx,
+    file_sync_delete_fn delete_fn, void *delete_ctx,
+    int force, double sync_interval) {
+    /*
+     * Execute one upload sync cycle (mirrors FileSyncManager._sync_transaction).
+     * Builds a manager wired to the injected callbacks and runs the real
+     * lib cycle: rate-limit guard, classify to_upload/to_delete, upload,
+     * delete, commit or rollback (rate-limit clock never advances on failure).
+     */
+    file_sync_manager_t *m = file_sync_manager_create_ex(
+        NULL, NULL, NULL,
+        bulk_upload_fn, bulk_upload_ctx,
+        upload_fn, upload_ctx,
+        delete_fn, delete_ctx,
+        get_files_fn, get_files_ctx);
+    if (!m) return -1;
+    if (sync_interval > 0.0) file_sync_manager_set_interval(m, sync_interval);
+    int rc = file_sync_manager_sync_transaction(m, force);
+    file_sync_manager_free(m);
+    return rc;
+}
+
+/* PoP: cli_tools_environments_file_sync__sync_back_transaction @ tools/environments/file_sync.py:_sync_back_transaction */
+int cli_tools_environments_file_sync__sync_back_transaction(
+    const char *hermes_home,
+    file_sync_bulk_download_fn download_fn, void *download_ctx) {
+    /*
+     * Teardown pull (mirrors FileSyncManager._sync_back_transaction — a thin
+     * wrapper over the sync-back implementation).
+     */
+    return cli_tools_environments_file_sync__sync_back_impl(hermes_home, download_fn, download_ctx);
+}
+
 /* PoP: cli_tools_environments_file_sync__infer_host_path @ tools/environments/file_sync.py:_infer_host_path */
 char* cli_tools_environments_file_sync__infer_host_path(const char *remote_path, json_node_t *file_mapping,
                                                          char *buf, size_t bufsz) {

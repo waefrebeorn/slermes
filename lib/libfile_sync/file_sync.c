@@ -289,6 +289,8 @@ static char *resolve_host_path(const char *host_path) {
 
 /* ── Manager (mirrors Python FileSyncManager) ────────────────────── */
 
+static bool is_upload_only(file_sync_manager_t *m, const char *host_path);  /* forward */
+
 typedef struct {
     char remote_path[FILE_SYNC_PATH_MAX];
     char host_path[FILE_SYNC_PATH_MAX];
@@ -308,6 +310,23 @@ struct file_sync_manager {
     int uo_cap;
     file_sync_bulk_download_fn download_fn;
     void *download_ctx;
+
+    /* Upload-cycle callbacks (mirrors Python FileSyncManager injected fns).
+     * Any may be NULL. */
+    file_sync_bulk_upload_fn bulk_upload_fn;
+    void *bulk_upload_ctx;
+    file_sync_upload_fn upload_fn;
+    void *upload_ctx;
+    file_sync_delete_fn delete_fn;
+    void *delete_ctx;
+    file_sync_get_files_fn get_files_fn;  /* returns file_sync_list_t* */
+    void *get_files_ctx;
+
+    /* synced_files: remote_path -> (mtime, size) key, modeled as a string key
+     * stored in the map entry's pushed_hash field when empty (unpushed) or
+     * a mtime|size composite when pending. Simpler: reuse a separate hash table. */
+    double last_sync_time;   /* monotonic; 0 ensures first sync runs */
+    double sync_interval;     /* seconds; 0 = no rate limit */
 };
 
 static bool manager_add_map(file_sync_manager_t *m, const char *remote,
@@ -334,19 +353,45 @@ static file_sync_map_entry_t *manager_find_map(file_sync_manager_t *m,
     return NULL;
 }
 
-file_sync_manager_t *file_sync_manager_create(
+/* PoP: _sync_transaction @ tools/environments/file_sync.py:_sync_transaction */
+/* PoP: __init__ @ tools/environments/file_sync.py:FileSyncManager.__init__ */
+
+/* Port of Python FileSyncManager.__init__ + create_ex.
+ * Creates a manager that stores upload-cycle callbacks. */
+file_sync_manager_t *file_sync_manager_create_ex(
     const file_sync_list_t *files,
-    file_sync_bulk_download_fn download_fn, void *download_ctx) {
+    file_sync_bulk_download_fn download_fn, void *download_ctx,
+    file_sync_bulk_upload_fn bulk_upload_fn, void *bulk_upload_ctx,
+    file_sync_upload_fn upload_fn, void *upload_ctx,
+    file_sync_delete_fn delete_fn, void *delete_ctx,
+    file_sync_get_files_fn get_files_fn, void *get_files_ctx)
+{
     file_sync_manager_t *m = calloc(1, sizeof(*m));
     if (!m) return NULL;
     m->download_fn = download_fn;
     m->download_ctx = download_ctx;
+    m->bulk_upload_fn = bulk_upload_fn;
+    m->bulk_upload_ctx = bulk_upload_ctx;
+    m->upload_fn = upload_fn;
+    m->upload_ctx = upload_ctx;
+    m->delete_fn = delete_fn;
+    m->delete_ctx = delete_ctx;
+    m->get_files_fn = get_files_fn;
+    m->get_files_ctx = get_files_ctx;
+    m->last_sync_time = 0.0;       /* 0 ensures first sync runs */
+    m->sync_interval = 0.0;        /* 0 = no rate limit unless set */
     if (files) {
         for (int i = 0; i < files->count; i++)
             manager_add_map(m, files->entries[i].remote_path,
                             files->entries[i].host_path);
     }
     return m;
+}
+
+/* Optionally configured the rate-limit interval (Python _sync_interval). */
+void file_sync_manager_set_interval(file_sync_manager_t *m, double seconds) {
+    if (!m) return;
+    m->sync_interval = seconds;
 }
 
 void file_sync_manager_free(file_sync_manager_t *m) {
@@ -368,6 +413,185 @@ void file_sync_manager_mark_pushed(file_sync_manager_t *m,
         if (!e) return;
     }
     file_sha256_hex(host_path, e->pushed_hash);
+}
+
+/* Compute the mtime|size file key (Python _file_mtime_key).
+ * Writes into key_out (key_out_size), returns 0 on success. */
+static int fmgr_file_mtime_key(const char *host_path,
+                                char *key_out, size_t key_size) {
+    struct stat st;
+    if (!host_path || stat(host_path, &st) != 0) {
+        if (key_out && key_size > 0) key_out[0] = '\0';
+        return -1;
+    }
+    /* Python: f"{st.st_mtime:.6f}|{st.st_size}" */
+    snprintf(key_out, key_size, "%.6f|%lld",
+             (double)st.st_mtime, (long long)st.st_size);
+    return 0;
+}
+
+/* Check if a host path is upload-only (mirrors self._upload_only_host_paths). */
+static bool fmgr_is_upload_only(file_sync_manager_t *m, const char *host_path) {
+    return is_upload_only(m, host_path);
+}
+
+/* Port of Python _sync_transaction: execute one upload sync cycle.
+ * force=1 skips the rate-limit guard. Returns 0 if cycled, -1 on error.
+ * Mirrors the upload/delete/commit/rollback semantics exactly. */
+int file_sync_manager_sync_transaction(file_sync_manager_t *m, int force) {
+    if (!m) return -1;
+    if (!m->get_files_fn) return -1;   /* need file enumeration */
+
+    /* Rate-limit guard (mirrors the monotonic check). */
+    if (!force && m->sync_interval > 0.0) {
+        double now = (double)time(NULL);
+        if (now - m->last_sync_time < m->sync_interval) {
+            return 0;   /* not yet time; Python returns None */
+        }
+    }
+
+    /* current_files: enumerate via get_files_fn (returns a fresh list). */
+    file_sync_list_t *current = m->get_files_fn(m->get_files_ctx);
+
+    /* Classify: to_upload (new/changed on host, not upload-only) and
+     * to_delete (in map but not in current_files). */
+    int to_upload = 0;
+    int to_delete_count = 0;
+    file_sync_map_entry_t **upload_entries = NULL;
+    char **delete_paths = NULL;
+
+    /* Snapshot pushed_hashes for rollback. */
+    char **prev_keys = malloc(m->map_count > 0 ? m->map_count : 1);
+    for (int i = 0; i < m->map_count; i++)
+        prev_keys[i] = m->map[i].pushed_hash[0]
+                       ? strdup(m->map[i].pushed_hash) : NULL;
+
+    /* to_upload: scan current_files for host-side changes. */
+    if (current) {
+        for (int i = 0; i < current->count; i++) {
+            const char *hp = current->entries[i].host_path;
+            const char *rp = current->entries[i].remote_path;
+            if (!hp[0] || !rp[0]) continue;
+            if (fmgr_is_upload_only(m, hp)) continue;  /* credentials */
+
+            char fkey[65];
+            if (fmgr_file_mtime_key(hp, fkey, sizeof(fkey)) != 0) continue;
+
+            file_sync_map_entry_t *e = manager_find_map(m, rp);
+            if (!e) {
+                /* New file — add to map, mark for upload. */
+                if (!manager_add_map(m, rp, hp)) continue;
+                e = manager_find_map(m, rp);
+                if (!e) continue;
+            }
+            /* Not yet pushed, or changed since push? */
+            if (e->pushed_hash[0] == '\0' || strcmp(e->pushed_hash, fkey) != 0) {
+                upload_entries = realloc(upload_entries, (to_upload + 1) * sizeof(void *));
+                upload_entries[to_upload++] = e;
+            }
+        }
+    }
+
+    /* to_delete: map entries whose remote_path is no longer in current_files. */
+    for (int i = 0; i < m->map_count; i++) {
+        const char *rp = m->map[i].remote_path;
+        bool still_here = false;
+        if (current) {
+            for (int j = 0; j < current->count; j++) {
+                if (strcmp(current->entries[j].remote_path, rp) == 0) {
+                    still_here = true; break;
+                }
+            }
+        }
+        if (!still_here) {
+            delete_paths = realloc(delete_paths, (to_delete_count + 1) * sizeof(char *));
+            delete_paths[to_delete_count++] = strdup(rp);
+        }
+    }
+
+    if (current) file_sync_list_free(current);
+
+    if (to_upload == 0 && to_delete_count == 0) {
+        m->last_sync_time = (double)time(NULL);
+        for (int i = 0; i < m->map_count; i++) free(prev_keys[i]);
+        free(prev_keys); free(upload_entries); free(delete_paths);
+        return 0;
+    }
+
+    /* Execute uploads. */
+    bool ok = true;
+    if (to_upload > 0 && m->bulk_upload_fn) {
+        /* Build a file_sync_list_t from upload_entries. */
+        file_sync_list_t ul;
+        ul.count = to_upload; ul.capacity = to_upload;
+        ul.entries = malloc((to_upload > 0 ? to_upload : 1) * sizeof(file_sync_entry_t));
+        for (int i = 0; i < to_upload; i++) {
+            strncpy(ul.entries[i].host_path, upload_entries[i]->host_path, FILE_SYNC_PATH_MAX - 1);
+            strncpy(ul.entries[i].remote_path, upload_entries[i]->remote_path, FILE_SYNC_PATH_MAX - 1);
+            ul.entries[i].host_path[FILE_SYNC_PATH_MAX - 1] = '\0';
+            ul.entries[i].remote_path[FILE_SYNC_PATH_MAX - 1] = '\0';
+        }
+        ok = m->bulk_upload_fn(&ul, m->bulk_upload_ctx);
+        free(ul.entries);
+    } else if (m->upload_fn) {
+        for (int i = 0; i < to_upload && ok; i++) {
+            ok = m->upload_fn(upload_entries[i]->host_path,
+                              upload_entries[i]->remote_path,
+                              m->upload_ctx);
+        }
+    }
+
+    /* Execute deletes. */
+    if (ok && to_delete_count > 0 && m->delete_fn) {
+        for (int i = 0; i < to_delete_count; i++) {
+            m->delete_fn(delete_paths[i], m->delete_ctx);
+        }
+    }
+
+    if (!ok) {
+        /* Rollback: restore previous pushed hashes. */
+        for (int i = 0; i < m->map_count; i++) {
+            if (prev_keys[i]) {
+                strncpy(m->map[i].pushed_hash, prev_keys[i], 64);
+                m->map[i].pushed_hash[64] = '\0';
+            } else {
+                m->map[i].pushed_hash[0] = '\0';
+            }
+            free(prev_keys[i]);
+        }
+        m->last_sync_time = 0.0;  /* do NOT advance rate-limit clock on failure */
+        free(prev_keys); free(upload_entries);
+        for (int i = 0; i < to_delete_count; i++) free(delete_paths[i]);
+        free(delete_paths);
+        return -1;
+    }
+
+    /* Commit: update pushed_hashes with new mtime|size keys. */
+    for (int i = 0; i < to_upload; i++) {
+        char fkey[65];
+        if (fmgr_file_mtime_key(upload_entries[i]->host_path, fkey, sizeof(fkey)) == 0) {
+            strncpy(upload_entries[i]->pushed_hash, fkey, 64);
+            upload_entries[i]->pushed_hash[64] = '\0';
+        }
+    }
+    m->last_sync_time = (double)time(NULL);
+    for (int i = 0; i < m->map_count; i++) free(prev_keys[i]);
+    free(prev_keys); free(upload_entries);
+    for (int i = 0; i < to_delete_count; i++) free(delete_paths[i]);
+    free(delete_paths);
+    return 0;
+}
+
+/* PoP: _sync_back_transaction @ tools/environments/file_sync.py:_sync_back_transaction */
+/* PoP: sync_back @ tools/environments/file_sync.py:sync_back */
+
+/* Port of Python _sync_back_transaction: delegates to file_sync_manager_sync_back
+ * (the upload cycle's teardown pull). The Python version is a thin wrapper over
+ * sync_back; the C version reuses the same implementation. */
+int file_sync_manager_sync_back_transaction(file_sync_manager_t *m,
+                                              const char *hermes_home) {
+    if (!m) return -1;
+    return file_sync_manager_sync_back(m, hermes_home);
 }
 
 void file_sync_manager_add_upload_only(file_sync_manager_t *m,
