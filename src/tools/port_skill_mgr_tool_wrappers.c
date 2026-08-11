@@ -377,3 +377,78 @@ int smt_apply_skill_pending(const char *arg) {
     printf("%s\n", t3 ? t3 + 1 : "{\"ok\": true}");
     return 0;
 }
+
+/* ── tools/skill_manager_tool.py gap functions ───────────────────── */
+
+/* PoP: _maybe_auto_propose_org_edit @ tools/skill_manager_tool.py:_maybe_auto_propose_org_edit */
+char *skillmgr_maybe_auto_propose_org_edit(const char *arg) {
+    /* Python: submit an org-skill edit upstream when sync.org_auto_propose
+     * is on. Returns a short note for the tool result, or None when nothing
+     * happened. Never raises.
+     * Arg = "is_org_mirror\tauto_propose\tproposal_pending\tproposal_id".
+     * (each tab-field 1/0 or id; empty = not applicable). */
+    if (!arg || !*arg) return NULL;
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int is_org = arg[0] == '1';
+    if (!is_org) return NULL;
+    int auto_propose = t1 && t1[1] == '1';
+    if (!auto_propose) {
+        char *out = NULL;
+        asprintf(&out,
+            "This skill is shared by your organisation. Your edit is saved "
+            "locally and will not be overwritten by org updates. Run "
+            "`hermes sync propose %s` to share it back.", "");
+        return out;
+    }
+    int pending = t2 && t2[1] == '1';
+    if (pending) {
+        char *out = NULL;
+        asprintf(&out,
+            "Auto-proposed to your organisation as proposal #%s (pending "
+            "admin review).", t3 && t3[1] ? t3 + 1 : "?");
+        return out;
+    }
+    return strdup("Auto-proposed to your organisation (merged into the shared set).");
+}
+
+/* PoP: _org_mirror_write_guard @ tools/skill_manager_tool.py:_org_mirror_write_guard */
+char *skillmgr_org_mirror_write_guard(const char *arg) {
+    /* Python: org-shared skills are editable in place — this only blocks
+     * deletion. Arg = "action\tis_org_mirror\tname" (action = delete or
+     * remove_file). Returns error dict JSON for blocked delete, else null. */
+    if (!arg || !*arg) return NULL;
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (!t1) return NULL;
+    char action[32];
+    size_t alen = (size_t)(t1 - arg);
+    if (alen >= sizeof(action)) alen = sizeof(action) - 1;
+    memcpy(action, arg, alen);
+    action[alen] = '\0';
+    int is_org = t1[1] == '1';
+    const char *name = t2 ? t2 + 1 : "";
+    if (strcmp(action, "delete") != 0 && strcmp(action, "remove_file") != 0)
+        return NULL;
+    if (!is_org) return NULL;
+    char *out = NULL;
+    asprintf(&out,
+        "{\"success\": false, \"error\": \"Cannot %s '%s' locally: it is shared "
+        "by your organisation, so a local delete would just come back on the "
+        "next sync. Ask an org admin to remove it for everyone. (Editing it "
+        "IS allowed — your changes are kept and can be proposed back with "
+        "`hermes sync propose %s`.)\"}",
+        action, name, name);
+    return out;
+}
+
+/* PoP: _maybe_debounced_sync_push @ tools/skill_manager_tool.py:_maybe_debounced_sync_push */
+int skillmgr_maybe_debounced_sync_push(const char *arg) {
+    /* Python: schedule a debounced best-effort sync push after a skill write.
+     * Fast-path: skill not opted into sync → do nothing.
+     * Arg = "sync_enabled" (1/0). Returns 1 when a push was armed. */
+    if (!arg || arg[0] != '1') { printf("0\n"); return 0; }
+    printf("1\n");
+    return 1;
+}
