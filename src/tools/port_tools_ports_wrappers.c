@@ -13,6 +13,7 @@
 #include <dirent.h>
 #include "hermes_json.h"
 #include "registry.h"
+#include "credential_pool.h"
 
 /* PoP: _canon_key_combo @ tools/computer_use/tool.py:_canon_key_combo */
 int tools_computer_use_tool_u_canon_key_combo(const char *arg) {
@@ -2383,6 +2384,92 @@ int tools_tool_backend_helpers_resolve_openai_audio_api_key(const char *arg) {
     while (*v == ' ' || *v == '\t') v++;
     printf("%s\n", v);
     return 0;
+}
+
+/* PoP: _scoped_credential @ tools/tool_backend_helpers.py:_scoped_credential */
+char *tools_tool_backend_helpers__scoped_credential(const char *name) {
+    /* Python: read a credential env var under the active profile secret scope,
+     * falling back to a raw getenv only when secret_scope is unavailable. */
+    if (!name || !*name) return strdup("");
+    extern char *secret_scope_get_secret(const char *name, const char *default_val);
+    char *val = secret_scope_get_secret(name, "");
+    if (!val) {
+        /* Fallback: raw os.environ read (packaging edge — secret_scope unavailable) */
+        const char *raw = getenv(name);
+        return strdup(raw ? raw : "");
+    }
+    /* Python: .strip() */
+    char *start = val;
+    while (*start == ' ' || *start == '\t' || *start == '\n' || *start == '\r') start++;
+    char *end = start + strlen(start);
+    while (end > start && (*(end - 1) == ' ' || *(end - 1) == '\t' ||
+                            *(end - 1) == '\n' || *(end - 1) == '\r')) {
+        *--end = '\0';
+    }
+    if (start == val) return val;   /* nothing to trim — reuse */
+    char *trimmed = strdup(start);
+    free(val);
+    return trimmed;
+}
+
+/* PoP: resolve_provider_secret @ tools/tool_backend_helpers.py:resolve_provider_secret */
+char *tools_tool_backend_helpers_resolve_provider_secret(
+    const char *env_var, const char *provider_id, const char *config_value) {
+    /* Python: resolve a voice/STT/TTS API key — single owner for key lookup.
+     * Resolution order: config_value -> scoped env -> pool (non-multiplex only). */
+    if (!env_var || !*env_var) return strdup("");
+
+    /* 1. Explicit config value from config.yaml. */
+    if (config_value && config_value[0]) {
+        char *v = strdup(config_value);
+        /* Python: str(...).strip() */
+        char *s = v, *e = v + strlen(v);
+        while (*s == ' ' || *s == '\t') s++;
+        while (e > s && (*(e - 1) == ' ' || *(e - 1) == '\t')) *--e = '\0';
+        char *trimmed = strdup(s);
+        free(v);
+        return trimmed;
+    }
+
+    /* 2. Scope-aware env read. */
+    char *key = tools_tool_backend_helpers__scoped_credential(env_var);
+    if (key && key[0]) return key;
+
+    /* 3. Under multiplexing the profile scope is authoritative — do not fall
+     *    through to the credential pool which may belong to another profile. */
+    extern bool secret_scope_is_multiplex_active(void);
+    if (secret_scope_is_multiplex_active()) {
+        free(key);
+        return strdup("");
+    }
+
+    /* 4. Credential pool — check both provider_id and custom:<provider_id>. */
+    extern credential_pool_t *load_pool(const char *provider);
+    if (provider_id && provider_id[0]) {
+        char custom_key[1024];
+        const char *keys[] = { provider_id, NULL };
+        bool have_custom = snprintf(custom_key, sizeof(custom_key),
+                                    "custom:%s", provider_id) < (int)sizeof(custom_key);
+        if (have_custom) keys[1] = custom_key;
+
+        for (int i = 0; i < (int)(sizeof(keys) / sizeof(keys[0])) && keys[i]; i++) {
+            credential_pool_t *pool = load_pool(keys[i]);
+            if (!pool || !credential_pool_has_available(pool)) {
+                if (pool) credential_pool_free(pool);
+                continue;
+            }
+            const char *k = credential_pool_next_key(pool, NULL);
+            if (k && k[0]) {
+                char *result = strdup(k);
+                credential_pool_free(pool);
+                free(key);
+                return result;
+            }
+            credential_pool_free(pool);
+        }
+    }
+    free(key);
+    return strdup("");
 }
 
 /* PoP: prefers_gateway @ tools/tool_backend_helpers.py:prefers_gateway */

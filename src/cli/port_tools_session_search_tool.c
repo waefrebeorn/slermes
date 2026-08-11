@@ -1304,3 +1304,85 @@ int cli_tools_session_search_tool_check_session_search_requirements(
     hermes_log(LOG_DEBUG, "session_search", "check_requirements: available (%s)", db_path);
     return 0;
 }
+
+/* PoP: cli_tools_session_search_tool__get_message_storage_state @ tools/session_search_tool.py:_get_message_storage_state */
+
+/* Port of Python tools/session_search_tool.py:_get_message_storage_state.
+ * Return the owning session and visibility flags for *message_id*.
+ * On success fills session_id_out/active_out/compacted_out and returns 0;
+ * returns -1 when the message id is absent or the lookup fails (Python None). */
+int cli_tools_session_search_tool__get_message_storage_state(
+    sqlite3 *db, const char *message_id,
+    char *session_id_out, size_t session_size,
+    int *active_out, int *compacted_out)
+{
+    if (!message_id || !message_id[0]) return -1;
+    if (!db) return -1;
+
+    sqlite3_stmt *st = NULL;
+    int rc = sqlite3_prepare_v2(db,
+        "SELECT session_id, active, compacted FROM messages WHERE id = ?",
+        -1, &st, NULL);
+    if (rc != SQLITE_OK) {
+        hermes_log(LOG_DEBUG, "session_search", "storage_state: prepare failed: %s",
+                   sqlite3_errmsg(db));
+        return -1;
+    }
+    sqlite3_bind_text(st, 1, message_id, -1, SQLITE_TRANSIENT);
+    if (sqlite3_step(st) != SQLITE_ROW) {
+        sqlite3_finalize(st);
+        return -1;   /* no row — Python returns None */
+    }
+
+    const unsigned char *sid = sqlite3_column_text(st, 0);
+    if (sid && session_id_out && session_size > 0)
+        snprintf(session_id_out, session_size, "%s", (const char *)sid);
+    if (active_out)   *active_out   = sqlite3_column_int(st, 1);
+    if (compacted_out) *compacted_out = sqlite3_column_int(st, 2);
+
+    sqlite3_finalize(st);
+    hermes_log(LOG_DEBUG, "session_search", "storage_state: %s -> %s active=%d compacted=%d",
+               message_id, sid ? (const char *)sid : "?", *active_out, *compacted_out);
+    return 0;
+}
+
+/* PoP: cli_tools_session_search_tool__session_link @ tools/session_search_tool.py:_session_link */
+
+/* Port of Python tools/session_search_tool.py:_session_link.
+ * The reference the agent writes to point the user at a session:
+ *   "@session:<name>/<id>" when a profile name resolves, else "@session:<id>".
+ * The profile segment is omitted when we can't name it confidently — a bare
+ * id still resolves, it just can't disambiguate across profiles. A "custom"
+ * (unrecognized) HERMES_HOME also omits the segment. Caller frees the result. */
+char *cli_tools_session_search_tool__session_link(const char *session_id,
+                                                   const char *profile)
+{
+    if (!session_id || !session_id[0]) return NULL;
+
+    char name[256];
+    name[0] = '\0';
+
+    const char *p = profile;
+    while (p && *p == ' ') p++;
+    size_t plen = p ? strlen(p) : 0;
+    while (plen > 0 && p[plen - 1] == ' ') plen--;
+    if (p && plen > 0) {
+        snprintf(name, sizeof(name), "%.*s", (int)plen, p);
+    } else {
+        /* Resolve the active profile (mirrors get_active_profile_name).
+         * "custom" (unrecognized HERMES_HOME) must not be emitted. */
+        extern const char *hermes_get_profile(void);
+        const char *resolved = hermes_get_profile();
+        if (resolved && resolved[0] && strcmp(resolved, "custom") != 0)
+            snprintf(name, sizeof(name), "%s", resolved);
+    }
+
+    if (name[0]) {
+        char *out = NULL;
+        if (asprintf(&out, "@session:%s/%s", name, session_id) < 0) return NULL;
+        return out;
+    }
+    char *out = NULL;
+    if (asprintf(&out, "@session:%s", session_id) < 0) return NULL;
+    return out;
+}
