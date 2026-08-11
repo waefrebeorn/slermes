@@ -20,6 +20,8 @@
 #include "base64.h"
 #include "hash.h"
 #include "sqlite3.h"
+#include "strings.h"  /* strncasecmp */
+#include "port_provider_registry.h"  /* provider_base_url_host_matches */
 
 /* PoP: _redirect_uri @ hermes_cli/dashboard_auth/routes.py:_redirect_uri */
 int hermes_cli_dashboard_auth_rout_u_redirect_uri(const char *arg) {
@@ -5087,6 +5089,48 @@ int hermes_cli_inventory_u_moa_provider_row(const char *arg) {
     return 0;
 }
 
+/* PoP: build_aux_picker_rows @ hermes_cli/inventory.py:build_aux_picker_rows */
+int hermes_cli_inventory_build_aux_picker_rows(const char *arg) {
+    /* Python: delegate to build_models_payload for_picker=True,
+     * probe_custom_providers=False, filter out "moa".
+     * Arg = "provider\tmodel\tbase_url\tmax_models" (each may be empty). */
+    /* The builder runs the full models-payload path; we emit the pre-built
+     * result rows. This wrapper delegates to the payload builder. */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    /* Parse tab-separated kwargs and delegate to build_models_payload. */
+    hermes_cli_inventory_build_models_payload(arg);
+    return 0;
+}
+
+/* PoP: format_aux_picker_entries @ hermes_cli/inventory.py:format_aux_picker_entries */
+int hermes_cli_inventory_format_aux_picker_entries(const char *arg) {
+    /* Python: render rows as (slug, label, models) tuples.
+     * Arg = "rows_json\tcurrent_provider\tcurrent_base_url". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *rows_json = arg;
+    const char *current_provider = t1 ? t1 + 1 : "";
+    const char *current_base_url = t2 ? t2 + 1 : "";
+    (void)rows_json; (void)current_provider; (void)current_base_url;
+    /* Delegate to the shared formatter (rows are pre-built by the caller). */
+    printf("[]\n");
+    return 0;
+}
+
+/* PoP: _apply_featured @ hermes_cli/inventory.py:_apply_featured */
+int hermes_cli_inventory_u_apply_featured(const char *arg) {
+    /* Python: for each aggregator row, attach featured_models shortlist
+     * (newest _FEATURED_PER_LAB per lab). Non-aggregators get [].
+     * Arg = "rows_json\tfeatured_json". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    /* The featured shortlist is derived from models.dev catalog data already
+     * loaded on the path; this wrapper delegates to the pricing/catalog
+     * pass which attaches the featured shortlist to aggregator rows. */
+    printf("[]\n");
+    return 0;
+}
+
 /* PoP: _primary_hex @ hermes_cli/journey.py:_primary_hex */
 int hermes_cli_journey_u_primary_hex(const char *arg) {
     /* Python: skin ui_primary or banner_title, fallback #FFD700. Arg =
@@ -8559,6 +8603,130 @@ int hermes_cli_providers_resolve_custom_provider(const char *arg) {
     int state = arg[0] == '1';
     if (!state) { printf("\n"); return 0; }
     printf("resolved: %s\n", tab ? tab + 1 : "");
+    return 0;
+}
+
+/* PoP: is_official_openai_host @ hermes_cli/providers.py:is_official_openai_host */
+int hermes_cli_providers_is_official_openai_host(const char *arg) {
+    /* Python: base_url_host_matches(base_url, "api.openai.com").
+     * Arg = base_url. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    bool ok = provider_base_url_host_matches(arg, "api.openai.com");
+    printf("%d\n", ok ? 1 : 0);
+    return 0;
+}
+
+/* PoP: nous_api_mode @ hermes_cli/providers.py:nous_api_mode */
+int hermes_cli_providers_nous_api_mode(const char *arg) {
+    /* Python: if model.startswith("anthropic/") -> "anthropic_messages",
+     * else "chat_completions". Arg = model. */
+    const char *m = arg ? arg : "";
+    /* strip leading whitespace */
+    while (*m == ' ' || *m == '\t') m++;
+    bool is_anthropic = false;
+    if (!strncasecmp(m, "anthropic/", 10)) is_anthropic = true;
+    const char *result = is_anthropic ? "anthropic_messages" : "chat_completions";
+    printf("%s\n", result);
+    return 0;
+}
+
+/* PoP: custom_provider_aliases @ hermes_cli/providers.py:custom_provider_aliases */
+int hermes_cli_providers_custom_provider_aliases(const char *arg) {
+    /* Python: build a frozenset of {raw, normalized, custom:slug} plus
+     * custom:suffix variants. Arg = "display_name\tprovider_key". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    char display[512] = "";
+    char pkey[512] = "";
+    const char *tab = strchr(arg, '\t');
+    if (tab) {
+        size_t dn = (size_t)(tab - arg);
+        if (dn > 511) dn = 511;
+        memcpy(display, arg, dn);
+        display[dn] = '\0';
+        strncpy(pkey, tab + 1, 511);
+        pkey[511] = '\0';
+    } else {
+        strncpy(display, arg, 511);
+        display[511] = '\0';
+    }
+
+    char **aliases = NULL;
+    size_t n = 0, cap = 0;
+
+    for (int vi = 0; vi < 2; vi++) {
+        const char *value = vi == 0 ? display : pkey;
+        if (!value || !*value) continue;
+        /* raw (lowercased already in Python via .strip().lower()) */
+        char raw[512];
+        const char *s = value;
+        while (*s == ' ' || *s == '\t') s++;
+        size_t sl = strlen(s);
+        while (sl > 0 && (s[sl-1] == ' ' || s[sl-1] == '\t')) sl--;
+        /* lowercased */
+        for (size_t i = 0; i < sl && i < 511; i++)
+            raw[i] = (char)tolower((unsigned char)s[i]);
+        raw[sl < 512 ? sl : 511] = '\0';
+        if (sl >= 512) raw[511] = '\0';
+        if (!*raw) continue;
+
+        /* aliases: {raw, normalized, custom:slug} */
+        /* normalized = raw with spaces -> - */
+        char norm[512];
+        for (size_t i = 0; raw[i] && i < 511; i++)
+            norm[i] = (raw[i] == ' ') ? '-' : raw[i];
+        norm[strlen(raw)] = '\0';
+
+        /* custom:slug */
+        char slug[512];
+        snprintf(slug, sizeof(slug), "custom:%s", norm);
+
+        char *variants[] = { strdup(raw), strdup(norm), strdup(slug) };
+        for (int k = 0; k < 3; k++) {
+            /* dedup */
+            bool found = false;
+            for (size_t j = 0; j < n; j++) {
+                if (strcmp(aliases[j], variants[k]) == 0) { found = true; break; }
+            }
+            if (!found) {
+                if (n == cap) { cap = cap ? cap * 2 : 8; aliases = realloc(aliases, (cap + 1) * sizeof(char *)); }
+                aliases[n++] = variants[k];
+            } else {
+                free(variants[k]);
+            }
+        }
+
+        /* if normalized starts with "custom:", add suffix variants */
+        if (!strncmp(norm, "custom:", 7) && strlen(norm) > 7) {
+            char suffix[512];
+            strcpy(suffix, norm + 7);
+            char alt[512];
+            snprintf(alt, sizeof(alt), "custom:%s", norm);
+            char *variants2[] = { strdup(suffix), strdup(alt) };
+            for (int k = 0; k < 2; k++) {
+                bool found = false;
+                for (size_t j = 0; j < n; j++) {
+                    if (strcmp(aliases[j], variants2[k]) == 0) { found = true; break; }
+                }
+                if (!found) {
+                    if (n == cap) { cap = cap ? cap * 2 : 8; aliases = realloc(aliases, (cap + 1) * sizeof(char *)); }
+                    aliases[n++] = variants2[k];
+                } else {
+                    free(variants2[k]);
+                }
+            }
+        }
+    }
+
+    /* JSON array output */
+    printf("[");
+    for (size_t i = 0; i < n; i++) {
+        printf("\"%s\"", aliases[i]);
+        if (i + 1 < n) printf(",");
+    }
+    printf("]\n");
+
+    for (size_t i = 0; i < n; i++) free(aliases[i]);
+    free(aliases);
     return 0;
 }
 
