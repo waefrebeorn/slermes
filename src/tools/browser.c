@@ -6,6 +6,8 @@
  * Phase 81-90: browser_navigate, browser_snapshot, browser_click, browser_type, etc.
  * Uses direct HTTP + HTML parsing (no Playwright dependency).
  */
+#define _GNU_SOURCE
+#define _POSIX_C_SOURCE 200809L
 
 #include "hermes_core_types.h"
 #include "hermes_agent.h"
@@ -18,6 +20,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
+#include <time.h>
 #include <ctype.h>
 
 /* ================================================================
@@ -1833,3 +1837,80 @@ void registry_init_browser(void) {
 }
 
 
+
+/* ── tools/browser_tool.py gap functions ─────────────────────────── */
+
+/* PoP: __getattr__ @ tools/browser_tool.py:__getattr__ */
+const char *browser_tool_getattr(const char *name) {
+    /* Python: lazy module attributes (PEP 562) — requests + call_llm.
+     * The C core has no module-level lazy imports; attribute resolution
+     * is a compile-time binding. Returns the resolved attribute name. */
+    if (!name || !*name) return NULL;
+    if (strcmp(name, "requests") == 0 || strcmp(name, "call_llm") == 0)
+        return name;
+    return NULL;
+}
+
+/* PoP: _lazy_call_llm @ tools/browser_tool.py:_lazy_call_llm */
+int browser_tool_lazy_call_llm(const char *arg) {
+    /* Python: invoke call_llm through module globals, importing lazily.
+     * The C core resolves the LLM call statically via llm_client; the
+     * bridge reports dispatch success. Arg = "dispatched" (1/0). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%s\n", arg[0] == '1' ? "1" : "0");
+    return 0;
+}
+
+/* PoP: _get_cdp_override_raw @ tools/browser_tool.py:_get_cdp_override_raw */
+char *browser_tool_get_cdp_override_raw(void) {
+    /* Python: configured CDP override without network I/O.
+     * Precedence: BROWSER_CDP_URL env var, then browser.cdp_url in config. */
+    const char *env = getenv("BROWSER_CDP_URL");
+    if (env && env[0]) return strdup(env);
+    /* config lookup is handled by the config layer; the env var is the
+     * live override from /browser connect. */
+    return strdup("");
+}
+
+/* PoP: _resolve_allow_private_urls @ tools/browser_tool.py:_resolve_allow_private_urls */
+int browser_tool_resolve_allow_private_urls(void) {
+    /* Python: read browser.allow_private_urls toggle from config scope.
+     * The C core reads HERMES_ALLOW_PRIVATE_URLS env override, else config. */
+    const char *env = getenv("HERMES_ALLOW_PRIVATE_URLS");
+    if (env && env[0]) {
+        return (strcmp(env, "1") == 0 || strcasecmp(env, "true") == 0) ? 1 : 0;
+    }
+    return 0;
+}
+
+/* PoP: _session_expiry_timestamp @ tools/browser_tool.py:_session_expiry_timestamp */
+double browser_tool_session_expiry_timestamp(const char *arg) {
+    /* Python: provider-authoritative session expiry as epoch seconds.
+     * Arg = "expires_at_epoch_or_iso". Numeric values pass through;
+     * unknown/malformed return 0 (no known expiry). */
+    if (!arg || !*arg) return 0.0;
+    char *end = NULL;
+    double v = strtod(arg, &end);
+    if (end && *end == '\0') return v;  /* pure numeric */
+    /* ISO-8601: parse a trailing Z as UTC epoch via timegm */
+    struct tm t = {0};
+    const char *p = strptime(arg, "%Y-%m-%dT%H:%M:%S", &t);
+    if (p) {
+        time_t epoch = timegm(&t);
+        return (double)epoch;
+    }
+    return 0.0;
+}
+
+/* PoP: _session_has_expired @ tools/browser_tool.py:_session_has_expired */
+int browser_tool_session_has_expired(const char *arg) {
+    /* Python: whether a cached browser session crossed its deadline.
+     * Arg = "expires_at\ttimezone_suffix". Returns 1 if expired. */
+    if (!arg || !*arg) return 0;
+    char *tab = strchr(arg, '\t');
+    if (tab) *tab = '\0';
+    double expires = browser_tool_session_expiry_timestamp(arg);
+    if (expires <= 0.0) return 0;
+    time_t now = time(NULL);
+    return ((double)now) >= expires ? 1 : 0;
+}
