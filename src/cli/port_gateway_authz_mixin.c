@@ -4,9 +4,15 @@
 
 #include "hermes_logger.h"
 #include "hermes_gateway_dm.h"
+#include "hermes_json.h"
+#include "hermes_logger.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
+
+extern json_t *secret_scope_current_secret_scope(void);
+extern bool secret_scope_is_multiplex_active(void);
 
 /* PoP: cli_gateway_authz_mixin__adapter_enforces_own_access_policy @ gateway/authz_mixin.py:_adapter_enforces_own_access_policy */
 
@@ -168,6 +174,42 @@ bool gateway_dm_opted_in(const char *platform_env)
         }
     }
     return false;
+}
+
+/* PoP: cli_gateway_authz_mixin__platform_gate_env @ gateway/authz_mixin.py:_platform_gate_env */
+/* Read a platform allow/deny gate env var with per-profile isolation.
+ * Returns a malloc'd string (caller frees). */
+char *cli_gateway_authz_mixin__platform_gate_env(const char *name, const char *default_val) {
+    if (!name || !*name) return default_val ? strdup(default_val) : strdup("");
+    json_t *scope = secret_scope_current_secret_scope();
+    bool multiplex_active = secret_scope_is_multiplex_active();
+    if (scope && scope->type == JSON_OBJECT && multiplex_active) {
+        json_t *val_node = json_obj_get(scope, name);
+        char *result = NULL;
+        if (val_node && val_node->type == JSON_STRING && val_node->str_val && *val_node->str_val)
+            result = strdup(val_node->str_val);
+        json_free(scope);
+        if (result) {
+            char *s = result;
+            while (*s == ' ' || *s == '\t') s++;
+            size_t l = strlen(s);
+            while (l > 0 && (s[l-1] == ' ' || s[l-1] == '\t')) s[--l] = '\0';
+            if (s != result) memmove(result, s, strlen(s) + 1);
+        }
+        if (result && *result) return result;
+        free(result);
+        return default_val ? strdup(default_val) : strdup("");
+    }
+    if (scope) json_free(scope);
+    const char *env_val = getenv(name);
+    if (env_val && *env_val) {
+        char *s = strdup(env_val);
+        char *p = s; while (*p == ' ' || *p == '\t') { memmove(p, p+1, strlen(p)); }
+        size_t l = strlen(s);
+        while (l > 0 && (s[l-1] == ' ' || s[l-1] == '\t')) s[--l] = '\0';
+        return s;
+    }
+    return default_val ? strdup(default_val) : strdup("");
 }
 
 

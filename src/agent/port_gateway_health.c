@@ -13,6 +13,13 @@
 #include "hermes_json.h"
 #include "hermes_crypto.h"
 #include "hermes_gateway_health.h"
+#include "port_monitoring_emitter.h"
+
+/* Opaque struct definition (header declares `typedef struct gw_diag_handler gw_diag_handler_t;`). */
+struct gw_diag_handler {
+    char *profile;
+    char *version;
+};
 
 /* ── State allowlists ─────────────────────────────────────── */
 static const char *GW_RUNNING_STATES[] = {"running", "connected", "ok", "ready", NULL};
@@ -324,4 +331,58 @@ void gw_health_snapshot_free(gw_health_snapshot_t *s) {
     free(s->metrics);
     json_free(s->events);
     free(s);
+}
+
+/* ── GatewayDiagnosticLogHandler ───────────────────────────────────────── */
+/* PoP: gw_diag_handler_init @ agent/monitoring/gateway_health.py:GatewayDiagnosticLogHandler.__init__ */
+gw_diag_handler_t *gw_diag_handler_init(const char *profile, const char *version) {
+    gw_diag_handler_t *h = calloc(1, sizeof(*h));
+    if (!h) return NULL;
+    h->profile = strdup(profile ? profile : "default");
+    h->version = strdup(version ? version : "unknown");
+    if (!h->profile || !h->version) {
+        free(h->profile); free(h->version); free(h); return NULL;
+    }
+    return h;
+}
+
+void gw_diag_handler_free(gw_diag_handler_t *h) {
+    if (!h) return;
+    free(h->profile); free(h->version); free(h);
+}
+
+/* PoP: gw_diag_handler_emit @ agent/monitoring/gateway_health.py:GatewayDiagnosticLogHandler.emit */
+/* Bridge an warning+ log record into a gateway diagnostic event.
+ * Fully fail-open: failures never abort the logging path. */
+void gw_diag_handler_emit(gw_diag_handler_t *h,
+                          const char *logger_name, int levelno,
+                          const char *level_name, const char *message) {
+    if (!h || !message) return;
+    if (levelno < 30) return;  /* logging.WARNING = 30 */
+    if (!gw_source_logger_for_export(logger_name)) return;
+
+    const char *subsystem = gw_subsystem_for_logger(logger_name);
+    const char *error_class = gw_classify_gateway_error(message);
+    const char *source_logger = gw_source_logger_for_export(logger_name);
+    const char *platform = gw_platform_for_subsystem(subsystem);
+
+    json_t *event = json_object();
+    if (!event) return;
+    json_set(event, "name", json_string(level_name ? level_name : "warning"));
+    json_set(event, "subsystem", json_string(subsystem));
+    json_set(event, "source_logger", json_string(source_logger ? source_logger : ""));
+    json_set(event, "platform", json_string(platform ? platform : ""));
+    json_set(event, "error_class", json_string(error_class));
+    json_set(event, "error_code", json_string(error_class));
+    json_set(event, "profile", json_string(h->profile));
+    json_set(event, "version", json_string(h->version));
+    json_set(event, "severity", json_string(level_name ? level_name : "warning"));
+
+    /* Emit via the monitoring emitter (fail-open). */
+    monitoring_emitter_t *em = monitoring_emitter_get();
+    if (em) {
+        monitoring_emitter_emit(em, event);
+        monitoring_emitter_flush(em, 0.5);
+    }
+    json_free(event);
 }

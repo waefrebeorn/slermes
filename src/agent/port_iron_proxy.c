@@ -13,7 +13,16 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+/* Cross-TU references (same module, separate files) */
+extern char *ipx_read_persisted_nonce(const char *hermes_home);
+
 #define IRON_PROXY_VERSION "0.39.0"
+
+/* Module-global nonce set during start_proxy (mirrors Python _proxy_nonce).
+ * NULL when no proxy was started in-process. */
+char *ip_proxy_nonce = NULL;
+
+#define IP_NONCE_ENV "HERMES_IRON_PROXY_NONCE"
 
 static void ip_get_hermes_home(char *out, size_t outsz) {
     const char *hh = getenv("HERMES_HOME");
@@ -156,4 +165,91 @@ char *ip_management_token_path(void) {
     sprintf(out, "%s/management.token", d);
     free(d);
     return out;
+}
+
+/* PoP: ip_pid_alive @ agent/proxy_sources/iron_proxy.py:_pid_alive */
+/* Return 1 iff pid is alive AND is an iron-proxy process.
+ * Defends against PID reuse: /proc/<pid>/environ nonce match →
+ * argv0 basename match → ps fallback → conservative true (exotic platforms). */
+int ip_pid_alive(long pid) {
+    if (pid <= 0) return 0;
+
+    char hermes_home[1024];
+    ip_get_hermes_home(hermes_home, sizeof(hermes_home));
+
+    /* Signal 1: nonce env var in /proc/<pid>/environ (Linux). */
+    char envpath[1024];
+    snprintf(envpath, sizeof(envpath), "/proc/%ld/environ", pid);
+    FILE *ef = fopen(envpath, "rb");
+    if (ef) {
+        char *buf = NULL; size_t cap = 0; size_t len = 0;
+        int c;
+        while ((c = fgetc(ef)) != EOF) {
+            if (len + 1 >= cap) { cap = cap ? cap * 2 : 4096; buf = realloc(buf, cap); }
+            if (buf) buf[len++] = (unsigned char)c;
+        }
+        fclose(ef);
+        if (buf && len > 0) {
+            char needle[64];
+            snprintf(needle, sizeof(needle), "%s=", IP_NONCE_ENV);
+            /* Build candidate nonces: ip_proxy_nonce (in-process), on-disk persisted. */
+            char *on_disk = ipx_read_persisted_nonce(hermes_home);
+            char *candidates[4] = {0};
+            int n = 0;
+            if (ip_proxy_nonce && *ip_proxy_nonce) candidates[n++] = ip_proxy_nonce;
+            if (on_disk) candidates[n++] = on_disk;
+            for (int i = 0; i < n; i++) {
+                char full[320];
+                snprintf(full, sizeof(full), "%s%s", needle, candidates[i]);
+                size_t fl = strlen(full);
+                if (len >= fl && memmem(buf, len, full, fl)) {
+                    free(on_disk); free(buf); return 1;
+                }
+            }
+            free(on_disk);
+        }
+        free(buf);
+    }
+
+    /* Signal 2: argv[0] basename starts with "iron-proxy" (Linux). */
+    char cmdpath[1024];
+    snprintf(cmdpath, sizeof(cmdpath), "/proc/%ld/cmdline", pid);
+    FILE *cf = fopen(cmdpath, "rb");
+    if (cf) {
+        char *buf = NULL; size_t cap = 0; size_t len = 0;
+        int c;
+        while ((c = fgetc(cf)) != EOF) {
+            if (len + 1 >= cap) { cap = cap ? cap * 2 : 4096; buf = realloc(buf, cap); }
+            if (buf) buf[len++] = (unsigned char)c;
+        }
+        fclose(cf);
+        if (buf && len > 0) {
+            const char *argv0 = buf;
+            const char *slash = strrchr(argv0, '/');
+            const char *base = slash ? slash + 1 : argv0;
+            int alive = (strncmp(base, "iron-proxy", 10) == 0);
+            free(buf);
+            if (alive) return 1;
+        }
+    }
+
+    /* Signal 3: ps fallback (macOS / non-proc). */
+    char cmd[256];
+    snprintf(cmd, sizeof(cmd), "ps -p %ld -o comm= 2>/dev/null", pid);
+    FILE *pf = popen(cmd, "r");
+    if (pf) {
+        char comm[256];
+        if (fgets(comm, sizeof(comm), pf)) {
+            size_t n = strlen(comm);
+            while (n > 0 && (comm[n-1] == '\n' || comm[n-1] == '\r' || comm[n-1] == ' '))
+                comm[--n] = '\0';
+            const char *slash = strrchr(comm, '/');
+            const char *base = slash ? slash + 1 : comm;
+            if (strncmp(base, "iron-proxy", 10) == 0) { pclose(pf); return 1; }
+        }
+        pclose(pf);
+    }
+
+    /* Exotic: be conservative — assume alive. */
+    return 1;
 }

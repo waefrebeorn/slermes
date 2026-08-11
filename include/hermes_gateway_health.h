@@ -88,6 +88,22 @@ gw_health_snapshot_t *gw_build_health_snapshot(
 
 void gw_health_snapshot_free(gw_health_snapshot_t *s);
 
+/* ── GatewayDiagnosticLogHandler ──────────────────────────────── */
+
+/* Opaque diagnostic handler (Python: GatewayDiagnosticLogHandler). */
+typedef struct gw_diag_handler gw_diag_handler_t;
+
+/* PoP: GatewayDiagnosticLogHandler.__init__ @ agent/monitoring/gateway_health.py:GatewayDiagnosticLogHandler.__init__ */
+gw_diag_handler_t *gw_diag_handler_init(const char *profile, const char *version);
+
+void gw_diag_handler_free(gw_diag_handler_t *h);
+
+/* PoP: GatewayDiagnosticLogHandler.emit @ agent/monitoring/gateway_health.py:GatewayDiagnosticLogHandler.emit */
+/* Bridge a warning+ log record into a gateway diagnostic event. Fail-open. */
+void gw_diag_handler_emit(gw_diag_handler_t *h,
+                          const char *logger_name, int levelno,
+                          const char *level_name, const char *message);
+
 #ifdef __cplusplus
 }
 #endif

@@ -788,3 +788,37 @@ void ws_transport_free(ws_transport_t *t) {
     pthread_cond_destroy(&t->handshake_cond);
     free(t);
 }
+
+/* PoP: ws_transport_descriptor_for_platform @ gateway/relay/ws_transport.py:descriptor_for_platform */
+
+/* The negotiated descriptor for one fronted platform, or NULL.
+ * The Python stores descriptors per-platform in a dict; in the C port the
+ * handshake descriptor is parsed from the last received handshake JSON and
+ * its `platform` field is checked. */
+capability_descriptor_t *ws_transport_descriptor_for_platform(ws_transport_t *t, const char *platform) {
+    if (!t || !platform || !*platform) return NULL;
+    pthread_mutex_lock(&t->handshake_lock);
+    if (!t->handshake_done || !t->descriptor_json[0]) {
+        pthread_mutex_unlock(&t->handshake_lock);
+        return NULL;
+    }
+    char *desc_copy = strdup(t->descriptor_json);
+    pthread_mutex_unlock(&t->handshake_lock);
+    if (!desc_copy) return NULL;
+
+    capability_descriptor_t *desc = malloc(sizeof(capability_descriptor_t));
+    if (!desc) { free(desc_copy); return NULL; }
+    *desc = capability_descriptor_from_json(desc_copy);
+    free(desc_copy);
+
+    if (desc->platform[0] && strcmp(desc->platform, platform) == 0)
+        return desc;
+    free(desc);
+    return NULL;
+}
+
+/* PoP: ws_transport_descriptor_json @ gateway/relay/ws_transport.py:_descriptor */
+const char *ws_transport_descriptor_json(ws_transport_t *t) {
+    if (!t) return NULL;
+    return t->descriptor_json;
+}

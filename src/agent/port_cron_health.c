@@ -308,6 +308,7 @@ bool cron_is_overdue(const json_t *job, double now_epoch) {
 
 /* ── emit_execution_state ─────────────────────────────────────────── */
 /* PoP: emit_execution_state @ agent/monitoring/cron_health.py:emit_execution_state */
+/* PoP: _emit_execution_state @ cron/executions.py:_emit_execution_state */
 void cron_emit_execution_state(const json_t *record, const char *delivery_outcome) {
     if (!record) return;
     struct cron_execution_event ev = project_execution_event(record, delivery_outcome);

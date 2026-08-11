@@ -1,24 +1,14 @@
 /*
  * port_gateway_relay_descriptor.c — Port of Python gateway/relay/descriptor.py
  */
-#include <stdio.h>
+#include "hermes_logger.h"
 #include "hermes_gateway_core.h"
+#include "port_gateway_relay_ws_transport.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include "hermes_json.h"
 
-typedef struct {
-    char label[256];
-    int max_message_length;
-    char emoji[64];
-    char platform_hint[1024];
-    bool pii_safe;
-    char markdown_dialect[64];
-    bool supports_draft_streaming;
-    bool supports_edit;
-    bool supports_threads;
-} capability_descriptor_t;
+/* capability_descriptor_t now lives in port_gateway_relay_ws_transport.h. */
 
 /* PoP: capability_descriptor_from_platform_entry @ gateway/relay/descriptor.py:from_platform_entry */
 capability_descriptor_t capability_descriptor_from_platform_entry(
@@ -101,6 +91,68 @@ capability_descriptor_t capability_descriptor_from_json(const char *data)
     if (node && node->type == JSON_BOOL)
         desc.supports_threads = node->bool_val;
 
+    node = json_object_get(raw, "platform");
+    if (node && node->type == JSON_STRING)
+        strncpy(desc.platform, json_node_get_string(node), sizeof(desc.platform) - 1);
+
+    node = json_object_get(raw, "supported_ops");
+    if (node && node->type == JSON_ARRAY) {
+        char *ser = json_serialize(node);
+        if (ser) {
+            strncpy(desc.supported_ops, ser, sizeof(desc.supported_ops) - 1);
+            free(ser);
+        }
+    }
+
     json_free(raw);
     return desc;
+}
+
+/* PoP: capability_descriptor_supports_op @ gateway/relay/descriptor.py:supports_op */
+
+/* Whether the connector advertises outbound op `op`.
+ * Fail-open for legacy connectors: empty supported_ops => legacy op set. */
+bool capability_descriptor_supports_op(const capability_descriptor_t *desc, const char *op) {
+    if (!op) return false;
+    if (desc && desc->supported_ops[0]) {
+        /* supported_ops is a JSON array string; check membership */
+        const char *s = desc->supported_ops;
+        size_t oplen = strlen(op);
+        /* simple JSON array member check */
+        const char *p = s;
+        while ((p = strstr(p, op))) {
+            /* verify it's a standalone token between delimiters */
+            char before = *(p-1);
+            char after = *(p+oplen);
+            if ((before == '"' || before == ',' || before == '[' || before == ' ') &&
+                (after == '"' || after == ',' || after == ']' || after == ' ' || after == '\0'))
+                return true;
+            p += oplen;
+        }
+        return false;
+    }
+    /* Legacy fallback */
+    return strcmp(op, "send") == 0 || strcmp(op, "edit") == 0 ||
+           strcmp(op, "typing") == 0 || strcmp(op, "follow_up") == 0;
+}
+
+/* PoP: capability_descriptor_to_json @ gateway/relay/descriptor.py:to_json */
+char *capability_descriptor_to_json(const capability_descriptor_t *desc) {
+    if (!desc) return strdup("{}");
+    json_t *obj = json_object();
+    if (!obj) return strdup("{}");
+    json_set(obj, "label", json_string(desc->label));
+    json_set(obj, "platform", json_string(desc->platform));
+    json_set(obj, "max_message_length", json_number(desc->max_message_length));
+    json_set(obj, "emoji", json_string(desc->emoji));
+    json_set(obj, "platform_hint", json_string(desc->platform_hint));
+    json_set(obj, "pii_safe", json_bool(desc->pii_safe));
+    json_set(obj, "markdown_dialect", json_string(desc->markdown_dialect));
+    json_set(obj, "supports_draft_streaming", json_bool(desc->supports_draft_streaming));
+    json_set(obj, "supports_edit", json_bool(desc->supports_edit));
+    json_set(obj, "supports_threads", json_bool(desc->supports_threads));
+    json_set(obj, "supported_ops", json_string(desc->supported_ops));
+    char *s = json_serialize(obj);
+    json_free(obj);
+    return s ? s : strdup("{}");
 }

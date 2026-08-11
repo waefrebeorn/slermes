@@ -11,6 +11,9 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "hermes_json.h"
+#include "crypto.h"
+#include <limits.h>
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -161,4 +164,106 @@ char *cct_extract_cache_stats(const char *usage_json) {
         e++;
     }
     return strndup(v, (size_t)(e - v));
+}
+
+/* PoP: _static_prompt_instructions @ agent/transports/chat_completions.py:_static_prompt_instructions */
+/* Return the stable system/developer prefix from messages[0], or NULL. */
+char *cct_static_prompt_instructions(const char *messages_json) {
+    if (!messages_json) return NULL;
+    /* messages_json is a JSON array. Extract the content of the first
+     * system/developer message. */
+    json_t *arr = json_parse(messages_json, NULL);
+    if (!arr || arr->type != JSON_ARRAY) { json_free(arr); return NULL; }
+    size_t len = json_len(arr);
+    char *result = NULL;
+    if (len > 0) {
+        json_t *first = json_get(arr, 0);
+        if (first && first->type == JSON_OBJECT) {
+            json_t *role = json_obj_get(first, "role");
+            if (role && role->type == JSON_STRING &&
+                (strcmp(role->str_val, "system") == 0 ||
+                 strcmp(role->str_val, "developer") == 0)) {
+                json_t *content = json_obj_get(first, "content");
+                if (content && content->type == JSON_STRING) {
+                    result = strdup(content->str_val);
+                } else if (content && content->type == JSON_OBJECT) {
+                    /* Non-str content: serialize sorted JSON. */
+                    result = json_serialize(content);
+                } else if (content) {
+                    result = strdup(json_serialize(content) ? json_serialize(content) : "");
+                }
+            }
+        }
+    }
+    json_free(arr);
+    return result;
+}
+
+/* PoP: _add_prompt_cache_key @ agent/transports/chat_completions.py:_add_prompt_cache_key */
+/* Add prompt_cache_key only for explicitly capable endpoints with no existing
+ * key. Returns a malloc'd JSON string with the key injected (caller frees the
+ * original and replaces it), or NULL on failure. Input api_kwargs is not
+ * modified (Python mutates in-place; C11 returns a new buffer). */
+char *cct_add_prompt_cache_key(const char *api_kwargs_json,
+                               const char *messages_json, const char *tools_json,
+                               int supports_prompt_cache_key) {
+    if (!api_kwargs_json || !supports_prompt_cache_key) return NULL;
+    json_t *kwargs = json_parse(api_kwargs_json, NULL);
+    if (!kwargs || kwargs->type != JSON_OBJECT) { json_free(kwargs); return NULL; }
+    /* Check for existing prompt_cache_key — in api_kwargs or extra_body. */
+    if (json_obj_get(kwargs, "prompt_cache_key")) { json_free(kwargs); return NULL; }
+    json_t *eb = json_obj_get(kwargs, "extra_body");
+    if (eb && eb->type == JSON_OBJECT && json_obj_get(eb, "prompt_cache_key")) {
+        json_free(kwargs); return NULL;
+    }
+    char *prefix = cct_static_prompt_instructions(messages_json);
+    if (!prefix) prefix = strdup("");
+    size_t need = strlen(prefix) + (tools_json ? strlen(tools_json) : 1) + 1;
+    char *blob = malloc(need);
+    if (blob) {
+        snprintf(blob, need, "%s%s", prefix, tools_json ? tools_json : "");
+        unsigned char hash[CRYPTO_SHA256_LEN];
+        crypto_sha256((const unsigned char *)blob, strlen(blob), hash);
+        char hex[65];
+        for (int i = 0; i < (int)CRYPTO_SHA256_LEN; i++)
+            snprintf(hex + i * 2, 3, "%02x", hash[i]);
+        hex[64] = '\0';
+        json_set(kwargs, "prompt_cache_key", json_string(hex));
+    }
+    free(blob);
+    free(prefix);
+    char *out = json_serialize(kwargs);
+    json_free(kwargs);
+    return out;  /* NULL on failure */
+}
+
+/* PoP: _is_openai_api_base_url @ agent/transports/chat_completions.py:_is_openai_api_base_url */
+/* True only for api.openai.com itself (exact host, not Azure/substring). */
+bool cct_is_openai_api_base_url(const char *base_url) {
+    if (!base_url) return false;
+    char *n = NULL;
+    /* urlparse(str(base_url or "").strip()).hostname */
+    asprintf(&n, "%s", base_url);
+    /* strip */
+    char *s = n; while (*s && isspace((unsigned char)*s)) s++;
+    while (*s == '/' || *s == 'h' || *s == 't' || *s == 'p') {
+        /* just trim leading ws, we parse below */
+        s++;
+    }
+    /* Simple hostname extraction: skip scheme and path */
+    char *hp = strdup(base_url);
+    /* lowercase */
+    char *p = hp; while (*p) { *p = tolower((unsigned char)*p); p++; }
+    free(n);
+    /* find host: after "://" up to next "/" or end */
+    char *proto = strstr(hp, "://");
+    char *host_start = proto ? proto + 3 : hp;
+    char *host_end = strchr(host_start, '/');
+    if (!host_end) host_end = host_start + strlen(host_start);
+    char host[256];
+    size_t hl = (size_t)(host_end - host_start);
+    if (hl >= sizeof(host)) hl = sizeof(host) - 1;
+    memcpy(host, host_start, hl); host[hl] = '\0';
+    free(hp);
+    return strcmp(host, "api.openai.com") == 0;
 }
