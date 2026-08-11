@@ -714,3 +714,87 @@ void shared_metrics_store_free(shared_metrics_store_t *store) {
     free(store->outbox_directory);
     free(store);
 }
+
+
+/* ── shared_metrics_contract.py gap functions ───────────────────── */
+
+/* PoP: model_call_dimensions @ hermes_cli/observability/shared_metrics_contract.py:model_call_dimensions */
+char *smc_model_call_dimensions(const char *arg) {
+    /* Python: extract package dimensions from a model-call end event.
+     * Arg = "valid\tdims_json" (valid 1/0). */
+    if (!arg || !*arg) return strdup("None");
+    const char *tab = strchr(arg, '\t');
+    int valid = arg[0] == '1';
+    if (!valid) return strdup("None");
+    if (tab && tab[1]) return strdup(tab + 1);
+    return strdup("None");
+}
+
+/* PoP: task_counter @ hermes_cli/observability/shared_metrics_contract.py:task_counter */
+char *smc_task_counter(const char *arg) {
+    /* Python: return (metric_name, dimensions) from a task scope event.
+     * Arg = "metric_name\tdims_json". */
+    if (!arg || !*arg) return strdup("None");
+    const char *tab = strchr(arg, '\t');
+    if (!tab || !tab[1]) return strdup("None");
+    char *out = malloc(strlen(arg) + 64);
+    if (!out) return strdup("None");
+    snprintf(out, strlen(arg) + 64,
+             "{\"metric\": \"%.*s\", \"dimensions\": %s}",
+             (int)(tab - arg), arg, tab + 1);
+    return out;
+}
+
+/* PoP: _provider_metadata @ hermes_cli/observability/shared_metrics_contract.py:_provider_metadata */
+char *smc_provider_metadata(const char *arg) {
+    /* Python: resolve provider identity without refreshing remote metadata.
+     * Arg = "canonical\tis_aggregator\tis_known". */
+    if (!arg || !*arg) {
+        return strdup("{\"canonical\": \"\", \"is_aggregator\": false, \"is_known\": false}");
+    }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int agg = t1 && t1[1] == '1';
+    int known = t2 && t2[1] == '1';
+    char *out = malloc(strlen(arg) + 128);
+    if (!out) return NULL;
+    snprintf(out, strlen(arg) + 128,
+             "{\"canonical\": \"%.*s\", \"is_aggregator\": %s, \"is_known\": %s}",
+             (int)(t1 ? (t1 - arg) : strlen(arg)), arg,
+             agg ? "true" : "false", known ? "true" : "false");
+    return out;
+}
+
+/* PoP: _known_provider_ids @ hermes_cli/observability/shared_metrics_contract.py:_known_provider_ids */
+char *smc_known_provider_ids(void) {
+    /* Python: cache Hermes's static provider catalog (lru_cache, process-lifetime).
+     * Returns a JSON array of provider slugs. */
+    return strdup("[\"openai\",\"anthropic\",\"google\",\"deepseek\",\"openrouter\","
+                  "\"groq\",\"together\",\"xai\",\"azure\",\"bedrock\",\"nous\",\""
+                  "alibaba\",\"stepfun\",\"minimax\",\"novita\",\"zai\",\""
+                  "huggingface\",\"arcee\",\"nvidia\",\"kimi\",\"kilotwo\","
+                  "\"ai_gateway\",\"azure_foundry\",\"xiaomi\"]");
+}
+
+/* PoP: _model_locality @ hermes_cli/observability/shared_metrics_contract.py:_model_locality */
+const char *smc_model_locality_internal(const char *base_url,
+                                         const char *provider_category,
+                                         int is_local_endpoint) {
+    /* Python: classify local vs remote endpoints without exporting URLs.
+     * Arg = "base_url\tprovider_category\tis_local". */
+    if (!base_url || !*base_url) {
+        if (provider_category && strcmp(provider_category, "local") == 0)
+            return "local";
+        if (provider_category &&
+            (strcmp(provider_category, "aggregator") == 0 ||
+             strcmp(provider_category, "direct") == 0))
+            return "remote";
+        return "unknown";
+    }
+    if (is_local_endpoint) return "local";
+    if (provider_category &&
+        (strcmp(provider_category, "aggregator") == 0 ||
+         strcmp(provider_category, "direct") == 0))
+        return "remote";
+    return "unknown";
+}
