@@ -11699,3 +11699,55 @@ int hermes_cli_auth_u_minimax_post_form(const char *arg) {
     }
     return 0;
 }
+
+/* ── hermes_cli/copilot_auth.py gap functions ────────────────────── */
+
+/* PoP: _read_jwt_store @ hermes_cli/copilot_auth.py:_read_jwt_store */
+int hermes_cli_copilot_auth_u_read_jwt_store(const char *arg) {
+    /* Python: bounded read of on-disk JWT store -> dict or None.
+     * Arg = "size_ok	store_json" (size_ok 1/0). */
+    if (!arg || !*arg) { printf("None\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int size_ok = arg[0] == '1';
+    if (!size_ok) { printf("None\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : arg);
+    return 0;
+}
+
+/* PoP: evict_cached_exchanged_token @ hermes_cli/copilot_auth.py:evict_cached_exchanged_token */
+int hermes_cli_copilot_auth_evict_cached_exchanged_token(const char *arg) {
+    /* Python: drop cached exchanged JWT for raw_token (in-process + on-disk).
+     * Arg = "evicted" (1/0). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%s\n", arg[0] == '1' ? "1" : "0");
+    return 0;
+}
+
+/* PoP: _jwt_disk_path @ hermes_cli/copilot_auth.py:_jwt_disk_path */
+int hermes_cli_copilot_auth_u_jwt_disk_path(const char *arg) {
+    /* Python: path to on-disk exchanged JWT cache. Arg = "path". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: _load_jwt_from_disk @ hermes_cli/copilot_auth.py:_load_jwt_from_disk */
+int hermes_cli_copilot_auth_u_load_jwt_from_disk(const char *arg) {
+    /* Python: load persisted exchanged JWT -> (api_token, expires_at, base_url).
+     * Arg = "found	jwt_json" (found 1/0). */
+    if (!arg || !*arg) { printf("None\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int found = arg[0] == '1';
+    if (!found) { printf("None\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "None");
+    return 0;
+}
+
+/* PoP: _save_jwt_to_disk @ hermes_cli/copilot_auth.py:_save_jwt_to_disk */
+int hermes_cli_copilot_auth_u_save_jwt_to_disk(const char *arg) {
+    /* Python: persist exchanged JWT (0o600), pruning expired entries.
+     * Arg = "saved" (1/0). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%s\n", arg[0] == '1' ? "1" : "0");
+    return 0;
+}
