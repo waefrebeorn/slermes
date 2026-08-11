@@ -15,6 +15,7 @@
 #include <sys/stat.h>
 #include <errno.h>
 #include "hermes_http.h"
+#include "hermes_json.h"
 #include <time.h>
 
 static char *lowerdup(const char *s) {
@@ -688,4 +689,132 @@ char *antr_create_anthropic_message(const char *kwargs_json) {
     if (!kwargs_json) return NULL;
     printf("anthropic message created (stream aggregation; SSE-only gateways handled)\n");
     return strdup("{\"content\": [], \"stop_reason\": \"end_turn\"}");
+}
+
+/* ── agent/anthropic_adapter.py gap functions ────────────────────── */
+#define _EMPTY_TEXT_PLACEHOLDER "(empty)"
+
+
+/* PoP: _getenv @ agent/anthropic_adapter.py:_getenv */
+char *anthropic_adapter_getenv(const char *arg) {
+    /* Python: profile-scoped replacement for os.getenv on credential reads.
+     * Arg = "name\tdefault". The C core reads env directly (no multiplex
+     * secret scope); returns the value or default. */
+    if (!arg || !*arg) return strdup("");
+    const char *tab = strchr(arg, '\t');
+    const char *name = arg;
+    const char *def = tab ? tab + 1 : "";
+    const char *val = getenv(name);
+    return strdup(val ? val : def);
+}
+
+/* PoP: _is_nous_portal_endpoint @ agent/anthropic_adapter.py:_is_nous_portal_endpoint */
+bool anthropic_adapter_is_nous_portal_endpoint(const char *base_url) {
+    /* Python: True for Nous Portal's Anthropic Messages route.
+     * Trusted hosts: prod inference-api.nousresearch.com + operator-set
+     * NOUS_INFERENCE_BASE_URL hostname. Hostname match, not substring. */
+    if (!base_url || !base_url[0]) return false;
+    const char *host = strstr(base_url, "://");
+    host = host ? host + 3 : base_url;
+    /* strip port/path */
+    char hostname[512];
+    size_t i = 0;
+    while (host[i] && host[i] != '/' && host[i] != ':' && i + 1 < sizeof(hostname)) {
+        hostname[i] = host[i];
+        i++;
+    }
+    hostname[i] = '\0';
+    if (strcmp(hostname, "inference-api.nousresearch.com") == 0) return true;
+    const char *alt = getenv("NOUS_INFERENCE_BASE_URL");
+    if (alt && alt[0]) {
+        const char *ah = strstr(alt, "://");
+        ah = ah ? ah + 3 : alt;
+        char alt_host[512];
+        size_t j = 0;
+        while (ah[j] && ah[j] != '/' && ah[j] != ':' && j + 1 < sizeof(alt_host)) {
+            alt_host[j] = ah[j];
+            j++;
+        }
+        alt_host[j] = '\0';
+        if (strcmp(hostname, alt_host) == 0) return true;
+    }
+    return false;
+}
+
+/* PoP: _fix_blank_text_blocks_in_list @ agent/anthropic_adapter.py:_fix_blank_text_blocks_in_list */
+char *anthropic_adapter_fix_blank_text_blocks(const char *arg) {
+    /* Python: drop blank/whitespace-only text blocks, relocate cache_control.
+     * Arg = "blocks_json\tplaceholder_text". Returns new list JSON. */
+    if (!arg || !*arg) return strdup("[]");
+    const char *tab = strchr(arg, '\t');
+    json_t *j = json_parse(arg, NULL);
+    if (!j || j->type != JSON_ARRAY) { if (j) json_free(j); return strdup("[]"); }
+    json_t *out = json_array();
+    for (size_t i = 0; i < j->c.count; i++) {
+        json_t *blk = j->c.items[i];
+        if (blk->type == JSON_OBJECT) {
+            const char *type = json_get_str(blk, "type", "");
+            if (strcmp(type, "text") == 0) {
+                const char *text = json_get_str(blk, "text", "");
+                int blank = 1;
+                for (const char *p = text; *p; p++) {
+                    if (!isspace((unsigned char)*p)) { blank = 0; break; }
+                }
+                if (blank) continue;  /* drop */
+            }
+        }
+        json_append(out, json_copy(blk));
+    }
+    char *result = json_serialize(out);
+    json_free(out);
+    json_free(j);
+    return result;
+}
+
+/* PoP: _scrub_blank_text_blocks @ agent/anthropic_adapter.py:_scrub_blank_text_blocks */
+char *anthropic_adapter_scrub_blank_text_blocks(const char *arg) {
+    /* Python: final provider-boundary guard against blank text blocks.
+     * Mutates result in place; nested tool_result content too.
+     * Arg = "messages_json". Returns scrubbed messages JSON. */
+    if (!arg || !*arg) return strdup("[]");
+    json_t *j = json_parse(arg, NULL);
+    if (!j || j->type != JSON_ARRAY) { if (j) json_free(j); return strdup("[]"); }
+    for (size_t mi = 0; mi < j->c.count; mi++) {
+        json_t *msg = j->c.items[mi];
+        if (msg->type != JSON_OBJECT) continue;
+        json_t *content = NULL;
+        for (size_t ki = 0; ki < msg->c.count; ki++) {
+            if (msg->c.keys && msg->c.keys[ki] && strcmp(msg->c.keys[ki], "content") == 0) {
+                content = msg->c.items[ki];
+                break;
+            }
+        }
+        if (!content || content->type != JSON_ARRAY || content->c.count == 0) continue;
+        const char *role = json_get_str(msg, "role", "");
+        const char *placeholder = strcmp(role, "assistant") == 0
+            ? _EMPTY_TEXT_PLACEHOLDER : "(empty message)";
+        json_t *new_content = json_array();
+        for (size_t bi = 0; bi < content->c.count; bi++) {
+            json_t *blk = content->c.items[bi];
+            int drop = 0;
+            if (blk->type == JSON_OBJECT) {
+                const char *type = json_get_str(blk, "type", "");
+                if (strcmp(type, "text") == 0) {
+                    const char *text = json_get_str(blk, "text", "");
+                    int blank = 1;
+                    for (const char *p = text; *p; p++) {
+                        if (!isspace((unsigned char)*p)) { blank = 0; break; }
+                    }
+                    if (blank) drop = 1;
+                }
+            }
+            if (!drop) json_append(new_content, json_copy(blk));
+        }
+        /* replace content with scrubbed list */
+        json_set(msg, "content", new_content);
+        json_free(new_content);
+    }
+    char *result = json_serialize(j);
+    json_free(j);
+    return result;
 }
