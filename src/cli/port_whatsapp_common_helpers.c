@@ -252,3 +252,66 @@ char *whatsapp_common_resolve_bridge_dir(void) {
     if (stat(path, &st) == 0 && S_ISDIR(st.st_mode)) return strdup(path);
     return strdup(path);
 }
+
+/* ── Scoped secret read ─────────────────────────────────────────────── */
+
+/* Delegate to the shared profile-secret-scope reader (agent/secret_scope.py).
+ * It already implements the UnscopedSecretError → os.environ fallback for the
+ * default profile, so _get_wsecret is a thin wrapper that mirrors Python:
+ *   try:  val = _scoped_get_secret(name, default)
+ *   except _UnscopedSecretError:
+ *       val = os.getenv(name)
+ *   return val if val is not None else default
+ * In C, secret_scope_get_secret returns os.environ on the unscoped path
+ * directly, so we just strdup its result (which may be the live env value or
+ * the provided default). */
+extern const char *secret_scope_get_secret(const char *name, const char *default_val);
+
+/* PoP: _get_wsecret @ gateway/platforms/whatsapp_common.py:_get_wsecret */
+char *whatsapp_common_get_wsecret(const char *name, const char *default_value) {
+    const char *val = secret_scope_get_secret(name, default_value);
+    return val ? strdup(val) : (default_value ? strdup(default_value) : NULL);
+}
+
+/* ── Live DM allowlist ──────────────────────────────────────────────── */
+
+/* PoP: _live_dm_allow_from @ gateway/platforms/whatsapp_common.py:_live_dm_allow_from
+ *
+ * Source precedence matches construction: explicit config wins over any env
+ * carrier. When the adapter was seeded from an env var, re-read that same key
+ * so pairing approve/revoke takes effect without restart (including an empty
+ * value while the key is still present). When the key is absent — sole-entry
+ * revoke calls remove_env_value — treat the allowlist as empty instead of
+ * falling back to the construction-time snapshot. Config-seeded adapters keep
+ * the in-memory snapshot, which pairing revoke purges in place — a
+ * lower-precedence or stale env value must not broaden access.
+ *
+ * C adaptation: the adapter owns the instance state (_dm_allowlist_source key
+ * string + _allow_from snapshot array). This function receives both as params
+ * so it is caller-state explicit (no hidden instance). */
+/* PoP: whatsapp_common_live_dm_allow_from @ gateway/platforms/whatsapp_common.py:_live_dm_allow_from */
+json_t *whatsapp_common_live_dm_allow_from(const char *dm_allowlist_source,
+                                            json_t *allow_from_snapshot) {
+    if (dm_allowlist_source && dm_allowlist_source[0] &&
+        strcmp(dm_allowlist_source, "config") != 0) {
+        /* Env-var-seeded: re-read the same key so approve/revoke takes effect
+         * without restart. An empty value while the key is present yields []. */
+        const char *env_val = getenv(dm_allowlist_source);
+        if (env_val) {
+            return whatsapp_common_coerce_allow_list(json_string(env_val));
+        }
+        /* Key removed (sole-entry pairing revoke) — do not revive stale
+         * construction snapshot. */
+        return json_array();
+    }
+    /* config-seeded or no source: return the in-memory snapshot (may be empty). */
+    if (!allow_from_snapshot) return json_array();
+    json_t *out = json_array();
+    size_t n = json_array_size(allow_from_snapshot);
+    for (size_t i = 0; i < n; i++) {
+        json_t *item = json_array_get(allow_from_snapshot, i);
+        const char *s = json_string_value(item);
+        if (s && s[0]) json_array_append(out, json_string(s));
+    }
+    return out;
+}

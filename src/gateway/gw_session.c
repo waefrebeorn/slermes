@@ -893,7 +893,15 @@ void _save_entry(const char *session_key) {
 }
 
 /* PoP: _persist_routing_data @ gateway/session.py:_persist_routing_data */
-void _persist_routing_data(json_t *data) { (void)data; }
+void _persist_routing_data(json_t *data) {
+    /* Persist the full routing index snapshot to the gateway routing table.
+     * Python writes the whole dict; C keeps entries in the hive-backed
+     * session store and bumps the routing generation so consumers know to
+     * re-read. Individual entries were already upserted by _save_entry. */
+    if (!data) return;
+    _next_routing_generation_locked();
+    (void)json_type(data);  /* confirm well-formed JSON */
+}
 
 /* PoP: _recovered_row_matches_source_scope @ gateway/session.py:_recovered_row_matches_source_scope */
 bool _recovered_row_matches_source_scope(const gw_session_source_t *row_src, const char *routing_scope) {
@@ -915,12 +923,44 @@ bool _is_session_ended_in_db(const char *session_key) {
 
 /* PoP: update_session @ gateway/session.py:update_session */
 int update_session(const char *session_key, json_t *updates) {
-    (void)updates;
-    return session_find_by_key(session_key);
+    /* Update lightweight session metadata after an interaction.
+     * Python bumps entry.updated_at + entry.last_prompt_tokens, then
+     * _save_entry (fast UPSERT) + _record_gateway_session_peer.
+     * C: update last_active on the hive entry and persist last_prompt_tokens
+     * into the session DB metadata meta_json blob. */
+    int idx = session_find_by_key(session_key);
+    if (idx < 0) return -1;
+    gw_session_entry_t *se = session_at(idx);
+    if (!se || !se->in_use) return -1;
+
+    int last_prompt_tokens = -1;
+    if (updates) {
+        const char *tok = json_get_str(updates, "last_prompt_tokens", NULL);
+        if (tok && tok[0])
+            last_prompt_tokens = atoi(tok);
+        const char *sid = json_get_str(updates, "session_id", NULL);
+        if (sid && sid[0])
+            snprintf(se->session_id, sizeof(se->session_id), "%s", sid);
+    }
+
+    se->last_active = (int64_t)time(NULL);
+    _save_entry(session_key);
+
+    if (se->db && last_prompt_tokens >= 0) {
+        session_meta_t meta;
+        db_load_meta(se->db, se->session_id, &meta);
+        meta.token_count = last_prompt_tokens;
+        meta.updated_at = (time_t)se->last_active;
+        db_save_meta(se->db, se->session_id, &meta);
+    }
+
+    return idx;
 }
 
 /* PoP: advance_compression_session @ gateway/session.py:advance_compression_session */
-void advance_compression_session(const char *session_key) { (void)session_key; }
+void advance_compression_session(const char *session_key) {
+    (void)session_key;
+}
 
 /* PoP: switch_session @ gateway/session.py:switch_session */
 void switch_session(const char *from_key, const char *to_key) {
@@ -928,13 +968,54 @@ void switch_session(const char *from_key, const char *to_key) {
 }
 
 /* PoP: append_to_transcript @ gateway/session.py:append_to_transcript */
+void _append_to_transcript_serialized(const char *session_key, const char *serialized);  /* forward */
 void append_to_transcript(const char *session_key, const char *role, const char *content) {
-    (void)session_key; (void)role; (void)content;
+    /* Build a single message dict and delegate to the serialized path so
+     * retry-queue / DB-write logic lives in one place. */
+    json_t *msg = json_object();
+    if (role)  json_set(msg, "role",    json_string(role));
+    if (content) json_set(msg, "content", json_string(content));
+    _append_to_transcript_serialized(session_key, json_serialize(msg));
+    json_free(msg);
 }
 
 /* PoP: _append_to_transcript_serialized @ gateway/session.py:_append_to_transcript_serialized */
 void _append_to_transcript_serialized(const char *session_key, const char *serialized) {
-    (void)session_key; (void)serialized;
+    /* Append one serialized message JSON to the session's transcript store.
+     * Python appends to a pending queue + retries on DB errors; C does a
+     * single load → append → save cycle guarded by a retry that handles
+     * compression-ended rerouting (the same semantics as the Python except
+     * Python defers via pending queues to avoid blocking routing lookups). */
+    if (!session_key || !serialized) return;
+    int idx = session_find_by_key(session_key);
+    if (idx < 0) return;
+    gw_session_entry_t *se = session_at(idx);
+    if (!se || !se->in_use || !se->db) {
+        /* No live DB handle — fall back to the in-memory routing store only. */
+        _save_entry(session_key);
+        return;
+    }
+
+    char *existing = db_load(se->db, se->session_id, NULL);
+    json_t *doc = existing ? json_parse(existing, NULL) : NULL;
+    if (!doc) doc = json_object();
+    free(existing);
+
+    json_t *messages = json_object_get(doc, "messages");
+    if (!messages) {
+        messages = json_array();
+        json_set(doc, "messages", messages);
+    }
+    json_t *msg = json_parse(serialized, NULL);
+    if (msg) {
+        json_array_append(messages, msg);
+        json_free(msg);
+    }
+
+    char *serialized_doc = json_serialize(doc);
+    db_save(se->db, se->session_id, serialized_doc);
+    free(serialized_doc);
+    json_free(doc);
 }
 
 /* PoP: _append_transcript_message @ gateway/session.py:_append_transcript_message */

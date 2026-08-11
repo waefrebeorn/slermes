@@ -86,6 +86,19 @@ void gw_stream_consumer_record_turn_final_payload(gw_stream_consumer_t *c, const
  * Returns 1 (True), 0 (False), or -1 (None — comparison impossible). */
 int gw_stream_consumer_delivered_final_matches(gw_stream_consumer_t *c, const char *final_text);
 
+/* Instance getters for finalization state (Python @property accessors). */
+bool gw_stream_consumer_final_response_sent(const gw_stream_consumer_t *c);
+bool gw_stream_consumer_final_content_delivered(const gw_stream_consumer_t *c);
+const char *gw_stream_consumer_message_id(const gw_stream_consumer_t *c);
+
+/* Setters invoked by the transport as messages are sent/edited/finalized. */
+void gw_stream_consumer_set_final_response_sent(gw_stream_consumer_t *c);
+void gw_stream_consumer_set_final_content_delivered(gw_stream_consumer_t *c);
+void gw_stream_consumer_set_message_id(gw_stream_consumer_t *c, const char *msg_id);
+/* Edit the in-flight message (Python _edit_message seam for the transport). */
+void gw_stream_consumer_edit_message(gw_stream_consumer_t *c,
+                                      const char *message_id, const char *text);
+
 #ifdef __cplusplus
 }
 #endif

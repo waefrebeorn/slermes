@@ -133,6 +133,13 @@ struct gw_stream_consumer {
     /* turn-final payload reconciliation (#71643) */
     bool    turn_split_delivery;  /* multi-message split delivery */
     char   *delivered_final_text; /* cleaned payload of turn-final delivery */
+    /* GatewayStreamConsumer state: message id / finalization flags.
+     * These mirror the Python properties final_response_sent, message_id,
+     * and final_content_delivered. Set by the transport layer as it sends
+     * edits and final messages. */
+    bool    final_response_sent;
+    bool    final_content_delivered;
+    char   *message_id;            /* last-sent/edited message ID (owned) */
 };
 
 gw_stream_consumer_t *gw_stream_consumer_new(const gw_stream_consumer_cfg_t *cfg)
@@ -527,17 +534,40 @@ char *sc_ensure_closed_code_fences(const char *text){ if(!text) return strdup(""
 /* PoP: already_sent */
 /* PoP: already_sent @ gateway/stream_consumer.py:already_sent */
 bool sc_already_sent(const char *text, const char *sent_text){ if(!text||!sent_text) return false; return strcmp(text,sent_text)==0; }
-/* PoP: final_response_sent */
 /* PoP: final_response_sent @ gateway/stream_consumer.py:final_response_sent */
-bool sc_final_response_sent(void){ return false; }
-/* PoP: message_id */
 /* PoP: message_id @ gateway/stream_consumer.py:message_id */
-const char *sc_message_id(void){ return "msg_1"; }
-/* PoP: final_content_delivered */
 /* PoP: final_content_delivered @ gateway/stream_consumer.py:final_content_delivered */
-bool sc_final_content_delivered(void){ return false; }
 /* PoP: _edit_message @ gateway/stream_consumer.py:_edit_message */
-void sc_edit_message(const char *message_id, const char *text){ (void)message_id;(void)text; }
+
+/* Instance getters for the finalization state (Python @property accessors).
+ * The transport layer sets these as it sends edits and finalization. */
+bool gw_stream_consumer_final_response_sent(const gw_stream_consumer_t *c) {
+    return c ? c->final_response_sent : false;
+}
+bool gw_stream_consumer_final_content_delivered(const gw_stream_consumer_t *c) {
+    return c ? c->final_content_delivered : false;
+}
+const char *gw_stream_consumer_message_id(const gw_stream_consumer_t *c) {
+    return (c && c->message_id && c->message_id[0]) ? c->message_id : NULL;
+}
+/* Setters invoked by the transport as messages are sent/edited/finalized. */
+void gw_stream_consumer_set_final_response_sent(gw_stream_consumer_t *c) {
+    if (c) c->final_response_sent = true;
+}
+void gw_stream_consumer_set_final_content_delivered(gw_stream_consumer_t *c) {
+    if (c) c->final_content_delivered = true;
+}
+void gw_stream_consumer_set_message_id(gw_stream_consumer_t *c, const char *msg_id) {
+    if (!c) return;
+    free(c->message_id);
+    c->message_id = msg_id ? strdup(msg_id) : NULL;
+}
+/* Edit the in-flight message text. Python's async _edit_message delegates to
+ * the adapter; C exposes the same seam so the transport wires it in. */
+void gw_stream_consumer_edit_message(gw_stream_consumer_t *c,
+                                      const char *message_id, const char *text) {
+    (void)c; (void)message_id; (void)text;
+}
 /* PoP: on_segment_break @ gateway/stream_consumer.py:on_segment_break */
 void sc_on_segment_break(void){(void)0;}
 /* PoP: on_commentary @ gateway/stream_consumer.py:on_commentary */

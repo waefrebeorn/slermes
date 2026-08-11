@@ -270,6 +270,14 @@ double read_float_env(const char *name, double default_val);
  * window_secs <= 0 disables the gate. */
 bool is_fresh_gateway_interruption(double timestamp, double now, double window_secs);
 
+/*
+ *  WhatsApp common helpers
+ *  (gateway/platforms/whatsapp_common.py)
+ */
+char *whatsapp_common_get_wsecret(const char *name, const char *default_value);
+json_t *whatsapp_common_live_dm_allow_from(const char *dm_allowlist_source,
+                                            json_t *allow_from_snapshot);
+
 #ifdef __cplusplus
 }
 #endif
