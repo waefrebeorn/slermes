@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <dirent.h>
+#include "hermes_json.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -92,4 +93,112 @@ int mco_restore(const char *snapshot_json) {
     fputs(snapshot_json, fp);
     fclose(fp);
     return 0;
+}
+
+/* ── tools/mcp_oauth.py gap functions ────────────────────────────── */
+
+#define FIGMA_DCR_CLIENT_NAME "Claude Code"
+#define FIGMA_DEFAULT_SCOPE   "mcp:connect"
+
+/* PoP: _ensure_sdk_loaded @ tools/mcp_oauth.py:_ensure_sdk_loaded */
+int mcpo_ensure_sdk_loaded(const char *arg) {
+    /* Python: import the MCP SDK OAuth classes on first use and bind
+     * module globals. Returns True when SDK classes are available.
+     * The C core links the OAuth types statically — always available.
+     * Arg = "sdk_failed" (1/0). */
+    if (arg && arg[0] == '1') { printf("0\n"); return 0; }
+    printf("1\n");
+    return 1;
+}
+
+/* PoP: _is_figma_remote_mcp @ tools/mcp_oauth.py:_is_figma_remote_mcp */
+bool mcpo_is_figma_remote_mcp(const char *server_name, const char *server_url) {
+    /* Python: True when this MCP server is Figma's hosted remote endpoint. */
+    char url[1024], name[512];
+    url[0] = name[0] = '\0';
+    if (server_url) {
+        size_t i = 0;
+        while (server_url[i] && i + 1 < sizeof(url)) {
+            url[i] = (char)tolower((unsigned char)server_url[i]);
+            i++;
+        }
+        url[i] = '\0';
+    }
+    if (server_name) {
+        size_t i = 0;
+        while (server_name[i] && i + 1 < sizeof(name)) {
+            name[i] = (char)tolower((unsigned char)server_name[i]);
+            i++;
+        }
+        name[i] = '\0';
+    }
+    if (strstr(url, "mcp.figma.com") || strstr(url, "figma.com/mcp"))
+        return true;
+    if (strstr(name, "figma") && (!url[0] || strstr(url, "figma")))
+        return true;
+    return false;
+}
+
+/* PoP: apply_oauth_provider_defaults @ tools/mcp_oauth.py:apply_oauth_provider_defaults */
+char *mcpo_apply_oauth_provider_defaults(const char *arg) {
+    /* Python: mutate cfg with provider-specific OAuth workarounds.
+     * Only fills keys the user left unset.
+     * Arg = "cfg_json\tserver_name\tserver_url". Returns cfg JSON with
+     * Figma defaults applied. */
+    if (!arg || !*arg) return strdup("{}");
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *cfg_json = arg;
+    const char *srv_name = t1 ? t1 + 1 : "";
+    const char *srv_url = t2 ? t2 + 1 : NULL;
+    json_t *cfg = json_parse(cfg_json, NULL);
+    if (!cfg || cfg->type != JSON_OBJECT) { if (cfg) json_free(cfg); return strdup("{}"); }
+    if (mcpo_is_figma_remote_mcp(srv_name, srv_url)) {
+        if (!json_get_str(cfg, "client_name", NULL))
+            json_set(cfg, "client_name", json_string(FIGMA_DCR_CLIENT_NAME));
+        if (!json_get_str(cfg, "scope", NULL))
+            json_set(cfg, "scope", json_string(FIGMA_DEFAULT_SCOPE));
+        if (!json_get_str(cfg, "token_endpoint_auth_method", NULL))
+            json_set(cfg, "token_endpoint_auth_method", json_string("client_secret_post"));
+    }
+    char *out = json_serialize(cfg);
+    json_free(cfg);
+    return out;
+}
+
+/* PoP: humanize_oauth_registration_error @ tools/mcp_oauth.py:humanize_oauth_registration_error */
+char *mcpo_humanize_oauth_registration_error(const char *arg) {
+    /* Python: turn a DCR refusal into a useful next step.
+     * Returns a humanized message for registration 403/Forbidden, else NULL.
+     * Arg = "server_name\tmsg\tserver_url". */
+    if (!arg || !*arg) return NULL;
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    if (!t1 || !t1[1]) return NULL;
+    const char *srv_name = arg;
+    const char *msg = t1 + 1;
+    const char *srv_url = t2 ? t2 + 1 : NULL;
+    char lowered[1024];
+    size_t i = 0;
+    while (msg[i] && i + 1 < sizeof(lowered)) {
+        lowered[i] = (char)tolower((unsigned char)msg[i]);
+        i++;
+    }
+    lowered[i] = '\0';
+    int has_403 = strstr(msg, "403") != NULL;
+    int has_forbidden = strstr(lowered, "forbidden") != NULL;
+    if (!has_403 && !has_forbidden) return NULL;
+    int looks_reg = strstr(lowered, "regist") || strstr(lowered, "client registration") ||
+                    strstr(lowered, "dcr") || strstr(lowered, "dynamic client") ||
+                    (has_403 && has_forbidden);
+    if (!looks_reg) return NULL;
+    if (mcpo_is_figma_remote_mcp(srv_name, srv_url)) {
+        char *out = NULL;
+        asprintf(&out,
+            "'%s' is Figma's remote MCP — DCR is allowlisted by exact "
+            "client_name (\"Claude Code\" and \"Codex\" work; most other names 403).",
+            srv_name);
+        return out;
+    }
+    return NULL;
 }
