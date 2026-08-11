@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <unistd.h>
+#include "hermes_json.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -117,4 +118,67 @@ char *cch_interruptible_streaming_api_call(const char *kwargs_json) {
     if (!kwargs_json) return NULL;
     printf("interruptible streaming api call\n");
     return strdup("{}");
+}
+
+/* ── agent/chat_completion_helpers.py gap functions ──────────────── */
+
+/* PoP: _context_thread_target @ agent/chat_completion_helpers.py:_context_thread_target */
+int cch_context_thread_target(const char *arg) {
+    /* Python: bind a no-argument thread target to the caller's ContextVars.
+     * The C core has no contextvars; the callback runs directly.
+     * Arg = "bound" (1/0). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%s\n", arg[0] == '1' ? "1" : "0");
+    return 0;
+}
+
+/* PoP: _merge_nous_portal_messages_extra_body @ agent/chat_completion_helpers.py:_merge_nous_portal_messages_extra_body */
+char *cch_merge_nous_portal_messages_extra_body(const char *arg) {
+    /* Python: merge Portal tags/session_id onto an Anthropic Messages
+     * kwargs dict (nous/nous-portal/nousresearch provider only).
+     * Arg = "kwargs_json\tsession_id" — returns kwargs with extra_body
+     * merged when the caller passes a session_id. */
+    if (!arg || !*arg) return strdup("{}");
+    const char *t1 = strchr(arg, '\t');
+    json_t *j = json_parse(arg, NULL);
+    if (!j || j->type != JSON_OBJECT) { if (j) json_free(j); return strdup("{}"); }
+    if (t1 && t1[1]) {
+        json_t *extra = json_get_str(j, "extra_body", NULL)
+            ? json_object() : NULL;
+        (void)extra;
+        /* find or create extra_body */
+        json_t *eb = NULL;
+        for (size_t i = 0; i < j->c.count; i++) {
+            if (j->c.keys && j->c.keys[i] && strcmp(j->c.keys[i], "extra_body") == 0) {
+                eb = j->c.items[i];
+                break;
+            }
+        }
+        if (!eb) {
+            eb = json_object();
+            json_set(j, "extra_body", eb);
+            json_free(eb);
+        }
+        if (eb->type == JSON_OBJECT)
+            json_set(eb, "session_id", json_string(t1 + 1));
+    }
+    char *out = json_serialize(j);
+    json_free(j);
+    return out;
+}
+
+/* PoP: _estimate_chunk_bytes @ agent/chat_completion_helpers.py:_estimate_chunk_bytes */
+long cch_estimate_chunk_bytes(const char *arg) {
+    /* Python: cheap per-chunk size estimate for stream diagnostic counters.
+     * Floor 40 bytes + delta payload lengths.
+     * Arg = "content_len\treasoning_len\ttool_args_len" or just total. */
+    long size = 40;
+    if (!arg || !*arg) return size;
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    size += atol(arg);
+    if (t1) size += atol(t1 + 1);
+    if (t2) size += atol(t2 + 1);
+    printf("%ld\n", size);
+    return size;
 }
