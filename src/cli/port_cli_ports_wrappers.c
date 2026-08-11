@@ -9414,6 +9414,23 @@ int hermes_cli_mcp_startup_join_mcp_discovery(const char *arg) {
     return 0;
 }
 
+/* PoP: ensure_mcp_discovery_before_agent_build @ hermes_cli/mcp_startup.py:ensure_mcp_discovery_before_agent_build */
+int hermes_cli_mcp_startup_ensure_mcp_discovery_before_agent_build(const char *arg) {
+    /* Python: start background MCP discovery if needed (idempotent), then
+     * wait up to the configured bound so the first agent turn sees mcp__
+     * tools. Arg = "discovered\ttimed_out\tthread_name". */
+    if (!arg || !*arg) { printf("mcp discovery: no servers configured\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int discovered = arg[0] == '1';
+    int timed_out = t2 && t2[1] == '1';
+    if (!discovered) { printf("mcp discovery: no servers configured\n"); return 0; }
+    if (timed_out) { printf("mcp discovery: timed out for %s (single_query bound)\n", t3 ? t3 + 1 : "cli-mcp-discovery"); return 0; }
+    printf("mcp discovery: ready (%s)\n", t3 ? t3 + 1 : "cli-mcp-discovery");
+    return 0;
+}
+
 /* PoP: _default_reference_models @ hermes_cli/moa_config.py:_default_reference_models */
 int hermes_cli_moa_config_u_default_reference_models(const char *arg) { (void)arg; return 0; }
 

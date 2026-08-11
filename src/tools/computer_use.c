@@ -927,6 +927,13 @@ static bool macos_browser_has_tool(const char *name, void *ctx) {
 }
 
 /* ── _browser_route / typed_browser_* (PoP: _browser_route / typed_browser_*) ─ */
+/* PoP: _browser_route @ tools/computer_use/cua_backend.py:CuaDriverBackend._browser_route */
+/* PoP: typed_browser_state @ tools/computer_use/backend.py:ComputerUseBackend.typed_browser_state */
+/* PoP: typed_browser_state @ tools/computer_use/cua_backend.py:CuaDriverBackend.typed_browser_state */
+/* PoP: typed_browser_prepare @ tools/computer_use/backend.py:ComputerUseBackend.typed_browser_prepare */
+/* PoP: typed_browser_prepare @ tools/computer_use/cua_backend.py:CuaDriverBackend.typed_browser_prepare */
+/* PoP: typed_browser_action @ tools/computer_use/backend.py:ComputerUseBackend.typed_browser_action */
+/* PoP: typed_browser_action @ tools/computer_use/cua_backend.py:CuaDriverBackend.typed_browser_action */
 /* _browser_route returns the cached route, constructing it on first access.
  * Mirrors Python: getattr(self,"_typed_browser",None) -> if None, construct. */
 static cua_typed_browser_route_t *macos_browser_route(macos_state_t *st) {
@@ -973,6 +980,7 @@ static char *macos_typed_browser_action(macos_state_t *st, const char *driver_to
 }
 
 /* ── _run_input_action ──────────────────────────────────────────────── */
+/* PoP: _run_input_action @ tools/computer_use/cua_backend.py:CuaDriverBackend._run_input_action */
 /* Apply one delivery rung, optionally focusing via bring_to_front first.
  * Returns a cu_action_t* (the C ActionResult equivalent). */
 static cu_action_t *macos_run_input_action(macos_state_t *st,
@@ -1049,6 +1057,7 @@ static cu_action_t *macos_run_input_action(macos_state_t *st,
 }
 
 /* ── _revive_declared_session_once ────────────────────────────────────── */
+/* PoP: _revive_declared_session_once @ tools/computer_use/cua_backend.py:CuaDriverBackend._revive_declared_session_once */
 /* If the session ended during a tool call, revive it and retry once.
  * This is the sync C equivalent: on an ended-session error, call
  * start_session again, then re-issue the original tool call. */

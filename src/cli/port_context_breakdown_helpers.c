@@ -19,6 +19,8 @@
 #include "hermes_json.h"
 #include "hermes_core_types.h"
 #include "hermes_memory.h"
+#include "hermes_system_prompt.h"
+#include "context_breakdown.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -642,4 +644,86 @@ char **context_breakdown_render_lines(const char *payload_json, const char *deta
 
     if (out_lines) *out_lines = n;
     return lines;
+}
+
+/* ---- compute_context_details ---- */
+
+/* Declarations for the prompt_size sub-helpers (ported in port_hermes_cli_prompt_size.c). */
+extern char *psize_compute_skills_breakdown(const char *skills_block);
+extern char *psize_compute_toolsets_breakdown(const char *tools_json);
+
+/* PoP: compute_context_details @ agent/context_breakdown.py:compute_context_details */
+/* Port of Python compute_context_details: expanded per-skill / per-toolset
+ * cost listing for /context all. Builds the stable system prompt, extracts the
+ * <available_skills> block, and runs the existing prompt_size breakdown
+ * helpers to attribute bytes->tokens. Returns a malloc'd JSON object
+ * {"skills":[...], "toolsets":[...]} (caller frees). */
+char *context_breakdown_compute_details(const system_prompt_config_t *cfg)
+{
+    char *stable = system_prompt_build(cfg);
+    if (!stable) return strdup("{\"skills\":[],\"toolsets\":[]}");
+
+    /* Extract <available_skills>...</available_skills> (non-greedy, DOTALL). */
+    char skills_block[16384] = "";
+    const char *open = strstr(stable, "<available_skills>");
+    if (open) {
+        const char *close = strstr(open, "</available_skills>");
+        if (close) {
+            size_t blen = (close + 16) - open;
+            if (blen < sizeof(skills_block)) {
+                memcpy(skills_block, open, blen);
+                skills_block[blen] = '\0';
+            }
+        }
+    }
+
+    char *skills_json = psize_compute_skills_breakdown(skills_block);
+    char *toolsets_json = psize_compute_toolsets_breakdown(
+        cfg && cfg->context_files ? cfg->context_files : "[]");
+
+    json_t *skills_arr = json_parse(skills_json ? skills_json : "[]", NULL);
+    if (skills_arr && skills_arr->type != JSON_ARRAY) { json_free(skills_arr); skills_arr = NULL; }
+    json_t *toolsets_arr = json_parse(toolsets_json ? toolsets_json : "[]", NULL);
+    if (toolsets_arr && toolsets_arr->type != JSON_ARRAY) { json_free(toolsets_arr); toolsets_arr = NULL; }
+
+    json_t *out = json_object();
+    json_t *skills_out = json_array();
+    if (skills_arr) {
+        for (size_t i = 0; i < skills_arr->c.count; i++) {
+            json_t *e = json_copy(skills_arr->c.items[i]);
+            if (e) {
+                json_t *ibl = json_obj_get(e, "index_line_bytes");
+                if (ibl && ibl->type == JSON_NUMBER)
+                    json_set(e, "index_tokens", json_number((double)context_breakdown_bytes_to_tokens((long)ibl->num_val)));
+                json_t *smb = json_obj_get(e, "skill_md_bytes");
+                if (smb && smb->type == JSON_NUMBER)
+                    json_set(e, "skill_md_tokens", json_number((double)context_breakdown_bytes_to_tokens((long)smb->num_val)));
+                json_append(skills_out, e);
+            }
+        }
+    }
+    json_t *toolsets_out = json_array();
+    if (toolsets_arr) {
+        for (size_t i = 0; i < toolsets_arr->c.count; i++) {
+            json_t *e = json_copy(toolsets_arr->c.items[i]);
+            if (e) {
+                json_t *jb = json_obj_get(e, "json_bytes");
+                if (jb && jb->type == JSON_NUMBER)
+                    json_set(e, "schema_tokens", json_number((double)context_breakdown_bytes_to_tokens((long)jb->num_val)));
+                json_append(toolsets_out, e);
+            }
+        }
+    }
+    json_object_set(out, "skills", skills_out);
+    json_object_set(out, "toolsets", toolsets_out);
+
+    free(skills_json);
+    free(toolsets_json);
+    free(stable);
+    if (skills_arr) json_free(skills_arr);
+    if (toolsets_arr) json_free(toolsets_arr);
+
+    char *result = json_serialize(out);
+    json_free(out);
+    return result ? result : strdup("{\"skills\":[],\"toolsets\":[]}");
 }

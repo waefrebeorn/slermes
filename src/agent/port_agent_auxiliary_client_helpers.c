@@ -674,6 +674,17 @@ char *aux__extract_aux_response_text(const llm_response_t *resp) {
     if (!resp) return strdup("");
     return strdup(resp->content ? resp->content : (resp->reasoning ? resp->reasoning : ""));
 }
+
+/* Port of Python: resolve_task() — resolve an auxiliary task name into an
+ * llm_config_t by loading the global hermes config. */
+bool auxiliary_task_llm_config(const char *task_name, llm_config_t *out) {
+    if (!task_name || !out) return false;
+    hermes_config_t cfg;
+    memset(&cfg, 0, sizeof(cfg));
+    hermes_config_load(&cfg, NULL);
+    return resolve_task(&cfg, task_name, out);
+}
+
 /* PoP: aux__call_llm @ agent/auxiliary_client.py:call_llm */
 /* Synchronous auxiliary LLM call. Returns malloc'd response text. */
 char *aux__call_llm(const char *provider, const char *model, const char *prompt) {
@@ -698,4 +709,138 @@ char *aux__call_llm(const char *provider, const char *model, const char *prompt)
 char *aux__async_call_llm(const char *provider, const char *model, const char *prompt) {
     /* C runs synchronously; delegate to the sync path. */
     return aux__call_llm(provider, model, prompt);
+}
+
+/* ---- _call_llm_impl / _async_call_llm_impl ---- */
+/* Declarations for the resolver/pool helpers (defined later in this file). */
+extern char *aux__pool_runtime_api_key(const char *provider);
+extern char *aux__pool_runtime_base_url(const char *provider);
+bool auxiliary_task_llm_config(const char *task_name, llm_config_t *out);
+
+/* PoP: _call_llm_impl @ agent/auxiliary_client.py:_call_llm_impl */
+/* Port of Python _call_llm_impl: centralized synchronous LLM call. Takes a
+ * JSON kwargs object (provider, model, base_url, api_key, messages,
+ * temperature, max_tokens, tools, timeout, extra_body, reasoning_config,
+ * api_mode, stream, etc.) and resolves provider+model from task config,
+ * explicit args, or auto-detect — then dispatches via llm_chat_completion.
+ * Returns malloc'd response text (caller frees). */
+char *aux__call_llm_impl(const char *task, const char *kwargs_json) {
+    if (!kwargs_json || !kwargs_json[0]) return strdup("");
+
+    llm_config_t cfg;
+    memset(&cfg, 0, sizeof(cfg));
+
+    json_t *kw = json_parse(kwargs_json, NULL);
+    if (!kw || kw->type != JSON_OBJECT) {
+        if (kw) json_free(kw);
+        return strdup("");
+    }
+
+    /* Resolve provider+model: explicit args override task config. */
+    const char *provider = NULL, *model = NULL, *base_url = NULL,
+               *api_key = NULL, *api_mode = NULL;
+    json_t *jpr, *jmo, *jbu, *jak, *jam;
+
+    jpr = json_obj_get(kw, "provider");  if (jpr && jpr->type == JSON_STRING) provider = jpr->str_val;
+    jmo = json_obj_get(kw, "model");     if (jmo && jmo->type == JSON_STRING) model = jmo->str_val;
+    jbu = json_obj_get(kw, "base_url");  if (jbu && jbu->type == JSON_STRING) base_url = jbu->str_val;
+    jak = json_obj_get(kw, "api_key");   if (jak && jak->type == JSON_STRING) api_key = jak->str_val;
+    jam = json_obj_get(kw, "api_mode");  if (jam && jam->type == JSON_STRING) api_mode = jam->str_val;
+
+    if (provider && *provider) {
+        snprintf(cfg.provider, sizeof(cfg.provider), "%s", provider);
+    } else if (task && *task) {
+        llm_config_t tcfg; memset(&tcfg, 0, sizeof(tcfg));
+        if (auxiliary_task_llm_config(task, &tcfg))
+            snprintf(cfg.provider, sizeof(cfg.provider), "%s", tcfg.provider);
+        else
+            snprintf(cfg.provider, sizeof(cfg.provider), "openai");
+    } else {
+        snprintf(cfg.provider, sizeof(cfg.provider), "openai");
+    }
+
+    if (model && *model)            snprintf(cfg.model, sizeof(cfg.model), "%s", model);
+    if (base_url && *base_url)      snprintf(cfg.base_url, sizeof(cfg.base_url), "%s", base_url);
+    if (api_mode && *api_mode)      snprintf(cfg.api_mode, sizeof(cfg.api_mode), "%s", api_mode);
+
+    /* api_key: explicit > pool resolution. */
+    if (api_key && *api_key)
+        snprintf(cfg.api_key, sizeof(cfg.api_key), "%s", api_key);
+    else {
+        char *k = aux__pool_runtime_api_key(cfg.provider);
+        if (k) { snprintf(cfg.api_key, sizeof(cfg.api_key), "%s", k); free(k); }
+    }
+    /* base_url fallback from pool if not set explicitly. */
+    if (!cfg.base_url[0]) {
+        char *u = aux__pool_runtime_base_url(cfg.provider);
+        if (u) { snprintf(cfg.base_url, sizeof(cfg.base_url), "%s", u); free(u); }
+    }
+
+    /* Optional params. */
+    json_t *jt = json_obj_get(kw, "temperature");
+    if (jt && jt->type == JSON_NUMBER) cfg.temperature = (float)jt->num_val;
+    json_t *jm = json_obj_get(kw, "max_tokens");
+    if (jm && jm->type == JSON_NUMBER) cfg.max_tokens = (int)jm->num_val;
+    json_t *jeb = json_obj_get(kw, "extra_body");
+    if (jeb && jeb->type == JSON_STRING) {
+        snprintf(cfg.extra_body, sizeof(cfg.extra_body), "%s", jeb->str_val);
+    }
+    json_t *jrd = json_obj_get(kw, "reasoning_config");
+    if (jrd && jrd->type == JSON_OBJECT) {
+        json_t *eff = json_obj_get(jrd, "effort");
+        if (eff && eff->type == JSON_STRING)
+            snprintf(cfg.reasoning_effort, sizeof(cfg.reasoning_effort), "%s", eff->str_val);
+        json_t *mt = json_obj_get(jrd, "max_tokens");
+        if (mt && mt->type == JSON_NUMBER) cfg.max_thinking_tokens = (int)mt->num_val;
+    }
+    json_t *jb = json_obj_get(kw, "tools");
+    if (jb && jb->type == JSON_ARRAY) {
+        char *ser = json_serialize(jb);
+        if (ser) { snprintf(cfg.extra_body, sizeof(cfg.extra_body), "%s", ser); free(ser); }
+    }
+
+    /* Build message list from kwargs["messages"] (JSON array of {role,content}). */
+    json_t *msgs_arr = json_obj_get(kw, "messages");
+    message_t **msgs = NULL;
+    size_t n_msgs = 0;
+    if (msgs_arr && msgs_arr->type == JSON_ARRAY) {
+        n_msgs = msgs_arr->c.count;
+        msgs = calloc(n_msgs ? n_msgs : 1, sizeof(message_t *));
+        for (size_t i = 0; i < n_msgs; i++) {
+            json_t *m = msgs_arr->c.items[i];
+            if (m && m->type == JSON_OBJECT) {
+                json_t *role = json_obj_get(m, "role");
+                json_t *content = json_obj_get(m, "content");
+                const char *rstr = role && role->type == JSON_STRING ? role->str_val : "";
+                int rtype = MSG_USER;
+                if (strcmp(rstr, "system") == 0) rtype = MSG_SYSTEM;
+                else if (strcmp(rstr, "assistant") == 0) rtype = MSG_ASSISTANT;
+                else if (strcmp(rstr, "user") == 0) rtype = MSG_USER;
+                const char *cstr = content && content->type == JSON_STRING ? content->str_val : "";
+                msgs[i] = message_new(rtype, cstr ? cstr : "");
+            }
+        }
+    }
+
+    int cfg_max_retries = cfg.max_retries;
+    cfg.max_retries = 0;  /* impl handles its own single-shot path */
+
+    llm_response_t *resp = llm_chat_completion(&cfg, n_msgs ? msgs : NULL, n_msgs, NULL);
+
+    for (size_t i = 0; i < n_msgs; i++) if (msgs && msgs[i]) message_free(msgs[i]);
+    free(msgs);
+    json_free(kw);
+
+    cfg.max_retries = cfg_max_retries;
+    if (!resp) return strdup("");
+    char *out = strdup(resp->content ? resp->content : "");
+    llm_response_free(resp);
+    return out;
+}
+
+/* PoP: _async_call_llm_impl @ agent/auxiliary_client.py:_async_call_llm_impl */
+/* Port of Python _async_call_llm_impl: async variant. C runs synchronously
+ * (single-threaded event loop), so this delegates to the sync impl. */
+char *aux__async_call_llm_impl(const char *task, const char *kwargs_json) {
+    return aux__call_llm_impl(task, kwargs_json);
 }

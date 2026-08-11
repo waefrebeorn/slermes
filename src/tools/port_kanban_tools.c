@@ -6,12 +6,14 @@
 
 #include "hermes_logger.h"
 #include "hermes_json.h"
+#include "kanban_db.h"
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <time.h>
+#include <sqlite3.h>
 
 /* ================================================================
  *  Profile / gating helpers
@@ -323,4 +325,142 @@ char *default_task_id(const char *arg)
     const char *env_tid = getenv("HERMES_KANBAN_TASK");
     if (env_tid && env_tid[0]) return strdup(env_tid);
     return NULL;
+}
+
+/* ================================================================
+ *  inject_new_comments_from_env
+ * ================================================================ */
+/* Rate-limit interval, mirrors Python _COMMENT_POLL_MIN_INTERVAL_SECONDS. */
+#define COMMENT_POLL_MIN_INTERVAL_SECONDS 30.0
+
+static double      g_comment_poll_last_attempt = 0.0;   /* monotonic */
+static char       *g_comment_watermark = NULL;           /* "task_id" -> long */
+
+/* PoP: inject_new_comments_from_env @ tools/kanban_tools.py:inject_new_comments_from_env */
+/* Port of Python inject_new_comments_from_env: best-effort, self-gating.
+ * No-op unless HERMES_KANBAN_TASK is set and a steer callback is provided.
+ * First poll per task only seeds the watermark to the newest existing
+ * comment; later polls fold comments newer than the watermark into a
+ * mid-run steer note. The worker's own comments (author == HERMES_PROFILE)
+ * are skipped. Returns true when a steer was injected. */
+bool kanban_inject_new_comments_from_env(bool (*steer_fn)(const char *note))
+{
+    const char *tid = getenv("HERMES_KANBAN_TASK");
+    if (!tid || !tid[0] || !steer_fn) return false;
+
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    double now = (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
+    if (now - g_comment_poll_last_attempt < COMMENT_POLL_MIN_INTERVAL_SECONDS)
+        return false;
+    g_comment_poll_last_attempt = now;
+
+    /* Load watermark: value stored after "task_id=" marker. */
+    long seen = 0;
+    bool seen_set = false;
+    if (g_comment_watermark) {
+        const char *eq = strstr(g_comment_watermark, "=");
+        if (eq && strncmp(g_comment_watermark, tid, (size_t)(eq - g_comment_watermark)) == 0
+            && (size_t)(eq - g_comment_watermark) == strlen(tid)) {
+            seen = strtol(eq + 1, NULL, 10);
+            seen_set = true;
+        }
+    }
+
+    sqlite3 *conn = kdb_connect(NULL);
+    if (!conn) return false;
+
+    int n = 0;
+    kanban_comment_t **rows = kdb_list_comments_after(conn, tid, seen_set ? seen : 0, &n);
+    kdb_close(conn);
+    if (!rows) return false;
+
+    if (!seen_set) {
+        /* First poll: seed past the existing thread, inject nothing. */
+        long max_id = 0;
+        for (int i = 0; i < n; i++)
+            if (kdb_comment_id(rows[i]) > max_id) max_id = kdb_comment_id(rows[i]);
+        free(g_comment_watermark);
+        char wm[64];
+        snprintf(wm, sizeof(wm), "%s=%ld", tid, max_id);
+        g_comment_watermark = strdup(wm);
+        kdb_comment_list_free(rows);
+        return false;
+    }
+    if (n == 0) { kdb_comment_list_free(rows); return false; }
+
+    /* Advance the watermark past everything read (incl. own notes). */
+    long max_id = 0;
+    for (int i = 0; i < n; i++)
+        if (kdb_comment_id(rows[i]) > max_id) max_id = kdb_comment_id(rows[i]);
+    free(g_comment_watermark);
+    char wm[64];
+    snprintf(wm, sizeof(wm), "%s=%ld", tid, max_id);
+    g_comment_watermark = strdup(wm);
+
+    /* Keep only comments not authored by this worker profile, with body. */
+    const char *own = getenv("HERMES_PROFILE");
+    if (!own) own = "";
+    while (*own == ' ') own++;
+    size_t own_len = strlen(own);
+    while (own_len > 0 && own[own_len - 1] == ' ') own_len--;
+
+    char **lines = NULL;
+    int n_fresh = 0;
+    for (int i = 0; i < n; i++) {
+        const char *author = kdb_comment_author(rows[i]);
+        const char *body   = kdb_comment_body(rows[i]);
+        if (!body || !body[0]) continue;
+        if (author) {
+            while (*author == ' ') author++;
+            size_t alen = strlen(author);
+            while (alen > 0 && author[alen - 1] == ' ') alen--;
+            if (alen == own_len && strncmp(author, own, alen) == 0) continue;
+        }
+        const char *disp = author && author[0] ? author : "operator";
+        size_t blen = strlen(body);
+        while (blen > 0 && (body[blen - 1] == ' ' || body[blen - 1] == '\n')) blen--;
+        lines = realloc(lines, (size_t)(n_fresh + 1) * sizeof(char *));
+        if (!lines) break;
+        size_t dlen = strlen(disp);
+        char *line = malloc(dlen + blen + 4);
+        if (!line) break;
+        snprintf(line, dlen + blen + 4, "- %.*s: %.*s", (int)dlen, disp, (int)blen, body);
+        lines[n_fresh++] = line;
+    }
+    kdb_comment_list_free(rows);
+
+    if (n_fresh == 0) {
+        for (int i = 0; i < n_fresh; i++) free(lines[i]);
+        free(lines);
+        return false;
+    }
+
+    /* Build the note: "New note(s) on your kanban task from the operator...". */
+    size_t total = 0;
+    for (int i = 0; i < n_fresh; i++) total += strlen(lines[i]) + 1;
+    char *note = malloc(128 + total + 1);
+    if (!note) {
+        for (int i = 0; i < n_fresh; i++) free(lines[i]);
+        free(lines);
+        return false;
+    }
+    char *p = note;
+    int wrote = snprintf(p, 128, "New note%s on your kanban task from the operator "
+                                  "(delivered mid-run). Take it into account for the work "
+                                  "you're doing right now:\n", n_fresh > 1 ? "s" : "");
+    p += wrote;
+    for (int i = 0; i < n_fresh; i++) {
+        size_t l = strlen(lines[i]);
+        memcpy(p, lines[i], l);
+        p += l;
+        *p++ = '\n';
+        free(lines[i]);
+    }
+    *p = '\0';
+    free(lines);
+
+    bool ok = steer_fn(note);
+    free(note);
+    return ok;
 }

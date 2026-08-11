@@ -157,6 +157,8 @@ long        kdb_run_ended_at(const kanban_run_t *r);
 const char *kdb_comment_author(const kanban_comment_t *c);
 const char *kdb_comment_body(const kanban_comment_t *c);
 long        kdb_comment_created_at(const kanban_comment_t *c);
+/* PoP: kdb_comment_id @ hermes_cli/kanban_db.py:Comment.id */
+long        kdb_comment_id(const kanban_comment_t *c);
 
 /* Attachment */
 const char *kdb_attach_filename(const kanban_attach_t *a);

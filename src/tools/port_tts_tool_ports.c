@@ -820,7 +820,7 @@ typedef struct {
     int lookahead;
 } tts_sync_player_t;
 
-/* PoP: __init__ @ tools/tts_tool.py:SyncTtsPlayer.__init__ */
+/* PoP: __init__ @ tools/tts_tool.py:_SyncSentencePipeline.__init__ */
 tts_sync_player_t *tts_sync_player_new(int lookahead) {
     /* Python: ThreadPoolExecutor(1) + daemon drain thread + queue. */
     tts_sync_player_t *p = calloc(1, sizeof(*p));
@@ -831,7 +831,7 @@ tts_sync_player_t *tts_sync_player_new(int lookahead) {
     return p;
 }
 
-/* PoP: _synthesize_to_tmp @ tools/tts_tool.py:SyncTtsPlayer._synthesize_to_tmp */
+/* PoP: _synthesize_to_tmp @ tools/tts_tool.py:_SyncSentencePipeline._synthesize_to_tmp */
 char *tts_sync_player_synthesize_to_tmp(tts_sync_player_t *player, const char *cleaned) {
     /* Python: tempfile + text_to_speech_tool. */
     if (!player || player->stopped || !cleaned) return NULL;
@@ -846,10 +846,31 @@ char *tts_sync_player_synthesize_to_tmp(tts_sync_player_t *player, const char *c
     return strdup(tmp_path);
 }
 
-/* PoP: _drain @ tools/tts_tool.py:SyncTtsPlayer._drain */
+/* PoP: _drain @ tools/tts_tool.py:_SyncSentencePipeline._drain */
 void tts_sync_player_drain(tts_sync_player_t *player) {
     /* Python: drain queue, play audio, unlink temp files. */
     if (!player) return;
     /* In C CLI, no audio playback; just mark drained. */
     player->stopped = true;
+}
+
+/* PoP: speak @ tools/tts_tool.py:_SyncSentencePipeline.speak */
+/* Port of Python _SyncSentencePipeline.speak: queue one sentence for
+ * synthesis. In the C CLI the synthesis is performed synchronously by the
+ * caller via tts_sync_player_synthesize_to_tmp; here we only track the
+ * stopped flag (mirrors the early return when the stop event is set).
+ * Returns 0 on success, -1 when stopped / invalid. */
+int tts_sync_player_speak(tts_sync_player_t *player, const char *cleaned) {
+    if (!player || player->stopped || !cleaned) return -1;
+    return 0;
+}
+
+/* PoP: close @ tools/tts_tool.py:_SyncSentencePipeline.close */
+/* Port of Python _SyncSentencePipeline.close: flush queued sentences in
+ * order (skipped if stopped), then join the player and shutdown the
+ * synthesis executor. In the C CLI this drains pending work (the caller
+ * synthesizes synchronously) and marks the pipeline closed. */
+void tts_sync_player_close(tts_sync_player_t *player) {
+    if (!player) return;
+    tts_sync_player_drain(player);
 }

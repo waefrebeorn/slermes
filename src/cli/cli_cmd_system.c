@@ -1684,6 +1684,7 @@ void cmd_toolsets(const char *args, agent_state_t *state) {
  * Also performs install-method detection (docker/nix bail with guidance)
  * and takes the shared update lock so concurrent updaters refuse instead
  * of corrupting the checkout (update_lock.UpdateLock). */
+/* PoP: cmd_update @ hermes_cli/main.py:cmd_update */
 void cmd_update(const char *args, agent_state_t *state) {
     (void)state;
     const char *a = args ? args : "";

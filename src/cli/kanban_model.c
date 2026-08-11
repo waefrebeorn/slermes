@@ -332,6 +332,8 @@ void kdb_comment_free(kanban_comment_t *c)
 
 /* PoP: kdb_comment_author @ hermes_cli/kanban_db.py:author */
 const char *kdb_comment_author(const kanban_comment_t *c){ return c ? c->author : NULL; }
+/* PoP: kdb_comment_id @ hermes_cli/kanban_db.py:Comment.id */
+long        kdb_comment_id(const kanban_comment_t *c){ return c ? c->id : 0; }
 /* PoP: kdb_comment_body @ hermes_cli/kanban_db.py:body */
 const char *kdb_comment_body(const kanban_comment_t *c){ return c ? c->body : NULL; }
 /* PoP: kdb_comment_created_at @ hermes_cli/kanban_db.py:created_at */

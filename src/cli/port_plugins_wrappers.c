@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include "hermes_json.h"
 #include "plugin.h"
+#include "hermes_subagent_lifecycle.h"
 
 extern const char *plugin_get_bundled_plugins_dir(const char *hermes_home);
 extern void plugin_install_debug_handler(void);
@@ -224,4 +225,32 @@ void plug_clear_thread_tool_whitelist(const char *thread_id) {
 /* PoP: _get_pre_tool_call_directive_details @ hermes_cli/plugins.py:_get_pre_tool_call_directive_details */
 json_t *plug_get_pre_tool_call_directive_details_inner(void) {
     return plugin_get_pre_tool_call_directive_details();
+}
+
+/* ---- subagent_lifecycle property (hermes_cli/plugins.py:subagent_lifecycle) ---- */
+extern subagent_lifecycle_service_t *subagent_service_create(void *(*parent_resolver)(void));
+extern void *subagent_get_active_parent(void);
+extern void subagent_service_free(subagent_lifecycle_service_t *svc);
+
+/* PoP: subagent_lifecycle @ hermes_cli/plugins.py:subagent_lifecycle */
+/* Port of Python plugins.subagent_lifecycle property: lazily construct a
+ * SubagentLifecycleService bound to get_active_subagent_parent and cache it
+ * in the plugin session state. Arg = "create|get". */
+static subagent_lifecycle_service_t *g_lifecycle = NULL;
+
+subagent_lifecycle_service_t *plugins_get_subagent_lifecycle(const char *arg)
+{
+    if (arg && arg[0] == 'c') {  /* create */
+        if (g_lifecycle) return g_lifecycle;
+        g_lifecycle = subagent_service_create(subagent_get_active_parent);
+        return g_lifecycle;
+    }
+    if (!g_lifecycle) g_lifecycle = subagent_service_create(subagent_get_active_parent);
+    return g_lifecycle;
+}
+
+/* PoP: _free_subagent_lifecycle @ hermes_cli/plugins.py:subagent_lifecycle */
+/* Teardown the cached lifecycle service (session teardown). */
+void plugins_free_subagent_lifecycle(void) {
+    if (g_lifecycle) { subagent_service_free(g_lifecycle); g_lifecycle = NULL; }
 }

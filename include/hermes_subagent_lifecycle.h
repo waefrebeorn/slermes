@@ -251,6 +251,25 @@ int subagent_service_reconnect(
     subagent_reconnect_result_t *out_rr
 );
 
+/* PoP: _run @ agent/subagent_lifecycle.py:SubagentLifecycleService._run */
+/* subagent_service_run: apply a delegate result dict (status/summary/error)
+ * to the record, transitioning it to the terminal state.
+ * result_json is NULL -> FAILED (error path). Returns 0 on success. */
+struct subagent_record_s;   /* opaque — defined in port_subagent_lifecycle.c */
+int subagent_service_run(subagent_lifecycle_service_t *svc,
+                         struct subagent_record_s *record,
+                         const char *goal,
+                         void *parent,
+                         const char *result_json);
+
+/* Create a fresh SubagentResult. Caller frees via subagent_result_free. */
+subagent_result_t *subagent_result_create(subagent_handle_t handle,
+                                          subagent_state_t terminal_state,
+                                          bool ready,
+                                          const char *summary,
+                                          double started_at,
+                                          double completed_at);
+
 /* PoP: _cleanup_locked @ agent/subagent_lifecycle.py:SubagentLifecycleService._cleanup_locked */
 void subagent_service_cleanup_locked(subagent_lifecycle_service_t *svc);
 

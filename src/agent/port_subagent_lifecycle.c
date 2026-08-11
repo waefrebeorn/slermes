@@ -347,6 +347,32 @@ void subagent_terminal_state_free(subagent_terminal_state_t *ts) {
     free(ts->diagnostic);
 }
 
+/* PoP: SubagentResult @ agent/subagent_lifecycle.py:SubagentResult */
+/* Create a fresh SubagentResult. Caller frees via subagent_result_free. */
+subagent_result_t *subagent_result_create(subagent_handle_t handle,
+                                          subagent_state_t terminal_state,
+                                          bool ready,
+                                          const char *summary,
+                                          double started_at,
+                                          double completed_at)
+{
+    subagent_result_t *r = calloc(1, sizeof(*r));
+    if (!r) return NULL;
+    r->handle = handle;
+    r->terminal_state = terminal_state;
+    r->ready = ready;
+    r->summary = summary ? strdup(summary) : NULL;
+    r->structured_payload = json_array();
+    r->started_at = started_at;
+    r->completed_at = completed_at;
+    r->error_classification = NULL;
+    r->error_message = NULL;
+    r->usage_metadata = json_object();
+    r->tool_execution_summary = json_object();
+    r->result_hash = NULL;
+    return r;
+}
+
 void subagent_result_free(subagent_result_t *r) {
     if (!r) return;
     subagent_handle_free(&r->handle);
@@ -506,6 +532,90 @@ int subagent_service_launch(
         if (error_out) *error_out = strdup("Failed to create handle.");
         return -1;
     }
+    return 0;
+}
+
+/* PoP: _run @ agent/subagent_lifecycle.py:SubagentLifecycleService._run */
+/* Port of Python SubagentLifecycleService._run: invoked by launch in a worker
+ * thread. Resolves the parent, runs the child lifecycle via delegate_tool,
+ * then applies the result dict -> SubagentState transition (completed ->
+ * SUCCEEDED, interrupted -> CANCELLED/INTERRUPTED, else FAILED), truncating
+ * summary/error to SUBAGENT_MAX_RESULT_CHARS. In C the delegate_tool execution
+ * is not yet wired, so we apply the transition for a provided result payload
+ * (NULL -> FAILED). This makes _run independently testable. */
+int subagent_service_run(
+    subagent_lifecycle_service_t *svc,
+    struct subagent_record_s *record,
+    const char *goal,
+    void *parent,
+    const char *result_json)
+{
+    (void)svc; (void)goal; (void)parent;
+    if (!record) return -1;
+
+    /* State transition: mark RUNNING (unless CANCEL_REQUESTED). */
+    double now = (double)time(NULL);
+    pthread_mutex_lock(&g_registry.lock);
+    if (record->state != SUBAGENT_STATE_CANCEL_REQUESTED)
+        record->state = SUBAGENT_STATE_RUNNING;
+    record->started_at = now;
+    record->updated_at = now;
+    pthread_mutex_unlock(&g_registry.lock);
+
+    /* Simulate _run_child_lifecycle result if not provided. */
+    const char *status = "error";
+    const char *summary = NULL;
+    const char *error = NULL;
+
+    if (result_json && result_json[0]) {
+        char *jerr = NULL;
+        json_t *raw = json_parse(result_json, &jerr);
+        if (jerr) free(jerr);
+        if (raw && (raw->type == JSON_OBJECT)) {
+            json_t *st = json_obj_get(raw, "status");
+            if (st && st->type == JSON_STRING) status = st->str_val;
+            json_t *sm = json_obj_get(raw, "summary");
+            if (sm && sm->type == JSON_STRING) summary = sm->str_val;
+            json_t *er = json_obj_get(raw, "error");
+            if (er && er->type == JSON_STRING) error = er->str_val;
+        }
+        if (raw) json_free(raw);
+    }
+
+    /* Map status -> terminal state. */
+    subagent_state_t terminal;
+    if (strcmp(status, "completed") == 0) {
+        terminal = SUBAGENT_STATE_SUCCEEDED;
+    } else if (strcmp(status, "interrupted") == 0) {
+        pthread_mutex_lock(&g_registry.lock);
+        bool was_cancel = (record->state == SUBAGENT_STATE_CANCEL_REQUESTED);
+        pthread_mutex_unlock(&g_registry.lock);
+        terminal = was_cancel ? SUBAGENT_STATE_CANCELLED : SUBAGENT_STATE_INTERRUPTED;
+    } else {
+        terminal = SUBAGENT_STATE_FAILED;
+    }
+
+    /* Build SubagentResult (truncated to _MAX_RESULT_CHARS). */
+    pthread_mutex_lock(&g_registry.lock);
+    double completed_at = (double)time(NULL);
+    if (record->result) { /* free prior result placeholder if any */
+        subagent_result_free(record->result);
+        record->result = NULL;
+    }
+    subagent_result_t *res = subagent_result_create(record->handle, terminal,
+        true /*completed*/, summary, completed_at, record->started_at);
+    if (res) {
+        if (error) {
+            res->error_classification = strdup(terminal == SUBAGENT_STATE_SUCCEEDED ? NULL : "RuntimeError");
+            char *em = malloc(SUBAGENT_MAX_RESULT_CHARS + 1);
+            if (em) { snprintf(em, SUBAGENT_MAX_RESULT_CHARS + 1, "%.*s", SUBAGENT_MAX_RESULT_CHARS, error); res->error_message = em; }
+        }
+        record->result = res;
+    }
+    record->agent = NULL;  /* detach parent ref, mirrors Python `record.agent = None` */
+    record->state = terminal;
+    pthread_mutex_unlock(&g_registry.lock);
+
     return 0;
 }
 

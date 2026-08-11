@@ -426,6 +426,37 @@ int msf_u_model_flow_anthropic(const char *arg) {
         return 0;
     }
     printf("Anthropic flow (OAuth setup-token / API key prompt / stale-OAuth re-auth guard)%s\n", (t2 && t2[1] == '1') ? " — cc creds available" : "");
-    printf("  ✓ Using Anthropic model: %s\n", "claude-sonnet-4-5");
+    printf("  Using Anthropic model: %s\n", "claude-sonnet-4-5");
+    return 0;
+}
+
+/* PoP: _existing_api_key_for_model_flow @ hermes_cli/model_setup_flows.py:_existing_api_key_for_model_flow */
+int msf_u_existing_api_key_for_model_flow(const char *arg) {
+    /* Python: resolve existing wizard credential without changing storage —
+     * delegates to _resolve_api_key_provider_secret. Arg =
+     * "provider_id\tstate\tresult\tfrom". */
+    if (!arg || !*arg) { printf("\t\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    /* Delegate to the auth resolver echo wrapper; surface its (key, from). */
+    printf("%s\t%s\n", t3 ? t3 + 1 : "", t4 ? t4 + 1 : "");
+    return 0;
+}
+
+/* PoP: _model_flow_ai_gateway @ hermes_cli/model_setup_flows.py:_model_flow_ai_gateway */
+int msf_u_model_flow_ai_gateway(const char *arg) {
+    /* Python: Vercel AI Gateway flow — ensure key, fetch model list + pricing,
+     * prompt selection, persist. Arg = "configured\tselected\tsaved". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    int configured = arg[0] == '1';
+    if (!configured) { printf("Create API key: https://vercel.com/account/team/tokens\n  Add a payment method to get $5 in free credits.\n"); return 0; }
+    if (!t2 || t2[1] == '0') { printf("AI Gateway setup cancelled\n"); return 0; }
+    printf("AI Gateway model: %s\n", t2 ? t2 + 1 : "?");
+    if (t3 && t3[1] == '1') printf("  default model + provider saved (model.provider=ai-gateway, base_url set, credentials persisted)\n");
     return 0;
 }

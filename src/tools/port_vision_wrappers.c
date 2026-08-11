@@ -71,3 +71,31 @@ json_t *vi_video_analyze_tool(json_t *args) {
 json_t *vi_handle_video_analyze(json_t *args) {
     return vi_video_analyze_tool(args);
 }
+
+/* ---- _load_auxiliary_client ---- */
+/* Port of Python _load_auxiliary_client: lazily bind the auxiliary-client
+ * entry points (async_call_llm + extract_content_or_reasoning) used by the
+ * vision/audio fallback paths. In Python this is a module-level lazy import
+ * guarded by a None check; in C the equivalents are plain extern symbols, so
+ * the loader is idempotent: the first call resolves them, later calls are
+ * no-ops. Returns 1 when both entry points are available. */
+static bool g_aux_loaded = false;
+static bool g_aux_available = false;
+
+/* PoP: _load_auxiliary_client @ tools/vision_tools.py:_load_auxiliary_client */
+int vi_load_auxiliary_client(void) {
+    if (g_aux_loaded) return g_aux_available ? 1 : 0;
+    g_aux_loaded = true;
+    /* The C auxiliary client lives in port_agent_auxiliary_client_helpers.c;
+     * both entry points are always linked in the binary. */
+    extern char *aux__async_call_llm(const char *provider, const char *model, const char *prompt);
+    g_aux_available = (aux__async_call_llm != NULL);
+    return g_aux_available ? 1 : 0;
+}
+
+/* Accessor for the auxiliary-call entry point (NULL until loaded). */
+char *(*vi_aux_async_call_llm(void))(const char *, const char *, const char *) {
+    if (!g_aux_loaded) vi_load_auxiliary_client();
+    extern char *aux__async_call_llm(const char *provider, const char *model, const char *prompt);
+    return g_aux_available ? aux__async_call_llm : NULL;
+}
