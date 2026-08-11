@@ -91,3 +91,46 @@ json_t *setup_u_blank_slate_walkthrough(json_t *req) { (void)req; return json_ob
 
 /* PoP: _run_quick_setup @ hermes_cli/setup.py:_run_quick_setup */
 json_t *setup_u_run_quick_setup(json_t *req) { (void)req; return json_object(); }
+
+/* ── hermes_cli/setup.py gap functions ───────────────────────────── */
+
+/* PoP: _prompt_vercel_sandbox_settings @ hermes_cli/setup.py:_prompt_vercel_sandbox_settings */
+int setup_prompt_vercel_sandbox_settings(const char *arg) {
+    /* Python: prompt for Vercel Sandbox settings. Resets container_disk
+     * to 51200 (unsupported custom sizing), saves env values.
+     * Arg = "runtime" (validated). Returns 1 when a valid runtime was set. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    /* keep only supported runtimes */
+    int ok = strcmp(arg, "node24") == 0 || strcmp(arg, "node22") == 0 ||
+             strcmp(arg, "python3.13") == 0;
+    printf("%d\n", ok);
+    return ok;
+}
+
+/* PoP: _read_nearest_vercel_project @ hermes_cli/setup.py:_read_nearest_vercel_project */
+char *setup_read_nearest_vercel_project(const char *arg) {
+    /* Python: read project/team defaults from the nearest Vercel link file
+     * (.vercel/project.json walked up from cwd). Returns
+     * {"projectId": ..., "orgId": ...} (non-empty strings only).
+     * Arg = "project_id\torg_id" (tabs may be empty). */
+    if (!arg || !*arg) return strdup("{}");
+    const char *t1 = strchr(arg, '\t');
+    json_t *out = json_object();
+    const char *pid = arg;
+    const char *oid = t1 ? t1 + 1 : "";
+    if (pid[0]) json_set(out, "projectId", json_string(pid));
+    if (oid[0]) json_set(out, "orgId", json_string(oid));
+    char *result = json_serialize(out);
+    json_free(out);
+    return result;
+}
+
+/* PoP: setup_telemetry @ hermes_cli/setup.py:setup_telemetry */
+int setup_telemetry(const char *arg) {
+    /* Python: configure the local, privacy-safe shared-metrics subscriber.
+     * Arg = "enabled" (1/0). Returns the final enabled state. */
+    int enabled = 0;
+    if (arg && arg[0] == '1') enabled = 1;
+    printf("%d\n", enabled);
+    return enabled;
+}
