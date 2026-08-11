@@ -21,6 +21,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdbool.h>
+#include "hermes_json.h"
 
 /* --- UNICODE_MAP: smart punctuation -> ASCII (mirrors Python dict) ------- */
 typedef struct { const char *u; const char *a; } uni_map_t;
@@ -817,3 +819,103 @@ void fuzzy_match_fuzzy_find_and_replace(const char *content, const char *old_str
     *out_error = strdup("Could not find a match for old_string in the file");
 }
 
+
+/* ── tools/fuzzy_match.py gap functions ──────────────────────────── */
+
+/* PoP: is_already_applied @ tools/fuzzy_match.py:is_already_applied */
+bool fuzzy_is_already_applied(const char *content, const char *old_string,
+                              const char *new_string) {
+    /* Python: True when the requested edit is already present.
+     * Conservative: new_string >= 8 stripped chars, must appear EXACTLY;
+     * when old != new, old_string must be GONE. */
+    if (!new_string || !new_string[0]) return false;
+    size_t stripped = 0;
+    for (const char *p = new_string; *p; p++) {
+        if (!isspace((unsigned char)*p)) stripped++;
+    }
+    if (stripped < 8) return false;
+    if (!content || !strstr(content, new_string)) return false;
+    if (old_string && strcmp(old_string, new_string) == 0) return true;
+    if (!old_string) return true;
+    return !strstr(content, old_string);
+}
+
+/* PoP: _format_match_locations @ tools/fuzzy_match.py:_format_match_locations */
+char *fuzzy_format_match_locations(const char *arg) {
+    /* Python: render up to cap match positions as 'L<line>: <snippet>' rows.
+     * Arg = "content\tmatches_json" — matches_json is array of [start, end]. */
+    if (!arg || !*arg) return strdup("");
+    const char *t1 = strchr(arg, '\t');
+    if (!t1) return strdup("");
+    const char *content = arg;
+    json_t *j = json_parse(t1 + 1, NULL);
+    if (!j || j->type != JSON_ARRAY) { if (j) json_free(j); return strdup(""); }
+    size_t cap = 5;
+    size_t n = j->c.count < cap ? j->c.count : cap;
+    /* count lines up to each start to derive line numbers */
+    char *out = malloc(4096);
+    if (!out) { json_free(j); return strdup(""); }
+    out[0] = '\0';
+    for (size_t i = 0; i < n; i++) {
+        json_t *pair = j->c.items[i];
+        if (!pair || pair->type != JSON_ARRAY || pair->c.count < 1) continue;
+        double start = pair->c.items[0]->type == JSON_NUMBER
+            ? pair->c.items[0]->num_val : 0;
+        long line_no = 1;
+        long pos = 0;
+        while (pos < (long)start && content[pos]) {
+            if (content[pos] == '\n') line_no++;
+            pos++;
+        }
+        /* extract the line containing start */
+        long ls = (long)start;
+        while (ls > 0 && content[ls] != '\n') ls--;
+        if (content[ls] == '\n') ls++;
+        long le = ls;
+        while (content[le] && content[le] != '\n') le++;
+        long len = le - ls;
+        if (len > 80) len = 77;
+        char snippet[96];
+        memcpy(snippet, content + ls, (size_t)len);
+        snippet[len] = '\0';
+        /* strip */
+        size_t a = 0, b = strlen(snippet);
+        while (a < b && isspace((unsigned char)snippet[a])) a++;
+        while (b > a && isspace((unsigned char)snippet[b - 1])) b--;
+        char row[256];
+        if (len > 80) {
+            snprintf(row, sizeof(row), "  L%ld: %.*s...\n", line_no, (int)(b - a), snippet + a);
+        } else {
+            snprintf(row, sizeof(row), "  L%ld: %.*s\n", line_no, (int)(b - a), snippet + a);
+        }
+        strncat(out, row, 4096 - strlen(out) - 1);
+    }
+    long extra = (long)j->c.count - (long)cap;
+    if (extra > 0) {
+        char row[64];
+        snprintf(row, sizeof(row), "  ... and %ld more\n", extra);
+        strncat(out, row, 4096 - strlen(out) - 1);
+    }
+    json_free(j);
+    return out;
+}
+
+/* PoP: _visualize_whitespace @ tools/fuzzy_match.py:_visualize_whitespace */
+char *fuzzy_visualize_whitespace(const char *line) {
+    /* Python: render leading whitespace visibly (→ = tab, · = space).
+     * Only the leading run is visualized. */
+    if (!line) return strdup("");
+    size_t i = 0;
+    while (line[i] == ' ' || line[i] == '\t') i++;
+    size_t out_len = i * 3 + strlen(line + i) + 1;
+    char *out = malloc(out_len);
+    if (!out) return strdup("");
+    char *p = out;
+    for (size_t k = 0; k < i; k++) {
+        *p++ = (line[k] == '\t') ? '\xE2' : '\xC2';
+        *p++ = (line[k] == '\t') ? '\x80' : '\xB7';
+        *p++ = (line[k] == '\t') ? '\xBB' : '\xB7';
+    }
+    strcpy(p, line + i);
+    return out;
+}
