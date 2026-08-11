@@ -16,6 +16,9 @@
 
 #include "hermes_core_types.h"
 #include "hermes_json.h"
+#include "port_config_py_helpers.h"  /* config_py_recommended_update_command_for_method */
+#include "port_web_server_paths.h"  /* detect_install_method */
+#include "port_startup_fast.h"  /* sf_project_root_str */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -295,4 +298,51 @@ int doctor_acknowledge_advisory(const char *advisory_id) {
     }
     fprintf(stderr, "[doctor] Advisory %s acknowledged\n", advisory_id);
     return 0;
+}
+
+/* PoP: _sqlite_upgrade_hint @ hermes_cli/doctor.py:_sqlite_upgrade_hint */
+char *doctor_sqlite_upgrade_hint(const char *install_method) {
+    /* Python: build an actionable SQLite upgrade hint string based on
+     * install method. Uses detect_install_method() (already ported as
+     * the C function detect_install_method) + recommended_update_command_for_method. */
+    const char *method = NULL;
+    if (install_method && *install_method) {
+        method = install_method;
+    } else {
+        /* Python: detect_install_method(PROJECT_ROOT) */
+        char *root = sf_project_root_str();
+        method = detect_install_method(root ? root : "");
+        free(root);
+    }
+
+    char cmd_buf[512] = "";
+    if (method && *method) {
+        config_py_recommended_update_command_for_method(method, cmd_buf, sizeof(cmd_buf));
+    }
+
+    char *action = NULL;
+    if (method && strcmp(method, "docker") == 0) {
+        /* f"run `{command}`, then recreate all Hermes containers" */
+        char *fmt = "run `%s`, then recreate all Hermes containers";
+        size_t len = snprintf(NULL, 0, fmt, cmd_buf) + 1;
+        action = malloc(len);
+        if (action)
+            snprintf(action, len, fmt, cmd_buf);
+    } else if (method && (strcmp(method, "nix") == 0 || strcmp(method, "nixos") == 0)) {
+        /* action = recommended_update_command_for_method(method) */
+        action = strdup(cmd_buf);
+    } else {
+        /* action = "run `hermes update`" */
+        action = strdup("run `hermes update`");
+    }
+    /* method is borrowed/const — don't free it */
+
+    /* Final hint: "(action; fixed versions: 3.51.3+ / 3.50.7 / 3.44.6 — see URL)" */
+    const char *fmt = "(%s; fixed versions: 3.51.3+ / 3.50.7 / 3.44.6 — see https://sqlite.org/wal.html#walresetbug)";
+    size_t len = snprintf(NULL, 0, fmt, action ? action : "") + 1;
+    char *result = malloc(len);
+    if (result && action)
+        snprintf(result, len, fmt, action);
+    free(action);
+    return result ? result : strdup("");
 }
