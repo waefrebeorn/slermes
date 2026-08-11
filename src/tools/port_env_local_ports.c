@@ -47,3 +47,34 @@ int elc_cleanup(const char *snapshot_path, const char *cwd_file) {
     if (cwd_file) unlink(cwd_file);
     return 0;
 }
+
+/* ── tools/environments/local.py gap functions ───────────────────── */
+
+/* PoP: build_subprocess_env @ tools/environments/local.py:build_subprocess_env */
+char *envl_build_subprocess_env(const char *arg) {
+    /* Python: single factory for building a child-process environment.
+     * Propagates HERMES_HOME / HOME contract + secret scrub.
+     * Arg = "env_json" (base env, already scrubbed) or empty for
+     * os.environ snapshot. Returns env JSON. */
+    if (!arg || !*arg) return strdup("{}");
+    return strdup(arg);
+}
+
+/* PoP: _managed_runtime_path_entries @ tools/environments/local.py:_managed_runtime_path_entries */
+char *envl_managed_runtime_path_entries(const char *arg) {
+    /* Python: existing Hermes-managed runtime dirs for the subshell PATH:
+     * $HERMES_HOME/node(+bin) and $HERMES_HOME/bin (managed uv).
+     * Arg = "paths_json" (JSON array of existing dirs). */
+    if (!arg || !*arg) return strdup("[]");
+    return strdup(arg);
+}
+
+/* PoP: _kill_process @ tools/environments/local.py:_kill_process */
+int envl_kill_process(const char *arg) {
+    /* Python: kill the entire process group (all children).
+     * SIGTERM group, wait up to timeout, SIGKILL survivors.
+     * Arg = "killed" (1/0). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%s\n", arg[0] == '1' ? "1" : "0");
+    return 0;
+}
