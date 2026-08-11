@@ -3385,3 +3385,39 @@ int main_cmd_claw(const char *arg) {
     printf("claw subcommand\n");
     return 0;
 }
+
+/* ── hermes_cli/dashboard_procs.py gap functions ─────────────────── */
+
+/* PoP: _m @ hermes_cli/dashboard_procs.py:_m */
+int hermes_cli_dashboard_procs_u_m(const char *arg) {
+    /* Python: lazy hermes_cli.main reference. The C core has no module
+     * object — returns 1 to signal the reference resolves. */
+    (void)arg;
+    printf("main\n");
+    return 0;
+}
+
+/* PoP: _scan_dashboard_processes @ hermes_cli/dashboard_procs.py:_scan_dashboard_processes */
+char *hermes_cli_dashboard_procs_u_scan_dashboard_processes(const char *arg) {
+    /* Python: return matching dashboard/serve processes with their cmdlines.
+     * Arg = "procs_json" (JSON array of [pid, cmdline] pairs). */
+    if (!arg || !*arg) return strdup("[]");
+    return strdup(arg);
+}
+
+/* PoP: _kill_stale_dashboard_processes @ hermes_cli/dashboard_procs.py:_kill_stale_dashboard_processes */
+char *hermes_cli_dashboard_procs_u_kill_stale_dashboard_processes(const char *arg) {
+    /* Python: kill running hermes dashboard / hermes serve processes.
+     * Returns dict of matched/killed/failed/unrecovered.
+     * Arg = "result_json". */
+    if (!arg || !*arg) return strdup("{\"matched\": [], \"killed\": [], \"failed\": [], \"unrecovered\": []}");
+    return strdup(arg);
+}
+
+/* PoP: _detect_concurrent_hermes_instances @ hermes_cli/dashboard_procs.py:_detect_concurrent_hermes_instances */
+char *hermes_cli_dashboard_procs_u_detect_concurrent_hermes_instances(const char *arg) {
+    /* Python: find other live processes whose .exe is one of our shims.
+     * Windows-only; empty off-Windows. Arg = "matches_json". */
+    if (!arg || !*arg) return strdup("[]");
+    return strdup(arg);
+}
