@@ -79,6 +79,13 @@ void gw_stream_consumer_add_commentary(gw_stream_consumer_t *c, const char *text
  * (mirrors has_delivered_text). */
 bool gw_stream_consumer_has_delivered_text(gw_stream_consumer_t *c, const char *text);
 
+/* Record the exact cleaned payload of a turn-final delivery (#71643). */
+void gw_stream_consumer_record_turn_final_payload(gw_stream_consumer_t *c, const char *text);
+
+/* Reconcile recorded turn-final payload against final_text.
+ * Returns 1 (True), 0 (False), or -1 (None — comparison impossible). */
+int gw_stream_consumer_delivered_final_matches(gw_stream_consumer_t *c, const char *final_text);
+
 #ifdef __cplusplus
 }
 #endif

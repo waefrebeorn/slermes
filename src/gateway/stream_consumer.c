@@ -6,6 +6,10 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+/* Forward declarations for PoP helpers defined later in this file. */
+char *sc_clean_for_display(const char *text);
+char *sc_ensure_closed_code_fences(const char *text);
+
 /*
  * stream_consumer.c — Port of Python gateway/stream_consumer.py
  *
@@ -126,6 +130,9 @@ struct gw_stream_consumer {
     char **commentary;
     size_t commentary_count;
     size_t commentary_cap;
+    /* turn-final payload reconciliation (#71643) */
+    bool    turn_split_delivery;  /* multi-message split delivery */
+    char   *delivered_final_text; /* cleaned payload of turn-final delivery */
 };
 
 gw_stream_consumer_t *gw_stream_consumer_new(const gw_stream_consumer_cfg_t *cfg)
@@ -153,6 +160,7 @@ void gw_stream_consumer_free(gw_stream_consumer_t *c)
     free(c->last_sent_text);
     for (size_t i = 0; i < c->commentary_count; i++) free(c->commentary[i]);
     free(c->commentary);
+    free(c->delivered_final_text);
     free(c);
 }
 
@@ -534,6 +542,63 @@ void sc_edit_message(const char *message_id, const char *text){ (void)message_id
 void sc_on_segment_break(void){(void)0;}
 /* PoP: on_commentary @ gateway/stream_consumer.py:on_commentary */
 void sc_on_commentary(const char *commentary){(void)commentary;}
+
+/* ─── turn-final payload reconciliation (#71643) ────────────────────────── */
+/* Port of GatewayStreamConsumer._record_turn_final_payload. */
+/* PoP: _record_turn_final_payload @ gateway/stream_consumer.py:_record_turn_final_payload */
+void gw_stream_consumer_record_turn_final_payload(gw_stream_consumer_t *c, const char *text) {
+    if (!c) return;
+    if (c->turn_split_delivery) {
+        free(c->delivered_final_text);
+        c->delivered_final_text = NULL;
+        return;
+    }
+    char *cleaned = sc_clean_for_display(text);
+    char *fenced = sc_ensure_closed_code_fences(cleaned);
+    free(cleaned);
+    /* strip + normalize whitespace like Python .strip() */
+    if (fenced) {
+        char *s = fenced;
+        while (*s && isspace((unsigned char)*s)) s++;
+        char *e = s + strlen(s);
+        while (e > s && isspace((unsigned char)*(e-1))) e--;
+        free(c->delivered_final_text);
+        c->delivered_final_text = strndup(s, (size_t)(e - s));
+    } else {
+        free(c->delivered_final_text);
+        c->delivered_final_text = NULL;
+    }
+}
+
+/* Port of GatewayStreamConsumer.delivered_final_matches. */
+/* PoP: delivered_final_matches @ gateway/stream_consumer.py:delivered_final_matches */
+int gw_stream_consumer_delivered_final_matches(gw_stream_consumer_t *c, const char *final_text) {
+    if (!c) return -1; /* None */
+    if (c->turn_split_delivery) return -1;
+    if (!c->delivered_final_text) return -1;
+    char *cleaned = sc_clean_for_display(final_text);
+    char *fenced = sc_ensure_closed_code_fences(cleaned);
+    free(cleaned);
+    int result = -1;
+    if (fenced) {
+        char *s = fenced;
+        while (*s && isspace((unsigned char)*s)) s++;
+        char *e = s + strlen(s);
+        while (e > s && isspace((unsigned char)*(e-1))) e--;
+        if (e > s) {
+            if (strcmp(s, c->delivered_final_text) == 0) {
+                result = 1; /* True */
+            } else if (gw_stream_consumer_has_delivered_text(c, final_text)) {
+                result = 1;
+            } else {
+                result = 0; /* False */
+            }
+        }
+        free(fenced);
+    }
+    return result;
+}
+
 /* PoP: flush_pending_sync @ gateway/stream_consumer.py:flush_pending_sync */
 void sc_flush_pending_sync(void){(void)0;}
 /* PoP: _notify_new_message @ gateway/stream_consumer.py:_notify_new_message */
@@ -542,9 +607,11 @@ void sc_notify_new_message(const char *text){(void)text;}
 void sc_signal_flush(void){(void)0;}
 /* PoP: on_delta @ gateway/stream_consumer.py:on_delta */
 void sc_on_delta(const char *delta){(void)delta;}
-/* PoP: _clean_for_display */
 /* PoP: _clean_for_display @ gateway/stream_consumer.py:_clean_for_display */
-char *sc_clean_for_display(const char *text){ if(!text) return strdup(""); return strdup(text); }
+char *sc_clean_for_display(const char *text){
+    if (!text) return strdup("");
+    return gw_base__strip_media_directives_for_display(text);
+}
 /* PoP: _send_new_chunk @ gateway/stream_consumer.py:_send_new_chunk */
 void sc_send_new_chunk(const char *chunk){(void)chunk;}
 /* PoP: _continuation_text */

@@ -7,6 +7,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+#include <pthread.h>
+
+/* Module-level state for voice busy-probe + TTS-playing flags.
+ * Port of Python hermes_cli/voice.py module globals. */
+static int (*_voice_busy_probe)(void) = NULL;
+static bool _tts_playing = false;
+static int _continuous_no_speech_count = 0;
+static const int _CONTINUOUS_NO_SPEECH_LIMIT = 3;
+
+/* PoP: cli_hermes_cli_voice_set_voice_busy_probe @ hermes_cli/voice.py:set_voice_busy_probe */
+/* Register a callable that returns true while the agent is mid-turn. */
+void cli_hermes_cli_voice_set_voice_busy_probe(int (*probe)(void)) {
+    _voice_busy_probe = probe;
+}
+
 
 /* PoP: cli_hermes_cli_voice_voice_record_key_from_config @ hermes_cli/voice.py:voice_record_key_from_config */
 
@@ -192,4 +208,48 @@ int cli_hermes_cli_voice__beeps_enabled(const char *config_json, int *out)
 
 /* Port of Python hermes_cli/voice.py:stop_and_transcribe */
 /* Stops recording and transcribes. Returns transcript or NULL. */
+
+/* PoP: cli_hermes_cli_voice__voice_activity_held @ hermes_cli/voice.py:_voice_activity_held */
+/* True while silent cycles must NOT count toward the no-speech limit.
+ * Held when TTS is playing (user is listening) or the busy probe reports
+ * the agent mid-turn (user is waiting). Fail-open to "not held" so a
+ * broken probe can never make the voice chat immortal. */
+int cli_hermes_cli_voice__voice_activity_held(void) {
+    if (_tts_playing)
+        return 1;
+    if (_voice_busy_probe == NULL)
+        return 0;
+    int r = _voice_busy_probe();
+    return r > 0 ? 1 : 0;
+}
+
+/* Set TTS-playing flag (called by the playback thread when speech starts/stops). */
+void cli_hermes_cli_voice_set_tts_playing(int playing) {
+    _tts_playing = playing ? 1 : 0;
+}
+
+/* Reset the continuous no-speech counter (called on each new transcript). */
+void cli_hermes_cli_voice_reset_no_speech_count(void) {
+    _continuous_no_speech_count = 0;
+}
+
+/* Increment and check the no-speech limit. Returns 1 when the limit is hit. */
+int cli_hermes_cli_voice_bump_no_speech_count(void) {
+    _continuous_no_speech_count++;
+    return _continuous_no_speech_count >= _CONTINUOUS_NO_SPEECH_LIMIT ? 1 : 0;
+}
+
+/* PoP: cli_hermes_cli_voice__speak_text_streaming @ hermes_cli/voice.py:_speak_text_streaming */
+/* Speak text via the generic streaming dispatcher; returns 1 on success.
+ * Feeds the full text as a single delta + end-of-text sentinel, then blocks
+ * until the pipeline's done event fires. In the C port this maps onto the
+ * existing voice_speak() pipeline (voice_mode.c), which already delivers
+ * audio via the configured TTS provider. */
+int cli_hermes_cli_voice__speak_text_streaming(const char *text) {
+    if (!text || !text[0])
+        return 0;
+    extern void voice_speak(const char *text);
+    voice_speak(text);
+    return 1;
+}
 

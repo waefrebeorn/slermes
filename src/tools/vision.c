@@ -16,6 +16,9 @@
 #include <unistd.h>
 #include <stdarg.h>
 #include <ctype.h>
+#include <stdint.h>
+
+extern json_t *term_get_active_env(const char *task_id);
 
 static const char *SCHEMA = "{"
     "\"type\":\"object\","
@@ -688,4 +691,26 @@ void registry_init_vision(void) {
         "Analyze an image file. Returns metadata (dimensions, type, size) and "
         "optionally sends to LLM for description. Supports local files and URLs.",
         SCHEMA, vision_handler);
+}
+
+/* ─── image_source.py ports ────────────────────────────────────────── */
+
+/* PoP: _get_active_env @ tools/image_source.py:_get_active_env */
+/* Resolve the active terminal backend env for task_id (delegates to
+ * terminal_env_registry; returns json_t borrowed from that registry). */
+json_t *image_source_get_active_env(const char *task_id) {
+    if (!task_id) return NULL;
+    return term_get_active_env(task_id);
+}
+
+/* PoP: _detect_video_mime @ tools/image_source.py:_detect_video_mime */
+/* Video MIME from extension table, falling back to the ISO BMFF ftyp magic
+ * at offset 4 (covers extensionless data: URLs, query-string URLs). */
+const char *image_source_detect_video_mime(const char *src, const unsigned char *data, size_t len) {
+    if (!src) return NULL;
+    const char *ext_mime = vision_detect_video_mime_type(src);
+    if (ext_mime) return ext_mime;
+    if (len > 12 && data && data[4] == 'f' && data[5] == 't' && data[6] == 'y' && data[7] == 'p')
+        return "video/mp4";
+    return NULL;
 }

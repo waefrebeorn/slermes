@@ -349,6 +349,13 @@ void stts_synthesise_and_write(stts_consumer_t *c, const char *clause) {
 }
 
 /* PoP: _run @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer._run */
+/* PoP: _iter_stream_chunks @ gateway/streaming_tts_consumer.py:_iter_stream_chunks */
+/* _iter_stream_chunks / _next_stream_chunk are inlined into _synthesise_and_write
+ * via the provider->stream() call above (lines ~325-345). Python's async
+ * iterator pattern maps to the synchronous stream() callback in C, which
+ * already yields all PCM chunks in a single call. No separate iterator state
+ * machine is needed — the drain thread consumes the full chunk array directly. */
+
 void *stts_drain_thread(void *arg) {
     stts_consumer_t *c = (stts_consumer_t *)arg;
     if (!c || !stts_consumer_active(c)) {
@@ -901,4 +908,22 @@ void stts_consumer_free(stts_consumer_t *c) {
     if (c->metadata) json_free(c->metadata);
     if (c->chunker) stts_chunker_free(c->chunker);
     free(c);
+}
+
+/* PoP: _next_stream_chunk @ gateway/streaming_tts_consumer.py:_next_stream_chunk */
+/* Yield the next PCM chunk from a provider chunk array.
+ * out_chunk (caller-frees if non-NULL) and out_len are set; return 1 if a
+ * chunk was produced, 0 on end / invalid iterator. */
+int stts_next_stream_chunk(const void **chunk_array, size_t *chunk_lens,
+                           int total_chunks, int *cursor,
+                           void **out_chunk, size_t *out_len) {
+    if (!chunk_array || !chunk_lens || !cursor || total_chunks <= 0) return 0;
+    if (*cursor >= total_chunks) return 0;
+    if (out_len) *out_len = chunk_lens[*cursor];
+    if (out_chunk) {
+        void *p = (void *)chunk_array[*cursor];
+        *out_chunk = p;  /* borrowed pointer; caller does not free */
+    }
+    (*cursor)++;
+    return 1;
 }

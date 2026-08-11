@@ -52,6 +52,37 @@ void set_current_session_id(const char *session_id) {
     pthread_setspecific(g_session_key, strdup(session_id));
 }
 
+/* PoP: scoped_current_session_id @ gateway/session_context.py:scoped_current_session_id */
+/* Bind a task-local session id and restore the prior value on exit.
+ * With session_id==NULL this acts as a save/restore boundary around code
+ * that may call set_current_session_id itself. It intentionally never
+ * mutates the process environment. */
+void scoped_current_session_id(const char *session_id, scoped_session_restore_t *restore) {
+    if (!restore) return;
+    pthread_once(&g_session_once, session_key_init);
+    char *prev = pthread_getspecific(g_session_key);
+    restore->has_prev = (prev != NULL);
+    if (prev) {
+        strncpy(restore->prev_id, prev, sizeof(restore->prev_id) - 1);
+        restore->prev_id[sizeof(restore->prev_id) - 1] = '\0';
+    }
+    if (session_id) {
+        char *old = pthread_getspecific(g_session_key);
+        free(old);
+        pthread_setspecific(g_session_key, strdup(session_id));
+    }
+}
+
+/* Restore the pre-scope session id saved by scoped_current_session_id(). */
+void scoped_current_session_id_restore(const scoped_session_restore_t *restore) {
+    if (!restore) return;
+    pthread_once(&g_session_once, session_key_init);
+    char *old = pthread_getspecific(g_session_key);
+    free(old);
+    pthread_setspecific(g_session_key,
+                        restore->has_prev ? strdup(restore->prev_id) : NULL);
+}
+
 
 /* Set all session context variables.
  * Port of Python gateway/session_context.py set_session_vars().

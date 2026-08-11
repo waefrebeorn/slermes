@@ -183,3 +183,24 @@ char *bb_handle_webhook(const char *query_json) {
     printf("bluebubbles webhook handled (password gate)\n");
     return strdup("{\"status\": 200}");
 }
+
+/* ── Scoped secret read ─────────────────────────────────────────────── */
+
+/* Delegate to the shared profile-secret-scope reader (agent/secret_scope.py).
+ * It already implements the UnscopedSecretError → os.environ fallback for the
+ * default profile, so _get_scoped_secret is a thin wrapper that mirrors Python:
+ *   try:  val = _scoped_get_secret(name, default)
+ *   except _UnscopedSecretError:
+ *       val = os.getenv(name)
+ *   return val if val is not None else default
+ * In C, secret_scope_get_secret returns os.environ on the unscoped path
+ * directly, so we just strdup its result (which may be the live env value or
+ * the provided default). */
+extern const char *secret_scope_get_secret(const char *name, const char *default_val);
+
+/* PoP: _get_scoped_secret @ gateway/platforms/bluebubbles.py:_get_scoped_secret */
+char *bb_get_scoped_secret(const char *name, const char *default_value) {
+    const char *val = secret_scope_get_secret(name, default_value);
+    return val ? strdup(val) : (default_value ? strdup(default_value) : NULL);
+}
+

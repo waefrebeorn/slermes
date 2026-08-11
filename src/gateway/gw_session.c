@@ -866,6 +866,32 @@ void _prune_stale_sessions_locked(void) { prune_old_entries(86400); }
 /* PoP: _snapshot_routing_locked @ gateway/session.py:_snapshot_routing_locked */
 json_t *_snapshot_routing_locked(void) { return json_object(); }
 
+/* Shared routing-generation counter. Both full snapshots and single-entry
+ * fast saves MUST allocate from this one counter (Python comment on
+ * _next_routing_generation_locked). */
+static int64_t g_routing_generation = 0;
+
+/* PoP: _next_routing_generation_locked @ gateway/session.py:_next_routing_generation_locked */
+int64_t _next_routing_generation_locked(void) {
+    g_routing_generation += 1;
+    return g_routing_generation;
+}
+
+/* PoP: _save_entry @ gateway/session.py:_save_entry */
+void _save_entry(const char *session_key) {
+    /* Persist ONE routing entry via UPSERT — the per-turn fast path.
+     * The C session store keeps the entry in the hive; the durable
+     * serialization happens in db_save()/session_free(). This mirrors
+     * the Python fallback path (_save_entries) when no saver callback
+     * is installed. */
+    int idx = session_find_by_key(session_key);
+    if (idx < 0) return;
+    gw_session_entry_t *se = session_at(idx);
+    if (!se || !se->in_use) return;
+    _next_routing_generation_locked();
+    se->last_active = (int64_t)time(NULL);
+}
+
 /* PoP: _persist_routing_data @ gateway/session.py:_persist_routing_data */
 void _persist_routing_data(json_t *data) { (void)data; }
 

@@ -315,3 +315,187 @@ char *moa_create(const char *kwargs_json) {
     json_free(kwargs);
     return strdup("{}");
 }
+
+/* ── MoA stream-chunk adapter + reference-guidance peel ─────────────── */
+
+/* PoP: _completed_response_as_stream_chunk @ agent/moa_loop.py:_completed_response_as_stream_chunk */
+/* Convert a completed Chat Completions response JSON into one delta stream
+ * chunk (choices[0].delta shape). Input is a serialized response object:
+ * {"id":…,"model":…,"choices":[{"index":0,"message":{"content":…,
+ * "tool_calls":[…],"reasoning_content":…}, "finish_reason":"stop"}], "usage":…} */
+char *moa_completed_response_as_stream_chunk(const char *response_json) {
+    if (!response_json) return strdup("{}");
+    json_t *resp = json_parse(response_json, NULL);
+    if (!resp) return strdup("{}");
+
+    json_t *out = json_object();
+    const char *id = json_get_str(resp, "id", NULL);
+    if (id) json_set(out, "id", json_string(id));
+    const char *model = json_get_str(resp, "model", NULL);
+    if (model) json_set(out, "model", json_string(model));
+    json_t *usage = json_object_get(resp, "usage");
+    if (usage) json_set(out, "usage", json_copy(usage));
+
+    json_t *choices = json_object_get(resp, "choices");
+    json_t *out_choices = json_array();
+    if (choices && json_is_array(choices) && json_array_size(choices) > 0) {
+        json_t *first = json_array_get(choices, 0);
+        json_t *msg = json_object_get(first, "message");
+        json_t *delta = json_object();
+        if (msg) {
+            const char *content = json_get_str(msg, "content", NULL);
+            if (content) json_set(delta, "content", json_string(content));
+            const char *rc = json_get_str(msg, "reasoning_content", NULL);
+            if (rc) json_set(delta, "reasoning_content", json_string(rc));
+            const char *reasoning = json_get_str(msg, "reasoning", NULL);
+            if (reasoning) json_set(delta, "reasoning", json_string(reasoning));
+            json_t *tc = json_object_get(msg, "tool_calls");
+            if (tc && json_is_array(tc) && json_array_size(tc) > 0) {
+                json_t *deltas = json_array();
+                for (size_t i = 0; i < json_array_size(tc); i++) {
+                    json_t *src = json_array_get(tc, i);
+                    json_t *fn = json_object_get(src, "function");
+                    json_t *d = json_object();
+                    json_set(d, "index", json_int((int64_t)json_get_num(src, "index", (double)i)));
+                    const char *tcid = json_get_str(src, "id", NULL);
+                    if (tcid) json_set(d, "id", json_string(tcid));
+                    const char *tctype = json_get_str(src, "type", NULL);
+                    json_set(d, "type", json_string(tctype ? tctype : "function"));
+                    json_t *fn_out = json_object();
+                    if (fn) {
+                        const char *fn_name = json_get_str(fn, "name", NULL);
+                        if (fn_name) json_set(fn_out, "name", json_string(fn_name));
+                        const char *fn_args = json_get_str(fn, "arguments", NULL);
+                        if (fn_args) json_set(fn_out, "arguments", json_string(fn_args));
+                    }
+                    json_set(d, "function", fn_out);
+                    json_array_append(deltas, d);
+                }
+                json_set(delta, "tool_calls", deltas);
+            }
+        }
+        json_t *choice = json_object();
+        json_set(choice, "index", json_int((int64_t)json_get_num(first, "index", 0.0)));
+        json_set(choice, "delta", delta);
+        const char *fr = json_get_str(first, "finish_reason", NULL);
+        json_set(choice, "finish_reason", json_string(fr ? fr : "stop"));
+        json_array_append(out_choices, choice);
+    }
+    json_set(out, "choices", out_choices);
+
+    char *ser = json_serialize(out);
+    json_free(out);
+    json_free(resp);
+    return ser ? ser : strdup("{}");
+}
+
+/* PoP: peel_reference_guidance @ agent/moa_loop.py:peel_reference_guidance */
+/* Remove reference guidance previously attached to the last user message.
+ * Takes the serialized messages array + guidance string; returns a new
+ * messages array JSON (input not mutated). */
+char *moa_peel_reference_guidance(const char *messages_json, const char *guidance) {
+    if (!messages_json) return strdup("[]");
+    json_t *msgs = json_parse(messages_json, NULL);
+    if (!msgs || !json_is_array(msgs)) {
+        if (msgs) json_free(msgs);
+        return strdup("[]");
+    }
+    if (!guidance || !guidance[0] || json_array_size(msgs) == 0) {
+        char *ser = json_serialize(msgs);
+        json_free(msgs);
+        return ser ? ser : strdup("[]");
+    }
+    json_t *out = json_array();
+    size_t n = json_array_size(msgs);
+    for (size_t i = 0; i + 1 < n; i++)
+        json_array_append(out, json_copy(json_array_get(msgs, i)));
+
+    json_t *last = json_array_get(msgs, n - 1);
+    const char *role = json_get_str(last, "role", NULL);
+    if (!role || strcmp(role, "user") != 0) {
+        json_array_append(out, json_copy(last));
+        char *ser = json_serialize(out);
+        json_free(out);
+        json_free(msgs);
+        return ser ? ser : strdup("[]");
+    }
+    json_t *content = json_object_get(last, "content");
+    bool changed = false;
+    char *suffix = NULL;
+    if (asprintf(&suffix, "\n\n%s", guidance) < 0) suffix = NULL;
+
+    if (content && json_is_string(content)) {
+        const char *ctext = json_get_str(last, "content", NULL);
+        if (ctext && strcmp(ctext, guidance) == 0) {
+            /* Shape (c): guidance was its own user message — drop it. */
+            changed = true;
+        } else if (ctext && suffix && strlen(ctext) >= strlen(suffix) &&
+                   strcmp(ctext + strlen(ctext) - strlen(suffix), suffix) == 0) {
+            /* Shape (a): merged into trailing string user turn. */
+            json_t *peeled = json_object();
+            const char *lrole = json_get_str(last, "role", "user");
+            json_set(peeled, "role", json_string(lrole));
+            char *cut = strndup(ctext, strlen(ctext) - strlen(suffix));
+            json_set(peeled, "content", json_string(cut));
+            free(cut);
+            json_array_append(out, peeled);
+            changed = true;
+        }
+    } else if (content && json_is_array(content)) {
+        size_t cn = json_array_size(content);
+        if (cn > 0) {
+            json_t *last_part = json_array_get(content, cn - 1);
+            const char *ptype = json_get_str(last_part, "type", "text");
+            if (strcmp(ptype, "text") == 0) {
+                const char *ptext = json_get_str(last_part, "text", NULL);
+                if (ptext) {
+                    bool part_is_guidance = (strcmp(ptext, guidance) == 0);
+                    bool part_is_suffix = suffix && strcmp(ptext, suffix) == 0;
+                    bool part_ends_suffix = suffix && strlen(ptext) >= strlen(suffix) &&
+                        strcmp(ptext + strlen(ptext) - strlen(suffix), suffix) == 0;
+                    if (part_is_guidance || part_is_suffix) {
+                        /* Shape (b): guidance rode as its own trailing part. */
+                        json_t *peeled = json_object();
+                        const char *lrole = json_get_str(last, "role", "user");
+                        json_set(peeled, "role", json_string(lrole));
+                        json_t *new_content = json_array();
+                        for (size_t k = 0; k + 1 < cn; k++)
+                            json_array_append(new_content, json_copy(json_array_get(content, k)));
+                        if (json_array_size(new_content) > 0) {
+                            json_set(peeled, "content", new_content);
+                            json_array_append(out, peeled);
+                        }
+                        /* empty content → drop whole message (mirror shape c) */
+                        changed = true;
+                    } else if (part_ends_suffix) {
+                        json_t *new_part = json_object();
+                        const char *nptype = json_get_str(last_part, "type", "text");
+                        json_set(new_part, "type", json_string(nptype));
+                        char *cut = strndup(ptext, strlen(ptext) - strlen(suffix));
+                        json_set(new_part, "text", json_string(cut));
+                        free(cut);
+                        json_t *peeled = json_object();
+                        const char *lrole = json_get_str(last, "role", "user");
+                        json_set(peeled, "role", json_string(lrole));
+                        json_t *new_content = json_array();
+                        for (size_t k = 0; k + 1 < cn; k++)
+                            json_array_append(new_content, json_copy(json_array_get(content, k)));
+                        json_array_append(new_content, new_part);
+                        json_set(peeled, "content", new_content);
+                        json_array_append(out, peeled);
+                        changed = true;
+                    }
+                }
+            }
+        }
+    }
+    free(suffix);
+    if (!changed)
+        json_array_append(out, json_copy(last));
+
+    char *ser = json_serialize(out);
+    json_free(out);
+    json_free(msgs);
+    return ser ? ser : strdup("[]");
+}
+

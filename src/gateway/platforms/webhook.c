@@ -1389,4 +1389,65 @@ static char *wh_resolve(json_t *payload, const char *key) {
     return NULL;
 }
 
-/* PoP: wh_render_prompt @ gateway/platforms/webhook.py:_render_prompt */
+/* ─── Autonomous-lane silence + profile routing checks ───────────────── */
+
+/* Shared autonomous-lane silence matcher (also used by cron).
+ * Treats a "[SILENT]" marker on its own first or last line as silence while
+ * still delivering prose that merely mentions the marker mid-sentence. */
+static bool wh_is_autonomous_silence_response(const char *content) {
+    if (!content || !*content) return true;  /* empty = silence */
+    char *buf = strdup(content);
+    char *p = buf;
+    /* Find first non-empty line */
+    while (*p == '\n') p++;
+    char *first_nl = strchr(p, '\n');
+    bool first_line_silent = false;
+    if (first_nl) {
+        char *end = first_nl;
+        while (end > p && (end[-1] == '\r' || end[-1] == ' ')) end--;
+        *end = '\0';
+    }
+    if (strcmp(p, "[SILENT]") == 0) first_line_silent = true;
+
+    /* Last non-empty line */
+    char *last = buf + strlen(buf);
+    while (last > buf && (*last == '\0' || last[-1] == '\n' || last[-1] == '\r' ||
+                           last[-1] == ' ' || last[-1] == '\t')) last--;
+    char *last_nl = last;
+    while (last_nl > buf && *last_nl != '\n') last_nl--;
+    if (*last_nl == '\n') last_nl++;
+    bool last_line_silent = (strcmp(last_nl, "[SILENT]") == 0);
+    free(buf);
+    return first_line_silent || last_line_silent;
+}
+
+/* PoP: _is_webhook_silence_response @ gateway/platforms/webhook.py:_is_webhook_silence_response */
+bool wh_is_webhook_silence_response(const char *content) {
+    return wh_is_autonomous_silence_response(content);
+}
+
+/* PoP: _route_allows_profile @ gateway/platforms/webhook.py:_route_allows_profile */
+/* Return whether a route is bound to the URL-selected profile.
+ * route_config_json = serialized {"profile": "..."} (or {} for default).
+ * request_profile = the profile string (or NULL for default).
+ * Omitting profile keeps a route on "default". An explicit null/blank/
+ * non-string value fails closed (returns false). */
+bool wh_route_allows_profile(const char *route_config_json, const char *request_profile) {
+    const char *configured = NULL;
+    bool has_profile = false;
+    if (route_config_json && *route_config_json) {
+        json_t *cfg = json_parse(route_config_json, NULL);
+        if (cfg && json_is_object(cfg)) {
+            json_t *prof = json_object_get(cfg, "profile");
+            if (prof) {
+                has_profile = true;
+                if (json_is_string(prof)) configured = prof->str_val;
+            }
+        }
+        if (cfg) json_free(cfg);
+    }
+    if (!has_profile) configured = "default";
+    if (!configured || !*configured) return false;
+    const char *effective = (request_profile && *request_profile) ? request_profile : "default";
+    return strcmp(configured, effective) == 0;
+}

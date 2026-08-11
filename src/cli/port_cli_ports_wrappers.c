@@ -22,6 +22,7 @@
 #include "sqlite3.h"
 #include "strings.h"  /* strncasecmp */
 #include "port_provider_registry.h"  /* provider_base_url_host_matches */
+#include "lifecycle_ledger.h"         /* llg_read_prior_exit_label */
 
 /* PoP: _redirect_uri @ hermes_cli/dashboard_auth/routes.py:_redirect_uri */
 int hermes_cli_dashboard_auth_rout_u_redirect_uri(const char *arg) {
@@ -7272,6 +7273,22 @@ int hermes_cli_container_boot_u_maybe_migrate_legacy_gateway_run_te(const char *
     int state = t4 && t4[1] == '1';
     if (has_state || no_supervise || !legacy || !state) { printf("\n"); return 0; }
     printf("%s\n", dry_run ? "running (dry-run — would write)" : "running (state seeded)");
+    return 0;
+}
+
+/* PoP: _read_prior_exit_label @ hermes_cli/container_boot.py:_read_prior_exit_label */
+/* Thin wrapper over lifecycle_ledger.read_prior_exit_label.
+ * Arg = profile_dir path (tab-delimited if combined). Prints the label. */
+int hermes_cli_container_boot_u_read_prior_exit_label(const char *arg) {
+    if (!arg || !*arg) { printf("unknown\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    size_t len = tab ? (size_t)(tab - arg) : strlen(arg);
+    char *profile_dir = strndup(arg, len);
+    char *label = llg_read_prior_exit_label(profile_dir);
+    free(profile_dir);
+    if (!label) label = strdup("unknown");
+    printf("%s\n", label);
+    free(label);
     return 0;
 }
 

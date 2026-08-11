@@ -169,6 +169,17 @@ char *canonical_whatsapp_identifier(const char *identifier);
 
 /* Set the active session ID in both env and thread-local storage. */
 void set_current_session_id(const char *session_id);
+void reset_session_vars(void);
+
+/* Opaque save/restore boundary for scoped_current_session_id(). */
+typedef struct {
+    int has_prev;
+    char prev_id[128];
+} scoped_session_restore_t;
+
+/* Port of gateway/session_context.py:scoped_current_session_id */
+void scoped_current_session_id(const char *session_id, scoped_session_restore_t *restore);
+void scoped_current_session_id_restore(const scoped_session_restore_t *restore);
 
 /* Set all session context environment variables. */
 void set_session_vars(const char *platform, const char *chat_id,

@@ -7,6 +7,9 @@
 
 #include <stdbool.h>
 #include "hermes_gateway_core.h"
+#include "hermes_regex.h"
+#include "hermes_json.h"
+#include "hermes_logger.h"
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
@@ -230,4 +233,162 @@ emit:
     free(lines);
     free(buf);
     return out;
+}
+
+/* ─── Mention pattern compilation ────────────────────────────────────── */
+
+/* Compiled mention pattern list (port of Python list[re.Pattern]). */
+typedef struct {
+    void **patterns;   /* hregex_t* elements */
+    size_t count;
+    size_t cap;
+} mention_patterns_t;
+
+/* PoP: compile_mention_patterns @ gateway/platforms/helpers.py:compile_mention_patterns */
+mention_patterns_t *gateway_platforms_helpers_compile_mention_patterns(
+    const char *raw_json,       /* JSON list of pattern strings, or NULL */
+    const char *log_prefix,     /* e.g. "[bluebubbles]" */
+    const char *platform_label, /* config-style label, or NULL for wakeword */
+    const char *defaults_json
+) {
+    mention_patterns_t *mp = calloc(1, sizeof(*mp));
+    if (!mp) return NULL;
+
+    /* Gather the raw list of pattern strings. */
+    char **collected = NULL;
+    size_t collected_n = 0, collected_cap = 0;
+
+    if (platform_label != NULL) {
+        /* Config-style (dingtalk/telegram). */
+        if (!raw_json) goto done;
+        json_t *arr = json_parse(raw_json, NULL);
+        if (arr && json_is_array(arr)) {
+            for (size_t i = 0; i < json_array_size(arr); i++) {
+                const char *s = json_get_str(json_array_get(arr, i), "", "");
+                if (s && *s) {
+                    if (collected_n + 1 > collected_cap) {
+                        collected_cap = collected_cap ? collected_cap * 2 : 8;
+                        collected = realloc(collected, collected_cap * sizeof(char *));
+                    }
+                    collected[collected_n++] = strdup(s);
+                }
+            }
+        }
+        json_free(arr);
+    } else {
+        /* Wakeword-style (photon/bluebubbles). */
+        if (!raw_json) {
+            if (defaults_json) {
+                json_t *arr = json_parse(defaults_json, NULL);
+                if (arr && json_is_array(arr)) {
+                    for (size_t i = 0; i < json_array_size(arr); i++) {
+                        const char *s = json_get_str(json_array_get(arr, i), "", "");
+                        if (s) {
+                            if (collected_n + 1 > collected_cap) {
+                                collected_cap = collected_cap ? collected_cap * 2 : 8;
+                                collected = realloc(collected, collected_cap * sizeof(char *));
+                            }
+                            collected[collected_n++] = strdup(s);
+                        }
+                    }
+                }
+                json_free(arr);
+            }
+        } else if (*raw_json) {
+            /* Try JSON list parse first; fall back to comma/newline split. */
+            json_t *arr = json_parse(raw_json, NULL);
+            if (arr && json_is_array(arr)) {
+                for (size_t i = 0; i < json_array_size(arr); i++) {
+                    const char *s = json_get_str(json_array_get(arr, i), "", "");
+                    if (s) {
+                        if (collected_n + 1 > collected_cap) {
+                            collected_cap = collected_cap ? collected_cap * 2 : 8;
+                            collected = realloc(collected, collected_cap * sizeof(char *));
+                        }
+                        collected[collected_n++] = strdup(s);
+                    }
+                }
+            } else {
+                /* Comma/newline split */
+                char *copy = strdup(raw_json);
+                char *saveptr = NULL;
+                char *line = strtok_r(copy, "\n", &saveptr);
+                while (line) {
+                    char *part_save = NULL;
+                    char *part = strtok_r(line, ",", &part_save);
+                    while (part) {
+                        char *t = part;
+                        while (*t == ' ' || *t == '\t') t++;
+                        char *e = t + strlen(t);
+                        while (e > t && (e[-1] == ' ' || e[-1] == '\t')) e--;
+                        if (e > t) {
+                            if (collected_n + 1 > collected_cap) {
+                                collected_cap = collected_cap ? collected_cap * 2 : 8;
+                                collected = realloc(collected, collected_cap * sizeof(char *));
+                            }
+                            collected[collected_n++] = strndup(t, (size_t)(e - t));
+                        }
+                        part = strtok_r(NULL, ",", &part_save);
+                    }
+                    line = strtok_r(NULL, "\n", &saveptr);
+                }
+                free(copy);
+            }
+            json_free(arr);
+        } else {
+            /* Scalar wrapped in a list */
+            if (collected_n + 1 > collected_cap) {
+                collected_cap = 8;
+                collected = realloc(collected, collected_cap * sizeof(char *));
+            }
+            collected[collected_n++] = strdup(raw_json);
+        }
+    }
+
+done:
+    /* Compile each pattern with case-insensitive flag (re.IGNORECASE). */
+    for (size_t i = 0; i < collected_n; i++) {
+        char *text = collected[i];
+        char *t = text;
+        while (*t == ' ' || *t == '\t') t++;
+        if (!*t) { free(collected[i]); continue; }
+        hregex_t *re = regex_compile(text, 1);  /* 1 = IGNORECASE */
+        if (re) {
+            if (mp->count + 1 > mp->cap) {
+                mp->cap = mp->cap ? mp->cap * 2 : 8;
+                mp->patterns = realloc(mp->patterns, mp->cap * sizeof(void *));
+            }
+            mp->patterns[mp->count++] = re;
+        }
+    }
+    for (size_t i = 0; i < collected_n; i++) free(collected[i]);
+    free(collected);
+
+    if (mp->count > 0 && log_prefix) {
+        /* Log the count — mirrors Python info log. */
+        hermes_log(LOG_INFO, (log_prefix && *log_prefix) ? log_prefix + 1 : "helpers",
+                   "Loaded %zu mention pattern(s)", mp->count);
+    }
+    return mp;
+}
+
+/* Free a mention_patterns_t. */
+void gateway_platforms_helpers_free_mention_patterns(mention_patterns_t *mp) {
+    if (!mp) return;
+    for (size_t i = 0; i < mp->count; i++) regex_free((hregex_t *)mp->patterns[i]);
+    free(mp->patterns);
+    free(mp);
+}
+
+/* Match text against compiled patterns. Returns 1 if any matches. */
+int gateway_platforms_helpers_match_mentions(const mention_patterns_t *mp, const char *text) {
+    if (!mp || !text) return 0;
+    for (size_t i = 0; i < mp->count; i++) {
+        regex_match_t *m = regex_match((hregex_t *)mp->patterns[i], text);
+        if (m) {
+            regex_match_free(m);
+            return 1;
+        }
+    }
+    return 0;
 }
