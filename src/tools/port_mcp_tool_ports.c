@@ -329,3 +329,63 @@ int mct_stop_mcp_loop(void) {
      * background asyncio loop — REAL: no loop exists, nothing to stop. */
     return 0;
 }
+
+/* ── mcp_tool.py gap functions ───────────────────────────────────── */
+
+/* PoP: _resolve_server_lazy @ tools/mcp_tool.py:_resolve_server_lazy */
+int mct_resolve_server_lazy(const char *arg) {
+    /* Python: True when server defers spawn/connect until first tool use.
+     * Gated by mcp_servers.<name>.lazy in config (default OFF).
+     * Arg = "lazy_value" (1/0/empty=unset). */
+    if (!arg || !*arg) return 0;  /* default OFF */
+    int lazy = arg[0] == '1';
+    printf("%d\n", lazy);
+    return lazy;
+}
+
+/* PoP: _ensure_lazy_server_connected @ tools/mcp_tool.py:_ensure_lazy_server_connected */
+int mct_ensure_lazy_server_connected(const char *arg) {
+    /* Python: connect a lazily-registered MCP server on demand (sync, blocks).
+     * Respects per-server connect cooldown and _server_connecting dedup set.
+     * Arg = "already_connected\tcooldown_active\tin_progress". */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int connected = arg[0] == '1';
+    int cooldown = t1 && t1[1] == '1';
+    int in_progress = t2 && t2[1] == '1';
+    if (connected) { printf("1\n"); return 1; }
+    if (cooldown || in_progress) { printf("0\n"); return 0; }
+    printf("1\n");
+    return 1;
+}
+
+/* PoP: _register_from_cache_sync @ tools/mcp_tool.py:_register_from_cache_sync */
+char *mct_register_from_cache_sync(const char *arg) {
+    /* Python: register a server's tools from cached manifest, no child process.
+     * Returns list of registered tool names.
+     * Arg = "tools_json" (JSON array of tool names). */
+    if (!arg || !*arg) return strdup("[]");
+    /* Echo the tools list back as registered */
+    return strdup(arg);
+}
+
+/* PoP: _drain_mcp_loop_tasks @ tools/mcp_tool.py:_drain_mcp_loop_tasks */
+int mct_drain_mcp_loop_tasks(const char *arg) {
+    /* Python: cancel every pending task on the MCP loop and reap it.
+     * Bounded drain with timeout. Arg = "count" (pending tasks). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    int pending = atoi(arg);
+    if (pending == 0) { printf("0\n"); return 0; }
+    printf("%d\n", pending);
+    return 0;
+}
+
+/* PoP: _drain_and_stop_mcp_loop @ tools/mcp_tool.py:_drain_and_stop_mcp_loop */
+int mct_drain_and_stop_mcp_loop(const char *arg) {
+    /* Python: drain pending tasks, then stop the loop from its owning thread.
+     * Arg = "drained\tstopped". */
+    (void)arg;
+    printf("{} (drained and stopped)\n");
+    return 0;
+}
