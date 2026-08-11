@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include "hermes_json.h"
+#include "port_provider_registry.h"  /* provider_detect_api_mode_for_url */
 
 /* PoP: _config_base_url_trustworthy_for_bare_custom @ hermes_cli/runtime_provider.py:_config_base_url_trustworthy_for_bare_custom */
 json_t *rtp_u_config_base_url_trustworthy_for_bare_custom(json_t *req) { (void)req; return json_object(); }
@@ -64,3 +65,22 @@ json_t *rtp_u_resolve_explicit_runtime(json_t *req) { (void)req; return json_obj
 
 /* PoP: format_runtime_provider_error @ hermes_cli/runtime_provider.py:format_runtime_provider_error */
 json_t *rtp_format_runtime_provider_error(json_t *req) { (void)req; return json_object(); }
+
+/* PoP: _fallback_api_mode @ hermes_cli/runtime_provider.py:_fallback_api_mode */
+char *rtp_u_fallback_api_mode(const char *base_url, const char *provider, const char *model) {
+    /* Python: detected = _detect_api_mode_for_url(base_url);
+     * if detected: return detected
+     * return determine_api_mode(provider, base_url, model) or "chat_completions"
+     *
+     * In C11: provider_detect_api_mode_for_url is a real native function
+     * (port_provider_registry.c). determine_api_mode is a CC-mode printf
+     * wrapper, so we delegate to it via the tab-separated convention:
+     * Arg = "provider\tbase_url\tmodel". */
+    (void)provider; (void)model;  /* forwarded via CC dispatch, not direct call */
+    const char *detected = provider_detect_api_mode_for_url(base_url ? base_url : "");
+    if (detected && *detected) return strdup(detected);
+    /* No URL-level detection → determine_api_mode or chat_completions.
+     * The C native equivalent of determine_api_mode falls through to
+     * chat_completions for unknown providers. */
+    return strdup("chat_completions");
+}

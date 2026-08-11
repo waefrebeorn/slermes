@@ -56,6 +56,13 @@ void subdir_hints_cleanup(void);
  */
 char *subdir_hints_check(const char *tool_name, const char *args_json);
 
+/* Seed working-dir digest (mirrors Python _seed_working_dir_digest). */
+void subdir_hints_seed_working_dir_digest(void);
+
+/* Check if a path is inside an excluded directory (mirrors Python
+ * SubdirectoryHintTracker._is_excluded). */
+bool subdir_hints_is_excluded(const char *path);
+
 #ifdef __cplusplus
 }
 #endif

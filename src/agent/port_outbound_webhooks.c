@@ -540,3 +540,12 @@ void ow_targets_free(ow_webhook_target_t **targets) {
         ow_target_free(*tp);
     free(targets);
 }
+
+/* PoP: redirect_request @ agent/outbound_webhooks.py:redirect_request */
+void *ow_redirect_request(const char *req, const char *newurl, int code) {
+    /* Python: _NoRedirectHandler.redirect_request returns None — any 3xx is
+     * treated as a delivery failure (signing/headers would be wrong on
+     * follow). C HTTP client returns NULL (no redirect) to signal failure. */
+    (void)req; (void)newurl; (void)code;
+    return NULL;
+}

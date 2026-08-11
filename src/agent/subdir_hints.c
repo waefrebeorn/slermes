@@ -21,6 +21,7 @@
 #include <limits.h>
 #include <pthread.h>
 #include <pwd.h>
+#include "crypto.h"      /* crypto_sha256 */
 
 /* ================================================================
  *  State
@@ -29,6 +30,10 @@
 /* Tracked directories — hive-backed (no landlocked static) */
 #include "hive.h"
 static hive_t *g_loaded_dirs = NULL;
+
+/* Tracked content digests — hive-backed (mirrors Python _loaded_digests).
+ * Each entry is a malloc'd 65-byte hex SHA-256 string (64 hex chars + NUL). */
+static hive_t *g_loaded_digests = NULL;
 
 /* Working directory */
 static char g_working_dir[PATH_MAX] = {0};
@@ -487,4 +492,124 @@ char *load_hints_for_directory(const char *directory) {
     }
 
     return NULL;
+}
+
+/* ─── PoP-annotated gap closures ──────────────────────────────── */
+
+/* PoP: _seed_working_dir_digest @ agent/subdirectory_hints.py:_seed_working_dir_digest */
+static void sha256_to_hex(const unsigned char hash[CRYPTO_SHA256_LEN], char out[65]) {
+    static const char hex[] = "0123456789abcdef";
+    for (int i = 0; i < (int)CRYPTO_SHA256_LEN; i++) {
+        out[i*2]   = hex[hash[i] >> 4];
+        out[i*2+1] = hex[hash[i] & 0x0f];
+    }
+    out[64] = '\0';
+}
+
+void subdir_hints_seed_working_dir_digest(void) {
+    /* Python: read first matching hint file from working_dir, compute
+     * SHA-256 of stripped content, add to _loaded_digests. */
+    pthread_mutex_lock(&g_lock);
+
+    if (!g_working_dir[0]) {
+        if (!getcwd(g_working_dir, sizeof(g_working_dir))) {
+            pthread_mutex_unlock(&g_lock);
+            return;
+        }
+    }
+
+    for (int h = 0; HINT_FILENAMES[h]; h++) {
+        char path[PATH_MAX];
+        snprintf(path, sizeof(path), "%s/%s", g_working_dir, HINT_FILENAMES[h]);
+        FILE *f = fopen(path, "r");
+        if (!f) continue;
+
+        /* Read file contents */
+        fseek(f, 0, SEEK_END);
+        long sz = ftell(f);
+        if (sz < 0 || sz > 1024 * 1024) { fclose(f); continue; }  /* skip huge files */
+        fseek(f, 0, SEEK_SET);
+        char *buf = malloc((size_t)sz + 1);
+        if (!buf) { fclose(f); continue; }
+        size_t rd = fread(buf, 1, (size_t)sz, f);
+        fclose(f);
+        buf[rd] = '\0';
+
+        /* Strip whitespace (Python: .strip()) */
+        char *start = buf;
+        while (*start == ' ' || *start == '\t' || *start == '\n' || *start == '\r') start++;
+        char *end = start + strlen(start);
+        while (end > start && (end[-1] == ' ' || end[-1] == '\t' || end[-1] == '\n' || end[-1] == '\r'))
+            *--end = '\0';
+
+        if (start < end) {
+            unsigned char hash[CRYPTO_SHA256_LEN];
+            crypto_sha256((const unsigned char *)start, (size_t)(end - start), hash);
+            char hex[65];
+            sha256_to_hex(hash, hex);
+            /* Add to g_loaded_digests if not already present */
+            if (!g_loaded_digests) g_loaded_digests = hive_new(16);
+            hive_iter_t it;
+            hive_iter_begin(g_loaded_digests, &it);
+            hive_handle_t hnd;
+            char *existing;
+            bool found = false;
+            while (hive_iter_next(g_loaded_digests, &it, &hnd, (void **)&existing)) {
+                if (strcmp(existing, hex) == 0) { found = true; break; }
+            }
+            if (!found) {
+                hive_insert(g_loaded_digests, strdup(hex), &found);
+            }
+        }
+        free(buf);
+        break;  /* first match wins */
+    }
+
+    pthread_mutex_unlock(&g_lock);
+}
+
+/* PoP: _is_excluded @ agent/subdirectory_hints.py:_is_excluded */
+static const char *EXCLUDED_DIR_NAMES[] = {
+    "node_modules", "venv", ".venv", "__pycache__",
+    ".git", ".hg", ".svn",
+    ".Trash", ".cache", ".tox", ".mypy_cache", ".pytest_cache",
+    "site-packages", "dist-packages",
+    "backups", "backup", ".backups",
+    "vendor", "third_party",
+    NULL
+};
+
+bool subdir_hints_is_excluded(const char *path) {
+    /* Python: rel_parts = path.relative_to(working_dir).parts;
+     * return any(part in _EXCLUDED_DIR_NAMES for part in rel_parts) */
+    if (!path || !*path) return true;
+
+    char resolved[PATH_MAX];
+    if (!realpath(path, resolved)) return true;
+
+    char work[PATH_MAX];
+    if (!g_working_dir[0]) {
+        if (!getcwd(g_working_dir, sizeof(g_working_dir))) return true;
+    }
+    strncpy(work, g_working_dir, sizeof(work) - 1);
+    work[sizeof(work) - 1] = '\0';
+
+    /* Extract relative path components from resolved vs working_dir */
+    size_t wlen = strlen(work);
+    if (strncmp(resolved, work, wlen) != 0) return true;
+    const char *rel = resolved + wlen;
+    if (*rel == '/') rel++;
+
+    /* Walk through path components */
+    char tmppath[PATH_MAX];
+    strncpy(tmppath, rel, sizeof(tmppath) - 1);
+    tmppath[sizeof(tmppath) - 1] = '\0';
+    char *saveptr = NULL;
+    for (char *tok = strtok_r(tmppath, "/", &saveptr); tok; tok = strtok_r(NULL, "/", &saveptr)) {
+        for (int i = 0; EXCLUDED_DIR_NAMES[i]; i++) {
+            if (strcmp(tok, EXCLUDED_DIR_NAMES[i]) == 0)
+                return true;
+        }
+    }
+    return false;
 }

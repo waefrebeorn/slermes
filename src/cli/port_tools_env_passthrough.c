@@ -9,9 +9,17 @@
 #include "hermes_logger.h"
 #include "env_passthrough.h"
 #include "hermes_core_types.h"
+#include "secret_common.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+/* Secret-scope functions are declared in port_agent_secret_scope.c
+ * (no shared header yet) — declare their signatures here. */
+extern const char *secret_scope_get_secret(const char *name, const char *default_val);
+extern bool secret_scope_is_multiplex_active(void);
+extern bool secret_scope_is_global_env_fn(const char *name);
+extern json_t *secret_scope_current_secret_scope(void);
 
 /* Cache for _load_config_passthrough (mirrors Python module global
  * _config_passthrough — None until first load). */
@@ -175,4 +183,41 @@ void cli_tools_env_passthrough_clear_env_passthrough(void)
 {
     env_passthrough_clear();
     hermes_log(LOG_DEBUG, "env_passthrough", "Session allowlist cleared");
+}
+
+/* PoP: resolve_passthrough_value @ tools/env_passthrough.py:resolve_passthrough_value */
+char *cli_tools_env_passthrough_resolve_passthrough_value(const char *name, const char *fallback) {
+    /* Python:
+     *   if _is_global_env(name) and fallback is not None: return fallback
+     *   scope = current_secret_scope()
+     *   multiplex_active = is_multiplex_active()
+     *   if scope is None:
+     *       if multiplex_active: return get_secret(name)
+     *       return fallback
+     *   return get_secret(name, None if multiplex_active else fallback) */
+    if (!name || !*name) return fallback ? strdup(fallback) : NULL;
+
+    /* Global terminal/runtime settings preserve caller's fallback. */
+    if (secret_scope_is_global_env_fn(name) && fallback)
+        return strdup(fallback);
+
+    json_t *scope = secret_scope_current_secret_scope();
+    bool multiplex_active = secret_scope_is_multiplex_active();
+
+    if (!scope || scope->type != JSON_OBJECT) {
+        /* scope is None */
+        if (scope) json_free(scope);
+        if (multiplex_active) {
+            const char *val = secret_scope_get_secret(name, NULL);
+            return val ? strdup(val) : NULL;
+        }
+        return fallback ? strdup(fallback) : NULL;
+    }
+    json_free(scope);
+
+    /* get_secret(name, None if multiplex_active else fallback) */
+    const char *default_val = multiplex_active ? NULL : fallback;
+    const char *val = secret_scope_get_secret(name, default_val);
+    if (val) return strdup(val);
+    return fallback ? strdup(fallback) : NULL;
 }
