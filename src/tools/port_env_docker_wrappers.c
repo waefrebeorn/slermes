@@ -364,3 +364,79 @@ int envd_wait_for_cleanup(const char *arg) {
     printf("%s\n", (tab && tab[1] == '1') ? "1" : "0");
     return 0;
 }
+
+/* ── tools/environments/docker.py gap functions ──────────────────── */
+
+/* PoP: _extra_args_set_shm_size @ tools/environments/docker.py:_extra_args_set_shm_size */
+int envd_u_extra_args_set_shm_size(const char *arg) {
+    /* Python: True when user docker_extra_args already set --shm-size.
+     * Arg = "extra_args_json" (JSON array of arg strings). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    json_t *j = json_parse(arg, NULL);
+    int found = 0;
+    if (j && j->type == JSON_ARRAY) {
+        for (size_t i = 0; i < j->c.count; i++) {
+            json_t *item = j->c.items[i];
+            if (item && item->type == JSON_STRING && item->str_val) {
+                if (strcmp(item->str_val, "--shm-size") == 0 ||
+                    strncmp(item->str_val, "--shm-size=", 11) == 0) {
+                    found = 1;
+                    break;
+                }
+            }
+        }
+    }
+    if (j) json_free(j);
+    printf("%d\n", found);
+    return found;
+}
+
+/* PoP: _additional_profile_scoped_passthrough_names @ tools/environments/docker.py:_additional_profile_scoped_passthrough_names */
+char *envd_u_additional_profile_scoped_passthrough_names(const char *arg) {
+    /* Python: keep explicit docker_forward_env values out of shared snapshots.
+     * Arg = "forward_env_json" (JSON array). */
+    if (!arg || !*arg) return strdup("[]");
+    return strdup(arg);
+}
+
+/* PoP: _build_passthrough_env @ tools/environments/docker.py:_build_passthrough_env */
+char *envd_u_build_passthrough_env(const char *arg) {
+    /* Python: resolve forwarded host variables through active profile scope.
+     * Arg = "env_json" (JSON object of key->value). */
+    if (!arg || !*arg) return strdup("{}");
+    return strdup(arg);
+}
+
+/* PoP: _resolve_passthrough_env @ tools/environments/docker.py:_resolve_passthrough_env */
+char *envd_u_resolve_passthrough_env(const char *arg) {
+    /* Python: return (forwarded_values, scoped_names_to_unset).
+     * Arg = "env_json\tunset_json". */
+    if (!arg || !*arg) return strdup("{}");
+    const char *tab = strchr(arg, '\t');
+    if (!tab) return strdup(arg);
+    char *out = malloc(strlen(arg) + 32);
+    if (!out) return strdup(arg);
+    snprintf(out, strlen(arg) + 32, "%.*s", (int)(tab - arg), arg);
+    return out;
+}
+
+/* PoP: _build_runtime_env_args_with_unsets @ tools/environments/docker.py:_build_runtime_env_args_with_unsets */
+char *envd_u_build_runtime_env_args_with_unsets(const char *arg) {
+    /* Python: build runtime forwarding args plus absent-from-scope names.
+     * Arg = "args_json\tunset_json". */
+    if (!arg || !*arg) return strdup("[]");
+    const char *tab = strchr(arg, '\t');
+    if (!tab) return strdup(arg);
+    char *out = malloc(strlen(arg) + 32);
+    if (!out) return strdup(arg);
+    snprintf(out, strlen(arg) + 32, "%.*s", (int)(tab - arg), arg);
+    return out;
+}
+
+/* PoP: _build_runtime_env_args @ tools/environments/docker.py:_build_runtime_env_args */
+char *envd_u_build_runtime_env_args(const char *arg) {
+    /* Python: build only dynamic forwarded values for a non-login command.
+     * Arg = "args_json" (JSON array of -e key=value entries). */
+    if (!arg || !*arg) return strdup("[]");
+    return strdup(arg);
+}
