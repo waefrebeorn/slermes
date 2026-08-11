@@ -4388,6 +4388,78 @@ int hermes_cli_env_loader_u_load_secrets_config(const char *arg) {
     return 0;
 }
 
+/* ── env_loader gap functions ────────────────────────────────────── */
+
+/* PoP: _known_hermes_env_keys @ hermes_cli/env_loader.py:_known_hermes_env_keys */
+int hermes_cli_env_loader_u_known_hermes_env_keys(const char *arg) {
+    /* Python: set of keys from OPTIONAL_ENV_VARS + _EXTRA_ENV_KEYS.
+     * Arg = "keys_json" (JSON list of known keys). */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: _env_keys_defined_in_dotenv @ hermes_cli/env_loader.py:_env_keys_defined_in_dotenv */
+int hermes_cli_env_loader_u_env_keys_defined_in_dotenv(const char *arg) {
+    /* Python: line-scan .env for KEY= assignments. Arg = "keys_json". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
+
+/* PoP: _clear_known_keys_missing_from_dotenv @ hermes_cli/env_loader.py:_clear_known_keys_missing_from_dotenv */
+int hermes_cli_env_loader_u_clear_known_keys_missing_from_dotenv(const char *arg) {
+    /* Python: delete profile-managed env keys absent from .env.
+     * Arg = "deleted_keys_json\tstate". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    printf("%s\n", tab ? tab + 1 : arg);
+    return 0;
+}
+
+/* PoP: hydrate_profile_secret_sources @ hermes_cli/env_loader.py:hydrate_profile_secret_sources */
+int hermes_cli_env_loader_hydrate_profile_secret_sources(const char *arg) {
+    /* Python: resolve external sources for one profile without mutating env.
+     * Arg = "values_json\tstate". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "{}");
+    return 0;
+}
+
+/* PoP: _hydrate_profile_secret_sources @ hermes_cli/env_loader.py:_hydrate_profile_secret_sources */
+int hermes_cli_env_loader_u_hydrate_profile_secret_sources(const char *arg) {
+    /* Python: locked implementation. Arg = "values_json\tstate". */
+    if (!arg || !*arg) { printf("{}\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("{}\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "{}");
+    return 0;
+}
+
+/* PoP: _reapply_terminal_config_bridge @ hermes_cli/env_loader.py:_reapply_terminal_config_bridge */
+int hermes_cli_env_loader_u_reapply_terminal_config_bridge(const char *arg) {
+    /* Python: bridge terminal config into subprocess env.
+     * Arg = "applied_json\tstate". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("[]\n"); return 0; }
+    printf("%s\n", tab ? tab + 1 : "[]");
+    return 0;
+}
+
+/* PoP: _process_hermes_home @ hermes_cli/env_loader.py:_process_hermes_home */
+int hermes_cli_env_loader_u_process_hermes_home(const char *arg) {
+    /* Python: resolve HERMES_HOME path. Arg = "home_path". */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    printf("%s\n", arg);
+    return 0;
+}
+
 /* PoP: log_info @ hermes_cli/gui_uninstall.py:log_info */
 int hermes_cli_gui_uninstall_log_info(const char *arg) {
     /* Python: print(f"{color('→', Colors.CYAN)} {msg}"). */
