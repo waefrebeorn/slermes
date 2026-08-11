@@ -183,17 +183,12 @@
     {
       "file": "src/cli/port_auth_na.c",
       "func": "_xai_oauth_state_from_store",
+      "undefined": "json_new_string"
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_xai_oauth_state_from_store",
       "undefined": "json_object_get"
-    },
-    {
-      "file": "src/cli/port_auth_na.c",
-      "func": "_xai_oauth_state_from_store",
-      "undefined": "json_new_object"
-    },
-    {
-      "file": "src/cli/port_auth_na.c",
-      "func": "_xai_oauth_state_from_store",
-      "undefined": "json_array_get"
     },
     {
       "file": "src/cli/port_auth_na.c",
@@ -203,12 +198,17 @@
     {
       "file": "src/cli/port_auth_na.c",
       "func": "_xai_oauth_state_from_store",
+      "undefined": "json_array_get"
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_xai_oauth_state_from_store",
       "undefined": "json_object_set"
     },
     {
       "file": "src/cli/port_auth_na.c",
       "func": "_xai_oauth_state_from_store",
-      "undefined": "json_new_string"
+      "undefined": "json_new_object"
     },
     {
       "file": "src/cli/port_auth_na.c",
@@ -228,27 +228,12 @@
     {
       "file": "src/cli/port_auth_na.c",
       "func": "_write_through_xai_oauth_to_global_root",
-      "undefined": "json_new_object"
+      "undefined": "json_object_set"
     },
     {
       "file": "src/cli/port_auth_na.c",
       "func": "_write_through_xai_oauth_to_global_root",
-      "undefined": "json_object_set"
-    },
-    {
-      "file": "src/cli/port_auth_na.c",
-      "func": "_auth_file_cache_key",
       "undefined": "json_new_object"
-    },
-    {
-      "file": "src/cli/port_auth_na.c",
-      "func": "_auth_file_cache_key",
-      "undefined": "json_object_set"
-    },
-    {
-      "file": "src/cli/port_auth_na.c",
-      "func": "_auth_file_cache_key",
-      "undefined": "json_new_number"
     },
     {
       "file": "src/cli/port_auth_na.c",
@@ -257,13 +242,23 @@
     },
     {
       "file": "src/cli/port_auth_na.c",
-      "func": "nous_token_has_billing_scope",
-      "undefined": "json_object_get"
+      "func": "_auth_file_cache_key",
+      "undefined": "json_object_set"
     },
     {
-      "file": "src/cli/port_config.c",
-      "func": "_strip_dotted_keys",
-      "undefined": "json_object_set"
+      "file": "src/cli/port_auth_na.c",
+      "func": "_auth_file_cache_key",
+      "undefined": "json_new_object"
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "_auth_file_cache_key",
+      "undefined": "json_new_number"
+    },
+    {
+      "file": "src/cli/port_auth_na.c",
+      "func": "nous_token_has_billing_scope",
+      "undefined": "json_object_get"
     },
     {
       "file": "src/cli/port_config.c",
@@ -277,8 +272,13 @@
     },
     {
       "file": "src/cli/port_config.c",
+      "func": "_strip_dotted_keys",
+      "undefined": "json_object_set"
+    },
+    {
+      "file": "src/cli/port_config.c",
       "func": "clear_model_endpoint_credentials",
-      "undefined": "json_new_object"
+      "undefined": "json_new_string"
     },
     {
       "file": "src/cli/port_config.c",
@@ -288,7 +288,7 @@
     {
       "file": "src/cli/port_config.c",
       "func": "clear_model_endpoint_credentials",
-      "undefined": "json_new_string"
+      "undefined": "json_new_object"
     },
     {
       "file": "src/cli/port_config.c",
@@ -313,12 +313,12 @@
     {
       "file": "src/cli/port_kanban_db_na.c",
       "func": "_resolve_worktree_workspace",
-      "undefined": "json_object_set"
+      "undefined": "json_new_string"
     },
     {
       "file": "src/cli/port_kanban_db_na.c",
       "func": "_resolve_worktree_workspace",
-      "undefined": "json_new_string"
+      "undefined": "json_object_set"
     },
     {
       "file": "src/cli/port_kanban_db_na.c",
@@ -328,7 +328,7 @@
     {
       "file": "src/cli/port_kanban_db_na.c",
       "func": "_dispatch_once_locked",
-      "undefined": "json_new_object"
+      "undefined": "json_new_string"
     },
     {
       "file": "src/cli/port_kanban_db_na.c",
@@ -338,11 +338,16 @@
     {
       "file": "src/cli/port_kanban_db_na.c",
       "func": "_dispatch_once_locked",
-      "undefined": "json_new_number"
+      "undefined": "json_new_object"
     },
     {
       "file": "src/cli/port_kanban_db_na.c",
       "func": "_dispatch_once_locked",
+      "undefined": "json_new_number"
+    },
+    {
+      "file": "src/cli/port_main.c",
+      "func": "_build_provider_choices",
       "undefined": "json_new_string"
     },
     {
@@ -354,11 +359,6 @@
       "file": "src/cli/port_main.c",
       "func": "_build_provider_choices",
       "undefined": "json_new_array"
-    },
-    {
-      "file": "src/cli/port_main.c",
-      "func": "_build_provider_choices",
-      "undefined": "json_new_string"
     },
     {
       "file": "src/cli/port_web_server.c",

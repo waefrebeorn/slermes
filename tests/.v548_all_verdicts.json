@@ -181,18 +181,6 @@
  },
  {
   "file": "src/agent/port_agent_auxiliary_client_helpers.c",
-  "cname": "aux__refresh_nous_recommended_model",
-  "py": "agent/auxiliary_client.py:_refresh_nous_recommended_model",
-  "shape": "FACADE_SHAPE",
-  "detail": "strdup(\"nous-hermes-3\")",
-  "cbody": "/* C resolves via provider catalog; default to a stable Nous aux slug. */\n    return strdup(\"nous-hermes-3\");",
-  "verdict": "FACADE_FRAUD",
-  "py_evidence": "computation/assignment/loop over data",
-  "final": "FACADE_FRAUD",
-  "evidence": "Python does real work; C hardcoded const skips it"
- },
- {
-  "file": "src/agent/port_agent_auxiliary_client_helpers.c",
   "cname": "aux__retry_same_provider_sync",
   "py": "agent/auxiliary_client.py:_retry_same_provider_sync",
   "shape": "THIN_SHAPE",
@@ -832,8 +820,8 @@
   "cname": "_get_provider_chain",
   "py": "agent/auxiliary_client.py:_get_provider_chain",
   "shape": "FACADE_SHAPE",
-  "detail": "strdup(\"nous,openrouter,deepinfra,openai,anthropic,deepseek,gemini\")",
-  "cbody": "/* Python: ordered chain, built at call time; openai-codex excluded. */\n    return strdup(\"nous,openrouter,deepinfra,openai,anthropic,deepseek,gemini\");",
+  "detail": "strdup(\"openrouter,nous,local/custom,api-key\")",
+  "cbody": "return strdup(\"openrouter,nous,local/custom,api-key\");",
   "verdict": "FACADE_FRAUD",
   "py_evidence": "returns computed expr: [('openrouter', _try_openrouter), ('nous', _try_nous), ('local/custom', _try_custom_endpoint), ('api-key', _resolve_api_key_provider)]",
   "final": "FACADE_FRAUD",
@@ -879,13 +867,13 @@
   "file": "src/agent/port_auxiliary_client_helpers2.c",
   "cname": "_aux_interrupt_protected",
   "py": "agent/auxiliary_client.py:_aux_interrupt_protected",
-  "shape": "FACADE_SHAPE",
-  "detail": "false",
-  "cbody": "/* Python: interrupt protection flag (default off; enabled during\n     * streaming where SIGINT must not kill the client mid-request). */\n    return false;",
-  "verdict": "FACADE_FRAUD",
+  "shape": "THIN_SHAPE",
+  "detail": "aux_interrupt_protected()",
+  "cbody": "return aux_interrupt_protected();",
+  "verdict": "THIN_HONEST",
   "py_evidence": "returns computed expr: bool(getattr(_aux_interrupt_protection, 'active', False))",
-  "final": "FACADE_FRAUD",
-  "evidence": "Python does real work; C hardcoded const skips it"
+  "final": "THIN_HONEST",
+  "evidence": "thin delegation, no SDK/IO -> honest"
  },
  {
   "file": "src/agent/port_auxiliary_client_helpers2.c",
@@ -893,7 +881,7 @@
   "py": "agent/auxiliary_client.py:close",
   "shape": "FACADE_SHAPE",
   "detail": "0",
-  "cbody": "/* Python: close the client. C client is stateless \u2014 nothing to free. */\n    return 0;",
+  "cbody": "return 0;",
   "verdict": "FACADE_FRAUD",
   "py_evidence": "1 call(s) present",
   "final": "FACADE_FRAUD",
@@ -1275,13 +1263,13 @@
   "file": "src/agent/port_display_ports.c",
   "cname": "_diff_ansi",
   "py": "agent/display.py:_diff_ansi",
-  "shape": "FACADE_SHAPE",
-  "detail": "strdup(\"\\x1b[32m\\x1b[31m\\x1b[36m\")",
-  "cbody": "/* Python: ANSI escapes from active skin (cached). */\n    return strdup(\"\\x1b[32m\\x1b[31m\\x1b[36m\");",
-  "verdict": "FACADE_FRAUD",
+  "shape": "THIN_SHAPE",
+  "detail": "strdup(\"{\\\"dim\\\":\\\"\\\\033[38;2;150;150;150m\\\",\" \"\\\"file\\\":\\\"\\\\033[38;2;180;160;255m\\\",\" \"\\\"hunk\\\":\\\"\\\\033[38;2;120;120;140m\\\",\" \"\\\"minus\\\":\\\"\\\\033[38;2;255;255;255;48;2;120;20;20m\\\",\" \"\\\"plus\\\":\\\"\\\\033[38;2;255;255;255;48;2;20;90;20m\\\"}\")",
+  "cbody": "return strdup(\"{\\\"dim\\\":\\\"\\\\033[38;2;150;150;150m\\\",\"\n                  \"\\\"file\\\":\\\"\\\\033[38;2;180;160;255m\\\",\"\n                  \"\\\"hunk\\\":\\\"\\\\033[38;2;120;120;140m\\\",\"\n                  \"\\\"minus\\\":\\\"\\\\033[38;2;255;255;255;48;2;120;20;20m\\\",\"\n                  \"\\\"plus\\\":\\\"\\\\033[38;2;255;255;255;48;2;20;90;20m\\\"}\");",
+  "verdict": "THIN_HONEST",
   "py_evidence": "computation/assignment/loop over data",
-  "final": "FACADE_FRAUD",
-  "evidence": "Python does real work; C hardcoded const skips it"
+  "final": "THIN_REVIEW",
+  "evidence": "Python does real work; verify C wrapper covers it"
  },
  {
   "file": "src/agent/port_display_ports.c",
@@ -1299,37 +1287,37 @@
   "file": "src/agent/port_display_ports.c",
   "cname": "get_waiting_faces",
   "py": "agent/display.py:get_waiting_faces",
-  "shape": "FACADE_SHAPE",
-  "detail": "strdup(\"(\u3002\u30fb\u03c9\u30fb\u3002)\\n(\u00b4\uff65\u03c9\uff65`)\\n(>_<)\")",
-  "cbody": "/* Python: skin faces or KAWAII_WAITING fallback. */\n    return strdup(\"(\u3002\u30fb\u03c9\u30fb\u3002)\\n(\u00b4\uff65\u03c9\uff65`)\\n(>_<)\");",
-  "verdict": "FACADE_FRAUD",
+  "shape": "THIN_SHAPE",
+  "detail": "strdup(\"(\uff61\u25d5\u203f\u25d5\uff61)\\n(\u25d5\u203f\u25d5\u273f)\\n\u0669(\u25d5\u203f\u25d5\uff61)\u06f6\\n(\u273f\u25e0\u203f\u25e0)\\n( \u02d8\u25bd\u02d8)\u3063\\n\" \"\u266a(\u00b4\u03b5` )\\n(\u25d5\u1d17\u25d5\u273f)\\n\u30fe(\uff3e\u2207\uff3e)\\n(\u2267\u25e1\u2266)\\n(\u2605\u03c9\u2605)\")",
+  "cbody": "return strdup(\"(\uff61\u25d5\u203f\u25d5\uff61)\\n(\u25d5\u203f\u25d5\u273f)\\n\u0669(\u25d5\u203f\u25d5\uff61)\u06f6\\n(\u273f\u25e0\u203f\u25e0)\\n( \u02d8\u25bd\u02d8)\u3063\\n\"\n                  \"\u266a(\u00b4\u03b5` )\\n(\u25d5\u1d17\u25d5\u273f)\\n\u30fe(\uff3e\u2207\uff3e)\\n(\u2267\u25e1\u2266)\\n(\u2605\u03c9\u2605)\");",
+  "verdict": "THIN_HONEST",
   "py_evidence": "calls external/IO: skin.spinner.get",
-  "final": "FACADE_FRAUD",
-  "evidence": "Python does real work; C hardcoded const skips it"
+  "final": "THIN_REVIEW",
+  "evidence": "Python does real work; verify C wrapper covers it"
  },
  {
   "file": "src/agent/port_display_ports.c",
   "cname": "get_thinking_faces",
   "py": "agent/display.py:get_thinking_faces",
-  "shape": "FACADE_SHAPE",
-  "detail": "strdup(\"(\uffe3\u03c9\uffe3)\\n(\uffe3\uff5e\uffe3)\\n(\uffe3\u03c1\uffe3)\")",
-  "cbody": "return strdup(\"(\uffe3\u03c9\uffe3)\\n(\uffe3\uff5e\uffe3)\\n(\uffe3\u03c1\uffe3)\");",
-  "verdict": "FACADE_FRAUD",
+  "shape": "THIN_SHAPE",
+  "detail": "strdup(\"(\uff61\u2022\u0301\ufe3f\u2022\u0300\uff61)\\n(\u25d4_\u25d4)\\n(\u00ac\u203f\u00ac)\\n( \u2022_\u2022)>\u2310\u25a0-\u25a0\\n(\u2310\u25a0_\u25a0)\\n\" \"(\u00b4\uff65_\uff65`)\\n\u25c9_\u25c9\\n(\u00b0\u30ed\u00b0)\\n( \u02d8\u2323\u02d8)\u2661\\n\u30fd(>\u2200<\u2606)\u2606\\n\" \"\u0669(\u0e51\u275b\u1d17\u275b\u0e51)\u06f6\\n(\u2299_\u2299)\\n(\u00ac_\u00ac)\\n( \u0361\u00b0 \u035c\u0296 \u0361\u00b0)\\n\u0ca0_\u0ca0\")",
+  "cbody": "return strdup(\"(\uff61\u2022\u0301\ufe3f\u2022\u0300\uff61)\\n(\u25d4_\u25d4)\\n(\u00ac\u203f\u00ac)\\n( \u2022_\u2022)>\u2310\u25a0-\u25a0\\n(\u2310\u25a0_\u25a0)\\n\"\n                  \"(\u00b4\uff65_\uff65`)\\n\u25c9_\u25c9\\n(\u00b0\u30ed\u00b0)\\n( \u02d8\u2323\u02d8)\u2661\\n\u30fd(>\u2200<\u2606)\u2606\\n\"\n                  \"\u0669(\u0e51\u275b\u1d17\u275b\u0e51)\u06f6\\n(\u2299_\u2299)\\n(\u00ac_\u00ac)\\n( \u0361\u00b0 \u035c\u0296 \u0361\u00b0)\\n\u0ca0_\u0ca0\");",
+  "verdict": "THIN_HONEST",
   "py_evidence": "calls external/IO: skin.spinner.get",
-  "final": "FACADE_FRAUD",
-  "evidence": "Python does real work; C hardcoded const skips it"
+  "final": "THIN_REVIEW",
+  "evidence": "Python does real work; verify C wrapper covers it"
  },
  {
   "file": "src/agent/port_display_ports.c",
   "cname": "get_thinking_verbs",
   "py": "agent/display.py:get_thinking_verbs",
-  "shape": "FACADE_SHAPE",
-  "detail": "strdup(\"thinking\\npondering\\nwondering\")",
-  "cbody": "return strdup(\"thinking\\npondering\\nwondering\");",
-  "verdict": "FACADE_FRAUD",
+  "shape": "THIN_SHAPE",
+  "detail": "strdup(\"pondering\\ncontemplating\\nmusing\\ncogitating\\nruminating\\n\" \"deliberating\\nmulling\\nreflecting\\nprocessing\\nreasoning\\n\" \"analyzing\\ncomputing\\nsynthesizing\\nformulating\\nbrainstorming\")",
+  "cbody": "return strdup(\"pondering\\ncontemplating\\nmusing\\ncogitating\\nruminating\\n\"\n                  \"deliberating\\nmulling\\nreflecting\\nprocessing\\nreasoning\\n\"\n                  \"analyzing\\ncomputing\\nsynthesizing\\nformulating\\nbrainstorming\");",
+  "verdict": "THIN_HONEST",
   "py_evidence": "calls external/IO: skin.spinner.get",
-  "final": "FACADE_FRAUD",
-  "evidence": "Python does real work; C hardcoded const skips it"
+  "final": "THIN_REVIEW",
+  "evidence": "Python does real work; verify C wrapper covers it"
  },
  {
   "file": "src/agent/port_display_ports.c",
@@ -2038,18 +2026,6 @@
   "py_evidence": "calls external/IO: asyncio.run",
   "final": "THIN_REVIEW",
   "evidence": "Python does real work; verify C wrapper covers it"
- },
- {
-  "file": "src/agent/port_retry_utils_ports.c",
-  "cname": "zai_coding_overload_retry_ceiling",
-  "py": "agent/retry_utils.py:zai_coding_overload_retry_ceiling",
-  "shape": "FACADE_SHAPE",
-  "detail": "10",
-  "cbody": "/* Python: ceiling for full overload schedule. */\n    return 10;",
-  "verdict": "FACADE_FRAUD",
-  "py_evidence": "returns computed expr: short_attempts + len(_ZAI_CODING_OVERLOAD_LONG_BACKOFF) + 1",
-  "final": "FACADE_FRAUD",
-  "evidence": "Python does real work; C hardcoded const skips it"
  },
  {
   "file": "src/agent/port_runtime_cwd_ports.c",
@@ -15888,18 +15864,6 @@
   "evidence": "thin delegation, no SDK/IO -> honest"
  },
  {
-  "file": "src/gateway/port_gateway_ports_wrappers.c",
-  "cname": "_truthy_env",
-  "py": "gateway/cwd_placeholder.py:_truthy_env",
-  "shape": "FACADE_SHAPE",
-  "detail": "0",
-  "cbody": "(void)arg; return 0;",
-  "verdict": "FACADE_FRAUD",
-  "py_evidence": "returns computed expr: (value or '').strip().lower() in {'true', '1', 'yes'}",
-  "final": "FACADE_FRAUD",
-  "evidence": "Python does real work; C hardcoded const skips it"
- },
- {
   "file": "src/gateway/port_gateway_relay_adapter.c",
   "cname": "message_len_fn",
   "py": "gateway/relay/adapter.py:message_len_fn",
@@ -18562,18 +18526,6 @@
   "py_evidence": "computation/assignment/loop over data",
   "final": "THIN_REVIEW",
   "evidence": "Python does real work; verify C wrapper covers it"
- },
- {
-  "file": "src/tools/port_transcription_wrappers.c",
-  "cname": "_has_any_command_stt_provider",
-  "py": "tools/transcription_tools.py:_has_any_command_stt_provider",
-  "shape": "FACADE_SHAPE",
-  "detail": "false",
-  "cbody": "return false;",
-  "verdict": "FACADE_FRAUD",
-  "py_evidence": "computation/assignment/loop over data",
-  "final": "FACADE_FRAUD",
-  "evidence": "Python does real work; C hardcoded const skips it"
  },
  {
   "file": "src/tools/port_transcription_wrappers.c",
