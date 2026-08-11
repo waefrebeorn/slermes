@@ -2250,3 +2250,62 @@ int cgw_u_gateway_command_inner(const char *arg) {
     printf("dispatched subcmd '%s' (run→s6 redirect check + env stamp; setup; install --force/--system + termux branch; status/stop/restart/logs/config/enroll)%s\n", sub, (t2 && t2[1] == '1') ? " — managed refuse on install" : "");
     return 0;
 }
+
+/* ── hermes_cli/gateway.py gap functions ─────────────────────────── */
+
+/* PoP: _append_node_dir_for_service @ hermes_cli/gateway.py:_append_node_dir_for_service */
+char *cgw_append_node_dir_for_service(const char *arg) {
+    /* Python: add the Node directory a generated service unit should use
+     * to path_entries. Managed $HERMES_HOME/node goes first when it exists;
+     * PATH lookup is the fallback rung.
+     * Arg = "path_entries_json\tmanaged_node" (managed_node = dir or empty). */
+    if (!arg || !*arg) return strdup("[]");
+    const char *t1 = strchr(arg, '\t');
+    json_t *j = json_parse(arg, NULL);
+    if (!j || j->type != JSON_ARRAY) { if (j) json_free(j); return strdup("[]"); }
+    if (t1 && t1[1]) {
+        /* managed node exists: insert at front */
+        json_t *new_arr = json_array();
+        json_append(new_arr, json_string(t1 + 1));
+        for (size_t i = 0; i < j->c.count; i++)
+            json_append(new_arr, json_copy(j->c.items[i]));
+        char *out = json_serialize(new_arr);
+        json_free(new_arr);
+        json_free(j);
+        return out;
+    }
+    char *out = json_serialize(j);
+    json_free(j);
+    return out;
+}
+
+/* PoP: _get_restart_after_turn_timeout @ hermes_cli/gateway.py:_get_restart_after_turn_timeout */
+double cgw_get_restart_after_turn_timeout(const char *arg) {
+    /* Python: in-band restart wait-for-idle timeout in seconds (#77184).
+     * Env HERMES_RESTART_AFTER_TURN_TIMEOUT wins, then config
+     * agent.restart_after_turn_timeout, then default.
+     * Arg = "env_or_cfg_value" (empty = unset). */
+    double v = 0.0;
+    if (arg && arg[0]) {
+        v = atof(arg);
+    }
+    printf("%.0f\n", v);
+    return v;
+}
+
+/* PoP: _get_restart_exit_wait_budget @ hermes_cli/gateway.py:_get_restart_exit_wait_budget */
+double cgw_get_restart_exit_wait_budget(const char *arg) {
+    /* Python: CLI wait for gateway exit after SIGUSR1 / self-restart.
+     * = resolve_restart_exit_wait_budget(drain_timeout, after_turn_timeout).
+     * Arg = "drain\tafter_turn" (numeric seconds). */
+    double drain = 0.0, after = 0.0;
+    if (arg && arg[0]) {
+        const char *t1 = strchr(arg, '\t');
+        drain = atof(arg);
+        if (t1 && t1[1]) after = atof(t1 + 1);
+    }
+    /* budget = drain + after_turn + small settle margin */
+    double budget = drain + after + 2.0;
+    printf("%.0f\n", budget);
+    return budget;
+}
