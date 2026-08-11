@@ -1072,6 +1072,7 @@ void cmd_session_search(const char *args, agent_state_t *state) {
     json_free(root);
 }
 
+/* PoP: cmd_sessions @ hermes_cli/sessions_cmd.py:cmd_sessions */
 void cmd_sessions(const char *args, agent_state_t *state) {
     if (!state->db) {
         printf("No session database available.\n");

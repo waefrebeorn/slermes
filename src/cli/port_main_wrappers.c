@@ -365,6 +365,7 @@ int main_u_has_any_provider_configured(const char *arg) {
 }
 
 /* PoP: _session_browse_picker @ hermes_cli/main.py:_session_browse_picker */
+/* PoP: main_u_session_browse_picker @ hermes_cli/sessions_cmd.py:_session_browse_picker */
 int main_u_session_browse_picker(const char *arg) {
     /* Python: curses browser. Arg =
      * "picked\tstate\tresult". */
@@ -2886,7 +2887,7 @@ int main_u_ensure_fhs_path_guard(const char *arg) {
 }
 
 /* PoP: _size_delta_label @ hermes_cli/main.py:_size_delta_label */
-/* PoP: _size_delta_label @ hermes_cli/main.py:_size_delta_label */
+/* PoP: main_u_size_delta_label @ hermes_cli/sessions_cmd.py:_size_delta_label */
 int main_u_size_delta_label(const char *arg) {
     /* Python returns f"reclaimed {mb:.1f} MB" or f"grew by {-mb:.1f} MB".
      * The C shim takes the MB value as a string arg and prints the label. */

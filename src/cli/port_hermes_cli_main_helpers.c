@@ -159,6 +159,7 @@ char *read_git_revision_fingerprint(const char *repo_root)
 
 /*
  * PoP: _relative_time @ hermes_cli/main.py:_relative_time */
+/* PoP: relative_time @ hermes_cli/sessions_cmd.py:_relative_time */
 char *relative_time(long ts)
 {
     if (!ts) return strdup("?");

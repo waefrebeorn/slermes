@@ -19,6 +19,7 @@
 
 /* PoP: get_hermes_home @ cron/scheduler.py:_get_hermes_home */
 /* PoP: get_hermes_home @ tools/tirith_security.py:_get_hermes_home */
+/* PoP: get_hermes_home @ hermes_cli/sessions_cmd.py:get_hermes_home */
 const char *get_hermes_home(void) {
     const char *home = getenv("HERMES_HOME");
     if (!home) home = getenv("HOME");
