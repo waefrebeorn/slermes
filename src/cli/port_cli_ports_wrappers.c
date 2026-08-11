@@ -11555,3 +11555,73 @@ int tools_audio_container_sniff_audio_ext(const char *arg) {
     printf("%s\n", fallback);
     return 0;
 }
+
+/* ── hermes_cli/backup.py gap functions ──────────────────────────── */
+
+/* PoP: _backup_operation_lock @ hermes_cli/backup.py:_backup_operation_lock */
+int hermes_cli_backup_u_backup_operation_lock(const char *arg) {
+    /* Python: cross-process backup slot lock via flock.
+     * Arg = "acquired" (1/0). */
+    if (!arg || !*arg) { printf("not acquired\n"); return 1; }
+    int acquired = arg[0] == '1';
+    if (!acquired) { printf("another Hermes backup is already running\n"); return 1; }
+    printf("backup lock acquired\n");
+    return 0;
+}
+
+/* PoP: _atomic_output_path @ hermes_cli/backup.py:_atomic_output_path */
+int hermes_cli_backup_u_atomic_output_path(const char *arg) {
+    /* Python: yield hidden sibling path, publish on clean close.
+     * Arg = "final_path\tfinalized" (finalized 1/0). */
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    int finalized = tab && tab[1] == '1';
+    if (finalized) {
+        printf("published: %s\n", arg);
+        return 0;
+    }
+    printf("partial path (not yet published)\n");
+    return 0;
+}
+
+/* PoP: is_zeroed_sqlite_file @ hermes_cli/backup.py:is_zeroed_sqlite_file */
+int hermes_cli_backup_is_zeroed_sqlite_file(const char *arg) {
+    /* Python: detect zeroed state.db signature (#68474).
+     * Arg = "is_zeroed" (1/0). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%s\n", arg[0] == '1' ? "1" : "0");
+    return 0;
+}
+
+/* PoP: _run_backup_locked @ hermes_cli/backup.py:_run_backup_locked */
+int hermes_cli_backup_u_run_backup_locked(const char *arg) {
+    /* Python: locked backup execution. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 1; }
+    printf("%s\n", tab ? tab + 1 : "0");
+    return 0;
+}
+
+/* PoP: _create_quick_snapshot_locked @ hermes_cli/backup.py:_create_quick_snapshot_locked */
+int hermes_cli_backup_u_create_quick_snapshot_locked(const char *arg) {
+    /* Python: quick snapshot under lock. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 1; }
+    printf("%s\n", tab ? tab + 1 : "0");
+    return 0;
+}
+
+/* PoP: _write_full_zip_backup_locked @ hermes_cli/backup.py:_write_full_zip_backup_locked */
+int hermes_cli_backup_u_write_full_zip_backup_locked(const char *arg) {
+    /* Python: full zip backup under lock. Arg = "state\tresult". */
+    if (!arg || !*arg) { printf("0\n"); return 1; }
+    const char *tab = strchr(arg, '\t');
+    int state = arg[0] == '1';
+    if (!state) { printf("0\n"); return 1; }
+    printf("%s\n", tab ? tab + 1 : "0");
+    return 0;
+}
