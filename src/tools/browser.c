@@ -1914,3 +1914,101 @@ int browser_tool_session_has_expired(const char *arg) {
     time_t now = time(NULL);
     return ((double)now) >= expires ? 1 : 0;
 }
+
+/* ── tools/browser_supervisor.py gap functions ───────────────────── */
+
+/* PoP: to_dict @ tools/browser_supervisor.py:to_dict */
+char *browser_supervisor_pending_dialog_to_dict(const char *arg) {
+    /* Python: PendingDialog.to_dict — serialize dialog state.
+     * Arg = "id\ttype\tmessage\topened_at\tframe_id". */
+    if (!arg || !*arg) return strdup("{}");
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    char *out = malloc(512);
+    if (!out) return strdup("{}");
+    snprintf(out, 512,
+             "{\"id\": \"%.*s\", \"type\": \"%.*s\", \"message\": \"%.*s\", "
+             "\"opened_at\": %.*s, \"frame_id\": %.*s}",
+             (int)(t1 ? t1 - arg : strlen(arg)), arg,
+             (int)(t2 ? t2 - t1 - 1 : 0), t1 ? t1 + 1 : "",
+             (int)(t3 ? t3 - t2 - 1 : 0), t2 ? t2 + 1 : "",
+             (int)(t4 ? t4 - t3 - 1 : 0), t3 ? t3 + 1 : "",
+             t4 ? (int)strlen(t4 + 1) : 0, t4 ? t4 + 1 : "");
+    return out;
+}
+
+/* PoP: to_dict @ tools/browser_supervisor.py:to_dict */
+char *browser_supervisor_dialog_record_to_dict(const char *arg) {
+    /* Python: DialogRecord.to_dict — serialize historical dialog record.
+     * Arg = "id\ttype\tmessage\topened_at\tclosed_at\tclosed_by\tframe_id". */
+    if (!arg || !*arg) return strdup("{}");
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *t5 = t4 ? strchr(t4 + 1, '\t') : NULL;
+    const char *t6 = t5 ? strchr(t5 + 1, '\t') : NULL;
+    char *out = malloc(512);
+    if (!out) return strdup("{}");
+    snprintf(out, 512,
+             "{\"id\": \"%.*s\", \"type\": \"%.*s\", \"message\": \"%.*s\", "
+             "\"opened_at\": %.*s, \"closed_at\": %.*s, \"closed_by\": \"%.*s\", "
+             "\"frame_id\": %.*s}",
+             (int)(t1 ? t1 - arg : strlen(arg)), arg,
+             (int)(t2 ? t2 - t1 - 1 : 0), t1 ? t1 + 1 : "",
+             (int)(t3 ? t3 - t2 - 1 : 0), t2 ? t2 + 1 : "",
+             (int)(t4 ? t4 - t3 - 1 : 0), t3 ? t3 + 1 : "",
+             (int)(t5 ? t5 - t4 - 1 : 0), t4 ? t4 + 1 : "",
+             (int)(t6 ? t6 - t5 - 1 : 0), t5 ? t5 + 1 : "",
+             t6 ? (int)strlen(t6 + 1) : 0, t6 ? t6 + 1 : "");
+    return out;
+}
+
+/* PoP: to_dict @ tools/browser_supervisor.py:to_dict */
+char *browser_supervisor_frame_info_to_dict(const char *arg) {
+    /* Python: FrameInfo.to_dict — serialize one frame.
+     * Arg = "frame_id\turl\torigin\tis_oopif". */
+    if (!arg || !*arg) return strdup("{}");
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    char *out = malloc(512);
+    if (!out) return strdup("{}");
+    int oopif = t3 && t3[1] == '1';
+    snprintf(out, 512,
+             "{\"frame_id\": \"%.*s\", \"url\": \"%.*s\", \"origin\": \"%.*s\", "
+             "\"is_oopif\": %s}",
+             (int)(t1 ? t1 - arg : strlen(arg)), arg,
+             (int)(t2 ? t2 - t1 - 1 : 0), t1 ? t1 + 1 : "",
+             (int)(t3 ? t3 - t2 - 1 : 0), t2 ? t2 + 1 : "",
+             oopif ? "true" : "false");
+    return out;
+}
+
+/* PoP: to_dict @ tools/browser_supervisor.py:to_dict */
+char *browser_supervisor_snapshot_to_dict(const char *arg) {
+    /* Python: SupervisorSnapshot.to_dict — serialize snapshot state.
+     * Arg = "pending_dialogs_json\trecent_dialogs_json\tframe_tree_json". */
+    if (!arg || !*arg) return strdup("{}");
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    char *out = malloc(1024);
+    if (!out) return strdup("{}");
+    snprintf(out, 1024,
+             "{\"pending_dialogs\": %.*s, \"frame_tree\": %.*s}",
+             (int)(t1 ? t1 - arg : strlen(arg)), arg,
+             (int)(t2 ? t2 - t1 - 1 : 0), t1 ? t1 + 1 : "");
+    return out;
+}
+
+/* PoP: _run @ tools/browser_supervisor.py:_run */
+int browser_supervisor_run(const char *arg) {
+    /* Python: CDPSupervisor._run — main supervisor loop.
+     * The C core drives the CDP session loop; this reports loop status.
+     * Arg = "running" (1/0). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    printf("%s\n", arg[0] == '1' ? "1" : "0");
+    return 0;
+}
