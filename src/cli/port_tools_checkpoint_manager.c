@@ -17,6 +17,9 @@ extern tool_checkpoint_mgr_t *checkpoint_manager_create(bool enabled,
 extern void checkpoint_manager_free(tool_checkpoint_mgr_t *self);
 extern char *checkpoint_manager_list(tool_checkpoint_mgr_t *self,
                                      const char *working_dir);
+extern char *checkpoint_manager_diff(tool_checkpoint_mgr_t *self,
+                                     const char *working_dir,
+                                     const char *commit_hash);
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -281,6 +284,85 @@ int cli_tools_checkpoint_manager__enforce_size_cap(
     hermes_log(LOG_DEBUG, "checkpoint", "enforce_size_cap: pruned=%d (cap=%dMB)",
         pruned, max_total_size_mb);
     return pruned;
+}
+
+/* Port of Python tools/checkpoint_manager.py:_repair_bare_repo_dirs */
+
+/* PoP: session_diff @ tools/checkpoint_manager.py:session_diff */
+char *cli_tools_checkpoint_manager_session_diff(const char *working_dir) {
+    /* Python: list_checkpoints → take the last (earliest retained) hash →
+     * diff against it. Succeeds with empty output when no checkpoints exist. */
+    tool_checkpoint_mgr_t *mgr = checkpoint_manager_create(
+        true, 0, 0, 0);
+    if (!mgr) return strdup("{\"success\":false,\"error\":\"checkpoint manager unavailable\"}");
+
+    char *list_json = checkpoint_manager_list(mgr, working_dir);
+    if (!list_json) {
+        /* No checkpoints → empty success. */
+        checkpoint_manager_free(mgr);
+        return strdup("{\"success\":true,\"stat\":\"\",\"diff\":\"\",\"empty\":true}");
+    }
+
+    /* Find the baseline hash: checkpoints[-1].get("hash").
+     * The list JSON is an array of {"hash": "...", ...} objects,
+     * most-recent-first; we want the last entry's hash. */
+    json_t *arr = json_parse(list_json, NULL);
+    free(list_json);
+    char *baseline = NULL;
+    if (arr && arr->type == JSON_ARRAY) {
+        size_t n = json_len(arr);
+        if (n == 0) {
+            json_free(arr);
+            checkpoint_manager_free(mgr);
+            return strdup("{\"success\":true,\"stat\":\"\",\"diff\":\"\",\"empty\":true}");
+        }
+        json_t *last = json_get(arr, n - 1);
+        if (last && last->type == JSON_OBJECT) {
+            json_t *h = json_obj_get(last, "hash");
+            if (h && h->type == JSON_STRING)
+                baseline = strdup(h->str_val);
+        }
+    }
+    json_free(arr);
+
+    if (!baseline || !*baseline) {
+        free(baseline);
+        checkpoint_manager_free(mgr);
+        return strdup("{\"success\":true,\"stat\":\"\",\"diff\":\"\",\"empty\":true}");
+    }
+
+    char *result_json = checkpoint_manager_diff(mgr, working_dir, baseline);
+
+    if (!result_json) {
+        free(baseline);
+        checkpoint_manager_free(mgr);
+        return strdup("{\"success\":false,\"error\":\"diff failed\"}");
+    }
+
+    /* Inject baseline key (setdefault) and empty flag, mirroring Python. */
+    json_t *result = json_parse(result_json, NULL);
+    free(result_json);
+    if (result && result->type == JSON_OBJECT) {
+        /* setdefault("baseline", baseline) */
+        if (!json_obj_get(result, "baseline"))
+            json_set(result, "baseline", json_string(baseline));
+        /* if not stat and not diff → empty: True */
+        json_t *stat = json_obj_get(result, "stat");
+        json_t *diff = json_obj_get(result, "diff");
+        const char *stat_s = (stat && stat->type == JSON_STRING) ? stat->str_val : "";
+        const char *diff_s = (diff && diff->type == JSON_STRING) ? diff->str_val : "";
+        if ((!stat_s || !*stat_s) && (!diff_s || !*diff_s))
+            json_set(result, "empty", json_bool(1));  /* true */
+        char *r = json_serialize(result);
+        json_free(result);
+        free(baseline);
+        checkpoint_manager_free(mgr);
+        return r ? r : strdup("{\"success\":false,\"error\":\"serialize failed\"}");
+    }
+    free(baseline);
+    checkpoint_manager_free(mgr);
+    json_free(result);
+    return strdup("{\"success\":false,\"error\":\"parse failed\"}");
 }
 
 /* Port of Python tools/checkpoint_manager.py:_repair_bare_repo_dirs */
