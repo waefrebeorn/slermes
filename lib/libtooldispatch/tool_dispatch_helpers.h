@@ -69,6 +69,18 @@ char **extract_file_mutation_targets(const char *tool_name,
 /* Free results from extract_file_mutation_targets */
 void free_mutation_targets(char **targets, size_t count);
 
+/* Extract ALL canonical scope paths for path-scoped tools (plural form of
+ * extract_parallel_scope_path). Returns a malloc'd array of canonical path
+ * strings (caller frees each + the array). count_out receives the count.
+ * For search_files with no path, "." (cwd) is returned — faithful to Python
+ * which reserves the search root rather than falling back to a barrier. */
+char **extract_parallel_scope_paths(const char *tool_name,
+                                    const char *args_json,
+                                    size_t *count_out);
+
+/* Free results from extract_parallel_scope_paths */
+void free_scope_paths(char **paths, size_t count);
+
 /* ================================================================
  *  Multimodal tool result detection
  * ================================================================ */

@@ -440,6 +440,14 @@ typedef struct {
      * Persisted to session DB meta_json as "system_prompt" on first build.
      * Port of Python agent._cached_system_prompt. */
     char *cached_system_prompt;
+
+    /* Port of Python:
+     *  - agent._cached_system_prompt_static  (rebuilt stable tier)
+     *  - agent._use_prompt_caching           (prompt-cache mode gate)
+     *  - agent._static_rebuild_failed_for    (failed-rebuild memoization) */
+    char *cached_system_prompt_static;
+    bool  use_prompt_caching;
+    char *static_rebuild_failed_for;   /* NULL or the prompt string it failed on */
 } agent_state_t;
 
 /* Interrupt type constants (interrupt_type field) */

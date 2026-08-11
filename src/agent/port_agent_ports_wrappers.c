@@ -531,6 +531,23 @@ int agent_tool_dispatch_helpers_u_extract_parallel_scope_path(const char *arg) {
     return ok;
 }
 
+/* PoP: _extract_parallel_scope_paths @ agent/tool_dispatch_helpers.py:_extract_parallel_scope_paths */
+/* Wrapper exposing the lib's extract_parallel_scope_paths (returns a JSON
+ * array of canonical scope-path strings for a path-scoped tool call). */
+char *agent_tool_dispatch_helpers_u_extract_parallel_scope_paths(
+    const char *tool_name, const char *args_json)
+{
+    size_t n = 0;
+    char **paths = extract_parallel_scope_paths(tool_name, args_json, &n);
+    json_t *arr = json_array();
+    for (size_t i = 0; i < n; i++)
+        json_append(arr, json_string(paths[i] ? paths[i] : ""));
+    char *out = json_serialize(arr);
+    json_free(arr);
+    free_scope_paths(paths, n);
+    return out ? out : strdup("[]");
+}
+
 /* PoP: _paths_overlap @ agent/tool_dispatch_helpers.py:_paths_overlap */
 int agent_tool_dispatch_helpers_u_paths_overlap(const char *arg) {
     /* arg is a JSON [left, right] array. */

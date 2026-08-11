@@ -612,3 +612,66 @@ char *format_tools_for_system_message(tool_registry_t *reg) {
     return result ? result : strdup("[]");
 }
 
+/* PoP: reconstruct_static_prefix @ agent/system_prompt.py:reconstruct_static_prefix */
+
+/* Port of Python reconstruct_static_prefix(agent, system_prompt, *, log_label).
+ *
+ * Rebuilds agent._cached_system_prompt_static (the stable tier) so prefix-cache
+ * consumers regain the two-block [static, volatile] layout. The rebuilt stable
+ * tier is used ONLY when the stored prompt literally starts with it
+ * (startswith gate) — safety against prompt-rewrite on changed inputs.
+ * A failed reconstruction is memoized per stored prompt
+ * (agent._static_rebuild_failed_for) so the retry-loop hot path doesn't
+ * re-run file I/O when inputs haven't changed. */
+void system_prompt_reconstruct_static_prefix(agent_state_t *agent,
+                                             const system_prompt_config_t *cfg)
+{
+    if (!agent) return;
+    if (!agent->use_prompt_caching) return;   /* fast path: no-op */
+
+    const char *stored = agent->cached_system_prompt;
+    if (!stored || !stored[0]) return;
+
+    /* If we already have a static prefix and the stored prompt starts with
+     * it, there's nothing to rebuild. */
+    if (agent->cached_system_prompt_static &&
+        agent->cached_system_prompt_static[0] &&
+        strncmp(stored, agent->cached_system_prompt_static,
+                strlen(agent->cached_system_prompt_static)) == 0) {
+        return;
+    }
+
+    /* Memorize failed rebuilds — don't re-run file I/O for the same prompt. */
+    if (agent->static_rebuild_failed_for &&
+        strcmp(agent->static_rebuild_failed_for, stored) == 0) {
+        return;
+    }
+
+    char *static_part = system_prompt_build_stable(cfg);
+    if (static_part && static_part[0] && stored) {
+        /* startswith gate: only adopt if the stored prompt literally starts
+         * with the rebuilt stable tier. */
+        size_t slen = strlen(static_part);
+        if (strncmp(stored, static_part, slen) == 0) {
+            if (agent->cached_system_prompt_static)
+                free(agent->cached_system_prompt_static);
+            agent->cached_system_prompt_static = static_part;
+            if (agent->static_rebuild_failed_for)
+                free(agent->static_rebuild_failed_for);
+            agent->static_rebuild_failed_for = NULL;
+            return;
+        }
+    }
+
+    /* Reconstruction failed or the rebuilt prefix didn't match — memoize the
+     * failure and clear any stale static prefix (fall back to legacy layout). */
+    free(static_part);
+    if (agent->cached_system_prompt_static) {
+        free(agent->cached_system_prompt_static);
+        agent->cached_system_prompt_static = NULL;
+    }
+    if (agent->static_rebuild_failed_for)
+        free(agent->static_rebuild_failed_for);
+    agent->static_rebuild_failed_for = strdup(stored);
+}
+

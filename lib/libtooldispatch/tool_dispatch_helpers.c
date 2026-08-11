@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <limits.h>
 #include <unistd.h>
 
 /* ================================================================
@@ -921,4 +922,105 @@ char *plan_tool_batch_segments(const char *tool_calls_json,
     char *out = json_serialize(segments);
     json_free(segments);
     return out;
+}
+
+/* PoP: _extract_parallel_scope_paths @ agent/tool_dispatch_helpers.py:_extract_parallel_scope_paths */
+
+/* Local canonical path helper (self-contained — mirrors canonicalize_path
+ * in src/agent/port_agent_core_helpers.c but avoids a cross-layer dependency
+ * from this lib into a src/ TU). realpath resolves symlinks on existing
+ * components; for not-yet-created paths we fall back to absolute lexical form. */
+static char *canonicalize_path(const char *raw_path, const char *execution_cwd) {
+    if (!raw_path || !raw_path[0]) return NULL;
+    char expanded[4096];
+    if (raw_path[0] == '~' && (raw_path[1] == '/' || raw_path[1] == '\0')) {
+        const char *home = getenv("HOME");
+        if (home) snprintf(expanded, sizeof(expanded), "%s%s", home, raw_path + 1);
+        else snprintf(expanded, sizeof(expanded), "%s", raw_path);
+    } else snprintf(expanded, sizeof(expanded), "%s", raw_path);
+    char candidate[4608];
+    if (expanded[0] == '/') snprintf(candidate, sizeof(candidate), "%s", expanded);
+    else { const char *base = (execution_cwd && *execution_cwd) ? execution_cwd : ".";
+          snprintf(candidate, sizeof(candidate), "%s/%s", base, expanded); }
+    char resolved[PATH_MAX];
+    if (realpath(candidate, resolved)) return strdup(resolved);
+    /* fallback: absolute lexical path */
+    char cwd[PATH_MAX];
+    if (candidate[0] == '/') return strdup(candidate);
+    if (getcwd(cwd, sizeof(cwd))) {
+        char *out = malloc(strlen(cwd) + strlen(candidate) + 2);
+        if (out) { snprintf(out, strlen(cwd)+strlen(candidate)+2, "%s/%s", cwd, candidate); return out; }
+    }
+    return strdup(candidate);
+}
+
+char **extract_parallel_scope_paths(const char *tool_name,
+                                    const char *args_json,
+                                    size_t *count_out)
+{
+    if (count_out) *count_out = 0;
+    if (!tool_name || !args_json || !args_json[0]) return NULL;
+
+    size_t cap = 8;
+    char **paths = calloc(cap, sizeof(char *));
+    if (!paths) return NULL;
+    size_t n = 0;
+
+    /* For write_file / patch (V4A multi-file), use extract_file_mutation_targets
+     * which already parses *** Update/Add/Delete/Move File headers. */
+    if (strcmp(tool_name, "write_file") == 0 || strcmp(tool_name, "patch") == 0) {
+        size_t mt_count = 0;
+        char **mt = extract_file_mutation_targets(tool_name, args_json, &mt_count);
+        for (size_t i = 0; i < mt_count; i++) {
+            char *canon = canonicalize_path(mt[i], NULL);
+            if (canon) {
+                /* de-dup */
+                bool seen = false;
+                for (size_t j = 0; j < n; j++)
+                    if (strcmp(paths[j], canon) == 0) { seen = true; break; }
+                if (!seen) {
+                    if (n >= cap) { cap *= 2; char **np = realloc(paths, cap * sizeof(char *)); if (!np) break; paths = np; }
+                    paths[n++] = canon;
+                } else {
+                    free(canon);
+                }
+            }
+        }
+        free_mutation_targets(mt, mt_count);
+    } else {
+        /* read_file / search_files: extract the "path" arg. */
+        char *jerr = NULL;
+        json_t *args = json_parse(args_json, &jerr);
+        if (jerr) free(jerr);
+        if (args) {
+            const char *raw_path = NULL;
+            json_t *pn = json_obj_get(args, "path");
+            if (pn && pn->type == JSON_STRING) raw_path = pn->str_val;
+            if (raw_path && raw_path[0]) {
+                char *canon = canonicalize_path(raw_path, NULL);
+                if (canon) {
+                    if (n >= cap) { cap *= 2; char **np = realloc(paths, cap * sizeof(char *)); if (!np) { free(canon); canon = NULL; } else paths = np; }
+                    if (canon) paths[n++] = canon;
+                }
+            } else if (strcmp(tool_name, "search_files") == 0) {
+                /* search_files defaults its root to "." when path omitted. */
+                char *canon = canonicalize_path(".", NULL);
+                if (canon) {
+                    if (n >= cap) { cap *= 2; char **np = realloc(paths, cap * sizeof(char *)); if (!np) { free(canon); canon = NULL; } else paths = np; }
+                    if (canon) paths[n++] = canon;
+                }
+            }
+        }
+        if (args) json_free(args);
+    }
+
+    if (count_out) *count_out = n;
+    return paths;
+}
+
+/* PoP: _extract_parallel_scope_paths @ agent/tool_dispatch_helpers.py:_extract_parallel_scope_paths */
+void free_scope_paths(char **paths, size_t count) {
+    if (!paths) return;
+    for (size_t i = 0; i < count; i++) free(paths[i]);
+    free(paths);
 }

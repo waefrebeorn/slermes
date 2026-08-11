@@ -2636,6 +2636,46 @@ int hermes_cli_security_audit_u_discover_mcp(const char *arg) {
     return 0;
 }
 
+/* PoP: _discover_components @ hermes_cli/security_audit.py:_discover_components */
+int hermes_cli_security_audit_u_discover_components(const char *arg) {
+    /* Python: discover all scannable components across enabled sources —
+     * concatenates _discover_venv() + _discover_plugins(home) +
+     * _discover_mcp() into a single list[Component]. In the C echo-wrapper
+     * scheme each sub-discovery is invoked separately and its JSON result
+     * passed here as the concatenated payload. Arg = "venv_json\tplugins_json\tmcp_json". */
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+
+    /* Split on tab into three JSON fragments and merge into one array. */
+    json_t *merged = json_array();
+    const char *cur = arg;
+    for (int seg = 0; seg < 3 && cur && *cur; seg++) {
+        const char *tab = strchr(cur, '\t');
+        char frag[8192];
+        size_t flen = tab ? (size_t)(tab - cur) : strlen(cur);
+        if (flen >= sizeof(frag)) flen = sizeof(frag) - 1;
+        memcpy(frag, cur, flen);
+        frag[flen] = '\0';
+
+        char *jerr = NULL;
+        json_t *arr = json_parse(frag, &jerr);
+        if (jerr) free(jerr);
+        if (arr && arr->type == JSON_ARRAY) {
+            for (size_t i = 0; i < arr->c.count; i++)
+                json_append(merged, json_copy(arr->c.items[i]));
+        }
+        if (arr) json_free(arr);
+
+        if (tab) cur = tab + 1;
+        else break;
+    }
+
+    char *out = json_serialize(merged);
+    json_free(merged);
+    printf("%s\n", out ? out : "[]");
+    free(out);
+    return 0;
+}
+
 /* PoP: _http_post_json @ hermes_cli/security_audit.py:_http_post_json */
 int hermes_cli_security_audit_u_http_post_json(const char *arg) {
     /* Python: urllib POST JSON, parse response JSON. Arg =
@@ -10692,6 +10732,48 @@ int hermes_cli_cli_agent_setup_mix_u_display_resumed_history(const char *arg) {
     if (!state) { printf("0 (no history / minimal mode)\n"); return 0; }
     if (!shown) { printf("0 (empty after filter)\n"); return 0; }
     printf("1 (recap capped at %s exchanges; hidden-earlier indicator; dim styling; output-history suspended)%s\n", t2 ? t2 + 1 : "10", (t2 && t2[1] == '1') ? " — reasoning tags stripped" : "");
+    return 0;
+}
+
+/* PoP: _runtime_credentials_ready @ hermes_cli/cli_agent_setup_mixin.py:_runtime_credentials_ready */
+int hermes_cli_cli_agent_setup_mix_u_runtime_credentials_ready(const char *arg) {
+    /* Python: silently probe whether any inference provider can be resolved.
+     * Arg = "provider\tapi_key\tbase_url" (resolved runtime from
+     * resolve_runtime_provider). Never prints; returns 1/0. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *api_key = t1 ? t1 + 1 : "";
+    const char *base_url = t2 ? t2 + 1 : "";
+    /* Python: if callable(api_key) and not isinstance(api_key, str): return bool(base_url)
+     *         if isinstance(api_key, str) and api_key: return bool(base_url)
+     *         return bool(base_url and "openrouter.ai" not in base_url)
+     * In the wrapper scheme api_key is a string (or empty for keyless local). */
+    bool ready;
+    if (api_key && *api_key) {
+        ready = base_url && *base_url;
+    } else {
+        /* keyless custom/local endpoints */
+        ready = (base_url && *base_url && strstr(base_url, "openrouter.ai") == NULL);
+    }
+    printf("%d\n", ready ? 1 : 0);
+    return 0;
+}
+
+/* PoP: _offer_first_run_setup @ hermes_cli/cli_agent_setup_mixin.py:_offer_first_run_setup */
+int hermes_cli_cli_agent_setup_mix_u_offer_first_run_setup(const char *arg) {
+    /* Python: offer provider picker when no provider configured (interactive).
+     * Arg = "offered\tanswer\tconfigured" where answer in {y,n} and
+     * configured=1 means a provider was picked. */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    int offered = arg[0] == '1';
+    int configured = t2 ? (t2[1] == '1' ? 1 : 0) : 0;
+    if (!offered) { printf("0 (no tty / already configured)\n"); return 0; }
+    if (!configured) { printf("0 (skipped or cancelled: 'Run hermes model')\n"); return 0; }
+    printf("1 (provider configured; CLI state resynced from config)\n");
     return 0;
 }
 

@@ -14,6 +14,7 @@
 #include "json.h"
 #include "hermes_agent.h"
 #include "hermes_gateway_types.h"
+#include "hermes_system_prompt.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -502,19 +503,19 @@ bool cvl_rewrite_system_content_blocks(json_t *system_message, const char *effec
 /* ---- _ensure_cached_system_prompt_static ---- */
 /* Python: delegate to agent.system_prompt.reconstruct_static_prefix(agent,
  * system_message=..., log_label="failover redecoration").
- * C: the system_prompt module is not yet ported. We provide the contract
- *    boundary: if the C agent state has cached_system_prompt, the caller
- *    (failover path) should trigger reconstruction. We return whether the
- *    static prefix is stale (NULL or empty). */
+ * C: delegates to the real port in system_prompt.c, which rebuilds the
+ *    stable tier via system_prompt_build_stable() and applies the startswith
+ *    gate + failed-rebuild memoization. */
 /* PoP: _ensure_cached_system_prompt_static @ agent/conversation_loop.py:_ensure_cached_system_prompt_static */
-bool cvl_ensure_cached_system_prompt_static(const agent_state_t *agent) {
-    /* In Python: always calls reconstruct_static_prefix which memoizes
-     * failed rebuilds. In C, the equivalent is a call to the system_prompt
-     * reconstruction module (port of agent/system_prompt.py) which is not
-     * yet available. We expose the stale-check here so the failover path
-     * can decide whether to rebuild. */
+bool cvl_ensure_cached_system_prompt_static(agent_state_t *agent,
+                                            const system_prompt_config_t *cfg) {
     if (!agent) return false;
-    return (agent->cached_system_prompt == NULL || agent->cached_system_prompt[0] == '\0');
+    bool stale = (agent->cached_system_prompt_static == NULL ||
+                  agent->cached_system_prompt_static[0] == '\0');
+    if (stale) {
+        system_prompt_reconstruct_static_prefix(agent, cfg);
+    }
+    return stale;
 }
 
 /* ---- _peel_moa_guidance ---- */

@@ -187,6 +187,17 @@ char *build_environment_hints(void);
  * Returns malloc'd hint string (caller must free) or NULL. */
 char *probe_remote_backend(const char *env_type);
 
+/* reconstruct_static_prefix — port of Python
+ * agent/system_prompt.py::reconstruct_static_prefix.
+ *
+ * Rebuilds _cached_system_prompt_static (the stable tier) for a stored
+ * system prompt so prefix-cache consumers regain the two-block layout.
+ * The rebuilt stable tier is used ONLY when the stored prompt literally
+ * starts with it (startswith gate) — never a rewritten prompt. Failed
+ * rebuilds are memoized per stored prompt. */
+void system_prompt_reconstruct_static_prefix(agent_state_t *agent,
+                                             const system_prompt_config_t *cfg);
+
 /* Check if model should use 'developer' role instead of 'system' at API boundary.
  * Port of Python prompt_builder.py:DEVELOPER_ROLE_MODELS. */
 bool is_developer_role_model(const char *model_name);
