@@ -259,3 +259,51 @@ int gw_weixin_send_typing(const char *base_url, const char *token,
     (void)status;
     return 0;
 }
+
+/* ── gateway/restart.py remaining gap functions ───────────────────── */
+
+/* PoP: is_container_restart_context @ gateway/restart.py:is_container_restart_context */
+bool gw_is_container_restart_context(void) {
+    /* Python: /.dockerenv or /run/.containerenv on disk — Docker/Podman
+     * cgroup means the detached setsid path dies with the cgroup, so
+     * exit-75 service restart is the only viable restart path. */
+    return access("/.dockerenv", F_OK) == 0 ||
+           access("/run/.containerenv", F_OK) == 0;
+}
+
+/* PoP: parse_restart_after_turn_timeout @ gateway/restart.py:parse_restart_after_turn_timeout */
+double gw_parse_restart_after_turn_timeout(const char *raw, double default_timeout) {
+    /* Python: 0 is a deliberate disable (legacy immediate drain) and must NOT
+     * fall through to the default — unlike empty/missing input. */
+    static const double DEFAULT_AFTER_TURN = 21600.0;
+    double fallback = default_timeout;
+    if (fallback <= 0.0) fallback = DEFAULT_AFTER_TURN;
+
+    if (raw == NULL) return fallback;
+    if (raw[0] == '\0') return fallback;
+
+    /* Check for empty/whitespace string */
+    bool all_space = true;
+    for (const char *p = raw; *p; p++) {
+        if (*p != ' ' && *p != '\\t') { all_space = false; break; }
+    }
+    if (all_space) return fallback;
+
+    char *end = NULL;
+    double v = strtod(raw, &end);
+    if (end == raw || *end != '\\0') return fallback;
+    /* Python: max(0.0, value) — 0 is a valid disable. */
+    return v > 0.0 ? v : 0.0;
+}
+
+/* PoP: resolve_restart_exit_wait_budget @ gateway/restart.py:resolve_restart_exit_wait_budget */
+double gw_resolve_restart_exit_wait_budget(double drain_timeout,
+                                           double after_turn_timeout,
+                                           double headroom) {
+    /* Python: drain + after_turn + headroom (default headroom 15.0).
+     * Each component is guarded against TypeError/ValueError → 0.0. */
+    double drain = (drain_timeout > 0.0) ? drain_timeout : 0.0;
+    double after_turn = (after_turn_timeout > 0.0) ? after_turn_timeout : 0.0;
+    double margin = (headroom > 0.0) ? headroom : 15.0;
+    return drain + after_turn + margin;
+}

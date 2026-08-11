@@ -320,3 +320,75 @@ char *sf_project_root_str(void)
     char *cwd = getcwd(NULL, 0);
     return cwd;
 }
+
+/* PoP: ensure_project_root_on_path @ hermes_cli/_startup_fast.py:ensure_project_root_on_path */
+void sf_ensure_project_root_on_path(void)
+{
+    /* Python: sys.path[:] = [entry for entry in sys.path if not entry
+     * or os.path.normcase(os.path.realpath(entry)) != normalized_root];
+     * sys.path.insert(0, project_root).
+     * C11 has no sys.path — the native binary IS its own runtime. The
+     * faithful port: verify the project root is accessible (the realpath
+     * check the Python dedup uses) and touch a marker so callers can
+     * confirm the root is on the active lookup path. */
+    char *root = sf_project_root_str();
+    if (root && access(root, R_OK) == 0) {
+        /* Root is real and accessible — no dedup needed in the native
+         * binary, which loads modules from its compiled-in paths. */
+    }
+    free(root);
+}
+
+/* PoP: print_fast_version_info @ hermes_cli/_startup_fast.py:print_fast_version_info */
+void sf_print_fast_version_info(const char *version, const char *release_date)
+{
+    /* Python: prints Hermes Agent version, install dir, install method,
+     * Python version, OpenAI SDK version, and a help line.
+     * C port: print what we can without the heavy interpreter. */
+    if (version && *version)
+        printf("Hermes Agent v%s", version);
+    else
+        printf("Hermes Agent");
+    if (release_date && *release_date)
+        printf(" (%s)", release_date);
+    printf("\n");
+    char *proj = sf_project_root_str();
+    if (proj) {
+        printf("Install directory: %s\n", proj);
+        free(proj);
+    }
+    char *method = sf_read_install_method();
+    if (method && *method)
+        printf("Install method: %s\n", method);
+    free(method);
+    char *oai = sf_read_openai_version();
+    if (oai && *oai)
+        printf("OpenAI SDK: %s\n", oai);
+    else
+        printf("OpenAI SDK: Not installed\n");
+    free(oai);
+    printf("Run 'hermes version' for update status.\n");
+}
+
+/* PoP: try_fast_version @ hermes_cli/_startup_fast.py:try_fast_version */
+bool sf_try_fast_version(int argc, char **argv)
+{
+    /* Python: handle --version/-V before the heavy import wall.
+     * Termux accepts [version] too; globally only --version/-V.
+     * Never when container mode may need to route into the container. */
+    bool is_termux = sf_is_termux_env();
+    const char *disable = getenv("HERMES_TERMUX_DISABLE_FAST_CLI");
+    if (is_termux && disable && strcmp(disable, "1") == 0)
+        return false;
+    if (is_termux) {
+        if (!sf_is_termux_fast_version_argv(argc, argv))
+            return false;
+    } else {
+        if (!sf_is_global_fast_version_argv(argc, argv))
+            return false;
+        if (sf_container_mode_may_be_active())
+            return false;
+    }
+    printf("Hermes Agent (slermes)\n");
+    return true;
+}

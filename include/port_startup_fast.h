@@ -55,6 +55,18 @@ char *sf_resolved_home(void);
 /* The project root (repo dir) as a string. */
 char *sf_project_root_str(void);
 
+/* PoP: ensure_project_root_on_path @ hermes_cli/_startup_fast.py:ensure_project_root_on_path */
+/* Put the project root at sys.path[0], deduping realpath-equivalents. */
+void sf_ensure_project_root_on_path(void);
+
+/* PoP: print_fast_version_info @ hermes_cli/_startup_fast.py:print_fast_version_info */
+/* Print version info to stdout before the heavy import wall. */
+void sf_print_fast_version_info(const char *version, const char *release_date);
+
+/* PoP: try_fast_version @ hermes_cli/_startup_fast.py:try_fast_version */
+/* Handle --version/-V before the heavy import wall. Returns true if handled. */
+bool sf_try_fast_version(int argc, char **argv);
+
 #ifdef __cplusplus
 }
 #endif
