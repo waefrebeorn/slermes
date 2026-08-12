@@ -135,45 +135,6 @@ static char *build_http_response(int status, const char *status_text,
 }
 
 /* ================================================================
- *  JSON string escaper
- * ================================================================ */
-
-static char *json_escape_str(const char *s) {
-    if (!s) return strdup("null");
-    size_t cap = strlen(s) * 2 + 3; /* worst case: all chars escaped */
-    char *out = malloc(cap);
-    if (!out) return NULL;
-    size_t j = 0;
-    out[j++] = '"';
-    for (const char *p = s; *p; p++) {
-        switch (*p) {
-            case '"':  out[j++] = '\\'; out[j++] = '"';  break;
-            case '\\': out[j++] = '\\'; out[j++] = '\\'; break;
-            case '\n': out[j++] = '\\'; out[j++] = 'n';  break;
-            case '\r': out[j++] = '\\'; out[j++] = 'r';  break;
-            case '\t': out[j++] = '\\'; out[j++] = 't';  break;
-            default:
-                if ((unsigned char)*p < 0x20) {
-                    /* control char — skip or encode as \u00xx */
-                    j += snprintf(out + j, cap - j, "\\u%04x", (unsigned char)*p);
-                } else {
-                    out[j++] = *p;
-                }
-                break;
-        }
-        if (j >= cap - 8) {
-            cap *= 2;
-            char *tmp = realloc(out, cap);
-            if (!tmp) { free(out); return NULL; }
-            out = tmp;
-        }
-    }
-    out[j++] = '"';
-    out[j] = '\0';
-    return out;
-}
-
-/* ================================================================
  *  HTTP request body extractor
  * ================================================================
  * Returns pointer to body within buf (after \r\n\r\n), or NULL.
@@ -939,9 +900,10 @@ static void handle_webhook_request(int client_fd) {
     extern gateway_state_t g_gw;
     char *agent_resp = agent_chat(&g_gw.agent, text);
 
-    /* Build JSON response */
-    char *escaped_resp = json_escape_str(agent_resp ? agent_resp : "");
-    char *escaped_chat = json_escape_str(chat_id);
+    /* Build JSON response — json_escape_string from libjson returns a quoted
+     * JSON string literal; NULL inputs embed as bare JSON null. */
+    char *escaped_resp = json_escape_string(agent_resp ? agent_resp : "");
+    char *escaped_chat = chat_id ? json_escape_string(chat_id) : strdup("null");
 
     char json_buf[65536];
     snprintf(json_buf, sizeof(json_buf),

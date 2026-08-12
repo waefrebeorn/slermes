@@ -17,6 +17,7 @@
 
 #define _GNU_SOURCE
 #include "plugin.h"
+#include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -140,27 +141,6 @@ static void load_state(void) {
 }
 
 /* ================================================================
- *  JSON escape helper
- * ================================================================ */
-
-static char *json_escape(const char *s) {
-    if (!s) return strdup("");
-    size_t cap = strlen(s) * 2 + 2;
-    char *out = (char *)malloc(cap);
-    if (!out) return strdup("");
-    size_t j = 0;
-    for (const char *sp = s; *sp && j < cap - 2; sp++) {
-        if (*sp == '"' || *sp == '\\') { out[j++] = '\\'; out[j++] = *sp; }
-        else if (*sp == '\n') { out[j++] = '\\'; out[j++] = 'n'; }
-        else if (*sp == '\t') { out[j++] = '\\'; out[j++] = 't'; }
-        else if (*sp == '\r') { out[j++] = '\\'; out[j++] = 'r'; }
-        else out[j++] = *sp;
-    }
-    out[j] = '\0';
-    return out;
-}
-
-/* ================================================================
  *  FAL.ai REST API via curl popen
  * ================================================================ */
 
@@ -219,7 +199,7 @@ static char *fal_api_call(const char *json_body) {
     }
 
     /* Escape the JSON body for shell */
-    char *escaped = json_escape(json_body);
+    char *escaped = json_escape_string(json_body);
     if (!escaped) return NULL;
 
     /* Build curl command */
@@ -326,7 +306,7 @@ static char *impl_image_gen(const char *prompt, const char *params_json) {
     }
 
     /* Build JSON body for FAL API */
-    char *esc_prompt = json_escape(prompt);
+    char *esc_prompt = json_escape_string(prompt);
     if (!esc_prompt) return strdup("{\"error\":\"OOM\"}");
 
     char body[8192];

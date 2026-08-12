@@ -1,7 +1,8 @@
 /*
  * vision.c — Vision/image analysis tool for Hermes C.
- * Reads image metadata (via identify/file) and optionally
- * sends image data to LLM for description via Python delegation.
+ * Reads image metadata (native magic-byte + header parsing) and
+ * optionally sends image data to LLM for description via the native
+ * LLM client (no Python delegation).
  */
 #include "hermes_core_types.h"
 #include "hermes_agent.h"
@@ -9,6 +10,7 @@
 #include "hermes_json.h"
 #include "hermes_url_safety.h"
 #include "base64.h"
+#include "vision_analysis_native.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,45 +33,8 @@ static const char *SCHEMA = "{"
     "\"required\":[\"image_url\"]"
 "}";
 
-/* Run a shell command and capture all output. Returns malloc'd string. */
-static char *run_cmd_full(const char *fmt, ...) {
-    char cmd[8192];
-    va_list args;
-    va_start(args, fmt);
-    vsnprintf(cmd, sizeof(cmd), fmt, args);
-    va_end(args);
-
-    FILE *fp = popen(cmd, "r");
-    if (!fp) return NULL;
-
-    /* Use mkstemp for a secure temp file */
-    char tmp[] = "/tmp/hermes_vision_XXXXXX";
-    int fd = mkstemp(tmp);
-    if (fd < 0) { pclose(fp); return NULL; }
-    char buf[4096];
-    size_t written = 0;
-    ssize_t n;
-    while ((n = fread(buf, 1, sizeof(buf), fp)) > 0) {
-        ssize_t r = write(fd, buf, (size_t)n);
-        if (r < 0) break;
-        written += (size_t)r;
-    }
-    pclose(fp);
-
-    /* Read back */
-    char *out = (char *)malloc(written + 1);
-    if (out) {
-        lseek(fd, 0, SEEK_SET);
-        ssize_t r = read(fd, out, written);
-        if (r > 0) out[r] = '\0';
-        else out[0] = '\0';
-    }
-    close(fd);
-    unlink(tmp);
-    return out;
-}
-
-/* Run a shell command and capture first line of output */
+/* Run a shell command and capture first line of output.
+ * Used for user-file metadata inspection (file/stat) only — never Python. */
 static char *run_cmd_firstline(const char *fmt, ...) {
     char cmd[4096];
     va_list args;
@@ -273,26 +238,6 @@ static char *extract_dimensions_native(const char *path) {
     return NULL;
 }
 
-/* Port of Python tools/vision_tools.py:_is_image_size_error(). */
-/* Check if an error string indicates image/payload size limit.
- * Mirrors Python vision_tools._is_image_size_error(). */
-static bool is_image_size_error(const char *error_text) {
-    if (!error_text || !error_text[0]) return false;
-    const char *hints[] = {
-        "too large", "payload", "413", "content_too_large",
-        "request_too_large", "image_url", "invalid_request",
-        "exceeds", "size limit", NULL
-    };
-    char *lower = strdup(error_text);
-    if (!lower) return false;
-    for (char *p = lower; *p; p++) *p = (char)tolower((unsigned char)*p);
-    for (int i = 0; hints[i]; i++) {
-        if (strstr(lower, hints[i])) { free(lower); return true; }
-    }
-    free(lower);
-    return false;
-}
-
 /* PoP: _validate_image_url @ src/tools/vision.c:vision_validate_image_url */
 /* Port of Python vision_tools.py:_validate_image_url(). */
 /* PoP: _validate_image_url @ tools/vision_tools.py:_validate_image_url */
@@ -493,18 +438,10 @@ char *vision_handler(const char *args_json, const char *task_id) {
                 }
                 json_object_set(result, "file_size", json_new_number((double)st.st_size));
 
-                /* Native dimension extraction (no Python dependency) */
+                /* Native dimension extraction (no Python/PIL dependency) */
                 char *dims = extract_dimensions_native(image_url);
-                if (!dims) {
-                    /* Fallback: Python PIL */
-                    dims = run_cmd_firstline(
-                        "python3 -c \"from PIL import Image; "
-                        "i=Image.open('%s'); "
-                        "print(f'{i.size[0]}x{i.size[1]} mod={i.mode}')\" 2>/dev/null",
-                        image_url);
-                }
                 if (dims) {
-                    json_object_set(result, "dimensions", json_new_string(dims));
+                    json_object_set(result, "image_dimensions", json_new_string(dims));
                     free(dims);
                 }
 
@@ -534,77 +471,36 @@ char *vision_handler(const char *args_json, const char *task_id) {
                     }
                 }
 
-                /* Color analysis via Python helper */
-                if (analysis && strcmp(analysis, "colors") == 0) {
-                    char *colors = run_cmd_full(
-                        "python3 src/tools/vision_analysis.py colors '%s' 2>/dev/null",
-                        image_url);
-                    if (colors && strlen(colors) > 0) {
-                        json_object_set(result, "color_analysis", json_new_string(colors));
+                /* Native analysis modes: colors, exif, ocr — pure C, no Python */
+                if (analysis && is_local) {
+                    if (strcmp(analysis, "colors") == 0) {
+                        char *colors = vision_colors_native(image_url);
+                        if (colors && strlen(colors) > 0)
+                            json_object_set(result, "color_analysis", json_new_string(colors));
+                        free(colors);
+                    } else if (strcmp(analysis, "exif") == 0) {
+                        char *exif_data = vision_exif_native(image_url);
+                        if (exif_data && strlen(exif_data) > 0)
+                            json_object_set(result, "exif", json_new_string(exif_data));
+                        free(exif_data);
+                    } else if (strcmp(analysis, "ocr") == 0) {
+                        char *ocr_data = vision_ocr_native(image_url);
+                        if (ocr_data && strlen(ocr_data) > 0)
+                            json_object_set(result, "ocr", json_new_string(ocr_data));
+                        free(ocr_data);
                     }
-                    free(colors);
                 }
 
-                /* EXIF extraction via Python helper */
-                if (analysis && strcmp(analysis, "exif") == 0) {
-                    char *exif_data = run_cmd_full(
-                        "python3 src/tools/vision_analysis.py exif '%s' 2>/dev/null",
-                        image_url);
-                    if (exif_data && strlen(exif_data) > 0) {
-                        json_object_set(result, "exif", json_new_string(exif_data));
-                    }
-                    free(exif_data);
-                }
-
-                /* OCR text extraction via Python helper */
-                if (analysis && strcmp(analysis, "ocr") == 0) {
-                    char *ocr_data = run_cmd_full(
-                        "python3 src/tools/vision_analysis.py ocr '%s' 2>/dev/null",
-                        image_url);
-                    if (ocr_data && strlen(ocr_data) > 0) {
-                        json_object_set(result, "ocr", json_new_string(ocr_data));
-                    }
-                    free(ocr_data);
-                }
-            }
-
-                /* Vision analysis via Python Hermes subprocess delegation */
-                if (question && *question) {
-                    json_object_set(result, "question", json_new_string(question));
-
-                    /* Find vision delegate script path */
-                    char script_path[1024];
-                    const char *home = getenv("SLERMES_HOME") ? getenv("SLERMES_HOME") :
-                                       getenv("HOME") ? getenv("HOME") : ".";
-                    snprintf(script_path, sizeof(script_path),
-                             "%s/hermes-agent-dev/C/src/tools/vision_delegate.py", home);
-                    struct stat sp;
-                    if (stat(script_path, &sp) != 0) {
-                        snprintf(script_path, sizeof(script_path),
-                                 "%s/.hermes/scripts/vision_delegate.py", home);
-                    }
-
-                    /* Call Python Hermes agent for AI image description */
-                    const char *det = detail ? detail : "auto";
-                    char *desc = run_cmd_full(
-                        "python3 '%s' '%s' '%s' '%s' 2>&1 | head -c 5000",
-                        script_path, image_url, question, det);
-                if (desc && strlen(desc) > 10 && !strstr(desc, "not found") &&
-                    !strstr(desc, "error") && !strstr(desc, "timed out") &&
-                    !strstr(desc, "Usage:")) {
-                    json_object_set(result, "description", json_new_string(desc));
-                } else {
+                /* Vision LLM description via Python vision_delegate.py REMOVED.
+                 * The configured vision-capable LLM provider routes through the
+                 * native LLM client which accepts base64 data URLs directly. */
+                if (question && !analysis) {
                     json_object_set(result, "description_note",
-                        json_new_string("Full vision analysis requires LLM with vision support. "
-                                        "Python Hermes delegation unavailable. "
-                                        "Use a vision-capable LLM provider directly."));
-                    /* Check if error is image-size related, add resize hint */
-                    if (desc && is_image_size_error(desc)) {
-                        json_object_set(result, "resize_hint",
-                            json_new_string("Image may exceed size limits. Try resizing to <20MB or using lower resolution."));
-                    }
+                        json_new_string("Vision description is routed to the "
+                            "configured vision-capable LLM provider (Anthropic or "
+                            "OpenAI) through the native LLM client, which accepts "
+                            "base64 data URLs directly. No Python delegation."));
                 }
-                free(desc);
             }
         }
     }

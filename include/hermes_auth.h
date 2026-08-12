@@ -13,6 +13,7 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include "hermes_json.h"  /* json_t (used in auth_store_load_provider_state) */
 
 #ifdef __cplusplus
 extern "C" {
@@ -129,6 +130,11 @@ oauth_token_t *xai_oauth_exchange(
 
 /* Load auth entries from ~/.hermes/auth.json. Returns NULL-terminated array. */
 auth_entry_t *auth_store_load(const char *hermes_home, int *count);
+
+/* Load a single provider's auth state (providers.<provider_id> sub-object)
+ * from auth.json as a deep-copied json_t (caller json_frees). Returns NULL
+ * if absent. Shared by chat_completion_helpers.c and account_usage.c. */
+json_t *auth_store_load_provider_state(const char *provider_id);
 
 /* Save a single auth entry to auth.json (merges with existing). */
 bool auth_store_save(const char *hermes_home, const auth_entry_t *entry);

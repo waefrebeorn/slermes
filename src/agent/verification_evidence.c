@@ -4,6 +4,7 @@
  */
 
 #include "verification_evidence.h"
+#include "hermes_json.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -459,22 +460,7 @@ void verification_classify(const char *command, const char *cwd,
 
 #include "db.h"
 
-static char *json_escape(const char *s) {
-    /* minimal escape for db storage */
-    size_t len = strlen(s ? s : "");
-    char *out = (char*)malloc(len*2+8);
-    char *p = out;
-    *p++ = '"';
-    for (size_t i = 0; i < len; i++) {
-        char c = s[i];
-        if (c == '"' || c == '\\') { *p++ = '\\'; *p++ = c; }
-        else if (c == '\n') { *p++ = '\\'; *p++ = 'n'; }
-        else if (c == '\r') { *p++ = '\\'; *p++ = 'r'; }
-        else *p++ = c;
-    }
-    *p++ = '"'; *p = '\0';
-    return out;
-}
+/* json_escape_string provided by libjson (hermes_json.h) — shared by all ports. */
 
 static const char *kind_str(verify_kind_t k) {
     switch (k) {
@@ -523,12 +509,12 @@ bool verification_record_result(const char *db_dir, const char *command,
     else events_json = xstrdup("[]");
     free(existing);
 
-    char *esc_cmd = json_escape(out->command);
-    char *esc_can = json_escape(out->canonical_command);
-    char *esc_cwd = json_escape(out->cwd);
-    char *esc_root = json_escape(out->root);
-    char *esc_sid = json_escape(out->session_id);
-    char *esc_out = json_escape(out->output_summary);
+    char *esc_cmd = json_escape_string(out->command);
+    char *esc_can = json_escape_string(out->canonical_command);
+    char *esc_cwd = json_escape_string(out->cwd);
+    char *esc_root = json_escape_string(out->root);
+    char *esc_sid = json_escape_string(out->session_id);
+    char *esc_out = json_escape_string(out->output_summary);
 
     size_t cap = strlen(events_json) + 2048;
     char *new_events = (char*)malloc(cap);
@@ -538,9 +524,9 @@ bool verification_record_result(const char *db_dir, const char *command,
         "\"root\":%s,\"session_id\":%s,\"output_summary\":%s}]",
         (int)strlen(events_json)-1, events_json,
         (events_json[1]=='{' || events_json[1]=='\0') ? "" : ",",
-        json_escape(now), esc_cmd, esc_can,
-        json_escape(kind_str(out->kind)), json_escape(scope_str(out->scope)),
-        json_escape(status_str(out->status)), out->exit_code, esc_cwd,
+        json_escape_string(now), esc_cmd, esc_can,
+        json_escape_string(kind_str(out->kind)), json_escape_string(scope_str(out->scope)),
+        json_escape_string(status_str(out->status)), out->exit_code, esc_cwd,
         esc_root, esc_sid, esc_out);
     (void)off;
     free(esc_cmd); free(esc_can); free(esc_cwd); free(esc_root);
@@ -573,7 +559,7 @@ bool verification_mark_edited(const char *db_dir, const char *session_id,
         size_t cap = 8; for (int i=0;i<npaths;i++) cap += strlen(paths[i])+8;
         paths_json = (char*)malloc(cap);
         int o = sprintf(paths_json, "[");
-        for (int i=0;i<npaths;i++){ char *e=json_escape(paths[i]); o+=sprintf(paths_json+o, "%s%s", i?",":"", e); free(e);}
+        for (int i=0;i<npaths;i++){ char *e=json_escape_string(paths[i]); o+=sprintf(paths_json+o, "%s%s", i?",":"", e); free(e);}
         o+=sprintf(paths_json+o, "]");
     } else {
         paths_json = (char*)malloc(8); strcpy(paths_json, "[]");
@@ -581,7 +567,7 @@ bool verification_mark_edited(const char *db_dir, const char *session_id,
 
     size_t mcap = strlen(paths_json)+128;
     char *rec = (char*)malloc(mcap);
-    snprintf(rec, mcap, "{\"edited_at\":%s,\"changed_paths\":%s}", json_escape(now), paths_json);
+    snprintf(rec, mcap, "{\"edited_at\":%s,\"changed_paths\":%s}", json_escape_string(now), paths_json);
 
     bool ok = db_save(db, ek, rec);
     free(rec); free(paths_json); free(ek); free(k);
@@ -611,8 +597,8 @@ char *verification_status_json(const char *db_dir, const char *session_id,
 
     char *result;
     if (!events || events[0] != '[' || strlen(events) < 3) {
-        char *e2 = json_escape(r);
-        char *s2 = json_escape(sid);
+        char *e2 = json_escape_string(r);
+        char *s2 = json_escape_string(sid);
         size_t cap = strlen(e2)+strlen(s2)+96;
         result = (char*)malloc(cap);
         sprintf(result,
@@ -648,13 +634,13 @@ char *verification_status_json(const char *db_dir, const char *session_id,
                     else if (strncmp(q,"failed",6)==0) status="failed"; }
             }
         }
-        char *e2 = json_escape(r);
-        char *s2 = json_escape(sid);
+        char *e2 = json_escape_string(r);
+        char *s2 = json_escape_string(sid);
         size_t cap = strlen(status)+strlen(ev_copy)+strlen(e2)+strlen(s2)+160;
         result = (char*)malloc(cap);
         sprintf(result,
             "{\"status\":%s,\"evidence\":%s,\"root\":%s,\"session_id\":%s,\"changed_paths\":[]}",
-            json_escape(status), ev_copy, e2, s2);
+            json_escape_string(status), ev_copy, e2, s2);
         free(e2); free(s2); free(ev_copy);
     }
     free(k);

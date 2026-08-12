@@ -7,6 +7,7 @@
 
 #define _GNU_SOURCE
 #include "app_state_internal.h"
+#include "session_db.h"
 #include "gui_core.h"
 #include "slermes_home.h"
 #include "sqlite3.h"
@@ -123,178 +124,17 @@ int app_chat_y(app_state_t *app) { return TITLEBAR_H; }
 int app_chat_h(app_state_t *app) { return app ? app_win_h(app) - TITLEBAR_H - STATUSBAR_H : 0; }
 int app_sidebar_h(app_state_t *app) { return app ? app_win_h(app) - TITLEBAR_H - STATUSBAR_H : 0; }
 
-/* Database */
-int app_db_open(app_state_t *app) {
-    if (!app) return -1;
-    if (!slermes_initialized()) slermes_init();
-    snprintf(app->state_db_path, sizeof(app->state_db_path), "%s/%s",
-             slermes_home(), SLERMES_FILE_STATE_DB);
-    if (access(app->state_db_path, R_OK) != 0) {
-        fprintf(stderr, "state.db not found at %s\n", app->state_db_path);
-        return -1;
-    }
-    int rc = sqlite3_open_v2(app->state_db_path, &app->db,
-                              SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX, NULL);
-    if (rc != SQLITE_OK) {
-        fprintf(stderr, "Failed to open state.db: %s\n", sqlite3_errmsg(app->db));
-        return -1;
-    }
-    sqlite3_exec(app->db, "PRAGMA journal_mode=WAL; PRAGMA temp_store=memory;", NULL, NULL, NULL);
-    return 0;
-}
-
-void app_db_close(app_state_t *app) {
-    if (app && app->db) {
-        sqlite3_close(app->db);
-        app->db = NULL;
-    }
-}
-
-typedef int (*db_cb_t)(void*, int, char**, char**);
-
-static int db_query(app_state_t *app, const char *sql, db_cb_t cb, void *user) {
-    if (!app || !app->db) return -1;
-    char *err = NULL;
-    int rc = sqlite3_exec(app->db, sql, cb, user, &err);
-    if (rc != SQLITE_OK) {
-        fprintf(stderr, "SQL: %s\nErr: %s\n", sql, err ? err : "?");
-        sqlite3_free(err);
-    }
-    return rc;
-}
-
-static int cb_sessions(void *u, int argc, char **argv, char **cn) {
-    (void)u;
-    app_state_t *app = (app_state_t*)u;
-    if (!app || app->session_count >= MAX_SESSIONS) return 0;
-    app_session_entry_t *s = &app->sessions[app->session_count];
-    memset(s, 0, sizeof(*s));
-    for (int i = 0; i < argc; i++) {
-        if (!argv[i]) continue;
-        if (!strcmp(cn[i],"id")) snprintf(s->id,sizeof(s->id),"%s",argv[i]);
-        else if (!strcmp(cn[i],"title")) snprintf(s->title,sizeof(s->title),"%s",argv[i]);
-        else if (!strcmp(cn[i],"source")) snprintf(s->source,sizeof(s->source),"%s",argv[i]);
-        else if (!strcmp(cn[i],"model")) snprintf(s->model,sizeof(s->model),"%s",argv[i]);
-        else if (!strcmp(cn[i],"message_count")) s->msg_count = atoi(argv[i]);
-        else if (!strcmp(cn[i],"input_tokens")) s->tokens = atoi(argv[i]);
-        else if (!strcmp(cn[i],"started_at")) s->started_at = (long)atof(argv[i]);
-    }
-    app->session_count++;
-    return 0;
-}
-
-void app_load_sessions(app_state_t *app) {
-    if (!app) return;
-    app->session_count = 0;
-    char buf[1024];
-    snprintf(buf, sizeof(buf),
-        "SELECT id, COALESCE(NULLIF(title,''),id) AS title, "
-        "COALESCE(source,'cli') AS source, COALESCE(model,'') AS model, "
-        "COALESCE(message_count,0) AS message_count, "
-        "COALESCE(input_tokens,0) AS input_tokens, "
-        "COALESCE(started_at,0) AS started_at "
-        "FROM sessions WHERE parent_session_id IS NULL "
-        "ORDER BY started_at DESC LIMIT %d", MAX_SESSIONS);
-    db_query(app, buf, cb_sessions, app);
-    if (app->session_count > 0)
-        snprintf(app->latest_model, sizeof(app->latest_model), "%s", app->sessions[0].model);
-}
-
-static int cb_messages(void *u, int argc, char **argv, char **cn) {
-    (void)u;
-    app_state_t *app = (app_state_t*)u;
-    if (!app || app->message_count >= MAX_MESSAGES) return 0;
-    message_entry_t *m = &app->messages[app->message_count];
-    memset(m, 0, sizeof(*m));
-    for (int i = 0; i < argc; i++) {
-        if (!argv[i]) continue;
-        if (!strcmp(cn[i],"role")) snprintf(m->role,sizeof(m->role),"%s",argv[i]);
-        else if (!strcmp(cn[i],"content")) snprintf(m->content,sizeof(m->content),"%s",argv[i]);
-        else if (!strcmp(cn[i],"timestamp")) m->timestamp = (long)(atof(argv[i])*1000);
-    }
-    app->message_count++;
-    return 0;
-}
-
-void app_load_messages(app_state_t *app, int idx) {
-    if (!app) return;
-    app->message_count = 0;
-    if (idx < 0 || idx >= app->session_count) return;
-    char *sql = sqlite3_mprintf(
-        "SELECT role,COALESCE(content,'') AS content,"
-        "COALESCE(timestamp,0) AS timestamp "
-        "FROM messages WHERE session_id='%q' "
-        "ORDER BY timestamp ASC,id ASC LIMIT %d",
-        app->sessions[idx].id, MAX_MESSAGES);
-    if (sql) { db_query(app, sql, cb_messages, app); sqlite3_free(sql); }
-}
-
-static int cb_count(void *u, int c, char **v, char **cn) {
-    (void)cn; int *out = (int*)u;
-    if (c>0 && v[0]) *out = atoi(v[0]);
-    return 0;
-}
-
-void app_load_skills(app_state_t *app) {
-    if (!app) return;
-    app->skill_count = 0;
-    char path[512];
-    snprintf(path, sizeof(path), "%s/%s", slermes_home(), SLERMES_DIR_SKILLS);
-    DIR *d = opendir(path);
-    if (!d) return;
-    struct dirent *de;
-    while ((de = readdir(d)) && app->skill_count < MAX_ITEMS) {
-        if (de->d_name[0] == '.') continue;
-        snprintf(app->skill_names[app->skill_count], sizeof(app->skill_names[0]), "%s", de->d_name);
-        app->skill_count++;
-    }
-    closedir(d);
-}
-
-void app_load_profiles(app_state_t *app) {
-    if (!app) return;
-    app->profile_count = 0;
-    char path[512];
-    snprintf(path, sizeof(path), "%s/%s", slermes_home(), SLERMES_DIR_PROFILES);
-    DIR *d = opendir(path);
-    if (!d) return;
-    struct dirent *de;
-    while ((de = readdir(d)) && app->profile_count < MAX_ITEMS) {
-        if (de->d_name[0] == '.') continue;
-        snprintf(app->profile_names[app->profile_count], sizeof(app->profile_names[0]), "%s", de->d_name);
-        app->profile_count++;
-    }
-    closedir(d);
-}
-
-void app_load_cron(app_state_t *app) {
-    if (!app) return;
-    app->cron_count = 0;
-    char path[512];
-    snprintf(path, sizeof(path), "%s/%s", slermes_home(), SLERMES_FILE_CRON);
-    FILE *f = fopen(path, "r");
-    if (!f) return;
-    char line[4096];
-    while (fgets(line, sizeof(line), f)) {
-        const char *p = strstr(line, "\"name\"");
-        if (!p) continue;
-        p = strchr(p+6, '"'); if (!p) continue;
-        p++;
-        const char *end = strchr(p, '"'); if (!end) continue;
-        if (app->cron_count >= MAX_ITEMS) break;
-        size_t len = end - p; if (len > 120) len = 120;
-        memcpy(app->cron_names[app->cron_count], p, len);
-        app->cron_names[app->cron_count][len] = '\0';
-        app->cron_count++;
-    }
-    fclose(f);
-}
-
-void app_load_stats(app_state_t *app) {
-    if (!app) return;
-    db_query(app, "SELECT COUNT(*) FROM sessions WHERE parent_session_id IS NULL", cb_count, &app->total_sessions);
-    db_query(app, "SELECT COUNT(*) FROM messages", cb_count, &app->total_messages);
-}
+/* Database — these are thin delegators to session_db.c (the canonical DB
+ * module), which owns the shared app_state_t sqlite accessors. Kept for the
+ * public app_* API surface (app_state.h); all real work lives in session_db.c. */
+int app_db_open(app_state_t *app) { return session_db_open(app); }
+void app_db_close(app_state_t *app) { session_db_close(app); }
+void app_load_sessions(app_state_t *app) { session_db_load_sessions(app); }
+void app_load_messages(app_state_t *app, int idx) { session_db_load_messages(app, idx); }
+void app_load_skills(app_state_t *app) { session_db_load_skills(app); }
+void app_load_profiles(app_state_t *app) { session_db_load_profiles(app); }
+void app_load_cron(app_state_t *app) { session_db_load_cron(app); }
+void app_load_stats(app_state_t *app) { session_db_load_stats(app); }
 
 /* Session management */
 int app_selected_session(app_state_t *app) { return app ? app->selected_session : -1; }

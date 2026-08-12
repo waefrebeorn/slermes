@@ -7,9 +7,14 @@
 #include "hermes_json.h"
 #include "hermes_http.h"
 #include "hermes_gateway_qqbot.h"
+#include "hermes_crypto.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
+
+/* Native chunked-upload surface (port_qqbot_chunked_upload_ports.c). */
+char *qcu_upload(const char *file_path, long chunk_size);
 
 static char g_qqbot_webhook[1024] = "";
 static char g_qqbot_token[256] = "";
@@ -341,134 +346,86 @@ const char *qqbot_get_text(json_node_t *update) {
     return json_get_str(update, "text", "");
 }
 
-/* ── Subprocess bridge for Python supplementary features ───────
- * Port of Python gateway/platforms/qqbot/{chunked_upload,crypto,onboard,utils}.
+/* ── Native implementations for QQ Bot supplementary features ───────
+ * Replaces the Python subprocess bridges (gateway.platforms.qqbot.{
+ * chunked_upload, crypto, onboard}) with native C11 + libcrypto + libhttp.
  *
- * These features require Python dependencies (QQ COS SDK, cryptography)
- * and are invoked via subprocess. C core messaging (send, receive,
- * keyboards, webhook) is handled natively above. */
+ * - qqbot_upload_file     → native chunked upload via qcu_* (libhttp, libcrypto)
+ * - qqbot_verify_signature → native HMAC-SHA1 over body using the bot token
+ * - qqbot_setup_subscriptions → native QQ Bot /guilds/app API call
+ *
+ * C core messaging (send, receive, keyboards, webhook) is handled natively above.
+ * ────────────────────────────────────────────────────────────────────────── */
 
-/* Invoke a Python qqbot submodule via subprocess.
- * module: "chunked_upload", "crypto", "onboard", "utils"
- * args: JSON string with command arguments
- * Returns heap-allocated JSON result string, or NULL on failure. */
-static char *qqbot_python_bridge(const char *module, const char *args) {
-    if (!module || !args) return NULL;
-
-    /* Build the Python command path */
-    const char *home = getenv("HOME");
-    if (!home) home = "/home/wubu";
-    char cmd[4096];
-    int n = snprintf(cmd, sizeof(cmd),
-        "cd '%s/hermes-agent-dev' 2>/dev/null && "
-        "python3 -c \""
-        "import sys, json; sys.path.insert(0, '.'); "
-        "mod = __import__('gateway.platforms.qqbot.%s', fromlist=['']); "
-        "data = json.loads('''%s'''); "
-        "result = getattr(mod, data.get('action', ''))(**data.get('params', {})); "
-        "print(json.dumps(result))"
-        "\" 2>/dev/null",
-        home, module, args);
-
-    if (n >= (int)sizeof(cmd)) return NULL;
-
-    FILE *fp = popen(cmd, "r");
-    if (!fp) return NULL;
-
-    char buf[16384];
-    size_t total = 0;
-    while (total < sizeof(buf) - 1) {
-        size_t r = fread(buf + total, 1, sizeof(buf) - 1 - total, fp);
-        if (r == 0) break;
-        total += r;
-    }
-    buf[total] = '\0';
-    int exit_code = pclose(fp);
-
-    if (exit_code != 0 || total == 0) return NULL;
-    return strdup(buf);
-}
-
-/* Port of Python gateway/platforms/qqbot/chunked_upload.py
- * Upload a file to QQ's content delivery service.
+/* PoP: upload_file @ gateway/platforms/qqbot/chunked_upload.py (upload_file) */
+/* Upload a file to QQ's content delivery service via the native chunked
+ * upload path (qcu_upload handles the COS multipart protocol via libhttp).
  * file_path: path to local file
- * Returns JSON with file_url on success, NULL on failure. */
+ * Returns JSON string with file_url on success, NULL on failure. */
 char *qqbot_upload_file(const char *file_path) {
-    if (!file_path) return NULL;
-
-    /* Build args JSON */
-    char args[2048];
-    snprintf(args, sizeof(args),
-             "{\"action\":\"upload_file\",\"params\":{\"file_path\":\"%s\"}}",
-             file_path);
-
-    char *result = qqbot_python_bridge("chunked_upload", args);
-    if (result) return result;
-
-    /* Fallback: try direct COS upload via Python script */
-    const char *home = getenv("HOME");
-    if (!home) home = "/home/wubu";
-    char cmd[4096];
-    snprintf(cmd, sizeof(cmd),
-        "cd '%s/hermes-agent-dev' 2>/dev/null && "
-        "python3 -m gateway.platforms.qqbot.chunked_upload --file '%s' 2>/dev/null",
-        home, file_path);
-
-    FILE *fp = popen(cmd, "r");
-    if (!fp) return NULL;
-    char buf[8192];
-    size_t n = fread(buf, 1, sizeof(buf) - 1, fp);
-    buf[n] = '\0';
-    pclose(fp);
-    if (n == 0) return NULL;
-    return strdup(buf);
+    if (!file_path || !*file_path) return NULL;
+    /* Delegate to the native chunked-upload implementation which uses
+     * libhttp + libcrypto for the COS pre-signed-URL protocol. */
+    return qcu_upload(file_path, 1 << 20);
 }
 
-/* Port of Python gateway/platforms/qqbot/crypto.py
- * Verify a QQ Bot message signature.
+/* PoP: verify_signature @ gateway/platforms/qqbot/crypto.py (verify_signature) */
+/* Verify a QQ Bot webhook signature using HMAC-SHA1.
+ * QQ Bot signatures are HMAC-SHA1(<body>, token) — the bot token acts as
+ * the shared secret. Uses the native crypto_hmac_sha1 + crypto_hex_encode.
  * body: raw request body
- * signature: X-Signature header value
- * Returns true if signature is valid. */
+ * signature: hex-encoded HMAC signature header
+ * Returns true if the signature is valid. */
 bool qqbot_verify_signature(const char *body, const char *signature) {
-    if (!body || !signature) return false;
+    if (!body || !signature || !signature[0]) return false;
+    if (!g_qqbot_token[0]) return false;
 
-    char args[4096];
-    /* Escape body for JSON (simple version) */
-    char *escaped = (char*)malloc(strlen(body) * 2 + 1);
-    if (!escaped) return false;
-    size_t j = 0;
-    for (size_t i = 0; body[i]; i++) {
-        if (body[i] == '\\') escaped[j++] = '\\';
-        if (body[i] == '\'') escaped[j++] = '\\';
-        escaped[j++] = body[i];
-        if (j >= strlen(body) * 2 - 1) break;
-    }
-    escaped[j] = '\0';
-
-    snprintf(args, sizeof(args),
-             "{\"action\":\"verify_signature\",\"params\":{\"body\":\"%s\",\"signature\":\"%s\"}}",
-             escaped, signature);
-    free(escaped);
-
-    char *result = qqbot_python_bridge("crypto", args);
-    if (!result) return false;
-
-    json_node_t *jr = json_parse(result, NULL);
-    free(result);
-    if (!jr) return false;
-    bool valid = (jr->type == JSON_BOOL && jr->bool_val);
-    json_free(jr);
-    return valid;
+    unsigned char mac[20];
+    crypto_hmac_sha1((const unsigned char *)g_qqbot_token,
+                     strlen(g_qqbot_token),
+                     (const unsigned char *)body, strlen(body), mac);
+    char *computed = crypto_hex_encode(mac, sizeof(mac));
+    if (!computed) return false;
+    bool ok = (strcasecmp(computed, signature) == 0);
+    free(computed);
+    return ok;
 }
 
-/* Port of Python gateway/platforms/qqbot/onboard.py
- * Set up QQ Bot event subscriptions.
- * Returns JSON string with setup result or NULL. */
+/* PoP: setup_subscriptions @ gateway/platforms/qqbot/onboard.py (setup_subscriptions) */
+/* Set up QQ Bot event subscriptions via the Open API.
+ * intents: comma-separated intent list (e.g. "public_guild_messages")
+ * Returns JSON string with setup result or NULL on failure.
+ *
+ * Uses the native QQ Bot API endpoint POST /guilds/app/ with the bot token. */
 char *qqbot_setup_subscriptions(const char *intents) {
-    if (!intents) intents = "public_guild_messages,direct_message";
-    char args[1024];
-    snprintf(args, sizeof(args),
-             "{\"action\":\"setup_subscriptions\",\"params\":{\"intents\":\"%s\"}}",
-             intents);
-    return qqbot_python_bridge("onboard", args);
+    if (!intents || !*intents) intents = "public_guild_messages,direct_message";
+
+    http_client_t *http = http_client_new(30);
+    if (!http) return NULL;
+
+    json_node_t *body = json_new_object();
+    json_set(body, "intents", json_string(intents));
+
+    char url[512];
+    snprintf(url, sizeof(url), "%s/guilds/app", g_qqbot_api_base);
+
+    char headers[512];
+    build_headers(headers, sizeof(headers));
+
+    char *json_body = json_serialize(body);
+    json_free(body);
+    if (!json_body) { http_client_free(http); return NULL; }
+
+    http_response_t *resp = http_request(http, HTTP_POST, url, headers,
+                                         json_body, strlen(json_body));
+    free(json_body);
+    http_client_free(http);
+    if (!resp || !resp->body) {
+        if (resp) http_response_free(resp);
+        return NULL;
+    }
+
+    char *result = strdup(resp->body);
+    http_response_free(resp);
+    return result;
 }

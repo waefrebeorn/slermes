@@ -180,42 +180,10 @@ static char *openrouter_build_request_body(const provider_t *p,
     }
 
     /* Messages */
-    json_t *msgs = json_new_array();
+    /* Messages — delegate to shared provider_build_messages_array (port of
+     * the common OpenAI-compat messages-construction block). */
+    json_t *msgs = provider_build_messages_array(messages, msg_count);
     if (!msgs) { json_free(root); return NULL; }
-
-    for (size_t i = 0; i < msg_count; i++) {
-        json_t *msg = json_new_object();
-        const char *role_str;
-        switch (messages[i]->role) {
-            case MSG_SYSTEM:    role_str = "system";    break;
-            case MSG_USER:      role_str = "user";      break;
-            case MSG_ASSISTANT: role_str = "assistant"; break;
-            case MSG_TOOL:      role_str = "tool";      break;
-            default:            role_str = "user";      break;
-        }
-        json_object_set(msg, "role", json_new_string(role_str));
-        json_object_set(msg, "content", json_new_string(
-            messages[i]->content ? messages[i]->content : ""));
-
-        if (messages[i]->role == MSG_TOOL && messages[i]->tool_call_id)
-            json_object_set(msg, "tool_call_id", json_new_string(messages[i]->tool_call_id));
-
-        if (messages[i]->role == MSG_ASSISTANT && messages[i]->tool_calls_count > 0) {
-            json_t *tcs = json_new_array();
-            for (int j = 0; j < messages[i]->tool_calls_count && j < 64; j++) {
-                json_t *tc = json_new_object();
-                json_object_set(tc, "id", json_new_string(messages[i]->tool_calls[j].id));
-                json_object_set(tc, "type", json_new_string("function"));
-                json_t *func = json_new_object();
-                json_object_set(func, "name", json_new_string(messages[i]->tool_calls[j].name));
-                json_object_set(func, "arguments", json_new_string(messages[i]->tool_calls[j].arguments));
-                json_object_set(tc, "function", func);
-                json_array_append(tcs, tc);
-            }
-            json_object_set(msg, "tool_calls", tcs);
-        }
-        json_array_append(msgs, msg);
-    }
     json_object_set(root, "messages", msgs);
 
     if (tools_json && json_array_count(tools_json) > 0)

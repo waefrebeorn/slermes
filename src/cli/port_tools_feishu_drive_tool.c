@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 /* Thread-local client storage from feishu_drive_tool */
 typedef struct {
@@ -42,8 +43,8 @@ void *cli_tools_feishu_drive_tool_get_client(void)
 /* Check if the lark_oapi (Feishu SDK) is importable/available. */
 int cli_tools_feishu_drive_tool__check_feishu(void)
 {
-    /* In a full Python implementation, this checks importlib.util.find_spec("lark_oapi").
-     * In C, we check if the feishu SDK shared library is available. */
+    /* In a full Python implementation, this checks importlib.util.find_spec.
+     * In C, we check for the feishu SDK shared library / venv package. */
     /* Try to check for the feishu SDK by looking for the library file */
     const char *feishu_paths[] = {
         "/usr/lib/lark_oapi.so",
@@ -59,9 +60,33 @@ int cli_tools_feishu_drive_tool__check_feishu(void)
         }
     }
 
-    /* Also check via Python import (fallback) */
-    int ret = system("python3 -c \"import importlib.util; exit(0 if importlib.util.find_spec('lark_oapi') else 1)\" 2>/dev/null");
-    if (ret == 0) return 1;
-
+    /* Native venv site-packages probe (lark_oapi is a pure-Python wheel):
+     * check $VIRTUAL_ENV/lib/pythonX.Y/site-packages/lark_oapi. */
+    const char *ve = getenv("VIRTUAL_ENV");
+    const char *hp = getenv("HOME");
+    const char *pyhome = getenv("PYTHONHOME");
+    const char *cfg_py = getenv("HERMES_PYTHON");
+    const char *roots[4] = { ve, hp, pyhome, cfg_py };
+    for (int r = 0; r < 4 && roots[r]; r++) {
+        char p[4096];
+        /* venv layout: <root>/lib/pythonX.Y/site-packages/lark_oapi */
+        if (ve == roots[r]) {
+            snprintf(p, sizeof(p),
+                     "%s/lib/python3.11/site-packages/lark_oapi/__init__.py", roots[r]);
+            if (access(p, R_OK) == 0) return 1;
+            snprintf(p, sizeof(p),
+                     "%s/lib/python3.12/site-packages/lark_oapi/__init__.py", roots[r]);
+            if (access(p, R_OK) == 0) return 1;
+        } else {
+            /* user/system layout: <root>/lib/python3.11/site-packages or .local */
+            snprintf(p, sizeof(p),
+                     "%s/lib/python3.11/site-packages/lark_oapi/__init__.py", roots[r]);
+            if (access(p, R_OK) == 0) return 1;
+            snprintf(p, sizeof(p),
+                     "%s/.local/lib/python3.11/site-packages/lark_oapi/__init__.py",
+                     roots[r]);
+            if (access(p, R_OK) == 0) return 1;
+        }
+    }
     return 0; /* SDK not available */
 }

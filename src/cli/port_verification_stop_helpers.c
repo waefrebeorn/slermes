@@ -30,36 +30,7 @@
 #include <limits.h>
 #include <ctype.h>
 
-static char *json_escape_string(const char *s)
-{
-    if (!s) s = "";
-    size_t need = 1;
-    for (const char *p = s; *p; p++) {
-        unsigned char c = (unsigned char)*p;
-        if (c == '"' || c == '\\') need += 2;
-        else if (c == '\n') need += 2;
-        else if (c == '\r') need += 2;
-        else if (c == '\t') need += 2;
-        else if (c < 0x20) need += 6;
-        else need += 1;
-    }
-    char *out = malloc(need + 1);
-    char *q = out;
-    *q++ = '"';
-    for (const char *p = s; *p; p++) {
-        unsigned char c = (unsigned char)*p;
-        if (c == '"') { *q++='\\'; *q++='"'; }
-        else if (c == '\\') { *q++='\\'; *q++='\\'; }
-        else if (c == '\n') { *q++='\\'; *q++='n'; }
-        else if (c == '\r') { *q++='\\'; *q++='r'; }
-        else if (c == '\t') { *q++='\\'; *q++='t'; }
-        else if (c < 0x20) { sprintf(q, "\\u%04x", c); q += 6; }
-        else *q++ = (char)c;
-    }
-    *q++ = '"';
-    *q = '\0';
-    return out;
-}
+
 
 #define MAX_CHANGED_PATHS_IN_NUDGE 8
 

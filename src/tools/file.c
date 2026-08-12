@@ -21,6 +21,7 @@
 #include "difflib.h"
 #include "hash.h"
 #include "binary.h"
+#include "yaml.h"
 
 /* WSL path translation — convert Windows to /mnt/ form (static buf, single-thread) */
 static const char *wsl_translate_path(const char *path) {
@@ -675,11 +676,41 @@ static char *handle_syntax(const char *args_json) {
     } else if (strcmp(ftype, "sh") == 0) {
         snprintf(cmd, sizeof(cmd), "bash -n '%s' 2>&1", path);
     } else if (strcmp(ftype, "json") == 0) {
-        snprintf(cmd, sizeof(cmd),
-            "python3 -c \"import json; json.load(open('%s'))\" 2>&1", path);
-    } else if (strcmp(ftype, "yaml") == 0) {
-        snprintf(cmd, sizeof(cmd),
-            "python3 -c \"import yaml; yaml.safe_load(open('%s'))\" 2>&1", path);
+        /* Native JSON validation via libjson — no Python dependency. */
+        if (err) { free(err); err = NULL; }
+        json_node_t *node = json_parse_file(path, &err);
+        if (node) { json_free(node); err = NULL; }
+        if (err) {
+            json_node_t *result = json_new_object();
+            json_object_set(result, "path", json_new_string(path));
+            json_object_set(result, "type", json_new_string("json"));
+            json_object_set(result, "valid", json_new_bool(false));
+            json_object_set(result, "error", json_new_string(err));
+            free(err); json_free(args);
+            return json_serialize(result);
+        }
+        json_node_t *result = json_new_object();
+        json_object_set(result, "path", json_new_string(path));
+        json_object_set(result, "type", json_new_string("json"));
+        json_object_set(result, "valid", json_new_bool(true));
+        json_free(args);
+        return json_serialize(result);
+    } else if (strcmp(ftype, "yaml") == 0 || strcmp(ftype, "yml") == 0) {
+        /* Native YAML validation via libyaml — no Python dependency. */
+        char *yerr = NULL;
+        yaml_doc_t *doc = yaml_parse_file(path, &yerr);
+        json_node_t *result = json_new_object();
+        json_object_set(result, "path", json_new_string(path));
+        json_object_set(result, "type", json_new_string(
+            strcmp(ftype,"yaml")==0 ? "yaml" : "yml"));
+        json_object_set(result, "valid", json_new_bool(doc != NULL));
+        if (!doc) {
+            json_object_set(result, "error",
+                json_new_string(yerr ? yerr : "YAML parse error"));
+        } else { yaml_free(doc); }
+        free(yerr);
+        json_free(args);
+        return json_serialize(result);
     } else if (strcmp(ftype, "c") == 0) {
         snprintf(cmd, sizeof(cmd),
             "gcc -fsyntax-only -x c '%s' 2>&1", path);

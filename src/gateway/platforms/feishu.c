@@ -768,103 +768,150 @@ const char *feishu_get_text(json_node_t *update) {
     return json_get_str(update, "text", "");
 }
 
-/* ── Subprocess bridge for Python supplementary features ───────
- * Port of Python gateway/platforms/feishu_comment.py,
- * feishu_comment_rules.py, feishu_meeting_invite.py.
+/* ── Native Open API implementations for document comments & meetings ────
+ * Replaces the Python subprocess bridges with direct REST calls to the
+ * Feishu Drive v1 / Docx v1 endpoints via openapi_post (libhttp).
  *
- * These features require Python dependencies (lark_oapi SDK) and are
- * invoked via subprocess. C core messaging (send, images, files, docs,
- * cards, webhook) is handled natively above. */
+ * Endpoints (from Feishu Open Platform docs):
+ *   POST /open-apis/drive/v1/files/:file_token/comments?file_type=docx
+ *   GET  /open-apis/drive/v1/files/:file_token/comments/:comment_id
+ *   POST /open-apis/im/v1/messages
+ * ────────────────────────────────────────────────────────────────────────── */
 
-/* Invoke a Python feishu submodule via subprocess. */
-static char *feishu_python_bridge(const char *module, const char *action,
-                                   const char *json_params) {
-    if (!module || !action) return NULL;
-
-    const char *home = getenv("HOME");
-    if (!home) home = "/home/wubu";
-    char cmd[8192];
-    snprintf(cmd, sizeof(cmd),
-        "cd '%s/hermes-agent-dev' 2>/dev/null && "
-        "python3 -c \""
-        "import sys, json; sys.path.insert(0, '.'); "
-        "mod = __import__('gateway.platforms.%s', fromlist=['']); "
-        "data = json.loads('''%s'''); "
-        "result = getattr(mod, '%s')(**data); "
-        "print(json.dumps(result))"
-        "\" 2>/dev/null",
-        home, module, json_params ? json_params : "{}", action);
-
-    FILE *fp = popen(cmd, "r");
-    if (!fp) return NULL;
-
-    char buf[16384];
-    size_t total = 0;
-    while (total < sizeof(buf) - 1) {
-        size_t r = fread(buf + total, 1, sizeof(buf) - 1 - total, fp);
-        if (r == 0) break;
-        total += r;
-    }
-    buf[total] = '\0';
-    int exit_code = pclose(fp);
-    if (exit_code != 0 || total == 0) return NULL;
-    return strdup(buf);
-}
-
-/* Port of Python gateway/platforms/feishu_comment.py
- * Create a comment on a Feishu document.
- * doc_id: document token
+/* PoP: create_comment @ gateway/platforms/feishu_comment.py (create_comment) */
+/* Create a global comment on a Feishu document (docx).
+ * doc_id: document file token
  * text: comment text content
- * Returns JSON with comment_id on success, NULL on failure. */
-char *feishu_comment_create(const char *doc_id, const char *text) {
-    if (!doc_id || !text) return NULL;
-    char params[4096];
-    /* JSON-escape text */
-    char *escaped = (char*)malloc(strlen(text) * 2 + 1);
-    if (!escaped) return NULL;
-    size_t j = 0;
-    for (size_t i = 0; text[i] && j < strlen(text) * 2 - 1; i++) {
-        if (text[i] == '\\' || text[i] == '\"') escaped[j++] = '\\';
-        escaped[j++] = text[i];
+ * Returns JSON string with comment_id on success, NULL on failure. */
+char *feishu_comment_create(const char *doc_id, const char *text)
+{
+    if (!doc_id || !*doc_id || !text) return NULL;
+
+    /* Build request body: {"content":{"text":"..."}} */
+    json_node_t *body = json_new_object();
+    json_node_t *content = json_new_object();
+    json_set(content, "text", json_new_string(text));
+    json_set(body, "content", content);
+    /* POST /drive/v1/files/<token>/comments?file_type=docx&user_id_type=open_id */
+    char url[1024];
+    snprintf(url, sizeof(url),
+             "%s/drive/v1/files/%s/comments?file_type=docx", FEISHU_API_BASE,
+             doc_id);
+
+    http_response_t *resp = openapi_post(NULL, url, body);
+    if (!resp || !resp->body) {
+        if (resp) http_response_free(resp);
+        return NULL;
     }
-    escaped[j] = '\0';
-    snprintf(params, sizeof(params),
-             "{\"doc_id\":\"%s\",\"text\":\"%s\"}",
-             doc_id, escaped);
-    free(escaped);
-    return feishu_python_bridge("feishu_comment", "create_comment", params);
+
+    /* Parse response: {"code":0,"msg":"success","data":{"comment_id":"..."}} */
+    json_node_t *j = json_parse(resp->body, NULL);
+    http_response_free(resp);
+    if (!j) return NULL;
+
+    int code = (int)json_get_num(j, "code", -1);
+    char *result = NULL;
+    if (code == 0) {
+        json_node_t *data = json_obj_get(j, "data");
+        if (data) {
+            const char *cid = json_get_str(data, "comment_id", "");
+            if (cid && *cid) {
+                result = strdup(cid);
+            }
+        }
+    }
+    json_free(j);
+    return result;
 }
 
-/* Port of Python gateway/platforms/feishu_comment_rules.py
- * Get access control rules for a Feishu document comment thread.
- * doc_id: document token
- * Returns JSON with rules array on success, NULL on failure. */
-char *feishu_comment_get_rules(const char *doc_id) {
-    if (!doc_id) return NULL;
-    char params[256];
-    snprintf(params, sizeof(params), "{\"doc_id\":\"%s\"}", doc_id);
-    return feishu_python_bridge("feishu_comment_rules", "get_rules", params);
+/* PoP: get_rules @ gateway/platforms/feishu_comment_rules.py (get_rules) */
+/* Get access-control rules for a Feishu document comment thread.
+ * doc_id: document file token
+ * Returns JSON string with rules array on success, NULL on failure.
+ *
+ * The C runtime has no rule DB; we surface the configured rules JSON path
+ * (mirrors feishu_comment_rules config at ~/.hermes/feishu_comment_rules.json). */
+char *feishu_comment_get_rules(const char *doc_id)
+{
+    if (!doc_id || !*doc_id) return NULL;
+
+    /* Read the rules config file (~/.hermes/feishu_comment_rules.json). */
+    const char *home = getenv("HERMES_HOME");
+    if (!home || !*home) home = getenv("HOME");
+    if (!home) return NULL;
+
+    char cfgpath[4096];
+    snprintf(cfgpath, sizeof(cfgpath),
+             "%s/feishu_comment_rules.json", home);
+    FILE *f = fopen(cfgpath, "rb");
+    if (!f) return NULL;
+
+    struct stat st;
+    if (fstat(fileno(f), &st) != 0) { fclose(f); return NULL; }
+    size_t len = (size_t)st.st_size;
+    char *buf = malloc(len + 1);
+    if (!buf) { fclose(f); return NULL; }
+    size_t n = fread(buf, 1, len, f);
+    fclose(f);
+    buf[n] = '\0';
+
+    json_node_t *rules = json_parse(buf, NULL);
+    free(buf);
+    if (!rules) return NULL;
+
+    /* Return the rules JSON verbatim. */
+    char *out = json_serialize(rules);
+    json_free(rules);
+    return out;
 }
 
-/* Port of Python gateway/platforms/feishu_meeting_invite.py
- * Create a meeting invite in a Feishu chat.
+/* PoP: create_invite @ gateway/platforms/feishu_meeting_invite.py (create_invite) */
+/* Create a meeting invite in a Feishu chat via the IM messages API.
  * chat_id: target chat
  * topic: meeting topic
  * start_time: ISO 8601 start time (optional, NULL for now)
- * Returns JSON with meeting info on success, NULL on failure. */
+ * Returns JSON string with meeting info on success, NULL on failure. */
 char *feishu_create_meeting_invite(const char *chat_id, const char *topic,
-                                    const char *start_time) {
-    if (!chat_id || !topic) return NULL;
-    char params[2048];
-    if (start_time && start_time[0]) {
-        snprintf(params, sizeof(params),
-                 "{\"chat_id\":\"%s\",\"topic\":\"%s\","
-                 "\"start_time\":\"%s\"}",
-                 chat_id, topic, start_time);
-    } else {
-        snprintf(params, sizeof(params),
-                 "{\"chat_id\":\"%s\",\"topic\":\"%s\"}",
-                 chat_id, topic);
+                                    const char *start_time)
+{
+    if (!chat_id || !*chat_id || !topic || !*topic) return NULL;
+
+    /* POST /im/v1/messages with a card containing the invite prompt. */
+    json_node_t *body = json_new_object();
+    json_set(body, "receive_id", json_new_string(chat_id));
+    json_set(body, "msg_type", json_new_string("text"));
+    json_node_t *content = json_new_object();
+    /* Build the meeting invite text mirroring the Python prompt. */
+    char txt[1024];
+    if (start_time && *start_time)
+        snprintf(txt, sizeof(txt),
+                 "Meeting invite: %s\nStarts: %s", topic, start_time);
+    else
+        snprintf(txt, sizeof(txt), "Meeting invite: %s", topic);
+    json_set(content, "text", json_new_string(txt));
+    json_set(body, "content", content);
+
+    char url[512];
+    snprintf(url, sizeof(url), "%s/im/v1/messages", FEISHU_API_BASE);
+
+    http_response_t *resp = openapi_post(NULL, url, body);
+    if (!resp || !resp->body) {
+        if (resp) http_response_free(resp);
+        return NULL;
     }
-    return feishu_python_bridge("feishu_meeting_invite", "create_invite", params);
+
+    json_node_t *j = json_parse(resp->body, NULL);
+    http_response_free(resp);
+    if (!j) return NULL;
+
+    int code = (int)json_get_num(j, "code", -1);
+    char *result = NULL;
+    if (code == 0) {
+        json_node_t *data = json_obj_get(j, "data");
+        if (data) {
+            result = json_serialize(data);
+        }
+    }
+    json_free(j);
+    return result;
 }

@@ -85,6 +85,12 @@ static inline bool json_has(const json_t *obj, const char *key) {
 char   *json_serialize(const json_t *node);
 char   *json_serialize_pretty(const json_t *node, int indent);
 
+/* === String escaping === */
+/** Allocate a malloc'd JSON string literal (with surrounding double quotes)
+ *  for the given input, escaping per JSON spec (", \, \n, \r, \t, <0x20).
+ *  Caller frees. NULL input is treated as the empty string. */
+char   *json_escape_string(const char *s);
+
 /* === Copy / Free === */
 json_t *json_copy(const json_t *node);
 void    json_free(json_t *node);

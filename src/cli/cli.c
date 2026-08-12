@@ -402,27 +402,7 @@ static int cli_stream_cb(const char *token, void *userdata) {
 
 /* Escape a string for JSON output (backslash, quote, newline, tab).
  * Caller must free() the result. Returns NULL on allocation failure. */
-static char *cli_json_escape(const char *raw) {
-    if (!raw) return strdup("null");
-    size_t rlen = strlen(raw);
-    size_t cap = rlen * 2 + 3;
-    char *esc = (char *)malloc(cap);
-    if (!esc) return strdup("null");
-    size_t j = 0;
-    esc[j++] = '"';
-    for (size_t i = 0; i < rlen && j < cap - 4; i++) {
-        if (raw[i] == '\\') { esc[j++] = '\\'; esc[j++] = '\\'; }
-        else if (raw[i] == '"')  { esc[j++] = '\\'; esc[j++] = '"'; }
-        else if (raw[i] == '\n') { esc[j++] = '\\'; esc[j++] = 'n'; }
-        else if (raw[i] == '\t') { esc[j++] = '\\'; esc[j++] = 't'; }
-        else if ((unsigned char)raw[i] < 0x20) { esc[j++] = '\\'; esc[j++] = 'u';
-            snprintf(esc + j, cap - j, "%04x", (unsigned char)raw[i]); j += 4; }
-        else esc[j++] = raw[i];
-    }
-    esc[j++] = '"';
-    esc[j] = '\0';
-    return esc;
-}
+/* json_escape_string provided by libjson (hermes_json.h) — shared across ports. */
 
 /* Print a JSON-formatted response to stdout.
  * Fields: response, session_id, status (ok/error) */
@@ -467,7 +447,7 @@ static char *json_capture_stop(void) {
 }
 
 static void cli_json_respond(const char *response, const char *session_id, const char *status) {
-    char *esc_resp = cli_json_escape(response);
+    char *esc_resp = response ? json_escape_string(response) : strdup("\"null\"");
     printf("{\"response\":%s,\"session_id\":\"%s\",\"status\":\"%s\"}\n",
            esc_resp ? esc_resp : "null",
            session_id && session_id[0] ? session_id : "",

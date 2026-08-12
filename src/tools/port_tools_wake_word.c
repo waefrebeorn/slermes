@@ -13,6 +13,10 @@
 #define _GNU_SOURCE
 #include "port_tools_wake_word.h"
 #include "libjson/json.h"
+#include "port_config_py_helpers.h"
+#include "profile_store.h"
+#include "hermes_core_types.h"
+#include "yaml.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,6 +31,10 @@
 #include <sys/file.h>
 #include <time.h>
 #include <errno.h>
+#include <alsa/asoundlib.h>
+
+/* Native wake-word audio backend: ALSA device enumeration + capture.
+ * Replaces the Python sounddevice/numpy subprocess probes. */
 
 /* Opaque detector state — mirrors Python's WakeWordDetector. */
 struct ww_detector {
@@ -362,139 +370,224 @@ const char *ww_default_inference_framework(void)
     return ww_is_macos_arm64() ? "tflite" : "onnx";
 }
 
+/* Native site-packages probe: return 1 if a Python package's top-level module
+ * directory or .py/.so file exists in any venv/user/system site-packages.
+ * This is our code checking whether a (third-party) ML runtime is installed —
+ * the runtime itself is not ours to reimplement. Mirrors lazy_deps'
+ * importlib.util.find_spec semantics for the wake-word feature packages. */
+static bool ww_site_package_module(const char *module)
+{
+    if (!module || !*module) return false;
+
+    /* Top-level package dir / module file name. Dots delimit submodules, but
+     * here we only probe the top-level import name (the runtime package). */
+    char top[128];
+    size_t n = strlen(module);
+    size_t i = 0;
+    while (i < n && module[i] != '.') { top[i] = module[i]; i++; }
+    top[i] = '\0';
+    if (i == 0) return false;
+
+    const char *ve = getenv("VIRTUAL_ENV");
+    const char *hp = getenv("HOME");
+    const char *pyhome = getenv("PYTHONHOME");
+    const char *roots[6] = { ve, hp, pyhome, NULL };
+    int nroots = 0;
+    while (nroots < 3 && roots[nroots]) nroots++;
+
+    for (int r = 0; r < nroots; r++) {
+        const char *base = roots[r];
+        /* venv vs user/system layout */
+        const char *layouts[4] = { NULL, NULL, NULL, NULL };
+        int nl = 0;
+        if (ve && base == ve) {
+            layouts[nl++] = "/lib/python3.11/site-packages";
+            layouts[nl++] = "/lib/python3.12/site-packages";
+            layouts[nl++] = "/lib/python3.10/site-packages";
+        } else {
+            layouts[nl++] = "/lib/python3.11/site-packages";
+            layouts[nl++] = "/.local/lib/python3.11/site-packages";
+        }
+        for (int L = 0; L < nl; L++) {
+            char p[2048];
+            snprintf(p, sizeof(p), "%s%s/%s/__init__.py", base, layouts[L], top);
+            if (access(p, R_OK) == 0) return true;
+            snprintf(p, sizeof(p), "%s%s/%s.py", base, layouts[L], top);
+            if (access(p, R_OK) == 0) return true;
+            snprintf(p, sizeof(p), "%s%s/%s.so", base, layouts[L], top);
+            if (access(p, R_OK) == 0) return true;
+        }
+    }
+    return false;
+}
+
+/* Native lazy_deps.is_available for the wake-word feature set. Each feature
+ * maps to a distinguishing top-level package whose presence implies the deps
+ * are satisfied. Mirrors tools/lazy_deps.py LAZY_DEPS entries. */
+static bool ww_site_package_available(const char *feature)
+{
+    if (!feature) return false;
+    if (strcmp(feature, "wake.porcupine") == 0)
+        return ww_site_package_module("pvporcupine");
+    if (strcmp(feature, "wake.sherpa") == 0)
+        return ww_site_package_module("sherpa_onnx");
+    if (strcmp(feature, "wake.openwakeword.tflite") == 0)
+        return ww_site_package_module("ai_edge_litert");
+    /* wake.openwakeword — onnxruntime is the runtime dependency. */
+    return ww_site_package_module("onnxruntime");
+}
+
+/* Native lazy_deps._allow_lazy_installs(): config kill switch wins, else
+ * defaults to allow. Mirrors the Python resolution order. */
+static bool ww_allow_lazy_installs(void)
+{
+    json_t *config = config_py_load_config_readonly();
+    if (config && config->type == JSON_OBJECT) {
+        json_t *sec = json_obj_get(config, "security");
+        if (sec && sec->type == JSON_OBJECT) {
+            json_t *allow = json_obj_get(sec, "allow_lazy_installs");
+            bool ok = true;
+            if (allow) {
+                if (allow->type == JSON_BOOL) ok = allow->bool_val;
+                else if (allow->type == JSON_NUMBER) ok = allow->num_val != 0.0;
+                else if (allow->type == JSON_STRING)
+                    ok = strcmp(allow->str_val, "false") != 0 &&
+                         strcmp(allow->str_val, "0") != 0;
+            }
+            json_free(config);
+            return ok;
+        }
+        json_free(config);
+    } else if (config) {
+        json_free(config);
+    }
+    return true; /* fail open */
+}
+
 /* PoP: ensure_tflite_runtime @ tools/wake_word.py:ensure_tflite_runtime */
 bool ww_ensure_tflite_runtime(void)
 {
-    /* Try the standard tflite_runtime import first. */
-    FILE *fp = popen("python3 -c "
-                     "\"import tflite_runtime.interpreter\" "
-                     "2>/dev/null",
-                     "r");
-    if (fp) {
-        int rc = pclose(fp);
-        if (rc == 0) return true;
-    }
-
-    /* Bridge ai_edge_litert -> tflite_runtime (macOS). */
-    fp = popen("python3 -c "
-               "\"from ai_edge_litert import interpreter as _litert; "
-               "import types, sys; "
-               "pkg = types.ModuleType('tflite_runtime'); "
-               "pkg.__path__ = []; "
-               "sys.modules.setdefault('tflite_runtime', pkg); "
-               "sys.modules['tflite_runtime.interpreter'] = _litert; "
-               "print('ok')\" "
-               "2>/dev/null",
-               "r");
-    if (fp) {
-        char buf[64];
-        if (fgets(buf, sizeof(buf), fp) != NULL) {
-            pclose(fp);
-            return strstr(buf, "ok") != NULL;
-        }
-        pclose(fp);
-    }
+    /* Native probe: the tflite runtime is a site-packages package; check for
+     * it directly rather than shelling to ``python3 -c "import ..."``. */
+    if (ww_site_package_module("tflite_runtime")) return true;
+    if (ww_site_package_module("ai_edge_litert")) return true;
     return false;
 }
 
 /* PoP: load_wake_word_config @ tools/wake_word.py:load_wake_word_config */
 json_t *ww_load_wake_word_config(void)
 {
-    /* Delegate to Python to load the config and extract
-     * the wake_word section. */
-    FILE *fp = popen("python3 -c "
-                       "\"import json, sys; "
-                       "from hermes_cli.config import load_config; "
-                       "cfg = load_config(); "
-                       "wake = cfg.get('wake_word', {}); "
-                       "print(json.dumps(wake))\" "
-                       "2>/dev/null",
-                       "r");
-    if (!fp) return json_object();
-
-    char buf[4096];
-    json_t *result = json_object();
-    if (fgets(buf, sizeof(buf), fp) != NULL) {
-        char *err = NULL;
-        json_t *parsed = json_parse(buf, &err);
-        if (parsed && parsed->type == JSON_OBJECT) {
-            json_free(result);
-            result = parsed;
-        }
-        if (err) free(err);
+    /* Load the merged config natively and extract the wake_word section.
+     * config_py_load_config_readonly() mirrors Python's load_config(). */
+    json_t *config = config_py_load_config_readonly();
+    if (!config || config->type != JSON_OBJECT) {
+        if (config) json_free(config);
+        return json_object();
     }
-    pclose(fp);
+    json_t *wake = json_obj_get(config, "wake_word");
+    json_t *result = json_object();
+    if (wake && wake->type == JSON_OBJECT) {
+        /* Deep-copy the wake_word section into the result. */
+        char *ser = json_serialize(wake);
+        if (ser) {
+            json_t *parsed = json_parse(ser, NULL);
+            free(ser);
+            if (parsed && parsed->type == JSON_OBJECT) {
+                json_free(result);
+                result = parsed;
+            }
+        }
+    }
+    json_free(config);
     return result;
 }
 
 /* PoP: _active_profile_name @ tools/wake_word.py:_active_profile_name */
 char *ww_active_profile_name(void)
 {
-    FILE *fp = popen("python3 -c "
-                       "\"from hermes_cli.config import get_active_profile; "
-                       "print(get_active_profile() or 'default')\" "
-                       "2>/dev/null",
-                       "r");
-    if (!fp) return strdup("default");
-
-    char buf[256];
-    char *result = strdup("default");
-    if (fgets(buf, sizeof(buf), fp) != NULL) {
-        buf[strcspn(buf, "\n")] = '\0';
-        if (strlen(buf) > 0) {
-            free(result);
-            result = strdup(buf);
-        }
-    }
-    pclose(fp);
-    return result;
+    /* Native: infer the current profile name from HERMES_HOME.
+     * Returns "default" when unset — matches Python's get_active_profile(). */
+    return profile_get_active_name();
 }
 
 /* PoP: enrolled_profile_phrases @ tools/wake_word.py:enrolled_profile_phrases */
 json_t *ww_enrolled_profile_phrases(void)
 {
-    /* Delegate to Python to enumerate profiles and their
-     * wake-word phrases. */
-    FILE *fp = popen("python3 -c "
-                       "\"import json, sys; "
-                       "from hermes_cli.config import list_profiles; "
-                       "profiles = list_profiles(); "
-                       "result = {}; "
-                       "for p in profiles: "
-                       "  cfg = p.get('config', {}); "
-                       "  ww = cfg.get('wake_word', {}); "
-                       "  if ww.get('enabled', False): "
-                       "    result[p['name']] = ww.get('phrase', 'hey ' + p['name']); "
-                       "print(json.dumps(result))\" "
-                       "2>/dev/null",
-                       "r");
-    if (!fp) return json_object();
-
-    char buf[4096];
+    /* Enumerate profiles natively (default + all named, mirroring
+     * list_profiles) and read each one's wake_word config from disk. */
     json_t *result = json_object();
-    if (fgets(buf, sizeof(buf), fp) != NULL) {
-        char *err = NULL;
-        json_t *parsed = json_parse(buf, &err);
-        if (parsed && parsed->type == JSON_OBJECT) {
-            json_free(result);
-            result = parsed;
+    char *packed = profile_profiles_to_serve(true);
+    if (!packed) return result;
+
+    char *cursor = packed;
+    const char *name = NULL, *home = NULL;
+    while (profile_serve_next(packed, &cursor, &name, &home)) {
+        if (!name) continue;
+        /* Resolve this profile's home to its config.yaml path. */
+        char cfgpath[HERMES_PATH_MAX];
+        if (home && *home)
+            snprintf(cfgpath, sizeof cfgpath, "%s/config.yaml", home);
+        else {
+            char *resolved = profile_resolve_env(name);
+            if (resolved) {
+                snprintf(cfgpath, sizeof cfgpath, "%s/config.yaml", resolved);
+                free(resolved);
+            } else {
+                snprintf(cfgpath, sizeof cfgpath, "config.yaml");
+            }
         }
-        if (err) free(err);
+        /* Parse the profile's config.yaml raw (no defaults merge). */
+        json_t *cfg = NULL;
+        char *yerr = NULL;
+        yaml_doc_t *yp = yaml_parse_file(cfgpath, &yerr);
+        free(yerr);
+        if (yp) {
+            char *js = yaml_to_json_string(yp, "");
+            yaml_free(yp);
+            if (js) {
+                cfg = json_parse(js, NULL);
+                free(js);
+            }
+        }
+        json_t *wake = cfg ? json_obj_get(cfg, "wake_word") : NULL;
+        bool enabled = false;
+        const char *phrase = NULL;
+        if (wake && wake->type == JSON_OBJECT) {
+            json_t *en = json_obj_get(wake, "enabled");
+            if (en && en->type == JSON_BOOL) enabled = en->bool_val;
+            else if (en && en->type == JSON_NUMBER) enabled = en->num_val != 0.0;
+            else if (en && en->type == JSON_STRING)
+                enabled = strcmp(en->str_val, "true") == 0 ||
+                          strcmp(en->str_val, "1") == 0 ||
+                          strcmp(en->str_val, "yes") == 0 ||
+                          strcmp(en->str_val, "on") == 0;
+            json_t *ph = json_obj_get(wake, "phrase");
+            if (ph && ph->type == JSON_STRING) phrase = ph->str_val;
+        }
+        if (enabled) {
+            char buf[128];
+            if (!phrase || !*phrase)
+                snprintf(buf, sizeof buf, "hey %s", name);
+            else
+                snprintf(buf, sizeof buf, "%s", phrase);
+            json_set(result, name, json_string(buf));
+        }
+        if (cfg) json_free(cfg);
     }
-    pclose(fp);
+    free(packed);
     return result;
 }
 
 /* PoP: _import_audio @ tools/wake_word.py:_import_audio */
 int ww_import_audio(void)
 {
-    FILE *fp = popen("python3 -c "
-                     "\"import numpy, sounddevice\" "
-                     "2>/dev/null",
-                     "r");
-    if (!fp) return -1;
-    int rc = pclose(fp);
-    return (rc == 0) ? 0 : -1;
+    /* Native ALSA probe: open the default PCM in capture mode briefly to
+     * confirm the audio subsystem is available (mirrors sounddevice import). */
+    snd_pcm_t *pcm = NULL;
+    int err = snd_pcm_open(&pcm, "default", SND_PCM_STREAM_CAPTURE,
+                           SND_PCM_NONBLOCK);
+    if (pcm) snd_pcm_close(pcm);
+    return (err == 0) ? 0 : -1;
 }
 
 /* PoP: _audio_available @ tools/wake_word.py:_audio_available */
@@ -508,39 +601,81 @@ json_t *ww_describe_input_device(int selector)
 {
     json_t *details = json_object();
     if (!details) return NULL;
+    json_set(details, "selector", json_number(selector));
 
-    char cmd[256];
-    snprintf(cmd, sizeof(cmd),
-             "python3 -c "
-             "\"import sounddevice as sd, json, sys; "
-             "try: "
-             "  info = sd.query_devices(%d, 'input'); "
-             "  print(json.dumps(info)) "
-             "except Exception as e: "
-             "  print(json.dumps({'error': str(e)}))\" "
-             "2>/dev/null",
-             selector);
+    snd_ctl_t *ctl = NULL;
+    /* Resolve the selector to a device name. PortAudio uses integer indices;
+     * ALSA defaults to "default" when the index is -1 or unavailable. */
+    const char *devname = "default";
+    if (selector >= 0) {
+        char hwname[64];
+        snprintf(hwname, sizeof(hwname), "hw:%d", selector);
+        int err = snd_ctl_open(&ctl, hwname, 0);
+        if (err < 0) {
+            json_set(details, "error",
+                     json_string(snd_strerror(err)));
+            return details;
+        }
+        devname = hwname;
+    } else {
+        /* selector -1 / None → default device */
+        int err = snd_ctl_open(&ctl, "default", 0);
+        if (err < 0) {
+            json_set(details, "error", json_string("no default audio device"));
+            return details;
+        }
+    }
 
-    FILE *fp = popen(cmd, "r");
-    if (!fp) {
-        json_set(details, "error", json_string("popen failed"));
+    /* Query PCM info for max channels + default sample rate. */
+    snd_pcm_t *pcm = NULL;
+    int err = snd_pcm_open(&pcm, devname, SND_PCM_STREAM_CAPTURE,
+                           SND_PCM_NONBLOCK);
+    if (err < 0) {
+        json_set(details, "error", json_string(snd_strerror(err)));
+        if (ctl) snd_ctl_close(ctl);
         return details;
     }
 
-    char buf[4096];
-    if (fgets(buf, sizeof(buf), fp) != NULL) {
-        /* Parse the JSON output from sounddevice. */
-        char *err = NULL;
-        json_t *parsed = json_parse(buf, &err);
-        if (parsed) {
-            json_free(details);
-            free(err);
-            return parsed;
-        }
-        if (err) free(err);
+    snd_pcm_hw_params_t *params = NULL;
+    snd_pcm_hw_params_alloca(&params);
+    if (snd_pcm_hw_params(pcm, params) >= 0) {
+        unsigned int rate = 0;
+        snd_pcm_hw_params_get_rate(params, &rate, 0);
+        if (rate == 0) rate = 16000;
+        json_set(details, "default_samplerate", json_number(rate));
+
+        unsigned int chans = 1;
+        snd_pcm_hw_params_get_channels(params, &chans);
     }
-    pclose(fp);
-    json_set(details, "error", json_string("no output"));
+
+    /* Device name from the control handle. */
+    char card_name[128] = {0};
+    if (ctl) {
+        snd_ctl_card_info_t *info = NULL;
+        snd_ctl_card_info_alloca(&info);
+        if (info && snd_ctl_card_info(ctl, info) == 0) {
+            const char *name = snd_ctl_card_info_get_name(info);
+            if (name) {
+                snprintf(card_name, sizeof(card_name), "%s", name);
+                json_set(details, "name", json_string(card_name));
+            }
+            int ha = snd_ctl_card_info_get_card(info);
+            json_set(details, "hostapi_index", json_number(ha));
+            const char *ha_name = snd_ctl_card_info_get_driver(info);
+            if (ha_name)
+                json_set(details, "hostapi", json_string(ha_name));
+        }
+    }
+
+    /* max_input_channels */
+    unsigned int max_ch = 0;
+    if (params) snd_pcm_hw_params_get_channels_max(params, &max_ch);
+    if (max_ch == 0) max_ch = 1;
+    json_set(details, "max_input_channels", json_number(max_ch));
+
+    if (params) snd_pcm_hw_params_free(params);
+    snd_pcm_close(pcm);
+    if (ctl) snd_ctl_close(ctl);
     return details;
 }
 
@@ -641,89 +776,165 @@ void *ww_build_engine(const json_t *cfg)
 /* PoP: _stt_ready @ tools/wake_word.py:_stt_ready */
 bool ww_stt_ready(void)
 {
-    FILE *fp = popen("python3 -c "
-                     "\"from tools.transcription_tools import "
-                     "_get_provider, _load_stt_config, is_stt_enabled; "
-                     "cfg = _load_stt_config(); "
-                     "print('true' if is_stt_enabled(cfg) and "
-                     "_get_provider(cfg) != 'none' else 'false')\" "
-                     "2>/dev/null",
-                     "r");
-    if (!fp) return false;
-    char buf[64];
-    bool ready = false;
-    if (fgets(buf, sizeof(buf), fp) != NULL) {
-        ready = (strstr(buf, "true") != NULL);
+    /* Native: read the merged config's stt section; enabled + real provider.
+     * Mirrors Python transcription_tools.is_stt_enabled + _get_provider. */
+    json_t *config = config_py_load_config_readonly();
+    if (!config || config->type != JSON_OBJECT) {
+        if (config) json_free(config);
+        return false;
     }
-    pclose(fp);
-    return ready;
+    json_t *stt = json_obj_get(config, "stt");
+    bool enabled = true;
+    const char *provider = NULL;
+    if (stt && stt->type == JSON_OBJECT) {
+        json_t *en = json_obj_get(stt, "enabled");
+        if (en && en->type == JSON_BOOL) enabled = en->bool_val;
+        else if (en && en->type == JSON_NUMBER) enabled = en->num_val != 0.0;
+        else if (en && en->type == JSON_STRING)
+            enabled = strcmp(en->str_val, "false") != 0 &&
+                      strcmp(en->str_val, "0") != 0 &&
+                      strcmp(en->str_val, "no") != 0 &&
+                      strcmp(en->str_val, "off") != 0;
+        json_t *pv = json_obj_get(stt, "provider");
+        if (pv && pv->type == JSON_STRING) provider = pv->str_val;
+    }
+    json_free(config);
+    if (!enabled) return false;
+    /* _get_provider returns "none" when explicitly set to a disabled
+     * value; default (unset) means the provider is the built-in local one. */
+    if (!provider) return true;                       /* default = local */
+    size_t plen = strlen(provider);
+    while (plen > 0 && (provider[plen-1]==' '||provider[plen-1]=='\t'||
+                        provider[plen-1]=='\n'||provider[plen-1]=='\r')) plen--;
+    if (plen == 0) return true;                       /* empty -> default */
+    return strncasecmp(provider, "none", 4) != 0;     /* != "none" */
 }
 
 /* PoP: _tts_ready @ tools/wake_word.py:_tts_ready */
 bool ww_tts_ready(void)
 {
-    FILE *fp = popen("python3 -c "
-                     "\"from tools.tts_tool import _get_provider, _load_tts_config; "
-                     "provider = _get_provider(_load_tts_config()); "
-                     "print(provider if provider else 'none')\" "
-                     "2>/dev/null",
-                     "r");
-    if (!fp) return false;
-    char buf[128];
-    bool ready = false;
-    if (fgets(buf, sizeof(buf), fp) != NULL) {
-        /* Strip newline */
-        buf[strcspn(buf, "\n")] = '\0';
-        /* Any non-empty, non-"none" provider counts as ready
-         * (lazy installs are handled at first use). */
-        ready = (strlen(buf) > 0 && strcmp(buf, "none") != 0);
+    /* Native: read the merged config's tts section; any non-empty,
+     * non-"none" provider counts as ready (lazy install at first use).
+     * Mirrors Python tts_tool._get_provider + wake_word._tts_ready. */
+    json_t *config = config_py_load_config_readonly();
+    if (!config || config->type != JSON_OBJECT) {
+        if (config) json_free(config);
+        return false;
     }
-    pclose(fp);
-    return ready;
+    json_t *tts = json_obj_get(config, "tts");
+    const char *provider = NULL;
+    if (tts && tts->type == JSON_OBJECT) {
+        json_t *pv = json_obj_get(tts, "provider");
+        if (pv && pv->type == JSON_STRING) provider = pv->str_val;
+        else if (pv && pv->type == JSON_NUMBER) {
+            char *s = json_serialize(pv);
+            if (s) {
+                /* reuse the serialized number as the provider label */
+                provider = NULL; /* numeric providers are not valid names */
+                free(s);
+            }
+        }
+    }
+    json_free(config);
+    if (!provider) return false;                        /* no provider */
+    size_t plen = strlen(provider);
+    while (plen > 0 && (provider[plen-1]==' '||provider[plen-1]=='\t'||
+                        provider[plen-1]=='\n'||provider[plen-1]=='\r')) plen--;
+    if (plen == 0) return false;                        /* empty -> none */
+    return strncasecmp(provider, "none", 4) != 0;       /* != "none" */
 }
 
 /* PoP: check_wake_word_requirements @ tools/wake_word.py:check_wake_word_requirements */
 json_t *ww_check_wake_word_requirements(const json_t *cfg)
 {
-    /* Build the requirements dict by calling into the Python
-     * implementation for the complex dependency-check logic. */
-    char *cfg_json = cfg ? json_serialize(cfg) : strdup("{}");
-    if (!cfg_json) return NULL;
+    /* Native port: deterministic feasibility report over the same signals as
+     * the Python original. The only third-party component here is the ML
+     * runtime package itself; whether it is installed is a site-packages
+     * availability probe (our code), not the runtime. */
+    if (!cfg || cfg->type != JSON_OBJECT) cfg = NULL;
 
-    char *escaped = malloc(strlen(cfg_json) * 2 + 1);
-    if (!escaped) { free(cfg_json); return NULL; }
-    char *dst = escaped;
-    for (const char *s = cfg_json; *s; s++) {
-        if (*s == '"' || *s == '\\') *dst++ = '\\';
-        *dst++ = *s;
+    /* provider = _provider(cfg) */
+    char *provider = ww_provider(cfg);
+
+    /* feature selection */
+    const char *feature = "wake.openwakeword";
+    bool is_porcupine = provider && (strcasecmp(provider, "porcupine") == 0);
+    bool is_sherpa = provider && (strcasecmp(provider, "sherpa") == 0 ||
+                                  strcasecmp(provider, "sherpa-onnx") == 0 ||
+                                  strcasecmp(provider, "kws") == 0 ||
+                                  strcasecmp(provider, "open") == 0);
+    if (is_porcupine) feature = "wake.porcupine";
+    else if (is_sherpa) feature = "wake.sherpa";
+
+    /* deps_ok = lazy_deps.is_available(feature) — native site-packages probe. */
+    bool deps_ok = ww_site_package_available(feature);
+
+    /* lazy_ok = lazy_deps._allow_lazy_installs() */
+    bool lazy_ok = ww_allow_lazy_installs();
+
+    /* audio_ok = _audio_available() if deps_ok else False */
+    bool audio_ok = deps_ok ? ww_audio_available() : false;
+
+    bool key_ok = true;
+    bool stt_ok = ww_stt_ready();
+    bool tts_ok = ww_tts_ready();
+    const char *hint = "";
+
+    /* tflite backend needs a runtime openWakeWord doesn't declare off Linux. */
+    bool tflite_ok = true;
+    if (!is_porcupine && !is_sherpa) {
+        char *framework = ww_resolve_inference_framework(cfg, ww_is_macos_arm64());
+        if (framework && strcasecmp(framework, "tflite") == 0) {
+            tflite_ok = ww_ensure_tflite_runtime()
+                        || ww_site_package_available("wake.openwakeword.tflite")
+                        || lazy_ok;
+        }
+        free(framework);
     }
-    *dst = '\0';
-    free(cfg_json);
 
-    char cmd[8192];
-    snprintf(cmd, sizeof(cmd),
-        "python3 -c "
-        "\"import sys, json; "
-        "from tools.wake_word import check_wake_word_requirements; "
-        "cfg = json.loads('%s'); "
-        "result = check_wake_word_requirements(cfg); "
-        "print(json.dumps(result))\" "
-        "2>/dev/null",
-        escaped);
-    free(escaped);
-
-    FILE *fp = popen(cmd, "r");
-    if (!fp) return NULL;
-
-    char buf[8192];
-    json_t *result = NULL;
-    if (fgets(buf, sizeof(buf), fp) != NULL) {
-        char *err = NULL;
-        result = json_parse(buf, &err);
-        if (err) free(err);
+    if (is_porcupine) {
+        const char *key = getenv("PORCUPINE_ACCESS_KEY");
+        if (!key || !key[0]) {
+            key_ok = false;
+            hint = "Set PORCUPINE_ACCESS_KEY (free key at https://console.picovoice.ai).";
+        }
+    } else if (!deps_ok && !lazy_ok) {
+        /* feature_install_command(feature) */
+        hint = "uv pip install sherpa-onnx openwakeword onnxruntime "
+               "pvporcupine sounddevice numpy";
+    } else if (!tflite_ok) {
+        hint = "The wake word needs the tflite runtime on this Mac: pip install ai-edge-litert";
+    } else if (deps_ok && !audio_ok) {
+        hint = "Microphone capture needs sounddevice + numpy and a working audio device.";
+    } else if (!stt_ok || !tts_ok) {
+        bool miss_stt = !stt_ok;
+        bool miss_tts = !tts_ok;
+        if (miss_stt && miss_tts)
+            hint = "Wake word needs speech-to-text and text-to-speech configured — run `hermes tools` (Voice section) or see the voice-mode docs.";
+        else if (miss_stt)
+            hint = "Wake word needs speech-to-text configured — run `hermes tools` (Voice section) or see the voice-mode docs.";
+        else
+            hint = "Wake word needs text-to-speech configured — run `hermes tools` (Voice section) or see the voice-mode docs.";
     }
-    pclose(fp);
-    return result ? result : json_object();
+
+    bool available = key_ok && stt_ok && tts_ok && tflite_ok
+                     && ((deps_ok && audio_ok) || (!deps_ok && lazy_ok));
+
+    json_t *result = json_object();
+    json_set(result, "available", json_bool(available));
+    json_set(result, "provider", json_string(provider ? provider : ""));
+    json_set(result, "deps_available", json_bool(deps_ok));
+    json_set(result, "audio_available", json_bool(audio_ok));
+    json_set(result, "access_key_set", json_bool(key_ok));
+    json_set(result, "stt_available", json_bool(stt_ok));
+    json_set(result, "tts_available", json_bool(tts_ok));
+    char *phrase = ww_wake_phrase(cfg);
+    json_set(result, "phrase", json_string(phrase ? phrase : ""));
+    free(phrase);
+    if (hint[0])
+        json_set(result, "hint", json_string(hint));
+    free(provider);
+    return result;
 }
 
 /* ---------------------------------------------------------------------------

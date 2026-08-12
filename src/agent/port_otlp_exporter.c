@@ -51,36 +51,14 @@ char *otlp_exporter_otlp_config(const char *config_json)
     return out;
 }
 
-/* ── Shared function: identical body to gateway_health_export's _resolve_headers ── */
+/* ── Shared function: delegates to gateway_health_export's _resolve_headers ── */
 
 /* PoP: _resolve_headers @ agent/monitoring/otlp_exporter.py:_resolve_headers */
+/* Reuses he_resolve_headers (ported from gateway_health_export.py) — both
+ * faithfully mirror the identical Python _resolve_headers body. */
 char *otlp_exporter_resolve_headers(const char *headers_env_json)
 {
-    if (!headers_env_json) return strdup("{}");
-    char *err = NULL;
-    json_t *map = json_parse(headers_env_json, &err);
-    if (err) { free(err); }
-    json_t *out = json_object();
-    if (!map || map->type != JSON_OBJECT) {
-        if (map) json_free(map);
-        char *s = json_serialize(out);
-        json_free(out);
-        return s;
-    }
-    for (size_t i = 0; i < map->c.count; i++) {
-        const char *hk = map->c.keys[i];
-        json_t *vj = map->c.items[i];
-        if (!vj || vj->type != JSON_STRING || !vj->str_val || !*vj->str_val)
-            continue;
-        const char *env_val = getenv(vj->str_val);
-        if (env_val && *env_val) {
-            json_set(out, hk, json_string(env_val));
-        }
-    }
-    json_free(map);
-    char *s = json_serialize(out);
-    json_free(out);
-    return s;
+    return he_resolve_headers(headers_env_json);
 }
 
 /* ── is_enabled: otlp.get("enabled") and otlp.get("endpoint") ── */

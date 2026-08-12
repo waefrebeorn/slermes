@@ -194,10 +194,34 @@ static char *openai_build_request_body(const provider_t *p,
      * Providers without a registered profile are left untouched. */
     apply_provider_profile(p, root);
 
-    /* Messages */
-    json_t *msgs = json_new_array();
+    /* Messages — shared helper builds the role/content/tool_calls array. */
+    json_t *msgs = provider_build_messages_array(messages, msg_count);
     if (!msgs) { json_free(root); return NULL; }
+    json_object_set(root, "messages", msgs);
 
+    /* Tools */
+    if (tools_json && json_array_count(tools_json) > 0) {
+        json_object_set(root, "tools", json_copy(tools_json));
+    }
+
+    /* Serialize */
+    char *body = json_serialize(root);
+    json_free(root);
+    return body;
+}
+
+/* ================================================================
+ *  Shared message-array builder (openai-compatible providers).
+ * ================================================================
+ * Port of the shared messages-construction block inlined by every OpenAI-compat
+ * provider (openai, deepseek, openrouter, azure, xai, custom). Returns a malloc'd
+ * json_t* array of message objects (caller json_frees), or NULL on failure.
+ */
+/* PoP: _to_messages @ provider/openai.py:_to_messages (shared across openai-compat ports) */
+json_t *provider_build_messages_array(const message_t **messages, size_t msg_count)
+{
+    json_t *msgs = json_new_array();
+    if (!msgs) return NULL;
     for (size_t i = 0; i < msg_count; i++) {
         json_t *msg = json_new_object();
         const char *role_str;
@@ -218,10 +242,11 @@ static char *openai_build_request_body(const provider_t *p,
                 json_new_string(messages[i]->tool_call_id));
         }
 
-        /* Tool calls for assistant messages */
+        /* Tool calls for assistant messages (capped at 64 — matches
+         * message_t.tool_calls[64] declared slot count, same as all ports) */
         if (messages[i]->role == MSG_ASSISTANT && messages[i]->tool_calls_count > 0) {
             json_t *tcs = json_new_array();
-            for (int j = 0; j < messages[i]->tool_calls_count; j++) {
+            for (int j = 0; j < messages[i]->tool_calls_count && j < 64; j++) {
                 json_t *tc = json_new_object();
                 json_object_set(tc, "id",
                     json_new_string(messages[i]->tool_calls[j].id));
@@ -239,17 +264,7 @@ static char *openai_build_request_body(const provider_t *p,
 
         json_array_append(msgs, msg);
     }
-    json_object_set(root, "messages", msgs);
-
-    /* Tools */
-    if (tools_json && json_array_count(tools_json) > 0) {
-        json_object_set(root, "tools", json_copy(tools_json));
-    }
-
-    /* Serialize */
-    char *body = json_serialize(root);
-    json_free(root);
-    return body;
+    return msgs;
 }
 
 /* ================================================================

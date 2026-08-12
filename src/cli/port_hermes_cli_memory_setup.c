@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <dlfcn.h>
 
 
 
@@ -120,6 +121,46 @@ static size_t provider_pip_dependencies_c(const char *provider_name,
     return n;
 }
 
+/* Native import probe: check whether a Python package import name is
+ * available without shelling out to ``python3``. Mirrors the semantic of
+ * importlib.util.find_spec — returns 1 if the package is installed. */
+static int cli_memory_import_available(const char *imp_name)
+{
+    if (!imp_name || !*imp_name) return 0;
+
+    /* 1) dlopen on the top-level package name (C extension packages). */
+    const char *try_libs[] = {
+        NULL,  /* filled below */
+    };
+    (void)try_libs;
+    /* Build candidate shared-library names for C-extension packages. */
+    char libpath[512];
+    /* Packages like 'mem0', 'honcho', 'hindsight_client' may ship .so files. */
+    const char *ve = getenv("VIRTUAL_ENV");
+    const char *hp = getenv("HOME");
+    const char *pyhome = getenv("PYTHONHOME");
+    const char *roots[4] = { ve, hp, pyhome, NULL };
+    for (int r = 0; r < 4 && roots[r]; r++) {
+        const char *suffix = (ve == roots[r])
+            ? "/lib/python3.11/site-packages" : "/.local/lib/python3.11/site-packages";
+        char sp[2048];
+        snprintf(sp, sizeof(sp), "%s%s", roots[r], suffix);
+        /* Check <sp>/<imp_name>/__init__.py (pure-Python) or ...so (C-ext). */
+        snprintf(libpath, sizeof(libpath), "%s/%s/__init__.py", sp, imp_name);
+        if (access(libpath, R_OK) == 0) return 1;
+        snprintf(libpath, sizeof(libpath), "%s/%s.so", sp, imp_name);
+        if (access(libpath, R_OK) == 0) return 1;
+    }
+
+    /* 2) dlopen fallback for packages already on the linker path. */
+    char dlname[256];
+    snprintf(dlname, sizeof(dlname), "lib%s.so", imp_name);
+    void *h = dlopen(dlname, RTLD_LAZY | RTLD_NOLOAD);
+    if (h) { dlclose(h); return 1; }
+
+    return 0;
+}
+
 /* PoP: cli_hermes_cli_memory_setup__install_dependencies @ hermes_cli/memory_setup.py:_install_dependencies */
 
 /* Port of Python hermes_cli/memory_setup.py:_install_dependencies.
@@ -212,11 +253,8 @@ int cli_hermes_cli_memory_setup__install_dependencies(
         for (size_t k = 0; k < sizeof(IMPORT_NAMES)/sizeof(IMPORT_NAMES[0]); k++) {
             if (strcmp(dep, IMPORT_NAMES[k].pip) == 0) { imp = IMPORT_NAMES[k].imp; break; }
         }
-        /* dlopen-style probe via a tiny subprocess: `python3 -c "import X"` */
-        char cmd[512];
-        snprintf(cmd, sizeof(cmd), "python3 -c \"import %s\" >/dev/null 2>&1", imp);
-        int rc = system(cmd);
-        if (rc != 0) missing[n_missing++] = strdup(dep);
+        /* Native import probe — no Python subprocess. */
+        if (!cli_memory_import_available(imp)) missing[n_missing++] = strdup(dep);
     }
 
     if (n_missing == 0) {

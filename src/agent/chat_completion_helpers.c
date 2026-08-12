@@ -19,6 +19,7 @@
 #include <ctype.h>
 
 #include "hermes_agent.h"
+#include "hermes_auth.h"  /* auth_store_load_provider_state */
 
 /* AG26: Port of Python agent/chat_completion_helpers.py:_is_openai_codex_backend(). Returns true if api_mode
  * equals "codex_responses". */
@@ -454,34 +455,11 @@ void chat_completion_helpers__fallback_entry_key(const json_t *fb,
 }
 
 /* Reads the persisted auth store (~/.hermes/auth.json) provider state for
- * provider_id. Returns a malloc'd JSON object (caller json_free) or NULL. */
+ * provider_id. Returns a malloc'd JSON object (caller json_free) or NULL.
+ * Delegates to the canonical auth_store_load_provider_state in token_exchange.c. */
 static json_t *cch_load_provider_auth_state(const char *provider_id)
 {
-    const char *home = getenv("HERMES_HOME");
-    char path[4096];
-    if (home && *home)
-        snprintf(path, sizeof(path), "%s/auth.json", home);
-    else {
-        const char *h = getenv("HOME");
-        if (!h || !*h) return NULL;
-        snprintf(path, sizeof(path), "%s/.hermes/auth.json", h);
-    }
-    FILE *f = fopen(path, "r");
-    if (!f) return NULL;
-    fseek(f, 0, SEEK_END); long size = ftell(f); fseek(f, 0, SEEK_SET);
-    if (size <= 0) { fclose(f); return NULL; }
-    char *buf = malloc((size_t)size + 1);
-    if (!buf) { fclose(f); return NULL; }
-    size_t n = fread(buf, 1, (size_t)size, f);
-    fclose(f); buf[n] = '\0';
-    json_t *store = json_parse(buf, NULL);
-    free(buf);
-    if (!store) return NULL;
-    json_t *providers = json_obj_get(store, "providers");
-    json_t *state = providers ? json_obj_get(providers, provider_id) : NULL;
-    json_t *result = state ? json_copy(state) : NULL;
-    json_free(store);
-    return result;
+    return auth_store_load_provider_state(provider_id);
 }
 
 /* PoP: chat_completion_helpers__fallback_entry_unavailable_without_network @ agent/chat_completion_helpers.py:_fallback_entry_unavailable_without_network */

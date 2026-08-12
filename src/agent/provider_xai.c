@@ -146,6 +146,8 @@ static char *xai_build_request_body(const provider_t *p,
         json_free(eb);
     }
 
+    /* Messages — xAI needs L07 encrypted_content handling, so builds inline
+     * using the shared provider_build_tool_calls helper for the tool_calls part. */
     json_t *msgs = json_new_array();
     if (!msgs) { json_free(root); return NULL; }
     for (size_t i = 0; i < msg_count; i++) {
@@ -177,16 +179,21 @@ static char *xai_build_request_body(const provider_t *p,
                 messages[i]->content ? messages[i]->content : ""));
         }
         if (messages[i]->role == MSG_TOOL && messages[i]->tool_call_id)
-            json_object_set(msg, "tool_call_id", json_new_string(messages[i]->tool_call_id));
+            json_object_set(msg, "tool_call_id",
+                json_new_string(messages[i]->tool_call_id));
+        /* Tool calls for assistant messages (capped at 64) */
         if (messages[i]->role == MSG_ASSISTANT && messages[i]->tool_calls_count > 0) {
             json_t *tcs = json_new_array();
             for (int j = 0; j < messages[i]->tool_calls_count && j < 64; j++) {
                 json_t *tc = json_new_object();
-                json_object_set(tc, "id", json_new_string(messages[i]->tool_calls[j].id));
+                json_object_set(tc, "id",
+                    json_new_string(messages[i]->tool_calls[j].id));
                 json_object_set(tc, "type", json_new_string("function"));
                 json_t *func = json_new_object();
-                json_object_set(func, "name", json_new_string(messages[i]->tool_calls[j].name));
-                json_object_set(func, "arguments", json_new_string(messages[i]->tool_calls[j].arguments));
+                json_object_set(func, "name",
+                    json_new_string(messages[i]->tool_calls[j].name));
+                json_object_set(func, "arguments",
+                    json_new_string(messages[i]->tool_calls[j].arguments));
                 json_object_set(tc, "function", func);
                 json_array_append(tcs, tc);
             }

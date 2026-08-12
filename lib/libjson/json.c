@@ -680,6 +680,39 @@ char *json_serialize_pretty(const json_t *node, int indent) {
     return s.buf ? s.buf : xstrdup("null");
 }
 
+/* === Public string escaping (shared by all ports) === */
+char *json_escape_string(const char *s)
+{
+    if (!s) s = "";
+    size_t need = 1;
+    for (const char *p = s; *p; p++) {
+        unsigned char c = (unsigned char)*p;
+        if (c == '"' || c == '\\') need += 2;
+        else if (c == '\n') need += 2;
+        else if (c == '\r') need += 2;
+        else if (c == '\t') need += 2;
+        else if (c < 0x20) need += 6;
+        else need += 1;
+    }
+    char *out = (char *)malloc(need + 1);
+    if (!out) return NULL;
+    char *q = out;
+    *q++ = '"';
+    for (const char *p = s; *p; p++) {
+        unsigned char c = (unsigned char)*p;
+        if (c == '"')        { *q++ = '\\'; *q++ = '"'; }
+        else if (c == '\\')  { *q++ = '\\'; *q++ = '\\'; }
+        else if (c == '\n')  { *q++ = '\\'; *q++ = 'n'; }
+        else if (c == '\r')  { *q++ = '\\'; *q++ = 'r'; }
+        else if (c == '\t')  { *q++ = '\\'; *q++ = 't'; }
+        else if (c < 0x20)   { q += snprintf(q, 7, "\\u%04x", c); }
+        else *q++ = (char)c;
+    }
+    *q++ = '"';
+    *q = '\0';
+    return out;
+}
+
 /* ================================================================
  *  Copy / Free
  * ================================================================ */

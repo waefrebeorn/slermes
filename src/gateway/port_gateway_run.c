@@ -12,6 +12,7 @@
 #include "hermes_gateway_runner.h" /* GatewayRunner opaque */
 #include "hermes_redact.h"        /* hermes_redact */
 #include "hermes_skill_commands.h" /* skill_cmd_* functions */
+#include "../tools/process_registry.h"  /* native process reaping */
 
 #include <stdio.h>
 #include <strings.h>
@@ -1505,27 +1506,10 @@ int gw_reap_gateway_turn_processes(GatewayRunner *self, const char *session_key,
     (void)self;
     if (!session_key || strlen(session_key) == 0) return 0;
     if (!is_still_current) return 0;
-    /* Delegate to process_registry via subprocess. */
-    char _pcmd[1024];
-    snprintf(_pcmd, sizeof(_pcmd),
-        "python3 -c "
-        "\"from tools.process_registry import process_registry; "
-        "import sys; "
-        "try: "
-        "  killed = process_registry.kill_started_since('', [], source=sys.argv[1]); "
-        "  print(killed); "
-        "except Exception: "
-        "  print(0)\" "
-        "\" %s 2>/dev/null", source ? source : "gateway_turn_timeout");
-    FILE *fp = popen(_pcmd, "r");
-    if (!fp) return 0;
-    char buf[32];
-    int killed = 0;
-    if (fgets(buf, sizeof(buf), fp) != NULL) {
-        killed = atoi(buf);
-    }
-    pclose(fp);
-    return killed;
+    /* Native: delegate to the in-process process registry instead of
+     * shelling out to Python's tools.process_registry. */
+    return process_registry_kill_started_since(session_key, NULL, 0,
+                                                source ? source : "gateway_turn_timeout");
 }
 
 /* PoP: _abandon_timed_out_gateway_turn @ gateway/run.py:_abandon_timed_out_gateway_turn */

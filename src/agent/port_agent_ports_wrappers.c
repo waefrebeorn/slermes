@@ -16,6 +16,9 @@
 #include "hermes_json.h"
 #include "libtooldispatch/tool_dispatch_helpers.h"
 #include "hash.h"
+#include "pngdec.h"
+#include <webp/encode.h>
+#include <webp/mux.h>
 
 /* PoP: _endpoint_scoped_context_length @ agent/model_metadata.py:_endpoint_scoped_context_length */
 int agent_model_metadata_u_endpoint_scoped_context_length(const char *arg) {
@@ -444,22 +447,67 @@ int agent_pet_generate_atlas_compose_atlas(const char *arg) {
 /* PoP: atlas_to_webp_bytes @ agent/pet/generate/atlas.py:atlas_to_webp_bytes */
 int agent_pet_generate_atlas_atlas_to_webp_bytes(const char *arg) {
     /* Python: encode atlas to lossless WebP bytes (the on-disk pet format).
-     * Arg = path to PNG/atlas image; C port shells to cwebp if available. */
+     * Native port: decode the source image (PNG via pngdec) to RGBA, then
+     * encode losslessly with libwebp (WebPEncodeLosslessBGRA). No Python. */
     if (!arg || !*arg) { printf("\n"); return 0; }
+
+    /* Try the external cwebp binary first (it handles JPEG/PNG/etc.). */
     char cmd[1600];
     snprintf(cmd, sizeof(cmd),
-             "cwebp -quiet -lossless -q 100 -exact '%s' -o - 2>/dev/null || "
-             "python3 -c \"from PIL import Image; import sys,io;"
-             "b=io.BytesIO();Image.open(sys.argv[1]).save(b,format='WEBP',"
-             "lossless=True,quality=100,method=6,exact=True);sys.stdout.buffer.write(b.getvalue())\" '%s' 2>/dev/null",
-             arg, arg);
+             "cwebp -quiet -lossless -q 100 -exact '%s' -o - 2>/dev/null", arg);
     FILE *fp = popen(cmd, "r");
-    if (!fp) { printf("\n"); return 0; }
-    char buf[1024];
-    size_t n = fread(buf, 1, sizeof(buf) - 1, fp);
-    pclose(fp);
-    buf[n] = '\0';
-    printf("%zu bytes\n", n);
+    if (fp) {
+        char buf[1024];
+        size_t n = fread(buf, 1, sizeof(buf) - 1, fp);
+        pclose(fp);
+        if (n > 0) {
+            buf[n] = '\0';
+            printf("%zu bytes\n", n);
+            return 0;
+        }
+    }
+
+    /* Native fallback: decode via pngdec + libwebp lossless encode. */
+    pngdec_image_t *img = pngdec_decode_file(arg);
+    if (!img || !img->pixels || img->channels < 3) {
+        if (img) pngdec_image_free(img);
+        printf("\n");
+        return 0;
+    }
+    int w = img->width;
+    int h = img->height;
+    uint8_t *webp_out = NULL;
+    /* Normalize to RGBA BGRA buffer for WebPEncodeLosslessBGRA. */
+    uint8_t *rgba = malloc((size_t)w * h * 4);
+    if (!rgba) { pngdec_image_free(img); printf("\n"); return 0; }
+    for (int y = 0; y < h; y++) {
+        for (int x = 0; x < w; x++) {
+            size_t src = (size_t)(y * w + x) * img->channels;
+            size_t dst = (size_t)(y * w + x) * 4;
+            uint8_t r = img->pixels[src + 0];
+            uint8_t g = img->channels > 1 ? img->pixels[src + 1] : 0;
+            uint8_t b = img->channels > 2 ? img->pixels[src + 2] : 0;
+            uint8_t a = img->channels > 3 ? img->pixels[src + 3] : 255;
+            /* WebPEncodeLosslessBGRA expects BGRA order */
+            rgba[dst + 0] = b;
+            rgba[dst + 1] = g;
+            rgba[dst + 2] = r;
+            rgba[dst + 3] = a;
+        }
+    }
+    pngdec_image_free(img);
+
+    /* Encode losslessly; WebPEncodeLosslessBGRA returns the encoded byte
+     * count, or 0 on error. The output buffer is malloc'd by libwebp. */
+    size_t webp_size = WebPEncodeLosslessBGRA(rgba, w, h, w * 4,
+                                              (uint8_t **)&webp_out);
+    free(rgba);
+    if (webp_size == 0 || !webp_out) {
+        printf("\n");
+        return 0;
+    }
+    fwrite(webp_out, 1, webp_size, stdout);
+    WebPFree(webp_out);
     return 0;
 }
 

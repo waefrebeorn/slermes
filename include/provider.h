@@ -495,6 +495,15 @@ char *anthropic_run_oauth_setup(void);
 /* Port of Python anthropic_adapter.py:run_hermes_oauth_login_pure(). */
 json_t *anthropic_run_oauth_login(void);
 
+/* ================================================================
+ *  Shared message-array builder (openAI-compat providers).
+ * ================================================================
+ * Port of the shared messages-construction block inlined by every OpenAI-compat
+ * provider build_request_body (openai, deepseek, openrouter, azure, xai, custom).
+ * Returns a malloc'd json_t* array of message objects (caller json_frees),
+ * or NULL on allocation failure. */
+json_t *provider_build_messages_array(const message_t **messages, size_t msg_count);
+
 /* Register all built-in providers */
 void register_provider_builtins(void);
 

@@ -538,6 +538,43 @@ static char *_auth_json_path(const char *hermes_home) {
     return path;
 }
 
+/* ================================================================
+ *  Provider-specific auth state (providers.<provider_id> in auth.json)
+ * ================================================================ */
+/*
+ * Faithful shared implementation of hermes_cli.auth.get_provider_auth_state
+ * (port of Python hermes_cli.providers.auth.get_provider_auth_state).
+ * Returns a deep copy of the providers.<provider_id> sub-object (caller
+ * json_frees), or NULL if the provider has no entry / auth.json is absent
+ * or invalid — matching Python's None-on-missing contract.
+ */
+json_t *auth_store_load_provider_state(const char *provider_id)
+{
+    if (!provider_id || !*provider_id) return NULL;
+
+    const char *home = getenv("HERMES_HOME");
+    char path[4096];
+    if (home && *home)
+        snprintf(path, sizeof(path), "%s/auth.json", home);
+    else {
+        const char *h = getenv("HOME");
+        if (!h || !*h) return NULL;
+        snprintf(path, sizeof(path), "%s/.hermes/auth.json", h);
+    }
+
+    char *err = NULL;
+    json_t *root = json_parse_file(path, &err);
+    if (!root) { free(err); return NULL; }
+    if (root->type != JSON_OBJECT) { json_free(root); return NULL; }
+
+    json_t *providers = json_object_get(root, "providers");
+    json_t *state = providers ? json_object_get(providers, provider_id) : NULL;
+
+    json_t *result = state ? json_copy(state) : NULL;
+    json_free(root);
+    return result;
+}
+
 auth_entry_t *auth_store_load(const char *hermes_home, int *out_count) {
     if (out_count) *out_count = 0;
 

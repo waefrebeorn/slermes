@@ -49,36 +49,7 @@ static const char *CONTRACT_LABELS[] = {
 };
 
 /* local JSON string escaper: returns malloc'd escaped string. Caller frees. */
-static char *json_escape(const char *s)
-{
-    if (!s) s = "";
-    size_t need = 1;
-    for (const char *p = s; *p; p++) {
-        unsigned char c = (unsigned char)*p;
-        if (c == '"' || c == '\\') need += 2;
-        else if (c == '\n') need += 2;
-        else if (c == '\r') need += 2;
-        else if (c == '\t') need += 2;
-        else if (c < 0x20) need += 6;
-        else need += 1;
-    }
-    char *out = malloc(need + 1);
-    char *q = out;
-    *q++ = '"';
-    for (const char *p = s; *p; p++) {
-        unsigned char c = (unsigned char)*p;
-        if (c == '"') { *q++='\\'; *q++='"'; }
-        else if (c == '\\') { *q++='\\'; *q++='\\'; }
-        else if (c == '\n') { *q++='\\'; *q++='n'; }
-        else if (c == '\r') { *q++='\\'; *q++='r'; }
-        else if (c == '\t') { *q++='\\'; *q++='t'; }
-        else if (c < 0x20) { sprintf(q, "\\u%04x", c); q += 6; }
-        else *q++ = (char)c;
-    }
-    *q++ = '"';
-    *q = '\0';
-    return out;
-}
+
 
 /* ---------------------------------------------------------------------------
  * smallest JSON object extractor (mimics _JSON_OBJECT_RE = \{.*?\} DOTALL)
@@ -177,7 +148,7 @@ char *goals_render_block(const char *contract_json)
             if (!n) break;
             out = n;
             if (out[0]) strcat(out, "\n");
-            char *esc = json_escape(val);
+            char *esc = json_escape_string(val);
             strcat(out, "- ");
             strcat(out, CONTRACT_LABELS[i]);
             strcat(out, ": ");
@@ -265,9 +236,9 @@ char *parse_contract_json(const char *text)
     char *out = malloc(8192);
     snprintf(out, 8192,
         "{\"headline\":%s,\"contract\":{\"outcome\":%s,\"verification\":%s,\"constraints\":%s,\"boundaries\":%s,\"stop_when\":%s}}",
-        json_escape(headline),
-        json_escape(fields[0]), json_escape(fields[1]),
-        json_escape(fields[2]), json_escape(fields[3]), json_escape(fields[4]));
+        json_escape_string(headline),
+        json_escape_string(fields[0]), json_escape_string(fields[1]),
+        json_escape_string(fields[2]), json_escape_string(fields[3]), json_escape_string(fields[4]));
     return out;
 }
 
@@ -314,7 +285,7 @@ char *goals_from_json(const char *raw)
         "\"last_turn_at\":%g,\"consecutive_parse_failures\":0,\"waiting_on_pid\":null,"
         "\"waiting_on_session\":null,\"waiting_until\":%g,\"waiting_reason\":null,"
         "\"waiting_since\":%g,\"contract\":%s,\"subgoals\":%s}",
-        json_escape(goal), json_escape(status), tu, mt, ca, lta, wu, ws,
+        json_escape_string(goal), json_escape_string(status), tu, mt, ca, lta, wu, ws,
         contract_json, sub_json);
     free(contract_json); free(sub_json);
     json_free(d);
@@ -527,7 +498,7 @@ char *parse_judge_response_json(const char *raw)
         char *r = malloc(strlen(verdict) + strlen(reason) + 64);
         snprintf(r, strlen(verdict)+strlen(reason)+64,
             "{\"verdict\":%s,\"reason\":%s,\"parse_failed\":0,\"wait\":null}",
-            json_escape(verdict), json_escape(reason));
+            json_escape_string(verdict), json_escape_string(reason));
         json_free(d); free(text);
         return r;
     }
@@ -537,7 +508,7 @@ char *parse_judge_response_json(const char *raw)
     if (!sess) sess = json_object_get(d, "session_id");
     if (!sess) sess = json_object_get(d, "wait_session");
     if (sess && sess->type == JSON_STRING && json_string_value(sess)[0]) {
-        snprintf(wait_json, sizeof(wait_json), "{\"session_id\":%s}", json_escape(json_string_value(sess)));
+        snprintf(wait_json, sizeof(wait_json), "{\"session_id\":%s}", json_escape_string(json_string_value(sess)));
     } else {
         /* try pid / seconds integer keys */
         const char *pid_keys[] = {"wait_on_pid","pid","wait_pid",NULL};
@@ -569,14 +540,14 @@ char *parse_judge_response_json(const char *raw)
         char *r = malloc(strlen(reason) + 128);
         snprintf(r, strlen(reason)+128,
             "{\"verdict\":\"continue\",\"reason\":%s (wait verdict had no target — continuing),\"parse_failed\":0,\"wait\":null}",
-            json_escape(reason));
+            json_escape_string(reason));
         json_free(d); free(text);
         return r;
     }
     char *r = malloc(strlen(verdict)+strlen(reason)+strlen(wait_json)+64);
     snprintf(r, strlen(verdict)+strlen(reason)+strlen(wait_json)+64,
         "{\"verdict\":%s,\"reason\":%s,\"parse_failed\":0,\"wait\":%s}",
-        json_escape(verdict), json_escape(reason), wait_json);
+        json_escape_string(verdict), json_escape_string(reason), wait_json);
     json_free(d); free(text);
     return r;
 }

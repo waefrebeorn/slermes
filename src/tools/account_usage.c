@@ -15,6 +15,7 @@
  */
 #define _GNU_SOURCE
 #include "hermes_account_usage.h"
+#include "hermes_auth.h"  /* auth_store_load_provider_state */
 #include "hermes_json.h"
 #include "hermes_http.h"
 #include <stdio.h>
@@ -623,33 +624,10 @@ void account_usage_free_lines(char **lines) {
 /* ---- Port of Python agent/account_usage.py:build_credits_view ------------ */
 
 /* Read a provider's auth state from auth.json (faithful to
- * hermes_cli.auth.get_provider_auth_state). Returns malloc'd JSON or NULL. */
+ * hermes_cli.auth.get_provider_auth_state). Returns malloc'd JSON or NULL.
+ * Delegates to the canonical auth_store_load_provider_state in token_exchange.c. */
 static json_t *au_load_provider_auth_state(const char *provider_id) {
-    const char *home = getenv("HERMES_HOME");
-    char path[4096];
-    if (home && *home)
-        snprintf(path, sizeof(path), "%s/auth.json", home);
-    else {
-        const char *h = getenv("HOME");
-        if (!h || !*h) return NULL;
-        snprintf(path, sizeof(path), "%s/.hermes/auth.json", h);
-    }
-    FILE *f = fopen(path, "r");
-    if (!f) return NULL;
-    fseek(f, 0, SEEK_END); long size = ftell(f); fseek(f, 0, SEEK_SET);
-    if (size <= 0) { fclose(f); return NULL; }
-    char *buf = malloc((size_t)size + 1);
-    if (!buf) { fclose(f); return NULL; }
-    size_t n = fread(buf, 1, (size_t)size, f);
-    fclose(f); buf[n] = '\0';
-    json_t *store = json_parse(buf, NULL);
-    free(buf);
-    if (!store) return NULL;
-    json_t *providers = json_obj_get(store, "providers");
-    json_t *state = providers ? json_obj_get(providers, provider_id) : NULL;
-    json_t *result = state ? json_copy(state) : NULL;
-    json_free(store);
-    return result;
+    return auth_store_load_provider_state(provider_id);
 }
 
 static credits_view_t *au_credits_view_empty(void) {
