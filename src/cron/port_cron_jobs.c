@@ -50,6 +50,27 @@ extern char *cron_lifecycle_check_gateway_lifecycle(const char *prompt,
 static long find_job_index(const json_t *jobs, const char *id);
 static char *normalize_optional_text(const json_t *value, bool strip_trailing_slash);
 
+/* Forward declarations — job state predicates (cron/jobs.py
+ * _has_pause_marker / is_job_runnable / effective_job_state) and the
+ * preflight/skill-ref/save-path helpers credited via PoP below. */
+bool cronjobs_has_pause_marker(const json_t *job);
+bool cronjobs_is_job_runnable(const json_t *job);
+char *cronjobs_effective_job_state(const json_t *job);
+char *cronjobs_canonical_skill_ref(const char *raw);
+json_t *cronjobs_parse_jobs_file(const char *path, bool *used_strict_fallback,
+                                 char **err);
+json_t *cronjobs_peek_jobs_unlocked(void);
+char *cronjobs_jobs_file_stamp(void);
+json_t *cronjobs_merge_unexpected_disk_jobs(const json_t *jobs,
+                                             const json_t *removed_ids);
+char *cronjobs_records_load_stamp(void);
+void cronjobs_records_invalidate_stamp(void);
+void cronjobs_record_load_stamp(const char *stamp);
+char *cronjobs_validate_job_mode_invariants(const char *monitor_script,
+                                            const char *monitor_url,
+                                            bool no_agent,
+                                            const char *script);
+
 /* ── small utilities ──────────────────────────────────────────────── */
 
 static char *xstrdup(const char *s) {
@@ -391,21 +412,83 @@ json_t *cronjobs_normalize_job_record(const json_t *job) {
     json_set(norm, "schedule_display", json_string(disp));
     free(disp);
 
-    char *state_raw = cronjobs_coerce_job_text(json_object_get(norm, "state"), "");
-    char *state = str_strip_dup(state_raw);
-    free(state_raw);
-    if (!state || !*state) {
-        free(state);
-        bool enabled = json_get_bool(norm, "enabled", true);
-        state = xstrdup(enabled ? "scheduled" : "paused");
-    }
-    json_set(norm, "state", json_string(state));
+    /* State is derived via effective_job_state (honors enabled + pause markers),
+     * port of effective_job_state(_normalize_job_record's stored state). The
+     * previous inline fallback only checked `enabled` and missed the paused_at
+     * precedence that effective_job_state encodes. */
+    char *state = cronjobs_effective_job_state(norm);
+    json_set(norm, "state", json_string(state ? state : "scheduled"));
 
     free(job_id);
     free(prompt);
     free(name);
     free(state);
     return norm;
+}
+
+/* ── Job state predicates (port of cron/jobs.py _has_pause_marker etc.) ── */
+
+/* True iff the record has a truthy paused_at marker. Python:
+ * bool(job.get("paused_at")). */
+static bool cronjobs_state_is_pause_paused_at(const json_t *pa) {
+    if (!pa || json_is_null(pa)) return false;
+    if (json_is_string(pa)) {
+        const char *s = json_string_value(pa);
+        return s != NULL && *s != '\0';
+    }
+    if (json_is_number(pa)) return json_number_value(pa) != 0.0;
+    if (json_is_bool(pa)) return json_is_true(pa);
+    return false;
+}
+
+/* PoP: cronjobs_has_pause_marker @ cron/jobs.py:_has_pause_marker */
+bool cronjobs_has_pause_marker(const json_t *job) {
+    if (!job || !json_is_object(job)) return false;
+    const char *state = json_object_get_string(job, "state", NULL);
+    char *stripped = str_strip_dup(state ? state : "");
+    bool paused_state = (stripped && strcmp(stripped, "paused") == 0);
+    free(stripped);
+    json_t *pa = json_object_get(job, "paused_at");
+    return paused_state || cronjobs_state_is_pause_paused_at(pa);
+}
+
+/* PoP: cronjobs_is_job_runnable @ cron/jobs.py:is_job_runnable */
+bool cronjobs_is_job_runnable(const json_t *job) {
+    if (!job) return false;
+    if (!json_get_bool(job, "enabled", true)) return false;
+    if (cronjobs_has_pause_marker(job)) return false;
+    return true;
+}
+
+/* PoP: cronjobs_effective_job_state @ cron/jobs.py:effective_job_state */
+char *cronjobs_effective_job_state(const json_t *job) {
+    if (!job || !json_is_object(job)) return xstrdup("scheduled");
+    const char *stored_raw = json_object_get_string(job, "state", NULL);
+    char *stored = str_strip_dup(stored_raw ? stored_raw : "");
+    if (stored && (strcmp(stored, "completed") == 0 || strcmp(stored, "error") == 0)) {
+        char *r = xstrdup(stored);
+        free(stored);
+        return r;
+    }
+    bool enabled = json_get_bool(job, "enabled", true);
+    if (!enabled) {
+        if (cronjobs_has_pause_marker(job) || (stored && strcmp(stored, "paused") == 0)) {
+            free(stored);
+            return xstrdup("paused");
+        }
+        char *r = xstrdup(stored && *stored ? stored : "paused");
+        free(stored);
+        return r;
+    }
+    /* enabled=true is authoritative: never claim paused */
+    if (stored && strcmp(stored, "paused") == 0) { free(stored); return xstrdup("scheduled"); }
+    if (cronjobs_state_is_pause_paused_at(json_object_get(job, "paused_at"))) {
+        free(stored);
+        return xstrdup("scheduled");
+    }
+    char *r = xstrdup(stored && *stored ? stored : "scheduled");
+    free(stored);
+    return r;
 }
 
 /* ── ISO helpers (local wall-clock with numeric offset, like Python) ── */
@@ -780,6 +863,12 @@ json_t *cronjobs_load_jobs(char **err) {
     struct stat st;
     if (stat(path, &st) != 0) { free(path); return json_array(); }
 
+    /* Record the load stamp so the save path can fast-path the shrink-merge
+     * to a single stat() when nothing changed under us (#80624). */
+    char *pre_read = cronjobs_jobs_file_stamp();
+    cronjobs_record_load_stamp(pre_read);
+    free(pre_read);
+
     char *perr = NULL;
     json_t *data = json_parse_file(path, &perr);
     free(perr);
@@ -815,13 +904,20 @@ bool cronjobs_save_jobs(const json_t *jobs) {
     char *path = cronjobs_jobs_file();
     if (!path) return false;
 
+    /* Shrink-merge guard (#80624): rescue on-disk jobs a concurrent writer
+     * created since this section loaded. Fast-paths to one stat() when the load
+     * stamp still matches (healthy no-race save). */
+    json_t *merged = cronjobs_merge_unexpected_disk_jobs(jobs, NULL);
+    json_t *payload = merged ? merged : json_copy(jobs);
+
     json_t *wrapper = json_object();
-    json_set(wrapper, "jobs", json_copy(jobs));
+    json_set(wrapper, "jobs", json_copy(payload));
     char *ts = now_iso();
     json_set(wrapper, "updated_at", json_string(ts ? ts : ""));
     free(ts);
     char *text = json_serialize_pretty(wrapper, 2);
     json_free(wrapper);
+    json_free(payload);
     if (!text) { free(path); return false; }
 
     char *dir = cronjobs_cron_dir();
@@ -846,10 +942,9 @@ bool cronjobs_save_jobs(const json_t *jobs) {
     }
     free(text);
     free(path);
+    cronjobs_records_invalidate_stamp();
     return ok;
 }
-
-/* ── Workdir / optional text ──────────────────────────────────────── */
 
 /* PoP: cronjobs_ensure_aware @ cron/jobs.py:_ensure_aware */
 /* Single-home Slermes stores aware ISO timestamps (see iso_local); naive
@@ -1006,6 +1101,21 @@ json_t *cronjobs_create_job(const cronjobs_create_opts *o, char **err) {
         return NULL;
     }
 
+    /* _validate_job_mode_invariants: monitor_script/monitor_url are mutually
+     * exclusive with each other, with no_agent, and require a script. */
+    {
+        char *iv = cronjobs_validate_job_mode_invariants(o->monitor_script,
+                                                        o->monitor_url,
+                                                        no_agent, script);
+        if (iv) {
+            set_err(err, iv); free(iv);
+            json_free(parsed); json_free(skills);
+            free(job_id); free(now); free(model); free(provider); free(base_url);
+            free(script); free(deliver_owned);
+            return NULL;
+        }
+    }
+
     json_t *toolsets = NULL;
     if (o->enabled_toolsets && json_is_array(o->enabled_toolsets)) {
         json_t *tmp = json_array();
@@ -1110,6 +1220,18 @@ json_t *cronjobs_create_job(const cronjobs_create_opts *o, char **err) {
     json_set(job, "workdir", workdir ? json_string(workdir) : json_null());
     if (o->attach_to_session >= 0)
         json_set(job, "attach_to_session", json_bool(o->attach_to_session != 0));
+
+    /* monitor_script/monitor_url are stored verbatim (stripped); default null. */
+    {
+        char *ms = normalize_optional_cstr(o->monitor_script, false);
+        char *mu = o->monitor_url ? str_strip_dup(o->monitor_url) : NULL;
+        if (mu && !*mu) { free(mu); mu = NULL; }
+        json_set(job, "monitor_script", ms ? json_string(ms) : json_null());
+        json_set(job, "monitor_url", mu ? json_string(mu) : json_null());
+        free(ms); free(mu);
+    }
+    /* _set_preflight_alerted default: False on creation. */
+    json_set(job, "preflight_alerted", json_bool(false));
 
     int lk = cronjobs_lock();
     char *lerr = NULL;
@@ -1981,16 +2103,14 @@ json_t *cronjobs_referenced_skill_names(void) {
             json_object_get_string(job, "skill", NULL), json_object_get(job, "skills"));
         size_t sn = json_array_size(skills);
         for (size_t j = 0; j < sn; j++) {
-            char *name = str_strip_dup(json_string_value(json_array_get(skills, j)));
-            /* lstrip('/') */
-            char *p = name;
-            while (*p == '/') p++;
-            if (*p) {
+            const char *raw_name = json_string_value(json_array_get(skills, j));
+            char *name = cronjobs_canonical_skill_ref(raw_name);
+            if (*name) {
                 bool dup = false;
                 size_t on = json_array_size(out);
                 for (size_t k = 0; k < on; k++)
-                    if (strcmp(json_string_value(json_array_get(out, k)), p) == 0) { dup = true; break; }
-                if (!dup) json_append(out, json_string(p));
+                    if (strcmp(json_string_value(json_array_get(out, k)), name) == 0) { dup = true; break; }
+                if (!dup) json_append(out, json_string(name));
             }
             free(name);
         }
@@ -2102,6 +2222,10 @@ json_t *cronjobs_rewrite_skill_refs(const json_t *consolidated, const json_t *pr
 static pthread_mutex_t g_cron_lock_mutex = PTHREAD_MUTEX_INITIALIZER;
 static int  g_cron_lock_depth = 0;
 static int  g_cron_lock_fd = -1;
+/* Load-generation stamp for the shrink-merge fast path (#80624). Set by
+ * load_jobs inside a held lock, invalidated after every save. Mirrors Python's
+ * _jobs_lock_state.load_stamp. */
+static char *g_cron_load_stamp = NULL;
 
 /* Acquire the jobs lock (reentrant). Returns 0 on success. */
 int cron_jobs_lock_acquire(void)
@@ -2166,3 +2290,218 @@ int cron_classify_items_main(void)
 {
     return 0;
 }
+
+/* PoP: cronjobs_validate_job_mode_invariants @ cron/jobs.py:_validate_job_mode_invariants */
+char *cronjobs_validate_job_mode_invariants(const char *monitor_script,
+                                            const char *monitor_url,
+                                            bool no_agent,
+                                            const char *script) {
+    bool has_ms = monitor_script && *monitor_script;
+    bool has_mu = monitor_url && *monitor_url;
+    if (has_ms && has_mu)
+        return xstrdup("monitor_script and monitor_url are mutually exclusive");
+    if ((has_ms || has_mu) && no_agent)
+        return xstrdup("monitor_script/monitor_url conflict with no_agent");
+    if ((has_ms || has_mu) && !script)
+        return xstrdup("monitor_script/monitor_url requires a script");
+    return NULL;
+}
+
+/* PoP: cronjobs_canonical_skill_ref @ cron/jobs.py:_canonical_skill_ref */
+char *cronjobs_canonical_skill_ref(const char *raw) {
+    if (!raw) return xstrdup("");
+    char *s = str_strip_dup(raw);
+    if (s && (s[0] == '/' || s[0] == '@')) {
+        char *t = xstrdup(s + 1);
+        free(s);
+        s = str_strip_dup(t);
+        free(t);
+    }
+    if (s && *s == '\0') { free(s); return xstrdup(""); }
+    return s;
+}
+
+/* PoP: cronjobs_peek_jobs_unlocked @ cron/jobs.py:_peek_jobs_unlocked */
+json_t *cronjobs_peek_jobs_unlocked(void) {
+    char *path = cronjobs_jobs_file();
+    if (!path) return NULL;
+    struct stat st;
+    if (stat(path, &st) != 0) { free(path); return json_array(); }
+    bool sfb = false; char *perr = NULL;
+    json_t *data = cronjobs_parse_jobs_file(path, &sfb, &perr);
+    free(perr); free(path);
+    if (!data) return NULL;
+    json_t *jobs = NULL;
+    if (json_is_object(data)) {
+        json_t *j = json_object_get(data, "jobs");
+        jobs = (j && json_is_array(j)) ? json_copy(j) : json_array();
+    } else if (json_is_array(data)) { jobs = data; data = NULL; }
+    else { json_free(data); return NULL; }
+    json_free(data);
+    return jobs;
+}
+
+/* PoP: cronjobs_jobs_file_stamp @ cron/jobs.py:_jobs_file_stamp */
+char *cronjobs_jobs_file_stamp(void) {
+    char *path = cronjobs_jobs_file();
+    if (!path) return NULL;
+    struct stat st;
+    char *r = NULL;
+    if (stat(path, &st) == 0) {
+        r = malloc(96);
+        if (r) snprintf(r, 96, "%lld|%ld|%ld",
+                        (long long)st.st_mtime, (long)st.st_size, (long)st.st_ino);
+    }
+    free(path);
+    return r;
+}
+
+/* PoP: cronjobs_records_load_stamp @ cron/jobs.py:_record_load_stamp */
+/* Setter: record the load stamp while inside a held critical section so the
+ * save path can fast-path the shrink-merge to a single stat(). No-op outside a
+ * critical section (mirrors Python's depth guard). Port of
+ * _record_load_stamp — the None-arg form is cronjobs_records_invalidate_stamp. */
+void cronjobs_record_load_stamp(const char *stamp) {
+    if (g_cron_lock_depth <= 0) return;
+    free(g_cron_load_stamp);
+    g_cron_load_stamp = stamp ? xstrdup(stamp) : NULL;
+}
+
+char *cronjobs_records_load_stamp(void) {
+    return g_cron_load_stamp ? xstrdup(g_cron_load_stamp) : NULL;
+}
+
+/* PoP: cronjobs_records_invalidate_stamp @ cron/jobs.py:_record_load_stamp */
+void cronjobs_records_invalidate_stamp(void) {
+    free(g_cron_load_stamp);
+    g_cron_load_stamp = NULL;
+}
+
+/* PoP: cronjobs_merge_unexpected_disk_jobs @ cron/jobs.py:_merge_unexpected_disk_jobs */
+json_t *cronjobs_merge_unexpected_disk_jobs(const json_t *jobs,
+                                            const json_t *removed_ids) {
+    char *cur = cronjobs_records_load_stamp();
+    char *disk = cronjobs_jobs_file_stamp();
+    if (cur && disk && strcmp(cur, disk) == 0) {
+        free(cur); free(disk);
+        return json_copy(jobs);
+    }
+    free(cur); free(disk);
+    json_t *disk_jobs = cronjobs_peek_jobs_unlocked();
+    if (!disk_jobs) return json_copy(jobs);
+    json_t *intnd = json_array();
+    if (removed_ids && json_is_array(removed_ids)) {
+        size_t n = json_array_size(removed_ids);
+        for (size_t i = 0; i < n; i++) {
+            json_t *v = json_array_get(removed_ids, i);
+            if (json_is_string(v) && *json_string_value(v))
+                json_append(intnd, json_string(json_string_value(v)));
+        }
+    }
+    json_t *new_ids = json_array();
+    size_t jn = jobs ? json_array_size(jobs) : 0;
+    for (size_t i = 0; i < jn; i++) {
+        json_t *job = json_array_get(jobs, i);
+        const char *id = json_object_get_string(job, "id", NULL);
+        if (id && *id) json_append(new_ids, json_string(id));
+    }
+    json_t *recovered = json_array();
+    size_t dn = json_array_size(disk_jobs);
+    for (size_t i = 0; i < dn; i++) {
+        json_t *dj = json_array_get(disk_jobs, i);
+        if (!json_is_object(dj)) continue;
+        const char *did = json_object_get_string(dj, "id", NULL);
+        if (!did || !*did) continue;
+        bool keep = true;
+        for (size_t k = 0; k < json_array_size(new_ids); k++)
+            if (strcmp(json_string_value(json_array_get(new_ids, k)), did) == 0)
+                { keep = false; break; }
+        if (keep)
+            for (size_t k = 0; k < json_array_size(intnd); k++)
+                if (strcmp(json_string_value(json_array_get(intnd, k)), did) == 0)
+                    { keep = false; break; }
+        if (keep) json_append(recovered, json_copy(dj));
+    }
+    json_free(new_ids); json_free(intnd); json_free(disk_jobs);
+    json_t *result = json_copy(jobs);
+    size_t rc = json_array_size(recovered);
+    for (size_t i = 0; i < rc; i++)
+        json_append(result, json_copy(json_array_get(recovered, i)));
+    json_free(recovered);
+    return result;
+}
+
+/* PoP: cronjobs_preflight_set @ cron/jobs.py:_set_preflight_alerted */
+bool cronjobs_preflight_set(const char *job_id, bool value) {
+    if (!job_id) return false;
+    char *err = NULL;
+    json_t *jobs = cronjobs_load_jobs(&err);
+    free(err);
+    if (!jobs) return false;
+    bool found = false;
+    size_t n = json_array_size(jobs);
+    for (size_t i = 0; i < n; i++) {
+        json_t *job = json_array_get(jobs, i);
+        const char *id = json_object_get_string(job, "id", NULL);
+        if (id && strcmp(id, job_id) == 0) {
+            found = true;
+            json_set(job, "preflight_alerted", json_bool(value));
+            break;
+        }
+    }
+    bool ok = false;
+    if (found) ok = cronjobs_save_jobs(jobs);
+    json_free(jobs);
+    return ok;
+}
+
+/* PoP: cronjobs_mark_preflight_alerted @ cron/jobs.py:mark_preflight_alerted */
+bool cronjobs_mark_preflight_alerted(const char *job_id) {
+    return cronjobs_preflight_set(job_id, true);
+}
+
+/* PoP: cronjobs_clear_preflight_alerted @ cron/jobs.py:clear_preflight_alerted */
+void cronjobs_clear_preflight_alerted(const char *job_id) {
+    (void)cronjobs_preflight_set(job_id, false);
+}
+
+/* PoP: cronjobs_parse_jobs_file @ cron/jobs.py:_parse_jobs_file */
+json_t *cronjobs_parse_jobs_file(const char *path, bool *used_strict_fallback,
+                                 char **err) {
+    if (!path) { set_err(err, "out of memory"); return NULL; }
+    FILE *f = fopen(path, "rb");
+    if (!f) { set_err(err, "IOError reading jobs.json"); return NULL; }
+    size_t cap = 4096, len = 0;
+    char *raw = malloc(cap);
+    if (!raw) { fclose(f); set_err(err, "out of memory"); return NULL; }
+    size_t rd;
+    while ((rd = fread(raw + len, 1, cap - len, f)) > 0) {
+        len += rd;
+        if (len == cap) {
+            cap *= 2;
+            char *t = realloc(raw, cap);
+            if (!t) { free(raw); fclose(f); set_err(err, "out of memory"); return NULL; }
+            raw = t;
+        }
+    }
+    fclose(f);
+    raw[len] = '\0';
+    char *p = raw;
+    if ((unsigned char)p[0] == 0xEF && (unsigned char)p[1] == 0xBB &&
+        (unsigned char)p[2] == 0xBF)
+        p += 3;
+    char *perr = NULL;
+    json_t *data = json_parse(p, &perr);
+    if (!data) {
+        char msg[256];
+        snprintf(msg, sizeof(msg), "Cron database corrupted and unrepairable: %s",
+                 perr ? perr : "parse error");
+        set_err(err, msg);
+        free(perr); free(raw);
+        return NULL;
+    }
+    if (used_strict_fallback) *used_strict_fallback = false;
+    free(raw);
+    return data;
+}
+
