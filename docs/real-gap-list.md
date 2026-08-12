@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-12T01:38:54Z from `live_parity_scan.json` by `make parity-walkway`. **736 REAL_GAP across 127 modules** (of 13,359 total functions).
+> Generated 2026-08-12T01:47:21Z from `live_parity_scan.json` by `make parity-walkway`. **736 REAL_GAP across 127 modules** (of 13,359 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 

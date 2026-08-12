@@ -12,7 +12,7 @@ We took Hermes Agent — Nous Research's Python/Electron AI agent — and **SLER
 
 > Live counts from `make parity-walkway` (sentinel PARITY:AUTO). Do not hand-edit — regenerated from the live scanner on every run.
 
-**Upstream sync checkpoint:** 1,431 ahead / 12 behind upstream/main (last merge 2026-08-11 (upstream fetched)). The behind-count is the staleness timer.
+**Upstream sync checkpoint:** 1,434 ahead / 0 behind upstream/main (last merge 2026-08-12 (upstream fetched)). The repo is up to date with upstream.
 
 <!-- /PARITY:AUTO -->
 

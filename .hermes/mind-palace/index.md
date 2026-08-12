@@ -23,7 +23,7 @@ Anything the Nous Research team produces — **code AND documents** — is upstr
 | **BOOTLEG** | 70 (recursive_false_gap_hunter.py) |
 | **Build** | Clean, 0 errors (slermes ~37 MB) |
 | **Tests** | Mission 8: 65 pass / 0 fail (state_db 27, API 17, UI 12, CLI 9) |
-| **Upstream Sync** | 1,431 ahead / 12 behind upstream/main (last merge 2026-08-11 (upstream fetched)) |
+| **Upstream Sync** | 1,434 ahead / 0 behind upstream/main (last merge 2026-08-12 (upstream fetched)) |
 
 > Live counts: `make parity-walkway` (sentinel PARITY:AUTO). Do not hand-edit — regenerated from the live scanner on every run.
 
