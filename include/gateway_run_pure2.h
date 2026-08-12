@@ -212,6 +212,31 @@ bool gw_is_discord_auto_thread_lane(const char *platform,
                                     bool auto_thread_created,
                                     const char *auto_thread_initial_name);
 
+/* ── New pure helpers: compression progress, thread_info, env float,
+ * multiplex profile homes ───────────────────────────── */
+
+/* run.py turn_context.compression_made_progress — True when materially reduced.
+ * Row-count drop counts; otherwise token drop >5% counts. */
+/* PoP: compression_made_progress @ turn_context.py:compression_made_progress */
+bool gw_compression_made_progress(int orig_len, int new_len,
+                                  int orig_tokens, int new_tokens);
+
+/* run.py _float_env — read env var as float, fallback on typo/empty.
+ * (already ported as gw_float_env in src/gateway/port_gateway_run.c.) */
+
+/* run.py _as_thread_info — (thread_id, initial_name) pair or NULL.
+ * Returns malloc'd "thread_id\0initial_name\0" packed (NUL-separated), or
+ * NULL when the value isn't a 2-tuple of strings. Caller frees. */
+/* PoP: _as_thread_info @ gateway/run.py:_as_thread_info */
+char *gw_as_thread_info(const char *info_json);
+
+/* run.py _multiplex_profile_homes — packed [name\0home\0\n]* for the
+ * authoritative profile set on a multiplex config (reuses
+ * profile_profiles_to_serve). malloc'd, NUL-terminated; empty when none.
+ * _float_env is already declared via gw_float_env in gateway_run_pure.h. */
+/* PoP: _multiplex_profile_homes @ gateway/run.py:_multiplex_profile_homes */
+char *gw_multiplex_profile_homes(void);
+
 #ifdef __cplusplus
 }
 #endif

@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-12T02:34:13Z from `live_parity_scan.json` by `make parity-walkway`. **709 REAL_GAP across 126 modules** (of 13,359 total functions).
+> Generated 2026-08-12T03:09:16Z from `live_parity_scan.json` by `make parity-walkway`. **707 REAL_GAP across 126 modules** (of 13,359 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -342,13 +342,11 @@
 - _chain_gap (function)
 - _chain_ending_at (function)
 
-### gateway/run.py (31 gaps)
+### gateway/run.py (29 gaps)
 
 - _hygiene_cooldown_for_failure (function)
 - _reset_hygiene_failure_streak (function)
 - hygiene_compaction_recovered (function)
-- _as_thread_info (function)
-- _multiplex_profile_homes (function)
 - _strip_response_attachments_for_direct_send (function)
 - TurnRunner._attach_session_title_callback (method)
 - GatewayRunner._queue_retryable_fatal_platform (method)

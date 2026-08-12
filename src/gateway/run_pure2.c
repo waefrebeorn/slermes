@@ -29,6 +29,7 @@
 
 #include "hermes_core_types.h"   /* hermes_config_t, hermes_config_load, hermes_get_home */
 #include "hermes_json.h"         /* json_node_t */
+#include "profile_store.h"       /* profile_profiles_to_serve */
 #include "gateway_run_pure.h"    /* gateway_strip_auto_continue_noise */
 #include "hash.h"                /* hash_sha256_hex */
 
@@ -870,4 +871,49 @@ bool gw_is_discord_auto_thread_lane(const char *platform,
     if (!auto_thread_initial_name || auto_thread_initial_name[0] == '\0')
         return false;
     return true;
+}
+
+/* ── Pure helpers: compression_made_progress, _as_thread_info,
+ * _multiplex_profile_homes ───────────────────────────── */
+
+/* _float_env was already ported in src/gateway/port_gateway_run.c.
+
+ * PoP: compression_made_progress @ turn_context.py:compression_made_progress */
+bool gw_compression_made_progress(int orig_len, int new_len,
+                                  int orig_tokens, int new_tokens) {
+    /* Python: new row count drop OR token drop >5% (orig_tokens > 0).
+     * A row-count drop counts unconditionally (the degenerate no-op path). */
+    if (new_len < orig_len)
+        return true;
+    return orig_tokens > 0 && new_tokens < orig_tokens * 0.95;
+}
+
+/* PoP: _as_thread_info @ gateway/run.py:_as_thread_info */
+char *gw_as_thread_info(const char *info_json) {
+    /* Python: isinstance(info, tuple) and len==2 and all str.
+     * Returns malloc'd "thread_id\0initial_name\0" packed, or NULL. */
+    if (!info_json) return NULL;
+    json_t *a = json_parse(info_json, NULL);
+    if (!a || a->type != JSON_ARRAY || a->c.count != 2) { json_free(a); return NULL; }
+    json_t *t0 = a->c.items[0];
+    json_t *t1 = a->c.items[1];
+    if (!t0 || t0->type != JSON_STRING || !t1 || t1->type != JSON_STRING) {
+        json_free(a);
+        return NULL;
+    }
+    size_t l0 = strlen(t0->str_val);
+    size_t l1 = strlen(t1->str_val);
+    char *out = (char *)malloc(l0 + 1 + l1 + 1);
+    if (!out) { json_free(a); return NULL; }
+    memcpy(out, t0->str_val, l0 + 1);
+    memcpy(out + l0 + 1, t1->str_val, l1 + 1);
+    json_free(a);
+    return out;
+}
+
+/* PoP: _multiplex_profile_homes @ gateway/run.py:_multiplex_profile_homes */
+char *gw_multiplex_profile_homes(void) {
+    /* Python: list(profiles_to_serve(multiplex=True)). C reuses the ported
+     * profile_profiles_to_serve(True) which returns the packed form. */
+    return profile_profiles_to_serve(true);
 }
