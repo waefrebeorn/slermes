@@ -739,7 +739,7 @@ int hermes_state_set_session_title(hermes_state_db_t *db, const char *session_id
     return hermes_state_set_session_title_impl(db, session_id, title, false);
 }
 
-/* PoP: hermes_state_set_auto_title_if_empty @ hermes_state.py:set_auto_title_if_empty */
+/* PoP: set_auto_title_if_empty @ hermes_state.py:SessionDB.set_auto_title_if_empty */
 int hermes_state_set_auto_title_if_empty(hermes_state_db_t *db, const char *session_id, const char *title) {
     return hermes_state_set_session_title_impl(db, session_id, title, true);
 }
@@ -959,17 +959,15 @@ long long hermes_state_int_or_default(const char *value, long long default_v) {
     return v;
 }
 
-/* PoP: hermes_state_reasoning_json_value @ hermes_state.py:_reasoning_json_value */
-char *hermes_state_reasoning_json_value(const char *value) {
-    /* Non-string -> value as-is; string that parses as JSON -> the parsed
-     * JSON re-serialized (normalized); unparseable string -> value as-is. */
-    if (!value) return NULL;
-    json_t *parsed = json_parse(value, NULL);
-    if (parsed) {
-        char *ser = json_serialize(parsed);
-        json_free(parsed);
-        return ser;
-    }
+/* PoP: _reasoning_json_text @ hermes_state.py:_reasoning_json_text */
+char *hermes_state_reasoning_json_text(const char *value) {
+    /* Python: if not value -> None; if isinstance str -> value as-is; else
+     * json.dumps(value). C callers hand over an already-serialized string
+     * (a raw TEXT column or a prior dump), so the faithful mirror is: empty
+     * -> NULL, otherwise pass the string through untouched — NEVER re-encode
+     * raw TEXT (that would double-encode and break reasoning-replay
+     * consumers that check isinstance(list)). */
+    if (!value || !value[0]) return NULL;
     return strdup(value);
 }
 

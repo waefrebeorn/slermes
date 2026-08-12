@@ -266,6 +266,104 @@ int hermes_state_publish_compression_child(hermes_state_db_t *db,
                                            const char *compression_lock_holder,
                                            bool require_compression_lease);
 
+/* ── Session title / read-state / resume-safety / usage (SessionDB methods) ──
+ * PoP: _title_rank @ hermes_state.py:SessionDB._title_rank
+ * Rank a stored title_source {derived:0, llm:1, user:2}; NULL -> user(2). */
+int hermes_state_title_rank(const char *source);
+
+/* PoP: set_auto_title @ hermes_state.py:SessionDB.set_auto_title
+ * Write an automatic title (source derived|llm) honoring provenance
+ * precedence; returns True only when the title was actually written. */
+bool hermes_state_set_auto_title(hermes_state_db_t *db, const char *session_id,
+                                 const char *title, const char *source);
+
+/* PoP: get_session_title_source @ hermes_state.py:SessionDB.get_session_title_source
+ * Provenance of a session's title (malloc'd) or NULL when untitled/absent. */
+char *hermes_state_get_session_title_source(hermes_state_db_t *db,
+                                            const char *session_id);
+
+/* PoP: set_session_title_source @ hermes_state.py:SessionDB.set_session_title_source
+ * Overwrite provenance (keep title text) where title IS NOT NULL. */
+bool hermes_state_set_session_title_source(hermes_state_db_t *db,
+                                           const char *session_id,
+                                           const char *source);
+
+/* PoP: set_session_read @ hermes_state.py:SessionDB.set_session_read
+ * Stamp the whole compression lineage with a last_read_at watermark
+ * (now when read=True, 0 when read=False). */
+bool hermes_state_set_session_read(hermes_state_db_t *db, const char *session_id,
+                                   bool read);
+
+/* PoP: session_unread @ hermes_state.py:SessionDB.session_unread
+ * Derive unread from a session row's watermark + activity. */
+bool hermes_state_session_unread(const char *session_row_json);
+
+/* PoP: get_resume_message_count @ hermes_state.py:SessionDB.get_resume_message_count
+ * COUNT(*) active messages across the session lineage. */
+long long hermes_state_get_resume_message_count(hermes_state_db_t *db,
+                                                const char *session_id);
+
+/* PoP: assert_resume_safe @ hermes_state.py:SessionDB.assert_resume_safe
+ * Count safe when under max_messages; -1 when over (raise equiv); -2 when
+ * max<0 (ValueError); 0 when max==0 (guard disabled). */
+long long hermes_state_assert_resume_safe(hermes_state_db_t *db,
+                                          const char *session_id,
+                                          long long max_messages);
+
+/* PoP: assert_export_safe @ hermes_state.py:SessionDB.assert_export_safe
+ * Same as assert_resume_safe but counts only the requested segment. */
+long long hermes_state_assert_export_safe(hermes_state_db_t *db,
+                                          const char *session_id,
+                                          long long max_messages);
+
+/* PoP: _is_explicit_fork_child_row @ hermes_state.py:SessionDB._is_explicit_fork_child_row
+ * True when a session row is a branch/delegate/tool child (unkeyed by design). */
+bool hermes_state_is_explicit_fork_child_row(const char *session_json);
+
+/* PoP: find_pr_url_messages @ hermes_state.py:SessionDB.find_pr_url_messages
+ * Tool results containing "/pull/" across the given sessions (malloc'd JSON). */
+char *hermes_state_find_pr_url_messages(hermes_state_db_t *db,
+                                        const char *session_ids_json);
+
+/* PoP: patch_session_model_config @ hermes_state.py:SessionDB.patch_session_model_config
+ * Merge patch into a session's model_config (None value deletes key). */
+bool hermes_state_patch_session_model_config(hermes_state_db_t *db,
+                                             const char *session_id,
+                                             const char *patch_json);
+
+/* PoP: get_session_model_config_value @ hermes_state.py:SessionDB.get_session_model_config_value
+ * Read one key out of model_config (malloc'd serialized or default). */
+char *hermes_state_get_session_model_config_value(hermes_state_db_t *db,
+                                                  const char *session_id,
+                                                  const char *key,
+                                                  const char *default_str);
+
+/* PoP: usage_totals @ hermes_state.py:SessionDB.usage_totals
+ * Sum tokens + spend across sessions (malloc'd {"tokens","cost_usd"} JSON). */
+char *hermes_state_usage_totals(hermes_state_db_t *db,
+                                long long min_message_count,
+                                int include_archived);
+
+/* PoP: find_orphaned_gateway_sessions @ hermes_state.py:SessionDB.find_orphaned_gateway_sessions
+ * Message-bearing unkeyed rows + adoption verdicts (malloc'd JSON array). */
+char *hermes_state_find_orphaned_gateway_sessions(hermes_state_db_t *db,
+                                                  double max_gap_s);
+
+/* PoP: adopt_orphaned_gateway_session @ hermes_state.py:SessionDB.adopt_orphaned_gateway_session
+ * Stamp orphan with donor's routing identity + retire donor. */
+bool hermes_state_adopt_orphaned_gateway_session(hermes_state_db_t *db,
+                                                 const char *orphan_id,
+                                                 const char *donor_id);
+
+/* PoP: reopen_orphaned_compression_session @ hermes_state.py:SessionDB.reopen_orphaned_compression_session
+ * Reopen a compression parent only when no continuation + lease expired. */
+bool hermes_state_reopen_orphaned_compression_session(hermes_state_db_t *db,
+                                                      const char *session_id);
+
+/* PoP: collect_state_db_stats @ hermes_state.py:collect_state_db_stats
+ * Best-effort read-only stats snapshot of a state.db (malloc'd JSON). */
+char *hermes_state_collect_state_db_stats(const char *db_path);
+
 #ifdef __cplusplus
 }
 #endif

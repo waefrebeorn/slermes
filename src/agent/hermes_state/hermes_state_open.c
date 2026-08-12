@@ -4,7 +4,9 @@
  * Self-contained unit; see hermes_state_internal.h for the shared handle.
  */
 
+#define _GNU_SOURCE
 #include "hermes_state_internal.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/time.h>
@@ -49,6 +51,10 @@ const char *HERMES_STATE_SCHEMA_SQL =
     "    cost_source TEXT,"
     "    pricing_version TEXT,"
     "    title TEXT,"
+    "    title_source TEXT,"
+    "    last_activity_at REAL,"
+    "    last_activity_description TEXT,"
+    "    last_activity_provenance TEXT,"
     "    api_call_count INTEGER DEFAULT 0,"
     "    handoff_state TEXT,"
     "    handoff_platform TEXT,"
@@ -61,6 +67,7 @@ const char *HERMES_STATE_SCHEMA_SQL =
     "    rewind_count INTEGER NOT NULL DEFAULT 0,"
     "    archived INTEGER NOT NULL DEFAULT 0,"
     "    pinned INTEGER NOT NULL DEFAULT 0,"
+    "    last_read_at REAL,"
     "    FOREIGN KEY (parent_session_id) REFERENCES sessions(id)"
     ");"
     "CREATE TABLE IF NOT EXISTS messages ("
@@ -320,6 +327,25 @@ hermes_state_db_t *hermes_state_db_open(const char *path) {
         sqlite3_close(h->db);
         free(h);
         return NULL;
+    }
+    /* Migrate legacy DBs that predate title_source / last_read_at (Python
+     * ALTER TABLE ADD COLUMN migration; duplicate-column errors are fine). */
+    {
+        static const char *sess_cols[] = {
+            "title_source TEXT", "last_read_at REAL",
+            "last_activity_at REAL",
+            "last_activity_description TEXT",
+            "last_activity_provenance TEXT", NULL
+        };
+        for (int i = 0; sess_cols[i]; i++) {
+            char *sql = NULL;
+            asprintf(&sql, "ALTER TABLE sessions ADD COLUMN %s;", sess_cols[i]);
+            char *e2 = NULL;
+            int rc2 = sqlite3_exec(h->db, sql, NULL, NULL, &e2);
+            if (e2) sqlite3_free(e2);
+            free(sql);
+            if (rc2 != SQLITE_OK && rc2 != SQLITE_ERROR) break;
+        }
     }
     /* Deferred indexes and FTS layout: a fresh DB is born at the current
      * layout (Python: fresh DBs get FTS_STORAGE_VERSION immediately). */

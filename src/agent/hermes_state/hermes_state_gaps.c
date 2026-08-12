@@ -17,6 +17,7 @@
 #include <time.h>
 #include <ctype.h>
 #include <dirent.h>
+#include <sys/stat.h>
 
 /* ════════════════════════════════════════════════════════════════════
  * Transcript safety limits (hermes_state.py:_configured_transcript_limit
@@ -1178,3 +1179,1020 @@ int hermes_state_retag_kanban_worker_sessions(hermes_state_db_t *db,
     }
     return retagged;
 }
+
+/* ════════════════════════════════════════════════════════════════════
+ * SessionDB title / read-state / resume-safety / model-config methods
+ * (hermes_state.py SessionDB._title_rank, set_auto_title,
+ * get/set_session_title_source, set_session_read, session_unread,
+ * get_resume_message_count, assert_resume_safe, assert_export_safe,
+ * _is_explicit_fork_child_row, find_pr_url_messages,
+ * patch_session_model_config, get_session_model_config_value).
+ * ════════════════════════════════════════════════════════════════════ */
+
+/* Reused helper: hermes_state_sanitize_title (returns malloc'd or NULL). */
+extern char *hermes_state_sanitize_title(const char *title);
+/* Reused helper: hermes_state_session_lineage_root_to_tip (JSON array str). */
+extern char *hermes_state_session_lineage_root_to_tip(hermes_state_db_t *db,
+                                                      const char *session_id);
+/* Reused helper: hermes_state_reasoning_json_text (returns malloc'd or NULL). */
+extern char *hermes_state_reasoning_json_text(const char *value);
+
+/* Python: TITLE_SOURCE_RANK {derived:0, llm:1, user:2}; NULL -> user(2).
+ * Internal static (public PoP name below is hermes_state_title_rank). */
+static int hermes_state_title_rank_impl(const char *source) {
+    if (!source || !*source) return 2;  /* NULL = pre-provenance row = user */
+    if (strcmp(source, "derived") == 0) return 0;
+    if (strcmp(source, "llm") == 0) return 1;
+    if (strcmp(source, "user") == 0) return 2;
+    return 0;  /* unknown source -> lowest rank */
+}
+
+/* PoP: _title_rank @ hermes_state.py:SessionDB._title_rank */
+int hermes_state_title_rank(const char *source) {
+    return hermes_state_title_rank_impl(source);
+}
+
+/* PoP: get_session_title_source @ hermes_state.py:SessionDB.get_session_title_source */
+char *hermes_state_get_session_title_source(hermes_state_db_t *db,
+                                            const char *session_id) {
+    /* Python: SELECT title, title_source; None if untitled. Returns malloc'd
+     * source string or NULL when the session is untitled/absent. */
+    if (!db || !db->db || !session_id) return NULL;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "SELECT title, title_source FROM sessions WHERE id = ?",
+            -1, &st, NULL) != SQLITE_OK) return NULL;
+    sqlite3_bind_text(st, 1, session_id, -1, SQLITE_TRANSIENT);
+    char *out = NULL;
+    if (sqlite3_step(st) == SQLITE_ROW) {
+        const unsigned char *title = sqlite3_column_text(st, 0);
+        const unsigned char *src = sqlite3_column_text(st, 1);
+        if (title && *title)   /* untitled -> None */
+            out = src ? strdup((const char *)src) : NULL;
+    }
+    sqlite3_finalize(st);
+    return out;
+}
+
+/* PoP: set_session_title_source @ hermes_state.py:SessionDB.set_session_title_source */
+bool hermes_state_set_session_title_source(hermes_state_db_t *db,
+                                           const char *session_id,
+                                           const char *source) {
+    /* Python: overwrite provenance (keep title text) where title IS NOT NULL. */
+    if (!db || !db->db || !session_id || !source) return false;
+    /* Validate: source must be in _TITLE_SOURCE_RANK (derived/llm/user). */
+    if (strcmp(source, "derived") != 0 && strcmp(source, "llm") != 0
+        && strcmp(source, "user") != 0)
+        return false;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "UPDATE sessions SET title_source = ? WHERE id = ? AND title IS NOT NULL",
+            -1, &st, NULL) != SQLITE_OK) return false;
+    sqlite3_bind_text(st, 1, source, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(st, 2, session_id, -1, SQLITE_TRANSIENT);
+    bool ok = sqlite3_step(st) == SQLITE_DONE;
+    sqlite3_finalize(st);
+    return ok && sqlite3_changes(db->db) > 0;
+}
+
+/* PoP: set_auto_title @ hermes_state.py:SessionDB.set_auto_title */
+bool hermes_state_set_auto_title(hermes_state_db_t *db, const char *session_id,
+                                 const char *title, const char *source) {
+    /* Python: write an automatic title honoring provenance precedence.
+     * source must be derived|llm; user never passes through here. */
+    if (!db || !db->db || !session_id || !title) return false;
+    if (strcmp(source, "derived") != 0 && strcmp(source, "llm") != 0)
+        return false;
+    char *clean = hermes_state_sanitize_title(title);
+    if (!clean) return false;   /* empty/too-long title sanitizes to NULL */
+    int new_rank = hermes_state_title_rank(source);
+    bool wrote = false;
+    /* Read current title+source under the writer lock (single conn in C). */
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "SELECT title, title_source FROM sessions WHERE id = ?",
+            -1, &st, NULL) == SQLITE_OK) {
+        sqlite3_bind_text(st, 1, session_id, -1, SQLITE_TRANSIENT);
+        if (sqlite3_step(st) == SQLITE_ROW) {
+            const unsigned char *cur_title = sqlite3_column_text(st, 0);
+            const unsigned char *cur_src = sqlite3_column_text(st, 1);
+            int cur_rank = 0;
+            if (cur_title && *cur_title) {
+                /* existing title: only overwrite if stored rank < new rank */
+                cur_rank = hermes_state_title_rank(
+                    cur_src ? (const char *)cur_src : NULL);
+                if (cur_rank >= new_rank) { sqlite3_finalize(st); free(clean); return false; }
+            }
+            /* no title (or lower rank) -> write */
+            sqlite3_finalize(st);
+            sqlite3_stmt *up = NULL;
+            if (sqlite3_prepare_v2(db->db,
+                    "UPDATE sessions SET title = ?, title_source = ? WHERE id = ?",
+                    -1, &up, NULL) == SQLITE_OK) {
+                sqlite3_bind_text(up, 1, clean, -1, SQLITE_TRANSIENT);
+                sqlite3_bind_text(up, 2, source, -1, SQLITE_TRANSIENT);
+                sqlite3_bind_text(up, 3, session_id, -1, SQLITE_TRANSIENT);
+                wrote = sqlite3_step(up) == SQLITE_DONE;
+                sqlite3_finalize(up);
+            }
+        } else {
+            sqlite3_finalize(st);   /* row absent -> nothing written */
+        }
+    }
+    free(clean);
+    return wrote;
+}
+
+/* PoP: set_auto_title_if_empty @ hermes_state.py:SessionDB.set_auto_title_if_empty
+ * (already implemented in hermes_state_misc.c — see hermes_state_set_auto_title_if_empty). */
+
+/* PoP: set_session_read @ hermes_state.py:SessionDB.set_session_read */
+bool hermes_state_set_session_read(hermes_state_db_t *db, const char *session_id,
+                                   bool read) {
+    /* Python: stamp the whole compression lineage with last_read_at watermark.
+     * read=True -> now; read=False -> 0 (explicitly unread). */
+    if (!db || !db->db || !session_id) return false;
+    char *lineage = hermes_state_session_lineage_root_to_tip(db, session_id);
+    if (!lineage) return false;
+    json_t *arr = json_parse(lineage, NULL);
+    free(lineage);
+    if (!arr || arr->type != JSON_ARRAY) { if (arr) json_free(arr); return false; }
+    double watermark = read ? hermes_state_now_epoch() : 0.0;
+    bool ok = true;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "UPDATE sessions SET last_read_at = ? WHERE id = ?",
+            -1, &st, NULL) != SQLITE_OK) {
+        json_free(arr);
+        return false;
+    }
+    for (int i = 0; i < (int)arr->c.count; i++) {
+        json_t *id = arr->c.items[i];
+        if (id->type != JSON_STRING) continue;
+        sqlite3_bind_double(st, 1, watermark);
+        sqlite3_bind_text(st, 2, id->str_val, -1, SQLITE_TRANSIENT);
+        if (sqlite3_step(st) != SQLITE_DONE) ok = false;
+        sqlite3_reset(st);
+        sqlite3_clear_bindings(st);
+    }
+    sqlite3_finalize(st);
+    json_free(arr);
+    return ok;
+}
+
+/* PoP: session_unread @ hermes_state.py:SessionDB.session_unread */
+bool hermes_state_session_unread(const char *session_row_json) {
+    /* Python: last_read_at NULL -> read (False); else active > watermark. */
+    if (!session_row_json) return false;
+    json_t *row = json_parse(session_row_json, NULL);
+    if (!row) return false;
+    bool result = false;
+    json_t *lr = json_obj_get(row, "last_read_at");
+    if (lr && lr->type != JSON_NULL) {
+        double last_read = 0.0;
+        if (lr->type == JSON_NUMBER) last_read = lr->num_val;
+        double last_active = 0.0;
+        json_t *la = json_obj_get(row, "last_active");
+        if (la && la->type == JSON_NUMBER) last_active = la->num_val;
+        else {
+            json_t *sa = json_obj_get(row, "started_at");
+            if (sa && sa->type == JSON_NUMBER) last_active = sa->num_val;
+        }
+        result = last_active > last_read;
+    }
+    json_free(row);
+    return result;
+}
+
+/* PoP: _is_explicit_fork_child_row @ hermes_state.py:SessionDB._is_explicit_fork_child_row */
+bool hermes_state_is_explicit_fork_child_row(const char *session_json) {
+    if (!session_json) return false;
+    json_t *s = json_parse(session_json, NULL);
+    if (!s) return false;
+    bool result = false;
+    json_t *src = json_obj_get(s, "source");
+    if (src && src->type == JSON_STRING && strcmp(src->str_val, "tool") == 0) {
+        result = true;
+    } else {
+        json_t *mc = json_obj_get(s, "model_config");
+        if (mc && mc->type == JSON_STRING && mc->str_val) {
+            json_t *cfg = json_parse(mc->str_val, NULL);
+            if (cfg && cfg->type == JSON_OBJECT) {
+                result = json_obj_get(cfg, "_branched_from") != NULL
+                      || json_obj_get(cfg, "_delegate_from") != NULL;
+            }
+            if (cfg) json_free(cfg);
+        } else if (mc && mc->type == JSON_OBJECT) {
+            result = json_obj_get(mc, "_branched_from") != NULL
+                  || json_obj_get(mc, "_delegate_from") != NULL;
+        }
+    }
+    json_free(s);
+    return result;
+}
+
+/* PoP: get_resume_message_count @ hermes_state.py:SessionDB.get_resume_message_count */
+long long hermes_state_get_resume_message_count(hermes_state_db_t *db,
+                                                const char *session_id) {
+    /* Python: COUNT(*) active messages across the session lineage. */
+    if (!db || !db->db || !session_id) return 0;
+    char *lineage = hermes_state_session_lineage_root_to_tip(db, session_id);
+    if (!lineage) return 0;
+    json_t *arr = json_parse(lineage, NULL);
+    free(lineage);
+    if (!arr || arr->type != JSON_ARRAY) { if (arr) json_free(arr); return 0; }
+    long long total = 0;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "SELECT COUNT(*) FROM messages WHERE session_id = ? AND active = 1",
+            -1, &st, NULL) != SQLITE_OK) { json_free(arr); return 0; }
+    for (int i = 0; i < (int)arr->c.count; i++) {
+        json_t *id = arr->c.items[i];
+        if (id->type != JSON_STRING) continue;
+        sqlite3_bind_text(st, 1, id->str_val, -1, SQLITE_TRANSIENT);
+        if (sqlite3_step(st) == SQLITE_ROW)
+            total += sqlite3_column_int64(st, 0);
+        sqlite3_reset(st);
+        sqlite3_clear_bindings(st);
+    }
+    sqlite3_finalize(st);
+    json_free(arr);
+    return total;
+}
+
+/* PoP: assert_resume_safe @ hermes_state.py:SessionDB.assert_resume_safe */
+long long hermes_state_assert_resume_safe(hermes_state_db_t *db,
+                                          const char *session_id,
+                                          long long max_messages) {
+    /* Python: max<0 raise; max==0 guard disabled -> 0; else count, raise if
+     * exceeds. Returns count when safe, -1 when over limit (raise equiv). */
+    if (max_messages < 0) return -2;   /* ValueError: must be non-negative */
+    if (max_messages == 0) return 0;   /* disabled */
+    long long count = hermes_state_get_resume_message_count(db, session_id);
+    if (count > max_messages) return -1;   /* raise SessionResumeTooLargeError */
+    return count;
+}
+
+/* PoP: assert_export_safe @ hermes_state.py:SessionDB.assert_export_safe */
+long long hermes_state_assert_export_safe(hermes_state_db_t *db,
+                                          const char *session_id,
+                                          long long max_messages) {
+    /* Python: count only the requested segment (not ancestors). */
+    if (max_messages < 0) return -2;
+    if (max_messages == 0) return 0;
+    if (!db || !db->db || !session_id) return 0;
+    long long count = 0;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "SELECT COUNT(*) FROM messages WHERE session_id = ? AND active = 1",
+            -1, &st, NULL) == SQLITE_OK) {
+        sqlite3_bind_text(st, 1, session_id, -1, SQLITE_TRANSIENT);
+        if (sqlite3_step(st) == SQLITE_ROW) count = sqlite3_column_int64(st, 0);
+        sqlite3_finalize(st);
+    }
+    if (count > max_messages) return -1;   /* raise SessionExportTooLargeError */
+    return count;
+}
+
+/* PoP: find_pr_url_messages @ hermes_state.py:SessionDB.find_pr_url_messages */
+char *hermes_state_find_pr_url_messages(hermes_state_db_t *db,
+                                        const char *session_ids_json) {
+    /* Python: tool results containing "/pull/" across the given sessions,
+     * oldest-first. Returns a malloc'd JSON array of {session_id, content}. */
+    if (!db || !db->db || !session_ids_json) return strdup("[]");
+    json_t *ids = json_parse(session_ids_json, NULL);
+    if (!ids || ids->type != JSON_ARRAY) { if (ids) json_free(ids); return strdup("[]"); }
+    json_t *out = json_array();
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "SELECT session_id, content FROM messages "
+            "WHERE session_id = ? AND role = 'tool' AND content LIKE '%/pull/%' "
+            "ORDER BY id ASC",
+            -1, &st, NULL) != SQLITE_OK) { json_free(ids); char *e = json_serialize(out); json_free(out); return e; }
+    for (int i = 0; i < (int)ids->c.count; i++) {
+        json_t *id = ids->c.items[i];
+        if (id->type != JSON_STRING) continue;
+        sqlite3_bind_text(st, 1, id->str_val, -1, SQLITE_TRANSIENT);
+        while (sqlite3_step(st) == SQLITE_ROW) {
+            json_t *row = json_object();
+            json_set(row, "session_id",
+                     json_string((const char *)sqlite3_column_text(st, 0)));
+            const unsigned char *content = sqlite3_column_text(st, 1);
+            json_set(row, "content", json_string(content ? (const char *)content : ""));
+            json_append(out, row);
+        }
+        sqlite3_reset(st);
+        sqlite3_clear_bindings(st);
+    }
+    sqlite3_finalize(st);
+    json_free(ids);
+    char *result = json_serialize(out);
+    json_free(out);
+    return result ? result : strdup("[]");
+}
+
+/* PoP: patch_session_model_config @ hermes_state.py:SessionDB.patch_session_model_config */
+bool hermes_state_patch_session_model_config(hermes_state_db_t *db,
+                                             const char *session_id,
+                                             const char *patch_json) {
+    /* Python: SELECT + merge + UPDATE model_config. None patch value deletes
+     * the key. No-op when the row is absent or the patch is empty. */
+    if (!db || !db->db || !session_id || !patch_json || !*patch_json) return false;
+    json_t *patch = json_parse(patch_json, NULL);
+    if (!patch || patch->type != JSON_OBJECT) { if (patch) json_free(patch); return false; }
+    /* Read current model_config. */
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "SELECT model_config FROM sessions WHERE id = ?",
+            -1, &st, NULL) != SQLITE_OK) { json_free(patch); return false; }
+    sqlite3_bind_text(st, 1, session_id, -1, SQLITE_TRANSIENT);
+    json_t *cfg = NULL;
+    if (sqlite3_step(st) == SQLITE_ROW) {
+        const unsigned char *raw = sqlite3_column_text(st, 0);
+        if (raw && *raw) {
+            cfg = json_parse((const char *)raw, NULL);
+            if (cfg && cfg->type != JSON_OBJECT) { json_free(cfg); cfg = NULL; }
+        }
+    }
+    sqlite3_finalize(st);
+    if (!cfg) cfg = json_object();
+    /* Merge: None -> delete key; else set. Iterate the patch object's own
+     * key/value pairs (libjson stores object entries in c.keys / c.items). */
+    if (patch->c.count == 0) { json_free(cfg); json_free(patch); return false; }
+    for (size_t i = 0; i < patch->c.count; i++) {
+        const char *key = patch->c.keys[i];
+        json_t *val = patch->c.items[i];
+        if (val && val->type == JSON_NULL)
+            json_obj_del(cfg, key);
+        else
+            json_set(cfg, key, json_copy(val));
+    }
+    char *merged = json_serialize(cfg);
+    json_free(cfg);
+    if (!merged) { json_free(patch); return false; }
+    bool ok = false;
+    sqlite3_stmt *up = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "UPDATE sessions SET model_config = ? WHERE id = ?",
+            -1, &up, NULL) == SQLITE_OK) {
+        sqlite3_bind_text(up, 1, merged, -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(up, 2, session_id, -1, SQLITE_TRANSIENT);
+        ok = sqlite3_step(up) == SQLITE_DONE;
+        sqlite3_finalize(up);
+    }
+    free(merged);
+    json_free(patch);
+    return ok;
+}
+
+/* PoP: get_session_model_config_value @ hermes_state.py:SessionDB.get_session_model_config_value */
+char *hermes_state_get_session_model_config_value(hermes_state_db_t *db,
+                                                  const char *session_id,
+                                                  const char *key,
+                                                  const char *default_str) {
+    /* Python: read one key out of a session's model_config JSON (tolerant
+     * parse). Returns malloc'd serialized value or default when absent. */
+    if (!db || !db->db || !session_id || !key) return strdup(default_str ? default_str : "");
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db, "SELECT model_config FROM sessions WHERE id = ?",
+                           -1, &st, NULL) != SQLITE_OK)
+        return strdup(default_str ? default_str : "");
+    sqlite3_bind_text(st, 1, session_id, -1, SQLITE_TRANSIENT);
+    char *out = NULL;
+    if (sqlite3_step(st) == SQLITE_ROW) {
+        const unsigned char *raw = sqlite3_column_text(st, 0);
+        if (raw && *raw) {
+            json_t *cfg = json_parse((const char *)raw, NULL);
+            if (cfg && cfg->type == JSON_OBJECT) {
+                json_t *val = json_obj_get(cfg, key);
+                if (val) out = json_serialize(val);
+            }
+            if (cfg) json_free(cfg);
+        }
+    }
+    sqlite3_finalize(st);
+    if (!out) out = strdup(default_str ? default_str : "");
+    return out;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+ * Remaining SessionDB / module gaps (hermes_state.py): _merge_model_config_json,
+ * usage_totals, collect_state_db_stats, _set_journal_mode_no_wait,
+ * _wal_reset_repair_hint, purge_stale_tool_call_markers, and the read-conn
+ * lifecycle methods (faithful no-ops in C — single shared connection).
+ * ════════════════════════════════════════════════════════════════════ */
+
+/* PoP: _discard_partial_read_conn @ hermes_state.py:SessionDB._discard_partial_read_conn */
+void hermes_state_discard_partial_read_conn(void) {
+    /* Python: close a conn that failed between open and hand-off. C uses a
+     * single shared connection; nothing to discard. */
+}
+
+/* PoP: _close_read_conn @ hermes_state.py:SessionDB._close_read_conn */
+void hermes_state_close_read_conn(void) {
+    /* Python: close a pooled read conn + release permit. C shares one conn;
+     * no pooling to release. */
+}
+
+/* PoP: _checkout_read_conn @ hermes_state.py:SessionDB._checkout_read_conn */
+int hermes_state_checkout_read_conn(hermes_state_db_t *db) {
+    /* Python: borrow a read conn from the pool, open on miss; None when the
+     * read path is unavailable (non-WAL / read_only). C: return 1 when the
+     * shared writer conn is usable (WAL), else 0. */
+    return db && db->db ? 1 : 0;
+}
+
+/* PoP: _enter_fts_fail_open @ hermes_state.py:SessionDB._enter_fts_fail_open */
+int hermes_state_enter_fts_fail_open(const char *error_text) {
+    /* Python: decide whether an FTS SQLite error should fail open. Returns 1
+     * when the error is a known transient/lock-shaped one. */
+    if (!error_text) return 0;
+    char lowered[256];
+    size_t i = 0;
+    for (; error_text[i] && i < sizeof(lowered) - 1; i++)
+        lowered[i] = (char)tolower((unsigned char)error_text[i]);
+    lowered[i] = '\0';
+    if (strstr(lowered, "locked") || strstr(lowered, "busy")
+        || strstr(lowered, "no such table"))
+        return 1;
+    return 0;
+}
+
+/* PoP: _merge_model_config_json @ hermes_state.py:SessionDB._merge_model_config_json */
+char *hermes_state_merge_model_config_json(hermes_state_db_t *db,
+                                           const char *session_id,
+                                           const char *patch_json,
+                                           const char *on_missing) {
+    /* Python: SELECT + tolerant-parse + merge patch into model_config; None
+     * patch value deletes the key. Returns serialized merged JSON (NULL when
+     * merged dict empty), the "row missing" sentinel, or NULL on error. */
+    if (!db || !db->db || !session_id) return NULL;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "SELECT model_config FROM sessions WHERE id = ?",
+            -1, &st, NULL) != SQLITE_OK) return NULL;
+    sqlite3_bind_text(st, 1, session_id, -1, SQLITE_TRANSIENT);
+    json_t *cfg = NULL;
+    if (sqlite3_step(st) == SQLITE_ROW) {
+        const unsigned char *raw = sqlite3_column_text(st, 0);
+        if (raw && *raw) {
+            cfg = json_parse((const char *)raw, NULL);
+            if (cfg && cfg->type != JSON_OBJECT) { json_free(cfg); cfg = NULL; }
+        }
+    } else {
+        /* row absent */
+        sqlite3_finalize(st);
+        if (on_missing && strcmp(on_missing, "raise") == 0) return NULL;
+        return strdup("__MODEL_CONFIG_ROW_MISSING__");
+    }
+    sqlite3_finalize(st);
+    if (!cfg) cfg = json_object();
+    if (patch_json && *patch_json) {
+        json_t *patch = json_parse(patch_json, NULL);
+        if (patch && patch->type == JSON_OBJECT) {
+            for (size_t i = 0; i < patch->c.count; i++) {
+                const char *key = patch->c.keys[i];
+                json_t *val = patch->c.items[i];
+                if (val && val->type == JSON_NULL)
+                    json_obj_del(cfg, key);
+                else
+                    json_set(cfg, key, json_copy(val));
+            }
+        }
+        if (patch) json_free(patch);
+    }
+    char *merged = NULL;
+    if (cfg->c.count > 0)
+        merged = json_serialize(cfg);
+    json_free(cfg);
+    return merged;   /* NULL when empty (Python None convention) */
+}
+
+/* PoP: usage_totals @ hermes_state.py:SessionDB.usage_totals */
+char *hermes_state_usage_totals(hermes_state_db_t *db, long long min_message_count,
+                                int include_archived) {
+    /* Python: sum tokens + spend across sessions (parent-only). Returns a
+     * malloc'd JSON {"tokens": int, "cost_usd": float}. */
+    if (!db || !db->db) return strdup("{\"tokens\":0,\"cost_usd\":0.0}");
+    sqlite3_stmt *st = NULL;
+    const char *sql = "SELECT "
+        "COALESCE(SUM(COALESCE(input_tokens,0)+COALESCE(output_tokens,0)),0), "
+        "COALESCE(SUM(COALESCE(actual_cost_usd, estimated_cost_usd, 0)),0) "
+        "FROM sessions WHERE parent_session_id IS NULL AND message_count >= ?";
+    if (!include_archived)
+        sql = "SELECT "
+            "COALESCE(SUM(COALESCE(input_tokens,0)+COALESCE(output_tokens,0)),0), "
+            "COALESCE(SUM(COALESCE(actual_cost_usd, estimated_cost_usd, 0)),0) "
+            "FROM sessions WHERE parent_session_id IS NULL AND message_count >= ? "
+            "AND COALESCE(archived,0) = 0";
+    if (sqlite3_prepare_v2(db->db, sql, -1, &st, NULL) != SQLITE_OK)
+        return strdup("{\"tokens\":0,\"cost_usd\":0.0}");
+    sqlite3_bind_int64(st, 1, min_message_count);
+    long long tokens = 0;
+    double cost = 0.0;
+    if (sqlite3_step(st) == SQLITE_ROW) {
+        tokens = sqlite3_column_int64(st, 0);
+        cost = sqlite3_column_double(st, 1);
+    }
+    sqlite3_finalize(st);
+    json_t *o = json_object();
+    json_set(o, "tokens", json_number((double)(tokens)));
+    json_set(o, "cost_usd", json_number(cost));
+    char *out = json_serialize(o);
+    json_free(o);
+    return out ? out : strdup("{\"tokens\":0,\"cost_usd\":0.0}");
+}
+
+/* PoP: _set_journal_mode_no_wait @ hermes_state.py:_set_journal_mode_no_wait */
+const char *hermes_state_set_journal_mode_no_wait(hermes_state_db_t *db,
+                                                  const char *mode) {
+    /* Python: PRAGMA journal_mode with busy_timeout forced to 0 so a concurrent
+     * opener makes the pragma fail immediately. Returns the resulting mode
+     * (lowercase) or NULL on error. */
+    if (!db || !db->db || !mode) return NULL;
+    static char result[32];
+    /* Force busy_timeout=0, capture previous, run pragma, restore. */
+    sqlite3_busy_timeout(db->db, 0);
+    sqlite3_stmt *st = NULL;
+    char sql[64];
+    snprintf(sql, sizeof(sql), "PRAGMA journal_mode=%s", mode);
+    result[0] = '\0';
+    if (sqlite3_prepare_v2(db->db, sql, -1, &st, NULL) == SQLITE_OK) {
+        if (sqlite3_step(st) == SQLITE_ROW) {
+            const unsigned char *m = sqlite3_column_text(st, 0);
+            if (m) { snprintf(result, sizeof(result), "%s", (const char *)m); }
+        }
+        sqlite3_finalize(st);
+    }
+    sqlite3_busy_timeout(db->db, 5000);   /* restore default */
+    return result[0] ? result : NULL;
+}
+
+/* PoP: _wal_reset_repair_hint @ hermes_state.py:_wal_reset_repair_hint */
+const char *hermes_state_wal_reset_repair_hint(void) {
+    /* Python: context-appropriate hint for repairing the SQLite runtime.
+     * C has no install-method detection; return the generic advice. */
+    return "install a Python build bundled with SQLite 3.51.3+ "
+           "(or backports 3.50.7 / 3.44.6) and restart Hermes";
+}
+
+/* PoP: collect_state_db_stats @ hermes_state.py:collect_state_db_stats */
+char *hermes_state_collect_state_db_stats(const char *db_path) {
+    /* Python: best-effort read-only stats snapshot of a state.db file. Returns
+     * a malloc'd JSON with all documented keys (values may be null). */
+    json_t *o = json_object();
+    json_set(o, "page_count", json_null());
+    json_set(o, "page_size", json_null());
+    json_set(o, "freelist_count", json_null());
+    json_set(o, "logical_size_bytes", json_null());
+    json_set(o, "wal_size_bytes", json_number((double)(0)));
+    json_set(o, "journal_mode", json_null());
+    json_set(o, "messages", json_null());
+    json_set(o, "sessions", json_null());
+    json_set(o, "fts_tables", json_object());
+    json_set(o, "fts_storage_version", json_null());
+    json_set(o, "fts_rebuild_pending", json_null());
+    json_set(o, "fts_rebuild_high_water", json_null());
+    json_set(o, "fts_rebuild_progress", json_null());
+    if (db_path && *db_path) {
+        /* WAL sidecar size (no connection needed). */
+        char wal[4096];
+        snprintf(wal, sizeof(wal), "%s-wal", db_path);
+        struct stat sb;
+        if (stat(wal, &sb) == 0)
+            json_set(o, "wal_size_bytes", json_number((double)((long long)sb.st_size)));
+        /* Read-only connection. */
+        sqlite3 *ro = NULL;
+        char uri[4200];
+        snprintf(uri, sizeof(uri), "file:%s?mode=ro", db_path);
+        if (sqlite3_open_v2(uri, &ro, SQLITE_OPEN_READONLY, NULL) == SQLITE_OK) {
+            sqlite3_busy_timeout(ro, 2000);
+            /* page_count / page_size / logical_size */
+            sqlite3_stmt *st = NULL;
+            if (sqlite3_prepare_v2(ro, "PRAGMA page_count", -1, &st, NULL) == SQLITE_OK
+                && sqlite3_step(st) == SQLITE_ROW)
+                json_set(o, "page_count", json_number((double)sqlite3_column_int64(st, 0)));
+            if (st) { sqlite3_finalize(st); st = NULL; }
+            if (sqlite3_prepare_v2(ro, "PRAGMA page_size", -1, &st, NULL) == SQLITE_OK
+                && sqlite3_step(st) == SQLITE_ROW)
+                json_set(o, "page_size", json_number((double)sqlite3_column_int64(st, 0)));
+            if (st) { sqlite3_finalize(st); st = NULL; }
+            if (sqlite3_prepare_v2(ro, "PRAGMA freelist_count", -1, &st, NULL) == SQLITE_OK
+                && sqlite3_step(st) == SQLITE_ROW)
+                json_set(o, "freelist_count", json_number((double)sqlite3_column_int64(st, 0)));
+            if (st) { sqlite3_finalize(st); st = NULL; }
+            if (sqlite3_prepare_v2(ro, "PRAGMA journal_mode", -1, &st, NULL) == SQLITE_OK
+                && sqlite3_step(st) == SQLITE_ROW) {
+                const unsigned char *jm = sqlite3_column_text(st, 0);
+                if (jm) json_set(o, "journal_mode", json_string((const char *)jm));
+            }
+            if (st) { sqlite3_finalize(st); st = NULL; }
+            if (sqlite3_prepare_v2(ro, "SELECT COUNT(*) FROM messages", -1, &st, NULL) == SQLITE_OK
+                && sqlite3_step(st) == SQLITE_ROW)
+                json_set(o, "messages", json_number((double)sqlite3_column_int64(st, 0)));
+            if (st) { sqlite3_finalize(st); st = NULL; }
+            if (sqlite3_prepare_v2(ro, "SELECT COUNT(*) FROM sessions", -1, &st, NULL) == SQLITE_OK
+                && sqlite3_step(st) == SQLITE_ROW)
+                json_set(o, "sessions", json_number((double)sqlite3_column_int64(st, 0)));
+            if (st) { sqlite3_finalize(st); st = NULL; }
+            sqlite3_close(ro);
+        }
+        json_t *pc = json_obj_get(o, "page_count");
+        json_t *ps = json_obj_get(o, "page_size");
+        if (pc && pc->type == JSON_NUMBER && ps && ps->type == JSON_NUMBER)
+            json_set(o, "logical_size_bytes",
+                     json_number((double)((long long)(pc->num_val * ps->num_val))));
+    }
+    char *out = json_serialize(o);
+    json_free(o);
+    return out ? out : strdup("{}");
+}
+
+/* PoP: purge_stale_tool_call_markers @ hermes_state.py:SessionDB.purge_stale_tool_call_markers */
+char *hermes_state_purge_stale_tool_call_markers(hermes_state_db_t *db,
+                                                 int dry_run) {
+    /* Python: permanently clear bare "[marker]" assistant content (pre-#78148)
+     * from messages. dry_run reports without writing. Returns JSON
+     * {"dry_run", "rows_affected", "row_ids", "backup_path"}. */
+    if (!db || !db->db)
+        return strdup("{\"dry_run\":0,\"rows_affected\":0,\"row_ids\":[],\"backup_path\":null}");
+    /* Find affected rows: assistant + tool_calls present + marker content. */
+    long long ids[512];
+    int n = 0;
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "SELECT id, content FROM messages "
+            "WHERE role = 'assistant' AND tool_calls IS NOT NULL AND tool_calls != ''",
+            -1, &st, NULL) == SQLITE_OK) {
+        while (sqlite3_step(st) == SQLITE_ROW && n < 512) {
+            long long id = sqlite3_column_int64(st, 0);
+            const unsigned char *content = sqlite3_column_text(st, 1);
+            /* Reuse the marker matcher on the raw content. */
+            if (content && hermes_state_stale_marker_match((const char *)content))
+                ids[n++] = id;
+        }
+        sqlite3_finalize(st);
+    }
+    if (!dry_run) {
+        for (int i = 0; i < n; i++) {
+            sqlite3_stmt *up = NULL;
+            if (sqlite3_prepare_v2(db->db, "UPDATE messages SET content = '' WHERE id = ?",
+                                   -1, &up, NULL) == SQLITE_OK) {
+                sqlite3_bind_int64(up, 1, ids[i]);
+                sqlite3_step(up);
+                sqlite3_finalize(up);
+            }
+        }
+    }
+    json_t *o = json_object();
+    json_set(o, "dry_run", json_bool(dry_run != 0));
+    json_set(o, "rows_affected", json_number((double)(n)));
+    json_t *arr = json_array();
+    for (int i = 0; i < n; i++) json_append(arr, json_number((double)(ids[i])));
+    json_set(o, "row_ids", arr);
+    json_set(o, "backup_path", json_null());
+    char *out = json_serialize(o);
+    json_free(o);
+    return out ? out : strdup("{}");
+}
+
+/* ════════════════════════════════════════════════════════════════════
+ * Orphaned gateway session recovery (hermes_state.py SessionDB
+ * find_orphaned_gateway_sessions, adopt_orphaned_gateway_session,
+ * reopen_orphaned_compression_session).
+ * ════════════════════════════════════════════════════════════════════ */
+
+#define HERMES_STATE_ORPHAN_ADOPTION_MAX_GAP_S 900.0
+
+/* SQL expression for session recency (freshest of last_activity_at, latest
+ * message timestamp; falls back to started_at). */
+#define HERMES_STATE_LAST_ACTIVE_SQL(alias) \
+    "COALESCE((SELECT MAX(_act_v.v) FROM (" \
+    "SELECT " alias ".last_activity_at AS v UNION ALL " \
+    "SELECT (SELECT MAX(_act_m.timestamp) FROM messages _act_m " \
+    "WHERE _act_m.session_id = " alias ".id) " \
+    ") _act_v), " alias ".started_at)"
+
+/* PoP: find_orphaned_gateway_sessions @ hermes_state.py:SessionDB.find_orphaned_gateway_sessions */
+char *hermes_state_find_orphaned_gateway_sessions(hermes_state_db_t *db,
+                                                  double max_gap_s) {
+    /* Python: report message-bearing unkeyed rows that can be adopted. Returns
+     * a malloc'd JSON array of records. */
+    if (!db || !db->db) return strdup("[]");
+    double gap = (max_gap_s > 0) ? max_gap_s : HERMES_STATE_ORPHAN_ADOPTION_MAX_GAP_S;
+
+    /* Find orphan candidates. */
+    json_t *records = json_array();
+    sqlite3_stmt *st = NULL;
+    const char *orphan_sql =
+        "SELECT o.id, o.source, o.user_id, o.started_at, o.parent_session_id, "
+        HERMES_STATE_LAST_ACTIVE_SQL("o") " AS last_active, "
+        "(SELECT COUNT(*) FROM messages m WHERE m.session_id = o.id) AS message_count "
+        "FROM sessions o "
+        "WHERE o.session_key IS NULL "
+        "AND EXISTS (SELECT 1 FROM messages m WHERE m.session_id = o.id) "
+        "AND COALESCE(o.source, '') != 'tool' "
+        "AND json_extract(COALESCE(o.model_config, '{}'), '$._branched_from') IS NULL "
+        "AND json_extract(COALESCE(o.model_config, '{}'), '$._delegate_from') IS NULL "
+        "ORDER BY o.started_at ASC";
+    if (sqlite3_prepare_v2(db->db, orphan_sql, -1, &st, NULL) != SQLITE_OK)
+        return strdup("[]");
+
+    /* Collect orphan rows. */
+    struct { char id[256], source[64], user_id[256]; double started_at, last_active;
+             char parent[256]; long long message_count; } orphans[256];
+    int n_orphans = 0;
+    while (sqlite3_step(st) == SQLITE_ROW && n_orphans < 256) {
+        const unsigned char *id = sqlite3_column_text(st, 0);
+        const unsigned char *src = sqlite3_column_text(st, 1);
+        const unsigned char *uid = sqlite3_column_text(st, 2);
+        const unsigned char *parent = sqlite3_column_text(st, 4);
+        snprintf(orphans[n_orphans].id, sizeof(orphans[n_orphans].id), "%s", id ? (const char *)id : "");
+        snprintf(orphans[n_orphans].source, sizeof(orphans[n_orphans].source), "%s", src ? (const char *)src : "");
+        snprintf(orphans[n_orphans].user_id, sizeof(orphans[n_orphans].user_id), "%s", uid ? (const char *)uid : "");
+        snprintf(orphans[n_orphans].parent, sizeof(orphans[n_orphans].parent), "%s", parent ? (const char *)parent : "");
+        orphans[n_orphans].started_at = sqlite3_column_double(st, 3);
+        orphans[n_orphans].last_active = sqlite3_column_double(st, 5);
+        orphans[n_orphans].message_count = sqlite3_column_int64(st, 6);
+        n_orphans++;
+    }
+    sqlite3_finalize(st);
+
+    for (int i = 0; i < n_orphans; i++) {
+        json_t *rec = json_object();
+        json_set(rec, "orphan_id", json_string(orphans[i].id));
+        json_set(rec, "source", json_string(orphans[i].source));
+        json_set(rec, "message_count", json_number((double)orphans[i].message_count));
+        json_set(rec, "started_at", json_number(orphans[i].started_at));
+        json_set(rec, "last_active", json_number(orphans[i].last_active));
+        json_set(rec, "donor_id", json_null());
+        json_set(rec, "session_key", json_null());
+        json_set(rec, "evidence", json_string(""));
+        json_set(rec, "adoptable", json_bool(false));
+        json_set(rec, "reason", json_string(""));
+
+        char donor_id[256] = ""; char donor_key[256] = ""; char evidence[32] = ""; char reason[512] = "";
+
+        if (orphans[i].parent[0]) {
+            /* lineage evidence: parent is keyed + same source. */
+            sqlite3_stmt *ds = NULL;
+            if (sqlite3_prepare_v2(db->db,
+                    "SELECT d.id, d.session_key FROM sessions d "
+                    "WHERE d.id = ? AND d.session_key IS NOT NULL "
+                    "AND COALESCE(d.source, '') = COALESCE(?, '')",
+                    -1, &ds, NULL) == SQLITE_OK) {
+                sqlite3_bind_text(ds, 1, orphans[i].parent, -1, SQLITE_TRANSIENT);
+                sqlite3_bind_text(ds, 2, orphans[i].source, -1, SQLITE_TRANSIENT);
+                if (sqlite3_step(ds) == SQLITE_ROW) {
+                    const unsigned char *did = sqlite3_column_text(ds, 0);
+                    const unsigned char *dk = sqlite3_column_text(ds, 1);
+                    snprintf(donor_id, sizeof(donor_id), "%s", did ? (const char *)did : "");
+                    snprintf(donor_key, sizeof(donor_key), "%s", dk ? (const char *)dk : "");
+                    snprintf(evidence, sizeof(evidence), "lineage");
+                } else {
+                    snprintf(reason, sizeof(reason),
+                             "parent session carries no gateway identity of this source");
+                }
+                sqlite3_finalize(ds);
+            }
+        } else {
+            /* contiguity evidence: exactly one keyed same-source predecessor
+             * that fell quiet near the orphan's start. */
+            snprintf(evidence, sizeof(evidence), "contiguity");
+            sqlite3_stmt *cs = NULL;
+            const char *cand_sql =
+                "SELECT d.id, d.session_key FROM sessions d "
+                "WHERE d.session_key IS NOT NULL AND d.id != ? "
+                "AND COALESCE(d.source, '') = COALESCE(?, '') "
+                "AND (COALESCE(d.user_id, '') = '' OR COALESCE(?, '') = '' OR d.user_id = ?) "
+                "AND " HERMES_STATE_LAST_ACTIVE_SQL("d") " BETWEEN ? AND ? "
+                "AND " HERMES_STATE_LAST_ACTIVE_SQL("d") " < ? "
+                "ORDER BY " HERMES_STATE_LAST_ACTIVE_SQL("d") " DESC LIMIT 2";
+            if (sqlite3_prepare_v2(db->db, cand_sql, -1, &cs, NULL) == SQLITE_OK) {
+                sqlite3_bind_text(cs, 1, orphans[i].id, -1, SQLITE_TRANSIENT);
+                sqlite3_bind_text(cs, 2, orphans[i].source, -1, SQLITE_TRANSIENT);
+                sqlite3_bind_text(cs, 3, orphans[i].user_id, -1, SQLITE_TRANSIENT);
+                sqlite3_bind_text(cs, 4, orphans[i].user_id, -1, SQLITE_TRANSIENT);
+                sqlite3_bind_double(cs, 5, orphans[i].started_at - gap);
+                sqlite3_bind_double(cs, 6, orphans[i].started_at + gap);
+                sqlite3_bind_double(cs, 7, orphans[i].last_active);
+                int n_cand = 0;
+                while (sqlite3_step(cs) == SQLITE_ROW) {
+                    if (n_cand == 0) {
+                        const unsigned char *did = sqlite3_column_text(cs, 0);
+                        const unsigned char *dk = sqlite3_column_text(cs, 1);
+                        snprintf(donor_id, sizeof(donor_id), "%s", did ? (const char *)did : "");
+                        snprintf(donor_key, sizeof(donor_key), "%s", dk ? (const char *)dk : "");
+                    }
+                    n_cand++;
+                }
+                sqlite3_finalize(cs);
+                if (n_cand == 0) {
+                    snprintf(reason, sizeof(reason),
+                             "no keyed predecessor fell quiet within %.0fs of this session's start",
+                             gap);
+                } else if (n_cand > 1) {
+                    donor_id[0] = '\0'; donor_key[0] = '\0';
+                    snprintf(reason, sizeof(reason),
+                             "ambiguous: more than one keyed predecessor matches this window");
+                }
+            }
+        }
+
+        if (donor_id[0]) {
+            json_set(rec, "donor_id", json_string(donor_id));
+            json_set(rec, "session_key", json_string(donor_key));
+            json_set(rec, "evidence", json_string(evidence));
+            json_set(rec, "adoptable", json_bool(true));
+        } else if (reason[0]) {
+            json_set(rec, "reason", json_string(reason));
+        }
+        json_append(records, rec);
+    }
+
+    /* Contest resolution: two unkeyed successors claiming the same donor. */
+    for (int i = 0; i < (int)records->c.count; i++) {
+        json_t *rec = records->c.items[i];
+        json_t *adoptable = json_obj_get(rec, "adoptable");
+        if (!adoptable || !adoptable->bool_val) continue;
+        json_t *donor = json_obj_get(rec, "donor_id");
+        if (!donor || donor->type != JSON_STRING) continue;
+        const char *d = donor->str_val;
+        int claims = 0;
+        for (int j = 0; j < (int)records->c.count; j++) {
+            json_t *other = records->c.items[j];
+            json_t *od = json_obj_get(other, "donor_id");
+            if (od && od->type == JSON_STRING && strcmp(od->str_val, d) == 0) claims++;
+        }
+        if (claims > 1) {
+            json_set(rec, "adoptable", json_bool(false));
+            json_set(rec, "reason", json_string(
+                "ambiguous: more than one unkeyed session claims this predecessor"));
+        }
+    }
+    char *out = json_serialize(records);
+    json_free(records);
+    return out ? out : strdup("[]");
+}
+
+/* PoP: adopt_orphaned_gateway_session @ hermes_state.py:SessionDB.adopt_orphaned_gateway_session */
+bool hermes_state_adopt_orphaned_gateway_session(hermes_state_db_t *db,
+                                                 const char *orphan_id,
+                                                 const char *donor_id) {
+    /* Python: stamp orphan with donor's routing identity, retire donor. */
+    if (!db || !db->db || !orphan_id || !donor_id || strcmp(orphan_id, donor_id) == 0)
+        return false;
+    /* Read donor + orphan. */
+    sqlite3_stmt *d = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "SELECT session_key, chat_id, chat_type, thread_id, user_id, "
+            "origin_json, display_name, source FROM sessions WHERE id = ?",
+            -1, &d, NULL) != SQLITE_OK) return false;
+    sqlite3_bind_text(d, 1, donor_id, -1, SQLITE_TRANSIENT);
+    bool donor_ok = sqlite3_step(d) == SQLITE_ROW;
+    if (!donor_ok) { sqlite3_finalize(d); return false; }
+    const char *dk = (const char *)sqlite3_column_text(d, 0);
+    const char *dchat = (const char *)sqlite3_column_text(d, 1);
+    const char *dct = (const char *)sqlite3_column_text(d, 2);
+    const char *dthr = (const char *)sqlite3_column_text(d, 3);
+    const char *duid = (const char *)sqlite3_column_text(d, 4);
+    const char *dorig = (const char *)sqlite3_column_text(d, 5);
+    const char *ddisp = (const char *)sqlite3_column_text(d, 6);
+    const char *dsrc = (const char *)sqlite3_column_text(d, 7);
+    sqlite3_finalize(d);
+    if (!dk || !dk[0]) return false;   /* donor must be keyed */
+
+    /* Read orphan session_key + source. */
+    sqlite3_stmt *o = NULL;
+    if (sqlite3_prepare_v2(db->db, "SELECT session_key, source FROM sessions WHERE id = ?",
+                           -1, &o, NULL) != SQLITE_OK) return false;
+    sqlite3_bind_text(o, 1, orphan_id, -1, SQLITE_TRANSIENT);
+    bool orphan_ok = sqlite3_step(o) == SQLITE_ROW;
+    if (!orphan_ok) { sqlite3_finalize(o); return false; }
+    const char *okey = (const char *)sqlite3_column_text(o, 0);
+    const char *osrc = (const char *)sqlite3_column_text(o, 1);
+    sqlite3_finalize(o);
+    if (okey && okey[0]) return false;   /* orphan already keyed */
+    if (strcmp(dsrc ? dsrc : "", osrc ? osrc : "") != 0) return false;
+
+    /* Stamp orphan; COALESCE preserves existing non-NULL columns. */
+    sqlite3_stmt *up = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "UPDATE sessions SET session_key = ?, chat_id = COALESCE(chat_id, ?), "
+            "chat_type = COALESCE(chat_type, ?), thread_id = COALESCE(thread_id, ?), "
+            "user_id = COALESCE(user_id, ?), origin_json = COALESCE(origin_json, ?), "
+            "display_name = COALESCE(display_name, ?), "
+            "parent_session_id = COALESCE(parent_session_id, ?) "
+            "WHERE id = ? AND session_key IS NULL",
+            -1, &up, NULL) != SQLITE_OK) return false;
+    sqlite3_bind_text(up, 1, dk, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(up, 2, dchat, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(up, 3, dct, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(up, 4, dthr, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(up, 5, duid, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(up, 6, dorig, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(up, 7, ddisp, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(up, 8, donor_id, -1, SQLITE_TRANSIENT);
+    sqlite3_bind_text(up, 9, orphan_id, -1, SQLITE_TRANSIENT);
+    bool stamped = sqlite3_step(up) == SQLITE_DONE;
+    sqlite3_finalize(up);
+    if (!stamped) return false;
+
+    /* Retire donor with a non-resumable reason. */
+    sqlite3_stmt *rt = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "UPDATE sessions SET ended_at = COALESCE(ended_at, ?), "
+            "end_reason = 'superseded_by_repair' WHERE id = ?",
+            -1, &rt, NULL) == SQLITE_OK) {
+        sqlite3_bind_double(rt, 1, hermes_state_now_epoch());
+        sqlite3_bind_text(rt, 2, donor_id, -1, SQLITE_TRANSIENT);
+        sqlite3_step(rt);
+        sqlite3_finalize(rt);
+    }
+    return true;
+}
+
+/* PoP: reopen_orphaned_compression_session @ hermes_state.py:SessionDB.reopen_orphaned_compression_session */
+bool hermes_state_reopen_orphaned_compression_session(hermes_state_db_t *db,
+                                                      const char *session_id) {
+    /* Python: reopen a compression parent only when no continuation exists and
+     * the compression lease is expired. */
+    if (!db || !db->db || !session_id) return false;
+    /* Parent must be a closed compression row. */
+    sqlite3_stmt *p = NULL;
+    if (sqlite3_prepare_v2(db->db, "SELECT ended_at, end_reason FROM sessions WHERE id = ?",
+                           -1, &p, NULL) != SQLITE_OK) return false;
+    sqlite3_bind_text(p, 1, session_id, -1, SQLITE_TRANSIENT);
+    bool parent_ok = sqlite3_step(p) == SQLITE_ROW;
+    if (parent_ok) {
+        /* ended_at IS NULL or end_reason != compression -> not reopenable. */
+        if (sqlite3_column_type(p, 0) == SQLITE_NULL) parent_ok = false;
+        else {
+            const unsigned char *er = sqlite3_column_text(p, 1);
+            if (!er || strcmp((const char *)er, "compression") != 0) parent_ok = false;
+        }
+    }
+    sqlite3_finalize(p);
+    if (!parent_ok) return false;
+
+    /* Any direct non-branch/non-delegate/non-tool child blocks reopen. */
+    sqlite3_stmt *c = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "SELECT 1 FROM sessions WHERE parent_session_id = ? "
+            "AND COALESCE(json_extract(COALESCE(model_config, '{}'), '$._branched_from'), '') != ? "
+            "AND COALESCE(json_extract(COALESCE(model_config, '{}'), '$._delegate_from'), '') != ? "
+            "AND COALESCE(source, '') != 'tool' LIMIT 1",
+            -1, &c, NULL) == SQLITE_OK) {
+        sqlite3_bind_text(c, 1, session_id, -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(c, 2, session_id, -1, SQLITE_TRANSIENT);
+        sqlite3_bind_text(c, 3, session_id, -1, SQLITE_TRANSIENT);
+        bool has_child = sqlite3_step(c) == SQLITE_ROW;
+        sqlite3_finalize(c);
+        if (has_child) return false;
+    }
+
+    /* Compression lease must be absent or expired. */
+    sqlite3_stmt *lk = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "SELECT holder, expires_at FROM compression_locks WHERE session_id = ?",
+            -1, &lk, NULL) == SQLITE_OK) {
+        sqlite3_bind_text(lk, 1, session_id, -1, SQLITE_TRANSIENT);
+        if (sqlite3_step(lk) == SQLITE_ROW) {
+            double now = hermes_state_now_epoch();
+            int expires_type = sqlite3_column_type(lk, 1);
+            double expires = (expires_type == SQLITE_NULL) ? 0.0 : sqlite3_column_double(lk, 1);
+            const char *holder = (const char *)sqlite3_column_text(lk, 0);
+            /* Active lease (expires_at NULL or in the future) -> fail closed. */
+            if (expires_type == SQLITE_NULL || expires >= now) {
+                sqlite3_finalize(lk);
+                return false;
+            }
+            /* Expired: reclaim the row. */
+            sqlite3_finalize(lk);
+            sqlite3_stmt *dl = NULL;
+            if (sqlite3_prepare_v2(db->db,
+                    "DELETE FROM compression_locks WHERE session_id = ? AND holder = ? AND expires_at = ?",
+                    -1, &dl, NULL) == SQLITE_OK) {
+                sqlite3_bind_text(dl, 1, session_id, -1, SQLITE_TRANSIENT);
+                sqlite3_bind_text(dl, 2, holder ? holder : "", -1, SQLITE_TRANSIENT);
+                sqlite3_bind_double(dl, 3, expires);
+                sqlite3_step(dl);
+                sqlite3_finalize(dl);
+            }
+        } else {
+            sqlite3_finalize(lk);
+        }
+    }
+
+    /* Reopen: clear ended_at + end_reason. */
+    sqlite3_stmt *up = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "UPDATE sessions SET ended_at = NULL, end_reason = NULL "
+            "WHERE id = ? AND ended_at IS NOT NULL AND end_reason = 'compression'",
+            -1, &up, NULL) != SQLITE_OK) return false;
+    sqlite3_bind_text(up, 1, session_id, -1, SQLITE_TRANSIENT);
+    bool ok = sqlite3_step(up) == SQLITE_DONE;
+    sqlite3_finalize(up);
+    return ok && sqlite3_changes(db->db) == 1;
+}
+
