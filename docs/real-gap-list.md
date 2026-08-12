@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-12T01:47:21Z from `live_parity_scan.json` by `make parity-walkway`. **736 REAL_GAP across 127 modules** (of 13,359 total functions).
+> Generated 2026-08-12T02:34:13Z from `live_parity_scan.json` by `make parity-walkway`. **709 REAL_GAP across 126 modules** (of 13,359 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -798,36 +798,6 @@
 - _is_serve_orphaned (function)
 - _start_parent_death_watchdog (function)
 - _demo (function)
-
-### hermes_state.py (27 gaps)
-
-- _set_journal_mode_no_wait (function)
-- _wal_reset_repair_hint (function)
-- collect_state_db_stats (function)
-- SessionDB._discard_partial_read_conn (method)
-- SessionDB._close_read_conn (method)
-- SessionDB._checkout_read_conn (method)
-- SessionDB._enter_fts_fail_open (method)
-- SessionDB.find_orphaned_gateway_sessions (method)
-- SessionDB.adopt_orphaned_gateway_session (method)
-- SessionDB.reopen_orphaned_compression_session (method)
-- SessionDB._merge_model_config_json (method)
-- SessionDB.patch_session_model_config (method)
-- SessionDB.get_session_model_config_value (method)
-- SessionDB._title_rank (method)
-- SessionDB.set_auto_title (method)
-- SessionDB.get_session_title_source (method)
-- SessionDB.set_session_title_source (method)
-- SessionDB.set_session_read (method)
-- SessionDB.session_unread (method)
-- SessionDB.usage_totals (method)
-- SessionDB._reasoning_json_text (method)
-- SessionDB.find_pr_url_messages (method)
-- SessionDB.get_resume_message_count (method)
-- SessionDB.assert_resume_safe (method)
-- SessionDB.assert_export_safe (method)
-- SessionDB._is_explicit_fork_child_row (method)
-- SessionDB.purge_stale_tool_call_markers (method)
 
 ### tools/approval.py (6 gaps)
 
