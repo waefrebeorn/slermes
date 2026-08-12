@@ -9,13 +9,13 @@
 <!-- PARITY:AUTO -->
 | Classification | Count | Percentage | Meaning |
 |----------------|-------|------------|---------|
-| **PORTED** | 12,688 | 95.0% | C11 implementation with PoP annotation |
-| **REAL_GAP** | 671 | 5.0% | Honest gaps (not yet ported — IO/network/DB/logic; NOT faked) |
+| **PORTED** | 12,698 | 95.1% | C11 implementation with PoP annotation |
+| **REAL_GAP** | 661 | 4.9% | Honest gaps (not yet ported — IO/network/DB/logic; NOT faked) |
 | **PARTIAL** | 0 | 0.0% | All C fns now carry PoP annotations |
 | **BOOTLEG** | 70 | — | No-work echo stubs (recursive_false_gap_hunter.py) |
 | **TOTAL** | 13,359 | 100% | All Python functions/methods scanned |
 
-> **Generated 2026-08-12T04:29:50Z by `make parity-walkway` from the live scanner.** The PORT phase (v398→v667) is legacy — this table is the single source of truth for completeness. Do not hand-edit.
+> **Generated 2026-08-12T05:09:33Z by `make parity-walkway` from the live scanner.** The PORT phase (v398→v667) is legacy — this table is the single source of truth for completeness. Do not hand-edit.
 <!-- /PARITY:AUTO -->
 
 **Generated:** 2026-08-07 (post-sync, v670 checkpoint) from live scanner

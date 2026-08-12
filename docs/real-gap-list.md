@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-12T04:29:50Z from `live_parity_scan.json` by `make parity-walkway`. **671 REAL_GAP across 124 modules** (of 13,359 total functions).
+> Generated 2026-08-12T05:09:33Z from `live_parity_scan.json` by `make parity-walkway`. **661 REAL_GAP across 123 modules** (of 13,359 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -664,17 +664,8 @@
 - _non_negative_number (function)
 - _metric_identifier (function)
 
-### hermes_cli/personality.py (10 gaps)
+### hermes_cli/personality.py (1 gaps)
 
-- _get (function)
-- prompt_text (function)
-- render_personality_prompt (function)
-- describe_personality (function)
-- normalize_personality_name (function)
-- available_personalities (function)
-- resolve_personality (function)
-- active_personality_name (function)
-- resolve_ephemeral_system_prompt (function)
 - persist_personality (function)
 
 ### hermes_cli/plugins.py (16 gaps)
@@ -712,10 +703,6 @@
 - _configured_nofile_soft_limit (function)
 - configured_nofile_soft_limit (function)
 - apply_nofile_soft_limit (function)
-
-### hermes_cli/sizefmt.py (1 gaps)
-
-- format_bytes (function)
 
 ### hermes_cli/status.py (1 gaps)
 
