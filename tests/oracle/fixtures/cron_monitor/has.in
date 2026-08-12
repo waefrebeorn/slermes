@@ -1,0 +1,5 @@
+{"fn":"has","script":"","url":""}
+{"fn":"has","script":"echo hi","url":""}
+{"fn":"has","script":"","url":"https://example.com/x"}
+{"fn":"has","script":"echo hi","url":"https://example.com/x"}
+{"fn":"has","script":"  ","url":"  "}

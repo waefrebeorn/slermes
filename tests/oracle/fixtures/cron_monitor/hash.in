@@ -1,0 +1,5 @@
+{"fn":"hash","in":""}
+{"fn":"hash","in":"hello world"}
+{"fn":"hash","in":"line1\nline2\nline3"}
+{"fn":"hash","in":"MONITOR CHANGE DETECTED"}
+{"fn":"hash","in":"hash the change, not the timestamp"}

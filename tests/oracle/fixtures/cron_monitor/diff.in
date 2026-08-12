@@ -1,0 +1,5 @@
+{"fn":"diff","old":"","new":"line one"}
+{"fn":"diff","old":"line one","new":""}
+{"fn":"diff","old":"a\nb\nc","new":"a\nx\nc"}
+{"fn":"diff","old":"hello","new":"hello"}
+{"fn":"diff","old":"old line","new":"new line"}

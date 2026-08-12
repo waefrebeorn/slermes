@@ -210,6 +210,11 @@
       "oracle": "tests/sta_oracle_cron_delivery.py",
       "fixtures": "tests/oracle/fixtures/cron_delivery"
     },
+    "cron_monitor": {
+      "harness": "tests/t_port_cron_monitor.c",
+      "oracle": "tests/sta_oracle_cron_monitor.py",
+      "fixtures": "tests/oracle/fixtures/port_cron_monitor"
+    },
     "cron_prompt_sanitize": {
       "harness": "tests/t_port_cron_prompt_sanitize.c",
       "oracle": "tests/sta_oracle_cron_prompt_sanitize.py",
