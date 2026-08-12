@@ -83,22 +83,22 @@ static void free_toks(char **toks, int count) {
 }
 
 /* ── JSON in/out builders ─────────────────────────────────────── */
-static char *json_str(const char *s) {
+static char *h_json_str(const char *s) {
     if (!s) return strdup("null");
     return json_esc(s);
 }
 
-static char *json_int(int v) {
+static char *h_json_int(int v) {
     char buf[32];
     snprintf(buf, sizeof(buf), "%d", v);
     return strdup(buf);
 }
 
-static char *json_bool(bool v) {
+static char *h_json_bool(bool v) {
     return strdup(v ? "true" : "false");
 }
 
-static char *json_obj(const char *keyvals) {
+static char *h_json_obj(const char *keyvals) {
     return strdup(keyvals);
 }
 
@@ -131,12 +131,12 @@ int main(int argc, char **argv) {
         if (strcmp(op, "duration_bucket") == 0) {
             int ms = (argc > 1) ? atoi(argv[1]) : 0;
             const char *result = smc_duration_bucket(ms);
-            emit_json(json_esc(op), json_int(ms), json_esc(result));
+            emit_json(json_esc(op), h_json_int(ms), json_esc(result));
 
         } else if (strcmp(op, "count_bucket") == 0) {
             int c = (argc > 1) ? atoi(argv[1]) : 0;
             const char *result = smc_count_bucket(c);
-            emit_json(json_esc(op), json_int(c), json_esc(result));
+            emit_json(json_esc(op), h_json_int(c), json_esc(result));
 
         } else if (strcmp(op, "execution_surface") == 0) {
             const char *val = (argc > 1) ? argv[1] : "";
@@ -199,27 +199,6 @@ int main(int argc, char **argv) {
             emit_json(json_esc(op), in_buf, result ? result : "null");
             free(result);
 
-        } else if (strcmp(op, "model_family") == 0) {
-            const char *declared = (argc > 1) ? argv[1] : "";
-            const char *model = (argc > 2) ? argv[2] : "";
-            const char *resp = (argc > 3) ? argv[3] : "";
-            const char *result = smc_model_family(declared, model, resp);
-            char in_buf[512];
-            snprintf(in_buf, sizeof(in_buf),
-                "{\"declared\":%s,\"model\":%s,\"response_model\":%s}",
-                json_esc(declared), json_esc(model), json_esc(resp));
-            emit_json(json_esc(op), in_buf, json_esc(result));
-
-        } else if (strcmp(op, "model_call_outcome") == 0) {
-            const char *outcome = (argc > 1) ? argv[1] : "";
-            const char *result = smc_model_call_outcome(outcome);
-            emit_json(json_esc(op), json_esc(outcome), json_esc(result));
-
-        } else if (strcmp(op, "provider_family") == 0) {
-            const char *provider = (argc > 1) ? argv[1] : "";
-            const char *result = smc_provider_family(provider);
-            emit_json(json_esc(op), json_esc(provider), json_esc(result));
-
         } else if (strcmp(op, "counter_dims_valid") == 0) {
             const char *metric = (argc > 1) ? argv[1] : "";
             /* Build key/value arrays for smc_counter_dimensions_are_valid */
@@ -257,6 +236,40 @@ int main(int argc, char **argv) {
             }
             strcat(in_buf, "}}");
             emit_json(json_esc(op), in_buf, result ? "true" : "false");
+
+        } else if (strcmp(op, "skill_load_fields") == 0) {
+            bool reused = (argc > 1 && strcmp(argv[1], "true") == 0);
+            bool reuse_after_patch = (argc > 2 && strcmp(argv[2], "true") == 0);
+            int use_count = (argc > 3) ? atoi(argv[3]) : 0;
+            const char *provenance = (argc > 4) ? argv[4] : "";
+            char *result = smc_skill_load_fields(reused, reuse_after_patch, use_count, provenance);
+            char in_buf[512];
+            snprintf(in_buf, sizeof(in_buf),
+                "{\"reused\":%s,\"reuse_after_patch\":%s,\"use_count\":%d,\"provenance\":%s}",
+                reused ? "true" : "false", reuse_after_patch ? "true" : "false",
+                use_count, json_esc(provenance));
+            emit_json(json_esc(op), in_buf, result ? result : "null");
+            free(result);
+
+        } else if (strcmp(op, "skill_lifecycle_fields") == 0) {
+            const char *action = (argc > 1) ? argv[1] : "";
+            const char *provenance = (argc > 2) ? argv[2] : "";
+            char *result = smc_skill_lifecycle_fields(action, provenance);
+            char in_buf[512];
+            snprintf(in_buf, sizeof(in_buf), "{\"action\":%s,\"provenance\":%s}",
+                json_esc(action), json_esc(provenance));
+            emit_json(json_esc(op), in_buf, result ? result : "null");
+            free(result);
+
+        } else if (strcmp(op, "tool_category") == 0) {
+            const char *toolset = (argc > 1) ? argv[1] : "";
+            const char *result = smc_tool_category(toolset);
+            emit_json(json_esc(op), json_esc(toolset), json_esc(result));
+
+        } else if (strcmp(op, "tool_approval_outcome") == 0) {
+            const char *choice = (argc > 1) ? argv[1] : "";
+            const char *result = smc_tool_approval_outcome(choice);
+            emit_json(json_esc(op), json_esc(choice), json_esc(result));
 
         } else {
             emit_error(json_esc(op), "unknown op");

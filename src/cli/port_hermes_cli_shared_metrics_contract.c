@@ -871,7 +871,7 @@ char *smc_skill_load_fields(bool reused, bool reuse_after_patch,
     /* Guard: use_count must be a positive int, bool flags required,
      * and reuse_after_patch implies reused. */
     if (use_count < 1 || (reuse_after_patch && !reused)) return NULL;
-    const char *post_patch = "no_new_patch";
+    const char *post_patch = "not_applicable";
     if (reused) post_patch = reuse_after_patch ? "reused_after_patch" : "no_new_patch";
     const char *reuse_state = reused ? "reused" : "first_use";
     const char *use_bucket = smc_count_bucket(use_count);

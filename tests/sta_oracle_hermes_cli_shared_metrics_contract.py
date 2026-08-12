@@ -23,10 +23,11 @@ from hermes_cli.observability.shared_metrics_contract import (
     task_terminal_state,
     duration_bucket,
     count_bucket,
-    provider_family,
-    model_family,
-    model_call_outcome,
     model_call_fields,
+    skill_lifecycle_fields,
+    skill_load_fields,
+    tool_category,
+    tool_approval_outcome,
 )
 
 
@@ -105,23 +106,6 @@ def main():
                     out_str, end_reason, termination = task_terminal_state(kwargs)
                     emit_result(op, {"reason": reason, "interrupted": interrupted, "completed": completed, "failed": failed}, [out_str, end_reason, termination])
 
-                elif op == "model_family":
-                    declared = args[0] if len(args) > 0 and args[0] else ""
-                    model = args[1] if len(args) > 1 and args[1] else ""
-                    resp = args[2] if len(args) > 2 and args[2] else ""
-                    kwargs = {"model_family": declared, "model": model, "response_model": resp}
-                    result = model_family(kwargs)
-                    emit_result(op, {"declared": declared, "model": model, "response_model": resp}, result)
-
-                elif op == "model_call_outcome":
-                    outcome = args[0] if args and args[0] else ""
-                    result = model_call_outcome({"outcome": outcome})
-                    emit_result(op, outcome, result)
-
-                elif op == "provider_family":
-                    provider = args[0] if args and args[0] else ""
-                    result = provider_family({"provider": provider})
-                    emit_result(op, provider, result)
 
                 elif op == "counter_dims_valid":
                     metric = args[0]
@@ -132,6 +116,33 @@ def main():
                             dims[k] = v
                     result = counter_dimensions_are_valid(metric, dims)
                     emit_result(op, {"metric": metric, "dims": dims}, result)
+
+                elif op == "skill_load_fields":
+                    reused = (len(args) > 0 and args[0] == "true")
+                    reuse_after_patch = (len(args) > 1 and args[1] == "true")
+                    use_count = int(args[2]) if len(args) > 2 and args[2] else 0
+                    provenance = args[3] if len(args) > 3 else ""
+                    kwargs = {"reused": reused, "reuse_after_patch": reuse_after_patch,
+                              "use_count": use_count, "provenance": provenance}
+                    result = skill_load_fields(kwargs)
+                    emit_result(op, kwargs, result)
+
+                elif op == "skill_lifecycle_fields":
+                    action = args[0] if args and args[0] else ""
+                    provenance = args[1] if len(args) > 1 else ""
+                    kwargs = {"action": action, "provenance": provenance}
+                    result = skill_lifecycle_fields(kwargs)
+                    emit_result(op, kwargs, result)
+
+                elif op == "tool_category":
+                    toolset = args[0] if args and args[0] else ""
+                    result = tool_category({"toolset": toolset})
+                    emit_result(op, toolset, result)
+
+                elif op == "tool_approval_outcome":
+                    choice = args[0] if args and args[0] else ""
+                    result = tool_approval_outcome({"choice": choice})
+                    emit_result(op, choice, result)
 
                 else:
                     emit({"error": "unknown op: " + op})

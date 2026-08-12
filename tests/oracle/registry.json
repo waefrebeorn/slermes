@@ -430,6 +430,14 @@
       "oracle": "tests/sta_oracle_hermes_cli_gateway.py",
       "fixtures": "tests/oracle/fixtures/hermes_cli_gateway"
     },
+    "hermes_cli_heartbeat": {
+      "harness": "tests/t_port_hermes_cli_heartbeat.c",
+      "oracle": "tests/sta_oracle_hermes_cli_heartbeat.py",
+      "fixtures": "tests/oracle/fixtures/hermes_cli_heartbeat",
+      "normalize": {
+        "float_int_equal": true
+      }
+    },
     "hermes_cli_inventory": {
       "harness": "tests/t_port_hermes_cli_inventory.c",
       "oracle": "tests/sta_oracle_hermes_cli_inventory.py",

@@ -128,6 +128,7 @@ double smc_non_negative_number(const json_t *value) {
 
 /* ── _event_metadata_is_valid (metrics v2 envelope) ─────────────── */
 
+/* PoP: smc_event_metadata_is_valid @ hermes_cli/observability/shared_metrics_contract.py:_event_metadata_is_valid */
 bool smc_event_metadata_is_valid(const json_t *event) {
     if (!event || event->type != JSON_OBJECT) return false;
     const json_t *metadata = json_obj_get(event, "metadata");

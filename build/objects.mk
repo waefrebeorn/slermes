@@ -270,6 +270,7 @@ PORT_OBJ = \
         src/cli/port_hermes_cli_shared_metrics_contract.o \
         src/cli/port_smc_event_extractors.o \
         src/cli/port_hermes_cli_relay_shared_metrics.o \
+        src/cli/port_hermes_cli_heartbeat.o \
         src/cli/port_hermes_cli_focus_view.o \
         src/cli/port_hermes_cli_slash_exec.o \
         src/cli/port_hermes_cli_kanban_swarm.o \

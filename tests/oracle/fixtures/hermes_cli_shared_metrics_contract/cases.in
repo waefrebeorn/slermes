@@ -69,33 +69,53 @@ task_terminal_state|system_aborted|false|false|false
 task_terminal_state||false|false|false
 task_terminal_state|some_error|false|false|true
 
-# ── model_family ──
-model_family||gpt-4o|
-model_family||claude-opus-4|
-model_family|claude|some-model|
-model_family||deepseek/deepseek-r1|
-model_family|unknown|some-random-model|
-model_family|||
-
-# ── model_call_outcome ──
-model_call_outcome|success
-model_call_outcome|failed
-model_call_outcome|cancelled
-model_call_outcome|unknown
-model_call_outcome|
-
-# ── provider_family ──
-provider_family|openai
-provider_family|anthropic
-provider_family|ollama
-provider_family|moa
-provider_family|custom
-provider_family|lmstudio
-provider_family|
-
 # ── counter_dimensions_are_valid ──
 counter_dims_valid|hermes.model_call.count|call_role=primary|locality=remote|model_family=gpt|outcome=success|provider_family=direct
 counter_dims_valid|hermes.model_call.count|call_role=primary|locality=invalid|model_family=gpt|outcome=success|provider_family=direct
 counter_dims_valid|hermes.task_run.started|entrypoint=interactive|execution_surface=cli
 counter_dims_valid|hermes.task_run.finished|duration_bucket=5s_to_30s|end_reason=completed|entrypoint=interactive|execution_surface=cli|model_call_count_bucket=5|outcome=success|retry_count_bucket=1|termination=none|tool_call_count_bucket=3
 counter_dims_valid|unknown.metric|key=value
+
+# ── skill_load_fields ──
+skill_load_fields|true|false|1|first_party
+skill_load_fields|true|false|5|first_party
+skill_load_fields|true|true|3|first_party
+skill_load_fields|false|false|1|first_party
+skill_load_fields|true|true|1|first_party
+skill_load_fields|false|true|1|first_party
+skill_load_fields|true|false|0|first_party
+skill_load_fields|true|false|-1|first_party
+skill_load_fields||false|1|
+skill_load_fields|true|false|1|weird_source
+
+# ── skill_lifecycle_fields ──
+skill_lifecycle_fields|archived|first_party
+skill_lifecycle_fields|installed|first_party
+skill_lifecycle_fields|unknown|first_party
+skill_lifecycle_fields||first_party
+skill_lifecycle_fields|installed|
+
+# ── tool_category ──
+tool_category|file
+tool_category|terminal
+tool_category|mcp_search
+tool_category|image_generation
+tool_category|clarify
+tool_category|session_search
+tool_category|discord
+tool_category|web
+tool_category|skills
+tool_category|clarify
+tool_category|homeassistant
+tool_category|browser_camofox
+tool_category|video_generation
+tool_category|unknown_toolset
+tool_category|
+tool_category|x_search
+
+# ── tool_approval_outcome ──
+tool_approval_outcome|approved
+tool_approval_outcome|denied
+tool_approval_outcome|auto_approved
+tool_approval_outcome|
+tool_approval_outcome|weird_choice

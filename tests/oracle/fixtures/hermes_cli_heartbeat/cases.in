@@ -1,0 +1,45 @@
+# Oracle fixture for hermes_cli/heartbeat.py
+# Format: op|arg0|arg1|...
+#
+# parse_interval: Python returns None for non-match, -1 for below-floor,
+# else an int. C returns rc=0->null, INT_MIN->-1, else int.
+parse_interval|10m
+parse_interval|every 10m
+parse_interval|Every 10m
+parse_interval|EVERY 2h
+parse_interval|90 minutes
+parse_interval|0.5h
+parse_interval|5m
+parse_interval|1m
+parse_interval|30s
+parse_interval|90s
+parse_interval|not an interval
+parse_interval|
+parse_interval|-5m
+parse_interval|5e2m
+parse_interval|10 m junk
+parse_interval|every
+parse_interval|10x
+parse_interval|2d
+parse_interval|7d
+
+# format_interval
+format_interval|600
+format_interval|3600
+format_interval|86400
+format_interval|45
+format_interval|0
+format_interval|90
+
+# is_due: args = json_state | now
+is_due|{"prompt":"check logs","interval_seconds":300,"status":"active","created_at":1000.0,"last_fired_at":0.0,"fire_count":0}|1300.0
+is_due|{"prompt":"check logs","interval_seconds":300,"status":"active","created_at":1000.0,"last_fired_at":1010.0,"fire_count":0}|1300.0
+is_due|{"prompt":"check logs","interval_seconds":300,"status":"active","created_at":1000.0,"last_fired_at":1300.0,"fire_count":1}|1300.0
+is_due|{"prompt":"check logs","interval_seconds":300,"status":"paused","created_at":1000.0,"last_fired_at":0.0,"fire_count":0}|1300.0
+is_due|{"prompt":"","interval_seconds":300,"status":"active","created_at":1000.0,"last_fired_at":0.0,"fire_count":0}|1300.0
+is_due|{"prompt":"x","interval_seconds":0,"status":"active","created_at":1000.0,"last_fired_at":0.0,"fire_count":0}|1300.0
+is_due|{"prompt":"x","interval_seconds":300,"status":"cleared","created_at":1000.0,"last_fired_at":0.0,"fire_count":0}|1300.0
+
+# render_prompt: deterministic (no time dependency)
+render_prompt|{"prompt":"check the deployment","interval_seconds":600,"status":"active","created_at":0,"last_fired_at":0,"fire_count":0}
+render_prompt|{"prompt":"sync git","interval_seconds":900,"status":"active","created_at":0,"last_fired_at":0,"fire_count":3}
