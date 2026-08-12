@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-12T05:09:33Z from `live_parity_scan.json` by `make parity-walkway`. **661 REAL_GAP across 123 modules** (of 13,359 total functions).
+> Generated 2026-08-12T05:50:11Z from `live_parity_scan.json` by `make parity-walkway`. **642 REAL_GAP across 123 modules** (of 13,359 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -639,30 +639,11 @@
 - SharedMetricsStore._migrate_v1_counter_aggregates (method)
 - SharedMetricsStore._parse_state_timestamp (method)
 
-### hermes_cli/observability/shared_metrics_contract.py (22 gaps)
+### hermes_cli/observability/shared_metrics_contract.py (3 gaps)
 
-- client_os_family (function)
-- client_architecture (function)
-- client_install_method (function)
-- client_resource (function)
-- client_resource_is_valid (function)
 - _event_metadata_is_valid (function)
-- client_active_counter (function)
-- _auxiliary_model_call_dimensions (function)
-- tool_call_dimensions (function)
-- tool_approval_counter (function)
-- skill_counter (function)
 - skill_lifecycle_fields (function)
 - skill_load_fields (function)
-- skill_provenance (function)
-- tool_category (function)
-- tool_outcome (function)
-- tool_approval_outcome (function)
-- tool_terminal_fields (function)
-- tool_latency_bucket (function)
-- tool_retry_bucket (function)
-- _non_negative_number (function)
-- _metric_identifier (function)
 
 ### hermes_cli/personality.py (1 gaps)
 

@@ -122,14 +122,14 @@ verified 0 mismatches vs live Python. Build links clean, Mission 8: 36/0/35.
 Fixed `tests/run_one_oracle.sh` (added `-I src`) so port headers resolve.
 
 <!-- PARITY:AUTO -->
-| PORTED  | 12,623 / 13,359 (94.5%) |
-| REAL_GAP| 736 (5.5%) — no N/A |
+| PORTED  | 12,717 / 13,359 (95.2%) |
+| REAL_GAP| 642 (4.8%) — no N/A |
 | PARTIAL | 0 (0.0%) |
 | BOOTLEG | 70 (recursive_false_gap_hunter.py) |
 
 **Phase (v671):** PORT phase — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.
 
-**Upstream sync checkpoint:** 1,434 ahead / 0 behind upstream/main (last merge 2026-08-12 (upstream fetched)). The repo is up to date with upstream.
+**Upstream sync checkpoint:** 1,441 ahead / 0 behind upstream/main (last merge 2026-08-12 (upstream fetched)). The repo is up to date with upstream.
 
-_Generated 2026-08-12T01:47:21Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
+_Generated 2026-08-12T05:50:11Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
 <!-- /PARITY:AUTO -->

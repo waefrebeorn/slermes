@@ -717,33 +717,8 @@ void shared_metrics_store_free(shared_metrics_store_t *store) {
 
 
 /* ── shared_metrics_contract.py gap functions ───────────────────── */
-
-/* PoP: model_call_dimensions @ hermes_cli/observability/shared_metrics_contract.py:model_call_dimensions */
-char *smc_model_call_dimensions(const char *arg) {
-    /* Python: extract package dimensions from a model-call end event.
-     * Arg = "valid\tdims_json" (valid 1/0). */
-    if (!arg || !*arg) return strdup("None");
-    const char *tab = strchr(arg, '\t');
-    int valid = arg[0] == '1';
-    if (!valid) return strdup("None");
-    if (tab && tab[1]) return strdup(tab + 1);
-    return strdup("None");
-}
-
-/* PoP: task_counter @ hermes_cli/observability/shared_metrics_contract.py:task_counter */
-char *smc_task_counter(const char *arg) {
-    /* Python: return (metric_name, dimensions) from a task scope event.
-     * Arg = "metric_name\tdims_json". */
-    if (!arg || !*arg) return strdup("None");
-    const char *tab = strchr(arg, '\t');
-    if (!tab || !tab[1]) return strdup("None");
-    char *out = malloc(strlen(arg) + 64);
-    if (!out) return strdup("None");
-    snprintf(out, strlen(arg) + 64,
-             "{\"metric\": \"%.*s\", \"dimensions\": %s}",
-             (int)(tab - arg), arg, tab + 1);
-    return out;
-}
+/* Faithful implementations of model_call_dimensions and task_counter now live
+ * in port_smc_event_extractors.c (the echo-stub versions here were unfaithful). */
 
 /* PoP: _provider_metadata @ hermes_cli/observability/shared_metrics_contract.py:_provider_metadata */
 char *smc_provider_metadata(const char *arg) {

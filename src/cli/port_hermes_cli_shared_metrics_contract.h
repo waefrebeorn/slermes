@@ -16,12 +16,20 @@
 
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
+#include "hermes_json.h"   /* json_t, json_obj_get, json_set, ... */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-/* ── String constants matching Python ──────────────────────────── */
+/* ── Runtime/schema constants (shared with relay callers) ─────── */
+#define SMC_RUNTIME_INSTANCE_KEY "hermes.relay.runtime_instance"
+#define SMC_RUNTIME_SCHEMA_KEY   "hermes.relay.schema_version"
+#define SMC_RUNTIME_SCHEMA_VERSION "hermes.relay.runtime.v1"
+#define SMC_TOOL_CALL_SCOPE "hermes.tool_call"
+#define SMC_TOOL_APPROVAL_MARK "hermes.tool_approval"
+#define SMC_SKILL_LIFECYCLE_MARK "hermes.skill.lifecycle"
+#define SMC_SKILL_LOAD_MARK "hermes.skill.load"
+#define SMC_CLIENT_ACTIVE_MARK "hermes.client.active"
+#define SMC_MODEL_CALL_SCOPE_PREFIX "hermes.model_call"
+#define SMC_MODEL_CALL_PROFILE_MODEL "unknown"
 
 #define SMC_SCHEMA_KEY       "hermes.metrics.schema_version"
 #define SMC_SCHEMA_VERSION   "hermes.metrics.event.v1"
@@ -186,6 +194,79 @@ bool smc_is_local_custom_alias(const char *provider);
  * Python: provider_family(kwargs)
  */
 const char *smc_provider_family(const char *provider);
+
+/* ── Event-extraction functions (per-event extractors) ─────────── */
+
+/* PoP: _event_metadata_is_valid @ hermes_cli/observability/shared_metrics_contract.py:_event_metadata_is_valid
+ * Returns true if the event's metadata carries a valid v1 relay schema envelope. */
+bool smc_event_metadata_is_valid(const json_t *event);
+
+/* PoP: _auxiliary_model_call_dimensions @ hermes_cli/observability/shared_metrics_contract.py:_auxiliary_model_call_dimensions */
+char *smc_auxiliary_model_call_dimensions(const char *event_json);
+
+/* PoP: model_call_dimensions @ hermes_cli/observability/shared_metrics_contract.py:model_call_dimensions */
+char *smc_model_call_dimensions(const char *event_json);
+
+/* PoP: task_counter @ hermes_cli/observability/shared_metrics_contract.py:task_counter */
+char *smc_task_counter(const char *event_json);
+
+/* PoP: task_terminal_fields @ hermes_cli/observability/shared_metrics_contract.py:task_terminal_fields
+ * Build the bounded terminal payload for a task from its start fields + end data.
+ * (smc_task_start_fields / smc_task_entrypoint / smc_duration_bucket /
+ * smc_count_bucket are the existing validators reused here.) */
+char *smc_task_terminal_fields_json(const json_t *data);
+
+/* PoP: tool_call_dimensions @ hermes_cli/observability/shared_metrics_contract.py:tool_call_dimensions */
+char *smc_tool_call_dimensions(const char *event_json);
+
+/* PoP: tool_approval_counter @ hermes_cli/observability/shared_metrics_contract.py:tool_approval_counter */
+char *smc_tool_approval_counter(const char *event_json);
+
+/* PoP: skill_counter @ hermes_cli/observability/shared_metrics_contract.py:skill_counter */
+char *smc_skill_counter(const char *event_json);
+
+/* PoP: client_active_counter @ hermes_cli/observability/shared_metrics_contract.py:client_active_counter */
+char *smc_client_active_counter(const char *event_json);
+
+/* PoP: _non_negative_number @ hermes_cli/observability/shared_metrics_contract.py:_non_negative_number */
+double smc_non_negative_number(const json_t *value);
+
+/* PoP: _metric_identifier @ hermes_cli/observability/shared_metrics_contract.py:_metric_identifier
+ * Caller frees the returned string. */
+char *smc_metric_identifier(const char *value, int max_length);
+
+/* PoP: skill_provenance @ hermes_cli/observability/shared_metrics_contract.py:skill_provenance */
+const char *smc_skill_provenance(const char *value);
+
+/* PoP: tool_category @ hermes_cli/observability/shared_metrics_contract.py:tool_category */
+const char *smc_tool_category(const char *toolset);
+/* PoP: tool_outcome @ hermes_cli/observability/shared_metrics_contract.py:tool_outcome */
+const char *smc_tool_outcome(const char *status);
+/* PoP: tool_approval_outcome @ hermes_cli/observability/shared_metrics_contract.py:tool_approval_outcome */
+const char *smc_tool_approval_outcome(const char *choice);
+
+/* PoP: tool_terminal_fields @ hermes_cli/observability/shared_metrics_contract.py:tool_terminal_fields */
+char *smc_tool_terminal_fields_json(const json_t *data, const char *category,
+                                    const char *approval_outcome,
+                                    const json_t *fallback_duration_ms);
+
+/* PoP: tool_latency_bucket @ hermes_cli/observability/shared_metrics_contract.py:tool_latency_bucket */
+const char *smc_tool_latency_bucket(const json_t *value, const json_t *fallback);
+/* PoP: tool_retry_bucket @ hermes_cli/observability/shared_metrics_contract.py:tool_retry_bucket */
+const char *smc_tool_retry_bucket(const json_t *value);
+
+/* client resource taxonomies */
+/* PoP: client_os_family @ hermes_cli/observability/shared_metrics_contract.py:client_os_family */
+const char *smc_client_os_family(const char *value);
+/* PoP: client_architecture @ hermes_cli/observability/shared_metrics_contract.py:client_architecture */
+const char *smc_client_architecture(const char *value);
+/* PoP: client_install_method @ hermes_cli/observability/shared_metrics_contract.py:client_install_method */
+const char *smc_client_install_method(const char *value);
+/* PoP: client_resource @ hermes_cli/observability/shared_metrics_contract.py:client_resource */
+char *smc_client_resource(const char *hermes_version, const char *os_name,
+                          const char *architecture, const char *install_method);
+/* PoP: client_resource_is_valid @ hermes_cli/observability/shared_metrics_contract.py:client_resource_is_valid */
+bool smc_client_resource_is_valid(const char *resource_json);
 
 #ifdef __cplusplus
 }
