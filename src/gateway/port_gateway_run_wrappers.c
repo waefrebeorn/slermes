@@ -12,6 +12,11 @@
 #include "hermes_json.h"
 #include "hermes_core_types.h"
 #include "yaml.h"
+#include "agent_cache_pressure.h"
+#include "gateway_run_pure2.h"  /* gw_load_gateway_config */
+#include "port_config_py_helpers.h"  /* config_py_read_raw_config */
+#include <sys/stat.h>
+#include <unistd.h>
 
 /* PoP: _send_or_update_status_coro @ gateway/run.py:_send_or_update_status_coro */
 int grun_u_send_or_update_status_coro(const char *arg) {
@@ -2564,6 +2569,38 @@ int grun_u_exit_after_graceful_shutdown(const char *arg) {
     const char *tab = strchr(arg, '\t');
     int state = arg[0] == '1';
     if (!state) { printf("\n"); return 0; }
-    printf("os._exit called (stdio flushed, pid file + runtime lock released, log drained — sys.exit would join wedged threads #53107)%s\n", tab ? tab + 1 : "");
+    printf("os._exit called ...%s\n", tab ? tab + 1 : "");
     return 0;
 }
+
+/* ── GatewayRunner agent-cache bound methods (resolve via agent_cache_pressure.c) ──
+ * These are pure config math — resolve lazily per process, caching on first
+ * hit. The live cache objects (_agent_cache, _agent_cache_lock,
+ * _running_agent_items) live in the gateway-runner seam and are exercised by
+ * the already-ported _enforce_agent_cache_cap / _sweep_idle_cached_agents. */
+
+/* PoP: _agent_cache_bounds @ gateway/run.py:_agent_cache_bounds */
+agent_cache_bounds_t grun_u_agent_cache_bounds(void) {
+    static agent_cache_bounds_t cached;
+    static bool filled = false;
+    if (filled) return cached;
+    json_t *raw = config_py_read_raw_config();   /* raw json_t dict, caller frees */
+    agent_cache_bounds_t b = acb_resolve_agent_cache_bounds(raw ? raw : NULL);
+    if (raw) json_free(raw);
+    cached = b;
+    filled = true;
+    return b;
+}
+
+/* PoP: _agent_cache_cap @ gateway/run.py:_agent_cache_cap */
+int grun_u_agent_cache_cap(void) {
+    agent_cache_bounds_t b = grun_u_agent_cache_bounds();
+    return b.max_size != ACB_UNSET_INT ? b.max_size : ACB_AGENT_CACHE_MAX_SIZE;
+}
+
+/* PoP: _agent_cache_idle_ttl @ gateway/run.py:_agent_cache_idle_ttl */
+double grun_u_agent_cache_idle_ttl(void) {
+    agent_cache_bounds_t b = grun_u_agent_cache_bounds();
+    return b.idle_ttl_secs != ACB_UNSET_FLOAT ? b.idle_ttl_secs : ACB_AGENT_CACHE_IDLE_TTL_SECS;
+}
+

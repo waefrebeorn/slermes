@@ -14,6 +14,7 @@
 
 #include "hermes_core_types.h"   /* hermes_config_t */
 #include "hermes_json.h"         /* json_node_t */
+#include "agent_cache_pressure.h"  /* agent_cache_bounds_t */
 
 #ifdef __cplusplus
 extern "C" {
@@ -236,6 +237,13 @@ char *gw_as_thread_info(const char *info_json);
  * _float_env is already declared via gw_float_env in gateway_run_pure.h. */
 /* PoP: _multiplex_profile_homes @ gateway/run.py:_multiplex_profile_homes */
 char *gw_multiplex_profile_homes(void);
+
+/* PoP: _agent_cache_bounds @ gateway/run.py:_agent_cache_bounds */
+agent_cache_bounds_t grun_u_agent_cache_bounds(void);
+/* PoP: _agent_cache_cap @ gateway/run.py:_agent_cache_cap */
+int grun_u_agent_cache_cap(void);
+/* PoP: _agent_cache_idle_ttl @ gateway/run.py:_agent_cache_idle_ttl */
+double grun_u_agent_cache_idle_ttl(void);
 
 #ifdef __cplusplus
 }

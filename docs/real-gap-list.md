@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-12T03:09:16Z from `live_parity_scan.json` by `make parity-walkway`. **707 REAL_GAP across 126 modules** (of 13,359 total functions).
+> Generated 2026-08-12T04:29:50Z from `live_parity_scan.json` by `make parity-walkway`. **671 REAL_GAP across 124 modules** (of 13,359 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -288,18 +288,6 @@
 
 - CronScheduler.register_job (method)
 
-### gateway/agent_cache_pressure.py (9 gaps)
-
-- _positive_int (function)
-- _positive_float (function)
-- _cgroup_limit_bytes (function)
-- _total_memory_bytes (function)
-- resolve_memory_high_mb (function)
-- resolve_agent_cache_bounds (function)
-- read_anon_rss_mb (function)
-- transcript_persistence_caught_up (function)
-- plan_pressure_evictions (function)
-
 ### gateway/config.py (1 gaps)
 
 - _normalize_multiplex_profile_allowlist (function)
@@ -342,7 +330,7 @@
 - _chain_gap (function)
 - _chain_ending_at (function)
 
-### gateway/run.py (29 gaps)
+### gateway/run.py (26 gaps)
 
 - _hygiene_cooldown_for_failure (function)
 - _reset_hygiene_failure_streak (function)
@@ -368,9 +356,6 @@
 - GatewayRunner._start_heartbeat_poller (method)
 - async GatewayRunner._deliver_queued_first_response (method)
 - async GatewayRunner._await_relay_auto_thread_info (method)
-- GatewayRunner._agent_cache_bounds (method)
-- GatewayRunner._agent_cache_cap (method)
-- GatewayRunner._agent_cache_idle_ttl (method)
 - GatewayRunner._sweep_agent_cache_under_pressure (method)
 - GatewayRunner._release_pressure_batch (method)
 
@@ -955,33 +940,6 @@
 
 - _const_branch_type (function)
 - collapse_const_unions (function)
-
-### tools/self_repo_guard.py (24 gaps)
-
-- get_running_source_root (function)
-- _resolve (function)
-- _is_within (function)
-- _executable_name (function)
-- _shell_words_at (function)
-- _consume_options (function)
-- _command_parts (function)
-- _scope_keys (function)
-- _operator_before (function)
-- _cd_target (function)
-- _shell_script_arg (function)
-- _heredoc_specs (function)
-- _masked_line (function)
-- _mask_heredocs (function)
-- _git_target_and_subcommand (function)
-- _mutates_worktree (function)
-- _next_positional (function)
-- _inspect_git_worktree (function)
-- _read_git_alias (function)
-- _inspect_git (function)
-- _inspect_github_cli (function)
-- _find_mutation (function)
-- detect_self_repo_git_mutation (function)
-- _block_message (function)
 
 ### tools/skill_linter.py (17 gaps)
 
