@@ -19,11 +19,15 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
+/* Module-level enabled state, mirroring Python DebugToolLog.enabled. */
+static bool g_dbh_enabled = false;
+
 /* PoP: __init__ @ tools/debug_helpers.py:__init__ */
 char *dbh_init(const char *tool_name, const char *env_var) {
     /* Python: env-gated tool logging. */
     const char *v = env_var ? getenv(env_var) : NULL;
     bool enabled = v && (strcmp(v, "true") == 0 || strcmp(v, "1") == 0);
+    g_dbh_enabled = enabled;
     char *out = NULL;
     asprintf(&out, "{\"tool_name\": \"%s\", \"enabled\": %s}",
              tool_name ? tool_name : "", enabled ? "true" : "false");
@@ -32,8 +36,8 @@ char *dbh_init(const char *tool_name, const char *env_var) {
 
 /* PoP: active @ tools/debug_helpers.py:active */
 bool dbh_active(void) {
-    printf("debug helper active probe\n");
-    return false;
+    /* Python: DebugToolLog.active == self.enabled (env-gated at init). */
+    return g_dbh_enabled;
 }
 
 /* PoP: save @ tools/debug_helpers.py:save */

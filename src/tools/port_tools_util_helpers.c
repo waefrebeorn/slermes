@@ -371,7 +371,9 @@ char *tools_image_source_init(const char *message, const char *src, const char *
 /* PoP: set @ tools/interrupt.py:set */
 int tools_interrupt_set(bool state)
 {
-    (void)state;
+    /* Python: set_interrupt(active, thread_id) — real per-thread signal. */
+    extern void set_interrupt(bool active, unsigned long thread_id);
+    set_interrupt(state, 0);   /* 0 -> current thread */
     return 0;
 }
 

@@ -1781,7 +1781,26 @@ int tools_file_state_writes_since_2(const char *arg) {
 }
 
 /* PoP: known_reads @ tools/file_state.py:known_reads */
-int tools_file_state_known_reads_2(const char *arg) { (void)arg; return 0; }
+int tools_file_state_known_reads_2(const char *arg) {
+    /* Python: return list of resolved paths read for task_id. */
+    extern void fs_known_reads(const char *task_id, char out[][256], int *out_count);
+    if (!arg || !*arg) { printf("[]\n"); return 0; }
+    /* Arg = "task_id" (tab-separated fields may follow). */
+    char task[256];
+    snprintf(task, sizeof(task), "%s", arg);
+    char *tab = strchr(task, '\t');
+    if (tab) *tab = '\0';
+    char reads[64][256];
+    int count = 0;
+    fs_known_reads(task, reads, &count);
+    printf("[");
+    for (int i = 0; i < count; i++) {
+        if (i > 0) printf(", ");
+        printf("\"%s\"", reads[i]);
+    }
+    printf("]\n");
+    return 0;
+}
 
 /* PoP: publish_authorization_url @ tools/mcp_dashboard_oauth.py:publish_authorization_url */
 int tools_mcp_dashboard_oauth_publish_authorization_url(const char *arg) {
@@ -2621,9 +2640,17 @@ int tools_xai_video_tools_u_clean_string(const char *arg) {
 int tools_xai_video_tools_u_provider_not_configured_error(const char *arg) {
     /* Python: returns JSON error dict — REAL. */
     (void)arg;
-    printf("{\"success\": false, \"error\": \"xAI video edit/extend tools require "
-           "`video_gen.provider` to be configured as `xai` via `hermes tools` -> "
-           "Video Generation.\", \"error_type\": \"provider_not_configured\"}\n");
+    json_node_t *o = json_object();
+    json_set(o, "success", json_bool(false));
+    json_set(o, "error", json_string(
+        "xAI video edit/extend tools require `video_gen.provider` to be "
+        "configured as `xai` via `hermes tools` -> Video Generation."));
+    json_set(o, "error_type", json_string("provider_not_configured"));
+    json_set(o, "provider", json_string("xai"));
+    char *s = json_serialize(o);
+    json_free(o);
+    printf("%s\n", s ? s : "{}");
+    free(s);
     return 0;
 }
 
@@ -3230,7 +3257,12 @@ int tools_skill_provenance_reset_current_write_origin(const char *arg) {
 }
 
 /* PoP: get_current_write_origin @ tools/skill_provenance.py:get_current_write_origin */
-int tools_skill_provenance_get_current_write_origin(const char *arg) { (void)arg; printf("%s\n", skill_provenance_current_origin()); return 0; }
+int tools_skill_provenance_get_current_write_origin(const char *arg) {
+    (void)arg;
+    extern const char *skill_provenance_get(void);
+    printf("%s\n", skill_provenance_get());
+    return 0;
+}
 
 /* PoP: is_background_review @ tools/skill_provenance.py:is_background_review */
 const char *skill_provenance_current_origin(void) {
@@ -3863,7 +3895,8 @@ int tools_feishu_drive_tool_u_do_request(const char *arg) {
 int tools_interrupt_clear_current_thread_interrupt(const char *arg) {
     /* Python: per-thread clear. Arg = "state". */
     (void)arg;
-    printf("current-thread interrupt bit cleared\n");
+    extern void set_interrupt(bool active, unsigned long thread_id);
+    set_interrupt(false, 0);   /* clear current thread's interrupt bit */
     return 0;
 }
 

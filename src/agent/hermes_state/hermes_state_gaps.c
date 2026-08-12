@@ -8,12 +8,306 @@
 #include "hermes_state_internal.h"
 #include "hermes_state_db.h"
 #include "hermes_json.h"
+#include "port_config_py_helpers.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
 #include <unistd.h>
 #include <time.h>
+#include <ctype.h>
+#include <dirent.h>
+
+/* ════════════════════════════════════════════════════════════════════
+ * Transcript safety limits (hermes_state.py:_configured_transcript_limit
+ * and the resolved_* wrappers). Config-resolved at call time.
+ * ════════════════════════════════════════════════════════════════════ */
+
+#define HERMES_STATE_MAX_SAFE_RESUME 20000
+#define HERMES_STATE_MAX_SAFE_EXPORT 20000
+
+static int hermes_state_transcript_limit(const char *key, int fallback) {
+    /* Python: load_config_readonly().get("sessions").get(key); 0 disables.
+     * Mirror faithfully: any config subsystem failure returns fallback. */
+    json_t *cfg = config_py_load_config_impl(0);
+    if (!cfg) return fallback;
+    json_t *sessions = json_obj_get(cfg, "sessions");
+    int result = fallback;
+    if (sessions) {
+        json_t *val = json_obj_get(sessions, key);
+        if (val && val->type == JSON_NUMBER) {
+            int limit = (int)val->num_val;
+            result = (limit >= 0) ? limit : fallback;
+        } else if (val && val->type == JSON_STRING) {
+            long parsed = strtol(val->str_val, NULL, 10);
+            int limit = (int)parsed;
+            result = (limit >= 0) ? limit : fallback;
+        }
+    }
+    json_free(cfg);
+    return result;
+}
+
+/* PoP: _configured_transcript_limit @ hermes_state.py:_configured_transcript_limit */
+int hermes_state_configured_transcript_limit(const char *key, int fallback) {
+    return hermes_state_transcript_limit(key, fallback);
+}
+
+/* PoP: resolved_max_resume_messages @ hermes_state.py:resolved_max_resume_messages */
+int hermes_state_resolved_max_resume_messages(void) {
+    return hermes_state_transcript_limit("max_resume_messages", HERMES_STATE_MAX_SAFE_RESUME);
+}
+
+/* PoP: resolved_max_export_messages @ hermes_state.py:resolved_max_export_messages */
+int hermes_state_resolved_max_export_messages(void) {
+    return hermes_state_transcript_limit("max_export_messages", HERMES_STATE_MAX_SAFE_EXPORT);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+ * State-db live-system guard (hermes_state.py:_real_platform_state_root,
+ * _running_under_pytest, _production_state_roots, _is_production_state_db,
+ * _ensure_test_isolation).
+ * ════════════════════════════════════════════════════════════════════ */
+
+/* Python: os.path.expanduser("~") reads HOME env (not Path.home, which tests
+ * monkeypatch). */
+static int hermes_state_expanduser(const char *in, char *out, size_t sz) {
+    if (!in) return -1;
+    if (in[0] == '~') {
+        const char *home = getenv("HOME");
+        if (home && home[0])
+            snprintf(out, sz, "%s%s", home, in + 1);
+        else
+            snprintf(out, sz, "%s", in + 1);
+    } else {
+        snprintf(out, sz, "%s", in);
+    }
+    return 0;
+}
+
+/* PoP: _real_platform_state_root @ hermes_state.py:_real_platform_state_root */
+char *hermes_state_real_platform_state_root(void) {
+    char home[4096];
+    char expanded[4096];
+    char root[4096];
+    if (hermes_state_expanduser("~", home, sizeof(home)) != 0)
+        return NULL;
+    /* Non-Windows: ~/.hermes */
+    snprintf(expanded, sizeof(expanded), "%s/.hermes", home);
+    if (realpath(expanded, root))
+        return strdup(root);
+    return strdup(expanded);
+}
+
+/* PoP: _running_under_pytest @ hermes_state.py:_running_under_pytest */
+bool hermes_state_running_under_pytest(void) {
+    const char *t = getenv("PYTEST_CURRENT_TEST");
+    if (t && t[0]) return true;
+    const char *v = getenv("PYTEST_VERSION");
+    if (v && v[0]) return true;
+    return false;
+}
+
+/* PoP: _production_state_roots @ hermes_state.py:_production_state_roots */
+static void hermes_state_production_state_roots(char roots[][4096], int *out_n, int cap) {
+    int n = 0;
+    char *real = hermes_state_real_platform_state_root();
+    if (real) {
+        if (n < cap) snprintf(roots[n++], 4096, "%s", real);
+        free(real);
+    }
+    /* _STATE_DB_GUARD_EXTRA_DENY_ROOTS is empty in upstream. */
+    *out_n = n;
+}
+
+/* PoP: _is_production_state_db @ hermes_state.py:_is_production_state_db */
+bool hermes_state_is_production_state_db(const char *resolved, const char *root) {
+    size_t rl = strlen(root);
+    if (strncmp(resolved, root, rl) != 0)
+        return false;
+    /* <root>/state.db — root is parent of resolved. */
+    if (resolved[rl] == '/') {
+        const char *rest = resolved + rl + 1;
+        if (strchr(rest, '/') == NULL)
+            return true;   /* direct child file */
+        /* profiles/<name>/<file> — exactly 2 components deep. */
+        if (strncmp(rest, "profiles/", 9) == 0) {
+            const char *prof = rest + 9;
+            const char *slash = strchr(prof, '/');
+            if (slash && strchr(slash + 1, '/') == NULL)
+                return true;
+        }
+    }
+    return false;
+}
+
+/* PoP: _ensure_test_isolation @ hermes_state.py:_ensure_test_isolation */
+int hermes_state_ensure_test_isolation(const char *db_path) {
+    /* _STATE_DB_GUARD_BYPASS = False; only active under pytest. */
+    if (!hermes_state_running_under_pytest())
+        return 0;
+    if (!db_path || !db_path[0])
+        return 0;
+    char resolved[4096];
+    if (!realpath(db_path, resolved))
+        snprintf(resolved, sizeof(resolved), "%s", db_path);
+    char roots[8][4096];
+    int n = 0;
+    hermes_state_production_state_roots(roots, &n, 8);
+    for (int i = 0; i < n; i++) {
+        if (hermes_state_is_production_state_db(resolved, roots[i]))
+            return -1;
+    }
+    return 0;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+ * Stale tool-call marker repair (hermes_state.py:_is_stale_tool_call_marker
+ * and _strip_stale_tool_call_markers). Clears persisted bare "[marker]"
+ * assistant content left by pre-#78148 tool-call turns.
+ * ════════════════════════════════════════════════════════════════════ */
+
+/* Python: ^\[[A-Za-z_][A-Za-z0-9_.-]*\]$ */
+static bool hermes_state_stale_marker_match(const char *s) {
+    if (!s) return false;
+    const char *p = s;
+    if (*p != '[') return false;
+    p++;
+    if (!(*p == '_' || (*p >= 'A' && *p <= 'Z') || (*p >= 'a' && *p <= 'z')))
+        return false;
+    p++;
+    while (*p && *p != ']') {
+        char c = *p;
+        if (!(c == '_' || c == '.' || c == '-'
+              || (c >= '0' && c <= '9')
+              || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')))
+            return false;
+        p++;
+    }
+    if (*p != ']') return false;
+    return p[1] == '\0';
+}
+
+/* PoP: _is_stale_tool_call_marker_message @ hermes_state.py:_is_stale_tool_call_marker_message */
+bool hermes_state_is_stale_tool_call_marker(const json_t *msg) {
+    if (!msg || msg->type != JSON_OBJECT) return false;
+    json_t *role = json_obj_get(msg, "role");
+    if (!role || role->type != JSON_STRING || strcmp(role->str_val, "assistant") != 0)
+        return false;
+    json_t *tool_calls = json_obj_get(msg, "tool_calls");
+    if (!tool_calls || tool_calls->type != JSON_ARRAY)
+        return false;
+    json_t *content = json_obj_get(msg, "content");
+    if (!content || content->type != JSON_STRING)
+        return false;
+    /* Python: content.strip() then fullmatch. */
+    const char *c = content->str_val;
+    while (*c == ' ' || *c == '\t' || *c == '\n' || *c == '\r') c++;
+    return hermes_state_stale_marker_match(c);
+}
+
+/* PoP: _strip_stale_tool_call_markers @ hermes_state.py:_strip_stale_tool_call_markers */
+int hermes_state_strip_stale_tool_call_markers(json_t *messages) {
+    if (!messages || messages->type != JSON_ARRAY) return 0;
+    int repaired = 0;
+    for (int i = 0; i < (int)messages->c.count; i++) {
+        json_t *msg = messages->c.items[i];
+        if (hermes_state_is_stale_tool_call_marker(msg)) {
+            json_t *empty = json_string("");
+            json_set(msg, "content", empty);
+            repaired++;
+        }
+    }
+    return repaired;
+}
+
+/* ════════════════════════════════════════════════════════════════════
+ * Persistence-error classification (hermes_state.py:is_disk_full_error,
+ * classify_persistence_error) and DB-holder counting (count_db_holders).
+ * ════════════════════════════════════════════════════════════════════ */
+
+/* Python: _DISK_FULL_MARKERS — disk-full / ENOSPC markers. */
+static const char *const HERMES_STATE_DISK_FULL_MARKERS[] = {
+    "no space left on device",
+    "not enough space",
+    "database or disk is full",
+    "disk full",
+    "full disk",
+    "enospc",
+    NULL
+};
+
+/* PoP: is_disk_full_error @ hermes_state.py:is_disk_full_error */
+bool hermes_state_is_disk_full_error(const char *err_str) {
+    if (!err_str || !err_str[0]) return false;
+    char lowered[512];
+    size_t i = 0;
+    for (; err_str[i] && i < sizeof(lowered) - 1; i++)
+        lowered[i] = (char)tolower((unsigned char)err_str[i]);
+    lowered[i] = '\0';
+    for (int m = 0; HERMES_STATE_DISK_FULL_MARKERS[m]; m++)
+        if (strstr(lowered, HERMES_STATE_DISK_FULL_MARKERS[m]))
+            return true;
+    return false;
+}
+
+/* PoP: classify_persistence_error @ hermes_state.py:classify_persistence_error */
+const char *hermes_state_classify_persistence_error(const char *err_str) {
+    if (!err_str || !err_str[0])
+        return "unknown";
+    char lowered[512];
+    size_t i = 0;
+    for (; err_str[i] && i < sizeof(lowered) - 1; i++)
+        lowered[i] = (char)tolower((unsigned char)err_str[i]);
+    lowered[i] = '\0';
+    if (strstr(lowered, "locked") || strstr(lowered, "busy")
+        || strstr(lowered, "being compressed")
+        || strstr(lowered, "compression lease"))
+        return "locked";
+    if (hermes_state_is_disk_full_error(lowered)
+        || strstr(lowered, "disk")
+        || strstr(lowered, "readonly")
+        || strstr(lowered, "read-only"))
+        return "disk";
+    return "unknown";
+}
+
+/* PoP: count_db_holders @ hermes_state.py:count_db_holders */
+int hermes_state_count_db_holders(const char *db_path) {
+    if (!db_path || !db_path[0]) return -1;
+    char target[4096];
+    if (!realpath(db_path, target))
+        return -1;
+    int holders = 0;
+    DIR *proc = opendir("/proc");
+    if (!proc) return -1;
+    struct dirent *ent;
+    while ((ent = readdir(proc)) != NULL) {
+        if (ent->d_name[0] < '0' || ent->d_name[0] > '9')
+            continue;
+        char fd_dir[512];
+        snprintf(fd_dir, sizeof(fd_dir), "/proc/%s/fd", ent->d_name);
+        DIR *fd = opendir(fd_dir);
+        if (!fd) continue;   /* process gone or not ours */
+        struct dirent *fe;
+        int found = 0;
+        while (!found && (fe = readdir(fd)) != NULL) {
+            char link[4096];
+            char fdpath[600];
+            snprintf(fdpath, sizeof(fdpath), "%s/%s", fd_dir, fe->d_name);
+            ssize_t n = readlink(fdpath, link, sizeof(link) - 1);
+            if (n > 0) {
+                link[n] = '\0';
+                if (strcmp(link, target) == 0)
+                    found = 1;
+            }
+        }
+        closedir(fd);
+        if (found) holders++;
+    }
+    closedir(proc);
+    return holders;
+}
 
 /* ════════════════════════════════════════════════════════════════════
  * _default_db_path / apply_database_pragmas

@@ -61,6 +61,8 @@ char *bsr_resolve(const char *config_yaml) {
 
 /* PoP: _reset_for_tests @ agent/browser_registry.py:_reset_for_tests */
 int bsr_reset_for_tests(void) {
-    printf("browser provider registry cleared (test-only)\n");
+    /* Python: browser provider registry _reset_for_tests(). */
+    extern void browser_registry_reset(void);
+    browser_registry_reset();
     return 0;
 }

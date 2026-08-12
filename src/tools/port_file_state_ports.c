@@ -34,8 +34,9 @@ int fst_lock_path(const char *path) {
 
 /* PoP: clear @ tools/file_state.py:clear */
 int fst_clear(void) {
-    /* Python: test-only reset. */
-    printf("file-state reset (test-only)\n");
+    /* Python: test-only reset. Delegate to real file-state engine. */
+    extern void fs_clear(void);
+    fs_clear();
     return 0;
 }
 

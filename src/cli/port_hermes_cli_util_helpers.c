@@ -18,6 +18,10 @@
 #include "shared_metrics.h"
 #include "hermes_shared_metrics_contract.h"
 #include "port_agent_relay_runtime.h"
+#include "skill_bundles.h"
+#include "pet.h"
+#include "projects_db.h"
+#include "hermes_gateway_webhook.h"
 #include <strings.h>  /* strcasecmp */
 
 /* hermes_state gap functions (defined in hermes_state_gaps.c, no public header) */
@@ -353,7 +357,19 @@ char *hcli_read_plugin_manifest(const char *plugin_dir)
 /* PoP: _cmd_list @ hermes_cli/bundles.py:_cmd_list */
 int hcli_bundles_cmd_list(const char *bundles_dir)
 {
+    /* Python: list skill bundles + print. Delegate to real registry scan. */
     (void)bundles_dir;
+    extern void skill_bundles_print(const skill_bundle_registry_t *reg);
+    extern int skill_bundles_scan(skill_bundle_registry_t *reg);
+    skill_bundle_registry_t reg;
+    memset(&reg, 0, sizeof(reg));
+    int n = skill_bundles_scan(&reg);
+    if (n <= 0) {
+        printf("No bundles installed yet. Create one with:\n");
+        printf("  slermes bundles create <name> --skill skill1 --skill skill2\n");
+        return 0;
+    }
+    skill_bundles_print(&reg);
     return 0;
 }
 
@@ -438,6 +454,22 @@ int hcli_dash_tickets_reset(void)
 /* PoP: _cmd_list @ hermes_cli/webhook.py:_cmd_list */
 int hcli_webhook_cmd_list(void)
 {
+    /* Python: list dynamic webhook subscriptions. */
+    int count = webhook_subscription_count();
+    if (count <= 0) {
+        printf("  No dynamic webhook subscriptions.\n");
+        printf("  Create one with: slermes webhook subscribe <name>\n");
+        return 0;
+    }
+    printf("\n  %d webhook subscription(s):\n\n", count);
+    webhook_subscription_t subs[64];
+    int n = webhook_subscription_list(subs, 64);
+    for (int i = 0; i < n; i++) {
+        printf("  #%d: %s\n", i, subs[i].endpoint);
+        if (subs[i].max_retries > 0)
+            printf("      retries=%d backoff=%dms\n",
+                   subs[i].max_retries, subs[i].backoff_ms);
+    }
     return 0;
 }
 
@@ -559,19 +591,77 @@ int hcli_opw_cmd_status(void)
 /* PoP: _cmd_list @ hermes_cli/pets.py:_cmd_list */
 int hcli_pets_cmd_list(bool installed)
 {
+    /* Python: list gallery pets, or installed ones with --installed. */
     (void)installed;
+    pet_installed_t pets[16];
+    int n = pet_installed_pets(pets, 16);
+    if (n <= 0) {
+        printf("No pets installed. Try: slermes pets install boba\n");
+        return 0;
+    }
+    printf("Installed pets (%d):\n", n);
+    for (int i = 0; i < n; i++)
+        printf("  %-24s %s\n", pets[i].slug, pets[i].display_name);
     return 0;
 }
 
 /* PoP: _cmd_doctor @ hermes_cli/pets.py:_cmd_doctor */
 int hcli_pets_cmd_doctor(void)
 {
+    /* Python: report install state, active pet, config, terminal capability. */
+    extern bool pet_is_enabled(void);
+    extern pet_render_mode_t pet_resolve_mode(const char *configured, bool is_tty);
+    extern pet_render_mode_t pet_detect_terminal_graphics(void);
+
+    printf("petdex doctor\n");
+    printf("  pets dir:        %s\n", pet_pets_dir());
+
+    pet_installed_t pets[16];
+    int n = pet_installed_pets(pets, 16);
+    printf("  installed pets:  %d\n", n);
+    pet_installed_t active;
+    bool has_active = pet_resolve_active_pet(NULL, &active);
+    if (has_active)
+        printf("  active pet:      %s\n", active.slug);
+    else
+        printf("  active pet:      (none)\n");
+
+    printf("  enabled:         %s\n", pet_is_enabled() ? "true" : "false");
+    pet_render_mode_t mode = pet_resolve_mode("auto", isatty(1));
+    static const char *names[] = {
+        "auto", "kitty", "iterm", "sixel", "unicode", "off"
+    };
+    printf("  render mode:     %s\n",
+           mode >= 0 && mode < PET_MODE_COUNT ? names[mode] : "auto");
+    (void)pet_detect_terminal_graphics();
     return 0;
 }
 
 /* PoP: _cmd_list @ hermes_cli/projects_cmd.py:_cmd_list */
 int hcli_projects_cmd_list(void)
 {
+    /* Python: list saved projects. */
+    extern projects_db_t *projects_db_connect(const char *db_dir);
+    extern void projects_db_close(projects_db_t *db);
+    extern void projects_db_free_projects(project_t *arr, int n);
+    const char *root = slermes_home();
+    projects_db_t *db = projects_db_connect(root);
+    if (!db) {
+        printf("No projects saved yet.\n");
+        return 0;
+    }
+    int count = 0;
+    project_t *projs = projects_db_list_projects(db, false, &count);
+    if (count <= 0 || !projs) {
+        printf("No projects saved yet.\n");
+        projects_db_close(db);
+        return 0;
+    }
+    printf("Projects (%d):\n", count);
+    for (int i = 0; i < count; i++)
+        printf("  %s\n", projs[i].name);
+    projects_db_free_projects(projs, count);
+    projects_db_close(db);
     return 0;
 }
 

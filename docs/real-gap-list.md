@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-12T00:54:35Z from `live_parity_scan.json` by `make parity-walkway`. **748 REAL_GAP across 127 modules** (of 13,359 total functions).
+> Generated 2026-08-12T01:38:54Z from `live_parity_scan.json` by `make parity-walkway`. **736 REAL_GAP across 127 modules** (of 13,359 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -799,23 +799,11 @@
 - _start_parent_death_watchdog (function)
 - _demo (function)
 
-### hermes_state.py (39 gaps)
+### hermes_state.py (27 gaps)
 
-- _configured_transcript_limit (function)
-- resolved_max_resume_messages (function)
-- resolved_max_export_messages (function)
-- _real_platform_state_root (function)
-- _running_under_pytest (function)
-- _production_state_roots (function)
-- _is_production_state_db (function)
-- _ensure_test_isolation (function)
-- _is_stale_tool_call_marker_message (function)
-- _strip_stale_tool_call_markers (function)
 - _set_journal_mode_no_wait (function)
 - _wal_reset_repair_hint (function)
-- classify_persistence_error (function)
 - collect_state_db_stats (function)
-- count_db_holders (function)
 - SessionDB._discard_partial_read_conn (method)
 - SessionDB._close_read_conn (method)
 - SessionDB._checkout_read_conn (method)

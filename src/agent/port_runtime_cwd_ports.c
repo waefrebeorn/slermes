@@ -20,23 +20,30 @@ static char *lowerdup(const char *s) {
 }
 
 /* PoP: set_session_cwd @ agent/runtime_cwd.py:set_session_cwd */
+/* Real engine: set_session_cwd / clear_session_cwd / resolve_context_cwd
+ * live in src/agent/prompt_builder.c (declared in hermes_system_prompt.h). */
+extern void set_session_cwd(const char *cwd);
+extern void clear_session_cwd(void);
+extern const char *resolve_context_cwd(void);
+
 char *rcw_set_session_cwd(const char *cwd) {
     /* Python: pin logical cwd. */
     if (!cwd) return strdup("");
+    set_session_cwd(cwd);
     return strdup(cwd);
 }
 
 /* PoP: clear_session_cwd @ agent/runtime_cwd.py:clear_session_cwd */
 int rcw_clear_session_cwd(void) {
-    printf("session cwd cleared\n");
+    clear_session_cwd();
     return 0;
 }
 
 /* PoP: _session_cwd_override @ agent/runtime_cwd.py:_session_cwd_override */
 char *rcw_session_cwd_override(void) {
     /* Python: current override or "". */
-    printf("session cwd override read\n");
-    return strdup("");
+    const char *cur = resolve_context_cwd();
+    return strdup(cur ? cur : "");
 }
 
 /* PoP: resolve_agent_cwd @ agent/runtime_cwd.py:resolve_agent_cwd */

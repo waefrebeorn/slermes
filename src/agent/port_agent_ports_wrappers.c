@@ -2980,7 +2980,8 @@ int agent_battery_read_battery(const char *arg) {
 int agent_battery_clear_cache(const char *arg) {
     /* Python test hook: drop the memoised reading. */
     (void)arg;
-    printf("battery cache cleared\n");
+    extern void battery_clear_cache(void);
+    battery_clear_cache();
     return 0;
 }
 
