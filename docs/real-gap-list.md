@@ -1,6 +1,6 @@
 # Slermes REAL_GAP List — Function Level (live scanner)
 
-> Generated 2026-08-12T05:50:11Z from `live_parity_scan.json` by `make parity-walkway`. **642 REAL_GAP across 123 modules** (of 13,359 total functions).
+> Generated 2026-08-12T06:17:49Z from `live_parity_scan.json` by `make parity-walkway`. **624 REAL_GAP across 122 modules** (of 13,359 total functions).
 
 > This is the forward work plan. Each entry is a Python function not yet ported to C. Close by implementing real C + a single-line `/* PoP: fn @ module.py:fn */` annotation (see slermes-gap-closure skill). Never hand-edit — regenerate via the scanner.
 
@@ -611,25 +611,6 @@
 - _cache_entry_valid (function)
 - cached_fetch_api_models (function)
 
-### hermes_cli/observability/relay_shared_metrics.py (16 gaps)
-
-- _Runtime.record_client_active (method)
-- _Runtime._emit_client_active (method)
-- _Runtime.record_model_call_error (method)
-- _Runtime.start_tool_call (method)
-- _Runtime.record_approval (method)
-- _Runtime.record_skill_lifecycle (method)
-- _Runtime._tool_call_identity (method)
-- _Runtime._tool_call_identities_are_compatible (method)
-- _Runtime._event_matches_task_turn (method)
-- _Runtime._approval_task (method)
-- _Runtime._open_tool_call (method)
-- _Runtime._finish_tool_call (method)
-- _Runtime._end_pending_tool_calls (method)
-- _Runtime._new_model_call_key (method)
-- _Runtime._existing_model_call_key (method)
-- _with_runtime_toolset (function)
-
 ### hermes_cli/observability/shared_metrics.py (6 gaps)
 
 - SharedMetricsStore.record_client_active (method)
@@ -639,11 +620,9 @@
 - SharedMetricsStore._migrate_v1_counter_aggregates (method)
 - SharedMetricsStore._parse_state_timestamp (method)
 
-### hermes_cli/observability/shared_metrics_contract.py (3 gaps)
+### hermes_cli/observability/shared_metrics_contract.py (1 gaps)
 
 - _event_metadata_is_valid (function)
-- skill_lifecycle_fields (function)
-- skill_load_fields (function)
 
 ### hermes_cli/personality.py (1 gaps)
 

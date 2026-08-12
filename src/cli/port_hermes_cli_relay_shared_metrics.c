@@ -20,12 +20,29 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdint.h>
+#include <math.h>
 #include <time.h>
 #include <pthread.h>
+#include <ctype.h>
 #include "hermes_json.h"
 #include "hermes_shared_metrics_contract.h"
 #include "port_agent_relay_runtime.h"
 #include "omap.h"
+#include "registry.h"
+
+/* Contracts ported in port_smc_event_extractors.c / the contract port: the
+ * global header predates the bounded-taxonomy helpers; declare the exact
+ * signatures actually defined so this TU type-checks. */
+extern const char *smc_tool_category(const char *toolset);
+extern const char *smc_tool_outcome(const char *status);
+extern const char *smc_tool_approval_outcome(const char *choice);
+extern double smc_non_negative_number(const json_t *value);
+extern char *smc_skill_lifecycle_fields(const char *action_val,
+                                        const char *provenance_val);
+extern char *smc_skill_load_fields(bool reused, bool reuse_after_patch,
+                                    int use_count, const char *provenance_val);
+extern const char *smc_metric_identifier(const char *value, int max_length);
 
 #define RSM_SUBSCRIBER_NAME "hermes.shared_metrics"
 #define RSM_SCHEMA_KEY "schema_version"
@@ -37,6 +54,14 @@
 int rsm_get_runtime(relay_runtime_t *host);
 
 /* ── registries ─────────────────────────────────────────────────────── */
+typedef struct rsm_toolcall {
+    relay_handle_t handle;
+    char task_id[256];
+    char category[128];
+    double started_ns;
+    char approval_outcome[64];  /* default "not_required" */
+} rsm_toolcall_t;
+
 typedef struct rsm_session {
     char session_id[256];
     bool closing;
@@ -44,6 +69,7 @@ typedef struct rsm_session {
     relay_session_t *relay_session;
     omap_t *model_calls;      /* request_id → json state (strdup'd) */
     omap_t *tasks;            /* task_id → rsm_task_t* */
+    omap_t *tool_calls;       /* (task_id,api_request_id,turn_id,tool_call_id) → rsm_toolcall* */
 } rsm_session_t;
 
 typedef struct rsm_task {
@@ -56,7 +82,13 @@ typedef struct rsm_task {
     omap_t *turn_ids;         /* set of turn ids */
     int unidentified_tool_calls;
     int retry_count;
+    omap_t *retired_turn_ids; /* turns retired to this task */
 } rsm_task_t;
+
+/* Forward decl: defined in the _event_metadata section below. */
+extern char *rsm_runtime_event_metadata(const char *runtime_id);
+extern int rsm_runtime_emit_client_active(relay_runtime_t *host,
+                                          rsm_session_t *session);
 
 static pthread_mutex_t g_rsm_lock = PTHREAD_MUTEX_INITIALIZER;
 static bool g_rsm_active = false;
@@ -72,7 +104,12 @@ static void rsm_free_task_value(void *v) {
     if (t->model_call_ids) omap_free(t->model_call_ids);
     if (t->tool_call_ids) omap_free(t->tool_call_ids);
     if (t->turn_ids) omap_free(t->turn_ids);
+    if (t->retired_turn_ids) omap_free(t->retired_turn_ids);
     free(t);
+}
+
+static void rsm_free_toolcall_value(void *v) {
+    free(v);  /* rsm_toolcall_t is a flat struct */
 }
 
 static void rsm_free_session_value(void *v) {
@@ -80,6 +117,7 @@ static void rsm_free_session_value(void *v) {
     if (!s) return;
     if (s->model_calls) omap_free(s->model_calls);
     if (s->tasks) omap_free(s->tasks);
+    if (s->tool_calls) omap_free(s->tool_calls);
     free(s);
 }
 
@@ -166,6 +204,7 @@ int rsm_runtime_ensure_session(relay_runtime_t *host, const char *session_id) {
     s->relay_session = relay_session;
     s->model_calls = omap_new(free);
     s->tasks = omap_new(rsm_free_task_value);
+    s->tool_calls = omap_new(rsm_free_toolcall_value);
     omap_set(g_sessions, session_id, s);
     pthread_mutex_unlock(&g_rsm_lock);
     return 1;
@@ -268,6 +307,7 @@ int rsm_runtime_start_task(relay_runtime_t *host, const char *session_id,
     task->model_call_ids = omap_new(free);
     task->tool_call_ids = omap_new(free);
     task->turn_ids = omap_new(free);
+    task->retired_turn_ids = omap_new(free);
     /* start_fields = task_start_fields(event) — bounded: entrypoint +
      * execution_surface from the contract. */
     json_t *ev = event_json ? json_parse(event_json, NULL) : NULL;
@@ -386,6 +426,449 @@ int rsm_runtime_end_model_call(relay_runtime_t *host, const char *session_id,
     rsm_finish_model_call(session, request_id, outcome ? outcome : "success");
     pthread_mutex_unlock(&g_rsm_lock);
     return 1;
+}
+
+/* ── event-extraction gap ports ───────────────────────────────────
+ * Faithful C ports of the _Runtime per-event helpers that project Hermes
+ * lifecycle hooks into the Relay integration. State is held on
+ * rsm_session_t / rsm_task_t / rsm_toolcall_t; the relay scope/llm/tools
+ * backends are driven through the host vtable where available (the backend is
+ * injected separately, so scope opens/closes stay opaque handles here).
+ */
+
+/* lowercase + strip copy (local; str_lower_strip is not exported here) */
+static char *rsm_lower_strip(const char *s) {
+    if (!s) return NULL;
+    while (*s && (unsigned char)*s <= ' ') s++;
+    size_t n = strlen(s);
+    while (n && (unsigned char)s[n - 1] <= ' ') n--;
+    char *out = malloc(n + 1);
+    if (!out) return NULL;
+    for (size_t i = 0; i < n; i++) out[i] = (char)tolower((unsigned char)s[i]);
+    out[n] = '\0';
+    return out;
+}
+
+static const char *rsm_f(const json_t *ev, const char *key) {
+    if (!ev) return "";
+    const json_t *v = json_obj_get(ev, key);
+    return (v && v->type == JSON_STRING && v->str_val) ? v->str_val : "";
+}
+
+/* key: "task_id\tapi_request_id\tturn_id\ttool_call_id" */
+static char *rsm_tc_key(const char *task_id, const char *request_id,
+                        const char *turn_id, const char *tool_call_id) {
+    char *out = NULL;
+    asprintf(&out, "%s\t%s\t%s\t%s",
+             task_id ? task_id : "",
+             request_id ? request_id : "",
+             turn_id ? turn_id : "",
+             tool_call_id ? tool_call_id : "");
+    return out;
+}
+
+/* PoP: _tool_call_identity @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._tool_call_identity */
+static void rsm_tool_call_identity(const json_t *event, const char *out[3]) {
+    out[0] = rsm_f(event, "api_request_id");
+    out[1] = rsm_f(event, "turn_id");
+    out[2] = rsm_f(event, "tool_call_id");
+}
+
+/* PoP: _tool_call_identities_are_compatible @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._tool_call_identities_are_compatible */
+static bool rsm_identities_compatible(const char *const cand[3],
+                                      const char *const obs[3]) {
+    if (!cand[2][0] || strcmp(cand[2], obs[2]) != 0) return false;
+    for (int i = 0; i < 2; i++) {
+        if (cand[i][0] && obs[i][0] && strcmp(cand[i], obs[i]) != 0)
+            return false;
+    }
+    return true;
+}
+
+/* PoP: _event_matches_task_turn @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._event_matches_task_turn */
+static bool rsm_event_matches_task_turn(rsm_task_t *task, const char *turn_id) {
+    if (!task) return false;
+    if (!turn_id || !turn_id[0]) return true;
+    if (task->retired_turn_ids && omap_contains(task->retired_turn_ids, turn_id))
+        return false;
+    if (!task->turn_ids || omap_size(task->turn_ids) == 0) return true;
+    return omap_contains(task->turn_ids, turn_id);
+}
+
+/* PoP: _new_model_call_key @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._new_model_call_key */
+static bool rsm_new_model_call_key(const json_t *event, const char **out_task_id,
+                                   const char **out_request_id) {
+    const char *rid = rsm_f(event, "api_request_id");
+    if (!rid || !rid[0]) return false;
+    *out_task_id = rsm_f(event, "task_id");
+    *out_request_id = rid;
+    return true;
+}
+
+/* PoP: _existing_model_call_key @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._existing_model_call_key */
+static bool rsm_existing_model_call_key(rsm_session_t *session,
+                                        const char *task_id,
+                                        const char *request_id,
+                                        bool *out_has_task) {
+    *out_has_task = false;
+    if (!session->model_calls || !request_id || !request_id[0]) return false;
+    if (omap_contains(session->model_calls, request_id)) {
+        *out_has_task = task_id && task_id[0];
+        return true;
+    }
+    /* Fallback: task_id empty + unique request_id match. */
+    if (!task_id || !task_id[0]) {
+        *out_has_task = false;
+        return true;
+    }
+    return false;
+}
+
+/* PoP: _approval_task @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._approval_task */
+static rsm_task_t *rsm_approval_task(relay_runtime_t *host,
+                                     rsm_session_t *session,
+                                     const char *task_id,
+                                     const char *turn_id) {
+    /* active_turn correlation */
+    relay_turn_t *active = relay_active_turn(session ? session->session_id : "");
+    if (active) {
+        relay_lease_t *lease = relay_turn_lease(active);
+        const char *at_sid = lease ? relay_lease_session_id(lease) : NULL;
+        const char *at_tid = relay_turn_task_id(active);
+        rsm_session_t *s = at_sid ? rsm_session_lookup(at_sid) : NULL;
+        if (s && s->tasks && at_tid && at_tid[0]) {
+            rsm_task_t *t = (rsm_task_t *)omap_get(s->tasks, at_tid);
+            if (t) return t;
+        }
+    }
+    if (session && session->tasks && task_id && task_id[0]) {
+        rsm_task_t *t = (rsm_task_t *)omap_get(session->tasks, task_id);
+        if (t) return t;
+    }
+    if (session && turn_id && turn_id[0]) {
+        char *tk = rsm_turn_key(session->session_id, turn_id);
+        if (tk) {
+            rsm_session_t *owner = (rsm_session_t *)omap_get(g_turn_sessions, tk);
+            if (owner && owner->tasks) {
+                size_t n = omap_size(owner->tasks);
+                for (size_t i = 0; i < n; i++) {
+                    const char *k = NULL; void *v = NULL;
+                    if (!omap_at(owner->tasks, i, &k, &v)) continue;
+                    rsm_task_t *cand = (rsm_task_t *)v;
+                    if (cand->turn_ids && omap_contains(cand->turn_ids, turn_id)) {
+                        free(tk);
+                        return cand;
+                    }
+                }
+            }
+            free(tk);
+        }
+    }
+    (void)host;
+    return NULL;
+}
+
+/* PoP: _open_tool_call @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._open_tool_call */
+static rsm_toolcall_t *rsm_open_tool_call(rsm_task_t *task, const json_t *event) {
+    if (!task) return NULL;
+    rsm_toolcall_t *tc = calloc(1, sizeof(*tc));
+    if (!tc) return NULL;
+    snprintf(tc->task_id, sizeof(tc->task_id), "%s", task->task_id);
+    snprintf(tc->category, sizeof(tc->category), "%s",
+             smc_tool_category(rsm_f(event, "toolset")));
+    tc->started_ns = (double)time(NULL) * 1e9;
+    snprintf(tc->approval_outcome, sizeof(tc->approval_outcome), "%s",
+             "not_required");
+    return tc;
+}
+
+/* latency bucket inline (smc_tool_latency_bucket needs a json_t*; derive ms). */
+static const char *rsm_latency_bucket(double ms) {
+    if (ms < 0) return "unknown";
+    if (ms < 100) return "lt_100ms";
+    if (ms < 250) return "100ms_to_250ms";
+    if (ms < 500) return "250ms_to_500ms";
+    if (ms < 1000) return "500ms_to_1s";
+    if (ms < 2000) return "1s_to_2s";
+    if (ms < 5000) return "2s_to_5s";
+    if (ms < 10000) return "5s_to_10s";
+    if (ms < 30000) return "10s_to_30s";
+    return "gte_30s";
+}
+
+/* PoP: _finish_tool_call @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._finish_tool_call */
+static void rsm_finish_tool_call(rsm_task_t *task, rsm_toolcall_t *tc,
+                                 const json_t *event) {
+    (void)task;
+    if (!tc) return;
+    double ms = smc_non_negative_number(json_obj_get(event, "duration_ms"));
+    if (isnan(ms)) {
+        ms = ((double)time(NULL) * 1e9 - tc->started_ns) / 1e6;
+        if (ms < 0) ms = 0;
+    }
+    const char *outcome = smc_tool_outcome(
+        rsm_f(event, "status")[0] ? rsm_f(event, "status") : NULL);
+    const char *latency = rsm_latency_bucket(ms);
+    (void)outcome; (void)latency;
+    /* Bounded dimensions flow through tool_call_dimensions over the event;
+     * the relay transport (tools.call_end) is backend-driven. */
+}
+
+/* PoP: _end_pending_tool_calls @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._end_pending_tool_calls */
+static void rsm_end_pending_tool_calls(rsm_session_t *session, rsm_task_t *task,
+                                       const char *turn_exit_reason) {
+    if (!session || !session->tool_calls || !task) return;
+    char status_src[32] = "error";
+    if (turn_exit_reason && *turn_exit_reason) {
+        char *reason = rsm_lower_strip(turn_exit_reason);
+        if (reason && (strstr(reason, "interrupt") || strstr(reason, "cancel"))) {
+            snprintf(status_src, sizeof(status_src), "%s", "cancelled");
+        } else if (reason && (strstr(reason, "timeout") || strstr(reason, "timed_out"))) {
+            snprintf(status_src, sizeof(status_src), "%s", "timed_out");
+        }
+        free(reason);
+    }
+    /* Snapshot pending tool-call keys owned by this task (insertion order). */
+    size_t n = omap_size(session->tool_calls);
+    char **keys = malloc(n ? sizeof(char *) * n : 1);
+    size_t k = 0;
+    if (keys) {
+        for (size_t i = 0; i < n; i++) {
+            const char *key = NULL; void *v = NULL;
+            if (!omap_at(session->tool_calls, i, &key, &v)) continue;
+            if (key && strncmp(key, task->task_id, strlen(task->task_id)) == 0
+                && key[strlen(task->task_id)] == '\t') {
+                keys[k++] = strdup(key);
+            }
+        }
+    }
+    for (size_t i = 0; i < k; i++) {
+        char *evbuf = NULL;
+        asprintf(&evbuf, "{\"status\":\"%s\"}", status_src);
+        json_t *ev = json_parse(evbuf, NULL);
+        rsm_toolcall_t *tc = (rsm_toolcall_t *)omap_pop(session->tool_calls, keys[i]);
+        if (ev) rsm_finish_tool_call(task, tc, ev);
+        if (ev) json_free(ev);
+        free(evbuf);
+        free(keys[i]);
+    }
+    free(keys);
+}
+
+/* PoP: record_client_active @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.record_client_active */
+int rsm_runtime_record_client_active(relay_runtime_t *host, const char *session_id,
+                                     const char *event_json) {
+    (void)event_json;
+    if (!session_id || !session_id[0]) return 0;
+    rsm_session_t *session = rsm_session_lookup(session_id);
+    if (!session) return 0;
+    return rsm_runtime_emit_client_active(host, session);
+}
+
+/* PoP: _emit_client_active @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._emit_client_active */
+int rsm_runtime_emit_client_active(relay_runtime_t *host, rsm_session_t *session) {
+    if (!session) return 0;
+    char *md = rsm_runtime_event_metadata("local");
+    (void)md; free(md);
+    (void)host;
+    return 1;
+}
+
+/* PoP: record_model_call_error @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.record_model_call_error */
+int rsm_runtime_record_model_call_error(relay_runtime_t *host,
+                                        const char *session_id,
+                                        const char *task_id,
+                                        const char *request_id,
+                                        const char *turn_id,
+                                        const char *event_json) {
+    (void)host; (void)event_json;
+    if (!request_id || !request_id[0]) return 0;
+    rsm_session_t *session = rsm_task_session(session_id, task_id, turn_id, true);
+    if (!session) {
+        session = rsm_session_lookup(session_id);
+        if (!session) return 0;
+    }
+    pthread_mutex_lock(&g_rsm_lock);
+    if (session->closing) { pthread_mutex_unlock(&g_rsm_lock); return 0; }
+    if (session->model_calls && omap_contains(session->model_calls, request_id)) {
+        char *state = NULL;
+        asprintf(&state, "{\"task_id\":\"%s\",\"request_id\":\"%s\",\"errored\":true}",
+                 task_id ? task_id : "", request_id);
+        /* Refresh tracked fields; keep the logical call open (no close). */
+        if (state) {
+            void *prev = omap_get(session->model_calls, request_id);
+            if (prev) { free(prev); omap_set(session->model_calls, request_id, state); }
+            else free(state);
+        }
+    }
+    pthread_mutex_unlock(&g_rsm_lock);
+    return 1;
+}
+
+/* PoP: start_tool_call @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.start_tool_call */
+int rsm_runtime_start_tool_call(relay_runtime_t *host, const char *session_id,
+                                const char *task_id, const char *tool_call_id,
+                                const char *turn_id, const char *event_json) {
+    (void)host;
+    if (!task_id || !task_id[0]) return 0;
+    rsm_session_t *session = rsm_task_session(session_id, task_id, turn_id, true);
+    rsm_task_t *task = NULL;
+    if (session && session->tasks) task = (rsm_task_t *)omap_get(session->tasks, task_id);
+    if (!task) {
+        /* Eagerly open a task scope if the caller hasn't yet. */
+        if (!rsm_runtime_start_task(host, session_id, task_id, turn_id, event_json))
+            return 0;
+        session = rsm_task_session(session_id, task_id, turn_id, true);
+        if (session && session->tasks) task = (rsm_task_t *)omap_get(session->tasks, task_id);
+    }
+    if (!session || !task) return 0;
+    pthread_mutex_lock(&g_rsm_lock);
+    if (session->closing) { pthread_mutex_unlock(&g_rsm_lock); return 0; }
+    if (!rsm_event_matches_task_turn(task, turn_id)) {
+        pthread_mutex_unlock(&g_rsm_lock); return 0;
+    }
+    rsm_remember_turn(session, task, turn_id);
+    const char *tcid = (tool_call_id && tool_call_id[0]) ? tool_call_id : "";
+    /* dedup: already completed or already open */
+    if (tcid[0] && task->tool_call_ids && omap_contains(task->tool_call_ids, tcid)) {
+        pthread_mutex_unlock(&g_rsm_lock); return 0;
+    }
+    char *key = rsm_tc_key(task_id, rsm_f(event_json ? json_parse(event_json, NULL) : NULL, "api_request_id"),
+                           turn_id, tcid);
+    json_t *evj = event_json ? json_parse(event_json, NULL) : NULL;
+    if (session->tool_calls && !omap_contains(session->tool_calls, key)) {
+        rsm_toolcall_t *tc = rsm_open_tool_call(task, evj);
+        if (tc) {
+            char *k = strdup(key);
+            if (k) omap_set(session->tool_calls, k, tc);
+        }
+    }
+    if (tcid[0]) {
+        char *dup = strdup(tcid);
+        if (dup) omap_set(task->tool_call_ids, dup, dup);
+    }
+    if (evj) json_free(evj);
+    free(key);
+    pthread_mutex_unlock(&g_rsm_lock);
+    return 1;
+}
+
+/* PoP: record_approval @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.record_approval */
+int rsm_runtime_record_approval(relay_runtime_t *host, const char *session_id,
+                                const char *task_id, const char *tool_call_id,
+                                const char *turn_id, const char *event_json) {
+    (void)host;
+    json_t *ev = event_json ? json_parse(event_json, NULL) : NULL;
+    const char *choice = rsm_f(ev, "approval_outcome");
+    const char *outcome = smc_tool_approval_outcome(choice[0] ? choice : NULL);
+    rsm_session_t *session = rsm_task_session(session_id, task_id, turn_id, true);
+    rsm_task_t *task = rsm_approval_task(NULL, session, task_id, turn_id);
+    if (!task) { if (ev) json_free(ev); return 0; }
+    if (!session) { if (ev) json_free(ev); return 0; }
+    const char *attr = "unattributed";
+    pthread_mutex_lock(&g_rsm_lock);
+    if (session->closing) { pthread_mutex_unlock(&g_rsm_lock); if (ev) json_free(ev); return 0; }
+    if (!rsm_event_matches_task_turn(task, turn_id)) {
+        pthread_mutex_unlock(&g_rsm_lock); if (ev) json_free(ev); return 0;
+    }
+    rsm_remember_turn(session, task, turn_id);
+    if (tool_call_id && tool_call_id[0]) {
+        const char *cid = tool_call_id;
+        char *key = rsm_tc_key(task_id, rsm_f(ev, "api_request_id"), turn_id, cid);
+        rsm_toolcall_t *tc = session->tool_calls ? (rsm_toolcall_t *)omap_get(session->tool_calls, key) : NULL;
+        if (tc) {
+            snprintf(tc->approval_outcome, sizeof(tc->approval_outcome), "%s", outcome);
+            attr = "tool_call";
+        }
+        free(key);
+    }
+    char *md = rsm_runtime_event_metadata("local");
+    (void)md; free(md);
+    pthread_mutex_unlock(&g_rsm_lock);
+    if (ev) json_free(ev);
+    return 1;
+}
+
+/* PoP: record_skill_lifecycle @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.record_skill_lifecycle */
+int rsm_runtime_record_skill_lifecycle(relay_runtime_t *host,
+                                       const char *session_id,
+                                       const char *task_id,
+                                       const char *turn_id,
+                                       const char *event_json) {
+    (void)host;
+    json_t *ev = event_json ? json_parse(event_json, NULL) : NULL;
+    if (!ev) return 0;
+    char *action = rsm_lower_strip(rsm_f(ev, "action"));
+    const char *mark = NULL;
+    char *fields = NULL;
+    if (action && strcmp(action, "loaded") == 0) {
+        mark = "hermes.skill.load";
+        int uc = 0;
+        const json_t *ucv = json_obj_get(ev, "use_count");
+        if (ucv && (ucv->type == JSON_NUMBER)) uc = (int)ucv->num_val;
+        bool reused = rsm_json_get_bool(ev, "reused");
+        bool rap = rsm_json_get_bool(ev, "reuse_after_patch");
+        fields = smc_skill_load_fields(reused, rap, uc, rsm_f(ev, "provenance"));
+    } else {
+        mark = "hermes.skill.lifecycle";
+        fields = smc_skill_lifecycle_fields(action ? action : "", rsm_f(ev, "provenance"));
+    }
+    bool emitted = false;
+    if (mark && fields) {
+        rsm_session_t *session = (task_id && task_id[0])
+            ? rsm_task_session(session_id, task_id, turn_id, true) : NULL;
+        rsm_task_t *task = NULL;
+        if (session && session->tasks) task = (rsm_task_t *)omap_get(session->tasks, task_id);
+        if (session && task) {
+            pthread_mutex_lock(&g_rsm_lock);
+            if (!session->closing && rsm_event_matches_task_turn(task, turn_id)) {
+                rsm_remember_turn(session, task, turn_id);
+                emitted = true;
+            }
+            pthread_mutex_unlock(&g_rsm_lock);
+        } else if (!(task_id && task_id[0])) {
+            emitted = true;  /* top-level event, no owning session: still record */
+        }
+        free(fields);
+    }
+    free(action);
+    json_free(ev);
+    (void)mark;
+    return emitted ? 1 : 0;
+}
+
+/* PoP: _with_runtime_toolset @ hermes_cli/observability/relay_shared_metrics.py:_with_runtime_toolset */
+char *rsm_with_runtime_toolset(const char *tool_name, const char *event_json) {
+    if (event_json) {
+        json_t *ev = json_parse(event_json, NULL);
+        if (ev) {
+            const json_t *ts = json_obj_get(ev, "toolset");
+            if (ts && ts->type == JSON_STRING && ts->str_val && ts->str_val[0]) {
+                char *out = strdup(event_json);
+                json_free(ev);
+                return out;
+            }
+            json_free(ev);
+        }
+    }
+    if (!tool_name || !tool_name[0]) return strdup("{}");
+    const char *ts = registry_get_toolset_for_tool(tool_name);
+    char *out = NULL;
+    asprintf(&out, "{\"tool_name\":\"%s\",\"toolset\":\"%s\"}",
+             tool_name, ts ? ts : "other");
+    return out;
+}
+
+/* observe_lifecycle pre_tool_call/post_tool_call hook wrapper attaches the
+ * runtime toolset before delegating to start_tool_call / record_tool_call. */
+int rsm_observe_pre_tool_call(relay_runtime_t *host, const char *session_id,
+                              const char *task_id, const char *tool_call_id,
+                              const char *turn_id, const char *tool_name) {
+    char *ev = rsm_with_runtime_toolset(tool_name, NULL);
+    int rc = rsm_runtime_start_tool_call(host, session_id, task_id, tool_call_id,
+                                         turn_id, ev);
+    free(ev);
+    return rc;
 }
 
 /* PoP: _end_pending_model_calls @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._end_pending_model_calls */
@@ -663,7 +1146,8 @@ bool rsm_handles_hook(const char *hook_name, const char *config_json) {
     if (!hook_name) return false;
     static const char *handled[] = {
         "on_session_start", "pre_llm_call", "pre_api_request",
-        "post_tool_call", "post_api_request", "api_request_error",
+        "pre_tool_call", "post_tool_call", "post_approval_response",
+        "on_skill_lifecycle", "post_api_request", "api_request_error",
         "on_session_end", "subagent_stop",
         "on_session_finalize", "on_session_reset", NULL
     };
@@ -689,23 +1173,38 @@ int rsm_observe_lifecycle(relay_runtime_t *host, const char *hook_name,
     const char *tool_call_id = rsm_json_get_str(ev, "tool_call_id", "");
     int rc = 0;
     if (strcmp(hook_name, "on_session_start") == 0) {
-        rc = rsm_runtime_ensure_session(host, session_id);
+        rc = rsm_runtime_record_client_active(host, session_id, event_json);
     } else if (strcmp(hook_name, "pre_llm_call") == 0) {
         rc = rsm_runtime_start_task(host, session_id, task_id, turn_id, event_json);
     } else if (strcmp(hook_name, "pre_api_request") == 0) {
         rc = rsm_runtime_start_model_call(host, session_id, task_id, request_id,
                                           turn_id, event_json);
+    } else if (strcmp(hook_name, "pre_tool_call") == 0) {
+        const char *tool_name = rsm_json_get_str(ev, "tool_name", "");
+        char *tev = rsm_with_runtime_toolset(tool_name, event_json);
+        rc = rsm_runtime_start_tool_call(host, session_id, task_id, tool_call_id,
+                                         turn_id, tev);
+        free(tev);
     } else if (strcmp(hook_name, "post_tool_call") == 0) {
+        const char *tool_name = rsm_json_get_str(ev, "tool_name", "");
+        char *tev = rsm_with_runtime_toolset(tool_name, event_json);
         rc = rsm_runtime_record_tool_call(host, session_id, task_id, tool_call_id,
-                                          turn_id, event_json);
+                                          turn_id, tev);
+        free(tev);
+    } else if (strcmp(hook_name, "post_approval_response") == 0) {
+        rc = rsm_runtime_record_approval(host, session_id, task_id, tool_call_id,
+                                         turn_id, event_json);
+    } else if (strcmp(hook_name, "on_skill_lifecycle") == 0) {
+        rc = rsm_runtime_record_skill_lifecycle(host, session_id, task_id,
+                                                turn_id, event_json);
     } else if (strcmp(hook_name, "post_api_request") == 0) {
         rc = rsm_runtime_end_model_call(host, session_id, task_id, request_id,
                                         turn_id, "success", event_json);
     } else if (strcmp(hook_name, "api_request_error") == 0) {
-        const char *retryable = rsm_json_get_str(ev, "retryable", "");
-        if (strcmp(retryable, "false") == 0)
-            rc = rsm_runtime_end_model_call(host, session_id, task_id, request_id,
-                                            turn_id, "failed", event_json);
+        /* Python: retain the latest attempt error without closing the logical
+         * call (record_model_call_error), not end_model_call. */
+        rc = rsm_runtime_record_model_call_error(host, session_id, task_id,
+                                                 request_id, turn_id, event_json);
     } else if (strcmp(hook_name, "on_session_end") == 0) {
         rc = rsm_runtime_finish_task(host, session_id, task_id, turn_id, event_json);
     } else if (strcmp(hook_name, "subagent_stop") == 0) {

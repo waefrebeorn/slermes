@@ -844,3 +844,48 @@ char *smc_model_call_fields(const char *provider,
     return result;
 }
 
+/* PoP: skill_lifecycle_fields @ hermes_cli/observability/shared_metrics_contract.py:skill_lifecycle_fields */
+char *smc_skill_lifecycle_fields(const char *action_val, const char *provenance_val) {
+    char *action = str_lower_strip(action_val);
+    static const char *allowed[] = {
+        "archived","created","edited","installed","patched","restored","stale", NULL
+    };
+    if (!action || !str_in_set(action, allowed, 7)) {
+        if (action) free(action);
+        return NULL;
+    }
+    const char *prov = smc_skill_provenance(provenance_val);
+    int needed = snprintf(NULL, 0,
+        "{\"action\":\"%s\",\"provenance\":\"%s\"}", action, prov);
+    char *result = malloc((size_t)needed + 1);
+    if (result)
+        snprintf(result, (size_t)needed + 1,
+                 "{\"action\":\"%s\",\"provenance\":\"%s\"}", action, prov);
+    free(action);
+    return result;
+}
+
+/* PoP: skill_load_fields @ hermes_cli/observability/shared_metrics_contract.py:skill_load_fields */
+char *smc_skill_load_fields(bool reused, bool reuse_after_patch,
+                            int use_count, const char *provenance_val) {
+    /* Guard: use_count must be a positive int, bool flags required,
+     * and reuse_after_patch implies reused. */
+    if (use_count < 1 || (reuse_after_patch && !reused)) return NULL;
+    const char *post_patch = "no_new_patch";
+    if (reused) post_patch = reuse_after_patch ? "reused_after_patch" : "no_new_patch";
+    const char *reuse_state = reused ? "reused" : "first_use";
+    const char *use_bucket = smc_count_bucket(use_count);
+    const char *prov = smc_skill_provenance(provenance_val);
+    int needed = snprintf(NULL, 0,
+        "{\"post_patch_state\":\"%s\",\"provenance\":\"%s\","
+        "\"reuse_state\":\"%s\",\"use_count_bucket\":\"%s\"}",
+        post_patch, prov, reuse_state, use_bucket);
+    char *result = malloc((size_t)needed + 1);
+    if (result)
+        snprintf(result, (size_t)needed + 1,
+                 "{\"post_patch_state\":\"%s\",\"provenance\":\"%s\","
+                 "\"reuse_state\":\"%s\",\"use_count_bucket\":\"%s\"}",
+                 post_patch, prov, reuse_state, use_bucket);
+    return result;
+}
+

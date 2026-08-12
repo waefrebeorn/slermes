@@ -268,6 +268,12 @@ char *smc_client_resource(const char *hermes_version, const char *os_name,
 /* PoP: client_resource_is_valid @ hermes_cli/observability/shared_metrics_contract.py:client_resource_is_valid */
 bool smc_client_resource_is_valid(const char *resource_json);
 
+/* PoP: skill_lifecycle_fields @ hermes_cli/observability/shared_metrics_contract.py:skill_lifecycle_fields */
+/* PoP: skill_load_fields @ hermes_cli/observability/shared_metrics_contract.py:skill_load_fields */
+char *smc_skill_lifecycle_fields(const char *action_val, const char *provenance_val);
+char *smc_skill_load_fields(bool reused, bool reuse_after_patch,
+                            int use_count, const char *provenance_val);
+
 #ifdef __cplusplus
 }
 #endif

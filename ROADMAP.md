@@ -4,9 +4,9 @@
 **Version:** 0.19.0-slermes (v671, PORT phase)  
 **Last updated:** 2026-08-12
 
-> **v671 PORT phase:** live scanner 2026-08-12: 12,717 / 13,359 (95.2%) PORTED · 642 REAL_GAP · 0 PARTIAL. The C11 binary is the deliverable.
+> **v671 PORT phase:** live scanner 2026-08-12: 12,735 / 13,359 (95.3%) PORTED · 624 REAL_GAP · 0 PARTIAL. The C11 binary is the deliverable.
 >
-> **Upstream sync checkpoint:** 1,441 ahead / 0 behind upstream/main (last merge 2026-08-12 (upstream fetched)). The repo is up to date with upstream.
+> **Upstream sync checkpoint:** 1,442 ahead / 0 behind upstream/main (last merge 2026-08-12 (upstream fetched)). The repo is up to date with upstream.
 <!-- /PARITY:AUTO -->
 
 > "Mission 1-8 complete" doesn't mean done — it means the foundation is laid.  
