@@ -19,14 +19,14 @@ No façades. No stubs. No placeholders. Triple-check: plumber, painter, devil.
 ⏳ MCP client wiring to cua-driver (macOS only)
 
 <!-- PARITY:AUTO -->
-| PORTED  | 14,045 / 14,045 (100.0%) |
-| REAL_GAP| 0 (0.0%) — no N/A |
+| PORTED  | 12,611 / 13,359 (94.4%) |
+| REAL_GAP| 748 (5.6%) — no N/A |
 | PARTIAL | 0 (0.0%) |
-| BOOTLEG | 0 (recursive_false_gap_hunter.py) |
+| BOOTLEG | 85 (recursive_false_gap_hunter.py) |
 
-**Phase (v671):** COMPLETE phase — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.
+**Phase (v671):** PORT phase — the C11 binary is the deliverable: faithful, oracle-verified, usable standalone across operating systems. Closing REAL_GAPs is the path; the AGI-OS integration consumes the binary, not the Python tree.
 
-**Upstream sync checkpoint:** 1,419 ahead / 1,115 behind upstream/main (last merge 2026-08-10 (upstream fetched)). The behind-count is the staleness timer — see the stash→pull→fix→pop workflow below.
+**Upstream sync checkpoint:** 1,430 ahead / 0 behind upstream/main (last merge 2026-08-12 (upstream fetched)). The repo is up to date with upstream.
 
-_Generated 2026-08-11T10:38:07Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
+_Generated 2026-08-12T00:54:35Z from live scanner `tests/slermes_parity_battleground.py` — do not edit by hand; run `make parity-walkway`._
 <!-- /PARITY:AUTO -->
