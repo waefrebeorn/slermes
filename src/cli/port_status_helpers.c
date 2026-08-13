@@ -23,6 +23,7 @@
 #include "port_hermes_cli_timefmt.h"
 #include "hermes_yaml.h"
 #include "port_hermes_cli_timefmt.h"  /* tf_relative_time */
+#include "agent_estop.h"           /* estop_paused_reply            */
 
 /* PoP: sta_format_relative_ts @ hermes_cli/status.py:_format_relative_ts */
 /* Format an epoch timestamp as a short relative age, delegating to the
@@ -30,6 +31,14 @@
 char *sta_format_relative_ts(double ts)
 {
     return tf_relative_time(ts);
+}
+
+/* PoP: sta_estop_status_line @ hermes_cli/status.py:_estop_status_line */
+/* One-line pause banner for `hermes status`, or NULL when not paused.
+ * Cheap: delegates to estop_paused_reply() (single stat on the sentinel). */
+char *sta_estop_status_line(void)
+{
+    return estop_paused_reply();
 }
 
 /* PoP: sta_format_iso_timestamp @ hermes_cli/status.py:_format_iso_timestamp */
