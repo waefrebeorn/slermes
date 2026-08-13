@@ -1211,6 +1211,41 @@ int _merge_adjacent_user_turns(json_t *result, json_t **out_merged) {
     return (int)merged->c.count;
 }
 
+/* _DB_PERSISTED_MARKER = "_db_persisted" (agent/context_compressor.py module literal).
+ * Defined locally (not in the generated constants header) since it is only
+ * used by the persistence-marker strip/copy helpers below. */
+static const char *CC_DB_PERSISTED_MARKER = "_db_persisted";
+
+/* PoP: _fresh_compaction_message_copy @ agent/context_compressor.py:_fresh_compaction_message_copy */
+/* Copy a message for compaction assembly without persistence markers
+ * (_db_persisted stripped). Caller frees the returned json_t*. */
+json_t *cc_fresh_compaction_message_copy(const json_t *msg) {
+    if (!msg || msg->type != JSON_OBJECT) return json_copy(msg);
+    json_t *fresh = json_copy(msg);
+    if (!fresh) return NULL;
+    json_obj_del(fresh, CC_DB_PERSISTED_MARKER);
+    return fresh;
+}
+
+/* PoP: _strip_persistence_markers @ agent/context_compressor.py:_strip_persistence_markers */
+/* Enforce the compaction invariant: no assembled message carries a persistence
+ * marker. Mutates in place. Returns count of strips performed. */
+int cc_strip_persistence_markers(json_t *messages) {
+    if (!messages || messages->type != JSON_ARRAY) return 0;
+    int stripped = 0;
+    int n = (int)json_len(messages);
+    for (int i = 0; i < n; i++) {
+        json_t *msg = json_get(messages, (size_t)i);
+        if (!msg || msg->type != JSON_OBJECT) continue;
+        if (json_obj_get(msg, CC_DB_PERSISTED_MARKER)) {
+            if (json_obj_del(msg, CC_DB_PERSISTED_MARKER))
+                stripped++;
+        }
+    }
+    return stripped;
+}
+
+
 /* ── batch 5: standalone handoff + user-turn predicates (pure) ─────────── */
 
 /* PoP: _handoff_carries_live_user_content @ agent/context_compressor.py:_handoff_carries_live_user_content */

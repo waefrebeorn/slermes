@@ -253,6 +253,11 @@ bool cc_is_user_originated_turn(const json_t *message);
 /* Textual thinking chars inside a reasoning_details envelope (envelope blobs skipped). */
 int  cc_reasoning_details_text_chars(const json_t *value);
 
+/* Copy a message for compaction assembly without persistence markers. Caller frees. */
+json_t *cc_fresh_compaction_message_copy(const json_t *msg);
+/* Strip persistence markers from assembled messages; returns count stripped. */
+int  cc_strip_persistence_markers(json_t *messages);
+
 /* ── batch 6: stateful compression-guard + preflight trackers ───────────── */
 /* Record a consecutive timeout failure using the shared cooldown ladder. */
 void cc_record_timeout_failure(cc_compression_guards_t *g, const char *error);
