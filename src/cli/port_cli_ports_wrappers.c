@@ -8100,6 +8100,32 @@ int hermes_cli__early_recovery_u_project_root(const char *arg) {
     return 0;
 }
 
+/* PoP: _pytest_owns_live_checkout @ hermes_cli/_early_recovery.py:_pytest_owns_live_checkout */
+/* True when running under pytest AND root is this module's own checkout.
+ * Lifecycle tests spawn real subprocesses that import hermes_cli.main with
+ * recovery armed; PYTEST_CURRENT_TEST rides the inherited env into those
+ * children. Arg = "root" (the project_root path passed in). Prints 1 when
+ * the env var is set and root matches the current working directory
+ * (the resolved repo checkout), else 0. */
+int hermes_cli__early_recovery_u_pytest_owns_live_checkout(const char *arg) {
+    const char *pct = getenv("PYTEST_CURRENT_TEST");
+    if (!pct || !*pct) { printf("0\n"); return 0; }
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    char cwd[2048];
+    if (!getcwd(cwd, sizeof(cwd))) { printf("0\n"); return 0; }
+    /* Compare resolved root against the process cwd (the checkout). */
+    char real_root[2048];
+    if (realpath(arg, real_root)) {
+        char real_cwd[2048];
+        if (realpath(cwd, real_cwd)) {
+            printf("%d\n", strcmp(real_root, real_cwd) == 0 ? 1 : 0);
+            return 0;
+        }
+    }
+    printf("%d\n", strcmp(arg, cwd) == 0 ? 1 : 0);
+    return 0;
+}
+
 /* PoP: _pinned_specs @ hermes_cli/_early_recovery.py:_pinned_specs */
 int hermes_cli__early_recovery_u_pinned_specs(const char *arg) {
     /* Python: bare -> pinned spec map. Arg = "packages\tresult". */
