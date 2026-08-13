@@ -383,6 +383,35 @@ int hermes_cli_debug_u_resolve_log_path(const char *arg) {
     return 0;
 }
 
+/* PoP: _missing_log_note @ hermes_cli/debug.py:_missing_log_note */
+/* Explain a missing log instead of stating a bare absence. For a client-side
+ * log the absence is expected on a remote backend, so the note names the
+ * writer and the path to collect by hand. Arg = "log_name\tprimary_path"
+ * (primary_path empty when _primary_log_path returned None). */
+int hermes_cli_debug_u_missing_log_note(const char *arg) {
+    const char *CLIENT_REASON = "written by Hermes Desktop on the machine running the app, not by this backend. If the desktop connects to a remote/docker/SSH backend, collect it on that client machine";
+    if (!arg || !*arg) { printf("(file not found)\n"); return 0; }
+    const char *tab = strchr(arg, '\t');
+    char namebuf[256];
+    const char *nl = tab ? tab : arg;
+    size_t nlen = (size_t)(nl - arg);
+    if (nlen >= sizeof(namebuf)) nlen = sizeof(namebuf) - 1;
+    memcpy(namebuf, arg, nlen); namebuf[nlen] = '\0';
+    const char *primary = tab ? tab + 1 : "";
+    if (strcmp(namebuf, "desktop") == 0) {
+        if (*primary)
+            printf("(not on this host: %s — expected at %s)\n", CLIENT_REASON, primary);
+        else
+            printf("(not on this host: %s)\n", CLIENT_REASON);
+    } else {
+        if (*primary)
+            printf("(not on this host: unknown client log — expected at %s)\n", primary);
+        else
+            printf("(file not found)\n");
+    }
+    return 0;
+}
+
 /* PoP: _capture_log_snapshot @ hermes_cli/debug.py:_capture_log_snapshot */
 int hermes_cli_debug_u_capture_log_snapshot(const char *arg) {
     /* Python: same-file snapshot. Arg =
