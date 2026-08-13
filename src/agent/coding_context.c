@@ -438,6 +438,7 @@ bool coding_context_find_marker_root(const char *cwd, char *out, size_t out_size
 
 /* AG26: Port of Python agent/coding_context.py:_detect_profile_name() */
 /* AG26: Port of Python agent/coding_context.py:is_coding_context() */
+/* PoP: is_coding_context @ agent/coding_context.py:is_coding_context */
 const char *coding_context_detect_profile_name(
     const char *mode, const char *platform, const char *cwd) {
 

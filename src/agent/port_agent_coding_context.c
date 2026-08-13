@@ -13,6 +13,7 @@
 
 
 /* Port of Python: detect_project_facts */
+/* PoP: detect_project_facts @ agent/coding_context.py:detect_project_facts */
 bool detect_project_facts(const char *root, json_t *out_facts) {
     if (!root || !out_facts) return false;
     
@@ -205,6 +206,7 @@ bool detect_project_facts(const char *root, json_t *out_facts) {
 
 
 /* Port of Python: project_facts_for */
+/* PoP: project_facts_for @ agent/coding_context.py:project_facts_for */
 json_t *project_facts_for(const char *cwd) {
     if (!cwd) return NULL;
     
