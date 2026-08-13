@@ -12,6 +12,9 @@
 #include <stdio.h>
 #include <regex.h>
 
+/* From port_agent_core_helpers.c (agent/tool_dispatch_helpers.py:_canonical_path). */
+extern char *tdh_canonical_path(const char *raw_path, const char *execution_cwd);
+
 /* File-mutating tool names (FILE_MUTATING_TOOL_NAMES in Python). */
 static const char *FILE_MUTATING_TOOLS[] = { "write_file", "patch", NULL };
 
@@ -209,4 +212,87 @@ char **agent_tool_dispatch_extract_landed_file_mutation_paths(const char *tool_n
     free(rbuf);
     *out_n = targets_n;
     return targets;
+}
+
+/* PoP: agent_tool_dispatch__extract_parallel_scope_paths @ agent/tool_dispatch_helpers.py:_extract_parallel_scope_paths */
+/* Return every canonical path this call reserves for overlap checks. For
+ * "patch" in V4A mode, scope comes from patch-body "*** Update/Add/Delete/
+ * Move File:" headers (via extract_file_mutation_targets). Otherwise the
+ * "path" arg is used; search_files with no path reserves "." (cwd) rather
+ * than demoting to a sequential barrier. Dedupes by canonical path. Returns
+ * a malloc'd NULL-terminated array (or NULL when the tool isn't path-scoped).
+ * execution_cwd may be NULL (fall back to process cwd). */
+char **agent_tool_dispatch_extract_parallel_scope_paths(
+    const char *tool_name, const char *args_json, const char *execution_cwd,
+    int *out_n)
+{
+    *out_n = 0;
+    if (!tool_name) return NULL;
+    /* _PATH_SCOPED_TOOLS = {read_file, search_files, write_file, patch} */
+    const char *PATH_SCOPED[] = { "read_file", "search_files", "write_file", "patch", NULL };
+    int scoped_tool = 0;
+    for (int i = 0; PATH_SCOPED[i]; i++)
+        if (strcmp(tool_name, PATH_SCOPED[i]) == 0) { scoped_tool = 1; break; }
+    if (!scoped_tool) return NULL;
+
+    /* Parse path/mode/patch from args_json (mirrors Python's function_args). */
+    char path[1024]; path[0] = '\0';
+    char mode[64]; mode[0] = '\0';
+    char patch[8192]; patch[0] = '\0';
+    if (args_json) {
+        json_get_string_field(args_json, "path", path, sizeof(path));
+        json_get_string_field(args_json, "mode", mode, sizeof(mode));
+        json_get_string_field(args_json, "patch", patch, sizeof(patch));
+    }
+
+    /* raw_paths accumulation. */
+    char *raw_paths[128];
+    int nraw = 0;
+    /* Python: mode defaults to "replace"; V4A patch branch only when
+     * tool=="patch" AND (mode or "replace")=="patch". */
+    const char *eff_mode = mode[0] ? mode : "replace";
+    if (strcmp(tool_name, "patch") == 0 && strcmp(eff_mode, "patch") == 0) {
+        int tn = 0;
+        char **targets = extract_file_mutation_targets(tool_name,
+                            path[0] ? path : NULL, mode[0] ? mode : NULL,
+                            patch[0] ? patch : NULL, &tn);
+        for (int i = 0; i < tn && nraw < 128; i++) raw_paths[nraw++] = targets[i];
+        free(targets);
+    } else {
+        if (path[0]) {
+            raw_paths[nraw++] = strdup(path);
+        } else if (strcmp(tool_name, "search_files") == 0) {
+            raw_paths[nraw++] = strdup(".");
+        }
+    }
+
+    /* Canonicalize + dedupe. */
+    char **scoped = NULL;
+    int n = 0, cap = 0;
+    char *seen[128]; int nseen = 0;
+    for (int i = 0; i < nraw; i++) {
+        char *raw = raw_paths[i];
+        if (!raw || !*raw) { free(raw); continue; }
+        char *canonical = tdh_canonical_path(raw, execution_cwd);
+        free(raw);
+        if (!canonical) continue;
+        /* dedupe by canonical string */
+        int dup = 0;
+        for (int s = 0; s < nseen; s++)
+            if (strcmp(seen[s], canonical) == 0) { dup = 1; break; }
+        if (dup) { free(canonical); continue; }
+        if (nseen < 128) seen[nseen++] = strdup(canonical);
+        if (n >= cap) { cap = cap ? cap * 2 : 4; scoped = realloc(scoped, sizeof(char *) * cap); }
+        scoped[n++] = canonical;
+    }
+    for (int s = 0; s < nseen; s++) free(seen[s]);
+    if (n > 0) {
+        scoped = realloc(scoped, sizeof(char *) * (n + 1));
+        scoped[n] = NULL;
+    } else if (scoped) {
+        free(scoped);
+        scoped = NULL;
+    }
+    *out_n = n;
+    return scoped;
 }
