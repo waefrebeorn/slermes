@@ -53,3 +53,28 @@ char *gna2_create_chat_completion(const char *extra_body_json) {
     }
     return strdup(extra_body_json);
 }
+
+/* PoP: is_standard_key_auth_error @ agent/gemini_native_adapter.py:is_standard_key_auth_error */
+int gna2_is_standard_key_auth_error(int status, const char *error_message,
+                                    const char *reason)
+{
+    /* Return true when a Gemini 401 indicates Google rejected the key TYPE.
+     * Google began rejecting unrestricted legacy "Standard" Google Cloud API
+     * keys on the Gemini API; the rejection surfaces as a misleading 401
+     * telling the user to supply an OAuth 2 access token, optionally carrying
+     * google.rpc.ErrorInfo reason ACCESS_TOKEN_TYPE_UNSUPPORTED. Scoped
+     * narrowly so a plain bad key keeps its existing message. */
+    if (status != 401) return 0;
+    if (reason && strcmp(reason, "ACCESS_TOKEN_TYPE_UNSUPPORTED") == 0) return 1;
+    if (error_message) {
+        /* case-insensitive "expected oauth 2 access token" */
+        char *lower = strdup(error_message);
+        if (lower) {
+            for (char *c = lower; *c; c++) *c = (char)tolower((unsigned char)*c);
+            int hit = strstr(lower, "expected oauth 2 access token") != NULL;
+            free(lower);
+            return hit;
+        }
+    }
+    return 0;
+}
