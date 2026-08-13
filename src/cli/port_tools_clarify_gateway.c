@@ -16,6 +16,7 @@
  */
 
 #include "hermes_logger.h"
+#include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -220,6 +221,87 @@ char *cli_tools_clarify_gateway__coerce_text_response(const clarify_entry_t *ent
         }
     }
     return strdup(text);
+}
+
+/* PoP: cli_tools_clarify_gateway__coerce_multi_select_text @ tools/clarify_gateway.py:_coerce_multi_select_text */
+/* Parse a typed multi-select reply into a JSON array of choice labels.
+ * Accepts numbers and/or exact labels separated by commas (and, for
+ * all-numeric replies, bare spaces): "1,3", "1 3", "staging, prod".
+ * Returns NULL when any token is out of range or unrecognised (so the
+ * caller can reject the reply cleanly). */
+char *cli_tools_clarify_gateway__coerce_multi_select_text(const clarify_entry_t *entry, const char *text) {
+    if (!text || !*text || !entry || entry->choice_count <= 0) return NULL;
+    json_t *arr = json_array();
+    if (!arr) return NULL;
+    /* Collect tokens: split on commas; if no commas and every token is
+     * numeric, also split on spaces. */
+    char work[2048];
+    size_t n = 0;
+    for (const char *p = text; *p && n + 1 < sizeof(work); p++) {
+        if (!isspace((unsigned char)*p) || n > 0) work[n++] = *p;
+    }
+    while (n > 0 && isspace((unsigned char)work[n - 1])) n--;
+    work[n] = '\0';
+    /* Determine tokens. */
+    char *tokens[64];
+    int ntok = 0;
+    char *saveptr = NULL;
+    int has_comma = strchr(work, ',') != NULL;
+    if (has_comma) {
+        char *tok = strtok_r(work, ",", &saveptr);
+        while (tok && ntok < 64) {
+            /* strip */
+            char *s = tok; while (*s && isspace((unsigned char)*s)) s++;
+            char *e = s + strlen(s); while (e > s && isspace((unsigned char)*(e-1))) e--;
+            if (e > s) { tokens[ntok++] = strndup(s, (size_t)(e - s)); }
+            tok = strtok_r(NULL, ",", &saveptr);
+        }
+    } else {
+        char *save2 = NULL;
+        char *tok = strtok_r(work, " \t", &save2);
+        int allnum = 1;
+        char *toks[64]; int nt2 = 0;
+        while (tok && nt2 < 64) { toks[nt2++] = tok; if (!allnum || !*tok) allnum = 0; tok = strtok_r(NULL, " \t", &save2); }
+        if (nt2 > 1 && allnum) {
+            for (int i = 0; i < nt2; i++) tokens[ntok++] = strdup(toks[i]);
+        } else {
+            /* single token */
+            if (nt2 > 0) tokens[ntok++] = strdup(toks[0]);
+        }
+    }
+    /* Resolve each token */
+    int ok = 1;
+    for (int t = 0; t < ntok && ok; t++) {
+        char *tok = tokens[t];
+        /* numeric? */
+        char *end = NULL;
+        long idx = strtol(tok, &end, 10);
+        if (end != tok && *end == '\0') {
+            if (idx >= 1 && idx <= entry->choice_count) {
+                json_array_append(arr, json_new_string(entry->choices[idx - 1]));
+            } else {
+                ok = 0; /* out-of-range number → reject */
+            }
+        } else {
+            /* case-insensitive exact label match */
+            int found = 0;
+            for (int i = 0; i < entry->choice_count; i++) {
+                if (strlen(tok) == strlen(entry->choices[i])) {
+                    int same = 1;
+                    for (const char *a = tok, *b = entry->choices[i]; *a; a++, b++) {
+                        if (tolower((unsigned char)*a) != tolower((unsigned char)*b)) { same = 0; break; }
+                    }
+                    if (same) { json_array_append(arr, json_new_string(entry->choices[i])); found = 1; break; }
+                }
+            }
+            if (!found) ok = 0;
+        }
+        free(tok);
+    }
+    if (!ok) { json_free(arr); return NULL; }
+    char *out = json_dumps(arr, 0);
+    json_free(arr);
+    return out;
 }
 
 /* PoP: cli_tools_clarify_gateway_resolve_text_response_for_session @ tools/clarify_gateway.py:resolve_text_response_for_session */
