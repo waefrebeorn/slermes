@@ -3,6 +3,7 @@
  */
 
 #include "hermes_logger.h"
+#include "hermes_json.h"
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,8 +29,27 @@ char *cli_tools_xai_http_hermes_xai_user_agent(void)
     return result ? result : strdup("Hermes-Agent/unknown");
 }
 
-/* PoP: cli_tools_xai_http_resolve_xai_http_credentials @ tools/xai_http.py:resolve_xai_http_credentials */
+/* PoP: hermes_xai_default_headers @ tools/xai_http.py:hermes_xai_default_headers */
+char *cli_tools_xai_http_hermes_xai_default_headers(void)
+{
+    /* Default headers for OpenAI-SDK and raw HTTP clients talking to xAI.
+     * Replaces the OpenAI Python SDK's identifying User-Agent so chat/
+     * completions and Responses traffic is attributed as Hermes Agent,
+     * matching the direct HTTP integrations. Returns a malloc'd JSON
+     * object string with a single "User-Agent" key. */
+    char *ua = cli_tools_xai_http_hermes_xai_user_agent();
+    if (!ua) ua = strdup("Hermes-Agent/unknown");
+    /* Build {"User-Agent": "<ua>"} via the json_t builder. */
+    json_t *obj = json_new_object();
+    if (!obj) { free(ua); return NULL; }
+    json_object_set(obj, "User-Agent", json_new_string(ua));
+    char *out = json_dumps(obj, 0);
+    json_free(obj);
+    free(ua);
+    return out ? out : strdup("{\"User-Agent\":\"Hermes-Agent/unknown\"}");
+}
 
+/* PoP: cli_tools_xai_http_resolve_xai_http_credentials @ tools/xai_http.py:resolve_xai_http_credentials */
 /* Port of Python tools/xai_http.py:resolve_xai_http_credentials */
 /* Resolve bearer credentials for direct xAI HTTP endpoints.
  * In the C port, we return a JSON string with provider/api_key/base_url.
