@@ -1,0 +1,20 @@
+{
+  "cases": [
+    {"name": "clean_basic", "content": "---\nname: clean_basic\ndescription: A clean skill with no issues.\nversion: 1.0.0\nauthor: Hermes Agent\nlicense: MIT\nmetadata:\n  hermes:\n    tags: [test]\n---\n## When to Use\n\nUse this skill when you need to demonstrate a clean linter pass.\n"},
+    {"name": "name_bad_format", "content": "---\nname: Bad_Name\ndescription: A skill with a badly formatted name.\nversion: 1.0.0\nauthor: Hermes Agent\nlicense: MIT\n---\n## When to Use\n\nUse this skill when checking name validation.\n"},
+    {"name": "desc_too_long", "content": "---\nname: desc_too_long\ndescription: This description is intentionally far longer than the sixty character threshold so that it triggers the description-length finding from the linter.\nversion: 1.0.0\nauthor: Hermes Agent\nlicense: MIT\n---\n## When to Use\n\nUse this skill when testing the description length check.\n"},
+    {"name": "marketing_word", "content": "---\nname: marketing_word\ndescription: A powerful and comprehensive skill for everything.\nversion: 1.0.0\nauthor: Hermes Agent\nlicense: MIT\n---\n## When to Use\n\nUse this skill when testing marketing word detection.\n"},
+    {"name": "name_dir_mismatch", "content": "---\nname: different_name\ndescription: Name does not match the directory.\nversion: 1.0.0\nauthor: Hermes Agent\nlicense: MIT\n---\n## When to Use\n\nUse this skill when testing name/directory matching.\n",
+      "fixture_files": {"SKILL.md": "---\nname: different_name\ndescription: Name does not match the directory.\nversion: 1.0.0\nauthor: Hermes Agent\nlicense: MIT\n---\n## When to Use\n\nUse this skill when testing name/directory matching.\n"}},
+    {"name": "dangling_ref", "content": "---\nname: refcheck\ndescription: Has a dangling reference.\nversion: 1.0.0\nauthor: Hermes Agent\nlicense: MIT\n---\n## When to Use\n\nSee references/missing_file.md.\n",
+      "fixture_files": {"SKILL.md": "---\nname: refcheck\ndescription: Has a dangling reference.\nversion: 1.0.0\nauthor: Hermes Agent\nlicense: MIT\n---\n## When to Use\n\nSee references/missing_file.md.\n"}},
+    {"name": "forbidden_file", "content": "---\nname: forb\ndescription: Ships a forbidden file.\nversion: 1.0.0\nauthor: Hermes Agent\nlicense: MIT\n---\n## When to Use\n\nUse this skill when testing forbidden files.\n",
+      "fixture_files": {"README.md": "# Readme\n", "SKILL.md": "---\nname: forb\ndescription: Ships a forbidden file.\nversion: 1.0.0\nauthor: Hermes Agent\nlicense: MIT\n---\n## When to Use\n\nUse this skill when testing forbidden files.\n"}},
+    {"name": "no_sections", "content": "---\nname: no_sections\ndescription: Has no When to Use section.\nversion: 1.0.0\nauthor: Hermes Agent\nlicense: MIT\n---\nThis skill has no sections at all.\n"},
+    {"name": "shell_util_in_prose", "content": "---\nname: shell_util_in_prose\ndescription: Mentions grep in prose.\nversion: 1.0.0\nauthor: Hermes Agent\nlicense: MIT\n---\n## When to Use\n\nInstead of `grep`, prefer the native tool.\n"},
+    {"name": "platforms_gating", "content": "---\nname: posixgate\ndescription: Bundles a POSIX-only script.\nversion: 1.0.0\nauthor: Hermes Agent\nlicense: MIT\n---\n## When to Use\n\nUse this skill when testing platforms gating.\n",
+      "fixture_files": {"SKILL.md": "---\nname: posixgate\ndescription: Bundles a POSIX-only script.\nversion: 1.0.0\nauthor: Hermes Agent\nlicense: MIT\n---\n## When to Use\n\nUse this skill when testing platforms gating.\n"},
+      "fixture_scripts": {"d.py": "import fcntl\nimport os\nos.setsid()\n"}},
+    {"name": "missing_metadata", "content": "---\nname: missing_metadata\ndescription: Missing version author license.\n---\n## When to Use\n\nUse this skill when testing missing metadata.\n"}
+  ]
+}

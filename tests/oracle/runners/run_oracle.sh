@@ -123,7 +123,14 @@ FAIL=0
 # harness correctly classify FALSE FAPs (env noise — real cwd, git status,
 # hostname) as non-failures instead of spurious MISMATCHes.
 REG_JSON="${REG_JSON:-tests/oracle/registry.json}"
-STRIP_PATTERNS=$(python3 -c "import json,sys; print('\n'.join(json.load(open('$REG_JSON')).get('normalize',{}).get('strip_patterns',[])))" 2>/dev/null)
+STRIP_PATTERNS=$(python3 -c "
+import json,sys
+d = json.load(open('$REG_JSON'))
+norm = d.get('normalize',{}).get('strip_patterns',[])
+port = d.get('ports',{}).get(sys.argv[1],{})
+port_strip = port.get('strip_patterns',[]) if isinstance(port, dict) else []
+print('\\n'.join(list(norm) + list(port_strip)))
+" "$NAME" 2>/dev/null)
 STRIP_FIELDS=$(python3 -c "import json,sys; print(' '.join(json.load(open('$REG_JSON')).get('normalize',{}).get('strip_fields',[])))" 2>/dev/null)
 # Per-port float/int canonicalization: C's JSON writer renders integral
 # doubles as "1" while Python emits "1.0"; when the port opts in

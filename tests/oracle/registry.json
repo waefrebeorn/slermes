@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "description": "Agnostic oracle registry \u2014 maps port names to their harness/oracle/fixture trio. The runner iterates this file instead of requiring per-module shell scripts.",
+  "description": "Agnostic oracle registry — maps port names to their harness/oracle/fixture trio. The runner iterates this file instead of requiring per-module shell scripts.",
   "ports": {
     "agent_import": {
       "harness": "tests/t_port_agent_import.c",
@@ -1398,6 +1398,17 @@
       "harness": "tests/t_port_working_diff.c",
       "oracle": "tests/sta_oracle_working_diff.py",
       "fixtures": "tests/oracle/fixtures/working_diff"
+    },
+    "skill_linter": {
+      "harness": "tests/t_port_skill_linter.c",
+      "oracle": "tests/sta_oracle_skill_linter.py",
+      "fixtures": "tests/oracle/fixtures/skill_linter",
+      "strip_patterns": [
+        "does not match directory '[^']*'"
+      ],
+      "normalize": {
+        "float_int_equal": true
+      }
     }
   },
   "normalize": {
