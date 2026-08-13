@@ -93,6 +93,31 @@ int cli_hermes_cli_hooks__truncate(
     return 0;
 }
 
+/* PoP: cli_hermes_cli_hooks__print_parsed @ hermes_cli/hooks.py:_print_parsed */
+/* Port of Python hermes_cli/hooks.py:_print_parsed.
+ * Pretty-print the parsed wire-shape from a hook result dict. */
+void cli_hermes_cli_hooks__print_parsed(const char *result_json)
+{
+    if (!result_json || !*result_json) {
+        printf("      parsed: <none — hook contributed nothing to the dispatcher>\n");
+        return;
+    }
+    json_t *r = json_parse(result_json, NULL);
+    if (!r) {
+        printf("      parsed: <none — hook contributed nothing to the dispatcher>\n");
+        return;
+    }
+    json_t *parsed = json_obj_get(r, "parsed");
+    if (parsed) {
+        char *s = json_dumps(parsed, 0);
+        printf("      parsed (Hermes wire shape): %s\n", s ? s : "<unserializable>");
+        if (s) free(s);
+    } else {
+        printf("      parsed: <none — hook contributed nothing to the dispatcher>\n");
+    }
+    json_free(r);
+}
+
 /* PoP: cli_hermes_cli_hooks__cmd_revoke @ hermes_cli/hooks.py:_cmd_revoke */
 
 /* Port of Python hermes_cli/hooks.py:_cmd_revoke */
