@@ -3,6 +3,7 @@
  */
 
 #include "hermes_logger.h"
+#include "hermes_json.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -301,6 +302,59 @@ void cli_hermes_cli_memory_setup_cmd_setup_provider(const char *provider_name)
 
 /* PoP: cli_hermes_cli_memory_setup__write_env_vars @ hermes_cli/memory_setup.py:_write_env_vars */
 
+/* Port of Python hermes_cli/memory_setup.py:_provider_pip_dependencies.
+ * Return the pip deps a provider actually needs on THIS install. The manifest
+ * declares a baseline; some providers install mode-dependent extras at setup
+ * time. For hindsight in local_embedded mode, append "hindsight-all".
+ * In C we emit the list as a JSON array string for the CLI wrapper layer. */
+/* PoP: cli_hermes_cli_memory_setup__provider_pip_dependencies @ hermes_cli/memory_setup.py:_provider_pip_dependencies */
+char *cli_hermes_cli_memory_setup__provider_pip_dependencies(
+    const char *provider_name, const char *declared_deps_json)
+{
+    json_t *arr = json_new_array();
+    if (!arr) return NULL;
+    /* Copy declared deps. */
+    if (declared_deps_json && declared_deps_json[0]) {
+        json_t *in = json_parse(declared_deps_json, NULL);
+        if (in && in->type == JSON_ARRAY) {
+            size_t n = json_len(in);
+            for (size_t i = 0; i < n; i++) {
+                json_t *e = json_get(in, i);
+                if (e && e->type == JSON_STRING) json_array_append(arr, json_new_string(e->str_val));
+            }
+        }
+        if (in) json_free(in);
+    }
+    /* Mode-dependent extras: hindsight local_embedded → hindsight-all. */
+    if (provider_name && strcmp(provider_name, "hindsight") == 0) {
+        const char *home = getenv("HERMES_HOME");
+        if (!home || !*home) home = getenv("HOME");
+        if (home && *home) {
+            char cfgpath[2048];
+            snprintf(cfgpath, sizeof(cfgpath), "%s/hindsight/config.json", home);
+            FILE *f = fopen(cfgpath, "rb");
+            if (f) {
+                char buf[4096];
+                size_t n = fread(buf, 1, sizeof(buf) - 1, f);
+                buf[n] = '\0';
+                fclose(f);
+                json_t *cfg = json_parse(buf, NULL);
+                if (cfg && cfg->type == JSON_OBJECT) {
+                    json_t *mode = json_obj_get(cfg, "mode");
+                    const char *mv = (mode && mode->type == JSON_STRING) ? mode->str_val : "";
+                    if (mv && (strcmp(mv, "local") == 0 || strcmp(mv, "local_embedded") == 0))
+                        json_array_append(arr, json_new_string("hindsight-all"));
+                }
+                if (cfg) json_free(cfg);
+            }
+        }
+    }
+    char *out = json_dumps(arr, 0);
+    json_free(arr);
+    return out ? out : strdup("[]");
+}
+
+/* PoP: cli_hermes_cli_memory_setup__write_env_vars @ hermes_cli/memory_setup.py:_write_env_vars */
 /* Port of Python hermes_cli/memory_setup.py:_write_env_vars */
 /* Appends or updates env vars in .env file. */
 int cli_hermes_cli_memory_setup__write_env_vars(
