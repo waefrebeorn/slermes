@@ -15,6 +15,15 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <signal.h>
+#include "json.h"  /* libjson — for _parse_response / _fail_closed_block / _evaluate_result */
+
+/* Constants shared across shell-hook ports. Mirrors Python
+ * agent/shell_hooks.py constants: BLOCK_EXIT_CODE, _STDERR_MESSAGE_LIMIT,
+ * _DEFAULT_BLOCK_MESSAGE, and the blocking-capable event set. */
+#define SHK_BLOCK_EXIT_CODE  2
+#define SHK_STDERR_LIMIT     400
+#define SHK_DEFAULT_BLOCK_MESSAGE "Blocked by shell hook."
+#define SHK_PRE_TOOL_CALL_EVENT "pre_tool_call"  /* only blocking-capable event */
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -145,11 +154,56 @@ char *shk_block_message(const char *primary, const char *fallback) {
 }
 
 /* PoP: _parse_response @ agent/shell_hooks.py:_parse_response */
+/* Translate stdout JSON into Hermes wire-shape. For pre_tool_call, the
+ * Claude-Code-style {"decision":"block","reason":"..."} is translated to
+ * canonical {"action":"block","message":"..."}; {"context":"..."} passes
+ * through for pre_llm_call. Returns NULL for non-matching/empty. */
 char *shk_parse_response(const char *stdout_json) {
-    /* Python: stdout JSON → wire-shape dict (decision map). */
-    if (!stdout_json) return strdup("{}");
-    printf("hook response parsed (claude-code decision shape)\n");
-    return strdup(stdout_json);
+    if (!stdout_json || !*stdout_json) return NULL;
+    const char *s = stdout_json;
+    while (*s == ' ' || *s == '\n' || *s == '\r' || *s == '\t') s++;
+    if (*s == '\0') return NULL;
+
+    json_t *data = json_parse(s, NULL);
+    if (!data || data->type != JSON_OBJECT) {
+        if (data) json_free(data);
+        return NULL;
+    }
+
+    const char *action = json_get_str(data, "action", NULL);
+    const char *decision = json_get_str(data, "decision", NULL);
+    const char *context = json_get_str(data, "context", NULL);
+
+    char *result = NULL;
+    if ((action && strcmp(action, "block") == 0) ||
+        (decision && strcmp(decision, "block") == 0)) {
+        /* Block directive (canonical or Claude-Code-style). _block_message
+         * priority: reason/message field depending on the source shape. */
+        const char *primary = NULL, *fallback = NULL;
+        if (action && strcmp(action, "block") == 0) {
+            primary = json_get_str(data, "message", NULL);
+            fallback = json_get_str(data, "reason", NULL);
+        } else {
+            primary = json_get_str(data, "reason", NULL);
+            fallback = json_get_str(data, "message", NULL);
+        }
+        char *msg = shk_block_message(primary, fallback);
+        json_t *obj = json_object();
+        if (obj) {
+            json_set(obj, "action", json_string("block"));
+            json_set(obj, "message", json_string(msg));
+            result = json_serialize(obj);
+            json_free(obj);
+        }
+        free(msg);
+    } else if (context && *context) {
+        /* pre_llm_call context injection — pass stdout through unchanged. */
+        result = strdup(s);
+    }
+    /* else: any other JSON object → NULL (silent no-op). */
+
+    json_free(data);
+    return result;
 }
 
 /* PoP: allowlist_path @ agent/shell_hooks.py:allowlist_path */
@@ -319,3 +373,159 @@ char *shk_run_once(const char *command, const char *payload_json) {
     printf("hook fired once w/ synthetic payload (%s)\n", command);
     return strdup("{}");
 }
+
+/* ==================================================================== */
+/* Failure-semantics encoder — Port of agent/shell_hooks.py             */
+/* _fail_closed_block + _evaluate_result.                               */
+/* ==================================================================== */
+
+/* pre_tool_call is the only blocking-capable event (Claude-Code / Cursor
+ * compatible). Mirrors Python _BLOCKING_EVENTS. */
+static bool shk_event_is_blocking(const char *event) {
+    return event && strcmp(event, "pre_tool_call") == 0;
+}
+
+/* PoP: _fail_closed_block @ agent/shell_hooks.py:_fail_closed_block */
+/* Canonical block shape for a fail_closed hook that failed. Returns a
+ * malloc'd JSON object string: {"action":"block","message":"hook <cmd> failed closed: <reason>"} */
+char *shk_fail_closed_block(const char *command, const char *reason) {
+    char *msg = NULL;
+    if (asprintf(&msg, "hook %s failed closed: %s",
+                 command ? command : "?", reason ? reason : "") < 0)
+        return NULL;
+    char *out = NULL;
+    json_t *obj = json_object();
+    if (!obj) { free(msg); return NULL; }
+    json_set(obj, "action", json_string("block"));
+    json_set(obj, "message", json_string(msg));
+    out = json_serialize(obj);
+    json_free(obj);
+    free(msg);
+    return out ? out : strdup("{\"action\":\"block\",\"message\":\"hook failed closed\"}");
+}
+
+/* PoP: _evaluate_result @ agent/shell_hooks.py:_evaluate_result */
+/* Turn a _spawn diagnostic dict (JSON with returncode/stdout/stderr/
+ * timed_out/error/elapsed_seconds) into the hook's contribution. Returns
+ * a malloc'd JSON object string (block directive) or NULL for fail-open.
+ * Mirrors Python exactly: spawn error / timeout fail-open unless
+ * fail_closed on a blocking event; exit-code-2 blocks; non-zero warns;
+ * unparseable stdout on a fail-closed blocking hook blocks. */
+char *shk_evaluate_result(const char *event, bool fail_closed,
+                          const char *command, const char *diag_json) {
+    if (!diag_json) return NULL;
+    json_t *r = json_parse(diag_json, NULL);
+    if (!r || r->type != JSON_OBJECT) {
+        if (r) json_free(r);
+        /* No parseable diag at all on a fail-closed blocking hook → block. */
+        if (fail_closed && shk_event_is_blocking(event))
+            return shk_fail_closed_block(command, "no diagnostic produced");
+        return NULL;
+    }
+
+    const char *error = json_get_str(r, "error", NULL);
+    bool timed_out = json_get_bool(r, "timed_out", false);
+    int returncode = (int)json_get_num(r, "returncode", -1);
+    const char *stdout_str = json_get_str(r, "stdout", NULL);
+    const char *stderr_str = json_get_str(r, "stderr", NULL);
+    double elapsed = json_get_num(r, "elapsed_seconds", 0);
+    bool blocking_event = shk_event_is_blocking(event);
+    bool fc = fail_closed && blocking_event;
+
+    /* Spawn error / timeout — fail open unless fail_closed on blocking evt. */
+    if (error && *error) {
+        fprintf(stderr, "[shell_hooks] hook failed (event=%s command=%s): %s\n",
+                event ? event : "?", command ? command : "?", error);
+        char *out = NULL;
+        if (fc)
+            out = shk_fail_closed_block(command, error);
+        json_free(r);
+        return out;
+    }
+    if (timed_out) {
+        char reason[128];
+        snprintf(reason, sizeof(reason), "timed out after %.0fs", elapsed);
+        fprintf(stderr, "[shell_hooks] hook timed out (event=%s command=%s): %s\n",
+                event ? event : "?", command ? command : "?", reason);
+        char *out = NULL;
+        if (fc)
+            out = shk_fail_closed_block(command, reason);
+        json_free(r);
+        return out;
+    }
+
+    /* Exit-code-2 block (Claude-Code / Cursor compatible) on blocking event. */
+    char stderr_lim[SHK_STDERR_LIMIT + 1] = {0};
+    if (stderr_str && stderr_str[0]) {
+        fprintf(stderr, "[shell_hooks] hook stderr (event=%s command=%s): %.*s\n",
+                event ? event : "?", command ? command : "?",
+                SHK_STDERR_LIMIT, stderr_str);
+        snprintf(stderr_lim, sizeof(stderr_lim), "%.*s", SHK_STDERR_LIMIT, stderr_str);
+    }
+    if (returncode == SHK_BLOCK_EXIT_CODE && blocking_event) {
+        /* stdout block JSON wins for the message. */
+        char *parsed = shk_parse_response(stdout_str ? stdout_str : "");
+        json_t *p = parsed ? json_parse(parsed, NULL) : NULL;
+        char *result = NULL;
+        if (p && p->type == JSON_OBJECT &&
+            strcmp(json_get_str(p, "action", ""), "block") == 0) {
+            result = parsed ? strdup(parsed) : NULL;
+        } else {
+            /* stderr → default */
+            char *message = NULL;
+            if (stderr_lim[0]) message = strdup(stderr_lim);
+            if (!message) message = strdup(SHK_DEFAULT_BLOCK_MESSAGE);
+            json_t *obj = json_object();
+            if (obj) {
+                json_set(obj, "action", json_string("block"));
+                json_set(obj, "message", json_string(message));
+                result = json_serialize(obj);
+                json_free(obj);
+            }
+            free(message);
+        }
+        if (p) json_free(p);
+        free(parsed);
+        json_free(r);
+        return result;
+    }
+
+    /* Other non-zero exits: warn, still parse stdout for a block directive. */
+    if (returncode != 0) {
+        fprintf(stderr, "[shell_hooks] hook exited %d (event=%s command=%s); stderr=%s\n",
+                returncode, event ? event : "?", command ? command : "?",
+                stderr_str ? stderr_str : "");
+    }
+
+    /* Normal path: parse stdout for a directive. */
+    char *stdout_trim = NULL;
+    if (stdout_str) {
+        const char *s = stdout_str;
+        while (*s == ' ' || *s == '\n' || *s == '\r' || *s == '\t') s++;
+        stdout_trim = strdup(s);
+        char *e = stdout_trim + strlen(stdout_trim);
+        while (e > stdout_trim && (e[-1] == ' ' || e[-1] == '\n' || e[-1] == '\r' || e[-1] == '\t'))
+            *--e = '\0';
+    }
+    char *parsed = stdout_trim ? shk_parse_response(stdout_trim) : strdup("{}");
+    free(stdout_trim);
+
+    /* fail_closed: unparseable stdout that's non-empty blocks. */
+    if (parsed && fc && stdout_str && stdout_str[0]) {
+        json_t *d = json_parse(parsed, NULL);
+        bool valid = (d && d->type == JSON_OBJECT);
+        if (d) json_free(d);
+        if (!valid) {
+            char *blk = shk_fail_closed_block(command, "unparseable stdout (expected a JSON object)");
+            free(parsed);
+            json_free(r);
+            return blk;
+        }
+    }
+
+    char *result = parsed ? strdup(parsed) : NULL;
+    free(parsed);
+    json_free(r);
+    return result;
+}
+
