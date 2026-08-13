@@ -274,3 +274,41 @@ int bb_u_extract_payload_record(const char *arg) {
     json_free(p);
     return 0;
 }
+
+/* Secret-scope helpers (agent/secret_scope.py ports). */
+extern json_t *secret_scope_current_secret_scope(void);
+extern bool secret_scope_is_multiplex_active(void);
+extern const char *secret_scope_get_secret(const char *name, const char *default_val);
+
+/* PoP: _get_scoped_secret @ gateway/platforms/bluebubbles.py:_get_scoped_secret */
+/* Scope-aware credential read with the default-profile startup fallback.
+ * Secondary profiles construct their adapters under a profile secret scope —
+ * the scope is authoritative and a scoped miss returns default (no cross-
+ * profile borrow from os.environ). The DEFAULT profile's adapter constructs
+ * and sends UNscoped under multiplexing, where a bare get_secret would raise
+ * UnscopedSecretError and crash this path; there os.environ is that profile's
+ * own value, so fall back to it. Arg = "name\tdefault\tenv_val". */
+int bb_u_get_scoped_secret(const char *arg) {
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    char name[256];
+    size_t nl = (size_t)(t1 ? t1 - arg : strlen(arg));
+    if (nl >= sizeof(name)) nl = sizeof(name) - 1;
+    memcpy(name, arg, nl); name[nl] = '\0';
+    const char *dflt = t1 ? t1 + 1 : "";
+    const char *env = t2 ? t2 + 1 : "";
+    const char *val = NULL;
+    json_t *scope = secret_scope_current_secret_scope();
+    int scope_installed = scope && scope->type == JSON_OBJECT;
+    if (scope_installed) {
+        val = secret_scope_get_secret(name, dflt);
+    } else if (secret_scope_is_multiplex_active()) {
+        /* Python: UnscopedSecretError raised → fall back to os.environ */
+        val = env[0] ? env : dflt;
+    } else {
+        val = secret_scope_get_secret(name, dflt);
+    }
+    printf("%s\n", val ? val : dflt);
+    return 0;
+}
