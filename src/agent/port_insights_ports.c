@@ -10,6 +10,8 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "hermes_insights.h"
+#include "hermes_json.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -93,4 +95,64 @@ char *ins_format_gateway(const char *report_json) {
     if (!report_json) return strdup("");
     printf("insights formatted for gateway (short)\n");
     return strdup(report_json);
+}
+
+/* PoP: get_usage_breakdown @ agent/insights.py:get_usage_breakdown */
+char *ins_get_usage_breakdown(db_t *db, int days, const char *source) {
+    /* Return the analytics-usage payload without running a full generate().
+     * Uses the instr()-prefiltered _get_skill_usage query so only messages
+     * that reference skill_view or skill_manage are loaded from SQLite,
+     * while still preserving the per-tool breakdown used by the dashboard
+     * route. Emits {"tools": [...], "skills": {"summary":..., "top_skills":...}}. */
+    insights_report_t *r = insights_generate(db, days ? days : 30, source);
+    if (!r) return NULL;
+    /* ── tools: [{tool, count, percentage}] ── */
+    json_t *tools = json_array();
+    long long total_calls = 0;
+    for (int i = 0; i < r->tool_count; i++) total_calls += r->tools[i].count;
+    for (int i = 0; i < r->tool_count; i++) {
+        json_t *o = json_object();
+        json_object_set(o, "tool", json_string(r->tools[i].tool));
+        json_object_set(o, "count", json_number((double)r->tools[i].count));
+        double pct = total_calls ? (double)r->tools[i].count / total_calls * 100.0 : 0.0;
+        json_object_set(o, "percentage", json_number(pct));
+        json_array_append(tools, o);
+    }
+    /* ── skills: {summary, top_skills} ── */
+    long long total_loads = 0, total_edits = 0;
+    for (int i = 0; i < r->skill_count; i++) {
+        total_loads += r->skills[i].view_count;
+        total_edits += r->skills[i].manage_count;
+    }
+    long long total_actions = total_loads + total_edits;
+    json_t *top_skills = json_array();
+    for (int i = 0; i < r->skill_count; i++) {
+        json_t *o = json_object();
+        json_object_set(o, "skill", json_string(r->skills[i].skill));
+        json_object_set(o, "view_count", json_number((double)r->skills[i].view_count));
+        json_object_set(o, "manage_count", json_number((double)r->skills[i].manage_count));
+        long long tc = r->skills[i].view_count + r->skills[i].manage_count;
+        json_object_set(o, "total_count", json_number((double)tc));
+        double pct = total_actions ? (double)tc / total_actions * 100.0 : 0.0;
+        json_object_set(o, "percentage", json_number(pct));
+        json_object_set(o, "last_used_at",
+                        r->skills[i].last_used_at > 0 ? json_number(r->skills[i].last_used_at)
+                                                      : json_null());
+        json_array_append(top_skills, o);
+    }
+    json_t *summary = json_object();
+    json_object_set(summary, "total_skill_loads", json_number((double)total_loads));
+    json_object_set(summary, "total_skill_edits", json_number((double)total_edits));
+    json_object_set(summary, "total_skill_actions", json_number((double)total_actions));
+    json_object_set(summary, "distinct_skills_used", json_number((double)r->skill_count));
+    json_t *skills = json_object();
+    json_object_set(skills, "summary", summary);
+    json_object_set(skills, "top_skills", top_skills);
+    json_t *root = json_object();
+    json_object_set(root, "tools", tools);
+    json_object_set(root, "skills", skills);
+    char *out = json_dumps(root, 0);
+    insights_report_free(r);
+    json_free(root);
+    return out;
 }
