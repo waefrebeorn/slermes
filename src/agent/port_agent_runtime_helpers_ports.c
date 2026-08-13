@@ -387,3 +387,63 @@ int arh_direct_native_anthropic_tool_cache_capability(const char *base_url,
     free(host);
     return r;
 }
+
+/* PoP: _msg_has_payload @ agent/agent_runtime_helpers.py:_msg_has_payload */
+/* True if msg carries anything the API treats as non-empty content.
+ * Covers string content, non-empty multimodal content lists, tool_calls,
+ * tool_call_id linkage (tool results), and reasoning payloads. Role-agnostic
+ * so it can vet user/assistant/tool turns uniformly. */
+int arh_msg_has_payload(const json_t *msg)
+{
+    if (!msg || msg->type != JSON_OBJECT) return 0;
+    json_t *content = json_obj_get(msg, "content");
+    if (content && content->type == JSON_STRING) {
+        if (content->str_val && *content->str_val) {
+            /* content.strip() */
+            const char *s = content->str_val;
+            while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+            if (*s) return 1;
+        }
+    } else if (content && content->type == JSON_ARRAY) {
+        size_t n = json_len(content);
+        for (size_t i = 0; i < n; i++) {
+            json_t *block = json_get(content, i);
+            if (!block) continue;
+            if (block->type == JSON_OBJECT) {
+                /* any typed block counts, as long as a text block is not blank */
+                const char *btype = json_get_str(block, "type", NULL);
+                if (btype && strcmp(btype, "text") == 0) {
+                    const char *txt = json_get_str(block, "text", NULL);
+                    if (txt && *txt) {
+                        const char *s = txt;
+                        while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+                        if (*s) return 1;
+                    }
+                    continue; /* blank text block does not count */
+                }
+                return 1;
+            } else if (block) {
+                return 1;
+            }
+        }
+    } else if (content && content->type != JSON_NULL) {
+        /* content not in (None, "") */
+        if (!(content->type == JSON_STRING && !content->str_val))
+            return 1;
+    }
+    /* structural payloads */
+    json_t *tc = json_obj_get(msg, "tool_calls");
+    if (tc && (tc->type == JSON_ARRAY ? json_len(tc) > 0 : 1)) return 1;
+    const char *rc = json_get_str(msg, "reasoning_content", NULL);
+    if (rc && *rc) {
+        const char *s = rc;
+        while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+        if (*s) return 1;
+    }
+    if (json_obj_get(msg, "reasoning") != NULL ||
+        json_obj_get(msg, "reasoning_details") != NULL) return 1;
+    /* codex item carriers */
+    if (json_obj_get(msg, "codex_message_items") != NULL ||
+        json_obj_get(msg, "codex_reasoning_items") != NULL) return 1;
+    return 0;
+}
