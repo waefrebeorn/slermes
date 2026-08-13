@@ -536,3 +536,92 @@ int scheduler_register_plugin_platform(const char *name, const char *env_var)
     g_plugin_count++;
     return 1;
 }
+
+/* PoP: scheduler_preflight_check_delivery @ cron/scheduler.py:_preflight_check_delivery */
+/* Check the job's delivery target(s) resolve to configured platforms.
+ *
+ * "local"/"origin" (and the "all" routing token) need no gateway credentials
+ * and are never checked — a deliver=local job must not pay a gateway-config
+ * load. For concrete platform targets, an unknown platform always blocks; a
+ * known platform additionally blocks when connected[] is non-NULL and the
+ * platform is not in it (the caller supplies the gateway's connected set; a
+ * NULL connected set means the gateway-config load failed → fail OPEN so a
+ * transient config hiccup never wedges delivery that would have worked).
+ *
+ * Returns a malloc'd reason string, or NULL when the delivery is fine. */
+char *scheduler_preflight_check_delivery(const char *deliver_value,
+                                         const char **connected, int n_connected)
+{
+    char *norm = scheduler_normalize_deliver_value(deliver_value ? deliver_value : "");
+    if (!norm) return NULL;
+    char *saveptr = NULL;
+    char *part = strtok_r(norm, ",", &saveptr);
+    while (part) {
+        /* strip whitespace */
+        char *p = part;
+        while (*p == ' ' || *p == '\t') p++;
+        size_t l = strlen(p);
+        while (l > 0 && (p[l-1] == ' ' || p[l-1] == '\t')) l--;
+        char partbuf[256];
+        if (l >= sizeof(partbuf)) l = sizeof(partbuf) - 1;
+        memcpy(partbuf, p, l); partbuf[l] = '\0';
+        if (!partbuf[0]) { part = strtok_r(NULL, ",", &saveptr); continue; }
+        /* local / origin / all → never checked */
+        if (strcasecmp(partbuf, "local") == 0 ||
+            strcasecmp(partbuf, "origin") == 0 ||
+            strcasecmp(partbuf, "all") == 0) {
+            part = strtok_r(NULL, ",", &saveptr);
+            continue;
+        }
+        /* platform = part.split(":", 1)[0].strip() */
+        const char *colon = strchr(partbuf, ':');
+        char platform[256];
+        if (colon) {
+            size_t pl = (size_t)(colon - partbuf);
+            if (pl >= sizeof(platform)) pl = sizeof(platform) - 1;
+            memcpy(platform, partbuf, pl); platform[pl] = '\0';
+        } else {
+            snprintf(platform, sizeof(platform), "%s", partbuf);
+        }
+        /* strip */
+        char *ps = platform;
+        while (*ps == ' ' || *ps == '\t') ps++;
+        size_t psl = strlen(ps);
+        while (psl > 0 && (ps[psl-1] == ' ' || ps[psl-1] == '\t')) psl--;
+        char plat2[256];
+        if (psl >= sizeof(plat2)) psl = sizeof(plat2) - 1;
+        memcpy(plat2, ps, psl); plat2[psl] = '\0';
+
+        if (!scheduler_is_known_delivery_platform(plat2)) {
+            char *reason = NULL;
+            asprintf(&reason,
+                "delivery platform '%s' is not a known cron delivery target. "
+                "Fix the job's `deliver` value or configure the platform's "
+                "gateway credentials.", plat2);
+            free(norm);
+            return reason;
+        }
+        /* known platform: block if connected set supplied and platform absent */
+        if (connected != NULL) {
+            int present = 0;
+            for (int i = 0; i < n_connected; i++) {
+                if (connected[i] && strcasecmp(connected[i], plat2) == 0) {
+                    present = 1;
+                    break;
+                }
+            }
+            if (!present) {
+                char *reason = NULL;
+                asprintf(&reason,
+                    "delivery platform '%s' has no gateway credentials "
+                    "configured (not connected). Configure it via `hermes "
+                    "setup` or change the job's `deliver` target.", plat2);
+                free(norm);
+                return reason;
+            }
+        }
+        part = strtok_r(NULL, ",", &saveptr);
+    }
+    free(norm);
+    return NULL;
+}

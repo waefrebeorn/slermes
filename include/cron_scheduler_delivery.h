@@ -154,4 +154,15 @@ int scheduler_cron_delivery_targets(const char **connected, int n_connected,
  */
 int scheduler_register_plugin_platform(const char *name, const char *env_var);
 
+/*
+ * Preflight delivery check (cron/scheduler.py:_preflight_check_delivery).
+ * "local"/"origin"/"all" need no gateway credentials and are never checked.
+ * An unknown platform always blocks; a known platform blocks when connected[]
+ * is non-NULL and the platform is absent from it (NULL connected = gateway
+ * config failed to load → fail OPEN). Returns a malloc'd reason string, or
+ * NULL when delivery is fine. Caller frees the returned string.
+ */
+char *scheduler_preflight_check_delivery(const char *deliver_value,
+                                         const char **connected, int n_connected);
+
 #endif /* CRON_SCHEDULER_DELIVERY_H */
