@@ -5,7 +5,7 @@
 #include "hermes_json.h"
 #include "provider_metadata.h"
 
-/* PoP: agent_turn_context__compression_made_progress @ agent/turn_context.py:_compression_made_progress */
+/* PoP: agent_turn_context_compression_made_progress @ agent/turn_context.py:compression_made_progress */
 bool agent_turn_context_compression_made_progress(
     long orig_len, long new_len, long orig_tokens, long new_tokens)
 {

@@ -15,6 +15,7 @@
 #include <unistd.h>
 #include <poll.h>
 #include <sys/socket.h>
+#include "json.h"
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -323,4 +324,49 @@ long arh_force_close_tcp_sockets(long fd) {
     if (fd < 0) return 0;
     shutdown((int)fd, SHUT_RDWR);
     return 0;
+}
+
+/* PoP: cache_ttl_means_disabled @ agent/agent_runtime_helpers.py:cache_ttl_means_disabled */
+/* True when a prompt_caching.cache_ttl value means caching off.
+ * Single source of truth for the disable-synonym detection shared by
+ * agent_init (_cache_disabled) and the stub policy paths. Unknown values
+ * ("2h", integers) are NOT a disable — callers keep caching enabled with
+ * the default TTL. */
+int arh_cache_ttl_means_disabled(const char *ttl)
+{
+    if (!ttl) return 1; /* ttl is None → True */
+    if (strcmp(ttl, "5m") == 0 || strcmp(ttl, "1h") == 0) return 0;
+    if (strcmp(ttl, "false") == 0) return 1; /* ttl is False → True */
+    /* str(ttl).lower() in ("off","false","disabled","no","none") */
+    char *low = lowerdup(ttl);
+    if (!low) return 0;
+    int r = (strcmp(low, "off") == 0 || strcmp(low, "false") == 0 ||
+             strcmp(low, "disabled") == 0 || strcmp(low, "no") == 0 ||
+             strcmp(low, "none") == 0);
+    free(low);
+    return r;
+}
+
+/* PoP: prompt_caching_disabled_from_config @ agent/agent_runtime_helpers.py:prompt_caching_disabled_from_config */
+/* True when prompt_caching.cache_ttl is configured as off. Same disable
+ * detection as agent_init (via cache_ttl_means_disabled) so stub-based policy
+ * paths honor the same config contract without holding a live AIAgent.
+ * Fail-open on any config-read error (returns 0). */
+int arh_prompt_caching_disabled_from_config(void)
+{
+    extern json_t *config_py_load_config_readonly(void);
+    json_t *cfg = config_py_load_config_readonly();
+    if (!cfg) return 0;
+    json_t *pc = json_obj_get(cfg, "prompt_caching");
+    const char *ttl = "5m";
+    if (pc && pc->type == JSON_OBJECT) {
+        json_t *ttl_node = json_obj_get(pc, "cache_ttl");
+        if (ttl_node && ttl_node->type == JSON_STRING && ttl_node->str_val && *ttl_node->str_val)
+            ttl = ttl_node->str_val;
+        else if (ttl_node && ttl_node->type == JSON_BOOL && !ttl_node->bool_val)
+            ttl = "false";
+    }
+    int r = arh_cache_ttl_means_disabled(ttl);
+    json_free(cfg);
+    return r;
 }
