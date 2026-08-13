@@ -37,6 +37,8 @@
 
 #include "hermes_gateway_config.h"
 #include "port_gateway_run_deps.h"
+#include "agent_estop.h"      /* estop gate + /pause */
+#include "cli/cli_cmd_parity.h"   /* cmd_pause (estop engage/disengage) */
 #include "hermes_redact.h"
 #include "hermes_tirith.h"
 #include "hermes_cron.h"
@@ -1009,10 +1011,53 @@ void process_update(const char *platform, const char *chat_id, const char *text)
                         session_agent->llm.model);
                 gateway_send(platform, chat_id, buf);
             }
+        } else if (strcmp(cmd_buf, "pause") == 0) {
+            /* GW_ESTOP: /pause [off|resume|stop|disengage|<reason>]
+             * Faithful port of gateway/run.py _handle_pause_command.
+             * Engages the global emergency stop; resume aliases disengage it.
+             * Recognized slash commands bypass the estop gate (see below) so a
+             * messaging-only operator is never locked out. Reuses cmd_pause
+             * (cli_cmd_parity.c) which wraps the agent_estop opaque port. */
+            cmd_pause(args, session_agent);
             free(modified_text);
             return;
         }
         /* Unknown command — let it fall through to the AI agent */
+    }
+
+    /* GW_ESTOP_GATE: Global emergency-stop turn gate (gateway/run.py lines
+     * 15036-15080). Recognized slash commands already returned above, so any
+     * text reaching here is a non-control message. While ESTOP is engaged,
+     * hold NEW turns: reply with paused_notice instead of invoking the agent.
+     *
+     * Faithful allow-pass-through (run.py): a session already running its own
+     * turn, an in-flight /update prompt, or a pending slash-confirm/approval
+     * is NOT held (those steer in-flight work). The C gateway tracks running
+     * state via session_agent; pending clarifications/approvals are checked
+     * via the approval/clarify hooks that already run above. */
+    if (estop_is_engaged()) {
+        /* Allow in-flight agent turns to keep running. Python's
+         * `_is_session_running` maps to: a turn is active when it has a live
+         * stream or tool-event callback (set during the turn, cleared on
+         * completion at GW12+ below). Pending /update prompts, clarifications
+         * and approvals are already intercepted by the responders above
+         * (gw_approval_check_response / gw_clarify_check_response). */
+        bool in_flight = false;
+        if (session_agent &&
+            (session_agent->stream_cb || session_agent->tool_event_cb))
+            in_flight = true;
+        if (!in_flight) {
+            char *paused = estop_paused_reply();
+            if (paused) {
+                gateway_send(platform, chat_id, paused);
+                free(paused);
+            } else {
+                gateway_send(platform, chat_id,
+                    "⏸️ Hermes is paused. New work is on hold; run `/pause off` to pick things back up.");
+            }
+            free(modified_text);
+            return;
+        }
     }
 
     /* Run agent on per-chat session.

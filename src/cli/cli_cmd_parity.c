@@ -20,9 +20,12 @@
 #include "hermes_billing.h"
 #include "port_config_py_helpers.h"
 #include "battery.h"
+#include "agent_estop.h"   /* pause estop engage/disengage/get_state */
+#include "hermes_json.h"   /* json_parse / json_obj_get (estop state parse) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>          /* tolower */
 #include <unistd.h>
 
 /* ── existing faithful wrappers (port_cli_commands_mixin_wrappers.c) ── */
@@ -298,6 +301,94 @@ void cmd_blueprint(const char *args, agent_state_t *state) {
     (void)state;
     /* Delegate to the faithful blueprint wrapper. */
     ccm_handle_blueprint_command(args ? args : "");
+}
+
+/* ── /pause ─────────────────────────────────────────────────────────── */
+/* Faithful C11 port of the global emergency stop (agent/estop.py), reached
+ * in-band via the `/pause` slash command (gateway-only, commands.py CommandDef
+ * "pause") and on the CLI as `hermes pause ...` (pause.py build_pause_parser).
+ *
+ * Python keeps the two dispatch surfaces separate: the slash form is
+ * gateway/run.py `_handle_pause_command`; the host-shell form is
+ * hermes_cli/subcommands/pause.py `cmd_pause`. They share one semantic —
+ * engage/disengage the ESTOP sentinel — so a single C handler serves both,
+ * reusing the opaque agent_estop port.
+ *
+ * Note: there is NO estop `cmd_resume`. Python's resume is reached in-band as
+ * `/pause off | resume | stop | disengage` (run.py line 14637: the aliases set
+ * {"off","resume","stop","disengage"}), NOT a separate /resume slash. The C
+ * `/resume` slash remains session-resume (curator.py:_cmd_resume). So matching
+ * Python exactly means ONE estop handler: cmd_pause, with the disengage
+ * branch inline. */
+/* PoP: cmd_pause @ hermes_cli/subcommands/pause.py:cmd_pause */
+/* PoP: _handle_pause_command @ gateway/run.py:_handle_pause_command */
+void cmd_pause(const char *args, agent_state_t *state) {
+    (void)state;
+    /* Mirror pause.py / run.py: strip leading spaces. */
+    const char *arg = args ? args : "";
+    while (*arg == ' ') arg++;
+
+    /* Normalize to lowercase for alias comparison (run.py uses .lower()
+     * on the args token). */
+    char lbuf[128];
+    size_t li = 0;
+    for (const char *p = arg; *p && li + 1 < sizeof(lbuf); p++)
+        lbuf[li++] = (char)tolower((unsigned char)*p);
+    lbuf[li] = '\0';
+
+    /* Resume aliases: off | resume | stop | disengage -> disengage. */
+    if (strcmp(lbuf, "off") == 0 || strcmp(lbuf, "resume") == 0 ||
+        strcmp(lbuf, "stop") == 0 || strcmp(lbuf, "disengage") == 0) {
+        char *path = estop_sentinel_path();
+        int lifted = estop_disengage();
+        if (lifted) {
+            printf("▶️  Hermes resumed — dispatch picks up on the next tick.\n");
+        } else {
+            printf("Hermes is not paused (no sentinel at %s).\n",
+                   path ? path : "");
+        }
+        free(path);
+        return;
+    }
+
+    /* Engage (optionally with a reason). */
+    int already = estop_is_engaged();
+    char *path = estop_sentinel_path();
+    /* Reason is the raw (non-lowercased) arg token — pause.py stores args as
+     * the reason verbatim; run.py stores `reason=args` verbatim. */
+    const char *reason = (arg && *arg) ? arg : NULL;
+    char *engaged_path = estop_engage(reason);
+
+    const char *verb = already ? "Still paused" : "Hermes paused";
+    printf("⏸️  %s", verb);
+    if (already && !reason) {
+        /* Show the existing reason when re-engaging without one (run.py:
+         * prints existing reason on the "already paused" path). */
+        char *state_json = estop_get_state();
+        if (state_json) {
+            char *reason2 = NULL;
+            json_t *j = json_parse(state_json, NULL);
+            free(state_json);
+            if (j && j->type == JSON_OBJECT) {
+                json_t *r = json_obj_get(j, "reason");
+                if (r && r->type == JSON_STRING && r->str_val && *r->str_val)
+                    reason2 = strdup(r->str_val);
+                json_free(j);
+            }
+            if (reason2 && *reason2)
+                printf(" (reason: %s)", reason2);
+            free(reason2);
+        }
+    } else if (reason) {
+        printf(" — reason: %s", reason);
+    }
+    printf("\n");
+    printf("    sentinel: %s\n", engaged_path ? engaged_path : (path ? path : ""));
+    printf(
+        "    Cron dispatch, kanban dispatch, and new gateway turns are on hold.\n"
+        "    In-flight work keeps running. Run `/pause off` to lift the pause.\n");
+    free(engaged_path);
+    free(path);
 }
 
 /* ── /hatch ─────────────────────────────────────────────────────────── */

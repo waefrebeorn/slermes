@@ -74,6 +74,7 @@ static const cli_command_def_t CLI_COMMANDS[] = {
     { "rollback", "List or restore filesystem checkpoints", "Session", NULL, "[number]", NULL, false },
     { "snapshot", "Create or restore state snapshots of Hermes config/state", "Session", k15_aliases, "[create|restore <id>|prune]", NULL, false },
     { "stop", "Kill all running background processes", "Session", NULL, "", NULL, false },
+    { "pause", "Pause new work globally (emergency stop); 'off' resumes", "Session", NULL, "[reason | off]", NULL, true },
     { "approve", "Approve a pending dangerous command", "Session", NULL, "[session|always]", NULL, true },
     { "deny", "Deny a pending dangerous command", "Session", NULL, "", NULL, true },
     { "background", "Run a prompt in the background", "Session", k19_aliases, "<prompt>", NULL, false },
@@ -224,9 +225,10 @@ const cli_command_def_t *const CLI_COMMAND_REGISTRY[] = {
     &CLI_COMMANDS[79],
     &CLI_COMMANDS[80],
     &CLI_COMMANDS[81],
+    &CLI_COMMANDS[82],
     NULL
 };
-size_t CLI_COMMAND_REGISTRY_COUNT = 82;
+size_t CLI_COMMAND_REGISTRY_COUNT = 83;
 
 /* PoP: resolve_command @ hermes_cli/commands.py:resolve_command */
 /* ── resolve_command (mirrors commands.py:resolve_command) ───────────────── */

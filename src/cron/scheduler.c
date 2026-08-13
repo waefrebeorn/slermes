@@ -16,6 +16,7 @@
 #include "hermes_json.h"
 #include "hermes_skill_commands.h"
 #include "slermes_home.h"
+#include "agent_estop.h"   /* estop gate (cron/jobs.py scheduler.py) */
 #include "../cron/scheduler.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -335,8 +336,36 @@ void cron_remove_job(const char *name) {
 int cron_run_loop(int interval_sec) {
     printf("[cron] Scheduler started (interval: %ds)\n", interval_sec);
 
+    static int warned = 0;  /* one-shot hold notice per engagement */
     while (true) {
         time_t now = time(NULL);
+
+        /* CR_ESTOP: Global emergency stop. Mirrors cron/scheduler.py lines
+         * 4937-4942: while the ESTOP sentinel is engaged, skip dispatch for
+         * the entire tick (due jobs simply wait for the next tick after
+         * `hermes resume`). estop_check_paused logs the hold once per
+         * engagement (not every tick) and fails OPEN only via its own lock;
+         * here we honor the sentinel authoritatively. */
+        if (estop_is_engaged()) {
+            if (!warned) {
+                char *st = estop_get_state();
+                if (st) {
+                    fprintf(stderr,
+                        "[cron] Dispatch paused by global emergency stop — "
+                        "new runs on hold; remove the sentinel with `/pause off` "
+                        "(%s).\n", st);
+                    free(st);
+                } else {
+                    fprintf(stderr,
+                        "[cron] Dispatch paused by global emergency stop — "
+                        "new runs on hold; remove the sentinel with `/pause off`.\n");
+                }
+                warned = 1;
+            }
+            sleep(interval_sec);
+            continue;
+        }
+        warned = 0;  /* sentinel cleared → re-arm one-shot warning */
 
         for (cron_job_t *job = g_jobs; job; job = job->next) {
             if (!job->active) continue;

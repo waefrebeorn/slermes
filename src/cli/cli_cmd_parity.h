@@ -27,5 +27,6 @@ void cmd_subscription(const char *args, agent_state_t *state);
 void cmd_suggestions(const char *args, agent_state_t *state);
 void cmd_timestamps(const char *args, agent_state_t *state);
 void cmd_topup(const char *args, agent_state_t *state);
+void cmd_pause(const char *args, agent_state_t *state);
 
 #endif /* SLERMES_CLI_CMD_PARITY_H */

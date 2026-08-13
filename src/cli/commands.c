@@ -431,6 +431,14 @@ const command_def_t COMMANDS[] = {
     {.name="/snapshot", .alias="/snap", .description="Save a named snapshot", .category="Session", .args_hint="[name]", .subcommands=NULL, .handler=cmd_snapshot, .cli_only=true, .gateway_only=false},
     {.name="/status", .alias="/st", .description="Show session status and configuration info", .category="Session", .args_hint=NULL, .subcommands=NULL, .handler=cmd_status},
     {.name="/stop", .alias=NULL, .description="Kill all running background processes", .category="System", .args_hint=NULL, .subcommands=NULL, .handler=cmd_stop},
+    /* /pause is gateway_only=True in Python (commands.py CommandDef "pause"),
+     * but Python's host-shell CLI reaches estop via `hermes pause` (argparse
+     * subcommand → pause.py:cmd_pause), NOT the slash-dispatch path. slermes
+     * has no separate argparse layer, so `hermes /pause` must dispatch here;
+     * the gateway handles /pause via its own inline chain (server.c) which
+     * ignores gateway_only. Setting gateway_only=false lets the CLI reach it,
+     * matching Python's reachable `hermes pause` entry point. */
+    {.name="/pause", .alias=NULL, .description="Pause new work globally (emergency stop); '/pause off' resumes", .category="Session", .args_hint="[reason | off]", .subcommands=NULL, .handler=cmd_pause, .gateway_only=false},
     {.name="/approve", .alias=NULL, .description="Approve a pending dangerous command", .category="Security", .args_hint=NULL, .subcommands=NULL, .handler=cmd_approve, .cli_only=false, .gateway_only=true},
     {.name="/deny", .alias=NULL, .description="Deny a pending dangerous command", .category="Security", .args_hint=NULL, .subcommands=NULL, .handler=cmd_deny, .cli_only=false, .gateway_only=true},
     {.name="/title", .alias=NULL, .description="Set a title for the current session", .category="Session", .args_hint="<title>", .subcommands=NULL, .handler=cmd_title},

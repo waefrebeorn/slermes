@@ -30,6 +30,7 @@
 #include "kanban_db.h"
 #include "hermes_json.h"
 #include "hermes_regex.h"
+#include "agent_estop.h"   /* estop gate (gateway/kanban_watchers _kanban_dispatch_allowed) */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -1796,6 +1797,21 @@ kdb_dispatch_result_t *kdb_dispatch_once(sqlite3 *conn,
     if (dbp) kdb_dispatch_tick_lock_acquire(dbp, &held, &h);
     if (dbp) free(dbp);
     if (!held) { res->skipped_locked = 1; return res; }
+
+    /* KB_ESTOP: Global emergency stop gate (gateway/kanban_watchers.py
+     * _kanban_dispatch_allowed). Checked BEFORE spawning new workers so a
+     * pause takes effect on the next tick without a gateway restart. Already-
+     * running workers finish (the dispatch tick only stops NEW spawns). Fails
+     * open only if the estop module is unimportable in Python; C always links
+     * agent_estop, so the sentinel is honoured authoritatively here. */
+    if (estop_is_engaged()) {
+        /* No new spawns while ESTOP is held (mirror
+         * _kanban_dispatch_allowed returning False). res is fresh-calloc'd
+         * (skipped_locked=0, spawned_n=0), so an empty spawn result is the
+         * faithful "no progress" signal. */
+        kdb_dispatch_tick_lock_release(h);
+        return res;
+    }
 
     kdb_reap_worker_zombies();
 
