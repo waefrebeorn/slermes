@@ -370,3 +370,20 @@ int arh_prompt_caching_disabled_from_config(void)
     json_free(cfg);
     return r;
 }
+
+/* PoP: _direct_native_anthropic_tool_cache_capability @ agent/agent_runtime_helpers.py:_direct_native_anthropic_tool_cache_capability */
+/* Return whether this resolved destination accepts native tool markers.
+ * C signature takes the resolved base_url + api_mode (no live agent object):
+ * True when api_mode == "anthropic_messages" and the base URL host is
+ * api.anthropic.com. */
+int arh_direct_native_anthropic_tool_cache_capability(const char *base_url,
+                                                      const char *api_mode)
+{
+    if (!api_mode || strcmp(api_mode, "anthropic_messages") != 0) return 0;
+    extern char *provider_base_url_hostname(const char *base_url);
+    char *host = provider_base_url_hostname(base_url ? base_url : "");
+    if (!host) return 0;
+    int r = (strcmp(host, "api.anthropic.com") == 0);
+    free(host);
+    return r;
+}
