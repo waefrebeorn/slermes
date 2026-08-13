@@ -581,6 +581,20 @@ int commands_count(void) {
     return count;
 }
 
+/* PoP: is_interrupt_then_dispatch @ hermes_cli/commands.py:is_interrupt_then_dispatch */
+/* Return true when command_name must interrupt a running agent first.
+ * Derived from the registry: commands whose busy_policy is
+ * "interrupt_then_dispatch" (the /stop, /new, /reset class). Accepts aliases
+ * (e.g. "reset" resolves to "new"). In the C port the interrupt-then-dispatch
+ * set is {new, reset, stop}. */
+bool cli_commands_is_interrupt_then_dispatch(const char *command_name) {
+    if (!command_name) return false;
+    const char *INTERRUPT[] = { "new", "reset", "stop", NULL };
+    for (int i = 0; INTERRUPT[i]; i++)
+        if (strcasecmp(command_name, INTERRUPT[i]) == 0) return true;
+    return false;
+}
+
 const char *commands_list_json(void) {
     int count = commands_count();
     size_t bufsz = 256 + (size_t)count * 256;
