@@ -463,3 +463,100 @@ char *cli_agent_display__build_tool_label(const char *tool_name, const char *arg
     free(preview);
     return r;
 }
+
+/* PoP: _display_url @ agent/display.py:_display_url */
+/* Extract a display-only URL. For a dict, prefers "url" then "href". For a
+ * string, strip whitespace. Everything else → "". Returns malloc'd string. */
+char *cli_agent_display__display_url(const char *value_json)
+{
+    if (!value_json) return strdup("");
+    char *err = NULL;
+    json_t *v = json_parse(value_json, &err);
+    free(err);
+    if (v && v->type == JSON_OBJECT) {
+        json_t *u = json_obj_get(v, "url");
+        if (!u) u = json_obj_get(v, "href");
+        if (u && u->type == JSON_STRING) { char *r = strdup(u->str_val); json_free(v); return r; }
+        json_free(v);
+        return strdup("");
+    }
+    if (v) json_free(v);
+    /* String path: strip whitespace. */
+    const char *s = value_json;
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    size_t n = strlen(s);
+    while (n > 0 && (s[n-1] == ' ' || s[n-1] == '\t' || s[n-1] == '\n' || s[n-1] == '\r')) n--;
+    return strndup(s, n);
+}
+
+/* PoP: prepare_tool_preview @ agent/display.py:prepare_tool_preview */
+/* Build one canonical compact preview before platform formatting.
+ *
+ * Rebuilds the uncapped preview from the tool arguments (max_len=0 →
+ * unlimited) so an upstream display cap cannot discard the link target.
+ * Then truncates to max_len and, if truncated, extracts an http(s) URL
+ * from the full text for explicit URL metadata.
+ *
+ * Returns a malloc'd ToolPreview{text, truncated, url} (caller frees text
+ * and url; url may be NULL). */
+typedef struct {
+    char *text;
+    int truncated;
+    char *url;   /* NULL when none */
+} agent_tool_preview_t;
+
+agent_tool_preview_t *cli_agent_display__prepare_tool_preview(
+    const char *tool_name, const char *args_json, const char *fallback, int max_len)
+{
+    agent_tool_preview_t *p = calloc(1, sizeof(*p));
+    if (!p) return NULL;
+
+    char *full = cli_agent_display__build_tool_preview(tool_name, args_json, 0);
+    if (!full || !full[0]) {
+        free(full);
+        full = strdup(fallback ? fallback : "");
+    }
+    char *text = cli_agent_display__truncate_preview(full, max_len);
+    if (!text) text = strdup("");
+    p->text = text;
+    p->truncated = (strcmp(text, full) != 0);
+
+    if (p->truncated) {
+        /* Extract url from the FULL text (the truncate may have cut it).
+         * Python: _display_url(full_text) — full_text is a plain string, so
+         * this just strips whitespace and returns it. */
+        char *candidate = cli_agent_display__display_url(full);
+
+        /* Validate http(s) scheme with a non-empty netloc.
+         * Mirrors Python: urlsplit(candidate) parsed, scheme in {http,https},
+         * netloc non-empty. A trailing slash is fine (netloc still parses). */
+        if (candidate && *candidate) {
+            const char *s = candidate;
+            size_t n = strlen(s);
+            int is_http = (n > 7 && strncmp(s, "http://", 7) == 0);
+            int is_https = (n > 8 && strncmp(s, "https://", 8) == 0);
+            if (is_http || is_https) {
+                const char *after = s + (is_https ? 8 : 7);
+                const char *slash = strchr(after, '/');
+                size_t netlen = slash ? (size_t)(slash - after) : strlen(after);
+                if (netlen > 0) p->url = candidate;
+                else free(candidate);
+            } else {
+                free(candidate);
+            }
+        } else if (candidate) {
+            free(candidate);
+        }
+    }
+    free(full);
+    return p;
+}
+
+void cli_agent_display__tool_preview_free(agent_tool_preview_t *p)
+{
+    if (!p) return;
+    free(p->text);
+    free(p->url);
+    free(p);
+}
+
