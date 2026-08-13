@@ -1,11 +1,10 @@
 /*
  * t_port_context_compressor_pure.c — Oracle harness for context_compressor.py pure helpers.
  *
- * Tests all pure functions that are ported, regardless of which .c file they
- * live in. Uses the sibling's API for functions in context_compressor_pure.c
- * and port_context_compressor_ports.c, and the port_context_compressor_pure.c
- * API for the two functions defined there (cc_fresh_compaction_message_copy,
- * cc_template_visible_role).
+ * Tests all pure functions ported in src/agent/context_compressor_pure.c
+ * (declared in include/context_compressor_pure.h). The two functions
+ * cc_fresh_compaction_message_copy and cc_template_visible_role live there too,
+ * NOT in the deleted sibling stub port_context_compressor_pure.c.
  */
 #define _POSIX_C_SOURCE 200809L
 #define _GNU_SOURCE
@@ -13,7 +12,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "libjson/json.h"
-#include "port_context_compressor_pure.h"
 #include "context_compressor_pure.h"
 
 /* Forward declarations for functions in port_context_compressor_ports.c
