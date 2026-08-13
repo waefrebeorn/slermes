@@ -838,3 +838,76 @@ int model_curated_models_for_provider(const char *provider,
     }
     return n;
 }
+
+/* PoP: _repair_prefix_from_catalogue @ hermes_cli/model_normalize.py:_repair_prefix_from_catalogue */
+/* Restore a dropped vendor/ prefix using the provider's catalogue.
+ * Never guesses from the model name shape — only repairs a bare id that
+ * matches exactly one curated entry for this provider modulo the prefix.
+ * Returns a malloc'd string: the repaired id, or a copy of model_name when
+ * nothing unique matches (so self-hosted / non-catalog models are untouched). */
+char *model_repair_prefix_from_catalogue(const char *model_name, const char *provider)
+{
+    if (!model_name) return strdup("");
+    if (strchr(model_name, '/')) return strdup(model_name);
+    int n = model_provider_model_count(provider);
+    if (n <= 0) return strdup(model_name);
+    /* needle = model_name.strip().lower() */
+    char needle[256];
+    {
+        const char *s = model_name;
+        while (*s == ' ' || *s == '\t') s++;
+        size_t l = strlen(s);
+        while (l > 0 && (s[l-1] == ' ' || s[l-1] == '\t')) l--;
+        size_t c = 0;
+        for (size_t i = 0; i < l && c < sizeof(needle)-1; i++)
+            needle[c++] = (char)tolower((unsigned char)s[i]);
+        needle[c] = '\0';
+    }
+    /* matches = { entry for entry in catalogue if "/" in entry and
+     * entry.split("/",1)[1].strip().lower() == needle } */
+    char match[512] = "";
+    int n_match = 0;
+    for (int i = 0; i < n; i++) {
+        const char *entry = model_provider_model_at(provider, i);
+        if (!entry) continue;
+        const char *slash = strchr(entry, '/');
+        if (!slash) continue;
+        const char *body = slash + 1;
+        /* body.strip().lower() == needle */
+        const char *b = body;
+        while (*b == ' ' || *b == '\t') b++;
+        size_t bl = strlen(b);
+        while (bl > 0 && (b[bl-1] == ' ' || b[bl-1] == '\t')) bl--;
+        if (bl != strlen(needle)) continue;
+        if (strncasecmp(b, needle, strlen(needle)) != 0) continue;
+        /* match! */
+        snprintf(match, sizeof(match), "%s", entry);
+        n_match++;
+    }
+    if (n_match == 1) return strdup(match);
+    return strdup(model_name);
+}
+
+/* PoP: suggest_prefixed_model_id @ hermes_cli/model_normalize.py:suggest_prefixed_model_id */
+/* Return the prefixed catalogue id for a bare model_name, if unambiguous.
+ * The diagnostic counterpart to _repair_prefix_from_catalogue: used to
+ * explain a provider's content-free 404 when the configured id lost its
+ * vendor/ prefix. Returns NULL when the name already has a prefix, the
+ * provider has no curated catalogue, or nothing matches — callers stay
+ * silent rather than guess. Returns a malloc'd string, or NULL. */
+char *model_suggest_prefixed_model_id(const char *provider, const char *model_name)
+{
+    const char *name = model_name ? model_name : "";
+    /* strip */
+    while (*name == ' ' || *name == '\t') name++;
+    size_t l = strlen(name);
+    while (l > 0 && (name[l-1] == ' ' || name[l-1] == '\t')) l--;
+    if (l == 0 || memchr(name, '/', l)) return NULL;
+    char *repaired = model_repair_prefix_from_catalogue(name, provider);
+    if (!repaired) return NULL;
+    if (strcmp(repaired, name) != 0) {
+        return repaired; /* repaired != name → prefixed id */
+    }
+    free(repaired);
+    return NULL;
+}
