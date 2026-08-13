@@ -875,3 +875,37 @@ int setup_wizard_noninteractive(void) {
     ensure_dir(hermes_dir);
     return 0;
 }
+
+/* Suffix match so plugin adapters nobody enumerated (IRC, SimpleX, LINE,
+ * ntfy) get the same treatment. Callers must still keep any var a platform
+ * lists as required — hiding a required credential would make that platform
+ * unconfigurable from the UI. */
+
+/* PoP: is_setup_hidden_env @ hermes_cli/setup_hidden_env.py:is_setup_hidden_env */
+bool setup_wizard_is_hidden_env(const char *name)
+{
+    if (!name) return false;
+    static const char *SUFFIXES[] = {
+        "_HOME_CHANNEL",
+        "_HOME_CHANNEL_NAME",
+        "_HOME_CHANNEL_THREAD_ID",
+        "_HOME_ADDRESS",
+        "_ALLOW_ALL_USERS",
+        "_REPLY_TO_MODE",
+        "_REPLY_MODE",
+        "_REQUIRE_MENTION",
+        "_AUTO_THREAD",
+        "_FREE_RESPONSE_CHANNELS",
+        "_FREE_RESPONSE_ROOMS",
+        "_ALLOWED_CHANNELS",
+        "_PROXY",
+    };
+    size_t n = strlen(name);
+    for (size_t i = 0; i < sizeof(SUFFIXES)/sizeof(SUFFIXES[0]); i++) {
+        size_t sl = strlen(SUFFIXES[i]);
+        if (n >= sl && strcmp(name + n - sl, SUFFIXES[i]) == 0)
+            return true;
+    }
+    return false;
+}
+
