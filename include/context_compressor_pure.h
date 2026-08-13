@@ -51,6 +51,28 @@ typedef struct {
     long last_compression_rough_tokens;
 } cc_request_tracker_t;
 
+/* Compressor budget state (mirrors ContextCompressor's cached budget fields).
+ * All *_resolved_* / *_budget_* fields are "unset sentinel" = -1 until lazily
+ * resolved, exactly like the Python properties. */
+typedef struct {
+    /* immutable config (set once at construction) */
+    const char *model;
+    const char *base_url;
+    const char *api_key;
+    const char *provider;
+    int  config_context_length;      /* 0 == None */
+    double base_threshold_percent;   /* _base_threshold_percent (per-model resolved) */
+    double summary_target_ratio;
+    long  max_tokens;                /* 0 == None */
+    long  threshold_tokens_cap;      /* -1 == None */
+    /* lazily-resolved cache */
+    long resolved_context_length;    /* -1 == unset */
+    long threshold_tokens;           /* -1 == unset */
+    long tail_token_budget;          /* -1 == unset */
+    long max_summary_tokens;         /* -1 == unset */
+    double threshold_percent;        /* effective (floored) percent */
+} cc_compressor_budget_t;
+
 /* Re-declare the small helpers owned by context.c we reuse (no agent dep). */
 char *context_compressor__skill_pruned_marker(const char *skill_name);
 int   context_compressor__extract_pruned_skill_names(const char *text,
@@ -282,6 +304,23 @@ bool cc_should_compress_info(const cc_compression_guards_t *g, long prompt_token
 void cc_note_request_rough_estimate(cc_request_tracker_t *t, long rough_tokens);
 /* NOTE: cc_should_defer_preflight_to_real_usage is owned by
  * port_context_compressor_ports.c (canonical PoP-tagged impl) — not here. */
+
+/* ── batch 8: ContextCompressor budget property accessors (pure math) ──── */
+/* Lazy-resolve + cache the model's context length (small-context floor applied).
+ * Returns the resolved window. */
+long cc_budget_resolve_context_length(cc_compressor_budget_t *b);
+/* context_length getter/setter */
+long cc_budget_context_length_get(cc_compressor_budget_t *b);
+void cc_budget_context_length_set(cc_compressor_budget_t *b, long value);
+/* threshold_tokens getter/setter (lazy compute + absolute cap) */
+long cc_budget_threshold_tokens_get(cc_compressor_budget_t *b);
+void cc_budget_threshold_tokens_set(cc_compressor_budget_t *b, long value);
+/* tail_token_budget getter/setter (threshold_tokens * summary_target_ratio) */
+long cc_budget_tail_token_budget_get(cc_compressor_budget_t *b);
+void cc_budget_tail_token_budget_set(cc_compressor_budget_t *b, long value);
+/* max_summary_tokens getter/setter (min(0.05*context_length, ceiling)) */
+long cc_budget_max_summary_tokens_get(cc_compressor_budget_t *b);
+void cc_budget_max_summary_tokens_set(cc_compressor_budget_t *b, long value);
 
 #ifdef __cplusplus
 }

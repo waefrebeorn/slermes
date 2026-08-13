@@ -10,6 +10,9 @@
 
 #include "context_compressor_pure.h"
 #include "context_compressor_constants.h"
+/* _SUMMARY_TOKENS_CEILING / _MIN_SUMMARY_TOKENS not yet exposed by the constants
+ * header — mirror Python's literal values inline (see context_compressor.py). */
+#define CC_MAX_SUMMARY_TOKENS_CEILING 10000L
 
 #include <stdlib.h>
 #include <string.h>
@@ -20,6 +23,7 @@
 #include "hermes_redact.h"
 #include "hermes_json.h"
 #include "libregex/hermes_regex.h"
+#include "provider_metadata.h"  /* get_model_context_length() */
 
 /* ── Shared constants (mirror the Python module-level literals) ─────────── */
 
@@ -1575,3 +1579,82 @@ int cc_prune_stale_reasoning_replay(json_t *messages) {
 
 
 
+
+/* ── batch 8: ContextCompressor budget property accessors (pure math) ──── */
+/* These re-implement the Python @property getters/setters as pure functions
+ * over cc_compressor_budget_t, reusing the threshold-math helpers above. The
+ * ContextCompressor struct (in the orchestration TU) owns a budget_t; these
+ * let it delegate the lazy-resolution math without duplicating logic. */
+
+/* PoP: _resolve_context_length @ agent/context_compressor.py:_resolve_context_length */
+long cc_budget_resolve_context_length(cc_compressor_budget_t *b) {
+    if (!b) return -1;
+    if (b->resolved_context_length != -1)
+        return b->resolved_context_length;
+    b->resolved_context_length = get_model_context_length(
+        b->model, b->base_url, b->api_key,
+        b->config_context_length, b->provider);
+    /* Small-context threshold floor (raise-only). */
+    b->threshold_percent = cc_effective_threshold_percent(
+        b->resolved_context_length, b->base_threshold_percent);
+    return b->resolved_context_length;
+}
+
+/* PoP: context_length @ agent/context_compressor.py:context_length */
+long cc_budget_context_length_get(cc_compressor_budget_t *b) {
+    return cc_budget_resolve_context_length(b);
+}
+
+/* context_length.setter — invalidate derived budgets unless same value. */
+void cc_budget_context_length_set(cc_compressor_budget_t *b, long value) {
+    if (!b) return;
+    if (value == b->resolved_context_length) return; /* no-op guard (#32221) */
+    b->resolved_context_length = value;
+    double base = b->base_threshold_percent;
+    if (base != 0.0) /* bare test instances never ran __init__ */
+        b->threshold_percent = cc_effective_threshold_percent(value, base);
+    b->threshold_tokens = -1;
+    b->tail_token_budget = -1;
+    b->max_summary_tokens = -1;
+}
+
+/* PoP: threshold_tokens @ agent/context_compressor.py:threshold_tokens */
+long cc_budget_threshold_tokens_get(cc_compressor_budget_t *b) {
+    if (!b) return -1;
+    if (b->threshold_tokens != -1) return b->threshold_tokens;
+    cc_budget_resolve_context_length(b); /* sets floored threshold_percent */
+    b->threshold_tokens = cc_compute_threshold_tokens(
+        b->resolved_context_length, b->threshold_percent, b->max_tokens);
+    b->threshold_tokens = cc_apply_threshold_tokens_cap(
+        b->threshold_tokens, b->threshold_tokens_cap, b->resolved_context_length);
+    return b->threshold_tokens;
+}
+void cc_budget_threshold_tokens_set(cc_compressor_budget_t *b, long value) {
+    if (b) b->threshold_tokens = value;
+}
+
+/* PoP: tail_token_budget @ agent/context_compressor.py:tail_token_budget */
+long cc_budget_tail_token_budget_get(cc_compressor_budget_t *b) {
+    if (!b) return -1;
+    if (b->tail_token_budget != -1) return b->tail_token_budget;
+    b->tail_token_budget =
+        (long)(cc_budget_threshold_tokens_get(b) * b->summary_target_ratio);
+    return b->tail_token_budget;
+}
+void cc_budget_tail_token_budget_set(cc_compressor_budget_t *b, long value) {
+    if (b) b->tail_token_budget = value;
+}
+
+/* PoP: max_summary_tokens @ agent/context_compressor.py:max_summary_tokens */
+long cc_budget_max_summary_tokens_get(cc_compressor_budget_t *b) {
+    if (!b) return -1;
+    if (b->max_summary_tokens != -1) return b->max_summary_tokens;
+    long ctx = cc_budget_resolve_context_length(b);
+    long by_ratio = (long)(ctx * 0.05);
+    long ceiling = CC_MAX_SUMMARY_TOKENS_CEILING; /* 10,000 — _SUMMARY_TOKENS_CEILING */
+    b->max_summary_tokens = by_ratio < ceiling ? by_ratio : ceiling;
+    return b->max_summary_tokens;
+}
+void cc_budget_max_summary_tokens_set(cc_compressor_budget_t *b, long value) {
+    if (b) b->max_summary_tokens = value;
+}
