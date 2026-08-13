@@ -196,15 +196,36 @@ bool hermes_state_is_stale_tool_call_marker(const json_t *msg) {
     if (!role || role->type != JSON_STRING || strcmp(role->str_val, "assistant") != 0)
         return false;
     json_t *tool_calls = json_obj_get(msg, "tool_calls");
-    if (!tool_calls || tool_calls->type != JSON_ARRAY)
+    /* Python: `if not msg.get("tool_calls"): return False`. Truthiness —
+     * missing/NULL, empty list, empty string, 0, false all fail; any other
+     * value (non-empty array, truthy string) passes. */
+    if (!tool_calls || tool_calls->type == JSON_NULL)
         return false;
+    if (tool_calls->type == JSON_ARRAY) {
+        if (tool_calls->c.count == 0) return false;
+    } else if (tool_calls->type == JSON_STRING) {
+        if (!tool_calls->str_val || !tool_calls->str_val[0]) return false;
+    } else if (tool_calls->type == JSON_NUMBER) {
+        if (tool_calls->num_val == 0.0) return false;
+    } else if (tool_calls->type == JSON_BOOL) {
+        if (!tool_calls->bool_val) return false;
+    }
     json_t *content = json_obj_get(msg, "content");
     if (!content || content->type != JSON_STRING)
         return false;
-    /* Python: content.strip() then fullmatch. */
+    /* Python: content.strip() (both ends), then fullmatch. */
     const char *c = content->str_val;
-    while (*c == ' ' || *c == '\t' || *c == '\n' || *c == '\r') c++;
-    return hermes_state_stale_marker_match(c);
+    const char *c_end = c + strlen(c);
+    while (c < c_end && (*c == ' ' || *c == '\t' || *c == '\n' || *c == '\r')) c++;
+    while (c_end > c && (c_end[-1] == ' ' || c_end[-1] == '\t'
+                         || c_end[-1] == '\n' || c_end[-1] == '\r')) c_end--;
+    char *stripped = malloc((size_t)(c_end - c) + 1);
+    if (!stripped) return false;
+    memcpy(stripped, c, (size_t)(c_end - c));
+    stripped[c_end - c] = '\0';
+    bool result = hermes_state_stale_marker_match(stripped);
+    free(stripped);
+    return result;
 }
 
 /* PoP: _strip_stale_tool_call_markers @ hermes_state.py:_strip_stale_tool_call_markers */
