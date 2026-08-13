@@ -295,3 +295,87 @@ bool agent_redact_key_has_secret_keyword(const char *key)
     }
     return false;
 }
+
+/* file-read commands + secret-bearing .env basenames (Python
+ * _FILE_READ_COMMANDS / _BLOCKED_PROJECT_ENV_BASENAMES). */
+static const char *ENV_FILE_READ_COMMANDS[] = {
+    "cat", "head", "tail", "type", "bat", "less", "more", "nl",
+    "zcat", "tac", "view", "batcat", NULL
+};
+static const char *ENV_FILE_BASENAMES[] = {
+    ".env", ".env.development", ".env.local", ".env.production",
+    ".env.staging", ".env.test", ".envrc", NULL
+};
+
+/* PoP: agent_redact__command_reads_env_file @ agent/redact.py:_command_reads_env_file */
+/* True when `command` reads a .env file to stdout. Detects file-read
+ * commands (cat/head/tail/...) where any argument's basename is a
+ * .env-style file. Template files (.env.example, .env.sample, ...) are not
+ * in the basename list and never match. Handles pipelines and command
+ * sequences. Conservative defense-in-depth, not a boundary. */
+bool agent_redact_command_reads_env_file(const char *command)
+{
+    if (!command || command[0] == '\0') return false;
+    /* split on shell separators [|;&]+ */
+    char *buf = strdup(command);
+    int nseg = 1;
+    for (char *p = buf; *p; p++) if (is_shell_sep(*p)) nseg++;
+    char **segs = malloc(sizeof(char *) * (nseg + 1));
+    int ns = 0;
+    char *p = buf, *start = buf;
+    while (1) {
+        if (is_shell_sep(*p) || *p == '\0') {
+            size_t l = (size_t)(p - start);
+            char *seg = malloc(l + 1); memcpy(seg, start, l); seg[l] = '\0';
+            segs[ns++] = seg;
+            if (*p == '\0') break;
+            start = p + 1;
+        }
+        p++;
+    }
+    bool result = false;
+    for (int i = 0; i < ns && !result; i++) {
+        char *seg = segs[i];
+        while (*seg == ' ' || *seg == '\t') seg++;
+        if (*seg == '\0') { free(segs[i]); continue; }
+        /* tokenize by whitespace (plain split(), not shlex) */
+        char *saveptr = NULL;
+        char *tok = strtok_r(seg, " \t", &saveptr);
+        if (!tok) { free(segs[i]); continue; }
+        bool is_reader = false;
+        for (int k = 0; ENV_FILE_READ_COMMANDS[k]; k++) {
+            if (strcmp(tok, ENV_FILE_READ_COMMANDS[k]) == 0) { is_reader = true; break; }
+        }
+        if (!is_reader) { free(segs[i]); continue; }
+        /* check arguments (skip -flags) */
+        char *arg = strtok_r(NULL, " \t", &saveptr);
+        while (arg) {
+            if (arg[0] != '-') {
+                /* strip shell quotes, then basename on / and \ */
+                size_t al = strlen(arg);
+                if (al >= 2 && (arg[0] == '"' || arg[0] == '\'') &&
+                    arg[al-1] == arg[0]) {
+                    arg[al-1] = '\0'; arg++;
+                }
+                const char *slash = strrchr(arg, '/');
+                const char *bslash = strrchr(arg, '\\');
+                const char *base = arg;
+                if (slash && slash > base) base = slash + 1;
+                if (bslash && bslash + 1 > base) base = bslash + 1;
+                /* basename.lower() in basenames */
+                for (int k = 0; ENV_FILE_BASENAMES[k]; k++) {
+                    if (strcasecmp(base, ENV_FILE_BASENAMES[k]) == 0) {
+                        result = true;
+                        break;
+                    }
+                }
+            }
+            if (result) break;
+            arg = strtok_r(NULL, " \t", &saveptr);
+        }
+        free(segs[i]);
+    }
+    free(segs);
+    free(buf);
+    return result;
+}
