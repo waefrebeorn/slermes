@@ -1658,3 +1658,11 @@ long cc_budget_max_summary_tokens_get(cc_compressor_budget_t *b) {
 void cc_budget_max_summary_tokens_set(cc_compressor_budget_t *b, long value) {
     if (b) b->max_summary_tokens = value;
 }
+
+/* ── note_request_rough_estimate (canonical impl, pure tracker math) ───── */
+/* PoP: note_request_rough_estimate @ agent/context_compressor.py:note_request_rough_estimate */
+void cc_note_request_rough_estimate(cc_request_tracker_t *t, long rough_tokens) {
+    if (!t) return;
+    if (rough_tokens < 0) rough_tokens = 0;
+    t->pending_request_rough_tokens = rough_tokens;
+}

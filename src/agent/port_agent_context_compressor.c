@@ -165,6 +165,77 @@ void cc_set_micro_compact_enabled(context_compressor_t *cc, int every_n_turns) {
     }
 }
 
+/* ── note_request_rough_estimate ────────────────────────────────────────── */
+/* (canonical PoP-tagged impl — see context_compressor_pure.c)              */
+/* ── _emit_init_summary_once ──────────────────────────────────────────── */
+/* PoP: _emit_init_summary_once @ agent/context_compressor.py:_emit_init_summary_once */
+void cc_arm_init_summary(context_compressor_t *cc) {
+    if (cc) cc->_log_init_summary = 1;
+}
+void cc_emit_init_summary_once(context_compressor_t *cc) {
+    if (!cc || !cc->_log_init_summary) return;
+    cc->_log_init_summary = 0;
+    long ctx = cc_budget_resolve_context_length(&cc->b);
+    long thresh = cc_budget_threshold_tokens_get(&cc->b);
+    long tail = cc_budget_tail_token_budget_get(&cc->b);
+    hermes_log(LOG_INFO, "context_compressor",
+        "Context compressor initialized: model=%s context_length=%ld "
+        "threshold=%ld (%.0f%%) target_ratio=20%% tail_budget=%ld "
+        "provider=%s base_url=%s",
+        cc->model ? cc->model : "", ctx, thresh,
+        cc->b.threshold_percent * 100.0, tail,
+        cc->provider ? cc->provider : "none",
+        cc->base_url ? cc->base_url : "none");
+}
+
+/* ── _build_micro_summary_prompt ──────────────────────────────────────── */
+/* PoP: _build_micro_summary_prompt @ agent/context_compressor.py:_build_micro_summary_prompt */
+json_t *cc_build_micro_summary_prompt(const char *existing_summary,
+                                      const char *exchange_text) {
+    const char *summary_block = (existing_summary && existing_summary[0] != '\0')
+        ? existing_summary
+        : "(No previous summary yet.)";
+    const char *exch = exchange_text ? exchange_text : "";
+
+    json_t *arr = json_array();
+    if (!arr) return NULL;
+    json_t *sys_msg = json_object();
+    json_t *usr_msg = json_object();
+    if (!sys_msg || !usr_msg) { json_free(arr); json_free(sys_msg); json_free(usr_msg); return NULL; }
+    json_set(sys_msg, "role", json_string("system"));
+    json_set(sys_msg, "content", json_string("You are a conversation summarization assistant."));
+
+    /* Assemble the user prompt via a single asprintf (matches Python f-string). */
+    char *user_prompt = NULL;
+    int rc = asprintf(&user_prompt,
+        "You are a summarization agent creating a compact record of an "
+        "ongoing conversation.  You are given a running summary and the "
+        "next exchange from the conversation.  Merge the exchange's key "
+        "decisions, requirements, file paths, and open questions into the "
+        "summary.  Preserve the summary's structure.  Drop resolved details "
+        "that are no longer relevant.  Add new decisions, file paths, and "
+        "open questions.\n\n"
+        "NEVER include API keys, tokens, passwords, secrets, credentials, "
+        "or connection strings in the summary \u2014 replace any that appear "
+        "with [REDACTED].\n\n"
+        "## Current Running Summary\n%s\n\n"
+        "## Next Exchange to Merge\n%s\n\n"
+        "Return ONLY the updated summary text, no preamble or explanation. "
+        "Do not include this instruction block in your output.",
+        summary_block, exch);
+    if (rc < 0 || !user_prompt) {
+        json_free(sys_msg); json_free(usr_msg); json_free(arr);
+        return NULL;
+    }
+    json_set(usr_msg, "role", json_string("user"));
+    json_set(usr_msg, "content", json_string(user_prompt));
+    free(user_prompt);
+
+    json_append(arr, sys_msg);
+    json_append(arr, usr_msg);
+    return arr;
+}
+
 /* ── _resolve_compact_cursor ────────────────────────────────────────────── */
 /* PoP: _resolve_compact_cursor @ agent/context_compressor.py:_resolve_compact_cursor */
 long cc_resolve_compact_cursor(context_compressor_t *cc, const json_t *messages,

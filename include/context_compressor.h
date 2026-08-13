@@ -53,6 +53,19 @@ void cc_set_micro_compact_cursor(context_compressor_t *cc, long v);
 void cc_set_micro_compact_enabled(context_compressor_t *cc, int every_n_turns);
 void cc_set_micro_compact_tokens_saved_total(context_compressor_t *cc, long v);
 
+/* ── micro-summation prompt builder (pure, no IO) ──────────────────────── */
+/* PoP: _build_micro_summary_prompt @ agent/context_compressor.py:_build_micro_summary_prompt */
+/* Build the prompt messages (a 2-element JSON array: system + user) for a
+ * single-exchange micro-summary. Caller frees the returned JSON via json_free. */
+json_t *cc_build_micro_summary_prompt(const char *existing_summary,
+                                       const char *exchange_text);
+
+/* PoP: _emit_init_summary_once @ agent/context_compressor.py:_emit_init_summary_once */
+/* NOTE: cc_note_request_rough_estimate (note_request_rough_estimate) is a pure
+ * helper on cc_request_tracker_t, declared + impl in context_compressor_pure. */
+void cc_arm_init_summary(context_compressor_t *cc);
+void cc_emit_init_summary_once(context_compressor_t *cc);
+
 #ifdef __cplusplus
 }
 #endif
