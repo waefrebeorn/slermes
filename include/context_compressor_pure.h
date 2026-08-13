@@ -277,6 +277,9 @@ int  cc_reasoning_details_text_chars(const json_t *value);
 
 /* Copy a message for compaction assembly without persistence markers. Caller frees. */
 json_t *cc_fresh_compaction_message_copy(const json_t *msg);
+
+/* PoP: _serialize_for_summary @ agent/context_compressor.py:_serialize_for_summary */
+char *cc_serialize_for_summary(const char *messages_json); /* caller frees; impl in port_context_compressor_ports.c */
 /* Strip persistence markers from assembled messages; returns count stripped. */
 int  cc_strip_persistence_markers(json_t *messages);
 
