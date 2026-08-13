@@ -867,6 +867,68 @@ char *clear_legacy(const char *checkpoint_base) {
     return strdup("{\"cleared\":0}");
 }
 
+/* PoP: session_diff @ tools/checkpoint_manager.py:session_diff */
+/* Cumulative diff of everything changed in the working tree since the
+ * earliest retained checkpoint. Powers `/diff session`.
+ *
+ * Returns the same shape as checkpoint_manager_diff ({"success","stat",
+ * "diff"}), plus "baseline" (earliest retained hash) on success and
+ * "empty": true when no checkpoints exist yet (nothing edited) or the
+ * diff is empty. Caller frees. */
+char *checkpoint_manager_session_diff(tool_checkpoint_mgr_t *self, const char *working_dir)
+{
+    if (!self || !working_dir)
+        return strdup("{\"success\":false,\"error\":\"invalid args\"}");
+
+    char *list = checkpoint_manager_list(self, working_dir);
+    if (!list) return strdup("{\"success\":true,\"stat\":\"\",\"diff\":\"\",\"empty\":true}");
+
+    json_t *arr = json_parse(list, NULL);
+    free(list);
+    if (!arr || arr->type != JSON_ARRAY || json_len(arr) == 0) {
+        if (arr) json_free(arr);
+        return strdup("{\"success\":true,\"stat\":\"\",\"diff\":\"\",\"empty\":true}");
+    }
+
+    /* Earliest retained checkpoint = LAST element of the list. */
+    json_t *baseline = json_get(arr, json_len(arr) - 1);
+    const char *hash = NULL;
+    if (baseline) {
+        json_t *h = json_obj_get(baseline, "hash");
+        if (h && h->type == JSON_STRING) hash = h->str_val;
+    }
+    json_free(arr);
+    if (!hash || !*hash)
+        return strdup("{\"success\":true,\"stat\":\"\",\"diff\":\"\",\"empty\":true}");
+
+    char *result = checkpoint_manager_diff(self, working_dir, hash);
+    if (!result) return strdup("{\"success\":false,\"error\":\"diff failed\"}");
+
+    json_t *rj = json_parse(result, NULL);
+    free(result);
+    if (!rj || rj->type != JSON_OBJECT) {
+        if (rj) json_free(rj);
+        return strdup("{\"success\":false,\"error\":\"diff parse failed\"}");
+    }
+
+    json_t *succ = json_obj_get(rj, "success");
+    int ok = (succ && succ->type == JSON_BOOL && succ->bool_val) ? 1 : 0;
+    if (ok) {
+        /* setdefault("baseline", baseline) */
+        if (!json_has(rj, "baseline"))
+            json_set(rj, "baseline", json_string(hash));
+        json_t *stat = json_obj_get(rj, "stat");
+        json_t *diff = json_obj_get(rj, "diff");
+        int stat_empty = (!stat || stat->type != JSON_STRING || !stat->str_val[0]);
+        int diff_empty = (!diff || diff->type != JSON_STRING || !diff->str_val[0]);
+        if (stat_empty && diff_empty)
+            json_set(rj, "empty", json_bool(true));
+    }
+    char *ser = json_serialize(rj);
+    json_free(rj);
+    return ser ? ser : strdup("{\"success\":false,\"error\":\"serialize failed\"}");
+}
+
 char *format_checkpoint_list(const char *checkpoints_json, const char *directory) {
     (void)directory;
     return checkpoints_json ? strdup(checkpoints_json) : strdup("[]");
