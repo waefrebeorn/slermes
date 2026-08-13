@@ -225,6 +225,16 @@ int  cc_cursor_after_splice(const json_t *result, int fallback);
 /* New message array with consecutive plain-text real user turns merged. Caller frees. */
 json_t *cc_merge_adjacent_user_turns(const json_t *result);
 
+/* ── batch 5: standalone handoff + user-turn predicates (pure) ─────────── */
+/* True when a summary-bearing row still carries a live user ask after handoff stripped. */
+bool cc_handoff_carries_live_user_content(const json_t *message);
+/* True when the next model call would be driven ONLY by a handoff. */
+bool cc_reference_handoff_would_drive_next_model_call(const json_t *messages);
+/* True for human-authored user turns (not compaction scaffolding). */
+bool cc_is_user_originated_turn(const json_t *message);
+/* Textual thinking chars inside a reasoning_details envelope (envelope blobs skipped). */
+int  cc_reasoning_details_text_chars(const json_t *value);
+
 #ifdef __cplusplus
 }
 #endif

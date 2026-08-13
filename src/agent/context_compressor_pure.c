@@ -1210,3 +1210,105 @@ int _merge_adjacent_user_turns(json_t *result, json_t **out_merged) {
     return (int)merged->c.count;
 }
 
+/* ── batch 5: standalone handoff + user-turn predicates (pure) ─────────── */
+
+/* PoP: _handoff_carries_live_user_content @ agent/context_compressor.py:_handoff_carries_live_user_content */
+/* True when a summary-bearing row still carries a live user ask after the handoff is stripped. */
+bool cc_handoff_carries_live_user_content(const json_t *message) {
+    if (!message || message->type != JSON_OBJECT) return false;
+    if (!cc_is_context_summary_message(message)) return false;
+    return cc_strip_context_summary_handoff_message(message) != NULL;
+}
+
+/* PoP: reference_handoff_would_drive_next_model_call @ agent/context_compressor.py:reference_handoff_would_drive_next_model_call */
+/* True when the next model call would be driven ONLY by a handoff (no real
+ * user/tool continuation after the last driving summary handoff). */
+bool cc_reference_handoff_would_drive_next_model_call(const json_t *messages) {
+    if (!messages) return false;
+    int n = (int)json_len(messages);
+    if (n == 0) return false;
+    int last_driving_handoff = -1;
+    for (int i = 0; i < n; i++) {
+        json_t *msg = json_get(messages, (size_t)i);
+        if (!msg) continue;
+        if (!cc_is_context_summary_message(msg)) continue;
+        if (cc_handoff_carries_live_user_content(msg)) continue;
+        last_driving_handoff = i;
+    }
+    if (last_driving_handoff < 0) return false;
+    for (int i = last_driving_handoff + 1; i < n; i++) {
+        json_t *msg = json_get(messages, (size_t)i);
+        if (!msg) continue;
+        const char *role = json_get_str(msg, "role", "");
+        if (strcmp(role, "tool") == 0) return false;
+        if (strcmp(role, "assistant") == 0 && json_obj_get(msg, "tool_calls")) return false;
+        if (cc_is_actionable_user_turn(msg) && !cc_is_synthetic_compression_user_turn(msg))
+            return false;
+        if (cc_is_context_summary_message(msg) && cc_handoff_carries_live_user_content(msg))
+            return false;
+    }
+    return true;
+}
+
+/* PoP: is_user_originated_turn @ agent/context_compressor.py:is_user_originated_turn */
+/* True for human-authored user turns (not compaction scaffolding). */
+bool cc_is_user_originated_turn(const json_t *message) {
+    if (!message || message->type != JSON_OBJECT) return false;
+    const char *role = json_get_str(message, "role", "");
+    if (strcmp(role, "user") != 0) return false;
+    if (json_obj_get(message, "display_kind")) return false;
+    if (cc_is_context_summary_message(message)) return false;
+    if (cc_is_synthetic_compression_user_turn(message)) return false;
+    return cc_is_actionable_user_turn(message);
+}
+
+/* PoP: _reasoning_details_text_chars @ agent/context_compressor.py:_reasoning_details_text_chars */
+/* Textual thinking chars inside a reasoning_details envelope; opaque envelope
+ * blobs (signatures, redacted data, encrypted payloads) are skipped. */
+int cc_reasoning_details_text_chars(const json_t *value) {
+    if (!value) return 0;
+    if (value->type == JSON_STRING) {
+        const char *s = json_get_str(value, "", "");
+        return (int)strlen(s);
+    }
+    if (value->type == JSON_NULL) return 0;
+    int total = 0;
+    if (value->type == JSON_ARRAY) {
+        int n = (int)json_len(value);
+        for (int i = 0; i < n; i++) {
+            json_t *item = json_get(value, (size_t)i);
+            if (!item) continue;
+            if (item->type == JSON_STRING) {
+                total += (int)strlen(json_get_str(item, "", ""));
+            } else if (item->type == JSON_OBJECT) {
+                size_t cnt = item->c.count;
+                for (size_t k = 0; k < cnt; k++) {
+                    if (item->c.keys[k] && strcmp(item->c.keys[k], "thinking") == 0 &&
+                        item->c.items[k] && item->c.items[k]->type == JSON_STRING)
+                        total += (int)strlen(json_get_str(item->c.items[k], "", ""));
+                }
+                /* if no thinking key found in this dict, count all string fields */
+                if (total == 0) {
+                    for (size_t k = 0; k < cnt; k++) {
+                        if (item->c.items[k] && item->c.items[k]->type == JSON_STRING)
+                            total += (int)strlen(json_get_str(item->c.items[k], "", ""));
+                    }
+                }
+            }
+        }
+    } else if (value->type == JSON_OBJECT) {
+        size_t cnt = value->c.count;
+        for (size_t k = 0; k < cnt; k++) {
+            if (value->c.keys[k] && strcmp(value->c.keys[k], "thinking") == 0 &&
+                value->c.items[k] && value->c.items[k]->type == JSON_STRING)
+                total += (int)strlen(json_get_str(value->c.items[k], "", ""));
+        }
+        if (total == 0)
+            for (size_t k = 0; k < cnt; k++)
+                if (value->c.items[k] && value->c.items[k]->type == JSON_STRING)
+                    total += (int)strlen(json_get_str(value->c.items[k], "", ""));
+    }
+    return total;
+}
+
+
