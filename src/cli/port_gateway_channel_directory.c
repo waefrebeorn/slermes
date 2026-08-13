@@ -771,3 +771,78 @@ char *format_directory_for_display(void)
     json_free(dir);
     return out;
 }
+
+/* PoP: _normalize_adapter_channels @ gateway/channel_directory.py:_normalize_adapter_channels */
+/* Validate and dedupe channel entries returned by an adapter's list_channels()
+ * hook. raw_json is a JSON array of {id,name,type,thread_id,guild}. Returns a
+ * malloc'd JSON array of normalized entries, deduped by id. */
+json_t *cli_gateway_channel_directory__normalize_adapter_channels(const char *raw_json)
+{
+    json_t *out = json_array();
+    if (!raw_json || !raw_json[0]) return out;
+    json_t *raw = json_parse(raw_json, NULL);
+    if (!raw || raw->type != JSON_ARRAY) {
+        if (raw) json_free(raw);
+        return out;
+    }
+    /* seen_ids set — simple linear dedup against accumulated ids. */
+    char seen[64][512];
+    size_t nseen = 0;
+    size_t n = json_array_size(raw);
+    for (size_t i = 0; i < n; i++) {
+        json_t *r = json_array_get(raw, i);
+        if (!r || r->type != JSON_OBJECT) continue;
+        json_t *idn = json_obj_get(r, "id");
+        const char *id = (idn && idn->type == JSON_STRING) ? idn->str_val : "";
+        /* strip id */
+        while (*id == ' ' || *id == '\t') id++;
+        const char *ide = id + strlen(id);
+        while (ide > id && (ide[-1] == ' ' || ide[-1] == '\t')) ide--;
+        size_t idlen = (size_t)(ide - id);
+        if (idlen == 0) continue;
+        /* name = name or channel_id, stripped */
+        json_t *nn = json_obj_get(r, "name");
+        const char *nstr = (nn && nn->type == JSON_STRING) ? nn->str_val : NULL;
+        char name[512];
+        const char *nsrc = (nstr && nstr[0]) ? nstr : id;
+        size_t nl = strlen(nsrc);
+        const char *ns = nsrc;
+        while (ns < nsrc + nl && (*ns == ' ' || *ns == '\t')) ns++;
+        const char *ne = nsrc + nl;
+        while (ne > ns && (ne[-1] == ' ' || ne[-1] == '\t')) ne--;
+        size_t nlen = (size_t)(ne - ns);
+        if (nlen >= sizeof(name)) nlen = sizeof(name) - 1;
+        memcpy(name, ns, nlen); name[nlen] = '\0';
+        if (nlen == 0) continue;
+        /* dedup by id */
+        int dup = 0;
+        for (size_t s = 0; s < nseen; s++)
+            if (strncmp(seen[s], id, idlen) == 0 && seen[s][idlen] == '\0') { dup = 1; break; }
+        if (dup) continue;
+        /* build entry */
+        json_t *e = json_object();
+        char idbuf[512];
+        if (idlen >= sizeof(idbuf)) idlen = sizeof(idbuf) - 1;
+        memcpy(idbuf, id, idlen); idbuf[idlen] = '\0';
+        json_set(e, "id", json_string(idbuf));
+        json_set(e, "name", json_string(name));
+        json_t *tn = json_obj_get(r, "type");
+        const char *type = (tn && tn->type == JSON_STRING && tn->str_val[0]) ? tn->str_val : "dm";
+        json_set(e, "type", json_string(type));
+        json_t *tid = json_obj_get(r, "thread_id");
+        if (tid && tid->type == JSON_STRING && tid->str_val[0])
+            json_set(e, "thread_id", json_string(tid->str_val));
+        json_t *gld = json_obj_get(r, "guild");
+        if (gld && gld->type == JSON_STRING && gld->str_val[0])
+            json_set(e, "guild", json_string(gld->str_val));
+        json_append(out, e);
+        /* record id */
+        if (nseen < 64) {
+            if (idlen >= 512) idlen = 511;
+            memcpy(seen[nseen], id, idlen); seen[nseen][idlen] = '\0';
+            nseen++;
+        }
+    }
+    json_free(raw);
+    return out;
+}

@@ -77,3 +77,15 @@ char *schp_resolve_cron_scheduler(const char *config_yaml) {
     free(l);
     return r;
 }
+
+/* PoP: register_job @ cron/scheduler_provider.py:register_job */
+void *schp_register_job(const char *job_json) {
+    /* Register the first external trigger for one newly persisted job.
+     * The built-in provider reads the local store on every tick, so its
+     * default is a no-op. External providers override this when creating a
+     * job requires a remote registration before callers can honestly report
+     * that the job is scheduled. */
+    (void)job_json;
+    return NULL;
+}
+
