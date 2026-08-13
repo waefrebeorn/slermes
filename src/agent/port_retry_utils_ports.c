@@ -11,6 +11,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <math.h>
+#include <time.h>
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
@@ -77,4 +78,55 @@ long rtu_zai_coding_overload_retry_ceiling(int short_attempts) {
     if (short_attempts < 0) short_attempts = 3;
     static const double LONG_BACKOFF[] = {30.0, 60.0, 90.0, 120.0};
     return short_attempts + (int)(sizeof(LONG_BACKOFF) / sizeof(LONG_BACKOFF[0])) + 1;
+}
+
+/* PoP: parse_retry_after_seconds @ agent/retry_utils.py:parse_retry_after_seconds */
+double rtu_parse_retry_after_seconds(const char *value)
+{
+    /* Parse a "Retry-After" header value into non-negative seconds.
+     * Accepts a numeric string / number / HTTP-date (RFC 7231). Returns -1
+     * (sentinel for None) when absent or unparseable. Negative deltas are
+     * clamped to 0.0. */
+    if (!value) return -1.0;
+    const char *raw = value;
+    /* bool in Python → None; skip. */
+    if (strcmp(raw, "true") == 0 || strcmp(raw, "false") == 0) return -1.0;
+    /* trim */
+    while (*raw == ' ' || *raw == '\t') raw++;
+    const char *end = raw + strlen(raw);
+    while (end > raw && (end[-1] == ' ' || end[-1] == '\t')) end--;
+    if (raw == end) return -1.0;
+    /* numeric string */
+    char tmp[64];
+    size_t len = (size_t)(end - raw);
+    if (len >= sizeof(tmp)) len = sizeof(tmp) - 1;
+    memcpy(tmp, raw, len); tmp[len] = '\0';
+    char *nend = NULL;
+    double num = strtod(tmp, &nend);
+    if (nend && *nend == '\0') {
+        return num < 0.0 ? 0.0 : num;
+    }
+    /* HTTP-date form (RFC 7231): seconds until that instant, clamped at 0.
+     * Formats: IMF-fixdate "Sun, 06 Nov 1994 08:49:37 GMT",
+     * RFC 850 "Sunday, 06-Nov-94 08:49:37 GMT",
+     * asctime "Sun Nov  6 08:49:37 1994". Dates are GMT. */
+    struct tm tm;
+    memset(&tm, 0, sizeof(tm));
+    const char *fmts[] = {
+        "%a, %d %b %Y %H:%M:%S GMT",   /* IMF-fixdate */
+        "%A, %d-%b-%y %H:%M:%S GMT",   /* RFC 850 */
+        "%a %b %e %H:%M:%S %Y",        /* asctime */
+        NULL
+    };
+    for (int i = 0; fmts[i]; i++) {
+        memset(&tm, 0, sizeof(tm));
+        char *r = strptime(tmp, fmts[i], &tm);
+        if (r && *r == '\0') {
+            time_t when = timegm(&tm);
+            time_t now = time(NULL);
+            double secs = (double)(when - now);
+            return secs < 0.0 ? 0.0 : secs;
+        }
+    }
+    return -1.0;
 }

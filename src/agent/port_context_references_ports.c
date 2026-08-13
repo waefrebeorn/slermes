@@ -17,6 +17,12 @@
 /* Forward decl — defined below in this unit. */
 char *crf_code_fence_language(const char *path);
 
+/* Forward decl — tools/credential_files.py:to_agent_visible_cache_path
+ * (defined in src/cli/port_tools_credential_files.c). */
+char *cli_tools_credential_files_to_agent_visible_cache_path(const char *host_path,
+                                                             const char *container_base,
+                                                             char *buf, size_t bufsz);
+
 static char *lowerdup(const char *s) {
     if (!s) return NULL;
     char *d = strdup(s);
@@ -379,4 +385,21 @@ char *crf_code_fence_language(const char *path) {
     for (int i = 0; map[i].ext; i++)
         if (strcmp(dot, map[i].ext) == 0) return strdup(map[i].lang);
     return NULL;
+}
+
+/* PoP: _agent_visible_path @ agent/context_references.py:_agent_visible_path */
+char *crf_agent_visible_path(const char *path)
+{
+    /* Map a host path to the path the agent's tools can read in the active
+     * backend. Under a container backend (docker) the gateway host path
+     * dangles inside the sandbox; files staged into an auto-mounted cache
+     * dir are translated to their in-container path via the existing
+     * tools.credential_files machinery. Falls back to the host path when
+     * the backend is local or translation is unavailable. */
+    if (!path) return NULL;
+    char buf[768];
+    /* container_base NULL → default /root/.hermes (matches credential_files) */
+    if (cli_tools_credential_files_to_agent_visible_cache_path(path, NULL, buf, sizeof(buf)))
+        return strdup(buf);
+    return strdup(path);
 }
