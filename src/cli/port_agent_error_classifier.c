@@ -323,3 +323,30 @@ char *cli_agent_error_classifier__extract_upstream_provider_name(
     if (buf[0] == '\0') return NULL;
     return strdup(buf);
 }
+
+/* PoP: cli_agent_error_classifier_model_id_missing_known_prefix @ agent/error_classifier.py:_model_id_missing_known_prefix */
+/* True when a bare model id is only known to the provider as `vendor/id`.
+ * Some providers answer a malformed model id with a naked 404 that names
+ * nothing (NVIDIA NIM returns "404 page not found" for a bare id). Consulting
+ * the curated catalogue tells the two apart: if the id carries no "/" but the
+ * catalogue has exactly one entry ending in "/<id>", the prefix was dropped
+ * and the failure is deterministic. Never guesses — an id absent from the
+ * catalogue returns False so genuine endpoint problems keep their retryable
+ * "unknown" classification. */
+int cli_agent_error_classifier_model_id_missing_known_prefix(const char *model, const char *provider)
+{
+    /* name = (model or "").strip() */
+    const char *name = model ? model : "";
+    while (*name == ' ' || *name == '\t') name++;
+    size_t l = strlen(name);
+    while (l > 0 && (name[l-1] == ' ' || name[l-1] == '\t')) l--;
+    if (l == 0 || memchr(name, '/', l)) return 0;
+    /* suggest_prefixed_model_id((provider or "").strip(), name) → bool */
+    const char *prov = provider ? provider : "";
+    while (*prov == ' ' || *prov == '\t') prov++;
+    extern char *model_suggest_prefixed_model_id(const char *provider, const char *model_name);
+    char *sug = model_suggest_prefixed_model_id(prov, name);
+    int result = sug != NULL;
+    free(sug);
+    return result;
+}
