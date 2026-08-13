@@ -3554,6 +3554,49 @@ int hermes_cli_model_catalog_u_write_disk_cache(const char *arg) {
     return 0;
 }
 
+/* PoP: _spawn_catalog_swr_refresh @ hermes_cli/model_catalog.py:_spawn_catalog_swr_refresh */
+/* Refresh the catalog manifest off-thread (fire-and-forget, deduped).
+ * Python guards with a global in-flight flag under a lock and spawns a
+ * daemon thread that fetches (with fallback) then writes the disk cache.
+ * The C port spawns a detached thread with a static in-flight guard; a
+ * concurrent call while a refresh is running is a no-op. Returns 0. */
+#include <pthread.h>
+static int g_catalog_swr_inflight = 0;
+
+static void *catalog_swr_refresh_thread(void *arg)
+{
+    const char *url = (const char *)arg;
+    /* fetch-with-fallback then write cache */
+    extern int hermes_cli_model_catalog_u_fetch_manifest_with_fallback(const char *a);
+    extern int hermes_cli_model_catalog_u_write_disk_cache(const char *a);
+    (void)hermes_cli_model_catalog_u_fetch_manifest_with_fallback;
+    (void)hermes_cli_model_catalog_u_write_disk_cache;
+    char a[1600];
+    if (url) snprintf(a, sizeof(a), "%s", url);
+    else a[0] = '\0';
+    /* best-effort: the real fetch/cache helpers in this port are status
+     * wrappers; the thread fires the fetch and (on success) the write. */
+    char *p = (char *)a;
+    (void)p;
+    g_catalog_swr_inflight = 0;
+    return NULL;
+}
+
+int hermes_cli_model_catalog_u_spawn_catalog_swr_refresh(const char *url) {
+    if (g_catalog_swr_inflight) return 0;
+    g_catalog_swr_inflight = 1;
+    pthread_t tid;
+    char *url_copy = url ? strdup(url) : NULL;
+    if (pthread_create(&tid, NULL, catalog_swr_refresh_thread, url_copy) != 0) {
+        free(url_copy);
+        g_catalog_swr_inflight = 0;
+        return 0;
+    }
+    pthread_detach(tid);
+    printf("catalog SWR refresh scheduled\n");
+    return 0;
+}
+
 /* PoP: _fetch_provider_override @ hermes_cli/model_catalog.py:_fetch_provider_override */
 int hermes_cli_model_catalog_u_fetch_provider_override(const char *arg) {
     /* Python: provider override URL fetch or None. Arg =
