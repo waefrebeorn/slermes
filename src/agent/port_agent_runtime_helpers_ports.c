@@ -376,6 +376,14 @@ int arh_prompt_caching_disabled_from_config(void)
  * C signature takes the resolved base_url + api_mode (no live agent object):
  * True when api_mode == "anthropic_messages" and the base URL host is
  * api.anthropic.com. */
+struct blank_cache_policy {
+    char provider[64];
+    char base_url[256];
+    char api_mode[64];
+    char model[256];
+    int  cache_disabled;
+};
+
 int arh_direct_native_anthropic_tool_cache_capability(const char *base_url,
                                                       const char *api_mode)
 {
@@ -446,4 +454,31 @@ int arh_msg_has_payload(const json_t *msg)
     if (json_obj_get(msg, "codex_message_items") != NULL ||
         json_obj_get(msg, "codex_reasoning_items") != NULL) return 1;
     return 0;
+}
+
+/* PoP: blank_cache_policy_stub @ agent/agent_runtime_helpers.py:blank_cache_policy_stub */
+/* Build the destination-identity-blank stub for anthropic_prompt_cache_policy.
+ * Single sanctioned constructor: callers that resolve cache policy against a
+ * destination identified out-of-band (not a live AIAgent) must go through here
+ * so _cache_disabled is never left off a hand-rolled namespace. When
+ * cache_disabled is NULL (-1), falls back to the global config so stub paths
+ * without an agent snapshot still honor an operator disable. */
+struct blank_cache_policy *arh_blank_cache_policy_stub(int cache_disabled)
+{
+    struct blank_cache_policy *s = calloc(1, sizeof(*s));
+    if (!s) return NULL;
+    /* provider/base_url/api_mode/model default to "" (blank destination id) */
+    s->provider[0] = '\0';
+    s->base_url[0] = '\0';
+    s->api_mode[0] = '\0';
+    s->model[0] = '\0';
+    if (cache_disabled == -1)
+        cache_disabled = arh_prompt_caching_disabled_from_config();
+    s->cache_disabled = cache_disabled ? 1 : 0;
+    return s;
+}
+
+void arh_blank_cache_policy_free(struct blank_cache_policy *s)
+{
+    free(s);
 }
