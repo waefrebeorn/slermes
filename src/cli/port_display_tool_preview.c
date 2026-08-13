@@ -560,3 +560,56 @@ void cli_agent_display__tool_preview_free(agent_tool_preview_t *p)
     free(p);
 }
 
+/* PoP: _browser_exec_step_label @ agent/display.py:_browser_exec_step_label */
+/* User-friendly step label from browser_exec code's leading comment.
+ * args is a JSON object string; reads "code", takes the first line, and if
+ * it starts with '#', strips leading '#' + whitespace and truncates to
+ * max_chars (appending '…' when truncated). Returns NULL (not a label) when
+ * there's no code / no leading-comment label / empty label. Caller frees. */
+char *cli_agent_display__browser_exec_step_label(const char *args_json, int max_chars)
+{
+    if (max_chars <= 0) max_chars = 80;
+    if (!args_json || !args_json[0]) return NULL;
+    char *err = NULL;
+    json_t *args = json_parse(args_json, &err);
+    free(err);
+    if (!args || args->type != JSON_OBJECT) { if (args) json_free(args); return NULL; }
+    json_t *code = json_obj_get(args, "code");
+    const char *code_s = (code && code->type == JSON_STRING) ? code->str_val : "";
+    while (*code_s == ' ' || *code_s == '\t' || *code_s == '\n' || *code_s == '\r') code_s++;
+    if (!*code_s) { json_free(args); return NULL; }
+
+    /* first line */
+    const char *nl = strchr(code_s, '\n');
+    size_t first_len = nl ? (size_t)(nl - code_s) : strlen(code_s);
+    char *first = strndup(code_s, first_len);
+    /* strip trailing whitespace of first line */
+    size_t fl = strlen(first);
+    while (fl > 0 && (first[fl-1]==' '||first[fl-1]=='\t'||first[fl-1]=='\r')) first[--fl]='\0';
+    if (!first || first[0] != '#') { free(first); json_free(args); return NULL; }
+
+    /* strip leading '#' then whitespace */
+    const char *q = first + 1;
+    while (*q == '#' ) q++;
+    while (*q == ' ' || *q == '\t') q++;
+    /* copy the label out before freeing the first-line buffer */
+    char *label = strdup(q);
+    free(first);
+    if (!label || !*label) { free(label); json_free(args); return NULL; }
+
+    size_t len = strlen(label);
+    if (len > (size_t)max_chars) {
+        /* label[:max_chars-1] + "…" */
+        char *out = malloc(max_chars + 2);
+        if (!out) { free(label); json_free(args); return NULL; }
+        memcpy(out, label, max_chars - 1);
+        out[max_chars - 1] = 0xE2; out[max_chars] = 0x80; out[max_chars + 1] = 0xA6; /* … */
+        out[max_chars + 2] = '\0';
+        free(label);
+        json_free(args);
+        return out;
+    }
+    json_free(args);
+    return label;
+}
+
