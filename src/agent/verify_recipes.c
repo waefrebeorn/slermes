@@ -398,12 +398,12 @@ recipe_t *recipe_detect_node(const char *root, const char *pkg_json)
 
     const char *label = "Node.js app";
     int default_port = 0;
-    if (strcmp(first_framework, "nextjs") == 0) { label = "Next.js"; default_port = 3000; }
-    else if (strcmp(first_framework, "sveltekit") == 0) { label = "SvelteKit"; default_port = 5173; }
-    else if (strcmp(first_framework, "astro") == 0) { label = "Astro"; default_port = 4321; }
-    else if (strcmp(first_framework, "remix") == 0) { label = "Remix"; default_port = 3000; }
-    else if (strcmp(first_framework, "cra") == 0) { label = "Create React App"; default_port = 3000; }
-    else if (strcmp(first_framework, "vite") == 0) { label = "Vite"; default_port = 5173; }
+    if (strcmp(first_framework, "nextjs") == 0) { label = "Next.js"; default_port = 3000; recipe_set_kind(r, "nextjs"); }
+    else if (strcmp(first_framework, "sveltekit") == 0) { label = "SvelteKit"; default_port = 5173; recipe_set_kind(r, "sveltekit"); }
+    else if (strcmp(first_framework, "astro") == 0) { label = "Astro"; default_port = 4321; recipe_set_kind(r, "astro"); }
+    else if (strcmp(first_framework, "remix") == 0) { label = "Remix"; default_port = 3000; recipe_set_kind(r, "remix"); }
+    else if (strcmp(first_framework, "cra") == 0) { label = "Create React App"; default_port = 3000; recipe_set_kind(r, "cra"); }
+    else if (strcmp(first_framework, "vite") == 0) { label = "Vite"; default_port = 5173; recipe_set_kind(r, "vite"); }
     recipe_set_name(r, label);
 
     const char *start_script = has_dev ? "dev" : (has_start ? "start" : NULL);
