@@ -105,6 +105,45 @@ char *extract_user_instruction_from_skill_message(const char *content) {
     return extract_impl(content, NULL);
 }
 
+/* PoP: append_user_instruction @ agent/skill_commands.py:append_user_instruction */
+char *append_user_instruction(char ***parts, size_t *nparts, const char *instruction)
+{
+    /* Append the instruction line to parts; return the stable prefix.
+     * Shared by every builder that ends a static skill scaffold with the
+     * caller-supplied volatile instruction. The returned prefix ends exactly
+     * at the instruction marker, so registering it with the cache-boundary
+     * machinery lets the cache planner put a breakpoint on the scaffold. */
+    if (!parts || !nparts || !instruction) return NULL;
+    static const char *INSTRUCTION = "The user has provided the following instruction alongside the skill invocation: ";
+    /* stable_prefix = "\n".join(parts) + "\n" + INSTRUCTION */
+    size_t total = 0;
+    for (size_t i = 0; i < *nparts; i++)
+        total += strlen((*parts)[i]) + 1; /* +1 for '\n' */
+    total += strlen(INSTRUCTION);
+    char *prefix = malloc(total + 2);
+    if (!prefix) return NULL;
+    size_t off = 0;
+    for (size_t i = 0; i < *nparts; i++) {
+        size_t l = strlen((*parts)[i]);
+        memcpy(prefix + off, (*parts)[i], l); off += l;
+        prefix[off++] = '\n';
+    }
+    size_t il = strlen(INSTRUCTION);
+    memcpy(prefix + off, INSTRUCTION, il); off += il;
+    prefix[off] = '\0';
+    /* parts.append(f"{INSTRUCTION}{instruction}") */
+    char *joined = malloc(il + strlen(instruction) + 1);
+    if (!joined) { free(prefix); return NULL; }
+    memcpy(joined, INSTRUCTION, il);
+    strcpy(joined + il, instruction);
+    char **np = realloc(*parts, (*nparts + 1) * sizeof(char *));
+    if (!np) { free(joined); free(prefix); return NULL; }
+    *parts = np;
+    (*parts)[*nparts] = joined;
+    (*nparts)++;
+    return prefix;
+}
+
 /* PoP: describe_skill_invocation @ agent/skill_commands.py:describe_skill_invocation */
 char *describe_skill_invocation(const char *content) {
     if (!content || strncmp(content, SKILL_INVOCATION_PREFIX,
