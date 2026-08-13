@@ -258,6 +258,16 @@ json_t *cc_fresh_compaction_message_copy(const json_t *msg);
 /* Strip persistence markers from assembled messages; returns count stripped. */
 int  cc_strip_persistence_markers(json_t *messages);
 
+/* Role as counted by strict chat-template alternation checks (NULL if skipped). */
+const char *cc_template_visible_role(const json_t *message);
+/* True when a clarify user_response is runtime sentinel prose (timeout/no-user). */
+bool cc_is_clarify_non_response_sentinel(const json_t *response);
+/* Index of the newest assistant message, or -1. */
+int  cc_last_assistant_index(const json_t *messages);
+/* Strip stale per-turn replay items from assistant messages before the last
+ * user turn. Mutates in place; returns count of messages pruned. */
+int  cc_prune_stale_reasoning_replay(json_t *messages);
+
 /* ── batch 6: stateful compression-guard + preflight trackers ───────────── */
 /* Record a consecutive timeout failure using the shared cooldown ladder. */
 void cc_record_timeout_failure(cc_compression_guards_t *g, const char *error);

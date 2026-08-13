@@ -1442,5 +1442,136 @@ bool cc_should_compress_info(const cc_compression_guards_t *g, long prompt_token
  * is a real gate there). The cc_request_tracker_t math above is available for
  * the canonical version to adopt if it wants the projection-based variant. */
 
+/* ── batch 7: module-level pure helpers (previously REAL_GAP) ───────────── */
+
+/* PoP: _template_visible_role @ agent/context_compressor.py:_template_visible_role */
+/* Role as counted by strict chat-template alternation checks. Returns NULL for
+ * messages the alternation check skips (tool results, and assistant messages
+ * carrying tool_calls). */
+const char *cc_template_visible_role(const json_t *message) {
+    if (!message || message->type != JSON_OBJECT) return NULL;
+    const char *role = json_get_str(message, "role", "");
+    if (strcmp(role, "tool") == 0) return NULL;
+    if (strcmp(role, "assistant") == 0 && json_obj_get(message, "tool_calls"))
+        return NULL;
+    return role;
+}
+
+/* PoP: _is_clarify_non_response_sentinel @ agent/context_compressor.py:_is_clarify_non_response_sentinel */
+/* True when a clarify user_response is runtime sentinel prose (timeout /
+ * no-user), not an actual user answer. For lists, ANY sentinel item poisons
+ * the whole response. */
+static const char *CC_CLARIFY_NON_RESPONSE_PREFIXES[] = {
+    "The user did not provide a response",
+    "[user did not respond",
+    "[clarify prompt could not be delivered",
+    "[oneshot mode:",
+    NULL,
+};
+
+bool cc_is_clarify_non_response_sentinel(const json_t *response) {
+    if (!response) return false;
+    if (response->type == JSON_STRING) {
+        const char *s = json_get_str(response, "", "");
+        while (*s && isspace((unsigned char)*s)) s++;
+        for (int i = 0; CC_CLARIFY_NON_RESPONSE_PREFIXES[i]; i++)
+            if (strncmp(s, CC_CLARIFY_NON_RESPONSE_PREFIXES[i],
+                        strlen(CC_CLARIFY_NON_RESPONSE_PREFIXES[i])) == 0)
+                return true;
+        return false;
+    }
+    if (response->type == JSON_ARRAY) {
+        int n = (int)json_len(response);
+        for (int i = 0; i < n; i++) {
+            json_t *item = json_get(response, (size_t)i);
+            if (!item || item->type != JSON_STRING) continue;
+            const char *s = json_get_str(item, "", "");
+            while (*s && isspace((unsigned char)*s)) s++;
+            for (int k = 0; CC_CLARIFY_NON_RESPONSE_PREFIXES[k]; k++)
+                if (strncmp(s, CC_CLARIFY_NON_RESPONSE_PREFIXES[k],
+                            strlen(CC_CLARIFY_NON_RESPONSE_PREFIXES[k])) == 0)
+                    return true;
+        }
+        return false;
+    }
+    return false;
+}
+
+/* PoP: _last_assistant_index @ agent/context_compressor.py:_last_assistant_index */
+/* Index of the newest assistant message, or -1. */
+int cc_last_assistant_index(const json_t *messages) {
+    if (!messages || messages->type != JSON_ARRAY) return -1;
+    int n = (int)json_len(messages);
+    for (int i = n - 1; i >= 0; i--) {
+        json_t *msg = json_get(messages, (size_t)i);
+        if (msg && msg->type == JSON_OBJECT &&
+            strcmp(json_get_str(msg, "role", ""), "assistant") == 0)
+            return i;
+    }
+    return -1;
+}
+
+/* PoP: _prune_stale_reasoning_replay @ agent/context_compressor.py:_prune_stale_reasoning_replay */
+/* Strip stale per-turn replay items (codex_reasoning_items) from assistant
+ * messages belonging to turns older than the active one. Turn boundary is the
+ * LAST USER message; everything after it keeps its items. Native compaction
+ * checkpoints (type=="compaction") are exempt. Mutates in place; returns the
+ * count of messages pruned. */
+static const char *CC_STALE_REPLAY_PRUNE_KEYS[] = {
+    "codex_reasoning_items",
+    NULL,
+};
+
+int cc_prune_stale_reasoning_replay(json_t *messages) {
+    if (!messages || messages->type != JSON_ARRAY) return 0;
+    int n = (int)json_len(messages);
+    int last_user_idx = -1;
+    for (int i = n - 1; i >= 0; i--) {
+        json_t *msg = json_get(messages, (size_t)i);
+        if (msg && msg->type == JSON_OBJECT &&
+            strcmp(json_get_str(msg, "role", ""), "user") == 0) {
+            last_user_idx = i;
+            break;
+        }
+    }
+    if (last_user_idx < 0) return 0; /* fail open toward correctness */
+
+    int pruned = 0;
+    for (int i = 0; i < last_user_idx; i++) {
+        json_t *msg = json_get(messages, (size_t)i);
+        if (!msg || msg->type != JSON_OBJECT) continue;
+        if (strcmp(json_get_str(msg, "role", ""), "assistant") != 0) continue;
+        for (int k = 0; CC_STALE_REPLAY_PRUNE_KEYS[k]; k++) {
+            json_t *items = json_obj_get(msg, CC_STALE_REPLAY_PRUNE_KEYS[k]);
+            if (!items || items->type != JSON_ARRAY || json_len(items) == 0)
+                continue;
+            int in = (int)json_len(items);
+            int kept_count = 0;
+            json_t *kept = json_array();
+            if (!kept) continue;
+            for (int j = 0; j < in; j++) {
+                json_t *item = json_get(items, (size_t)j);
+                if (item && item->type == JSON_OBJECT &&
+                    strcmp(json_get_str(item, "type", ""), "compaction") == 0) {
+                    json_append(kept, json_copy(item));
+                    kept_count++;
+                }
+            }
+            if (kept_count == in) {
+                json_free(kept);
+                continue; /* nothing stale in this sidecar */
+            }
+            if (kept_count > 0)
+                json_set(msg, CC_STALE_REPLAY_PRUNE_KEYS[k], kept);
+            else {
+                json_free(kept);
+                json_obj_del(msg, CC_STALE_REPLAY_PRUNE_KEYS[k]);
+            }
+            pruned++;
+        }
+    }
+    return pruned;
+}
+
 
 
