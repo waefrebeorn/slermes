@@ -9659,8 +9659,29 @@ int hermes_cli_moa_config_u_coerce_reference_timeout(const char *arg) {
     }
     char *end = NULL;
     double v = strtod(arg, &end);
-    if (end == arg || !isfinite(v) || v <= 0) { printf("%.2f\n", dflt); return 0; }
-    printf("%.2f\n", v);
+    if (end == arg || !isfinite(v) || v <= 0) { printf("%.2f\\n", dflt); return 0; }
+    printf("%.2f\\n", v);
+    return 0;
+}
+
+/* PoP: _validate_reference_timeout @ hermes_cli/web_models.py:_validate_reference_timeout */
+/* Class-validator: coerce `value` to a finite positive float, or -1 on
+ * rejection (mirrors Python raising ValueError). None/"" -> -1 sentinel
+ * (caller treats as "unset"). Booleans, non-numeric, inf/nan, and <=0
+ * are rejected. Returns the validated timeout in *out and 0 on success;
+ * returns -1 on rejection. */
+int hermes_cli_web_models_validate_reference_timeout(const char *value, double *out)
+{
+    if (value == NULL) { if (out) *out = -1.0; return -1; }
+    if (value[0] == '\0') { if (out) *out = -1.0; return -1; }
+    /* Reject booleans explicitly — Python isinstance(value, bool) is checked
+     * BEFORE numeric coercion. "true"/"false" strings are NOT valid floats,
+     * so strtod leaves end==arg → rejection anyway. */
+    char *end = NULL;
+    double v = strtod(value, &end);
+    if (end == value || *end != '\0') { if (out) *out = -1.0; return -1; }
+    if (!isfinite(v) || v <= 0.0) { if (out) *out = -1.0; return -1; }
+    if (out) *out = v;
     return 0;
 }
 
