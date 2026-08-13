@@ -6,6 +6,7 @@
 
 #include "hermes_state_internal.h"
 #include "hermes_state_db.h"
+#include "hermes_json.h"   /* json_t parse/patch/serialize */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -65,6 +66,90 @@ bool hermes_state_set_model_config(hermes_state_db_t *db, const char *session_id
     bool ok = sqlite3_step(st) == SQLITE_DONE;
     sqlite3_finalize(st);
     return ok;
+}
+
+/* ── model_config read/patch (proactive-prune-rearm runway + micro sync) ─ */
+
+/* PoP: get_session_model_config_value @ hermes_state.py:get_session_model_config_value */
+char *hermes_state_get_session_model_config_value(hermes_state_db_t *db,
+                                                  const char *session_id,
+                                                  const char *key,
+                                                  const char *default_json) {
+    if (!db || !session_id || !*session_id || !key || !*key) {
+        return default_json ? strdup(default_json) : strdup("null");
+    }
+    sqlite3_stmt *st = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "SELECT model_config FROM sessions WHERE id = ?", -1, &st, NULL)
+        != SQLITE_OK)
+        return default_json ? strdup(default_json) : strdup("null");
+    sqlite3_bind_text(st, 1, session_id, -1, SQLITE_TRANSIENT);
+    char *result = NULL;
+    if (sqlite3_step(st) == SQLITE_ROW) {
+        const unsigned char *mc = sqlite3_column_text(st, 0);
+        const char *src = mc ? (const char *)mc : "{}";
+        json_t *obj = json_parse(src, NULL);
+        if (obj && obj->type == JSON_OBJECT) {
+            json_t *val = json_obj_get(obj, key);
+            if (val) {
+                char *ser = json_serialize(val);
+                result = ser ? ser : strdup("null");
+                free(ser);
+            }
+        }
+        if (!result)
+            result = default_json ? strdup(default_json) : strdup("null");
+        json_free(obj);
+    } else {
+        result = default_json ? strdup(default_json) : strdup("null");
+    }
+    sqlite3_finalize(st);
+    return result;
+}
+
+/* PoP: patch_session_model_config @ hermes_state.py:patch_session_model_config */
+bool hermes_state_patch_session_model_config(hermes_state_db_t *db,
+                                             const char *session_id,
+                                             const char *patch_json) {
+    if (!db || !session_id || !*session_id) return false;
+
+    /* Read current model_config, merge patch keys on top, write back. */
+    sqlite3_stmt *gst = NULL;
+    if (sqlite3_prepare_v2(db->db,
+            "SELECT model_config FROM sessions WHERE id = ?", -1, &gst, NULL)
+        != SQLITE_OK) return false;
+    sqlite3_bind_text(gst, 1, session_id, -1, SQLITE_TRANSIENT);
+
+    json_t *merged = json_object();
+    if (sqlite3_step(gst) == SQLITE_ROW) {
+        const unsigned char *mc = sqlite3_column_text(gst, 0);
+        json_t *cur = json_parse(mc ? (const char*)mc : "{}", NULL);
+        if (cur && cur->type == JSON_OBJECT) {
+            /* Deep-copy existing entries into merged. */
+            for (size_t i = 0; i < cur->c.count; i++)
+                json_set(merged, cur->c.keys[i], json_copy(cur->c.items[i]));
+        }
+        json_free(cur);
+    }
+    sqlite3_finalize(gst);
+    if (!merged) return false;
+
+    /* Apply patch: top-level keys overwrite existing (matches Python update). */
+    if (patch_json && *patch_json) {
+        json_t *patch = json_parse(patch_json, NULL);
+        if (patch && patch->type == JSON_OBJECT) {
+            for (size_t i = 0; i < patch->c.count; i++)
+                json_set(merged, patch->c.keys[i], json_copy(patch->c.items[i]));
+        }
+        json_free(patch);
+    }
+
+    char *out = json_serialize(merged);
+    json_free(merged);
+    if (!out) return false;
+    bool written = hermes_state_set_model_config(db, session_id, out);
+    free(out);
+    return written;
 }
 bool hermes_state_link_child(hermes_state_db_t *db, const char *child_id,
                              const char *parent_id, const char *end_reason) {

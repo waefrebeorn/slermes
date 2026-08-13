@@ -59,6 +59,20 @@ bool hermes_state_link_child(hermes_state_db_t *db, const char *child_id,
 bool hermes_state_set_model_config(hermes_state_db_t *db, const char *session_id,
                                    const char *model_config_json);
 
+/* PoP: get_session_model_config_value @ hermes_state.py:get_session_model_config_value
+ * Read one key out of the session's model_config JSON. Returns the JSON-encoded
+ * value string (caller frees), or strdup(default_json) when absent/error. */
+char *hermes_state_get_session_model_config_value(hermes_state_db_t *db,
+                                                  const char *session_id,
+                                                  const char *key,
+                                                  const char *default_json);
+
+/* PoP: patch_session_model_config @ hermes_state.py:patch_session_model_config
+ * Merge patch_json into the existing model_config JSON (top-level keys only). */
+bool hermes_state_patch_session_model_config(hermes_state_db_t *db,
+                                             const char *session_id,
+                                             const char *patch_json);
+
 /* ── Message append / read ──────────────────────────────────────────────
  * PoP: append_message @ hermes_state.py:append_message
  * Appends a message row and bumps message_count (and tool_call_count when

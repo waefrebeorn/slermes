@@ -15,6 +15,7 @@
 #include "hermes_json.h"
 #include "context_compressor_pure.h"   /* budget + guard structs + helpers */
 #include "context_compressor.h"
+#include "hermes_state_db.h"   /* hermes_state get/patch model_config */
 #include "context_compressor_constants.h"  /* CC_COMPRESSED_SUMMARY_METADATA_KEY */
 
 /* Port of Python: _compute_threshold_tokens */
@@ -159,11 +160,44 @@ void cc_set_micro_compact_tokens_saved_total(context_compressor_t *cc, long v) {
     if (cc) cc->micro_compact_tokens_saved_total = v;
 }
 void cc_set_micro_compact_enabled(context_compressor_t *cc, int every_n_turns) {
-    if (cc) {
-        cc->micro_compact_enabled = every_n_turns > 0 ? 1 : 0;
-        cc->micro_compact_every_n_turns = every_n_turns;
+    if (cc) { cc->micro_compact_enabled = every_n_turns > 0 ? 1 : 0; cc->micro_compact_every_n_turns = every_n_turns; }
+}
+
+/* Arm / disarm the session_db / session_id on a compressor. */
+void cc_compressor_set_session(context_compressor_t *cc,
+                               const char *session_id, void *session_db) {
+    if (!cc) return;
+    free(cc->session_id);
+    cc->session_id = session_id ? strdup(session_id) : NULL;
+    cc->session_db = session_db;
+}
+
+/* ── proactive-prune-rearm runway (durable session_config) ─────────────── */
+
+/* PoP: _load_proactive_prune_rearm_tokens @ agent/context_compressor.py:_load_proactive_prune_rearm_tokens */
+void cc_load_proactive_prune_rearm_tokens(context_compressor_t *cc) {
+    if (!cc || !cc->session_id || !cc->session_db) return;
+    char *val = hermes_state_get_session_model_config_value(
+        (hermes_state_db_t *)cc->session_db, cc->session_id,
+        CC_PROACTIVE_PRUNE_REARM_KEY, "0");
+    if (val) {
+        char *endp = NULL;
+        long v = strtol(val, &endp, 10);
+        v = (endp == val) ? 0 : v;
+        if (v < 0) v = 0;
+        cc->micro_compact_defrag_threshold_tokens = v;
+        free(val);
     }
 }
+
+/* PoP: _clear_durable_proactive_prune_rearm @ agent/context_compressor.py:_clear_durable_proactive_prune_rearm */
+void cc_clear_durable_proactive_prune_rearm(context_compressor_t *cc) {
+    if (!cc || !cc->session_id || !cc->session_db) return;
+    hermes_state_patch_session_model_config(
+        (hermes_state_db_t *)cc->session_db, cc->session_id,
+        "{\"" CC_PROACTIVE_PRUNE_REARM_KEY "\":null}");
+}
+
 
 /* ── note_request_rough_estimate ────────────────────────────────────────── */
 /* (canonical PoP-tagged impl — see context_compressor_pure.c)              */

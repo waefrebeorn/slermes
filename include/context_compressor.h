@@ -53,6 +53,18 @@ void cc_set_micro_compact_cursor(context_compressor_t *cc, long v);
 void cc_set_micro_compact_enabled(context_compressor_t *cc, int every_n_turns);
 void cc_set_micro_compact_tokens_saved_total(context_compressor_t *cc, long v);
 
+/* PoP: _load_proactive_prune_rearm_tokens @ agent/context_compressor.py:_load_proactive_prune_rearm_tokens
+ * Restore the durable proactive-prune-rearm runway token count from the
+ * session's model_config. No-op when no session_db/session_id. */
+void cc_load_proactive_prune_rearm_tokens(context_compressor_t *cc);
+/* PoP: _clear_durable_proactive_prune_rearm @ agent/context_compressor.py:_clear_durable_prune_rearm
+ * Remove the persisted proactive-prune-rearm runway key. No-op when
+ * standalone. */
+void cc_clear_durable_proactive_prune_rearm(context_compressor_t *cc);
+/* Arm / disarm the session_db / session_id on a compressor. */
+void cc_compressor_set_session(context_compressor_t *cc,
+                               const char *session_id, void *session_db);
+
 /* ── micro-summation prompt builder (pure, no IO) ──────────────────────── */
 /* PoP: _build_micro_summary_prompt @ agent/context_compressor.py:_build_micro_summary_prompt */
 /* Build the prompt messages (a 2-element JSON array: system + user) for a
