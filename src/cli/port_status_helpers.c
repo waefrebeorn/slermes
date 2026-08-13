@@ -22,6 +22,15 @@
 #include <time.h>
 #include "port_hermes_cli_timefmt.h"
 #include "hermes_yaml.h"
+#include "port_hermes_cli_timefmt.h"  /* tf_relative_time */
+
+/* PoP: sta_format_relative_ts @ hermes_cli/status.py:_format_relative_ts */
+/* Format an epoch timestamp as a short relative age, delegating to the
+ * portable timefmt port (mirrors Python: relative_time(ts)). */
+char *sta_format_relative_ts(double ts)
+{
+    return tf_relative_time(ts);
+}
 
 /* PoP: sta_format_iso_timestamp @ hermes_cli/status.py:_format_iso_timestamp */
 void sta_format_iso_timestamp(const char *value, char out[64])
