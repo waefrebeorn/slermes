@@ -215,6 +215,16 @@ void cc_restart_handoff_probe_bounds(const json_t *messages, int protect_first_n
 int  cc_effective_protect_first_n(int compression_count, int has_previous_summary,
                                  int protect_first_n);
 
+/* ── batch 4: micro-compaction marker helpers ─────────────────────────── */
+/* Assemble the marker content wrapper around summary_text. Caller frees. */
+char *cc_render_micro_marker_content(const char *summary_text);
+/* Recover the rolling-summary text from a summary marker's content. Caller frees. */
+char *cc_rolling_summary_from_marker(const char *content);
+/* Index just past the summary marker in result (scan from the end), else fallback. */
+int  cc_cursor_after_splice(const json_t *result, int fallback);
+/* New message array with consecutive plain-text real user turns merged. Caller frees. */
+json_t *cc_merge_adjacent_user_turns(const json_t *result);
+
 #ifdef __cplusplus
 }
 #endif
