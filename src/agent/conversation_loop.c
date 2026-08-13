@@ -60,6 +60,64 @@ struct tool_dispatch_arg {
     int  *duration_ms_out;  /* S14 gap #13: latency tracking */
 };
 
+/* PoP: is_trivial_prompt @ agent/memory_provider.py:is_trivial_prompt */
+static int is_trivial_prompt(const char *text)
+{
+    if (!text) return 1;
+    /* strip leading/trailing whitespace */
+    const char *s = text;
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    if (*s == '\0') return 1;
+    /* slash commands */
+    if (*s == '/') return 1;
+    /* TRIVIAL_PROMPT_RE pattern (case-insensitive): */
+    /* ^(yes|no|ok|okay|sure|thanks|thank you|y|n|yep|nope|yeah|nah| */
+    /* hi|hey|hello|yo|sup| */
+    /* continue|go ahead|do it|proceed|got it|cool|nice|great|done|next|lgtm|k) */
+    /* [\s!?.:;,"'～—–…()\[\]{}<>*&^%$#@!+=` ]*$ */
+    static const char *TRIVIAL_WORDS[] = {
+        "yes","no","ok","okay","sure","thanks","thank you","y","n",
+        "yep","nope","yeah","nah","hi","hey","hello","yo","sup",
+        "continue","go ahead","do it","proceed","got it","cool",
+        "nice","great","done","next","lgtm","k", NULL
+    };
+    /* find end of the word portion */
+    const char *e = s;
+    while (*e && *e != ' ' && *e != '\t' && *e != '\n' && *e != '\r') e++;
+    size_t wlen = (size_t)(e - s);
+    for (size_t i = 0; TRIVIAL_WORDS[i]; i++) {
+        const char *w = TRIVIAL_WORDS[i];
+        size_t wl = strlen(w);
+        if (wl == wlen && strncasecmp(s, w, wlen) == 0) {
+            /* match: rest must be only [\\s!?.:;,"'\\u2018\\u2019\\u201c\\u201d\\u2014\\u2013\\u2026()\\[\\]{}<>*&^%$#@!+=`\\u00a0]* */
+            const char *r = e;
+            while (*r) {
+                char c = *r;
+                if (c == ' ' || c == '\t' || c == '\n' || c == '\r') { r++; continue; }
+                if (c == '!' || c == '?' || c == '.' || c == ',' || c == ';' ||
+                    c == ':' || c == '"' || c == '\'' || c == '~' || c == '*' ||
+                    c == '(' || c == ')' || c == '[' || c == ']' ||
+                    c == '{' || c == '}' || c == '<' || c == '>' ||
+                    c == '&' || c == '^' || c == '%' || c == '$' ||
+                    c == '#' || c == '@' || c == '+' || c == '=' ||
+                    c == '`' || (unsigned char)c == 0xC2) {
+                    /* 0xC2 = start of U+00A0 (nbsp) or U+201x etc. two-byte UTF-8 */
+                    if ((unsigned char)c == 0xC2) {
+                        /* skip the two-byte UTF-8 sequence */
+                        r += (r[1] ? 2 : 1);
+                    } else {
+                        r++;
+                    }
+                    continue;
+                }
+                return 0; /* non-trivial trailing char */
+            }
+            return 1; /* matched trivial pattern */
+        }
+    }
+    return 0;
+}
+
 static void *tool_dispatch_thread(void *arg) {
     struct tool_dispatch_arg *a = (struct tool_dispatch_arg *)arg;
     struct timespec ts_start, ts_end;
@@ -160,8 +218,8 @@ char *run_conversation(agent_state_t *state,
         if (prefill_msg) context_push(state, prefill_msg);
     }
 
-    /* ME01: Trigger background memory prefetch on user message */
-    if (state->memory && user_message && user_message[0]) {
+    /* ME01: Trigger background memory prefetch on non-trivial user message */
+    if (state->memory && user_message && !is_trivial_prompt(user_message)) {
         /* Free any previous prefetch result */
         if (state->prefetch_result) {
             free(state->prefetch_result);
