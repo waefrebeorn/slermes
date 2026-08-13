@@ -15,6 +15,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <time.h>
 
 #include "hermes_redact.h"
 #include "hermes_json.h"
@@ -1310,5 +1311,76 @@ int cc_reasoning_details_text_chars(const json_t *value) {
     }
     return total;
 }
+
+/* ── batch 6: stateful compression-guard + preflight trackers ───────────── */
+/* These mirror the ContextCompressor instance methods. They operate on small
+ * value structs so the math is unit-testable without the full agent handle. */
+
+/* Timeout cooldown ladder (seconds) — mirrors _TIMEOUT_COOLDOWN_LADDER. */
+static const unsigned int CC_TIMEOUT_COOLDOWN_LADDER[] = { 60, 300, 900 };
+#define CC_TIMEOUT_COOLDOWN_LADDER_LEN \
+    (int)(sizeof(CC_TIMEOUT_COOLDOWN_LADDER) / sizeof(CC_TIMEOUT_COOLDOWN_LADDER[0]))
+
+static double cc_monotonic_seconds(void) {
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
+}
+
+/* PoP: record_timeout_failure @ agent/context_compressor.py:record_timeout_failure */
+void cc_record_timeout_failure(cc_compression_guards_t *g, const char *error) {
+    if (!g) return;
+    g->consecutive_timeout_failures++;
+    if (g->consecutive_timeout_failures > CC_TIMEOUT_COOLDOWN_LADDER_LEN)
+        g->consecutive_timeout_failures = CC_TIMEOUT_COOLDOWN_LADDER_LEN;
+    unsigned int cooldown = CC_TIMEOUT_COOLDOWN_LADDER[g->consecutive_timeout_failures - 1];
+    g->summary_failure_cooldown_until = cc_monotonic_seconds() + (double)cooldown;
+    if (error) {
+        free(g->last_summary_error);
+        g->last_summary_error = strdup(error);
+    }
+}
+
+/* PoP: _compression_block_reason @ agent/context_compressor.py:_compression_block_reason */
+char *cc_compression_block_reason(const cc_compression_guards_t *g) {
+    if (!g) return NULL;
+    double remaining = g->summary_failure_cooldown_until - cc_monotonic_seconds();
+    if (remaining > 0.0) {
+        char buf[64];
+        snprintf(buf, sizeof(buf), "cooldown:%d", (int)(remaining + 0.5));
+        return strdup(buf);
+    }
+    if (g->ineffective_compression_count >= 2 || g->fallback_compression_streak >= 2)
+        return strdup("ineffective");
+    return NULL;
+}
+
+/* PoP: _automatic_compression_blocked @ agent/context_compressor.py:_automatic_compression_blocked */
+bool cc_automatic_compression_blocked(const cc_compression_guards_t *g) {
+    return cc_compression_block_reason(g) != NULL;
+}
+
+/* PoP: should_compress_info @ agent/context_compressor.py:should_compress_info */
+bool cc_should_compress_info(const cc_compression_guards_t *g, long prompt_tokens,
+                             long threshold_tokens, bool *out_should, char **out_reason) {
+    if (out_should) *out_should = false;
+    if (out_reason) *out_reason = NULL;
+    if (prompt_tokens < threshold_tokens) return false;
+    char *reason = cc_compression_block_reason(g);
+    if (reason) {
+        if (out_reason) *out_reason = reason;
+        else free(reason);
+        return true; /* over threshold but blocked */
+    }
+    if (out_should) *out_should = true;
+    return true;
+}
+
+/* note_request_rough_estimate / should_defer_preflight_to_real_usage are
+ * intentionally NOT re-declared here: port_context_compressor_ports.c owns
+ * the canonical PoP-tagged implementations (cc_should_defer_preflight_to_real_usage
+ * is a real gate there). The cc_request_tracker_t math above is available for
+ * the canonical version to adopt if it wants the projection-based variant. */
+
 
 

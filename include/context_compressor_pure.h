@@ -33,6 +33,24 @@ extern "C" {
 
 #include "hermes_json.h"  /* defines json_t (opaque struct) */
 
+/* ── Stateful tracker structs (mirror ContextCompressor instance fields) ── */
+/* Compression-guard state: cooldown + anti-thrashing counters. */
+typedef struct {
+    int   consecutive_timeout_failures;
+    double summary_failure_cooldown_until;  /* monotonic seconds */
+    int   ineffective_compression_count;
+    int   fallback_compression_streak;
+    char *last_summary_error;              /* strdup'd, owned */
+} cc_compression_guards_t;
+
+/* Request pre-flight projection: (rough, real) anchor pair. */
+typedef struct {
+    long pending_request_rough_tokens;
+    long last_real_prompt_tokens;
+    long last_rough_tokens_when_real_prompt_fit;
+    long last_compression_rough_tokens;
+} cc_request_tracker_t;
+
 /* Re-declare the small helpers owned by context.c we reuse (no agent dep). */
 char *context_compressor__skill_pruned_marker(const char *skill_name);
 int   context_compressor__extract_pruned_skill_names(const char *text,
@@ -234,6 +252,21 @@ bool cc_reference_handoff_would_drive_next_model_call(const json_t *messages);
 bool cc_is_user_originated_turn(const json_t *message);
 /* Textual thinking chars inside a reasoning_details envelope (envelope blobs skipped). */
 int  cc_reasoning_details_text_chars(const json_t *value);
+
+/* ── batch 6: stateful compression-guard + preflight trackers ───────────── */
+/* Record a consecutive timeout failure using the shared cooldown ladder. */
+void cc_record_timeout_failure(cc_compression_guards_t *g, const char *error);
+/* Human-readable block reason ("cooldown:N"/"ineffective"/NULL) from guards. Caller frees. */
+char *cc_compression_block_reason(const cc_compression_guards_t *g);
+/* True when a guard is active (cooldown or anti-thrashing). */
+bool cc_automatic_compression_blocked(const cc_compression_guards_t *g);
+/* (should_compress, reason) tuple. Returns whether over threshold. */
+bool cc_should_compress_info(const cc_compression_guards_t *g, long prompt_tokens,
+                             long threshold_tokens, bool *out_should, char **out_reason);
+/* Record the rough estimate of the request about to be sent. */
+void cc_note_request_rough_estimate(cc_request_tracker_t *t, long rough_tokens);
+/* NOTE: cc_should_defer_preflight_to_real_usage is owned by
+ * port_context_compressor_ports.c (canonical PoP-tagged impl) — not here. */
 
 #ifdef __cplusplus
 }
