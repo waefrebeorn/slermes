@@ -304,6 +304,12 @@ char *cli_tools_clarify_gateway__coerce_multi_select_text(const clarify_entry_t 
     return out;
 }
 
+/* ── NOTE: cli_tools_clarify_gateway__coerce_multi_select_text ──────────── */
+/* The canonical PoP-tagged impl lives above (line ~232, using libjson's
+ * json_array_append + json_dumps). A duplicate pre-libjson definition that
+ * manually built the JSON string was removed here to fix the redefinition
+ * error introduced by the rebase merge. */
+
 /* PoP: cli_tools_clarify_gateway_resolve_text_response_for_session @ tools/clarify_gateway.py:resolve_text_response_for_session */
 int cli_tools_clarify_gateway_resolve_text_response_for_session(const char *session_key, const char *response) {
     clarify_entry_t *entry = cli_tools_clarify_gateway_get_pending_for_session(session_key);
@@ -312,152 +318,4 @@ int cli_tools_clarify_gateway_resolve_text_response_for_session(const char *sess
     int ok = cli_tools_clarify_gateway_resolve_gateway_clarify(entry->clarify_id, coerced);
     free(coerced);
     return ok;
-}
-/* PoP: cli_tools_clarify_gateway__coerce_multi_select_text @ tools/clarify_gateway.py:_coerce_multi_select_text */
-
-/* Parse a typed multi-select reply into a JSON array of choice labels.
- * Accepts numbers and/or exact labels separated by commas (and, for
- * all-numeric replies, bare spaces): "1,3", "1 3", "staging, prod".
- * Returns NULL when any token is out of range or unrecognized. */
-char *cli_tools_clarify_gateway__coerce_multi_select_text(
-    const clarify_entry_t *entry, const char *text)
-{
-    if (!text || !*text) return NULL;
-    if (!entry || entry->choice_count <= 0) return NULL;
-
-    const char *choices[16];
-    int nchoices = 0;
-    for (int i = 0; i < entry->choice_count && i < 16; i++) choices[nchoices++] = entry->choices[i];
-
-    /* Split on commas first; if no commas and every whitespace-separated
-     * token is numeric, treat spaces as separators too ("1 3"). */
-    char *tokens[64];
-    int ntokens = 0;
-    if (strchr(text, ',')) {
-        char *copy = strdup(text);
-        char *save = NULL;
-        for (char *t = strtok_r(copy, ",", &save); t && ntokens < 64; t = strtok_r(NULL, ",", &save)) {
-            while (*t == ' ' || *t == '\t') t++;
-            size_t l = strlen(t);
-            while (l > 0 && (t[l-1]==' '||t[l-1]=='\t')) t[--l] = '\0';
-            if (*t) tokens[ntokens++] = strdup(t);
-        }
-        free(copy);
-    } else {
-        char *copy = strdup(text);
-        char *parts[64];
-        int nparts = 0;
-        char *save = NULL;
-        for (char *t = strtok_r(copy, " \t", &save); t && nparts < 64; t = strtok_r(NULL, " \t", &save)) {
-            parts[nparts++] = t;
-        }
-        int all_numeric = 1;
-        for (int i = 0; i < nparts; i++) {
-            for (const char *p = parts[i]; *p; p++) {
-                if (!isdigit((unsigned char)*p)) { all_numeric = 0; break; }
-            }
-            if (!all_numeric) break;
-        }
-        if (nparts > 1 && all_numeric) {
-            for (int i = 0; i < nparts; i++) tokens[ntokens++] = strdup(parts[i]);
-        } else {
-            tokens[ntokens++] = strdup(text);  /* single token */
-        }
-        free(copy);
-    }
-
-    /* Resolve tokens against choices. */
-    char *selected[16];
-    int nselected = 0;
-    int ok = 1;
-    for (int i = 0; i < ntokens && ok; i++) {
-        const char *token = tokens[i];
-        int is_digit = 1;
-        for (const char *p = token; *p; p++) if (!isdigit((unsigned char)*p)) { is_digit = 0; break; }
-        if (is_digit) {
-            long idx = strtol(token, NULL, 10) - 1;
-            if (idx < 0 || idx >= nchoices) { ok = 0; break; }
-            /* canonical label from choices[idx], stripped */
-            const char *label = choices[idx];
-            while (*label == ' ' || *label == '\t') label++;
-            size_t ll = strlen(label);
-            while (ll > 0 && (label[ll-1]==' '||label[ll-1]=='\t')) ll--;
-            /* dedupe */
-            int dup = 0;
-            for (int s = 0; s < nselected; s++) {
-                if (strlen(selected[s]) == ll && strncmp(selected[s], label, ll) == 0) { dup = 1; break; }
-            }
-            if (!dup) {
-                selected[nselected] = malloc(ll + 1);
-                if (selected[nselected]) { memcpy(selected[nselected], label, ll); selected[nselected][ll] = '\0'; nselected++; }
-            }
-            continue;
-        }
-        /* Exact label match (case-insensitive) */
-        int matched = 0;
-        for (int c = 0; c < nchoices && !matched; c++) {
-            const char *choice = choices[c];
-            while (*choice == ' ' || *choice == '\t') choice++;
-            size_t cl = strlen(choice);
-            while (cl > 0 && (choice[cl-1]==' '||choice[cl-1]=='\t')) cl--;
-            if (strlen(token) == cl) {
-                int same = 1;
-                for (size_t k = 0; k < cl; k++) {
-                    if (tolower((unsigned char)token[k]) != tolower((unsigned char)choice[k])) { same = 0; break; }
-                }
-                if (same) {
-                    /* dedupe */
-                    int dup = 0;
-                    for (int s = 0; s < nselected; s++) {
-                        if (strcmp(selected[s], choice) == 0) { dup = 1; break; }
-                    }
-                    /* strip trailing for dedupe compare */
-                    if (!dup) {
-                        char canon[256];
-                        size_t ccl = cl < sizeof(canon) - 1 ? cl : sizeof(canon) - 1;
-                        memcpy(canon, choice, ccl); canon[ccl] = '\0';
-                        for (int s = 0; s < nselected; s++) {
-                            if (strcmp(selected[s], canon) == 0) { dup = 1; break; }
-                        }
-                        if (!dup) { selected[nselected] = strdup(canon); nselected++; }
-                    }
-                    matched = 1;
-                }
-            }
-        }
-        if (!matched) { ok = 0; break; }
-    }
-
-    for (int i = 0; i < ntokens; i++) free(tokens[i]);
-
-    if (!ok) {
-        for (int s = 0; s < nselected; s++) free(selected[s]);
-        return NULL;
-    }
-
-    /* Build JSON array. */
-    size_t total = 2;
-    for (int s = 0; s < nselected; s++) {
-        total += strlen(selected[s]) + 3;  /* quote + comma + quotes */
-    }
-    char *out = malloc(total + 1);
-    if (!out) {
-        for (int s = 0; s < nselected; s++) free(selected[s]);
-        return NULL;
-    }
-    char *w = out;
-    *w++ = '[';
-    for (int s = 0; s < nselected; s++) {
-        if (s > 0) *w++ = ',';
-        *w++ = '"';
-        for (const char *p = selected[s]; *p; p++) {
-            if (*p == '"' || *p == '\\') *w++ = '\\';
-            *w++ = *p;
-        }
-        *w++ = '"';
-    }
-    *w++ = ']';
-    *w = '\0';
-    for (int s = 0; s < nselected; s++) free(selected[s]);
-    return out;
 }

@@ -364,64 +364,7 @@ bool secret_scope_is_global_env_fn(const char *name)
     return secret_scope_is_global_env(name);
 }
 
-/* PoP: _strip_inline_comment @ agent/secret_scope.py:_strip_inline_comment */
-char *secret_scope_strip_inline_comment(const char *value)
-{
-    /* Strip a dotenv-style inline comment from a raw .env value.
-     * - Quoted values: scan for the matching close quote (backslash-escape
-     *   aware for double quotes); everything through the close quote is kept,
-     *   a trailing "# ..." after it is discarded.
-     * - Unquoted values: truncate only at a "#" PRECEDED BY WHITESPACE
-     *   (so KEY=foo#bar keeps foo#bar, KEY=value # comment keeps value).
-     *   A value that starts with "#" is kept. */
-    if (!value) return NULL;
-    while (*value == ' ' || *value == '\t') value++;
-    const char *start = value;
-    size_t len = strlen(value);
-    while (len > 0 && (value[len-1] == ' ' || value[len-1] == '\t' || value[len-1] == '\n' || value[len-1] == '\r')) len--;
-    if (len == 0) return strdup("");
-    char quote = value[0];
-    if (quote == '\'' || quote == '"') {
-        size_t i = 1;
-        while (i < len) {
-            char ch = value[i];
-            if (quote == '"' && ch == '\\') {
-                i += 2; /* skip escaped character */
-                continue;
-            }
-            if (ch == quote) {
-                /* found close quote; check remainder after it */
-                const char *rem = value + i + 1;
-                while (*rem == ' ' || *rem == '\t') rem++;
-                if (*rem == '#') {
-                    /* keep through close quote only */
-                    char *out = malloc(i + 1);
-                    if (!out) return NULL;
-                    memcpy(out, value, i);
-                    out[i] = '\0';
-                    return out;
-                }
-                /* non-comment trailing junk: leave value untouched */
-                return strdup(value);
-            }
-            i++;
-        }
-        /* unterminated quote: leave as-is */
-        return strdup(value);
-    }
-    /* unquoted: truncate at whitespace+# */
-    for (size_t i = 0; i + 1 < len; i++) {
-        if ((value[i] == ' ' || value[i] == '\t') && value[i+1] == '#') {
-            /* strip trailing space(s) before # */
-            size_t cut = i;
-            while (cut > 0 && (value[cut-1] == ' ' || value[cut-1] == '\t')) cut--;
-            char *out = malloc(cut + 1);
-            if (!out) return NULL;
-            memcpy(out, value, cut);
-            out[cut] = '\0';
-            return out;
-        }
-    }
-    (void)start;
-    return strdup(value);
-}
+/* NOTE: _strip_inline_comment is implemented once above (static
+ * secret_scope_strip_inline_comment, PoP @ agent/secret_scope.py:_strip_inline_comment).
+ * A duplicate non-static definition was removed here to resolve the linker
+ * redefinition introduced by the rebase merge. */

@@ -23,6 +23,11 @@
 #define CC_CHARS_PER_TOKEN 4
 #define CC_SKILL_VIEW_PRUNE_MIN_CHARS 5000
 #define CC_COMPRESSED_SUMMARY_METADATA_KEY "_compressed_summary"
+#define CC_MICRO_COMPACT_MARKER_KEY "_micro_compact_marker"
+#define CC_DB_PERSISTED_MARKER "_db_persisted"
+#define CC_COMPRESSED_SUMMARY_HAS_USER_TURN_KEY "_compressed_summary_has_user_turn"
+#define CC_PROACTIVE_PRUNE_REARM_KEY "_proactive_prune_rearm_tokens"
+#define CC_DEF_DEFRAG_THRESHOLD_TOKENS 8000
 #define CC_COMPRESSION_CONTINUATION_USER_CONTENT "Continue from the compressed conversation context above. This marker exists because no human user turn was available."
 #define CC_LEGACY_COMPRESSION_CONTINUATION_USER_CONTENT "Continue from the compressed conversation context above. This marker exists because the compacted transcript contained no preserved user turn."
 #define CC_MERGED_PRIOR_CONTEXT_HEADER "[PRIOR CONTEXT — for reference only; not a new message]"

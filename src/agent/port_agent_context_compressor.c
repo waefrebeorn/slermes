@@ -55,12 +55,8 @@ int effective_protect_first_n(int compression_count, bool has_previous_summary)
 /* ContextCompressor instance + micro-compaction state (mirrors            */
 /* agent/context_compressor.py ContextCompressor.__init__ fields).         */
 
-/* Metadata keys (mirror Python module literals). */
-#define CC_MICRO_COMPACT_MARKER_KEY    "_micro_compact_marker"
-#define CC_COMPRESSED_SUMMARY_HAS_USER_TURN_KEY "_compressed_summary_has_user_turn"
-#define CC_DB_PERSISTED_MARKER         "_db_persisted"
-#define CC_PROACTIVE_PRUNE_REARM_KEY   "_proactive_prune_rearm_tokens"
-#define CC_DEF_DEFRAG_THRESHOLD_TOKENS 8000   /* _PRUNE_MIN_CHARS default */
+/* Metadata keys live in context_compressor_constants.h (shared header) so that
+ * both context_compressor_pure.c and this orchestrator see identical literals. */
 
 /* Opaque compressor handle (definition lives in this TU). */
 struct context_compressor_t {

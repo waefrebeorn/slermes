@@ -1215,10 +1215,8 @@ int _merge_adjacent_user_turns(json_t *result, json_t **out_merged) {
     return (int)merged->c.count;
 }
 
-/* _DB_PERSISTED_MARKER = "_db_persisted" (agent/context_compressor.py module literal).
- * Defined locally (not in the generated constants header) since it is only
- * used by the persistence-marker strip/copy helpers below. */
-static const char *CC_DB_PERSISTED_MARKER = "_db_persisted";
+/* _db_persisted marker (agent/context_compressor.py module literal) is now
+ * shared via context_compressor_constants.h (CC_DB_PERSISTED_MARKER). */
 
 /* PoP: _fresh_compaction_message_copy @ agent/context_compressor.py:_fresh_compaction_message_copy */
 /* Copy a message for compaction assembly without persistence markers
@@ -1665,4 +1663,44 @@ void cc_note_request_rough_estimate(cc_request_tracker_t *t, long rough_tokens) 
     if (!t) return;
     if (rough_tokens < 0) rough_tokens = 0;
     t->pending_request_rough_tokens = rough_tokens;
+}
+
+/* ── batch 4: micro-compaction marker helpers (cc_-prefixed wrappers) ───── */
+/* These cc_-prefixed wrappers are the call surface the orchestration layer
+ * (port_agent_context_compressor.c) uses; each delegates to the faithful
+ * underscore-prefixed leaf port. */
+
+/* PoP: _render_micro_marker_content @ agent/context_compressor.py:_render_micro_marker_content */
+char *cc_render_micro_marker_content(const char *summary_text) {
+    return _render_micro_marker_content(summary_text);
+}
+
+/* PoP: _rolling_summary_from_marker @ agent/context_compressor.py:_rolling_summary_from_marker */
+char *cc_rolling_summary_from_marker(const char *content) {
+    return _rolling_summary_from_marker(content);
+}
+
+/* PoP: _cursor_after_splice @ agent/context_compressor.py:_cursor_after_splice */
+int cc_cursor_after_splice(const json_t *result, int fallback) {
+    /* Scan backwards for a micro-compaction summary marker; return its index+1.
+     * Falls back to `fallback` when none is found (mirrors the Python: the
+     * marker row, if present, is the last summary marker's successor). */
+    if (!result || result->type != JSON_ARRAY) return fallback;
+    int n = (int)json_len(result);
+    for (int i = n - 1; i >= 0; i--) {
+        json_t *m = json_get(result, (size_t)i);
+        if (m && m->type == JSON_OBJECT &&
+            json_obj_get(m, CC_COMPRESSED_SUMMARY_METADATA_KEY) &&
+            json_obj_get(m, CC_MICRO_COMPACT_MARKER_KEY))
+            return i + 1;
+    }
+    return fallback;
+}
+
+/* PoP: _merge_adjacent_user_turns @ agent/context_compressor.py:_merge_adjacent_user_turns */
+json_t *cc_merge_adjacent_user_turns(const json_t *result) {
+    json_t *m = NULL;
+    int rc = _merge_adjacent_user_turns((json_t *)result, &m);
+    (void)rc;
+    return m ? m : json_array(); /* return empty array on failure, matching caller's `merged ? merged : json_array()` */
 }
