@@ -19,6 +19,12 @@
 #include "hermes_json.h"
 #include "base64.h"
 #include "hash.h"
+
+/* cron/notepad.py backend (port_cron_notepad.c). */
+extern json_t *cron_notepad_set_note(const char *job_id, const char *key, const char *value);
+extern char *cron_notepad_get_note(const char *job_id, const char *key);
+extern int cron_notepad_delete_note(const char *job_id, const char *key);
+extern json_t *cron_notepad_list_notes(const char *job_id);
 #include "sqlite3.h"
 #include "strings.h"  /* strncasecmp */
 #include "port_provider_registry.h"  /* provider_base_url_host_matches */
@@ -7710,6 +7716,108 @@ int hermes_cli_cron_u_job_action(const char *arg) {
         return 1;
     }
     printf("%s job: %s (%s)\n", action, name[0] ? name : job_id, job_id);
+    return 0;
+}
+
+/* PoP: cron_notepad @ hermes_cli/cron.py:cron_notepad */
+/* Handle `hermes cron notepad <job_id> [get|set|delete|list]`. Arg =
+ * "job_id\taction\tkey\tvalue". Returns exit code (0 ok, 1 error);
+ * result text printed to stdout. Delegates to the cron_notepad backend. */
+int hermes_cli_cron_cron_notepad(const char *arg) {
+    if (!arg || !*arg) {
+        printf("A job ID is required.\n");
+        return 1;
+    }
+    char job_id[256];
+    char action[16];
+    char key[256];
+    char value[4096];
+    job_id[0] = action[0] = key[0] = value[0] = '\0';
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    size_t jl = t1 ? (size_t)(t1 - arg) : strlen(arg);
+    if (jl >= sizeof(job_id)) jl = sizeof(job_id) - 1;
+    memcpy(job_id, arg, jl); job_id[jl] = '\0';
+    if (t1) {
+        size_t al = (size_t)(t2 ? t2 - (t1 + 1) : strlen(t1 + 1));
+        if (al >= sizeof(action)) al = sizeof(action) - 1;
+        memcpy(action, t1 + 1, al); action[al] = '\0';
+    } else {
+        strcpy(action, "list");
+    }
+    if (t2) {
+        size_t kl = (size_t)(t3 ? t3 - (t2 + 1) : strlen(t2 + 1));
+        if (kl >= sizeof(key)) kl = sizeof(key) - 1;
+        memcpy(key, t2 + 1, kl); key[kl] = '\0';
+    }
+    if (t3) {
+        size_t vl = strlen(t3 + 1);
+        if (vl >= sizeof(value)) vl = sizeof(value) - 1;
+        memcpy(value, t3 + 1, vl); value[vl] = '\0';
+    }
+    if (action[0] == '\0') strcpy(action, "list");
+
+    if (!job_id[0]) {
+        printf("A job ID is required.\n");
+        return 1;
+    }
+    if (strcmp(action, "set") == 0) {
+        if (!key[0] || !value[0]) {
+            printf("Usage: hermes cron notepad <job_id> set <key> <value>\n");
+            return 1;
+        }
+        /* delegate to backend upsert */
+        json_t *res = cron_notepad_set_note(job_id, key, value);
+        if (res) { json_free(res); printf("Set notepad key '%s' for job %s.\n", key, job_id); }
+        else { printf("Failed to set notepad key '%s' for job %s.\n", key, job_id); return 1; }
+        return 0;
+    }
+    if (strcmp(action, "get") == 0) {
+        if (!key[0]) {
+            printf("Usage: hermes cron notepad <job_id> get <key>\n");
+            return 1;
+        }
+        char *stored = cron_notepad_get_note(job_id, key);
+        if (!stored) {
+            printf("No notepad key '%s' for job %s.\n", key, job_id);
+            return 1;
+        }
+        printf("%s\n", stored);
+        free(stored);
+        return 0;
+    }
+    if (strcmp(action, "delete") == 0) {
+        if (!key[0]) {
+            printf("Usage: hermes cron notepad <job_id> delete <key>\n");
+            return 1;
+        }
+        int ok = cron_notepad_delete_note(job_id, key);
+        if (ok) {
+            printf("Deleted notepad key '%s' for job %s.\n", key, job_id);
+            return 0;
+        }
+        printf("No notepad key '%s' for job %s.\n", key, job_id);
+        return 1;
+    }
+    /* list (default) */
+    json_t *notes = cron_notepad_list_notes(job_id);
+    if (!notes || json_array_size(notes) == 0) {
+        printf("Notepad for job %s is empty.\n", job_id);
+        if (notes) json_free(notes);
+        return 0;
+    }
+    size_t n = json_array_size(notes);
+    for (size_t i = 0; i < n; i++) {
+        json_t *note = json_array_get(notes, i);
+        if (!note) continue;
+        json_t *k = json_obj_get(note, "key");
+        json_t *v = json_obj_get(note, "value");
+        const char *ks = (k && k->type == JSON_STRING) ? k->str_val : "";
+        const char *vs = (v && v->type == JSON_STRING) ? v->str_val : "";
+        printf("  %s = %s\n", ks, vs);
+    }
+    json_free(notes);
     return 0;
 }
 
