@@ -223,6 +223,59 @@ const char *gateway_config_normalize_notice_delivery(const char *value, const ch
     return default_val;
 }
 
+/* Profile-name helpers (hermes_cli/profiles.py ports). */
+extern int profiles_normalize_profile_name(const char *name, char *out, size_t outsz);
+extern int profiles_validate_profile_name(const char *name, char *err, size_t errsz);
+
+/* PoP: _normalize_multiplex_profile_allowlist @ gateway/config.py:_normalize_multiplex_profile_allowlist */
+/* Normalize the optional named-profile allowlist. A NULL value preserves the
+ * historical serve-all behavior (returns NULL). A malformed outer value fails
+ * safe to an empty array (default profile only); malformed entries are
+ * skipped with a warning. Returns a malloc'd json_node_t array (or NULL). */
+json_node_t *gateway_config_normalize_multiplex_profile_allowlist(const json_node_t *value) {
+    if (!value || json_node_is_null(value)) return NULL;
+    if (!json_node_is_array(value)) {
+        hermes_log(LOG_WARNING, "gateway_config",
+                   "Invalid gateway.multiplex_profile_allowlist (expected a list); serving only the default profile");
+        return json_array();
+    }
+    json_node_t *result = json_array();
+    size_t n = json_array_size(value);
+    for (size_t i = 0; i < n; i++) {
+        json_node_t *entry = json_array_get(value, i);
+        if (!entry || !json_node_is_string(entry)) {
+            hermes_log(LOG_WARNING, "gateway_config",
+                       "Skipping invalid gateway.multiplex_profile_allowlist entry (expected a profile name)");
+            continue;
+        }
+        const char *e = json_node_get_string(entry);
+        char norm[128];
+        if (profiles_normalize_profile_name(e, norm, sizeof(norm)) < 0) {
+            hermes_log(LOG_WARNING, "gateway_config",
+                       "Skipping invalid gateway.multiplex_profile_allowlist entry '%s'", e);
+            continue;
+        }
+        char err[128];
+        if (profiles_validate_profile_name(norm, err, sizeof(err)) != 0) {
+            hermes_log(LOG_WARNING, "gateway_config",
+                       "Skipping invalid gateway.multiplex_profile_allowlist entry '%s'", e);
+            continue;
+        }
+        /* skip "default" or duplicate */
+        if (strcmp(norm, "default") == 0) continue;
+        int dup = 0;
+        size_t rn = json_array_size(result);
+        for (size_t k = 0; k < rn; k++) {
+            json_node_t *existing = json_array_get(result, k);
+            if (existing && json_node_is_string(existing) &&
+                strcmp(json_node_get_string(existing), norm) == 0) { dup = 1; break; }
+        }
+        if (dup) continue;
+        json_array_append(result, json_new_string(norm));
+    }
+    return result;
+}
+
 /* ================================================================
  *  Helper functions (Port of Python gateway/config.py)
  * ================================================================ */

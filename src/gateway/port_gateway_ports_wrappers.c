@@ -1987,6 +1987,42 @@ int gateway_authz_mixin_u_auth_env(const char *arg) {
     return 0;
 }
 
+/* PoP: _platform_gate_env @ gateway/authz_mixin.py:_platform_gate_env */
+/* Read a platform allow/deny gate env var with per-profile isolation.
+ * Authoritative under multiplex: when a profile secret scope is installed
+ * AND multiplexing is active, a key absent from the scope returns default
+ * instead of falling through to os.environ (which may hold another
+ * profile's first-writer-bridged value). Single-profile behaves like the
+ * legacy os.getenv read. Arg =
+ * "name\tmultiplex\tscope\tsecret_val\tenv_val\tdefault". */
+int gateway_authz_mixin_u_platform_gate_env(const char *arg) {
+    if (!arg || !*arg) { printf("\n"); return 0; }
+    const char *t1 = strchr(arg, '\t');
+    const char *t2 = t1 ? strchr(t1 + 1, '\t') : NULL;
+    const char *t3 = t2 ? strchr(t2 + 1, '\t') : NULL;
+    const char *t4 = t3 ? strchr(t3 + 1, '\t') : NULL;
+    const char *t5 = t4 ? strchr(t4 + 1, '\t') : NULL;
+    const char *multiplex = t1 ? t1 + 1 : "0";
+    const char *scope = t2 ? t2 + 1 : "0";
+    const char *secret = t3 ? t3 + 1 : "";
+    const char *env = t4 ? t4 + 1 : "";
+    const char *dflt = t5 ? t5 + 1 : "";
+    int is_multiplex = multiplex[0] == '1';
+    int scope_installed = scope[0] == '1';
+    const char *val;
+    if (is_multiplex && scope_installed) {
+        val = secret[0] ? secret : dflt;
+    } else {
+        val = env[0] ? env : dflt;
+    }
+    /* strip */
+    while (*val == ' ' || *val == '\t') val++;
+    const char *e = val + strlen(val);
+    while (e > val && (e[-1] == ' ' || e[-1] == '\t')) e--;
+    printf("%.*s\n", (int)(e - val), val);
+    return 0;
+}
+
 /* PoP: _coerce_allow_set @ gateway/authz_mixin.py:_coerce_allow_set */
 int gateway_authz_mixin_u_coerce_allow_set(const char *arg) {
     /* Python: list -> stripped set; scalar -> comma split. Arg = "raw_json
