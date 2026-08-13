@@ -20,6 +20,7 @@
 
 #include "hermes_json.h"
 #include "coding_context.h"
+#include "verify_recipes.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -532,4 +533,34 @@ char *verification_stop_verification_snapshot(const char *session_id, const char
     if (arr) json_free(arr);
     char *ret = result ? result : (first_snapshot ? first_snapshot : strdup("null"));
     return ret;
+}
+
+/* agent/verify/environment.py + recipes.py backends (verify_environment.c). */
+extern char *verify_manifest_path(const char *root);
+extern recipe_t *verify_load_manifest(const char *root);
+extern recipe_t *recipe_detect(const char *root);
+
+/* PoP: verification_stop_workspace_has_runnable_recipe @ agent/verification_stop.py:_workspace_has_runnable_recipe */
+/* Whether the workspace has a runtime verify recipe `hermes verify` can run.
+ * True when a saved .hermes/environment.json manifest exists, or when cheap
+ * static detection (agent.verify.recipes.detect_recipe) finds a recipe with a
+ * start command. Deliberately fail-silent and cheap — this only decorates the
+ * nudge text; it must never break or slow the nudge path. */
+bool verification_stop_workspace_has_runnable_recipe(const char *root)
+{
+    if (!root || !*root) return false;
+    /* manifest_path(root).is_file() */
+    char *mp = verify_manifest_path(root);
+    bool manifest_ok = false;
+    if (mp) {
+        struct stat st;
+        manifest_ok = (stat(mp, &st) == 0 && S_ISREG(st.st_mode));
+        free(mp);
+    }
+    if (manifest_ok) return true;
+    recipe_t *recipe = recipe_detect(root);
+    if (!recipe) return false;
+    bool has_start = recipe->start != NULL && *recipe->start != '\0';
+    recipe_free(recipe);
+    return has_start;
 }
