@@ -482,3 +482,51 @@ void arh_blank_cache_policy_free(struct blank_cache_policy *s)
 {
     free(s);
 }
+
+/* PoP: repair_empty_non_final_messages @ agent/agent_runtime_helpers.py:repair_empty_non_final_messages */
+/* Heal empty-content non-final messages before they reach the provider.
+ *
+ * A stream that dies with 0 recovered characters can persist an assistant
+ * turn with content=None and no tool_calls; the Anthropic/litellm/Bedrock
+ * schema rejects any transcript containing an empty non-final message. The
+ * write-time guard in chat_completion_helpers stops NEW stubs, but already-
+ * poisoned transcripts self-heal here: on the per-call api_messages copy,
+ * substituting a minimal placeholder content for empty non-final assistant
+ * or user turns (the final message is left untouched). Returns a newly
+ * built array (caller frees with json_free). */
+json_t *arh_repair_empty_non_final_messages(const json_t *messages)
+{
+    if (!messages || messages->type != JSON_ARRAY) {
+        /* return input-shaped null/empty */
+        json_t *empty = json_array();
+        return empty;
+    }
+    size_t n = json_len(messages);
+    if (n < 2) {
+        /* nothing to repair — return a copy of the input */
+        json_t *copy = json_array();
+        for (size_t i = 0; i < n; i++) json_append(copy, json_copy(json_get(messages, i)));
+        return copy;
+    }
+    static const char *INTERRUPTED_PLACEHOLDER = "[response interrupted]";
+    json_t *repaired = json_array();
+    size_t last_idx = n - 1;
+    for (size_t idx = 0; idx < n; idx++) {
+        json_t *msg = json_get(messages, idx);
+        if (idx != last_idx && msg && msg->type == JSON_OBJECT) {
+            const char *role = json_get_str(msg, "role", NULL);
+            if ((role && (strcmp(role, "assistant") == 0 || strcmp(role, "user") == 0))
+                && !arh_msg_has_payload(msg)) {
+                /* shallow-copy so stored history / cache stays byte-stable */
+                json_t *fixed = json_copy(msg);
+                if (fixed && fixed->type == JSON_OBJECT) {
+                    json_set(fixed, "content", json_string(INTERRUPTED_PLACEHOLDER));
+                }
+                json_append(repaired, fixed);
+                continue;
+            }
+        }
+        json_append(repaired, json_copy(msg));
+    }
+    return repaired;
+}
