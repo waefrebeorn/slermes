@@ -8,6 +8,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+#include <pthread.h>
 
 /* Forward declarations. */
 const char *cli_tools_osv_check__infer_ecosystem(const char *command);
@@ -220,6 +222,103 @@ int cli_tools_osv_check__parse_pypi_package(
     return 0;
 }
 
+/* ─── result cache (TTL + max-entries) ────────────────────────────────── */
+
+#define OSV_CACHE_MAX_ENTRIES 256
+#define OSV_CACHE_TTL_S_DEF   3600.0
+
+struct osv_cache_entry {
+    char  *key;       /* malloc'd, owned */
+    double expiry;    /* monotonic deadline */
+    char  *result;    /* malloc'd, owned (or NULL) */
+};
+
+static struct osv_cache_entry g_osv_cache[OSV_CACHE_MAX_ENTRIES];
+static size_t g_osv_cache_count = 0;
+static pthread_mutex_t g_osv_cache_lock = PTHREAD_MUTEX_INITIALIZER;
+
+static double osv_monotonic_now(void)
+{
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
+}
+
+/* PoP: _cache_get @ tools/osv_check.py:_cache_get */
+/* Return 1 (hit) + *out_result on a fresh entry, or 0 (miss) on absent/expired.
+ * On eviction of an expired entry, the slot is compacted. *out_result is
+ * malloc'd (caller frees) or NULL. */
+int cli_tools_osv_check__cache_get(const char *key, char **out_result)
+{
+    if (out_result) *out_result = NULL;
+    if (!key) return 0;
+    pthread_mutex_lock(&g_osv_cache_lock);
+    for (size_t i = 0; i < g_osv_cache_count; i++) {
+        struct osv_cache_entry *e = &g_osv_cache[i];
+        if (e->key && strcmp(e->key, key) == 0) {
+            if (osv_monotonic_now() >= e->expiry) {
+                free(e->key); free(e->result);
+                e->key = NULL; e->result = NULL; e->expiry = 0.0;
+                for (size_t j = i; j + 1 < g_osv_cache_count; j++)
+                    g_osv_cache[j] = g_osv_cache[j + 1];
+                g_osv_cache_count--;
+                pthread_mutex_unlock(&g_osv_cache_lock);
+                return 0;
+            }
+            if (out_result) *out_result = strdup(e->result ? e->result : "");
+            pthread_mutex_unlock(&g_osv_cache_lock);
+            return 1;
+        }
+    }
+    pthread_mutex_unlock(&g_osv_cache_lock);
+    return 0;
+}
+
+/* PoP: _cache_put @ tools/osv_check.py:_cache_put */
+/* Store (key, result) with a TTL. At capacity, evict expired first; if still
+ * full, clear the whole cache (safe reset — tiny working set in practice). */
+void cli_tools_osv_check__cache_put(const char *key, const char *result)
+{
+    if (!key) return;
+    double now = osv_monotonic_now();
+    double ttl = OSV_CACHE_TTL_S_DEF;
+    const char *env_ttl = getenv("OSV_CHECK_CACHE_TTL");
+    if (env_ttl && *env_ttl) { double v = atof(env_ttl); if (v > 0.0) ttl = v; }
+    pthread_mutex_lock(&g_osv_cache_lock);
+    if (g_osv_cache_count >= OSV_CACHE_MAX_ENTRIES) {
+        for (size_t i = 0; i < g_osv_cache_count; ) {
+            struct osv_cache_entry *e = &g_osv_cache[i];
+            if (now >= e->expiry) {
+                free(e->key); free(e->result);
+                for (size_t j = i; j + 1 < g_osv_cache_count; j++)
+                    g_osv_cache[j] = g_osv_cache[j + 1];
+                g_osv_cache_count--;
+                continue;
+            }
+            i++;
+        }
+        if (g_osv_cache_count >= OSV_CACHE_MAX_ENTRIES)
+            g_osv_cache_count = 0; /* tiny working set in practice; safe reset */
+    }
+    for (size_t i = 0; i < g_osv_cache_count; i++) {
+        if (g_osv_cache[i].key && strcmp(g_osv_cache[i].key, key) == 0) {
+            free(g_osv_cache[i].key);
+            free(g_osv_cache[i].result);
+            g_osv_cache[i].key = strdup(key);
+            g_osv_cache[i].result = result ? strdup(result) : NULL;
+            g_osv_cache[i].expiry = now + ttl;
+            pthread_mutex_unlock(&g_osv_cache_lock);
+            return;
+        }
+    }
+    if (g_osv_cache_count < OSV_CACHE_MAX_ENTRIES) {
+        g_osv_cache[g_osv_cache_count].key = strdup(key);
+        g_osv_cache[g_osv_cache_count].result = result ? strdup(result) : NULL;
+        g_osv_cache[g_osv_cache_count].expiry = now + ttl;
+        g_osv_cache_count++;
+    }
+    pthread_mutex_unlock(&g_osv_cache_lock);
+}
 
 
 /* PoP: cli_tools_osv_check__cache_get @ tools/osv_check.py:_cache_get */
