@@ -313,6 +313,38 @@ bool hcli_is_dashboard_container(const char *argv_line)
     return dash != NULL;
 }
 
+/* PoP: _read_prior_exit_label @ hermes_cli/container_boot.py:_read_prior_exit_label */
+/* How the profile's previous gateway life ended (clean/unclean/unknown).
+ * Thin, exception-free wrapper over
+ * gateway.lifecycle_ledger.read_prior_exit_label — cont-init runs in a
+ * minimal environment and forensics must never block reconciliation.
+ * Reads <profile_home>/state/gateway.lifecycle.json; "exited" → clean,
+ * "running" → unclean, else unknown. Returns a malloc'd label string. */
+char *hcli_read_prior_exit_label(const char *profile_dir)
+{
+    if (!profile_dir) return strdup("unknown");
+    char path[2048];
+    snprintf(path, sizeof(path), "%s/state/gateway.lifecycle.json", profile_dir);
+    FILE *f = fopen(path, "rb");
+    if (!f) return strdup("unknown");
+    char buf[8192];
+    size_t n = fread(buf, 1, sizeof(buf) - 1, f);
+    buf[n] = '\0';
+    fclose(f);
+    char *err = NULL;
+    json_t *sentinel = json_parse(buf, &err);
+    if (err) { free(err); }
+    if (!sentinel) return strdup("unknown");
+    json_t *phase = json_obj_get(sentinel, "phase");
+    const char *pv = (phase && phase->type == JSON_STRING) ? phase->str_val : "";
+    char *result;
+    if (strcmp(pv, "exited") == 0) result = strdup("clean");
+    else if (strcmp(pv, "running") == 0) result = strdup("unclean");
+    else result = strdup("unknown");
+    json_free(sentinel);
+    return result;
+}
+
 /* PoP: _wait_for_gateway_absent @ hermes_cli/gateway_windows.py:_wait_for_gateway_absent */
 bool hcli_wait_for_gateway_absent(double timeout_s, double interval_s)
 {
