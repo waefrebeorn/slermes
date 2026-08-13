@@ -1286,16 +1286,41 @@ bool cc_reference_handoff_would_drive_next_model_call(const json_t *messages) {
     return true;
 }
 
-/* PoP: is_user_originated_turn @ agent/context_compressor.py:is_user_originated_turn */
-/* True for human-authored user turns (not compaction scaffolding). */
+/* PoP: cc_is_user_originated_turn @ agent/context_compressor.py:is_user_originated_turn */
+/* True for a genuine human user turn: role==user AND not a synthetic
+ * compression/continuation marker (those are internal scaffolding, not a
+ * real prompt the live model should answer). Delegates to the classmethod
+ * equivalents ported in this TU (cc_is_synthetic_compression_user_turn,
+ * cc_is_context_summary_message). */
 bool cc_is_user_originated_turn(const json_t *message) {
     if (!message || message->type != JSON_OBJECT) return false;
     const char *role = json_get_str(message, "role", "");
     if (strcmp(role, "user") != 0) return false;
-    if (json_obj_get(message, "display_kind")) return false;
-    if (cc_is_context_summary_message(message)) return false;
     if (cc_is_synthetic_compression_user_turn(message)) return false;
-    return cc_is_actionable_user_turn(message);
+    return true;
+}
+
+/* PoP: _is_nonempty_user_turn @ agent/context_compressor.py:_is_nonempty_user_turn */
+/* A user turn with non-whitespace content that is not a synthetic
+ * compression/summary marker. Mirrors the module-level staticmethod:
+ *   role == "user" and bool(_content_text_for_contains(content).strip())
+ * plus the synthetic-summary exclusion so empty/placeholder user rows
+ * (e.g. compression continuation markers) are not counted as real turns. */
+bool cc_is_nonempty_user_turn(const json_t *message) {
+    if (!message || message->type != JSON_OBJECT) return false;
+    const char *role = json_get_str(message, "role", "");
+    if (strcmp(role, "user") != 0) return false;
+    if (cc_is_synthetic_compression_user_turn(message)) return false;
+    json_t *content = json_obj_get(message, "content");
+    if (!content) return false;
+    char *text = context_compressor_content_text(content);
+    bool nonempty = false;
+    if (text) {
+        for (const char *p = text; *p; p++)
+            if (!isspace((unsigned char)*p)) { nonempty = true; break; }
+        free(text);
+    }
+    return nonempty;
 }
 
 /* PoP: _reasoning_details_text_chars @ agent/context_compressor.py:_reasoning_details_text_chars */
