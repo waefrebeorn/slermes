@@ -1,0 +1,37 @@
+[
+  {"op": "canonical", "arg": "https://github.com/NousResearch/hermes-agent.git"},
+  {"op": "canonical", "arg": "git@github.com:nousresearch/hermes-agent.git"},
+  {"op": "canonical", "arg": "ssh://git@github.com/NousResearch/hermes-agent.git"},
+  {"op": "canonical", "arg": "https://github.com/other/repo"},
+  {"op": "canonical", "arg": "github.com/foo/bar.git/"},
+  {"op": "canonical", "arg": ""},
+  {"op": "canonical", "arg": null},
+
+  {"op": "is_ssh", "arg": "git@github.com:x/y.git"},
+  {"op": "is_ssh", "arg": "ssh://git@github.com/x/y.git"},
+  {"op": "is_ssh", "arg": "https://github.com/x/y.git"},
+  {"op": "is_ssh", "arg": ""},
+  {"op": "is_ssh", "arg": null},
+
+  {"op": "is_official_ssh", "arg": "git@github.com:nousresearch/hermes-agent.git"},
+  {"op": "is_official_ssh", "arg": "git@github.com:other/repo.git"},
+  {"op": "is_official_ssh", "arg": "https://github.com/nousresearch/hermes-agent.git"},
+
+  {"op": "ctx_len", "arg": 500},
+  {"op": "ctx_len", "arg": 1024},
+  {"op": "ctx_len", "arg": 999},
+  {"op": "ctx_len", "arg": 1000},
+  {"op": "ctx_len", "arg": 128000},
+  {"op": "ctx_len", "arg": 999999},
+  {"op": "ctx_len", "arg": 1000000},
+  {"op": "ctx_len", "arg": 1048576},
+  {"op": "ctx_len", "arg": 1550000},
+  {"op": "ctx_len", "arg": 200000},
+  {"op": "ctx_len", "arg": 0},
+
+  {"op": "toolset", "arg": "code_tools"},
+  {"op": "toolset", "arg": "web"},
+  {"op": "toolset", "arg": "browser_tools"},
+  {"op": "toolset", "arg": ""},
+  {"op": "toolset", "arg": null}
+]
