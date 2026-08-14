@@ -445,3 +445,69 @@ char *file_tools_special_file_kind(const char *path) {
     return strdup("a special (non-regular) file");
 }
 
+/* PoP: _protected_instruction_reason @ tools/file_tools.py:_protected_instruction_reason */
+/* Returns malloc'd reason string or NULL. Caller frees. */
+char *file_tools_protected_instruction_reason(const char *filepath, const char *extra_patterns_json) {
+    if (!filepath) return NULL;
+    /* Normalize path */
+    char *normalized = strdup(filepath);
+    /* Expand ~ */
+    if (filepath[0] == '~' && filepath[1] == '/') {
+        const char *home = getenv("HOME");
+        if (home) {
+            char *expanded = NULL;
+            asprintf(&expanded, "%s%s", home, filepath + 1);
+            free(normalized);
+            normalized = expanded;
+        }
+    }
+    /* Get basename */
+    char *base = strrchr(normalized, '/');
+    if (!base) base = strrchr(normalized, '\\');
+    char *basename = base ? base + 1 : normalized;
+    /* Check protected basenames */
+    const char *protected[] = {
+        ".cursorrules", ".github", "claude.md", "codex.md",
+        "continue", "gemini.md", "instructions.md", "rules.md",
+        "agents.md", "copilot.md", "aider", "CLAUDE.md", "AGENTS.md",
+        NULL
+    };
+    for (int i = 0; protected[i]; i++) {
+        if (strcasecmp(basename, protected[i]) == 0) {
+            char *result = strdup(basename);
+            free(normalized);
+            return result;
+        }
+    }
+    /* Check extra patterns if provided */
+    if (extra_patterns_json) {
+        char *err = NULL;
+        json_t *patterns = json_parse(extra_patterns_json, &err);
+        if (!err && patterns && patterns->type == JSON_ARRAY) {
+            for (size_t i = 0; i < patterns->c.count; i++) {
+                if (patterns->c.items[i] && patterns->c.items[i]->type == JSON_STRING) {
+                    const char *pat = patterns->c.items[i]->str_val;
+                    /* Simple fnmatch-style: * matches anything */
+                    int match = 1;
+                    const char *pp = pat, *sp = basename;
+                    while (*pp && *sp) {
+                        if (*pp == '*') { pp++; if (!*pp) { match = 1; break; } while (*sp && *sp != *pp) sp++; }
+                        else if (*pp == '?' || tolower((unsigned char)*pp) == tolower((unsigned char)*sp)) { pp++; sp++; }
+                        else { match = 0; break; }
+                    }
+                    if (match && !*pp && !*sp) {
+                        json_free(patterns);
+                        char *result = strdup(basename);
+                        free(normalized);
+                        return result;
+                    }
+                }
+            }
+        }
+        if (err) free(err);
+        if (patterns) json_free(patterns);
+    }
+    free(normalized);
+    return NULL;
+}
+
