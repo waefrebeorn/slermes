@@ -807,3 +807,108 @@ char *dlg_load_config(const char *config_yaml) {
     printf("delegation config loaded\n");
     return strdup("{}");
 }
+
+/* ── tools/delegation_output_schema.py ──────────────────────────── */
+
+/* PoP: extract_json_candidate @ tools/delegation_output_schema.py:extract_json_candidate */
+/* Returns malloc'd JSON candidate string. Caller frees. */
+char *delegation_extract_json_candidate(const char *text) {
+    if (!text) return strdup("");
+    /* Strip leading/trailing whitespace */
+    const char *raw = text;
+    while (*raw == ' ' || *raw == '\t' || *raw == '\n' || *raw == '\r') raw++;
+    size_t len = strlen(raw);
+    while (len > 0 && (raw[len-1] == ' ' || raw[len-1] == '\t' || raw[len-1] == '\n' || raw[len-1] == '\r')) len--;
+    char *working = strndup(raw, len);
+    if (!working) return strdup("");
+    /* Strip markdown code fences */
+    if (strncmp(working, "```", 3) == 0) {
+        char *nl = strchr(working + 3, '\n');
+        if (nl) {
+            char *rest = strdup(nl + 1);
+            free(working);
+            working = rest;
+        }
+        size_t wlen = strlen(working);
+        if (wlen >= 3 && strcmp(working + wlen - 3, "```") == 0) {
+            working[wlen - 3] = '\0';
+        }
+        /* Strip "json\n" prefix */
+        if (strncasecmp(working, "json\n", 5) == 0) {
+            char *rest = strdup(working + 5);
+            free(working);
+            working = rest;
+        }
+    }
+    /* Find outermost { } or [ ] span */
+    size_t wlen = strlen(working);
+    for (const char *opener = "{"; ; opener = "[") {
+        const char *closer = (opener[0] == '{') ? "}" : "]";
+        if (working[0] == opener[0]) {
+            /* Already starts with opener — return as-is */
+            return working;
+        }
+        char *start = strchr(working, opener[0]);
+        char *end = strrchr(working, closer[0]);
+        if (start && end && end > start) {
+            size_t slen = (size_t)(end - start) + 1;
+            char *result = strndup(start, slen);
+            free(working);
+            return result ? result : strdup("");
+        }
+        if (opener[0] == '[') break;  /* tried both */
+    }
+    return working;
+}
+
+/* PoP: append_output_contract @ tools/delegation_output_schema.py:append_output_contract */
+/* Returns malloc'd context string. Caller frees. */
+char *delegation_append_output_contract(const char *context, const char *schema_json) {
+    if (!schema_json) return strdup(context ? context : "");
+    const char *header = "OUTPUT CONTRACT (machine-validated)";
+    const char *instruction = "Your FINAL response must be a single JSON object that validates against this JSON Schema. No prose before or after the JSON; a ```json code fence is acceptable but not required.";
+    char *block = NULL;
+    asprintf(&block, "%s:\n%s\n%s", header, instruction, schema_json);
+    if (!block) return strdup(context ? context : "");
+    const char *base = context ? context : "";
+    /* rstrip base */
+    size_t blen = strlen(base);
+    while (blen > 0 && (base[blen-1] == ' ' || base[blen-1] == '\t' || base[blen-1] == '\n' || base[blen-1] == '\r')) blen--;
+    char *result = NULL;
+    if (blen > 0) {
+        asprintf(&result, "%.*s\n\n%s", (int)blen, base, block);
+    } else {
+        result = strdup(block);
+    }
+    free(block);
+    return result ? result : strdup("");
+}
+
+/* PoP: build_retry_message @ tools/delegation_output_schema.py:build_retry_message */
+/* Returns malloc'd retry message. errors_json = JSON array of strings. Caller frees. */
+char *delegation_build_retry_message(const char *errors_json) {
+    if (!errors_json) return strdup("");
+    char *err = NULL;
+    json_t *errors = json_parse(errors_json, &err);
+    if (err || !errors || errors->type != JSON_ARRAY) { if (err) free(err); if (errors) json_free(errors); return strdup(""); }
+    const char *header = "Your previous final response was rejected by the output contract validator. Validation errors:\n";
+    const char *footer = "\n\nReply with ONLY the corrected JSON object matching the OUTPUT CONTRACT schema from your task context. No prose, no explanations.";
+    size_t total_len = strlen(header) + strlen(footer) + 3;
+    for (size_t i = 0; i < errors->c.count; i++) {
+        if (errors->c.items[i] && errors->c.items[i]->type == JSON_STRING)
+            total_len += strlen(errors->c.items[i]->str_val) + 3;  /* "- " + "\n" */
+    }
+    char *result = (char *)malloc(total_len + 1);
+    if (!result) { json_free(errors); return strdup(""); }
+    strcpy(result, header);
+    for (size_t i = 0; i < errors->c.count; i++) {
+        if (errors->c.items[i] && errors->c.items[i]->type == JSON_STRING) {
+            strcat(result, "- ");
+            strcat(result, errors->c.items[i]->str_val);
+            strcat(result, "\n");
+        }
+    }
+    strcat(result, footer);
+    json_free(errors);
+    return result;
+}

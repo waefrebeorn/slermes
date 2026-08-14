@@ -646,3 +646,17 @@ void relay_helper_free_urls(char **urls) {
     for (int i = 0; urls[i]; i++) free(urls[i]);
     free(urls);
 }
+
+/* PoP: _minted_here @ gateway/relay/adapter.py:_minted_here */
+int relay_adapter_minted_here(const char *prompt_id, const char *owner_nonce) {
+    if (!prompt_id) return 0;
+    if (!owner_nonce) return 0;
+    /* Check if prompt_id starts with owner_nonce */
+    const char *dot = strchr(prompt_id, '.');
+    if (dot) {
+        size_t head_len = (size_t)(dot - prompt_id);
+        return (strlen(owner_nonce) == head_len && strncmp(prompt_id, owner_nonce, head_len) == 0);
+    }
+    /* No dot segment — treat as ours (pre-upgrade prompt) */
+    return 1;
+}
