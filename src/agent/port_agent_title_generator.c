@@ -487,3 +487,33 @@ char *title_derive_title(const char *user_message) {
     free(text);
     return out && *out ? out : (out ? (free(out), NULL) : NULL);
 }
+
+/* PoP: _is_real_user_turn @ agent/title_generator.py:_is_real_user_turn */
+/* Returns 1 if the message is a real user turn, 0 otherwise. */
+int title_is_real_user_turn(const char *message_json) {
+    if (!message_json) return 0;
+    char *err = NULL;
+    json_t *message = json_parse(message_json, &err);
+    if (err || !message || message->type != JSON_OBJECT) { if (err) free(err); if (message) json_free(message); return 0; }
+    json_t *role = json_obj_get(message, "role");
+    if (!role || role->type != JSON_STRING || strcmp(role->str_val, "user") != 0) { json_free(message); return 0; }
+    json_t *content = json_obj_get(message, "content");
+    if (!content) { json_free(message); return 0; }
+    extern bool title_is_titleable_user_message(const char *user_message);
+    extern char *mct_flatten_message_text(const char *message_json);
+    char *text = NULL;
+    if (content->type == JSON_STRING) {
+        text = strdup(content->str_val);
+    } else {
+        char *content_json = json_serialize(content);
+        text = mct_flatten_message_text(content_json);
+        free(content_json);
+    }
+    int result = 0;
+    if (text) {
+        result = title_is_titleable_user_message(text) ? 1 : 0;
+        free(text);
+    }
+    json_free(message);
+    return result;
+}
