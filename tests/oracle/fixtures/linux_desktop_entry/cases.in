@@ -1,0 +1,20 @@
+[
+  {"op": "is_supported"},
+
+  {"op": "xdg_data_home"},
+  {"op": "desktop_entry_path"},
+  {"op": "icon_path", "arg": "/tmp/project"},
+
+  {"op": "quote", "arg": "hermes"},
+  {"op": "quote", "arg": "/usr/bin/hermes"},
+  {"op": "quote", "arg": "/opt/My App/bin/hermes"},
+  {"op": "quote", "arg": "/path/with\"quote"},
+  {"op": "quote", "arg": "/path/with\\backslash"},
+  {"op": "quote", "arg": "cmd & run | pipe ; then $HOME * glob ? q # hash ( ) `tick`"},
+  {"op": "quote", "arg": "~/.local/bin/hermes"},
+  {"op": "quote", "arg": ""},
+
+  {"op": "render", "arg": "{\"exec\":\"/usr/bin/hermes desktop\",\"icon\":\"/tmp/icon.png\"}"},
+  {"op": "render", "arg": "{\"exec\":\"\\\"/opt/My App/bin/hermes desktop\\\"\",\"icon\":\"hermes\"}"},
+  {"op": "render", "arg": "{\"exec\":\"\",\"icon\":\"\"}"}
+]
