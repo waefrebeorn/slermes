@@ -199,3 +199,15 @@ int wst_set_passthrough_handler(void) {
     printf("passthrough handler registered\n");
     return 0;
 }
+
+/* PoP: _env_disconnect_budget_s @ gateway/relay/ws_transport.py:_env_disconnect_budget_s */
+double wst_env_disconnect_budget_s(void) {
+    double budget = 5.0;
+    const char *raw = getenv("HERMES_GATEWAY_ADAPTER_DISCONNECT_TIMEOUT");
+    if (raw && *raw) {
+        char *end;
+        double val = strtod(raw, &end);
+        if (end != raw && val >= 0) budget = val;
+    }
+    return budget;
+}

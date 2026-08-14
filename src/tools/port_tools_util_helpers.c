@@ -688,3 +688,40 @@ int tools_project_resolve(const char *token, char *out, size_t outsz)
     if (s) { snprintf(out, outsz, "%s", s); free(s); }
     return 0;
 }
+
+/* PoP: _bound_error_text @ tools/registry.py:_bound_error_text */
+/* Returns malloc'd bounded error text. Caller frees. */
+char *registry_bound_error_text(const char *text) {
+    if (!text) return strdup("");
+    size_t len = strlen(text);
+    size_t max_chars = 4000;  /* _MAX_TOOL_ERROR_CHARS */
+    if (len <= max_chars) return strdup(text);
+    const char *marker = "...[TRUNCATED]";  /* _TOOL_ERROR_TRUNCATION_MARKER */
+    size_t marker_len = strlen(marker);
+    char *out = (char *)malloc(max_chars + marker_len + 1);
+    memcpy(out, text, max_chars);
+    memcpy(out + max_chars, marker, marker_len);
+    out[max_chars + marker_len] = '\0';
+    return out;
+}
+
+/* PoP: _bound_json_error_result @ tools/registry.py:_bound_json_error_result */
+/* Returns malloc'd bounded JSON error result. Caller frees. */
+char *registry_bound_json_error_result(const char *result) {
+    if (!result) return strdup("");
+    size_t len = strlen(result);
+    size_t max_chars = 4000;  /* _MAX_TOOL_ERROR_CHARS */
+    if (len <= max_chars) return strdup(result);
+    if (!strstr(result, "\"error\"")) return strdup(result);
+    char *err = NULL;
+    json_t *payload = json_parse(result, &err);
+    if (err || !payload || payload->type != JSON_OBJECT) { if (err) free(err); if (payload) json_free(payload); return strdup(result); }
+    json_t *error_val = json_obj_get(payload, "error");
+    if (!error_val || error_val->type != JSON_STRING || strlen(error_val->str_val) <= max_chars) { json_free(payload); return strdup(result); }
+    char *bounded = registry_bound_error_text(error_val->str_val);
+    json_set(payload, "error", json_string(bounded));  /* steals */
+    free(bounded);
+    char *out = json_serialize(payload);
+    json_free(payload);
+    return out ? out : strdup(result);
+}

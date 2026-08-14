@@ -154,3 +154,55 @@ bool restart_loop_check_and_record(int max_restarts, int window_seconds, double 
     if (max_restarts <= 0) return false;
     return n >= max_restarts;
 }
+
+/* PoP: _chain_gap @ gateway/restart_loop_guard.py:_chain_gap */
+double restart_loop_chain_gap(int window_seconds, int max_gap_seconds) {
+    int max_val = window_seconds > max_gap_seconds ? window_seconds : max_gap_seconds;
+    if (max_val < 1) max_val = 1;
+    return (double)max_val;
+}
+
+/* PoP: _chain_ending_at @ gateway/restart_loop_guard.py:_chain_ending_at */
+/* Returns JSON array of chain timestamps. Caller frees. */
+char *restart_loop_chain_ending_at(const char *boots_json, double ts, double gap) {
+    if (!boots_json) return strdup("[]");
+    char *err = NULL;
+    json_t *boots = json_parse(boots_json, &err);
+    if (err || !boots || boots->type != JSON_ARRAY) { if (err) free(err); if (boots) json_free(boots); return strdup("[]"); }
+    /* Sort descending and build chain */
+    /* Simplified: just return sorted timestamps within gap */
+    json_t *chain = json_array();
+    double prev = ts;
+    /* Collect and sort */
+    double *vals = NULL;
+    size_t vcount = 0;
+    for (size_t i = 0; i < boots->c.count; i++) {
+        if (boots->c.items[i] && boots->c.items[i]->type == JSON_NUMBER) {
+            vals = realloc(vals, sizeof(double) * (vcount + 1));
+            vals[vcount++] = boots->c.items[i]->num_val;
+        }
+    }
+    /* Sort descending */
+    for (size_t i = 0; i < vcount; i++)
+        for (size_t j = i + 1; j < vcount; j++)
+            if (vals[j] > vals[i]) { double t = vals[i]; vals[i] = vals[j]; vals[j] = t; }
+    for (size_t i = 0; i < vcount; i++) {
+        if (vals[i] > ts) {
+            json_append(chain, json_number(vals[i]));
+            continue;
+        }
+        if (prev - vals[i] > gap) break;
+        json_append(chain, json_number(vals[i]));
+        prev = vals[i];
+    }
+    free(vals);
+    json_free(boots);
+    /* Reverse to ascending */
+    json_t *result = json_array();
+    for (size_t i = chain->c.count; i > 0; i--)
+        json_append(result, json_copy(chain->c.items[i-1]));
+    json_free(chain);
+    char *out = json_serialize(result);
+    json_free(result);
+    return out;
+}
