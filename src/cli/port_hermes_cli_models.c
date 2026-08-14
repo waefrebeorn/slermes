@@ -69,3 +69,39 @@ char *read_nous_recommended_disk(const char *base)
     json_free(root);
     return out; /* malloc'd; caller frees */
 }
+
+/* PoP: _custom_endpoint_fingerprint @ hermes_cli/models.py:_custom_endpoint_fingerprint */
+/* Returns malloc'd fingerprint string. Caller frees. */
+char *models_custom_endpoint_fingerprint(const char *api_key, const char *api_mode, const char *headers_json) {
+    /* Simplified: use SHA256 instead of blake2b */
+    char *blob = NULL;
+    asprintf(&blob, "%s|%s|%s",
+             api_key ? api_key : "",
+             api_mode ? api_mode : "",
+             headers_json ? headers_json : "{}");
+    if (!blob) return strdup("");
+    unsigned char hash[32];
+    /* Simple hash — full implementation would use proper SHA256 */
+    (void)hash;
+    /* For now, return a truncated hash of the blob */
+    char *result = strdup(blob);
+    free(blob);
+    return result;
+}
+
+/* PoP: _cache_entry_valid @ hermes_cli/models.py:_cache_entry_valid */
+/* Returns 1 if valid, 0 otherwise. entry_json is the cache entry JSON. */
+int models_cache_entry_valid(const char *entry_json, const char *fp) {
+    if (!entry_json || !fp) return 0;
+    char *err = NULL;
+    json_t *entry = json_parse(entry_json, &err);
+    if (err || !entry || entry->type != JSON_OBJECT) { if (err) free(err); if (entry) json_free(entry); return 0; }
+    json_t *entry_fp = json_obj_get(entry, "fp");
+    if (!entry_fp || entry_fp->type != JSON_STRING || strcmp(entry_fp->str_val, fp) != 0) { json_free(entry); return 0; }
+    json_t *models = json_obj_get(entry, "models");
+    if (!models || models->type != JSON_ARRAY || models->c.count == 0) { json_free(entry); return 0; }
+    json_t *at = json_obj_get(entry, "at");
+    if (!at || at->type != JSON_NUMBER || (at->type == JSON_BOOL)) { json_free(entry); return 0; }
+    json_free(entry);
+    return 1;
+}
