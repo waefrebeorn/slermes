@@ -183,3 +183,119 @@ json_t *doctor_managed_scope_check(void) {
     json_set(r, "healthy", json_bool(true));
     return r;
 }
+
+/* PoP: _read_journal_mode @ hermes_cli/doctor.py:_read_journal_mode */
+/* Returns malloc'd (mode, error) pair as JSON: {"mode":...,"error":...}. Caller frees. */
+char *doctor_read_journal_mode(const char *db_path) {
+    if (!db_path) return strdup("{\"mode\":null,\"error\":\"null path\"}");
+    FILE *f = fopen(db_path, "rb");
+    if (!f) {
+        char *err = NULL;
+        asprintf(&err, "{\"mode\":null,\"error\":\"%s\"}", "could not open file");
+        return err ? err : strdup("{\"mode\":null,\"error\":\"open failed\"}");
+    }
+    unsigned char header[20];
+    size_t n = fread(header, 1, 20, f);
+    fclose(f);
+    if (n == 0) return strdup("{\"mode\":null,\"error\":\"file is empty\"}");
+    if (n < 20) return strdup("{\"mode\":null,\"error\":\"file is not a database\"}");
+    /* Check SQLite magic: "SQLite format 3\0" */
+    if (memcmp(header, "SQLite format 3", 15) != 0) return strdup("{\"mode\":null,\"error\":\"file is not a database\"}");
+    if (header[18] == 2) return strdup("{\"mode\":\"wal\",\"error\":null}");
+    if (header[18] == 1) return strdup("{\"mode\":\"rollback\",\"error\":null}");
+    char *result = NULL;
+    asprintf(&result, "{\"mode\":null,\"error\":\"unrecognized file-format version %d\"}", header[18]);
+    return result ? result : strdup("{\"mode\":null,\"error\":\"unknown\"}");
+}
+
+/* PoP: _render_state_db_stats @ hermes_cli/doctor.py:_render_state_db_stats */
+/* Returns malloc'd JSON array of [kind, text, detail] tuples. Caller frees. */
+char *doctor_render_state_db_stats(const char *stats_json, int holders) {
+    if (!stats_json) return strdup("[]");
+    char *err = NULL;
+    json_t *stats = json_parse(stats_json, &err);
+    if (err || !stats || stats->type != JSON_OBJECT) { if (err) free(err); if (stats) json_free(stats); return strdup("[]"); }
+    json_t *lines = json_array();
+    /* Size bits */
+    json_t *logical = json_obj_get(stats, "logical_size_bytes");
+    json_t *wal = json_obj_get(stats, "wal_size_bytes");
+    json_t *freelist = json_obj_get(stats, "freelist_count");
+    json_t *page_count = json_obj_get(stats, "page_count");
+    char *size_bits = NULL;
+    if (logical && logical->type == JSON_NUMBER) {
+        char *buf = NULL;
+        asprintf(&buf, "logical size %ld bytes", (long)logical->num_val);
+        free(size_bits);
+        size_bits = buf;
+    }
+    if (page_count && page_count->type == JSON_NUMBER) {
+        char *buf = NULL;
+        asprintf(&buf, "%s%ld pages", size_bits ? ", " : "", (long)page_count->num_val);
+        free(size_bits);
+        size_bits = buf;
+    }
+    if (freelist && freelist->type == JSON_NUMBER) {
+        char *buf = NULL;
+        asprintf(&buf, "%s%ld free", size_bits ? ", " : "", (long)freelist->num_val);
+        free(size_bits);
+        size_bits = buf;
+    }
+    if (wal && wal->type == JSON_NUMBER) {
+        char *buf = NULL;
+        asprintf(&buf, "%sWAL %ld bytes", size_bits ? ", " : "", (long)wal->num_val);
+        free(size_bits);
+        size_bits = buf;
+    }
+    if (size_bits) {
+        char *text = NULL;
+        asprintf(&text, "state.db %s", size_bits);
+        json_t *tuple = json_array();
+        json_append(tuple, json_string("info"));
+        json_append(tuple, json_string(text));
+        json_append(tuple, json_string(""));
+        json_append(lines, tuple);
+        free(text);
+        free(size_bits);
+    }
+    /* Row bits */
+    json_t *messages = json_obj_get(stats, "messages");
+    json_t *sessions = json_obj_get(stats, "sessions");
+    json_t *journal_mode = json_obj_get(stats, "journal_mode");
+    char *row_bits = NULL;
+    if (messages && messages->type == JSON_NUMBER) {
+        char *buf = NULL;
+        asprintf(&buf, "%ld messages", (long)messages->num_val);
+        free(row_bits);
+        row_bits = buf;
+    }
+    if (sessions && sessions->type == JSON_NUMBER) {
+        char *buf = NULL;
+        asprintf(&buf, "%s%ld sessions", row_bits ? ", " : "", (long)sessions->num_val);
+        free(row_bits);
+        row_bits = buf;
+    }
+    if (journal_mode && journal_mode->type == JSON_STRING) {
+        char *buf = NULL;
+        asprintf(&buf, "%sjournal_mode=%s", row_bits ? ", " : "", journal_mode->str_val);
+        free(row_bits);
+        row_bits = buf;
+    }
+    if (holders > 0) {
+        char *buf = NULL;
+        asprintf(&buf, "%s%d process(es) holding the DB open", row_bits ? ", " : ", ", holders);
+        free(row_bits);
+        row_bits = buf;
+    }
+    if (row_bits) {
+        json_t *tuple = json_array();
+        json_append(tuple, json_string("info"));
+        json_append(tuple, json_string(row_bits));
+        json_append(tuple, json_string(""));
+        json_append(lines, tuple);
+        free(row_bits);
+    }
+    json_free(stats);
+    char *out = json_serialize(lines);
+    json_free(lines);
+    return out ? out : strdup("[]");
+}
