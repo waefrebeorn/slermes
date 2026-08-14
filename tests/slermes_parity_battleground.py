@@ -380,7 +380,7 @@ class CIndexer:
 
         c_func_pattern = re.compile(
             r'^(?:static\s+)?(?:const\s+)?(?:__attribute__\(\s*unused\s*\)\s+)?'
-            r'(?:\w+\s+)*(?:\*\s*)?(\w+)\s*\(',
+            r'(?:\w+\s+)*(?:\*\s*)*(\w+)\s*\(',
             re.MULTILINE
         )
 
@@ -1245,6 +1245,26 @@ class ParityAnalyzer:
                         stub_reason="PoP annotation exists but no C function body found",
                         notes="Annotation-only stub — comment without implementation"
                     )
+            # No c_file/c_function info — but PoP was found, check if the
+            # Python function name exists in the global C function index
+            if pop.c_file and not pop.c_function:
+                c_funcs = self.c_index.find_c_function(feature.name, py_file, feature.parent_class)
+                if not c_funcs:
+                    # Try direct name match (C functions may have underscore prefix)
+                    name = feature.name.lstrip('_')
+                    if name in self.c_index.functions:
+                        c_funcs = self.c_index.functions[name]
+                if c_funcs:
+                    return GapEntry(
+                        python_file=py_file,
+                        python_feature=feature,
+                        classification="PORTED",
+                        c_location=c_funcs[0].file,
+                        c_function=c_funcs[0].name,
+                        pop_annotation=pop,
+                        severity="LOW",
+                        notes="PoP annotation found, C function exists in index"
+                    )
             # No c_file/c_function info — fall through to other checks
 
 
@@ -1599,7 +1619,18 @@ class ParityAnalyzer:
         func_pattern = r'(?:static\s+)?(?:\w+\s+)*\*?\s*' + escaped_name + r'\s*\([^)]*\)\s*\{'
         match = re.search(func_pattern, file_content)
         if not match:
-            return "missing"
+            # If PoP is in a header file, check the corresponding .c file
+            if c_file.endswith('.h'):
+                c_impl_file = c_file.replace('.h', '.c')
+                impl_path = SLERMES_DIR / c_impl_file
+                if impl_path.exists():
+                    with open(impl_path) as f:
+                        impl_content = f.read()
+                    match = re.search(func_pattern, impl_content)
+                    if match:
+                        file_content = impl_content
+            if not match:
+                return "missing"
 
         # Extract function body (up to closing brace)
         body_start = match.end()
