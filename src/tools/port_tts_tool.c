@@ -481,3 +481,146 @@ char *tts_tool_generate_deepinfra_tts(const char *text, const char *output_path,
     }
     return strdup(output_path ? output_path : "");
 }
+/* ── audio delivery profile + sentence split (tools/tts_tool.py) ────── */
+
+/* Python _PLATFORM_AUDIO_DEFAULTS. */
+typedef struct { const char *platform; long max_file_bytes; double safety_ratio; } tts_platform_default_t;
+static const tts_platform_default_t TTS_PLATFORM_DEFAULTS[] = {
+    {"discord", 10 * 1024 * 1024, 0.85},
+    {"telegram", 50 * 1024 * 1024, 0.85},
+    {"default", 10 * 1024 * 1024, 0.85},
+};
+#define TTS_N_PLATFORM_DEFAULTS 3
+
+/* Audio delivery profile result. */
+typedef struct {
+    char *platform;        /* caller frees */
+    long max_file_bytes;
+    double safety_ratio;
+} tts_delivery_profile_t;
+
+/* PoP: _resolve_audio_delivery_profile @ tools/tts_tool.py:_resolve_audio_delivery_profile */
+/* Resolve upload constraints incl. optional per-platform overrides from the
+ * tts_config JSON object (delivery_profiles.<key>). Returns the profile;
+ * caller frees platform. */
+tts_delivery_profile_t tts_tool_resolve_audio_delivery_profile(const char *platform,
+                                                               const json_t *tts_config) {
+    /* key = (platform or "default").lower().strip() or "default" */
+    const char *plat = platform ? platform : "";
+    while (*plat == ' ' || *plat == '\t' || *plat == '\n' || *plat == '\r') plat++;
+    size_t pl = strlen(plat);
+    while (pl > 0 && (plat[pl-1]==' '||plat[pl-1]=='\t'||plat[pl-1]=='\n'||plat[pl-1]=='\r')) pl--;
+    char key[64];
+    size_t ki = 0;
+    for (size_t i = 0; i < pl && ki < 63; i++) {
+        char c = plat[i];
+        if (c >= 'A' && c <= 'Z') c = (char)(c + 32);
+        key[ki++] = c;
+    }
+    key[ki] = '\0';
+    if (ki == 0) strcpy(key, "default");
+
+    /* defaults = copy of _PLATFORM_AUDIO_DEFAULTS[key] or default */
+    const tts_platform_default_t *def = &TTS_PLATFORM_DEFAULTS[2]; /* default */
+    for (int i = 0; i < TTS_N_PLATFORM_DEFAULTS; i++) {
+        if (strcmp(key, TTS_PLATFORM_DEFAULTS[i].platform) == 0) { def = &TTS_PLATFORM_DEFAULTS[i]; break; }
+    }
+    long max_file_bytes = def->max_file_bytes;
+    double safety_ratio = def->safety_ratio;
+
+    /* cfg = tts_config or {}; profiles = cfg.get("delivery_profiles");
+     * overrides = profiles.get(key, {}) if isinstance(profiles, dict) else {} */
+    if (tts_config && tts_config->type == JSON_OBJECT) {
+        json_t *profiles = json_obj_get(tts_config, "delivery_profiles");
+        if (profiles && profiles->type == JSON_OBJECT) {
+            json_t *ov = json_obj_get(profiles, key);
+            if (ov && ov->type == JSON_OBJECT) {
+                /* defaults.update({k: v for k,v in overrides if v is not None}) */
+                json_t *mb = json_obj_get(ov, "max_file_bytes");
+                if (mb && mb->type != JSON_NULL) {
+                    /* Python: defaults.update({k: v ... if v is not None});
+                     * a bool or non-int is rejected, but ANY int (incl. 0 or
+                     * negative) is assigned here and reset by the validation
+                     * below — so assign unconditionally for non-bool numbers. */
+                    if (!(mb->type == JSON_BOOL) && mb->type == JSON_NUMBER) {
+                        max_file_bytes = (long)mb->num_val;
+                    }
+                }
+                json_t *sr = json_obj_get(ov, "safety_ratio");
+                if (sr && sr->type != JSON_NULL) {
+                    if (!(sr->type == JSON_BOOL) && (sr->type == JSON_NUMBER)) {
+                        double v = sr->num_val;
+                        if (v > 0 && v <= 1) safety_ratio = v;
+                    }
+                }
+            }
+        }
+    }
+    /* re-validate max_file_bytes */
+    if (max_file_bytes <= 0) max_file_bytes = TTS_PLATFORM_DEFAULTS[2].max_file_bytes;
+    /* re-validate safety_ratio */
+    if (!(safety_ratio > 0 && safety_ratio <= 1)) safety_ratio = 0.85;
+
+    tts_delivery_profile_t out;
+    out.platform = strdup(key);
+    out.max_file_bytes = max_file_bytes;
+    out.safety_ratio = safety_ratio;
+    return out;
+}
+
+/* PoP: _split_oversized_sentence @ tools/tts_tool.py:_split_oversized_sentence */
+/* Split one over-limit sentence on word boundaries, then hard boundaries.
+ * Returns a malloc'd array of malloc'd strings; *count gets the length.
+ * Caller frees each string and the array. */
+char **tts_tool_split_oversized_sentence(const char *sentence, int max_chars,
+                                         int *out_count) {
+    char **chunks = NULL;
+    int n = 0, cap = 0;
+    char *current = strdup("");
+    if (!sentence) sentence = "";
+    /* split into words on whitespace */
+    char *dup = strdup(sentence);
+    char *save = NULL;
+    for (char *tok = strtok_r(dup, " \t\n\r", &save); tok; tok = strtok_r(NULL, " \t\n\r", &save)) {
+        size_t wl = strlen(tok);
+        if ((int)wl > max_chars) {
+            /* hard split this word */
+            if (*current) { 
+                if (n == cap) { cap = cap ? cap * 2 : 8; chunks = realloc(chunks, cap * sizeof(char*)); }
+                chunks[n++] = current; current = strdup("");
+            }
+            for (size_t i = 0; i < wl; i += max_chars) {
+                size_t len = wl - i;
+                if (len > (size_t)max_chars) len = max_chars;
+                char *piece = strndup(tok + i, len);
+                if (n == cap) { cap = cap ? cap * 2 : 8; chunks = realloc(chunks, cap * sizeof(char*)); }
+                chunks[n++] = piece;
+            }
+            continue;
+        }
+        /* candidate = f"{current} {word}".strip() */
+        size_t cl = strlen(current);
+        char *candidate = malloc(cl + 1 + wl + 1);
+        if (cl) { memcpy(candidate, current, cl); candidate[cl] = ' '; memcpy(candidate + cl + 1, tok, wl); candidate[cl + 1 + wl] = '\0'; }
+        else { memcpy(candidate, tok, wl); candidate[wl] = '\0'; }
+        if (*current && (int)strlen(candidate) > max_chars) {
+            if (n == cap) { cap = cap ? cap * 2 : 8; chunks = realloc(chunks, cap * sizeof(char*)); }
+            chunks[n++] = current;
+            current = strdup(tok);
+        } else {
+            free(current);
+            current = candidate;
+            continue;
+        }
+        free(candidate);
+    }
+    free(dup);
+    if (*current) {
+        if (n == cap) { cap = cap ? cap * 2 : 8; chunks = realloc(chunks, cap * sizeof(char*)); }
+        chunks[n++] = current;
+    } else {
+        free(current);
+    }
+    *out_count = n;
+    return chunks;
+}

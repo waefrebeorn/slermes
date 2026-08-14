@@ -1,0 +1,22 @@
+[
+  {"op": "resolve_profile", "arg": "discord", "cfg": "{}"},
+  {"op": "resolve_profile", "arg": "telegram", "cfg": "{}"},
+  {"op": "resolve_profile", "arg": "whatsapp", "cfg": "{}"},
+  {"op": "resolve_profile", "arg": null, "cfg": "{}"},
+  {"op": "resolve_profile", "arg": "", "cfg": "{}"},
+  {"op": "resolve_profile", "arg": "Telegram ", "cfg": "{}"},
+  {"op": "resolve_profile", "arg": "telegram", "cfg": "{\"delivery_profiles\":{\"telegram\":{\"max_file_bytes\":9999}}}"},
+  {"op": "resolve_profile", "arg": "telegram", "cfg": "{\"delivery_profiles\":{\"telegram\":{\"max_file_bytes\":0}}}"},
+  {"op": "resolve_profile", "arg": "telegram", "cfg": "{\"delivery_profiles\":{\"telegram\":{\"safety_ratio\":0.9}}}"},
+  {"op": "resolve_profile", "arg": "telegram", "cfg": "{\"delivery_profiles\":{\"telegram\":{\"safety_ratio\":2}}}"},
+  {"op": "resolve_profile", "arg": "discord", "cfg": "{\"delivery_profiles\":{\"discord\":{\"max_file_bytes\":true}}}"},
+  {"op": "resolve_profile", "arg": "telegram", "cfg": "{\"delivery_profiles\":{\"telegram\":{\"max_file_bytes\":null}}}"},
+
+  {"op": "split_sentence", "arg": "this is a very long sentence with some big words", "max_chars": 10},
+  {"op": "split_sentence", "arg": "short", "max_chars": 10},
+  {"op": "split_sentence", "arg": "", "max_chars": 10},
+  {"op": "split_sentence", "arg": "antidisestablishmentarianism is long", "max_chars": 10},
+  {"op": "split_sentence", "arg": "oneword", "max_chars": 3},
+  {"op": "split_sentence", "arg": "a b c d e", "max_chars": 2},
+  {"op": "split_sentence", "arg": "hello world foo bar baz", "max_chars": 5}
+]
