@@ -1222,3 +1222,11 @@ char *approval_check_execute_code_guard(const char *code, const char *env_type) 
     free(low);
     return result;
 }
+
+/* PoP: _clamped_window_seconds @ tools/approval.py:_clamped_window_seconds */
+double approval_clamped_window_seconds(double started, double now, double ceiling) {
+    double elapsed = now - started;
+    if (elapsed < 0) elapsed = 0;
+    if (elapsed > ceiling) elapsed = ceiling;
+    return elapsed;
+}
