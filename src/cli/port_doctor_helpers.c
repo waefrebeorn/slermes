@@ -184,6 +184,14 @@ json_t *doctor_managed_scope_check(void) {
     return r;
 }
 
+/* PoP: _format_db_size @ hermes_cli/doctor.py:_format_db_size */
+/* Returns malloc'd human-readable size string. Caller frees. */
+char *doctor_format_db_size(long long nbytes) {
+    if (nbytes < 0) return strdup("size unknown");
+    extern const char *format_size(unsigned long long bytes);
+    return strdup(format_size((unsigned long long)nbytes));
+}
+
 /* PoP: _read_journal_mode @ hermes_cli/doctor.py:_read_journal_mode */
 /* Returns malloc'd (mode, error) pair as JSON: {"mode":...,"error":...}. Caller frees. */
 char *doctor_read_journal_mode(const char *db_path) {

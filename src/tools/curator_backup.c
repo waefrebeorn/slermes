@@ -138,7 +138,7 @@ static json_node_t *read_manifest(const char *snap_dir) {
 /* Port of Python agent/curator_backup.py format_size().
  * Formats byte count as human-readable string: "1.2 KB", "45 B", etc.
  * Returns statically allocated buffer (valid until next call). */
-static const char *format_size(unsigned long long bytes) {
+const char *format_size(unsigned long long bytes) {
     static char buf[32];
     static const char *units[] = {"B", "KB", "MB", "GB", NULL};
     double val = (double)bytes;
