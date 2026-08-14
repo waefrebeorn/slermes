@@ -61,3 +61,8 @@ char *sku_provenance(const char *skill_name) {
     /* agent covers user-created + agent-created */
     return strdup("agent");
 }
+
+/* PoP: _non_negative_int @ tools/skill_usage.py:_non_negative_int */
+int skill_usage_non_negative_int(long value) {
+    return value > 0 ? (int)value : 0;
+}
