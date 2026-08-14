@@ -236,3 +236,32 @@ bool is_audio_output_active(void) {
 bool audio_recorder_max_duration_reached(double cap, double elapsed) {
     return cap > 0 && elapsed >= cap;
 }
+
+/* PoP: _normalize_for_echo_compare @ tools/voice_mode.py:_normalize_for_echo_compare */
+/* Returns malloc'd normalized text. Caller frees. */
+char *voice_mode_normalize_for_echo_compare(const char *text) {
+    if (!text) return strdup("");
+    /* Replace runs of whitespace with single space, strip, lowercase */
+    size_t len = strlen(text);
+    char *out = (char *)malloc(len + 1);
+    if (!out) return strdup("");
+    size_t j = 0;
+    int in_space = 0;
+    /* skip leading space */
+    size_t i = 0;
+    while (i < len && (text[i] == ' ' || text[i] == '\t' || text[i] == '\n' || text[i] == '\r')) i++;
+    for (; i < len; i++) {
+        char c = text[i];
+        if (c == ' ' || c == '\t' || c == '\n' || c == '\r') {
+            in_space = 1;
+        } else {
+            if (in_space && j > 0) out[j++] = ' ';
+            in_space = 0;
+            /* lowercase */
+            if (c >= 'A' && c <= 'Z') c = (char)(c + 32);
+            out[j++] = c;
+        }
+    }
+    out[j] = '\0';
+    return out;
+}

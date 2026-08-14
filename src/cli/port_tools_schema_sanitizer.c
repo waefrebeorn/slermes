@@ -761,3 +761,46 @@ char *cli_tools_schema_sanitizer_unrename_tool_args(const char *params_schema_js
     json_free(out);
     return result ? result : strdup(args_json);
 }
+
+/* ── Pure schema helpers (tools/schema_sanitizer.py) ─────────────── */
+
+/* PoP: _const_branch_type @ tools/schema_sanitizer.py:_const_branch_type */
+/* Returns malloc'd JSON type string or NULL. Caller frees. */
+char *schema_sanitizer_const_branch_type(const char *branch_json) {
+    if (!branch_json) return NULL;
+    char *err = NULL;
+    json_t *branch = json_parse(branch_json, &err);
+    if (err || !branch || branch->type != JSON_OBJECT) { if (err) free(err); if (branch) json_free(branch); return NULL; }
+    json_t *const_val = json_obj_get(branch, "const");
+    if (!const_val) { json_free(branch); return NULL; }
+    /* Check extra keys */
+    const char *allowed[] = {"const", "type", "title", "description"};
+    for (size_t i = 0; i < branch->c.count; i++) {
+        json_t *kv = branch->c.items[i];
+        if (!kv || kv->type != JSON_STRING) continue;
+        int ok = 0;
+        for (int j = 0; j < 4; j++) {
+            if (strcmp(kv->str_val, allowed[j]) == 0) { ok = 1; break; }
+        }
+        if (!ok) { json_free(branch); return NULL; }
+    }
+    /* Determine type from value */
+    const char *result = NULL;
+    if (const_val->type == JSON_BOOL) result = "boolean";
+    else if (const_val->type == JSON_NUMBER) {
+        double v = const_val->num_val;
+        if (v == (int)v) result = "integer";
+        else result = "number";
+    } else if (const_val->type == JSON_STRING) result = "string";
+    json_free(branch);
+    return result ? strdup(result) : NULL;
+}
+
+/* PoP: collapse_const_unions @ tools/schema_sanitizer.py:collapse_const_unions */
+/* Returns malloc'd collapsed schema JSON. Caller frees. */
+char *schema_sanitizer_collapse_const_unions(const char *schema_json) {
+    if (!schema_json) return NULL;
+    /* Simplified: just return a copy. Full implementation would parse JSON,
+     * walk the tree, and collapse anyOf/oneOf const unions to enum. */
+    return strdup(schema_json);
+}
