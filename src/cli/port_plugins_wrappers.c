@@ -10,9 +10,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
 #include "hermes_json.h"
 #include "plugin.h"
 #include "hermes_subagent_lifecycle.h"
+#include "crypto.h"
 
 extern const char *plugin_get_bundled_plugins_dir(const char *hermes_home);
 extern void plugin_install_debug_handler(void);
@@ -253,4 +255,96 @@ subagent_lifecycle_service_t *plugins_get_subagent_lifecycle(const char *arg)
 /* Teardown the cached lifecycle service (session teardown). */
 void plugins_free_subagent_lifecycle(void) {
     if (g_lifecycle) { subagent_service_free(g_lifecycle); g_lifecycle = NULL; }
+}
+
+/* ── pure plugin helpers (hermes_cli/plugins.py) ─────────────────────── */
+
+/* PoP: _portable_skill_namespace @ hermes_cli/plugins.py:_portable_skill_namespace */
+/* Python: slug = "".join(ch if ch.isascii() and (ch.isalnum() or ch in "_-")
+ * else "-" for ch in key.lower()); slug = slug.strip("-_-_-") or "plugin";
+ * digest = sha256(key).hexdigest()[:8]; return f"agent-plugin-{slug}-{digest}". */
+char *plugins_portable_skill_namespace(const char *key) {
+    if (!key) key = "";
+    /* build slug from key.lower() with the ascii/alnum/_- filter */
+    char *slug = malloc(strlen(key) * 2 + 2);
+    if (!slug) return strdup("");
+    size_t w = 0;
+    for (const char *p = key; *p;) {
+        unsigned char c = (unsigned char)*p;
+        /* Decode a UTF-8 codepoint: Python iterates characters, so a single
+         * multibyte char (e.g. É) becomes ONE '-', not one per byte. */
+        size_t seq = 1;
+        if (c >= 0x80) {
+            if (c >= 0xF0) seq = 4;
+            else if (c >= 0xE0) seq = 3;
+            else if (c >= 0xC0) seq = 2;
+        }
+        int ascii_ok = (c < 128) && ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')
+                                     || c == '_' || c == '-');
+        int ascii_lower = (c >= 'A' && c <= 'Z') ? (int)(c + 32) : (int)c;
+        int ok = (seq == 1) ? (ascii_ok || (c >= 'A' && c <= 'Z')) : 0;
+        if (seq == 1 && c >= 'A' && c <= 'Z') ok = 1;
+        slug[w++] = ok ? (char)ascii_lower : '-';
+        p += seq;
+    }
+    slug[w] = '\0';
+    /* strip leading/trailing '-' and '_' */
+    size_t start = 0, end = w;
+    while (start < end && (slug[start] == '-' || slug[start] == '_')) start++;
+    while (end > start && (slug[end-1] == '-' || slug[end-1] == '_')) end--;
+    if (start >= end) {
+        /* slug collapses to nothing: use "plugin". Buffer must hold it. */
+        char *n = realloc(slug, 8);
+        if (!n) { free(slug); return strdup(""); }
+        slug = n;
+        strcpy(slug, "plugin");
+    } else {
+        if (start) { memmove(slug, slug + start, end - start); slug[end - start] = '\0'; }
+    }
+    /* sha256 hexdigest first 8 chars (Python: hexdigest()[:8]) */
+    unsigned char digest[CRYPTO_SHA256_LEN];
+    crypto_sha256((const unsigned char *)key, strlen(key), digest);
+    char hex[17];
+    for (int i = 0; i < 4; i++) snprintf(hex + i * 2, 3, "%02x", digest[i]);
+    hex[8] = '\0';
+    char *out = NULL;
+    asprintf(&out, "agent-plugin-%s-%s", slug, hex);
+    free(slug);
+    return out;
+}
+
+/* PoP: _display_author @ hermes_cli/plugins.py:_display_author */
+/* Python: if value is Mapping: return ", ".join(str(value[f]) for f in
+ * ("name","email","url") if value.get(f)); return "" if None else str(value). */
+char *plugins_display_author(const char *value_json) {
+    if (!value_json || !*value_json) return strdup("");
+    /* If it's a JSON object (Mapping), join name/email/url present fields. */
+    json_t *v = json_parse(value_json, NULL);
+    if (v && v->type == JSON_OBJECT) {
+        size_t cap = 256, w = 0;
+        char *out = malloc(cap);
+        if (!out) { json_free(v); return strdup(""); }
+        const char *fields[3] = {"name", "email", "url"};
+        for (int i = 0; i < 3; i++) {
+            json_t *f = json_obj_get(v, fields[i]);
+            if (f && f->type == JSON_STRING && f->str_val && *f->str_val) {
+                size_t fl = strlen(f->str_val);
+                size_t need = w + fl + (w > 0 ? 2 : 0) + 1;
+                if (need > cap) {
+                    cap = need + 64;
+                    char *n = realloc(out, cap);
+                    if (!n) break;
+                    out = n;
+                }
+                if (w > 0) { out[w++] = ','; out[w++] = ' '; }
+                memcpy(out + w, f->str_val, fl); w += fl;
+            }
+        }
+        out[w] = '\0';
+        json_free(v);
+        return out;
+    }
+    if (v) json_free(v);
+    /* non-object: string value verbatim (str(value)) */
+    return strdup(value_json);
 }

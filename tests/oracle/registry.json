@@ -1439,6 +1439,11 @@
       "harness": "tests/t_port_title_generator.c",
       "oracle": "tests/sta_oracle_title_generator.py",
       "fixtures": "tests/oracle/fixtures/title_generator"
+    },
+    "plugins_pure": {
+      "harness": "tests/t_port_plugins_pure.c",
+      "oracle": "tests/sta_oracle_plugins_pure.py",
+      "fixtures": "tests/oracle/fixtures/plugins_pure"
     }
   },
   "normalize": {

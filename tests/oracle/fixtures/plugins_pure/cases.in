@@ -1,0 +1,21 @@
+[
+  {"op": "namespace", "arg": "My Plugin"},
+  {"op": "namespace", "arg": "my-plugin"},
+  {"op": "namespace", "arg": "my_plugin"},
+  {"op": "namespace", "arg": "  HÉLLO World!!  "},
+  {"op": "namespace", "arg": "UPPER CASE"},
+  {"op": "namespace", "arg": "---"},
+  {"op": "namespace", "arg": "__my__plugin__"},
+  {"op": "namespace", "arg": "a"},
+  {"op": "namespace", "arg": ""},
+  {"op": "namespace", "arg": "Mixed_Case-Plugin v2"},
+
+  {"op": "display_author", "arg": "{\"name\": \"John\", \"email\": \"j@x.com\", \"url\": \"https://x.com\"}"},
+  {"op": "display_author", "arg": "{\"name\": \"John\"}"},
+  {"op": "display_author", "arg": "{\"email\": \"j@x.com\"}"},
+  {"op": "display_author", "arg": "{\"url\": \"https://x.com\"}"},
+  {"op": "display_author", "arg": "{}"},
+  {"op": "display_author", "arg": "Alice"},
+  {"op": "display_author", "arg": ""},
+  {"op": "display_author", "arg": null}
+]
