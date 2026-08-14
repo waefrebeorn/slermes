@@ -1414,6 +1414,11 @@
       "harness": "tests/t_port_hermes_state.c",
       "oracle": "tests/sta_oracle_hermes_state.py",
       "fixtures": "tests/oracle/fixtures/hermes_state"
+    },
+    "hermes_state_db": {
+      "harness": "tests/t_port_hermes_state_db.c",
+      "oracle": "tests/sta_oracle_hermes_state_db.py",
+      "fixtures": "tests/oracle/fixtures/hermes_state_db"
     }
   },
   "normalize": {

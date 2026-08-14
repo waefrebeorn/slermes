@@ -92,9 +92,8 @@ char *hermes_state_get_session_model_config_value(hermes_state_db_t *db,
         if (obj && obj->type == JSON_OBJECT) {
             json_t *val = json_obj_get(obj, key);
             if (val) {
-                char *ser = json_serialize(val);
-                result = ser ? ser : strdup("null");
-                free(ser);
+                result = json_serialize(val);
+                if (!result) result = strdup("null");
             }
         }
         if (!result)
@@ -134,12 +133,19 @@ bool hermes_state_patch_session_model_config(hermes_state_db_t *db,
     sqlite3_finalize(gst);
     if (!merged) return false;
 
-    /* Apply patch: top-level keys overwrite existing (matches Python update). */
+    /* Apply patch: top-level keys overwrite existing (matches Python update).
+     * A JSON null patch value REMOVES that key (matches _merge_model_config_json
+     * `config.pop(key, None)` for None values). */
     if (patch_json && *patch_json) {
         json_t *patch = json_parse(patch_json, NULL);
         if (patch && patch->type == JSON_OBJECT) {
-            for (size_t i = 0; i < patch->c.count; i++)
-                json_set(merged, patch->c.keys[i], json_copy(patch->c.items[i]));
+            for (size_t i = 0; i < patch->c.count; i++) {
+                json_t *pv = patch->c.items[i];
+                if (pv && pv->type == JSON_NULL)
+                    json_obj_del(merged, patch->c.keys[i]);
+                else
+                    json_set(merged, patch->c.keys[i], json_copy(pv));
+            }
         }
         json_free(patch);
     }
