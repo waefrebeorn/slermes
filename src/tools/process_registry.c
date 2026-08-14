@@ -1852,3 +1852,42 @@ void process_registry_destroy(void) {
     pthread_mutex_unlock(&g_registry.lock);
     g_registry_initialized = false;
 }
+
+/* PoP: _build_systemd_scope_argv @ tools/process_registry.py:_build_systemd_scope_argv */
+/* Returns malloc'd JSON array of argv strings. Caller frees. */
+char *process_registry_build_systemd_scope_argv(const char *shell_argv_json, const char *unit_suffix, long memory_max) {
+    if (!shell_argv_json) return strdup("[]");
+    char *err = NULL;
+    json_t *shell_argv = json_parse(shell_argv_json, &err);
+    if (err || !shell_argv || shell_argv->type != JSON_ARRAY) { if (err) free(err); if (shell_argv) json_free(shell_argv); return strdup("[]"); }
+    json_t *result = json_array();
+    json_append(result, json_string("systemd-run"));
+    json_append(result, json_string("--user"));
+    json_append(result, json_string("--scope"));
+    json_append(result, json_string("--quiet"));
+    json_append(result, json_string("--unit"));
+    char *unit_name = NULL;
+    asprintf(&unit_name, "hermes-worker-%s", unit_suffix ? unit_suffix : "default");
+    json_append(result, json_string(unit_name));
+    free(unit_name);
+    json_append(result, json_string("--collect"));
+    json_append(result, json_string("--property"));
+    json_append(result, json_string("MemoryAccounting=yes"));
+    json_append(result, json_string("--property"));
+    char *mem_max_str = NULL;
+    asprintf(&mem_max_str, "MemoryMax=%ld", memory_max);
+    json_append(result, json_string(mem_max_str));
+    free(mem_max_str);
+    json_append(result, json_string("--property"));
+    json_append(result, json_string("OOMPolicy=kill"));
+    json_append(result, json_string("--"));
+    for (size_t i = 0; i < shell_argv->c.count; i++) {
+        if (shell_argv->c.items[i] && shell_argv->c.items[i]->type == JSON_STRING) {
+            json_append(result, json_string(shell_argv->c.items[i]->str_val));
+        }
+    }
+    json_free(shell_argv);
+    char *out = json_serialize(result);
+    json_free(result);
+    return out ? out : strdup("[]");
+}
