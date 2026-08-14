@@ -16,6 +16,11 @@
 #include <sys/stat.h>
 
 #include "hermes_json.h"
+#include "truthy.h"
+
+/* Python module-level trim constants (tools/transcription_tools.py). */
+#define TS_CLOUD_TRIM_THRESHOLD_DB_DEFAULT (-40)
+#define TS_CLOUD_TRIM_KEEP_MS_DEFAULT 300
 
 /* PoP: _is_local_stt_provider @ tools/transcription_tools.py:_is_local_stt_provider */
 bool ts_is_local_stt_provider(const char *provider, const char *stt_config_json)
@@ -243,4 +248,81 @@ bool ts_is_hallucinated_segment(const char *segment_json,
 char **tts_command_provider_env_passthrough(const char *config_json, int *out_count)
 {
     return ts_command_stt_env_passthrough(config_json, out_count);
+}
+
+/* PoP: _get_idle_unload_seconds @ tools/transcription_tools.py:_get_idle_unload_seconds */
+/* Python: int(local_cfg.get("unload_after_idle_seconds", 0)) with try/except
+ * -> 0 on TypeError/ValueError; then max(val, 0). */
+int ts_get_idle_unload_seconds(const char *local_cfg_json)
+{
+    int val = 0;
+    json_t *cfg = local_cfg_json ? json_parse(local_cfg_json, NULL) : NULL;
+    if (cfg && cfg->type == JSON_OBJECT) {
+        json_t *v = json_obj_get(cfg, "unload_after_idle_seconds");
+        if (v) {
+            if (v->type == JSON_NUMBER) {
+                val = (int)v->num_val;
+            } else if (v->type == JSON_STRING) {
+                char *end = NULL;
+                long parsed = strtol(v->str_val, &end, 10);
+                if (end == v->str_val) { val = 0; }  /* int("abc") raises -> 0 */
+                else val = (int)parsed;
+            } else {
+                val = 0;  /* int(None/True/False) would differ; config uses ints */
+            }
+        }
+    }
+    if (cfg) json_free(cfg);
+    return val > 0 ? val : 0;
+}
+
+/* PoP: _cloud_trim_settings @ tools/transcription_tools.py:_cloud_trim_settings */
+/* Python: enabled = is_truthy_value(cfg.get("cloud_trim_silence", True), True);
+ * threshold_db = int(cfg.get("cloud_trim_threshold_db", -40)) w/ fallback;
+ * keep_ms = int(cfg.get("cloud_trim_keep_ms", 300)) w/ fallback, max(keep_ms, 0). */
+void ts_cloud_trim_settings(const char *stt_config_json,
+                            bool *enabled_out, int *threshold_db_out,
+                            int *keep_ms_out)
+{
+    bool enabled = true;                       /* default True */
+    int threshold_db = TS_CLOUD_TRIM_THRESHOLD_DB_DEFAULT;
+    int keep_ms = TS_CLOUD_TRIM_KEEP_MS_DEFAULT;
+
+    json_t *cfg = stt_config_json ? json_parse(stt_config_json, NULL) : NULL;
+    if (cfg && cfg->type == JSON_OBJECT) {
+        json_t *en = json_obj_get(cfg, "cloud_trim_silence");
+        if (en) {
+            if (en->type == JSON_STRING)
+                enabled = is_truthy_value(en->str_val, true);
+            else if (en->type == JSON_BOOL)
+                enabled = en->bool_val;
+            else
+                enabled = true;
+        }
+        json_t *tdb = json_obj_get(cfg, "cloud_trim_threshold_db");
+        if (tdb) {
+            if (tdb->type == JSON_NUMBER)
+                threshold_db = (int)tdb->num_val;
+            else if (tdb->type == JSON_STRING) {
+                char *end = NULL;
+                long p = strtol(tdb->str_val, &end, 10);
+                if (end != tdb->str_val) threshold_db = (int)p;
+            }
+        }
+        json_t *km = json_obj_get(cfg, "cloud_trim_keep_ms");
+        if (km) {
+            if (km->type == JSON_NUMBER)
+                keep_ms = (int)km->num_val;
+            else if (km->type == JSON_STRING) {
+                char *end = NULL;
+                long p = strtol(km->str_val, &end, 10);
+                if (end != km->str_val) keep_ms = (int)p;
+            }
+        }
+    }
+    if (cfg) json_free(cfg);
+
+    if (enabled_out) *enabled_out = enabled;
+    if (threshold_db_out) *threshold_db_out = threshold_db;
+    if (keep_ms_out) *keep_ms_out = keep_ms > 0 ? keep_ms : 0;
 }

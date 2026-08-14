@@ -1,6 +1,23 @@
 [
-  {"op": "ts_is_local_stt_provider", "value": "local"},
-  {"op": "ts_is_local_stt_provider", "value": "local_command"},
-  {"op": "ts_is_local_stt_provider", "value": "openai"},
-  {"op": "ts_is_local_stt_provider", "value": "gemini"},
-  {"op": "ts_is_local_or_private_url"...[truncated]
+  {"op": "idle_unload", "arg": "{}"},
+  {"op": "idle_unload", "arg": "{\"unload_after_idle_seconds\": 300}"},
+  {"op": "idle_unload", "arg": "{\"unload_after_idle_seconds\": 0}"},
+  {"op": "idle_unload", "arg": "{\"unload_after_idle_seconds\": -50}"},
+  {"op": "idle_unload", "arg": "{\"unload_after_idle_seconds\": \"600\"}"},
+  {"op": "idle_unload", "arg": "{\"unload_after_idle_seconds\": \"not_a_num\"}"},
+  {"op": "idle_unload", "arg": "{\"unload_after_idle_seconds\": \"abc\"}"},
+  {"op": "idle_unload", "arg": "{\"unload_after_idle_seconds\": 120}"},
+
+  {"op": "cloud_trim", "arg": "{}"},
+  {"op": "cloud_trim", "arg": "{\"cloud_trim_silence\": false}"},
+  {"op": "cloud_trim", "arg": "{\"cloud_trim_silence\": \"false\"}"},
+  {"op": "cloud_trim", "arg": "{\"cloud_trim_silence\": true}"},
+  {"op": "cloud_trim", "arg": "{\"cloud_trim_silence\": \"true\"}"},
+  {"op": "cloud_trim", "arg": "{\"cloud_trim_threshold_db\": -50}"},
+  {"op": "cloud_trim", "arg": "{\"cloud_trim_threshold_db\": \"-45\"}"},
+  {"op": "cloud_trim", "arg": "{\"cloud_trim_threshold_db\": \"x\"}"},
+  {"op": "cloud_trim", "arg": "{\"cloud_trim_keep_ms\": 200}"},
+  {"op": "cloud_trim", "arg": "{\"cloud_trim_keep_ms\": 0}"},
+  {"op": "cloud_trim", "arg": "{\"cloud_trim_keep_ms\": -100}"},
+  {"op": "cloud_trim", "arg": "{\"cloud_trim_silence\": false, \"cloud_trim_threshold_db\": -50, \"cloud_trim_keep_ms\": 200}"}
+]

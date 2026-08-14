@@ -28,4 +28,14 @@ bool ts_is_hallucinated_segment(const char *segment_json,
                                  double no_speech_threshold,
                                  double logprob_threshold);
 
+/* PoP: _get_idle_unload_seconds @ tools/transcription_tools.py:_get_idle_unload_seconds */
+/* Resolve the idle unload timeout from stt.local config (0 = never). */
+int ts_get_idle_unload_seconds(const char *local_cfg_json);
+
+/* PoP: _cloud_trim_settings @ tools/transcription_tools.py:_cloud_trim_settings */
+/* Resolve (enabled, threshold_db, keep_ms) for the cloud silence trim. */
+void ts_cloud_trim_settings(const char *stt_config_json,
+                            bool *enabled_out, int *threshold_db_out,
+                            int *keep_ms_out);
+
 #endif

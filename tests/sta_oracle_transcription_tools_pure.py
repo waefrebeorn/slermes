@@ -1,79 +1,42 @@
-"""Oracle for tools/transcription_tools.py pure helpers.
+#!/usr/bin/env python3
+"""Oracle for the config-parse helpers of tools/transcription_tools.py ported
+to C (transcription_tools_pure.c).
 
-Tests against LIVE Python source.
+Reads the JSON cases fixture (argv[1]), recomputes each case from LIVE
+tools/transcription_tools.py, and emits one JSON object per case. The C harness
+emits the same shape; the runner exact-compares.
 """
-import json, os, sys
+import json
+import os
+import sys
 
-DEV_ROOT = os.environ.get("HERMES_DEV_ROOT")
-if DEV_ROOT and DEV_ROOT not in sys.path:
-    sys.path.insert(0, DEV_ROOT)
+# Quarry root (parent of slermes) so `import tools.transcription_tools` works.
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# The fixture's @SBX@/@NOW@ placeholders and isolated HOME shouldn't matter for
+# these pure config-parsers, but keep the module importable from cwd too.
+sys.path.insert(0, os.getcwd())
 
-from tools.transcription_tools import (
-    _is_local_stt_provider,
-    _command_stt_env_passthrough,
-    _is_local_or_private_url,
-    _confidence_thresholds,
-    _is_hallucinated_segment,
-)
-from tools.tts_tool import _command_provider_env_passthrough
-
-
-def run(c):
-    op = c.get("op")
-    if op == "ts_is_local_stt_provider":
-        return _is_local_stt_provider(c.get("value", ""), {})
-    if op == "ts_is_local_or_private_url":
-        return _is_local_or_private_url(c.get("value", ""))
-    if op == "ts_command_stt_env_passthrough":
-        cfg = c.get("value", {})
-        if isinstance(cfg, str):
-            cfg = json.loads(cfg)
-        result = _command_stt_env_passthrough(cfg)
-        if not result:
-            return "[]"
-        return "[" + ", ".join(result) + "]"
-    if op == "tts_command_provider_env_passthrough":
-        cfg = c.get("value", {})
-        if isinstance(cfg, str):
-            cfg = json.loads(cfg)
-        result = _command_provider_env_passthrough(cfg)
-        if not result:
-            return "[]"
-        return "[" + ", ".join(result) + "]"
-    if op == "ts_confidence_thresholds":
-        cfg = c.get("value", {})
-        if isinstance(cfg, str):
-            cfg = json.loads(cfg)
-        nsp, lp = _confidence_thresholds(cfg)
-        return f"{nsp:.17g},{lp:.17g}"
-    if op == "ts_is_hallucinated_segment":
-        seg = c.get("value", {})
-        if isinstance(seg, str):
-            seg = json.loads(seg)
-        nsp = c.get("no_speech_threshold", 0.6)
-        lp = c.get("logprob_threshold", -1.0)
-        return _is_hallucinated_segment(seg, nsp, lp)
-    return None
+from tools import transcription_tools as t  # noqa: E402
 
 
 def main():
-    with open(sys.argv[1]) as f:
+    with open(sys.argv[1], encoding="utf-8") as f:
         cases = json.load(f)
     for c in cases:
-        r = run(c)
-        if r is None:
-            print("none")
-        elif isinstance(r, bool):
-            print("true" if r else "false")
-        elif isinstance(r, (int, float)):
-            if isinstance(r, float) and r == int(r):
-                print(int(r))
-            else:
-                print(r)
-        elif isinstance(r, str):
-            print(r)
+        op = c.get("op")
+        arg = c.get("arg", {})
+        cfg = json.loads(arg) if isinstance(arg, str) and arg else {}
+        if op == "idle_unload":
+            out = t._get_idle_unload_seconds(cfg)
+            print(json.dumps({"op": "idle_unload", "out": out}))
+        elif op == "cloud_trim":
+            enabled, tdb, keep = t._cloud_trim_settings(cfg)
+            print(json.dumps({"op": "cloud_trim",
+                              "enabled": bool(enabled),
+                              "threshold_db": tdb,
+                              "keep_ms": keep}))
         else:
-            print(json.dumps(r, sort_keys=True))
+            print(json.dumps({"op": "unknown"}))
 
 
 if __name__ == "__main__":

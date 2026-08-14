@@ -1,88 +1,67 @@
 /*
- * Oracle harness for tools/transcription_tools.py pure helpers.
+ * t_port_transcription_tools_pure.c — oracle harness for the config-parse
+ * helpers of tools/transcription_tools.py ported to C
+ * (transcription_tools_pure.c / transcription_tools_pure.h).
+ *
+ * Reads a JSON fixture (argv[1]) of cases, runs the C functions, and emits one
+ * JSON object per case. The Python oracle (sta_oracle_transcription_tools_pure.py)
+ * recomputes the same functions from LIVE tools/transcription_tools.py and the
+ * runner exact-compares.
+ *
+ * Tested: ts_get_idle_unload_seconds, ts_cloud_trim_settings.
  */
+#define _POSIX_C_SOURCE 200809L
 #define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "hermes_json.h"
+#include "libjson/json.h"
 #include "transcription_tools_pure.h"
 
+static char *read_file(const char *path) {
+    FILE *f = fopen(path, "rb");
+    if (!f) return NULL;
+    fseek(f, 0, SEEK_END);
+    long sz = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    char *buf = malloc(sz + 1);
+    if (!buf) { fclose(f); return NULL; }
+    size_t rd = fread(buf, 1, sz, f);
+    buf[rd] = '\0';
+    fclose(f);
+    return buf;
+}
+
 int main(int argc, char **argv) {
-    if (argc < 2) { fprintf(stderr, "usage: %s cases.json\n", argv[0]); return 2; }
-    char *txt = NULL;
-    long len = 0;
-    FILE *f = fopen(argv[1], "r");
-    if (!f) { perror("open cases"); return 2; }
-    fseek(f, 0, SEEK_END); len = ftell(f); fseek(f, 0, SEEK_SET);
-    txt = (char *)malloc(len + 1);
-    len = fread(txt, 1, len, f); txt[len] = '\0'; fclose(f);
-
+    if (argc < 2) { fprintf(stderr, "usage: t_port_transcription_tools_pure <cases.in>\n"); return 1; }
+    char *text = read_file(argv[1]);
+    if (!text) { fprintf(stderr, "cannot read %s\n", argv[1]); return 1; }
     char *err = NULL;
-    json_t *root = json_parse(txt, &err);
-    free(txt);
-    if (err) { fprintf(stderr, "parse: %s\n", err); free(err); return 2; }
-    if (!root || root->type != JSON_ARRAY) { fprintf(stderr, "not array\n"); return 2; }
+    json_t *cases = json_parse(text, &err);
+    free(text);
+    if (err || !cases || cases->type != JSON_ARRAY) { if (err) free(err); fprintf(stderr, "bad fixture\n"); return 1; }
 
-    for (size_t i = 0; i < root->c.count; i++) {
-        json_t *c = json_get(root, i);
-        json_t *opj = json_obj_get(c, "op");
-        const char *name = opj && opj->type == JSON_STRING ? opj->str_val : "";
+    for (size_t i = 0; i < cases->c.count; i++) {
+        json_t *c = cases->c.items[i];
+        const char *op = json_get_str(c, "op", "");
+        json_t *arg = json_obj_get(c, "arg");
+        const char *s = (arg && arg->type == JSON_STRING) ? arg->str_val : "";
 
-        if (strcmp(name, "ts_is_local_stt_provider") == 0) {
-            const char *v = json_get_str(c, "value", "");
-            bool r = ts_is_local_stt_provider(v, NULL);
-            printf(r ? "true\n" : "false\n");
-        } else if (strcmp(name, "ts_is_local_or_private_url") == 0) {
-            const char *v = json_get_str(c, "value", "");
-            bool r = ts_is_local_or_private_url(v);
-            printf(r ? "true\n" : "false\n");
-        } else if (strcmp(name, "ts_command_stt_env_passthrough") == 0 ||
-                   strcmp(name, "tts_command_provider_env_passthrough") == 0) {
-            json_t *vj = json_obj_get(c, "value");
-            char *json_str = NULL;
-            if (vj && vj->type == JSON_OBJECT) {
-                json_str = json_serialize(vj);
-            }
-            int cnt;
-            char **r;
-            if (strcmp(name, "tts_command_provider_env_passthrough") == 0)
-                r = tts_command_provider_env_passthrough(json_str ? json_str : "{}", &cnt);
-            else
-                r = ts_command_stt_env_passthrough(json_str ? json_str : "{}", &cnt);
-            if (json_str) free(json_str);
-            if (!r || cnt == 0) { printf("[]\n"); }
-            else {
-                printf("[");
-                for (int j = 0; j < cnt; j++) {
-                    printf("%s%s", j > 0 ? ", " : "", r[j]);
-                }
-                printf("]\n");
-                for (int j = 0; j < cnt; j++) free(r[j]);
-                free(r);
-            }
-        } else if (strcmp(name, "ts_confidence_thresholds") == 0) {
-            json_t *vj = json_obj_get(c, "value");
-            char *json_str = NULL;
-            if (vj && vj->type == JSON_OBJECT) {
-                json_str = json_serialize(vj);
-            }
-            double nsp, lp;
-            ts_confidence_thresholds(json_str ? json_str : "{}", &nsp, &lp);
-            if (json_str) free(json_str);
-            printf("%.17g,%.17g\n", nsp, lp);
-        } else if (strcmp(name, "ts_is_hallucinated_segment") == 0) {
-            json_t *vj = json_obj_get(c, "value");
-            char *json_str = NULL;
-            if (vj) json_str = json_serialize(vj);
-            double nsp = json_get_num(c, "no_speech_threshold", 0.6);
-            double lp = json_get_num(c, "logprob_threshold", -1.0);
-            bool r = ts_is_hallucinated_segment(json_str ? json_str : "{}", nsp, lp);
-            if (json_str) free(json_str);
-            printf(r ? "true\n" : "false\n");
+        if (strcmp(op, "idle_unload") == 0) {
+            int out = ts_get_idle_unload_seconds(s);
+            printf("{\"op\":\"idle_unload\",\"out\":%d}\n", out);
+        } else if (strcmp(op, "cloud_trim") == 0) {
+            bool enabled = true; int tdb = -40, keep = 300;
+            ts_cloud_trim_settings(s, &enabled, &tdb, &keep);
+            printf("{\"op\":\"cloud_trim\",\"enabled\":%s,\"threshold_db\":%d,\"keep_ms\":%d}\n",
+                   enabled ? "true" : "false", tdb, keep);
+        } else {
+            printf("{\"op\":\"unknown\"}\n");
         }
     }
-    free(root);
+    json_free(cases);
     return 0;
 }

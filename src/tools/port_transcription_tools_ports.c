@@ -10,9 +10,13 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <pthread.h>
 #include <sys/stat.h>
+#include <time.h>
 #include "libjson/json.h"
 #include "hermes_logger.h"
+#include "transcribe_helpers.h"
+#include "transcription_tools_pure.h"
 
 #define TRT_MAX_FILE_SIZE (25 * 1024 * 1024)
 #define TRT_VAD_MIN_SILENCE_MS_DEFAULT 2000
@@ -467,4 +471,266 @@ char *trt_transcribe_audio_local_fallback(const char *file_path, const char *mod
         hermes_log(LOG_DEBUG, "transcription_tools", "whisper binary found for %s", file_path);
     }
     return trt_transcribe_prepared_audio(file_path, model);
+}
+
+/* ── ffmpeg/ffprobe encode + duration probe (subprocess) ─────────────── */
+
+/* Python _STT_M4A_ENCODE_ARGS (tools/transcription_tools.py:238). */
+static const char *const TRT_STT_M4A_ENCODE_ARGS[] = {
+    "-vn", "-ac", "1", "-ar", "16000",
+    "-c:a", "aac", "-b:a", "32k", "-movflags", "+faststart",
+    NULL
+};
+
+/* PoP: _run_ffmpeg_stt_encode @ tools/transcription_tools.py:_run_ffmpeg_stt_encode */
+/* Python: ffmpeg -y -i input [-af filter] <encode_args> output (check=True,
+ * timeout=120). Raises on failure. Returns 0 on success, -1 on failure. */
+int trt_run_ffmpeg_stt_encode(const char *ffmpeg, const char *input_path,
+                              const char *output_path, const char *audio_filter) {
+    if (!ffmpeg || !input_path || !output_path) return -1;
+    char cmd[8192];
+    size_t off = (size_t)snprintf(cmd, sizeof(cmd), "%s -y -i '%s'", ffmpeg, input_path);
+    if (audio_filter && *audio_filter)
+        off += (size_t)snprintf(cmd + off, sizeof(cmd) - off, " -af '%s'", audio_filter);
+    for (int i = 0; TRT_STT_M4A_ENCODE_ARGS[i]; i++)
+        off += (size_t)snprintf(cmd + off, sizeof(cmd) - off, " %s", TRT_STT_M4A_ENCODE_ARGS[i]);
+    snprintf(cmd + off, sizeof(cmd) - off, " '%s' 2>/dev/null", output_path);
+    /* Python subprocess.run(check=True, timeout=120, stdin=DEVNULL). */
+    return system(cmd) == 0 ? 0 : -1;
+}
+
+/* PoP: _find_ffprobe_binary @ tools/transcription_tools.py:_find_ffprobe_binary */
+/* Python: _find_binary("ffprobe"). Returns the ffprobe path or NULL. */
+const char *trt_find_ffprobe_binary(void) {
+    return transcribe_find_binary("ffprobe");
+}
+
+/* PoP: _probe_audio_duration @ tools/transcription_tools.py:_probe_audio_duration */
+/* Python: ffprobe -v error -show_entries format=duration -of
+ * default=noprint_wrappers=1:nokey=1 <file> -> float seconds, or NULL. */
+double trt_probe_audio_duration(const char *file_path, int *ok) {
+    if (ok) *ok = 0;
+    if (!file_path) return -1.0;
+    const char *ffprobe = transcribe_find_binary("ffprobe");
+    if (!ffprobe) return -1.0;
+    char cmd[4096];
+    snprintf(cmd, sizeof(cmd),
+             "%s -v error -show_entries format=duration "
+             "-of default=noprint_wrappers=1:nokey=1 '%s' 2>/dev/null",
+             ffprobe, file_path);
+    FILE *f = popen(cmd, "r");
+    if (!f) return -1.0;
+    char buf[256];
+    if (fgets(buf, sizeof(buf), f) == NULL) {
+        pclose(f);
+        return -1.0;
+    }
+    pclose(f);
+    char *end = NULL;
+    double d = strtod(buf, &end);
+    if (end == buf) return -1.0;
+    if (ok) *ok = 1;
+    return d;
+}
+
+/* PoP: _safe_find_spec @ tools/transcription_tools.py:_safe_find_spec */
+/* Python importlib.util.find_spec(module) — the C port has no Python runtime,
+ * so the faithful analog is "is this native STT capability available". Cloud
+ * providers are always available (built-in HTTP clients); local ones require
+ * the corresponding binary. */
+bool trt_safe_find_spec(const char *module_name) {
+    if (!module_name) return false;
+    if (strcmp(module_name, "openai") == 0 ||
+        strcmp(module_name, "mistralai") == 0 ||
+        strcmp(module_name, "elevenlabs") == 0)
+        return true;   /* native HTTP client is built in */
+    if (strcmp(module_name, "faster_whisper") == 0)
+        return transcribe_find_whisper_binary() != NULL;
+    if (strcmp(module_name, "pilk") == 0)
+        return transcribe_find_binary("pilk") != NULL;
+    return false;
+}
+
+/* ── idle-unload watcher (Python threading trio) ─────────────────────── */
+
+static pthread_mutex_t trt_idle_mgmt_lock = PTHREAD_MUTEX_INITIALIZER;
+static pthread_t trt_idle_thread;
+static int trt_idle_thread_alive = 0;
+static volatile double trt_last_transcription_time = 0.0;
+static volatile int trt_idle_stop = 0;
+
+/* PoP: _touch_transcription_time @ tools/transcription_tools.py:_touch_transcription_time */
+void trt_touch_transcription_time(void) {
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    trt_last_transcription_time = (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
+}
+
+/* Python: _local_model cache — the C port has no whisper model object, so
+ * unloading is a no-op that releases the cached binary-handle flag. */
+static volatile int trt_local_model_loaded = 0;
+
+/* PoP: _unload_local_model @ tools/transcription_tools.py:_unload_local_model */
+void trt_unload_local_model(void) {
+    pthread_mutex_lock(&trt_idle_mgmt_lock);
+    trt_local_model_loaded = 0;
+    pthread_mutex_unlock(&trt_idle_mgmt_lock);
+}
+
+static void *trt_idle_watch_fn(void *arg) {
+    (void)arg;
+    while (!trt_idle_stop) {
+        struct timespec ts;
+        clock_gettime(CLOCK_MONOTONIC, &ts);
+        double now = (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
+        if (trt_local_model_loaded && now - trt_last_transcription_time >= 30.0) {
+            trt_unload_local_model();
+            break;
+        }
+        usleep(500000);   /* 0.5s check interval */
+    }
+    return NULL;
+}
+
+/* PoP: _start_idle_unload_watcher @ tools/transcription_tools.py:_start_idle_unload_watcher */
+void trt_start_idle_unload_watcher(int timeout_seconds) {
+    (void)timeout_seconds;
+    pthread_mutex_lock(&trt_idle_mgmt_lock);
+    if (trt_idle_thread_alive) {
+        pthread_mutex_unlock(&trt_idle_mgmt_lock);
+        return;
+    }
+    trt_idle_stop = 0;
+    if (pthread_create(&trt_idle_thread, NULL, trt_idle_watch_fn, NULL) == 0)
+        trt_idle_thread_alive = 1;
+    pthread_mutex_unlock(&trt_idle_mgmt_lock);
+}
+
+/* ── cloud silence trim ──────────────────────────────────────────────── */
+
+#define TRT_CLOUD_TRIM_MIN_SAVING 0.10
+#define TRT_CLOUD_TRIM_MIN_RESULT_SECONDS 0.3
+#define TRT_CLOUD_TRIM_MIN_INPUT_SECONDS 12.0
+
+/* PoP: _trim_silence_for_cloud_stt @ tools/transcription_tools.py:_trim_silence_for_cloud_stt */
+char *trt_trim_silence_for_cloud_stt(const char *file_path,
+                                     const char *stt_config_json) {
+    if (!file_path) return NULL;
+    bool enabled = true;
+    int threshold_db = -40, keep_ms = 300;
+    ts_cloud_trim_settings(stt_config_json, &enabled, &threshold_db, &keep_ms);
+    if (!enabled) return NULL;
+    const char *ffmpeg = transcribe_find_ffmpeg_binary();
+    if (!ffmpeg) return NULL;
+
+    int ok = 0;
+    double original_duration = trt_probe_audio_duration(file_path, &ok);
+    if (!ok || original_duration <= 0 || original_duration < TRT_CLOUD_TRIM_MIN_INPUT_SECONDS)
+        return NULL;
+
+    double keep_seconds = keep_ms / 1000.0;
+    char filter[512];
+    snprintf(filter, sizeof(filter),
+             "silenceremove=start_periods=1:start_threshold=%ddB:start_silence=%.3f:"
+             "stop_periods=-1:stop_threshold=%ddB:stop_silence=%.3f",
+             threshold_db, keep_seconds, threshold_db, keep_seconds);
+
+    /* Build a temp work dir + trimmed path. */
+    char tmpl[] = "/tmp/hermes-stt-trim-XXXXXX";
+    char *work_dir = mkdtemp(tmpl);
+    if (!work_dir) return NULL;
+    const char *slash = strrchr(file_path, '/');
+    const char *stem = slash ? slash + 1 : file_path;
+    char stem_buf[256];
+    char *dot = strrchr(stem, '.');
+    if (dot) snprintf(stem_buf, sizeof(stem_buf), "%.*s", (int)(dot - stem), stem);
+    else { strncpy(stem_buf, stem, sizeof(stem_buf)-1); stem_buf[sizeof(stem_buf)-1]='\0'; }
+    if (!*stem_buf) strncpy(stem_buf, "audio", sizeof(stem_buf)-1);
+    char trimmed[1024];
+    snprintf(trimmed, sizeof(trimmed), "%s/%s-trimmed.m4a", work_dir, stem_buf);
+
+    int keep_result = 0;
+    char *result = NULL;
+    if (trt_run_ffmpeg_stt_encode(ffmpeg, file_path, trimmed, filter) == 0) {
+        int tok = 0;
+        double trimmed_duration = trt_probe_audio_duration(trimmed, &tok);
+        double min_result = TRT_CLOUD_TRIM_MIN_RESULT_SECONDS > 2 * keep_seconds
+                                ? TRT_CLOUD_TRIM_MIN_RESULT_SECONDS : 2 * keep_seconds;
+        if (tok && trimmed_duration >= min_result &&
+            trimmed_duration <= original_duration * (1 - TRT_CLOUD_TRIM_MIN_SAVING)) {
+            result = strdup(trimmed);
+            keep_result = 1;
+        }
+    }
+    if (!keep_result) {
+        /* Python: shutil.rmtree(work_dir, ignore_errors=True) on failure. */
+        char rm[1100];
+        snprintf(rm, sizeof(rm), "rm -rf '%s' 2>/dev/null", work_dir);
+        system(rm);
+    }
+    return result;
+}
+
+/* ── provider dispatch (_dispatch_stt_provider) ──────────────────────── */
+
+/* Python BUILTIN_STT_PROVIDERS (tools/transcription_tools.py:379). */
+static bool trt_is_builtin_provider(const char *p) {
+    if (!p) return false;
+    return strcmp(p, "local") == 0 || strcmp(p, "local_command") == 0 ||
+           strcmp(p, "groq") == 0 || strcmp(p, "openai") == 0 ||
+           strcmp(p, "mistral") == 0 || strcmp(p, "xai") == 0 ||
+           strcmp(p, "elevenlabs") == 0 || strcmp(p, "deepinfra") == 0;
+}
+
+/* PoP: _dispatch_stt_provider @ tools/transcription_tools.py:_dispatch_stt_provider */
+/* Route *file_path* to the handler for *provider* (built-in). Returns JSON
+ * result string (caller frees). Command/plugin providers fall back to the
+ * generic no-provider error (C port has no plugin registry for STT). */
+char *trt_dispatch_stt_provider(const char *file_path, const char *provider,
+                                const char *stt_config_json, const char *model) {
+    if (!file_path) {
+        return strdup("{\"success\":false,\"transcript\":\"\",\"error\":\"no file\"}");
+    }
+    const char *prov = provider ? provider : "";
+
+    if (strcmp(prov, "groq") == 0) {
+        const char *m = model ? model : "whisper-large-v3-turbo";
+        return transcribe_transcribe_groq(file_path, m);
+    }
+    if (strcmp(prov, "openai") == 0) {
+        const char *m = model ? model : "whisper-1";
+        return transcribe_openai_compatible(
+            NULL, NULL, file_path, m, NULL);
+    }
+    if (strcmp(prov, "mistral") == 0) {
+        const char *m = model ? model : "voxtral-mini-latest";
+        return transcribe_transcribe_mistral(file_path, m);
+    }
+    if (strcmp(prov, "xai") == 0) {
+        const char *m = model ? model : "grok-stt";
+        return transcribe_transcribe_xai(file_path, m);
+    }
+    if (strcmp(prov, "elevenlabs") == 0) {
+        const char *m = model ? model : "scribe_v2";
+        return transcribe_transcribe_elevenlabs(file_path, m);
+    }
+    if (strcmp(prov, "deepinfra") == 0) {
+        const char *m = model ? model : "";
+        return transcribe_transcribe_deepinfra(file_path, m);
+    }
+
+    /* local / local_command: C has no faster-whisper; use the local-fallback
+     * path which probes for a whisper binary. */
+    if (strcmp(prov, "local") == 0 || strcmp(prov, "local_command") == 0) {
+        return trt_transcribe_audio_local_fallback(file_path, model);
+    }
+
+    /* Python: if provider is configured-but-unregistered, error; else the
+     * generic no-provider message. */
+    if (trt_is_builtin_provider(prov) == false) {
+        return trt_unregistered_stt_provider_error(prov);
+    }
+    return strdup(
+        "{\"success\":false,\"transcript\":\"\","
+        "\"error\":\"No STT provider available.\"}");
 }
