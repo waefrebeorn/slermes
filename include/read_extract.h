@@ -18,4 +18,32 @@ const char *read_extract_extension(const char *path);
 /* Port of tools/read_extract.py:is_extractable_document. */
 bool read_extract_is_extractable_document(const char *path);
 
+/* PoP: _group_ranges @ tools/read_extract.py:_group_ranges */
+/* Group sorted 1-based page numbers into [start, end] runs. Fills *out_runs
+ * (pairs) up to *out_count (in/out capacity); returns actual run count. */
+int read_extract_group_ranges(const int *pages, int n_pages,
+                              int *out_runs, int *out_count);
+
+/* PoP: _page_ranges @ tools/read_extract.py:_page_ranges */
+/* Compact 1-based range list, e.g. "2-29, 33-35, 42". Caller frees. */
+char *read_extract_page_ranges(const int *pages, int n_pages);
+
+/* PoP: _gap_map @ tools/read_extract.py:_gap_map */
+/* Per-gap breakdown: each empty range labeled with the last text seen before
+ * it. Returns malloc'd multi-line string. Caller frees. */
+char *read_extract_gap_map(const int *counts, int n_counts,
+                           const char *const *texts, const int *empty, int n_empty);
+
+/* PoP: _human_size @ tools/read_extract.py:_human_size */
+/* e.g. round(12345/1024) KB else N B. Caller frees. */
+char *read_extract_human_size(long long n_bytes);
+
+/* PoP: _base64_bytes @ tools/read_extract.py:_base64_bytes */
+/* Approximate decoded size of a base64 payload (whitespace ignored). */
+long long read_extract_base64_bytes(const char *payload);
+
+/* PoP: _clean_stream_text @ tools/read_extract.py:_clean_stream_text */
+/* Strip ANSI escapes and collapse \r progress-bar rewrites. Caller frees. */
+char *read_extract_clean_stream_text(const char *text);
+
 #endif /* SLERMES_READ_EXTRACT_H */

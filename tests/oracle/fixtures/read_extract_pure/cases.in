@@ -1,0 +1,33 @@
+[
+  {"op": "group_ranges", "arg": {"pages": [2, 3, 4, 33, 34, 35, 42]}},
+  {"op": "group_ranges", "arg": {"pages": []}},
+  {"op": "group_ranges", "arg": {"pages": [1]}},
+  {"op": "group_ranges", "arg": {"pages": [1, 2, 5, 6, 7, 10]}},
+
+  {"op": "page_ranges", "arg": {"pages": [2, 3, 4, 33, 34, 35, 42]}},
+  {"op": "page_ranges", "arg": {"pages": []}},
+  {"op": "page_ranges", "arg": {"pages": [1]}},
+  {"op": "page_ranges", "arg": {"pages": [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27]}},
+
+  {"op": "gap_map", "arg": {"counts": [500, 0, 0, 300, 0], "texts": ["Page One Content", "bad", "bad", "Page Four", "bad"], "empty": [2, 3, 5]}},
+  {"op": "gap_map", "arg": {"counts": [0, 0], "texts": ["", ""], "empty": [1, 2]}},
+  {"op": "gap_map", "arg": {"counts": [100, 200, 300], "texts": ["a", "b", "c"], "empty": []}},
+
+  {"op": "human_size", "arg": 500},
+  {"op": "human_size", "arg": 1024},
+  {"op": "human_size", "arg": 12345},
+  {"op": "human_size", "arg": 0},
+  {"op": "human_size", "arg": 1048576},
+
+  {"op": "base64_bytes", "arg": "aGVsbG8="},
+  {"op": "base64_bytes", "arg": ""},
+  {"op": "base64_bytes", "arg": "TWFuIGlzIGRpc3Rpbmd1aXNoZWQ="},
+  {"op": "base64_bytes", "arg": "aGVsbG8gd29ybGQh"}, 
+  {"op": "base64_bytes", "arg": "YWJj\nZGVm\n"}, 
+
+  {"op": "clean_stream", "arg": "a\rb\nc\r\nd"},
+  {"op": "clean_stream", "arg": "plain text"},
+  {"op": "clean_stream", "arg": "\u001b[31mred\u001b[0m text"},
+  {"op": "clean_stream", "arg": "line1\r\nline2\r\nline3"},
+  {"op": "clean_stream", "arg": "progress 10%\rprogress 20%\rprogress 30%\ndone"}
+]

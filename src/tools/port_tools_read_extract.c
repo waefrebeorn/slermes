@@ -23,6 +23,7 @@
 #include "hermes_logger.h"
 #include "wubuoxml/reader.h"
 #include "wubuoxml/docx_text.h"
+#include "ansi_strip.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -760,5 +761,190 @@ static char *read_extract_notebook(const char *path, char *errbuf, size_t errsz)
     while (len > 0 && (out[len-1] == '\n' || out[len-1] == '\r')) len--;
     if (len + 1 >= cap) { char *n = realloc(out, len + 2); if (n) out = n; }
     out[len++] = '\n'; out[len] = '\0';
+    return out;
+}
+/* ── Pure range/format helpers (tools/read_extract.py) ──────────────── */
+
+/* PoP: _group_ranges @ tools/read_extract.py:_group_ranges */
+/* Python: group sorted 1-based pages into [start, end] runs. */
+int read_extract_group_ranges(const int *pages, int n_pages,
+                              int *out_runs, int *out_count) {
+    int cap = out_count ? *out_count : 0;
+    int n = 0;
+    if (!pages || !out_runs || cap <= 0) return 0;
+    for (int i = 0; i < n_pages; i++) {
+        int p = pages[i];
+        if (n > 0 && p == out_runs[2 * (n - 1) + 1] + 1) {
+            out_runs[2 * (n - 1) + 1] = p;
+        } else {
+            if (n >= cap) break;
+            out_runs[2 * n] = p;
+            out_runs[2 * n + 1] = p;
+            n++;
+        }
+    }
+    if (out_count) *out_count = n;
+    return n;
+}
+
+/* PoP: _page_ranges @ tools/read_extract.py:_page_ranges */
+/* Python: "2-29, 33-35, 42"; cap at 12 parts then "…". Caller frees. */
+char *read_extract_page_ranges(const int *pages, int n_pages) {
+    if (!pages || n_pages <= 0) return strdup("");
+    int runs[2 * 1024];
+    int cap = 1024;
+    int n = read_extract_group_ranges(pages, n_pages, runs, &cap);
+    char *buf = malloc(8192);
+    if (!buf) return strdup("");
+    size_t off = 0;
+    int shown = n > 12 ? 12 : n;
+    for (int i = 0; i < shown; i++) {
+        if (i > 0) off += (size_t)snprintf(buf + off, 8192 - off, ", ");
+        int a = runs[2 * i], b = runs[2 * i + 1];
+        if (a != b)
+            off += (size_t)snprintf(buf + off, 8192 - off, "%d-%d", a, b);
+        else
+            off += (size_t)snprintf(buf + off, 8192 - off, "%d", a);
+    }
+    if (n > 12) {
+        off += (size_t)snprintf(buf + off, 8192 - off, ", …");
+    }
+    return buf;
+}
+
+/* Python _GAP_CONTEXT_CHARS = 60; PDF_GAP_MAP_MAX_ENTRIES = 20;
+ * PDF_EMPTY_PAGE_CHARS = 20. */
+#define RE_GAP_CONTEXT_CHARS 60
+#define RE_GAP_MAP_MAX_ENTRIES 20
+#define RE_EMPTY_PAGE_CHARS 20
+
+/* PoP: _gap_map @ tools/read_extract.py:_gap_map */
+char *read_extract_gap_map(const int *counts, int n_counts,
+                           const char *const *texts, const int *empty, int n_empty) {
+    char *buf = malloc(65536);
+    if (!buf) return strdup("");
+    buf[0] = '\0';
+    size_t off = 0;
+    int ranges[2 * RE_GAP_MAP_MAX_ENTRIES * 2];
+    int rcap = RE_GAP_MAP_MAX_ENTRIES * 2;
+    int nr = read_extract_group_ranges(empty, n_empty, ranges, &rcap);
+    for (int i = 0; i < nr && i < RE_GAP_MAP_MAX_ENTRIES; i++) {
+        int a = ranges[2 * i], b = ranges[2 * i + 1];
+        const char *label = "";
+        for (int prev = a - 2; prev >= 0; prev--) {
+            if (counts[prev] >= RE_EMPTY_PAGE_CHARS) {
+                char snip[RE_GAP_CONTEXT_CHARS + 1];
+                const char *t = (prev < n_counts && texts) ? texts[prev] : "";
+                if (!t) t = "";
+                size_t w = 0;
+                int prev_space = 0;
+                for (const char *p = t; *p && w < RE_GAP_CONTEXT_CHARS; p++) {
+                    if (*p == ' ' || *p == '\t' || *p == '\n') {
+                        prev_space = 1;
+                        while ((*p == ' ' || *p == '\t' || *p == '\n') && *p) p++;
+                        if (*p == '\0') break;
+                        p--;
+                    } else {
+                        if (prev_space && w > 0 && w < RE_GAP_CONTEXT_CHARS)
+                            snip[w++] = ' ';
+                        prev_space = 0;
+                        if (w < RE_GAP_CONTEXT_CHARS) snip[w++] = *p;
+                    }
+                }
+                snip[w] = '\0';
+                static char lblbuf[256];
+                snprintf(lblbuf, sizeof(lblbuf), " — after \"%s\" (p%d)", snip, prev + 1);
+                label = lblbuf;
+                break;
+            }
+        }
+        char spbuf[32];
+        const char *span;
+        if (a == b) snprintf(spbuf, sizeof(spbuf), "page %d", a);
+        else snprintf(spbuf, sizeof(spbuf), "pages %d-%d", a, b);
+        span = spbuf;
+        int n = b - a + 1;
+        /* Python: lines joined with "\n" — no trailing newline. */
+        off += (size_t)snprintf(buf + off, 65536 - off,
+                "  %s (%d page%s)%s\n", span, n, n != 1 ? "s" : "", label);
+    }
+    /* Python "…" line for overflow, joined with "\n". */
+    if (nr > RE_GAP_MAP_MAX_ENTRIES) {
+        int rest_pages = 0;
+        for (int i = RE_GAP_MAP_MAX_ENTRIES; i < nr; i++)
+            rest_pages += ranges[2 * i + 1] - ranges[2 * i] + 1;
+        off += (size_t)snprintf(buf + off, 65536 - off,
+                "  … %d more gaps (%d pages)\n", nr - RE_GAP_MAP_MAX_ENTRIES, rest_pages);
+    }
+    /* Strip the single trailing "\n" (join semantics). */
+    if (off > 0 && buf[off - 1] == '\n') buf[off - 1] = '\0';
+    return buf;
+}
+
+/* PoP: _human_size @ tools/read_extract.py:_human_size */
+char *read_extract_human_size(long long n_bytes) {
+    char *out = NULL;
+    if (n_bytes >= 1024) {
+        long long kb = (long long)((n_bytes / 1024.0) + 0.5);
+        asprintf(&out, "%lld KB", kb);
+    } else {
+        asprintf(&out, "%lld B", n_bytes);
+    }
+    return out;
+}
+
+/* PoP: _base64_bytes @ tools/read_extract.py:_base64_bytes */
+long long read_extract_base64_bytes(const char *payload) {
+    if (!payload) return 0;
+    size_t len = 0;
+    for (const char *p = payload; *p; p++) {
+        char c = *p;
+        if ((c >= '0' && c <= '9') || (c >= '+' && c <= '/') ||
+            c == '=' || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
+            len++;
+    }
+    size_t trailing_eq = 0;
+    const char *p = payload + strlen(payload);
+    while (p > payload && p[-1] == '=') { trailing_eq++; p--; }
+    size_t padding = trailing_eq < 2 ? trailing_eq : 2;
+    long long size = (long long)((len * 3) / 4);
+    size -= (long long)padding;
+    return size > 0 ? size : 0;
+}
+
+/* PoP: _clean_stream_text @ tools/read_extract.py:_clean_stream_text */
+char *read_extract_clean_stream_text(const char *text) {
+    if (!text) return strdup("");
+    char *stripped = strip_ansi(text);
+    if (!stripped) return strdup("");
+    char *buf = malloc(strlen(stripped) * 2 + 1);
+    if (!buf) { free(stripped); return strdup(""); }
+    size_t w = 0;
+    for (const char *p = stripped; *p; p++) {
+        if (*p == '\r' && p[1] == '\n') {
+            buf[w++] = '\n';
+            p++;
+        } else {
+            buf[w++] = *p;
+        }
+    }
+    buf[w] = '\0';
+    char *out = malloc(strlen(buf) + 1);
+    if (!out) { free(buf); free(stripped); return strdup(""); }
+    size_t ow = 0;
+    char *save = NULL;
+    for (char *line = strtok_r(buf, "\n", &save); line; line = strtok_r(NULL, "\n", &save)) {
+        char *last = line;
+        char *scan = line;
+        char *r;
+        while ((r = strchr(scan, '\r')) != NULL) { last = r + 1; scan = r + 1; }
+        size_t llen = strlen(last);
+        memcpy(out + ow, last, llen);
+        ow += llen;
+        out[ow++] = '\n';
+    }
+    if (ow > 0) ow--;
+    out[ow] = '\0';
+    free(buf); free(stripped);
     return out;
 }

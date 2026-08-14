@@ -1424,6 +1424,11 @@
       "harness": "tests/t_port_linux_desktop_entry.c",
       "oracle": "tests/sta_oracle_linux_desktop_entry.py",
       "fixtures": "tests/oracle/fixtures/linux_desktop_entry"
+    },
+    "read_extract_pure": {
+      "harness": "tests/t_port_read_extract_pure.c",
+      "oracle": "tests/sta_oracle_read_extract_pure.py",
+      "fixtures": "tests/oracle/fixtures/read_extract_pure"
     }
   },
   "normalize": {
