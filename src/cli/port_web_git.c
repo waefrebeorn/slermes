@@ -1235,3 +1235,67 @@ json_t *web_git_review_create_pr(const char *cwd) {
     free(url);
     return r;
 }
+
+/* PoP: _pr_query @ hermes_cli/web_git.py:_pr_query */
+/* Returns malloc'd GraphQL query string. Caller frees. */
+char *web_git_pr_query(const char *owner, const char *name, const char *branches_json, const char *numbers_json) {
+    if (!owner || !name) return strdup("");
+    char *err = NULL;
+    json_t *branches = json_parse(branches_json ? branches_json : "[]", &err);
+    if (err || !branches || branches->type != JSON_ARRAY) { if (err) free(err); if (branches) json_free(branches); branches = json_array(); }
+    json_t *numbers = json_parse(numbers_json ? numbers_json : "[]", &err);
+    if (err || !numbers || numbers->type != JSON_ARRAY) { if (err) free(err); if (numbers) json_free(numbers); numbers = json_array(); }
+    const char *fields = "number title url state isDraft headRefName author { login }";
+    char *result = NULL;
+    char *line = NULL;
+    asprintf(&line, "query { repository(owner: %s, name: %s) {\n", owner, name);
+    result = line;
+    int idx = 0;
+    for (size_t i = 0; i < branches->c.count; i++) {
+        if (branches->c.items[i] && branches->c.items[i]->type == JSON_STRING) {
+            asprintf(&line, "%s  b%d: pullRequests(headRefName: %s, first: 5, orderBy: {field: CREATED_AT, direction: DESC}) { nodes { %s } }\n",
+                     result ? result : "", idx, branches->c.items[i]->str_val, fields);
+            free(result); result = line;
+            idx++;
+        }
+    }
+    for (size_t i = 0; i < numbers->c.count; i++) {
+        if (numbers->c.items[i] && numbers->c.items[i]->type == JSON_NUMBER) {
+            asprintf(&line, "%s  n%d: pullRequest(number: %ld) { %s }\n",
+                     result ? result : "", idx, (long)numbers->c.items[i]->num_val, fields);
+            free(result); result = line;
+            idx++;
+        }
+    }
+    asprintf(&line, "%s} }", result ? result : "");
+    free(result); result = line;
+    json_free(branches);
+    json_free(numbers);
+    return result ? result : strdup("");
+}
+
+/* PoP: _pr_payload @ hermes_cli/web_git.py:_pr_payload */
+/* Returns malloc'd JSON payload dict. pr_json = {"headRefName":...,"isDraft":...,"number":...,"state":...,"title":...,"url":...}. Caller frees. */
+char *web_git_pr_payload(const char *pr_json) {
+    if (!pr_json) return strdup("{}");
+    char *err = NULL;
+    json_t *pr = json_parse(pr_json, &err);
+    if (err || !pr || pr->type != JSON_OBJECT) { if (err) free(err); if (pr) json_free(pr); return strdup("{}"); }
+    json_t *result = json_object();
+    json_t *head = json_obj_get(pr, "headRefName");
+    json_set(result, "branch", json_string(head && head->type == JSON_STRING ? head->str_val : ""));
+    json_t *draft = json_obj_get(pr, "isDraft");
+    json_set(result, "draft", json_bool(draft && (draft->type == JSON_BOOL ? draft->num_val != 0 : 0)));
+    json_t *number = json_obj_get(pr, "number");
+    json_set(result, "number", json_number(number && number->type == JSON_NUMBER ? number->num_val : 0));
+    json_t *state = json_obj_get(pr, "state");
+    json_set(result, "state", json_string(state && state->type == JSON_STRING ? state->str_val : ""));
+    json_t *title = json_obj_get(pr, "title");
+    json_set(result, "title", json_string(title && title->type == JSON_STRING ? title->str_val : ""));
+    json_t *url = json_obj_get(pr, "url");
+    json_set(result, "url", json_string(url && url->type == JSON_STRING ? url->str_val : ""));
+    json_free(pr);
+    char *out = json_serialize(result);
+    json_free(result);
+    return out ? out : strdup("{}");
+}
