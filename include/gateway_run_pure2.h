@@ -240,6 +240,11 @@ char *gw_multiplex_profile_homes(void);
 
 /* PoP: _agent_cache_bounds @ gateway/run.py:_agent_cache_bounds */
 agent_cache_bounds_t grun_u_agent_cache_bounds(void);
+/* PoP: gateway_run_pure2_hygiene_compaction_recovered @ gateway/run.py:hygiene_compaction_recovered */
+bool gateway_run_pure2_hygiene_compaction_recovered(bool aborted, bool rotated,
+                                                    bool in_place,
+                                                    long msg_count, long new_count,
+                                                    long approx_tokens, long new_tokens);
 /* PoP: _agent_cache_cap @ gateway/run.py:_agent_cache_cap */
 int grun_u_agent_cache_cap(void);
 /* PoP: _agent_cache_idle_ttl @ gateway/run.py:_agent_cache_idle_ttl */

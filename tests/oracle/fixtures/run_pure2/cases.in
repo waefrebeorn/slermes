@@ -1,0 +1,8 @@
+[{"op":"compression_made_progress","orig_len":100,"new_len":50,"orig_tokens":1000,"new_tokens":600}
+,{"op":"compression_made_progress","orig_len":100,"new_len":99,"orig_tokens":1000,"new_tokens":950}
+,{"op":"compression_made_progress","orig_len":50,"new_len":50,"orig_tokens":1000,"new_tokens":950}
+,{"op":"compression_made_progress","orig_len":100,"new_len":50,"orig_tokens":0,"new_tokens":0}
+,{"op":"hygiene_compaction_recovered","aborted":true,"rotated":true,"in_place":true,"msg_count":1,"new_count":2,"approx_tokens":3,"new_tokens":4}
+,{"op":"hygiene_compaction_recovered","aborted":false,"rotated":false,"in_place":false,"msg_count":1,"new_count":2,"approx_tokens":3,"new_tokens":4}
+,{"op":"hygiene_compaction_recovered","aborted":false,"rotated":true,"in_place":true,"msg_count":100,"new_count":99,"approx_tokens":1000,"new_tokens":950}
+]

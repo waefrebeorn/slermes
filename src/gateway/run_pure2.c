@@ -917,3 +917,16 @@ char *gw_multiplex_profile_homes(void) {
      * profile_profiles_to_serve(True) which returns the packed form. */
     return profile_profiles_to_serve(true);
 }
+
+/* PoP: gateway_run_pure2_hygiene_compaction_recovered @ gateway/run.py:hygiene_compaction_recovered */
+/* True when a hygiene run actually recovered the session. */
+
+bool gateway_run_pure2_hygiene_compaction_recovered(bool aborted, bool rotated,
+                                                    bool in_place,
+                                                    long msg_count, long new_count,
+                                                    long approx_tokens, long new_tokens) {
+    if (aborted) return false;
+    if (!(rotated || in_place)) return false;
+    return gw_compression_made_progress(
+        (int)msg_count, (int)new_count, (int)approx_tokens, (int)new_tokens);
+}
