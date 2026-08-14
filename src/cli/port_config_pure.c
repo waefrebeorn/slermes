@@ -273,3 +273,16 @@ const char *provider_group_for_slug(const char *slug)
             return SLUG_TO_GROUP[k][1];
     return "";
 }
+
+/* PoP: _is_ssh_remote_tilde_cwd @ hermes_cli/config.py:_is_ssh_remote_tilde_cwd */
+int config_is_ssh_remote_tilde_cwd(const char *backend, const char *cwd) {
+    if (!backend || !cwd) return 0;
+    /* Check if backend is ssh */
+    const char *b = backend;
+    while (*b == ' ' || *b == '\t') b++;
+    if (strncasecmp(b, "ssh", 3) != 0) return 0;
+    /* Check if cwd is ~ or ~/... */
+    if (strcmp(cwd, "~") == 0) return 1;
+    if (cwd[0] == '~' && cwd[1] == '/') return 1;
+    return 0;
+}

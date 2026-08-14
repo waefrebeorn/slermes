@@ -462,3 +462,27 @@ int msw_resolve_display_context_length_async(const char *arg) {
     /* Reuse the existing sync resolver */
     return msw_resolve_display_context_length(arg);
 }
+
+/* PoP: _models_config_is_allowlist @ hermes_cli/model_switch.py:_models_config_is_allowlist */
+/* Returns 1 if the config value is an intentional allowlist. value_json = JSON value. */
+int model_switch_config_is_allowlist(const char *value_json) {
+    if (!value_json) return 0;
+    char *err = NULL;
+    json_t *value = json_parse(value_json, &err);
+    if (err || !value) { if (err) free(err); return 0; }
+    int result = 0;
+    if (value->type == JSON_STRING) {
+        /* String: allowlist if non-empty */
+        const char *s = value->str_val;
+        while (*s == ' ' || *s == '\t') s++;
+        result = *s != '\0';
+    } else if (value->type == JSON_OBJECT) {
+        /* Dict: metadata, NOT an allowlist */
+        result = 0;
+    } else if (value->type == JSON_ARRAY) {
+        /* List: allowlist */
+        result = 1;
+    }
+    json_free(value);
+    return result;
+}
