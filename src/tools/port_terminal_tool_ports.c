@@ -12,6 +12,13 @@
 
 #include "terminal_env_registry.h"
 #include "hermes_logger.h"
+#include "browser_redact.h"  /* browser_redact_sensitive_text */
+
+/* PoP: _redact_terminal_error_text @ tools/terminal_tool.py:_redact_terminal_error_text */
+/* Force-redact text before serializing a terminal error envelope. */
+char *terminal_redact_error_text(const char *value) {
+    return browser_redact_sensitive_text(value ? value : "");
+}
 
 static char *lowerdup(const char *s) {
     if (!s) return NULL;

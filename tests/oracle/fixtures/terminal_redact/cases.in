@@ -1,0 +1,8 @@
+[
+  {"arg": "normal error message"},
+  {"arg": "sk_live_1234567890abcdef"},
+  {"arg": null},
+  {"arg": ""},
+  {"arg": "https://example.com?api_key=secret123&other=ok"},
+  {"arg": "x-api-key: my-secret-key-12345"}
+]

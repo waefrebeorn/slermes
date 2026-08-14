@@ -10,6 +10,11 @@
 #include <ctype.h>
 #include <math.h>
 
+/* extern helpers from config.py ports */
+extern const char *detect_install_method(const char *project_root);
+extern void config_py_recommended_update_command_for_method(const char *method, char *out, size_t out_size);
+extern char *cfg_get_managed_update_command(const char *managed_system);
+
 /* Python: _OFFICIAL_REPO_CANONICAL = "github.com/nousresearch/hermes-agent". */
 #define BANNER_OFFICIAL_REPO_CANONICAL "github.com/nousresearch/hermes-agent"
 
@@ -129,4 +134,32 @@ char *banner_display_toolset_name(const char *toolset_name) {
         return out ? out : strdup(toolset_name);
     }
     return strdup(toolset_name);
+}
+
+/* PoP: _format_update_notice @ hermes_cli/banner.py:_format_update_notice */
+/* Render the update warning line for a non-zero behind result. Caller frees. */
+char *banner_format_update_notice(int behind) {
+    if (behind > 0) {
+        const char *commits_word = (behind == 1) ? "commit" : "commits";
+        /* Python: recommended_update_command() -> detect_install_method() +
+         * recommended_update_command_for_method(). */
+        const char *method = detect_install_method(NULL);
+        char cmd_buf[256];
+        config_py_recommended_update_command_for_method(method, cmd_buf, sizeof(cmd_buf));
+        char *out = NULL;
+        asprintf(&out,
+            "[bold yellow]⚠ %d %s behind[/][dim yellow] — run [bold]%s[/bold] to update[/]",
+            behind, commits_word, cmd_buf);
+        return out;
+    }
+    char *managed_cmd = cfg_get_managed_update_command(NULL);
+    char *line = strdup("[bold yellow]⚠ update available[/]");
+    if (managed_cmd && *managed_cmd) {
+        char *extra = NULL;
+        asprintf(&extra, "%s[dim yellow] — run [bold]%s[/bold][/]", line, managed_cmd);
+        free(line); free(managed_cmd);
+        return extra;
+    }
+    free(managed_cmd);
+    return line;
 }
