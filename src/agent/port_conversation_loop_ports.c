@@ -617,3 +617,18 @@ char *conversation_loop_join_truncated_parts(const char *parts_json) {
     json_free(parts);
     return joined;
 }
+
+/* PoP: _clone_message_for_send @ agent/conversation_loop.py:_clone_message_for_send */
+/* Returns deep copy of a message JSON for the per-call API copy. Caller frees. */
+char *conv_clone_message_for_send(const char *msg_json) {
+    if (!msg_json) return strdup("{}");
+    char *err = NULL;
+    json_t *msg = json_parse(msg_json, &err);
+    if (err || !msg) { if (err) free(err); if (msg) json_free(msg); return strdup("{}"); }
+    json_t *copy = json_copy(msg); /* deep copy */
+    json_free(msg);
+    if (!copy) return strdup("{}");
+    char *out = json_serialize(copy);
+    json_free(copy);
+    return out ? out : strdup("{}");
+}
