@@ -416,3 +416,49 @@ int asuggest_approvals_command(const char *sub, const as_suggest_args_t *args) {
     printf("hermes approvals %s — (see approvals suggest)\n", sub);
     return 1;
 }
+
+/* PoP: _render_text @ hermes_cli/approvals_test.py:_render_text */
+/* Returns malloc'd text representation of a verdict. verdict_json = {"command":...,"env_type":...,"verdict":...,"exit_code":...,"rule":...,"detail":...,"normalized_variants":[...]}. Caller frees. */
+char *approvals_test_render_text(const char *verdict_json) {
+    if (!verdict_json) return strdup("");
+    char *err = NULL;
+    json_t *v = json_parse(verdict_json, &err);
+    if (err || !v || v->type != JSON_OBJECT) { if (err) free(err); if (v) json_free(v); return strdup(""); }
+    json_t *command = json_obj_get(v, "command");
+    json_t *env_type = json_obj_get(v, "env_type");
+    json_t *verdict = json_obj_get(v, "verdict");
+    json_t *exit_code = json_obj_get(v, "exit_code");
+    json_t *rule = json_obj_get(v, "rule");
+    json_t *detail = json_obj_get(v, "detail");
+    json_t *variants = json_obj_get(v, "normalized_variants");
+    char *result = NULL;
+    char *line = NULL;
+    asprintf(&line, "command : %s\n", command && command->type == JSON_STRING ? command->str_val : "");
+    result = line;
+    asprintf(&line, "%senv-type: %s\n", result ? result : "", env_type && env_type->type == JSON_STRING ? env_type->str_val : "");
+    free(result); result = line;
+    asprintf(&line, "%sverdict : %s  (exit %ld)\n", result ? result : "",
+             verdict && verdict->type == JSON_STRING ? verdict->str_val : "",
+             exit_code && exit_code->type == JSON_NUMBER ? (long)exit_code->num_val : 0);
+    free(result); result = line;
+    if (rule && rule->type == JSON_STRING && rule->str_val[0]) {
+        asprintf(&line, "%srule    : %s\n", result ? result : "", rule->str_val);
+        free(result); result = line;
+    }
+    if (detail && detail->type == JSON_STRING && detail->str_val[0]) {
+        asprintf(&line, "%sdetail  : %s\n", result ? result : "", detail->str_val);
+        free(result); result = line;
+    }
+    asprintf(&line, "%snormalized trace (variants the detectors evaluated):\n", result ? result : "");
+    free(result); result = line;
+    if (variants && variants->type == JSON_ARRAY) {
+        for (size_t i = 0; i < variants->c.count; i++) {
+            if (variants->c.items[i] && variants->c.items[i]->type == JSON_STRING) {
+                asprintf(&line, "%s  - %s\n", result ? result : "", variants->c.items[i]->str_val);
+                free(result); result = line;
+            }
+        }
+    }
+    json_free(v);
+    return result ? result : strdup("");
+}
