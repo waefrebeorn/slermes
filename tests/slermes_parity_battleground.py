@@ -602,7 +602,7 @@ class CIndexer:
         # Pattern: [static] [const] <return_type> [*] <func_name> (
         # The func_name is the last identifier before '('
         match = re.search(
-            r'^(?:static\s+)?(?:const\s+)?(?:[\w]+\s+)+\*?\s*(\w+)\s*\(',
+            r'^(?:static\s+)?(?:const\s+)?(?:[\w]+\s+)*(?:\*\s*)*(\w+)\s*\(',
             after, re.MULTILINE
         )
         if match:
