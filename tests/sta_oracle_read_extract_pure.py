@@ -47,6 +47,24 @@ def main():
         elif op == "clean_stream":
             out = m._clean_stream_text(arg if isinstance(arg, str) else "")
             print(json.dumps({"op": "clean_stream", "out": out}))
+        elif op == "nb_output_text":
+            if isinstance(arg, str) and arg:
+                try:
+                    arg = json.loads(arg)
+                except Exception:
+                    arg = {}
+            out = m._notebook_output_text(arg if isinstance(arg, dict) else {})
+            print(json.dumps({"op": "nb_output_text", "out": out}))
+        elif op == "nb_outputs":
+            if isinstance(arg, str) and arg:
+                try:
+                    arg = json.loads(arg)
+                except Exception:
+                    arg = {}
+            arg = arg if isinstance(arg, dict) else {}
+            cell = arg.get("cell", {})
+            out = m._notebook_outputs(cell, arg.get("jq", ""), arg.get("filename", ""))
+            print(json.dumps({"op": "nb_outputs", "out": out}))
         else:
             print(json.dumps({"op": "unknown"}))
 

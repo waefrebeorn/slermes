@@ -46,4 +46,16 @@ long long read_extract_base64_bytes(const char *payload);
 /* Strip ANSI escapes and collapse \r progress-bar rewrites. Caller frees. */
 char *read_extract_clean_stream_text(const char *text);
 
+/* PoP: _notebook_output_text @ tools/read_extract.py:_notebook_output_text */
+/* Render one notebook output as compact text. Takes output as a JSON object
+ * string (or "" for none). Caller frees. */
+char *read_extract_notebook_output_text(const char *output_json);
+
+/* PoP: _notebook_outputs @ tools/read_extract.py:_notebook_outputs */
+/* Render a cell's outputs array as joined text, tail-truncated at
+ * _MAX_OUTPUT_CHARS. Takes the cell JSON object string. Caller frees. */
+char *read_extract_notebook_outputs(const char *cell_json,
+                                    const char *jq_pointer,
+                                    const char *filename);
+
 #endif /* SLERMES_READ_EXTRACT_H */

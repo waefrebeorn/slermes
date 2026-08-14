@@ -130,6 +130,21 @@ int main(int argc, char **argv) {
             char *r = read_extract_clean_stream_text(s);
             printf("{\"op\":\"clean_stream\",\"out\":%s}\n", jesc(r ? r : ""));
             free(r);
+        } else if (strcmp(op, "nb_output_text") == 0) {
+            char *r = read_extract_notebook_output_text(s);
+            printf("{\"op\":\"nb_output_text\",\"out\":%s}\n", jesc(r ? r : ""));
+            free(r);
+        } else if (strcmp(op, "nb_outputs") == 0) {
+            json_t *obj = s && *s ? json_parse(s, NULL) : NULL;
+            json_t *cell = obj ? json_obj_get(obj, "cell") : NULL;
+            const char *jq = obj ? json_get_str(obj, "jq", "") : "";
+            const char *fn = obj ? json_get_str(obj, "filename", "") : "";
+            char *cellstr = cell ? json_serialize(cell) : NULL;
+            char *r = read_extract_notebook_outputs(cellstr ? cellstr : "",
+                                                     jq, fn);
+            printf("{\"op\":\"nb_outputs\",\"out\":%s}\n", jesc(r ? r : ""));
+            free(r); free(cellstr);
+            if (obj) json_free(obj);
         } else {
             printf("{\"op\":\"unknown\"}\n");
         }

@@ -917,6 +917,7 @@ char *read_extract_clean_stream_text(const char *text) {
     if (!text) return strdup("");
     char *stripped = strip_ansi(text);
     if (!stripped) return strdup("");
+    /* Python: cleaned = strip_ansi(text).replace("\r\n", "\n") */
     char *buf = malloc(strlen(stripped) * 2 + 1);
     if (!buf) { free(stripped); return strdup(""); }
     size_t w = 0;
@@ -929,22 +930,258 @@ char *read_extract_clean_stream_text(const char *text) {
         }
     }
     buf[w] = '\0';
-    char *out = malloc(strlen(buf) + 1);
+
+    /* Python: for line in cleaned.split("\n"): frames = [f for f in
+     * line.split("\r") if f]; lines.append(frames[-1] if frames else "");
+     * return "\n".join(lines). CRITICAL: split("\n") keeps trailing empty
+     * tokens, so "\n".join preserves trailing newlines. */
+    size_t cap = strlen(buf) + 1;
+    char *out = malloc(cap);
     if (!out) { free(buf); free(stripped); return strdup(""); }
     size_t ow = 0;
-    char *save = NULL;
-    for (char *line = strtok_r(buf, "\n", &save); line; line = strtok_r(NULL, "\n", &save)) {
-        char *last = line;
-        char *scan = line;
-        char *r;
-        while ((r = strchr(scan, '\r')) != NULL) { last = r + 1; scan = r + 1; }
-        size_t llen = strlen(last);
-        memcpy(out + ow, last, llen);
-        ow += llen;
-        out[ow++] = '\n';
+    const char *line_start = buf;
+    while (1) {
+        const char *nl = strchr(line_start, '\n');
+        size_t linelen = nl ? (size_t)(nl - line_start) : strlen(line_start);
+        /* find last \r-separated non-empty frame within [line_start, +linelen) */
+        const char *last = NULL;
+        size_t last_len = 0;
+        const char *seg = line_start;
+        const char *seg_end = line_start + linelen;
+        while (seg <= seg_end) {
+            const char *r = memchr(seg, '\r', (size_t)(seg_end - seg));
+            const char *frame_end = r ? r : seg_end;
+            if (frame_end > seg) { last = seg; last_len = (size_t)(frame_end - seg); }
+            if (!r) break;
+            seg = r + 1;
+        }
+        if (last) {
+            if (ow + last_len + 1 > cap) { cap = (ow + last_len + 2) * 2; char *n = realloc(out, cap); if (!n) break; out = n; }
+            memcpy(out + ow, last, last_len);
+            ow += last_len;
+        }
+        /* join separator between lines only (Python "\n".join inserts between
+         * elements, never after the last). */
+        if (nl) {
+            if (ow + 1 > cap) { cap = (ow + 2) * 2; char *n = realloc(out, cap); if (!n) break; out = n; }
+            out[ow++] = '\n';
+        }
+        if (!nl) break;
+        line_start = nl + 1;
     }
-    if (ow > 0) ow--;
     out[ow] = '\0';
     free(buf); free(stripped);
     return out;
+}
+/* ── notebook output rendering (_notebook_output_text / _notebook_outputs) ─ */
+
+#define RE_MAX_OUTPUT_CHARS 20000
+
+/* PoP: _notebook_output_text @ tools/read_extract.py:_notebook_output_text */
+char *read_extract_notebook_output_text(const char *output_json) {
+    if (!output_json || !*output_json) return strdup("");
+    json_node_t *out = json_parse(output_json, NULL);
+    if (!out || out->type != JSON_OBJECT) {
+        if (out) json_free(out);
+        return strdup("");
+    }
+    const char *otype = json_get_str(out, "output_type", "");
+
+    char *result = NULL;
+
+    if (strcmp(otype, "stream") == 0) {
+        json_node_t *text = json_object_get(out, "text");
+        char *src = read_extract_source_text(text);
+        char *body = read_extract_clean_stream_text(src);
+        free(src);
+        const char *p = body;
+        while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+        result = strdup(*p ? body : "");
+        free(body);
+    } else if (strcmp(otype, "error") == 0 || strcmp(otype, "pyerr") == 0) {
+        json_node_t *tb = json_object_get(out, "traceback");
+        char *tb_text = strdup("");
+        if (tb && tb->type == JSON_ARRAY) {
+            size_t cap = 256, len = 0;
+            char *joined = malloc(cap);
+            if (joined) {
+                for (size_t i = 0; i < tb->c.count; i++) {
+                    json_node_t *it = json_get(tb, i);
+                    if (it && it->type == JSON_STRING && it->str_val) {
+                        size_t al = strlen(it->str_val);
+                        /* Python: "\n".join(str lines) — separator between
+                         * elements only; each element keeps its own trailing \n. */
+                        if (i > 0) {
+                            if (len + 1 > cap) { cap = len + 256; char *n = realloc(joined, cap); if (!n) break; joined = n; }
+                            joined[len++] = '\n';
+                        }
+                        if (len + al + 1 > cap) { cap = len + al + 256; char *n = realloc(joined, cap); if (!n) break; joined = n; }
+                        memcpy(joined + len, it->str_val, al); len += al;
+                    }
+                }
+                joined[len] = '\0';
+            } else joined = strdup("");
+            tb_text = read_extract_clean_stream_text(joined);
+            free(joined);
+        }
+        const char *ename = json_get_str(out, "ename", "");
+        const char *evalue = json_get_str(out, "evalue", "");
+        char header[1024];
+        int hl = snprintf(header, sizeof(header), "Error: %s: %s", ename, evalue);
+        while (hl > 0 && (header[hl-1] == ':' || header[hl-1] == ' ')) hl--;
+        header[hl] = '\0';
+        size_t cap2 = strlen(header) + strlen(tb_text) + 4;
+        char *r = malloc(cap2);
+        snprintf(r, cap2, "%s\n%s", header, tb_text);
+        size_t rl = strlen(r);
+        while (rl > 0 && (r[rl-1] == '\n' || r[rl-1] == ' ' || r[rl-1] == '\t')) rl--;
+        r[rl] = '\0';
+        result = r;
+        free(tb_text);
+    } else if (strcmp(otype, "execute_result") == 0 || strcmp(otype, "display_data") == 0 ||
+               strcmp(otype, "pyout") == 0) {
+        json_node_t *data = json_object_get(out, "data");
+        json_node_t *data_owned = NULL;
+        if (!data || data->type != JSON_OBJECT) {
+            /* nbformat v3: mime data flat on the output dict */
+            data_owned = json_new_object();
+            json_node_t *text = json_object_get(out, "text");
+            if (text && (text->type == JSON_STRING || text->type == JSON_ARRAY)) {
+                char *src = read_extract_source_text(text);
+                json_object_set(data_owned, "text/plain", json_string(src ? src : ""));
+                free(src);
+            }
+            const char *v3keys[][2] = {
+                {"png", "image/png"}, {"jpeg", "image/jpeg"},
+                {"svg", "image/svg+xml"}, {"html", "text/html"}
+            };
+            for (int k = 0; k < 4; k++) {
+                json_node_t *v = json_object_get(out, v3keys[k][0]);
+                if (v) json_object_set(data_owned, v3keys[k][1], v);
+            }
+            data = data_owned;
+        }
+        if (json_object_get(data, "application/vnd.jupyter.widget-view+json")) {
+            result = strdup("[interactive widget — omitted]");
+        } else {
+            result = NULL;
+            const char *prefs[] = { "text/plain", "text/markdown" };
+            for (int k = 0; k < 2 && !result; k++) {
+                json_node_t *mv = json_object_get(data, prefs[k]);
+                if (mv) {
+                    char *src = read_extract_source_text(mv);
+                    char *body = read_extract_clean_stream_text(src);
+                    free(src);
+                    const char *pp = body;
+                    while (*pp == ' ' || *pp == '\t' || *pp == '\n' || *pp == '\r') pp++;
+                    if (*pp) result = strdup(body);
+                    free(body);
+                }
+            }
+            if (!result) {
+                int img_found = 0;
+                for (size_t i = 0; i < data->c.count && !img_found; i++) {
+                    const char *mime = data->c.keys[i];
+                    if (mime && strncmp(mime, "image/", 6) == 0) {
+                        char *src = read_extract_source_text(data->c.items[i]);
+                        long long size = read_extract_base64_bytes(src);
+                        char *hs = read_extract_human_size(size);
+                        asprintf(&result, "[%s output — %s, omitted]", mime, hs);
+                        free(src); free(hs);
+                        img_found = 1;
+                    }
+                }
+            }
+            if (!result && json_object_get(data, "text/html")) {
+                char *html = read_extract_source_text(json_object_get(data, "text/html"));
+                asprintf(&result, "[text/html output — %zu chars, omitted]", strlen(html));
+                free(html);
+            }
+            if (!result) {
+                char *mimes = NULL;
+                if (data->c.count > 0) {
+                    size_t cap = 16, len = 0;
+                    char *buf = malloc(cap);
+                    if (buf) {
+                        for (size_t i = 0; i < data->c.count; i++) {
+                            const char *m = data->c.keys[i] ? data->c.keys[i] : "?";
+                            size_t al = strlen(m);
+                            if (len + al + 2 > cap) { cap = len + al + 32; char *n = realloc(buf, cap); if (!n) break; buf = n; }
+                            if (i > 0) { buf[len++] = ','; buf[len++] = ' '; }
+                            memcpy(buf + len, m, al); len += al;
+                        }
+                        buf[len] = '\0';
+                    } else buf = strdup("");
+                    mimes = buf;
+                }
+                asprintf(&result, "[%s output — omitted]", mimes ? mimes : "unknown");
+                free(mimes);
+            }
+        }
+        if (data_owned) json_free(data_owned);
+    } else {
+        result = strdup("");
+    }
+
+    json_free(out);
+    return result ? result : strdup("");
+}
+
+/* PoP: _notebook_outputs @ tools/read_extract.py:_notebook_outputs */
+char *read_extract_notebook_outputs(const char *cell_json,
+                                    const char *jq_pointer,
+                                    const char *filename) {
+    if (!cell_json || !*cell_json) return strdup("");
+    json_node_t *cell = json_parse(cell_json, NULL);
+    if (!cell || cell->type != JSON_OBJECT) {
+        if (cell) json_free(cell);
+        return strdup("");
+    }
+    json_node_t *outputs = json_object_get(cell, "outputs");
+    if (!outputs || outputs->type != JSON_ARRAY) {
+        json_free(cell);
+        return strdup("");
+    }
+    size_t cap = 512, len = 0;
+    char *joined = malloc(cap);
+    if (!joined) { json_free(cell); return strdup(""); }
+    int first = 1;
+    for (size_t i = 0; i < outputs->c.count; i++) {
+        json_node_t *o = outputs->c.items[i];
+        if (!o || o->type != JSON_OBJECT) continue;
+        char *os = json_serialize(o);
+        if (!os) continue;
+        char *txt = read_extract_notebook_output_text(os);
+        free(os);
+        if (txt && *txt) {
+            const char *pp = txt;
+            while (*pp == ' ' || *pp == '\t' || *pp == '\n' || *pp == '\r') pp++;
+            if (*pp) {
+                if (!first) { joined[len++] = '\n'; }
+                first = 0;
+                size_t al = strlen(txt);
+                if (len + al + 1 > cap) { cap = len + al + 512; char *n = realloc(joined, cap); if (!n) { free(txt); free(joined); json_free(cell); return strdup(""); } joined = n; }
+                memcpy(joined + len, txt, al); len += al;
+            }
+        }
+        free(txt);
+    }
+    joined[len] = '\0';
+
+    if (len > RE_MAX_OUTPUT_CHARS) {
+        size_t omitted = len - RE_MAX_OUTPUT_CHARS;
+        char hint[256];
+        hint[0] = '\0';
+        if (jq_pointer && *jq_pointer && filename && *filename) {
+            snprintf(hint, sizeof(hint), " — full output: jq -r '%s' %s", jq_pointer, filename);
+        }
+        char *r = NULL;
+        asprintf(&r, "%.*s\n… [%zu output chars truncated%s]",
+                 (int)RE_MAX_OUTPUT_CHARS, joined, omitted, hint);
+        free(joined);
+        json_free(cell);
+        return r;
+    }
+    json_free(cell);
+    return joined;
 }

@@ -29,5 +29,23 @@
   {"op": "clean_stream", "arg": "plain text"},
   {"op": "clean_stream", "arg": "\u001b[31mred\u001b[0m text"},
   {"op": "clean_stream", "arg": "line1\r\nline2\r\nline3"},
-  {"op": "clean_stream", "arg": "progress 10%\rprogress 20%\rprogress 30%\ndone"}
+  {"op": "clean_stream", "arg": "progress 10%\rprogress 20%\rprogress 30%\ndone"},
+
+  {"op": "nb_output_text", "arg": "{\"output_type\":\"stream\",\"text\":\"hello world\"}"},
+  {"op": "nb_output_text", "arg": "{\"output_type\":\"stream\",\"text\":[\"line1\\n\",\"line2\"]}"},
+  {"op": "nb_output_text", "arg": "{\"output_type\":\"error\",\"ename\":\"ValueError\",\"evalue\":\"bad\",\"traceback\":[\"Traceback...\\n\",\"  File x.py\\n\"]}"},
+  {"op": "nb_output_text", "arg": "{\"output_type\":\"error\",\"ename\":\"\",\"evalue\":\"\"}"},
+  {"op": "nb_output_text", "arg": "{\"output_type\":\"execute_result\",\"data\":{\"text/plain\":\"42\"}}"},
+  {"op": "nb_output_text", "arg": "{\"output_type\":\"execute_result\",\"data\":{\"image/png\":\"aGVsbG8=\"}}"},
+  {"op": "nb_output_text", "arg": "{\"output_type\":\"display_data\",\"data\":{\"text/html\":\"<b>hi</b>\"}}"},
+  {"op": "nb_output_text", "arg": "{\"output_type\":\"display_data\",\"data\":{\"application/vnd.jupyter.widget-view+json\":{}}}"},
+  {"op": "nb_output_text", "arg": "{\"output_type\":\"display_data\",\"data\":{\"text/csv\":\"a,b\"}}"},
+  {"op": "nb_output_text", "arg": "{\"output_type\":\"execute_result\"}"},
+  {"op": "nb_output_text", "arg": "not json"},
+  {"op": "nb_output_text", "arg": ""},
+
+  {"op": "nb_outputs", "arg": "{\"cell\":{\"outputs\":[{\"output_type\":\"stream\",\"text\":\"a\\n\"},{\"output_type\":\"stream\",\"text\":\"b\"}]}}"},
+  {"op": "nb_outputs", "arg": "{\"cell\":{\"outputs\":[]}}"},
+  {"op": "nb_outputs", "arg": "{\"cell\":{}}"},
+  {"op": "nb_outputs", "arg": "{\"cell\":{\"outputs\":[{\"output_type\":\"error\",\"ename\":\"E\",\"evalue\":\"v\"}]},\"jq\":\".cells[3]\",\"filename\":\"nb.ipynb\"}"}
 ]
