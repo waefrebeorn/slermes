@@ -1656,3 +1656,19 @@ void ww_engine_close(ww_engine_t *eng)
     free(eng->profile);
     free(eng);
 }
+
+/* PoP: _capture_sample_rate @ tools/wake_word.py:_capture_sample_rate */
+/* Returns sample rate from device details. details_json = {"default_samplerate": ...} */
+int wake_word_capture_sample_rate(const char *details_json) {
+    if (!details_json) return 16000;  /* SAMPLE_RATE default */
+    char *err = NULL;
+    json_t *details = json_parse(details_json, &err);
+    if (err || !details || details->type != JSON_OBJECT) { if (err) free(err); if (details) json_free(details); return 16000; }
+    json_t *rate = json_obj_get(details, "default_samplerate");
+    int result = 16000;
+    if (rate && rate->type == JSON_NUMBER && rate->num_val > 0) {
+        result = (int)(rate->num_val + 0.5);
+    }
+    json_free(details);
+    return result;
+}
