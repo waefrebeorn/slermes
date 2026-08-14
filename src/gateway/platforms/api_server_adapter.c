@@ -1113,3 +1113,17 @@ char *gwapi_expected_api_key(const char *arg) {
     if (!arg || !*arg) return strdup("");
     return strdup(arg);
 }
+
+/* PoP: _sse_frame @ gateway/platforms/api_server.py:_sse_frame */
+/* Returns malloc'd SSE frame string. Caller frees. */
+char *api_server_sse_frame(const char *data_json, const char *event) {
+    if (!data_json) return strdup("");
+    if (event && *event) {
+        char *result = NULL;
+        asprintf(&result, "event: %s\ndata: %s\n\n", event, data_json);
+        return result ? result : strdup("");
+    }
+    char *result = NULL;
+    asprintf(&result, "data: %s\n\n", data_json);
+    return result ? result : strdup("");
+}
