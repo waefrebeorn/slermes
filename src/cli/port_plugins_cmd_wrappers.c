@@ -549,3 +549,22 @@ int pcmd_clear_plugin_bytecode(const char *target) {
     }
     return removed;
 }
+
+/* PoP: _is_portable_plugin_dir @ hermes_cli/plugins_cmd.py:_is_portable_plugin_dir */
+/* Returns 1 if dir_path is an Agent Plugins v1 package. */
+int plugins_cmd_is_portable_plugin_dir(const char *dir_path) {
+    if (!dir_path) return 0;
+    char yaml_path[4096], yml_path[4096], json_path[4096];
+    snprintf(yaml_path, sizeof(yaml_path), "%s/plugin.yaml", dir_path);
+    snprintf(yml_path, sizeof(yml_path), "%s/plugin.yml", dir_path);
+    snprintf(json_path, sizeof(json_path), "%s/plugin.json", dir_path);
+    /* Check if plugin.yaml or plugin.yml exists (native takes precedence) */
+    FILE *f = fopen(yaml_path, "r");
+    if (f) { fclose(f); return 0; }
+    f = fopen(yml_path, "r");
+    if (f) { fclose(f); return 0; }
+    /* Check if plugin.json exists */
+    f = fopen(json_path, "r");
+    if (f) { fclose(f); return 1; }
+    return 0;
+}
