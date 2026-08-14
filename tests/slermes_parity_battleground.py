@@ -1026,18 +1026,47 @@ class ParityAnalyzer:
         pop_annotations = self.c_index.find_pop_for_python(feature.name, py_file)
         if pop_annotations:
             pop = pop_annotations[0]
-            # PoP annotation = explicit proof of intentional implementation
-            # Never flag as stub — the developer explicitly marked this as ported
-            return GapEntry(
-                python_file=py_file,
-                python_feature=feature,
-                classification="PORTED",
-                c_location=pop.c_file,
-                c_function=pop.c_function,
-                pop_annotation=pop,
-                severity="LOW",
-                notes="Explicit PoP annotation"
-            )
+            # PoP annotation exists — but verify the C function has a real body.
+            # A PoP comment with no function body, or a trivial no-op, is not PORTED.
+            if pop.c_file and pop.c_function:
+                body_check = self._verify_pop_body(pop.c_file, pop.c_function)
+                if body_check == "real":
+                    return GapEntry(
+                        python_file=py_file,
+                        python_feature=feature,
+                        classification="PORTED",
+                        c_location=pop.c_file,
+                        c_function=pop.c_function,
+                        pop_annotation=pop,
+                        severity="LOW",
+                        notes="Explicit PoP annotation with verified body"
+                    )
+                elif body_check == "noop":
+                    return GapEntry(
+                        python_file=py_file,
+                        python_feature=feature,
+                        classification="STUB",
+                        c_location=pop.c_file,
+                        c_function=pop.c_function,
+                        pop_annotation=pop,
+                        severity="HIGH",
+                        stub_reason="PoP annotation exists but C function is a no-op/trivial",
+                        notes="PoP annotation present but body is empty or returns constant"
+                    )
+                else:  # "missing"
+                    return GapEntry(
+                        python_file=py_file,
+                        python_feature=feature,
+                        classification="REAL_GAP",
+                        c_location=pop.c_file,
+                        c_function=pop.c_function,
+                        pop_annotation=pop,
+                        severity="HIGH",
+                        stub_reason="PoP annotation exists but no C function body found",
+                        notes="Annotation-only stub — comment without implementation"
+                    )
+            # No c_file/c_function info — fall through to other checks
+
 
         # Unified C implementation search - works for ALL files
         # (everything is REAL_GAP until actually ported — there is no exempt list, no N/A)
@@ -1369,6 +1398,108 @@ class ParityAnalyzer:
             return True
 
         return False
+
+    def _verify_pop_body(self, c_file: str, func_name: str) -> str:
+        """Verify a PoP-annotated C function has a real body.
+
+        Returns:
+            "real" — function exists with non-trivial body
+            "noop" — function exists but is empty/returns constant
+            "missing" — no function body found (annotation-only stub)
+        """
+        fpath = SLERMES_DIR / c_file
+        if not fpath.exists():
+            return "missing"
+
+        with open(fpath) as f:
+            file_content = f.read()
+
+        # Find the function body using same logic as _check_if_stub
+        escaped_name = re.escape(func_name)
+        func_pattern = r'(?:static\s+)?(?:\w+\s+)*\*?\s*' + escaped_name + r'\s*\([^)]*\)\s*\{'
+        match = re.search(func_pattern, file_content)
+        if not match:
+            return "missing"
+
+        # Extract function body (up to closing brace)
+        body_start = match.end()
+        brace_count = 1
+        pos = body_start
+        in_string = False
+        in_char = False
+        in_line_comment = False
+        in_block_comment = False
+        while pos < len(file_content) and brace_count > 0:
+            ch = file_content[pos]
+            prev = file_content[pos - 1] if pos > 0 else '\0'
+
+            if in_line_comment:
+                if ch == '\n':
+                    in_line_comment = False
+                pos += 1
+                continue
+            elif in_block_comment:
+                if ch == '/' and prev == '*':
+                    in_block_comment = False
+                pos += 1
+                continue
+            elif in_string:
+                if ch == '"' and prev != '\\':
+                    in_string = False
+                pos += 1
+                continue
+            elif in_char:
+                if ch == "'" and prev != '\\':
+                    in_char = False
+                pos += 1
+                continue
+
+            if ch == '/' and pos + 1 < len(file_content):
+                if file_content[pos + 1] == '/':
+                    in_line_comment = True
+                    pos += 2
+                    continue
+                elif file_content[pos + 1] == '*':
+                    in_block_comment = True
+                    pos += 2
+                    continue
+            elif ch == '"':
+                in_string = True
+            elif ch == "'":
+                in_char = True
+            elif ch == '{':
+                brace_count += 1
+            elif ch == '}':
+                brace_count -= 1
+            pos += 1
+
+        body = file_content[body_start:pos].strip()
+
+        # Empty body = missing
+        if not body or body == ';':
+            return "missing"
+
+        # Count non-trivial lines (non-empty, non-comment)
+        lines = [l.strip() for l in body.split('\n')
+                 if l.strip() and not l.strip().startswith('//')]
+
+        # Single return constant = noop
+        if len(lines) <= 2 and any(re.match(r'return\s+(NULL|0|false|true|\d+|""|0\.0)\s*;', l) for l in lines):
+            return "noop"
+
+        # Only (void)param; lines = noop (unused param suppression)
+        if all(re.match(r'\(void\)\w+\s*;$', l) for l in lines):
+            return "noop"
+
+        # Empty body with just braces = noop
+        if len(lines) == 0:
+            return "noop"
+
+        # Body with just a comment = noop
+        if all(l.startswith('/*') or l.startswith('*') or l.startswith('//') for l in lines):
+            return "noop"
+
+        return "real"
 
 
     def scan_all(self) -> Dict[str, ModuleReport]:
