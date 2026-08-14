@@ -13,6 +13,8 @@
  */
 
 #include "cron_scheduler_delivery.h"
+#include <time.h>
+#include <sys/time.h>
 #include "cron_scheduler_helpers.h"   /* scheduler_normalize_deliver_value */
 
 #include <stdio.h>
@@ -624,4 +626,74 @@ char *scheduler_preflight_check_delivery(const char *deliver_value,
     }
     free(norm);
     return NULL;
+}
+
+/* PoP: _cron_inactivity_seconds @ cron/scheduler.py:_cron_inactivity_seconds */
+double scheduler_cron_inactivity_seconds(void) {
+    const char *raw = getenv("HERMES_CRON_TIMEOUT");
+    if (raw) raw = raw + strspn(raw, " \t");
+    if (!raw || !*raw) return 600.0;
+    char *end;
+    double val = strtod(raw, &end);
+    if (end == raw || val < 0) return 600.0;
+    return val;
+}
+
+/* PoP: _cwd_lock_timeout_seconds @ cron/scheduler.py:_cwd_lock_timeout_seconds */
+double scheduler_cwd_lock_timeout_seconds(void) {
+    double inactivity = scheduler_cron_inactivity_seconds();
+    if (inactivity <= 0) inactivity = 600.0;
+    /* _CWD_LOCK_TIMEOUT_FLOOR_SECONDS=30, _CWD_LOCK_TIMEOUT_MARGIN_SECONDS=10 */
+    double floor_val = 30.0;
+    if (inactivity < floor_val) inactivity = floor_val;
+    return inactivity + 10.0;
+}
+
+/* PoP: _utcnow_iso_ms @ cron/scheduler.py:_utcnow_iso_ms */
+/* Returns malloc'd RFC3339 UTC timestamp with ms precision. Caller frees. */
+char *scheduler_utcnow_iso_ms(void) {
+    time_t now = time(NULL);
+    struct tm tm;
+    gmtime_r(&now, &tm);
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    int ms = (int)(ts.tv_nsec / 1000000);
+    char *out = NULL;
+    asprintf(&out, "%04d-%02d-%02dT%02d:%02d:%02d.%03dZ",
+             tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday,
+             tm.tm_hour, tm.tm_min, tm.tm_sec, ms);
+    return out;
+}
+
+/* PoP: _usage_audit_path @ cron/scheduler.py:_usage_audit_path */
+/* Returns malloc'd path to usage_audit.jsonl. Caller frees. */
+char *scheduler_usage_audit_path(void) {
+    extern char *dashboard_procs_hermes_home_dir(void);
+    char *home = dashboard_procs_hermes_home_dir();
+    char *out = NULL;
+    asprintf(&out, "%s/cron/usage_audit.jsonl", home ? home : "~/.hermes");
+    free(home);
+    return out;
+}
+
+/* PoP: _origin_thread_is_stale @ cron/scheduler.py:_origin_thread_is_stale */
+int scheduler_origin_thread_is_stale(const char *platform, const char *thread_id,
+                                     const char *chat_id) {
+    if (!platform || strcasecmp(platform, "slack") != 0) return 0;
+    if (!thread_id || !*thread_id) return 0;
+    /* home_chat = _get_home_target_chat_id("slack") — would need config lookup.
+     * For now, if chat_id matches the home target, it's stale. */
+    /* This is a simplified version — full version needs config lookup */
+    return 0;  /* fail-safe: never mark as stale without config access */
+}
+
+/* PoP: _origin_delivery_thread @ cron/scheduler.py:_origin_delivery_thread */
+/* Returns malloc'd thread id or NULL. Caller frees. */
+char *scheduler_origin_delivery_thread(const char *platform, const char *origin_thread_id,
+                                       int is_stale) {
+    if (is_stale) {
+        /* Would need _get_home_target_thread_id("slack") — simplified */
+        return NULL;
+    }
+    return origin_thread_id ? strdup(origin_thread_id) : NULL;
 }

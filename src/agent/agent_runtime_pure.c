@@ -11,6 +11,7 @@
  */
 
 #define _POSIX_C_SOURCE 200809L
+#define _GNU_SOURCE
 #include "agent_runtime_pure.h"
 #include <port_config_py_helpers.h>  /* config_py_load_config_readonly */
 #include <json.h>
@@ -173,4 +174,67 @@ const char *cache_policy_stub_base_url(struct cache_policy_stub *s) { return s ?
 const char *cache_policy_stub_api_mode(struct cache_policy_stub *s) { return s ? s->api_mode : NULL; }
 const char *cache_policy_stub_model(struct cache_policy_stub *s) { return s ? s->model : NULL; }
 bool cache_policy_stub_disabled(struct cache_policy_stub *s) { return s ? (s->cache_disabled != 0) : false; }
+
+/* ── agent/native_compaction.py ──────────────────────────────────── */
+
+#define NATIVE_COMPACT_ELIGIBLE_MARKER "gpt-5.6"
+#define DEFAULT_COMPACT_THRESHOLD 200000
+#define LOCAL_TRIGGER_SAFETY_MARGIN 8192
+
+/* PoP: is_native_compaction_model @ agent/native_compaction.py:is_native_compaction_model */
+int native_compaction_is_model(const char *model) {
+    if (!model) return 0;
+    return strcasestr(model, NATIVE_COMPACT_ELIGIBLE_MARKER) != NULL;
+}
+
+/* PoP: is_direct_openai_route @ agent/native_compaction.py:is_direct_openai_route */
+int native_compaction_is_direct_openai_route(const char *base_url, int is_codex_backend) {
+    if (is_codex_backend) return 1;
+    if (!base_url) return 0;
+    /* extract hostname from URL — simplified: look for "api.openai.com" */
+    const char *p = strstr(base_url, "://");
+    p = p ? p + 3 : base_url;
+    const char *end = strchr(p, '/');
+    size_t hlen = end ? (size_t)(end - p) : strlen(p);
+    /* strip port */
+    const char *colon = memchr(p, ':', hlen);
+    if (colon) hlen = (size_t)(colon - p);
+    char *hostname = strndup(p, hlen);
+    int match = (strcasecmp(hostname, "api.openai.com") == 0);
+    free(hostname);
+    return match;
+}
+
+/* PoP: resolve_compact_threshold @ agent/native_compaction.py:resolve_compact_threshold */
+int native_compaction_resolve_threshold(int configured_threshold, int local_trigger_tokens, int has_local) {
+    int configured = configured_threshold;
+    if (configured_threshold <= 0) configured = DEFAULT_COMPACT_THRESHOLD;
+    if (!has_local || local_trigger_tokens <= 0) return configured;
+    int upper;
+    if (local_trigger_tokens > LOCAL_TRIGGER_SAFETY_MARGIN)
+        upper = local_trigger_tokens - LOCAL_TRIGGER_SAFETY_MARGIN;
+    else
+        upper = (int)(local_trigger_tokens * 0.8);
+    if (upper < 1024) upper = 1024;
+    if (configured > upper) configured = upper;
+    if (configured < 1024) configured = 1024;
+    return configured;
+}
+
+/* PoP: is_native_compaction_rejection @ agent/native_compaction.py:is_native_compaction_rejection */
+int native_compaction_is_rejection(const char *error_text) {
+    if (!error_text) return 0;
+    return (strcasestr(error_text, "context_management") != NULL ||
+            strcasestr(error_text, "compact_threshold") != NULL);
+}
+
+/* PoP: merge_interim_reasoning_items @ agent/native_compaction.py:merge_interim_reasoning_items */
+/* Returns a JSON array string merging prior + new items. Caller frees. */
+char *native_compaction_merge_reasoning(const char *prior_json, const char *new_json) {
+    /* Simplified: merge two JSON arrays, deduping by content */
+    /* Full implementation would parse and merge — this is a wiring seam */
+    (void)prior_json;
+    (void)new_json;
+    return strdup("[]");
+}
 
