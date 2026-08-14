@@ -195,3 +195,29 @@ int profiles_normalize_profile_archive_parts(const char *member,
     }
     return cnt;
 }
+
+/* PoP: _should_redact_export_file @ hermes_cli/profiles.py:_should_redact_export_file */
+/* Returns 1 if the file should be redacted, 0 otherwise. */
+int profiles_should_redact_export_file(const char *filename) {
+    if (!filename) return 0;
+    /* Check name match */
+    if (strcmp(filename, ".cursorrules") == 0) return 1;
+    /* Check .env.example suffix */
+    size_t len = strlen(filename);
+    if (len >= 11 && strcasecmp(filename + len - 11, ".env.example") == 0) return 1;
+    /* Check suffix in redaction set */
+    const char *dot = strrchr(filename, '.');
+    if (!dot) return 0;
+    const char *suffix = dot;
+    /* Compare against known suffixes */
+    const char *suffixes[] = {
+        ".md", ".txt", ".yaml", ".yml", ".json", ".jsonl",
+        ".toml", ".ini", ".cfg", ".conf", ".py", ".sh",
+        ".bash", ".zsh", ".js", ".ts", ".tsx", ".jsx",
+        ".css", ".html", ".xml", ".csv", NULL
+    };
+    for (int i = 0; suffixes[i]; i++) {
+        if (strcasecmp(suffix, suffixes[i]) == 0) return 1;
+    }
+    return 0;
+}

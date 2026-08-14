@@ -320,3 +320,26 @@ int hermes_cli_main_cmd_sync(const char *arg) {
     fprintf(stderr, "Unknown sync subcommand: %s\n", sub);
     return 2;
 }
+
+/* PoP: configured_nofile_soft_limit @ hermes_cli/resource_limits.py:configured_nofile_soft_limit */
+/* Returns the configured nofile soft limit, or -1 when disabled. config_json = {"runtime":{"nofile_soft_limit":N}} */
+int hermes_cli_configured_nofile_soft_limit(const char *config_json) {
+    if (!config_json) return 4096;  /* DEFAULT_NOFILE_SOFT_LIMIT */
+    char *err = NULL;
+    json_t *config = json_parse(config_json, &err);
+    if (err || !config || config->type != JSON_OBJECT) { if (err) free(err); if (config) json_free(config); return 4096; }
+    json_t *runtime = json_obj_get(config, "runtime");
+    if (!runtime || runtime->type != JSON_OBJECT) { json_free(config); return 4096; }
+    json_t *raw = json_obj_get(runtime, "nofile_soft_limit");
+    if (!raw) { json_free(config); return 4096; }
+    if (raw->type == JSON_BOOL) {
+        int val = raw->num_val ? -1 : -1;  /* True or False both disable */
+        json_free(config);
+        return -1;
+    }
+    if (raw->type != JSON_NUMBER) { json_free(config); return -1; }
+    long val = (long)raw->num_val;
+    if (val <= 0) { json_free(config); return -1; }
+    json_free(config);
+    return (int)val;
+}
