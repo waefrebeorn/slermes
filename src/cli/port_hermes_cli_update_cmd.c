@@ -4200,3 +4200,24 @@ char *uc_m(void)
     return NULL;
 }
 
+/* PoP: _print_update_completion @ hermes_cli/update_cmd.py:_print_update_completion */
+/* Print update outcome + terminal receipt line when action id is valid.
+ * Returns malloc'd combined output string. Caller frees. */
+char *update_cmd_print_completion(const char *message) {
+    const char *action_id = getenv("HERMES_ACTION_ID");
+    int valid_id = 0;
+    if (action_id && strlen(action_id) == 32) {
+        valid_id = 1;
+        for (const char *p = action_id; *p; p++) {
+            if (!((*p >= '0' && *p <= '9') || (*p >= 'a' && *p <= 'f'))) { valid_id = 0; break; }
+        }
+    }
+    char *out = NULL;
+    if (valid_id) {
+        asprintf(&out, "%s\n=== hermes-update completed %s ===", message ? message : "", action_id);
+    } else {
+        out = strdup(message ? message : "");
+    }
+    return out;
+}
+

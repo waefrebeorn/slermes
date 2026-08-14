@@ -14,6 +14,7 @@
 extern const char *detect_install_method(const char *project_root);
 extern void config_py_recommended_update_command_for_method(const char *method, char *out, size_t out_size);
 extern char *cfg_get_managed_update_command(const char *managed_system);
+extern char *dashboard_procs_hermes_home_dir(void);
 
 /* Python: _OFFICIAL_REPO_CANONICAL = "github.com/nousresearch/hermes-agent". */
 #define BANNER_OFFICIAL_REPO_CANONICAL "github.com/nousresearch/hermes-agent"
@@ -162,4 +163,15 @@ char *banner_format_update_notice(int behind) {
     }
     free(managed_cmd);
     return line;
+}
+
+/* PoP: _banner_snapshot_path @ hermes_cli/banner.py:_banner_snapshot_path */
+/* Return path to banner snapshot JSON. Caller frees. */
+char *banner_snapshot_path(void) {
+    char *home = dashboard_procs_hermes_home_dir();
+    if (!home) return strdup("~/.hermes/cache/banner_snapshot.json");
+    char *out = NULL;
+    asprintf(&out, "%s/cache/banner_snapshot.json", home);
+    free(home);
+    return out;
 }

@@ -1,0 +1,14 @@
+[
+  {"op": "is_desktop_serve", "cmd": "hermes serve --host 127.0.0.1 --port 0"},
+  {"op": "is_desktop_serve", "cmd": "hermes serve --isolated --host 127.0.0.1 --port 0 --profile work"},
+  {"op": "is_desktop_serve", "cmd": "hermes serve --host 10.0.0.1 --port 9119"},
+  {"op": "is_desktop_serve", "cmd": "hermes_cli serve --host 127.0.0.1 --port 0"},
+  {"op": "is_desktop_serve", "cmd": "some other process"},
+  {"op": "is_desktop_serve", "cmd": "HERMES serve --host localhost --port=0"},
+  {"op": "is_desktop_serve", "cmd": ""},
+  {"op": "hermes_home"},
+  {"op": "valid_lockfile", "json": "{\"schemaVersion\": 2, \"protocolVersion\": 1, \"ownershipId\": \"abc123\", \"spawnNonce\": \"0123456789abcdef\", \"tokenFingerprint\": \"0123456789abcdef0123456789abcdef\", \"pid\": 1234, \"port\": 8080, \"profile\": \"default\", \"hermesPath\": \"/usr/bin/hermes\", \"hermesHome\": \"/home/u/.hermes\", \"logPath\": \"/home/u/.hermes/locks/abc123/0123456789abcdef.log\", \"startedAt\": \"2024-01-01T00:00:00Z\"}", "ownership": "abc123"},
+  {"op": "valid_lockfile", "json": "{\"schemaVersion\": 2, \"protocolVersion\": 1, \"ownershipId\": \"abc123\", \"spawnNonce\": \"0123456789abcdef\", \"tokenFingerprint\": \"0123456789abcdef0123456789abcdef\", \"pid\": 1234, \"port\": 8080, \"profile\": \"default\", \"hermesPath\": \"/usr/bin/hermes\", \"hermesHome\": \"/home/u/.hermes\", \"logPath\": \"/home/u/.hermes/locks/abc123/0123456789abcdef.log\", \"startedAt\": \"2024-01-01T00:00:00Z\"}", "ownership": "wrong"},
+  {"op": "valid_lockfile", "json": "{\"schemaVersion\": 2, \"protocolVersion\": 1, \"ownershipId\": \"abc123\", \"spawnNonce\": \"SHORT\", \"tokenFingerprint\": \"0123456789abcdef0123456789abcdef\", \"pid\": 1234, \"port\": 8080, \"profile\": \"default\", \"hermesPath\": \"/usr/bin/hermes\", \"hermesHome\": \"/home/u/.hermes\", \"logPath\": \"/home/u/.hermes/locks/abc123/0123456789abcdef.log\", \"startedAt\": \"2024-01-01T00:00:00Z\"}", "ownership": "abc123"},
+  {"op": "valid_lockfile", "json": "{}", "ownership": "abc123"}
+]

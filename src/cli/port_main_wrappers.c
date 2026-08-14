@@ -3421,3 +3421,129 @@ char *hermes_cli_dashboard_procs_u_detect_concurrent_hermes_instances(const char
     if (!arg || !*arg) return strdup("[]");
     return strdup(arg);
 }
+
+/* ── Pure helpers (oracle-verified) ──────────────────────────────── */
+
+/* PoP: _is_desktop_local_serve_cmdline @ hermes_cli/dashboard_procs.py:_is_desktop_local_serve_cmdline */
+/* True for the Desktop-local serve spawn shape (loopback + ephemeral port). */
+int dashboard_procs_is_desktop_local_serve_cmdline(const char *command) {
+    if (!command) return 0;
+    const char *cmd = command;
+    /* case-insensitive search for "serve" and "hermes" */
+    int has_serve = 0, has_hermes = 0;
+    const char *p = cmd;
+    while (*p) {
+        if (!has_serve && (p == cmd || *(p-1) == ' ') &&
+            (strncasecmp(p, "serve", 5) == 0 && (p[5] == ' ' || p[5] == '\0' || p[5] == '\t')))
+            has_serve = 1;
+        if (!has_hermes && (strncasecmp(p, "hermes_cli", 10) == 0 ||
+            (strncasecmp(p, "hermes", 6) == 0 && (p[6] == ' ' || p[6] == '\0' || p[6] == '\t' || p[6] == '_'))))
+            has_hermes = 1;
+        p++;
+    }
+    if (!has_serve) return 0;
+    if (!has_hermes) return 0;
+    /* check loopback + ephemeral port tokens */
+    int has_loopback = (strstr(cmd, "--host 127.0.0.1") || strstr(cmd, "--host=127.0.0.1") ||
+                        strstr(cmd, "--host localhost") || strstr(cmd, "--host=localhost"));
+    int has_ephemeral = (strstr(cmd, "--port 0") || strstr(cmd, "--port=0"));
+    return has_loopback && has_ephemeral;
+}
+
+/* PoP: _exclude_pids_from_env @ hermes_cli/dashboard_procs.py:_exclude_pids_from_env */
+/* Parse HERMES_DESKTOP_CHILD_PID env var into a JSON array of ints. Caller frees. */
+#include "hermes_json.h"
+char *dashboard_procs_exclude_pids_from_env(void) {
+    const char *raw = getenv("HERMES_DESKTOP_CHILD_PID");
+    json_t *arr = json_array();
+    if (raw && *raw) {
+        const char *p = raw;
+        while (*p) {
+            while (*p == ',' || *p == ' ' || *p == '\t') p++;
+            if (!*p) break;
+            char *end;
+            long val = strtol(p, &end, 10);
+            if (end == p) break;
+            if (val > 0) json_append(arr, json_number((double)val));
+            p = end;
+        }
+    }
+    char *out = json_serialize(arr);
+    json_free(arr);
+    return out;
+}
+
+/* PoP: _hermes_home_dir @ hermes_cli/dashboard_procs.py:_hermes_home_dir */
+/* Resolved Hermes home (HERMES_HOME override or ~/.hermes). Caller frees. */
+char *dashboard_procs_hermes_home_dir(void) {
+    const char *override = getenv("HERMES_HOME");
+    if (override && *override) {
+        /* expanduser: ~/... -> home/... */
+        if (override[0] == '~' && override[1] == '/') {
+            const char *home = getenv("HOME");
+            if (home) {
+                char *out = NULL;
+                asprintf(&out, "%s%s", home, override + 1);
+                return out;
+            }
+        }
+        return strdup(override);
+    }
+    const char *home = getenv("HOME");
+    if (home) {
+        char *out = NULL;
+        asprintf(&out, "%s/.hermes", home);
+        return out;
+    }
+    return strdup("~/.hermes");
+}
+
+/* PoP: _valid_lockfile_payload @ hermes_cli/dashboard_procs.py:_valid_lockfile_payload */
+/* Validate a parsed backend.lock.json body. Returns 1 if valid, 0 otherwise. */
+int dashboard_procs_valid_lockfile_payload(const char *parsed_json, const char *ownership_id) {
+    if (!parsed_json || !ownership_id) return 0;
+    char *err = NULL;
+    json_t *parsed = json_parse(parsed_json, &err);
+    if (err || !parsed || parsed->type != JSON_OBJECT) { if (err) free(err); if (parsed) json_free(parsed); return 0; }
+    /* schemaVersion == 2, protocolVersion == 1 */
+    json_t *sv = json_obj_get(parsed, "schemaVersion");
+    json_t *pv = json_obj_get(parsed, "protocolVersion");
+    if (!sv || sv->type != JSON_NUMBER || sv->num_val != 2) { json_free(parsed); return 0; }
+    if (!pv || pv->type != JSON_NUMBER || pv->num_val != 1) { json_free(parsed); return 0; }
+    /* ownershipId must match */
+    json_t *oi = json_obj_get(parsed, "ownershipId");
+    if (!oi || oi->type != JSON_STRING || strcmp(oi->str_val, ownership_id) != 0) { json_free(parsed); return 0; }
+    /* spawnNonce: str, len==16, all hex */
+    json_t *nonce = json_obj_get(parsed, "spawnNonce");
+    if (!nonce || nonce->type != JSON_STRING || strlen(nonce->str_val) != 16) { json_free(parsed); return 0; }
+    for (const char *p = nonce->str_val; *p; p++) {
+        if (!((*p >= '0' && *p <= '9') || (*p >= 'a' && *p <= 'f') || (*p >= 'A' && *p <= 'F'))) { json_free(parsed); return 0; }
+    }
+    /* tokenFingerprint: str, len==32, all hex */
+    json_t *tf = json_obj_get(parsed, "tokenFingerprint");
+    if (!tf || tf->type != JSON_STRING || strlen(tf->str_val) != 32) { json_free(parsed); return 0; }
+    for (const char *p = tf->str_val; *p; p++) {
+        if (!((*p >= '0' && *p <= '9') || (*p >= 'a' && *p <= 'f') || (*p >= 'A' && *p <= 'F'))) { json_free(parsed); return 0; }
+    }
+    /* pid: int, >0, <=4194304 */
+    json_t *pid = json_obj_get(parsed, "pid");
+    if (!pid || pid->type != JSON_NUMBER || pid->num_val <= 0 || pid->num_val > 4194304) { json_free(parsed); return 0; }
+    /* port: int, 0..65535 */
+    json_t *port = json_obj_get(parsed, "port");
+    if (!port || port->type != JSON_NUMBER || port->num_val < 0 || port->num_val > 65535) { json_free(parsed); return 0; }
+    /* String fields: profile, hermesPath, hermesHome, logPath, startedAt (str, len<=1024) */
+    const char *fields[] = {"profile", "hermesPath", "hermesHome", "logPath", "startedAt"};
+    for (int i = 0; i < 5; i++) {
+        json_t *v = json_obj_get(parsed, fields[i]);
+        if (!v || v->type != JSON_STRING || strlen(v->str_val) > 1024) { json_free(parsed); return 0; }
+    }
+    /* logPath must end with /{ownershipId}/{spawnNonce}.log */
+    json_t *lp = json_obj_get(parsed, "logPath");
+    char *suffix = NULL;
+    asprintf(&suffix, "/%s/%s.log", ownership_id, nonce->str_val);
+    size_t llen = strlen(lp->str_val), slen = strlen(suffix);
+    int ok = (llen >= slen && strcmp(lp->str_val + llen - slen, suffix) == 0);
+    free(suffix);
+    json_free(parsed);
+    return ok;
+}

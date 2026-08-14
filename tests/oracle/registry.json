@@ -1479,6 +1479,16 @@
       "harness": "tests/t_port_banner_update.c",
       "oracle": "tests/sta_oracle_banner_update.py",
       "fixtures": "tests/oracle/fixtures/banner_update"
+    },
+    "dashboard_pure": {
+      "harness": "tests/t_port_dashboard_pure.c",
+      "oracle": "tests/sta_oracle_dashboard_pure.py",
+      "fixtures": "tests/oracle/fixtures/dashboard_pure"
+    },
+    "update_completion": {
+      "harness": "tests/t_port_update_completion.c",
+      "oracle": "tests/sta_oracle_update_completion.py",
+      "fixtures": "tests/oracle/fixtures/update_completion"
     }
   },
   "normalize": {
