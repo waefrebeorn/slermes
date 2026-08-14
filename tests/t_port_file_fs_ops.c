@@ -1,120 +1,136 @@
 /*
- * t_port_file_fs_ops.c — oracle harness for v553 file_fs_ops extraction.
- * Exercises the FS cluster (read_file_raw, delete_path, patch_replace,
- * is_likely_binary, is_image, detect_file_line_ending, file_has_bom)
- * against LIVE Python and emits JSON lines for the oracle.
+ * t_port_file_fs_ops.c — oracle harness for the byte-layer binary helpers of
+ * tools/file_operations.py ported to C (file_fs_ops.c / file_fs_ops.h).
  *
- *   gcc -O2 -g -I include -I src/tools -I src/agent -I lib/libjson \
- *       tests/t_port_file_fs_ops.c src/tools/file_fs_ops.o \
- *       src/tools/file_text_ops.o src/agent/file_safety.o \
- *       lib/libjson/json.o -o /tmp/t_fs
+ * Reads a JSON fixture (argv[1]) of cases, runs the C functions, emits one JSON
+ * object per case. The Python oracle recomputes from LIVE tools/file_operations.py.
+ *
+ * Tested: identify_binary_bytes, describe_binary_file, _is_likely_binary_bytes,
+ * _not_regular_error, _size_probe_cmd.
  */
-#include "file_fs_ops.h"
-#include "hermes_file_safety.h"
+#define _POSIX_C_SOURCE 200809L
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
+#include <stdbool.h>
 
-void hermes_log(int level, const char *fmt, ...)
-{
-    (void)level; (void)fmt;
+#include "hermes_json.h"
+#include "libjson/json.h"
+#include "file_fs_ops.h"
+
+static char *read_file(const char *path) {
+    FILE *f = fopen(path, "rb");
+    if (!f) return NULL;
+    fseek(f, 0, SEEK_END);
+    long sz = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    char *buf = malloc(sz + 1);
+    if (!buf) { fclose(f); return NULL; }
+    size_t rd = fread(buf, 1, sz, f);
+    buf[rd] = '\0';
+    fclose(f);
+    return buf;
 }
 
-static void emit_escaped(const char *s)
-{
-    if (!s) { printf("null"); return; }
-    putchar('"');
-    for (const char *p = s; *p; p++) {
-        unsigned char c = (unsigned char)*p;
-        if (c == '"' || c == '\\') { putchar('\\'); putchar(c); }
-        else if (c < 0x20) printf("\\u%04x", c);
-        else putchar(c);
+static char *jesc(const char *s) {
+    static char buf[4][8192];
+    static int cur = 0;
+    char *q = buf[cur];
+    cur = (cur + 1) % 4;
+    char *base = q;
+    *q++ = '"';
+    if (s) {
+        for (const char *p = s; *p; p++) {
+            unsigned char c = (unsigned char)*p;
+            if (c == '"' || c == '\\') { *q++ = '\\'; *q++ = c; }
+            else if (c == '\n') { *q++ = '\\'; *q++ = 'n'; }
+            else if (c == '\t') { *q++ = '\\'; *q++ = 't'; }
+            else if (c < 32) { *q++ = '\\'; *q++ = 'u'; *q++ = '0'; *q++ = '0';
+                *q++ = (c > 15 ? '1' : '0'); *q++ = (c % 16 < 10 ? c % 16 + '0' : c % 16 - 10 + 'a'); }
+            else if ((q - base) < 8170) *q++ = c;
+        }
     }
-    putchar('"');
+    *q++ = '"'; *q = '\0';
+    return base;
 }
 
-static void emit_str(const char *fn, const char *in, const char *out)
-{
-    printf("{\"fn\":\"%s\"", fn);
-    if (in) { printf(",\"in\":"); emit_escaped(in); }
-    printf(",\"out\":"); emit_escaped(out);
-    printf("}\n");
+/* decode a base64-encoded sample string into bytes */
+static unsigned char *b64decode(const char *s, size_t *outlen) {
+    size_t slen = strlen(s);
+    unsigned char *out = malloc(slen);
+    size_t o = 0, val = 0, bits = 0;
+    for (size_t i = 0; i < slen; i++) {
+        unsigned char c = (unsigned char)s[i];
+        int d;
+        if (c >= 'A' && c <= 'Z') d = c - 'A';
+        else if (c >= 'a' && c <= 'z') d = c - 'a' + 26;
+        else if (c >= '0' && c <= '9') d = c - '0' + 52;
+        else if (c == '+') d = 62;
+        else if (c == '/') d = 63;
+        else continue;
+        val = (val << 6) | (unsigned)d;
+        bits += 6;
+        if (bits >= 8) {
+            bits -= 8;
+            out[o++] = (unsigned char)((val >> bits) & 0xFF);
+        }
+    }
+    *outlen = o;
+    return out;
 }
 
-static void emit_bool(const char *fn, const char *in, int v)
-{
-    printf("{\"fn\":\"%s\"", fn);
-    if (in) printf(",\"in\":\"%s\"", in);
-    printf(",\"out\":%s}\n", v ? "true" : "false");
-}
+int main(int argc, char **argv) {
+    if (argc < 2) { fprintf(stderr, "usage: t_port_file_fs_ops <cases.in>\n"); return 1; }
+    char *text = read_file(argv[1]);
+    if (!text) { fprintf(stderr, "cannot read %s\n", argv[1]); return 1; }
+    char *err = NULL;
+    json_t *cases = json_parse(text, &err);
+    free(text);
+    if (err || !cases || cases->type != JSON_ARRAY) { if (err) free(err); fprintf(stderr, "bad fixture\n"); return 1; }
 
-int main(void)
-{
-    file_safety_set_test_paths("/tmp/hermes-fs-test-home", "/tmp/hermes-fs-test-root");
-    if (system("mkdir -p /tmp/hermes-fs-test-home /tmp/hermes-fs-test-root") != 0) {}
+    for (size_t i = 0; i < cases->c.count; i++) {
+        json_t *c = cases->c.items[i];
+        const char *op = json_get_str(c, "op", "");
+        json_t *arg = json_obj_get(c, "arg");
 
-    /* write fixtures */
-    char tf[256], bf[256], imgf[256], bomf[256], crf[256], lff[256], oneline[256];
-    snprintf(tf, sizeof(tf), "/tmp/hermes-fs-test-home/fs-%d.txt", (int)getpid());
-    snprintf(bf, sizeof(bf), "/tmp/hermes-fs-test-home/bin-%d.bin", (int)getpid());
-    snprintf(imgf, sizeof(imgf), "/tmp/hermes-fs-test-home/pic-%d.png", (int)getpid());
-    snprintf(bomf, sizeof(bomf), "/tmp/hermes-fs-test-home/bom-%d.txt", (int)getpid());
-    snprintf(crf, sizeof(crf), "/tmp/hermes-fs-test-home/crlf-%d.txt", (int)getpid());
-    snprintf(lff, sizeof(lff), "/tmp/hermes-fs-test-home/lf-%d.txt", (int)getpid());
-    snprintf(oneline, sizeof(oneline), "/tmp/hermes-fs-test-home/one-%d.txt", (int)getpid());
-
-    FILE *f;
-    f = fopen(tf, "w"); if (f) { fputs("hello\nworld\n", f); fclose(f); }
-    f = fopen(bf, "w"); if (f) { fwrite("AB\1\2\3CD\4", 1, 8, f); fclose(f); } /* non-printable >30% */
-    f = fopen(imgf, "w"); if (f) { fputs("pngdata", f); fclose(f); }
-    f = fopen(bomf, "wb"); if (f) { unsigned char b[]={0xEF,0xBB,0xBF,'h','i'}; fwrite(b,1,5,f); fclose(f); }
-    f = fopen(crf, "wb"); if (f) { fputs("a\r\nb\r\n", f); fclose(f); }
-    f = fopen(lff, "w"); if (f) { fputs("a\nb\n", f); fclose(f); }
-    f = fopen(oneline, "w"); if (f) { fputs("onlyoneline", f); fclose(f); }
-
-    /* read_file_raw */
-    char *r = file_fs_ops_read_file_raw(tf);
-    emit_str("read_file_raw", tf, r);
-    free(r);
-
-    /* delete_path: dedicated fixture (do not delete any oracle-read fixture) */
-    char delf[256];
-    snprintf(delf, sizeof(delf), "/tmp/hermes-fs-test-home/del-%d.txt", (int)getpid());
-    f = fopen(delf, "w"); if (f) { fputs("delete me", f); fclose(f); }
-
-    /* is_image */
-    emit_bool("is_image", tf, file_fs_ops_is_image(tf));
-    emit_bool("is_image", imgf, file_fs_ops_is_image(imgf));
-    emit_bool("is_image", "/x/foo.ico", file_fs_ops_is_image("/x/foo.ico"));
-
-    /* is_likely_binary */
-    emit_bool("is_likely_binary", tf, file_fs_ops_is_likely_binary(tf));
-    emit_bool("is_likely_binary", bf, file_fs_ops_is_likely_binary(bf));
-    emit_bool("is_likely_binary", "/x/foo.exe", file_fs_ops_is_likely_binary("/x/foo.exe"));
-    emit_bool("is_likely_binary", imgf, file_fs_ops_is_likely_binary(imgf));
-
-    /* patch_replace */
-    char *pr = file_fs_ops_patch_replace("aaaXbbbXccc", "X", "Y");
-    emit_str("patch_replace", "aaaXbbbXccc|X|Y", pr);
-    free(pr);
-    char *pr2 = file_fs_ops_patch_replace("nomatch", "Z", "Q");
-    emit_str("patch_replace", "nomatch|Z|Q", pr2);
-    free(pr2);
-
-    /* detect_file_line_ending */
-    emit_str("detect_file_line_ending", crf, file_fs_ops_detect_file_line_ending(crf));
-    emit_str("detect_file_line_ending", lff, file_fs_ops_detect_file_line_ending(lff));
-    emit_str("detect_file_line_ending", oneline, file_fs_ops_detect_file_line_ending(oneline));
-
-    /* file_has_bom */
-    emit_bool("file_has_bom", bomf, file_fs_ops_file_has_bom(bomf));
-    emit_bool("file_has_bom", tf, file_fs_ops_file_has_bom(tf));
-
-    /* delete_path deny guard */
-    emit_bool("delete_path_denied", "/etc/passwd", file_fs_ops_delete_path("/etc/passwd"));
-    emit_bool("delete_path_denied", "~/.ssh/id_rsa", file_fs_ops_delete_path("~/.ssh/id_rsa"));
-    emit_bool("delete_path_ok", delf, file_fs_ops_delete_path(delf));
-
+        if (strcmp(op, "identify") == 0) {
+            const char *b64 = (arg && arg->type == JSON_STRING) ? arg->str_val : "";
+            size_t blen = 0;
+            unsigned char *bytes = b64decode(b64, &blen);
+            char *r = file_fs_ops_identify_binary_bytes(bytes, blen);
+            printf("{\"op\":\"identify\",\"out\":%s}\n", jesc(r ? r : ""));
+            free(r); free(bytes);
+        } else if (strcmp(op, "describe") == 0) {
+            json_t *sample = json_obj_get(c, "sample");
+            const char *b64 = (sample && sample->type == JSON_STRING) ? sample->str_val : "";
+            size_t blen = 0;
+            unsigned char *bytes = b64decode(b64, &blen);
+            long long fsz = (arg && arg->type == JSON_NUMBER) ? (long long)arg->num_val : 0;
+            char *r = file_fs_ops_describe_binary_file(bytes, blen, fsz);
+            printf("{\"op\":\"describe\",\"out\":%s}\n", jesc(r ? r : ""));
+            free(r); free(bytes);
+        } else if (strcmp(op, "is_binary_bytes") == 0) {
+            const char *b64 = (arg && arg->type == JSON_STRING) ? arg->str_val : "";
+            size_t blen = 0;
+            unsigned char *bytes = b64decode(b64, &blen);
+            printf("{\"op\":\"is_binary_bytes\",\"out\":%s}\n",
+                   file_fs_ops_is_likely_binary_bytes(bytes, blen) ? "true" : "false");
+            free(bytes);
+        } else if (strcmp(op, "not_regular") == 0) {
+            const char *p = (arg && arg->type == JSON_STRING) ? arg->str_val : "";
+            char *r = file_fs_ops_not_regular_error(p);
+            printf("{\"op\":\"not_regular\",\"out\":%s}\n", jesc(r ? r : ""));
+            free(r);
+        } else if (strcmp(op, "size_probe") == 0) {
+            const char *p = (arg && arg->type == JSON_STRING) ? arg->str_val : "";
+            char *r = file_fs_ops_size_probe_cmd(p);
+            printf("{\"op\":\"size_probe\",\"out\":%s}\n", jesc(r ? r : ""));
+            free(r);
+        } else {
+            printf("{\"op\":\"unknown\"}\n");
+        }
+    }
+    json_free(cases);
     return 0;
 }

@@ -2,6 +2,7 @@
 #define SLERMES_FILE_FS_OPS_H
 
 #include <stdbool.h>
+#include <stddef.h>
 
 /*
  * file_fs_ops — filesystem read / write / type-detection helpers, ported from
@@ -45,5 +46,30 @@ char *file_fs_ops_detect_file_line_ending(const char *path);
 
 /* PoP: file_fs_ops_file_has_bom @ tools/file_operations.py:_file_has_bom */
 bool file_fs_ops_file_has_bom(const char *path);
+
+/* PoP: identify_binary_bytes @ tools/file_operations.py:identify_binary_bytes */
+/* Best-effort human name for binary content from magic bytes ("PNG image
+ * data" / "unknown binary"). Caller frees. */
+char *file_fs_ops_identify_binary_bytes(const unsigned char *sample, size_t len);
+
+/* PoP: describe_binary_file @ tools/file_operations.py:describe_binary_file */
+/* One-line binary refusal: "Binary file (<kind>, <size>) — cannot display
+ * as text." Caller frees. */
+char *file_fs_ops_describe_binary_file(const unsigned char *sample, size_t len,
+                                       long long file_size);
+
+/* PoP: _is_likely_binary_bytes @ tools/file_operations.py:_is_likely_binary_bytes */
+/* Byte-layer binary detection: valid UTF-8 (allowing one incomplete multibyte
+ * sequence at the very end) is text; NULs / invalid UTF-8 are binary. */
+bool file_fs_ops_is_likely_binary_bytes(const unsigned char *sample, size_t len);
+
+/* PoP: _not_regular_error @ tools/file_operations.py:_not_regular_error */
+/* Error text for a path that exists but would block if read. Caller frees. */
+char *file_fs_ops_not_regular_error(const char *path);
+
+/* PoP: _size_probe_cmd @ tools/file_operations.py:_size_probe_cmd */
+/* Shell command to get a regular file's byte size without opening it
+ * (avoids FIFO/socket/devices that never reach EOF). Caller frees. */
+char *file_fs_ops_size_probe_cmd(const char *path);
 
 #endif /* SLERMES_FILE_FS_OPS_H */

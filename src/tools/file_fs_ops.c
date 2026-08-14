@@ -192,3 +192,156 @@ bool file_fs_ops_file_has_bom(const char *path)
     fclose(f);
     return (read == 3 && bom[0] == 0xEF && bom[1] == 0xBB && bom[2] == 0xBF);
 }
+/* ── binary detection + regular-file probe (tools/file_operations.py) ── */
+
+/* Python _MAGIC_SIGNATURES (ordered, first match wins, longest shared-prefix
+ * first). Each: {prefix bytes, len, name}. */
+static const struct {
+    const unsigned char *prefix;
+    size_t len;
+    const char *name;
+} FF_MAGIC_SIGNATURES[] = {
+    {(const unsigned char *)"\x89PNG\r\n\x1a\n", 8, "PNG image data"},
+    {(const unsigned char *)"\xff\xd8\xff", 3, "JPEG image data"},
+    {(const unsigned char *)"GIF87a", 6, "GIF image data"},
+    {(const unsigned char *)"GIF89a", 6, "GIF image data"},
+    {(const unsigned char *)"RIFF", 4, "RIFF container (WAV/AVI/WebP family)"},
+    {(const unsigned char *)"%PDF-", 5, "PDF document"},
+    {(const unsigned char *)"PK\x03\x04", 4, "ZIP archive (also docx/xlsx/jar/apk)"},
+    {(const unsigned char *)"PK\x05\x06", 4, "ZIP archive (empty)"},
+    {(const unsigned char *)"\x1f\x8b", 2, "gzip compressed data"},
+    {(const unsigned char *)"BZh", 3, "bzip2 compressed data"},
+    {(const unsigned char *)"\xfd" "7zXZ\x00", 6, "xz compressed data"},
+    {(const unsigned char *)"7z\xbc\xaf\x27\x1c", 6, "7-Zip archive"},
+    {(const unsigned char *)"\x7f" "ELF", 4, "ELF executable"},
+    {(const unsigned char *)"MZ", 2, "Windows PE executable"},
+    {(const unsigned char *)"\xcf\xfa\xed\xfe", 4, "Mach-O executable (64-bit)"},
+    {(const unsigned char *)"\xca\xfe\xba\xbe", 4, "Mach-O universal binary / Java class"},
+    {(const unsigned char *)"SQLite format 3\x00", 16, "SQLite database"},
+    {(const unsigned char *)"OggS", 4, "Ogg container"},
+    {(const unsigned char *)"fLaC", 4, "FLAC audio"},
+    {(const unsigned char *)"ID3", 3, "MP3 audio (ID3 tag)"},
+    {(const unsigned char *)"\x00\x00\x00", 3, "ISO media container (MP4/MOV family)"},
+    {(const unsigned char *)"BM", 2, "BMP image data"},
+    {(const unsigned char *)"II*\x00", 4, "TIFF image data (little-endian)"},
+    {(const unsigned char *)"MM\x00*", 4, "TIFF image data (big-endian)"},
+};
+#define FF_N_MAGIC ((int)(sizeof(FF_MAGIC_SIGNATURES) / sizeof(FF_MAGIC_SIGNATURES[0])))
+
+/* PoP: identify_binary_bytes @ tools/file_operations.py:identify_binary_bytes */
+char *file_fs_ops_identify_binary_bytes(const unsigned char *sample, size_t len) {
+    if (!sample || len == 0) return strdup("unknown binary");
+    for (int i = 0; i < FF_N_MAGIC; i++) {
+        if (len >= FF_MAGIC_SIGNATURES[i].len &&
+            memcmp(sample, FF_MAGIC_SIGNATURES[i].prefix, FF_MAGIC_SIGNATURES[i].len) == 0) {
+            /* ISO media entry additionally checks for "ftyp" at offset 4. */
+            if (strncmp(FF_MAGIC_SIGNATURES[i].name, "ISO media", 9) == 0) {
+                if (len < 8 || memcmp(sample + 4, "ftyp", 4) != 0) continue;
+            }
+            return strdup(FF_MAGIC_SIGNATURES[i].name);
+        }
+    }
+    return strdup("unknown binary");
+}
+
+/* PoP: describe_binary_file @ tools/file_operations.py:describe_binary_file */
+char *file_fs_ops_describe_binary_file(const unsigned char *sample, size_t len,
+                                       long long file_size) {
+    char *kind = file_fs_ops_identify_binary_bytes(sample, len);
+    char *size = NULL;
+    if (file_size >= 1024LL * 1024) {
+        asprintf(&size, "%.1f MB", (double)file_size / (1024.0 * 1024.0));
+    } else if (file_size >= 1024) {
+        asprintf(&size, "%.1f KB", (double)file_size / 1024.0);
+    } else {
+        asprintf(&size, "%lld bytes", file_size);
+    }
+    char *out = NULL;
+    asprintf(&out, "Binary file (%s, %s) — cannot display as text.", kind, size ? size : "");
+    free(kind); free(size);
+    return out ? out : strdup("");
+}
+
+/* PoP: _is_likely_binary_bytes @ tools/file_operations.py:_is_likely_binary_bytes */
+bool file_fs_ops_is_likely_binary_bytes(const unsigned char *sample, size_t len) {
+    if (!sample || len == 0) return false;
+    /* NUL byte => binary. */
+    for (size_t i = 0; i < len; i++)
+        if (sample[i] == 0x00) return true;
+    /* Validate UTF-8: allow one incomplete multibyte sequence at the very end
+     * (boundary cut), everything else must decode cleanly. */
+    size_t i = 0;
+    int invalid = 0;
+    while (i < len) {
+        unsigned char b = sample[i];
+        size_t seq;
+        if (b < 0x80) { i++; continue; }
+        else if ((b & 0xE0) == 0xC0) { seq = 2; if (b < 0xC2) { invalid = 1; break; } }
+        else if ((b & 0xF0) == 0xE0) { seq = 3; }
+        else if ((b & 0xF8) == 0xF0) { seq = 4; }
+        else { invalid = 1; break; }
+        /* continuation bytes */
+        int ok = 1;
+        for (size_t k = 1; k < seq; k++) {
+            if (i + k >= len) {
+                /* incomplete sequence at very end => boundary cut, allowed
+                 * if the prefix decodes cleanly (which it does by reaching
+                 * here). */
+                return false;
+            }
+            if ((sample[i + k] & 0xC0) != 0x80) { ok = 0; break; }
+        }
+        if (!ok) { invalid = 1; break; }
+        /* overlong / surrogate / out-of-range checks (minimal faithful) */
+        if (seq == 3) {
+            unsigned char c1 = sample[i], c2 = sample[i+1];
+            if (c1 == 0xE0 && c2 < 0xA0) { invalid = 1; break; }
+            if (c1 == 0xED && c2 >= 0xA0) { invalid = 1; break; }
+        } else if (seq == 4) {
+            unsigned char c1 = sample[i], c2 = sample[i+1];
+            if (c1 == 0xF0 && c2 < 0x90) { invalid = 1; break; }
+            if (c1 == 0xF4 && c2 >= 0x90) { invalid = 1; break; }
+            if (c1 > 0xF4) { invalid = 1; break; }
+        }
+        i += seq;
+    }
+    return invalid != 0;
+}
+
+/* PoP: _not_regular_error @ tools/file_operations.py:_not_regular_error */
+char *file_fs_ops_not_regular_error(const char *path) {
+    char *out = NULL;
+    asprintf(&out,
+        "Cannot read '%s': not a regular file (directory, FIFO, socket, or "
+        "device). Reading it could block indefinitely.", path ? path : "");
+    return out ? out : strdup("");
+}
+
+/* PoP: _size_probe_cmd @ tools/file_operations.py:_size_probe_cmd */
+char *file_fs_ops_size_probe_cmd(const char *path) {
+    /* Python: arg = _escape_shell_arg(path); then the if/elif/else cmd. */
+    if (!path) return strdup("exit 1");
+    char *arg = malloc(strlen(path) * 4 + 4);
+    if (!arg) return strdup("exit 1");
+    /* Single-quote escape: ' -> '"'"' */
+    size_t w = 0;
+    arg[w++] = '\'';
+    for (const char *p = path; *p; p++) {
+        if (*p == '\'') {
+            /* single-quote escape: ' -> '"'"' (5 chars) */
+            memcpy(arg + w, "'\"'\"'", 5);
+            w += 5;
+        } else {
+            arg[w++] = *p;
+        }
+    }
+    arg[w++] = '\'';
+    arg[w] = '\0';
+    char *out = NULL;
+    asprintf(&out,
+        "if [ -f %s ]; then wc -c < %s 2>/dev/null; "
+        "elif [ -e %s ]; then echo __hermes_not_regular__; "
+        "else exit 1; fi", arg, arg, arg);
+    free(arg);
+    return out ? out : strdup("exit 1");
+}

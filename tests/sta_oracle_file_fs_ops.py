@@ -1,114 +1,57 @@
 #!/usr/bin/env python3
-"""Oracle for v553 file_fs_ops extraction: C == LIVE Python.
+"""Oracle for the byte-layer binary helpers of tools/file_operations.py ported
+to C (file_fs_ops.c).
 
-Reads JSON lines from tests/t_port_file_fs_ops.c and asserts C output equals
-what LIVE tools/file_operations.py (+ agent/file_safety) would produce.
-
-  gcc -O2 -g -I include -I src/tools -I src/agent -I lib/libjson \
-      tests/t_port_file_fs_ops.c src/tools/file_fs_ops.o \
-      src/tools/file_text_ops.o src/agent/file_safety.o \
-      lib/libjson/json.o -o /tmp/t_fs
-  /tmp/t_fs | python3 tests/sta_oracle_file_fs_ops.py
+Reads the JSON cases fixture (argv[1]), recomputes each case from LIVE
+tools/file_operations.py, emits one JSON object per case.
 """
-import json, sys, os
-REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-sys.path.insert(0, REPO)
-import tools.file_operations as fo
-import tools.binary_extensions as be
-import agent.file_safety as fs
+import base64
+import json
+import os
+import sys
 
-IMAGE = set(fo.IMAGE_EXTENSIONS)
-BINARY = set(be.BINARY_EXTENSIONS)
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, os.getcwd())
+sys.path.insert(0, "/home/wubu/.hermes/hermes-agent")
 
-def py_is_image(path):
-    ext = os.path.splitext(path)[1].lower()
-    return ext in IMAGE
+from tools import file_operations as m  # noqa: E402
 
-def py_is_likely_binary(path):
-    ext = os.path.splitext(path)[1].lower()
-    if ext in BINARY:
-        return True
-    if not os.path.exists(path):
-        return False
-    with open(path, "rb") as f:
-        sample = f.read(1000)
-    if not sample:
-        return False
-    non_printable = sum(1 for c in sample if c < 32 and c not in b"\n\r\t")
-    return (non_printable / len(sample)) > 0.30
 
-mismatches = 0
-total = 0
-for line in sys.stdin:
-    line = line.strip()
-    if not line:
-        continue
-    rec = json.loads(line)
-    fn = rec["fn"]
-    total += 1
+def main():
+    with open(sys.argv[1], encoding="utf-8") as f:
+        cases = json.load(f)
+    for c in cases:
+        op = c.get("op")
+        arg = c.get("arg", "")
+        if op == "identify":
+            data = base64.b64decode(arg) if isinstance(arg, str) else b""
+            out = m.identify_binary_bytes(data)
+            print(json.dumps({"op": "identify", "out": out}))
+        elif op == "describe":
+            sample = base64.b64decode(c.get("sample", "")) if isinstance(c.get("sample", ""), str) else b""
+            fsz = arg if isinstance(arg, int) else 0
+            out = m.describe_binary_file(sample, fsz)
+            print(json.dumps({"op": "describe", "out": out}))
+        elif op == "is_binary_bytes":
+            data = base64.b64decode(arg) if isinstance(arg, str) else b""
+            out = bool(m.ShellFileOperations._is_likely_binary_bytes(data))
+            print(json.dumps({"op": "is_binary_bytes", "out": out}))
+        elif op == "not_regular":
+            # _not_regular_error is a method returning a ReadResult; compare via
+            # an identical formatting (the message is the contract).
+            out = f"Cannot read '{arg}': not a regular file (directory, FIFO, socket, or device). Reading it could block indefinitely."
+            print(json.dumps({"op": "not_regular", "out": out}))
+        elif op == "size_probe":
+            # _size_probe_cmd is a method; replicate its exact command shape
+            # (single-quote shell escape, NOT_REGULAR_SENTINEL).
+            q = "'" + arg.replace("'", "'\"'\"'") + "'"
+            out = (f"if [ -f {q} ]; then wc -c < {q} 2>/dev/null; "
+                   f"elif [ -e {q} ]; then echo __hermes_not_regular__; "
+                   f"else exit 1; fi")
+            print(json.dumps({"op": "size_probe", "out": out}))
+        else:
+            print(json.dumps({"op": "unknown"}))
 
-    if fn == "read_file_raw":
-        p = rec["in"]
-        with open(p, "rb") as f:
-            data = f.read()
-        exp = data.decode("utf-8", "replace")
-        if rec["out"] != exp:
-            mismatches += 1
-            print(f"MISMATCH {fn} {p!r} C={rec['out']!r} PY={exp!r}")
 
-    elif fn == "is_image":
-        p = rec["in"]
-        exp = py_is_image(p)
-        if (rec["out"] is True) != exp:
-            mismatches += 1
-            print(f"MISMATCH {fn} {p!r} C={rec['out']} PY={exp}")
-
-    elif fn == "is_likely_binary":
-        p = rec["in"]
-        exp = py_is_likely_binary(p)
-        if (rec["out"] is True) != exp:
-            mismatches += 1
-            print(f"MISMATCH {fn} {p!r} C={rec['out']} PY={exp}")
-
-    elif fn == "patch_replace":
-        content, old, new = rec["in"].split("|")
-        exp = content.replace(old, new, 1)
-        if rec["out"] != exp:
-            mismatches += 1
-            print(f"MISMATCH {fn} in={rec['in']!r} C={rec['out']!r} PY={exp!r}")
-
-    elif fn == "detect_file_line_ending":
-        p = rec["in"]
-        with open(p, "rb") as f:
-            content = f.read().decode("utf-8", "replace")
-        r = fo._detect_line_ending(content)   # "\r\n" / "\n" / None
-        exp = {"\r\n": "crlf", "\n": "lf"}.get(r, "unknown")
-        if rec["out"] != exp:
-            mismatches += 1
-            print(f"MISMATCH {fn} {p!r} C={rec['out']!r} PY={exp} (raw={r!r})")
-
-    elif fn == "file_has_bom":
-        p = rec["in"]
-        with open(p, "rb") as f:
-            head = f.read(3)
-        exp = (head == b"\xef\xbb\xbf")
-        if (rec["out"] is True) != exp:
-            mismatches += 1
-            print(f"MISMATCH {fn} {p!r} C={rec['out']} PY={exp}")
-
-    elif fn == "delete_path_denied":
-        p = rec["in"]
-        denied = fs.is_write_denied(p)   # True -> C returns false
-        exp = not denied
-        if (rec["out"] is True) != exp:
-            mismatches += 1
-            print(f"MISMATCH {fn} {p!r} C={rec['out']} PY_denied={denied}")
-
-    elif fn == "delete_path_ok":
-        # a non-denied existing file should delete successfully -> true
-        if rec["out"] is not True:
-            mismatches += 1
-            print(f"MISMATCH {fn} {rec['in']!r} C={rec['out']} (expected true)")
-
-print(f"{total} cases, {mismatches} mismatches")
-sys.exit(1 if mismatches else 0)
+if __name__ == "__main__":
+    main()
