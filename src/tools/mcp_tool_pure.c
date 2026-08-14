@@ -264,3 +264,141 @@ bool matches_name_filter(const char *tool_name, const char **patterns, size_t n)
     }
     return false;
 }
+
+/* ── MCP trust + identity header helpers (tools/mcp_tool.py) ─────────── */
+
+#define _TRUST_FULL     "full"
+#define _TRUST_UNTRUSTED "untrusted"
+
+/* PoP: _normalize_server_trust @ tools/mcp_tool.py:_normalize_server_trust */
+/* Return "full" or "untrusted". Missing/None -> full; unknown -> untrusted. */
+char *mcp_normalize_server_trust(const json_t *value) {
+    if (!value || value->type == JSON_NULL) return strdup(_TRUST_FULL);
+    const char *text = "";
+    if (value->type == JSON_STRING) text = value->str_val;
+    else if (value->type == JSON_NUMBER || value->type == JSON_BOOL) {
+        /* Python str(value).strip().lower() */
+        char tmp[32];
+        if (value->type == JSON_NUMBER) snprintf(tmp, sizeof(tmp), "%.0f", value->num_val);
+        else snprintf(tmp, sizeof(tmp), "%s", value->num_val ? "true" : "false");
+        text = tmp;
+    } else {
+        return strdup(_TRUST_UNTRUSTED);
+    }
+    /* strip + lower */
+    const char *s = text;
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    size_t sl = strlen(s);
+    while (sl > 0 && (s[sl-1]==' '||s[sl-1]=='\t'||s[sl-1]=='\n'||s[sl-1]=='\r')) sl--;
+    if (sl == 0) return strdup(_TRUST_UNTRUSTED);
+    char lowered[64];
+    size_t li = 0;
+    for (size_t i = 0; i < sl && li < 63; i++) {
+        char c = s[i];
+        if (c >= 'A' && c <= 'Z') c = (char)(c + 32);
+        lowered[li++] = c;
+    }
+    lowered[li] = '\0';
+    if (strcmp(lowered, _TRUST_FULL) == 0) return strdup(_TRUST_FULL);
+    if (strcmp(lowered, _TRUST_UNTRUSTED) == 0) return strdup(_TRUST_UNTRUSTED);
+    return strdup(_TRUST_UNTRUSTED);
+}
+
+/* PoP: _annotation_read_only_hint @ tools/mcp_tool.py:_annotation_read_only_hint */
+/* Return true only when annotations.readOnlyHint is exactly True. */
+bool mcp_annotation_read_only_hint(const json_t *mcp_tool) {
+    if (!mcp_tool) return false;
+    /* handle dict or object with attribute */
+    json_t *annotations = NULL;
+    if (mcp_tool->type == JSON_OBJECT) {
+        annotations = json_obj_get(mcp_tool, "annotations");
+    }
+    if (!annotations) return false;
+    if (annotations->type == JSON_NULL) return false;
+    json_t *hint = NULL;
+    if (annotations->type == JSON_OBJECT) {
+        hint = json_obj_get(annotations, "readOnlyHint");
+    }
+    if (!hint) return false;
+    return (hint->type == JSON_BOOL && hint->num_val != 0);
+}
+
+/* PoP: _resolve_identity_header @ tools/mcp_tool.py:_resolve_identity_header */
+/* Returns a json_t* array [name, value], or NULL. Caller must json_free. */
+#include "port_gateway_run_deps.h"  /* gw_active_profile_name */
+json_t *mcp_resolve_identity_header(const char *server_name, const json_t *config) {
+    (void)server_name;
+    if (!config || config->type != JSON_OBJECT) return NULL;
+    json_t *raw = json_obj_get(config, "identity_header");
+    if (!raw || raw->type == JSON_NULL) return NULL;
+    if (raw->type != JSON_OBJECT) return NULL;  /* warn + ignore */
+    json_t *name = json_obj_get(raw, "name");
+    if (!name || name->type != JSON_STRING || !name->str_val || !*name->str_val) return NULL;
+    const char *name_str = name->str_val;
+    char value_from[32] = "static";
+    json_t *vf = json_obj_get(raw, "value_from");
+    if (vf && vf->type == JSON_STRING && vf->str_val && *vf->str_val) {
+        strncpy(value_from, vf->str_val, sizeof(value_from) - 1);
+        value_from[sizeof(value_from)-1] = '\0';
+    }
+    /* strip + lower value_from */
+    char *p = value_from;
+    while (*p == ' ' || *p == '\t') p++;
+    size_t pl = strlen(p);
+    while (pl > 0 && (p[pl-1]==' '||p[pl-1]=='\t')) pl--;
+    p[pl] = '\0';
+    for (size_t i = 0; i < pl && p[i]; i++) {
+        if (p[i] >= 'A' && p[i] <= 'Z') p[i] = (char)(p[i] + 32);
+    }
+    if (strcmp(p, "profile") == 0) {
+        const char *active = gw_active_profile_name();
+        json_t *arr = json_array();
+        json_append(arr, json_string(name_str));
+        json_append(arr, json_string(active ? active : ""));
+        return arr;
+        }
+    if (strcmp(p, "static") != 0) return NULL;
+    json_t *val = json_obj_get(raw, "value");
+    if (!val || val->type != JSON_STRING || !val->str_val || !*val->str_val) return NULL;
+    json_t *arr = json_array();
+    json_append(arr, json_string(name_str));
+    json_append(arr, json_string(val->str_val));
+    return arr;
+}
+
+/* PoP: _apply_identity_header @ tools/mcp_tool.py:_apply_identity_header */
+/* Merge the resolved identity header into headers (in place). Returns headers. */
+json_t *mcp_apply_identity_header(const char *server_name, const json_t *config, json_t *headers) {
+    if (!headers || headers->type != JSON_OBJECT) return headers;
+    json_t *resolved = mcp_resolve_identity_header(server_name, config);
+    if (!resolved || resolved->type != JSON_ARRAY || resolved->c.count < 2) {
+        if (resolved) json_free(resolved);
+        return headers;
+    }
+    json_t *name_val = resolved->c.items[0];
+    json_t *value_val = resolved->c.items[1];
+    if (!name_val || name_val->type != JSON_STRING) { json_free(resolved); return headers; }
+    const char *new_name = name_val->str_val;
+    const char *new_value = (value_val && value_val->type == JSON_STRING) ? value_val->str_val : "";
+    /* check if any existing key matches case-insensitively */
+    for (size_t i = 0; i < headers->c.count; i++) {
+        json_t *kv = headers->c.items[i];
+        if (!kv || kv->type != JSON_STRING) continue;
+        /* case-insensitive compare */
+        const char *ek = kv->str_val, *nk = new_name;
+        int eq = 1;
+        while (*ek && *nk) {
+            if (((*ek >= 'A' && *ek <= 'Z') ? *ek + 32 : *ek) !=
+                ((*nk >= 'A' && *nk <= 'Z') ? *nk + 32 : *nk)) { eq = 0; break; }
+            ek++; nk++;
+        }
+        eq = eq && !*ek && !*nk;
+        if (eq) {
+            json_free(resolved);
+            return headers;  /* explicit config wins */
+        }
+    }
+    json_set(headers, new_name, json_string(new_value));  /* json_set steals */
+    json_free(resolved);
+    return headers;
+}

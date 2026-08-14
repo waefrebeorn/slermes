@@ -45,4 +45,17 @@ void mcp_warn_hidden_whitespace_free(char **items, size_t n);
  * patterns[n] must be non-NULL strings; NULL entries skipped. */
 bool matches_name_filter(const char *tool_name, const char **patterns, size_t n);
 
+/* _normalize_server_trust — normalize trust value to "full" or "untrusted".
+ * Returns a malloc'd string; caller frees. */
+char *mcp_normalize_server_trust(const json_t *value);
+
+/* _annotation_read_only_hint — return true only when readOnlyHint is exactly True. */
+bool mcp_annotation_read_only_hint(const json_t *mcp_tool);
+
+/* _resolve_identity_header — return json_t* array [name, value], or NULL. */
+json_t *mcp_resolve_identity_header(const char *server_name, const json_t *config);
+
+/* _apply_identity_header — merge resolved identity header into headers in place. */
+json_t *mcp_apply_identity_header(const char *server_name, const json_t *config, json_t *headers);
+
 #endif /* HERMES_MCP_TOOL_PURE_H */

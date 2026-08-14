@@ -1,0 +1,29 @@
+[
+  {"op": "normalize_trust", "arg": null},
+  {"op": "normalize_trust", "arg": "FULL"},
+  {"op": "normalize_trust", "arg": "untrusted"},
+  {"op": "normalize_trust", "arg": "bogus"},
+  {"op": "normalize_trust", "arg": 0},
+  {"op": "normalize_trust", "arg": true},
+
+  {"op": "read_only_hint", "arg": {"annotations": {"readOnlyHint": true}}},
+  {"op": "read_only_hint", "arg": {"annotations": {"readOnlyHint": false}}},
+  {"op": "read_only_hint", "arg": {"annotations": {}}},
+  {"op": "read_only_hint", "arg": {"annotations": None}},
+  {"op": "read_only_hint", "arg": {"name": "t1"}},
+  {"op": "read_only_hint", "arg": null},
+  {"op": "read_only_hint", "arg": "not-an-object"},
+
+  {"op": "resolve_identity", "server": "s1", "cfg": {"identity_header": {"name": "X-Id", "value_from": "static", "value": "alice"}}},
+  {"op": "resolve_identity", "server": "s1", "cfg": {"identity_header": {"name": "X-Id", "value_from": "profile"}}},
+  {"op": "resolve_identity", "server": "s1", "cfg": {"identity_header": {"name": "", "value": "x"}}},
+  {"op": "resolve_identity", "server": "s1", "cfg": {"identity_header": "bad"}},
+  {"op": "resolve_identity", "server": "s1", "cfg": {"identity_header": {"value_from": "weird"}}},
+  {"op": "resolve_identity", "server": "s1", "cfg": {}},
+  {"op": "resolve_identity", "server": "s1", "cfg": null},
+
+  {"op": "apply_identity", "server": "s1", "cfg": {"identity_header": {"name": "X-Id", "value": "alice"}}, "headers": {}},
+  {"op": "apply_identity", "server": "s1", "cfg": {"identity_header": {"name": "X-Id", "value": "alice"}}, "headers": {"X-ID": "bob"}},
+  {"op": "apply_identity", "server": "s1", "cfg": {}, "headers": {"Accept": "application/json"}},
+  {"op": "apply_identity", "server": "s1", "cfg": null, "headers": {}}
+]
