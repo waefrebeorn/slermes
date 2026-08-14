@@ -588,3 +588,32 @@ char *cvl_finalize_wait_result(const char *rendered, long returncode,
     json_free(r);
     return out ? out : strdup("{}");
 }
+
+/* PoP: _join_truncated_parts @ agent/conversation_loop.py:_join_truncated_parts */
+/* Returns malloc'd joined string. Caller frees. */
+char *conversation_loop_join_truncated_parts(const char *parts_json) {
+    if (!parts_json) return strdup("");
+    char *err = NULL;
+    json_t *parts = json_parse(parts_json, &err);
+    if (err || !parts || parts->type != JSON_ARRAY) { if (err) free(err); if (parts) json_free(parts); return strdup(""); }
+    size_t total_len = 0;
+    for (size_t i = 0; i < parts->c.count; i++) {
+        json_t *p = parts->c.items[i];
+        if (p && p->type == JSON_STRING) total_len += strlen(p->str_val);
+    }
+    total_len += parts->c.count;  /* newlines */
+    char *joined = (char *)malloc(total_len + 1);
+    if (!joined) { json_free(parts); return strdup(""); }
+    joined[0] = '\0';
+    for (size_t i = 0; i < parts->c.count; i++) {
+        json_t *p = parts->c.items[i];
+        if (!p || p->type != JSON_STRING) continue;
+        const char *part = p->str_val;
+        if (joined[0] && joined[strlen(joined)-1] != ' ' && joined[strlen(joined)-1] != '\n' && part && part[0] != ' ' && part[0] != '\n') {
+            strcat(joined, "\n");
+        }
+        strcat(joined, part);
+    }
+    json_free(parts);
+    return joined;
+}
