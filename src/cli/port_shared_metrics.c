@@ -773,3 +773,24 @@ const char *smc_model_locality_internal(const char *base_url,
         return "remote";
     return "unknown";
 }
+
+/* PoP: _parse_state_timestamp @ hermes_cli/observability/shared_metrics.py:_parse_state_timestamp */
+/* Returns malloc'd ISO timestamp string or NULL on failure. Caller frees. */
+char *shared_metrics_parse_timestamp(const char *value) {
+    if (!value || !*value) return NULL;
+    /* Parse ISO format: replace Z with +00:00, then validate */
+    char *normalized = strdup(value);
+    size_t len = strlen(normalized);
+    /* Replace trailing Z with +00:00 */
+    if (len > 0 && normalized[len-1] == 'Z') {
+        normalized[len-1] = '\0';
+        char *expanded = NULL;
+        asprintf(&expanded, "%s+00:00", normalized);
+        free(normalized);
+        normalized = expanded;
+    }
+    /* Basic validation: must contain a 'T' and be parseable */
+    if (!normalized || !strchr(normalized, 'T')) { free(normalized); return NULL; }
+    /* Return the normalized form */
+    return normalized;
+}
