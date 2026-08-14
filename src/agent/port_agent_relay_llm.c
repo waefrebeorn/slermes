@@ -1631,3 +1631,21 @@ json_t *anthropic_stream_accumulator_response(const anthropic_stream_accumulator
     json_free(assembled);
     return merged;
 }
+
+/* PoP: _response_model_name @ agent/relay_llm.py:_response_model_name */
+/* Returns malloc'd model name or NULL. Caller frees. */
+char *relay_llm_response_model_name(const char *response_json) {
+    if (!response_json) return NULL;
+    char *err = NULL;
+    json_t *response = json_parse(response_json, &err);
+    if (err || !response) { if (err) free(err); if (response) json_free(response); return NULL; }
+    char *result = NULL;
+    if (response->type == JSON_OBJECT) {
+        json_t *model = json_obj_get(response, "model");
+        if (model && model->type == JSON_STRING && model->str_val && *model->str_val) {
+            result = strdup(model->str_val);
+        }
+    }
+    json_free(response);
+    return result;
+}
