@@ -1,0 +1,43 @@
+[
+  {"op": "strip_wrappers", "arg": "<command-message><command-name>/work</command-name></command-message>"},
+  {"op": "strip_wrappers", "arg": "<system-reminder>remember</system-reminder>please do x"},
+  {"op": "strip_wrappers", "arg": "<command-message>fix this</command-message>"},
+  {"op": "strip_wrappers", "arg": "<command-message>fix this</command-message>then check"},
+  {"op": "strip_wrappers", "arg": "<command-message>"},
+  {"op": "strip_wrappers", "arg": "plain prose"},
+  {"op": "strip_wrappers", "arg": ""},
+  {"op": "strip_wrappers", "arg": "<task-notification>done</task-notification>deploy it"},
+  {"op": "strip_wrappers", "arg": "  <ide_opened_file>main.c</ide_opened_file>  inspect this"},
+
+  {"op": "clean_title", "arg": "  Hello   World  "},
+  {"op": "clean_title", "arg": "Title: Fix the bug"},
+  {"op": "clean_title", "arg": "\"Quoted Title\""},
+  {"op": "clean_title", "arg": "Trailing period."},
+  {"op": "clean_title", "arg": "  "},
+  {"op": "clean_title", "arg": ""},
+  {"op": "clean_title", "arg": "A title that is far longer than eighty characters and needs to be truncated down to a reasonable length for the sidebar display"},
+
+  {"op": "extract_title", "arg": "{\"title\": \"Refactor auth\"}"},
+  {"op": "extract_title", "arg": "{\"title\": \"  Padded Title  \"}"},
+  {"op": "extract_title", "arg": "some chat {\"title\": \"embedded title\"} more"},
+  {"op": "extract_title", "arg": "```json\n{\"title\": \"fenced title\"}\n```"},
+  {"op": "extract_title", "arg": "Title: plain prose title"},
+  {"op": "extract_title", "arg": "just some prose"},
+  {"op": "extract_title", "arg": ""},
+  {"op": "extract_title", "arg": "{\"other\": 1}"},
+
+  {"op": "is_titleable", "arg": "Please fix this"},
+  {"op": "is_titleable", "arg": "[CONTEXT COMPACTION reference only]"},
+  {"op": "is_titleable", "arg": "[Runtime note: something]"},
+  {"op": "is_titleable", "arg": "[System: The active model for this chat has changed to gpt-4o]"},
+  {"op": "is_titleable", "arg": "[SYSTEM] reboot"},
+  {"op": "is_titleable", "arg": ""},
+  {"op": "is_titleable", "arg": "<command-message>only wrapper</command-message>"},
+  {"op": "is_titleable", "arg": "<command-message>real intent</command-message>"},
+
+  {"op": "derive_title", "arg": "   Fix the login bug now\nsecond line"},
+  {"op": "derive_title", "arg": "short"},
+  {"op": "derive_title", "arg": ""},
+  {"op": "derive_title", "arg": "<command-message>only</command-message>"},
+  {"op": "derive_title", "arg": "This is an extremely long first line that far exceeds the forty eight character limit for derived titles and should get truncated"}
+]

@@ -73,9 +73,14 @@ char *summarize_user_message(const char *user_message) {
     /* Reuse the canonical scaffolding parser so the titler sees
      * "/work — fix the title leak" instead of the expanded skill body. */
     char *described = describe_skill_invocation(user_message);
-    if (described) return described;
-    /* None -> not skill scaffolding: title the raw message. */
-    return strdup(user_message);
+    /* Python: text = described if described is not None else user_message;
+     * return strip_control_wrappers(text). So strip wrappers off whatever
+     * text we chose. */
+    char *text = described ? described : strdup(user_message);
+    char *out = title_strip_control_wrappers(text);
+    if (text != described) free(text);
+    free(described);
+    return out;
 }
 
 /* PoP: persist_session_title @ agent/title_generator.py:_persist_session_title */
@@ -108,4 +113,377 @@ char *persist_session_title(db_t *session_db, const char *session_id,
     if (rc == SESSION_TITLE_OK) return deduped;
     free(deduped);
     return NULL;
+}
+/* ── title derivation + control-wrapper stripping ────────────────────── */
+
+/* Python _CONTROL_WRAPPERS (agent/title_generator.py:113). */
+static const char *const TITLE_CONTROL_OPEN[] = {
+    "<command-message>", "<command-name>", "<command-args>",
+    "<local-command-caveat>", "<local-command-stderr>",
+    "<local-command-stdout>", "<task-notification>", "<system-reminder>",
+    "<ide_opened_file>", "<ide_selection>",
+};
+static const char *const TITLE_CONTROL_CLOSE[] = {
+    "</command-message>", "</command-name>", "</command-args>",
+    "</local-command-caveat>", "</local-command-stderr>",
+    "</local-command-stdout>", "</task-notification>", "</system-reminder>",
+    "</ide_opened_file>", "</ide_selection>",
+};
+#define TITLE_N_CONTROL 10
+
+/* Python _MACHINE_PREFIXES (agent/title_generator.py:130) + LEGACY prefix. */
+static const char *const TITLE_MACHINE_PREFIXES[] = {
+    "[CONTEXT COMPACTION",
+    "[CONTEXT SUMMARY]:",
+    "[Runtime note:",
+    "[System note:",
+    "[SYSTEM]",
+    "[System: The active model for this chat has changed to ",
+};
+#define TITLE_N_MACHINE 6
+
+/* Python MAX_DERIVED_TITLE_CHARS = 48. */
+#define TITLE_MAX_DERIVED 48
+
+/* PoP: strip_control_wrappers @ agent/title_generator.py:strip_control_wrappers */
+char *title_strip_control_wrappers(const char *text) {
+    if (!text) return strdup("");
+    /* current = text.strip() */
+    const char *s = text;
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    size_t slen = strlen(s);
+    while (slen > 0 && (s[slen-1] == ' ' || s[slen-1] == '\t' || s[slen-1] == '\n' || s[slen-1] == '\r')) slen--;
+
+    char *current = strndup(s, slen);
+    if (!current) return strdup("");
+
+    /* Bounded loop: each pass must remove at least one wrapper or stop. */
+    for (int pass = 0; pass < TITLE_N_CONTROL * 2; pass++) {
+        char *stripped = current;
+        int changed = 0;
+        for (int i = 0; i < TITLE_N_CONTROL && !changed; i++) {
+            const char *open = TITLE_CONTROL_OPEN[i];
+            const char *close = TITLE_CONTROL_CLOSE[i];
+            /* if not stripped.lower().startswith(open_tag) */
+            size_t openlen = strlen(open);
+            if (strncasecmp(stripped, open, openlen) != 0) continue;
+            /* find close tag (case-insensitive) */
+            char *end = NULL;
+            {
+                size_t l = strlen(stripped);
+                char *low = malloc(l + 1);
+                if (low) {
+                    for (size_t k = 0; k < l; k++) low[k] = (char)tolower((unsigned char)stripped[k]);
+                    low[l] = '\0';
+                    char *cl = strstr(low, close);
+                    if (cl) end = stripped + (cl - low);
+                    free(low);
+                }
+            }
+            if (!end) {
+                /* Unterminated wrapper: drop the opening tag, keep body. */
+                stripped = strdup(stripped + openlen);
+                /* strip */
+                {
+                    char *p = stripped;
+                    while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+                    char *q = p + strlen(p);
+                    while (q > p && (q[-1] == ' ' || q[-1] == '\t' || q[-1] == '\n' || q[-1] == '\r')) q--;
+                    *q = '\0';
+                    if (p != stripped) memmove(stripped, p, (size_t)(q - p) + 1);
+                }
+                changed = 1;
+            } else {
+                char *inner = strndup(stripped + openlen, (size_t)(end - (stripped + openlen)));
+                char *rest = strdup(end + strlen(close));
+                /* strip both */
+                char *inner_s = inner, *rest_s = rest;
+                while (*inner_s == ' ' || *inner_s == '\t' || *inner_s == '\n' || *inner_s == '\r') inner_s++;
+                {
+                    char *q = inner_s + strlen(inner_s);
+                    while (q > inner_s && (q[-1]==' '||q[-1]=='\t'||q[-1]=='\n'||q[-1]=='\r')) q--;
+                    *q = '\0';
+                }
+                while (*rest_s == ' ' || *rest_s == '\t' || *rest_s == '\n' || *rest_s == '\r') rest_s++;
+                {
+                    char *q = rest_s + strlen(rest_s);
+                    while (q > rest_s && (q[-1]==' '||q[-1]=='\t'||q[-1]=='\n'||q[-1]=='\r')) q--;
+                    *q = '\0';
+                }
+                /* Prefer trailing prose; otherwise the wrapper's own body. */
+                char *next = (*rest_s) ? strdup(rest_s) : strdup(inner_s);
+                free(inner); free(rest);
+                stripped = next;
+                changed = 1;
+            }
+        }
+        if (!changed) break;
+        free(current);
+        current = stripped;
+    }
+    return current;
+}
+
+/* PoP: _clean_title @ agent/title_generator.py:_clean_title */
+char *title_clean_title(const char *text) {
+    if (!text) return NULL;
+    /* title = " ".join((text or "").split()) */
+    char *buf = malloc(strlen(text) * 2 + 1);
+    if (!buf) return NULL;
+    size_t w = 0;
+    int in_space = 0;
+    for (const char *p = text; *p; p++) {
+        if (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') {
+            if (w > 0) in_space = 1;
+        } else {
+            if (in_space && w > 0) buf[w++] = ' ';
+            in_space = 0;
+            buf[w++] = *p;
+        }
+    }
+    buf[w] = '\0';
+    /* title.strip('"\'') then strip() */
+    size_t start = 0, end = w;
+    while (start < end && (buf[start] == '"' || buf[start] == '\'')) start++;
+    while (end > start && (buf[end-1] == '"' || buf[end-1] == '\'')) end--;
+    while (start < end && (buf[start]==' '||buf[start]=='\t'||buf[start]=='\n'||buf[start]=='\r')) start++;
+    while (end > start && (buf[end-1]==' '||buf[end-1]=='\t'||buf[end-1]=='\n'||buf[end-1]=='\r')) end--;
+    buf[end] = '\0';
+    if (start) memmove(buf, buf + start, end - start + 1);
+    /* if title.lower().startswith("title:") */
+    if (strncasecmp(buf, "title:", 6) == 0) {
+        size_t blen = strlen(buf);
+        char *nb = strdup(buf + 6);
+        free(buf);
+        buf = nb;
+        /* strip() */
+        char *p = buf;
+        while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+        char *q = p + strlen(p);
+        while (q > p && (q[-1]==' '||q[-1]=='\t'||q[-1]=='\n'||q[-1]=='\r')) q--;
+        *q = '\0';
+        if (p != buf) memmove(buf, p, (size_t)(q - p) + 1);
+    }
+    /* title.rstrip(".!;,:" ) */
+    {
+        size_t blen = strlen(buf);
+        while (blen > 0 && strchr(".!;,:", buf[blen-1])) blen--;
+        buf[blen] = '\0';
+    }
+    if (!*buf) { free(buf); return NULL; }
+    /* if len(title) > 80: title[:77].rstrip() + "..." */
+    if (strlen(buf) > 80) {
+        char cut[81];
+        memcpy(cut, buf, 77);
+        cut[77] = '\0';
+        size_t cl = 77;
+        while (cl > 0 && (cut[cl-1]==' '||cut[cl-1]=='\t'||cut[cl-1]=='\n'||cut[cl-1]=='\r')) cl--;
+        cut[cl] = '\0';
+        char *out = NULL;
+        asprintf(&out, "%s...", cut);
+        free(buf);
+        return out;
+    }
+    return buf;
+}
+
+/* PoP: _extract_title_text @ agent/title_generator.py:_extract_title_text */
+char *title_extract_title_text(const char *content) {
+    if (!content || !*content) return strdup("");
+    /* raw = content.strip() */
+    const char *s = content;
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    size_t slen = strlen(s);
+    while (slen > 0 && (s[slen-1]==' '||s[slen-1]=='\t'||s[slen-1]=='\n'||s[slen-1]=='\r')) slen--;
+    char *raw = strndup(s, slen);
+    if (!raw) return strdup("");
+
+    /* Fenced JSON: ^```(?:json)?\s*(.*?)\s*```$ */
+    {
+        char *strip_raw = raw;
+        while (*strip_raw == ' ' || *strip_raw == '\t' || *strip_raw == '\n' || *strip_raw == '\r') strip_raw++;
+        if (strncmp(strip_raw, "```", 3) == 0) {
+            /* find closing ``` */
+            size_t l = strlen(strip_raw);
+            char *low = strip_raw;
+            /* naive: find last "```" */
+            char *last_close = NULL;
+            for (char *p = low + 3; p; p = strstr(p, "```")) { last_close = p; p += 3; }
+            if (last_close) {
+                char *inner_start = low + 3;
+                if (strncmp(inner_start, "json", 4) == 0 && (inner_start[4]==' '||inner_start[4]=='\n'||inner_start[4]=='\t'||inner_start[4]=='\r'))
+                    inner_start += 4;
+                size_t il = (size_t)(last_close - inner_start);
+                char *nraw = strndup(inner_start, il);
+                free(raw);
+                raw = nraw;
+            }
+        }
+    }
+
+    /* json.loads(raw); if dict with "title" str -> return it */
+    json_t *parsed = json_parse(raw, NULL);
+    if (parsed && parsed->type == JSON_OBJECT) {
+        json_t *t = json_obj_get(parsed, "title");
+        if (t && t->type == JSON_STRING && t->str_val) {
+            /* return parsed["title"].strip() */
+            const char *tv = t->str_val;
+            while (*tv == ' ' || *tv == '\t' || *tv == '\n' || *tv == '\r') tv++;
+            size_t tl = strlen(tv);
+            while (tl > 0 && (tv[tl-1]==' '||tv[tl-1]=='\t'||tv[tl-1]=='\n'||tv[tl-1]=='\r')) tl--;
+            char *out = strndup(tv, tl);
+            json_free(parsed); free(raw);
+            return out;
+        }
+    }
+    if (parsed) json_free(parsed);
+
+    /* Loose scan: "title"\s*:\s*"((?:[^"\\]|\\.)*)" */
+    {
+        char *m = strstr(raw, "\"title\"");
+        if (m) {
+            char *colon = m + 7;
+            while (*colon == ' ' || *colon == '\t') colon++;
+            if (*colon == ':') {
+                colon++;
+                while (*colon == ' ' || *colon == '\t') colon++;
+                if (*colon == '"') {
+                    /* read until unescaped closing quote */
+                    char *out = malloc(strlen(colon) + 1);
+                    size_t ow = 0;
+                    colon++; /* skip opening quote */
+                    while (*colon && *colon != '"') {
+                        if (*colon == '\\' && colon[1]) { colon++; }
+                        out[ow++] = *colon;
+                        colon++;
+                    }
+                    out[ow] = '\0';
+                    char *res = out;
+                    while (*res == ' ' || *res == '\t' || *res == '\n' || *res == '\r') res++;
+                    size_t rl = strlen(res);
+                    while (rl > 0 && (res[rl-1]==' '||res[rl-1]=='\t'||res[rl-1]=='\n'||res[rl-1]=='\r')) rl--;
+                    char *final = strndup(res, rl);
+                    free(out);
+                    free(raw);
+                    return final;
+                }
+            }
+        }
+    }
+
+    /* Prose fallback: first real line, strip leading "title:". */
+    {
+        const char *line = raw;
+        while (*line == ' ' || *line == '\t' || *line == '\n' || *line == '\r') line++;
+        const char *nl = strchr(line, '\n');
+        size_t ll = nl ? (size_t)(nl - line) : strlen(line);
+        char *ln = strndup(line, ll);
+        /* strip */
+        char *p = ln;
+        while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+        char *q = p + strlen(p);
+        while (q > p && (q[-1]==' '||q[-1]=='\t'||q[-1]=='\n'||q[-1]=='\r')) q--;
+        *q = '\0';
+        if (p != ln) memmove(ln, p, (size_t)(q - p) + 1);
+        if (strncasecmp(ln, "title:", 6) == 0) {
+            char *nb = strdup(ln + 6);
+            free(ln);
+            ln = nb;
+            p = ln;
+            while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+            q = p + strlen(p);
+            while (q > p && (q[-1]==' '||q[-1]=='\t'||q[-1]=='\n'||q[-1]=='\r')) q--;
+            *q = '\0';
+            if (p != ln) memmove(ln, p, (size_t)(q - p) + 1);
+        }
+        /* strip('"\'') then strip() */
+        size_t start = 0, end = strlen(ln);
+        while (start < end && (ln[start] == '"' || ln[start] == '\'')) start++;
+        while (end > start && (ln[end-1] == '"' || ln[end-1] == '\'')) end--;
+        ln[end] = '\0';
+        if (start) memmove(ln, ln + start, end - start + 1);
+        char *res = ln;
+        while (*res == ' ' || *res == '\t' || *res == '\n' || *res == '\r') res++;
+        size_t rl = strlen(res);
+        while (rl > 0 && (res[rl-1]==' '||res[rl-1]=='\t'||res[rl-1]=='\n'||res[rl-1]=='\r')) rl--;
+        res[rl] = '\0';
+        if (res != ln) memmove(ln, res, rl + 1);
+        free(raw);
+        return ln;
+    }
+}
+
+/* PoP: is_titleable_user_message @ agent/title_generator.py:is_titleable_user_message */
+bool title_is_titleable_user_message(const char *user_message) {
+    if (!user_message) return false;
+    /* if not isinstance(str) or not user_message.strip() */
+    const char *p = user_message;
+    while (*p == ' ' || *p == '\t' || *p == '\n' || *p == '\r') p++;
+    if (!*p) return false;
+    /* machine prefixes */
+    const char *lp = user_message;
+    while (*lp == ' ' || *lp == '\t' || *lp == '\n' || *lp == '\r') lp++;
+    for (int i = 0; i < TITLE_N_MACHINE; i++) {
+        size_t pl = strlen(TITLE_MACHINE_PREFIXES[i]);
+        if (strncasecmp(lp, TITLE_MACHINE_PREFIXES[i], pl) == 0) return false;
+    }
+    /* return bool(_summarize_user_message(user_message).strip()) */
+    char *summ = summarize_user_message(user_message);
+    int result = 0;
+    if (summ) {
+        const char *sp = summ;
+        while (*sp == ' ' || *sp == '\t' || *sp == '\n' || *sp == '\r') sp++;
+        result = *sp != '\0';
+    }
+    free(summ);
+    return result != 0;
+}
+
+/* PoP: derive_title @ agent/title_generator.py:derive_title */
+char *title_derive_title(const char *user_message) {
+    char *text = summarize_user_message(user_message);
+    if (!text) return NULL;
+    const char *sp = text;
+    while (*sp == ' ' || *sp == '\t' || *sp == '\n' || *sp == '\r') sp++;
+    if (!*sp) { free(text); return NULL; }
+    /* first non-empty line */
+    const char *line_start = sp;
+    const char *nl = strchr(line_start, '\n');
+    size_t ll = nl ? (size_t)(nl - line_start) : strlen(line_start);
+    /* find the actual first non-empty line (Python uses generator over all
+     * lines, but text is stripped so the first line is non-empty). */
+    char *line = strndup(line_start, ll);
+    /* line = " ".join(line.split()) */
+    char *buf = malloc(strlen(line) * 2 + 1);
+    if (!buf) { free(line); free(text); return NULL; }
+    size_t w = 0;
+    int in_space = 0;
+    for (const char *q = line; *q; q++) {
+        if (*q == ' ' || *q == '\t' || *q == '\n' || *q == '\r') { if (w > 0) in_space = 1; }
+        else { if (in_space && w > 0) buf[w++] = ' '; in_space = 0; buf[w++] = *q; }
+    }
+    buf[w] = '\0';
+    free(line);
+    if (!*buf) { free(buf); free(text); return NULL; }
+
+    char *out = NULL;
+    if (strlen(buf) > TITLE_MAX_DERIVED) {
+        char *cut = strndup(buf, TITLE_MAX_DERIVED);
+        /* space = cut.rfind(" "); if space > MAX//2: cut = cut[:space] */
+        char *last_space = strrchr(cut, ' ');
+        if (last_space && (size_t)(last_space - cut) > TITLE_MAX_DERIVED / 2) {
+            *last_space = '\0';
+        }
+        /* cut.rstrip(" ,.;:—-") + "…" */
+        size_t cl = strlen(cut);
+        while (cl > 0 && strchr(" ,.;:—-", cut[cl-1])) cl--;
+        cut[cl] = '\0';
+        asprintf(&out, "%s…", cut);
+        free(cut);
+    } else {
+        out = strdup(buf);
+    }
+    free(buf);
+    free(text);
+    return out && *out ? out : (out ? (free(out), NULL) : NULL);
 }

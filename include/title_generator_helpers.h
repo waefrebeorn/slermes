@@ -37,6 +37,31 @@ char *persist_session_title(db_t *session_db, const char *session_id,
                             const char *title,
                             session_title_result_t *result);
 
+/* PoP: strip_control_wrappers @ agent/title_generator.py:strip_control_wrappers */
+/* Remove leading machine-authored control wrappers (nested), returning the
+ * user's prose. Caller frees. */
+char *title_strip_control_wrappers(const char *text);
+
+/* PoP: _clean_title @ agent/title_generator.py:_clean_title */
+/* Normalize a model-produced title, or NULL when nothing usable remains.
+ * Caller frees. */
+char *title_clean_title(const char *text);
+
+/* PoP: _extract_title_text @ agent/title_generator.py:_extract_title_text */
+/* Pull the title out of a model response (JSON object, loose scan, prose
+ * fallback). Caller frees. */
+char *title_extract_title_text(const char *content);
+
+/* PoP: is_titleable_user_message @ agent/title_generator.py:is_titleable_user_message */
+/* True when a user message carries real intent to title from (not machine
+ * scaffolding, not empty after stripping control wrappers). */
+bool title_is_titleable_user_message(const char *user_message);
+
+/* PoP: derive_title @ agent/title_generator.py:derive_title */
+/* Build an instant (dumb, word-boundary) title from a user message. Caller
+ * frees; NULL when nothing usable. */
+char *title_derive_title(const char *user_message);
+
 #ifdef __cplusplus
 }
 #endif
