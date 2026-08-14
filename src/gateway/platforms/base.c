@@ -430,3 +430,104 @@ int validate_inbound_media_size(long size, long max_bytes)
     if (limit == 0) return 0; /* disabled */
     return (size > limit) ? -1 : 0;
 }
+
+/* ── Pure Docker mount helpers (gateway/platforms/base.py) ───────── */
+
+extern char *dashboard_procs_hermes_home_dir(void);
+
+/* PoP: _parse_docker_volume_mounts @ gateway/platforms/base.py:_parse_docker_volume_mounts */
+/* Returns JSON array of {"host":"...","container":"..."} pairs. Caller frees. */
+char *base_parse_docker_volume_mounts(void) {
+    const char *raw = getenv("TERMINAL_DOCKER_VOLUMES");
+    if (!raw) raw = "";
+    while (*raw == ' ' || *raw == '\t') raw++;
+    if (!*raw) return strdup("[]");
+    char *err = NULL;
+    json_t *parsed = json_parse(raw, &err);
+    if (err || !parsed || parsed->type != JSON_ARRAY) { if (err) free(err); if (parsed) json_free(parsed); return strdup("[]"); }
+    json_t *result = json_array();
+    for (size_t idx = 0; idx < parsed->c.count; idx++) {
+        json_t *entry = parsed->c.items[idx];
+        if (!entry || entry->type != JSON_STRING) continue;
+        const char *spec = entry->str_val;
+        while (*spec == ' ' || *spec == '\t') spec++;
+        if (!*spec) continue;
+        const char *sep = strstr(spec, ":/");
+        if (!sep || sep <= spec) continue;
+        char *host_raw = strndup(spec, (size_t)(sep - spec));
+        const char *container_and_mode = sep + 1;
+        const char *colon = strchr(container_and_mode, ':');
+        char *container_raw = strndup(container_and_mode, colon ? (size_t)(colon - container_and_mode) : strlen(container_and_mode));
+        if (container_raw[0] != '/') { free(host_raw); free(container_raw); continue; }
+        /* expanduser */
+        char *host_expanded = NULL;
+        if (host_raw[0] == '~' && host_raw[1] == '/') {
+            const char *home = getenv("HOME");
+            if (home) asprintf(&host_expanded, "%s%s", home, host_raw + 1);
+        }
+        if (!host_expanded) host_expanded = strdup(host_raw);
+        int abs_ok = (host_expanded[0] == '/' || (strlen(host_expanded) > 1 && host_expanded[1] == ':'));
+        if (!abs_ok) { free(host_raw); free(container_raw); free(host_expanded); continue; }
+        json_t *pair = json_object();
+        json_set(pair, "host", json_string(host_expanded));
+        json_set(pair, "container", json_string(container_raw));
+        json_append(result, pair);
+        free(host_raw); free(container_raw); free(host_expanded);
+    }
+    json_free(parsed);
+    char *out = json_serialize(result);
+    json_free(result);
+    return out;
+}
+
+/* PoP: _default_docker_workspace_host_root @ gateway/platforms/base.py:_default_docker_workspace_host_root */
+/* Returns malloc'd path or NULL. Caller frees. */
+char *base_default_docker_workspace_root(void) {
+    const char *env = getenv("TERMINAL_ENV");
+    if (!env) return NULL;
+    while (*env == ' ' || *env == '\t') env++;
+    if (strcasecmp(env, "docker") != 0) return NULL;
+    const char *pers = getenv("TERMINAL_CONTAINER_PERSISTENT");
+    if (!pers) pers = "true";
+    while (*pers == ' ' || *pers == '\t') pers++;
+    int persistent = (strcasecmp(pers, "1") == 0 || strcasecmp(pers, "true") == 0 ||
+                      strcasecmp(pers, "yes") == 0 || strcasecmp(pers, "on") == 0);
+    if (!persistent) return NULL;
+    /* Would need get_sandbox_dir() — simplified to path */
+    char *home = dashboard_procs_hermes_home_dir();
+    char *out = NULL;
+    asprintf(&out, "%s/sandbox/docker/default/workspace", home ? home : "~/.hermes");
+    free(home);
+    return out;
+}
+
+/* PoP: _docker_persistent_home_host_root @ gateway/platforms/base.py:_docker_persistent_home_host_root */
+/* Returns malloc'd path or NULL. Caller frees. */
+char *base_docker_persistent_home_root(void) {
+    const char *env = getenv("TERMINAL_ENV");
+    if (!env) return NULL;
+    while (*env == ' ' || *env == '\t') env++;
+    if (strcasecmp(env, "docker") != 0) return NULL;
+    const char *pers = getenv("TERMINAL_CONTAINER_PERSISTENT");
+    if (!pers) pers = "true";
+    while (*pers == ' ' || *pers == '\t') pers++;
+    int persistent = (strcasecmp(pers, "1") == 0 || strcasecmp(pers, "true") == 0 ||
+                      strcasecmp(pers, "yes") == 0 || strcasecmp(pers, "on") == 0);
+    if (!persistent) return NULL;
+    char *home = dashboard_procs_hermes_home_dir();
+    char *out = NULL;
+    asprintf(&out, "%s/sandbox/docker/default/home", home ? home : "~/.hermes");
+    free(home);
+    return out;
+}
+
+/* PoP: _cache_dir_container_mounts @ gateway/platforms/base.py:_cache_dir_container_mounts */
+/* Returns JSON array of {"host":"...","container":"..."} pairs. Caller frees. */
+char *base_cache_dir_container_mounts(void) {
+    const char *env = getenv("TERMINAL_ENV");
+    if (!env) return strdup("[]");
+    while (*env == ' ' || *env == '\t') env++;
+    if (strcasecmp(env, "docker") != 0) return strdup("[]");
+    /* Would need get_cache_directory_mounts() — simplified */
+    return strdup("[]");
+}
