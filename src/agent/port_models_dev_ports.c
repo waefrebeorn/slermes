@@ -233,7 +233,7 @@ char *mdv_find_model_entry(const char *models_json, const char *model_id) {
     return strndup(v, (size_t)(e - v));
 }
 
-/* PoP: get_model_capabilities @ agent/models_dev.py:get_model_capabilities */
+/* PoP: mdv_get_model_capabilities @ agent/models_dev.py:get_model_capabilities */
 char *mdv_get_model_capabilities(const char *registry_json, const char *provider, const char *model) {
     if (!registry_json || !model) return strdup("{}");
     char *models = mdv_get_provider_models(registry_json, provider ? provider : "");
@@ -381,7 +381,7 @@ char *mdv_get_provider_info(const char *registry_json, const char *provider) {
     return strndup(v, (size_t)(e - v));
 }
 
-/* PoP: get_model_info @ agent/models_dev.py:get_model_info */
+/* PoP: mdv_get_model_info @ agent/models_dev.py:get_model_info */
 char *mdv_get_model_info(const char *registry_json, const char *provider, const char *model) {
     if (!registry_json || !model) return NULL;
     char *models = mdv_get_provider_models(registry_json, provider ? provider : "");

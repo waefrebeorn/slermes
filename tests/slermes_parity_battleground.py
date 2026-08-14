@@ -853,6 +853,57 @@ class ParityAnalyzer:
         r'(?:static\s+|inline\s+)?(?:const\s+|unsigned\s+)?'
         r'(?:[\w:]+\s+)+?(\*?\w+)\s*\(([^;]*?)\)\s*\{', re.S)
 
+    @staticmethod
+    def _strip_comments(content):
+        """Strip C-style comments (// line and /* block */) from content.
+        Replaces comment text with spaces to preserve character positions."""
+        result = list(content)
+        i = 0
+        n = len(result)
+        in_string = False
+        in_char = False
+        while i < n:
+            if in_string:
+                if result[i] == '"' and (i == 0 or result[i-1] != '\\'):
+                    in_string = False
+                i += 1
+                continue
+            if in_char:
+                if result[i] == "'" and (i == 0 or result[i-1] != '\\'):
+                    in_char = False
+                i += 1
+                continue
+            if result[i] == '"':
+                in_string = True
+                i += 1
+                continue
+            if result[i] == "'":
+                in_char = True
+                i += 1
+                continue
+            if result[i] == '/' and i + 1 < n:
+                if result[i+1] == '/':
+                    # Line comment: replace until newline
+                    while i < n and result[i] != '\n':
+                        result[i] = ' '
+                        i += 1
+                    continue
+                if result[i+1] == '*':
+                    # Block comment: replace until */
+                    result[i] = ' '
+                    result[i+1] = ' '
+                    i += 2
+                    while i < n and not (result[i] == '*' and i + 1 < n and result[i+1] == '/'):
+                        result[i] = ' '
+                        i += 1
+                    if i < n:
+                        result[i] = ' '
+                        result[i+1] = ' '
+                        i += 2
+                    continue
+            i += 1
+        return ''.join(result)
+
     def _ensure_port_graph(self):
         if hasattr(self, '_port_defined'):
             return
@@ -862,8 +913,14 @@ class ParityAnalyzer:
                 continue
             for rel in rels:
                 content, _ = self.c_index._get_cached_content(rel)
-                for m in self._FUNC_DEF.finditer(content):
+                # Strip C comments before scanning for function definitions —
+                # otherwise the regex matches text inside /* */ comments that
+                # looks like a function signature (e.g. "suffix (_YYYYMMDD...)").
+                stripped = self._strip_comments(content)
+                for m in self._FUNC_DEF.finditer(stripped):
                     name = m.group(1)
+                    # Strip leading * from pointer return types (regex captures it)
+                    name = name.lstrip('*')
                     if name in ('if','while','for','switch','return','sizeof','catch'):
                         continue
                     body_start = m.end(); depth = 1; pos = body_start
@@ -1054,6 +1111,13 @@ class ParityAnalyzer:
         if pop_annotations:
             pop = pop_annotations[0]
             self._ensure_port_graph()
+            # Annotation-only stub: PoP comment exists but the C function
+            # has no body in any port_*.c file → not actually ported.
+            if pop.c_function not in self._port_defined:
+                return GapEntry(py_file, feature, "REAL_GAP", c_location=pop.c_file,
+                                c_function=pop.c_function, pop_annotation=pop,
+                                stub_reason="PoP annotation with no C function body (annotation-only stub)",
+                                severity="HIGH", da_flags=["DA-4:annotation-only-stub"])
             if self._recursive_bootleg(pop.c_function):
                 # Cross-check the Python side: a trivial Python function ports
                 # faithfully as a trivial C function — only flag when the

@@ -163,6 +163,8 @@ def compute():
     real = tot["real_gaps"]
     partial = tot["partial"]
     pct = tot["coverage_pct"]
+    da4 = tot.get("da4_annotation_only_stubs", 0)
+    genuine = tot.get("genuine_gaps", real)
 
     # BOOTLEG count from the recursive hunter (0 = every function does real
     # observable work or faithfully mirrors Python's own trivial behavior).
@@ -211,7 +213,8 @@ def compute():
     return dict(ported=ported, real=real, partial=partial, total=total,
                 pct=pct, bootleg=bootleg, ahead=ahead, behind=behind,
                 last_merge=last_merge, phase=phase, version=current_version(),
-                stamp=doc.get("_generated_at", "unknown-time"))
+                stamp=doc.get("_generated_at", "unknown-time"),
+                da4=da4, genuine=genuine)
 
 
 def count_block(d):
@@ -221,9 +224,13 @@ def count_block(d):
                     else "unknown")
     ahead = d['ahead'] if d['ahead'] >= 0 else "?"
     behind = d['behind'] if d['behind'] >= 0 else "?"
+    da4 = d.get('da4', 0)
+    genuine = d.get('genuine', d['real'])
     return (
         f"| PORTED  | {d['ported']:,} / {d['total']:,} ({d['pct']:.1f}%) |\n"
         f"| REAL_GAP| {d['real']:,} ({100.0 * d['real'] / d['total']:.1f}%) — no N/A |\n"
+        f"|  ├ DA-4 annotation-only stubs | {da4:,} (PoP comment, no C body) |\n"
+        f"|  └ Genuine gaps (no C at all) | {genuine:,} |\n"
         f"| PARTIAL | {d['partial']:,} ({partial_pct:.1f}%) |\n"
         f"| BOOTLEG | {bootleg_line} (recursive_false_gap_hunter.py) |\n"
         f"\n"
@@ -310,11 +317,15 @@ def roadmap_block(d):
 def parity_summary_block(d):
     """docs/parity-summary.md Overall Numbers table (live)."""
     partial_pct = 100.0 * d['partial'] / d['total'] if d['total'] else 0.0
+    da4 = d.get('da4', 0)
+    genuine = d.get('genuine', d['real'])
     return (
         f"| Classification | Count | Percentage | Meaning |\n"
         f"|----------------|-------|------------|---------|\n"
-        f"| **PORTED** | {d['ported']:,} | {d['pct']:.1f}% | C11 implementation with PoP annotation |\n"
-        f"| **REAL_GAP** | {d['real']:,} | {100.0 * d['real'] / d['total']:.1f}% | Honest gaps (not yet ported — IO/network/DB/logic; NOT faked) |\n"
+        f"| **PORTED** | {d['ported']:,} | {d['pct']:.1f}% | C11 implementation with PoP annotation + real C body |\n"
+        f"| **REAL_GAP** | {d['real']:,} | {100.0 * d['real'] / d['total']:.1f}% | Honest gaps (not yet ported) |\n"
+        f"|  ├ DA-4 annotation-only stubs | {da4:,} | — | PoP comment with NO C function body (scanner was fooled) |\n"
+        f"|  └ Genuine gaps (no C at all) | {genuine:,} | — | No C equivalent exists anywhere |\n"
         f"| **PARTIAL** | {d['partial']:,} | {partial_pct:.1f}% | All C fns now carry PoP annotations |\n"
         f"| **BOOTLEG** | {d['bootleg'] if d['bootleg'] is not None else '?'} | — | No-work echo stubs (recursive_false_gap_hunter.py) |\n"
         f"| **TOTAL** | {d['total']:,} | 100% | All Python functions/methods scanned |\n"
@@ -328,10 +339,13 @@ def parity_summary_block(d):
 def index_line(d):
     """User-level INDEX.md battleship status line."""
     b = d['bootleg'] if d['bootleg'] is not None else "?"
+    da4 = d.get('da4', 0)
+    genuine = d.get('genuine', d['real'])
     return (
         f"- **battleship.md** — Current state: {d['version']} {d['phase']} phase. "
         f"Live scanner: {d['ported']:,}/{d['total']:,} ({d['pct']:.1f}%) PORTED, "
-        f"{d['real']:,} REAL_GAP, {d['partial']:,} PARTIAL, **{b} BOOTLEG** "
+        f"{d['real']:,} REAL_GAP ({da4:,} DA-4 stubs, {genuine:,} genuine), "
+        f"{d['partial']:,} PARTIAL, **{b} BOOTLEG** "
         f"(make parity-walkway)."
     )
 
@@ -466,11 +480,16 @@ def readme_header_block(d):
     """README.md derived header (version + phase + sync checkpoint)."""
     ahead = d['ahead'] if d['ahead'] >= 0 else "?"
     behind = d['behind'] if d['behind'] >= 0 else "?"
+    da4 = d.get('da4', 0)
+    genuine = d.get('genuine', d['real'])
     return (
         f"**Version:** {d['version']} ({d['phase']} phase)  \n"
         f"**Last updated:** {d['stamp'][:10]}\n\n"
         f"> Live counts from `make parity-walkway` (sentinel PARITY:AUTO). "
         f"Do not hand-edit — regenerated from the live scanner on every run.\n\n"
+        f"**Parity:** {d['ported']:,} PORTED ({d['pct']:.1f}%) · "
+        f"{d['real']:,} REAL_GAP ({da4:,} DA-4 stubs, {genuine:,} genuine) · "
+        f"{d['bootleg'] if d['bootleg'] is not None else '?'} BOOTLEG\n\n"
         f"**Upstream sync checkpoint:** {ahead:,} ahead / {behind:,} behind "
         f"upstream/main (last merge {d['last_merge']}). "
         f"{'The repo is up to date with upstream.' if behind == 0 else 'The behind-count is the staleness timer.'}\n"
@@ -480,6 +499,8 @@ def readme_header_block(d):
 def index_toc_block(d):
     """docs/index.md derived TOC (mirrors src/ layout, counts from scanner)."""
     b = d['bootleg'] if d['bootleg'] is not None else "?"
+    da4 = d.get('da4', 0)
+    genuine = d.get('genuine', d['real'])
     return (
         f"## Project Status\n\n"
         f"| Metric | Value |\n"
@@ -487,6 +508,8 @@ def index_toc_block(d):
         f"| **Version** | {d['version']} ({d['phase']} phase) |\n"
         f"| **PORTED** | {d['ported']:,} ({d['pct']:.1f}% of {d['total']:,}) |\n"
         f"| **REAL_GAP** | {d['real']:,} ({100.0 * d['real'] / d['total']:.1f}%) |\n"
+        f"|  ├ DA-4 stubs | {da4:,} |\n"
+        f"|  └ Genuine | {genuine:,} |\n"
         f"| **PARTIAL** | {d['partial']:,} |\n"
         f"| **BOOTLEG** | {b} |\n"
         f"| **Upstream Sync** | {d['ahead']:,} ahead / {d['behind']:,} behind |\n"

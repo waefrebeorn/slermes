@@ -9,13 +9,15 @@
 <!-- PARITY:AUTO -->
 | Classification | Count | Percentage | Meaning |
 |----------------|-------|------------|---------|
-| **PORTED** | 12,735 | 95.3% | C11 implementation with PoP annotation |
-| **REAL_GAP** | 624 | 4.7% | Honest gaps (not yet ported — IO/network/DB/logic; NOT faked) |
+| **PORTED** | 5,543 | 41.4% | C11 implementation with PoP annotation + real C body |
+| **REAL_GAP** | 7,861 | 58.6% | Honest gaps (not yet ported) |
+|  ├ DA-4 annotation-only stubs | 7,813 | — | PoP comment with NO C function body (scanner was fooled) |
+|  └ Genuine gaps (no C at all) | 48 | — | No C equivalent exists anywhere |
 | **PARTIAL** | 0 | 0.0% | All C fns now carry PoP annotations |
-| **BOOTLEG** | 70 | — | No-work echo stubs (recursive_false_gap_hunter.py) |
-| **TOTAL** | 13,359 | 100% | All Python functions/methods scanned |
+| **BOOTLEG** | 117 | — | No-work echo stubs (recursive_false_gap_hunter.py) |
+| **TOTAL** | 13,404 | 100% | All Python functions/methods scanned |
 
-> **Generated 2026-08-12T06:17:49Z by `make parity-walkway` from the live scanner.** The PORT phase (v398→v667) is legacy — this table is the single source of truth for completeness. Do not hand-edit.
+> **Generated 2026-08-14T23:15:26Z by `make parity-walkway` from the live scanner.** The PORT phase (v398→v667) is legacy — this table is the single source of truth for completeness. Do not hand-edit.
 <!-- /PARITY:AUTO -->
 
 **Generated:** 2026-08-07 (post-sync, v670 checkpoint) from live scanner
@@ -25,13 +27,25 @@ Closing REAL_GAPs is the path forward.
 
 ## How to read the numbers
 
-- **PORTED** — C11 implementation with a `/* PoP: fn @ module.py:fn */` annotation,
-  verified by the oracle harness where available.
-- **REAL_GAP** — Python function not yet ported to C. These are honest gaps, not fakes.
-  Each one needs a real C implementation (no stubs, no `printf`+`return NULL`).
+- **PORTED** — C11 implementation with a `/* PoP: fn @ module.py:fn */` annotation
+  AND a real C function body, verified by the oracle harness where available.
+- **REAL_GAP** — Python function not yet ported to C. Two subclasses:
+  - **DA-4 annotation-only stubs** — a PoP comment exists but has NO C function
+    body behind it. The scanner was previously fooled into counting these as
+    PORTED. They need real C implementations.
+  - **Genuine gaps** — no C equivalent exists anywhere.
 - **PARTIAL** — C fn exists with a PoP annotation but needs full implementation logic.
 - **BOOTLEG** — No-work echo stubs caught by `recursive_false_gap_hunter.py`.
   These should delegate to real C infrastructure (see `slermes-parity-bulk-drain` skill).
+
+## DA-4: the annotation-only stub problem
+
+Previously the scanner counted any PoP-annotated function as PORTED, even if the
+C function body didn't exist. This let 7,813 single-line comments (`/* PoP: fn @ mod.py:fn */`)
+with zero lines of actual C code hide as "ported". The scanner now detects this:
+if the C function name from the PoP annotation has no body in the port graph,
+it's flagged `DA-4:annotation-only-stub` and counted as REAL_GAP. The fix is to
+either implement the real C body or remove the misleading annotation.
 
 ## How Gaps Were Closed (recent history)
 

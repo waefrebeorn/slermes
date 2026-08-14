@@ -100,6 +100,15 @@ def main():
         "stub": sum(m.get("stub", 0) for m in modules.values()),
         "real_gaps": sum(m.get("real_gaps", 0) for m in modules.values()),
     }
+    # DA-4 breakdown: annotation-only stubs (PoP comment, no C body)
+    da4 = 0
+    for m in modules.values():
+        for g in m.get("gaps", []):
+            if g.get("classification") == "REAL_GAP":
+                if "DA-4:annotation-only-stub" in g.get("da_flags", []):
+                    da4 += 1
+    tot["da4_annotation_only_stubs"] = da4
+    tot["genuine_gaps"] = tot["real_gaps"] - da4
     tot["modules_scanned"] = len(modules)
     tot["coverage_pct"] = round(100.0 * tot["ported"] / tot["total"], 1) if tot["total"] else 0.0
 
@@ -116,9 +125,11 @@ def main():
         json.dump(doc, f, indent=1)
         f.write("\n")
 
-    print("LIVE  PORTED %d / %d (%.1f%%)  REAL_GAP %d  PARTIAL %d  STUB %d"
+    print("LIVE  PORTED %d / %d (%.1f%%)  REAL_GAP %d (DA-4 stubs: %d, genuine: %d)  PARTIAL %d  STUB %d"
           % (tot["ported"], tot["total"], tot["coverage_pct"],
-             tot["real_gaps"], tot["partial"], tot["stub"]))
+             tot["real_gaps"], tot.get("da4_annotation_only_stubs", 0),
+             tot.get("genuine_gaps", tot["real_gaps"]),
+             tot["partial"], tot["stub"]))
     drift = doc.get("drift", {})
     print("modules scanned: %d   drift(new=%s resolved=%s status=%s)"
           % (tot["modules_scanned"], drift.get("new_gap_count"),

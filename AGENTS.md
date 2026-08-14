@@ -1,5 +1,12 @@
 # Slermes — Development Guide
 
+<!-- PARITY:AUTO -->
+> **Live scanner state (programmatic — never hand-edit):**
+> PORTED 5,543 / 13,404 (41.4%) · REAL_GAP 7,861 (DA-4 stubs: 7,813, genuine: 48)
+> · BOOTLEG 117 · v671 PORT phase
+> · Generated 2026-08-14T23:05:23Z from `make parity-walkway`
+<!-- /PARITY:AUTO -->
+
 Instructions for AI coding assistants and developers working on the **slermes**
 C11 codebase. This is the C11 port of Hermes Agent, NOT the Python project.
 The Python source lives in the parent repo (`/home/wubu/hermes-agent-dev/`)
@@ -37,14 +44,30 @@ tree is maintained as a fork-base merge so upstream stays an ancestor
 - **No landlocked statics.** Oversized static arrays become hive-backed
   (`lib/libhive`, linked blocks + skipfield + freelist).
 - **There is no N/A.** Every Python feature not yet in C is REAL_GAP work.
+- **No annotation-only stubs.** A `/* PoP: fn @ mod.py:fn */` comment WITHOUT a
+  real C function body is worse than nothing — it games the scanner. Every PoP
+  annotation MUST have a real, non-trivial C body behind it.
+- **"Continue" means EXECUTE.** When the user says "continue", pick the next
+  feasible REAL WORK and DO IT — don't restate options or ask permission.
+- **No "third party" exemption.** If it's Python in the hermes tree, we port it
+  to C11 faithfully. We build from scratch with NO concessions, reusing wubu's
+  own libs first.
+- **Time is irrelevant.** Agentic AI work takes minutes. Never cite time as a
+  reason to defer, phase, or skip work. Go heavy first.
+- **Fix broken code.** A build that "compiles" is not done. Prove it links,
+  runs, and passes tests. Diagnose before patching — find the true root cause.
+- **Opaque structs + minimal includes + C11 only.** No god headers. Keep every
+  module self-contained. Reuse, don't duplicate.
 
 ## How Porting Works
 
 1. **The scanner is the source of truth.** `python3
    tests/slermes_parity_battleground.py --json` (or `make parity-walkway`)
    reads the Python tree + C source and classifies every Python function:
-   PORTED (has `/* PoP: fn @ module.py:fn */` annotation + real C body),
-   REAL_GAP (not ported), PARTIAL, BOOTLEG (echo stub).
+   PORTED (has `/* PoP: fn @ module.py:fn */` annotation AND a real C body),
+   REAL_GAP (not ported — including DA-4 annotation-only stubs), PARTIAL, BOOTLEG (echo stub).
+   The scanner now verifies that the C function body exists — a PoP comment
+   with no body is flagged DA-4 and counted as REAL_GAP.
 2. **PoP annotations are single-line.** `/* PoP: fn @ mod.py:fn */` — one per
    Python function, exactly matching the scanner regex. Multi-line or
    `(ClassName)` forms are invisible to the scanner.

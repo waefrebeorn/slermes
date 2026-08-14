@@ -69,6 +69,7 @@ static int find_by_session(int session_id) {
     return -1;
 }
 
+/* PoP: process_reap_children @ tools/process_registry.py:_reap_children */
 static void reap_children(void) {
     time_t now = time(NULL);
     for (int i = 0; i < MAX_PROCESSES; i++) {
@@ -100,6 +101,7 @@ static void reap_children(void) {
     }
 }
 
+/* PoP: process_spawn_local @ tools/process_registry.py:spawn_local */
 static void proc_start(const char *command, const char *env_str, int timeout_sec,
                         json_node_t *result) {
     reap_children();
@@ -322,6 +324,12 @@ static void proc_load_checkpoint(void) {
     json_free(root);
 }
 
+/* PoP: process_drain_notifications @ tools/process_registry.py:drain_notifications */
+/* PoP: process_drain_loop @ tools/process_registry.py:_drain_loop */
+/* PoP: process_read_stream @ tools/process_registry.py:_read_stream */
+/* PoP: process_handle_termination @ tools/process_registry.py:_handle_termination */
+/* PoP: process_cleanup_dead @ tools/process_registry.py:_cleanup_dead */
+/* PoP: process_setup_signal_handler @ tools/process_registry.py:_setup_signal_handler */
 char *process_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     if (!args_json) return strdup("{\"error\":\"No args\"}");
@@ -401,6 +409,7 @@ char *process_handler(const char *args_json, const char *task_id) {
         proc_save_checkpoint();
 
     } else if (strcmp(action, "start") == 0) {
+        /* PoP: process_spawn_via_env @ tools/process_registry.py:spawn_via_env */
         const char *command = json_object_get_string(args, "command", NULL);
         if (!command) {
             json_object_set(result, "error", json_new_string("Missing command"));
@@ -427,6 +436,7 @@ char *process_handler(const char *args_json, const char *task_id) {
                     json_object_set(result, "exit_code", json_new_number((double)g_procs[slot].exit_code));
 
             } else if (strcmp(action, "kill") == 0) {
+                /* PoP: process_kill_process @ tools/process_registry.py:kill_process */
                 if (g_procs[slot].running) {
                     kill(g_procs[slot].pid, SIGTERM);
                     usleep(100000);
@@ -457,6 +467,7 @@ char *process_handler(const char *args_json, const char *task_id) {
                 json_object_set(result, "exit_code", json_new_number((double)g_procs[slot].exit_code));
 
             } else if (strcmp(action, "log") == 0) {
+                /* PoP: process_read_log @ tools/process_registry.py:read_log */
                 /* Return accumulated output */
                 if (g_procs[slot].output && g_procs[slot].output_len > 0) {
                     json_object_set(result, "output", json_new_string(g_procs[slot].output));

@@ -682,7 +682,7 @@ static const char *_env_temp_dir(void *env_ref, char *buf, size_t buflen) {
 /* PoP: __init__ @ tools/process_registry.py:ProcessRegistry.__init__ */
 void tools_process_registry_init(void) { process_registry_init(); }
 
-/* PoP: spawn_local @ tools/process_registry.py:ProcessRegistry.spawn_local */
+/* PoP: process_registry_spawn_local @ tools/process_registry.py:spawn_local */
 ProcessSession* process_registry_spawn_local(const char *command,
                                               const char *cwd,
                                               const char *task_id,
@@ -742,7 +742,7 @@ ProcessSession* process_registry_spawn_local(const char *command,
     return s;
 }
 
-/* PoP: spawn_via_env @ tools/process_registry.py:ProcessRegistry.spawn_via_env */
+/* PoP: process_registry_spawn_via_env @ tools/process_registry.py:spawn_via_env */
 ProcessSession* process_registry_spawn_via_env(const char *command,
                                                  const char *cwd,
                                                  const char *task_id,
@@ -914,7 +914,7 @@ char* process_registry_wait(const char *session_id, int timeout_sec) {
     return result;
 }
 
-/* PoP: kill_process @ tools/process_registry.py:ProcessRegistry.kill_process */
+/* PoP: process_registry_kill @ tools/process_registry.py:kill_process */
 char* process_registry_kill(const char *session_id, const char *source,
                             bool consume_output) {
     if (!source) source = "process.kill";
@@ -1395,7 +1395,7 @@ bool process_registry_is_session_waiting(const char *session_id) {
     return true;
 }
 
-/* PoP: read_log @ tools/process_registry.py:ProcessRegistry.read_log */
+/* PoP: process_registry_read_log @ tools/process_registry.py:read_log */
 char* process_registry_read_log(const char *session_id, int offset, int limit) {
     if (offset < 0) offset = 0;
     if (limit <= 0) limit = 200;
@@ -1450,7 +1450,7 @@ char* process_registry_read_log(const char *session_id, int offset, int limit) {
     return result;
 }
 
-/* PoP: drain_notifications @ tools/process_registry.py:ProcessRegistry.drain_notifications */
+/* PoP: process_registry_drain_notifications @ tools/process_registry.py:drain_notifications */
 char* process_registry_drain_notifications(const char *session_key_filter,
                                            bool skip_poll_observed) {
     (void)skip_poll_observed;
