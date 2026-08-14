@@ -891,3 +891,31 @@ bool cron_lifecycle_contains_gateway_lifecycle_command_or_referenced_script(
     for (size_t v = 0; v < vcount; v++) free(visited[v]);
     return result;
 }
+
+/* PoP: _sanitize_remote_script_text @ cron/lifecycle_guard.py:_sanitize_remote_script_text */
+/* Returns (text, ok) via out params. ok=0 means binary/oversized. */
+void lifecycle_sanitize_remote_script(const char *text, char **out_text, int *ok) {
+    if (!text || !*text) { *out_text = NULL; *ok = 0; return; }
+    if (strchr(text, '\x00')) { *out_text = NULL; *ok = 0; return; }
+    size_t len = strlen(text);
+    if (len > 1048576) { *out_text = NULL; *ok = 0; return; }  /* _MAX_REFERENCED_SCRIPT_BYTES = 1MB */
+    *out_text = strdup(text);
+    *ok = 1;
+}
+
+/* PoP: _expand_candidate_path @ cron/lifecycle_guard.py:_expand_candidate_path */
+/* Returns malloc'd expanded path or NULL. Caller frees. */
+char *lifecycle_expand_candidate_path(const char *candidate) {
+    if (!candidate || !*candidate) return NULL;
+    if (strchr(candidate, '\x00')) return NULL;
+    /* expanduser */
+    if (candidate[0] == '~' && candidate[1] == '/') {
+        const char *home = getenv("HOME");
+        if (home) {
+            char *out = NULL;
+            asprintf(&out, "%s%s", home, candidate + 1);
+            return out;
+        }
+    }
+    return strdup(candidate);
+}
