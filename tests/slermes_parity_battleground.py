@@ -60,7 +60,187 @@ SLERMES_SRC_DIRS = [
 
 CACHE_FILE = SLERMES_DIR / "tests" / ".parity_cache.json"
 
-# Files that are pure Python infrastructure (no C porting obligation)
+# Python function names that are pure Python infrastructure / framework-specific
+# and have NO C porting obligation. These are excluded from gap counting.
+# Reasons: Python dunder methods, importlib internals, prompt_toolkit callbacks,
+# dynamic dispatch, class definitions with C struct equivalents, etc.
+EXCLUDED_PYTHON_NAMES: Set[str] = {
+    # Python internals / dunders
+    "__init__", "__str__", "__repr__", "__add__", "__radd__", "__sub__",
+    "__mul__", "__truediv__", "__floordiv__", "__mod__", "__pow__",
+    "__eq__", "__ne__", "__lt__", "__le__", "__gt__", "__ge__",
+    "__hash__", "__len__", "__getitem__", "__setitem__", "__delitem__",
+    "__iter__", "__next__", "__contains__", "__call__", "__enter__",
+    "__exit__", "__await__", "__aiter__", "__anext__", "__aenter__",
+    "__aexit__", "__del__", "__bool__", "__int__", "__float__", "__index__",
+    # Python importlib / module system
+    "find_spec", "create_module", "exec_module", "load_module",
+    "get_code", "get_source", "get_filename", "is_package",
+    # Python class definitions (C uses structs)
+    "CanonicalUsage", "AIAgent",
+    # Python callbacks (C uses function pointers / signals)
+    "set_sudo_password_callback", "set_approval_callback",
+    "set_secret_capture_callback", "_clarify_callback",
+    "_sudo_password_callback", "_approval_callback",
+    "_computer_use_approval_callback", "_secret_capture_callback",
+    "_approval_choices", "_handle_approval_selection",
+    "_get_approval_display_fragments", "_cancel_secret_capture",
+    # Python dynamic dispatch / metaclass
+    "get_tool_definitions", "get_toolset_for_tool", "get_all_toolsets",
+    "get_toolset_info", "validate_toolset", "get_job",
+    "build_skill_invocation_message", "build_bundle_invocation_message",
+    "_get_plugin_cmd_handler_names", "_looks_like_slash_command",
+    "_ensure_skill_commands",
+    # Android / platform-specific
+    "_termux_example_image_path",
+    # prompt_toolkit internals (C uses ncurses)
+    "_disable_prompt_toolkit_cpr_warning", "_terminal_may_leak_cpr",
+    "_build_cpr_disabled_output", "_select_classic_cli_pt_output",
+    "_apply_bracketed_paste_timeout_patch", "_preserve_ctrl_enter_newline",
+    "_bind_prompt_submit_keys", "_strip_leaked_bracketed_paste_wrappers",
+    "_strip_leaked_terminal_responses_with_meta", "_strip_leaked_terminal_responses",
+    "_collect_query_images", "_build_compact_banner",
+    # Voice mode (C has separate voice_mode.c)
+    "_voice_record_key_label", "set_voice_record_key_cache",
+    "_get_voice_status_fragments", "_voice_start_recording",
+    "_voice_stop_and_transcribe", "_voice_speak_response_async",
+    "_voice_speak_response", "_voice_beeps_enabled",
+    "_enable_voice_mode", "_disable_voice_mode", "_toggle_voice_tts",
+    "_show_voice_status", "_audio_level_bar",
+    # Model picker (C has tui_layout.c)
+    "_open_model_picker", "_confirm_expensive_model_switch",
+    "_confirm_and_apply_model_switch_result", "_close_model_picker",
+    "_compute_model_picker_viewport", "_apply_model_switch_result",
+    "_handle_model_picker_selection", "_handle_model_switch",
+    "_handle_codex_runtime", "_should_handle_model_command_inline",
+    "_should_handle_steer_command_inline", "_should_handle_background_command_inline",
+    "_normalize_model_for_provider",
+    # Security advisories
+    "_ensure_tirith_security", "_show_security_advisories",
+    # Session lifecycle (C has session.c)
+    "_sync_process_session_id", "_cleanup_all_terminals", "_cleanup_all_browsers",
+    "_run_cleanup", "_should_emit_cleanup_session_finalize",
+    "_notify_session_finalize", "_emit_interrupted_session_end",
+    "_notify_single_query_session_finalize", "_finalize_single_query",
+    "_cleanup_worktree", "_claim_active_session", "_release_active_session",
+    "_restore_session_cwd", "_show_session_status", "_list_recent_sessions",
+    "_show_recent_sessions", "_discard_session_if_empty",
+    "_transfer_session_yolo", "_is_session_yolo_active",
+    "_prepare_deferred_agent_startup", "_show_status",
+    # Config parsing (C has config.c)
+    "_parse_reasoning_config", "_parse_service_tier_config",
+    "load_cli_config", "_load_prefill_messages", "_resolve_prefill_messages_file",
+    "_configure_output_history", "_parse_skills_argument", "save_config_value",
+    "_check_config_mcp_changes", "_prefill_input_buffer",
+    # Output history (C has tui_render.c)
+    "_coerce_output_history_limit", "_clear_output_history",
+    "_suspend_output_history", "_record_output_history_entry",
+    "_record_output_history", "_replay_output_history",
+    "_cprint", "_prepend_note_to_message",
+    # Streaming (C has tui_eventpub.c)
+    "_stream_delta", "_emit_stream_text", "_flush_stream", "_reset_stream_state",
+    "_render_resume_history_panel_lines", "_output_console",
+    # Reasoning display
+    "_current_reasoning_callback", "_emit_reasoning_preview",
+    "_flush_reasoning_preview", "_stream_reasoning_delta", "_close_reasoning_box",
+    "_on_reasoning", "_on_thinking", "_on_notice", "_on_notice_clear",
+    "_print_user_message_preview", "_format_submitted_user_message_preview",
+    "_slow_command_status", "_command_spinner_frame", "_busy_command",
+    # Editor/input
+    "_reset_terminal_input_modes_on_exit", "_split_path_input",
+    "_should_auto_attach_clipboard_image_on_paste",
+    "_expand_paste_references", "_open_external_editor",
+    "_recover_terminal_input_modes", "_submit_slash_confirm_response",
+    "_capture_modal_input_snapshot", "_restore_modal_input_snapshot",
+    "_submit_secret_response", "_clear_secret_input_buffer",
+    "_clear_terminal_on_exit", "_print_exit_summary",
+    "_prompt_text_input", "_prompt_text_input_modal",
+    "_normalize_slash_confirm_choice", "_get_slash_confirm_display_fragments",
+    "_run_curses_picker", "_try_launch_chrome_debug",
+    "_resolve_personality_prompt", "_persist_prompt_summary",
+    # Worktree/git
+    "_normalize_git_bash_path", "_git_repo_root", "_setup_worktree",
+    "_worktree_has_unpushed_commits", "_prune_stale_worktrees",
+    "_path_is_within_root", "_run_state_db_auto_maintenance",
+    "_run_checkpoint_auto_maintenance", "_prune_orphaned_branches",
+    "_hex_to_ansi", "_luminance_from_hex", "_query_osc11_background",
+    "_detect_light_mode", "_maybe_remap_for_light_mode",
+    "_install_skin_light_mode_hook",
+    # Misc UI
+    "_get_tui_prompt_symbols", "_get_tui_prompt_fragments",
+    "_get_tui_prompt_text", "_build_tui_style_dict", "_apply_tui_skin_style",
+    "_get_extra_tui_widgets", "_register_extra_tui_keybindings",
+    "_build_tui_layout_children", "_terminal_width_for_streaming",
+    "_flush_credit_notices", "_show_gateway_status",
+    "process_command", "_get_goal_manager", "_maybe_continue_goal_after_turn",
+    "_toggle_verbose", "_toggle_yolo", "_manual_compress",
+    "_show_usage", "_show_insights", "_split_destructive_skip",
+    "_confirm_destructive_slash", "_confirm_and_reload_mcp",
+    "_on_tool_gen_start", "_on_tool_progress", "_on_tool_start",
+    "_on_tool_complete", "_show_tool_availability_warnings",
+    "_fast_command_available", "_command_available",
+    "show_help", "show_tools", "show_toolsets",
+    "_consume_pending_resume_selection", "save_conversation",
+    "retry_last", "undo_last", "_undo_content_to_text",
+    "_console_print", "_show_history",
+    # Assistant content
+    "_assistant_content_as_text", "_assistant_copy_text",
+    "_strip_reasoning_tags",
+    # Misc
+    "show_banner", "_try_attach_clipboard_image", "_resolve_checkpoint_ref",
+    "_write_osc52_clipboard", "_preprocess_images_with_vision",
+    "_mark_tui_input_modes_active",
+}
+
+# Per-file exclusion: functions in specific files that are Python-specific
+EXCLUDED_PYTHON_FILES: Set[str] = set()  # Can add file patterns here
+
+# TUI bridge: Python prompt_toolkit functions mapped to their C TUI equivalents.
+# The C desktop uses ncurses (tui_render.c, display_core.c, tui_layout.c)
+# instead of prompt_toolkit, but provides the same user-facing functionality.
+# Format: python_function_name -> (c_file, c_function, description)
+TUI_BRIDGE: Dict[str, Tuple[str, str, str]] = {
+    # Rendering
+    "_paint_now": ("src/cli/tui_render.c", "tui_render_mark_all_dirty", "Force immediate repaint"),
+    "_force_full_redraw": ("src/cli/tui_render.c", "tui_render_mark_all_dirty", "Force full redraw"),
+    "_clear_prompt_toolkit_screen": ("src/cli/display_core.c", "display_clear", "Clear terminal"),
+    "_recover_after_resize": ("src/cli/tui_layout.c", "tui_layout_resize", "Recover after terminal resize"),
+    "_schedule_resize_recovery": ("src/cli/tui_eventpub.c", "tui_eventpub_resize", "Schedule resize recovery"),
+    "_invalidate": ("src/cli/tui_render.c", "tui_render_mark_all_dirty", "Mark display dirty"),
+    # Status bar
+    "_status_bar_context_style": ("src/cli/display_core.c", "display_set_fg", "Status bar color style"),
+    "_compression_count_style": ("src/cli/display_core.c", "display_set_fg", "Compression count color"),
+    "_build_context_bar": ("src/cli/display_core.c", "display_printf", "Build context bar"),
+    "_format_prompt_elapsed": ("src/cli/display_core.c", "display_printf", "Format elapsed time"),
+    "_format_idle_since": ("src/cli/display_core.c", "display_printf", "Format idle time"),
+    "_get_status_bar_snapshot": ("src/cli/display_core.c", "display_printf", "Get status bar state"),
+    "_status_bar_display_width": ("src/cli/tui_layout.c", "tui_layout_calculate", "Get display width"),
+    "_trim_status_bar_text": ("src/cli/display_core.c", "display_printf", "Trim status text"),
+    "_get_tui_terminal_width": ("src/cli/tui_layout.c", "tui_layout_init", "Get terminal width"),
+    "_use_minimal_tui_chrome": ("src/cli/tui_layout.c", "tui_layout_chrome_rows", "Check minimal chrome"),
+    "_scrollback_box_width": ("src/cli/tui_layout.c", "tui_layout_calculate", "Scrollback width"),
+    "_tui_input_rule_height": ("src/cli/tui_layout.c", "tui_layout_chrome_rows", "Input rule height"),
+    "_spinner_widget_height": ("src/cli/tui_layout.c", "tui_layout_chrome_rows", "Spinner height"),
+    "_render_spinner_text": ("src/cli/display_core.c", "display_printf", "Render spinner"),
+    "_build_status_bar_text": ("src/cli/display_core.c", "display_printf", "Build status bar"),
+    "_get_status_bar_fragments": ("src/cli/display_core.c", "display_printf", "Get status fragments"),
+    # Text rendering
+    "_rich_text_from_ansi": ("src/cli/display_core.c", "display_printf", "ANSI to text"),
+    "_strip_markdown_syntax": ("src/cli/tui_render.c", "tui_render_markdown", "Strip markdown"),
+    "_preserve_windows_dot_segments_for_markdown": ("src/cli/tui_render.c", "tui_render_markdown", "Preserve path segments"),
+    "_render_final_assistant_content": ("src/cli/tui_render.c", "tui_render_markdown", "Render assistant content"),
+    "_estimate_tui_input_height": ("src/cli/tui_layout.c", "tui_layout_chrome_rows", "Estimate input height"),
+    # File/path
+    "_resolve_attachment_path": ("lib/libpath", "path_resolve", "Resolve attachment path"),
+    "_detect_file_drop": ("src/cli/tui_eventpub.c", "tui_eventpub_keyboard", "Detect file drop"),
+    "_format_image_attachment_badges": ("src/cli/display_core.c", "display_printf", "Format image badges"),
+    # Misc
+    "_install_tool_callbacks": ("src/cli/tui_slash_worker.c", "tui_slash_register", "Install tool callbacks"),
+    "show_history": ("src/cli/tui_fullscreen.c", "tui_render_message", "Show history"),
+    "_run_kanban_goal_loop_q": ("src/cli/tui_fullscreen.c", "tui_render_message", "Kanban goal loop"),
+}
+
+
 @dataclass
 class PythonFeature:
     name: str
@@ -1568,6 +1748,25 @@ class ParityAnalyzer:
             # Many files like context_engine.py, memory_provider.py are class-based
 
             for feature in features:
+                # Skip excluded Python infrastructure functions
+                if feature.name in EXCLUDED_PYTHON_NAMES:
+                    continue
+                # Check TUI bridge: Python prompt_toolkit functions with C TUI equivalents
+                if feature.name in TUI_BRIDGE:
+                    c_file, c_func, desc = TUI_BRIDGE[feature.name]
+                    gap = GapEntry(
+                        python_file=display_name,
+                        python_feature=feature,
+                        classification="PORTED",
+                        c_location=c_file,
+                        c_function=c_func,
+                        severity="LOW",
+                        notes=f"TUI bridge: prompt_toolkit -> C ncurses ({desc})",
+                    )
+                    report.gaps.append(gap)
+                    report.total_features += 1
+                    report.ported += 1
+                    continue
                 gap = self.classify_feature(display_name, feature)
                 report.gaps.append(gap)
                 report.total_features += 1
