@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "json.h"
 #include <stdbool.h>
 #include <ctype.h>
 
@@ -124,4 +125,31 @@ char *tcx_map_finish_reason(const char *status) {
     if (strcmp(status, "incomplete") == 0) return strdup("length");
     if (strcmp(status, "failed") == 0) return strdup("error");
     return strdup("stop");
+}
+
+/* PoP: _rename_client_web_search_for_xai @ agent/transports/codex.py:_rename_client_web_search_for_xai */
+/* Returns malloc'd JSON array of tools with web_search renamed. Caller frees. */
+char *codex_rename_client_web_search_for_xai(const char *response_tools_json) {
+    if (!response_tools_json) return strdup("[]");
+    char *err = NULL;
+    json_t *tools = json_parse(response_tools_json, &err);
+    if (err || !tools || tools->type != JSON_ARRAY) { if (err) free(err); if (tools) json_free(tools); return strdup("[]"); }
+    json_t *result = json_array();
+    for (size_t i = 0; i < tools->c.count; i++) {
+        json_t *tool = tools->c.items[i];
+        if (!tool || tool->type != JSON_OBJECT) { json_append(result, json_copy(tool)); continue; }
+        json_t *name = json_obj_get(tool, "name");
+        if (name && name->type == JSON_STRING && strcmp(name->str_val, "web_search") == 0) {
+            /* Rename to alias */
+            json_t *aliased = json_copy(tool);
+            json_set(aliased, "name", json_string("hermes_web_search"));
+            json_append(result, aliased);
+        } else {
+            json_append(result, json_copy(tool));
+        }
+    }
+    json_free(tools);
+    char *out = json_serialize(result);
+    json_free(result);
+    return out ? out : strdup("[]");
 }
