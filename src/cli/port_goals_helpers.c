@@ -624,3 +624,11 @@ char *render_background_block_json(const char *processes_json)
     json_free(list);
     return out;
 }
+
+/* PoP: _meta_key @ hermes_cli/goals.py:_meta_key */
+/* Returns malloc'd "goal:<session_id>" key. Caller frees. */
+char *goals_meta_key(const char *session_id) {
+    char *result = NULL;
+    asprintf(&result, "goal:%s", session_id ? session_id : "");
+    return result ? result : strdup("");
+}
