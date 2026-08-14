@@ -1,0 +1,22 @@
+[
+  {"op": "is_local", "arg": "http://localhost:5006"},
+  {"op": "is_local", "arg": "http://127.0.0.1:5006"},
+  {"op": "is_local", "arg": "http://[::1]:5006"},
+  {"op": "is_local", "arg": "http://0.0.0.0:5006"},
+  {"op": "is_local", "arg": "localhost"},
+  {"op": "is_local", "arg": "https://api.actual.inc"},
+  {"op": "is_local", "arg": "https://example.com"},
+  {"op": "is_local", "arg": ""},
+  {"op": "is_local", "arg": "LOCALHOST."},
+
+  {"op": "normalize", "arg": "http://127.0.0.1:5006"},
+  {"op": "normalize", "arg": "http://127.0.0.1:5006/"},
+  {"op": "normalize", "arg": "https://api.actual.inc"},
+  {"op": "normalize", "arg": "https://api.actual.inc/"},
+  {"op": "normalize", "arg": "https://api.actual.inc/v1"},
+  {"op": "normalize", "arg": "http://localhost:5006/v1"},
+  {"op": "normalize", "arg": "https://example.com/foo"},
+  {"op": "normalize", "arg": ""},
+  {"op": "normalize", "arg": "  http://127.0.0.1:5006  "},
+  {"op": "normalize", "arg": null}
+]

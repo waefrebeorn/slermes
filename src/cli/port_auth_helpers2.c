@@ -134,3 +134,96 @@ char *ath_step_up_nous_billing_scope(void) {
     printf("nous device flow re-run (billing:manage requested)\n");
     return strdup("{}");
 }
+
+/* ── Actual local base URL detection/normalization (hermes_cli/auth.py) ── */
+
+/* PoP: is_actual_local_base_url @ hermes_cli/auth.py:is_actual_local_base_url */
+/* Return true for Actual's loopback local API endpoint. Host is lowercased and
+ * trailing dot stripped. */
+bool ath_is_actual_local_base_url(const char *base_url) {
+    if (!base_url) return false;
+    const char *s = base_url;
+    /* urlparse: hostname is None when there's no scheme. Require "://". */
+    const char *scheme = strstr(s, "://");
+    if (!scheme) return false;
+    const char *h = scheme + 3;
+    /* strip any userinfo@ */
+    const char *at = strrchr(h, '@');
+    if (at) h = at + 1;
+    /* hostname: urlparse strips IPv6 brackets and stops at ':' or '/'. */
+    char host[512];
+    size_t wi = 0;
+    if (*h == '[') {
+        /* IPv6 literal: read until ']' */
+        const char *b = h + 1;
+        while (*b && *b != ']' && wi < 510) host[wi++] = (char)((*b >= 'A' && *b <= 'Z') ? *b + 32 : *b), b++;
+    } else {
+        while (*h && *h != ':' && *h != '/' && *h != '?' && wi < 510) {
+            char c = *h;
+            if (c >= 'A' && c <= 'Z') c = (char)(c + 32);
+            host[wi++] = c;
+            h++;
+        }
+    }
+    host[wi] = '\0';
+    /* rstrip(".") */
+    while (wi > 0 && host[wi-1] == '.') host[--wi] = '\0';
+    return (strcmp(host, "localhost") == 0 || strcmp(host, "127.0.0.1") == 0
+            || strcmp(host, "::1") == 0 || strcmp(host, "0.0.0.0") == 0);
+}
+
+/* PoP: normalize_actual_base_url @ hermes_cli/auth.py:normalize_actual_base_url */
+/* Return Actual's OpenAI-compatible base URL: strip trailing slash, and if the
+ * host is api.actual.inc or a loopback host with no path, append /v1. Caller
+ * frees. */
+char *ath_normalize_actual_base_url(const char *base_url) {
+    if (!base_url) { return strdup("https://api.actual.inc/v1"); }
+    /* strip() */
+    const char *s = base_url;
+    while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r') s++;
+    size_t sl = strlen(s);
+    while (sl > 0 && (s[sl-1]==' '||s[sl-1]=='\t'||s[sl-1]=='\n'||s[sl-1]=='\r')) sl--;
+    /* rstrip("/") */
+    while (sl > 0 && s[sl-1] == '/') sl--;
+    char *url = strndup(s, sl);
+    if (!*url) { free(url); return strdup("https://api.actual.inc/v1"); }
+
+    /* parse host + path */
+    const char *h = url;
+    const char *scheme = strstr(url, "://");
+    if (scheme) h = scheme + 3;
+    const char *at = strrchr(h, '@');
+    if (at) h = at + 1;
+    size_t hlen = 0;
+    while (h[hlen] && h[hlen] != ':' && h[hlen] != '/' && h[hlen] != '?') hlen++;
+    char host[512];
+    size_t wi = 0;
+    for (size_t i = 0; i < hlen && wi < 510; i++) {
+        char c = h[i];
+        if (c == '[') continue;
+        if (c == ']') continue;
+        if (c >= 'A' && c <= 'Z') c = (char)(c + 32);
+        host[wi++] = c;
+    }
+    host[wi] = '\0';
+    while (wi > 0 && host[wi-1] == '.') host[--wi] = '\0';
+    /* path = everything from '/' to end, rstripped of '/' */
+    const char *path_start = h + hlen;
+    if (*path_start == ':') { /* skip port */
+        const char *p2 = strchr(path_start, '/');
+        path_start = p2 ? p2 : path_start + strlen(path_start);
+    }
+    size_t plen = strlen(path_start);
+    while (plen > 0 && path_start[plen-1] == '/') plen--;
+    int path_empty = (plen == 0);
+
+    int host_is_actual = (strcmp(host, "api.actual.inc") == 0);
+    int host_is_local = ath_is_actual_local_base_url(url);
+    if ((host_is_actual || host_is_local) && path_empty) {
+        char *out = NULL;
+        asprintf(&out, "%s/v1", url);
+        free(url);
+        return out;
+    }
+    return url;
+}
