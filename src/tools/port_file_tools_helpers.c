@@ -429,3 +429,19 @@ char *file_tools_check_cross_profile_path(const char *filepath, const char *task
     return NULL;
 }
 
+/* PoP: _special_file_kind @ tools/file_tools.py:_special_file_kind */
+/* Return malloc'd human name for non-regular file types. Caller frees. */
+#include <sys/stat.h>
+char *file_tools_special_file_kind(const char *path) {
+    if (!path) return NULL;
+    struct stat st;
+    if (stat(path, &st) != 0) return NULL;
+    mode_t mode = st.st_mode;
+    if (S_ISREG(mode) || S_ISDIR(mode)) return NULL;
+    if (S_ISFIFO(mode)) return strdup("a FIFO (named pipe)");
+    if (S_ISSOCK(mode)) return strdup("a socket");
+    if (S_ISCHR(mode)) return strdup("a character device");
+    if (S_ISBLK(mode)) return strdup("a block device");
+    return strdup("a special (non-regular) file");
+}
+

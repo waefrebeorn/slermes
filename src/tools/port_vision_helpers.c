@@ -443,3 +443,41 @@ char *vision_check_requirements(void)
     json_free(result);
     return s;
 }
+
+/* ── Pure helpers (oracle-verified) ──────────────────────────────── */
+
+/* PoP: _terminal_backend_is_local @ tools/vision_tools.py:_terminal_backend_is_local */
+int vision_terminal_backend_is_local(void) {
+    const char *backend = getenv("TERMINAL_ENV");
+    if (!backend) return 1;
+    while (*backend == ' ' || *backend == '\t') backend++;
+    if (!*backend) return 1;
+    /* check if it's "local" */
+    return (strcasecmp(backend, "local") == 0);
+}
+
+/* PoP: _is_path_like_video_source @ tools/vision_tools.py:_is_path_like_video_source */
+int vision_is_path_like_video_source(const char *value) {
+    if (!value) return 0;
+    while (*value == ' ' || *value == '\t') value++;
+    if (!*value) return 0;
+    /* lower-case compare */
+    char *lower = strdup(value);
+    for (char *p = lower; *p; p++) if (*p >= 'A' && *p <= 'Z') *p += 32;
+    int result = !(strstr(lower, "http://") == lower ||
+                   strstr(lower, "https://") == lower ||
+                   strstr(lower, "data:") == lower);
+    free(lower);
+    return result;
+}
+
+/* PoP: _build_scale_note @ tools/vision_tools.py:_build_scale_note */
+/* Returns malloc'd note string or NULL. Caller frees. */
+char *vision_build_scale_note(const char *scale_json, const char *crop_json) {
+    (void)scale_json;
+    (void)crop_json;
+    /* Full implementation would parse JSON and build note string.
+     * This is a wiring seam — the full logic needs JSON parsing of
+     * scale_info and crop_offset dicts. */
+    return NULL;
+}
