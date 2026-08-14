@@ -402,3 +402,32 @@ json_t *mcp_apply_identity_header(const char *server_name, const json_t *config,
     json_free(resolved);
     return headers;
 }
+
+/* PoP: _context_var_value @ tools/mcp_tool.py:_context_var_value */
+/* Returns malloc'd resolved value or NULL. Caller frees. */
+char *mcp_context_var_value(const char *ref) {
+    if (!ref) return NULL;
+    if (strcmp(ref, "userHome") == 0) {
+        const char *home = getenv("HOME");
+        return strdup(home ? home : "~");
+    }
+    if (strcmp(ref, "workspaceFolder") == 0) {
+        /* Would need _authoritative_workspace_root() — fallback to cwd */
+        char buf[4096];
+        if (getcwd(buf, sizeof(buf))) return strdup(buf);
+        return strdup(".");
+    }
+    if (strcmp(ref, "workspaceFolderBasename") == 0) {
+        char buf[4096];
+        if (getcwd(buf, sizeof(buf))) {
+            char *base = strrchr(buf, '/');
+            if (!base) base = strrchr(buf, '\\');
+            return strdup(base ? base + 1 : buf);
+        }
+        return strdup(".");
+    }
+    if (strcmp(ref, "pathSeparator") == 0 || strcmp(ref, "/") == 0) {
+        return strdup("/");
+    }
+    return NULL;
+}
