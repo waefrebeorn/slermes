@@ -59,6 +59,7 @@ const char* _electron_dir(const char* project_root)
  *   if sys.platform == "win32": return dist / "electron.exe"
  *   return dist / "electron"
  */
+/* PoP: _electron_dist_ok @ hermes_cli/main.py:_electron_dist_ok */
 /* Port of Python: _electron_dist_binary */
 const char* _electron_dist_binary(const char* project_root)
 {

@@ -411,6 +411,7 @@ char *normalize_board_slug(const char *slug)
     if (!s[0]) return NULL;
     /* validate: ^[a-z0-9][a-z0-9\-_]{0,63}$ */
     if (!(isalnum((unsigned char)s[0]))) return NULL;
+/* PoP: get_current_board @ hermes_cli/kanban_db.py:get_current_board */
     for (size_t i = 1; i < strlen(s); i++)
         if (!(isalnum((unsigned char)s[i]) || s[i]=='-' || s[i]=='_')) return NULL;
     if (strlen(s) > 64) return NULL;
@@ -419,6 +420,7 @@ char *normalize_board_slug(const char *slug)
 
 /*
  * Returns malloc'd root dir. Caller frees. */
+/* PoP: kanban_home @ hermes_cli/kanban_db.py:kanban_home */
 char *kanban_home(void)
 {
     char root[PATH_MAX];
@@ -499,6 +501,7 @@ char *get_current_board(void)
 
 /*
  * Writes the slug to <root>/kanban/current. Returns 0 on success. */
+/* PoP: set_current_board @ hermes_cli/kanban_db.py:set_current_board */
 int set_current_board(const char *slug)
 {
     char *normed = normalize_board_slug(slug);
@@ -527,6 +530,7 @@ int set_current_board(const char *slug)
 
 /*
  * Returns malloc'd "<root>/kanban/boards/<slug>" (slug defaulted). Caller frees. */
+/* PoP: board_dir @ hermes_cli/kanban_db.py:board_dir */
 char *board_dir(const char *board)
 {
     char *slug = normalize_board_slug(board);
@@ -552,6 +556,7 @@ int board_exists(const char *board)
 
 /*
  * Returns malloc'd path to the kanban.db for board. Caller frees. */
+/* PoP: kanban_db_path @ hermes_cli/kanban_db.py:kanban_db_path */
 char *kanban_db_path(const char *board)
 {
     const char *override = getenv("HERMES_KANBAN_DB");
@@ -590,6 +595,7 @@ int profile_exists(const char *name)
 
 /*
  * Returns malloc'd workspaces dir for board. Caller frees. */
+/* PoP: workspaces_root @ hermes_cli/kanban_db.py:workspaces_root */
 char *workspaces_root(const char *board)
 {
     const char *override = getenv("HERMES_KANBAN_WORKSPACES_ROOT");
@@ -612,6 +618,7 @@ char *workspaces_root(const char *board)
 
 /*
  * Returns malloc'd attachments dir for board. Caller frees. */
+/* PoP: attachments_root @ hermes_cli/kanban_db.py:attachments_root */
 char *attachments_root(const char *board)
 {
     const char *override = getenv("HERMES_KANBAN_ATTACHMENTS_ROOT");
@@ -634,6 +641,7 @@ char *attachments_root(const char *board)
 
 /*
  * Returns malloc'd "<attachments_root>/<task_id>". Caller frees. */
+/* PoP: task_attachments_dir @ hermes_cli/kanban_db.py:task_attachments_dir */
 char *task_attachments_dir(const char *task_id, const char *board)
 {
     char *root = attachments_root(board);
@@ -645,6 +653,7 @@ char *task_attachments_dir(const char *task_id, const char *board)
 
 /*
  * Returns malloc'd worker-logs dir for board. Caller frees. */
+/* PoP: worker_logs_dir @ hermes_cli/kanban_db.py:worker_logs_dir */
 char *worker_logs_dir(const char *board)
 {
     char *slug = normalize_board_slug(board);
@@ -665,6 +674,7 @@ char *worker_logs_dir(const char *board)
 
 /*
  * Returns malloc'd "<board_dir>/board.json". Caller frees. */
+/* PoP: board_metadata_path @ hermes_cli/kanban_db.py:board_metadata_path */
 char *board_metadata_path(const char *board)
 {
     char *slug = normalize_board_slug(board);
@@ -715,6 +725,7 @@ char *default_board_display_name(const char *slug)
 
 /*
  * Removes <root>/kanban/current if present. Returns 0 on success / not-found. */
+/* PoP: clear_current_board @ hermes_cli/kanban_db.py:clear_current_board */
 int clear_current_board(void)
 {
     char *cp = kanban_current_board_path();

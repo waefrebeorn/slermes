@@ -74,6 +74,7 @@ json_t *git_branches_route(const char *path) {
  * Python: return {"branches": await _git_op(_web_git.base_branch_list, _git_path(path))} */
 /* PoP: git_base_branches_route @ hermes_cli/web_routers/git.py:git_base_branches_route */
 json_t *git_base_branches_route(const char *path) {
+/* PoP: git_review_diff_route @ hermes_cli/web_routers/git.py:git_review_diff_route */
     char *cwd = ws_fs_path(path);
     if (!cwd) return git_op_error("invalid path");
     json_t *br = web_git_base_branch_list(cwd);
@@ -193,6 +194,7 @@ json_t *git_revert_route(const char *path, const char *file) {
 
 /* ── git_commit_route ─────────────────────────────────────────────────────────────
  * Python: return await _git_op(_web_git.review_commit, _git_path(body.path), body.message, body.push) */
+/* PoP: git_worktree_add_route @ hermes_cli/web_routers/git.py:git_worktree_add_route */
 /* PoP: git_commit_route @ hermes_cli/web_routers/git.py:git_commit_route */
 json_t *git_commit_route(const char *path, const char *message, bool push) {
     char *cwd = ws_fs_path(path);

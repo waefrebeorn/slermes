@@ -406,6 +406,7 @@ char *strip_ollama_cloud_suffix(const char *model_id)
     if (L >= 6 && strcmp(model_id + L - 6, ":cloud") == 0) L -= 6;
     else if (L >= 6 && strcmp(model_id + L - 6, "-cloud") == 0) L -= 6;
     char *out = malloc(L + 1);
+/* PoP: opencode_model_api_mode @ hermes_cli/models.py:opencode_model_api_mode */
     memcpy(out, model_id, L); out[L] = '\0';
     return out;
 }
@@ -432,6 +433,7 @@ char *lmstudio_server_root(const char *base_url)
 {
     if (!base_url || !base_url[0]) return NULL;
     char buf[1024];
+/* PoP: azure_foundry_model_api_mode @ hermes_cli/models.py:azure_foundry_model_api_mode */
     size_t L = strlen(base_url);
     if (L >= sizeof(buf)) L = sizeof(buf)-1;
     memcpy(buf, base_url, L); buf[L]='\0';

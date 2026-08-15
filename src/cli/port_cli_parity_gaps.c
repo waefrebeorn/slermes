@@ -216,6 +216,7 @@ bool cli_persist_session_yolo(const char *session_id, bool enabled) {
         return false;
     sqlite3 *db = NULL;
     const char *home = slermes_home();
+/* PoP: _render_stash_panel @ cli.py:_render_stash_panel */
     if (!home) return false;
     char db_path[1024];
     snprintf(db_path, sizeof(db_path), "%s/%s", home, SLERMES_FILE_STATE_DB);
@@ -243,7 +244,7 @@ bool cli_persist_session_yolo(const char *session_id, bool enabled) {
  * The Python version uses prompt_toolkit FormattedText tuples; the C port
  * returns plain text with ANSI-free markup, matching the terminal rendering
  * layer that consumes cli_stash_panel_render(). */
-char *cli_render_stash_panel(const char **stash_items, size_t n_items,
+char *_render_stash_panel(const char **stash_items, size_t n_items,
                              int cursor, int width) {
     int W = width - 4;
     if (W < 12) W = 12;

@@ -13,6 +13,7 @@
 #include <sys/stat.h>
 
 /* Port of Python: _electron_pkg_staged_missing_dist */
+/* PoP: _electron_pkg_staged_missing_dist @ hermes_cli/main.py:_electron_pkg_staged_missing_dist */
 bool _electron_pkg_staged_missing_dist(const char* project_root)
 {
     hermes_log(LOG_DEBUG, "port", "_electron_pkg_staged_missing_dist: called");

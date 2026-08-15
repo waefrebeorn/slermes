@@ -481,6 +481,7 @@ char *cli_gateway_channel_directory_build_channel_directory(
 {
     json_t *platforms = json_object();
     const char *SKIP[] = {"local", "api_server", "webhook", NULL};
+/* PoP: load_directory @ gateway/channel_directory.py:load_directory */
     for (int i = 0; i < adapter_count; i++) {
         const char *pn = platform_names ? platform_names[i] : NULL;
         if (!pn) continue;
@@ -514,8 +515,8 @@ char *cli_gateway_channel_directory_build_channel_directory(
     return out;
 }
 
-/*
- * Load the cached directory from disk (re-applies aliases on read). */
+/* PoP: lookup_channel_type @ gateway/channel_directory.py:lookup_channel_type */
+/* Load the cached directory from disk (re-applies aliases on read). */
 json_t *load_directory(void)
 {
     const char *home = credfiles_get_hermes_home();
@@ -540,6 +541,7 @@ json_t *load_directory(void)
         apply_channel_aliases(json_obj_get(base, "platforms"));
         return base;
     }
+/* PoP: resolve_channel_name @ gateway/channel_directory.py:resolve_channel_name */
     json_t *plats = json_obj_get(data, "platforms");
     if (!plats || plats->type != JSON_OBJECT) {
         plats = json_object();

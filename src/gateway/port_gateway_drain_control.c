@@ -39,6 +39,7 @@ static bool write_file_atomic(const char *path, const char *content)
     return rename(tmp, path) == 0;
 }
 
+/* PoP: current_instantiation_epoch @ gateway/drain_control.py:current_instantiation_epoch */
 /* Mirror current_instantiation_epoch(): boot_id + pid1 start time. */
 static void current_instantiation_epoch(char *out, size_t outsz)
 {
@@ -66,6 +67,7 @@ static void current_instantiation_epoch(char *out, size_t outsz)
     snprintf(out, outsz, "%s:%s", bid, p1);
 }
 
+/* PoP: drain_request_path @ gateway/drain_control.py:drain_request_path */
 static const char *drain_request_path(char *out, size_t outsz, const char *home)
 {
     const char *h = home ? home : getenv("HERMES_HOME");

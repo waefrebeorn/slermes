@@ -617,6 +617,7 @@ char *blueprint_catalog_form_schema(json_t *bp)
 {
     if (!bp || bp->type != JSON_OBJECT) return NULL;
     json_t *schema = json_object();
+/* PoP: blueprint_catalog_entry @ cron/blueprint_catalog.py:blueprint_catalog_entry */
     json_set(schema, "key", json_string(json_get_str(bp, "key", "")));
     json_set(schema, "title", json_string(json_get_str(bp, "title", "")));
     json_set(schema, "description", json_string(json_get_str(bp, "description", "")));

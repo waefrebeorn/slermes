@@ -344,6 +344,7 @@ char *token_fingerprint(const char *token)
 /*
  * Returns malloc'd user-facing message. Caller frees. For non-AuthError
  * inputs returns a copy of msg. */
+/* PoP: format_auth_error @ hermes_cli/auth.py:format_auth_error */
 char *format_auth_error(const auth_error_t *error)
 {
     if (!error) return strdup("");
@@ -459,6 +460,7 @@ char *normalize_lmstudio_runtime_base_url(const char *base_url)
 
 /*
  * Returns 1 when value is a non-empty, non-placeholder secret string. */
+/* PoP: has_usable_secret @ hermes_cli/auth.py:has_usable_secret */
 int has_usable_secret(const char *value, int min_length)
 {
     static const char *PLACEHOLDER[] = {
