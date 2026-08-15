@@ -356,7 +356,6 @@ int kdb_set_worker_pid(sqlite3 *conn, const char *task_id, pid_t pid)
 /* ===================================================================== */
 /* _worker_terminal_timeout_env                                       */
 /* ===================================================================== */
-/* PoP: string @ hermes_cli/kanban_db.py:_worker_terminal_timeout_env */
 /* Returns malloc'd string (caller frees) or NULL. */
 char *kdb_worker_terminal_timeout_env(long max_runtime_seconds,
                                       const char *current_timeout)
@@ -1613,7 +1612,6 @@ char **kdb_detect_stale_running(sqlite3 *conn, int stale_timeout_seconds)
 /* check_respawn_guard                                                */
 /* ===================================================================== */
 
-/* PoP: string @ hermes_cli/kanban_db.py:check_respawn_guard */
 /* Returns malloc'd reason string (caller frees) or NULL. */
 char *kdb_check_respawn_guard(sqlite3 *conn, const char *task_id)
 {

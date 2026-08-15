@@ -176,7 +176,6 @@ bool gateway_dm_opted_in(const char *platform_env)
     return false;
 }
 
-/* PoP: string @ gateway/authz_mixin.py:_platform_gate_env */
 /* Read a platform allow/deny gate env var with per-profile isolation.
  * Returns a malloc'd string (caller frees). */
 char *cli_gateway_authz_mixin__platform_gate_env(const char *name, const char *default_val) {

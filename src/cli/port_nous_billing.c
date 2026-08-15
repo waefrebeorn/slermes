@@ -522,7 +522,6 @@ int billing_resolve_token_and_base(char **token_out, char **base_out, bool use_c
     return 0;
 }
 
-/* PoP: string @ hermes_cli/nous_billing.py:_raise_for_error */
 /* Map an HTTP error response to the right typed billing error, returned as a
  * malloc'd JSON string (caller frees). Mirrors Python's status->BillingError
  * dispatch: 401 -> auth, 403+insufficient_scope -> scope, 429/503 -> rate

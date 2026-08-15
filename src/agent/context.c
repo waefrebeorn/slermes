@@ -1000,7 +1000,6 @@ int context_compressor__starts_with_summary_prefix(const char *text) {
 }
 
 /* ── classify_summary_content (classmethod → function) ─────────────────── */
-/* PoP: NULL @ agent/context_compressor.py:classify_summary_content */
 /* Returns an allocated string: "standalone", "merged", or NULL (no summary).
  * Caller frees. */
 char *context_compressor__classify_summary_content(const char *content) {

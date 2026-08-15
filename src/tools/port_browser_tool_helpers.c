@@ -181,7 +181,6 @@ int browser__needs_lightpanda_fallback(const char *engine, const char *command, 
     return need;
 }
 
-/* PoP: string @ tools/browser_tool.py:_annotate_lightpanda_fallback */
 /* Copy the fallback reason into a result dict's "fallback" field. Returns a
  * malloc'd annotated JSON string (or a copy of result_json when no reason). */
 char *browser__annotate_lightpanda_fallback(const char *engine, const char *command, const char *result_json) {

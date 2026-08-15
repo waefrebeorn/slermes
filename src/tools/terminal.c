@@ -1242,7 +1242,6 @@ char *terminal_rewrite_sudo(const char *command, bool *found) {
     return out;
 }
 
-/* PoP: string @ tools/terminal_tool.py:_transform_sudo_command */
 /* Transform sudo commands to support password piping.
  * Port of Python terminal_tool._transform_sudo_command().
  * Returns malloc'd string: rewritten command if sudo found and password available,

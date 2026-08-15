@@ -226,7 +226,6 @@ char *run_conversation(agent_state_t *state,
             state->prefetch_result = NULL;
         }
         state->prefetch_in_progress = 0;
-/* PoP: if @ agent/memory_provider.py:prefetch */
         /* Do synchronous prefetch (C is single-threaded per agent, so
            background thread adds complexity without benefit for the
            typical case). Search memory with the user query. */

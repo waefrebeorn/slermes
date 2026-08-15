@@ -203,7 +203,6 @@ scheduler_media_kind_t scheduler_route_media(const char *platform,
 
 /* ── media send via adapter (live path) ────────────────────────────── */
 
-/* PoP: NULL @ cron/scheduler.py:_send_media_via_adapter */
 /* Routes each extracted MEDIA file to the appropriate adapter method by kind.
  * Returns the number of successful sends. The adapter may be NULL (no live
  * gateway) in which case 0 is returned (the standalone fallback handles

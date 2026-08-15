@@ -114,7 +114,6 @@ int cli_tools_video_generation_tool_check_video_generation_requirements(void) {
     return 1;
 }
 
-/* PoP: if @ tools/video_generation_tool.py:_missing_provider_error */
 json_node_t* cli_tools_video_generation_tool__missing_provider_error(const char *configured) {
     /*
      * Build a JSON error response for missing provider.
@@ -149,7 +148,6 @@ json_node_t* cli_tools_video_generation_tool__missing_provider_error(const char 
     return err;
 }
 
-/* PoP: if @ tools/video_generation_tool.py:_normalize_reference_images */
 json_node_t* cli_tools_video_generation_tool__normalize_reference_images(json_node_t *value) {
     /*
      * Normalize reference image URLs from various input formats.
@@ -264,7 +262,6 @@ json_node_t* cli_tools_video_generation_tool__handle_video_generate(json_node_t 
     return err;
 }
 
-/* PoP: if @ tools/video_generation_tool.py:_format_model_caveats */
 json_node_t* cli_tools_video_generation_tool__format_model_caveats(json_node_t *model_meta, json_node_t *backend_caps) {
     /*
      * Pull human-readable caveats out of one model's catalog metadata.

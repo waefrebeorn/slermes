@@ -68,7 +68,6 @@ int jobs_parse_duration(const char *s)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: NULL @ cron/jobs.py:compute_next_run */
 /* schedule_json: {"kind":"once","run_at":"ISO"} | {"kind":"interval","minutes":N}
  * last_run_at: ISO timestamp string or NULL.
  * Returns malloc'd ISO timestamp, or NULL (cron kind / error). Caller frees. */

@@ -914,7 +914,6 @@ char* process_registry_wait(const char *session_id, int timeout_sec) {
     return result;
 }
 
-/* PoP: if @ tools/process_registry.py:kill_process */
 char* process_registry_kill(const char *session_id, const char *source,
                             bool consume_output) {
     if (!source) source = "process.kill";
@@ -1636,7 +1635,6 @@ void _format_age(double seconds, char *buf, size_t buf_len) {
     snprintf(buf, buf_len, "%dh%d%m", h, m);
 }
 
-/* PoP: if @ tools/process_registry.py:_format_async_delegation */
 char* _format_async_delegation(const char *json_evt) {
     char *err = NULL;
     json_t *evt = json_parse(json_evt, &err);
@@ -1691,7 +1689,6 @@ char* _format_async_delegation(const char *json_evt) {
     return out;
 }
 
-/* PoP: if @ tools/process_registry.py:format_process_notification */
 char* format_process_notification(const char *json_evt) {
     char *err = NULL;
     json_t *evt = json_parse(json_evt, &err);
@@ -1755,7 +1752,6 @@ char* format_process_notification(const char *json_evt) {
     return out;
 }
 
-/* PoP: if @ tools/process_registry.py:_redact_process_result */
 char* _redact_process_result(char *json_result) {
     char *err = NULL;
     json_t *r = json_parse(json_result, &err);
@@ -1782,7 +1778,6 @@ char* _redact_process_result(char *json_result) {
     return out;
 }
 
-/* PoP: if @ tools/process_registry.py:_handle_process */
 char* process_registry_handle(const char *action,
                               const char *session_id,
                               const char *data,

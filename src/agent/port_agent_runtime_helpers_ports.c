@@ -456,7 +456,6 @@ int arh_msg_has_payload(const json_t *msg)
     return 0;
 }
 
-/* PoP: NULL @ agent/agent_runtime_helpers.py:blank_cache_policy_stub */
 /* Build the destination-identity-blank stub for anthropic_prompt_cache_policy.
  * Single sanctioned constructor: callers that resolve cache policy against a
  * destination identified out-of-band (not a live AIAgent) must go through here

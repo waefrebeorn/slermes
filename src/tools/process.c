@@ -409,7 +409,6 @@ char *process_handler(const char *args_json, const char *task_id) {
         proc_save_checkpoint();
 
     } else if (strcmp(action, "start") == 0) {
-        /* PoP: if @ tools/process_registry.py:spawn_via_env */
         const char *command = json_object_get_string(args, "command", NULL);
         if (!command) {
             json_object_set(result, "error", json_new_string("Missing command"));
@@ -436,7 +435,6 @@ char *process_handler(const char *args_json, const char *task_id) {
                     json_object_set(result, "exit_code", json_new_number((double)g_procs[slot].exit_code));
 
             } else if (strcmp(action, "kill") == 0) {
-                /* PoP: if @ tools/process_registry.py:kill_process */
                 if (g_procs[slot].running) {
                     kill(g_procs[slot].pid, SIGTERM);
                     usleep(100000);
@@ -467,7 +465,6 @@ char *process_handler(const char *args_json, const char *task_id) {
                 json_object_set(result, "exit_code", json_new_number((double)g_procs[slot].exit_code));
 
             } else if (strcmp(action, "log") == 0) {
-                /* PoP: if @ tools/process_registry.py:read_log */
                 /* Return accumulated output */
                 if (g_procs[slot].output && g_procs[slot].output_len > 0) {
                     json_object_set(result, "output", json_new_string(g_procs[slot].output));

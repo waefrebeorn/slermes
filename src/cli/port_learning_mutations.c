@@ -66,7 +66,6 @@ static void lm_yaml_count_keys(const char *key, const char *val, void *user)
     (*(int *)user)++;
 }
 
-/* PoP: string @ agent/learning_mutations.py:_edit_skill */
 /* Faithful port of tools/skill_manager_tool._validate_frontmatter.
  * Returns a malloc'd error string (caller frees) or NULL if valid. */
 static char *lm_validate_frontmatter(const char *content)
