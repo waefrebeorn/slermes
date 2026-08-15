@@ -117,6 +117,8 @@ struct session_state_registry {
     omap_t *sessions; /* session_key -> session_state_t* */
 };
 
+/* PoP: relay_session_state_registry_new @ gateway/session_state.py:SessionState */
+/* PoP: relay_session_state_registry_new @ gateway/session_state.py:SessionState.__init__ */
 session_state_registry_t *relay_session_state_registry_new(void) {
     session_state_registry_t *reg = calloc(1, sizeof(*reg));
     if (!reg) return NULL;
@@ -139,6 +141,7 @@ session_state_t *relay_session_state_get_or_create(session_state_registry_t *reg
     return s;
 }
 
+/* PoP: relay_session_state_get @ gateway/session_state.py:SessionFieldView._sessions */
 session_state_t *relay_session_state_get(session_state_registry_t *reg,
                                          const char *session_key) {
     return omap_get(reg->sessions, session_key);
@@ -172,6 +175,7 @@ size_t relay_session_state_items(session_state_registry_t *reg,
  * Clear semantics (turn.clear / conversation.clear)
  * ======================================================================== */
 
+/* PoP: relay_session_state_turn_clear @ gateway/session_state.py:TurnState.clear */
 void relay_session_state_turn_clear(session_turn_state_t *t) {
     json_t *agent = json_null();
     json_t *started = json_number(0.0);
@@ -185,6 +189,7 @@ void relay_session_state_turn_clear(session_turn_state_t *t) {
      * are owned by _release_turn_lease (#64934). */
 }
 
+/* PoP: relay_session_state_conversation_clear @ gateway/session_state.py:ConversationState.clear */
 void relay_session_state_conversation_clear(session_conversation_state_t *c) {
     json_t *model = json_null();
     json_t *restore = json_null();
@@ -222,8 +227,11 @@ static json_t *dflt_arr(void)    { return json_array(); }
 static json_t *dflt_bool(void)   { return json_bool(false); }
 static json_t *dflt_unset(void)  { return (json_t *)&g_unset_tier; }
 
+/* PoP: pres_not_none @ gateway/session_state.py:_present_not_none */
 static bool pres_not_none(const json_t *v) { return v->type != JSON_NULL; }
+/* PoP: pres_not_unset @ gateway/session_state.py:_present_not_unset */
 static bool pres_not_unset(const json_t *v) { return v != &g_unset_tier; }
+/* PoP: pres_not_zero @ gateway/session_state.py:_present_nonzero */
 static bool pres_not_zero(const json_t *v) {
     switch (v->type) {
     case JSON_NULL:   return false;
@@ -238,6 +246,7 @@ static bool pres_not_zero(const json_t *v) {
 
 /* Resolve a (scope, field) pair to the address of the json_t* slot inside a
  * session_state_t. This lets the view layer read/write uniformly. */
+/* PoP: field_slot @ gateway/session_state.py:SessionFieldView._value */
 static json_t **field_slot(session_state_t *s, state_scope_t scope, int field) {
     switch (scope) {
     case SCOPE_TURN:
@@ -322,6 +331,8 @@ static const legacy_spec_t LEGACY_SPECS[] = {
     { LEGACY_SESSION_RUN_GENERATION,               "_session_run_generation",         SCOPE_PERSISTENT,  PERS_RUN_GENERATION,        dflt_zero_i,pres_not_zero },
 };
 
+/* PoP: relay_session_field_view_new @ gateway/session_state.py:legacy_dict_property */
+/* PoP: relay_session_field_view_new @ gateway/session_state.py:SessionFieldView.__init__ */
 session_field_view_t *relay_session_field_view_new(session_state_registry_t *reg,
                                                   legacy_field_t attr) {
     if ((int)attr < 0 || (int)attr >= (int)LEGACY_FIELD_COUNT) return NULL;
@@ -337,6 +348,8 @@ session_field_view_t *relay_session_field_view_new(session_state_registry_t *reg
 
 void relay_session_field_view_free(session_field_view_t *view) { free(view); }
 
+/* PoP: SessionFieldView.__getitem__ @ gateway/session_state.py:SessionFieldView.__getitem__ */
+/* PoP: relay_session_field_view_get @ gateway/session_state.py:SessionFieldView.__getitem__ */
 json_t *relay_session_field_view_get(session_field_view_t *view,
                                      const char *key, int *rc) {
     session_state_t *s = relay_session_state_get(view->reg, key);
@@ -348,6 +361,8 @@ json_t *relay_session_field_view_get(session_field_view_t *view,
     return value; /* borrowed */
 }
 
+/* PoP: SessionFieldView.__setitem__ @ gateway/session_state.py:SessionFieldView.__setitem__ */
+/* PoP: relay_session_field_view_set @ gateway/session_state.py:SessionFieldView.__setitem__ */
 int relay_session_field_view_set(session_field_view_t *view,
                                  const char *key, json_t *value) {
     session_state_t *s = relay_session_state_get_or_create(view->reg, key);
@@ -361,6 +376,8 @@ int relay_session_field_view_set(session_field_view_t *view,
     return SFV_OK;
 }
 
+/* PoP: SessionFieldView.__delitem__ @ gateway/session_state.py:SessionFieldView.__delitem__ */
+/* PoP: relay_session_field_view_del @ gateway/session_state.py:SessionFieldView.__delitem__ */
 int relay_session_field_view_del(session_field_view_t *view, const char *key) {
     session_state_t *s = relay_session_state_get(view->reg, key);
     if (!s) return SFV_KEY_ERROR;
@@ -372,6 +389,7 @@ int relay_session_field_view_del(session_field_view_t *view, const char *key) {
     return SFV_OK;
 }
 
+/* PoP: relay_session_field_view_contains @ gateway/session_state.py:SessionFieldView.__contains__ */
 bool relay_session_field_view_contains(session_field_view_t *view, const char *key) {
     session_state_t *s = relay_session_state_get(view->reg, key);
     if (!s) return false;
@@ -379,6 +397,8 @@ bool relay_session_field_view_contains(session_field_view_t *view, const char *k
     return view->pres(*slot);
 }
 
+/* PoP: SessionFieldView.clear @ gateway/session_state.py:SessionFieldView.clear */
+/* PoP: relay_session_field_view_clear @ gateway/session_state.py:SessionFieldView.clear */
 void relay_session_field_view_clear(session_field_view_t *view) {
     const char **keys = NULL;
     session_state_t **states = NULL;
@@ -392,6 +412,8 @@ void relay_session_field_view_clear(session_field_view_t *view) {
     free(keys); free(states);
 }
 
+/* PoP: SessionFieldView.__iter__ @ gateway/session_state.py:SessionFieldView.__iter__ */
+/* PoP: relay_session_field_view_keys @ gateway/session_state.py:SessionFieldView.__iter__ */
 size_t relay_session_field_view_keys(session_field_view_t *view,
                                      const char ***out_keys) {
     const char **keys = NULL;
@@ -409,6 +431,7 @@ size_t relay_session_field_view_keys(session_field_view_t *view,
     return w;
 }
 
+/* PoP: relay_session_field_view_eq @ gateway/session_state.py:SessionFieldView.__eq__ */
 bool relay_session_field_view_eq(session_field_view_t *view, const omap_t *other) {
     const char **keys = NULL;
     session_state_t **states = NULL;
@@ -434,6 +457,7 @@ bool relay_session_field_view_eq(session_field_view_t *view, const omap_t *other
     return true;
 }
 
+/* PoP: relay_session_field_view_len @ gateway/session_state.py:SessionFieldView.__len__ */
 size_t relay_session_field_view_len(session_field_view_t *view) {
     const char **keys = NULL;
     session_state_t **states = NULL;
@@ -447,6 +471,7 @@ size_t relay_session_field_view_len(session_field_view_t *view) {
     return w;
 }
 
+/* PoP: relay_session_field_view_repr @ gateway/session_state.py:SessionFieldView.__repr__ */
 char *relay_session_field_view_repr(session_field_view_t *view) {
     const char **keys = NULL;
     size_t n = relay_session_field_view_keys(view, &keys);
@@ -470,6 +495,7 @@ char *relay_session_field_view_repr(session_field_view_t *view) {
     return buf; /* caller frees */
 }
 
+/* PoP: relay_session_field_view_ne @ gateway/session_state.py:SessionFieldView.__ne__ */
 bool relay_session_field_view_ne(session_field_view_t *view, const omap_t *other) {
     return !relay_session_field_view_eq(view, other);
 }
@@ -482,6 +508,8 @@ struct turn_lease_token_view {
     session_state_registry_t *reg;
 };
 
+/* PoP: relay_turn_lease_token_view_new @ gateway/session_state.py:legacy_lease_token_property */
+/* PoP: relay_turn_lease_token_view_new @ gateway/session_state.py:TurnLeaseTokenView.__init__ */
 turn_lease_token_view_t *relay_turn_lease_token_view_new(session_state_registry_t *reg) {
     turn_lease_token_view_t *v = calloc(1, sizeof(*v));
     v->reg = reg;
@@ -490,6 +518,7 @@ turn_lease_token_view_t *relay_turn_lease_token_view_new(session_state_registry_
 
 void relay_turn_lease_token_view_free(turn_lease_token_view_t *view) { free(view); }
 
+/* PoP: split_key @ gateway/session_state.py:TurnLeaseTokenView._split */
 static bool split_key(const json_t *key, const char **out_sk, long *out_gen) {
     if (!key || key->type != JSON_ARRAY || key->c.count != 2) return false;
     json_t *a = key->c.items[0];
@@ -501,6 +530,8 @@ static bool split_key(const json_t *key, const char **out_sk, long *out_gen) {
     return true;
 }
 
+/* PoP: TurnLeaseTokenView.__getitem__ @ gateway/session_state.py:TurnLeaseTokenView.__getitem__ */
+/* PoP: relay_turn_lease_token_view_get @ gateway/session_state.py:TurnLeaseTokenView.__getitem__ */
 json_t *relay_turn_lease_token_view_get(turn_lease_token_view_t *view,
                                         const json_t *key, int *rc) {
     const char *sk; long gen;
@@ -514,6 +545,8 @@ json_t *relay_turn_lease_token_view_get(turn_lease_token_view_t *view,
     return s->turn.lease_token; /* borrowed */
 }
 
+/* PoP: TurnLeaseTokenView.__setitem__ @ gateway/session_state.py:TurnLeaseTokenView.__setitem__ */
+/* PoP: relay_turn_lease_token_view_set @ gateway/session_state.py:TurnLeaseTokenView.__setitem__ */
 int relay_turn_lease_token_view_set(turn_lease_token_view_t *view,
                                     const json_t *key, json_t *value) {
     const char *sk; long gen;
@@ -526,6 +559,8 @@ int relay_turn_lease_token_view_set(turn_lease_token_view_t *view,
     return SFV_OK;
 }
 
+/* PoP: TurnLeaseTokenView.__delitem__ @ gateway/session_state.py:TurnLeaseTokenView.__delitem__ */
+/* PoP: relay_turn_lease_token_view_del @ gateway/session_state.py:TurnLeaseTokenView.__delitem__ */
 int relay_turn_lease_token_view_del(turn_lease_token_view_t *view,
                                     const json_t *key) {
     const char *sk; long gen;
@@ -541,6 +576,7 @@ int relay_turn_lease_token_view_del(turn_lease_token_view_t *view,
     return SFV_OK;
 }
 
+/* PoP: relay_turn_lease_token_view_contains @ gateway/session_state.py:TurnLeaseTokenView.__contains__ */
 bool relay_turn_lease_token_view_contains(turn_lease_token_view_t *view,
                                           const json_t *key) {
     const char *sk; long gen;
@@ -566,6 +602,8 @@ void relay_turn_lease_token_view_clear(turn_lease_token_view_t *view) {
     free(keys); free(states);
 }
 
+/* PoP: TurnLeaseTokenView.__iter__ @ gateway/session_state.py:TurnLeaseTokenView.__iter__ */
+/* PoP: relay_turn_lease_token_view_keys @ gateway/session_state.py:TurnLeaseTokenView.__iter__ */
 size_t relay_turn_lease_token_view_keys(turn_lease_token_view_t *view,
                                         json_t ***out_keys) {
     const char **keys = NULL;
@@ -586,6 +624,7 @@ size_t relay_turn_lease_token_view_keys(turn_lease_token_view_t *view,
     return w;
 }
 
+/* PoP: relay_turn_lease_token_view_len @ gateway/session_state.py:TurnLeaseTokenView.__len__ */
 size_t relay_turn_lease_token_view_len(turn_lease_token_view_t *view) {
     const char **keys = NULL;
     session_state_t **states = NULL;

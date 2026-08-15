@@ -16,6 +16,7 @@ extern bool parse_enabled_flag(const char *value, bool default_val);
 extern bool toolset_allowed_for_platform(const char *ts_key, const char *platform);
 extern char *config_py_get_env_value_prefer_dotenv(const char *key);
 
+/* PoP: configurable_toolsets_keys @ hermes_cli/tools_config.py:CONFIGURABLE_TOOLSETS */
 static const char *const CONFIGURABLE_KEYS[] = {
     "web", "browser", "terminal", "file", "code_execution", "vision",
     "video", "image_gen", "video_gen", "x_search", "tts", "skills", "todo",
@@ -24,6 +25,7 @@ static const char *const CONFIGURABLE_KEYS[] = {
     "yuanbao", "computer_use", NULL
 };
 
+/* PoP: default_off_toolsets @ hermes_cli/tools_config.py:_DEFAULT_OFF_TOOLSETS */
 static const char *const DEFAULT_OFF[] = {
     "homeassistant", "spotify", "discord", "discord_admin", "video",
     "video_gen", "x_search", NULL
@@ -145,6 +147,7 @@ static char *json_scalar_to_str(const json_t *v) {
     }
 }
 
+/* PoP: platform_tools_enabled_mcp_server_names @ hermes_cli/tools_config.py:enabled_mcp_server_names */
 char **platform_tools_enabled_mcp_server_names(const json_t *config,
                                                size_t *out_n) {
     pset_t s = {0};
@@ -171,6 +174,7 @@ char **platform_tools_enabled_mcp_server_names(const json_t *config,
     return ps_finish(&s, out_n);
 }
 
+/* PoP: platform_tools_get_enabled_platforms @ hermes_cli/tools_config.py:_get_enabled_platforms */
 char **platform_tools_get_enabled_platforms(size_t *out_n) {
     pset_t s = {0};
     ps_add(&s, "cli");
@@ -192,6 +196,7 @@ char **platform_tools_get_enabled_platforms(size_t *out_n) {
     return ps_finish(&s, out_n);
 }
 
+/* PoP: platform_tools_configuration_platform @ hermes_cli/tools_config.py:_toolset_configuration_platform */
 char *platform_tools_configuration_platform(const char *ts_key,
                                             const char *default_platform) {
     const char *def = default_platform ? default_platform : "cli";
@@ -205,6 +210,7 @@ char *platform_tools_configuration_platform(const char *ts_key,
     return strdup(def);
 }
 
+/* PoP: exempt_explicit_platform_native @ hermes_cli/tools_config.py:_exempt_explicit_platform_native */
 static void exempt_explicit_platform_native(pset_t *default_off,
                                             const char *platform,
                                             bool explicitly_configured) {
@@ -220,6 +226,7 @@ static void exempt_explicit_platform_native(pset_t *default_off,
     }
 }
 
+/* PoP: xai_credentials_present @ hermes_cli/tools_config.py:_xai_credentials_present */
 static bool xai_credentials_present(void) {
     /* xAI OAuth tokens in the auth store (SuperGrok / Premium+).
      * auth_store_load requires a real home path — passing NULL crashes.
@@ -438,6 +445,7 @@ static char **platform_tools_get_finish(const json_t *config,
     return ps_finish(enabled, out_n);
 }
 
+/* PoP: platform_tools_get @ hermes_cli/tools_config.py:_get_platform_tools */
 char **platform_tools_get(const json_t *config, const char *platform,
                           bool include_default_mcp_servers, size_t *out_n) {
     pset_t enabled = {0};
@@ -565,6 +573,7 @@ char **platform_tools_get(const json_t *config, const char *platform,
     return result;
 }
 
+/* PoP: platform_tools_summary @ hermes_cli/tools_config.py:_platform_toolset_summary */
 json_t *platform_tools_summary(const json_t *config,
                                const char *const *platforms, size_t n_platforms) {
     char **detected = NULL;
@@ -588,6 +597,7 @@ json_t *platform_tools_summary(const json_t *config,
     return out;
 }
 
+/* PoP: platform_tools_save @ hermes_cli/tools_config.py:_save_platform_tools */
 void platform_tools_save(json_t *config, const char *platform,
                          const char *const *enabled_keys, size_t n_enabled) {
     if (!config || !platform) return;

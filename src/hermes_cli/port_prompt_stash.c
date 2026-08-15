@@ -27,6 +27,7 @@ static double default_clock(void) {
 }
 
 /* Build a preview: collapse newlines/tabs into a single line, ellipsize. */
+/* PoP: build_preview @ hermes_cli/prompt_stash.py:build_preview */
 char *prompt_stash_build_preview(const char *text, int width) {
     if (!text || !*text) return strdup("");
     /* flatten */
@@ -74,7 +75,9 @@ char *prompt_stash_build_preview(const char *text, int width) {
     return collapsed;
 }
 
+/* PoP: stash_entry_t @ hermes_cli/prompt_stash.py:StashEntry */
 
+/* PoP: prompt_stash_t @ hermes_cli/prompt_stash.py:PromptStash */
 struct prompt_stash {
     stash_entry_t **items;   /* newest-first; items[0] most recent */
     size_t        count;
@@ -85,6 +88,7 @@ struct prompt_stash {
     int           panel_cursor;
 };
 
+/* PoP: prompt_stash_new @ hermes_cli/prompt_stash.py:PromptStash.__init__ */
 prompt_stash_t *prompt_stash_new(int max_items, prompt_stash_clock_fn clock) {
     prompt_stash_t *ps = calloc(1, sizeof(*ps));
     if (!ps) return NULL;
@@ -105,7 +109,9 @@ static void entry_free(stash_entry_t *e) {
     free(e);
 }
 
+/* PoP: prompt_stash_len @ hermes_cli/prompt_stash.py:PromptStash.__len__ */
 size_t prompt_stash_len(const prompt_stash_t *ps) { return ps ? ps->count : 0; }
+/* PoP: prompt_stash_bool @ hermes_cli/prompt_stash.py:PromptStash.__bool__ */
 bool prompt_stash_bool(const prompt_stash_t *ps) { return ps && ps->count > 0; }
 size_t prompt_stash_count(const prompt_stash_t *ps) { return ps ? ps->count : 0; }
 
@@ -117,6 +123,7 @@ static void ensure_cap(prompt_stash_t *ps, size_t need) {
     ps->cap = nc;
 }
 
+/* PoP: prompt_stash_items @ hermes_cli/prompt_stash.py:PromptStash.items */
 stash_entry_t **prompt_stash_items(const prompt_stash_t *ps, size_t *out_n) {
     size_t n = ps ? ps->count : 0;
     stash_entry_t **out = calloc(n ? n : 1, sizeof(stash_entry_t *));
@@ -127,6 +134,7 @@ stash_entry_t **prompt_stash_items(const prompt_stash_t *ps, size_t *out_n) {
 
 void prompt_stash_free_entries(stash_entry_t **items, size_t n) { free(items); }
 
+/* PoP: prompt_stash_entry_as_dict @ hermes_cli/prompt_stash.py:StashEntry.as_dict */
 json_t *prompt_stash_entry_as_dict(const stash_entry_t *e) {
     json_t *d = json_object();
     json_set(d, "text", json_string(e->text ? e->text : ""));
@@ -136,6 +144,7 @@ json_t *prompt_stash_entry_as_dict(const stash_entry_t *e) {
     return d;
 }
 
+/* PoP: prompt_stash_panel_rows @ hermes_cli/prompt_stash.py:PromptStash.panel_rows */
 json_t *prompt_stash_panel_rows(const prompt_stash_t *ps) {
     json_t *arr = json_array();
     for (size_t i = 0; i < ps->count; i++) {
@@ -144,6 +153,7 @@ json_t *prompt_stash_panel_rows(const prompt_stash_t *ps) {
     return arr;
 }
 
+/* PoP: prompt_stash_indicator @ hermes_cli/prompt_stash.py:PromptStash.indicator */
 char *prompt_stash_indicator(const prompt_stash_t *ps) {
     size_t n = ps ? ps->count : 0;
     if (!n) return strdup("");
@@ -154,6 +164,7 @@ char *prompt_stash_indicator(const prompt_stash_t *ps) {
     return buf;
 }
 
+/* PoP: prompt_stash_placeholder_hint @ hermes_cli/prompt_stash.py:PromptStash.placeholder_hint */
 char *prompt_stash_placeholder_hint(const prompt_stash_t *ps) {
     size_t n = ps ? ps->count : 0;
     if (!n) return strdup("");
@@ -170,6 +181,7 @@ char *prompt_stash_placeholder_hint(const prompt_stash_t *ps) {
     return buf;
 }
 
+/* PoP: prompt_stash_stash @ hermes_cli/prompt_stash.py:PromptStash.stash */
 bool prompt_stash_stash(prompt_stash_t *ps, const char *text, json_t *images) {
     bool has_images = images && json_len(images) > 0;
     /* Python: if not (text or "").strip() and not has_images: return False */
@@ -203,6 +215,7 @@ bool prompt_stash_stash(prompt_stash_t *ps, const char *text, json_t *images) {
     return true;
 }
 
+/* PoP: prompt_stash_pop @ hermes_cli/prompt_stash.py:PromptStash.pop */
 bool prompt_stash_pop(prompt_stash_t *ps, int index,
                       char **out_text, json_t **out_images) {
     *out_text = NULL; *out_images = NULL;
@@ -221,12 +234,14 @@ bool prompt_stash_pop(prompt_stash_t *ps, int index,
     return true;
 }
 
+/* PoP: prompt_stash_peek @ hermes_cli/prompt_stash.py:PromptStash.peek */
 const stash_entry_t *prompt_stash_peek(const prompt_stash_t *ps, int index) {
     if (!ps || !ps->count) return NULL;
     if (!(0 <= index && (size_t)index < ps->count)) return NULL;
     return ps->items[index];
 }
 
+/* PoP: prompt_stash_clear @ hermes_cli/prompt_stash.py:PromptStash.clear */
 void prompt_stash_clear(prompt_stash_t *ps) {
     for (size_t i = 0; i < ps->count; i++) entry_free(ps->items[i]);
     ps->count = 0;
@@ -235,6 +250,7 @@ void prompt_stash_clear(prompt_stash_t *ps) {
 }
 
 /* clamp helper (used by cursor ops) */
+/* PoP: prompt_stash_clamp_cursor @ hermes_cli/prompt_stash.py:PromptStash._clamp_cursor */
 static int clamp_cursor_int(prompt_stash_t *ps, int value) {
     if (!ps->count) return 0;
     int hi = (int)ps->count - 1;
@@ -246,6 +262,7 @@ int prompt_stash_clamp_cursor(prompt_stash_t *ps, int value) {
     return clamp_cursor_int(ps, value);
 }
 
+/* PoP: prompt_stash_open_panel @ hermes_cli/prompt_stash.py:PromptStash.open_panel */
 bool prompt_stash_open_panel(prompt_stash_t *ps) {
     if (!ps->count) return false;
     ps->panel_open = true;
@@ -253,16 +270,19 @@ bool prompt_stash_open_panel(prompt_stash_t *ps) {
     return true;
 }
 
+/* PoP: prompt_stash_close_panel @ hermes_cli/prompt_stash.py:PromptStash.close_panel */
 void prompt_stash_close_panel(prompt_stash_t *ps) {
     ps->panel_open = false;
     ps->panel_cursor = 0;
 }
 
+/* PoP: prompt_stash_move_cursor @ hermes_cli/prompt_stash.py:PromptStash.move_cursor */
 int prompt_stash_move_cursor(prompt_stash_t *ps, int delta) {
     ps->panel_cursor = clamp_cursor_int(ps, ps->panel_cursor + delta);
     return ps->panel_cursor;
 }
 
+/* PoP: prompt_stash_delete_at_cursor @ hermes_cli/prompt_stash.py:PromptStash.delete_at_cursor */
 bool prompt_stash_delete_at_cursor(prompt_stash_t *ps) {
     if (!ps->count) return false;
     int idx = clamp_cursor_int(ps, ps->panel_cursor);
@@ -279,6 +299,7 @@ bool prompt_stash_delete_at_cursor(prompt_stash_t *ps) {
     return true;
 }
 
+/* PoP: prompt_stash_restore_at_cursor @ hermes_cli/prompt_stash.py:PromptStash.restore_at_cursor */
 bool prompt_stash_restore_at_cursor(prompt_stash_t *ps,
                                    char **out_text, json_t **out_images) {
     *out_text = NULL; *out_images = NULL;
@@ -289,6 +310,7 @@ bool prompt_stash_restore_at_cursor(prompt_stash_t *ps,
     return ok;
 }
 
+/* PoP: resolve_ctrl_s @ hermes_cli/prompt_stash.py:resolve_ctrl_s */
 ctrl_s_action_t prompt_stash_resolve_ctrl_s(prompt_stash_t *ps,
                                             const char *buffer_text,
                                             json_t *images,

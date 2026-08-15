@@ -34,6 +34,7 @@ void freeze_yolo_mode(bool value)
     s_yolo_mode_frozen_set = true;
 }
 
+/* PoP: is_yolo_mode_frozen @ tools/approval.py:_YOLO_MODE_FROZEN */
 bool is_yolo_mode_frozen(void)
 {
     return s_yolo_mode_frozen;
@@ -43,6 +44,7 @@ bool is_yolo_mode_frozen(void)
  *  Approval mode / bypass helpers
  * ================================================================ */
 
+/* PoP: is_approval_bypass_active @ tools/approval.py:is_approval_bypass_active */
 bool is_approval_bypass_active(void)
 {
     if (s_yolo_mode_frozen_set && s_yolo_mode_frozen) return true;
@@ -54,6 +56,7 @@ bool is_approval_bypass_active(void)
     return false;
 }
 
+/* PoP: get_approval_mode @ tools/approval.py:_get_approval_mode */
 const char *get_approval_mode(void)
 {
     const char *mode = getenv("HERMES_APPROVAL_MODE");
@@ -64,6 +67,7 @@ const char *get_approval_mode(void)
  *  Shell parsing / command detection helpers
  * ================================================================ */
 
+/* PoP: skip_container_guards @ tools/approval.py:_should_skip_container_guards */
 bool skip_container_guards(const char *env_type, bool has_host_access)
 {
     if (!env_type) return false;
@@ -73,6 +77,7 @@ bool skip_container_guards(const char *env_type, bool has_host_access)
             strcmp(env_type, "daytona") == 0);
 }
 
+/* PoP: strip_shell_comments @ tools/approval.py:_strip_shell_comments */
 char *strip_shell_comments(const char *command)
 {
     if (!command) return strdup("");
@@ -103,12 +108,14 @@ char *strip_shell_comments(const char *command)
     return result;
 }
 
+/* PoP: skip_shell_whitespace @ tools/approval.py:_skip_shell_whitespace */
 size_t skip_shell_whitespace(const char *s, size_t i, size_t len) {
     while (i < len && (s[i] == ' ' || s[i] == '\t' || s[i] == '\n' || s[i] == '\r'))
         i++;
     return i;
 }
 
+/* PoP: scan_dollar_paren_end @ tools/approval.py:_scan_dollar_paren_end */
 size_t scan_dollar_paren_end(const char *s, size_t start, size_t len) {
     /* start points at '$('; we need to find matching ')' */
     int depth = 0;
@@ -135,6 +142,7 @@ size_t scan_dollar_paren_end(const char *s, size_t start, size_t len) {
     return len; /* unmatched - return end */
 }
 
+/* PoP: scan_backtick_end @ tools/approval.py:_scan_backtick_end */
 size_t scan_backtick_end(const char *s, size_t start, size_t len) {
     bool in_single = false, in_double = false, escaped = false;
     for (size_t i = start + 1; i < len; i++) {
@@ -148,6 +156,7 @@ size_t scan_backtick_end(const char *s, size_t start, size_t len) {
     return len;
 }
 
+/* PoP: read_shell_word @ tools/approval.py:_read_shell_word */
 size_t read_shell_word(const char *s, size_t start, size_t len, char *out, size_t out_cap) {
     bool in_single = false, in_double = false, escaped = false;
     size_t o = 0;
@@ -177,6 +186,7 @@ size_t read_shell_word(const char *s, size_t start, size_t len, char *out, size_
     return o;
 }
 
+/* PoP: strip_optional_shell_quotes @ tools/approval.py:_strip_optional_shell_quotes */
 char *strip_optional_shell_quotes(const char *word)
 {
     if (!word) return strdup("");
@@ -193,6 +203,7 @@ char *strip_optional_shell_quotes(const char *word)
     return strdup(word);
 }
 
+/* PoP: is_simple_shell_literal @ tools/approval.py:_is_simple_shell_literal */
 bool is_simple_shell_literal(const char *word)
 {
     /* Faithful port of tools/approval.py _is_simple_shell_literal:
@@ -211,6 +222,7 @@ bool is_simple_shell_literal(const char *word)
     return true;
 }
 
+/* PoP: literal_command_substitution_output @ tools/approval.py:_literal_command_substitution_output */
 char *literal_command_substitution_output(const char *command)
 {
     if (!command) return strdup("");
@@ -234,6 +246,7 @@ char *literal_command_substitution_output(const char *command)
     return out;
 }
 
+/* PoP: replace_simple_command_substitutions @ tools/approval.py:_replace_simple_command_substitutions */
 char *replace_simple_command_substitutions(const char *command)
 {
     if (!command) return strdup("");
@@ -262,6 +275,7 @@ char *replace_simple_command_substitutions(const char *command)
     return out;
 }
 
+/* PoP: replace_simple_shell_expansions @ tools/approval.py:_replace_simple_shell_expansions */
 char *replace_simple_shell_expansions(const char *command)
 {
     if (!command) return strdup("");
@@ -303,6 +317,7 @@ char *replace_simple_shell_expansions(const char *command)
     return out;
 }
 
+/* PoP: strip_shell_word_syntax @ tools/approval.py:_strip_shell_word_syntax */
 char *strip_shell_word_syntax(const char *word)
 {
     if (!word) return strdup("");
@@ -320,6 +335,7 @@ char *strip_shell_word_syntax(const char *word)
     return out;
 }
 
+/* PoP: deobfuscate_shell_word_for_detection @ tools/approval.py:_deobfuscate_shell_word_for_detection */
 char *deobfuscate_shell_word_for_detection(const char *word)
 {
     if (!word) return strdup("");
@@ -350,6 +366,7 @@ char *deobfuscate_shell_word_for_detection(const char *word)
     return out;
 }
 
+/* PoP: iter_shell_command_starts @ tools/approval.py:_iter_shell_command_starts */
 size_t iter_shell_command_starts(const char *command, size_t *out_starts, size_t max_starts)
 {
     if (!command) return 0;
@@ -375,6 +392,7 @@ size_t iter_shell_command_starts(const char *command, size_t *out_starts, size_t
     return count;
 }
 
+/* PoP: mark_command_starts @ tools/approval.py:_mark_command_starts */
 size_t mark_command_starts(const char *command, bool *marks, size_t marks_len)
 {
     if (!command) return 0;
@@ -401,6 +419,7 @@ size_t mark_command_starts(const char *command, bool *marks, size_t marks_len)
     return starts;
 }
 
+/* PoP: iter_shell_command_word_spans @ tools/approval.py:_iter_shell_command_word_spans */
 size_t iter_shell_command_word_spans(const char *command, size_t *out_starts, size_t *out_ends, size_t max_spans)
 {
     if (!command) return 0;
@@ -431,6 +450,7 @@ size_t iter_shell_command_word_spans(const char *command, size_t *out_starts, si
     return count;
 }
 
+/* PoP: command_detection_variants @ tools/approval.py:_command_detection_variants */
 json_t *command_detection_variants(const char *command)
 {
     json_t *arr = json_array();
@@ -539,6 +559,7 @@ static void make_interactive_key(void)
     pthread_key_create(&s_interactive_key, interactive_key_destructor);
 }
 
+/* PoP: set_hermes_interactive_context @ tools/approval.py:set_hermes_interactive_context */
 void *set_hermes_interactive_context(bool interactive)
 {
     pthread_once(&s_interactive_key_once, make_interactive_key);
@@ -554,6 +575,7 @@ void *set_hermes_interactive_context(bool interactive)
     return prev_copy;
 }
 
+/* PoP: reset_hermes_interactive_context @ tools/approval.py:reset_hermes_interactive_context */
 void reset_hermes_interactive_context(void *token)
 {
     pthread_once(&s_interactive_key_once, make_interactive_key);
@@ -565,6 +587,7 @@ void reset_hermes_interactive_context(void *token)
     }
 }
 
+/* PoP: _is_interactive_cli @ tools/approval.py:_is_interactive_cli */
 bool _is_interactive_cli(void)
 {
     pthread_once(&s_interactive_key_once, make_interactive_key);
@@ -585,6 +608,7 @@ bool _is_interactive_cli(void)
 
 #include "hermes_regex.h"
 
+/* PoP: _hardline_rm_path @ tools/approval.py:_hardline_rm_path */
 char *hardline_rm_path(const char *path_alt)
 {
     if (!path_alt) return strdup("");
@@ -603,6 +627,7 @@ char *hardline_rm_path(const char *path_alt)
     return pattern;
 }
 
+/* PoP: _home_prefix_fold_regex @ tools/approval.py:_home_prefix_fold_regex */
 hregex_t *home_prefix_fold_regex(const char *path)
 {
     if (!path || !*path) return NULL;
@@ -663,6 +688,7 @@ hregex_t *home_prefix_fold_regex(const char *path)
     return re;
 }
 
+/* PoP: _fold_home_prefixes @ tools/approval.py:_fold_home_prefixes */
 char *fold_home_prefixes(const char *command, const char **paths, size_t path_count, const char *replacement)
 {
     if (!command) return strdup("");
@@ -735,24 +761,29 @@ char *fold_home_prefixes(const char *command, const char **paths, size_t path_co
 static char g_current_session_key[256];
 static char g_current_observability_context[256];
 
+/* PoP: approval_set_current_session_key @ tools/approval.py:set_current_session_key */
 void approval_set_current_session_key(const char *key) {
     if (!key) key = "";
     snprintf(g_current_session_key, sizeof(g_current_session_key), "%s", key);
 }
 
+/* PoP: approval_reset_current_session_key @ tools/approval.py:reset_current_session_key */
 void approval_reset_current_session_key(void) {
     memset(g_current_session_key, 0, sizeof(g_current_session_key));
 }
 
+/* PoP: approval_get_current_session_key @ tools/approval.py:get_current_session_key */
 const char *approval_get_current_session_key(void) {
     return g_current_session_key;
 }
 
+/* PoP: approval_set_current_observability_context @ tools/approval.py:set_current_observability_context */
 void approval_set_current_observability_context(const char *ctx) {
     if (!ctx) ctx = "";
     snprintf(g_current_observability_context, sizeof(g_current_observability_context), "%s", ctx);
 }
 
+/* PoP: approval_reset_current_observability_context @ tools/approval.py:reset_current_observability_context */
 void approval_reset_current_observability_context(void) {
     g_current_observability_context[0] = '\0';
 }
@@ -765,11 +796,13 @@ static int au_env_var_enabled(const char *name) {
     return (v[0] == '1' || strcasecmp(v, "true") == 0 || strcasecmp(v, "yes") == 0);
 }
 
+/* PoP: approval__get_session_platform @ tools/approval.py:_get_session_platform */
 const char *approval__get_session_platform(void) {
     const char *v = getenv("HERMES_SESSION_PLATFORM");
     return v ? v : "";
 }
 
+/* PoP: approval__is_gateway_approval_context @ tools/approval.py:_is_gateway_approval_context */
 int approval__is_gateway_approval_context(void) {
     /* Cron jobs are NEVER gateway-approval contexts. */
     if (au_env_var_enabled("HERMES_CRON_SESSION")) return 0;
@@ -779,6 +812,7 @@ int approval__is_gateway_approval_context(void) {
 
 /* --- Approval-mode config helpers ---------------------------------------- */
 
+/* PoP: approval__normalize_approval_mode @ tools/approval.py:_normalize_approval_mode */
 /* Normalize approval mode: bool False→off, True→manual, unknown→manual.
  * Always returns one of "manual", "smart", "off". */
 const char *approval__normalize_approval_mode(const char *mode) {
@@ -797,6 +831,7 @@ const char *approval__normalize_approval_mode(const char *mode) {
     return "manual";
 }
 
+/* PoP: approval__get_approval_config @ tools/approval.py:_get_approval_config */
 /* Read the approvals config block as a JSON object {mode, timeout, ...}. */
 json_t *approval__get_approval_config(void) {
     hermes_config_t cfg;
@@ -812,6 +847,7 @@ json_t *approval__get_approval_config(void) {
     return obj;
 }
 
+/* PoP: approval__get_cron_approval_mode @ tools/approval.py:_get_cron_approval_mode */
 const char *approval__get_cron_approval_mode(void) {
     hermes_config_t cfg;
     memset(&cfg, 0, sizeof(cfg));
@@ -821,6 +857,7 @@ const char *approval__get_cron_approval_mode(void) {
 
 /* --- Pattern key helpers -------------------------------------------------- */
 
+/* PoP: approval__legacy_pattern_key @ tools/approval.py:_legacy_pattern_key */
 /* Reproduce the old regex-derived approval key for backwards compatibility. */
 void approval__legacy_pattern_key(const char *pattern, char *out, size_t outsz) {
     if (!pattern || !out || outsz == 0) { if (out) out[0] = '\0'; return; }
@@ -839,6 +876,7 @@ void approval__legacy_pattern_key(const char *pattern, char *out, size_t outsz) 
     }
 }
 
+/* PoP: approval__approval_key_aliases @ tools/approval.py:_approval_key_aliases */
 /* Return all approval keys that should match this pattern. Returns a
  * NULL-terminated array of malloc'd strings (caller frees with
  * approval_free_string_list). */
@@ -863,6 +901,7 @@ void approval_free_string_list(char **list) {
 
 /* --- Resolved-home rewriters --------------------------------------------- */
 
+/* PoP: approval__rewrite_resolved_user_home @ tools/approval.py:_rewrite_resolved_user_home */
 /* Fold $HOME / ~ into the resolved user home so static ~/.ssh patterns match. */
 void approval__rewrite_resolved_user_home(const char *command, char *out, size_t outsz) {
     const char *home = getenv("HOME");
@@ -885,6 +924,7 @@ void approval__rewrite_resolved_user_home(const char *command, char *out, size_t
     out[j] = '\0';
 }
 
+/* PoP: approval__rewrite_resolved_hermes_home @ tools/approval.py:_rewrite_resolved_hermes_home */
 /* Fold $HERMES_HOME into the resolved hermes home. */
 void approval__rewrite_resolved_hermes_home(const char *command, char *out, size_t outsz) {
     const char *home = getenv("HERMES_HOME");
@@ -905,6 +945,7 @@ void approval__rewrite_resolved_hermes_home(const char *command, char *out, size
 
 /* --- Block-result builders ----------------------------------------------- */
 
+/* PoP: approval__hardline_block_result @ tools/approval.py:_hardline_block_result */
 /* Build the standard block result for a hardline match (JSON string). */
 char *approval__hardline_block_result(const char *description) {
     char *out = malloc(1024);
@@ -918,6 +959,7 @@ char *approval__hardline_block_result(const char *description) {
     return out;
 }
 
+/* PoP: approval__sudo_stdin_block_result @ tools/approval.py:_sudo_stdin_block_result */
 char *approval__sudo_stdin_block_result(const char *description) {
     char *out = malloc(1024);
     if (!out) return NULL;
@@ -931,6 +973,7 @@ char *approval__sudo_stdin_block_result(const char *description) {
 
 /* --- Command guards (simplified faithful core) --------------------------- */
 
+/* PoP: approval__check_sudo_stdin_guard @ tools/approval.py:_check_sudo_stdin_guard */
 /* Detect `sudo -S` (stdin password) without configured SUDO_PASSWORD.
  * Returns a malloc'd JSON result string or NULL when not blocked. */
 static const char *HARDLINE_PATTERNS[] = {
@@ -971,6 +1014,7 @@ char *approval__check_sudo_stdin_guard(const char *command) {
     return NULL;
 }
 
+/* PoP: detect_hardline_command @ tools/approval.py:detect_hardline_command */
 char *approval_detect_hardline_command(const char *command) {
     if (!command) return NULL;
     if (strlen(command) > 65536) return NULL;
@@ -1027,6 +1071,7 @@ char *approval_detect_hardline_command(const char *command) {
 
 /* --- Tirith description formatting --------------------------------------- */
 
+/* PoP: approval__format_tirith_description @ tools/approval.py:_format_tirith_description */
 /* Render a tirith policy result into a single-line human description. */
 void approval__format_tirith_description(const char *tirith_result_json,
                                          char *out, size_t outsz) {
@@ -1045,6 +1090,7 @@ void approval__format_tirith_description(const char *tirith_result_json,
 
 /* --- Smart approve -------------------------------------------------------- */
 
+/* PoP: approval__smart_approve @ tools/approval.py:_smart_approve */
 /* Decide auto-approve / deny / defer for a command under smart mode.
  * Returns a malloc'd JSON result: {"decision":"allow"|"deny"|"defer",
  * "reason":...}. */
@@ -1069,6 +1115,7 @@ char *approval__smart_approve(const char *command, const char *description) {
 
 /* --- Approval hook fire -------------------------------------------------- */
 
+/* PoP: approval__fire_approval_hook @ tools/approval.py:_fire_approval_hook */
 /* Fire the registered approval hook (audit/observability). Best-effort. */
 void approval__fire_approval_hook(const char *event, const char *detail) {
     hermes_log(LOG_INFO, "approval", "approval_hook: %s %s",
@@ -1077,19 +1124,24 @@ void approval__fire_approval_hook(const char *event, const char *detail) {
 
 /* --- PoP-annotated wrappers for bundled gateway/session functions -------- */
 
+/* PoP: approval_disable_session_yolo @ tools/approval.py:disable_session_yolo */
 void approval_disable_session_yolo(void) { approval_set_yolo(false); }
 
+/* PoP: approval_is_current_session_yolo_enabled @ tools/approval.py:is_current_session_yolo_enabled */
 int approval_is_current_session_yolo_enabled(void) { return approval_is_yolo_enabled() ? 1 : 0; }
 
+/* PoP: approval_load_permanent @ tools/approval.py:load_permanent */
 /* Python: _permanent_approved.update(patterns). Calls the real merge+save. */
 void approval_load_permanent(const char **patterns, size_t n) {
     approval_save_permanent_allowlist(patterns, n);
 }
 
+/* PoP: approval_unregister_gateway_notify @ tools/approval.py:unregister_gateway_notify */
 void approval_unregister_gateway_notify(void) {
     approval_set_gateway_send(NULL, NULL, NULL);
 }
 
+/* PoP: approval_resolve_gateway_approval @ tools/approval.py:resolve_gateway_approval */
 int approval_resolve_gateway_approval(const char *platform, const char *chat_id) {
     /* Python: resolve the oldest pending gateway approval (FIFO) and relay
      * the choice to the waiting agent thread. The C shim keys by
@@ -1115,6 +1167,7 @@ int approval_resolve_gateway_approval(const char *platform, const char *chat_id)
     return 1;
 }
 
+/* PoP: approval_submit_pending @ tools/approval.py:submit_pending */
 int approval_submit_pending(const char *session_key, const char *payload) {
     /* Python: _pending[session_key] = approval — replace any prior entry. */
     if (!session_key || !*session_key) return 0;
@@ -1133,6 +1186,7 @@ int approval_submit_pending(const char *session_key, const char *payload) {
     return 1;
 }
 
+/* PoP: approval_approve_session @ tools/approval.py:approve_session */
 int approval_approve_session(const char *session_key, int approve) {
     /* Python: _session_approved[session_key].add(pattern_key). The C shim
      * collapses pattern_key to an int flag: approve=1 records the session
@@ -1148,6 +1202,7 @@ int approval_approve_session(const char *session_key, int approve) {
     return 1;
 }
 
+/* PoP: approval_check_execute_code_guard @ tools/approval.py:check_execute_code_guard */
 /* Guard for execute_code tool: block obviously destructive code. Returns a
  * malloc'd JSON block result or NULL when allowed. */
 char *approval_check_execute_code_guard(const char *code, const char *env_type) {
@@ -1168,6 +1223,7 @@ char *approval_check_execute_code_guard(const char *code, const char *env_type) 
     return result;
 }
 
+/* PoP: _clamped_window_seconds @ tools/approval.py:_clamped_window_seconds */
 double approval_clamped_window_seconds(double started, double now, double ceiling) {
     double elapsed = now - started;
     if (elapsed < 0) elapsed = 0;

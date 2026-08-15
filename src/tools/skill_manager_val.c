@@ -39,6 +39,7 @@ char *skill_val_validate_name(const char *name) {
     return NULL;
 }
 
+/* PoP: smt_u_validate_category @ tools/skill_manager_tool.py:_validate_category */
 char *skill_val_validate_category(const char *category) {
     if (!category) return NULL;
     if (strchr(category, '/') || strchr(category, '\\'))
@@ -53,6 +54,7 @@ char *skill_val_validate_category(const char *category) {
     return NULL;
 }
 
+/* PoP: _validate_content_size @ tools/skill_manager_tool.py:_validate_content_size */
 char *skill_val_validate_content_size(const char *content, const char *label) {
     const char *lab = label && *label ? label : "SKILL.md";
     size_t len = content ? strlen(content) : 0;
@@ -70,6 +72,7 @@ char *skill_val_validate_content_size(const char *content, const char *label) {
 /* Minimal frontmatter check (faithful to the Python contract without a YAML
  * parser): must start with '---', have a closing '\n---\n', contain 'name:' and
  * 'description:' keys, description within length, and non-empty body. */
+/* PoP: smt_u_validate_frontmatter @ tools/skill_manager_tool.py:_validate_frontmatter */
 char *skill_val_validate_frontmatter(const char *content) {
     if (!content || !*content) return strdup("Content cannot be empty.");
     while (*content == ' ' || *content == '\t') content++;
@@ -197,6 +200,7 @@ char *skill_val_validate_file_path(const char *file_path) {
     return NULL;
 }
 
+/* PoP: skill_val_resolve_skill_target @ tools/skill_manager_tool.py:_resolve_skill_target */
 char *skill_val_resolve_skill_target(const char *skill_dir, const char *file_path,
                                      char **out_error) {
     if (out_error) *out_error = NULL;
@@ -221,6 +225,7 @@ char *skill_val_resolve_skill_target(const char *skill_dir, const char *file_pat
     return joined;
 }
 
+/* PoP: skill_val_validate_delete_target @ tools/skill_manager_tool.py:_validate_delete_target */
 char *skill_val_validate_delete_target(const char *skill_dir,
                                        char **roots, int nroots) {
     if (skill_val_is_path_redirect(skill_dir)) {
@@ -250,6 +255,7 @@ char *skill_val_validate_delete_target(const char *skill_dir,
     return r;
 }
 
+/* PoP: skill_val_containing_skills_root @ tools/skill_manager_tool.py:_containing_skills_root */
 char *skill_val_containing_skills_root(const char *skill_path,
                                        char **roots, int nroots) {
     for (int i = 0; i < nroots; i++) {

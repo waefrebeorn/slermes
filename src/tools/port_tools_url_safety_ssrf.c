@@ -46,6 +46,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+/* PoP: _MAX_SSRF_CONNECT_IPS @ tools/url_safety.py:_MAX_SSRF_CONNECT_IPS */
 #define SSRF_MAX_CONNECT_IPS 8
 
 /* Proxy environment variables (order matches Python _PROXY_ENV_VARS). */
@@ -56,6 +57,7 @@ static const char *SSRF_PROXY_ENV_VARS[] = {
     NULL,
 };
 
+/* PoP: ssrf_proxy_is_configured @ tools/url_safety.py:_proxy_is_configured */
 /* Return true when at least one HTTP proxy env var is set (non-empty). */
 bool ssrf_proxy_is_configured(void)
 {
@@ -73,6 +75,7 @@ typedef struct {
     char scheme[8];   /* "http" or "https" */
 } ssrf_origin_scheme_t;
 
+/* PoP: ssrf_safe_connect_scheme @ tools/url_safety.py:_safe_connect_scheme */
 /* Return schemes_by_origin.get((host,port)) or ("https" if port==443 else "http").
  * `map`/`n` may be NULL/0 (empty mapping). Result is a static-lifetime literal
  * or a pointer into `map`; caller must not free. */
@@ -88,6 +91,7 @@ const char *ssrf_safe_connect_scheme(const char *host, int port,
     return (port == 443) ? "https" : "http";
 }
 
+/* PoP: ssrf_is_blocked_ip @ tools/url_safety.py:_is_blocked_ip */
 /* Return true if a resolved sockaddr should be blocked for SSRF protection.
  * Faithful to Python _is_blocked_ip: private / loopback / link-local /
  * reserved / multicast / unspecified / CGNAT(100.64/10), and IPv4-mapped
@@ -192,6 +196,7 @@ bool ssrf_is_blocked_ip(const struct sockaddr *sa)
     return true; /* unknown family — fail closed */
 }
 
+/* PoP: ssrf_resolved_http_connect_ips @ tools/url_safety.py:_resolved_http_connect_ips */
 /* Resolve + validate `host` for one HTTP connect attempt. Returns a malloc'd,
  * NULL-terminated array of vetted IP strings (at most SSRF_MAX_CONNECT_IPS,
  * de-duplicated, preserving getaddrinfo order), or NULL on any policy
@@ -281,6 +286,7 @@ char **ssrf_resolved_http_connect_ips(const char *host, int port, const char *sc
  * effective scheme and delegates to ssrf_resolved_http_connect_ips. `ctx` may
  * carry an origin->scheme map (from ssrf_origin_scheme_context); NULL means the
  * default port-based scheme is used. Signature matches async_http_ssrf_guard_t. */
+/* PoP: ssrf_connect_guard @ tools/url_safety.py:connect_tcp */
 char **ssrf_connect_guard(const char *host, int port, const char *scheme, void *ctx)
 {
     const ssrf_origin_scheme_t *map = (const ssrf_origin_scheme_t *)ctx;
@@ -294,6 +300,7 @@ char **ssrf_connect_guard(const char *host, int port, const char *scheme, void *
     return ssrf_resolved_http_connect_ips(host, port, eff_scheme);
 }
 
+/* PoP: ssrf_origin_scheme_context @ tools/url_safety.py:_origin_scheme_context */
 /* Build a one-entry origin->scheme mapping for a request's URL. Returns 1 and
  * fills *out when host/port/scheme are valid (scheme in {http,https}); returns
  * 0 (empty context) otherwise, faithful to Python returning {} . */
@@ -310,6 +317,10 @@ int ssrf_origin_scheme_context(const char *host, int port, const char *scheme,
     return 1;
 }
 
+/* PoP: ssrf_install_guard_on_client @ tools/url_safety.py:_install_ssrf_guard_on_client */
+/* PoP: ssrf_install_guard_on_client @ tools/url_safety.py:_install_ssrf_guard_on_async_client */
+/* PoP: ssrf_install_guard_on_transport @ tools/url_safety.py:_install_ssrf_guard_on_transport */
+/* PoP: ssrf_install_guard_on_transport @ tools/url_safety.py:_install_ssrf_guard_on_async_transport */
 /* Install the SSRF guard on an async_http client. In C there is one client
  * type and one (non-blocking) transport, so the Python async/sync transport and
  * client installers all collapse to this single faithful operation: point the
@@ -327,6 +338,8 @@ int ssrf_install_guard_on_client(async_http_client_t *client)
     return ssrf_install_guard_on_transport(client);
 }
 
+/* PoP: ssrf_safe_http_transport @ tools/url_safety.py:ssrf_safe_http_transport */
+/* PoP: ssrf_safe_http_transport @ tools/url_safety.py:ssrf_safe_async_http_transport */
 /* Return a new async_http client whose transport pins direct TCP connects to
  * vetted IPs (the Python "transport" object with a guarded network backend).
  * timeout_ms<=0 uses the client default. Caller frees with async_http_client_free. */
@@ -338,6 +351,8 @@ async_http_client_t *ssrf_safe_http_transport(int timeout_ms)
     return c;
 }
 
+/* PoP: ssrf_create_safe_client @ tools/url_safety.py:create_ssrf_safe_client */
+/* PoP: ssrf_create_safe_client @ tools/url_safety.py:create_ssrf_safe_async_client */
 /* Create an async_http client with connect-time SSRF validation — the
  * public factory (create_ssrf_safe_client / create_ssrf_safe_async_client).
  * Direct connections are resolved, validated, and dialed by IP while the
@@ -350,6 +365,7 @@ async_http_client_t *ssrf_create_safe_client(int timeout_ms)
     return c;
 }
 
+/* PoP: ssrf_connect_unix_socket @ tools/url_safety.py:connect_unix_socket */
 /* Unix socket connections are ALWAYS blocked in the SSRF-safe transport
  * (both _SSRFGuardedNetworkBackend.connect_unix_socket and the async
  * variant raise SSRFConnectionBlocked unconditionally). Returns -1 and,
@@ -363,6 +379,7 @@ int ssrf_connect_unix_socket(const char *path, char *errbuf, size_t errsz)
     return -1;
 }
 
+/* PoP: ssrf_sleep @ tools/url_safety.py:sleep */
 /* Delegate sleep to the underlying backend (Python: self._backend.sleep).
  * In the C runtime the backend is the poll event loop; a plain nanosleep is
  * the faithful single-threaded equivalent (the loop is not pumping while a

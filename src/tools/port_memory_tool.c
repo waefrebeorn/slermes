@@ -66,6 +66,7 @@ static int char_count_arr(const char **arr, int n) {
     for (int i = 0; i < n; i++) total += (int)strlen(arr[i]);
     return total;
 }
+/* PoP: entries_for @ tools/memory_tool.py:_entries_for */
 static const char **entries_for(const memory_store_t *s, const char *target, int *pn) {
     if (target && strcmp(target, "user") == 0) { *pn = s->user_n; return (const char**)s->user_entries; }
     *pn = s->memory_n; return (const char**)s->memory_entries;
@@ -245,9 +246,11 @@ const char *memory_store_snapshot(memory_store_t *s, const char *target) {
     return s->snap_memory;
 }
 
+/* PoP: memory_store_char_count @ tools/memory_tool.py:_char_count */
 int memory_store_char_count(memory_store_t *s, const char *target) {
     int n; const char **e = entries_for(s, target, &n); return char_count_arr(e, n);
 }
+/* PoP: memory_store_char_limit @ tools/memory_tool.py:_char_limit */
 int memory_store_char_limit(memory_store_t *s, const char *target) {
     return char_limit_for(s, target);
 }
@@ -288,6 +291,7 @@ static char *resp_error(memory_store_t *s, const char *target, const char *err, 
 }
 
 /* consolidation-failure degradation */
+/* PoP: consolidation_failure @ tools/memory_tool.py:_consolidation_failure */
 static char *consolidation_failure(memory_store_t *s, const char *target, char *resp) {
     s->consolidation_failures++;
     if (s->consolidation_failures <= MAX_CONSOLIDATION_FAILURES_PER_TURN)
@@ -305,6 +309,7 @@ static char *consolidation_failure(memory_store_t *s, const char *target, char *
 
 /* external drift: any single entry exceeds the whole-store limit, or a
    round-trip reserialize differs. Returns malloc'd .bak path or NULL. */
+/* PoP: detect_external_drift @ tools/memory_tool.py:_detect_external_drift */
 static char *detect_external_drift(memory_store_t *s, const char *mem_dir, const char *target) {
     const char *path = path_for(mem_dir, target);
     FILE *f = fopen(path, "rb");
@@ -420,6 +425,7 @@ char *memory_store_remove(memory_store_t *s, const char *target, const char *old
 }
 
 /* batch */
+/* PoP: memory_store_apply_batch @ tools/memory_tool.py:apply_batch */
 char *memory_store_apply_batch(memory_store_t *s, const char *target, const json_node_t *ops) {
     if (!ops) return resp_error(s, target, "operations list is empty.", 0);
     int opn = (int)json_array_size(ops);
@@ -539,8 +545,10 @@ static char *gate_result_staged(memory_write_gate_decision_t *d) {
     return out;
 }
 
+/* PoP: check_memory_requirements @ tools/memory_tool.py:check_memory_requirements */
 int memory_tool_available(void) { return 1; }
 
+/* PoP: memory_tool_missing_old_text_error @ tools/memory_tool.py:_missing_old_text_error */
 char *memory_tool_missing_old_text_error(memory_store_t *store,
                                          const char *target, const char *action) {
     int n; const char **e = entries_for(store, target, &n);

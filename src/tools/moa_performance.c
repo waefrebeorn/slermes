@@ -771,31 +771,37 @@ void moa_model_selector_record_success(moa_project_context_t *project, const cha
 /* shared http client handle (the engine owns the actual transport) */
 static int g_http_client_open = 0;
 
+/* PoP: kdb_init_db @ tools/moa_performance.py:_init_db */
 void moa_perf_init_db(void) {
     moa_get_project_manager();   /* triggers sqlite schema init via pthread_once */
     moa_get_response_cache();
     moa_get_research_cache();
 }
 
+/* PoP: moa_perf_get_or_create_project @ tools/moa_performance.py:get_or_create_project */
 moa_project_context_t *moa_perf_get_or_create_project(const char *working_dir, const char *project_name) {
     (void)project_name;  /* C impl derives name from working_dir when creating */
     return moa_project_get_or_create(working_dir);
 }
 
+/* PoP: moa_perf_save_project @ tools/moa_performance.py:_save_project */
 void moa_perf_save_project(moa_project_context_t *ctx) {
     if (ctx) moa_project_update(ctx);
 }
 
+/* PoP: moa_perf_update_project @ tools/moa_performance.py:update_project */
 void moa_perf_update_project(moa_project_context_t *ctx) {
     if (ctx) moa_project_update(ctx);
 }
 
+/* PoP: moa_perf_record_session @ tools/moa_performance.py:record_session */
 void moa_perf_record_session(const char *project_id, const char *mode, const char *prompt,
                              const char *result_summary, const char **models_used, int models_count,
                              double duration) {
     moa_project_record_session(project_id, mode, prompt, result_summary, models_used, models_count, duration);
 }
 
+/* PoP: moa_perf_get_project_history @ tools/moa_performance.py:get_project_history */
 char *moa_perf_get_project_history(const char *project_id, int limit) {
     moa_project_manager_t *pm = moa_get_project_manager();
     if (!pm || !pm->db || !project_id) return strdup("[]");
@@ -831,18 +837,21 @@ char *moa_perf_get_project_history(const char *project_id, int limit) {
     return s;
 }
 
+/* PoP: moa_perf_get_preferred_model @ tools/moa_performance.py:get_preferred_model */
 const char *moa_perf_get_preferred_model(const char *project_id, const char *mode) {
     moa_project_context_t *ctx = moa_project_get_or_create(NULL);
     (void)project_id;
     return moa_project_get_preferred_model(ctx, mode);
 }
 
+/* PoP: moa_perf_set_preferred_model @ tools/moa_performance.py:set_preferred_model */
 void moa_perf_set_preferred_model(const char *project_id, const char *mode, const char *model) {
     moa_project_context_t *ctx = moa_project_get_or_create(NULL);
     (void)project_id;
     moa_project_set_preferred_model(ctx, mode, model);
 }
 
+/* PoP: moa_perf_make_key @ tools/moa_performance.py:_make_key */
 void moa_perf_make_key(const char *query, const char *intent, char *out, size_t out_len) {
     unsigned char hash[32];
     char buf[1024];
@@ -857,66 +866,81 @@ void moa_perf_make_key(const char *query, const char *intent, char *out, size_t 
     out[n*2] = '\0';
 }
 
+/* PoP: moa_perf_clear_expired @ tools/moa_performance.py:clear_expired */
 void moa_perf_clear_expired(void) {
     moa_research_clear_expired_cache();
     /* response cache TTL handled lazily on get; nothing to purge here */
 }
 
+/* PoP: moa_perf_ensure_session @ tools/moa_performance.py:_ensure_session */
 void moa_perf_ensure_session(void) {
     moa_get_project_manager();
 }
 
+/* PoP: tools_online_research_u__aenter__ @ tools/moa_performance.py:__aenter__ */
 void moa_perf_enter(void) { g_http_client_open = 1; }
+/* PoP: tools_online_research_u__aexit__ @ tools/moa_performance.py:__aexit__ */
 void moa_perf_exit(void) { g_http_client_open = 0; }
 
+/* PoP: moa_perf_call_model @ tools/moa_performance.py:call_model */
 char *moa_perf_call_model(const moa_ref_model_t *ref, const char *system_prompt, const char *user_prompt) {
     return moa_http_client_call_model(ref, system_prompt, user_prompt);
 }
 
+/* PoP: moa_perf_call_model_batch @ tools/moa_performance.py:call_model_batch */
 char **moa_perf_call_model_batch(const moa_ref_model_t *refs, int ref_count,
                                  const char *system_prompt, const char *user_prompt, int *out_count) {
     return moa_query_all_references(refs, ref_count, system_prompt, user_prompt, out_count);
 }
 
+/* PoP: moa_perf_extract_content @ tools/moa_performance.py:_extract_content */
 char *moa_perf_extract_content(const char *data_json) {
     return moa_http_client_extract_content(data_json);
 }
 
+/* PoP: moa_perf_get_model_for_mode @ tools/moa_performance.py:get_model_for_mode */
 const moa_ref_model_t *moa_perf_get_model_for_mode(const moa_ref_model_t *refs, int ref_count,
                                                    const char *mode) {
     moa_project_context_t *ctx = moa_project_get_or_create(NULL);
     return moa_model_selector_get_preferred(refs, ref_count, ctx, mode);
 }
 
+/* PoP: moa_perf_record_successful_model @ tools/moa_performance.py:record_successful_model */
 void moa_perf_record_successful_model(const char *project_id, const char *mode, const moa_ref_model_t *model) {
     moa_project_context_t *ctx = moa_project_get_or_create(NULL);
     (void)project_id;
     moa_model_selector_record_success(ctx, mode, model);
 }
 
+/* PoP: moa_perf_get_project_manager @ tools/moa_performance.py:get_project_manager */
 moa_project_manager_t *moa_perf_get_project_manager(void) {
     return moa_get_project_manager();
 }
 
+/* PoP: moa_perf_get_research_cache @ tools/moa_performance.py:get_research_cache */
 void *moa_perf_get_research_cache(void) {
     return (void *)moa_get_research_cache();
 }
 
+/* PoP: moa_perf_get_response_cache @ tools/moa_performance.py:get_response_cache */
 void *moa_perf_get_response_cache(void) {
     return (void *)moa_get_response_cache();
 }
 
+/* PoP: moa_perf_get_model_selector @ tools/moa_performance.py:get_model_selector */
 void *moa_perf_get_model_selector(void) {
     /* single shared selector; identity handle */
     static int selector = 1;
     return &selector;
 }
 
+/* PoP: moa_perf_get_http_client @ tools/moa_performance.py:get_http_client */
 void *moa_perf_get_http_client(void) {
     moa_perf_enter();
     return &g_http_client_open;
 }
 
+/* PoP: moa_perf_close_global_clients @ tools/moa_performance.py:close_global_clients */
 void moa_perf_close_global_clients(void) {
     moa_performance_shutdown();
 }

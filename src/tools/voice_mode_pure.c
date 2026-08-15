@@ -20,12 +20,14 @@
 
 /* ── _is_nan ─────────────────────────────────────────────────────── */
 
+/* PoP: _is_nan @ tools/voice_mode.py:_is_nan */
 bool is_nan(double value) {
     return isnan(value);
 }
 
 /* ── _get_beep_volume ────────────────────────────────────────────── */
 
+/* PoP: voice_get_beep_volume @ tools/voice_mode.py:_get_beep_volume */
 double voice_get_beep_volume(const json_t *voice_cfg) {
     const double default_vol = VM_DEFAULT_BEEP_VOLUME;
     if (!voice_cfg || voice_cfg->type != JSON_OBJECT) return default_vol;
@@ -66,35 +68,35 @@ static const char *_proc_version(void) {
     done = 1;
     return buf;
 }
-/* PoP: _is_wsl @ tools/voice_mode.py:_is_wsl */
 
+/* PoP: _is_wsl @ tools/voice_mode.py:_is_wsl */
 bool _is_wsl(void) {
     return strstr(_proc_version(), "microsoft") != NULL;
-/* PoP: _is_wsl2_env @ tools/voice_mode.py:_is_wsl2_env */
 }
 
+/* PoP: _is_wsl2_env @ tools/voice_mode.py:_is_wsl2_env */
 bool _is_wsl2_env(void) {
-/* PoP: _wsl_powershell_tts_available @ tools/voice_mode.py:_wsl_powershell_tts_available */
     return strstr(_proc_version(), "microsoft") != NULL;
 }
 
+/* PoP: _wsl_powershell_tts_available @ tools/voice_mode.py:_wsl_powershell_tts_available */
 bool _wsl_powershell_tts_available(void) {
     if (!_is_wsl2_env()) return false;
     return access("/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe", X_OK) == 0
         && access("/usr/bin/ffmpeg", X_OK) == 0;
-/* PoP: _voice_debug_enabled @ tools/voice_mode.py:_voice_debug_enabled */
 }
 
 /* ── _voice_debug_enabled ────────────────────────────────────────── */
 
+/* PoP: _voice_debug_enabled @ tools/voice_mode.py:_voice_debug_enabled */
 bool _voice_debug_enabled(void) {
     const char *v = getenv("HERMES_VOICE_DEBUG");
-/* PoP: _vad_log @ tools/voice_mode.py:_vad_log */
     return v && strcmp(v, "1") == 0;
 }
 
 /* ── _vad_log ────────────────────────────────────────────────────── */
 
+/* PoP: _vad_log @ tools/voice_mode.py:_vad_log */
 void _vad_log(const char *msg) {
     if (!msg) return;
     fprintf(stderr, "[voice-vad] %s\n", msg);
@@ -102,6 +104,7 @@ void _vad_log(const char *msg) {
 
 /* ── _load_voice_stop_phrases ────────────────────────────────────── */
 
+/* PoP: _load_voice_stop_phrases @ tools/voice_mode.py:_load_voice_stop_phrases */
 char **_load_voice_stop_phrases(const json_t *voice_cfg, int *out_count) {
     *out_count = 0;
     json_t *phrases = NULL;
@@ -155,6 +158,7 @@ void free_voice_stop_phrases(char **phrases, int count) {
 
 /* ── is_voice_stop_phrase ────────────────────────────────────────── */
 
+/* PoP: is_voice_stop_phrase @ tools/voice_mode.py:is_voice_stop_phrase */
 bool is_voice_stop_phrase(const char *transcript,
                           char **stop_phrases, int phrase_count) {
     if (!transcript || !*transcript) return false;
@@ -183,8 +187,8 @@ bool is_voice_stop_phrase(const char *transcript,
 }
 
 /* ── voice_stop_hint ─────────────────────────────────────────────── */
-/* PoP: voice_stop_hint @ tools/voice_mode.py:voice_stop_hint */
 
+/* PoP: voice_stop_hint @ tools/voice_mode.py:voice_stop_hint */
 char *voice_stop_hint(char **stop_phrases, int phrase_count) {
     if (phrase_count == 0 || !stop_phrases || !stop_phrases[0]) return strdup("");
     char *hint = (char *)malloc(256);
@@ -193,8 +197,8 @@ char *voice_stop_hint(char **stop_phrases, int phrase_count) {
 }
 
 /* ── thinking_sound_enabled ──────────────────────────────────────── */
-/* PoP: thinking_sound_enabled @ tools/voice_mode.py:thinking_sound_enabled */
 
+/* PoP: thinking_sound_enabled @ tools/voice_mode.py:thinking_sound_enabled */
 bool thinking_sound_enabled(const json_t *voice_cfg) {
     if (!voice_cfg || voice_cfg->type != JSON_OBJECT) return true;
     json_t *raw = json_obj_get(voice_cfg, "thinking_sound");
@@ -208,17 +212,17 @@ bool thinking_sound_enabled(const json_t *voice_cfg) {
 
 static int g_audio_output_active_count = 0;
 static pthread_mutex_t g_audio_output_lock = PTHREAD_MUTEX_INITIALIZER;
-/* PoP: mark_audio_output_active @ tools/voice_mode.py:mark_audio_output_active */
 
+/* PoP: mark_audio_output_active @ tools/voice_mode.py:mark_audio_output_active */
 void mark_audio_output_active(bool active) {
     pthread_mutex_lock(&g_audio_output_lock);
     if (active) g_audio_output_active_count++;
     else g_audio_output_active_count = g_audio_output_active_count > 0
         ? g_audio_output_active_count - 1 : 0;
     pthread_mutex_unlock(&g_audio_output_lock);
-/* PoP: is_audio_output_active @ tools/voice_mode.py:is_audio_output_active */
 }
 
+/* PoP: is_audio_output_active @ tools/voice_mode.py:is_audio_output_active */
 bool is_audio_output_active(void) {
     pthread_mutex_lock(&g_audio_output_lock);
     bool r = g_audio_output_active_count > 0;
@@ -226,12 +230,14 @@ bool is_audio_output_active(void) {
     return r;
 }
 
+/* PoP: audio_recorder_max_duration_reached @ tools/voice_mode.py:_max_duration_reached */
 /* Whether the configured hard recording-length cap has elapsed.
  * cap: voice.max_recording_seconds (0 or <=0 disables). elapsed: seconds. */
 bool audio_recorder_max_duration_reached(double cap, double elapsed) {
     return cap > 0 && elapsed >= cap;
 }
 
+/* PoP: _normalize_for_echo_compare @ tools/voice_mode.py:_normalize_for_echo_compare */
 /* Returns malloc'd normalized text. Caller frees. */
 char *voice_mode_normalize_for_echo_compare(const char *text) {
     if (!text) return strdup("");

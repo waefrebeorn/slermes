@@ -61,23 +61,27 @@ static const pet_state_alias_t g_state_aliases[PET_STATE_COUNT] = {
    Pet Constants API
    ════════════════════════════════════════════════════════════════════════ */
 
+/* PoP: pet_clamp_scale @ agent/pet/constants.py:clamp_scale */
 float pet_clamp_scale(float scale) {
     if (scale < PET_MIN_SCALE) return PET_MIN_SCALE;
     if (scale > PET_MAX_SCALE) return PET_MAX_SCALE;
     return scale;
 }
 
+/* PoP: pet_cols_for_scale @ agent/pet/constants.py:cols_for_scale */
 int pet_cols_for_scale(float scale) {
     int cols = (int)(PET_BASE_UNICODE_COLS * (scale > 0.001f ? scale : PET_DEFAULT_SCALE) + 0.5f);
     if (cols < PET_UNICODE_MIN_COLS) cols = PET_UNICODE_MIN_COLS;
     return cols;
 }
 
+/* PoP: pet_resolve_cols @ agent/pet/constants.py:resolve_cols */
 int pet_resolve_cols(float scale, int unicode_cols) {
     if (unicode_cols > 0) return unicode_cols;
     return pet_cols_for_scale(scale);
 }
 
+/* PoP: pet_state_rows_for_grid @ agent/pet/constants.py:state_rows_for_grid */
 const char **pet_state_rows_for_grid(int row_count) {
     if (row_count >= 9) {
         static const char *codex_rows[9];
@@ -89,6 +93,7 @@ const char **pet_state_rows_for_grid(int row_count) {
     return (const char **)legacy_rows;
 }
 
+/* PoP: pet_state_row_index @ agent/pet/constants.py:state_row_index */
 int pet_state_row_index(pet_state_t state, int row_count) {
     if (state < 0 || state >= PET_STATE_COUNT) return 0;
 
@@ -107,12 +112,14 @@ int pet_state_row_index(pet_state_t state, int row_count) {
     return 0;
 }
 
+/* PoP: pet_state_string @ agent/pet/constants.py:state_aliases_for */
 const char *pet_state_string(pet_state_t state) {
     if (state >= 0 && state < PET_STATE_COUNT)
         return g_state_names[state];
     return "idle";
 }
 
+/* PoP: pet_state_from_string @ agent/pet/constants.py:state_aliases_for */
 pet_state_t pet_state_from_string(const char *s) {
     if (!s || !*s) return PET_STATE_IDLE;
     for (int i = 0; i < PET_STATE_COUNT; i++) {
@@ -125,6 +132,7 @@ pet_state_t pet_state_from_string(const char *s) {
     return PET_STATE_IDLE;
 }
 
+/* PoP: pet_state_aliases @ agent/pet/constants.py:state_aliases_for */
 const char **pet_state_aliases(pet_state_t state) {
     if (state < 0 || state >= PET_STATE_COUNT) return NULL;
     static const char *alias_list[PET_STATE_COUNT][5];

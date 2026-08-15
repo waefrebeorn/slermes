@@ -218,6 +218,7 @@ int  gateway_runner_active_session_count(const GatewayRunner *self);
 /* ─── Message handling ────────────────────────────────────────────── */
 
 /* Process an inbound message event. Returns response string or NULL. */
+/* PoP: gateway_runner_handle_message @ gateway/run.py:_handle_message */
 int gateway_runner_handle_message(GatewayRunner *self,
                                    const char *event_json,
                                    char *response_out, size_t response_size);
@@ -225,6 +226,7 @@ int gateway_runner_handle_message(GatewayRunner *self,
 /* ─── Slash commands ──────────────────────────────────────────────── */
 
 /* Check if a command name is an allowed slash command. */
+/* PoP: gateway_runner_check_slash_access @ gateway/run.py:_check_slash_access */
 bool gateway_runner_check_slash_access(const GatewayRunner *self,
                                         const char *command_name);
 

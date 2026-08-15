@@ -32,6 +32,7 @@ static const int COMMON_RESOLUTIONS[] = {0, 1, 2, 3}; /* 480p, 540p, 720p, 1080p
 static const char *DEFAULT_ASPECT_RATIO = "16:9";
 static const char *DEFAULT_RESOLUTION = "720p";
 
+/* PoP: cli_tools_video_generation_tool__read_video_gen_section @ tools/video_generation_tool.py:_read_video_gen_section */
 json_node_t* cli_tools_video_generation_tool__read_video_gen_section(void) {
     /*
      * Read the video_gen section from config.yaml.
@@ -51,6 +52,7 @@ json_node_t* cli_tools_video_generation_tool__read_video_gen_section(void) {
     return section;
 }
 
+/* PoP: cli_tools_video_generation_tool__read_configured_video_provider @ tools/video_generation_tool.py:_read_configured_video_provider */
 const char* cli_tools_video_generation_tool__read_configured_video_provider(char *buf, size_t bufsz) {
     /*
      * Return the configured video generation provider name, or NULL if not set.
@@ -72,6 +74,7 @@ const char* cli_tools_video_generation_tool__read_configured_video_provider(char
     return provider ? buf : NULL;
 }
 
+/* PoP: cli_tools_video_generation_tool__read_configured_video_model @ tools/video_generation_tool.py:_read_configured_video_model */
 const char* cli_tools_video_generation_tool__read_configured_video_model(char *buf, size_t bufsz) {
     /*
      * Return the configured video generation model name, or NULL if not set.
@@ -93,6 +96,7 @@ const char* cli_tools_video_generation_tool__read_configured_video_model(char *b
     return model ? buf : NULL;
 }
 
+/* PoP: cli_tools_video_generation_tool_check_video_generation_requirements @ tools/video_generation_tool.py:check_video_generation_requirements */
 int cli_tools_video_generation_tool_check_video_generation_requirements(void) {
     /*
      * Return 1 when at least one registered provider reports available.
@@ -110,6 +114,7 @@ int cli_tools_video_generation_tool_check_video_generation_requirements(void) {
     return 1;
 }
 
+/* PoP: cli_tools_video_generation_tool__missing_provider_error @ tools/video_generation_tool.py:_missing_provider_error */
 json_node_t* cli_tools_video_generation_tool__missing_provider_error(const char *configured) {
     /*
      * Build a JSON error response for missing provider.
@@ -144,6 +149,7 @@ json_node_t* cli_tools_video_generation_tool__missing_provider_error(const char 
     return err;
 }
 
+/* PoP: cli_tools_video_generation_tool__normalize_reference_images @ tools/video_generation_tool.py:_normalize_reference_images */
 json_node_t* cli_tools_video_generation_tool__normalize_reference_images(json_node_t *value) {
     /*
      * Normalize reference image URLs from various input formats.
@@ -258,6 +264,7 @@ json_node_t* cli_tools_video_generation_tool__handle_video_generate(json_node_t 
     return err;
 }
 
+/* PoP: cli_tools_video_generation_tool__format_model_caveats @ tools/video_generation_tool.py:_format_model_caveats */
 json_node_t* cli_tools_video_generation_tool__format_model_caveats(json_node_t *model_meta, json_node_t *backend_caps) {
     /*
      * Pull human-readable caveats out of one model's catalog metadata.
@@ -301,6 +308,7 @@ json_node_t* cli_tools_video_generation_tool__format_model_caveats(json_node_t *
     return caveats;
 }
 
+/* PoP: cli_tools_video_generation_tool__build_dynamic_video_schema @ tools/video_generation_tool.py:_build_dynamic_video_schema */
 json_node_t* cli_tools_video_generation_tool__build_dynamic_video_schema(void) {
     /*
      * Build a description that reflects the active backend's actual surface.

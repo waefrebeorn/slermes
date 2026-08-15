@@ -549,7 +549,6 @@ int credential_pool_select(const credential_pool_t *pool) {
 /* Port of Python agent/credential_pool.py:peek().
  * Peek at the next credential without rotating.
  * Returns the entry index or -1 if no usable key. */
-/* PoP: peek @ hermes_cli/prompt_stash.py:peek */
 int peek(const credential_pool_t *pool) {
     if (!pool || pool->entry_count == 0) return -1;
     

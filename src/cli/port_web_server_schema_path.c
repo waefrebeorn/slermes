@@ -47,6 +47,7 @@ const char *ws_path_status_str(ws_path_status_t s) {
 }
 
 /* ───────────────────────── ws_infer_type ──────────────────────────────── */
+/* PoP: _infer_type @ hermes_cli/web_server.py:_infer_type */
 const char *ws_infer_type_bool (bool   v) { (void)v; return "boolean"; }
 const char *ws_infer_type_int  (long   v) { (void)v; return "number";  }
 const char *ws_infer_type_f64  (double v) { (void)v; return "number";  }
@@ -228,6 +229,7 @@ void ws_schema_free(ws_schema_entry_t *arr, size_t n) {
 }
 
 /* ── ws_path_text ───────────────────────────────────────────────────── */
+/* PoP: ws_path_text_n @ hermes_cli/web_server.py:_path_text */
 ws_path_status_t ws_path_text_n(const char *raw, size_t raw_len,
                                 char *out, size_t cap)
 {
@@ -313,6 +315,7 @@ ws_path_status_t ws_canonical_path(const char *raw, bool require_exists,
 }
 
 /* ─────────────────── ws_path_is_under ─────────────────────────────────── */
+/* PoP: _path_is_under @ hermes_cli/web_server.py:_path_is_under */
 /* `target == root or root in target.parents`. Both args must be canonical
  * (realpath'd). Implementation: walk parents of target via dirname() loops;
  * equality, then string-prefix-with-trailing-slash check. */
@@ -449,6 +452,7 @@ ws_path_status_t ws_decode_data_url(const char *data_url,
 }
 
 /* ── ws_fs_mime_type ─────────────────────────────────────────────────────── */
+/* PoP: _fs_mime_type @ hermes_cli/web_server.py:_fs_mime_type */
 /* Python: suffix-lowercased; if in `_FS_MIME_TYPES` return that;
  * else `mimetypes.guess_type(str(path))[0] or "application/octet-stream"`.
  * We mirror that exactly: first the hardcoded dashboard table, then a small
@@ -669,6 +673,7 @@ char *ws_fs_find_git_root(const char *start) {
  *     Python: strip; check NUL; expanduser(); resolve().
  *     Returns malloc'd absolute path on success, NULL on error (empty/NUL/invalid).
  */
+/* PoP: ws_fs_path @ hermes_cli.web_server.py:_fs_path */
 char *ws_fs_path(const char *raw_path) {
     if (!raw_path) return NULL;
     /* Strip whitespace */

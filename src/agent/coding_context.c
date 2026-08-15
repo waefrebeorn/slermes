@@ -262,6 +262,7 @@ static void path_dirname(const char *path, char *out, size_t out_size) {
     free(copy);
 }
 
+/* PoP: dir_exists @ agent/pet/store.py:exists */
 static bool file_exists(const char *path) {
     if (!path) return false;
     struct stat st;
@@ -437,6 +438,7 @@ bool coding_context_find_marker_root(const char *cwd, char *out, size_t out_size
 
 /* AG26: Port of Python agent/coding_context.py:_detect_profile_name() */
 /* AG26: Port of Python agent/coding_context.py:is_coding_context() */
+/* PoP: coding_context_is_coding_context @ agent/coding_context.py:is_coding_context */
 const char *coding_context_detect_profile_name(
     const char *mode, const char *platform, const char *cwd) {
 
@@ -598,6 +600,7 @@ const char *coding_runtime_mode_model(const coding_runtime_mode_t *mode) {
     return mode ? mode->model : "";
 }
 
+/* PoP: toolset_selection @ agent/coding_context.py:toolset_selection */
 /* AG26: Port of Python agent/coding_context.py:toolset_selection() */
 const char **coding_runtime_mode_toolset_selection(
     const coding_runtime_mode_t *mode, const hermes_config_t *config) {
@@ -622,6 +625,7 @@ const char **coding_runtime_mode_toolset_selection(
  * PoP: system_blocks @ agent/coding_context.py:system_blocks
  * PoP: coding_system_prompt_parts @ agent/coding_context.py:coding_system_prompt_parts
  */
+/* PoP: system_blocks @ agent/coding_context.py:system_blocks */
 char **coding_runtime_mode_system_blocks(
     const coding_runtime_mode_t *mode, int *out_count) {
 
@@ -687,6 +691,7 @@ void coding_runtime_mode_free_blocks(char **blocks, int count) {
     free(blocks);
 }
 
+/* PoP: compact_skill_categories @ agent/coding_context.py:compact_skill_categories */
 /* AG26: Port of Python agent/coding_context.py:compact_skill_categories() */
 const char **coding_runtime_mode_compact_skill_categories(const coding_runtime_mode_t *mode) {
     if (!mode || !coding_runtime_mode_is_coding(mode) ||
@@ -858,6 +863,7 @@ int coding_context_read_small(const char *path, char *out, size_t out_size, size
  * agent/coding_context.py:_project_facts
  * Detects manifests, package managers, verify commands, context files for a
  * root and renders them as workspace-snapshot lines into out (malloc'd, caller frees). */
+/* PoP: detect_project_facts @ agent/coding_context.py:_project_facts */
 char *coding_context_project_facts(const char *root)
 {
     if (!root || !root[0]) return NULL;
@@ -1085,6 +1091,7 @@ char *coding_context_build_workspace_block(const char *cwd)
     return out;
 }
 
+/* PoP: coding_selection @ agent/coding_context.py:coding_selection */
 const char **coding_context_coding_selection(const char *platform, const char *cwd, const hermes_config_t *config)
 {
     coding_runtime_mode_t *mode = coding_context_resolve_runtime_mode(platform, cwd, config, NULL);
@@ -1094,6 +1101,9 @@ const char **coding_context_coding_selection(const char *platform, const char *c
     return r;
 }
 
+/* PoP: system_prompt_parts @ agent/coding_context.py:system_prompt_parts */
+/* PoP: coding_system_prompt_parts @ agent/coding_context.py:coding_system_prompt_parts */
+/* PoP: coding_system_blocks @ agent/coding_context.py:coding_system_blocks */
 char **coding_context_coding_system_blocks(const char *platform, const char *cwd, const hermes_config_t *config, const char *model, int *out_count)
 {
     coding_runtime_mode_t *mode = coding_context_resolve_runtime_mode(platform, cwd, config, model);
@@ -1103,6 +1113,7 @@ char **coding_context_coding_system_blocks(const char *platform, const char *cwd
     return r;
 }
 
+/* PoP: coding_compact_skill_categories @ agent/coding_context.py:coding_compact_skill_categories */
 const char **coding_context_coding_compact_skill_categories(const char *platform, const char *cwd, const hermes_config_t *config)
 {
     coding_runtime_mode_t *mode = coding_context_resolve_runtime_mode(platform, cwd, config, NULL);
@@ -1290,6 +1301,8 @@ char *coding_context_coding_instructions(const hermes_config_t *config)
  * Port of Python agent/coding_context.py:coding_compact_skill_categories
  */
 
+/* PoP: is_coding_context @ agent/coding_context.py:is_coding_context */
+/* PoP: coding_context_is_coding_context @ agent/coding_context.py:is_coding_context */
 
 /* Port of Python is_coding_context: whether Hermes should operate in its
  * coding posture right now. Thin wrapper over resolve_runtime_mode().is_coding. */
@@ -1303,6 +1316,7 @@ int coding_context_is_coding_context(const char *platform, const char *cwd,
     return is_coding ? 1 : 0;
 }
 
+/* PoP: project_facts_for @ agent/coding_context.py:project_facts_for */
 
 /* Port of Python project_facts_for: structured project facts for cwd
  * (root, manifests, packageManagers, verifyCommands, contextFiles) as a

@@ -163,6 +163,8 @@ static bool setup_prompt_yes_no(const char *question, bool default_yes) {
 }
 
 /* Prompt for a choice from a list. Returns index or -1 on cancel/error. */
+/* PoP: stp_prompt_choice @ hermes_cli/moa_cmd.py:_prompt_choice */
+/* PoP: stp_prompt_choice @ hermes_cli/tools_config.py:_prompt_choice */
 /* Port of Python hermes_cli/setup.py:prompt_choice(). */
 static int setup_prompt_choice(const char *question, const char *choices[],
                                 int n_choices, int default_idx) {
@@ -2674,6 +2676,7 @@ char *quote_env_value(const char *value)
     return out;
 }
 
+/* PoP: _looks_like_structured_value @ hermes_cli/config.py:_looks_like_structured_value */
 int looks_like_structured_value(const char *value)
 {
     if (!value) return 0;

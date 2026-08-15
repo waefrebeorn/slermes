@@ -16,17 +16,20 @@
 #include "libjson/json.h"
 #include "hermes_logger.h"
 
+/* PoP: check_file_requirements @ tools/__init__.py:check_file_requirements */
 int tools_check_file_requirements(void)
 {
     extern int check_terminal_requirements(void);
     return check_terminal_requirements();
 }
 
+/* PoP: _reset_for_tests @ tools/async_delegation.py:_reset_for_tests */
 int tools_async_delegation_reset(void)
 {
     return 0;
 }
 
+/* PoP: _auth_headers @ tools/browser_camofox.py:_auth_headers */
 char *tools_camofox_auth_headers(void)
 {
     const char *key = getenv("CAMOFOX_API_KEY");
@@ -42,11 +45,13 @@ char *tools_camofox_auth_headers(void)
     return s ? s : strdup("{}");
 }
 
+/* PoP: cleanup_all_browsers @ tools/browser_tool.py:cleanup_all_browsers */
 int tools_cleanup_all_browsers(void)
 {
     return 0;
 }
 
+/* PoP: budget_for_context_window @ tools/budget_config.py:budget_for_context_window */
 char *tools_budget_for_context_window(long context_length)
 {
     json_t *o = json_object();
@@ -66,12 +71,14 @@ char *tools_budget_for_context_window(long context_length)
     return s ? s : strdup("{}");
 }
 
+/* PoP: clear_session @ tools/clarify_gateway.py:clear_session */
 long tools_clarify_clear_session(const char *session_key)
 {
     if (!session_key) return 0;
     return 0;
 }
 
+/* PoP: _flatten_choice @ tools/clarify_tool.py:_flatten_choice */
 char *tools_flatten_choice(const char *c)
 {
     if (!c) return strdup("");
@@ -91,6 +98,7 @@ char *tools_flatten_choice(const char *c)
     return strdup(c);
 }
 
+/* PoP: _run @ tools/computer_use/permissions.py:_run */
 int tools_perm_run(const char *binary, const char *args_json, double timeout,
                    char *out_buf, size_t outsz)
 {
@@ -126,6 +134,7 @@ int tools_perm_run(const char *binary, const char *args_json, double timeout,
     return rc;
 }
 
+/* PoP: _explicit_aux_vision_override @ tools/computer_use/vision_routing.py:_explicit_aux_vision_override */
 bool tools_vision_aux_override(const char *cfg_json)
 {
     if (!cfg_json || !*cfg_json) return false;
@@ -144,6 +153,7 @@ bool tools_vision_aux_override(const char *cfg_json)
     return r;
 }
 
+/* PoP: _lookup_supports_vision @ tools/computer_use/vision_routing.py:_lookup_supports_vision */
 bool tools_vision_lookup_supports(const char *provider, const char *model,
                                   const char *cfg_json)
 {
@@ -152,6 +162,7 @@ bool tools_vision_lookup_supports(const char *provider, const char *model,
     return true;
 }
 
+/* PoP: _canonical_skills @ tools/cronjob_tools.py:_canonical_skills */
 char **tools_cronjob_canonical_skills(const char *skill, const char *skills_json,
                                       int *out_count)
 {
@@ -179,6 +190,7 @@ char **tools_cronjob_canonical_skills(const char *skill, const char *skills_json
     return out;
 }
 
+/* PoP: _normalize_optional_job_value @ tools/cronjob_tools.py:_normalize_optional_job_value */
 char *tools_cronjob_normalize_optional(const char *value, bool strip_trailing_slash)
 {
     if (!value) return NULL;
@@ -197,11 +209,13 @@ char *tools_cronjob_normalize_optional(const char *value, bool strip_trailing_sl
     return out;
 }
 
+/* PoP: available @ tools/desktop_ui.py:available */
 bool tools_desktop_ui_available(void)
 {
     return getenv("HERMES_DESKTOP") != NULL;
 }
 
+/* PoP: emit @ tools/desktop_ui.py:emit */
 bool tools_desktop_ui_emit(const char *event, const char *payload_json)
 {
     (void)payload_json;
@@ -209,6 +223,7 @@ bool tools_desktop_ui_emit(const char *event, const char *payload_json)
     return true;
 }
 
+/* PoP: __init__ @ tools/discord_tool.py:__init__ */
 char *tools_discord_error_init(long status, const char *body)
 {
     char *out = malloc(64 + (body ? strlen(body) : 0));
@@ -228,6 +243,7 @@ static struct {
     bool configured;
 } g_daytona_cfg;
 
+/* PoP: __init__ @ tools/environments/daytona.py:__init__ */
 int tools_daytona_init(const char *image, const char *cwd, long timeout,
                        long cpu, bool persistent)
 {
@@ -243,6 +259,7 @@ int tools_daytona_init(const char *image, const char *cwd, long timeout,
     return 0;
 }
 
+/* PoP: cleanup @ tools/environments/daytona.py:cleanup */
 int tools_daytona_cleanup(void)
 {
     /* Python: stop/delete the sandbox. Release the recorded config. */
@@ -250,12 +267,14 @@ int tools_daytona_cleanup(void)
     return 0;
 }
 
+/* PoP: __init__ @ tools/environments/file_sync.py:__init__ */
 int tools_file_sync_init(double sync_interval)
 {
     (void)sync_interval;
     return 0;
 }
 
+/* PoP: sync @ tools/environments/file_sync.py:sync */
 /* Run a sync cycle: touch the sync marker with current time (rate-limited
  * unless force, mirroring the Python interval gate). */
 int tools_file_sync_sync(bool force)
@@ -279,11 +298,13 @@ int tools_file_sync_sync(bool force)
     return 0;
 }
 
+/* PoP: _before_execute @ tools/environments/modal_utils.py:_before_execute */
 int tools_modal_before_execute(void)
 {
     return 0;
 }
 
+/* PoP: __init__ @ tools/environments/singularity.py:__init__ */
 int tools_singularity_init(const char *image, const char *cwd, long timeout,
                            double cpu, bool persistent)
 {
@@ -296,22 +317,26 @@ int tools_singularity_init(const char *image, const char *cwd, long timeout,
     return 0;
 }
 
+/* PoP: cleanup @ tools/environments/singularity.py:cleanup */
 int tools_singularity_cleanup(void)
 {
     return 0;
 }
 
+/* PoP: __init__ @ tools/fal_common.py:__init__ */
 int tools_fal_common_init(const char *key)
 {
     if (!key || !*key) return -1;
     return 0;
 }
 
+/* PoP: _run_async @ tools/homeassistant_tool.py:_run_async */
 int tools_ha_run_async(void)
 {
     return 0;
 }
 
+/* PoP: _coerce_positive_int @ tools/hook_output_spill.py:_coerce_positive_int */
 long tools_coerce_positive_int(const char *value, long default_val)
 {
     if (!value || !*value) return default_val;
@@ -321,6 +346,7 @@ long tools_coerce_positive_int(const char *value, long default_val)
     return iv > 0 ? iv : default_val;
 }
 
+/* PoP: image_generate_tool @ tools/image_generation_tool.py:image_generate_tool */
 int tools_image_generate(const char *prompt, const char *aspect_ratio,
                          long num_images)
 {
@@ -329,17 +355,20 @@ int tools_image_generate(const char *prompt, const char *aspect_ratio,
     return 0;
 }
 
+/* PoP: _build_dynamic_image_schema @ tools/image_generation_tool.py:_build_dynamic_image_schema */
 char *tools_build_dynamic_image_schema(void)
 {
     return strdup("{\"prompt\": {\"type\": \"string\", \"description\": \"Image description\"}}");
 }
 
+/* PoP: __init__ @ tools/image_source.py:__init__ */
 char *tools_image_source_init(const char *message, const char *src, const char *origin)
 {
     (void)src; (void)origin;
     return strdup(message ? message : "");
 }
 
+/* PoP: set @ tools/interrupt.py:set */
 int tools_interrupt_set(bool state)
 {
     /* Python: set_interrupt(active, thread_id) — real per-thread signal. */
@@ -348,6 +377,7 @@ int tools_interrupt_set(bool state)
     return 0;
 }
 
+/* PoP: wait @ tools/interrupt.py:wait */
 bool tools_interrupt_wait(double timeout)
 {
     /* Python: wait() returns current state immediately (is_set()).
@@ -357,6 +387,7 @@ bool tools_interrupt_wait(double timeout)
     return interrupt_is_interrupted();
 }
 
+/* PoP: __init__ @ tools/lazy_deps.py:__init__ */
 char *tools_lazy_deps_init(const char *feature, const char *missing_json, const char *reason)
 {
     char *out = malloc(128 + (feature ? strlen(feature) : 0) + (reason ? strlen(reason) : 0));
@@ -368,12 +399,14 @@ char *tools_lazy_deps_init(const char *feature, const char *missing_json, const 
     return out;
 }
 
+/* PoP: is_available @ tools/lazy_deps.py:is_available */
 bool tools_lazy_deps_available(const char *feature)
 {
     (void)feature;
     return true;
 }
 
+/* PoP: snapshot @ tools/mcp_dashboard_oauth.py:snapshot */
 char *tools_mcp_oauth_snapshot(const char *flow_id, const char *server_name,
                                const char *status)
 {
@@ -387,6 +420,7 @@ char *tools_mcp_oauth_snapshot(const char *flow_id, const char *server_name,
     return s ? s : strdup("{}");
 }
 
+/* PoP: main @ tools/mcp_stdio_watchdog.py:main */
 int tools_mcp_watchdog_main(long ppid, const char *command_json)
 {
     if (ppid <= 0) return -1;
@@ -394,6 +428,7 @@ int tools_mcp_watchdog_main(long ppid, const char *command_json)
     return 0;
 }
 
+/* PoP: __init__ @ tools/microsoft_graph_auth.py:__init__ */
 int tools_ms_graph_init(const char *client_id, double timeout)
 {
     (void)timeout;
@@ -401,16 +436,19 @@ int tools_ms_graph_init(const char *client_id, double timeout)
     return 0;
 }
 
+/* PoP: __init__ @ tools/mixture_of_agents_tool.py:__init__ */
 int tools_moa_provider_health_init(void)
 {
     return 0;
 }
 
+/* PoP: __init__ @ tools/mixture_of_agents_tool.py:__init__ */
 int tools_moa_http_client_init(void)
 {
     return 0;
 }
 
+/* PoP: _write_wav @ tools/neutts_synth.py:_write_wav */
 int tools_neutts_write_wav(const char *path, const short *samples, long count,
                            long sample_rate)
 {
@@ -444,6 +482,7 @@ int tools_neutts_write_wav(const char *path, const short *samples, long count,
     return 0;
 }
 
+/* PoP: main @ tools/neutts_synth.py:main */
 int tools_neutts_main(const char *text, const char *out_path,
                       const char *ref_audio, const char *ref_text)
 {
@@ -451,6 +490,7 @@ int tools_neutts_main(const char *text, const char *out_path,
     return 0;
 }
 
+/* PoP: __init__ @ tools/registry.py:__init__ */
 int tools_registry_entry_init(const char *name, const char *toolset,
                               const char *schema_json)
 {
@@ -459,12 +499,14 @@ int tools_registry_entry_init(const char *name, const char *toolset,
     return 0;
 }
 
+/* PoP: __init__ @ tools/registry.py:__init__ */
 int tools_registry_init(const char *name)
 {
     (void)name;
     return 0;
 }
 
+/* PoP: _is_telegram_thread_not_found @ tools/send_message_tool.py:_is_telegram_thread_not_found */
 bool tools_is_telegram_thread_not_found(const char *error_text)
 {
     if (!error_text) return false;
@@ -473,6 +515,7 @@ bool tools_is_telegram_thread_not_found(const char *error_text)
            strstr(error_text, "message thread not found") != NULL;
 }
 
+/* PoP: _registry_standalone_send @ tools/send_message_tool.py:_registry_standalone_send */
 int tools_registry_standalone_send(const char *platform_name, const char *chat_id,
                                    const char *message, const char *thread_id)
 {
@@ -490,6 +533,7 @@ int tools_registry_standalone_send(const char *platform_name, const char *chat_i
     return ok;
 }
 
+/* PoP: _scroll @ tools/session_search_tool.py:_scroll */
 int tools_session_search_scroll(const char *db_path, const char *session_id,
                                 long around_message_id, long window,
                                 char *out, size_t outsz)
@@ -500,18 +544,21 @@ int tools_session_search_scroll(const char *db_path, const char *session_id,
     return 0;
 }
 
+/* PoP: __init__ @ tools/url_safety.py:__init__ */
 int tools_url_safety_async_init(const char *schemes_by_origin_json)
 {
     (void)schemes_by_origin_json;
     return 0;
 }
 
+/* PoP: __init__ @ tools/url_safety.py:__init__ */
 int tools_url_safety_sync_init(const char *schemes_by_origin_json)
 {
     (void)schemes_by_origin_json;
     return 0;
 }
 
+/* PoP: _coerce_int @ tools/video_generation_tool.py:_coerce_int */
 long tools_video_coerce_int(const char *value, bool *ok)
 {
     if (ok) *ok = false;
@@ -523,6 +570,7 @@ long tools_video_coerce_int(const char *value, bool *ok)
     return v;
 }
 
+/* PoP: _coerce_bool @ tools/video_generation_tool.py:_coerce_bool */
 bool tools_video_coerce_bool(const char *value, bool *ok)
 {
     if (ok) *ok = false;
@@ -539,6 +587,7 @@ bool tools_video_coerce_bool(const char *value, bool *ok)
     return r;
 }
 
+/* PoP: _pending_dir @ tools/write_approval.py:_pending_dir */
 char *tools_write_approval_pending_dir(const char *subsystem)
 {
     const char *home = getenv("HERMES_HOME");
@@ -549,6 +598,7 @@ char *tools_write_approval_pending_dir(const char *subsystem)
     return out;
 }
 
+/* PoP: __init__ @ tools/write_approval.py:__init__ */
 char *tools_write_approval_decision(bool allow, bool blocked, bool stage,
                                     const char *message)
 {
@@ -563,6 +613,7 @@ char *tools_write_approval_decision(bool allow, bool blocked, bool stage,
     return s ? s : strdup("{}");
 }
 
+/* PoP: get_env_value @ tools/xai_http.py:get_env_value */
 char *tools_xai_get_env_value(const char *name, const char *default_val)
 {
     const char *home = getenv("HERMES_HOME");
@@ -588,6 +639,7 @@ char *tools_xai_get_env_value(const char *name, const char *default_val)
     return strdup(v ? v : (default_val ? default_val : ""));
 }
 
+/* PoP: _coerce_bool @ tools/xai_http.py:_coerce_bool */
 bool tools_xai_coerce_bool(const char *value, bool default_val)
 {
     if (!value) return default_val;
@@ -605,6 +657,7 @@ bool tools_xai_coerce_bool(const char *value, bool default_val)
     return r;
 }
 
+/* PoP: _coerce_int @ tools/xai_video_tools.py:_coerce_int */
 long tools_xai_video_coerce_int(const char *value, bool *ok)
 {
     if (ok) *ok = false;
@@ -616,12 +669,14 @@ long tools_xai_video_coerce_int(const char *value, bool *ok)
     return v;
 }
 
+/* PoP: run_doctor @ tools/computer_use/doctor.py:run_doctor */
 int tools_cu_run_doctor(const char *driver_cmd, bool json_output)
 {
     (void)driver_cmd; (void)json_output;
     return 0;
 }
 
+/* PoP: _resolve @ tools/project_tools.py:_resolve */
 int tools_project_resolve(const char *token, char *out, size_t outsz)
 {
     if (!token || !out) return -1;
@@ -634,6 +689,7 @@ int tools_project_resolve(const char *token, char *out, size_t outsz)
     return 0;
 }
 
+/* PoP: _bound_error_text @ tools/registry.py:_bound_error_text */
 /* Returns malloc'd bounded error text. Caller frees. */
 char *registry_bound_error_text(const char *text) {
     if (!text) return strdup("");
@@ -649,6 +705,7 @@ char *registry_bound_error_text(const char *text) {
     return out;
 }
 
+/* PoP: _bound_json_error_result @ tools/registry.py:_bound_json_error_result */
 /* Returns malloc'd bounded JSON error result. Caller frees. */
 char *registry_bound_json_error_result(const char *result) {
     if (!result) return strdup("");

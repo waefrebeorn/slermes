@@ -55,6 +55,7 @@ static void gw_re_escape(const char *src, char *out, size_t out_sz)
     out[j] = '\0';
 }
 
+/* PoP: gw_status_template_to_regex @ gateway/run.py:_status_template_to_regex */
 /* Compile a compression status template constant into a regex source.
  * Literal text is escaped verbatim; each {field} placeholder becomes a
  * numeric-ish pattern [\d,]+ (covers ints + {:,} thousands separators). */
@@ -110,6 +111,7 @@ static int gw_compression_progress_notices_raw(void)
     return en;
 }
 
+/* PoP: gw_gateway_compression_progress_notices_enabled @ gateway/run.py:_gateway_compression_progress_notices_enabled */
 int gw_gateway_compression_progress_notices_enabled(void)
 {
     return gw_compression_progress_notices_raw();
@@ -119,6 +121,7 @@ int gw_gateway_compression_progress_notices_enabled(void)
  * _csv_or_list_to_set
  * ================================================================ */
 
+/* PoP: gw_csv_or_list_to_set @ gateway/run.py:_csv_or_list_to_set */
 /* Normalize a config list or comma-separated scalar into a malloc'd
  * NULL-terminated string array (caller frees with gw_strset_free).
  * Each entry is whitespace-stripped; empties dropped. */
@@ -170,6 +173,7 @@ void gw_strset_free(char **set)
  * _slack_parent_channel_id
  * ================================================================ */
 
+/* PoP: gw_slack_parent_channel_id @ gateway/run.py:_slack_parent_channel_id */
 /* Return the parent Slack channel from a possibly thread-scoped chat ID. */
 void gw_slack_parent_channel_id(const char *chat_id, char *out, size_t out_sz)
 {
@@ -190,6 +194,7 @@ typedef struct {
     secret_scope_token_t prev_secret_scope;
 } gw_profile_scope_token_t;
 
+/* PoP: gw_profile_runtime_scope_enter @ gateway/run.py:_profile_runtime_scope */
 /* Enter a profile runtime scope: install HERMES_HOME_OVERRIDE + the
  * profile's secret scope so config/skills/memory AND credentials resolve to
  * the profile for the duration of one turn. Returns a token to restore
@@ -215,6 +220,7 @@ int gw_profile_runtime_scope_enter(const char *profile_home,
     return 1;
 }
 
+/* PoP: gw_profile_runtime_scope_exit @ gateway/run.py:_profile_runtime_scope */
 /* Restore the previous home override + secret scope (the contextmanager's
  * finally block). */
 void gw_profile_runtime_scope_exit(gw_profile_scope_token_t *tok)
@@ -227,6 +233,7 @@ void gw_profile_runtime_scope_exit(gw_profile_scope_token_t *tok)
     secret_scope_reset_secret_scope(tok->prev_secret_scope);
 }
 
+/* PoP: gw_slack_ignored_channels_from_config @ gateway/run.py:_slack_ignored_channels_from_gateway_config */
 /* Port of Python gateway.run._slack_ignored_channels_from_gateway_config.
  * Returns a csv_or_list (comma/semicolon/space/newline separated) set
  * of Slack channel IDs that the generic gateway must never dispatch.
@@ -259,6 +266,7 @@ char **gw_slack_ignored_channels_from_config(
     return result;
 }
 
+/* PoP: gw_is_slack_ignored_channel @ gateway/run.py:_is_slack_ignored_channel */
 /* Returns true if chat_id is in the Slack ignored list or is a wildcard. */
 bool gw_is_slack_ignored_channel(
     const yaml_doc_t *platform_cfg,
@@ -294,6 +302,7 @@ bool gw_is_slack_ignored_channel(
     return result;
 }
 
+/* PoP: _retry_ordinal @ hermes_cli/observability/relay_shared_metrics.py:_retry_ordinal */
 /* Extract retry_count from event dict, validate it's a non-negative int. */
 /* (Python's dict.get + isinstance + value >= 0 check) */
 int gw_retry_ordinal(const json_t *event)

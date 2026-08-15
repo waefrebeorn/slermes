@@ -46,6 +46,7 @@ void port_web_tools_state_cleanup(port_web_tools_state_t *state)
 /* Forward declarations */
 char *web_env_value(const char *name);
 bool web_has_env(const char *name);
+/* PoP: web_get_backend @ tools/computer_use/tool.py:_get_backend */
 char *web_get_backend(void);
 char *web_get_search_backend(void);
 char *web_get_extract_backend(void);
@@ -60,6 +61,7 @@ bool web_truncate_with_footer(const char *content, const char *url, int char_lim
 char *web_search_tool(const char *query, int limit);
 bool web_check_web_api_key(void);
 
+/* PoP: web_env_value @ tools/web_tools.py:_env_value */
 char *web_env_value(const char *name)
 {
     if (!name) return strdup("");
@@ -71,6 +73,7 @@ char *web_env_value(const char *name)
     return strdup(val);
 }
 
+/* PoP: web_has_env @ tools/web_tools.py:_has_env */
 bool web_has_env(const char *name)
 {
     char *val = web_env_value(name);
@@ -79,6 +82,7 @@ bool web_has_env(const char *name)
     return exists;
 }
 
+/* PoP: web_load_web_config @ tools/web_tools.py:_load_web_config */
 char *web_load_web_config(void)
 {
     /* Load the web: section from ~/.hermes/config.yaml via hermes_config_load. */
@@ -97,6 +101,7 @@ char *web_load_web_config(void)
     return serialized ? serialized : strdup("{}");
 }
 
+/* PoP: web_ensure_web_plugins_loaded @ tools/web_tools.py:_ensure_web_plugins_loaded */
 void web_ensure_web_plugins_loaded(void)
 {
     /* In C, the registry is loaded at init time — no need for lazy plugin discovery.
@@ -106,6 +111,7 @@ void web_ensure_web_plugins_loaded(void)
 
 
 
+/* PoP: web_get_backend @ tools/web_tools.py:_get_backend */
 char *web_get_backend(void)
 {
 
@@ -121,6 +127,7 @@ char *web_get_backend(void)
     return strdup("firecrawl"); /* default */
 }
 
+/* PoP: web_get_capability_backend @ tools/web_tools.py:_get_capability_backend */
 char *web_get_capability_backend(const char *capability)
 {
     if (!capability) return web_get_backend();
@@ -132,16 +139,19 @@ char *web_get_capability_backend(const char *capability)
     return web_get_backend();
 }
 
+/* PoP: web_get_search_backend @ tools/web_tools.py:_get_search_backend */
 char *web_get_search_backend(void)
 {
     return web_get_capability_backend("search");
 }
 
+/* PoP: web_get_extract_backend @ tools/web_tools.py:_get_extract_backend */
 char *web_get_extract_backend(void)
 {
     return web_get_capability_backend("extract");
 }
 
+/* PoP: web_is_backend_available @ tools/web_tools.py:_is_backend_available */
 bool web_is_backend_available(const char *backend)
 {
     if (!backend) return false;
@@ -165,6 +175,7 @@ bool web_is_backend_available(const char *backend)
     return false;
 }
 
+/* PoP: web_ddgs_package_importable @ tools/web_tools.py:_ddgs_package_importable */
 bool web_ddgs_package_importable(void)
 {
     /* In C we can't import Python packages - check if ddgs CLI is available */
@@ -172,6 +183,7 @@ bool web_ddgs_package_importable(void)
            (system("which duckduckgo-search >/dev/null 2>&1") == 0);
 }
 
+/* PoP: web_web_requires_env @ tools/web_tools.py:_web_requires_env */
 char **web_web_requires_env(int *out_count)
 {
     static const char *envs[] = {
@@ -202,6 +214,7 @@ char **web_web_requires_env(int *out_count)
     return result;
 }
 
+/* PoP: web_get_extract_char_limit @ tools/web_tools.py:_get_extract_char_limit */
 int web_get_extract_char_limit(void)
 {
     /* Python: web.extract_char_limit from config, clamped to [2000, 500000],
@@ -220,12 +233,14 @@ int web_get_extract_char_limit(void)
     return v;
 }
 
+/* PoP: web_convert_base64_images_to_links @ tools/web_tools.py:convert_base64_images_to_links */
 /* Delegate to the focused web_base64_img module (faithful POSIX-ERE port). */
 char *web_convert_base64_images_to_links(const char *text)
 {
     return web_base64_img_convert(text);
 }
 
+/* PoP: web_store_full_text @ tools/web_tools.py:_store_full_text */
 char *web_store_full_text(const char *url, const char *content)
 {
     if (!url || !content) return NULL;
@@ -235,6 +250,7 @@ char *web_store_full_text(const char *url, const char *content)
     return NULL;
 }
 
+/* PoP: web_truncate_with_footer @ tools/web_tools.py:_truncate_with_footer */
 bool web_truncate_with_footer(const char *content, const char *url, int char_limit,
                               char **out_text, bool *out_truncated)
 {
@@ -339,6 +355,7 @@ bool web_truncate_with_footer(const char *content, const char *url, int char_lim
 
 
 
+/* PoP: web_search_tool @ tools/web_tools.py:web_search_tool */
 char *web_search_tool(const char *query, int limit)
 {
     if (!query) return strdup("{\"success\":false,\"error\":\"query is required\"}");
@@ -356,6 +373,7 @@ char *web_search_tool(const char *query, int limit)
     return result;
 }
 
+/* PoP: web_check_web_api_key @ tools/web_tools.py:check_web_api_key */
 bool web_check_web_api_key(void)
 {
     char *backend = web_get_backend();
@@ -366,6 +384,7 @@ bool web_check_web_api_key(void)
     return available;
 }
 
+/* PoP: web_extract_tool @ tools/web_tools.py:web_extract_tool */
 /* Port of Python tools/web_tools.py:web_extract_tool().
  * Extract content from specific web pages using available extraction API backend. */
 char *web_extract_tool(const char *urls_json, const char *format, int char_limit)

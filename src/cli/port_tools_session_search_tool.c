@@ -90,6 +90,7 @@ typedef struct {
 } sst_msg_t;
 
 /* Decode content (strip the JSON-encoding prefix the Python DB applies). */
+/* PoP: sst_decode_content @ hermes_state.py:_decode_content */
 static void sst_decode_content(const char *raw, char *out, size_t outsz) {
     out[0] = '\0';
     if (!raw) return;
@@ -592,6 +593,7 @@ static int sst_anchored_view(sqlite3 *db, const char *session_id, long anchor_id
 
 /* ── Public ported functions ─────────────────────────────────────── */
 
+/* PoP: cli_tools_session_search_tool__resolve_to_parent @ tools/session_search_tool.py:_resolve_to_parent */
 
 /* Port of Python tools/session_search_tool.py:_resolve_to_parent.
  * Walk parent_session_id chain to the lineage root via the session DB. */
@@ -616,6 +618,7 @@ int cli_tools_session_search_tool__resolve_to_parent(
     return 0;
 }
 
+/* PoP: cli_tools_session_search_tool__shape_message @ tools/session_search_tool.py:_shape_message */
 
 /* Port of Python tools/session_search_tool.py:_shape_message.
  * Slim a message JSON row for the tool response: keep id/role/content/
@@ -673,6 +676,7 @@ int cli_tools_session_search_tool__shape_message(
     return 0;
 }
 
+/* PoP: cli_tools_session_search_tool__resolve_profile_db @ tools/session_search_tool.py:_resolve_profile_db */
 
 /* Port of Python tools/session_search_tool.py:_resolve_profile_db.
  * Resolve a profile's state.db path. Empty profile -> default DB path. */
@@ -709,6 +713,7 @@ int cli_tools_session_search_tool__resolve_profile_db(
     return 0;
 }
 
+/* PoP: cli_tools_session_search_tool__locate_session_db @ tools/session_search_tool.py:_locate_session_db */
 
 /* Port of Python tools/session_search_tool.py:_locate_session_db.
  * Scan every profile's state.db (read-only) for a session id; return the
@@ -786,6 +791,7 @@ int cli_tools_session_search_tool__locate_session_db(
     return 0;
 }
 
+/* PoP: cli_tools_session_search_tool__read_session @ tools/session_search_tool.py:_read_session */
 
 /* Port of Python tools/session_search_tool.py:_read_session.
  * Dump a whole session by id (head + tail when large), shaped. */
@@ -943,6 +949,7 @@ int cli_tools_session_search_tool__read_session(
     return 0;
 }
 
+/* PoP: cli_tools_session_search_tool__list_recent_sessions @ tools/session_search_tool.py:_list_recent_sessions */
 
 /* Port of Python tools/session_search_tool.py:_list_recent_sessions.
  * Return metadata for the most recent sessions (excluding hidden sources,
@@ -1035,6 +1042,7 @@ int cli_tools_session_search_tool__list_recent_sessions(
     return 0;
 }
 
+/* PoP: cli_tools_session_search_tool__discover @ tools/session_search_tool.py:_discover */
 
 /* Port of Python tools/session_search_tool.py:_discover.
  * Discovery shape: FTS5 search + dedupe by lineage + anchored window +
@@ -1245,6 +1253,7 @@ int cli_tools_session_search_tool__discover(
     return 0;
 }
 
+/* PoP: cli_tools_session_search_tool_check_session_search_requirements @ tools/session_search_tool.py:check_session_search_requirements */
 
 /* Port of Python tools/session_search_tool.py:check_session_search_requirements.
  * Check if session search is available (DB exists, FTS5 ready). */
@@ -1296,6 +1305,7 @@ int cli_tools_session_search_tool_check_session_search_requirements(
     return 0;
 }
 
+/* PoP: cli_tools_session_search_tool__get_message_storage_state @ tools/session_search_tool.py:_get_message_storage_state */
 
 /* Port of Python tools/session_search_tool.py:_get_message_storage_state.
  * Return the owning session and visibility flags for *message_id*.
@@ -1336,6 +1346,7 @@ int cli_tools_session_search_tool__get_message_storage_state(
     return 0;
 }
 
+/* PoP: cli_tools_session_search_tool__session_link @ tools/session_search_tool.py:_session_link */
 
 /* Port of Python tools/session_search_tool.py:_session_link.
  * The reference the agent writes to point the user at a session:

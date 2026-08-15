@@ -251,6 +251,7 @@ char *provider_label(const char *provider) {
  * single definition, PoP-annotated). This module reuses it via the shared
  * declaration in provider_meta.h. */
 
+/* PoP: group_providers @ hermes_cli.models.py:group_providers */
 provider_row_t *group_providers(const char *const *slugs) {
     if (!slugs) return NULL;
 

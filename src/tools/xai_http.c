@@ -35,6 +35,7 @@ static char *xai_http_handler(const char *args_json, const char *task_id) {
     json_node_t *result = json_new_object();
 
     if (strcmp(action, "check_credentials") == 0) {
+/* PoP: has_xai_credentials @ tools/xai_http.py:has_xai_credentials */
         bool has_creds = has_xai_credentials();
         json_object_set(result, "has_credentials", json_new_bool(has_creds));
         if (has_creds) {

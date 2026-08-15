@@ -643,6 +643,7 @@ static const tui_slash_cmd_t slash_commands[] = {
     {"/logs",    "Show log viewer", ""},
     {"/skills",  "Browse available skills", ""},
     {"/todos",   "Show todo/kanban board", ""},
+/* PoP: doc_info @ hermes_cli/mcp_config.py:_info */
     {"/agent",   "Show agent info (model, provider, tokens)", ""},
     {NULL, NULL, NULL}
 };

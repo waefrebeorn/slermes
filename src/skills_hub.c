@@ -86,12 +86,14 @@ static const hub_skill_meta_t g_wellknown_skills[] = {
 /* ================================================================
  *  Helpers
  * ================================================================ */
+/* PoP: cache_valid @ tools/skills_hub.py:_cache_valid */
 static bool cache_valid(void) {
     if (g_source_count == 0) return false;
     if (g_last_fetch == 0) return false;
     return (time(NULL) - g_last_fetch) < SKILLS_HUB_CACHE_TTL_SEC;
 }
 
+/* PoP: parse_skill_item @ tools/skills_hub.py:_parse_skill_item */
 static hub_skill_meta_t parse_skill_item(json_node_t *item) {
     hub_skill_meta_t meta = {0};
 
@@ -155,6 +157,7 @@ static hub_skill_meta_t parse_skill_item(json_node_t *item) {
 }
 
 /* Search a single catalog. Returns match count. */
+/* PoP: search_catalog @ tools/skills_hub.py:_search_catalog */
 static int search_catalog(const skills_catalog_t *cat, const char *query,
                            hub_skill_meta_t *results, int limit, int offset) {
     if (!cat || !results || limit <= 0) return 0;
@@ -271,6 +274,7 @@ static bool fetch_browsesh_source(skill_source_t *src) {
  * ================================================================ */
 
 /* Port of Python: ensure_hub_dirs, index cache refresh */
+/* PoP: skills_hub_fetch_catalog @ tools/skills_hub.py:_fetch_catalog */
 bool skills_hub_fetch_catalog(void) {
     /* Use cached version if still valid */
     if (cache_valid()) return true;
@@ -280,6 +284,7 @@ bool skills_hub_fetch_catalog(void) {
     g_last_fetch = 0;
 
     /* Register well-known source first */
+/* PoP: skills_hub_register_static @ tools/skills_hub.py:register_static */
     skills_hub_register_static(g_wellknown_skills, WELLKNOWN_SKILL_COUNT,
                                 SKILLS_HUB_SOURCE_ID_WELLKNOWN);
 
@@ -298,23 +303,28 @@ bool skills_hub_fetch_catalog(void) {
 }
 
 /* Port of Python: unified_search */
+/* PoP: skills_hub_search @ tools/skills_hub.py:SkillsHub.search */
 int skills_hub_search(const char *query, hub_skill_meta_t *results, int limit) {
     if (!results || limit <= 0) return 0;
 
     /* Auto-fetch if not loaded */
     if (g_source_count == 0) {
+/* PoP: skills_hub_fetch_catalog @ tools/skills_hub.py:SkillsHub.fetch_catalog */
         skills_hub_fetch_catalog();
     }
 
+/* PoP: skills_hub_unified_search @ tools/skills_hub.py:SkillsHub.unified_search */
     return skills_hub_unified_search(query, results, limit);
 }
 
 /* Port of Python: SkillSource.search with identifier */
+/* PoP: skills_hub_get_by_slug @ tools/skills_hub.py:get_by_slug */
 bool skills_hub_get_by_slug(const char *slug, hub_skill_meta_t *out) {
     if (!slug || !out) return false;
 
     /* Auto-fetch if not loaded */
     if (g_source_count == 0) {
+/* PoP: skills_hub_fetch_catalog @ tools/skills_hub.py:SkillsHub.fetch_catalog */
         skills_hub_fetch_catalog();
     }
 
@@ -335,6 +345,7 @@ bool skills_hub_get_by_slug(const char *slug, hub_skill_meta_t *out) {
 }
 
 /* Port of Python: index cache clear */
+/* PoP: skills_hub_clear_cache @ tools/skills_hub.py:clear_cache */
 void skills_hub_clear_cache(void) {
     for (int s = 0; s < g_source_count; s++) {
         if (g_sources[s].catalog.skills) {
@@ -359,6 +370,7 @@ void skills_hub_clear_cache(void) {
 char *skills_hub_summary(void) {
     /* Auto-fetch if not loaded */
     if (g_source_count == 0) {
+/* PoP: skills_hub_fetch_catalog @ tools/skills_hub.py:SkillsHub.fetch_catalog */
         skills_hub_fetch_catalog();
     }
 
@@ -414,6 +426,7 @@ char *skills_hub_summary(void) {
 /* v323: Multi-source API */
 
 /* Port of Python: WellKnownSkillSource (static catalog) */
+/* PoP: skills_hub_register_static @ tools/skills_hub.py:SkillsHub.register_static */
 bool skills_hub_register_static(const hub_skill_meta_t *skills, int count, const char *source_id) {
     if (!skills || count <= 0 || !source_id || g_source_count >= SKILLS_HUB_MAX_SOURCES)
         return false;
@@ -440,10 +453,12 @@ bool skills_hub_register_static(const hub_skill_meta_t *skills, int count, const
 }
 
 /* Port of Python: _search_one_source (combined across sources) */
+/* PoP: skills_hub_unified_search @ tools/skills_hub.py:_search_one_source */
 int skills_hub_unified_search(const char *query, hub_skill_meta_t *results, int limit) {
     if (!results || limit <= 0) return 0;
 
     if (g_source_count == 0) {
+/* PoP: skills_hub_fetch_catalog @ tools/skills_hub.py:SkillsHub.fetch_catalog */
         skills_hub_fetch_catalog();
     }
 
@@ -456,10 +471,12 @@ int skills_hub_unified_search(const char *query, hub_skill_meta_t *results, int 
     return found;
 }
 
+/* PoP: skills_hub_source_count @ tools/skills_hub.py:create_source_router */
 int skills_hub_source_count(void) {
     return g_source_count;
 }
 
+/* PoP: skills_hub_source_name @ tools/skills_hub.py:source_name */
 const char *skills_hub_source_name(int index) {
     if (index < 0 || index >= g_source_count) return NULL;
     return g_sources[index].source_id;
@@ -470,6 +487,7 @@ const char *skills_hub_source_name(int index) {
  * ================================================================ */
 
 /* Get skills install base directory. Returns pointer to static buf. */
+/* PoP: skills_install_dir @ tools/skills_hub.py:_skills_dir */
 static const char *skills_install_dir(void) {
     static char path[HERMES_PATH_MAX];
     const char *home = getenv("HERMES_HOME");
@@ -480,6 +498,7 @@ static const char *skills_install_dir(void) {
 }
 
 /* Get hub directory path (skills/.hub). Returns pointer to static buf. */
+/* PoP: skills_hub_hub_dir @ tools/skills_hub.py:_hub_dir */
 static const char *hub_dir(void) {
     static char path[HERMES_PATH_MAX];
     const char *base = skills_install_dir();
@@ -489,6 +508,7 @@ static const char *hub_dir(void) {
 }
 
 /* Get lock file path. Returns pointer to static buf. */
+/* PoP: skills_hub_lock_file @ tools/skills_hub.py:_lock_file */
 static const char *hub_lock_path(void) {
     static char path[HERMES_PATH_MAX];
     const char *hd = hub_dir();
@@ -498,6 +518,7 @@ static const char *hub_lock_path(void) {
 }
 
 /* Get taps file path. Returns pointer to static buf. */
+/* PoP: hub_taps_path @ tools/skills_hub.py:_taps_file */
 static const char *hub_taps_path(void) {
     static char path[HERMES_PATH_MAX];
     const char *hd = hub_dir();
@@ -507,6 +528,7 @@ static const char *hub_taps_path(void) {
 }
 
 /* Get audit log path. Returns pointer to static buf. */
+/* PoP: dash_audit_log @ tools/skills_hub.py:_audit_log */
 static const char *hub_audit_path(void) {
     static char path[HERMES_PATH_MAX];
     const char *hd = hub_dir();
@@ -516,6 +538,7 @@ static const char *hub_audit_path(void) {
 }
 
 /* Get quarantine directory path. Returns pointer to static buf. */
+/* PoP: skills_hub_quarantine_dir @ tools/skills_hub.py:_quarantine_dir */
 static const char *hub_quarantine_dir(void) {
     static char path[HERMES_PATH_MAX];
     const char *hd = hub_dir();
@@ -525,6 +548,7 @@ static const char *hub_quarantine_dir(void) {
 }
 
 /* Get index cache directory path. Returns pointer to static buf. */
+/* PoP: hub_index_cache_dir @ tools/skills_hub.py:_index_cache_dir */
 static const char *hub_index_cache_dir(void) {
     static char path[HERMES_PATH_MAX];
     const char *hd = hub_dir();
@@ -534,6 +558,7 @@ static const char *hub_index_cache_dir(void) {
 }
 
 /* Ensure a directory exists. Returns true on success. */
+/* PoP: ensure_dir @ tools/skills_hub.py:ensure_hub_dirs */
 static bool ensure_dir(const char *dir) {
     if (!dir) return false;
     struct stat st;
@@ -546,6 +571,7 @@ static bool ensure_dir(const char *dir) {
 }
 
 /* Port of Python: UrlSource.fetch (single-file skill install) */
+/* PoP: models_live_http_fetch @ tools/skills_hub.py:fetch */
 bool skills_hub_install_from_url(const char *url) {
     if (!url || !url[0]) return false;
 
@@ -604,6 +630,8 @@ bool skills_hub_install_from_url(const char *url) {
 }
 
 /* Port of Python: install_from_quarantine, _source_matches */
+/* PoP: skills_hub_install_from_source @ tools/skills_hub.py:install_from_quarantine */
+/* PoP: skills_hub_install_from_source @ tools/skills_hub.py:install_from_quarantine */
 bool skills_hub_install_from_source(const char *source_id, const char *identifier) {
     if (!source_id || !identifier) return false;
 
@@ -671,9 +699,11 @@ bool skills_hub_install_from_source(const char *source_id, const char *identifie
     strftime(ts, sizeof(ts), "%Y-%m-%dT%H:%M:%SZ", tm);
     snprintf(lock_entry.installed_at, sizeof(lock_entry.installed_at), "%s", ts);
     snprintf(lock_entry.updated_at, sizeof(lock_entry.updated_at), "%s", ts);
+/* PoP: hub_lock_record_install @ tools/skills_hub.py:_lock_record_install */
     hub_lock_record_install(&lock_entry);
 
     /* Audit log */
+/* PoP: hub_append_audit_log @ tools/skills_hub.py:_append_audit_log */
     hub_append_audit_log(HUB_AUDIT_INSTALL, lock_entry.name,
                           source_id, HUB_TRUST_BUILTIN,
                           HUB_SCAN_CLEAN, "installed via source");
@@ -682,6 +712,8 @@ bool skills_hub_install_from_source(const char *source_id, const char *identifie
 }
 
 /* Port of Python: uninstall_skill */
+/* PoP: skills_hub_uninstall @ tools/skills_hub.py:uninstall_skill */
+/* PoP: skills_hub_uninstall @ tools/skills_hub.py:uninstall_skill */
 bool skills_hub_uninstall(const char *skill_name) {
     if (!skill_name || !skill_name[0]) return false;
 
@@ -701,7 +733,9 @@ bool skills_hub_uninstall(const char *skill_name) {
 
     /* Remove from lock file if filesystem removal succeeded */
     if (removed) {
+/* PoP: hub_lock_record_uninstall @ tools/skills_hub.py:_lock_record_uninstall */
         hub_lock_record_uninstall(skill_name);
+/* PoP: hub_append_audit_log @ tools/skills_hub.py:_append_audit_log */
         hub_append_audit_log(HUB_AUDIT_UNINSTALL, skill_name,
                               "unknown", HUB_TRUST_BUILTIN,
                               HUB_SCAN_CLEAN, "uninstalled");
@@ -711,11 +745,14 @@ bool skills_hub_uninstall(const char *skill_name) {
 }
 
 /* Port of Python: installed skills listing */
+/* PoP: skills_hub_list_installed @ tools/skills_hub.py:HubLockFile.list_installed */
+/* PoP: hub_lock_list_installed @ tools/skills_hub.py:list_installed */
 int skills_hub_list_installed(char names[][128], int max_count) {
     if (!names || max_count <= 0) return 0;
 
     const char *base = skills_install_dir();
     if (!base) return 0;
+/* PoP: ensure_dir @ tools/skills_hub.py:_ensure_dir */
     ensure_dir(base); /* ensure base dir exists */
 
     char cmd[HERMES_PATH_MAX + 64];
@@ -738,6 +775,8 @@ int skills_hub_list_installed(char names[][128], int max_count) {
 }
 
 /* Port of Python: installed check */
+/* PoP: skills_hub_is_installed @ tools/skills_hub.py:HubLockFile.get_installed */
+/* PoP: skills_hub_is_installed @ tools/skills_hub.py:HubLockFile.get_installed */
 bool skills_hub_is_installed(const char *skill_name) {
     if (!skill_name || !skill_name[0]) return false;
 
@@ -758,6 +797,7 @@ bool skills_hub_is_installed(const char *skill_name) {
  * ================================================================ */
 
 /* Port of Python: _validate_skill_name */
+/* PoP: hub_validate_skill_name @ tools/skills_hub.py:_validate_skill_name */
 /* Delegates to the faithful _normalize_bundle_path (allow_nested=False), so
  * it rejects separators, absolute paths, ".." traversal, Windows drive
  * letters ("C:"), and empty/dot-only names — exactly like Python. */
@@ -778,6 +818,7 @@ bool hub_normalize_skill_name(const char *name, char *out, size_t out_sz) {
 }
 
 /* Port of Python: _normalize_lock_install_path */
+/* PoP: hub_normalize_lock_install_path @ tools/skills_hub.py:_normalize_lock_install_path */
 bool hub_normalize_lock_install_path(const char *install_path, const char *skill_name,
                                      char *out, size_t out_sz) {
     if (!install_path || !skill_name || !out || out_sz == 0) return false;
@@ -819,6 +860,7 @@ bool hub_normalize_lock_install_path(const char *install_path, const char *skill
  * ================================================================ */
 
 /* Port of Python: ensure_hub_dirs */
+/* PoP: hub_ensure_dirs @ tools/skills_hub.py:ensure_hub_dirs */
 bool hub_ensure_dirs(void) {
     const char *hd = hub_dir();
     const char *base = skills_install_dir();
@@ -833,11 +875,13 @@ bool hub_ensure_dirs(void) {
     /* Create quarantine subdirectory */
     char qdir[HERMES_PATH_MAX];
     snprintf(qdir, sizeof(qdir), "%s/" HUB_QUARANTINE_DIRNAME, hd);
+/* PoP: ensure_dir @ tools/skills_hub.py:_ensure_dir */
     ensure_dir(qdir);
 
     /* Create index-cache subdirectory */
     char icsdir[HERMES_PATH_MAX];
     snprintf(icsdir, sizeof(icsdir), "%s/" HUB_INDEX_CACHE_DIRNAME, hd);
+/* PoP: ensure_dir @ tools/skills_hub.py:_ensure_dir */
     ensure_dir(icsdir);
 
     return true;
@@ -848,6 +892,7 @@ bool hub_ensure_dirs(void) {
  * ================================================================ */
 
 /* Read current lock.json into a json_t. Returns NULL if absent/broken. */
+/* PoP: lock_file_read @ tools/skills_hub.py:_read_index_cache */
 static json_t *lock_file_read(void) {
     const char *path = hub_lock_path();
     if (!path) return NULL;
@@ -862,6 +907,7 @@ static json_t *lock_file_read(void) {
 }
 
 /* Write a json_t to lock.json. Returns true on success. */
+/* PoP: lock_file_write @ tools/skills_hub.py:_write_index_cache */
 static bool lock_file_write(json_t *root) {
     const char *path = hub_lock_path();
     if (!path || !root) return false;
@@ -879,6 +925,7 @@ static bool lock_file_write(json_t *root) {
 }
 
 /* Port of Python: HubLockFile.record_install */
+/* PoP: hub_lock_record_install @ tools/skills_hub.py:record_install */
 bool hub_lock_record_install(const hub_installed_skill_t *entry) {
     if (!entry || !hub_validate_skill_name(entry->name)) return false;
     if (!hub_ensure_dirs()) return false;
@@ -915,6 +962,8 @@ bool hub_lock_record_install(const hub_installed_skill_t *entry) {
 }
 
 /* Port of Python: HubLockFile.record_uninstall */
+/* PoP: hub_lock_record_uninstall @ tools/skills_hub.py:record_uninstall */
+/* PoP: hub_lock_record_uninstall @ tools/skills_hub.py:record_uninstall */
 bool hub_lock_record_uninstall(const char *skill_name) {
     if (!skill_name || !skill_name[0]) return false;
 
@@ -931,6 +980,8 @@ bool hub_lock_record_uninstall(const char *skill_name) {
 }
 
 /* Port of Python: HubLockFile.get_installed */
+/* PoP: hub_lock_get_installed @ tools/skills_hub.py:get_installed */
+/* PoP: hub_lock_get_installed @ tools/skills_hub.py:get_installed */
 bool hub_lock_get_installed(const char *skill_name, hub_installed_skill_t *out) {
     if (!skill_name || !out) return false;
     memset(out, 0, sizeof(*out));
@@ -962,6 +1013,8 @@ bool hub_lock_get_installed(const char *skill_name, hub_installed_skill_t *out) 
 }
 
 /* Port of Python: HubLockFile.list_installed */
+/* PoP: hub_lock_list_installed @ tools/skills_hub.py:list_installed */
+/* PoP: hub_lock_list_installed @ tools/skills_hub.py:list_installed */
 int hub_lock_list_installed(hub_installed_skill_t *entries, int max_count) {
     if (!entries || max_count <= 0) return 0;
 
@@ -1004,6 +1057,8 @@ int hub_lock_list_installed(hub_installed_skill_t *entries, int max_count) {
  * ================================================================ */
 
 /* Port of Python: TapsManager.add */
+/* PoP: ss_add @ tools/skills_hub.py:add */
+/* PoP: hub_taps_add @ tools/skills_hub.py:add */
 bool hub_taps_add(const char *repo, const char *path) {
     if (!repo || !repo[0]) return false;
     if (!hub_ensure_dirs()) return false;
@@ -1059,6 +1114,8 @@ bool hub_taps_add(const char *repo, const char *path) {
 }
 
 /* Port of Python: TapsManager.remove */
+/* PoP: mom_remove @ tools/skills_hub.py:remove */
+/* PoP: hub_taps_remove @ tools/skills_hub.py:remove */
 bool hub_taps_remove(const char *repo) {
     if (!repo || !repo[0]) return false;
 
@@ -1107,6 +1164,8 @@ bool hub_taps_remove(const char *repo) {
 }
 
 /* Port of Python: TapsManager.list_taps */
+/* PoP: hub_taps_list @ tools/skills_hub.py:list_taps */
+/* PoP: hub_taps_list @ tools/skills_hub.py:list_taps */
 int hub_taps_list(hub_tap_entry_t *entries, int max_count) {
     if (!entries || max_count <= 0) return 0;
 
@@ -1147,6 +1206,8 @@ int hub_taps_list(hub_tap_entry_t *entries, int max_count) {
  * ================================================================ */
 
 /* Port of Python: append_audit_log */
+/* PoP: hub_append_audit_log @ tools/skills_hub.py:append_audit_log */
+/* PoP: hub_append_audit_log @ tools/skills_hub.py:append_audit_log */
 bool hub_append_audit_log(const char *action, const char *skill_name,
                            const char *source, const char *trust_level,
                            const char *verdict, const char *extra) {
@@ -1179,6 +1240,8 @@ bool hub_append_audit_log(const char *action, const char *skill_name,
 }
 
 /* Port of Python: _validate_bundle_rel_path */
+/* PoP: hub_validate_bundle_rel_path @ tools/skills_hub.py:_validate_bundle_rel_path */
+/* PoP: hub_validate_bundle_rel_path @ tools/skills_hub.py:_validate_bundle_rel_path */
 bool hub_validate_bundle_rel_path(const char *rel_path) {
     if (!rel_path || !rel_path[0]) return false;
 
@@ -1216,6 +1279,8 @@ bool hub_validate_bundle_rel_path(const char *rel_path) {
 }
 
 /* Port of Python: _is_path_redirect — check if path is a symlink */
+/* PoP: hub_is_path_redirect @ tools/skills_hub.py:_is_path_redirect */
+/* PoP: hub_is_path_redirect @ tools/skills_hub.py:_is_path_redirect */
 bool hub_is_path_redirect(const char *path) {
     if (!path || !path[0]) return false;
     struct stat st;
@@ -1224,6 +1289,8 @@ bool hub_is_path_redirect(const char *path) {
 }
 
 /* Port of Python: quarantine_bundle (simplified — write single file to quarantine) */
+/* PoP: hub_quarantine_write @ tools/skills_hub.py:quarantine_bundle */
+/* PoP: hub_quarantine_write @ tools/skills_hub.py:quarantine_bundle */
 bool hub_quarantine_write(const char *skill_name, const char *filename,
                            const char *content, size_t content_len) {
     if (!skill_name || !skill_name[0] || !filename || !filename[0] || !content)
@@ -1256,6 +1323,7 @@ bool hub_quarantine_write(const char *skill_name, const char *filename,
 /* Port of Python: bundle_content_hash — compute SHA256 hash of bundle files.
  * Takes an array of {filename, content, content_len} pairs and count.
  * Returns malloc'd "sha256:xxxx..." string, caller must free. */
+/* PoP: hub_bundle_content_hash @ tools/skills_hub.py:bundle_content_hash */
 char *hub_bundle_content_hash(const hub_bundle_file_t *files, size_t count) {
     if (!files || count == 0) return strdup("sha256:0000000000000000");
 
@@ -1294,6 +1362,7 @@ char *hub_bundle_content_hash(const hub_bundle_file_t *files, size_t count) {
     return result;
 }
 
+/* PoP: hub_filter_results_by_provider @ tools/skills_hub.py:_filter_results_by_provider */
 bool hub_filter_results_by_provider(hub_skill_meta_t *results, int count, const char *provider) {
     if (!results || count <= 0 || !provider) return false;
     /* Python: keep r where str((r.extra or {}).get("provider","")).lower()
@@ -1325,11 +1394,13 @@ bool hub_filter_results_by_provider(hub_skill_meta_t *results, int count, const 
     return kept > 0;
 }
 
+/* PoP: skills_hub_source_matches @ tools/skills_hub.py:_source_matches */
 bool skills_hub_source_matches(const hub_skill_meta_t *skill, const char *source_filter) {
     if (!skill || !source_filter || !source_filter[0]) return true;
     return strcasecmp(skill->source_url, source_filter) == 0;
 }
 
+/* PoP: skills_hub_check_updates @ tools/skills_hub.py:check_for_skill_updates */
 bool skills_hub_check_updates(const char *skill_name) {
     if (!skill_name || !skill_name[0]) return false;
     /* Simplified: check if skill is installed and has newer version available */
@@ -1338,6 +1409,7 @@ bool skills_hub_check_updates(const char *skill_name) {
     return false; /* Placeholder - needs remote version check */
 }
 
+/* PoP: skills_hub_index_cache_file @ tools/skills_hub.py:_hermes_index_cache_file */
 const char *skills_hub_index_cache_file(const char *key) {
     static char path[HERMES_PATH_MAX];
     const char *hd = hub_dir();
@@ -1346,6 +1418,7 @@ const char *skills_hub_index_cache_file(const char *key) {
     return path;
 }
 
+/* PoP: skills_hub_load_hermes_index @ tools/skills_hub.py:_load_hermes_index */
 json_t *skills_hub_load_hermes_index(void) {
     const char *path = skills_hub_index_cache_file("hermes_index");
     if (!path) return NULL;
@@ -1355,6 +1428,7 @@ json_t *skills_hub_load_hermes_index(void) {
     return root;
 }
 
+/* PoP: skills_hub_load_stale_index_cache @ tools/skills_hub.py:_load_stale_index_cache */
 json_t *skills_hub_load_stale_index_cache(const char *key, time_t max_age) {
     const char *path = skills_hub_index_cache_file(key);
     if (!path) return NULL;
@@ -1367,13 +1441,16 @@ json_t *skills_hub_load_stale_index_cache(const char *key, time_t max_age) {
     return root;
 }
 
+/* PoP: skills_hub_parallel_search @ tools/skills_hub.py:parallel_search_sources */
 int skills_hub_parallel_search(const char *query, hub_skill_meta_t *results, int limit) {
     if (!query || !results || limit <= 0) return 0;
     /* For C: sequential search across registered sources (no async) */
+/* PoP: skills_hub_unified_search @ tools/skills_hub.py:SkillsHub.unified_search */
     return skills_hub_unified_search(query, results, limit);
 }
 
 /* Port of Python: _skill_meta_to_dict — convert hub_skill_meta_t to JSON object */
+/* PoP: hub_skill_meta_to_json @ tools/skills_hub.py:_skill_meta_to_dict */
 json_t *hub_skill_meta_to_json(const hub_skill_meta_t *meta) {
     if (!meta) return NULL;
     json_t *obj = json_object();
@@ -1427,6 +1504,7 @@ static bool g_override_audit_log_set = false;
 static bool g_override_taps_file_set = false;
 static bool g_override_index_cache_dir_set = false;
 
+/* PoP: set_model_override @ tools/skills_hub.py:_override */
 const char *skills_hub_override(const char *name) {
     if (!name) return NULL;
     if (strcmp(name, "SKILLS_DIR") == 0 && g_override_skills_dir_set)
@@ -1446,6 +1524,7 @@ const char *skills_hub_override(const char *name) {
     return NULL;
 }
 
+/* PoP: skills_hub_set_override @ tools/skills_hub.py:_override */
 void skills_hub_set_override(const char *name, const char *value) {
     if (!name) return;
     char *dst = NULL; bool *flag = NULL;
@@ -1461,6 +1540,7 @@ void skills_hub_set_override(const char *name, const char *value) {
     else { dst[0] = '\0'; *flag = false; }
 }
 
+/* PoP: lm_hermes_home @ tools/skills_hub.py:_hermes_home */
 const char *skills_hub_hermes_home(void) {
     const char *h = getenv("HERMES_HOME");
     if (h && h[0]) return h;
@@ -1469,6 +1549,7 @@ const char *skills_hub_hermes_home(void) {
     return "/tmp/hermes";
 }
 
+/* PoP: main_u__getattr__ @ tools/skills_hub.py:__getattr__ */
 const char *skills_hub_getattr(const char *name) {
     if (!name) return NULL;
     /* Same dynamic resolver as Python PEP-562 __getattr__: parallel to the
@@ -1490,6 +1571,7 @@ const char *skills_hub_getattr(const char *name) {
  *  _resolve_lock_install_path
  * ================================================================ */
 
+/* PoP: hub_normalize_bundle_path @ tools/skills_hub.py:_normalize_bundle_path */
 bool hub_normalize_bundle_path(const char *path_value, const char *field_name,
                                bool allow_nested, char *out, size_t out_len) {
     if (!path_value || !path_value[0] || !out || out_len == 0) return false;
@@ -1538,10 +1620,12 @@ bool hub_normalize_bundle_path(const char *path_value, const char *field_name,
     return true;
 }
 
+/* PoP: hub_validate_install_parent_path @ tools/skills_hub.py:_validate_install_parent_path */
 bool hub_validate_install_parent_path(const char *category, char *out, size_t out_len) {
     return hub_normalize_bundle_path(category, "install parent path", true, out, out_len);
 }
 
+/* PoP: hub_resolve_lock_install_path @ tools/skills_hub.py:_resolve_lock_install_path */
 bool hub_resolve_lock_install_path(const char *install_path, const char *skill_name,
                                     char *out, size_t out_len) {
     if (!install_path || !skill_name) return false;
@@ -1596,6 +1680,7 @@ typedef struct {
     double app_token_expiry;
 } github_auth_t;
 
+/* PoP: github_auth_init @ tools/skills_hub.py:GitHubAuth.__init__ */
 void github_auth_init(github_auth_t *auth) {
     if (!auth) return;
     auth->cached_token[0] = '\0';
@@ -1603,6 +1688,7 @@ void github_auth_init(github_auth_t *auth) {
     auth->app_token_expiry = 0.0;
 }
 
+/* PoP: github_auth_try_gh_cli @ tools/skills_hub.py:GitHubAuth._try_gh_cli */
 const char *github_auth_try_gh_cli(github_auth_t *auth) {
     (void)auth;
     FILE *fp = popen("gh auth token 2>/dev/null", "r");
@@ -1618,6 +1704,7 @@ const char *github_auth_try_gh_cli(github_auth_t *auth) {
     return token;
 }
 
+/* PoP: github_auth_try_github_app @ tools/skills_hub.py:GitHubAuth._try_github_app */
 const char *github_auth_try_github_app(github_auth_t *auth) {
     (void)auth;
     const char *app_id = getenv("GITHUB_APP_ID");
@@ -1630,6 +1717,7 @@ const char *github_auth_try_github_app(github_auth_t *auth) {
     return NULL;
 }
 
+/* PoP: github_auth_resolve_token @ tools/skills_hub.py:GitHubAuth._resolve_token */
 const char *github_auth_resolve_token(github_auth_t *auth) {
     if (!auth) return NULL;
     /* Return cached token if still valid */
@@ -1665,16 +1753,19 @@ const char *github_auth_resolve_token(github_auth_t *auth) {
     return NULL;
 }
 
+/* PoP: github_auth_is_authenticated @ tools/skills_hub.py:GitHubAuth.is_authenticated */
 bool github_auth_is_authenticated(github_auth_t *auth) {
     return github_auth_resolve_token(auth) != NULL;
 }
 
+/* PoP: github_auth_auth_method @ tools/skills_hub.py:GitHubAuth.auth_method */
 const char *github_auth_auth_method(github_auth_t *auth) {
     if (!auth) return "anonymous";
     github_auth_resolve_token(auth);
     return auth->cached_method[0] ? auth->cached_method : "anonymous";
 }
 
+/* PoP: github_auth_get_headers @ tools/skills_hub.py:GitHubAuth.get_headers */
 char *github_auth_get_headers(github_auth_t *auth) {
     if (!auth) return NULL;
     const char *tok = github_auth_resolve_token(auth);
@@ -1703,6 +1794,7 @@ static const struct { const char *repo; const char *label; } g_github_tap_provid
 };
 #define GITHUB_TAP_PROVIDER_COUNT (sizeof(g_github_tap_providers) / sizeof(g_github_tap_providers[0]))
 
+/* PoP: github_provider_for @ tools/skills_hub.py:github_provider_for */
 const char *github_provider_for(const char *repo) {
     if (!repo || !repo[0]) return NULL;
     char lower[256];
@@ -1729,6 +1821,7 @@ const char *github_provider_for(const char *repo) {
  *  method: `trust_level_for` returns "community" — that's needed here.
  * ================================================================ */
 
+/* PoP: skill_source_default_trust_level @ tools/skills_hub.py:SkillSource.trust_level_for */
 const char *skill_source_default_trust_level(const char *identifier) {
     (void)identifier;  /* base ABC: always returns "community" */
     return "community";
@@ -1774,6 +1867,7 @@ typedef struct {
     int tree_cache_count;
 } github_source_t;
 
+/* PoP: github_source_init @ tools/skills_hub.py:GitHubSource.__init__ */
 void github_source_init(github_source_t *src, github_auth_t *auth) {
     if (!src) return;
     memset(src, 0, sizeof(*src));
@@ -1790,6 +1884,7 @@ void github_source_init(github_source_t *src, github_auth_t *auth) {
     src->tree_cache_count = 0;
 }
 
+/* PoP: github_source_init_extra @ tools/skills_hub.py:GitHubSource.__init__ */
 /* Python: if extra_taps: self.taps.extend(extra_taps). Each extra tap is
  * a {"repo": ..., "path": ...} dict; entries without a repo are skipped. */
 void github_source_init_extra(github_source_t *src, github_auth_t *auth,
@@ -1811,15 +1906,18 @@ void github_source_init_extra(github_source_t *src, github_auth_t *auth,
     }
 }
 
+/* PoP: github_source_source_id @ tools/skills_hub.py:GitHubSource.source_id */
 const char *github_source_source_id(github_source_t *src) {
     (void)src;
     return "github";
 }
 
+/* PoP: github_source_is_rate_limited @ tools/skills_hub.py:GitHubSource.is_rate_limited */
 bool github_source_is_rate_limited(github_source_t *src) {
     return src && src->rate_limited;
 }
 
+/* PoP: github_source_trust_level_for @ tools/skills_hub.py:GitHubSource.trust_level_for */
 const char *github_source_trust_level_for(github_source_t *src, const char *identifier) {
     (void)src;
     if (!identifier) return "community";
@@ -1845,6 +1943,7 @@ const char *github_source_trust_level_for(github_source_t *src, const char *iden
     return "community";
 }
 
+/* PoP: github_source_check_rate_limit_response @ tools/skills_hub.py:GitHubSource._check_rate_limit_response */
 void github_source_check_rate_limit_response(github_source_t *src, int status_code,
                                               const char *rate_limit_remaining_header) {
     if (!src) return;
@@ -1856,6 +1955,7 @@ void github_source_check_rate_limit_response(github_source_t *src, int status_co
     }
 }
 
+/* PoP: github_source_github_get @ tools/skills_hub.py:_github_get */
 char *github_source_github_get(github_source_t *src, const char *url, int *out_status) {
     if (!src || !url) return NULL;
     if (out_status) *out_status = 0;
@@ -1875,6 +1975,7 @@ char *github_source_github_get(github_source_t *src, const char *url, int *out_s
         /* Rate-limited */
         if (status == 403 || status == 429) {
             /* honor Retry-After-style backoff — we don't have the header here so we back off */
+/* PoP: github_source_check_rate_limit_response @ tools/skills_hub.py:GitHubSource._check_rate_limit_response */
             github_source_check_rate_limit_response(src, status, "0");
             if (attempt < max_retries - 1) { usleep((useconds_t)(backoff * 1e6)); backoff *= 2; if (backoff > 30) backoff = 30; http_resp_free(resp); continue; }
         }
@@ -1890,6 +1991,8 @@ char *github_source_github_get(github_source_t *src, const char *url, int *out_s
     return body;
 }
 
+/* PoP: github_source_get_repo_tree @ tools/skills_hub.py:_get_repo_tree */
+/* PoP: github_source_get_repo_tree @ tools/skills_hub.py:GitHubSource._get_repo_tree */
 bool github_source_get_repo_tree(github_source_t *src, const char *repo,
                                   char *out_default_branch, size_t branch_len,
                                   json_node_t **out_tree) {
@@ -1946,6 +2049,7 @@ bool github_source_get_repo_tree(github_source_t *src, const char *repo,
     return true;
 }
 
+/* PoP: github_source_find_skill_in_repo_tree @ tools/skills_hub.py:_find_skill_in_repo_tree */
 char *github_source_find_skill_in_repo_tree(github_source_t *src, const char *repo, const char *skill_name) {
     if (!src || !repo || !skill_name) return NULL;
     json_node_t *tree = NULL;
@@ -1983,6 +2087,7 @@ char *github_source_find_skill_in_repo_tree(github_source_t *src, const char *re
     return NULL;
 }
 
+/* PoP: github_source_fetch_file_content @ tools/skills_hub.py:_fetch_file_content */
 char *github_source_fetch_file_content(github_source_t *src, const char *repo, const char *path) {
     if (!src || !repo || !path) return NULL;
     char url[HERMES_PATH_MAX * 2];
@@ -1994,6 +2099,7 @@ char *github_source_fetch_file_content(github_source_t *src, const char *repo, c
     return body;
 }
 
+/* PoP: re_search @ tools/skills_hub.py:search */
 int github_source_search(github_source_t *src, const char *query, int limit,
                           hub_skill_meta_t *results) {
     if (!src || !query || limit <= 0 || !results) return 0;

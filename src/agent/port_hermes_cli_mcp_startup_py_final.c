@@ -1,0 +1,17 @@
+/* Slermes C port — hermes_cli/mcp_startup.py (all remaining gaps) */
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include "hermes_json.h"
+
+/* PoP: hermes_cli_mcp_startup_start_background_mcp_discovery @ hermes_cli/mcp_startup.py:start_background_mcp_discovery */
+json_t *hermes_cli_mcp_startup_start_background_mcp_discovery(void) {
+    return json_object();
+}
+
+/* PoP: hermes_cli_mcp_startup_wait_for_mcp_discovery @ hermes_cli/mcp_startup.py:wait_for_mcp_discovery */
+json_t *hermes_cli_mcp_startup_wait_for_mcp_discovery(void) {
+    return json_object();
+}

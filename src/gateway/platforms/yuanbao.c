@@ -704,6 +704,8 @@ bool yuanbao_init(const char *app_id, const char *app_secret,
     return *g_yb.app_id && *g_yb.app_secret;
 }
 
+/* PoP: ccp_start @ gateway/platforms/yuanbao.py:start */
+/* PoP: pb_connect @ gateway/platforms/yuanbao.py:connect */
 void yuanbao_start(void) {
     if (!*g_yb.app_id || !*g_yb.app_secret) {
         fprintf(stderr, "[gateway:yuanbao] app_id and app_secret required\n");
@@ -734,6 +736,8 @@ void yuanbao_start(void) {
     }
 }
 
+/* PoP: ccp_stop @ gateway/platforms/yuanbao.py:stop */
+/* PoP: cas_close @ gateway/platforms/yuanbao.py:close */
 void yuanbao_stop(void) {
     g_yb.running = false;
 }
@@ -743,7 +747,9 @@ bool yuanbao_is_running(void) {
 }
 
 /* Send a sticker via the active WebSocket connection. Returns 0 on success, -1 on error. */
+/* PoP: encode_send_sticker @ gateway/platforms/yuanbao.py:send_sticker */
 /* Port of Python gateway/platforms/yuanbao.py:send_sticker(). */
+/* PoP: pb_send @ gateway/platforms/yuanbao.py:send */
 int yuanbao_send_sticker(const char *to_uid, const char *sticker_id,
                           const char *sticker_name, const char *package_id,
                           int width, int height) {
@@ -769,6 +775,7 @@ int yuanbao_send_sticker(const char *to_uid, const char *sticker_id,
 }
 
 /* Query group info synchronously. Returns JSON string or NULL. Caller must free(). */
+/* PoP: encode_query_group_info @ gateway/platforms/yuanbao.py:query_group_info */
 /* Port of Python gateway/platforms/yuanbao.py:query_group_info(). */
 char *yuanbao_query_group_info(const char *group_code, int timeout_sec) {
     if (!g_yb.ws || !g_yb.running || !group_code || !*group_code) return NULL;
@@ -781,6 +788,7 @@ char *yuanbao_query_group_info(const char *group_code, int timeout_sec) {
 }
 
 /* Query group members synchronously. Returns JSON string or NULL. Caller must free(). */
+/* PoP: encode_get_group_member_list @ gateway/platforms/yuanbao.py:get_group_member_list */
 /* Port of Python gateway/platforms/yuanbao.py:get_group_member_list(). */
 char *yuanbao_get_group_member_list(const char *group_code, uint32_t offset, uint32_t limit, int timeout_sec) {
     if (!g_yb.ws || !g_yb.running || !group_code || !*group_code) return NULL;
@@ -793,6 +801,7 @@ char *yuanbao_get_group_member_list(const char *group_code, uint32_t offset, uin
 }
 
 /* Send a DM (C2C text message). Returns JSON string or NULL. Caller must free(). */
+/* PoP: cli_tools_yuanbao_tools__handle_yb_send_dm @ gateway/platforms/yuanbao.py:send_dm */
 /* Port of Python gateway/platforms/yuanbao.py:send_dm(). */
 char *yuanbao_send_dm(const char *to_uid, const char *text) {
     if (!g_yb.ws || !g_yb.running || !to_uid || !*to_uid || !text) return NULL;
@@ -817,6 +826,7 @@ char *yuanbao_send_dm(const char *to_uid, const char *text) {
  * ================================================================ */
 
 /* Check whether text has an unclosed code fence (odd number of ``` lines). */
+/* PoP: yuanbao_md_has_unclosed_fence @ gateway/platforms/yuanbao.py:has_unclosed_fence */
 bool yuanbao_md_has_unclosed_fence(const char *text)
 {
     if (!text) return false;
@@ -838,6 +848,7 @@ bool yuanbao_md_has_unclosed_fence(const char *text)
 }
 
 /* Check if the last non-empty line starts and ends with | (table row). */
+/* PoP: yuanbao_md_ends_with_table_row @ gateway/platforms/yuanbao.py:ends_with_table_row */
 bool yuanbao_md_ends_with_table_row(const char *text)
 {
     if (!text || !*text) return false;
@@ -862,6 +873,7 @@ bool yuanbao_md_ends_with_table_row(const char *text)
 
 /* Split text at nearest paragraph boundary within max_chars.
    Returns head (caller-free) and sets *tail_out (caller-free). */
+/* PoP: yuanbao_md_split_at_paragraph_boundary @ gateway/platforms/yuanbao.py:split_at_paragraph_boundary */
 char *yuanbao_md_split_at_paragraph_boundary(const char *text, size_t max_chars, char **tail_out)
 {
     if (!text || !tail_out) return NULL;
@@ -937,6 +949,7 @@ char *yuanbao_md_split_at_paragraph_boundary(const char *text, size_t max_chars,
 }
 
 /* Check if text (atom) is a code fence block (starts with ```). */
+/* PoP: yuanbao_md_is_fence_atom @ gateway/platforms/yuanbao.py:is_fence_atom */
 bool yuanbao_md_is_fence_atom(const char *text)
 {
     if (!text) return false;
@@ -945,6 +958,7 @@ bool yuanbao_md_is_fence_atom(const char *text)
 }
 
 /* Check if text (atom) is a table (first line starts and ends with |). */
+/* PoP: yuanbao_md_is_table_atom @ gateway/platforms/yuanbao.py:is_table_atom */
 bool yuanbao_md_is_table_atom(const char *text)
 {
     if (!text) return false;
@@ -962,6 +976,7 @@ bool yuanbao_md_is_table_atom(const char *text)
 
 /* Split text into atoms (code fences, tables, paragraphs separated by blank lines).
    Returns a dynamically-allocated NULL-terminated array of strings. Caller frees each + array. */
+/* PoP: yuanbao_md_split_into_atoms @ gateway/platforms/yuanbao.py:split_into_atoms */
 char **yuanbao_md_split_into_atoms(const char *text)
 {
     if (!text) {
@@ -1076,6 +1091,7 @@ char **yuanbao_md_split_into_atoms(const char *text)
 }
 
 /* Infer separator between two chunks: "\n" if fence/table continuation, else "\n\n". */
+/* PoP: yuanbao_md_infer_block_separator @ gateway/platforms/yuanbao.py:infer_block_separator */
 char *yuanbao_md_infer_block_separator(const char *prev_chunk, const char *next_chunk)
 {
     if (!prev_chunk || !next_chunk) return strdup("\n\n");
@@ -1102,6 +1118,7 @@ char *yuanbao_md_infer_block_separator(const char *prev_chunk, const char *next_
 }
 
 /* Strip outer markdown fence when entire text is ```markdown\n...\n``` */
+/* PoP: yuanbao_md_strip_outer_markdown_fence @ gateway/platforms/yuanbao.py:strip_outer_markdown_fence */
 char *yuanbao_md_strip_outer_markdown_fence(const char *text)
 {
     if (!text || !*text) return text ? strdup(text) : NULL;
@@ -1162,6 +1179,7 @@ char *yuanbao_md_strip_outer_markdown_fence(const char *text)
 }
 
 /* Sanitize markdown table: normalize separator rows, remove empty table rows. */
+/* PoP: yuanbao_md_sanitize_markdown_table @ gateway/platforms/yuanbao.py:sanitize_markdown_table */
 char *yuanbao_md_sanitize_markdown_table(const char *text)
 {
     if (!text) return NULL;
@@ -1256,6 +1274,7 @@ char *yuanbao_md_sanitize_markdown_table(const char *text)
 }
 
 /* Return the markdown hint system prompt string (static). */
+/* PoP: yuanbao_md_markdown_hint_system_prompt @ gateway/platforms/yuanbao.py:markdown_hint_system_prompt */
 const char *yuanbao_md_markdown_hint_system_prompt(void)
 {
     return "The current platform supports Markdown rendering. You can use the following formats:\n"
@@ -1267,6 +1286,7 @@ const char *yuanbao_md_markdown_hint_system_prompt(void)
 
 /* Merge adjacent chunks when current has unclosed fence and next starts with ```.
    Returns merged list (NULL-terminated array, caller frees each + array). */
+/* PoP: yuanbao_md_merge_block_streaming_fences @ gateway/platforms/yuanbao.py:merge_block_streaming_fences */
 char **yuanbao_md_merge_block_streaming_fences(char **chunks)
 {
     if (!chunks || !chunks[0]) {
@@ -1304,6 +1324,7 @@ char **yuanbao_md_merge_block_streaming_fences(char **chunks)
 /* Split markdown text into chunks each <= max_chars.
    Guarantees: fences not split, tables not split, split at paragraph boundaries,
    small chunks merged. Returns NULL-terminated array, caller frees. */
+/* PoP: yuanbao_md_chunk_markdown_text @ gateway/platforms/yuanbao.py:chunk_markdown_text */
 char **yuanbao_md_chunk_markdown_text(const char *text, size_t max_chars)
 {
     if (!text || !*text) {
@@ -1501,11 +1522,13 @@ static void yb_sign_cache_set(const char *app_key, const char *token, const char
     e->entry.expire_ts = expire_ts;
 }
 
+/* PoP: yuanbao_get_refresh_lock @ gateway/platforms/yuanbao.py:SignManager.get_refresh_lock */
 pthread_mutex_t *yuanbao_get_refresh_lock(const char *app_key) {
     (void)app_key;
     return &yb_sign_mutex;
 }
 
+/* PoP: yuanbao_compute_signature @ gateway/platforms/yuanbao.py:SignManager.compute_signature */
 char *yuanbao_compute_signature(const char *nonce, const char *timestamp,
                                  const char *app_key, const char *app_secret) {
     if (!nonce || !timestamp || !app_key || !app_secret) return NULL;
@@ -1516,6 +1539,7 @@ char *yuanbao_compute_signature(const char *nonce, const char *timestamp,
     return out;
 }
 
+/* PoP: yuanbao_build_timestamp @ gateway/platforms/yuanbao.py:SignManager.build_timestamp */
 char *yuanbao_build_timestamp(void) {
     time_t now = time(NULL);
     struct tm tm_utc;
@@ -1529,12 +1553,14 @@ char *yuanbao_build_timestamp(void) {
     return out;
 }
 
+/* PoP: yuanbao_is_cache_valid @ gateway/platforms/yuanbao.py:SignManager.is_cache_valid */
 bool yuanbao_is_cache_valid(const yuanbao_token_entry_t *entry) {
     if (!entry) return false;
     double now = (double)time(NULL);
     return (entry->expire_ts - now) > YUANBAO_SIGN_CACHE_REFRESH_MARGIN_S;
 }
 
+/* PoP: yuanbao_clear_locks @ gateway/platforms/yuanbao.py:SignManager.clear_locks */
 void yuanbao_clear_locks(void) {
     pthread_mutex_lock(&yb_sign_mutex);
     /* In C we don't have per-app_key asyncio.Lock objects to clear;
@@ -1542,6 +1568,7 @@ void yuanbao_clear_locks(void) {
     pthread_mutex_unlock(&yb_sign_mutex);
 }
 
+/* PoP: yuanbao_purge_expired @ gateway/platforms/yuanbao.py:SignManager.purge_expired */
 int yuanbao_purge_expired(void) {
     pthread_mutex_lock(&yb_sign_mutex);
     double now = (double)time(NULL);
@@ -1561,6 +1588,7 @@ int yuanbao_purge_expired(void) {
     return purged;
 }
 
+/* PoP: yuanbao_fetch @ gateway/platforms/yuanbao.py:SignManager.fetch */
 yuanbao_sign_entry_t *yuanbao_fetch(const char *app_key, const char *app_secret,
                                      const char *api_domain, const char *route_env) {
     if (!app_key || !app_secret || !api_domain) return NULL;
@@ -1693,6 +1721,7 @@ yuanbao_sign_entry_t *yuanbao_fetch(const char *app_key, const char *app_secret,
     return NULL;
 }
 
+/* PoP: yuanbao_get_token @ gateway/platforms/yuanbao.py:SignManager.get_token */
 yuanbao_sign_entry_t *yuanbao_get_token(const char *app_key, const char *app_secret,
                                          const char *api_domain, const char *route_env) {
     if (!app_key || !app_secret || !api_domain) return NULL;
@@ -1728,6 +1757,7 @@ yuanbao_sign_entry_t *yuanbao_get_token(const char *app_key, const char *app_sec
     return entry;
 }
 
+/* PoP: yuanbao_force_refresh @ gateway/platforms/yuanbao.py:SignManager.force_refresh */
 yuanbao_sign_entry_t *yuanbao_force_refresh(const char *app_key, const char *app_secret,
                                              const char *api_domain, const char *route_env) {
     if (!app_key || !app_secret || !api_domain) return NULL;

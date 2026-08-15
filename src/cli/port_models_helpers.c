@@ -673,6 +673,7 @@ bool _ai_gateway_model_is_free(const char *pricing_json) {
     return in_val == 0.0 && out_val == 0.0;
 }
 
+/* PoP: _provider_catalog_names @ hermes_cli/models.py:_provider_catalog_names */
 /* Returns malloc'd NULL-terminated array of "active+retired" model names for
  * a provider (caller frees each + the array). Faithful to Python's
  * active + retired aliases; the C static catalog already merges deepseek's
@@ -693,8 +694,8 @@ char **_provider_catalog_names(const char *provider, int *out_n) {
     return result;
 }
 
-/* Returns malloc'd lowercased dedup key, folding through _MODEL_ALIAS_CANONICAL.
 /* PoP: _model_dedup_key @ hermes_cli/models.py:_model_dedup_key */
+/* Returns malloc'd lowercased dedup key, folding through _MODEL_ALIAS_CANONICAL.
  * The alias table is the model_search.py mapping (ported from scratch). */
 char *_model_dedup_key(const char *model_id) {
     if (!model_id) return strdup("");
@@ -836,6 +837,7 @@ char *_fetch_ai_gateway_models(double timeout_sec) {
     return result;
 }
 
+/* PoP: fetch_ai_gateway_models @ hermes_cli/models.py:fetch_ai_gateway_models */
 /* Curated picker list, refreshed from live catalog when possible.
  * Returns malloc'd JSON: [{"id":"...","desc":"free|recommended|"}, ...]
  * (faithful to the (mid, desc) tuple list in Python). */
@@ -920,8 +922,8 @@ char *fetch_ai_gateway_models(double timeout_sec, bool force_refresh) {
     return curated;  /* caller frees */
 }
 
-/* Returns malloc'd JSON: {model_id: {"prompt":..,"completion":..,
 /* PoP: fetch_ai_gateway_pricing @ hermes_cli/models.py:fetch_ai_gateway_pricing */
+/* Returns malloc'd JSON: {model_id: {"prompt":..,"completion":..,
  * "input_cache_read":..,"input_cache_write":..}}. caller frees. */
 char *fetch_ai_gateway_pricing(double timeout_sec, bool force_refresh) {
     static pthread_mutex_t cache_lock = PTHREAD_MUTEX_INITIALIZER;
@@ -992,9 +994,9 @@ char *fetch_ai_gateway_pricing(double timeout_sec, bool force_refresh) {
     return result;
 }
 
+/* PoP: ai_gateway_model_ids @ hermes_cli/models.py:ai_gateway_model_ids */
 /* Return just the AI Gateway model-id strings (faithful to Python's
  *  [mid for mid, _ in fetch_ai_gateway_models(...)] ). Returns malloc'd
-/* PoP: ai_gateway_model_ids @ hermes_cli/models.py:ai_gateway_model_ids */
  * JSON array string of ids, or NULL. Caller frees. */
 char *ai_gateway_model_ids(double timeout_sec, bool force_refresh) {
     char *curated = fetch_ai_gateway_models(timeout_sec, force_refresh);
@@ -1017,6 +1019,7 @@ char *ai_gateway_model_ids(double timeout_sec, bool force_refresh) {
     return result;
 }
 
+/* PoP: _spawn_swr_refresh @ hermes_cli/models.py:_spawn_swr_refresh */
 /* Fire-and-forget background refresh of a provider model-id cache entry.
  * At most one refresh in flight per cache_key (dedup via _swr_refresh_lock).
  * Failures are swallowed — the stale entry keeps being served. Mirrors the
@@ -1048,7 +1051,6 @@ static void *_swr_worker(void *arg) {
     free(fp);
     /* persist via the existing save API */
     model_save_provider_models_cache(entry_json);
-/* PoP: _spawn_swr_refresh @ hermes_cli/models.py:_spawn_swr_refresh */
     free(entry_json);
     free(provider);
     return NULL;
@@ -1128,6 +1130,7 @@ static void *_catalog_swr_worker(void *arg) {
     return NULL;
 }
 
+/* PoP: _spawn_catalog_swr_refresh @ hermes_cli/model_catalog.py:_spawn_catalog_swr_refresh */
 /* Port of Python _spawn_catalog_swr_refresh: refresh the catalog manifest
  * off-thread (fire-and-forget, deduped via _catalog_swr_inflight). The
  * refreshed manifest lands on disk; the next get_catalog() picks it up

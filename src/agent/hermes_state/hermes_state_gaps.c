@@ -54,10 +54,12 @@ int hermes_state_configured_transcript_limit(const char *key, int fallback) {
     return hermes_state_transcript_limit(key, fallback);
 }
 
+/* PoP: hs_resolved_max_resume_messages @ hermes_state.py:resolved_max_resume_messages */
 int hermes_state_resolved_max_resume_messages(void) {
     return hermes_state_transcript_limit("max_resume_messages", HERMES_STATE_MAX_SAFE_RESUME);
 }
 
+/* PoP: hs_resolved_max_export_messages @ hermes_state.py:resolved_max_export_messages */
 int hermes_state_resolved_max_export_messages(void) {
     return hermes_state_transcript_limit("max_export_messages", HERMES_STATE_MAX_SAFE_EXPORT);
 }
@@ -83,8 +85,8 @@ static int hermes_state_expanduser(const char *in, char *out, size_t sz) {
     }
     return 0;
 }
-/* PoP: hermes_state_real_platform_state_root @ hermes_state.py:_real_platform_state_root */
 
+/* PoP: _real_platform_state_root @ hermes_state.py:_real_platform_state_root */
 char *hermes_state_real_platform_state_root(void) {
     char home[4096];
     char expanded[4096];
@@ -98,15 +100,16 @@ char *hermes_state_real_platform_state_root(void) {
     return strdup(expanded);
 }
 
+/* PoP: hs_running_under_pytest @ hermes_state.py:_running_under_pytest */
 bool hermes_state_running_under_pytest(void) {
     const char *t = getenv("PYTEST_CURRENT_TEST");
     if (t && t[0]) return true;
     const char *v = getenv("PYTEST_VERSION");
     if (v && v[0]) return true;
     return false;
-/* PoP: hermes_state_production_state_roots @ hermes_state.py:_production_state_roots */
 }
 
+/* PoP: hermes_state_production_state_roots @ hermes_state.py:_production_state_roots */
 static void hermes_state_production_state_roots(char roots[][4096], int *out_n, int cap) {
     int n = 0;
     char *real = hermes_state_real_platform_state_root();
@@ -118,6 +121,7 @@ static void hermes_state_production_state_roots(char roots[][4096], int *out_n, 
     *out_n = n;
 }
 
+/* PoP: hs_is_production_state_db @ hermes_state.py:_is_production_state_db */
 bool hermes_state_is_production_state_db(const char *resolved, const char *root) {
     size_t rl = strlen(root);
     if (strncmp(resolved, root, rl) != 0)
@@ -135,10 +139,10 @@ bool hermes_state_is_production_state_db(const char *resolved, const char *root)
                 return true;
         }
     }
-/* PoP: hermes_state_ensure_test_isolation @ hermes_state.py:_ensure_test_isolation */
     return false;
 }
 
+/* PoP: hermes_state_ensure_test_isolation @ hermes_state.py:_ensure_test_isolation */
 int hermes_state_ensure_test_isolation(const char *db_path) {
     /* _STATE_DB_GUARD_BYPASS = False; only active under pytest. */
     if (!hermes_state_running_under_pytest())
@@ -185,6 +189,7 @@ static bool hermes_state_stale_marker_match(const char *s) {
     return p[1] == '\0';
 }
 
+/* PoP: _is_stale_tool_call_marker_message @ hermes_state.py:_is_stale_tool_call_marker_message */
 bool hermes_state_is_stale_tool_call_marker(const json_t *msg) {
     if (!msg || msg->type != JSON_OBJECT) return false;
     json_t *role = json_obj_get(msg, "role");
@@ -219,11 +224,11 @@ bool hermes_state_is_stale_tool_call_marker(const json_t *msg) {
     memcpy(stripped, c, (size_t)(c_end - c));
     stripped[c_end - c] = '\0';
     bool result = hermes_state_stale_marker_match(stripped);
-/* PoP: hermes_state_strip_stale_tool_call_markers @ hermes_state.py:_strip_stale_tool_call_markers */
     free(stripped);
     return result;
 }
 
+/* PoP: hermes_state_strip_stale_tool_call_markers @ hermes_state.py:_strip_stale_tool_call_markers */
 int hermes_state_strip_stale_tool_call_markers(json_t *messages) {
     if (!messages || messages->type != JSON_ARRAY) return 0;
     int repaired = 0;
@@ -254,6 +259,7 @@ static const char *const HERMES_STATE_DISK_FULL_MARKERS[] = {
     NULL
 };
 
+/* PoP: hs_is_disk_full_error @ hermes_state.py:is_disk_full_error */
 bool hermes_state_is_disk_full_error(const char *err_str) {
     if (!err_str || !err_str[0]) return false;
     char lowered[512];
@@ -267,6 +273,7 @@ bool hermes_state_is_disk_full_error(const char *err_str) {
     return false;
 }
 
+/* PoP: classify_persistence_error @ hermes_state.py:classify_persistence_error */
 const char *hermes_state_classify_persistence_error(const char *err_str) {
     if (!err_str || !err_str[0])
         return "unknown";
@@ -282,12 +289,12 @@ const char *hermes_state_classify_persistence_error(const char *err_str) {
     if (hermes_state_is_disk_full_error(lowered)
         || strstr(lowered, "disk")
         || strstr(lowered, "readonly")
-/* PoP: hermes_state_count_db_holders @ hermes_state.py:count_db_holders */
         || strstr(lowered, "read-only"))
         return "disk";
     return "unknown";
 }
 
+/* PoP: hermes_state_count_db_holders @ hermes_state.py:count_db_holders */
 int hermes_state_count_db_holders(const char *db_path) {
     if (!db_path || !db_path[0]) return -1;
     char target[4096];
@@ -327,21 +334,21 @@ int hermes_state_count_db_holders(const char *db_path) {
 /* ════════════════════════════════════════════════════════════════════
  * _default_db_path / apply_database_pragmas
  * ════════════════════════════════════════════════════════════════════ */
-/* PoP: hermes_state_default_db_path @ hermes_state.py:_default_db_path */
 
+/* PoP: _default_db_path @ hermes_state.py:_default_db_path */
 char *hermes_state_default_db_path(void) {
     /* Python: HERMES_STATE_DB_PATH env override else ~/.hermes/state/state.db. */
     const char *env = getenv("HERMES_STATE_DB_PATH");
     if (env && env[0]) return strdup(env);
     const char *home = getenv("HERMES_HOME");
     if (!home || !home[0]) home = getenv("HOME");
-/* PoP: hermes_state_apply_database_pragmas @ hermes_state.py:apply_database_pragmas */
     if (!home || !home[0]) home = "/tmp";
     char *out = NULL;
     asprintf(&out, "%s/state/state.db", home);
     return out;
 }
 
+/* PoP: hermes_state_apply_database_pragmas @ hermes_state.py:apply_database_pragmas */
 int hermes_state_apply_database_pragmas(hermes_state_db_t *db) {
     /* Python: WAL + synchronous=NORMAL + busy_timeout + foreign_keys. */
     if (!db || !db->db) return -1;
@@ -360,6 +367,7 @@ int hermes_state_apply_database_pragmas(hermes_state_db_t *db) {
  * _store_system_prompt / _delete_unreferenced_system_prompts
  * ════════════════════════════════════════════════════════════════════ */
 
+/* PoP: _store_system_prompt @ hermes_state.py:SessionDB._store_system_prompt */
 int hermes_state_store_system_prompt(hermes_state_db_t *db, const char *session_id,
                                      const char *content) {
     /* Python: INSERT OR REPLACE INTO system_prompts (session_id, content). */
@@ -367,7 +375,6 @@ int hermes_state_store_system_prompt(hermes_state_db_t *db, const char *session_
     sqlite3_stmt *st = NULL;
     if (sqlite3_prepare_v2(db->db,
             "INSERT OR REPLACE INTO system_prompts (session_id, content) VALUES (?, ?)",
-/* PoP: hermes_state_delete_unreferenced_system_prompts @ hermes_state.py:_delete_unreferenced_system_prompts */
             -1, &st, NULL) != SQLITE_OK) return -1;
     sqlite3_bind_text(st, 1, session_id, -1, SQLITE_TRANSIENT);
     sqlite3_bind_text(st, 2, content ? content : "", -1, SQLITE_TRANSIENT);
@@ -376,6 +383,7 @@ int hermes_state_store_system_prompt(hermes_state_db_t *db, const char *session_
     return rc == SQLITE_DONE ? 0 : -1;
 }
 
+/* PoP: _delete_unreferenced_system_prompts @ hermes_state.py:SessionDB._delete_unreferenced_system_prompts */
 int hermes_state_delete_unreferenced_system_prompts(hermes_state_db_t *db) {
     /* Python: DELETE FROM system_prompts WHERE session_id NOT IN (SELECT id FROM sessions). */
     if (!db || !db->db) return 0;
@@ -393,32 +401,33 @@ int hermes_state_delete_unreferenced_system_prompts(hermes_state_db_t *db) {
  * _session_row_dict / _get_read_conn / _read_ctx / _sleep_before_write_retry
  * ════════════════════════════════════════════════════════════════════ */
 
+/* PoP: _session_row_dict @ hermes_state.py:SessionDB._session_row_dict */
 char *hermes_state_session_row_dict(const char *session_id, const char *source,
                                     double created_at) {
     /* Python: the row dict used to seed a new session row. Returns malloc'd
      * JSON object. */
     char *out = NULL;
-/* PoP: hermes_state_get_read_conn @ hermes_state.py:_get_read_conn */
     asprintf(&out,
         "{\"id\":\"%s\",\"source\":\"%s\",\"created_at\":%.3f,"
         "\"ended_at\":null,\"end_reason\":null,\"parent_session_id\":null,"
         "\"archived\":0,\"message_count\":0,\"tool_call_count\":0}",
-/* PoP: hermes_state_read_ctx @ hermes_state.py:_read_ctx */
         session_id ? session_id : "", source ? source : "",
         created_at > 0 ? created_at : hermes_state_now_epoch());
     return out;
-/* PoP: hermes_state_sleep_before_write_retry @ hermes_state.py:_sleep_before_write_retry */
 }
 
+/* PoP: _get_read_conn @ hermes_state.py:SessionDB._get_read_conn */
 int hermes_state_get_read_conn(hermes_state_db_t *db) {
     /* Python: return the read connection (single connection in C). */
     return db && db->db ? 1 : 0;
 }
 
+/* PoP: _read_ctx @ hermes_state.py:SessionDB._read_ctx */
 int hermes_state_read_ctx(hermes_state_db_t *db) {
     return db && db->db ? 1 : 0;
 }
 
+/* PoP: _sleep_before_write_retry @ hermes_state.py:SessionDB._sleep_before_write_retry */
 void hermes_state_sleep_before_write_retry(int attempt, double base_delay_ms) {
     /* Python: exponential backoff with jitter before a write retry. */
     double delay_ms = base_delay_ms * (1 << (attempt > 8 ? 8 : attempt));
@@ -432,6 +441,7 @@ void hermes_state_sleep_before_write_retry(int attempt, double base_delay_ms) {
  * compression failure cooldown rows
  * ════════════════════════════════════════════════════════════════════ */
 
+/* PoP: get_compression_failure_cooldown_row @ hermes_state.py:SessionDB.get_compression_failure_cooldown_row */
 char *hermes_state_get_compression_failure_cooldown_row(hermes_state_db_t *db,
                                                         const char *session_id) {
     /* Python: return the exact stored cooldown columns without expiry
@@ -460,6 +470,7 @@ char *hermes_state_get_compression_failure_cooldown_row(hermes_state_db_t *db,
     return out;
 }
 
+/* PoP: restore_compression_failure_cooldown_row @ hermes_state.py:SessionDB.restore_compression_failure_cooldown_row */
 int hermes_state_restore_compression_failure_cooldown_row(hermes_state_db_t *db,
                                                           const char *session_id,
                                                           const char *snapshot_json) {
@@ -511,6 +522,7 @@ int hermes_state_restore_compression_failure_cooldown_row(hermes_state_db_t *db,
  * session activity stamps
  * ════════════════════════════════════════════════════════════════════ */
 
+/* PoP: touch_session_activity @ hermes_state.py:SessionDB.touch_session_activity */
 int hermes_state_touch_session_activity(hermes_state_db_t *db, const char *session_id,
                                         double ts, const char *description,
                                         const char *provenance) {
@@ -535,9 +547,9 @@ int hermes_state_touch_session_activity(hermes_state_db_t *db, const char *sessi
     return rc == SQLITE_DONE ? 0 : -1;
 }
 
+/* PoP: clear_session_activity_labels @ hermes_state.py:SessionDB.clear_session_activity_labels */
 int hermes_state_clear_session_activity_labels(hermes_state_db_t *db,
                                                const char *session_id) {
-/* PoP: hermes_state_get_session_activity @ hermes_state.py:get_session_activity */
     /* Python: keep last_activity_at, clear description + provenance. */
     if (!db || !db->db || !session_id) return -1;
     sqlite3_stmt *st = NULL;
@@ -550,6 +562,7 @@ int hermes_state_clear_session_activity_labels(hermes_state_db_t *db,
     return rc == SQLITE_DONE ? 0 : -1;
 }
 
+/* PoP: get_session_activity @ hermes_state.py:SessionDB.get_session_activity */
 char *hermes_state_get_session_activity(hermes_state_db_t *db, const char *session_id) {
     /* Python: read last_activity_at/description/provenance off the session
      * row and build the snapshot. Returns malloc'd JSON or NULL. */
@@ -593,6 +606,7 @@ char *hermes_state_get_session_activity(hermes_state_db_t *db, const char *sessi
  * YOLO flag
  * ════════════════════════════════════════════════════════════════════ */
 
+/* PoP: set_session_yolo @ hermes_state.py:SessionDB.set_session_yolo */
 int hermes_state_set_session_yolo(hermes_state_db_t *db, const char *session_id,
                                   bool enabled) {
     /* Python: merge yolo_mode into the session's model_config JSON
@@ -615,7 +629,6 @@ int hermes_state_set_session_yolo(hermes_state_db_t *db, const char *session_id,
         merged = json_dumps(cfg, 0);
         json_free(cfg);
     }
-/* PoP: hermes_state_session_yolo_enabled @ hermes_state.py:session_yolo_enabled */
     sqlite3_finalize(st);
     if (!merged) return -1;   /* row absent */
     sqlite3_stmt *up = NULL;
@@ -629,6 +642,7 @@ int hermes_state_set_session_yolo(hermes_state_db_t *db, const char *session_id,
     return rc == SQLITE_DONE ? 0 : -1;
 }
 
+/* PoP: session_yolo_enabled @ hermes_state.py:SessionDB.session_yolo_enabled */
 bool hermes_state_session_yolo_enabled(const char *session_meta_json) {
     /* Python: read yolo_mode off a session row dict (model_config is a JSON
      * string); False on any parse failure — resume must never enable the
@@ -663,13 +677,13 @@ static char g_token_queue[256][512];   /* session_id:delta_json entries */
 static int g_token_queue_n = 0;
 static int g_token_writer_stop = 0;
 
+/* PoP: queue_token_counts @ hermes_state.py:SessionDB.queue_token_counts */
 int hermes_state_queue_token_counts(hermes_state_db_t *db, const char *session_id,
                                     const char *delta_json) {
     /* Python: append to the deque + notify; fall back to synchronous apply
      * after close(). The C port keeps a bounded FIFO of session:delta
      * entries drained by the background writer. */
     (void)db;
-/* PoP: hermes_state_apply_token_batch @ hermes_state.py:_apply_token_batch */
     if (!session_id || !delta_json) return -1;
     pthread_mutex_lock(&g_token_lock);
     if (g_token_queue_n < 256) {
@@ -684,6 +698,7 @@ int hermes_state_queue_token_counts(hermes_state_db_t *db, const char *session_i
     return -1;   /* queue full — caller applies synchronously */
 }
 
+/* PoP: _apply_token_batch @ hermes_state.py:SessionDB._apply_token_batch */
 int hermes_state_apply_token_batch(hermes_state_db_t *db) {
     /* Python: apply the accumulated deltas to session_model_usage. The C
      * port writes each queued delta as a usage row (or aggregate update). */
@@ -711,7 +726,6 @@ int hermes_state_apply_token_batch(hermes_state_db_t *db) {
             if (tj && tj->type == JSON_NUMBER) tokens = tj->num_val;
             json_free(dj);
         }
-/* PoP: hermes_state_coalesce_token_deltas @ hermes_state.py:_coalesce_token_deltas */
         sqlite3_stmt *st = NULL;
         if (sqlite3_prepare_v2(db->db,
                 "INSERT INTO session_model_usage (session_id, usage_tokens) "
@@ -727,6 +741,7 @@ int hermes_state_apply_token_batch(hermes_state_db_t *db) {
     return applied;
 }
 
+/* PoP: _coalesce_token_deltas @ hermes_state.py:SessionDB._coalesce_token_deltas */
 int hermes_state_coalesce_token_deltas(void) {
     /* Python: merge queued deltas for the same session before applying.
      * The C port coalesces adjacent same-session entries in the FIFO. */
@@ -750,7 +765,6 @@ int hermes_state_coalesce_token_deltas(void) {
                          tab_j ? tab_j + 1 : "");
                 snprintf(g_token_queue[i], sizeof(g_token_queue[i]), "%s", combined);
                 for (int k = j; k < g_token_queue_n - 1; k++)
-/* PoP: hermes_state_token_writer_loop @ hermes_state.py:_token_writer_loop */
                     memcpy(g_token_queue[k], g_token_queue[k + 1], sizeof(g_token_queue[0]));
                 g_token_queue_n--;
                 j--;
@@ -765,14 +779,13 @@ int hermes_state_coalesce_token_deltas(void) {
     return 0;
 }
 
-/* PoP: hermes_state_stop_token_writer @ hermes_state.py:_stop_token_writer */
+/* PoP: _token_writer_loop @ hermes_state.py:SessionDB._token_writer_loop */
 void *hermes_state_token_writer_loop(void *arg) {
     /* Python: drain the queue on notify until stopped. */
     hermes_state_db_t *db = (hermes_state_db_t *)arg;
     for (;;) {
         pthread_mutex_lock(&g_token_lock);
         while (g_token_queue_n == 0 && !g_token_writer_stop)
-/* PoP: hermes_state_drain_token_queue_at_exit @ hermes_state.py:_drain_token_queue_at_exit */
             pthread_cond_wait(&g_token_cond, &g_token_lock);
         int has_work = g_token_queue_n > 0;
         int stop = g_token_writer_stop;
@@ -781,10 +794,10 @@ void *hermes_state_token_writer_loop(void *arg) {
         if (has_work) hermes_state_apply_token_batch(db);
         if (stop && g_token_queue_n == 0) break;
     }
-/* PoP: hermes_state_flush_token_counts @ hermes_state.py:flush_token_counts */
     return NULL;
 }
 
+/* PoP: _stop_token_writer @ hermes_state.py:SessionDB._stop_token_writer */
 void hermes_state_stop_token_writer(void) {
     pthread_mutex_lock(&g_token_lock);
     g_token_writer_stop = 1;
@@ -792,10 +805,12 @@ void hermes_state_stop_token_writer(void) {
     pthread_mutex_unlock(&g_token_lock);
 }
 
+/* PoP: _drain_token_queue_at_exit @ hermes_state.py:SessionDB._drain_token_queue_at_exit */
 int hermes_state_drain_token_queue_at_exit(hermes_state_db_t *db) {
     return hermes_state_apply_token_batch(db);
 }
 
+/* PoP: flush_token_counts @ hermes_state.py:SessionDB.flush_token_counts */
 int hermes_state_flush_token_counts(hermes_state_db_t *db, double timeout) {
     /* Python: block until every queued delta is applied. */
     (void)timeout;
@@ -806,6 +821,7 @@ int hermes_state_flush_token_counts(hermes_state_db_t *db, double timeout) {
  * transcript write guards / append_messages_batch
  * ════════════════════════════════════════════════════════════════════ */
 
+/* PoP: _check_transcript_write_guards @ hermes_state.py:SessionDB._check_transcript_write_guards */
 int hermes_state_check_transcript_write_guards(hermes_state_db_t *db,
                                                const char *session_id) {
     /* Python: refuse transcript writes to ended/archived sessions. */
@@ -822,6 +838,7 @@ int hermes_state_check_transcript_write_guards(hermes_state_db_t *db,
     return ok;
 }
 
+/* PoP: append_messages_batch @ hermes_state.py:SessionDB.append_messages_batch */
 long long hermes_state_append_messages_batch(hermes_state_db_t *db,
                                              const char *session_id,
                                              const char *messages_json) {
@@ -888,6 +905,7 @@ static json_t *decode_display_metadata(const char *raw) {
     return json_object();
 }
 
+/* PoP: set_message_reaction @ hermes_state.py:SessionDB.set_message_reaction */
 char *hermes_state_set_message_reaction(hermes_state_db_t *db, const char *session_id,
                                         long long message_row_id, const char *emoji,
                                         const char *author) {
@@ -962,6 +980,7 @@ char *hermes_state_set_message_reaction(hermes_state_db_t *db, const char *sessi
     return dumped;
 }
 
+/* PoP: get_message_reactions @ hermes_state.py:SessionDB.get_message_reactions */
 char *hermes_state_get_message_reactions(hermes_state_db_t *db, const char *session_id,
                                          long long message_row_id) {
     /* Python: return the reaction list (never NULL). */
@@ -987,6 +1006,7 @@ char *hermes_state_get_message_reactions(hermes_state_db_t *db, const char *sess
     return out;
 }
 
+/* PoP: take_unseen_reactions @ hermes_state.py:SessionDB.take_unseen_reactions */
 char *hermes_state_take_unseen_reactions(hermes_state_db_t *db, const char *session_id,
                                          const char *seen_until_json) {
     /* Python: return reactions newer than a cursor and mark them seen.
@@ -1007,7 +1027,6 @@ char *hermes_state_take_unseen_reactions(hermes_state_db_t *db, const char *sess
             -1, &st, NULL) != SQLITE_OK) return strdup("[]");
     sqlite3_bind_text(st, 1, session_id, -1, SQLITE_TRANSIENT);
     json_t *out_arr = json_array();
-/* PoP: hermes_state_latest_message_row_id @ hermes_state.py:latest_message_row_id */
     while (sqlite3_step(st) == SQLITE_ROW) {
         const char *raw = (const char *)sqlite3_column_text(st, 0);
         json_t *meta = decode_display_metadata(raw);
@@ -1020,7 +1039,6 @@ char *hermes_state_take_unseen_reactions(hermes_state_db_t *db, const char *sess
                     json_array_append(out_arr, r);
             }
         }
-/* PoP: hermes_state_latest_user_message_row_id @ hermes_state.py:latest_user_message_row_id */
         json_free(meta);
     }
     sqlite3_finalize(st);
@@ -1029,6 +1047,7 @@ char *hermes_state_take_unseen_reactions(hermes_state_db_t *db, const char *sess
     return out;
 }
 
+/* PoP: latest_message_row_id @ hermes_state.py:SessionDB.latest_message_row_id */
 long long hermes_state_latest_message_row_id(hermes_state_db_t *db, const char *session_id) {
     if (!db || !db->db || !session_id) return -1;
     sqlite3_stmt *st = NULL;
@@ -1042,6 +1061,7 @@ long long hermes_state_latest_message_row_id(hermes_state_db_t *db, const char *
     return id;
 }
 
+/* PoP: latest_user_message_row_id @ hermes_state.py:SessionDB.latest_user_message_row_id */
 long long hermes_state_latest_user_message_row_id(hermes_state_db_t *db, const char *session_id) {
     if (!db || !db->db || !session_id) return -1;
     sqlite3_stmt *st = NULL;
@@ -1055,7 +1075,7 @@ long long hermes_state_latest_user_message_row_id(hermes_state_db_t *db, const c
     return id;
 }
 
-/* PoP: hermes_state_session_count_ge @ hermes_state.py:session_count_ge */
+/* PoP: get_message_role @ hermes_state.py:SessionDB.get_message_role */
 char *hermes_state_get_message_role(hermes_state_db_t *db, const char *session_id,
                                     long long message_row_id) {
     if (!db || !db->db || !session_id || message_row_id < 0) return NULL;
@@ -1078,6 +1098,7 @@ char *hermes_state_get_message_role(hermes_state_db_t *db, const char *session_i
  * session counts / kanban retag
  * ════════════════════════════════════════════════════════════════════ */
 
+/* PoP: session_count_ge @ hermes_state.py:SessionDB.session_count_ge */
 bool hermes_state_session_count_ge(hermes_state_db_t *db, int n) {
     /* Python: SELECT 1 FROM sessions LIMIT ? — archived included. */
     if (!db || !db->db || n <= 0) return false;
@@ -1091,6 +1112,7 @@ bool hermes_state_session_count_ge(hermes_state_db_t *db, int n) {
     return count >= n;
 }
 
+/* PoP: session_count_by_source @ hermes_state.py:SessionDB.session_count_by_source */
 char *hermes_state_session_count_by_source(hermes_state_db_t *db,
                                            bool include_archived,
                                            bool archived_only,
@@ -1123,6 +1145,7 @@ char *hermes_state_session_count_by_source(hermes_state_db_t *db,
     return dumped;
 }
 
+/* PoP: retag_kanban_worker_sessions @ hermes_state.py:SessionDB.retag_kanban_worker_sessions */
 int hermes_state_retag_kanban_worker_sessions(hermes_state_db_t *db,
                                               const char *workspaces_root) {
     /* Python: retag legacy kanban worker rows from cli to kanban, gated per
@@ -1185,7 +1208,6 @@ int hermes_state_retag_kanban_worker_sessions(hermes_state_db_t *db,
  * get_resume_message_count, assert_resume_safe, assert_export_safe,
  * _is_explicit_fork_child_row, find_pr_url_messages,
  * patch_session_model_config, get_session_model_config_value).
-/* PoP: hermes_state_title_rank @ hermes_state.py:_title_rank */
  * ════════════════════════════════════════════════════════════════════ */
 
 /* Reused helper: hermes_state_sanitize_title (returns malloc'd or NULL). */
@@ -1206,10 +1228,12 @@ static int hermes_state_title_rank_impl(const char *source) {
     return 0;  /* unknown source -> lowest rank */
 }
 
+/* PoP: _title_rank @ hermes_state.py:SessionDB._title_rank */
 int hermes_state_title_rank(const char *source) {
     return hermes_state_title_rank_impl(source);
 }
 
+/* PoP: get_session_title_source @ hermes_state.py:SessionDB.get_session_title_source */
 char *hermes_state_get_session_title_source(hermes_state_db_t *db,
                                             const char *session_id) {
     /* Python: SELECT title, title_source; None if untitled. Returns malloc'd
@@ -1231,6 +1255,7 @@ char *hermes_state_get_session_title_source(hermes_state_db_t *db,
     return out;
 }
 
+/* PoP: set_session_title_source @ hermes_state.py:SessionDB.set_session_title_source */
 bool hermes_state_set_session_title_source(hermes_state_db_t *db,
                                            const char *session_id,
                                            const char *source) {
@@ -1251,6 +1276,7 @@ bool hermes_state_set_session_title_source(hermes_state_db_t *db,
     return ok && sqlite3_changes(db->db) > 0;
 }
 
+/* PoP: set_auto_title @ hermes_state.py:SessionDB.set_auto_title */
 bool hermes_state_set_auto_title(hermes_state_db_t *db, const char *session_id,
                                  const char *title, const char *source) {
     /* Python: write an automatic title honoring provenance precedence.
@@ -1301,6 +1327,7 @@ bool hermes_state_set_auto_title(hermes_state_db_t *db, const char *session_id,
 /* PoP: set_auto_title_if_empty @ hermes_state.py:SessionDB.set_auto_title_if_empty
  * (already implemented in hermes_state_misc.c — see hermes_state_set_auto_title_if_empty). */
 
+/* PoP: set_session_read @ hermes_state.py:SessionDB.set_session_read */
 bool hermes_state_set_session_read(hermes_state_db_t *db, const char *session_id,
                                    bool read) {
     /* Python: stamp the whole compression lineage with last_read_at watermark.
@@ -1313,7 +1340,6 @@ bool hermes_state_set_session_read(hermes_state_db_t *db, const char *session_id
     if (!arr || arr->type != JSON_ARRAY) { if (arr) json_free(arr); return false; }
     double watermark = read ? hermes_state_now_epoch() : 0.0;
     bool ok = true;
-/* PoP: hermes_state_session_unread @ hermes_state.py:session_unread */
     sqlite3_stmt *st = NULL;
     if (sqlite3_prepare_v2(db->db,
             "UPDATE sessions SET last_read_at = ? WHERE id = ?",
@@ -1333,9 +1359,9 @@ bool hermes_state_set_session_read(hermes_state_db_t *db, const char *session_id
     sqlite3_finalize(st);
     json_free(arr);
     return ok;
-/* PoP: hermes_state_is_explicit_fork_child_row @ hermes_state.py:_is_explicit_fork_child_row */
 }
 
+/* PoP: session_unread @ hermes_state.py:SessionDB.session_unread */
 bool hermes_state_session_unread(const char *session_row_json) {
     /* Python: last_read_at NULL -> read (False); else active > watermark. */
     if (!session_row_json) return false;
@@ -1359,6 +1385,7 @@ bool hermes_state_session_unread(const char *session_row_json) {
     return result;
 }
 
+/* PoP: _is_explicit_fork_child_row @ hermes_state.py:SessionDB._is_explicit_fork_child_row */
 bool hermes_state_is_explicit_fork_child_row(const char *session_json) {
     if (!session_json) return false;
     json_t *s = json_parse(session_json, NULL);
@@ -1385,6 +1412,7 @@ bool hermes_state_is_explicit_fork_child_row(const char *session_json) {
     return result;
 }
 
+/* PoP: get_resume_message_count @ hermes_state.py:SessionDB.get_resume_message_count */
 long long hermes_state_get_resume_message_count(hermes_state_db_t *db,
                                                 const char *session_id) {
     /* Python: COUNT(*) active messages across the session lineage. */
@@ -1413,6 +1441,7 @@ long long hermes_state_get_resume_message_count(hermes_state_db_t *db,
     return total;
 }
 
+/* PoP: assert_resume_safe @ hermes_state.py:SessionDB.assert_resume_safe */
 long long hermes_state_assert_resume_safe(hermes_state_db_t *db,
                                           const char *session_id,
                                           long long max_messages) {
@@ -1425,6 +1454,7 @@ long long hermes_state_assert_resume_safe(hermes_state_db_t *db,
     return count;
 }
 
+/* PoP: assert_export_safe @ hermes_state.py:SessionDB.assert_export_safe */
 long long hermes_state_assert_export_safe(hermes_state_db_t *db,
                                           const char *session_id,
                                           long long max_messages) {
@@ -1445,6 +1475,7 @@ long long hermes_state_assert_export_safe(hermes_state_db_t *db,
     return count;
 }
 
+/* PoP: find_pr_url_messages @ hermes_state.py:SessionDB.find_pr_url_messages */
 char *hermes_state_find_pr_url_messages(hermes_state_db_t *db,
                                         const char *session_ids_json) {
     /* Python: tool results containing "/pull/" across the given sessions,
@@ -1480,30 +1511,29 @@ char *hermes_state_find_pr_url_messages(hermes_state_db_t *db,
     json_free(out);
     return result ? result : strdup("[]");
 }
-/* PoP: hermes_state_discard_partial_read_conn @ hermes_state.py:_discard_partial_read_conn */
 
 
 
 /* ════════════════════════════════════════════════════════════════════
-/* PoP: hermes_state_close_read_conn @ hermes_state.py:_close_read_conn */
  * Remaining SessionDB / module gaps (hermes_state.py): _merge_model_config_json,
  * usage_totals, collect_state_db_stats, _set_journal_mode_no_wait,
  * _wal_reset_repair_hint, purge_stale_tool_call_markers, and the read-conn
  * lifecycle methods (faithful no-ops in C — single shared connection).
-/* PoP: hermes_state_checkout_read_conn @ hermes_state.py:_checkout_read_conn */
  * ════════════════════════════════════════════════════════════════════ */
 
+/* PoP: _discard_partial_read_conn @ hermes_state.py:SessionDB._discard_partial_read_conn */
 void hermes_state_discard_partial_read_conn(void) {
     /* Python: close a conn that failed between open and hand-off. C uses a
-/* PoP: hermes_state_enter_fts_fail_open @ hermes_state.py:_enter_fts_fail_open */
      * single shared connection; nothing to discard. */
 }
 
+/* PoP: _close_read_conn @ hermes_state.py:SessionDB._close_read_conn */
 void hermes_state_close_read_conn(void) {
     /* Python: close a pooled read conn + release permit. C shares one conn;
      * no pooling to release. */
 }
 
+/* PoP: _checkout_read_conn @ hermes_state.py:SessionDB._checkout_read_conn */
 int hermes_state_checkout_read_conn(hermes_state_db_t *db) {
     /* Python: borrow a read conn from the pool, open on miss; None when the
      * read path is unavailable (non-WAL / read_only). C: return 1 when the
@@ -1511,6 +1541,7 @@ int hermes_state_checkout_read_conn(hermes_state_db_t *db) {
     return db && db->db ? 1 : 0;
 }
 
+/* PoP: _enter_fts_fail_open @ hermes_state.py:SessionDB._enter_fts_fail_open */
 int hermes_state_enter_fts_fail_open(const char *error_text) {
     /* Python: decide whether an FTS SQLite error should fail open. Returns 1
      * when the error is a known transient/lock-shaped one. */
@@ -1526,6 +1557,7 @@ int hermes_state_enter_fts_fail_open(const char *error_text) {
     return 0;
 }
 
+/* PoP: _merge_model_config_json @ hermes_state.py:SessionDB._merge_model_config_json */
 char *hermes_state_merge_model_config_json(hermes_state_db_t *db,
                                            const char *session_id,
                                            const char *patch_json,
@@ -1575,6 +1607,7 @@ char *hermes_state_merge_model_config_json(hermes_state_db_t *db,
     return merged;   /* NULL when empty (Python None convention) */
 }
 
+/* PoP: usage_totals @ hermes_state.py:SessionDB.usage_totals */
 char *hermes_state_usage_totals(hermes_state_db_t *db, long long min_message_count,
                                 int include_archived) {
     /* Python: sum tokens + spend across sessions (parent-only). Returns a
@@ -1609,6 +1642,7 @@ char *hermes_state_usage_totals(hermes_state_db_t *db, long long min_message_cou
     return out ? out : strdup("{\"tokens\":0,\"cost_usd\":0.0}");
 }
 
+/* PoP: _set_journal_mode_no_wait @ hermes_state.py:_set_journal_mode_no_wait */
 const char *hermes_state_set_journal_mode_no_wait(hermes_state_db_t *db,
                                                   const char *mode) {
     /* Python: PRAGMA journal_mode with busy_timeout forced to 0 so a concurrent
@@ -1627,14 +1661,13 @@ const char *hermes_state_set_journal_mode_no_wait(hermes_state_db_t *db,
             const unsigned char *m = sqlite3_column_text(st, 0);
             if (m) { snprintf(result, sizeof(result), "%s", (const char *)m); }
         }
-/* PoP: hermes_state_wal_reset_repair_hint @ hermes_state.py:_wal_reset_repair_hint */
         sqlite3_finalize(st);
     }
     sqlite3_busy_timeout(db->db, 5000);   /* restore default */
     return result[0] ? result : NULL;
 }
-/* PoP: hermes_state_collect_state_db_stats @ hermes_state.py:collect_state_db_stats */
 
+/* PoP: _wal_reset_repair_hint @ hermes_state.py:_wal_reset_repair_hint */
 const char *hermes_state_wal_reset_repair_hint(void) {
     /* Python: context-appropriate hint for repairing the SQLite runtime.
      * C has no install-method detection; return the generic advice. */
@@ -1642,6 +1675,7 @@ const char *hermes_state_wal_reset_repair_hint(void) {
            "(or backports 3.50.7 / 3.44.6) and restart Hermes";
 }
 
+/* PoP: collect_state_db_stats @ hermes_state.py:collect_state_db_stats */
 char *hermes_state_collect_state_db_stats(const char *db_path) {
     /* Python: best-effort read-only stats snapshot of a state.db file. Returns
      * a malloc'd JSON with all documented keys (values may be null). */
@@ -1713,6 +1747,7 @@ char *hermes_state_collect_state_db_stats(const char *db_path) {
     return out ? out : strdup("{}");
 }
 
+/* PoP: purge_stale_tool_call_markers @ hermes_state.py:SessionDB.purge_stale_tool_call_markers */
 char *hermes_state_purge_stale_tool_call_markers(hermes_state_db_t *db,
                                                  int dry_run) {
     /* Python: permanently clear bare "[marker]" assistant content (pre-#78148)
@@ -1777,6 +1812,7 @@ char *hermes_state_purge_stale_tool_call_markers(hermes_state_db_t *db,
     "WHERE _act_m.session_id = " alias ".id) " \
     ") _act_v), " alias ".started_at)"
 
+/* PoP: find_orphaned_gateway_sessions @ hermes_state.py:SessionDB.find_orphaned_gateway_sessions */
 char *hermes_state_find_orphaned_gateway_sessions(hermes_state_db_t *db,
                                                   double max_gap_s) {
     /* Python: report message-bearing unkeyed rows that can be adopted. Returns
@@ -1938,6 +1974,7 @@ char *hermes_state_find_orphaned_gateway_sessions(hermes_state_db_t *db,
     return out ? out : strdup("[]");
 }
 
+/* PoP: adopt_orphaned_gateway_session @ hermes_state.py:SessionDB.adopt_orphaned_gateway_session */
 bool hermes_state_adopt_orphaned_gateway_session(hermes_state_db_t *db,
                                                  const char *orphan_id,
                                                  const char *donor_id) {
@@ -2014,6 +2051,7 @@ bool hermes_state_adopt_orphaned_gateway_session(hermes_state_db_t *db,
     return true;
 }
 
+/* PoP: reopen_orphaned_compression_session @ hermes_state.py:SessionDB.reopen_orphaned_compression_session */
 bool hermes_state_reopen_orphaned_compression_session(hermes_state_db_t *db,
                                                       const char *session_id) {
     /* Python: reopen a compression parent only when no continuation exists and

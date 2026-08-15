@@ -1053,6 +1053,7 @@ bool strip_images_from_messages(json_t *messages) {
  *  Mutates the array in place (mirrors Python in-place behaviour).
  * ================================================================ */
 
+/* PoP: message_sanitize_close_interrupted @ agent/message_sanitization.py:close_interrupted_tool_sequence */
 bool message_sanitize_close_interrupted(json_t *messages, const char *final_response)
 {
     if (!messages || messages->type != JSON_ARRAY || json_len(messages) == 0)

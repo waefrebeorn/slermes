@@ -37,11 +37,16 @@ static const char *OW_TOP_LEVEL_PAYLOAD_KEYS[] = {
 
 /* ── WebhookTarget ────────────────────────────────────────── */
 
+/* PoP: WebhookTarget.label @ agent/outbound_webhooks.py:WebhookTarget.label */
+/* PoP: __init__ @ agent/outbound_webhooks.py:WebhookTarget.__post_init__ */
+/* PoP: ow_target_label @ agent/outbound_webhooks.py:WebhookTarget.label */
 const char *ow_target_label(const ow_webhook_target_t *t) {
     if (!t) return "";
     return (t->name && t->name[0]) ? t->name : (t->url ? t->url : "");
 }
 
+/* PoP: WebhookTarget.matches_tool @ agent/outbound_webhooks.py:WebhookTarget.matches_tool */
+/* PoP: matches_tool @ agent/outbound_webhooks.py:WebhookTarget.matches_tool */
 bool ow_target_matches_tool(const ow_webhook_target_t *t, const char *tool_name) {
     if (!t || !t->matcher || !t->matcher[0]) return true;
     if (!tool_name) return false;
@@ -88,6 +93,7 @@ void ow_target_free(ow_webhook_target_t *t) {
     free(t);
 }
 
+/* PoP: _parse_single_target @ agent/outbound_webhooks.py:_parse_single_target */
 ow_webhook_target_t *ow_parse_single_target(int index, const json_t *raw) {
     if (!raw || raw->type != JSON_OBJECT) {
         fprintf(stderr, "hooks.outbound[%d] must be a mapping; got %s\n",
@@ -170,6 +176,7 @@ ow_webhook_target_t *ow_parse_single_target(int index, const json_t *raw) {
     return t;
 }
 
+/* PoP: _resolve_secret @ agent/outbound_webhooks.py:_resolve_secret */
 char *ow_resolve_secret(int index, const json_t *raw) {
     (void)index;
     if (!raw) return NULL;
@@ -187,6 +194,7 @@ char *ow_resolve_secret(int index, const json_t *raw) {
     return NULL;
 }
 
+/* PoP: _parse_outbound_block @ agent/outbound_webhooks.py:_parse_outbound_block */
 ow_webhook_target_t **ow_parse_outbound_block(const json_t *raw) {
     if (!raw) return NULL;
     if (raw->type != JSON_ARRAY) {
@@ -214,6 +222,7 @@ ow_webhook_target_t **ow_parse_outbound_block(const json_t *raw) {
 
 /* ── Payload serialization ────────────────────────────────── */
 
+/* PoP: _serialize_payload @ agent/outbound_webhooks.py:_serialize_payload */
 char *ow_serialize_payload(const char *event, const json_t *kwargs,
                             const char *delivery_id) {
     if (!event || !delivery_id) return NULL;
@@ -269,6 +278,7 @@ char *ow_serialize_payload(const char *event, const json_t *kwargs,
     return body;
 }
 
+/* PoP: _build_delivery @ agent/outbound_webhooks.py:_build_delivery */
 json_t *ow_build_delivery(const char *event, const ow_webhook_target_t *target,
                            const char *body, size_t body_len,
                            const char *delivery_id) {
@@ -331,6 +341,7 @@ static size_t g_n_registered = 0;
 static size_t g_cap_registered = 0;
 static pthread_mutex_t g_reg_lock = PTHREAD_MUTEX_INITIALIZER;
 
+/* PoP: flush @ agent/outbound_webhooks.py:flush */
 bool ow_flush(double timeout_seconds) {
     struct timespec deadline;
     clock_gettime(CLOCK_MONOTONIC, &deadline);
@@ -354,6 +365,7 @@ bool ow_flush(double timeout_seconds) {
     return true;
 }
 
+/* PoP: reset_for_tests @ agent/outbound_webhooks.py:reset_for_tests */
 void ow_reset_for_tests(void) {
     pthread_mutex_lock(&g_reg_lock);
     for (size_t i = 0; i < g_n_registered; i++) {
@@ -372,6 +384,7 @@ void ow_reset_for_tests(void) {
     pthread_mutex_unlock(&g_queue.lock);
 }
 
+/* PoP: _enqueue @ agent/outbound_webhooks.py:_enqueue */
 bool ow_enqueue(const json_t *delivery) {
     if (!delivery) return false;
     ow_ensure_worker();
@@ -399,6 +412,7 @@ bool ow_enqueue(const json_t *delivery) {
     return true;
 }
 
+/* PoP: _worker_loop @ agent/outbound_webhooks.py:_worker_loop */
 static void *ow_worker_thread(void *arg) {
     (void)arg;
     while (1) {
@@ -420,6 +434,7 @@ static void *ow_worker_thread(void *arg) {
     return NULL;
 }
 
+/* PoP: _ensure_worker @ agent/outbound_webhooks.py:_ensure_worker */
 void ow_ensure_worker(void) {
     if (g_queue.started) return;
     pthread_mutex_lock(&g_queue.lock);
@@ -435,6 +450,7 @@ void ow_ensure_worker(void) {
     pthread_mutex_unlock(&g_queue.lock);
 }
 
+/* PoP: _deliver @ agent/outbound_webhooks.py:_deliver */
 void ow_deliver(const json_t *delivery) {
     const char *ev = json_get_str(delivery, "event", "?");
     const char *lb = json_get_str(delivery, "label", "?");
@@ -446,12 +462,14 @@ void ow_deliver(const json_t *delivery) {
     /* TODO: actual HTTP POST via libhttp */
 }
 
+/* PoP: _make_callback @ agent/outbound_webhooks.py:_make_callback */
 void *ow_make_callback(const char *event, const ow_webhook_target_t *target) {
     (void)event;
     (void)target;
     return NULL;
 }
 
+/* PoP: register_from_config @ agent/outbound_webhooks.py:register_from_config */
 ow_webhook_target_t **ow_register_from_config(const json_t *cfg) {
     if (!cfg || cfg->type != JSON_OBJECT) return NULL;
 
@@ -507,6 +525,7 @@ ow_webhook_target_t **ow_register_from_config(const json_t *cfg) {
     return targets;
 }
 
+/* PoP: iter_configured_targets @ agent/outbound_webhooks.py:iter_configured_targets */
 ow_webhook_target_t **ow_iter_configured_targets(const json_t *cfg) {
     if (!cfg || cfg->type != JSON_OBJECT) return NULL;
     const json_t *hooks = json_obj_get(cfg, "hooks");
@@ -522,6 +541,7 @@ void ow_targets_free(ow_webhook_target_t **targets) {
     free(targets);
 }
 
+/* PoP: redirect_request @ agent/outbound_webhooks.py:redirect_request */
 void *ow_redirect_request(const char *req, const char *newurl, int code) {
     /* Python: _NoRedirectHandler.redirect_request returns None — any 3xx is
      * treated as a delivery failure (signing/headers would be wrong on

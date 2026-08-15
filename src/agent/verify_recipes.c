@@ -158,6 +158,7 @@ void recipe_free(recipe_t *r)
 
 /* ---- package.json / package manager ---- */
 
+/* PoP: _read_package_json @ agent/verify/recipes.py:_read_package_json */
 char *recipe_read_package_json(const char *root)
 {
     char *raw = read_file_text(root, "package.json");
@@ -176,6 +177,7 @@ char *recipe_read_package_json(const char *root)
     return out;
 }
 
+/* PoP: detect_package_manager @ agent/verify/recipes.py:detect_package_manager */
 char *recipe_detect_package_manager(const char *root)
 {
     static const char *candidates[][2] = {
@@ -199,6 +201,7 @@ char *recipe_detect_package_manager(const char *root)
 /* ---- port inference ---- */
 
 /* regex-free: scan for --port <n> or -p <n>, then PORT=<n> */
+/* PoP: recipe_infer_port_from_command @ agent/verify/recipes.py:_infer_port_from_command */
 int recipe_infer_port_from_command(const char *command)
 {
     if (!command || !*command) return 0;
@@ -225,12 +228,14 @@ int recipe_infer_port_from_command(const char *command)
     return 0;
 }
 
+/* PoP: ws_fs_read_text @ agent/verify/recipes.py:_read_text */
 /* Read a file's UTF-8 text, or NULL on OSError (mirrors _read_text). */
 char *recipe_read_text(const char *root, const char *name)
 {
     return read_file_text(root, name);
 }
 
+/* PoP: _dedupe @ agent/verify/recipes.py:_dedupe */
 /* Dedupe a list of strings, dropping blanks, preserving first-seen order.
  * Returns a NULL-terminated char** (caller frees with the normal helper). */
 char **recipe_dedupe(const char *const *values, size_t n)
@@ -263,6 +268,7 @@ char **recipe_dedupe(const char *const *values, size_t n)
     return out;
 }
 
+/* PoP: _script_runner @ agent/verify/recipes.py:_script_runner */
 /* Build the package-manager script-run invocation for an entry script. */
 char *recipe_script_runner(const char *package_manager, const char *entry)
 {
@@ -274,6 +280,7 @@ char *recipe_script_runner(const char *package_manager, const char *entry)
     char *r=NULL; asprintf(&r, "npm run %s", entry); return r;
 }
 
+/* PoP: _parse_make_targets @ agent/verify/recipes.py:_parse_make_targets */
 /* Parse Makefile target names: lines matching ^[A-Za-z0-9_.-]+:(space|\$).
  * Returns a NULL-terminated char** of target names (caller frees). */
 char **recipe_parse_make_targets(const char *raw)
@@ -333,6 +340,7 @@ static char *script_runner(const char *pm, const char *entry)
     char *r=NULL; asprintf(&r, "npm run %s", entry); return r;
 }
 
+/* PoP: _detect_node_recipe @ agent/verify/recipes.py:_detect_node_recipe */
 recipe_t *recipe_detect_node(const char *root, const char *pkg_json)
 {
     recipe_t *r = recipe_new();
@@ -453,6 +461,7 @@ recipe_t *recipe_detect_node(const char *root, const char *pkg_json)
 
 /* ---- Python ---- */
 
+/* PoP: _detect_python_recipe @ agent/verify/recipes.py:_detect_python_recipe */
 recipe_t *recipe_detect_python(const char *root)
 {
     char *pyproject = read_file_text(root, "pyproject.toml");
@@ -550,6 +559,7 @@ recipe_t *recipe_detect_python(const char *root)
 
 /* ---- Go / Rust / Java ---- */
 
+/* PoP: _detect_go_recipe @ agent/verify/recipes.py:_detect_go_recipe */
 recipe_t *recipe_detect_go(const char *root)
 {
     if (!file_exists(root, "go.mod")) return NULL;
@@ -564,6 +574,7 @@ recipe_t *recipe_detect_go(const char *root)
     return r;
 }
 
+/* PoP: _detect_rust_recipe @ agent/verify/recipes.py:_detect_rust_recipe */
 recipe_t *recipe_detect_rust(const char *root)
 {
     if (!file_exists(root, "Cargo.toml")) return NULL;
@@ -578,6 +589,7 @@ recipe_t *recipe_detect_rust(const char *root)
     return r;
 }
 
+/* PoP: _detect_java_recipe @ agent/verify/recipes.py:_detect_java_recipe */
 recipe_t *recipe_detect_java(const char *root)
 {
     if (file_exists(root, "pom.xml")) {
@@ -610,6 +622,7 @@ recipe_t *recipe_detect_java(const char *root)
 
 /* ---- Makefile ---- */
 
+/* PoP: _detect_make_recipe @ agent/verify/recipes.py:_detect_make_recipe */
 recipe_t *recipe_detect_make(const char *root)
 {
     char *makefile = read_file_text(root, "Makefile");
@@ -671,6 +684,7 @@ recipe_t *recipe_detect_make(const char *root)
 
 /* ---- docker-compose ---- */
 
+/* PoP: _detect_compose_recipe @ agent/verify/recipes.py:_detect_compose_recipe */
 recipe_t *recipe_detect_compose(const char *root)
 {
     static const char *files[] = {"docker-compose.yml", "docker-compose.yaml", "compose.yml", "compose.yaml", NULL};
@@ -693,6 +707,7 @@ recipe_t *recipe_detect_compose(const char *root)
 
 /* ---- entry point ---- */
 
+/* PoP: detect_recipe @ agent/verify/recipes.py:detect_recipe */
 recipe_t *recipe_detect(const char *root)
 {
     char *pkg = recipe_read_package_json(root);
@@ -735,6 +750,7 @@ static void ingest_strings(recipe_t *r, void (*setter)(recipe_t *, const char *)
     }
 }
 
+/* PoP: from_dict @ agent/verify/recipes.py:Recipe.from_dict */
 recipe_t *recipe_from_dict(const char *raw)
 {
     if (!raw) return NULL;
@@ -773,6 +789,7 @@ recipe_t *recipe_from_dict(const char *raw)
     return r;
 }
 
+/* PoP: to_dict @ agent/verify/recipes.py:Recipe.to_dict */
 char *recipe_to_json(const recipe_t *r)
 {
     json_t *o = json_object();

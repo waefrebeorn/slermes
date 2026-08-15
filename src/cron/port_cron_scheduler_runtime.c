@@ -26,6 +26,7 @@
  * Session titling
  * ================================================================ */
 
+/* PoP: scheduler_set_cron_session_title @ cron/scheduler.py:_set_cron_session_title */
 char *scheduler_set_cron_session_title(db_t *db, const char *session_id,
                                        const char *base_title,
                                        bool *conflict_out)
@@ -125,6 +126,7 @@ void scheduler_running_jobs_remove(const char *job_id)
     pthread_mutex_unlock(&g_running_lock);
 }
 
+/* PoP: scheduler_get_running_job_ids @ cron/scheduler.py:get_running_job_ids */
 char **scheduler_get_running_job_ids(size_t *out_n)
 {
     pthread_mutex_lock(&g_running_lock);
@@ -142,6 +144,7 @@ char **scheduler_get_running_job_ids(size_t *out_n)
     return out;
 }
 
+/* PoP: scheduler_mark_running_jobs_interrupted @ cron/scheduler.py:mark_running_jobs_interrupted */
 char **scheduler_mark_running_jobs_interrupted(const char *reason,
                                                size_t *out_n)
 {
@@ -181,6 +184,7 @@ char **scheduler_mark_running_jobs_interrupted(const char *reason,
     return marked;
 }
 
+/* PoP: scheduler_is_interrupted @ cron/scheduler.py:_is_interrupted */
 bool scheduler_is_interrupted(const char *job_id)
 {
     if (!job_id) return false;
@@ -190,6 +194,7 @@ bool scheduler_is_interrupted(const char *job_id)
     return hit;
 }
 
+/* PoP: scheduler_consume_interrupted_flag @ cron/scheduler.py:_consume_interrupted_flag */
 bool scheduler_consume_interrupted_flag(const char *job_id)
 {
     if (!job_id) return false;
@@ -212,6 +217,7 @@ struct scheduler_rwlock {
     int writers_waiting;
 };
 
+/* PoP: scheduler_rwlock_new @ cron/scheduler.py:__init__ */
 scheduler_rwlock_t *scheduler_rwlock_new(void)
 {
     scheduler_rwlock_t *lk = calloc(1, sizeof(*lk));
@@ -229,6 +235,7 @@ void scheduler_rwlock_free(scheduler_rwlock_t *lk)
     free(lk);
 }
 
+/* PoP: scheduler_rwlock_acquire_read @ cron/scheduler.py:acquire_read */
 void scheduler_rwlock_acquire_read(scheduler_rwlock_t *lk)
 {
     pthread_mutex_lock(&lk->mu);
@@ -238,6 +245,7 @@ void scheduler_rwlock_acquire_read(scheduler_rwlock_t *lk)
     pthread_mutex_unlock(&lk->mu);
 }
 
+/* PoP: scheduler_rwlock_release_read @ cron/scheduler.py:release_read */
 void scheduler_rwlock_release_read(scheduler_rwlock_t *lk)
 {
     pthread_mutex_lock(&lk->mu);
@@ -247,6 +255,7 @@ void scheduler_rwlock_release_read(scheduler_rwlock_t *lk)
     pthread_mutex_unlock(&lk->mu);
 }
 
+/* PoP: scheduler_rwlock_acquire_write @ cron/scheduler.py:acquire_write */
 void scheduler_rwlock_acquire_write(scheduler_rwlock_t *lk)
 {
     pthread_mutex_lock(&lk->mu);
@@ -258,6 +267,7 @@ void scheduler_rwlock_acquire_write(scheduler_rwlock_t *lk)
     pthread_mutex_unlock(&lk->mu);
 }
 
+/* PoP: scheduler_rwlock_release_write @ cron/scheduler.py:release_write */
 void scheduler_rwlock_release_write(scheduler_rwlock_t *lk)
 {
     pthread_mutex_lock(&lk->mu);
@@ -396,6 +406,7 @@ static scheduler_pool_t *g_parallel_pool = NULL;
 static int g_parallel_pool_workers = -1;
 static scheduler_pool_t *g_sequential_pool = NULL;
 
+/* PoP: scheduler_get_parallel_pool @ cron/scheduler.py:_get_parallel_pool */
 scheduler_pool_t *scheduler_get_parallel_pool(int max_workers)
 {
     pthread_mutex_lock(&g_pool_mu);
@@ -410,6 +421,7 @@ scheduler_pool_t *scheduler_get_parallel_pool(int max_workers)
     return p;
 }
 
+/* PoP: scheduler_get_sequential_pool @ cron/scheduler.py:_get_sequential_pool */
 scheduler_pool_t *scheduler_get_sequential_pool(void)
 {
     pthread_mutex_lock(&g_pool_mu);
@@ -420,6 +432,7 @@ scheduler_pool_t *scheduler_get_sequential_pool(void)
     return p;
 }
 
+/* PoP: scheduler_shutdown_parallel_pool @ cron/scheduler.py:_shutdown_parallel_pool */
 void scheduler_shutdown_parallel_pool(void)
 {
     pthread_mutex_lock(&g_pool_mu);
@@ -442,6 +455,7 @@ static volatile int g_shutting_down = 0;
 
 void scheduler_note_interpreter_shutdown(void) { g_shutting_down = 1; }
 
+/* PoP: scheduler_interpreter_shutting_down @ cron/scheduler.py:_interpreter_shutting_down */
 bool scheduler_interpreter_shutting_down(const char *error_text)
 {
     if (g_shutting_down) return true;
@@ -471,6 +485,7 @@ bool scheduler_interpreter_shutting_down(const char *error_text)
  * Lock paths
  * ================================================================ */
 
+/* PoP: scheduler_get_lock_paths @ cron/scheduler.py:_get_lock_paths */
 void scheduler_get_lock_paths(char **lock_dir_out, char **tick_lock_out)
 {
     char *dir = cronjobs_cron_dir();   /* <HERMES_HOME>/cron, resolved live */
@@ -494,6 +509,7 @@ void scheduler_get_lock_paths(char **lock_dir_out, char **tick_lock_out)
  * _plugin_cron_env_var read side over the same registration hook).
  * ================================================================ */
 
+/* PoP: scheduler_plugin_cron_env_var @ cron/scheduler.py:_plugin_cron_env_var */
 const char *scheduler_plugin_cron_env_var(const char *platform_name)
 {
     /* The delivery module owns the plugin table; reuse its plugin-ONLY

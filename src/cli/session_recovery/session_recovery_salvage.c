@@ -11,6 +11,7 @@
 #define SR_MIN_ROWID (-9223372036854775807LL - 1)
 #define SR_MAX_ROWID 9223372036854775807LL
 
+/* PoP: sr_append_skipped_range @ hermes_cli/session_recovery.py:_append_skipped_range */
 static void sr_append_skipped_range(json_t *ranges, long long low,
                                     long long high, const char *error) {
     size_t n = json_len(ranges);
@@ -31,6 +32,7 @@ static void sr_append_skipped_range(json_t *ranges, long long low,
     json_append(ranges, e);
 }
 
+/* PoP: sr_salvage_rowid_bounds @ hermes_cli/session_recovery.py:_salvage_rowid_bounds */
 static json_t *sr_salvage_rowid_bounds(sqlite3 *src, const char *table) {
     json_t *result = json_object();
     json_t *errors = json_array();
@@ -117,6 +119,7 @@ static void sr_salvage_progress(sr_salvage_ctx_t *c) {
     json_free(ev);
 }
 
+/* PoP: copy_range @ hermes_cli/session_recovery.py:copy_range */
 static void sr_copy_range(sr_salvage_ctx_t *c, long long low, long long high) {
     if (low > high) return;
     long long rq = (long long)json_get_num(c->result, "range_queries", 0);
@@ -234,6 +237,7 @@ static void sr_copy_range(sr_salvage_ctx_t *c, long long low, long long high) {
     sr_copy_range(c, midpoint + 1, high);
 }
 
+/* PoP: sr_copy_table_salvage @ hermes_cli/session_recovery.py:_copy_table_salvage */
 json_t *sr_copy_table_salvage(sqlite3 *src, sqlite3 *dst, const char *table,
                               int chunk_size, session_recovery_progress_cb cb,
                               void *ud, const json_t *source_rows,

@@ -48,6 +48,7 @@ static const char *pairing_env_for(const char *platform) {
     return NULL;
 }
 
+/* PoP: _allowlist_env_for_platform @ gateway/pairing.py:_allowlist_env_for_platform */
 /* Return the per-platform allowlist env var name, or NULL. Falls back to the
  * platform registry for plugin platforms; here we just check the static map
  * (plugin registry honored by the caller's authz union if needed). */
@@ -55,6 +56,7 @@ const char *pairing_allowlist_env_for_platform(const char *platform) {
     return pairing_env_for(platform);
 }
 
+/* PoP: _split_allowlist @ gateway/pairing.py:_split_allowlist */
 /* Split a comma-separated allowlist into a NULL-terminated array of
  * heap-allocated uid strings. Caller frees each element and the array. */
 char **pairing_split_allowlist(const char *allowlist_str) {
@@ -86,6 +88,7 @@ char **pairing_split_allowlist(const char *allowlist_str) {
     return out;
 }
 
+/* PoP: _sync_allowlist_add @ gateway/pairing.py:_sync_allowlist_add */
 /* Add user_id to the platform allowlist env var IF one is configured. On an
  * open gateway (no allowlist) we do nothing. Best-effort; failures are ignored
  * because the pairing store grant still authorizes via the authz union. */

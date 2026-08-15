@@ -15,6 +15,7 @@
 #include <string.h>
 #include <stdio.h>
 
+/* PoP: gateway_platforms_helpers_is_table_row @ gateway/platforms/helpers.py:is_table_row */
 bool gateway_platforms_helpers_is_table_row(const char *line)
 {
     if (!line) return false;
@@ -24,6 +25,7 @@ bool gateway_platforms_helpers_is_table_row(const char *line)
     return strchr(line, '|') != NULL;
 }
 
+/* PoP: gateway_platforms_helpers_split_markdown_table_row @ gateway/platforms/helpers.py:split_markdown_table_row */
 char **gateway_platforms_helpers_split_markdown_table_row(const char *line, int *out_n)
 {
     /* Returns a NULL-terminated array of malloc'd cell strings (caller frees). */
@@ -90,6 +92,7 @@ static bool is_table_separator_line(const char *line)
     return ok && cells >= 1 && *p == '\0';
 }
 
+/* PoP: gateway_platforms_helpers_render_table_block @ gateway/platforms/helpers.py:_render_table_block */
 char *gateway_platforms_helpers_render_table_block(char **table_block, int nblock)
 {
     /* Returns malloc'd rendered string. Caller frees. */
@@ -167,6 +170,7 @@ char *gateway_platforms_helpers_render_table_block(char **table_block, int nbloc
     return out;
 }
 
+/* PoP: gateway_platforms_helpers_convert_table_to_bullets @ gateway/platforms/helpers.py:convert_table_to_bullets */
 char *gateway_platforms_helpers_convert_table_to_bullets(const char *text)
 {
     if (!text) return NULL;
@@ -240,6 +244,7 @@ typedef struct {
     size_t cap;
 } mention_patterns_t;
 
+/* PoP: compile_mention_patterns @ gateway/platforms/helpers.py:compile_mention_patterns */
 mention_patterns_t *gateway_platforms_helpers_compile_mention_patterns(
     const char *raw_json,       /* JSON list of pattern strings, or NULL */
     const char *log_prefix,     /* e.g. "[bluebubbles]" */

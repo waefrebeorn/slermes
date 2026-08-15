@@ -42,6 +42,7 @@ static const char _EXIT_CODE_HINTS[][512] = {
  * Each takes (command, output_window) and returns a malloc'd hint or NULL.
  * The window is already the first _SCAN_CHARS of the output. */
 
+/* PoP: _hint_gh_unknown_json_field @ tools/terminal_hints.py:_hint_gh_unknown_json_field */
 /* ~9,175x: gh CLI version drift — model asks for fields the installed gh
  * doesn't know. gh already prints the valid field list.
  * Pattern: r'Unknown JSON field: "?(\w+)' */
@@ -59,6 +60,7 @@ char *thint_hint_gh_unknown_json_field(const char *command, const char *output) 
     return hint;
 }
 
+/* PoP: _hint_command_not_found @ tools/terminal_hints.py:_hint_command_not_found */
 /* ~1,010x generic; 837x bare `python` on python3-only distros.
  * Pattern: r"(?:bash: line \d+: |bash: |sh: \d*:? ?)?([\w.+-]+): command not found" */
 char *thint_hint_command_not_found(const char *command, const char *output) {
@@ -94,6 +96,7 @@ char *thint_hint_command_not_found(const char *command, const char *output) {
     return hint;
 }
 
+/* PoP: _hint_module_not_found @ tools/terminal_hints.py:_hint_module_not_found */
 /* ~739x: almost always a venv-activation slip, not a missing dependency.
  * Pattern: r'(?:ModuleNotFoundError|ImportError): No module named '?([\w.]+)' */
 char *thint_hint_module_not_found(const char *command, const char *output) {
@@ -113,6 +116,7 @@ char *thint_hint_module_not_found(const char *command, const char *output) {
     return hint;
 }
 
+/* PoP: _hint_merge_conflict @ tools/terminal_hints.py:_hint_merge_conflict */
 /* ~1,172x: models sometimes re-run the failing merge/rebase verbatim.
  * Pattern: r"^CONFLICT |Automatic merge failed|needs merge" with re.M */
 char *thint_hint_merge_conflict(const char *command, const char *output) {
@@ -142,6 +146,7 @@ char *thint_hint_merge_conflict(const char *command, const char *output) {
         "`--abort`.");
 }
 
+/* PoP: _hint_already_exists @ tools/terminal_hints.py:_hint_already_exists */
 /* ~633x: branch/dir/file already exists → retrying unchanged always fails.
  * Pattern: r"(?:fatal|error):.*?'([^']+)' already exists" */
 char *thint_hint_already_exists(const char *command, const char *output) {
@@ -159,6 +164,7 @@ char *thint_hint_already_exists(const char *command, const char *output) {
     return hint;
 }
 
+/* PoP: _hint_gh_rate_limit @ tools/terminal_hints.py:_hint_gh_rate_limit */
 /* ~133x: immediate retries burn turns; the limit is time-based. */
 char *thint_hint_gh_rate_limit(const char *command, const char *output) {
     (void)command;
@@ -171,6 +177,7 @@ char *thint_hint_gh_rate_limit(const char *command, const char *output) {
         "Continue with other work and retry this operation later.");
 }
 
+/* PoP: _hint_permission_denied @ tools/terminal_hints.py:_hint_permission_denied */
 char *thint_hint_permission_denied(const char *command, const char *output) {
     (void)command;
     if (!output) return NULL;
@@ -196,6 +203,7 @@ static const hint_fn _OUTPUT_HINTS[] = {
 };
 #define _N_HINTS (sizeof(_OUTPUT_HINTS)/sizeof(_OUTPUT_HINTS[0]))
 
+/* PoP: annotate_failure @ tools/terminal_hints.py:annotate_failure */
 /* Return one short recovery hint for a failed command, or NULL.
  * Returns NULL for exit_code == 0. */
 char *thint_annotate_failure(const char *command, int exit_code, const char *output) {

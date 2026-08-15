@@ -256,6 +256,7 @@ void cmd_completions(const char *args, agent_state_t *state) {
     }
 }
 
+/* PoP: cmd_compress_coerce_keep_value @ hermes_cli/partial_compress.py:_coerce_keep */
 int cmd_compress_coerce_keep_value(const char *value)
 {
     if (!value) return CMD_COMPRESS_DEFAULT_KEEP_LAST;
@@ -650,6 +651,8 @@ void cmd_deps(const char *args, agent_state_t *state) {
 /* AG26: Port of Python hermes_cli/hooks.py:_cmd_doctor().
  * AG26: Port of Python hermes_cli/main.py:cmd_doctor().
  */
+/* PoP: cmd_doctor @ tools/computer_use/permissions.py:_doctor */
+/* PoP: cmd_doctor @ hermes_cli/console_engine.py:_doctor */
 void cmd_doctor(const char *args, agent_state_t *state) {
     /* Normalize subcommand */
     char subcmd[64] = "";
@@ -1344,9 +1347,9 @@ void cmd_platforms(const char *args, agent_state_t *state) {
     printf("\nAll 20 platform types available. Use -v for credential check.\n");
     printf("Config: gateway.platforms in config.yaml or $HERMES_GATEWAY_PLATFORMS\n");
 }
-/* PoP: cmd_profile @ hermes_cli/main.py:cmd_profile */
 
 /* /profile: Show active profile */
+/* PoP: cmd_profile @ hermes_cli/main.py:cmd_profile */
 void cmd_profile(const char *args, agent_state_t *state) {
     if (args && args[0]) {
         if (strcmp(args, "home") == 0) {
@@ -1373,10 +1376,11 @@ void cmd_redraw(const char *args, agent_state_t *state) {
     (void)args; (void)state;
     printf("\033[2J\033[H"); /* Clear screen + home cursor */
     printf("Screen cleared. Use /help for commands.\n");
-/* PoP: cmd_reload @ hermes_cli/proxy_cli.py:cmd_reload */
 }
 
 /* /reload: Reload .env */
+/* PoP: cmd_reload @ hermes_cli/bundles.py:_cmd_reload */
+/* PoP: cmd_reload @ hermes_cli/proxy_cli.py:cmd_reload */
 void cmd_reload(const char *args, agent_state_t *state) {
     if (args && args[0]) {
         if (strcmp(args, "plugins") == 0) {
@@ -1499,9 +1503,9 @@ void cmd_sethome(const char *args, agent_state_t *state) {
     }
     snprintf(g_home_channel, sizeof(g_home_channel), "%s", args);
     printf("Home channel set to: %s\n", g_home_channel);
-/* PoP: cmd_skin @ hermes_cli/main.py:cmd_skin */
 }
 
+/* PoP: cmd_skin @ hermes_cli/main.py:cmd_skin */
 void cmd_skin(const char *args, agent_state_t *state) {
     (void)state;
     if (args && args[0]) {
@@ -1553,11 +1557,11 @@ void cmd_statusbar(const char *args, agent_state_t *state) {
     } else {
         printf("Unknown argument: %s\n", args);
         printf("  Usage: /statusbar [on|off|status]\n");
-/* PoP: cmd_stop @ hermes_cli/proxy_cli.py:cmd_stop */
     }
 }
 
 /* /stop: Kill all running background processes */
+/* PoP: cmd_stop @ hermes_cli/proxy_cli.py:cmd_stop */
 void cmd_stop(const char *args, agent_state_t *state) {
     (void)args; (void)state;
     printf("Stopping all background processes...\n");
@@ -1567,11 +1571,12 @@ void cmd_stop(const char *args, agent_state_t *state) {
     if (fp) {
         if (fgets(buf, sizeof(buf), fp)) killed = atoi(buf) == 0 ? 1 : 0;
         pclose(fp);
-/* PoP: cmd_tools @ hermes_cli/main.py:cmd_tools */
     }
     printf("Done. Killed %d process(es).\n", killed ? 1 : 0);
 }
 
+/* PoP: cmd_tools @ hermes_cli/portal_cli.py:_cmd_tools */
+/* PoP: cmd_tools @ hermes_cli/main.py:cmd_tools */
 void cmd_tools(const char *args, agent_state_t *state) {
     if (args && args[0]) {
         /* Show details for a specific tool */
@@ -1679,6 +1684,7 @@ void cmd_toolsets(const char *args, agent_state_t *state) {
  * Also performs install-method detection (docker/nix bail with guidance)
  * and takes the shared update lock so concurrent updaters refuse instead
  * of corrupting the checkout (update_lock.UpdateLock). */
+/* PoP: cmd_update @ hermes_cli/main.py:cmd_update */
 void cmd_update(const char *args, agent_state_t *state) {
     (void)state;
     const char *a = args ? args : "";

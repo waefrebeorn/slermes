@@ -147,6 +147,7 @@ static void safe_getcwd(char *buf, size_t bufsz) {
 }
 
 /* ------------------------------------------------------------------ */
+/* PoP: tt_record_session_cwd @ tools/terminal_tool.py:record_session_cwd */
 /* ------------------------------------------------------------------ */
 void term_rec_record_session_cwd(const char *session_key, const char *cwd) {
     if (!cwd || !*cwd) return;                 /* empty cwd ignored */
@@ -163,6 +164,7 @@ void term_rec_record_session_cwd(const char *session_key, const char *cwd) {
     pthread_mutex_unlock(&g_lock);
 }
 
+/* PoP: tt_get_session_cwd @ tools/terminal_tool.py:get_session_cwd */
 const char *term_rec_get_session_cwd(const char *session_key) {
     const char *key = (session_key && *session_key) ? session_key : "default";
     pthread_mutex_lock(&g_lock);
@@ -173,6 +175,7 @@ const char *term_rec_get_session_cwd(const char *session_key) {
     return out;
 }
 
+/* PoP: clear_session_cwd @ tools/terminal_tool.py:clear_session_cwd */
 void term_rec_clear_session_cwd(const char *session_key) {
     if (!session_key) return;
     pthread_mutex_lock(&g_lock);
@@ -181,6 +184,7 @@ void term_rec_clear_session_cwd(const char *session_key) {
     pthread_mutex_unlock(&g_lock);
 }
 
+/* PoP: tt_register_task_env_overrides @ tools/terminal_tool.py:register_task_env_overrides */
 void term_reg_register_task_env_overrides(const char *task_id, json_t *overrides) {
     if (!task_id || !*task_id || !overrides) return;
     pthread_mutex_lock(&g_lock);
@@ -201,6 +205,7 @@ void term_reg_register_task_env_overrides(const char *task_id, json_t *overrides
     pthread_mutex_unlock(&g_lock);
 }
 
+/* PoP: tt_clear_task_env_overrides @ tools/terminal_tool.py:clear_task_env_overrides */
 void term_reg_clear_task_env_overrides(const char *task_id) {
     if (!task_id) return;
     pthread_mutex_lock(&g_lock);
@@ -210,6 +215,7 @@ void term_reg_clear_task_env_overrides(const char *task_id) {
     term_rec_clear_session_cwd(task_id);
 }
 
+/* PoP: term_resolve_container_task_id @ tools/terminal_tool.py:_resolve_container_task_id */
 /* Map a tool-call task_id to the container/sandbox key. Subagents collapse to
  * "default"; override-registered rollouts with isolation keys stay distinct. */
 void term_resolve_container_task_id(const char *task_id, char *out, size_t outsz) {
@@ -231,6 +237,7 @@ void term_resolve_container_task_id(const char *task_id, char *out, size_t outsz
     snprintf(out, outsz, "%s", "default");
 }
 
+/* PoP: tt_resolve_task_overrides @ tools/terminal_tool.py:resolve_task_overrides */
 /* Raw key first, then collapsed container id — the single source so the
  * terminal and file layers can't drift apart. */
 json_t *term_resolve_task_overrides(const char *task_id) {
@@ -249,6 +256,7 @@ json_t *term_resolve_task_overrides(const char *task_id) {
 }
 
 /* ------------------------------------------------------------------ */
+/* PoP: term_is_unusable_container_cwd @ tools/terminal_tool.py:_is_unusable_container_cwd */
 /* ------------------------------------------------------------------ */
 bool term_is_unusable_container_cwd(const char *cwd) {
     if (!cwd || !*cwd) return false;
@@ -259,6 +267,7 @@ bool term_is_unusable_container_cwd(const char *cwd) {
     return false;
 }
 
+/* PoP: _get_env_config @ tools/terminal_tool.py:_get_env_config */
 /* Build the full terminal env config dict from TERMINAL_* env vars. */
 json_t *term_get_env_config(void) {
     /* _ensure_terminal_env_bridged() — the C launcher bridges terminal.*
@@ -410,6 +419,8 @@ json_t *term_get_env_config(void) {
 }
 
 /* ------------------------------------------------------------------ */
+/* PoP: get_active_env @ tools/terminal_tool.py:get_active_env         */
+/* PoP: is_persistent_env @ tools/terminal_tool.py:is_persistent_env   */
 /* ------------------------------------------------------------------ */
 
 /* Return a copy of the active env entry for task_id (or NULL). */
@@ -448,6 +459,7 @@ void term_env_set_active(const char *task_id, json_t *env_entry) {
 }
 
 /* ------------------------------------------------------------------ */
+/* PoP: cleanup_vm @ tools/terminal_tool.py:cleanup_vm                 */
 /* ------------------------------------------------------------------ */
 void term_cleanup_vm(const char *task_id, bool force_remove) {
     (void)force_remove;
@@ -465,6 +477,7 @@ void term_cleanup_vm(const char *task_id, bool force_remove) {
     }
 }
 
+/* PoP: cleanup_all_environments @ tools/terminal_tool.py:cleanup_all_environments */
 int term_cleanup_all_environments(void) {
     pthread_mutex_lock(&g_lock);
     registry_init_locked();
@@ -486,6 +499,7 @@ int term_cleanup_all_environments(void) {
     return (int)got;
 }
 
+/* PoP: _cleanup_inactive_envs @ tools/terminal_tool.py:_cleanup_inactive_envs */
 int term_cleanup_inactive_envs(long lifetime_seconds) {
     if (lifetime_seconds <= 0) lifetime_seconds = 300;
     double now = (double)time(NULL);
@@ -513,6 +527,7 @@ int term_cleanup_inactive_envs(long lifetime_seconds) {
     return cleaned;
 }
 
+/* PoP: check_terminal_requirements @ tools/terminal_tool.py:check_terminal_requirements */
 bool term_check_terminal_requirements(void) {
     json_t *cfg = term_get_env_config();
     const char *env_type = cfg ? json_get_str(cfg, "env_type", "local") : "local";

@@ -62,6 +62,7 @@ static const char *IMAGE_EXT[] = {
     ".png", ".jpg", ".jpeg", ".gif", ".bmp", ".ico", ".webp", NULL
 };
 
+/* PoP: file_fs_ops_read_file_raw @ tools/file_operations.py:read_file_raw */
 char *file_fs_ops_read_file_raw(const char *path)
 {
     if (!path) return NULL;
@@ -81,6 +82,7 @@ char *file_fs_ops_read_file_raw(const char *path)
     return buf;
 }
 
+/* PoP: file_fs_ops_delete_path @ tools/file_operations.py:delete_path */
 /* Faithful: Python's delete_path -> _python_delete first calls
  * _is_write_denied(path) and returns WriteResult(error="Delete denied: ...")
  * for protected paths. POSIX-only backend (no Windows rm), so it
@@ -95,11 +97,13 @@ bool file_fs_ops_delete_path(const char *path)
     return unlink(path) == 0 || rmdir(path) == 0;
 }
 
+/* PoP: file_fs_ops_python_delete @ tools/file_operations.py:_python_delete */
 bool file_fs_ops_python_delete(const char *path)
 {
     return file_fs_ops_delete_path(path);
 }
 
+/* PoP: file_fs_ops_patch_replace @ tools/file_operations.py:patch_replace */
 /* First-occurrence replace primitive (Python's full method is fuzzy + guarded). */
 char *file_fs_ops_patch_replace(const char *content, const char *old_text,
                                  const char *new_text)
@@ -136,6 +140,7 @@ static bool in_set(const char *ext, const char **set)
     return false;
 }
 
+/* PoP: file_fs_ops_is_likely_binary @ tools/file_operations.py:_is_likely_binary */
 /* ext in BINARY_EXTENSIONS -> true; else >30% non-printable in first 1000
  * bytes -> true; else false. Mirrors the .py content-sample branch. */
 bool file_fs_ops_is_likely_binary(const char *path)
@@ -158,6 +163,7 @@ bool file_fs_ops_is_likely_binary(const char *path)
     return read > 0 && ((double)non_printable / (double)read) > 0.30;
 }
 
+/* PoP: file_fs_ops_is_image @ tools/file_operations.py:_is_image */
 /* IMAGE_EXTENSIONS set, case-insensitive (includes .ico). */
 bool file_fs_ops_is_image(const char *path)
 {
@@ -166,6 +172,7 @@ bool file_fs_ops_is_image(const char *path)
     return in_set(ext, IMAGE_EXT);
 }
 
+/* PoP: file_fs_ops_detect_file_line_ending @ tools/file_operations.py:_detect_file_line_ending */
 char *file_fs_ops_detect_file_line_ending(const char *path)
 {
     char *content = file_fs_ops_read_file_raw(path);
@@ -175,6 +182,7 @@ char *file_fs_ops_detect_file_line_ending(const char *path)
     return ending;
 }
 
+/* PoP: file_fs_ops_file_has_bom @ tools/file_operations.py:_file_has_bom */
 bool file_fs_ops_file_has_bom(const char *path)
 {
     FILE *f = fopen(path, "rb");
@@ -220,6 +228,7 @@ static const struct {
 };
 #define FF_N_MAGIC ((int)(sizeof(FF_MAGIC_SIGNATURES) / sizeof(FF_MAGIC_SIGNATURES[0])))
 
+/* PoP: identify_binary_bytes @ tools/file_operations.py:identify_binary_bytes */
 char *file_fs_ops_identify_binary_bytes(const unsigned char *sample, size_t len) {
     if (!sample || len == 0) return strdup("unknown binary");
     for (int i = 0; i < FF_N_MAGIC; i++) {
@@ -235,6 +244,7 @@ char *file_fs_ops_identify_binary_bytes(const unsigned char *sample, size_t len)
     return strdup("unknown binary");
 }
 
+/* PoP: describe_binary_file @ tools/file_operations.py:describe_binary_file */
 char *file_fs_ops_describe_binary_file(const unsigned char *sample, size_t len,
                                        long long file_size) {
     char *kind = file_fs_ops_identify_binary_bytes(sample, len);
@@ -252,6 +262,7 @@ char *file_fs_ops_describe_binary_file(const unsigned char *sample, size_t len,
     return out ? out : strdup("");
 }
 
+/* PoP: _is_likely_binary_bytes @ tools/file_operations.py:_is_likely_binary_bytes */
 bool file_fs_ops_is_likely_binary_bytes(const unsigned char *sample, size_t len) {
     if (!sample || len == 0) return false;
     /* NUL byte => binary. */
@@ -297,6 +308,7 @@ bool file_fs_ops_is_likely_binary_bytes(const unsigned char *sample, size_t len)
     return invalid != 0;
 }
 
+/* PoP: _not_regular_error @ tools/file_operations.py:_not_regular_error */
 char *file_fs_ops_not_regular_error(const char *path) {
     char *out = NULL;
     asprintf(&out,
@@ -305,6 +317,7 @@ char *file_fs_ops_not_regular_error(const char *path) {
     return out ? out : strdup("");
 }
 
+/* PoP: _size_probe_cmd @ tools/file_operations.py:_size_probe_cmd */
 char *file_fs_ops_size_probe_cmd(const char *path) {
     /* Python: arg = _escape_shell_arg(path); then the if/elif/else cmd. */
     if (!path) return strdup("exit 1");
