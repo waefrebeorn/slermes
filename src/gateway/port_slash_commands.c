@@ -102,6 +102,7 @@ static json_t *picker_choice(const char *value, char *label, bool is_current) {
     return o;
 }
 
+/* PoP: slash_reasoning_picker_choices @ gateway/slash_commands.py:_reasoning_picker_choices */
 json_t *slash_reasoning_picker_choices(const char *current_effort) {
     const char *cur = current_effort ? current_effort : "";
     json_t *arr = json_array();

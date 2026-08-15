@@ -31,7 +31,7 @@
 
 
 /*
- * PoP: _chars_to_tokens @ agent/context_breakdown.py:_chars_to_tokens */
+ * PoP: context_breakdown_chars_to_tokens @ agent/context_breakdown.py:_chars_to_tokens */
 int context_breakdown_chars_to_tokens(const char *text)
 {
     if (!text || !text[0]) return 0;

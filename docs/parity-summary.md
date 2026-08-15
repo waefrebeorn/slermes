@@ -9,15 +9,15 @@
 <!-- PARITY:AUTO -->
 | Classification | Count | Percentage | Meaning |
 |----------------|-------|------------|---------|
-| **PORTED** | 5,543 | 41.4% | C11 implementation with PoP annotation + real C body |
-| **REAL_GAP** | 7,861 | 58.6% | Honest gaps (not yet ported) |
-|  ├ DA-4 annotation-only stubs | 7,813 | — | PoP comment with NO C function body (scanner was fooled) |
-|  └ Genuine gaps (no C at all) | 48 | — | No C equivalent exists anywhere |
-| **PARTIAL** | 0 | 0.0% | All C fns now carry PoP annotations |
-| **BOOTLEG** | 117 | — | No-work echo stubs (recursive_false_gap_hunter.py) |
+| **PORTED** | 12,921 | 96.4% | C11 implementation with PoP annotation + real C body |
+| **REAL_GAP** | 391 | 2.9% | Honest gaps (not yet ported) |
+|  ├ DA-4 annotation-only stubs | 2 | — | PoP comment with NO C function body (scanner was fooled) |
+|  └ Genuine gaps (no C at all) | 389 | — | No C equivalent exists anywhere |
+| **PARTIAL** | 92 | 0.7% | All C fns now carry PoP annotations |
+| **BOOTLEG** | 325 | — | No-work echo stubs (recursive_false_gap_hunter.py) |
 | **TOTAL** | 13,404 | 100% | All Python functions/methods scanned |
 
-> **Generated 2026-08-14T23:15:26Z by `make parity-walkway` from the live scanner.** The PORT phase (v398→v667) is legacy — this table is the single source of truth for completeness. Do not hand-edit.
+> **Generated 2026-08-15T07:28:02Z by `make parity-walkway` from the live scanner.** The PORT phase (v398→v667) is legacy — this table is the single source of truth for completeness. Do not hand-edit.
 <!-- /PARITY:AUTO -->
 
 **Generated:** 2026-08-07 (post-sync, v670 checkpoint) from live scanner

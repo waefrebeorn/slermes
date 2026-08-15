@@ -58,7 +58,7 @@ static int is_non_code_name(const char *name)
 }
 
 /*
- * PoP: _is_non_code_path @ agent/verification_stop.py:_is_non_code_path */
+ * PoP: verification_stop_is_non_code_path @ agent/verification_stop.py:_is_non_code_path */
 int verification_stop_is_non_code_path(const char *raw)
 {
     if (!raw || !raw[0]) return 0;

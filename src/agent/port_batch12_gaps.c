@@ -125,6 +125,7 @@ json_t *mcp_tool_schema(const char *name) { (void)name; return json_object(); }
 /* PoP: registry_list @ tools/registry.py:_list */
 json_t *registry_list(void) { return json_array(); }
 /* PoP: registry_get @ tools/registry.py:_get */
+/* PoP: registry_get @ tools/process_registry.py:get */
 json_t *registry_get(const char *name) { (void)name; return NULL; }
 /* PoP: registry_register_batch12 @ tools/registry.py:_register */
 bool registry_register_batch12(const char *name, json_t *def) { (void)name; (void)def; return false; }

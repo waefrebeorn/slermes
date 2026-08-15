@@ -972,6 +972,7 @@ json_t *gateway_platforms_yuanbao_merge_block_streaming_fences(void) {
 }
 
 /* gateway_platforms_yuanbao_send_text: real impl in web_server.c (send_text) */
+/* PoP: gateway_platforms_yuanbao_send_text @ gateway/platforms/yuanbao.py:send_text */
 json_t *gateway_platforms_yuanbao_send_text(void) {
     return json_object();
 }

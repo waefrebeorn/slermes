@@ -677,6 +677,7 @@ const model_group_row_t *model_group_next(const char *packed,
 
 #include <sys/stat.h>
 
+/* PoP: model_provider_models_cache_path @ hermes_cli/models.py:_provider_models_cache_path */
 char *model_provider_models_cache_path(void) {
     /* Owned by port_models_helpers.c (provider_models_cache_path). */
     return provider_models_cache_path();

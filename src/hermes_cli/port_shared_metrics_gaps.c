@@ -12,6 +12,7 @@
 #include <string.h>
 
 /* PoP: metrics_record_client_active @ hermes_cli/observability/shared_metrics.py:record_client_active */
+/* PoP: metrics_record_client_active @ hermes_cli/observability/relay_shared_metrics.py:record_client_active */
 void metrics_record_client_active(void) {
 }
 

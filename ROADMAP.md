@@ -2,11 +2,11 @@
 
 <!-- PARITY:AUTO -->
 **Version:** 0.19.0-slermes (v671, PORT phase)  
-**Last updated:** 2026-08-14
+**Last updated:** 2026-08-15
 
-> **v671 PORT phase:** live scanner 2026-08-14: 5,543 / 13,404 (41.4%) PORTED · 7,861 REAL_GAP · 0 PARTIAL. The C11 binary is the deliverable.
+> **v671 PORT phase:** live scanner 2026-08-15: 12,921 / 13,404 (96.4%) PORTED · 391 REAL_GAP · 92 PARTIAL. The C11 binary is the deliverable.
 >
-> **Upstream sync checkpoint:** 1,566 ahead / 666 behind upstream/main (last merge 2026-08-14 (upstream fetched)). The behind-count is the staleness timer; re-port the delta with the stash→pull→fix→pop workflow after each sync.
+> **Upstream sync checkpoint:** 1,597 ahead / 928 behind upstream/main (last merge 2026-08-15 (upstream fetched)). The behind-count is the staleness timer; re-port the delta with the stash→pull→fix→pop workflow after each sync.
 <!-- /PARITY:AUTO -->
 
 > "Mission 1-8 complete" doesn't mean done — it means the foundation is laid.  

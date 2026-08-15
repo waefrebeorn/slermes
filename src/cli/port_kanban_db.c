@@ -429,7 +429,7 @@ char *kanban_home(void)
 }
 
 /*
- * PoP: boards_root @ hermes_cli/kanban_db.py:boards_root */
+ * PoP: kanban_boards_root @ hermes_cli/kanban_db.py:boards_root */
 char *kanban_boards_root(void)
 {
     char root[PATH_MAX];
@@ -440,7 +440,7 @@ char *kanban_boards_root(void)
 }
 
 /*
- * PoP: current_board_path @ hermes_cli/kanban_db.py:current_board_path */
+ * PoP: kanban_current_board_path @ hermes_cli/kanban_db.py:current_board_path */
 char *kanban_current_board_path(void)
 {
     char root[PATH_MAX];

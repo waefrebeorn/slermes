@@ -664,6 +664,7 @@ char *skills_hub_resolve_skill_md_url(const char *identifier)
  * _load_hermes_index(): fresh cache (< 6h TTL) wins, else fetch from the
  * docs site, else fall back to a stale cache. Returns true only when the
  * index parses and carries a non-empty "skills" array. */
+/* PoP: skills_hub_is_available @ tools/skills_hub.py:is_available */
 bool skills_hub_is_available(void)
 {
     /* <hermes_home>/skills/.hub/index-cache/hermes-index.json */

@@ -8,13 +8,13 @@ We took Hermes Agent — Nous Research's Python/Electron AI agent — and **SLER
 
 <!-- PARITY:AUTO -->
 **Version:** v671 (PORT phase)  
-**Last updated:** 2026-08-14
+**Last updated:** 2026-08-15
 
 > Live counts from `make parity-walkway` (sentinel PARITY:AUTO). Do not hand-edit — regenerated from the live scanner on every run.
 
-**Parity:** 5,543 PORTED (41.4%) · 7,861 REAL_GAP (7,813 DA-4 stubs, 48 genuine) · 117 BOOTLEG
+**Parity:** 12,921 PORTED (96.4%) · 391 REAL_GAP (2 DA-4 stubs, 389 genuine) · 325 BOOTLEG
 
-**Upstream sync checkpoint:** 1,566 ahead / 666 behind upstream/main (last merge 2026-08-14 (upstream fetched)). The behind-count is the staleness timer.
+**Upstream sync checkpoint:** 1,597 ahead / 928 behind upstream/main (last merge 2026-08-15 (upstream fetched)). The behind-count is the staleness timer.
 
 <!-- /PARITY:AUTO -->
 

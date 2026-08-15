@@ -315,6 +315,7 @@ json_t *skills_hub_browse(int page, int page_size) {
 
 /* ── inspect_skill (L895) ── */
 /* PoP: skills_hub_inspect @ hermes_cli/skills_hub.py:inspect_skill */
+/* PoP: skills_hub_inspect @ tools/skills_hub.py:inspect */
 json_t *skills_hub_inspect(const char *identifier) {
     (void)identifier;
     return NULL;

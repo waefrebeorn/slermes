@@ -250,7 +250,7 @@ class CIndexer:
             r'^(?:static\s+)?(?:const\s+)?(?:__attribute__\(\s*unused\s*\)\s+)?'
             r'(?:\w+\s+)*(?:\*\s*)?(\w+)\s*\(', re.MULTILINE)
         pop_patterns = [
-            re.compile(r'/\*\s*PoP:\s*(\w+)\s*@\s*([\w/.]+):(\w+)\s*\*/', re.MULTILINE),
+            re.compile(r'/\*\s*PoP:\s*(\w+)\s*@\s*([\w/.]+):([\w.]+)\s*\*/', re.MULTILINE),
             re.compile(r'/\*(?:[^*]|\*[^/])*?\n\s*\*\s*PoP:\s*(\w+)\s*@\s*([\w/.]+):([\w.]+)', re.MULTILINE),
             re.compile(r'/\*\s*Port of Python\s+\w+_\w+\.py:(_?)\w+\(', re.MULTILINE),
             re.compile(r'/\*\s*Port of Python[^:]*:?\s*([\w.]+)', re.MULTILINE),
@@ -333,8 +333,11 @@ class CIndexer:
                             if pattern is pop_pattern:
                                 raw = m.group(3).strip()
                                 py_funcs = [raw.split('.')[-1]]
-                            elif pattern.pattern.startswith(r'/\*[\s\S]*?'):
-                                py_funcs = [m.group(3).strip()]
+                            elif pattern.pattern.startswith(r'/\*(?:[^*]|\*[^/])*?') or pattern.pattern.startswith(r'/\*[\s\S]*?'):
+                                if len(m.groups()) >= 3:
+                                    py_funcs = [m.group(3).strip()]
+                                else:
+                                    py_funcs = [m.group(1).strip()]
                             else:
                                 py_names = m.group(1).strip()
                                 py_funcs = []
@@ -347,8 +350,9 @@ class CIndexer:
                                 # module-aware form: group(1)=python_file, group(2)=fn
                                 python_file = m.group(1).strip()
                                 py_funcs = [m.group(2).strip().split('(')[0]]
-                            elif pattern is pop_pattern or pattern.pattern.startswith(r'/\*[\s\S]*?') or pattern.pattern.startswith(r'/\*\n'):
-                                python_file = m.group(2).strip()
+                            elif pattern is pop_pattern or pattern.pattern.startswith(r'/\*[\s\S]*?') or pattern.pattern.startswith(r'/\*\\n') or pattern.pattern.startswith(r'/\*(?:[^*]|\*[^/])*?'):
+                                if len(m.groups()) >= 2:
+                                    python_file = m.group(2).strip()
                             self.pop_annotations.append(PopAnnotation(
                                 c_function=c_func_name, python_functions=py_funcs,
                                 c_file=rel_str, python_file=python_file, line=line,
@@ -463,7 +467,16 @@ class CIndexer:
     def find_pop_for_python(self, python_name, py_file=""):
         matches = []
         for pop in self.pop_annotations:
+            # Match by exact name or by class-qualified name (e.g. "GatewayRunner.progress_callback")
+            matched = False
             if python_name in pop.python_functions:
+                matched = True
+            else:
+                for pf in pop.python_functions:
+                    if pf.endswith('.' + python_name):
+                        matched = True
+                        break
+            if matched:
                 # A pop without a python_file is a partial-pattern artifact
                 # (e.g. the trailing-underscore-word capture); it must never
                 # shadow a real annotation when the caller knows its module.
@@ -864,12 +877,18 @@ class ParityAnalyzer:
         in_char = False
         while i < n:
             if in_string:
-                if result[i] == '"' and (i == 0 or result[i-1] != '\\'):
+                if result[i] == '\\' and i + 1 < n:
+                    i += 2  # skip escaped char
+                    continue
+                if result[i] == '"':
                     in_string = False
                 i += 1
                 continue
             if in_char:
-                if result[i] == "'" and (i == 0 or result[i-1] != '\\'):
+                if result[i] == '\\' and i + 1 < n:
+                    i += 2  # skip escaped char
+                    continue
+                if result[i] == "'":
                     in_char = False
                 i += 1
                 continue

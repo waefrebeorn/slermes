@@ -22,6 +22,7 @@ static const char *PLACEHOLDERS[] = {
 bool has_usable_secret(const char *value, int min_length);
 
 /* ── kimi base url ── */
+/* PoP: auth_resolve_kimi_base_url @ hermes_cli/auth.py:_resolve_kimi_base_url */
 char *auth_resolve_kimi_base_url(const char *api_key, const char *default_url, const char *env_override) {
     if (env_override && env_override[0]) return strdup(env_override);
     if (!api_key || !api_key[0]) return strdup(default_url ? default_url : "");
@@ -30,6 +31,7 @@ char *auth_resolve_kimi_base_url(const char *api_key, const char *default_url, c
 }
 
 /* ── lmstudio base url ── */
+/* PoP: auth_normalize_lmstudio_runtime_base_url @ hermes_cli/auth.py:_normalize_lmstudio_runtime_base_url */
 char *auth_normalize_lmstudio_runtime_base_url(const char *base_url) {
     char *root = strdup(base_url ? base_url : "");
     /* strip + rstrip '/' */
@@ -118,6 +120,7 @@ bool _is_expiring(const char *expires_at_iso, int skew_seconds) {
     return exp <= (time(NULL) + skew_seconds);
 }
 
+/* PoP: auth_coerce_ttl_seconds @ hermes_cli/auth.py:_coerce_ttl_seconds */
 int auth_coerce_ttl_seconds(const char *expires_in) {
     if (!expires_in) return 0;
     char *end; long v = strtol(expires_in, &end, 10);
