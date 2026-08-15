@@ -67,7 +67,7 @@ int browser__should_inject_engine(const char *engine) {
     return g_local_mode;
 }
 
-/* PoP: browser__is_legacy_provider_registry_overridden @ tools/browser_tool.py:_is_legacy_provider_registry_overridden */
+/* PoP: false @ tools/browser_tool.py:_is_legacy_provider_registry_overridden */
 /* The C port has no plugin registry to override; report false (production path). */
 int browser__is_legacy_provider_registry_overridden(void) { return 0; }
 
@@ -181,7 +181,7 @@ int browser__needs_lightpanda_fallback(const char *engine, const char *command, 
     return need;
 }
 
-/* PoP: browser__annotate_lightpanda_fallback @ tools/browser_tool.py:_annotate_lightpanda_fallback */
+/* PoP: string @ tools/browser_tool.py:_annotate_lightpanda_fallback */
 /* Copy the fallback reason into a result dict's "fallback" field. Returns a
  * malloc'd annotated JSON string (or a copy of result_json when no reason). */
 char *browser__annotate_lightpanda_fallback(const char *engine, const char *command, const char *result_json) {
@@ -443,7 +443,7 @@ void browser__write_owner_pid(const char *session_key, pid_t pid) {
     if (f) { fprintf(f, "%d", (int)pid); fclose(f); }
 }
 
-/* PoP: browser__verify_reapable_browser_daemon @ tools/browser_tool.py:_verify_reapable_browser_daemon */
+/* PoP: dead @ tools/browser_tool.py:_verify_reapable_browser_daemon */
 /* Return 1 if the pid in <session>.pid is dead (reapable), 0 otherwise. */
 int browser__verify_reapable_browser_daemon(const char *session_key) {
     if (!session_key) return 0;

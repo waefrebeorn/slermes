@@ -680,7 +680,7 @@ bool pet_register_local_pet(const char *slug, const char *display_name,
     return true;
 }
 
-/* PoP: ssh_sync_download @ agent/pet/store.py:_download */
+/* PoP: pet_download_file @ agent/pet/store.py:_download */
 bool pet_download_file(const char *url, const char *dest_path, int timeout_sec)
 {
     (void)timeout_sec;

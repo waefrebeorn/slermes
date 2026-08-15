@@ -73,7 +73,7 @@ static double cfn_now(void) {
 }
 
 /* ── _discovery_cache_path ──────────────────────────────────────────── */
-/* PoP: _discovery_cache_path @ tools/registry.py:_discovery_cache_path */
+/* PoP: resolved @ tools/registry.py:_discovery_cache_path */
 /* Returns "<hermes_home>/cache/tool_discovery_cache.json" (malloc'd), or NULL
  * if the hermes home cannot be resolved (mirrors the except→None path). */
 char *discovery_cache_path(void) {
@@ -88,7 +88,7 @@ char *discovery_cache_path(void) {
 }
 
 /* ── _load_discovery_cache ──────────────────────────────────────────── */
-/* PoP: _load_discovery_cache @ tools/registry.py:_load_discovery_cache */
+/* PoP: load_discovery_cache @ tools/registry.py:_load_discovery_cache */
 json_t *load_discovery_cache(void) {
     char *path = discovery_cache_path();
     json_t *out = json_object();
@@ -125,7 +125,7 @@ json_t *load_discovery_cache(void) {
 }
 
 /* ── _save_discovery_cache (best-effort atomic write) ───────────────── */
-/* PoP: _save_discovery_cache @ tools/registry.py:_save_discovery_cache */
+/* PoP: save_discovery_cache @ tools/registry.py:_save_discovery_cache */
 void save_discovery_cache(const json_t *cache) {
     char *path = discovery_cache_path();
     if (!path) return;
@@ -171,7 +171,7 @@ char *check_fn_cache_scope(void) {
 }
 
 /* ── _prune_check_fn_caches ────────────────────────────────────────── */
-/* PoP: _prune_check_fn_caches @ tools/registry.py:_prune_check_fn_caches */
+/* PoP: cfn_prune @ tools/registry.py:_prune_check_fn_caches */
 static void cfn_prune(double now) {
     /* expire TTL-stale verdicts */
     for (size_t i = 0; i < g_cfn_count; i++) {
@@ -205,7 +205,7 @@ static void cfn_prune(double now) {
 }
 
 /* ── get_cached_check_fn_result ────────────────────────────────────── */
-/* PoP: get_cached_check_fn_result @ tools/registry.py:get_cached_check_fn_result */
+/* PoP: verdict @ tools/registry.py:get_cached_check_fn_result */
 /* Return the current cached verdict for *fn* if its TTL is still valid.
  * NEVER executes the probe.  For read-only surfaces.  Returns: default_value
  * when no fresh verdict (hit=false), cached value when hit=true. */
@@ -240,7 +240,7 @@ bool get_cached_check_fn_result(void *fn, bool *hit, bool default_value) {
 }
 
 /* ── cache write + read-for-call path (used by _check_fn_cached parity) ─ */
-/* PoP: _check_fn_cached @ tools/registry.py:_check_fn_cached */
+/* PoP: check_fn_cached @ tools/registry.py:_check_fn_cached */
 bool check_fn_cached(bool (*fn)(void)) {
     double now = cfn_now();
     char *scope = check_fn_cache_scope();

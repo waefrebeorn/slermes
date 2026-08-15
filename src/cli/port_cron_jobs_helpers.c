@@ -41,7 +41,7 @@ static void lc(char *s)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: parse_duration @ cron/jobs.py:parse_duration */
+/* PoP: jobs_parse_duration @ cron/jobs.py:parse_duration */
 /* Parses "30m"->30, "2h"->120, "1d"->1440. Returns minutes, or -1 on invalid. */
 int jobs_parse_duration(const char *s)
 {
@@ -68,7 +68,7 @@ int jobs_parse_duration(const char *s)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: compute_next_run @ cron/jobs.py:compute_next_run */
+/* PoP: NULL @ cron/jobs.py:compute_next_run */
 /* schedule_json: {"kind":"once","run_at":"ISO"} | {"kind":"interval","minutes":N}
  * last_run_at: ISO timestamp string or NULL.
  * Returns malloc'd ISO timestamp, or NULL (cron kind / error). Caller frees. */
@@ -158,7 +158,7 @@ static void _atomic_write_counter_impl(const char *path, long value) {
     rename(tmppath, path);
 }
 
-/* PoP: _ensure_croniter @ cron/jobs.py:_ensure_croniter */
+/* PoP: port @ cron/jobs.py:_ensure_croniter */
 /* libcron is always linked; the croniter external dependency is unconditionally
  * available in the C port (mirrors HAS_CRONITER=True). */
 bool _ensure_croniter(void) { (void)HAS_CRONITER; return true; }

@@ -11,7 +11,7 @@
 #include <ctype.h>
 #include "hermes_json.h"
 
-/* PoP: _redact_reference_text @ agent/moa_loop.py:_redact_reference_text */
+/* PoP: moa_u_redact_reference_text @ agent/moa_loop.py:_redact_reference_text */
 int moa_u_redact_reference_text(const char *arg) {
     /* Python: secrets + email/phone redaction. Arg = "text\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -22,7 +22,7 @@ int moa_u_redact_reference_text(const char *arg) {
     return 0;
 }
 
-/* PoP: _moa_privacy_mode @ agent/moa_loop.py:_moa_privacy_mode */
+/* PoP: moa_u_moa_privacy_mode @ agent/moa_loop.py:_moa_privacy_mode */
 int moa_u_moa_privacy_mode(const char *arg) {
     /* Python: coerce_privacy_filter(raw.get("privacy_filter")). Arg =
      * JSON moa config (or empty). */
@@ -43,7 +43,7 @@ int moa_u_moa_privacy_mode(const char *arg) {
     return 0;
 }
 
-/* PoP: _redact_reference_outputs @ agent/moa_loop.py:_redact_reference_outputs */
+/* PoP: moa_u_redact_reference_outputs @ agent/moa_loop.py:_redact_reference_outputs */
 int moa_u_redact_reference_outputs(const char *arg) {
     /* Python: redact advisor text, keep accounting. Arg = "labels\ttexts"
      * (tab-sep pairs, text may be redacted already). */
@@ -52,7 +52,7 @@ int moa_u_redact_reference_outputs(const char *arg) {
     return 0;
 }
 
-/* PoP: _redact_trace_messages @ agent/moa_loop.py:_redact_trace_messages */
+/* PoP: moa_u_redact_trace_messages @ agent/moa_loop.py:_redact_trace_messages */
 int moa_u_redact_trace_messages(const char *arg) {
     /* Python: redact trace copies. Arg = "messages_json\tstate\tresult". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -64,7 +64,7 @@ int moa_u_redact_trace_messages(const char *arg) {
     return 0;
 }
 
-/* PoP: _redact_trace_accounting @ agent/moa_loop.py:_redact_trace_accounting */
+/* PoP: moa_u_redact_trace_accounting @ agent/moa_loop.py:_redact_trace_accounting */
 int moa_u_redact_trace_accounting(const char *arg) {
     /* Python: accounting copy w/ redacted text. Arg =
      * "state\tresult". */
@@ -76,7 +76,7 @@ int moa_u_redact_trace_accounting(const char *arg) {
     return 0;
 }
 
-/* PoP: _slot_label @ agent/moa_loop.py:_slot_label */
+/* PoP: moa_u_slot_label @ agent/moa_loop.py:_slot_label */
 int moa_u_slot_label(const char *arg) {
     /* Python: f"{provider.strip()}:{model.strip()}" + [reasoning=effort]
      * when effort. Arg = JSON slot. */
@@ -99,7 +99,7 @@ int moa_u_slot_label(const char *arg) {
     return 0;
 }
 
-/* PoP: _slot_reasoning_config @ agent/moa_loop.py:_slot_reasoning_config */
+/* PoP: moa_u_slot_reasoning_config @ agent/moa_loop.py:_slot_reasoning_config */
 int moa_u_slot_reasoning_config(const char *arg) {
     /* Python: parse slot reasoning_effort, None on bad. Arg = effort. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -111,7 +111,7 @@ int moa_u_slot_reasoning_config(const char *arg) {
     return 0;
 }
 
-/* PoP: _aggregator_reasoning_config @ agent/moa_loop.py:_aggregator_reasoning_config */
+/* PoP: moa_u_aggregator_reasoning_config @ agent/moa_loop.py:_aggregator_reasoning_config */
 int moa_u_aggregator_reasoning_config(const char *arg) {
     /* Python: slot > per-model > global. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -122,7 +122,7 @@ int moa_u_aggregator_reasoning_config(const char *arg) {
     return 0;
 }
 
-/* PoP: _slot_runtime @ agent/moa_loop.py:_slot_runtime */
+/* PoP: moa_u_slot_runtime @ agent/moa_loop.py:_slot_runtime */
 int moa_u_slot_runtime(const char *arg) {
     /* Python: canonical resolver. Arg =
      * "state\tresult". */
@@ -134,7 +134,7 @@ int moa_u_slot_runtime(const char *arg) {
     return 0;
 }
 
-/* PoP: _merge_slot_extra_body @ agent/moa_loop.py:_merge_slot_extra_body */
+/* PoP: moa_u_merge_slot_extra_body @ agent/moa_loop.py:_merge_slot_extra_body */
 int moa_u_merge_slot_extra_body(const char *arg) {
     /* Python: {**slot, **caller} when both dicts; caller wins. Arg =
      * "slot_json\tcaller_json" (empty = none). */
@@ -196,7 +196,7 @@ int moa_u_merge_slot_extra_body(const char *arg) {
     return 0;
 }
 
-/* PoP: _maybe_apply_moa_cache_control @ agent/moa_loop.py:_maybe_apply_moa_cache_control */
+/* PoP: moa_u_maybe_apply_moa_cache_control @ agent/moa_loop.py:_maybe_apply_moa_cache_control */
 int moa_u_maybe_apply_moa_cache_control(const char *arg) {
     /* Python: policy-resolved decoration. Arg =
      * "state\tresult". */
@@ -208,7 +208,7 @@ int moa_u_maybe_apply_moa_cache_control(const char *arg) {
     return 0;
 }
 
-/* PoP: _run_reference @ agent/moa_loop.py:_run_reference */
+/* PoP: moa_u_run_reference @ agent/moa_loop.py:_run_reference */
 int moa_u_run_reference(const char *arg) {
     /* Python: single ref call. Arg =
      * "state\tresult". */
@@ -220,7 +220,7 @@ int moa_u_run_reference(const char *arg) {
     return 0;
 }
 
-/* PoP: _trim_messages_for_reference @ agent/moa_loop.py:_trim_messages_for_reference */
+/* PoP: moa_u_trim_messages_for_reference @ agent/moa_loop.py:_trim_messages_for_reference */
 int moa_u_trim_messages_for_reference(const char *arg) {
     /* Python: window-fit trim. Arg =
      * "trimmed\tstate\tresult". */
@@ -235,7 +235,7 @@ int moa_u_trim_messages_for_reference(const char *arg) {
     return 0;
 }
 
-/* PoP: _run_references_parallel @ agent/moa_loop.py:_run_references_parallel */
+/* PoP: moa_u_run_references_parallel @ agent/moa_loop.py:_run_references_parallel */
 int moa_u_run_references_parallel(const char *arg) {
     /* Python: fan-out + order. Arg =
      * "done\tstate\tresult". */
@@ -248,7 +248,7 @@ int moa_u_run_references_parallel(const char *arg) {
     return 0;
 }
 
-/* PoP: _truncate_tool_result @ agent/moa_loop.py:_truncate_tool_result */
+/* PoP: moa_u_truncate_tool_result @ agent/moa_loop.py:_truncate_tool_result */
 int moa_u_truncate_tool_result(const char *arg) {
     /* Python: head+tail halves with omitted marker. Arg = "text\tbudget". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -264,7 +264,7 @@ int moa_u_truncate_tool_result(const char *arg) {
     return 0;
 }
 
-/* PoP: _render_tool_calls @ agent/moa_loop.py:_render_tool_calls */
+/* PoP: moa_u_render_tool_calls @ agent/moa_loop.py:_render_tool_calls */
 int moa_u_render_tool_calls(const char *arg) {
     /* Python: flattened lines. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -276,7 +276,7 @@ int moa_u_render_tool_calls(const char *arg) {
     return 0;
 }
 
-/* PoP: _reference_messages @ agent/moa_loop.py:_reference_messages */
+/* PoP: moa_u_reference_messages @ agent/moa_loop.py:_reference_messages */
 int moa_u_reference_messages(const char *arg) {
     /* Python: advisory text view. Arg =
      * "ends_user\tstate\tresult". */
@@ -289,7 +289,7 @@ int moa_u_reference_messages(const char *arg) {
     return 0;
 }
 
-/* PoP: _preset_temperature @ agent/moa_loop.py:_preset_temperature */
+/* PoP: moa_u_preset_temperature @ agent/moa_loop.py:_preset_temperature */
 int moa_u_preset_temperature(const char *arg) {
     /* Python: None on absent/empty/null. Arg = "value\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -302,7 +302,7 @@ int moa_u_preset_temperature(const char *arg) {
     return 0;
 }
 
-/* PoP: _is_failed_reference @ agent/moa_loop.py:_is_failed_reference */
+/* PoP: moa_u_is_failed_reference @ agent/moa_loop.py:_is_failed_reference */
 int moa_u_is_failed_reference(const char *arg) {
     /* Python: lstrip().lower() startswith "[failed:" or "[skipped:". */
     if (!arg) return 0;
@@ -311,7 +311,7 @@ int moa_u_is_failed_reference(const char *arg) {
     return strncasecmp(s, "[failed:", 8) == 0 || strncasecmp(s, "[skipped:", 9) == 0;
 }
 
-/* PoP: _successful_references @ agent/moa_loop.py:_successful_references */
+/* PoP: moa_u_successful_references @ agent/moa_loop.py:_successful_references */
 int moa_u_successful_references(const char *arg) {
     /* Python: keep outputs whose result is not a [failed:/[skipped: sentinel
      * (preserving payload). Arg = tab-separated "payload\tresult" pairs. */
@@ -345,7 +345,7 @@ int moa_u_successful_references(const char *arg) {
     return 0;
 }
 
-/* PoP: _failed_reference_labels @ agent/moa_loop.py:_failed_reference_labels */
+/* PoP: moa_u_failed_reference_labels @ agent/moa_loop.py:_failed_reference_labels */
 int moa_u_failed_reference_labels(const char *arg) {
     /* Python: labels whose reference text is a failure/skip sentinel.
      * Arg = JSON array of [label, text] pairs. */
@@ -367,7 +367,7 @@ int moa_u_failed_reference_labels(const char *arg) {
     return 0;
 }
 
-/* PoP: _degraded_notice @ agent/moa_loop.py:_degraded_notice */
+/* PoP: moa_u_degraded_notice @ agent/moa_loop.py:_degraded_notice */
 int moa_u_degraded_notice(const char *arg) {
     /* Python (failed_labels, policy): empty when no labels or policy is
      * "silent"; else "[Reference models unavailable: <labels>]".
@@ -391,7 +391,7 @@ int moa_u_degraded_notice(const char *arg) {
     return 0;
 }
 
-/* PoP: aggregate_moa_context @ agent/moa_loop.py:aggregate_moa_context */
+/* PoP: moa_aggregate_moa_context @ agent/moa_loop.py:aggregate_moa_context */
 int moa_aggregate_moa_context(const char *arg) {
     /* Python: reference fan-out. Arg =
      * "notes\tstate\tresult". */
@@ -404,7 +404,7 @@ int moa_aggregate_moa_context(const char *arg) {
     return 0;
 }
 
-/* PoP: _attach_reference_guidance @ agent/moa_loop.py:_attach_reference_guidance */
+/* PoP: moa_u_attach_reference_guidance @ agent/moa_loop.py:_attach_reference_guidance */
 int moa_u_attach_reference_guidance(const char *arg) {
     /* Python: cache-safe append. Arg =
      * "last_user\tstring_content\tstate\tresult". */
@@ -424,7 +424,7 @@ int moa_u_attach_reference_guidance(const char *arg) {
     return 0;
 }
 
-/* PoP: consume_reference_usage @ agent/moa_loop.py:consume_reference_usage */
+/* PoP: moa_consume_reference_usage @ agent/moa_loop.py:consume_reference_usage */
 int moa_consume_reference_usage(const char *arg) {
     /* Python: pop pending usage + cost, reset both. Arg =
      * "usage_json\tcost\tstate". */
@@ -437,7 +437,7 @@ int moa_consume_reference_usage(const char *arg) {
     return 0;
 }
 
-/* PoP: _record_late_reference_accounting @ agent/moa_loop.py:_record_late_reference_accounting */
+/* PoP: moa_u_record_late_reference_accounting @ agent/moa_loop.py:_record_late_reference_accounting */
 int moa_u_record_late_reference_accounting(const char *arg) {
     /* Python: late-spend fold. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -448,7 +448,7 @@ int moa_u_record_late_reference_accounting(const char *arg) {
     return 0;
 }
 
-/* PoP: consume_and_save_trace @ agent/moa_loop.py:consume_and_save_trace */
+/* PoP: moa_consume_and_save_trace @ agent/moa_loop.py:consume_and_save_trace */
 int moa_consume_and_save_trace(const char *arg) {
     /* Python: pending flush. Arg =
      * "has_pending\tstate\tresult". */
@@ -462,7 +462,7 @@ int moa_consume_and_save_trace(const char *arg) {
     return 0;
 }
 
-/* PoP: prepare @ agent/moa_loop.py:prepare */
+/* PoP: moa_prepare @ agent/moa_loop.py:prepare */
 int moa_prepare(const char *arg) {
     /* Python: advisor fan-out -> aggregator request. Arg = "messages\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -473,7 +473,7 @@ int moa_prepare(const char *arg) {
     return 0;
 }
 
-/* PoP: rebase_prepared_request @ agent/moa_loop.py:rebase_prepared_request */
+/* PoP: moa_rebase_prepared_request @ agent/moa_loop.py:rebase_prepared_request */
 int moa_rebase_prepared_request(const char *arg) {
     /* Python: apply guidance to rebuilt transcript. Arg =
      * "guidance\tmessages_json\tresult". */
@@ -486,7 +486,7 @@ int moa_rebase_prepared_request(const char *arg) {
     return 0;
 }
 
-/* PoP: _call_prepared_aggregator @ agent/moa_loop.py:_call_prepared_aggregator */
+/* PoP: moa_u_call_prepared_aggregator @ agent/moa_loop.py:_call_prepared_aggregator */
 int moa_u_call_prepared_aggregator(const char *arg) {
     /* Python: exactly-once aggregator. Arg =
      * "state\tresult\terr". */
@@ -507,7 +507,7 @@ int moa_u_call_prepared_aggregator(const char *arg) {
     return 0;
 }
 
-/* PoP: consume_reference_usage @ agent/moa_loop.py:consume_reference_usage */
+/* PoP: moa_consume_reference_usage_2 @ agent/moa_loop.py:consume_reference_usage */
 int moa_consume_reference_usage_2(const char *arg) {
     /* Python: duplicate stub — same as consume_reference_usage. */
     if (!arg || !*arg) { printf("zeroed\t\n"); return 0; }
@@ -519,7 +519,7 @@ int moa_consume_reference_usage_2(const char *arg) {
     return 0;
 }
 
-/* PoP: last_aggregator_slot @ agent/moa_loop.py:last_aggregator_slot */
+/* PoP: moa_last_aggregator_slot @ agent/moa_loop.py:last_aggregator_slot */
 int moa_last_aggregator_slot(const char *arg) {
     /* Python: chat.completions.last_aggregator_slot or None. Arg = slot JSON
      * or empty. */
@@ -528,7 +528,7 @@ int moa_last_aggregator_slot(const char *arg) {
     return 0;
 }
 
-/* PoP: consume_and_save_trace @ agent/moa_loop.py:consume_and_save_trace */
+/* PoP: moa_consume_and_save_trace_2 @ agent/moa_loop.py:consume_and_save_trace */
 int moa_consume_and_save_trace_2(const char *arg) {
     /* Python: alt variant. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -539,7 +539,7 @@ int moa_consume_and_save_trace_2(const char *arg) {
     return 0;
 }
 
-/* PoP: build_moa_facade @ agent/moa_loop.py:build_moa_facade */
+/* PoP: moa_build_moa_facade @ agent/moa_loop.py:build_moa_facade */
 int moa_build_moa_facade(const char *arg) {
     /* Python: reference relay. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }

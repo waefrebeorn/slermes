@@ -18,14 +18,14 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _cmd_list @ hermes_cli/pairing.py:_cmd_list */
+/* PoP: par_cmd_list @ hermes_cli/pairing.py:_cmd_list */
 char *par_cmd_list(void) {
     /* Python: pending + approved users. */
     printf("pairing list rendered (pending + approved)\n");
     return strdup("[]");
 }
 
-/* PoP: _cmd_approve @ hermes_cli/pairing.py:_cmd_approve */
+/* PoP: par_cmd_approve @ hermes_cli/pairing.py:_cmd_approve */
 char *par_cmd_approve(const char *platform, const char *code) {
     /* Python: approve a pairing code. */
     if (!platform || !code) return NULL;
@@ -35,7 +35,7 @@ char *par_cmd_approve(const char *platform, const char *code) {
     return strdup("{\"success\": true}");
 }
 
-/* PoP: _cmd_revoke @ hermes_cli/pairing.py:_cmd_revoke */
+/* PoP: par_cmd_revoke @ hermes_cli/pairing.py:_cmd_revoke */
 char *par_cmd_revoke(const char *platform, const char *user_id) {
     /* Python: revoke access. */
     if (!platform || !user_id) return NULL;

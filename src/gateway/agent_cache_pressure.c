@@ -28,7 +28,7 @@ int gateway_cgroup_cleanup_own_cgroup_path(const char *buf, char *out, size_t ou
 
 /* ── _positive_int(value) ──
  * value is a json_t*. Booleans/None -> NULL (sentinel ACB_UNSET_INT). */
-/* PoP: tg_positive_int @ gateway/agent_cache_pressure.py:_positive_int */
+/* PoP: acb_positive_int @ gateway/agent_cache_pressure.py:_positive_int */
 int acb_positive_int(const void *value) {
     const json_t *v = (const json_t *)value;
     if (!v) return ACB_UNSET_INT;
@@ -242,7 +242,7 @@ bool acb_transcript_persistence_caught_up(const void *agent) {
 /* ── plan_pressure_evictions(...) ──
  * ordered_entries: array of {key, agent} pairs, LRU→MRU order.
  * Returns malloc'd array of indices; *out_count set. */
-/* PoP: plan_pressure_evictions @ gateway/agent_cache_pressure.py:plan_pressure_evictions */
+/* PoP: acb_plan_pressure_evictions @ gateway/agent_cache_pressure.py:plan_pressure_evictions */
 typedef struct { const char *key; const void *agent; } acb_entry_t;
 size_t *acb_plan_pressure_evictions(const void *ordered_entries, size_t entry_count,
                                     bool (*is_evictable)(const char *key, const void *agent, void *user),

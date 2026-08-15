@@ -363,7 +363,7 @@ char *verification_stop_build_nudge(const char *changed_paths_json, int attempts
         size_t cap = strlen(joined) + 256;
         instruction = malloc(cap);
         snprintf(instruction, cap,
-/* PoP: now @ gateway/session.py:_now */
+/* PoP: helpers @ gateway/session.py:_now */
             "Run the relevant verification command now (%s), read any failure, repair the code, and summarize what passed.",
             joined);
         free(joined);
@@ -412,7 +412,7 @@ static void vs_expand_user(const char *raw, char *out, size_t out_size)
     snprintf(out, out_size, "%s", raw);
 }
 
-/* PoP: verification_stop_candidate_cwds @ agent/verification_stop.py:_candidate_cwds */
+/* PoP: strings @ agent/verification_stop.py:_candidate_cwds */
 /* Takes JSON array of raw path strings; returns JSON array of resolved,
  * de-duplicated candidate cwd strings (each path if it is a dir, else its
  * parent). Faithful to Path.resolve/is_dir with a seen-set. */

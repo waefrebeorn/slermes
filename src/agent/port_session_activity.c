@@ -27,7 +27,7 @@ static const char *PROVENANCE_KNOWN[] = {
     NULL
 };
 
-/* PoP: bound_activity_description @ agent/session_activity.py:bound_activity_description */
+/* PoP: sa_bound_activity_description @ agent/session_activity.py:bound_activity_description */
 char *sa_bound_activity_description(const char *description) {
     /* Python: clamp free-form activity text to the shared budget (120). */
     if (!description) return strdup("");
@@ -55,7 +55,7 @@ char *sa_bound_activity_description(const char *description) {
     return out;
 }
 
-/* PoP: normalize_activity_provenance @ agent/session_activity.py:normalize_activity_provenance */
+/* PoP: sa_normalize_activity_provenance @ agent/session_activity.py:normalize_activity_provenance */
 const char *sa_normalize_activity_provenance(const char *provenance) {
     /* Python: return a known provenance, or UNKNOWN when unset/unrecognized. */
     if (!provenance) return "unknown";
@@ -74,7 +74,7 @@ const char *sa_normalize_activity_provenance(const char *provenance) {
     return "unknown";
 }
 
-/* PoP: reset_session_activity_persist_window @ agent/session_activity.py:reset_session_activity_persist_window */
+/* PoP: sa_reset_session_activity_persist_window @ agent/session_activity.py:reset_session_activity_persist_window */
 int sa_reset_session_activity_persist_window(const char *arg) {
     /* Python: clear the agent's durable SessionDB activity persist
      * rate-limit window. The C core resets its persist-last stamp to 0
@@ -84,7 +84,7 @@ int sa_reset_session_activity_persist_window(const char *arg) {
     return 0;
 }
 
-/* PoP: build_activity_snapshot @ agent/session_activity.py:build_activity_snapshot */
+/* PoP: sa_build_activity_snapshot @ agent/session_activity.py:build_activity_snapshot */
 char *sa_build_activity_snapshot(const char *arg) {
     /* Python: build the shared activity snapshot (+ optional extras).
      * Arg = "last_activity_at\tlast_activity_description\tlast_activity_provenance\tnow". */

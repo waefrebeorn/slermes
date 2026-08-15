@@ -612,7 +612,7 @@ char *format_tools_for_system_message(tool_registry_t *reg) {
     return result ? result : strdup("[]");
 }
 
-/* PoP: system_prompt_reconstruct_static_prefix @ agent/system_prompt.py:reconstruct_static_prefix */
+/* PoP: reconstruct_static_prefix @ agent/system_prompt.py:reconstruct_static_prefix */
 
 /* Port of Python reconstruct_static_prefix(agent, system_prompt, *, log_label).
  *

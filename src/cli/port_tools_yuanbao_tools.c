@@ -24,9 +24,9 @@ void *cli_tools_yuanbao_tools__get_active_adapter(void) {
 }
 
 /* PoP: cli_tools_yuanbao_tools__get_active_adapter
-/* PoP: cli_tools_yuanbao_tools__get_active_adapter @ tools/yuanbao_tools.py:_get_active_adapter */
+/* PoP: if @ tools/yuanbao_tools.py:_get_active_adapter */
 
-/* PoP: cli_tools_yuanbao_tools_get_group_info @ tools/yuanbao_tools.py:get_group_info */
+/* PoP: if @ tools/yuanbao_tools.py:get_group_info */
 json_node_t* cli_tools_yuanbao_tools_get_group_info(const char *group_code) {
     /*
      * Query group basic info (group name, member count, owner).
@@ -49,7 +49,7 @@ json_node_t* cli_tools_yuanbao_tools_get_group_info(const char *group_code) {
     return result;
 }
 
-/* PoP: cli_tools_yuanbao_tools_query_group_members @ tools/yuanbao_tools.py:query_group_members */
+/* PoP: if @ tools/yuanbao_tools.py:query_group_members */
 json_node_t* cli_tools_yuanbao_tools_query_group_members(const char *group_code, const char *action, const char *name, int mention) {
     /*
      * Unified group member query tool. action: find, list_bots, list_all.
@@ -75,7 +75,7 @@ json_node_t* cli_tools_yuanbao_tools_query_group_members(const char *group_code,
     return result;
 }
 
-/* PoP: cli_tools_yuanbao_tools_search_sticker @ tools/yuanbao_tools.py:search_sticker */
+/* PoP: if @ tools/yuanbao_tools.py:search_sticker */
 json_node_t* cli_tools_yuanbao_tools_search_sticker(const char *query, int limit) {
     /*
      * Search built-in stickers by keyword, return top-N candidates.

@@ -21,36 +21,36 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: busy_input_hint_gateway @ agent/onboarding.py:busy_input_hint_gateway */
+/* PoP: obd_busy_input_hint_gateway @ agent/onboarding.py:busy_input_hint_gateway */
 char *obd_busy_input_hint_gateway(const char *mode) {
     /* Python: first-time busy hint, gateway flavor. */
     if (!mode) return strdup("");
     return strdup("I'm busy — I'll respond shortly.");
 }
 
-/* PoP: busy_input_hint_cli @ agent/onboarding.py:busy_input_hint_cli */
+/* PoP: obd_busy_input_hint_cli @ agent/onboarding.py:busy_input_hint_cli */
 char *obd_busy_input_hint_cli(const char *mode) {
     /* Python: plain-text CLI hint. */
     if (!mode) return strdup("");
     return strdup("(still working…)");
 }
 
-/* PoP: tool_progress_hint_gateway @ agent/onboarding.py:tool_progress_hint_gateway */
+/* PoP: obd_tool_progress_hint_gateway @ agent/onboarding.py:tool_progress_hint_gateway */
 char *obd_tool_progress_hint_gateway(void) {
     return strdup("💡 First-time tip — that tool took a while and I'm streaming every step.");
 }
 
-/* PoP: tool_progress_hint_cli @ agent/onboarding.py:tool_progress_hint_cli */
+/* PoP: obd_tool_progress_hint_cli @ agent/onboarding.py:tool_progress_hint_cli */
 char *obd_tool_progress_hint_cli(void) {
     return strdup("(tip) That tool ran for a while. Use /verbose to cycle tool-progress display.");
 }
 
-/* PoP: openclaw_residue_hint_cli @ agent/onboarding.py:openclaw_residue_hint_cli */
+/* PoP: obd_openclaw_residue_hint_cli @ agent/onboarding.py:openclaw_residue_hint_cli */
 char *obd_openclaw_residue_hint_cli(void) {
     return strdup("(tip) Found ~/.openclaw/ from a previous assistant — Hermes won't touch it.");
 }
 
-/* PoP: detect_openclaw_residue @ agent/onboarding.py:detect_openclaw_residue */
+/* PoP: obd_detect_openclaw_residue @ agent/onboarding.py:detect_openclaw_residue */
 bool obd_detect_openclaw_residue(void) {
     /* Python: ~/.openclaw present in HOME — REAL. */
     const char *home = getenv("HOME");
@@ -62,7 +62,7 @@ bool obd_detect_openclaw_residue(void) {
     return r;
 }
 
-/* PoP: profile_build_mode @ agent/onboarding.py:profile_build_mode */
+/* PoP: obd_profile_build_mode @ agent/onboarding.py:profile_build_mode */
 char *obd_profile_build_mode(const char *config_yaml) {
     /* Python: auto/manual/never. */
     if (!config_yaml) return strdup("auto");
@@ -79,13 +79,13 @@ char *obd_profile_build_mode(const char *config_yaml) {
     return r;
 }
 
-/* PoP: profile_build_directive @ agent/onboarding.py:profile_build_directive */
+/* PoP: obd_profile_build_directive @ agent/onboarding.py:profile_build_directive */
 char *obd_profile_build_directive(void) {
     /* Python: system-note directive for first message. */
     return strdup("[profile-build] Observe preferences and build my profile.");
 }
 
-/* PoP: is_seen @ agent/onboarding.py:is_seen */
+/* PoP: obd_is_seen @ agent/onboarding.py:is_seen */
 bool obd_is_seen(const char *config_yaml, const char *flag) {
     /* Python: onboarding.seen.<flag> present. */
     if (!config_yaml || !flag) return false;
@@ -94,7 +94,7 @@ bool obd_is_seen(const char *config_yaml, const char *flag) {
     return strstr(config_yaml, needle) != NULL;
 }
 
-/* PoP: mark_seen @ agent/onboarding.py:mark_seen */
+/* PoP: obd_mark_seen @ agent/onboarding.py:mark_seen */
 int obd_mark_seen(const char *config_path, const char *flag) {
     /* Python: persist onboarding.seen.<flag>=True atomically. */
     if (!config_path || !flag) return -1;

@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_environments_singularity_find_singularity_executable @ tools/environments/singularity.py:_find_singularity_executable */
+/* PoP: tools_environments_singularity_find_singularity_executable_p @ tools/environments/singularity.py:_find_singularity_executable */
 json_t *tools_environments_singularity_find_singularity_executable_p(void) {
     return json_object();
 }

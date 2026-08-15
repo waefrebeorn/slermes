@@ -510,7 +510,7 @@ static char *iso_local(time_t ts) {
     return out;
 }
 
-/* PoP: now_iso @ tools/skill_usage.py:_now_iso */
+/* PoP: ISO @ tools/skill_usage.py:_now_iso */
 /* Current time ISO (local, aware). Mirrors _hermes_now().isoformat(). */
 char *now_iso(void) { return iso_local(time(NULL)); }
 
@@ -690,7 +690,7 @@ done:
     return out;
 }
 
-/* PoP: cronjobs_recoverable_oneshot_run_at @ cron/jobs.py:_recoverable_oneshot_run_at */
+/* PoP: recoverable_oneshot_run_at @ cron/jobs.py:_recoverable_oneshot_run_at */
 static char *recoverable_oneshot_run_at(const json_t *schedule, time_t now,
                                         const char *last_run_at) {
     const char *kind = json_object_get_string(schedule, "kind", "");
@@ -785,7 +785,7 @@ char *cronjobs_compute_next_run(const json_t *schedule, const char *last_run_at)
 
 /* ── Ticker heartbeat ─────────────────────────────────────────────── */
 
-/* PoP: cronjobs_atomic_write_epoch @ cron/jobs.py:_atomic_write_epoch */
+/* PoP: atomic_write_epoch @ cron/jobs.py:_atomic_write_epoch */
 static void atomic_write_epoch(const char *path) {
     cronjobs_ensure_dirs();
     char *dir = cronjobs_cron_dir();
@@ -817,7 +817,7 @@ void cronjobs_record_ticker_heartbeat(bool success) {
     }
 }
 
-/* PoP: cronjobs_epoch_file_age @ cron/jobs.py:_epoch_file_age */
+/* PoP: epoch_file_age @ cron/jobs.py:_epoch_file_age */
 static double epoch_file_age(const char *path) {
     FILE *f = fopen(path, "r");
     if (!f) return -1.0;
@@ -946,7 +946,7 @@ bool cronjobs_save_jobs(const json_t *jobs) {
     return ok;
 }
 
-/* PoP: cronjobs_ensure_aware @ cron/jobs.py:_ensure_aware */
+/* PoP: input @ cron/jobs.py:_ensure_aware */
 /* Single-home Slermes stores aware ISO timestamps (see iso_local); naive
  * timestamps never occur, so "ensure aware" is identity with a guard that
  * returns NULL for empty input (mirrors fail-open on unparseable input). */
@@ -955,14 +955,14 @@ static char *ensure_aware(const char *iso) {
     return xstrdup(iso);
 }
 
-/* PoP: cronjobs_resolve_default_model_snapshot @ cron/jobs.py:_resolve_default_model_snapshot */
+/* PoP: exactly @ cron/jobs.py:_resolve_default_model_snapshot */
 /* Single-home: there is no multi-profile config resolver wired here, and the
  * Python path fail-opens to None when config is missing/unreadable. We mirror
  * that exactly (null snapshot), so an unpinned-model job carries no snapshot
  * and the fire-time drift guard treats "no snapshot" as "no assertion". */
 static char *resolve_default_model_snapshot(void) { return NULL; }
 
-/* PoP: cronjobs_compute_provider_model_snapshots @ cron/jobs.py:_compute_provider_model_snapshots */
+/* PoP: compute_provider_model_snapshots @ cron/jobs.py:_compute_provider_model_snapshots */
 static void compute_provider_model_snapshots(const char *provider, const char *model,
                                              const char *base_url, bool no_agent,
                                              char **out_provider, char **out_model) {
@@ -974,7 +974,7 @@ static void compute_provider_model_snapshots(const char *provider, const char *m
     if (!model || !*model) *out_model = resolve_default_model_snapshot();
 }
 
-/* PoP: cronjobs_normalized_inference_axes @ cron/jobs.py:_normalized_inference_axes */
+/* PoP: normalized_inference_axes @ cron/jobs.py:_normalized_inference_axes */
 static void normalized_inference_axes(const json_t *job, char **provider, char **model,
                                       char **base_url, bool *no_agent) {
     *provider = normalize_optional_text(json_object_get(job, "provider"), false);
@@ -1016,7 +1016,7 @@ char *cronjobs_normalize_workdir(const char *workdir, char **err) {
     return xstrdup(resolved);
 }
 
-/* PoP: cronjobs_normalize_job_optional_text @ cron/jobs.py:_normalize_job_optional_text */
+/* PoP: normalize_optional_text @ cron/jobs.py:_normalize_job_optional_text */
 static char *normalize_optional_text(const json_t *value, bool strip_trailing_slash) {
     if (!json_is_string(value)) return NULL;
     char *text = str_strip_dup(json_string_value(value));
@@ -1735,7 +1735,7 @@ bool cronjobs_advance_next_run(const char *job_id) {
     return ret;
 }
 
-/* PoP: cronjobs_machine_id @ cron/jobs.py:_machine_id */
+/* PoP: machine_id @ cron/jobs.py:_machine_id */
 static char *machine_id(void) {
     const char *explicit = getenv("HERMES_MACHINE_ID");
     if (explicit) {
@@ -1859,7 +1859,7 @@ static int iso_utc_offset(const char *iso) {
     return INT_MIN; /* naive */
 }
 
-/* PoP: cronjobs_timezone_offset_mismatch @ cron/jobs.py:_timezone_offset_mismatch */
+/* PoP: timezone_offset_mismatch @ cron/jobs.py:_timezone_offset_mismatch */
 static bool timezone_offset_mismatch(const char *stored_iso, int now_off) {
     int so = iso_utc_offset(stored_iso);
     if (so == INT_MIN || now_off == INT_MIN) return false;
@@ -1878,7 +1878,7 @@ static time_t iso_wall_clock(const char *iso) {
     return mktime(&tm);
 }
 
-/* PoP: cronjobs_stored_wall_clock_is_future @ cron/jobs.py:_stored_wall_clock_is_future */
+/* PoP: stored_wall_clock_is_future @ cron/jobs.py:_stored_wall_clock_is_future */
 static bool stored_wall_clock_is_future(const char *stored_iso, time_t now) {
     time_t sw = iso_wall_clock(stored_iso);
     struct tm nl; localtime_r(&now, &nl); nl.tm_isdst = -1;
@@ -2011,7 +2011,7 @@ json_t *cronjobs_get_due_jobs(void) {
 
 /* ── Output save + prune ──────────────────────────────────────────── */
 
-/* PoP: cronjobs_cron_output_keep @ cron/jobs.py:_cron_output_keep */
+/* PoP: cron_output_keep @ cron/jobs.py:_cron_output_keep */
 static int cron_output_keep(void) {
     /* config-driven in Python; single-home default here. */
     return CRONJOBS_OUTPUT_DEFAULT_KEEP;
@@ -2021,7 +2021,7 @@ static int cmp_str_desc(const void *a, const void *b) {
     return strcmp(*(const char *const *)b, *(const char *const *)a);
 }
 
-/* PoP: cronjobs_prune_job_output @ cron/jobs.py:_prune_job_output */
+/* PoP: prune_job_output @ cron/jobs.py:_prune_job_output */
 static int prune_job_output(const char *dir, int keep) {
     if (keep <= 0) return 0;
     DIR *d = opendir(dir);
@@ -2214,7 +2214,7 @@ json_t *cronjobs_rewrite_skill_refs(const json_t *consolidated, const json_t *pr
     return report;
 }
 
-/* PoP: _jobs_lock @ cron/jobs.py:_jobs_lock */
+/* PoP: lock @ cron/jobs.py:_jobs_lock */
 /* Reentrant lock state: depth counter + process mutex + advisory fd.
  * Mirrors Python's _jobs_lock context manager: nested calls in the same
  * thread reuse the held lock (depth), and the critical section is also
@@ -2267,7 +2267,7 @@ int cron_jobs_lock_init(void)
     return 0;
 }
 
-/* PoP: __init__ @ cron/jobs.py:__init__ */
+/* PoP: cron_jobs_ambiguous_init @ cron/jobs.py:__init__ */
 char *cron_jobs_ambiguous_init(const char *ref, const char *matches_json)
 {
     json_t *o = json_object();
@@ -2285,7 +2285,7 @@ char *cron_jobs_ambiguous_init(const char *ref, const char *matches_json)
     return s ? s : strdup("{}");
 }
 
-/* PoP: main @ cron/scripts/classify_items.py:main */
+/* PoP: cron_classify_items_main @ cron/scripts/classify_items.py:main */
 int cron_classify_items_main(void)
 {
     return 0;
@@ -2356,7 +2356,7 @@ char *cronjobs_jobs_file_stamp(void) {
     return r;
 }
 
-/* PoP: cronjobs_records_load_stamp @ cron/jobs.py:_record_load_stamp */
+/* PoP: stat @ cron/jobs.py:_record_load_stamp */
 /* Setter: record the load stamp while inside a held critical section so the
  * save path can fast-path the shrink-merge to a single stat(). No-op outside a
  * critical section (mirrors Python's depth guard). Port of

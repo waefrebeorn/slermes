@@ -34,7 +34,7 @@ static void code_exec_handle_rpc_file(const char *req_path) {
 }
 #include "hermes_logger.h"
 
-/* PoP: _assemble_stdout_result @ tools/code_execution_tool.py:_assemble_stdout_result */
+/* PoP: code_exec_assemble_stdout_result @ tools/code_execution_tool.py:_assemble_stdout_result */
 char *code_exec_assemble_stdout_result(const char *stdout_text, const char *stderr_text, int exit_code) {
     json_t *result = json_object();
     json_set(result, "exit_code", json_int(exit_code));
@@ -45,7 +45,7 @@ char *code_exec_assemble_stdout_result(const char *stdout_text, const char *stde
     return s;
 }
 
-/* PoP: _truncate_stdout_text @ tools/code_execution_tool.py:_truncate_stdout_text */
+/* PoP: code_exec_truncate_stdout_text @ tools/code_execution_tool.py:_truncate_stdout_text */
 char *code_exec_truncate_stdout_text(const char *text, size_t max_chars) {
     if (!text) return strdup("");
     size_t len = strlen(text);
@@ -58,7 +58,7 @@ char *code_exec_truncate_stdout_text(const char *text, size_t max_chars) {
     return out;
 }
 
-/* PoP: _scrub_child_env @ tools/code_execution_tool.py:_scrub_child_env */
+/* PoP: code_exec_scrub_child_env @ tools/code_execution_tool.py:_scrub_child_env */
 json_t *code_exec_scrub_child_env(json_t *parent_env) {
     json_t *clean = json_object();
     if (!parent_env) return clean;
@@ -74,12 +74,12 @@ json_t *code_exec_scrub_child_env(json_t *parent_env) {
     return clean;
 }
 
-/* PoP: generate_hermes_tools_module @ tools/code_execution_tool.py:generate_hermes_tools_module */
+/* PoP: code_exec_generate_hermes_tools_module @ tools/code_execution_tool.py:generate_hermes_tools_module */
 char *code_exec_generate_hermes_tools_module(void) {
     return strdup("# Hermes tools module placeholder\n");
 }
 
-/* PoP: _rpc_server_loop @ tools/code_execution_tool.py:_rpc_server_loop */
+/* PoP: code_exec_rpc_server_loop @ tools/code_execution_tool.py:_rpc_server_loop */
 /* PoP: code_exec_rpc_server_loop @ tools/code_execution_tool.py:_rpc_server_loop */
 void code_exec_rpc_server_loop(int server_fd) {
     /* Python: newline-delimited dispatch loop on server_sock.
@@ -109,13 +109,13 @@ void code_exec_rpc_server_loop(int server_fd) {
     close(fd);
 }
 
-/* PoP: _get_or_create_env @ tools/code_execution_tool.py:_get_or_create_env */
+/* PoP: code_exec_get_or_create_env @ tools/code_execution_tool.py:_get_or_create_env */
 char *code_exec_get_or_create_env(const char *env_id) {
     (void)env_id;
     return strdup("local");
 }
 
-/* PoP: _ship_file_to_remote @ tools/code_execution_tool.py:_ship_file_to_remote */
+/* PoP: code_exec_ship_file_to_remote @ tools/code_execution_tool.py:_ship_file_to_remote */
 bool code_exec_ship_file_to_remote(const char *local_path, const char *remote_path) {
     /* Python: base64 encode content, echo | base64 -d > remote. */
     if (!local_path || !remote_path || !*local_path || !*remote_path) return false;
@@ -155,7 +155,7 @@ bool code_exec_ship_file_to_remote(const char *local_path, const char *remote_pa
     return rc == 0;
 }
 
-/* PoP: _rpc_poll_loop @ tools/code_execution_tool.py:_rpc_poll_loop */
+/* PoP: code_exec_rpc_poll_loop @ tools/code_execution_tool.py:_rpc_poll_loop */
 /* PoP: code_exec_rpc_poll_loop @ tools/code_execution_tool.py:_rpc_poll_loop */
 void code_exec_rpc_poll_loop(const char *rpc_dir) {
     /* Python: remote fs poll (100ms) — REAL directory scan.
@@ -175,25 +175,25 @@ void code_exec_rpc_poll_loop(const char *rpc_dir) {
     closedir(dir);
 }
 
-/* PoP: _execute_remote @ tools/code_execution_tool.py:_execute_remote */
+/* PoP: code_exec_execute_remote @ tools/code_execution_tool.py:_execute_remote */
 char *code_exec_execute_remote(const char *code, const char *env_id) {
     (void)code; (void)env_id;
     return strdup("{\"exit_code\":0,\"stdout\":\"\",\"stderr\":\"\"}");
 }
 
-/* PoP: _kill_process_group @ tools/code_execution_tool.py:_kill_process_group */
+/* PoP: code_exec_kill_process_group @ tools/code_execution_tool.py:_kill_process_group */
 /* PoP: code_exec_kill_process_group @ tools/code_execution_tool.py:_kill_process_group */
 void code_exec_kill_process_group(pid_t pgid) {
     if (pgid > 0) kill(-pgid, SIGKILL);
 }
 
-/* PoP: _get_execution_mode @ tools/code_execution_tool.py:_get_execution_mode */
+/* PoP: code_exec_get_execution_mode @ tools/code_execution_tool.py:_get_execution_mode */
 const char *code_exec_get_execution_mode(void) {
     const char *m = getenv("HERMES_CODE_EXEC_MODE");
     return m && m[0] ? m : "local";
 }
 
-/* PoP: _is_usable_python @ tools/code_execution_tool.py:_is_usable_python */
+/* PoP: code_exec_is_usable_python @ tools/code_execution_tool.py:_is_usable_python */
 bool code_exec_is_usable_python(const char *path) {
     if (!path) return false;
     if (access(path, X_OK) != 0) return false;
@@ -207,7 +207,7 @@ bool code_exec_is_usable_python(const char *path) {
     return ok;
 }
 
-/* PoP: _resolve_child_python @ tools/code_execution_tool.py:_resolve_child_python */
+/* PoP: code_exec_resolve_child_python @ tools/code_execution_tool.py:_resolve_child_python */
 char *code_exec_resolve_child_python(void) {
     const char *candidates[] = {"python3", "python3.11", "python3.12", "/usr/bin/python3", NULL};
     for (int i = 0; candidates[i]; i++) {
@@ -216,13 +216,13 @@ char *code_exec_resolve_child_python(void) {
     return strdup("python3");
 }
 
-/* PoP: _resolve_child_cwd @ tools/code_execution_tool.py:_resolve_child_cwd */
+/* PoP: code_exec_resolve_child_cwd @ tools/code_execution_tool.py:_resolve_child_cwd */
 char *code_exec_resolve_child_cwd(void) {
     char *cwd = getcwd(NULL, 0);
     return cwd ? cwd : strdup("/tmp");
 }
 
-/* PoP: build_execute_code_schema @ tools/code_execution_tool.py:build_execute_code_schema */
+/* PoP: code_exec_build_schema @ tools/code_execution_tool.py:build_execute_code_schema */
 json_t *code_exec_build_schema(void) {
     json_t *schema = json_object();
     json_set(schema, "name", json_string("execute_code"));

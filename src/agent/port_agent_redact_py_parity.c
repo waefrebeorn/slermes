@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: agent_redact_mask_control_split_tokens @ agent/redact.py:_mask_control_split_tokens */
+/* PoP: agent_redact_mask_control_split_tokens_p @ agent/redact.py:_mask_control_split_tokens */
 json_t *agent_redact_mask_control_split_tokens_p(void) {
     return json_object();
 }

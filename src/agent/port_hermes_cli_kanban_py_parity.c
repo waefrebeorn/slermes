@@ -14,32 +14,32 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_kanban_build_parser @ hermes_cli/kanban.py:build_parser */
+/* PoP: hermes_cli_kanban_build_parser_p @ hermes_cli/kanban.py:build_parser */
 json_t *hermes_cli_kanban_build_parser_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_kanban_goal_mode_handoff_rejection @ hermes_cli/kanban.py:_goal_mode_handoff_rejection */
+/* PoP: hermes_cli_kanban_goal_mode_handoff_rejection_p @ hermes_cli/kanban.py:_goal_mode_handoff_rejection */
 json_t *hermes_cli_kanban_goal_mode_handoff_rejection_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_kanban_cmd_request_review @ hermes_cli/kanban.py:_cmd_request_review */
+/* PoP: hermes_cli_kanban_cmd_request_review_p @ hermes_cli/kanban.py:_cmd_request_review */
 json_t *hermes_cli_kanban_cmd_request_review_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_kanban_cmd_request_changes @ hermes_cli/kanban.py:_cmd_request_changes */
+/* PoP: hermes_cli_kanban_cmd_request_changes_p @ hermes_cli/kanban.py:_cmd_request_changes */
 json_t *hermes_cli_kanban_cmd_request_changes_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_kanban_cmd_reopen_review @ hermes_cli/kanban.py:_cmd_reopen_review */
+/* PoP: hermes_cli_kanban_cmd_reopen_review_p @ hermes_cli/kanban.py:_cmd_reopen_review */
 json_t *hermes_cli_kanban_cmd_reopen_review_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_kanban_run_slash @ hermes_cli/kanban.py:run_slash */
+/* PoP: hermes_cli_kanban_run_slash_p @ hermes_cli/kanban.py:run_slash */
 json_t *hermes_cli_kanban_run_slash_p(void) {
     return json_object();
 }

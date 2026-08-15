@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ tools/environments/local.py:__init__ */
+/* PoP: elc_init @ tools/environments/local.py:__init__ */
 char *elc_init(const char *cwd, long timeout_seconds) {
     /* Python: resolve initial cwd. */
     char resolved[4096];
@@ -32,7 +32,7 @@ char *elc_init(const char *cwd, long timeout_seconds) {
     return out;
 }
 
-/* PoP: _run_bash @ tools/environments/local.py:_run_bash */
+/* PoP: elc_run_bash @ tools/environments/local.py:_run_bash */
 char *elc_run_bash(const char *cmd_string, bool login_shell) {
     /* Python: bash exec via find_bash. */
     if (!cmd_string) return NULL;
@@ -40,7 +40,7 @@ char *elc_run_bash(const char *cmd_string, bool login_shell) {
     return strdup("{}");
 }
 
-/* PoP: cleanup @ tools/environments/local.py:cleanup */
+/* PoP: elc_cleanup @ tools/environments/local.py:cleanup */
 int elc_cleanup(const char *snapshot_path, const char *cwd_file) {
     /* Python: remove temp files — REAL unlink. */
     if (snapshot_path) unlink(snapshot_path);
@@ -50,7 +50,7 @@ int elc_cleanup(const char *snapshot_path, const char *cwd_file) {
 
 /* ── tools/environments/local.py gap functions ───────────────────── */
 
-/* PoP: build_subprocess_env @ tools/environments/local.py:build_subprocess_env */
+/* PoP: envl_build_subprocess_env @ tools/environments/local.py:build_subprocess_env */
 char *envl_build_subprocess_env(const char *arg) {
     /* Python: single factory for building a child-process environment.
      * Propagates HERMES_HOME / HOME contract + secret scrub.
@@ -60,7 +60,7 @@ char *envl_build_subprocess_env(const char *arg) {
     return strdup(arg);
 }
 
-/* PoP: _managed_runtime_path_entries @ tools/environments/local.py:_managed_runtime_path_entries */
+/* PoP: envl_managed_runtime_path_entries @ tools/environments/local.py:_managed_runtime_path_entries */
 char *envl_managed_runtime_path_entries(const char *arg) {
     /* Python: existing Hermes-managed runtime dirs for the subshell PATH:
      * $HERMES_HOME/node(+bin) and $HERMES_HOME/bin (managed uv).
@@ -69,7 +69,7 @@ char *envl_managed_runtime_path_entries(const char *arg) {
     return strdup(arg);
 }
 
-/* PoP: _kill_process @ tools/environments/local.py:_kill_process */
+/* PoP: envl_kill_process @ tools/environments/local.py:_kill_process */
 int envl_kill_process(const char *arg) {
     /* Python: kill the entire process group (all children).
      * SIGTERM group, wait up to timeout, SIGKILL survivors.

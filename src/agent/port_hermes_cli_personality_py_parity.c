@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_personality_persist_personality @ hermes_cli/personality.py:persist_personality */
+/* PoP: hermes_cli_personality_persist_personality_p @ hermes_cli/personality.py:persist_personality */
 json_t *hermes_cli_personality_persist_personality_p(void) {
     return json_object();
 }

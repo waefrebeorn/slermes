@@ -20,7 +20,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _is_windows @ agent/secret_sources/command.py:_is_windows */
+/* PoP: cmd_is_windows @ agent/secret_sources/command.py:_is_windows */
 bool cmd_is_windows(void) {
     /* Python: os.name == "nt" — REAL uname probe. */
 #ifdef _WIN32
@@ -30,7 +30,7 @@ bool cmd_is_windows(void) {
 #endif
 }
 
-/* PoP: unquote_dotenv_value @ agent/secret_sources/command.py:unquote_dotenv_value */
+/* PoP: cmd_unquote_dotenv_value @ agent/secret_sources/command.py:unquote_dotenv_value */
 char *cmd_unquote_dotenv_value(const char *value) {
     /* Python: strip one layer of matching quotes. */
     if (!value) return strdup("");
@@ -41,7 +41,7 @@ char *cmd_unquote_dotenv_value(const char *value) {
     return strdup(value);
 }
 
-/* PoP: parse_secret_output @ agent/secret_sources/command.py:parse_secret_output */
+/* PoP: cmd_parse_secret_output @ agent/secret_sources/command.py:parse_secret_output */
 char *cmd_parse_secret_output(const char *stdout_text) {
     /* Python: bare value OR KEY=VALUE map. */
     if (!stdout_text) return strdup("{\"bare\": null, \"map\": {}}");
@@ -59,7 +59,7 @@ char *cmd_parse_secret_output(const char *stdout_text) {
     return strdup(stdout_text);
 }
 
-/* PoP: _run_helper @ agent/secret_sources/command.py:_run_helper */
+/* PoP: cmd_run_helper @ agent/secret_sources/command.py:_run_helper */
 char *cmd_run_helper(const char *command, const char *key) {
     /* Python: /bin/sh -c; stdout or None — REAL fork/exec. */
     if (!command) return NULL;
@@ -94,7 +94,7 @@ char *cmd_run_helper(const char *command, const char *key) {
     return out;
 }
 
-/* PoP: _parse_dotenv_map @ agent/secret_sources/command.py:_parse_dotenv_map */
+/* PoP: cmd_parse_dotenv_map @ agent/secret_sources/command.py:_parse_dotenv_map */
 char *cmd_parse_dotenv_map(const char *blob) {
     /* Python: KEY=VALUE blob → map. */
     if (!blob) return strdup("{}");
@@ -136,7 +136,7 @@ char *cmd_parse_dotenv_map(const char *blob) {
     return out;
 }
 
-/* PoP: get_command_secret @ agent/secret_sources/command.py:get_command_secret */
+/* PoP: cmd_get_command_secret @ agent/secret_sources/command.py:get_command_secret */
 char *cmd_get_command_secret(const char *command, const char *key) {
     /* Python: run helper with key in env. */
     if (!command || !key) return NULL;
@@ -144,7 +144,7 @@ char *cmd_get_command_secret(const char *command, const char *key) {
     return out ? cmd_unquote_dotenv_value(out) : NULL;
 }
 
-/* PoP: list_command_secrets @ agent/secret_sources/command.py:list_command_secrets */
+/* PoP: cmd_list_command_secrets @ agent/secret_sources/command.py:list_command_secrets */
 char *cmd_list_command_secrets(const char *command) {
     /* Python: enumerate once with empty key. */
     if (!command) return strdup("{}");
@@ -155,7 +155,7 @@ char *cmd_list_command_secrets(const char *command) {
     return map;
 }
 
-/* PoP: apply_command_secrets @ agent/secret_sources/command.py:apply_command_secrets */
+/* PoP: cmd_apply_command_secrets @ agent/secret_sources/command.py:apply_command_secrets */
 long cmd_apply_command_secrets(const char *command) {
     /* Python: run once + setenv KEY=VALUE. */
     if (!command) return 0;
@@ -182,12 +182,12 @@ long cmd_apply_command_secrets(const char *command) {
     return applied;
 }
 
-/* PoP: config_schema @ agent/secret_sources/command.py:config_schema */
+/* PoP: cmd_config_schema @ agent/secret_sources/command.py:config_schema */
 char *cmd_config_schema(void) {
     return strdup("{\"enabled\": {\"description\": \"Master switch\", \"default\": false}}");
 }
 
-/* PoP: remediation @ agent/secret_sources/command.py:remediation */
+/* PoP: cmd_remediation @ agent/secret_sources/command.py:remediation */
 char *cmd_remediation(const char *kind) {
     /* Python: fix guidance per error kind. */
     if (!kind) return strdup("");

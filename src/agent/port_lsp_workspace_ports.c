@@ -21,7 +21,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: normalize_path @ agent/lsp/workspace.py:normalize_path */
+/* PoP: lsw_normalize_path @ agent/lsp/workspace.py:normalize_path */
 char *lsw_normalize_path(const char *path) {
     /* Python: ~ resolve + absolute + stable key. */
     if (!path) return NULL;
@@ -41,7 +41,7 @@ char *lsw_normalize_path(const char *path) {
     return out;
 }
 
-/* PoP: find_git_worktree @ agent/lsp/workspace.py:find_git_worktree */
+/* PoP: lsw_find_git_worktree @ agent/lsp/workspace.py:find_git_worktree */
 char *lsw_find_git_worktree(const char *start) {
     /* Python: walk up for .git — REAL. */
     if (!start) return NULL;
@@ -62,7 +62,7 @@ char *lsw_find_git_worktree(const char *start) {
     return NULL;
 }
 
-/* PoP: is_inside_workspace @ agent/lsp/workspace.py:is_inside_workspace */
+/* PoP: lsw_is_inside_workspace @ agent/lsp/workspace.py:is_inside_workspace */
 bool lsw_is_inside_workspace(const char *path, const char *workspace_root) {
     /* Python: absolute containment. */
     if (!path || !workspace_root) return false;
@@ -72,7 +72,7 @@ bool lsw_is_inside_workspace(const char *path, const char *workspace_root) {
     return false;
 }
 
-/* PoP: nearest_root @ agent/lsp/workspace.py:nearest_root */
+/* PoP: lsw_nearest_root @ agent/lsp/workspace.py:nearest_root */
 char *lsw_nearest_root(const char *start, const char *markers_json) {
     /* Python: walk up for marker files. */
     if (!start) return NULL;
@@ -108,7 +108,7 @@ char *lsw_nearest_root(const char *start, const char *markers_json) {
     return NULL;
 }
 
-/* PoP: resolve_workspace_for_file @ agent/lsp/workspace.py:resolve_workspace_for_file */
+/* PoP: lsw_resolve_workspace_for_file @ agent/lsp/workspace.py:resolve_workspace_for_file */
 char *lsw_resolve_workspace_for_file(const char *file_path) {
     /* Python: (workspace_root, gated_in). */
     if (!file_path) return NULL;
@@ -122,7 +122,7 @@ char *lsw_resolve_workspace_for_file(const char *file_path) {
     return out;
 }
 
-/* PoP: clear_cache @ agent/lsp/workspace.py:clear_cache */
+/* PoP: lsw_clear_cache @ agent/lsp/workspace.py:clear_cache */
 int lsw_clear_cache(void) {
     /* Python: service shutdown. */
     printf("lsp workspace cache cleared\n");

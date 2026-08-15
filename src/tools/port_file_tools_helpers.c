@@ -81,7 +81,7 @@ static char *file_tools_realpath_dup(const char *path)
  * --------------------------------------------------------------------------- */
 static long g_max_read_chars_cached = -1;
 
-/* PoP: _get_max_read_chars @ tools/file_tools.py:_get_max_read_chars */
+/* PoP: read @ tools/file_tools.py:_get_max_read_chars */
 /* Return the configured max characters per file read (cached). */
 int file_tools_get_max_read_chars(void)
 {
@@ -95,7 +95,7 @@ int file_tools_get_max_read_chars(void)
 /* ---------------------------------------------------------------------------
  * _is_blocked_device_path / _is_blocked_device
  * --------------------------------------------------------------------------- */
-/* PoP: _is_blocked_device_path @ tools/file_tools.py:_is_blocked_device_path */
+/* PoP: file_tools_is_blocked_device_path @ tools/file_tools.py:_is_blocked_device_path */
 /* True for concrete device/fd paths that can hang reads. */
 static bool file_tools_is_blocked_device_path(const char *path)
 {
@@ -142,7 +142,7 @@ static bool file_tools_is_blocked_device_path(const char *path)
     return false;
 }
 
-/* PoP: _is_blocked_device @ tools/file_tools.py:_is_blocked_device */
+/* PoP: process @ tools/file_tools.py:_is_blocked_device */
 /* True if the path would hang the process (infinite output / blocking input). */
 static bool file_tools_is_blocked_device(const char *filepath, const char *base_dir)
 {
@@ -212,7 +212,7 @@ static bool file_tools_is_blocked_device(const char *filepath, const char *base_
 /* ---------------------------------------------------------------------------
  * _sentinel_free_abs_cwd / _configured_terminal_cwd
  * --------------------------------------------------------------------------- */
-/* PoP: _sentinel_free_abs_cwd @ tools/file_tools.py:_sentinel_free_abs_cwd */
+/* PoP: file_tools_sentinel_free_abs_cwd @ tools/file_tools.py:_sentinel_free_abs_cwd */
 /* Normalize a cwd candidate to an absolute, sentinel-free anchor. Caller frees. */
 char *file_tools_sentinel_free_abs_cwd(const char *raw)
 {
@@ -229,7 +229,7 @@ char *file_tools_sentinel_free_abs_cwd(const char *raw)
     return exp;
 }
 
-/* PoP: _configured_terminal_cwd @ tools/file_tools.py:_configured_terminal_cwd */
+/* PoP: file_tools_configured_terminal_cwd @ tools/file_tools.py:_configured_terminal_cwd */
 /* $TERMINAL_CWD only when it names a real directory anchor. Caller frees. */
 char *file_tools_configured_terminal_cwd(void)
 {
@@ -241,7 +241,7 @@ char *file_tools_configured_terminal_cwd(void)
 /* ---------------------------------------------------------------------------
  * Workspace root resolution (best-effort; C terminal env is single/shared).
  * --------------------------------------------------------------------------- */
-/* PoP: _authoritative_workspace_root @ tools/file_tools.py:_authoritative_workspace_root */
+/* PoP: file_tools_authoritative_workspace_root @ tools/file_tools.py:_authoritative_workspace_root */
 /* Best-effort absolute workspace root for divergence checks. Caller frees. */
 char *file_tools_authoritative_workspace_root(const char *task_id)
 {
@@ -260,7 +260,7 @@ char *file_tools_authoritative_workspace_root(const char *task_id)
     return NULL;
 }
 
-/* PoP: _resolve_base_dir @ tools/file_tools.py:_resolve_base_dir */
+/* PoP: file_tools_resolve_base_dir @ tools/file_tools.py:_resolve_base_dir */
 /* Absolute base directory for resolving relative paths. Caller frees. */
 char *file_tools_resolve_base_dir(const char *task_id)
 {
@@ -281,7 +281,7 @@ char *file_tools_resolve_base_dir(const char *task_id)
     return rp;
 }
 
-/* PoP: _resolve_path_for_task @ tools/file_tools.py:_resolve_path_for_task */
+/* PoP: file_tools_resolve_path_for_task @ tools/file_tools.py:_resolve_path_for_task */
 /* Resolve filepath against the task's absolute base directory. Caller frees. */
 char *file_tools_resolve_path_for_task(const char *filepath, const char *task_id)
 {
@@ -305,7 +305,7 @@ char *file_tools_resolve_path_for_task(const char *filepath, const char *task_id
 /* ---------------------------------------------------------------------------
  * _path_resolution_warning
  * --------------------------------------------------------------------------- */
-/* PoP: _path_resolution_warning @ tools/file_tools.py:_path_resolution_warning */
+/* PoP: file_tools_path_resolution_warning @ tools/file_tools.py:_path_resolution_warning */
 /* Warn when a relative path resolved OUTSIDE the task's workspace root. Caller frees. */
 char *file_tools_path_resolution_warning(const char *filepath, const char *resolved, const char *task_id)
 {
@@ -345,7 +345,7 @@ char *file_tools_path_resolution_warning(const char *filepath, const char *resol
 /* ---------------------------------------------------------------------------
  * _check_sensitive_path
  * --------------------------------------------------------------------------- */
-/* PoP: _check_sensitive_path @ tools/file_tools.py:_check_sensitive_path */
+/* PoP: file_tools_check_sensitive_path @ tools/file_tools.py:_check_sensitive_path */
 /* Return an error message if the path targets a sensitive system location. Caller frees. */
 char *file_tools_check_sensitive_path(const char *filepath, const char *task_id)
 {
@@ -405,7 +405,7 @@ char *file_tools_check_sensitive_path(const char *filepath, const char *task_id)
 /* ---------------------------------------------------------------------------
  * _check_cross_profile_path
  * --------------------------------------------------------------------------- */
-/* PoP: _check_cross_profile_path @ tools/file_tools.py:_check_cross_profile_path */
+/* PoP: file_tools_check_cross_profile_path @ tools/file_tools.py:_check_cross_profile_path */
 /* Soft-guard warning when filepath lands in another profile's scope / a sandbox
  * or container mirror. Caller frees. */
 char *file_tools_check_cross_profile_path(const char *filepath, const char *task_id)
@@ -429,7 +429,7 @@ char *file_tools_check_cross_profile_path(const char *filepath, const char *task
     return NULL;
 }
 
-/* PoP: _special_file_kind @ tools/file_tools.py:_special_file_kind */
+/* PoP: file_tools_special_file_kind @ tools/file_tools.py:_special_file_kind */
 /* Return malloc'd human name for non-regular file types. Caller frees. */
 #include <sys/stat.h>
 char *file_tools_special_file_kind(const char *path) {
@@ -445,7 +445,7 @@ char *file_tools_special_file_kind(const char *path) {
     return strdup("a special (non-regular) file");
 }
 
-/* PoP: _protected_instruction_reason @ tools/file_tools.py:_protected_instruction_reason */
+/* PoP: file_tools_protected_instruction_reason @ tools/file_tools.py:_protected_instruction_reason */
 /* Returns malloc'd reason string or NULL. Caller frees. */
 char *file_tools_protected_instruction_reason(const char *filepath, const char *extra_patterns_json) {
     if (!filepath) return NULL;

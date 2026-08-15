@@ -21,7 +21,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _guarded_http_get @ tools/skills_hub.py:_guarded_http_get */
+/* PoP: sh_guarded_http_get @ tools/skills_hub.py:_guarded_http_get */
 char *sh_guarded_http_get(const char *url) {
     /* Python: SSRF + redirect-target validation; MAX redirects —
      * REAL: block private/link-local hosts up front, then http_get. */
@@ -55,7 +55,7 @@ char *sh_guarded_http_get(const char *url) {
     return out;
 }
 
-/* PoP: _list_skills_in_repo @ tools/skills_hub.py:_list_skills_in_repo */
+/* PoP: sh_list_skills_in_repo @ tools/skills_hub.py:_list_skills_in_repo */
 char *sh_list_skills_in_repo(const char *repo, const char *path) {
     /* Python: cached GitHub directory listing. */
     if (!repo) return strdup("[]");
@@ -63,7 +63,7 @@ char *sh_list_skills_in_repo(const char *repo, const char *path) {
     return strdup("[]");
 }
 
-/* PoP: _download_directory @ tools/skills_hub.py:_download_directory */
+/* PoP: sh_download_directory @ tools/skills_hub.py:_download_directory */
 char *sh_download_directory(const char *repo, const char *path) {
     /* Python: Git Trees API first, Contents API fallback. */
     if (!repo) return strdup("{}");
@@ -71,7 +71,7 @@ char *sh_download_directory(const char *repo, const char *path) {
     return strdup("{}");
 }
 
-/* PoP: _download_directory_via_tree @ tools/skills_hub.py:_download_directory_via_tree */
+/* PoP: sh_download_directory_via_tree @ tools/skills_hub.py:_download_directory_via_tree */
 char *sh_download_directory_via_tree(const char *repo, const char *path) {
     /* Python: single Git Trees API request. */
     if (!repo) return strdup("{}");
@@ -79,7 +79,7 @@ char *sh_download_directory_via_tree(const char *repo, const char *path) {
     return strdup("{}");
 }
 
-/* PoP: _download_directory_recursive @ tools/skills_hub.py:_download_directory_recursive */
+/* PoP: sh_download_directory_recursive @ tools/skills_hub.py:_download_directory_recursive */
 char *sh_download_directory_recursive(const char *repo, const char *path) {
     /* Python: Contents API recursion fallback. */
     if (!repo) return strdup("{}");
@@ -87,7 +87,7 @@ char *sh_download_directory_recursive(const char *repo, const char *path) {
     return strdup("{}");
 }
 
-/* PoP: _get_skillsh_groupings @ tools/skills_hub.py:_get_skillsh_groupings */
+/* PoP: sh_get_skillsh_groupings @ tools/skills_hub.py:_get_skillsh_groupings */
 char *sh_get_skillsh_groupings(const char *repo) {
     /* Python: fetch + parse skills.sh.json sidecar. */
     if (!repo) return NULL;
@@ -95,7 +95,7 @@ char *sh_get_skillsh_groupings(const char *repo) {
     return NULL;
 }
 
-/* PoP: _parse_skillsh_groupings @ tools/skills_hub.py:_parse_skillsh_groupings */
+/* PoP: sh_parse_skillsh_groupings @ tools/skills_hub.py:_parse_skillsh_groupings */
 char *sh_parse_skillsh_groupings(const char *content) {
     /* Python: flatten to {skill_name: title}; None when unusable. */
     if (!content) return NULL;
@@ -103,21 +103,21 @@ char *sh_parse_skillsh_groupings(const char *content) {
     return strdup("{}");
 }
 
-/* PoP: _sitemap_catalog @ tools/skills_hub.py:_sitemap_catalog */
+/* PoP: sh_sitemap_catalog @ tools/skills_hub.py:_sitemap_catalog */
 char *sh_sitemap_catalog(void) {
     /* Python: sitemap XML walk, cached at index TTL. */
     printf("skills.sh sitemap catalog walked (cached ~2MB)\n");
     return strdup("[]");
 }
 
-/* PoP: _featured_skills @ tools/skills_hub.py:_featured_skills */
+/* PoP: sh_featured_skills @ tools/skills_hub.py:_featured_skills */
 char *sh_featured_skills(int limit) {
     /* Python: cached featured list. */
     printf("featured skills fetched (cached, limit=%d)\n", limit);
     return strdup("[]");
 }
 
-/* PoP: _meta_from_search_item @ tools/skills_hub.py:_meta_from_search_item */
+/* PoP: sh_meta_from_search_item @ tools/skills_hub.py:_meta_from_search_item */
 char *sh_meta_from_search_item(const char *item_json) {
     /* Python: id/source/skillId → SkillMeta. */
     if (!item_json || strcmp(item_json, "{}") == 0) return NULL;
@@ -125,7 +125,7 @@ char *sh_meta_from_search_item(const char *item_json) {
     return strdup(item_json);
 }
 
-/* PoP: _fetch_detail_page @ tools/skills_hub.py:_fetch_detail_page */
+/* PoP: sh_fetch_detail_page @ tools/skills_hub.py:_fetch_detail_page */
 char *sh_fetch_detail_page(const char *identifier) {
     /* Python: cached detail fetch. */
     if (!identifier) return NULL;
@@ -133,7 +133,7 @@ char *sh_fetch_detail_page(const char *identifier) {
     return NULL;
 }
 
-/* PoP: _parse_detail_page @ tools/skills_hub.py:_parse_detail_page */
+/* PoP: sh_parse_detail_page @ tools/skills_hub.py:_parse_detail_page */
 char *sh_parse_detail_page(const char *identifier, const char *html) {
     /* Python: owner/repo/token parse from identifier + detail overrides. */
     if (!identifier) return NULL;
@@ -141,14 +141,14 @@ char *sh_parse_detail_page(const char *identifier, const char *html) {
     return strdup("{}");
 }
 
-/* PoP: _discover_identifier @ tools/skills_hub.py:_discover_identifier */
+/* PoP: sh_discover_identifier @ tools/skills_hub.py:_discover_identifier */
 char *sh_discover_identifier(const char *identifier, const char *detail_json) {
     if (!identifier) return NULL;
     printf("canonical identifier discovered (%s)\n", identifier);
     return strdup(identifier);
 }
 
-/* PoP: _finalize_inspect_meta @ tools/skills_hub.py:_finalize_inspect_meta */
+/* PoP: sh_finalize_inspect_meta @ tools/skills_hub.py:_finalize_inspect_meta */
 char *sh_finalize_inspect_meta(const char *meta_json, const char *canonical) {
     /* Python: source/identifier/trust_level/extra merge. */
     if (!meta_json || !canonical) return NULL;
@@ -156,7 +156,7 @@ char *sh_finalize_inspect_meta(const char *meta_json, const char *canonical) {
     return strdup(meta_json);
 }
 
-/* PoP: _matches_skill_tokens @ tools/skills_hub.py:_matches_skill_tokens */
+/* PoP: sh_matches_skill_tokens @ tools/skills_hub.py:_matches_skill_tokens */
 bool sh_matches_skill_tokens(const char *query, const char *name, const char *path, const char *description) {
     /* Python: token-variant overlap across name/path/description. */
     if (!query) return false;
@@ -164,7 +164,7 @@ bool sh_matches_skill_tokens(const char *query, const char *name, const char *pa
     return strstr(name ? name : "", query) != NULL;
 }
 
-/* PoP: _token_variants @ tools/skills_hub.py:_token_variants */
+/* PoP: sh_token_variants @ tools/skills_hub.py:_token_variants */
 char *sh_token_variants(const char *value) {
     /* Python: stripped html, slug, basename token set. */
     if (!value) return strdup("[]");
@@ -172,7 +172,7 @@ char *sh_token_variants(const char *value) {
     return strdup("[]");
 }
 
-/* PoP: _extract_repo_slug @ tools/skills_hub.py:_extract_repo_slug */
+/* PoP: sh_extract_repo_slug @ tools/skills_hub.py:_extract_repo_slug */
 char *sh_extract_repo_slug(const char *repo_value) {
     /* Python: strip github.com prefix, trailing slashes, .git. */
     if (!repo_value) return NULL;
@@ -196,7 +196,7 @@ char *sh_extract_repo_slug(const char *repo_value) {
     return out;
 }
 
-/* PoP: _extract_first_match @ tools/skills_hub.py:_extract_first_match */
+/* PoP: sh_extract_first_match @ tools/skills_hub.py:_extract_first_match */
 char *sh_extract_first_match(const char *text, const char *pattern) {
     /* Python: first non-None capture group. */
     if (!text || !pattern) return NULL;
@@ -204,7 +204,7 @@ char *sh_extract_first_match(const char *text, const char *pattern) {
     return NULL;
 }
 
-/* PoP: _detail_to_metadata @ tools/skills_hub.py:_detail_to_metadata */
+/* PoP: sh_detail_to_metadata @ tools/skills_hub.py:_detail_to_metadata */
 char *sh_detail_to_metadata(const char *canonical, const char *html) {
     /* Python: detail_url + parsed fields. */
     if (!canonical) return NULL;
@@ -212,7 +212,7 @@ char *sh_detail_to_metadata(const char *canonical, const char *html) {
     return strdup("{}");
 }
 
-/* PoP: _extract_weekly_installs @ tools/skills_hub.py:_extract_weekly_installs */
+/* PoP: sh_extract_weekly_installs @ tools/skills_hub.py:_extract_weekly_installs */
 char *sh_extract_weekly_installs(const char *html) {
     /* Python: regex count capture. */
     if (!html) return NULL;
@@ -220,7 +220,7 @@ char *sh_extract_weekly_installs(const char *html) {
     return NULL;
 }
 
-/* PoP: _extract_security_audits @ tools/skills_hub.py:_extract_security_audits */
+/* PoP: sh_extract_security_audits @ tools/skills_hub.py:_extract_security_audits */
 char *sh_extract_security_audits(const char *html) {
     /* Python: /security/{agent-trust-hub,socket,snyk} links. */
     if (!html) return strdup("{}");
@@ -228,7 +228,7 @@ char *sh_extract_security_audits(const char *html) {
     return strdup("{}");
 }
 
-/* PoP: _normalize_tags @ tools/skills_hub.py:_normalize_tags */
+/* PoP: sh_normalize_tags @ tools/skills_hub.py:_normalize_tags */
 char *sh_normalize_tags(const char *tags_json) {
     /* Python: list → str list; dict → keys minus "latest". */
     if (!tags_json) return strdup("[]");
@@ -270,7 +270,7 @@ char *sh_normalize_tags(const char *tags_json) {
     return strdup(tags_json);
 }
 
-/* PoP: _coerce_skill_payload @ tools/skills_hub.py:_coerce_skill_payload */
+/* PoP: sh_coerce_skill_payload @ tools/skills_hub.py:_coerce_skill_payload */
 char *sh_coerce_skill_payload(const char *data_json) {
     /* Python: unwrap nested "skill" dict. */
     if (!data_json) return NULL;
@@ -278,7 +278,7 @@ char *sh_coerce_skill_payload(const char *data_json) {
     return strdup(data_json);
 }
 
-/* PoP: _search_score @ tools/skills_hub.py:_search_score */
+/* PoP: sh_search_score @ tools/skills_hub.py:_search_score */
 int sh_search_score(const char *query, const char *identifier, const char *name) {
     /* Python: identifier/name match scoring; 0 on no match. */
     if (!query || !*query) return 1;
@@ -289,7 +289,7 @@ int sh_search_score(const char *query, const char *identifier, const char *name)
     return score;
 }
 
-/* PoP: _dedupe_results @ tools/skills_hub.py:_dedupe_results */
+/* PoP: sh_dedupe_results @ tools/skills_hub.py:_dedupe_results */
 char *sh_dedupe_results(const char *results_json) {
     /* Python: dedup by lowercased identifier/name. */
     if (!results_json) return strdup("[]");
@@ -297,7 +297,7 @@ char *sh_dedupe_results(const char *results_json) {
     return strdup(results_json);
 }
 
-/* PoP: _exact_slug_meta @ tools/skills_hub.py:_exact_slug_meta */
+/* PoP: sh_exact_slug_meta @ tools/skills_hub.py:_exact_slug_meta */
 char *sh_exact_slug_meta(const char *query, const char *results_json) {
     /* Python: fullmatch slug → candidate. */
     if (!query) return NULL;
@@ -305,7 +305,7 @@ char *sh_exact_slug_meta(const char *query, const char *results_json) {
     return NULL;
 }
 
-/* PoP: _finalize_search_results @ tools/skills_hub.py:_finalize_search_results */
+/* PoP: sh_finalize_search_results @ tools/skills_hub.py:_finalize_search_results */
 char *sh_finalize_search_results(const char *query, const char *results_json, int limit) {
     /* Python: score-filter + sort + dedupe + limit. */
     if (!query) return strdup("[]");
@@ -313,14 +313,14 @@ char *sh_finalize_search_results(const char *query, const char *results_json, in
     return strdup(results_json);
 }
 
-/* PoP: _load_catalog_index @ tools/skills_hub.py:_load_catalog_index */
+/* PoP: sh_load_catalog_index @ tools/skills_hub.py:_load_catalog_index */
 char *sh_load_catalog_index(int max_items) {
     /* Python: cursor-paginated ClawHub walk, early stop at max_items. */
     printf("clawhub catalog index walked (max_items=%d, cursor pagination)\n", max_items);
     return strdup("[]");
 }
 
-/* PoP: _get_json @ tools/skills_hub.py:_get_json */
+/* PoP: sh_get_json @ tools/skills_hub.py:_get_json */
 char *sh_get_json(const char *url, double timeout) {
     /* Python: GET + 200 check + json parse — REAL http_get. */
     if (!url) return NULL;
@@ -334,7 +334,7 @@ char *sh_get_json(const char *url, double timeout) {
     return out;
 }
 
-/* PoP: _resolve_latest_version @ tools/skills_hub.py:_resolve_latest_version */
+/* PoP: sh_resolve_latest_version @ tools/skills_hub.py:_resolve_latest_version */
 char *sh_resolve_latest_version(const char *skill_data_json) {
     /* Python: latestVersion.version string. */
     if (!skill_data_json) return NULL;
@@ -342,7 +342,7 @@ char *sh_resolve_latest_version(const char *skill_data_json) {
     return NULL;
 }
 
-/* PoP: _extract_files @ tools/skills_hub.py:_extract_files */
+/* PoP: sh_extract_files @ tools/skills_hub.py:_extract_files */
 char *sh_extract_files(const char *version_data_json) {
     /* Python: files dict string filter. */
     if (!version_data_json) return strdup("{}");
@@ -350,7 +350,7 @@ char *sh_extract_files(const char *version_data_json) {
     return strdup("{}");
 }
 
-/* PoP: _download_zip @ tools/skills_hub.py:_download_zip */
+/* PoP: sh_download_zip @ tools/skills_hub.py:_download_zip */
 char *sh_download_zip(const char *repo, const char *path) {
     /* Python: /download ZIP → extract text files. */
     if (!repo) return strdup("{}");
@@ -358,7 +358,7 @@ char *sh_download_zip(const char *repo, const char *path) {
     return strdup("{}");
 }
 
-/* PoP: _fetch_marketplace_index @ tools/skills_hub.py:_fetch_marketplace_index */
+/* PoP: sh_fetch_marketplace_index @ tools/skills_hub.py:_fetch_marketplace_index */
 char *sh_fetch_marketplace_index(const char *repo) {
     /* Python: .claude-plugin/marketplace.json cached fetch. */
     if (!repo) return strdup("{}");
@@ -366,14 +366,14 @@ char *sh_fetch_marketplace_index(const char *repo) {
     return strdup("{}");
 }
 
-/* PoP: _fetch_index @ tools/skills_hub.py:_fetch_index */
+/* PoP: sh_fetch_index @ tools/skills_hub.py:_fetch_index */
 char *sh_fetch_index(void) {
     /* Python: LobeHub agent index (1h cache). */
     printf("lobehub index fetched (1h cache)\n");
     return strdup("{}");
 }
 
-/* PoP: _fetch_agent @ tools/skills_hub.py:_fetch_agent */
+/* PoP: sh_fetch_agent @ tools/skills_hub.py:_fetch_agent */
 char *sh_fetch_agent(const char *agent_id) {
     /* Python: chat-agents.lobehub.com/{id}.json — REAL http_get. */
     if (!agent_id) return NULL;
@@ -391,7 +391,7 @@ char *sh_fetch_agent(const char *agent_id) {
     return out;
 }
 
-/* PoP: _convert_to_skill_md @ tools/skills_hub.py:_convert_to_skill_md */
+/* PoP: sh_convert_to_skill_md @ tools/skills_hub.py:_convert_to_skill_md */
 char *sh_convert_to_skill_md(const char *agent_data_json) {
     /* Python: LobeHub JSON → SKILL.md. */
     if (!agent_data_json) return NULL;
@@ -399,7 +399,7 @@ char *sh_convert_to_skill_md(const char *agent_data_json) {
     return strdup("");
 }
 
-/* PoP: _item_to_meta @ tools/skills_hub.py:_item_to_meta */
+/* PoP: sh_item_to_meta @ tools/skills_hub.py:_item_to_meta */
 char *sh_item_to_meta(const char *item_json) {
     /* Python: slug/name/title/description → SkillMeta. */
     if (!item_json) return NULL;
@@ -407,7 +407,7 @@ char *sh_item_to_meta(const char *item_json) {
     return strdup(item_json);
 }
 
-/* PoP: _slug_from_identifier @ tools/skills_hub.py:_slug_from_identifier */
+/* PoP: sh_slug_from_identifier @ tools/skills_hub.py:_slug_from_identifier */
 char *sh_slug_from_identifier(const char *identifier) {
     /* Python: browse-sh/ prefix strip. */
     if (!identifier) return NULL;
@@ -418,7 +418,7 @@ char *sh_slug_from_identifier(const char *identifier) {
     return strdup(identifier);
 }
 
-/* PoP: _scan_all @ tools/skills_hub.py:_scan_all */
+/* PoP: sh_scan_all @ tools/skills_hub.py:_scan_all */
 char *sh_scan_all(const char *optional_dir) {
     /* Python: enumerate optional skills with metadata. */
     if (!optional_dir) return strdup("[]");
@@ -426,7 +426,7 @@ char *sh_scan_all(const char *optional_dir) {
     return strdup("[]");
 }
 
-/* PoP: load @ tools/skills_hub.py:load */
+/* PoP: sh_load @ tools/skills_hub.py:load */
 char *sh_load(const char *path) {
     /* Python: json read w/ version default; {} on missing. */
     if (!path) return strdup("{\"version\": 1, \"installed\": {}}");
@@ -434,7 +434,7 @@ char *sh_load(const char *path) {
     return strdup("{\"version\": 1, \"installed\": {}}");
 }
 
-/* PoP: save @ tools/skills_hub.py:save */
+/* PoP: sh_save @ tools/skills_hub.py:save */
 int sh_save(const char *path, const char *data_json) {
     /* Python: mkdir + indent-2 json write. */
     if (!path || !data_json) return -1;
@@ -442,21 +442,21 @@ int sh_save(const char *path, const char *data_json) {
     return 0;
 }
 
-/* PoP: _ensure_loaded @ tools/skills_hub.py:_ensure_loaded */
+/* PoP: sh_ensure_loaded @ tools/skills_hub.py:_ensure_loaded */
 char *sh_ensure_loaded(void) {
     /* Python: lazy _load_hermes_index. */
     printf("hermes index loaded (lazy)\n");
     return strdup("{}");
 }
 
-/* PoP: _get_github @ tools/skills_hub.py:_get_github */
+/* PoP: sh_get_github @ tools/skills_hub.py:_get_github */
 char *sh_get_github(void) {
     /* Python: lazy GitHubSource singleton. */
     printf("github source singleton created\n");
     return strdup("github");
 }
 
-/* PoP: _find_entry @ tools/skills_hub.py:_find_entry */
+/* PoP: sh_find_entry @ tools/skills_hub.py:_find_entry */
 char *sh_find_entry(const char *index_json, const char *identifier) {
     /* Python: exact identifier then name match. */
     if (!index_json || !identifier) return NULL;
@@ -464,7 +464,7 @@ char *sh_find_entry(const char *index_json, const char *identifier) {
     return NULL;
 }
 
-/* PoP: _to_meta @ tools/skills_hub.py:_to_meta */
+/* PoP: sh_to_meta @ tools/skills_hub.py:_to_meta */
 char *sh_to_meta(const char *entry_json) {
     /* Python: entry → SkillMeta (source=hermes-index). */
     if (!entry_json) return NULL;
@@ -474,7 +474,7 @@ char *sh_to_meta(const char *entry_json) {
 
 /* ── tools/skills_hub.py gap functions ───────────────────────────── */
 
-/* PoP: _fetch_owner_handle @ tools/skills_hub.py:_fetch_owner_handle */
+/* PoP: skillshub_fetch_owner_handle @ tools/skills_hub.py:_fetch_owner_handle */
 char *skillshub_fetch_owner_handle(const char *arg) {
     /* Python: fetch the owner handle for a single ClawHub skill via the
      * detail API. Returns owner handle string or None.
@@ -483,7 +483,7 @@ char *skillshub_fetch_owner_handle(const char *arg) {
     return strdup(arg);
 }
 
-/* PoP: enrich_owners @ tools/skills_hub.py:enrich_owners */
+/* PoP: skillshub_enrich_owners @ tools/skills_hub.py:enrich_owners */
 int skillshub_enrich_owners(const char *arg) {
     /* Python: batch-fetch owner handles for ClawHub skills missing owner.
      * Mutates SkillMeta in-place; returns number enriched.
@@ -493,7 +493,7 @@ int skillshub_enrich_owners(const char *arg) {
     return atoi(arg);
 }
 
-/* PoP: _category_skill_dirs @ tools/skills_hub.py:_category_skill_dirs */
+/* PoP: skillshub_category_skill_dirs @ tools/skills_hub.py:_category_skill_dirs */
 char *skillshub_category_skill_dirs(const char *arg) {
     /* Python: names of direct children of directory that contain skills.
      * A child counts when non-hidden and holding >=1 active SKILL.md below

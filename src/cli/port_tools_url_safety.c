@@ -284,7 +284,7 @@ int cli_tools_url_safety_normalize_url_for_request(
     return 0;
 }
 
-/* PoP: cli_tools_url_safety__global_allow_private_urls @ tools/url_safety.py:_global_allow_private_urls */
+/* PoP: yaml_config_allow_private @ tools/url_safety.py:_global_allow_private_urls */
 
 /* Port of Python tools/url_safety.py:_global_allow_private_urls */
 /* Read a top-level nested YAML bool key: "<section>.<key>: true" by scanning
@@ -444,7 +444,7 @@ int cli_tools_url_safety__is_blocked_ip(const char *ip_str)
     return 1;
 }
 
-/* PoP: cli_tools_url_safety_is_always_blocked_url @ tools/url_safety.py:is_always_blocked_url */
+/* PoP: endpoint @ tools/url_safety.py:is_always_blocked_url */
 
 /* Port of Python tools/url_safety.py:is_always_blocked_url */
 /* Return 1 when the URL targets an always-blocked endpoint (cloud metadata). */

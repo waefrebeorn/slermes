@@ -14,17 +14,17 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_plugins_list_plugins @ hermes_cli/plugins.py:list_plugins */
+/* PoP: hermes_cli_plugins_list_plugins_p @ hermes_cli/plugins.py:list_plugins */
 json_t *hermes_cli_plugins_list_plugins_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_plugins_discover_plugins @ hermes_cli/plugins.py:discover_plugins */
+/* PoP: hermes_cli_plugins_discover_plugins_p @ hermes_cli/plugins.py:discover_plugins */
 json_t *hermes_cli_plugins_discover_plugins_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_plugins_persist_plugin_toolset_keys @ hermes_cli/plugins.py:_persist_plugin_toolset_keys */
+/* PoP: hermes_cli_plugins_persist_plugin_toolset_keys_p @ hermes_cli/plugins.py:_persist_plugin_toolset_keys */
 json_t *hermes_cli_plugins_persist_plugin_toolset_keys_p(void) {
     return json_object();
 }

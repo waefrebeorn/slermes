@@ -20,17 +20,17 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: name @ agent/browser_provider.py:name */
+/* PoP: brp_name @ agent/browser_provider.py:name */
 char *brp_name(void) {
     return strdup("browser");
 }
 
-/* PoP: display_name @ agent/browser_provider.py:display_name */
+/* PoP: brp_display_name @ agent/browser_provider.py:display_name */
 char *brp_display_name(void) {
     return strdup("Browser");
 }
 
-/* PoP: is_available @ agent/browser_provider.py:is_available */
+/* PoP: brp_is_available @ agent/browser_provider.py:is_available */
 bool brp_is_available(void) {
     /* Python: any registered provider can service calls. */
     extern int browser_registry_list(const browser_provider_t ***out_list);
@@ -45,13 +45,13 @@ bool brp_is_available(void) {
     return avail;
 }
 
-/* PoP: get_setup_schema @ agent/browser_provider.py:get_setup_schema */
+/* PoP: brp_get_setup_schema @ agent/browser_provider.py:get_setup_schema */
 char *brp_get_setup_schema(void) {
     /* Python: setup schema for the setup wizard. */
     return strdup("{\"fields\":[{\"key\":\"BROWSER_MANAGED_TOKEN\",\"label\":\"Browser managed-gateway token\",\"secret\":true}]}");
 }
 
-/* PoP: provider_name @ agent/browser_provider.py:provider_name */
+/* PoP: brp_provider_name @ agent/browser_provider.py:provider_name */
 char *brp_provider_name(void) {
     /* Python: backward-compat alias. */
     return strdup("Browser");

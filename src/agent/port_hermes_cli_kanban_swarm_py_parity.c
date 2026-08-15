@@ -14,12 +14,12 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_kanban_swarm_activate_root_inline @ hermes_cli/kanban_swarm.py:_activate_root_inline */
+/* PoP: hermes_cli_kanban_swarm_activate_root_inline_p @ hermes_cli/kanban_swarm.py:_activate_root_inline */
 json_t *hermes_cli_kanban_swarm_activate_root_inline_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_kanban_swarm_create_swarm_uncommitted @ hermes_cli/kanban_swarm.py:_create_swarm_uncommitted */
+/* PoP: hermes_cli_kanban_swarm_create_swarm_uncommitted_p @ hermes_cli/kanban_swarm.py:_create_swarm_uncommitted */
 json_t *hermes_cli_kanban_swarm_create_swarm_uncommitted_p(void) {
     return json_object();
 }

@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ cli.py:__init__ */
+/* PoP: cli3_init @ cli.py:__init__ */
 char *cli3_init(const char *skin_key, const char *fallback_hex) {
     /* Python: skin-aware console. */
     char *out = NULL;
@@ -28,7 +28,7 @@ char *cli3_init(const char *skin_key, const char *fallback_hex) {
     return out;
 }
 
-/* PoP: print @ cli.py:print */
+/* PoP: cli3_print @ cli.py:print */
 int cli3_print(const char *text) {
     /* Python: buffer + terminal width read. */
     if (!text) return -1;
@@ -36,7 +36,7 @@ int cli3_print(const char *text) {
     return 0;
 }
 
-/* PoP: status @ cli.py:status */
+/* PoP: cli3_status @ cli.py:status */
 char *cli3_status(const char *message) {
     /* Python: no-op rich-compat status context. */
     if (!message) return NULL;

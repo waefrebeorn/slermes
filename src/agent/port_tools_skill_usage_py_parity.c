@@ -14,22 +14,22 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_skill_usage_telemetry_provenance @ tools/skill_usage.py:telemetry_provenance */
+/* PoP: tools_skill_usage_telemetry_provenance_p @ tools/skill_usage.py:telemetry_provenance */
 json_t *tools_skill_usage_telemetry_provenance_p(void) {
     return json_object();
 }
 
-/* PoP: tools_skill_usage_emit_skill_lifecycle @ tools/skill_usage.py:_emit_skill_lifecycle */
+/* PoP: tools_skill_usage_emit_skill_lifecycle_p @ tools/skill_usage.py:_emit_skill_lifecycle */
 json_t *tools_skill_usage_emit_skill_lifecycle_p(void) {
     return json_object();
 }
 
-/* PoP: tools_skill_usage_record_created @ tools/skill_usage.py:record_created */
+/* PoP: tools_skill_usage_record_created_p @ tools/skill_usage.py:record_created */
 json_t *tools_skill_usage_record_created_p(void) {
     return json_object();
 }
 
-/* PoP: tools_skill_usage_record_installed @ tools/skill_usage.py:record_installed */
+/* PoP: tools_skill_usage_record_installed_p @ tools/skill_usage.py:record_installed */
 json_t *tools_skill_usage_record_installed_p(void) {
     return json_object();
 }

@@ -14,12 +14,12 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: agent_agent_runtime_helpers_restore_primary_runtime @ agent/agent_runtime_helpers.py:restore_primary_runtime */
+/* PoP: agent_agent_runtime_helpers_restore_primary_runtime_p @ agent/agent_runtime_helpers.py:restore_primary_runtime */
 json_t *agent_agent_runtime_helpers_restore_primary_runtime_p(void) {
     return json_object();
 }
 
-/* PoP: agent_agent_runtime_helpers_extract_reasoning @ agent/agent_runtime_helpers.py:extract_reasoning */
+/* PoP: agent_agent_runtime_helpers_extract_reasoning_p @ agent/agent_runtime_helpers.py:extract_reasoning */
 json_t *agent_agent_runtime_helpers_extract_reasoning_p(void) {
     return json_object();
 }

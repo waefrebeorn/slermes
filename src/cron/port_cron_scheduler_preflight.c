@@ -23,7 +23,7 @@ machinery is invoked. They validate:
 #include <string.h>
 #include "json.h"
 
-/* PoP: _cron_preflight_enabled @ cron/scheduler.py:_cron_preflight_enabled */
+/* PoP: cron_scheduler_cron_preflight_enabled @ cron/scheduler.py:_cron_preflight_enabled */
 /* Whether cron pre-dispatch configuration validation is enabled.
  * Default ON; only the literal boolean false under "cron.preflight" opts
  * out (mirrors cron_model_drift_guard_enabled semantics). */

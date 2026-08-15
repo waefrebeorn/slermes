@@ -21,7 +21,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _redact @ tools/delegation_live_log.py:_redact */
+/* PoP: dll_redact @ tools/delegation_live_log.py:_redact */
 char *dll_redact(const char *text) {
     /* Python: mask credentials before transcript. */
     if (!text) return strdup("");
@@ -46,7 +46,7 @@ char *dll_redact(const char *text) {
     return out;
 }
 
-/* PoP: __init__ @ tools/delegation_live_log.py:__init__ */
+/* PoP: dll_init @ tools/delegation_live_log.py:__init__ */
 char *dll_init(const char *delegation_id, long task_index, const char *log_dir) {
     /* Python: transcript writer state. */
     char *out = NULL;
@@ -55,7 +55,7 @@ char *dll_init(const char *delegation_id, long task_index, const char *log_dir) 
     return out;
 }
 
-/* PoP: event @ tools/delegation_live_log.py:event */
+/* PoP: dll_event @ tools/delegation_live_log.py:event */
 int dll_event(const char *role, const char *text) {
     /* Python: append HH:MM:SS role ⟩ text; flush per event. */
     if (!role || !text) return -1;
@@ -66,7 +66,7 @@ int dll_event(const char *role, const char *text) {
     return 0;
 }
 
-/* PoP: thinking @ tools/delegation_live_log.py:thinking */
+/* PoP: dll_thinking @ tools/delegation_live_log.py:thinking */
 int dll_thinking(const char *text) {
     /* Python: one-line think event. */
     if (!text) return -1;
@@ -74,7 +74,7 @@ int dll_thinking(const char *text) {
     return 0;
 }
 
-/* PoP: marker @ tools/delegation_live_log.py:marker */
+/* PoP: dll_marker @ tools/delegation_live_log.py:marker */
 int dll_marker(const char *kind, const char *detail) {
     /* Python: start/final/error/interrupt/budget marker. */
     if (!kind) return -1;
@@ -82,7 +82,7 @@ int dll_marker(const char *kind, const char *detail) {
     return 0;
 }
 
-/* PoP: flush_stream @ tools/delegation_live_log.py:flush_stream */
+/* PoP: dll_flush_stream @ tools/delegation_live_log.py:flush_stream */
 int dll_flush_stream(const char *stream_buf) {
     /* Python: flush accumulated stream. */
     if (!stream_buf) return -1;
@@ -90,7 +90,7 @@ int dll_flush_stream(const char *stream_buf) {
     return 0;
 }
 
-/* PoP: finalize @ tools/delegation_live_log.py:finalize */
+/* PoP: dll_finalize @ tools/delegation_live_log.py:finalize */
 int dll_finalize(const char *result_json) {
     /* Python: terminal marker from aggregated result. */
     if (!result_json) return -1;
@@ -98,7 +98,7 @@ int dll_finalize(const char *result_json) {
     return 0;
 }
 
-/* PoP: _write_manifest @ tools/delegation_live_log.py:_write_manifest */
+/* PoP: dll_write_manifest @ tools/delegation_live_log.py:_write_manifest */
 int dll_write_manifest(const char *log_dir, const char *delegation_id, long task_index) {
     /* Python: manifest.json write — REAL. */
     if (!log_dir || !delegation_id) return -1;

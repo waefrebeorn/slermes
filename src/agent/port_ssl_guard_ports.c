@@ -20,7 +20,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _skip_ssl_guard_enabled @ agent/ssl_guard.py:_skip_ssl_guard_enabled */
+/* PoP: sslg_skip_ssl_guard_enabled @ agent/ssl_guard.py:_skip_ssl_guard_enabled */
 bool sslg_skip_ssl_guard_enabled(void) {
     /* Python: HERMES_SKIP_SSL_GUARD in skip values. */
     const char *v = getenv("HERMES_SKIP_SSL_GUARD");
@@ -33,12 +33,12 @@ bool sslg_skip_ssl_guard_enabled(void) {
     return r;
 }
 
-/* PoP: _repair_hint @ agent/ssl_guard.py:_repair_hint */
+/* PoP: sslg_repair_hint @ agent/ssl_guard.py:_repair_hint */
 char *sslg_repair_hint(void) {
     return strdup("Repair: run `hermes doctor --fix` (auto-reinstalls certifi), or set SSL_CERT_FILE to a valid bundle");
 }
 
-/* PoP: _ssl_err @ agent/ssl_guard.py:_ssl_err */
+/* PoP: sslg_ssl_err @ agent/ssl_guard.py:_ssl_err */
 char *sslg_ssl_err(const char *label, const char *detail) {
     char *out = NULL;
     asprintf(&out, "{\"kind\": \"ssl_config\", \"label\": \"%s\", \"detail\": \"%s\"}",
@@ -46,7 +46,7 @@ char *sslg_ssl_err(const char *label, const char *detail) {
     return out;
 }
 
-/* PoP: _validate_bundle_path @ agent/ssl_guard.py:_validate_bundle_path */
+/* PoP: sslg_validate_bundle_path @ agent/ssl_guard.py:_validate_bundle_path */
 int sslg_validate_bundle_path(const char *value) {
     /* Python: expanduser + exists check — REAL. */
     if (!value) return -1;
@@ -62,7 +62,7 @@ int sslg_validate_bundle_path(const char *value) {
     return rc;
 }
 
-/* PoP: verify_ca_bundle @ agent/ssl_guard.py:verify_ca_bundle */
+/* PoP: sslg_verify_ca_bundle @ agent/ssl_guard.py:verify_ca_bundle */
 int sslg_verify_ca_bundle(const char *bundle_path) {
     /* Python: present + loadable. */
     if (!bundle_path) return -1;
@@ -78,7 +78,7 @@ int sslg_verify_ca_bundle(const char *bundle_path) {
     return 0;
 }
 
-/* PoP: verify_ca_bundle_with_fallback @ agent/ssl_guard.py:verify_ca_bundle_with_fallback */
+/* PoP: sslg_verify_ca_bundle_with_fallback @ agent/ssl_guard.py:verify_ca_bundle_with_fallback */
 int sslg_verify_ca_bundle_with_fallback(const char *bundle_path) {
     /* Python: backward-compatible wrapper. */
     int rc = sslg_verify_ca_bundle(bundle_path);

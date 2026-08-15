@@ -11,7 +11,7 @@
 #include <ctype.h>
 #include "hermes_json.h"
 
-/* PoP: _declared_model_ids @ hermes_cli/model_switch.py:_declared_model_ids */
+/* PoP: msw_u_declared_model_ids @ hermes_cli/model_switch.py:_declared_model_ids */
 int msw_u_declared_model_ids(const char *arg) {
     /* Python: config shapes. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -22,7 +22,7 @@ int msw_u_declared_model_ids(const char *arg) {
     return 0;
 }
 
-/* PoP: _save_discovered_models_to_config @ hermes_cli/model_switch.py:_save_discovered_models_to_config */
+/* PoP: msw_u_save_discovered_models_to_config @ hermes_cli/model_switch.py:_save_discovered_models_to_config */
 int msw_u_save_discovered_models_to_config(const char *arg) {
     /* Python: custom_providers cache. Arg =
      * "changed\tstate\tresult". */
@@ -36,7 +36,7 @@ int msw_u_save_discovered_models_to_config(const char *arg) {
     return 0;
 }
 
-/* PoP: _bare_custom_provider_def @ hermes_cli/model_switch.py:_bare_custom_provider_def */
+/* PoP: msw_u_bare_custom_provider_def @ hermes_cli/model_switch.py:_bare_custom_provider_def */
 int msw_u_bare_custom_provider_def(const char *arg) {
     /* Python: ProviderDef for custom endpoint or None. Arg = "base_url". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -47,7 +47,7 @@ int msw_u_bare_custom_provider_def(const char *arg) {
     return 0;
 }
 
-/* PoP: format_model_for_display @ hermes_cli/model_switch.py:format_model_for_display */
+/* PoP: msw_format_model_for_display @ hermes_cli/model_switch.py:format_model_for_display */
 int msw_format_model_for_display(const char *arg) {
     /* Python: strip the Palantir Foundry opaque proxy prefix
      * "ri.language-model-service..language-model." and return the trailing
@@ -63,7 +63,7 @@ int msw_format_model_for_display(const char *arg) {
     return 0;
 }
 
-/* PoP: is_nous_hermes_non_agentic @ hermes_cli/model_switch.py:is_nous_hermes_non_agentic */
+/* PoP: msw_is_nous_hermes_non_agentic @ hermes_cli/model_switch.py:is_nous_hermes_non_agentic */
 int msw_is_nous_hermes_non_agentic(const char *arg) {
     /* Python: regex on model name (Hermes 3/4 chat). Arg = model name. */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -80,7 +80,7 @@ int msw_is_nous_hermes_non_agentic(const char *arg) {
     return 0;
 }
 
-/* PoP: _check_hermes_model_warning @ hermes_cli/model_switch.py:_check_hermes_model_warning */
+/* PoP: msw_u_check_hermes_model_warning @ hermes_cli/model_switch.py:_check_hermes_model_warning */
 int msw_u_check_hermes_model_warning(const char *arg) {
     /* Python: is_nous_hermes_non_agentic(model_name) -> warning text or "". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -104,7 +104,7 @@ int msw_u_check_hermes_model_warning(const char *arg) {
     return 0;
 }
 
-/* PoP: _load_direct_aliases @ hermes_cli/model_switch.py:_load_direct_aliases */
+/* PoP: msw_u_load_direct_aliases @ hermes_cli/model_switch.py:_load_direct_aliases */
 int msw_u_load_direct_aliases(const char *arg) {
     /* Python: config alias map. Arg =
      * "count\tstate\tresult". */
@@ -117,7 +117,7 @@ int msw_u_load_direct_aliases(const char *arg) {
     return 0;
 }
 
-/* PoP: _ensure_direct_aliases @ hermes_cli/model_switch.py:_ensure_direct_aliases */
+/* PoP: msw_u_ensure_direct_aliases @ hermes_cli/model_switch.py:_ensure_direct_aliases */
 int msw_u_ensure_direct_aliases(const char *arg) {
     /* Python: lazy-load aliases in place. Arg = "loaded". */
     (void)arg;
@@ -125,7 +125,7 @@ int msw_u_ensure_direct_aliases(const char *arg) {
     return 0;
 }
 
-/* PoP: parse_model_flags_detailed @ hermes_cli/model_switch.py:parse_model_flags_detailed */
+/* PoP: msw_parse_model_flags_detailed @ hermes_cli/model_switch.py:parse_model_flags_detailed */
 int msw_parse_model_flags_detailed(const char *arg) {
     /* Python: hand-rolled flag parse. Arg =
      * "model\tprovider\tflags\tstate\tresult". */
@@ -140,7 +140,7 @@ int msw_parse_model_flags_detailed(const char *arg) {
     return 0;
 }
 
-/* PoP: _model_sort_key @ hermes_cli/model_switch.py:_model_sort_key */
+/* PoP: msw_u_model_sort_key @ hermes_cli/model_switch.py:_model_sort_key */
 int msw_u_model_sort_key(const char *arg) {
     /* Python: version state machine. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("(0, 9, '')\n"); return 0; }
@@ -151,7 +151,7 @@ int msw_u_model_sort_key(const char *arg) {
     return 0;
 }
 
-/* PoP: get_authenticated_provider_slugs @ hermes_cli/model_switch.py:get_authenticated_provider_slugs */
+/* PoP: msw_get_authenticated_provider_slugs @ hermes_cli/model_switch.py:get_authenticated_provider_slugs */
 int msw_get_authenticated_provider_slugs(const char *arg) {
     /* Python: slugs from list_authenticated_providers or []. Arg = "slugs"
      * (tab-sep, empty = none). */
@@ -160,7 +160,7 @@ int msw_get_authenticated_provider_slugs(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_alias_fallback @ hermes_cli/model_switch.py:_resolve_alias_fallback */
+/* PoP: msw_u_resolve_alias_fallback @ hermes_cli/model_switch.py:_resolve_alias_fallback */
 int msw_u_resolve_alias_fallback(const char *arg) {
     /* Python: try providers (default openrouter,nous), first hit wins. Arg =
      * "raw\tproviders\tresult". */
@@ -173,7 +173,7 @@ int msw_u_resolve_alias_fallback(const char *arg) {
     return 0;
 }
 
-/* PoP: resolve_display_context_length @ hermes_cli/model_switch.py:resolve_display_context_length */
+/* PoP: msw_resolve_display_context_length @ hermes_cli/model_switch.py:resolve_display_context_length */
 int msw_resolve_display_context_length(const char *arg) {
     /* Python: provider-aware ctx. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -184,7 +184,7 @@ int msw_resolve_display_context_length(const char *arg) {
     return 0;
 }
 
-/* PoP: _configured_provider_matches @ hermes_cli/model_switch.py:_configured_provider_matches */
+/* PoP: msw_u_configured_provider_matches @ hermes_cli/model_switch.py:_configured_provider_matches */
 int msw_u_configured_provider_matches(const char *arg) {
     /* Python: exact-declared routing. Arg =
      * "count\tstate\tresult". */
@@ -197,7 +197,7 @@ int msw_u_configured_provider_matches(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_named_custom_model_id @ hermes_cli/model_switch.py:_resolve_named_custom_model_id */
+/* PoP: msw_u_resolve_named_custom_model_id @ hermes_cli/model_switch.py:_resolve_named_custom_model_id */
 int msw_u_resolve_named_custom_model_id(const char *arg) {
     /* Python: picker prefix map. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -208,7 +208,7 @@ int msw_u_resolve_named_custom_model_id(const char *arg) {
     return 0;
 }
 
-/* PoP: _credential_pool_is_usable @ hermes_cli/model_switch.py:_credential_pool_is_usable */
+/* PoP: msw_u_credential_pool_is_usable @ hermes_cli/model_switch.py:_credential_pool_is_usable */
 int msw_u_credential_pool_is_usable(const char *arg) {
     /* Python: pool available else raw present. Arg = "has_creds\thas_avail\traw_present". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -220,7 +220,7 @@ int msw_u_credential_pool_is_usable(const char *arg) {
     return 0;
 }
 
-/* PoP: _extra_headers_from_config @ hermes_cli/model_switch.py:_extra_headers_from_config */
+/* PoP: msw_u_extra_headers_from_config @ hermes_cli/model_switch.py:_extra_headers_from_config */
 int msw_u_extra_headers_from_config(const char *arg) {
     /* Python: {} if not dict; else normalize_extra_headers(
      * entry.get("extra_headers")). Arg = entry JSON. */
@@ -240,7 +240,7 @@ int msw_u_extra_headers_from_config(const char *arg) {
     return 0;
 }
 
-/* PoP: prewarm_picker_cache_async @ hermes_cli/model_switch.py:prewarm_picker_cache_async */
+/* PoP: msw_prewarm_picker_cache_async @ hermes_cli/model_switch.py:prewarm_picker_cache_async */
 int msw_prewarm_picker_cache_async(const char *arg) {
     /* Python: bg daemon warm. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -251,7 +251,7 @@ int msw_prewarm_picker_cache_async(const char *arg) {
     return 0;
 }
 
-/* PoP: _prepend_moa_picker_provider @ hermes_cli/model_switch.py:_prepend_moa_picker_provider */
+/* PoP: msw_u_prepend_moa_picker_provider @ hermes_cli/model_switch.py:_prepend_moa_picker_provider */
 int msw_u_prepend_moa_picker_provider(const char *arg) {
     /* Python: virtual MoA row prepended. Arg = "current\tstate\tresult". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -265,13 +265,13 @@ int msw_u_prepend_moa_picker_provider(const char *arg) {
 
 /* ── ModelSwitchRequest dataclass port ──────────────────────────────── */
 
-/* PoP: model_input @ hermes_cli/model_switch.py:ModelSwitchRequest.model_input */
+/* PoP: msw_model_switch_request_model_input @ hermes_cli/model_switch.py:ModelSwitchRequest.model_input */
 const char *msw_model_switch_request_model_input(const char *target) {
     /* Python: property returning self.target */
     return target ? target : "";
 }
 
-/* PoP: flags @ hermes_cli/model_switch.py:ModelSwitchRequest.flags */
+/* PoP: msw_model_switch_request_flags @ hermes_cli/model_switch.py:ModelSwitchRequest.flags */
 char *msw_model_switch_request_flags(const char *target,
         const char *provider, bool is_global, bool is_session,
         bool is_once, bool force_refresh) {
@@ -286,7 +286,7 @@ char *msw_model_switch_request_flags(const char *target,
     return buf;
 }
 
-/* PoP: error_messages @ hermes_cli/model_switch.py:ModelSwitchRequest.error_messages */
+/* PoP: msw_model_switch_request_error_messages @ hermes_cli/model_switch.py:ModelSwitchRequest.error_messages */
 char *msw_model_switch_request_error_messages(const char *errors_csv) {
     /* Python: [MODEL_SWITCH_ERROR_TEXT[code] for code in self.errors]
      * Arg = comma-separated error codes (e.g. "once_with_global,once_requires_target").
@@ -345,7 +345,7 @@ char *msw_parse_model_flags_detailed_buf(const char *arg) {
     return result;
 }
 
-/* PoP: parse_model_switch_args @ hermes_cli/model_switch.py:parse_model_switch_args */
+/* PoP: msw_parse_model_switch_args @ hermes_cli/model_switch.py:parse_model_switch_args */
 char *msw_parse_model_switch_args(const char *raw_args) {
     /* Python: wraps parse_model_flags_detailed + flag-conflict validation.
      * Returns a serialized ModelSwitchRequest:
@@ -394,7 +394,7 @@ char *msw_parse_model_switch_args(const char *raw_args) {
     return NULL;
 }
 
-/* PoP: _effective_model_candidate @ hermes_cli/model_switch.py:_effective_model_candidate */
+/* PoP: msw_effective_model_candidate @ hermes_cli/model_switch.py:_effective_model_candidate */
 const char *msw_effective_model_candidate(const char *value, const char *model_key) {
     /* Python: extract model-name from str / dict / attr-object.
      * Args: value (string, or JSON dict, or ignored), model_key (for dict lookup).
@@ -438,7 +438,7 @@ const char *msw_effective_model_candidate(const char *value, const char *model_k
     return buf;
 }
 
-/* PoP: resolve_effective_model @ hermes_cli/model_switch.py:resolve_effective_model */
+/* PoP: msw_resolve_effective_model @ hermes_cli/model_switch.py:resolve_effective_model */
 const char *msw_resolve_effective_model(const char *session, const char *channel,
         const char *global_cfg) {
     /* Python: session > channel > global precedence.
@@ -454,7 +454,7 @@ const char *msw_resolve_effective_model(const char *session, const char *channel
     return "";
 }
 
-/* PoP: resolve_display_context_length_async @ hermes_cli/model_switch.py:resolve_display_context_length_async */
+/* PoP: msw_resolve_display_context_length_async @ hermes_cli/model_switch.py:resolve_display_context_length_async */
 int msw_resolve_display_context_length_async(const char *arg) {
     /* Python: async wrapper that runs resolve_display_context_length in a
      * thread. In C: delegate to the sync resolver (msw_resolve_display_context_length).
@@ -463,7 +463,7 @@ int msw_resolve_display_context_length_async(const char *arg) {
     return msw_resolve_display_context_length(arg);
 }
 
-/* PoP: _models_config_is_allowlist @ hermes_cli/model_switch.py:_models_config_is_allowlist */
+/* PoP: model_switch_config_is_allowlist @ hermes_cli/model_switch.py:_models_config_is_allowlist */
 /* Returns 1 if the config value is an intentional allowlist. value_json = JSON value. */
 int model_switch_config_is_allowlist(const char *value_json) {
     if (!value_json) return 0;

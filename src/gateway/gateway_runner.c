@@ -264,10 +264,10 @@ bool gateway_runner_should_exit_cleanly(const GatewayRunner *self)
 /* PoP: gateway_runner_should_exit_with_failure @ gateway/run.py:should_exit_with_failure */
 bool gateway_runner_should_exit_with_failure(const GatewayRunner *self)
     { return self ? self->exit_with_failure : false; }
-/* PoP: tui_entry_get_exit_reason @ gateway/run.py:exit_reason */
+/* PoP: gateway_runner_exit_reason @ gateway/run.py:exit_reason */
 const char *gateway_runner_exit_reason(const GatewayRunner *self)
     { return self ? self->exit_reason : NULL; }
-/* PoP: _interpret_exit_code @ gateway/run.py:exit_code */
+/* PoP: gateway_runner_exit_code @ gateway/run.py:exit_code */
 int gateway_runner_exit_code(const GatewayRunner *self)
     { return self ? self->exit_code_val : -1; }
 const char *gateway_runner_busy_input_mode(const GatewayRunner *self)
@@ -549,7 +549,7 @@ void gw_ephemeral_change_key(const char *session_key, const char *prefix,
  * Session management
  * ════════════════════════════════════════════════════════════════════════ */
 
-/* PoP: gateway_runner_session_key_for_source @ gateway/run.py:GatewayRunner._session_key_for_source */
+/* PoP: gateway_runner_connect_adapter @ gateway/run.py:GatewayRunner._session_key_for_source */
 /* ════════════════════════════════════════════════════════════════════════
  * Platform adapter management
  * ════════════════════════════════════════════════════════════════════════ */

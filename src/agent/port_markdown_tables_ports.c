@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _disp_width @ agent/markdown_tables.py:_disp_width */
+/* PoP: mdt_disp_width @ agent/markdown_tables.py:_disp_width */
 long mdt_disp_width(const char *s) {
     /* Python: display width; -1 → len. */
     if (!s) return 0;
@@ -32,7 +32,7 @@ long mdt_disp_width(const char *s) {
     return w > 0 ? w : (long)strlen(s);
 }
 
-/* PoP: _pad_to_width @ agent/markdown_tables.py:_pad_to_width */
+/* PoP: mdt_pad_to_width @ agent/markdown_tables.py:_pad_to_width */
 char *mdt_pad_to_width(const char *s, long target) {
     /* Python: right-pad to display width. */
     if (!s) return NULL;
@@ -47,7 +47,7 @@ char *mdt_pad_to_width(const char *s, long target) {
     return out;
 }
 
-/* PoP: split_table_row @ agent/markdown_tables.py:split_table_row */
+/* PoP: mdt_split_table_row @ agent/markdown_tables.py:split_table_row */
 char *mdt_split_table_row(const char *row) {
     /* Python: | a | b | c | → [a, b, c] — REAL cell splitter. */
     if (!row) return strdup("[]");
@@ -89,7 +89,7 @@ char *mdt_split_table_row(const char *row) {
     return out;
 }
 
-/* PoP: is_table_divider @ agent/markdown_tables.py:is_table_divider */
+/* PoP: mdt_is_table_divider @ agent/markdown_tables.py:is_table_divider */
 bool mdt_is_table_divider(const char *row) {
     /* Python: separator line of - and :. */
     if (!row) return false;
@@ -105,7 +105,7 @@ bool mdt_is_table_divider(const char *row) {
     return divider && strchr(row, '-') != NULL;
 }
 
-/* PoP: looks_like_table_row @ agent/markdown_tables.py:looks_like_table_row */
+/* PoP: mdt_looks_like_table_row @ agent/markdown_tables.py:looks_like_table_row */
 bool mdt_looks_like_table_row(const char *row) {
     /* Python: plausible table row for streaming. */
     if (!row) return false;
@@ -117,7 +117,7 @@ bool mdt_looks_like_table_row(const char *row) {
     return pipes >= 2;
 }
 
-/* PoP: _render_block @ agent/markdown_tables.py:_render_block */
+/* PoP: mdt_render_block @ agent/markdown_tables.py:_render_block */
 char *mdt_render_block(const char *rows_json, long avail_width) {
     /* Python: uniform-width table render. */
     if (!rows_json) return strdup("");
@@ -125,7 +125,7 @@ char *mdt_render_block(const char *rows_json, long avail_width) {
     return strdup(rows_json);
 }
 
-/* PoP: _wrap_to_width @ agent/markdown_tables.py:_wrap_to_width */
+/* PoP: mdt_wrap_to_width @ agent/markdown_tables.py:_wrap_to_width */
 char *mdt_wrap_to_width(const char *text, long width) {
     /* Python: word-boundary soft wrap — REAL. */
     if (!text) return strdup("");
@@ -156,7 +156,7 @@ char *mdt_wrap_to_width(const char *text, long width) {
     return out;
 }
 
-/* PoP: _render_vertical @ agent/markdown_tables.py:_render_vertical */
+/* PoP: mdt_render_vertical @ agent/markdown_tables.py:_render_vertical */
 char *mdt_render_vertical(const char *rows_json) {
     /* Python: too-wide table as Header: value rows. */
     if (!rows_json) return strdup("");

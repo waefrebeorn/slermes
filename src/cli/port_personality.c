@@ -33,7 +33,7 @@ const per_builtin_t per_BUILTIN_PERSONALITIES[] = {
 const size_t per_BUILTIN_PERSONALITIES_COUNT =
     sizeof(per_BUILTIN_PERSONALITIES) / sizeof(per_BUILTIN_PERSONALITIES[0]);
 
-/* PoP: _get @ hermes_cli/personality.py:_get */
+/* PoP: per_get @ hermes_cli/personality.py:_get */
 const json_t *per_get(const json_t *cfg, const char *const *keys, size_t nkeys, const json_t *default_val) {
     const json_t *node = cfg;
     for (size_t i = 0; i < nkeys; i++) {
@@ -45,7 +45,7 @@ const json_t *per_get(const json_t *cfg, const char *const *keys, size_t nkeys, 
     return node;
 }
 
-/* PoP: prompt_text @ hermes_cli/personality.py:prompt_text */
+/* PoP: per_prompt_text @ hermes_cli/personality.py:prompt_text */
 char *per_prompt_text(const json_t *value) {
     if (!value || value->type == JSON_NULL) return strdup("");
     if (value->type == JSON_STRING) {
@@ -92,7 +92,7 @@ char *per_prompt_text(const json_t *value) {
     return strdup("");
 }
 
-/* PoP: render_personality_prompt @ hermes_cli/personality.py:render_personality_prompt */
+/* PoP: per_render_personality_prompt @ hermes_cli/personality.py:render_personality_prompt */
 char *per_render_personality_prompt(const json_t *value) {
     if (value && value->type == JSON_OBJECT) {
         /* parts = [system_prompt, "Tone: X", "Style: Y"] joined by \n */
@@ -116,7 +116,7 @@ char *per_render_personality_prompt(const json_t *value) {
     return per_prompt_text(value);
 }
 
-/* PoP: describe_personality @ hermes_cli/personality.py:describe_personality */
+/* PoP: per_describe_personality @ hermes_cli/personality.py:describe_personality */
 char *per_describe_personality(const json_t *value, int width) {
     char *preview = NULL;
     if (value && value->type == JSON_OBJECT) {
@@ -154,7 +154,7 @@ char *per_describe_personality(const json_t *value, int width) {
     return out;
 }
 
-/* PoP: normalize_personality_name @ hermes_cli/personality.py:normalize_personality_name */
+/* PoP: per_normalize_personality_name @ hermes_cli/personality.py:normalize_personality_name */
 char *per_normalize_personality_name(const json_t *value) {
     char *s = per_prompt_text(value);  /* strip + trim */
     char *lower = malloc(strlen(s) + 1);
@@ -169,7 +169,7 @@ char *per_normalize_personality_name(const json_t *value) {
     return lower;
 }
 
-/* PoP: available_personalities @ hermes_cli/personality.py:available_personalities */
+/* PoP: per_available_personalities @ hermes_cli/personality.py:available_personalities */
 json_t *per_available_personalities(const json_t *cfg) {
     json_t *merged = json_object();
     for (size_t i = 0; i < per_BUILTIN_PERSONALITIES_COUNT; i++) {
@@ -191,7 +191,7 @@ json_t *per_available_personalities(const json_t *cfg) {
     return merged;
 }
 
-/* PoP: resolve_personality @ hermes_cli/personality.py:resolve_personality */
+/* PoP: per_resolve_personality @ hermes_cli/personality.py:resolve_personality */
 int per_resolve_personality(const json_t *value, const json_t *cfg,
                             char **out_name, char **out_prompt, char **out_err) {
     *out_name = *out_prompt = *out_err = NULL;
@@ -241,7 +241,7 @@ int per_resolve_personality(const json_t *value, const json_t *cfg,
     return 0;
 }
 
-/* PoP: active_personality_name @ hermes_cli/personality.py:active_personality_name */
+/* PoP: per_active_personality_name @ hermes_cli/personality.py:active_personality_name */
 char *per_active_personality_name(const json_t *cfg) {
     const char *keys[] = {"display", "personality"};
     const json_t *val = per_get(cfg, keys, 2, NULL);
@@ -255,7 +255,7 @@ char *per_active_personality_name(const json_t *cfg) {
     return strdup("");
 }
 
-/* PoP: resolve_ephemeral_system_prompt @ hermes_cli/personality.py:resolve_ephemeral_system_prompt */
+/* PoP: per_resolve_ephemeral_system_prompt @ hermes_cli/personality.py:resolve_ephemeral_system_prompt */
 char *per_resolve_ephemeral_system_prompt(const json_t *cfg) {
     char *name = per_active_personality_name(cfg);
     if (name && name[0]) {

@@ -14,12 +14,12 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_skills_sync_client_list_synced_skill_names @ tools/skills_sync_client.py:list_synced_skill_names */
+/* PoP: tools_skills_sync_client_list_synced_skill_names_p @ tools/skills_sync_client.py:list_synced_skill_names */
 json_t *tools_skills_sync_client_list_synced_skill_names_p(void) {
     return json_object();
 }
 
-/* PoP: tools_skills_sync_client_all_local_skill_names @ tools/skills_sync_client.py:_all_local_skill_names */
+/* PoP: tools_skills_sync_client_all_local_skill_names_p @ tools/skills_sync_client.py:_all_local_skill_names */
 json_t *tools_skills_sync_client_all_local_skill_names_p(void) {
     return json_object();
 }

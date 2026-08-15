@@ -197,7 +197,7 @@ void cmd_curator(const char *args, agent_state_t *state) {
 
 /* /reload-skills: Re-scan skills directory */
 /* Port of Python skill_commands: reload_skills */
-/* PoP: _reload_skills @ cli.py:_reload_skills */
+/* PoP: cmd_reload_skills @ cli.py:_reload_skills */
 /* Port of Python cli.py:_reload_skills(). */
 void cmd_reload_skills(const char *args, agent_state_t *state) {
     (void)args; (void)state;
@@ -236,7 +236,7 @@ void cmd_reload_skills(const char *args, agent_state_t *state) {
     printf("Found %d skill(s). Use /skills search-hub <query> to find more.\n", count);
 }
 
-/* PoP: cli_hermes_cli_skills_config_skills_command @ hermes_cli/skills_config.py:skills_command */
+/* PoP: cmd_skills @ hermes_cli/skills_config.py:skills_command */
 /* /skills: List installed skills */
 /* PoP: cmd_skills @ hermes_cli/main.py:cmd_skills */
 void cmd_skills(const char *args, agent_state_t *state) {

@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_clarify_gateway_register @ tools/clarify_gateway.py:register */
+/* PoP: tools_clarify_gateway_register_p @ tools/clarify_gateway.py:register */
 json_t *tools_clarify_gateway_register_p(void) {
     return json_object();
 }

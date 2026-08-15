@@ -84,7 +84,7 @@ static void now_iso(char *buf, size_t sz)
     strftime(buf, sz, "%Y-%m-%dT%H:%M:%S", &tm);
 }
 
-/* PoP: cron_secure_file @ cron/suggestions.py:_secure_file */
+/* PoP: cron_sugg_secure_file @ cron/suggestions.py:_secure_file */
 void cron_sugg_secure_file(const char *path)
 {
     chmod(path, 0600); /* ignore any OSError like Python */
@@ -193,7 +193,7 @@ json_t *cron_sugg_load_suggestions(void)
     return copy;
 }
 
-/* PoP: pairing_list_pending @ cron/suggestions.py:list_pending */
+/* PoP: cron_sugg_list_pending @ cron/suggestions.py:list_pending */
 json_t *cron_sugg_list_pending(void)
 {
     json_t *all = cron_sugg_load_suggestions();

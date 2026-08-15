@@ -33,7 +33,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: matches_tool @ agent/shell_hooks.py:matches_tool */
+/* PoP: shk_matches_tool @ agent/shell_hooks.py:matches_tool */
 bool shk_matches_tool(const char *matcher, const char *tool_name, const char *matcher_type) {
     /* Python: regex/glob/prefix matcher; None → match all. */
     if (!matcher) return true;
@@ -54,7 +54,7 @@ bool shk_matches_tool(const char *matcher, const char *tool_name, const char *ma
     return strcmp(tool_name, matcher) == 0;
 }
 
-/* PoP: register_from_config @ agent/shell_hooks.py:register_from_config */
+/* PoP: shk_register_from_config @ agent/shell_hooks.py:register_from_config */
 long shk_register_from_config(const char *config_json) {
     /* Python: register every configured hook on plugin manager. */
     if (!config_json) return 0;
@@ -62,7 +62,7 @@ long shk_register_from_config(const char *config_json) {
     return 0;
 }
 
-/* PoP: iter_configured_hooks @ agent/shell_hooks.py:iter_configured_hooks */
+/* PoP: shk_iter_configured_hooks @ agent/shell_hooks.py:iter_configured_hooks */
 char *shk_iter_configured_hooks(const char *config_json) {
     /* Python: parsed specs, no registration. */
     if (!config_json) return strdup("[]");
@@ -70,13 +70,13 @@ char *shk_iter_configured_hooks(const char *config_json) {
     return strdup("[]");
 }
 
-/* PoP: reset_for_tests @ agent/shell_hooks.py:reset_for_tests */
+/* PoP: shk_reset_for_tests @ agent/shell_hooks.py:reset_for_tests */
 int shk_reset_for_tests(void) {
     printf("hook idempotence set cleared\n");
     return 0;
 }
 
-/* PoP: _parse_hooks_block @ agent/shell_hooks.py:_parse_hooks_block */
+/* PoP: shk_parse_hooks_block @ agent/shell_hooks.py:_parse_hooks_block */
 char *shk_parse_hooks_block(const char *hooks_json) {
     /* Python: flat spec list; malformed warn-and-skip. */
     if (!hooks_json) return strdup("[]");
@@ -84,7 +84,7 @@ char *shk_parse_hooks_block(const char *hooks_json) {
     return strdup(hooks_json);
 }
 
-/* PoP: _parse_single_entry @ agent/shell_hooks.py:_parse_single_entry */
+/* PoP: shk_parse_single_entry @ agent/shell_hooks.py:_parse_single_entry */
 char *shk_parse_single_entry(const char *raw_json, const char *name) {
     /* Python: mapping w/ command key; else warn. */
     if (!raw_json) return NULL;
@@ -96,7 +96,7 @@ char *shk_parse_single_entry(const char *raw_json, const char *name) {
     return strdup(raw_json);
 }
 
-/* PoP: _spawn @ agent/shell_hooks.py:_spawn */
+/* PoP: shk_spawn @ agent/shell_hooks.py:_spawn */
 char *shk_spawn(const char *command, const char *stdin_json) {
     /* Python: subprocess run w/ stdin; diagnostic dict out —
      * REAL: fork + exec /bin/sh -c with stdin piped. */
@@ -129,7 +129,7 @@ char *shk_spawn(const char *command, const char *stdin_json) {
     return out;
 }
 
-/* PoP: _make_callback @ agent/shell_hooks.py:_make_callback */
+/* PoP: shk_make_callback @ agent/shell_hooks.py:_make_callback */
 char *shk_make_callback(const char *spec_json) {
     /* Python: invoke_hook closure. */
     if (!spec_json) return NULL;
@@ -137,7 +137,7 @@ char *shk_make_callback(const char *spec_json) {
     return strdup(spec_json);
 }
 
-/* PoP: _serialize_payload @ agent/shell_hooks.py:_serialize_payload */
+/* PoP: shk_serialize_payload @ agent/shell_hooks.py:_serialize_payload */
 char *shk_serialize_payload(const char *payload_json) {
     /* Python: default=str stringification. */
     if (!payload_json) return strdup("{}");
@@ -145,7 +145,7 @@ char *shk_serialize_payload(const char *payload_json) {
     return strdup(payload_json);
 }
 
-/* PoP: _block_message @ agent/shell_hooks.py:_block_message */
+/* PoP: shk_block_message @ agent/shell_hooks.py:_block_message */
 char *shk_block_message(const char *primary, const char *fallback) {
     /* Python: validated string block message; primary wins. */
     if (primary && *primary) return strdup(primary);
@@ -153,7 +153,7 @@ char *shk_block_message(const char *primary, const char *fallback) {
     return strdup("Blocked by shell hook.");
 }
 
-/* PoP: _parse_response @ agent/shell_hooks.py:_parse_response */
+/* PoP: shk_parse_response @ agent/shell_hooks.py:_parse_response */
 /* Translate stdout JSON into Hermes wire-shape. For pre_tool_call, the
  * Claude-Code-style {"decision":"block","reason":"..."} is translated to
  * canonical {"action":"block","message":"..."}; {"context":"..."} passes
@@ -206,14 +206,14 @@ char *shk_parse_response(const char *stdout_json) {
     return result;
 }
 
-/* PoP: allowlist_path @ agent/shell_hooks.py:allowlist_path */
+/* PoP: shk_allowlist_path @ agent/shell_hooks.py:allowlist_path */
 char *shk_allowlist_path(const char *hermes_home) {
     char *out = NULL;
     asprintf(&out, "%s/shell-hooks-allowlist.json", hermes_home ? hermes_home : "~/.hermes");
     return out;
 }
 
-/* PoP: load_allowlist @ agent/shell_hooks.py:load_allowlist */
+/* PoP: shk_load_allowlist @ agent/shell_hooks.py:load_allowlist */
 char *shk_load_allowlist(const char *hermes_home) {
     /* Python: parsed allowlist or empty skeleton. */
     if (!hermes_home) return strdup("{\"approvals\": []}");
@@ -239,7 +239,7 @@ char *shk_load_allowlist(const char *hermes_home) {
     return out ? out : strdup("{\"approvals\": []}");
 }
 
-/* PoP: save_allowlist @ agent/shell_hooks.py:save_allowlist */
+/* PoP: shk_save_allowlist @ agent/shell_hooks.py:save_allowlist */
 int shk_save_allowlist(const char *hermes_home, const char *data_json) {
     /* Python: atomic mkstemp + os.replace (cross-process safe). */
     if (!hermes_home || !data_json) return -1;
@@ -258,7 +258,7 @@ int shk_save_allowlist(const char *hermes_home, const char *data_json) {
     return rc == 0 ? 0 : -1;
 }
 
-/* PoP: _is_allowlisted @ agent/shell_hooks.py:_is_allowlisted */
+/* PoP: shk_is_allowlisted @ agent/shell_hooks.py:_is_allowlisted */
 bool shk_is_allowlisted(const char *allowlist_json, const char *event, const char *command) {
     /* Python: any approval entry matching event+command. */
     if (!allowlist_json || !event || !command) return false;
@@ -277,7 +277,7 @@ bool shk_is_allowlisted(const char *allowlist_json, const char *event, const cha
     return false;
 }
 
-/* PoP: _locked_update_approvals @ agent/shell_hooks.py:_locked_update_approvals */
+/* PoP: shk_locked_update_approvals @ agent/shell_hooks.py:_locked_update_approvals */
 int shk_locked_update_approvals(const char *event, const char *command) {
     /* Python: flock-serialised read-modify-write. */
     if (!event || !command) return -1;
@@ -285,7 +285,7 @@ int shk_locked_update_approvals(const char *event, const char *command) {
     return 0;
 }
 
-/* PoP: _prompt_and_record @ agent/shell_hooks.py:_prompt_and_record */
+/* PoP: shk_prompt_and_record @ agent/shell_hooks.py:_prompt_and_record */
 bool shk_prompt_and_record(const char *event, const char *command) {
     /* Python: interactive approve; record when granted. */
     if (!event || !command) return false;
@@ -293,14 +293,14 @@ bool shk_prompt_and_record(const char *event, const char *command) {
     return false;
 }
 
-/* PoP: _record_approval @ agent/shell_hooks.py:_record_approval */
+/* PoP: shk_record_approval @ agent/shell_hooks.py:_record_approval */
 int shk_record_approval(const char *event, const char *command) {
     if (!event || !command) return -1;
     printf("approval recorded (%s, %s)\n", event, command);
     return 0;
 }
 
-/* PoP: _utc_now_iso @ agent/shell_hooks.py:_utc_now_iso */
+/* PoP: shk_utc_now_iso @ agent/shell_hooks.py:_utc_now_iso */
 char *shk_utc_now_iso(void) {
     /* Python: UTC ISO-8601 Z-suffixed. */
     time_t t = time(NULL);
@@ -311,7 +311,7 @@ char *shk_utc_now_iso(void) {
     return strdup(buf);
 }
 
-/* PoP: revoke @ agent/shell_hooks.py:revoke */
+/* PoP: shk_revoke @ agent/shell_hooks.py:revoke */
 long shk_revoke(const char *command) {
     /* Python: remove matching entries; count removed. */
     if (!command) return 0;
@@ -319,7 +319,7 @@ long shk_revoke(const char *command) {
     return 0;
 }
 
-/* PoP: _command_script_path @ agent/shell_hooks.py:_command_script_path */
+/* PoP: shk_command_script_path @ agent/shell_hooks.py:_command_script_path */
 char *shk_command_script_path(const char *command) {
     /* Python: script path token from command. */
     if (!command) return NULL;
@@ -330,7 +330,7 @@ char *shk_command_script_path(const char *command) {
     return out;
 }
 
-/* PoP: _resolve_effective_accept @ agent/shell_hooks.py:_resolve_effective_accept */
+/* PoP: shk_resolve_effective_accept @ agent/shell_hooks.py:_resolve_effective_accept */
 bool shk_resolve_effective_accept(const char *opt1, const char *opt2, const char *opt3) {
     /* Python: any truthy source flips on. */
     if (opt1 && strcmp(opt1, "1") == 0) return true;
@@ -339,7 +339,7 @@ bool shk_resolve_effective_accept(const char *opt1, const char *opt2, const char
     return false;
 }
 
-/* PoP: allowlist_entry_for @ agent/shell_hooks.py:allowlist_entry_for */
+/* PoP: shk_allowlist_entry_for @ agent/shell_hooks.py:allowlist_entry_for */
 char *shk_allowlist_entry_for(const char *allowlist_json, const char *event, const char *command) {
     /* Python: matching approval record or None. */
     if (!allowlist_json || !command) return NULL;
@@ -347,7 +347,7 @@ char *shk_allowlist_entry_for(const char *allowlist_json, const char *event, con
     return NULL;
 }
 
-/* PoP: script_mtime_iso @ agent/shell_hooks.py:script_mtime_iso */
+/* PoP: shk_script_mtime_iso @ agent/shell_hooks.py:script_mtime_iso */
 char *shk_script_mtime_iso(const char *script_path) {
     /* Python: ISO mtime or None. */
     if (!script_path) return NULL;
@@ -360,13 +360,13 @@ char *shk_script_mtime_iso(const char *script_path) {
     return strdup(buf);
 }
 
-/* PoP: script_is_executable @ agent/shell_hooks.py:script_is_executable */
+/* PoP: shk_script_is_executable @ agent/shell_hooks.py:script_is_executable */
 bool shk_script_is_executable(const char *script_path) {
     if (!script_path) return false;
     return access(script_path, X_OK) == 0;
 }
 
-/* PoP: run_once @ agent/shell_hooks.py:run_once */
+/* PoP: shk_run_once @ agent/shell_hooks.py:run_once */
 char *shk_run_once(const char *command, const char *payload_json) {
     /* Python: single firing w/ synthetic payload. */
     if (!command) return NULL;
@@ -385,7 +385,7 @@ static bool shk_event_is_blocking(const char *event) {
     return event && strcmp(event, "pre_tool_call") == 0;
 }
 
-/* PoP: _fail_closed_block @ agent/shell_hooks.py:_fail_closed_block */
+/* PoP: shk_fail_closed_block @ agent/shell_hooks.py:_fail_closed_block */
 /* Canonical block shape for a fail_closed hook that failed. Returns a
  * malloc'd JSON object string: {"action":"block","message":"hook <cmd> failed closed: <reason>"} */
 char *shk_fail_closed_block(const char *command, const char *reason) {
@@ -404,7 +404,7 @@ char *shk_fail_closed_block(const char *command, const char *reason) {
     return out ? out : strdup("{\"action\":\"block\",\"message\":\"hook failed closed\"}");
 }
 
-/* PoP: _evaluate_result @ agent/shell_hooks.py:_evaluate_result */
+/* PoP: shk_evaluate_result @ agent/shell_hooks.py:_evaluate_result */
 /* Turn a _spawn diagnostic dict (JSON with returncode/stdout/stderr/
  * timed_out/error/elapsed_seconds) into the hook's contribution. Returns
  * a malloc'd JSON object string (block directive) or NULL for fail-open.

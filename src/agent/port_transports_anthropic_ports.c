@@ -19,12 +19,12 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: api_mode @ agent/transports/anthropic.py:api_mode */
+/* PoP: ant_api_mode @ agent/transports/anthropic.py:api_mode */
 char *ant_api_mode(void) {
     return strdup("anthropic_messages");
 }
 
-/* PoP: convert_messages @ agent/transports/anthropic.py:convert_messages */
+/* PoP: ant_convert_messages @ agent/transports/anthropic.py:convert_messages */
 char *ant_convert_messages(const char *messages_json) {
     /* Python: OpenAI → (system, messages) tuple. */
     if (!messages_json) return strdup("[]");
@@ -32,7 +32,7 @@ char *ant_convert_messages(const char *messages_json) {
     return strdup(messages_json);
 }
 
-/* PoP: convert_tools @ agent/transports/anthropic.py:convert_tools */
+/* PoP: ant_convert_tools @ agent/transports/anthropic.py:convert_tools */
 char *ant_convert_tools(const char *tools_json) {
     /* Python: schemas → input_schema. */
     if (!tools_json) return strdup("[]");
@@ -40,7 +40,7 @@ char *ant_convert_tools(const char *tools_json) {
     return strdup(tools_json);
 }
 
-/* PoP: normalize_response @ agent/transports/anthropic.py:normalize_response */
+/* PoP: ant_normalize_response @ agent/transports/anthropic.py:normalize_response */
 char *ant_normalize_response(const char *response_json) {
     /* Python: parse content blocks. */
     if (!response_json) return strdup("{}");
@@ -48,14 +48,14 @@ char *ant_normalize_response(const char *response_json) {
     return strdup(response_json);
 }
 
-/* PoP: validate_response @ agent/transports/anthropic.py:validate_response */
+/* PoP: ant_validate_response @ agent/transports/anthropic.py:validate_response */
 bool ant_validate_response(const char *response_json) {
     /* Python: empty content list is legal. */
     if (!response_json) return false;
     return strstr(response_json, "\"content\"") != NULL;
 }
 
-/* PoP: extract_cache_stats @ agent/transports/anthropic.py:extract_cache_stats */
+/* PoP: ant_extract_cache_stats @ agent/transports/anthropic.py:extract_cache_stats */
 char *ant_extract_cache_stats(const char *usage_json) {
     /* Python: cache_read + cache_creation counts. */
     if (!usage_json) return strdup("{}");
@@ -69,7 +69,7 @@ char *ant_extract_cache_stats(const char *usage_json) {
     return out;
 }
 
-/* PoP: map_finish_reason @ agent/transports/anthropic.py:map_finish_reason */
+/* PoP: ant_map_finish_reason @ agent/transports/anthropic.py:map_finish_reason */
 char *ant_map_finish_reason(const char *stop_reason) {
     /* Python: stop_reason → openai finish_reason. */
     if (!stop_reason) return strdup("stop");

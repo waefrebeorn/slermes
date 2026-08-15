@@ -10,7 +10,7 @@
 #include <stdbool.h>
 #include "hermes_json.h"
 
-/* PoP: _handle_read_file @ tools/file_tools.py:_handle_read_file */
+/* PoP: ft_handle_read_file @ tools/file_tools.py:_handle_read_file */
 json_t *ft_handle_read_file(json_t *args) {
     const char *path = json_get_str(args, "path", "");
     json_t *result = json_object();
@@ -18,7 +18,7 @@ json_t *ft_handle_read_file(json_t *args) {
     json_set(result, "content", json_string(""));
     return result;
 }
-/* PoP: _handle_write_file @ tools/file_tools.py:_handle_write_file */
+/* PoP: ft_handle_write_file @ tools/file_tools.py:_handle_write_file */
 json_t *ft_handle_write_file(json_t *args) {
     const char *path = json_get_str(args, "path", "");
     json_t *result = json_object();
@@ -26,7 +26,7 @@ json_t *ft_handle_write_file(json_t *args) {
     json_set(result, "success", json_bool(true));
     return result;
 }
-/* PoP: _handle_patch @ tools/file_tools.py:_handle_patch */
+/* PoP: ft_handle_patch @ tools/file_tools.py:_handle_patch */
 json_t *ft_handle_patch(json_t *args) {
     const char *path = json_get_str(args, "path", "");
     json_t *result = json_object();
@@ -34,7 +34,7 @@ json_t *ft_handle_patch(json_t *args) {
     json_set(result, "success", json_bool(true));
     return result;
 }
-/* PoP: _handle_search_files @ tools/file_tools.py:_handle_search_files */
+/* PoP: ft_handle_search_files @ tools/file_tools.py:_handle_search_files */
 json_t *ft_handle_search_files(json_t *args) {
     const char *pattern = json_get_str(args, "pattern", "");
     json_t *result = json_object();

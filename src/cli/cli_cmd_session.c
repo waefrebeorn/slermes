@@ -1072,6 +1072,7 @@ void cmd_session_search(const char *args, agent_state_t *state) {
     json_free(root);
 }
 
+/* PoP: cmd_sessions @ hermes_cli/sessions_cmd.py:cmd_sessions */
 void cmd_sessions(const char *args, agent_state_t *state) {
     if (!state->db) {
         printf("No session database available.\n");
@@ -1405,143 +1406,143 @@ void cmd_usage(const char *args, agent_state_t *state) {
         printf("  Est. cost:   $%.6f\n", state->session_estimated_cost_usd);
 }
 
-/* PoP: cmd_approve @ hermes_cli/callbacks.py:approval_callback */
-/* PoP: cmd_approve @ hermes_cli/write_approval_commands.py:handle_pending_subcommand */
-/* PoP: cmd_auth @ hermes_cli/auth.py:get_auth_status */
-/* PoP: cmd_auth @ hermes_cli/auth.py:login_command */
-/* PoP: cmd_auth @ hermes_cli/auth.py:logout_command */
-/* PoP: cmd_auth @ hermes_cli/copilot_auth.py:copilot_device_code_login */
-/* PoP: cmd_auth @ hermes_cli/copilot_auth.py:get_copilot_api_token */
-/* PoP: cmd_auth @ hermes_cli/dingtalk_auth.py:begin_registration */
-/* PoP: cmd_auth @ hermes_cli/dingtalk_auth.py:poll_registration */
-/* PoP: cmd_banner @ hermes_cli/banner.py:build_welcome_banner */
-/* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:_fmt_candidates */
-/* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:_fmt_catalog */
-/* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:_fmt_no_match */
-/* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:_humanize_schedule */
-/* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:_manage_hint */
-/* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:_parse_kv */
-/* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:_resolve_origin */
-/* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:build_blueprint_seed */
-/* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:handle_blueprint_command */
-/* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:match_blueprint */
-/* PoP: cmd_browser @ hermes_cli/browser_connect.py:get_chrome_debug_candidates */
-/* PoP: cmd_browser @ hermes_cli/browser_connect.py:is_browser_debug_ready */
-/* PoP: cmd_browser @ hermes_cli/browser_connect.py:try_launch_chrome_debug */
-/* PoP: cmd_checkpoint @ hermes_cli/checkpoints.py:cmd_clear */
-/* PoP: cmd_checkpoint @ hermes_cli/checkpoints.py:cmd_list */
-/* PoP: cmd_checkpoint @ hermes_cli/checkpoints.py:cmd_prune */
-/* PoP: cmd_checkpoint @ hermes_cli/checkpoints.py:cmd_status */
-/* PoP: cmd_checkpoint @ hermes_cli/checkpoints.py:register_cli */
-/* PoP: cmd_clarify @ hermes_cli/callbacks.py:clarify_callback */
-/* PoP: cmd_commands @ hermes_cli/commands.py:resolve_command */
-/* PoP: cmd_completions @ hermes_cli/commands.py:get_completions */
-/* PoP: cmd_compress @ hermes_cli/partial_compress.py:parse_partial_compress_args */
-/* PoP: cmd_compress @ hermes_cli/partial_compress.py:rejoin_compressed_head_and_tail */
-/* PoP: cmd_compress @ hermes_cli/partial_compress.py:split_history_for_partial_compress */
-/* PoP: cmd_config @ hermes_cli/config.py:edit_config */
-/* PoP: cmd_config @ hermes_cli/config.py:migrate_config */
-/* PoP: cmd_config @ hermes_cli/config.py:set_config_value */
-/* PoP: cmd_config @ hermes_cli/config.py:show_config */
-/* PoP: cmd_cron @ hermes_cli/cron.py:cron_create */
-/* PoP: cmd_cron @ hermes_cli/cron.py:cron_edit */
-/* PoP: cmd_cron @ hermes_cli/cron.py:cron_list */
-/* PoP: cmd_cron @ hermes_cli/cron.py:cron_status */
-/* PoP: cmd_cron @ hermes_cli/cron.py:cron_tick */
-/* PoP: cmd_curator @ hermes_cli/curator.py:cli_main */
-/* PoP: cmd_curator @ hermes_cli/curator.py:register_cli */
-/* PoP: cmd_debug @ hermes_cli/debug.py:build_debug_share */
-/* PoP: cmd_debug @ hermes_cli/debug.py:collect_debug_report */
-/* PoP: cmd_debug @ hermes_cli/debug.py:run_debug_delete */
-/* PoP: cmd_debug @ hermes_cli/debug.py:run_debug_share */
-/* PoP: cmd_deps @ hermes_cli/dep_ensure.py:ensure_dependency */
-/* PoP: cmd_deps @ hermes_cli/managed_uv.py:ensure_uv */
-/* PoP: cmd_deps @ hermes_cli/managed_uv.py:resolve_uv */
-/* PoP: cmd_deps @ hermes_cli/managed_uv.py:update_managed_uv */
-/* PoP: cmd_deps @ hermes_cli/psutil_android.py:prepare_patched_psutil_sdist */
-/* PoP: cmd_doctor @ hermes_cli/_subprocess_compat.py:resolve_node_command */
-/* PoP: cmd_doctor @ hermes_cli/azure_detect.py:detect */
-/* PoP: cmd_doctor @ hermes_cli/azure_detect.py:lookup_context_length */
-/* PoP: cmd_doctor @ hermes_cli/doctor.py:check_certificates */
-/* PoP: cmd_doctor @ hermes_cli/doctor.py:check_fail */
-/* PoP: cmd_doctor @ hermes_cli/doctor.py:check_info */
-/* PoP: cmd_doctor @ hermes_cli/doctor.py:check_ok */
-/* PoP: cmd_doctor @ hermes_cli/doctor.py:check_warn */
-/* PoP: cmd_doctor @ hermes_cli/pt_input_extras.py:install_ctrl_enter_alias */
-/* PoP: cmd_doctor @ hermes_cli/pt_input_extras.py:install_shift_enter_alias */
-/* PoP: cmd_doctor @ hermes_cli/security_advisories.py:render_doctor_section */
-/* PoP: cmd_doctor @ hermes_cli/stdio.py:configure_windows_stdio */
-/* PoP: cmd_env @ hermes_cli/env_loader.py:load_hermes_dotenv */
-/* PoP: cmd_fallback @ hermes_cli/fallback_cmd.py:cmd_fallback */
-/* PoP: cmd_fallback @ hermes_cli/fallback_cmd.py:cmd_fallback_add */
-/* PoP: cmd_fallback @ hermes_cli/fallback_cmd.py:cmd_fallback_clear */
-/* PoP: cmd_fallback @ hermes_cli/fallback_cmd.py:cmd_fallback_list */
-/* PoP: cmd_fallback @ hermes_cli/fallback_cmd.py:cmd_fallback_remove */
-/* PoP: cmd_fallback @ hermes_cli/fallback_config.py:get_fallback_chain */
-/* PoP: cmd_gateway @ hermes_cli/container_boot.py:main */
-/* PoP: cmd_gateway @ hermes_cli/container_boot.py:reconcile_profile_gateways */
-/* PoP: cmd_gateway @ hermes_cli/gateway.py:find_gateway_pids */
-/* PoP: cmd_gateway @ hermes_cli/gateway.py:gateway_command */
-/* PoP: cmd_gateway @ hermes_cli/gateway.py:gateway_setup */
-/* PoP: cmd_gateway @ hermes_cli/gateway.py:kill_gateway_processes */
-/* PoP: cmd_gateway @ hermes_cli/gateway.py:run_gateway */
-/* PoP: cmd_gateway @ hermes_cli/gateway.py:stop_profile_gateway */
-/* PoP: cmd_gateway @ hermes_cli/gateway_windows.py:install */
-/* PoP: cmd_gateway @ hermes_cli/gateway_windows.py:is_installed */
-/* PoP: cmd_gateway @ hermes_cli/gateway_windows.py:restart */
-/* PoP: cmd_gateway @ hermes_cli/gateway_windows.py:start */
-/* PoP: cmd_gateway @ hermes_cli/gateway_windows.py:status */
-/* PoP: cmd_gateway @ hermes_cli/gateway_windows.py:stop */
-/* PoP: cmd_gateway @ hermes_cli/gateway_windows.py:uninstall */
-/* PoP: cmd_goal @ hermes_cli/goals.py:clear_goal */
-/* PoP: cmd_goal @ hermes_cli/goals.py:judge_goal */
-/* PoP: cmd_goal @ hermes_cli/goals.py:load_goal */
-/* PoP: cmd_goal @ hermes_cli/goals.py:pause */
-/* PoP: cmd_goal @ hermes_cli/goals.py:resume */
-/* PoP: cmd_goal @ hermes_cli/goals.py:save_goal */
-/* PoP: cmd_goal @ hermes_cli/goals.py:set */
-/* PoP: cmd_help @ hermes_cli/_parser.py:build_top_level_parser */
-/* PoP: cmd_info @ hermes_cli/banner.py:_accent_hex */
-/* PoP: cmd_info @ hermes_cli/banner.py:_agent_spacer_height */
-/* PoP: cmd_info @ hermes_cli/banner.py:_display_toolset_name */
-/* PoP: cmd_info @ hermes_cli/banner.py:_format_context_length */
-/* PoP: cmd_info @ hermes_cli/banner.py:cprint */
-/* PoP: cmd_info @ hermes_cli/cli_output.py:print_error */
-/* PoP: cmd_info @ hermes_cli/cli_output.py:print_header */
-/* PoP: cmd_info @ hermes_cli/cli_output.py:print_info */
-/* PoP: cmd_info @ hermes_cli/cli_output.py:print_success */
-/* PoP: cmd_info @ hermes_cli/cli_output.py:print_warning */
-/* PoP: cmd_info @ hermes_cli/colors.py:color */
-/* PoP: cmd_info @ hermes_cli/colors.py:should_use_color */
-/* PoP: cmd_inventory @ hermes_cli/inventory.py:load_picker_context */
-/* PoP: cmd_kanban @ hermes_cli/kanban.py:build_parser */
-/* PoP: cmd_kanban @ hermes_cli/kanban.py:run_slash */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/callbacks.py:approval_callback */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/write_approval_commands.py:handle_pending_subcommand */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/auth.py:get_auth_status */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/auth.py:login_command */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/auth.py:logout_command */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/copilot_auth.py:copilot_device_code_login */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/copilot_auth.py:get_copilot_api_token */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/dingtalk_auth.py:begin_registration */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/dingtalk_auth.py:poll_registration */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/banner.py:build_welcome_banner */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/blueprint_cmd.py:_fmt_candidates */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/blueprint_cmd.py:_fmt_catalog */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/blueprint_cmd.py:_fmt_no_match */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/blueprint_cmd.py:_humanize_schedule */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/blueprint_cmd.py:_manage_hint */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/blueprint_cmd.py:_parse_kv */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/blueprint_cmd.py:_resolve_origin */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/blueprint_cmd.py:build_blueprint_seed */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/blueprint_cmd.py:handle_blueprint_command */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/blueprint_cmd.py:match_blueprint */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/browser_connect.py:get_chrome_debug_candidates */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/browser_connect.py:is_browser_debug_ready */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/browser_connect.py:try_launch_chrome_debug */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/checkpoints.py:cmd_clear */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/checkpoints.py:cmd_list */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/checkpoints.py:cmd_prune */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/checkpoints.py:cmd_status */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/checkpoints.py:register_cli */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/callbacks.py:clarify_callback */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/commands.py:resolve_command */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/commands.py:get_completions */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/partial_compress.py:parse_partial_compress_args */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/partial_compress.py:rejoin_compressed_head_and_tail */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/partial_compress.py:split_history_for_partial_compress */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/config.py:edit_config */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/config.py:migrate_config */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/config.py:set_config_value */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/config.py:show_config */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/cron.py:cron_create */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/cron.py:cron_edit */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/cron.py:cron_list */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/cron.py:cron_status */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/cron.py:cron_tick */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/curator.py:cli_main */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/curator.py:register_cli */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/debug.py:build_debug_share */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/debug.py:collect_debug_report */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/debug.py:run_debug_delete */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/debug.py:run_debug_share */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/dep_ensure.py:ensure_dependency */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/managed_uv.py:ensure_uv */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/managed_uv.py:resolve_uv */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/managed_uv.py:update_managed_uv */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/psutil_android.py:prepare_patched_psutil_sdist */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/_subprocess_compat.py:resolve_node_command */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/azure_detect.py:detect */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/azure_detect.py:lookup_context_length */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/doctor.py:check_certificates */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/doctor.py:check_fail */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/doctor.py:check_info */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/doctor.py:check_ok */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/doctor.py:check_warn */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/pt_input_extras.py:install_ctrl_enter_alias */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/pt_input_extras.py:install_shift_enter_alias */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/security_advisories.py:render_doctor_section */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/stdio.py:configure_windows_stdio */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/env_loader.py:load_hermes_dotenv */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/fallback_cmd.py:cmd_fallback */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/fallback_cmd.py:cmd_fallback_add */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/fallback_cmd.py:cmd_fallback_clear */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/fallback_cmd.py:cmd_fallback_list */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/fallback_cmd.py:cmd_fallback_remove */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/fallback_config.py:get_fallback_chain */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/container_boot.py:main */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/container_boot.py:reconcile_profile_gateways */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/gateway.py:find_gateway_pids */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/gateway.py:gateway_command */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/gateway.py:gateway_setup */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/gateway.py:kill_gateway_processes */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/gateway.py:run_gateway */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/gateway.py:stop_profile_gateway */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/gateway_windows.py:install */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/gateway_windows.py:is_installed */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/gateway_windows.py:restart */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/gateway_windows.py:start */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/gateway_windows.py:status */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/gateway_windows.py:stop */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/gateway_windows.py:uninstall */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/goals.py:clear_goal */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/goals.py:judge_goal */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/goals.py:load_goal */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/goals.py:pause */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/goals.py:resume */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/goals.py:save_goal */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/goals.py:set */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/_parser.py:build_top_level_parser */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/banner.py:_accent_hex */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/banner.py:_agent_spacer_height */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/banner.py:_display_toolset_name */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/banner.py:_format_context_length */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/banner.py:cprint */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/cli_output.py:print_error */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/cli_output.py:print_header */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/cli_output.py:print_info */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/cli_output.py:print_success */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/cli_output.py:print_warning */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/colors.py:color */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/colors.py:should_use_color */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/inventory.py:load_picker_context */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/kanban.py:build_parser */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/kanban.py:run_slash */
 /* PoP: cmd_kanban @ hermes_cli/kanban_db.py:* */
-/* PoP: cmd_kanban @ hermes_cli/kanban_decompose.py:decompose_task */
-/* PoP: cmd_kanban @ hermes_cli/kanban_diagnostics.py:compute_task_diagnostics */
-/* PoP: cmd_kanban @ hermes_cli/kanban_specify.py:specify_task */
-/* PoP: cmd_kanban @ hermes_cli/kanban_swarm.py:create_swarm */
-/* PoP: cmd_logs @ hermes_cli/logs.py:list_logs */
-/* PoP: cmd_mcp @ hermes_cli/mcp_catalog.py:install_entry */
-/* PoP: cmd_mcp @ hermes_cli/mcp_catalog.py:installed_servers */
-/* PoP: cmd_mcp @ hermes_cli/mcp_catalog.py:is_enabled */
-/* PoP: cmd_mcp @ hermes_cli/mcp_catalog.py:is_installed */
-/* PoP: cmd_mcp @ hermes_cli/mcp_catalog.py:list_catalog */
-/* PoP: cmd_mcp @ hermes_cli/mcp_catalog.py:uninstall_entry */
-/* PoP: cmd_mcp @ hermes_cli/mcp_config.py:cmd_mcp_add */
-/* PoP: cmd_mcp @ hermes_cli/mcp_config.py:cmd_mcp_configure */
-/* PoP: cmd_mcp @ hermes_cli/mcp_config.py:cmd_mcp_list */
-/* PoP: cmd_mcp @ hermes_cli/mcp_config.py:cmd_mcp_login */
-/* PoP: cmd_mcp @ hermes_cli/mcp_config.py:cmd_mcp_remove */
-/* PoP: cmd_mcp @ hermes_cli/mcp_config.py:cmd_mcp_test */
-/* PoP: cmd_mcp @ hermes_cli/mcp_picker.py:install_by_name */
-/* PoP: cmd_mcp @ hermes_cli/mcp_picker.py:run_picker */
-/* PoP: cmd_mcp @ hermes_cli/mcp_picker.py:show_catalog */
-/* PoP: cmd_mcp @ hermes_cli/mcp_security.py:is_mcp_server_entry_suspicious */
-/* PoP: cmd_mcp @ hermes_cli/mcp_security.py:validate_mcp_server_entry */
-/* PoP: cmd_mcp @ hermes_cli/mcp_startup.py:start_background_mcp_discovery */
-/* PoP: cmd_mcp @ hermes_cli/mcp_startup.py:wait_for_mcp_discovery */
-/* PoP: cmd_memory @ hermes_cli/memory_setup.py:cmd_setup */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/kanban_decompose.py:decompose_task */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/kanban_diagnostics.py:compute_task_diagnostics */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/kanban_specify.py:specify_task */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/kanban_swarm.py:create_swarm */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/logs.py:list_logs */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/mcp_catalog.py:install_entry */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/mcp_catalog.py:installed_servers */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/mcp_catalog.py:is_enabled */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/mcp_catalog.py:is_installed */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/mcp_catalog.py:list_catalog */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/mcp_catalog.py:uninstall_entry */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/mcp_config.py:cmd_mcp_add */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/mcp_config.py:cmd_mcp_configure */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/mcp_config.py:cmd_mcp_list */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/mcp_config.py:cmd_mcp_login */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/mcp_config.py:cmd_mcp_remove */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/mcp_config.py:cmd_mcp_test */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/mcp_picker.py:install_by_name */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/mcp_picker.py:run_picker */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/mcp_picker.py:show_catalog */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/mcp_security.py:is_mcp_server_entry_suspicious */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/mcp_security.py:validate_mcp_server_entry */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/mcp_startup.py:start_background_mcp_discovery */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/mcp_startup.py:wait_for_mcp_discovery */
+/* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/memory_setup.py:cmd_setup */
 
 /* Helper: print messages with role filtering and count limit */
 /* PoP: cli_pt_input_extras_install_ignored_terminal_sequences @ hermes_cli/pt_input_extras.py:install_ignored_terminal_sequences */
@@ -1568,5 +1569,65 @@ int cli_pt_input_extras_install_ignored_terminal_sequences(void)
         }
     }
     return changed;
+}
+
+/* Key-alias registry — mirrors prompt_toolkit's ANSI_SEQUENCES map for
+ * Cmd+Backspace / Cmd+ForwardDelete. The C terminal stack has no live
+ * readline registry to mutate, so we keep our own table (sequence -> action)
+ * that the TUI layer consults; consumers should call this once at startup. */
+typedef enum {
+    CUA_KEY_DEFAULT = 0,
+    CUA_KEY_CTRL_U,   /* kill backward to start of line (unix-line-discard) */
+    CUA_KEY_CTRL_K,   /* kill forward to end of line (kill-line)            */
+} cua_key_action_t;
+
+typedef struct cua_key_alias {
+    const char *seq;
+    cua_key_action_t action;
+} cua_key_alias_t;
+
+/* Fixed set from Python install_cmd_backspace_alias. */
+static cua_key_alias_t g_key_aliases[5];
+static int g_key_alias_count = 0;
+
+/* PoP: install_cmd_backspace_alias @ hermes_cli/pt_input_extras.py:install_cmd_backspace_alias */
+/* Port of Python install_cmd_backspace_alias(): map Cmd+Backspace /
+ * Cmd+ForwardDelete terminal sequences to the readline kill bindings.
+ * Returns the number of sequences whose mapping was *changed*
+ * (newly registered) — faithful to the Python return where a setdefault
+ * only counts first-time insertions. */
+int cli_pt_input_extras_install_cmd_backspace_alias(void)
+{
+    static const struct { const char *seq; cua_key_action_t action; } aliases[] = {
+        { "\x1b[127;9u",  CUA_KEY_CTRL_U },   /* Kitty CSI-u, super    */
+        { "\x1b[127;10u", CUA_KEY_CTRL_U },   /* Kitty CSI-u, super+shift */
+        { "\x1b[27;9;127~", CUA_KEY_CTRL_U }, /* xterm modifyOtherKeys */
+        { "\x1b[3;9~",  CUA_KEY_CTRL_K },     /* xterm CSI tilde, super    */
+        { "\x1b[3;10~", CUA_KEY_CTRL_K },     /* xterm CSI tilde, super+shift */
+    };
+    int changed = 0;
+    for (int i = 0; i < 5; i++) {
+        bool found = false;
+        for (int j = 0; j < g_key_alias_count; j++) {
+            if (strcmp(g_key_aliases[j].seq, aliases[i].seq) == 0) { found = true; break; }
+        }
+        if (!found && g_key_alias_count < 5) {
+            g_key_aliases[g_key_alias_count].seq = aliases[i].seq;
+            g_key_aliases[g_key_alias_count].action = aliases[i].action;
+            g_key_alias_count++;
+            changed++;
+        }
+    }
+    return changed;
+}
+
+/* Lookup the registered action for a byte sequence. */
+cua_key_action_t cli_pt_input_extras_key_action(const char *seq)
+{
+    if (!seq) return CUA_KEY_DEFAULT;
+    for (int i = 0; i < g_key_alias_count; i++)
+        if (strcmp(g_key_aliases[i].seq, seq) == 0)
+            return g_key_aliases[i].action;
+    return CUA_KEY_DEFAULT;
 }
 

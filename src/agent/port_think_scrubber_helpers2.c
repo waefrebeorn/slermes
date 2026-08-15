@@ -21,12 +21,12 @@ static char *lowerdup(const char *s) {
 
 static const char *TAGS[] = {"<thinking>", "</thinking>", "<reasoning_scratchpad>", "</reasoning_scratchpad>", NULL};
 
-/* PoP: __init__ @ agent/think_scrubber.py:__init__ */
+/* PoP: ths_init @ agent/think_scrubber.py:__init__ */
 char *ths_init(void) {
     return strdup("{\"in_block\": false, \"buf\": \"\"}");
 }
 
-/* PoP: _is_block_boundary @ agent/think_scrubber.py:_is_block_boundary */
+/* PoP: ths_is_block_boundary @ agent/think_scrubber.py:_is_block_boundary */
 bool ths_is_block_boundary(const char *buf, long idx) {
     /* Python: position is boundary of any tag. */
     if (!buf || idx < 0) return false;
@@ -41,7 +41,7 @@ bool ths_is_block_boundary(const char *buf, long idx) {
     return false;
 }
 
-/* PoP: _max_partial_suffix @ agent/think_scrubber.py:_max_partial_suffix */
+/* PoP: ths_max_partial_suffix @ agent/think_scrubber.py:_max_partial_suffix */
 long ths_max_partial_suffix(const char *buf) {
     /* Python: longest suffix that is tag prefix. */
     if (!buf) return 0;

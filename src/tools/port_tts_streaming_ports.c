@@ -36,7 +36,7 @@
 static const char *STTS_PROVIDER_PRIORITY[] = {"elevenlabs", "gemini", "openai", "xai", NULL};
 
 /* ── Stateful SentenceChunker ──────────────────────────────────────────── */
-/* PoP: __init__ @ tools/tts_streaming.py:SentenceChunker.__init__ */
+/* PoP: stts_chunker_new @ tools/tts_streaming.py:SentenceChunker.__init__ */
 typedef struct stts_chunker {
     char *buf;       /* accumulated text (think blocks stripped) */
     long min_len;    /* minimum head length to emit */
@@ -101,7 +101,7 @@ static char *strip_think_blocks_c(const char *text) {
     return out;
 }
 
-/* PoP: feed @ tools/tts_streaming.py:feed */
+/* PoP: stts_chunker_feed @ tools/tts_streaming.py:feed */
 char *stts_chunker_feed(stts_chunker_t *c, const char *delta, char **out_buf_state) {
     if (!c || !delta) {
         if (out_buf_state) *out_buf_state = NULL;
@@ -239,7 +239,7 @@ char *stts_chunker_feed(stts_chunker_t *c, const char *delta, char **out_buf_sta
     return out;
 }
 
-/* PoP: flush @ tools/tts_streaming.py:flush */
+/* PoP: stts_chunker_flush @ tools/tts_streaming.py:flush */
 char *stts_chunker_flush(stts_chunker_t *c) {
     if (!c) return strdup("");
     /* tail = _THINK_BLOCK_RE.sub("", buf).strip() */
@@ -276,7 +276,7 @@ typedef struct {
 /* The old API wrappers (for backward compat with port_tts_streaming_helpers.h).
  * These are now thin wrappers around the stateful chunker. */
 
-/* PoP: __init__ @ tools/tts_streaming.py:SentenceChunker.__init__ */
+/* PoP: stts_buf_init @ tools/tts_streaming.py:SentenceChunker.__init__ */
 char *stts_buf_init(long min_len) {
     stts_chunker_state_t *c = malloc(sizeof(*c));
     if (!c) return NULL;
@@ -288,7 +288,7 @@ char *stts_buf_init(long min_len) {
     return (char *)c;
 }
 
-/* PoP: feed @ tools/tts_streaming.py:SentenceChunker.feed */
+/* PoP: stts_buf_feed @ tools/tts_streaming.py:SentenceChunker.feed */
 char *stts_buf_feed(const char *delta, long min_len) {
     /* Stateless shim — not used by the consumer port which calls the
      * stateful API directly. */
@@ -303,7 +303,7 @@ char *stts_buf_feed(const char *delta, long min_len) {
     return strdup("");
 }
 
-/* PoP: flush @ tools/tts_streaming.py:SentenceChunker.flush */
+/* PoP: stts_buf_flush @ tools/tts_streaming.py:SentenceChunker.flush */
 char *stts_buf_flush(const char *buf) {
     if (!buf) return strdup("");
     char *stripped = strip_think_blocks_c(buf);
@@ -344,8 +344,8 @@ static int collect_capped(const char **chunks, size_t *lens, int count,
 
 /* ElevenLabs provider: POST https://api.elevenlabs.io/v1/text-to-speech/{voice_id}
  * with response_format=pcm_24000, streaming via SSE. */
-/* PoP: available @ tools/tts_streaming.py:ElevenLabsStreamer.available */
-/* PoP: stream @ tools/tts_streaming.py:ElevenLabsStreamer.stream */
+/* PoP: stts_provider_elevenlabs_stream @ tools/tts_streaming.py:ElevenLabsStreamer.available */
+/* PoP: stts_provider_elevenlabs_stream @ tools/tts_streaming.py:ElevenLabsStreamer.stream */
 static int stts_provider_elevenlabs_stream(void *ctx, const char *text,
                                             void **out_chunks, size_t *out_lens,
                                             int max_chunks) {
@@ -393,14 +393,14 @@ static int stts_provider_elevenlabs_stream(void *ctx, const char *text,
 
 /* _capped: streaming byte-cap pass-through. Mirrors Python _capped:
  * yields chunks until the 16 MiB per-sentence cap is exceeded, then stops. */
-/* PoP: _capped @ tools/tts_streaming.py:_capped */
+/* PoP: stts_capped @ tools/tts_streaming.py:_capped */
 int stts_capped(const char **chunks, size_t *lens, int count,
                 void **out_chunks, size_t *out_lens, int max_chunks) {
     return collect_capped(chunks, lens, count, out_chunks, out_lens, max_chunks);
 }
 
 /* _openai_config_api_key: return tts.openai.api_key from config, or empty str. */
-/* PoP: _openai_config_api_key @ tools/tts_streaming.py:_openai_config_api_key */
+/* PoP: stts_openai_config_api_key @ tools/tts_streaming.py:_openai_config_api_key */
 const char *stts_openai_config_api_key(void) {
     const char *key = tool_config_get("openai", "api_key");
     if (!key || !key[0]) return "";
@@ -409,7 +409,7 @@ const char *stts_openai_config_api_key(void) {
 
 /* _resolve_key: provider secret lookup — config > env > credential pool.
  * ALL streaming-provider key lookups go through here. */
-/* PoP: _resolve_key @ tools/tts_streaming.py:_resolve_key */
+/* PoP: stts_resolve_key @ tools/tts_streaming.py:_resolve_key */
 const char *stts_resolve_key(const char *env_var, const char *provider_id) {
     if (!env_var) return "";
     const char *key = tool_config_get_api_key(provider_id);
@@ -424,10 +424,10 @@ const char *stts_resolve_key(const char *env_var, const char *provider_id) {
  * STTS_PROVIDER_PRIORITY list. The @register decorator in Python populates
  * _REGISTRY; here the priority array + constructor dispatch serves the same
  * role. */
-/* PoP: register @ tools/tts_streaming.py:register */
+/* PoP: stts_provider_openai_stream @ tools/tts_streaming.py:register */
 /* OpenAI provider: POST to /v1/audio/speech with response_format=pcm_stream */
-/* PoP: available @ tools/tts_streaming.py:OpenAIStreamer.available */
-/* PoP: stream @ tools/tts_streaming.py:OpenAIStreamer.stream */
+/* PoP: stts_provider_openai_stream @ tools/tts_streaming.py:OpenAIStreamer.available */
+/* PoP: stts_provider_openai_stream @ tools/tts_streaming.py:OpenAIStreamer.stream */
 static int stts_provider_openai_stream(void *ctx, const char *text,
                                         void **out_chunks, size_t *out_lens,
                                         int max_chunks) {
@@ -475,8 +475,8 @@ static int stts_provider_openai_stream(void *ctx, const char *text,
 }
 
 /* Gemini provider: POST to {base_url}/models/{model}:streamGenerateContent?alt=sse */
-/* PoP: available @ tools/tts_streaming.py:GeminiStreamer.available */
-/* PoP: stream @ tools/tts_streaming.py:GeminiStreamer.stream */
+/* PoP: stts_provider_gemini_stream @ tools/tts_streaming.py:GeminiStreamer.available */
+/* PoP: stts_provider_gemini_stream @ tools/tts_streaming.py:GeminiStreamer.stream */
 static int stts_provider_gemini_stream(void *ctx, const char *text,
                                         void **out_chunks, size_t *out_lens,
                                         int max_chunks) {
@@ -539,11 +539,11 @@ static int stts_provider_gemini_stream(void *ctx, const char *text,
 /* xAI provider: WebSocket-based (wss://api.x.ai/v1/tts).
  * For the C port, we use the HTTP bridge via the provider's HTTP endpoint
  * if WebSocket isn't available. Falls back gracefully. */
-/* PoP: available @ tools/tts_streaming.py:XAIStreamer.available */
-/* PoP: stream @ tools/tts_streaming.py:XAIStreamer.stream */
-/* PoP: _collect_async @ tools/tts_streaming.py:XAIStreamer._collect_async */
-/* PoP: _drain_async @ tools/tts_streaming.py:XAIStreamer._drain_async */
-/* PoP: _async_frames @ tools/tts_streaming.py:XAIStreamer._async_frames */
+/* PoP: stts_provider_xai_stream @ tools/tts_streaming.py:XAIStreamer.available */
+/* PoP: stts_provider_xai_stream @ tools/tts_streaming.py:XAIStreamer.stream */
+/* PoP: stts_provider_xai_stream @ tools/tts_streaming.py:XAIStreamer._collect_async */
+/* PoP: stts_provider_xai_stream @ tools/tts_streaming.py:XAIStreamer._drain_async */
+/* PoP: stts_provider_xai_stream @ tools/tts_streaming.py:XAIStreamer._async_frames */
 static int stts_provider_xai_stream(void *ctx, const char *text,
                                      void **out_chunks, size_t *out_lens,
                                      int max_chunks) {
@@ -585,7 +585,7 @@ static int stts_provider_xai_stream(void *ctx, const char *text,
 
 /* Provider constructors — each checks availability then fills the vtable. */
 
-/* PoP: _try_instantiate @ tools/tts_streaming.py:_try_instantiate */
+/* PoP: resolve_streaming_provider_c_named @ tools/tts_streaming.py:_try_instantiate */
 stts_provider_t *resolve_streaming_provider_c_named(const char *name, json_t *tts_config) {
     if (!name || !tts_config) return NULL;
 

@@ -18,19 +18,19 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ tools/todo_tool.py:__init__ */
+/* PoP: tdt_init @ tools/todo_tool.py:__init__ */
 char *tdt_init(void) {
     return strdup("{\"items\": []}");
 }
 
-/* PoP: read @ tools/todo_tool.py:read */
+/* PoP: tdt_read @ tools/todo_tool.py:read */
 char *tdt_read(const char *state_json) {
     /* Python: copy of list. */
     if (!state_json) return strdup("[]");
     return strdup(state_json);
 }
 
-/* PoP: _validate @ tools/todo_tool.py:_validate */
+/* PoP: tdt_validate @ tools/todo_tool.py:_validate */
 char *tdt_validate(const char *item_json) {
     /* Python: required fields + normalize. */
     if (!item_json) return NULL;
@@ -39,7 +39,7 @@ char *tdt_validate(const char *item_json) {
     return strdup(item_json);
 }
 
-/* PoP: todo_tool @ tools/todo_tool.py:todo_tool */
+/* PoP: tdt_todo_tool @ tools/todo_tool.py:todo_tool */
 char *tdt_todo_tool(const char *params_json) {
     /* Python: read or write entry. */
     if (!params_json) return NULL;

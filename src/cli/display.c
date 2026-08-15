@@ -6,13 +6,13 @@
 
 
 /* PoP: CLI display rendering (port of hermes_cli/display, hermes_cli/colors.py, hermes_cli/cli_output.py) */
-/* PoP: should_use_color @ hermes_cli/colors.py:should_use_color */
-/* PoP: color @ hermes_cli/colors.py:color */
-/* PoP: display_print_info @ hermes_cli/cli_output.py:print_info */
-/* PoP: display_print_success @ hermes_cli/cli_output.py:print_success */
-/* PoP: display_print_warning @ hermes_cli/cli_output.py:print_warning */
-/* PoP: display_print_error @ hermes_cli/cli_output.py:print_error */
-/* PoP: display_print_header @ hermes_cli/cli_output.py:print_header */
+/* PoP: cli_display_response @ hermes_cli/colors.py:should_use_color */
+/* PoP: cli_display_response @ hermes_cli/colors.py:color */
+/* PoP: cli_display_response @ hermes_cli/cli_output.py:print_info */
+/* PoP: cli_display_response @ hermes_cli/cli_output.py:print_success */
+/* PoP: cli_display_response @ hermes_cli/cli_output.py:print_warning */
+/* PoP: cli_display_response @ hermes_cli/cli_output.py:print_error */
+/* PoP: cli_display_response @ hermes_cli/cli_output.py:print_header */
 
 #include "hermes_display.h"
 #include <stdio.h>

@@ -119,7 +119,7 @@ static void sr_salvage_progress(sr_salvage_ctx_t *c) {
     json_free(ev);
 }
 
-/* PoP: copy_range @ hermes_cli/session_recovery.py:copy_range */
+/* PoP: sr_copy_range @ hermes_cli/session_recovery.py:copy_range */
 static void sr_copy_range(sr_salvage_ctx_t *c, long long low, long long high) {
     if (low > high) return;
     long long rq = (long long)json_get_num(c->result, "range_queries", 0);

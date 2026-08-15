@@ -13,7 +13,7 @@
 #include <time.h>
 #include "hermes_json.h"
 
-/* PoP: _now_ns @ agent/monitoring/events.py:_now_ns */
+/* PoP: monev_now_ns @ agent/monitoring/events.py:_now_ns */
 long long monev_now_ns(void) {
     /* Python: time.time_ns(). */
     struct timespec ts;
@@ -21,7 +21,7 @@ long long monev_now_ns(void) {
     return (long long)ts.tv_sec * 1000000000LL + (long long)ts.tv_nsec;
 }
 
-/* PoP: to_dict @ agent/monitoring/events.py:to_dict */
+/* PoP: monev_gateway_health_to_dict @ agent/monitoring/events.py:to_dict */
 char *monev_gateway_health_to_dict(const char *arg) {
     /* Python: GatewayHealthEvent.to_dict — {"event": "gateway_health", **asdict}.
      * Arg = "fields_json" (object of the dataclass fields). */
@@ -38,7 +38,7 @@ char *monev_gateway_health_to_dict(const char *arg) {
     return out ? out : strdup("{\"event\": \"gateway_health\"}");
 }
 
-/* PoP: to_dict @ agent/monitoring/events.py:to_dict */
+/* PoP: monev_gateway_diagnostic_to_dict @ agent/monitoring/events.py:to_dict */
 char *monev_gateway_diagnostic_to_dict(const char *arg) {
     /* Python: GatewayDiagnosticEvent.to_dict. */
     if (!arg || !*arg) return strdup("{\"event\": \"gateway_diagnostic\"}");
@@ -54,7 +54,7 @@ char *monev_gateway_diagnostic_to_dict(const char *arg) {
     return out ? out : strdup("{\"event\": \"gateway_diagnostic\"}");
 }
 
-/* PoP: to_dict @ agent/monitoring/events.py:to_dict */
+/* PoP: monev_cron_execution_to_dict @ agent/monitoring/events.py:to_dict */
 char *monev_cron_execution_to_dict(const char *arg) {
     /* Python: CronExecutionEvent.to_dict. */
     if (!arg || !*arg) return strdup("{\"event\": \"cron_execution\"}");

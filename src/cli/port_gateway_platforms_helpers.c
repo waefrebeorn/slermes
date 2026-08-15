@@ -27,12 +27,12 @@ static int _dedup_count = 0;
 static double _dedup_ttl = 300.0;
 static int _dedup_max_size = 2000;
 
-/* PoP: helpers_is_duplicate @ gateway/platforms/helpers.py:is_duplicate */
+/* PoP: memory @ gateway/platforms/helpers.py:is_duplicate */
 
 /* Port of Python gateway/platforms/helpers.py:is_duplicate
  * Hive-backed seen-map: only live msg_ids consume memory (was
  * _dedup_seen[2000] = 265KB of .bss). */
-/* PoP: _is_duplicate @ gateway/platforms/qqbot/adapter.py:_is_duplicate */
+/* PoP: helpers_is_duplicate @ gateway/platforms/qqbot/adapter.py:_is_duplicate */
 int helpers_is_duplicate(const char *msg_id)
 {
     if (!msg_id || !msg_id[0]) return 0;
@@ -128,7 +128,7 @@ typedef struct {
 static hive_t *_batch = NULL;   /* of BatchEntry* (heap) */
 static pthread_mutex_t _batch_lock = PTHREAD_MUTEX_INITIALIZER;
 
-/* PoP: helpers_enqueue @ gateway/platforms/helpers.py:enqueue */
+/* PoP: newline @ gateway/platforms/helpers.py:enqueue */
 
 /* Port of Python gateway/platforms/helpers.py:enqueue
  * Python: pending is a dict keyed by `key`; a second event for the same

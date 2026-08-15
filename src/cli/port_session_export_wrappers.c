@@ -79,7 +79,7 @@ static void sexp_format_timestamp(json_t *msg, char *out, size_t outsz) {
 int sexp_u_render_user_prompts_markdown(const char *arg);
 int sexp_u_render_full_markdown(const char *arg);
 
-/* PoP: normalize_export_format @ hermes_cli/session_export.py:normalize_export_format */
+/* PoP: sexp_normalize_export_format @ hermes_cli/session_export.py:normalize_export_format */
 int sexp_normalize_export_format(const char *arg) {
     /* Python: strip/lower; md -> markdown; jsonl/markdown only. Arg = fmt
      * (default jsonl). */
@@ -94,7 +94,7 @@ int sexp_normalize_export_format(const char *arg) {
     return 1;
 }
 
-/* PoP: normalize_export_only @ hermes_cli/session_export.py:normalize_export_only */
+/* PoP: sexp_normalize_export_only @ hermes_cli/session_export.py:normalize_export_only */
 int sexp_normalize_export_only(const char *arg) {
     /* Python: strip/lower; user* -> "user-prompts"; else ValueError. Arg =
      * only (empty = None). */
@@ -111,7 +111,7 @@ int sexp_normalize_export_only(const char *arg) {
     return 1;
 }
 
-/* PoP: render_sessions_export @ hermes_cli/session_export.py:render_sessions_export */
+/* PoP: sexp_render_sessions_export @ hermes_cli/session_export.py:render_sessions_export */
 int sexp_render_sessions_export(const char *arg) {
     /* Python: jsonl or markdown render. Arg = "fmt\tonly\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -122,7 +122,7 @@ int sexp_render_sessions_export(const char *arg) {
     return 0;
 }
 
-/* PoP: export_record_count @ hermes_cli/session_export.py:export_record_count */
+/* PoP: sexp_export_record_count @ hermes_cli/session_export.py:export_record_count */
 int sexp_export_record_count(const char *arg) {
     /* Python: (count, "prompt"|"session"). Arg = "only\tcount". */
     if (!arg || !*arg) { printf("0 session\n"); return 0; }
@@ -133,7 +133,7 @@ int sexp_export_record_count(const char *arg) {
     return 0;
 }
 
-/* PoP: iter_user_prompt_records @ hermes_cli/session_export.py:iter_user_prompt_records */
+/* PoP: sexp_iter_user_prompt_records @ hermes_cli/session_export.py:iter_user_prompt_records */
 int sexp_iter_user_prompt_records(const char *arg) {
     /* Python: user-prompt records. Arg = "records_json\tcount". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -142,7 +142,7 @@ int sexp_iter_user_prompt_records(const char *arg) {
     return 0;
 }
 
-/* PoP: _render_jsonl @ hermes_cli/session_export.py:_render_jsonl */
+/* PoP: sexp_u_render_jsonl @ hermes_cli/session_export.py:_render_jsonl */
 int sexp_u_render_jsonl(const char *arg) {
     /* Python: json.dumps per row joined by \n (+ trailing). Arg = "only" or
      * rows JSON array (each row dumped verbatim). */
@@ -165,7 +165,7 @@ int sexp_u_render_jsonl(const char *arg) {
     return 0;
 }
 
-/* PoP: _render_markdown @ hermes_cli/session_export.py:_render_markdown */
+/* PoP: sexp_u_render_markdown @ hermes_cli/session_export.py:_render_markdown */
 int sexp_u_render_markdown(const char *arg) {
     /* Python (sessions, only): "user-prompts" -> the prompts renderer,
      * anything else -> the full renderer. Arg = "only\tsessionsJSON". */
@@ -178,7 +178,7 @@ int sexp_u_render_markdown(const char *arg) {
         return sexp_u_render_user_prompts_markdown(sjson);
     return sexp_u_render_full_markdown(sjson);
 }
-/* PoP: _render_user_prompts_markdown @ hermes_cli/session_export.py:_render_user_prompts_markdown */
+/* PoP: sexp_u_render_user_prompts_markdown @ hermes_cli/session_export.py:_render_user_prompts_markdown */
 int sexp_u_render_user_prompts_markdown(const char *arg) {
     /* Python: "# User prompts for session <id>" + metadata; per prompt
      * "{marker} {index}. {timestamp}" + fenced content. */
@@ -227,7 +227,7 @@ int sexp_u_render_user_prompts_markdown(const char *arg) {
     return 0;
 }
 
-/* PoP: _append_prompt_records @ hermes_cli/session_export.py:_append_prompt_records */
+/* PoP: sexp_u_append_prompt_records @ hermes_cli/session_export.py:_append_prompt_records */
 int sexp_u_append_prompt_records(const char *arg) {
     /* Python: prompt record headings. Arg = "records_json\theading_level". */
     if (!arg || !*arg) { printf("_No user prompts found._\n\n"); return 0; }
@@ -258,7 +258,7 @@ int sexp_u_append_prompt_records(const char *arg) {
     return 0;
 }
 
-/* PoP: _render_full_markdown @ hermes_cli/session_export.py:_render_full_markdown */
+/* PoP: sexp_u_render_full_markdown @ hermes_cli/session_export.py:_render_full_markdown */
 int sexp_u_render_full_markdown(const char *arg) {
     /* Python: single session -> "# Session: <title>" + metadata + messages
      * at heading 2; multiple -> "# Hermes sessions export" grouped with
@@ -337,7 +337,7 @@ int sexp_u_render_full_markdown(const char *arg) {
     json_free(arr);
     return 0;
 }
-/* PoP: _append_session_messages @ hermes_cli/session_export.py:_append_session_messages */
+/* PoP: sexp_u_append_session_messages @ hermes_cli/session_export.py:_append_session_messages */
 int sexp_u_append_session_messages(const char *arg) {
     /* Python (lines, session, heading_level): "## Tool: X" fenced details
      * blocks for tool rows; "{marker} {Label}{ - ts}" + content otherwise.
@@ -400,7 +400,7 @@ int sexp_u_append_session_messages(const char *arg) {
     return 0;
 }
 
-/* PoP: _messages @ hermes_cli/session_export.py:_messages */
+/* PoP: sexp_u_messages @ hermes_cli/session_export.py:_messages */
 int sexp_u_messages(const char *arg) {
     /* Python: session.get("messages") or []; keep only dict entries.
      * Arg = session JSON. Print the filtered JSON array. */
@@ -428,7 +428,7 @@ int sexp_u_messages(const char *arg) {
     return 0;
 }
 
-/* PoP: _message_text @ hermes_cli/session_export.py:_message_text */
+/* PoP: sexp_u_message_text @ hermes_cli/session_export.py:_message_text */
 int sexp_u_message_text(const char *arg) {
     /* Python: str passthrough; list -> join parts; dict text/content. Arg =
      * "type\tvalue" (type: str/list/dict/other). */
@@ -479,7 +479,7 @@ int sexp_u_message_text(const char *arg) {
     return 0;
 }
 
-/* PoP: _content_part_text @ hermes_cli/session_export.py:_content_part_text */
+/* PoP: sexp_u_content_part_text @ hermes_cli/session_export.py:_content_part_text */
 int sexp_u_content_part_text(const char *arg) {
     /* Python: str part; dict text/content string; else json dump; else str.
      * Arg = part JSON. */
@@ -504,7 +504,7 @@ int sexp_u_content_part_text(const char *arg) {
     return 0;
 }
 
-/* PoP: _session_metadata_lines @ hermes_cli/session_export.py:_session_metadata_lines */
+/* PoP: sexp_u_session_metadata_lines @ hermes_cli/session_export.py:_session_metadata_lines */
 int sexp_u_session_metadata_lines(const char *arg) {
     /* Python: "- Session ID: `<id>`" + Source/Model/Title lines. */
     if (!arg || !*arg) return 0;
@@ -525,7 +525,7 @@ int sexp_u_session_metadata_lines(const char *arg) {
     return 0;
 }
 
-/* PoP: _session_id @ hermes_cli/session_export.py:_session_id */
+/* PoP: sexp_u_session_id @ hermes_cli/session_export.py:_session_id */
 int sexp_u_session_id(const char *arg) {
     /* Python: session.get("id") or session.get("session_id") or "unknown". */
     if (!arg || !*arg) { printf("unknown\n"); return 0; }
@@ -538,7 +538,7 @@ int sexp_u_session_id(const char *arg) {
     return 0;
 }
 
-/* PoP: _session_title_or_id @ hermes_cli/session_export.py:_session_title_or_id */
+/* PoP: sexp_u_session_title_or_id @ hermes_cli/session_export.py:_session_title_or_id */
 int sexp_u_session_title_or_id(const char *arg) {
     /* Python: stripped title or _session_id(session). */
     if (!arg || !*arg) { printf("unknown\n"); return 0; }
@@ -557,7 +557,7 @@ int sexp_u_session_title_or_id(const char *arg) {
     return 0;
 }
 
-/* PoP: _heading_text @ hermes_cli/session_export.py:_heading_text */
+/* PoP: sexp_u_heading_text @ hermes_cli/session_export.py:_heading_text */
 int sexp_u_heading_text(const char *arg) {
     /* Python: " ".join(str(value).splitlines()).strip() or "unknown". */
     char *c = sexp_collapse(arg ? arg : "");
@@ -567,7 +567,7 @@ int sexp_u_heading_text(const char *arg) {
     return 0;
 }
 
-/* PoP: _inline_text @ hermes_cli/session_export.py:_inline_text */
+/* PoP: sexp_u_inline_text @ hermes_cli/session_export.py:_inline_text */
 int sexp_u_inline_text(const char *arg) {
     /* Python: " ".join(value.splitlines()).strip(). */
     char *c = sexp_collapse(arg ? arg : "");
@@ -576,7 +576,7 @@ int sexp_u_inline_text(const char *arg) {
     return 0;
 }
 
-/* PoP: _fenced_text @ hermes_cli/session_export.py:_fenced_text */
+/* PoP: sexp_u_fenced_text @ hermes_cli/session_export.py:_fenced_text */
 int sexp_u_fenced_text(const char *arg) {
     /* Python (language, text): fence grows while present in the text. */
     if (!arg) { printf("\n"); return 0; }
@@ -590,7 +590,7 @@ int sexp_u_fenced_text(const char *arg) {
     return 0;
 }
 
-/* PoP: _finish_markdown @ hermes_cli/session_export.py:_finish_markdown */
+/* PoP: sexp_u_finish_markdown @ hermes_cli/session_export.py:_finish_markdown */
 int sexp_u_finish_markdown(const char *arg) {
     /* Python: strip trailing empty lines, join, add one final newline. */
     if (!arg || !*arg) { printf("\n"); return 0; }

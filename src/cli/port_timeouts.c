@@ -17,7 +17,7 @@
 #include <string.h>
 #include <stdio.h>
 
-/* PoP: _coerce_timeout @ hermes_cli/timeouts.py:_coerce_timeout */
+/* PoP: None @ hermes_cli/timeouts.py:_coerce_timeout */
 /* Coerce a raw timeout value to a positive float, else None(-1). */
 /* PoP: timeouts_coerce_timeout @ hermes_cli/timeouts.py:_coerce_timeout */
 double timeouts_coerce_timeout(const char *raw)
@@ -32,11 +32,11 @@ double timeouts_coerce_timeout(const char *raw)
     return v;
 }
 
-/* PoP: _get_model_config @ hermes_cli/timeouts.py:_get_model_config */
+/* PoP: object @ hermes_cli/timeouts.py:_get_model_config */
 /* Given a provider_config JSON object + optional model name, return the model's
  * config object (borrowed from config), or NULL if absent. Does NOT free. */
 /* PoP: timeouts_get_model_config @ hermes_cli/timeouts.py:_get_model_config */
-/* PoP: _get_model_config @ hermes_cli/runtime_provider.py:_get_model_config */
+/* PoP: timeouts_get_model_config @ hermes_cli/runtime_provider.py:_get_model_config */
 const json_t *timeouts_get_model_config(const json_t *provider_config,
                                        const char *model)
 {
@@ -98,7 +98,7 @@ static double get_provider_timeout(const char *config_json,
     return -1.0;
 }
 
-/* PoP: get_provider_request_timeout @ hermes_cli/timeouts.py:get_provider_request_timeout */
+/* PoP: timeouts_get_provider_request_timeout @ hermes_cli/timeouts.py:get_provider_request_timeout */
 double timeouts_get_provider_request_timeout(const char *config_json,
                                             const char *provider_id,
                                             const char *model)
@@ -106,7 +106,7 @@ double timeouts_get_provider_request_timeout(const char *config_json,
     return get_provider_timeout(config_json, provider_id, model, 0);
 }
 
-/* PoP: get_provider_stale_timeout @ hermes_cli/timeouts.py:get_provider_stale_timeout */
+/* PoP: timeouts_get_provider_stale_timeout @ hermes_cli/timeouts.py:get_provider_stale_timeout */
 double timeouts_get_provider_stale_timeout(const char *config_json,
                                           const char *provider_id,
                                           const char *model)

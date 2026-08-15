@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_async_delegation_capture_routing_origin @ tools/async_delegation.py:_capture_routing_origin */
+/* PoP: tools_async_delegation_capture_routing_origin_p @ tools/async_delegation.py:_capture_routing_origin */
 json_t *tools_async_delegation_capture_routing_origin_p(void) {
     return json_object();
 }

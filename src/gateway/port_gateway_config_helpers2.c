@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _ensure_platform_extra_dict @ gateway/config.py:_ensure_platform_extra_dict */
+/* PoP: gcf_ensure_platform_extra_dict @ gateway/config.py:_ensure_platform_extra_dict */
 char *gcf_ensure_platform_extra_dict(const char *config_json, const char *name) {
     /* Python: get-or-create platforms_data[name].extra. */
     if (!config_json || !name) return strdup("{}");
@@ -26,7 +26,7 @@ char *gcf_ensure_platform_extra_dict(const char *config_json, const char *name) 
     return strdup(config_json);
 }
 
-/* PoP: _is_platform_connected @ gateway/config.py:_is_platform_connected */
+/* PoP: gcf_is_platform_connected @ gateway/config.py:_is_platform_connected */
 bool gcf_is_platform_connected(const char *platform_name, const char *config_json) {
     /* Python: sufficiently configured. */
     if (!platform_name) return false;
@@ -34,7 +34,7 @@ bool gcf_is_platform_connected(const char *platform_name, const char *config_jso
     return false;
 }
 
-/* PoP: _validate_gateway_config @ gateway/config.py:_validate_gateway_config */
+/* PoP: gcf_validate_gateway_config @ gateway/config.py:_validate_gateway_config */
 char *gcf_validate_gateway_config(const char *config_json) {
     /* Python: validate + sanitize in place. */
     if (!config_json) return strdup("{}");

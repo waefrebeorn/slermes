@@ -18,14 +18,14 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: cmd_setup @ hermes_cli/proxy_cli.py:cmd_setup */
+/* PoP: pxc_cmd_setup @ hermes_cli/proxy_cli.py:cmd_setup */
 char *pxc_cmd_setup(void) {
     /* Python: iron-proxy setup panel. */
     printf("iron-proxy setup panel rendered\n");
     return strdup("iron-proxy setup");
 }
 
-/* PoP: cmd_status @ hermes_cli/proxy_cli.py:cmd_status */
+/* PoP: pxc_cmd_status @ hermes_cli/proxy_cli.py:cmd_status */
 char *pxc_cmd_status(const char *config_json) {
     /* Python: proxy config status. */
     if (!config_json) return strdup("{}");
@@ -33,7 +33,7 @@ char *pxc_cmd_status(const char *config_json) {
     return strdup(config_json);
 }
 
-/* PoP: cmd_config @ hermes_cli/proxy_cli.py:cmd_config */
+/* PoP: pxc_cmd_config @ hermes_cli/proxy_cli.py:cmd_config */
 char *pxc_cmd_config(void) {
     /* Python: config path status. */
     printf("proxy config command executed\n");

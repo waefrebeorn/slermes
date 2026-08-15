@@ -9,7 +9,7 @@
  * any reference to a retired xAI model. Pure logic — no I/O.
  */
 
-/* PoP: hermes_xai_looks_like @ hermes_cli/xai_retirement.py:_looks_like_xai */
+/* PoP: hermes_xai_normalize @ hermes_cli/xai_retirement.py:_looks_like_xai */
 
 #include "hermes_xai_retirement.h"
 #include <string.h>

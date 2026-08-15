@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: set_approval_callback @ tools/computer_use/tool.py:set_approval_callback */
+/* PoP: cut_set_approval_callback @ tools/computer_use/tool.py:set_approval_callback */
 int cut_set_approval_callback(const char *callback_desc) {
     /* Python: CLI approval prompt callback. */
     if (!callback_desc) return -1;
@@ -27,12 +27,12 @@ int cut_set_approval_callback(const char *callback_desc) {
     return 0;
 }
 
-/* PoP: __init__ @ tools/computer_use/tool.py:__init__ */
+/* PoP: cut_init @ tools/computer_use/tool.py:__init__ */
 char *cut_init(void) {
     return strdup("{\"calls\": [], \"started\": false}");
 }
 
-/* PoP: key @ tools/computer_use/tool.py:key */
+/* PoP: cut_key @ tools/computer_use/tool.py:key */
 char *cut_key(const char *keys_json, const char *kw_json) {
     /* Python: record + execute key action. */
     if (!keys_json) return strdup("{\"ok\": false}");
@@ -40,7 +40,7 @@ char *cut_key(const char *keys_json, const char *kw_json) {
     return strdup("{\"ok\": true}");
 }
 
-/* PoP: _dispatch @ tools/computer_use/tool.py:_dispatch */
+/* PoP: cut_dispatch @ tools/computer_use/tool.py:_dispatch */
 char *cut_dispatch(const char *args_json) {
     /* Python: action dispatch (capture etc.). */
     if (!args_json) return NULL;
@@ -50,7 +50,7 @@ char *cut_dispatch(const char *args_json) {
 
 /* ── tools/computer_use/tool.py gap functions ────────────────────── */
 
-/* PoP: _cua_permission_mode @ tools/computer_use/tool.py:_cua_permission_mode */
+/* PoP: cut_cua_permission_mode @ tools/computer_use/tool.py:_cua_permission_mode */
 const char *cut_cua_permission_mode(const char *arg) {
     /* Python: map Hermes approval bypass onto Cua's immutable mode.
      * Fails closed. Arg = "bypass_active" (1/0). */
@@ -59,7 +59,7 @@ const char *cut_cua_permission_mode(const char *arg) {
     return bypass ? "unrestricted" : "standard";
 }
 
-/* PoP: release_computer_use_session @ tools/computer_use/tool.py:release_computer_use_session */
+/* PoP: cut_release_computer_use_session @ tools/computer_use/tool.py:release_computer_use_session */
 int cut_release_computer_use_session(const char *arg) {
     /* Python: release one session-owned computer-use backend.
      * Arg = "found" (1/0). */
@@ -68,7 +68,7 @@ int cut_release_computer_use_session(const char *arg) {
     return 0;
 }
 
-/* PoP: _shutdown_backend_atexit @ tools/computer_use/tool.py:_shutdown_backend_atexit */
+/* PoP: cut_shutdown_backend_atexit @ tools/computer_use/tool.py:_shutdown_backend_atexit */
 int cut_shutdown_backend_atexit(const char *arg) {
     /* Python: stop all cached backends so cua-driver children don't outlive.
      * Arg = "count" (number of backends stopped). */
@@ -77,7 +77,7 @@ int cut_shutdown_backend_atexit(const char *arg) {
     return 0;
 }
 
-/* PoP: _classify_action_result @ tools/computer_use/tool.py:_classify_action_result */
+/* PoP: cut_classify_action_result @ tools/computer_use/tool.py:_classify_action_result */
 char *cut_classify_action_result(const char *arg) {
     /* Python: choose next ladder step from semantic evidence.
      * Arg = "effect\tverified\tok\tcode". */
@@ -101,7 +101,7 @@ char *cut_classify_action_result(const char *arg) {
     return strdup("{\"decision\": \"verify_fresh_state\"}");
 }
 
-/* PoP: _action_payload @ tools/computer_use/tool.py:_action_payload */
+/* PoP: cut_action_payload @ tools/computer_use/tool.py:_action_payload */
 char *cut_action_payload(const char *arg) {
     /* Python: build action result payload dict.
      * Arg = "ok\taction\tmessage\tverified\teffect\tescalation\tpath\tdegraded\tdelivery_mode\tcode\tmeta". */

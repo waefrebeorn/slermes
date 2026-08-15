@@ -19,14 +19,14 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _ra @ agent/tool_executor.py:_ra */
+/* PoP: tex_ra @ agent/tool_executor.py:_ra */
 char *tex_ra(void) {
     /* Python: lazy run_agent ref. */
     printf("run_agent lazy reference\n");
     return NULL;
 }
 
-/* PoP: _emit_terminal_post_tool_call @ agent/tool_executor.py:_emit_terminal_post_tool_call */
+/* PoP: tex_emit_terminal_post_tool_call @ agent/tool_executor.py:_emit_terminal_post_tool_call */
 int tex_emit_terminal_post_tool_call(const char *result_json) {
     /* Python: post-tool-call hook. */
     if (!result_json) return -1;
@@ -34,7 +34,7 @@ int tex_emit_terminal_post_tool_call(const char *result_json) {
     return 0;
 }
 
-/* PoP: _cancelled_tool_result @ agent/tool_executor.py:_cancelled_tool_result */
+/* PoP: tex_cancelled_tool_result @ agent/tool_executor.py:_cancelled_tool_result */
 char *tex_cancelled_tool_result(const char *reason) {
     /* Python: cancellation result json. */
     char *out = NULL;
@@ -43,7 +43,7 @@ char *tex_cancelled_tool_result(const char *reason) {
     return out;
 }
 
-/* PoP: _emit_cancelled_terminal_post_tool_call @ agent/tool_executor.py:_emit_cancelled_terminal_post_tool_call */
+/* PoP: tex_emit_cancelled_terminal_post_tool_call @ agent/tool_executor.py:_emit_cancelled_terminal_post_tool_call */
 int tex_emit_cancelled_terminal_post_tool_call(const char *reason) {
     /* Python: cancelled variant of hook. */
     char *r = tex_cancelled_tool_result(reason);
@@ -52,14 +52,14 @@ int tex_emit_cancelled_terminal_post_tool_call(const char *reason) {
     return rc;
 }
 
-/* PoP: _tool_search_scoped_names @ agent/tool_executor.py:_tool_search_scoped_names */
+/* PoP: tex_tool_search_scoped_names @ agent/tool_executor.py:_tool_search_scoped_names */
 char *tex_tool_search_scoped_names(void) {
     /* Python: deferrable names for session. */
     printf("tool-search scoped names computed\n");
     return strdup("[]");
 }
 
-/* PoP: execute_tool_calls_concurrent @ agent/tool_executor.py:execute_tool_calls_concurrent */
+/* PoP: tex_execute_tool_calls_concurrent @ agent/tool_executor.py:execute_tool_calls_concurrent */
 char *tex_execute_tool_calls_concurrent(const char *calls_json) {
     /* Python: thread-pool execution. */
     if (!calls_json) return strdup("[]");
@@ -67,7 +67,7 @@ char *tex_execute_tool_calls_concurrent(const char *calls_json) {
     return strdup(calls_json);
 }
 
-/* PoP: execute_tool_calls_sequential @ agent/tool_executor.py:execute_tool_calls_sequential */
+/* PoP: tex_execute_tool_calls_sequential @ agent/tool_executor.py:execute_tool_calls_sequential */
 char *tex_execute_tool_calls_sequential(const char *calls_json) {
     /* Python: original sequential behavior. */
     if (!calls_json) return strdup("[]");
@@ -98,7 +98,7 @@ extern char *file_tools_resolve_path_for_task(const char *filepath, const char *
 
 
 /* ---- _image_generate_parallel_limit ---- */
-/* PoP: _image_generate_parallel_limit @ agent/tool_executor.py:_image_generate_parallel_limit */
+/* PoP: tex_image_generate_parallel_limit @ agent/tool_executor.py:_image_generate_parallel_limit */
 /* Python: cap = config["image_gen"]["max_parallel_requests"]... */
 int tex_image_generate_parallel_limit(void) {
     json_t *cfg = config_py_load_config_impl(0);
@@ -119,7 +119,7 @@ int tex_image_generate_parallel_limit(void) {
 }
 
 /* ---- _max_workers_for_tool_batch ---- */
-/* PoP: _max_workers_for_tool_batch @ agent/tool_executor.py:_max_workers_for_tool_batch */
+/* PoP: min @ agent/tool_executor.py:_max_workers_for_tool_batch */
 /* Python: max_workers = MAX_TOOL_WORKERS; if any call is image_generate, cap at image_generate_limit; return min(count, max_workers). */
 int tex_max_workers_for_tool_batch(const char *names_json, int count) {
     if (!names_json || count <= 0) return 0;
@@ -151,7 +151,7 @@ typedef struct {
     double excluded_seconds;             /* _excluded_seconds */
 } tex_auth_gate_t;
 
-/* PoP: __init__ @ agent/tool_executor.py:__init__ */
+/* PoP: tex_concurrent_tool_authorization_gate_init @ agent/tool_executor.py:__init__ */
 void tex_concurrent_tool_authorization_gate_init(tex_auth_gate_t *gate) {
     if (!gate) return;
     pthread_mutex_init(&gate->serialization_lock, NULL);
@@ -161,7 +161,7 @@ void tex_concurrent_tool_authorization_gate_init(tex_auth_gate_t *gate) {
     gate->excluded_seconds = 0.0;
 }
 
-/* PoP: run @ agent/tool_executor.py:run */
+/* PoP: tex_concurrent_tool_authorization_gate_run @ agent/tool_executor.py:run */
 /* Execute callback under the serialization lock, tracking the time window
  * during which the gate is held. Returns the callback's int result. */
 int tex_concurrent_tool_authorization_gate_run(tex_auth_gate_t *gate,
@@ -193,7 +193,7 @@ int tex_concurrent_tool_authorization_gate_run(tex_auth_gate_t *gate,
     return result;
 }
 
-/* PoP: excluded_seconds @ agent/tool_executor.py:excluded_seconds */
+/* PoP: tex_concurrent_tool_authorization_gate_excluded_seconds @ agent/tool_executor.py:excluded_seconds */
 /* Return completed + currently-active authorization wait time. */
 double tex_concurrent_tool_authorization_gate_excluded_seconds(const tex_auth_gate_t *gate) {
     if (!gate) return 0.0;
@@ -217,7 +217,7 @@ void tex_concurrent_tool_authorization_gate_destroy(tex_auth_gate_t *gate) {
 
 /* ---- _managed_values ---- */
 /* Python: return (outcome.result, outcome.args, outcome.middleware_trace, outcome.blocked). */
-/* PoP: _managed_values @ agent/tool_executor.py:_managed_values */
+/* PoP: tex_managed_values @ agent/tool_executor.py:_managed_values */
 /* Unpacks a _ManagedToolResult JSON object {"result":..., "args":...,
  * "middleware_trace":..., "blocked":...} into output fields.
  * Each output field is a malloc'd string or NULL. Caller frees all. */
@@ -255,7 +255,7 @@ void tex_managed_values(const json_t *outcome, char **out_result, char **out_arg
  * side-effecting portion — reusing checkpoint_manager_ensure +
  * file_tools_resolve_path_for_task. Returns true when a checkpoint was
  * ensured (so the caller knows preflight ran). */
-/* PoP: _begin_tool_execution @ agent/tool_executor.py:_begin_tool_execution */
+/* PoP: tex_begin_tool_execution @ agent/tool_executor.py:_begin_tool_execution */
 bool tex_begin_tool_execution(void *agent, const char *function_name,
                               const char *args_json, const char *effective_task_id,
                               const char *tool_call_id, int display_index,
@@ -330,7 +330,7 @@ bool tex_begin_tool_execution(void *agent, const char *function_name,
  * message with effect_disposition="none". tool_calls is a JSON array of
  * OpenAI-style objects: {"id":"...","function":{"name":"..."}}. messages is
  * a JSON array that gets mutated in place. */
-/* PoP: _append_cancelled_tool_results @ agent/tool_executor.py:_append_cancelled_tool_results */
+/* PoP: tex_append_cancelled_tool_results @ agent/tool_executor.py:_append_cancelled_tool_results */
 void tex_append_cancelled_tool_results(json_t *messages, const json_t *tool_calls,
                                        const char *reason) {
     if (!messages || !json_is_array(messages) || !tool_calls) return;

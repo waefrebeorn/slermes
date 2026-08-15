@@ -111,7 +111,7 @@ bool aux_interrupt_protection(bool active)
     return aux_interrupt_protected();
 }
 
-/* PoP: aux_interrupt_protection @ agent/auxiliary_client.py:aux_interrupt_protection */
+/* PoP: aux_interrupt_protection_bridge @ agent/auxiliary_client.py:aux_interrupt_protection */
 bool aux_interrupt_protection_bridge(void *ctx, void *active)
 {
     if (!ctx) {

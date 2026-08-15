@@ -15,7 +15,7 @@
 #include <fcntl.h>
 #include <errno.h>
 
-/* PoP: cli_gateway_shutdown_forensics__signal_name @ gateway/shutdown_forensics.py:_signal_name */
+/* PoP: cli_gateway_shutdown_forensics_spawn_async_diagnostic @ gateway/shutdown_forensics.py:_signal_name */
 const char* cli_gateway_shutdown_forensics__signal_name(int sig) {
     switch (sig) {
         case SIGTERM: return "SIGTERM";
@@ -38,7 +38,7 @@ const char* cli_gateway_shutdown_forensics__signal_name(int sig) {
     }
 }
 
-/* PoP: cli_gateway_shutdown_forensics__read_proc_field @ gateway/shutdown_forensics.py:_read_proc_field */
+/* PoP: cli_gateway_shutdown_forensics_spawn_async_diagnostic @ gateway/shutdown_forensics.py:_read_proc_field */
 char* cli_gateway_shutdown_forensics__read_proc_field(int pid, const char *key) {
     if (pid <= 0 || !key) return NULL;
     char path[128];
@@ -63,7 +63,7 @@ char* cli_gateway_shutdown_forensics__read_proc_field(int pid, const char *key) 
     return result;
 }
 
-/* PoP: cli_gateway_shutdown_forensics__read_proc_cmdline @ gateway/shutdown_forensics.py:_read_proc_cmdline */
+/* PoP: cli_gateway_shutdown_forensics_spawn_async_diagnostic @ gateway/shutdown_forensics.py:_read_proc_cmdline */
 char* cli_gateway_shutdown_forensics__read_proc_cmdline(int pid) {
     if (pid <= 0) return NULL;
     char path[128];
@@ -86,7 +86,7 @@ char* cli_gateway_shutdown_forensics__read_proc_cmdline(int pid) {
     return result;
 }
 
-/* PoP: cli_gateway_shutdown_forensics__proc_summary @ gateway/shutdown_forensics.py:_proc_summary */
+/* PoP: cli_gateway_shutdown_forensics_spawn_async_diagnostic @ gateway/shutdown_forensics.py:_proc_summary */
 json_node_t* cli_gateway_shutdown_forensics__proc_summary(int pid) {
     json_node_t *summary = json_new_object();
     if (!summary) return NULL;
@@ -108,7 +108,7 @@ json_node_t* cli_gateway_shutdown_forensics__proc_summary(int pid) {
     return summary;
 }
 
-/* PoP: cli_gateway_shutdown_forensics_snapshot_shutdown_context @ gateway/shutdown_forensics.py:snapshot_shutdown_context */
+/* PoP: cli_gateway_shutdown_forensics_spawn_async_diagnostic @ gateway/shutdown_forensics.py:snapshot_shutdown_context */
 json_node_t* cli_gateway_shutdown_forensics_snapshot_shutdown_context(int received_signal) {
     json_node_t *ctx = json_new_object();
     if (!ctx) return NULL;
@@ -156,7 +156,7 @@ int cli_gateway_shutdown_forensics_spawn_async_diagnostic(const char *log_path, 
     return child > 0 ? child : -1;
 }
 
-/* PoP: cli_gateway_shutdown_forensics_format_context_for_log @ gateway/shutdown_forensics.py:format_context_for_log */
+/* PoP: pending @ gateway/shutdown_forensics.py:format_context_for_log */
 char* cli_gateway_shutdown_forensics_format_context_for_log(json_node_t *ctx) {
     if (!ctx) return strdup("(null)");
     const char *sig = json_object_get_string(ctx, "signal", "?");
@@ -209,14 +209,14 @@ char* cli_gateway_shutdown_forensics_format_context_for_log(json_node_t *ctx) {
     return buf;
 }
 
-/* PoP: cli_gateway_shutdown_forensics_context_as_json @ gateway/shutdown_forensics.py:context_as_json */
+/* PoP: pending @ gateway/shutdown_forensics.py:context_as_json */
 char* cli_gateway_shutdown_forensics_context_as_json(json_node_t *ctx) {
     if (!ctx) return strdup("{}");
     char *json_str = json_serialize(ctx);
     return json_str ? json_str : strdup("{}");
 }
 
-/* PoP: cli_gateway_shutdown_forensics_check_systemd_timing_alignment @ gateway/shutdown_forensics.py:check_systemd_timing_alignment */
+/* PoP: pending @ gateway/shutdown_forensics.py:check_systemd_timing_alignment */
 json_node_t* cli_gateway_shutdown_forensics_check_systemd_timing_alignment(double drain_timeout) {
     const char *invocation_id = getenv("INVOCATION_ID");
     if (!invocation_id) return NULL;
@@ -228,7 +228,7 @@ json_node_t* cli_gateway_shutdown_forensics_check_systemd_timing_alignment(doubl
     return result;
 }
 
-/* PoP: cli_gateway_shutdown_forensics__parse_systemd_duration_to_us @ gateway/shutdown_forensics.py:_parse_systemd_duration_to_us */
+/* PoP: pending @ gateway/shutdown_forensics.py:_parse_systemd_duration_to_us */
 /* Faithful port of the Python tokenizer: digits/'.' accumulate a number,
  * alpha accumulates a unit token; on whitespace the pending (digits, unit)
  * pair is applied. Units: us/ms/s/sec/min/h/hr. A bare number (no unit)

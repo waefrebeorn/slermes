@@ -93,7 +93,7 @@ int cli_tools_checkpoint_manager_ensure_checkpoint(
     return result;
 }
 
-/* PoP: cli_tools_checkpoint_manager_list_checkpoints @ tools/checkpoint_manager.py:list_checkpoints */
+/* PoP: directory @ tools/checkpoint_manager.py:list_checkpoints */
 
 /* Port of Python tools/checkpoint_manager.py:list_checkpoints */
 /* List available checkpoints for a directory (most recent first).
@@ -288,7 +288,7 @@ int cli_tools_checkpoint_manager__enforce_size_cap(
 
 /* Port of Python tools/checkpoint_manager.py:_repair_bare_repo_dirs */
 
-/* PoP: session_diff @ tools/checkpoint_manager.py:session_diff */
+/* PoP: cli_tools_checkpoint_manager_session_diff @ tools/checkpoint_manager.py:session_diff */
 char *cli_tools_checkpoint_manager_session_diff(const char *working_dir) {
     /* Python: list_checkpoints → take the last (earliest retained) hash →
      * diff against it. Succeeds with empty output when no checkpoints exist. */

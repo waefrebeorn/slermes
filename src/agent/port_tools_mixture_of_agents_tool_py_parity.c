@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_mixture_of_agents_tool_query_all_references @ tools/mixture_of_agents_tool.py:query_all_references */
+/* PoP: tools_mixture_of_agents_tool_query_all_references_p @ tools/mixture_of_agents_tool.py:query_all_references */
 json_t *tools_mixture_of_agents_tool_query_all_references_p(void) {
     return json_object();
 }

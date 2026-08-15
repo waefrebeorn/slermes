@@ -20,7 +20,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ hermes_cli/web_server.py:__init__ */
+/* PoP: wbs_init @ hermes_cli/web_server.py:__init__ */
 char *wbs_init(long window_seconds) {
     /* Python: error window tracker. */
     if (window_seconds <= 0) window_seconds = 60;
@@ -29,19 +29,19 @@ char *wbs_init(long window_seconds) {
     return out;
 }
 
-/* PoP: snapshot @ hermes_cli/web_server.py:snapshot */
+/* PoP: wbs_snapshot @ hermes_cli/web_server.py:snapshot */
 char *wbs_snapshot(void) {
     /* Python: status enum + counts + timestamps. */
     return strdup("{\"status\": \"ok\", \"error_count\": 0}");
 }
 
-/* PoP: get_status @ hermes_cli/web_server.py:get_status */
+/* PoP: wbs_get_status @ hermes_cli/web_server.py:get_status */
 char *wbs_get_status(void) {
     return strdup("{\"status\": \"ok\"}");
 }
 
-/* PoP: get_sessions @ hermes_cli/web_server.py:get_sessions */
-/* PoP: get_sessions @ hermes_cli/web_routers/sessions.py:get_sessions */
+/* PoP: wbs_get_sessions @ hermes_cli/web_server.py:get_sessions */
+/* PoP: wbs_get_sessions @ hermes_cli/web_routers/sessions.py:get_sessions */
 char *wbs_get_sessions(bool archived, const char *index_json) {
     /* Python: list sessions; archived controls soft-archive handling. */
     if (!index_json) return strdup("[]");
@@ -49,7 +49,7 @@ char *wbs_get_sessions(bool archived, const char *index_json) {
     return strdup(index_json);
 }
 
-/* PoP: _coerce_bool @ hermes_cli/web_server.py:_coerce_bool */
+/* PoP: wbs_coerce_bool @ hermes_cli/web_server.py:_coerce_bool */
 bool wbs_coerce_bool(const char *value, bool default_value) {
     /* Python: bool/none/empty/string coercion. */
     if (!value || !*value) return default_value;
@@ -65,19 +65,19 @@ bool wbs_coerce_bool(const char *value, bool default_value) {
     return r;
 }
 
-/* PoP: get_schema @ hermes_cli/web_server.py:get_schema */
+/* PoP: wbs_get_schema @ hermes_cli/web_server.py:get_schema */
 char *wbs_get_schema(void) {
     return strdup("{}");
 }
 
-/* PoP: get_model_info @ hermes_cli/web_server.py:get_model_info */
+/* PoP: wbs_get_model_info @ hermes_cli/web_server.py:get_model_info */
 char *wbs_get_model_info(void) {
     /* Python: resolved model metadata. */
     printf("model metadata resolved for configured model\n");
     return strdup("{}");
 }
 
-/* PoP: _catalog_lookup @ hermes_cli/web_server.py:_catalog_lookup */
+/* PoP: wbs_catalog_lookup @ hermes_cli/web_server.py:_catalog_lookup */
 char *wbs_catalog_lookup(const char *platform_id, const char *catalog_json) {
     /* Python: platform catalog entry by id. */
     if (!platform_id || !catalog_json) return NULL;
@@ -92,8 +92,8 @@ char *wbs_catalog_lookup(const char *platform_id, const char *catalog_json) {
     return strndup(open, (size_t)(close - open + 1));
 }
 
-/* PoP: cron_fire_webhook @ hermes_cli/web_server.py:cron_fire_webhook */
-/* PoP: cron_fire_webhook @ hermes_cli/web_routers/cron.py:cron_fire_webhook */
+/* PoP: wbs_cron_fire_webhook @ hermes_cli/web_server.py:cron_fire_webhook */
+/* PoP: wbs_cron_fire_webhook @ hermes_cli/web_routers/cron.py:cron_fire_webhook */
 char *wbs_cron_fire_webhook(const char *job_id) {
     /* Python: fire cron webhook. */
     if (!job_id) return strdup("{\"success\": false}");
@@ -101,21 +101,21 @@ char *wbs_cron_fire_webhook(const char *job_id) {
     return strdup("{\"success\": true}");
 }
 
-/* PoP: run_doctor @ hermes_cli/web_server.py:run_doctor */
+/* PoP: wbs_run_doctor @ hermes_cli/web_server.py:run_doctor */
 char *wbs_run_doctor(void) {
     /* Python: doctor check. */
     printf("doctor run\n");
     return strdup("{\"ok\": true}");
 }
 
-/* PoP: list_checkpoints @ hermes_cli/web_server.py:list_checkpoints */
+/* PoP: wbs_list_checkpoints @ hermes_cli/web_server.py:list_checkpoints */
 char *wbs_list_checkpoints(void) {
     /* Python: checkpoint list. */
     printf("checkpoints listed\n");
     return strdup("[]");
 }
 
-/* PoP: _config_profile_scope @ hermes_cli/web_server.py:_config_profile_scope */
+/* PoP: wbs_config_profile_scope @ hermes_cli/web_server.py:_config_profile_scope */
 char *wbs_config_profile_scope(void) {
     /* Python: await-safe config-only profile scope. */
     printf("config profile scope resolved\n");

@@ -31,7 +31,7 @@
  * snapshot store (real JSON file I/O)
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _snapshot_store_path @ tools/environments/vercel_sandbox.py:_snapshot_store_path */
+/* PoP: ve_snapshot_store_path @ tools/environments/vercel_sandbox.py:_snapshot_store_path */
 char *ve_snapshot_store_path(void) {
     const char *home = getenv("HERMES_HOME");
     if (!home || !home[0]) home = getenv("HOME");
@@ -41,7 +41,7 @@ char *ve_snapshot_store_path(void) {
     return out;
 }
 
-/* PoP: _load_snapshots @ tools/environments/vercel_sandbox.py:_load_snapshots */
+/* PoP: ve_load_snapshots @ tools/environments/vercel_sandbox.py:_load_snapshots */
 char *ve_load_snapshots(void) {
     /* Python: read the JSON dict from the store; {} on any failure. */
     char *path = ve_snapshot_store_path();
@@ -70,7 +70,7 @@ char *ve_load_snapshots(void) {
     return out ? out : strdup("{}");
 }
 
-/* PoP: _save_snapshots @ tools/environments/vercel_sandbox.py:_save_snapshots */
+/* PoP: ve_save_snapshots @ tools/environments/vercel_sandbox.py:_save_snapshots */
 int ve_save_snapshots(const char *data_json) {
     /* Python: atomic-ish JSON write of the store. */
     char *path = ve_snapshot_store_path();
@@ -83,7 +83,7 @@ int ve_save_snapshots(const char *data_json) {
     return 0;
 }
 
-/* PoP: _get_snapshot_id @ tools/environments/vercel_sandbox.py:_get_snapshot_id */
+/* PoP: ve_get_snapshot_id @ tools/environments/vercel_sandbox.py:_get_snapshot_id */
 char *ve_get_snapshot_id(const char *task_id) {
     /* Python: store.get(task_id) if it's a non-empty string. */
     if (!task_id || !task_id[0]) return NULL;
@@ -99,7 +99,7 @@ char *ve_get_snapshot_id(const char *task_id) {
     return out;
 }
 
-/* PoP: _store_snapshot @ tools/environments/vercel_sandbox.py:_store_snapshot */
+/* PoP: ve_store_snapshot @ tools/environments/vercel_sandbox.py:_store_snapshot */
 int ve_store_snapshot(const char *task_id, const char *snapshot_id) {
     if (!task_id || !task_id[0] || !snapshot_id || !snapshot_id[0]) return -1;
     char *store = ve_load_snapshots();
@@ -115,7 +115,7 @@ int ve_store_snapshot(const char *task_id, const char *snapshot_id) {
     return rc;
 }
 
-/* PoP: _delete_snapshot @ tools/environments/vercel_sandbox.py:_delete_snapshot */
+/* PoP: ve_delete_snapshot @ tools/environments/vercel_sandbox.py:_delete_snapshot */
 int ve_delete_snapshot(const char *task_id, const char *snapshot_id) {
     if (!task_id || !task_id[0]) return -1;
     char *store = ve_load_snapshots();
@@ -144,7 +144,7 @@ int ve_delete_snapshot(const char *task_id, const char *snapshot_id) {
  * _ensure_vercel_sdk / _retry_vercel_call
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _ensure_vercel_sdk @ tools/environments/vercel_sandbox.py:_ensure_vercel_sdk */
+/* PoP: ve_ensure_vercel_sdk @ tools/environments/vercel_sandbox.py:_ensure_vercel_sdk */
 int ve_ensure_vercel_sdk(void) {
     /* Python: setdefault VERCEL_TELEMETRY_DISABLED=1 (never override an
      * explicit user value) + lazy-install probe. The C port sets the env
@@ -157,7 +157,7 @@ int ve_ensure_vercel_sdk(void) {
     return 0;
 }
 
-/* PoP: _retry_vercel_call @ tools/environments/vercel_sandbox.py:_retry_vercel_call */
+/* PoP: ve_retry_vercel_call @ tools/environments/vercel_sandbox.py:_retry_vercel_call */
 int ve_retry_vercel_call(const char *label, int attempts,
                          bool (*fn)(void *ctx, char **out_err), void *ctx,
                          char **out_err) {
@@ -186,14 +186,14 @@ int ve_retry_vercel_call(const char *label, int attempts,
  * status enums
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _sandbox_status_type @ tools/environments/vercel_sandbox.py:_sandbox_status_type */
+/* PoP: ve_sandbox_status_type @ tools/environments/vercel_sandbox.py:_sandbox_status_type */
 const char *ve_sandbox_status_type(void) {
     /* Python: returns the SandboxStatus enum class. The C port maps the
      * status names 1:1 as strings. */
     return "SandboxStatus";
 }
 
-/* PoP: _terminal_sandbox_states @ tools/environments/vercel_sandbox.py:_terminal_sandbox_states */
+/* PoP: ve_terminal_sandbox_states @ tools/environments/vercel_sandbox.py:_terminal_sandbox_states */
 int ve_terminal_sandbox_states(const char **states_out, int max) {
     /* Python: frozenset{ABORTED, FAILED, STOPPED} — the states that
      * terminate a sandbox. */
@@ -208,7 +208,7 @@ int ve_terminal_sandbox_states(const char **states_out, int max) {
  * _build_create_params
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _build_create_params @ tools/environments/vercel_sandbox.py:_build_create_params */
+/* PoP: ve_build_create_params @ tools/environments/vercel_sandbox.py:_build_create_params */
 int ve_build_create_params(double cpu, int memory, int disk, double timeout_secs,
                            const char *runtime, int *out_err,
                            double *out_timeout, char *out_runtime, size_t rt_sz,
@@ -235,14 +235,14 @@ int ve_build_create_params(double cpu, int memory, int disk, double timeout_secs
  * detection helpers
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _detect_workspace_root @ tools/environments/vercel_sandbox.py:_detect_workspace_root */
+/* PoP: ve_detect_workspace_root @ tools/environments/vercel_sandbox.py:_detect_workspace_root */
 char *ve_detect_workspace_root(const char *sandbox_cwd) {
     /* Python: sandbox.sandbox.cwd if it starts with "/", else default. */
     if (sandbox_cwd && sandbox_cwd[0] == '/') return strdup(sandbox_cwd);
     return strdup(VERCEL_DEFAULT_CWD);
 }
 
-/* PoP: _detect_remote_home @ tools/environments/vercel_sandbox.py:_detect_remote_home */
+/* PoP: ve_detect_remote_home @ tools/environments/vercel_sandbox.py:_detect_remote_home */
 char *ve_detect_remote_home(const char *result_output, const char *workspace_root) {
     /* Python: strip the HOME probe output; if it starts with "/" use it,
      * else fall back to workspace_root. */
@@ -289,7 +289,7 @@ static char *quoted_rm_command(const char *const *paths, int n) {
     return out;
 }
 
-/* PoP: _vercel_delete @ tools/environments/vercel_sandbox.py:_vercel_delete */
+/* PoP: ve_vercel_delete @ tools/environments/vercel_sandbox.py:_vercel_delete */
 int ve_vercel_delete(vercel_sandbox_client_t *client, const char *const *remote_paths,
                      int n, const char *workspace_root) {
     /* Python: run quoted rm; raise when returncode != 0. */
@@ -312,7 +312,7 @@ int ve_vercel_delete(vercel_sandbox_client_t *client, const char *const *remote_
     return rc;
 }
 
-/* PoP: _vercel_bulk_upload @ tools/environments/vercel_sandbox.py:_vercel_bulk_upload */
+/* PoP: ve_vercel_bulk_upload @ tools/environments/vercel_sandbox.py:_vercel_bulk_upload */
 int ve_vercel_bulk_upload(vercel_sandbox_client_t *client,
                           const char *const *host_paths, const char *const *remote_paths,
                           int n) {
@@ -345,7 +345,7 @@ int ve_vercel_bulk_upload(vercel_sandbox_client_t *client,
     return rc;
 }
 
-/* PoP: _vercel_upload @ tools/environments/vercel_sandbox.py:_vercel_upload */
+/* PoP: ve_vercel_upload @ tools/environments/vercel_sandbox.py:_vercel_upload */
 int ve_vercel_upload(vercel_sandbox_client_t *client, const char *host_path,
                      const char *remote_path) {
     if (!host_path || !remote_path) return -1;
@@ -354,7 +354,7 @@ int ve_vercel_upload(vercel_sandbox_client_t *client, const char *host_path,
     return ve_vercel_bulk_upload(client, hp, rp, 1);
 }
 
-/* PoP: _vercel_bulk_download @ tools/environments/vercel_sandbox.py:_vercel_bulk_download */
+/* PoP: ve_vercel_bulk_download @ tools/environments/vercel_sandbox.py:_vercel_bulk_download */
 int ve_vercel_bulk_download(vercel_sandbox_client_t *client, const char *remote_home,
                             const char *dest_tar_path, const char *workspace_root) {
     /* Python: tar the remote .hermes dir on the sandbox, download the tar,
@@ -399,7 +399,7 @@ int ve_vercel_bulk_download(vercel_sandbox_client_t *client, const char *remote_
  * _wait_for_running / _stop_sandbox / _snapshot_sandbox
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _wait_for_running @ tools/environments/vercel_sandbox.py:_wait_for_running */
+/* PoP: ve_wait_for_running @ tools/environments/vercel_sandbox.py:_wait_for_running */
 int ve_wait_for_running(vercel_sandbox_client_t *client, double timeout_secs,
                         const char *(*status_fn)(void *ctx), void *status_ctx) {
     /* Python: poll sandbox status until RUNNING (default 30s, 250ms poll);

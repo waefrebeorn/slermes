@@ -158,7 +158,7 @@ static void el_discard_announced_active(const char *key) {
     }
 }
 
-/* PoP: log_reaped @ agent/lsp/eventlog.py:log_reaped */
+/* PoP: lsp_log_reaped @ agent/lsp/eventlog.py:log_reaped */
 void lsp_log_reaped(const char **keys, int n_keys, double idle_timeout) {
     /* Clear the log_active announce cache for reaped keys so a later
        respawn re-announces at INFO instead of logging a misleading DEBUG

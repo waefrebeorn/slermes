@@ -138,7 +138,7 @@ char *cua_parse_key_combo(const char *keys, char ***out_modifiers, int *out_nmod
     return key;
 }
 
-/* PoP: _wsl_windows_path_to_posix @ tools/computer_use/cua_backend.py:_wsl_windows_path_to_posix */
+/* PoP: cua_wsl_windows_path_to_posix @ tools/computer_use/cua_backend.py:_wsl_windows_path_to_posix */
 /* Port of Python:
  *   if not re.match(r"^[A-Za-z]:[\\/]", path): return path
  *   from hermes_constants import is_wsl

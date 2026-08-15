@@ -8,7 +8,7 @@
 #include <string.h>
 #include <time.h>
 
-/* PoP: hermes_cli_checkpoints__fmt_bytes @ hermes_cli/checkpoints.py:_fmt_bytes */
+/* PoP: hermes_cli_checkpoints_fmt_bytes @ hermes_cli/checkpoints.py:_fmt_bytes */
 void hermes_cli_checkpoints_fmt_bytes(long n, char *out, size_t outsz)
 {
     static const char *units[] = {"B", "KB", "MB", "GB", "TB"};
@@ -22,7 +22,7 @@ void hermes_cli_checkpoints_fmt_bytes(long n, char *out, size_t outsz)
     else snprintf(out, outsz, "%.1f %s", size, units[i]);
 }
 
-/* PoP: hermes_cli_checkpoints__fmt_age @ hermes_cli/checkpoints.py:_fmt_age */
+/* PoP: hermes_cli_checkpoints_fmt_age @ hermes_cli/checkpoints.py:_fmt_age */
 /* now is passed in (Python reads time.time() internally; we expose it for testability). */
 void hermes_cli_checkpoints_fmt_age(double ts, double now, char *out, size_t outsz)
 {
@@ -36,7 +36,7 @@ void hermes_cli_checkpoints_fmt_age(double ts, double now, char *out, size_t out
     snprintf(out, outsz, "%dd ago", (int)(age / 86400));
 }
 
-/* PoP: hermes_cli_checkpoints__fmt_ts @ hermes_cli/checkpoints.py:_fmt_ts */
+/* PoP: hermes_cli_checkpoints_fmt_ts @ hermes_cli/checkpoints.py:_fmt_ts */
 /* Formats a unix timestamp as "YYYY-MM-DD HH:MM"; on a non-numeric/zero/NaN
  * value returns the em-dash placeholder "—". */
 void hermes_cli_checkpoints_fmt_ts(double ts, char *out, size_t outsz)

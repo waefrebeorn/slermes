@@ -180,7 +180,7 @@ static char *mcp_json_serialize_sorted(const json_t *n)
 }
 
 /* ── cache_path ──────────────────────────────────────────────────────────── */
-/* PoP: provider_context_cache_path @ tools/mcp_schema_cache.py:_cache_path */
+/* PoP: mcp_cache_path @ tools/mcp_schema_cache.py:_cache_path */
 char *mcp_cache_path(void)
 {
     const char *home = slermes_home();
@@ -193,7 +193,7 @@ char *mcp_cache_path(void)
 }
 
 /* ── config_fingerprint ──────────────────────────────────────────────────── */
-/* PoP: config_fingerprint @ tools/mcp_schema_cache.py:config_fingerprint */
+/* PoP: mcp_config_fingerprint @ tools/mcp_schema_cache.py:config_fingerprint */
 char *mcp_config_fingerprint(const json_t *config)
 {
     if (!config) return NULL;
@@ -261,7 +261,7 @@ char *mcp_config_fingerprint(const json_t *config)
 }
 
 /* ── _load_all / _save_all ───────────────────────────────────────────────── */
-/* PoP: _load_all @ tools/mcp_schema_cache.py:_load_all */
+/* PoP: mcp_load_all @ tools/mcp_schema_cache.py:_load_all */
 json_t *mcp_load_all(void)
 {
     char *path = mcp_cache_path();
@@ -290,7 +290,7 @@ json_t *mcp_load_all(void)
     return data;
 }
 
-/* PoP: mcp_save_all @ tools/mcp_schema_cache.py:_save_all */
+/* PoP: atomic_json_write @ tools/mcp_schema_cache.py:_save_all */
 /* Python: atomic_json_write(path, data, mode=0o600).  C uses
  * util_atomic_json_write (indent=2) + chmod 0600. */
 void mcp_save_all(const json_t *data)
@@ -310,7 +310,7 @@ void mcp_save_all(const json_t *data)
 }
 
 /* ── get_cached_entry / has_cached_entry ─────────────────────────────────── */
-/* PoP: get_cached_entry @ tools/mcp_schema_cache.py:get_cached_entry */
+/* PoP: mcp_get_cached_entry @ tools/mcp_schema_cache.py:get_cached_entry */
 json_t *mcp_get_cached_entry(const char *server_name, const char *fingerprint)
 {
     pthread_mutex_lock(&_cache_lock);
@@ -397,7 +397,7 @@ void mcp_clear_cache_entry(const char *server_name)
 }
 
 /* ── tools_from_cache_entry / utility_tools_from_cache_entry ─────────────── */
-/* PoP: tools_from_cache_entry @ tools/mcp_schema_cache.py:tools_from_cache_entry */
+/* PoP: mcp_tools_from_cache_entry @ tools/mcp_schema_cache.py:tools_from_cache_entry */
 json_t *mcp_tools_from_cache_entry(const json_t *entry)
 {
     if (!entry || entry->type != JSON_OBJECT) return json_array();
@@ -407,7 +407,7 @@ json_t *mcp_tools_from_cache_entry(const json_t *entry)
     return json_array();
 }
 
-/* PoP: utility_tools_from_cache_entry @ tools/mcp_schema_cache.py:utility_tools_from_cache_entry */
+/* PoP: mcp_utility_tools_from_cache_entry @ tools/mcp_schema_cache.py:utility_tools_from_cache_entry */
 json_t *mcp_utility_tools_from_cache_entry(const json_t *entry)
 {
     if (!entry || entry->type != JSON_OBJECT) return json_array();

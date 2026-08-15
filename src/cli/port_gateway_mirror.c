@@ -9,7 +9,7 @@
 #include <string.h>
 #include <sqlite3.h>
 
-/* PoP: cli_gateway_mirror__append_to_sqlite @ gateway/mirror.py:_append_to_sqlite */
+/* PoP: log @ gateway/mirror.py:_append_to_sqlite */
 /* Append a message to the SQLite session database. Faithful to the Python:
  * open the state.db (best-effort), INSERT (session_id, role, content), and
  * swallow any failure as a debug log (mirror writes are best-effort and must

@@ -42,7 +42,7 @@ budget_config_t budget_for_agent(int context_length) {
 /* Maximum number of concurrent worker threads for parallel tool execution. */
 #define MAX_TOOL_WORKERS 8
 
-/* PoP: agent_tool_executor__resolve_concurrent_tool_timeout @ agent/tool_executor.py:_resolve_concurrent_tool_timeout */
+/* PoP: timeout @ agent/tool_executor.py:_resolve_concurrent_tool_timeout */
 /* Resolve the concurrent-tool timeout from HERMES_CONCURRENT_TOOL_TIMEOUT_S.
  * Writes the timeout (seconds) to *out and returns 1 when a finite timeout
  * applies, or returns 0 (no timeout / disabled) when the env var is <= 0.

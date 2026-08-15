@@ -85,7 +85,7 @@ static int mgr_provider_index(const char *name) {
     return -1;
 }
 
-/* PoP: providers @ agent/memory_manager.py:providers */
+/* PoP: mgr_providers @ agent/memory_manager.py:providers */
 char *mgr_providers(void) {
     /* Python: all registered providers in order. */
     mgr_ensure_builtin();
@@ -102,7 +102,7 @@ char *mgr_providers(void) {
     return ser ? ser : strdup("[]");
 }
 
-/* PoP: get_provider @ agent/memory_manager.py:get_provider */
+/* PoP: mgr_get_provider @ agent/memory_manager.py:get_provider */
 char *mgr_get_provider(const char *name) {
     /* Python: provider by name or None. */
     if (!name) return NULL;
@@ -119,7 +119,7 @@ char *mgr_get_provider(const char *name) {
     return ser;
 }
 
-/* PoP: build_system_prompt @ agent/memory_manager.py:build_system_prompt */
+/* PoP: mgr_build_system_prompt @ agent/memory_manager.py:build_system_prompt */
 char *mgr_build_system_prompt(void) {
     /* Python: combined blocks from all providers, labeled per provider. */
     mgr_ensure_builtin();
@@ -143,7 +143,7 @@ char *mgr_build_system_prompt(void) {
     return out ? out : strdup("");
 }
 
-/* PoP: has_tool @ agent/memory_manager.py:has_tool */
+/* PoP: mgr_has_tool @ agent/memory_manager.py:has_tool */
 bool mgr_has_tool(const char *tool_name) {
     /* Python: any provider handles this tool. */
     if (!tool_name) return false;
@@ -158,7 +158,7 @@ bool mgr_has_tool(const char *tool_name) {
     return false;
 }
 
-/* PoP: handle_tool_call @ agent/memory_manager.py:handle_tool_call */
+/* PoP: mgr_handle_tool_call @ agent/memory_manager.py:handle_tool_call */
 char *mgr_handle_tool_call(const char *tool_name, const char *args_json) {
     /* Python: route to provider; JSON string result. */
     if (!tool_name) return NULL;
@@ -202,7 +202,7 @@ char *mgr_handle_tool_call(const char *tool_name, const char *args_json) {
     return result ? result : strdup("{}");
 }
 
-/* PoP: on_session_end @ agent/memory_manager.py:on_session_end */
+/* PoP: mgr_on_session_end @ agent/memory_manager.py:on_session_end */
 int mgr_on_session_end(void) {
     /* Python: notify all providers. */
     mgr_ensure_builtin();
@@ -213,19 +213,19 @@ int mgr_on_session_end(void) {
     return 0;
 }
 
-/* PoP: __init__ @ agent/memory_manager.py:__init__ */
+/* PoP: mgr_scrubber_init @ agent/memory_manager.py:__init__ */
 char *mgr_scrubber_init(void) {
     /* Python: stream scrubber state. */
     return strdup("{\"in_span\": false, \"buf\": \"\", \"at_block_boundary\": true}");
 }
 
-/* PoP: reset @ agent/memory_manager.py:reset */
+/* PoP: mgr_scrubber_reset @ agent/memory_manager.py:reset */
 int mgr_scrubber_reset(void) {
     printf("scrubber reset (span + buffer cleared)\n");
     return 0;
 }
 
-/* PoP: feed @ agent/memory_manager.py:feed */
+/* PoP: mgr_scrubber_feed @ agent/memory_manager.py:feed */
 char *mgr_scrubber_feed(const char *text) {
     /* Python: visible portion after scrubbing; hold back partial tags. */
     if (!text) return strdup("");
@@ -245,14 +245,14 @@ char *mgr_scrubber_feed(const char *text) {
     return out ? out : strdup("");
 }
 
-/* PoP: flush @ agent/memory_manager.py:flush */
+/* PoP: mgr_scrubber_flush @ agent/memory_manager.py:flush */
 char *mgr_scrubber_flush(void) {
     /* Python: emit held-back buffer at end-of-stream. */
     printf("scrubber flushed (held-back buffer emitted)\n");
     return strdup("");
 }
 
-/* PoP: _max_partial_suffix @ agent/memory_manager.py:_max_partial_suffix */
+/* PoP: mgr_max_partial_suffix @ agent/memory_manager.py:_max_partial_suffix */
 long mgr_max_partial_suffix(const char *buf) {
     /* Python: longest buf-suffix that is a tag-prefix. */
     if (!buf) return 0;
@@ -270,7 +270,7 @@ long mgr_max_partial_suffix(const char *buf) {
     return best;
 }
 
-/* PoP: _is_block_boundary @ agent/memory_manager.py:_is_block_boundary */
+/* PoP: mgr_is_block_boundary @ agent/memory_manager.py:_is_block_boundary */
 bool mgr_is_block_boundary(const char *buf, long idx, bool at_block_boundary) {
     /* Python: preceded by newline or boundary. */
     if (!buf) return at_block_boundary;
@@ -281,7 +281,7 @@ bool mgr_is_block_boundary(const char *buf, long idx, bool at_block_boundary) {
     return false;
 }
 
-/* PoP: _strip_skill_scaffolding @ agent/memory_manager.py:_strip_skill_scaffolding */
+/* PoP: mgr_strip_skill_scaffolding @ agent/memory_manager.py:_strip_skill_scaffolding */
 char *mgr_strip_skill_scaffolding(const char *text) {
     /* Python: memory-worthy user text or None (skip turn). */
     if (!text) return NULL;

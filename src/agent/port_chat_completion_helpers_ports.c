@@ -22,21 +22,21 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _ra @ agent/chat_completion_helpers.py:_ra */
+/* PoP: cch_ra_ref @ agent/chat_completion_helpers.py:_ra */
 char *cch_ra_ref(void) {
     /* Python: lazy run_agent ref for test patches. */
     printf("run_agent lazy reference (patchable)\n");
     return NULL;
 }
 
-/* PoP: estimate_request_context_tokens @ agent/chat_completion_helpers.py:estimate_request_context_tokens */
+/* PoP: cch_estimate_request_context_tokens @ agent/chat_completion_helpers.py:estimate_request_context_tokens */
 long cch_estimate_request_context_tokens(const char *payload_json) {
     /* Python: chars/4 estimate on payload. */
     if (!payload_json) return 0;
     return (long)(strlen(payload_json) / 4);
 }
 
-/* PoP: _is_openai_codex_backend @ agent/chat_completion_helpers.py:_is_openai_codex_backend */
+/* PoP: cch_is_openai_codex_backend @ agent/chat_completion_helpers.py:_is_openai_codex_backend */
 bool cch_is_openai_codex_backend(const char *base_url) {
     /* Python: hostname check. */
     if (!base_url) return false;
@@ -47,7 +47,7 @@ bool cch_is_openai_codex_backend(const char *base_url) {
     return r;
 }
 
-/* PoP: _env_float @ agent/chat_completion_helpers.py:_env_float */
+/* PoP: cch_env_float @ agent/chat_completion_helpers.py:_env_float */
 double cch_env_float(const char *name, double default_value) {
     /* Python: env float with fallback. */
     if (!name) return default_value;
@@ -59,7 +59,7 @@ double cch_env_float(const char *name, double default_value) {
     return v;
 }
 
-/* PoP: interruptible_api_call @ agent/chat_completion_helpers.py:interruptible_api_call */
+/* PoP: cch_interruptible_api_call @ agent/chat_completion_helpers.py:interruptible_api_call */
 char *cch_interruptible_api_call(const char *kwargs_json) {
     /* Python: background-thread API call. */
     if (!kwargs_json) return NULL;
@@ -67,7 +67,7 @@ char *cch_interruptible_api_call(const char *kwargs_json) {
     return strdup("{}");
 }
 
-/* PoP: build_api_kwargs @ agent/chat_completion_helpers.py:build_api_kwargs */
+/* PoP: cch_build_api_kwargs @ agent/chat_completion_helpers.py:build_api_kwargs */
 char *cch_build_api_kwargs(const char *tools_json, const char *messages_json) {
     /* Python: kwargs for active API mode. */
     if (!messages_json) return NULL;
@@ -75,7 +75,7 @@ char *cch_build_api_kwargs(const char *tools_json, const char *messages_json) {
     return strdup("{}");
 }
 
-/* PoP: build_assistant_message @ agent/chat_completion_helpers.py:build_assistant_message */
+/* PoP: cch_build_assistant_message @ agent/chat_completion_helpers.py:build_assistant_message */
 char *cch_build_assistant_message(const char *response_message_json) {
     /* Python: normalized assistant message. */
     if (!response_message_json) return NULL;
@@ -83,7 +83,7 @@ char *cch_build_assistant_message(const char *response_message_json) {
     return strdup(response_message_json);
 }
 
-/* PoP: try_activate_fallback @ agent/chat_completion_helpers.py:try_activate_fallback */
+/* PoP: cch_try_activate_fallback @ agent/chat_completion_helpers.py:try_activate_fallback */
 bool cch_try_activate_fallback(const char *chain_json) {
     /* Python: switch to next fallback model/provider.
      * REAL: parse the fallback chain; activate when an entry exists. */
@@ -95,14 +95,14 @@ bool cch_try_activate_fallback(const char *chain_json) {
     return true;
 }
 
-/* PoP: handle_max_iterations @ agent/chat_completion_helpers.py:handle_max_iterations */
+/* PoP: cch_handle_max_iterations @ agent/chat_completion_helpers.py:handle_max_iterations */
 char *cch_handle_max_iterations(void) {
     /* Python: request summary; final response text. */
     printf("max iterations reached — summary requested\n");
     return strdup("");
 }
 
-/* PoP: cleanup_task_resources @ agent/chat_completion_helpers.py:cleanup_task_resources */
+/* PoP: cch_cleanup_task_resources @ agent/chat_completion_helpers.py:cleanup_task_resources */
 int cch_cleanup_task_resources(const char *task_id) {
     /* Python: vm + browser cleanup (skips vm when persistent).
      * REAL: delegate to the canonical cleanup_task_resources. */
@@ -112,7 +112,7 @@ int cch_cleanup_task_resources(const char *task_id) {
     return 0;
 }
 
-/* PoP: interruptible_streaming_api_call @ agent/chat_completion_helpers.py:interruptible_streaming_api_call */
+/* PoP: cch_interruptible_streaming_api_call @ agent/chat_completion_helpers.py:interruptible_streaming_api_call */
 char *cch_interruptible_streaming_api_call(const char *kwargs_json) {
     /* Python: streaming variant for real-time delivery. */
     if (!kwargs_json) return NULL;
@@ -122,7 +122,7 @@ char *cch_interruptible_streaming_api_call(const char *kwargs_json) {
 
 /* ── agent/chat_completion_helpers.py gap functions ──────────────── */
 
-/* PoP: _context_thread_target @ agent/chat_completion_helpers.py:_context_thread_target */
+/* PoP: cch_context_thread_target @ agent/chat_completion_helpers.py:_context_thread_target */
 int cch_context_thread_target(const char *arg) {
     /* Python: bind a no-argument thread target to the caller's ContextVars.
      * The C core has no contextvars; the callback runs directly.
@@ -132,7 +132,7 @@ int cch_context_thread_target(const char *arg) {
     return 0;
 }
 
-/* PoP: _merge_nous_portal_messages_extra_body @ agent/chat_completion_helpers.py:_merge_nous_portal_messages_extra_body */
+/* PoP: cch_merge_nous_portal_messages_extra_body @ agent/chat_completion_helpers.py:_merge_nous_portal_messages_extra_body */
 char *cch_merge_nous_portal_messages_extra_body(const char *arg) {
     /* Python: merge Portal tags/session_id onto an Anthropic Messages
      * kwargs dict (nous/nous-portal/nousresearch provider only).
@@ -167,7 +167,7 @@ char *cch_merge_nous_portal_messages_extra_body(const char *arg) {
     return out;
 }
 
-/* PoP: _estimate_chunk_bytes @ agent/chat_completion_helpers.py:_estimate_chunk_bytes */
+/* PoP: cch_estimate_chunk_bytes @ agent/chat_completion_helpers.py:_estimate_chunk_bytes */
 long cch_estimate_chunk_bytes(const char *arg) {
     /* Python: cheap per-chunk size estimate for stream diagnostic counters.
      * Floor 40 bytes + delta payload lengths.

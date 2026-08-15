@@ -66,7 +66,7 @@ char *kdb_claimer_id(void)
 /* parent / phantom resolution                                        */
 /* ------------------------------------------------------------------ */
 
-/* PoP: kanban_find_missing_parents @ hermes_cli/kanban_db.py:_find_missing_parents */
+/* PoP: kdb_find_missing_parents @ hermes_cli/kanban_db.py:_find_missing_parents */
 char **kdb_find_missing_parents(sqlite3 *conn, char **parents, int n)
 {
     if (!conn || n <= 0) { char **e = malloc(sizeof(char*)); e[0] = NULL; return e; }
@@ -639,7 +639,7 @@ char *kdb_safe_which_no_cwd(const char *command)
 /* schema drift detection                                             */
 /* ------------------------------------------------------------------ */
 
-/* PoP: kb_table_has_drifted @ hermes_cli/kanban_db.py:_table_has_drifted */
+/* PoP: kdb_table_has_drifted @ hermes_cli/kanban_db.py:_table_has_drifted */
 int kdb_table_has_drifted(sqlite3 *conn, const char *table)
 {
     if (!conn || !table) return 0;
@@ -790,7 +790,7 @@ void kdb_maybe_emit_scratch_tip(sqlite3 *conn, const char *task_id,
 /* corruption recovery: backup + guard                           */
 /* ------------------------------------------------------------------ */
 
-/* PoP: kdb_backup_corrupt_db @ hermes_cli/kanban_db.py:_backup_corrupt_db */
+/* PoP: DB @ hermes_cli/kanban_db.py:_backup_corrupt_db */
 /* Copy a corrupt DB (and its WAL/SHM sidecars) to a content-addressed
  * backup inside the DB's own parent dir. The backup basename is derived
  * from the file name + sha256[:16] of the bytes, so repeated quarantine
@@ -863,7 +863,7 @@ char *kdb_backup_corrupt_db(const char *path)
     return strdup(cand);
 }
 
-/* PoP: kdb_guard_existing_db_is_healthy @ hermes_cli/kanban_db.py:_guard_existing_db_is_healthy */
+/* PoP: propagate @ hermes_cli/kanban_db.py:_guard_existing_db_is_healthy */
 /* Run `PRAGMA integrity_check` on an existing non-empty DB file. Opens a
  * throwaway probe so a healthy WAL/hot-journal DB can checkpoint before
  * we call it corrupt. Returns:

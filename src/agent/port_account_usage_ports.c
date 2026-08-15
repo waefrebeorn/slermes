@@ -21,7 +21,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _utc_now @ agent/account_usage.py:_utc_now */
+/* PoP: acu_utc_now @ agent/account_usage.py:_utc_now */
 char *acu_utc_now(void) {
     /* Python: UTC datetime. */
     time_t t = time(NULL);
@@ -34,7 +34,7 @@ char *acu_utc_now(void) {
     return out;
 }
 
-/* PoP: build_nous_credits_snapshot @ agent/account_usage.py:build_nous_credits_snapshot */
+/* PoP: acu_build_nous_credits_snapshot @ agent/account_usage.py:build_nous_credits_snapshot */
 char *acu_build_nous_credits_snapshot(const char *account_json) {
     /* Python: maps NousPortalAccountInfo → AccountUsageSnapshot.
      * Extracts subscription + top-up magnitudes from the account JSON,
@@ -92,7 +92,7 @@ char *acu_build_nous_credits_snapshot(const char *account_json) {
     return ser ? ser : strdup("{}");
 }
 
-/* PoP: nous_credits_lines @ agent/account_usage.py:nous_credits_lines */
+/* PoP: acu_nous_credits_lines @ agent/account_usage.py:nous_credits_lines */
 char *acu_nous_credits_lines(void) {
     /* Python: renders /usage lines from portal, or [] on any failure.
      * C: best-effort portal fetch; returns [] when unavailable. */
@@ -138,7 +138,7 @@ char *acu_nous_credits_lines(void) {
     return lines;
 }
 
-/* PoP: _snapshot_from_credits_state @ agent/account_usage.py:_snapshot_from_credits_state */
+/* PoP: acu_snapshot_from_credits_state @ agent/account_usage.py:_snapshot_from_credits_state */
 char *acu_snapshot_from_credits_state(const char *credits_json) {
     /* Python: maps header-shaped CreditsState → AccountUsageSnapshot.
      * Extracts used_fraction → monthly-grant % window. Fail-open → NULL. */
@@ -185,7 +185,7 @@ char *acu_snapshot_from_credits_state(const char *credits_json) {
     return ser ? ser : NULL;
 }
 
-/* PoP: _resolve_codex_usage_url @ agent/account_usage.py:_resolve_codex_usage_url */
+/* PoP: acu_resolve_codex_usage_url @ agent/account_usage.py:_resolve_codex_usage_url */
 char *acu_resolve_codex_usage_url(const char *base_url) {
     /* Python: codex backend urls[0]. */
     if (!base_url) return NULL;

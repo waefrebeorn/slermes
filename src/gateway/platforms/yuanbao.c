@@ -704,8 +704,8 @@ bool yuanbao_init(const char *app_id, const char *app_secret,
     return *g_yb.app_id && *g_yb.app_secret;
 }
 
-/* PoP: ccp_start @ gateway/platforms/yuanbao.py:start */
-/* PoP: pb_connect @ gateway/platforms/yuanbao.py:connect */
+/* PoP: yuanbao_start @ gateway/platforms/yuanbao.py:start */
+/* PoP: yuanbao_start @ gateway/platforms/yuanbao.py:connect */
 void yuanbao_start(void) {
     if (!*g_yb.app_id || !*g_yb.app_secret) {
         fprintf(stderr, "[gateway:yuanbao] app_id and app_secret required\n");
@@ -736,8 +736,8 @@ void yuanbao_start(void) {
     }
 }
 
-/* PoP: ccp_stop @ gateway/platforms/yuanbao.py:stop */
-/* PoP: cas_close @ gateway/platforms/yuanbao.py:close */
+/* PoP: yuanbao_stop @ gateway/platforms/yuanbao.py:stop */
+/* PoP: yuanbao_stop @ gateway/platforms/yuanbao.py:close */
 void yuanbao_stop(void) {
     g_yb.running = false;
 }
@@ -747,9 +747,9 @@ bool yuanbao_is_running(void) {
 }
 
 /* Send a sticker via the active WebSocket connection. Returns 0 on success, -1 on error. */
-/* PoP: encode_send_sticker @ gateway/platforms/yuanbao.py:send_sticker */
+/* PoP: yuanbao_send_sticker @ gateway/platforms/yuanbao.py:send_sticker */
 /* Port of Python gateway/platforms/yuanbao.py:send_sticker(). */
-/* PoP: pb_send @ gateway/platforms/yuanbao.py:send */
+/* PoP: yuanbao_send_sticker @ gateway/platforms/yuanbao.py:send */
 int yuanbao_send_sticker(const char *to_uid, const char *sticker_id,
                           const char *sticker_name, const char *package_id,
                           int width, int height) {
@@ -775,7 +775,7 @@ int yuanbao_send_sticker(const char *to_uid, const char *sticker_id,
 }
 
 /* Query group info synchronously. Returns JSON string or NULL. Caller must free(). */
-/* PoP: encode_query_group_info @ gateway/platforms/yuanbao.py:query_group_info */
+/* PoP: yuanbao_query_group_info @ gateway/platforms/yuanbao.py:query_group_info */
 /* Port of Python gateway/platforms/yuanbao.py:query_group_info(). */
 char *yuanbao_query_group_info(const char *group_code, int timeout_sec) {
     if (!g_yb.ws || !g_yb.running || !group_code || !*group_code) return NULL;
@@ -788,7 +788,7 @@ char *yuanbao_query_group_info(const char *group_code, int timeout_sec) {
 }
 
 /* Query group members synchronously. Returns JSON string or NULL. Caller must free(). */
-/* PoP: encode_get_group_member_list @ gateway/platforms/yuanbao.py:get_group_member_list */
+/* PoP: yuanbao_get_group_member_list @ gateway/platforms/yuanbao.py:get_group_member_list */
 /* Port of Python gateway/platforms/yuanbao.py:get_group_member_list(). */
 char *yuanbao_get_group_member_list(const char *group_code, uint32_t offset, uint32_t limit, int timeout_sec) {
     if (!g_yb.ws || !g_yb.running || !group_code || !*group_code) return NULL;
@@ -801,7 +801,7 @@ char *yuanbao_get_group_member_list(const char *group_code, uint32_t offset, uin
 }
 
 /* Send a DM (C2C text message). Returns JSON string or NULL. Caller must free(). */
-/* PoP: cli_tools_yuanbao_tools__handle_yb_send_dm @ gateway/platforms/yuanbao.py:send_dm */
+/* PoP: yuanbao_send_dm @ gateway/platforms/yuanbao.py:send_dm */
 /* Port of Python gateway/platforms/yuanbao.py:send_dm(). */
 char *yuanbao_send_dm(const char *to_uid, const char *text) {
     if (!g_yb.ws || !g_yb.running || !to_uid || !*to_uid || !text) return NULL;

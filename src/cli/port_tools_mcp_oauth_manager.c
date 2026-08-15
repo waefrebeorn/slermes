@@ -96,7 +96,7 @@ typedef struct mcp_oauth_manager {
     pthread_mutex_t entries_lock;
 } mcp_oauth_manager_t;
 
-/* PoP: cli_tools_mcp_oauth_manager__make_hermes_provider_class @ tools/mcp_oauth_manager.py:_make_hermes_provider_class */
+/* PoP: SDK @ tools/mcp_oauth_manager.py:_make_hermes_provider_class */
 
 /* Port of Python _make_hermes_provider_class.
  * Returns 1 if the in-tree OAuth SDK (libmcp_oauth) is available, else 0.
@@ -117,7 +117,7 @@ int cli_tools_mcp_oauth_manager__make_hermes_provider_class(void)
     return 1;
 }
 
-/* PoP: cli_tools_mcp_oauth_manager_get_or_build_provider @ tools/mcp_oauth_manager.py:get_or_build_provider */
+/* PoP: handle @ tools/mcp_oauth_manager.py:get_or_build_provider */
 
 /* Port of Python get_or_build_provider.
  * Returns a cached provider for server_name, building one on first use.
@@ -247,7 +247,7 @@ int cli_tools_mcp_oauth_manager__build_provider(
     return 0;
 }
 
-/* PoP: cli_tools_mcp_oauth_manager_invalidate_if_disk_changed @ tools/mcp_oauth_manager.py:invalidate_if_disk_changed */
+/* PoP: 1 @ tools/mcp_oauth_manager.py:invalidate_if_disk_changed */
 
 /* Port of Python invalidate_if_disk_changed.
  * If the on-disk token file's mtime_ns differs from the last-seen value,
@@ -311,7 +311,7 @@ int cli_tools_mcp_oauth_manager_invalidate_if_disk_changed(
     return changed;
 }
 
-/* PoP: cli_tools_mcp_oauth_manager_handle_401 @ tools/mcp_oauth_manager.py:handle_401 */
+/* PoP: decision @ tools/mcp_oauth_manager.py:handle_401 */
 
 /* Port of Python handle_401 — deduplicated 401 recovery.
  * Returns 1 (and *refreshed_out=1) if a fresh token is now available

@@ -21,7 +21,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _is_ancestor_or_same @ agent/subdirectory_hints.py:_is_ancestor_or_same */
+/* PoP: shi_is_ancestor_or_same @ agent/subdirectory_hints.py:_is_ancestor_or_same */
 bool shi_is_ancestor_or_same(const char *a, const char *b) {
     /* Python: a is ancestor-or-same of b. */
     if (!a || !b) return false;
@@ -31,7 +31,7 @@ bool shi_is_ancestor_or_same(const char *a, const char *b) {
     return false;
 }
 
-/* PoP: __init__ @ agent/subdirectory_hints.py:__init__ */
+/* PoP: shi_init @ agent/subdirectory_hints.py:__init__ */
 char *shi_init(const char *working_dir) {
     /* Python: resolved working dir + loaded set. */
     char cwd[4096];
@@ -44,7 +44,7 @@ char *shi_init(const char *working_dir) {
     return out;
 }
 
-/* PoP: check_tool_call @ agent/subdirectory_hints.py:check_tool_call */
+/* PoP: shi_check_tool_call @ agent/subdirectory_hints.py:check_tool_call */
 char *shi_check_tool_call(const char *args_json, const char *working_dir) {
     /* Python: extract dirs + load hints. */
     if (!args_json) return NULL;
@@ -52,7 +52,7 @@ char *shi_check_tool_call(const char *args_json, const char *working_dir) {
     return NULL;
 }
 
-/* PoP: _extract_directories @ agent/subdirectory_hints.py:_extract_directories */
+/* PoP: shi_extract_directories @ agent/subdirectory_hints.py:_extract_directories */
 char *shi_extract_directories(const char *args_json) {
     /* Python: directory paths from args. */
     if (!args_json) return strdup("[]");
@@ -60,7 +60,7 @@ char *shi_extract_directories(const char *args_json) {
     return strdup("[]");
 }
 
-/* PoP: _add_path_candidate @ agent/subdirectory_hints.py:_add_path_candidate */
+/* PoP: shi_add_path_candidate @ agent/subdirectory_hints.py:_add_path_candidate */
 char *shi_add_path_candidate(const char *raw_path, const char *working_dir) {
     /* Python: resolve + add dir + ancestors. */
     if (!raw_path) return strdup("[]");
@@ -72,7 +72,7 @@ char *shi_add_path_candidate(const char *raw_path, const char *working_dir) {
     return out;
 }
 
-/* PoP: _extract_paths_from_command @ agent/subdirectory_hints.py:_extract_paths_from_command */
+/* PoP: shi_extract_paths_from_command @ agent/subdirectory_hints.py:_extract_paths_from_command */
 char *shi_extract_paths_from_command(const char *command) {
     /* Python: path-like tokens from shell command. */
     if (!command) return strdup("[]");
@@ -106,7 +106,7 @@ char *shi_extract_paths_from_command(const char *command) {
     return out;
 }
 
-/* PoP: _is_valid_subdir @ agent/subdirectory_hints.py:_is_valid_subdir */
+/* PoP: shi_is_valid_subdir @ agent/subdirectory_hints.py:_is_valid_subdir */
 bool shi_is_valid_subdir(const char *path, const char *working_dir) {
     /* Python: real dir inside working_dir. */
     if (!path || !working_dir) return false;
@@ -115,7 +115,7 @@ bool shi_is_valid_subdir(const char *path, const char *working_dir) {
     return stat(path, &st) == 0 && S_ISDIR(st.st_mode);
 }
 
-/* PoP: _load_hints_for_directory @ agent/subdirectory_hints.py:_load_hints_for_directory */
+/* PoP: shi_load_hints_for_directory @ agent/subdirectory_hints.py:_load_hints_for_directory */
 char *shi_load_hints_for_directory(const char *path) {
     /* Python: load hint files (AGENTS.md etc.) — REAL read. */
     if (!path) return NULL;

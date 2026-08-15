@@ -20,7 +20,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ hermes_cli/auth.py:__init__ */
+/* PoP: ath_error_init @ hermes_cli/auth.py:__init__ */
 char *ath_error_init(const char *message, const char *provider, long code) {
     char *out = NULL;
     asprintf(&out, "{\"message\": \"%s\", \"provider\": \"%s\", \"code\": %ld}",
@@ -28,7 +28,7 @@ char *ath_error_init(const char *message, const char *provider, long code) {
     return out;
 }
 
-/* PoP: suppress_credential_source @ hermes_cli/auth.py:suppress_credential_source */
+/* PoP: ath_suppress_credential_source @ hermes_cli/auth.py:suppress_credential_source */
 int ath_suppress_credential_source(const char *source) {
     /* Python: mark suppressed so it won't re-seed. */
     if (!source) return -1;
@@ -36,7 +36,7 @@ int ath_suppress_credential_source(const char *source) {
     return 0;
 }
 
-/* PoP: get_active_provider @ hermes_cli/auth.py:get_active_provider */
+/* PoP: ath_get_active_provider @ hermes_cli/auth.py:get_active_provider */
 char *ath_get_active_provider(const char *auth_store_json) {
     /* Python: active provider id from store. */
     if (!auth_store_json) return NULL;
@@ -52,7 +52,7 @@ char *ath_get_active_provider(const char *auth_store_json) {
     return strndup(v, (size_t)(e - v));
 }
 
-/* PoP: _codex_pool_rate_limit_status @ hermes_cli/auth.py:_codex_pool_rate_limit_status */
+/* PoP: ath_codex_pool_rate_limit_status @ hermes_cli/auth.py:_codex_pool_rate_limit_status */
 char *ath_codex_pool_rate_limit_status(const char *cred_json) {
     /* Python: pool-only codex credential in quota cooldown. */
     if (!cred_json) return strdup("{}");
@@ -60,7 +60,7 @@ char *ath_codex_pool_rate_limit_status(const char *cred_json) {
     return strdup(cred_json);
 }
 
-/* PoP: _xai_oauth_state_from_store @ hermes_cli/auth.py:_xai_oauth_state_from_store */
+/* PoP: ath_xai_oauth_state_from_store @ hermes_cli/auth.py:_xai_oauth_state_from_store */
 char *ath_xai_oauth_state_from_store(const char *auth_store_json) {
     /* Python: usable xAI oauth from provider state or pool. */
     if (!auth_store_json) return NULL;
@@ -70,7 +70,7 @@ char *ath_xai_oauth_state_from_store(const char *auth_store_json) {
     return strdup("{}");
 }
 
-/* PoP: _xai_oauth_state_has_usable_tokens @ hermes_cli/auth.py:_xai_oauth_state_has_usable_tokens */
+/* PoP: ath_xai_oauth_state_has_usable_tokens @ hermes_cli/auth.py:_xai_oauth_state_has_usable_tokens */
 bool ath_xai_oauth_state_has_usable_tokens(const char *state_json) {
     /* Python: tokens + access_token/refresh_token present. */
     if (!state_json) return false;
@@ -79,7 +79,7 @@ bool ath_xai_oauth_state_has_usable_tokens(const char *state_json) {
     return (strstr(t, "access_token") || strstr(t, "refresh_token")) && t < t + 200;
 }
 
-/* PoP: _profile_has_own_xai_oauth_state @ hermes_cli/auth.py:_profile_has_own_xai_oauth_state */
+/* PoP: ath_profile_has_own_xai_oauth_state @ hermes_cli/auth.py:_profile_has_own_xai_oauth_state */
 bool ath_profile_has_own_xai_oauth_state(const char *auth_store_json) {
     /* Python: own providers.xai-oauth block. */
     if (!auth_store_json) return false;
@@ -88,7 +88,7 @@ bool ath_profile_has_own_xai_oauth_state(const char *auth_store_json) {
     return strstr(p, "xai-oauth") != NULL;
 }
 
-/* PoP: _write_through_xai_oauth_to_global_root @ hermes_cli/auth.py:_write_through_xai_oauth_to_global_root */
+/* PoP: ath_write_through_xai_oauth_to_global_root @ hermes_cli/auth.py:_write_through_xai_oauth_to_global_root */
 int ath_write_through_xai_oauth_to_global_root(const char *state_json) {
     /* Python: persist rotated state into global-root auth.json.
      * REAL: merge providers.xai-oauth into ~/.hermes/auth.json. */
@@ -105,7 +105,7 @@ int ath_write_through_xai_oauth_to_global_root(const char *state_json) {
     return 0;
 }
 
-/* PoP: _auth_file_cache_key @ hermes_cli/auth.py:_auth_file_cache_key */
+/* PoP: ath_auth_file_cache_key @ hermes_cli/auth.py:_auth_file_cache_key */
 char *ath_auth_file_cache_key(const char *auth_file_path) {
     /* Python: resolved-path cache key. */
     if (!auth_file_path) return NULL;
@@ -114,21 +114,21 @@ char *ath_auth_file_cache_key(const char *auth_file_path) {
     return out;
 }
 
-/* PoP: _nous_device_code_login @ hermes_cli/auth.py:_nous_device_code_login */
+/* PoP: ath_nous_device_code_login @ hermes_cli/auth.py:_nous_device_code_login */
 char *ath_nous_device_code_login(void) {
     /* Python: full oauth state without persisting. */
     printf("nous device-code login (state returned, not persisted)\n");
     return strdup("{}");
 }
 
-/* PoP: nous_token_has_billing_scope @ hermes_cli/auth.py:nous_token_has_billing_scope */
+/* PoP: ath_nous_token_has_billing_scope @ hermes_cli/auth.py:nous_token_has_billing_scope */
 bool ath_nous_token_has_billing_scope(const char *token_json) {
     /* Python: billing:manage scope present. */
     if (!token_json) return false;
     return strstr(token_json, "billing:manage") != NULL;
 }
 
-/* PoP: step_up_nous_billing_scope @ hermes_cli/auth.py:step_up_nous_billing_scope */
+/* PoP: ath_step_up_nous_billing_scope @ hermes_cli/auth.py:step_up_nous_billing_scope */
 char *ath_step_up_nous_billing_scope(void) {
     /* Python: re-run device flow requesting billing:manage. */
     printf("nous device flow re-run (billing:manage requested)\n");
@@ -137,7 +137,7 @@ char *ath_step_up_nous_billing_scope(void) {
 
 /* ── Actual local base URL detection/normalization (hermes_cli/auth.py) ── */
 
-/* PoP: is_actual_local_base_url @ hermes_cli/auth.py:is_actual_local_base_url */
+/* PoP: ath_is_actual_local_base_url @ hermes_cli/auth.py:is_actual_local_base_url */
 /* Return true for Actual's loopback local API endpoint. Host is lowercased and
  * trailing dot stripped. */
 bool ath_is_actual_local_base_url(const char *base_url) {
@@ -172,7 +172,7 @@ bool ath_is_actual_local_base_url(const char *base_url) {
             || strcmp(host, "::1") == 0 || strcmp(host, "0.0.0.0") == 0);
 }
 
-/* PoP: normalize_actual_base_url @ hermes_cli/auth.py:normalize_actual_base_url */
+/* PoP: ath_normalize_actual_base_url @ hermes_cli/auth.py:normalize_actual_base_url */
 /* Return Actual's OpenAI-compatible base URL: strip trailing slash, and if the
  * host is api.actual.inc or a loopback host with no path, append /v1. Caller
  * frees. */

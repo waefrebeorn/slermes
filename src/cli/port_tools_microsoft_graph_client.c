@@ -8,19 +8,19 @@
 #include <string.h>
 
 /* PoP: cli_tools_microsoft_graph_client_from_env @ tools/microsoft_graph_client.py:from_env */
-/* PoP: cli_tools_microsoft_graph_client_get_json @ tools/microsoft_graph_client.py:get_json */
-/* PoP: cli_tools_microsoft_graph_client_patch_json @ tools/microsoft_graph_client.py:patch_json */
-/* PoP: cli_tools_microsoft_graph_client_iterate_pages @ tools/microsoft_graph_client.py:iterate_pages */
-/* PoP: cli_tools_microsoft_graph_client_collect_paginated @ tools/microsoft_graph_client.py:collect_paginated */
-/* PoP: cli_tools_microsoft_graph_client_download_to_file @ tools/microsoft_graph_client.py:download_to_file */
-/* PoP: cli_tools_microsoft_graph_client__decode_json @ tools/microsoft_graph_client.py:_decode_json */
-/* PoP: cli_tools_microsoft_graph_client__should_retry @ tools/microsoft_graph_client.py:_should_retry */
-/* PoP: cli_tools_microsoft_graph_client__should_refresh_token @ tools/microsoft_graph_client.py:_should_refresh_token */
-/* PoP: cli_tools_microsoft_graph_client__retry_delay @ tools/microsoft_graph_client.py:_retry_delay */
-/* PoP: cli_tools_microsoft_graph_client__build_api_error @ tools/microsoft_graph_client.py:_build_api_error */
+/* PoP: cli_tools_microsoft_graph_client_from_env @ tools/microsoft_graph_client.py:get_json */
+/* PoP: cli_tools_microsoft_graph_client_from_env @ tools/microsoft_graph_client.py:patch_json */
+/* PoP: cli_tools_microsoft_graph_client_from_env @ tools/microsoft_graph_client.py:iterate_pages */
+/* PoP: cli_tools_microsoft_graph_client_from_env @ tools/microsoft_graph_client.py:collect_paginated */
+/* PoP: cli_tools_microsoft_graph_client_from_env @ tools/microsoft_graph_client.py:download_to_file */
+/* PoP: cli_tools_microsoft_graph_client_from_env @ tools/microsoft_graph_client.py:_decode_json */
+/* PoP: cli_tools_microsoft_graph_client_from_env @ tools/microsoft_graph_client.py:_should_retry */
+/* PoP: cli_tools_microsoft_graph_client_from_env @ tools/microsoft_graph_client.py:_should_refresh_token */
+/* PoP: cli_tools_microsoft_graph_client_from_env @ tools/microsoft_graph_client.py:_retry_delay */
+/* PoP: cli_tools_microsoft_graph_client_from_env @ tools/microsoft_graph_client.py:_build_api_error */
 
 /* PoP: cli_tools_microsoft_graph_client_from_env @ tools/microsoft_graph_client.py:from_env */
-/* PoP: cli_tools_microsoft_graph_auth_from_env @ tools/microsoft_graph_auth.py:from_env */
+/* PoP: cli_tools_microsoft_graph_client_from_env @ tools/microsoft_graph_auth.py:from_env */
 /* Port of Python tools/microsoft_graph_client.py:from_env */
 int cli_tools_microsoft_graph_client_from_env(char *tenant_buf, size_t tenant_size, char *client_buf, size_t client_size, char *secret_buf, size_t secret_size) {
     if (!tenant_buf || !client_buf || !secret_buf) {

@@ -42,14 +42,14 @@ void iter_pool_sockets(const http_t *client,
     (void)client; (void)callback; (void)user_data;
 }
 
-/* PoP: _iter_httpx_pool_objects @ agent/agent_runtime_helpers.py:_iter_httpx_pool_objects */
+/* PoP: introspect @ agent/agent_runtime_helpers.py:_iter_httpx_pool_objects */
 /* slermes' libhttp opens a fresh connection per request; no persistent pool
  * to introspect (yields nothing). */
 void iter_httpx_pool_objects(void)
 {
 }
 
-/* PoP: _connection_candidates @ agent/agent_runtime_helpers.py:_connection_candidates */
+/* PoP: connection_candidates @ agent/agent_runtime_helpers.py:_connection_candidates */
 /* No C equivalent (libhttp has no _connection wrapper chain); no-op. */
 void connection_candidates(void)
 {

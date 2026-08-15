@@ -154,7 +154,7 @@ int cli_gateway_platforms_signal_rate_limit__is_signal_rate_limit_error(const ch
     return hit;
 }
 
-/* PoP: cli_gateway_platforms_signal_rate_limit__format_wait @ gateway/platforms/signal_rate_limit.py:_format_wait */
+/* PoP: if @ gateway/platforms/signal_rate_limit.py:_format_wait */
 char* cli_gateway_platforms_signal_rate_limit__format_wait(int seconds, char *buf, size_t bufsz) {
     /*
      * Format a wait duration as a human-readable string.
@@ -239,7 +239,7 @@ void cli_gateway_platforms_signal_rate_limit_feedback(int was_throttled, int ret
     }
 }
 
-/* PoP: cli_gateway_platforms_signal_rate_limit__token_bucket_init @ gateway/platforms/signal_rate_limit.py:_token_bucket_init */
+/* PoP: cli_gateway_platforms_signal_rate_limit__maybe_refill @ gateway/platforms/signal_rate_limit.py:_token_bucket_init */
 json_node_t* cli_gateway_platforms_signal_rate_limit__token_bucket_init(int capacity, int tokens_per_second) {
     /*
      * Initialize a token bucket. Returns a JSON object with bucket state.
@@ -291,7 +291,7 @@ void cli_gateway_platforms_signal_rate_limit__update_from_response(json_node_t *
     }
 }
 
-/* PoP: cli_gateway_platforms_signal_rate_limit_report_rpc_duration @ gateway/platforms/signal_rate_limit.py:report_rpc_duration */
+/* PoP: refill @ gateway/platforms/signal_rate_limit.py:report_rpc_duration */
 /* Record an attachment-send RPC that just completed: deduct n_attachments
  * tokens WITHOUT crediting upload-time refill (Signal checks the bucket at RPC
  * start and does not refill during processing — crediting it causes drift →

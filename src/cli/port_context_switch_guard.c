@@ -11,7 +11,7 @@
 #include <string.h>
 #include <time.h>
 
-/* PoP: _append_warning @ hermes_cli/context_switch_guard.py:_append_warning */
+/* PoP: context_switch_guard_append_warning @ hermes_cli/context_switch_guard.py:_append_warning */
 void context_switch_guard_append_warning(json_t *result, const char *text)
 {
     if (!result || !text) return;
@@ -30,7 +30,7 @@ void context_switch_guard_append_warning(json_t *result, const char *text)
     free(combined);
 }
 
-/* PoP: _threshold_tokens @ hermes_cli/context_switch_guard.py:_threshold_tokens */
+/* PoP: context_switch_guard_threshold_tokens @ hermes_cli/context_switch_guard.py:_threshold_tokens */
 int context_switch_guard_threshold_tokens(int context_length, float threshold_percent)
 {
     if (context_length <= 0) return 0;

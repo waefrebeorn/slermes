@@ -32,7 +32,7 @@ int cli_tools_env_passthrough__is_hermes_provider_credential(const char *name);
 /* Load tools.env_passthrough (terminal.env_passthrough) from config.yaml,
  * filtering out Hermes-managed provider credentials, and cache the result.
  * Returns the cached array via *out and count via *out_count. */
-/* PoP: gh @ hermes_cli/web_git.py:_gh */
+/* PoP: cli_tools_env_passthrough__load_config_passthrough @ hermes_cli/web_git.py:_gh */
 void cli_tools_env_passthrough__load_config_passthrough(char ***out, int *out_count)
 {
     if (out) *out = NULL;
@@ -113,7 +113,7 @@ int cli_tools_env_passthrough__is_hermes_provider_credential(const char *name)
     return (int)env_passthrough_is_blocked(name);
 }
 
-/* PoP: cli_tools_env_passthrough_register_env_passthrough @ tools/env_passthrough.py:register_env_passthrough */
+/* PoP: vars @ tools/env_passthrough.py:register_env_passthrough */
 
 /* Port of Python tools/env_passthrough.py:register_env_passthrough */
 /* Register env var names as allowed. Blocked vars (Hermes provider creds) are skipped. */
@@ -175,7 +175,7 @@ void cli_tools_env_passthrough_get_all_passthrough(char ***out, int *out_count)
     env_passthrough_get_all(out, out_count);
 }
 
-/* PoP: cli_tools_env_passthrough_clear_env_passthrough @ tools/env_passthrough.py:clear_env_passthrough */
+/* PoP: allowlist @ tools/env_passthrough.py:clear_env_passthrough */
 
 /* Port of Python tools/env_passthrough.py:clear_env_passthrough */
 /* Reset the skill-scoped allowlist (e.g. on session reset). */
@@ -185,7 +185,7 @@ void cli_tools_env_passthrough_clear_env_passthrough(void)
     hermes_log(LOG_DEBUG, "env_passthrough", "Session allowlist cleared");
 }
 
-/* PoP: resolve_passthrough_value @ tools/env_passthrough.py:resolve_passthrough_value */
+/* PoP: cli_tools_env_passthrough_resolve_passthrough_value @ tools/env_passthrough.py:resolve_passthrough_value */
 char *cli_tools_env_passthrough_resolve_passthrough_value(const char *name, const char *fallback) {
     /* Python:
      *   if _is_global_env(name) and fallback is not None: return fallback

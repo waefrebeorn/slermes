@@ -129,7 +129,7 @@ static char **parse_id_array(const char *json) {
 }
 
 /* ── ensure_lmstudio_model_loaded ──────────────────────────────────────── */
-/* PoP: ensure_lmstudio_model_loaded @ hermes_cli/models.py:ensure_lmstudio_model_loaded */
+/* PoP: needed @ hermes_cli/models.py:ensure_lmstudio_model_loaded */
 /* Injectable HTTP POST to /api/v1/models/load. Returns resolved loaded context
  * length, or -1 on failure. The probe uses the injectable `fetch` transport;
  * the (re)load uses the injectable `post` transport. Either may be NULL when
@@ -200,7 +200,7 @@ int models_ensure_lmstudio_model_loaded(http_fetch_fn fetch, void *fetch_ctx,
 }
 
 /* ── validate_requested_model ──────────────────────────────────────────── */
-/* PoP: validate_requested_model @ hermes_cli/models.py:validate_requested_model */
+/* PoP: models_validate_requested_model @ hermes_cli/models.py:validate_requested_model */
 models_validate_result_t models_validate_requested_model(
     http_fetch_fn fetch, void *ctx,
     const char *model_name, const char *provider,

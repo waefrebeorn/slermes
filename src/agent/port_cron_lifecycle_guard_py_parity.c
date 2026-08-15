@@ -14,32 +14,32 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: cron_lifecycle_guard_iter_command_segments @ cron/lifecycle_guard.py:_iter_command_segments */
+/* PoP: cron_lifecycle_guard_iter_command_segments_p @ cron/lifecycle_guard.py:_iter_command_segments */
 json_t *cron_lifecycle_guard_iter_command_segments_p(void) {
     return json_object();
 }
 
-/* PoP: cron_lifecycle_guard_mask_data_sink_arguments @ cron/lifecycle_guard.py:_mask_data_sink_arguments */
+/* PoP: cron_lifecycle_guard_mask_data_sink_arguments_p @ cron/lifecycle_guard.py:_mask_data_sink_arguments */
 json_t *cron_lifecycle_guard_mask_data_sink_arguments_p(void) {
     return json_object();
 }
 
-/* PoP: cron_lifecycle_guard_lifecycle_command_scan_with_data_exemption @ cron/lifecycle_guard.py:_lifecycle_command_scan_with_data_exemption */
+/* PoP: cron_lifecycle_guard_lifecycle_command_scan_with_data_exemption_p @ cron/lifecycle_guard.py:_lifecycle_command_scan_with_data_exemption */
 json_t *cron_lifecycle_guard_lifecycle_command_scan_with_data_exemption_p(void) {
     return json_object();
 }
 
-/* PoP: cron_lifecycle_guard_direct_lifecycle_scan @ cron/lifecycle_guard.py:_direct_lifecycle_scan */
+/* PoP: cron_lifecycle_guard_direct_lifecycle_scan_p @ cron/lifecycle_guard.py:_direct_lifecycle_scan */
 json_t *cron_lifecycle_guard_direct_lifecycle_scan_p(void) {
     return json_object();
 }
 
-/* PoP: cron_lifecycle_guard_iter_referenced_shell_scripts @ cron/lifecycle_guard.py:_iter_referenced_shell_scripts */
+/* PoP: cron_lifecycle_guard_iter_referenced_shell_scripts_p @ cron/lifecycle_guard.py:_iter_referenced_shell_scripts */
 json_t *cron_lifecycle_guard_iter_referenced_shell_scripts_p(void) {
     return json_object();
 }
 
-/* PoP: cron_lifecycle_guard_iter_shell_command_payloads @ cron/lifecycle_guard.py:_iter_shell_command_payloads */
+/* PoP: cron_lifecycle_guard_iter_shell_command_payloads_p @ cron/lifecycle_guard.py:_iter_shell_command_payloads */
 json_t *cron_lifecycle_guard_iter_shell_command_payloads_p(void) {
     return json_object();
 }

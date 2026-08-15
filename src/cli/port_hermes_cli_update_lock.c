@@ -19,7 +19,7 @@
 #include <signal.h>
 #include "libjson/json.h"
 
-/* PoP: update_marker_path @ hermes_cli/update_lock.py:update_marker_path */
+/* PoP: ul_update_marker_path @ hermes_cli/update_lock.py:update_marker_path */
 char *ul_update_marker_path(void) {
     const char *home = getenv("HERMES_HOME");
     if (!home || !*home) home = getenv("HOME");
@@ -29,7 +29,7 @@ char *ul_update_marker_path(void) {
     return path;
 }
 
-/* PoP: _pid_alive @ hermes_cli/update_lock.py:_pid_alive */
+/* PoP: ul_pid_alive @ hermes_cli/update_lock.py:_pid_alive */
 bool ul_pid_alive(int pid) {
     if (pid <= 0) return false;
     /* Delegate to gateway.status._pid_exists equivalent:
@@ -37,7 +37,7 @@ bool ul_pid_alive(int pid) {
     return kill(pid, 0) == 0;
 }
 
-/* PoP: _handoff_pid @ hermes_cli/update_lock.py:_handoff_pid */
+/* PoP: ul_handoff_pid @ hermes_cli/update_lock.py:_handoff_pid */
 int ul_handoff_pid(void) {
     const char *raw = getenv("HERMES_UPDATE_HANDOFF_PID");
     if (!raw || !*raw) return -1;
@@ -51,7 +51,7 @@ int ul_handoff_pid(void) {
     return pid > 0 ? (int)pid : -1;
 }
 
-/* PoP: _is_ancestor_pid @ hermes_cli/update_lock.py:_is_ancestor_pid */
+/* PoP: ul_is_ancestor_pid @ hermes_cli/update_lock.py:_is_ancestor_pid */
 bool ul_is_ancestor_pid(int pid) {
     if (pid <= 0) return false;
     /* Walk /proc/self/status parent chain on Linux.
@@ -82,7 +82,7 @@ bool ul_is_ancestor_pid(int pid) {
     return false;
 }
 
-/* PoP: read_live_update @ hermes_cli/update_lock.py:read_live_update */
+/* PoP: ul_read_live_update @ hermes_cli/update_lock.py:read_live_update */
 UpdateHolder *ul_read_live_update(const char *path) {
     if (!path) path = ul_update_marker_path();
     if (!path) return NULL;
@@ -122,7 +122,7 @@ UpdateHolder *ul_read_live_update(const char *path) {
     return h;
 }
 
-/* PoP: describe_holder @ hermes_cli/update_lock.py:describe_holder */
+/* PoP: ul_describe_holder @ hermes_cli/update_lock.py:describe_holder */
 char *ul_describe_holder(const UpdateHolder *holder) {
     if (!holder) return NULL;
     int total = (int)holder->age_seconds;
@@ -143,7 +143,7 @@ char *ul_describe_holder(const UpdateHolder *holder) {
     return out;
 }
 
-/* PoP: __init__ @ hermes_cli/update_lock.py:UpdateLock.__init__ */
+/* PoP: ul_update_lock_new @ hermes_cli/update_lock.py:UpdateLock.__init__ */
 UpdateLock *ul_update_lock_new(const char *path) {
     UpdateLock *lock = malloc(sizeof(UpdateLock));
     if (!lock) return NULL;
@@ -153,7 +153,7 @@ UpdateLock *ul_update_lock_new(const char *path) {
     return lock;
 }
 
-/* PoP: acquire @ hermes_cli/update_lock.py:UpdateLock.acquire */
+/* PoP: ul_update_lock_acquire @ hermes_cli/update_lock.py:UpdateLock.acquire */
 bool ul_update_lock_acquire(UpdateLock *lock) {
     if (!lock) return false;
     UpdateHolder *existing = ul_read_live_update(lock->path);
@@ -186,7 +186,7 @@ bool ul_update_lock_acquire(UpdateLock *lock) {
     return true;
 }
 
-/* PoP: release @ hermes_cli/update_lock.py:UpdateLock.release */
+/* PoP: ul_update_lock_release @ hermes_cli/update_lock.py:UpdateLock.release */
 void ul_update_lock_release(UpdateLock *lock) {
     if (!lock || !lock->acquired) return;
     lock->acquired = false;
@@ -209,12 +209,12 @@ void ul_update_lock_release(UpdateLock *lock) {
     unlink(lock->path);
 }
 
-/* PoP: __enter__ @ hermes_cli/update_lock.py:UpdateLock.__enter__ */
+/* PoP: ul_update_lock_enter @ hermes_cli/update_lock.py:UpdateLock.__enter__ */
 bool ul_update_lock_enter(UpdateLock *lock) {
     return ul_update_lock_acquire(lock);
 }
 
-/* PoP: __exit__ @ hermes_cli/update_lock.py:UpdateLock.__exit__ */
+/* PoP: ul_update_lock_exit @ hermes_cli/update_lock.py:UpdateLock.__exit__ */
 void ul_update_lock_exit(UpdateLock *lock) {
     ul_update_lock_release(lock);
 }

@@ -19,27 +19,27 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: applied_any @ agent/secret_sources/registry.py:applied_any */
+/* PoP: ssr_applied_any @ agent/secret_sources/registry.py:applied_any */
 bool ssr_applied_any(const char *provenance_json) {
     /* Python: bool(provenance). */
     if (!provenance_json) return false;
     return strcmp(provenance_json, "{}") != 0 && strcmp(provenance_json, "[]") != 0;
 }
 
-/* PoP: _ensure_builtin_sources @ agent/secret_sources/registry.py:_ensure_builtin_sources */
+/* PoP: ssr_ensure_builtin_sources @ agent/secret_sources/registry.py:_ensure_builtin_sources */
 int ssr_ensure_builtin_sources(void) {
     /* Python: idempotent bundled registration. */
     printf("builtin secret sources ensured (idempotent)\n");
     return 0;
 }
 
-/* PoP: _reset_registry_for_tests @ agent/secret_sources/registry.py:_reset_registry_for_tests */
+/* PoP: ssr_reset_registry_for_tests @ agent/secret_sources/registry.py:_reset_registry_for_tests */
 int ssr_reset_registry_for_tests(void) {
     printf("secret source registry reset (test-only)\n");
     return 0;
 }
 
-/* PoP: _fetch_with_timeout @ agent/secret_sources/registry.py:_fetch_with_timeout */
+/* PoP: ssr_fetch_with_timeout @ agent/secret_sources/registry.py:_fetch_with_timeout */
 char *ssr_fetch_with_timeout(const char *source_desc, const char *cfg_json, long timeout_seconds) {
     /* Python: wall-clock budget; never raises. */
     if (!source_desc) return NULL;
@@ -48,7 +48,7 @@ char *ssr_fetch_with_timeout(const char *source_desc, const char *cfg_json, long
     return NULL;
 }
 
-/* PoP: _ordered_enabled_sources @ agent/secret_sources/registry.py:_ordered_enabled_sources */
+/* PoP: ssr_ordered_enabled_sources @ agent/secret_sources/registry.py:_ordered_enabled_sources */
 char *ssr_ordered_enabled_sources(const char *config_yaml) {
     /* Python: secrets.sources order. */
     if (!config_yaml) return strdup("[]");
@@ -56,7 +56,7 @@ char *ssr_ordered_enabled_sources(const char *config_yaml) {
     return strdup("[]");
 }
 
-/* PoP: _profile_alias_target @ agent/secret_sources/registry.py:_profile_alias_target */
+/* PoP: ssr_profile_alias_target @ agent/secret_sources/registry.py:_profile_alias_target */
 char *ssr_profile_alias_target(const char *profile_name) {
     /* Python: FOO_<PROFILE> → FOO when safe. */
     if (!profile_name) return NULL;

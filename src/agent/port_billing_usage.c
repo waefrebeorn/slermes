@@ -23,7 +23,7 @@
 
 #define LOW_BALANCE_THRESHOLD_USD 5.0
 
-/* PoP: billing_usage__finite @ agent/billing_usage.py:_finite */
+/* PoP: billing_usage_finite @ agent/billing_usage.py:_finite */
 bool billing_usage_finite(const void *json_value, double *out) {
     const json_t *v = (const json_t *)json_value;
     if (!v || v->type != JSON_NUMBER) { *out = 0.0; return false; }
@@ -33,7 +33,7 @@ bool billing_usage_finite(const void *json_value, double *out) {
     return true;
 }
 
-/* PoP: billing_usage__fmt_usd @ agent/billing_usage.py:_fmt_usd */
+/* PoP: billing_usage_fmt_usd @ agent/billing_usage.py:_fmt_usd */
 /* PoP: billing_usage_fmt_usd @ agent/billing_usage.py:_fmt_usd */
 void billing_usage_fmt_usd(double value, char *buf, size_t sz) {
     account_usage_fmt_usd(value, buf, sz);
@@ -100,7 +100,7 @@ struct usage_bar {
     double spent_usd;
 };
 
-/* PoP: billing_usage_usagebar @ agent/billing_usage.py:UsageBar */
+/* PoP: usage_bar_make @ agent/billing_usage.py:UsageBar */
 usage_bar_t *usage_bar_make(const char *kind, double remaining, double total,
                             double spent) {
     usage_bar_t *b = calloc(1, sizeof(*b));
@@ -123,7 +123,7 @@ double      usage_bar_remaining(const usage_bar_t *b){ return b ? b->remaining_u
 double      usage_bar_total(const usage_bar_t *b)   { return b ? b->total_usd : 0.0; }
 double      usage_bar_spent(const usage_bar_t *b)   { return b ? b->spent_usd : 0.0; }
 
-/* PoP: billing_usage_usagebar_pct_used @ agent/billing_usage.py:UsageBar.pct_used */
+/* PoP: usage_bar_pct_used @ agent/billing_usage.py:UsageBar.pct_used */
 bool usage_bar_pct_used(const usage_bar_t *b, int *out_pct) {
     if (!b || strcmp(b->kind, "plan") != 0 || b->total_usd <= 0) return false;
     int pct = (int)round(b->spent_usd / b->total_usd * 100.0);
@@ -133,7 +133,7 @@ bool usage_bar_pct_used(const usage_bar_t *b, int *out_pct) {
     return true;
 }
 
-/* PoP: billing_usage_usagebar_fill_fraction @ agent/billing_usage.py:UsageBar.fill_fraction */
+/* PoP: usage_bar_fill_fraction @ agent/billing_usage.py:UsageBar.fill_fraction */
 double usage_bar_fill_fraction(const usage_bar_t *b) {
     if (!b || b->total_usd <= 0) return 0.0;
     double f = b->remaining_usd / b->total_usd;
@@ -171,7 +171,7 @@ static usage_model_t *usage_model_make_available_false(void) {
     return m;
 }
 
-/* PoP: billing_usage_usage_model_from_account @ agent/billing_usage.py:usage_model_from_account */
+/* PoP: usage_model_from_account @ agent/billing_usage.py:usage_model_from_account */
 usage_model_t *usage_model_from_account(const void *account_info_json) {
     const json_t *ai = (const json_t *)account_info_json;
     if (!ai || ai->type != JSON_OBJECT) return usage_model_make_available_false();
@@ -279,7 +279,7 @@ double usage_model_subscription_remaining(const usage_model_t *m){ return m ? m-
 double usage_model_topup_remaining(const usage_model_t *m){ return m ? m->topup_remaining_usd : 0.0; }
 double usage_model_total_spendable(const usage_model_t *m){ return m ? m->total_spendable_usd : 0.0; }
 
-/* PoP: billing_usage_usagemodel_has_topup @ agent/billing_usage.py:UsageModel.has_topup */
+/* PoP: usage_model_has_topup @ agent/billing_usage.py:UsageModel.has_topup */
 bool usage_model_has_topup(const usage_model_t *m) {
     return m && m->topup_remaining_usd > 0;
 }

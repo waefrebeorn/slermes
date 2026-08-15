@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli__subprocess_compat_resolve_node_command @ hermes_cli/_subprocess_compat.py:resolve_node_command */
+/* PoP: hermes_cli__subprocess_compat_resolve_node_command_p @ hermes_cli/_subprocess_compat.py:resolve_node_command */
 json_t *hermes_cli__subprocess_compat_resolve_node_command_p(void) {
     return json_object();
 }

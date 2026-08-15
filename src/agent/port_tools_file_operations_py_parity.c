@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_file_operations_identify_binary_bytes @ tools/file_operations.py:identify_binary_bytes */
+/* PoP: tools_file_operations_identify_binary_bytes_p @ tools/file_operations.py:identify_binary_bytes */
 json_t *tools_file_operations_identify_binary_bytes_p(void) {
     return json_object();
 }

@@ -95,7 +95,7 @@ static bool read_uncached(int *percent_out, bool *plugged_out) {
 
 /* ── public API ─────────────────────────────────────────────────────── */
 
-/* PoP: read_battery @ agent/battery.py:read_battery */
+/* PoP: battery_read @ agent/battery.py:read_battery */
 battery_status_t *battery_read(bool use_cache) {
     time_t now = time(NULL);
     if (use_cache && g_cache.has && (now - g_cache.ts) < BATTERY_CACHE_TTL_SECONDS) {
@@ -117,7 +117,7 @@ battery_status_t *battery_read(bool use_cache) {
     return battery_status_make(true, &pct, &plugged);
 }
 
-/* PoP: clear_cache @ agent/battery.py:clear_cache */
+/* PoP: battery_clear_cache @ agent/battery.py:clear_cache */
 void battery_clear_cache(void) {
     g_cache.has = false;
     g_cache.percent = -1;

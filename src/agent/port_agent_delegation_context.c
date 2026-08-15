@@ -121,7 +121,7 @@ bool is_delegated_child_process_context(void)
     return getenv("HERMES_DELEGATED_CHILD_CONTEXT") != NULL ? true : false;
 }
 
-/* PoP: agent_delegation_context_scrub_kanban_env @ agent/delegation_context.py:scrub_kanban_env */
+/* PoP: scrub_kanban_env @ agent/delegation_context.py:scrub_kanban_env */
 char **scrub_kanban_env(char **env)
 {
     if (!env) return NULL;
@@ -174,7 +174,7 @@ char **scrub_kanban_env(char **env)
     return ctx.env;
 }
 
-/* PoP: agent_delegation_context_delegated_child_subprocess_env @ agent/delegation_context.py:delegated_child_subprocess_env */
+/* PoP: delegated_child_subprocess_env @ agent/delegation_context.py:delegated_child_subprocess_env */
 char **delegated_child_subprocess_env(char **env)
 {
     if (!is_delegated_child_process_context()) {

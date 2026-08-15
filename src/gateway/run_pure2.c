@@ -92,7 +92,7 @@ void gw_ensure_windows_gateway_venv_imports(void) {
 }
 
 /* ────────── _gateway_loop_exception_handler ────────── */
-/* PoP: gw_gateway_loop_exception_handler @ gateway/run.py:_gateway_loop_exception_handler */
+/* PoP: gw_gateway_loop_exception_handler_is_transient @ gateway/run.py:_gateway_loop_exception_handler */
 bool gw_gateway_loop_exception_handler_is_transient(const char *exc_name) {
     /* The Python walks the exception __cause__/__context__ chain. C callers
      * pass the concrete exception type name; we apply the same transient
@@ -197,7 +197,7 @@ bool gw_platform_has_bot_credential(const char *platform,
 }
 
 /* ────────── _resolve_hermes_bin ────────── */
-/* PoP: hermes_cli_relaunch_resolve_hermes_bin @ gateway/run.py:_resolve_hermes_bin */
+/* PoP: gw_resolve_hermes_bin @ gateway/run.py:_resolve_hermes_bin */
 /* Returns malloc'd "hermes" or NULL when no shim is available. */
 char *gw_resolve_hermes_bin(void) {
     const char *path = getenv("PATH");
@@ -254,7 +254,7 @@ void gw_resolve_gateway_model(const hermes_config_t *cfg, char *out, size_t cap)
 }
 
 /* ────────── _channel_override_lookup_keys ────────── */
-/* PoP: gw_channel_override_lookup_keys @ gateway/run.py:_channel_override_lookup_keys */
+/* PoP: strings @ gateway/run.py:_channel_override_lookup_keys */
 /* out_keys is an array of up to 3 malloc'd strings (caller frees each). */
 int gw_channel_override_lookup_keys(const char *chat_id, const char *thread_id,
                                     const char *parent_id, char **out_keys, int cap) {
@@ -454,7 +454,7 @@ bool gw_should_clear_resume_pending_after_turn(const json_node_t *agent_result) 
 }
 
 /* ────────── _preserve_queued_followup_history_offset ────────── */
-/* PoP: gw_preserve_queued_followup_history_offset @ gateway/run.py:_preserve_queued_followup_history_offset */
+/* PoP: object @ gateway/run.py:_preserve_queued_followup_history_offset */
 /* Returns a malloc'd JSON object (merged) or NULL when unchanged. */
 char *gw_preserve_queued_followup_history_offset(const char *current_json,
                                                   const char *followup_json) {
@@ -888,7 +888,7 @@ bool gw_compression_made_progress(int orig_len, int new_len,
     return orig_tokens > 0 && new_tokens < orig_tokens * 0.95;
 }
 
-/* PoP: _as_thread_info @ gateway/run.py:_as_thread_info */
+/* PoP: gw_as_thread_info @ gateway/run.py:_as_thread_info */
 char *gw_as_thread_info(const char *info_json) {
     /* Python: isinstance(info, tuple) and len==2 and all str.
      * Returns malloc'd "thread_id\0initial_name\0" packed, or NULL. */
@@ -911,14 +911,14 @@ char *gw_as_thread_info(const char *info_json) {
     return out;
 }
 
-/* PoP: _multiplex_profile_homes @ gateway/run.py:_multiplex_profile_homes */
+/* PoP: gw_multiplex_profile_homes @ gateway/run.py:_multiplex_profile_homes */
 char *gw_multiplex_profile_homes(void) {
     /* Python: list(profiles_to_serve(multiplex=True)). C reuses the ported
      * profile_profiles_to_serve(True) which returns the packed form. */
     return profile_profiles_to_serve(true);
 }
 
-/* PoP: gw_run_hygiene_compaction_recovered @ gateway/run.py:hygiene_compaction_recovered */
+/* PoP: gateway_run_pure2_hygiene_compaction_recovered @ gateway/run.py:hygiene_compaction_recovered */
 /* True when a hygiene run actually recovered the session. */
 
 bool gateway_run_pure2_hygiene_compaction_recovered(bool aborted, bool rotated,

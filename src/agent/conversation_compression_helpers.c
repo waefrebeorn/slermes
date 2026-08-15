@@ -24,7 +24,7 @@ extern json_t *context_compressor__fresh_compaction_message_copy(const json_t *m
 
 /* ── Constants ───────────────────────────────────────────────────────── */
 
-/* PoP: CC_COMPACTION_DONE_STATUS @ agent/conversation_compression.py:_emit_compaction_done */
+/* PoP: cc_monotonic @ agent/conversation_compression.py:_emit_compaction_done */
 const char *CC_COMPACTION_DONE_STATUS =
     "\xE2\x9C\x93 Context compaction complete \xE2\x80\x94 continuing turn...";
 
@@ -376,7 +376,7 @@ json_t *cc_recover_rotated_compression_session(hermes_state_db_t *db,
 
 /* ── Compaction message shaping ──────────────────────────────────────── */
 
-/* PoP: sexp_u_message_text @ agent/conversation_compression.py:_message_text */
+/* PoP: cc_message_text @ agent/conversation_compression.py:_message_text */
 char *cc_message_text(const json_t *message) {
     if (!message || message->type != JSON_OBJECT) return strdup("");
     const json_t *content = json_obj_get(message, "content");
@@ -677,7 +677,7 @@ bool cc_finalize_compression_notification(cc_pending_notification_t **slot,
     if (!pending) return false;
     bool result = false;
     if (committed && pending->fn) {
-        /* PoP: cc_notify_context_engine @ agent/conversation_compression.py:_notify_context_engine_compression_complete */
+        /* PoP: cc_compression_attempt_telemetry_line @ agent/conversation_compression.py:_notify_context_engine_compression_complete */
         result = pending->fn(pending->ctx, pending->new_session_id,
                              pending->old_session_id);
     }
@@ -796,7 +796,7 @@ bool cc_cached_prompt_reflects_builtin_memory(const char *memory_block,
 
 /* ── Skew / guard helpers + codex-app-server route ───────────────────── */
 
-/* PoP: cc_lock_api_is_absent_on_session_db @ agent/conversation_compression.py:_lock_api_is_absent_on_session_db */
+/* PoP: SessionDB @ agent/conversation_compression.py:_lock_api_is_absent_on_session_db */
 /* The C SessionDB (hermes_state_db_t) always carries the lock API, so the
  * hot-reload skew (old class missing try_acquire_compression_lock) cannot
  * occur. Mirrors the fail-closed return for any non-hermes_state_db handle. */
@@ -809,7 +809,7 @@ bool cc_lock_api_is_absent_on_session_db(const void *lock_db) {
     return lock_db == NULL; /* NULL handle = structurally degenerate → absent */
 }
 
-/* PoP: cc_refresh_persisted_compression_guards @ agent/conversation_compression.py:_refresh_persisted_compression_guards */
+/* PoP: cc_ctx_refresh_guards @ agent/conversation_compression.py:_refresh_persisted_compression_guards */
 /* Durable automatic-compression guards live on the ContextCompressor. The
  * C ContextCompressor exposes the same refresh entry points; calling them
  * with the same method-name table keeps the two implementations in lockstep.
@@ -825,7 +825,7 @@ void cc_refresh_persisted_compression_guards(const void *compressor) {
     cc_ctx_refresh_guards(compressor);
 }
 
-/* PoP: _supported_compression_kwargs @ agent/conversation_compression.py:_supported_compression_kwargs */
+/* PoP: set @ agent/conversation_compression.py:_supported_compression_kwargs */
 /* Context-engine plugin callables may outlive host-contract additions. We
  * cannot introspect an opaque C fn pointer's signature, so we accept the
  * widest documented contract and let the engine ignore unknown keys — but
@@ -875,14 +875,14 @@ void cc_heartbeat_free(cc_heartbeat_t *h) {
     free(h); /* fence is owned by the caller */
 }
 
-/* PoP: _fence_cancelled @ agent/conversation_compression.py:_CompressionActivityHeartbeat._fence_cancelled */
+/* PoP: cc_heartbeat_fence_cancelled @ agent/conversation_compression.py:_CompressionActivityHeartbeat._fence_cancelled */
 bool cc_heartbeat_fence_cancelled(const cc_heartbeat_t *h) {
     /* fence is not None and fence.is_cancelled */
     if (!h || !h->fence) return false;
     return cc_commit_fence_is_cancelled(h->fence);
 }
 
-/* PoP: _should_suppress @ agent/conversation_compression.py:_CompressionActivityHeartbeat._should_suppress */
+/* PoP: cc_heartbeat_should_suppress @ agent/conversation_compression.py:_CompressionActivityHeartbeat._should_suppress */
 bool cc_heartbeat_should_suppress(cc_heartbeat_t *h) {
     /* Latched once host cancel/timeout wins or a terminal stamp is observed,
      * so a later UNKNOWN rewrite cannot re-arm a detached zombie heartbeat. */
@@ -897,7 +897,7 @@ bool cc_heartbeat_should_suppress(cc_heartbeat_t *h) {
 
 /* ── _CompressionActivityHeartbeat._touch ─────────────────────────────── */
 
-/* PoP: _touch @ agent/conversation_compression.py:_CompressionActivityHeartbeat._touch */
+/* PoP: callback @ agent/conversation_compression.py:_CompressionActivityHeartbeat._touch */
 /* Touches the agent's forward-progress heartbeat so a hung compressor doesn't
  * look idle. The agent exposes _touch_activity(desc) on its opaque handle; the
  * caller resolves it and passes the callback (NULL = no-op, matching Python's
@@ -941,7 +941,7 @@ typedef struct cc_codex_session_ctx {
 /* helper: wrap (messages, prompt) into the [messages, prompt] tuple shape */
 static json_t *cc_codex_result(json_t *messages, char *prompt);
 
-/* PoP: _compress_context_via_codex_app_server @ agent/conversation_compression.py:_compress_context_via_codex_app_server */
+/* PoP: unchanged @ agent/conversation_compression.py:_compress_context_via_codex_app_server */
 /* Returns a malloc'd JSON tuple [unchanged_messages, built_prompt]. On the
  * Hermes-native fallback path (auto_mode != "hermes" or no session) messages
  * are returned unchanged with the built system prompt; on the codex path the
@@ -1025,7 +1025,7 @@ static json_t *cc_codex_result(json_t *messages, char *prompt) {
 
 /* ── Status string constants ─────────────────────────────────────────── */
 
-/* PoP: COMPACTION_STATUS @ agent/conversation_compression.py:COMPACTION_STATUS */
+/* PoP: cc_try_admit_compression_job @ agent/conversation_compression.py:COMPACTION_STATUS */
 const char *CC_COMPACTION_STATUS =
     "\xF0\x9F\x94\x84 Compacting conversation history...";
 
@@ -1135,7 +1135,7 @@ static const char *CC_COMPRESSOR_ATTEMPT_STATE_FIELDS[] = {
     NULL,
 };
 
-/* PoP: _snapshot_compressor_attempt_state @ agent/conversation_compression.py:_snapshot_compressor_attempt_state */
+/* PoP: cc_snapshot_compressor_attempt_state @ agent/conversation_compression.py:_snapshot_compressor_attempt_state */
 json_t *cc_snapshot_compressor_attempt_state(const json_t *state) {
     /* Copy only mutable bookkeeping owned by one compression attempt.
      * The explicit allow-list avoids copying provider clients, session DB
@@ -1361,7 +1361,7 @@ static void cc_pool_init_once(void) {
     }
 }
 
-/* PoP: _get_compress_timeout_executor @ agent/conversation_compression.py:_get_compress_timeout_executor */
+/* PoP: cc_get_compress_timeout_executor @ agent/conversation_compression.py:_get_compress_timeout_executor */
 cc_compress_pool_t *cc_get_compress_timeout_executor(void) {
     /* Return the process-wide compress-timeout DaemonThreadPoolExecutor.
      * Lazily created on first call; never shut down per-call (a timed-out
@@ -1431,7 +1431,7 @@ cc_compress_pool_t *cc_get_compress_timeout_executor(void);
  * worker_fn receives the commit fence via worker_arg. On timeout returns
  * fallback_prompt (caller-provided string).
  */
-/* PoP: run_compress_context_with_progress_timeout @ agent/conversation_compression.py:run_compress_context_with_progress_timeout */
+/* PoP: cc_run_compress_context_with_progress_timeout @ agent/conversation_compression.py:run_compress_context_with_progress_timeout */
 char *cc_run_compress_context_with_progress_timeout(
     void (*worker_fn)(void *),
     void *worker_arg,

@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_model_catalog_seed_cache_from_checkout @ hermes_cli/model_catalog.py:seed_cache_from_checkout */
+/* PoP: hermes_cli_model_catalog_seed_cache_from_checkout_p @ hermes_cli/model_catalog.py:seed_cache_from_checkout */
 json_t *hermes_cli_model_catalog_seed_cache_from_checkout_p(void) {
     return json_object();
 }

@@ -210,7 +210,7 @@ void cmd_mcp(const char *args, agent_state_t *state) {
     }
 }
 
-/* PoP: _reload_mcp @ cli.py:_reload_mcp */
+/* PoP: cmd_reload_mcp @ cli.py:_reload_mcp */
 /* Port of Python cli.py:_reload_mcp(). */
 void cmd_reload_mcp(const char *args, agent_state_t *state) {
     (void)args; (void)state;

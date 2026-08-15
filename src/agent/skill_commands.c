@@ -978,7 +978,7 @@ const char *resolve_skill_commands_platform(void) {
     return NULL;
 }
 
-/* PoP: load_skill_payload @ agent/skill_commands.py:_load_skill_payload */
+/* PoP: skill_payload_free @ agent/skill_commands.py:_load_skill_payload */
 /* Port of Python: _load_skill_payload — load a skill by name/path */
 /* Returns a skill_cmd_payload_t* or NULL on failure. Caller must free with skill_payload_free(). */
 skill_cmd_payload_t *load_skill_payload(const char *skill_identifier)

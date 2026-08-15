@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: gateway_lifecycle_ledger_process_hermes_home @ gateway/lifecycle_ledger.py:_process_hermes_home */
+/* PoP: gateway_lifecycle_ledger_process_hermes_home_p @ gateway/lifecycle_ledger.py:_process_hermes_home */
 json_t *gateway_lifecycle_ledger_process_hermes_home_p(void) {
     return json_object();
 }

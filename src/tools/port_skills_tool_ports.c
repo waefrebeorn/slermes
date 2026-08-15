@@ -21,7 +21,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _skills_dir @ tools/skills_tool.py:_skills_dir */
+/* PoP: skt_skills_dir @ tools/skills_tool.py:_skills_dir */
 char *skt_skills_dir(void) {
     /* Python: active profile skills dir at call time. */
     const char *h = getenv("HERMES_HOME");
@@ -33,7 +33,7 @@ char *skt_skills_dir(void) {
     return strdup("skills");
 }
 
-/* PoP: load_env @ tools/skills_tool.py:load_env */
+/* PoP: skt_load_env @ tools/skills_tool.py:load_env */
 char *skt_load_env(void) {
     /* Python: HERMES_HOME/.env — REAL read. */
     const char *h = getenv("HERMES_HOME");
@@ -76,7 +76,7 @@ char *skt_load_env(void) {
     return out;
 }
 
-/* PoP: set_secret_capture_callback @ tools/skills_tool.py:set_secret_capture_callback */
+/* PoP: skt_set_secret_capture_callback @ tools/skills_tool.py:set_secret_capture_callback */
 int skt_set_secret_capture_callback(const char *callback_desc) {
     /* Python: global callback. */
     if (!callback_desc) return -1;
@@ -84,7 +84,7 @@ int skt_set_secret_capture_callback(const char *callback_desc) {
     return 0;
 }
 
-/* PoP: skills_list @ tools/skills_tool.py:skills_list */
+/* PoP: skt_skills_list @ tools/skills_tool.py:skills_list */
 char *skt_skills_list(void) {
     /* Python: tier-1 minimal metadata — REAL dir scan. */
     char *dir = skt_skills_dir();
@@ -118,7 +118,7 @@ char *skt_skills_list(void) {
     return out;
 }
 
-/* PoP: skill_view @ tools/skills_tool.py:skill_view */
+/* PoP: skt_skill_view @ tools/skills_tool.py:skill_view */
 char *skt_skill_view(const char *skill_name, const char *file_path) {
     /* Python: read skill content — REAL read. */
     if (!skill_name) return NULL;
@@ -151,7 +151,7 @@ char *skt_skill_view(const char *skill_name, const char *file_path) {
     "current and complete. (Re-issued after context compression, this " \
     "returns the full content again.)"
 
-/* PoP: _skill_view_fingerprint @ tools/skills_tool.py:_skill_view_fingerprint */
+/* PoP: skillstool_view_fingerprint @ tools/skills_tool.py:_skill_view_fingerprint */
 char *skillstool_view_fingerprint(const char *arg) {
     /* Python: stat the skill file a successful skill_view served.
      * Arg = "source_path" or empty. Returns "src\tmtime_ns\tsize" or NULL. */
@@ -166,7 +166,7 @@ char *skillstool_view_fingerprint(const char *arg) {
     return out;
 }
 
-/* PoP: _record_skill_view @ tools/skills_tool.py:_record_skill_view */
+/* PoP: skillstool_record_skill_view @ tools/skills_tool.py:_record_skill_view */
 int skillstool_record_skill_view(const char *arg) {
     /* Python: record a served skill_view so an identical repeat can dedup.
      * Skips setup-needed views. Arg = "recorded" (1/0). */
@@ -175,7 +175,7 @@ int skillstool_record_skill_view(const char *arg) {
     return 0;
 }
 
-/* PoP: _check_skill_view_dedup @ tools/skills_tool.py:_check_skill_view_dedup */
+/* PoP: skillstool_check_skill_view_dedup @ tools/skills_tool.py:_check_skill_view_dedup */
 char *skillstool_check_skill_view_dedup(const char *arg) {
     /* Python: return a dedup stub when this exact skill file was already
      * served to this task and is unchanged; None otherwise.
@@ -196,7 +196,7 @@ char *skillstool_check_skill_view_dedup(const char *arg) {
     return out;
 }
 
-/* PoP: reset_skill_view_dedup @ tools/skills_tool.py:reset_skill_view_dedup */
+/* PoP: skillstool_reset_skill_view_dedup @ tools/skills_tool.py:reset_skill_view_dedup */
 int skillstool_reset_skill_view_dedup(const char *arg) {
     /* Python: clear the skill_view dedup cache (all tasks when arg empty).
      * Called on context compression. Arg = "task_id" or empty. */

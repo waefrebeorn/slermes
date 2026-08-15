@@ -14,12 +14,12 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: gateway_session_is_path_unsafe @ gateway/session.py:_is_path_unsafe */
+/* PoP: gateway_session_is_path_unsafe_p @ gateway/session.py:_is_path_unsafe */
 json_t *gateway_session_is_path_unsafe_p(void) {
     return json_object();
 }
 
-/* PoP: gateway_session_session_key_namespace @ gateway/session.py:_session_key_namespace */
+/* PoP: gateway_session_session_key_namespace_p @ gateway/session.py:_session_key_namespace */
 json_t *gateway_session_session_key_namespace_p(void) {
     return json_object();
 }

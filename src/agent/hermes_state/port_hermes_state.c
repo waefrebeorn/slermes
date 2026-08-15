@@ -27,7 +27,7 @@
 /* _system_prompt_hash                                                 */
 /* ------------------------------------------------------------------ */
 
-/* PoP: _system_prompt_hash @ hermes_state.py:_system_prompt_hash */
+/* PoP: hs_system_prompt_hash @ hermes_state.py:_system_prompt_hash */
 char *hs_system_prompt_hash(const char *system_prompt)
 {
     if (!system_prompt) return NULL;
@@ -71,7 +71,7 @@ static const char *_disk_full_markers[] = {
     NULL,
 };
 
-/* PoP: is_disk_full_error @ hermes_state.py:is_disk_full_error */
+/* PoP: hs_is_disk_full_error @ hermes_state.py:is_disk_full_error */
 bool hs_is_disk_full_error(const char *exc)
 {
     if (!exc) return false;
@@ -103,7 +103,7 @@ bool hs_is_disk_full_error(const char *exc)
 /* resolve_journal_mode                                                */
 /* ------------------------------------------------------------------ */
 
-/* PoP: resolve_journal_mode @ hermes_state.py:resolve_journal_mode */
+/* PoP: hs_resolve_journal_mode @ hermes_state.py:resolve_journal_mode */
 char *hs_resolve_journal_mode(void)
 {
     /* Try to load config.yaml and read database.journal_mode.

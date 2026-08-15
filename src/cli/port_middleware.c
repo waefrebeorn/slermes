@@ -26,7 +26,7 @@ json_t *middleware_observer_payload(const json_t *kwargs) {
     return out;
 }
 
-/* PoP: middleware_payload @ hermes_cli/middleware.py:middleware_payload */
+/* PoP: middleware_middleware_payload @ hermes_cli/middleware.py:middleware_payload */
 json_t *middleware_middleware_payload(const json_t *kwargs) {
     json_t *out = json_object();
     if (kwargs && kwargs->type == JSON_OBJECT) {

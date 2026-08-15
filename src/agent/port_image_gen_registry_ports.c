@@ -19,27 +19,27 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: register_provider @ agent/image_gen_registry.py:register_provider */
+/* PoP: igr_register_provider @ agent/image_gen_registry.py:register_provider */
 int igr_register_provider(const char *name, const char *provider_desc) {
     if (!name) return -1;
     printf("image provider registered: %s\n", name);
     return 0;
 }
 
-/* PoP: list_providers @ agent/image_gen_registry.py:list_providers */
+/* PoP: igr_list_providers @ agent/image_gen_registry.py:list_providers */
 char *igr_list_providers(void) {
     printf("image providers listed (sorted)\n");
     return strdup("[]");
 }
 
-/* PoP: get_provider @ agent/image_gen_registry.py:get_provider */
+/* PoP: igr_get_provider @ agent/image_gen_registry.py:get_provider */
 char *igr_get_provider(const char *name) {
     if (!name) return NULL;
     printf("image provider fetched: %s\n", name);
     return NULL;
 }
 
-/* PoP: get_active_provider @ agent/image_gen_registry.py:get_active_provider */
+/* PoP: igr_get_active_provider @ agent/image_gen_registry.py:get_active_provider */
 char *igr_get_active_provider(const char *config_yaml) {
     /* Python: image_gen.provider from config. */
     if (!config_yaml) return NULL;
@@ -55,7 +55,7 @@ char *igr_get_active_provider(const char *config_yaml) {
     return strndup(v, (size_t)(e - v));
 }
 
-/* PoP: _reset_for_tests @ agent/image_gen_registry.py:_reset_for_tests */
+/* PoP: igr_reset_for_tests @ agent/image_gen_registry.py:_reset_for_tests */
 int igr_reset_for_tests(void) {
     printf("image provider registry cleared (test-only)\n");
     return 0;

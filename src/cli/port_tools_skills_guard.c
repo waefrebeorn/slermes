@@ -40,7 +40,7 @@ int cli_tools_skills_guard_scan_skill(const char *skill_path, const char *source
                                       char *result_buf, size_t bufsize);
 const char *cli_tools_skills_guard__resolve_trust_level(const char *source, const char *repo);
 
-/* PoP: cli_tools_skills_guard__content_digest @ tools/skills_guard.py:_content_digest */
+/* PoP: sg_collect_files @ tools/skills_guard.py:_content_digest */
 /* Canonical SHA-256 over relative paths and exact file bytes. Mirrors the
  * Python exactly: for a directory, sorted(rglob('*')) of files, each fed as
  * rel.as_posix().encode() + b'\x00' + file bytes into one rolling SHA-256;
@@ -149,7 +149,7 @@ char *skills_guard_content_digest(const char *skill_path) {
     return hex;
 }
 
-/* PoP: cli_tools_skills_guard_full_content_hash @ tools/skills_guard.py:full_content_hash */
+/* PoP: skills_guard_full_content_hash @ tools/skills_guard.py:full_content_hash */
 char *skills_guard_full_content_hash(const char *skill_path) {
     char *digest = skills_guard_content_digest(skill_path);
     if (!digest) return NULL;
@@ -161,7 +161,7 @@ char *skills_guard_full_content_hash(const char *skill_path) {
     return out;
 }
 
-/* PoP: cli_tools_skills_guard__finding_dict @ tools/skills_guard.py:_finding_dict */
+/* PoP: getattr @ tools/skills_guard.py:_finding_dict */
 /* Mirror {key: getattr(finding, key) for key in (...)} — returns a compact
  * JSON object with the seven Finding fields. String values are JSON-escaped.
  * Caller frees. */
@@ -210,7 +210,7 @@ char *skills_guard_finding_dict(const skills_guard_finding_t *f) {
     return out;
 }
 
-/* PoP: cli_tools_skills_guard_scan_skill_cached @ tools/skills_guard.py:scan_skill_cached */
+/* PoP: entry @ tools/skills_guard.py:scan_skill_cached */
 /* Returns a scan plus attestation, caching only exact current content.
  * On a content+source match, deserializes the cached ScanResult (fresh=false);
  * otherwise runs the scan and writes a fresh cache entry (fresh=true). */

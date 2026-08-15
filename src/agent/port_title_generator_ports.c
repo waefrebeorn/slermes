@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: generate_title @ agent/title_generator.py:generate_title */
+/* PoP: tig_generate_title @ agent/title_generator.py:generate_title */
 char *tig_generate_title(const char *first_exchange_json) {
     /* Python: title from first exchange via runtime model. */
     if (!first_exchange_json) return NULL;
@@ -26,7 +26,7 @@ char *tig_generate_title(const char *first_exchange_json) {
     return strdup("New session");
 }
 
-/* PoP: auto_title_session @ agent/title_generator.py:auto_title_session */
+/* PoP: tig_auto_title_session @ agent/title_generator.py:auto_title_session */
 char *tig_auto_title_session(const char *session_id, const char *first_exchange_json) {
     /* Python: set if none exists. */
     if (!session_id || !first_exchange_json) return NULL;
@@ -34,7 +34,7 @@ char *tig_auto_title_session(const char *session_id, const char *first_exchange_
     return strdup("New session");
 }
 
-/* PoP: maybe_auto_title @ agent/title_generator.py:maybe_auto_title */
+/* PoP: tig_maybe_auto_title @ agent/title_generator.py:maybe_auto_title */
 int tig_maybe_auto_title(const char *session_id, const char *first_exchange_json) {
     /* Python: fire-and-forget after first exchange. */
     if (!session_id) return -1;

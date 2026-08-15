@@ -21,7 +21,7 @@ struct battery_status {
     bool  plugged;        /* valid iff has_plugged */
 };
 
-/* PoP: battery_battery_status_make @ agent/battery.py:BatteryStatus */
+/* PoP: battery_status_make @ agent/battery.py:BatteryStatus */
 battery_status_t *battery_status_make(bool available, const int *percent,
                                       const bool *plugged) {
     battery_status_t *s = calloc(1, sizeof(*s));
@@ -48,13 +48,13 @@ bool battery_status_plugged(const battery_status_t *s, bool *out) {
     *out = false; return false;
 }
 
-/* PoP: battery_BatteryStatus_charging @ agent/battery.py:BatteryStatus.charging */
+/* PoP: battery_status_charging @ agent/battery.py:BatteryStatus.charging */
 bool battery_status_charging(const battery_status_t *s) {
     bool plugged = false;
     return battery_status_plugged(s, &plugged) && plugged;
 }
 
-/* PoP: battery_battery_category @ agent/battery.py:battery_category */
+/* PoP: battery_category @ agent/battery.py:battery_category */
 const char *battery_category(const battery_status_t *s) {
     if (!battery_status_available(s)) return BATTERY_CATEGORY_DIM;
     int pct = 0;
@@ -66,13 +66,13 @@ const char *battery_category(const battery_status_t *s) {
     return BATTERY_CATEGORY_GOOD;
 }
 
-/* PoP: battery_battery_glyph @ agent/battery.py:battery_glyph */
+/* PoP: battery_glyph @ agent/battery.py:battery_glyph */
 const char *battery_glyph(const battery_status_t *s) {
     /* ⚡ while charging, else 🔋 */
     return battery_status_charging(s) ? "\u26A1" : "\U0001F50B";
 }
 
-/* PoP: battery_format_battery @ agent/battery.py:format_battery */
+/* PoP: format_battery @ agent/battery.py:format_battery */
 char *format_battery(const battery_status_t *s) {
     if (!s || !battery_status_available(s)) return strdup("");
     int pct = 0;

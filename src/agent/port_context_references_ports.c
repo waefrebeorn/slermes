@@ -31,7 +31,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: parse_context_references @ agent/context_references.py:parse_context_references */
+/* PoP: crf_parse_context_references @ agent/context_references.py:parse_context_references */
 char *crf_parse_context_references(const char *message) {
     /* Python: extract [[...]] reference spans. */
     if (!message) return strdup("[]");
@@ -65,7 +65,7 @@ char *crf_parse_context_references(const char *message) {
     return out;
 }
 
-/* PoP: preprocess_context_references @ agent/context_references.py:preprocess_context_references */
+/* PoP: crf_preprocess_context_references @ agent/context_references.py:preprocess_context_references */
 char *crf_preprocess_context_references(const char *message, const char *cwd) {
     /* Python: async expansion entry. */
     if (!message) return strdup("");
@@ -73,7 +73,7 @@ char *crf_preprocess_context_references(const char *message, const char *cwd) {
     return strdup(message);
 }
 
-/* PoP: _resolve_path @ agent/context_references.py:_resolve_path */
+/* PoP: crf_resolve_path @ agent/context_references.py:_resolve_path */
 char *crf_resolve_path(const char *cwd, const char *target, const char *allowed_root) {
     /* Python: expanduser + cwd join + absolute. */
     if (!target) return NULL;
@@ -90,7 +90,7 @@ char *crf_resolve_path(const char *cwd, const char *target, const char *allowed_
     return expanded;
 }
 
-/* PoP: _expand_file_reference @ agent/context_references.py:_expand_file_reference */
+/* PoP: crf_expand_file_reference @ agent/context_references.py:_expand_file_reference */
 char *crf_expand_file_reference(const char *cwd, const char *target, const char *allowed_root) {
     /* Python: read file, fence by language. */
     if (!cwd || !target) return NULL;
@@ -115,7 +115,7 @@ char *crf_expand_file_reference(const char *cwd, const char *target, const char 
     return out;
 }
 
-/* PoP: _expand_folder_reference @ agent/context_references.py:_expand_folder_reference */
+/* PoP: crf_expand_folder_reference @ agent/context_references.py:_expand_folder_reference */
 char *crf_expand_folder_reference(const char *cwd, const char *target, const char *allowed_root) {
     /* Python: folder listing. */
     if (!cwd || !target) return NULL;
@@ -145,7 +145,7 @@ char *crf_expand_folder_reference(const char *cwd, const char *target, const cha
     return out;
 }
 
-/* PoP: _expand_git_reference @ agent/context_references.py:_expand_git_reference */
+/* PoP: crf_expand_git_reference @ agent/context_references.py:_expand_git_reference */
 char *crf_expand_git_reference(const char *cwd, const char *target) {
     /* Python: git show <ref>. */
     if (!cwd || !target) return NULL;
@@ -162,7 +162,7 @@ char *crf_expand_git_reference(const char *cwd, const char *target) {
     return strdup(buf);
 }
 
-/* PoP: _ensure_reference_path_allowed @ agent/context_references.py:_ensure_reference_path_allowed */
+/* PoP: crf_ensure_reference_path_allowed @ agent/context_references.py:_ensure_reference_path_allowed */
 bool crf_ensure_reference_path_allowed(const char *path) {
     /* Python: must not escape hermes home. */
     if (!path) return false;
@@ -172,7 +172,7 @@ bool crf_ensure_reference_path_allowed(const char *path) {
     return true;
 }
 
-/* PoP: _strip_trailing_punctuation @ agent/context_references.py:_strip_trailing_punctuation */
+/* PoP: crf_strip_trailing_punctuation @ agent/context_references.py:_strip_trailing_punctuation */
 char *crf_strip_trailing_punctuation(const char *value) {
     /* Python: strip .,;:!? and balanced closers. */
     if (!value) return strdup("");
@@ -190,7 +190,7 @@ char *crf_strip_trailing_punctuation(const char *value) {
     return strndup(value, n);
 }
 
-/* PoP: _strip_reference_wrappers @ agent/context_references.py:_strip_reference_wrappers */
+/* PoP: crf_strip_reference_wrappers @ agent/context_references.py:_strip_reference_wrappers */
 char *crf_strip_reference_wrappers(const char *value) {
     /* Python: strip matching ` " ' wrappers. */
     if (!value) return strdup("");
@@ -200,7 +200,7 @@ char *crf_strip_reference_wrappers(const char *value) {
     return strdup(value);
 }
 
-/* PoP: _parse_file_reference_value @ agent/context_references.py:_parse_file_reference_value */
+/* PoP: crf_parse_file_reference_value @ agent/context_references.py:_parse_file_reference_value */
 char *crf_parse_file_reference_value(const char *value) {
     /* Python: quoted path + :start[:end] offsets. */
     if (!value) return NULL;
@@ -229,7 +229,7 @@ char *crf_parse_file_reference_value(const char *value) {
     return out;
 }
 
-/* PoP: _remove_reference_tokens @ agent/context_references.py:_remove_reference_tokens */
+/* PoP: crf_remove_reference_tokens @ agent/context_references.py:_remove_reference_tokens */
 char *crf_remove_reference_tokens(const char *message, const char *refs_json) {
     /* Python: drop original [[...]] spans. */
     if (!message) return strdup("");
@@ -248,7 +248,7 @@ char *crf_remove_reference_tokens(const char *message, const char *refs_json) {
     return out;
 }
 
-/* PoP: _is_binary_file @ agent/context_references.py:_is_binary_file */
+/* PoP: crf_is_binary_file @ agent/context_references.py:_is_binary_file */
 bool crf_is_binary_file(const char *path) {
     /* Python: mime guess; non-text is binary. */
     if (!path) return false;
@@ -263,7 +263,7 @@ bool crf_is_binary_file(const char *path) {
     return false;
 }
 
-/* PoP: _build_folder_listing @ agent/context_references.py:_build_folder_listing */
+/* PoP: crf_build_folder_listing @ agent/context_references.py:_build_folder_listing */
 char *crf_build_folder_listing(const char *cwd, const char *path) {
     /* Python: relative-to-cwd listing. */
     if (!path) return strdup("");
@@ -278,7 +278,7 @@ char *crf_build_folder_listing(const char *cwd, const char *path) {
     return out;
 }
 
-/* PoP: _iter_visible_entries @ agent/context_references.py:_iter_visible_entries */
+/* PoP: crf_iter_visible_entries @ agent/context_references.py:_iter_visible_entries */
 char *crf_iter_visible_entries(const char *path, const char *cwd, long limit) {
     /* Python: rg-backed visible entries. */
     if (!path) return strdup("[]");
@@ -313,7 +313,7 @@ char *crf_iter_visible_entries(const char *path, const char *cwd, long limit) {
     return out;
 }
 
-/* PoP: _rg_files @ agent/context_references.py:_rg_files */
+/* PoP: crf_rg_files @ agent/context_references.py:_rg_files */
 char *crf_rg_files(const char *path, const char *cwd, long limit) {
     /* Python: ripgrep file listing. */
     if (!path) return NULL;
@@ -343,7 +343,7 @@ char *crf_rg_files(const char *path, const char *cwd, long limit) {
     return out;
 }
 
-/* PoP: _file_metadata @ agent/context_references.py:_file_metadata */
+/* PoP: crf_file_metadata @ agent/context_references.py:_file_metadata */
 char *crf_file_metadata(const char *path) {
     /* Python: size bytes or line count. */
     if (!path) return strdup("0 bytes");
@@ -370,7 +370,7 @@ char *crf_file_metadata(const char *path) {
     return out;
 }
 
-/* PoP: _code_fence_language @ agent/context_references.py:_code_fence_language */
+/* PoP: crf_code_fence_language @ agent/context_references.py:_code_fence_language */
 char *crf_code_fence_language(const char *path) {
     /* Python: extension → language mapping. */
     if (!path) return NULL;
@@ -387,7 +387,7 @@ char *crf_code_fence_language(const char *path) {
     return NULL;
 }
 
-/* PoP: _agent_visible_path @ agent/context_references.py:_agent_visible_path */
+/* PoP: crf_agent_visible_path @ agent/context_references.py:_agent_visible_path */
 char *crf_agent_visible_path(const char *path)
 {
     /* Map a host path to the path the agent's tools can read in the active

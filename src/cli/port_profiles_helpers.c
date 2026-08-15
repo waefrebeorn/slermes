@@ -27,14 +27,14 @@
 #include <ctype.h>
 
 /* --- normalize_profile_name ------------------------------------------- */
-/* PoP: normalize_profile_name @ hermes_cli/profiles.py:normalize_profile_name */
+/* PoP: empty @ hermes_cli/profiles.py:normalize_profile_name */
 /*
  * Canonical profile id: strip, reject empty (return -1), "default" (any case)
  * -> "default", else lowercase. On success fill out (malloc'd by caller or
  * static). We return the length written into out (excluding NUL), or -1 for
  * empty. Caller provides out of size >= 64.
  */
-/* PoP: profile_name @ hermes_cli/plugins.py:profile_name */
+/* PoP: profiles_normalize_profile_name @ hermes_cli/plugins.py:profile_name */
 int profiles_normalize_profile_name(const char *name, char *out, size_t outsz)
 {
     if (!name) { if (out && outsz) out[0] = '\0'; return -1; }
@@ -91,7 +91,7 @@ static int profiles_is_reserved(const char *s)
 }
 
 /* --- validate_profile_name -------------------------------------------- */
-/* PoP: validate_profile_name @ hermes_cli/profiles.py:validate_profile_name */
+/* PoP: profiles_validate_profile_name @ hermes_cli/profiles.py:validate_profile_name */
 /* Returns 0 if valid; -1 and fills err otherwise. "default" is always valid. */
 int profiles_validate_profile_name(const char *name, char *err, size_t errsz)
 {
@@ -114,7 +114,7 @@ int profiles_validate_profile_name(const char *name, char *err, size_t errsz)
 }
 
 /* --- validate_alias_name ---------------------------------------------- */
-/* PoP: validate_alias_name @ hermes_cli/profiles.py:validate_alias_name */
+/* PoP: profiles_validate_alias_name @ hermes_cli/profiles.py:validate_alias_name */
 /* Same regex as profile id (forbids '/', '.', '..'); no reserved-name check. */
 int profiles_validate_alias_name(const char *name, char *err, size_t errsz)
 {
@@ -129,7 +129,7 @@ int profiles_validate_alias_name(const char *name, char *err, size_t errsz)
 }
 
 /* --- normalize_profile_archive_parts ---------------------------------- */
-/* PoP: _normalize_profile_archive_parts @ hermes_cli/profiles.py:_normalize_profile_archive_parts */
+/* PoP: profiles_normalize_profile_archive_parts @ hermes_cli/profiles.py:_normalize_profile_archive_parts */
 /*
  * Split an archive member name into safe posix path parts. Rejects:
  *   - empty / None
@@ -196,7 +196,7 @@ int profiles_normalize_profile_archive_parts(const char *member,
     return cnt;
 }
 
-/* PoP: _should_redact_export_file @ hermes_cli/profiles.py:_should_redact_export_file */
+/* PoP: profiles_should_redact_export_file @ hermes_cli/profiles.py:_should_redact_export_file */
 /* Returns 1 if the file should be redacted, 0 otherwise. */
 int profiles_should_redact_export_file(const char *filename) {
     if (!filename) return 0;

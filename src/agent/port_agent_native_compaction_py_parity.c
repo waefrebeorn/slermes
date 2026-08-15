@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: agent_native_compaction_native_compaction_context_management @ agent/native_compaction.py:native_compaction_context_management */
+/* PoP: agent_native_compaction_native_compaction_context_management_p @ agent/native_compaction.py:native_compaction_context_management */
 json_t *agent_native_compaction_native_compaction_context_management_p(void) {
     return json_object();
 }

@@ -129,7 +129,7 @@ char *skills_tool_category_from_path(const char *skill_path)
 /* ---------------------------------------------------------------------------
  * _parse_tags @ tools/skills_tool.py:_parse_tags
  * ------------------------------------------------------------------------- */
-/* PoP: _parse_tags @ tools/skills_tool.py:_parse_tags */
+/* PoP: skills_tool_parse_tags @ tools/skills_tool.py:_parse_tags */
 char **skills_tool_parse_tags(const char *tags_value, int *out_n)
 {
     char **out = NULL;
@@ -680,7 +680,7 @@ char *skills_tool_parse_frontmatter(const char *content)
     return s;
 }
 
-/* PoP: sku_get_disabled_skill_names @ tools/skills_tool.py:_get_disabled_skill_names */
+/* PoP: skills_tool_get_disabled_skill_names @ tools/skills_tool.py:_get_disabled_skill_names */
 char **skills_tool_get_disabled_skill_names(int *out_n)
 {
     char **out = NULL; int n = 0;

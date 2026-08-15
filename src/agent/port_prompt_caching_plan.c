@@ -51,7 +51,7 @@ static json_t *pc_build_marker(const char *ttl)
 }
 
 /* ── _can_carry_marker ───────────────────────────────────────────────────── */
-/* PoP: _can_carry_marker @ agent/prompt_caching.py:_can_carry_marker */
+/* PoP: pc_can_carry_marker @ agent/prompt_caching.py:_can_carry_marker */
 static bool pc_can_carry_marker(const json_t *msg, bool native_anthropic)
 {
     if (!msg || msg->type != JSON_OBJECT) return false;
@@ -75,7 +75,7 @@ static bool pc_can_carry_marker(const json_t *msg, bool native_anthropic)
 }
 
 /* ── _apply_cache_marker ─────────────────────────────────────────────────── */
-/* PoP: _apply_cache_marker @ agent/prompt_caching.py:_apply_cache_marker */
+/* PoP: pc_apply_cache_marker @ agent/prompt_caching.py:_apply_cache_marker */
 static void pc_apply_cache_marker(json_t *msg, json_t *cache_marker,
                                   bool native_anthropic)
 {
@@ -123,7 +123,7 @@ static void pc_apply_cache_marker(json_t *msg, json_t *cache_marker,
 }
 
 /* ── _apply_system_cache_markers ─────────────────────────────────────────── */
-/* PoP: _apply_system_cache_markers @ agent/prompt_caching.py:_apply_system_cache_markers */
+/* PoP: applied @ agent/prompt_caching.py:_apply_system_cache_markers */
 /* Returns the number of markers applied (0, 1, or 2). */
 static int pc_apply_system_cache_markers(json_t *msg, json_t *marker,
                                          const char *static_system_prefix,
@@ -169,7 +169,7 @@ static int pc_apply_system_cache_markers(json_t *msg, json_t *marker,
 }
 
 /* ── apply_anthropic_cache_control ───────────────────────────────────────── */
-/* PoP: apply_anthropic_cache_control @ agent/prompt_caching.py:apply_anthropic_cache_control */
+/* PoP: pca_apply_anthropic_cache_control @ agent/prompt_caching.py:apply_anthropic_cache_control */
 /*
  * Returns a shallow copy of messages list with deep copies of modified
  * messages.  Caller frees with json_free.
@@ -237,7 +237,7 @@ json_t *pca_apply_anthropic_cache_control(const json_t *api_messages,
 }
 
 /* ── _completed_transaction_endpoint_indexes ───────────────────────────── */
-/* PoP: _completed_transaction_endpoint_indexes @ agent/prompt_caching.py:_completed_transaction_endpoint_indexes */
+/* PoP: pc_completed_transaction_endpoint_indexes @ agent/prompt_caching.py:_completed_transaction_endpoint_indexes */
 /* Returns a json_t array of int endpoints. */
 json_t *pc_completed_transaction_endpoint_indexes(const json_t *messages,
                                                      bool native_anthropic)
@@ -309,7 +309,7 @@ json_t *pc_completed_transaction_endpoint_indexes(const json_t *messages,
 }
 
 /* ── _count_cache_markers ────────────────────────────────────────────────── */
-/* PoP: _count_cache_markers @ agent/prompt_caching.py:_count_cache_markers */
+/* PoP: pca_count_cache_markers @ agent/prompt_caching.py:_count_cache_markers */
 int pca_count_cache_markers(const json_t *messages, const json_t *tools)
 {
     int count = 0;
@@ -340,7 +340,7 @@ int pca_count_cache_markers(const json_t *messages, const json_t *tools)
 }
 
 /* ── build_prompt_cache_plan ─────────────────────────────────────────────── */
-/* PoP: build_prompt_cache_plan @ agent/prompt_caching.py:build_prompt_cache_plan */
+/* PoP: pca_build_prompt_cache_plan @ agent/prompt_caching.py:build_prompt_cache_plan */
 /*
  * Returns a PromptCachePlan-like json_t object:
  *   {"messages": <json_t array>, "tools": <json_t array>}
@@ -427,7 +427,7 @@ json_t *pca_build_prompt_cache_plan(const json_t *api_messages,
 }
 
 /* ── PromptCachePlan.marker_count (lazy @property) ───────────────────────── */
-/* PoP: marker_count @ agent/prompt_caching.py:marker_count */
+/* PoP: pca_prompt_cache_plan_marker_count @ agent/prompt_caching.py:marker_count */
 int pca_prompt_cache_plan_marker_count(const json_t *plan)
 {
     if (!plan || plan->type != JSON_OBJECT) return 0;

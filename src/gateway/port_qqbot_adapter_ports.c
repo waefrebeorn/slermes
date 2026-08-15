@@ -27,7 +27,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _resolve_qq_secret @ gateway/platforms/qqbot/adapter.py:_resolve_qq_secret */
+/* PoP: qqa_resolve_qq_secret @ gateway/platforms/qqbot/adapter.py:_resolve_qq_secret */
 /* Resolve a per-profile QQ_* setting honoring the active secret scope.
  * Mirrors Python: try get_secret(name, default); on UnscopedSecretError
  * (multiplex active, no profile scope installed) fall back to
@@ -63,7 +63,7 @@ const char *qqa_resolve_qq_secret(const char *name, const char *default_val)
     return val ? val : default_val;
 }
 
-/* PoP: __init__ @ gateway/platforms/qqbot/adapter.py:__init__ */
+/* PoP: qqa_init @ gateway/platforms/qqbot/adapter.py:__init__ */
 char *qqa_init(const char *code, const char *reason) {
     /* Python: int code + str reason normalization. */
     char *out = NULL;
@@ -72,25 +72,25 @@ char *qqa_init(const char *code, const char *reason) {
     return out;
 }
 
-/* PoP: is_connected @ gateway/platforms/qqbot/adapter.py:is_connected */
+/* PoP: qqa_is_connected @ gateway/platforms/qqbot/adapter.py:is_connected */
 bool qqa_is_connected(void) {
     /* Python: QQ WS transport usable. */
     printf("qq ws transport probe\n");
     return false;
 }
 
-/* PoP: name @ gateway/platforms/qqbot/adapter.py:name */
+/* PoP: qqa_name @ gateway/platforms/qqbot/adapter.py:name */
 char *qqa_name(void) {
     return strdup("QQBot");
 }
 
-/* PoP: enforces_own_access_policy @ gateway/platforms/qqbot/adapter.py:enforces_own_access_policy */
+/* PoP: qqa_enforces_own_access_policy @ gateway/platforms/qqbot/adapter.py:enforces_own_access_policy */
 bool qqa_enforces_own_access_policy(void) {
     /* Python: DM/group gated at intake. */
     return true;
 }
 
-/* PoP: connect @ gateway/platforms/qqbot/adapter.py:connect */
+/* PoP: qqa_connect @ gateway/platforms/qqbot/adapter.py:connect */
 bool qqa_connect(const char *app_id, const char *secret) {
     /* Python: authenticate → gateway URL → WS open. */
     if (!app_id || !secret) return false;
@@ -98,7 +98,7 @@ bool qqa_connect(const char *app_id, const char *secret) {
     return false;
 }
 
-/* PoP: disconnect @ gateway/platforms/qqbot/adapter.py:disconnect */
+/* PoP: qqa_disconnect @ gateway/platforms/qqbot/adapter.py:disconnect */
 int qqa_disconnect(void) {
     /* Python: close all connections + stop listeners.
      * Delegate to the real qqbot adapter lifecycle. */
@@ -107,7 +107,7 @@ int qqa_disconnect(void) {
     return 0;
 }
 
-/* PoP: _cleanup @ gateway/platforms/qqbot/adapter.py:_cleanup */
+/* PoP: qqa_cleanup @ gateway/platforms/qqbot/adapter.py:_cleanup */
 int qqa_cleanup(void) {
     /* Python: ws + http session cleaned up.
      * Stop the adapter and release the outbound queue. */
@@ -116,7 +116,7 @@ int qqa_cleanup(void) {
     return 0;
 }
 
-/* PoP: handle_message @ gateway/platforms/qqbot/adapter.py:handle_message */
+/* PoP: qqa_handle_message @ gateway/platforms/qqbot/adapter.py:handle_message */
 int qqa_handle_message(const char *event_json) {
     /* Python: cache last msg id per chat, delegate to base. */
     if (!event_json) return -1;
@@ -124,7 +124,7 @@ int qqa_handle_message(const char *event_json) {
     return 0;
 }
 
-/* PoP: send @ gateway/platforms/qqbot/adapter.py:send */
+/* PoP: qqa_send @ gateway/platforms/qqbot/adapter.py:send */
 char *qqa_send(const char *chat_id, const char *content) {
     /* Python: text or markdown send. */
     if (!chat_id || !content) return strdup("{\"success\": false}");
@@ -132,7 +132,7 @@ char *qqa_send(const char *chat_id, const char *content) {
     return strdup("{\"success\": true}");
 }
 
-/* PoP: send_update_prompt @ gateway/platforms/qqbot/adapter.py:send_update_prompt */
+/* PoP: qqa_send_update_prompt @ gateway/platforms/qqbot/adapter.py:send_update_prompt */
 char *qqa_send_update_prompt(const char *chat_id) {
     /* Python: Yes/No update confirmation w/ inline buttons. */
     if (!chat_id) return strdup("{\"success\": false}");
@@ -140,35 +140,35 @@ char *qqa_send_update_prompt(const char *chat_id) {
     return strdup("{\"success\": true}");
 }
 
-/* PoP: send_image_file @ gateway/platforms/qqbot/adapter.py:send_image_file */
+/* PoP: qqa_send_image_file @ gateway/platforms/qqbot/adapter.py:send_image_file */
 char *qqa_send_image_file(const char *chat_id, const char *file_path, const char *caption) {
     if (!chat_id || !file_path) return strdup("{\"success\": false}");
     printf("qq image file sent (%s)\n", file_path);
     return strdup("{\"success\": true}");
 }
 
-/* PoP: send_voice @ gateway/platforms/qqbot/adapter.py:send_voice */
+/* PoP: qqa_send_voice @ gateway/platforms/qqbot/adapter.py:send_voice */
 char *qqa_send_voice(const char *chat_id, const char *audio_path, const char *caption) {
     if (!chat_id || !audio_path) return strdup("{\"success\": false}");
     printf("qq voice sent (%s)\n", audio_path);
     return strdup("{\"success\": true}");
 }
 
-/* PoP: send_video @ gateway/platforms/qqbot/adapter.py:send_video */
+/* PoP: qqa_send_video @ gateway/platforms/qqbot/adapter.py:send_video */
 char *qqa_send_video(const char *chat_id, const char *video_path, const char *caption) {
     if (!chat_id || !video_path) return strdup("{\"success\": false}");
     printf("qq video sent (%s)\n", video_path);
     return strdup("{\"success\": true}");
 }
 
-/* PoP: send_document @ gateway/platforms/qqbot/adapter.py:send_document */
+/* PoP: qqa_send_document @ gateway/platforms/qqbot/adapter.py:send_document */
 char *qqa_send_document(const char *chat_id, const char *file_path, const char *caption) {
     if (!chat_id || !file_path) return strdup("{\"success\": false}");
     printf("qq document sent (%s)\n", file_path);
     return strdup("{\"success\": true}");
 }
 
-/* PoP: send_typing @ gateway/platforms/qqbot/adapter.py:send_typing */
+/* PoP: qqa_send_typing @ gateway/platforms/qqbot/adapter.py:send_typing */
 int qqa_send_typing(const char *chat_id) {
     /* Python: C2C input notify, debounced. */
     if (!chat_id) return -1;
@@ -176,7 +176,7 @@ int qqa_send_typing(const char *chat_id) {
     return 0;
 }
 
-/* PoP: format_message @ gateway/platforms/qqbot/adapter.py:format_message */
+/* PoP: qqa_format_message @ gateway/platforms/qqbot/adapter.py:format_message */
 char *qqa_format_message(const char *content, bool markdown_support) {
     /* Python: as-is when markdown; else strip. */
     if (!content) return strdup("");
@@ -196,7 +196,7 @@ char *qqa_format_message(const char *content, bool markdown_support) {
     return out;
 }
 
-/* PoP: get_chat_info @ gateway/platforms/qqbot/adapter.py:get_chat_info */
+/* PoP: qqa_get_chat_info @ gateway/platforms/qqbot/adapter.py:get_chat_info */
 char *qqa_get_chat_info(const char *chat_id) {
     /* Python: chat type heuristics. */
     if (!chat_id) return NULL;

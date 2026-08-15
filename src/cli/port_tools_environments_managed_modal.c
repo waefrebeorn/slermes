@@ -52,7 +52,7 @@ double cli_tools_environments_managed_modal__request_timeout_env(const char *nam
     return result;
 }
 
-/* PoP: cli_tools_environments_managed_modal__start_modal_exec @ tools/environments/managed_modal.py:_start_modal_exec */
+/* PoP: handle @ tools/environments/managed_modal.py:_start_modal_exec */
 json_node_t* cli_tools_environments_managed_modal__start_modal_exec(const char *sandbox_id, json_node_t *prepared) {
     /*
      * Start a command execution in the Modal sandbox via the Nous tool gateway.
@@ -157,7 +157,7 @@ json_node_t* cli_tools_environments_managed_modal__start_modal_exec(const char *
     return handle;
 }
 
-/* PoP: cli_tools_environments_managed_modal__poll_modal_exec @ tools/environments/managed_modal.py:_poll_modal_exec */
+/* PoP: cli_tools_environments_managed_modal__cancel_modal_exec @ tools/environments/managed_modal.py:_poll_modal_exec */
 json_node_t* cli_tools_environments_managed_modal__poll_modal_exec(const char *sandbox_id, const char *exec_id) {
     /*
      * Poll the status of a running exec via the Nous tool gateway.
@@ -270,7 +270,7 @@ void cli_tools_environments_managed_modal__cancel_exec(const char *exec_id) {
     http_free(h);
 }
 
-/* PoP: cli_tools_environments_managed_modal__timeout_result_for_modal @ tools/environments/managed_modal.py:_timeout_result_for_modal */
+/* PoP: unsupported @ tools/environments/managed_modal.py:_timeout_result_for_modal */
 json_node_t* cli_tools_environments_managed_modal__timeout_result_for_modal(int timeout) {
     /*
      * Build a timeout result dict for a Modal exec that exceeded its deadline.
@@ -287,7 +287,7 @@ json_node_t* cli_tools_environments_managed_modal__timeout_result_for_modal(int 
     return result;
 }
 
-/* PoP: cli_tools_environments_managed_modal__create_sandbox @ tools/environments/managed_modal.py:_create_sandbox */
+/* PoP: unsupported @ tools/environments/managed_modal.py:_create_sandbox */
 json_node_t* cli_tools_environments_managed_modal__create_sandbox(const char *image, const char *cwd, int timeout) {
     /*
      * Create a new Modal sandbox via the Nous tool gateway.
@@ -365,7 +365,7 @@ json_node_t* cli_tools_environments_managed_modal__create_sandbox(const char *im
     return result;
 }
 
-/* PoP: cli_tools_environments_managed_modal__format_error @ tools/environments/managed_modal.py:_format_error */
+/* PoP: unsupported @ tools/environments/managed_modal.py:_format_error */
 json_node_t* cli_tools_environments_managed_modal__format_error(const char *prefix, int status_code, const char *body) {
     /*
      * Format an error response from the Modal gateway.
@@ -386,7 +386,7 @@ json_node_t* cli_tools_environments_managed_modal__format_error(const char *pref
     return err;
 }
 
-/* PoP: cli_tools_environments_managed_modal__guard_unsupported_credential_passthrough @ tools/environments/managed_modal.py:_guard_unsupported_credential_passthrough */
+/* PoP: unsupported @ tools/environments/managed_modal.py:_guard_unsupported_credential_passthrough */
 /* Managed Modal does not sync or mount host credential files. If any host
  * credential-file mounts are registered, refuse (the Python raises ValueError).
  * Returns 0 when safe to proceed, -1 when passthrough is unsupported (caller

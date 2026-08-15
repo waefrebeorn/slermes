@@ -27,7 +27,7 @@ static double default_clock(void) {
 }
 
 /* Build a preview: collapse newlines/tabs into a single line, ellipsize. */
-/* PoP: build_preview @ hermes_cli/prompt_stash.py:build_preview */
+/* PoP: prompt_stash_build_preview @ hermes_cli/prompt_stash.py:build_preview */
 char *prompt_stash_build_preview(const char *text, int width) {
     if (!text || !*text) return strdup("");
     /* flatten */
@@ -75,9 +75,9 @@ char *prompt_stash_build_preview(const char *text, int width) {
     return collapsed;
 }
 
-/* PoP: stash_entry_t @ hermes_cli/prompt_stash.py:StashEntry */
+/* PoP: prompt_stash_new @ hermes_cli/prompt_stash.py:StashEntry */
 
-/* PoP: prompt_stash_t @ hermes_cli/prompt_stash.py:PromptStash */
+/* PoP: prompt_stash_new @ hermes_cli/prompt_stash.py:PromptStash */
 struct prompt_stash {
     stash_entry_t **items;   /* newest-first; items[0] most recent */
     size_t        count;
@@ -250,7 +250,7 @@ void prompt_stash_clear(prompt_stash_t *ps) {
 }
 
 /* clamp helper (used by cursor ops) */
-/* PoP: prompt_stash_clamp_cursor @ hermes_cli/prompt_stash.py:PromptStash._clamp_cursor */
+/* PoP: clamp_cursor_int @ hermes_cli/prompt_stash.py:PromptStash._clamp_cursor */
 static int clamp_cursor_int(prompt_stash_t *ps, int value) {
     if (!ps->count) return 0;
     int hi = (int)ps->count - 1;
@@ -310,7 +310,7 @@ bool prompt_stash_restore_at_cursor(prompt_stash_t *ps,
     return ok;
 }
 
-/* PoP: resolve_ctrl_s @ hermes_cli/prompt_stash.py:resolve_ctrl_s */
+/* PoP: prompt_stash_resolve_ctrl_s @ hermes_cli/prompt_stash.py:resolve_ctrl_s */
 ctrl_s_action_t prompt_stash_resolve_ctrl_s(prompt_stash_t *ps,
                                             const char *buffer_text,
                                             json_t *images,

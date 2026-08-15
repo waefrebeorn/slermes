@@ -12,7 +12,7 @@
 #include <openssl/evp.h>
 #include "hermes_json.h"
 
-/* PoP: _iso_timestamp @ hermes_cli/session_export_md.py:_iso_timestamp */
+/* PoP: sexmd_u_iso_timestamp @ hermes_cli/session_export_md.py:_iso_timestamp */
 int sexmd_u_iso_timestamp(const char *arg) {
     /* Python: float epoch -> UTC ISO with Z; empty -> ""; non-numeric ->
      * str(value). Arg = value. */
@@ -29,7 +29,7 @@ int sexmd_u_iso_timestamp(const char *arg) {
     return 0;
 }
 
-/* PoP: _frontmatter_value @ hermes_cli/session_export_md.py:_frontmatter_value */
+/* PoP: sexmd_u_frontmatter_value @ hermes_cli/session_export_md.py:_frontmatter_value */
 int sexmd_u_frontmatter_value(const char *arg) {
     /* Python: null/true/false/json/string-json. Arg = "value\ttype"
      * (type: none/bool/int/float/list/str). */
@@ -45,7 +45,7 @@ int sexmd_u_frontmatter_value(const char *arg) {
     return 0;
 }
 
-/* PoP: _frontmatter_line @ hermes_cli/session_export_md.py:_frontmatter_line */
+/* PoP: sexmd_u_frontmatter_line @ hermes_cli/session_export_md.py:_frontmatter_line */
 int sexmd_u_frontmatter_line(const char *arg) {
     /* Python: f"{key}: {_frontmatter_value(value)}". Arg = "key\tvalue";
      * multi-line values get continuation indentation. */
@@ -60,7 +60,7 @@ int sexmd_u_frontmatter_line(const char *arg) {
     return 0;
 }
 
-/* PoP: _message_heading @ hermes_cli/session_export_md.py:_message_heading */
+/* PoP: sexmd_u_message_heading @ hermes_cli/session_export_md.py:_message_heading */
 int sexmd_u_message_heading(const char *arg) {
     /* Python: "### Role" + " — ts" + tool label. Arg =
      * "role\tname\ttimestamp" (name/timestamp may be empty). */
@@ -88,7 +88,7 @@ int sexmd_u_message_heading(const char *arg) {
     return 0;
 }
 
-/* PoP: _render_content @ hermes_cli/session_export_md.py:_render_content */
+/* PoP: sexmd_u_render_content @ hermes_cli/session_export_md.py:_render_content */
 int sexmd_u_render_content(const char *arg) {
     /* Python: None -> ""; str -> content.rstrip(); else ```json fence with
      * indent=2 serialization. */
@@ -114,7 +114,7 @@ int sexmd_u_render_content(const char *arg) {
     return 0;
 }
 
-/* PoP: _render_tool_calls @ hermes_cli/session_export_md.py:_render_tool_calls */
+/* PoP: sexmd_u_render_tool_calls @ hermes_cli/session_export_md.py:_render_tool_calls */
 int sexmd_u_render_tool_calls(const char *arg) {
     /* Python: "" if not tool_calls; else
      * "\n\n## Tool calls\n\n```json\n" + json.dumps(tool_calls,
@@ -124,7 +124,7 @@ int sexmd_u_render_tool_calls(const char *arg) {
     return 0;
 }
 
-/* PoP: _session_id @ hermes_cli/session_export_md.py:_session_id */
+/* PoP: sexmd_u_session_id @ hermes_cli/session_export_md.py:_session_id */
 int sexmd_u_session_id(const char *arg) {
     /* Python: session.get("id") or session.get("session_id") or
      * "unknown-session". Arg = JSON session object. */
@@ -137,7 +137,7 @@ int sexmd_u_session_id(const char *arg) {
     return 0;
 }
 
-/* PoP: _segments @ hermes_cli/session_export_md.py:_segments */
+/* PoP: sexmd_u_segments @ hermes_cli/session_export_md.py:_segments */
 int sexmd_u_segments(const char *arg) {
     /* Python: session["segments"] (list of dicts) if present, else
      * [session]. Arg = session JSON. */
@@ -170,7 +170,7 @@ int sexmd_u_segments(const char *arg) {
     return 0;
 }
 
-/* PoP: _message_count @ hermes_cli/session_export_md.py:_message_count */
+/* PoP: sexmd_u_message_count @ hermes_cli/session_export_md.py:_message_count */
 int sexmd_u_message_count(const char *arg) {
     /* Python: sum(len(seg.get("messages") or []) for seg in _segments(...)).
      * Arg = JSON array of segments with "messages" arrays. */
@@ -189,7 +189,7 @@ int sexmd_u_message_count(const char *arg) {
     return 0;
 }
 
-/* PoP: _render_messages @ hermes_cli/session_export_md.py:_render_messages */
+/* PoP: sexmd_u_render_messages @ hermes_cli/session_export_md.py:_render_messages */
 int sexmd_u_render_messages(const char *arg) {
     /* Python: messages markdown render. Arg = "count\tsegments\tresult". */
     if (!arg || !*arg) { printf("## Messages\n\n_No messages in this session._\n"); return 0; }
@@ -201,7 +201,7 @@ int sexmd_u_render_messages(const char *arg) {
     return 0;
 }
 
-/* PoP: _export_body_without_hash @ hermes_cli/session_export_md.py:_export_body_without_hash */
+/* PoP: sexmd_u_export_body_without_hash @ hermes_cli/session_export_md.py:_export_body_without_hash */
 int sexmd_u_export_body_without_hash(const char *arg) {
     /* Python: frontmatter + body. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -212,7 +212,7 @@ int sexmd_u_export_body_without_hash(const char *arg) {
     return 0;
 }
 
-/* PoP: _body_for_digest @ hermes_cli/session_export_md.py:_body_for_digest */
+/* PoP: sexmd_u_body_for_digest @ hermes_cli/session_export_md.py:_body_for_digest */
 int sexmd_u_body_for_digest(const char *arg) {
     /* Python: _SHA_LINE_RE.sub("- SHA256 of exported body: `pending`", text).
      * The line "- SHA256 of exported body: `<64 hex>`" is replaced with the
@@ -242,7 +242,7 @@ int sexmd_u_body_for_digest(const char *arg) {
     return 0;
 }
 
-/* PoP: render_session_markdown @ hermes_cli/session_export_md.py:render_session_markdown */
+/* PoP: sexmd_render_session_markdown @ hermes_cli/session_export_md.py:render_session_markdown */
 int sexmd_render_session_markdown(const char *arg) {
     /* Python: body + digest or pre-verification. Arg =
      * "fmt\tbody\tinclude_verification\tdigest". */
@@ -263,7 +263,7 @@ int sexmd_render_session_markdown(const char *arg) {
     return 0;
 }
 
-/* PoP: safe_session_filename @ hermes_cli/session_export_md.py:safe_session_filename */
+/* PoP: sexmd_safe_session_filename @ hermes_cli/session_export_md.py:safe_session_filename */
 int sexmd_safe_session_filename(const char *arg) {
     /* Python: <session_id>-<slug>.<fmt>; slug sanitized. Arg =
      * "fmt\tsession_id\ttitle". */
@@ -305,7 +305,7 @@ int sexmd_safe_session_filename(const char *arg) {
     return 0;
 }
 
-/* PoP: file_sha256 @ hermes_cli/session_export_md.py:file_sha256 */
+/* PoP: sexmd_file_sha256 @ hermes_cli/session_export_md.py:file_sha256 */
 int sexmd_file_sha256(const char *arg) {
     /* Python: hashlib.sha256(path.read_bytes()).hexdigest(). */
     if (!arg || !*arg) return 0;
@@ -326,7 +326,7 @@ int sexmd_file_sha256(const char *arg) {
     return 0;
 }
 
-/* PoP: verify_export_file @ hermes_cli/session_export_md.py:verify_export_file */
+/* PoP: sexmd_verify_export_file @ hermes_cli/session_export_md.py:verify_export_file */
 int sexmd_verify_export_file(const char *arg) {
     /* Python: sha + count + id checks. Arg = "state\treason". */
     if (!arg || !*arg) { printf("0 file missing\n"); return 0; }
@@ -338,7 +338,7 @@ int sexmd_verify_export_file(const char *arg) {
     return 0;
 }
 
-/* PoP: redact_session_data @ hermes_cli/session_export_md.py:redact_session_data */
+/* PoP: sexmd_redact_session_data @ hermes_cli/session_export_md.py:redact_session_data */
 int sexmd_redact_session_data(const char *arg) {
     /* Python: deep redact copy. Arg = "session_json\tstate\tresult". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -350,7 +350,7 @@ int sexmd_redact_session_data(const char *arg) {
     return 0;
 }
 
-/* PoP: write_session_markdown @ hermes_cli/session_export_md.py:write_session_markdown */
+/* PoP: sexmd_write_session_markdown @ hermes_cli/session_export_md.py:write_session_markdown */
 int sexmd_write_session_markdown(const char *arg) {
     /* Python: mkdir + safe filename + write; FileExistsError. Arg =
      * "output_dir\tfilename\texists\tforce\tcontent". */
@@ -368,7 +368,7 @@ int sexmd_write_session_markdown(const char *arg) {
     return 0;
 }
 
-/* PoP: append_manifest_entry @ hermes_cli/session_export_md.py:append_manifest_entry */
+/* PoP: sexmd_append_manifest_entry @ hermes_cli/session_export_md.py:append_manifest_entry */
 int sexmd_append_manifest_entry(const char *arg) {
     /* Python: append JSONL manifest entry. Arg = "path\tsession_id\thash". */
     if (!arg || !*arg) { printf("\n"); return 0; }

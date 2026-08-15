@@ -20,7 +20,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _normalize_command_for_detection @ tools/approval.py:_normalize_command_for_detection */
+/* PoP: apr_normalize_command_for_detection @ tools/approval.py:_normalize_command_for_detection */
 char *apr_normalize_command_for_detection(const char *command) {
     /* Python: strip ANSI escapes, null bytes, normalize fullwidth. */
     if (!command) return strdup("");
@@ -63,7 +63,7 @@ char *apr_normalize_command_for_detection(const char *command) {
     return out;
 }
 
-/* PoP: _has_allowlist_shell_operator @ tools/approval.py:_has_allowlist_shell_operator */
+/* PoP: apr_has_allowlist_shell_operator @ tools/approval.py:_has_allowlist_shell_operator */
 bool apr_has_allowlist_shell_operator(const char *command) {
     /* Python: (\n|&&|\|\||[;&|<>`]|\$() */
     if (!command) return false;
@@ -77,7 +77,7 @@ bool apr_has_allowlist_shell_operator(const char *command) {
     return false;
 }
 
-/* PoP: _strip_line_comment @ tools/approval.py:_strip_line_comment */
+/* PoP: apr_strip_line_comment @ tools/approval.py:_strip_line_comment */
 char *apr_strip_line_comment(const char *line) {
     /* Python: remove trailing # comment, quote-state aware. */
     if (!line) return strdup("");
@@ -97,7 +97,7 @@ char *apr_strip_line_comment(const char *line) {
     return out ? out : strdup("");
 }
 
-/* PoP: _get_approval_timeout @ tools/approval.py:_get_approval_timeout */
+/* PoP: apr_get_approval_timeout @ tools/approval.py:_get_approval_timeout */
 long apr_get_approval_timeout(const char *config_yaml) {
     /* Python: approvals.timeout; default 300. */
     if (!config_yaml) return 300;
@@ -109,7 +109,7 @@ long apr_get_approval_timeout(const char *config_yaml) {
     return v > 0 ? v : 300;
 }
 
-/* PoP: _command_matches_permanent_allowlist @ tools/approval.py:_command_matches_permanent_allowlist */
+/* PoP: apr_command_matches_permanent_allowlist @ tools/approval.py:_command_matches_permanent_allowlist */
 bool apr_command_matches_permanent_allowlist(const char *command, const char *allowlist_json) {
     /* Python: command_allowlist exact or glob. */
     if (!command || !allowlist_json) return false;
@@ -145,7 +145,7 @@ bool apr_command_matches_permanent_allowlist(const char *command, const char *al
     return false;
 }
 
-/* PoP: detect_dangerous_command @ tools/approval.py:detect_dangerous_command */
+/* PoP: apr_detect_dangerous_command @ tools/approval.py:detect_dangerous_command */
 char *apr_detect_dangerous_command(const char *command) {
     /* Python: (is_dangerous, pattern_key, description) — real pattern
      * table for recursive delete / disk wipe / pipe-to-sh / rm -rf. */
@@ -175,7 +175,7 @@ char *apr_detect_dangerous_command(const char *command) {
     return out;
 }
 
-/* PoP: load_permanent_allowlist @ tools/approval.py:load_permanent_allowlist */
+/* PoP: apr_load_permanent_allowlist @ tools/approval.py:load_permanent_allowlist */
 long apr_load_permanent_allowlist(const char *config_yaml) {
     /* Python: load + sync into module state; returns count. */
     if (!config_yaml) return 0;
@@ -192,7 +192,7 @@ long apr_load_permanent_allowlist(const char *config_yaml) {
     return count;
 }
 
-/* PoP: save_permanent_allowlist @ tools/approval.py:save_permanent_allowlist */
+/* PoP: apr_save_permanent_allowlist @ tools/approval.py:save_permanent_allowlist */
 int apr_save_permanent_allowlist(const char *config_path, const char *patterns_json) {
     /* Python: config["command_allowlist"] = sorted + save. */
     if (!config_path || !patterns_json) return -1;
@@ -208,7 +208,7 @@ int apr_save_permanent_allowlist(const char *config_path, const char *patterns_j
     return rc == 0 ? 0 : -1;
 }
 
-/* PoP: is_approved @ tools/approval.py:is_approved */
+/* PoP: apr_is_approved @ tools/approval.py:is_approved */
 bool apr_is_approved(const char *pattern_key, const char *permanent_json) {
     /* Python: session-scoped or permanent match. */
     if (!pattern_key) return false;
@@ -216,7 +216,7 @@ bool apr_is_approved(const char *pattern_key, const char *permanent_json) {
     return false;
 }
 
-/* PoP: approve_permanent @ tools/approval.py:approve_permanent */
+/* PoP: apr_approve_permanent @ tools/approval.py:approve_permanent */
 int apr_approve_permanent(const char *pattern_key, const char *allowlist_json) {
     /* Python: add to set. */
     if (!pattern_key) return -1;

@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_config_migrations_migrate_to_34 @ hermes_cli/config_migrations.py:_migrate_to_34 */
+/* PoP: hermes_cli_config_migrations_migrate_to_34_p @ hermes_cli/config_migrations.py:_migrate_to_34 */
 json_t *hermes_cli_config_migrations_migrate_to_34_p(void) {
     return json_object();
 }

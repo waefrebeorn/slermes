@@ -902,7 +902,7 @@ bool uc_sync_fork_with_upstream(const char *git_cmd[], const char *cwd)
 }
 
 /* ── _npm_manifest_paths ───────────────────────────────────────── */
-/* PoP: main_u_npm_manifest_paths @ hermes_cli/update_cmd.py:_npm_manifest_paths */
+/* PoP: uc_npm_manifest_paths @ hermes_cli/update_cmd.py:_npm_manifest_paths */
 char **uc_npm_manifest_paths(const char *project_root)
 {
     char **paths = NULL;
@@ -1139,7 +1139,7 @@ void uc_write_marker_file(const char *path)
 }
 
 /* ── _for_each_systemd_gateway_unit ───────────────────────── */
-/* PoP: main_u_for_each_systemd_gateway_unit @ hermes_cli/update_cmd.py:_for_each_systemd_gateway_unit */
+/* PoP: uc_for_each_systemd_gateway_unit @ hermes_cli/update_cmd.py:_for_each_systemd_gateway_unit */
 char **uc_for_each_systemd_gateway_unit(const char *list_units_stdout)
 {
     if (!list_units_stdout || !*list_units_stdout) return NULL;
@@ -1230,7 +1230,7 @@ char *uc_warn_incomplete_gateway_fleet_restart(const char **failed_units)
 }
 
 /* ── _discard_lockfile_churn (pure selection half) ───────── */
-/* PoP: uc_discard_lockfile_churn @ hermes_cli/update_cmd.py:_discard_lockfile_churn */
+/* PoP: uc_select_lockfile_churn @ hermes_cli/update_cmd.py:_discard_lockfile_churn */
 char **uc_select_lockfile_churn(const char *diff_stdout)
 {
     if (!diff_stdout || !*diff_stdout) return NULL;
@@ -2770,7 +2770,7 @@ int uc_cmd_update_check(const char *project_root, const char *branch)
 }
 
 /* ── _update_node_dependencies ─────────────────────────────── */
-/* PoP: main_u_update_node_dependencies @ hermes_cli/update_cmd.py:_update_node_dependencies */
+/* PoP: uc_update_node_dependencies @ hermes_cli/update_cmd.py:_update_node_dependencies */
 char **uc_update_node_dependencies(const char *project_root)
 {
     if (!project_root) return NULL;
@@ -4200,7 +4200,7 @@ char *uc_m(void)
     return NULL;
 }
 
-/* PoP: _print_update_completion @ hermes_cli/update_cmd.py:_print_update_completion */
+/* PoP: update_cmd_print_completion @ hermes_cli/update_cmd.py:_print_update_completion */
 /* Print update outcome + terminal receipt line when action id is valid.
  * Returns malloc'd combined output string. Caller frees. */
 char *update_cmd_print_completion(const char *message) {

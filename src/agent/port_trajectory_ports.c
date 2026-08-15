@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: convert_scratchpad_to_think @ agent/trajectory.py:convert_scratchpad_to_think */
+/* PoP: trj_convert_scratchpad_to_think @ agent/trajectory.py:convert_scratchpad_to_think */
 char *trj_convert_scratchpad_to_think(const char *content) {
     /* Python: <REASONING_SCRATCHPAD> → <think>. */
     if (!content || !strstr(content, "<REASONING_SCRATCHPAD>")) return content ? strdup(content) : strdup("");
@@ -50,7 +50,7 @@ char *trj_convert_scratchpad_to_think(const char *content) {
     return out;
 }
 
-/* PoP: has_incomplete_scratchpad @ agent/trajectory.py:has_incomplete_scratchpad */
+/* PoP: trj_has_incomplete_scratchpad @ agent/trajectory.py:has_incomplete_scratchpad */
 bool trj_has_incomplete_scratchpad(const char *content) {
     /* Python: open tag without close. */
     if (!content) return false;
@@ -60,7 +60,7 @@ bool trj_has_incomplete_scratchpad(const char *content) {
     return close == NULL;
 }
 
-/* PoP: save_trajectory @ agent/trajectory.py:save_trajectory */
+/* PoP: trj_save_trajectory @ agent/trajectory.py:save_trajectory */
 int trj_save_trajectory(const char *jsonl_path, const char *entry_json) {
     /* Python: append JSONL — REAL append. */
     if (!jsonl_path || !entry_json) return -1;

@@ -300,7 +300,7 @@ void cli_hermes_cli_memory_setup_cmd_setup_provider(const char *provider_name)
 
 
 
-/* PoP: cli_hermes_cli_memory_setup__write_env_vars @ hermes_cli/memory_setup.py:_write_env_vars */
+/* PoP: cli_hermes_cli_memory_setup__provider_pip_dependencies @ hermes_cli/memory_setup.py:_write_env_vars */
 
 /* Port of Python hermes_cli/memory_setup.py:_provider_pip_dependencies.
  * Return the pip deps a provider actually needs on THIS install. The manifest
@@ -470,7 +470,7 @@ void cli_hermes_cli_memory_setup_free_providers(cli_memory_provider_info_t *p)
     free(p);
 }
 
-/* PoP: cli_hermes_cli_memory_setup__curses_select @ hermes_cli/memory_setup.py:_curses_select */
+/* PoP: stdin @ hermes_cli/memory_setup.py:_curses_select */
 /*
  * Port of Python hermes_cli/memory_setup.py:_curses_select().
  * The Python version renders a curses selection menu; the C port takes the

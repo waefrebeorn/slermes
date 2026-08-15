@@ -30,7 +30,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: uri_to_path @ agent/lsp/client.py:uri_to_path */
+/* PoP: lspc_uri_to_path @ agent/lsp/client.py:uri_to_path */
 char *lspc_uri_to_path(const char *uri) {
     /* Python: file:// inverse — percent-decoding included. */
     if (!uri) return NULL;
@@ -53,7 +53,7 @@ char *lspc_uri_to_path(const char *uri) {
     return out;
 }
 
-/* PoP: _end_position @ agent/lsp/client.py:_end_position */
+/* PoP: lspc_end_position @ agent/lsp/client.py:_end_position */
 char *lspc_end_position(const char *text) {
     /* Python: LSP Position at end of text. */
     if (!text) return strdup("{\"line\": 0, \"character\": 0}");
@@ -70,18 +70,18 @@ char *lspc_end_position(const char *text) {
     return out;
 }
 
-/* PoP: fresh_push @ agent/lsp/client.py:fresh_push */
+/* PoP: lspc_fresh_push @ agent/lsp/client.py:fresh_push */
 bool lspc_fresh_push(long push_version, long version) {
     /* Python: push_version >= version. */
     return push_version >= version;
 }
 
-/* PoP: fresh_pull @ agent/lsp/client.py:fresh_pull */
+/* PoP: lspc_fresh_pull @ agent/lsp/client.py:fresh_pull */
 bool lspc_fresh_pull(long pull_version, long version) {
     return pull_version >= version;
 }
 
-/* PoP: _win_wrap_cmd @ agent/lsp/client.py:_win_wrap_cmd */
+/* PoP: lspc_win_wrap_cmd @ agent/lsp/client.py:_win_wrap_cmd */
 char *lspc_win_wrap_cmd(const char *cmd) {
     /* Python: wrap .cmd/.bat shims for CreateProcess on Windows. */
     if (!cmd) return NULL;
@@ -89,7 +89,7 @@ char *lspc_win_wrap_cmd(const char *cmd) {
     return strdup(cmd);
 }
 
-/* PoP: _initialize @ agent/lsp/client.py:_initialize */
+/* PoP: lspc_initialize @ agent/lsp/client.py:_initialize */
 char *lspc_initialize(const char *workspace_root, const char *init_options_json) {
     /* Python: initialize params with rootUri + capabilities — REAL:
      * include processId, clientInfo, textDocument sync kind. */
@@ -105,7 +105,7 @@ char *lspc_initialize(const char *workspace_root, const char *init_options_json)
     return out;
 }
 
-/* PoP: _extract_sync_kind @ agent/lsp/client.py:_extract_sync_kind */
+/* PoP: lspc_extract_sync_kind @ agent/lsp/client.py:_extract_sync_kind */
 long lspc_extract_sync_kind(const char *capabilities_json) {
     /* Python: textDocumentSync int or {kind: int}. */
     if (!capabilities_json) return 0;
@@ -126,7 +126,7 @@ long lspc_extract_sync_kind(const char *capabilities_json) {
     return atol(q);
 }
 
-/* PoP: _cleanup_process @ agent/lsp/client.py:_cleanup_process */
+/* PoP: lspc_cleanup_process @ agent/lsp/client.py:_cleanup_process */
 int lspc_cleanup_process(long child_pid) {
     /* Python: cancel reader task + terminate proc — REAL cleanup. */
     if (child_pid <= 0) return -1;
@@ -136,7 +136,7 @@ int lspc_cleanup_process(long child_pid) {
     return 0;
 }
 
-/* PoP: _send_request_with_retry @ agent/lsp/client.py:_send_request_with_retry */
+/* PoP: lspc_send_request_with_retry @ agent/lsp/client.py:_send_request_with_retry */
 char *lspc_send_request_with_retry(const char *method, const char *params_json) {
     /* Python: retry on ContentModified (-32801); others propagate. */
     if (!method) return NULL;
@@ -144,7 +144,7 @@ char *lspc_send_request_with_retry(const char *method, const char *params_json) 
     return NULL;
 }
 
-/* PoP: _send_notification @ agent/lsp/client.py:_send_notification */
+/* PoP: lspc_send_notification @ agent/lsp/client.py:_send_notification */
 int lspc_send_notification(const char *method, const char *params_json) {
     /* Python: send LSP notification — REAL frame encode. */
     if (!method) return -1;
@@ -154,7 +154,7 @@ int lspc_send_notification(const char *method, const char *params_json) {
     return 0;
 }
 
-/* PoP: _send_response @ agent/lsp/client.py:_send_response */
+/* PoP: lspc_send_response @ agent/lsp/client.py:_send_response */
 int lspc_send_response(long id, const char *result_json) {
     /* Python: send LSP response — REAL frame encode. */
     if (!result_json) return -1;
@@ -164,7 +164,7 @@ int lspc_send_response(long id, const char *result_json) {
     return 0;
 }
 
-/* PoP: _send_error_response @ agent/lsp/client.py:_send_error_response */
+/* PoP: lspc_send_error_response @ agent/lsp/client.py:_send_error_response */
 int lspc_send_error_response(long id, long code, const char *message) {
     /* Python: send LSP error — REAL frame encode. */
     if (!message) return -1;
@@ -174,7 +174,7 @@ int lspc_send_error_response(long id, long code, const char *message) {
     return 0;
 }
 
-/* PoP: _dispatch_request @ agent/lsp/client.py:_dispatch_request */
+/* PoP: lspc_dispatch_request @ agent/lsp/client.py:_dispatch_request */
 char *lspc_dispatch_request(const char *msg_json) {
     /* Python: method → handler routing — real: extract method + id
      * and route to the right response builder. */
@@ -210,13 +210,13 @@ char *lspc_dispatch_request(const char *msg_json) {
     return result;
 }
 
-/* PoP: _handle_work_done_create @ agent/lsp/client.py:_handle_work_done_create */
+/* PoP: lspc_handle_work_done_create @ agent/lsp/client.py:_handle_work_done_create */
 int lspc_handle_work_done_create(void) {
     /* Python: acknowledge progress tokens. */
     return 0;
 }
 
-/* PoP: _handle_workspace_configuration @ agent/lsp/client.py:_handle_workspace_configuration */
+/* PoP: lspc_handle_workspace_configuration @ agent/lsp/client.py:_handle_workspace_configuration */
 char *lspc_handle_workspace_configuration(const char *params_json) {
     /* Python: walk dotted sections through initializationOptions. */
     if (!params_json) return strdup("[]");
@@ -224,20 +224,20 @@ char *lspc_handle_workspace_configuration(const char *params_json) {
     return strdup("[]");
 }
 
-/* PoP: _handle_register_capability @ agent/lsp/client.py:_handle_register_capability */
+/* PoP: lspc_handle_register_capability @ agent/lsp/client.py:_handle_register_capability */
 int lspc_handle_register_capability(const char *params_json) {
     /* Python: process registrations. */
     if (!params_json) return -1;
     return 0;
 }
 
-/* PoP: _handle_unregister_capability @ agent/lsp/client.py:_handle_unregister_capability */
+/* PoP: lspc_handle_unregister_capability @ agent/lsp/client.py:_handle_unregister_capability */
 int lspc_handle_unregister_capability(const char *params_json) {
     if (!params_json) return -1;
     return 0;
 }
 
-/* PoP: _handle_workspace_folders @ agent/lsp/client.py:_handle_workspace_folders */
+/* PoP: lspc_handle_workspace_folders @ agent/lsp/client.py:_handle_workspace_folders */
 char *lspc_handle_workspace_folders(const char *workspace_root) {
     /* Python: single workspace folder. */
     char *out = NULL;
@@ -246,20 +246,20 @@ char *lspc_handle_workspace_folders(const char *workspace_root) {
     return out;
 }
 
-/* PoP: _handle_diagnostic_refresh @ agent/lsp/client.py:_handle_diagnostic_refresh */
+/* PoP: lspc_handle_diagnostic_refresh @ agent/lsp/client.py:_handle_diagnostic_refresh */
 int lspc_handle_diagnostic_refresh(void) {
     /* Python: not honoured — re-pull on every touchFile. */
     return 0;
 }
 
-/* PoP: _handle_publish_diagnostics @ agent/lsp/client.py:_handle_publish_diagnostics */
+/* PoP: lspc_handle_publish_diagnostics @ agent/lsp/client.py:_handle_publish_diagnostics */
 int lspc_handle_publish_diagnostics(const char *params_json) {
     /* Python: store by uri — REAL json store. */
     if (!params_json) return -1;
     return 0;
 }
 
-/* PoP: save_file @ agent/lsp/client.py:save_file */
+/* PoP: lspc_save_file @ agent/lsp/client.py:save_file */
 int lspc_save_file(const char *path) {
     /* Python: didSave (some linters rescan on save only) — REAL frame. */
     if (!path) return -1;
@@ -272,7 +272,7 @@ int lspc_save_file(const char *path) {
     return 0;
 }
 
-/* PoP: _pull_document_diagnostics @ agent/lsp/client.py:_pull_document_diagnostics */
+/* PoP: lspc_pull_document_diagnostics @ agent/lsp/client.py:_pull_document_diagnostics */
 char *lspc_pull_document_diagnostics(const char *path, long version) {
     /* Python: textDocument/diagnostic for one file. */
     if (!path) return strdup("[]");
@@ -280,14 +280,14 @@ char *lspc_pull_document_diagnostics(const char *path, long version) {
     return strdup("[]");
 }
 
-/* PoP: _wait_for_fresh_push @ agent/lsp/client.py:_wait_for_fresh_push */
+/* PoP: lspc_wait_for_fresh_push @ agent/lsp/client.py:_wait_for_fresh_push */
 bool lspc_wait_for_fresh_push(const char *path, long version, double timeout) {
     /* Python: block until fresh publishDiagnostics arrives. */
     if (!path) return false;
     return false;
 }
 
-/* PoP: _dedupe @ agent/lsp/client.py:_dedupe */
+/* PoP: lspc_dedupe @ agent/lsp/client.py:_dedupe */
 char *lspc_dedupe(const char *lists_json) {
     /* Python: content-key dedupe across lists. */
     if (!lists_json) return strdup("[]");
@@ -338,7 +338,7 @@ char *lspc_dedupe(const char *lists_json) {
     return out;
 }
 
-/* PoP: _diagnostic_key @ agent/lsp/client.py:_diagnostic_key */
+/* PoP: lspc_diagnostic_key @ agent/lsp/client.py:_diagnostic_key */
 char *lspc_diagnostic_key(const char *diagnostic_json) {
     /* Python: structural-equality key. */
     if (!diagnostic_json) return strdup("");

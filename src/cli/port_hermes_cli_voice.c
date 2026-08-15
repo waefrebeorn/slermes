@@ -156,7 +156,7 @@ void cli_hermes_cli_voice__debug(const char *msg)
     }
 }
 
-/* PoP: cli_hermes_cli_voice__beeps_enabled @ hermes_cli/voice.py:_beeps_enabled */
+/* PoP: string @ hermes_cli/voice.py:_beeps_enabled */
 /* CLI parity: voice.beep_enabled in config.yaml (default True). The C port
  * takes the already-loaded config as a JSON string (same shape as the rest of
  * this file's config helpers) and reads voice.beep_enabled, defaulting True.
@@ -209,7 +209,7 @@ int cli_hermes_cli_voice__beeps_enabled(const char *config_json, int *out)
 /* Port of Python hermes_cli/voice.py:stop_and_transcribe */
 /* Stops recording and transcribes. Returns transcript or NULL. */
 
-/* PoP: cli_hermes_cli_voice__voice_activity_held @ hermes_cli/voice.py:_voice_activity_held */
+/* PoP: playing @ hermes_cli/voice.py:_voice_activity_held */
 /* True while silent cycles must NOT count toward the no-speech limit.
  * Held when TTS is playing (user is listening) or the busy probe reports
  * the agent mid-turn (user is waiting). Fail-open to "not held" so a
@@ -239,7 +239,7 @@ int cli_hermes_cli_voice_bump_no_speech_count(void) {
     return _continuous_no_speech_count >= _CONTINUOUS_NO_SPEECH_LIMIT ? 1 : 0;
 }
 
-/* PoP: cli_hermes_cli_voice__speak_text_streaming @ hermes_cli/voice.py:_speak_text_streaming */
+/* PoP: voice_speak @ hermes_cli/voice.py:_speak_text_streaming */
 /* Speak text via the generic streaming dispatcher; returns 1 on success.
  * Feeds the full text as a single delta + end-of-text sentinel, then blocks
  * until the pipeline's done event fires. In the C port this maps onto the

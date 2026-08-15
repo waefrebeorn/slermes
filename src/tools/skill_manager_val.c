@@ -39,7 +39,7 @@ char *skill_val_validate_name(const char *name) {
     return NULL;
 }
 
-/* PoP: smt_u_validate_category @ tools/skill_manager_tool.py:_validate_category */
+/* PoP: skill_val_validate_category @ tools/skill_manager_tool.py:_validate_category */
 char *skill_val_validate_category(const char *category) {
     if (!category) return NULL;
     if (strchr(category, '/') || strchr(category, '\\'))
@@ -54,7 +54,7 @@ char *skill_val_validate_category(const char *category) {
     return NULL;
 }
 
-/* PoP: _validate_content_size @ tools/skill_manager_tool.py:_validate_content_size */
+/* PoP: skill_val_validate_content_size @ tools/skill_manager_tool.py:_validate_content_size */
 char *skill_val_validate_content_size(const char *content, const char *label) {
     const char *lab = label && *label ? label : "SKILL.md";
     size_t len = content ? strlen(content) : 0;
@@ -72,7 +72,7 @@ char *skill_val_validate_content_size(const char *content, const char *label) {
 /* Minimal frontmatter check (faithful to the Python contract without a YAML
  * parser): must start with '---', have a closing '\n---\n', contain 'name:' and
  * 'description:' keys, description within length, and non-empty body. */
-/* PoP: smt_u_validate_frontmatter @ tools/skill_manager_tool.py:_validate_frontmatter */
+/* PoP: skill_val_validate_frontmatter @ tools/skill_manager_tool.py:_validate_frontmatter */
 char *skill_val_validate_frontmatter(const char *content) {
     if (!content || !*content) return strdup("Content cannot be empty.");
     while (*content == ' ' || *content == '\t') content++;

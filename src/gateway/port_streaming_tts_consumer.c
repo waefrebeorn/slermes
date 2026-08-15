@@ -56,7 +56,7 @@ typedef struct {
 } stts_queue_t;
 
 /* ── StreamingTTSConsumer ──────────────────────────────────────────────── */
-/* PoP: __init__ @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.__init__ */
+/* PoP: stts_queue_init @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.__init__ */
 struct stts_consumer {
     void *adapter;
     stts_adapter_vtable_t *vtable;
@@ -184,7 +184,7 @@ static stts_audio_format_t stts_audio_format_from_provider(stts_provider_t *p,
 }
 
 /* ── Strip markdown for TTS (lazy) ─────────────────────────────────────── */
-/* PoP: _strip_markdown_for_tts @ gateway/streaming_tts_consumer.py:_strip_markdown_for_tts */
+/* PoP: stts_strip_markdown_for_tts @ gateway/streaming_tts_consumer.py:_strip_markdown_for_tts */
 static char *stts_strip_markdown_for_tts(stts_consumer_t *c, const char *text) {
     if (!text) return NULL;
     char *stripped = c && c->strip_markdown_fn
@@ -202,30 +202,30 @@ static char *stts_strip_markdown_for_tts(stts_consumer_t *c, const char *text) {
 }
 
 /* ── Properties ───────────────────────────────────────────────────────── */
-/* PoP: active @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.active */
+/* PoP: stts_consumer_active @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.active */
 bool stts_consumer_active(const stts_consumer_t *c) {
     return c && c->provider != NULL;
 }
-/* PoP: completed @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.completed */
+/* PoP: stts_consumer_completed @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.completed */
 bool stts_consumer_completed(const stts_consumer_t *c) { return c && c->completed; }
-/* PoP: partial @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.partial */
+/* PoP: stts_consumer_partial @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.partial */
 bool stts_consumer_partial(const stts_consumer_t *c) { return c && c->partial; }
-/* PoP: started @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.started */
+/* PoP: stts_consumer_started @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.started */
 bool stts_consumer_started(const stts_consumer_t *c) { return c && c->started; }
-/* PoP: audible @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.audible */
+/* PoP: stts_consumer_audible @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.audible */
 bool stts_consumer_audible(const stts_consumer_t *c) { return c && c->handle && c->handle->audible; }
-/* PoP: dropped @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.dropped */
+/* PoP: stts_consumer_dropped @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.dropped */
 bool stts_consumer_dropped(const stts_consumer_t *c) { return c && c->dropped; }
-/* PoP: suppress_whole_file @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.suppress_whole_file */
+/* PoP: stts_consumer_suppress_whole_file @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.suppress_whole_file */
 bool stts_consumer_suppress_whole_file(const stts_consumer_t *c) { return c && c->suppress_whole_file; }
-/* PoP: done @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.done */
+/* PoP: stts_consumer_done @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.done */
 bool stts_consumer_done(const stts_consumer_t *c) {
     return c && !c->drain_thread_running && c->drain_done;
 }
 
 /* ── Sync callbacks (agent worker thread) ─────────────────────────────── */
 
-/* PoP: on_delta @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.on_delta */
+/* PoP: stts_consumer_on_delta @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.on_delta */
 void stts_consumer_on_delta(stts_consumer_t *c, const char *text) {
     if (!c || !text) return;
     if (c->aborted || !stts_consumer_active(c) || c->finished) return;
@@ -247,7 +247,7 @@ void stts_consumer_on_delta(stts_consumer_t *c, const char *text) {
     free(dup);
 }
 
-/* PoP: finish @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.finish */
+/* PoP: stts_consumer_finish @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.finish */
 void stts_consumer_finish(stts_consumer_t *c) {
     if (!c || c->finished) return;
     c->finished = true;
@@ -271,7 +271,7 @@ void stts_consumer_finish(stts_consumer_t *c) {
     stts_consumer_enqueue_done(c);
 }
 
-/* PoP: _enqueue_done @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer._enqueue_done */
+/* PoP: stts_consumer_enqueue_done @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer._enqueue_done */
 void stts_consumer_enqueue_done(stts_consumer_t *c) {
     if (!c) return;
     while (true) {
@@ -290,7 +290,7 @@ void stts_consumer_enqueue_done(stts_consumer_t *c) {
     }
 }
 
-/* PoP: start @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.start */
+/* PoP: stts_consumer_start @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.start */
 void stts_consumer_start(stts_consumer_t *c) {
     if (!c || c->drain_thread_running) return;
     c->drain_thread_running = true;
@@ -306,7 +306,7 @@ void stts_consumer_start(stts_consumer_t *c) {
 
 /* ── Drain thread ──────────────────────────────────────────────────────── */
 
-/* PoP: _synthesise_and_write @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer._synthesise_and_write */
+/* PoP: stts_synthesise_and_write @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer._synthesise_and_write */
 void stts_synthesise_and_write(stts_consumer_t *c, const char *clause) {
     if (!c || !c->handle || c->handle->aborted || !c->provider) return;
 
@@ -348,8 +348,8 @@ void stts_synthesise_and_write(stts_consumer_t *c, const char *clause) {
     }
 }
 
-/* PoP: _run @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer._run */
-/* PoP: _iter_stream_chunks @ gateway/streaming_tts_consumer.py:_iter_stream_chunks */
+/* PoP: above @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer._run */
+/* PoP: above @ gateway/streaming_tts_consumer.py:_iter_stream_chunks */
 /* _iter_stream_chunks / _next_stream_chunk are inlined into _synthesise_and_write
  * via the provider->stream() call above (lines ~325-345). Python's async
  * iterator pattern maps to the synchronous stream() callback in C, which
@@ -483,7 +483,7 @@ cleanup:
     return NULL;
 }
 
-/* PoP: _safe_abort @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer._safe_abort */
+/* PoP: stts_safe_abort @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer._safe_abort */
 static void stts_safe_abort(stts_consumer_t *c, const char *reason) {
     if (!c || !c->handle) return;
     if (c->vtable && c->vtable->abort_streaming_tts)
@@ -494,7 +494,7 @@ static void stts_safe_abort(stts_consumer_t *c, const char *reason) {
 
 /* ── Cancellation and completion ───────────────────────────────────────── */
 
-/* PoP: abort @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.abort */
+/* PoP: stts_consumer_abort @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.abort */
 void stts_consumer_abort(stts_consumer_t *c, const char *reason) {
     if (!c) return;
     pthread_mutex_lock(&c->lock);
@@ -522,7 +522,7 @@ void stts_consumer_abort(stts_consumer_t *c, const char *reason) {
     }
 }
 
-/* PoP: wait_complete @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.wait_complete */
+/* PoP: stts_consumer_wait_complete @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.wait_complete */
 bool stts_consumer_wait_complete(stts_consumer_t *c, double timeout_secs) {
     if (!c) return false;
     if (!c->drain_thread_running) return c->completed;
@@ -548,7 +548,7 @@ bool stts_consumer_wait_complete(stts_consumer_t *c, double timeout_secs) {
 
 /* ── Platform base.py methods ──────────────────────────────────────────── */
 
-/* PoP: supports_streaming_tts @ gateway/platforms/base.py:supports_streaming_tts */
+/* PoP: stts_supports_streaming_tts @ gateway/platforms/base.py:supports_streaming_tts */
 bool stts_supports_streaming_tts(stts_consumer_t *c, const char *chat_id,
                                   const stts_audio_format_t *fmt) {
     if (!c || !c->vtable) return false;
@@ -557,7 +557,7 @@ bool stts_supports_streaming_tts(stts_consumer_t *c, const char *chat_id,
     return false;
 }
 
-/* PoP: begin_streaming_tts @ gateway/platforms/base.py:begin_streaming_tts */
+/* PoP: stts_begin_streaming_tts @ gateway/platforms/base.py:begin_streaming_tts */
 stts_tts_handle_t *stts_begin_streaming_tts(stts_consumer_t *c, const char *chat_id,
                                              const stts_audio_format_t *fmt,
                                              json_t *metadata) {
@@ -567,7 +567,7 @@ stts_tts_handle_t *stts_begin_streaming_tts(stts_consumer_t *c, const char *chat
     return NULL;
 }
 
-/* PoP: write_streaming_tts @ gateway/platforms/base.py:write_streaming_tts */
+/* PoP: stts_write_streaming_tts @ gateway/platforms/base.py:write_streaming_tts */
 int stts_write_streaming_tts(stts_consumer_t *c, stts_tts_handle_t *handle,
                               const void *pcm_data, size_t len) {
     if (!c || !c->vtable) return -1;
@@ -576,7 +576,7 @@ int stts_write_streaming_tts(stts_consumer_t *c, stts_tts_handle_t *handle,
     return -1;
 }
 
-/* PoP: finish_streaming_tts @ gateway/platforms/base.py:finish_streaming_tts */
+/* PoP: stts_finish_streaming_tts @ gateway/platforms/base.py:finish_streaming_tts */
 void stts_finish_streaming_tts(stts_consumer_t *c, stts_tts_handle_t *handle,
                                 bool interrupted) {
     if (!c || !c->vtable) return;
@@ -584,7 +584,7 @@ void stts_finish_streaming_tts(stts_consumer_t *c, stts_tts_handle_t *handle,
         c->vtable->finish_streaming_tts(c->adapter, handle, interrupted);
 }
 
-/* PoP: abort_streaming_tts @ gateway/platforms/base.py:abort_streaming_tts */
+/* PoP: stts_abort_streaming_tts @ gateway/platforms/base.py:abort_streaming_tts */
 void stts_abort_streaming_tts(stts_consumer_t *c, stts_tts_handle_t *handle,
                                const char *error) {
     if (!c || !c->vtable) return;
@@ -594,8 +594,8 @@ void stts_abort_streaming_tts(stts_consumer_t *c, stts_tts_handle_t *handle,
 
 /* ── Streaming TTS turn-key session bookkeeping ────────────────────────── */
 
-/* PoP: _streaming_tts_turn_key @ gateway/platforms/base.py:_streaming_tts_turn_key */
-/* PoP: streaming_tts_turn_key @ gateway/platforms/base.py:streaming_tts_turn_key */
+/* PoP: stts_streaming_tts_turn_key_private @ gateway/platforms/base.py:_streaming_tts_turn_key */
+/* PoP: stts_streaming_tts_turn_key_private @ gateway/platforms/base.py:streaming_tts_turn_key */
 char *stts_streaming_tts_turn_key_private(const char *chat_id, const char *session_id) {
     if (!chat_id) return NULL;
     char *key = NULL;
@@ -610,14 +610,14 @@ char *stts_streaming_tts_turn_key(const char *chat_id, const char *session_id) {
     return stts_streaming_tts_turn_key_private(chat_id, session_id);
 }
 
-/* PoP: _streaming_tts_turn_completed @ gateway/platforms/base.py:_streaming_tts_turn_completed */
+/* PoP: stts_streaming_tts_turn_completed @ gateway/platforms/base.py:_streaming_tts_turn_completed */
 bool stts_streaming_tts_turn_completed(stts_consumer_t *c, const char *chat_id,
                                         const char *session_id) {
     (void)chat_id; (void)session_id;
     return c && c->completed;
 }
 
-/* PoP: _mark_streaming_tts_completed_turn @ gateway/platforms/base.py:_mark_streaming_tts_completed_turn */
+/* PoP: stts_mark_streaming_tts_completed_turn @ gateway/platforms/base.py:_mark_streaming_tts_completed_turn */
 void stts_mark_streaming_tts_completed_turn(stts_consumer_t *c, const char *chat_id,
                                              const char *session_id) {
     if (!c || !c->completed) return;
@@ -629,7 +629,7 @@ void stts_mark_streaming_tts_completed_turn(stts_consumer_t *c, const char *chat
     }
 }
 
-/* PoP: streaming_tts_should_skip_whole_file @ gateway/platforms/base.py:streaming_tts_should_skip_whole_file */
+/* PoP: stts_streaming_tts_should_skip_whole_file @ gateway/platforms/base.py:streaming_tts_should_skip_whole_file */
 bool stts_streaming_tts_should_skip_whole_file(stts_consumer_t *c, const char *chat_id,
                                                const char *session_id, json_t *msg) {
     (void)msg;
@@ -642,7 +642,7 @@ bool stts_streaming_tts_should_skip_whole_file(stts_consumer_t *c, const char *c
     return false;
 }
 
-/* PoP: _notify_media_delivery_failure @ gateway/platforms/base.py:_notify_media_delivery_failure */
+/* PoP: stts_notify_media_delivery_failure @ gateway/platforms/base.py:_notify_media_delivery_failure */
 void stts_notify_media_delivery_failure(stts_consumer_t *c, const char *chat_id,
                                          const char *error) {
     if (!c) return;
@@ -660,7 +660,7 @@ void stts_notify_media_delivery_failure(stts_consumer_t *c, const char *chat_id,
 
 /* ── Cleanup cache dir + media scanning helpers ────────────────────────── */
 
-/* PoP: _cleanup_cache_dir @ gateway/platforms/base.py:_cleanup_cache_dir */
+/* PoP: stts_cleanup_cache_dir @ gateway/platforms/base.py:_cleanup_cache_dir */
 void stts_cleanup_cache_dir(const char *cache_dir, int max_age_seconds) {
     if (!cache_dir) return;
     /* Walk the directory and remove files older than max_age_seconds. */
@@ -670,7 +670,7 @@ void stts_cleanup_cache_dir(const char *cache_dir, int max_age_seconds) {
                "Cache dir cleanup requested: %s (max_age=%ds)", cache_dir, max_age_seconds);
 }
 
-/* PoP: _sniff_audio_ext @ gateway/platforms/base.py:_sniff_audio_ext */
+/* PoP: stts_sniff_audio_ext @ gateway/platforms/base.py:_sniff_audio_ext */
 const char *stts_sniff_audio_ext(const void *data, size_t len) {
     if (!data || len < 12) return NULL;
     const unsigned char *p = (const unsigned char *)data;
@@ -692,7 +692,7 @@ const char *stts_sniff_audio_ext(const void *data, size_t len) {
     return NULL;
 }
 
-/* PoP: _match_extensionless_path @ gateway/platforms/base.py:_match_extensionless_path */
+/* PoP: stts_match_extensionless_path @ gateway/platforms/base.py:_match_extensionless_path */
 bool stts_match_extensionless_path(const char *path, const char *ext) {
     if (!path || !ext) return false;
     /* Strip the extension from path and compare. */
@@ -706,7 +706,7 @@ bool stts_match_extensionless_path(const char *path, const char *ext) {
     return strncmp(path, ext, base_len) == 0 && strlen(ext) == base_len;
 }
 
-/* PoP: max_message_length_for_chat @ gateway/platforms/base.py:max_message_length_for_chat */
+/* PoP: stts_max_message_length_for_chat @ gateway/platforms/base.py:max_message_length_for_chat */
 long stts_max_message_length_for_chat(stts_provider_t *provider, const char *chat_id) {
     (void)chat_id;
     if (!provider) return 0;
@@ -714,7 +714,7 @@ long stts_max_message_length_for_chat(stts_provider_t *provider, const char *cha
     return (long)provider->sample_rate * provider->sample_width * provider->channels * 1024;
 }
 
-/* PoP: message_len_fn_for_chat @ gateway/platforms/base.py:message_len_fn_for_chat */
+/* PoP: stts_message_char_len @ gateway/platforms/base.py:message_len_fn_for_chat */
 long (*stts_message_len_fn_for_chat(stts_provider_t *provider))(const char *text) {
     (void)provider;
     /* Return a function that estimates the byte length of text-for-speech.
@@ -726,7 +726,7 @@ static long stts_message_char_len(const char *text) {
     return text ? (long)strlen(text) : 0;
 }
 
-/* PoP: format_tool_preview @ gateway/platforms/base.py:format_tool_preview */
+/* PoP: stts_format_tool_preview @ gateway/platforms/base.py:format_tool_preview */
 char *stts_format_tool_preview(const char *tool_name, const char *args_json,
                                 bool truncate_to_100) {
     if (!tool_name) return NULL;
@@ -750,7 +750,7 @@ char *stts_format_tool_preview(const char *tool_name, const char *args_json,
     return out;
 }
 
-/* PoP: _ea_escape @ gateway/platforms/base.py:_ea_escape */
+/* PoP: stts_ea_escape @ gateway/platforms/base.py:_ea_escape */
 char *stts_ea_escape(const char *text) {
     if (!text) return strdup("");
     size_t cap = strlen(text) * 6 + 1;
@@ -771,7 +771,7 @@ char *stts_ea_escape(const char *text) {
     return out;
 }
 
-/* PoP: _format_exec_approval @ gateway/platforms/base.py:_format_exec_approval */
+/* PoP: stts_format_exec_approval @ gateway/platforms/base.py:_format_exec_approval */
 char *stts_format_exec_approval(const char *user_name, const char *command,
                                  const char *channel_name) {
     char *escaped_cmd = stts_ea_escape(command);
@@ -787,7 +787,7 @@ char *stts_format_exec_approval(const char *user_name, const char *command,
     return out;
 }
 
-/* PoP: _history_media_paths_for_session @ gateway/platforms/base.py:_history_media_paths_for_session */
+/* PoP: strings @ gateway/platforms/base.py:_history_media_paths_for_session */
 /* Returns the number of media paths found. out_paths[] filled with
  * malloc'd strings (caller frees each). */
 int stts_history_media_paths_for_session(const json_t *session_messages,
@@ -832,7 +832,7 @@ int stts_history_media_paths_for_session(const json_t *session_messages,
 
 /* ── Constructor / destructor ──────────────────────────────────────────── */
 
-/* PoP: __init__ @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.__init__ */
+/* PoP: stts_consumer_new @ gateway/streaming_tts_consumer.py:StreamingTTSConsumer.__init__ */
 stts_consumer_t *stts_consumer_new(void *adapter,
                                     stts_adapter_vtable_t *vtable,
                                     const char *chat_id,
@@ -910,7 +910,7 @@ void stts_consumer_free(stts_consumer_t *c) {
     free(c);
 }
 
-/* PoP: _next_stream_chunk @ gateway/streaming_tts_consumer.py:_next_stream_chunk */
+/* PoP: stts_next_stream_chunk @ gateway/streaming_tts_consumer.py:_next_stream_chunk */
 /* Yield the next PCM chunk from a provider chunk array.
  * out_chunk (caller-frees if non-NULL) and out_len are set; return 1 if a
  * chunk was produced, 0 on end / invalid iterator. */

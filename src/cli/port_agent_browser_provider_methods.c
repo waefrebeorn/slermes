@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: browser_provider_create_session @ agent/browser_provider.py:create_session */
+/* PoP: NULL @ agent/browser_provider.py:create_session */
 
 /* Port of Python agent/browser_provider.py:create_session */
 /* Create a cloud browser session and return session metadata.

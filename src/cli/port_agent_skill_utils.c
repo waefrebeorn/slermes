@@ -115,7 +115,7 @@ char *cli_agent_skill_utils__load_raw_config(void)
     return content;
 }
 
-/* PoP: cli_agent_skill_utils__resolve_for_skill_ownership @ agent/skill_utils.py:_resolve_for_skill_ownership */
+/* PoP: exist @ agent/skill_utils.py:_resolve_for_skill_ownership */
 /* Expand ~ then resolve to a canonical absolute path. Falls back to an
  * unresolved absolute path when the target does not exist (mirrors Python's
  * expanduser().resolve() with .absolute() fallback). Caller frees. */

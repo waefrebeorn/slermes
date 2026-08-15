@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: gateway_platforms_api_server_put_threadsafe @ gateway/platforms/api_server.py:put_threadsafe */
+/* PoP: gateway_platforms_api_server_put_threadsafe_p @ gateway/platforms/api_server.py:put_threadsafe */
 json_t *gateway_platforms_api_server_put_threadsafe_p(void) {
     return json_object();
 }

@@ -93,7 +93,7 @@ static void verb_add_noun(verb_entry_t *ve, const char *plural, int count) {
 }
 
 /* ---- format_elapsed ---- */
-/* PoP: format_elapsed @ agent/turn_summary.py:format_elapsed */
+/* PoP: turn_summary_format_elapsed @ agent/turn_summary.py:format_elapsed */
 char *turn_summary_format_elapsed(double seconds) {
     if (seconds < 0) seconds = 0.0;
     char buf[32];
@@ -108,7 +108,7 @@ char *turn_summary_format_elapsed(double seconds) {
 }
 
 /* ---- _pluralize ---- */
-/* PoP: _pluralize @ agent/turn_summary.py:_pluralize */
+/* PoP: turn_summary_pluralize @ agent/turn_summary.py:_pluralize */
 char *turn_summary_pluralize(int count, const char *plural_noun) {
     if (count == 1) {
         char *singular;
@@ -139,7 +139,7 @@ char *turn_summary_pluralize(int count, const char *plural_noun) {
 }
 
 /* ---- _count_diff_lines ---- */
-/* PoP: _count_diff_lines @ agent/turn_summary.py:_count_diff_lines */
+/* PoP: turn_summary_count_diff_lines @ agent/turn_summary.py:_count_diff_lines */
 void turn_summary_count_diff_lines(const char *diff, int *out_added, int *out_removed) {
     int added = 0, removed = 0;
     if (!diff) { *out_added = 0; *out_removed = 0; return; }
@@ -166,7 +166,7 @@ void turn_summary_count_diff_lines(const char *diff, int *out_added, int *out_re
 }
 
 /* ---- _extract_line_deltas ---- */
-/* PoP: _extract_line_deltas @ agent/turn_summary.py:_extract_line_deltas */
+/* PoP: extract_line_deltas @ agent/turn_summary.py:_extract_line_deltas */
 static bool extract_line_deltas(const char *tool_name, const json_t *result,
                                 int *out_added, int *out_removed) {
     /* only diff-result tools */
@@ -192,7 +192,7 @@ static bool extract_line_deltas(const char *tool_name, const json_t *result,
 }
 
 /* ---- _ordered_verbs ---- */
-/* PoP: _ordered_verbs @ agent/turn_summary.py:_ordered_verbs */
+/* PoP: ordered_verbs @ agent/turn_summary.py:_ordered_verbs */
 static const char **ordered_verbs(const turn_tally_t *t, size_t *out_n) {
     /* first-seen order */
     const char **seen = malloc(sizeof(char *) * (t->n_verbs ? t->n_verbs : 1));
@@ -214,7 +214,7 @@ static const char **ordered_verbs(const turn_tally_t *t, size_t *out_n) {
 }
 
 /* ---- format_turn_summary ---- */
-/* PoP: format_turn_summary @ agent/turn_summary.py:format_turn_summary */
+/* PoP: turn_summary_format @ agent/turn_summary.py:format_turn_summary */
 char *turn_summary_format(double elapsed_seconds, const turn_tally_t *tally,
                           int max_segments) {
     turn_tally_t empty;
@@ -310,7 +310,7 @@ char *turn_summary_format(double elapsed_seconds, const turn_tally_t *tally,
 }
 
 /* ---- format_token_flow ---- */
-/* PoP: format_token_flow @ agent/turn_summary.py:format_token_flow */
+/* PoP: turn_summary_format_token_flow @ agent/turn_summary.py:format_token_flow */
 char *turn_summary_format_token_flow(const json_t *output_tokens, const char *arrow) {
     if (!output_tokens) return strdup("");
     long count;

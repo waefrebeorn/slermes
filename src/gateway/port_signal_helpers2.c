@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ gateway/platforms/signal.py:__init__ */
+/* PoP: sgl_init @ gateway/platforms/signal.py:__init__ */
 char *sgl_init(const char *config_json) {
     /* Python: extra config merge. */
     if (!config_json) return strdup("{}");
@@ -26,7 +26,7 @@ char *sgl_init(const char *config_json) {
     return strdup(config_json);
 }
 
-/* PoP: connect @ gateway/platforms/signal.py:connect */
+/* PoP: sgl_connect @ gateway/platforms/signal.py:connect */
 bool sgl_connect(void) {
     /* Python: signal-cli daemon + SSE listener.
      * Delegate to the live C implementation (src/gateway/platforms/
@@ -46,7 +46,7 @@ bool sgl_connect(void) {
     return signal_connect();
 }
 
-/* PoP: disconnect @ gateway/platforms/signal.py:disconnect */
+/* PoP: sgl_disconnect @ gateway/platforms/signal.py:disconnect */
 int sgl_disconnect(void) {
     /* Python: stop SSE + cleanup. */
     extern void signal_disconnect(void);

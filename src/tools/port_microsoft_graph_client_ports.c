@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ tools/microsoft_graph_client.py:__init__ */
+/* PoP: mgc_init @ tools/microsoft_graph_client.py:__init__ */
 char *mgc_init(long status_code, const char *method, const char *url) {
     char *out = NULL;
     asprintf(&out, "{\"status_code\": %ld, \"method\": \"%s\", \"url\": \"%s\"}",
@@ -27,7 +27,7 @@ char *mgc_init(long status_code, const char *method, const char *url) {
     return out;
 }
 
-/* PoP: delete @ tools/microsoft_graph_client.py:delete */
+/* PoP: mgc_delete @ tools/microsoft_graph_client.py:delete */
 char *mgc_delete(const char *base_url, const char *path, const char *token) {
     /* Python: REAL DELETE request. */
     if (!base_url || !path) return NULL;
@@ -50,7 +50,7 @@ char *mgc_delete(const char *base_url, const char *path, const char *token) {
     return out;
 }
 
-/* PoP: _resolve_url @ tools/microsoft_graph_client.py:_resolve_url */
+/* PoP: mgc_resolve_url @ tools/microsoft_graph_client.py:_resolve_url */
 char *mgc_resolve_url(const char *base_url, const char *path_or_url) {
     /* Python: absolute or relative. */
     if (!path_or_url) return NULL;

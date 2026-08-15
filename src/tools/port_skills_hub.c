@@ -336,7 +336,7 @@ bool skills_hub_is_valid_skill_name(const char *name)
     return hub_validate_skill_name(name);
 }
 
-/* PoP: skills_hub_source_is_valid_skill_name @ tools/skills_hub.py:_is_valid_skill_name */
+/* PoP: names @ tools/skills_hub.py:_is_valid_skill_name */
 /* SkillSource._is_valid_skill_name: strip + lowercase the candidate, reject
  * empty / reserved names (skill, readme, index, unnamed-skill), then match
  * ^[a-z][a-z0-9_-]*$. NOTE: distinct from the module-level
@@ -659,7 +659,7 @@ char *skills_hub_resolve_skill_md_url(const char *identifier)
  * ================================================================ */
 
 /* Port of Python: is_available (HermesIndexSource) */
-/* PoP: skills_hub_is_available @ tools/skills_hub.py:HermesIndexSource.is_available */
+/* PoP: cache @ tools/skills_hub.py:HermesIndexSource.is_available */
 /* Whether the hermes skills index is available. Mirrors Python
  * _load_hermes_index(): fresh cache (< 6h TTL) wins, else fetch from the
  * docs site, else fall back to a stale cache. Returns true only when the

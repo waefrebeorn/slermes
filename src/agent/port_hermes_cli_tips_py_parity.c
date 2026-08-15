@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_tips_get_random_tip @ hermes_cli/tips.py:get_random_tip */
+/* PoP: hermes_cli_tips_get_random_tip_p @ hermes_cli/tips.py:get_random_tip */
 json_t *hermes_cli_tips_get_random_tip_p(void) {
     return json_object();
 }

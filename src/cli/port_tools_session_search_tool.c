@@ -713,7 +713,7 @@ int cli_tools_session_search_tool__resolve_profile_db(
     return 0;
 }
 
-/* PoP: cli_tools_session_search_tool__locate_session_db @ tools/session_search_tool.py:_locate_session_db */
+/* PoP: owning @ tools/session_search_tool.py:_locate_session_db */
 
 /* Port of Python tools/session_search_tool.py:_locate_session_db.
  * Scan every profile's state.db (read-only) for a session id; return the
@@ -791,7 +791,7 @@ int cli_tools_session_search_tool__locate_session_db(
     return 0;
 }
 
-/* PoP: cli_tools_session_search_tool__read_session @ tools/session_search_tool.py:_read_session */
+/* PoP: id @ tools/session_search_tool.py:_read_session */
 
 /* Port of Python tools/session_search_tool.py:_read_session.
  * Dump a whole session by id (head + tail when large), shaped. */
@@ -949,7 +949,7 @@ int cli_tools_session_search_tool__read_session(
     return 0;
 }
 
-/* PoP: cli_tools_session_search_tool__list_recent_sessions @ tools/session_search_tool.py:_list_recent_sessions */
+/* PoP: sessions @ tools/session_search_tool.py:_list_recent_sessions */
 
 /* Port of Python tools/session_search_tool.py:_list_recent_sessions.
  * Return metadata for the most recent sessions (excluding hidden sources,
@@ -1042,7 +1042,7 @@ int cli_tools_session_search_tool__list_recent_sessions(
     return 0;
 }
 
-/* PoP: cli_tools_session_search_tool__discover @ tools/session_search_tool.py:_discover */
+/* PoP: cron @ tools/session_search_tool.py:_discover */
 
 /* Port of Python tools/session_search_tool.py:_discover.
  * Discovery shape: FTS5 search + dedupe by lineage + anchored window +
@@ -1253,7 +1253,7 @@ int cli_tools_session_search_tool__discover(
     return 0;
 }
 
-/* PoP: cli_tools_session_search_tool_check_session_search_requirements @ tools/session_search_tool.py:check_session_search_requirements */
+/* PoP: available @ tools/session_search_tool.py:check_session_search_requirements */
 
 /* Port of Python tools/session_search_tool.py:check_session_search_requirements.
  * Check if session search is available (DB exists, FTS5 ready). */
@@ -1305,7 +1305,7 @@ int cli_tools_session_search_tool_check_session_search_requirements(
     return 0;
 }
 
-/* PoP: cli_tools_session_search_tool__get_message_storage_state @ tools/session_search_tool.py:_get_message_storage_state */
+/* PoP: fails @ tools/session_search_tool.py:_get_message_storage_state */
 
 /* Port of Python tools/session_search_tool.py:_get_message_storage_state.
  * Return the owning session and visibility flags for *message_id*.

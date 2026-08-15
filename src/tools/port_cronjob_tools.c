@@ -59,7 +59,7 @@ void notify_provider_jobs_changed(void);
  * delegate to that self-contained, oracle-verified module. */
 
 /* ================================================================ */
-/* PoP: check_invisible_unicode @ tools/cronjob_tools.py:_check_invisible_unicode */
+/* PoP: module @ tools/cronjob_tools.py:_check_invisible_unicode */
 /* Delegates to the self-contained cron_prompt_sanitize module (v551 split). */
 char *check_invisible_unicode(const char *prompt)
 {
@@ -71,7 +71,7 @@ char *check_invisible_unicode(const char *prompt)
  *  Returns a JSON object {cleaned_prompt, removed_codepoints[]}.
  *  Caller owns the returned json_t*.
  * ================================================================ */
-/* PoP: strip_invisible_unicode @ tools/cronjob_tools.py:_strip_invisible_unicode */
+/* PoP: module @ tools/cronjob_tools.py:_strip_invisible_unicode */
 /* Delegates to the self-contained cron_prompt_sanitize module (v551 split). */
 json_t *strip_invisible_unicode(const char *prompt)
 {
@@ -83,7 +83,7 @@ json_t *strip_invisible_unicode(const char *prompt)
  *  Scans an assembled cron prompt (includes loaded skill content).
  *  Returns json_t* {cleaned, error} where error is empty string on pass.
  * ================================================================ */
-/* PoP: scan_cron_skill_assembled @ tools/cronjob_tools.py:_scan_cron_skill_assembled */
+/* PoP: module @ tools/cronjob_tools.py:_scan_cron_skill_assembled */
 /* Delegates to the self-contained cron_prompt_sanitize module (v551 split). */
 json_t *scan_cron_skill_assembled(const char *assembled)
 {
@@ -194,7 +194,7 @@ char *repeat_display(const json_t *job)
  *  Returns json_t* {provider, model} (both strings or null).
  *  Pins provider to config main provider if model given but provider omitted.
  * ================================================================ */
-/* PoP: resolve_model_override @ tools/cronjob_tools.py:_resolve_model_override */
+/* PoP: into @ tools/cronjob_tools.py:_resolve_model_override */
 /* Port of Python tools/cronjob_tools.py:_resolve_model_override().
  * Resolves a model override object into (provider, model) for job storage.
  * If provider is omitted, pins the current main provider from config so the
@@ -303,7 +303,7 @@ static char *normalize_deliver_param(const json_t *value)
  * demoted (clear error / safe no-op — never fake-success).
  * ======================================================================== */
 
-/* PoP: check_cronjob_requirements @ tools/cronjob_tools.py:check_cronjob_requirements */
+/* PoP: check @ tools/cronjob_tools.py:check_cronjob_requirements */
 /* Pure env-var truthiness check (mirrors utils.env_var_enabled: 1/true/yes/on). */
 bool cronjob_check_cronjob_requirements(void)
 {
@@ -323,7 +323,7 @@ bool cronjob_check_cronjob_requirements(void)
     return false;
 }
 
-/* PoP: _validate_cron_script_path @ tools/cronjob_tools.py:_validate_cron_script_path */
+/* PoP: cronjob_validate_cron_script_path @ tools/cronjob_tools.py:_validate_cron_script_path */
 /* API-boundary guard: scripts must be relative paths within HERMES_HOME/scripts/.
  * Rejects absolute / ~ / Windows-drive prefixes and `..` traversal. */
 char *cronjob_validate_cron_script_path(const char *script)
@@ -359,7 +359,7 @@ char *cronjob_validate_cron_script_path(const char *script)
     return NULL;
 }
 
-/* PoP: _format_job @ tools/cronjob_tools.py:_format_job */
+/* PoP: cronjob_format_job @ tools/cronjob_tools.py:_format_job */
 /* Pure job-dict -> display-dict formatter. */
 json_t *cronjob_format_job(const json_t *job)
 {
@@ -438,7 +438,7 @@ json_t *cronjob_format_job(const json_t *job)
     return r;
 }
 
-/* PoP: _validate_cron_base_url @ tools/cronjob_tools.py:_validate_cron_base_url */
+/* PoP: cronjob_validate_cron_base_url @ tools/cronjob_tools.py:_validate_cron_base_url */
 /* SECURITY: rejects pairing a named provider's stored credential with an
  * off-host base_url (credential exfil, CWE-200/522). Python host-matches
  * against the provider registry; this C port has no provider-registry, so it
@@ -477,7 +477,7 @@ char *cronjob_validate_cron_base_url(const char *provider, const char *base_url)
     return msg;
 }
 
-/* PoP: _notify_provider_jobs_changed_safe @ tools/cronjob_tools.py:_notify_provider_jobs_changed_safe */
+/* PoP: cronjob_notify_provider_jobs_changed_safe @ tools/cronjob_tools.py:_notify_provider_jobs_changed_safe */
 /* Best-effort scheduler-provider notification. Mirrors Python: delegate to
  * notify_provider_jobs_changed() (src/cron/port_scheduler.c) and never let a
  * provider error propagate out of the tool. */
@@ -487,7 +487,7 @@ void cronjob_notify_provider_jobs_changed_safe(void)
     notify_provider_jobs_changed();
 }
 
-/* PoP: _execute_job_now @ tools/cronjob_tools.py:_execute_job_now */
+/* PoP: cronjob_execute_job_now @ tools/cronjob_tools.py:_execute_job_now */
 /* Execute a cron job immediately, outside the scheduler tick. Mirrors the
  * Python contract: returns {"claimed": bool, "success": bool, "error": str|null}.
  * Delegates to the shared C fire path cron_cmd_handler(action="run-now"), which
@@ -495,7 +495,7 @@ void cronjob_notify_provider_jobs_changed_safe(void)
  * the ticker uses, so failure/delivery behaviour cannot drift. The built-in C
  * scheduler has no separate CAS store, so an inline run IS the claim: a found +
  * triggered job maps to claimed=true; a missing/failed lookup to claimed=false. */
-/* PoP: _now @ gateway/session.py:_now */
+/* PoP: cronjob_execute_job_now @ gateway/session.py:_now */
 json_t *cronjob_execute_job_now(const json_t *job)
 {
     json_t *out = json_object();
@@ -556,7 +556,7 @@ json_t *cronjob_execute_job_now(const json_t *job)
     return out;
 }
 
-/* PoP: cronjob @ tools/cronjob_tools.py:cronjob */
+/* PoP: cron_cmd_handler @ tools/cronjob_tools.py:cronjob */
 /* Unified cron management dispatcher. The full CRUD + fire subsystem already
  * exists in the C port as cron_cmd_handler() (src/cron/cron_cli.c), wired to
  * g_cron_store, run_one_job, and the sqlite job store. This is the tool-schema

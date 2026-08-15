@@ -19,18 +19,18 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: register_provider @ agent/tts_registry.py:register_provider */
+/* PoP: ttsr_register_provider @ agent/tts_registry.py:register_provider */
 int ttsr_register_provider(const char *name, const char *provider_desc) {
     if (!name) return -1;
     return tts_register_provider(name, provider_desc) ? 0 : -1;
 }
 
-/* PoP: list_providers @ agent/tts_registry.py:list_providers */
+/* PoP: ttsr_list_providers @ agent/tts_registry.py:list_providers */
 char *ttsr_list_providers(void) {
     return tts_list_providers();
 }
 
-/* PoP: get_provider @ agent/tts_registry.py:get_provider */
+/* PoP: ttsr_get_provider @ agent/tts_registry.py:get_provider */
 char *ttsr_get_provider(const char *name) {
     /* Python: case-insensitive. */
     if (!name) return NULL;
@@ -38,7 +38,7 @@ char *ttsr_get_provider(const char *name) {
     return t ? strdup(t) : NULL;
 }
 
-/* PoP: _reset_for_tests @ agent/tts_registry.py:_reset_for_tests */
+/* PoP: ttsr_reset_for_tests @ agent/tts_registry.py:_reset_for_tests */
 int ttsr_reset_for_tests(void) {
     tts_reset_for_tests();
     return 0;

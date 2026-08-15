@@ -216,7 +216,7 @@ static tool_t *find_unlocked(const char *name) {
 /* ================================================================
  *  Registration
  * ================================================================ */
-/* PoP: crs_register @ tools/registry.py:register */
+/* PoP: registry_register @ tools/registry.py:register */
 
 bool registry_register(const char *name, const char *description,
                         const char *schema_json,
@@ -564,7 +564,7 @@ char *repair_tool_call(const char *tool_name) {
     #undef ADD_VAR
     #undef MAX_VARIANTS
 }
-/* PoP: dispatch @ tools/registry.py:dispatch */
+/* PoP: registry_dispatch @ tools/registry.py:dispatch */
 
 char *registry_dispatch(const char *name, const char *args_json,
                         const char *task_id)
@@ -770,7 +770,7 @@ const char *registry_get_toolset(const char *name) {
 }
 
 /* S14 gap #16: Rich query API — get tool schema JSON */
-/* PoP: get_schema @ tools/registry.py:get_schema */
+/* PoP: registry_get_schema @ tools/registry.py:get_schema */
 /* Port of Python tools/registry.py:get_schema(). */
 const char *registry_get_schema(const char *name) {
     if (!name) return "";
@@ -787,7 +787,7 @@ const char *registry_get_schema(const char *name) {
 }
 
 /* Rich query: return display emoji for a tool, or default (⚡) if unset */
-/* PoP: get_emoji @ tools/registry.py:get_emoji */
+/* PoP: registry_get_emoji @ tools/registry.py:get_emoji */
 /* Port of Python tools/registry.py:get_emoji(). */
 const char *registry_get_emoji(const char *name, const char *default_emoji) {
     if (!name) return default_emoji ? default_emoji : "\xE2\x9A\xA1";
@@ -1004,7 +1004,7 @@ bool registry_deregister(const char *name) {
 
 /* Return sorted unique toolset names present in the registry.
  * Caller frees the returned NULL-terminated char* array. */
-/* PoP: get_registered_toolset_names @ tools/registry.py:get_registered_toolset_names */
+/* PoP: registry_get_registered_toolset_names @ tools/registry.py:get_registered_toolset_names */
 char **registry_get_registered_toolset_names(size_t *out_n) {
     pthread_mutex_lock(&g_registry_mutex);
     char **names = calloc(g_registry.count + 1, sizeof(char*));
@@ -1029,7 +1029,7 @@ char **registry_get_registered_toolset_names(size_t *out_n) {
 
 /* Return sorted tool names registered under a given toolset.
  * Caller frees the returned NULL-terminated char* array. */
-/* PoP: get_tool_names_for_toolset @ tools/registry.py:get_tool_names_for_toolset */
+/* PoP: registry_get_tool_names_for_toolset @ tools/registry.py:get_tool_names_for_toolset */
 char **registry_get_tool_names_for_toolset(const char *toolset, size_t *out_n) {
     pthread_mutex_lock(&g_registry_mutex);
     char **names = calloc(g_registry.count + 1, sizeof(char*));
@@ -1052,7 +1052,7 @@ char **registry_get_tool_names_for_toolset(const char *toolset, size_t *out_n) {
 
 /* Return sorted names of every registered tool.
  * Caller frees the returned NULL-terminated char* array. */
-/* PoP: mm_get_all_tool_names @ tools/registry.py:get_all_tool_names */
+/* PoP: registry_get_all_tool_names @ tools/registry.py:get_all_tool_names */
 char **registry_get_all_tool_names(size_t *out_n) {
     pthread_mutex_lock(&g_registry_mutex);
     char **names = calloc(g_registry.count + 1, sizeof(char*));
@@ -1085,7 +1085,7 @@ char *registry_get_tool_to_toolset_map(void) {
 }
 
 /* Return the toolset a tool belongs to, or NULL. Caller does not own. */
-/* PoP: get_toolset_for_tool @ tools/registry.py:get_toolset_for_tool */
+/* PoP: registry_get_toolset_for_tool @ tools/registry.py:get_toolset_for_tool */
 const char *registry_get_toolset_for_tool(const char *name) {
     pthread_mutex_lock(&g_registry_mutex);
     const char *ts = NULL;

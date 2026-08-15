@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ tools/environments/ssh.py:__init__ */
+/* PoP: esh_init @ tools/environments/ssh.py:__init__ */
 char *esh_init(const char *cwd, long timeout_seconds, const char *host, const char *user) {
     char *out = NULL;
     asprintf(&out, "{\"cwd\": \"%s\", \"timeout\": %ld, \"host\": \"%s\", \"user\": \"%s\"}",
@@ -27,14 +27,14 @@ char *esh_init(const char *cwd, long timeout_seconds, const char *host, const ch
     return out;
 }
 
-/* PoP: _before_execute @ tools/environments/ssh.py:_before_execute */
+/* PoP: esh_before_execute @ tools/environments/ssh.py:_before_execute */
 int esh_before_execute(void) {
     /* Python: sync files via FileSyncManager. */
     printf("ssh files synced to remote (rate-limited)\n");
     return 0;
 }
 
-/* PoP: cleanup @ tools/environments/ssh.py:cleanup */
+/* PoP: esh_cleanup @ tools/environments/ssh.py:cleanup */
 int esh_cleanup(void) {
     /* Python: sync files from sandbox + close ssh control socket.
      * REAL: terminate the control socket if one exists, unlink it. */

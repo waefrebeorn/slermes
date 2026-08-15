@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: format_bytes @ hermes_cli/sizefmt.py:format_bytes */
+/* PoP: szf_format_bytes @ hermes_cli/sizefmt.py:format_bytes */
 char *szf_format_bytes(const char *input) {
     if (!input) return strdup("?");
     char *end = NULL;

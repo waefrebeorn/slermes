@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ agent/gemini_native_adapter.py:__init__ */
+/* PoP: gna2_error_init @ agent/gemini_native_adapter.py:__init__ */
 char *gna2_error_init(const char *message, long code, long status_code) {
     /* Python: typed error. */
     char *out = NULL;
@@ -28,7 +28,7 @@ char *gna2_error_init(const char *message, long code, long status_code) {
     return out;
 }
 
-/* PoP: create @ agent/gemini_native_adapter.py:create */
+/* PoP: gna2_create @ agent/gemini_native_adapter.py:create */
 char *gna2_create(const char *kwargs_json) {
     /* Python: delegate to client. */
     if (!kwargs_json) return NULL;
@@ -36,14 +36,14 @@ char *gna2_create(const char *kwargs_json) {
     return strdup("{}");
 }
 
-/* PoP: close @ agent/gemini_native_adapter.py:close */
+/* PoP: gna2_close @ agent/gemini_native_adapter.py:close */
 int gna2_close(void) {
     /* Python: close http. */
     printf("gemini http client closed\n");
     return 0;
 }
 
-/* PoP: _create_chat_completion @ agent/gemini_native_adapter.py:_create_chat_completion */
+/* PoP: gna2_create_chat_completion @ agent/gemini_native_adapter.py:_create_chat_completion */
 char *gna2_create_chat_completion(const char *extra_body_json) {
     /* Python: thinking config from extra_body. */
     if (!extra_body_json) return strdup("{}");
@@ -54,7 +54,7 @@ char *gna2_create_chat_completion(const char *extra_body_json) {
     return strdup(extra_body_json);
 }
 
-/* PoP: is_standard_key_auth_error @ agent/gemini_native_adapter.py:is_standard_key_auth_error */
+/* PoP: gna2_is_standard_key_auth_error @ agent/gemini_native_adapter.py:is_standard_key_auth_error */
 int gna2_is_standard_key_auth_error(int status, const char *error_message,
                                     const char *reason)
 {

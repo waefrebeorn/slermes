@@ -30,7 +30,7 @@ static const int SYNC_BACK_MAX_RETRIES = 3;
 static const int SYNC_BACK_BACKOFF[] = {2, 4, 8};
 static const long SYNC_BACK_MAX_BYTES = 2L * 1024 * 1024 * 1024;
 
-/* PoP: cli_tools_environments_file_sync_iter_sync_files @ tools/environments/file_sync.py:iter_sync_files */
+/* PoP: cli_tools_environments_file_sync__sha256_file @ tools/environments/file_sync.py:iter_sync_files */
 json_node_t* cli_tools_environments_file_sync_iter_sync_files(const char *container_base) {
     /*
      * Enumerate all files that should be synced to a remote environment.
@@ -45,7 +45,7 @@ json_node_t* cli_tools_environments_file_sync_iter_sync_files(const char *contai
     return files;
 }
 
-/* PoP: cli_tools_environments_file_sync_quoted_rm_command @ tools/environments/file_sync.py:quoted_rm_command */
+/* PoP: cli_tools_environments_file_sync__sha256_file @ tools/environments/file_sync.py:quoted_rm_command */
 char* cli_tools_environments_file_sync_quoted_rm_command(const char **paths, int path_count,
                                                            char *buf, size_t bufsz) {
     /*
@@ -81,7 +81,7 @@ char* cli_tools_environments_file_sync_quoted_rm_command(const char **paths, int
     return buf;
 }
 
-/* PoP: cli_tools_environments_file_sync_quoted_mkdir_command @ tools/environments/file_sync.py:quoted_mkdir_command */
+/* PoP: cli_tools_environments_file_sync__sha256_file @ tools/environments/file_sync.py:quoted_mkdir_command */
 char* cli_tools_environments_file_sync_quoted_mkdir_command(const char **dirs, int dir_count,
                                                               char *buf, size_t bufsz) {
     /*
@@ -99,7 +99,7 @@ char* cli_tools_environments_file_sync_quoted_mkdir_command(const char **dirs, i
     return buf;
 }
 
-/* PoP: cli_tools_environments_file_sync_unique_parent_dirs @ tools/environments/file_sync.py:unique_parent_dirs */
+/* PoP: cli_tools_environments_file_sync__sha256_file @ tools/environments/file_sync.py:unique_parent_dirs */
 json_node_t* cli_tools_environments_file_sync_unique_parent_dirs(json_node_t *files) {
     /*
      * Extract sorted unique parent directories from (host, remote) pairs.
@@ -269,7 +269,7 @@ int cli_tools_environments_file_sync__sync_back_transaction(
     return cli_tools_environments_file_sync__sync_back_impl(hermes_home, download_fn, download_ctx);
 }
 
-/* PoP: cli_tools_environments_file_sync__infer_host_path @ tools/environments/file_sync.py:_infer_host_path */
+/* PoP: Path @ tools/environments/file_sync.py:_infer_host_path */
 char* cli_tools_environments_file_sync__infer_host_path(const char *remote_path, json_node_t *file_mapping,
                                                          char *buf, size_t bufsz) {
     /*
@@ -310,7 +310,7 @@ static char *file_sync_resolve_host_path(const char *host_path) {
     return strdup(resolved);
 }
 
-/* PoP: cli_tools_environments_file_sync__credential_host_paths @ tools/environments/file_sync.py:_credential_host_paths */
+/* PoP: cli_tools_environments_file_sync__is_upload_only_host_path @ tools/environments/file_sync.py:_credential_host_paths */
 json_node_t* cli_tools_environments_file_sync__credential_host_paths(void) {
     /*
      * Return the credential files that are upload-only for remote sandboxes.

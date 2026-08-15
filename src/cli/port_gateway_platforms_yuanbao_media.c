@@ -95,7 +95,7 @@ int cli_gateway_platforms_yuanbao_media_download_url(
     return 0;
 }
 
-/* PoP: cli_gateway_platforms_yuanbao_media_get_cos_credentials @ gateway/platforms/yuanbao_media.py:get_cos_credentials */
+/* PoP: COS @ gateway/platforms/yuanbao_media.py:get_cos_credentials */
 
 /* Port of Python gateway/platforms/yuanbao_media.py:get_cos_credentials */
 /* Gets COS (Cloud Object Storage) upload credentials. */

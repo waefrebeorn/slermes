@@ -18,18 +18,18 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ hermes_cli/proxy/adapters/nous_portal.py:__init__ */
+/* PoP: npo_init @ hermes_cli/proxy/adapters/nous_portal.py:__init__ */
 char *npo_init(void) {
     /* Python: serialized proxy state + refresh. */
     return strdup("{\"lock\": \"process-local\", \"refresh\": \"cross-process\"}");
 }
 
-/* PoP: name @ hermes_cli/proxy/adapters/nous_portal.py:name */
+/* PoP: npo_name @ hermes_cli/proxy/adapters/nous_portal.py:name */
 char *npo_name(void) {
     return strdup("nous");
 }
 
-/* PoP: display_name @ hermes_cli/proxy/adapters/nous_portal.py:display_name */
+/* PoP: npo_display_name @ hermes_cli/proxy/adapters/nous_portal.py:display_name */
 char *npo_display_name(void) {
     return strdup("Nous Portal");
 }

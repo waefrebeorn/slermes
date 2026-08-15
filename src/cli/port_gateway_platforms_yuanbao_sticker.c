@@ -89,7 +89,7 @@ static const sticker_entry_t STICKER_MAP[] = {
 
 #define STICKER_COUNT 52
 
-/* PoP: cli_gateway_platforms_yuanbao_sticker_get_sticker_by_name @ gateway/platforms/yuanbao_sticker.py:get_sticker_by_name */
+/* PoP: cli_gateway_platforms_yuanbao_sticker__multiset_char_hit_ratio @ gateway/platforms/yuanbao_sticker.py:get_sticker_by_name */
 json_node_t* cli_gateway_platforms_yuanbao_sticker_get_sticker_by_name(const char *name) {
     /*
      * Find sticker by name with fuzzy matching.
@@ -119,7 +119,7 @@ json_node_t* cli_gateway_platforms_yuanbao_sticker_get_sticker_by_name(const cha
     return NULL;
 }
 
-/* PoP: cli_gateway_platforms_yuanbao_sticker_get_random_sticker @ gateway/platforms/yuanbao_sticker.py:get_random_sticker */
+/* PoP: cli_gateway_platforms_yuanbao_sticker__multiset_char_hit_ratio @ gateway/platforms/yuanbao_sticker.py:get_random_sticker */
 json_node_t* cli_gateway_platforms_yuanbao_sticker_get_random_sticker(const char *category) {
     /*
      * Return a random sticker, optionally filtered by category.
@@ -147,7 +147,7 @@ json_node_t* cli_gateway_platforms_yuanbao_sticker_get_random_sticker(const char
     return NULL;
 }
 
-/* PoP: cli_gateway_platforms_yuanbao_sticker_get_sticker_by_id @ gateway/platforms/yuanbao_sticker.py:get_sticker_by_id */
+/* PoP: cli_gateway_platforms_yuanbao_sticker__multiset_char_hit_ratio @ gateway/platforms/yuanbao_sticker.py:get_sticker_by_id */
 json_node_t* cli_gateway_platforms_yuanbao_sticker_get_sticker_by_id(const char *sticker_id) {
     /*
      * Find sticker by sticker_id (exact match).
@@ -164,7 +164,7 @@ json_node_t* cli_gateway_platforms_yuanbao_sticker_get_sticker_by_id(const char 
     return NULL;
 }
 
-/* PoP: cli_gateway_platforms_yuanbao_sticker__normalize_text @ gateway/platforms/yuanbao_sticker.py:_normalize_text */
+/* PoP: cli_gateway_platforms_yuanbao_sticker__multiset_char_hit_ratio @ gateway/platforms/yuanbao_sticker.py:_normalize_text */
 char* cli_gateway_platforms_yuanbao_sticker__normalize_text(const char *raw, char *buf, size_t bufsz) {
     /*
      * Normalize text: NFKC normalization, strip, lowercase.
@@ -187,7 +187,7 @@ char* cli_gateway_platforms_yuanbao_sticker__normalize_text(const char *raw, cha
     return buf;
 }
 
-/* PoP: cli_gateway_platforms_yuanbao_sticker__compact_text @ gateway/platforms/yuanbao_sticker.py:_compact_text */
+/* PoP: cli_gateway_platforms_yuanbao_sticker__multiset_char_hit_ratio @ gateway/platforms/yuanbao_sticker.py:_compact_text */
 char* cli_gateway_platforms_yuanbao_sticker__compact_text(const char *raw, char *buf, size_t bufsz) {
     /*
      * Compact text: normalize then remove punctuation and whitespace.

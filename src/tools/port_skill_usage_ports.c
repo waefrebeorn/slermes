@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _read_skill_name @ tools/skill_usage.py:_read_skill_name */
+/* PoP: sku_read_skill_name @ tools/skill_usage.py:_read_skill_name */
 char *sku_read_skill_name(const char *content) {
     /* Python: name: field from YAML frontmatter. */
     if (!content) return NULL;
@@ -33,7 +33,7 @@ char *sku_read_skill_name(const char *content) {
     return strndup(v, (size_t)(e - v));
 }
 
-/* PoP: set_state @ tools/skill_usage.py:set_state */
+/* PoP: sku_set_state @ tools/skill_usage.py:set_state */
 int sku_set_state(const char *skill_name, const char *state) {
     /* Python: invalid state or non-curator → no-op. */
     if (!skill_name || !state) return -1;
@@ -46,7 +46,7 @@ int sku_set_state(const char *skill_name, const char *state) {
     return 0;
 }
 
-/* PoP: forget @ tools/skill_usage.py:forget */
+/* PoP: sku_forget @ tools/skill_usage.py:forget */
 int sku_forget(const char *skill_name) {
     /* Python: drop entry on delete. */
     if (!skill_name) return -1;
@@ -54,7 +54,7 @@ int sku_forget(const char *skill_name) {
     return 0;
 }
 
-/* PoP: provenance @ tools/skill_usage.py:provenance */
+/* PoP: sku_provenance @ tools/skill_usage.py:provenance */
 char *sku_provenance(const char *skill_name) {
     /* Python: hub | bundled | agent. */
     if (!skill_name) return strdup("agent");
@@ -62,7 +62,7 @@ char *sku_provenance(const char *skill_name) {
     return strdup("agent");
 }
 
-/* PoP: _non_negative_int @ tools/skill_usage.py:_non_negative_int */
+/* PoP: skill_usage_non_negative_int @ tools/skill_usage.py:_non_negative_int */
 int skill_usage_non_negative_int(long value) {
     return value > 0 ? (int)value : 0;
 }

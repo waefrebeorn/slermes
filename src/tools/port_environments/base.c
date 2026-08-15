@@ -11,7 +11,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-/* PoP: poll @ tools/process_registry.py:ProcessRegistry.poll */
+/* PoP: env_poll @ tools/process_registry.py:ProcessRegistry.poll */
 /* Poll the environment — check if the child process is still running and
  * collect any new output. The ctx is a ProcessSession pointer. */
 void env_poll(void* ctx)
@@ -49,7 +49,7 @@ void env_poll(void* ctx)
     }
 }
 
-/* PoP: kill @ tools/process_registry.py:ProcessRegistry.kill */
+/* PoP: env_kill @ tools/process_registry.py:ProcessRegistry.kill */
 /* Kill the environment's child process. Sends SIGTERM first, then SIGKILL
  * after a short delay if the process doesn't exit. */
 void env_kill(void* ctx)

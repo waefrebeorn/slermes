@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_session_recovery_append_skipped_range @ hermes_cli/session_recovery.py:_append_skipped_range */
+/* PoP: hermes_cli_session_recovery_append_skipped_range_p @ hermes_cli/session_recovery.py:_append_skipped_range */
 json_t *hermes_cli_session_recovery_append_skipped_range_p(void) {
     return json_object();
 }

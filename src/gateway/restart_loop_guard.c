@@ -32,7 +32,7 @@ static void resolve_home(char *out, size_t outsz, const char *hermes_home) {
     snprintf(out, outsz, "%s", ".hermes");
 }
 
-/* PoP: ssc_sync_state_path @ gateway/restart_loop_guard.py:_state_path */
+/* PoP: restart_loop_state_path @ gateway/restart_loop_guard.py:_state_path */
 char *restart_loop_state_path(char *buf, size_t bufsz, const char *hermes_home) {
     char home[PATH_MAX];
     resolve_home(home, sizeof(home), hermes_home);
@@ -139,7 +139,7 @@ bool restart_loop_is_tripped(int max_restarts, int window_seconds, double now,
     return recent >= max_restarts;
 }
 
-/* PoP: scc_clear @ gateway/restart_loop_guard.py:clear */
+/* PoP: restart_loop_clear @ gateway/restart_loop_guard.py:clear */
 void restart_loop_clear(const char *hermes_home) {
     char path[PATH_MAX];
     if (!restart_loop_state_path(path, sizeof(path), hermes_home)) return;
@@ -162,7 +162,7 @@ double restart_loop_chain_gap(int window_seconds, int max_gap_seconds) {
     return (double)max_val;
 }
 
-/* PoP: _chain_ending_at @ gateway/restart_loop_guard.py:_chain_ending_at */
+/* PoP: restart_loop_chain_ending_at @ gateway/restart_loop_guard.py:_chain_ending_at */
 /* Returns JSON array of chain timestamps. Caller frees. */
 char *restart_loop_chain_ending_at(const char *boots_json, double ts, double gap) {
     if (!boots_json) return strdup("[]");

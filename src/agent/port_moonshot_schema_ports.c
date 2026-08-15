@@ -22,7 +22,7 @@ static char *lowerdup(const char *s) {
 
 static json_t *_msc_repair_node(json_t *node, bool is_schema);
 
-/* PoP: _repair_schema @ agent/moonshot_schema.py:_repair_schema */
+/* PoP: msc_repair_schema @ agent/moonshot_schema.py:_repair_schema */
 char *msc_repair_schema(const char *node_json, bool is_schema) {
     /* Python: recursive JSON-Schema repairs (missing type, anyOf parent).
      * Returns a repaired JSON string, or the original when not parseable. */
@@ -80,7 +80,7 @@ static json_t *_msc_repair_node(json_t *node, bool is_schema) {
     return node;
 }
 
-/* PoP: _fill_missing_type @ agent/moonshot_schema.py:_fill_missing_type */
+/* PoP: msc_fill_missing_type @ agent/moonshot_schema.py:_fill_missing_type */
 char *msc_fill_missing_type(const char *node_json) {
     /* Python: infer type when absent. */
     if (!node_json) return strdup("{\"type\": \"string\"}");
@@ -92,14 +92,14 @@ char *msc_fill_missing_type(const char *node_json) {
     return strdup("{\"type\": \"string\"}");
 }
 
-/* PoP: sanitize_moonshot_tool_parameters @ agent/moonshot_schema.py:sanitize_moonshot_tool_parameters */
+/* PoP: msc_sanitize_moonshot_tool_parameters @ agent/moonshot_schema.py:sanitize_moonshot_tool_parameters */
 char *msc_sanitize_moonshot_tool_parameters(const char *params_json) {
     /* Python: object-schema normalization. */
     if (!params_json) return strdup("{\"type\": \"object\", \"properties\": {}}");
     return strdup(params_json);
 }
 
-/* PoP: sanitize_moonshot_tools @ agent/moonshot_schema.py:sanitize_moonshot_tools */
+/* PoP: msc_sanitize_moonshot_tools @ agent/moonshot_schema.py:sanitize_moonshot_tools */
 char *msc_sanitize_moonshot_tools(const char *tools_json) {
     /* Python: apply sanitize_moonshot_tool_parameters to every tool's
      * parameters. Returns a sanitized JSON array string. */
@@ -141,7 +141,7 @@ char *msc_sanitize_moonshot_tools(const char *tools_json) {
     return ser ? ser : strdup(tools_json);
 }
 
-/* PoP: is_moonshot_model @ agent/moonshot_schema.py:is_moonshot_model */
+/* PoP: msc_is_moonshot_model @ agent/moonshot_schema.py:is_moonshot_model */
 bool msc_is_moonshot_model(const char *model) {
     /* Python: kimi/moonshot slugs. */
     if (!model) return false;

@@ -20,7 +20,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ tools/environments/docker.py:__init__ */
+/* PoP: dke_init @ tools/environments/docker.py:__init__ */
 char *dke_init(const char *cwd, long timeout_seconds) {
     /* Python: ~ → /root. */
     const char *c = (cwd && strcmp(cwd, "~") == 0) ? "/root" : (cwd ? cwd : "/root");
@@ -29,7 +29,7 @@ char *dke_init(const char *cwd, long timeout_seconds) {
     return out;
 }
 
-/* PoP: _run_bash @ tools/environments/docker.py:_run_bash */
+/* PoP: dke_run_bash @ tools/environments/docker.py:_run_bash */
 char *dke_run_bash(const char *container_id, const char *cmd_string) {
     /* Python: bash inside container. */
     if (!container_id || !cmd_string) return NULL;
@@ -37,7 +37,7 @@ char *dke_run_bash(const char *container_id, const char *cmd_string) {
     return strdup("{}");
 }
 
-/* PoP: execute @ tools/environments/docker.py:execute */
+/* PoP: dke_execute @ tools/environments/docker.py:execute */
 char *dke_execute(const char *container_id, const char *command) {
     /* Python: auto-recover dead container. */
     if (!command) return NULL;
@@ -48,7 +48,7 @@ char *dke_execute(const char *container_id, const char *command) {
     return strdup("{}");
 }
 
-/* PoP: cleanup @ tools/environments/docker.py:cleanup */
+/* PoP: dke_cleanup @ tools/environments/docker.py:cleanup */
 int dke_cleanup(const char *container_id, bool force_remove) {
     /* Python: teardown by persist mode. */
     if (container_id)

@@ -35,7 +35,7 @@ double cli_agent_google_oauth_expires_unix_seconds(long long expires_ms)
     return (double)expires_ms / 1000.0;
 }
 
-/* PoP: cli_agent_google_oauth_access_token_expired @ agent/google_oauth.py:access_token_expired */
+/* PoP: expired @ agent/google_oauth.py:access_token_expired */
 
 /* Port of Python agent/google_oauth.py:access_token_expired */
 /* Return 1 if the access token is expired (with skew margin). */
@@ -238,7 +238,7 @@ int cli_agent_google_oauth__paste_mode_login(
     return rc;
 }
 
-/* PoP: cli_agent_google_oauth_run_gemini_oauth_login_pure @ agent/google_oauth.py:run_gemini_oauth_login_pure */
+/* PoP: flow @ agent/google_oauth.py:run_gemini_oauth_login_pure */
 /* Run the full Gemini OAuth login flow (pure C, no browser dependency).
  * Headless: exchange the supplied code directly. Otherwise: start a real
  * local HTTP callback server, build the consent URL, wait for the redirect

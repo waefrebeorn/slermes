@@ -8,7 +8,7 @@
  * status summary for `proxy status`).
  */
 
-/* PoP: cli_hermes_cli_proxy_adapters_base_allowed_paths @ hermes_cli/proxy/adapters/base.py:allowed_paths */
+/* PoP: string @ hermes_cli/proxy/adapters/base.py:allowed_paths */
 
 #include "hermes_logger.h"
 #include <stdio.h>

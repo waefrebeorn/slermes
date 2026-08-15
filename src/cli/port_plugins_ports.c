@@ -22,7 +22,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ hermes_cli/plugins.py:__init__ */
+/* PoP: plg_init @ hermes_cli/plugins.py:__init__ */
 char *plg_init(const char *manifest_json) {
     /* Python: plugin facade. */
     if (!manifest_json) return NULL;
@@ -31,21 +31,21 @@ char *plg_init(const char *manifest_json) {
     return out;
 }
 
-/* PoP: llm @ hermes_cli/plugins.py:llm */
+/* PoP: plg_llm @ hermes_cli/plugins.py:llm */
 char *plg_llm(void) {
     /* Python: PluginLlm facade. */
     printf("plugin llm facade returned\n");
     return strdup("{}");
 }
 
-/* PoP: discover_and_load @ hermes_cli/plugins.py:discover_and_load */
+/* PoP: plg_discover_and_load @ hermes_cli/plugins.py:discover_and_load */
 char *plg_discover_and_load(bool force) {
     /* Python: scan all sources + load. */
     printf("plugins discovered + loaded (force=%d)\n", force);
     return strdup("[]");
 }
 
-/* PoP: _scan_directory @ hermes_cli/plugins.py:_scan_directory */
+/* PoP: plg_scan_directory @ hermes_cli/plugins.py:_scan_directory */
 char *plg_scan_directory(const char *path) {
     /* Python: plugin.yaml manifests from subdirs — REAL. */
     if (!path) return strdup("[]");
@@ -82,7 +82,7 @@ char *plg_scan_directory(const char *path) {
     return out;
 }
 
-/* PoP: invoke_hook @ hermes_cli/plugins.py:invoke_hook */
+/* PoP: plg_invoke_hook @ hermes_cli/plugins.py:invoke_hook */
 char *plg_invoke_hook(const char *hook_name, const char *args_json) {
     /* Python: call all registered callbacks. */
     if (!hook_name) return NULL;

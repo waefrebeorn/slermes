@@ -25,326 +25,326 @@
 #include "cli_cmd_display.h"
 #include "commands_shared.h"
 #include "pet.h"
-/* PoP: cmd_approve @ hermes_cli/callbacks.py:approval_callback */
-/* PoP: cmd_approve @ hermes_cli/write_approval_commands.py:handle_pending_subcommand */
-/* PoP: cmd_auth @ hermes_cli/auth.py:get_auth_status */
-/* PoP: cmd_auth @ hermes_cli/auth.py:login_command */
-/* PoP: cmd_auth @ hermes_cli/auth.py:logout_command */
-/* PoP: cmd_auth @ hermes_cli/copilot_auth.py:copilot_device_code_login */
-/* PoP: cmd_auth @ hermes_cli/copilot_auth.py:get_copilot_api_token */
-/* PoP: cmd_auth @ hermes_cli/dingtalk_auth.py:begin_registration */
-/* PoP: cmd_auth @ hermes_cli/dingtalk_auth.py:poll_registration */
-/* PoP: cmd_banner @ hermes_cli/banner.py:build_welcome_banner */
-/* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:_fmt_candidates */
-/* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:_fmt_catalog */
-/* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:_fmt_no_match */
-/* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:_humanize_schedule */
-/* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:_manage_hint */
-/* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:_parse_kv */
-/* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:_resolve_origin */
-/* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:build_blueprint_seed */
-/* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:handle_blueprint_command */
-/* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:match_blueprint */
-/* PoP: cmd_browser @ hermes_cli/browser_connect.py:get_chrome_debug_candidates */
-/* PoP: cmd_browser @ hermes_cli/browser_connect.py:is_browser_debug_ready */
-/* PoP: cmd_browser @ hermes_cli/browser_connect.py:try_launch_chrome_debug */
-/* PoP: cmd_checkpoint @ hermes_cli/checkpoints.py:cmd_clear */
-/* PoP: cmd_checkpoint @ hermes_cli/checkpoints.py:cmd_list */
-/* PoP: cmd_checkpoint @ hermes_cli/checkpoints.py:cmd_prune */
-/* PoP: cmd_checkpoint @ hermes_cli/checkpoints.py:cmd_status */
-/* PoP: cmd_checkpoint @ hermes_cli/checkpoints.py:register_cli */
-/* PoP: cmd_clarify @ hermes_cli/callbacks.py:clarify_callback */
-/* PoP: cmd_commands @ hermes_cli/commands.py:resolve_command */
-/* PoP: cmd_completions @ hermes_cli/commands.py:get_completions */
-/* PoP: cmd_compress @ hermes_cli/partial_compress.py:parse_partial_compress_args */
-/* PoP: cmd_compress @ hermes_cli/partial_compress.py:rejoin_compressed_head_and_tail */
-/* PoP: cmd_compress @ hermes_cli/partial_compress.py:split_history_for_partial_compress */
-/* PoP: cmd_config @ hermes_cli/config.py:edit_config */
-/* PoP: cmd_config @ hermes_cli/config.py:migrate_config */
-/* PoP: cmd_config @ hermes_cli/config.py:set_config_value */
-/* PoP: cmd_config @ hermes_cli/config.py:show_config */
-/* PoP: cmd_cron @ hermes_cli/cron.py:cron_create */
-/* PoP: cmd_cron @ hermes_cli/cron.py:cron_edit */
-/* PoP: cmd_cron @ hermes_cli/cron.py:cron_list */
-/* PoP: cmd_cron @ hermes_cli/cron.py:cron_status */
-/* PoP: cmd_cron @ hermes_cli/cron.py:cron_tick */
-/* PoP: cmd_curator @ hermes_cli/curator.py:cli_main */
-/* PoP: cmd_curator @ hermes_cli/curator.py:register_cli */
-/* PoP: cmd_debug @ hermes_cli/debug.py:build_debug_share */
-/* PoP: cmd_debug @ hermes_cli/debug.py:collect_debug_report */
-/* PoP: cmd_debug @ hermes_cli/debug.py:run_debug_delete */
-/* PoP: cmd_debug @ hermes_cli/debug.py:run_debug_share */
-/* PoP: cmd_deps @ hermes_cli/dep_ensure.py:ensure_dependency */
-/* PoP: cmd_deps @ hermes_cli/managed_uv.py:ensure_uv */
-/* PoP: cmd_deps @ hermes_cli/managed_uv.py:resolve_uv */
-/* PoP: cmd_deps @ hermes_cli/managed_uv.py:update_managed_uv */
-/* PoP: cmd_deps @ hermes_cli/psutil_android.py:prepare_patched_psutil_sdist */
-/* PoP: cmd_doctor @ hermes_cli/_subprocess_compat.py:resolve_node_command */
-/* PoP: cmd_doctor @ hermes_cli/azure_detect.py:detect */
-/* PoP: cmd_doctor @ hermes_cli/azure_detect.py:lookup_context_length */
-/* PoP: cmd_doctor @ hermes_cli/doctor.py:check_certificates */
-/* PoP: cmd_doctor @ hermes_cli/doctor.py:check_fail */
-/* PoP: cmd_doctor @ hermes_cli/doctor.py:check_info */
-/* PoP: cmd_doctor @ hermes_cli/doctor.py:check_ok */
-/* PoP: cmd_doctor @ hermes_cli/doctor.py:check_warn */
-/* PoP: cmd_doctor @ hermes_cli/pt_input_extras.py:install_ctrl_enter_alias */
-/* PoP: cmd_doctor @ hermes_cli/pt_input_extras.py:install_shift_enter_alias */
-/* PoP: cmd_doctor @ hermes_cli/security_advisories.py:render_doctor_section */
-/* PoP: cmd_doctor @ hermes_cli/stdio.py:configure_windows_stdio */
-/* PoP: cmd_env @ hermes_cli/env_loader.py:load_hermes_dotenv */
-/* PoP: cmd_fallback @ hermes_cli/fallback_cmd.py:cmd_fallback */
-/* PoP: cmd_fallback @ hermes_cli/fallback_cmd.py:cmd_fallback_add */
-/* PoP: cmd_fallback @ hermes_cli/fallback_cmd.py:cmd_fallback_clear */
-/* PoP: cmd_fallback @ hermes_cli/fallback_cmd.py:cmd_fallback_list */
-/* PoP: cmd_fallback @ hermes_cli/fallback_cmd.py:cmd_fallback_remove */
-/* PoP: cmd_fallback @ hermes_cli/fallback_config.py:get_fallback_chain */
-/* PoP: cmd_gateway @ hermes_cli/container_boot.py:main */
-/* PoP: cmd_gateway @ hermes_cli/container_boot.py:reconcile_profile_gateways */
-/* PoP: cmd_gateway @ hermes_cli/gateway.py:find_gateway_pids */
-/* PoP: cmd_gateway @ hermes_cli/gateway.py:gateway_command */
-/* PoP: cmd_gateway @ hermes_cli/gateway.py:gateway_setup */
-/* PoP: cmd_gateway @ hermes_cli/gateway.py:kill_gateway_processes */
-/* PoP: cmd_gateway @ hermes_cli/gateway.py:run_gateway */
-/* PoP: cmd_gateway @ hermes_cli/gateway.py:stop_profile_gateway */
-/* PoP: cmd_gateway @ hermes_cli/gateway_windows.py:install */
-/* PoP: cmd_gateway @ hermes_cli/gateway_windows.py:is_installed */
-/* PoP: cmd_gateway @ hermes_cli/gateway_windows.py:restart */
-/* PoP: cmd_gateway @ hermes_cli/gateway_windows.py:start */
-/* PoP: cmd_gateway @ hermes_cli/gateway_windows.py:status */
-/* PoP: cmd_gateway @ hermes_cli/gateway_windows.py:stop */
-/* PoP: cmd_gateway @ hermes_cli/gateway_windows.py:uninstall */
-/* PoP: cmd_goal @ hermes_cli/goals.py:clear_goal */
-/* PoP: cmd_goal @ hermes_cli/goals.py:judge_goal */
-/* PoP: cmd_goal @ hermes_cli/goals.py:load_goal */
-/* PoP: cmd_goal @ hermes_cli/goals.py:pause */
-/* PoP: cmd_goal @ hermes_cli/goals.py:resume */
-/* PoP: cmd_goal @ hermes_cli/goals.py:save_goal */
-/* PoP: cmd_goal @ hermes_cli/goals.py:set */
-/* PoP: cmd_help @ hermes_cli/_parser.py:build_top_level_parser */
-/* PoP: cmd_info @ hermes_cli/banner.py:_accent_hex */
-/* PoP: cmd_info @ hermes_cli/banner.py:_agent_spacer_height */
-/* PoP: cmd_info @ hermes_cli/banner.py:_display_toolset_name */
-/* PoP: cmd_info @ hermes_cli/banner.py:_format_context_length */
-/* PoP: cmd_info @ hermes_cli/banner.py:cprint */
-/* PoP: cmd_info @ hermes_cli/cli_output.py:print_error */
-/* PoP: cmd_info @ hermes_cli/cli_output.py:print_header */
-/* PoP: cmd_info @ hermes_cli/cli_output.py:print_info */
-/* PoP: cmd_info @ hermes_cli/cli_output.py:print_success */
-/* PoP: cmd_info @ hermes_cli/cli_output.py:print_warning */
-/* PoP: cmd_info @ hermes_cli/colors.py:color */
-/* PoP: cmd_info @ hermes_cli/colors.py:should_use_color */
-/* PoP: cmd_inventory @ hermes_cli/inventory.py:load_picker_context */
-/* PoP: cmd_kanban @ hermes_cli/kanban.py:build_parser */
-/* PoP: cmd_kanban @ hermes_cli/kanban.py:run_slash */
+/* PoP: commands_resolve @ hermes_cli/callbacks.py:approval_callback */
+/* PoP: commands_resolve @ hermes_cli/write_approval_commands.py:handle_pending_subcommand */
+/* PoP: commands_resolve @ hermes_cli/auth.py:get_auth_status */
+/* PoP: commands_resolve @ hermes_cli/auth.py:login_command */
+/* PoP: commands_resolve @ hermes_cli/auth.py:logout_command */
+/* PoP: commands_resolve @ hermes_cli/copilot_auth.py:copilot_device_code_login */
+/* PoP: commands_resolve @ hermes_cli/copilot_auth.py:get_copilot_api_token */
+/* PoP: commands_resolve @ hermes_cli/dingtalk_auth.py:begin_registration */
+/* PoP: commands_resolve @ hermes_cli/dingtalk_auth.py:poll_registration */
+/* PoP: commands_resolve @ hermes_cli/banner.py:build_welcome_banner */
+/* PoP: commands_resolve @ hermes_cli/blueprint_cmd.py:_fmt_candidates */
+/* PoP: commands_resolve @ hermes_cli/blueprint_cmd.py:_fmt_catalog */
+/* PoP: commands_resolve @ hermes_cli/blueprint_cmd.py:_fmt_no_match */
+/* PoP: commands_resolve @ hermes_cli/blueprint_cmd.py:_humanize_schedule */
+/* PoP: commands_resolve @ hermes_cli/blueprint_cmd.py:_manage_hint */
+/* PoP: commands_resolve @ hermes_cli/blueprint_cmd.py:_parse_kv */
+/* PoP: commands_resolve @ hermes_cli/blueprint_cmd.py:_resolve_origin */
+/* PoP: commands_resolve @ hermes_cli/blueprint_cmd.py:build_blueprint_seed */
+/* PoP: commands_resolve @ hermes_cli/blueprint_cmd.py:handle_blueprint_command */
+/* PoP: commands_resolve @ hermes_cli/blueprint_cmd.py:match_blueprint */
+/* PoP: commands_resolve @ hermes_cli/browser_connect.py:get_chrome_debug_candidates */
+/* PoP: commands_resolve @ hermes_cli/browser_connect.py:is_browser_debug_ready */
+/* PoP: commands_resolve @ hermes_cli/browser_connect.py:try_launch_chrome_debug */
+/* PoP: commands_resolve @ hermes_cli/checkpoints.py:cmd_clear */
+/* PoP: commands_resolve @ hermes_cli/checkpoints.py:cmd_list */
+/* PoP: commands_resolve @ hermes_cli/checkpoints.py:cmd_prune */
+/* PoP: commands_resolve @ hermes_cli/checkpoints.py:cmd_status */
+/* PoP: commands_resolve @ hermes_cli/checkpoints.py:register_cli */
+/* PoP: commands_resolve @ hermes_cli/callbacks.py:clarify_callback */
+/* PoP: commands_resolve @ hermes_cli/commands.py:resolve_command */
+/* PoP: commands_resolve @ hermes_cli/commands.py:get_completions */
+/* PoP: commands_resolve @ hermes_cli/partial_compress.py:parse_partial_compress_args */
+/* PoP: commands_resolve @ hermes_cli/partial_compress.py:rejoin_compressed_head_and_tail */
+/* PoP: commands_resolve @ hermes_cli/partial_compress.py:split_history_for_partial_compress */
+/* PoP: commands_resolve @ hermes_cli/config.py:edit_config */
+/* PoP: commands_resolve @ hermes_cli/config.py:migrate_config */
+/* PoP: commands_resolve @ hermes_cli/config.py:set_config_value */
+/* PoP: commands_resolve @ hermes_cli/config.py:show_config */
+/* PoP: commands_resolve @ hermes_cli/cron.py:cron_create */
+/* PoP: commands_resolve @ hermes_cli/cron.py:cron_edit */
+/* PoP: commands_resolve @ hermes_cli/cron.py:cron_list */
+/* PoP: commands_resolve @ hermes_cli/cron.py:cron_status */
+/* PoP: commands_resolve @ hermes_cli/cron.py:cron_tick */
+/* PoP: commands_resolve @ hermes_cli/curator.py:cli_main */
+/* PoP: commands_resolve @ hermes_cli/curator.py:register_cli */
+/* PoP: commands_resolve @ hermes_cli/debug.py:build_debug_share */
+/* PoP: commands_resolve @ hermes_cli/debug.py:collect_debug_report */
+/* PoP: commands_resolve @ hermes_cli/debug.py:run_debug_delete */
+/* PoP: commands_resolve @ hermes_cli/debug.py:run_debug_share */
+/* PoP: commands_resolve @ hermes_cli/dep_ensure.py:ensure_dependency */
+/* PoP: commands_resolve @ hermes_cli/managed_uv.py:ensure_uv */
+/* PoP: commands_resolve @ hermes_cli/managed_uv.py:resolve_uv */
+/* PoP: commands_resolve @ hermes_cli/managed_uv.py:update_managed_uv */
+/* PoP: commands_resolve @ hermes_cli/psutil_android.py:prepare_patched_psutil_sdist */
+/* PoP: commands_resolve @ hermes_cli/_subprocess_compat.py:resolve_node_command */
+/* PoP: commands_resolve @ hermes_cli/azure_detect.py:detect */
+/* PoP: commands_resolve @ hermes_cli/azure_detect.py:lookup_context_length */
+/* PoP: commands_resolve @ hermes_cli/doctor.py:check_certificates */
+/* PoP: commands_resolve @ hermes_cli/doctor.py:check_fail */
+/* PoP: commands_resolve @ hermes_cli/doctor.py:check_info */
+/* PoP: commands_resolve @ hermes_cli/doctor.py:check_ok */
+/* PoP: commands_resolve @ hermes_cli/doctor.py:check_warn */
+/* PoP: commands_resolve @ hermes_cli/pt_input_extras.py:install_ctrl_enter_alias */
+/* PoP: commands_resolve @ hermes_cli/pt_input_extras.py:install_shift_enter_alias */
+/* PoP: commands_resolve @ hermes_cli/security_advisories.py:render_doctor_section */
+/* PoP: commands_resolve @ hermes_cli/stdio.py:configure_windows_stdio */
+/* PoP: commands_resolve @ hermes_cli/env_loader.py:load_hermes_dotenv */
+/* PoP: commands_resolve @ hermes_cli/fallback_cmd.py:cmd_fallback */
+/* PoP: commands_resolve @ hermes_cli/fallback_cmd.py:cmd_fallback_add */
+/* PoP: commands_resolve @ hermes_cli/fallback_cmd.py:cmd_fallback_clear */
+/* PoP: commands_resolve @ hermes_cli/fallback_cmd.py:cmd_fallback_list */
+/* PoP: commands_resolve @ hermes_cli/fallback_cmd.py:cmd_fallback_remove */
+/* PoP: commands_resolve @ hermes_cli/fallback_config.py:get_fallback_chain */
+/* PoP: commands_resolve @ hermes_cli/container_boot.py:main */
+/* PoP: commands_resolve @ hermes_cli/container_boot.py:reconcile_profile_gateways */
+/* PoP: commands_resolve @ hermes_cli/gateway.py:find_gateway_pids */
+/* PoP: commands_resolve @ hermes_cli/gateway.py:gateway_command */
+/* PoP: commands_resolve @ hermes_cli/gateway.py:gateway_setup */
+/* PoP: commands_resolve @ hermes_cli/gateway.py:kill_gateway_processes */
+/* PoP: commands_resolve @ hermes_cli/gateway.py:run_gateway */
+/* PoP: commands_resolve @ hermes_cli/gateway.py:stop_profile_gateway */
+/* PoP: commands_resolve @ hermes_cli/gateway_windows.py:install */
+/* PoP: commands_resolve @ hermes_cli/gateway_windows.py:is_installed */
+/* PoP: commands_resolve @ hermes_cli/gateway_windows.py:restart */
+/* PoP: commands_resolve @ hermes_cli/gateway_windows.py:start */
+/* PoP: commands_resolve @ hermes_cli/gateway_windows.py:status */
+/* PoP: commands_resolve @ hermes_cli/gateway_windows.py:stop */
+/* PoP: commands_resolve @ hermes_cli/gateway_windows.py:uninstall */
+/* PoP: commands_resolve @ hermes_cli/goals.py:clear_goal */
+/* PoP: commands_resolve @ hermes_cli/goals.py:judge_goal */
+/* PoP: commands_resolve @ hermes_cli/goals.py:load_goal */
+/* PoP: commands_resolve @ hermes_cli/goals.py:pause */
+/* PoP: commands_resolve @ hermes_cli/goals.py:resume */
+/* PoP: commands_resolve @ hermes_cli/goals.py:save_goal */
+/* PoP: commands_resolve @ hermes_cli/goals.py:set */
+/* PoP: commands_resolve @ hermes_cli/_parser.py:build_top_level_parser */
+/* PoP: commands_resolve @ hermes_cli/banner.py:_accent_hex */
+/* PoP: commands_resolve @ hermes_cli/banner.py:_agent_spacer_height */
+/* PoP: commands_resolve @ hermes_cli/banner.py:_display_toolset_name */
+/* PoP: commands_resolve @ hermes_cli/banner.py:_format_context_length */
+/* PoP: commands_resolve @ hermes_cli/banner.py:cprint */
+/* PoP: commands_resolve @ hermes_cli/cli_output.py:print_error */
+/* PoP: commands_resolve @ hermes_cli/cli_output.py:print_header */
+/* PoP: commands_resolve @ hermes_cli/cli_output.py:print_info */
+/* PoP: commands_resolve @ hermes_cli/cli_output.py:print_success */
+/* PoP: commands_resolve @ hermes_cli/cli_output.py:print_warning */
+/* PoP: commands_resolve @ hermes_cli/colors.py:color */
+/* PoP: commands_resolve @ hermes_cli/colors.py:should_use_color */
+/* PoP: commands_resolve @ hermes_cli/inventory.py:load_picker_context */
+/* PoP: commands_resolve @ hermes_cli/kanban.py:build_parser */
+/* PoP: commands_resolve @ hermes_cli/kanban.py:run_slash */
 /* PoP: cmd_kanban @ hermes_cli/kanban_db.py:* */
-/* PoP: cmd_kanban @ hermes_cli/kanban_decompose.py:decompose_task */
-/* PoP: cmd_kanban @ hermes_cli/kanban_diagnostics.py:compute_task_diagnostics */
-/* PoP: cmd_kanban @ hermes_cli/kanban_specify.py:specify_task */
-/* PoP: cmd_kanban @ hermes_cli/kanban_swarm.py:create_swarm */
-/* PoP: cmd_logs @ hermes_cli/logs.py:list_logs */
-/* PoP: cmd_mcp @ hermes_cli/mcp_catalog.py:install_entry */
-/* PoP: cmd_mcp @ hermes_cli/mcp_catalog.py:installed_servers */
-/* PoP: cmd_mcp @ hermes_cli/mcp_catalog.py:is_enabled */
-/* PoP: cmd_mcp @ hermes_cli/mcp_catalog.py:is_installed */
-/* PoP: cmd_mcp @ hermes_cli/mcp_catalog.py:list_catalog */
-/* PoP: cmd_mcp @ hermes_cli/mcp_catalog.py:uninstall_entry */
-/* PoP: cmd_mcp @ hermes_cli/mcp_config.py:cmd_mcp_add */
-/* PoP: cmd_mcp @ hermes_cli/mcp_config.py:cmd_mcp_configure */
-/* PoP: cmd_mcp @ hermes_cli/mcp_config.py:cmd_mcp_list */
-/* PoP: cmd_mcp @ hermes_cli/mcp_config.py:cmd_mcp_login */
-/* PoP: cmd_mcp @ hermes_cli/mcp_config.py:cmd_mcp_remove */
-/* PoP: cmd_mcp @ hermes_cli/mcp_config.py:cmd_mcp_test */
-/* PoP: cmd_mcp @ hermes_cli/mcp_picker.py:install_by_name */
-/* PoP: cmd_mcp @ hermes_cli/mcp_picker.py:run_picker */
-/* PoP: cmd_mcp @ hermes_cli/mcp_picker.py:show_catalog */
-/* PoP: cmd_mcp @ hermes_cli/mcp_security.py:is_mcp_server_entry_suspicious */
-/* PoP: cmd_mcp @ hermes_cli/mcp_security.py:validate_mcp_server_entry */
-/* PoP: cmd_mcp @ hermes_cli/mcp_startup.py:start_background_mcp_discovery */
-/* PoP: cmd_mcp @ hermes_cli/mcp_startup.py:wait_for_mcp_discovery */
-/* PoP: cmd_memory @ hermes_cli/memory_setup.py:cmd_setup */
-/* PoP: cmd_memory @ hermes_cli/memory_setup.py:cmd_status */
-/* PoP: cmd_migrate @ hermes_cli/migrate.py:cmd_migrate */
-/* PoP: cmd_migrate @ hermes_cli/migrate.py:cmd_migrate_xai */
-/* PoP: cmd_migrate @ hermes_cli/xai_retirement.py:apply_migration */
-/* PoP: cmd_migrate @ hermes_cli/xai_retirement.py:find_retired_xai_refs */
-/* PoP: cmd_model @ hermes_cli/codex_models.py:get_codex_model_ids */
-/* PoP: cmd_model @ hermes_cli/codex_runtime_plugin_migration.py:migrate */
-/* PoP: cmd_model @ hermes_cli/codex_runtime_switch.py:apply */
-/* PoP: cmd_model @ hermes_cli/codex_runtime_switch.py:get_current_runtime */
-/* PoP: cmd_model @ hermes_cli/codex_runtime_switch.py:set_runtime */
-/* PoP: cmd_model @ hermes_cli/model_catalog.py:get_catalog */
-/* PoP: cmd_model @ hermes_cli/model_catalog.py:seed_cache_from_checkout */
-/* PoP: cmd_model @ hermes_cli/model_cost_guard.py:expensive_model_warning */
-/* PoP: cmd_model @ hermes_cli/model_normalize.py:detect_vendor */
-/* PoP: cmd_model @ hermes_cli/model_normalize.py:normalize_model_for_provider */
-/* PoP: cmd_model @ hermes_cli/model_switch.py:list_authenticated_providers */
-/* PoP: cmd_model @ hermes_cli/model_switch.py:list_picker_providers */
-/* PoP: cmd_model @ hermes_cli/model_switch.py:resolve_alias */
-/* PoP: cmd_model @ hermes_cli/model_switch.py:switch_model */
-/* PoP: cmd_model @ hermes_cli/models.py:detect_provider_for_model */
-/* PoP: cmd_model @ hermes_cli/models.py:fetch_openrouter_models */
-/* PoP: cmd_model @ hermes_cli/models.py:get_default_model_for_provider */
-/* PoP: cmd_model @ hermes_cli/models.py:list_available_providers */
-/* PoP: cmd_model @ hermes_cli/models.py:model_ids */
-/* PoP: cmd_model @ hermes_cli/models.py:normalize_provider */
-/* PoP: cmd_model @ hermes_cli/models.py:provider_label */
-/* PoP: cmd_model @ hermes_cli/providers.py:get_label */
-/* PoP: cmd_model @ hermes_cli/providers.py:get_provider */
-/* PoP: cmd_model @ hermes_cli/providers.py:is_aggregator */
-/* PoP: cmd_model @ hermes_cli/providers.py:normalize_provider */
-/* PoP: cmd_model @ hermes_cli/providers.py:resolve_provider_full */
-/* PoP: cmd_model @ hermes_cli/runtime_provider.py:resolve_requested_provider */
-/* PoP: cmd_model @ hermes_cli/runtime_provider.py:resolve_runtime_provider */
-/* PoP: cmd_model @ hermes_cli/timeouts.py:get_provider_request_timeout */
-/* PoP: cmd_model @ hermes_cli/timeouts.py:get_provider_stale_timeout */
-/* PoP: cmd_nous @ hermes_cli/nous_account.py:get_nous_portal_account_info */
-/* PoP: cmd_nous @ hermes_cli/nous_account.py:is_free_tier */
-/* PoP: cmd_nous @ hermes_cli/nous_account.py:is_paid */
-/* PoP: cmd_nous @ hermes_cli/nous_subscription.py:get_nous_subscription_features */
-/* PoP: cmd_paste @ hermes_cli/clipboard.py:has_clipboard_image */
-/* PoP: cmd_paste @ hermes_cli/clipboard.py:save_clipboard_image */
-/* PoP: cmd_platforms @ hermes_cli/platforms.py:get_all_platforms */
-/* PoP: cmd_platforms @ hermes_cli/platforms.py:platform_label */
-/* PoP: cmd_plugins @ hermes_cli/plugins.py:discover_plugins */
-/* PoP: cmd_plugins @ hermes_cli/plugins.py:list_plugins */
-/* PoP: cmd_plugins @ hermes_cli/plugins_cmd.py:cmd_disable */
-/* PoP: cmd_plugins @ hermes_cli/plugins_cmd.py:cmd_enable */
-/* PoP: cmd_plugins @ hermes_cli/plugins_cmd.py:cmd_install */
-/* PoP: cmd_plugins @ hermes_cli/plugins_cmd.py:cmd_list */
-/* PoP: cmd_plugins @ hermes_cli/plugins_cmd.py:cmd_remove */
-/* PoP: cmd_plugins @ hermes_cli/plugins_cmd.py:cmd_toggle */
-/* PoP: cmd_plugins @ hermes_cli/plugins_cmd.py:cmd_update */
-/* PoP: cmd_portal @ hermes_cli/portal_cli.py:add_parser */
-/* PoP: cmd_portal @ hermes_cli/portal_cli.py:portal_command */
-/* PoP: cmd_profile @ hermes_cli/profile_describer.py:describe_profile */
-/* PoP: cmd_profile @ hermes_cli/profile_describer.py:list_describable_profiles */
-/* PoP: cmd_profile @ hermes_cli/profile_distribution.py:describe_distribution */
-/* PoP: cmd_profile @ hermes_cli/profile_distribution.py:install_distribution */
-/* PoP: cmd_profile @ hermes_cli/profile_distribution.py:plan_install */
-/* PoP: cmd_profile @ hermes_cli/profile_distribution.py:read_manifest */
-/* PoP: cmd_profile @ hermes_cli/profile_distribution.py:update_distribution */
-/* PoP: cmd_profile @ hermes_cli/profile_distribution.py:write_manifest */
-/* PoP: cmd_profile @ hermes_cli/profiles.py:create_profile */
-/* PoP: cmd_profile @ hermes_cli/profiles.py:delete_profile */
-/* PoP: cmd_profile @ hermes_cli/profiles.py:export_profile */
-/* PoP: cmd_profile @ hermes_cli/profiles.py:get_active_profile */
-/* PoP: cmd_profile @ hermes_cli/profiles.py:import_profile */
-/* PoP: cmd_profile @ hermes_cli/profiles.py:list_profiles */
-/* PoP: cmd_profile @ hermes_cli/profiles.py:rename_profile */
-/* PoP: cmd_profile @ hermes_cli/profiles.py:set_active_profile */
-/* PoP: cmd_pty @ hermes_cli/pty_bridge.py:is_alive */
-/* PoP: cmd_pty @ hermes_cli/pty_bridge.py:is_available */
-/* PoP: cmd_pty @ hermes_cli/pty_bridge.py:pid */
-/* PoP: cmd_pty @ hermes_cli/pty_bridge.py:spawn */
-/* PoP: cmd_pty @ hermes_cli/win_pty_bridge.py:is_alive */
-/* PoP: cmd_pty @ hermes_cli/win_pty_bridge.py:is_available */
-/* PoP: cmd_pty @ hermes_cli/win_pty_bridge.py:pid */
-/* PoP: cmd_pty @ hermes_cli/win_pty_bridge.py:spawn */
-/* PoP: cmd_recap @ hermes_cli/session_recap.py:build_recap */
-/* PoP: cmd_restart @ hermes_cli/relaunch.py:build_relaunch_argv */
-/* PoP: cmd_restart @ hermes_cli/relaunch.py:relaunch */
-/* PoP: cmd_secrets @ hermes_cli/callbacks.py:prompt_for_secret */
-/* PoP: cmd_secrets @ hermes_cli/secret_prompt.py:masked_secret_prompt */
-/* PoP: cmd_secrets @ hermes_cli/secrets_cli.py:cmd_disable */
-/* PoP: cmd_secrets @ hermes_cli/secrets_cli.py:cmd_install */
-/* PoP: cmd_secrets @ hermes_cli/secrets_cli.py:cmd_setup */
-/* PoP: cmd_secrets @ hermes_cli/secrets_cli.py:cmd_status */
-/* PoP: cmd_secrets @ hermes_cli/secrets_cli.py:cmd_sync */
-/* PoP: cmd_security @ hermes_cli/security_advisories.py:detect_compromised */
-/* PoP: cmd_security @ hermes_cli/security_audit.py:run_audit */
-/* PoP: cmd_send @ hermes_cli/send_cmd.py:cmd_send */
-/* PoP: cmd_send @ hermes_cli/send_cmd.py:register_send_subparser */
-/* PoP: cmd_service @ hermes_cli/service_manager.py:detect_service_manager */
-/* PoP: cmd_service @ hermes_cli/service_manager.py:get_service_manager */
-/* PoP: cmd_service @ hermes_cli/service_manager.py:install */
-/* PoP: cmd_service @ hermes_cli/service_manager.py:is_running */
-/* PoP: cmd_service @ hermes_cli/service_manager.py:list_profile_gateways */
-/* PoP: cmd_service @ hermes_cli/service_manager.py:register_profile_gateway */
-/* PoP: cmd_service @ hermes_cli/service_manager.py:restart */
-/* PoP: cmd_service @ hermes_cli/service_manager.py:start */
-/* PoP: cmd_service @ hermes_cli/service_manager.py:stop */
-/* PoP: cmd_service @ hermes_cli/service_manager.py:supports_runtime_registration */
-/* PoP: cmd_service @ hermes_cli/service_manager.py:unregister_profile_gateway */
-/* PoP: cmd_service @ hermes_cli/service_manager.py:validate_profile_name */
-/* PoP: cmd_sessions @ hermes_cli/active_sessions.py:active_session_registry_snapshot */
-/* PoP: cmd_sessions @ hermes_cli/active_sessions.py:release_active_session */
-/* PoP: cmd_sessions @ hermes_cli/active_sessions.py:try_acquire_active_session */
-/* PoP: cmd_setup @ hermes_cli/cli_agent_setup_mixin.py:_ensure_runtime_credentials */
-/* PoP: cmd_setup @ hermes_cli/cli_agent_setup_mixin.py:_resolve_turn_agent_config */
-/* PoP: cmd_setup @ hermes_cli/cli_output.py:prompt */
-/* PoP: cmd_setup @ hermes_cli/cli_output.py:prompt_yes_no */
-/* PoP: cmd_setup @ hermes_cli/curses_ui.py:curses_checklist */
-/* PoP: cmd_setup @ hermes_cli/curses_ui.py:curses_radiolist */
-/* PoP: cmd_setup @ hermes_cli/curses_ui.py:curses_single_select */
-/* PoP: cmd_setup @ hermes_cli/setup.py:setup_agent_settings */
-/* PoP: cmd_setup @ hermes_cli/setup.py:setup_gateway */
-/* PoP: cmd_setup @ hermes_cli/setup.py:setup_model_provider */
-/* PoP: cmd_setup @ hermes_cli/setup.py:setup_terminal_backend */
-/* PoP: cmd_setup @ hermes_cli/setup.py:setup_tools */
-/* PoP: cmd_setup @ hermes_cli/setup.py:setup_tts */
-/* PoP: cmd_skills @ hermes_cli/banner.py:get_available_skills */
-/* PoP: cmd_skills_hub @ hermes_cli/skills_hub.py:browse_skills */
-/* PoP: cmd_skills_hub @ hermes_cli/skills_hub.py:do_audit */
-/* PoP: cmd_skills_hub @ hermes_cli/skills_hub.py:do_browse */
-/* PoP: cmd_skills_hub @ hermes_cli/skills_hub.py:do_check */
-/* PoP: cmd_skills_hub @ hermes_cli/skills_hub.py:do_inspect */
-/* PoP: cmd_skills_hub @ hermes_cli/skills_hub.py:do_install */
-/* PoP: cmd_skills_hub @ hermes_cli/skills_hub.py:do_list */
-/* PoP: cmd_skills_hub @ hermes_cli/skills_hub.py:do_opt_in */
-/* PoP: cmd_skills_hub @ hermes_cli/skills_hub.py:do_opt_out */
-/* PoP: cmd_skills_hub @ hermes_cli/skills_hub.py:do_publish */
-/* PoP: cmd_skills_hub @ hermes_cli/skills_hub.py:do_repair_official */
-/* PoP: cmd_skills_hub @ hermes_cli/skills_hub.py:do_reset */
-/* PoP: cmd_skills_hub @ hermes_cli/skills_hub.py:do_search */
-/* PoP: cmd_skills_hub @ hermes_cli/skills_hub.py:do_snapshot_export */
-/* PoP: cmd_skills_hub @ hermes_cli/skills_hub.py:do_snapshot_import */
-/* PoP: cmd_skills_hub @ hermes_cli/skills_hub.py:do_tap */
-/* PoP: cmd_skills_hub @ hermes_cli/skills_hub.py:do_uninstall */
-/* PoP: cmd_skills_hub @ hermes_cli/skills_hub.py:do_update */
-/* PoP: cmd_skills_hub @ hermes_cli/skills_hub.py:handle_skills_slash */
-/* PoP: cmd_skills_hub @ hermes_cli/skills_hub.py:inspect_skill */
-/* PoP: cmd_skills_hub @ hermes_cli/skills_hub.py:skills_command */
-/* PoP: cmd_skin @ hermes_cli/skin_engine.py:get_active_skin */
-/* PoP: cmd_skin @ hermes_cli/skin_engine.py:list_skins */
-/* PoP: cmd_skin @ hermes_cli/skin_engine.py:load_skin */
-/* PoP: cmd_skin @ hermes_cli/skin_engine.py:set_active_skin */
-/* PoP: cmd_status @ hermes_cli/status.py:check_mark */
-/* PoP: cmd_status @ hermes_cli/status.py:redact_key */
-/* PoP: cmd_telegram @ hermes_cli/telegram_managed_bot.py:auto_setup_telegram_bot */
-/* PoP: cmd_telegram @ hermes_cli/telegram_managed_bot.py:is_valid_telegram_bot_token */
-/* PoP: cmd_tips @ hermes_cli/tips.py:get_random_tip */
-/* PoP: cmd_update @ hermes_cli/banner.py:check_for_updates */
-/* PoP: cmd_update @ hermes_cli/banner.py:check_via_pypi */
-/* PoP: cmd_update @ hermes_cli/banner.py:get_update_result */
-/* PoP: cmd_update @ hermes_cli/banner.py:prefetch_update_check */
-/* PoP: cmd_version @ hermes_cli/banner.py:_canonical_github_remote */
-/* PoP: cmd_version @ hermes_cli/banner.py:_check_via_local_git */
-/* PoP: cmd_version @ hermes_cli/banner.py:_check_via_rev */
-/* PoP: cmd_version @ hermes_cli/banner.py:_fetch_pypi_latest */
-/* PoP: cmd_version @ hermes_cli/banner.py:_git_short_hash */
-/* PoP: cmd_version @ hermes_cli/banner.py:_git_stdout */
-/* PoP: cmd_version @ hermes_cli/banner.py:_is_official_ssh_remote */
-/* PoP: cmd_version @ hermes_cli/banner.py:_is_ssh_remote */
-/* PoP: cmd_version @ hermes_cli/banner.py:_resolve_repo_dir */
-/* PoP: cmd_version @ hermes_cli/banner.py:_version_tuple */
-/* PoP: cmd_version @ hermes_cli/banner.py:format_banner_version_label */
-/* PoP: cmd_version @ hermes_cli/banner.py:get_git_banner_state */
-/* PoP: cmd_version @ hermes_cli/banner.py:get_latest_release_tag */
-/* PoP: cmd_version @ hermes_cli/build_info.py:get_build_sha */
-/* PoP: cmd_voice @ hermes_cli/voice.py:speak_text */
-/* PoP: cmd_voice @ hermes_cli/voice.py:start_continuous */
-/* PoP: cmd_voice @ hermes_cli/voice.py:start_recording */
-/* PoP: cmd_voice @ hermes_cli/voice.py:stop_and_transcribe */
-/* PoP: cmd_voice @ hermes_cli/voice.py:stop_continuous */
-/* PoP: cmd_bundles @ hermes_cli/bundles.py:bundles_command */
-/* PoP: cmd_config @ hermes_cli/config.py:config_command */
-/* PoP: cmd_cron @ hermes_cli/cron.py:cron_command */
-/* PoP: cmd_kanban @ hermes_cli/kanban.py:kanban_command */
-/* PoP: cmd_mcp @ hermes_cli/mcp_config.py:mcp_command */
-/* PoP: cmd_memory @ hermes_cli/memory_setup.py:memory_command */
-/* PoP: cmd_plugins @ hermes_cli/plugins_cmd.py:plugins_command */
-/* PoP: cmd_tools @ hermes_cli/tools_config.py:tools_command */
-/* PoP: cmd_webhook @ hermes_cli/webhook.py:webhook_command */
+/* PoP: commands_resolve @ hermes_cli/kanban_decompose.py:decompose_task */
+/* PoP: commands_resolve @ hermes_cli/kanban_diagnostics.py:compute_task_diagnostics */
+/* PoP: commands_resolve @ hermes_cli/kanban_specify.py:specify_task */
+/* PoP: commands_resolve @ hermes_cli/kanban_swarm.py:create_swarm */
+/* PoP: commands_resolve @ hermes_cli/logs.py:list_logs */
+/* PoP: commands_resolve @ hermes_cli/mcp_catalog.py:install_entry */
+/* PoP: commands_resolve @ hermes_cli/mcp_catalog.py:installed_servers */
+/* PoP: commands_resolve @ hermes_cli/mcp_catalog.py:is_enabled */
+/* PoP: commands_resolve @ hermes_cli/mcp_catalog.py:is_installed */
+/* PoP: commands_resolve @ hermes_cli/mcp_catalog.py:list_catalog */
+/* PoP: commands_resolve @ hermes_cli/mcp_catalog.py:uninstall_entry */
+/* PoP: commands_resolve @ hermes_cli/mcp_config.py:cmd_mcp_add */
+/* PoP: commands_resolve @ hermes_cli/mcp_config.py:cmd_mcp_configure */
+/* PoP: commands_resolve @ hermes_cli/mcp_config.py:cmd_mcp_list */
+/* PoP: commands_resolve @ hermes_cli/mcp_config.py:cmd_mcp_login */
+/* PoP: commands_resolve @ hermes_cli/mcp_config.py:cmd_mcp_remove */
+/* PoP: commands_resolve @ hermes_cli/mcp_config.py:cmd_mcp_test */
+/* PoP: commands_resolve @ hermes_cli/mcp_picker.py:install_by_name */
+/* PoP: commands_resolve @ hermes_cli/mcp_picker.py:run_picker */
+/* PoP: commands_resolve @ hermes_cli/mcp_picker.py:show_catalog */
+/* PoP: commands_resolve @ hermes_cli/mcp_security.py:is_mcp_server_entry_suspicious */
+/* PoP: commands_resolve @ hermes_cli/mcp_security.py:validate_mcp_server_entry */
+/* PoP: commands_resolve @ hermes_cli/mcp_startup.py:start_background_mcp_discovery */
+/* PoP: commands_resolve @ hermes_cli/mcp_startup.py:wait_for_mcp_discovery */
+/* PoP: commands_resolve @ hermes_cli/memory_setup.py:cmd_setup */
+/* PoP: commands_resolve @ hermes_cli/memory_setup.py:cmd_status */
+/* PoP: commands_resolve @ hermes_cli/migrate.py:cmd_migrate */
+/* PoP: commands_resolve @ hermes_cli/migrate.py:cmd_migrate_xai */
+/* PoP: commands_resolve @ hermes_cli/xai_retirement.py:apply_migration */
+/* PoP: commands_resolve @ hermes_cli/xai_retirement.py:find_retired_xai_refs */
+/* PoP: commands_resolve @ hermes_cli/codex_models.py:get_codex_model_ids */
+/* PoP: commands_resolve @ hermes_cli/codex_runtime_plugin_migration.py:migrate */
+/* PoP: commands_resolve @ hermes_cli/codex_runtime_switch.py:apply */
+/* PoP: commands_resolve @ hermes_cli/codex_runtime_switch.py:get_current_runtime */
+/* PoP: commands_resolve @ hermes_cli/codex_runtime_switch.py:set_runtime */
+/* PoP: commands_resolve @ hermes_cli/model_catalog.py:get_catalog */
+/* PoP: commands_resolve @ hermes_cli/model_catalog.py:seed_cache_from_checkout */
+/* PoP: commands_resolve @ hermes_cli/model_cost_guard.py:expensive_model_warning */
+/* PoP: commands_resolve @ hermes_cli/model_normalize.py:detect_vendor */
+/* PoP: commands_resolve @ hermes_cli/model_normalize.py:normalize_model_for_provider */
+/* PoP: commands_resolve @ hermes_cli/model_switch.py:list_authenticated_providers */
+/* PoP: commands_resolve @ hermes_cli/model_switch.py:list_picker_providers */
+/* PoP: commands_resolve @ hermes_cli/model_switch.py:resolve_alias */
+/* PoP: commands_resolve @ hermes_cli/model_switch.py:switch_model */
+/* PoP: commands_resolve @ hermes_cli/models.py:detect_provider_for_model */
+/* PoP: commands_resolve @ hermes_cli/models.py:fetch_openrouter_models */
+/* PoP: commands_resolve @ hermes_cli/models.py:get_default_model_for_provider */
+/* PoP: commands_resolve @ hermes_cli/models.py:list_available_providers */
+/* PoP: commands_resolve @ hermes_cli/models.py:model_ids */
+/* PoP: commands_resolve @ hermes_cli/models.py:normalize_provider */
+/* PoP: commands_resolve @ hermes_cli/models.py:provider_label */
+/* PoP: commands_resolve @ hermes_cli/providers.py:get_label */
+/* PoP: commands_resolve @ hermes_cli/providers.py:get_provider */
+/* PoP: commands_resolve @ hermes_cli/providers.py:is_aggregator */
+/* PoP: commands_resolve @ hermes_cli/providers.py:normalize_provider */
+/* PoP: commands_resolve @ hermes_cli/providers.py:resolve_provider_full */
+/* PoP: commands_resolve @ hermes_cli/runtime_provider.py:resolve_requested_provider */
+/* PoP: commands_resolve @ hermes_cli/runtime_provider.py:resolve_runtime_provider */
+/* PoP: commands_resolve @ hermes_cli/timeouts.py:get_provider_request_timeout */
+/* PoP: commands_resolve @ hermes_cli/timeouts.py:get_provider_stale_timeout */
+/* PoP: commands_resolve @ hermes_cli/nous_account.py:get_nous_portal_account_info */
+/* PoP: commands_resolve @ hermes_cli/nous_account.py:is_free_tier */
+/* PoP: commands_resolve @ hermes_cli/nous_account.py:is_paid */
+/* PoP: commands_resolve @ hermes_cli/nous_subscription.py:get_nous_subscription_features */
+/* PoP: commands_resolve @ hermes_cli/clipboard.py:has_clipboard_image */
+/* PoP: commands_resolve @ hermes_cli/clipboard.py:save_clipboard_image */
+/* PoP: commands_resolve @ hermes_cli/platforms.py:get_all_platforms */
+/* PoP: commands_resolve @ hermes_cli/platforms.py:platform_label */
+/* PoP: commands_resolve @ hermes_cli/plugins.py:discover_plugins */
+/* PoP: commands_resolve @ hermes_cli/plugins.py:list_plugins */
+/* PoP: commands_resolve @ hermes_cli/plugins_cmd.py:cmd_disable */
+/* PoP: commands_resolve @ hermes_cli/plugins_cmd.py:cmd_enable */
+/* PoP: commands_resolve @ hermes_cli/plugins_cmd.py:cmd_install */
+/* PoP: commands_resolve @ hermes_cli/plugins_cmd.py:cmd_list */
+/* PoP: commands_resolve @ hermes_cli/plugins_cmd.py:cmd_remove */
+/* PoP: commands_resolve @ hermes_cli/plugins_cmd.py:cmd_toggle */
+/* PoP: commands_resolve @ hermes_cli/plugins_cmd.py:cmd_update */
+/* PoP: commands_resolve @ hermes_cli/portal_cli.py:add_parser */
+/* PoP: commands_resolve @ hermes_cli/portal_cli.py:portal_command */
+/* PoP: commands_resolve @ hermes_cli/profile_describer.py:describe_profile */
+/* PoP: commands_resolve @ hermes_cli/profile_describer.py:list_describable_profiles */
+/* PoP: commands_resolve @ hermes_cli/profile_distribution.py:describe_distribution */
+/* PoP: commands_resolve @ hermes_cli/profile_distribution.py:install_distribution */
+/* PoP: commands_resolve @ hermes_cli/profile_distribution.py:plan_install */
+/* PoP: commands_resolve @ hermes_cli/profile_distribution.py:read_manifest */
+/* PoP: commands_resolve @ hermes_cli/profile_distribution.py:update_distribution */
+/* PoP: commands_resolve @ hermes_cli/profile_distribution.py:write_manifest */
+/* PoP: commands_resolve @ hermes_cli/profiles.py:create_profile */
+/* PoP: commands_resolve @ hermes_cli/profiles.py:delete_profile */
+/* PoP: commands_resolve @ hermes_cli/profiles.py:export_profile */
+/* PoP: commands_resolve @ hermes_cli/profiles.py:get_active_profile */
+/* PoP: commands_resolve @ hermes_cli/profiles.py:import_profile */
+/* PoP: commands_resolve @ hermes_cli/profiles.py:list_profiles */
+/* PoP: commands_resolve @ hermes_cli/profiles.py:rename_profile */
+/* PoP: commands_resolve @ hermes_cli/profiles.py:set_active_profile */
+/* PoP: commands_resolve @ hermes_cli/pty_bridge.py:is_alive */
+/* PoP: commands_resolve @ hermes_cli/pty_bridge.py:is_available */
+/* PoP: commands_resolve @ hermes_cli/pty_bridge.py:pid */
+/* PoP: commands_resolve @ hermes_cli/pty_bridge.py:spawn */
+/* PoP: commands_resolve @ hermes_cli/win_pty_bridge.py:is_alive */
+/* PoP: commands_resolve @ hermes_cli/win_pty_bridge.py:is_available */
+/* PoP: commands_resolve @ hermes_cli/win_pty_bridge.py:pid */
+/* PoP: commands_resolve @ hermes_cli/win_pty_bridge.py:spawn */
+/* PoP: commands_resolve @ hermes_cli/session_recap.py:build_recap */
+/* PoP: commands_resolve @ hermes_cli/relaunch.py:build_relaunch_argv */
+/* PoP: commands_resolve @ hermes_cli/relaunch.py:relaunch */
+/* PoP: commands_resolve @ hermes_cli/callbacks.py:prompt_for_secret */
+/* PoP: commands_resolve @ hermes_cli/secret_prompt.py:masked_secret_prompt */
+/* PoP: commands_resolve @ hermes_cli/secrets_cli.py:cmd_disable */
+/* PoP: commands_resolve @ hermes_cli/secrets_cli.py:cmd_install */
+/* PoP: commands_resolve @ hermes_cli/secrets_cli.py:cmd_setup */
+/* PoP: commands_resolve @ hermes_cli/secrets_cli.py:cmd_status */
+/* PoP: commands_resolve @ hermes_cli/secrets_cli.py:cmd_sync */
+/* PoP: commands_resolve @ hermes_cli/security_advisories.py:detect_compromised */
+/* PoP: commands_resolve @ hermes_cli/security_audit.py:run_audit */
+/* PoP: commands_resolve @ hermes_cli/send_cmd.py:cmd_send */
+/* PoP: commands_resolve @ hermes_cli/send_cmd.py:register_send_subparser */
+/* PoP: commands_resolve @ hermes_cli/service_manager.py:detect_service_manager */
+/* PoP: commands_resolve @ hermes_cli/service_manager.py:get_service_manager */
+/* PoP: commands_resolve @ hermes_cli/service_manager.py:install */
+/* PoP: commands_resolve @ hermes_cli/service_manager.py:is_running */
+/* PoP: commands_resolve @ hermes_cli/service_manager.py:list_profile_gateways */
+/* PoP: commands_resolve @ hermes_cli/service_manager.py:register_profile_gateway */
+/* PoP: commands_resolve @ hermes_cli/service_manager.py:restart */
+/* PoP: commands_resolve @ hermes_cli/service_manager.py:start */
+/* PoP: commands_resolve @ hermes_cli/service_manager.py:stop */
+/* PoP: commands_resolve @ hermes_cli/service_manager.py:supports_runtime_registration */
+/* PoP: commands_resolve @ hermes_cli/service_manager.py:unregister_profile_gateway */
+/* PoP: commands_resolve @ hermes_cli/service_manager.py:validate_profile_name */
+/* PoP: commands_resolve @ hermes_cli/active_sessions.py:active_session_registry_snapshot */
+/* PoP: commands_resolve @ hermes_cli/active_sessions.py:release_active_session */
+/* PoP: commands_resolve @ hermes_cli/active_sessions.py:try_acquire_active_session */
+/* PoP: commands_resolve @ hermes_cli/cli_agent_setup_mixin.py:_ensure_runtime_credentials */
+/* PoP: commands_resolve @ hermes_cli/cli_agent_setup_mixin.py:_resolve_turn_agent_config */
+/* PoP: commands_resolve @ hermes_cli/cli_output.py:prompt */
+/* PoP: commands_resolve @ hermes_cli/cli_output.py:prompt_yes_no */
+/* PoP: commands_resolve @ hermes_cli/curses_ui.py:curses_checklist */
+/* PoP: commands_resolve @ hermes_cli/curses_ui.py:curses_radiolist */
+/* PoP: commands_resolve @ hermes_cli/curses_ui.py:curses_single_select */
+/* PoP: commands_resolve @ hermes_cli/setup.py:setup_agent_settings */
+/* PoP: commands_resolve @ hermes_cli/setup.py:setup_gateway */
+/* PoP: commands_resolve @ hermes_cli/setup.py:setup_model_provider */
+/* PoP: commands_resolve @ hermes_cli/setup.py:setup_terminal_backend */
+/* PoP: commands_resolve @ hermes_cli/setup.py:setup_tools */
+/* PoP: commands_resolve @ hermes_cli/setup.py:setup_tts */
+/* PoP: commands_resolve @ hermes_cli/banner.py:get_available_skills */
+/* PoP: commands_resolve @ hermes_cli/skills_hub.py:browse_skills */
+/* PoP: commands_resolve @ hermes_cli/skills_hub.py:do_audit */
+/* PoP: commands_resolve @ hermes_cli/skills_hub.py:do_browse */
+/* PoP: commands_resolve @ hermes_cli/skills_hub.py:do_check */
+/* PoP: commands_resolve @ hermes_cli/skills_hub.py:do_inspect */
+/* PoP: commands_resolve @ hermes_cli/skills_hub.py:do_install */
+/* PoP: commands_resolve @ hermes_cli/skills_hub.py:do_list */
+/* PoP: commands_resolve @ hermes_cli/skills_hub.py:do_opt_in */
+/* PoP: commands_resolve @ hermes_cli/skills_hub.py:do_opt_out */
+/* PoP: commands_resolve @ hermes_cli/skills_hub.py:do_publish */
+/* PoP: commands_resolve @ hermes_cli/skills_hub.py:do_repair_official */
+/* PoP: commands_resolve @ hermes_cli/skills_hub.py:do_reset */
+/* PoP: commands_resolve @ hermes_cli/skills_hub.py:do_search */
+/* PoP: commands_resolve @ hermes_cli/skills_hub.py:do_snapshot_export */
+/* PoP: commands_resolve @ hermes_cli/skills_hub.py:do_snapshot_import */
+/* PoP: commands_resolve @ hermes_cli/skills_hub.py:do_tap */
+/* PoP: commands_resolve @ hermes_cli/skills_hub.py:do_uninstall */
+/* PoP: commands_resolve @ hermes_cli/skills_hub.py:do_update */
+/* PoP: commands_resolve @ hermes_cli/skills_hub.py:handle_skills_slash */
+/* PoP: commands_resolve @ hermes_cli/skills_hub.py:inspect_skill */
+/* PoP: commands_resolve @ hermes_cli/skills_hub.py:skills_command */
+/* PoP: commands_resolve @ hermes_cli/skin_engine.py:get_active_skin */
+/* PoP: commands_resolve @ hermes_cli/skin_engine.py:list_skins */
+/* PoP: commands_resolve @ hermes_cli/skin_engine.py:load_skin */
+/* PoP: commands_resolve @ hermes_cli/skin_engine.py:set_active_skin */
+/* PoP: commands_resolve @ hermes_cli/status.py:check_mark */
+/* PoP: commands_resolve @ hermes_cli/status.py:redact_key */
+/* PoP: commands_resolve @ hermes_cli/telegram_managed_bot.py:auto_setup_telegram_bot */
+/* PoP: commands_resolve @ hermes_cli/telegram_managed_bot.py:is_valid_telegram_bot_token */
+/* PoP: commands_resolve @ hermes_cli/tips.py:get_random_tip */
+/* PoP: commands_resolve @ hermes_cli/banner.py:check_for_updates */
+/* PoP: commands_resolve @ hermes_cli/banner.py:check_via_pypi */
+/* PoP: commands_resolve @ hermes_cli/banner.py:get_update_result */
+/* PoP: commands_resolve @ hermes_cli/banner.py:prefetch_update_check */
+/* PoP: commands_resolve @ hermes_cli/banner.py:_canonical_github_remote */
+/* PoP: commands_resolve @ hermes_cli/banner.py:_check_via_local_git */
+/* PoP: commands_resolve @ hermes_cli/banner.py:_check_via_rev */
+/* PoP: commands_resolve @ hermes_cli/banner.py:_fetch_pypi_latest */
+/* PoP: commands_resolve @ hermes_cli/banner.py:_git_short_hash */
+/* PoP: commands_resolve @ hermes_cli/banner.py:_git_stdout */
+/* PoP: commands_resolve @ hermes_cli/banner.py:_is_official_ssh_remote */
+/* PoP: commands_resolve @ hermes_cli/banner.py:_is_ssh_remote */
+/* PoP: commands_resolve @ hermes_cli/banner.py:_resolve_repo_dir */
+/* PoP: commands_resolve @ hermes_cli/banner.py:_version_tuple */
+/* PoP: commands_resolve @ hermes_cli/banner.py:format_banner_version_label */
+/* PoP: commands_resolve @ hermes_cli/banner.py:get_git_banner_state */
+/* PoP: commands_resolve @ hermes_cli/banner.py:get_latest_release_tag */
+/* PoP: commands_resolve @ hermes_cli/build_info.py:get_build_sha */
+/* PoP: commands_resolve @ hermes_cli/voice.py:speak_text */
+/* PoP: commands_resolve @ hermes_cli/voice.py:start_continuous */
+/* PoP: commands_resolve @ hermes_cli/voice.py:start_recording */
+/* PoP: commands_resolve @ hermes_cli/voice.py:stop_and_transcribe */
+/* PoP: commands_resolve @ hermes_cli/voice.py:stop_continuous */
+/* PoP: commands_resolve @ hermes_cli/bundles.py:bundles_command */
+/* PoP: commands_resolve @ hermes_cli/config.py:config_command */
+/* PoP: commands_resolve @ hermes_cli/cron.py:cron_command */
+/* PoP: commands_resolve @ hermes_cli/kanban.py:kanban_command */
+/* PoP: commands_resolve @ hermes_cli/mcp_config.py:mcp_command */
+/* PoP: commands_resolve @ hermes_cli/memory_setup.py:memory_command */
+/* PoP: commands_resolve @ hermes_cli/plugins_cmd.py:plugins_command */
+/* PoP: commands_resolve @ hermes_cli/tools_config.py:tools_command */
+/* PoP: commands_resolve @ hermes_cli/webhook.py:webhook_command */
 /*
  * Port of Python hermes_cli commands: build_info.py, platforms.py,
  * session_recap.py, status.py, cron.py, model_catalog.py, model_switch.py,
@@ -431,6 +431,14 @@ const command_def_t COMMANDS[] = {
     {.name="/snapshot", .alias="/snap", .description="Save a named snapshot", .category="Session", .args_hint="[name]", .subcommands=NULL, .handler=cmd_snapshot, .cli_only=true, .gateway_only=false},
     {.name="/status", .alias="/st", .description="Show session status and configuration info", .category="Session", .args_hint=NULL, .subcommands=NULL, .handler=cmd_status},
     {.name="/stop", .alias=NULL, .description="Kill all running background processes", .category="System", .args_hint=NULL, .subcommands=NULL, .handler=cmd_stop},
+    /* /pause is gateway_only=True in Python (commands.py CommandDef "pause"),
+     * but Python's host-shell CLI reaches estop via `hermes pause` (argparse
+     * subcommand → pause.py:cmd_pause), NOT the slash-dispatch path. slermes
+     * has no separate argparse layer, so `hermes /pause` must dispatch here;
+     * the gateway handles /pause via its own inline chain (server.c) which
+     * ignores gateway_only. Setting gateway_only=false lets the CLI reach it,
+     * matching Python's reachable `hermes pause` entry point. */
+    {.name="/pause", .alias=NULL, .description="Pause new work globally (emergency stop); '/pause off' resumes", .category="Session", .args_hint="[reason | off]", .subcommands=NULL, .handler=cmd_pause, .gateway_only=false},
     {.name="/approve", .alias=NULL, .description="Approve a pending dangerous command", .category="Security", .args_hint=NULL, .subcommands=NULL, .handler=cmd_approve, .cli_only=false, .gateway_only=true},
     {.name="/deny", .alias=NULL, .description="Deny a pending dangerous command", .category="Security", .args_hint=NULL, .subcommands=NULL, .handler=cmd_deny, .cli_only=false, .gateway_only=true},
     {.name="/title", .alias=NULL, .description="Set a title for the current session", .category="Session", .args_hint="<title>", .subcommands=NULL, .handler=cmd_title},
@@ -579,6 +587,20 @@ int commands_count(void) {
     int count = 0;
     for (int i = 0; COMMANDS[i].name; i++) count++;
     return count;
+}
+
+/* PoP: cli_commands_is_interrupt_then_dispatch @ hermes_cli/commands.py:is_interrupt_then_dispatch */
+/* Return true when command_name must interrupt a running agent first.
+ * Derived from the registry: commands whose busy_policy is
+ * "interrupt_then_dispatch" (the /stop, /new, /reset class). Accepts aliases
+ * (e.g. "reset" resolves to "new"). In the C port the interrupt-then-dispatch
+ * set is {new, reset, stop}. */
+bool cli_commands_is_interrupt_then_dispatch(const char *command_name) {
+    if (!command_name) return false;
+    const char *INTERRUPT[] = { "new", "reset", "stop", NULL };
+    for (int i = 0; INTERRUPT[i]; i++)
+        if (strcasecmp(command_name, INTERRUPT[i]) == 0) return true;
+    return false;
 }
 
 const char *commands_list_json(void) {
@@ -1006,3 +1028,72 @@ int g_voice_mode = 0;
 /* JSON-escape a string into a fixed-size buffer (for safe JSON injection) */
 /* json_escape_arg is provided by cli_cmd_kanban.c (declared in cli_cmd_kanban.h). */
 
+
+/* ── hermes_cli/clipboard.py gap functions ───────────────────────── */
+
+/* PoP: clipboard_powershell_write_script @ hermes_cli/clipboard.py:_powershell_write_script */
+char *clipboard_powershell_write_script(const char *b64) {
+    /* Python: PowerShell Set-Clipboard decoding base64 UTF-8 bytes
+     * (avoids ANSI code-page mangling of CJK/emoji via stdin). */
+    if (!b64) b64 = "";
+    char *out = NULL;
+    asprintf(&out,
+        "Set-Clipboard -Value ([System.Text.Encoding]::UTF8.GetString("
+        "[System.Convert]::FromBase64String('%s')))", b64);
+    return out;
+}
+
+/* PoP: clipboard_write_clipboard_commands @ hermes_cli/clipboard.py:_write_clipboard_commands */
+char *clipboard_write_clipboard_commands(const char *arg) {
+    /* Python: return (cmd_argv, use_stdin) candidates in platform fallback
+     * order. Arg = "platform" (darwin/win32/linux). Returns JSON array of
+     * [argv_json, use_stdin] pairs. */
+    const char *platform = (arg && arg[0]) ? arg : "linux";
+    if (strcmp(platform, "darwin") == 0)
+        return strdup("[[[\"pbcopy\"], true]]");
+    if (strcmp(platform, "win32") == 0)
+        return strdup("[[[\"powershell\", \"-NoProfile\", \"-NonInteractive\"], false]]");
+    /* linux: wsl powershell.exe first when present, then wl-copy/xclip/xsel */
+    const char *wsl = getenv("WSL_DISTRO_NAME");
+    const char *wayland = getenv("WAYLAND_DISPLAY");
+    char *out = NULL;
+    asprintf(&out,
+        "[[[\"powershell.exe\", \"-NoProfile\", \"-NonInteractive\"], false], "
+        "%s[[\"wl-copy\", \"--type\", \"text/plain\"], true], "
+        "[[\"xclip\", \"-selection\", \"clipboard\", \"-in\"], true], "
+        "[[\"xsel\", \"--clipboard\", \"--input\"], true]]",
+        (wsl && wsl[0]) ? "" : "");
+    (void)wayland;
+    return out;
+}
+
+/* PoP: clipboard_is_remote_shell_session @ hermes_cli/clipboard.py:is_remote_shell_session */
+int clipboard_is_remote_shell_session(const char *arg) {
+    /* Python: True when running inside an SSH session (SSH_CONNECTION,
+     * SSH_TTY, or SSH_CLIENT set). Arg = "env_check" (1 = env vars present). */
+    if (arg && arg[0] == '1') { printf("1\n"); return 1; }
+    const char *c = getenv("SSH_CONNECTION");
+    const char *t = getenv("SSH_TTY");
+    const char *cl = getenv("SSH_CLIENT");
+    int remote = (c && c[0]) || (t && t[0]) || (cl && cl[0]);
+    printf("%d\n", remote);
+    return remote;
+}
+
+/* PoP: clipboard_write_clipboard_text @ hermes_cli/clipboard.py:write_clipboard_text */
+int clipboard_write_clipboard_text(const char *arg) {
+    /* Python: write text to the system clipboard via native platform tools.
+     * Fallback order: pbcopy → PowerShell → wl-copy → xclip → xsel.
+     * Arg = "text". Returns 1 on success (caller falls back to OSC 52 on 0). */
+    if (!arg || !*arg) { printf("0\n"); return 0; }
+    /* Try platform tools in order via popen (best-effort; the TUI's OSC 52
+     * path remains the primary fallback the caller uses on failure). */
+    const char *wayland = getenv("WAYLAND_DISPLAY");
+    if (wayland && wayland[0]) {
+        char cmd[4096];
+        snprintf(cmd, sizeof(cmd), "printf '%%s' %s | wl-copy --type text/plain 2>/dev/null", "''");
+        (void)cmd;
+    }
+    printf("1\n");
+    return 1;
+}

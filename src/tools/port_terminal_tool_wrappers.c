@@ -33,7 +33,7 @@ static bool tt_cleanup_running = false;
 static pthread_t tt_cleanup_thread;
 static bool tt_cleanup_thread_started = false;
 
-/* PoP: _safe_parse_import_env @ tools/terminal_tool.py:_safe_parse_import_env */
+/* PoP: tt_u_safe_parse_import_env @ tools/terminal_tool.py:_safe_parse_import_env */
 int tt_u_safe_parse_import_env(const char *arg) {
     /* Python: converter with fallback. Arg = "raw\tvalid\tdefault\tvalue". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -46,7 +46,7 @@ int tt_u_safe_parse_import_env(const char *arg) {
     return 0;
 }
 
-/* PoP: _get_sudo_password_callback @ tools/terminal_tool.py:_get_sudo_password_callback */
+/* PoP: tt_u_get_sudo_password_callback @ tools/terminal_tool.py:_get_sudo_password_callback */
 int tt_u_get_sudo_password_callback(const char *arg) {
     /* Python: getattr(_callback_tls, "sudo_password", None). */
     (void)arg;
@@ -55,7 +55,7 @@ int tt_u_get_sudo_password_callback(const char *arg) {
     return 0;
 }
 
-/* PoP: _get_approval_callback @ tools/terminal_tool.py:_get_approval_callback */
+/* PoP: tt_u_get_approval_callback @ tools/terminal_tool.py:_get_approval_callback */
 int tt_u_get_approval_callback(const char *arg) {
     /* Python: getattr(_callback_tls, "approval", None). */
     (void)arg;
@@ -64,7 +64,7 @@ int tt_u_get_approval_callback(const char *arg) {
     return 0;
 }
 
-/* PoP: _get_sudo_password_cache_scope @ tools/terminal_tool.py:_get_sudo_password_cache_scope */
+/* PoP: tt_u_get_sudo_password_cache_scope @ tools/terminal_tool.py:_get_sudo_password_cache_scope */
 int tt_u_get_sudo_password_cache_scope(const char *arg) {
     /* Python: session/callback/thread scope. Arg = "session_key\tcallback\tthread". */
     if (!arg || !*arg) { printf("thread:<id>\n"); return 0; }
@@ -76,7 +76,7 @@ int tt_u_get_sudo_password_cache_scope(const char *arg) {
     return 0;
 }
 
-/* PoP: _get_cached_sudo_password @ tools/terminal_tool.py:_get_cached_sudo_password */
+/* PoP: tt_u_get_cached_sudo_password @ tools/terminal_tool.py:_get_cached_sudo_password */
 int tt_u_get_cached_sudo_password(const char *arg) {
     /* Python: locked _sudo_password_cache.get(scope, ""). Arg = scope. */
     (void)arg;
@@ -86,7 +86,7 @@ int tt_u_get_cached_sudo_password(const char *arg) {
     return 0;
 }
 
-/* PoP: _set_cached_sudo_password @ tools/terminal_tool.py:_set_cached_sudo_password */
+/* PoP: tt_u_set_cached_sudo_password @ tools/terminal_tool.py:_set_cached_sudo_password */
 int tt_u_set_cached_sudo_password(const char *arg) {
     /* Python: cache password under scope, or evict when empty. Arg =
      * "scope\tpassword" (password empty = evict). */
@@ -98,7 +98,7 @@ int tt_u_set_cached_sudo_password(const char *arg) {
     return 0;
 }
 
-/* PoP: _reset_cached_sudo_passwords @ tools/terminal_tool.py:_reset_cached_sudo_passwords */
+/* PoP: tt_u_reset_cached_sudo_passwords @ tools/terminal_tool.py:_reset_cached_sudo_passwords */
 int tt_u_reset_cached_sudo_passwords(const char *arg) {
     /* Python: clear sudo password cache. */
     (void)arg;
@@ -106,7 +106,7 @@ int tt_u_reset_cached_sudo_passwords(const char *arg) {
     return 0;
 }
 
-/* PoP: _docker_volume_uses_host_path @ tools/terminal_tool.py:_docker_volume_uses_host_path */
+/* PoP: tt_u_docker_volume_uses_host_path @ tools/terminal_tool.py:_docker_volume_uses_host_path */
 int tt_u_docker_volume_uses_host_path(const char *arg) {
     /* Python: a stripped spec starting with "/", "~", "./", "../" or a
      * Windows drive path (X:/ or X:\) is a host bind-mount. */
@@ -121,7 +121,7 @@ int tt_u_docker_volume_uses_host_path(const char *arg) {
     return 0;
 }
 
-/* PoP: _docker_has_host_access @ tools/terminal_tool.py:_docker_has_host_access */
+/* PoP: tt_u_docker_has_host_access @ tools/terminal_tool.py:_docker_has_host_access */
 int tt_u_docker_has_host_access(const char *arg) {
     /* Python: env_type docker AND (host_cwd+mount OR host-path volume).
      * Arg = "env_type\thost_cwd\tmount\tvolumes". */
@@ -143,7 +143,7 @@ int tt_u_docker_has_host_access(const char *arg) {
     return 0;
 }
 
-/* PoP: _check_all_guards @ tools/terminal_tool.py:_check_all_guards */
+/* PoP: tt_u_check_all_guards @ tools/terminal_tool.py:_check_all_guards */
 int tt_u_check_all_guards(const char *arg) {
     /* Python: consolidated guard result. Arg = "command\tapproved\tmessage". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -154,7 +154,7 @@ int tt_u_check_all_guards(const char *arg) {
     return 0;
 }
 
-/* PoP: _sudo_wrong_password_failure @ tools/terminal_tool.py:_sudo_wrong_password_failure */
+/* PoP: tt_u_sudo_wrong_password_failure @ tools/terminal_tool.py:_sudo_wrong_password_failure */
 int tt_u_sudo_wrong_password_failure(const char *arg) {
     /* Python: any(marker in output.lower() for marker in
      * _SUDO_WRONG_PASSWORD_MARKERS). Arg = command output. */
@@ -176,7 +176,7 @@ int tt_u_sudo_wrong_password_failure(const char *arg) {
     return 0;
 }
 
-/* PoP: _invalidate_cached_sudo_on_auth_failure @ tools/terminal_tool.py:_invalidate_cached_sudo_on_auth_failure */
+/* PoP: tt_u_invalidate_cached_sudo_on_auth_failure @ tools/terminal_tool.py:_invalidate_cached_sudo_on_auth_failure */
 int tt_u_invalidate_cached_sudo_on_auth_failure(const char *arg) {
     /* Python (command, output): env-configured SUDO_PASSWORD is an explicit
      * operator choice and is never dropped; otherwise the session-cached
@@ -206,7 +206,7 @@ int tt_u_invalidate_cached_sudo_on_auth_failure(const char *arg) {
     return 1;
 }
 
-/* PoP: _count_real_sudo_invocations @ tools/terminal_tool.py:_count_real_sudo_invocations */
+/* PoP: tt_u_count_real_sudo_invocations @ tools/terminal_tool.py:_count_real_sudo_invocations */
 int tt_u_count_real_sudo_invocations(const char *arg) {
     /* Python: tokeniser scan. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -218,7 +218,7 @@ int tt_u_count_real_sudo_invocations(const char *arg) {
     return 0;
 }
 
-/* PoP: record_session_cwd @ tools/terminal_tool.py:record_session_cwd */
+/* PoP: tt_record_session_cwd @ tools/terminal_tool.py:record_session_cwd */
 int tt_record_session_cwd(const char *arg) {
     /* Python: record cwd for key (ignore empty). Arg = "key\tcwd\tchanged". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -244,7 +244,7 @@ int tt_record_session_cwd(const char *arg) {
     return 0;
 }
 
-/* PoP: get_session_cwd @ tools/terminal_tool.py:get_session_cwd */
+/* PoP: tt_get_session_cwd @ tools/terminal_tool.py:get_session_cwd */
 int tt_get_session_cwd(const char *arg) {
     /* Python: recorded cwd for key or None. Arg = "key\tcwd" (cwd empty = none). */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -259,7 +259,7 @@ int tt_get_session_cwd(const char *arg) {
     return 0;
 }
 
-/* PoP: register_task_env_overrides @ tools/terminal_tool.py:register_task_env_overrides */
+/* PoP: tt_register_task_env_overrides @ tools/terminal_tool.py:register_task_env_overrides */
 int tt_register_task_env_overrides(const char *arg) {
     /* Python: override registration. Arg =
      * "has_cwd\tstate\tresult". */
@@ -293,7 +293,7 @@ int tt_register_task_env_overrides(const char *arg) {
     return 0;
 }
 
-/* PoP: clear_task_env_overrides @ tools/terminal_tool.py:clear_task_env_overrides */
+/* PoP: tt_clear_task_env_overrides @ tools/terminal_tool.py:clear_task_env_overrides */
 int tt_clear_task_env_overrides(const char *arg) {
     /* Python: _task_env_overrides.pop(task_id, None); clear_session_cwd(
      * task_id). Arg = task_id. */
@@ -303,7 +303,7 @@ int tt_clear_task_env_overrides(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_container_task_id @ tools/terminal_tool.py:_resolve_container_task_id */
+/* PoP: tt_u_resolve_container_task_id @ tools/terminal_tool.py:_resolve_container_task_id */
 int tt_u_resolve_container_task_id(const char *arg) {
     /* Python: isolation-keys gate. Arg =
      * "has_override\tisolation\tstate\tresult". */
@@ -325,7 +325,7 @@ int tt_u_resolve_container_task_id(const char *arg) {
     return 0;
 }
 
-/* PoP: resolve_task_overrides @ tools/terminal_tool.py:resolve_task_overrides */
+/* PoP: tt_resolve_task_overrides @ tools/terminal_tool.py:resolve_task_overrides */
 int tt_resolve_task_overrides(const char *arg) {
     /* Python: raw key then collapsed. Arg = "task_id\tstate\tresult". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -346,7 +346,7 @@ int tt_resolve_task_overrides(const char *arg) {
     return 0;
 }
 
-/* PoP: _parse_env_var @ tools/terminal_tool.py:_parse_env_var */
+/* PoP: tt_u_parse_env_var @ tools/terminal_tool.py:_parse_env_var */
 int tt_u_parse_env_var(const char *arg) {
     /* Python: converter over env value; ValueError with guidance. Arg =
      * "name\traw\tvalid\tvalue". */
@@ -364,7 +364,7 @@ int tt_u_parse_env_var(const char *arg) {
     return 0;
 }
 
-/* PoP: _safe_getcwd @ tools/terminal_tool.py:_safe_getcwd */
+/* PoP: tt_u_safe_getcwd @ tools/terminal_tool.py:_safe_getcwd */
 int tt_u_safe_getcwd(const char *arg) {
     /* Python: cwd or TERMINAL_CWD or home. Arg = "cwd\tstate\tfallback". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -376,7 +376,7 @@ int tt_u_safe_getcwd(const char *arg) {
     return 0;
 }
 
-/* PoP: _is_ssh_remote_tilde_cwd @ tools/terminal_tool.py:_is_ssh_remote_tilde_cwd */
+/* PoP: tt_u_is_ssh_remote_tilde_cwd @ tools/terminal_tool.py:_is_ssh_remote_tilde_cwd */
 int tt_u_is_ssh_remote_tilde_cwd(const char *arg) {
     /* Python (backend, cwd): only the ssh backend qualifies; then cwd must
      * be "~" or "~/...". The shim receives "backend\tcwd". */
@@ -389,7 +389,7 @@ int tt_u_is_ssh_remote_tilde_cwd(const char *arg) {
     return strcmp(cwd, "~") == 0 || strncmp(cwd, "~/", 2) == 0;
 }
 
-/* PoP: _is_unusable_container_cwd @ tools/terminal_tool.py:_is_unusable_container_cwd */
+/* PoP: tt_u_is_unusable_container_cwd @ tools/terminal_tool.py:_is_unusable_container_cwd */
 int tt_u_is_unusable_container_cwd(const char *arg) {
     /* Python: host/relative cwd check. Arg = "cwd\tis_abs\tstate". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -407,7 +407,7 @@ int tt_u_is_unusable_container_cwd(const char *arg) {
     return 0;
 }
 
-/* PoP: _ensure_terminal_env_bridged @ tools/terminal_tool.py:_ensure_terminal_env_bridged */
+/* PoP: tt_u_ensure_terminal_env_bridged @ tools/terminal_tool.py:_ensure_terminal_env_bridged */
 int tt_u_ensure_terminal_env_bridged(const char *arg) {
     /* Python: config backfill. Arg =
      * "env_set\tattempted\tstate\tresult". */
@@ -424,7 +424,7 @@ int tt_u_ensure_terminal_env_bridged(const char *arg) {
     return 0;
 }
 
-/* PoP: _get_modal_backend_state @ tools/terminal_tool.py:_get_modal_backend_state */
+/* PoP: tt_u_get_modal_backend_state @ tools/terminal_tool.py:_get_modal_backend_state */
 int tt_u_get_modal_backend_state(const char *arg) {
     /* Python: resolve_modal_backend_state(modal_mode, has_direct,
      * managed_ready). Arg = "mode\tdirect\tmanaged" (1/0). */
@@ -441,7 +441,7 @@ int tt_u_get_modal_backend_state(const char *arg) {
     return 0;
 }
 
-/* PoP: _cleanup_thread_worker @ tools/terminal_tool.py:_cleanup_thread_worker */
+/* PoP: tt_u_cleanup_thread_worker @ tools/terminal_tool.py:_cleanup_thread_worker */
 int tt_u_cleanup_thread_worker(const char *arg) {
     /* Python: periodic inactive-env cleanup loop. Arg = "running\tlifetime". */
     if (!arg || !*arg) { printf("cleanup worker idle\n"); return 0; }
@@ -452,7 +452,7 @@ int tt_u_cleanup_thread_worker(const char *arg) {
     return 0;
 }
 
-/* PoP: _start_cleanup_thread @ tools/terminal_tool.py:_start_cleanup_thread */
+/* PoP: tt_u_start_cleanup_thread @ tools/terminal_tool.py:_start_cleanup_thread */
 int tt_u_start_cleanup_thread(const char *arg) {
     /* Python: daemon cleanup thread guard. Arg = "1"/"0" running. */
     if (arg && arg[0] == '1') { printf("cleanup thread already running\n"); return 0; }
@@ -460,7 +460,7 @@ int tt_u_start_cleanup_thread(const char *arg) {
     return 0;
 }
 
-/* PoP: _stop_cleanup_thread @ tools/terminal_tool.py:_stop_cleanup_thread */
+/* PoP: tt_u_stop_cleanup_thread @ tools/terminal_tool.py:_stop_cleanup_thread */
 int tt_u_stop_cleanup_thread(const char *arg) {
     /* Python: _cleanup_running = False; join the thread (5s timeout). */
     (void)arg;
@@ -472,7 +472,7 @@ int tt_u_stop_cleanup_thread(const char *arg) {
     return 0;
 }
 
-/* PoP: _atexit_cleanup @ tools/terminal_tool.py:_atexit_cleanup */
+/* PoP: tt_u_atexit_cleanup @ tools/terminal_tool.py:_atexit_cleanup */
 int tt_u_atexit_cleanup(const char *arg) {
     /* Python: sandbox shutdown at exit. Arg = "count\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }

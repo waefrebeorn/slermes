@@ -376,7 +376,7 @@ const char *matrix_get_text(json_node_t *update) {
 
 /* Create a private room. Returns room_id string (static buf, valid until next call)
  * or NULL on failure. */
-/* PoP: create_room @ gateway/platforms/matrix.py:create_room */
+/* PoP: matrix_create_room @ gateway/platforms/matrix.py:create_room */
 /* Port of Python gateway/platforms/matrix.py:create_room(). */
 const char *matrix_create_room(http_client_t *http, const char *name,
                                 const char *alias, bool is_public) {

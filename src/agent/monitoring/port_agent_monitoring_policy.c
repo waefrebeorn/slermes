@@ -21,7 +21,7 @@
 #include "port_config_py_helpers.h"    /* config_py_load_config_readonly,
                                           config_py_save_value */
 
-/* PoP: ensure_install_id @ agent/monitoring/policy.py:ensure_install_id */
+/* PoP: config @ agent/monitoring/policy.py:ensure_install_id */
 /* Return a malloc'd stable install id. If config (a json object) already has a
  * non-blank monitoring.install_id string, return it. Otherwise mint uuid4,
  * persist it (fail-open), and update the in-memory config. Caller frees. */

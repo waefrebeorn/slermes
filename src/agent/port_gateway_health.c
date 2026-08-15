@@ -41,16 +41,16 @@ static const char *GW_SUPERVISION_MODES[] = {
     NULL
 };
 
-/* PoP: _allowed_logger @ agent/monitoring/gateway_health.py:_allowed_logger */
-/* PoP: _safe_metric_value @ agent/monitoring/gateway_health.py:_safe_metric_value */
-/* PoP: _base_attrs @ agent/monitoring/gateway_health.py:_base_attrs */
-/* PoP: _metric @ agent/monitoring/gateway_health.py:_metric */
-/* PoP: _safe_profile @ agent/monitoring/gateway_health.py:_safe_profile */
-/* PoP: _safe_version @ agent/monitoring/gateway_health.py:_safe_version */
-/* PoP: _coerce_pid @ agent/monitoring/gateway_health.py:_coerce_pid */
+/* PoP: str_in_list @ agent/monitoring/gateway_health.py:_allowed_logger */
+/* PoP: str_in_list @ agent/monitoring/gateway_health.py:_safe_metric_value */
+/* PoP: str_in_list @ agent/monitoring/gateway_health.py:_base_attrs */
+/* PoP: str_in_list @ agent/monitoring/gateway_health.py:_metric */
+/* PoP: str_in_list @ agent/monitoring/gateway_health.py:_safe_profile */
+/* PoP: str_in_list @ agent/monitoring/gateway_health.py:_safe_version */
+/* PoP: str_in_list @ agent/monitoring/gateway_health.py:_coerce_pid */
 /* PoP: GatewayDiagnosticLogHandler.__init__ @ agent/monitoring/gateway_health.py:GatewayDiagnosticLogHandler.__init__ */
 /* PoP: GatewayDiagnosticLogHandler.emit @ agent/monitoring/gateway_health.py:GatewayDiagnosticLogHandler.emit */
-/* PoP: emit_runtime_status_transition @ agent/monitoring/gateway_health.py:emit_runtime_status_transition */
+/* PoP: str_in_list @ agent/monitoring/gateway_health.py:emit_runtime_status_transition */
 static bool str_in_list(const char *s, const char **list) {
     if (!s) return false;
     for (int i = 0; list[i]; i++)
@@ -58,7 +58,7 @@ static bool str_in_list(const char *s, const char **list) {
     return false;
 }
 
-/* PoP: source_logger_for_export @ agent/monitoring/gateway_health.py:source_logger_for_export */
+/* PoP: gw_source_logger_for_export @ agent/monitoring/gateway_health.py:source_logger_for_export */
 const char *gw_source_logger_for_export(const char *name) {
     if (!name) return NULL;
     size_t len = strlen(name);
@@ -77,7 +77,7 @@ const char *gw_source_logger_for_export(const char *name) {
     return NULL;
 }
 
-/* PoP: redact_gateway_message @ agent/monitoring/gateway_health.py:redact_gateway_message */
+/* PoP: gw_redact_gateway_message @ agent/monitoring/gateway_health.py:redact_gateway_message */
 char *gw_redact_gateway_message(const char *message) {
     if (!message) return strdup("");
     /* Simple length-bound. Full redaction requires agent/monitoring/redaction. */
@@ -90,7 +90,7 @@ char *gw_redact_gateway_message(const char *message) {
     return out;
 }
 
-/* PoP: classify_gateway_error @ agent/monitoring/gateway_health.py:classify_gateway_error */
+/* PoP: gw_classify_gateway_error @ agent/monitoring/gateway_health.py:classify_gateway_error */
 const char *gw_classify_gateway_error(const char *raw) {
     if (!raw) return "unknown";
     /* Lowercase */
@@ -122,7 +122,7 @@ const char *gw_classify_gateway_error(const char *raw) {
     return "unknown";
 }
 
-/* PoP: classify_exit_reason @ agent/monitoring/gateway_health.py:classify_exit_reason */
+/* PoP: gw_classify_exit_reason @ agent/monitoring/gateway_health.py:classify_exit_reason */
 const char *gw_classify_exit_reason(const char *raw, const char *state, bool restart_requested) {
     if (restart_requested) return "restart_requested";
     if (!raw && state && strcmp(state, "startup_failed") != 0) return NULL;
@@ -146,7 +146,7 @@ const char *gw_classify_exit_reason(const char *raw, const char *state, bool res
     return classified;
 }
 
-/* PoP: _bounded_state @ agent/monitoring/gateway_health.py:_bounded_state */
+/* PoP: gw_bounded_state @ agent/monitoring/gateway_health.py:_bounded_state */
 const char *gw_bounded_state(const char *raw) {
     if (!raw) return "unknown";
     char buf[128];
@@ -162,7 +162,7 @@ const char *gw_bounded_state(const char *raw) {
     return "unknown";
 }
 
-/* PoP: _safe_instance_id @ agent/monitoring/gateway_health.py:_safe_instance_id */
+/* PoP: gw_safe_instance_id @ agent/monitoring/gateway_health.py:_safe_instance_id */
 char *gw_safe_instance_id(const char *raw) {
     const char *val = raw ? raw : "unknown";
     size_t vlen = strlen(val);
@@ -183,7 +183,7 @@ char *gw_safe_instance_id(const char *raw) {
     return out;
 }
 
-/* PoP: _parse_active_agents @ agent/monitoring/gateway_health.py:_parse_active_agents */
+/* PoP: gw_parse_active_agents @ agent/monitoring/gateway_health.py:_parse_active_agents */
 int gw_parse_active_agents(const char *raw) {
     if (!raw) return 0;
     char *end = NULL;
@@ -192,17 +192,17 @@ int gw_parse_active_agents(const char *raw) {
     return (v > 0) ? (int)v : 0;
 }
 
-/* PoP: _derive_busy @ agent/monitoring/gateway_health.py:_derive_busy */
+/* PoP: gw_derive_busy @ agent/monitoring/gateway_health.py:_derive_busy */
 bool gw_derive_busy(bool gateway_running, const char *gateway_state, int active_agents) {
     return gateway_running && gateway_state && strcmp(gateway_state, "running") == 0 && active_agents > 0;
 }
 
-/* PoP: _derive_drainable @ agent/monitoring/gateway_health.py:_derive_drainable */
+/* PoP: gw_derive_drainable @ agent/monitoring/gateway_health.py:_derive_drainable */
 bool gw_derive_drainable(bool gateway_running, const char *gateway_state) {
     return gateway_running && gateway_state && strcmp(gateway_state, "running") == 0;
 }
 
-/* PoP: subsystem_for_logger @ agent/monitoring/gateway_health.py:subsystem_for_logger */
+/* PoP: gw_subsystem_for_logger @ agent/monitoring/gateway_health.py:subsystem_for_logger */
 const char *gw_subsystem_for_logger(const char *logger_name) {
     if (!logger_name) return "gateway";
     if (strcmp(logger_name, "gateway.relay") == 0 ||
@@ -225,7 +225,7 @@ const char *gw_subsystem_for_logger(const char *logger_name) {
     return "gateway";
 }
 
-/* PoP: platform_for_subsystem @ agent/monitoring/gateway_health.py:platform_for_subsystem */
+/* PoP: gw_platform_for_subsystem @ agent/monitoring/gateway_health.py:platform_for_subsystem */
 const char *gw_platform_for_subsystem(const char *subsystem) {
     if (!subsystem || strncmp(subsystem, "platform.", 9) != 0)
         return NULL;

@@ -98,7 +98,7 @@ int gw_base__is_command(const char *text) {
     return text && text[0] == '/';
 }
 
-/* PoP: gw_base__get_command @ gateway/platforms/base.py:get_command */
+/* PoP: name @ gateway/platforms/base.py:get_command */
 /* Extract command name (lowercased, '@'-stripped, '/'-rejecting). Returns
  * malloc'd string or NULL. */
 char *gw_base__get_command(const char *text) {
@@ -138,7 +138,7 @@ char *gw_base__context_note(const char *kind, const char *display_name, const ch
     return out;
 }
 
-/* PoP: gw_base__resolve_channel_prompt @ gateway/platforms/base.py:resolve_channel_prompt */
+/* PoP: dict @ gateway/platforms/base.py:resolve_channel_prompt */
 /* Resolve a per-channel prompt from a config.extra dict (JSON). Prefers
  * channel_id, falls back to parent_id. Returns malloc'd prompt or NULL. */
 char *gw_base__resolve_channel_prompt(const char *extra_json, const char *channel_id, const char *parent_id) {
@@ -179,7 +179,7 @@ int gw_base__ssrf_redirect_guard(const char *url) {
     return 1; /* allow public http(s) */
 }
 
-/* PoP: gw_base__cache_image_from_url @ gateway/platforms/base.py:cache_image_from_url */
+/* PoP: path @ gateway/platforms/base.py:cache_image_from_url */
 /* Download an image URL to a cache file and return its path (malloc'd). The
  * HTTP GET is the boundary. Returns NULL on failure. */
 char *gw_base__cache_image_from_url(const char *url) {
@@ -260,7 +260,7 @@ char **gw_base__filter_local_delivery_paths(char **file_paths, int n) {
     return out;
 }
 
-/* PoP: gw_base__mask_protected_spans @ gateway/platforms/base.py:_mask_protected_spans */
+/* PoP: code @ gateway/platforms/base.py:_mask_protected_spans */
 /* Replace fenced code blocks, inline code (except backtick-quoted MEDIA: paths)
  * and blockquotes with spaces, preserving character count. Returns malloc'd. */
 char *gw_base__mask_protected_spans(const char *content) {
@@ -478,7 +478,7 @@ char *gw_base__apply_topic_recovery(const char *thread_id) {
  *  Capability flags, config resolution, and simple methods
  * ================================================================ */
 
-/* PoP: gw_base__resolve_channel_skills @ gateway/platforms/base.py:resolve_channel_skills */
+/* PoP: skill @ gateway/platforms/base.py:resolve_channel_skills */
 /* Resolve auto-loaded skill(s) for a channel from config.extra JSON.
  * Returns malloc'd NULL-terminated array of skill-name strings (caller frees
  * with gw_base_free_kv_list), or NULL if no match. */
@@ -535,7 +535,7 @@ int gw_base__prefers_fresh_final_streaming(const char *content, const char *meta
     return 0;
 }
 
-/* PoP: gw_base__streaming_overflow_limit @ gateway/platforms/base.py:streaming_overflow_limit */
+/* PoP: NULL @ gateway/platforms/base.py:streaming_overflow_limit */
 /* Returns NULL (0) to use MAX_MESSAGE_LENGTH — represented as -1 sentinel. */
 long gw_base__streaming_overflow_limit(void) { return -1; }
 
@@ -734,7 +734,7 @@ gw_base_send_result_t *gw_base__send_private_notice(const char *chat_id, const c
     return r;
 }
 
-/* PoP: gw_base__send_multiple_images @ gateway/platforms/base.py:send_multiple_images */
+/* PoP: of @ gateway/platforms/base.py:send_multiple_images */
 /* Send a batch of (url, alt) pairs. Each routed via cache/send. Returns 0 ok. */
 int gw_base__send_multiple_images(const char *chat_id, char **images, int n, float human_delay) {
     for (int i = 0; i < n; i++) {
@@ -905,7 +905,7 @@ int gw_base__is_queue_text_debounce_candidate(const char *busy_text_mode, int me
         && (text && text[0]);
 }
 
-/* PoP: gw_base__can_merge_text_debounce_events @ gateway/platforms/base.py:_can_merge_text_debounce_events */
+/* PoP: identity @ gateway/platforms/base.py:_can_merge_text_debounce_events */
 /* Two events merge if same sender identity (platform+user, or dm+chat). */
 int gw_base__can_merge_text_debounce_events(const char *pa, const char *pb) {
     /* pa/pb are "platform:user" or "platform:dm:chat" identity strings */
@@ -1068,7 +1068,7 @@ int gw_base__handle_message(const char *session_key, const char *text, int is_co
     return gw_base__start_session_processing(session_key, text);
 }
 
-/* PoP: gw_base__process_message_background @ gateway/platforms/base.py:_process_message_background */
+/* PoP: active @ gateway/platforms/base.py:_process_message_background */
 /* Python marks the session active (interrupt event) and spawns the async
  * processing task. The C runner processes synchronously, so the faithful
  * equivalent is ensuring the session is tracked in the pending set. */
@@ -1127,7 +1127,7 @@ char *gw_base__get_pending_message(const char *session_key) {
     return out;
 }
 
-/* PoP: gw_base__proxy_kwargs_for_bot @ gateway/platforms/base.py:proxy_kwargs_for_bot */
+/* PoP: URL @ gateway/platforms/base.py:proxy_kwargs_for_bot */
 /* Returns malloc'd proxy URL (the "proxy" field) or NULL if none. Caller frees. */
 char *gw_base__proxy_kwargs_for_bot(const char *proxy_url) {
     if (!proxy_url || !proxy_url[0]) return NULL;
@@ -1144,7 +1144,7 @@ gw_base_ephemeral_reply_t *gw_base__new_ephemeral_reply(const char *text, int tt
     return e;
 }
 
-/* PoP: gw_base__create_handoff_thread @ gateway/platforms/base.py:create_handoff_thread */
+/* PoP: NULL @ gateway/platforms/base.py:create_handoff_thread */
 /* Default base adapter has no threading support; returns NULL (caller falls
  * back to parent_chat_id). Platform adapters override. */
 char *gw_base__create_handoff_thread(const char *parent_chat_id, const char *name) {
@@ -1152,7 +1152,7 @@ char *gw_base__create_handoff_thread(const char *parent_chat_id, const char *nam
     return NULL;
 }
 
-/* PoP: gw_base__schedule_ephemeral_delete @ gateway/platforms/base.py:_schedule_ephemeral_delete */
+/* PoP: ttl_seconds @ gateway/platforms/base.py:_schedule_ephemeral_delete */
 /* Schedule a detached delete of message_id after ttl_seconds (best-effort).
  * Spawns a real pthread that sleeps then invokes the platform delete fn. */
 static void *gw_base__ephemeral_delete_worker(void *arg) {

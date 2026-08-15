@@ -38,7 +38,7 @@ static void config_path(char *buf, size_t sz) {
 }
 
 /* Read raw config.yaml (no defaults merge) -> json_t (caller frees). NULL on missing. */
-/* PoP: config_py_read_raw_config @ hermes_cli/config.py:read_raw_config */
+/* PoP: read_raw_config_file @ hermes_cli/config.py:read_raw_config */
 json_t *config_py_read_raw_config(void);
 static json_t *read_raw_config_file(void) {
     char path[HERMES_PATH_MAX];
@@ -262,7 +262,7 @@ json_t *config_py_load_config_readonly(void) {
     return config_py_load_config_impl(0);
 }
 
-/* PoP: _persist_migration @ hermes_cli/config.py:_persist_migration */
+/* PoP: config_py_persist_migration @ hermes_cli/config.py:_persist_migration */
 int config_py_persist_migration(const json_t *config) {
     char path[HERMES_PATH_MAX];
     config_path(path, sizeof path);
@@ -616,7 +616,7 @@ json_t *read_user_config_raw(const char *cfg_path) {
     return doc;
 }
 
-/* PoP: read_raw_config_readonly @ hermes_cli/config.py:read_raw_config_readonly */
+/* PoP: object @ hermes_cli/config.py:read_raw_config_readonly */
 	/* Fast-path: return cached raw config without deepcopy. Identity-invariant
  * (first caller sees the exact dict later cache hits return). Best-effort:
  * on any failure returns empty object (caller must not mutate). */
@@ -703,7 +703,7 @@ bool cron_model_drift_guard_enabled(json_t *config) {
     return true;  /* non-boolean → fail-closed */
 }
 
-/* PoP: _cron_fleet_default_covers_axis @ hermes_cli/config.py:_cron_fleet_default_covers_axis */
+/* PoP: default @ hermes_cli/config.py:_cron_fleet_default_covers_axis */
 	/* True iff the explicit cron.fleet default (cron.model / cron.model_provider)
  * covers *axis*. */
 bool _cron_fleet_default_covers_axis(const char *axis, json_t *config) {
@@ -718,7 +718,7 @@ bool _cron_fleet_default_covers_axis(const char *axis, json_t *config) {
     return v->str_val && strlen(v->str_val) > 0;
 }
 
-/* PoP: _load_cron_jobs_for_config_warning @ hermes_cli/config.py:_load_cron_jobs_for_config_warning */
+/* PoP: array @ hermes_cli/config.py:_load_cron_jobs_for_config_warning */
 	/* Best-effort read of the active profile's cron jobs database. Delegates to
  * cron.jobs.load_jobs (cronjobs_load_jobs) to reuse BOM/corruption handling.
  * Returns a json_t array (caller frees) — empty on any failure. */

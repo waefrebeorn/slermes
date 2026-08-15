@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _handle_list_comments @ tools/feishu_drive_tool.py:_handle_list_comments */
+/* PoP: fdt_handle_list_comments @ tools/feishu_drive_tool.py:_handle_list_comments */
 char *fdt_handle_list_comments(const char *args_json) {
     /* Python: client-gated list. */
     if (!args_json) return NULL;
@@ -26,21 +26,21 @@ char *fdt_handle_list_comments(const char *args_json) {
     return strdup("{\"comments\": []}");
 }
 
-/* PoP: _handle_list_replies @ tools/feishu_drive_tool.py:_handle_list_replies */
+/* PoP: fdt_handle_list_replies @ tools/feishu_drive_tool.py:_handle_list_replies */
 char *fdt_handle_list_replies(const char *args_json) {
     if (!args_json) return NULL;
     printf("feishu drive replies listed\n");
     return strdup("{\"replies\": []}");
 }
 
-/* PoP: _handle_reply_comment @ tools/feishu_drive_tool.py:_handle_reply_comment */
+/* PoP: fdt_handle_reply_comment @ tools/feishu_drive_tool.py:_handle_reply_comment */
 char *fdt_handle_reply_comment(const char *args_json) {
     if (!args_json) return NULL;
     printf("feishu drive comment replied\n");
     return strdup("{\"success\": true}");
 }
 
-/* PoP: _handle_add_comment @ tools/feishu_drive_tool.py:_handle_add_comment */
+/* PoP: fdt_handle_add_comment @ tools/feishu_drive_tool.py:_handle_add_comment */
 char *fdt_handle_add_comment(const char *args_json) {
     if (!args_json) return NULL;
     printf("feishu drive comment added\n");

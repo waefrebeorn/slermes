@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: normalize_whatsapp_identifier @ gateway/whatsapp_identity.py:normalize_whatsapp_identifier */
+/* PoP: wai_normalize_whatsapp_identifier @ gateway/whatsapp_identity.py:normalize_whatsapp_identifier */
 char *wai_normalize_whatsapp_identifier(const char *identifier) {
     /* Python: strip JID/LID syntax to stable numeric. */
     if (!identifier) return NULL;
@@ -31,7 +31,7 @@ char *wai_normalize_whatsapp_identifier(const char *identifier) {
     return strndup(p, (size_t)(e - p));
 }
 
-/* PoP: expand_whatsapp_aliases @ gateway/whatsapp_identity.py:expand_whatsapp_aliases */
+/* PoP: wai_expand_whatsapp_aliases @ gateway/whatsapp_identity.py:expand_whatsapp_aliases */
 char *wai_expand_whatsapp_aliases(const char *identifier, const char *bridge_sessions_json) {
     /* Python: resolve via bridge session mapping files. */
     if (!identifier) return NULL;
@@ -39,7 +39,7 @@ char *wai_expand_whatsapp_aliases(const char *identifier, const char *bridge_ses
     return strdup("[]");
 }
 
-/* PoP: canonical_whatsapp_identifier @ gateway/whatsapp_identity.py:canonical_whatsapp_identifier */
+/* PoP: wai_canonical_whatsapp_identifier @ gateway/whatsapp_identity.py:canonical_whatsapp_identifier */
 char *wai_canonical_whatsapp_identifier(const char *identifier, const char *bridge_sessions_json) {
     /* Python: stable identity across phone-JID/LID. */
     if (!identifier) return NULL;

@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: gateway_shutdown_flush_spool_dropped_transcript_message @ gateway/shutdown_flush.py:spool_dropped_transcript_message */
+/* PoP: gateway_shutdown_flush_spool_dropped_transcript_message_p @ gateway/shutdown_flush.py:spool_dropped_transcript_message */
 json_t *gateway_shutdown_flush_spool_dropped_transcript_message_p(void) {
     return json_object();
 }

@@ -266,8 +266,8 @@ static char *frame_type_of(const json_t *payload) {
 }
 
 /* run_command inline (synchronous seam: exec + result frames). */
-/* PoP: ws_console_handle_frame @ hermes_cli/web_server.py:run_command */
-/* PoP: ws_console_handle_frame @ hermes_cli/web_server.py:start_command */
+/* PoP: run_command_now @ hermes_cli/web_server.py:run_command */
+/* PoP: run_command_now @ hermes_cli/web_server.py:start_command */
 static bool run_command_now(ws_console_session_t *s, const char *line,
                             bool confirmed, ws_console_exec_fn exec,
                             void *exec_ctx, json_t *frames) {

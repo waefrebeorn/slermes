@@ -14,12 +14,12 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_resource_limits_configured_nofile_soft_limit @ hermes_cli/resource_limits.py:_configured_nofile_soft_limit */
+/* PoP: hermes_cli_resource_limits_configured_nofile_soft_limit_p @ hermes_cli/resource_limits.py:_configured_nofile_soft_limit */
 json_t *hermes_cli_resource_limits_configured_nofile_soft_limit_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_resource_limits_apply_nofile_soft_limit @ hermes_cli/resource_limits.py:apply_nofile_soft_limit */
+/* PoP: hermes_cli_resource_limits_apply_nofile_soft_limit_p @ hermes_cli/resource_limits.py:apply_nofile_soft_limit */
 json_t *hermes_cli_resource_limits_apply_nofile_soft_limit_p(void) {
     return json_object();
 }

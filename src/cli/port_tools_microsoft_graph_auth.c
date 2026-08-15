@@ -14,7 +14,7 @@
  * forces a fresh fetch. */
 static char  *_msgraph_cached_token = NULL;
 
-/* PoP: cli_tools_microsoft_graph_auth_clear_cache @ tools/microsoft_graph_auth.py:clear_cache */
+/* PoP: token @ tools/microsoft_graph_auth.py:clear_cache */
 /* Drop the cached token (self._cached_token = None). Idempotent. */
 void cli_tools_microsoft_graph_auth_clear_cache(void) {
     free(_msgraph_cached_token);

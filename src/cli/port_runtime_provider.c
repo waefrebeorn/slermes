@@ -56,7 +56,7 @@ char *canonical_custom_identity(const char *base_url, const char *config_provide
     return provider_canonical_custom_identity(base_url, config_provider, NULL);
 }
 
-/* PoP: canonical_custom_identity @ hermes_cli/runtime_provider.py:canonical_custom_identity */
+/* PoP: _canonical_custom_identity @ hermes_cli/runtime_provider.py:canonical_custom_identity */
 char *_canonical_custom_identity(void *ctx, void *base_url, void *config_provider)
 {
     if (!ctx) {

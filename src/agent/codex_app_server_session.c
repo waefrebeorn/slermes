@@ -348,7 +348,7 @@ void codex_session_set_event_callback(
  *  ensure_started — spawn subprocess, initialize, thread/start
  * ================================================================ */
 
-/* PoP: monitoring_emitter_ensure_started @ agent/transports/codex_app_server_session.py:ensure_started */
+/* PoP: codex_session_ensure_started @ agent/transports/codex_app_server_session.py:ensure_started */
 char *codex_session_ensure_started(codex_session_t *s) {
     if (!s) return NULL;
     if (s->thread_id) return strdup(s->thread_id);
@@ -854,7 +854,7 @@ codex_turn_result_t *codex_session_run_turn(
  *  agent/transports/codex_app_server_session.py:compact_thread)
  * ================================================================ */
 
-/* PoP: _notification_belongs_to_turn @ agent/transports/codex_app_server_session.py:_notification_belongs_to_turn */
+/* PoP: id @ agent/transports/codex_app_server_session.py:_notification_belongs_to_turn */
 /* True when a notification's scope ids match the active thread/turn. When the
  * caller has not yet captured a turn id (NULL), only the thread id is required.
  * A NULL observed thread id is treated as "belongs" (unspecified = inherits). */
@@ -872,7 +872,7 @@ static bool note_belongs_to_turn(codex_session_t *s,
     return true;
 }
 
-/* PoP: compact_thread @ agent/transports/codex_app_server_session.py:compact_thread */
+/* PoP: codex_session_compact_thread @ agent/transports/codex_app_server_session.py:compact_thread */
 codex_turn_result_t *codex_session_compact_thread(
     codex_session_t *s,
     double turn_timeout,
@@ -1092,7 +1092,7 @@ static void codex_route_close_thunk(void *session) {
     codex_session_free(s);
 }
 
-/* PoP: _record_codex_app_server_compaction @ agent/codex_runtime.py:_record_codex_app_server_compaction */
+/* PoP: codex_session_bind_compression_vtable @ agent/codex_runtime.py:_record_codex_app_server_compaction */
 /* Bind a live codex session into the compression-route vtable. The caller owns
  * the cc_codex_session_vtable_t storage; this fills only the transport seams. */
 void codex_session_bind_compression_vtable(codex_session_t *session,

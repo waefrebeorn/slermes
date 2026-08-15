@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_env_loader_load_hermes_dotenv @ hermes_cli/env_loader.py:load_hermes_dotenv */
+/* PoP: hermes_cli_env_loader_load_hermes_dotenv_p @ hermes_cli/env_loader.py:load_hermes_dotenv */
 json_t *hermes_cli_env_loader_load_hermes_dotenv_p(void) {
     return json_object();
 }

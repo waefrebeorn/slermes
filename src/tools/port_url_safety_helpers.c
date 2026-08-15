@@ -15,7 +15,7 @@ static const char *URL_SAFETY_TRUSTED_HOSTS[] = {
     NULL,
 };
 
-/* PoP: _allows_private_ip_resolution @ tools/url_safety.py:_allows_private_ip_resolution */
+/* PoP: tools_url_safety_allows_private_ip_resolution @ tools/url_safety.py:_allows_private_ip_resolution */
 bool tools_url_safety_allows_private_ip_resolution(const char *hostname, const char *scheme)
 {
     if (!scheme || strcmp(scheme, "https") != 0) return false;

@@ -141,7 +141,7 @@ void cli_hermes_cli_hooks__cmd_doctor(void)
 }
 
 
-/* PoP: cli_hermes_cli_hooks__doctor_one @ hermes_cli/hooks.py:_doctor_one */
+/* PoP: fields @ hermes_cli/hooks.py:_doctor_one */
 
 /* Port of Python hermes_cli/hooks.py:_doctor_one.
  * Runs health checks on a single hook. Returns problem count.

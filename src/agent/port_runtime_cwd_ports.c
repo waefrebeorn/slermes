@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: set_session_cwd @ agent/runtime_cwd.py:set_session_cwd */
+/* PoP: rcw_set_session_cwd @ agent/runtime_cwd.py:set_session_cwd */
 /* Real engine: set_session_cwd / clear_session_cwd / resolve_context_cwd
  * live in src/agent/prompt_builder.c (declared in hermes_system_prompt.h). */
 extern void set_session_cwd(const char *cwd);
@@ -33,20 +33,20 @@ char *rcw_set_session_cwd(const char *cwd) {
     return strdup(cwd);
 }
 
-/* PoP: clear_session_cwd @ agent/runtime_cwd.py:clear_session_cwd */
+/* PoP: rcw_clear_session_cwd @ agent/runtime_cwd.py:clear_session_cwd */
 int rcw_clear_session_cwd(void) {
     clear_session_cwd();
     return 0;
 }
 
-/* PoP: _session_cwd_override @ agent/runtime_cwd.py:_session_cwd_override */
+/* PoP: rcw_session_cwd_override @ agent/runtime_cwd.py:_session_cwd_override */
 char *rcw_session_cwd_override(void) {
     /* Python: current override or "". */
     const char *cur = resolve_context_cwd();
     return strdup(cur ? cur : "");
 }
 
-/* PoP: resolve_agent_cwd @ agent/runtime_cwd.py:resolve_agent_cwd */
+/* PoP: rcw_resolve_agent_cwd @ agent/runtime_cwd.py:resolve_agent_cwd */
 char *rcw_resolve_agent_cwd(const char *override, const char *fallback) {
     /* Python: override expanduser else fallback. */
     if (override && *override) {
@@ -64,7 +64,7 @@ char *rcw_resolve_agent_cwd(const char *override, const char *fallback) {
     return strdup(".");
 }
 
-/* PoP: resolve_context_cwd @ agent/runtime_cwd.py:resolve_context_cwd */
+/* PoP: rcw_resolve_context_cwd @ agent/runtime_cwd.py:resolve_context_cwd */
 char *rcw_resolve_context_cwd(const char *override, const char *fallback) {
     /* Python: None means no configured cwd. */
     return rcw_resolve_agent_cwd(override, fallback ? fallback : "");

@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: error @ hermes_cli/console_engine.py:error */
+/* PoP: coe_error @ hermes_cli/console_engine.py:error */
 char *coe_error(const char *message) {
     /* Python: console error result. */
     if (!message) return strdup("{\"status\": \"error\"}");
@@ -27,7 +27,7 @@ char *coe_error(const char *message) {
     return out;
 }
 
-/* PoP: __init__ @ hermes_cli/console_engine.py:__init__ */
+/* PoP: coe_init @ hermes_cli/console_engine.py:__init__ */
 char *coe_init(long output_limit) {
     if (output_limit <= 0) output_limit = 4096;
     char *out = NULL;
@@ -35,7 +35,7 @@ char *coe_init(long output_limit) {
     return out;
 }
 
-/* PoP: execute @ hermes_cli/console_engine.py:execute */
+/* PoP: coe_execute @ hermes_cli/console_engine.py:execute */
 char *coe_execute(const char *line) {
     /* Python: empty → ok. */
     if (!line) return strdup("{\"status\": \"ok\"}");
@@ -46,7 +46,7 @@ char *coe_execute(const char *line) {
     return strdup("{\"status\": \"ok\"}");
 }
 
-/* PoP: register @ hermes_cli/console_engine.py:register */
+/* PoP: coe_register @ hermes_cli/console_engine.py:register */
 int coe_register(const char *path_json, const char *command_desc) {
     /* Python: register command tree. */
     if (!path_json || !command_desc) return -1;
@@ -54,7 +54,7 @@ int coe_register(const char *path_json, const char *command_desc) {
     return 0;
 }
 
-/* PoP: _resolve_command @ hermes_cli/console_engine.py:_resolve_command */
+/* PoP: coe_resolve_command @ hermes_cli/console_engine.py:_resolve_command */
 char *coe_resolve_command(const char *tokens_json) {
     /* Python: rejection-aware resolution. */
     if (!tokens_json) return NULL;

@@ -233,7 +233,7 @@ char *model_normalize_prepend_vendor(const char *model_name)
     return out;
 }
 
-/* PoP: normalize_copilot_model_id @ hermes_cli/models.py:normalize_copilot_model_id */
+/* PoP: string @ hermes_cli/models.py:normalize_copilot_model_id */
 /* Copilot-specific resolver (pure part). Python's version also does a live
  * catalog lookup; that dynamic part is a REAL_GAP here — we resolve against
  * the static alias table and strip the vendor/prefix, reproducing the

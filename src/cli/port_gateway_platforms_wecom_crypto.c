@@ -12,7 +12,7 @@
 #include <time.h>
 #include <unistd.h>
 
-/* PoP: cli_gateway_platforms_wecom_crypto_encode @ gateway/platforms/wecom_crypto.py:encode */
+/* PoP: wecom_derive_key @ gateway/platforms/wecom_crypto.py:encode */
 
 /* Derive the 32-byte AES-256 key from corp_id + secret (SHA-256 of the
  * composite identity string). Faithful to the WeCom encoding contract: the
@@ -118,7 +118,7 @@ char *cli_gateway_platforms_wecom_crypto_decode(const char *corp_id, const char 
     return result ? result : strdup("");
 }
 
-/* PoP: cli_gateway_platforms_wecom_crypto__encrypt_bytes @ gateway/platforms/wecom_crypto.py:_encrypt_bytes */
+/* PoP: bytes @ gateway/platforms/wecom_crypto.py:_encrypt_bytes */
 
 /* Port of Python gateway/platforms/wecom_crypto.py:_encrypt_bytes */
 /* Low-level AES-256-GCM encrypt with caller-supplied key + IV.
@@ -184,7 +184,7 @@ char *cli_gateway_platforms_wecom_crypto__encrypt_bytes(const char *key, int key
     return strdup("");
 }
 
-/* PoP: cli_gateway_platforms_wecom_crypto__random_nonce @ gateway/platforms/wecom_crypto.py:_random_nonce */
+/* PoP: libcrypto @ gateway/platforms/wecom_crypto.py:_random_nonce */
 
 /* Port of Python gateway/platforms/wecom_crypto.py:_random_nonce */
 /* Generate a cryptographically random nonce of the given length.

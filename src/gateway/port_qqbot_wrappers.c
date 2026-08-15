@@ -16,13 +16,13 @@
 /* Python adapter instance slot _interaction_callback. */
 static void *g_qqbot_interaction_callback = NULL;
 
-/* PoP: check_qq_requirements @ gateway/platforms/qqbot/adapter.py:check_qq_requirements */
+/* PoP: qqbot_check_qq_requirements @ gateway/platforms/qqbot/adapter.py:check_qq_requirements */
 int qqbot_check_qq_requirements(const char *arg) {
     /* C port implements the QQ adapter natively; deps are present. */
     return 1;
 }
 
-/* PoP: _coerce_list @ gateway/platforms/qqbot/adapter.py:_coerce_list */
+/* PoP: qqbot_u_coerce_list @ gateway/platforms/qqbot/adapter.py:_coerce_list */
 int qqbot_u_coerce_list(const char *arg) {
     /* Python: config value -> trimmed string list. Arg = "v1\tv2..." or
      * comma-sep. */
@@ -46,7 +46,7 @@ int qqbot_u_coerce_list(const char *arg) {
     return 0;
 }
 
-/* PoP: _log_tag @ gateway/platforms/qqbot/adapter.py:_log_tag */
+/* PoP: qqbot_u_log_tag @ gateway/platforms/qqbot/adapter.py:_log_tag */
 int qqbot_u_log_tag(const char *arg) {
     /* Python: f"QQBot:{app_id}" if app_id else "QQBot". Arg = app_id. */
     if (!arg || !*arg) { printf("QQBot\n"); return 0; }
@@ -54,7 +54,7 @@ int qqbot_u_log_tag(const char *arg) {
     return 0;
 }
 
-/* PoP: _fail_pending @ gateway/platforms/qqbot/adapter.py:_fail_pending */
+/* PoP: qqbot_u_fail_pending @ gateway/platforms/qqbot/adapter.py:_fail_pending */
 int qqbot_u_fail_pending(const char *arg) {
     /* Python: set_exception(RuntimeError(reason)) on all pending futures,
      * then clear. Arg = reason. */
@@ -63,7 +63,7 @@ int qqbot_u_fail_pending(const char *arg) {
     return 0;
 }
 
-/* PoP: _mark_transport_disconnected @ gateway/platforms/qqbot/adapter.py:_mark_transport_disconnected */
+/* PoP: qqbot_u_mark_transport_disconnected @ gateway/platforms/qqbot/adapter.py:_mark_transport_disconnected */
 int qqbot_u_mark_transport_disconnected(const char *arg) {
     /* Python: runtime status disconnected unless fatal. Arg = "has_fatal". */
     if (arg && arg[0] == '1') { printf("fatal — skipping status write\n"); return 0; }
@@ -71,7 +71,7 @@ int qqbot_u_mark_transport_disconnected(const char *arg) {
     return 0;
 }
 
-/* PoP: _ensure_token @ gateway/platforms/qqbot/adapter.py:_ensure_token */
+/* PoP: qqbot_u_ensure_token @ gateway/platforms/qqbot/adapter.py:_ensure_token */
 int qqbot_u_ensure_token(const char *arg) {
     /* Python: singleflight refresh. Arg =
      * "refreshed\tstate\tresult". */
@@ -86,7 +86,7 @@ int qqbot_u_ensure_token(const char *arg) {
     return 0;
 }
 
-/* PoP: _open_ws @ gateway/platforms/qqbot/adapter.py:_open_ws */
+/* PoP: qqbot_u_open_ws @ gateway/platforms/qqbot/adapter.py:_open_ws */
 int qqbot_u_open_ws(const char *arg) {
     /* Python: ws open. Arg =
      * "opened\tstate\tresult". */
@@ -101,7 +101,7 @@ int qqbot_u_open_ws(const char *arg) {
     return 0;
 }
 
-/* PoP: _listen_loop @ gateway/platforms/qqbot/adapter.py:_listen_loop */
+/* PoP: qqbot_u_listen_loop @ gateway/platforms/qqbot/adapter.py:_listen_loop */
 int qqbot_u_listen_loop(const char *arg) {
     /* Python: close-code handling. Arg =
      * "state\tresult". */
@@ -113,7 +113,7 @@ int qqbot_u_listen_loop(const char *arg) {
     return 0;
 }
 
-/* PoP: _reconnect @ gateway/platforms/qqbot/adapter.py:_reconnect */
+/* PoP: qqbot_u_reconnect @ gateway/platforms/qqbot/adapter.py:_reconnect */
 int qqbot_u_reconnect(const char *arg) {
     /* Python: backoff table. Arg =
      * "reconnected\tstate\tresult". */
@@ -128,7 +128,7 @@ int qqbot_u_reconnect(const char *arg) {
     return 0;
 }
 
-/* PoP: _read_events @ gateway/platforms/qqbot/adapter.py:_read_events */
+/* PoP: qqbot_u_read_events @ gateway/platforms/qqbot/adapter.py:_read_events */
 int qqbot_u_read_events(const char *arg) {
     /* Python: frame loop. Arg =
      * "state\tresult\terr". */
@@ -149,7 +149,7 @@ int qqbot_u_read_events(const char *arg) {
     return 0;
 }
 
-/* PoP: _heartbeat_loop @ gateway/platforms/qqbot/adapter.py:_heartbeat_loop */
+/* PoP: qqbot_u_heartbeat_loop @ gateway/platforms/qqbot/adapter.py:_heartbeat_loop */
 int qqbot_u_heartbeat_loop(const char *arg) {
     /* Python: op 1 heartbeat. Arg =
      * "beating\tstate\tresult". */
@@ -164,7 +164,7 @@ int qqbot_u_heartbeat_loop(const char *arg) {
     return 0;
 }
 
-/* PoP: _send_identify @ gateway/platforms/qqbot/adapter.py:_send_identify */
+/* PoP: qqbot_u_send_identify @ gateway/platforms/qqbot/adapter.py:_send_identify */
 int qqbot_u_send_identify(const char *arg) {
     /* Python: op 2. Arg =
      * "sent\tstate\tresult". */
@@ -179,7 +179,7 @@ int qqbot_u_send_identify(const char *arg) {
     return 0;
 }
 
-/* PoP: _send_resume @ gateway/platforms/qqbot/adapter.py:_send_resume */
+/* PoP: qqbot_u_send_resume @ gateway/platforms/qqbot/adapter.py:_send_resume */
 int qqbot_u_send_resume(const char *arg) {
     /* Python: op 6. Arg =
      * "sent\tstate\tresult". */
@@ -194,7 +194,7 @@ int qqbot_u_send_resume(const char *arg) {
     return 0;
 }
 
-/* PoP: _dispatch_payload @ gateway/platforms/qqbot/adapter.py:_dispatch_payload */
+/* PoP: qqbot_u_dispatch_payload @ gateway/platforms/qqbot/adapter.py:_dispatch_payload */
 int qqbot_u_dispatch_payload(const char *arg) {
     /* Python: route inbound WebSocket payloads by op/t. Arg =
      * "op\tt\ts\td_json". Implements the op dispatch table: op 10 Hello
@@ -246,7 +246,7 @@ int qqbot_u_dispatch_payload(const char *arg) {
     }
 }
 
-/* PoP: _handle_ready @ gateway/platforms/qqbot/adapter.py:_handle_ready */
+/* PoP: qqbot_u_handle_ready @ gateway/platforms/qqbot/adapter.py:_handle_ready */
 int qqbot_u_handle_ready(const char *arg) {
     /* Python: READY event stores session_id. Arg = "session_id". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -254,10 +254,10 @@ int qqbot_u_handle_ready(const char *arg) {
     return 0;
 }
 
-/* PoP: _parse_json @ gateway/platforms/qqbot/adapter.py:_parse_json */
+/* PoP: qqbot_u_parse_json @ gateway/platforms/qqbot/adapter.py:_parse_json */
 int qqbot_u_parse_json(const char *arg) { (void)arg; return 0; }
 
-/* PoP: _next_msg_seq @ gateway/platforms/qqbot/adapter.py:_next_msg_seq */
+/* PoP: qqbot_u_next_msg_seq @ gateway/platforms/qqbot/adapter.py:_next_msg_seq */
 int qqbot_u_next_msg_seq(const char *arg) {
     /* Python: 0..65535 seq. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -268,7 +268,7 @@ int qqbot_u_next_msg_seq(const char *arg) {
     return 0;
 }
 
-/* PoP: _on_message @ gateway/platforms/qqbot/adapter.py:_on_message */
+/* PoP: qqbot_u_on_message @ gateway/platforms/qqbot/adapter.py:_on_message */
 int qqbot_u_on_message(const char *arg) {
     /* Python: inbound route. Arg =
      * "routed\tstate\tresult". */
@@ -283,14 +283,14 @@ int qqbot_u_on_message(const char *arg) {
     return 0;
 }
 
-/* PoP: set_interaction_callback @ gateway/platforms/qqbot/adapter.py:set_interaction_callback */
+/* PoP: qqbot_set_interaction_callback @ gateway/platforms/qqbot/adapter.py:set_interaction_callback */
 int qqbot_set_interaction_callback(const char *arg) {
     /* Python: self._interaction_callback = callback (register/clear). */
     g_qqbot_interaction_callback = (void *)arg;
     return 0;
 }
 
-/* PoP: _on_interaction @ gateway/platforms/qqbot/adapter.py:_on_interaction */
+/* PoP: qqbot_u_on_interaction @ gateway/platforms/qqbot/adapter.py:_on_interaction */
 int qqbot_u_on_interaction(const char *arg) {
     /* Python: INTERACTION_CREATE. Arg =
      * "acked\tstate\tresult". */
@@ -305,7 +305,7 @@ int qqbot_u_on_interaction(const char *arg) {
     return 0;
 }
 
-/* PoP: _acknowledge_interaction @ gateway/platforms/qqbot/adapter.py:_acknowledge_interaction */
+/* PoP: qqbot_u_acknowledge_interaction @ gateway/platforms/qqbot/adapter.py:_acknowledge_interaction */
 int qqbot_u_acknowledge_interaction(const char *arg) {
     /* Python: PUT ack. Arg =
      * "acked\tstate\tresult". */
@@ -320,7 +320,7 @@ int qqbot_u_acknowledge_interaction(const char *arg) {
     return 0;
 }
 
-/* PoP: _parse_gateway_session_key @ gateway/platforms/qqbot/adapter.py:_parse_gateway_session_key */
+/* PoP: qqbot_u_parse_gateway_session_key @ gateway/platforms/qqbot/adapter.py:_parse_gateway_session_key */
 int qqbot_u_parse_gateway_session_key(const char *arg) {
     if (!arg) { printf("\n"); return 0; }
     char buf[512]; strncpy(buf, arg, sizeof buf - 1); buf[sizeof buf - 1] = 0;
@@ -335,7 +335,7 @@ int qqbot_u_parse_gateway_session_key(const char *arg) {
     return 0;
 }
 
-/* PoP: _is_authorized_interaction_for_session @ gateway/platforms/qqbot/adapter.py:_is_authorized_interaction_for_session */
+/* PoP: qqbot_u_is_authorized_interaction_for_session @ gateway/platforms/qqbot/adapter.py:_is_authorized_interaction_for_session */
 int qqbot_u_is_authorized_interaction_for_session(const char *arg) {
     /* Python: operator match. Arg =
      * "authorized\tstate\tresult". */
@@ -349,7 +349,7 @@ int qqbot_u_is_authorized_interaction_for_session(const char *arg) {
     return 0;
 }
 
-/* PoP: _default_interaction_dispatch @ gateway/platforms/qqbot/adapter.py:_default_interaction_dispatch */
+/* PoP: qqbot_u_default_interaction_dispatch @ gateway/platforms/qqbot/adapter.py:_default_interaction_dispatch */
 int qqbot_u_default_interaction_dispatch(const char *arg) {
     /* Python: approve/update routing. Arg =
      * "handled\tstate\tresult". */
@@ -364,7 +364,7 @@ int qqbot_u_default_interaction_dispatch(const char *arg) {
     return 0;
 }
 
-/* PoP: _write_update_response @ gateway/platforms/qqbot/adapter.py:_write_update_response */
+/* PoP: qqbot_u_write_update_response @ gateway/platforms/qqbot/adapter.py:_write_update_response */
 int qqbot_u_write_update_response(const char *arg) {
     /* Python: tmp+rename. Arg =
      * "written\tstate\tresult". */
@@ -379,7 +379,7 @@ int qqbot_u_write_update_response(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_c2c_message @ gateway/platforms/qqbot/adapter.py:_handle_c2c_message */
+/* PoP: qqbot_u_handle_c2c_message @ gateway/platforms/qqbot/adapter.py:_handle_c2c_message */
 int qqbot_u_handle_c2c_message(const char *arg) {
     /* Python: dm intake. Arg =
      * "handled\tstate\tresult". */
@@ -394,7 +394,7 @@ int qqbot_u_handle_c2c_message(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_group_message @ gateway/platforms/qqbot/adapter.py:_handle_group_message */
+/* PoP: qqbot_u_handle_group_message @ gateway/platforms/qqbot/adapter.py:_handle_group_message */
 int qqbot_u_handle_group_message(const char *arg) {
     /* Python: group @-message. Arg =
      * "handled\tstate\tresult". */
@@ -409,7 +409,7 @@ int qqbot_u_handle_group_message(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_guild_message @ gateway/platforms/qqbot/adapter.py:_handle_guild_message */
+/* PoP: qqbot_u_handle_guild_message @ gateway/platforms/qqbot/adapter.py:_handle_guild_message */
 int qqbot_u_handle_guild_message(const char *arg) {
     /* Python: guild ACL. Arg =
      * "handled\tstate\tresult". */
@@ -424,7 +424,7 @@ int qqbot_u_handle_guild_message(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_dm_message @ gateway/platforms/qqbot/adapter.py:_handle_dm_message */
+/* PoP: qqbot_u_handle_dm_message @ gateway/platforms/qqbot/adapter.py:_handle_dm_message */
 int qqbot_u_handle_dm_message(const char *arg) {
     /* Python: guild DM ACL. Arg =
      * "handled\tstate\tresult". */
@@ -439,7 +439,7 @@ int qqbot_u_handle_dm_message(const char *arg) {
     return 0;
 }
 
-/* PoP: _process_quoted_context @ gateway/platforms/qqbot/adapter.py:_process_quoted_context */
+/* PoP: qqbot_u_process_quoted_context @ gateway/platforms/qqbot/adapter.py:_process_quoted_context */
 int qqbot_u_process_quoted_context(const char *arg) {
     /* Python: msg_elements 103. Arg =
      * "quoted\tstate\tresult". */
@@ -452,7 +452,7 @@ int qqbot_u_process_quoted_context(const char *arg) {
     return 0;
 }
 
-/* PoP: _merge_quote_into @ gateway/platforms/qqbot/adapter.py:_merge_quote_into */
+/* PoP: qqbot_u_merge_quote_into @ gateway/platforms/qqbot/adapter.py:_merge_quote_into */
 int qqbot_u_merge_quote_into(const char *arg) {
     /* Python (quote_block, text): prepend the quote separated by a blank
      * line; the result is stripped. Arg = "quote_block\ttext". */
@@ -477,7 +477,7 @@ int qqbot_u_merge_quote_into(const char *arg) {
     return 0;
 }
 
-/* PoP: _detect_message_type @ gateway/platforms/qqbot/adapter.py:_detect_message_type */
+/* PoP: qqbot_u_detect_message_type @ gateway/platforms/qqbot/adapter.py:_detect_message_type */
 int qqbot_u_detect_message_type(const char *arg) {
     /* Python: content-type switch. Arg =
      * "type\tstate\tresult". */
@@ -491,7 +491,7 @@ int qqbot_u_detect_message_type(const char *arg) {
     return 0;
 }
 
-/* PoP: _process_attachments @ gateway/platforms/qqbot/adapter.py:_process_attachments */
+/* PoP: qqbot_u_process_attachments @ gateway/platforms/qqbot/adapter.py:_process_attachments */
 int qqbot_u_process_attachments(const char *arg) {
     /* Python: uniform inbox. Arg =
      * "state\tresult". */
@@ -503,7 +503,7 @@ int qqbot_u_process_attachments(const char *arg) {
     return 0;
 }
 
-/* PoP: _download_and_cache @ gateway/platforms/qqbot/adapter.py:_download_and_cache */
+/* PoP: qqbot_u_download_and_cache @ gateway/platforms/qqbot/adapter.py:_download_and_cache */
 int qqbot_u_download_and_cache(const char *arg) {
     /* Python: safe-url gate. Arg =
      * "path\tstate\tresult". */
@@ -516,7 +516,7 @@ int qqbot_u_download_and_cache(const char *arg) {
     return 0;
 }
 
-/* PoP: _is_voice_content_type @ gateway/platforms/qqbot/adapter.py:_is_voice_content_type */
+/* PoP: qqbot_u_is_voice_content_type @ gateway/platforms/qqbot/adapter.py:_is_voice_content_type */
 int qqbot_u_is_voice_content_type(const char *arg) {
     /* Python: voice/audio ct or voice extension. Arg = "content_type\tfilename". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -534,7 +534,7 @@ int qqbot_u_is_voice_content_type(const char *arg) {
     return 0;
 }
 
-/* PoP: _qq_media_headers @ gateway/platforms/qqbot/adapter.py:_qq_media_headers */
+/* PoP: qqbot_u_qq_media_headers @ gateway/platforms/qqbot/adapter.py:_qq_media_headers */
 int qqbot_u_qq_media_headers(const char *arg) {
     /* Python: CDN auth header. Arg =
      * "has_token\tstate\tresult". */
@@ -549,7 +549,7 @@ int qqbot_u_qq_media_headers(const char *arg) {
     return 0;
 }
 
-/* PoP: _stt_voice_attachment @ gateway/platforms/qqbot/adapter.py:_stt_voice_attachment */
+/* PoP: qqbot_u_stt_voice_attachment @ gateway/platforms/qqbot/adapter.py:_stt_voice_attachment */
 int qqbot_u_stt_voice_attachment(const char *arg) {
     /* Python: 3-priority STT. Arg =
      * "text\tstate\tresult". */
@@ -562,7 +562,7 @@ int qqbot_u_stt_voice_attachment(const char *arg) {
     return 0;
 }
 
-/* PoP: _convert_audio_to_wav_file @ gateway/platforms/qqbot/adapter.py:_convert_audio_to_wav_file */
+/* PoP: qqbot_u_convert_audio_to_wav_file @ gateway/platforms/qqbot/adapter.py:_convert_audio_to_wav_file */
 int qqbot_u_convert_audio_to_wav_file(const char *arg) {
     /* Python: pilk→ffmpeg. Arg =
      * "wav\tstate\tresult". */
@@ -575,7 +575,7 @@ int qqbot_u_convert_audio_to_wav_file(const char *arg) {
     return 0;
 }
 
-/* PoP: _guess_ext_from_data @ gateway/platforms/qqbot/adapter.py:_guess_ext_from_data */
+/* PoP: qqbot_u_guess_ext_from_data @ gateway/platforms/qqbot/adapter.py:_guess_ext_from_data */
 int qqbot_u_guess_ext_from_data(const char *arg) {
     /* Python: magic-byte sniffing -> extension, default .amr (QQ's most
      * common voice format). */
@@ -597,7 +597,7 @@ int qqbot_u_guess_ext_from_data(const char *arg) {
     return 0;
 }
 
-/* PoP: _looks_like_silk @ gateway/platforms/qqbot/adapter.py:_looks_like_silk */
+/* PoP: qqbot_u_looks_like_silk @ gateway/platforms/qqbot/adapter.py:_looks_like_silk */
 int qqbot_u_looks_like_silk(const char *arg) {
     /* Python: header sniff. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -608,7 +608,7 @@ int qqbot_u_looks_like_silk(const char *arg) {
     return 0;
 }
 
-/* PoP: _convert_silk_to_wav @ gateway/platforms/qqbot/adapter.py:_convert_silk_to_wav */
+/* PoP: qqbot_u_convert_silk_to_wav @ gateway/platforms/qqbot/adapter.py:_convert_silk_to_wav */
 int qqbot_u_convert_silk_to_wav(const char *arg) {
     /* Python: pilk library. Arg =
      * "wav\tstate\tresult". */
@@ -621,7 +621,7 @@ int qqbot_u_convert_silk_to_wav(const char *arg) {
     return 0;
 }
 
-/* PoP: _convert_raw_to_wav @ gateway/platforms/qqbot/adapter.py:_convert_raw_to_wav */
+/* PoP: qqbot_u_convert_raw_to_wav @ gateway/platforms/qqbot/adapter.py:_convert_raw_to_wav */
 int qqbot_u_convert_raw_to_wav(const char *arg) {
     /* Python: raw PCM 16k. Arg =
      * "wav\tstate\tresult". */
@@ -634,7 +634,7 @@ int qqbot_u_convert_raw_to_wav(const char *arg) {
     return 0;
 }
 
-/* PoP: _convert_ffmpeg_to_wav @ gateway/platforms/qqbot/adapter.py:_convert_ffmpeg_to_wav */
+/* PoP: qqbot_u_convert_ffmpeg_to_wav @ gateway/platforms/qqbot/adapter.py:_convert_ffmpeg_to_wav */
 int qqbot_u_convert_ffmpeg_to_wav(const char *arg) {
     /* Python: ffmpeg subprocess. Arg =
      * "wav\tstate\tresult". */
@@ -647,7 +647,7 @@ int qqbot_u_convert_ffmpeg_to_wav(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_stt_config @ gateway/platforms/qqbot/adapter.py:_resolve_stt_config */
+/* PoP: qqbot_u_resolve_stt_config @ gateway/platforms/qqbot/adapter.py:_resolve_stt_config */
 int qqbot_u_resolve_stt_config(const char *arg) {
     /* Python: 3-priority STT. Arg =
      * "resolved\tstate\tresult". */
@@ -662,7 +662,7 @@ int qqbot_u_resolve_stt_config(const char *arg) {
     return 0;
 }
 
-/* PoP: _call_stt @ gateway/platforms/qqbot/adapter.py:_call_stt */
+/* PoP: qqbot_u_call_stt @ gateway/platforms/qqbot/adapter.py:_call_stt */
 int qqbot_u_call_stt(const char *arg) {
     /* Python: OpenAI-compat STT. Arg =
      * "text\tstate\tresult". */
@@ -675,7 +675,7 @@ int qqbot_u_call_stt(const char *arg) {
     return 0;
 }
 
-/* PoP: _convert_audio_to_wav @ gateway/platforms/qqbot/adapter.py:_convert_audio_to_wav */
+/* PoP: qqbot_u_convert_audio_to_wav @ gateway/platforms/qqbot/adapter.py:_convert_audio_to_wav */
 int qqbot_u_convert_audio_to_wav(const char *arg) {
     /* Python: bytes → wav cache. Arg =
      * "wav\tstate\tresult". */
@@ -688,7 +688,7 @@ int qqbot_u_convert_audio_to_wav(const char *arg) {
     return 0;
 }
 
-/* PoP: _api_request @ gateway/platforms/qqbot/adapter.py:_api_request */
+/* PoP: qqbot_u_api_request @ gateway/platforms/qqbot/adapter.py:_api_request */
 int qqbot_u_api_request(const char *arg) {
     /* Python: authenticated REST. Arg =
      * "state\tresult\terr". */
@@ -705,7 +705,7 @@ int qqbot_u_api_request(const char *arg) {
     return 0;
 }
 
-/* PoP: _upload_media @ gateway/platforms/qqbot/adapter.py:_upload_media */
+/* PoP: qqbot_u_upload_media @ gateway/platforms/qqbot/adapter.py:_upload_media */
 int qqbot_u_upload_media(const char *arg) {
     /* Python: POST media to /v2/users/<id>/files (c2c) or
      * /v2/groups/<id>/files (group). Arg =
@@ -765,7 +765,7 @@ int qqbot_u_upload_media(const char *arg) {
     return ok ? 0 : -1;
 }
 
-/* PoP: _wait_for_reconnection @ gateway/platforms/qqbot/adapter.py:_wait_for_reconnection */
+/* PoP: qqbot_u_wait_for_reconnection @ gateway/platforms/qqbot/adapter.py:_wait_for_reconnection */
 int qqbot_u_wait_for_reconnection(const char *arg) {
     /* Python: race-window poll. Arg =
      * "reconnected\tstate\tresult". */
@@ -780,7 +780,7 @@ int qqbot_u_wait_for_reconnection(const char *arg) {
     return 0;
 }
 
-/* PoP: _send_chunk @ gateway/platforms/qqbot/adapter.py:_send_chunk */
+/* PoP: qqbot_u_send_chunk @ gateway/platforms/qqbot/adapter.py:_send_chunk */
 int qqbot_u_send_chunk(const char *arg) {
     /* Python: retry+backoff. Arg =
      * "sent\tstate\tresult". */
@@ -795,7 +795,7 @@ int qqbot_u_send_chunk(const char *arg) {
     return 0;
 }
 
-/* PoP: _send_c2c_text @ gateway/platforms/qqbot/adapter.py:_send_c2c_text */
+/* PoP: qqbot_u_send_c2c_text @ gateway/platforms/qqbot/adapter.py:_send_c2c_text */
 int qqbot_u_send_c2c_text(const char *arg) {
     /* Python: /v2/users POST. Arg =
      * "state\tresult\terr". */
@@ -812,7 +812,7 @@ int qqbot_u_send_c2c_text(const char *arg) {
     return 0;
 }
 
-/* PoP: _send_group_text @ gateway/platforms/qqbot/adapter.py:_send_group_text */
+/* PoP: qqbot_u_send_group_text @ gateway/platforms/qqbot/adapter.py:_send_group_text */
 int qqbot_u_send_group_text(const char *arg) {
     /* Python: /v2/groups POST. Arg =
      * "state\tresult\terr". */
@@ -829,7 +829,7 @@ int qqbot_u_send_group_text(const char *arg) {
     return 0;
 }
 
-/* PoP: _send_guild_text @ gateway/platforms/qqbot/adapter.py:_send_guild_text */
+/* PoP: qqbot_u_send_guild_text @ gateway/platforms/qqbot/adapter.py:_send_guild_text */
 int qqbot_u_send_guild_text(const char *arg) {
     /* Python: /channels POST. Arg =
      * "state\tresult\terr". */
@@ -846,7 +846,7 @@ int qqbot_u_send_guild_text(const char *arg) {
     return 0;
 }
 
-/* PoP: send_approval_request @ gateway/platforms/qqbot/adapter.py:send_approval_request */
+/* PoP: qqbot_send_approval_request @ gateway/platforms/qqbot/adapter.py:send_approval_request */
 int qqbot_send_approval_request(const char *arg) {
     /* Python: 3-button keyboard. Arg =
      * "sent\tstate\tresult". */
@@ -861,7 +861,7 @@ int qqbot_send_approval_request(const char *arg) {
     return 0;
 }
 
-/* PoP: send_exec_approval @ gateway/platforms/qqbot/adapter.py:send_exec_approval */
+/* PoP: qqbot_send_exec_approval @ gateway/platforms/qqbot/adapter.py:send_exec_approval */
 int qqbot_send_exec_approval(const char *arg) {
     /* Python: 3-button approval prompt (allow-once / allow-always / deny).
      * Arg = "chat_id\tcommand\tsession_key\tdescription\tallow_permanent".
@@ -930,7 +930,7 @@ int qqbot_send_exec_approval(const char *arg) {
     return ok ? 0 : -1;
 }
 
-/* PoP: _build_text_body @ gateway/platforms/qqbot/adapter.py:_build_text_body */
+/* PoP: qqbot_u_build_text_body @ gateway/platforms/qqbot/adapter.py:_build_text_body */
 int qqbot_u_build_text_body(const char *arg) {
     /* Python: markdown/text body. Arg =
      * "md\tstate\tresult". */
@@ -948,7 +948,7 @@ int qqbot_u_build_text_body(const char *arg) {
     return 0;
 }
 
-/* PoP: _send_media @ gateway/platforms/qqbot/adapter.py:_send_media */
+/* PoP: qqbot_u_send_media @ gateway/platforms/qqbot/adapter.py:_send_media */
 int qqbot_u_send_media(const char *arg) {
     /* Python: url vs chunked. Arg =
      * "sent\tstate\tresult". */
@@ -963,7 +963,7 @@ int qqbot_u_send_media(const char *arg) {
     return 0;
 }
 
-/* PoP: _upload_local_file @ gateway/platforms/qqbot/adapter.py:_upload_local_file */
+/* PoP: qqbot_u_upload_local_file @ gateway/platforms/qqbot/adapter.py:_upload_local_file */
 int qqbot_u_upload_local_file(const char *arg) {
     /* Python: chunked upload. Arg =
      * "state\tresult\terr". */
@@ -984,7 +984,7 @@ int qqbot_u_upload_local_file(const char *arg) {
     return 0;
 }
 
-/* PoP: _load_media @ gateway/platforms/qqbot/adapter.py:_load_media */
+/* PoP: qqbot_u_load_media @ gateway/platforms/qqbot/adapter.py:_load_media */
 int qqbot_u_load_media(const char *arg) {
     /* Python: url/local source. Arg =
      * "state\tresult\terr". */
@@ -1001,7 +1001,7 @@ int qqbot_u_load_media(const char *arg) {
     return 0;
 }
 
-/* PoP: _is_url @ gateway/platforms/qqbot/adapter.py:_is_url */
+/* PoP: qqbot_u_is_url @ gateway/platforms/qqbot/adapter.py:_is_url */
 int qqbot_u_is_url(const char *arg) {
     /* Python: urlparse(str(source)).scheme in {"http", "https"}. */
     if (!arg || !*arg) return 0;
@@ -1009,7 +1009,7 @@ int qqbot_u_is_url(const char *arg) {
     return 0;
 }
 
-/* PoP: _guess_chat_type @ gateway/platforms/qqbot/adapter.py:_guess_chat_type */
+/* PoP: qqbot_u_guess_chat_type @ gateway/platforms/qqbot/adapter.py:_guess_chat_type */
 int qqbot_u_guess_chat_type(const char *arg) {
     /* Python: chat_type_map[chat_id] if known else "c2c". Arg =
      * "chat_id\tmapped_type" (mapped_type optional; no tab = unknown). */
@@ -1020,7 +1020,7 @@ int qqbot_u_guess_chat_type(const char *arg) {
     return 0;
 }
 
-/* PoP: _strip_at_mention @ gateway/platforms/qqbot/adapter.py:_strip_at_mention */
+/* PoP: qqbot_u_strip_at_mention @ gateway/platforms/qqbot/adapter.py:_strip_at_mention */
 int qqbot_u_strip_at_mention(const char *arg) {
     if (!arg) { printf("\n"); return 0; }
     const char *p = arg;
@@ -1033,7 +1033,7 @@ int qqbot_u_strip_at_mention(const char *arg) {
     return 0;
 }
 
-/* PoP: _is_dm_allowed @ gateway/platforms/qqbot/adapter.py:_is_dm_allowed */
+/* PoP: qqbot_u_is_dm_allowed @ gateway/platforms/qqbot/adapter.py:_is_dm_allowed */
 int qqbot_u_is_dm_allowed(const char *arg) {
     /* Python: strict DM policy (disabled/allowlist/open; pairing excluded).
      * Arg = "policy\tsender_id\tallowlist_json\topen_opted". */
@@ -1065,7 +1065,7 @@ int qqbot_u_is_dm_allowed(const char *arg) {
     return 0;
 }
 
-/* PoP: _is_dm_intake_allowed @ gateway/platforms/qqbot/adapter.py:_is_dm_intake_allowed */
+/* PoP: qqbot_u_is_dm_intake_allowed @ gateway/platforms/qqbot/adapter.py:_is_dm_intake_allowed */
 int qqbot_u_is_dm_intake_allowed(const char *arg) {
     /* Python: principal required; policy switch. Arg =
      * "principal\tpolicy\tallowlist_json\topen_opted". */
@@ -1100,7 +1100,7 @@ int qqbot_u_is_dm_intake_allowed(const char *arg) {
     return 0;
 }
 
-/* PoP: _is_group_allowed @ gateway/platforms/qqbot/adapter.py:_is_group_allowed */
+/* PoP: qqbot_u_is_group_allowed @ gateway/platforms/qqbot/adapter.py:_is_group_allowed */
 int qqbot_u_is_group_allowed(const char *arg) {
     /* Python: group policy (disabled/allowlist/pairing/open). Arg =
      * "policy\tgroup_id\tallowlist_json\topen_opted". */
@@ -1133,7 +1133,7 @@ int qqbot_u_is_group_allowed(const char *arg) {
     return 0;
 }
 
-/* PoP: _entry_matches @ gateway/platforms/qqbot/adapter.py:_entry_matches */
+/* PoP: qqbot_u_entry_matches @ gateway/platforms/qqbot/adapter.py:_entry_matches */
 int qqbot_u_entry_matches(const char *arg) {
     /* Python: any(entry.strip().lower() == "*" or == target). Arg =
      * "target\tentry\tentry..." (tab-sep). */
@@ -1154,7 +1154,7 @@ int qqbot_u_entry_matches(const char *arg) {
     return 0;
 }
 
-/* PoP: _parse_qq_timestamp @ gateway/platforms/qqbot/adapter.py:_parse_qq_timestamp */
+/* PoP: qqbot_u_parse_qq_timestamp @ gateway/platforms/qqbot/adapter.py:_parse_qq_timestamp */
 int qqbot_u_parse_qq_timestamp(const char *arg) {
     /* QQ timestamp: ISO 8601 string OR integer milliseconds -> epoch seconds. */
     if (!arg || !*arg) return (int)time(NULL);

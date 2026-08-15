@@ -20,40 +20,40 @@
 #include <ctype.h>
 #include <math.h>
 
-/* PoP: parse_money @ agent/billing_view.py:parse_money */
+/* PoP: billing_fetch @ agent/billing_view.py:parse_money */
 /* Port of Python agent/billing_view.py:parse_money */
 
-/* PoP: format_money @ agent/billing_view.py:format_money */
+/* PoP: billing_fetch @ agent/billing_view.py:format_money */
 /* Port of Python agent/billing_view.py:format_money */
 
-/* PoP: masked @ agent/billing_view.py:CardInfo.masked */
+/* PoP: billing_fetch @ agent/billing_view.py:CardInfo.masked */
 /* Port of Python agent/billing_view.py:CardInfo.masked */
 
-/* PoP: can_charge @ agent/billing_view.py:BillingState.can_charge */
+/* PoP: billing_fetch @ agent/billing_view.py:BillingState.can_charge */
 /* Port of Python agent/billing_view.py:BillingState.can_charge */
 
-/* PoP: _parse_card @ agent/billing_view.py:_parse_card */
+/* PoP: billing_fetch @ agent/billing_view.py:_parse_card */
 /* Port of Python agent/billing_view.py:_parse_card */
 
-/* PoP: _parse_monthly_cap @ agent/billing_view.py:_parse_monthly_cap */
+/* PoP: billing_fetch @ agent/billing_view.py:_parse_monthly_cap */
 /* Port of Python agent/billing_view.py:_parse_monthly_cap */
 
-/* PoP: _parse_auto_reload @ agent/billing_view.py:_parse_auto_reload */
+/* PoP: billing_fetch @ agent/billing_view.py:_parse_auto_reload */
 /* Port of Python agent/billing_view.py:_parse_auto_reload */
 
-/* PoP: billing_state_from_payload @ agent/billing_view.py:billing_state_from_payload */
+/* PoP: billing_fetch @ agent/billing_view.py:billing_state_from_payload */
 /* Port of Python agent/billing_view.py:billing_state_from_payload */
 
-/* PoP: build_billing_state @ agent/billing_view.py:build_billing_state */
+/* PoP: billing_fetch @ agent/billing_view.py:build_billing_state */
 /* Port of Python agent/billing_view.py:build_billing_state */
 
-/* PoP: _fallback_portal_url @ agent/billing_view.py:_fallback_portal_url */
+/* PoP: billing_fetch @ agent/billing_view.py:_fallback_portal_url */
 /* Port of Python agent/billing_view.py:_fallback_portal_url */
 
-/* PoP: new_idempotency_key @ agent/billing_view.py:new_idempotency_key */
+/* PoP: billing_fetch @ agent/billing_view.py:new_idempotency_key */
 /* Port of Python agent/billing_view.py:new_idempotency_key */
 
-/* PoP: validate_charge_amount @ agent/billing_view.py:validate_charge_amount */
+/* PoP: billing_fetch @ agent/billing_view.py:validate_charge_amount */
 /* Port of Python agent/billing_view.py:validate_charge_amount */
 
 /* ================================================================
@@ -95,7 +95,7 @@ static char *billing_fetch(const char *url, const char *auth_header) {
 /* billing_json helpers live in billing_json_helpers.c (hermes_billing.h) */
 
 static char *json_get_string(const char *json, const char *key, char *buf, size_t buf_sz) {
-/* PoP: parse_budget_ceiling @ agent/billing_view.py:parse_budget_ceiling */
+/* PoP: parse_card @ agent/billing_view.py:parse_budget_ceiling */
     if (!json || !key || !buf || buf_sz == 0) return NULL;
     buf[0] = '\0';
     char search[128];

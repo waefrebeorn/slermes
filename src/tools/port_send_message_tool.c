@@ -109,21 +109,21 @@ static json_t *send_message_handle_send(json_t *args);
 
 #include <sys/types.h>
 
-/* PoP: _display_chat_id @ tools/send_message_tool.py:_display_chat_id */
+/* PoP: send_message_display_chat_id @ tools/send_message_tool.py:_display_chat_id */
 /* Delegate to the focused send_message_target module. */
 char *send_message_display_chat_id(const char *platform_name, const char *chat_id)
 {
     return send_message_target_display_chat_id(platform_name, chat_id);
 }
 
-/* PoP: _telegram_retry_delay @ tools/send_message_tool.py:_telegram_retry_delay */
+/* PoP: send_message_telegram_retry_delay @ tools/send_message_tool.py:_telegram_retry_delay */
 /* Delegate to the focused send_message_target module. */
 double send_message_telegram_retry_delay(const char *error_text, int attempt)
 {
     return send_message_target_telegram_retry_delay(error_text, attempt);
 }
 
-/* PoP: _parse_target_ref @ tools/send_message_tool.py:_parse_target_ref */
+/* PoP: send_message_parse_target_ref @ tools/send_message_tool.py:_parse_target_ref */
 /* Delegate to the focused send_message_target module. */
 int send_message_parse_target_ref(const char *platform_name, const char *target_ref,
                                    char *chat_id_out, size_t chat_id_size,
@@ -134,7 +134,7 @@ int send_message_parse_target_ref(const char *platform_name, const char *target_
                                                  thread_id_out, thread_id_size);
 }
 
-/* PoP: _describe_media_for_mirror @ tools/send_message_tool.py:_describe_media_for_mirror */
+/* PoP: send_message_describe_media_for_mirror @ tools/send_message_tool.py:_describe_media_for_mirror */
 /* Port of Python tools/send_message_tool.py:_describe_media_for_mirror().
  * Generate descriptive text for media attachments in mirror output. */
 char *send_message_describe_media_for_mirror(json_t *media_files)
@@ -175,7 +175,7 @@ char *send_message_describe_media_for_mirror(json_t *media_files)
     return result;
 }
 
-/* PoP: _get_cron_auto_delivery_target @ tools/send_message_tool.py:_get_cron_auto_delivery_target */
+/* PoP: send_message_get_cron_auto_delivery_target @ tools/send_message_tool.py:_get_cron_auto_delivery_target */
 /* Port of Python tools/send_message_tool.py:_get_cron_auto_delivery_target().
  * Get the auto-delivery target for cron jobs. */
 int send_message_get_cron_auto_delivery_target(char *platform_out, size_t platform_size,
@@ -217,7 +217,7 @@ int send_message_get_cron_auto_delivery_target(char *platform_out, size_t platfo
     return success;
 }
 
-/* PoP: _maybe_skip_cron_duplicate_send @ tools/send_message_tool.py:_maybe_skip_cron_duplicate_send */
+/* PoP: send_message_maybe_skip_cron_duplicate_send @ tools/send_message_tool.py:_maybe_skip_cron_duplicate_send */
 /* Port of Python tools/send_message_tool.py:_maybe_skip_cron_duplicate_send().
  * Check if this cron send would be a duplicate. Returns 1 to skip, 0 to send. */
 int send_message_maybe_skip_cron_duplicate_send(const char *platform, const char *chat_id,
@@ -258,7 +258,7 @@ static size_t hash_str(const char *str)
     return hash;
 }
 
-/* PoP: _check_send_message @ tools/send_message_tool.py:_check_send_message */
+/* PoP: send_message_check_send_message @ tools/send_message_tool.py:_check_send_message */
 /* Port of Python tools/send_message_tool.py:_check_send_message().
  * Internal check function - returns tool_error or None. */
 json_t *send_message_check_send_message(const char *platform_name, const char *chat_id,
@@ -282,7 +282,7 @@ json_t *send_message_check_send_message(const char *platform_name, const char *c
     return NULL;  /* OK */
 }
 
-/* PoP: send_message_tool @ tools/send_message_tool.py:send_message_tool */
+/* PoP: send_message_tool_main @ tools/send_message_tool.py:send_message_tool */
 /* Port of Python tools/send_message_tool.py:send_message_tool().
  * Main handler for cross-channel send_message tool calls. */
 json_t *send_message_tool_main(json_t *args)
@@ -307,7 +307,7 @@ json_t *send_message_tool_main(json_t *args)
 }
 
 /* Helper functions that would need full gateway integration */
-/* PoP: _handle_list @ tools/send_message_tool.py:_handle_list */
+/* PoP: send_message_handle_list @ tools/send_message_tool.py:_handle_list */
 /* Port of Python tools/send_message_tool.py:_handle_list().
  * Return formatted list of available messaging targets. */
 json_t *send_message_handle_list(void)
@@ -319,7 +319,7 @@ json_t *send_message_handle_list(void)
     return result;
 }
 
-/* PoP: _handle_react @ tools/send_message_tool.py:_handle_react */
+/* PoP: send_message_handle_react @ tools/send_message_tool.py:_handle_react */
 /* Port of Python tools/send_message_tool.py:_handle_react().
  * Attach (or with remove=True retract) an emoji reaction on a message
  * via a live gateway adapter. */
@@ -364,7 +364,7 @@ json_t *send_message_handle_react(json_t *args, bool remove)
     return result;
 }
 
-/* PoP: _handle_send @ tools/send_message_tool.py:_handle_send */
+/* PoP: send_message_handle_send @ tools/send_message_tool.py:_handle_send */
 /* Port of Python tools/send_message_tool.py:_handle_send().
  * Send a message to a platform target. */
 json_t *send_message_handle_send(json_t *args)
@@ -777,7 +777,7 @@ json_t *send_message_send_telegram(const char *token, const char *chat_id,
     return result;
 }
 
-/* PoP: send_message_send_signal @ tools/send_message_tool.py:_send_signal */
+/* PoP: Signal @ tools/send_message_tool.py:_send_signal */
 /* Port of Python tools/send_message_tool.py:_send_signal().
  * Send a message via Signal (photon). */
 json_t *send_message_send_signal(json_t *pconfig, const char *chat_id,
@@ -869,7 +869,7 @@ json_t *send_message_send_weixin(json_t *pconfig, const char *chat_id,
     return result;
 }
 
-/* PoP: send_message_send_bluebubbles @ tools/send_message_tool.py:_send_bluebubbles */
+/* PoP: BlueBubbles @ tools/send_message_tool.py:_send_bluebubbles */
 /* Port of Python tools/send_message_tool.py:_send_bluebubbles().
  * Send a message via BlueBubbles (iMessage bridge). */
 json_t *send_message_send_bluebubbles(json_t *pconfig, const char *chat_id,

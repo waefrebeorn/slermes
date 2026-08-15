@@ -22,7 +22,7 @@
 #include <unistd.h>
 #include <ctype.h>
 
-/* PoP: close_terminal_tool @ tools/close_terminal_tool.py:close_terminal_tool */
+/* PoP: check_close_terminal_requirements @ tools/close_terminal_tool.py:close_terminal_tool */
 bool check_close_terminal_requirements(void) {
     const char *v = getenv("HERMES_DESKTOP");
     if (!v || !*v) return false;
@@ -32,7 +32,7 @@ bool check_close_terminal_requirements(void) {
     return strcmp(buf, "1") == 0 || strcmp(buf, "true") == 0 || strcmp(buf, "yes") == 0;
 }
 
-/* PoP: close_terminal_tool @ tools/close_terminal_tool.py:close_terminal_tool */
+/* PoP: object @ tools/close_terminal_tool.py:close_terminal_tool */
 /* Handler signature matches registry_register_ex: args_json is the tool's
  * argument object ({"process_id": "..."}), task_id is the active task. */
 char *close_terminal_tool(const char *args_json, const char *task_id) {

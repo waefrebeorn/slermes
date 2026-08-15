@@ -36,7 +36,7 @@ static const rt_floor_t RT_FLOORS[] = {
 };
 #define RT_N (int)(sizeof(RT_FLOORS)/sizeof(RT_FLOORS[0]))
 
-/* PoP: _get_pattern @ agent/reasoning_timeouts.py:_get_pattern */
+/* PoP: rt_get_pattern @ agent/reasoning_timeouts.py:_get_pattern */
 /* Build the wrapper regex `^slug($|[-._])` for a slug — mirrors Python's
  * _get_pattern (start-of-slug + slug + end-or-separator right anchor).
  * Returns 0 on success, non-zero on overflow. */
@@ -46,7 +46,7 @@ static int rt_get_pattern(const char *slug, char *out, size_t outsz)
     return (n < 0 || (size_t)n >= outsz) ? -1 : 0;
 }
 
-/* PoP: _match_any @ agent/reasoning_timeouts.py:_match_any */
+/* PoP: floor @ agent/reasoning_timeouts.py:_match_any */
 /* Return the floor (seconds) for the first matching slug, else -1.0.
  * Longest slug wins on shared prefixes (o3-mini beats o3). */
 static double rt_match_any(const char *slug)

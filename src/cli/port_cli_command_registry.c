@@ -230,7 +230,7 @@ const cli_command_def_t *const CLI_COMMAND_REGISTRY[] = {
 };
 size_t CLI_COMMAND_REGISTRY_COUNT = 83;
 
-/* PoP: resolve_command @ hermes_cli/commands.py:resolve_command */
+/* PoP: cli_resolve_command @ hermes_cli/commands.py:resolve_command */
 /* ── resolve_command (mirrors commands.py:resolve_command) ───────────────── */
 const cli_command_def_t *cli_resolve_command(const char *name) {
     if (!name) return NULL;
@@ -313,10 +313,10 @@ static cli_index_entry_t *build_index(bool subcommands_mode) {
     idx[n].value = NULL;
     return idx;
 }
-/* PoP: _build_commands_index @ hermes_cli/commands.py:COMMANDS */
+/* PoP: cli_build_commands_index @ hermes_cli/commands.py:COMMANDS */
 cli_index_entry_t *cli_build_commands_index(void) { return build_index(false); }
 
-/* PoP: _build_subcommands_index @ hermes_cli/commands.py:SUBCOMMANDS */
+/* PoP: cli_build_subcommands_index @ hermes_cli/commands.py:SUBCOMMANDS */
 cli_index_entry_t *cli_build_subcommands_index(void) { return build_index(true); }
 
 void cli_free_index(cli_index_entry_t *idx) {
@@ -327,7 +327,7 @@ void cli_free_index(cli_index_entry_t *idx) {
     free(idx);
 }
 
-/* PoP: _walk @ hermes_cli/completion.py:_walk */
+/* PoP: help_cb @ hermes_cli/completion.py:_walk */
 /* ── completion_walk (mirrors completion.py:_walk) ───────────────────────── */
 /* Build a completion_node tree from the registry. Help text per command comes
  * from help_cb (or the command description when NULL). flags are derived from

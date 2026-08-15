@@ -188,7 +188,7 @@ static void close_cur_op(patch_op_t *cur, hunk_t *cur_hunk) {
     if (cur) finalize_hunk(cur, cur_hunk);
 }
 
-/* PoP: parse_v4a_patch @ tools/patch_parser.py:parse_v4a_patch */
+/* PoP: patch_parser_parse_v4a @ tools/patch_parser.py:parse_v4a_patch */
 parse_result_t patch_parser_parse_v4a(const char *patch_content) {
     parse_result_t r;
     memset(&r, 0, sizeof(r));
@@ -436,7 +436,7 @@ void patch_parser_print_canonical(const patch_parse_result_t *r)
     putchar('\n');
 }
 
-/* PoP: _write_file_accepts_pre_content @ tools/patch_parser.py:_write_file_accepts_pre_content */
+/* PoP: false @ tools/patch_parser.py:_write_file_accepts_pre_content */
 /* True when file_ops.write_file accepts a pre_content kwarg. In the C port
  * the write_file tool has a fixed arity and does NOT accept pre_content, so
  * this conservatively returns false (mirroring the Python path where an

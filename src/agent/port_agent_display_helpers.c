@@ -11,7 +11,7 @@
 /* Forward decl: src/cli/display_core.c (build_tool_preview port). */
 char *cli_agent_display__build_tool_preview(const char *tool_name, const char *args_json, int max_len);
 
-/* PoP: _oneline @ agent/display.py:_oneline */
+/* PoP: agent_display_oneline @ agent/display.py:_oneline */
 void agent_display_oneline(const char *text, char *out, size_t outsz)
 {
     if (outsz == 0) return;
@@ -32,7 +32,7 @@ void agent_display_oneline(const char *text, char *out, size_t outsz)
     out[o] = '\0';
 }
 
-/* PoP: _truncate_preview @ agent/display.py:_truncate_preview */
+/* PoP: agent_display_truncate_preview @ agent/display.py:_truncate_preview */
 void agent_display_truncate_preview(const char *text, int max_len, char *out, size_t outsz)
 {
     if (outsz == 0) return;
@@ -57,7 +57,7 @@ void agent_display_truncate_preview(const char *text, int max_len, char *out, si
     out[i] = '\0';
 }
 
-/* PoP: _shell_basename @ agent/display.py:_shell_basename */
+/* PoP: agent_display_shell_basename @ agent/display.py:_shell_basename */
 void agent_display_shell_basename(const char *head, char *out, size_t outsz)
 {
     if (outsz == 0) return;
@@ -69,7 +69,7 @@ void agent_display_shell_basename(const char *head, char *out, size_t outsz)
     out[i] = '\0';
 }
 
-/* PoP: prepare_tool_preview @ agent/display.py:prepare_tool_preview */
+/* PoP: http @ agent/display.py:prepare_tool_preview */
 
 /* Port of Python prepare_tool_preview: build one canonical compact preview
  * before platform formatting. Rebuilds the uncapped preview from tool args

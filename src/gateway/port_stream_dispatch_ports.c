@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ gateway/stream_dispatch.py:__init__ */
+/* PoP: std_init @ gateway/stream_dispatch.py:__init__ */
 char *std_init(const char *adapter_desc, const char *sink_desc) {
     char *out = NULL;
     asprintf(&out, "{\"adapter\": \"%s\", \"sink\": \"%s\"}",
@@ -26,7 +26,7 @@ char *std_init(const char *adapter_desc, const char *sink_desc) {
     return out;
 }
 
-/* PoP: dispatch @ gateway/stream_dispatch.py:dispatch */
+/* PoP: std_dispatch @ gateway/stream_dispatch.py:dispatch */
 int std_dispatch(const char *event_json) {
     /* Python: route single event; never raises. */
     if (!event_json) return -1;
@@ -34,7 +34,7 @@ int std_dispatch(const char *event_json) {
     return 0;
 }
 
-/* PoP: _dispatch @ gateway/stream_dispatch.py:_dispatch */
+/* PoP: std_dispatch_inner @ gateway/stream_dispatch.py:_dispatch */
 int std_dispatch_inner(const char *event_json, bool sink_enabled) {
     /* Python: chunk/stop/commentary routing. */
     if (!event_json) return -1;

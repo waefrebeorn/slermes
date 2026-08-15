@@ -13,7 +13,7 @@
 #include <signal.h>
 #include "hermes_json.h"
 
-/* PoP: _action_result_from @ tools/computer_use/cua_backend.py:_action_result_from */
+/* PoP: cua_u_action_result_from @ tools/computer_use/cua_backend.py:_action_result_from */
 int cua_u_action_result_from(const char *arg) {
     /* Python: structured verdict lift. Arg =
      * "state\tresult". */
@@ -25,7 +25,7 @@ int cua_u_action_result_from(const char *arg) {
     return 0;
 }
 
-/* PoP: _computer_use_cfg @ tools/computer_use/cua_backend.py:_computer_use_cfg */
+/* PoP: cua_u_computer_use_cfg @ tools/computer_use/cua_backend.py:_computer_use_cfg */
 int cua_u_computer_use_cfg(const char *arg) {
     /* Python: (load_config() or {}).get("computer_use") or {} on error.
      * Arg = config JSON (or empty). */
@@ -49,7 +49,7 @@ int cua_u_computer_use_cfg(const char *arg) {
     return 0;
 }
 
-/* PoP: _cua_no_overlay @ tools/computer_use/cua_backend.py:_cua_no_overlay */
+/* PoP: cua_u_cua_no_overlay @ tools/computer_use/cua_backend.py:_cua_no_overlay */
 int cua_u_cua_no_overlay(const char *arg) {
     /* Python: config override then auto-detect. Arg =
      * "state\tplatform\thas_display\tis_wsl\tresult". */
@@ -70,7 +70,7 @@ int cua_u_cua_no_overlay(const char *arg) {
     return 0;
 }
 
-/* PoP: _cua_telemetry_disabled @ tools/computer_use/cua_backend.py:_cua_telemetry_disabled */
+/* PoP: cua_u_cua_telemetry_disabled @ tools/computer_use/cua_backend.py:_cua_telemetry_disabled */
 int cua_u_cua_telemetry_disabled(const char *arg) {
     /* Python: NOT config cua_telemetry (default False -> disabled True).
      * Arg = "1"/"0" config flag. */
@@ -79,7 +79,7 @@ int cua_u_cua_telemetry_disabled(const char *arg) {
     return 0;
 }
 
-/* PoP: _computer_use_max_image_dimension @ tools/computer_use/cua_backend.py:_computer_use_max_image_dimension */
+/* PoP: cua_u_computer_use_max_image_dimension @ tools/computer_use/cua_backend.py:_computer_use_max_image_dimension */
 int cua_u_computer_use_max_image_dimension(const char *arg) {
     /* Python: config int default 1456; <=0/non-numeric -> None. Arg = raw. */
     if (!arg || !*arg) { printf("1456\n"); return 0; }
@@ -91,7 +91,7 @@ int cua_u_computer_use_max_image_dimension(const char *arg) {
     return 0;
 }
 
-/* PoP: cua_driver_child_env @ tools/computer_use/cua_backend.py:cua_driver_child_env */
+/* PoP: cua_cua_driver_child_env @ tools/computer_use/cua_backend.py:cua_driver_child_env */
 int cua_cua_driver_child_env(const char *arg) {
     /* Python: base env + telemetry-disable var. Arg = "telemetry_disabled\tenv_json". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -102,7 +102,7 @@ int cua_cua_driver_child_env(const char *arg) {
     return 0;
 }
 
-/* PoP: _z_index_uninformative @ tools/computer_use/cua_backend.py:_z_index_uninformative */
+/* PoP: cua_u_z_index_uninformative @ tools/computer_use/cua_backend.py:_z_index_uninformative */
 int cua_u_z_index_uninformative(const char *arg) {
     /* Python: True if no windows; len({w.get("z_index",0) for w in
      * windows}) <= 1. Arg = "z\tz\tz..." z-indices. */
@@ -121,7 +121,7 @@ int cua_u_z_index_uninformative(const char *arg) {
     return 0;
 }
 
-/* PoP: _parse_xprop_net_active_window @ tools/computer_use/cua_backend.py:_parse_xprop_net_active_window */
+/* PoP: cua_u_parse_xprop_net_active_window @ tools/computer_use/cua_backend.py:_parse_xprop_net_active_window */
 int cua_u_parse_xprop_net_active_window(const char *arg) {
     /* Python: "window id # 0x..." or first hex token. Arg = stdout. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -140,7 +140,7 @@ int cua_u_parse_xprop_net_active_window(const char *arg) {
     return 0;
 }
 
-/* PoP: _linux_x11_active_window_id @ tools/computer_use/cua_backend.py:_linux_x11_active_window_id */
+/* PoP: cua_u_linux_x11_active_window_id @ tools/computer_use/cua_backend.py:_linux_x11_active_window_id */
 int cua_u_linux_x11_active_window_id(const char *arg) {
     /* Python: xprop probe or None. Arg = "has_display\tstdout". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -163,7 +163,7 @@ int cua_u_linux_x11_active_window_id(const char *arg) {
     return 0;
 }
 
-/* PoP: _is_real_app_window @ tools/computer_use/cua_backend.py:_is_real_app_window */
+/* PoP: cua_u_is_real_app_window @ tools/computer_use/cua_backend.py:_is_real_app_window */
 int cua_u_is_real_app_window(const char *arg) {
     /* Python: title not starting with any non-app prefix (case-insens).
      * Arg = title. */
@@ -182,7 +182,7 @@ int cua_u_is_real_app_window(const char *arg) {
     return 0;
 }
 
-/* PoP: _select_capture_target @ tools/computer_use/cua_backend.py:_select_capture_target */
+/* PoP: cua_u_select_capture_target @ tools/computer_use/cua_backend.py:_select_capture_target */
 int cua_u_select_capture_target(const char *arg) {
     /* Python: z-index/active-window pick. Arg =
      * "exact\tlinux\tstate\tresult". */
@@ -199,7 +199,7 @@ int cua_u_select_capture_target(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_mcp_invocation @ tools/computer_use/cua_backend.py:_resolve_mcp_invocation */
+/* PoP: cua_u_resolve_mcp_invocation @ tools/computer_use/cua_backend.py:_resolve_mcp_invocation */
 int cua_u_resolve_mcp_invocation(const char *arg) {
     /* Python: manifest probe. Arg =
      * "from_manifest\tstate\tresult". */
@@ -213,7 +213,7 @@ int cua_u_resolve_mcp_invocation(const char *arg) {
     return 0;
 }
 
-/* PoP: _mcp_args_with_overlay_flag @ tools/computer_use/cua_backend.py:_mcp_args_with_overlay_flag */
+/* PoP: cua_u_mcp_args_with_overlay_flag @ tools/computer_use/cua_backend.py:_mcp_args_with_overlay_flag */
 int cua_u_mcp_args_with_overlay_flag(const char *arg) {
     /* Python: args + ["--no-overlay"] when no-overlay configured AND driver
      * supports it; else args. Arg = "no_overlay_supported\targ\targ...". */
@@ -226,7 +226,7 @@ int cua_u_mcp_args_with_overlay_flag(const char *arg) {
     return 0;
 }
 
-/* PoP: _cua_driver_supports_no_overlay @ tools/computer_use/cua_backend.py:_cua_driver_supports_no_overlay */
+/* PoP: cua_u_cua_driver_supports_no_overlay @ tools/computer_use/cua_backend.py:_cua_driver_supports_no_overlay */
 int cua_u_cua_driver_supports_no_overlay(const char *arg) {
     /* Python: --help probe. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -237,7 +237,7 @@ int cua_u_cua_driver_supports_no_overlay(const char *arg) {
     return 0;
 }
 
-/* PoP: _has_path_separator @ tools/computer_use/cua_backend.py:_has_path_separator */
+/* PoP: cua_u_has_path_separator @ tools/computer_use/cua_backend.py:_has_path_separator */
 int cua_u_has_path_separator(const char *value) {
     /* Python: os.sep in value or (os.altsep is not None and os.altsep in
      * value). POSIX sep is '/'; altsep only exists on Windows. */
@@ -249,7 +249,7 @@ int cua_u_has_path_separator(const char *value) {
     return 0;
 }
 
-/* PoP: _candidate_cua_driver_commands @ tools/computer_use/cua_backend.py:_candidate_cua_driver_commands */
+/* PoP: cua_u_candidate_cua_driver_commands @ tools/computer_use/cua_backend.py:_candidate_cua_driver_commands */
 int cua_u_candidate_cua_driver_commands(const char *arg) {
     /* Python: resolution order. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -300,7 +300,7 @@ static char *cua_expanduser(const char *p) {
     return strdup(p);
 }
 
-/* PoP: resolve_cua_driver_cmd @ tools/computer_use/cua_backend.py:resolve_cua_driver_cmd */
+/* PoP: cua_resolve_cua_driver_cmd @ tools/computer_use/cua_backend.py:resolve_cua_driver_cmd */
 int cua_resolve_cua_driver_cmd(const char *arg) {
     /* Python: an explicit override (arg) or HERMES_CUA_DRIVER_CMD is
      * authoritative; otherwise resolve "cua-driver" on PATH, then the
@@ -358,7 +358,7 @@ int cua_resolve_cua_driver_cmd(const char *arg) {
     return 0;
 }
 
-/* PoP: cua_driver_update_nudge @ tools/computer_use/cua_backend.py:cua_driver_update_nudge */
+/* PoP: cua_cua_driver_update_nudge @ tools/computer_use/cua_backend.py:cua_driver_update_nudge */
 int cua_cua_driver_update_nudge(const char *arg) {
     /* Python: update message or None. Arg = "available\tlatest\tcurrent". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -371,7 +371,7 @@ int cua_cua_driver_update_nudge(const char *arg) {
     return 0;
 }
 
-/* PoP: cua_driver_install_hint @ tools/computer_use/cua_backend.py:cua_driver_install_hint */
+/* PoP: cua_cua_driver_install_hint @ tools/computer_use/cua_backend.py:cua_driver_install_hint */
 int cua_cua_driver_install_hint(void) {
     /* Python: multi-line install guidance; the installer command differs
      * per platform (PowerShell on Windows, bash+curl elsewhere). */
@@ -390,7 +390,7 @@ int cua_cua_driver_install_hint(void) {
     return 0;
 }
 
-/* PoP: _parse_elements_from_structured @ tools/computer_use/cua_backend.py:_parse_elements_from_structured */
+/* PoP: cua_u_parse_elements_from_structured @ tools/computer_use/cua_backend.py:_parse_elements_from_structured */
 int cua_u_parse_elements_from_structured(const char *arg) {
     /* Python: real frames. Arg =
      * "count\tstate\tresult". */
@@ -403,7 +403,7 @@ int cua_u_parse_elements_from_structured(const char *arg) {
     return 0;
 }
 
-/* PoP: _require_started @ tools/computer_use/cua_backend.py:_require_started */
+/* PoP: cua_u_require_started @ tools/computer_use/cua_backend.py:_require_started */
 int cua_u_require_started(const char *arg) {
     /* Python: started gate. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -414,7 +414,7 @@ int cua_u_require_started(const char *arg) {
     return 0;
 }
 
-/* PoP: _lifecycle_coro @ tools/computer_use/cua_backend.py:_lifecycle_coro */
+/* PoP: cua_u_lifecycle_coro @ tools/computer_use/cua_backend.py:_lifecycle_coro */
 int cua_u_lifecycle_coro(const char *arg) {
     /* Python: same-task enter/exit. Arg =
      * "ready\tstate\tresult". */
@@ -429,7 +429,7 @@ int cua_u_lifecycle_coro(const char *arg) {
     return 0;
 }
 
-/* PoP: _populate_capabilities @ tools/computer_use/cua_backend.py:_populate_capabilities */
+/* PoP: cua_u_populate_capabilities @ tools/computer_use/cua_backend.py:_populate_capabilities */
 int cua_u_populate_capabilities(const char *arg) {
     /* Python: tools/list cache. Arg =
      * "cached\tstate\tresult". */
@@ -442,7 +442,7 @@ int cua_u_populate_capabilities(const char *arg) {
     return 0;
 }
 
-/* PoP: _start_lifecycle_locked @ tools/computer_use/cua_backend.py:_start_lifecycle_locked */
+/* PoP: cua_u_start_lifecycle_locked @ tools/computer_use/cua_backend.py:_start_lifecycle_locked */
 int cua_u_start_lifecycle_locked(const char *arg) {
     /* Python: 30s ready wait. Arg = "state\tresult\terr". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -466,7 +466,7 @@ int cua_u_start_lifecycle_locked(const char *arg) {
     return 0;
 }
 
-/* PoP: _stop_lifecycle_locked @ tools/computer_use/cua_backend.py:_stop_lifecycle_locked */
+/* PoP: cua_u_stop_lifecycle_locked @ tools/computer_use/cua_backend.py:_stop_lifecycle_locked */
 int cua_u_stop_lifecycle_locked(const char *arg) {
     /* Python: signal + wait 5s + clear future. Arg = "has_future\ttimed_out\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -480,7 +480,7 @@ int cua_u_stop_lifecycle_locked(const char *arg) {
     return 0;
 }
 
-/* PoP: _signal_shutdown_locked @ tools/computer_use/cua_backend.py:_signal_shutdown_locked */
+/* PoP: cua_u_signal_shutdown_locked @ tools/computer_use/cua_backend.py:_signal_shutdown_locked */
 int cua_u_signal_shutdown_locked(const char *arg) {
     /* Python: threadsafe event set. Arg = "loop_running". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -489,7 +489,7 @@ int cua_u_signal_shutdown_locked(const char *arg) {
     return 0;
 }
 
-/* PoP: _call_tool_async @ tools/computer_use/cua_backend.py:_call_tool_async */
+/* PoP: cua_u_call_tool_async @ tools/computer_use/cua_backend.py:_call_tool_async */
 int cua_u_call_tool_async(const char *arg) {
     /* Python: session call. Arg =
      * "state\tresult\terr". */
@@ -506,7 +506,7 @@ int cua_u_call_tool_async(const char *arg) {
     return 0;
 }
 
-/* PoP: capabilities_discovered @ tools/computer_use/cua_backend.py:capabilities_discovered */
+/* PoP: cua_capabilities_discovered @ tools/computer_use/cua_backend.py:capabilities_discovered */
 int cua_capabilities_discovered(const char *arg) {
     /* Python: bool(self._capabilities). Arg = "0" or "1". */
     if (arg && arg[0] == '1') { printf("1\n"); return 0; }
@@ -514,7 +514,7 @@ int cua_capabilities_discovered(const char *arg) {
     return 0;
 }
 
-/* PoP: capability_version @ tools/computer_use/cua_backend.py:capability_version */
+/* PoP: cua_capability_version @ tools/computer_use/cua_backend.py:capability_version */
 int cua_capability_version(void) {
     /* Python: driver-advertised capability vocabulary version ("" when the
      * driver predates the field). The C port does not launch the driver,
@@ -523,7 +523,7 @@ int cua_capability_version(void) {
     return 0;
 }
 
-/* PoP: _is_closed_session_error @ tools/computer_use/cua_backend.py:_is_closed_session_error */
+/* PoP: cua_u_is_closed_session_error @ tools/computer_use/cua_backend.py:_is_closed_session_error */
 int cua_u_is_closed_session_error(const char *arg) {
     /* Python classifies the exception by class name/module: ClosedResourceError,
      * BrokenResourceError, EndOfStream, anyio.*Resource*, BrokenPipeError and
@@ -539,7 +539,7 @@ int cua_u_is_closed_session_error(const char *arg) {
     return 0;
 }
 
-/* PoP: _is_transient_daemon_error @ tools/computer_use/cua_backend.py:_is_transient_daemon_error */
+/* PoP: cua_u_is_transient_daemon_error @ tools/computer_use/cua_backend.py:_is_transient_daemon_error */
 int cua_u_is_transient_daemon_error(const char *arg) {
     /* Python: EAGAIN congestion from the cua-driver daemon proxy — the
      * message carries "Resource temporarily unavailable" or "os error 35". */
@@ -548,7 +548,7 @@ int cua_u_is_transient_daemon_error(const char *arg) {
            strstr(arg, "os error 35") != NULL;
 }
 
-/* PoP: _restart_session_locked @ tools/computer_use/cua_backend.py:_restart_session_locked */
+/* PoP: cua_u_restart_session_locked @ tools/computer_use/cua_backend.py:_restart_session_locked */
 int cua_u_restart_session_locked(const char *arg) {
     /* Python: stop lifecycle + clear caps + start. Arg = "started\tstate". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -558,7 +558,7 @@ int cua_u_restart_session_locked(const char *arg) {
     return 0;
 }
 
-/* PoP: _call_tool_via_cli @ tools/computer_use/cua_backend.py:_call_tool_via_cli */
+/* PoP: cua_u_call_tool_via_cli @ tools/computer_use/cua_backend.py:_call_tool_via_cli */
 int cua_u_call_tool_via_cli(const char *arg) {
     /* Python: EAGAIN fallback. Arg =
      * "state\tresult\terr". */
@@ -575,7 +575,7 @@ int cua_u_call_tool_via_cli(const char *arg) {
     return 0;
 }
 
-/* PoP: _extract_tool_result @ tools/computer_use/cua_backend.py:_extract_tool_result */
+/* PoP: cua_u_extract_tool_result @ tools/computer_use/cua_backend.py:_extract_tool_result */
 int cua_u_extract_tool_result(const char *arg) {
     /* Python: flatten result. Arg =
      * "parts\tstate\tresult". */
@@ -588,7 +588,7 @@ int cua_u_extract_tool_result(const char *arg) {
     return 0;
 }
 
-/* PoP: _image_from_tool_result @ tools/computer_use/cua_backend.py:_image_from_tool_result */
+/* PoP: cua_u_image_from_tool_result @ tools/computer_use/cua_backend.py:_image_from_tool_result */
 int cua_u_image_from_tool_result(const char *arg) {
     /* Python: both delivery shapes. Arg =
      * "state\tresult". */
@@ -600,7 +600,7 @@ int cua_u_image_from_tool_result(const char *arg) {
     return 0;
 }
 
-/* PoP: _ingest_windows @ tools/computer_use/cua_backend.py:_ingest_windows */
+/* PoP: cua_u_ingest_windows @ tools/computer_use/cua_backend.py:_ingest_windows */
 int cua_u_ingest_windows(const char *arg) {
     /* Python: pid/window_id gate. Arg =
      * "count\tstate\tresult". */
@@ -613,7 +613,7 @@ int cua_u_ingest_windows(const char *arg) {
     return 0;
 }
 
-/* PoP: _clear_active_target @ tools/computer_use/cua_backend.py:_clear_active_target */
+/* PoP: cua_u_clear_active_target @ tools/computer_use/cua_backend.py:_clear_active_target */
 int cua_u_clear_active_target(const char *arg) {
     /* Python: null out pid/window/app/target + clear snapshot tokens. */
     (void)arg;
@@ -621,7 +621,7 @@ int cua_u_clear_active_target(const char *arg) {
     return 0;
 }
 
-/* PoP: _failed_capture @ tools/computer_use/cua_backend.py:_failed_capture */
+/* PoP: cua_u_failed_capture @ tools/computer_use/cua_backend.py:_failed_capture */
 int cua_u_failed_capture(const char *arg) {
     /* Python: empty CaptureResult with window_title=message. Arg = message. */
     if (!arg || !*arg) { printf("0\t0\t\t\t\t\t\n"); return 0; }
@@ -629,7 +629,7 @@ int cua_u_failed_capture(const char *arg) {
     return 0;
 }
 
-/* PoP: _call_capture_tool @ tools/computer_use/cua_backend.py:_call_capture_tool */
+/* PoP: cua_u_call_capture_tool @ tools/computer_use/cua_backend.py:_call_capture_tool */
 int cua_u_call_capture_tool(const char *arg) {
     /* Python: call capture tool, disarm + raise on error. Arg =
      * "name\tis_error\tmessage". */
@@ -647,7 +647,7 @@ int cua_u_call_capture_tool(const char *arg) {
     return 0;
 }
 
-/* PoP: _load_windows @ tools/computer_use/cua_backend.py:_load_windows */
+/* PoP: cua_u_load_windows @ tools/computer_use/cua_backend.py:_load_windows */
 int cua_u_load_windows(const char *arg) {
     /* Python: z-index sort + CLI fallback. Arg =
      * "count\tstate\tresult". */
@@ -660,7 +660,7 @@ int cua_u_load_windows(const char *arg) {
     return 0;
 }
 
-/* PoP: _match_windows_for_app @ tools/computer_use/cua_backend.py:_match_windows_for_app */
+/* PoP: cua_u_match_windows_for_app @ tools/computer_use/cua_backend.py:_match_windows_for_app */
 int cua_u_match_windows_for_app(const char *arg) {
     /* Python: exact-first. Arg =
      * "count\tstate\tresult". */
@@ -673,7 +673,7 @@ int cua_u_match_windows_for_app(const char *arg) {
     return 0;
 }
 
-/* PoP: _apply_delivery @ tools/computer_use/cua_backend.py:_apply_delivery */
+/* PoP: cua_u_apply_delivery @ tools/computer_use/cua_backend.py:_apply_delivery */
 int cua_u_apply_delivery(const char *arg) {
     /* Python: foreground gate. Arg =
      * "mode\tcapable\tstate\tresult". */
@@ -698,7 +698,7 @@ int cua_u_apply_delivery(const char *arg) {
     return 0;
 }
 
-/* PoP: set_value @ tools/computer_use/cua_backend.py:set_value */
+/* PoP: cua_set_value @ tools/computer_use/cua_backend.py:set_value */
 int cua_set_value(const char *arg) {
     /* Python: set_value action w/ active window guard. Arg =
      * "has_window\telement\tresult". */
@@ -719,7 +719,7 @@ int cua_set_value(const char *arg) {
     return 0;
 }
 
-/* PoP: list_apps @ tools/computer_use/cua_backend.py:list_apps */
+/* PoP: cua_list_apps @ tools/computer_use/cua_backend.py:list_apps */
 int cua_list_apps(const char *arg) {
     /* Python: structured/data/text fallback. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -730,7 +730,7 @@ int cua_list_apps(const char *arg) {
     return 0;
 }
 
-/* PoP: list_windows @ tools/computer_use/cua_backend.py:list_windows */
+/* PoP: cua_list_windows @ tools/computer_use/cua_backend.py:list_windows */
 int cua_list_windows(const char *arg) {
     /* Python: self._load_windows() — the cached window list. */
     static char g_windows[8192] = "";
@@ -739,7 +739,7 @@ int cua_list_windows(const char *arg) {
     return 0;
 }
 
-/* PoP: launch_app @ tools/computer_use/cua_backend.py:launch_app */
+/* PoP: cua_launch_app @ tools/computer_use/cua_backend.py:launch_app */
 int cua_launch_app(const char *arg) {
     /* Python: idempotent launch. Arg = "has_id\tstate\tresult". */
     if (!arg || !*arg) {
@@ -757,7 +757,7 @@ int cua_launch_app(const char *arg) {
     return 0;
 }
 
-/* PoP: kill_app @ tools/computer_use/cua_backend.py:kill_app */
+/* PoP: cua_kill_app @ tools/computer_use/cua_backend.py:kill_app */
 int cua_kill_app(const char *arg) {
     /* Python: self._action("kill_app", {"pid": int(pid)}) — terminate by
      * pid, kill -9 equivalent. Arg = pid. */
@@ -769,7 +769,7 @@ int cua_kill_app(const char *arg) {
     return 0;
 }
 
-/* PoP: bring_to_front @ tools/computer_use/cua_backend.py:bring_to_front */
+/* PoP: cua_bring_to_front @ tools/computer_use/cua_backend.py:bring_to_front */
 int cua_bring_to_front(const char *arg) {
     /* Python: activate window. Arg = "pid\twindow_id\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -781,7 +781,7 @@ int cua_bring_to_front(const char *arg) {
     return 0;
 }
 
-/* PoP: get_cursor_position @ tools/computer_use/cua_backend.py:get_cursor_position */
+/* PoP: cua_get_cursor_position @ tools/computer_use/cua_backend.py:get_cursor_position */
 int cua_get_cursor_position(const char *arg) {
     /* Python: call_tool get_cursor_position -> (x, y) ints. Arg =
      * "x\ty" (or JSON structuredContent). */
@@ -804,7 +804,7 @@ int cua_get_cursor_position(const char *arg) {
     return 0;
 }
 
-/* PoP: get_screen_size @ tools/computer_use/cua_backend.py:get_screen_size */
+/* PoP: cua_get_screen_size @ tools/computer_use/cua_backend.py:get_screen_size */
 int cua_get_screen_size(const char *arg) {
     /* Python: call_tool get_screen_size -> structuredContent or {}. Arg =
      * JSON or empty. */
@@ -813,7 +813,7 @@ int cua_get_screen_size(const char *arg) {
     return 0;
 }
 
-/* PoP: zoom @ tools/computer_use/cua_backend.py:zoom */
+/* PoP: cua_zoom @ tools/computer_use/cua_backend.py:zoom */
 int cua_zoom(const char *arg) {
     /* Python: zoom-to-rect call. Arg = "window_id\tx\ty\tw\th\tfactor\tstate". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -831,7 +831,7 @@ int cua_zoom(const char *arg) {
     return 0;
 }
 
-/* PoP: set_agent_cursor_enabled @ tools/computer_use/cua_backend.py:set_agent_cursor_enabled */
+/* PoP: cua_set_agent_cursor_enabled @ tools/computer_use/cua_backend.py:set_agent_cursor_enabled */
 int cua_set_agent_cursor_enabled(const char *arg) {
     /* Python: _action("set_agent_cursor_enabled", {enabled, cursor_id?}).
      * Arg = "enabled\tcursor_id" (1/0). */
@@ -843,7 +843,7 @@ int cua_set_agent_cursor_enabled(const char *arg) {
     return 0;
 }
 
-/* PoP: set_agent_cursor_motion @ tools/computer_use/cua_backend.py:set_agent_cursor_motion */
+/* PoP: cua_set_agent_cursor_motion @ tools/computer_use/cua_backend.py:set_agent_cursor_motion */
 int cua_set_agent_cursor_motion(const char *arg) {
     /* Python: motion tuning args. Arg = "glide\tdwell\tidle_hide\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -856,7 +856,7 @@ int cua_set_agent_cursor_motion(const char *arg) {
     return 0;
 }
 
-/* PoP: set_agent_cursor_style @ tools/computer_use/cua_backend.py:set_agent_cursor_style */
+/* PoP: cua_set_agent_cursor_style @ tools/computer_use/cua_backend.py:set_agent_cursor_style */
 int cua_set_agent_cursor_style(const char *arg) {
     /* Python: cursor style action. Arg = "gradients\tbloom\timage\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -870,7 +870,7 @@ int cua_set_agent_cursor_style(const char *arg) {
     return 0;
 }
 
-/* PoP: get_agent_cursor_state @ tools/computer_use/cua_backend.py:get_agent_cursor_state */
+/* PoP: cua_get_agent_cursor_state @ tools/computer_use/cua_backend.py:get_agent_cursor_state */
 int cua_get_agent_cursor_state(const char *arg) {
     /* Python: cursor state structured content. Arg = "cursor_id\tresult". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -881,7 +881,7 @@ int cua_get_agent_cursor_state(const char *arg) {
     return 0;
 }
 
-/* PoP: start_recording @ tools/computer_use/cua_backend.py:start_recording */
+/* PoP: cua_start_recording @ tools/computer_use/cua_backend.py:start_recording */
 int cua_start_recording(const char *arg) {
     /* Python: start_recording call. Arg =
      * "output_dir\trecord_video\tresult". */
@@ -894,7 +894,7 @@ int cua_start_recording(const char *arg) {
     return 0;
 }
 
-/* PoP: stop_recording @ tools/computer_use/cua_backend.py:stop_recording */
+/* PoP: cua_stop_recording @ tools/computer_use/cua_backend.py:stop_recording */
 int cua_stop_recording(const char *arg) {
     /* Python: call_tool stop_recording; return structuredContent or {}. */
     (void)arg;
@@ -902,7 +902,7 @@ int cua_stop_recording(const char *arg) {
     return 0;
 }
 
-/* PoP: get_recording_state @ tools/computer_use/cua_backend.py:get_recording_state */
+/* PoP: cua_get_recording_state @ tools/computer_use/cua_backend.py:get_recording_state */
 int cua_get_recording_state(const char *arg) {
     /* Python: recorder state dict. Arg = "recording\tenabled\toutput_dir\tvideo_active". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -917,7 +917,7 @@ int cua_get_recording_state(const char *arg) {
     return 0;
 }
 
-/* PoP: replay_trajectory @ tools/computer_use/cua_backend.py:replay_trajectory */
+/* PoP: cua_replay_trajectory @ tools/computer_use/cua_backend.py:replay_trajectory */
 int cua_replay_trajectory(const char *arg) {
     /* Python: session call_tool replay. Arg =
      * "trajectory_dir\tdry_run\tspeed_factor\tresult". */
@@ -933,7 +933,7 @@ int cua_replay_trajectory(const char *arg) {
     return 0;
 }
 
-/* PoP: install_ffmpeg @ tools/computer_use/cua_backend.py:install_ffmpeg */
+/* PoP: cua_install_ffmpeg @ tools/computer_use/cua_backend.py:install_ffmpeg */
 int cua_install_ffmpeg(const char *arg) {
     /* Python: session call_tool install_ffmpeg. Arg = result passthrough. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -941,7 +941,7 @@ int cua_install_ffmpeg(const char *arg) {
     return 0;
 }
 
-/* PoP: _maybe_attach_element_token @ tools/computer_use/cua_backend.py:_maybe_attach_element_token */
+/* PoP: cua_u_maybe_attach_element_token @ tools/computer_use/cua_backend.py:_maybe_attach_element_token */
 int cua_u_maybe_attach_element_token(const char *arg) {
     /* Python: token attach w/ capability gate. Arg =
      * "has_index\thas_token\tcapable\tattached". */

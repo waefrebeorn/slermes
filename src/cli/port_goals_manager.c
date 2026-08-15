@@ -10,31 +10,31 @@
  * dependencies. Process liveness + persistence are injected via a vtable so
  * this module stays pure (no DB, TTY, network, or OS-process calls).
  *
-/* PoP: reset @ hermes_cli/goals.py:set */
-/* PoP: goal_state_set_contract @ hermes_cli/goals.py:set_contract */
-/* PoP: goal_manager_pause @ hermes_cli/goals.py:pause */
-/* PoP: cmd_resume @ hermes_cli/goals.py:resume */
-/* PoP: scc_clear @ hermes_cli/goals.py:clear */
-/* PoP: goal_manager_mark_done @ hermes_cli/goals.py:mark_done */
-/* PoP: goal_state_add_subgoal @ hermes_cli/goals.py:add_subgoal */
-/* PoP: goal_manager_remove_subgoal @ hermes_cli/goals.py:remove_subgoal */
-/* PoP: goal_manager_clear_subgoals @ hermes_cli/goals.py:clear_subgoals */
-/* PoP: goal_manager_status_line @ hermes_cli/goals.py:status_line */
-/* PoP: goals_has_goal @ hermes_cli/goals.py:has_goal */
-/* PoP: goals_has_contract @ hermes_cli/goals.py:has_contract */
-/* PoP: goals_is_active @ hermes_cli/goals.py:is_active */
-/* PoP: goals_is_waiting @ hermes_cli/goals.py:is_waiting */
-/* PoP: goal_manager_stop_waiting @ hermes_cli/goals.py:stop_waiting */
-/* PoP: goal_manager_wait_on @ hermes_cli/goals.py:wait_on */
-/* PoP: goal_manager_wait_on_session @ hermes_cli/goals.py:wait_on_session */
-/* PoP: goal_manager_wait_for_seconds @ hermes_cli/goals.py:wait_for_seconds */
-/* PoP: goal_manager_next_continuation_prompt @ hermes_cli/goals.py:next_continuation_prompt */
-/* PoP: goal_manager_render_contract @ hermes_cli/goals.py:render_contract */
-/* PoP: goal_manager_render_subgoals @ hermes_cli/goals.py:render_subgoals */
-/* PoP: goal_judge_extract_json @ hermes_cli/goals.py:_extract_json_object */
-/* PoP: goal_judge_parse_response @ hermes_cli/goals.py:_parse_judge_response */
-/* PoP: goal_judge_render_background_block @ hermes_cli/goals.py:_render_background_block */
-/* PoP: goal_judge_max_tokens_resolved @ hermes_cli/goals.py:_goal_judge_max_tokens */
+/* PoP: index @ hermes_cli/goals.py:set */
+/* PoP: index @ hermes_cli/goals.py:set_contract */
+/* PoP: index @ hermes_cli/goals.py:pause */
+/* PoP: index @ hermes_cli/goals.py:resume */
+/* PoP: index @ hermes_cli/goals.py:clear */
+/* PoP: index @ hermes_cli/goals.py:mark_done */
+/* PoP: index @ hermes_cli/goals.py:add_subgoal */
+/* PoP: index @ hermes_cli/goals.py:remove_subgoal */
+/* PoP: index @ hermes_cli/goals.py:clear_subgoals */
+/* PoP: index @ hermes_cli/goals.py:status_line */
+/* PoP: index @ hermes_cli/goals.py:has_goal */
+/* PoP: index @ hermes_cli/goals.py:has_contract */
+/* PoP: index @ hermes_cli/goals.py:is_active */
+/* PoP: index @ hermes_cli/goals.py:is_waiting */
+/* PoP: index @ hermes_cli/goals.py:stop_waiting */
+/* PoP: index @ hermes_cli/goals.py:wait_on */
+/* PoP: index @ hermes_cli/goals.py:wait_on_session */
+/* PoP: index @ hermes_cli/goals.py:wait_for_seconds */
+/* PoP: index @ hermes_cli/goals.py:next_continuation_prompt */
+/* PoP: index @ hermes_cli/goals.py:render_contract */
+/* PoP: index @ hermes_cli/goals.py:render_subgoals */
+/* PoP: index @ hermes_cli/goals.py:_extract_json_object */
+/* PoP: index @ hermes_cli/goals.py:_parse_judge_response */
+/* PoP: index @ hermes_cli/goals.py:_render_background_block */
+/* PoP: index @ hermes_cli/goals.py:_goal_judge_max_tokens */
 
 
 #include "goal_contract.h"
@@ -58,7 +58,6 @@
 
 /* truncate a string to max chars (replacing tail with '… [truncated]' semantics
  * is skipped here — caller only needs the leading max chars). */
-/* PoP: truncate_copy @ hermes_cli/goals.py:is_waiting */
 static void truncate_copy(const char *src, char *dst, size_t max) {
     size_t n = src ? strlen(src) : 0;
     if (n > max) n = max;
@@ -262,8 +261,8 @@ char *goal_manager_status_line(const goal_manager_t *m) {
             return out;
         }
         if (s->waiting_on_pid && (!m->vtab || !m->vtab->pid_alive ||
-/* PoP: ip_pid_alive @ hermes_cli/active_sessions.py:_pid_alive */
-/* PoP: ip_pid_alive @ hermes_cli/kanban_db.py:_pid_alive */
+/* PoP: goal_manager_set @ hermes_cli/active_sessions.py:_pid_alive */
+/* PoP: goal_manager_set @ hermes_cli/kanban_db.py:_pid_alive */
                                   m->vtab->pid_alive(s->waiting_on_pid))) {
             char wr_buf[128];
             snprintf(wr_buf, sizeof(wr_buf), "pid %ld%s%s%s", s->waiting_on_pid,
@@ -854,7 +853,7 @@ char *goal_judge_render_background_block(const char *const *json_processes) {
     return out;
 }
 
-/* PoP: gather_background_processes @ hermes_cli/goals.py:gather_background_processes */
+/* PoP: process_registry_list @ hermes_cli/goals.py:gather_background_processes */
 /*
  * Faithful C port of goals.py:gather_background_processes.
  *

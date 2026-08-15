@@ -14,22 +14,22 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_delegate_tool_close_subagent_steering @ tools/delegate_tool.py:_close_subagent_steering */
+/* PoP: tools_delegate_tool_close_subagent_steering_p @ tools/delegate_tool.py:_close_subagent_steering */
 json_t *tools_delegate_tool_close_subagent_steering_p(void) {
     return json_object();
 }
 
-/* PoP: tools_delegate_tool_steer_subagent @ tools/delegate_tool.py:steer_subagent */
+/* PoP: tools_delegate_tool_steer_subagent_p @ tools/delegate_tool.py:steer_subagent */
 json_t *tools_delegate_tool_steer_subagent_p(void) {
     return json_object();
 }
 
-/* PoP: tools_delegate_tool_capture_gateway_steer_authority @ tools/delegate_tool.py:_capture_gateway_steer_authority */
+/* PoP: tools_delegate_tool_capture_gateway_steer_authority_p @ tools/delegate_tool.py:_capture_gateway_steer_authority */
 json_t *tools_delegate_tool_capture_gateway_steer_authority_p(void) {
     return json_object();
 }
 
-/* PoP: tools_delegate_tool_validate_batch_tasks @ tools/delegate_tool.py:_validate_batch_tasks */
+/* PoP: tools_delegate_tool_validate_batch_tasks_p @ tools/delegate_tool.py:_validate_batch_tasks */
 json_t *tools_delegate_tool_validate_batch_tasks_p(void) {
     return json_object();
 }

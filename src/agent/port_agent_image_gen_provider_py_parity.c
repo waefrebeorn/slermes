@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: agent_image_gen_provider_resolve_aspect_ratio @ agent/image_gen_provider.py:resolve_aspect_ratio */
+/* PoP: agent_image_gen_provider_resolve_aspect_ratio_p @ agent/image_gen_provider.py:resolve_aspect_ratio */
 json_t *agent_image_gen_provider_resolve_aspect_ratio_p(void) {
     return json_object();
 }

@@ -86,7 +86,7 @@ typedef struct vercel_sandbox_env {
 /* Singleton environment (the tool runtime creates one per task). */
 static vercel_sandbox_env_t g_env;
 
-/* PoP: __init__ @ tools/environments/vercel_sandbox.py:__init__ */
+/* PoP: ve_env_init @ tools/environments/vercel_sandbox.py:__init__ */
 void ve_env_init(const char *task_id, bool persistent, double timeout_secs,
                  const char *runtime) {
     memset(&g_env, 0, sizeof(g_env));
@@ -107,7 +107,7 @@ void ve_env_set_client(const vercel_sandbox_client_t *client) {
     pthread_mutex_unlock(&g_env.lock);
 }
 
-/* PoP: _create_sandbox @ tools/environments/vercel_sandbox.py:_create_sandbox */
+/* PoP: ve_env_create_sandbox @ tools/environments/vercel_sandbox.py:_create_sandbox */
 int ve_env_create_sandbox(void) {
     /* Python: restore from a snapshot when persistent + snapshot exists
      * (falling back to a fresh sandbox on failure), else create fresh;
@@ -152,7 +152,7 @@ int ve_env_create_sandbox(void) {
     return rc;
 }
 
-/* PoP: _close_sandbox_client @ tools/environments/vercel_sandbox.py:_close_sandbox_client */
+/* PoP: ve_env_close_sandbox_client @ tools/environments/vercel_sandbox.py:_close_sandbox_client */
 void ve_env_close_sandbox_client(void) {
     pthread_mutex_lock(&g_env.lock);
     if (g_env.client.close) g_env.client.close(g_env.client.ctx);
@@ -160,7 +160,7 @@ void ve_env_close_sandbox_client(void) {
     pthread_mutex_unlock(&g_env.lock);
 }
 
-/* PoP: _stop_sandbox @ tools/environments/vercel_sandbox.py:_stop_sandbox */
+/* PoP: ve_env_stop_sandbox @ tools/environments/vercel_sandbox.py:_stop_sandbox */
 void ve_env_stop_sandbox(void) {
     /* Python: stop the sandbox and poll until stopped/terminal (15s). */
     pthread_mutex_lock(&g_env.lock);
@@ -181,7 +181,7 @@ void ve_env_stop_sandbox(void) {
     pthread_mutex_unlock(&g_env.lock);
 }
 
-/* PoP: _snapshot_sandbox @ tools/environments/vercel_sandbox.py:_snapshot_sandbox */
+/* PoP: ve_env_snapshot_sandbox @ tools/environments/vercel_sandbox.py:_snapshot_sandbox */
 char *ve_env_snapshot_sandbox(void) {
     /* Python: snapshot the sandbox and persist the snapshot id for the
      * task (persistent environments only). Returns the snapshot id. */
@@ -198,7 +198,7 @@ char *ve_env_snapshot_sandbox(void) {
     return snapshot_id;
 }
 
-/* PoP: _configure_attached_sandbox @ tools/environments/vercel_sandbox.py:_configure_attached_sandbox */
+/* PoP: ve_env_configure_attached_sandbox @ tools/environments/vercel_sandbox.py:_configure_attached_sandbox */
 int ve_env_configure_attached_sandbox(const char *requested_cwd) {
     /* Python: wait for running, detect workspace root + remote home, then
      * resolve the working cwd (~ → home; ""/default → workspace root). */
@@ -264,7 +264,7 @@ int ve_env_configure_attached_sandbox(const char *requested_cwd) {
     return 0;
 }
 
-/* PoP: _ensure_sandbox_ready @ tools/environments/vercel_sandbox.py:_ensure_sandbox_ready */
+/* PoP: ve_env_ensure_sandbox_ready @ tools/environments/vercel_sandbox.py:_ensure_sandbox_ready */
 int ve_env_ensure_sandbox_ready(void) {
     /* Python: attach the sandbox if not yet attached (create + configure). */
     pthread_mutex_lock(&g_env.lock);
@@ -279,7 +279,7 @@ int ve_env_ensure_sandbox_ready(void) {
     return rc;
 }
 
-/* PoP: _before_execute @ tools/environments/vercel_sandbox.py:_before_execute */
+/* PoP: ve_env_before_execute @ tools/environments/vercel_sandbox.py:_before_execute */
 int ve_env_before_execute(void) {
     /* Python: ensure ready + sync files. The C port ensures ready; file
      * sync is the upload lane invoked by the executor. */
@@ -287,7 +287,7 @@ int ve_env_before_execute(void) {
     return 0;
 }
 
-/* PoP: _run_bash @ tools/environments/vercel_sandbox.py:_run_bash */
+/* PoP: ve_env_run_bash @ tools/environments/vercel_sandbox.py:_run_bash */
 char *ve_env_run_bash(const char *cmd_string, bool login) {
     /* Python: run bash -lc/-c in the workspace root; timeout is enforced
      * by the caller's cancel (the SDK has no per-exec timeout). Returns
@@ -308,7 +308,7 @@ char *ve_env_run_bash(const char *cmd_string, bool login) {
     return result;
 }
 
-/* PoP: cleanup @ tools/environments/vercel_sandbox.py:cleanup */
+/* PoP: ve_env_cleanup @ tools/environments/vercel_sandbox.py:cleanup */
 int ve_env_cleanup(void) {
     /* Python: sync back, snapshot when persistent, always stop. */
     pthread_mutex_lock(&g_env.lock);

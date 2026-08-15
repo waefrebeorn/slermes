@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: gateway_relay_ws_transport_disconnect_drain_grace_s @ gateway/relay/ws_transport.py:_disconnect_drain_grace_s */
+/* PoP: gateway_relay_ws_transport_disconnect_drain_grace_s_p @ gateway/relay/ws_transport.py:_disconnect_drain_grace_s */
 json_t *gateway_relay_ws_transport_disconnect_drain_grace_s_p(void) {
     return json_object();
 }

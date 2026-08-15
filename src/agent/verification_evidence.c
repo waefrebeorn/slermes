@@ -130,7 +130,7 @@ void verify_free_segments(char ***segments, int count, int *lens) {
     free(lens);
 }
 
-/* PoP: vev_u_clean_token @ agent/verification_evidence.py:_clean_token */
+/* PoP: verify_clean_token @ agent/verification_evidence.py:_clean_token */
 char *verify_clean_token(const char *token) {
     char *s = xstrdup(token ? token : "");
     if (!s) return NULL;
@@ -138,7 +138,7 @@ char *verify_clean_token(const char *token) {
     return s;
 }
 
-/* PoP: vev_u_canonical_tokens @ agent/verification_evidence.py:_canonical_tokens */
+/* PoP: verify_canonical_tokens @ agent/verification_evidence.py:_canonical_tokens */
 char **verify_canonical_tokens(const char *canonical, int *out_count) {
     int n; char **raw = shell_tokenize(canonical, &n);
     char **out = NULL;
@@ -173,7 +173,7 @@ int verify_find_subsequence(char **tokens, int n, char **needle, int m) {
     return found;
 }
 
-/* PoP: vev_u_strip_command_prefix @ agent/verification_evidence.py:_strip_command_prefix */
+/* PoP: verify_strip_command_prefix @ agent/verification_evidence.py:_strip_command_prefix */
 char **verify_strip_command_prefix(char **tokens, int n, int *out_n) {
     int start = 0;
     if (n > 0 && strcmp(tokens[0], "env") == 0) start = 1;
@@ -185,7 +185,7 @@ char **verify_strip_command_prefix(char **tokens, int n, int *out_n) {
     return tokens + start;
 }
 
-/* PoP: vev_u_equivalent_needles @ agent/verification_evidence.py:_equivalent_needles */
+/* PoP: verify_equivalent_needles @ agent/verification_evidence.py:_equivalent_needles */
 char ***verify_equivalent_needles(char **needle, int m, int *out_count, int **out_lens) {
     char ***out = NULL;
     int cap = 0, n = 0;
@@ -226,7 +226,7 @@ char ***verify_equivalent_needles(char **needle, int m, int *out_count, int **ou
     return out;
 }
 
-/* PoP: _find_canonical_match @ agent/verification_evidence.py:_find_canonical_match */
+/* PoP: verify_find_canonical_match @ agent/verification_evidence.py:_find_canonical_match */
 verify_match_t *verify_find_canonical_match(const char *command,
                                             char **canonical_commands, int nc) {
     int seg_count; int *seg_lens;
@@ -316,7 +316,7 @@ bool verify_is_under_temp_dir(const char *token) {
     }
     return false;
 }
-/* PoP: vev_u_is_under_root @ agent/verification_evidence.py:_is_under_root */
+/* PoP: verify_is_under_root @ agent/verification_evidence.py:_is_under_root */
 
 bool verify_is_under_root(const char *token, const char *root) {
     if (!token || !root || !root[0]) return false;
@@ -339,7 +339,7 @@ bool verify_is_temp_script_path(const char *token, const char *root) {
     return verify_is_under_temp_dir(token) && !verify_is_under_root(token, root);
 }
 
-/* PoP: vev_u_ad_hoc_script_args @ agent/verification_evidence.py:_ad_hoc_script_args */
+/* PoP: verify_ad_hoc_script_args @ agent/verification_evidence.py:_ad_hoc_script_args */
 char **verify_ad_hoc_script_args(char **tokens, int n, const char *root, int *out_n) {
     char **cand = verify_strip_command_prefix(tokens, n, &n);
     if (n == 0) { *out_n = 0; return NULL; }
@@ -368,7 +368,7 @@ char **verify_ad_hoc_script_args(char **tokens, int n, const char *root, int *ou
     return NULL;
 }
 
-/* PoP: _find_ad_hoc_match @ agent/verification_evidence.py:_find_ad_hoc_match */
+/* PoP: verify_find_ad_hoc_match @ agent/verification_evidence.py:_find_ad_hoc_match */
 char **verify_find_ad_hoc_match(const char *command, const char *root, int *out_n) {
     int seg_count; int *seg_lens;
     char ***segs = verify_split_segments(command, &seg_count, &seg_lens);
@@ -385,7 +385,7 @@ char **verify_find_ad_hoc_match(const char *command, const char *root, int *out_
     return result;
 }
 
-/* PoP: vev_u_summarize_output @ agent/verification_evidence.py:_summarize_output */
+/* PoP: verify_summarize_output @ agent/verification_evidence.py:_summarize_output */
 char *verify_summarize_output(const char *output) {
     const char *text = output ? output : "";
     /* strip trailing whitespace minimally */

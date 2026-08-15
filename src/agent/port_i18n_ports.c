@@ -21,7 +21,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _locales_dir @ agent/i18n.py:_locales_dir */
+/* PoP: i18_locales_dir @ agent/i18n.py:_locales_dir */
 char *i18_locales_dir(void) {
     /* Python: locale yaml dir; first existing wins. */
     const char *h = getenv("HERMES_HOME");
@@ -35,7 +35,7 @@ char *i18_locales_dir(void) {
     return a ? a : strdup("locales");
 }
 
-/* PoP: _normalize_lang @ agent/i18n.py:_normalize_lang */
+/* PoP: i18_normalize_lang @ agent/i18n.py:_normalize_lang */
 char *i18_normalize_lang(const char *lang) {
     /* Python: supported code or default. */
     if (!lang) return strdup("en");
@@ -50,7 +50,7 @@ char *i18_normalize_lang(const char *lang) {
     return strdup("en");
 }
 
-/* PoP: _load_catalog @ agent/i18n.py:_load_catalog */
+/* PoP: i18_load_catalog @ agent/i18n.py:_load_catalog */
 char *i18_load_catalog(const char *lang) {
     /* Python: load + flatten locale yaml — real file read. */
     if (!lang) return strdup("{}");
@@ -72,7 +72,7 @@ char *i18_load_catalog(const char *lang) {
     return buf;
 }
 
-/* PoP: _flatten_into @ agent/i18n.py:_flatten_into */
+/* PoP: i18_flatten_into @ agent/i18n.py:_flatten_into */
 long i18_flatten_into(const char *node_json) {
     /* Python: dotted-key flattening. */
     if (!node_json) return 0;
@@ -80,7 +80,7 @@ long i18_flatten_into(const char *node_json) {
     return 0;
 }
 
-/* PoP: _config_language_cached @ agent/i18n.py:_config_language_cached */
+/* PoP: i18_config_language_cached @ agent/i18n.py:_config_language_cached */
 char *i18_config_language_cached(const char *config_yaml) {
     /* Python: display.language once per process. */
     if (!config_yaml) return NULL;
@@ -96,13 +96,13 @@ char *i18_config_language_cached(const char *config_yaml) {
     return strndup(v, (size_t)(e - v));
 }
 
-/* PoP: reset_language_cache @ agent/i18n.py:reset_language_cache */
+/* PoP: i18_reset_language_cache @ agent/i18n.py:reset_language_cache */
 int i18_reset_language_cache(void) {
     printf("language cache invalidated\n");
     return 0;
 }
 
-/* PoP: get_language @ agent/i18n.py:get_language */
+/* PoP: i18_get_language @ agent/i18n.py:get_language */
 char *i18_get_language(const char *config_yaml) {
     /* Python: env > config > default. */
     const char *env = getenv("HERMES_LANG");
@@ -116,7 +116,7 @@ char *i18_get_language(const char *config_yaml) {
     return strdup("en");
 }
 
-/* PoP: t @ agent/i18n.py:t */
+/* PoP: i18_t @ agent/i18n.py:t */
 char *i18_t(const char *dotted_key, const char *catalog_json) {
     /* Python: translate dotted key. */
     if (!dotted_key) return strdup("");

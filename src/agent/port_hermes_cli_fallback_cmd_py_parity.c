@@ -14,17 +14,17 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_fallback_cmd_cmd_fallback_list @ hermes_cli/fallback_cmd.py:cmd_fallback_list */
+/* PoP: hermes_cli_fallback_cmd_cmd_fallback_list_p @ hermes_cli/fallback_cmd.py:cmd_fallback_list */
 json_t *hermes_cli_fallback_cmd_cmd_fallback_list_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_fallback_cmd_cmd_fallback_remove @ hermes_cli/fallback_cmd.py:cmd_fallback_remove */
+/* PoP: hermes_cli_fallback_cmd_cmd_fallback_remove_p @ hermes_cli/fallback_cmd.py:cmd_fallback_remove */
 json_t *hermes_cli_fallback_cmd_cmd_fallback_remove_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_fallback_cmd_cmd_fallback_clear @ hermes_cli/fallback_cmd.py:cmd_fallback_clear */
+/* PoP: hermes_cli_fallback_cmd_cmd_fallback_clear_p @ hermes_cli/fallback_cmd.py:cmd_fallback_clear */
 json_t *hermes_cli_fallback_cmd_cmd_fallback_clear_p(void) {
     return json_object();
 }

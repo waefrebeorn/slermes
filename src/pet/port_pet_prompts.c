@@ -125,14 +125,14 @@ static char *format_exact(const char *fmt, ...)
 
 /* ── public API ─────────────────────────────────────────────────────────── */
 
-/* PoP: style_hint @ agent/pet/generate/prompts.py:style_hint */
+/* PoP: string @ agent/pet/generate/prompts.py:style_hint */
 /* Returns the style hint string (malloc'd) for a style key, or "" if unknown. */
 char *pet_prompts_style_hint(const char *style)
 {
     return strdup(style_hint_lookup(style));
 }
 
-/* PoP: _spacing_spec @ agent/pet/generate/prompts.py:_spacing_spec */
+/* PoP: pet_prompts_spacing_spec @ agent/pet/generate/prompts.py:_spacing_spec */
 /* (per-pose width px, gap px) for a row of frame_count poses. */
 /* PoP: pet_prompts_spacing_spec @ agent/pet/generate/prompts.py:_spacing_spec */
 void pet_prompts_spacing_spec(int frame_count, int *out_pose_px, int *out_gap_px)
@@ -146,7 +146,7 @@ void pet_prompts_spacing_spec(int frame_count, int *out_pose_px, int *out_gap_px
     if (out_gap_px) *out_gap_px = gap_px;
 }
 
-/* PoP: build_base_prompt @ agent/pet/generate/prompts.py:build_base_prompt */
+/* PoP: pet_prompts_build_base @ agent/pet/generate/prompts.py:build_base_prompt */
 char *pet_prompts_build_base(const char *concept, const char *style, const char *variation)
 {
     char *c = trim_copy(concept);
@@ -174,7 +174,7 @@ char *pet_prompts_build_base(const char *concept, const char *style, const char 
     return out;
 }
 
-/* PoP: build_row_prompt @ agent/pet/generate/prompts.py:build_row_prompt */
+/* PoP: pet_prompts_build_row @ agent/pet/generate/prompts.py:build_row_prompt */
 char *pet_prompts_build_row(const char *state, int frame_count, const char *concept, const char *style)
 {
     const char *action = state_action_lookup(state);

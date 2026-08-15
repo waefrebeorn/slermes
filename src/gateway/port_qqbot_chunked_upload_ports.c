@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ gateway/platforms/qqbot/chunked_upload.py:__init__ */
+/* PoP: qcu_init @ gateway/platforms/qqbot/chunked_upload.py:__init__ */
 char *qcu_init(const char *file_name, long file_size) {
     char *out = NULL;
     asprintf(&out, "{\"file_name\": \"%s\", \"file_size\": %ld, \"chunks\": []}",
@@ -27,7 +27,7 @@ char *qcu_init(const char *file_name, long file_size) {
     return out;
 }
 
-/* PoP: upload @ gateway/platforms/qqbot/chunked_upload.py:upload */
+/* PoP: qcu_upload @ gateway/platforms/qqbot/chunked_upload.py:upload */
 char *qcu_upload(const char *file_path, long chunk_size) {
     /* Python: full chunked upload → complete_upload. */
     if (!file_path) return NULL;
@@ -36,7 +36,7 @@ char *qcu_upload(const char *file_path, long chunk_size) {
     return strdup("{}");
 }
 
-/* PoP: _complete @ gateway/platforms/qqbot/chunked_upload.py:_complete */
+/* PoP: qcu_complete @ gateway/platforms/qqbot/chunked_upload.py:_complete */
 char *qcu_complete(const char *upload_id) {
     /* Python: complete_upload with retry. */
     if (!upload_id) return NULL;
@@ -44,7 +44,7 @@ char *qcu_complete(const char *upload_id) {
     return strdup("{}");
 }
 
-/* PoP: format_size @ gateway/platforms/qqbot/chunked_upload.py:format_size */
+/* PoP: qcu_format_size @ gateway/platforms/qqbot/chunked_upload.py:format_size */
 char *qcu_format_size(double size) {
     /* Python: '12.3 MB'. */
     char *out = NULL;

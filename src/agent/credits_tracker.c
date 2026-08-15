@@ -551,12 +551,12 @@ void credits_tracker_evaluate_notices(const credits_state_t *state,
     #undef LATCH_REMOVE
 }
 
-/* PoP: credits_state_depleted @ credits_tracker:depleted */
+/* PoP: credits_latch_init @ credits_tracker:depleted */
 /* (implementation in include/hermes_credits_tracker.h as static inline) */
 
 /* ── Latch init ───────────────────────────────────────────────────────── */
 
-/* PoP: new_credits_latch @ agent/credits_tracker.py:new_credits_latch */
+/* PoP: credits_latch_init @ agent/credits_tracker.py:new_credits_latch */
 /* Initialize a credits_latch_t to the fresh notice latch shape that
  * evaluate_credits_notices expects: active=empty, seen_below_90=false,
  * usage_band=unset(-1), seen_grant_unspent=false. */

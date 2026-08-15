@@ -22,7 +22,7 @@ static char *migrate_hermes_home(void) {
     return out;
 }
 
-/* PoP: cli_hermes_cli_migrate__resolve_config_path @ hermes_cli/migrate.py:_resolve_config_path */
+/* PoP: string @ hermes_cli/migrate.py:_resolve_config_path */
 /* Best-effort: locate the active config.yaml on disk — <hermes_home>/config.yaml.
  * Returns a malloc'd path string (caller frees) or NULL on alloc failure. */
 char *cli_hermes_cli_migrate__resolve_config_path(void) {

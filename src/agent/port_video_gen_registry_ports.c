@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: register_provider @ agent/video_gen_registry.py:register_provider */
+/* PoP: vgr_register_provider @ agent/video_gen_registry.py:register_provider */
 int vgr_register_provider(const char *name, const char *provider_desc) {
     if (!name) return -1;
     video_gen_provider_t prov = {0};
@@ -29,19 +29,19 @@ int vgr_register_provider(const char *name, const char *provider_desc) {
     return video_gen_register_provider(&prov) ? 0 : -1;
 }
 
-/* PoP: list_providers @ agent/video_gen_registry.py:list_providers */
+/* PoP: vgr_list_providers @ agent/video_gen_registry.py:list_providers */
 char *vgr_list_providers(void) {
     return strdup("[]");
 }
 
-/* PoP: get_provider @ agent/video_gen_registry.py:get_provider */
+/* PoP: vgr_get_provider @ agent/video_gen_registry.py:get_provider */
 char *vgr_get_provider(const char *name) {
     if (!name) return NULL;
     const video_gen_provider_t *p = video_gen_get_provider(name);
     return p ? strdup(p->name) : NULL;
 }
 
-/* PoP: get_active_provider @ agent/video_gen_registry.py:get_active_provider */
+/* PoP: vgr_get_active_provider @ agent/video_gen_registry.py:get_active_provider */
 char *vgr_get_active_provider(const char *config_yaml) {
     /* Python: video_gen.provider from config. */
     if (!config_yaml) return NULL;
@@ -57,7 +57,7 @@ char *vgr_get_active_provider(const char *config_yaml) {
     return strndup(v, (size_t)(e - v));
 }
 
-/* PoP: _reset_for_tests @ agent/video_gen_registry.py:_reset_for_tests */
+/* PoP: vgr_reset_for_tests @ agent/video_gen_registry.py:_reset_for_tests */
 int vgr_reset_for_tests(void) {
     video_gen_reset_registry();
     return 0;

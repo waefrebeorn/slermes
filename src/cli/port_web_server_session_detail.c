@@ -196,7 +196,7 @@ json_t *ws_sess_get_session(const char *db_path, const char *session_id) {
 }
 
 /* ── get_messages ───────────────────────────────────────────────────── */
-/* PoP: ws_sess_get_messages @ hermes_state.py:get_messages */
+/* PoP: decode_message_row @ hermes_state.py:get_messages */
 static json_t *decode_message_row(sqlite3_stmt *st) {
     int ncol = sqlite3_column_count(st);
     json_t *m = json_object();

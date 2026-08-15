@@ -20,22 +20,22 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ hermes_cli/proxy/adapters/xai.py:__init__ */
+/* PoP: pxa_init @ hermes_cli/proxy/adapters/xai.py:__init__ */
 char *pxa_init(void) {
     return strdup("{\"pool\": null}");
 }
 
-/* PoP: name @ hermes_cli/proxy/adapters/xai.py:name */
+/* PoP: pxa_name @ hermes_cli/proxy/adapters/xai.py:name */
 char *pxa_name(void) {
     return strdup("xai");
 }
 
-/* PoP: display_name @ hermes_cli/proxy/adapters/xai.py:display_name */
+/* PoP: pxa_display_name @ hermes_cli/proxy/adapters/xai.py:display_name */
 char *pxa_display_name(void) {
     return strdup("xAI Grok OAuth");
 }
 
-/* PoP: is_authenticated @ hermes_cli/proxy/adapters/xai.py:is_authenticated */
+/* PoP: pxa_is_authenticated @ hermes_cli/proxy/adapters/xai.py:is_authenticated */
 bool pxa_is_authenticated(void) {
     /* Python: pool.has_available() — check the xAI credential pool.
      * Delegate to the C credential store (lib/libcredential). */
@@ -43,7 +43,7 @@ bool pxa_is_authenticated(void) {
     return has_xai_credentials();
 }
 
-/* PoP: get_credential @ hermes_cli/proxy/adapters/xai.py:get_credential */
+/* PoP: pxa_get_credential @ hermes_cli/proxy/adapters/xai.py:get_credential */
 char *pxa_get_credential(void) {
     /* Python: pool.get_credential() — resolve the active xAI credential.
      * Delegate to the C credential store (lib/libxai_http). */
@@ -53,7 +53,7 @@ char *pxa_get_credential(void) {
     return strdup(key);
 }
 
-/* PoP: get_retry_credential @ hermes_cli/proxy/adapters/xai.py:get_retry_credential */
+/* PoP: pxa_get_retry_credential @ hermes_cli/proxy/adapters/xai.py:get_retry_credential */
 char *pxa_get_retry_credential(long status_code) {
     /* Python: 401/429 only. */
     if (status_code != 401 && status_code != 429) return NULL;

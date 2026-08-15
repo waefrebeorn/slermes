@@ -22,7 +22,7 @@
 #include "hermes_json.h"
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _fmt_ts @ tools/file_state.py:_fmt_ts */
+/* PoP: epoch @ tools/file_state.py:_fmt_ts */
 /* Returns malloc'd "HH:MM:SS" string for the given epoch (seconds). */
 char *file_state_fmt_ts(double ts)
 {
@@ -39,7 +39,7 @@ char *file_state_fmt_ts(double ts)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _cap_dict @ tools/file_state.py:_cap_dict */
+/* PoP: oldest @ tools/file_state.py:_cap_dict */
 /* Trims the JSON object referenced by *obj to the newest `limit` keys by
  * preserving insertion order: drops the oldest (first) keys beyond the limit.
  * hermes_json/libjson has no object-clear, so we rebuild *obj in place via a

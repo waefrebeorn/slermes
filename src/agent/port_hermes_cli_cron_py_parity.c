@@ -14,27 +14,27 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_cron_cron_list @ hermes_cli/cron.py:cron_list */
+/* PoP: hermes_cli_cron_cron_list_p @ hermes_cli/cron.py:cron_list */
 json_t *hermes_cli_cron_cron_list_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_cron_cron_tick @ hermes_cli/cron.py:cron_tick */
+/* PoP: hermes_cli_cron_cron_tick_p @ hermes_cli/cron.py:cron_tick */
 json_t *hermes_cli_cron_cron_tick_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_cron_cron_status @ hermes_cli/cron.py:cron_status */
+/* PoP: hermes_cli_cron_cron_status_p @ hermes_cli/cron.py:cron_status */
 json_t *hermes_cli_cron_cron_status_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_cron_cron_create @ hermes_cli/cron.py:cron_create */
+/* PoP: hermes_cli_cron_cron_create_p @ hermes_cli/cron.py:cron_create */
 json_t *hermes_cli_cron_cron_create_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_cron_cron_edit @ hermes_cli/cron.py:cron_edit */
+/* PoP: hermes_cli_cron_cron_edit_p @ hermes_cli/cron.py:cron_edit */
 json_t *hermes_cli_cron_cron_edit_p(void) {
     return json_object();
 }

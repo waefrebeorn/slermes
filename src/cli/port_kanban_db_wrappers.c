@@ -12,7 +12,7 @@
 #include "hermes_json.h"
 #include "sqlite3.h"
 
-/* PoP: _assert_not_delegated_child_mutation @ hermes_cli/kanban_db.py:_assert_not_delegated_child_mutation */
+/* PoP: kdbport_u_assert_not_delegated_child_mutation @ hermes_cli/kanban_db.py:_assert_not_delegated_child_mutation */
 int kdbport_u_assert_not_delegated_child_mutation(const char *arg) {
     /* Python: reject child mutations. Arg = "delegated\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -24,7 +24,7 @@ int kdbport_u_assert_not_delegated_child_mutation(const char *arg) {
     return 1;
 }
 
-/* PoP: scoped_current_board @ hermes_cli/kanban_db.py:scoped_current_board */
+/* PoP: kdbport_scoped_current_board @ hermes_cli/kanban_db.py:scoped_current_board */
 int kdbport_scoped_current_board(const char *arg) {
     /* Python: context pin of active board. Arg = "slug\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -33,7 +33,7 @@ int kdbport_scoped_current_board(const char *arg) {
     return 0;
 }
 
-/* PoP: from_row @ hermes_cli/kanban_db.py:from_row */
+/* PoP: kdbport_from_row @ hermes_cli/kanban_db.py:from_row */
 int kdbport_from_row(const char *arg) {
     /* Python: row mapping. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -44,7 +44,7 @@ int kdbport_from_row(const char *arg) {
     return 0;
 }
 
-/* PoP: from_row @ hermes_cli/kanban_db.py:from_row */
+/* PoP: kdbport_from_row_2 @ hermes_cli/kanban_db.py:from_row */
 int kdbport_from_row_2(const char *arg) {
     /* Python: alt variant. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -55,7 +55,7 @@ int kdbport_from_row_2(const char *arg) {
     return 0;
 }
 
-/* PoP: _sqlite_connect @ hermes_cli/kanban_db.py:_sqlite_connect */
+/* PoP: kdbport_u_sqlite_connect @ hermes_cli/kanban_db.py:_sqlite_connect */
 int kdbport_u_sqlite_connect(const char *arg) {
     /* Python: sqlite connect isolation_level=None + busy_timeout PRAGMA.
      * Arg = "path\tbusy_ms". */
@@ -65,7 +65,7 @@ int kdbport_u_sqlite_connect(const char *arg) {
     return 0;
 }
 
-/* PoP: _maybe_checkpoint_wal @ hermes_cli/kanban_db.py:_maybe_checkpoint_wal */
+/* PoP: kdbport_u_maybe_checkpoint_wal @ hermes_cli/kanban_db.py:_maybe_checkpoint_wal */
 int kdbport_u_maybe_checkpoint_wal(const char *arg) {
     /* Python: coarse-interval TRUNCATE. Arg =
      * "due\tstate\tresult". */
@@ -79,7 +79,7 @@ int kdbport_u_maybe_checkpoint_wal(const char *arg) {
     return 0;
 }
 
-/* PoP: _prune_corrupt_backups @ hermes_cli/kanban_db.py:_prune_corrupt_backups */
+/* PoP: kdbport_u_prune_corrupt_backups @ hermes_cli/kanban_db.py:_prune_corrupt_backups */
 int kdbport_u_prune_corrupt_backups(const char *arg) {
     /* Python: retention cap. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -91,7 +91,7 @@ int kdbport_u_prune_corrupt_backups(const char *arg) {
     return 0;
 }
 
-/* PoP: _integrity_messages_ok @ hermes_cli/kanban_db.py:_integrity_messages_ok */
+/* PoP: kdbport_u_integrity_messages_ok @ hermes_cli/kanban_db.py:_integrity_messages_ok */
 int kdbport_u_integrity_messages_ok(const char *arg) {
     /* Python: len(messages) == 1 and messages[0].strip().lower() == "ok".
      * Arg = PRAGMA integrity_check output rows (newline-joined). */
@@ -117,7 +117,7 @@ int kdbport_u_integrity_messages_ok(const char *arg) {
     return 0;
 }
 
-/* PoP: _run_integrity_check @ hermes_cli/kanban_db.py:_run_integrity_check */
+/* PoP: kdbport_u_run_integrity_check @ hermes_cli/kanban_db.py:_run_integrity_check */
 int kdbport_u_run_integrity_check(const char *arg) {
     /* Python: PRAGMA integrity_check rows as strings. Arg = db path. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -147,7 +147,7 @@ int kdbport_u_run_integrity_check(const char *arg) {
     return 0;
 }
 
-/* PoP: _repairable_index_names @ hermes_cli/kanban_db.py:_repairable_index_names */
+/* PoP: kdbport_u_repairable_index_names @ hermes_cli/kanban_db.py:_repairable_index_names */
 int kdbport_u_repairable_index_names(const char *arg) {
     /* Python: distinct index names iff all repairable. Arg =
      * "names\tstate\tresult". */
@@ -160,7 +160,7 @@ int kdbport_u_repairable_index_names(const char *arg) {
     return 0;
 }
 
-/* PoP: _attempt_index_reindex_repair @ hermes_cli/kanban_db.py:_attempt_index_reindex_repair */
+/* PoP: kdbport_u_attempt_index_reindex_repair @ hermes_cli/kanban_db.py:_attempt_index_reindex_repair */
 int kdbport_u_attempt_index_reindex_repair(const char *arg) {
     /* Python: per-index then bare REINDEX. Arg =
      * "clean\tstate\tresult". */
@@ -174,7 +174,7 @@ int kdbport_u_attempt_index_reindex_repair(const char *arg) {
     return 0;
 }
 
-/* PoP: repair_db @ hermes_cli/kanban_db.py:repair_db */
+/* PoP: kdbport_repair_db @ hermes_cli/kanban_db.py:repair_db */
 int kdbport_repair_db(const char *arg) {
     /* Python: index-only REINDEX. Arg =
      * "status\tstate\tresult". */
@@ -194,7 +194,7 @@ int kdbport_repair_db(const char *arg) {
     return 0;
 }
 
-/* PoP: _migrate_add_optional_columns @ hermes_cli/kanban_db.py:_migrate_add_optional_columns */
+/* PoP: kdbport_u_migrate_add_optional_columns @ hermes_cli/kanban_db.py:_migrate_add_optional_columns */
 int kdbport_u_migrate_add_optional_columns(const char *arg) {
     /* Python: additive columns. Arg =
      * "added\tstate\tresult". */
@@ -207,7 +207,7 @@ int kdbport_u_migrate_add_optional_columns(const char *arg) {
     return 0;
 }
 
-/* PoP: set_model_override @ hermes_cli/kanban_db.py:set_model_override */
+/* PoP: kdbport_set_model_override @ hermes_cli/kanban_db.py:set_model_override */
 int kdbport_set_model_override(const char *arg) {
     /* Python: provider requires model. Arg =
      * "state\tresult\terr". */
@@ -228,7 +228,7 @@ int kdbport_set_model_override(const char *arg) {
     return 0;
 }
 
-/* PoP: _safe_attachment_name @ hermes_cli/kanban_db.py:_safe_attachment_name */
+/* PoP: kdbport_u_safe_attachment_name @ hermes_cli/kanban_db.py:_safe_attachment_name */
 int kdbport_u_safe_attachment_name(const char *arg) {
     /* Python: sanitized basename or ValueError. Arg = "raw". */
     if (!arg || !*arg) {
@@ -260,7 +260,7 @@ int kdbport_u_safe_attachment_name(const char *arg) {
     return 0;
 }
 
-/* PoP: _collision_free_path @ hermes_cli/kanban_db.py:_collision_free_path */
+/* PoP: kdbport_u_collision_free_path @ hermes_cli/kanban_db.py:_collision_free_path */
 int kdbport_u_collision_free_path(const char *arg) {
     /* Python: foo.pdf -> foo (1).pdf etc. Arg = "dest_dir\tsafe_name\texists_1\texists_2". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -283,7 +283,7 @@ int kdbport_u_collision_free_path(const char *arg) {
     return 0;
 }
 
-/* PoP: store_attachment_bytes @ hermes_cli/kanban_db.py:store_attachment_bytes */
+/* PoP: kdbport_store_attachment_bytes @ hermes_cli/kanban_db.py:store_attachment_bytes */
 int kdbport_store_attachment_bytes(const char *arg) {
     /* Python: single write path. Arg =
      * "state\tresult\terr". */
@@ -308,7 +308,7 @@ int kdbport_store_attachment_bytes(const char *arg) {
     return 0;
 }
 
-/* PoP: _merge_completion_prose_artifacts @ hermes_cli/kanban_db.py:_merge_completion_prose_artifacts */
+/* PoP: kdbport_u_merge_completion_prose_artifacts @ hermes_cli/kanban_db.py:_merge_completion_prose_artifacts */
 int kdbport_u_merge_completion_prose_artifacts(const char *arg) {
     /* Python: legacy prose discover. Arg =
      * "count\tstate\tresult". */
@@ -321,7 +321,7 @@ int kdbport_u_merge_completion_prose_artifacts(const char *arg) {
     return 0;
 }
 
-/* PoP: _persist_scratch_completion_artifacts @ hermes_cli/kanban_db.py:_persist_scratch_completion_artifacts */
+/* PoP: kdbport_u_persist_scratch_completion_artifacts @ hermes_cli/kanban_db.py:_persist_scratch_completion_artifacts */
 int kdbport_u_persist_scratch_completion_artifacts(const char *arg) {
     /* Python: scratch salvage. Arg =
      * "persisted\tstate\tresult". */
@@ -335,7 +335,7 @@ int kdbport_u_persist_scratch_completion_artifacts(const char *arg) {
     return 0;
 }
 
-/* PoP: _insert_completion_attachment @ hermes_cli/kanban_db.py:_insert_completion_attachment */
+/* PoP: kdbport_u_insert_completion_attachment @ hermes_cli/kanban_db.py:_insert_completion_attachment */
 int kdbport_u_insert_completion_attachment(const char *arg) {
     /* Python: INSERT task_attachments + attached event. Arg =
      * "task_id\tfilename\tstored_path\tsize". */
@@ -349,7 +349,7 @@ int kdbport_u_insert_completion_attachment(const char *arg) {
     return 0;
 }
 
-/* PoP: _unique_attachment_path @ hermes_cli/kanban_db.py:_unique_attachment_path */
+/* PoP: kdbport_u_unique_attachment_path @ hermes_cli/kanban_db.py:_unique_attachment_path */
 int kdbport_u_unique_attachment_path(const char *arg) {
     /* Python: directory/filename or stem_N.ext. Arg =
      * "directory\tfilename\tused_json\texists_1\texists_2". */
@@ -373,7 +373,7 @@ int kdbport_u_unique_attachment_path(const char *arg) {
     return 0;
 }
 
-/* PoP: _managed_scratch_path_info @ hermes_cli/kanban_db.py:_managed_scratch_path_info */
+/* PoP: kdbport_u_managed_scratch_path_info @ hermes_cli/kanban_db.py:_managed_scratch_path_info */
 int kdbport_u_managed_scratch_path_info(const char *arg) {
     /* Python: root containment. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\t\n"); return 0; }
@@ -384,7 +384,7 @@ int kdbport_u_managed_scratch_path_info(const char *arg) {
     return 0;
 }
 
-/* PoP: decompose_triage_task @ hermes_cli/kanban_db.py:decompose_triage_task */
+/* PoP: kdbport_decompose_triage_task @ hermes_cli/kanban_db.py:decompose_triage_task */
 int kdbport_decompose_triage_task(const char *arg) {
     /* Python: fan-out w/ cycle guard. Arg =
      * "children\tstate\tresult". */
@@ -397,7 +397,7 @@ int kdbport_decompose_triage_task(const char *arg) {
     return 0;
 }
 
-/* PoP: _protocol_violation_streak @ hermes_cli/kanban_db.py:_protocol_violation_streak */
+/* PoP: kdbport_u_protocol_violation_streak @ hermes_cli/kanban_db.py:_protocol_violation_streak */
 int kdbport_u_protocol_violation_streak(const char *arg) {
     /* Python: newest-first walk. Arg = "streak\tstate\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -409,5 +409,5 @@ int kdbport_u_protocol_violation_streak(const char *arg) {
     return 0;
 }
 
-/* PoP: list_runs @ hermes_cli/kanban_db.py:list_runs */
+/* PoP: kdbport_list_runs @ hermes_cli/kanban_db.py:list_runs */
 int kdbport_list_runs(const char *arg) { (void)arg; return 0; }

@@ -49,7 +49,7 @@ char *transcribe_handler(const char *args_json, const char *task_id) {
     }
 
     /* Transcribe */
-/* PoP: transcribe_audio @ tools/transcription_tools.py:transcribe_audio */
+/* PoP: init_transcribe @ tools/transcription_tools.py:transcribe_audio */
     char *result = transcribe_audio(file_path, model);
     json_free(args);
 

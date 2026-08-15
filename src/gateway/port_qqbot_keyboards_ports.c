@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: to_dict @ gateway/platforms/qqbot/keyboards.py:to_dict */
+/* PoP: qkb_to_dict @ gateway/platforms/qqbot/keyboards.py:to_dict */
 char *qkb_to_dict(const char *type, const char *extra_json) {
     /* Python: {"type": ...} + extras. */
     if (!type) return strdup("{}");
@@ -33,7 +33,7 @@ char *qkb_to_dict(const char *type, const char *extra_json) {
     return out;
 }
 
-/* PoP: __init__ @ gateway/platforms/qqbot/keyboards.py:__init__ */
+/* PoP: qkb_init @ gateway/platforms/qqbot/keyboards.py:__init__ */
 char *qkb_init(bool post_c2c, bool post_group) {
     /* Python: approval sender with per-channel post fns. */
     char *out = NULL;
@@ -42,7 +42,7 @@ char *qkb_init(bool post_c2c, bool post_group) {
     return out;
 }
 
-/* PoP: send @ gateway/platforms/qqbot/keyboards.py:send */
+/* PoP: qkb_send @ gateway/platforms/qqbot/keyboards.py:send */
 char *qkb_send(const char *chat_id, const char *chat_type, const char *message_json) {
     /* Python: c2c or group dispatch. */
     if (!chat_id || !chat_type) return strdup("{\"success\": false}");

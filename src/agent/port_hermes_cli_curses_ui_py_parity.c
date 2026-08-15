@@ -14,17 +14,17 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_curses_ui_curses_checklist @ hermes_cli/curses_ui.py:curses_checklist */
+/* PoP: hermes_cli_curses_ui_curses_checklist_p @ hermes_cli/curses_ui.py:curses_checklist */
 json_t *hermes_cli_curses_ui_curses_checklist_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_curses_ui_curses_radiolist @ hermes_cli/curses_ui.py:curses_radiolist */
+/* PoP: hermes_cli_curses_ui_curses_radiolist_p @ hermes_cli/curses_ui.py:curses_radiolist */
 json_t *hermes_cli_curses_ui_curses_radiolist_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_curses_ui_curses_single_select @ hermes_cli/curses_ui.py:curses_single_select */
+/* PoP: hermes_cli_curses_ui_curses_single_select_p @ hermes_cli/curses_ui.py:curses_single_select */
 json_t *hermes_cli_curses_ui_curses_single_select_p(void) {
     return json_object();
 }

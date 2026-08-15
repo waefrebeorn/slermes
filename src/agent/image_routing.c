@@ -679,7 +679,7 @@ void image_routing_disable_vision(void *state) {
     s->vision_disabled = true;
 }
 
-/* PoP: _disabled @ tools/file_state.py:_disabled */
+/* PoP: image_routing_vision_disabled @ tools/file_state.py:_disabled */
 bool image_routing_vision_disabled(const void *state) {
     if (!state) return false;
     const agent_state_t *s = (const agent_state_t *)state;
@@ -752,7 +752,7 @@ static char *ir_lower_dup(const char *s) {
 /* Runtime override accessor from auxiliary_client.c */
 extern const char *get_runtime_main_base_url(void);
 
-/* PoP: image_routing__resolve_inference_base_url @ agent/image_routing.py:_resolve_inference_base_url */
+/* PoP: object @ agent/image_routing.py:_resolve_inference_base_url */
 /* Best-effort base URL for the active inference provider. cfg is a parsed JSON
  * config object (or NULL). Returns a malloc'd string (caller frees), "" when
  * nothing resolves. Mirrors Python's precedence: runtime override → model.base_url

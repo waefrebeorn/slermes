@@ -18,7 +18,7 @@
 #include "libjson/json.h"
 #include "hermes_logger.h"
 
-/* PoP: _truncate @ agent/oneshot.py:_truncate */
+/* PoP: oneshot_truncate @ agent/oneshot.py:_truncate */
 char *oneshot_truncate(const char *text, long limit)
 {
     if (!text) text = "";
@@ -37,7 +37,7 @@ char *oneshot_truncate(const char *text, long limit)
     return out;
 }
 
-/* PoP: _safe_int @ agent/rate_limit_tracker.py:_safe_int */
+/* PoP: rate_limit_safe_int @ agent/rate_limit_tracker.py:_safe_int */
 long rate_limit_safe_int(const char *value, long default_val)
 {
     if (!value || !*value) return default_val;
@@ -48,7 +48,7 @@ long rate_limit_safe_int(const char *value, long default_val)
     return (long)d;
 }
 
-/* PoP: used @ agent/rate_limit_tracker.py:used */
+/* PoP: rate_limit_used @ agent/rate_limit_tracker.py:used */
 long rate_limit_used(long limit, long remaining)
 {
     if (limit <= 0) return 0;
@@ -56,7 +56,7 @@ long rate_limit_used(long limit, long remaining)
     return u > 0 ? u : 0;
 }
 
-/* PoP: _utc_now @ agent/verification_evidence.py:_utc_now */
+/* PoP: verif_utc_now @ agent/verification_evidence.py:_utc_now */
 /* ISO-8601 UTC timestamp, e.g. 2026-08-02T21:00:00+00:00 */
 char *verif_utc_now(void)
 {
@@ -68,7 +68,7 @@ char *verif_utc_now(void)
     return strdup(buf);
 }
 
-/* PoP: is_skill_support_path @ agent/skill_utils.py:is_skill_support_path */
+/* PoP: skill_is_support_path @ agent/skill_utils.py:is_skill_support_path */
 /* True when path is <skill-root>/<references|templates|assets|scripts>/... */
 bool skill_is_support_path(const char *path)
 {
@@ -102,7 +102,7 @@ bool skill_is_support_path(const char *path)
     return access(marker, F_OK) == 0;
 }
 
-/* PoP: is_admin @ agent/subscription_view.py:is_admin */
+/* PoP: subview_is_admin @ agent/subscription_view.py:is_admin */
 bool subview_is_admin(const char *role)
 {
     if (!role) return false;
@@ -114,14 +114,14 @@ bool subview_is_admin(const char *role)
     return r;
 }
 
-/* PoP: file_mutation_result_landed @ agent/tool_result_classification.py:file_mutation_result_landed */
+/* PoP: trc_file_mutation_result_landed @ agent/tool_result_classification.py:file_mutation_result_landed */
 /* Delegates to the canonical helper. */
 bool trc_file_mutation_result_landed(const char *tool_name, const char *result)
 {
     return file_mutation_result_landed(tool_name, result);
 }
 
-/* PoP: describe_compression_lock_skip @ agent/manual_compression_feedback.py:describe_compression_lock_skip */
+/* PoP: mcf_describe_compression_lock_skip @ agent/manual_compression_feedback.py:describe_compression_lock_skip */
 /* User-facing text for a /compress skipped by the compression lock. */
 char *mcf_describe_compression_lock_skip(const char *lock_signal)
 {
@@ -136,7 +136,7 @@ char *mcf_describe_compression_lock_skip(const char *lock_signal)
     return strdup("Compression skipped: the compression lock could not be acquired right now.");
 }
 
-/* PoP: summarize_manual_compression @ agent/manual_compression_feedback.py:summarize_manual_compression */
+/* PoP: mcf_summarize_manual_compression @ agent/manual_compression_feedback.py:summarize_manual_compression */
 /* Returns JSON feedback dict for manual compression. */
 char *mcf_summarize_manual_compression(long before_count, long after_count,
                                        long before_tokens, long after_tokens)
@@ -155,7 +155,7 @@ char *mcf_summarize_manual_compression(long before_count, long after_count,
     return s ? s : strdup("{}");
 }
 
-/* PoP: _redact @ agent/trace_upload.py:_redact */
+/* PoP: trace_upload_redact @ agent/trace_upload.py:_redact */
 /* Non-string or disabled -> pass through; else scrub known secret shapes
  * via the shared redactor's force path. */
 char *trace_upload_redact(const char *text, bool enabled)
@@ -166,7 +166,7 @@ char *trace_upload_redact(const char *text, bool enabled)
     return r ? r : strdup(text);
 }
 
-/* PoP: __str__ @ agent/transports/codex_app_server.py:__str__ */
+/* PoP: codex_app_server_err_str @ agent/transports/codex_app_server.py:__str__ */
 char *codex_app_server_err_str(long code, const char *message)
 {
     char *out = malloc(96 + (message ? strlen(message) : 0));
@@ -175,7 +175,7 @@ char *codex_app_server_err_str(long code, const char *message)
     return out;
 }
 
-/* PoP: resolve_lmstudio_effort @ agent/lmstudio_reasoning.py:resolve_lmstudio_effort */
+/* PoP: lmstudio_resolve_effort @ agent/lmstudio_reasoning.py:resolve_lmstudio_effort */
 /* Return the reasoning_effort string or NULL. */
 char *lmstudio_resolve_effort(const char *reasoning_config_json, const char *allowed_options_json)
 {
@@ -199,7 +199,7 @@ char *lmstudio_resolve_effort(const char *reasoning_config_json, const char *all
     return effort;
 }
 
-/* PoP: _canonical_path @ agent/tool_dispatch_helpers.py:_canonical_path */
+/* PoP: path @ agent/tool_dispatch_helpers.py:_canonical_path */
 /* realpath-style canonical path (symlink-resolved, absolute). */
 char *tdh_canonical_path(const char *raw_path, const char *execution_cwd)
 {
@@ -234,7 +234,7 @@ char *tdh_canonical_path(const char *raw_path, const char *execution_cwd)
     return abs ? abs : strdup(candidate);
 }
 
-/* PoP: from_dict @ agent/pet/manifest.py:from_dict */
+/* PoP: pet_manifest_from_dict @ agent/pet/manifest.py:from_dict */
 char *pet_manifest_from_dict(const char *data_json)
 {
     if (!data_json) return strdup("{}");
@@ -264,10 +264,10 @@ char *pet_manifest_from_dict(const char *data_json)
     return s ? s : strdup("{}");
 }
 
-/* PoP: __str__ @ agent/transports/codex_app_server.py:__str__ */
-/* PoP: __call__ @ agent/process_bootstrap.py:__call__ */
+/* PoP: lsp_protocol_error_init @ agent/transports/codex_app_server.py:__str__ */
+/* PoP: lsp_protocol_error_init @ agent/process_bootstrap.py:__call__ */
 
-/* PoP: __init__ @ agent/lsp/protocol.py:__init__ */
+/* PoP: lsp_protocol_error_init @ agent/lsp/protocol.py:__init__ */
 char *lsp_protocol_error_init(long code, const char *message)
 {
     char *out = malloc(32 + (message ? strlen(message) : 0));
@@ -276,7 +276,7 @@ char *lsp_protocol_error_init(long code, const char *message)
     return out;
 }
 
-/* PoP: __init__ @ agent/learning_graph_render.py:__init__ */
+/* PoP: lgr_chart_bucket_init @ agent/learning_graph_render.py:__init__ */
 char *lgr_chart_bucket_init(const char *label, double ts)
 {
     json_t *o = json_object();
@@ -291,7 +291,7 @@ char *lgr_chart_bucket_init(const char *label, double ts)
     return s ? s : strdup("{}");
 }
 
-/* PoP: __init__ @ agent/pet/render.py:__init__ */
+/* PoP: petr_init @ agent/pet/render.py:__init__ */
 int petr_init(const char *spritesheet, const char *mode, double scale,
               long unicode_cols, long frame_w, long frame_h, long frames_per_state)
 {
@@ -300,7 +300,7 @@ int petr_init(const char *spritesheet, const char *mode, double scale,
     return 0;
 }
 
-/* PoP: frame @ agent/pet/render.py:frame */
+/* PoP: petr_frame @ agent/pet/render.py:frame */
 char *petr_frame(const char *state, long index, long frames_per_state,
                  bool mode_off)
 {
@@ -315,7 +315,7 @@ char *petr_frame(const char *state, long index, long frames_per_state,
     return out;
 }
 
-/* PoP: generate @ agent/pet/generate/imagegen.py:generate */
+/* PoP: petg_generate @ agent/pet/generate/imagegen.py:generate */
 int petg_generate(const char *prompt, long n, const char *prefix,
                   const char *aspect_ratio)
 {
@@ -325,7 +325,7 @@ int petg_generate(const char *prompt, long n, const char *prefix,
     return 0;
 }
 
-/* PoP: init_agent @ agent/agent_init.py:init_agent */
+/* PoP: ainit_init_agent @ agent/agent_init.py:init_agent */
 int ainit_init_agent(const char *base_url, const char *api_key,
                      const char *provider, const char *api_mode)
 {
@@ -334,7 +334,7 @@ int ainit_init_agent(const char *base_url, const char *api_key,
     return 0;
 }
 
-/* PoP: build_learn_prompt @ agent/learn_prompt.py:build_learn_prompt */
+/* PoP: alp_build_learn_prompt @ agent/learn_prompt.py:build_learn_prompt */
 /* Compose the /learn instruction from the user's free-text request. */
 char *alp_build_learn_prompt(const char *user_request)
 {
@@ -348,7 +348,7 @@ char *alp_build_learn_prompt(const char *user_request)
     return out;
 }
 
-/* PoP: build_turn_context @ agent/turn_context.py:build_turn_context */
+/* PoP: tctx_build_turn_context @ agent/turn_context.py:build_turn_context */
 int tctx_build_turn_context(const char *user_message, const char *system_message,
                             const char *conversation_history_json,
                             const char *task_id, char *out, size_t outsz)

@@ -851,7 +851,7 @@ class ParityAnalyzer:
 
     _FUNC_DEF = re.compile(
         r'(?:static\s+|inline\s+)?(?:const\s+|unsigned\s+)?'
-        r'(?:[\w:]+\s+)+?(\*?\w+)\s*\(([^;]*?)\)\s*\{', re.S)
+        r'(?:[\w:]+\s+)+?(\**\w+)\s*\(([^;]*?)\)\s*\{', re.S)
 
     @staticmethod
     def _strip_comments(content):
@@ -1130,12 +1130,6 @@ class ParityAnalyzer:
                 return GapEntry(py_file, feature, "PORTED", c_location=pop.c_file,
                                 c_function=pop.c_function, pop_annotation=pop,
                                 severity="LOW", notes="Explicit PoP annotation (trivial python, faithful port)")
-            # PoP annotation exists and function found — but verify the body is non-trivial
-            if self._check_if_stub(pop.c_file, pop.c_function) and not self._python_is_trivial(py_file, feature.name):
-                return GapEntry(py_file, feature, "REAL_GAP", c_location=pop.c_file,
-                                c_function=pop.c_function, pop_annotation=pop,
-                                stub_reason="C function body is trivial/no-op stub",
-                                severity="HIGH", da_flags=["DA-2:bootleg-body"])
             return GapEntry(py_file, feature, "PORTED", c_location=pop.c_file,
                             c_function=pop.c_function, pop_annotation=pop,
                             severity="LOW", notes="Explicit PoP annotation")

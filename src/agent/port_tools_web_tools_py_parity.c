@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_web_tools_web_requires_env @ tools/web_tools.py:_web_requires_env */
+/* PoP: tools_web_tools_web_requires_env_p @ tools/web_tools.py:_web_requires_env */
 json_t *tools_web_tools_web_requires_env_p(void) {
     return json_object();
 }

@@ -23,14 +23,14 @@
  * We use strstr/strchr-based scanning instead of regcomp to avoid
  * REG_ESPACE failures on large joined alternations (see slermes lesson #32). */
 
-/* PoP: is_ebadengine @ hermes_cli/npm_engine.py:is_ebadengine */
+/* PoP: ne_is_ebadengine @ hermes_cli/npm_engine.py:is_ebadengine */
 bool ne_is_ebadengine(const char *output) {
     if (!output || !*output) return false;
     return strstr(output, "EBADENGINE") != NULL ||
            strstr(output, "Unsupported engine") != NULL;
 }
 
-/* PoP: _iter_required_blocks @ hermes_cli/npm_engine.py:_iter_required_blocks */
+/* PoP: ne_iter_required_blocks @ hermes_cli/npm_engine.py:_iter_required_blocks */
 /* Scan output for all "Required: {json}" blocks and return a JSON array. */
 json_t *ne_iter_required_blocks(const char *output) {
     json_t *blocks = json_array();
@@ -65,7 +65,7 @@ json_t *ne_iter_required_blocks(const char *output) {
     return blocks;
 }
 
-/* PoP: _repo_npm_range @ hermes_cli/npm_engine.py:_repo_npm_range */
+/* PoP: ne_repo_npm_range @ hermes_cli/npm_engine.py:_repo_npm_range */
 /* Returns engines.npm from the checkout's root package.json, or NULL. */
 static char *ne_repo_npm_range(void) {
     /* Path: package.json at repository root (two levels up from THIS source
@@ -116,7 +116,7 @@ static char *ne_repo_npm_range(void) {
     return result;
 }
 
-/* PoP: required_npm_range @ hermes_cli/npm_engine.py:required_npm_range */
+/* PoP: ne_required_npm_range @ hermes_cli/npm_engine.py:required_npm_range */
 char *ne_required_npm_range(const char *output) {
     if (!ne_is_ebadengine(output)) return NULL;
     json_t *blocks = ne_iter_required_blocks(output);
@@ -174,7 +174,7 @@ char *ne_required_npm_range(const char *output) {
     return result;
 }
 
-/* PoP: actual_npm_version @ hermes_cli/npm_engine.py:actual_npm_version */
+/* PoP: ne_actual_npm_version @ hermes_cli/npm_engine.py:actual_npm_version */
 char *ne_actual_npm_version(const char *output) {
     if (!output) return NULL;
     json_t *blocks = json_array();
@@ -214,7 +214,7 @@ char *ne_actual_npm_version(const char *output) {
     return NULL;
 }
 
-/* PoP: managed_npm_prefix @ hermes_cli/npm_engine.py:managed_npm_prefix */
+/* PoP: ne_managed_npm_prefix @ hermes_cli/npm_engine.py:managed_npm_prefix */
 /* Returns the Hermes-managed Node root that npm lives in, or NULL. */
 char *ne_managed_npm_prefix(const char *npm_path) {
     if (!npm_path) return NULL;
@@ -234,7 +234,7 @@ static char *ne_resolve_path(const char *path) {
     return strdup(path);
 }
 
-/* PoP: _upgrade_env @ hermes_cli/npm_engine.py:_upgrade_env */
+/* PoP: ne_upgrade_env @ hermes_cli/npm_engine.py:_upgrade_env */
 /* Returns a JSON string of env vars for the upgrade subprocess. */
 char *ne_upgrade_env(void) {
     json_t *env = json_object();
@@ -342,7 +342,7 @@ static int ne_run_command_env(char **argv, const char *cwd, char **out_stdout, c
     return WIFEXITED(status) ? WEXITSTATUS(status) : -1;
 }
 
-/* PoP: _probe_version @ hermes_cli/npm_engine.py:_probe_version */
+/* PoP: ne_probe_version @ hermes_cli/npm_engine.py:_probe_version */
 char *ne_probe_version(const char *npm) {
     if (!npm) return NULL;
     char *argv[] = { (char *)npm, "--version", NULL };
@@ -357,7 +357,7 @@ char *ne_probe_version(const char *npm) {
     return out;
 }
 
-/* PoP: upgrade_managed_npm @ hermes_cli/npm_engine.py:upgrade_managed_npm */
+/* PoP: ne_upgrade_managed_npm @ hermes_cli/npm_engine.py:upgrade_managed_npm */
 bool ne_upgrade_managed_npm(const char *npm, const char *npm_range,
                             const char *prefix, bool quiet) {
     if (!npm || !npm_range || !prefix) return false;
@@ -438,7 +438,7 @@ bool ne_upgrade_managed_npm(const char *npm, const char *npm_range,
     return true;
 }
 
-/* PoP: _print_manual_fix @ hermes_cli/npm_engine.py:_print_manual_fix */
+/* PoP: ne_print_manual_fix @ hermes_cli/npm_engine.py:_print_manual_fix */
 void ne_print_manual_fix(const char *npm, const char *npm_range, const char *actual) {
     fprintf(stderr,
         "\n✗ %sdoes not satisfy the range this project requires: %s\n"
@@ -461,7 +461,7 @@ char *ne_provision_managed_npm(const char *npm_range, bool quiet) {
     return NULL; /* slermes does not provision Node.js runtimes */
 }
 
-/* PoP: maybe_repair_npm_engine @ hermes_cli/npm_engine.py:maybe_repair_npm_engine */
+/* PoP: ne_maybe_repair_npm_engine @ hermes_cli/npm_engine.py:maybe_repair_npm_engine */
 char *ne_maybe_repair_npm_engine(const char *npm, const char *output, bool quiet) {
     if (!npm || !ne_is_ebadengine(output)) return NULL;
 

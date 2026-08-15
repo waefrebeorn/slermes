@@ -20,17 +20,17 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: name @ agent/tts_provider.py:name */
+/* PoP: ttp_name @ agent/tts_provider.py:name */
 char *ttp_name(void) {
     return strdup("tts");
 }
 
-/* PoP: display_name @ agent/tts_provider.py:display_name */
+/* PoP: ttp_display_name @ agent/tts_provider.py:display_name */
 char *ttp_display_name(void) {
     return strdup("TTS");
 }
 
-/* PoP: is_available @ agent/tts_provider.py:is_available */
+/* PoP: ttp_is_available @ agent/tts_provider.py:is_available */
 bool ttp_is_available(void) {
     /* Python: any registered TTS provider key present. Delegates to the
      * real TTS registry. */
@@ -42,7 +42,7 @@ bool ttp_is_available(void) {
     return avail;
 }
 
-/* PoP: list_models @ agent/tts_provider.py:list_models */
+/* PoP: ttp_list_models @ agent/tts_provider.py:list_models */
 char *ttp_list_models(void) {
     /* Python: catalog entries for the picker. */
     extern char *tts_list_providers(void);
@@ -72,13 +72,13 @@ char *ttp_list_models(void) {
     return ser ? ser : strdup("[]");
 }
 
-/* PoP: get_setup_schema @ agent/tts_provider.py:get_setup_schema */
+/* PoP: ttp_get_setup_schema @ agent/tts_provider.py:get_setup_schema */
 char *ttp_get_setup_schema(void) {
     return strdup("{\"fields\": [{\"key\": \"api_key\", \"label\": \"API Key\", "
                   "\"type\": \"password\"}]}");
 }
 
-/* PoP: default_model @ agent/tts_provider.py:default_model */
+/* PoP: ttp_default_model @ agent/tts_provider.py:default_model */
 char *ttp_default_model(void) {
     /* Python: first provider id or None. */
     extern char *tts_list_providers(void);
@@ -97,13 +97,13 @@ char *ttp_default_model(void) {
     return out;
 }
 
-/* PoP: voice_compatible @ agent/tts_provider.py:voice_compatible */
+/* PoP: ttp_voice_compatible @ agent/tts_provider.py:voice_compatible */
 bool ttp_voice_compatible(void) {
     /* Python: mirrors tts.prefer_voice_bubble. */
     return false;
 }
 
-/* PoP: resolve_output_format @ agent/tts_provider.py:resolve_output_format */
+/* PoP: ttp_resolve_output_format @ agent/tts_provider.py:resolve_output_format */
 char *ttp_resolve_output_format(const char *value) {
     /* Python: clamp to valid set. */
     if (!value) return strdup("wav");

@@ -266,7 +266,7 @@ static char *dlg_strip_url_credentials(const char *bounded) {
  * Returns: malloc'd string (for a scalar) OR NULL for None.
  *          For lists, returns a NULL-terminated array of char* strings (caller frees items + array).
  */
-/* PoP: _sanitize_tool_target @ tools/delegate_tool.py:_sanitize_tool_target */
+/* PoP: dlg_sanitize_tool_target @ tools/delegate_tool.py:_sanitize_tool_target */
 char *dlg_sanitize_tool_target(const char *key, const char *value) {
     if (!value || !value[0]) return NULL;
     /* bounded = value[:1024] */
@@ -312,7 +312,7 @@ char **dlg_sanitize_tool_target_list(const char *key, const char *json_array, in
  *         and side-effect targets (key in target set, cleaned values).
  * Returns a malloc'd json_t {"argument_keys":[...], "targets":{...}}.
  */
-/* PoP: _summarize_tool_arguments @ tools/delegate_tool.py:_summarize_tool_arguments */
+/* PoP: dlg_summarize_tool_arguments @ tools/delegate_tool.py:_summarize_tool_arguments */
 json_t *dlg_summarize_tool_arguments(const char *arguments) {
     json_t *r = json_object();
     json_t *keys = json_array();
@@ -406,7 +406,7 @@ json_t *dlg_summarize_tool_arguments(const char *arguments) {
  *         Re-sanitize targets, cap keys at 128 chars + 64 entries.
  * Returns a malloc'd json_t {"argument_keys":[...], "targets":{...}}.
  */
-/* PoP: _sanitize_tool_input_summary @ tools/delegate_tool.py:_sanitize_tool_input_summary */
+/* PoP: dlg_sanitize_tool_input_summary @ tools/delegate_tool.py:_sanitize_tool_input_summary */
 json_t *dlg_sanitize_tool_input_summary(const char *summary_json) {
     json_t *r = json_object();
     json_t *keys = json_array();
@@ -470,7 +470,7 @@ json_t *dlg_sanitize_tool_input_summary(const char *summary_json) {
  *        output_bytes, status} from a tool_trace list.
  * Returns a malloc'd json_t array. Caller frees.
  */
-/* PoP: _subagent_stop_tool_call_history @ tools/delegate_tool.py:_subagent_stop_tool_call_history */
+/* PoP: dlg_subagent_stop_tool_call_history @ tools/delegate_tool.py:_subagent_stop_tool_call_history */
 json_t *dlg_subagent_stop_tool_call_history(const char *tool_trace_json) {
     json_t *arr = json_array();
     if (!tool_trace_json) return arr;
@@ -555,7 +555,7 @@ json_t *dlg_subagent_stop_tool_call_history(const char *tool_trace_json) {
  * contract by saving/restoring the parent's last-resolved toolset through
  * the agent runtime API. Returns 0 on success, nonzero on error.
  */
-/* PoP: _build_child_preserving_parent_tools @ tools/delegate_tool.py:_build_child_preserving_parent_tools */
+/* PoP: dlg_build_child_preserving_parent_tools @ tools/delegate_tool.py:_build_child_preserving_parent_tools */
 int dlg_build_child_preserving_parent_tools(const char *task_json) {
     /* _build_child_agent runs under _CHILD_CONSTRUCTION_LOCK in Python.
      * C: model_tools._last_resolved_tool_names is the parent's set; building
@@ -580,7 +580,7 @@ int dlg_build_child_preserving_parent_tools(const char *task_json) {
  *    process-wide mutex) is the portable C equivalent — it serializes the
  *    same lifecycle side-effects across all finalizations in the process.
  */
-/* PoP: _parent_finalization_lock @ tools/delegate_tool.py:_parent_finalization_lock */
+/* PoP: dlg_parent_finalization_lock @ tools/delegate_tool.py:_parent_finalization_lock */
 void *dlg_parent_finalization_lock(void *parent_agent) {
     (void)parent_agent;
     return dlg_parent_finalization_lock_impl(parent_agent);
@@ -598,7 +598,7 @@ void *dlg_parent_finalization_lock(void *parent_agent) {
  *    which is not resolvable from pure JSON). The trimming + cost rollup +
  *    hook invocation on the JSON result are the testable logic.
  */
-/* PoP: _finalize_child_results @ tools/delegate_tool.py:_finalize_child_results */
+/* PoP: dlg_finalize_child_results @ tools/delegate_tool.py:_finalize_child_results */
 int dlg_finalize_child_results(char *results_json,
                                const char *task_list_json,
                                const char *children_json,
@@ -733,7 +733,7 @@ int dlg_finalize_child_results(char *results_json,
  *    lifecycle contract is: delegate to the task runner, then finalize.
  *    We expose the orchestration skeleton so the gateway can drive it.
  */
-/* PoP: _run_child_lifecycle @ tools/delegate_tool.py:_run_child_lifecycle */
+/* PoP: dlg_run_child_lifecycle @ tools/delegate_tool.py:_run_child_lifecycle */
 char *dlg_run_child_lifecycle(int task_index, const char *goal,
                               const char *child_json,
                               const char *parent_session_id) {
@@ -777,7 +777,7 @@ char *dlg_run_child_lifecycle(int task_index, const char *goal,
 
 /* ---- Existing PoP ports (unchanged) ---- */
 
-/* PoP: interrupt_subagent @ tools/delegate_tool.py:interrupt_subagent */
+/* PoP: dlg_interrupt_subagent @ tools/delegate_tool.py:interrupt_subagent */
 int dlg_interrupt_subagent(const char *subagent_id) {
     /* Python: stop at next iteration boundary. */
     if (!subagent_id) return -1;
@@ -785,14 +785,14 @@ int dlg_interrupt_subagent(const char *subagent_id) {
     return 0;
 }
 
-/* PoP: list_active_subagents @ tools/delegate_tool.py:list_active_subagents */
+/* PoP: dlg_list_active_subagents @ tools/delegate_tool.py:list_active_subagents */
 char *dlg_list_active_subagents(void) {
     /* Python: running tree snapshot. */
     printf("active subagent tree snapshotted\n");
     return strdup("[]");
 }
 
-/* PoP: delegate_task @ tools/delegate_tool.py:delegate_task */
+/* PoP: dlg_delegate_task @ tools/delegate_tool.py:delegate_task */
 char *dlg_delegate_task(const char *tasks_json) {
     /* Python: spawn one or more child agents. */
     if (!tasks_json) return NULL;
@@ -800,7 +800,7 @@ char *dlg_delegate_task(const char *tasks_json) {
     return strdup("[]");
 }
 
-/* PoP: _load_config @ tools/delegate_tool.py:_load_config */
+/* PoP: dlg_load_config @ tools/delegate_tool.py:_load_config */
 char *dlg_load_config(const char *config_yaml) {
     /* Python: shared persistent delegation config. */
     if (!config_yaml) return strdup("{}");
@@ -810,7 +810,7 @@ char *dlg_load_config(const char *config_yaml) {
 
 /* ── tools/delegation_output_schema.py ──────────────────────────── */
 
-/* PoP: extract_json_candidate @ tools/delegation_output_schema.py:extract_json_candidate */
+/* PoP: delegation_extract_json_candidate @ tools/delegation_output_schema.py:extract_json_candidate */
 /* Returns malloc'd JSON candidate string. Caller frees. */
 char *delegation_extract_json_candidate(const char *text) {
     if (!text) return strdup("");
@@ -861,7 +861,7 @@ char *delegation_extract_json_candidate(const char *text) {
     return working;
 }
 
-/* PoP: append_output_contract @ tools/delegation_output_schema.py:append_output_contract */
+/* PoP: delegation_append_output_contract @ tools/delegation_output_schema.py:append_output_contract */
 /* Returns malloc'd context string. Caller frees. */
 char *delegation_append_output_contract(const char *context, const char *schema_json) {
     if (!schema_json) return strdup(context ? context : "");
@@ -884,7 +884,7 @@ char *delegation_append_output_contract(const char *context, const char *schema_
     return result ? result : strdup("");
 }
 
-/* PoP: build_retry_message @ tools/delegation_output_schema.py:build_retry_message */
+/* PoP: delegation_build_retry_message @ tools/delegation_output_schema.py:build_retry_message */
 /* Returns malloc'd retry message. errors_json = JSON array of strings. Caller frees. */
 char *delegation_build_retry_message(const char *errors_json) {
     if (!errors_json) return strdup("");

@@ -35,7 +35,7 @@ static char *safe_filename(const char *name) {
     return out;
 }
 
-/* PoP: __init__ @ tools/mcp_oauth.py:__init__ */
+/* PoP: mco_init @ tools/mcp_oauth.py:__init__ */
 char *mco_init(const char *server_name, const char *hermes_home) {
     /* Python: safe server state dir. */
     if (!server_name) return NULL;
@@ -47,7 +47,7 @@ char *mco_init(const char *server_name, const char *hermes_home) {
     return out;
 }
 
-/* PoP: remove @ tools/mcp_oauth.py:remove */
+/* PoP: mco_remove @ tools/mcp_oauth.py:remove */
 int mco_remove(const char *hermes_home, const char *server_name) {
     /* Python: delete all stored state — REAL unlink. */
     if (!hermes_home || !server_name) return -1;
@@ -70,7 +70,7 @@ int mco_remove(const char *hermes_home, const char *server_name) {
     return 0;
 }
 
-/* PoP: snapshot @ tools/mcp_oauth.py:snapshot */
+/* PoP: mco_snapshot @ tools/mcp_oauth.py:snapshot */
 char *mco_snapshot(const char *hermes_home, const char *server_name) {
     /* Python: capture on-disk state for restore. */
     if (!hermes_home || !server_name) return strdup("{}");
@@ -78,7 +78,7 @@ char *mco_snapshot(const char *hermes_home, const char *server_name) {
     return strdup("{}");
 }
 
-/* PoP: restore @ tools/mcp_oauth.py:restore */
+/* PoP: mco_restore @ tools/mcp_oauth.py:restore */
 int mco_restore(const char *snapshot_json) {
     /* Python: revert without overwriting concurrent write.
      * REAL: write the snapshot only when target absent (only_if_absent). */
@@ -100,7 +100,7 @@ int mco_restore(const char *snapshot_json) {
 #define FIGMA_DCR_CLIENT_NAME "Claude Code"
 #define FIGMA_DEFAULT_SCOPE   "mcp:connect"
 
-/* PoP: _ensure_sdk_loaded @ tools/mcp_oauth.py:_ensure_sdk_loaded */
+/* PoP: mcpo_ensure_sdk_loaded @ tools/mcp_oauth.py:_ensure_sdk_loaded */
 int mcpo_ensure_sdk_loaded(const char *arg) {
     /* Python: import the MCP SDK OAuth classes on first use and bind
      * module globals. Returns True when SDK classes are available.
@@ -111,7 +111,7 @@ int mcpo_ensure_sdk_loaded(const char *arg) {
     return 1;
 }
 
-/* PoP: _is_figma_remote_mcp @ tools/mcp_oauth.py:_is_figma_remote_mcp */
+/* PoP: mcpo_is_figma_remote_mcp @ tools/mcp_oauth.py:_is_figma_remote_mcp */
 bool mcpo_is_figma_remote_mcp(const char *server_name, const char *server_url) {
     /* Python: True when this MCP server is Figma's hosted remote endpoint. */
     char url[1024], name[512];
@@ -139,7 +139,7 @@ bool mcpo_is_figma_remote_mcp(const char *server_name, const char *server_url) {
     return false;
 }
 
-/* PoP: apply_oauth_provider_defaults @ tools/mcp_oauth.py:apply_oauth_provider_defaults */
+/* PoP: mcpo_apply_oauth_provider_defaults @ tools/mcp_oauth.py:apply_oauth_provider_defaults */
 char *mcpo_apply_oauth_provider_defaults(const char *arg) {
     /* Python: mutate cfg with provider-specific OAuth workarounds.
      * Only fills keys the user left unset.
@@ -166,7 +166,7 @@ char *mcpo_apply_oauth_provider_defaults(const char *arg) {
     return out;
 }
 
-/* PoP: humanize_oauth_registration_error @ tools/mcp_oauth.py:humanize_oauth_registration_error */
+/* PoP: mcpo_humanize_oauth_registration_error @ tools/mcp_oauth.py:humanize_oauth_registration_error */
 char *mcpo_humanize_oauth_registration_error(const char *arg) {
     /* Python: turn a DCR refusal into a useful next step.
      * Returns a humanized message for registration 403/Forbidden, else NULL.

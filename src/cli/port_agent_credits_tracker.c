@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: cli_agent_credits_tracker_is_free_tier_model @ agent/credits_tracker.py:is_free_tier_model */
+/* PoP: model @ agent/credits_tracker.py:is_free_tier_model */
 
 /* Port of Python agent/credits_tracker.py:is_free_tier_model */
 /* Returns True when model is a Nous free-tier model (:free suffix check). */

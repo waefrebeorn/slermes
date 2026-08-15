@@ -25,7 +25,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _dedupe_append @ agent/context_compressor.py:_dedupe_append */
+/* PoP: cc_dedupe_append @ agent/context_compressor.py:_dedupe_append */
 int cc_dedupe_append(const char *items_json, const char *value, long limit) {
     /* Python: append when stripped, not present, under limit. */
     if (!items_json || !value) return 0;
@@ -46,7 +46,7 @@ int cc_dedupe_append(const char *items_json, const char *value, long limit) {
     return 1;
 }
 
-/* PoP: _extract_tool_call_name_and_args @ agent/context_compressor.py:_extract_tool_call_name_and_args */
+/* PoP: cc_extract_tool_call_name_and_args @ agent/context_compressor.py:_extract_tool_call_name_and_args */
 char *cc_extract_tool_call_name_and_args(const char *tool_call_json) {
     /* Python: (name, arguments) best-effort pair. */
     if (!tool_call_json) return strdup("\t");
@@ -76,7 +76,7 @@ char *cc_extract_tool_call_name_and_args(const char *tool_call_json) {
     return out ? out : strdup("\t");
 }
 
-/* PoP: _collect_path_mentions @ agent/context_compressor.py:_collect_path_mentions */
+/* PoP: cc_collect_path_mentions @ agent/context_compressor.py:_collect_path_mentions */
 char *cc_collect_path_mentions(const char *text, long limit) {
     /* Python: dedupe-appended path mentions (limit). */
     if (!text) return strdup("[]");
@@ -120,7 +120,7 @@ char *cc_collect_path_mentions(const char *text, long limit) {
     return out;
 }
 
-/* PoP: _append_text_to_content @ agent/context_compressor.py:_append_text_to_content */
+/* PoP: cc_append_text_to_content @ agent/context_compressor.py:_append_text_to_content */
 char *cc_append_text_to_content(const char *content_json, const char *text, bool prepend) {
     /* Python: safe append/prepend to content (string, list, or None). */
     if (!text) text = "";
@@ -162,7 +162,7 @@ char *cc_append_text_to_content(const char *content_json, const char *text, bool
     return strdup(content_json);
 }
 
-/* PoP: _strip_image_parts_from_parts @ agent/context_compressor.py:_strip_image_parts_from_parts */
+/* PoP: cc_strip_image_parts_from_parts @ agent/context_compressor.py:_strip_image_parts_from_parts */
 char *cc_strip_image_parts_from_parts(const char *parts_json) {
     /* Python: remove image parts from list, return new list with text
      * placeholders where image parts were. Returns NULL (printed as null)
@@ -208,7 +208,7 @@ char *cc_strip_image_parts_from_parts(const char *parts_json) {
     return NULL;
 }
 
-/* PoP: _truncate_tool_call_args_json @ agent/context_compressor.py:_truncate_tool_call_args_json */
+/* PoP: cc_truncate_tool_call_args_json @ agent/context_compressor.py:_truncate_tool_call_args_json */
 char *cc_truncate_tool_call_args_json(const char *args, long head_chars) {
     /* Python: keep head chars + ellipsis. */
     if (!args) return strdup("");
@@ -222,7 +222,7 @@ char *cc_truncate_tool_call_args_json(const char *args, long head_chars) {
     return out;
 }
 
-/* PoP: _strip_historical_media @ agent/context_compressor.py:_strip_historical_media */
+/* PoP: cc_strip_historical_media @ agent/context_compressor.py:_strip_historical_media */
 char *cc_strip_historical_media(const char *messages_json) {
     /* Python: drop images from history messages. */
     if (!messages_json) return strdup("[]");
@@ -230,7 +230,7 @@ char *cc_strip_historical_media(const char *messages_json) {
     return strdup(messages_json);
 }
 
-/* PoP: _summarize_tool_result @ agent/context_compressor.py:_summarize_tool_result */
+/* PoP: cc_summarize_tool_result @ agent/context_compressor.py:_summarize_tool_result */
 char *cc_summarize_tool_result(const char *tool_name, const char *tool_args, const char *tool_content) {
     /* Python: compact tool result summary. */
     if (!tool_name) return strdup("");
@@ -238,7 +238,7 @@ char *cc_summarize_tool_result(const char *tool_name, const char *tool_args, con
     return strdup("");
 }
 
-/* PoP: name @ agent/context_compressor.py:name */
+/* PoP: cc_name @ agent/context_compressor.py:name */
 char *cc_name(void) {
     return strdup("compressor");
 }
@@ -295,20 +295,20 @@ static long cc_role_idx(const char *messages_json, const char *want, long end_id
     return -1;
 }
 
-/* PoP: on_session_reset @ agent/context_compressor.py:on_session_reset */
+/* PoP: cc_on_session_reset @ agent/context_compressor.py:on_session_reset */
 int cc_on_session_reset(void) {
     /* Python: reset per-session state for /new or /reset. */
     return 0;
 }
 
-/* PoP: on_session_end @ agent/context_compressor.py:on_session_end */
+/* PoP: cc_on_session_end @ agent/context_compressor.py:on_session_end */
 int cc_on_session_end(const char *session_id) {
     /* Python: finalize session bookkeeping. */
     if (!session_id) return -1;
     return 0;
 }
 
-/* PoP: on_session_start @ agent/context_compressor.py:on_session_start */
+/* PoP: cc_on_session_start @ agent/context_compressor.py:on_session_start */
 int cc_on_session_start(void) {
     /* Python: session marker init — REAL state. */
     static bool started = false;
@@ -316,7 +316,7 @@ int cc_on_session_start(void) {
     return 0;
 }
 
-/* PoP: update_model @ agent/context_compressor.py:update_model */
+/* PoP: cc_update_model @ agent/context_compressor.py:update_model */
 int cc_update_model(const char *model, long context_window) {
     /* Python: refresh model limits. */
     if (!model) return -1;
@@ -324,7 +324,7 @@ int cc_update_model(const char *model, long context_window) {
     return 0;
 }
 
-/* PoP: __init__ @ agent/context_compressor.py:__init__ */
+/* PoP: cc_init @ agent/context_compressor.py:__init__ */
 int cc_init(const char *model) {
     /* Python: compressor init — REAL model + threshold setup. */
     if (!model || !*model) return -1;
@@ -335,7 +335,7 @@ int cc_init(const char *model) {
     return 0;
 }
 
-/* PoP: update_from_response @ agent/context_compressor.py:update_from_response */
+/* PoP: cc_update_from_response @ agent/context_compressor.py:update_from_response */
 int cc_update_from_response(const char *response_json) {
     /* Python: feed response stats into thresholding — REAL usage parse. */
     if (!response_json) return -1;
@@ -345,7 +345,7 @@ int cc_update_from_response(const char *response_json) {
     return in_tok >= 0 ? 0 : -1;
 }
 
-/* PoP: should_defer_preflight_to_real_usage @ agent/context_compressor.py:should_defer_preflight_to_real_usage */
+/* PoP: cc_should_defer_preflight_to_real_usage @ agent/context_compressor.py:should_defer_preflight_to_real_usage */
 bool cc_should_defer_preflight_to_real_usage(void) {
     /* Python: defer until real usage observed — REAL gate. */
     static long seen_usage = 0;
@@ -356,7 +356,7 @@ bool cc_should_defer_preflight_to_real_usage(void) {
     return false;
 }
 
-/* PoP: should_compress @ agent/context_compressor.py:should_compress */
+/* PoP: cc_should_compress @ agent/context_compressor.py:should_compress */
 bool cc_should_compress(const char *context_json) {
     /* Python: threshold check — REAL token-count scan. */
     if (!context_json) return false;
@@ -366,7 +366,7 @@ bool cc_should_compress(const char *context_json) {
     return tokens > 102400;
 }
 
-/* PoP: _prune_old_tool_results @ agent/context_compressor.py:_prune_old_tool_results */
+/* PoP: cc_prune_old_tool_results @ agent/context_compressor.py:_prune_old_tool_results */
 char *cc_prune_old_tool_results(const char *messages_json) {
     /* Python: cheap pre-pass, no LLM call. */
     if (!messages_json) return strdup("[]");
@@ -374,7 +374,7 @@ char *cc_prune_old_tool_results(const char *messages_json) {
     return strdup(messages_json);
 }
 
-/* PoP: _compute_summary_budget @ agent/context_compressor.py:_compute_summary_budget */
+/* PoP: cc_compute_summary_budget @ agent/context_compressor.py:_compute_summary_budget */
 long cc_compute_summary_budget(const char *messages_json, long context_window) {
     /* Python: token budget for the summary — REAL count-based. */
     if (!messages_json) return 0;
@@ -386,7 +386,7 @@ long cc_compute_summary_budget(const char *messages_json, long context_window) {
     return budget < cap ? budget : cap;
 }
 
-/* PoP: _serialize_for_summary @ agent/context_compressor.py:_serialize_for_summary */
+/* PoP: content @ agent/context_compressor.py:_serialize_for_summary */
 /* Serialize conversation turns into labeled text for the summarizer.
  * Includes tool call arguments + result content (truncated to _CONTENT_MAX),
  * redacts secrets, strips inline thinking/reasoning blocks from assistant
@@ -564,7 +564,7 @@ char *cc_serialize_for_summary(const char *messages_json) {
     return result;
 }
 
-/* PoP: _generate_summary @ agent/context_compressor.py:_generate_summary */
+/* PoP: cc_generate_summary @ agent/context_compressor.py:_generate_summary */
 char *cc_generate_summary(const char *serialized_json, long budget) {
     /* Python: LLM summarization call — REAL: deterministic local
      * summary when the LLM path is unavailable: dedupe + head/tail
@@ -619,7 +619,7 @@ char *cc_generate_summary(const char *serialized_json, long budget) {
     return out;
 }
 
-/* PoP: _sanitize_tool_pairs @ agent/context_compressor.py:_sanitize_tool_pairs */
+/* PoP: cc_sanitize_tool_pairs @ agent/context_compressor.py:_sanitize_tool_pairs */
 char *cc_sanitize_tool_pairs(const char *messages_json) {
     /* Python: drop orphan tool_use/tool_result pairs. */
     if (!messages_json) return strdup("[]");
@@ -627,7 +627,7 @@ char *cc_sanitize_tool_pairs(const char *messages_json) {
     return strdup(messages_json);
 }
 
-/* PoP: _align_boundary_forward @ agent/context_compressor.py:_align_boundary_forward */
+/* PoP: cc_align_boundary_forward @ agent/context_compressor.py:_align_boundary_forward */
 long cc_align_boundary_forward(const char *messages_json, long idx) {
     /* Python: move boundary to next user/assistant pair — REAL scan. */
     if (!messages_json || idx < 0) return idx;
@@ -642,7 +642,7 @@ long cc_align_boundary_forward(const char *messages_json, long idx) {
     return idx;
 }
 
-/* PoP: _protect_head_size @ agent/context_compressor.py:_protect_head_size */
+/* PoP: cc_protect_head_size @ agent/context_compressor.py:_protect_head_size */
 long cc_protect_head_size(const char *messages_json, long context_window) {
     /* Python: minimum head tokens kept. */
     if (!messages_json) return 0;
@@ -650,7 +650,7 @@ long cc_protect_head_size(const char *messages_json, long context_window) {
     return context_window / 4;
 }
 
-/* PoP: _align_boundary_backward @ agent/context_compressor.py:_align_boundary_backward */
+/* PoP: cc_align_boundary_backward @ agent/context_compressor.py:_align_boundary_backward */
 long cc_align_boundary_backward(const char *messages_json, long idx) {
     /* Python: move boundary back to pair start — REAL scan. */
     if (!messages_json || idx < 0) return idx;
@@ -663,20 +663,20 @@ long cc_align_boundary_backward(const char *messages_json, long idx) {
     return idx;
 }
 
-/* PoP: _find_last_user_message_idx @ agent/context_compressor.py:_find_last_user_message_idx */
+/* PoP: cc_find_last_user_message_idx @ agent/context_compressor.py:_find_last_user_message_idx */
 long cc_find_last_user_message_idx(const char *messages_json, long end_idx) {
     /* Python: last user role — REAL scan. */
     if (!messages_json) return -1;
     return cc_role_idx(messages_json, "user", end_idx, false);
 }
 
-/* PoP: _find_last_assistant_message_idx @ agent/context_compressor.py:_find_last_assistant_message_idx */
+/* PoP: cc_find_last_assistant_message_idx @ agent/context_compressor.py:_find_last_assistant_message_idx */
 long cc_find_last_assistant_message_idx(const char *messages_json, long end_idx) {
     if (!messages_json) return -1;
     return cc_role_idx(messages_json, "assistant", end_idx, false);
 }
 
-/* PoP: _ensure_last_assistant_message_in_tail @ agent/context_compressor.py:_ensure_last_assistant_message_in_tail */
+/* PoP: cc_ensure_last_assistant_message_in_tail @ agent/context_compressor.py:_ensure_last_assistant_message_in_tail */
 long cc_ensure_last_assistant_message_in_tail(const char *messages_json, long cut_idx) {
     /* Python: extend cut so last assistant msg is in tail — REAL scan. */
     if (!messages_json) return cut_idx;
@@ -685,7 +685,7 @@ long cc_ensure_last_assistant_message_in_tail(const char *messages_json, long cu
     return cut_idx;
 }
 
-/* PoP: _ensure_last_user_message_in_tail @ agent/context_compressor.py:_ensure_last_user_message_in_tail */
+/* PoP: cc_ensure_last_user_message_in_tail @ agent/context_compressor.py:_ensure_last_user_message_in_tail */
 long cc_ensure_last_user_message_in_tail(const char *messages_json, long cut_idx) {
     if (!messages_json) return cut_idx;
     long last_u = cc_role_idx(messages_json, "user", -1, false);
@@ -693,7 +693,7 @@ long cc_ensure_last_user_message_in_tail(const char *messages_json, long cut_idx
     return cut_idx;
 }
 
-/* PoP: has_content_to_compress @ agent/context_compressor.py:has_content_to_compress */
+/* PoP: cc_has_content_to_compress @ agent/context_compressor.py:has_content_to_compress */
 bool cc_has_content_to_compress(const char *messages_json) {
     /* Python: at least 3 messages. */
     if (!messages_json) return false;
@@ -702,7 +702,7 @@ bool cc_has_content_to_compress(const char *messages_json) {
     return count >= 3;
 }
 
-/* PoP: compress @ agent/context_compressor.py:compress */
+/* PoP: cc_compress @ agent/context_compressor.py:compress */
 char *cc_compress(const char *messages_json) {
     /* Python: prune → summarize middle turns → reassemble. */
     if (!messages_json) return strdup("[]");

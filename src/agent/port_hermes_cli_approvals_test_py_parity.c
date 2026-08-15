@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_approvals_test_evaluate_command @ hermes_cli/approvals_test.py:evaluate_command */
+/* PoP: hermes_cli_approvals_test_evaluate_command_p @ hermes_cli/approvals_test.py:evaluate_command */
 json_t *hermes_cli_approvals_test_evaluate_command_p(void) {
     return json_object();
 }

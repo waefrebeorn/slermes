@@ -14,17 +14,17 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: cron_jobs_set_alert_flag @ cron/jobs.py:_set_alert_flag */
+/* PoP: cron_jobs_set_alert_flag_p @ cron/jobs.py:_set_alert_flag */
 json_t *cron_jobs_set_alert_flag_p(void) {
     return json_object();
 }
 
-/* PoP: cron_jobs_mark_drift_alerted @ cron/jobs.py:mark_drift_alerted */
+/* PoP: cron_jobs_mark_drift_alerted_p @ cron/jobs.py:mark_drift_alerted */
 json_t *cron_jobs_mark_drift_alerted_p(void) {
     return json_object();
 }
 
-/* PoP: cron_jobs_clear_drift_alerted @ cron/jobs.py:clear_drift_alerted */
+/* PoP: cron_jobs_clear_drift_alerted_p @ cron/jobs.py:clear_drift_alerted */
 json_t *cron_jobs_clear_drift_alerted_p(void) {
     return json_object();
 }

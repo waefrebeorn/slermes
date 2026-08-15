@@ -41,7 +41,7 @@
  *  Pure helpers
  * ================================================================ */
 
-/* PoP: _utc_now @ hermes_cli/observability/shared_metrics.py:_utc_now */
+/* PoP: sm_utc_now @ hermes_cli/observability/shared_metrics.py:_utc_now */
 /* Returns current UTC time as a struct. Caller allocates. */
 void sm_utc_now(struct sm_datetime *out) {
     time_t t = time(NULL);
@@ -55,7 +55,7 @@ void sm_utc_now(struct sm_datetime *out) {
     out->sec    = g.tm_sec;
 }
 
-/* PoP: _isoformat @ hermes_cli/observability/shared_metrics.py:_isoformat */
+/* PoP: sm_isoformat @ hermes_cli/observability/shared_metrics.py:_isoformat */
 /* Format a datetime as ISO-8601 with 'Z' suffix (UTC). Returns malloc'd
  * string. */
 char *sm_isoformat(const struct sm_datetime *dt) {
@@ -66,7 +66,7 @@ char *sm_isoformat(const struct sm_datetime *dt) {
     return out;
 }
 
-/* PoP: _ensure_private_directory @ hermes_cli/observability/shared_metrics.py:_ensure_private_directory */
+/* PoP: directory @ hermes_cli/observability/shared_metrics.py:_ensure_private_directory */
 /* Create directory (mkdir -p) with mode 0700. chmod 0700 on any failure. */
 int sm_ensure_private_directory(const char *path) {
     if (!path || !*path) return -1;
@@ -92,7 +92,7 @@ int sm_ensure_private_directory(const char *path) {
     return 0;
 }
 
-/* PoP: _ensure_private_file @ hermes_cli/observability/shared_metrics.py:_ensure_private_file */
+/* PoP: 0600 @ hermes_cli/observability/shared_metrics.py:_ensure_private_file */
 /* touch(mode=0600) + chmod 0600 (ignore chmod errors on non-owner). */
 int sm_ensure_private_file(const char *path) {
     if (!path || !*path) return -1;
@@ -111,7 +111,7 @@ static void sm_bind_text(sqlite3_stmt *stmt, int idx, const char *val) {
     sqlite3_bind_text(stmt, idx, val ? val : "", -1, SQLITE_TRANSIENT);
 }
 
-/* PoP: _ensure_schema_in_transaction @ hermes_cli/observability/shared_metrics.py:_ensure_schema_in_transaction */
+/* PoP: sm_ensure_schema_in_transaction @ hermes_cli/observability/shared_metrics.py:_ensure_schema_in_transaction */
 static int sm_ensure_schema_in_transaction(sqlite3 *db) {
     char *err = NULL;
     int rc = sqlite3_exec(db,
@@ -164,7 +164,7 @@ static int sm_ensure_schema_in_transaction(sqlite3 *db) {
     return SQLITE_OK;
 }
 
-/* PoP: _ensure_schema @ hermes_cli/observability/shared_metrics.py:_ensure_schema */
+/* PoP: sm_ensure_schema @ hermes_cli/observability/shared_metrics.py:_ensure_schema */
 static int sm_ensure_schema(sqlite3 *db) {
     int rc = sqlite3_exec(db, "PRAGMA busy_timeout=5000;", NULL, NULL, NULL);
     if (rc != SQLITE_OK) return rc;
@@ -189,7 +189,7 @@ static int sm_open_db(const char *db_path, sqlite3 **out) {
     return sm_ensure_schema(*out);
 }
 
-/* PoP: _install_id @ hermes_cli/observability/shared_metrics.py:_install_id */
+/* PoP: sm_install_id @ hermes_cli/observability/shared_metrics.py:_install_id */
 static char *sm_install_id(sqlite3 *db) {
     sqlite3_stmt *stmt = NULL;
     int rc = sqlite3_prepare_v2(db,
@@ -226,7 +226,7 @@ static char *sm_install_id(sqlite3 *db) {
     return id;
 }
 
-/* PoP: _connection @ hermes_cli/observability/shared_metrics.py:_connection */
+/* PoP: sm_connection @ hermes_cli/observability/shared_metrics.py:_connection */
 static int sm_connection(const char *db_path, sqlite3 **out) {
     return sm_open_db(db_path, out);
 }
@@ -235,7 +235,7 @@ static int sm_connection(const char *db_path, sqlite3 **out) {
  *  Counters
  * ================================================================ */
 
-/* PoP: counter_dimensions_are_valid @ hermes_cli/observability/shared_metrics_contract.py:counter_dimensions_are_valid */
+/* PoP: sm_counter_dimensions_are_valid @ hermes_cli/observability/shared_metrics_contract.py:counter_dimensions_are_valid */
 bool sm_counter_dimensions_are_valid(const char *metric, json_t *dims) {
     /* Allowlist contract: each metric has a fixed set of dimension keys,
      * each with a bounded set of values. Implemented from the contract
@@ -261,7 +261,7 @@ bool sm_counter_dimensions_are_valid(const char *metric, json_t *dims) {
     return true;
 }
 
-/* PoP: record_counter @ hermes_cli/observability/shared_metrics.py:record_counter */
+/* PoP: sm_record_counter @ hermes_cli/observability/shared_metrics.py:record_counter */
 int sm_record_counter(shared_metrics_store_t *store,
                       const char *metric_name, const char *dimensions_json,
                       const char *hermes_version) {
@@ -294,7 +294,7 @@ int sm_record_counter(shared_metrics_store_t *store,
     return (rc == SQLITE_DONE) ? 0 : -1;
 }
 
-/* PoP: record_model_call @ hermes_cli/observability/shared_metrics.py:record_model_call */
+/* PoP: sm_record_model_call @ hermes_cli/observability/shared_metrics.py:record_model_call */
 int sm_record_model_call(shared_metrics_store_t *store, json_t *dimensions,
                          const char *hermes_version) {
     if (!dimensions) return -1;
@@ -324,7 +324,7 @@ static int sm_write_json_file(const char *path, const char *content) {
     return 0;
 }
 
-/* PoP: _package_metric @ hermes_cli/observability/shared_metrics.py:_package_metric */
+/* PoP: row @ hermes_cli/observability/shared_metrics.py:_package_metric */
 /* Build a metric dict from a counter_aggregates row (static helper). */
 static json_t *sm_package_metric(const char *metric_name, const char *dims_json,
                                   int value, int packaged_value) {
@@ -353,7 +353,7 @@ static int sm_pending_period_count_db(sqlite3 *db) {
     return count;
 }
 
-/* PoP: _pending_period_count @ hermes_cli/observability/shared_metrics.py:_pending_period_count */
+/* PoP: sm_pending_period_count @ hermes_cli/observability/shared_metrics.py:_pending_period_count */
 /* Public accessor — opens its own db handle. Returns period count or 0. */
 int sm_pending_period_count(const char *db_path) {
     sqlite3 *db = NULL;
@@ -363,7 +363,7 @@ int sm_pending_period_count(const char *db_path) {
     return n;
 }
 
-/* PoP: _create_package_in_transaction @ hermes_cli/observability/shared_metrics.py:_create_package_in_transaction */
+/* PoP: sm_create_package_in_transaction @ hermes_cli/observability/shared_metrics.py:_create_package_in_transaction */
 char *sm_create_package_in_transaction(sqlite3 *db, const struct sm_datetime *now) {
     sqlite3_stmt *stmt = NULL;
     int rc = sqlite3_prepare_v2(db,
@@ -475,7 +475,7 @@ char *sm_create_package_in_transaction(sqlite3 *db, const struct sm_datetime *no
     return result;
 }
 
-/* PoP: _create_package @ hermes_cli/observability/shared_metrics.py:_create_package */
+/* PoP: sm_create_package @ hermes_cli/observability/shared_metrics.py:_create_package */
 char *sm_create_package(shared_metrics_store_t *store) {
     if (!store) return NULL;
     sqlite3 *db = NULL;
@@ -487,7 +487,7 @@ char *sm_create_package(shared_metrics_store_t *store) {
     return payload;
 }
 
-/* PoP: _create_pending_packages_if_due @ hermes_cli/observability/shared_metrics.py:_create_pending_packages_if_due */
+/* PoP: sm_create_pending_packages_if_due @ hermes_cli/observability/shared_metrics.py:_create_pending_packages_if_due */
 int sm_create_pending_packages_if_due(shared_metrics_store_t *store) {
     if (!store) return -1;
     sqlite3 *db = NULL;
@@ -520,7 +520,7 @@ int sm_create_pending_packages_if_due(shared_metrics_store_t *store) {
     return 0;
 }
 
-/* PoP: _export_pending_packages @ hermes_cli/observability/shared_metrics.py:_export_pending_packages */
+/* PoP: sm_export_pending_packages @ hermes_cli/observability/shared_metrics.py:_export_pending_packages */
 int sm_export_pending_packages(shared_metrics_store_t *store) {
     if (!store) return -1;
     sqlite3 *db = NULL;
@@ -557,7 +557,7 @@ int sm_export_pending_packages(shared_metrics_store_t *store) {
     return 0;
 }
 
-/* PoP: _prune_expired_history @ hermes_cli/observability/shared_metrics.py:_prune_expired_history */
+/* PoP: sm_prune_expired_history @ hermes_cli/observability/shared_metrics.py:_prune_expired_history */
 int sm_prune_expired_history(shared_metrics_store_t *store) {
     if (!store) return -1;
     sqlite3 *db = NULL;
@@ -622,7 +622,7 @@ static int sm_pending_period_count_wrapper(shared_metrics_store_t *store) {
     return n;
 }
 
-/* PoP: _export_and_prune @ hermes_cli/observability/shared_metrics.py:_export_and_prune */
+/* PoP: sm_export_and_prune @ hermes_cli/observability/shared_metrics.py:_export_and_prune */
 int sm_export_and_prune(shared_metrics_store_t *store) {
     if (!store) return -1;
     sm_export_pending_packages(store);
@@ -630,7 +630,7 @@ int sm_export_and_prune(shared_metrics_store_t *store) {
     return 0;
 }
 
-/* PoP: create_and_export_package @ hermes_cli/observability/shared_metrics.py:create_and_export_package */
+/* PoP: sm_create_and_export_package @ hermes_cli/observability/shared_metrics.py:create_and_export_package */
 int sm_create_and_export_package(shared_metrics_store_t *store) {
     if (!store) return -1;
     int pending = sm_pending_period_count_wrapper(store);
@@ -642,14 +642,14 @@ int sm_create_and_export_package(shared_metrics_store_t *store) {
     return sm_export_and_prune(store);
 }
 
-/* PoP: create_and_export_package_if_due @ hermes_cli/observability/shared_metrics.py:create_and_export_package_if_due */
+/* PoP: sm_create_and_export_package_if_due @ hermes_cli/observability/shared_metrics.py:create_and_export_package_if_due */
 int sm_create_and_export_package_if_due(shared_metrics_store_t *store) {
     if (!store) return -1;
     sm_create_pending_packages_if_due(store);
     return sm_export_and_prune(store);
 }
 
-/* PoP: counter_snapshot @ hermes_cli/observability/shared_metrics.py:counter_snapshot */
+/* PoP: sm_counter_snapshot @ hermes_cli/observability/shared_metrics.py:counter_snapshot */
 json_t *sm_counter_snapshot(shared_metrics_store_t *store) {
     if (!store) return NULL;
     sqlite3 *db = NULL;
@@ -681,7 +681,7 @@ json_t *sm_counter_snapshot(shared_metrics_store_t *store) {
     return arr;
 }
 
-/* PoP: __init__ @ hermes_cli/observability/shared_metrics.py:__init__ */
+/* PoP: shared_metrics_store_init @ hermes_cli/observability/shared_metrics.py:__init__ */
 shared_metrics_store_t *shared_metrics_store_init(const char *hermes_home) {
     shared_metrics_store_t *store = (shared_metrics_store_t *)calloc(1, sizeof(*store));
     if (!store) return NULL;
@@ -720,7 +720,7 @@ void shared_metrics_store_free(shared_metrics_store_t *store) {
 /* Faithful implementations of model_call_dimensions and task_counter now live
  * in port_smc_event_extractors.c (the echo-stub versions here were unfaithful). */
 
-/* PoP: _provider_metadata @ hermes_cli/observability/shared_metrics_contract.py:_provider_metadata */
+/* PoP: smc_provider_metadata @ hermes_cli/observability/shared_metrics_contract.py:_provider_metadata */
 char *smc_provider_metadata(const char *arg) {
     /* Python: resolve provider identity without refreshing remote metadata.
      * Arg = "canonical\tis_aggregator\tis_known". */
@@ -740,7 +740,7 @@ char *smc_provider_metadata(const char *arg) {
     return out;
 }
 
-/* PoP: _known_provider_ids @ hermes_cli/observability/shared_metrics_contract.py:_known_provider_ids */
+/* PoP: smc_known_provider_ids @ hermes_cli/observability/shared_metrics_contract.py:_known_provider_ids */
 char *smc_known_provider_ids(void) {
     /* Python: cache Hermes's static provider catalog (lru_cache, process-lifetime).
      * Returns a JSON array of provider slugs. */
@@ -751,7 +751,7 @@ char *smc_known_provider_ids(void) {
                   "\"ai_gateway\",\"azure_foundry\",\"xiaomi\"]");
 }
 
-/* PoP: _model_locality @ hermes_cli/observability/shared_metrics_contract.py:_model_locality */
+/* PoP: smc_model_locality_internal @ hermes_cli/observability/shared_metrics_contract.py:_model_locality */
 const char *smc_model_locality_internal(const char *base_url,
                                          const char *provider_category,
                                          int is_local_endpoint) {
@@ -774,7 +774,7 @@ const char *smc_model_locality_internal(const char *base_url,
     return "unknown";
 }
 
-/* PoP: _parse_state_timestamp @ hermes_cli/observability/shared_metrics.py:_parse_state_timestamp */
+/* PoP: shared_metrics_parse_timestamp @ hermes_cli/observability/shared_metrics.py:_parse_state_timestamp */
 /* Returns malloc'd ISO timestamp string or NULL on failure. Caller frees. */
 char *shared_metrics_parse_timestamp(const char *value) {
     if (!value || !*value) return NULL;

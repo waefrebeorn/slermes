@@ -19,7 +19,7 @@ static const char *g_loopback_hosts[] = {
     "127.0.0.1", "localhost", "::1", "ip6-localhost", "ip6-loopback", NULL
 };
 
-/* PoP: _is_loopback_host @ gateway/platforms/webhook.py:_is_loopback_host */
+/* PoP: value @ gateway/platforms/webhook.py:_is_loopback_host */
 /* True when `host` binds only to the local machine. A falsy value (empty/None)
  * is conservatively treated as non-loopback (unset host = default public bind). */
 bool webhook_is_loopback_host(const char *host) {
@@ -40,7 +40,7 @@ bool webhook_is_loopback_host(const char *host) {
     return false;
 }
 
-/* PoP: _hmac_str_equal @ gateway/platforms/webhook.py:_hmac_str_equal */
+/* PoP: webhook_hmac_str_equal @ gateway/platforms/webhook.py:_hmac_str_equal */
 /* Timing-safe equality for two strings, tolerant of non-ASCII input.
  * Python uses hmac.compare_digest on UTF-8 bytes; we compare lengths first then
  * do a constant-time byte compare so a hostile header fails closed. */
@@ -57,14 +57,14 @@ bool webhook_hmac_str_equal(const char *provided, const char *expected) {
     return diff == 0;
 }
 
-/* PoP: check_webhook_requirements @ gateway/platforms/webhook.py:check_webhook_requirements */
+/* PoP: webhook_check_requirements @ gateway/platforms/webhook.py:check_webhook_requirements */
 /* Returns whether required webhook dependencies are available. The HTTP stack is
  * always present in the C build, so this mirrors "deps available" (true). */
 bool webhook_check_requirements(void) {
     return true;
 }
 
-/* PoP: on_processing_complete @ gateway/platforms/webhook.py:on_processing_complete */
+/* PoP: webhook_u_on_processing_complete @ gateway/platforms/webhook.py:on_processing_complete */
 int webhook_u_on_processing_complete(const char *arg) {
     /* Python: close one-shot delivery session when run completes. */
     if (!arg || !*arg) { printf("0\n"); return 0; }

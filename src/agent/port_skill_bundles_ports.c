@@ -35,7 +35,7 @@ static const char *bundle_home(void) {
     return ".";
 }
 
-/* PoP: _bundles_dir @ agent/skill_bundles.py:_bundles_dir */
+/* PoP: sbd_bundles_dir @ agent/skill_bundles.py:_bundles_dir */
 char *sbd_bundles_dir(void) {
     char *out = NULL;
     const char *h = getenv("HERMES_BUNDLES_DIR");
@@ -44,7 +44,7 @@ char *sbd_bundles_dir(void) {
     return out;
 }
 
-/* PoP: _slugify @ agent/skill_bundles.py:_slugify */
+/* PoP: sbd_slugify @ agent/skill_bundles.py:_slugify */
 char *sbd_slugify(const char *name) {
     /* Python: lower, space/underscore → dash, strip invalid chars. */
     if (!name) return strdup("");
@@ -74,7 +74,7 @@ char *sbd_slugify(const char *name) {
     return out;
 }
 
-/* PoP: _iter_bundle_files @ agent/skill_bundles.py:_iter_bundle_files */
+/* PoP: sbd_iter_bundle_files @ agent/skill_bundles.py:_iter_bundle_files */
 char *sbd_iter_bundle_files(void) {
     /* Python: *.yaml bundle files. */
     char *dir = sbd_bundles_dir();
@@ -111,7 +111,7 @@ char *sbd_iter_bundle_files(void) {
     return out;
 }
 
-/* PoP: _max_mtime @ agent/skill_bundles.py:_max_mtime */
+/* PoP: sbd_max_mtime @ agent/skill_bundles.py:_max_mtime */
 long sbd_max_mtime(void) {
     /* Python: highest mtime across bundle files + dir. */
     char *dir = sbd_bundles_dir();
@@ -137,7 +137,7 @@ long sbd_max_mtime(void) {
     return best;
 }
 
-/* PoP: _load_bundle_file @ agent/skill_bundles.py:_load_bundle_file */
+/* PoP: sbd_load_bundle_file @ agent/skill_bundles.py:_load_bundle_file */
 char *sbd_load_bundle_file(const char *path) {
     /* Python: parse bundle yaml; None on error. */
     if (!path) return NULL;
@@ -155,7 +155,7 @@ char *sbd_load_bundle_file(const char *path) {
     return buf;
 }
 
-/* PoP: scan_bundles @ agent/skill_bundles.py:scan_bundles */
+/* PoP: sbd_scan_bundles @ agent/skill_bundles.py:scan_bundles */
 char *sbd_scan_bundles(void) {
     /* Python: scan + rebuild cache. Returns {"/slug": info-dict}. First
      * bundle wins on duplicate slug (alphabetical order). */
@@ -244,7 +244,7 @@ char *sbd_scan_bundles(void) {
 static char *s_bundle_cache = NULL;
 static long s_bundle_cache_mtime = -1;
 
-/* PoP: get_skill_bundles @ agent/skill_bundles.py:get_skill_bundles */
+/* PoP: sbd_get_skill_bundles @ agent/skill_bundles.py:get_skill_bundles */
 char *sbd_get_skill_bundles(void) {
     /* Python: current mapping, rescan when disk changed. */
     long now = sbd_max_mtime();
@@ -259,7 +259,7 @@ char *sbd_get_skill_bundles(void) {
     return s_bundle_cache ? strdup(s_bundle_cache) : strdup("{}");
 }
 
-/* PoP: reload_bundles @ agent/skill_bundles.py:reload_bundles */
+/* PoP: sbd_reload_bundles @ agent/skill_bundles.py:reload_bundles */
 char *sbd_reload_bundles(void) {
     /* Python: re-scan + diff {added, removed, unchanged, total}. */
     char *before = s_bundle_cache ? strdup(s_bundle_cache) : NULL;
@@ -331,7 +331,7 @@ char *sbd_reload_bundles(void) {
     return ser ? ser : strdup("{\"added\":[],\"removed\":[],\"unchanged\":[],\"total\":0}");
 }
 
-/* PoP: list_bundles @ agent/skill_bundles.py:list_bundles */
+/* PoP: sbd_list_bundles @ agent/skill_bundles.py:list_bundles */
 char *sbd_list_bundles(void) {
     /* Python: sorted bundle info dicts by slug. */
     char *map = sbd_get_skill_bundles();
@@ -373,7 +373,7 @@ char *sbd_list_bundles(void) {
     return ser ? ser : strdup("[]");
 }
 
-/* PoP: bundle_path_for @ agent/skill_bundles.py:bundle_path_for */
+/* PoP: sbd_bundle_path_for @ agent/skill_bundles.py:bundle_path_for */
 char *sbd_bundle_path_for(const char *name) {
     /* Python: canonical path for bundle name. */
     if (!name) return NULL;
@@ -386,7 +386,7 @@ char *sbd_bundle_path_for(const char *name) {
     return out;
 }
 
-/* PoP: save_bundle @ agent/skill_bundles.py:save_bundle */
+/* PoP: sbd_save_bundle @ agent/skill_bundles.py:save_bundle */
 int sbd_save_bundle(const char *name, const char *yaml_text) {
     /* Python: write + invalidate cache; FileExistsError when present. */
     if (!name || !yaml_text) return -1;
@@ -401,7 +401,7 @@ int sbd_save_bundle(const char *name, const char *yaml_text) {
     return 0;
 }
 
-/* PoP: delete_bundle @ agent/skill_bundles.py:delete_bundle */
+/* PoP: sbd_delete_bundle @ agent/skill_bundles.py:delete_bundle */
 char *sbd_delete_bundle(const char *name) {
     /* Python: delete by name; FileNotFoundError when missing. */
     if (!name) return NULL;
@@ -414,7 +414,7 @@ char *sbd_delete_bundle(const char *name) {
     return out;
 }
 
-/* PoP: get_bundle @ agent/skill_bundles.py:get_bundle */
+/* PoP: sbd_get_bundle @ agent/skill_bundles.py:get_bundle */
 char *sbd_get_bundle(const char *name) {
     /* Python: lookup by slug-normalized name. */
     if (!name) return NULL;

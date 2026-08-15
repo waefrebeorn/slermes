@@ -56,7 +56,7 @@ static bool _is_host_pid_alive(pid_t pid) {
     return gwstatus_pid_exists(pid);
 }
 
-/* PoP: _safe_host_start_time @ tools/process_registry.py:ProcessRegistry._safe_host_start_time */
+/* PoP: PID @ tools/process_registry.py:ProcessRegistry._safe_host_start_time */
 /* Kernel start ticks for a host PID (/proc/<pid>/stat field 22), or 0 when
  * unavailable — mirrors Python's None. PID-reuse guard. */
 static long _safe_host_start_time(pid_t pid) {
@@ -172,7 +172,7 @@ static void queue_completion_event(const char *json_event) {
     pthread_mutex_unlock(&g_registry.lock);
 }
 
-/* PoP: _clean_shell_noise @ tools/process_registry.py:ProcessRegistry._clean_shell_noise */
+/* PoP: clean_shell_noise @ tools/process_registry.py:ProcessRegistry._clean_shell_noise */
 /* Strips interactive-shell startup noise so it doesn't leak to model/user. */
 static void clean_shell_noise(char *text) {
     const char *noise[] = {
@@ -202,7 +202,7 @@ static void clean_shell_noise(char *text) {
     *dst = '\0';
 }
 
-/* PoP: _emit_output @ tools/process_registry.py:ProcessRegistry._emit_output */
+/* PoP: emit_output @ tools/process_registry.py:ProcessRegistry._emit_output */
 static void emit_output(ProcessSession *s, const char *chunk) {
     if (!s || !chunk || !*chunk) return;
     char *copy = strdup(chunk);
@@ -262,7 +262,7 @@ static bool _global_watch_admit(double now) {
     return admit;
 }
 
-/* PoP: _check_watch_patterns @ tools/process_registry.py:ProcessRegistry._check_watch_patterns */
+/* PoP: check_watch_patterns @ tools/process_registry.py:ProcessRegistry._check_watch_patterns */
 static void check_watch_patterns(ProcessSession *s, const char *new_text) {
     if (!s->watch_patterns || s->watch_pattern_count == 0 || s->watch_disabled) return;
     if (!s->running) return;
@@ -356,7 +356,7 @@ static void check_watch_patterns(ProcessSession *s, const char *new_text) {
     }
 }
 
-/* PoP: _reconcile_local_exit @ tools/process_registry.py:ProcessRegistry._reconcile_local_exit */
+/* PoP: reconcile_local_exit @ tools/process_registry.py:ProcessRegistry._reconcile_local_exit */
 static bool reconcile_local_exit(ProcessSession *s) {
     if (!s || !s->running || s->child_pid <= 0) return false;
     int status;
@@ -372,7 +372,7 @@ static bool reconcile_local_exit(ProcessSession *s) {
     return true;
 }
 
-/* PoP: _move_to_finished @ tools/process_registry.py:ProcessRegistry._move_to_finished */
+/* PoP: move_to_finished @ tools/process_registry.py:ProcessRegistry._move_to_finished */
 static void move_to_finished(ProcessSession *s) {
     if (!s) return;
     pthread_mutex_lock(&g_registry.lock);
@@ -453,7 +453,7 @@ static void _mark_poll_observed(const char *session_id) {
     g_registry.poll_observed[g_registry.poll_observed_count++] = strdup(session_id);
 }
 
-/* PoP: _drain_should_skip @ tools/process_registry.py:ProcessRegistry._drain_should_skip */
+/* PoP: process_registry_drain_should_skip @ tools/process_registry.py:ProcessRegistry._drain_should_skip */
 bool process_registry_drain_should_skip(const char *session_id,
                                         bool skip_poll_observed) {
     if (_session_in_consumed(session_id)) return true;
@@ -509,7 +509,7 @@ static void _refresh_detached_session(ProcessSession *s) {
     }
 }
 
-/* PoP: _reader_loop @ tools/process_registry.py:ProcessRegistry._reader_loop */
+/* PoP: reader_loop @ tools/process_registry.py:ProcessRegistry._reader_loop */
 /* POSIX orphan-pipe guard: short poll interval, stop shortly after child exits. */
 static void *reader_loop(void *arg) {
     ProcessSession *s = (ProcessSession*)arg;
@@ -543,7 +543,7 @@ static void *reader_loop(void *arg) {
     return NULL;
 }
 
-/* PoP: _env_poller_loop @ tools/process_registry.py:ProcessRegistry._env_poller_loop */
+/* PoP: env_poller_loop @ tools/process_registry.py:ProcessRegistry._env_poller_loop */
 static void *env_poller_loop(void *arg) {
     ProcessSession *s = (ProcessSession*)arg;
     char temp_dir[512];
@@ -582,7 +582,7 @@ static void *env_poller_loop(void *arg) {
     return NULL;
 }
 
-/* PoP: _pty_reader_loop @ tools/process_registry.py:ProcessRegistry._pty_reader_loop */
+/* PoP: pty_reader_loop @ tools/process_registry.py:ProcessRegistry._pty_reader_loop */
 static void *pty_reader_loop(void *arg) {
     ProcessSession *s = (ProcessSession*)arg;
     int pipefd = s->stdin_fd >= 0 ? s->stdin_fd : -1;
@@ -615,7 +615,7 @@ static bool _host_pid_is_ours(pid_t pid, long expected_start) {
     return _safe_host_start_time(pid) == expected_start;
 }
 
-/* PoP: _proc_alive @ tools/process_registry.py:ProcessRegistry._proc_alive */
+/* PoP: zombie @ tools/process_registry.py:ProcessRegistry._proc_alive */
 /* True if running and not a zombie (a zombie is already dead — nothing to SIGKILL). */
 static bool _proc_alive(pid_t pid) {
     if (pid <= 0) return false;
@@ -640,7 +640,7 @@ static double _daemon_term_grace_seconds(void) {
     return strtod(raw, NULL);
 }
 
-/* PoP: _terminate_host_pid @ tools/process_registry.py:ProcessRegistry._terminate_host_pid */
+/* PoP: group @ tools/process_registry.py:ProcessRegistry._terminate_host_pid */
 /* SIGTERM the process group (children before parent), wait grace, SIGKILL stragglers.
  * PID-identity guarded: refuses recycled PIDs. */
 static void _terminate_host_pid(pid_t pid, long expected_start) {
@@ -679,10 +679,10 @@ static const char *_env_temp_dir(void *env_ref, char *buf, size_t buflen) {
 
 /* ---- Public API ---- */
 
-/* PoP: __init__ @ tools/process_registry.py:ProcessRegistry.__init__ */
+/* PoP: tools_process_registry_init @ tools/process_registry.py:ProcessRegistry.__init__ */
 void tools_process_registry_init(void) { process_registry_init(); }
 
-/* PoP: process_registry_spawn_local @ tools/process_registry.py:spawn_local */
+/* PoP: process_registry_get_session @ tools/process_registry.py:spawn_local */
 ProcessSession* process_registry_spawn_local(const char *command,
                                               const char *cwd,
                                               const char *task_id,
@@ -742,7 +742,7 @@ ProcessSession* process_registry_spawn_local(const char *command,
     return s;
 }
 
-/* PoP: process_registry_spawn_via_env @ tools/process_registry.py:spawn_via_env */
+/* PoP: process_registry_get_session @ tools/process_registry.py:spawn_via_env */
 ProcessSession* process_registry_spawn_via_env(const char *command,
                                                  const char *cwd,
                                                  const char *task_id,
@@ -797,7 +797,7 @@ ProcessSession* process_registry_spawn_via_env(const char *command,
     return s;
 }
 
-/* PoP: get @ tools/process_registry.py:ProcessRegistry.get */
+/* PoP: process_registry_get_session @ tools/process_registry.py:ProcessRegistry.get */
 int process_registry_get_session(const char *session_id, ProcessSession **out) {
     registry_init();
     if (!session_id || !out) { if (out) *out = NULL; return 0; }
@@ -826,7 +826,7 @@ ProcessSession *process_registry_get_session_ptr(const char *session_id) {
     return s;
 }
 
-/* PoP: poll @ tools/process_registry.py:ProcessRegistry.poll */
+/* PoP: if @ tools/process_registry.py:ProcessRegistry.poll */
 char* process_registry_poll(const char *session_id) {
     registry_init();
     ProcessSession *s = process_registry_get_session_ptr(session_id);
@@ -865,7 +865,7 @@ char* process_registry_poll(const char *session_id) {
     return result;
 }
 
-/* PoP: wait @ tools/process_registry.py:ProcessRegistry.wait */
+/* PoP: if @ tools/process_registry.py:ProcessRegistry.wait */
 char* process_registry_wait(const char *session_id, int timeout_sec) {
     registry_init();
     ProcessSession *s = process_registry_get_session_ptr(session_id);
@@ -914,7 +914,7 @@ char* process_registry_wait(const char *session_id, int timeout_sec) {
     return result;
 }
 
-/* PoP: envb_kill_process @ tools/process_registry.py:kill_process */
+/* PoP: if @ tools/process_registry.py:kill_process */
 char* process_registry_kill(const char *session_id, const char *source,
                             bool consume_output) {
     if (!source) source = "process.kill";
@@ -976,7 +976,7 @@ char* process_registry_kill(const char *session_id, const char *source,
     return strdup("{\"status\":\"error\",\"error\":\"Process stdin not available (non-local backend)\"}");
 }
 
-/* PoP: count_running @ tools/process_registry.py:ProcessRegistry.count_running */
+/* PoP: process_registry_count_running @ tools/process_registry.py:ProcessRegistry.count_running */
 int process_registry_count_running(void) {
     registry_init();
     pthread_mutex_lock(&g_registry.lock);
@@ -985,7 +985,7 @@ int process_registry_count_running(void) {
     return count;
 }
 
-/* PoP: list_sessions @ tools/process_registry.py:ProcessRegistry.list_sessions */
+/* PoP: process_registry_has_active_for_task @ tools/process_registry.py:ProcessRegistry.list_sessions */
 char* process_registry_list(const char *task_id_filter, const char *session_key) {
     registry_init();
     pthread_mutex_lock(&g_registry.lock);
@@ -1051,7 +1051,7 @@ char* process_registry_list(const char *task_id_filter, const char *session_key)
     return result;
 }
 
-/* PoP: has_active_processes @ tools/process_registry.py:ProcessRegistry.has_active_processes */
+/* PoP: process_registry_has_active_for_task @ tools/process_registry.py:ProcessRegistry.has_active_processes */
 bool process_registry_has_active_for_task(const char *task_id) {
     registry_init();
     if (!task_id) return false;
@@ -1068,7 +1068,7 @@ bool process_registry_has_active_for_task(const char *task_id) {
     return false;
 }
 
-/* PoP: has_active_for_session @ tools/process_registry.py:ProcessRegistry.has_active_for_session */
+/* PoP: process_registry_has_active_for_session @ tools/process_registry.py:ProcessRegistry.has_active_for_session */
 bool process_registry_has_active_for_session(const char *session_key,
                                              double max_active_age_seconds) {
     registry_init();
@@ -1088,7 +1088,7 @@ bool process_registry_has_active_for_session(const char *session_key,
     return false;
 }
 
-/* PoP: has_any_active @ tools/process_registry.py:ProcessRegistry.has_any_active */
+/* PoP: process_registry_has_any_active @ tools/process_registry.py:ProcessRegistry.has_any_active */
 bool process_registry_has_any_active(void) {
     registry_init();
     pthread_mutex_lock(&g_registry.lock);
@@ -1102,7 +1102,7 @@ bool process_registry_has_any_active(void) {
     return false;
 }
 
-/* PoP: kill_started_since @ tools/process_registry.py:ProcessRegistry.kill_started_since */
+/* PoP: process_registry_kill_started_since @ tools/process_registry.py:ProcessRegistry.kill_started_since */
 int process_registry_kill_started_since(const char *task_id,
                                         const char **baseline_ids,
                                         int baseline_count,
@@ -1152,7 +1152,7 @@ int process_registry_kill_started_since(const char *task_id,
     return killed;
 }
 
-/* PoP: kill_all @ tools/process_registry.py:ProcessRegistry.kill_all */
+/* PoP: process_registry_kill_all @ tools/process_registry.py:ProcessRegistry.kill_all */
 int process_registry_kill_all(const char *task_id_filter, const char *source,
                               bool consume_output) {
     if (!source) source = "kill_all";
@@ -1194,7 +1194,7 @@ int process_registry_kill_all(const char *task_id_filter, const char *source,
     return killed;
 }
 
-/* PoP: _write_checkpoint @ tools/process_registry.py:ProcessRegistry._write_checkpoint */
+/* PoP: process_registry_write_checkpoint @ tools/process_registry.py:ProcessRegistry._write_checkpoint */
 void process_registry_write_checkpoint(void) {
     registry_init();
     pthread_mutex_lock(&g_registry.lock);
@@ -1222,7 +1222,7 @@ void process_registry_write_checkpoint(void) {
     pthread_mutex_unlock(&g_registry.lock);
 }
 
-/* PoP: recover_from_checkpoint @ tools/process_registry.py:ProcessRegistry.recover_from_checkpoint */
+/* PoP: process_registry_recover_from_checkpoint @ tools/process_registry.py:ProcessRegistry.recover_from_checkpoint */
 int process_registry_recover_from_checkpoint(void) {
     registry_init();
     FILE *fp = fopen(CHECKPOINT_PATH, "r");
@@ -1327,7 +1327,7 @@ static void _prune_if_needed(void) {
     pthread_mutex_unlock(&g_registry.lock);
 }
 
-/* PoP: set_watch_patterns @ tools/process_registry.py:ProcessRegistry.set_watch_patterns */
+/* PoP: process_registry_set_watch_patterns @ tools/process_registry.py:ProcessRegistry.set_watch_patterns */
 void process_registry_set_watch_patterns(const char *session_id, char **patterns, int count) {
     registry_init();
     ProcessSession *s = process_registry_get_session_ptr(session_id);
@@ -1349,7 +1349,7 @@ void process_registry_set_watch_patterns(const char *session_id, char **patterns
     pthread_mutex_unlock(&s->lock);
 }
 
-/* PoP: set_notify_on_complete @ tools/process_registry.py:ProcessRegistry.set_notify_on_complete */
+/* PoP: process_registry_set_notify_on_complete @ tools/process_registry.py:ProcessRegistry.set_notify_on_complete */
 void process_registry_set_notify_on_complete(const char *session_id, bool notify) {
     registry_init();
     ProcessSession *s = process_registry_get_session_ptr(session_id);
@@ -1359,7 +1359,7 @@ void process_registry_set_notify_on_complete(const char *session_id, bool notify
     pthread_mutex_unlock(&s->lock);
 }
 
-/* PoP: append_output @ tools/process_registry.py:ProcessRegistry.append_output */
+/* PoP: process_registry_append_output @ tools/process_registry.py:ProcessRegistry.append_output */
 void process_registry_append_output(const char *session_id, const char *text) {
     registry_init();
     ProcessSession *s = process_registry_get_session_ptr(session_id);
@@ -1367,7 +1367,7 @@ void process_registry_append_output(const char *session_id, const char *text) {
     session_append_output(s, text, strlen(text));
 }
 
-/* PoP: is_completion_consumed @ tools/process_registry.py:ProcessRegistry.is_completion_consumed */
+/* PoP: process_registry_completion_consumed @ tools/process_registry.py:ProcessRegistry.is_completion_consumed */
 bool process_registry_completion_consumed(const char *session_id) {
     if (!session_id) return false;
     registry_init();
@@ -1377,7 +1377,7 @@ bool process_registry_completion_consumed(const char *session_id) {
     return found;
 }
 
-/* PoP: is_session_waiting @ tools/process_registry.py:ProcessRegistry.is_session_waiting */
+/* PoP: process_registry_is_session_waiting @ tools/process_registry.py:ProcessRegistry.is_session_waiting */
 bool process_registry_is_session_waiting(const char *session_id) {
     if (!session_id || !*session_id) return false;
     ProcessSession *s = process_registry_get_session_ptr(session_id);
@@ -1395,7 +1395,7 @@ bool process_registry_is_session_waiting(const char *session_id) {
     return true;
 }
 
-/* PoP: process_registry_read_log @ tools/process_registry.py:read_log */
+/* PoP: process_registry_set_env_exec @ tools/process_registry.py:read_log */
 char* process_registry_read_log(const char *session_id, int offset, int limit) {
     if (offset < 0) offset = 0;
     if (limit <= 0) limit = 200;
@@ -1450,7 +1450,7 @@ char* process_registry_read_log(const char *session_id, int offset, int limit) {
     return result;
 }
 
-/* PoP: process_registry_drain_notifications @ tools/process_registry.py:drain_notifications */
+/* PoP: process_registry_set_env_exec @ tools/process_registry.py:drain_notifications */
 char* process_registry_drain_notifications(const char *session_key_filter,
                                            bool skip_poll_observed) {
     (void)skip_poll_observed;
@@ -1524,7 +1524,7 @@ char* process_registry_drain_notifications(const char *session_key_filter,
     return result;
 }
 
-/* PoP: snapshot_running_ids @ tools/process_registry.py:ProcessRegistry.snapshot_running_ids */
+/* PoP: process_registry_set_env_exec @ tools/process_registry.py:ProcessRegistry.snapshot_running_ids */
 char** process_registry_snapshot_running_ids(const char *task_id, int *count_out) {
     registry_init();
     if (count_out) *count_out = 0;
@@ -1542,7 +1542,7 @@ char** process_registry_snapshot_running_ids(const char *task_id, int *count_out
     return ids;
 }
 
-/* PoP: write_stdin @ tools/process_registry.py:ProcessRegistry.write_stdin */
+/* PoP: process_registry_set_env_exec @ tools/process_registry.py:ProcessRegistry.write_stdin */
 char* process_registry_write_stdin(const char *session_id, const char *data) {
     if (!data) data = "";
     registry_init();
@@ -1560,7 +1560,7 @@ char* process_registry_write_stdin(const char *session_id, const char *data) {
     return result;
 }
 
-/* PoP: submit_stdin @ tools/process_registry.py:ProcessRegistry.submit_stdin */
+/* PoP: process_registry_set_env_exec @ tools/process_registry.py:ProcessRegistry.submit_stdin */
 char* process_registry_submit_stdin(const char *session_id, const char *data) {
     if (!data) data = "";
     size_t len = strlen(data);
@@ -1573,7 +1573,7 @@ char* process_registry_submit_stdin(const char *session_id, const char *data) {
     return result;
 }
 
-/* PoP: close_stdin @ tools/process_registry.py:ProcessRegistry.close_stdin */
+/* PoP: process_registry_set_env_exec @ tools/process_registry.py:ProcessRegistry.close_stdin */
 char* process_registry_close_stdin(const char *session_id) {
     registry_init();
     ProcessSession *s = process_registry_get_session_ptr(session_id);
@@ -1586,17 +1586,17 @@ char* process_registry_close_stdin(const char *session_id) {
     return result;
 }
 
-/* PoP: set_env_exec @ tools/process_registry.py:ProcessRegistry.set_env_exec */
+/* PoP: process_registry_set_env_exec @ tools/process_registry.py:ProcessRegistry.set_env_exec */
 void process_registry_set_env_exec(process_registry_env_exec_fn fn) {
     g_env_exec = fn;
 }
 
-/* PoP: set_close_sink @ tools/process_registry.py:ProcessRegistry.set_close_sink */
+/* PoP: process_registry_set_close_sink @ tools/process_registry.py:ProcessRegistry.set_close_sink */
 void process_registry_set_close_sink(process_registry_close_sink_t sink) {
     g_close_sink = sink;
 }
 
-/* PoP: request_close_terminal @ tools/process_registry.py:request_close_terminal */
+/* PoP: process_registry_request_close_terminal @ tools/process_registry.py:request_close_terminal */
 char *process_registry_request_close_terminal(const char *session_id) {
     ProcessSession *s = process_registry_get_session_ptr(session_id);
     if (!s) return strdup("{\"status\":\"error\",\"error\":\"No such session\"}");
@@ -1636,7 +1636,7 @@ void _format_age(double seconds, char *buf, size_t buf_len) {
     snprintf(buf, buf_len, "%dh%d%m", h, m);
 }
 
-/* PoP: _format_async_delegation @ tools/process_registry.py:_format_async_delegation */
+/* PoP: if @ tools/process_registry.py:_format_async_delegation */
 char* _format_async_delegation(const char *json_evt) {
     char *err = NULL;
     json_t *evt = json_parse(json_evt, &err);
@@ -1691,7 +1691,7 @@ char* _format_async_delegation(const char *json_evt) {
     return out;
 }
 
-/* PoP: format_process_notification @ tools/process_registry.py:format_process_notification */
+/* PoP: if @ tools/process_registry.py:format_process_notification */
 char* format_process_notification(const char *json_evt) {
     char *err = NULL;
     json_t *evt = json_parse(json_evt, &err);
@@ -1755,7 +1755,7 @@ char* format_process_notification(const char *json_evt) {
     return out;
 }
 
-/* PoP: _redact_process_result @ tools/process_registry.py:_redact_process_result */
+/* PoP: if @ tools/process_registry.py:_redact_process_result */
 char* _redact_process_result(char *json_result) {
     char *err = NULL;
     json_t *r = json_parse(json_result, &err);
@@ -1782,7 +1782,7 @@ char* _redact_process_result(char *json_result) {
     return out;
 }
 
-/* PoP: _handle_process @ tools/process_registry.py:_handle_process */
+/* PoP: if @ tools/process_registry.py:_handle_process */
 char* process_registry_handle(const char *action,
                               const char *session_id,
                               const char *data,
@@ -1853,7 +1853,7 @@ void process_registry_destroy(void) {
     g_registry_initialized = false;
 }
 
-/* PoP: _build_systemd_scope_argv @ tools/process_registry.py:_build_systemd_scope_argv */
+/* PoP: process_registry_build_systemd_scope_argv @ tools/process_registry.py:_build_systemd_scope_argv */
 /* Returns malloc'd JSON array of argv strings. Caller frees. */
 char *process_registry_build_systemd_scope_argv(const char *shell_argv_json, const char *unit_suffix, long memory_max) {
     if (!shell_argv_json) return strdup("[]");

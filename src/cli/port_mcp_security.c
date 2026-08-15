@@ -9,7 +9,7 @@
 #include "hermes_regex.h"
 #include "json.h"
 
-/* PoP: hermes_cli_mcp_security__command_basename @ hermes_cli/mcp_security.py:_command_basename */
+/* PoP: hermes_cli_mcp_security_command_basename @ hermes_cli/mcp_security.py:_command_basename */
 void hermes_cli_mcp_security_command_basename(const char *command, char *out, size_t outsz)
 {
     if (!command || !*command) { out[0] = '\0'; return; }
@@ -38,7 +38,7 @@ void hermes_cli_mcp_security_command_basename(const char *command, char *out, si
     out[i] = '\0';
 }
 
-/* PoP: hermes_cli_mcp_security__inline_script @ hermes_cli/mcp_security.py:_inline_script */
+/* PoP: hermes_cli_mcp_security_inline_script @ hermes_cli/mcp_security.py:_inline_script */
 void hermes_cli_mcp_security_inline_script(const char *args_json, char *out, size_t outsz)
 {
     /* args may be a JSON array (we accept a pre-joined string or a list serialized
@@ -48,7 +48,7 @@ void hermes_cli_mcp_security_inline_script(const char *args_json, char *out, siz
     snprintf(out, outsz, "%s", args_json);
 }
 
-/* PoP: hermes_cli_mcp_security__entry_text @ hermes_cli/mcp_security.py:_entry_text */
+/* PoP: hermes_cli_mcp_security_entry_text @ hermes_cli/mcp_security.py:_entry_text */
 /* entry is passed as "command\x1fargs\x1fenv1\x1fenv2..." (unit sep between fields). */
 void hermes_cli_mcp_security_entry_text(const char *entry, char *out, size_t outsz)
 {

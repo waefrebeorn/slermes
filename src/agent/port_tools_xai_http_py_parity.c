@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_xai_http_has_xai_credentials @ tools/xai_http.py:has_xai_credentials */
+/* PoP: tools_xai_http_has_xai_credentials_p @ tools/xai_http.py:has_xai_credentials */
 json_t *tools_xai_http_has_xai_credentials_p(void) {
     return json_object();
 }

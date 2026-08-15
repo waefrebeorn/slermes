@@ -19,7 +19,7 @@ extern char *dashboard_procs_hermes_home_dir(void);
 /* Python: _OFFICIAL_REPO_CANONICAL = "github.com/nousresearch/hermes-agent". */
 #define BANNER_OFFICIAL_REPO_CANONICAL "github.com/nousresearch/hermes-agent"
 
-/* PoP: _canonical_github_remote @ hermes_cli/banner.py:_canonical_github_remote */
+/* PoP: banner_canonical_github_remote @ hermes_cli/banner.py:_canonical_github_remote */
 char *banner_canonical_github_remote(const char *url) {
     if (!url) return strdup("");
     /* value = url.strip() */
@@ -74,7 +74,7 @@ char *banner_canonical_github_remote(const char *url) {
     return value;
 }
 
-/* PoP: _is_ssh_remote @ hermes_cli/banner.py:_is_ssh_remote */
+/* PoP: banner_is_ssh_remote @ hermes_cli/banner.py:_is_ssh_remote */
 bool banner_is_ssh_remote(const char *url) {
     if (!url) return false;
     const char *v = url;
@@ -91,7 +91,7 @@ bool banner_is_ssh_remote(const char *url) {
     return res;
 }
 
-/* PoP: _is_official_ssh_remote @ hermes_cli/banner.py:_is_official_ssh_remote */
+/* PoP: banner_is_official_ssh_remote @ hermes_cli/banner.py:_is_official_ssh_remote */
 bool banner_is_official_ssh_remote(const char *url) {
     if (!banner_is_ssh_remote(url)) return false;
     char *canon = banner_canonical_github_remote(url);
@@ -100,7 +100,7 @@ bool banner_is_official_ssh_remote(const char *url) {
     return res;
 }
 
-/* PoP: _format_context_length @ hermes_cli/banner.py:_format_context_length */
+/* PoP: banner_format_context_length @ hermes_cli/banner.py:_format_context_length */
 char *banner_format_context_length(long long tokens) {
     char *out = NULL;
     if (tokens >= 1000000) {
@@ -125,7 +125,7 @@ char *banner_format_context_length(long long tokens) {
     return out ? out : strdup("");
 }
 
-/* PoP: _display_toolset_name @ hermes_cli/banner.py:_display_toolset_name */
+/* PoP: banner_display_toolset_name @ hermes_cli/banner.py:_display_toolset_name */
 char *banner_display_toolset_name(const char *toolset_name) {
     /* Python: `if not toolset_name: return "unknown"` — empty string is falsy. */
     if (!toolset_name || !*toolset_name) return strdup("unknown");
@@ -137,7 +137,7 @@ char *banner_display_toolset_name(const char *toolset_name) {
     return strdup(toolset_name);
 }
 
-/* PoP: _format_update_notice @ hermes_cli/banner.py:_format_update_notice */
+/* PoP: banner_format_update_notice @ hermes_cli/banner.py:_format_update_notice */
 /* Render the update warning line for a non-zero behind result. Caller frees. */
 char *banner_format_update_notice(int behind) {
     if (behind > 0) {
@@ -165,7 +165,7 @@ char *banner_format_update_notice(int behind) {
     return line;
 }
 
-/* PoP: _banner_snapshot_path @ hermes_cli/banner.py:_banner_snapshot_path */
+/* PoP: banner_snapshot_path @ hermes_cli/banner.py:_banner_snapshot_path */
 /* Return path to banner snapshot JSON. Caller frees. */
 char *banner_snapshot_path(void) {
     char *home = dashboard_procs_hermes_home_dir();

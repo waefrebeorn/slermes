@@ -194,7 +194,7 @@ void think_scrubber_free(think_scrubber_t *sc) {
     free(sc->buf); free(sc->out); free(sc);
 }
 
-/* PoP: cli_agent_think_scrubber_reset @ agent/think_scrubber.py:reset */
+/* PoP: reset @ agent/think_scrubber.py:reset */
 /* Port of Python agent/think_scrubber.py:StreamingThinkScrubber.reset(). */
 void reset(think_scrubber_t *sc) {
     if (!sc) return;
@@ -211,7 +211,7 @@ static int grow_buf(think_scrubber_t *sc, int needed) {
     return 1;
 }
 
-/* PoP: cli_agent_think_scrubber__find_first_tag @ agent/think_scrubber.py:_find_first_tag */
+/* PoP: find_first_tag @ agent/think_scrubber.py:_find_first_tag */
 /* Finds the first tag variant at or after start. Returns tag index or -1. */
 static int find_first_tag(const char *text, int start, int tag_count) {
     int text_len = (int)strlen(text);
@@ -227,13 +227,13 @@ static int find_first_tag(const char *text, int start, int tag_count) {
     return best_tag;
 }
 
-/* PoP: cli_agent_think_scrubber__find_earliest_closed_pair @ agent/think_scrubber.py:_find_earliest_closed_pair */
+/* PoP: find_earliest_closed_pair @ agent/think_scrubber.py:_find_earliest_closed_pair */
 static int find_earliest_closed_pair(const char *text, int len, int *pair_start, int *pair_end) {
     find_closed_pair(text, len, pair_start, pair_end);
     return (*pair_start >= 0 && *pair_end >= 0) ? 1 : 0;
 }
 
-/* PoP: cli_agent_think_scrubber__find_open_at_boundary @ agent/think_scrubber.py:_find_open_at_boundary */
+/* PoP: find_open_at_boundary @ agent/think_scrubber.py:_find_open_at_boundary */
 static int find_open_at_boundary(const char *text, int pos, int last_nl) {
     return is_boundary(text, pos, last_nl) ? pos : -1;
 }
@@ -244,7 +244,7 @@ static int is_block_boundary(const char *text, int pos, int last_nl) {
 }
 
 /* PoP: think_scrubber_strip_orphan_close_tags @ gateway/stream_consumer.py:_strip_orphan_close_tags */
-/* PoP: strip_orphan_close_tags @ agent/think_scrubber.py:_strip_orphan_close_tags */
+/* PoP: think_scrubber_strip_orphan_close_tags @ agent/think_scrubber.py:_strip_orphan_close_tags */
 /* Promoted to non-static so gateway/stream_consumer.c (the port of
  * GatewayStreamConsumer._filter_and_accumulate) reuses it instead of
  * duplicating the orphan-close-tag logic. */

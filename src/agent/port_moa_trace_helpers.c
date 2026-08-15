@@ -10,7 +10,7 @@
 #include <string.h>
 #include <ctype.h>
 
-/* PoP: _sanitize_session_id @ agent/moa_trace.py:_sanitize_session_id */
+/* PoP: moa_trace_sanitize_session_id @ agent/moa_trace.py:_sanitize_session_id */
 /* Make a session id safe as a filename component: keep alphanumerics and
  * '-', '_', '.', replace every other char with '_'. Empty/None -> "unknown-session".
  * Result malloc'd; caller frees. */

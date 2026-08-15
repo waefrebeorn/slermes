@@ -14,27 +14,27 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_skills_tool_get_required_environment_variables @ tools/skills_tool.py:_get_required_environment_variables */
+/* PoP: tools_skills_tool_get_required_environment_variables_p @ tools/skills_tool.py:_get_required_environment_variables */
 json_t *tools_skills_tool_get_required_environment_variables_p(void) {
     return json_object();
 }
 
-/* PoP: tools_skills_tool_remaining_required_environment_names @ tools/skills_tool.py:_remaining_required_environment_names */
+/* PoP: tools_skills_tool_remaining_required_environment_names_p @ tools/skills_tool.py:_remaining_required_environment_names */
 json_t *tools_skills_tool_remaining_required_environment_names_p(void) {
     return json_object();
 }
 
-/* PoP: tools_skills_tool_parse_tags @ tools/skills_tool.py:_parse_tags */
+/* PoP: tools_skills_tool_parse_tags_p @ tools/skills_tool.py:_parse_tags */
 json_t *tools_skills_tool_parse_tags_p(void) {
     return json_object();
 }
 
-/* PoP: tools_skills_tool_get_disabled_skill_names @ tools/skills_tool.py:_get_disabled_skill_names */
+/* PoP: tools_skills_tool_get_disabled_skill_names_p @ tools/skills_tool.py:_get_disabled_skill_names */
 json_t *tools_skills_tool_get_disabled_skill_names_p(void) {
     return json_object();
 }
 
-/* PoP: tools_skills_tool_plugin_skill_linked_files @ tools/skills_tool.py:_plugin_skill_linked_files */
+/* PoP: tools_skills_tool_plugin_skill_linked_files_p @ tools/skills_tool.py:_plugin_skill_linked_files */
 json_t *tools_skills_tool_plugin_skill_linked_files_p(void) {
     return json_object();
 }

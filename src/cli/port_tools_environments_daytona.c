@@ -166,7 +166,7 @@ int cli_tools_environments_daytona__daytona_delete(
     return 0;
 }
 
-/* PoP: cli_tools_environments_daytona__ensure_sandbox_ready @ tools/environments/daytona.py:_ensure_sandbox_ready */
+/* PoP: stopped @ tools/environments/daytona.py:_ensure_sandbox_ready */
 
 /* Port of Python tools/environments/daytona.py:_ensure_sandbox_ready */
 /* Restart sandbox if it was stopped (e.g., by a previous interrupt). */

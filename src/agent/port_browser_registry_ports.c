@@ -18,27 +18,27 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: register_provider @ agent/browser_registry.py:register_provider */
+/* PoP: bsr_register_provider @ agent/browser_registry.py:register_provider */
 int bsr_register_provider(const char *name, const char *provider_desc) {
     if (!name) return -1;
     printf("browser provider registered: %s\n", name);
     return 0;
 }
 
-/* PoP: list_providers @ agent/browser_registry.py:list_providers */
+/* PoP: bsr_list_providers @ agent/browser_registry.py:list_providers */
 char *bsr_list_providers(void) {
     printf("browser providers listed (sorted)\n");
     return strdup("[]");
 }
 
-/* PoP: get_provider @ agent/browser_registry.py:get_provider */
+/* PoP: bsr_get_provider @ agent/browser_registry.py:get_provider */
 char *bsr_get_provider(const char *name) {
     if (!name) return NULL;
     printf("browser provider fetched: %s\n", name);
     return NULL;
 }
 
-/* PoP: _resolve @ agent/browser_registry.py:_resolve */
+/* PoP: bsr_resolve @ agent/browser_registry.py:_resolve */
 char *bsr_resolve(const char *config_yaml) {
     /* Python: env > config > default rules. */
     const char *env = getenv("HERMES_BROWSER_PROVIDER");
@@ -59,7 +59,7 @@ char *bsr_resolve(const char *config_yaml) {
     return strdup("none");
 }
 
-/* PoP: _reset_for_tests @ agent/browser_registry.py:_reset_for_tests */
+/* PoP: bsr_reset_for_tests @ agent/browser_registry.py:_reset_for_tests */
 int bsr_reset_for_tests(void) {
     /* Python: browser provider registry _reset_for_tests(). */
     extern void browser_registry_reset(void);

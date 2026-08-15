@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_nous_subscription_get_nous_subscription_features @ hermes_cli/nous_subscription.py:get_nous_subscription_features */
+/* PoP: hermes_cli_nous_subscription_get_nous_subscription_features_p @ hermes_cli/nous_subscription.py:get_nous_subscription_features */
 json_t *hermes_cli_nous_subscription_get_nous_subscription_features_p(void) {
     return json_object();
 }

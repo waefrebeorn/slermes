@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_computer_use_cua_backend_stop @ tools/computer_use/cua_backend.py:stop */
+/* PoP: tools_computer_use_cua_backend_stop_p @ tools/computer_use/cua_backend.py:stop */
 json_t *tools_computer_use_cua_backend_stop_p(void) {
     return json_object();
 }

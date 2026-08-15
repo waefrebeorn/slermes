@@ -363,7 +363,7 @@ char *cc_str_arg(const json_t *args, const char *key, const char *def) {
 
 /* ── _summarize_tool_result_unguarded ─────────────────────────────────── */
 
-/* PoP: cc_summarize_tool_result_unguarded @ agent/context_compressor.py:_summarize_tool_result_unguarded */
+/* PoP: extract_group @ agent/context_compressor.py:_summarize_tool_result_unguarded */
 static const char *extract_group(const char *pattern, const char *text) {
     if (!text) return "?";
     hregex_t *re = regex_compile(pattern, 0);
@@ -674,7 +674,7 @@ int cc_starts_with_summary_prefix(const char *text) {
     return 0;
 }
 
-/* PoP: cli_agent_context_compressor__strip_summary_prefix @ agent/context_compressor.py:_strip_summary_prefix */
+/* PoP: cc_strip_summary_prefix @ agent/context_compressor.py:_strip_summary_prefix */
 char *cc_strip_summary_prefix(const char *summary) {
     if (!summary) return strdup("");
     char *text = strdup(summary);
@@ -712,7 +712,7 @@ char *cc_strip_summary_prefix(const char *summary) {
     return res;
 }
 
-/* PoP: cc_starts_with_summary_prefix @ agent/context_compressor.py:_with_summary_prefix */
+/* PoP: cc_with_summary_prefix @ agent/context_compressor.py:_with_summary_prefix */
 char *cc_with_summary_prefix(const char *summary) {
     char *body = cc_strip_summary_prefix(summary);
     if (!body || *body == '\0') {
@@ -911,7 +911,7 @@ int cc_find_context_summaries(const json_t *messages, int start, int end,
     return count;
 }
 
-/* PoP: cc_strip_context_summary_handoff_message @ agent/context_compressor.py:_strip_context_summary_handoff_message */
+/* PoP: json_t @ agent/context_compressor.py:_strip_context_summary_handoff_message */
 /* Returns a NEW message json_t (caller frees) with stale handoff data dropped,
  * merged prior-tail content preserved. Returns NULL on alloc failure. */
 json_t *cc_strip_context_summary_handoff_message(const json_t *message) {
@@ -1065,7 +1065,7 @@ static int cc_str_is_blank(const char *s) {
     return 1;
 }
 
-/* PoP: _template_visible_role @ agent/context_compressor.py:_template_visible_role */
+/* PoP: skips @ agent/context_compressor.py:_template_visible_role */
 const char *_template_visible_role(const json_t *message) {
     if (!message || message->type != JSON_OBJECT) return NULL;
     const char *role = json_get_str(message, "role", NULL);
@@ -1080,7 +1080,7 @@ const char *_template_visible_role(const json_t *message) {
 
 /* ── _reasoning_details_text_chars ────────────────────────────────────── */
 
-/* PoP: _reasoning_details_text_chars @ agent/context_compressor.py:_reasoning_details_text_chars */
+/* PoP: cc_reasoning_details_text_chars @ agent/context_compressor.py:_reasoning_details_text_chars */
 long _reasoning_details_text_chars(const json_t *value) {
     if (!value) return 0;
     if (value->type == JSON_STRING) return (long)strlen(value->str_val);
@@ -1115,7 +1115,7 @@ long _reasoning_details_text_chars(const json_t *value) {
 
 /* ── _rolling_summary_from_marker ─────────────────────────────────────── */
 
-/* PoP: _rolling_summary_from_marker @ agent/context_compressor.py:_rolling_summary_from_marker */
+/* PoP: cc_rolling_summary_from_marker @ agent/context_compressor.py:_rolling_summary_from_marker */
 char *_rolling_summary_from_marker(const char *content) {
     /* Python: if not isinstance(content, str) or not content.strip(): return "" */
     if (!content || cc_str_is_blank(content)) return strdup("");
@@ -1138,7 +1138,7 @@ char *_rolling_summary_from_marker(const char *content) {
 
 /* ── _render_micro_marker_content ─────────────────────────────────────── */
 
-/* PoP: _render_micro_marker_content @ agent/context_compressor.py:_render_micro_marker_content */
+/* PoP: cc_render_micro_marker_content @ agent/context_compressor.py:_render_micro_marker_content */
 char *_render_micro_marker_content(const char *summary_text) {
     char *stripped = cc_str_strip(strdup(summary_text ? summary_text : ""));
     if (!stripped) stripped = strdup("");
@@ -1155,7 +1155,7 @@ char *_render_micro_marker_content(const char *summary_text) {
 
 /* ── _merge_adjacent_user_turns ────────────────────────────────────────── */
 
-/* PoP: _merge_adjacent_user_turns @ agent/context_compressor.py:_merge_adjacent_user_turns */
+/* PoP: messages @ agent/context_compressor.py:_merge_adjacent_user_turns */
 /* Faithful port: builds a new list merging consecutive plain-text user turns */
 /* (\n\n-joined), skipping tool/summary messages. Drops the api_content sidecar */
 /* on merged messages (drop_stale_api_content). Returns the new count. The */
@@ -1218,7 +1218,7 @@ int _merge_adjacent_user_turns(json_t *result, json_t **out_merged) {
 /* _db_persisted marker (agent/context_compressor.py module literal) is now
  * shared via context_compressor_constants.h (CC_DB_PERSISTED_MARKER). */
 
-/* PoP: _fresh_compaction_message_copy @ agent/context_compressor.py:_fresh_compaction_message_copy */
+/* PoP: cc_fresh_compaction_message_copy @ agent/context_compressor.py:_fresh_compaction_message_copy */
 /* Copy a message for compaction assembly without persistence markers
  * (_db_persisted stripped). Caller frees the returned json_t*. */
 json_t *cc_fresh_compaction_message_copy(const json_t *msg) {
@@ -1229,7 +1229,7 @@ json_t *cc_fresh_compaction_message_copy(const json_t *msg) {
     return fresh;
 }
 
-/* PoP: _strip_persistence_markers @ agent/context_compressor.py:_strip_persistence_markers */
+/* PoP: cc_strip_persistence_markers @ agent/context_compressor.py:_strip_persistence_markers */
 /* Enforce the compaction invariant: no assembled message carries a persistence
  * marker. Mutates in place. Returns count of strips performed. */
 int cc_strip_persistence_markers(json_t *messages) {
@@ -1258,7 +1258,7 @@ bool cc_handoff_carries_live_user_content(const json_t *message) {
     return cc_strip_context_summary_handoff_message(message) != NULL;
 }
 
-/* PoP: cc_reference_handoff_would_drive_next_model_call @ agent/context_compressor.py:reference_handoff_would_drive_next_model_call */
+/* PoP: handoff @ agent/context_compressor.py:reference_handoff_would_drive_next_model_call */
 /* True when the next model call would be driven ONLY by a handoff (no real
  * user/tool continuation after the last driving summary handoff). */
 bool cc_reference_handoff_would_drive_next_model_call(const json_t *messages) {
@@ -1288,7 +1288,7 @@ bool cc_reference_handoff_would_drive_next_model_call(const json_t *messages) {
     return true;
 }
 
-/* PoP: cc_is_user_originated_turn @ agent/context_compressor.py:is_user_originated_turn */
+/* PoP: marker @ agent/context_compressor.py:is_user_originated_turn */
 /* True for a genuine human user turn: role==user AND not a synthetic
  * compression/continuation marker (those are internal scaffolding, not a
  * real prompt the live model should answer). Delegates to the classmethod
@@ -1302,7 +1302,7 @@ bool cc_is_user_originated_turn(const json_t *message) {
     return true;
 }
 
-/* PoP: _is_nonempty_user_turn @ agent/context_compressor.py:_is_nonempty_user_turn */
+/* PoP: bool @ agent/context_compressor.py:_is_nonempty_user_turn */
 /* A user turn with non-whitespace content that is not a synthetic
  * compression/summary marker. Mirrors the module-level staticmethod:
  *   role == "user" and bool(_content_text_for_contains(content).strip())
@@ -1389,7 +1389,7 @@ static double cc_monotonic_seconds(void) {
     return (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
 }
 
-/* PoP: record_timeout_failure @ agent/context_compressor.py:record_timeout_failure */
+/* PoP: cc_record_timeout_failure @ agent/context_compressor.py:record_timeout_failure */
 void cc_record_timeout_failure(cc_compression_guards_t *g, const char *error) {
     if (!g) return;
     g->consecutive_timeout_failures++;
@@ -1403,7 +1403,7 @@ void cc_record_timeout_failure(cc_compression_guards_t *g, const char *error) {
     }
 }
 
-/* PoP: _compression_block_reason @ agent/context_compressor.py:_compression_block_reason */
+/* PoP: cc_compression_block_reason @ agent/context_compressor.py:_compression_block_reason */
 char *cc_compression_block_reason(const cc_compression_guards_t *g) {
     if (!g) return NULL;
     double remaining = g->summary_failure_cooldown_until - cc_monotonic_seconds();
@@ -1417,12 +1417,12 @@ char *cc_compression_block_reason(const cc_compression_guards_t *g) {
     return NULL;
 }
 
-/* PoP: _automatic_compression_blocked @ agent/context_compressor.py:_automatic_compression_blocked */
+/* PoP: cc_automatic_compression_blocked @ agent/context_compressor.py:_automatic_compression_blocked */
 bool cc_automatic_compression_blocked(const cc_compression_guards_t *g) {
     return cc_compression_block_reason(g) != NULL;
 }
 
-/* PoP: should_compress_info @ agent/context_compressor.py:should_compress_info */
+/* PoP: cc_should_compress_info @ agent/context_compressor.py:should_compress_info */
 bool cc_should_compress_info(const cc_compression_guards_t *g, long prompt_tokens,
                              long threshold_tokens, bool *out_should, char **out_reason) {
     if (out_should) *out_should = false;
@@ -1584,7 +1584,7 @@ int cc_prune_stale_reasoning_replay(json_t *messages) {
  * ContextCompressor struct (in the orchestration TU) owns a budget_t; these
  * let it delegate the lazy-resolution math without duplicating logic. */
 
-/* PoP: _resolve_context_length @ agent/context_compressor.py:_resolve_context_length */
+/* PoP: cc_budget_resolve_context_length @ agent/context_compressor.py:_resolve_context_length */
 long cc_budget_resolve_context_length(cc_compressor_budget_t *b) {
     if (!b) return -1;
     if (b->resolved_context_length != -1)
@@ -1598,7 +1598,7 @@ long cc_budget_resolve_context_length(cc_compressor_budget_t *b) {
     return b->resolved_context_length;
 }
 
-/* PoP: context_length @ agent/context_compressor.py:context_length */
+/* PoP: cc_budget_context_length_get @ agent/context_compressor.py:context_length */
 long cc_budget_context_length_get(cc_compressor_budget_t *b) {
     return cc_budget_resolve_context_length(b);
 }
@@ -1616,7 +1616,7 @@ void cc_budget_context_length_set(cc_compressor_budget_t *b, long value) {
     b->max_summary_tokens = -1;
 }
 
-/* PoP: threshold_tokens @ agent/context_compressor.py:threshold_tokens */
+/* PoP: cc_budget_threshold_tokens_get @ agent/context_compressor.py:threshold_tokens */
 long cc_budget_threshold_tokens_get(cc_compressor_budget_t *b) {
     if (!b) return -1;
     if (b->threshold_tokens != -1) return b->threshold_tokens;
@@ -1631,7 +1631,7 @@ void cc_budget_threshold_tokens_set(cc_compressor_budget_t *b, long value) {
     if (b) b->threshold_tokens = value;
 }
 
-/* PoP: tail_token_budget @ agent/context_compressor.py:tail_token_budget */
+/* PoP: cc_budget_tail_token_budget_get @ agent/context_compressor.py:tail_token_budget */
 long cc_budget_tail_token_budget_get(cc_compressor_budget_t *b) {
     if (!b) return -1;
     if (b->tail_token_budget != -1) return b->tail_token_budget;
@@ -1643,7 +1643,7 @@ void cc_budget_tail_token_budget_set(cc_compressor_budget_t *b, long value) {
     if (b) b->tail_token_budget = value;
 }
 
-/* PoP: max_summary_tokens @ agent/context_compressor.py:max_summary_tokens */
+/* PoP: cc_budget_max_summary_tokens_get @ agent/context_compressor.py:max_summary_tokens */
 long cc_budget_max_summary_tokens_get(cc_compressor_budget_t *b) {
     if (!b) return -1;
     if (b->max_summary_tokens != -1) return b->max_summary_tokens;
@@ -1680,7 +1680,7 @@ char *cc_rolling_summary_from_marker(const char *content) {
     return _rolling_summary_from_marker(content);
 }
 
-/* PoP: _cursor_after_splice @ agent/context_compressor.py:_cursor_after_splice */
+/* PoP: cc_cursor_after_splice @ agent/context_compressor.py:_cursor_after_splice */
 int cc_cursor_after_splice(const json_t *result, int fallback) {
     /* Scan backwards for a micro-compaction summary marker; return its index+1.
      * Falls back to `fallback` when none is found (mirrors the Python: the
@@ -1697,7 +1697,7 @@ int cc_cursor_after_splice(const json_t *result, int fallback) {
     return fallback;
 }
 
-/* PoP: _merge_adjacent_user_turns @ agent/context_compressor.py:_merge_adjacent_user_turns */
+/* PoP: cc_merge_adjacent_user_turns @ agent/context_compressor.py:_merge_adjacent_user_turns */
 json_t *cc_merge_adjacent_user_turns(const json_t *result) {
     json_t *m = NULL;
     int rc = _merge_adjacent_user_turns((json_t *)result, &m);

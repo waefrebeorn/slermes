@@ -1506,7 +1506,7 @@ json_t *bedrock_normalize_converse_response(const json_t *response) {
  *  Bedrock bridge functions — Python parity stubs
  * ================================================================ */
 
-/* PoP: cli_agent_bedrock_adapter__require_boto3 @ agent/bedrock_adapter.py:_require_boto3 */
+/* PoP: bedrock_require_boto3 @ agent/bedrock_adapter.py:_require_boto3 */
 /* Port of Python bedrock_adapter._require_boto3().
  * C uses libhttp/SigV4 directly — no boto3 dependency.
  * Returns NULL to indicate Python SDK not available in C. */
@@ -1516,7 +1516,7 @@ const void *bedrock_require_boto3(void) {
     return null_client;
 }
 
-/* PoP: cli_agent_bedrock_adapter__get_bedrock_runtime_client @ agent/bedrock_adapter.py:_get_bedrock_runtime_client */
+/* PoP: bedrock_get_runtime_client @ agent/bedrock_adapter.py:_get_bedrock_runtime_client */
 /* Port of Python bedrock_adapter._get_bedrock_runtime_client().
  * C creates fresh HTTP client per call via libhttp — no client cache.
  * Returns NULL. */
@@ -1527,7 +1527,7 @@ const void *bedrock_get_runtime_client(const char *region) {
     return null_client;
 }
 
-/* PoP: cli_agent_bedrock_adapter__get_bedrock_control_client @ agent/bedrock_adapter.py:_get_bedrock_control_client */
+/* PoP: bedrock_get_control_client @ agent/bedrock_adapter.py:_get_bedrock_control_client */
 /* Port of Python bedrock_adapter._get_bedrock_control_client().
  * C creates fresh HTTP client per call — no control-plane client cache.
  * Returns NULL. */
@@ -1570,7 +1570,7 @@ bool is_stale_connection_error(void) {
     return handled_internally;
 }
 
-/* PoP: cli_agent_bedrock_adapter_bedrock_model_ids_or_none @ agent/bedrock_adapter.py:bedrock_model_ids_or_none */
+/* PoP: bedrock_model_ids_or_none @ agent/bedrock_adapter.py:bedrock_model_ids_or_none */
 /* Port of Python bedrock_adapter.bedrock_model_ids_or_none().
  * Returns NULL — model discovery requires boto3/botocore.
  * C uses the static BEDROCK_CONTEXT_TABLE for known models. */
@@ -1588,7 +1588,7 @@ void reset_discovery_cache(void) {
 /* Port of Python bedrock_adapter.discover_bedrock_models().
  * Returns NULL — model discovery requires boto3/botocore.
  * C uses the static BEDROCK_CONTEXT_TABLE for known models. */
-/* PoP: cli_agent_bedrock_adapter_discover_bedrock_models @ agent/bedrock_adapter.py:discover_bedrock_models */
+/* PoP: bedrock_discover_models @ agent/bedrock_adapter.py:discover_bedrock_models */
 void *bedrock_discover_models(void) {
     hermes_log(LOG_DEBUG, "bedrock", "discover_models: live discovery not available in C");
     static void *no_models = NULL;

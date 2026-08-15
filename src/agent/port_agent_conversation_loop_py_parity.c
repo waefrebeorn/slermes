@@ -14,12 +14,12 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: agent_conversation_loop_restore_user_after_reference_handoff @ agent/conversation_loop.py:_restore_user_after_reference_handoff */
+/* PoP: agent_conversation_loop_restore_user_after_reference_handoff_p @ agent/conversation_loop.py:_restore_user_after_reference_handoff */
 json_t *agent_conversation_loop_restore_user_after_reference_handoff_p(void) {
     return json_object();
 }
 
-/* PoP: agent_conversation_loop_should_skip_model_call_for_reference_handoff @ agent/conversation_loop.py:_should_skip_model_call_for_reference_handoff */
+/* PoP: agent_conversation_loop_should_skip_model_call_for_reference_handoff_p @ agent/conversation_loop.py:_should_skip_model_call_for_reference_handoff */
 json_t *agent_conversation_loop_should_skip_model_call_for_reference_handoff_p(void) {
     return json_object();
 }

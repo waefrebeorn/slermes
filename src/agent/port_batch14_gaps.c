@@ -30,7 +30,7 @@ bool agent_rt_helpers_fix(void) { return false; }
 /* ── agent/conversation_loop.py ── */
 /* PoP: conv_loop_should_continue @ agent/conversation_loop.py:_should_continue */
 bool conv_loop_should_continue(void) { return true; }
-/* PoP: comp_loop_compress @ agent/conversation_loop.py:_compress */
+/* PoP: conv_loop_compress @ agent/conversation_loop.py:_compress */
 bool conv_loop_compress(void) { return false; }
 
 /* ── agent/prompt_builder.py ── */
@@ -156,7 +156,7 @@ json_t *model_catalog_get(const char *id) { (void)id; return NULL; }
 /* ── hermes_cli/model_normalize.py ── */
 /* PoP: model_normalize_id @ hermes_cli/model_normalize.py:_id */
 char *model_normalize_id(const char *model) { return xstrdup(model ? model : ""); }
-/* PoP: model_normalize_provider @ hermes_cli/model_normalize.py:_provider */
+/* PoP: model_normalize_provider_batch @ hermes_cli/model_normalize.py:_provider */
 const char *model_normalize_provider_batch(const char *model) {
     if (!model) return "unknown";
     if (strstr(model, "openai")) return "openai";

@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_environments_local_sanitize_subprocess_env @ tools/environments/local.py:_sanitize_subprocess_env */
+/* PoP: tools_environments_local_sanitize_subprocess_env_p @ tools/environments/local.py:_sanitize_subprocess_env */
 json_t *tools_environments_local_sanitize_subprocess_env_p(void) {
     return json_object();
 }

@@ -22,7 +22,7 @@ static char *lowerdup(const char *s) {
 /* Process-wide LSP service singleton (Python module-level _service). */
 static lsp_service_t *s_lsp_service = NULL;
 
-/* PoP: get_service @ agent/lsp/__init__.py:get_service */
+/* PoP: lspi_get_service @ agent/lsp/__init__.py:get_service */
 char *lspi_get_service(void) {
     /* Python: process-wide singleton or None. */
     if (s_lsp_service) {
@@ -40,7 +40,7 @@ char *lspi_get_service(void) {
     return strdup("{\"active\": true}");
 }
 
-/* PoP: shutdown_service @ agent/lsp/__init__.py:shutdown_service */
+/* PoP: lspi_shutdown_service @ agent/lsp/__init__.py:shutdown_service */
 int lspi_shutdown_service(void) {
     /* Python: safe multiple times. */
     extern void lsp_service_destroy(lsp_service_t *svc);
@@ -51,7 +51,7 @@ int lspi_shutdown_service(void) {
     return 0;
 }
 
-/* PoP: _atexit_shutdown @ agent/lsp/__init__.py:_atexit_shutdown */
+/* PoP: lspi_atexit_shutdown @ agent/lsp/__init__.py:_atexit_shutdown */
 int lspi_atexit_shutdown(void) {
     /* Python: atexit wrapper around shutdown_service. */
     return lspi_shutdown_service();

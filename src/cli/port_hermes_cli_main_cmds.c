@@ -15,7 +15,7 @@
  * cmd_monitoring — gateway monitoring status
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: cmd_monitoring @ hermes_cli/main.py:cmd_monitoring */
+/* PoP: hermes_cli_main_cmd_monitoring @ hermes_cli/main.py:cmd_monitoring */
 int hermes_cli_main_cmd_monitoring(const char *monitoring_action, const char *config_json) {
     /* Python: print the gateway health-export + OTLP posture from config.
      * action defaults to "status". Returns 0; exits 2 on unknown action. */
@@ -100,7 +100,7 @@ int hermes_cli_main_cmd_monitoring(const char *monitoring_action, const char *co
  * cmd_approvals — approval suggestions dispatch
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: cmd_approvals @ hermes_cli/main.py:cmd_approvals */
+/* PoP: hermes_cli_main_cmd_approvals @ hermes_cli/main.py:cmd_approvals */
 int hermes_cli_main_cmd_approvals(const char *arg) {
     /* Python: dispatch to hermes_cli.approvals_suggest.approvals_command;
      * sys.exit(status) when nonzero. The C port routes into the approval
@@ -178,7 +178,7 @@ int hermes_cli_main_cmd_approvals(const char *arg) {
  * cmd_sync — skills sync dispatch
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: cmd_sync @ hermes_cli/main.py:cmd_sync */
+/* PoP: hermes_cli_main_cmd_sync @ hermes_cli/main.py:cmd_sync */
 int hermes_cli_main_cmd_sync(const char *arg) {
     /* Python: dispatch to the skills-sync command (status|pull|push|now|
      * enable|disable|device|propose). The C port routes to the skills-sync
@@ -321,7 +321,7 @@ int hermes_cli_main_cmd_sync(const char *arg) {
     return 2;
 }
 
-/* PoP: configured_nofile_soft_limit @ hermes_cli/resource_limits.py:configured_nofile_soft_limit */
+/* PoP: hermes_cli_configured_nofile_soft_limit @ hermes_cli/resource_limits.py:configured_nofile_soft_limit */
 /* Returns the configured nofile soft limit, or -1 when disabled. config_json = {"runtime":{"nofile_soft_limit":N}} */
 int hermes_cli_configured_nofile_soft_limit(const char *config_json) {
     if (!config_json) return 4096;  /* DEFAULT_NOFILE_SOFT_LIMIT */

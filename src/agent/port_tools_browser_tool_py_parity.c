@@ -14,12 +14,12 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_browser_tool_evaluate_url_safety @ tools/browser_tool.py:evaluate_url_safety */
+/* PoP: tools_browser_tool_evaluate_url_safety_p @ tools/browser_tool.py:evaluate_url_safety */
 json_t *tools_browser_tool_evaluate_url_safety_p(void) {
     return json_object();
 }
 
-/* PoP: tools_browser_tool_chromium_search_roots @ tools/browser_tool.py:_chromium_search_roots */
+/* PoP: tools_browser_tool_chromium_search_roots_p @ tools/browser_tool.py:_chromium_search_roots */
 json_t *tools_browser_tool_chromium_search_roots_p(void) {
     return json_object();
 }

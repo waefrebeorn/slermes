@@ -118,7 +118,7 @@ bool transcribe_has_local_command(const char *config_json)
     return cfg != NULL && json_object_get_string(cfg, "command", NULL) != NULL;
 }
 
-/* PoP: tsc_resolve_command_stt_provider_config @ tools/transcription_tools.py:_resolve_command_stt_provider_config */
+/* PoP: transcribe_resolve_command_stt_provider_config @ tools/transcription_tools.py:_resolve_command_stt_provider_config */
 char *transcribe_resolve_command_stt_provider_config(const char *config_json, const char *provider_name)
 {
     (void)provider_name;
@@ -441,7 +441,7 @@ json_t *transcribe_get_stt_section(const char *config_json, const char *name)
     return section ? json_copy(section) : NULL;
 }
 
-/* PoP: tsc_is_command_stt_provider_config @ tools/transcription_tools.py:_is_command_stt_provider_config */
+/* PoP: transcribe_is_command_stt_provider_config @ tools/transcription_tools.py:_is_command_stt_provider_config */
 bool transcribe_is_command_stt_provider_config(const char *config_json)
 {
     if (!config_json)

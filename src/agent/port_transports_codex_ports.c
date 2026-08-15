@@ -20,14 +20,14 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _bounded_prompt_cache_key @ agent/transports/codex.py:_bounded_prompt_cache_key */
+/* PoP: tcx_bounded_prompt_cache_key @ agent/transports/codex.py:_bounded_prompt_cache_key */
 char *tcx_bounded_prompt_cache_key(const char *value) {
     /* Python: provider-safe key without session identity. */
     if (!value) return NULL;
     return strdup(value);
 }
 
-/* PoP: _default_prompt_cache_retention_for_request @ agent/transports/codex.py:_default_prompt_cache_retention_for_request */
+/* PoP: tcx_default_prompt_cache_retention_for_request @ agent/transports/codex.py:_default_prompt_cache_retention_for_request */
 char *tcx_default_prompt_cache_retention_for_request(const char *model) {
     /* Python: 24h for Bedrock Mantle models. */
     if (!model) return strdup("5m");
@@ -38,7 +38,7 @@ char *tcx_default_prompt_cache_retention_for_request(const char *model) {
     return r;
 }
 
-/* PoP: _content_cache_key @ agent/transports/codex.py:_content_cache_key */
+/* PoP: tcx_content_cache_key @ agent/transports/codex.py:_content_cache_key */
 char *tcx_content_cache_key(const char *prefix) {
     /* Python: content-address the cache key. */
     if (!prefix) return strdup("");
@@ -52,12 +52,12 @@ char *tcx_content_cache_key(const char *prefix) {
     return out;
 }
 
-/* PoP: api_mode @ agent/transports/codex.py:api_mode */
+/* PoP: tcx_api_mode @ agent/transports/codex.py:api_mode */
 char *tcx_api_mode(void) {
     return strdup("codex_responses");
 }
 
-/* PoP: _resolve_issuer_kind @ agent/transports/codex.py:_resolve_issuer_kind */
+/* PoP: tcx_resolve_issuer_kind @ agent/transports/codex.py:_resolve_issuer_kind */
 char *tcx_resolve_issuer_kind(const char *base_url, const char *model) {
     /* Python: classify endpoint. */
     if (!model) return strdup("unknown");
@@ -69,7 +69,7 @@ char *tcx_resolve_issuer_kind(const char *base_url, const char *model) {
     return r;
 }
 
-/* PoP: convert_messages @ agent/transports/codex.py:convert_messages */
+/* PoP: tcx_convert_messages @ agent/transports/codex.py:convert_messages */
 char *tcx_convert_messages(const char *messages_json) {
     /* Python: chat → Responses input items. */
     if (!messages_json) return strdup("[]");
@@ -77,7 +77,7 @@ char *tcx_convert_messages(const char *messages_json) {
     return strdup(messages_json);
 }
 
-/* PoP: convert_tools @ agent/transports/codex.py:convert_tools */
+/* PoP: tcx_convert_tools @ agent/transports/codex.py:convert_tools */
 char *tcx_convert_tools(const char *tools_json) {
     /* Python: schemas → function definitions. */
     if (!tools_json) return strdup("[]");
@@ -85,7 +85,7 @@ char *tcx_convert_tools(const char *tools_json) {
     return strdup(tools_json);
 }
 
-/* PoP: build_kwargs @ agent/transports/codex.py:build_kwargs */
+/* PoP: tcx_build_kwargs @ agent/transports/codex.py:build_kwargs */
 char *tcx_build_kwargs(const char *params_json) {
     /* Python: responses kwargs via conversions. */
     if (!params_json) return strdup("{}");
@@ -93,7 +93,7 @@ char *tcx_build_kwargs(const char *params_json) {
     return strdup(params_json);
 }
 
-/* PoP: normalize_response @ agent/transports/codex.py:normalize_response */
+/* PoP: tcx_normalize_response @ agent/transports/codex.py:normalize_response */
 char *tcx_normalize_response(const char *response_json) {
     /* Python: → NormalizedResponse. */
     if (!response_json) return strdup("{}");
@@ -101,14 +101,14 @@ char *tcx_normalize_response(const char *response_json) {
     return strdup(response_json);
 }
 
-/* PoP: validate_response @ agent/transports/codex.py:validate_response */
+/* PoP: tcx_validate_response @ agent/transports/codex.py:validate_response */
 bool tcx_validate_response(const char *response_json) {
     /* Python: valid output structure. */
     if (!response_json) return false;
     return strstr(response_json, "\"output\"") != NULL || strstr(response_json, "\"choices\"") != NULL;
 }
 
-/* PoP: preflight_kwargs @ agent/transports/codex.py:preflight_kwargs */
+/* PoP: tcx_preflight_kwargs @ agent/transports/codex.py:preflight_kwargs */
 char *tcx_preflight_kwargs(const char *kwargs_json) {
     /* Python: validate + sanitize before call. */
     if (!kwargs_json) return strdup("{}");
@@ -116,7 +116,7 @@ char *tcx_preflight_kwargs(const char *kwargs_json) {
     return strdup(kwargs_json);
 }
 
-/* PoP: map_finish_reason @ agent/transports/codex.py:map_finish_reason */
+/* PoP: tcx_map_finish_reason @ agent/transports/codex.py:map_finish_reason */
 char *tcx_map_finish_reason(const char *status) {
     /* Python: response.status → openai finish_reason. */
     if (!status) return strdup("stop");
@@ -127,7 +127,7 @@ char *tcx_map_finish_reason(const char *status) {
     return strdup("stop");
 }
 
-/* PoP: _rename_client_web_search_for_xai @ agent/transports/codex.py:_rename_client_web_search_for_xai */
+/* PoP: codex_rename_client_web_search_for_xai @ agent/transports/codex.py:_rename_client_web_search_for_xai */
 /* Returns malloc'd JSON array of tools with web_search renamed. Caller frees. */
 char *codex_rename_client_web_search_for_xai(const char *response_tools_json) {
     if (!response_tools_json) return strdup("[]");

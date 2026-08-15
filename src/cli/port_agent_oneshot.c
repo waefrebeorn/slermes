@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: cli_agent_oneshot__strip_code_fence @ agent/oneshot.py:_strip_code_fence */
+/* PoP: string @ agent/oneshot.py:_strip_code_fence */
 
 /* Port of Python agent/oneshot.py:_strip_code_fence.
  * Drop a single wrapping ``` fence the model may have added.

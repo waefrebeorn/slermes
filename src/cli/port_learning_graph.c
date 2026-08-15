@@ -128,7 +128,7 @@ char *learning_graph_frontmatter(const char *skill_md_text)
     return ret;
 }
 
-/* PoP: learning_graph_load_usage @ agent/learning_graph.py:_load_usage */
+/* PoP: name @ agent/learning_graph.py:_load_usage */
 /* hermes_home -> malloc'd JSON map keyed by skill name (use_count/state/
  * created_by/pinned/last_*_at). Mirrors Python load_usage() + .usage.json. */
 char *learning_graph_load_usage(const char *hermes_home)
@@ -397,7 +397,7 @@ char *learning_graph_skill_roots(const char *hermes_home, const char *repo_skill
     return ret;
 }
 
-/* PoP: build_learning_graph @ agent/learning_graph.py:build_learning_graph */
+/* PoP: learning_graph_build @ agent/learning_graph.py:build_learning_graph */
 /* Full payload for the desktop learning panel. */
 char *learning_graph_build(const char *hermes_home, const char *repo_skills_dir)
 {

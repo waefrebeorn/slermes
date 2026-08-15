@@ -678,7 +678,7 @@ char **_provider_catalog_names(const char *provider, int *out_n) {
     return result;
 }
 
-/* PoP: _model_dedup_key @ hermes_cli/models.py:_model_dedup_key */
+/* PoP: mapping @ hermes_cli/models.py:_model_dedup_key */
 /* Returns malloc'd lowercased dedup key, folding through _MODEL_ALIAS_CANONICAL.
  * The alias table is the model_search.py mapping (ported from scratch). */
 char *_model_dedup_key(const char *model_id) {
@@ -710,7 +710,7 @@ char *_model_dedup_key(const char *model_id) {
     return strdup(start);
 }
 
-/* PoP: _openai_discovery_base_url @ hermes_cli/models.py:_openai_discovery_base_url */
+/* PoP: frees @ hermes_cli/models.py:_openai_discovery_base_url */
 /* Returns the effective OpenAI base URL for model discovery. Returns a
  * malloc'd string the caller frees (or a static default). */
 char *_openai_discovery_base_url(const char *provider) {
@@ -821,7 +821,7 @@ char *_fetch_ai_gateway_models(double timeout_sec) {
     return result;
 }
 
-/* PoP: fetch_ai_gateway_models @ hermes_cli/models.py:fetch_ai_gateway_models */
+/* PoP: the @ hermes_cli/models.py:fetch_ai_gateway_models */
 /* Curated picker list, refreshed from live catalog when possible.
  * Returns malloc'd JSON: [{"id":"...","desc":"free|recommended|"}, ...]
  * (faithful to the (mid, desc) tuple list in Python). */
@@ -978,7 +978,7 @@ char *fetch_ai_gateway_pricing(double timeout_sec, bool force_refresh) {
     return result;
 }
 
-/* PoP: ai_gateway_model_ids @ hermes_cli/models.py:ai_gateway_model_ids */
+/* PoP: strings @ hermes_cli/models.py:ai_gateway_model_ids */
 /* Return just the AI Gateway model-id strings (faithful to Python's
  *  [mid for mid, _ in fetch_ai_gateway_models(...)] ). Returns malloc'd
  * JSON array string of ids, or NULL. Caller frees. */
@@ -1003,7 +1003,7 @@ char *ai_gateway_model_ids(double timeout_sec, bool force_refresh) {
     return result;
 }
 
-/* PoP: _spawn_swr_refresh @ hermes_cli/models.py:_spawn_swr_refresh */
+/* PoP: _swr_worker @ hermes_cli/models.py:_spawn_swr_refresh */
 /* Fire-and-forget background refresh of a provider model-id cache entry.
  * At most one refresh in flight per cache_key (dedup via _swr_refresh_lock).
  * Failures are swallowed — the stale entry keeps being served. Mirrors the
@@ -1114,7 +1114,7 @@ static void *_catalog_swr_worker(void *arg) {
     return NULL;
 }
 
-/* PoP: _spawn_catalog_swr_refresh @ hermes_cli/model_catalog.py:_spawn_catalog_swr_refresh */
+/* PoP: get_catalog @ hermes_cli/model_catalog.py:_spawn_catalog_swr_refresh */
 /* Port of Python _spawn_catalog_swr_refresh: refresh the catalog manifest
  * off-thread (fire-and-forget, deduped via _catalog_swr_inflight). The
  * refreshed manifest lands on disk; the next get_catalog() picks it up

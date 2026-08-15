@@ -151,7 +151,7 @@ int gwstatus_terminate_pid(pid_t pid, bool force) {
     return 0;
 }
 
-/* PoP: _scope_hash @ gateway/status.py:_scope_hash */
+/* PoP: sha256 @ gateway/status.py:_scope_hash */
 /* Port of Python: _scope_hash — first 16 hex chars of sha256(identity). */
 static void scope_hash(const char *identity, char out[17]) {
     char *hex = hash_sha256_hex((const unsigned char *)identity, strlen(identity));
@@ -200,7 +200,7 @@ long gwstatus_get_process_start_time(pid_t pid) {
     return -1;
 }
 
-/* PoP: gwstatus_pid_exists @ gateway/status.py:_pid_exists */
+/* PoP: dead @ gateway/status.py:_pid_exists */
 /* Port of Python: _pid_exists — alive check that never signals a kill.
  * Reports zombies as dead (issue #42126). */
 bool gwstatus_pid_exists(pid_t pid) {
@@ -229,7 +229,7 @@ bool gwstatus_pid_exists(pid_t pid) {
 
 /* ── Command-line identity ───────────────────────────────────────────── */
 
-/* PoP: _read_process_cmdline @ gateway/status.py:_read_process_cmdline */
+/* PoP: string @ gateway/status.py:_read_process_cmdline */
 /* Port of Python: _read_process_cmdline. Linux: /proc/<pid>/cmdline with
  * NUL separators mapped to spaces; else `ps -p <pid> -o command=`.
  * Returns a malloc'd string (caller frees) or NULL. */
@@ -318,7 +318,7 @@ static void free_tokens(char **argv, int argc) {
     for (int i = 0; i < argc; i++) free(argv[i]);
 }
 
-/* PoP: _gateway_command_subcommand @ gateway/status.py:_gateway_command_subcommand */
+/* PoP: gateway_command_subcommand @ gateway/status.py:_gateway_command_subcommand */
 /* Port of Python: _gateway_command_subcommand. Returns a malloc'd subcommand
  * string (caller frees) or NULL. */
 static char *gateway_command_subcommand(const char *command) {
@@ -405,7 +405,7 @@ bool gwstatus_looks_like_gateway_runtime_command_line(const char *command) {
     return ok;
 }
 
-/* PoP: _looks_like_gateway_process @ gateway/status.py:_looks_like_gateway_process */
+/* PoP: looks_like_gateway_process @ gateway/status.py:_looks_like_gateway_process */
 /* Port of Python: _looks_like_gateway_process */
 static bool looks_like_gateway_process(pid_t pid) {
     char *cmd = read_process_cmdline(pid);
@@ -418,7 +418,7 @@ static bool looks_like_gateway_process(pid_t pid) {
 /* ── JSON record helpers ─────────────────────────────────────────────── */
 
 /* Read + parse a JSON object file. Returns json_t* (caller json_free) or NULL. */
-/* PoP: _read_json_file @ gateway/status.py:_read_json_file */
+/* PoP: read_json_file @ gateway/status.py:_read_json_file */
 static json_t *read_json_file(const char *path) {
     FILE *f = fopen(path, "rb");
     if (!f) return NULL;
@@ -442,7 +442,7 @@ static json_t *read_json_file(const char *path) {
     return node;
 }
 
-/* PoP: sm_write_json_file @ gateway/status.py:_write_json_file */
+/* PoP: write_json_file @ gateway/status.py:_write_json_file */
 static int write_json_file(const char *path, json_t *payload) {
     ensure_parent_dir(path);
     char *ser = json_serialize(payload);
@@ -537,7 +537,7 @@ static json_t *read_pid_record(const char *pid_path) {
     return NULL;
 }
 
-/* PoP: _record_looks_like_gateway @ gateway/status.py:_record_looks_like_gateway */
+/* PoP: metadata @ gateway/status.py:_record_looks_like_gateway */
 /* Port of Python: _record_looks_like_gateway — validate identity from
  * PID-file metadata (kind + argv joined) when cmdline is unavailable. */
 static bool record_looks_like_gateway(json_t *record) {
@@ -566,7 +566,7 @@ static bool record_looks_like_gateway(json_t *record) {
     return ok;
 }
 
-/* PoP: _record_matches_live_gateway_pid @ gateway/status.py:_record_matches_live_gateway_pid */
+/* PoP: record_matches_live_gateway_pid @ gateway/status.py:_record_matches_live_gateway_pid */
 /* Port of Python: _record_matches_live_gateway_pid. expected_home may be NULL
  * (active-profile case: any live gateway command line is acceptable); when set,
  * the readable live cmdline must additionally belong to that profile. */
@@ -775,7 +775,7 @@ void gwstatus_remove_pid_file(void) {
         unlink(path);
 }
 
-/* PoP: cached_get_running_pid @ gateway/status.py:get_running_pid */
+/* PoP: gwstatus_get_running_pid @ gateway/status.py:get_running_pid */
 /* Port of Python: get_running_pid */
 pid_t gwstatus_get_running_pid(const char *pid_path, bool cleanup_stale) {
     char defbuf[1200];
@@ -879,7 +879,7 @@ pid_t gwstatus_get_runtime_status_running_pid(const char *runtime_json,
     return result;
 }
 
-/* PoP: is_gateway_running @ gateway/status.py:is_gateway_running */
+/* PoP: gwstatus_is_gateway_running @ gateway/status.py:is_gateway_running */
 /* Port of Python: is_gateway_running */
 bool gwstatus_is_gateway_running(const char *pid_path, bool cleanup_stale) {
     return gwstatus_get_running_pid(pid_path, cleanup_stale) > 0;
@@ -983,7 +983,7 @@ static pid_t cached_get_running_pid(const char *pid_path, bool cleanup_stale) {
     return pid;
 }
 
-/* PoP: resolve_gateway_liveness @ gateway/status.py:resolve_gateway_liveness */
+/* PoP: gwstatus_resolve_gateway_liveness @ gateway/status.py:resolve_gateway_liveness */
 /* Single source of truth for "is the gateway up?" across dashboard surfaces.
  * Mirrors Python gateway/status.py:resolve_gateway_liveness():
  *   1. PID file + runtime lock (scoped to profile_dir when non-NULL),
@@ -1111,14 +1111,14 @@ bool gwstatus_derive_gateway_busy(bool gateway_running,
     return active_agents > 0;
 }
 
-/* PoP: derive_gateway_drainable @ gateway/status.py:derive_gateway_drainable */
+/* PoP: gwstatus_derive_gateway_drainable @ gateway/status.py:derive_gateway_drainable */
 /* Port of Python: derive_gateway_drainable */
 bool gwstatus_derive_gateway_drainable(bool gateway_running,
                                        const char *gateway_state) {
     return gateway_running && gateway_state && strcmp(gateway_state, "running") == 0;
 }
 
-/* PoP: _build_runtime_status_record @ gateway/status.py:_build_runtime_status_record */
+/* PoP: build_runtime_status_record @ gateway/status.py:_build_runtime_status_record */
 /* Port of Python: _build_runtime_status_record — seed record when file absent. */
 static json_t *build_runtime_status_record(void) {
     json_t *o = build_pid_record();
@@ -1199,7 +1199,7 @@ int gwstatus_write_runtime_status(const char *gateway_state,
     return rc;
 }
 
-/* PoP: read_runtime_status @ gateway/status.py:read_runtime_status */
+/* PoP: gwstatus_read_runtime_status @ gateway/status.py:read_runtime_status */
 /* Port of Python: read_runtime_status — serialized string or NULL. */
 char *gwstatus_read_runtime_status(const char *path) {
     char defbuf[1200];
@@ -1213,7 +1213,7 @@ char *gwstatus_read_runtime_status(const char *path) {
 
 /* ── Scope locks ─────────────────────────────────────────────────────── */
 
-/* PoP: _get_scope_lock_path @ gateway/status.py:_get_scope_lock_path */
+/* PoP: get_scope_lock_path @ gateway/status.py:_get_scope_lock_path */
 /* Port of Python: _get_scope_lock_path -> "<lockdir>/<scope>-<hash>.lock". */
 static char *get_scope_lock_path(const char *scope, const char *identity,
                                  char *buf, size_t n) {
@@ -1407,7 +1407,7 @@ int gwstatus_release_all_scoped_locks(pid_t owner_pid, long owner_start_time) {
 
 /* ── --replace takeover / planned-stop markers ───────────────────────── */
 
-/* PoP: _marker_is_stale @ gateway/status.py:_marker_is_stale */
+/* PoP: marker_is_stale @ gateway/status.py:_marker_is_stale */
 /* Port of Python: _marker_is_stale — true if age > ttl or unparseable. */
 static bool marker_is_stale(const char *written_at, int ttl_s) {
     if (!written_at || !written_at[0]) return true;
@@ -1424,7 +1424,7 @@ static bool marker_is_stale(const char *written_at, int ttl_s) {
     return age > (double)ttl_s;
 }
 
-/* PoP: _consume_pid_marker_for_self @ gateway/status.py:_consume_pid_marker_for_self */
+/* PoP: consume_pid_marker_for_self @ gateway/status.py:_consume_pid_marker_for_self */
 /* Port of Python: _consume_pid_marker_for_self. Always unlinks a matched or
  * stale/malformed marker. Returns true when the marker names this process. */
 static bool consume_pid_marker_for_self(const char *path,

@@ -353,7 +353,7 @@ void display_spinner_stop(display_spinner_t *sp, const char *done_msg) {
     fflush(stdout);
 }
 
-/* PoP: display_spinner_enter @ agent/display.py:KawaiiSpinner.__enter__ */
+/* PoP: KawaiiSpinner @ agent/display.py:KawaiiSpinner.__enter__ */
 /* Context-manager entry: start the spinner and return the spinner handle
  * (mirrors Python `with KawaiiSpinner(...) as sp:` returning self). */
 display_spinner_t *display_spinner_enter(display_spinner_t *sp, const char *label) {
@@ -361,7 +361,7 @@ display_spinner_t *display_spinner_enter(display_spinner_t *sp, const char *labe
     return sp;
 }
 
-/* PoP: display_spinner_exit @ agent/display.py:KawaiiSpinner.__exit__ */
+/* PoP: 0 @ agent/display.py:KawaiiSpinner.__exit__ */
 /* Context-manager exit: stop the spinner. Returns 0 (Python __exit__ returns
  * False, i.e. does not suppress exceptions). */
 int display_spinner_exit(display_spinner_t *sp) {
@@ -1764,7 +1764,7 @@ void set_tool_preview_max_len(int n) {
     g_tool_preview_max_len = (n > 0) ? n : 0;
 }
 
-/* PoP: cli_agent_display_get_tool_preview_max_len @ agent/display.py:get_tool_preview_max_len */
+/* PoP: length @ agent/display.py:get_tool_preview_max_len */
 /* Port of Python display.py:get_tool_preview_max_len().
  * Return the configured max preview length (0 = unlimited).
  * The value is set at startup from config or defaults to 2048 chars. */

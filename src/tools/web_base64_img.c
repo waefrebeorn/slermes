@@ -31,7 +31,7 @@
 typedef void (*b64_repl_t)(const char *match, const regmatch_t *g1,
                             char **out, size_t *op, size_t *cap);
 
-/* PoP: pj_ensure @ tools/lazy_deps.py:ensure */
+/* PoP: b64_ensure @ tools/lazy_deps.py:ensure */
 static int b64_ensure(char **out, size_t *cap, size_t need)
 {
     if (*cap >= need) return 0;

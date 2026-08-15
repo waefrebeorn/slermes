@@ -14,12 +14,12 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: agent_verify_recipes_dedupe @ agent/verify/recipes.py:_dedupe */
+/* PoP: agent_verify_recipes_dedupe_p @ agent/verify/recipes.py:_dedupe */
 json_t *agent_verify_recipes_dedupe_p(void) {
     return json_object();
 }
 
-/* PoP: agent_verify_recipes_parse_make_targets @ agent/verify/recipes.py:_parse_make_targets */
+/* PoP: agent_verify_recipes_parse_make_targets_p @ agent/verify/recipes.py:_parse_make_targets */
 json_t *agent_verify_recipes_parse_make_targets_p(void) {
     return json_object();
 }

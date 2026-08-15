@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_sessions_cmd_cmd_sessions @ hermes_cli/sessions_cmd.py:cmd_sessions */
+/* PoP: hermes_cli_sessions_cmd_cmd_sessions_p @ hermes_cli/sessions_cmd.py:cmd_sessions */
 json_t *hermes_cli_sessions_cmd_cmd_sessions_p(void) {
     return json_object();
 }

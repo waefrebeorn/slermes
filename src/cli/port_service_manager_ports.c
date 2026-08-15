@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ hermes_cli/service_manager.py:__init__ */
+/* PoP: svm_init @ hermes_cli/service_manager.py:__init__ */
 char *svm_init(const char *message, const char *service) {
     char *out = NULL;
     asprintf(&out, "{\"message\": \"%s\", \"service\": \"%s\"}",

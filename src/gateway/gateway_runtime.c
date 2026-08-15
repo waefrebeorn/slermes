@@ -481,7 +481,7 @@ void gw_runtime_init(void) {
  *  Port of Python stop() drain logic
  * ════════════════════════════════════════════════════════════════ */
 
-/* PoP: gw_drain_active_agents @ gateway/run.py:_drain_active_agents */
+/* PoP: _drain_active_agents @ gateway/run.py:_drain_active_agents */
 /* Port of Python _drain_active_agents(timeout): snapshot the active work
  * counts (running agents / in-flight cron jobs / queued messages), then
  * wait in 0.1s polls while any remain, up to the deadline. In-flight turns
@@ -569,7 +569,6 @@ void gw_notify_sessions_shutdown(const char *reason) {
 
 /* ════════════════════════════════════════════════════════════════
  *  8. SYSTEMD INTEGRATION
- * PoP: _launch_systemd_restart_shortcut @ gateway/run.py:_launch_systemd_restart_shortcut
  *  Port of Python _launch_systemd_restart_shortcut()
  *  Checks NOTIFY_SOCKET or JOURNAL_STREAM env vars.
  * ════════════════════════════════════════════════════════════════ */
@@ -593,7 +592,7 @@ void gw_systemd_ready(void) {
 }
 
 /* External: defined in server.c */
-/* PoP: session_get_or_create @ gateway/turn_lease.py:_get_or_create */
+/* PoP: request_restart @ gateway/turn_lease.py:_get_or_create */
 extern int session_get_or_create(const char *platform, const char *chat_id);
 
 /* ════════════════════════════════════════════════════════════════

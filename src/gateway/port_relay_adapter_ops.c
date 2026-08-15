@@ -75,7 +75,7 @@ static bool descriptor_supports_op(const char *descriptor_json, const char *op) 
  * _send_media
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _send_media @ gateway/relay/adapter.py:_send_media */
+/* PoP: relay_op_send_media @ gateway/relay/adapter.py:_send_media */
 char *relay_op_send_media(const char *descriptor_json, const char *chat_id,
                           const char *media_kind, const char *source,
                           bool source_is_path, const char *caption,
@@ -143,7 +143,7 @@ char *relay_op_send_media(const char *descriptor_json, const char *chat_id,
  * send_image / send_image_file / send_voice / send_video / send_document
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: send_image @ gateway/relay/adapter.py:send_image */
+/* PoP: relay_op_send_image @ gateway/relay/adapter.py:send_image */
 char *relay_op_send_image(const char *descriptor_json, const char *chat_id,
                           const char *image_url, const char *caption,
                           const char *reply_to, const char *metadata_json) {
@@ -157,7 +157,7 @@ char *relay_op_send_image(const char *descriptor_json, const char *chat_id,
                                false, caption, NULL, reply_to, metadata_json);
 }
 
-/* PoP: send_image_file @ gateway/relay/adapter.py:send_image_file */
+/* PoP: relay_op_send_image_file @ gateway/relay/adapter.py:send_image_file */
 char *relay_op_send_image_file(const char *descriptor_json, const char *chat_id,
                                const char *image_path, const char *caption,
                                const char *reply_to, const char *metadata_json) {
@@ -165,7 +165,7 @@ char *relay_op_send_image_file(const char *descriptor_json, const char *chat_id,
                                true, caption, NULL, reply_to, metadata_json);
 }
 
-/* PoP: send_voice @ gateway/relay/adapter.py:send_voice */
+/* PoP: relay_op_send_voice @ gateway/relay/adapter.py:send_voice */
 char *relay_op_send_voice(const char *descriptor_json, const char *chat_id,
                           const char *audio_path, const char *caption,
                           const char *reply_to, const char *metadata_json) {
@@ -173,7 +173,7 @@ char *relay_op_send_voice(const char *descriptor_json, const char *chat_id,
                                true, caption, NULL, reply_to, metadata_json);
 }
 
-/* PoP: send_video @ gateway/relay/adapter.py:send_video */
+/* PoP: relay_op_send_video @ gateway/relay/adapter.py:send_video */
 char *relay_op_send_video(const char *descriptor_json, const char *chat_id,
                           const char *video_path, const char *caption,
                           const char *reply_to, const char *metadata_json) {
@@ -181,7 +181,7 @@ char *relay_op_send_video(const char *descriptor_json, const char *chat_id,
                                true, caption, NULL, reply_to, metadata_json);
 }
 
-/* PoP: send_document @ gateway/relay/adapter.py:send_document */
+/* PoP: relay_op_send_document @ gateway/relay/adapter.py:send_document */
 char *relay_op_send_document(const char *descriptor_json, const char *chat_id,
                              const char *file_path, const char *caption,
                              const char *file_name, const char *reply_to,
@@ -194,7 +194,7 @@ char *relay_op_send_document(const char *descriptor_json, const char *chat_id,
  * _send_prompt
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _send_prompt @ gateway/relay/adapter.py:_send_prompt */
+/* PoP: relay_op_send_prompt @ gateway/relay/adapter.py:_send_prompt */
 char *relay_op_send_prompt(const char *descriptor_json, const char *chat_id,
                            const char *prompt_kind, const char *text,
                            const char *prompt_id, const char *options_json,
@@ -257,7 +257,7 @@ char *relay_op_send_prompt(const char *descriptor_json, const char *chat_id,
  * send_exec_approval / send_slash_confirm / send_clarify
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: send_exec_approval @ gateway/relay/adapter.py:send_exec_approval */
+/* PoP: relay_op_send_exec_approval @ gateway/relay/adapter.py:send_exec_approval */
 char *relay_op_send_exec_approval(const char *descriptor_json, const char *chat_id,
                                   const char *command, const char *session_key,
                                   const char *description, const char *metadata_json,
@@ -301,7 +301,7 @@ char *relay_op_send_exec_approval(const char *descriptor_json, const char *chat_
     return strdup("{\"success\":false,\"error\":\"relay prompt op unavailable\"}");
 }
 
-/* PoP: send_slash_confirm @ gateway/relay/adapter.py:send_slash_confirm */
+/* PoP: relay_op_send_slash_confirm @ gateway/relay/adapter.py:send_slash_confirm */
 char *relay_op_send_slash_confirm(const char *descriptor_json, const char *chat_id,
                                   const char *title, const char *message,
                                   const char *session_key, const char *confirm_id,
@@ -331,7 +331,7 @@ char *relay_op_send_slash_confirm(const char *descriptor_json, const char *chat_
     return strdup("{\"success\":false,\"error\":\"relay prompt op unavailable\"}");
 }
 
-/* PoP: send_clarify @ gateway/relay/adapter.py:send_clarify */
+/* PoP: relay_op_send_clarify @ gateway/relay/adapter.py:send_clarify */
 char *relay_op_send_clarify(const char *descriptor_json, const char *chat_id,
                             const char *question, const char *choices_json,
                             const char *clarify_id, const char *session_key,
@@ -391,7 +391,7 @@ char *relay_op_send_clarify(const char *descriptor_json, const char *chat_id,
  * _consume_prompt_response
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _consume_prompt_response @ gateway/relay/adapter.py:_consume_prompt_response */
+/* PoP: relay_op_consume_prompt_response @ gateway/relay/adapter.py:_consume_prompt_response */
 int relay_op_consume_prompt_response(const char *prompt_response_json,
                                      char *ack_out, size_t ack_sz) {
     /* Python: route an inbound prompt_response to its waiting primitive.
@@ -463,7 +463,7 @@ int relay_op_consume_prompt_response(const char *prompt_response_json,
  * _react / on_processing_start / on_processing_complete
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _react @ gateway/relay/adapter.py:_react */
+/* PoP: relay_op_react @ gateway/relay/adapter.py:_react */
 bool relay_op_react(const char *descriptor_json, const char *chat_id,
                     const char *message_id, const char *emoji, bool remove) {
     /* Python: egress one react op; best-effort (False on any failure).
@@ -487,7 +487,7 @@ bool relay_op_react(const char *descriptor_json, const char *chat_id,
     return ok;
 }
 
-/* PoP: on_processing_start @ gateway/relay/adapter.py:on_processing_start */
+/* PoP: relay_op_on_processing_start @ gateway/relay/adapter.py:on_processing_start */
 int relay_op_on_processing_start(const char *descriptor_json, const char *chat_id,
                                  const char *message_id) {
     /* Python: add the 👀 in-progress reaction (op-gated; silent no-op). */
@@ -496,7 +496,7 @@ int relay_op_on_processing_start(const char *descriptor_json, const char *chat_i
     return 0;
 }
 
-/* PoP: on_processing_complete @ gateway/relay/adapter.py:on_processing_complete */
+/* PoP: relay_op_on_processing_complete @ gateway/relay/adapter.py:on_processing_complete */
 int relay_op_on_processing_complete(const char *descriptor_json, const char *chat_id,
                                     const char *message_id, int outcome) {
     /* Python: swap 👀 for ✅/❌ per outcome (SUCCESS=0, FAILURE=1,
@@ -512,7 +512,7 @@ int relay_op_on_processing_complete(const char *descriptor_json, const char *cha
  * create_handoff_thread / rename_thread
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: create_handoff_thread @ gateway/relay/adapter.py:create_handoff_thread */
+/* PoP: relay_op_create_handoff_thread @ gateway/relay/adapter.py:create_handoff_thread */
 char *relay_op_create_handoff_thread(const char *descriptor_json,
                                      const char *parent_chat_id, const char *name) {
     /* Python: one thread_create op covers Discord (channel thread), Telegram
@@ -556,7 +556,7 @@ char *relay_op_create_handoff_thread(const char *descriptor_json,
     return tid;
 }
 
-/* PoP: rename_thread @ gateway/relay/adapter.py:rename_thread */
+/* PoP: relay_op_rename_thread @ gateway/relay/adapter.py:rename_thread */
 bool relay_op_rename_thread(const char *descriptor_json, const char *thread_id,
                             const char *name, const char *only_if_current_name,
                             bool prefer_connector_created,

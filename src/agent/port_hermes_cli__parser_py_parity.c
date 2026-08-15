@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli__parser_build_top_level_parser @ hermes_cli/_parser.py:build_top_level_parser */
+/* PoP: hermes_cli__parser_build_top_level_parser_p @ hermes_cli/_parser.py:build_top_level_parser */
 json_t *hermes_cli__parser_build_top_level_parser_p(void) {
     return json_object();
 }

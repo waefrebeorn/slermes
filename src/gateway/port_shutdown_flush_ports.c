@@ -72,7 +72,7 @@ static json_t *serialise_value(const char *value, const char *extra_json) {
 
 /* ── PoP-annotated public functions ────────────────────────────────── */
 
-/* PoP: flush_pending_to_file @ gateway/shutdown_flush.py:flush_pending_to_file */
+/* PoP: shutdown_flush_pending_to_file @ gateway/shutdown_flush.py:flush_pending_to_file */
 int shutdown_flush_pending_to_file(const char *pending_json,
                                     const char *reason) {
     /* pending_json: JSON object of {session_key: value} pairs.
@@ -149,7 +149,7 @@ int shutdown_flush_pending_to_file(const char *pending_json,
     return flushed;
 }
 
-/* PoP: _serialise_value @ gateway/shutdown_flush.py:_serialise_value */
+/* PoP: shutdown_flush_serialise_value @ gateway/shutdown_flush.py:_serialise_value */
 char *shutdown_flush_serialise_value(const char *value_json) {
     /* value_json: JSON value or plain string. Returns JSON dict string. */
     json_t *data = NULL;
@@ -177,7 +177,7 @@ char *shutdown_flush_serialise_value(const char *value_json) {
     return result;
 }
 
-/* PoP: recover_pending_to_db @ gateway/shutdown_flush.py:recover_pending_to_db */
+/* PoP: shutdown_flush_recover_pending_to_db @ gateway/shutdown_flush.py:recover_pending_to_db */
 int shutdown_flush_recover_pending_to_db(const char *db_path,
                                           int max_files) {
     /* Read pending-*.json files from <hermes_home>/pending_messages,
@@ -274,7 +274,7 @@ int shutdown_flush_recover_pending_to_db(const char *db_path,
     return recovered;
 }
 
-/* PoP: flush_agent_history_to_file @ gateway/shutdown_flush.py:flush_agent_history_to_file */
+/* PoP: shutdown_flush_agent_history_to_file @ gateway/shutdown_flush.py:flush_agent_history_to_file */
 int shutdown_flush_agent_history_to_file(const char *session_id,
                                           const char *history_json) {
     /* history_json: JSON array of messages. Returns 0 on success, -1 on fail. */
@@ -336,14 +336,14 @@ int shutdown_flush_agent_history_to_file(const char *session_id,
     return ret;
 }
 
-/* PoP: _get_flush_dir @ gateway/shutdown_flush.py:_get_flush_dir */
+/* PoP: shutdown_flush_get_flush_dir @ gateway/shutdown_flush.py:_get_flush_dir */
 char *shutdown_flush_get_flush_dir(void) {
     char flush_dir[1024];
     if (get_flush_dir(flush_dir, sizeof(flush_dir)) != 0) return NULL;
     return strdup(flush_dir);
 }
 
-/* PoP: _fsync_directory @ gateway/shutdown_flush.py:_fsync_directory */
+/* PoP: shutdown_flush_fsync_directory @ gateway/shutdown_flush.py:_fsync_directory */
 int shutdown_flush_fsync_directory(const char *path) {
     if (!path || !path[0]) return -1;
     int fd = open(path, O_RDONLY);
@@ -353,7 +353,7 @@ int shutdown_flush_fsync_directory(const char *path) {
     return ret;
 }
 
-/* PoP: _write_payload @ gateway/shutdown_flush.py:_write_payload */
+/* PoP: shutdown_flush_write_payload @ gateway/shutdown_flush.py:_write_payload */
 int shutdown_flush_write_payload(const char *flush_dir,
                                   const char *payload_json) {
     if (!flush_dir || !payload_json) return -1;

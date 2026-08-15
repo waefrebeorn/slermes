@@ -13,7 +13,7 @@
 #include <limits.h>
 #include "hermes_json.h"
 
-/* PoP: _retention_cutoff @ agent/verification_evidence.py:_retention_cutoff */
+/* PoP: vev_u_retention_cutoff @ agent/verification_evidence.py:_retention_cutoff */
 int vev_u_retention_cutoff(const char *arg) {
     /* Python: (now_utc - 30 days).isoformat(). */
     (void)arg;
@@ -28,7 +28,7 @@ int vev_u_retention_cutoff(const char *arg) {
     return 0;
 }
 
-/* PoP: _db_path @ agent/verification_evidence.py:_db_path */
+/* PoP: vev_u_db_path @ agent/verification_evidence.py:_db_path */
 int vev_u_db_path(const char *arg) {
     /* Python: get_hermes_home() / "verification_evidence.db". */
     (void)arg;
@@ -40,7 +40,7 @@ int vev_u_db_path(const char *arg) {
     return 0;
 }
 
-/* PoP: _connect @ agent/verification_evidence.py:_connect */
+/* PoP: vev_u_connect @ agent/verification_evidence.py:_connect */
 int vev_u_connect(const char *arg) {
     /* Python: sqlite connect + WAL fallback + schema. Arg = "db_path". */
     if (!arg || !*arg) { printf("\n"); return 1; }
@@ -48,7 +48,7 @@ int vev_u_connect(const char *arg) {
     return 0;
 }
 
-/* PoP: _transaction @ agent/verification_evidence.py:_transaction */
+/* PoP: vev_u_transaction @ agent/verification_evidence.py:_transaction */
 int vev_u_transaction(const char *arg) {
     /* Python: commit/rollback + ALWAYS close. Arg = "db_path\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -58,7 +58,7 @@ int vev_u_transaction(const char *arg) {
     return 0;
 }
 
-/* PoP: _ensure_schema @ agent/verification_evidence.py:_ensure_schema */
+/* PoP: vev_u_ensure_schema @ agent/verification_evidence.py:_ensure_schema */
 int vev_u_ensure_schema(const char *arg) {
     /* Python: 3 tables + index. Arg = "db_label\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -69,7 +69,7 @@ int vev_u_ensure_schema(const char *arg) {
     return 0;
 }
 
-/* PoP: _split_segment_tokens @ agent/verification_evidence.py:_split_segment_tokens */
+/* PoP: vev_u_split_segment_tokens @ agent/verification_evidence.py:_split_segment_tokens */
 int vev_u_split_segment_tokens(const char *arg) {
     /* Python: shlex.split per shell-split segment. Arg = command. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -105,7 +105,7 @@ int vev_u_split_segment_tokens(const char *arg) {
     return 0;
 }
 
-/* PoP: _clean_token @ agent/verification_evidence.py:_clean_token */
+/* PoP: vev_u_clean_token @ agent/verification_evidence.py:_clean_token */
 /* Python: token.strip(); strip leading "./" prefixes. Arg = token.
  * Real C: strips whitespace and any number of leading "./" path prefixes. */
 int vev_u_clean_token(const char *arg) {
@@ -130,7 +130,7 @@ int vev_u_clean_token(const char *arg) {
     return 0;
 }
 
-/* PoP: _canonical_tokens @ agent/verification_evidence.py:_canonical_tokens */
+/* PoP: vev_u_canonical_tokens @ agent/verification_evidence.py:_canonical_tokens */
 /* Python: [_clean_token(t) for t in shlex.split(canonical) if t].
  * Real C: shlex-style split of arg into tokens, each run through
  * vev_u_clean_token semantics, empty tokens dropped. */
@@ -162,7 +162,7 @@ int vev_u_canonical_tokens(const char *arg) {
     return 0;
 }
 
-/* PoP: _strip_command_prefix @ agent/verification_evidence.py:_strip_command_prefix */
+/* PoP: vev_u_strip_command_prefix @ agent/verification_evidence.py:_strip_command_prefix */
 /* Python: drop leading "env", VAR=value assignments, "command"/"time"/"noglob".
  * Real C: token-stream filter preserving remaining tokens. */
 int vev_u_strip_command_prefix(const char *arg) {
@@ -194,7 +194,7 @@ int vev_u_strip_command_prefix(const char *arg) {
     return 0;
 }
 
-/* PoP: _equivalent_needles @ agent/verification_evidence.py:_equivalent_needles */
+/* PoP: needle @ agent/verification_evidence.py:_equivalent_needles */
 /* Python: [[pm, script]...], [["bash",f],["sh",f]], and 5 pytest spellings.
  * Real C: arg is the canonical needle (tab-sep tokens). Prints each
  * equivalent spelling newline-separated. */
@@ -235,7 +235,7 @@ int vev_u_equivalent_needles(const char *arg) {
     return 0;
 }
 
-/* PoP: _is_under_root @ agent/verification_evidence.py:_is_under_root */
+/* PoP: Path @ agent/verification_evidence.py:_is_under_root */
 /* Python: Path(token).resolve() is root or under root.
  * Real C: realpath both, then prefix-match (root + leading '/' or exact). */
 int vev_u_is_under_root(const char *arg) {
@@ -264,7 +264,7 @@ int vev_u_is_under_root(const char *arg) {
     return 0;
 }
 
-/* PoP: _ad_hoc_script_args @ agent/verification_evidence.py:_ad_hoc_script_args */
+/* PoP: list @ agent/verification_evidence.py:_ad_hoc_script_args */
 /* Python: detect a hermes-verify-/hermes-ad-hoc-* script under temp dir and
  * return its trailing args. Real C: parse token list (tab-sep), apply
  * _strip_command_prefix, check first candidate for ad-hoc script path. */
@@ -338,7 +338,7 @@ int vev_u_ad_hoc_script_args(const char *arg) {
     return 0;
 }
 
-/* PoP: _summarize_output @ agent/verification_evidence.py:_summarize_output */
+/* PoP: vev_u_summarize_output @ agent/verification_evidence.py:_summarize_output */
 /* Python: truncate to _MAX_OUTPUT_SUMMARY_CHARS preserving head+tail.
  * Real C: arg = "output" (newline-escaped as literal "\n" already decoded
  * by caller semantics is 1:1). */
@@ -363,7 +363,7 @@ int vev_u_summarize_output(const char *arg) {
     return 0;
 }
 
-/* PoP: _prune_old_events @ agent/verification_evidence.py:_prune_old_events */
+/* PoP: vev_u_prune_old_events @ agent/verification_evidence.py:_prune_old_events */
 int vev_u_prune_old_events(const char *arg) {
     /* Python: bounded ledger. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -374,7 +374,7 @@ int vev_u_prune_old_events(const char *arg) {
     return 0;
 }
 
-/* PoP: classify_verification_command @ agent/verification_evidence.py:classify_verification_command */
+/* PoP: vev_classify_verification_command @ agent/verification_evidence.py:classify_verification_command */
 int vev_classify_verification_command(const char *arg) {
     /* Python: verify command classify. Arg =
      * "state\tresult\tkind". */
@@ -388,7 +388,7 @@ int vev_classify_verification_command(const char *arg) {
     return 0;
 }
 
-/* PoP: record_terminal_result @ agent/verification_evidence.py:record_terminal_result */
+/* PoP: vev_record_terminal_result @ agent/verification_evidence.py:record_terminal_result */
 int vev_record_terminal_result(const char *arg) {
     /* Python: evidence insert. Arg =
      * "is_evidence\tstate\tresult". */
@@ -402,7 +402,7 @@ int vev_record_terminal_result(const char *arg) {
     return 0;
 }
 
-/* PoP: mark_workspace_edited @ agent/verification_evidence.py:mark_workspace_edited */
+/* PoP: vev_mark_workspace_edited @ agent/verification_evidence.py:mark_workspace_edited */
 int vev_mark_workspace_edited(const char *arg) {
     /* Python: stale evidence. Arg =
      * "count\tstate\tresult". */
@@ -415,7 +415,7 @@ int vev_mark_workspace_edited(const char *arg) {
     return 0;
 }
 
-/* PoP: verification_status @ agent/verification_evidence.py:verification_status */
+/* PoP: vev_verification_status @ agent/verification_evidence.py:verification_status */
 int vev_verification_status(const char *arg) {
     /* Python: best-known state. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("{\"status\": \"not_applicable\", \"evidence\": null}\n"); return 0; }

@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _build_marker @ agent/prompt_caching.py:_build_marker */
+/* PoP: pca_build_marker @ agent/prompt_caching.py:_build_marker */
 char *pca_build_marker(const char *ttl) {
     /* Python: '5m' or '1h' cache_control. */
     if (!ttl) ttl = "5m";
@@ -27,7 +27,7 @@ char *pca_build_marker(const char *ttl) {
     return out;
 }
 
-/* PoP: _apply_cache_marker @ agent/prompt_caching.py:_apply_cache_marker */
+/* PoP: pca_apply_cache_marker @ agent/prompt_caching.py:_apply_cache_marker */
 char *pca_apply_cache_marker(const char *message_json, const char *ttl) {
     /* Python: add cache_control handling format variations. */
     if (!message_json) return NULL;

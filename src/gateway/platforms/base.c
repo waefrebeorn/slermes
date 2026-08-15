@@ -24,8 +24,8 @@
  * ================================================================ */
 
 /* Port of Python: utf16_len */
-/* PoP: cli_gateway_platforms_base_utf16_len @ gateway/platforms/base.py:utf16_len */
-/* PoP: cli_gateway_relay_adapter__utf16_len @ gateway/relay/adapter.py:_utf16_len */
+/* PoP: utf16_len @ gateway/platforms/base.py:utf16_len */
+/* PoP: utf16_len @ gateway/relay/adapter.py:_utf16_len */
 size_t utf16_len(const char *s) {
     if (!s) return 0;
 
@@ -62,7 +62,7 @@ size_t utf16_len(const char *s) {
 }
 
 /* Port of Python: _prefix_within_utf16_limit */
-/* PoP: _prefix_within_utf16_limit @ gateway/platforms/base.py:_prefix_within_utf16_limit */
+/* PoP: gw_prefix_within_utf16_limit @ gateway/platforms/base.py:_prefix_within_utf16_limit */
 char *gw_prefix_within_utf16_limit(const char *s, size_t limit) {
     if (!s || limit == 0) return strdup("");
 
@@ -112,7 +112,7 @@ char *gw_prefix_within_utf16_limit(const char *s, size_t limit) {
 }
 
 /* Port of Python: _custom_unit_to_cp */
-/* PoP: _custom_unit_to_cp @ gateway/platforms/base.py:_custom_unit_to_cp */
+/* PoP: custom_unit_to_cp @ gateway/platforms/base.py:_custom_unit_to_cp */
 int custom_unit_to_cp(const char *s, int len, int budget,
                        int (*len_fn)(const char *, int)) {
     if (!s || len <= 0 || budget <= 0) return 0;
@@ -140,7 +140,7 @@ int custom_unit_to_cp(const char *s, int len, int budget,
  * ================================================================ */
 
 /* Port of Python: _float_env */
-/* PoP: gw_float_env @ gateway/platforms/base.py:_float_env */
+/* PoP: float_env @ gateway/platforms/base.py:_float_env */
 double float_env(const char *name, double default_value) {
     if (!name) return default_value;
 
@@ -191,9 +191,9 @@ bool looks_like_image(const char *url) {
  *  Session/source helpers
  * ================================================================ */
 
-/* PoP: _build_source @ src/gateway/platforms/base.c:gw_build_source */
+/* PoP: gw_build_source @ src/gateway/platforms/base.c:gw_build_source */
 /* Port of Python yuanbao.py:_build_source(). */
-/* PoP: build_source @ gateway/platforms/base.py:build_source */
+/* PoP: gw_build_source @ gateway/platforms/base.py:build_source */
 json_node_t *gw_build_source(const char *platform, const char *chat_id,
                               const char *chat_name, const char *chat_type,
                               const char *user_id, const char *user_name,
@@ -217,7 +217,7 @@ json_node_t *gw_build_source(const char *platform, const char *chat_id,
  * ================================================================ */
 
 /* Port of Python: format_message */
-/* PoP: format_message @ gateway/platforms/base.py:format_message */
+/* PoP: gw_format_message @ gateway/platforms/base.py:format_message */
 char *gw_format_message(const char *text, bool markdown) {
     if (!text) return strdup("");
 
@@ -305,7 +305,7 @@ int is_host_excluded_by_no_proxy(const char *hostname, const char *no_proxy_valu
     return 0;
 }
 
-/* PoP: safe_url_for_log @ gateway/platforms/base.py:safe_url_for_log */
+/* PoP: URL @ gateway/platforms/base.py:safe_url_for_log */
 /* Returns malloc'd log-safe URL (strips userinfo, truncates). Caller frees. */
 char *safe_url_for_log(const char *url, int max_len)
 {
@@ -350,7 +350,7 @@ char *safe_url_for_log(const char *url, int max_len)
  *  These were REAL_GAP.
  * =========================================================================== */
 
-/* PoP: is_network_accessible @ gateway/platforms/base.py:is_network_accessible */
+/* PoP: loopback @ gateway/platforms/base.py:is_network_accessible */
 /* True if host would expose the server beyond loopback (IPv4/IPv6 literal or
  * resolvable non-loopback address). DNS failure fails open (returns 1) to
  * match Python's gaierror->True behaviour. */
@@ -422,7 +422,7 @@ long get_inbound_media_max_bytes(void)
     return BASE_DEFAULT_INBOUND_MEDIA_MAX_BYTES;
 }
 
-/* PoP: validate_inbound_media_size @ gateway/platforms/base.py:validate_inbound_media_size */
+/* PoP: large @ gateway/platforms/base.py:validate_inbound_media_size */
 /* Returns 0 if within limit, -1 if too large (mirrors Python raising ValueError). */
 int validate_inbound_media_size(long size, long max_bytes)
 {
@@ -435,7 +435,7 @@ int validate_inbound_media_size(long size, long max_bytes)
 
 extern char *dashboard_procs_hermes_home_dir(void);
 
-/* PoP: _parse_docker_volume_mounts @ gateway/platforms/base.py:_parse_docker_volume_mounts */
+/* PoP: base_parse_docker_volume_mounts @ gateway/platforms/base.py:_parse_docker_volume_mounts */
 /* Returns JSON array of {"host":"...","container":"..."} pairs. Caller frees. */
 char *base_parse_docker_volume_mounts(void) {
     const char *raw = getenv("TERMINAL_DOCKER_VOLUMES");
@@ -480,7 +480,7 @@ char *base_parse_docker_volume_mounts(void) {
     return out;
 }
 
-/* PoP: _default_docker_workspace_host_root @ gateway/platforms/base.py:_default_docker_workspace_host_root */
+/* PoP: base_default_docker_workspace_root @ gateway/platforms/base.py:_default_docker_workspace_host_root */
 /* Returns malloc'd path or NULL. Caller frees. */
 char *base_default_docker_workspace_root(void) {
     const char *env = getenv("TERMINAL_ENV");
@@ -501,7 +501,7 @@ char *base_default_docker_workspace_root(void) {
     return out;
 }
 
-/* PoP: _docker_persistent_home_host_root @ gateway/platforms/base.py:_docker_persistent_home_host_root */
+/* PoP: base_docker_persistent_home_root @ gateway/platforms/base.py:_docker_persistent_home_host_root */
 /* Returns malloc'd path or NULL. Caller frees. */
 char *base_docker_persistent_home_root(void) {
     const char *env = getenv("TERMINAL_ENV");
@@ -521,7 +521,7 @@ char *base_docker_persistent_home_root(void) {
     return out;
 }
 
-/* PoP: _cache_dir_container_mounts @ gateway/platforms/base.py:_cache_dir_container_mounts */
+/* PoP: base_cache_dir_container_mounts @ gateway/platforms/base.py:_cache_dir_container_mounts */
 /* Returns JSON array of {"host":"...","container":"..."} pairs. Caller frees. */
 char *base_cache_dir_container_mounts(void) {
     const char *env = getenv("TERMINAL_ENV");

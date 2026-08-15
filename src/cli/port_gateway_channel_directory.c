@@ -109,7 +109,7 @@ static void apply_channel_aliases(json_t *platforms)
     json_free(aliases);
 }
 
-/* PoP: _normalize_adapter_channels @ gateway/channel_directory.py:_normalize_adapter_channels */
+/* PoP: list_channels @ gateway/channel_directory.py:_normalize_adapter_channels */
 /* Validate and dedupe channel entries from an adapter's list_channels().
  * Input: JSON array of channel objects. Output: malloc'd JSON array of
  * {id, name, type, [thread_id], [guild]} entries, deduped by id. */
@@ -760,7 +760,7 @@ char *format_directory_for_display(void)
     return out;
 }
 
-/* PoP: _normalize_adapter_channels @ gateway/channel_directory.py:_normalize_adapter_channels */
+/* PoP: list_channels @ gateway/channel_directory.py:_normalize_adapter_channels */
 /* Validate and dedupe channel entries returned by an adapter's list_channels()
  * hook. raw_json is a JSON array of {id,name,type,thread_id,guild}. Returns a
  * malloc'd JSON array of normalized entries, deduped by id. */

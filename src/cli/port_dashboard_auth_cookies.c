@@ -88,7 +88,7 @@ const char *dash_read_with_fallback(const char *bare,
 
 /* ---- set/clear/read builders (emit cookie directives as strings) ---- */
 
-/* PoP: dash_set_session_cookies @ hermes_cli/dashboard_auth/cookies.py:set_session_cookies */
+/* PoP: out @ hermes_cli/dashboard_auth/cookies.py:set_session_cookies */
 /* Appends Set-Cookie directives to out (caller frees). Returns count. */
 int dash_set_session_cookies(char *out[], int out_cap,
                               const char *access_token,

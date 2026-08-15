@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: agent_secret_sources_base_get_source_environment @ agent/secret_sources/base.py:get_source_environment */
+/* PoP: agent_secret_sources_base_get_source_environment_p @ agent/secret_sources/base.py:get_source_environment */
 json_t *agent_secret_sources_base_get_source_environment_p(void) {
     return json_object();
 }

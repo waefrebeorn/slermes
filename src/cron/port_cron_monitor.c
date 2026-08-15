@@ -41,7 +41,7 @@ bool scheduler_run_job_script(const char *script_path, const char *workdir,
 #define CRON_MONITOR_SNAPSHOT_NAME  "monitor_last_output.txt"
 
 /* ── Snapshot path ────────────────────────────────────────────────── */
-/* PoP: _snapshot_path @ cron/monitor.py:_snapshot_path */
+/* PoP: monitor_snapshot_path @ cron/monitor.py:_snapshot_path */
 static char *monitor_snapshot_path(const char *job_id) {
     char *err = NULL;
     char *dir = cronjobs_job_output_dir(job_id, &err);
@@ -54,7 +54,7 @@ static char *monitor_snapshot_path(const char *job_id) {
 }
 
 /* ── Hash ─────────────────────────────────────────────────────────── */
-/* PoP: hash_monitor_output @ cron/monitor.py:hash_monitor_output */
+/* PoP: cron_monitor_hash_output @ cron/monitor.py:hash_monitor_output */
 char *cron_monitor_hash_output(const char *output) {
     if (!output) return hash_sha256_hex((const unsigned char *)"", 0);
     return hash_sha256_hex((const unsigned char *)output, strlen(output));
@@ -62,7 +62,7 @@ char *cron_monitor_hash_output(const char *output) {
 
 /* ── Source execution ─────────────────────────────────────────────── */
 
-/* PoP: _fetch_monitor_url @ cron/monitor.py:_fetch_monitor_url */
+/* PoP: fetch_monitor_url @ cron/monitor.py:_fetch_monitor_url */
 /* Bounded GET of a monitor URL. Returns true+body on 2xx. */
 static bool fetch_monitor_url(const char *url, char **out) {
     if (!url) { if (out) *out = NULL; return false; }
@@ -99,7 +99,7 @@ static bool fetch_monitor_url(const char *url, char **out) {
     return ok;
 }
 
-/* PoP: _run_monitor_source @ cron/monitor.py:_run_monitor_source */
+/* PoP: cron_monitor_run_source @ cron/monitor.py:_run_monitor_source */
 /* Run the job's monitor source; (ok, output) where output is malloc'd. */
 bool cron_monitor_run_source(const char *script, const char *url,
                              const char *workdir, char **output) {
@@ -114,7 +114,7 @@ bool cron_monitor_run_source(const char *script, const char *url,
 /* True iff a non-NULL, non-whitespace-only string has content after strip. */
 static bool _cron_monitor_strip_has_nonempty(const char *s);
 
-/* PoP: job_has_monitor @ cron/monitor.py:job_has_monitor */
+/* PoP: cron_monitor_has @ cron/monitor.py:job_has_monitor */
 bool cron_monitor_has(const char *monitor_script, const char *monitor_url) {
     /* Python: (monitor_script or "").strip() — strip whitespace first. */
     const char *s = monitor_script ? monitor_script : "";
@@ -134,7 +134,7 @@ static bool _cron_monitor_strip_has_nonempty(const char *s) {
 
 /* ── Diff ─────────────────────────────────────────────────────────── */
 
-/* PoP: build_monitor_diff @ cron/monitor.py:build_monitor_diff */
+/* PoP: cron_monitor_build_diff @ cron/monitor.py:build_monitor_diff */
 char *cron_monitor_build_diff(const char *old, const char *new_out) {
     /* Reuse libdifflib's faithful unified_diff (Myers/LCS). It emits
      * "--- original\n+++ modified\n" headers; cron/monitor.py pins
@@ -187,7 +187,7 @@ char *cron_monitor_build_diff(const char *old, const char *new_out) {
 
 /* ── Context block + main entry ────────────────────────────────────── */
 
-/* PoP: _read_last_output @ cron/monitor.py:_read_last_output */
+/* PoP: monitor_read_last_output @ cron/monitor.py:_read_last_output */
 static char *monitor_read_last_output(const char *job_id) {
     char *path = monitor_snapshot_path(job_id);
     if (!path) return strdup("");
@@ -205,7 +205,7 @@ static char *monitor_read_last_output(const char *job_id) {
     return buf ? buf : strdup("");
 }
 
-/* PoP: _write_last_output @ cron/monitor.py:_write_last_output */
+/* PoP: monitor_write_last_output @ cron/monitor.py:_write_last_output */
 static void monitor_write_last_output(const char *job_id, const char *output) {
     char *path = monitor_snapshot_path(job_id);
     if (!path) return;
@@ -228,7 +228,7 @@ static void monitor_write_last_output(const char *job_id, const char *output) {
     fclose(f);
 }
 
-/* PoP: _persist_monitor_state @ cron/monitor.py:_persist_monitor_state */
+/* PoP: monitor_persist @ cron/monitor.py:_persist_monitor_state */
 static void monitor_persist(const char *job_id, const char *hash, const char *output) {
     monitor_write_last_output(job_id, output);
     char *now = now_iso();
@@ -258,7 +258,7 @@ static char *monitor_trim_output(const char *output) {
     return out;
 }
 
-/* PoP: check_monitor @ cron/monitor.py:check_monitor */
+/* PoP: cron_monitor_check @ cron/monitor.py:check_monitor */
 monitor_outcome_t cron_monitor_check(const char *job_id,
                                      const char *monitor_script,
                                      const char *monitor_url,

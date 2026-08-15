@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_security_audit_run_audit @ hermes_cli/security_audit.py:run_audit */
+/* PoP: hermes_cli_security_audit_run_audit_p @ hermes_cli/security_audit.py:run_audit */
 json_t *hermes_cli_security_audit_run_audit_p(void) {
     return json_object();
 }

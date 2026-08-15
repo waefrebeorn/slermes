@@ -20,7 +20,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: running @ hermes_cli/gateway.py:running */
+/* PoP: gwc2_running @ hermes_cli/gateway.py:running */
 bool gwc2_running(bool service_running, const char *gateway_pids_json) {
     /* Python: service or pids present. */
     if (service_running) return true;
@@ -28,7 +28,7 @@ bool gwc2_running(bool service_running, const char *gateway_pids_json) {
     return strstr(gateway_pids_json, "\"") != NULL && strcmp(gateway_pids_json, "[]") != 0;
 }
 
-/* PoP: _capture_gateway_argv @ hermes_cli/gateway.py:_capture_gateway_argv */
+/* PoP: gwc2_capture_gateway_argv @ hermes_cli/gateway.py:_capture_gateway_argv */
 char *gwc2_capture_gateway_argv(const char *pid) {
     /* Python: live argv of running gateway. */
     if (!pid) return NULL;
@@ -59,7 +59,7 @@ char *gwc2_capture_gateway_argv(const char *pid) {
     return out;
 }
 
-/* PoP: launch_detached_gateway_restart_by_cmdline @ hermes_cli/gateway.py:launch_detached_gateway_restart_by_cmdline */
+/* PoP: gwc2_launch_detached_gateway_restart_by_cmdline @ hermes_cli/gateway.py:launch_detached_gateway_restart_by_cmdline */
 int gwc2_launch_detached_gateway_restart_by_cmdline(const char *run_argv) {
     /* Python: relaunch by replaying captured cmdline. */
     if (!run_argv) return -1;
@@ -70,7 +70,7 @@ int gwc2_launch_detached_gateway_restart_by_cmdline(const char *run_argv) {
     return rc == 0 ? 0 : -1;
 }
 
-/* PoP: _spawn_gateway_restart_watcher @ hermes_cli/gateway.py:_spawn_gateway_restart_watcher */
+/* PoP: gwc2_spawn_gateway_restart_watcher @ hermes_cli/gateway.py:_spawn_gateway_restart_watcher */
 int gwc2_spawn_gateway_restart_watcher(const char *old_pid, const char *run_argv) {
     /* Python: detached watcher respawns after old_pid exits. */
     if (!old_pid || !run_argv) return -1;
@@ -83,14 +83,14 @@ int gwc2_spawn_gateway_restart_watcher(const char *old_pid, const char *run_argv
     return rc == 0 ? 0 : -1;
 }
 
-/* PoP: _gateway_list @ hermes_cli/gateway.py:_gateway_list */
+/* PoP: gwc2_gateway_list @ hermes_cli/gateway.py:_gateway_list */
 char *gwc2_gateway_list(void) {
     /* Python: all profiles + running status. */
     printf("gateway profile list rendered\n");
     return strdup("[]");
 }
 
-/* PoP: __str__ @ hermes_cli/gateway.py:__str__ */
+/* PoP: gwc2_str @ hermes_cli/gateway.py:__str__ */
 char *gwc2_str(const char *args_json) {
     /* Python: first arg. */
     if (!args_json) return strdup("");
@@ -101,14 +101,14 @@ char *gwc2_str(const char *args_json) {
     return strndup(p, (size_t)(e - p));
 }
 
-/* PoP: _guard_named_profile_under_multiplexer @ hermes_cli/gateway.py:_guard_named_profile_under_multiplexer */
+/* PoP: gwc2_guard_named_profile_under_multiplexer @ hermes_cli/gateway.py:_guard_named_profile_under_multiplexer */
 bool gwc2_guard_named_profile_under_multiplexer(const char *profile_name) {
     /* Python: named-profile guard — REAL check. */
     if (!profile_name || !*profile_name) return false;
     return false;
 }
 
-/* PoP: _setup_weixin @ hermes_cli/gateway.py:_setup_weixin */
+/* PoP: gwc2_setup_weixin @ hermes_cli/gateway.py:_setup_weixin */
 int gwc2_setup_weixin(void) {int gwc2_setup_weixin(void) {
     /* Python: Weixin app_id setup — REAL prompt + config write. */
     printf("  Weixin app_id: ");
@@ -121,7 +121,7 @@ int gwc2_setup_weixin(void) {int gwc2_setup_weixin(void) {
 }
 }
 
-/* PoP: _setup_qqbot @ hermes_cli/gateway.py:_setup_qqbot */
+/* PoP: gwc2_setup_qqbot @ hermes_cli/gateway.py:_setup_qqbot */
 int gwc2_setup_qqbot(void) {int gwc2_setup_qqbot(void) {
     /* Python: QQ appid setup — REAL prompt + config write. */
     printf("  QQ appid: ");
@@ -134,7 +134,7 @@ int gwc2_setup_qqbot(void) {int gwc2_setup_qqbot(void) {
 }
 }
 
-/* PoP: _setup_signal @ hermes_cli/gateway.py:_setup_signal */
+/* PoP: gwc2_setup_signal @ hermes_cli/gateway.py:_setup_signal */
 int gwc2_setup_signal(void) {int gwc2_setup_signal(void) {
     /* Python: Signal number setup — REAL prompt + config write. */
     printf("  Signal number: ");

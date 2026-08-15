@@ -37,7 +37,7 @@ static const char *LEGACY1 =
     "Delete the contents (or this file) to use the default personality.\n"
     "-->";
 
-/* PoP: hermes_cli_default_soul__normalize_soul @ hermes_cli/default_soul.py:_normalize_soul */
+/* PoP: hermes_cli_default_soul_normalize @ hermes_cli/default_soul.py:_normalize_soul */
 char *hermes_cli_default_soul_normalize(const char *text)
 {
     if (!text) text = "";
@@ -70,7 +70,7 @@ char *hermes_cli_default_soul_normalize(const char *text)
     return out;
 }
 
-/* PoP: hermes_cli_default_soul__is_legacy_template_soul @ hermes_cli/default_soul.py:is_legacy_template_soul */
+/* PoP: hermes_cli_default_soul_is_legacy @ hermes_cli/default_soul.py:is_legacy_template_soul */
 bool hermes_cli_default_soul_is_legacy(const char *text)
 {
     char *norm = hermes_cli_default_soul_normalize(text);

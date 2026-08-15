@@ -51,7 +51,7 @@ static int cron_token_is_silent(const char *line)
     return 0;
 }
 
-/* PoP: _is_cron_silence_response @ cron/scheduler.py:_is_cron_silence_response */
+/* PoP: scheduler_is_cron_silence_response @ cron/scheduler.py:_is_cron_silence_response */
 int scheduler_is_cron_silence_response(const char *text)
 {
     if (!text) return 0;
@@ -101,7 +101,7 @@ int scheduler_is_cron_silence_response(const char *text)
     return 0;
 }
 
-/* PoP: _normalize_deliver_value @ cron/scheduler.py:_normalize_deliver_value */
+/* PoP: scheduler_normalize_deliver_value @ cron/scheduler.py:_normalize_deliver_value */
 /*
  * Normalize a deliver value to its canonical string form.
  *  - None / "" -> "local"

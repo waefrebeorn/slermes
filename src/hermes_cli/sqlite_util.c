@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-/* PoP: add_column_if_missing @ hermes_cli/sqlite_util.py:add_column_if_missing */
+/* PoP: sqlite_util_add_column_if_missing @ hermes_cli/sqlite_util.py:add_column_if_missing */
 sqlite_util_add_result_t sqlite_util_add_column_if_missing(
     sqlite3 *conn, const char *table, const char *column, const char *ddl) {
     if (!conn || !table || !ddl) return SQLITE_UTIL_ADD_ERROR;

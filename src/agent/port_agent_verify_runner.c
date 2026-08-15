@@ -17,7 +17,7 @@
 #define RUNNER_TAIL_CHARS 4000
 
 /* ── _tail: return last `limit` characters of text ── */
-/* PoP: _tail @ agent/verify/runner.py:_tail */
+/* PoP: runner_tail @ agent/verify/runner.py:_tail */
 char *runner_tail(const char *text, int limit)
 {
     if (!text) return strdup("");
@@ -29,14 +29,14 @@ char *runner_tail(const char *text, int limit)
 /* ── PhaseResult dataclass helpers ── */
 /* These mirror the Python @dataclass PhaseResult properties/methods. */
 
-/* PoP: ok @ agent/verify/runner.py:ok */
+/* PoP: runner_phase_result_ok @ agent/verify/runner.py:ok */
 /* PhaseResult.ok: exit_code == 0 and not timed_out */
 bool runner_phase_result_ok(int exit_code, bool timed_out)
 {
     return exit_code == 0 && !timed_out;
 }
 
-/* PoP: to_dict @ agent/verify/runner.py:to_dict */
+/* PoP: runner_phase_result_to_dict @ agent/verify/runner.py:to_dict */
 /* PhaseResult.to_dict: serialize to JSON object */
 json_t *runner_phase_result_to_dict(
     const char *phase,
@@ -59,7 +59,7 @@ json_t *runner_phase_result_to_dict(
 
 /* ── ReadinessResult dataclass helpers ── */
 
-/* PoP: to_dict @ agent/verify/runner.py:to_dict */
+/* PoP: runner_readiness_result_to_dict @ agent/verify/runner.py:to_dict */
 /* ReadinessResult.to_dict: serialize to JSON object */
 json_t *runner_readiness_result_to_dict(
     const char *url,
@@ -81,7 +81,7 @@ json_t *runner_readiness_result_to_dict(
 
 /* ── VerifyResult dataclass helpers ── */
 
-/* PoP: ok @ agent/verify/runner.py:ok */
+/* PoP: runner_verify_result_ok @ agent/verify/runner.py:ok */
 /* VerifyResult.ok: all phases ok AND readiness ok */
 bool runner_verify_result_ok(
     const json_t *phases_arr,
@@ -102,7 +102,7 @@ bool runner_verify_result_ok(
     return true;
 }
 
-/* PoP: to_dict @ agent/verify/runner.py:to_dict */
+/* PoP: runner_verify_result_to_dict @ agent/verify/runner.py:to_dict */
 /* VerifyResult.to_dict: serialize to JSON object */
 json_t *runner_verify_result_to_dict(
     const char *recipe_name,
@@ -140,7 +140,7 @@ json_t *runner_verify_result_to_dict(
 }
 
 /* ── _run_phase_command: run a shell command with timeout ── */
-/* PoP: _run_phase_command @ agent/verify/runner.py:_run_phase_command */
+/* PoP: runner_run_phase_command @ agent/verify/runner.py:_run_phase_command */
 json_t *runner_run_phase_command(
     const char *phase,
     const char *command,
@@ -202,7 +202,7 @@ json_t *runner_run_phase_command(
 }
 
 /* ── _poll_readiness: poll a URL until it responds ── */
-/* PoP: _poll_readiness @ agent/verify/runner.py:_poll_readiness */
+/* PoP: runner_poll_readiness @ agent/verify/runner.py:_poll_readiness */
 json_t *runner_poll_readiness(
     const char *url,
     double timeout_sec,
@@ -256,7 +256,7 @@ json_t *runner_poll_readiness(
 }
 
 /* ── _terminate_process_group: SIGTERM then SIGKILL a process group ── */
-/* PoP: _terminate_process_group @ agent/verify/runner.py:_terminate_process_group */
+/* PoP: runner_terminate_process_group @ agent/verify/runner.py:_terminate_process_group */
 void runner_terminate_process_group(pid_t pid)
 {
     if (pid <= 0) return;
@@ -285,7 +285,7 @@ void runner_terminate_process_group(pid_t pid)
 }
 
 /* ── _run_start_phase: launch start command, poll readiness, tear down ── */
-/* PoP: _run_start_phase @ agent/verify/runner.py:_run_start_phase */
+/* PoP: runner_run_start_phase @ agent/verify/runner.py:_run_start_phase */
 json_t *runner_run_start_phase(
     const char *start_command,
     const char *root,
@@ -343,7 +343,7 @@ json_t *runner_run_start_phase(
 }
 
 /* ── run_verify: orchestrate a full verify pass ── */
-/* PoP: run_verify @ agent/verify/runner.py:run_verify */
+/* PoP: runner_run_verify @ agent/verify/runner.py:run_verify */
 json_t *runner_run_verify(
     const char *root,
     const char *recipe_name,

@@ -20,7 +20,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ hermes_cli/nous_billing.py:__init__ */
+/* PoP: nb2_error_init @ hermes_cli/nous_billing.py:__init__ */
 char *nb2_error_init(const char *message, const char *status, const char *error) {
     char *out = NULL;
     asprintf(&out, "{\"message\": \"%s\", \"status\": \"%s\", \"error\": \"%s\"}",
@@ -28,7 +28,7 @@ char *nb2_error_init(const char *message, const char *status, const char *error)
     return out;
 }
 
-/* PoP: resolve_portal_base_url @ hermes_cli/nous_billing.py:resolve_portal_base_url */
+/* PoP: nb2_resolve_portal_base_url @ hermes_cli/nous_billing.py:resolve_portal_base_url */
 char *nb2_resolve_portal_base_url(void) {
     /* Python: login-time precedence env. */
     const char *v = getenv("HERMES_PORTAL_BASE_URL");
@@ -36,7 +36,7 @@ char *nb2_resolve_portal_base_url(void) {
     return strdup("https://portal.nousresearch.com");
 }
 
-/* PoP: _absolutize_portal_url @ hermes_cli/nous_billing.py:_absolutize_portal_url */
+/* PoP: nb2_absolutize_portal_url @ hermes_cli/nous_billing.py:_absolutize_portal_url */
 char *nb2_absolutize_portal_url(const char *portal_url) {
     /* Python: relative server url → absolute. */
     if (!portal_url) return NULL;
@@ -49,7 +49,7 @@ char *nb2_absolutize_portal_url(const char *portal_url) {
     return out;
 }
 
-/* PoP: _retry_after_seconds @ hermes_cli/nous_billing.py:_retry_after_seconds */
+/* PoP: nb2_retry_after_seconds @ hermes_cli/nous_billing.py:_retry_after_seconds */
 long nb2_retry_after_seconds(const char *header_value) {
     /* Python: integer seconds or None. */
     if (!header_value || !*header_value) return -1;
@@ -59,7 +59,7 @@ long nb2_retry_after_seconds(const char *header_value) {
     return v;
 }
 
-/* PoP: get_billing_state @ hermes_cli/nous_billing.py:get_billing_state */
+/* PoP: nb2_get_billing_state @ hermes_cli/nous_billing.py:get_billing_state */
 char *nb2_get_billing_state(const char *base_url, const char *token) {
     /* Python: GET /api/billing/state — REAL http. */
     if (!base_url) return NULL;
@@ -79,7 +79,7 @@ char *nb2_get_billing_state(const char *base_url, const char *token) {
     return out;
 }
 
-/* PoP: patch_auto_top_up @ hermes_cli/nous_billing.py:patch_auto_top_up */
+/* PoP: nb2_patch_auto_top_up @ hermes_cli/nous_billing.py:patch_auto_top_up */
 char *nb2_patch_auto_top_up(const char *base_url, const char *token, const char *config_json) {
     /* Python: PATCH /api/billing/auto-top-up. */
     if (!base_url) return NULL;
@@ -100,7 +100,7 @@ char *nb2_patch_auto_top_up(const char *base_url, const char *token, const char 
     return out;
 }
 
-/* PoP: post_charge @ hermes_cli/nous_billing.py:post_charge */
+/* PoP: nb2_post_charge @ hermes_cli/nous_billing.py:post_charge */
 char *nb2_post_charge(const char *base_url, const char *token, const char *payload_json, const char *idempotency_key) {
     /* Python: POST /api/billing/charge with Idempotency-Key. */
     if (!base_url) return NULL;
@@ -123,7 +123,7 @@ char *nb2_post_charge(const char *base_url, const char *token, const char *paylo
     return out;
 }
 
-/* PoP: get_charge_status @ hermes_cli/nous_billing.py:get_charge_status */
+/* PoP: nb2_get_charge_status @ hermes_cli/nous_billing.py:get_charge_status */
 char *nb2_get_charge_status(const char *base_url, const char *token, const char *charge_id) {
     /* Python: GET /api/billing/charge/{id}. */
     if (!base_url || !charge_id) return NULL;

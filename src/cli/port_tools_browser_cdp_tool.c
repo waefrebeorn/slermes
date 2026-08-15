@@ -278,7 +278,7 @@ char *browser_cdp_tool__redact_cdp_output(const char *html) {
     return hermes_redact(html);
 }
 
-/* PoP: browser_cdp_tool__private_page_guard_error @ tools/browser_cdp_tool.py:_private_page_guard_error */
+/* PoP: string @ tools/browser_cdp_tool.py:_private_page_guard_error */
 /* Build the canonical "private page / SSRF guard" error for a blocked action.
  * Returns a malloc'd error string (caller frees). */
 char *browser_cdp_tool__private_page_guard_error(const char *effective_task_id,
@@ -286,7 +286,7 @@ char *browser_cdp_tool__private_page_guard_error(const char *effective_task_id,
     return browser_blocked_private_page_action(effective_task_id, action);
 }
 
-/* PoP: browser_cdp_tool__browser_cdp_private_guard @ tools/browser_cdp_tool.py:_browser_cdp_private_guard */
+/* PoP: string @ tools/browser_cdp_tool.py:_browser_cdp_private_guard */
 /* Guard: refuse to navigate/act on a private/blocked URL. Returns a malloc'd
  * error string (caller frees) when blocked, else NULL. Mirrors Python: blocked
  * if the URL is a private-range address, on the always-blocked list, or

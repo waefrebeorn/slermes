@@ -65,7 +65,7 @@ static bool model_contains_any(const char *model, const char **patterns) {
     return false;
 }
 
-/* PoP: cli_agent_anthropic_adapter__supports_adaptive_thinking @ agent/anthropic_adapter.py:_supports_adaptive_thinking */
+/* PoP: thinking @ agent/anthropic_adapter.py:_supports_adaptive_thinking */
 /* Port of Python agent/anthropic_adapter.py:_supports_adaptive_thinking().
  * Claude 4.6+ models support adaptive thinking (type="adaptive" + output_config.effort) */
 static bool supports_adaptive_thinking(const char *model) {
@@ -75,7 +75,7 @@ static bool supports_adaptive_thinking(const char *model) {
     return result;
 }
 
-/* PoP: cli_agent_anthropic_adapter__supports_xhigh_effort @ agent/anthropic_adapter.py:_supports_xhigh_effort */
+/* PoP: supports_xhigh_effort @ agent/anthropic_adapter.py:_supports_xhigh_effort */
 /* Port of Python agent/anthropic_adapter.py:_supports_xhigh_effort().
  * Opus 4.7+ models accept the "xhigh" effort level */
 static bool supports_xhigh_effort(const char *model) {
@@ -85,7 +85,7 @@ static bool supports_xhigh_effort(const char *model) {
     return result;
 }
 
-/* PoP: cli_agent_anthropic_adapter__forbids_sampling_params @ agent/anthropic_adapter.py:_forbids_sampling_params */
+/* PoP: forbids_sampling_params @ agent/anthropic_adapter.py:_forbids_sampling_params */
 /* Port of Python agent/anthropic_adapter.py:_forbids_sampling_params().
  * Opus 4.7+ models reject temperature/top_p/top_k (any non-null value → 400) */
 static bool forbids_sampling_params(const char *model) {
@@ -95,7 +95,7 @@ static bool forbids_sampling_params(const char *model) {
     return result;
 }
 
-/* PoP: model_supports_fast_mode @ agent/anthropic_adapter.py:_supports_fast_mode */
+/* PoP: mode @ agent/anthropic_adapter.py:_supports_fast_mode */
 /* Port of Python agent/anthropic_adapter.py:_supports_fast_mode().
  * Opus 4.6 supports fast mode (speed="fast" + beta header) */
 static bool supports_fast_mode(const char *model) {
@@ -1195,7 +1195,7 @@ bool is_bedrock_model_id(const char *model_id) {
     return false;
 }
 
-/* PoP: cli_agent_anthropic_adapter__resolve_positive_anthropic_max_tokens @ agent/anthropic_adapter.py:_resolve_positive_anthropic_max_tokens */
+/* PoP: anthropic_resolve_positive_max_tokens @ agent/anthropic_adapter.py:_resolve_positive_anthropic_max_tokens */
 /* Port of Python anthropic_adapter.py:_resolve_positive_anthropic_max_tokens(). */
 int anthropic_resolve_positive_max_tokens(int value) {
     if (value <= 0) return 0;
@@ -3035,7 +3035,7 @@ char *anthropic_refresh_oauth_token(json_t *creds) {
     return result;
 }
 
-/* PoP: cli_agent_anthropic_adapter__to_plain_data @ agent/anthropic_adapter.py:_to_plain_data */
+/* PoP: anthropic_to_plain_data @ agent/anthropic_adapter.py:_to_plain_data */
 /* Port of Python anthropic_adapter.py:_to_plain_data().
  * Recursively convert SDK objects to plain data structures.
  * In C, there are no Pydantic/SDK objects — values are already plain JSON.
@@ -3050,7 +3050,7 @@ json_t *anthropic_to_plain_data(const json_t *value) {
     return copy;
 }
 
-/* PoP: cli_agent_anthropic_adapter__get_anthropic_sdk @ agent/anthropic_adapter.py:_get_anthropic_sdk */
+/* PoP: anthropic_get_sdk @ agent/anthropic_adapter.py:_get_anthropic_sdk */
 /* Port of Python anthropic_adapter.py:_get_anthropic_sdk().
  * Returns the anthropic SDK reference. In C, no Python SDK exists;
  * returns a version-identifying string constant. */

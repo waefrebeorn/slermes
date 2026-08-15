@@ -63,7 +63,7 @@ static int parse_iso_to_ts(const char *value, time_t *out)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _hermes_meta @ agent/learning_graph.py:_hermes_meta */
+/* PoP: learning_graph_hermes_meta @ agent/learning_graph.py:_hermes_meta */
 /* fm_json: JSON object. Returns malloc'd JSON of metadata.hermes (or "{}"). */
 char *learning_graph_hermes_meta(const char *fm_json)
 {
@@ -84,7 +84,7 @@ char *learning_graph_hermes_meta(const char *fm_json)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _related @ agent/learning_graph.py:_related */
+/* PoP: learning_graph_related @ agent/learning_graph.py:_related */
 /* fm_json: JSON object. Returns malloc'd JSON array of related skill names. */
 char *learning_graph_related(const char *fm_json)
 {
@@ -144,7 +144,7 @@ char *learning_graph_related(const char *fm_json)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _category @ agent/learning_graph.py:_category */
+/* PoP: learning_graph_category @ agent/learning_graph.py:_category */
 /* fm_json: JSON object; fallback: caller-computed path-derived category
  * (mirrors skill_md.parts[-3]). Returns malloc'd category string. */
 char *learning_graph_category(const char *fm_json, const char *fallback)
@@ -170,7 +170,7 @@ char *learning_graph_category(const char *fm_json, const char *fallback)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _to_int_ts @ agent/learning_graph.py:_to_int_ts */
+/* PoP: scalar @ agent/learning_graph.py:_to_int_ts */
 /* value_json: a JSON scalar (number or string). *found set to 1 on success.
  * Returns epoch seconds (or 0 with *found=0 on failure). */
 long long learning_graph_to_int_ts(const char *value_json, int *found)
@@ -202,7 +202,7 @@ long long learning_graph_to_int_ts(const char *value_json, int *found)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _usage_timestamp @ agent/learning_graph.py:_usage_timestamp */
+/* PoP: learning_graph_usage_timestamp @ agent/learning_graph.py:_usage_timestamp */
 /* rec_json: JSON object. Returns first valid ts among the priority keys,
  * or 0 with *found=0 if none. */
 long long learning_graph_usage_timestamp(const char *rec_json, int *found)
@@ -227,7 +227,7 @@ long long learning_graph_usage_timestamp(const char *rec_json, int *found)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _tokenize @ agent/learning_graph.py:_tokenize */
+/* PoP: tokens @ agent/learning_graph.py:_tokenize */
 /* Returns malloc'd JSON array of tokens (len>=3) from text. */
 char *learning_graph_tokenize(const char *text)
 {
@@ -308,7 +308,7 @@ static int lg_set_intersect_count(char **a, int an, char **b, int bn)
     return c;
 }
 
-/* PoP: learning_graph_build_edges @ agent/learning_graph.py:build_edges */
+/* PoP: edges @ agent/learning_graph.py:build_edges */
 /* nodes_json: JSON array of {"name":str,"related":[str,...]}. Returns a
  * malloc'd JSON array of [a,b] sorted, deduped undirected edges (endpoints
  * both present, no self-loops). Preserves node/related iteration order. */
@@ -382,7 +382,7 @@ done:;
     return ret;
 }
 
-/* PoP: learning_graph_density_stats @ agent/learning_graph.py:density_stats */
+/* PoP: objects @ agent/learning_graph.py:density_stats */
 /* nodes_json: JSON array of node objects (name,category,use_count,created_by).
  * edges_json: JSON array of [a,b] pairs. Returns malloc'd JSON object of graph
  * density metrics matching the Python dict (edges_per_node round-3,

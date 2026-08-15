@@ -14,12 +14,12 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_mcp_config_info @ hermes_cli/mcp_config.py:_info */
+/* PoP: hermes_cli_mcp_config_info_p @ hermes_cli/mcp_config.py:_info */
 json_t *hermes_cli_mcp_config_info_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_mcp_config_success @ hermes_cli/mcp_config.py:_success */
+/* PoP: hermes_cli_mcp_config_success_p @ hermes_cli/mcp_config.py:_success */
 json_t *hermes_cli_mcp_config_success_p(void) {
     return json_object();
 }

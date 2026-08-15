@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: cli_gateway_platforms_qqbot_crypto_generate_bind_key @ gateway/platforms/qqbot/crypto.py:generate_bind_key */
+/* PoP: base64 @ gateway/platforms/qqbot/crypto.py:generate_bind_key */
 
 /* Port of Python gateway/platforms/qqbot/crypto.py:generate_bind_key */
 /* Generate a 256-bit random AES key and return it as base64 (caller free()). */
@@ -26,7 +26,7 @@ char *cli_gateway_platforms_qqbot_crypto_generate_bind_key(void)
     return base64_encode(key, 32);
 }
 
-/* PoP: cli_gateway_platforms_qqbot_crypto_decrypt_secret @ gateway/platforms/qqbot/crypto.py:decrypt_secret */
+/* PoP: IV @ gateway/platforms/qqbot/crypto.py:decrypt_secret */
 
 /* Port of Python gateway/platforms/qqbot/crypto.py:decrypt_secret */
 /* Decrypt a base64-encoded AES-256-GCM ciphertext.

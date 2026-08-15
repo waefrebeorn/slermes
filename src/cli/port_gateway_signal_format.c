@@ -103,7 +103,7 @@ static char *normalize_bullet_markers(const char *src)
 
 typedef struct { int start; int len; char style[16]; } style_entry_t;
 
-/* PoP: gateway_signal_markdown_to_signal @ gateway/platforms/signal_format.py:markdown_to_signal */
+/* PoP: out_text @ gateway/platforms/signal_format.py:markdown_to_signal */
 
 /* Convert markdown -> (text, styles[]). Caller owns *out_text (malloc) and each
  * style string in styles[] (malloc). Returns number of style strings written. */

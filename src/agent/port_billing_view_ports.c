@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: provenance @ agent/billing_view.py:provenance */
+/* PoP: biv_provenance @ agent/billing_view.py:provenance */
 char *biv_provenance(const char *rung) {
     /* Python: human label for card pick reason. */
     if (!rung) return NULL;
@@ -33,7 +33,7 @@ char *biv_provenance(const char *rung) {
     return out;
 }
 
-/* PoP: display @ agent/billing_view.py:display */
+/* PoP: biv_display @ agent/billing_view.py:display */
 char *biv_display(const char *brand, const char *last4) {
     /* Python: Visa ····4242. */
     if (!brand || !last4) return NULL;
@@ -42,7 +42,7 @@ char *biv_display(const char *brand, const char *last4) {
     return out;
 }
 
-/* PoP: is_admin @ agent/billing_view.py:is_admin */
+/* PoP: biv_is_admin @ agent/billing_view.py:is_admin */
 bool biv_is_admin(const char *role) {
     /* Python: legacy OWNER/ADMIN display-only check. */
     if (!role) return false;

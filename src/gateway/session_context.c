@@ -122,7 +122,7 @@ void clear_session_vars(void) {
 }
 
 
-/* PoP: reset_session_vars @ gateway/session_context.py:reset_session_vars */
+/* PoP: leaks @ gateway/session_context.py:reset_session_vars */
 /* Reset every session context variable to the "never bound in this context"
  * state (Python's _UNSET sentinel). Distinct from clear_session_vars(), which
  * marks vars "explicitly cleared" (""); in the C env-var model both collapse to

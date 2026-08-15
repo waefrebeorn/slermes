@@ -105,7 +105,7 @@ bool async_consume_detached(async_coro_t *task) {
     return had_exception;
 }
 
-/* PoP: increase_indent @ utils.py:increase_indent */
+/* PoP: utils_increase_indent @ utils.py:increase_indent */
 char *utils_increase_indent(const char *text, bool flow, bool indentless)
 {
     (void)flow; (void)indentless;

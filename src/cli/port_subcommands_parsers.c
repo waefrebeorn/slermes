@@ -52,7 +52,7 @@ static char *emit_spec(json_t *spec)
     return ser ? ser : strdup("{}");
 }
 
-/* PoP: build_approvals_parser @ hermes_cli/subcommands/approvals.py:build_approvals_parser */
+/* PoP: subcmd_build_approvals_parser @ hermes_cli/subcommands/approvals.py:build_approvals_parser */
 char *subcmd_build_approvals_parser(void)
 {
     json_t *spec = json_object();
@@ -75,7 +75,7 @@ char *subcmd_build_approvals_parser(void)
     return emit_spec(spec);
 }
 
-/* PoP: build_import_agent_parser @ hermes_cli/subcommands/import_agent.py:build_import_agent_parser */
+/* PoP: subcmd_build_import_agent_parser @ hermes_cli/subcommands/import_agent.py:build_import_agent_parser */
 char *subcmd_build_import_agent_parser(void)
 {
     json_t *spec = json_object();
@@ -99,7 +99,7 @@ char *subcmd_build_import_agent_parser(void)
     return emit_spec(spec);
 }
 
-/* PoP: build_monitoring_parser @ hermes_cli/subcommands/monitoring.py:build_monitoring_parser */
+/* PoP: subcmd_build_monitoring_parser @ hermes_cli/subcommands/monitoring.py:build_monitoring_parser */
 char *subcmd_build_monitoring_parser(void)
 {
     json_t *spec = json_object();
@@ -116,7 +116,7 @@ char *subcmd_build_monitoring_parser(void)
     return emit_spec(spec);
 }
 
-/* PoP: build_sync_parser @ hermes_cli/subcommands/sync.py:build_sync_parser */
+/* PoP: subcmd_build_sync_parser @ hermes_cli/subcommands/sync.py:build_sync_parser */
 char *subcmd_build_sync_parser(void)
 {
     json_t *spec = json_object();
@@ -154,7 +154,7 @@ char *subcmd_build_sync_parser(void)
     return emit_spec(spec);
 }
 
-/* PoP: build_verify_parser @ hermes_cli/subcommands/verify.py:build_verify_parser */
+/* PoP: subcmd_build_verify_parser @ hermes_cli/subcommands/verify.py:build_verify_parser */
 char *subcmd_build_verify_parser(void)
 {
     json_t *spec = json_object();

@@ -11,7 +11,7 @@
 #include <string.h>
 #include <sys/time.h>
 
-/* PoP: HERMES_STATE_SCHEMA_SQL @ hermes_state.py:SCHEMA_SQL */
+/* PoP: hermes_state_now_epoch @ hermes_state.py:SCHEMA_SQL */
 const char *HERMES_STATE_SCHEMA_SQL =
     "CREATE TABLE IF NOT EXISTS schema_version (version INTEGER NOT NULL);"
     "CREATE TABLE IF NOT EXISTS sessions ("
@@ -165,7 +165,7 @@ const char *HERMES_STATE_SCHEMA_SQL =
     "CREATE INDEX IF NOT EXISTS idx_async_delegations_delivery"
     "    ON async_delegations(delivery_state, completed_at);";
 
-/* PoP: HERMES_STATE_DEFERRED_INDEX_SQL @ hermes_state.py:DEFERRED_INDEX_SQL */
+/* PoP: hermes_state_now_epoch @ hermes_state.py:DEFERRED_INDEX_SQL */
 const char *HERMES_STATE_DEFERRED_INDEX_SQL =
     "CREATE INDEX IF NOT EXISTS idx_messages_session_active"
     "    ON messages(session_id, active, timestamp);"
@@ -178,7 +178,7 @@ const char *HERMES_STATE_DEFERRED_INDEX_SQL =
     "CREATE INDEX IF NOT EXISTS idx_sessions_handoff_state"
     "    ON sessions(handoff_state, started_at);";
 
-/* PoP: HERMES_STATE_FTS_SQL @ hermes_state.py:FTS_SQL */
+/* PoP: hermes_state_now_epoch @ hermes_state.py:FTS_SQL */
 const char *HERMES_STATE_FTS_SQL =
     "CREATE VIRTUAL TABLE IF NOT EXISTS messages_fts USING fts5("
     "    content,"
@@ -220,7 +220,7 @@ const char *HERMES_STATE_FTS_SQL =
     "    VALUES (new.id, new.content, new.tool_name, new.tool_calls);"
     "END;";
 
-/* PoP: HERMES_STATE_FTS_TRIGRAM_SQL @ hermes_state.py:FTS_TRIGRAM_SQL */
+/* PoP: hermes_state_now_epoch @ hermes_state.py:FTS_TRIGRAM_SQL */
 const char *HERMES_STATE_FTS_TRIGRAM_SQL =
     "CREATE VIEW IF NOT EXISTS messages_fts_trigram_src AS"
     "    SELECT id, role, content, tool_name, tool_calls"
@@ -271,7 +271,7 @@ const char *HERMES_STATE_FTS_TRIGRAM_SQL =
     "    WHERE new.role <> 'tool';"
     "END;";
 
-/* PoP: hermes_state_apply_telegram_topic_migration @ hermes_state.py:apply_telegram_topic_migration */
+/* PoP: hermes_state_now_epoch @ hermes_state.py:apply_telegram_topic_migration */
 const char *HERMES_STATE_TOPIC_SQL =
     "CREATE TABLE IF NOT EXISTS telegram_dm_topic_mode ("
     "    chat_id TEXT PRIMARY KEY,"
@@ -373,7 +373,7 @@ hermes_state_db_t *hermes_state_db_open(const char *path) {
     return h;
 }
 
-/* PoP: apply_telegram_topic_migration @ hermes_state.py:apply_telegram_topic_migration */
+/* PoP: hermes_state_apply_telegram_topic_migration @ hermes_state.py:apply_telegram_topic_migration */
 /* PoP: hermes_state_apply_telegram_topic_migration @ hermes_state.py:apply_telegram_topic_migration */
 bool hermes_state_apply_telegram_topic_migration(hermes_state_db_t *db) {
     if (!db || !db->db) return false;

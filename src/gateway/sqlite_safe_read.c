@@ -28,7 +28,7 @@ static int     g_cap = 0;
 
 static char *dup_key(const char *p) { return p ? strdup(p) : NULL; }
 
-/* PoP: cmd_key @ hermes_cli/sqlite_safe_read.py:_key */
+/* PoP: sqlite_safe_key @ hermes_cli/sqlite_safe_read.py:_key */
 char *sqlite_safe_key(const char *path)
 {
     if (!path || !*path) return NULL;
@@ -107,7 +107,7 @@ bool sqlite_safe_has_live_connection(const char *path)
     return found;
 }
 
-/* PoP: _canonical_db_path @ hermes_cli/sqlite_safe_read.py:_canonical_db_path */
+/* PoP: sqlite_safe_canonical_db_path @ hermes_cli/sqlite_safe_read.py:_canonical_db_path */
 char *sqlite_safe_canonical_db_path(sqlite3 *conn)
 {
     if (!conn) return NULL;
@@ -162,7 +162,7 @@ bool sqlite_safe_file_length_matches_header(sqlite3 *conn)
     return ok;
 }
 
-/* PoP: read_header_bytes_preopen @ hermes_cli/sqlite_safe_read.py:read_header_bytes_preopen */
+/* PoP: sqlite_safe_read_header_bytes_preopen @ hermes_cli/sqlite_safe_read.py:read_header_bytes_preopen */
 unsigned char *sqlite_safe_read_header_bytes_preopen(const char *path, size_t length, bool force, size_t *out_len)
 {
     if (!out_len) return NULL;
@@ -307,7 +307,7 @@ sqlite3 *sqlite_safe_connect_tracked(const char *path,
  * C11, so close() (untrack after sqlite3_close succeeds) is the wrapper's own
  * method. Same correctness contract, no metaclass. */
 
-/* PoP: connect_tracked @ hermes_cli/sqlite_safe_read.py:connect_tracked */
+/* PoP: sqlite_safe_tracked_conn_open @ hermes_cli/sqlite_safe_read.py:connect_tracked */
 sqlite_safe_tracked_conn_t *sqlite_safe_tracked_conn_open(const char *path,
                                                           const char *tracking_path,
                                                           const sqlite_safe_open_fn *open_fn,
@@ -323,8 +323,8 @@ sqlite_safe_tracked_conn_t *sqlite_safe_tracked_conn_open(const char *path,
     return tc;
 }
 
-/* PoP: _retrofit_tracking @ hermes_cli/sqlite_safe_read.py:_retrofit_tracking */
-/* PoP: TrackedConnection @ hermes_cli/sqlite_safe_read.py:TrackedConnection */
+/* PoP: tracked @ hermes_cli/sqlite_safe_read.py:_retrofit_tracking */
+/* PoP: tracked @ hermes_cli/sqlite_safe_read.py:TrackedConnection */
 /* PoP: close @ hermes_cli/sqlite_safe_read.py:_TrackingMixin.close
  * Contract: close() first; untrack only after close succeeds; a failing close
  * leaves the connection tracked (guard stays refused). */

@@ -115,7 +115,7 @@ static const char *PARTIAL_SILENT_MARKERS[] = {
     "[SILENT]", "SILENT", "NO_REPLY", "NO REPLY", NULL
 };
 
-/* PoP: cli_gateway_response_filters_is_partial_silence_marker @ gateway/response_filters.py:is_partial_silence_marker */
+/* PoP: marker @ gateway/response_filters.py:is_partial_silence_marker */
 
 /* Port of Python gateway/response_filters.py:is_partial_silence_marker */
 /* True while `text` is a non-empty prefix of some silence marker (streaming hold-back). */
@@ -150,7 +150,7 @@ int cli_gateway_response_filters_is_partial_silence_marker(const char *text)
     return found;
 }
 
-/* PoP: cli_gateway_response_filters_is_autonomous_silence_response @ gateway/response_filters.py:is_autonomous_silence_response */
+/* PoP: lanes @ gateway/response_filters.py:is_autonomous_silence_response */
 
 /* Loose silence matcher for autonomous lanes (cron, webhook).
  * Suppresses when a marker is the whole response, sits on its own first or

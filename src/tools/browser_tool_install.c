@@ -112,7 +112,7 @@ bool browser_allow_private_urls(void)
     return env && (strcmp(env, "true") == 0 || strcmp(env, "1") == 0);
 }
 
-/* PoP: _is_always_blocked_url @ tools/browser_tool.py:_is_always_blocked_url */
+/* PoP: browser_is_always_blocked_url @ tools/browser_tool.py:_is_always_blocked_url */
 /* PoP: browser_is_always_blocked_url @ tools/browser_tool.py:_is_always_blocked_url */
 bool browser_is_always_blocked_url(const char *url)
 {
@@ -125,7 +125,7 @@ bool browser_is_always_blocked_url(const char *url)
     return false;
 }
 
-/* PoP: _is_safe_url @ tools/browser_tool.py:_is_safe_url */
+/* PoP: browser_is_safe_url @ tools/browser_tool.py:_is_safe_url */
 /* PoP: browser_is_safe_url @ tools/browser_tool.py:_is_safe_url */
 bool browser_is_safe_url(const char *url)
 {

@@ -14,32 +14,32 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: agent_delegation_context_non_dispatcher_owned_context @ agent/delegation_context.py:non_dispatcher_owned_context */
+/* PoP: agent_delegation_context_non_dispatcher_owned_context_p @ agent/delegation_context.py:non_dispatcher_owned_context */
 json_t *agent_delegation_context_non_dispatcher_owned_context_p(void) {
     return json_object();
 }
 
-/* PoP: agent_delegation_context_is_dispatcher_owned_worker_context @ agent/delegation_context.py:is_dispatcher_owned_worker_context */
+/* PoP: agent_delegation_context_is_dispatcher_owned_worker_context_p @ agent/delegation_context.py:is_dispatcher_owned_worker_context */
 json_t *agent_delegation_context_is_dispatcher_owned_worker_context_p(void) {
     return json_object();
 }
 
-/* PoP: agent_delegation_context_enter_non_dispatcher_owned_context @ agent/delegation_context.py:enter_non_dispatcher_owned_context */
+/* PoP: agent_delegation_context_enter_non_dispatcher_owned_context_p @ agent/delegation_context.py:enter_non_dispatcher_owned_context */
 json_t *agent_delegation_context_enter_non_dispatcher_owned_context_p(void) {
     return json_object();
 }
 
-/* PoP: agent_delegation_context_exit_non_dispatcher_owned_context @ agent/delegation_context.py:exit_non_dispatcher_owned_context */
+/* PoP: agent_delegation_context_exit_non_dispatcher_owned_context_p @ agent/delegation_context.py:exit_non_dispatcher_owned_context */
 json_t *agent_delegation_context_exit_non_dispatcher_owned_context_p(void) {
     return json_object();
 }
 
-/* PoP: agent_delegation_context_scrub_kanban_env @ agent/delegation_context.py:scrub_kanban_env */
+/* PoP: agent_delegation_context_scrub_kanban_env_p @ agent/delegation_context.py:scrub_kanban_env */
 json_t *agent_delegation_context_scrub_kanban_env_p(void) {
     return json_object();
 }
 
-/* PoP: agent_delegation_context_delegated_child_subprocess_env @ agent/delegation_context.py:delegated_child_subprocess_env */
+/* PoP: agent_delegation_context_delegated_child_subprocess_env_p @ agent/delegation_context.py:delegated_child_subprocess_env */
 json_t *agent_delegation_context_delegated_child_subprocess_env_p(void) {
     return json_object();
 }

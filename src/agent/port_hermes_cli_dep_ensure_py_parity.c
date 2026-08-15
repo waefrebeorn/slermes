@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_dep_ensure_ensure_dependency @ hermes_cli/dep_ensure.py:ensure_dependency */
+/* PoP: hermes_cli_dep_ensure_ensure_dependency_p @ hermes_cli/dep_ensure.py:ensure_dependency */
 json_t *hermes_cli_dep_ensure_ensure_dependency_p(void) {
     return json_object();
 }

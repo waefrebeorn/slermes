@@ -166,7 +166,7 @@ json_t *session_recent_window(const json_t *messages, int window) {
     return out;
 }
 
-/* PoP: session_shortened_path @ hermes_cli/session_recap.py:_shortened_path */
+/* PoP: in @ hermes_cli/session_recap.py:_shortened_path */
 /* cwd and home passed in (deterministic, no IO). */
 void session_shortened_path(const char *path, const char *cwd, const char *home, char *out, size_t out_cap) {
     if (!path || !*path) { out[0]='\0'; return; }

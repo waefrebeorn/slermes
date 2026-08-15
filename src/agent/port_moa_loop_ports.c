@@ -21,7 +21,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ agent/moa_loop.py:__init__ */
+/* PoP: moa_init @ agent/moa_loop.py:__init__ */
 char *moa_init(const char *usage_json, double cost_usd, const char *cost_status) {
     char *out = NULL;
     asprintf(&out, "{\"usage\": %s, \"cost_usd\": %.4f, \"cost_status\": \"%s\"}",
@@ -29,7 +29,7 @@ char *moa_init(const char *usage_json, double cost_usd, const char *cost_status)
     return out;
 }
 
-/* PoP: _extract_text @ agent/moa_loop.py:_extract_text */
+/* PoP: moa_extract_text @ agent/moa_loop.py:_extract_text */
 char *moa_extract_text(const char *response_json) {
     /* Python: assistant text from response. */
     if (!response_json) return strdup("");
@@ -45,8 +45,8 @@ char *moa_extract_text(const char *response_json) {
     return strndup(v, (size_t)(e - v));
 }
 
-/* PoP: create @ agent/moa_loop.py:create */
-/* PoP: _call_prepared_aggregator @ agent/moa_loop.py:_call_prepared_aggregator */
+/* PoP: catalog @ agent/moa_loop.py:create */
+/* PoP: catalog @ agent/moa_loop.py:_call_prepared_aggregator */
 
 /* Resolve a provider slot's base_url + api_key from the environment, using
  * the provider catalog (port_provider_registry.h): the provider's declared
@@ -318,7 +318,7 @@ char *moa_create(const char *kwargs_json) {
 
 /* ── MoA stream-chunk adapter + reference-guidance peel ─────────────── */
 
-/* PoP: _completed_response_as_stream_chunk @ agent/moa_loop.py:_completed_response_as_stream_chunk */
+/* PoP: moa_completed_response_as_stream_chunk @ agent/moa_loop.py:_completed_response_as_stream_chunk */
 /* Convert a completed Chat Completions response JSON into one delta stream
  * chunk (choices[0].delta shape). Input is a serialized response object:
  * {"id":…,"model":…,"choices":[{"index":0,"message":{"content":…,
@@ -389,7 +389,7 @@ char *moa_completed_response_as_stream_chunk(const char *response_json) {
     return ser ? ser : strdup("{}");
 }
 
-/* PoP: peel_reference_guidance @ agent/moa_loop.py:peel_reference_guidance */
+/* PoP: JSON @ agent/moa_loop.py:peel_reference_guidance */
 /* Remove reference guidance previously attached to the last user message.
  * Takes the serialized messages array + guidance string; returns a new
  * messages array JSON (input not mutated). */

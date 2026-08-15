@@ -14,52 +14,52 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_update_cmd_web_toolchain_roots @ hermes_cli/update_cmd.py:_web_toolchain_roots */
+/* PoP: hermes_cli_update_cmd_web_toolchain_roots_p @ hermes_cli/update_cmd.py:_web_toolchain_roots */
 json_t *hermes_cli_update_cmd_web_toolchain_roots_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_update_cmd_update_node_dependencies @ hermes_cli/update_cmd.py:_update_node_dependencies */
+/* PoP: hermes_cli_update_cmd_update_node_dependencies_p @ hermes_cli/update_cmd.py:_update_node_dependencies */
 json_t *hermes_cli_update_cmd_update_node_dependencies_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_update_cmd_wait_for_windows_update_gateway_exit @ hermes_cli/update_cmd.py:_wait_for_windows_update_gateway_exit */
+/* PoP: hermes_cli_update_cmd_wait_for_windows_update_gateway_exit_p @ hermes_cli/update_cmd.py:_wait_for_windows_update_gateway_exit */
 json_t *hermes_cli_update_cmd_wait_for_windows_update_gateway_exit_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_update_cmd_detect_venv_python_processes @ hermes_cli/update_cmd.py:_detect_venv_python_processes */
+/* PoP: hermes_cli_update_cmd_detect_venv_python_processes_p @ hermes_cli/update_cmd.py:_detect_venv_python_processes */
 json_t *hermes_cli_update_cmd_detect_venv_python_processes_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_update_cmd_venv_launcher_ancestors @ hermes_cli/update_cmd.py:_venv_launcher_ancestors */
+/* PoP: hermes_cli_update_cmd_venv_launcher_ancestors_p @ hermes_cli/update_cmd.py:_venv_launcher_ancestors */
 json_t *hermes_cli_update_cmd_venv_launcher_ancestors_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_update_cmd_leftover_pausable_gateway_pids @ hermes_cli/update_cmd.py:_leftover_pausable_gateway_pids */
+/* PoP: hermes_cli_update_cmd_leftover_pausable_gateway_pids_p @ hermes_cli/update_cmd.py:_leftover_pausable_gateway_pids */
 json_t *hermes_cli_update_cmd_leftover_pausable_gateway_pids_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_update_cmd_cold_start_windows_gateway_after_update @ hermes_cli/update_cmd.py:_cold_start_windows_gateway_after_update */
+/* PoP: hermes_cli_update_cmd_cold_start_windows_gateway_after_update_p @ hermes_cli/update_cmd.py:_cold_start_windows_gateway_after_update */
 json_t *hermes_cli_update_cmd_cold_start_windows_gateway_after_update_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_update_cmd_for_each_systemd_gateway_unit @ hermes_cli/update_cmd.py:_for_each_systemd_gateway_unit */
+/* PoP: hermes_cli_update_cmd_for_each_systemd_gateway_unit_p @ hermes_cli/update_cmd.py:_for_each_systemd_gateway_unit */
 json_t *hermes_cli_update_cmd_for_each_systemd_gateway_unit_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_update_cmd_refresh_bootstrap_cache_scripts @ hermes_cli/update_cmd.py:_refresh_bootstrap_cache_scripts */
+/* PoP: hermes_cli_update_cmd_refresh_bootstrap_cache_scripts_p @ hermes_cli/update_cmd.py:_refresh_bootstrap_cache_scripts */
 json_t *hermes_cli_update_cmd_refresh_bootstrap_cache_scripts_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_update_cmd_resume_windows_gateways_after_update @ hermes_cli/update_cmd.py:_resume_windows_gateways_after_update */
+/* PoP: hermes_cli_update_cmd_resume_windows_gateways_after_update_p @ hermes_cli/update_cmd.py:_resume_windows_gateways_after_update */
 json_t *hermes_cli_update_cmd_resume_windows_gateways_after_update_p(void) {
     return json_object();
 }

@@ -499,7 +499,7 @@ typedef struct {
     double safety_ratio;
 } tts_delivery_profile_t;
 
-/* PoP: _resolve_audio_delivery_profile @ tools/tts_tool.py:_resolve_audio_delivery_profile */
+/* PoP: tts_tool_resolve_audio_delivery_profile @ tools/tts_tool.py:_resolve_audio_delivery_profile */
 /* Resolve upload constraints incl. optional per-platform overrides from the
  * tts_config JSON object (delivery_profiles.<key>). Returns the profile;
  * caller frees platform. */
@@ -568,7 +568,7 @@ tts_delivery_profile_t tts_tool_resolve_audio_delivery_profile(const char *platf
     return out;
 }
 
-/* PoP: _split_oversized_sentence @ tools/tts_tool.py:_split_oversized_sentence */
+/* PoP: tts_tool_split_oversized_sentence @ tools/tts_tool.py:_split_oversized_sentence */
 /* Split one over-limit sentence on word boundaries, then hard boundaries.
  * Returns a malloc'd array of malloc'd strings; *count gets the length.
  * Caller frees each string and the array. */

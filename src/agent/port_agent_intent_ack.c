@@ -49,7 +49,7 @@ void agent_intent_ack_continuation_mode(const char *mode, const char *api_mode, 
     snprintf(out, outsz, "off");
 }
 
-/* PoP: agent_intent_ack_continuation_enabled @ agent/agent_runtime_helpers.py:intent_ack_continuation_enabled */
+/* PoP: only @ agent/agent_runtime_helpers.py:intent_ack_continuation_enabled */
 /* Whether intent-ack continuation should fire at all for this turn: the on/off
  * gate only (the per-turn cap and codex-intermediate-ack detector are applied by
  * the caller). True iff the resolved continuation mode is not "off". */

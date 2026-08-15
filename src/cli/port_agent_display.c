@@ -301,7 +301,7 @@ int cli_agent_display__is_shell_boundary_echo(const char *segment)
     return _cli_is_shell_boundary_echo(segment);
 }
 
-/* PoP: cli_agent_display__oneline @ agent/display.py:_oneline */
+/* PoP: whitespace @ agent/display.py:_oneline */
 /* Collapse all whitespace (incl. newlines) to single spaces between runs,
  * matching Python " ".join(text.split()). Caller frees. */
 char *cli_agent_display__oneline(const char *text)
@@ -326,7 +326,7 @@ char *cli_agent_display__oneline(const char *text)
     return out;
 }
 
-/* PoP: cli_agent_display__shell_head_word @ agent/display.py:_shell_head_word */
+/* PoP: _cli_shell_head_word @ agent/display.py:_shell_head_word */
 /* First non-KEY= word, reduced to its basename. Caller frees. */
 static char *_cli_shell_head_word(const char *segment)
 {
@@ -357,7 +357,7 @@ static char *_cli_shell_head_word(const char *segment)
     return bn; /* bn is a fresh strdup, caller frees */
 }
 
-/* PoP: cli_agent_display__summarize_shell_command @ agent/display.py:summarize_shell_command */
+/* PoP: _cli_is_silent_head @ agent/display.py:summarize_shell_command */
 
 /* Silent compound-command heads (see _SHELL_SILENT_HEADS). */
 static const char *CLI_SHELL_SILENT_HEADS[] = {

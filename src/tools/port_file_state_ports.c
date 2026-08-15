@@ -19,12 +19,12 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ tools/file_state.py:__init__ */
+/* PoP: fst_init @ tools/file_state.py:__init__ */
 char *fst_init(void) {
     return strdup("{\"reads\": {}, \"last_writes\": {}}");
 }
 
-/* PoP: lock_path @ tools/file_state.py:lock_path */
+/* PoP: fst_lock_path @ tools/file_state.py:lock_path */
 int fst_lock_path(const char *path) {
     /* Python: per-path read→modify→write lock. */
     if (!path) return -1;
@@ -32,7 +32,7 @@ int fst_lock_path(const char *path) {
     return 0;
 }
 
-/* PoP: clear @ tools/file_state.py:clear */
+/* PoP: fst_clear @ tools/file_state.py:clear */
 int fst_clear(void) {
     /* Python: test-only reset. Delegate to real file-state engine. */
     extern void fs_clear(void);
@@ -40,7 +40,7 @@ int fst_clear(void) {
     return 0;
 }
 
-/* PoP: get_registry @ tools/file_state.py:get_registry */
+/* PoP: fst_get_registry @ tools/file_state.py:get_registry */
 char *fst_get_registry(void) {
     printf("file-state registry returned\n");
     return strdup("{}");

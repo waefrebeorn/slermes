@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_self_repo_guard_heredoc_specs @ tools/self_repo_guard.py:_heredoc_specs */
+/* PoP: tools_self_repo_guard_heredoc_specs_p @ tools/self_repo_guard.py:_heredoc_specs */
 json_t *tools_self_repo_guard_heredoc_specs_p(void) {
     return json_object();
 }

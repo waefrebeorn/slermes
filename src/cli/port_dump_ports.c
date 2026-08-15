@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _get_git_commit_date @ hermes_cli/dump.py:_get_git_commit_date */
+/* PoP: dmp_get_git_commit_date @ hermes_cli/dump.py:_get_git_commit_date */
 char *dmp_get_git_commit_date(const char *repo_dir) {
     /* Python: HEAD authored date — REAL git log. */
     if (!repo_dir) return strdup("");
@@ -35,7 +35,7 @@ char *dmp_get_git_commit_date(const char *repo_dir) {
     return strdup(date);
 }
 
-/* PoP: _redact @ hermes_cli/dump.py:_redact */
+/* PoP: dmp_redact @ hermes_cli/dump.py:_redact */
 char *dmp_redact(const char *value) {
     /* Python: keep first 4 + last 4. */
     if (!value) return NULL;
@@ -46,7 +46,7 @@ char *dmp_redact(const char *value) {
     return out;
 }
 
-/* PoP: _gateway_status @ hermes_cli/dump.py:_gateway_status */
+/* PoP: dmp_gateway_status @ hermes_cli/dump.py:_gateway_status */
 char *dmp_gateway_status(void) {
     /* Python: short status string. */
     printf("gateway status probed (short)\n");

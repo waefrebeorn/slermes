@@ -336,14 +336,14 @@ static void format_with_commas(char *buf, size_t bufsz, long n)
     (void)bufsz;
 }
 
-/* PoP: _bytes_to_tokens @ agent/context_breakdown.py:_bytes_to_tokens */
+/* PoP: context_breakdown_bytes_to_tokens @ agent/context_breakdown.py:_bytes_to_tokens */
 long context_breakdown_bytes_to_tokens(long size)
 {
     if (size < 0) return -1;   /* None -> -1 sentinel */
     return (size + 3) / 4;
 }
 
-/* PoP: render_context_grid @ agent/context_breakdown.py:render_context_grid */
+/* PoP: cells @ agent/context_breakdown.py:render_context_grid */
 /* 100 cells (5x20), one percent of the context window each. */
 char **context_breakdown_render_grid(const char *payload_json, size_t *out_lines)
 {
@@ -410,7 +410,7 @@ char **context_breakdown_render_grid(const char *payload_json, size_t *out_lines
     return lines;
 }
 
-/* PoP: render_context_category_lines @ agent/context_breakdown.py:render_context_category_lines */
+/* PoP: context_breakdown_render_category_lines @ agent/context_breakdown.py:render_context_category_lines */
 char **context_breakdown_render_category_lines(const char *payload_json, size_t *out_lines)
 {
     static const char FREE_GLYPH[] = "\xc2\xb7";
@@ -484,7 +484,7 @@ char **context_breakdown_render_category_lines(const char *payload_json, size_t 
     return lines;
 }
 
-/* PoP: render_context_details_lines @ agent/context_breakdown.py:render_context_details_lines */
+/* PoP: context_breakdown_render_details_lines @ agent/context_breakdown.py:render_context_details_lines */
 char **context_breakdown_render_details_lines(const char *details_json, size_t *out_lines)
 {
     enum { LIMIT = 15 };
@@ -559,7 +559,7 @@ char **context_breakdown_render_details_lines(const char *details_json, size_t *
     return lines;
 }
 
-/* PoP: render_context_breakdown_lines @ agent/context_breakdown.py:render_context_breakdown_lines */
+/* PoP: context_breakdown_render_lines @ agent/context_breakdown.py:render_context_breakdown_lines */
 char **context_breakdown_render_lines(const char *payload_json, const char *details_json, int grid, size_t *out_lines)
 {
     char **lines = malloc(sizeof(char *) * 96);
@@ -618,7 +618,7 @@ char **context_breakdown_render_lines(const char *payload_json, const char *deta
 extern char *psize_compute_skills_breakdown(const char *skills_block);
 extern char *psize_compute_toolsets_breakdown(const char *tools_json);
 
-/* PoP: compute_context_details @ agent/context_breakdown.py:compute_context_details */
+/* PoP: context_breakdown_compute_details @ agent/context_breakdown.py:compute_context_details */
 /* Port of Python compute_context_details: expanded per-skill / per-toolset
  * cost listing for /context all. Builds the stable system prompt, extracts the
  * <available_skills> block, and runs the existing prompt_size breakdown

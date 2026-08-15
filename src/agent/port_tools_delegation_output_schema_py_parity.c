@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_delegation_output_schema_validate_output @ tools/delegation_output_schema.py:validate_output */
+/* PoP: tools_delegation_output_schema_validate_output_p @ tools/delegation_output_schema.py:validate_output */
 json_t *tools_delegation_output_schema_validate_output_p(void) {
     return json_object();
 }

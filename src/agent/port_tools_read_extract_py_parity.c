@@ -14,17 +14,17 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_read_extract_pdf_coverage_note_from_bytes @ tools/read_extract.py:_pdf_coverage_note_from_bytes */
+/* PoP: tools_read_extract_pdf_coverage_note_from_bytes_p @ tools/read_extract.py:_pdf_coverage_note_from_bytes */
 json_t *tools_read_extract_pdf_coverage_note_from_bytes_p(void) {
     return json_object();
 }
 
-/* PoP: tools_read_extract_shared_strings @ tools/read_extract.py:_shared_strings */
+/* PoP: tools_read_extract_shared_strings_p @ tools/read_extract.py:_shared_strings */
 json_t *tools_read_extract_shared_strings_p(void) {
     return json_object();
 }
 
-/* PoP: tools_read_extract_sheet_rows @ tools/read_extract.py:_sheet_rows */
+/* PoP: tools_read_extract_sheet_rows_p @ tools/read_extract.py:_sheet_rows */
 json_t *tools_read_extract_sheet_rows_p(void) {
     return json_object();
 }

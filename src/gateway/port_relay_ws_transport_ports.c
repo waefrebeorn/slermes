@@ -31,7 +31,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _ws_dial_url @ gateway/relay/ws_transport.py:_ws_dial_url */
+/* PoP: wst_ws_dial_url @ gateway/relay/ws_transport.py:_ws_dial_url */
 char *wst_ws_dial_url(const char *relay_url) {
     /* Python: normalize to ws(s)://…/relay dial target. */
     if (!relay_url) return NULL;
@@ -51,7 +51,7 @@ char *wst_ws_dial_url(const char *relay_url) {
     return out;
 }
 
-/* PoP: _event_from_wire @ gateway/relay/ws_transport.py:_event_from_wire */
+/* PoP: wst_event_from_wire @ gateway/relay/ws_transport.py:_event_from_wire */
 char *wst_event_from_wire(const char *payload_json) {
     /* Python: rebuild MessageEvent from normalized inbound payload. */
     if (!payload_json) return NULL;
@@ -59,7 +59,7 @@ char *wst_event_from_wire(const char *payload_json) {
     return strdup(payload_json);
 }
 
-/* PoP: _upgrade_headers @ gateway/relay/ws_transport.py:_upgrade_headers */
+/* PoP: wst_upgrade_headers @ gateway/relay/ws_transport.py:_upgrade_headers */
 char *wst_upgrade_headers(const char *secret) {
     /* Python: auth headers for WS upgrade; {} when no secret. */
     if (!secret || !*secret) return strdup("{}");
@@ -68,7 +68,7 @@ char *wst_upgrade_headers(const char *secret) {
     return out;
 }
 
-/* PoP: connect @ gateway/relay/ws_transport.py:connect */
+/* PoP: wst_connect @ gateway/relay/ws_transport.py:connect */
 bool wst_connect(const char *dial_url, const char *secret) {
     /* Python: dial + start loops; True on success.
      * Delegate to the real WebSocket transport (libwebsocket-backed):
@@ -90,7 +90,7 @@ bool wst_connect(const char *dial_url, const char *secret) {
     return true;
 }
 
-/* PoP: disconnect @ gateway/relay/ws_transport.py:disconnect */
+/* PoP: wst_disconnect @ gateway/relay/ws_transport.py:disconnect */
 int wst_disconnect(void) {
     /* Python: stop loops + close ws. */
     if (g_wst_transport) {
@@ -101,7 +101,7 @@ int wst_disconnect(void) {
     return 0;
 }
 
-/* PoP: handshake @ gateway/relay/ws_transport.py:handshake */
+/* PoP: wst_handshake @ gateway/relay/ws_transport.py:handshake */
 char *wst_handshake(const char *descriptor_json) {
     /* Python: descriptor cached or fetched. */
     if (descriptor_json) return strdup(descriptor_json);
@@ -109,13 +109,13 @@ char *wst_handshake(const char *descriptor_json) {
     return NULL;
 }
 
-/* PoP: set_inbound_handler @ gateway/relay/ws_transport.py:set_inbound_handler */
+/* PoP: wst_set_inbound_handler @ gateway/relay/ws_transport.py:set_inbound_handler */
 int wst_set_inbound_handler(void) {
     printf("inbound handler registered\n");
     return 0;
 }
 
-/* PoP: send_outbound @ gateway/relay/ws_transport.py:send_outbound */
+/* PoP: wst_send_outbound @ gateway/relay/ws_transport.py:send_outbound */
 char *wst_send_outbound(const char *action, const char *platform) {
     /* Python: request/response outbound frame. */
     if (!action) return strdup("{\"success\": false, \"error\": \"relay transport not connected\"}");
@@ -123,7 +123,7 @@ char *wst_send_outbound(const char *action, const char *platform) {
     return strdup("{\"success\": true}");
 }
 
-/* PoP: send_follow_up @ gateway/relay/ws_transport.py:send_follow_up */
+/* PoP: wst_send_follow_up @ gateway/relay/ws_transport.py:send_follow_up */
 char *wst_send_follow_up(const char *action, const char *platform) {
     /* Python: follow_up rides the same outbound frame. */
     if (!action) return strdup("{\"success\": false}");
@@ -131,7 +131,7 @@ char *wst_send_follow_up(const char *action, const char *platform) {
     return strdup("{\"success\": true}");
 }
 
-/* PoP: get_chat_info @ gateway/relay/ws_transport.py:get_chat_info */
+/* PoP: wst_get_chat_info @ gateway/relay/ws_transport.py:get_chat_info */
 char *wst_get_chat_info(const char *chat_id) {
     /* Python: request_response get_chat_info op. */
     if (!chat_id) return strdup("{}");
@@ -140,7 +140,7 @@ char *wst_get_chat_info(const char *chat_id) {
     return out;
 }
 
-/* PoP: send_interrupt @ gateway/relay/ws_transport.py:send_interrupt */
+/* PoP: wst_send_interrupt @ gateway/relay/ws_transport.py:send_interrupt */
 int wst_send_interrupt(const char *session_key, const char *reason) {
     /* Python: interrupt frame. */
     if (!session_key) return -1;
@@ -148,7 +148,7 @@ int wst_send_interrupt(const char *session_key, const char *reason) {
     return 0;
 }
 
-/* PoP: go_idle @ gateway/relay/ws_transport.py:go_idle */
+/* PoP: wst_go_idle @ gateway/relay/ws_transport.py:go_idle */
 int wst_go_idle(void) {
     /* Python: flip destination to buffered-only — REAL state flag. */
     static bool g_idle = false;
@@ -156,7 +156,7 @@ int wst_go_idle(void) {
     return 0;
 }
 
-/* PoP: _request_response @ gateway/relay/ws_transport.py:_request_response */
+/* PoP: wst_request_response @ gateway/relay/ws_transport.py:_request_response */
 char *wst_request_response(const char *frame_json) {
     /* Python: request/response with connection guard. */
     if (!frame_json) return strdup("{\"success\": false, \"error\": \"relay transport not connected\"}");
@@ -164,7 +164,7 @@ char *wst_request_response(const char *frame_json) {
     return strdup("{\"success\": true}");
 }
 
-/* PoP: _send @ gateway/relay/ws_transport.py:_send */
+/* PoP: wst_send @ gateway/relay/ws_transport.py:_send */
 int wst_send(const char *frame_json) {
     /* Python: raw frame send; raises when not connected — REAL write. */
     if (!frame_json) return -1;
@@ -173,7 +173,7 @@ int wst_send(const char *frame_json) {
     return 0;
 }
 
-/* PoP: _read_loop @ gateway/relay/ws_transport.py:_read_loop */
+/* PoP: wst_read_loop @ gateway/relay/ws_transport.py:_read_loop */
 int wst_read_loop(void) {
     /* Python: chunked ws reads into lines — REAL line pump. */
     char buf[8192];
@@ -185,7 +185,7 @@ int wst_read_loop(void) {
     return 0;
 }
 
-/* PoP: _handle_frame @ gateway/relay/ws_transport.py:_handle_frame */
+/* PoP: wst_handle_frame @ gateway/relay/ws_transport.py:_handle_frame */
 int wst_handle_frame(const char *line) {
     /* Python: json frame dispatch; bad json logged. */
     if (!line) return -1;
@@ -194,13 +194,13 @@ int wst_handle_frame(const char *line) {
     return 0;
 }
 
-/* PoP: set_passthrough_handler @ gateway/relay/ws_transport.py:set_passthrough_handler */
+/* PoP: wst_set_passthrough_handler @ gateway/relay/ws_transport.py:set_passthrough_handler */
 int wst_set_passthrough_handler(void) {
     printf("passthrough handler registered\n");
     return 0;
 }
 
-/* PoP: _env_disconnect_budget_s @ gateway/relay/ws_transport.py:_env_disconnect_budget_s */
+/* PoP: wst_env_disconnect_budget_s @ gateway/relay/ws_transport.py:_env_disconnect_budget_s */
 double wst_env_disconnect_budget_s(void) {
     double budget = 5.0;
     const char *raw = getenv("HERMES_GATEWAY_ADAPTER_DISCONNECT_TIMEOUT");

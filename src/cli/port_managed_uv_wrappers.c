@@ -28,7 +28,7 @@
 static void cleanup_generation(const char *generation, const char *python_root);
 static int  wal_reset_vulnerable_from_json(json_t *sv);
 
-/* PoP: managed_uv_path @ hermes_cli/managed_uv.py:managed_uv_path */
+/* PoP: muv_managed_uv_path @ hermes_cli/managed_uv.py:managed_uv_path */
 int muv_managed_uv_path(const char *arg) {
     /* Python: $HERMES_HOME/bin/uv (uv.exe on Windows). Arg = hermes_home. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -36,7 +36,7 @@ int muv_managed_uv_path(const char *arg) {
     return 0;
 }
 
-/* PoP: managed_python_install_dir @ hermes_cli/managed_uv.py:managed_python_install_dir */
+/* PoP: muv_managed_python_install_dir @ hermes_cli/managed_uv.py:managed_python_install_dir */
 int muv_managed_python_install_dir(const char *arg) {
     /* Python: (project_root or _PROJECT_ROOT) / _RUNTIME_DIR_NAME / "python".
      * Arg = optional project root. */
@@ -47,7 +47,7 @@ int muv_managed_python_install_dir(const char *arg) {
     return 0;
 }
 
-/* PoP: managed_python_env @ hermes_cli/managed_uv.py:managed_python_env */
+/* PoP: muv_managed_python_env @ hermes_cli/managed_uv.py:managed_python_env */
 int muv_managed_python_env(const char *arg) {
     /* Python: sanitized env with UV pins. Arg = "install_dir\tstate". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -58,14 +58,14 @@ int muv_managed_python_env(const char *arg) {
     return 0;
 }
 
-/* PoP: repaired @ hermes_cli/managed_uv.py:repaired */
+/* PoP: muv_repaired @ hermes_cli/managed_uv.py:repaired */
 int muv_repaired(const char *arg) {
     /* Python: status == "repaired". */
     if (!arg || !*arg) return 0;
     return strcmp(arg, "repaired") == 0;
 }
 
-/* PoP: _report_runtime_repair_failure @ hermes_cli/managed_uv.py:_report_runtime_repair_failure */
+/* PoP: muv_u_report_runtime_repair_failure @ hermes_cli/managed_uv.py:_report_runtime_repair_failure */
 int muv_u_report_runtime_repair_failure(const char *arg) {
     /* Python: warn (no backup) or ✗ manual recovery (backup). Arg =
      * "backup_venv\tdetail" (backup empty = none). */
@@ -81,7 +81,7 @@ int muv_u_report_runtime_repair_failure(const char *arg) {
     return 0;
 }
 
-/* PoP: __new__ @ hermes_cli/managed_uv.py:__new__ */
+/* PoP: muv_u__new__ @ hermes_cli/managed_uv.py:__new__ */
 int muv_u__new__(const char *arg) {
     /* Python: __new__ with the path + fresh_bootstrap flag. Arg = "path\tfresh". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -91,7 +91,7 @@ int muv_u__new__(const char *arg) {
     return 0;
 }
 
-/* PoP: __iter__ @ hermes_cli/managed_uv.py:__iter__ */
+/* PoP: muv_u__iter__ @ hermes_cli/managed_uv.py:__iter__ */
 int muv_u__iter__(const char *arg) {
     /* Python: iter((str(self) or None, fresh_bootstrap)). Arg = "path\tfresh"
      * (path empty = unavailable). */
@@ -103,7 +103,7 @@ int muv_u__iter__(const char *arg) {
     return 0;
 }
 
-/* PoP: _ensure_uv_path @ hermes_cli/managed_uv.py:_ensure_uv_path */
+/* PoP: muv_u_ensure_uv_path @ hermes_cli/managed_uv.py:_ensure_uv_path */
 int muv_u_ensure_uv_path(const char *arg) {
     /* Python: install + verify + repair. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -116,7 +116,7 @@ int muv_u_ensure_uv_path(const char *arg) {
     return 0;
 }
 
-/* PoP: _venv_python @ hermes_cli/managed_uv.py:_venv_python */
+/* PoP: muv_u_venv_python @ hermes_cli/managed_uv.py:_venv_python */
 int muv_u_venv_python(const char *arg) {
     /* Python: Windows -> venv/Scripts/python.exe; else venv/bin/python.
      * Arg = venv dir. */
@@ -129,7 +129,7 @@ int muv_u_venv_python(const char *arg) {
     return 0;
 }
 
-/* PoP: _remove_tree @ hermes_cli/managed_uv.py:_remove_tree */
+/* PoP: muv_u_remove_tree @ hermes_cli/managed_uv.py:_remove_tree */
 int muv_u_remove_tree(const char *arg) {
     /* Python: best-effort rmtree constrained to boundary (path must resolve
      * under boundary). Arg = "path\tboundary". */
@@ -154,7 +154,7 @@ int muv_u_remove_tree(const char *arg) {
     return 0;
 }
 
-/* PoP: _make_world_traversable @ hermes_cli/managed_uv.py:_make_world_traversable */
+/* PoP: muv_u_make_world_traversable @ hermes_cli/managed_uv.py:_make_world_traversable */
 int muv_u_make_world_traversable(const char *arg) {
     /* Python: path.chmod(st_mode | 0o755) — keep root/FHS-managed runtimes
      * executable by non-root callers; OSError ignored. Arg = path. */
@@ -166,7 +166,7 @@ int muv_u_make_world_traversable(const char *arg) {
     return 0;
 }
 
-/* PoP: _runtime_request @ hermes_cli/managed_uv.py:_runtime_request */
+/* PoP: muv_u_runtime_request @ hermes_cli/managed_uv.py:_runtime_request */
 int muv_u_runtime_request(const char *arg) {
     /* Python: python_version[:2] joined. Arg = "3.11.14" etc. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -185,7 +185,7 @@ int muv_u_runtime_request(const char *arg) {
     return 0;
 }
 
-/* PoP: _install_safe_python_generation @ hermes_cli/managed_uv.py:_install_safe_python_generation */
+/* PoP: muv_u_install_safe_python_generation @ hermes_cli/managed_uv.py:_install_safe_python_generation */
 int muv_u_install_safe_python_generation(const char *arg) {
     /* Python: fixed-SQLite runtime. Arg =
      * "state\tresult\terr". */
@@ -202,7 +202,7 @@ int muv_u_install_safe_python_generation(const char *arg) {
     return 0;
 }
 
-/* PoP: _smoke_candidate_venv @ hermes_cli/managed_uv.py:_smoke_candidate_venv */
+/* PoP: muv_u_smoke_candidate_venv @ hermes_cli/managed_uv.py:_smoke_candidate_venv */
 int muv_u_smoke_candidate_venv(const char *arg) {
     /* Python: interpreter smoke. Arg =
      * "state\tresult\terr". */
@@ -219,7 +219,7 @@ int muv_u_smoke_candidate_venv(const char *arg) {
     return 0;
 }
 
-/* PoP: _stage_candidate_venv @ hermes_cli/managed_uv.py:_stage_candidate_venv */
+/* PoP: muv_u_stage_candidate_venv @ hermes_cli/managed_uv.py:_stage_candidate_venv */
 int muv_u_stage_candidate_venv(const char *arg) {
     /* Python: relocatable stage. Arg =
      * "state\tresult\terr". */
@@ -236,7 +236,7 @@ int muv_u_stage_candidate_venv(const char *arg) {
     return 0;
 }
 
-/* PoP: _rename_with_retry @ hermes_cli/managed_uv.py:_rename_with_retry */
+/* PoP: muv_u_rename_with_retry @ hermes_cli/managed_uv.py:_rename_with_retry */
 int muv_u_rename_with_retry(const char *arg) {
     /* Python: rename with retry delays (0, .1, .25, .5, 1s). Arg =
      * "source\tdestination". */
@@ -260,7 +260,7 @@ int muv_u_rename_with_retry(const char *arg) {
     return 1;
 }
 
-/* PoP: _cut_over_candidate @ hermes_cli/managed_uv.py:_cut_over_candidate */
+/* PoP: muv_u_cut_over_candidate @ hermes_cli/managed_uv.py:_cut_over_candidate */
 int muv_u_cut_over_candidate(const char *arg) {
     /* Python: park→promote→smoke. Arg =
      * "state\tresult\terr". */
@@ -281,7 +281,7 @@ int muv_u_cut_over_candidate(const char *arg) {
     return 0;
 }
 
-/* PoP: _acquire_repair_lock @ hermes_cli/managed_uv.py:_acquire_repair_lock */
+/* PoP: muv_u_acquire_repair_lock @ hermes_cli/managed_uv.py:_acquire_repair_lock */
 int muv_u_acquire_repair_lock(const char *arg) {
     /* Python: flock held until process exit. Arg = "path\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -292,7 +292,7 @@ int muv_u_acquire_repair_lock(const char *arg) {
     return 0;
 }
 
-/* PoP: _release_repair_lock @ hermes_cli/managed_uv.py:_release_repair_lock */
+/* PoP: muv_u_release_repair_lock @ hermes_cli/managed_uv.py:_release_repair_lock */
 int muv_u_release_repair_lock(const char *arg) {
     /* Python: flock unlock + close (best-effort). Arg = path. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -300,7 +300,7 @@ int muv_u_release_repair_lock(const char *arg) {
     return 0;
 }
 
-/* PoP: _windows_runtime_holders @ hermes_cli/managed_uv.py:_windows_runtime_holders */
+/* PoP: muv_u_windows_runtime_holders @ hermes_cli/managed_uv.py:_windows_runtime_holders */
 int muv_u_windows_runtime_holders(const char *arg) {
     /* Python: (holds, reason) for Windows venv holders. Arg =
      * "is_windows\tholders\treason". */
@@ -316,7 +316,7 @@ int muv_u_windows_runtime_holders(const char *arg) {
     return 0;
 }
 
-/* PoP: repair_vulnerable_runtime @ hermes_cli/managed_uv.py:repair_vulnerable_runtime */
+/* PoP: muv_repair_vulnerable_runtime @ hermes_cli/managed_uv.py:repair_vulnerable_runtime */
 int muv_repair_vulnerable_runtime(const char *arg) {
     /* Python: non-mutating replace. Arg =
      * "state\tresult". */
@@ -330,7 +330,7 @@ int muv_repair_vulnerable_runtime(const char *arg) {
     return 0;
 }
 
-/* PoP: _install_uv @ hermes_cli/managed_uv.py:_install_uv */
+/* PoP: muv_u_install_uv @ hermes_cli/managed_uv.py:_install_uv */
 int muv_u_install_uv(const char *arg) {
     /* Python: env vars + platform dispatch. Arg = "target\tsystem\tstate". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -342,7 +342,7 @@ int muv_u_install_uv(const char *arg) {
     return 0;
 }
 
-/* PoP: _install_uv_posix @ hermes_cli/managed_uv.py:_install_uv_posix */
+/* PoP: muv_u_install_uv_posix @ hermes_cli/managed_uv.py:_install_uv_posix */
 int muv_u_install_uv_posix(const char *arg) {
     /* Python: curl install.sh + sh (two-stage).
      * REAL: run the official installer via curl | sh. */
@@ -351,7 +351,7 @@ int muv_u_install_uv_posix(const char *arg) {
     return rc == 0 ? 0 : -1;
 }
 
-/* PoP: _install_uv_windows @ hermes_cli/managed_uv.py:_install_uv_windows */
+/* PoP: muv_u_install_uv_windows @ hermes_cli/managed_uv.py:_install_uv_windows */
 int muv_u_install_uv_windows(const char *arg) {
     /* Python: powershell -ExecutionPolicy Bypass -c "irm ... | iex".
      * Windows-only; POSIX port reports unavailable. */
@@ -360,7 +360,7 @@ int muv_u_install_uv_windows(const char *arg) {
     return 1;
 }
 
-/* PoP: rebuild_venv @ hermes_cli/managed_uv.py:rebuild_venv */
+/* PoP: muv_rebuild_venv @ hermes_cli/managed_uv.py:rebuild_venv */
 int muv_rebuild_venv(const char *arg) {
     /* Python: body is literally "True  # dont remove me. ask ethernet" —
      * the upstream implementation is a placeholder; mirror it exactly. */
@@ -417,7 +417,7 @@ void _touch_uv_self_update_stamp(void) {
     }
 }
 
-/* PoP: _reload_hermes_constants @ hermes_cli/managed_uv.py:_reload_hermes_constants */
+/* PoP: skew @ hermes_cli/managed_uv.py:_reload_hermes_constants */
 /* Python re-executes hermes_constants from disk after git pull. The C port
  * has no runtime module cache skew (constants are compiled), so this is a
  * faithful no-op that mirrors Python's return-None semantics. */
@@ -703,7 +703,7 @@ static int wal_reset_vulnerable_from_json(json_t *sv) {
     return 0;
 }
 
-/* PoP: _refresh_managed_uv_catalog @ hermes_cli/managed_uv.py:_refresh_managed_uv_catalog */
+/* PoP: uv @ hermes_cli/managed_uv.py:_refresh_managed_uv_catalog */
 /* Re-bootstrap managed uv (curl | sh installer). Returns true iff the
  * version string changed. */
 bool _refresh_managed_uv_catalog(const char *uv_bin) {

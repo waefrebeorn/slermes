@@ -24,13 +24,13 @@ static const char *SENSITIVE_LONG_FLAGS[] = {
     NULL
 };
 
-/* PoP: _probe_fail_json @ hermes_cli/_scan_venv_blockers.py:_probe_fail_json */
+/* PoP: scanvb_probe_fail_json @ hermes_cli/_scan_venv_blockers.py:_probe_fail_json */
 char *scanvb_probe_fail_json(void) {
     /* Python: json.dumps({"ok": False, "blocked": False, "processes": []}) */
     return strdup("{\"ok\": false, \"blocked\": false, \"processes\": []}");
 }
 
-/* PoP: _emit_probe_fail @ hermes_cli/_scan_venv_blockers.py:_emit_probe_fail */
+/* PoP: scanvb_emit_probe_fail @ hermes_cli/_scan_venv_blockers.py:_emit_probe_fail */
 int scanvb_emit_probe_fail(const char *diagnostic) {
     /* Python: print one JSON to stdout, diagnostic to stderr, exit non-zero. */
     char *probe = scanvb_probe_fail_json();
@@ -40,7 +40,7 @@ int scanvb_emit_probe_fail(const char *diagnostic) {
     return 1;
 }
 
-/* PoP: _find_flag @ hermes_cli/_scan_venv_blockers.py:_find_flag */
+/* PoP: scanvb_find_flag @ hermes_cli/_scan_venv_blockers.py:_find_flag */
 long scanvb_find_flag(const char *text, const char *flag) {
     /* Python: index of *flag* when it starts the string or follows a space.
      * Returns -1 when not found. Avoids matching --token inside an
@@ -55,7 +55,7 @@ long scanvb_find_flag(const char *text, const char *flag) {
     return -1;
 }
 
-/* PoP: _redact_sensitive_cmdline @ hermes_cli/_scan_venv_blockers.py:_redact_sensitive_cmdline */
+/* PoP: scanvb_redact_sensitive_cmdline @ hermes_cli/_scan_venv_blockers.py:_redact_sensitive_cmdline */
 char *scanvb_redact_sensitive_cmdline(const char *cmdline) {
     /* Python: generic secret redaction then long-flag redaction.
      * If the generic redactor fails, return "<redacted>". */
@@ -89,7 +89,7 @@ char *scanvb_redact_sensitive_cmdline(const char *cmdline) {
     return redacted;
 }
 
-/* PoP: _is_pausable_gateway @ hermes_cli/_scan_venv_blockers.py:_is_pausable_gateway */
+/* PoP: scanvb_is_pausable_gateway @ hermes_cli/_scan_venv_blockers.py:_is_pausable_gateway */
 bool scanvb_is_pausable_gateway(const char *cmdline) {
     /* Python: True when cmdline is a gateway process the updater can pause.
      * Delegates to gateway.status.looks_like_gateway_command_line. */
@@ -97,7 +97,7 @@ bool scanvb_is_pausable_gateway(const char *cmdline) {
     return gwstatus_looks_like_gateway_command_line(cmdline);
 }
 
-/* PoP: main @ hermes_cli/_scan_venv_blockers.py:main */
+/* PoP: scanvb_main @ hermes_cli/_scan_venv_blockers.py:main */
 int scanvb_main(const char *processes_json, const char *exempted_count) {
     /* Python entry point: prints one JSON doc, exits 0 for valid scan.
      * Arg = "processes_json\texempted_count" where processes_json is the

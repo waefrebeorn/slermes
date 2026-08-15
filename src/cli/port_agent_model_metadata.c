@@ -97,7 +97,7 @@ int cli_agent_model_metadata__save_model_metadata_disk_cache(
     return 0;
 }
 
-/* PoP: cli_agent_model_metadata_is_output_cap_error @ agent/model_metadata.py:is_output_cap_error */
+/* PoP: cap @ agent/model_metadata.py:is_output_cap_error */
 
 /* Port of Python agent/model_metadata.py:is_output_cap_error.
  * Returns 1 if a 400 is about the OUTPUT cap (max_tokens) being too large. */
@@ -182,7 +182,7 @@ static int mm_is_ollama(const char *base_url)
     return 0;
 }
 
-/* PoP: cli_agent_model_metadata_query_ollama_supports_vision @ agent/model_metadata.py:query_ollama_supports_vision */
+/* PoP: query_ollama_supports_vision @ agent/model_metadata.py:query_ollama_supports_vision */
 /*
  * Port of Python query_ollama_supports_vision(model, base_url, api_key).
  * POSTs {name: model} to <server>/api/show and inspects the "capabilities"
@@ -273,7 +273,7 @@ int cli_agent_model_metadata_get_model_context_length_async(
     return get_model_context_length(model, base_url, api_key, config_context_length, provider);
 }
 
-/* PoP: _msg_fingerprint @ agent/model_metadata.py:_msg_fingerprint */
+/* PoP: id @ agent/model_metadata.py:_msg_fingerprint */
 /* Build a hashable fingerprint of a JSON value for cache keying.
  * Returns a JSON-serializable structure:
  *   null/true/false -> the literal
@@ -392,7 +392,7 @@ static json_t *blackhole_cache_get(void) {
     return g_endpoint_blackhole_cache;
 }
 
-/* PoP: _endpoint_host_key @ agent/model_metadata.py:_endpoint_host_key */
+/* PoP: mm_endpoint_host_key @ agent/model_metadata.py:_endpoint_host_key */
 char *mm_endpoint_host_key(const char *base_url) {
     char *normalized = provider_normalize_base_url(base_url);
     if (!normalized) return NULL;
@@ -422,7 +422,7 @@ char *mm_endpoint_host_key(const char *base_url) {
     return result;
 }
 
-/* PoP: _note_endpoint_blackholed @ agent/model_metadata.py:_note_endpoint_blackholed */
+/* PoP: mm_note_endpoint_blackholed @ agent/model_metadata.py:_note_endpoint_blackholed */
 void mm_note_endpoint_blackholed(const char *base_url) {
     char *key = mm_endpoint_host_key(base_url);
     if (!key) return;
@@ -437,7 +437,7 @@ void mm_note_endpoint_blackholed(const char *base_url) {
     free(key);
 }
 
-/* PoP: _endpoint_blackholed @ agent/model_metadata.py:_endpoint_blackholed */
+/* PoP: mm_endpoint_blackholed @ agent/model_metadata.py:_endpoint_blackholed */
 bool mm_endpoint_blackholed(const char *base_url) {
     if (ENDPOINT_BLACKHOLE_TTL_SECONDS <= 0) return false;
     char *key = mm_endpoint_host_key(base_url);
@@ -457,7 +457,7 @@ bool mm_endpoint_blackholed(const char *base_url) {
     return true;
 }
 
-/* PoP: _is_connect_timeout @ agent/model_metadata.py:_is_connect_timeout */
+/* PoP: mm_is_connect_timeout @ agent/model_metadata.py:_is_connect_timeout */
 bool mm_is_connect_timeout(const char *exc_type) {
     /* Python: checks isinstance(exc, httpx.ConnectTimeout) or
      * requests.exceptions.ConnectTimeout. In C, we match by exception
@@ -474,7 +474,7 @@ bool mm_is_connect_timeout(const char *exc_type) {
 
 #define LOCAL_PROBE_DISK_TTL_SECONDS 300.0
 
-/* PoP: _local_probe_disk_cache_path @ agent/model_metadata.py:_local_probe_disk_cache_path */
+/* PoP: mm_local_probe_disk_cache_path @ agent/model_metadata.py:_local_probe_disk_cache_path */
 char *mm_local_probe_disk_cache_path(void) {
     /* Python: get_hermes_home() / "cache" / "local_endpoint_probes.json" */
     const char *home = get_hermes_home();
@@ -484,7 +484,7 @@ char *mm_local_probe_disk_cache_path(void) {
     return path;
 }
 
-/* PoP: _load_local_probe_disk_cache @ agent/model_metadata.py:_load_local_probe_disk_cache */
+/* PoP: mm_load_local_probe_disk_cache @ agent/model_metadata.py:_load_local_probe_disk_cache */
 json_t *mm_load_local_probe_disk_cache(void) {
     char *path = mm_local_probe_disk_cache_path();
     if (!path) return json_object();
@@ -497,7 +497,7 @@ json_t *mm_load_local_probe_disk_cache(void) {
     return data;
 }
 
-/* PoP: _local_probe_disk_get @ agent/model_metadata.py:_local_probe_disk_get */
+/* PoP: mm_local_probe_disk_get @ agent/model_metadata.py:_local_probe_disk_get */
 char *mm_local_probe_disk_get(const char *kind, const char *key) {
     /* Python: load cache, check f"{kind}:{key}" entry TTL, return value. */
     if (!kind || !key) return NULL;
@@ -525,7 +525,7 @@ char *mm_local_probe_disk_get(const char *kind, const char *key) {
     return result;
 }
 
-/* PoP: _local_probe_disk_put @ agent/model_metadata.py:_local_probe_disk_put */
+/* PoP: mm_local_probe_disk_put @ agent/model_metadata.py:_local_probe_disk_put */
 void mm_local_probe_disk_put(const char *kind, const char *key, const char *value_json) {
     /* Python: prune stale entries, add new {value, ts}, atomic JSON write. */
     if (!kind || !key || !value_json) return;
@@ -572,7 +572,7 @@ void mm_local_probe_disk_put(const char *kind, const char *key, const char *valu
 
 static json_t *g_fallback_warned = NULL;
 
-/* PoP: _warn_context_length_fallback @ agent/model_metadata.py:_warn_context_length_fallback */
+/* PoP: mm_warn_context_length_fallback @ agent/model_metadata.py:_warn_context_length_fallback */
 void mm_warn_context_length_fallback(const char *model, const char *base_url) {
     /* Python: warn once per (model, base_url) about context length fallback. */
     char key[512];
@@ -594,7 +594,7 @@ void mm_warn_context_length_fallback(const char *model, const char *base_url) {
 static json_t *g_msg_tokens_cache = NULL;  /* dict: fingerprint -> [pins, tokens] */
 static size_t g_msg_tokens_count = 0;
 
-/* PoP: _estimate_message_tokens_cached @ agent/model_metadata.py:_estimate_message_tokens_cached */
+/* PoP: mm_estimate_message_tokens_cached @ agent/model_metadata.py:_estimate_message_tokens_cached */
 int mm_estimate_message_tokens_cached(const char *msg_json, int image_cost) {
     /* Python: fingerprint message, check cache, compute if miss, evict LRU. */
     if (!msg_json) return 0;
@@ -638,7 +638,7 @@ int mm_estimate_message_tokens_cached(const char *msg_json, int image_cost) {
     return tokens;
 }
 
-/* PoP: _wire_message_shadow @ agent/model_metadata.py:_wire_message_shadow */
+/* PoP: mm_wire_message_shadow @ agent/model_metadata.py:_wire_message_shadow */
 char *mm_wire_message_shadow(const char *msg_json) {
     /* Python: build a shadow dict with api_content substitution + image
      * stripping. Returns the shadowed message as JSON string. */
@@ -721,7 +721,7 @@ char *mm_wire_message_shadow(const char *msg_json) {
 
 /* ── Requests SSL verify resolution ───────────────────────────────────────── */
 
-/* PoP: _ensure_requests @ agent/model_metadata.py:_ensure_requests */
+/* PoP: mm_ensure_requests @ agent/model_metadata.py:_ensure_requests */
 bool mm_ensure_requests(void) {
     /* Python: lazy import requests. In C, 'requests' is the HTTP backend
      * (hermes_http), always linked. Verify availability via a runtime probe. */
@@ -729,7 +729,7 @@ bool mm_ensure_requests(void) {
     return true;
 }
 
-/* PoP: __getattr__ @ agent/model_metadata.py:__getattr__ */
+/* PoP: mm_model_metadata_getattr @ agent/model_metadata.py:__getattr__ */
 void *mm_model_metadata_getattr(const char *name) {
     /* Python: module-level __getattr__ — returns requests module on demand. */
     if (name && strcmp(name, "requests") == 0) {
@@ -739,7 +739,7 @@ void *mm_model_metadata_getattr(const char *name) {
     return NULL;  /* raise AttributeError equivalent */
 }
 
-/* PoP: _resolve_requests_verify @ agent/model_metadata.py:_resolve_requests_verify */
+/* PoP: mm_resolve_requests_verify @ agent/model_metadata.py:_resolve_requests_verify */
 char *mm_resolve_requests_verify(void) {
     /* Python: check HERMES_CA_BUNDLE / REQUESTS_CA_BUNDLE / SSL_CERT_FILE.
      * Returns path if file exists, or "true" for default. */

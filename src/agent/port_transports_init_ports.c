@@ -18,14 +18,14 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: register_transport @ agent/transports/__init__.py:register_transport */
+/* PoP: tri_register_transport @ agent/transports/__init__.py:register_transport */
 int tri_register_transport(const char *api_mode, const char *transport_desc) {
     if (!api_mode) return -1;
     printf("transport registered: %s\n", api_mode);
     return 0;
 }
 
-/* PoP: get_transport @ agent/transports/__init__.py:get_transport */
+/* PoP: tri_get_transport @ agent/transports/__init__.py:get_transport */
 char *tri_get_transport(const char *api_mode) {
     /* Python: instance or None. */
     if (!api_mode) return NULL;
@@ -33,7 +33,7 @@ char *tri_get_transport(const char *api_mode) {
     return NULL;
 }
 
-/* PoP: _discover_transports @ agent/transports/__init__.py:_discover_transports */
+/* PoP: tri_discover_transports @ agent/transports/__init__.py:_discover_transports */
 int tri_discover_transports(void) {
     /* Python: import all modules for auto-registration. */
     printf("transport modules discovered (auto-registration)\n");

@@ -22,7 +22,7 @@ static char *lowerdup(const char *s) {
 /* Module-level enabled state, mirroring Python DebugToolLog.enabled. */
 static bool g_dbh_enabled = false;
 
-/* PoP: __init__ @ tools/debug_helpers.py:__init__ */
+/* PoP: dbh_init @ tools/debug_helpers.py:__init__ */
 char *dbh_init(const char *tool_name, const char *env_var) {
     /* Python: env-gated tool logging. */
     const char *v = env_var ? getenv(env_var) : NULL;
@@ -34,13 +34,13 @@ char *dbh_init(const char *tool_name, const char *env_var) {
     return out;
 }
 
-/* PoP: active @ tools/debug_helpers.py:active */
+/* PoP: dbh_active @ tools/debug_helpers.py:active */
 bool dbh_active(void) {
     /* Python: DebugToolLog.active == self.enabled (env-gated at init). */
     return g_dbh_enabled;
 }
 
-/* PoP: save @ tools/debug_helpers.py:save */
+/* PoP: dbh_save @ tools/debug_helpers.py:save */
 int dbh_save(const char *log_dir, const char *tool_name, const char *log_json) {
     /* Python: flush to JSON file — REAL write. */
     if (!log_dir || !tool_name) return -1;

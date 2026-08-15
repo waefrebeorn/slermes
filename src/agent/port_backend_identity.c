@@ -23,7 +23,7 @@
 
 /* ── string normalization helpers ────────────────────────────────────────── */
 
-/* PoP: agent_backend_identity__norm_provider @ agent/backend_identity.py:_norm_provider */
+/* PoP: agent_backend_identity_norm_provider @ agent/backend_identity.py:_norm_provider */
 char *agent_backend_identity_norm_provider(const char *value) {
     /* Python: (value or "").strip().lower() */
     if (!value) return strdup("");
@@ -40,13 +40,13 @@ char *agent_backend_identity_norm_provider(const char *value) {
     return out;
 }
 
-/* PoP: agent_backend_identity__norm_model @ agent/backend_identity.py:_norm_model */
+/* PoP: agent_backend_identity_norm_model @ agent/backend_identity.py:_norm_model */
 char *agent_backend_identity_norm_model(const char *value) {
     /* Python: (value or "").strip().lower() — identical to _norm_provider */
     return agent_backend_identity_norm_provider(value);
 }
 
-/* PoP: agent_backend_identity__norm_base_url @ agent/backend_identity.py:_norm_base_url */
+/* PoP: agent_backend_identity_norm_base_url @ agent/backend_identity.py:_norm_base_url */
 char *agent_backend_identity_norm_base_url(const char *value) {
     /* Python: (value or "").strip().rstrip("/").lower() */
     char *stripped = agent_backend_identity_norm_provider(value);
@@ -84,7 +84,7 @@ struct backend_identity_s {
     char *base_url;
 };
 
-/* PoP: agent_backend_identity__norm_provider @ agent/backend_identity.py:BackendIdentity.build */
+/* PoP: agent_backend_identity_build @ agent/backend_identity.py:BackendIdentity.build */
 BackendIdentity *agent_backend_identity_build(const char *provider,
                                                const char *model,
                                                const char *base_url) {
@@ -111,7 +111,7 @@ const char *agent_backend_identity_base_url(const BackendIdentity *bi)  { return
 
 /* ── _both_first_class ──────────────────────────────────────────────────── */
 
-/* PoP: agent_backend_identity__both_first_class @ agent/backend_identity.py:_both_first_class */
+/* PoP: agent_backend_identity_both_first_class @ agent/backend_identity.py:_both_first_class */
 bool agent_backend_identity_both_first_class(const BackendIdentity *a, const BackendIdentity *b) {
     /* Python:
      *   if not a.provider or not b.provider or a.provider == b.provider: return False

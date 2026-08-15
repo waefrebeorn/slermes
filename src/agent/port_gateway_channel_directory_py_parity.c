@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: gateway_channel_directory_format_directory_for_display @ gateway/channel_directory.py:format_directory_for_display */
+/* PoP: gateway_channel_directory_format_directory_for_display_p @ gateway/channel_directory.py:format_directory_for_display */
 json_t *gateway_channel_directory_format_directory_for_display_p(void) {
     return json_object();
 }

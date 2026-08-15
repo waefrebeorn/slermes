@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ gateway/shutdown_watchdog.py:__init__ */
+/* PoP: sdw_init @ gateway/shutdown_watchdog.py:__init__ */
 char *sdw_init(long interval_seconds) {
     if (interval_seconds <= 0) interval_seconds = 5;
     char *out = NULL;
@@ -27,7 +27,7 @@ char *sdw_init(long interval_seconds) {
     return out;
 }
 
-/* PoP: stop @ gateway/shutdown_watchdog.py:stop */
+/* PoP: sdw_stop @ gateway/shutdown_watchdog.py:stop */
 int sdw_stop(void) {
     /* Python: set stop event. */
     printf("shutdown watchdog stop event set\n");

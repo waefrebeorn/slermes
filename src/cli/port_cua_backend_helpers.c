@@ -21,7 +21,7 @@
 #include <string.h>
 
 /* --- PNG/JPEG dimension sniffing -------------------------------------- */
-/* PoP: _image_dimensions_from_bytes @ tools/computer_use/cua_backend.py:_image_dimensions_from_bytes */
+/* PoP: PNG @ tools/computer_use/cua_backend.py:_image_dimensions_from_bytes */
 /* Returns width,height via out params, or (0,0) if it can't be determined.
  * Mirrors Python: PNG (IHDR at offset 16), JPEG SOF0..SOF15 markers. */
 void cua_backend_image_dimensions_from_bytes(const unsigned char *raw, size_t n,
@@ -75,7 +75,7 @@ void cua_backend_image_dimensions_from_bytes(const unsigned char *raw, size_t n,
 }
 
 /* --- AX-tree text split ----------------------------------------------- */
-/* PoP: _split_tree_text @ tools/computer_use/cua_backend.py:_split_tree_text */
+/* PoP: cua_backend_split_tree_text @ tools/computer_use/cua_backend.py:_split_tree_text */
 /* Splits get_window_state text into (summary_line, tree_markdown).
  * Allocates *out_summary and *out_tree with malloc; caller frees. On
  * no-newline input, summary = whole string, tree = "". Returns 0 on success. */
@@ -99,7 +99,7 @@ int cua_backend_split_tree_text(const char *full_text,
 }
 
 /* --- key combo parsing ------------------------------------------------- */
-/* PoP: _parse_key_combo @ tools/computer_use/cua_backend.py:_parse_key_combo */
+/* PoP: cua_backend_parse_key_combo @ tools/computer_use/cua_backend.py:_parse_key_combo */
 /*
  * Parse a key string like 'cmd+s' into (key, modifiers).
  * Returns key (malloc'd, may be NULL) and fills modifiers[] (malloc'd array of

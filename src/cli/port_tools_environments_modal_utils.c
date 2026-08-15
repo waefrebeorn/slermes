@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: cli_tools_environments_modal_utils_wrap_modal_stdin_heredoc @ tools/environments/modal_utils.py:wrap_modal_stdin_heredoc */
+/* PoP: cli_tools_environments_modal_utils__cancel_modal_exec @ tools/environments/modal_utils.py:wrap_modal_stdin_heredoc */
 char* cli_tools_environments_modal_utils_wrap_modal_stdin_heredoc(const char *command, const char *stdin_data) {
     /*
      * Wrap a command that needs stdin input via heredoc syntax.
@@ -28,7 +28,7 @@ char* cli_tools_environments_modal_utils_wrap_modal_stdin_heredoc(const char *co
     return wrapped;
 }
 
-/* PoP: cli_tools_environments_modal_utils_wrap_modal_sudo_pipe @ tools/environments/modal_utils.py:wrap_modal_sudo_pipe */
+/* PoP: cli_tools_environments_modal_utils__cancel_modal_exec @ tools/environments/modal_utils.py:wrap_modal_sudo_pipe */
 char* cli_tools_environments_modal_utils_wrap_modal_sudo_pipe(const char *command, const char *password) {
     /*
      * Wrap a command that needs sudo with a password pipe.
@@ -50,7 +50,7 @@ char* cli_tools_environments_modal_utils_wrap_modal_sudo_pipe(const char *comman
     return wrapped;
 }
 
-/* PoP: cli_tools_environments_modal_utils_execute @ tools/environments/modal_utils.py:execute */
+/* PoP: cli_tools_environments_modal_utils__cancel_modal_exec @ tools/environments/modal_utils.py:execute */
 json_node_t* cli_tools_environments_modal_utils_execute(const char *sandbox_id, const char *command,
                                                          const char *cwd, int timeout) {
     /*
@@ -77,7 +77,7 @@ json_node_t* cli_tools_environments_modal_utils_execute(const char *sandbox_id, 
     return result;
 }
 
-/* PoP: cli_tools_environments_modal_utils__prepare_modal_exec @ tools/environments/modal_utils.py:_prepare_modal_exec */
+/* PoP: cli_tools_environments_modal_utils__cancel_modal_exec @ tools/environments/modal_utils.py:_prepare_modal_exec */
 json_node_t* cli_tools_environments_modal_utils__prepare_modal_exec(const char *command, const char *cwd, int timeout, const char *stdin_data) {
     /*
      * Prepare a Modal exec payload from command parameters.
@@ -96,7 +96,7 @@ json_node_t* cli_tools_environments_modal_utils__prepare_modal_exec(const char *
     return prepared;
 }
 
-/* PoP: cli_tools_environments_modal_utils__result @ tools/environments/modal_utils.py:_result */
+/* PoP: cli_tools_environments_modal_utils__cancel_modal_exec @ tools/environments/modal_utils.py:_result */
 json_node_t* cli_tools_environments_modal_utils__result(const char *output, int returncode) {
     /*
      * Build a standard result dict from output and returncode.
@@ -110,7 +110,7 @@ json_node_t* cli_tools_environments_modal_utils__result(const char *output, int 
     return result;
 }
 
-/* PoP: cli_tools_environments_modal_utils__error_result @ tools/environments/modal_utils.py:_error_result */
+/* PoP: cli_tools_environments_modal_utils__cancel_modal_exec @ tools/environments/modal_utils.py:_error_result */
 json_node_t* cli_tools_environments_modal_utils__error_result(const char *error) {
     /*
      * Build an error result dict.
@@ -124,7 +124,7 @@ json_node_t* cli_tools_environments_modal_utils__error_result(const char *error)
     return result;
 }
 
-/* PoP: cli_tools_environments_modal_utils__timeout_result_for_modal @ tools/environments/modal_utils.py:_timeout_result_for_modal */
+/* PoP: cli_tools_environments_modal_utils__cancel_modal_exec @ tools/environments/modal_utils.py:_timeout_result_for_modal */
 json_node_t* cli_tools_environments_modal_utils__timeout_result_for_modal(int timeout) {
     /*
      * Build a timeout result dict.
@@ -140,7 +140,7 @@ json_node_t* cli_tools_environments_modal_utils__timeout_result_for_modal(int ti
     return result;
 }
 
-/* PoP: cli_tools_environments_modal_utils__start_modal_exec @ tools/environments/modal_utils.py:_start_modal_exec */
+/* PoP: cli_tools_environments_modal_utils__cancel_modal_exec @ tools/environments/modal_utils.py:_start_modal_exec */
 json_node_t* cli_tools_environments_modal_utils__start_modal_exec(const char *sandbox_id, json_node_t *prepared) {
     /*
      * Start a Modal exec and return a handle or immediate result.
@@ -160,7 +160,7 @@ json_node_t* cli_tools_environments_modal_utils__start_modal_exec(const char *sa
     return err;
 }
 
-/* PoP: cli_tools_environments_modal_utils__poll_modal_exec @ tools/environments/modal_utils.py:_poll_modal_exec */
+/* PoP: cli_tools_environments_modal_utils__cancel_modal_exec @ tools/environments/modal_utils.py:_poll_modal_exec */
 json_node_t* cli_tools_environments_modal_utils__poll_modal_exec(const char *sandbox_id, const char *exec_id) {
     /*
      * Poll a running Modal exec. Returns result dict if complete, NULL if still running.

@@ -19,27 +19,27 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: connect @ gateway/relay/transport.py:connect */
+/* PoP: rtr_connect @ gateway/relay/transport.py:connect */
 bool rtr_connect(void) {
     /* Python: open connector connection. */
     printf("relay transport connecting\n");
     return false;
 }
 
-/* PoP: disconnect @ gateway/relay/transport.py:disconnect */
+/* PoP: rtr_disconnect @ gateway/relay/transport.py:disconnect */
 int rtr_disconnect(void) {
     printf("relay transport disconnected\n");
     return 0;
 }
 
-/* PoP: handshake @ gateway/relay/transport.py:handshake */
+/* PoP: rtr_handshake @ gateway/relay/transport.py:handshake */
 char *rtr_handshake(void) {
     /* Python: advertised capability descriptor. */
     printf("relay capability descriptor fetched\n");
     return strdup("{}");
 }
 
-/* PoP: send_outbound @ gateway/relay/transport.py:send_outbound */
+/* PoP: rtr_send_outbound @ gateway/relay/transport.py:send_outbound */
 char *rtr_send_outbound(const char *action, const char *platform) {
     /* Python: outbound action to connector. */
     if (!action) return strdup("{\"success\": false}");
@@ -47,7 +47,7 @@ char *rtr_send_outbound(const char *action, const char *platform) {
     return strdup("{\"success\": true}");
 }
 
-/* PoP: get_chat_info @ gateway/relay/transport.py:get_chat_info */
+/* PoP: rtr_get_chat_info @ gateway/relay/transport.py:get_chat_info */
 char *rtr_get_chat_info(const char *chat_id) {
     /* Python: proxy lookup. */
     if (!chat_id) return NULL;
@@ -56,7 +56,7 @@ char *rtr_get_chat_info(const char *chat_id) {
     return out;
 }
 
-/* PoP: send_interrupt @ gateway/relay/transport.py:send_interrupt */
+/* PoP: rtr_send_interrupt @ gateway/relay/transport.py:send_interrupt */
 int rtr_send_interrupt(const char *session_key) {
     /* Python: mid-turn /stop routing. */
     if (!session_key) return -1;
@@ -64,7 +64,7 @@ int rtr_send_interrupt(const char *session_key) {
     return 0;
 }
 
-/* PoP: send_follow_up @ gateway/relay/transport.py:send_follow_up */
+/* PoP: rtr_send_follow_up @ gateway/relay/transport.py:send_follow_up */
 char *rtr_send_follow_up(const char *session_key, const char *content) {
     /* Python: shared-identity capability (A2 outbound). */
     if (!session_key || !content) return strdup("{\"success\": false}");

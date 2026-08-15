@@ -608,7 +608,7 @@ bool _is_interactive_cli(void)
 
 #include "hermes_regex.h"
 
-/* PoP: _hardline_rm_path @ tools/approval.py:_hardline_rm_path */
+/* PoP: hardline_rm_path @ tools/approval.py:_hardline_rm_path */
 char *hardline_rm_path(const char *path_alt)
 {
     if (!path_alt) return strdup("");
@@ -627,7 +627,7 @@ char *hardline_rm_path(const char *path_alt)
     return pattern;
 }
 
-/* PoP: _home_prefix_fold_regex @ tools/approval.py:_home_prefix_fold_regex */
+/* PoP: home_prefix_fold_regex @ tools/approval.py:_home_prefix_fold_regex */
 hregex_t *home_prefix_fold_regex(const char *path)
 {
     if (!path || !*path) return NULL;
@@ -688,7 +688,7 @@ hregex_t *home_prefix_fold_regex(const char *path)
     return re;
 }
 
-/* PoP: _fold_home_prefixes @ tools/approval.py:_fold_home_prefixes */
+/* PoP: fold_home_prefixes @ tools/approval.py:_fold_home_prefixes */
 char *fold_home_prefixes(const char *command, const char **paths, size_t path_count, const char *replacement)
 {
     if (!command) return strdup("");
@@ -876,7 +876,7 @@ void approval__legacy_pattern_key(const char *pattern, char *out, size_t outsz) 
     }
 }
 
-/* PoP: approval__approval_key_aliases @ tools/approval.py:_approval_key_aliases */
+/* PoP: strings @ tools/approval.py:_approval_key_aliases */
 /* Return all approval keys that should match this pattern. Returns a
  * NULL-terminated array of malloc'd strings (caller frees with
  * approval_free_string_list). */
@@ -945,7 +945,7 @@ void approval__rewrite_resolved_hermes_home(const char *command, char *out, size
 
 /* --- Block-result builders ----------------------------------------------- */
 
-/* PoP: approval__hardline_block_result @ tools/approval.py:_hardline_block_result */
+/* PoP: match @ tools/approval.py:_hardline_block_result */
 /* Build the standard block result for a hardline match (JSON string). */
 char *approval__hardline_block_result(const char *description) {
     char *out = malloc(1024);
@@ -1014,7 +1014,7 @@ char *approval__check_sudo_stdin_guard(const char *command) {
     return NULL;
 }
 
-/* PoP: detect_hardline_command @ tools/approval.py:detect_hardline_command */
+/* PoP: approval_detect_hardline_command @ tools/approval.py:detect_hardline_command */
 char *approval_detect_hardline_command(const char *command) {
     if (!command) return NULL;
     if (strlen(command) > 65536) return NULL;
@@ -1115,7 +1115,7 @@ char *approval__smart_approve(const char *command, const char *description) {
 
 /* --- Approval hook fire -------------------------------------------------- */
 
-/* PoP: approval__fire_approval_hook @ tools/approval.py:_fire_approval_hook */
+/* PoP: hook @ tools/approval.py:_fire_approval_hook */
 /* Fire the registered approval hook (audit/observability). Best-effort. */
 void approval__fire_approval_hook(const char *event, const char *detail) {
     hermes_log(LOG_INFO, "approval", "approval_hook: %s %s",
@@ -1223,7 +1223,7 @@ char *approval_check_execute_code_guard(const char *code, const char *env_type) 
     return result;
 }
 
-/* PoP: _clamped_window_seconds @ tools/approval.py:_clamped_window_seconds */
+/* PoP: approval_clamped_window_seconds @ tools/approval.py:_clamped_window_seconds */
 double approval_clamped_window_seconds(double started, double now, double ceiling) {
     double elapsed = now - started;
     if (elapsed < 0) elapsed = 0;

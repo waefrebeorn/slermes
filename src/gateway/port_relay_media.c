@@ -29,7 +29,7 @@
 void relay_auth_make_upgrade_token(const char *secret, const char *ws_url,
                                    char *token_out, size_t out_sz);
 
-/* PoP: media_base_url @ gateway/relay/media.py:media_base_url */
+/* PoP: relay_media_base_url @ gateway/relay/media.py:media_base_url */
 char *relay_media_base_url(const char *relay_dial_url) {
     /* Map ws(s)://…/relay dial URL to http(s)://… base.
      * ws→http / wss→https, trailing /relay stripped. */
@@ -54,7 +54,7 @@ char *relay_media_base_url(const char *relay_dial_url) {
 
 /* ── RelayMediaClient ────────────────────────────────────────────── */
 
-/* PoP: __init__ @ gateway/relay/media.py:__init__ */
+/* PoP: relay_media_client_new @ gateway/relay/media.py:__init__ */
 typedef struct relay_media_client {
     char *base_url;   /* rstrip("/") */
     char *gateway_id;
@@ -85,14 +85,14 @@ void relay_media_client_free(relay_media_client_t *c) {
     free(c->base_url); free(c->gateway_id); free(c->secret); free(c);
 }
 
-/* PoP: enabled @ gateway/relay/media.py:enabled */
+/* PoP: relay_media_client_enabled @ gateway/relay/media.py:enabled */
 bool relay_media_client_enabled(const relay_media_client_t *c) {
     /* True when the client can authenticate (per-gateway creds present). */
     if (!c) return false;
     return c->base_url[0] && c->gateway_id[0] && c->secret[0];
 }
 
-/* PoP: _bearer @ gateway/relay/media.py:_bearer */
+/* PoP: relay_media_client_bearer @ gateway/relay/media.py:_bearer */
 char *relay_media_client_bearer(const relay_media_client_t *c) {
     /* make_upgrade_token(gateway_id, secret) */
     if (!c) return NULL;
@@ -101,13 +101,13 @@ char *relay_media_client_bearer(const relay_media_client_t *c) {
     return strdup(token[0] ? token : "placeholder-token");
 }
 
-/* PoP: is_relay_media_url @ gateway/relay/media.py:is_relay_media_url */
+/* PoP: relay_media_client_is_relay_media_url @ gateway/relay/media.py:is_relay_media_url */
 bool relay_media_client_is_relay_media_url(const char *url) {
     /* Is url a connector re-host reference (needs our bearer to GET)? */
     return url && strstr(url, "/relay/media/") != NULL;
 }
 
-/* PoP: upload @ gateway/relay/media.py:upload */
+/* PoP: relay_media_client_upload @ gateway/relay/media.py:upload */
 char *relay_media_client_upload(relay_media_client_t *c, const char *file_path,
                                 const char *mime, const char *filename) {
     /* POST local file bytes to /relay/media; return reference URL or NULL. */
@@ -166,7 +166,7 @@ char *relay_media_client_upload(relay_media_client_t *c, const char *file_path,
     return out;
 }
 
-/* PoP: download @ gateway/relay/media.py:download */
+/* PoP: relay_media_client_download @ gateway/relay/media.py:download */
 char *relay_media_client_download(relay_media_client_t *c, const char *url,
                                   const char *suggested_name) {
     /* GET a re-hosted attachment to a local temp file; return its path.

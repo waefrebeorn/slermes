@@ -203,7 +203,7 @@ scheduler_media_kind_t scheduler_route_media(const char *platform,
 
 /* ── media send via adapter (live path) ────────────────────────────── */
 
-/* PoP: scheduler_send_media_via_adapter @ cron/scheduler.py:_send_media_via_adapter */
+/* PoP: NULL @ cron/scheduler.py:_send_media_via_adapter */
 /* Routes each extracted MEDIA file to the appropriate adapter method by kind.
  * Returns the number of successful sends. The adapter may be NULL (no live
  * gateway) in which case 0 is returned (the standalone fallback handles
@@ -250,7 +250,7 @@ int scheduler_send_media_via_adapter(const scheduler_adapter_t *adapter,
 
 /* ── ambiguous Telegram topic probe ────────────────────────────────── */
 
-/* PoP: scheduler_is_channel_dm_topic @ cron/scheduler.py:_is_channel_dm_topic */
+/* PoP: available @ cron/scheduler.py:_is_channel_dm_topic */
 /* The running gateway adapter exposes a get_chat_info probe. When no live
  * adapter is available (standalone cron), we fail SAFE to forum-topic routing
  * (return 0), exactly like the Python default. */
@@ -286,7 +286,7 @@ void scheduler_maybe_mirror_cron_delivery(const json_t *job,
     free(text);
 }
 
-/* PoP: scheduler_open_continuable_cron_thread @ cron/scheduler.py:_open_continuable_cron_thread */
+/* PoP: NULL @ cron/scheduler.py:_open_continuable_cron_thread */
 /* Open a dedicated thread for a continuable cron job. Returns malloc'd thread
  * id or NULL (fall back to DM mirror). In standalone cron there is no live
  * adapter with a create_thread capability, so we return NULL — the
@@ -319,7 +319,7 @@ void scheduler_seed_cron_thread_session(const json_t *job,
     free(text);
 }
 
-/* PoP: scheduler_seed_cron_channel_session @ cron/scheduler.py:_seed_cron_channel_session */
+/* PoP: FLAT @ cron/scheduler.py:_seed_cron_channel_session */
 /* Seed the FLAT (thread-less) session for an in_channel delivery. Returns true
  * when a seed row was created and the brief mirrored. */
 bool scheduler_seed_cron_channel_session(const json_t *job,
@@ -339,7 +339,7 @@ bool scheduler_seed_cron_channel_session(const json_t *job,
 
 /* ── deliver_result ────────────────────────────────────────────────── */
 
-/* PoP: scheduler_deliver_result @ cron/scheduler.py:_deliver_result */
+/* PoP: target @ cron/scheduler.py:_deliver_result */
 /* Deliver job output to the configured target(s). Uses the adapter when given,
  * else the registered platform send path. Returns NULL on success (or a
  * legitimately silent run) or a malloc'd error string. */

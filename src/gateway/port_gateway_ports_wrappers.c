@@ -67,7 +67,7 @@ static char *gsp_relative_path_under(const char *base_dir, const char *raw_path)
     return strdup(real);
 }
 
-/* PoP: _render_mentions @ gateway/platforms/signal.py:_render_mentions */
+/* PoP: gateway_platforms_signal_u_render_mentions @ gateway/platforms/signal.py:_render_mentions */
 int gateway_platforms_signal_u_render_mentions(const char *arg) {
     /* Python: replace U+FFFC with @id. Arg = "text\tmentions\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -78,7 +78,7 @@ int gateway_platforms_signal_u_render_mentions(const char *arg) {
     return 0;
 }
 
-/* PoP: validate_signal_config @ gateway/platforms/signal.py:validate_signal_config */
+/* PoP: gateway_platforms_signal_validate_signal_config @ gateway/platforms/signal.py:validate_signal_config */
 int gateway_platforms_signal_validate_signal_config(const char *arg) {
     /* Python: http_url AND account present. Arg = "http_url\taccount". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -89,7 +89,7 @@ int gateway_platforms_signal_validate_signal_config(const char *arg) {
     return 0;
 }
 
-/* PoP: _sse_listener @ gateway/platforms/signal.py:_sse_listener */
+/* PoP: gateway_platforms_signal_u_sse_listener @ gateway/platforms/signal.py:_sse_listener */
 int gateway_platforms_signal_u_sse_listener(const char *arg) {
     /* Python: SSE retry loop. Arg =
      * "state\tresult". */
@@ -101,7 +101,7 @@ int gateway_platforms_signal_u_sse_listener(const char *arg) {
     return 0;
 }
 
-/* PoP: _health_monitor @ gateway/platforms/signal.py:_health_monitor */
+/* PoP: gateway_platforms_signal_u_health_monitor @ gateway/platforms/signal.py:_health_monitor */
 int gateway_platforms_signal_u_health_monitor(const char *arg) {
     /* Python: SSE staleness. Arg =
      * "checked\tstate\tresult". */
@@ -114,7 +114,7 @@ int gateway_platforms_signal_u_health_monitor(const char *arg) {
     return 0;
 }
 
-/* PoP: _force_reconnect @ gateway/platforms/signal.py:_force_reconnect */
+/* PoP: gateway_platforms_signal_u_force_reconnect @ gateway/platforms/signal.py:_force_reconnect */
 int gateway_platforms_signal_u_force_reconnect(const char *arg) {
     /* Python: SSE close. Arg =
      * "closed\tstate\tresult". */
@@ -129,7 +129,7 @@ int gateway_platforms_signal_u_force_reconnect(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_envelope @ gateway/platforms/signal.py:_handle_envelope */
+/* PoP: gateway_platforms_signal_u_handle_envelope @ gateway/platforms/signal.py:_handle_envelope */
 int gateway_platforms_signal_u_handle_envelope(const char *arg) {
     /* Python: syncMessage filter. Arg =
      * "handled\tstate\tresult". */
@@ -144,7 +144,7 @@ int gateway_platforms_signal_u_handle_envelope(const char *arg) {
     return 0;
 }
 
-/* PoP: _remember_recipient_identifiers @ gateway/platforms/signal.py:_remember_recipient_identifiers */
+/* PoP: gateway_platforms_signal_u_remember_recipient_identifiers @ gateway/platforms/signal.py:_remember_recipient_identifiers */
 int gateway_platforms_signal_u_remember_recipient_identifiers(const char *arg) {
     /* Python: cache number<->uuid when uuid is a valid Signal service id.
      * Arg = "number\tuuid". */
@@ -156,7 +156,7 @@ int gateway_platforms_signal_u_remember_recipient_identifiers(const char *arg) {
     return 0;
 }
 
-/* PoP: _extract_contact_uuid @ gateway/platforms/signal.py:_extract_contact_uuid */
+/* PoP: gateway_platforms_signal_u_extract_contact_uuid @ gateway/platforms/signal.py:_extract_contact_uuid */
 int gateway_platforms_signal_u_extract_contact_uuid(const char *arg) {
     /* Python: number match gate. Arg =
      * "found\tstate\tresult". */
@@ -171,7 +171,7 @@ int gateway_platforms_signal_u_extract_contact_uuid(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_recipient @ gateway/platforms/signal.py:_resolve_recipient */
+/* PoP: gateway_platforms_signal_u_resolve_recipient @ gateway/platforms/signal.py:_resolve_recipient */
 int gateway_platforms_signal_u_resolve_recipient(const char *arg) {
     /* Python: uuid by number. Arg =
      * "resolved\tstate\tresult". */
@@ -184,7 +184,7 @@ int gateway_platforms_signal_u_resolve_recipient(const char *arg) {
     return 0;
 }
 
-/* PoP: _fetch_attachment @ gateway/platforms/signal.py:_fetch_attachment */
+/* PoP: gateway_platforms_signal_u_fetch_attachment @ gateway/platforms/signal.py:_fetch_attachment */
 int gateway_platforms_signal_u_fetch_attachment(const char *arg) {
     /* Python: getAttachment RPC. Arg =
      * "path\tstate\tresult". */
@@ -197,7 +197,7 @@ int gateway_platforms_signal_u_fetch_attachment(const char *arg) {
     return 0;
 }
 
-/* PoP: _rpc @ gateway/platforms/signal.py:_rpc */
+/* PoP: gateway_platforms_signal_u_rpc @ gateway/platforms/signal.py:_rpc */
 int gateway_platforms_signal_u_rpc(const char *arg) {
     /* Python: JSON-RPC 2.0. Arg =
      * "state\tresult\terr". */
@@ -218,7 +218,7 @@ int gateway_platforms_signal_u_rpc(const char *arg) {
     return 0;
 }
 
-/* PoP: _track_sent_timestamp @ gateway/platforms/signal.py:_track_sent_timestamp */
+/* PoP: gateway_platforms_signal_u_track_sent_timestamp @ gateway/platforms/signal.py:_track_sent_timestamp */
 int gateway_platforms_signal_u_track_sent_timestamp(const char *arg) {
     /* Python: echo-back filter record. Arg =
      * "has_ts\tstate\tresult". */
@@ -232,7 +232,7 @@ int gateway_platforms_signal_u_track_sent_timestamp(const char *arg) {
     return 0;
 }
 
-/* PoP: _notify_batch_pacing @ gateway/platforms/signal.py:_notify_batch_pacing */
+/* PoP: gateway_platforms_signal_u_notify_batch_pacing @ gateway/platforms/signal.py:_notify_batch_pacing */
 int gateway_platforms_signal_u_notify_batch_pacing(const char *arg) {
     /* Python: pacing notice. Arg =
      * "batch\tstate\tresult". */
@@ -245,7 +245,7 @@ int gateway_platforms_signal_u_notify_batch_pacing(const char *arg) {
     return 0;
 }
 
-/* PoP: _stop_typing_indicator @ gateway/platforms/signal.py:_stop_typing_indicator */
+/* PoP: gateway_platforms_signal_u_stop_typing_indicator @ gateway/platforms/signal.py:_stop_typing_indicator */
 int gateway_platforms_signal_u_stop_typing_indicator(const char *arg) {
     /* Python: cancel + RPC stop. Arg =
      * "stopped\tstate\tresult". */
@@ -260,7 +260,7 @@ int gateway_platforms_signal_u_stop_typing_indicator(const char *arg) {
     return 0;
 }
 
-/* PoP: remove_reaction @ gateway/platforms/signal.py:remove_reaction */
+/* PoP: gateway_platforms_signal_remove_reaction @ gateway/platforms/signal.py:remove_reaction */
 int gateway_platforms_signal_remove_reaction(const char *arg) {
     /* Python: empty emoji sendReaction. Arg =
      * "removed\tstate\tresult". */
@@ -275,7 +275,7 @@ int gateway_platforms_signal_remove_reaction(const char *arg) {
     return 0;
 }
 
-/* PoP: _extract_reaction_target @ gateway/platforms/signal.py:_extract_reaction_target */
+/* PoP: gateway_platforms_signal_u_extract_reaction_target @ gateway/platforms/signal.py:_extract_reaction_target */
 int gateway_platforms_signal_u_extract_reaction_target(const char *arg) {
     /* Python: (sender, timestamp_ms) from raw envelope or None. Arg = raw
      * JSON. */
@@ -298,7 +298,7 @@ int gateway_platforms_signal_u_extract_reaction_target(const char *arg) {
     return 0;
 }
 
-/* PoP: _reactions_enabled @ gateway/platforms/signal.py:_reactions_enabled */
+/* PoP: gateway_platforms_signal_u_reactions_enabled @ gateway/platforms/signal.py:_reactions_enabled */
 int gateway_platforms_signal_u_reactions_enabled(const char *arg) {
     /* Python: 2-gate check. Arg =
      * "env_on\tallowed\tstate\tresult". */
@@ -315,7 +315,7 @@ int gateway_platforms_signal_u_reactions_enabled(const char *arg) {
     return 0;
 }
 
-/* PoP: _db_path @ gateway/delivery_ledger.py:_db_path */
+/* PoP: gateway_delivery_ledger_u_db_path @ gateway/delivery_ledger.py:_db_path */
 int gateway_delivery_ledger_u_db_path(const char *arg) {
     /* Python: get_hermes_home() / "state.db". */
     (void)arg;
@@ -327,7 +327,7 @@ int gateway_delivery_ledger_u_db_path(const char *arg) {
     return 0;
 }
 
-/* PoP: _connect @ gateway/delivery_ledger.py:_connect */
+/* PoP: gateway_delivery_ledger_u_connect @ gateway/delivery_ledger.py:_connect */
 int gateway_delivery_ledger_u_connect(const char *arg) {
     /* Python: sqlite connect + schema init; mkdir parents. Arg = db path. */
     if (!arg || !*arg) { printf("\n"); return 1; }
@@ -335,7 +335,7 @@ int gateway_delivery_ledger_u_connect(const char *arg) {
     return 0;
 }
 
-/* PoP: _initialize_schema @ gateway/delivery_ledger.py:_initialize_schema */
+/* PoP: gateway_delivery_ledger_u_initialize_schema @ gateway/delivery_ledger.py:_initialize_schema */
 int gateway_delivery_ledger_u_initialize_schema(const char *arg) {
     /* Python: WAL fallback + CREATE TABLE. Arg = "db_label\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -343,7 +343,7 @@ int gateway_delivery_ledger_u_initialize_schema(const char *arg) {
     return 0;
 }
 
-/* PoP: _transaction @ gateway/delivery_ledger.py:_transaction */
+/* PoP: gateway_delivery_ledger_u_transaction @ gateway/delivery_ledger.py:_transaction */
 int gateway_delivery_ledger_u_transaction(const char *arg) {
     /* Python: commit/rollback + ALWAYS close. Arg = "db_path\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -351,7 +351,7 @@ int gateway_delivery_ledger_u_transaction(const char *arg) {
     return 0;
 }
 
-/* PoP: _owner_stamp @ gateway/delivery_ledger.py:_owner_stamp */
+/* PoP: gateway_delivery_ledger_u_owner_stamp @ gateway/delivery_ledger.py:_owner_stamp */
 int gateway_delivery_ledger_u_owner_stamp(const char *arg) {
     /* Python: (os.getpid(), get_process_start_time(pid)) — pid + start
      * time; start None on error. */
@@ -392,7 +392,7 @@ int gateway_delivery_ledger_u_owner_stamp(const char *arg) {
     return 0;
 }
 
-/* PoP: _owner_alive @ gateway/delivery_ledger.py:_owner_alive */
+/* PoP: gateway_delivery_ledger_u_owner_alive @ gateway/delivery_ledger.py:_owner_alive */
 int gateway_delivery_ledger_u_owner_alive(const char *arg) {
     /* Python: pid + start time probe. Arg =
      * "pid\tstarted_at\tstate\tresult". */
@@ -408,7 +408,7 @@ int gateway_delivery_ledger_u_owner_alive(const char *arg) {
     return 0;
 }
 
-/* PoP: compute_obligation_id @ gateway/delivery_ledger.py:compute_obligation_id */
+/* PoP: gateway_delivery_ledger_compute_obligation_id @ gateway/delivery_ledger.py:compute_obligation_id */
 int gateway_delivery_ledger_compute_obligation_id(const char *arg) {
     /* Python: sha256(session_key|message_ref|content)[:24]. Arg =
      * "session_key\tmessage_ref\tcontent". */
@@ -423,7 +423,7 @@ int gateway_delivery_ledger_compute_obligation_id(const char *arg) {
     return 0;
 }
 
-/* PoP: record_obligation @ gateway/delivery_ledger.py:record_obligation */
+/* PoP: gateway_delivery_ledger_record_obligation @ gateway/delivery_ledger.py:record_obligation */
 int gateway_delivery_ledger_record_obligation(const char *arg) {
     /* Python: INSERT OR REPLACE pending. Arg =
      * "obligation_id\tsession_key\tplatform\tstate". */
@@ -438,7 +438,7 @@ int gateway_delivery_ledger_record_obligation(const char *arg) {
     return 0;
 }
 
-/* PoP: mark_attempting @ gateway/delivery_ledger.py:mark_attempting */
+/* PoP: gateway_delivery_ledger_mark_attempting @ gateway/delivery_ledger.py:mark_attempting */
 int gateway_delivery_ledger_mark_attempting(const char *arg) {
     /* Python: _update_state(obligation_id, "attempting"). */
     if (!arg || !*arg) return 0;
@@ -446,7 +446,7 @@ int gateway_delivery_ledger_mark_attempting(const char *arg) {
     return 0;
 }
 
-/* PoP: mark_delivered @ gateway/delivery_ledger.py:mark_delivered */
+/* PoP: gateway_delivery_ledger_mark_delivered @ gateway/delivery_ledger.py:mark_delivered */
 int gateway_delivery_ledger_mark_delivered(const char *arg) {
     /* Python: _update_state(obligation_id, "delivered"). */
     if (!arg || !*arg) return 0;
@@ -454,7 +454,7 @@ int gateway_delivery_ledger_mark_delivered(const char *arg) {
     return 0;
 }
 
-/* PoP: mark_failed @ gateway/delivery_ledger.py:mark_failed */
+/* PoP: gateway_delivery_ledger_mark_failed @ gateway/delivery_ledger.py:mark_failed */
 int gateway_delivery_ledger_mark_failed(const char *arg) {
     /* Python: _update_state(obligation_id, "failed", error=error).
      * Arg = "obligation_id\terror". */
@@ -465,7 +465,7 @@ int gateway_delivery_ledger_mark_failed(const char *arg) {
     return 0;
 }
 
-/* PoP: _update_state @ gateway/delivery_ledger.py:_update_state */
+/* PoP: gateway_delivery_ledger_u_update_state @ gateway/delivery_ledger.py:_update_state */
 int gateway_delivery_ledger_u_update_state(const char *arg) {
     /* Python: UPDATE delivery_obligations SET state, updated_at, last_error
      * (error truncated 500). Arg = "obligation_id\tstate\terror" (error may
@@ -481,7 +481,7 @@ int gateway_delivery_ledger_u_update_state(const char *arg) {
     return 0;
 }
 
-/* PoP: sweep_recoverable @ gateway/delivery_ledger.py:sweep_recoverable */
+/* PoP: gateway_delivery_ledger_sweep_recoverable @ gateway/delivery_ledger.py:sweep_recoverable */
 int gateway_delivery_ledger_sweep_recoverable(const char *arg) {
     /* Python: claim + re-stamp. Arg =
      * "count\tstate\tresult". */
@@ -494,7 +494,7 @@ int gateway_delivery_ledger_sweep_recoverable(const char *arg) {
     return 0;
 }
 
-/* PoP: ledger_enabled @ gateway/delivery_ledger.py:ledger_enabled */
+/* PoP: gateway_delivery_ledger_ledger_enabled @ gateway/delivery_ledger.py:ledger_enabled */
 int gateway_delivery_ledger_ledger_enabled(const char *arg) {
     /* Python: config gate default True; string falsy set. Arg = "value". */
     if (!arg || !*arg) { printf("1\n"); return 0; }
@@ -505,7 +505,7 @@ int gateway_delivery_ledger_ledger_enabled(const char *arg) {
     return 0;
 }
 
-/* PoP: debug_rows @ gateway/delivery_ledger.py:debug_rows */
+/* PoP: gateway_delivery_ledger_debug_rows @ gateway/delivery_ledger.py:debug_rows */
 int gateway_delivery_ledger_debug_rows(const char *arg) {
     /* Python: JSON dump of recent rows. Arg = "rows_json". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -513,7 +513,7 @@ int gateway_delivery_ledger_debug_rows(const char *arg) {
     return 0;
 }
 
-/* PoP: _schedule @ gateway/shutdown_watchdog.py:_schedule */
+/* PoP: gateway_shutdown_watchdog_u_schedule @ gateway/shutdown_watchdog.py:_schedule */
 int gateway_shutdown_watchdog_u_schedule(const char *arg) {
     /* Python: self._timer = loop.call_later(interval, self._tick). */
     if (arg && *arg) printf("scheduled tick in %s s\n", arg);
@@ -521,7 +521,7 @@ int gateway_shutdown_watchdog_u_schedule(const char *arg) {
     return 0;
 }
 
-/* PoP: _tick @ gateway/shutdown_watchdog.py:_tick */
+/* PoP: gateway_shutdown_watchdog_u_tick @ gateway/shutdown_watchdog.py:_tick */
 int gateway_shutdown_watchdog_u_tick(const char *arg) {
     /* Python: if not self._cancelled: self._schedule(). Arg = "1" when
      * cancelled. */
@@ -530,7 +530,7 @@ int gateway_shutdown_watchdog_u_tick(const char *arg) {
     return 0;
 }
 
-/* PoP: cancel @ gateway/shutdown_watchdog.py:cancel */
+/* PoP: gateway_shutdown_watchdog_cancel @ gateway/shutdown_watchdog.py:cancel */
 int gateway_shutdown_watchdog_cancel(const char *arg) {
     /* Python: self._cancelled = True; cancel the pending timer. */
     (void)arg;
@@ -538,7 +538,7 @@ int gateway_shutdown_watchdog_cancel(const char *arg) {
     return 0;
 }
 
-/* PoP: is_alive @ gateway/shutdown_watchdog.py:is_alive */
+/* PoP: gateway_shutdown_watchdog_is_alive @ gateway/shutdown_watchdog.py:is_alive */
 int gateway_shutdown_watchdog_is_alive(const char *arg) {
     /* Python: the watchdog thread's liveness. */
     static int g_alive = 1;
@@ -546,7 +546,7 @@ int gateway_shutdown_watchdog_is_alive(const char *arg) {
     return g_alive;
 }
 
-/* PoP: _arm_loop_floor_timer @ gateway/shutdown_watchdog.py:_arm_loop_floor_timer */
+/* PoP: gateway_shutdown_watchdog_u_arm_loop_floor_timer @ gateway/shutdown_watchdog.py:_arm_loop_floor_timer */
 int gateway_shutdown_watchdog_u_arm_loop_floor_timer(const char *arg) {
     /* Python: timer handle with resolved interval (>0 or default). Arg =
      * interval (may be empty). */
@@ -557,7 +557,7 @@ int gateway_shutdown_watchdog_u_arm_loop_floor_timer(const char *arg) {
     return 0;
 }
 
-/* PoP: start_loop_liveness_watchdog @ gateway/shutdown_watchdog.py:start_loop_liveness_watchdog */
+/* PoP: gateway_shutdown_watchdog_start_loop_liveness_watchdog @ gateway/shutdown_watchdog.py:start_loop_liveness_watchdog */
 int gateway_shutdown_watchdog_start_loop_liveness_watchdog(const char *arg) {
     /* Python: strike-based backstop. Arg =
      * "state\tresult". */
@@ -569,7 +569,7 @@ int gateway_shutdown_watchdog_start_loop_liveness_watchdog(const char *arg) {
     return 0;
 }
 
-/* PoP: _process_hermes_home @ gateway/shutdown_watchdog.py:_process_hermes_home */
+/* PoP: gateway_shutdown_watchdog_u_process_hermes_home @ gateway/shutdown_watchdog.py:_process_hermes_home */
 int gateway_shutdown_watchdog_u_process_hermes_home(const char *arg) {
     /* Python: HERMES_HOME env if set (stripped), else get_hermes_home(). */
     (void)arg;
@@ -582,7 +582,7 @@ int gateway_shutdown_watchdog_u_process_hermes_home(const char *arg) {
     return 0;
 }
 
-/* PoP: get_loop_heartbeat_path @ gateway/shutdown_watchdog.py:get_loop_heartbeat_path */
+/* PoP: gateway_shutdown_watchdog_get_loop_heartbeat_path @ gateway/shutdown_watchdog.py:get_loop_heartbeat_path */
 int gateway_shutdown_watchdog_get_loop_heartbeat_path(const char *arg) {
     /* Python: base / "state" / "gateway.heartbeat" where base = home or
      * _process_hermes_home(). Arg = optional home. */
@@ -596,7 +596,7 @@ int gateway_shutdown_watchdog_get_loop_heartbeat_path(const char *arg) {
     return 0;
 }
 
-/* PoP: get_shutdown_watchdog_dump_path @ gateway/shutdown_watchdog.py:get_shutdown_watchdog_dump_path */
+/* PoP: gateway_shutdown_watchdog_get_shutdown_watchdog_dump_path @ gateway/shutdown_watchdog.py:get_shutdown_watchdog_dump_path */
 int gateway_shutdown_watchdog_get_shutdown_watchdog_dump_path(const char *arg) {
     /* Python: base / "state" / "gateway-shutdown-watchdog.json" (base =
      * home arg or _process_hermes_home()). Arg = optional home. */
@@ -608,7 +608,7 @@ int gateway_shutdown_watchdog_get_shutdown_watchdog_dump_path(const char *arg) {
     return 0;
 }
 
-/* PoP: write_loop_heartbeat @ gateway/shutdown_watchdog.py:write_loop_heartbeat */
+/* PoP: gateway_shutdown_watchdog_write_loop_heartbeat @ gateway/shutdown_watchdog.py:write_loop_heartbeat */
 int gateway_shutdown_watchdog_write_loop_heartbeat(const char *arg) {
     /* Python: atomic heartbeat JSON. Arg = "path\tpid\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -620,7 +620,7 @@ int gateway_shutdown_watchdog_write_loop_heartbeat(const char *arg) {
     return 0;
 }
 
-/* PoP: resolve_shutdown_watchdog_delay @ gateway/shutdown_watchdog.py:resolve_shutdown_watchdog_delay */
+/* PoP: gateway_shutdown_watchdog_resolve_shutdown_watchdog_delay @ gateway/shutdown_watchdog.py:resolve_shutdown_watchdog_delay */
 int gateway_shutdown_watchdog_resolve_shutdown_watchdog_delay(const char *arg) {
     /* Python (drain_timeout, grace_s): max(float(drain),0) + max(float(grace),0)
      * with DEFAULT_SHUTDOWN_WATCHDOG_GRACE_S fallback for bad grace.
@@ -647,7 +647,7 @@ int gateway_shutdown_watchdog_resolve_shutdown_watchdog_delay(const char *arg) {
     return 0;
 }
 
-/* PoP: _write_watchdog_dump @ gateway/shutdown_watchdog.py:_write_watchdog_dump */
+/* PoP: gateway_shutdown_watchdog_u_write_watchdog_dump @ gateway/shutdown_watchdog.py:_write_watchdog_dump */
 int gateway_shutdown_watchdog_u_write_watchdog_dump(const char *arg) {
     /* Python: faulthandler dump. Arg = "delay_s\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -659,7 +659,7 @@ int gateway_shutdown_watchdog_u_write_watchdog_dump(const char *arg) {
     return 0;
 }
 
-/* PoP: arm_shutdown_watchdog @ gateway/shutdown_watchdog.py:arm_shutdown_watchdog */
+/* PoP: gateway_shutdown_watchdog_arm_shutdown_watchdog @ gateway/shutdown_watchdog.py:arm_shutdown_watchdog */
 int gateway_shutdown_watchdog_arm_shutdown_watchdog(const char *arg) {
     /* Python: os._exit backstop. Arg =
      * "delay\tstate\tresult". */
@@ -672,7 +672,7 @@ int gateway_shutdown_watchdog_arm_shutdown_watchdog(const char *arg) {
     return 0;
 }
 
-/* PoP: loop_heartbeat_forever @ gateway/shutdown_watchdog.py:loop_heartbeat_forever */
+/* PoP: gateway_shutdown_watchdog_loop_heartbeat_forever @ gateway/shutdown_watchdog.py:loop_heartbeat_forever */
 int gateway_shutdown_watchdog_loop_heartbeat_forever(const char *arg) {
     /* Python: heartbeat cadence. Arg =
      * "interval\tstate\tresult". */
@@ -685,7 +685,7 @@ int gateway_shutdown_watchdog_loop_heartbeat_forever(const char *arg) {
     return 0;
 }
 
-/* PoP: _clean_phrase_list @ gateway/status_phrases.py:_clean_phrase_list */
+/* PoP: gateway_status_phrases_u_clean_phrase_list @ gateway/status_phrases.py:_clean_phrase_list */
 int gateway_status_phrases_u_clean_phrase_list(const char *arg) {
     /* Python: value[:80], strip, drop empty / >160 chars / duplicates. */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -720,7 +720,7 @@ int gateway_status_phrases_u_clean_phrase_list(const char *arg) {
     return 0;
 }
 
-/* PoP: _merge_phrase_mapping @ gateway/status_phrases.py:_merge_phrase_mapping */
+/* PoP: gateway_status_phrases_u_merge_phrase_mapping @ gateway/status_phrases.py:_merge_phrase_mapping */
 int gateway_status_phrases_u_merge_phrase_mapping(const char *arg) {
     /* Python (catalog, section, inherited_mode): mode "replace" swaps the
      * surface list, otherwise appends cleaned phrases. Section may carry
@@ -783,7 +783,7 @@ int gateway_status_phrases_u_merge_phrase_mapping(const char *arg) {
     return 0;
 }
 
-/* PoP: _merge_phrase_file @ gateway/status_phrases.py:_merge_phrase_file */
+/* PoP: gateway_status_phrases_u_merge_phrase_file @ gateway/status_phrases.py:_merge_phrase_file */
 int gateway_status_phrases_u_merge_phrase_file(const char *arg) {
     /* Python (catalog, path, inherited_mode): yaml.safe_load the file and
      * merge when it is a mapping. */
@@ -810,7 +810,7 @@ int gateway_status_phrases_u_merge_phrase_file(const char *arg) {
     return 0;
 }
 
-/* PoP: _relative_path_under @ gateway/status_phrases.py:_relative_path_under */
+/* PoP: gateway_status_phrases_u_relative_path_under @ gateway/status_phrases.py:_relative_path_under */
 int gateway_status_phrases_u_relative_path_under(const char *arg) {
     /* Python: resolve relative path under base, None on escape/absolute.
      * Arg = "raw\tbase". */
@@ -835,7 +835,7 @@ int gateway_status_phrases_u_relative_path_under(const char *arg) {
     return 0;
 }
 
-/* PoP: _iter_phrase_files @ gateway/status_phrases.py:_iter_phrase_files */
+/* PoP: gateway_status_phrases_u_iter_phrase_files @ gateway/status_phrases.py:_iter_phrase_files */
 int gateway_status_phrases_u_iter_phrase_files(const char *arg) {
     /* Python: [path] if file yaml/yml; sorted dir children; else []. Arg =
      * path (or path + "\tDIR" hint). */
@@ -871,7 +871,7 @@ int gateway_status_phrases_u_iter_phrase_files(const char *arg) {
     return 0;
 }
 
-/* PoP: _merge_phrase_paths @ gateway/status_phrases.py:_merge_phrase_paths */
+/* PoP: gateway_status_phrases_u_merge_phrase_paths @ gateway/status_phrases.py:_merge_phrase_paths */
 int gateway_status_phrases_u_merge_phrase_paths(const char *arg) {
     /* Python (catalog, base_dir, paths, inherited_mode): resolve each path
      * under base_dir, iterate its .yaml/.yml files, merge each. Arg =
@@ -941,7 +941,7 @@ int gateway_status_phrases_u_merge_phrase_paths(const char *arg) {
     return 0;
 }
 
-/* PoP: _load_builtin_catalog @ gateway/status_phrases.py:_load_builtin_catalog */
+/* PoP: gateway_status_phrases_u_load_builtin_catalog @ gateway/status_phrases.py:_load_builtin_catalog */
 int gateway_status_phrases_u_load_builtin_catalog(const char *arg) {
     /* Python: copy of _FALLBACK_PHRASES merged with assets YAML. Arg =
      * "surface=phrases..." (passthrough). */
@@ -950,7 +950,7 @@ int gateway_status_phrases_u_load_builtin_catalog(const char *arg) {
     return 0;
 }
 
-/* PoP: _copy_default_catalog @ gateway/status_phrases.py:_copy_default_catalog */
+/* PoP: gateway_status_phrases_u_copy_default_catalog @ gateway/status_phrases.py:_copy_default_catalog */
 int gateway_status_phrases_u_copy_default_catalog(const char *arg) {
     /* Python: deep copy of _DEFAULT_PHRASES (fallback merged with the
      * bundled status_phrases.yaml in replace mode). Arg = optional path
@@ -989,7 +989,7 @@ int gateway_status_phrases_u_copy_default_catalog(const char *arg) {
     return 0;
 }
 
-/* PoP: _merge_phrase_config @ gateway/status_phrases.py:_merge_phrase_config */
+/* PoP: gateway_status_phrases_u_merge_phrase_config @ gateway/status_phrases.py:_merge_phrase_config */
 int gateway_status_phrases_u_merge_phrase_config(const char *arg) {
     /* Python: merge section into catalog (append mode default). Arg =
      * "section_json\tmode". */
@@ -998,7 +998,7 @@ int gateway_status_phrases_u_merge_phrase_config(const char *arg) {
     return 0;
 }
 
-/* PoP: resolve_status_phrase_catalog @ gateway/status_phrases.py:resolve_status_phrase_catalog */
+/* PoP: gateway_status_phrases_resolve_status_phrase_catalog @ gateway/status_phrases.py:resolve_status_phrase_catalog */
 int gateway_status_phrases_resolve_status_phrase_catalog(const char *arg) {
     /* Python: layered merge. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -1009,7 +1009,7 @@ int gateway_status_phrases_resolve_status_phrase_catalog(const char *arg) {
     return 0;
 }
 
-/* PoP: classify_status_context @ gateway/status_phrases.py:classify_status_context */
+/* PoP: gateway_status_phrases_classify_status_context @ gateway/status_phrases.py:classify_status_context */
 int gateway_status_phrases_classify_status_context(const char *arg) {
     /* Python: normalized kind in {heartbeat, waiting, long_running, status}
      * -> "status"; else "generic". Arg = kind. */
@@ -1027,7 +1027,7 @@ int gateway_status_phrases_classify_status_context(const char *arg) {
     return 0;
 }
 
-/* PoP: choose_status_phrase @ gateway/status_phrases.py:choose_status_phrase */
+/* PoP: gateway_status_phrases_choose_status_phrase @ gateway/status_phrases.py:choose_status_phrase */
 int gateway_status_phrases_choose_status_phrase(const char *arg) {
     /* Python: avoid recent repeats. Arg = "category\tcandidates\tpicked\tstate". */
     if (!arg || !*arg) { printf("working on it\n"); return 0; }
@@ -1040,7 +1040,7 @@ int gateway_status_phrases_choose_status_phrase(const char *arg) {
     return 0;
 }
 
-/* PoP: file_size_human @ gateway/platforms/qqbot/chunked_upload.py:file_size_human */
+/* PoP: gateway_platforms_qqbot_chunke_file_size_human @ gateway/platforms/qqbot/chunked_upload.py:file_size_human */
 int gateway_platforms_qqbot_chunke_file_size_human(const char *arg) {
     /* Python: format_size(self.file_size) — human size with units. */
     if (!arg || !*arg) { printf("0 B\n"); return 0; }
@@ -1054,7 +1054,7 @@ int gateway_platforms_qqbot_chunke_file_size_human(const char *arg) {
     return 0;
 }
 
-/* PoP: file_size_human @ gateway/platforms/qqbot/chunked_upload.py:file_size_human */
+/* PoP: gateway_platforms_qqbot_chunke_file_size_human_2 @ gateway/platforms/qqbot/chunked_upload.py:file_size_human */
 int gateway_platforms_qqbot_chunke_file_size_human_2(const char *arg) {
     /* Python: format_size(self.file_size) — human size with units. */
     if (!arg || !*arg) { printf("0 B\n"); return 0; }
@@ -1068,7 +1068,7 @@ int gateway_platforms_qqbot_chunke_file_size_human_2(const char *arg) {
     return 0;
 }
 
-/* PoP: limit_human @ gateway/platforms/qqbot/chunked_upload.py:limit_human */
+/* PoP: gateway_platforms_qqbot_chunke_limit_human @ gateway/platforms/qqbot/chunked_upload.py:limit_human */
 int gateway_platforms_qqbot_chunke_limit_human(const char *arg) {
     /* Python: format_size(limit_bytes) if limit_bytes else "unknown".
      * Arg = byte count (or empty). */
@@ -1086,7 +1086,7 @@ int gateway_platforms_qqbot_chunke_limit_human(const char *arg) {
     return 0;
 }
 
-/* PoP: _parse_prepare_response @ gateway/platforms/qqbot/chunked_upload.py:_parse_prepare_response */
+/* PoP: gateway_platforms_qqbot_chunke_u_parse_prepare_response @ gateway/platforms/qqbot/chunked_upload.py:_parse_prepare_response */
 int gateway_platforms_qqbot_chunke_u_parse_prepare_response(const char *arg) {
     /* Python: prepare parse. Arg =
      * "state\tresult\terr". */
@@ -1103,7 +1103,7 @@ int gateway_platforms_qqbot_chunke_u_parse_prepare_response(const char *arg) {
     return 0;
 }
 
-/* PoP: _prepare @ gateway/platforms/qqbot/chunked_upload.py:_prepare */
+/* PoP: gateway_platforms_qqbot_chunke_u_prepare @ gateway/platforms/qqbot/chunked_upload.py:_prepare */
 int gateway_platforms_qqbot_chunke_u_prepare(const char *arg) {
     /* Python: upload_prepare. Arg =
      * "state\tresult\terr". */
@@ -1120,7 +1120,7 @@ int gateway_platforms_qqbot_chunke_u_prepare(const char *arg) {
     return 0;
 }
 
-/* PoP: _upload_one_part @ gateway/platforms/qqbot/chunked_upload.py:_upload_one_part */
+/* PoP: gateway_platforms_qqbot_chunke_u_upload_one_part @ gateway/platforms/qqbot/chunked_upload.py:_upload_one_part */
 int gateway_platforms_qqbot_chunke_u_upload_one_part(const char *arg) {
     /* Python: COS PUT part. Arg =
      * "uploaded\tstate\tresult". */
@@ -1135,7 +1135,7 @@ int gateway_platforms_qqbot_chunke_u_upload_one_part(const char *arg) {
     return 0;
 }
 
-/* PoP: _put_to_presigned_url @ gateway/platforms/qqbot/chunked_upload.py:_put_to_presigned_url */
+/* PoP: gateway_platforms_qqbot_chunke_u_put_to_presigned_url @ gateway/platforms/qqbot/chunked_upload.py:_put_to_presigned_url */
 int gateway_platforms_qqbot_chunke_u_put_to_presigned_url(const char *arg) {
     /* Python: presigned PUT. Arg =
      * "put\tstate\tresult". */
@@ -1148,7 +1148,7 @@ int gateway_platforms_qqbot_chunke_u_put_to_presigned_url(const char *arg) {
     return 0;
 }
 
-/* PoP: _part_finish_with_retry @ gateway/platforms/qqbot/chunked_upload.py:_part_finish_with_retry */
+/* PoP: gateway_platforms_qqbot_chunke_u_part_finish_with_retry @ gateway/platforms/qqbot/chunked_upload.py:_part_finish_with_retry */
 int gateway_platforms_qqbot_chunke_u_part_finish_with_retry(const char *arg) {
     /* Python: 40093001 retry. Arg =
      * "finished\tstate\tresult". */
@@ -1163,7 +1163,7 @@ int gateway_platforms_qqbot_chunke_u_part_finish_with_retry(const char *arg) {
     return 0;
 }
 
-/* PoP: _read_file_chunk @ gateway/platforms/qqbot/chunked_upload.py:_read_file_chunk */
+/* PoP: gateway_platforms_qqbot_chunke_u_read_file_chunk @ gateway/platforms/qqbot/chunked_upload.py:_read_file_chunk */
 int gateway_platforms_qqbot_chunke_u_read_file_chunk(const char *arg) {
     /* Python: seek + read exact length, IOError on short. Arg =
      * "path\toffset\tlength\tstate". */
@@ -1182,7 +1182,7 @@ int gateway_platforms_qqbot_chunke_u_read_file_chunk(const char *arg) {
     return 0;
 }
 
-/* PoP: _compute_file_hashes @ gateway/platforms/qqbot/chunked_upload.py:_compute_file_hashes */
+/* PoP: gateway_platforms_qqbot_chunke_u_compute_file_hashes @ gateway/platforms/qqbot/chunked_upload.py:_compute_file_hashes */
 int gateway_platforms_qqbot_chunke_u_compute_file_hashes(const char *arg) {
     /* Python: md5/sha1/md5_10m one pass. Arg =
      * "file_size\tstate\tmd5\tsha1\tmd5_10m". */
@@ -1197,7 +1197,7 @@ int gateway_platforms_qqbot_chunke_u_compute_file_hashes(const char *arg) {
     return 0;
 }
 
-/* PoP: _run_with_concurrency @ gateway/platforms/qqbot/chunked_upload.py:_run_with_concurrency */
+/* PoP: gateway_platforms_qqbot_chunke_u_run_with_concurrency @ gateway/platforms/qqbot/chunked_upload.py:_run_with_concurrency */
 int gateway_platforms_qqbot_chunke_u_run_with_concurrency(const char *arg) {
     /* Python: bounded thunks. Arg =
      * "done\tstate\tresult". */
@@ -1210,7 +1210,7 @@ int gateway_platforms_qqbot_chunke_u_run_with_concurrency(const char *arg) {
     return 0;
 }
 
-/* PoP: _render_relay_context @ gateway/relay/ws_transport.py:_render_relay_context */
+/* PoP: gateway_relay_ws_transport_u_render_relay_context @ gateway/relay/ws_transport.py:_render_relay_context */
 int gateway_relay_ws_transport_u_render_relay_context(const char *arg) {
     /* Python: channel context render. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1222,7 +1222,7 @@ int gateway_relay_ws_transport_u_render_relay_context(const char *arg) {
     return 0;
 }
 
-/* PoP: _normalize_slack_parent_command @ gateway/relay/ws_transport.py:_normalize_slack_parent_command */
+/* PoP: gateway_relay_ws_transport_u_normalize_slack_parent_command @ gateway/relay/ws_transport.py:_normalize_slack_parent_command */
 int gateway_relay_ws_transport_u_normalize_slack_parent_command(const char *arg) {
     /* Python: /hermes routing. Arg = "text\tstate\tresult\ttype". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1235,7 +1235,7 @@ int gateway_relay_ws_transport_u_normalize_slack_parent_command(const char *arg)
     return 0;
 }
 
-/* PoP: _passthrough_from_wire @ gateway/relay/ws_transport.py:_passthrough_from_wire */
+/* PoP: gateway_relay_ws_transport_u_passthrough_from_wire @ gateway/relay/ws_transport.py:_passthrough_from_wire */
 int gateway_relay_ws_transport_u_passthrough_from_wire(const char *arg) {
     /* Python: base64 body rebuild. Arg = "state\tplatform\tmethod\tpath\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1249,7 +1249,7 @@ int gateway_relay_ws_transport_u_passthrough_from_wire(const char *arg) {
     return 0;
 }
 
-/* PoP: _dial_and_start @ gateway/relay/ws_transport.py:_dial_and_start */
+/* PoP: gateway_relay_ws_transport_u_dial_and_start @ gateway/relay/ws_transport.py:_dial_and_start */
 int gateway_relay_ws_transport_u_dial_and_start(const char *arg) {
     /* Python: fresh handshake. Arg =
      * "dialed\tstate\tresult". */
@@ -1264,7 +1264,7 @@ int gateway_relay_ws_transport_u_dial_and_start(const char *arg) {
     return 0;
 }
 
-/* PoP: auth_revoked @ gateway/relay/ws_transport.py:auth_revoked */
+/* PoP: gateway_relay_ws_transport_auth_revoked @ gateway/relay/ws_transport.py:auth_revoked */
 int gateway_relay_ws_transport_auth_revoked(const char *arg) {
     /* Python: bool flag (4401 after prior handshake). Arg = "0"/"1". */
     if (arg && arg[0] == '1') { printf("1\n"); return 0; }
@@ -1272,7 +1272,7 @@ int gateway_relay_ws_transport_auth_revoked(const char *arg) {
     return 0;
 }
 
-/* PoP: _bot_id_for @ gateway/relay/ws_transport.py:_bot_id_for */
+/* PoP: gateway_relay_ws_transport_u_bot_id_for @ gateway/relay/ws_transport.py:_bot_id_for */
 int gateway_relay_ws_transport_u_bot_id_for(const char *arg) {
     /* Python: identity set match. Arg =
      * "found\tstate\tresult". */
@@ -1287,7 +1287,7 @@ int gateway_relay_ws_transport_u_bot_id_for(const char *arg) {
     return 0;
 }
 
-/* PoP: go_dormant @ gateway/relay/ws_transport.py:go_dormant */
+/* PoP: gateway_relay_ws_transport_go_dormant @ gateway/relay/ws_transport.py:go_dormant */
 int gateway_relay_ws_transport_go_dormant(const char *arg) {
     /* Python: D12 suspend-safe. Arg =
      * "dormant\tstate\tresult". */
@@ -1302,7 +1302,7 @@ int gateway_relay_ws_transport_go_dormant(const char *arg) {
     return 0;
 }
 
-/* PoP: _send_inbound_ack @ gateway/relay/ws_transport.py:_send_inbound_ack */
+/* PoP: gateway_relay_ws_transport_u_send_inbound_ack @ gateway/relay/ws_transport.py:_send_inbound_ack */
 int gateway_relay_ws_transport_u_send_inbound_ack(const char *arg) {
     /* Python: buffer ack. Arg =
      * "acked\tstate\tresult". */
@@ -1317,7 +1317,7 @@ int gateway_relay_ws_transport_u_send_inbound_ack(const char *arg) {
     return 0;
 }
 
-/* PoP: _close_code_of @ gateway/relay/ws_transport.py:_close_code_of */
+/* PoP: gateway_relay_ws_transport_u_close_code_of @ gateway/relay/ws_transport.py:_close_code_of */
 int gateway_relay_ws_transport_u_close_code_of(const char *arg) {
     /* Python: rcvd/sent frame. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1328,7 +1328,7 @@ int gateway_relay_ws_transport_u_close_code_of(const char *arg) {
     return 0;
 }
 
-/* PoP: _reconnect_loop @ gateway/relay/ws_transport.py:_reconnect_loop */
+/* PoP: gateway_relay_ws_transport_u_reconnect_loop @ gateway/relay/ws_transport.py:_reconnect_loop */
 int gateway_relay_ws_transport_u_reconnect_loop(const char *arg) {
     /* Python: capped backoff redial. Arg =
      * "state\tresult". */
@@ -1340,7 +1340,7 @@ int gateway_relay_ws_transport_u_reconnect_loop(const char *arg) {
     return 0;
 }
 
-/* PoP: _env_multiplex_profiles_override @ gateway/config.py:_env_multiplex_profiles_override */
+/* PoP: gateway_config_u_env_multiplex_profiles_override @ gateway/config.py:_env_multiplex_profiles_override */
 int gateway_config_u_env_multiplex_profiles_override(const char *arg) {
     /* Python: env > config > default. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1351,7 +1351,7 @@ int gateway_config_u_env_multiplex_profiles_override(const char *arg) {
     return 0;
 }
 
-/* PoP: _normalize_transport_token @ gateway/config.py:_normalize_transport_token */
+/* PoP: gateway_config_u_normalize_transport_token @ gateway/config.py:_normalize_transport_token */
 int gateway_config_u_normalize_transport_token(const char *arg) {
     /* Python: bool -> auto/off; str lower or auto. Arg = "type\tvalue". */
     if (!arg || !*arg) { printf("auto\n"); return 0; }
@@ -1368,7 +1368,7 @@ int gateway_config_u_normalize_transport_token(const char *arg) {
     return 0;
 }
 
-/* PoP: coerce_systemd_watchdog_seconds @ gateway/config.py:coerce_systemd_watchdog_seconds */
+/* PoP: gateway_config_coerce_systemd_watchdog_seconds @ gateway/config.py:coerce_systemd_watchdog_seconds */
 int gateway_config_coerce_systemd_watchdog_seconds(const char *arg) {
     /* Python: bounded positive or 0. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -1379,7 +1379,7 @@ int gateway_config_coerce_systemd_watchdog_seconds(const char *arg) {
     return 0;
 }
 
-/* PoP: _coerce_dict @ gateway/config.py:_coerce_dict */
+/* PoP: gateway_config_u_coerce_dict @ gateway/config.py:_coerce_dict */
 int gateway_config_u_coerce_dict(const char *arg) {
     /* Python: value if isinstance(value, dict) else {}. Arg = JSON value. */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -1396,7 +1396,7 @@ int gateway_config_u_coerce_dict(const char *arg) {
     return 0;
 }
 
-/* PoP: _getenv_str @ gateway/config.py:_getenv_str */
+/* PoP: gateway_config_u_getenv_str @ gateway/config.py:_getenv_str */
 int gateway_config_u_getenv_str(const char *arg) {
     /* Python: _getenv(name, default) -> value if not None else default.
      * Arg = "name\tdefault". */
@@ -1413,7 +1413,7 @@ int gateway_config_u_getenv_str(const char *arg) {
     return 0;
 }
 
-/* PoP: _getenv_int @ gateway/config.py:_getenv_int */
+/* PoP: gateway_config_u_getenv_int @ gateway/config.py:_getenv_int */
 int gateway_config_u_getenv_int(const char *arg) {
     /* Python: int(env var) or default. Arg = "name\tdefault". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -1433,7 +1433,7 @@ int gateway_config_u_getenv_int(const char *arg) {
     return 0;
 }
 
-/* PoP: platform_binds_port @ gateway/config.py:platform_binds_port */
+/* PoP: gateway_config_platform_binds_port @ gateway/config.py:platform_binds_port */
 int gateway_config_platform_binds_port(const char *arg) {
     /* Python: platform in set + mode-conditional match. Arg =
      * "platform\tin_set\tmode_match". */
@@ -1446,7 +1446,7 @@ int gateway_config_platform_binds_port(const char *arg) {
     return 0;
 }
 
-/* PoP: persist_home_channel @ gateway/config.py:persist_home_channel */
+/* PoP: gateway_config_persist_home_channel @ gateway/config.py:persist_home_channel */
 int gateway_config_persist_home_channel(const char *arg) {
     /* Python: save home_channel into platform config. Arg =
      * "platform\thome_json\tenabled_if_new\tstate". */
@@ -1457,7 +1457,7 @@ int gateway_config_persist_home_channel(const char *arg) {
     return 0;
 }
 
-/* PoP: _has_usable_api_server_key @ gateway/config.py:_has_usable_api_server_key */
+/* PoP: gateway_config_u_has_usable_api_server_key @ gateway/config.py:_has_usable_api_server_key */
 int gateway_config_u_has_usable_api_server_key(const char *arg) {
     /* Python: key present and >=16 chars. Arg = key. */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -1469,7 +1469,7 @@ int gateway_config_u_has_usable_api_server_key(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_auto_decompose_settings @ gateway/kanban_watchers.py:_resolve_auto_decompose_settings */
+/* PoP: gateway_kanban_watchers_u_resolve_auto_decompose_settings @ gateway/kanban_watchers.py:_resolve_auto_decompose_settings */
 int gateway_kanban_watchers_u_resolve_auto_decompose_settings(const char *arg) {
     /* Python: fresh read, fails safe. Arg =
      * "state\tenabled\tper_tick\tresult". */
@@ -1488,7 +1488,7 @@ int gateway_kanban_watchers_u_resolve_auto_decompose_settings(const char *arg) {
 static bool g_kanban_lock_owned = false;
 static char g_kanban_lock_handle[256] = "";
 
-/* PoP: _acquire_singleton_lock @ gateway/kanban_watchers.py:_acquire_singleton_lock */
+/* PoP: gateway_kanban_watchers_u_acquire_singleton_lock @ gateway/kanban_watchers.py:_acquire_singleton_lock */
 int gateway_kanban_watchers_u_acquire_singleton_lock(const char *arg) {
     /* Python: advisory flock. Arg =
      * "state\tresult\terr". */
@@ -1505,7 +1505,7 @@ int gateway_kanban_watchers_u_acquire_singleton_lock(const char *arg) {
     return 0;
 }
 
-/* PoP: _release_singleton_lock @ gateway/kanban_watchers.py:_release_singleton_lock */
+/* PoP: gateway_kanban_watchers_u_release_singleton_lock @ gateway/kanban_watchers.py:_release_singleton_lock */
 int gateway_kanban_watchers_u_release_singleton_lock(const char *arg) {
     /* Python: release file lock + close handle, best-effort. Arg = handle
      * path (or empty = None). */
@@ -1520,8 +1520,8 @@ int gateway_kanban_watchers_u_release_singleton_lock(const char *arg) {
     return 0;
 }
 
-/* PoP: _owns_kanban_dispatcher_lock @ gateway/kanban_watchers.py:_owns_kanban_dispatcher_lock */
-/* PoP: gateway_kanban_watchers_u_owns_lock @ gateway/kanban_watchers.py:_owns_kanban_dispatcher_lock */
+/* PoP: lock @ gateway/kanban_watchers.py:_owns_kanban_dispatcher_lock */
+/* PoP: lock @ gateway/kanban_watchers.py:_owns_kanban_dispatcher_lock */
 
 /* Port of Python _owns_kanban_dispatcher_lock: return whether this gateway
  * currently owns the singleton dispatcher lock (handle non-None). */
@@ -1530,8 +1530,8 @@ bool gateway_kanban_watchers_u_owns_lock(void)
     return g_kanban_lock_owned && g_kanban_lock_handle[0] != '\0';
 }
 
-/* PoP: _release_kanban_dispatcher_lock @ gateway/kanban_watchers.py:_release_kanban_dispatcher_lock */
-/* PoP: gateway_kanban_watchers_u_release_kanban_lock @ gateway/kanban_watchers.py:_release_kanban_dispatcher_lock */
+/* PoP: held @ gateway/kanban_watchers.py:_release_kanban_dispatcher_lock */
+/* PoP: held @ gateway/kanban_watchers.py:_release_kanban_dispatcher_lock */
 
 /* Port of Python _release_kanban_dispatcher_lock: clear notifier-visible
  * ownership before releasing the OS lock. Releases whatever handle is
@@ -1555,7 +1555,7 @@ void gateway_kanban_watchers_u_claim_lock(const char *handle)
     g_kanban_lock_handle[sizeof(g_kanban_lock_handle) - 1] = '\0';
 }
 
-/* PoP: _kanban_notifier_watcher @ gateway/kanban_watchers.py:_kanban_notifier_watcher */
+/* PoP: gateway_kanban_watchers_u_kanban_notifier_watcher @ gateway/kanban_watchers.py:_kanban_notifier_watcher */
 int gateway_kanban_watchers_u_kanban_notifier_watcher(const char *arg) {
     /* Python: notify loop. Arg =
      * "state\tresult". */
@@ -1567,7 +1567,7 @@ int gateway_kanban_watchers_u_kanban_notifier_watcher(const char *arg) {
     return 0;
 }
 
-/* PoP: _kanban_advance @ gateway/kanban_watchers.py:_kanban_advance */
+/* PoP: gateway_kanban_watchers_u_kanban_advance @ gateway/kanban_watchers.py:_kanban_advance */
 int gateway_kanban_watchers_u_kanban_advance(const char *arg) {
     /* Python: advance_notify_cursor in to_thread. Arg =
      * "board\ttask_id\tcursor\tstate". */
@@ -1582,7 +1582,7 @@ int gateway_kanban_watchers_u_kanban_advance(const char *arg) {
     return 0;
 }
 
-/* PoP: _kanban_unsub @ gateway/kanban_watchers.py:_kanban_unsub */
+/* PoP: gateway_kanban_watchers_u_kanban_unsub @ gateway/kanban_watchers.py:_kanban_unsub */
 int gateway_kanban_watchers_u_kanban_unsub(const char *arg) {
     /* Python: remove_notify_sub then close. Arg = "board\tsub_json". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1592,7 +1592,7 @@ int gateway_kanban_watchers_u_kanban_unsub(const char *arg) {
     return 0;
 }
 
-/* PoP: _kanban_rewind @ gateway/kanban_watchers.py:_kanban_rewind */
+/* PoP: gateway_kanban_watchers_u_kanban_rewind @ gateway/kanban_watchers.py:_kanban_rewind */
 int gateway_kanban_watchers_u_kanban_rewind(const char *arg) {
     /* Python: notify cursor undo. Arg =
      * "rewound\tstate\tresult". */
@@ -1607,7 +1607,7 @@ int gateway_kanban_watchers_u_kanban_rewind(const char *arg) {
     return 0;
 }
 
-/* PoP: _deliver_kanban_artifacts @ gateway/kanban_watchers.py:_deliver_kanban_artifacts */
+/* PoP: gateway_kanban_watchers_u_deliver_kanban_artifacts @ gateway/kanban_watchers.py:_deliver_kanban_artifacts */
 int gateway_kanban_watchers_u_deliver_kanban_artifacts(const char *arg) {
     /* Python: artifact upload. Arg =
      * "uploaded\tstate\tresult". */
@@ -1620,7 +1620,7 @@ int gateway_kanban_watchers_u_deliver_kanban_artifacts(const char *arg) {
     return 0;
 }
 
-/* PoP: _kanban_dispatcher_watcher @ gateway/kanban_watchers.py:_kanban_dispatcher_watcher */
+/* PoP: gateway_kanban_watchers_u_kanban_dispatcher_watcher @ gateway/kanban_watchers.py:_kanban_dispatcher_watcher */
 int gateway_kanban_watchers_u_kanban_dispatcher_watcher(const char *arg) {
     /* Python: dispatch loop. Arg =
      * "state\tresult". */
@@ -1632,7 +1632,7 @@ int gateway_kanban_watchers_u_kanban_dispatcher_watcher(const char *arg) {
     return 0;
 }
 
-/* PoP: _start_revocation_monitor @ gateway/relay/adapter.py:_start_revocation_monitor */
+/* PoP: gateway_relay_adapter_u_start_revocation_monitor @ gateway/relay/adapter.py:_start_revocation_monitor */
 int gateway_relay_adapter_u_start_revocation_monitor(const char *arg) {
     /* Python: 4401 poll. Arg =
      * "already\tstate\tresult". */
@@ -1647,7 +1647,7 @@ int gateway_relay_adapter_u_start_revocation_monitor(const char *arg) {
     return 0;
 }
 
-/* PoP: _watch_for_revocation @ gateway/relay/adapter.py:_watch_for_revocation */
+/* PoP: gateway_relay_adapter_u_watch_for_revocation @ gateway/relay/adapter.py:_watch_for_revocation */
 int gateway_relay_adapter_u_watch_for_revocation(const char *arg) {
     /* Python: 4401 terminal. Arg =
      * "revoked\tstate\tresult". */
@@ -1662,7 +1662,7 @@ int gateway_relay_adapter_u_watch_for_revocation(const char *arg) {
     return 0;
 }
 
-/* PoP: fronts_platform @ gateway/relay/adapter.py:fronts_platform */
+/* PoP: gateway_relay_adapter_fronts_platform @ gateway/relay/adapter.py:fronts_platform */
 int gateway_relay_adapter_fronts_platform(const char *arg) {
     /* Python: transport identities match platform. Arg =
      * "platform\tidentities_json\tmatched". */
@@ -1674,7 +1674,7 @@ int gateway_relay_adapter_fronts_platform(const char *arg) {
     return 0;
 }
 
-/* PoP: _platform_is_fronted @ gateway/relay/adapter.py:_platform_is_fronted */
+/* PoP: gateway_relay_adapter_u_platform_is_fronted @ gateway/relay/adapter.py:_platform_is_fronted */
 int gateway_relay_adapter_u_platform_is_fronted(const char *arg) {
     /* Python: fronts_platform alias. Arg =
      * "fronted\tstate\tresult". */
@@ -1688,7 +1688,7 @@ int gateway_relay_adapter_u_platform_is_fronted(const char *arg) {
     return 0;
 }
 
-/* PoP: _on_passthrough @ gateway/relay/adapter.py:_on_passthrough */
+/* PoP: gateway_relay_adapter_u_on_passthrough @ gateway/relay/adapter.py:_on_passthrough */
 int gateway_relay_adapter_u_on_passthrough(const char *arg) {
     /* Python: §5.1 edge-forward. Arg =
      * "handled\tstate\tresult". */
@@ -1703,7 +1703,7 @@ int gateway_relay_adapter_u_on_passthrough(const char *arg) {
     return 0;
 }
 
-/* PoP: _discord_interaction_to_event @ gateway/relay/adapter.py:_discord_interaction_to_event */
+/* PoP: gateway_relay_adapter_u_discord_interaction_to_event @ gateway/relay/adapter.py:_discord_interaction_to_event */
 int gateway_relay_adapter_u_discord_interaction_to_event(const char *arg) {
     /* Python: interaction body. Arg =
      * "itype\tstate\tresult". */
@@ -1718,7 +1718,7 @@ int gateway_relay_adapter_u_discord_interaction_to_event(const char *arg) {
     return 0;
 }
 
-/* PoP: _render_interaction_options @ gateway/relay/adapter.py:_render_interaction_options */
+/* PoP: gateway_relay_adapter_u_render_interaction_options @ gateway/relay/adapter.py:_render_interaction_options */
 int gateway_relay_adapter_u_render_interaction_options(const char *arg) {
     /* Python: discord options flatten. Arg =
      * "parts\tstate\tresult". */
@@ -1731,7 +1731,7 @@ int gateway_relay_adapter_u_render_interaction_options(const char *arg) {
     return 0;
 }
 
-/* PoP: go_dormant @ gateway/relay/adapter.py:go_dormant */
+/* PoP: gateway_relay_adapter_go_dormant @ gateway/relay/adapter.py:go_dormant */
 int gateway_relay_adapter_go_dormant(const char *arg) {
     /* Python: scale-to-zero quiesce. Arg =
      * "dormant\tstate\tresult". */
@@ -1746,7 +1746,7 @@ int gateway_relay_adapter_go_dormant(const char *arg) {
     return 0;
 }
 
-/* PoP: send_for_platform @ gateway/relay/adapter.py:send_for_platform */
+/* PoP: gateway_relay_adapter_send_for_platform @ gateway/relay/adapter.py:send_for_platform */
 int gateway_relay_adapter_send_for_platform(const char *arg) {
     /* Python: explicit platform send. Arg =
      * "sent\tstate\tresult". */
@@ -1761,7 +1761,7 @@ int gateway_relay_adapter_send_for_platform(const char *arg) {
     return 0;
 }
 
-/* PoP: _stringify_filter_value @ gateway/platforms/webhook_filters.py:_stringify_filter_value */
+/* PoP: gateway_platforms_webhook_filt_u_stringify_filter_value @ gateway/platforms/webhook_filters.py:_stringify_filter_value */
 int gateway_platforms_webhook_filt_u_stringify_filter_value(const char *arg) {
     /* Python: "" if _MISSING; json.dumps(value, sort_keys=True) for
      * dict/list; else str(value). Arg = value or _MISSING. */
@@ -1770,7 +1770,7 @@ int gateway_platforms_webhook_filt_u_stringify_filter_value(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_profile_path @ gateway/platforms/webhook_filters.py:_resolve_profile_path */
+/* PoP: gateway_platforms_webhook_filt_u_resolve_profile_path @ gateway/platforms/webhook_filters.py:_resolve_profile_path */
 int gateway_platforms_webhook_filt_u_resolve_profile_path(const char *arg) {
     /* Python: ~/.hermes -> profile home; absolute as-is; else home/raw. Arg =
      * "raw\thome\tresolved". */
@@ -1783,7 +1783,7 @@ int gateway_platforms_webhook_filt_u_resolve_profile_path(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_script_path @ gateway/platforms/webhook_filters.py:_resolve_script_path */
+/* PoP: gateway_platforms_webhook_filt_u_resolve_script_path @ gateway/platforms/webhook_filters.py:_resolve_script_path */
 int gateway_platforms_webhook_filt_u_resolve_script_path(const char *arg) {
     /* Python: scripts-root-relative resolve. Arg =
      * "script_value\tstate\tresult\terr". */
@@ -1797,7 +1797,7 @@ int gateway_platforms_webhook_filt_u_resolve_script_path(const char *arg) {
     return 1;
 }
 
-/* PoP: _load_filter_file_values @ gateway/platforms/webhook_filters.py:_load_filter_file_values */
+/* PoP: gateway_platforms_webhook_filt_u_load_filter_file_values @ gateway/platforms/webhook_filters.py:_load_filter_file_values */
 int gateway_platforms_webhook_filt_u_load_filter_file_values(const char *arg) {
     /* Python: JSON list/dict-keys/lines. Arg = "path\tstate\tvalues". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1809,7 +1809,7 @@ int gateway_platforms_webhook_filt_u_load_filter_file_values(const char *arg) {
     return 0;
 }
 
-/* PoP: resolve_filter_field @ gateway/platforms/webhook_filters.py:resolve_filter_field */
+/* PoP: gateway_platforms_webhook_filt_resolve_filter_field @ gateway/platforms/webhook_filters.py:resolve_filter_field */
 int gateway_platforms_webhook_filt_resolve_filter_field(const char *arg) {
     /* Python: dotted field resolve. Arg =
      * "field\tstate\tresult". */
@@ -1823,7 +1823,7 @@ int gateway_platforms_webhook_filt_resolve_filter_field(const char *arg) {
     return 0;
 }
 
-/* PoP: filter_matches @ gateway/platforms/webhook_filters.py:filter_matches */
+/* PoP: gateway_platforms_webhook_filt_filter_matches @ gateway/platforms/webhook_filters.py:filter_matches */
 int gateway_platforms_webhook_filt_filter_matches(const char *arg) {
     /* Python: declarative eval. Arg =
      * "matched\tstate\tresult". */
@@ -1837,7 +1837,7 @@ int gateway_platforms_webhook_filt_filter_matches(const char *arg) {
     return 0;
 }
 
-/* PoP: route_filters_match @ gateway/platforms/webhook_filters.py:route_filters_match */
+/* PoP: gateway_platforms_webhook_filt_route_filters_match @ gateway/platforms/webhook_filters.py:route_filters_match */
 int gateway_platforms_webhook_filt_route_filters_match(const char *arg) {
     /* Python: empty -> True; dict -> single; list -> all. Arg =
      * "filters_kind\tmatch" (kind: none/dict/list; match 1/0). */
@@ -1852,7 +1852,7 @@ int gateway_platforms_webhook_filt_route_filters_match(const char *arg) {
     return 0;
 }
 
-/* PoP: run_route_script @ gateway/platforms/webhook_filters.py:run_route_script */
+/* PoP: gateway_platforms_webhook_filt_run_route_script @ gateway/platforms/webhook_filters.py:run_route_script */
 int gateway_platforms_webhook_filt_run_route_script(const char *arg) {
     /* Python: script verdict. Arg =
      * "continue\tstate\tresult". */
@@ -1867,7 +1867,7 @@ int gateway_platforms_webhook_filt_run_route_script(const char *arg) {
     return 0;
 }
 
-/* PoP: register_deferred @ gateway/platform_registry.py:register_deferred */
+/* PoP: gateway_platform_registry_register_deferred @ gateway/platform_registry.py:register_deferred */
 int gateway_platform_registry_register_deferred(const char *arg) {
     /* Python: register lazy loader if not concretely present. Arg =
      * "name\talready_registered". */
@@ -1878,7 +1878,7 @@ int gateway_platform_registry_register_deferred(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_all @ gateway/platform_registry.py:_resolve_all */
+/* PoP: gateway_platform_registry_u_resolve_all @ gateway/platform_registry.py:_resolve_all */
 int gateway_platform_registry_u_resolve_all(const char *arg) {
     /* Python: run pending deferred loaders. Arg = "deferred_count". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -1886,7 +1886,7 @@ int gateway_platform_registry_u_resolve_all(const char *arg) {
     return 0;
 }
 
-/* PoP: all_entries @ gateway/platform_registry.py:all_entries */
+/* PoP: gateway_platform_registry_all_entries @ gateway/platform_registry.py:all_entries */
 int gateway_platform_registry_all_entries(const char *arg) {
     /* Python: self._resolve_all(); return list(self._entries.values()).
      * The C port mirrors the registry with a static name list that
@@ -1903,7 +1903,7 @@ int gateway_platform_registry_all_entries(const char *arg) {
     return 0;
 }
 
-/* PoP: plugin_entries @ gateway/platform_registry.py:plugin_entries */
+/* PoP: gateway_platform_registry_plugin_entries @ gateway/platform_registry.py:plugin_entries */
 int gateway_platform_registry_plugin_entries(const char *arg) {
     /* Python: [e for e in self._entries.values() if e.source == "plugin"].
      * Arg = "name\tsource\t..." pairs; echo names whose source is plugin. */
@@ -1927,7 +1927,7 @@ int gateway_platform_registry_plugin_entries(const char *arg) {
     return 0;
 }
 
-/* PoP: is_registered @ gateway/platform_registry.py:is_registered */
+/* PoP: gateway_platform_registry_is_registered @ gateway/platform_registry.py:is_registered */
 int gateway_platform_registry_is_registered(const char *arg) {
     /* Python: name in entries or deferred. Arg = "name\tentries\tdeferred". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -1953,7 +1953,7 @@ int gateway_platform_registry_is_registered(const char *arg) {
     return 0;
 }
 
-/* PoP: create_adapter @ gateway/platform_registry.py:create_adapter */
+/* PoP: gateway_platform_registry_create_adapter @ gateway/platform_registry.py:create_adapter */
 int gateway_platform_registry_create_adapter(const char *arg) {
     /* Python: gated factory. Arg =
      * "state\tresult\terr". */
@@ -1970,7 +1970,7 @@ int gateway_platform_registry_create_adapter(const char *arg) {
     return 0;
 }
 
-/* PoP: _auth_env @ gateway/authz_mixin.py:_auth_env */
+/* PoP: gateway_authz_mixin_u_auth_env @ gateway/authz_mixin.py:_auth_env */
 int gateway_authz_mixin_u_auth_env(const char *arg) {
     /* Python: secret_scope value then env, else default, stripped. Arg =
      * "name\tsecret_val\tenv_val\tdefault". */
@@ -1987,7 +1987,7 @@ int gateway_authz_mixin_u_auth_env(const char *arg) {
     return 0;
 }
 
-/* PoP: _platform_gate_env @ gateway/authz_mixin.py:_platform_gate_env */
+/* PoP: gateway_authz_mixin_u_platform_gate_env @ gateway/authz_mixin.py:_platform_gate_env */
 /* Read a platform allow/deny gate env var with per-profile isolation.
  * Authoritative under multiplex: when a profile secret scope is installed
  * AND multiplexing is active, a key absent from the scope returns default
@@ -2023,7 +2023,7 @@ int gateway_authz_mixin_u_platform_gate_env(const char *arg) {
     return 0;
 }
 
-/* PoP: _coerce_allow_set @ gateway/authz_mixin.py:_coerce_allow_set */
+/* PoP: gateway_authz_mixin_u_coerce_allow_set @ gateway/authz_mixin.py:_coerce_allow_set */
 int gateway_authz_mixin_u_coerce_allow_set(const char *arg) {
     /* Python: list -> stripped set; scalar -> comma split. Arg = "raw_json
      * or scalar". */
@@ -2069,7 +2069,7 @@ int gateway_authz_mixin_u_coerce_allow_set(const char *arg) {
     return 0;
 }
 
-/* PoP: _registered_transport_adapter @ gateway/authz_mixin.py:_registered_transport_adapter */
+/* PoP: gateway_authz_mixin_u_registered_transport_adapter @ gateway/authz_mixin.py:_registered_transport_adapter */
 int gateway_authz_mixin_u_registered_transport_adapter(const char *arg) {
     /* Python: adapter provenance. Arg = "platform\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2081,7 +2081,7 @@ int gateway_authz_mixin_u_registered_transport_adapter(const char *arg) {
     return 0;
 }
 
-/* PoP: _adapter_profile_for_source @ gateway/authz_mixin.py:_adapter_profile_for_source */
+/* PoP: gateway_authz_mixin_u_adapter_profile_for_source @ gateway/authz_mixin.py:_adapter_profile_for_source */
 int gateway_authz_mixin_u_adapter_profile_for_source(const char *arg) {
     /* Python: transport-owning profile or source profile. Arg =
      * "matched\tprofile\tsource_profile". */
@@ -2093,7 +2093,7 @@ int gateway_authz_mixin_u_adapter_profile_for_source(const char *arg) {
     return 0;
 }
 
-/* PoP: _pairing_store_for @ gateway/authz_mixin.py:_pairing_store_for */
+/* PoP: gateway_authz_mixin_u_pairing_store_for @ gateway/authz_mixin.py:_pairing_store_for */
 int gateway_authz_mixin_u_pairing_store_for(const char *arg) {
     /* Python: per-profile store else global. Arg =
      * "profile\tregistered\tstore". */
@@ -2106,7 +2106,7 @@ int gateway_authz_mixin_u_pairing_store_for(const char *arg) {
     return 0;
 }
 
-/* PoP: _probe_state_db @ gateway/readiness.py:_probe_state_db */
+/* PoP: gateway_readiness_u_probe_state_db @ gateway/readiness.py:_probe_state_db */
 int gateway_readiness_u_probe_state_db(const char *arg) {
     /* Python: RO schema probe. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("ok not initialized\n"); return 0; }
@@ -2118,7 +2118,7 @@ int gateway_readiness_u_probe_state_db(const char *arg) {
     return 0;
 }
 
-/* PoP: _probe_config @ gateway/readiness.py:_probe_config */
+/* PoP: gateway_readiness_u_probe_config @ gateway/readiness.py:_probe_config */
 int gateway_readiness_u_probe_config(const char *arg) {
     /* Python: ok using defaults / degraded top-level / ok / degraded error.
      * Arg = "exists\tstate" (state: none/mapping/error). */
@@ -2133,7 +2133,7 @@ int gateway_readiness_u_probe_config(const char *arg) {
     return 0;
 }
 
-/* PoP: _probe_disk @ gateway/readiness.py:_probe_disk */
+/* PoP: gateway_readiness_u_probe_disk @ gateway/readiness.py:_probe_disk */
 int gateway_readiness_u_probe_disk(const char *arg) {
     /* Python: disk usage -> ok/degraded. Arg = "home\tused_pct\tfree". */
     if (!arg || !*arg) { printf("degraded\n"); return 0; }
@@ -2145,7 +2145,7 @@ int gateway_readiness_u_probe_disk(const char *arg) {
     return 0;
 }
 
-/* PoP: _probe_gateway @ gateway/readiness.py:_probe_gateway */
+/* PoP: gateway_readiness_u_probe_gateway @ gateway/readiness.py:_probe_gateway */
 int gateway_readiness_u_probe_gateway(const char *arg) {
     /* Python: state + connected/configured platforms. Arg =
      * "state\tconnected\tconfigured". */
@@ -2159,7 +2159,7 @@ int gateway_readiness_u_probe_gateway(const char *arg) {
     return 0;
 }
 
-/* PoP: collect_runtime_readiness @ gateway/readiness.py:collect_runtime_readiness */
+/* PoP: gateway_readiness_collect_runtime_readiness @ gateway/readiness.py:collect_runtime_readiness */
 int gateway_readiness_collect_runtime_readiness(const char *arg) {
     /* Python: bounded readiness diagnostics. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("{\"status\": \"degraded\"}\n"); return 0; }
@@ -2170,7 +2170,7 @@ int gateway_readiness_collect_runtime_readiness(const char *arg) {
     return 0;
 }
 
-/* PoP: _notify_address @ gateway/systemd_notify.py:_notify_address */
+/* PoP: gateway_systemd_notify_u_notify_address @ gateway/systemd_notify.py:_notify_address */
 int gateway_systemd_notify_u_notify_address(const char *arg) {
     /* Python: "\0" + raw[1:] if raw starts with "@" else raw — translate
      * systemd's @abstract notation to Python's address form. */
@@ -2184,7 +2184,7 @@ int gateway_systemd_notify_u_notify_address(const char *arg) {
     return 0;
 }
 
-/* PoP: watchdog_interval_seconds @ gateway/systemd_notify.py:watchdog_interval_seconds */
+/* PoP: gateway_systemd_notify_watchdog_interval_seconds @ gateway/systemd_notify.py:watchdog_interval_seconds */
 int gateway_systemd_notify_watchdog_interval_seconds(const char *arg) {
     /* Python: NOTIFY_SOCKET + WATCHDOG_USEC/1e6; None on bad. Arg =
      * "notify_socket\twatchdog_usec". */
@@ -2197,7 +2197,7 @@ int gateway_systemd_notify_watchdog_interval_seconds(const char *arg) {
     return 0;
 }
 
-/* PoP: unhealthy @ gateway/systemd_notify.py:unhealthy */
+/* PoP: gateway_systemd_notify_unhealthy @ gateway/systemd_notify.py:unhealthy */
 int gateway_systemd_notify_unhealthy(const char *arg) {
     /* Python property: the unhealthy flag. */
     static int g_unhealthy = 0;
@@ -2206,7 +2206,7 @@ int gateway_systemd_notify_unhealthy(const char *arg) {
     return 0;
 }
 
-/* PoP: _lag_tolerance @ gateway/systemd_notify.py:_lag_tolerance */
+/* PoP: gateway_systemd_notify_u_lag_tolerance @ gateway/systemd_notify.py:_lag_tolerance */
 int gateway_systemd_notify_u_lag_tolerance(const char *arg) {
     /* Python: configured float or max(0.1, interval*0.25). Arg =
      * "interval\tconfigured". */
@@ -2231,7 +2231,7 @@ int gateway_systemd_notify_u_lag_tolerance(const char *arg) {
     return 0;
 }
 
-/* PoP: record_tick @ gateway/systemd_notify.py:record_tick */
+/* PoP: gateway_systemd_notify_record_tick @ gateway/systemd_notify.py:record_tick */
 int gateway_systemd_notify_record_tick(const char *arg) {
     /* Python: lag budget. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -2245,7 +2245,7 @@ int gateway_systemd_notify_record_tick(const char *arg) {
     return 0;
 }
 
-/* PoP: _warn_slack_directory @ gateway/channel_directory.py:_warn_slack_directory */
+/* PoP: gateway_channel_directory_u_warn_slack_directory @ gateway/channel_directory.py:_warn_slack_directory */
 int gateway_channel_directory_u_warn_slack_directory(const char *arg) {
     /* Python: throttled warning. Arg = "team_id\tdetail\tthrottled". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2257,7 +2257,7 @@ int gateway_channel_directory_u_warn_slack_directory(const char *arg) {
     return 0;
 }
 
-/* PoP: _slack_api_error_code @ gateway/channel_directory.py:_slack_api_error_code */
+/* PoP: gateway_channel_directory_u_slack_api_error_code @ gateway/channel_directory.py:_slack_api_error_code */
 int gateway_channel_directory_u_slack_api_error_code(const char *arg) {
     /* Python: response.error str or None. Arg = response JSON. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2271,7 +2271,7 @@ int gateway_channel_directory_u_slack_api_error_code(const char *arg) {
     return 0;
 }
 
-/* PoP: _build_from_sessions_db @ gateway/channel_directory.py:_build_from_sessions_db */
+/* PoP: gateway_channel_directory_u_build_from_sessions_db @ gateway/channel_directory.py:_build_from_sessions_db */
 int gateway_channel_directory_u_build_from_sessions_db(const char *arg) {
     /* Python: state.db rows. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -2283,7 +2283,7 @@ int gateway_channel_directory_u_build_from_sessions_db(const char *arg) {
     return 0;
 }
 
-/* PoP: _build_from_sessions_json @ gateway/channel_directory.py:_build_from_sessions_json */
+/* PoP: gateway_channel_directory_u_build_from_sessions_json @ gateway/channel_directory.py:_build_from_sessions_json */
 int gateway_channel_directory_u_build_from_sessions_json(const char *arg) {
     /* Python: legacy fallback. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -2295,7 +2295,7 @@ int gateway_channel_directory_u_build_from_sessions_json(const char *arg) {
     return 0;
 }
 
-/* PoP: __repr__ @ gateway/turn_lease.py:__repr__ */
+/* PoP: gateway_turn_lease_u__repr__ @ gateway/turn_lease.py:__repr__ */
 int gateway_turn_lease_u__repr__(const char *arg) {
     /* Python: f"<{cls.__name__} name={self.name!r}>". Arg = "cls\tname". */
     if (!arg || !*arg) { printf("<>\n"); return 0; }
@@ -2307,7 +2307,7 @@ int gateway_turn_lease_u__repr__(const char *arg) {
     return 0;
 }
 
-/* PoP: __len__ @ gateway/turn_lease.py:__len__ */
+/* PoP: gateway_turn_lease_u__len__ @ gateway/turn_lease.py:__len__ */
 int gateway_turn_lease_u__len__(const char *arg) {
     /* Python: len(self._leases). Arg = lease count (0 default). */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -2315,7 +2315,7 @@ int gateway_turn_lease_u__len__(const char *arg) {
     return 0;
 }
 
-/* PoP: _evict_idle @ gateway/turn_lease.py:_evict_idle */
+/* PoP: gateway_turn_lease_u_evict_idle @ gateway/turn_lease.py:_evict_idle */
 int gateway_turn_lease_u_evict_idle(const char *arg) {
     /* Python: idle-only cap. Arg =
      * "evicted\tstate\tresult". */
@@ -2330,7 +2330,7 @@ int gateway_turn_lease_u_evict_idle(const char *arg) {
     return 0;
 }
 
-/* PoP: rebind @ gateway/turn_lease.py:rebind */
+/* PoP: gateway_turn_lease_rebind @ gateway/turn_lease.py:rebind */
 int gateway_turn_lease_rebind(const char *arg) {
     /* Python: rotation alias. Arg =
      * "rebound\tstate\tresult". */
@@ -2345,7 +2345,7 @@ int gateway_turn_lease_rebind(const char *arg) {
     return 0;
 }
 
-/* PoP: specificity @ gateway/profile_routing.py:specificity */
+/* PoP: gateway_profile_routing_specificity @ gateway/profile_routing.py:specificity */
 int gateway_profile_routing_specificity(const char *arg) {
     /* Python: s=0; +2 guild_id, +4 chat_id, +8 thread_id. Arg =
      * "guild\tchat\tthread" presence flags (1/0 or empty). */
@@ -2359,7 +2359,7 @@ int gateway_profile_routing_specificity(const char *arg) {
     return 0;
 }
 
-/* PoP: parse_profile_routes @ gateway/profile_routing.py:parse_profile_routes */
+/* PoP: gateway_profile_routing_parse_profile_routes @ gateway/profile_routing.py:parse_profile_routes */
 int gateway_profile_routing_parse_profile_routes(const char *arg) {
     /* Python: specificity sort. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -2371,7 +2371,7 @@ int gateway_profile_routing_parse_profile_routes(const char *arg) {
     return 0;
 }
 
-/* PoP: match_profile_route @ gateway/profile_routing.py:match_profile_route */
+/* PoP: gateway_profile_routing_match_profile_route @ gateway/profile_routing.py:match_profile_route */
 int gateway_profile_routing_match_profile_route(const char *arg) {
     /* Python: first route matching platform/ids; None otherwise. Arg =
      * "route_id\tplatform" pairs (tab-sep), or empty. */
@@ -2387,7 +2387,7 @@ int gateway_profile_routing_match_profile_route(const char *arg) {
     return 0;
 }
 
-/* PoP: adapter_supports_push @ gateway/wake.py:adapter_supports_push */
+/* PoP: gateway_wake_adapter_supports_push @ gateway/wake.py:adapter_supports_push */
 int gateway_wake_adapter_supports_push(const char *arg) {
     /* Python: adapter flag default True. Arg = "flag" (empty = absent). */
     if (!arg || !*arg) { printf("1\n"); return 0; }
@@ -2395,7 +2395,7 @@ int gateway_wake_adapter_supports_push(const char *arg) {
     return 0;
 }
 
-/* PoP: deliver_wake @ gateway/wake.py:deliver_wake */
+/* PoP: gateway_wake_deliver_wake @ gateway/wake.py:deliver_wake */
 int gateway_wake_deliver_wake(const char *arg) {
     /* Python: wake turn. Arg =
      * "delivered\tstate\tresult". */
@@ -2410,7 +2410,7 @@ int gateway_wake_deliver_wake(const char *arg) {
     return 0;
 }
 
-/* PoP: _self_post_chat_completion @ gateway/wake.py:_self_post_chat_completion */
+/* PoP: gateway_wake_u_self_post_chat_completion @ gateway/wake.py:_self_post_chat_completion */
 int gateway_wake_u_self_post_chat_completion(const char *arg) {
     /* Python: in-pod POST. Arg =
      * "posted\tstate\tresult". */
@@ -2425,7 +2425,7 @@ int gateway_wake_u_self_post_chat_completion(const char *arg) {
     return 0;
 }
 
-/* PoP: _truthy_env @ gateway/cwd_placeholder.py:_truthy_env */
+/* PoP: gateway_cwd_placeholder_u_truthy_env @ gateway/cwd_placeholder.py:_truthy_env */
 /* Python: (value or "").strip().lower() in {"true","1","yes"}. */
 int gateway_cwd_placeholder_u_truthy_env(const char *arg) {
     if (!arg) return 0;
@@ -2440,7 +2440,7 @@ int gateway_cwd_placeholder_u_truthy_env(const char *arg) {
     return strcmp(buf, "true") == 0 || strcmp(buf, "1") == 0 || strcmp(buf, "yes") == 0;
 }
 
-/* PoP: resolve_placeholder_terminal_cwd @ gateway/cwd_placeholder.py:resolve_placeholder_terminal_cwd */
+/* PoP: gateway_cwd_placeholder_resolve_placeholder_terminal_cwd @ gateway/cwd_placeholder.py:resolve_placeholder_terminal_cwd */
 int gateway_cwd_placeholder_resolve_placeholder_terminal_cwd(const char *arg) {
     /* Python: backend/mount resolution. Arg =
      * "backend\tplaceholder\tmount\tmessaging_cwd\thome\tresult". */
@@ -2462,7 +2462,7 @@ int gateway_cwd_placeholder_resolve_placeholder_terminal_cwd(const char *arg) {
     return 0;
 }
 
-/* PoP: is_relay @ gateway/delivery.py:is_relay */
+/* PoP: gateway_delivery_is_relay @ gateway/delivery.py:is_relay */
 int gateway_delivery_is_relay(const char *arg) {
     /* Python: transport_platform == RELAY. Arg = "1"/"0". */
     if (arg && arg[0] == '1') { printf("1\n"); return 0; }
@@ -2470,7 +2470,7 @@ int gateway_delivery_is_relay(const char *arg) {
     return 0;
 }
 
-/* PoP: resolve_delivery_transport @ gateway/delivery.py:resolve_delivery_transport */
+/* PoP: gateway_delivery_resolve_delivery_transport @ gateway/delivery.py:resolve_delivery_transport */
 int gateway_delivery_resolve_delivery_transport(const char *arg) {
     /* Python: native > relay. Arg =
      * "has_native\tnative_enabled\thas_relay\tfronts\tstate\tresult". */
@@ -2492,7 +2492,7 @@ int gateway_delivery_resolve_delivery_transport(const char *arg) {
     return 0;
 }
 
-/* PoP: _strip_edge_silence_punctuation @ gateway/response_filters.py:_strip_edge_silence_punctuation */
+/* PoP: gateway_response_filters_u_strip_edge_silence_punctuation @ gateway/response_filters.py:_strip_edge_silence_punctuation */
 int gateway_response_filters_u_strip_edge_silence_punctuation(const char *arg) {
     /* Python: strip edge punctuation except [] markers. Arg = text. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2506,7 +2506,7 @@ int gateway_response_filters_u_strip_edge_silence_punctuation(const char *arg) {
     return 0;
 }
 
-/* PoP: _canonical_silence_candidates @ gateway/response_filters.py:_canonical_silence_candidates */
+/* PoP: gateway_response_filters_u_canonical_silence_candidates @ gateway/response_filters.py:_canonical_silence_candidates */
 int gateway_response_filters_u_canonical_silence_candidates(const char *arg) {
     /* Python: (exact,) or (exact, fallback) when edge punctuation stripped.
      * Arg = text. */
@@ -2515,7 +2515,7 @@ int gateway_response_filters_u_canonical_silence_candidates(const char *arg) {
     return 0;
 }
 
-/* PoP: discard @ gateway/platforms/helpers.py:discard */
+/* PoP: gateway_platforms_helpers_discard @ gateway/platforms/helpers.py:discard */
 int gateway_platforms_helpers_discard(const char *arg) {
     /* Python: self._seen.pop(msg_id, None) — release a claimed message ID
      * after cancelled/failed handoff. The C port keeps a static seen-set. */
@@ -2535,7 +2535,7 @@ int gateway_platforms_helpers_discard(const char *arg) {
     return 0;
 }
 
-/* PoP: is_gateway_supervisor_process @ gateway/restart.py:is_gateway_supervisor_process */
+/* PoP: gateway_restart_is_gateway_supervisor_process @ gateway/restart.py:is_gateway_supervisor_process */
 int gateway_restart_is_gateway_supervisor_process(const char *arg) {
     /* Python: INVOCATION_ID / s6 / XPC / EXTERNAL env truthy. Arg =
      * "flags\ttruthy" (flags = i/s/x per char). */
@@ -2547,7 +2547,7 @@ int gateway_restart_is_gateway_supervisor_process(const char *arg) {
     return 0;
 }
 
-/* PoP: declare_stateless_channel @ gateway/session_context.py:declare_stateless_channel */
+/* PoP: gateway_session_context_declare_stateless_channel @ gateway/session_context.py:declare_stateless_channel */
 int gateway_session_context_declare_stateless_channel(const char *arg) {
     /* Python: async delivery off, no latch. Arg = "state". */
     (void)arg;
@@ -2555,7 +2555,7 @@ int gateway_session_context_declare_stateless_channel(const char *arg) {
     return 0;
 }
 
-/* PoP: on_processing_start @ gateway/platforms/signal.py:on_processing_start */
+/* PoP: gateway_platforms_signal_u_on_processing_start @ gateway/platforms/signal.py:on_processing_start */
 int gateway_platforms_signal_u_on_processing_start(const char *arg) {
     /* Python: react with 👀 when processing begins. */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -2566,7 +2566,7 @@ int gateway_platforms_signal_u_on_processing_start(const char *arg) {
     return 0;
 }
 
-/* PoP: on_processing_complete @ gateway/platforms/signal.py:on_processing_complete */
+/* PoP: gateway_platforms_signal_u_on_processing_complete @ gateway/platforms/signal.py:on_processing_complete */
 int gateway_platforms_signal_u_on_processing_complete(const char *arg) {
     /* Python: swap 👀 for ✅ (success) / ❌ (failure); CANCELLED keeps 👀. */
     if (!arg || !*arg) { printf("0\n"); return 0; }

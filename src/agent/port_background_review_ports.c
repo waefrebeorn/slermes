@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _resolve_review_runtime @ agent/background_review.py:_resolve_review_runtime */
+/* PoP: brv_resolve_review_runtime @ agent/background_review.py:_resolve_review_runtime */
 char *brv_resolve_review_runtime(const char *config_json) {
     /* Python: provider/model/creds for review fork. */
     if (!config_json) return NULL;
@@ -27,7 +27,7 @@ char *brv_resolve_review_runtime(const char *config_json) {
     return strdup(config_json);
 }
 
-/* PoP: summarize_background_review_actions @ agent/background_review.py:summarize_background_review_actions */
+/* PoP: brv_summarize_background_review_actions @ agent/background_review.py:summarize_background_review_actions */
 char *brv_summarize_background_review_actions(const char *review_json) {
     /* Python: human-facing action summary. */
     if (!review_json) return strdup("");
@@ -35,13 +35,13 @@ char *brv_summarize_background_review_actions(const char *review_json) {
     return strdup(review_json);
 }
 
-/* PoP: build_memory_write_metadata @ agent/background_review.py:build_memory_write_metadata */
+/* PoP: brv_build_memory_write_metadata @ agent/background_review.py:build_memory_write_metadata */
 char *brv_build_memory_write_metadata(void) {
     /* Python: provenance for external memory mirrors. */
     return strdup("{\"source\": \"background_review\"}");
 }
 
-/* PoP: _run_review_in_thread @ agent/background_review.py:_run_review_in_thread */
+/* PoP: brv_run_review_in_thread @ agent/background_review.py:_run_review_in_thread */
 char *brv_run_review_in_thread(const char *prompt_json) {
     /* Python: daemon-thread worker. */
     if (!prompt_json) return NULL;
@@ -49,7 +49,7 @@ char *brv_run_review_in_thread(const char *prompt_json) {
     return strdup("{}");
 }
 
-/* PoP: spawn_background_review_thread @ agent/background_review.py:spawn_background_review_thread */
+/* PoP: brv_spawn_background_review_thread @ agent/background_review.py:spawn_background_review_thread */
 char *brv_spawn_background_review_thread(const char *context_json) {
     /* Python: build target + prompt. */
     if (!context_json) return NULL;

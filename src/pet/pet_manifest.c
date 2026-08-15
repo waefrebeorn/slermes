@@ -38,7 +38,7 @@ static bool cache_is_warm(void) {
     return (now_monotonic() - g_manifest_cache.fetched_at) < PET_MANIFEST_TTL;
 }
 
-/* PoP: lsw_clear_cache @ agent/pet/manifest.py:clear_cache */
+/* PoP: pet_clear_manifest_cache @ agent/pet/manifest.py:clear_cache */
 void pet_clear_manifest_cache(void) {
     pthread_mutex_lock(&g_manifest_lock);
     if (g_manifest_cache.entries) {
@@ -186,7 +186,7 @@ bool pet_find_entry(const char *slug, pet_manifest_entry_t *out) {
     return false;
 }
 
-/* PoP: agent_memory_provider_queue_prefetch @ agent/pet/manifest.py:prefetch */
+/* PoP: pet_prefetch_manifest @ agent/pet/manifest.py:prefetch */
 void pet_prefetch_manifest(void) {
     if (cache_is_warm()) return;
 

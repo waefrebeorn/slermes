@@ -13,7 +13,7 @@
 #include <string.h>
 #include <stdio.h>
 
-/* PoP: cron_classify_eprint @ cron/scripts/classify_items.py:_eprint */
+/* PoP: _eprint @ cron/scripts/classify_items.py:_eprint */
 /* Print to stderr. Mirror of Python _eprint(*args). */
 void cron_classify_eprint(const char *msg)
 {
@@ -21,7 +21,7 @@ void cron_classify_eprint(const char *msg)
 }
 
 
-/* PoP: _item_id @ cron/scripts/classify_items.py:_item_id */
+/* PoP: cron_classify_item_id @ cron/scripts/classify_items.py:_item_id */
 /* Prefer id/guid/message_id/url/link; else "item-<index>". Result malloc'd. */
 char *cron_classify_item_id(const json_t *item, int index)
 {
@@ -38,7 +38,7 @@ char *cron_classify_item_id(const json_t *item, int index)
     return strdup(buf);
 }
 
-/* PoP: _build_prompt @ cron/scripts/classify_items.py:_build_prompt */
+/* PoP: serialized @ cron/scripts/classify_items.py:_build_prompt */
 /* Build the classifier prompt. `items` is a json_t array; each element's
  * salient fields are serialized (capped at 1200 bytes) like Python. Returns a
  * malloc'd string. */
@@ -105,7 +105,7 @@ char *cron_classify_build_prompt(const json_t *items, const char *criteria)
     return out;
 }
 
-/* PoP: _parse_scores @ cron/scripts/classify_items.py:_parse_scores */
+/* PoP: cron_classify_parse_scores @ cron/scripts/classify_items.py:_parse_scores */
 /* Parse a tolerant JSON array of {index, score, reason}. Returns a malloc'd
  * array of classify_score_t (count in *out_count); caller frees with
  * cron_classify_free_scores. Empty/invalid -> count 0. */

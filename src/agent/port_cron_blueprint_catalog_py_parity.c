@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: cron_blueprint_catalog_get_blueprint @ cron/blueprint_catalog.py:get_blueprint */
+/* PoP: cron_blueprint_catalog_get_blueprint_p @ cron/blueprint_catalog.py:get_blueprint */
 json_t *cron_blueprint_catalog_get_blueprint_p(void) {
     return json_object();
 }

@@ -7,7 +7,7 @@
  * Python uuid5(NAMESPACE_URL, ...) digests.
  */
 
-/* PoP: browser_camofox_state_get_camofox_identity @ tools/browser_camofox_state.py:get_camofox_identity */
+/* PoP: get_camofox_state_dir @ tools/browser_camofox_state.py:get_camofox_identity */
 
 #include "hermes_core_types.h"
 #include "hermes_json.h"
@@ -21,7 +21,7 @@
 /* Resolve the profile-scoped Camofox persistence root.
  * Returns heap-allocated "<HERMES_HOME>/browser_auth/camofox" (caller frees),
  * or NULL on failure. Mirrors get_camofox_state_dir(). */
-/* PoP: ensure_state_dir @ hermes_cli/active_sessions.py:_state_dir */
+/* PoP: camofox_state_dir @ hermes_cli/active_sessions.py:_state_dir */
 static char *camofox_state_dir(void)
 {
     char home[4096];

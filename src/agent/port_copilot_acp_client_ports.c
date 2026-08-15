@@ -22,7 +22,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _is_gh_copilot_deprecation_message @ agent/copilot_acp_client.py:_is_gh_copilot_deprecation_message */
+/* PoP: cac_is_gh_copilot_deprecation_message @ agent/copilot_acp_client.py:_is_gh_copilot_deprecation_message */
 bool cac_is_gh_copilot_deprecation_message(const char *stderr_text) {
     /* Python: deprecated gh-copilot extension banner markers. */
     if (!stderr_text) return false;
@@ -34,7 +34,7 @@ bool cac_is_gh_copilot_deprecation_message(const char *stderr_text) {
     return hit;
 }
 
-/* PoP: _resolve_command @ agent/copilot_acp_client.py:_resolve_command */
+/* PoP: cac_resolve_command @ agent/copilot_acp_client.py:_resolve_command */
 char *cac_resolve_command(void) {
     /* Python: HERMES_COPILOT_ACP_COMMAND or COPILOT_CLI_PATH. */
     const char *a = getenv("HERMES_COPILOT_ACP_COMMAND");
@@ -52,7 +52,7 @@ char *cac_resolve_command(void) {
     return strdup("github-copilot");
 }
 
-/* PoP: _resolve_args @ agent/copilot_acp_client.py:_resolve_args */
+/* PoP: cac_resolve_args @ agent/copilot_acp_client.py:_resolve_args */
 char *cac_resolve_args(void) {
     /* Python: HERMES_COPILOT_ACP_ARGS or --acp --stdio. */
     const char *v = getenv("HERMES_COPILOT_ACP_ARGS");
@@ -64,7 +64,7 @@ char *cac_resolve_args(void) {
     return strdup("--acp --stdio");
 }
 
-/* PoP: _resolve_home_dir @ agent/copilot_acp_client.py:_resolve_home_dir */
+/* PoP: cac_resolve_home_dir @ agent/copilot_acp_client.py:_resolve_home_dir */
 char *cac_resolve_home_dir(void) {
     /* Python: stable HOME for child ACP processes. */
     const char *home = getenv("HOME");
@@ -76,14 +76,14 @@ char *cac_resolve_home_dir(void) {
     return strdup("/tmp");
 }
 
-/* PoP: _build_subprocess_env @ agent/copilot_acp_client.py:_build_subprocess_env */
+/* PoP: cac_build_subprocess_env @ agent/copilot_acp_client.py:_build_subprocess_env */
 char *cac_build_subprocess_env(void) {
     /* Python: route LLM provider creds through the credential store. */
     printf("acp subprocess env built (provider creds routed)\n");
     return strdup("{}");
 }
 
-/* PoP: _jsonrpc_error @ agent/copilot_acp_client.py:_jsonrpc_error */
+/* PoP: cac_jsonrpc_error @ agent/copilot_acp_client.py:_jsonrpc_error */
 char *cac_jsonrpc_error(const char *message_id, long code, const char *message) {
     /* Python: JSON-RPC 2.0 error envelope. */
     char *out = NULL;
@@ -93,7 +93,7 @@ char *cac_jsonrpc_error(const char *message_id, long code, const char *message) 
     return out;
 }
 
-/* PoP: _permission_denied @ agent/copilot_acp_client.py:_permission_denied */
+/* PoP: cac_permission_denied @ agent/copilot_acp_client.py:_permission_denied */
 char *cac_permission_denied(const char *message_id, const char *reason) {
     /* Python: permission-denied outcome envelope. */
     char *out = NULL;
@@ -104,7 +104,7 @@ char *cac_permission_denied(const char *message_id, const char *reason) {
     return out;
 }
 
-/* PoP: _format_messages_as_prompt @ agent/copilot_acp_client.py:_format_messages_as_prompt */
+/* PoP: cac_format_messages_as_prompt @ agent/copilot_acp_client.py:_format_messages_as_prompt */
 char *cac_format_messages_as_prompt(const char *messages_json) {
     /* Python: system preamble + role: content sections. */
     if (!messages_json) return strdup("");
@@ -115,7 +115,7 @@ char *cac_format_messages_as_prompt(const char *messages_json) {
     return out;
 }
 
-/* PoP: _render_message_content @ agent/copilot_acp_client.py:_render_message_content */
+/* PoP: cac_render_message_content @ agent/copilot_acp_client.py:_render_message_content */
 char *cac_render_message_content(const char *content_json) {
     /* Python: None→""; str→strip; list→join text parts. */
     if (!content_json) return strdup("");
@@ -158,7 +158,7 @@ char *cac_render_message_content(const char *content_json) {
     return strdup(content_json);
 }
 
-/* PoP: _build_openai_tool_call @ agent/copilot_acp_client.py:_build_openai_tool_call */
+/* PoP: cac_build_openai_tool_call @ agent/copilot_acp_client.py:_build_openai_tool_call */
 char *cac_build_openai_tool_call(const char *tool_call_json) {
     /* Python: OpenAI-compatible tool-call object. */
     if (!tool_call_json) return NULL;
@@ -166,7 +166,7 @@ char *cac_build_openai_tool_call(const char *tool_call_json) {
     return strdup(tool_call_json);
 }
 
-/* PoP: _completion_to_stream_chunks @ agent/copilot_acp_client.py:_completion_to_stream_chunks */
+/* PoP: cac_completion_to_stream_chunks @ agent/copilot_acp_client.py:_completion_to_stream_chunks */
 char *cac_completion_to_stream_chunks(const char *completion_json) {
     /* Python: one-shot response → OpenAI-style stream chunks. */
     if (!completion_json) return NULL;
@@ -174,7 +174,7 @@ char *cac_completion_to_stream_chunks(const char *completion_json) {
     return strdup(completion_json);
 }
 
-/* PoP: _extract_tool_calls_from_text @ agent/copilot_acp_client.py:_extract_tool_calls_from_text */
+/* PoP: cac_extract_tool_calls_from_text @ agent/copilot_acp_client.py:_extract_tool_calls_from_text */
 char *cac_extract_tool_calls_from_text(const char *text) {
     /* Python: (tool_calls, remaining_text). */
     if (!text || !*text || !strcmp(text, " ")) return strdup("[]\t");
@@ -182,7 +182,7 @@ char *cac_extract_tool_calls_from_text(const char *text) {
     return strdup("[]\t");
 }
 
-/* PoP: _ensure_path_within_cwd @ agent/copilot_acp_client.py:_ensure_path_within_cwd */
+/* PoP: cac_ensure_path_within_cwd @ agent/copilot_acp_client.py:_ensure_path_within_cwd */
 int cac_ensure_path_within_cwd(const char *path_text, const char *cwd) {
     /* Python: absolute paths must stay inside cwd. */
     if (!path_text) return -1;

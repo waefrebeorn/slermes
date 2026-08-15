@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_doctor_live_load_config @ hermes_cli/doctor_live.py:_load_config */
+/* PoP: hermes_cli_doctor_live_load_config_p @ hermes_cli/doctor_live.py:_load_config */
 json_t *hermes_cli_doctor_live_load_config_p(void) {
     return json_object();
 }

@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_online_research_reorder_totem_pole_by_research @ tools/online_research.py:reorder_totem_pole_by_research */
+/* PoP: tools_online_research_reorder_totem_pole_by_research_p @ tools/online_research.py:reorder_totem_pole_by_research */
 json_t *tools_online_research_reorder_totem_pole_by_research_p(void) {
     return json_object();
 }

@@ -42,7 +42,7 @@
  *   - default: passthrough
  * Verified byte-equal to LIVE Python (string-input contract) via
  * tests/sta_oracle_display_config.py. */
-/* PoP: gateway_display_config_normalise @ gateway/display_config.py:_normalise */
+/* PoP: normalise_display_value @ gateway/display_config.py:_normalise */
 char *normalise_display_value(const char *setting, const char *value) {
     if (!value) value = "";
     if (!setting) setting = "";

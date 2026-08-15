@@ -25,7 +25,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _compression_lock_holder @ agent/conversation_compression.py:_compression_lock_holder */
+/* PoP: ccp_compression_lock_holder @ agent/conversation_compression.py:_compression_lock_holder */
 char *ccp_compression_lock_holder(void) {
     /* Python: pid:tid:agent-instance:uuid. */
     char *out = NULL;
@@ -52,7 +52,7 @@ static void *ccp_heartbeat_thread(void *arg) {
     return NULL;
 }
 
-/* PoP: start @ agent/conversation_compression.py:start */
+/* PoP: ccp_start @ agent/conversation_compression.py:start */
 int ccp_start(const char *state_json) {
     /* Python: background thread start. */
     if (!state_json) return -1;
@@ -67,7 +67,7 @@ int ccp_start(const char *state_json) {
     return 0;
 }
 
-/* PoP: stop @ agent/conversation_compression.py:stop */
+/* PoP: ccp_stop @ agent/conversation_compression.py:stop */
 int ccp_stop(void) {
     /* Python: set stop event + join thread (timeout 1s). */
     g_ccp_stop = true;
@@ -79,7 +79,7 @@ int ccp_stop(void) {
     return 0;
 }
 
-/* PoP: _run @ agent/conversation_compression.py:_run */
+/* PoP: ccp_run @ agent/conversation_compression.py:_run */
 int ccp_run(long interval_seconds) {
     /* Python: interval loop with touch. */
     if (interval_seconds <= 0) interval_seconds = 60;
@@ -87,7 +87,7 @@ int ccp_run(long interval_seconds) {
     return ccp_start("{\"running\": true}");
 }
 
-/* PoP: check_compression_model_feasibility @ agent/conversation_compression.py:check_compression_model_feasibility */
+/* PoP: ccp_check_compression_model_feasibility @ agent/conversation_compression.py:check_compression_model_feasibility */
 char *ccp_check_compression_model_feasibility(const char *config_json) {
     /* Python: warn when aux model context too small. */
     if (!config_json) return NULL;
@@ -95,7 +95,7 @@ char *ccp_check_compression_model_feasibility(const char *config_json) {
     return NULL;
 }
 
-/* PoP: replay_compression_warning @ agent/conversation_compression.py:replay_compression_warning */
+/* PoP: ccp_replay_compression_warning @ agent/conversation_compression.py:replay_compression_warning */
 int ccp_replay_compression_warning(const char *warning) {
     /* Python: re-send via status_callback. */
     if (!warning) return -1;
@@ -103,7 +103,7 @@ int ccp_replay_compression_warning(const char *warning) {
     return 0;
 }
 
-/* PoP: compress_context @ agent/conversation_compression.py:compress_context */
+/* PoP: ccp_compress_context @ agent/conversation_compression.py:compress_context */
 char *ccp_compress_context(const char *session_json) {
     /* Python: compress + split session in SQLite. */
     if (!session_json) return NULL;
@@ -111,7 +111,7 @@ char *ccp_compress_context(const char *session_json) {
     return strdup(session_json);
 }
 
-/* PoP: try_shrink_image_parts_in_messages @ agent/conversation_compression.py:try_shrink_image_parts_in_messages */
+/* PoP: ccp_try_shrink_image_parts_in_messages @ agent/conversation_compression.py:try_shrink_image_parts_in_messages */
 char *ccp_try_shrink_image_parts_in_messages(const char *messages_json) {
     /* Python: re-encode image parts smaller. */
     if (!messages_json) return strdup("[]");

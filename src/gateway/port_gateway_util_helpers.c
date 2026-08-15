@@ -18,7 +18,7 @@
 
 typedef struct dead_target_registry dead_target_registry_t;
 
-/* PoP: main @ gateway/cgroup_cleanup.py:main */
+/* PoP: gw_cgroup_cleanup_main @ gateway/cgroup_cleanup.py:main */
 int gw_cgroup_cleanup_main(void)
 {
     extern int gateway_cgroup_cleanup_reap(const char *cgroup_path);
@@ -29,7 +29,7 @@ int gw_cgroup_cleanup_main(void)
     return 0;
 }
 
-/* PoP: __init__ @ gateway/dead_targets.py:__init__ */
+/* PoP: gw_dead_targets_init @ gateway/dead_targets.py:__init__ */
 int gw_dead_targets_init(const char *path)
 {
     extern dead_target_registry_t *dead_target_registry_create(const char *path);
@@ -40,13 +40,13 @@ int gw_dead_targets_init(const char *path)
     return 0;
 }
 
-/* PoP: __init__ @ gateway/hooks.py:__init__ */
+/* PoP: gw_hooks_init @ gateway/hooks.py:__init__ */
 int gw_hooks_init(void)
 {
     return 0;
 }
 
-/* PoP: __init__ @ gateway/pairing.py:__init__ */
+/* PoP: gw_pairing_init @ gateway/pairing.py:__init__ */
 int gw_pairing_init(const char *profile)
 {
     extern pairing_store_t *pairing_store_open(const char *dir);
@@ -64,14 +64,14 @@ int gw_pairing_init(const char *profile)
     return 0;
 }
 
-/* PoP: profile @ gateway/pairing.py:profile */
+/* PoP: gw_pairing_profile @ gateway/pairing.py:profile */
 char *gw_pairing_profile(void)
 {
     const char *p = getenv("HERMES_PROFILE");
     return strdup(p ? p : "");
 }
 
-/* PoP: __getattr__ @ gateway/platforms/__init__.py:__getattr__ */
+/* PoP: gw_platforms_getattr @ gateway/platforms/__init__.py:__getattr__ */
 int gw_platforms_getattr(const char *name)
 {
     /* Only QQAdapter / YuanbaoAdapter are lazy-exported. */
@@ -81,33 +81,33 @@ int gw_platforms_getattr(const char *name)
     return -1;
 }
 
-/* PoP: __dir__ @ gateway/platforms/__init__.py:__dir__ */
+/* PoP: gw_platforms_dir @ gateway/platforms/__init__.py:__dir__ */
 char *gw_platforms_dir(void)
 {
     return strdup("[\"QQAdapter\",\"YuanbaoAdapter\",\"BasePlatformAdapter\",\"APIAdapter\"]");
 }
 
-/* PoP: __init__ @ gateway/platforms/webhook_filters.py:__init__ */
+/* PoP: gw_webhook_filters_init @ gateway/platforms/webhook_filters.py:__init__ */
 long gw_webhook_filters_init(long script_timeout_seconds)
 {
     if (script_timeout_seconds < 1) script_timeout_seconds = 1;
     return script_timeout_seconds;
 }
 
-/* PoP: enforces_own_access_policy @ gateway/platforms/whatsapp_common.py:enforces_own_access_policy */
+/* PoP: gw_whatsapp_enforces_own_access_policy @ gateway/platforms/whatsapp_common.py:enforces_own_access_policy */
 bool gw_whatsapp_enforces_own_access_policy(void)
 {
     return true;
 }
 
-/* PoP: format_message @ gateway/platforms/whatsapp_common.py:format_message */
+/* PoP: gw_whatsapp_format_message @ gateway/platforms/whatsapp_common.py:format_message */
 char *gw_whatsapp_format_message(const char *content)
 {
     if (!content) return strdup("");
     return strdup(content);
 }
 
-/* PoP: matches @ gateway/profile_routing.py:matches */
+/* PoP: gw_profile_route_matches @ gateway/profile_routing.py:matches */
 bool gw_profile_route_matches(const char *platform, const char *guild_id,
                               const char *chat_id, const char *thread_id,
                               const char *route_platform, const char *route_guild_id,
@@ -124,7 +124,7 @@ bool gw_profile_route_matches(const char *platform, const char *guild_id,
     return true;
 }
 
-/* PoP: _check @ gateway/readiness.py:_check */
+/* PoP: gw_readiness_check @ gateway/readiness.py:_check */
 char *gw_readiness_check(const char *status, const char *detail,
                          const char *extra_json)
 {
@@ -149,7 +149,7 @@ char *gw_readiness_check(const char *status, const char *detail,
     return s ? s : strdup("{}");
 }
 
-/* PoP: to_json @ gateway/relay/descriptor.py:to_json */
+/* PoP: gw_descriptor_to_json @ gateway/relay/descriptor.py:to_json */
 char *gw_descriptor_to_json(const char *fields_json)
 {
     if (!fields_json) return strdup("{}");
@@ -163,14 +163,14 @@ char *gw_descriptor_to_json(const char *fields_json)
     return s ? s : strdup("{}");
 }
 
-/* PoP: __init__ @ gateway/relay/ws_transport.py:__init__ */
+/* PoP: gw_relay_ws_init @ gateway/relay/ws_transport.py:__init__ */
 int gw_relay_ws_init(const char *url, const char *platform, const char *bot_id)
 {
     if (!url || !platform || !bot_id) return -1;
     return 0;
 }
 
-/* PoP: parse_restart_drain_timeout @ gateway/restart.py:parse_restart_drain_timeout */
+/* PoP: gw_parse_restart_drain_timeout @ gateway/restart.py:parse_restart_drain_timeout */
 double gw_parse_restart_drain_timeout(const char *raw, double default_timeout)
 {
     if (!raw || !*raw) return default_timeout;
@@ -180,7 +180,7 @@ double gw_parse_restart_drain_timeout(const char *raw, double default_timeout)
     return v > 0.0 ? v : 0.0;
 }
 
-/* PoP: _key @ gateway/rich_sent_store.py:_key */
+/* PoP: gw_rich_sent_key @ gateway/rich_sent_store.py:_key */
 char *gw_rich_sent_key(const char *chat_id, const char *message_id)
 {
     if (!chat_id || !message_id) return strdup("");
@@ -190,7 +190,7 @@ char *gw_rich_sent_key(const char *chat_id, const char *message_id)
     return out;
 }
 
-/* PoP: lookup @ gateway/rich_sent_store.py:lookup */
+/* PoP: gw_rich_sent_lookup @ gateway/rich_sent_store.py:lookup */
 char *gw_rich_sent_lookup(const char *chat_id, const char *message_id)
 {
     if (!chat_id || !message_id) return NULL;
@@ -217,14 +217,14 @@ char *gw_rich_sent_lookup(const char *chat_id, const char *message_id)
     return out;
 }
 
-/* PoP: __init__ @ gateway/stream_consumer.py:__init__ */
+/* PoP: gw_stream_consumer_init @ gateway/stream_consumer.py:__init__ */
 int gw_stream_consumer_init(const char *chat_id, long max_len)
 {
     if (!chat_id) return -1;
     return 0;
 }
 
-/* PoP: run @ gateway/stream_consumer.py:run */
+/* PoP: gw_stream_consumer_run @ gateway/stream_consumer.py:run */
 int gw_stream_consumer_run(void)
 {
     /* Python: async task that drains the queue and edits the platform
@@ -238,20 +238,20 @@ int gw_stream_consumer_run(void)
     return 0;
 }
 
-/* PoP: __init__ @ gateway/delivery.py:__init__ */
+/* PoP: gw_delivery_init @ gateway/delivery.py:__init__ */
 int gw_delivery_init(void)
 {
     return 0;
 }
 
-/* PoP: _prune @ gateway/delivery_ledger.py:_prune */
+/* PoP: gw_delivery_ledger_prune @ gateway/delivery_ledger.py:_prune */
 long gw_delivery_ledger_prune(double now, double retention_seconds)
 {
     (void)now; (void)retention_seconds;
     return 0;
 }
 
-/* PoP: _send_typing @ gateway/platforms/weixin.py:_send_typing */
+/* PoP: gw_weixin_send_typing @ gateway/platforms/weixin.py:_send_typing */
 int gw_weixin_send_typing(const char *base_url, const char *token,
                           const char *to_user_id, long status)
 {
@@ -262,7 +262,7 @@ int gw_weixin_send_typing(const char *base_url, const char *token,
 
 /* ── gateway/restart.py remaining gap functions ───────────────────── */
 
-/* PoP: is_container_restart_context @ gateway/restart.py:is_container_restart_context */
+/* PoP: gw_is_container_restart_context @ gateway/restart.py:is_container_restart_context */
 bool gw_is_container_restart_context(void) {
     /* Python: /.dockerenv or /run/.containerenv on disk — Docker/Podman
      * cgroup means the detached setsid path dies with the cgroup, so
@@ -271,7 +271,7 @@ bool gw_is_container_restart_context(void) {
            access("/run/.containerenv", F_OK) == 0;
 }
 
-/* PoP: parse_restart_after_turn_timeout @ gateway/restart.py:parse_restart_after_turn_timeout */
+/* PoP: gw_parse_restart_after_turn_timeout @ gateway/restart.py:parse_restart_after_turn_timeout */
 double gw_parse_restart_after_turn_timeout(const char *raw, double default_timeout) {
     /* Python: 0 is a deliberate disable (legacy immediate drain) and must NOT
      * fall through to the default — unlike empty/missing input. */
@@ -296,7 +296,7 @@ double gw_parse_restart_after_turn_timeout(const char *raw, double default_timeo
     return v > 0.0 ? v : 0.0;
 }
 
-/* PoP: resolve_restart_exit_wait_budget @ gateway/restart.py:resolve_restart_exit_wait_budget */
+/* PoP: gw_resolve_restart_exit_wait_budget @ gateway/restart.py:resolve_restart_exit_wait_budget */
 double gw_resolve_restart_exit_wait_budget(double drain_timeout,
                                            double after_turn_timeout,
                                            double headroom) {

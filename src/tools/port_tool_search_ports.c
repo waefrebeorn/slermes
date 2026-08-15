@@ -20,7 +20,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _safe_int @ tools/tool_search.py:_safe_int */
+/* PoP: ts_safe_int @ tools/tool_search.py:_safe_int */
 bool ts_safe_int(const char *value, long *out) {
     /* Python: int parse or False. */
     if (!value || !out) return false;
@@ -31,21 +31,21 @@ bool ts_safe_int(const char *value, long *out) {
     return true;
 }
 
-/* PoP: is_deferrable_tool_name @ tools/tool_search.py:is_deferrable_tool_name */
+/* PoP: ts_is_deferrable_tool_name @ tools/tool_search.py:is_deferrable_tool_name */
 bool ts_is_deferrable_tool_name(const char *name, const char *deferrable_json) {
     /* Python: eligible for deferral. */
     if (!name || !deferrable_json) return false;
     return strstr(deferrable_json, name) != NULL;
 }
 
-/* PoP: estimate_tokens_from_schemas @ tools/tool_search.py:estimate_tokens_from_schemas */
+/* PoP: ts_estimate_tokens_from_schemas @ tools/tool_search.py:estimate_tokens_from_schemas */
 long ts_estimate_tokens_from_schemas(const char *tool_defs_json) {
     /* Python: chars/4 rule. */
     if (!tool_defs_json) return 0;
     return (long)(strlen(tool_defs_json) / 4);
 }
 
-/* PoP: _entry_search_text @ tools/tool_search.py:_entry_search_text */
+/* PoP: ts_entry_search_text @ tools/tool_search.py:_entry_search_text */
 char *ts_entry_search_text(const char *tool_json) {
     /* Python: name + description blob. */
     if (!tool_json) return strdup("");
@@ -55,7 +55,7 @@ char *ts_entry_search_text(const char *tool_json) {
     return out;
 }
 
-/* PoP: search_catalog @ tools/tool_search.py:search_catalog */
+/* PoP: ts_search_catalog @ tools/tool_search.py:search_catalog */
 char *ts_search_catalog(const char *catalog_json, const char *query, long limit) {
     /* Python: BM25 top-limit; substring fallback. */
     if (!catalog_json || !query) return strdup("[]");
@@ -101,7 +101,7 @@ char *ts_search_catalog(const char *catalog_json, const char *query, long limit)
     return out;
 }
 
-/* PoP: bridge_tool_schemas @ tools/tool_search.py:bridge_tool_schemas */
+/* PoP: ts_bridge_tool_schemas @ tools/tool_search.py:bridge_tool_schemas */
 char *ts_bridge_tool_schemas(const char *deferred_json) {
     /* Python: bridge schemas to inject in place of deferred. */
     if (!deferred_json) return strdup("[]");
@@ -109,7 +109,7 @@ char *ts_bridge_tool_schemas(const char *deferred_json) {
     return strdup(deferred_json);
 }
 
-/* PoP: assemble_tool_defs @ tools/tool_search.py:assemble_tool_defs */
+/* PoP: ts_assemble_tool_defs @ tools/tool_search.py:assemble_tool_defs */
 char *ts_assemble_tool_defs(const char *tool_defs_json, const char *deferred_names_json) {
     /* Python: visible defs when search enabled. */
     if (!tool_defs_json) return strdup("[]");
@@ -117,7 +117,7 @@ char *ts_assemble_tool_defs(const char *tool_defs_json, const char *deferred_nam
     return strdup(tool_defs_json);
 }
 
-/* PoP: dispatch_tool_search @ tools/tool_search.py:dispatch_tool_search */
+/* PoP: ts_dispatch_tool_search @ tools/tool_search.py:dispatch_tool_search */
 char *ts_dispatch_tool_search(const char *args_json) {
     /* Python: tool_search bridge execution. */
     if (!args_json) return strdup("{}");
@@ -125,14 +125,14 @@ char *ts_dispatch_tool_search(const char *args_json) {
     return strdup("{}");
 }
 
-/* PoP: dispatch_tool_describe @ tools/tool_search.py:dispatch_tool_describe */
+/* PoP: ts_dispatch_tool_describe @ tools/tool_search.py:dispatch_tool_describe */
 char *ts_dispatch_tool_describe(const char *args_json) {
     if (!args_json) return strdup("{}");
     printf("tool_describe bridge dispatched\n");
     return strdup("{}");
 }
 
-/* PoP: scoped_deferrable_names @ tools/tool_search.py:scoped_deferrable_names */
+/* PoP: ts_scoped_deferrable_names @ tools/tool_search.py:scoped_deferrable_names */
 char *ts_scoped_deferrable_names(const char *tool_defs_json, const char *deferrable_json) {
     /* Python: deferrable names present in defs. */
     if (!tool_defs_json) return strdup("[]");
@@ -140,7 +140,7 @@ char *ts_scoped_deferrable_names(const char *tool_defs_json, const char *deferra
     return strdup("[]");
 }
 
-/* PoP: resolve_underlying_call @ tools/tool_search.py:resolve_underlying_call */
+/* PoP: ts_resolve_underlying_call @ tools/tool_search.py:resolve_underlying_call */
 char *ts_resolve_underlying_call(const char *tool_call_json) {
     /* Python: parse into (underlying, args, error). */
     if (!tool_call_json) return NULL;

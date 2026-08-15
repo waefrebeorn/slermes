@@ -861,7 +861,7 @@ int setup_wizard_noninteractive(void) {
  * lists as required — hiding a required credential would make that platform
  * unconfigurable from the UI. */
 
-/* PoP: is_setup_hidden_env @ hermes_cli/setup_hidden_env.py:is_setup_hidden_env */
+/* PoP: setup_wizard_is_hidden_env @ hermes_cli/setup_hidden_env.py:is_setup_hidden_env */
 bool setup_wizard_is_hidden_env(const char *name)
 {
     if (!name) return false;

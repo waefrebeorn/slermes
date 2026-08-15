@@ -24,6 +24,11 @@
  * PoP: settings_page        @ apps/desktop/src/app/settings/index.tsx
  * PoP: theme_switcher       @ apps/desktop/src/app/settings/index.tsx
  * PoP: connection_config    @ apps/desktop/src/app/settings/index.tsx
+ * PoP: notifications        @ electron/main.cjs:notify
+ * PoP: file_dialog_open     @ electron/main.cjs:selectPaths
+ * PoP: file_dialog_save     @ electron/main.cjs:selectPaths
+ * PoP: open_external        @ electron/main.cjs:openExternal
+ * PoP: safe_storage         @ electron/main.cjs:safeStorage
  * PoP: auth_ticket          @ electron/dashboard-token.cjs
  * PoP: connection_revalidate @ electron/main.cjs:connection:revalidate
  * PoP: update_check         @ electron/main.cjs:updates:check
@@ -224,7 +229,7 @@ const char *desktop_safe_storage_path(void) {
  *  Notifications
  * ═══════════════════════════════════════════════════════════════════════ */
 
-/* PoP: notifications @ electron/main.cjs:notify */
+/* PoP: desktop_notify @ electron/main.cjs:notify */
 void desktop_notify(notify_kind_t kind, const char *title, const char *message) {
     if (g_desktop.notification_count >= DESKTOP_MAX_NOTIFICATIONS) {
         /* Shift out oldest */
@@ -303,7 +308,7 @@ static char *desktop_run_selector(const char *cmd) {
     return strdup(buf);
 }
 
-/* PoP: file_dialog_open @ electron/main.cjs:selectPaths */
+/* PoP: desktop_file_dialog_open @ electron/main.cjs:selectPaths */
 char *desktop_file_dialog_open(const char *title, const char *filter) {
     (void)filter;
     /* Prefer desktop-native selectors. */
@@ -333,7 +338,7 @@ char *desktop_file_dialog_open(const char *title, const char *filter) {
     return strdup(buf);
 }
 
-/* PoP: file_dialog_save @ electron/main.cjs:selectPaths */
+/* PoP: desktop_file_dialog_save @ electron/main.cjs:selectPaths */
 char *desktop_file_dialog_save(const char *title, const char *default_name, const char *filter) {
     (void)filter;
     char cmd[1024];
@@ -387,7 +392,7 @@ char *desktop_file_dialog_pick_dir(const char *title) {
     return strdup(buf);
 }
 
-/* PoP: open_external @ electron/main.cjs:openExternal */
+/* PoP: desktop_open_external @ electron/main.cjs:openExternal */
 bool desktop_open_external(const char *url) {
     if (!url || !*url) return false;
 
@@ -409,7 +414,7 @@ bool desktop_open_external(const char *url) {
  *  Safe Storage (encrypted credential storage)
  * ═══════════════════════════════════════════════════════════════════════ */
 
-/* PoP: safe_storage @ electron/main.cjs:safeStorage */
+/* PoP: desktop_auth_ticket_set @ electron/main.cjs:safeStorage */
 
 /* safe-storage state moved to desktop_settings.c */
 

@@ -216,7 +216,7 @@ char *kdb_create_task(sqlite3 *conn, const kdb_create_spec_t *spec, char **paren
                      spec->branch_name ? "\"true\"" : "null",
                      skills ? skills : "null",
                      spec->goal_mode ? "true" : "null");
-/* PoP: kdb_append_event @ hermes_cli/kanban_db.py:append_event */
+/* PoP: kdb_list_tasks @ hermes_cli/kanban_db.py:append_event */
             kdb_append_event(conn, task_id, -1, "created", payload);
             kdb_write_end(conn, 1);
             break;
@@ -313,7 +313,7 @@ int kdb_assign_task(sqlite3 *conn, const char *task_id, const char *profile)
                     ok = (sqlite3_step(up) == SQLITE_DONE);
                     sqlite3_finalize(up);
                 }
-/* PoP: kdb_append_event @ hermes_cli/kanban_db.py:append_event */
+/* PoP: kanban_would_cycle @ hermes_cli/kanban_db.py:append_event */
                 kdb_append_event(conn, task_id, -1, "assigned",
                                     assignee[0] ? "{\"assignee\":\"true\"}" : "{\"assignee\":null}");
                 ok = 1;
@@ -393,7 +393,7 @@ int kdb_link_tasks(sqlite3 *conn, const char *parent_id, const char *child_id)
         }
         sqlite3_finalize(ps);
     }
-/* PoP: kdb_append_event @ hermes_cli/kanban_db.py:append_event */
+/* PoP: kdb_unlink_tasks @ hermes_cli/kanban_db.py:append_event */
     kdb_append_event(conn, child_id, -1, "linked", "{\"parent\":\"x\",\"child\":\"x\"}");
     kdb_write_end(conn, 1);
     return 1;
@@ -669,7 +669,7 @@ void kdb_event_list_free(kanban_event_t **list)
 
 /* ---- runs ---- */
 
-/* PoP: kdbport_list_runs @ hermes_cli/kanban_db.py:list_runs */
+/* PoP: kdb_list_runs @ hermes_cli/kanban_db.py:list_runs */
 kanban_run_t **kdb_list_runs(sqlite3 *conn, const char *task_id,
                                 int include_active, int *out_n)
 {
@@ -700,7 +700,7 @@ void kdb_run_list_free(kanban_run_t **list)
     free(list);
 }
 
-/* PoP: api_server_handle_get_run @ hermes_cli/kanban_db.py:get_run */
+/* PoP: kdb_get_run @ hermes_cli/kanban_db.py:get_run */
 kanban_run_t *kdb_get_run(sqlite3 *conn, long run_id)
 {
     if (!conn) return NULL;
@@ -714,7 +714,7 @@ kanban_run_t *kdb_get_run(sqlite3 *conn, long run_id)
     return r;
 }
 
-/* PoP: kdb_complete_task @ hermes_cli/kanban_db.py:complete_task */
+/* PoP: kdb_latest_summary @ hermes_cli/kanban_db.py:complete_task */
 char *kdb_latest_summary(sqlite3 *conn, const char *task_id)
 {
     if (!conn || !task_id) return NULL;

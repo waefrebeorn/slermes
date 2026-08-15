@@ -8,7 +8,7 @@
 #include <string.h>
 #include <ctype.h>
 
-/* PoP: cli_tools_website_policy__get_default_config_path @ tools/website_policy.py:_get_default_config_path */
+/* PoP: cli_tools_website_policy__normalize_host @ tools/website_policy.py:_get_default_config_path */
 const char* cli_tools_website_policy__get_default_config_path(void) {
     const char *home = getenv("HERMES_HOME");
     if (!home) {

@@ -256,7 +256,7 @@ char *todo_handler(const char *args_json, const char *task_id) {
         json_object_set(result, "total", json_new_number((double)json_len(todos)));
 
     } else if (strcmp(action, "write") == 0 || strcmp(action, "merge") == 0) {
-/* PoP: write @ tools/todo_tool.py:write */
+/* PoP: registry_init_todo @ tools/todo_tool.py:write */
         /* Write/merge mode with todo items array — like Python's write() */
         json_node_t *provided = json_object_get(args, "todos");
         bool merge_mode = (strcmp(action, "merge") == 0)

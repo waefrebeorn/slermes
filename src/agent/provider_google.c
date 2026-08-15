@@ -2115,7 +2115,7 @@ char *gemini_native_adapter_bare_gemini_model_id(const char *model) {
     return out;
 }
 
-/* PoP: relay_turn_handle @ gateway/platforms/yuanbao.py:handle */
+/* PoP: gemini_native_adapter__enter @ gateway/platforms/yuanbao.py:handle */
 /* Opaque native client handle (mirrors GeminiNativeClient: api_key, base_url,
  * _default_headers). _default_headers is currently empty in C (the Python
  * default is {}), so only api_key/base_url are material. */
@@ -2124,7 +2124,7 @@ typedef struct gemini_native_client {
     char *base_url;
 } gemini_native_client_t;
 
-/* PoP: hermes_cli_active_sessions_u__enter__ @ agent/gemini_native_adapter.py:__enter__ */
+/* PoP: gemini_native_adapter__enter @ agent/gemini_native_adapter.py:__enter__ */
 gemini_native_client_t *gemini_native_adapter__enter(const char *api_key,
                                                       const char *base_url) {
     gemini_native_client_t *c = calloc(1, sizeof(*c));
@@ -2134,7 +2134,7 @@ gemini_native_client_t *gemini_native_adapter__enter(const char *api_key,
     return c; /* Python __enter__ returns self */
 }
 
-/* PoP: hermes_cli_active_sessions_u__exit__ @ agent/gemini_native_adapter.py:__exit__ */
+/* PoP: gemini_native_adapter__exit @ agent/gemini_native_adapter.py:__exit__ */
 void gemini_native_adapter__exit(gemini_native_client_t *c) {
     /* Python __exit__ calls self.close(); the C client holds no open socket,
      * so this frees the handle (the real teardown). */
@@ -2144,7 +2144,7 @@ void gemini_native_adapter__exit(gemini_native_client_t *c) {
     free(c);
 }
 
-/* PoP: bb_headers @ agent/gemini_native_adapter.py:_headers */
+/* PoP: gemini_native_adapter__headers @ agent/gemini_native_adapter.py:_headers */
 char *gemini_native_adapter__headers(const gemini_native_client_t *c) {
     /* Mirrors Python: Content-Type/Accept/x-goog-api-key/User-Agent, then
      * update(self._default_headers) — which is empty here. Reuses the same
@@ -2160,7 +2160,7 @@ char *gemini_native_adapter__headers(const gemini_native_client_t *c) {
     return out;
 }
 
-/* PoP: gemini_native_adapter__advance_stream_iterator @ agent/gemini_native_adapter.py:_advance_stream_iterator */
+/* PoP: event @ agent/gemini_native_adapter.py:_advance_stream_iterator */
 /* Advance through a json_t* array of SSE events. Sets *done=1 at end.
  * Returns the next event (borrowed, do not free) or NULL when done. */
 json_t *gemini_native_adapter__advance_stream_iterator(json_t *events,
@@ -2179,7 +2179,7 @@ json_t *gemini_native_adapter__advance_stream_iterator(json_t *events,
     return ev;
 }
 
-/* PoP: gemini_native_adapter__stream_completion @ agent/gemini_native_adapter.py:_stream_completion */
+/* PoP: strings @ agent/gemini_native_adapter.py:_stream_completion */
 /* Perform the SSE streaming completion request and return a json_t* ARRAY of
  * translated chunk-JSON strings (one entry per streamed chunk), or NULL.
  * Mirrors Python: POST to {base_url}/models/{bare}:streamGenerateContent?alt=sse,

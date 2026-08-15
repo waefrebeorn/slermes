@@ -153,7 +153,7 @@ static http_response_t *openapi_post(http_client_t *http, const char *url,
 
 /* GET request to Feishu Open API with auth.
  * Returns http_response_t (caller frees) or NULL. */
-/* PoP: wx_u_api_get @ gateway/platforms/bluebubbles.py:_api_get */
+/* PoP: openapi_get @ gateway/platforms/bluebubbles.py:_api_get */
 static http_response_t *openapi_get(http_client_t *http, const char *url) {
     const char *tok = get_tenant_token(http);
     if (!tok) return NULL;
@@ -606,7 +606,7 @@ char *feishu_upload_image(http_client_t *http, const char *image_path) {
 }
 
 /* Send an image by image_key to a specific receive_id via Open API. */
-/* PoP: send_image @ gateway/platforms/feishu.py:send_image */
+/* PoP: feishu_send_image @ gateway/platforms/feishu.py:send_image */
 /* Port of Python gateway/platforms/feishu.py:send_image(). */
 bool feishu_send_image(http_client_t *http, const char *receive_id,
                         const char *image_key) {

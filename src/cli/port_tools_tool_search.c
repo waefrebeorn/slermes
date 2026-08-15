@@ -88,7 +88,7 @@ int cli_tools_tool_search_classify_tools(
     return 0;
 }
 
-/* PoP: cli_tools_tool_search_is_bridge_tool @ tools/tool_search.py:is_bridge_tool */
+/* PoP: tool @ tools/tool_search.py:is_bridge_tool */
 
 /* Port of Python tools/tool_search.py:is_bridge_tool */
 /* Checks if a tool is a bridge tool (tool_search, tool_describe, tool_call). */

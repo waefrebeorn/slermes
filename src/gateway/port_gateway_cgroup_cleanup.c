@@ -41,7 +41,7 @@ int gateway_cgroup_cleanup_own_cgroup_path(const char *buf, char *out, size_t ou
     return 0;
 }
 
-/* PoP: _read_cgroup_pids @ gateway/cgroup_cleanup.py:_read_cgroup_pids */
+/* PoP: written @ gateway/cgroup_cleanup.py:_read_cgroup_pids */
 /* Read /sys/fs/cgroup<path>/cgroup.procs, parse each line as a PID into out[]
  * (max cap). Returns the number of PIDs written (0 on missing/unreadable). */
 size_t gateway_cgroup_cleanup_read_pids(const char *cgroup_path, int *out, size_t cap)
@@ -65,7 +65,7 @@ size_t gateway_cgroup_cleanup_read_pids(const char *cgroup_path, int *out, size_
     return count;
 }
 
-/* PoP: reap_cgroup @ gateway/cgroup_cleanup.py:reap_cgroup */
+/* PoP: NULL @ gateway/cgroup_cleanup.py:reap_cgroup */
 /* SIGKILL every PID in the cgroup other than the caller. Returns the count
  * killed. cgroup_path may be NULL (resolved from /proc/self/cgroup). */
 int gateway_cgroup_cleanup_reap(const char *cgroup_path)

@@ -14,27 +14,27 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_setup_supports_same_provider_pool_setup @ hermes_cli/setup.py:_supports_same_provider_pool_setup */
+/* PoP: hermes_cli_setup_supports_same_provider_pool_setup_p @ hermes_cli/setup.py:_supports_same_provider_pool_setup */
 json_t *hermes_cli_setup_supports_same_provider_pool_setup_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_setup_setup_model_provider @ hermes_cli/setup.py:setup_model_provider */
+/* PoP: hermes_cli_setup_setup_model_provider_p @ hermes_cli/setup.py:setup_model_provider */
 json_t *hermes_cli_setup_setup_model_provider_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_setup_setup_tts @ hermes_cli/setup.py:setup_tts */
+/* PoP: hermes_cli_setup_setup_tts_p @ hermes_cli/setup.py:setup_tts */
 json_t *hermes_cli_setup_setup_tts_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_setup_setup_tools @ hermes_cli/setup.py:setup_tools */
+/* PoP: hermes_cli_setup_setup_tools_p @ hermes_cli/setup.py:setup_tools */
 json_t *hermes_cli_setup_setup_tools_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_setup_run_setup_wizard @ hermes_cli/setup.py:run_setup_wizard */
+/* PoP: hermes_cli_setup_run_setup_wizard_p @ hermes_cli/setup.py:run_setup_wizard */
 json_t *hermes_cli_setup_run_setup_wizard_p(void) {
     return json_object();
 }

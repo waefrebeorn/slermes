@@ -98,7 +98,7 @@ void cmd_reply_free(CommandReply *r) {
  * Executors — pure formatters
  * ---------------------------------------------------------------------------*/
 
-/* PoP: _exec_version @ hermes_cli/slash_exec.py:_exec_version */
+/* PoP: slash_exec_version @ hermes_cli/slash_exec.py:_exec_version */
 /* Core /version text — the banner version label.
  * Mirrors hermes_cli/banner.py:format_banner_version_label():
  *   base = f"Hermes Agent v{VERSION} ({RELEASE_DATE})"
@@ -124,7 +124,7 @@ char *format_banner_version_label(void) {
     return base;
 }
 
-/* PoP: _exec_egress @ hermes_cli/slash_exec.py:_exec_egress */
+/* PoP: slash_exec_egress @ hermes_cli/slash_exec.py:_exec_egress */
 /* Core /egress text — Docker egress proxy status.
  * Mirrors hermes_cli/proxy_cli.py:format_status_text() line-for-line. */
 CommandReply *slash_exec_egress(const CommandContext *ctx) {
@@ -191,7 +191,7 @@ char *format_status_text(void) {
     return text;
 }
 
-/* PoP: _exec_profile @ hermes_cli/slash_exec.py:_exec_profile */
+/* PoP: slash_exec_profile @ hermes_cli/slash_exec.py:_exec_profile */
 /* Core /profile data — active profile name + home directory.
  * Mirrors hermes_cli/profiles.py:get_active_profile_name() +
  * display_hermes_home(). A multiplexed gateway may pre-resolve the
@@ -220,7 +220,7 @@ CommandReply *slash_exec_profile(const CommandContext *ctx) {
     return r;
 }
 
-/* PoP: _exec_bundles @ hermes_cli/slash_exec.py:_exec_bundles */
+/* PoP: registry @ hermes_cli/slash_exec.py:_exec_bundles */
 /* Core /bundles data — installed skill bundles listing.
  * Mirrors agent/skill_bundles.py:list_bundles() + the Python render loop:
  *   for info in bundles: lines.append(f"/{slug} — {desc} ({n} skills)") ...
@@ -264,7 +264,7 @@ CommandReply *slash_exec_bundles(const CommandContext *ctx) {
     return r;
 }
 
-/* PoP: _exec_help @ hermes_cli/slash_exec.py:_exec_help */
+/* PoP: body @ hermes_cli/slash_exec.py:_exec_help */
 /* Core gateway /help body (pre-platform mention decoration).
  * Mirrors hermes_cli/commands.py:_exec_help():
  *   t("gateway.help.header") + gateway_help_lines() + skill_commands */
@@ -319,7 +319,7 @@ CommandReply *slash_exec_help(const CommandContext *ctx) {
     return r;
 }
 
-/* PoP: _exec_commands @ hermes_cli/slash_exec.py:_exec_commands */
+/* PoP: parameter @ hermes_cli/slash_exec.py:_exec_commands */
 /* Core gateway /commands body — paginated command + skill listing.
  * Mirrors hermes_cli/commands.py:_exec_commands().
  * ctx.options["page_size"] is a surface parameter (Telegram uses 15). */
@@ -454,7 +454,7 @@ typedef struct {
     CommandReply *(*fn)(const CommandContext *ctx);
 } ExecEntry;
 
-/* PoP: EXECUTORS @ hermes_cli/slash_exec.py:EXECUTORS */
+/* PoP: slash_exec_run @ hermes_cli/slash_exec.py:EXECUTORS */
 static const ExecEntry _executors[] = {
     { "version",          slash_exec_version },
     { "egress",           slash_exec_egress },
@@ -465,7 +465,7 @@ static const ExecEntry _executors[] = {
     { NULL, NULL }
 };
 
-/* PoP: resolve_executor @ hermes_cli/slash_exec.py:resolve_executor */
+/* PoP: slash_exec_run @ hermes_cli/slash_exec.py:resolve_executor */
 CommandReply *(*slash_exec_resolve(const char *key))(const CommandContext *) {
     if (!key) return NULL;
     for (int i = 0; _executors[i].key; i++) {
@@ -475,14 +475,14 @@ CommandReply *(*slash_exec_resolve(const char *key))(const CommandContext *) {
     return NULL;
 }
 
-/* PoP: run_execute @ hermes_cli/slash_exec.py:run_execute */
+/* PoP: slash_exec_run @ hermes_cli/slash_exec.py:run_execute */
 CommandReply *slash_exec_run(const char *execute_key, const CommandContext *ctx) {
     CommandReply *(*fn)(const CommandContext *) = slash_exec_resolve(execute_key);
     if (!fn) return NULL;
     return fn(ctx);
 }
 
-/* PoP: execute_command @ hermes_cli/slash_exec.py:execute_command */
+/* PoP: slash_exec_execute @ hermes_cli/slash_exec.py:execute_command */
 CommandReply *slash_exec_execute(const char *name, const CommandContext *ctx) {
     if (!name) { errno = EINVAL; return NULL; }
     const char *key = NULL;

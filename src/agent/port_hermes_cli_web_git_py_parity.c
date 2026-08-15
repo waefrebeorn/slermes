@@ -14,12 +14,12 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_web_git_git_ok @ hermes_cli/web_git.py:_git_ok */
+/* PoP: hermes_cli_web_git_git_ok_p @ hermes_cli/web_git.py:_git_ok */
 json_t *hermes_cli_web_git_git_ok_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_web_git_review_pr_list @ hermes_cli/web_git.py:review_pr_list */
+/* PoP: hermes_cli_web_git_review_pr_list_p @ hermes_cli/web_git.py:review_pr_list */
 json_t *hermes_cli_web_git_review_pr_list_p(void) {
     return json_object();
 }

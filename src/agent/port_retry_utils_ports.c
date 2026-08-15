@@ -21,7 +21,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: jittered_backoff @ agent/retry_utils.py:jittered_backoff */
+/* PoP: rtu_jittered_backoff @ agent/retry_utils.py:jittered_backoff */
 double rtu_jittered_backoff(long attempt, double base_delay, double max_delay) {
     /* Python: exponential + jitter. */
     if (attempt < 1) attempt = 1;
@@ -33,7 +33,7 @@ double rtu_jittered_backoff(long attempt, double base_delay, double max_delay) {
     return exp + jitter;
 }
 
-/* PoP: _error_text @ agent/retry_utils.py:_error_text */
+/* PoP: rtu_error_text @ agent/retry_utils.py:_error_text */
 char *rtu_error_text(const char *error_json) {
     /* Python: flattened provider error text. */
     if (!error_json) return strdup("");
@@ -51,7 +51,7 @@ char *rtu_error_text(const char *error_json) {
     return strdup(error_json);
 }
 
-/* PoP: is_zai_coding_overload_error @ agent/retry_utils.py:is_zai_coding_overload_error */
+/* PoP: rtu_is_zai_coding_overload_error @ agent/retry_utils.py:is_zai_coding_overload_error */
 bool rtu_is_zai_coding_overload_error(const char *error) {
     /* Python: Z.AI coding plan transient overload 429. */
     if (!error) return false;
@@ -62,14 +62,14 @@ bool rtu_is_zai_coding_overload_error(const char *error) {
     return r;
 }
 
-/* PoP: adaptive_rate_limit_backoff @ agent/retry_utils.py:adaptive_rate_limit_backoff */
+/* PoP: rtu_adaptive_rate_limit_backoff @ agent/retry_utils.py:adaptive_rate_limit_backoff */
 double rtu_adaptive_rate_limit_backoff(const char *provider, const char *error) {
     /* Python: provider-aware default backoff. */
     if (rtu_is_zai_coding_overload_error(error)) return 30.0;
     return 5.0;
 }
 
-/* PoP: zai_coding_overload_retry_ceiling @ agent/retry_utils.py:zai_coding_overload_retry_ceiling */
+/* PoP: defaults @ agent/retry_utils.py:zai_coding_overload_retry_ceiling */
 /* Python: ceiling = short_attempts + len(LONG_BACKOFF) + 1.
  * With defaults (short_attempts=3, len(LONG_BACKOFF)=4) => 8.
  * The +1 accounts for the retry-count>=ceiling check running before the
@@ -80,7 +80,7 @@ long rtu_zai_coding_overload_retry_ceiling(int short_attempts) {
     return short_attempts + (int)(sizeof(LONG_BACKOFF) / sizeof(LONG_BACKOFF[0])) + 1;
 }
 
-/* PoP: parse_retry_after_seconds @ agent/retry_utils.py:parse_retry_after_seconds */
+/* PoP: rtu_parse_retry_after_seconds @ agent/retry_utils.py:parse_retry_after_seconds */
 double rtu_parse_retry_after_seconds(const char *value)
 {
     /* Parse a "Retry-After" header value into non-negative seconds.

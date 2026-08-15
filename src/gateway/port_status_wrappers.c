@@ -13,7 +13,7 @@
 #include <sys/stat.h>
 #include "hermes_json.h"
 
-/* PoP: _get_starts_log_path @ gateway/status.py:_get_starts_log_path */
+/* PoP: gstat_u_get_starts_log_path @ gateway/status.py:_get_starts_log_path */
 int gstat_u_get_starts_log_path(const char *arg) {
     /* Python: get_hermes_home() / "gateway-starts.log" (respawn-storm
      * ledger, distinct from restart_loop.json). Arg = optional hermes home. */
@@ -25,7 +25,7 @@ int gstat_u_get_starts_log_path(const char *arg) {
     return 0;
 }
 
-/* PoP: record_start_and_check_storm @ gateway/status.py:record_start_and_check_storm */
+/* PoP: gstat_record_start_and_check_storm @ gateway/status.py:record_start_and_check_storm */
 int gstat_record_start_and_check_storm(const char *arg) {
     /* Python: storm breaker. Arg =
      * "count\tstate\tresult". */
@@ -38,7 +38,7 @@ int gstat_record_start_and_check_storm(const char *arg) {
     return 0;
 }
 
-/* PoP: _get_process_hermes_home @ gateway/status.py:_get_process_hermes_home */
+/* PoP: gstat_u_get_process_hermes_home @ gateway/status.py:_get_process_hermes_home */
 int gstat_u_get_process_hermes_home(const char *arg) {
     /* Python: env HERMES_HOME or platform default. Arg = "env_home\tdefault". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -48,7 +48,7 @@ int gstat_u_get_process_hermes_home(const char *arg) {
     return 0;
 }
 
-/* PoP: _canonical_hermes_home @ gateway/status.py:_canonical_hermes_home */
+/* PoP: gstat_u_canonical_hermes_home @ gateway/status.py:_canonical_hermes_home */
 int gstat_u_canonical_hermes_home(const char *arg) {
     /* Python: Path(path).expanduser().resolve(strict=False) — a stable
      * absolute HERMES_HOME for persisted identity data. */
@@ -71,7 +71,7 @@ int gstat_u_canonical_hermes_home(const char *arg) {
     return 0;
 }
 
-/* PoP: _same_hermes_home @ gateway/status.py:_same_hermes_home */
+/* PoP: gstat_u_same_hermes_home @ gateway/status.py:_same_hermes_home */
 int gstat_u_same_hermes_home(const char *arg) {
     /* Python: normcase(canonical(left)) == normcase(canonical(right)).
      * Arg = "left\tright" hermes homes. */
@@ -90,7 +90,7 @@ int gstat_u_same_hermes_home(const char *arg) {
     return 0;
 }
 
-/* PoP: normalize_updated_at @ gateway/status.py:normalize_updated_at */
+/* PoP: gstat_normalize_updated_at @ gateway/status.py:normalize_updated_at */
 int gstat_normalize_updated_at(const char *arg) {
     /* Python: RFC3339 funnel. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -101,7 +101,7 @@ int gstat_normalize_updated_at(const char *arg) {
     return 0;
 }
 
-/* PoP: _clear_running_pid_cache @ gateway/status.py:_clear_running_pid_cache */
+/* PoP: gstat_u_clear_running_pid_cache @ gateway/status.py:_clear_running_pid_cache */
 int gstat_u_clear_running_pid_cache(const char *arg) {
     /* Python: locked clear of the running-pid cache. */
     (void)arg;
@@ -109,7 +109,7 @@ int gstat_u_clear_running_pid_cache(const char *arg) {
     return 0;
 }
 
-/* PoP: _file_cache_signature @ gateway/status.py:_file_cache_signature */
+/* PoP: gstat_u_file_cache_signature @ gateway/status.py:_file_cache_signature */
 int gstat_u_file_cache_signature(const char *arg) {
     /* Python: (False, None, None) on OSError; else (True, st_mtime_ns,
      * st_size). Arg = path. Print "1\tmtime_ns\tsize" or "0". */
@@ -121,7 +121,7 @@ int gstat_u_file_cache_signature(const char *arg) {
     return 0;
 }
 
-/* PoP: _running_pid_cache_signature @ gateway/status.py:_running_pid_cache_signature */
+/* PoP: gstat_u_running_pid_cache_signature @ gateway/status.py:_running_pid_cache_signature */
 int gstat_u_running_pid_cache_signature(const char *arg) {
     /* Python: tuple of file cache signatures (pid file + lock + optional
      * runtime status). Arg = "pid_path\tlock_path\truntime_path" (paths
@@ -149,7 +149,7 @@ int gstat_u_running_pid_cache_signature(const char *arg) {
     return 0;
 }
 
-/* PoP: runtime_status_is_stale @ gateway/status.py:runtime_status_is_stale */
+/* PoP: gstat_runtime_status_is_stale @ gateway/status.py:runtime_status_is_stale */
 int gstat_runtime_status_is_stale(const char *arg) {
     /* Python: missing/unparseable timestamp -> stale. Arg = "updated_at\tttl". */
     if (!arg || !*arg) { printf("1\n"); return 0; }
@@ -163,7 +163,7 @@ int gstat_runtime_status_is_stale(const char *arg) {
     return 0;
 }
 
-/* PoP: runtime_status_pid_is_live @ gateway/status.py:runtime_status_pid_is_live */
+/* PoP: gstat_runtime_status_pid_is_live @ gateway/status.py:runtime_status_pid_is_live */
 int gstat_runtime_status_pid_is_live(const char *arg) {
     /* Python: pid exists + start_time guard. Arg =
      * "pid\tstart_match\tstate". */
@@ -176,7 +176,7 @@ int gstat_runtime_status_pid_is_live(const char *arg) {
     return 0;
 }
 
-/* PoP: _validated_scoped_lock_gateway_owner @ gateway/status.py:_validated_scoped_lock_gateway_owner */
+/* PoP: gstat_u_validated_scoped_lock_gateway_owner @ gateway/status.py:_validated_scoped_lock_gateway_owner */
 int gstat_u_validated_scoped_lock_gateway_owner(const char *arg) {
     /* Python: 5-way agreement. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -187,7 +187,7 @@ int gstat_u_validated_scoped_lock_gateway_owner(const char *arg) {
     return 0;
 }
 
-/* PoP: _scoped_lock_owner_state @ gateway/status.py:_scoped_lock_owner_state */
+/* PoP: gstat_u_scoped_lock_owner_state @ gateway/status.py:_scoped_lock_owner_state */
 int gstat_u_scoped_lock_owner_state(const char *arg) {
     /* Python: same/exited/unknown. Arg = "alive\tstart_match" (alive 1/0;
      * start_match 1/0/2 where 2 = unknown). */
@@ -202,7 +202,7 @@ int gstat_u_scoped_lock_owner_state(const char *arg) {
     return 0;
 }
 
-/* PoP: _wait_for_scoped_lock_owner_exit @ gateway/status.py:_wait_for_scoped_lock_owner_exit */
+/* PoP: gstat_u_wait_for_scoped_lock_owner_exit @ gateway/status.py:_wait_for_scoped_lock_owner_exit */
 int gstat_u_wait_for_scoped_lock_owner_exit(const char *arg) {
     /* Python: (exited, safe_to_force) after bounded waits. Arg =
      * "attempts\tstates" (states = state letters e/u/s per attempt). */
@@ -220,7 +220,7 @@ int gstat_u_wait_for_scoped_lock_owner_exit(const char *arg) {
     return 0;
 }
 
-/* PoP: _snapshot_gateway_children @ gateway/status.py:_snapshot_gateway_children */
+/* PoP: gstat_u_snapshot_gateway_children @ gateway/status.py:_snapshot_gateway_children */
 int gstat_u_snapshot_gateway_children(const char *arg) {
     /* Python: recursive children snapshot (POSIX) or []. Arg =
      * "count\tstate". */
@@ -232,7 +232,7 @@ int gstat_u_snapshot_gateway_children(const char *arg) {
     return 0;
 }
 
-/* PoP: reap_gateway_children @ gateway/status.py:reap_gateway_children */
+/* PoP: gstat_reap_gateway_children @ gateway/status.py:reap_gateway_children */
 int gstat_reap_gateway_children(const char *arg) {
     /* Python: orphan tree-reap. Arg =
      * "reaped\tstate\tresult". */
@@ -246,7 +246,7 @@ int gstat_reap_gateway_children(const char *arg) {
     return 0;
 }
 
-/* PoP: take_over_scoped_lock_holder @ gateway/status.py:take_over_scoped_lock_holder */
+/* PoP: gstat_take_over_scoped_lock_holder @ gateway/status.py:take_over_scoped_lock_holder */
 int gstat_take_over_scoped_lock_holder(const char *arg) {
     /* Python: verified replace. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -257,7 +257,7 @@ int gstat_take_over_scoped_lock_holder(const char *arg) {
     return 0;
 }
 
-/* PoP: _terminate_scoped_lock_owner_once @ gateway/status.py:_terminate_scoped_lock_owner_once */
+/* PoP: gstat_u_terminate_scoped_lock_owner_once @ gateway/status.py:_terminate_scoped_lock_owner_once */
 int gstat_u_terminate_scoped_lock_owner_once(const char *arg) {
     /* Python: marker + identity-aware kill. Arg =
      * "state\tresult". */
@@ -269,7 +269,7 @@ int gstat_u_terminate_scoped_lock_owner_once(const char *arg) {
     return 0;
 }
 
-/* PoP: get_running_pid_cached @ gateway/status.py:get_running_pid_cached */
+/* PoP: gstat_get_running_pid_cached @ gateway/status.py:get_running_pid_cached */
 int gstat_get_running_pid_cached(const char *arg) {
     /* Python: signature cache. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }

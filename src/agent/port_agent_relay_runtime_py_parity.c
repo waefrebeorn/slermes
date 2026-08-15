@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: agent_relay_runtime_relay_instrumentation_enabled @ agent/relay_runtime.py:relay_instrumentation_enabled */
+/* PoP: agent_relay_runtime_relay_instrumentation_enabled_p @ agent/relay_runtime.py:relay_instrumentation_enabled */
 json_t *agent_relay_runtime_relay_instrumentation_enabled_p(void) {
     return json_object();
 }

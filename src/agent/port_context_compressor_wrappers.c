@@ -11,7 +11,7 @@
 #include <ctype.h>
 #include "hermes_json.h"
 
-/* PoP: _begin_compression_telemetry @ agent/context_compressor.py:_begin_compression_telemetry */
+/* PoP: ctxc_u_begin_compression_telemetry @ agent/context_compressor.py:_begin_compression_telemetry */
 int ctxc_u_begin_compression_telemetry(const char *arg) {
     /* Python: content-free seed. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -22,7 +22,7 @@ int ctxc_u_begin_compression_telemetry(const char *arg) {
     return 0;
 }
 
-/* PoP: _record_compression_regions @ agent/context_compressor.py:_record_compression_regions */
+/* PoP: ctxc_u_record_compression_regions @ agent/context_compressor.py:_record_compression_regions */
 int ctxc_u_record_compression_regions(const char *arg) {
     /* Python: telemetry head/middle/tail token estimates. Arg =
      * "head\tmiddle\ttail". */
@@ -34,7 +34,7 @@ int ctxc_u_record_compression_regions(const char *arg) {
     return 0;
 }
 
-/* PoP: _record_aux_compression_call @ agent/context_compressor.py:_record_aux_compression_call */
+/* PoP: ctxc_u_record_aux_compression_call @ agent/context_compressor.py:_record_aux_compression_call */
 int ctxc_u_record_aux_compression_call(const char *arg) {
     /* Python: aux telemetry accumulate. Arg =
      * "prompt_tokens\tmax_tokens\tduration_ms\tstate\tresult". */
@@ -50,7 +50,7 @@ int ctxc_u_record_aux_compression_call(const char *arg) {
     return 0;
 }
 
-/* PoP: _load_fallback_compression_streak @ agent/context_compressor.py:_load_fallback_compression_streak */
+/* PoP: ctxc_u_load_fallback_compression_streak @ agent/context_compressor.py:_load_fallback_compression_streak */
 int ctxc_u_load_fallback_compression_streak(const char *arg) {
     /* Python: restore durable streak. Arg = "session_id\tstored\tstate". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -62,7 +62,7 @@ int ctxc_u_load_fallback_compression_streak(const char *arg) {
     return 0;
 }
 
-/* PoP: _persist_fallback_compression_streak @ agent/context_compressor.py:_persist_fallback_compression_streak */
+/* PoP: ctxc_u_persist_fallback_compression_streak @ agent/context_compressor.py:_persist_fallback_compression_streak */
 int ctxc_u_persist_fallback_compression_streak(const char *arg) {
     /* Python: setter call, sqlite errors swallowed. Arg = "session_id\tstreak\tavailable". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -74,7 +74,7 @@ int ctxc_u_persist_fallback_compression_streak(const char *arg) {
     return 0;
 }
 
-/* PoP: _load_ineffective_compression_count @ agent/context_compressor.py:_load_ineffective_compression_count */
+/* PoP: ctxc_u_load_ineffective_compression_count @ agent/context_compressor.py:_load_ineffective_compression_count */
 int ctxc_u_load_ineffective_compression_count(const char *arg) {
     /* Python: durable strike count. Arg =
      * "session_id\tstored\tstate\tresult". */
@@ -88,7 +88,7 @@ int ctxc_u_load_ineffective_compression_count(const char *arg) {
     return 0;
 }
 
-/* PoP: _persist_ineffective_compression_count @ agent/context_compressor.py:_persist_ineffective_compression_count */
+/* PoP: ctxc_u_persist_ineffective_compression_count @ agent/context_compressor.py:_persist_ineffective_compression_count */
 int ctxc_u_persist_ineffective_compression_count(const char *arg) {
     /* Python: setter gate + sqlite swallow. Arg = "session_id\tcount\tavailable". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -100,7 +100,7 @@ int ctxc_u_persist_ineffective_compression_count(const char *arg) {
     return 0;
 }
 
-/* PoP: _record_ineffective_compression_verdict @ agent/context_compressor.py:_record_ineffective_compression_verdict */
+/* PoP: ctxc_u_record_ineffective_compression_verdict @ agent/context_compressor.py:_record_ineffective_compression_verdict */
 int ctxc_u_record_ineffective_compression_verdict(const char *arg) {
     /* Python: strike counter, persist only on change. Arg = "count\tcurrent". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -112,7 +112,7 @@ int ctxc_u_record_ineffective_compression_verdict(const char *arg) {
     return 0;
 }
 
-/* PoP: record_completed_compaction @ agent/context_compressor.py:record_completed_compaction */
+/* PoP: ctxc_record_completed_compaction @ agent/context_compressor.py:record_completed_compaction */
 int ctxc_record_completed_compaction(const char *arg) {
     /* Python: boundary + fallback streak bookkeeping. Arg =
      * "used_fallback\tstreak\tnew_streak". */
@@ -130,7 +130,7 @@ int ctxc_record_completed_compaction(const char *arg) {
     return 0;
 }
 
-/* PoP: snapshot_preflight_display_tokens @ agent/context_compressor.py:snapshot_preflight_display_tokens */
+/* PoP: ctxc_snapshot_preflight_display_tokens @ agent/context_compressor.py:snapshot_preflight_display_tokens */
 int ctxc_snapshot_preflight_display_tokens(const char *arg) {
     /* Python: return self.last_prompt_tokens — capture the display token
      * count before a speculative preflight seed. Arg = last_prompt_tokens. */
@@ -139,7 +139,7 @@ int ctxc_snapshot_preflight_display_tokens(const char *arg) {
     return 0;
 }
 
-/* PoP: rollback_interrupted_preflight_display_tokens @ agent/context_compressor.py:rollback_interrupted_preflight_display_tokens */
+/* PoP: ctxc_rollback_interrupted_preflight_display_tokens @ agent/context_compressor.py:rollback_interrupted_preflight_display_tokens */
 int ctxc_rollback_interrupted_preflight_display_tokens(const char *arg) {
     /* Python: keep snapshot unless awaiting_real_usage_after_compression &&
      * last_prompt_tokens == -1. Arg = "snapshot\tawaiting\tlast" (0/1,
@@ -156,7 +156,7 @@ int ctxc_rollback_interrupted_preflight_display_tokens(const char *arg) {
     return 0;
 }
 
-/* PoP: should_compress_info @ agent/context_compressor.py:should_compress_info */
+/* PoP: ctxc_should_compress_info @ agent/context_compressor.py:should_compress_info */
 int ctxc_should_compress_info(const char *arg) {
     /* Python: threshold tuple. Arg =
      * "over\tblocked\tstate\treason\tresult". */
@@ -175,7 +175,7 @@ int ctxc_should_compress_info(const char *arg) {
     return 0;
 }
 
-/* PoP: _compression_block_reason @ agent/context_compressor.py:_compression_block_reason */
+/* PoP: ctxc_u_compression_block_reason @ agent/context_compressor.py:_compression_block_reason */
 int ctxc_u_compression_block_reason(const char *arg) {
     /* Python: cooldown/ineffective/None. Arg =
      * "cooldown_remaining\tineffective_count\tfallback_streak\tresult". */
@@ -192,7 +192,7 @@ int ctxc_u_compression_block_reason(const char *arg) {
     return 0;
 }
 
-/* PoP: _refresh_durable_guards @ agent/context_compressor.py:_refresh_durable_guards */
+/* PoP: ctxc_u_refresh_durable_guards @ agent/context_compressor.py:_refresh_durable_guards */
 int ctxc_u_refresh_durable_guards(const char *arg) {
     /* Python: re-read cooldown + streak + count. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -203,7 +203,7 @@ int ctxc_u_refresh_durable_guards(const char *arg) {
     return 0;
 }
 
-/* PoP: _automatic_compression_blocked @ agent/context_compressor.py:_automatic_compression_blocked */
+/* PoP: ctxc_u_automatic_compression_blocked @ agent/context_compressor.py:_automatic_compression_blocked */
 int ctxc_u_automatic_compression_blocked(const char *arg) {
     /* Python: local snapshot + durable refresh re-check. Arg =
      * "locally_blocked\tstill_blocked\tstate". */
@@ -219,7 +219,7 @@ int ctxc_u_automatic_compression_blocked(const char *arg) {
     return 0;
 }
 
-/* PoP: _automatic_compression_blocked_locally @ agent/context_compressor.py:_automatic_compression_blocked_locally */
+/* PoP: ctxc_u_automatic_compression_blocked_locally @ agent/context_compressor.py:_automatic_compression_blocked_locally */
 int ctxc_u_automatic_compression_blocked_locally(const char *arg) {
     /* Python: cooldown + tripped snapshot check. Arg = "blocked". */
     if (arg && arg[0] == '1') { printf("1\n"); return 0; }
@@ -227,7 +227,7 @@ int ctxc_u_automatic_compression_blocked_locally(const char *arg) {
     return 0;
 }
 
-/* PoP: prune_tool_results_only @ agent/context_compressor.py:prune_tool_results_only */
+/* PoP: ctxc_prune_tool_results_only @ agent/context_compressor.py:prune_tool_results_only */
 int ctxc_prune_tool_results_only(const char *arg) {
     /* Python: no-LLM prune. Arg =
      * "pruned\tstate\tresult". */
@@ -242,7 +242,7 @@ int ctxc_prune_tool_results_only(const char *arg) {
     return 0;
 }
 
-/* PoP: _bound_summary_input @ agent/context_compressor.py:_bound_summary_input */
+/* PoP: ctxc_u_bound_summary_input @ agent/context_compressor.py:_bound_summary_input */
 int ctxc_u_bound_summary_input(const char *arg) {
     /* Python: head/tail bound. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -253,7 +253,7 @@ int ctxc_u_bound_summary_input(const char *arg) {
     return 0;
 }
 
-/* PoP: _validate_summary_user_provenance @ agent/context_compressor.py:_validate_summary_user_provenance */
+/* PoP: ctxc_u_validate_summary_user_provenance @ agent/context_compressor.py:_validate_summary_user_provenance */
 int ctxc_u_validate_summary_user_provenance(const char *arg) {
     /* Python: reject invented attribution. Arg =
      * "has_user_turn\tsnapshot_ok\tstate\tresult". */
@@ -274,7 +274,7 @@ int ctxc_u_validate_summary_user_provenance(const char *arg) {
     return 0;
 }
 
-/* PoP: _latest_user_task_snapshot @ agent/context_compressor.py:_latest_user_task_snapshot */
+/* PoP: ctxc_u_latest_user_task_snapshot @ agent/context_compressor.py:_latest_user_task_snapshot */
 int ctxc_u_latest_user_task_snapshot(const char *arg) {
     /* Python: deterministic anchor. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -285,7 +285,7 @@ int ctxc_u_latest_user_task_snapshot(const char *arg) {
     return 0;
 }
 
-/* PoP: _ground_historical_task_snapshot @ agent/context_compressor.py:_ground_historical_task_snapshot */
+/* PoP: ctxc_u_ground_historical_task_snapshot @ agent/context_compressor.py:_ground_historical_task_snapshot */
 int ctxc_u_ground_historical_task_snapshot(const char *arg) {
     /* Python: ground task snapshot section. Arg =
      * "has_snapshot\tstate\tresult". */
@@ -299,7 +299,7 @@ int ctxc_u_ground_historical_task_snapshot(const char *arg) {
     return 0;
 }
 
-/* PoP: _ensure_last_n_user_messages_in_tail @ agent/context_compressor.py:_ensure_last_n_user_messages_in_tail */
+/* PoP: ctxc_u_ensure_last_n_user_messages_in_tail @ agent/context_compressor.py:_ensure_last_n_user_messages_in_tail */
 int ctxc_u_ensure_last_n_user_messages_in_tail(const char *arg) {
     /* Python: N-user tail guarantee. Arg =
      * "n\tstate\tresult". */

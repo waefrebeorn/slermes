@@ -100,7 +100,7 @@ int hermes_state_archive_stale_sessions(hermes_state_db_t *db,
     return archived;
 }
 
-/* PoP: list_prune_candidates @ hermes_state.py:list_prune_candidates */
+/* PoP: hermes_state_list_prune_candidates @ hermes_state.py:list_prune_candidates */
 char *hermes_state_list_prune_candidates(hermes_state_db_t *db,
                                          double older_than_days,
                                          const char *source,
@@ -187,7 +187,7 @@ int hermes_state_archive_sessions(hermes_state_db_t *db,
     return count;
 }
 
-/* PoP: list_sessions_rich @ hermes_state.py:list_sessions_rich */
+/* PoP: hermes_state_list_sessions_rich @ hermes_state.py:list_sessions_rich */
 char *hermes_state_list_sessions_rich(hermes_state_db_t *db,
                                       bool archived_only) {
     if (!db) return strdup("[]");

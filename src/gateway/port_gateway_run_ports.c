@@ -21,7 +21,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _home_target_env_var @ gateway/run.py:_home_target_env_var */
+/* PoP: gwr_home_target_env_var @ gateway/run.py:_home_target_env_var */
 char *gwr_home_target_env_var(const char *platform) {
     /* Python: built-in per-platform env name. */
     if (!platform) return NULL;
@@ -33,7 +33,7 @@ char *gwr_home_target_env_var(const char *platform) {
     return out;
 }
 
-/* PoP: _home_thread_env_var @ gateway/run.py:_home_thread_env_var */
+/* PoP: gwr_home_thread_env_var @ gateway/run.py:_home_thread_env_var */
 char *gwr_home_thread_env_var(const char *platform) {
     if (!platform) return NULL;
     char *l = lowerdup(platform);
@@ -44,7 +44,7 @@ char *gwr_home_thread_env_var(const char *platform) {
     return out;
 }
 
-/* PoP: __init__ @ gateway/run.py:__init__ */
+/* PoP: gwr_init @ gateway/run.py:__init__ */
 char *gwr_init(const char *config_json) {
     /* Python: runner ref; multiplex-aware. */
     if (!config_json) return strdup("{}");
@@ -52,7 +52,7 @@ char *gwr_init(const char *config_json) {
     return strdup(config_json);
 }
 
-/* PoP: _load_prefill_messages @ gateway/run.py:_load_prefill_messages */
+/* PoP: gwr_load_prefill_messages @ gateway/run.py:_load_prefill_messages */
 char *gwr_load_prefill_messages(void) {
     /* Python: ephemeral prefill from config or env. */
     const char *v = getenv("HERMES_PREFILL_MESSAGES");
@@ -61,7 +61,7 @@ char *gwr_load_prefill_messages(void) {
     return strdup("[]");
 }
 
-/* PoP: _thread_metadata_for_source @ gateway/run.py:_thread_metadata_for_source */
+/* PoP: gwr_thread_metadata_for_source @ gateway/run.py:_thread_metadata_for_source */
 char *gwr_thread_metadata_for_source(const char *source_json) {
     /* Python: metadata for thread-aware replies. */
     if (!source_json) return strdup("{}");
@@ -69,7 +69,7 @@ char *gwr_thread_metadata_for_source(const char *source_json) {
     return strdup(source_json);
 }
 
-/* PoP: _reply_anchor_for_event @ gateway/run.py:_reply_anchor_for_event */
+/* PoP: gwr_reply_anchor_for_event @ gateway/run.py:_reply_anchor_for_event */
 char *gwr_reply_anchor_for_event(const char *event_json) {
     /* Python: platform-specific reply anchor. */
     if (!event_json) return NULL;
@@ -77,7 +77,7 @@ char *gwr_reply_anchor_for_event(const char *event_json) {
     return NULL;
 }
 
-/* PoP: _decide_image_input_mode @ gateway/run.py:_decide_image_input_mode */
+/* PoP: gwr_decide_image_input_mode @ gateway/run.py:_decide_image_input_mode */
 char *gwr_decide_image_input_mode(const char *provider, const char *model, const char *config_yaml) {
     /* Python: image routing for effective model. */
     if (!model) return strdup("text");
@@ -85,7 +85,7 @@ char *gwr_decide_image_input_mode(const char *provider, const char *model, const
     return strdup("text");
 }
 
-/* PoP: _run_agent @ gateway/run.py:_run_agent */
+/* PoP: gwr_run_agent @ gateway/run.py:_run_agent */
 char *gwr_run_agent(const char *args_json) {
     /* Python: profile-scoped agent run. */
     if (!args_json) return NULL;
@@ -93,7 +93,7 @@ char *gwr_run_agent(const char *args_json) {
     return strdup("{}");
 }
 
-/* PoP: main @ gateway/run.py:main */
+/* PoP: gwr_main @ gateway/run.py:main */
 int gwr_main(const char *args) {
     /* Python: gateway CLI entry; forces utf-8 stdio — REAL locale setup. */
     if (!args) return -1;

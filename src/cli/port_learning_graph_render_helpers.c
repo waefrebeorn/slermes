@@ -64,7 +64,7 @@ static rgb_t hex_to_rgb_impl(const char *s)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: recency_ink @ agent/learning_graph_render.py:recency_ink */
+/* PoP: learning_graph_render_recency_ink @ agent/learning_graph_render.py:recency_ink */
 double learning_graph_render_recency_ink(double rec)
 {
     double t = _clamp_impl(rec, 0.0, 1.0);
@@ -74,7 +74,7 @@ double learning_graph_render_recency_ink(double rec)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: hex_to_rgb @ agent/learning_graph_render.py:hex_to_rgb */
+/* PoP: learning_graph_render_hex_to_rgb @ agent/learning_graph_render.py:hex_to_rgb */
 /* returns malloc'd "r,g,b" string for easy consumption by callers */
 char *learning_graph_render_hex_to_rgb(const char *s)
 {
@@ -85,7 +85,7 @@ char *learning_graph_render_hex_to_rgb(const char *s)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: rgb_to_hex @ agent/learning_graph_render.py:rgb_to_hex */
+/* PoP: learning_graph_render_rgb_to_hex @ agent/learning_graph_render.py:rgb_to_hex */
 char *learning_graph_render_rgb_to_hex(int r, int g, int b)
 {
     int cr = (int)_clamp_impl(r,0,255), cg=(int)_clamp_impl(g,0,255), cb=(int)_clamp_impl(b,0,255);
@@ -95,7 +95,7 @@ char *learning_graph_render_rgb_to_hex(int r, int g, int b)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: mix_rgb @ agent/learning_graph_render.py:mix_rgb */
+/* PoP: learning_graph_render_mix_rgb @ agent/learning_graph_render.py:mix_rgb */
 /* returns malloc'd "r,g,b" string */
 char *learning_graph_render_mix_rgb(int ar, int ag, int ab, int br, int bg, int bb, double t)
 {
@@ -144,7 +144,7 @@ static rgb_t _complementary_ink_impl(rgb_t c)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: derive_palette @ agent/learning_graph_render.py:derive_palette */
+/* PoP: learning_graph_render_derive_palette @ agent/learning_graph_render.py:derive_palette */
 /* returns malloc'd JSON string: {primary, memory, skill, label, dim, bg} */
 char *learning_graph_render_derive_palette(const char *primary_hex, int dark)
 {
@@ -190,7 +190,7 @@ char *learning_graph_render_derive_palette(const char *primary_hex, int dark)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _node_label @ agent/learning_graph_render.py:_node_label */
+/* PoP: learning_graph_render_node_label @ agent/learning_graph_render.py:_node_label */
 char *learning_graph_render_node_label(const char *label, const char *id)
 {
     const char *src = (label && *label) ? label : (id ? id : "unknown");
@@ -213,21 +213,21 @@ char *learning_graph_render_node_label(const char *label, const char *id)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _clamp @ agent/learning_graph_render.py:_clamp */
+/* PoP: learning_graph_render_clamp @ agent/learning_graph_render.py:_clamp */
 double learning_graph_render_clamp(double v, double lo, double hi)
 {
     return _clamp_impl(v, lo, hi);
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _smoothstep @ agent/learning_graph_render.py:_smoothstep */
+/* PoP: learning_graph_render_smoothstep @ agent/learning_graph_render.py:_smoothstep */
 double learning_graph_render_smoothstep(double p)
 {
     return _smoothstep_impl(p);
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _rgb_to_hsl @ agent/learning_graph_render.py:_rgb_to_hsl */
+/* PoP: learning_graph_render_rgb_to_hsl @ agent/learning_graph_render.py:_rgb_to_hsl */
 /* returns malloc'd "h,s,l" string (h rounded to 2dp, s/l to 4dp) */
 char *learning_graph_render_rgb_to_hsl(int r, int g, int b)
 {
@@ -240,7 +240,7 @@ char *learning_graph_render_rgb_to_hsl(int r, int g, int b)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _hsl_to_rgb @ agent/learning_graph_render.py:_hsl_to_rgb */
+/* PoP: learning_graph_render_hsl_to_rgb @ agent/learning_graph_render.py:_hsl_to_rgb */
 /* returns malloc'd "r,g,b" string */
 char *learning_graph_render_hsl_to_rgb(double h, double s, double l)
 {
@@ -251,7 +251,7 @@ char *learning_graph_render_hsl_to_rgb(double h, double s, double l)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _complementary_ink @ agent/learning_graph_render.py:_complementary_ink */
+/* PoP: learning_graph_render_complementary_ink @ agent/learning_graph_render.py:_complementary_ink */
 /* returns malloc'd "r,g,b" string */
 char *learning_graph_render_complementary_ink(int r, int g, int b)
 {
@@ -263,7 +263,7 @@ char *learning_graph_render_complementary_ink(int r, int g, int b)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: format_date @ agent/learning_graph_render.py:format_date */
+/* PoP: learning_graph_render_format_date @ agent/learning_graph_render.py:format_date */
 /* UTC "%-d %b %Y" (glibc supports the BSD '-' flag; on platforms that don't
  * we strip the leading zero by hand). Returns malloc'd string, caller frees.
  * Python: None/falsy/unrepresentable -> "unknown". */
@@ -288,7 +288,7 @@ char *learning_graph_render_format_date(double ts)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _to_ts @ agent/learning_graph_render.py:_to_ts */
+/* PoP: success @ agent/learning_graph_render.py:_to_ts */
 /* Returns 1 on success (writes *out_ts) or 0 if not a finite number. */
 int learning_graph_render_to_ts(const void *value, double *out_ts)
 {
@@ -301,7 +301,7 @@ int learning_graph_render_to_ts(const void *value, double *out_ts)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _period_key @ agent/learning_graph_render.py:_period_key */
+/* PoP: learning_graph_render_period_key @ agent/learning_graph_render.py:_period_key */
 /* Returns malloc'd "y", "y,m", or "y,m,d" string for the given ts+granularity. */
 char *learning_graph_render_period_key(double ts, const char *granularity)
 {
@@ -319,7 +319,7 @@ char *learning_graph_render_period_key(double ts, const char *granularity)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _period_label @ agent/learning_graph_render.py:_period_label */
+/* PoP: string @ agent/learning_graph_render.py:_period_label */
 /* Returns malloc'd label string (e.g. "14 Nov", "Nov 2023", "2023"). */
 char *learning_graph_render_period_label(double ts, const char *granularity)
 {
@@ -342,7 +342,7 @@ char *learning_graph_render_period_label(double ts, const char *granularity)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _node_score @ agent/learning_graph_render.py:_node_score */
+/* PoP: learning_graph_render_node_score @ agent/learning_graph_render.py:_node_score */
 /* node is a json_t* with optional keys: kind, useCount, pinned, id. */
 double learning_graph_render_node_score(const json_t *node, double rec)
 {
@@ -356,7 +356,7 @@ double learning_graph_render_node_score(const json_t *node, double rec)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _node_meta @ agent/learning_graph_render.py:_node_meta */
+/* PoP: learning_graph_render_node_meta @ agent/learning_graph_render.py:_node_meta */
 /* node is a json_t*; returns malloc'd "·"-joined metadata string. */
 char *learning_graph_render_node_meta(const json_t *node)
 {

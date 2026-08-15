@@ -14,7 +14,7 @@
  *  Token estimation (rough: ~4 chars per token)
  * ================================================================ */
 
-/* PoP: cli_hermes_cli_context_switch_guard__estimate_tokens @ hermes_cli/context_switch_guard.py:_estimate_tokens */
+/* PoP: estimate_tokens @ hermes_cli/context_switch_guard.py:_estimate_tokens */
 static int estimate_tokens(const char *text) {
     if (!text) return 0;
     size_t len = strlen(text);
@@ -838,7 +838,7 @@ char *context_compressor__skill_pruned_marker(const char *skill_name) {
 
 
 /* ── _extract_pruned_skill_names ───────────────────────────────────────── */
-/* PoP: cc_extract_pruned_skill_names @ agent/context_compressor.py:_extract_pruned_skill_names */
+/* PoP: skill_view @ agent/context_compressor.py:_extract_pruned_skill_names */
 /* Return skill names referenced by prune markers in *text*, in order, deduped.
  * C analog of the regex _SKILL_PRUNED_MARKER_RE: anchored on the shared
  * prefix, captures skill_view(name='<name>'). */
@@ -878,7 +878,7 @@ int context_compressor__extract_pruned_skill_names(const char *text,
 }
 
 /* ── _reinject_pruned_skill_markers ─────────────────────────────────────── */
-/* PoP: cc_reinject_pruned_skill_markers @ agent/context_compressor.py:_reinject_pruned_skill_markers */
+/* PoP: path @ agent/context_compressor.py:_reinject_pruned_skill_markers */
 /* Deterministic restore of prune markers the summarizer dropped. Mirrors the
  * Python: build the marker for each skill missing from *summary*, append under
  * "## Pruned Skills", route the block through _redact_compaction_text (C:
@@ -948,7 +948,7 @@ int context_compressor__reinject_pruned_skill_markers(const char *summary,
 }
 
 /* ── _strip_persistence_markers / _fresh_compaction_message_copy ───────── */
-/* PoP: cc_strip_persistence_markers @ agent/context_compressor.py:_strip_persistence_markers */
+/* PoP: objects @ agent/context_compressor.py:_strip_persistence_markers */
 /* Terminal sweep enforcing the compaction invariant: no assembled message
  * carries the session-store persistence marker. Operates on an array of
  * message JSON objects (mutates each in place). */
@@ -964,7 +964,7 @@ int context_compressor__strip_persistence_markers(json_t *messages) {
     return 0;
 }
 
-/* PoP: context_compressor__fresh_compaction_message_copy @ agent/context_compressor.py:_fresh_compaction_message_copy */
+/* PoP: object @ agent/context_compressor.py:_fresh_compaction_message_copy */
 /* Copy a message for compaction assembly without the persistence marker.
  * Returns a new JSON object (deep-ish copy via serialize/parse). */
 json_t *context_compressor__fresh_compaction_message_copy(const json_t *msg) {
@@ -979,7 +979,7 @@ json_t *context_compressor__fresh_compaction_message_copy(const json_t *msg) {
 }
 
 /* ── _has_compressed_summary_metadata ──────────────────────────────────── */
-/* PoP: cc_has_compressed_summary_metadata @ agent/context_compressor.py:_has_compressed_summary_metadata */
+/* PoP: context_compressor__has_compressed_summary_metadata @ agent/context_compressor.py:_has_compressed_summary_metadata */
 int context_compressor__has_compressed_summary_metadata(const json_t *message) {
     if (!message || message->type != JSON_OBJECT) return 0;
     const json_t *v = json_object_get(message, CC_COMPRESSED_SUMMARY_METADATA_KEY);
@@ -987,7 +987,7 @@ int context_compressor__has_compressed_summary_metadata(const json_t *message) {
 }
 
 /* ── _starts_with_summary_prefix (classmethod → function) ──────────────── */
-/* PoP: cc_starts_with_summary_prefix @ agent/context_compressor.py:_starts_with_summary_prefix */
+/* PoP: context_compressor__starts_with_summary_prefix @ agent/context_compressor.py:_starts_with_summary_prefix */
 int context_compressor__starts_with_summary_prefix(const char *text) {
     if (!text) return 0;
     if (strncmp(text, CC_SUMMARY_PREFIX, strlen(CC_SUMMARY_PREFIX)) == 0) return 1;
@@ -1000,7 +1000,7 @@ int context_compressor__starts_with_summary_prefix(const char *text) {
 }
 
 /* ── classify_summary_content (classmethod → function) ─────────────────── */
-/* PoP: context_compressor__classify_summary_content @ agent/context_compressor.py:classify_summary_content */
+/* PoP: NULL @ agent/context_compressor.py:classify_summary_content */
 /* Returns an allocated string: "standalone", "merged", or NULL (no summary).
  * Caller frees. */
 char *context_compressor__classify_summary_content(const char *content) {
@@ -1026,7 +1026,7 @@ char *context_compressor__classify_summary_content(const char *content) {
 }
 
 /* ── _is_context_summary_content (classmethod → function) ──────────────── */
-/* PoP: cc_is_context_summary_content @ agent/context_compressor.py:_is_context_summary_content */
+/* PoP: context_compressor__is_context_summary_content @ agent/context_compressor.py:_is_context_summary_content */
 int context_compressor__is_context_summary_content(const char *content) {
     char *cls = context_compressor__classify_summary_content(content);
     int r = (cls != NULL);

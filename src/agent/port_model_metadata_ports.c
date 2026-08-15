@@ -21,7 +21,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _strip_provider_prefix @ agent/model_metadata.py:_strip_provider_prefix */
+/* PoP: mmd_strip_provider_prefix @ agent/model_metadata.py:_strip_provider_prefix */
 char *mmd_strip_provider_prefix(const char *model) {
     /* Python: "local:my-model" → "my-model". */
     if (!model) return NULL;
@@ -30,7 +30,7 @@ char *mmd_strip_provider_prefix(const char *model) {
     return strdup(model);
 }
 
-/* PoP: _infer_provider_from_url @ agent/model_metadata.py:_infer_provider_from_url */
+/* PoP: mmd_infer_provider_from_url @ agent/model_metadata.py:_infer_provider_from_url */
 char *mmd_infer_provider_from_url(const char *base_url) {
     /* Python: models.dev provider name from URL. */
     if (!base_url) return NULL;
@@ -48,7 +48,7 @@ char *mmd_infer_provider_from_url(const char *base_url) {
     return r;
 }
 
-/* PoP: _lmstudio_server_root @ agent/model_metadata.py:_lmstudio_server_root */
+/* PoP: mmd_lmstudio_server_root @ agent/model_metadata.py:_lmstudio_server_root */
 char *mmd_lmstudio_server_root(const char *base_url) {
     /* Python: root for native /api/v1 endpoints. */
     if (!base_url) return NULL;
@@ -62,7 +62,7 @@ char *mmd_lmstudio_server_root(const char *base_url) {
     return out;
 }
 
-/* PoP: _is_known_provider_base_url @ agent/model_metadata.py:_is_known_provider_base_url */
+/* PoP: mmd_is_known_provider_base_url @ agent/model_metadata.py:_is_known_provider_base_url */
 bool mmd_is_known_provider_base_url(const char *base_url) {
     char *p = mmd_infer_provider_from_url(base_url);
     bool r = p != NULL;
@@ -70,7 +70,7 @@ bool mmd_is_known_provider_base_url(const char *base_url) {
     return r;
 }
 
-/* PoP: _iter_nested_dicts @ agent/model_metadata.py:_iter_nested_dicts */
+/* PoP: mmd_iter_nested_dicts @ agent/model_metadata.py:_iter_nested_dicts */
 long mmd_iter_nested_dicts(const char *json) {
     /* Python: count nested dicts. */
     if (!json) return 0;
@@ -79,7 +79,7 @@ long mmd_iter_nested_dicts(const char *json) {
     return count;
 }
 
-/* PoP: _get_context_cache_path @ agent/model_metadata.py:_get_context_cache_path */
+/* PoP: mmd_get_context_cache_path @ agent/model_metadata.py:_get_context_cache_path */
 char *mmd_get_context_cache_path(void) {
     const char *h = getenv("HERMES_HOME");
     char *out = NULL;
@@ -88,7 +88,7 @@ char *mmd_get_context_cache_path(void) {
     return out;
 }
 
-/* PoP: _load_context_cache @ agent/model_metadata.py:_load_context_cache */
+/* PoP: mmd_load_context_cache @ agent/model_metadata.py:_load_context_cache */
 char *mmd_load_context_cache(void) {
     char *path = mmd_get_context_cache_path();
     FILE *f = fopen(path, "r");
@@ -105,7 +105,7 @@ char *mmd_load_context_cache(void) {
     return buf;
 }
 
-/* PoP: _invalidate_cached_context_length @ agent/model_metadata.py:_invalidate_cached_context_length */
+/* PoP: mmd_invalidate_cached_context_length @ agent/model_metadata.py:_invalidate_cached_context_length */
 int mmd_invalidate_cached_context_length(const char *key) {
     /* Python: drop stale cache entry — REAL: remove the cache file. */
     if (!key || !*key) return -1;
@@ -117,7 +117,7 @@ int mmd_invalidate_cached_context_length(const char *key) {
     return 0;
 }
 
-/* PoP: _model_name_suggests_kimi @ agent/model_metadata.py:_model_name_suggests_kimi */
+/* PoP: mmd_model_name_suggests_kimi @ agent/model_metadata.py:_model_name_suggests_kimi */
 bool mmd_model_name_suggests_kimi(const char *model) {
     /* Python: kimi-*, moonshot-* names. */
     if (!model) return false;
@@ -128,7 +128,7 @@ bool mmd_model_name_suggests_kimi(const char *model) {
     return r;
 }
 
-/* PoP: _model_name_suggests_minimax_m3 @ agent/model_metadata.py:_model_name_suggests_minimax_m3 */
+/* PoP: mmd_model_name_suggests_minimax_m3 @ agent/model_metadata.py:_model_name_suggests_minimax_m3 */
 bool mmd_model_name_suggests_minimax_m3(const char *model) {
     /* Python: MiniMax-M3 family. */
     if (!model) return false;
@@ -139,7 +139,7 @@ bool mmd_model_name_suggests_minimax_m3(const char *model) {
     return r;
 }
 
-/* PoP: _count_image_tokens @ agent/model_metadata.py:_count_image_tokens */
+/* PoP: mmd_count_image_tokens @ agent/model_metadata.py:_count_image_tokens */
 long mmd_count_image_tokens(const char *content_json) {
     /* Python: count image parts; token cost. */
     if (!content_json) return 0;

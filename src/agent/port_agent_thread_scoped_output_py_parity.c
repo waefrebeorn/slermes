@@ -14,12 +14,12 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: agent_thread_scoped_output_target @ agent/thread_scoped_output.py:_target */
+/* PoP: agent_thread_scoped_output_target_p @ agent/thread_scoped_output.py:_target */
 json_t *agent_thread_scoped_output_target_p(void) {
     return json_object();
 }
 
-/* PoP: agent_thread_scoped_output_ensure_installed @ agent/thread_scoped_output.py:_ensure_installed */
+/* PoP: agent_thread_scoped_output_ensure_installed_p @ agent/thread_scoped_output.py:_ensure_installed */
 json_t *agent_thread_scoped_output_ensure_installed_p(void) {
     return json_object();
 }

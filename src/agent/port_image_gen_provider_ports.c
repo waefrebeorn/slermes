@@ -23,18 +23,18 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: name @ agent/image_gen_provider.py:name */
+/* PoP: igp_name @ agent/image_gen_provider.py:name */
 char *igp_name(void) {
     return strdup("image_gen");
 }
 
-/* PoP: is_available @ agent/image_gen_provider.py:is_available */
+/* PoP: igp_is_available @ agent/image_gen_provider.py:is_available */
 bool igp_is_available(void) {
     printf("image provider availability probe\n");
     return false;
 }
 
-/* PoP: generate @ agent/image_gen_provider.py:generate */
+/* PoP: igp_generate @ agent/image_gen_provider.py:generate */
 char *igp_generate(const char *prompt, const char *source_image) {
     /* Python: generate or edit/transform. */
     if (!prompt) return NULL;
@@ -42,7 +42,7 @@ char *igp_generate(const char *prompt, const char *source_image) {
     return strdup("{}");
 }
 
-/* PoP: resolve_aspect_ratio @ agent/image_gen_provider.py:resolve_aspect_ratio */
+/* PoP: igp_resolve_aspect_ratio @ agent/image_gen_provider.py:resolve_aspect_ratio */
 char *igp_resolve_aspect_ratio(const char *value) {
     /* Python: clamp to valid set, default landscape. */
     if (!value) return strdup("landscape");
@@ -55,7 +55,7 @@ char *igp_resolve_aspect_ratio(const char *value) {
     return strdup("landscape");
 }
 
-/* PoP: normalize_reference_images @ agent/image_gen_provider.py:normalize_reference_images */
+/* PoP: igp_normalize_reference_images @ agent/image_gen_provider.py:normalize_reference_images */
 char *igp_normalize_reference_images(const char *refs_json) {
     /* Python: coerce to clean list of url/path strings. */
     if (!refs_json) return strdup("[]");
@@ -63,7 +63,7 @@ char *igp_normalize_reference_images(const char *refs_json) {
     return strdup(refs_json);
 }
 
-/* PoP: _images_cache_dir @ agent/image_gen_provider.py:_images_cache_dir */
+/* PoP: igp_images_cache_dir @ agent/image_gen_provider.py:_images_cache_dir */
 char *igp_images_cache_dir(void) {
     /* Python: $HERMES_HOME/cache/images with parents. */
     const char *h = getenv("HERMES_HOME");
@@ -74,7 +74,7 @@ char *igp_images_cache_dir(void) {
     return out;
 }
 
-/* PoP: save_b64_image @ agent/image_gen_provider.py:save_b64_image */
+/* PoP: igp_save_b64_image @ agent/image_gen_provider.py:save_b64_image */
 char *igp_save_b64_image(const char *b64_data) {
     /* Python: decode + write — REAL base64 decode. */
     if (!b64_data) return NULL;
@@ -110,7 +110,7 @@ char *igp_save_b64_image(const char *b64_data) {
     return path;
 }
 
-/* PoP: save_url_image @ agent/image_gen_provider.py:save_url_image */
+/* PoP: igp_save_url_image @ agent/image_gen_provider.py:save_url_image */
 char *igp_save_url_image(const char *url) {
     /* Python: download + write — REAL http_get. */
     if (!url) return NULL;
@@ -131,7 +131,7 @@ char *igp_save_url_image(const char *url) {
     return path;
 }
 
-/* PoP: success_response @ agent/image_gen_provider.py:success_response */
+/* PoP: igp_success_response @ agent/image_gen_provider.py:success_response */
 char *igp_success_response(const char *image, const char *model) {
     char *out = NULL;
     asprintf(&out, "{\"success\": true, \"image\": \"%s\", \"model\": \"%s\"}",
@@ -139,7 +139,7 @@ char *igp_success_response(const char *image, const char *model) {
     return out;
 }
 
-/* PoP: error_response @ agent/image_gen_provider.py:error_response */
+/* PoP: igp_error_response @ agent/image_gen_provider.py:error_response */
 char *igp_error_response(const char *error, const char *code) {
     char *out = NULL;
     asprintf(&out, "{\"success\": false, \"error\": \"%s\", \"code\": \"%s\"}",

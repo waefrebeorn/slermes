@@ -24,7 +24,7 @@ typedef struct {
 static loaded_hook_t g_loaded_hooks[MAX_LOADED_HOOKS];
 static int g_loaded_hooks_count = 0;
 
-/* PoP: cli_gateway_hooks__register_builtin_hooks @ gateway/hooks.py:_register_builtin_hooks */
+/* PoP: hooks @ gateway/hooks.py:_register_builtin_hooks */
 
 /* Port of Python gateway/hooks.py:_register_builtin_hooks().
  * Registers built-in hooks that are always active. Currently empty — no
@@ -36,7 +36,7 @@ void cli_gateway_hooks__register_builtin_hooks(void)
     hermes_log(LOG_DEBUG, "hooks", "register_builtin_hooks: none shipped (extension point)");
 }
 
-/* PoP: cli_gateway_hooks_loaded_hooks @ gateway/hooks.py:loaded_hooks */
+/* PoP: string @ gateway/hooks.py:loaded_hooks */
 
 /* Port of Python gateway/hooks.py:loaded_hooks().
  * Returns metadata about all loaded hooks as a JSON array string (caller

@@ -23,7 +23,7 @@ static bool ct_eq(const char *a, const char *b) {
     return diff == 0;
 }
 
-/* PoP: verify_signature @ gateway/relay/auth.py:verify_signature */
+/* PoP: rlauth_verify_signature @ gateway/relay/auth.py:verify_signature */
 bool rlauth_verify_signature(const char *sig_hex, const char *payload, const char *secret) {
     /* Python: constant-time HMAC check under ANY secret — real. */
     if (!sig_hex || !payload || !secret) return false;
@@ -32,7 +32,7 @@ bool rlauth_verify_signature(const char *sig_hex, const char *payload, const cha
     return ct_eq(mac, sig_hex);
 }
 
-/* PoP: verify_token @ gateway/relay/auth.py:verify_token */
+/* PoP: rlauth_verify_token @ gateway/relay/auth.py:verify_token */
 char *rlauth_verify_token(const char *token, const char *secret) {
     /* Python: split + verify + payload. */
     if (!token || !secret) return NULL;
@@ -49,7 +49,7 @@ char *rlauth_verify_token(const char *token, const char *secret) {
     return out;
 }
 
-/* PoP: verify_delivery_signature @ gateway/relay/auth.py:verify_delivery_signature */
+/* PoP: rlauth_verify_delivery_signature @ gateway/relay/auth.py:verify_delivery_signature */
 bool rlauth_verify_delivery_signature(const char *body_json, const char *sig_hex, const char *secret) {
     /* Python: connector→gateway delivery check. */
     if (!body_json || !sig_hex || !secret) return false;

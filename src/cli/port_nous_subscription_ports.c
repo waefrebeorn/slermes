@@ -31,33 +31,33 @@ static bool feat(const char *features_json, const char *key) {
     return strncmp(v, "true", 4) == 0 || *v == '1';
 }
 
-/* PoP: web @ hermes_cli/nous_subscription.py:web */
+/* PoP: nsub_web @ hermes_cli/nous_subscription.py:web */
 bool nsub_web(const char *features_json) {
     return feat(features_json, "web");
 }
 
-/* PoP: tts @ hermes_cli/nous_subscription.py:tts */
+/* PoP: nsub_tts @ hermes_cli/nous_subscription.py:tts */
 bool nsub_tts(const char *features_json) {
     return feat(features_json, "tts");
 }
 
-/* PoP: browser @ hermes_cli/nous_subscription.py:browser */
+/* PoP: nsub_browser @ hermes_cli/nous_subscription.py:browser */
 bool nsub_browser(const char *features_json) {
     return feat(features_json, "browser");
 }
 
-/* PoP: modal @ hermes_cli/nous_subscription.py:modal */
+/* PoP: nsub_modal @ hermes_cli/nous_subscription.py:modal */
 bool nsub_modal(const char *features_json) {
     return feat(features_json, "modal");
 }
 
-/* PoP: items @ hermes_cli/nous_subscription.py:items */
+/* PoP: nsub_items @ hermes_cli/nous_subscription.py:items */
 char *nsub_items(void) {
     /* Python: ordered feature list. */
     return strdup("[\"web\", \"image_gen\", \"video_gen\", \"tts\", \"stt\", \"browser\", \"modal\"]");
 }
 
-/* PoP: _model_config_dict @ hermes_cli/nous_subscription.py:_model_config_dict */
+/* PoP: nsub_model_config_dict @ hermes_cli/nous_subscription.py:_model_config_dict */
 char *nsub_model_config_dict(const char *config_json) {
     /* Python: model dict or string → dict. */
     if (!config_json) return strdup("{}");

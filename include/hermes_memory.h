@@ -324,6 +324,7 @@ json_t *memory_entry_to_json(const memory_entry_t *entry);
 
 /* === Context fencing (AG05) === */
 char *sanitize_context(const char *text);
+/* PoP: build_memory_context_block @ agent/memory_manager.py:build_memory_context_block */
 char *build_memory_context_block(const char *raw_context);
 
 /* ================================================================

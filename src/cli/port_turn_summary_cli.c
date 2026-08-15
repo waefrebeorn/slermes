@@ -54,7 +54,7 @@ struct cli_turn_summary_mgr {
 
 /* ── Properties ───────────────────────────────────────────────────────── */
 
-/* PoP: _spinner_token_flow @ cli.py:_spinner_token_flow */
+/* PoP: cli_turn_spinner_token_flow @ cli.py:_spinner_token_flow */
 char *cli_turn_spinner_token_flow(cli_turn_summary_mgr_t *mgr,
                                    void *agent) {
     (void)agent;
@@ -70,7 +70,7 @@ char *cli_turn_spinner_token_flow(cli_turn_summary_mgr_t *mgr,
     return result;
 }
 
-/* PoP: _turn_summary_is_active @ cli.py:_turn_summary_is_active */
+/* PoP: cli_turn_summary_is_active @ cli.py:_turn_summary_is_active */
 bool cli_turn_summary_is_active(cli_turn_summary_mgr_t *mgr) {
     if (!mgr) return false;
     if (!mgr->enabled) return false;
@@ -83,7 +83,7 @@ bool cli_turn_summary_is_active(cli_turn_summary_mgr_t *mgr) {
 
 /* ── Core methods ─────────────────────────────────────────────────────── */
 
-/* PoP: _turn_summary_begin @ cli.py:_turn_summary_begin */
+/* PoP: cli_turn_summary_begin @ cli.py:_turn_summary_begin */
 void cli_turn_summary_begin(cli_turn_summary_mgr_t *mgr, void *agent) {
     if (!mgr) return;
     if (!mgr->collector) {
@@ -100,7 +100,7 @@ void cli_turn_summary_begin(cli_turn_summary_mgr_t *mgr, void *agent) {
     mgr->token_baseline = mgr->agent_output_tokens;
 }
 
-/* PoP: _turn_summary_record @ cli.py:_turn_summary_record */
+/* PoP: cli_turn_summary_record @ cli.py:_turn_summary_record */
 void cli_turn_summary_record(cli_turn_summary_mgr_t *mgr,
                               const char *function_name,
                               const json_t *result, bool is_error) {
@@ -108,7 +108,7 @@ void cli_turn_summary_record(cli_turn_summary_mgr_t *mgr,
     turn_summary_collector_record(mgr->collector, function_name, result, is_error);
 }
 
-/* PoP: _turn_summary_emit @ cli.py:_turn_summary_emit */
+/* PoP: cli_turn_summary_emit @ cli.py:_turn_summary_emit */
 char *cli_turn_summary_emit(cli_turn_summary_mgr_t *mgr) {
     if (!mgr || !mgr->collector) return NULL;
     if (!cli_turn_summary_is_active(mgr)) return NULL;

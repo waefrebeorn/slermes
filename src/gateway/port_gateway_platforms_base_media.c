@@ -638,7 +638,7 @@ typedef struct {
     int end;
 } base_span_t;
 
-/* PoP: _merge_spans @ gateway/platforms/base.py:_merge_spans */
+/* PoP: base_platform_merge_spans @ gateway/platforms/base.py:_merge_spans */
 void base_platform_merge_spans(base_span_t *spans, int *count)
 {
     if (!spans || !count || *count <= 1) return;
@@ -671,7 +671,7 @@ void base_platform_merge_spans(base_span_t *spans, int *count)
  *  Faithful to: validate a bare extensionless-branch path.
  * ================================================================ */
 
-/* PoP: _resolve_extensionless_candidate @ gateway/platforms/base.py:_resolve_extensionless_candidate */
+/* PoP: base_platform_resolve_extensionless_candidate @ gateway/platforms/base.py:_resolve_extensionless_candidate */
 char *base_platform_resolve_extensionless_candidate(const char *path)
 {
     if (!path || !*path) return NULL;
@@ -684,7 +684,7 @@ char *base_platform_resolve_extensionless_candidate(const char *path)
  *  Returns page_options slice + meta via out-params.
  * ================================================================ */
 
-/* PoP: _format_choice_page @ gateway/platforms/base.py:_format_choice_page */
+/* PoP: base_platform_format_choice_page @ gateway/platforms/base.py:_format_choice_page */
 int base_platform_format_choice_page(
     int total, int page, int per_page,
     int *out_start, int *out_end,
@@ -710,7 +710,7 @@ int base_platform_format_choice_page(
  *  Faithful to: truncate text to budget chars, append suffix when cut.
  * ================================================================ */
 
-/* PoP: _truncate_preview @ gateway/platforms/base.py:_truncate_preview */
+/* PoP: base_platform_truncate_preview @ gateway/platforms/base.py:_truncate_preview */
 char *base_platform_truncate_preview(const char *text, int budget, const char *suffix)
 {
     if (!text) text = "";
@@ -734,7 +734,7 @@ char *base_platform_truncate_preview(const char *text, int budget, const char *s
  *  everything else .mp3. Path: $TMPDIR/hermes_voice/tts_reply_<12hex>.<ext>
  * ================================================================ */
 
-/* PoP: build_auto_tts_output_path @ gateway/platforms/base.py:build_auto_tts_output_path */
+/* PoP: base_platform_build_auto_tts_output_path @ gateway/platforms/base.py:build_auto_tts_output_path */
 char *base_platform_build_auto_tts_output_path(const char *platform_name)
 {
     static const char *const OPUS_VOICE_PLATFORMS[] = {

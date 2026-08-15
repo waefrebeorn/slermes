@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: agent_pet_constants_state_rows_for_grid @ agent/pet/constants.py:state_rows_for_grid */
+/* PoP: agent_pet_constants_state_rows_for_grid_p @ agent/pet/constants.py:state_rows_for_grid */
 json_t *agent_pet_constants_state_rows_for_grid_p(void) {
     return json_object();
 }

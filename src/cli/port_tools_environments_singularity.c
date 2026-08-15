@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: cli_tools_environments_singularity__find_singularity_executable @ tools/environments/singularity.py:_find_singularity_executable */
+/* PoP: cli_tools_environments_singularity__load_snapshots @ tools/environments/singularity.py:_find_singularity_executable */
 const char* cli_tools_environments_singularity__find_singularity_executable(void) {
     const char *path;
     path = getenv("PATH");
@@ -51,7 +51,7 @@ const char* cli_tools_environments_singularity__find_singularity_executable(void
     return NULL;
 }
 
-/* PoP: cli_tools_environments_singularity__ensure_singularity_available @ tools/environments/singularity.py:_ensure_singularity_available */
+/* PoP: cli_tools_environments_singularity__load_snapshots @ tools/environments/singularity.py:_ensure_singularity_available */
 const char* cli_tools_environments_singularity__ensure_singularity_available(void) {
     const char *exe = cli_tools_environments_singularity__find_singularity_executable();
     if (!exe) {

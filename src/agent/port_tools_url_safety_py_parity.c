@@ -14,12 +14,12 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_url_safety_resolved_http_connect_ips @ tools/url_safety.py:_resolved_http_connect_ips */
+/* PoP: tools_url_safety_resolved_http_connect_ips_p @ tools/url_safety.py:_resolved_http_connect_ips */
 json_t *tools_url_safety_resolved_http_connect_ips_p(void) {
     return json_object();
 }
 
-/* PoP: tools_url_safety_connect_tcp @ tools/url_safety.py:connect_tcp */
+/* PoP: tools_url_safety_connect_tcp_p @ tools/url_safety.py:connect_tcp */
 json_t *tools_url_safety_connect_tcp_p(void) {
     return json_object();
 }

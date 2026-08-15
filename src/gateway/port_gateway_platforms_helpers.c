@@ -244,7 +244,7 @@ typedef struct {
     size_t cap;
 } mention_patterns_t;
 
-/* PoP: compile_mention_patterns @ gateway/platforms/helpers.py:compile_mention_patterns */
+/* PoP: gateway_platforms_helpers_compile_mention_patterns @ gateway/platforms/helpers.py:compile_mention_patterns */
 mention_patterns_t *gateway_platforms_helpers_compile_mention_patterns(
     const char *raw_json,       /* JSON list of pattern strings, or NULL */
     const char *log_prefix,     /* e.g. "[bluebubbles]" */

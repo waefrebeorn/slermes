@@ -22,7 +22,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _normalize_ref @ agent/plugin_llm.py:_normalize_ref */
+/* PoP: pll_normalize_ref @ agent/plugin_llm.py:_normalize_ref */
 char *pll_normalize_ref(const char *raw) {
     /* Python: lower-case + strip whitespace. */
     if (!raw) return strdup("");
@@ -37,7 +37,7 @@ char *pll_normalize_ref(const char *raw) {
     return out;
 }
 
-/* PoP: _coerce_allowlist @ agent/plugin_llm.py:_coerce_allowlist */
+/* PoP: pll_coerce_allowlist @ agent/plugin_llm.py:_coerce_allowlist */
 char *pll_coerce_allowlist(const char *yaml_list) {
     /* Python: ["*"] → allow_any; list → frozenset; None → None. */
     if (!yaml_list) return strdup("{\"allow_any\": false, \"entries\": null}");
@@ -52,7 +52,7 @@ char *pll_coerce_allowlist(const char *yaml_list) {
     return out;
 }
 
-/* PoP: _resolve_trust_policy @ agent/plugin_llm.py:_resolve_trust_policy */
+/* PoP: pll_resolve_trust_policy @ agent/plugin_llm.py:_resolve_trust_policy */
 char *pll_resolve_trust_policy(const char *config_yaml, const char *plugin_id) {
     /* Python: plugins.entries.<id>.llm from config; missing config →
      * fully restrictive default-deny. The policy is resolved per-call so
@@ -132,7 +132,7 @@ char *pll_resolve_trust_policy(const char *config_yaml, const char *plugin_id) {
     return ser ? ser : strdup("{\"allow_any\": false, \"entries\": []}");
 }
 
-/* PoP: _check_overrides @ agent/plugin_llm.py:_check_overrides */
+/* PoP: pll_check_overrides @ agent/plugin_llm.py:_check_overrides */
 char *pll_check_overrides(const char *policy_json, const char *provider, const char *model) {
     /* Python: trust gate on overrides. */
     if (!policy_json) return NULL;
@@ -144,7 +144,7 @@ char *pll_check_overrides(const char *policy_json, const char *provider, const c
     return out;
 }
 
-/* PoP: _normalize_input_block @ agent/plugin_llm.py:_normalize_input_block */
+/* PoP: pll_normalize_input_block @ agent/plugin_llm.py:_normalize_input_block */
 char *pll_normalize_input_block(const char *input_json) {
     /* Python: structured block → plain dict. */
     if (!input_json) return strdup("{}");
@@ -152,7 +152,7 @@ char *pll_normalize_input_block(const char *input_json) {
     return strdup(input_json);
 }
 
-/* PoP: _build_structured_messages @ agent/plugin_llm.py:_build_structured_messages */
+/* PoP: pll_build_structured_messages @ agent/plugin_llm.py:_build_structured_messages */
 char *pll_build_structured_messages(const char *instructions, const char *input_json) {
     /* Python: instructions → system; input → user. */
     if (!instructions && !input_json) return strdup("[]");
@@ -165,7 +165,7 @@ char *pll_build_structured_messages(const char *instructions, const char *input_
     return out;
 }
 
-/* PoP: _strip_code_fences @ agent/plugin_llm.py:_strip_code_fences */
+/* PoP: pll_strip_code_fences @ agent/plugin_llm.py:_strip_code_fences */
 char *pll_strip_code_fences(const char *text) {
     /* Python: first fenced block; else unchanged. */
     if (!text) return strdup("");
@@ -178,7 +178,7 @@ char *pll_strip_code_fences(const char *text) {
     return strndup(nl + 1, (size_t)(close - nl - 1));
 }
 
-/* PoP: _parse_structured_text @ agent/plugin_llm.py:_parse_structured_text */
+/* PoP: pll_parse_structured_text @ agent/plugin_llm.py:_parse_structured_text */
 char *pll_parse_structured_text(const char *text) {
     /* Python: (parsed, content_type); "json" when parse succeeds. */
     if (!text) return strdup("null\ttext");
@@ -201,7 +201,7 @@ char *pll_parse_structured_text(const char *text) {
     return out;
 }
 
-/* PoP: _extract_usage @ agent/plugin_llm.py:_extract_usage */
+/* PoP: pll_extract_usage @ agent/plugin_llm.py:_extract_usage */
 char *pll_extract_usage(const char *response_json) {
     /* Python: usage dict tolerant of provider differences. */
     if (!response_json) return strdup("{}");
@@ -222,7 +222,7 @@ char *pll_extract_usage(const char *response_json) {
     return strndup(v, (size_t)(e - v));
 }
 
-/* PoP: _extract_text @ agent/plugin_llm.py:_extract_text */
+/* PoP: pll_extract_text @ agent/plugin_llm.py:_extract_text */
 char *pll_extract_text(const char *response_json) {
     /* Python: assistant text out of OpenAI-shaped response. */
     if (!response_json) return strdup("");
@@ -238,7 +238,7 @@ char *pll_extract_text(const char *response_json) {
     return strndup(v, (size_t)(e - v));
 }
 
-/* PoP: _resolve_attribution @ agent/plugin_llm.py:_resolve_attribution */
+/* PoP: pll_resolve_attribution @ agent/plugin_llm.py:_resolve_attribution */
 char *pll_resolve_attribution(const char *provider, const char *model, const char *fallback_json) {
     /* Python: result.provider/model precedence. */
     if (provider && *provider) {
@@ -249,7 +249,7 @@ char *pll_resolve_attribution(const char *provider, const char *model, const cha
     return fallback_json ? strdup(fallback_json) : strdup("{}");
 }
 
-/* PoP: __init__ @ agent/plugin_llm.py:__init__ */
+/* PoP: pll_init @ agent/plugin_llm.py:__init__ */
 char *pll_init(const char *plugin_id) {
     /* Python: plugin-scoped host-owned llm. */
     if (!plugin_id) return NULL;
@@ -258,7 +258,7 @@ char *pll_init(const char *plugin_id) {
     return out;
 }
 
-/* PoP: complete @ agent/plugin_llm.py:complete */
+/* PoP: pll_complete @ agent/plugin_llm.py:complete */
 char *pll_complete(const char *messages_json) {
     /* Python: chat completion against active model. */
     if (!messages_json) return NULL;
@@ -266,7 +266,7 @@ char *pll_complete(const char *messages_json) {
     return strdup("{}");
 }
 
-/* PoP: complete_structured @ agent/plugin_llm.py:complete_structured */
+/* PoP: pll_complete_structured @ agent/plugin_llm.py:complete_structured */
 char *pll_complete_structured(const char *input_json) {
     /* Python: bounded structured completion. */
     if (!input_json) return NULL;
@@ -274,13 +274,13 @@ char *pll_complete_structured(const char *input_json) {
     return strdup("{}");
 }
 
-/* PoP: _json_response_format @ agent/plugin_llm.py:_json_response_format */
+/* PoP: pll_json_response_format @ agent/plugin_llm.py:_json_response_format */
 char *pll_json_response_format(void) {
     /* Python: extra_body.response_format payload. */
     return strdup("{\"type\": \"json_object\"}");
 }
 
-/* PoP: _invoke_sync @ agent/plugin_llm.py:_invoke_sync */
+/* PoP: pll_invoke_sync @ agent/plugin_llm.py:_invoke_sync */
 char *pll_invoke_sync(const char *messages_json) {
     /* Python: host call_llm, lazy auxiliary_client import. */
     if (!messages_json) return NULL;
@@ -288,7 +288,7 @@ char *pll_invoke_sync(const char *messages_json) {
     return strdup("{}");
 }
 
-/* PoP: make_plugin_llm_for_test @ agent/plugin_llm.py:make_plugin_llm_for_test */
+/* PoP: pll_make_for_test @ agent/plugin_llm.py:make_plugin_llm_for_test */
 char *pll_make_for_test(const char *plugin_id) {
     /* Python: injected policy + caller for unit tests. */
     if (!plugin_id) return NULL;

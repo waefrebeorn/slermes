@@ -20,7 +20,7 @@
 #include <webp/encode.h>
 #include <webp/mux.h>
 
-/* PoP: _endpoint_scoped_context_length @ agent/model_metadata.py:_endpoint_scoped_context_length */
+/* PoP: agent_model_metadata_u_endpoint_scoped_context_length @ agent/model_metadata.py:_endpoint_scoped_context_length */
 int agent_model_metadata_u_endpoint_scoped_context_length(const char *arg) {
     /* Python: Kimi coding endpoint gate. Arg =
      * "base_url\tmodel\tstate\tresult". */
@@ -34,7 +34,7 @@ int agent_model_metadata_u_endpoint_scoped_context_length(const char *arg) {
     return 0;
 }
 
-/* PoP: _skip_persistent_context_cache @ agent/model_metadata.py:_skip_persistent_context_cache */
+/* PoP: agent_model_metadata_u_skip_persistent_context_cache @ agent/model_metadata.py:_skip_persistent_context_cache */
 int agent_model_metadata_u_skip_persistent_context_cache(const char *arg) {
     /* Python: lmstudio/openai-codex excluded. Arg = provider. */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -45,7 +45,7 @@ int agent_model_metadata_u_skip_persistent_context_cache(const char *arg) {
     return 0;
 }
 
-/* PoP: _maybe_cache_local_context_length @ agent/model_metadata.py:_maybe_cache_local_context_length */
+/* PoP: agent_model_metadata_u_maybe_cache_local_context_length @ agent/model_metadata.py:_maybe_cache_local_context_length */
 int agent_model_metadata_u_maybe_cache_local_context_length(const char *arg) {
     /* Python: save only when length >= minimum. Arg = "length\tmin\tsaved". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -56,7 +56,7 @@ int agent_model_metadata_u_maybe_cache_local_context_length(const char *arg) {
     return 0;
 }
 
-/* PoP: _reconcile_local_cached_context_length @ agent/model_metadata.py:_reconcile_local_cached_context_length */
+/* PoP: agent_model_metadata_u_reconcile_local_cached_context_length @ agent/model_metadata.py:_reconcile_local_cached_context_length */
 int agent_model_metadata_u_reconcile_local_cached_context_length(const char *arg) {
     /* Python: live probe wins. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -67,7 +67,7 @@ int agent_model_metadata_u_reconcile_local_cached_context_length(const char *arg
     return 0;
 }
 
-/* PoP: _localhost_to_ipv4 @ agent/model_metadata.py:_localhost_to_ipv4 */
+/* PoP: agent_model_metadata_u_localhost_to_ipv4 @ agent/model_metadata.py:_localhost_to_ipv4 */
 int agent_model_metadata_u_localhost_to_ipv4(const char *arg) {
     /* Python: ^(https?://)localhost(?=[:/]|$) -> \g<1>127.0.0.1 (once). */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -86,7 +86,7 @@ int agent_model_metadata_u_localhost_to_ipv4(const char *arg) {
     return 0;
 }
 
-/* PoP: _context_cache_key @ agent/model_metadata.py:_context_cache_key */
+/* PoP: agent_model_metadata_u_context_cache_key @ agent/model_metadata.py:_context_cache_key */
 int agent_model_metadata_u_context_cache_key(const char *arg) {
     /* Python: "model@base_url" with trailing slashes stripped. Arg =
      * "model\tbase_url". */
@@ -104,7 +104,7 @@ int agent_model_metadata_u_context_cache_key(const char *arg) {
     return 0;
 }
 
-/* PoP: _query_ollama_api_show_uncached @ agent/model_metadata.py:_query_ollama_api_show_uncached */
+/* PoP: agent_model_metadata_u_query_ollama_api_show_uncached @ agent/model_metadata.py:_query_ollama_api_show_uncached */
 int agent_model_metadata_u_query_ollama_api_show_uncached(const char *arg) {
     /* Python: /api/show. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -115,7 +115,7 @@ int agent_model_metadata_u_query_ollama_api_show_uncached(const char *arg) {
     return 0;
 }
 
-/* PoP: _query_local_context_length_uncached @ agent/model_metadata.py:_query_local_context_length_uncached */
+/* PoP: agent_model_metadata_u_query_local_context_length_uncached @ agent/model_metadata.py:_query_local_context_length_uncached */
 int agent_model_metadata_u_query_local_context_length_uncached(const char *arg) {
     /* Python: local server probe. Arg =
      * "found\tstate\tresult". */
@@ -129,7 +129,7 @@ int agent_model_metadata_u_query_local_context_length_uncached(const char *arg) 
     return 0;
 }
 
-/* PoP: _codex_oauth_token_fingerprint @ agent/model_metadata.py:_codex_oauth_token_fingerprint */
+/* PoP: agent_model_metadata_u_codex_oauth_token_fingerprint @ agent/model_metadata.py:_codex_oauth_token_fingerprint */
 int agent_model_metadata_u_codex_oauth_token_fingerprint(const char *arg) {
     /* Python: hashlib.sha256(access_token.encode()).hexdigest()[:16] — a
      * non-secret cache key for a Codex OAuth access token. */
@@ -141,7 +141,7 @@ int agent_model_metadata_u_codex_oauth_token_fingerprint(const char *arg) {
     return 0;
 }
 
-/* PoP: _extract_chatgpt_account_id @ agent/model_metadata.py:_extract_chatgpt_account_id */
+/* PoP: agent_model_metadata_u_extract_chatgpt_account_id @ agent/model_metadata.py:_extract_chatgpt_account_id */
 int agent_model_metadata_u_extract_chatgpt_account_id(const char *arg) {
     /* Python: JWT claim extract. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -152,7 +152,7 @@ int agent_model_metadata_u_extract_chatgpt_account_id(const char *arg) {
     return 0;
 }
 
-/* PoP: _fetch_codex_oauth_context_lengths_with_source @ agent/model_metadata.py:_fetch_codex_oauth_context_lengths_with_source */
+/* PoP: agent_model_metadata_u_fetch_codex_oauth_context_lengths_wit_ce @ agent/model_metadata.py:_fetch_codex_oauth_context_lengths_with_source */
 int agent_model_metadata_u_fetch_codex_oauth_context_lengths_wit_ce(const char *arg) {
     /* Python: token-fingerprint cache. Arg =
      * "from_http\tstate\tresult". */
@@ -166,7 +166,7 @@ int agent_model_metadata_u_fetch_codex_oauth_context_lengths_wit_ce(const char *
     return 0;
 }
 
-/* PoP: _resolve_codex_oauth_context_length_with_source @ agent/model_metadata.py:_resolve_codex_oauth_context_length_with_source */
+/* PoP: agent_model_metadata_u_resolve_codex_oauth_context_length_wi_ce @ agent/model_metadata.py:_resolve_codex_oauth_context_length_with_source */
 int agent_model_metadata_u_resolve_codex_oauth_context_length_wi_ce(const char *arg) {
     /* Python: live/memory/fallback. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n\n"); return 0; }
@@ -177,7 +177,7 @@ int agent_model_metadata_u_resolve_codex_oauth_context_length_wi_ce(const char *
     return 0;
 }
 
-/* PoP: _is_cjk_token_dense_char @ agent/model_metadata.py:_is_cjk_token_dense_char */
+/* PoP: agent_model_metadata_u_is_cjk_token_dense_char @ agent/model_metadata.py:_is_cjk_token_dense_char */
 int agent_model_metadata_u_is_cjk_token_dense_char(const char *arg) {
     /* Python: codepoint ranges. Arg = "codepoint". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -189,7 +189,7 @@ int agent_model_metadata_u_is_cjk_token_dense_char(const char *arg) {
     return 0;
 }
 
-/* PoP: _estimate_message_tokens_without_images @ agent/model_metadata.py:_estimate_message_tokens_without_images */
+/* PoP: agent_model_metadata_u_estimate_message_tokens_without_images @ agent/model_metadata.py:_estimate_message_tokens_without_images */
 int agent_model_metadata_u_estimate_message_tokens_without_images(const char *arg) {
     /* Python: shadow msg w/ images stripped. Arg = "msg_json\tstate\ttokens". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -201,7 +201,7 @@ int agent_model_metadata_u_estimate_message_tokens_without_images(const char *ar
     return 0;
 }
 
-/* PoP: _tool_name_for_cache @ agent/model_metadata.py:_tool_name_for_cache */
+/* PoP: agent_model_metadata_u_tool_name_for_cache @ agent/model_metadata.py:_tool_name_for_cache */
 int agent_model_metadata_u_tool_name_for_cache(const char *arg) {
     /* Python: tool.function.name elif tool.name (str). Arg = tool JSON. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -220,7 +220,7 @@ int agent_model_metadata_u_tool_name_for_cache(const char *arg) {
     return 0;
 }
 
-/* PoP: _estimate_tools_tokens_rough @ agent/model_metadata.py:_estimate_tools_tokens_rough */
+/* PoP: agent_model_metadata_u_estimate_tools_tokens_rough @ agent/model_metadata.py:_estimate_tools_tokens_rough */
 int agent_model_metadata_u_estimate_tools_tokens_rough(const char *arg) {
     /* Python: id-keyed cache. Arg =
      * "count\tstate\tresult". */
@@ -233,7 +233,7 @@ int agent_model_metadata_u_estimate_tools_tokens_rough(const char *arg) {
     return 0;
 }
 
-/* PoP: _has_slot_padding @ agent/pet/generate/atlas.py:_has_slot_padding */
+/* PoP: agent_pet_generate_atlas_u_has_slot_padding @ agent/pet/generate/atlas.py:_has_slot_padding */
 int agent_pet_generate_atlas_u_has_slot_padding(const char *arg) {
     /* Python: bbox padding check. Arg = "left\ttop\tright\tbottom\tw\th". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -253,7 +253,7 @@ int agent_pet_generate_atlas_u_has_slot_padding(const char *arg) {
     return 0;
 }
 
-/* PoP: _slot_bounds @ agent/pet/generate/atlas.py:_slot_bounds */
+/* PoP: agent_pet_generate_atlas_u_slot_bounds @ agent/pet/generate/atlas.py:_slot_bounds */
 int agent_pet_generate_atlas_u_slot_bounds(const char *arg) {
     /* Python: [(round(i*w/n), round((i+1)*w/n)) for i in range(n)].
      * Arg = "width\tframe_count". Print "l0\tr0\tl1\tr1...". */
@@ -276,7 +276,7 @@ int agent_pet_generate_atlas_u_slot_bounds(const char *arg) {
     return 0;
 }
 
-/* PoP: _component_crops @ agent/pet/generate/atlas.py:_component_crops */
+/* PoP: agent_pet_generate_atlas_u_component_crops @ agent/pet/generate/atlas.py:_component_crops */
 int agent_pet_generate_atlas_u_component_crops(const char *arg) {
     /* Python: connected components. Arg =
      * "frames\tstate\tresult". */
@@ -289,7 +289,7 @@ int agent_pet_generate_atlas_u_component_crops(const char *arg) {
     return 0;
 }
 
-/* PoP: _sever_expected_gutters @ agent/pet/generate/atlas.py:_sever_expected_gutters */
+/* PoP: agent_pet_generate_atlas_u_sever_expected_gutters @ agent/pet/generate/atlas.py:_sever_expected_gutters */
 int agent_pet_generate_atlas_u_sever_expected_gutters(const char *arg) {
     /* Python: transparent gutter cut. Arg = "frame_count\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -303,7 +303,7 @@ int agent_pet_generate_atlas_u_sever_expected_gutters(const char *arg) {
     return 0;
 }
 
-/* PoP: _slot_crops @ agent/pet/generate/atlas.py:_slot_crops */
+/* PoP: agent_pet_generate_atlas_u_slot_crops @ agent/pet/generate/atlas.py:_slot_crops */
 int agent_pet_generate_atlas_u_slot_crops(const char *arg) {
     /* Python: uniform column slices + bleed cleanup. Arg =
      * "frame_count\trequire_padding\tstate". */
@@ -317,7 +317,7 @@ int agent_pet_generate_atlas_u_slot_crops(const char *arg) {
     return 0;
 }
 
-/* PoP: _frame_x_ranges @ agent/pet/generate/atlas.py:_frame_x_ranges */
+/* PoP: agent_pet_generate_atlas_u_frame_x_ranges @ agent/pet/generate/atlas.py:_frame_x_ranges */
 int agent_pet_generate_atlas_u_frame_x_ranges(const char *arg) {
     /* Python: gutter-based slicing. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -328,7 +328,7 @@ int agent_pet_generate_atlas_u_frame_x_ranges(const char *arg) {
     return 0;
 }
 
-/* PoP: _significant_subject_boxes @ agent/pet/generate/atlas.py:_significant_subject_boxes */
+/* PoP: agent_pet_generate_atlas_u_significant_subject_boxes @ agent/pet/generate/atlas.py:_significant_subject_boxes */
 int agent_pet_generate_atlas_u_significant_subject_boxes(const char *arg) {
     /* Python: boxes with mass >= max(32, max_mass * 0.12) after merging.
      * Arg = "mass\tmass\t..." — echo the significant masses. */
@@ -361,7 +361,7 @@ int agent_pet_generate_atlas_u_significant_subject_boxes(const char *arg) {
     return 0;
 }
 
-/* PoP: _validate_extracted_frames @ agent/pet/generate/atlas.py:_validate_extracted_frames */
+/* PoP: agent_pet_generate_atlas_u_validate_extracted_frames @ agent/pet/generate/atlas.py:_validate_extracted_frames */
 int agent_pet_generate_atlas_u_validate_extracted_frames(const char *arg) {
     /* Python: multi-pose rejection. Arg =
      * "count\tstate\tresult\terr". */
@@ -379,7 +379,7 @@ int agent_pet_generate_atlas_u_validate_extracted_frames(const char *arg) {
     return 0;
 }
 
-/* PoP: extract_strip_frames @ agent/pet/generate/atlas.py:extract_strip_frames */
+/* PoP: agent_pet_generate_atlas_extract_strip_frames @ agent/pet/generate/atlas.py:extract_strip_frames */
 int agent_pet_generate_atlas_extract_strip_frames(const char *arg) {
     /* Python: strip → frames. Arg =
      * "count\tstate\tresult". */
@@ -392,7 +392,7 @@ int agent_pet_generate_atlas_extract_strip_frames(const char *arg) {
     return 0;
 }
 
-/* PoP: normalize_cells @ agent/pet/generate/atlas.py:normalize_cells */
+/* PoP: agent_pet_generate_atlas_normalize_cells @ agent/pet/generate/atlas.py:normalize_cells */
 int agent_pet_generate_atlas_normalize_cells(const char *arg) {
     /* Python: anti-jitter registration. Arg =
      * "states\tstate\tresult". */
@@ -405,7 +405,7 @@ int agent_pet_generate_atlas_normalize_cells(const char *arg) {
     return 0;
 }
 
-/* PoP: single_frame @ agent/pet/generate/atlas.py:single_frame */
+/* PoP: agent_pet_generate_atlas_single_frame @ agent/pet/generate/atlas.py:single_frame */
 int agent_pet_generate_atlas_single_frame(const char *arg) {
     /* Python: keyed single frame, fit to cell. Arg = "image_path\tfit\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -415,7 +415,7 @@ int agent_pet_generate_atlas_single_frame(const char *arg) {
     return 0;
 }
 
-/* PoP: _clear_transparent_rgb @ agent/pet/generate/atlas.py:_clear_transparent_rgb */
+/* PoP: agent_pet_generate_atlas_u_clear_transparent_rgb @ agent/pet/generate/atlas.py:_clear_transparent_rgb */
 int agent_pet_generate_atlas_u_clear_transparent_rgb(const char *arg) {
     /* Python: zero RGB of fully-transparent RGBA pixels. Arg = "path" (PPM
      * passthrough: print same). */
@@ -424,7 +424,7 @@ int agent_pet_generate_atlas_u_clear_transparent_rgb(const char *arg) {
     return 0;
 }
 
-/* PoP: mirror_frames @ agent/pet/generate/atlas.py:mirror_frames */
+/* PoP: agent_pet_generate_atlas_mirror_frames @ agent/pet/generate/atlas.py:mirror_frames */
 int agent_pet_generate_atlas_mirror_frames(const char *arg) {
     /* Python: horizontal flip each frame in place. Arg = "count\tstate". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -433,7 +433,7 @@ int agent_pet_generate_atlas_mirror_frames(const char *arg) {
     return 0;
 }
 
-/* PoP: compose_atlas @ agent/pet/generate/atlas.py:compose_atlas */
+/* PoP: agent_pet_generate_atlas_compose_atlas @ agent/pet/generate/atlas.py:compose_atlas */
 int agent_pet_generate_atlas_compose_atlas(const char *arg) {
     /* Python: pack frames into RGBA atlas. Arg = "states\trows\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -444,7 +444,7 @@ int agent_pet_generate_atlas_compose_atlas(const char *arg) {
     return 0;
 }
 
-/* PoP: atlas_to_webp_bytes @ agent/pet/generate/atlas.py:atlas_to_webp_bytes */
+/* PoP: agent_pet_generate_atlas_atlas_to_webp_bytes @ agent/pet/generate/atlas.py:atlas_to_webp_bytes */
 int agent_pet_generate_atlas_atlas_to_webp_bytes(const char *arg) {
     /* Python: encode atlas to lossless WebP bytes (the on-disk pet format).
      * Native port: decode the source image (PNG via pngdec) to RGBA, then
@@ -511,7 +511,7 @@ int agent_pet_generate_atlas_atlas_to_webp_bytes(const char *arg) {
     return 0;
 }
 
-/* PoP: validate_atlas @ agent/pet/generate/atlas.py:validate_atlas */
+/* PoP: agent_pet_generate_atlas_validate_atlas @ agent/pet/generate/atlas.py:validate_atlas */
 int agent_pet_generate_atlas_validate_atlas(const char *arg) {
     /* Python: geometry invariants. Arg =
      * "ok\tstate\tresult". */
@@ -532,17 +532,17 @@ int agent_pet_generate_atlas_validate_atlas(const char *arg) {
  * so they are no longer silent no-ops. The wrapper ABI is `int` (legacy PoP
  * placeholder); return values map booleans to 1/0 and release any heap result. */
 
-/* PoP: _is_destructive_command @ agent/tool_dispatch_helpers.py:_is_destructive_command */
+/* PoP: agent_tool_dispatch_helpers_u_is_destructive_command @ agent/tool_dispatch_helpers.py:_is_destructive_command */
 int agent_tool_dispatch_helpers_u_is_destructive_command(const char *arg) {
     return is_destructive_command(arg) ? 1 : 0;
 }
 
-/* PoP: _is_mcp_tool_parallel_safe @ agent/tool_dispatch_helpers.py:_is_mcp_tool_parallel_safe */
+/* PoP: agent_tool_dispatch_helpers_u_is_mcp_tool_parallel_safe @ agent/tool_dispatch_helpers.py:_is_mcp_tool_parallel_safe */
 int agent_tool_dispatch_helpers_u_is_mcp_tool_parallel_safe(const char *arg) {
     return is_mcp_tool_parallel_safe(arg) ? 1 : 0;
 }
 
-/* PoP: _plan_tool_batch_segments @ agent/tool_dispatch_helpers.py:_plan_tool_batch_segments */
+/* PoP: agent_tool_dispatch_helpers_u_plan_tool_batch_segments @ agent/tool_dispatch_helpers.py:_plan_tool_batch_segments */
 int agent_tool_dispatch_helpers_u_plan_tool_batch_segments(const char *arg) {
     char *segs = plan_tool_batch_segments(arg, NULL);
     int ok = (segs != NULL) ? 1 : 0;
@@ -550,7 +550,7 @@ int agent_tool_dispatch_helpers_u_plan_tool_batch_segments(const char *arg) {
     return ok;
 }
 
-/* PoP: _should_parallelize_tool_batch @ agent/tool_dispatch_helpers.py:_should_parallelize_tool_batch */
+/* PoP: agent_tool_dispatch_helpers_u_should_parallelize_tool_batch @ agent/tool_dispatch_helpers.py:_should_parallelize_tool_batch */
 int agent_tool_dispatch_helpers_u_should_parallelize_tool_batch(const char *arg) {
     /* arg is a JSON array of {"name":..,"arguments":..}; reuse the segment planner. */
     char *segs = plan_tool_batch_segments(arg, NULL);
@@ -563,7 +563,7 @@ int agent_tool_dispatch_helpers_u_should_parallelize_tool_batch(const char *arg)
     return parallel;
 }
 
-/* PoP: _extract_parallel_scope_path @ agent/tool_dispatch_helpers.py:_extract_parallel_scope_path */
+/* PoP: agent_tool_dispatch_helpers_u_extract_parallel_scope_path @ agent/tool_dispatch_helpers.py:_extract_parallel_scope_path */
 int agent_tool_dispatch_helpers_u_extract_parallel_scope_path(const char *arg) {
     /* arg is a JSON {"name":..,"arguments":..} object; decompose it. */
     char *jerr = NULL;
@@ -579,7 +579,7 @@ int agent_tool_dispatch_helpers_u_extract_parallel_scope_path(const char *arg) {
     return ok;
 }
 
-/* PoP: _extract_parallel_scope_paths @ agent/tool_dispatch_helpers.py:_extract_parallel_scope_paths */
+/* PoP: extract_parallel_scope_paths @ agent/tool_dispatch_helpers.py:_extract_parallel_scope_paths */
 /* Wrapper exposing the lib's extract_parallel_scope_paths (returns a JSON
  * array of canonical scope-path strings for a path-scoped tool call). */
 char *agent_tool_dispatch_helpers_u_extract_parallel_scope_paths(
@@ -596,7 +596,7 @@ char *agent_tool_dispatch_helpers_u_extract_parallel_scope_paths(
     return out ? out : strdup("[]");
 }
 
-/* PoP: _paths_overlap @ agent/tool_dispatch_helpers.py:_paths_overlap */
+/* PoP: agent_tool_dispatch_helpers_u_paths_overlap @ agent/tool_dispatch_helpers.py:_paths_overlap */
 int agent_tool_dispatch_helpers_u_paths_overlap(const char *arg) {
     /* arg is a JSON [left, right] array. */
     char *jerr = NULL;
@@ -611,12 +611,12 @@ int agent_tool_dispatch_helpers_u_paths_overlap(const char *arg) {
     return ov;
 }
 
-/* PoP: _is_multimodal_tool_result @ agent/tool_dispatch_helpers.py:_is_multimodal_tool_result */
+/* PoP: agent_tool_dispatch_helpers_u_is_multimodal_tool_result @ agent/tool_dispatch_helpers.py:_is_multimodal_tool_result */
 int agent_tool_dispatch_helpers_u_is_multimodal_tool_result(const char *arg) {
     return is_multimodal_tool_result(arg) ? 1 : 0;
 }
 
-/* PoP: _multimodal_text_summary @ agent/tool_dispatch_helpers.py:_multimodal_text_summary */
+/* PoP: agent_tool_dispatch_helpers_u_multimodal_text_summary @ agent/tool_dispatch_helpers.py:_multimodal_text_summary */
 int agent_tool_dispatch_helpers_u_multimodal_text_summary(const char *arg) {
     char *s = multimodal_text_summary_from_json(arg);
     int ok = (s != NULL) ? 1 : 0;
@@ -624,7 +624,7 @@ int agent_tool_dispatch_helpers_u_multimodal_text_summary(const char *arg) {
     return ok;
 }
 
-/* PoP: _append_subdir_hint_to_multimodal @ agent/tool_dispatch_helpers.py:_append_subdir_hint_to_multimodal */
+/* PoP: agent_tool_dispatch_helpers_u_append_subdir_hint_to_multimodal @ agent/tool_dispatch_helpers.py:_append_subdir_hint_to_multimodal */
 int agent_tool_dispatch_helpers_u_append_subdir_hint_to_multimodal(const char *arg) {
     /* arg is a JSON [result_json, hint] array. */
     char *jerr = NULL;
@@ -642,7 +642,7 @@ int agent_tool_dispatch_helpers_u_append_subdir_hint_to_multimodal(const char *a
     return ok;
 }
 
-/* PoP: _extract_file_mutation_targets @ agent/tool_dispatch_helpers.py:_extract_file_mutation_targets */
+/* PoP: agent_tool_dispatch_helpers_u_extract_file_mutation_targets @ agent/tool_dispatch_helpers.py:_extract_file_mutation_targets */
 int agent_tool_dispatch_helpers_u_extract_file_mutation_targets(const char *arg) {
     /* arg is a JSON [tool_name, args_json] array. */
     char *jerr = NULL;
@@ -661,7 +661,7 @@ int agent_tool_dispatch_helpers_u_extract_file_mutation_targets(const char *arg)
     return n;
 }
 
-/* PoP: _extract_error_preview @ agent/tool_dispatch_helpers.py:_extract_error_preview */
+/* PoP: agent_tool_dispatch_helpers_u_extract_error_preview @ agent/tool_dispatch_helpers.py:_extract_error_preview */
 int agent_tool_dispatch_helpers_u_extract_error_preview(const char *arg) {
     /* arg is a JSON [result, max_len] array. */
     char *jerr = NULL;
@@ -682,7 +682,7 @@ int agent_tool_dispatch_helpers_u_extract_error_preview(const char *arg) {
     return ok;
 }
 
-/* PoP: _trajectory_normalize_msg @ agent/tool_dispatch_helpers.py:_trajectory_normalize_msg */
+/* PoP: agent_tool_dispatch_helpers_u_trajectory_normalize_msg @ agent/tool_dispatch_helpers.py:_trajectory_normalize_msg */
 int agent_tool_dispatch_helpers_u_trajectory_normalize_msg(const char *arg) {
     char *s = trajectory_normalize_msg_json(arg);
     int ok = (s != NULL) ? 1 : 0;
@@ -690,7 +690,7 @@ int agent_tool_dispatch_helpers_u_trajectory_normalize_msg(const char *arg) {
     return ok;
 }
 
-/* PoP: make_tool_result_message @ agent/tool_dispatch_helpers.py:make_tool_result_message */
+/* PoP: agent_tool_dispatch_helpers_make_tool_result_message @ agent/tool_dispatch_helpers.py:make_tool_result_message */
 int agent_tool_dispatch_helpers_make_tool_result_message(const char *arg) {
     /* arg is a JSON [name, content, tool_call_id] array. */
     char *jerr = NULL;
@@ -707,12 +707,12 @@ int agent_tool_dispatch_helpers_make_tool_result_message(const char *arg) {
     return ok;
 }
 
-/* PoP: _is_untrusted_tool @ agent/tool_dispatch_helpers.py:_is_untrusted_tool */
+/* PoP: agent_tool_dispatch_helpers_u_is_untrusted_tool @ agent/tool_dispatch_helpers.py:_is_untrusted_tool */
 int agent_tool_dispatch_helpers_u_is_untrusted_tool(const char *arg) {
     return is_untrusted_tool(arg) ? 1 : 0;
 }
 
-/* PoP: _tool_output_risk_metadata @ agent/tool_dispatch_helpers.py:_tool_output_risk_metadata */
+/* PoP: agent_tool_dispatch_helpers_u_tool_output_risk_metadata @ agent/tool_dispatch_helpers.py:_tool_output_risk_metadata */
 int agent_tool_dispatch_helpers_u_tool_output_risk_metadata(const char *arg) {
     /* arg is a JSON [tool_name, content] array. */
     char *jerr = NULL;
@@ -730,7 +730,7 @@ int agent_tool_dispatch_helpers_u_tool_output_risk_metadata(const char *arg) {
     return ok;
 }
 
-/* PoP: _maybe_wrap_untrusted @ agent/tool_dispatch_helpers.py:_maybe_wrap_untrusted */
+/* PoP: agent_tool_dispatch_helpers_u_maybe_wrap_untrusted @ agent/tool_dispatch_helpers.py:_maybe_wrap_untrusted */
 int agent_tool_dispatch_helpers_u_maybe_wrap_untrusted(const char *arg) {
     /* arg is a JSON [name, content] array. */
     char *jerr = NULL;
@@ -748,7 +748,7 @@ int agent_tool_dispatch_helpers_u_maybe_wrap_untrusted(const char *arg) {
     return ok;
 }
 
-/* PoP: can_change_plan @ agent/subscription_view.py:can_change_plan */
+/* PoP: agent_subscription_view_can_change_plan @ agent/subscription_view.py:can_change_plan */
 int agent_subscription_view_can_change_plan(const char *arg) {
     /* Python: raw if set else is_admin. Arg = "raw\tadmin" (raw empty =
      * None). */
@@ -759,7 +759,7 @@ int agent_subscription_view_can_change_plan(const char *arg) {
     return 0;
 }
 
-/* PoP: _parse_current @ agent/subscription_view.py:_parse_current */
+/* PoP: agent_subscription_view_u_parse_current @ agent/subscription_view.py:_parse_current */
 int agent_subscription_view_u_parse_current(const char *arg) {
     /* Python: current subscription map. Arg = "raw_json\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -768,7 +768,7 @@ int agent_subscription_view_u_parse_current(const char *arg) {
     return 0;
 }
 
-/* PoP: _coalesce @ agent/subscription_view.py:_coalesce */
+/* PoP: agent_subscription_view_u_coalesce @ agent/subscription_view.py:_coalesce */
 int agent_subscription_view_u_coalesce(const char *arg) {
     /* Python: first non-None value (preserves 0). Arg = "v1\tv2\t..."
      * (empty = None). */
@@ -787,7 +787,7 @@ int agent_subscription_view_u_coalesce(const char *arg) {
     return 0;
 }
 
-/* PoP: _parse_tier @ agent/subscription_view.py:_parse_tier */
+/* PoP: agent_subscription_view_u_parse_tier @ agent/subscription_view.py:_parse_tier */
 int agent_subscription_view_u_parse_tier(const char *arg) {
     /* Python: NAS tier dict -> SubscriptionTier. Arg = "raw_json". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -808,7 +808,7 @@ int agent_subscription_view_u_parse_tier(const char *arg) {
     return 0;
 }
 
-/* PoP: subscription_change_preview_from_payload @ agent/subscription_view.py:subscription_change_preview_from_payload */
+/* PoP: agent_subscription_view_subscription_change_preview_from_pay_ad @ agent/subscription_view.py:subscription_change_preview_from_payload */
 int agent_subscription_view_subscription_change_preview_from_pay_ad(const char *arg) {
     /* Python: preview payload map. Arg = "payload_json\tresult". */
     if (!arg || !*arg) { printf("{\"effect\": \"blocked\"}\n"); return 0; }
@@ -817,7 +817,7 @@ int agent_subscription_view_subscription_change_preview_from_pay_ad(const char *
     return 0;
 }
 
-/* PoP: subscription_state_from_payload @ agent/subscription_view.py:subscription_state_from_payload */
+/* PoP: agent_subscription_view_subscription_state_from_payload @ agent/subscription_view.py:subscription_state_from_payload */
 int agent_subscription_view_subscription_state_from_payload(const char *arg) {
     /* Python: payload -> state map. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -828,7 +828,7 @@ int agent_subscription_view_subscription_state_from_payload(const char *arg) {
     return 0;
 }
 
-/* PoP: build_subscription_state @ agent/subscription_view.py:build_subscription_state */
+/* PoP: agent_subscription_view_build_subscription_state @ agent/subscription_view.py:build_subscription_state */
 int agent_subscription_view_build_subscription_state(const char *arg) {
     /* Python: fail-open fetch. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("{\"logged_in\": false}\n"); return 0; }
@@ -846,7 +846,7 @@ int agent_subscription_view_build_subscription_state(const char *arg) {
     return 0;
 }
 
-/* PoP: subscription_manage_url @ agent/subscription_view.py:subscription_manage_url */
+/* PoP: agent_subscription_view_subscription_manage_url @ agent/subscription_view.py:subscription_manage_url */
 int agent_subscription_view_subscription_manage_url(const char *arg) {
     /* Python: manage deep-link. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -857,7 +857,7 @@ int agent_subscription_view_subscription_manage_url(const char *arg) {
     return 0;
 }
 
-/* PoP: _format_dollars_grouped @ agent/subscription_view.py:_format_dollars_grouped */
+/* PoP: agent_subscription_view_u_format_dollars_grouped @ agent/subscription_view.py:_format_dollars_grouped */
 int agent_subscription_view_u_format_dollars_grouped(const char *arg) {
     /* Python: $1,000 / $1,234.50 / —. Arg = "value\tis_int\tgrouped". */
     if (!arg || !*arg) { printf("—\n"); return 0; }
@@ -869,7 +869,7 @@ int agent_subscription_view_u_format_dollars_grouped(const char *arg) {
     return 0;
 }
 
-/* PoP: selectable_tiers @ agent/subscription_view.py:selectable_tiers */
+/* PoP: agent_subscription_view_selectable_tiers @ agent/subscription_view.py:selectable_tiers */
 int agent_subscription_view_selectable_tiers(const char *arg) {
     /* Python: enabled non-current tiers with order > 0, sorted. Arg =
      * "tiers_json" (array of {tier_order, is_enabled, is_current, name}). */
@@ -915,7 +915,7 @@ int agent_subscription_view_selectable_tiers(const char *arg) {
     return 0;
 }
 
-/* PoP: format_tier_row @ agent/subscription_view.py:format_tier_row */
+/* PoP: agent_subscription_view_format_tier_row @ agent/subscription_view.py:format_tier_row */
 int agent_subscription_view_format_tier_row(const char *arg) {
     /* Python: "name · $X/mo[ · $Y credits/mo]" with thousands-grouped money;
      * credits suffix only when present and > 0. Arg = "name\tdollars\tcredits". */
@@ -965,7 +965,7 @@ int agent_subscription_view_format_tier_row(const char *arg) {
     return 0;
 }
 
-/* PoP: is_upgrade @ agent/subscription_view.py:is_upgrade */
+/* PoP: agent_subscription_view_is_upgrade @ agent/subscription_view.py:is_upgrade */
 int agent_subscription_view_is_upgrade(const char *arg) {
     /* Python: tier_order rank comparison. Arg =
      * "tier_order\tcurrent_order\tresult". */
@@ -978,7 +978,7 @@ int agent_subscription_view_is_upgrade(const char *arg) {
     return 0;
 }
 
-/* PoP: _dev_current @ agent/subscription_view.py:_dev_current */
+/* PoP: agent_subscription_view_u_dev_current @ agent/subscription_view.py:_dev_current */
 int agent_subscription_view_u_dev_current(const char *arg) {
     /* Python: dev defaults (tier plus, 1000 monthly, 420 remaining) merged
      * with overrides. Arg = overrides JSON or empty. */
@@ -996,7 +996,7 @@ int agent_subscription_view_u_dev_current(const char *arg) {
     return 0;
 }
 
-/* PoP: _dev_tiers @ agent/subscription_view.py:_dev_tiers */
+/* PoP: agent_subscription_view_u_dev_tiers @ agent/subscription_view.py:_dev_tiers */
 int agent_subscription_view_u_dev_tiers(const char *arg) {
     /* Python: sample catalog with current mark. Arg = "current_id". */
     if (!arg || !*arg) { printf("free\n"); return 0; }
@@ -1014,7 +1014,7 @@ int agent_subscription_view_u_dev_tiers(const char *arg) {
     return 0;
 }
 
-/* PoP: dev_fixture_subscription_state @ agent/subscription_view.py:dev_fixture_subscription_state */
+/* PoP: agent_subscription_view_dev_fixture_subscription_state @ agent/subscription_view.py:dev_fixture_subscription_state */
 int agent_subscription_view_dev_fixture_subscription_state(const char *arg) {
     /* Python: fixture map. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1025,7 +1025,7 @@ int agent_subscription_view_dev_fixture_subscription_state(const char *arg) {
     return 0;
 }
 
-/* PoP: openai_codex_stale_timeout_floor @ agent/chat_completion_helpers.py:openai_codex_stale_timeout_floor */
+/* PoP: agent_chat_completion_helpers_openai_codex_stale_timeout_floor @ agent/chat_completion_helpers.py:openai_codex_stale_timeout_floor */
 int agent_chat_completion_helpers_openai_codex_stale_timeout_floor(const char *arg) {
     /* Python: tiered floor by est tokens. Arg = "est_tokens". */
     if (!arg || !*arg) { printf("0.00\n"); return 0; }
@@ -1037,7 +1037,7 @@ int agent_chat_completion_helpers_openai_codex_stale_timeout_floor(const char *a
     return 0;
 }
 
-/* PoP: _provider_preferences_for_agent @ agent/chat_completion_helpers.py:_provider_preferences_for_agent */
+/* PoP: agent_chat_completion_helpers_u_provider_preferences_for_agent @ agent/chat_completion_helpers.py:_provider_preferences_for_agent */
 int agent_chat_completion_helpers_u_provider_preferences_for_agent(const char *arg) {
     /* Python: validated routing prefs. Arg = "prefs_json\tcount". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -1046,7 +1046,7 @@ int agent_chat_completion_helpers_u_provider_preferences_for_agent(const char *a
     return 0;
 }
 
-/* PoP: _codex_wait_notice_recovery @ agent/chat_completion_helpers.py:_codex_wait_notice_recovery */
+/* PoP: agent_chat_completion_helpers_u_codex_wait_notice_recovery @ agent/chat_completion_helpers.py:_codex_wait_notice_recovery */
 int agent_chat_completion_helpers_u_codex_wait_notice_recovery(const char *arg) {
     /* Python: earliest watchdog deadline. Arg =
      * "state\tresult". */
@@ -1061,14 +1061,14 @@ int agent_chat_completion_helpers_u_codex_wait_notice_recovery(const char *arg) 
 /* shared stale-stream counter (mirrors agent._consecutive_stale_streams) */
 static long long g_stale_streams = 0;
 
-/* PoP: _stale_streak @ agent/chat_completion_helpers.py:_stale_streak */
+/* PoP: agent_chat_completion_helpers_u_stale_streak @ agent/chat_completion_helpers.py:_stale_streak */
 int agent_chat_completion_helpers_u_stale_streak(const char *arg) {
     /* Python: int(agent._consecutive_stale_streams or 0). */
     (void)arg;
     return (int)g_stale_streams;
 }
 
-/* PoP: _bump_stale_streak @ agent/chat_completion_helpers.py:_bump_stale_streak */
+/* PoP: agent_chat_completion_helpers_u_bump_stale_streak @ agent/chat_completion_helpers.py:_bump_stale_streak */
 int agent_chat_completion_helpers_u_bump_stale_streak(const char *arg) {
     /* Python: agent._consecutive_stale_streams = streak + 1 (best-effort).
      * The C port keeps a static counter mirroring the agent attr. */
@@ -1078,7 +1078,7 @@ int agent_chat_completion_helpers_u_bump_stale_streak(const char *arg) {
     return 0;
 }
 
-/* PoP: _reset_stale_streak @ agent/chat_completion_helpers.py:_reset_stale_streak */
+/* PoP: agent_chat_completion_helpers_u_reset_stale_streak @ agent/chat_completion_helpers.py:_reset_stale_streak */
 int agent_chat_completion_helpers_u_reset_stale_streak(const char *arg) {
     /* Python: agent._consecutive_stale_streams = 0. */
     (void)arg;
@@ -1087,7 +1087,7 @@ int agent_chat_completion_helpers_u_reset_stale_streak(const char *arg) {
     return 0;
 }
 
-/* PoP: _check_stale_giveup @ agent/chat_completion_helpers.py:_check_stale_giveup */
+/* PoP: agent_chat_completion_helpers_u_check_stale_giveup @ agent/chat_completion_helpers.py:_check_stale_giveup */
 int agent_chat_completion_helpers_u_check_stale_giveup(const char *arg) {
     /* Python: raise when streak >= giveup. Arg = "giveup\tstreak". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -1102,7 +1102,7 @@ int agent_chat_completion_helpers_u_check_stale_giveup(const char *arg) {
     return 0;
 }
 
-/* PoP: _derive_stream_stale_timeout @ agent/chat_completion_helpers.py:_derive_stream_stale_timeout */
+/* PoP: agent_chat_completion_helpers_u_derive_stream_stale_timeout @ agent/chat_completion_helpers.py:_derive_stream_stale_timeout */
 int agent_chat_completion_helpers_u_derive_stream_stale_timeout(const char *arg) {
     /* Python: patience budget. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("180.0\n"); return 0; }
@@ -1113,7 +1113,7 @@ int agent_chat_completion_helpers_u_derive_stream_stale_timeout(const char *arg)
     return 0;
 }
 
-/* PoP: _bedrock_reasoning_stale_floor @ agent/chat_completion_helpers.py:_bedrock_reasoning_stale_floor */
+/* PoP: agent_chat_completion_helpers_u_bedrock_reasoning_stale_floor @ agent/chat_completion_helpers.py:_bedrock_reasoning_stale_floor */
 int agent_chat_completion_helpers_u_bedrock_reasoning_stale_floor(const char *arg) {
     /* Python: profile-id slug map. Arg =
      * "found\tstate\tresult". */
@@ -1127,7 +1127,7 @@ int agent_chat_completion_helpers_u_bedrock_reasoning_stale_floor(const char *ar
     return 0;
 }
 
-/* PoP: _dispatch_nonstreaming_api_request @ agent/chat_completion_helpers.py:_dispatch_nonstreaming_api_request */
+/* PoP: agent_chat_completion_helpers_u_dispatch_nonstreaming_api_re_st @ agent/chat_completion_helpers.py:_dispatch_nonstreaming_api_request */
 int agent_chat_completion_helpers_u_dispatch_nonstreaming_api_re_st(const char *arg) {
     /* Python: single dispatch point. Arg =
      * "mode\tstate\tresult". */
@@ -1141,7 +1141,7 @@ int agent_chat_completion_helpers_u_dispatch_nonstreaming_api_re_st(const char *
     return 0;
 }
 
-/* PoP: should_use_direct_api_call @ agent/chat_completion_helpers.py:should_use_direct_api_call */
+/* PoP: agent_chat_completion_helpers_should_use_direct_api_call @ agent/chat_completion_helpers.py:should_use_direct_api_call */
 int agent_chat_completion_helpers_should_use_direct_api_call(const char *arg) {
     /* Python: cron + chat_completions + not moa. Arg =
      * "platform\tapi_mode\tprovider". */
@@ -1158,7 +1158,7 @@ int agent_chat_completion_helpers_should_use_direct_api_call(const char *arg) {
     return 0;
 }
 
-/* PoP: direct_api_call @ agent/chat_completion_helpers.py:direct_api_call */
+/* PoP: agent_chat_completion_helpers_direct_api_call @ agent/chat_completion_helpers.py:direct_api_call */
 int agent_chat_completion_helpers_direct_api_call(const char *arg) {
     /* Python: inline no-interrupt call. Arg =
      * "ok\tstate\tresult". */
@@ -1173,7 +1173,7 @@ int agent_chat_completion_helpers_direct_api_call(const char *arg) {
     return 0;
 }
 
-/* PoP: _fallback_entry_is_same_backend_by_base_url @ agent/chat_completion_helpers.py:_fallback_entry_is_same_backend_by_base_url */
+/* PoP: agent_chat_completion_helpers_u_fallback_entry_is_same_backe_rl @ agent/chat_completion_helpers.py:_fallback_entry_is_same_backend_by_base_url */
 int agent_chat_completion_helpers_u_fallback_entry_is_same_backe_rl(const char *arg) {
     /* Python (fb_base_url, current_base_url, fb_model, current_model,
      * fb_provider, current_provider): same base_url + same model means the
@@ -1200,7 +1200,7 @@ int agent_chat_completion_helpers_u_fallback_entry_is_same_backe_rl(const char *
     return 1;
 }
 
-/* PoP: _build_partial_stream_stub @ agent/chat_completion_helpers.py:_build_partial_stream_stub */
+/* PoP: agent_chat_completion_helpers_u_build_partial_stream_stub @ agent/chat_completion_helpers.py:_build_partial_stream_stub */
 int agent_chat_completion_helpers_u_build_partial_stream_stub(const char *arg) {
     /* Python: PARTIAL_STREAM_STUB_ID stub. Arg =
      * "role\tcontent\tstate\tresult". */
@@ -1214,7 +1214,7 @@ int agent_chat_completion_helpers_u_build_partial_stream_stub(const char *arg) {
     return 0;
 }
 
-/* PoP: _moa_reference_output_allowed @ agent/agent_init.py:_moa_reference_output_allowed */
+/* PoP: agent_agent_init_u_moa_reference_output_allowed @ agent/agent_init.py:_moa_reference_output_allowed */
 int agent_agent_init_u_moa_reference_output_allowed(const char *arg) {
     /* Python: not (platform == "cli" and tool_progress_mode == "off").
      * Arg = "platform\tprogress_mode". */
@@ -1226,7 +1226,7 @@ int agent_agent_init_u_moa_reference_output_allowed(const char *arg) {
     return 0;
 }
 
-/* PoP: _relay_moa_reference_event @ agent/agent_init.py:_relay_moa_reference_event */
+/* PoP: agent_agent_init_u_relay_moa_reference_event @ agent/agent_init.py:_relay_moa_reference_event */
 int agent_agent_init_u_relay_moa_reference_event(const char *arg) {
     /* Python: relay MoA display events. Arg =
      * "event\tlabel\ttext\tstate". */
@@ -1240,7 +1240,7 @@ int agent_agent_init_u_relay_moa_reference_event(const char *arg) {
     return 0;
 }
 
-/* PoP: _provider_default_routes @ agent/agent_init.py:_provider_default_routes */
+/* PoP: agent_agent_init_u_provider_default_routes @ agent/agent_init.py:_provider_default_routes */
 int agent_agent_init_u_provider_default_routes(const char *arg) {
     /* Python: known exact default routes for a canonical provider id.
      * C port carries the builtin table; unknown providers -> empty. */
@@ -1273,7 +1273,7 @@ int agent_agent_init_u_provider_default_routes(const char *arg) {
     return 0;
 }
 
-/* PoP: _context_route_mismatch @ agent/agent_init.py:_context_route_mismatch */
+/* PoP: agent_agent_init_u_context_route_mismatch @ agent/agent_init.py:_context_route_mismatch */
 int agent_agent_init_u_context_route_mismatch(const char *arg) {
     /* Python: route compare. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -1284,7 +1284,7 @@ int agent_agent_init_u_context_route_mismatch(const char *arg) {
     return 0;
 }
 
-/* PoP: _normalize_custom_provider_name @ agent/agent_init.py:_normalize_custom_provider_name */
+/* PoP: agent_agent_init_u_normalize_custom_provider_name @ agent/agent_init.py:_normalize_custom_provider_name */
 int agent_agent_init_u_normalize_custom_provider_name(const char *arg) {
     /* Python: str(value or "").strip().lower().replace(" ", "-"). */
     if (!arg) { printf("\n"); return 0; }
@@ -1302,7 +1302,7 @@ int agent_agent_init_u_normalize_custom_provider_name(const char *arg) {
     return 0;
 }
 
-/* PoP: _custom_provider_runtime_ids @ agent/agent_init.py:_custom_provider_runtime_ids */
+/* PoP: agent_agent_init_u_custom_provider_runtime_ids @ agent/agent_init.py:_custom_provider_runtime_ids */
 int agent_agent_init_u_custom_provider_runtime_ids(const char *arg) {
     /* Python: {normalized, f"custom:{normalized}"} or empty set. Arg =
      * provider name (empty = none). */
@@ -1311,7 +1311,7 @@ int agent_agent_init_u_custom_provider_runtime_ids(const char *arg) {
     return 0;
 }
 
-/* PoP: _build_codex_gpt5_autoraise_notice @ agent/agent_init.py:_build_codex_gpt5_autoraise_notice */
+/* PoP: agent_agent_init_u_build_codex_gpt5_autoraise_notice @ agent/agent_init.py:_build_codex_gpt5_autoraise_notice */
 int agent_agent_init_u_build_codex_gpt5_autoraise_notice(const char *arg) {
     /* Python: autoraise banner. Arg =
      * "model\tcap\tfrom\tto\tstate\tresult". */
@@ -1328,7 +1328,7 @@ int agent_agent_init_u_build_codex_gpt5_autoraise_notice(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_compression_threshold @ agent/agent_init.py:_resolve_compression_threshold */
+/* PoP: agent_agent_init_u_resolve_compression_threshold @ agent/agent_init.py:_resolve_compression_threshold */
 int agent_agent_init_u_resolve_compression_threshold(const char *arg) {
     /* Python: autoraise-never-lower. Arg =
      * "has_override\tautoraise\tstate\tresult". */
@@ -1344,7 +1344,7 @@ int agent_agent_init_u_resolve_compression_threshold(const char *arg) {
     return 0;
 }
 
-/* PoP: _codex_gpt55_autoraise_notice_marker @ agent/agent_init.py:_codex_gpt55_autoraise_notice_marker */
+/* PoP: agent_agent_init_u_codex_gpt55_autoraise_notice_marker @ agent/agent_init.py:_codex_gpt55_autoraise_notice_marker */
 int agent_agent_init_u_codex_gpt55_autoraise_notice_marker(const char *arg) {
     /* Python: $HERMES_HOME/.codex_gpt55_autoraise_notice. Arg = hermes_home. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1352,7 +1352,7 @@ int agent_agent_init_u_codex_gpt55_autoraise_notice_marker(const char *arg) {
     return 0;
 }
 
-/* PoP: _codex_gpt55_autoraise_notice_state @ agent/agent_init.py:_codex_gpt55_autoraise_notice_state */
+/* PoP: agent_agent_init_u_codex_gpt55_autoraise_notice_state @ agent/agent_init.py:_codex_gpt55_autoraise_notice_state */
 int agent_agent_init_u_codex_gpt55_autoraise_notice_state(const char *arg) {
     /* Python: model:from_pct:to_pct. Arg = "model\tfrom\tto". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1372,7 +1372,7 @@ int agent_agent_init_u_codex_gpt55_autoraise_notice_state(const char *arg) {
     return 0;
 }
 
-/* PoP: _codex_gpt55_autoraise_notice_seen @ agent/agent_init.py:_codex_gpt55_autoraise_notice_seen */
+/* PoP: agent_agent_init_u_codex_gpt55_autoraise_notice_seen @ agent/agent_init.py:_codex_gpt55_autoraise_notice_seen */
 int agent_agent_init_u_codex_gpt55_autoraise_notice_seen(const char *arg) {
     /* Python: marker text == current state. Arg = "marker\tcurrent". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -1384,7 +1384,7 @@ int agent_agent_init_u_codex_gpt55_autoraise_notice_seen(const char *arg) {
     return 0;
 }
 
-/* PoP: _record_codex_gpt55_autoraise_notice @ agent/agent_init.py:_record_codex_gpt55_autoraise_notice */
+/* PoP: agent_agent_init_u_record_codex_gpt55_autoraise_notice @ agent/agent_init.py:_record_codex_gpt55_autoraise_notice */
 int agent_agent_init_u_record_codex_gpt55_autoraise_notice(const char *arg) {
     /* Python: write marker (best-effort). Arg = "path\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1397,7 +1397,7 @@ int agent_agent_init_u_record_codex_gpt55_autoraise_notice(const char *arg) {
     return 0;
 }
 
-/* PoP: usage_pct @ agent/rate_limit_tracker.py:usage_pct */
+/* PoP: agent_rate_limit_tracker_usage_pct @ agent/rate_limit_tracker.py:usage_pct */
 int agent_rate_limit_tracker_usage_pct(const char *arg) {
     /* Python: if limit <= 0 -> 0.0; else (used / limit) * 100.0.
      * Arg = "used\tlimit". */
@@ -1417,7 +1417,7 @@ int agent_rate_limit_tracker_usage_pct(const char *arg) {
     return 0;
 }
 
-/* PoP: remaining_seconds_now @ agent/rate_limit_tracker.py:remaining_seconds_now */
+/* PoP: agent_rate_limit_tracker_remaining_seconds_now @ agent/rate_limit_tracker.py:remaining_seconds_now */
 int agent_rate_limit_tracker_remaining_seconds_now(const char *arg) {
     /* Python: max(0.0, reset_seconds - (now - captured_at)).
      * Arg = "captured_at\treset_seconds". */
@@ -1437,14 +1437,14 @@ int agent_rate_limit_tracker_remaining_seconds_now(const char *arg) {
     return 0;
 }
 
-/* PoP: has_data @ agent/rate_limit_tracker.py:has_data */
+/* PoP: agent_rate_limit_tracker_has_data @ agent/rate_limit_tracker.py:has_data */
 int agent_rate_limit_tracker_has_data(const char *arg) {
     /* Python: self.captured_at > 0. */
     if (!arg || !*arg) return 0;
     return strtod(arg, NULL) > 0;
 }
 
-/* PoP: age_seconds @ agent/rate_limit_tracker.py:age_seconds */
+/* PoP: agent_rate_limit_tracker_age_seconds @ agent/rate_limit_tracker.py:age_seconds */
 int agent_rate_limit_tracker_age_seconds(const char *arg) {
     /* Python: if not has_data (captured_at <= 0) -> float("inf");
      * else time.time() - self.captured_at. Arg = "captured_at" epoch. */
@@ -1455,7 +1455,7 @@ int agent_rate_limit_tracker_age_seconds(const char *arg) {
     return 0;
 }
 
-/* PoP: _safe_float @ agent/rate_limit_tracker.py:_safe_float */
+/* PoP: agent_rate_limit_tracker_u_safe_float @ agent/rate_limit_tracker.py:_safe_float */
 int agent_rate_limit_tracker_u_safe_float(const char *arg) {
     /* Python: float(value) or default. Arg = "value\tdefault". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -1472,7 +1472,7 @@ int agent_rate_limit_tracker_u_safe_float(const char *arg) {
     return 0;
 }
 
-/* PoP: parse_rate_limit_headers @ agent/rate_limit_tracker.py:parse_rate_limit_headers */
+/* PoP: agent_rate_limit_tracker_parse_rate_limit_headers @ agent/rate_limit_tracker.py:parse_rate_limit_headers */
 int agent_rate_limit_tracker_parse_rate_limit_headers(const char *arg) {
     /* Python: header parse. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1483,7 +1483,7 @@ int agent_rate_limit_tracker_parse_rate_limit_headers(const char *arg) {
     return 0;
 }
 
-/* PoP: _fmt_count @ agent/rate_limit_tracker.py:_fmt_count */
+/* PoP: agent_rate_limit_tracker_u_fmt_count @ agent/rate_limit_tracker.py:_fmt_count */
 int agent_rate_limit_tracker_u_fmt_count(const char *arg) {
     /* Python: n>=1e6 -> "%.1fM"; n>=1e3 -> "%.1fK"; else str(n). Arg = n. */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -1494,7 +1494,7 @@ int agent_rate_limit_tracker_u_fmt_count(const char *arg) {
     return 0;
 }
 
-/* PoP: _fmt_seconds @ agent/rate_limit_tracker.py:_fmt_seconds */
+/* PoP: agent_rate_limit_tracker_u_fmt_seconds @ agent/rate_limit_tracker.py:_fmt_seconds */
 int agent_rate_limit_tracker_u_fmt_seconds(const char *arg) {
     /* Python: 58s / 2m 14s / 58m 57s / 1h 2m. Arg = seconds. */
     if (!arg || !*arg) { printf("0s\n"); return 0; }
@@ -1513,7 +1513,7 @@ int agent_rate_limit_tracker_u_fmt_seconds(const char *arg) {
     return 0;
 }
 
-/* PoP: _bar @ agent/rate_limit_tracker.py:_bar */
+/* PoP: agent_rate_limit_tracker_u_bar @ agent/rate_limit_tracker.py:_bar */
 int agent_rate_limit_tracker_u_bar(const char *arg) {
     /* Python: [███░░░] — filled = clamp(pct/100*width), empty = rest.
      * Arg = "pct\twidth". */
@@ -1533,7 +1533,7 @@ int agent_rate_limit_tracker_u_bar(const char *arg) {
     return 0;
 }
 
-/* PoP: _bucket_line @ agent/rate_limit_tracker.py:_bucket_line */
+/* PoP: agent_rate_limit_tracker_u_bucket_line @ agent/rate_limit_tracker.py:_bucket_line */
 int agent_rate_limit_tracker_u_bucket_line(const char *arg) {
     /* Python: "  label bar pct% used/limit used (remaining left, resets in X)".
      * Arg = "label\tlabel_width\tlimit\tused\tremaining\tpct\treset_s". */
@@ -1560,7 +1560,7 @@ int agent_rate_limit_tracker_u_bucket_line(const char *arg) {
     return 0;
 }
 
-/* PoP: format_rate_limit_display @ agent/rate_limit_tracker.py:format_rate_limit_display */
+/* PoP: agent_rate_limit_tracker_format_rate_limit_display @ agent/rate_limit_tracker.py:format_rate_limit_display */
 int agent_rate_limit_tracker_format_rate_limit_display(const char *arg) {
     /* Python: bucket display. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("No rate limit data yet — make an API request first.\n"); return 0; }
@@ -1571,7 +1571,7 @@ int agent_rate_limit_tracker_format_rate_limit_display(const char *arg) {
     return 0;
 }
 
-/* PoP: format_rate_limit_compact @ agent/rate_limit_tracker.py:format_rate_limit_compact */
+/* PoP: agent_rate_limit_tracker_format_rate_limit_compact @ agent/rate_limit_tracker.py:format_rate_limit_compact */
 int agent_rate_limit_tracker_format_rate_limit_compact(const char *arg) {
     /* Python: one-line RPM/RPH/TPM/TPH summary. Arg = "state\tparts". */
     if (!arg || !*arg) { printf("No rate limit data.\n"); return 0; }
@@ -1581,7 +1581,7 @@ int agent_rate_limit_tracker_format_rate_limit_compact(const char *arg) {
     return 0;
 }
 
-/* PoP: _normalize_pool_auth_type @ agent/credential_pool.py:_normalize_pool_auth_type */
+/* PoP: agent_credential_pool_u_normalize_pool_auth_type @ agent/credential_pool.py:_normalize_pool_auth_type */
 int agent_credential_pool_u_normalize_pool_auth_type(const char *arg) {
     /* Python: oauth for anthropic sk-ant-oat tokens, else auth_type or
      * api_key. Arg = "provider\tauth_type\ttoken". */
@@ -1600,7 +1600,7 @@ int agent_credential_pool_u_normalize_pool_auth_type(const char *arg) {
     return 0;
 }
 
-/* PoP: credential_pool_matches_provider @ agent/credential_pool.py:credential_pool_matches_provider */
+/* PoP: agent_credential_pool_credential_pool_matches_provider @ agent/credential_pool.py:credential_pool_matches_provider */
 int agent_credential_pool_credential_pool_matches_provider(const char *arg) {
     /* Python: custom: key match. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -1611,7 +1611,7 @@ int agent_credential_pool_credential_pool_matches_provider(const char *arg) {
     return 0;
 }
 
-/* PoP: _current_unlocked @ agent/credential_pool.py:_current_unlocked */
+/* PoP: agent_credential_pool_u_current_unlocked @ agent/credential_pool.py:_current_unlocked */
 int agent_credential_pool_u_current_unlocked(const char *arg) {
     /* Python: None if not self._current_id; else the entry whose id matches
      * _current_id. Arg = "current_id\tentry_id..." — echoes the current id
@@ -1640,7 +1640,7 @@ int agent_credential_pool_u_current_unlocked(const char *arg) {
     return 0;
 }
 
-/* PoP: entry_id_for_api_key @ agent/credential_pool.py:entry_id_for_api_key */
+/* PoP: agent_credential_pool_entry_id_for_api_key @ agent/credential_pool.py:entry_id_for_api_key */
 int agent_credential_pool_entry_id_for_api_key(const char *arg) {
     /* Python: current selection else unambiguous match. Arg =
      * "current_id\tmatches\tstate". */
@@ -1657,7 +1657,7 @@ int agent_credential_pool_entry_id_for_api_key(const char *arg) {
     return 0;
 }
 
-/* PoP: _sync_xai_oauth_entry_from_pool_store @ agent/credential_pool.py:_sync_xai_oauth_entry_from_pool_store */
+/* PoP: agent_credential_pool_u_sync_xai_oauth_entry_from_pool_store @ agent/credential_pool.py:_sync_xai_oauth_entry_from_pool_store */
 int agent_credential_pool_u_sync_xai_oauth_entry_from_pool_store(const char *arg) {
     /* Python: adopt rotated pair. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1668,7 +1668,7 @@ int agent_credential_pool_u_sync_xai_oauth_entry_from_pool_store(const char *arg
     return 0;
 }
 
-/* PoP: _single_use_refresh_lock_timeout @ agent/credential_pool.py:_single_use_refresh_lock_timeout */
+/* PoP: agent_credential_pool_u_single_use_refresh_lock_timeout @ agent/credential_pool.py:_single_use_refresh_lock_timeout */
 int agent_credential_pool_u_single_use_refresh_lock_timeout(const char *arg) {
     /* Python: max(lock, refresh + 5). Arg = "refresh_timeout\tlock_timeout". */
     if (!arg || !*arg) { printf("30.00\n"); return 0; }
@@ -1681,7 +1681,7 @@ int agent_credential_pool_u_single_use_refresh_lock_timeout(const char *arg) {
     return 0;
 }
 
-/* PoP: _codex_quota_restored_upstream @ agent/credential_pool.py:_codex_quota_restored_upstream */
+/* PoP: agent_credential_pool_u_codex_quota_restored_upstream @ agent/credential_pool.py:_codex_quota_restored_upstream */
 int agent_credential_pool_u_codex_quota_restored_upstream(const char *arg) {
     /* Python: early-reset probe. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -1692,7 +1692,7 @@ int agent_credential_pool_u_codex_quota_restored_upstream(const char *arg) {
     return 0;
 }
 
-/* PoP: _log_no_available_entries @ agent/credential_pool.py:_log_no_available_entries */
+/* PoP: agent_credential_pool_u_log_no_available_entries @ agent/credential_pool.py:_log_no_available_entries */
 int agent_credential_pool_u_log_no_available_entries(const char *arg) {
     /* Python: throttle INFO log. Arg = "throttled". */
     if (arg && arg[0] == '1') { printf("log throttled\n"); return 0; }
@@ -1700,7 +1700,7 @@ int agent_credential_pool_u_log_no_available_entries(const char *arg) {
     return 0;
 }
 
-/* PoP: try_refresh_matching @ agent/credential_pool.py:try_refresh_matching */
+/* PoP: agent_credential_pool_try_refresh_matching @ agent/credential_pool.py:try_refresh_matching */
 int agent_credential_pool_try_refresh_matching(const char *arg) {
     /* Python: hint-based refresh. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1711,7 +1711,7 @@ int agent_credential_pool_try_refresh_matching(const char *arg) {
     return 0;
 }
 
-/* PoP: compose_user_api_content @ agent/turn_context.py:compose_user_api_content */
+/* PoP: agent_turn_context_compose_user_api_content @ agent/turn_context.py:compose_user_api_content */
 int agent_turn_context_compose_user_api_content(const char *arg) {
     /* Python: API-side injections. Arg =
      * "is_str\thas_prefetch\thas_plugin\tstate\tresult". */
@@ -1730,7 +1730,7 @@ int agent_turn_context_compose_user_api_content(const char *arg) {
     return 0;
 }
 
-/* PoP: substitute_api_content @ agent/turn_context.py:substitute_api_content */
+/* PoP: agent_turn_context_substitute_api_content @ agent/turn_context.py:substitute_api_content */
 int agent_turn_context_substitute_api_content(const char *arg) {
     /* Python: pop sidecar + substitute. Arg = "sidecar\trole\tsubstituted". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1745,7 +1745,7 @@ int agent_turn_context_substitute_api_content(const char *arg) {
     return 0;
 }
 
-/* PoP: drop_stale_api_content @ agent/turn_context.py:drop_stale_api_content */
+/* PoP: agent_turn_context_drop_stale_api_content @ agent/turn_context.py:drop_stale_api_content */
 int agent_turn_context_drop_stale_api_content(const char *arg) {
     /* Python: msg.pop("api_content"). Arg = message JSON. */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -1763,7 +1763,7 @@ int agent_turn_context_drop_stale_api_content(const char *arg) {
     return 0;
 }
 
-/* PoP: extract_api_content_sidecar @ agent/turn_context.py:extract_api_content_sidecar */
+/* PoP: agent_turn_context_extract_api_content_sidecar @ agent/turn_context.py:extract_api_content_sidecar */
 int agent_turn_context_extract_api_content_sidecar(const char *arg) {
     /* Python: msg["api_content"] when str, else None. Arg = msg JSON. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1779,7 +1779,7 @@ int agent_turn_context_extract_api_content_sidecar(const char *arg) {
     return 0;
 }
 
-/* PoP: consume_gateway_turn_context_notes @ agent/turn_context.py:consume_gateway_turn_context_notes */
+/* PoP: agent_turn_context_consume_gateway_turn_context_notes @ agent/turn_context.py:consume_gateway_turn_context_notes */
 int agent_turn_context_consume_gateway_turn_context_notes(const char *arg) {
     /* Python: pop notes one-shot. Arg = "notes\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1790,7 +1790,7 @@ int agent_turn_context_consume_gateway_turn_context_notes(const char *arg) {
     return 0;
 }
 
-/* PoP: append_notes_to_multimodal_content @ agent/turn_context.py:append_notes_to_multimodal_content */
+/* PoP: agent_turn_context_append_notes_to_multimodal_content @ agent/turn_context.py:append_notes_to_multimodal_content */
 int agent_turn_context_append_notes_to_multimodal_content(const char *arg) {
     /* Python: append text part to list content. Arg =
      * "notes\tis_list\tappended". */
@@ -1803,7 +1803,7 @@ int agent_turn_context_append_notes_to_multimodal_content(const char *arg) {
     return 0;
 }
 
-/* PoP: reanchor_current_turn_user_idx @ agent/turn_context.py:reanchor_current_turn_user_idx */
+/* PoP: agent_turn_context_reanchor_current_turn_user_idx @ agent/turn_context.py:reanchor_current_turn_user_idx */
 int agent_turn_context_reanchor_current_turn_user_idx(const char *arg) {
     /* Python: exact-match scan from end. Arg =
      * "exact_idx\tfallback\tstate\tresult". */
@@ -1817,7 +1817,7 @@ int agent_turn_context_reanchor_current_turn_user_idx(const char *arg) {
     return 0;
 }
 
-/* PoP: _compression_warrants_another_preflight_pass @ agent/turn_context.py:_compression_warrants_another_preflight_pass */
+/* PoP: agent_turn_context_u_compression_warrants_another_preflight__ss @ agent/turn_context.py:_compression_warrants_another_preflight_pass */
 int agent_turn_context_u_compression_warrants_another_preflight__ss(const char *arg) {
     /* Python: over threshold AND reduced >5%. Arg = "new\tthreshold\torig". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -1831,7 +1831,7 @@ int agent_turn_context_u_compression_warrants_another_preflight__ss(const char *
     return 0;
 }
 
-/* PoP: _should_idle_compact @ agent/turn_context.py:_should_idle_compact */
+/* PoP: agent_turn_context_u_should_idle_compact @ agent/turn_context.py:_should_idle_compact */
 int agent_turn_context_u_should_idle_compact(const char *arg) {
     /* Python: idle compaction predicate. Arg =
      * "enabled\tidle_after\tgap\tcooldown\ttokens\tfloor\tresult". */
@@ -1854,7 +1854,7 @@ int agent_turn_context_u_should_idle_compact(const char *arg) {
     return 0;
 }
 
-/* PoP: _now_iso @ agent/trace_upload.py:_now_iso */
+/* PoP: agent_trace_upload_u_now_iso @ agent/trace_upload.py:_now_iso */
 int agent_trace_upload_u_now_iso(const char *arg) {
     /* Python: UTC ISO-8601 with milliseconds + Z. */
     (void)arg;
@@ -1870,7 +1870,7 @@ int agent_trace_upload_u_now_iso(const char *arg) {
     return 0;
 }
 
-/* PoP: _content_to_blocks @ agent/trace_upload.py:_content_to_blocks */
+/* PoP: agent_trace_upload_u_content_to_blocks @ agent/trace_upload.py:_content_to_blocks */
 int agent_trace_upload_u_content_to_blocks(const char *arg) {
     /* Python: content -> blocks. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -1881,7 +1881,7 @@ int agent_trace_upload_u_content_to_blocks(const char *arg) {
     return 0;
 }
 
-/* PoP: _tool_calls_to_blocks @ agent/trace_upload.py:_tool_calls_to_blocks */
+/* PoP: agent_trace_upload_u_tool_calls_to_blocks @ agent/trace_upload.py:_tool_calls_to_blocks */
 int agent_trace_upload_u_tool_calls_to_blocks(const char *arg) {
     /* Python: tool_calls -> tool_use blocks. Arg =
      * "count\tstate\tresult\tredact_fail". */
@@ -1898,7 +1898,7 @@ int agent_trace_upload_u_tool_calls_to_blocks(const char *arg) {
     return 0;
 }
 
-/* PoP: build_trace_jsonl @ agent/trace_upload.py:build_trace_jsonl */
+/* PoP: agent_trace_upload_build_trace_jsonl @ agent/trace_upload.py:build_trace_jsonl */
 int agent_trace_upload_build_trace_jsonl(const char *arg) {
     /* Python: Claude Code JSONL. Arg =
      * "lines\tstate\tresult". */
@@ -1911,7 +1911,7 @@ int agent_trace_upload_build_trace_jsonl(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_hf_token @ agent/trace_upload.py:_resolve_hf_token */
+/* PoP: agent_trace_upload_u_resolve_hf_token @ agent/trace_upload.py:_resolve_hf_token */
 int agent_trace_upload_u_resolve_hf_token(const char *arg) {
     /* Python: first non-empty HF_* env var (stripped), else None. */
     (void)arg;
@@ -1930,7 +1930,7 @@ int agent_trace_upload_u_resolve_hf_token(const char *arg) {
     return 0;
 }
 
-/* PoP: _do_upload @ agent/trace_upload.py:_do_upload */
+/* PoP: agent_trace_upload_u_do_upload @ agent/trace_upload.py:_do_upload */
 int agent_trace_upload_u_do_upload(const char *arg) {
     /* Python: HF push. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("Upload failed\n"); return 0; }
@@ -1948,7 +1948,7 @@ int agent_trace_upload_u_do_upload(const char *arg) {
     return 0;
 }
 
-/* PoP: load_session_messages @ agent/trace_upload.py:load_session_messages */
+/* PoP: agent_trace_upload_load_session_messages @ agent/trace_upload.py:load_session_messages */
 int agent_trace_upload_load_session_messages(const char *arg) {
     /* Python: (messages, meta) from SessionDB. Arg = "messages_json\tmeta_json". */
     if (!arg || !*arg) { printf("[]\n{}\n"); return 0; }
@@ -1957,7 +1957,7 @@ int agent_trace_upload_load_session_messages(const char *arg) {
     return 0;
 }
 
-/* PoP: upload_session_trace @ agent/trace_upload.py:upload_session_trace */
+/* PoP: agent_trace_upload_upload_session_trace @ agent/trace_upload.py:upload_session_trace */
 int agent_trace_upload_upload_session_trace(const char *arg) {
     /* Python: top-level upload. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("No active session to upload.\n"); return 0; }
@@ -1969,7 +1969,7 @@ int agent_trace_upload_upload_session_trace(const char *arg) {
     return 0;
 }
 
-/* PoP: sanitize_memory_context @ agent/context_engine.py:sanitize_memory_context */
+/* PoP: agent_context_engine_sanitize_memory_context @ agent/context_engine.py:sanitize_memory_context */
 int agent_context_engine_sanitize_memory_context(const char *arg) {
     /* Python: redact + head/tail truncate. Arg = "text\tmax_chars". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1984,7 +1984,7 @@ int agent_context_engine_sanitize_memory_context(const char *arg) {
     return 0;
 }
 
-/* PoP: automatic_compaction_status_message @ agent/context_engine.py:automatic_compaction_status_message */
+/* PoP: agent_context_engine_automatic_compaction_status_message @ agent/context_engine.py:automatic_compaction_status_message */
 int agent_context_engine_automatic_compaction_status_message(const char *arg) {
     /* Python: emit gate + formatter. Arg = "emit\tformatter\tmessage". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1998,7 +1998,7 @@ int agent_context_engine_automatic_compaction_status_message(const char *arg) {
     return 0;
 }
 
-/* PoP: should_compress_info @ agent/context_engine.py:should_compress_info */
+/* PoP: agent_context_engine_should_compress_info @ agent/context_engine.py:should_compress_info */
 int agent_context_engine_should_compress_info(const char *arg) {
     /* Python: (should_compress, reason). Arg = "should\treason". */
     if (!arg || !*arg) { printf("0\n\n"); return 0; }
@@ -2007,7 +2007,7 @@ int agent_context_engine_should_compress_info(const char *arg) {
     return 0;
 }
 
-/* PoP: prune_tool_results_only @ agent/context_engine.py:prune_tool_results_only */
+/* PoP: agent_context_engine_prune_tool_results_only @ agent/context_engine.py:prune_tool_results_only */
 int agent_context_engine_prune_tool_results_only(const char *arg) {
     /* Python: deterministic trim; base is safe no-op. Arg =
      * "messages\tn_pruned\tstate". */
@@ -2020,7 +2020,7 @@ int agent_context_engine_prune_tool_results_only(const char *arg) {
     return 0;
 }
 
-/* PoP: select_context @ agent/context_engine.py:select_context */
+/* PoP: agent_context_engine_select_context @ agent/context_engine.py:select_context */
 int agent_context_engine_select_context(const char *arg) {
     /* Python: pre-generation swap. Arg =
      * "selected\tstate\tresult". */
@@ -2035,7 +2035,7 @@ int agent_context_engine_select_context(const char *arg) {
     return 0;
 }
 
-/* PoP: on_turn_complete @ agent/context_engine.py:on_turn_complete */
+/* PoP: agent_context_engine_on_turn_complete @ agent/context_engine.py:on_turn_complete */
 int agent_context_engine_on_turn_complete(const char *arg) {
     /* Python: post-turn observation. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2046,7 +2046,7 @@ int agent_context_engine_on_turn_complete(const char *arg) {
     return 0;
 }
 
-/* PoP: get_automatic_compaction_status_message @ agent/context_engine.py:get_automatic_compaction_status_message */
+/* PoP: agent_context_engine_get_automatic_compaction_status_message @ agent/context_engine.py:get_automatic_compaction_status_message */
 int agent_context_engine_get_automatic_compaction_status_message(const char *arg) {
     /* Python: None unless emit flag. Arg = "emit\tdefault_message". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2057,7 +2057,7 @@ int agent_context_engine_get_automatic_compaction_status_message(const char *arg
     return 0;
 }
 
-/* PoP: classify_api_error @ agent/error_classifier.py:classify_api_error */
+/* PoP: agent_error_classifier_classify_api_error @ agent/error_classifier.py:classify_api_error */
 int agent_error_classifier_classify_api_error(const char *arg) {
     /* Python: priority pipeline. Arg =
      * "reason\tstate\tresult". */
@@ -2071,7 +2071,7 @@ int agent_error_classifier_classify_api_error(const char *arg) {
     return 0;
 }
 
-/* PoP: _classify_by_status @ agent/error_classifier.py:_classify_by_status */
+/* PoP: agent_error_classifier_u_classify_by_status @ agent/error_classifier.py:_classify_by_status */
 int agent_error_classifier_u_classify_by_status(const char *arg) {
     /* Python: status switch. Arg =
      * "reason\tstate\tresult". */
@@ -2085,7 +2085,7 @@ int agent_error_classifier_u_classify_by_status(const char *arg) {
     return 0;
 }
 
-/* PoP: _classify_402 @ agent/error_classifier.py:_classify_402 */
+/* PoP: agent_error_classifier_u_classify_402 @ agent/error_classifier.py:_classify_402 */
 int agent_error_classifier_u_classify_402(const char *arg) {
     /* Python: transient usage-limit vs billing. Arg =
      * "has_usage_limit\ttransient\tresult". */
@@ -2099,7 +2099,7 @@ int agent_error_classifier_u_classify_402(const char *arg) {
     return 0;
 }
 
-/* PoP: _classify_400 @ agent/error_classifier.py:_classify_400 */
+/* PoP: agent_error_classifier_u_classify_400 @ agent/error_classifier.py:_classify_400 */
 int agent_error_classifier_u_classify_400(const char *arg) {
     /* Python: 400 ordering. Arg =
      * "reason\tstate\tresult". */
@@ -2113,7 +2113,7 @@ int agent_error_classifier_u_classify_400(const char *arg) {
     return 0;
 }
 
-/* PoP: _classify_by_error_code @ agent/error_classifier.py:_classify_by_error_code */
+/* PoP: agent_error_classifier_u_classify_by_error_code @ agent/error_classifier.py:_classify_by_error_code */
 int agent_error_classifier_u_classify_by_error_code(const char *arg) {
     /* Python: structured code map. Arg =
      * "code\tstate\treason\tresult". */
@@ -2127,7 +2127,7 @@ int agent_error_classifier_u_classify_by_error_code(const char *arg) {
     return 0;
 }
 
-/* PoP: _classify_by_message @ agent/error_classifier.py:_classify_by_message */
+/* PoP: agent_error_classifier_u_classify_by_message @ agent/error_classifier.py:_classify_by_message */
 int agent_error_classifier_u_classify_by_message(const char *arg) {
     /* Python: message-pattern classify. Arg =
      * "state\tresult". */
@@ -2143,7 +2143,7 @@ int agent_error_classifier_u_classify_by_message(const char *arg) {
     return 0;
 }
 
-/* PoP: _extract_error_code @ agent/error_classifier.py:_extract_error_code */
+/* PoP: agent_error_classifier_u_extract_error_code @ agent/error_classifier.py:_extract_error_code */
 int agent_error_classifier_u_extract_error_code(const char *arg) {
     /* Python: nested/string error. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2154,7 +2154,7 @@ int agent_error_classifier_u_extract_error_code(const char *arg) {
     return 0;
 }
 
-/* PoP: queue_prefetch @ agent/memory_provider.py:queue_prefetch */
+/* PoP: agent_memory_provider_queue_prefetch @ agent/memory_provider.py:queue_prefetch */
 int agent_memory_provider_queue_prefetch(const char *arg) {
     /* Python: default no-op — providers that background-prefetch override. */
     (void)arg;
@@ -2162,7 +2162,7 @@ int agent_memory_provider_queue_prefetch(const char *arg) {
     return 0;
 }
 
-/* PoP: sync_turn @ agent/memory_provider.py:sync_turn */
+/* PoP: agent_memory_provider_sync_turn @ agent/memory_provider.py:sync_turn */
 int agent_memory_provider_sync_turn(const char *arg) {
     /* Python: persist completed turn (abstract, providers implement). Arg =
      * "turn_json". */
@@ -2171,7 +2171,7 @@ int agent_memory_provider_sync_turn(const char *arg) {
     return 0;
 }
 
-/* PoP: on_turn_start @ agent/memory_provider.py:on_turn_start */
+/* PoP: agent_memory_provider_on_turn_start @ agent/memory_provider.py:on_turn_start */
 int agent_memory_provider_on_turn_start(const char *arg) {
     /* Python: default no-op hook (kwargs ignored). */
     (void)arg;
@@ -2179,7 +2179,7 @@ int agent_memory_provider_on_turn_start(const char *arg) {
     return 0;
 }
 
-/* PoP: on_session_switch @ agent/memory_provider.py:on_session_switch */
+/* PoP: agent_memory_provider_on_session_switch @ agent/memory_provider.py:on_session_switch */
 int agent_memory_provider_on_session_switch(const char *arg) {
     /* Python: session-switch hook. Arg =
      * "new_session\treset\tstate\tresult". */
@@ -2193,7 +2193,7 @@ int agent_memory_provider_on_session_switch(const char *arg) {
     return 0;
 }
 
-/* PoP: on_pre_compress @ agent/memory_provider.py:on_pre_compress */
+/* PoP: agent_memory_provider_on_pre_compress @ agent/memory_provider.py:on_pre_compress */
 int agent_memory_provider_on_pre_compress(const char *arg) {
     /* Python: extract insights or empty string (default). Arg = messages
      * JSON. */
@@ -2202,7 +2202,7 @@ int agent_memory_provider_on_pre_compress(const char *arg) {
     return 0;
 }
 
-/* PoP: on_delegation @ agent/memory_provider.py:on_delegation */
+/* PoP: agent_memory_provider_on_delegation @ agent/memory_provider.py:on_delegation */
 int agent_memory_provider_on_delegation(const char *arg) {
     /* Python: observation hook on parent when subagent completes (no-op
      * base; subclasses record). Arg = "task\tresult\tchild". */
@@ -2215,7 +2215,7 @@ int agent_memory_provider_on_delegation(const char *arg) {
     return 0;
 }
 
-/* PoP: on_memory_write @ agent/memory_provider.py:on_memory_write */
+/* PoP: agent_memory_provider_on_memory_write @ agent/memory_provider.py:on_memory_write */
 int agent_memory_provider_on_memory_write(const char *arg) {
     /* Python: mirror hook (abstract). Arg = "action\ttarget\tcontent". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2227,7 +2227,7 @@ int agent_memory_provider_on_memory_write(const char *arg) {
     return 0;
 }
 
-/* PoP: _codex_item_to_tool_name @ agent/codex_runtime.py:_codex_item_to_tool_name */
+/* PoP: agent_codex_runtime_u_codex_item_to_tool_name @ agent/codex_runtime.py:_codex_item_to_tool_name */
 int agent_codex_runtime_u_codex_item_to_tool_name(const char *arg) {
     /* Python: item type -> synthetic tool name. Arg =
      * "item_type\tserver\ttool". */
@@ -2250,7 +2250,7 @@ int agent_codex_runtime_u_codex_item_to_tool_name(const char *arg) {
     return 0;
 }
 
-/* PoP: _codex_item_to_args @ agent/codex_runtime.py:_codex_item_to_args */
+/* PoP: agent_codex_runtime_u_codex_item_to_args @ agent/codex_runtime.py:_codex_item_to_args */
 int agent_codex_runtime_u_codex_item_to_args(const char *arg) {
     /* Python: item type -> args dict. Arg =
      * "item_type\tcommand\tquery\tresult". */
@@ -2265,7 +2265,7 @@ int agent_codex_runtime_u_codex_item_to_args(const char *arg) {
     return 0;
 }
 
-/* PoP: _codex_item_to_preview @ agent/codex_runtime.py:_codex_item_to_preview */
+/* PoP: agent_codex_runtime_u_codex_item_to_preview @ agent/codex_runtime.py:_codex_item_to_preview */
 int agent_codex_runtime_u_codex_item_to_preview(const char *arg) {
     /* Python: tool.started preview. Arg =
      * "item_type\tvalue\tstate\tresult". */
@@ -2279,7 +2279,7 @@ int agent_codex_runtime_u_codex_item_to_preview(const char *arg) {
     return 0;
 }
 
-/* PoP: _codex_item_completion_payload @ agent/codex_runtime.py:_codex_item_completion_payload */
+/* PoP: agent_codex_runtime_u_codex_item_completion_payload @ agent/codex_runtime.py:_codex_item_completion_payload */
 int agent_codex_runtime_u_codex_item_completion_payload(const char *arg) {
     /* Python: completion payload. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\t0\n"); return 0; }
@@ -2290,7 +2290,7 @@ int agent_codex_runtime_u_codex_item_completion_payload(const char *arg) {
     return 0;
 }
 
-/* PoP: make_codex_app_server_event_bridge @ agent/codex_runtime.py:make_codex_app_server_event_bridge */
+/* PoP: agent_codex_runtime_make_codex_app_server_event_bridge @ agent/codex_runtime.py:make_codex_app_server_event_bridge */
 int agent_codex_runtime_make_codex_app_server_event_bridge(const char *arg) {
     /* Python: JSON-RPC → UI. Arg =
      * "wired\tstate\tresult". */
@@ -2305,7 +2305,7 @@ int agent_codex_runtime_make_codex_app_server_event_bridge(const char *arg) {
     return 0;
 }
 
-/* PoP: _item_field @ agent/codex_runtime.py:_item_field */
+/* PoP: agent_codex_runtime_u_item_field @ agent/codex_runtime.py:_item_field */
 int agent_codex_runtime_u_item_field(const char *arg) {
     /* Python: getattr(item, name) else dict.get(name, default). Arg =
      * "name\tvalue\tdefault" (value empty = missing). */
@@ -2321,7 +2321,7 @@ int agent_codex_runtime_u_item_field(const char *arg) {
     return 0;
 }
 
-/* PoP: _apply_active_turn_redirect @ agent/conversation_loop.py:_apply_active_turn_redirect */
+/* PoP: agent_conversation_loop_u_apply_active_turn_redirect @ agent/conversation_loop.py:_apply_active_turn_redirect */
 int agent_conversation_loop_u_apply_active_turn_redirect(const char *arg) {
     /* Python: role-alternation fix. Arg =
      * "last_is_assistant\tstate\tresult". */
@@ -2335,7 +2335,7 @@ int agent_conversation_loop_u_apply_active_turn_redirect(const char *arg) {
     return 0;
 }
 
-/* PoP: _billing_block_dict @ agent/conversation_loop.py:_billing_block_dict */
+/* PoP: agent_conversation_loop_u_billing_block_dict @ agent/conversation_loop.py:_billing_block_dict */
 int agent_conversation_loop_u_billing_block_dict(const char *arg) {
     /* Python: build_billing_block(...).to_dict() or None. Arg =
      * "provider\tbase_url\tmodel" (billing JSON or empty). */
@@ -2348,7 +2348,7 @@ int agent_conversation_loop_u_billing_block_dict(const char *arg) {
     return 0;
 }
 
-/* PoP: _invalid_tool_name_error_content @ agent/conversation_loop.py:_invalid_tool_name_error_content */
+/* PoP: agent_conversation_loop_u_invalid_tool_name_error_content @ agent/conversation_loop.py:_invalid_tool_name_error_content */
 int agent_conversation_loop_u_invalid_tool_name_error_content(const char *arg) {
     /* Python: empty-name terse error. Arg =
      * "name_empty\tstate\tresult". */
@@ -2366,7 +2366,7 @@ int agent_conversation_loop_u_invalid_tool_name_error_content(const char *arg) {
     return 0;
 }
 
-/* PoP: _compression_deferred_result @ agent/conversation_loop.py:_compression_deferred_result */
+/* PoP: agent_conversation_loop_u_compression_deferred_result @ agent/conversation_loop.py:_compression_deferred_result */
 int agent_conversation_loop_u_compression_deferred_result(const char *arg) {
     /* Python: soft defer. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2377,7 +2377,7 @@ int agent_conversation_loop_u_compression_deferred_result(const char *arg) {
     return 0;
 }
 
-/* PoP: _apply_context_engine_selection @ agent/conversation_loop.py:_apply_context_engine_selection */
+/* PoP: agent_conversation_loop_u_apply_context_engine_selection @ agent/conversation_loop.py:_apply_context_engine_selection */
 int agent_conversation_loop_u_apply_context_engine_selection(const char *arg) {
     /* Python: per-turn hook. Arg =
      * "replaced\tstate\tresult". */
@@ -2392,7 +2392,7 @@ int agent_conversation_loop_u_apply_context_engine_selection(const char *arg) {
     return 0;
 }
 
-/* PoP: _notify_context_engine_turn_complete @ agent/conversation_loop.py:_notify_context_engine_turn_complete */
+/* PoP: agent_conversation_loop_u_notify_context_engine_turn_complete @ agent/conversation_loop.py:_notify_context_engine_turn_complete */
 int agent_conversation_loop_u_notify_context_engine_turn_complete(const char *arg) {
     /* Python: turn-complete hook. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2403,7 +2403,7 @@ int agent_conversation_loop_u_notify_context_engine_turn_complete(const char *ar
     return 0;
 }
 
-/* PoP: _forced_provider_from_env @ agent/pet/generate/imagegen.py:_forced_provider_from_env */
+/* PoP: agent_pet_generate_imagegen_u_forced_provider_from_env @ agent/pet/generate/imagegen.py:_forced_provider_from_env */
 int agent_pet_generate_imagegen_u_forced_provider_from_env(const char *arg) {
     /* Python: env name if in ref-capable set else None. Arg = "env\trefset". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2422,7 +2422,7 @@ int agent_pet_generate_imagegen_u_forced_provider_from_env(const char *arg) {
     return 0;
 }
 
-/* PoP: resolve_provider @ agent/pet/generate/imagegen.py:resolve_provider */
+/* PoP: agent_pet_generate_imagegen_resolve_provider @ agent/pet/generate/imagegen.py:resolve_provider */
 int agent_pet_generate_imagegen_resolve_provider(const char *arg) {
     /* Python: reference-capable pick. Arg =
      * "state\tresult\terr". */
@@ -2439,7 +2439,7 @@ int agent_pet_generate_imagegen_resolve_provider(const char *arg) {
     return 0;
 }
 
-/* PoP: list_sprite_providers @ agent/pet/generate/imagegen.py:list_sprite_providers */
+/* PoP: agent_pet_generate_imagegen_list_sprite_providers @ agent/pet/generate/imagegen.py:list_sprite_providers */
 int agent_pet_generate_imagegen_list_sprite_providers(const char *arg) {
     /* Python: ref-capable providers. Arg = "providers_json\tcount\tstate". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -2451,7 +2451,7 @@ int agent_pet_generate_imagegen_list_sprite_providers(const char *arg) {
     return 0;
 }
 
-/* PoP: _save_local @ agent/pet/generate/imagegen.py:_save_local */
+/* PoP: agent_pet_generate_imagegen_u_save_local @ agent/pet/generate/imagegen.py:_save_local */
 int agent_pet_generate_imagegen_u_save_local(const char *arg) {
     /* Python: download http(s) refs via save_url_image; else local path.
      * Arg = "image_ref\tprefix" (prefix may be empty). */
@@ -2479,7 +2479,7 @@ int agent_pet_generate_imagegen_u_save_local(const char *arg) {
     return 0;
 }
 
-/* PoP: _rejected_background @ agent/pet/generate/imagegen.py:_rejected_background */
+/* PoP: agent_pet_generate_imagegen_u_rejected_background @ agent/pet/generate/imagegen.py:_rejected_background */
 int agent_pet_generate_imagegen_u_rejected_background(const char *arg) {
     /* Python: "background" + "not supported"/"transparent". Arg = error. */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -2491,7 +2491,7 @@ int agent_pet_generate_imagegen_u_rejected_background(const char *arg) {
     return 0;
 }
 
-/* PoP: _harden_transparency @ agent/pet/generate/orchestrate.py:_harden_transparency */
+/* PoP: agent_pet_generate_orchestrate_u_harden_transparency @ agent/pet/generate/orchestrate.py:_harden_transparency */
 int agent_pet_generate_orchestrate_u_harden_transparency(const char *arg) {
     /* Python: chroma-key to RGBA PNG. Arg = "path\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2503,7 +2503,7 @@ int agent_pet_generate_orchestrate_u_harden_transparency(const char *arg) {
     return 0;
 }
 
-/* PoP: generate_base_drafts @ agent/pet/generate/orchestrate.py:generate_base_drafts */
+/* PoP: agent_pet_generate_orchestrate_generate_base_drafts @ agent/pet/generate/orchestrate.py:generate_base_drafts */
 int agent_pet_generate_orchestrate_generate_base_drafts(const char *arg) {
     /* Python: concurrent drafts. Arg =
      * "count\tstate\tresult". */
@@ -2516,7 +2516,7 @@ int agent_pet_generate_orchestrate_generate_base_drafts(const char *arg) {
     return 0;
 }
 
-/* PoP: _drafts_failed_reason @ agent/pet/generate/orchestrate.py:_drafts_failed_reason */
+/* PoP: agent_pet_generate_orchestrate_u_drafts_failed_reason @ agent/pet/generate/orchestrate.py:_drafts_failed_reason */
 int agent_pet_generate_orchestrate_u_drafts_failed_reason(const char *arg) {
     /* Python: "image generation produced no usable drafts" if no errors;
      * else humanized most-common error. Arg = "err\terr\t..." (tab-sep). */
@@ -2528,7 +2528,7 @@ int agent_pet_generate_orchestrate_u_drafts_failed_reason(const char *arg) {
     return 0;
 }
 
-/* PoP: _humanize_image_error @ agent/pet/generate/orchestrate.py:_humanize_image_error */
+/* PoP: agent_pet_generate_orchestrate_u_humanize_image_error @ agent/pet/generate/orchestrate.py:_humanize_image_error */
 int agent_pet_generate_orchestrate_u_humanize_image_error(const char *arg) {
     /* Python: friendly provider error. Arg = "error\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2540,7 +2540,7 @@ int agent_pet_generate_orchestrate_u_humanize_image_error(const char *arg) {
     return 0;
 }
 
-/* PoP: hatch_pet @ agent/pet/generate/orchestrate.py:hatch_pet */
+/* PoP: agent_pet_generate_orchestrate_hatch_pet @ agent/pet/generate/orchestrate.py:hatch_pet */
 int agent_pet_generate_orchestrate_hatch_pet(const char *arg) {
     /* Python: full hatch. Arg =
      * "state\tresult\terr". */
@@ -2561,7 +2561,7 @@ int agent_pet_generate_orchestrate_hatch_pet(const char *arg) {
     return 0;
 }
 
-/* PoP: _codex_backend_urls @ agent/account_usage.py:_codex_backend_urls */
+/* PoP: agent_account_usage_u_codex_backend_urls @ agent/account_usage.py:_codex_backend_urls */
 int agent_account_usage_u_codex_backend_urls(const char *arg) {
     /* Python: wham vs api/codex split. Arg = "base_url\tstyle". */
     if (!arg || !*arg) {
@@ -2578,7 +2578,7 @@ int agent_account_usage_u_codex_backend_urls(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_codex_usage_credentials @ agent/account_usage.py:_resolve_codex_usage_credentials */
+/* PoP: agent_account_usage_u_resolve_codex_usage_credentials @ agent/account_usage.py:_resolve_codex_usage_credentials */
 int agent_account_usage_u_resolve_codex_usage_credentials(const char *arg) {
     /* Python: 3-tier resolve. Arg =
      * "tier\tstate\tresult". */
@@ -2596,7 +2596,7 @@ int agent_account_usage_u_resolve_codex_usage_credentials(const char *arg) {
     return 0;
 }
 
-/* PoP: redeemed @ agent/account_usage.py:redeemed */
+/* PoP: agent_account_usage_redeemed @ agent/account_usage.py:redeemed */
 int agent_account_usage_redeemed(const char *arg) {
     /* Python: self.status == "reset". Arg = status. */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -2604,7 +2604,7 @@ int agent_account_usage_redeemed(const char *arg) {
     return 0;
 }
 
-/* PoP: redeem_codex_reset_credit @ agent/account_usage.py:redeem_codex_reset_credit */
+/* PoP: agent_account_usage_redeem_codex_reset_credit @ agent/account_usage.py:redeem_codex_reset_credit */
 int agent_account_usage_redeem_codex_reset_credit(const char *arg) {
     /* Python: banked credit redeem. Arg =
      * "status\tstate\tresult". */
@@ -2626,7 +2626,7 @@ int agent_account_usage_redeem_codex_reset_credit(const char *arg) {
     return 0;
 }
 
-/* PoP: _model_supports_prompt_cache @ agent/bedrock_adapter.py:_model_supports_prompt_cache */
+/* PoP: agent_bedrock_adapter_u_model_supports_prompt_cache @ agent/bedrock_adapter.py:_model_supports_prompt_cache */
 int agent_bedrock_adapter_u_model_supports_prompt_cache(const char *arg) {
     /* Python: any(pattern in model_lower for pattern in _CACHE_POINT_PATTERNS).
      * Arg = model id; matches nova/claude/llama cache-point patterns. */
@@ -2648,7 +2648,7 @@ int agent_bedrock_adapter_u_model_supports_prompt_cache(const char *arg) {
     return 0;
 }
 
-/* PoP: _safe_text @ agent/bedrock_adapter.py:_safe_text */
+/* PoP: agent_bedrock_adapter_u_safe_text @ agent/bedrock_adapter.py:_safe_text */
 int agent_bedrock_adapter_u_safe_text(const char *arg) {
     /* Python: non-whitespace text else placeholder. Arg = text. */
     if (!arg || !*arg) { printf("[empty text]\n"); return 0; }
@@ -2659,7 +2659,7 @@ int agent_bedrock_adapter_u_safe_text(const char *arg) {
     return 0;
 }
 
-/* PoP: _static_bedrock_context_length @ agent/bedrock_adapter.py:_static_bedrock_context_length */
+/* PoP: agent_bedrock_adapter_u_static_bedrock_context_length @ agent/bedrock_adapter.py:_static_bedrock_context_length */
 int agent_bedrock_adapter_u_static_bedrock_context_length(const char *arg) {
     /* Python: longest substring key match. Arg = "model\ttable_json". */
     if (!arg || !*arg) { printf("200000\n"); return 0; }
@@ -2686,7 +2686,7 @@ int agent_bedrock_adapter_u_static_bedrock_context_length(const char *arg) {
     return 0;
 }
 
-/* PoP: probe_bedrock_context_length @ agent/bedrock_adapter.py:probe_bedrock_context_length */
+/* PoP: agent_bedrock_adapter_probe_bedrock_context_length @ agent/bedrock_adapter.py:probe_bedrock_context_length */
 int agent_bedrock_adapter_probe_bedrock_context_length(const char *arg) {
     /* Python: tiered probe. Arg =
      * "found\tstate\tresult". */
@@ -2700,7 +2700,7 @@ int agent_bedrock_adapter_probe_bedrock_context_length(const char *arg) {
     return 0;
 }
 
-/* PoP: kanban_stop_nudge_enabled @ agent/kanban_stop.py:kanban_stop_nudge_enabled */
+/* PoP: agent_kanban_stop_kanban_stop_nudge_enabled @ agent/kanban_stop.py:kanban_stop_nudge_enabled */
 int agent_kanban_stop_kanban_stop_nudge_enabled(const char *arg) {
     /* Python: nudge off unless task set; explicit 0/false/no/off disables.
      * Arg = "nudge_env\ttask". */
@@ -2714,7 +2714,7 @@ int agent_kanban_stop_kanban_stop_nudge_enabled(const char *arg) {
     return 0;
 }
 
-/* PoP: _tool_call_name @ agent/kanban_stop.py:_tool_call_name */
+/* PoP: agent_kanban_stop_u_tool_call_name @ agent/kanban_stop.py:_tool_call_name */
 int agent_kanban_stop_u_tool_call_name(const char *arg) {
     /* Python: tool_call dict/attr -> function.name then name. Arg = JSON. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2733,7 +2733,7 @@ int agent_kanban_stop_u_tool_call_name(const char *arg) {
     return 0;
 }
 
-/* PoP: session_called_kanban_terminal @ agent/kanban_stop.py:session_called_kanban_terminal */
+/* PoP: agent_kanban_stop_session_called_kanban_terminal @ agent/kanban_stop.py:session_called_kanban_terminal */
 int agent_kanban_stop_session_called_kanban_terminal(const char *arg) {
     /* Python: scan messages for terminal kanban tool calls. Arg =
      * "messages_json\tterminal_tools". */
@@ -2786,7 +2786,7 @@ int agent_kanban_stop_session_called_kanban_terminal(const char *arg) {
     return 0;
 }
 
-/* PoP: build_kanban_stop_nudge @ agent/kanban_stop.py:build_kanban_stop_nudge */
+/* PoP: agent_kanban_stop_build_kanban_stop_nudge @ agent/kanban_stop.py:build_kanban_stop_nudge */
 int agent_kanban_stop_build_kanban_stop_nudge(const char *arg) {
     /* Python: protocol-violation nudge. Arg =
      * "enabled\tattempts\tmax\tterminal_called\tstate\tresult". */
@@ -2806,7 +2806,7 @@ int agent_kanban_stop_build_kanban_stop_nudge(const char *arg) {
     return 0;
 }
 
-/* PoP: unsilence @ agent/thread_scoped_output.py:unsilence */
+/* PoP: agent_thread_scoped_output_unsilence @ agent/thread_scoped_output.py:unsilence */
 int agent_thread_scoped_output_unsilence(const char *arg) {
     /* Python: decrement silenced depth; pop at 0. Arg = "ident\tdepth". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -2817,7 +2817,7 @@ int agent_thread_scoped_output_unsilence(const char *arg) {
     return 0;
 }
 
-/* PoP: writelines @ agent/thread_scoped_output.py:writelines */
+/* PoP: agent_thread_scoped_output_writelines @ agent/thread_scoped_output.py:writelines */
 int agent_thread_scoped_output_writelines(const char *arg) {
     /* Python: thread-scoped lines. Arg =
      * "routed\tstate\tresult". */
@@ -2832,7 +2832,7 @@ int agent_thread_scoped_output_writelines(const char *arg) {
     return 0;
 }
 
-/* PoP: __getattr__ @ agent/thread_scoped_output.py:__getattr__ */
+/* PoP: agent_thread_scoped_output_u__getattr__ @ agent/thread_scoped_output.py:__getattr__ */
 int agent_thread_scoped_output_u__getattr__(const char *arg) {
     /* Python: passthrough attr. Arg =
      * "delegated\tstate\tresult". */
@@ -2847,7 +2847,7 @@ int agent_thread_scoped_output_u__getattr__(const char *arg) {
     return 0;
 }
 
-/* PoP: thread_scoped_silence @ agent/thread_scoped_output.py:thread_scoped_silence */
+/* PoP: agent_thread_scoped_output_thread_scoped_silence @ agent/thread_scoped_output.py:thread_scoped_silence */
 int agent_thread_scoped_output_thread_scoped_silence(const char *arg) {
     /* Python: thread-local stdout/stderr silence.
      * REAL: dup /dev/null onto stderr for this thread, restore after.
@@ -2869,7 +2869,7 @@ int agent_thread_scoped_output_thread_scoped_silence(const char *arg) {
     return -1;
 }
 
-/* PoP: note_turn_start @ agent/agent_runtime_helpers.py:note_turn_start */
+/* PoP: agent_agent_runtime_helpers_note_turn_start @ agent/agent_runtime_helpers.py:note_turn_start */
 int agent_agent_runtime_helpers_note_turn_start(const char *arg) {
     /* Python: interleave tripwire. Arg =
      * "overlap\tstate\tresult". */
@@ -2887,7 +2887,7 @@ int agent_agent_runtime_helpers_note_turn_start(const char *arg) {
     return 0;
 }
 
-/* PoP: note_turn_persisted @ agent/agent_runtime_helpers.py:note_turn_persisted */
+/* PoP: agent_agent_runtime_helpers_note_turn_persisted @ agent/agent_runtime_helpers.py:note_turn_persisted */
 int agent_agent_runtime_helpers_note_turn_persisted(const char *arg) {
     /* Python: clear in-flight marker. Arg = "state\tsession_id\tpopped". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2899,7 +2899,7 @@ int agent_agent_runtime_helpers_note_turn_persisted(const char *arg) {
     return 0;
 }
 
-/* PoP: sync_credential_pool_entry_id @ agent/agent_runtime_helpers.py:sync_credential_pool_entry_id */
+/* PoP: agent_agent_runtime_helpers_sync_credential_pool_entry_id @ agent/agent_runtime_helpers.py:sync_credential_pool_entry_id */
 int agent_agent_runtime_helpers_sync_credential_pool_entry_id(const char *arg) {
     /* Python: rebind entry id or clear. Arg = "pool_bound\tentry_id". */
     if (!arg || !*arg) { printf("entry id cleared\n"); return 0; }
@@ -2910,7 +2910,7 @@ int agent_agent_runtime_helpers_sync_credential_pool_entry_id(const char *arg) {
     return 0;
 }
 
-/* PoP: _get_hermes_oauth_file @ agent/anthropic_adapter.py:_get_hermes_oauth_file */
+/* PoP: agent_anthropic_adapter_u_get_hermes_oauth_file @ agent/anthropic_adapter.py:_get_hermes_oauth_file */
 int agent_anthropic_adapter_u_get_hermes_oauth_file(const char *arg) {
     /* Python: get_hermes_home() / ".anthropic_oauth.json". */
     (void)arg;
@@ -2922,7 +2922,7 @@ int agent_anthropic_adapter_u_get_hermes_oauth_file(const char *arg) {
     return 0;
 }
 
-/* PoP: _safe_text @ agent/anthropic_adapter.py:_safe_text */
+/* PoP: agent_anthropic_adapter_u_safe_text @ agent/anthropic_adapter.py:_safe_text */
 int agent_anthropic_adapter_u_safe_text(const char *arg) {
     /* Python: whitespace -> placeholder. Arg = "text\tplaceholder". */
     if (!arg || !*arg) {
@@ -2941,7 +2941,7 @@ int agent_anthropic_adapter_u_safe_text(const char *arg) {
     return 0;
 }
 
-/* PoP: _ensure_leading_user_turn @ agent/anthropic_adapter.py:_ensure_leading_user_turn */
+/* PoP: agent_anthropic_adapter_u_ensure_leading_user_turn @ agent/anthropic_adapter.py:_ensure_leading_user_turn */
 int agent_anthropic_adapter_u_ensure_leading_user_turn(const char *arg) {
     /* Python: prepend minimal user turn. Arg = "first_role\tprepended". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -2952,7 +2952,7 @@ int agent_anthropic_adapter_u_ensure_leading_user_turn(const char *arg) {
     return 0;
 }
 
-/* PoP: _read_battery_uncached @ agent/battery.py:_read_battery_uncached */
+/* PoP: agent_battery_u_read_battery_uncached @ agent/battery.py:_read_battery_uncached */
 int agent_battery_u_read_battery_uncached(const char *arg) {
     /* Python: psutil sensors_battery. Arg = "state\tpercent\tplugged". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -2964,7 +2964,7 @@ int agent_battery_u_read_battery_uncached(const char *arg) {
     return 0;
 }
 
-/* PoP: read_battery @ agent/battery.py:read_battery */
+/* PoP: agent_battery_read_battery @ agent/battery.py:read_battery */
 int agent_battery_read_battery(const char *arg) {
     /* Python: cached battery read (TTL a few seconds). Arg = "use_cache\tjson". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -2976,7 +2976,7 @@ int agent_battery_read_battery(const char *arg) {
     return 0;
 }
 
-/* PoP: clear_cache @ agent/battery.py:clear_cache */
+/* PoP: agent_battery_clear_cache @ agent/battery.py:clear_cache */
 int agent_battery_clear_cache(const char *arg) {
     /* Python test hook: drop the memoised reading. */
     (void)arg;
@@ -2985,7 +2985,7 @@ int agent_battery_clear_cache(const char *arg) {
     return 0;
 }
 
-/* PoP: can_change_plan @ agent/billing_view.py:can_change_plan */
+/* PoP: agent_billing_view_can_change_plan @ agent/billing_view.py:can_change_plan */
 int agent_billing_view_can_change_plan(const char *arg) {
     /* Python: can_change_plan_raw if not None else is_admin. Arg =
      * "raw\tis_admin" (raw empty = None). */
@@ -3000,7 +3000,7 @@ int agent_billing_view_can_change_plan(const char *arg) {
     return 0;
 }
 
-/* PoP: _parse_auto_reload_card @ agent/billing_view.py:_parse_auto_reload_card */
+/* PoP: agent_billing_view_u_parse_auto_reload_card @ agent/billing_view.py:_parse_auto_reload_card */
 int agent_billing_view_u_parse_auto_reload_card(const char *arg) {
     /* Python: canonical/none or distinct with payment fields. Arg =
      * "card_json". */
@@ -3028,7 +3028,7 @@ int agent_billing_view_u_parse_auto_reload_card(const char *arg) {
     return 0;
 }
 
-/* PoP: _dev_fixture_billing_state @ agent/billing_view.py:_dev_fixture_billing_state */
+/* PoP: agent_billing_view_u_dev_fixture_billing_state @ agent/billing_view.py:_dev_fixture_billing_state */
 int agent_billing_view_u_dev_fixture_billing_state(const char *arg) {
     /* Python: 6 fixture map. Arg = "name\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -3042,7 +3042,7 @@ int agent_billing_view_u_dev_fixture_billing_state(const char *arg) {
     return 0;
 }
 
-/* PoP: read_streaming_error_body @ agent/bounded_response.py:read_streaming_error_body */
+/* PoP: agent_bounded_response_read_streaming_error_body @ agent/bounded_response.py:read_streaming_error_body */
 int agent_bounded_response_read_streaming_error_body(const char *arg) {
     /* Python: byte+deadline cap. Arg =
      * "truncated\tstate\tresult". */
@@ -3056,7 +3056,7 @@ int agent_bounded_response_read_streaming_error_body(const char *arg) {
     return 0;
 }
 
-/* PoP: _safe_close @ agent/bounded_response.py:_safe_close */
+/* PoP: agent_bounded_response_u_safe_close @ agent/bounded_response.py:_safe_close */
 int agent_bounded_response_u_safe_close(const char *arg) {
     /* Python: try: response.close() except: pass — REAL fd close. */
     if (!arg || !*arg) return 0;
@@ -3065,7 +3065,7 @@ int agent_bounded_response_u_safe_close(const char *arg) {
     return 0;
 }
 
-/* PoP: read_error_body_or_default @ agent/bounded_response.py:read_error_body_or_default */
+/* PoP: agent_bounded_response_read_error_body_or_default @ agent/bounded_response.py:read_error_body_or_default */
 int agent_bounded_response_read_error_body_or_default(const char *arg) {
     /* Python: body text or None when empty. Arg = body (or empty). */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -3073,7 +3073,7 @@ int agent_bounded_response_read_error_body_or_default(const char *arg) {
     return 0;
 }
 
-/* PoP: _display_url @ agent/display.py:_display_url */
+/* PoP: agent_display_u_display_url @ agent/display.py:_display_url */
 int agent_display_u_display_url(const char *arg) {
     /* Python: dict url/href or str strip, else "". Arg = "json_or_raw". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -3094,7 +3094,7 @@ int agent_display_u_display_url(const char *arg) {
     return 0;
 }
 
-/* PoP: build_status_phrase @ agent/display.py:build_status_phrase */
+/* PoP: agent_display_build_status_phrase @ agent/display.py:build_status_phrase */
 int agent_display_build_status_phrase(const char *arg) {
     /* Python: present-tense phrase. Arg =
      * "tool_name\tstate\tresult". */
@@ -3109,7 +3109,7 @@ int agent_display_build_status_phrase(const char *arg) {
     return 0;
 }
 
-/* PoP: _get_cute_tool_message @ agent/display.py:_get_cute_tool_message */
+/* PoP: agent_display_u_get_cute_tool_message @ agent/display.py:_get_cute_tool_message */
 int agent_display_u_get_cute_tool_message(const char *arg) {
     /* Python: quiet-mode line. Arg =
      * "failed\tstate\tresult". */
@@ -3124,7 +3124,7 @@ int agent_display_u_get_cute_tool_message(const char *arg) {
     return 0;
 }
 
-/* PoP: _traces_enabled_and_dir @ agent/moa_trace.py:_traces_enabled_and_dir */
+/* PoP: agent_moa_trace_u_traces_enabled_and_dir @ agent/moa_trace.py:_traces_enabled_and_dir */
 int agent_moa_trace_u_traces_enabled_and_dir(const char *arg) {
     /* Python: save_traces + trace_dir. Arg = "enabled\tstate\tdir". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -3136,7 +3136,7 @@ int agent_moa_trace_u_traces_enabled_and_dir(const char *arg) {
     return 0;
 }
 
-/* PoP: _slot_trace @ agent/moa_trace.py:_slot_trace */
+/* PoP: agent_moa_trace_u_slot_trace @ agent/moa_trace.py:_slot_trace */
 int agent_moa_trace_u_slot_trace(const char *arg) {
     /* Python: full trace dict. Arg = "label\tstate\tresult". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -3148,7 +3148,7 @@ int agent_moa_trace_u_slot_trace(const char *arg) {
     return 0;
 }
 
-/* PoP: save_moa_turn @ agent/moa_trace.py:save_moa_turn */
+/* PoP: agent_moa_trace_save_moa_turn @ agent/moa_trace.py:save_moa_turn */
 int agent_moa_trace_save_moa_turn(const char *arg) {
     /* Python: JSONL append. Arg =
      * "saved\tstate\tresult". */
@@ -3163,7 +3163,7 @@ int agent_moa_trace_save_moa_turn(const char *arg) {
     return 0;
 }
 
-/* PoP: _commit_message_template @ agent/oneshot.py:_commit_message_template */
+/* PoP: agent_oneshot_u_commit_message_template @ agent/oneshot.py:_commit_message_template */
 int agent_oneshot_u_commit_message_template(const char *arg) {
     /* Python: commit msg template. Arg =
      * "has_diff\thas_recent\thas_avoid\tstate\tresult". */
@@ -3180,7 +3180,7 @@ int agent_oneshot_u_commit_message_template(const char *arg) {
     return 0;
 }
 
-/* PoP: render_template @ agent/oneshot.py:render_template */
+/* PoP: agent_oneshot_render_template @ agent/oneshot.py:render_template */
 int agent_oneshot_render_template(const char *arg) {
     /* Python: template lookup, KeyError on unknown. Arg = "name\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -3190,7 +3190,7 @@ int agent_oneshot_render_template(const char *arg) {
     return 0;
 }
 
-/* PoP: run_oneshot @ agent/oneshot.py:run_oneshot */
+/* PoP: agent_oneshot_run_oneshot @ agent/oneshot.py:run_oneshot */
 int agent_oneshot_run_oneshot(const char *arg) {
     /* Python: stateless LLM call. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 1; }
@@ -3204,7 +3204,7 @@ int agent_oneshot_run_oneshot(const char *arg) {
     return 0;
 }
 
-/* PoP: _ensure_file_checkpoint @ agent/tool_executor.py:_ensure_file_checkpoint */
+/* PoP: agent_tool_executor_u_ensure_file_checkpoint @ agent/tool_executor.py:_ensure_file_checkpoint */
 int agent_tool_executor_u_ensure_file_checkpoint(const char *arg) {
     /* Python: checkpoint before mutation. Arg = "has_path\tstate\twork_dir". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -3216,7 +3216,7 @@ int agent_tool_executor_u_ensure_file_checkpoint(const char *arg) {
     return 0;
 }
 
-/* PoP: _parse_tool_arguments @ agent/tool_executor.py:_parse_tool_arguments */
+/* PoP: agent_tool_executor_u_parse_tool_arguments @ agent/tool_executor.py:_parse_tool_arguments */
 int agent_tool_executor_u_parse_tool_arguments(const char *arg) {
     /* Python: JSON parse without repair; error dict on bad. Arg = raw. */
     if (!arg || !*arg) { printf("{}\nInvalid tool arguments: Tool arguments must be a valid JSON object; tool was not executed.\n"); return 1; }
@@ -3233,7 +3233,7 @@ int agent_tool_executor_u_parse_tool_arguments(const char *arg) {
     return 1;
 }
 
-/* PoP: execute_tool_calls_segmented @ agent/tool_executor.py:execute_tool_calls_segmented */
+/* PoP: agent_tool_executor_execute_tool_calls_segmented @ agent/tool_executor.py:execute_tool_calls_segmented */
 int agent_tool_executor_execute_tool_calls_segmented(const char *arg) {
     /* Python: ordered segments. Arg =
      * "segments\tstate\tresult". */
@@ -3246,7 +3246,7 @@ int agent_tool_executor_execute_tool_calls_segmented(const char *arg) {
     return 0;
 }
 
-/* PoP: _try_nvidia_nim @ agent/auxiliary_client.py:_try_nvidia_nim */
+/* PoP: agent_auxiliary_client_u_try_nvidia_nim @ agent/auxiliary_client.py:_try_nvidia_nim */
 int agent_auxiliary_client_u_try_nvidia_nim(const char *arg) {
     /* Python: NIM probe. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\t\n"); return 0; }
@@ -3257,7 +3257,7 @@ int agent_auxiliary_client_u_try_nvidia_nim(const char *arg) {
     return 0;
 }
 
-/* PoP: _obj_get @ agent/auxiliary_client.py:_obj_get */
+/* PoP: agent_auxiliary_client_u_obj_get @ agent/auxiliary_client.py:_obj_get */
 int agent_auxiliary_client_u_obj_get(const char *arg) {
     /* Python: value = getattr(obj, key, default); if value is default and
      * isinstance(obj, dict): value = obj.get(key, default); return value.
@@ -3269,7 +3269,7 @@ int agent_auxiliary_client_u_obj_get(const char *arg) {
     return 0;
 }
 
-/* PoP: build_usage_model @ agent/billing_usage.py:build_usage_model */
+/* PoP: agent_billing_usage_build_usage_model @ agent/billing_usage.py:build_usage_model */
 int agent_billing_usage_build_usage_model(const char *arg) {
     /* Python: fail-open usage model. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("{\"available\": false}\n"); return 0; }
@@ -3280,7 +3280,7 @@ int agent_billing_usage_build_usage_model(const char *arg) {
     return 0;
 }
 
-/* PoP: _dev_fixture_usage_model @ agent/billing_usage.py:_dev_fixture_usage_model */
+/* PoP: agent_billing_usage_u_dev_fixture_usage_model @ agent/billing_usage.py:_dev_fixture_usage_model */
 int agent_billing_usage_u_dev_fixture_usage_model(const char *arg) {
     /* Python: fixture map. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -3291,14 +3291,14 @@ int agent_billing_usage_u_dev_fixture_usage_model(const char *arg) {
     return 0;
 }
 
-/* PoP: has_data @ agent/credits_tracker.py:has_data */
+/* PoP: agent_credits_tracker_has_data @ agent/credits_tracker.py:has_data */
 int agent_credits_tracker_has_data(const char *arg) {
     /* Python: self.captured_at > 0. */
     if (!arg || !*arg) return 0;
     return strtod(arg, NULL) > 0;
 }
 
-/* PoP: age_seconds @ agent/credits_tracker.py:age_seconds */
+/* PoP: agent_credits_tracker_age_seconds @ agent/credits_tracker.py:age_seconds */
 int agent_credits_tracker_age_seconds(const char *arg) {
     /* Python: if not has_data (captured_at <= 0) -> float("inf");
      * else time.time() - self.captured_at. Arg = "captured_at" epoch. */
@@ -3309,7 +3309,7 @@ int agent_credits_tracker_age_seconds(const char *arg) {
     return 0;
 }
 
-/* PoP: _can_carry_marker @ agent/prompt_caching.py:_can_carry_marker */
+/* PoP: agent_prompt_caching_u_can_carry_marker @ agent/prompt_caching.py:_can_carry_marker */
 int agent_prompt_caching_u_can_carry_marker(const char *arg) {
     /* Python: carrier predicate. Arg =
      * "native\tcontent_type\tstate\tresult". */
@@ -3325,7 +3325,7 @@ int agent_prompt_caching_u_can_carry_marker(const char *arg) {
     return 0;
 }
 
-/* PoP: _apply_system_cache_markers @ agent/prompt_caching.py:_apply_system_cache_markers */
+/* PoP: agent_prompt_caching_u_apply_system_cache_markers @ agent/prompt_caching.py:_apply_system_cache_markers */
 int agent_prompt_caching_u_apply_system_cache_markers(const char *arg) {
     /* Python: split system prefix. Arg =
      * "prefix_ok\tstate\tresult". */
@@ -3339,7 +3339,7 @@ int agent_prompt_caching_u_apply_system_cache_markers(const char *arg) {
     return 0;
 }
 
-/* PoP: _canonical_url_param_name @ agent/redact.py:_canonical_url_param_name */
+/* PoP: agent_redact_u_canonical_url_param_name @ agent/redact.py:_canonical_url_param_name */
 int agent_redact_u_canonical_url_param_name(const char *arg) {
     /* Python: unquote_plus x3 (stop when stable), casefold, - -> _. Arg =
      * name. */
@@ -3372,7 +3372,7 @@ int agent_redact_u_canonical_url_param_name(const char *arg) {
     return 0;
 }
 
-/* PoP: _redact_strict_url_credentials @ agent/redact.py:_redact_strict_url_credentials */
+/* PoP: agent_redact_u_redact_strict_url_credentials @ agent/redact.py:_redact_strict_url_credentials */
 int agent_redact_u_redact_strict_url_credentials(const char *arg) {
     /* Python: strict param + userinfo redaction. Arg =
      * "text\tstate\tresult". */
@@ -3385,7 +3385,7 @@ int agent_redact_u_redact_strict_url_credentials(const char *arg) {
     return 0;
 }
 
-/* PoP: split_stacked_skill_commands @ agent/skill_commands.py:split_stacked_skill_commands */
+/* PoP: agent_skill_commands_split_stacked_skill_commands @ agent/skill_commands.py:split_stacked_skill_commands */
 int agent_skill_commands_split_stacked_skill_commands(const char *arg) {
     /* Python: stacked /skill tokens. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\t\n"); return 0; }
@@ -3396,7 +3396,7 @@ int agent_skill_commands_split_stacked_skill_commands(const char *arg) {
     return 0;
 }
 
-/* PoP: build_stacked_skill_invocation_message @ agent/skill_commands.py:build_stacked_skill_invocation_message */
+/* PoP: agent_skill_commands_build_stacked_skill_invocation_message @ agent/skill_commands.py:build_stacked_skill_invocation_message */
 int agent_skill_commands_build_stacked_skill_invocation_message(const char *arg) {
     /* Python: stacked slash builder. Arg =
      * "loaded\tmissing\tstate\tresult". */
@@ -3410,7 +3410,7 @@ int agent_skill_commands_build_stacked_skill_invocation_message(const char *arg)
     return 0;
 }
 
-/* PoP: claim_stream_writer @ agent/stream_single_writer.py:claim_stream_writer */
+/* PoP: agent_stream_single_writer_claim_stream_writer @ agent/stream_single_writer.py:claim_stream_writer */
 int agent_stream_single_writer_claim_stream_writer(const char *arg) {
     /* Python: monotonic token or 0 (unfenced). Arg = "token\tstate". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -3420,7 +3420,7 @@ int agent_stream_single_writer_claim_stream_writer(const char *arg) {
     return 0;
 }
 
-/* PoP: stream_writer_is_current @ agent/stream_single_writer.py:stream_writer_is_current */
+/* PoP: agent_stream_single_writer_stream_writer_is_current @ agent/stream_single_writer.py:stream_writer_is_current */
 int agent_stream_single_writer_stream_writer_is_current(const char *arg) {
     /* Python: falsy token -> True; else delegate check. Arg =
      * "token\tcurrent\tstate". */
@@ -3434,7 +3434,7 @@ int agent_stream_single_writer_stream_writer_is_current(const char *arg) {
     return 0;
 }
 
-/* PoP: _is_pure_tool_call_tail @ agent/turn_finalizer.py:_is_pure_tool_call_tail */
+/* PoP: agent_turn_finalizer_u_is_pure_tool_call_tail @ agent/turn_finalizer.py:_is_pure_tool_call_tail */
 int agent_turn_finalizer_u_is_pure_tool_call_tail(const char *arg) {
     /* Python: tool_calls + no text. Arg = "has_tool_calls\ttext\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -3453,7 +3453,7 @@ int agent_turn_finalizer_u_is_pure_tool_call_tail(const char *arg) {
     return 0;
 }
 
-/* PoP: _drop_verification_continuation_scaffolding @ agent/turn_finalizer.py:_drop_verification_continuation_scaffolding */
+/* PoP: agent_turn_finalizer_u_drop_verification_continuation_scaffo_ng @ agent/turn_finalizer.py:_drop_verification_continuation_scaffolding */
 int agent_turn_finalizer_u_drop_verification_continuation_scaffo_ng(const char *arg) {
     /* Python: strip nudge messages with continuation flags. Arg = messages
      * JSON (array). */
@@ -3489,7 +3489,7 @@ int agent_turn_finalizer_u_drop_verification_continuation_scaffo_ng(const char *
     return 0;
 }
 
-/* PoP: save_url_video @ agent/video_gen_provider.py:save_url_video */
+/* PoP: agent_video_gen_provider_save_url_video @ agent/video_gen_provider.py:save_url_video */
 int agent_video_gen_provider_save_url_video(const char *arg) {
     /* Python: streamed cache. Arg = "state\tresult\terr". */
     if (!arg || !*arg) { printf("\n"); return 1; }
@@ -3513,7 +3513,7 @@ int agent_video_gen_provider_save_url_video(const char *arg) {
     return 0;
 }
 
-/* PoP: _create_and_poll @ agent/video_gen_provider.py:_create_and_poll */
+/* PoP: agent_video_gen_provider_u_create_and_poll @ agent/video_gen_provider.py:_create_and_poll */
 int agent_video_gen_provider_u_create_and_poll(const char *arg) {
     /* Python: create + poll w/ deadline. Arg =
      * "state\tdeadline_s\tinterval_s\tresult". */
@@ -3530,7 +3530,7 @@ int agent_video_gen_provider_u_create_and_poll(const char *arg) {
     return 0;
 }
 
-/* PoP: format_reference_value @ agent/context_references.py:format_reference_value */
+/* PoP: agent_context_references_format_reference_value @ agent/context_references.py:format_reference_value */
 int agent_context_references_format_reference_value(const char *arg) {
     /* Python: quote if needs quoting (space etc); first unused quote. Arg =
      * value. */
@@ -3548,7 +3548,7 @@ int agent_context_references_format_reference_value(const char *arg) {
     return 0;
 }
 
-/* PoP: _remove_xai_oauth_device_code @ agent/credential_sources.py:_remove_xai_oauth_device_code */
+/* PoP: agent_credential_sources_u_remove_xai_oauth_device_code @ agent/credential_sources.py:_remove_xai_oauth_device_code */
 int agent_credential_sources_u_remove_xai_oauth_device_code(const char *arg) {
     /* Python: clear auth store singleton. Arg = "cleared\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -3560,7 +3560,7 @@ int agent_credential_sources_u_remove_xai_oauth_device_code(const char *arg) {
     return 0;
 }
 
-/* PoP: _get_model_usage @ agent/insights.py:_get_model_usage */
+/* PoP: agent_insights_u_get_model_usage @ agent/insights.py:_get_model_usage */
 int agent_insights_u_get_model_usage(const char *arg) {
     /* Python: per-model usage rows or []. Arg = "rows_json\ttable_missing". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -3570,7 +3570,7 @@ int agent_insights_u_get_model_usage(const char *arg) {
     return 0;
 }
 
-/* PoP: preload_jiter_native_extension @ agent/jiter_preload.py:preload_jiter_native_extension */
+/* PoP: agent_jiter_preload_preload_jiter_native_extension @ agent/jiter_preload.py:preload_jiter_native_extension */
 int agent_jiter_preload_preload_jiter_native_extension(const char *arg) {
     /* Python: import jiter.jiter early; True/False. Arg = "preloaded\t1/0". */
     if (arg && arg[0] == '1') { printf("1\n"); return 0; }
@@ -3578,7 +3578,7 @@ int agent_jiter_preload_preload_jiter_native_extension(const char *arg) {
     return 0;
 }
 
-/* PoP: _ensure_required_array @ agent/moonshot_schema.py:_ensure_required_array */
+/* PoP: agent_moonshot_schema_u_ensure_required_array @ agent/moonshot_schema.py:_ensure_required_array */
 int agent_moonshot_schema_u_ensure_required_array(const char *arg) {
     /* Python: required as list, pruned to props. Arg = "node_json". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -3613,7 +3613,7 @@ int agent_moonshot_schema_u_ensure_required_array(const char *arg) {
     return 0;
 }
 
-/* PoP: _is_install_tree @ agent/runtime_cwd.py:_is_install_tree */
+/* PoP: agent_runtime_cwd_u_is_install_tree @ agent/runtime_cwd.py:_is_install_tree */
 int agent_runtime_cwd_u_is_install_tree(const char *arg) {
     /* Python: p == root or under root. Arg = "path\troot". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -3633,7 +3633,7 @@ int agent_runtime_cwd_u_is_install_tree(const char *arg) {
     return 0;
 }
 
-/* PoP: _tui_embedded_pane_clarifier @ agent/system_prompt.py:_tui_embedded_pane_clarifier */
+/* PoP: agent_system_prompt_u_tui_embedded_pane_clarifier @ agent/system_prompt.py:_tui_embedded_pane_clarifier */
 int agent_system_prompt_u_tui_embedded_pane_clarifier(const char *arg) {
     /* Python: desktop terminal clarifier append. Arg =
      * "hint\tdesktop_terminal\tresult". */
@@ -3646,7 +3646,7 @@ int agent_system_prompt_u_tui_embedded_pane_clarifier(const char *arg) {
     return 0;
 }
 
-/* PoP: tool_may_have_side_effect @ agent/tool_result_classification.py:tool_may_have_side_effect */
+/* PoP: agent_tool_result_classificati_tool_may_have_side_effect @ agent/tool_result_classification.py:tool_may_have_side_effect */
 int agent_tool_result_classificati_tool_may_have_side_effect(const char *arg) {
     /* Python: tool_name not in NO_EFFECT_TOOL_NAMES. */
     if (!arg || !*arg) return 1;
@@ -3660,7 +3660,7 @@ int agent_tool_result_classificati_tool_may_have_side_effect(const char *arg) {
     return 1;
 }
 
-/* PoP: get_provider_env @ agent/web_search_provider.py:get_provider_env */
+/* PoP: agent_web_search_provider_get_provider_env @ agent/web_search_provider.py:get_provider_env */
 int agent_web_search_provider_get_provider_env(const char *arg) {
     /* Python: config-aware env lookup. Arg = "name\tstate\tvalue". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -3672,7 +3672,7 @@ int agent_web_search_provider_get_provider_env(const char *arg) {
     return 0;
 }
 
-/* PoP: _disabled_web_plugin_for @ agent/web_search_registry.py:_disabled_web_plugin_for */
+/* PoP: agent_web_search_registry_u_disabled_web_plugin_for @ agent/web_search_registry.py:_disabled_web_plugin_for */
 int agent_web_search_registry_u_disabled_web_plugin_for(const char *arg) {
     /* Python: disabled-provider hint. Arg =
      * "found\tstate\tresult". */

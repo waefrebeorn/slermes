@@ -21,7 +21,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ gateway/platforms/webhook.py:__init__ */
+/* PoP: whk_init @ gateway/platforms/webhook.py:__init__ */
 char *whk_init(const char *config_json) {
     /* Python: host may be None (dual-stack). */
     if (!config_json) return strdup("{}");
@@ -29,7 +29,7 @@ char *whk_init(const char *config_json) {
     return strdup(config_json);
 }
 
-/* PoP: connect @ gateway/platforms/webhook.py:connect */
+/* PoP: whk_connect @ gateway/platforms/webhook.py:connect */
 bool whk_connect(void) {
     /* Python: reload dynamic routes + validate, then run the server.
      * Delegate to the live C webhook server (src/gateway/platforms/
@@ -45,7 +45,7 @@ bool whk_connect(void) {
     return true;
 }
 
-/* PoP: disconnect @ gateway/platforms/webhook.py:disconnect */
+/* PoP: whk_disconnect @ gateway/platforms/webhook.py:disconnect */
 int whk_disconnect(void) {
     /* Python: stop runner, drop subscriptions, clean resources.
      * The C webhook server loop exits when g_gw.running flips false
@@ -55,7 +55,7 @@ int whk_disconnect(void) {
     return 0;
 }
 
-/* PoP: send @ gateway/platforms/webhook.py:send */
+/* PoP: whk_send @ gateway/platforms/webhook.py:send */
 char *whk_send(const char *chat_id, const char *content) {
     /* Python: deliver to configured destination. */
     if (!chat_id || !content) return strdup("{\"success\": false}");
@@ -63,7 +63,7 @@ char *whk_send(const char *chat_id, const char *content) {
     return strdup("{\"success\": true}");
 }
 
-/* PoP: get_chat_info @ gateway/platforms/webhook.py:get_chat_info */
+/* PoP: whk_get_chat_info @ gateway/platforms/webhook.py:get_chat_info */
 char *whk_get_chat_info(const char *chat_id) {
     if (!chat_id) return NULL;
     char *out = NULL;
@@ -71,12 +71,12 @@ char *whk_get_chat_info(const char *chat_id) {
     return out;
 }
 
-/* PoP: _handle_health @ gateway/platforms/webhook.py:_handle_health */
+/* PoP: whk_handle_health @ gateway/platforms/webhook.py:_handle_health */
 char *whk_handle_health(void) {
     return strdup("{\"status\": \"ok\"}");
 }
 
-/* PoP: _resolve_request_profile @ gateway/platforms/webhook.py:_resolve_request_profile */
+/* PoP: whk_resolve_request_profile @ gateway/platforms/webhook.py:_resolve_request_profile */
 char *whk_resolve_request_profile(const char *path) {
     /* Python: /p/<profile>/ prefix resolution. */
     if (!path) return NULL;
@@ -88,7 +88,7 @@ char *whk_resolve_request_profile(const char *path) {
     return strndup(name, (size_t)(e - name));
 }
 
-/* PoP: _handle_webhook @ gateway/platforms/webhook.py:_handle_webhook */
+/* PoP: whk_handle_webhook @ gateway/platforms/webhook.py:_handle_webhook */
 char *whk_handle_webhook(const char *body_json) {
     /* Python: POST /webhooks/{route_name} receive + process. */
     if (!body_json) return strdup("{\"status\": 400}");

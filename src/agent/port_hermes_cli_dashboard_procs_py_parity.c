@@ -14,12 +14,12 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_dashboard_procs_lock_owned_serve_pids @ hermes_cli/dashboard_procs.py:_lock_owned_serve_pids */
+/* PoP: hermes_cli_dashboard_procs_lock_owned_serve_pids_p @ hermes_cli/dashboard_procs.py:_lock_owned_serve_pids */
 json_t *hermes_cli_dashboard_procs_lock_owned_serve_pids_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_dashboard_procs_reap_orphaned_desktop_local_serves @ hermes_cli/dashboard_procs.py:_reap_orphaned_desktop_local_serves */
+/* PoP: hermes_cli_dashboard_procs_reap_orphaned_desktop_local_serves_p @ hermes_cli/dashboard_procs.py:_reap_orphaned_desktop_local_serves */
 json_t *hermes_cli_dashboard_procs_reap_orphaned_desktop_local_serves_p(void) {
     return json_object();
 }

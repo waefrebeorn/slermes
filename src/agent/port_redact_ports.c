@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: mask_secret @ agent/redact.py:mask_secret */
+/* PoP: red_mask_secret @ agent/redact.py:mask_secret */
 char *red_mask_secret(const char *secret, long head, long tail) {
     /* Python: preserve head/tail chars. */
     if (!secret) return NULL;
@@ -48,7 +48,7 @@ char *red_mask_secret(const char *secret, long head, long tail) {
     return out;
 }
 
-/* PoP: _redact_query_string @ agent/redact.py:_redact_query_string */
+/* PoP: red_redact_query_string @ agent/redact.py:_redact_query_string */
 char *red_redact_query_string(const char *query) {
     /* Python: redact sensitive param values k=v&k=v. */
     if (!query) return strdup("");
@@ -100,7 +100,7 @@ char *red_redact_query_string(const char *query) {
     return out;
 }
 
-/* PoP: _redact_url_query_params @ agent/redact.py:_redact_url_query_params */
+/* PoP: red_redact_url_query_params @ agent/redact.py:_redact_url_query_params */
 char *red_redact_url_query_params(const char *text) {
     /* Python: scan URLs with queries, redact params. */
     if (!text) return strdup("");
@@ -128,7 +128,7 @@ char *red_redact_url_query_params(const char *text) {
     return out;
 }
 
-/* PoP: _redact_url_userinfo @ agent/redact.py:_redact_url_userinfo */
+/* PoP: red_redact_url_userinfo @ agent/redact.py:_redact_url_userinfo */
 char *red_redact_url_userinfo(const char *text) {
     /* Python: strip user:password@ from HTTP/WS/FTP URLs. */
     if (!text) return strdup("");
@@ -171,7 +171,7 @@ char *red_redact_url_userinfo(const char *text) {
     return out;
 }
 
-/* PoP: _redact_http_request_target_query_params @ agent/redact.py:_redact_http_request_target_query_params */
+/* PoP: red_redact_http_request_target_query_params @ agent/redact.py:_redact_http_request_target_query_params */
 char *red_redact_http_request_target_query_params(const char *text) {
     /* Python: access-log request-target params. */
     if (!text) return strdup("");
@@ -179,14 +179,14 @@ char *red_redact_http_request_target_query_params(const char *text) {
     return tmp ? tmp : strdup(text);
 }
 
-/* PoP: _redact_form_body @ agent/redact.py:_redact_form_body */
+/* PoP: red_redact_form_body @ agent/redact.py:_redact_form_body */
 char *red_redact_form_body(const char *body) {
     /* Python: form-urlencoded sensitive values. */
     if (!body) return strdup("");
     return red_redact_query_string(body);
 }
 
-/* PoP: _extract_literal_prefix @ agent/redact.py:_extract_literal_prefix */
+/* PoP: red_extract_literal_prefix @ agent/redact.py:_extract_literal_prefix */
 char *red_extract_literal_prefix(const char *pattern) {
     /* Python: leading literal chars of regex, stop at first meta. */
     if (!pattern) return strdup("");
@@ -199,7 +199,7 @@ char *red_extract_literal_prefix(const char *pattern) {
     return strndup(pattern, (size_t)(p - pattern));
 }
 
-/* PoP: _has_known_prefix_substring @ agent/redact.py:_has_known_prefix_substring */
+/* PoP: red_has_known_prefix_substring @ agent/redact.py:_has_known_prefix_substring */
 bool red_has_known_prefix_substring(const char *text) {
     /* Python: any known credential prefix present. */
     if (!text) return false;
@@ -209,7 +209,7 @@ bool red_has_known_prefix_substring(const char *text) {
     return false;
 }
 
-/* PoP: _has_http_method_substring @ agent/redact.py:_has_http_method_substring */
+/* PoP: red_has_http_method_substring @ agent/redact.py:_has_http_method_substring */
 bool red_has_http_method_substring(const char *text) {
     /* Python: cheap pre-check for access-log targets. */
     if (!text) return false;
@@ -222,7 +222,7 @@ bool red_has_http_method_substring(const char *text) {
     return hit;
 }
 
-/* PoP: __init__ @ agent/redact.py:__init__ */
+/* PoP: red_formatter_init @ agent/redact.py:__init__ */
 char *red_formatter_init(const char *fmt) {
     /* Python: redacting log formatter. */
     if (!fmt) return NULL;
@@ -231,7 +231,7 @@ char *red_formatter_init(const char *fmt) {
     return out;
 }
 
-/* PoP: format @ agent/redact.py:format */
+/* PoP: red_formatter_format @ agent/redact.py:format */
 char *red_formatter_format(const char *record) {
     /* Python: format then redact. */
     if (!record) return strdup("");

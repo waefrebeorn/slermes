@@ -128,7 +128,7 @@ char *cli__worktree_lock_is_live(const char *repo_root, const char *worktree_pat
 
 /* ---- terminal / CPR --------------------------------------------------- */
 
-/* PoP: cli__cli_visible_print @ cli.py:_cli_visible_print */
+/* PoP: stdout @ cli.py:_cli_visible_print */
 /* C has no prompt_toolkit app; print to stdout (equivalent when no TUI owns
  * the terminal). When a redraw is pending we still flush to stdout. */
 void cli__cli_visible_print(const char *text) {
@@ -147,7 +147,7 @@ int cli__terminal_may_leak_cpr(void) {
     return 0;
 }
 
-/* PoP: cli__build_cpr_disabled_output @ cli.py:_build_cpr_disabled_output */
+/* PoP: default @ cli.py:_build_cpr_disabled_output */
 /* Constructs a CPR-suppressed output object. In C there is no prompt_toolkit
  * Vt100_Output; the equivalent is to disable CPR globally, so we return NULL
  * and the caller falls back to the default (CPR disabled path), matching
@@ -170,7 +170,7 @@ void cli__recover_terminal_after_interrupt(void) {
 
 /* ---- pet subsystem ---------------------------------------------------- */
 
-/* PoP: cli__pet_resolve_config @ cli.py:_pet_resolve_config */
+/* PoP: config @ cli.py:_pet_resolve_config */
 /* Re-resolve the active pet from config (display.pet.enabled/slug/scale). */
 void cli__pet_resolve_config(void) {
     cli_pi_init();
@@ -203,7 +203,7 @@ void cli__pet_react_turn_end(void) {
     cli__pet_flash("wave", 1.6);
 }
 
-/* PoP: cli__derive_pet_state @ cli.py:_derive_pet_state */
+/* PoP: string @ cli.py:_derive_pet_state */
 /* Map CLI activity to a pet state string (malloc'd). */
 char *cli__derive_pet_state(void) {
     cli_pi_init();
@@ -223,7 +223,7 @@ char *cli__derive_pet_state(void) {
     return strdup(st);
 }
 
-/* PoP: cli__pet_frames_for @ cli.py:_pet_frames_for */
+/* PoP: 0 @ cli.py:_pet_frames_for */
 /* Return (and cache) frame count for a state. With no spritesheet renderer
  * the C engine has 0 frames, so we return 0 (caller treats empty as no pet). */
 int cli__pet_frames_for(const char *state) {
@@ -235,7 +235,7 @@ int cli__pet_frames_for(const char *state) {
     return n;
 }
 
-/* PoP: cli__pet_fragments @ cli.py:_pet_fragments */
+/* PoP: frame @ cli.py:_pet_fragments */
 /* Return fragment count for the current pet frame (0 when disabled). */
 int cli__pet_fragments(void) {
     cli_pi_init();
@@ -287,7 +287,7 @@ static void *cli__pet_anim_loop(void *arg) {
     return NULL;
 }
 
-/* PoP: cli__pet_anim_loop @ cli.py:_pet_anim_loop */
+/* PoP: cli__pet_anim_loop_impl @ cli.py:_pet_anim_loop */
 void cli__pet_anim_loop_impl(void) { cli__pet_anim_loop(NULL); }
 
 /* PoP: cli__pet_start_anim @ cli.py:_pet_start_anim */
@@ -312,7 +312,7 @@ void cli__pet_stop_anim(void) {
 
 /* ---- editor / interrupt / overlay state ------------------------------- */
 
-/* PoP: cli__submit_editor_buffer @ cli.py:_submit_editor_buffer */
+/* PoP: otherwise @ cli.py:_submit_editor_buffer */
 /* Submit text left by an external editor. Empty -> dropped; slash -> dispatch
  * flag; else routed to pending input. Returns 1 if a slash command was issued,
  * 0 otherwise (mirrors the Enter handler branch split). */

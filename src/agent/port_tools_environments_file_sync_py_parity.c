@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_environments_file_sync_quoted_rm_command @ tools/environments/file_sync.py:quoted_rm_command */
+/* PoP: tools_environments_file_sync_quoted_rm_command_p @ tools/environments/file_sync.py:quoted_rm_command */
 json_t *tools_environments_file_sync_quoted_rm_command_p(void) {
     return json_object();
 }

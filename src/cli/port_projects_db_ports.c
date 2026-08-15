@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _slugify @ hermes_cli/projects_db.py:_slugify */
+/* PoP: pdb_slugify @ hermes_cli/projects_db.py:_slugify */
 char *pdb_slugify(const char *name) {
     /* Python: best-effort slug from human name. */
     if (!name) return strdup("");
@@ -43,7 +43,7 @@ char *pdb_slugify(const char *name) {
     return out;
 }
 
-/* PoP: connect @ hermes_cli/projects_db.py:connect */
+/* PoP: pdb_connect @ hermes_cli/projects_db.py:connect */
 int pdb_connect(const char *db_path) {
     /* Python: WAL with DELETE checkpoint — REAL sqlite. */
     if (!db_path) return -1;
@@ -56,7 +56,7 @@ int pdb_connect(const char *db_path) {
     return 0;
 }
 
-/* PoP: to_dict @ hermes_cli/projects_db.py:to_dict */
+/* PoP: pdb_to_dict @ hermes_cli/projects_db.py:to_dict */
 char *pdb_to_dict(const char *path, const char *label) {
     char *out = NULL;
     asprintf(&out, "{\"path\": \"%s\", \"label\": \"%s\"}",

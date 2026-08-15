@@ -14,12 +14,12 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_image_source_ensure_container_env @ tools/image_source.py:_ensure_container_env */
+/* PoP: tools_image_source_ensure_container_env_p @ tools/image_source.py:_ensure_container_env */
 json_t *tools_image_source_ensure_container_env_p(void) {
     return json_object();
 }
 
-/* PoP: tools_image_source_resolve_local_source_to_data_url @ tools/image_source.py:resolve_local_source_to_data_url */
+/* PoP: tools_image_source_resolve_local_source_to_data_url_p @ tools/image_source.py:resolve_local_source_to_data_url */
 json_t *tools_image_source_resolve_local_source_to_data_url_p(void) {
     return json_object();
 }

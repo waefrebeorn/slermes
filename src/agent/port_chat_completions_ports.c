@@ -23,7 +23,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _build_gemini_thinking_config @ agent/transports/chat_completions.py:_build_gemini_thinking_config */
+/* PoP: cct_build_gemini_thinking_config @ agent/transports/chat_completions.py:_build_gemini_thinking_config */
 char *cct_build_gemini_thinking_config(const char *reasoning_json) {
     /* Python: reasoning config → Gemini thinkingConfig. */
     if (!reasoning_json) return NULL;
@@ -41,7 +41,7 @@ char *cct_build_gemini_thinking_config(const char *reasoning_json) {
     return out;
 }
 
-/* PoP: _snake_case_gemini_thinking_config @ agent/transports/chat_completions.py:_snake_case_gemini_thinking_config */
+/* PoP: cct_snake_case_gemini_thinking_config @ agent/transports/chat_completions.py:_snake_case_gemini_thinking_config */
 char *cct_snake_case_gemini_thinking_config(const char *config_json) {
     /* Python: camelCase → snake_case field names. */
     if (!config_json) return NULL;
@@ -66,7 +66,7 @@ char *cct_snake_case_gemini_thinking_config(const char *config_json) {
     return out;
 }
 
-/* PoP: _is_gemini_openai_compat_base_url @ agent/transports/chat_completions.py:_is_gemini_openai_compat_base_url */
+/* PoP: cct_is_gemini_openai_compat_base_url @ agent/transports/chat_completions.py:_is_gemini_openai_compat_base_url */
 bool cct_is_gemini_openai_compat_base_url(const char *base_url) {
     /* Python: gemini openai-compat endpoint detection. */
     if (!base_url) return false;
@@ -81,7 +81,7 @@ bool cct_is_gemini_openai_compat_base_url(const char *base_url) {
     return hit;
 }
 
-/* PoP: _model_consumes_thought_signature @ agent/transports/chat_completions.py:_model_consumes_thought_signature */
+/* PoP: cct_model_consumes_thought_signature @ agent/transports/chat_completions.py:_model_consumes_thought_signature */
 bool cct_model_consumes_thought_signature(const char *model) {
     /* Python: gemini family needs extra_body thought signature. */
     if (!model) return false;
@@ -92,12 +92,12 @@ bool cct_model_consumes_thought_signature(const char *model) {
     return hit;
 }
 
-/* PoP: api_mode @ agent/transports/chat_completions.py:api_mode */
+/* PoP: cct_api_mode @ agent/transports/chat_completions.py:api_mode */
 char *cct_api_mode(void) {
     return strdup("chat_completions");
 }
 
-/* PoP: convert_messages @ agent/transports/chat_completions.py:convert_messages */
+/* PoP: cct_convert_messages @ agent/transports/chat_completions.py:convert_messages */
 char *cct_convert_messages(const char *messages_json) {
     /* Python: strip internal fields strict APIs reject. */
     if (!messages_json) return strdup("[]");
@@ -105,14 +105,14 @@ char *cct_convert_messages(const char *messages_json) {
     return strdup(messages_json);
 }
 
-/* PoP: convert_tools @ agent/transports/chat_completions.py:convert_tools */
+/* PoP: cct_convert_tools @ agent/transports/chat_completions.py:convert_tools */
 char *cct_convert_tools(const char *tools_json) {
     /* Python: identity. */
     if (!tools_json) return strdup("[]");
     return strdup(tools_json);
 }
 
-/* PoP: build_kwargs @ agent/transports/chat_completions.py:build_kwargs */
+/* PoP: cct_build_kwargs @ agent/transports/chat_completions.py:build_kwargs */
 char *cct_build_kwargs(const char *params_json) {
     /* Python: chat.completions.create kwargs. */
     if (!params_json) return strdup("{}");
@@ -120,7 +120,7 @@ char *cct_build_kwargs(const char *params_json) {
     return strdup(params_json);
 }
 
-/* PoP: _build_kwargs_from_profile @ agent/transports/chat_completions.py:_build_kwargs_from_profile */
+/* PoP: cct_build_kwargs_from_profile @ agent/transports/chat_completions.py:_build_kwargs_from_profile */
 char *cct_build_kwargs_from_profile(const char *profile_json) {
     /* Python: single-path profile kwargs. */
     if (!profile_json) return strdup("{}");
@@ -128,7 +128,7 @@ char *cct_build_kwargs_from_profile(const char *profile_json) {
     return strdup(profile_json);
 }
 
-/* PoP: normalize_response @ agent/transports/chat_completions.py:normalize_response */
+/* PoP: cct_normalize_response @ agent/transports/chat_completions.py:normalize_response */
 char *cct_normalize_response(const char *response_json) {
     /* Python: ChatCompletion → NormalizedResponse. */
     if (!response_json) return strdup("{}");
@@ -136,7 +136,7 @@ char *cct_normalize_response(const char *response_json) {
     return strdup(response_json);
 }
 
-/* PoP: validate_response @ agent/transports/chat_completions.py:validate_response */
+/* PoP: cct_validate_response @ agent/transports/chat_completions.py:validate_response */
 bool cct_validate_response(const char *response_json) {
     /* Python: valid choices check. */
     if (!response_json) return false;
@@ -145,7 +145,7 @@ bool cct_validate_response(const char *response_json) {
     return true;
 }
 
-/* PoP: extract_cache_stats @ agent/transports/chat_completions.py:extract_cache_stats */
+/* PoP: cct_extract_cache_stats @ agent/transports/chat_completions.py:extract_cache_stats */
 char *cct_extract_cache_stats(const char *usage_json) {
     /* Python: prompt_tokens_details (OpenRouter/OpenAI) or deepseek. */
     if (!usage_json) return strdup("{}");
@@ -166,7 +166,7 @@ char *cct_extract_cache_stats(const char *usage_json) {
     return strndup(v, (size_t)(e - v));
 }
 
-/* PoP: _static_prompt_instructions @ agent/transports/chat_completions.py:_static_prompt_instructions */
+/* PoP: cct_static_prompt_instructions @ agent/transports/chat_completions.py:_static_prompt_instructions */
 /* Return the stable system/developer prefix from messages[0], or NULL. */
 char *cct_static_prompt_instructions(const char *messages_json) {
     if (!messages_json) return NULL;
@@ -199,7 +199,7 @@ char *cct_static_prompt_instructions(const char *messages_json) {
     return result;
 }
 
-/* PoP: _add_prompt_cache_key @ agent/transports/chat_completions.py:_add_prompt_cache_key */
+/* PoP: cct_add_prompt_cache_key @ agent/transports/chat_completions.py:_add_prompt_cache_key */
 /* Add prompt_cache_key only for explicitly capable endpoints with no existing
  * key. Returns a malloc'd JSON string with the key injected (caller frees the
  * original and replaces it), or NULL on failure. Input api_kwargs is not
@@ -237,7 +237,7 @@ char *cct_add_prompt_cache_key(const char *api_kwargs_json,
     return out;  /* NULL on failure */
 }
 
-/* PoP: _is_openai_api_base_url @ agent/transports/chat_completions.py:_is_openai_api_base_url */
+/* PoP: itself @ agent/transports/chat_completions.py:_is_openai_api_base_url */
 /* True only for api.openai.com itself (exact host, not Azure/substring). */
 bool cct_is_openai_api_base_url(const char *base_url) {
     if (!base_url) return false;

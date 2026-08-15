@@ -24,7 +24,7 @@
 #include "libjson/json.h"
 
 /* --- runtime url normalization ----------------------------------------- */
-/* PoP: _normalized_runtime_url @ tools/delegate_tool.py:_normalized_runtime_url */
+/* PoP: strip @ tools/delegate_tool.py:_normalized_runtime_url */
 /* str(value or "") then strip() then rstrip('/'). Allocates result (caller
  * frees). Returns malloc'd "" when input is NULL/empty. */
 char *delegate_normalized_runtime_url(const char *value)
@@ -45,7 +45,7 @@ char *delegate_normalized_runtime_url(const char *value)
 }
 
 /* --- tasks JSON string recovery (parse + validate) --------------------- */
-/* PoP: _recover_tasks_from_json_string @ tools/delegate_tool.py:_recover_tasks_from_json_string */
+/* PoP: original @ tools/delegate_tool.py:_recover_tasks_from_json_string */
 /*
  * Parse a 'tasks' JSON string. Returns 1 and sets *out_json (malloc'd string
  * copy of the parsed array) when it is a non-empty JSON array; otherwise
@@ -121,7 +121,7 @@ int delegate_recover_tasks_from_json_string(const char *tasks, char **out_json, 
 }
 
 /* --- summary head/tail trim (footer omitted; pure string math) --------- */
-/* PoP: _trim_summary_with_footer @ tools/delegate_tool.py:_trim_summary_with_footer */
+/* PoP: text @ tools/delegate_tool.py:_trim_summary_with_footer */
 /*
  * Snap a summary to a head+tail window (75% head / 25% tail) at line
  * boundaries, and return the model_text. The Python version also spills the

@@ -40,7 +40,7 @@ static void sf_resolve_home(char *buf, size_t bufsize)
 /* is_termux_env                                                       */
 /* ------------------------------------------------------------------ */
 
-/* PoP: is_termux_env @ hermes_cli/_startup_fast.py:is_termux_env */
+/* PoP: sf_is_termux_env @ hermes_cli/_startup_fast.py:is_termux_env */
 bool sf_is_termux_env(void)
 {
     const char *termux_version = getenv("TERMUX_VERSION");
@@ -66,7 +66,7 @@ static bool sf_argv_matches_one(int argc, char **argv, const char *target)
     return strcmp(argv[1], target) == 0;
 }
 
-/* PoP: is_termux_fast_version_argv @ hermes_cli/_startup_fast.py:is_termux_fast_version_argv */
+/* PoP: sf_is_termux_fast_version_argv @ hermes_cli/_startup_fast.py:is_termux_fast_version_argv */
 bool sf_is_termux_fast_version_argv(int argc, char **argv)
 {
     /* argv in (["--version"], ["-V"], ["version"]) */
@@ -79,7 +79,7 @@ bool sf_is_termux_fast_version_argv(int argc, char **argv)
 /* is_global_fast_version_argv                                         */
 /* ------------------------------------------------------------------ */
 
-/* PoP: is_global_fast_version_argv @ hermes_cli/_startup_fast.py:is_global_fast_version_argv */
+/* PoP: sf_is_global_fast_version_argv @ hermes_cli/_startup_fast.py:is_global_fast_version_argv */
 bool sf_is_global_fast_version_argv(int argc, char **argv)
 {
     /* argv in (["--version"], ["-V"]) */
@@ -91,7 +91,7 @@ bool sf_is_global_fast_version_argv(int argc, char **argv)
 /* is_container_startup_environment                                    */
 /* ------------------------------------------------------------------ */
 
-/* PoP: is_container_startup_environment @ hermes_cli/_startup_fast.py:is_container_startup_environment */
+/* PoP: sf_is_container_startup_environment @ hermes_cli/_startup_fast.py:is_container_startup_environment */
 bool sf_is_container_startup_environment(void)
 {
     if (access("/.dockerenv", F_OK) == 0)
@@ -116,7 +116,7 @@ bool sf_is_container_startup_environment(void)
 /* active_profile_may_override_home                                    */
 /* ------------------------------------------------------------------ */
 
-/* PoP: active_profile_may_override_home @ hermes_cli/_startup_fast.py:active_profile_may_override_home */
+/* PoP: sf_active_profile_may_override_home @ hermes_cli/_startup_fast.py:active_profile_may_override_home */
 bool sf_active_profile_may_override_home(const char *hermes_root)
 {
     if (!hermes_root) return false;
@@ -143,7 +143,7 @@ bool sf_active_profile_may_override_home(const char *hermes_root)
 /* container_mode_may_be_active                                        */
 /* ------------------------------------------------------------------ */
 
-/* PoP: container_mode_may_be_active @ hermes_cli/_startup_fast.py:container_mode_may_be_active */
+/* PoP: sf_container_mode_may_be_active @ hermes_cli/_startup_fast.py:container_mode_may_be_active */
 bool sf_container_mode_may_be_active(void)
 {
     if (getenv("HERMES_DEV") && strcmp(getenv("HERMES_DEV"), "1") == 0)
@@ -197,7 +197,7 @@ bool sf_container_mode_may_be_active(void)
 /* read_openai_version                                                 */
 /* ------------------------------------------------------------------ */
 
-/* PoP: read_openai_version @ hermes_cli/_startup_fast.py:read_openai_version */
+/* PoP: sf_read_openai_version @ hermes_cli/_startup_fast.py:read_openai_version */
 char *sf_read_openai_version(void)
 {
     /* Walk PATH-like dirs looking for openai/_version.py, then parse
@@ -258,7 +258,7 @@ char *sf_read_openai_version(void)
 /* read_install_method                                                 */
 /* ------------------------------------------------------------------ */
 
-/* PoP: read_install_method @ hermes_cli/_startup_fast.py:read_install_method */
+/* PoP: sf_read_install_method @ hermes_cli/_startup_fast.py:read_install_method */
 char *sf_read_install_method(void)
 {
     char hermes_root[4096];
@@ -294,7 +294,7 @@ char *sf_read_install_method(void)
 /* _resolved_home                                                      */
 /* ------------------------------------------------------------------ */
 
-/* PoP: _resolved_home @ hermes_cli/_startup_fast.py:_resolved_home */
+/* PoP: sf_resolved_home @ hermes_cli/_startup_fast.py:_resolved_home */
 char *sf_resolved_home(void)
 {
     char buf[4096];
@@ -306,7 +306,7 @@ char *sf_resolved_home(void)
 /* project_root_str                                                    */
 /* ------------------------------------------------------------------ */
 
-/* PoP: project_root_str @ hermes_cli/_startup_fast.py:project_root_str */
+/* PoP: sf_project_root_str @ hermes_cli/_startup_fast.py:project_root_str */
 char *sf_project_root_str(void)
 {
     /* os.path.realpath(os.path.join(os.path.dirname(__file__), os.pardir))
@@ -321,7 +321,7 @@ char *sf_project_root_str(void)
     return cwd;
 }
 
-/* PoP: ensure_project_root_on_path @ hermes_cli/_startup_fast.py:ensure_project_root_on_path */
+/* PoP: sf_ensure_project_root_on_path @ hermes_cli/_startup_fast.py:ensure_project_root_on_path */
 void sf_ensure_project_root_on_path(void)
 {
     /* Python: sys.path[:] = [entry for entry in sys.path if not entry
@@ -339,7 +339,7 @@ void sf_ensure_project_root_on_path(void)
     free(root);
 }
 
-/* PoP: print_fast_version_info @ hermes_cli/_startup_fast.py:print_fast_version_info */
+/* PoP: sf_print_fast_version_info @ hermes_cli/_startup_fast.py:print_fast_version_info */
 void sf_print_fast_version_info(const char *version, const char *release_date)
 {
     /* Python: prints Hermes Agent version, install dir, install method,
@@ -370,7 +370,7 @@ void sf_print_fast_version_info(const char *version, const char *release_date)
     printf("Run 'hermes version' for update status.\n");
 }
 
-/* PoP: try_fast_version @ hermes_cli/_startup_fast.py:try_fast_version */
+/* PoP: sf_try_fast_version @ hermes_cli/_startup_fast.py:try_fast_version */
 bool sf_try_fast_version(int argc, char **argv)
 {
     /* Python: handle --version/-V before the heavy import wall.

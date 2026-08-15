@@ -82,7 +82,7 @@ static char *pcs_strval(const json_t *node)
     return s ? s : strdup("");
 }
 
-/* PoP: _parse_multi_select_response @ tools/clarify_tool.py:_parse_multi_select_response */
+/* PoP: pcs_parse_multi_select_response @ tools/clarify_tool.py:_parse_multi_select_response */
 /* Parse a multi-select response into a list of cleaned choice strings.
  * Handles: already-a-JSON-array, JSON array text, comma-separated text.
  * Returns a malloc'd array of malloc'd strings; *out_count is set.

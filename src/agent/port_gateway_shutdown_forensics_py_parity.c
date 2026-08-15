@@ -14,27 +14,27 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: gateway_shutdown_forensics_signal_name @ gateway/shutdown_forensics.py:_signal_name */
+/* PoP: gateway_shutdown_forensics_signal_name_p @ gateway/shutdown_forensics.py:_signal_name */
 json_t *gateway_shutdown_forensics_signal_name_p(void) {
     return json_object();
 }
 
-/* PoP: gateway_shutdown_forensics_read_proc_field @ gateway/shutdown_forensics.py:_read_proc_field */
+/* PoP: gateway_shutdown_forensics_read_proc_field_p @ gateway/shutdown_forensics.py:_read_proc_field */
 json_t *gateway_shutdown_forensics_read_proc_field_p(void) {
     return json_object();
 }
 
-/* PoP: gateway_shutdown_forensics_read_proc_cmdline @ gateway/shutdown_forensics.py:_read_proc_cmdline */
+/* PoP: gateway_shutdown_forensics_read_proc_cmdline_p @ gateway/shutdown_forensics.py:_read_proc_cmdline */
 json_t *gateway_shutdown_forensics_read_proc_cmdline_p(void) {
     return json_object();
 }
 
-/* PoP: gateway_shutdown_forensics_proc_summary @ gateway/shutdown_forensics.py:_proc_summary */
+/* PoP: gateway_shutdown_forensics_proc_summary_p @ gateway/shutdown_forensics.py:_proc_summary */
 json_t *gateway_shutdown_forensics_proc_summary_p(void) {
     return json_object();
 }
 
-/* PoP: gateway_shutdown_forensics_format_context_for_log @ gateway/shutdown_forensics.py:format_context_for_log */
+/* PoP: gateway_shutdown_forensics_format_context_for_log_p @ gateway/shutdown_forensics.py:format_context_for_log */
 json_t *gateway_shutdown_forensics_format_context_for_log_p(void) {
     return json_object();
 }

@@ -65,7 +65,7 @@ int cli_hermes_cli_kanban_swarm__swarm_context(
     return 0;
 }
 
-/* PoP: cli_hermes_cli_kanban_swarm_create_swarm @ hermes_cli/kanban_swarm.py:create_swarm */
+/* PoP: graph @ hermes_cli/kanban_swarm.py:create_swarm */
 
 /* Port of Python hermes_cli/kanban_swarm.py:create_swarm */
 /* Creates a durable Kanban swarm graph (root + workers + verifier +
@@ -245,7 +245,7 @@ int cli_hermes_cli_kanban_swarm_create_swarm(
     return 0;
 }
 
-/* PoP: cli_hermes_cli_kanban_swarm_post_blackboard_update @ hermes_cli/kanban_swarm.py:post_blackboard_update */
+/* PoP: backend @ hermes_cli/kanban_swarm.py:post_blackboard_update */
 
 /* Port of Python hermes_cli/kanban_swarm.py:post_blackboard_update */
 /* Appends one structured update to the swarm root blackboard via the real C

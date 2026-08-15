@@ -117,7 +117,7 @@ static void ensure_regexes(void)
  * Pure helpers
  * ============================================================ */
 
-/* PoP: cli_logs_parse_since @ hermes_cli/logs.py:_parse_since */
+/* PoP: cutoff @ hermes_cli/logs.py:_parse_since */
 /* Parse '1h'/'30m'/'2d' into a UNIX cutoff (now - delta). NULL if unparseable. */
 time_t cli_logs_parse_since(const char *since_str)
 {
@@ -226,7 +226,7 @@ int cli_logs_matches_filters(const char *line,
  * File reading
  * ============================================================ */
 
-/* PoP: cli_logs_read_last_n_lines @ hermes_cli/logs.py:_read_last_n_lines */
+/* PoP: strings @ hermes_cli/logs.py:_read_last_n_lines */
 /* Read the last n lines from a file. Returns malloc'd array of malloc'd
  * line strings (each includes trailing \n), count in *out_n. NULL on error. */
 char **cli_logs_read_last_n_lines(const char *path, int n, int *out_n)
@@ -285,7 +285,7 @@ char **cli_logs_read_last_n_lines(const char *path, int n, int *out_n)
     return lines;
 }
 
-/* PoP: cli_logs_read_tail @ hermes_cli/logs.py:_read_tail */
+/* PoP: lines @ hermes_cli/logs.py:_read_tail */
 /* Returns last num_lines matching lines (or raw last num_lines). */
 char **cli_logs_read_tail(const char *path, int num_lines, int has_filters,
                           const char *min_level, const char *session_filter,

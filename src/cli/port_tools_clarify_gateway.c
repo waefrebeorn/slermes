@@ -41,9 +41,9 @@ typedef struct clarify_entry {
 static clarify_entry_t *g_entries = NULL;
 static int g_entry_count = 0;
 
-/* PoP: cli_tools_clarify_gateway_signature @ tools/clarify_gateway.py:signature */
+/* PoP: cli_tools_clarify_gateway_resolve_gateway_clarify @ tools/clarify_gateway.py:signature */
 
-/* PoP: cli_tools_clarify_gateway_wait_for_response @ tools/clarify_gateway.py:wait_for_response */
+/* PoP: cli_tools_clarify_gateway_resolve_gateway_clarify @ tools/clarify_gateway.py:wait_for_response */
 
 /* PoP: cli_tools_clarify_gateway_resolve_gateway_clarify @ tools/clarify_gateway.py:resolve_gateway_clarify */
 int cli_tools_clarify_gateway_resolve_gateway_clarify(const char *clarify_id, const char *response) {
@@ -69,7 +69,7 @@ int cli_tools_clarify_gateway_resolve_gateway_clarify(const char *clarify_id, co
     return 0;
 }
 
-/* PoP: cli_tools_clarify_gateway_get_pending_for_session @ tools/clarify_gateway.py:get_pending_for_session */
+/* PoP: cli_tools_clarify_gateway_mark_awaiting_text @ tools/clarify_gateway.py:get_pending_for_session */
 clarify_entry_t* cli_tools_clarify_gateway_get_pending_for_session(const char *session_key) {
     /*
      * Return the OLDEST pending clarify entry for a session, or NULL.
@@ -189,7 +189,7 @@ void *cli_tools_clarify_gateway_get_notify(const char *session_key) {
 
 /* PoP: cli_tools_clarify_gateway__coerce_text_response @ tools/clarify_gateway.py:_coerce_text_response */
 /* Map typed choice replies to canonical choice text, otherwise keep custom text. */
-/* PoP: _text_response @ tools/computer_use/tool.py:_text_response */
+/* PoP: cli_tools_clarify_gateway__coerce_text_response @ tools/computer_use/tool.py:_text_response */
 char *cli_tools_clarify_gateway__coerce_text_response(const clarify_entry_t *entry, const char *response) {
     if (!response) return strdup("");
     /* strip */
@@ -223,7 +223,7 @@ char *cli_tools_clarify_gateway__coerce_text_response(const clarify_entry_t *ent
     return strdup(text);
 }
 
-/* PoP: cli_tools_clarify_gateway__coerce_multi_select_text @ tools/clarify_gateway.py:_coerce_multi_select_text */
+/* PoP: commas @ tools/clarify_gateway.py:_coerce_multi_select_text */
 /* Parse a typed multi-select reply into a JSON array of choice labels.
  * Accepts numbers and/or exact labels separated by commas (and, for
  * all-numeric replies, bare spaces): "1,3", "1 3", "staging, prod".

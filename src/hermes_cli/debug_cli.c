@@ -159,7 +159,7 @@ void debug_record_pending(const char *hermes_home, const char *urls[], int n,
     free(keep);
 }
 
-/* PoP: hermes_cli_debug_u_best_effort_sweep_expired_pastes @ hermes_cli/debug.py:_sweep_expired_pastes */
+/* PoP: debug_sweep_expired_pastes @ hermes_cli/debug.py:_sweep_expired_pastes */
 void debug_sweep_expired_pastes(const char *hermes_home, double now,
                                 int (*delete_cb)(const char *url),
                                 int *out_deleted, int *out_remaining) {

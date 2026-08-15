@@ -80,7 +80,7 @@ static bool is_loopback_client(uint32_t client_ip) {
  * Port of Python hermes_cli/web_server.py:_resolve_session_token:
  *   `os.environ.get("HERMES_DASHBOARD_SESSION_TOKEN") or secrets.token_urlsafe(32)`
  * First try env; otherwise a UUID v4 (fallback: pid-timestamp hash). */
-/* PoP: _resolve_session_token @ hermes_cli/web_server.py:_resolve_session_token */
+/* PoP: generate_session_token @ hermes_cli/web_server.py:_resolve_session_token */
 static void generate_session_token(void) {
     /* First try HERMES_DASHBOARD_SESSION_TOKEN from env */
     const char *env_token = getenv("HERMES_DASHBOARD_SESSION_TOKEN");
@@ -601,7 +601,7 @@ static void handle_model_info(int fd) {
     } else send_json(fd, 200, "OK", "{}");
 }
 
-/* PoP: h_model_options @ hermes_cli/moa_cmd.py:_model_options */
+/* PoP: handle_model_options @ hermes_cli/moa_cmd.py:_model_options */
 /* PoP: handle_model_options @ gateway/platforms/api_server.py:_handle_model_options */
 static void handle_model_options(int fd) {
     json_t *root = json_new_object();
@@ -708,7 +708,7 @@ static void handle_cron_jobs(int fd) {
 
 /* ── Logs endpoint ── */
 
-/* PoP: h_logs @ hermes_cli/console_engine.py:_logs */
+/* PoP: handle_logs @ hermes_cli/console_engine.py:_logs */
 static void handle_logs(int fd) {
     const char *home = getenv("HERMES_HOME");
     if (!home) home = getenv("HOME");
@@ -805,7 +805,7 @@ static void handle_analytics(int fd) {
 
 /* ── Update endpoints ── */
 
-/* PoP: check_hermes_update @ hermes_cli/web_server.py:check_hermes_update */
+/* PoP: payload @ hermes_cli/web_server.py:check_hermes_update */
 /* Real online update check: git fetch origin main + commit-behind count,
  * 6h-cached, full dashboard payload (install_method / behind / commits /
  * message). The `force` query param busts the cache ("Check now" button). */
@@ -825,7 +825,7 @@ static void handle_update_check(int fd) {
     free(payload);
 }
 
-/* PoP: update_hermes @ hermes_cli/web_server.py:update_hermes */
+/* PoP: handle_update_apply @ hermes_cli/web_server.py:update_hermes */
 /* Kick off the real update in the background. Mirrors Python: managed /
  * docker / nix short-circuits report guidance; a git install acquires the
  * update lock and spawns the updater detached. */
@@ -1762,7 +1762,7 @@ static void handle_fs_list(int fd, const http_req_t *req) {
     free(j); json_free(arr);
 }
 
-/* PoP: ws_fs_read_text @ hermes_cli/web_server.py:fs_read_text */
+/* PoP: handle_fs_read_text @ hermes_cli/web_server.py:fs_read_text */
 static void handle_fs_read_text(int fd, const char *path) {
     const char *prefix = "/api/fs/read-text/";
     if (strncmp(path, prefix, strlen(prefix)) != 0) {
@@ -1816,8 +1816,8 @@ static void handle_fs_read_data(int fd, const char *path) {
     free(j); json_free(resp);
 }
 
-/* PoP: ws_fs_default_cwd @ hermes_cli/web_server.py:fs_default_cwd */
-/* PoP: ws_fs_default_cwd @ hermes_cli/web_server.py:_fs_default_cwd */
+/* PoP: handle_fs_default_cwd @ hermes_cli/web_server.py:fs_default_cwd */
+/* PoP: handle_fs_default_cwd @ hermes_cli/web_server.py:_fs_default_cwd */
 static void handle_fs_default_cwd(int fd) {
     char cwd_buf[1024];
     if (getcwd(cwd_buf, sizeof(cwd_buf))) {

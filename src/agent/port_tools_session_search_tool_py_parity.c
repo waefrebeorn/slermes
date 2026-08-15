@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_session_search_tool_locate_session_db @ tools/session_search_tool.py:_locate_session_db */
+/* PoP: tools_session_search_tool_locate_session_db_p @ tools/session_search_tool.py:_locate_session_db */
 json_t *tools_session_search_tool_locate_session_db_p(void) {
     return json_object();
 }

@@ -238,7 +238,7 @@ void turn_retry_state_set_restart_with_redirected_messages(turn_retry_state_t *s
     if (s) s->f[IDX_restart_with_redirected_messages] = v;
 }
 
-/* PoP: __iter__ @ agent/turn_retry_state.py:TurnRetryState.__iter__ */
+/* PoP: turn_retry_state_fields @ agent/turn_retry_state.py:TurnRetryState.__iter__ */
 turn_retry_field_t *turn_retry_state_fields(const turn_retry_state_t *s, size_t *count_out) {
     if (count_out) *count_out = IDX_COUNT;
     turn_retry_field_t *arr = malloc(sizeof(turn_retry_field_t) * IDX_COUNT);

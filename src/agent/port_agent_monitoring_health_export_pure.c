@@ -74,7 +74,7 @@ static bool _safe_resource_value(const char *text)
 
 /* ── _redact_string ──────────────────────────────────────────── */
 
-/* PoP: _redact_string @ agent/monitoring/gateway_health_export.py:_redact_string */
+/* PoP: limit @ agent/monitoring/gateway_health_export.py:_redact_string */
 /* redact_for_export(str(raw or ""), fail-open → "[redaction-unavailable]").
  * Truncated to limit (default 500). Returns malloc'd string. */
 char *ghe_redact_string(const char *raw, int limit)
@@ -92,7 +92,7 @@ char *ghe_redact_string(const char *raw, int limit)
 
 /* ── _safe_resource_attributes ───────────────────────────────── */
 
-/* PoP: _safe_resource_attributes @ agent/monitoring/gateway_health_export.py:_safe_resource_attributes */
+/* PoP: ghe_safe_resource_attributes @ agent/monitoring/gateway_health_export.py:_safe_resource_attributes */
 /* Allowlist bounded resource labels and reject values changed by redaction.
  * raw_json: JSON object. Returns a malloc'd JSON object string. */
 char *ghe_safe_resource_attributes(const char *raw_json)
@@ -158,7 +158,7 @@ done:
 
 /* ── _version ────────────────────────────────────────────────── */
 
-/* PoP: _version @ agent/monitoring/gateway_health_export.py:_version */
+/* PoP: ghe_version @ agent/monitoring/gateway_health_export.py:_version */
 const char *ghe_version(void)
 {
 #ifdef HERMES_VERSION
@@ -187,7 +187,7 @@ const char *ghe_version(void)
 
 /* ── _profile ────────────────────────────────────────────────── */
 
-/* PoP: _profile @ agent/monitoring/gateway_health_export.py:_profile */
+/* PoP: ghe_profile @ agent/monitoring/gateway_health_export.py:_profile */
 /* Returns the active profile name, or "default".
  * Checks HERMESSES_PROFILE then HERMES_PROFILE env, falls back to "default". */
 const char *ghe_profile(void)
@@ -200,7 +200,7 @@ const char *ghe_profile(void)
 
 /* ── _install_id ─────────────────────────────────────────────── */
 
-/* PoP: _install_id @ agent/monitoring/gateway_health_export.py:_install_id */
+/* PoP: ghe_install_id @ agent/monitoring/gateway_health_export.py:_install_id */
 /* config_json: JSON object, optionally with monitoring.install_id.
  * Returns the install_id string or "unknown" on failure. */
 char *ghe_install_id(const char *config_json)
@@ -229,7 +229,7 @@ char *ghe_install_id(const char *config_json)
 
 /* ── _supervision_mode ───────────────────────────────────────── */
 
-/* PoP: _supervision_mode @ agent/monitoring/gateway_health_export.py:_supervision_mode */
+/* PoP: ghe_supervision_mode @ agent/monitoring/gateway_health_export.py:_supervision_mode */
 /* Probe env vars to determine the supervision runtime. */
 const char *ghe_supervision_mode(void)
 {
@@ -242,7 +242,7 @@ const char *ghe_supervision_mode(void)
 
 /* ── _runtime_resource_attributes ──────────────────────────── */
 
-/* PoP: _runtime_resource_attributes @ agent/monitoring/gateway_health_export.py:_runtime_resource_attributes */
+/* PoP: ghe_runtime_resource_attributes @ agent/monitoring/gateway_health_export.py:_runtime_resource_attributes */
 /* Build the safe OTLP resource shared by metrics and diagnostic logs.
  * config_json: JSON config dict. telemetry_scope: the scope string.
  * Returns malloc'd JSON object string. */

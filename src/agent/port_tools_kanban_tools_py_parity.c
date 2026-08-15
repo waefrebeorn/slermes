@@ -14,22 +14,22 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_kanban_tools_is_dispatcher_owned_worker @ tools/kanban_tools.py:_is_dispatcher_owned_worker */
+/* PoP: tools_kanban_tools_is_dispatcher_owned_worker_p @ tools/kanban_tools.py:_is_dispatcher_owned_worker */
 json_t *tools_kanban_tools_is_dispatcher_owned_worker_p(void) {
     return json_object();
 }
 
-/* PoP: tools_kanban_tools_goal_mode_handoff_rejection @ tools/kanban_tools.py:_goal_mode_handoff_rejection */
+/* PoP: tools_kanban_tools_goal_mode_handoff_rejection_p @ tools/kanban_tools.py:_goal_mode_handoff_rejection */
 json_t *tools_kanban_tools_goal_mode_handoff_rejection_p(void) {
     return json_object();
 }
 
-/* PoP: tools_kanban_tools_handle_request_review @ tools/kanban_tools.py:_handle_request_review */
+/* PoP: tools_kanban_tools_handle_request_review_p @ tools/kanban_tools.py:_handle_request_review */
 json_t *tools_kanban_tools_handle_request_review_p(void) {
     return json_object();
 }
 
-/* PoP: tools_kanban_tools_handle_request_changes @ tools/kanban_tools.py:_handle_request_changes */
+/* PoP: tools_kanban_tools_handle_request_changes_p @ tools/kanban_tools.py:_handle_request_changes */
 json_t *tools_kanban_tools_handle_request_changes_p(void) {
     return json_object();
 }

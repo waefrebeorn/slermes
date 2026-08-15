@@ -14,12 +14,12 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_backup_validate_backup_zip @ hermes_cli/backup.py:_validate_backup_zip */
+/* PoP: hermes_cli_backup_validate_backup_zip_p @ hermes_cli/backup.py:_validate_backup_zip */
 json_t *hermes_cli_backup_validate_backup_zip_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_backup_prune_pre_update_backups @ hermes_cli/backup.py:_prune_pre_update_backups */
+/* PoP: hermes_cli_backup_prune_pre_update_backups_p @ hermes_cli/backup.py:_prune_pre_update_backups */
 json_t *hermes_cli_backup_prune_pre_update_backups_p(void) {
     return json_object();
 }

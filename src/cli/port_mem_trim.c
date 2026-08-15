@@ -49,7 +49,7 @@ double mt_monotonic(void) {
 }
 
 /* ── _cooldown_seconds ──────────────────────────────────────────────── */
-/* PoP: _cooldown_seconds @ hermes_cli/mem_trim.py:_cooldown_seconds */
+/* PoP: isinstance @ hermes_cli/mem_trim.py:_cooldown_seconds */
 /* Faithful C port of the Any-typed Python helper (max(0.0, float(value))):
  * bool → default; number → clamped to >=0; string that parses as float →
  * that value (>=0); non-numeric string → default. JSON_VALUE carries the
@@ -72,7 +72,7 @@ double mt_cooldown_seconds(const json_t *value) {
 }
 
 /* ── _log_every_n ──────────────────────────────────────────────────── */
-/* PoP: _log_every_n @ hermes_cli/mem_trim.py:_log_every_n */
+/* PoP: mt_log_every_n @ hermes_cli/mem_trim.py:_log_every_n */
 /* Faithful port: bool → default; int(value) with max(1,...); string that
  * parses as int → clamped to >=1; non-numeric → default. */
 int mt_log_every_n(const json_t *value) {
@@ -93,7 +93,7 @@ int mt_log_every_n(const json_t *value) {
 }
 
 /* ── _nonnegative_float ────────────────────────────────────────────── */
-/* PoP: _nonnegative_float @ hermes_cli/mem_trim.py:_nonnegative_float */
+/* PoP: mt_nonnegative_float @ hermes_cli/mem_trim.py:_nonnegative_float */
 /* Faithful port: bool → default; max(0.0, float(value)); string that
  * parses as float → clamped; non-numeric → default. */
 double mt_nonnegative_float(const json_t *value, double default_v) {
@@ -113,7 +113,7 @@ double mt_nonnegative_float(const json_t *value, double default_v) {
 }
 
 /* ── _read_proc_status ─────────────────────────────────────────────── */
-/* PoP: _read_proc_status @ hermes_cli/mem_trim.py:_read_proc_status */
+/* PoP: string @ hermes_cli/mem_trim.py:_read_proc_status */
 /* Read /proc/self/status into a malloc'd string (caller frees), or NULL on
  * non-Linux / unreadable. Mirrors reading Path("/proc/self/status"). */
 char *mt_read_proc_status(void) {
@@ -200,7 +200,7 @@ char *collect_memory_snapshot(int history_bytes) {
 }
 
 /* ── _should_log_trim ──────────────────────────────────────────────── */
-/* PoP: _should_log_trim @ hermes_cli/mem_trim.py:_should_log_trim */
+/* PoP: mt_should_log_trim @ hermes_cli/mem_trim.py:_should_log_trim */
 bool mt_should_log_trim(bool force, int log_every_n, int call_count,
                         const char *before_json, const char *after_json,
                         double info_log_min_delta_mb) {
@@ -224,7 +224,7 @@ bool mt_should_log_trim(bool force, int log_every_n, int call_count,
 }
 
 /* ── _probe_glibc_malloc_trim ──────────────────────────────────────── */
-/* PoP: _probe_glibc_malloc_trim @ hermes_cli/mem_trim.py:_probe_glibc_malloc_trim */
+/* PoP: mt_probe_glibc_malloc_trim @ hermes_cli/mem_trim.py:_probe_glibc_malloc_trim */
 /* Resolve glibc's malloc_trim once. Returns true when the function pointer is
  * live (stored in g_malloc_trim), false on non-Linux or unsupported allocators.
  * Callers read g_malloc_trim directly. */
@@ -319,7 +319,7 @@ bool trim_memory(bool force, const char *reason, double cooldown_seconds) {
 }
 
 /* ── _config_settings (returned struct via out-params) ──────────────── */
-/* PoP: _config_settings @ hermes_cli/mem_trim.py:_config_settings */
+/* PoP: mt_config_settings @ hermes_cli/mem_trim.py:_config_settings */
 /* Faithful port: reads context.memory_trim from the ro config, applying the
  * same coercion helpers. Writes results into the out-params. */
 void mt_config_settings(int *enabled_out, double *cooldown_out,

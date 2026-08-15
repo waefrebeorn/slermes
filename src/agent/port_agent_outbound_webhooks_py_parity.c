@@ -14,17 +14,17 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: agent_outbound_webhooks_register_from_config @ agent/outbound_webhooks.py:register_from_config */
+/* PoP: agent_outbound_webhooks_register_from_config_p @ agent/outbound_webhooks.py:register_from_config */
 json_t *agent_outbound_webhooks_register_from_config_p(void) {
     return json_object();
 }
 
-/* PoP: agent_outbound_webhooks_iter_configured_targets @ agent/outbound_webhooks.py:iter_configured_targets */
+/* PoP: agent_outbound_webhooks_iter_configured_targets_p @ agent/outbound_webhooks.py:iter_configured_targets */
 json_t *agent_outbound_webhooks_iter_configured_targets_p(void) {
     return json_object();
 }
 
-/* PoP: agent_outbound_webhooks_parse_outbound_block @ agent/outbound_webhooks.py:_parse_outbound_block */
+/* PoP: agent_outbound_webhooks_parse_outbound_block_p @ agent/outbound_webhooks.py:_parse_outbound_block */
 json_t *agent_outbound_webhooks_parse_outbound_block_p(void) {
     return json_object();
 }

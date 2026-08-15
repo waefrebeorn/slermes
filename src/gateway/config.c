@@ -34,7 +34,7 @@
  * ================================================================ */
 
 /* Port of Python: _coerce_bool */
-/* PoP: wbs_coerce_bool @ gateway/config.py:_coerce_bool */
+/* PoP: gateway_config_coerce_bool @ gateway/config.py:_coerce_bool */
 bool gateway_config_coerce_bool(const json_node_t *value, bool default_val) {
     if (!value || json_node_is_null(value)) {
         return default_val;
@@ -76,7 +76,7 @@ bool gateway_config_coerce_bool(const json_node_t *value, bool default_val) {
 }
 
 /* Port of Python: _coerce_float */
-/* PoP: moa_coerce_float @ gateway/config.py:_coerce_float */
+/* PoP: gateway_config_coerce_float @ gateway/config.py:_coerce_float */
 double gateway_config_coerce_float(const json_node_t *value, double default_val) {
     if (!value || json_node_is_null(value)) {
         return default_val;
@@ -101,7 +101,7 @@ double gateway_config_coerce_float(const json_node_t *value, double default_val)
 }
 
 /* Port of Python: _coerce_int */
-/* PoP: fo_coerce_int @ gateway/config.py:_coerce_int */
+/* PoP: gateway_config_coerce_int @ gateway/config.py:_coerce_int */
 int gateway_config_coerce_int(const json_node_t *value, int default_val) {
     if (!value || json_node_is_null(value)) {
         return default_val;
@@ -185,7 +185,7 @@ int gateway_config_coerce_optional_positive_int(const json_node_t *value, const 
  * ================================================================ */
 
 /* Port of Python: _normalize_unauthorized_dm_behavior */
-/* PoP: _normalize_unauthorized_dm_behavior @ gateway/config.py:_normalize_unauthorized_dm_behavior */
+/* PoP: gateway_config_normalize_unauthorized_dm_behavior @ gateway/config.py:_normalize_unauthorized_dm_behavior */
 const char *gateway_config_normalize_unauthorized_dm_behavior(const char *value, const char *default_val) {
     if (!value) return default_val;
 
@@ -205,7 +205,7 @@ const char *gateway_config_normalize_unauthorized_dm_behavior(const char *value,
 }
 
 /* Port of Python: _normalize_notice_delivery */
-/* PoP: _normalize_notice_delivery @ gateway/config.py:_normalize_notice_delivery */
+/* PoP: gateway_config_normalize_notice_delivery @ gateway/config.py:_normalize_notice_delivery */
 const char *gateway_config_normalize_notice_delivery(const char *value, const char *default_val) {
     if (!value) return default_val;
 
@@ -227,7 +227,7 @@ const char *gateway_config_normalize_notice_delivery(const char *value, const ch
 extern int profiles_normalize_profile_name(const char *name, char *out, size_t outsz);
 extern int profiles_validate_profile_name(const char *name, char *err, size_t errsz);
 
-/* PoP: _normalize_multiplex_profile_allowlist @ gateway/config.py:_normalize_multiplex_profile_allowlist */
+/* PoP: array @ gateway/config.py:_normalize_multiplex_profile_allowlist */
 /* Normalize the optional named-profile allowlist. A NULL value preserves the
  * historical serve-all behavior (returns NULL). A malformed outer value fails
  * safe to an empty array (default profile only); malformed entries are
@@ -353,7 +353,7 @@ typedef struct {
     char thread_id[64];
 } gw_home_channel_t;
 
-/* PoP: to_dict @ gateway/config.py:to_dict */
+/* PoP: gw_home_channel_to_json @ gateway/config.py:to_dict */
 /* Port of Python gateway/config.py:to_dict(). */
 bool gw_home_channel_to_json(const gw_home_channel_t *hc, json_node_t *obj) {
     if (!hc || !obj) return false;
@@ -366,7 +366,7 @@ bool gw_home_channel_to_json(const gw_home_channel_t *hc, json_node_t *obj) {
     return true;
 }
 
-/* PoP: from_dict @ gateway/config.py:from_dict */
+/* PoP: gw_home_channel_from_json @ gateway/config.py:from_dict */
 /* Port of Python gateway/config.py:from_dict(). */
 bool gw_home_channel_from_json(const json_node_t *obj, gw_home_channel_t *hc) {
     if (!hc || !obj || !json_node_is_object(obj)) return false;
@@ -412,7 +412,7 @@ typedef struct {
     char notify_exclude_platforms[256]; /* comma-separated */
 } gw_session_reset_policy_t;
 
-/* PoP: to_dict @ gateway/config.py:to_dict */
+/* PoP: gw_session_reset_policy_to_json @ gateway/config.py:to_dict */
 /* Port of Python gateway/config.py:to_dict(). */
 bool gw_session_reset_policy_to_json(const gw_session_reset_policy_t *p, json_node_t *obj) {
     if (!p || !obj) return false;
@@ -432,7 +432,7 @@ gw_reset_mode_t gw_reset_mode_from_string(const char *s) {
     return GW_RESET_MODE_BOTH;
 }
 
-/* PoP: from_dict @ gateway/config.py:from_dict */
+/* PoP: gw_session_reset_policy_from_json @ gateway/config.py:from_dict */
 /* Port of Python gateway/config.py:from_dict(). */
 bool gw_session_reset_policy_from_json(const json_node_t *obj, gw_session_reset_policy_t *p) {
     if (!p || !obj || !json_node_is_object(obj)) return false;
@@ -469,7 +469,7 @@ typedef struct {
     json_node_t *extra; /* extra platform-specific settings */
 } gw_platform_config_t;
 
-/* PoP: to_dict @ gateway/config.py:to_dict */
+/* PoP: gw_platform_config_to_json @ gateway/config.py:to_dict */
 /* Port of Python gateway/config.py:to_dict(). */
 bool gw_platform_config_to_json(const gw_platform_config_t *pc, json_node_t *obj) {
     if (!pc || !obj) return false;
@@ -494,7 +494,7 @@ bool gw_platform_config_to_json(const gw_platform_config_t *pc, json_node_t *obj
     return true;
 }
 
-/* PoP: from_dict @ gateway/config.py:from_dict */
+/* PoP: gw_platform_config_from_json @ gateway/config.py:from_dict */
 /* Port of Python gateway/config.py:from_dict(). */
 bool gw_platform_config_from_json(const json_node_t *obj, gw_platform_config_t *pc) {
     if (!pc || !obj || !json_node_is_object(obj)) return false;
@@ -555,7 +555,7 @@ typedef struct {
     double fresh_final_after_seconds;
 } gw_streaming_config_t;
 
-/* PoP: to_dict @ gateway/config.py:to_dict */
+/* PoP: gw_streaming_config_to_json @ gateway/config.py:to_dict */
 /* Port of Python gateway/config.py:to_dict(). */
 bool gw_streaming_config_to_json(const gw_streaming_config_t *sc, json_node_t *obj) {
     if (!sc || !obj) return false;
@@ -576,7 +576,7 @@ gw_stream_transport_t gw_stream_transport_from_string(const char *s) {
     return GW_STREAM_TRANSPORT_AUTO;
 }
 
-/* PoP: from_dict @ gateway/config.py:from_dict */
+/* PoP: gw_streaming_config_from_json @ gateway/config.py:from_dict */
 /* Port of Python gateway/config.py:from_dict(). */
 bool gw_streaming_config_from_json(const json_node_t *obj, gw_streaming_config_t *sc) {
     if (!sc || !obj || !json_node_is_object(obj)) return false;
@@ -689,7 +689,7 @@ typedef struct {
 } gateway_config_t;
 
 /* Port of Python: load_gateway_config */
-/* PoP: load_gateway_config @ gateway/config.py:load_gateway_config */
+/* PoP: gateway_config_load @ gateway/config.py:load_gateway_config */
 bool gateway_config_load(const char *config_dir, gateway_config_t *out_cfg) {
     if (!out_cfg) return false;
 
@@ -700,7 +700,7 @@ bool gateway_config_load(const char *config_dir, gateway_config_t *out_cfg) {
     }
 
     /* Apply env overrides */
-/* PoP: load_env @ hermes_cli/config.py:load_env */
+/* PoP: gateway_config_validate @ hermes_cli/config.py:load_env */
     hermes_config_load_env(&hcfg);
 
     memset(out_cfg, 0, sizeof(*out_cfg));
@@ -954,7 +954,7 @@ bool gateway_config_platform_connected(const gateway_config_t *cfg, int platform
 
 /* Port of Python: get_connected_platforms
  * Returns a JSON array of connected platform names. */
-/* PoP: get_connected_platforms @ gateway/config.py:get_connected_platforms */
+/* PoP: gateway_config_get_connected_platforms @ gateway/config.py:get_connected_platforms */
 /* Port of Python gateway/config.py:get_connected_platforms(). */
 json_node_t *gateway_config_get_connected_platforms(const gateway_config_t *cfg)
 {
@@ -977,7 +977,7 @@ json_node_t *gateway_config_get_connected_platforms(const gateway_config_t *cfg)
     return arr;
 }
 
-/* PoP: _is_platform_connected @ gateway/config.py:_is_platform_connected */
+/* PoP: gateway_config_is_platform_connected @ gateway/config.py:_is_platform_connected */
 /* Port of Python gateway/config.py:_is_platform_connected(). */
 bool gateway_config_is_platform_connected(const gateway_config_t *cfg, int platform_idx)
 {
@@ -986,7 +986,7 @@ bool gateway_config_is_platform_connected(const gateway_config_t *cfg, int platf
 
 /* Port of Python: get_home_channel
  * Get the home channel for a platform. Returns malloc'd JSON, caller must free. */
-/* PoP: get_home_channel @ gateway/config.py:get_home_channel */
+/* PoP: gateway_config_get_home_channel @ gateway/config.py:get_home_channel */
 /* Port of Python gateway/config.py:get_home_channel(). */
 json_node_t *gateway_config_get_home_channel(const gateway_config_t *cfg, int platform_idx)
 {
@@ -1008,7 +1008,7 @@ json_node_t *gateway_config_get_home_channel(const gateway_config_t *cfg, int pl
 
 /* Port of Python: get_reset_policy
  * Get the session reset policy as JSON. Returns malloc'd JSON, caller must free. */
-/* PoP: get_reset_policy @ gateway/config.py:get_reset_policy */
+/* PoP: gateway_config_get_reset_policy @ gateway/config.py:get_reset_policy */
 /* Port of Python gateway/config.py:get_reset_policy(). */
 json_node_t *gateway_config_get_reset_policy(const gateway_config_t *cfg)
 {
@@ -1021,7 +1021,7 @@ json_node_t *gateway_config_get_reset_policy(const gateway_config_t *cfg)
     return obj;
 }
 
-/* PoP: get_unauthorized_dm_behavior @ gateway/config.py:get_unauthorized_dm_behavior */
+/* PoP: gateway_config_get_unauthorized_dm_behavior @ gateway/config.py:get_unauthorized_dm_behavior */
 /* Port of Python gateway/config.py:get_unauthorized_dm_behavior(). */
 const char *gateway_config_get_unauthorized_dm_behavior(const gateway_config_t *cfg)
 {
@@ -1040,7 +1040,7 @@ const char *gateway_config_get_unauthorized_dm_behavior(const gateway_config_t *
     return "pair";
 }
 
-/* PoP: get_notice_delivery @ gateway/config.py:get_notice_delivery */
+/* PoP: gateway_config_get_notice_delivery @ gateway/config.py:get_notice_delivery */
 /* Port of Python gateway/config.py:get_notice_delivery(). */
 const char *gateway_config_get_notice_delivery(const gateway_config_t *cfg)
 {

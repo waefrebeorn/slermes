@@ -65,7 +65,7 @@ static char *rl_strdup(const char *s)
 
 /* ── _jsonable ────────────────────────────────────────────────────────── */
 
-/* PoP: _jsonable @ agent/relay_llm.py:_jsonable */
+/* PoP: relay_llm_jsonable @ agent/relay_llm.py:_jsonable */
 json_t *relay_llm_jsonable(const void *value)
 {
     if (!value) return json_null();
@@ -75,7 +75,7 @@ json_t *relay_llm_jsonable(const void *value)
 
 /* ── _namespace ───────────────────────────────────────────────────────── */
 
-/* PoP: _namespace @ agent/relay_llm.py:_namespace */
+/* PoP: relay_llm_namespace @ agent/relay_llm.py:_namespace */
 relay_llm_namespace_t *relay_llm_namespace(const json_t *value)
 {
     if (!value || value->type != JSON_OBJECT) return NULL;
@@ -158,7 +158,7 @@ static bool rl_json_equal_rec(const json_t *a, const json_t *b)
     }
 }
 
-/* PoP: _json_equal @ agent/relay_llm.py:_json_equal */
+/* PoP: relay_llm_json_equal @ agent/relay_llm.py:_json_equal */
 bool relay_llm_json_equal(const void *left, const void *right)
 {
     return rl_json_equal_rec((const json_t *)left, (const json_t *)right);
@@ -166,7 +166,7 @@ bool relay_llm_json_equal(const void *left, const void *right)
 
 /* ── _is_cancellation ─────────────────────────────────────────────────── */
 
-/* PoP: _is_cancellation @ agent/relay_llm.py:_is_cancellation */
+/* PoP: relay_llm_is_cancellation @ agent/relay_llm.py:_is_cancellation */
 bool relay_llm_is_cancellation(const char *error_kind)
 {
     if (!error_kind) return false;
@@ -175,7 +175,7 @@ bool relay_llm_is_cancellation(const char *error_kind)
            strcmp(error_kind, "KeyboardInterrupt") == 0;
 }
 
-/* PoP: _has_running_event_loop @ agent/relay_llm.py:_has_running_event_loop */
+/* PoP: relay_llm_has_running_event_loop @ agent/relay_llm.py:_has_running_event_loop */
 bool relay_llm_has_running_event_loop(void)
 {
     /* The C analogue of a thread with a running asyncio loop is a thread
@@ -183,7 +183,7 @@ bool relay_llm_has_running_event_loop(void)
     return relay_runtime_in_async_worker();
 }
 
-/* PoP: _run_awaitable @ agent/relay_llm.py:_run_awaitable */
+/* PoP: relay_llm_run_awaitable @ agent/relay_llm.py:_run_awaitable */
 void *relay_llm_run_awaitable(void *value)
 {
     /* C has no awaitables: the runtime's run_in_session_async already runs
@@ -194,7 +194,7 @@ void *relay_llm_run_awaitable(void *value)
 
 /* ── _codec ───────────────────────────────────────────────────────────── */
 
-/* PoP: _codec @ agent/relay_llm.py:_codec */
+/* PoP: relay_llm_codec @ agent/relay_llm.py:_codec */
 char *relay_llm_codec(const json_t *metadata)
 {
     /* Python: codecs = getattr(relay, "codecs", None); None -> None. The C
@@ -209,7 +209,7 @@ char *relay_llm_codec(const json_t *metadata)
 
 /* ── _provider_request_body ───────────────────────────────────────────── */
 
-/* PoP: _provider_request_body @ agent/relay_llm.py:_provider_request_body */
+/* PoP: relay_llm_provider_request_body @ agent/relay_llm.py:_provider_request_body */
 json_t *relay_llm_provider_request_body(const json_t *content, const json_t *metadata)
 {
     json_t *body = json_copy(content);
@@ -246,7 +246,7 @@ json_t *relay_llm_provider_request_body(const json_t *content, const json_t *met
 
 /* ── _relay_request_body ──────────────────────────────────────────────── */
 
-/* PoP: _relay_request_body @ agent/relay_llm.py:_relay_request_body */
+/* PoP: relay_llm_relay_request_body @ agent/relay_llm.py:_relay_request_body */
 json_t *relay_llm_relay_request_body(const json_t *request, const json_t *metadata)
 {
     json_t *body = json_copy(request);
@@ -312,7 +312,7 @@ json_t *relay_llm_relay_request_body(const json_t *request, const json_t *metada
 
 /* ── _restore_provider_message_extensions ─────────────────────────────── */
 
-/* PoP: _restore_provider_message_extensions @ agent/relay_llm.py:_restore_provider_message_extensions */
+/* PoP: relay_llm_restore_provider_message_extensions @ agent/relay_llm.py:_restore_provider_message_extensions */
 json_t *relay_llm_restore_provider_message_extensions(const json_t *original,
                                                       json_t *final,
                                                       const json_t *baseline,
@@ -354,7 +354,7 @@ json_t *relay_llm_restore_provider_message_extensions(const json_t *original,
 
 /* ── _provider_request ────────────────────────────────────────────────── */
 
-/* PoP: _provider_request @ agent/relay_llm.py:_provider_request */
+/* PoP: relay_llm_provider_request @ agent/relay_llm.py:_provider_request */
 json_t *relay_llm_provider_request(const json_t *original,
                                    const json_t *next_request,
                                    const json_t *relay_request_body,
@@ -445,7 +445,7 @@ json_t *relay_llm_provider_request(const json_t *original,
 
 /* ── _codec_round_trip_request_body ───────────────────────────────────── */
 
-/* PoP: _codec_round_trip_request_body @ agent/relay_llm.py:_codec_round_trip_request_body */
+/* PoP: relay_llm_codec_round_trip_request_body @ agent/relay_llm.py:_codec_round_trip_request_body */
 json_t *relay_llm_codec_round_trip_request_body(const json_t *backend_codec,
                                                 const json_t *relay_request,
                                                 const json_t *relay_request_body,
@@ -492,7 +492,7 @@ static void *rl_push_cb(void *p)
     return NULL;
 }
 
-/* PoP: _logical_parent @ agent/relay_llm.py:_logical_parent */
+/* PoP: relay_llm_logical_parent @ agent/relay_llm.py:_logical_parent */
 bool relay_llm_logical_parent(relay_runtime_t *runtime,
                               relay_session_t *session,
                               relay_handle_t parent,
@@ -564,7 +564,7 @@ static void *rl_pop_cb(void *p)
     return NULL;
 }
 
-/* PoP: _complete_logical @ agent/relay_llm.py:_complete_logical */
+/* PoP: relay_llm_complete_logical @ agent/relay_llm.py:_complete_logical */
 void relay_llm_complete_logical(relay_turn_t *turn,
                                 relay_handle_t handle,
                                 const char *request_id,
@@ -610,7 +610,7 @@ void relay_llm_complete_logical(relay_turn_t *turn,
 
 /* ── _recover_successful_callback ─────────────────────────────────────── */
 
-/* PoP: _recover_successful_callback @ agent/relay_llm.py:_recover_successful_callback */
+/* PoP: relay_llm_recover_successful_callback @ agent/relay_llm.py:_recover_successful_callback */
 bool relay_llm_recover_successful_callback(json_t **raw_response,
                                            const char *relay_error_kind,
                                            const char *relay_error_message,
@@ -638,7 +638,7 @@ bool relay_llm_recover_successful_callback(json_t **raw_response,
 
 /* ── complete_logical_call ────────────────────────────────────────────── */
 
-/* PoP: complete_logical_call @ agent/relay_llm.py:complete_logical_call */
+/* PoP: relay_llm_complete_logical_call @ agent/relay_llm.py:complete_logical_call */
 void relay_llm_complete_logical_call(const char *api_request_id, const char *outcome)
 {
     if (!api_request_id || !api_request_id[0]) return;
@@ -832,7 +832,7 @@ static json_t *rl_execute_impl(const json_t *request_json,
     return out;
 }
 
-/* PoP: execute @ agent/relay_llm.py:execute */
+/* PoP: relay_llm_execute @ agent/relay_llm.py:execute */
 json_t *relay_llm_execute(const json_t *request_json,
                           relay_llm_provider_callback callback, void *cb_user,
                           const char *session_id,
@@ -845,7 +845,7 @@ json_t *relay_llm_execute(const json_t *request_json,
                            defer_logical_completion);
 }
 
-/* PoP: execute_async @ agent/relay_llm.py:execute_async */
+/* PoP: relay_llm_execute_async @ agent/relay_llm.py:execute_async */
 json_t *relay_llm_execute_async(const json_t *request_json,
                                 relay_llm_provider_callback callback, void *cb_user,
                                 const char *session_id,
@@ -860,7 +860,7 @@ json_t *relay_llm_execute_async(const json_t *request_json,
                            defer_logical_completion);
 }
 
-/* PoP: execute_current @ agent/relay_llm.py:execute_current */
+/* PoP: relay_llm_execute_current @ agent/relay_llm.py:execute_current */
 json_t *relay_llm_execute_current(const json_t *request_json,
                                   relay_llm_provider_callback callback, void *cb_user,
                                   const char *name, const char *model_name,
@@ -879,7 +879,7 @@ json_t *relay_llm_execute_current(const json_t *request_json,
                            defer_logical_completion);
 }
 
-/* PoP: execute_current_async @ agent/relay_llm.py:execute_current_async */
+/* PoP: relay_llm_execute_current_async @ agent/relay_llm.py:execute_current_async */
 json_t *relay_llm_execute_current_async(const json_t *request_json,
                                         relay_llm_provider_callback callback, void *cb_user,
                                         const char *name, const char *model_name,
@@ -953,7 +953,7 @@ static void rl_raw_chunks_append(relay_llm_managed_stream_t *s, json_t *encoded)
     s->raw_chunks[s->raw_chunks_n++] = encoded;
 }
 
-/* PoP: __init__ @ agent/relay_llm.py:ManagedLlmStream.__init__ */
+/* PoP: relay_llm_managed_stream_new @ agent/relay_llm.py:ManagedLlmStream.__init__ */
 relay_llm_managed_stream_t *relay_llm_managed_stream_new(
     const json_t *request,
     void *(*stream_factory)(void *user), void *sf_user,
@@ -989,7 +989,7 @@ relay_llm_managed_stream_t *relay_llm_managed_stream_new(
     return s;
 }
 
-/* PoP: __iter__ @ agent/relay_llm.py:ManagedLlmStream.__iter__ */
+/* PoP: relay_llm_managed_stream_iter @ agent/relay_llm.py:ManagedLlmStream.__iter__ */
 relay_llm_managed_stream_t *relay_llm_managed_stream_iter(relay_llm_managed_stream_t *s)
 {
     return s;
@@ -1062,7 +1062,7 @@ static bool rl_stream_next_backend(relay_llm_managed_stream_t *s, json_t **out)
     return true;
 }
 
-/* PoP: __next__ @ agent/relay_llm.py:ManagedLlmStream.__next__ */
+/* PoP: relay_llm_managed_stream_next @ agent/relay_llm.py:ManagedLlmStream.__next__ */
 bool relay_llm_managed_stream_next(relay_llm_managed_stream_t *s, json_t **out_chunk)
 {
     if (!s || !out_chunk) return false;
@@ -1158,7 +1158,7 @@ bool relay_llm_managed_stream_next(relay_llm_managed_stream_t *s, json_t **out_c
     return true;
 }
 
-/* PoP: _preserve_pending_provider_chunks @ agent/relay_llm.py:ManagedLlmStream._preserve_pending_provider_chunks */
+/* PoP: relay_llm_managed_stream_preserve_pending @ agent/relay_llm.py:ManagedLlmStream._preserve_pending_provider_chunks */
 void relay_llm_managed_stream_preserve_pending(relay_llm_managed_stream_t *s)
 {
     if (!s) return;
@@ -1185,7 +1185,7 @@ void relay_llm_managed_stream_preserve_pending(relay_llm_managed_stream_t *s)
                                    s->logical_request_id, "success");
 }
 
-/* PoP: _close @ agent/relay_llm.py:ManagedLlmStream._close */
+/* PoP: relay_llm_managed_stream_shutdown @ agent/relay_llm.py:ManagedLlmStream._close */
 void relay_llm_managed_stream_shutdown(relay_llm_managed_stream_t *s,
                                        const char *logical_outcome)
 {
@@ -1202,7 +1202,7 @@ void relay_llm_managed_stream_shutdown(relay_llm_managed_stream_t *s,
                                    s->logical_request_id, logical_outcome);
 }
 
-/* PoP: close @ agent/relay_llm.py:ManagedLlmStream.close */
+/* PoP: relay_llm_managed_stream_close @ agent/relay_llm.py:ManagedLlmStream.close */
 void relay_llm_managed_stream_close(relay_llm_managed_stream_t *s)
 {
     relay_llm_managed_stream_shutdown(s, "cancelled");
@@ -1213,7 +1213,7 @@ json_t *relay_llm_managed_stream_final_response(const relay_llm_managed_stream_t
     return s ? s->final_response : NULL;
 }
 
-/* PoP: __del__ @ agent/relay_llm.py:ManagedLlmStream.__del__ */
+/* PoP: relay_llm_managed_stream_free @ agent/relay_llm.py:ManagedLlmStream.__del__ */
 void relay_llm_managed_stream_free(relay_llm_managed_stream_t *s)
 {
     if (!s) return;
@@ -1230,7 +1230,7 @@ void relay_llm_managed_stream_free(relay_llm_managed_stream_t *s)
     free(s);
 }
 
-/* PoP: stream @ agent/relay_llm.py:stream */
+/* PoP: rl_stream_exec_trampoline @ agent/relay_llm.py:stream */
 
 /* Argument bundle for the stream_execute backend hook, driven on the session
  * thread via run_in_session_async. */
@@ -1387,7 +1387,7 @@ relay_llm_managed_stream_t *relay_llm_stream(
     return s;
 }
 
-/* PoP: stream_current @ agent/relay_llm.py:stream_current */
+/* PoP: relay_llm_stream_current @ agent/relay_llm.py:stream_current */
 relay_llm_managed_stream_t *relay_llm_stream_current(
     const json_t *request_json,
     void *(*stream_factory)(void *user), void *sf_user,
@@ -1433,7 +1433,7 @@ struct anthropic_stream_accumulator {
     json_t *blocks;    /* index-keyed block objects ("0", "1", ...) */
 };
 
-/* PoP: __init__ @ agent/relay_llm.py:AnthropicStreamAccumulator.__init__ */
+/* PoP: anthropic_stream_accumulator_new @ agent/relay_llm.py:AnthropicStreamAccumulator.__init__ */
 anthropic_stream_accumulator_t *anthropic_stream_accumulator_new(void)
 {
     anthropic_stream_accumulator_t *acc =
@@ -1461,7 +1461,7 @@ static const char *MESSAGE_START_KEYS[] = { "id", "type", "role", "model", "usag
 static const char *MESSAGE_DELTA_KEYS[] = { "stop_reason", "stop_sequence" };
 #define MESSAGE_DELTA_KEYS_N 2
 
-/* PoP: observe @ agent/relay_llm.py:AnthropicStreamAccumulator.observe */
+/* PoP: anthropic_stream_accumulator_observe @ agent/relay_llm.py:AnthropicStreamAccumulator.observe */
 void anthropic_stream_accumulator_observe(anthropic_stream_accumulator_t *acc,
                                           const json_t *event)
 {
@@ -1569,7 +1569,7 @@ void anthropic_stream_accumulator_observe(anthropic_stream_accumulator_t *acc,
     json_free(payload);
 }
 
-/* PoP: finalize @ agent/relay_llm.py:AnthropicStreamAccumulator.finalize */
+/* PoP: anthropic_stream_accumulator_finalize @ agent/relay_llm.py:AnthropicStreamAccumulator.finalize */
 json_t *anthropic_stream_accumulator_finalize(const anthropic_stream_accumulator_t *acc)
 {
     if (!acc) return json_object();
@@ -1610,7 +1610,7 @@ json_t *anthropic_stream_accumulator_finalize(const anthropic_stream_accumulator
     return out;
 }
 
-/* PoP: response @ agent/relay_llm.py:AnthropicStreamAccumulator.response */
+/* PoP: anthropic_stream_accumulator_response @ agent/relay_llm.py:AnthropicStreamAccumulator.response */
 json_t *anthropic_stream_accumulator_response(const anthropic_stream_accumulator_t *acc,
                                               const json_t *base)
 {
@@ -1632,7 +1632,7 @@ json_t *anthropic_stream_accumulator_response(const anthropic_stream_accumulator
     return merged;
 }
 
-/* PoP: _response_model_name @ agent/relay_llm.py:_response_model_name */
+/* PoP: relay_llm_response_model_name @ agent/relay_llm.py:_response_model_name */
 /* Returns malloc'd model name or NULL. Caller frees. */
 char *relay_llm_response_model_name(const char *response_json) {
     if (!response_json) return NULL;

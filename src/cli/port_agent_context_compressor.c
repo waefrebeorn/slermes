@@ -198,7 +198,7 @@ static size_t cc_content_length_for_budget(const json_t *content) {
     return 0;
 }
 
-/* PoP: cli_agent_context_compressor__estimate_msg_budget_tokens @ agent/context_compressor.py:_estimate_msg_budget_tokens */
+/* PoP: envelope @ agent/context_compressor.py:_estimate_msg_budget_tokens */
 /* Token estimate for one message: content length / CHARS_PER_TOKEN + 10 role
  * overhead, plus the FULL tool_call envelope (serialized) / CHARS_PER_TOKEN.
  * msg is a parsed JSON message object. */
@@ -225,7 +225,7 @@ int cli_agent_context_compressor__estimate_msg_budget_tokens(const json_t *msg)
 
 /* ── _coerce_max_tokens ───────────────────────────────────────── */
 
-/* PoP: cli_agent_context_compressor__coerce_max_tokens @ agent/context_compressor.py:_coerce_max_tokens */
+/* PoP: value @ agent/context_compressor.py:_coerce_max_tokens */
 /* Normalize a max_tokens value to a positive int or "none". raw is the string
  * form of the value (NULL means Python None). Writes the coerced value to *out
  * and returns 1 when a positive reservation applies, 0 for None/<=0/non-int. */

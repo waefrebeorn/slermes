@@ -36,14 +36,14 @@ extern char *hermes_state_get_message_role(hermes_state_db_t *db,
                                           const char *session_id,
                                           long long message_row_id);
 
-/* PoP: _ensure_utf8 @ hermes_cli/__init__.py:_ensure_utf8 */
+/* PoP: hcli_ensure_utf8 @ hermes_cli/__init__.py:_ensure_utf8 */
 int hcli_ensure_utf8(void)
 {
     setlocale(LC_ALL, "");
     return 0;
 }
 
-/* PoP: _normalize_provider @ hermes_cli/auth_commands.py:_normalize_provider */
+/* PoP: hcli_normalize_provider @ hermes_cli/auth_commands.py:_normalize_provider */
 char *hcli_normalize_provider(const char *provider)
 {
     if (!provider) return strdup("");
@@ -67,7 +67,7 @@ char *hcli_normalize_provider(const char *provider)
     return out;
 }
 
-/* PoP: _token_fingerprint @ hermes_cli/copilot_auth.py:_token_fingerprint */
+/* PoP: hcli_token_fingerprint @ hermes_cli/copilot_auth.py:_token_fingerprint */
 char *hcli_token_fingerprint(const char *raw_token)
 {
     if (!raw_token) return strdup("");
@@ -79,14 +79,14 @@ char *hcli_token_fingerprint(const char *raw_token)
     return strdup(out);
 }
 
-/* PoP: _fmt_ts @ hermes_cli/curator.py:_fmt_ts */
+/* PoP: hcli_fmt_ts @ hermes_cli/curator.py:_fmt_ts */
 char *hcli_fmt_ts(const char *ts)
 {
     if (!ts || !*ts) return strdup("never");
     return strdup(ts);
 }
 
-/* PoP: _truncate @ hermes_cli/kanban_specify.py:_truncate */
+/* PoP: hcli_kanban_truncate @ hermes_cli/kanban_specify.py:_truncate */
 char *hcli_kanban_truncate(const char *text, long limit)
 {
     if (!text) text = "";
@@ -100,7 +100,7 @@ char *hcli_kanban_truncate(const char *text, long limit)
     return out;
 }
 
-/* PoP: _profile_author @ hermes_cli/kanban_specify.py:_profile_author */
+/* PoP: hcli_profile_author @ hermes_cli/kanban_specify.py:_profile_author */
 char *hcli_profile_author(void)
 {
     const char *p = getenv("HERMES_PROFILE");
@@ -110,7 +110,7 @@ char *hcli_profile_author(void)
     return strdup("specifier");
 }
 
-/* PoP: as_dict @ hermes_cli/kanban_swarm.py:as_dict */
+/* PoP: hcli_swarm_as_dict @ hermes_cli/kanban_swarm.py:as_dict */
 char *hcli_swarm_as_dict(const char *root_id, const char *worker_ids_json,
                          const char *verifier_id, const char *synthesizer_id)
 {
@@ -137,7 +137,7 @@ char *hcli_swarm_as_dict(const char *root_id, const char *worker_ids_json,
     return s ? s : strdup("{}");
 }
 
-/* PoP: _coerce_bool @ hermes_cli/moa_config.py:_coerce_bool */
+/* PoP: hcli_moa_coerce_bool @ hermes_cli/moa_config.py:_coerce_bool */
 bool hcli_moa_coerce_bool(const char *value, bool default_val)
 {
     if (!value || !*value) return default_val;
@@ -155,7 +155,7 @@ bool hcli_moa_coerce_bool(const char *value, bool default_val)
     return r;
 }
 
-/* PoP: _to_decimal @ hermes_cli/model_cost_guard.py:_to_decimal */
+/* PoP: hcli_to_decimal @ hermes_cli/model_cost_guard.py:_to_decimal */
 double hcli_to_decimal(const char *value, bool *ok)
 {
     if (ok) *ok = false;
@@ -167,7 +167,7 @@ double hcli_to_decimal(const char *value, bool *ok)
     return d;
 }
 
-/* PoP: _strip_vendor_prefix @ hermes_cli/model_normalize.py:_strip_vendor_prefix */
+/* PoP: hcli_strip_vendor_prefix @ hermes_cli/model_normalize.py:_strip_vendor_prefix */
 char *hcli_strip_vendor_prefix(const char *model_name)
 {
     if (!model_name) return strdup("");
@@ -176,7 +176,7 @@ char *hcli_strip_vendor_prefix(const char *model_name)
     return strdup(model_name);
 }
 
-/* PoP: resolve_persist_behavior @ hermes_cli/model_switch.py:resolve_persist_behavior */
+/* PoP: hcli_resolve_persist_behavior @ hermes_cli/model_switch.py:resolve_persist_behavior */
 bool hcli_resolve_persist_behavior(bool is_global, bool is_session, bool is_once,
                                    const char *explicit_provider)
 {
@@ -187,7 +187,7 @@ bool hcli_resolve_persist_behavior(bool is_global, bool is_session, bool is_once
     return true;
 }
 
-/* PoP: group_providers @ hermes_cli/models.py:group_providers */
+/* PoP: hcli_group_providers @ hermes_cli/models.py:group_providers */
 char *hcli_group_providers(const char *slugs_json)
 {
     if (!slugs_json) return strdup("[]");
@@ -207,14 +207,14 @@ char *hcli_group_providers(const char *slugs_json)
     return s ? s : strdup("[]");
 }
 
-/* PoP: _getenv @ hermes_cli/runtime_provider.py:_getenv */
+/* PoP: hcli_runtime_getenv @ hermes_cli/runtime_provider.py:_getenv */
 char *hcli_runtime_getenv(const char *name, const char *default_val)
 {
     const char *v = getenv(name);
     return strdup(v ? v : (default_val ? default_val : ""));
 }
 
-/* PoP: _format_timestamp @ hermes_cli/session_export.py:_format_timestamp */
+/* PoP: hcli_session_export_ts @ hermes_cli/session_export.py:_format_timestamp */
 char *hcli_session_export_ts(const char *value, bool *ok)
 {
     if (ok) *ok = false;
@@ -235,7 +235,7 @@ char *hcli_session_export_ts(const char *value, bool *ok)
     return strdup(buf);
 }
 
-/* PoP: _format_timestamp @ hermes_cli/session_export_html.py:_format_timestamp */
+/* PoP: hcli_session_export_html_ts @ hermes_cli/session_export_html.py:_format_timestamp */
 char *hcli_session_export_html_ts(double ts)
 {
     if (ts == 0.0) return strdup("N/A");
@@ -247,14 +247,14 @@ char *hcli_session_export_html_ts(double ts)
     return strdup(buf);
 }
 
-/* PoP: is_continuous_active @ hermes_cli/voice.py:is_continuous_active */
+/* PoP: hcli_voice_is_continuous_active @ hermes_cli/voice.py:is_continuous_active */
 bool hcli_voice_is_continuous_active(void)
 {
     const char *v = getenv("HERMES_VOICE_CONTINUOUS");
     return v && *v && strcmp(v, "0") != 0;
 }
 
-/* PoP: _continuous_on_silence @ hermes_cli/voice.py:_continuous_on_silence */
+/* PoP: hcli_voice_continuous_on_silence @ hermes_cli/voice.py:_continuous_on_silence */
 int hcli_voice_continuous_on_silence(void)
 {
     /* REAL: silence callback state machine — track consecutive silences. */
@@ -267,7 +267,7 @@ int hcli_voice_continuous_on_silence(void)
     return 0;
 }
 
-/* PoP: _normalize @ hermes_cli/xai_retirement.py:_normalize */
+/* PoP: hcli_xai_normalize @ hermes_cli/xai_retirement.py:_normalize */
 char *hcli_xai_normalize(const char *model_id)
 {
     if (!model_id) return strdup("");
@@ -286,7 +286,7 @@ char *hcli_xai_normalize(const char *model_id)
     return out;
 }
 
-/* PoP: _strip_container_argv_prefix @ hermes_cli/container_boot.py:_strip_container_argv_prefix */
+/* PoP: hcli_strip_container_argv_prefix @ hermes_cli/container_boot.py:_strip_container_argv_prefix */
 char *hcli_strip_container_argv_prefix(const char *argv_line)
 {
     if (!argv_line) return strdup("");
@@ -305,7 +305,7 @@ char *hcli_strip_container_argv_prefix(const char *argv_line)
     return strdup(p);
 }
 
-/* PoP: _is_dashboard_container @ hermes_cli/container_boot.py:_is_dashboard_container */
+/* PoP: hcli_is_dashboard_container @ hermes_cli/container_boot.py:_is_dashboard_container */
 bool hcli_is_dashboard_container(const char *argv_line)
 {
     if (!argv_line) return false;
@@ -313,7 +313,7 @@ bool hcli_is_dashboard_container(const char *argv_line)
     return dash != NULL;
 }
 
-/* PoP: _read_prior_exit_label @ hermes_cli/container_boot.py:_read_prior_exit_label */
+/* PoP: hcli_read_prior_exit_label @ hermes_cli/container_boot.py:_read_prior_exit_label */
 /* How the profile's previous gateway life ended (clean/unclean/unknown).
  * Thin, exception-free wrapper over
  * gateway.lifecycle_ledger.read_prior_exit_label — cont-init runs in a
@@ -345,7 +345,7 @@ char *hcli_read_prior_exit_label(const char *profile_dir)
     return result;
 }
 
-/* PoP: _wait_for_gateway_absent @ hermes_cli/gateway_windows.py:_wait_for_gateway_absent */
+/* PoP: hcli_wait_for_gateway_absent @ hermes_cli/gateway_windows.py:_wait_for_gateway_absent */
 bool hcli_wait_for_gateway_absent(double timeout_s, double interval_s)
 {
     /* REAL: poll for the gateway pid file absence until timeout.
@@ -366,7 +366,7 @@ bool hcli_wait_for_gateway_absent(double timeout_s, double interval_s)
     return false;
 }
 
-/* PoP: _read_manifest @ hermes_cli/plugins_cmd.py:_read_manifest */
+/* PoP: hcli_read_plugin_manifest @ hermes_cli/plugins_cmd.py:_read_manifest */
 char *hcli_read_plugin_manifest(const char *plugin_dir)
 {
     if (!plugin_dir) return strdup("{}");
@@ -386,7 +386,7 @@ char *hcli_read_plugin_manifest(const char *plugin_dir)
     return s ? s : strdup("{}");
 }
 
-/* PoP: _cmd_list @ hermes_cli/bundles.py:_cmd_list */
+/* PoP: hcli_bundles_cmd_list @ hermes_cli/bundles.py:_cmd_list */
 int hcli_bundles_cmd_list(const char *bundles_dir)
 {
     /* Python: list skill bundles + print. Delegate to real registry scan. */
@@ -405,7 +405,7 @@ int hcli_bundles_cmd_list(const char *bundles_dir)
     return 0;
 }
 
-/* PoP: summary @ hermes_cli/codex_runtime_plugin_migration.py:summary */
+/* PoP: hcli_migration_summary @ hermes_cli/codex_runtime_plugin_migration.py:summary */
 char *hcli_migration_summary(bool dry_run, bool written, const char *target_path)
 {
     char *out = malloc(512);
@@ -416,7 +416,7 @@ char *hcli_migration_summary(bool dry_run, bool written, const char *target_path
     return out;
 }
 
-/* PoP: _prompt @ hermes_cli/mcp_config.py:_prompt */
+/* PoP: hcli_mcp_prompt @ hermes_cli/mcp_config.py:_prompt */
 char *hcli_mcp_prompt(const char *question, bool password, const char *default_val)
 {
     (void)password;
@@ -432,7 +432,7 @@ char *hcli_mcp_prompt(const char *question, bool password, const char *default_v
     return strdup(buf);
 }
 
-/* PoP: _prompt @ hermes_cli/setup_whatsapp_cloud.py:_prompt */
+/* PoP: hcli_whatsapp_prompt @ hermes_cli/setup_whatsapp_cloud.py:_prompt */
 char *hcli_whatsapp_prompt(const char *message, const char *default_val, bool secret)
 {
     (void)secret;
@@ -447,7 +447,7 @@ char *hcli_whatsapp_prompt(const char *message, const char *default_val, bool se
     return strdup(buf);
 }
 
-/* PoP: _resolve @ hermes_cli/projects_cmd.py:_resolve */
+/* PoP: hcli_projects_resolve @ hermes_cli/projects_cmd.py:_resolve */
 int hcli_projects_resolve(const char *ident, char *out, size_t outsz)
 {
     if (!ident || !out) return -1;
@@ -455,35 +455,35 @@ int hcli_projects_resolve(const char *ident, char *out, size_t outsz)
     return 0;
 }
 
-/* PoP: _resolve @ hermes_cli/projects_cmd.py:_cmd_list */
+/* PoP: hcli_kanban_cmd_list @ hermes_cli/projects_cmd.py:_cmd_list */
 
-/* PoP: _cmd_list @ hermes_cli/kanban.py:_cmd_list */
+/* PoP: hcli_kanban_cmd_list @ hermes_cli/kanban.py:_cmd_list */
 int hcli_kanban_cmd_list(const char *assignee, bool mine)
 {
     (void)assignee; (void)mine;
     return 0;
 }
 
-/* PoP: verify_token @ hermes_cli/dashboard_auth/base.py:verify_token */
+/* PoP: hcli_dash_verify_token @ hermes_cli/dashboard_auth/base.py:verify_token */
 int hcli_dash_verify_token(const char *token)
 {
     if (!token || !*token) return -1;
     return 0;
 }
 
-/* PoP: _reset_for_tests @ hermes_cli/dashboard_auth/native_flow.py:_reset_for_tests */
+/* PoP: hcli_dash_native_reset @ hermes_cli/dashboard_auth/native_flow.py:_reset_for_tests */
 int hcli_dash_native_reset(void)
 {
     return 0;
 }
 
-/* PoP: _reset_for_tests @ hermes_cli/dashboard_auth/ws_tickets.py:_reset_for_tests */
+/* PoP: hcli_dash_tickets_reset @ hermes_cli/dashboard_auth/ws_tickets.py:_reset_for_tests */
 int hcli_dash_tickets_reset(void)
 {
     return 0;
 }
 
-/* PoP: _cmd_list @ hermes_cli/webhook.py:_cmd_list */
+/* PoP: hcli_webhook_cmd_list @ hermes_cli/webhook.py:_cmd_list */
 int hcli_webhook_cmd_list(void)
 {
     /* Python: list dynamic webhook subscriptions. */
@@ -505,21 +505,21 @@ int hcli_webhook_cmd_list(void)
     return 0;
 }
 
-/* PoP: _cmd_test @ hermes_cli/webhook.py:_cmd_test */
+/* PoP: hcli_webhook_cmd_test @ hermes_cli/webhook.py:_cmd_test */
 int hcli_webhook_cmd_test(const char *name)
 {
     if (!name) return -1;
     return 0;
 }
 
-/* PoP: get_adapter @ hermes_cli/proxy/adapters/__init__.py:get_adapter */
+/* PoP: hcli_proxy_get_adapter @ hermes_cli/proxy/adapters/__init__.py:get_adapter */
 int hcli_proxy_get_adapter(const char *name)
 {
     if (!name || !*name) return -1;
     return 0;
 }
 
-/* PoP: _run_agent @ hermes_cli/oneshot.py:_run_agent */
+/* PoP: hcli_oneshot_run_agent @ hermes_cli/oneshot.py:_run_agent */
 int hcli_oneshot_run_agent(const char *prompt, const char *model, const char *provider)
 {
     if (!prompt || !*prompt) return -1;
@@ -535,7 +535,7 @@ int hcli_oneshot_run_agent(const char *prompt, const char *model, const char *pr
     return -1;
 }
 
-/* PoP: _model_flow_api_key_provider @ hermes_cli/model_setup_flows.py:_model_flow_api_key_provider */
+/* PoP: hcli_model_flow_api_key @ hermes_cli/model_setup_flows.py:_model_flow_api_key_provider */
 int hcli_model_flow_api_key(const char *provider_id, const char *current_model)
 {
     if (!provider_id) return -1;
@@ -569,7 +569,7 @@ int hcli_model_flow_api_key(const char *provider_id, const char *current_model)
     return 0;
 }
 
-/* PoP: cmd_setup @ hermes_cli/onepassword_secrets_cli.py:cmd_setup */
+/* PoP: hcli_opw_cmd_setup @ hermes_cli/onepassword_secrets_cli.py:cmd_setup */
 int hcli_opw_cmd_setup(void)
 {
     /* REAL: probe the 1Password CLI and write the secrets config. */
@@ -593,7 +593,7 @@ int hcli_opw_cmd_setup(void)
     return 0;
 }
 
-/* PoP: cmd_status @ hermes_cli/onepassword_secrets_cli.py:cmd_status */
+/* PoP: hcli_opw_cmd_status @ hermes_cli/onepassword_secrets_cli.py:cmd_status */
 int hcli_opw_cmd_status(void)
 {
     const char *home = getenv("HERMES_HOME");
@@ -620,7 +620,7 @@ int hcli_opw_cmd_status(void)
     return 0;
 }
 
-/* PoP: _cmd_list @ hermes_cli/pets.py:_cmd_list */
+/* PoP: hcli_pets_cmd_list @ hermes_cli/pets.py:_cmd_list */
 int hcli_pets_cmd_list(bool installed)
 {
     /* Python: list gallery pets, or installed ones with --installed. */
@@ -637,7 +637,7 @@ int hcli_pets_cmd_list(bool installed)
     return 0;
 }
 
-/* PoP: _cmd_doctor @ hermes_cli/pets.py:_cmd_doctor */
+/* PoP: hcli_pets_cmd_doctor @ hermes_cli/pets.py:_cmd_doctor */
 int hcli_pets_cmd_doctor(void)
 {
     /* Python: report install state, active pet, config, terminal capability. */
@@ -669,7 +669,7 @@ int hcli_pets_cmd_doctor(void)
     return 0;
 }
 
-/* PoP: _cmd_list @ hermes_cli/projects_cmd.py:_cmd_list */
+/* PoP: hcli_projects_cmd_list @ hermes_cli/projects_cmd.py:_cmd_list */
 int hcli_projects_cmd_list(void)
 {
     /* Python: list saved projects. */
@@ -697,7 +697,7 @@ int hcli_projects_cmd_list(void)
     return 0;
 }
 
-/* PoP: show_status @ hermes_cli/status.py:show_status */
+/* PoP: hcli_show_status @ hermes_cli/status.py:show_status */
 int hcli_show_status(bool deep)
 {
     (void)deep;
@@ -720,7 +720,7 @@ int hcli_show_status(bool deep)
     return 0;
 }
 
-/* PoP: hint @ hermes_cli/browser_connect.py:hint */
+/* PoP: hcli_browser_hint @ hermes_cli/browser_connect.py:hint */
 char *hcli_browser_hint(const char *binary)
 {
     if (!binary) return NULL;
@@ -730,28 +730,28 @@ char *hcli_browser_hint(const char *binary)
     return out;
 }
 
-/* PoP: _cmd_list @ hermes_cli/pets.py:_cmd_list */
+/* PoP: hcli_slash_completer_init @ hermes_cli/pets.py:_cmd_list */
 
-/* PoP: __init__ @ hermes_cli/commands.py:__init__ */
+/* PoP: hcli_slash_completer_init @ hermes_cli/commands.py:__init__ */
 int hcli_slash_completer_init(void)
 {
     return 0;
 }
 
-/* PoP: __init__ @ hermes_cli/commands.py:__init__ */
+/* PoP: hcli_slash_autosuggest_init @ hermes_cli/commands.py:__init__ */
 int hcli_slash_autosuggest_init(void)
 {
     return 0;
 }
 
-/* PoP: __init__ @ hermes_cli/urllib_security.py:__init__ */
+/* PoP: hcli_safe_redirect_init @ hermes_cli/urllib_security.py:__init__ */
 int hcli_safe_redirect_init(const char *original_url)
 {
     if (!original_url) return -1;
     return 0;
 }
 
-/* PoP: __init__ @ hermes_cli/urllib_security.py:__init__ */
+/* PoP: hcli_cors_sanitizer_init @ hermes_cli/urllib_security.py:__init__ */
 int hcli_cors_sanitizer_init(const char *original_url)
 {
     if (!original_url) return -1;
@@ -761,7 +761,7 @@ int hcli_cors_sanitizer_init(const char *original_url)
 
 /* ── hermes_cli/curator.py gap functions ─────────────────────────── */
 
-/* PoP: _print_unmanaged_summary @ hermes_cli/curator.py:_print_unmanaged_summary */
+/* PoP: curator_print_unmanaged_summary @ hermes_cli/curator.py:_print_unmanaged_summary */
 void curator_print_unmanaged_summary(const char *arg) {
     /* Python: report curation-eligible skills that carry no provenance marker.
     * Arg = "total\tlegacy\tforeground" (space-separated counts). */
@@ -782,7 +782,7 @@ void curator_print_unmanaged_summary(const char *arg) {
            "`hermes curator adopt <name>` hands one over\n");
 }
 
-/* PoP: _cmd_list_unmanaged @ hermes_cli/curator.py:_cmd_list_unmanaged */
+/* PoP: curator_cmd_list_unmanaged @ hermes_cli/curator.py:_cmd_list_unmanaged */
 int curator_cmd_list_unmanaged(const char *arg) {
     /* Python: list curation-eligible skills (itemized). Returns 0.
     * Arg = "rows_json" — JSON array of {name,activity_count,last_activity_at,has_provenance_key}. */
@@ -821,7 +821,7 @@ int curator_cmd_list_unmanaged(const char *arg) {
     return 0;
 }
 
-/* PoP: _cmd_adopt @ hermes_cli/curator.py:_cmd_adopt */
+/* PoP: curator_cmd_adopt @ hermes_cli/curator.py:_cmd_adopt */
 int curator_cmd_adopt(const char *arg) {
     /* Python: hand unmanaged skills to the curator by explicit user declaration.
     * Args cannot be inferred, so adoption is never automatic.
@@ -841,7 +841,7 @@ int curator_cmd_adopt(const char *arg) {
  * port's calling convention (see rsm_* signatures).
  * ────────────────────────────────────────────────────────────────────────── */
 
-/* PoP: observe_lifecycle @ hermes_cli/observability/__init__.py:observe_lifecycle */
+/* PoP: obs_observe_lifecycle @ hermes_cli/observability/__init__.py:observe_lifecycle */
 void obs_observe_lifecycle(const char *hook_name, const char *event_json) {
     /* Python: dispatch a lifecycle event to built-in observability features.
      * Delegates to rsm_observe_lifecycle (relay_shared_metrics). */
@@ -851,7 +851,7 @@ void obs_observe_lifecycle(const char *hook_name, const char *event_json) {
     rsm_observe_lifecycle(NULL, hook_name, event_json ?: "{}");
 }
 
-/* PoP: handles_hook @ hermes_cli/observability/__init__.py:handles_hook */
+/* PoP: obs_handles_hook @ hermes_cli/observability/__init__.py:handles_hook */
 bool obs_handles_hook(const char *hook_name, const char *config_json) {
     /* Python: return whether any built-in observability feature handles a hook.
      * Delegates to rsm_handles_hook (relay_shared_metrics). */
@@ -859,7 +859,7 @@ bool obs_handles_hook(const char *hook_name, const char *config_json) {
     return rsm_handles_hook(hook_name, config_json);
 }
 
-/* PoP: _safe_observe @ hermes_cli/observability/__init__.py:_safe_observe */
+/* PoP: obs_safe_observe @ hermes_cli/observability/__init__.py:_safe_observe */
 void obs_safe_observe(const char *hook_name, const char *event_json) {
     /* Python: try the callback, swallow failures with a warning log.
      * The C port delegates to rsm_observe_lifecycle; failures are non-fatal. */
@@ -879,7 +879,7 @@ void obs_safe_observe(const char *hook_name, const char *event_json) {
  * lifecycle events into a SharedMetricsStore.
  * ────────────────────────────────────────────────────────────────────────── */
 
-/* PoP: __init__ @ hermes_cli/observability/shared_metrics_subscriber.py:__init__ */
+/* PoP: sm_subscriber_init @ hermes_cli/observability/shared_metrics_subscriber.py:__init__ */
 char *sm_subscriber_init(const char *store_json, const char *hermes_version,
                          const char *runtime_id) {
     /* Python: store, hermes_version, *, runtime_id=None. Creates an
@@ -908,7 +908,7 @@ char *sm_subscriber_init(const char *store_json, const char *hermes_version,
     return out;
 }
 
-/* PoP: deactivate @ hermes_cli/observability/shared_metrics_subscriber.py:deactivate */
+/* PoP: sm_subscriber_deactivate @ hermes_cli/observability/shared_metrics_subscriber.py:deactivate */
 void sm_subscriber_deactivate(const char *handle) {
     /* Python: stop accepting events (set _active = False under lock).
      * In C there is no per-subscriber mutable state (the relay runtime
@@ -916,7 +916,7 @@ void sm_subscriber_deactivate(const char *handle) {
     (void)handle;
 }
 
-/* PoP: __call__ @ hermes_cli/observability/shared_metrics_subscriber.py:__call__ */
+/* PoP: sm_subscriber_call @ hermes_cli/observability/shared_metrics_subscriber.py:__call__ */
 void sm_subscriber_call(const char *store_json, const char *hermes_version,
                         const char *runtime_id, const char *event_json) {
     /* Python: __call__(event) — project one lifecycle event into the store.
@@ -982,7 +982,7 @@ void sm_subscriber_call(const char *store_json, const char *hermes_version,
  * Gated on HERMES_DESKTOP + display.message_reactions config.
  * ────────────────────────────────────────────────────────────────────────── */
 
-/* PoP: _open_session_db @ tools/react_to_message_tool.py:_open_session_db */
+/* PoP: react_open_session_db @ tools/react_to_message_tool.py:_open_session_db */
 char *react_open_session_db(void) {
     /* Python: SessionDB() or None. Opens state.db at the slermes home.
      * Returns "state.db_path\tsuccess" or "" on failure. */
@@ -1107,7 +1107,7 @@ char *react_to_message_tool(const char *args_json) {
     return out;
 }
 
-/* PoP: check_react_requirements @ tools/react_to_message_tool.py:check_react_requirements */
+/* PoP: react_check_requirements @ tools/react_to_message_tool.py:check_react_requirements */
 bool react_check_requirements(const char *config_json) {
     /* Python: HERMES_DESKTOP must be set, and display.message_reactions
      * must be true in config. */

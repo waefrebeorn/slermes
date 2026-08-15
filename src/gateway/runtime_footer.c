@@ -29,7 +29,7 @@
  * Port of Python gateway/runtime_footer.py _home_relative_cwd().
  * AG26: Port of Python gateway/runtime_footer.py:_home_relative_cwd().
  */
-/* PoP: _home_relative_cwd @ gateway/runtime_footer.py:_home_relative_cwd */
+/* PoP: home_relative_cwd @ gateway/runtime_footer.py:_home_relative_cwd */
 char *home_relative_cwd(const char *cwd) {
     if (!cwd || !*cwd) return strdup("");
     const char *home = getenv("HOME");
@@ -51,7 +51,7 @@ char *home_relative_cwd(const char *cwd) {
  * Port of Python gateway/runtime_footer.py _model_short().
  * AG26: Port of Python gateway/runtime_footer.py:_model_short().
  */
-/* PoP: _model_short @ gateway/runtime_footer.py:_model_short */
+/* PoP: model_short @ gateway/runtime_footer.py:_model_short */
 char *model_short(const char *model) {
     if (!model || !*model) return strdup("");
     const char *slash = strrchr(model, '/');
@@ -129,7 +129,7 @@ json_node_t *resolve_footer_config(json_node_t *user_config,
     return resolved;
 }
 
-/* PoP: _format_latency @ gateway/runtime_footer.py:_format_latency */
+/* PoP: format_latency @ gateway/runtime_footer.py:_format_latency */
 const char *format_latency(double seconds)
 {
     static char buf[16];

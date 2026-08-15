@@ -4,7 +4,7 @@
  * Phase 5: basic schedule parsing + execution loop.
  */
 
-/* PoP: parse_schedule @ cron/jobs.py:parse_schedule */
+/* PoP: parse_cron_field @ cron/jobs.py:parse_schedule */
 
 
 /* PoP: cron scheduler (port of cron/scheduler) */

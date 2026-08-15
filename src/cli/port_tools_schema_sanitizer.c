@@ -163,7 +163,7 @@ static json_t *sanitize_node_walk(json_t *node)
     return out;
 }
 
-/* PoP: cli_tools_schema_sanitizer__sanitize_single_tool @ tools/schema_sanitizer.py:_sanitize_single_tool */
+/* PoP: object @ tools/schema_sanitizer.py:_sanitize_single_tool */
 
 /* Core: sanitize an OpenAI-format tool object (deep-copied, mutated in place
  * on the returned copy). Caller frees the returned json_t. */
@@ -240,7 +240,7 @@ char *cli_tools_schema_sanitizer__sanitize_tool_schemas(const char *tools_json)
 
 /* ---- strip_ref_siblings (recursive) ---- */
 
-/* PoP: cli_tools_schema_sanitizer__strip_ref_siblings @ tools/schema_sanitizer.py:_strip_ref_siblings */
+/* PoP: cli_tools_schema_sanitizer__strip_ref_siblings_node @ tools/schema_sanitizer.py:_strip_ref_siblings */
 
 json_t *cli_tools_schema_sanitizer__strip_ref_siblings_node(json_t *node)
 {
@@ -288,7 +288,7 @@ char *cli_tools_schema_sanitizer__strip_ref_siblings(const char *json_input)
 
 /* ---- strip_top_level_combinators (top level ONLY) ---- */
 
-/* PoP: cli_tools_schema_sanitizer__strip_top_level_combinators @ tools/schema_sanitizer.py:_strip_top_level_combinators */
+/* PoP: cli_tools_schema_sanitizer__strip_top_level_combinators_node @ tools/schema_sanitizer.py:_strip_top_level_combinators */
 
 static const char *TOP_FORBIDDEN[] = {"allOf","anyOf","oneOf","enum","not",NULL};
 
@@ -320,7 +320,7 @@ char *cli_tools_schema_sanitizer__strip_top_level_combinators(const char *json_i
 
 /* ---- strip_nullable_unions (recursive) ---- */
 
-/* PoP: cli_tools_schema_sanitizer_strip_nullable_unions @ tools/schema_sanitizer.py:strip_nullable_unions */
+/* PoP: strip_nullable_walk @ tools/schema_sanitizer.py:strip_nullable_unions */
 
 static json_t *strip_nullable_walk(json_t *node)
 {
@@ -391,7 +391,7 @@ char *cli_tools_schema_sanitizer_strip_nullable_unions(const char *json_input)
 
 /* ---- reactive strip: pattern/format and slash-enum ---- */
 
-/* PoP: cli_tools_schema_sanitizer__strip_pattern_and_format @ tools/schema_sanitizer.py:strip_pattern_and_format */
+/* PoP: strip_pf_walk @ tools/schema_sanitizer.py:strip_pattern_and_format */
 
 static json_t *strip_pf_walk(json_t *node, int *stripped)
 {
@@ -456,7 +456,7 @@ char *cli_tools_schema_sanitizer__strip_pattern_and_format(const char *tools_jso
     return r ? r : strdup("[]");
 }
 
-/* PoP: cli_tools_schema_sanitizer__strip_slash_enum @ tools/schema_sanitizer.py:strip_slash_enum */
+/* PoP: json_array_contains_slash_string @ tools/schema_sanitizer.py:strip_slash_enum */
 
 static int json_array_contains_slash_string(json_t *arr)
 {
@@ -538,7 +538,7 @@ char *cli_tools_schema_sanitizer__strip_slash_enum(const char *tools_json, int *
 
 /* ── property-key sanitization (tools/schema_sanitizer.py) ────────── */
 
-/* PoP: sanitize_property_key @ tools/schema_sanitizer.py:sanitize_property_key */
+/* PoP: cli_tools_schema_sanitizer_sanitize_property_key @ tools/schema_sanitizer.py:sanitize_property_key */
 char *cli_tools_schema_sanitizer_sanitize_property_key(const char *key)
 {
     /* Python: _PROP_KEY_BAD_CHARS.sub("_", key)[:64], or "param" if empty.
@@ -566,7 +566,7 @@ char *cli_tools_schema_sanitizer_sanitize_property_key(const char *key)
     return shrunk ? shrunk : out;
 }
 
-/* PoP: _rename_property_keys @ tools/schema_sanitizer.py:_rename_property_keys */
+/* PoP: cli_tools_schema_sanitizer__rename_property_keys @ tools/schema_sanitizer.py:_rename_property_keys */
 char *cli_tools_schema_sanitizer__rename_property_keys(const char *props_json,
                                                          const char *path)
 {
@@ -654,7 +654,7 @@ char *cli_tools_schema_sanitizer__rename_property_keys(const char *props_json,
     return s ? s : strdup("{}");
 }
 
-/* PoP: unrename_tool_args @ tools/schema_sanitizer.py:unrename_tool_args */
+/* PoP: cli_tools_schema_sanitizer_unrename_tool_args @ tools/schema_sanitizer.py:unrename_tool_args */
 char *cli_tools_schema_sanitizer_unrename_tool_args(const char *params_schema_json,
                                                      const char *args_json)
 {
@@ -764,7 +764,7 @@ char *cli_tools_schema_sanitizer_unrename_tool_args(const char *params_schema_js
 
 /* ── Pure schema helpers (tools/schema_sanitizer.py) ─────────────── */
 
-/* PoP: _const_branch_type @ tools/schema_sanitizer.py:_const_branch_type */
+/* PoP: schema_sanitizer_const_branch_type @ tools/schema_sanitizer.py:_const_branch_type */
 /* Returns malloc'd JSON type string or NULL. Caller frees. */
 char *schema_sanitizer_const_branch_type(const char *branch_json) {
     if (!branch_json) return NULL;
@@ -796,7 +796,7 @@ char *schema_sanitizer_const_branch_type(const char *branch_json) {
     return result ? strdup(result) : NULL;
 }
 
-/* PoP: collapse_const_unions @ tools/schema_sanitizer.py:collapse_const_unions */
+/* PoP: schema_sanitizer_collapse_const_unions @ tools/schema_sanitizer.py:collapse_const_unions */
 /* Returns malloc'd collapsed schema JSON. Caller frees. */
 char *schema_sanitizer_collapse_const_unions(const char *schema_json) {
     if (!schema_json) return NULL;

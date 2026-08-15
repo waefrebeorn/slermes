@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: set_current_session_id @ gateway/session_context.py:set_current_session_id */
+/* PoP: sct_set_current_session_id @ gateway/session_context.py:set_current_session_id */
 int sct_set_current_session_id(const char *session_id) {
     /* Python: ContextVar + os.environ sync — REAL setenv. */
     if (!session_id) return -1;
@@ -27,7 +27,7 @@ int sct_set_current_session_id(const char *session_id) {
     return 0;
 }
 
-/* PoP: set_session_vars @ gateway/session_context.py:set_session_vars */
+/* PoP: sct_set_session_vars @ gateway/session_context.py:set_session_vars */
 char *sct_set_session_vars(const char *session_id, const char *profile, const char *platform) {
     /* Python: all session vars + reset tokens. */
     if (session_id) setenv("HERMES_SESSION_ID", session_id, 1);
@@ -39,7 +39,7 @@ char *sct_set_session_vars(const char *session_id, const char *profile, const ch
     return out;
 }
 
-/* PoP: clear_session_vars @ gateway/session_context.py:clear_session_vars */
+/* PoP: sct_clear_session_vars @ gateway/session_context.py:clear_session_vars */
 int sct_clear_session_vars(void) {
     /* Python: mark explicitly cleared. */
     unsetenv("HERMES_SESSION_ID");
@@ -49,7 +49,7 @@ int sct_clear_session_vars(void) {
     return 0;
 }
 
-/* PoP: get_session_env @ gateway/session_context.py:get_session_env */
+/* PoP: sct_get_session_env @ gateway/session_context.py:get_session_env */
 char *sct_get_session_env(const char *legacy_name) {
     /* Python: legacy HERMES_SESSION_* read. */
     if (!legacy_name) return NULL;

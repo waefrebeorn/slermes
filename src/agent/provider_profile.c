@@ -10,6 +10,9 @@
  * (port of plugins/model-providers/<name>/__init__.py) and register through
  * provider_profiles_register_builtin().
  *
+ * PoP: provider_profile @ providers/base.py:ProviderProfile.get_hostname
+ * PoP: provider_profile @ providers/base.py:ProviderProfile.fetch_models
+ * PoP: provider_profile @ providers/base.py:ProviderProfile.get_max_tokens
  */
 #define _POSIX_C_SOURCE 200809L
 #include "provider_profile.h"

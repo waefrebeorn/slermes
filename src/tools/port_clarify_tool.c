@@ -18,7 +18,7 @@
 #define MAX_CHOICES 4
 
 /* ── _flatten_choice ─────────────────────────────────────────────────────── */
-/* PoP: _flatten_choice @ tools/clarify_tool.py:_flatten_choice */
+/* PoP: clarify_flatten_choice @ tools/clarify_tool.py:_flatten_choice */
 /*
  * Coerce a single choice into its user-facing display string. Supports bare
  * strings, dict-shaped choices ({"label":"..."} etc.), and lists. Returns a
@@ -86,7 +86,7 @@ char *clarify_flatten_choice(const json_node_t *c)
 }
 
 /* ── _invoke_callback ────────────────────────────────────────────────────── */
-/* PoP: _invoke_callback @ tools/clarify_tool.py:_invoke_callback */
+/* PoP: clarify_invoke_callback @ tools/clarify_tool.py:_invoke_callback */
 /* C cannot introspect a function-pointer signature the way Python inspects a
  * callable, so the C callback has a fixed signature that always accepts
  * multi_select.  The Python signature-inspection fallback (2-arg form for
@@ -106,7 +106,7 @@ char *clarify_invoke_callback(clarify_callback_fn callback, void *user_data,
 }
 
 /* ── _parse_multi_select_response ────────────────────────────────────────── */
-/* PoP: _parse_multi_select_response @ tools/clarify_tool.py:_parse_multi_select_response */
+/* PoP: clarify_parse_multi_select_response @ tools/clarify_tool.py:_parse_multi_select_response */
 /* Parse a multi-select response into a malloc'd JSON string array of cleaned
  * choice strings.  Handles: already-a-list, JSON array, comma-separated.
  * Returns a json_node_t* array (caller: json_free). */

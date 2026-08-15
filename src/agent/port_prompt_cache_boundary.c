@@ -36,7 +36,7 @@ static struct pcache_prefix_registry g_pcache = {
     .lock = PTHREAD_MUTEX_INITIALIZER,
 };
 
-/* PoP: register_stable_prefix @ agent/prompt_cache_boundary.py:register_stable_prefix */
+/* PoP: pcache_register_stable_prefix @ agent/prompt_cache_boundary.py:register_stable_prefix */
 void pcache_register_stable_prefix(const char *prefix)
 {
     if (!prefix || !*prefix) return;
@@ -82,7 +82,7 @@ out:
     pthread_mutex_unlock(&g_pcache.lock);
 }
 
-/* PoP: find_stable_prefix @ agent/prompt_cache_boundary.py:find_stable_prefix */
+/* PoP: pcache_find_stable_prefix @ agent/prompt_cache_boundary.py:find_stable_prefix */
 /* Returns the longest registered prefix that is a PROPER prefix of content
  * (len(prefix) < len(content)). Returns a heap-allocated copy the caller must
  * free, or NULL on no match. A hit refreshes the entry's LRU position. */
@@ -114,7 +114,7 @@ char *pcache_find_stable_prefix(const char *content)
     return result;
 }
 
-/* PoP: clear_stable_prefixes @ agent/prompt_cache_boundary.py:clear_stable_prefixes */
+/* PoP: pcache_clear_stable_prefixes @ agent/prompt_cache_boundary.py:clear_stable_prefixes */
 void pcache_clear_stable_prefixes(void)
 {
     pthread_mutex_lock(&g_pcache.lock);

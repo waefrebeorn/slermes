@@ -21,13 +21,13 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _estimate_cost @ agent/insights.py:_estimate_cost */
+/* PoP: ins_estimate_cost @ agent/insights.py:_estimate_cost */
 double ins_estimate_cost(long input_tokens, long output_tokens) {
     /* Python: usd estimate from token tuple. */
     return (double)input_tokens * 0.00000025 + (double)output_tokens * 0.0000010;
 }
 
-/* PoP: _bar_chart @ agent/insights.py:_bar_chart */
+/* PoP: ins_bar_chart @ agent/insights.py:_bar_chart */
 char *ins_bar_chart(const long *values, long count, long max_bar) {
     /* Python: horizontal bar chart strings. */
     if (!values || count <= 0) return strdup("[]");
@@ -50,13 +50,13 @@ char *ins_bar_chart(const long *values, long count, long max_bar) {
     return out;
 }
 
-/* PoP: __init__ @ agent/insights.py:__init__ */
+/* PoP: ins_init @ agent/insights.py:__init__ */
 char *ins_init(void) {
     /* Python: report generator over session db. */
     return strdup("{}");
 }
 
-/* PoP: generate @ agent/insights.py:generate */
+/* PoP: ins_generate @ agent/insights.py:generate */
 char *ins_generate(long days) {
     /* Python: complete report. */
     if (days <= 0) days = 7;
@@ -64,7 +64,7 @@ char *ins_generate(long days) {
     return strdup("{}");
 }
 
-/* PoP: _compute_activity_patterns @ agent/insights.py:_compute_activity_patterns */
+/* PoP: ins_compute_activity_patterns @ agent/insights.py:_compute_activity_patterns */
 char *ins_compute_activity_patterns(const char *sessions_json) {
     /* Python: day-of-week + hour counts. */
     if (!sessions_json) return strdup("{}");
@@ -72,7 +72,7 @@ char *ins_compute_activity_patterns(const char *sessions_json) {
     return strdup(sessions_json);
 }
 
-/* PoP: _compute_top_sessions @ agent/insights.py:_compute_top_sessions */
+/* PoP: ins_compute_top_sessions @ agent/insights.py:_compute_top_sessions */
 char *ins_compute_top_sessions(const char *sessions_json) {
     /* Python: longest / most messages / most tokens. */
     if (!sessions_json) return strdup("[]");
@@ -80,7 +80,7 @@ char *ins_compute_top_sessions(const char *sessions_json) {
     return strdup(sessions_json);
 }
 
-/* PoP: format_terminal @ agent/insights.py:format_terminal */
+/* PoP: ins_format_terminal @ agent/insights.py:format_terminal */
 char *ins_format_terminal(const char *report_json) {
     /* Python: CLI display. */
     if (!report_json) return strdup("");
@@ -89,7 +89,7 @@ char *ins_format_terminal(const char *report_json) {
     return strdup(report_json);
 }
 
-/* PoP: format_gateway @ agent/insights.py:format_gateway */
+/* PoP: ins_format_gateway @ agent/insights.py:format_gateway */
 char *ins_format_gateway(const char *report_json) {
     /* Python: shorter messaging format. */
     if (!report_json) return strdup("");
@@ -97,7 +97,7 @@ char *ins_format_gateway(const char *report_json) {
     return strdup(report_json);
 }
 
-/* PoP: get_usage_breakdown @ agent/insights.py:get_usage_breakdown */
+/* PoP: ins_get_usage_breakdown @ agent/insights.py:get_usage_breakdown */
 char *ins_get_usage_breakdown(db_t *db, int days, const char *source) {
     /* Return the analytics-usage payload without running a full generate().
      * Uses the instr()-prefiltered _get_skill_usage query so only messages

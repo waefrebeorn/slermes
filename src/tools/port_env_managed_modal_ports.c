@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ tools/environments/managed_modal.py:__init__ */
+/* PoP: emm_init @ tools/environments/managed_modal.py:__init__ */
 char *emm_init(const char *cwd, long timeout_seconds) {
     /* Python: guard unsupported credentials. */
     char *out = NULL;
@@ -27,7 +27,7 @@ char *emm_init(const char *cwd, long timeout_seconds) {
     return out;
 }
 
-/* PoP: cleanup @ tools/environments/managed_modal.py:cleanup */
+/* PoP: emm_cleanup @ tools/environments/managed_modal.py:cleanup */
 int emm_cleanup(const char *sandbox_id) {
     /* Python: sandbox teardown if present. */
     if (!sandbox_id) return 0;
@@ -35,7 +35,7 @@ int emm_cleanup(const char *sandbox_id) {
     return 0;
 }
 
-/* PoP: _coerce_number @ tools/environments/managed_modal.py:_coerce_number */
+/* PoP: emm_coerce_number @ tools/environments/managed_modal.py:_coerce_number */
 double emm_coerce_number(const char *value, double default_value) {
     /* Python: parse or default. */
     if (!value) return default_value;

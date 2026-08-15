@@ -15,7 +15,7 @@
 #include <string.h>
 #include <ctype.h>
 
-/* PoP: input_sanitize_strip @ hermes_cli/input_sanitize.py:strip_leaked_bracketed_paste_wrappers */
+/* PoP: str_remove_all @ hermes_cli/input_sanitize.py:strip_leaked_bracketed_paste_wrappers */
 /* Remove every occurrence of `needle` from `s`, returning a fresh string. */
 static char *str_remove_all(const char *s, const char *needle) {
     if (!s) return NULL;
@@ -120,7 +120,7 @@ char *input_sanitize_strip_leaked_bracketed_paste_wrappers(const char *text) {
     return t;
 }
 
-/* PoP: input_sanitize_collapse @ hermes_cli/input_sanitize.py:collapse_repeated_input_artifacts */
+/* PoP: input_sanitize_collapse_repeated_input_artifacts @ hermes_cli/input_sanitize.py:collapse_repeated_input_artifacts */
 char *input_sanitize_collapse_repeated_input_artifacts(const char *text,
                                                        int min_repeats) {
     const char *marker = "~[[e";
@@ -149,7 +149,7 @@ char *input_sanitize_collapse_repeated_input_artifacts(const char *text,
     return out;
 }
 
-/* PoP: input_sanitize_sanitize @ hermes_cli/input_sanitize.py:sanitize_user_prompt_text */
+/* PoP: sanitize_user_prompt_text @ hermes_cli/input_sanitize.py:sanitize_user_prompt_text */
 char *sanitize_user_prompt_text(const char *text) {
     if (!text || !*text) return text ? strdup(text) : NULL;
     char *cleaned = input_sanitize_strip_leaked_bracketed_paste_wrappers(text);

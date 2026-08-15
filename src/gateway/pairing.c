@@ -318,7 +318,7 @@ static bool uids_match(pairing_store_t *st, const char *platform, const char *le
 }
 
 /* ── approved ── */
-/* PoP: apr_is_approved @ gateway/pairing.py:is_approved */
+/* PoP: pairing_is_approved @ gateway/pairing.py:is_approved */
 
 bool pairing_is_approved(pairing_store_t *st, const char *platform, const char *user_id) {
     char name[256]; snprintf(name,sizeof(name),"%s-approved.json",platform);
@@ -399,7 +399,7 @@ bool pairing_approve_user(pairing_store_t *st, const char *platform, const char 
     /* allowlist mirror (option i) — best-effort, skipped at store layer */
     return true;
 }
-/* PoP: revoke @ gateway/pairing.py:revoke */
+/* PoP: pairing_revoke @ gateway/pairing.py:revoke */
 
 bool pairing_revoke(pairing_store_t *st, const char *platform, const char *user_id) {
     char name[256]; snprintf(name,sizeof(name),"%s-approved.json",platform);
@@ -685,8 +685,8 @@ void pairing_free_result(pairing_result_t *r){ if(!r)return; free(r->user_id); f
  *  real work.
  * ================================================================ */
 
-/* PoP: pairing_pending_path @ gateway/pairing.py:_pending_path */
-/* PoP: pairing_approved_path @ gateway/pairing.py:_approved_path */
+/* PoP: pairing_path_for_suffix @ gateway/pairing.py:_pending_path */
+/* PoP: pairing_path_for_suffix @ gateway/pairing.py:_approved_path */
 static char *pairing_path_for_suffix(const char *platform, const char *suffix) {
     size_t n = strlen(platform) + strlen(suffix) + 2;
     char *p = (char *)malloc(n);
@@ -763,7 +763,7 @@ static void pairing_record_failed_attempt(pairing_store_t *st, const char *platf
     pj_free(rl);
 }
 
-/* PoP: cgw_u_all_platforms @ gateway/pairing.py:_all_platforms */
+/* PoP: pairing_all_platforms @ gateway/pairing.py:_all_platforms */
 static char **pairing_all_platforms(pairing_store_t *st, const char *suffix, int *out_n) {
     char **arr = NULL; int n = 0, cap = 0;
     size_t slen = strlen(suffix);
@@ -786,7 +786,7 @@ static char **pairing_all_platforms(pairing_store_t *st, const char *suffix, int
     return arr;
 }
 
-/* PoP: _allowlist_env_for_platform @ gateway/pairing.py:_allowlist_env_for_platform */
+/* PoP: pairing_env_for_platform @ gateway/pairing.py:_allowlist_env_for_platform */
 /* Module-level helper: map platform name to its allowlist env var. */
 static const char *pairing_env_for_platform(const char *platform) {
     char buf[64]; size_t j = 0;
@@ -836,7 +836,7 @@ static void pairing_sync_allowlist_remove(const char *platform, const char *user
     pairing_sync_live_adapter_allowlist_remove(platform, user_id);
 }
 
-/* PoP: pairing_load_json_file @ gateway/pairing.py:_load_json_file */
+/* PoP: loader @ gateway/pairing.py:_load_json_file */
 /* Generic absolute-path JSON loader (mirrors Path.read_text + json.loads). */
 static pj_val_t *pairing_load_json_file(const char *path) {
     FILE *f = fopen(path, "rb");
@@ -852,7 +852,7 @@ static pj_val_t *pairing_load_json_file(const char *path) {
     return v;
 }
 
-/* PoP: pairing_merge_pairing_dir @ gateway/pairing.py:_merge_pairing_dir */
+/* PoP: dir @ gateway/pairing.py:_merge_pairing_dir */
 /* Merge *.json files from alternate dir into active dir (active wins on key
  * conflict). Mirrors the Python os.walk/merge + secure write. */
 static void pairing_merge_pairing_dir(const char *active_dir, const char *alternate_dir) {
@@ -920,7 +920,7 @@ static bool pairing_platform_uses_whatsapp_identity(const char *platform) {
                         strcmp(platform, "whatsapp_cloud") == 0);
 }
 
-/* PoP: _split_allowlist @ gateway/pairing.py:_split_allowlist */
+/* PoP: pairing_split_allowlist @ gateway/pairing.py:_split_allowlist */
 static char **pairing_split_allowlist(const char *raw, int *out_n) {
     *out_n = 0;
     if (!raw || !*raw) return NULL;
@@ -941,21 +941,21 @@ static char **pairing_split_allowlist(const char *raw, int *out_n) {
     return out;
 }
 
-/* PoP: _allowlist_env_for_platform @ gateway/pairing.py:_allowlist_env_for_platform */
+/* PoP: pairing_allowlist_env_for_platform @ gateway/pairing.py:_allowlist_env_for_platform */
 static const char *pairing_allowlist_env_for_platform(const char *platform) {
     /* Reuses the existing platform->env table (pairing_env_for_platform),
      * which lowercases + strips and covers all core platforms. */
     return pairing_env_for_platform(platform);
 }
 
-/* PoP: _read_allowlist_env @ gateway/pairing.py:_read_allowlist_env */
+/* PoP: pairing_read_allowlist_env @ gateway/pairing.py:_read_allowlist_env */
 static const char *pairing_read_allowlist_env(const char *env_var) {
     if (!env_var) return "";
     const char *v = getenv(env_var);
     return v ? v : "";
 }
 
-/* PoP: _purge_allowlist_entries @ gateway/pairing.py:_purge_allowlist_entries */
+/* PoP: pairing_purge_allowlist_entries @ gateway/pairing.py:_purge_allowlist_entries */
 /* Returns a malloc'd comma-joined string with alias-matched entries dropped
  * (wildcard '*' preserved). *changed reflects whether anything was dropped. */
 static char *pairing_purge_allowlist_entries(const char *entries_csv,
@@ -996,7 +996,7 @@ static char *pairing_purge_allowlist_entries(const char *entries_csv,
     return out;
 }
 
-/* PoP: _iter_live_gateway_adapters @ gateway/pairing.py:_iter_live_gateway_adapters */
+/* PoP: pairing_iter_live_gateway_adapters @ gateway/pairing.py:_iter_live_gateway_adapters */
 /* Gateway-only: yields adapters from the in-process GatewayRunner. In a library
  * build there is no runner, so this is a no-op (mirrors Python's try/except). */
 #ifdef HERMES_GATEWAY_RUNNING
@@ -1016,7 +1016,7 @@ static void pairing_iter_live_gateway_adapters(const char *platform,
      * truth (authz union honors both). Nothing to iterate. */
 }
 
-/* PoP: _adapter_platform_name @ gateway/pairing.py:_adapter_platform_name */
+/* PoP: pairing_adapter_platform_name @ gateway/pairing.py:_adapter_platform_name */
 static const char *pairing_adapter_platform_name(void *adapter) {
     (void)adapter;
     /* The C gateway adapters expose platform via adapter->platform.value or
@@ -1037,7 +1037,7 @@ static void pairing_sync_live_adapter_allowlist_remove(const char *platform, con
 #endif
 }
 
-/* PoP: _sync_allowlist_add @ gateway/pairing.py:_sync_allowlist_add */
+/* PoP: pairing_sync_allowlist_add @ gateway/pairing.py:_sync_allowlist_add */
 static void pairing_sync_allowlist_add(const char *platform, const char *user_id) {
     const char *env_var = pairing_allowlist_env_for_platform(platform);
     if (!env_var) return;
@@ -1058,7 +1058,7 @@ static void pairing_sync_allowlist_add(const char *platform, const char *user_id
 
 /* ── finish_approval + reset_failed_attempts + approve_request + request-id ── */
 
-/* PoP: _finish_approval @ gateway/pairing.py:_finish_approval */
+/* PoP: pairing_finish_approval @ gateway/pairing.py:_finish_approval */
 static pairing_result_t *pairing_finish_approval(pairing_store_t *st, const char *platform,
                                                  pj_val_t *pending, const char *matched_key,
                                                  pj_val_t *matched_entry, double now) {
@@ -1110,7 +1110,7 @@ bool pairing_looks_like_request_id(const char *value) {
     return true;
 }
 
-/* PoP: approve_request @ gateway/pairing.py:approve_request */
+/* PoP: pairing_approve_request @ gateway/pairing.py:approve_request */
 pairing_result_t *pairing_approve_request(pairing_store_t *st, const char *platform,
                                           const char *request_id, double now) {
     pairing_cleanup_expired(st, platform, now);

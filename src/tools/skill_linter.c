@@ -258,7 +258,7 @@ static int frontmatter_field(const char *content, const char *key,
 
 /* ── strip_code_blocks ───────────────────────────────────────────────────────── */
 
-/* PoP: _strip_code_blocks @ tools/skill_linter.py:_strip_code_blocks */
+/* PoP: strip_code_blocks @ tools/skill_linter.py:_strip_code_blocks */
 /* Strip fenced code blocks so prose-only checks don't fire on examples. */
 static char *strip_code_blocks(const char *body)
 {
@@ -788,7 +788,7 @@ size_t lint_format_findings(const lint_finding_t *findings, size_t n,
     return off;
 }
 
-/* PoP: htm_main @ tools/skill_linter.py:_main */
+/* PoP: skill_linter_main @ tools/skill_linter.py:_main */
 int skill_linter_main(int argc, char **argv)
 {
     if (argc < 2) {

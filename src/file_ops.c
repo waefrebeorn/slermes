@@ -3,7 +3,12 @@
  *
  * Provides file system operations needed by the desktop app.
  *
+ * PoP: file_read_text    @ electron/main.cjs:readFileText
  * PoP: file_read_dir     @ electron/main.cjs:fs:readDir
+ * PoP: file_write        @ electron/main.cjs:writeFile
+ * PoP: file_delete       @ electron/main.cjs:deleteFile
+ * PoP: dir_create        @ electron/main.cjs:createDir
+ * PoP: file_read_data_url @ electron/main.cjs:readFileDataUrl
  */
 
 #include "file_ops.h"
@@ -41,7 +46,7 @@ static void file_entry_init(file_entry_t *e, const char *name, const char *path,
 /* ── File read ──────────────────────────────────────────────────────────── */
 
 /* PoP: file_read_text @ electron/main.cjs:readFileText */
-/* PoP: ws_fs_read_text @ hermes_cli/agent_import.py:read_text */
+/* PoP: file_read_text @ hermes_cli/agent_import.py:read_text */
 char *file_read_text(const char *path, size_t *out_len) {
     if (!path) return NULL;
 
@@ -134,7 +139,7 @@ int file_read_bytes(const char *path, void *buf, size_t bufsize) {
 
 /* ── File write ─────────────────────────────────────────────────────────── */
 
-/* PoP: file_write @ electron/main.cjs:writeFile */
+/* PoP: file_write_text @ electron/main.cjs:writeFile */
 bool file_write_text(const char *path, const char *text) {
     if (!path || !text) return false;
 
@@ -278,7 +283,7 @@ const char *file_dirname(const char *path) {
     return d ? d : ".";
 }
 
-/* PoP: grun_u_handle_voice_channel_join @ gateway/shutdown_watchdog.py:join */
+/* PoP: file_join @ gateway/shutdown_watchdog.py:join */
 char *file_join(const char *dir, const char *name) {
     if (!dir || !name) return NULL;
     size_t dlen = strlen(dir);

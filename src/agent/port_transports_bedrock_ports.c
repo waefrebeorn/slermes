@@ -19,12 +19,12 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: api_mode @ agent/transports/bedrock.py:api_mode */
+/* PoP: brt_api_mode @ agent/transports/bedrock.py:api_mode */
 char *brt_api_mode(void) {
     return strdup("bedrock_converse");
 }
 
-/* PoP: convert_messages @ agent/transports/bedrock.py:convert_messages */
+/* PoP: brt_convert_messages @ agent/transports/bedrock.py:convert_messages */
 char *brt_convert_messages(const char *messages_json) {
     /* Python: OpenAI → Converse format. */
     if (!messages_json) return strdup("[]");
@@ -32,7 +32,7 @@ char *brt_convert_messages(const char *messages_json) {
     return strdup(messages_json);
 }
 
-/* PoP: convert_tools @ agent/transports/bedrock.py:convert_tools */
+/* PoP: brt_convert_tools @ agent/transports/bedrock.py:convert_tools */
 char *brt_convert_tools(const char *tools_json) {
     /* Python: schemas → toolConfig. */
     if (!tools_json) return strdup("[]");
@@ -40,7 +40,7 @@ char *brt_convert_tools(const char *tools_json) {
     return strdup(tools_json);
 }
 
-/* PoP: build_kwargs @ agent/transports/bedrock.py:build_kwargs */
+/* PoP: brt_build_kwargs @ agent/transports/bedrock.py:build_kwargs */
 char *brt_build_kwargs(const char *params_json) {
     /* Python: converse() kwargs via conversions. */
     if (!params_json) return strdup("{}");
@@ -48,7 +48,7 @@ char *brt_build_kwargs(const char *params_json) {
     return strdup(params_json);
 }
 
-/* PoP: normalize_response @ agent/transports/bedrock.py:normalize_response */
+/* PoP: brt_normalize_response @ agent/transports/bedrock.py:normalize_response */
 char *brt_normalize_response(const char *response_json) {
     /* Python: two shapes handled. */
     if (!response_json) return strdup("{}");
@@ -56,14 +56,14 @@ char *brt_normalize_response(const char *response_json) {
     return strdup(response_json);
 }
 
-/* PoP: validate_response @ agent/transports/bedrock.py:validate_response */
+/* PoP: brt_validate_response @ agent/transports/bedrock.py:validate_response */
 bool brt_validate_response(const char *response_json) {
     /* Python: post-normalize structure. */
     if (!response_json) return false;
     return strstr(response_json, "\"content\"") != NULL || strstr(response_json, "\"output\"") != NULL;
 }
 
-/* PoP: map_finish_reason @ agent/transports/bedrock.py:map_finish_reason */
+/* PoP: brt_map_finish_reason @ agent/transports/bedrock.py:map_finish_reason */
 char *brt_map_finish_reason(const char *stop_reason) {
     /* Python: adapter already maps most. */
     if (!stop_reason) return strdup("stop");

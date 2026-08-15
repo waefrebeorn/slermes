@@ -21,7 +21,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ gateway/platforms/whatsapp_cloud.py:__init__ */
+/* PoP: wac_init @ gateway/platforms/whatsapp_cloud.py:__init__ */
 char *wac_init(const char *config_json) {
     /* Python: extra config (phone id, token). */
     if (!config_json) return strdup("{}");
@@ -29,7 +29,7 @@ char *wac_init(const char *config_json) {
     return strdup(config_json);
 }
 
-/* PoP: connect @ gateway/platforms/whatsapp_cloud.py:connect */
+/* PoP: wac_connect @ gateway/platforms/whatsapp_cloud.py:connect */
 bool wac_connect(void) {
     /* Python: requirements check + runner start.
      * REAL: connect requires phone-number-id + token from env. */
@@ -39,7 +39,7 @@ bool wac_connect(void) {
     return true;
 }
 
-/* PoP: disconnect @ gateway/platforms/whatsapp_cloud.py:disconnect */
+/* PoP: wac_disconnect @ gateway/platforms/whatsapp_cloud.py:disconnect */
 int wac_disconnect(void) {
     /* Python: runner cleaned — REAL: drop the active flag. */
     extern void whatsapp_cloud_set_active(bool active);
@@ -49,7 +49,7 @@ int wac_disconnect(void) {
     return 0;
 }
 
-/* PoP: send @ gateway/platforms/whatsapp_cloud.py:send */
+/* PoP: wac_send @ gateway/platforms/whatsapp_cloud.py:send */
 char *wac_send(const char *chat_id, const char *content) {
     /* Python: text message via Graph API. */
     if (!chat_id || !content) return strdup("{\"success\": false}");
@@ -57,7 +57,7 @@ char *wac_send(const char *chat_id, const char *content) {
     return strdup("{\"success\": true}");
 }
 
-/* PoP: send_typing @ gateway/platforms/whatsapp_cloud.py:send_typing */
+/* PoP: wac_send_typing @ gateway/platforms/whatsapp_cloud.py:send_typing */
 int wac_send_typing(const char *chat_id) {
     /* Python: mark read + typing indicator. */
     if (!chat_id) return -1;
@@ -65,7 +65,7 @@ int wac_send_typing(const char *chat_id) {
     return 0;
 }
 
-/* PoP: send_clarify @ gateway/platforms/whatsapp_cloud.py:send_clarify */
+/* PoP: wac_send_clarify @ gateway/platforms/whatsapp_cloud.py:send_clarify */
 char *wac_send_clarify(const char *chat_id, const char *question, const char *choices_json) {
     /* Python: interactive buttons 1-3. */
     if (!chat_id || !question) return strdup("{\"success\": false}");
@@ -73,7 +73,7 @@ char *wac_send_clarify(const char *chat_id, const char *question, const char *ch
     return strdup("{\"success\": true}");
 }
 
-/* PoP: send_slash_confirm @ gateway/platforms/whatsapp_cloud.py:send_slash_confirm */
+/* PoP: wac_send_slash_confirm @ gateway/platforms/whatsapp_cloud.py:send_slash_confirm */
 char *wac_send_slash_confirm(const char *chat_id, const char *confirm_json) {
     /* Python: 3-button slash confirmation. */
     if (!chat_id) return strdup("{\"success\": false}");
@@ -81,7 +81,7 @@ char *wac_send_slash_confirm(const char *chat_id, const char *confirm_json) {
     return strdup("{\"success\": true}");
 }
 
-/* PoP: get_chat_info @ gateway/platforms/whatsapp_cloud.py:get_chat_info */
+/* PoP: wac_get_chat_info @ gateway/platforms/whatsapp_cloud.py:get_chat_info */
 char *wac_get_chat_info(const char *chat_id) {
     /* Python: no direct endpoint; basic metadata. */
     if (!chat_id) return NULL;
@@ -90,7 +90,7 @@ char *wac_get_chat_info(const char *chat_id) {
     return out;
 }
 
-/* PoP: send_image @ gateway/platforms/whatsapp_cloud.py:send_image */
+/* PoP: wac_send_image @ gateway/platforms/whatsapp_cloud.py:send_image */
 char *wac_send_image(const char *chat_id, const char *image_url, const char *caption) {
     /* Python: link mode preferred. */
     if (!chat_id || !image_url) return strdup("{\"success\": false}");
@@ -98,7 +98,7 @@ char *wac_send_image(const char *chat_id, const char *image_url, const char *cap
     return strdup("{\"success\": true}");
 }
 
-/* PoP: send_image_file @ gateway/platforms/whatsapp_cloud.py:send_image_file */
+/* PoP: wac_send_image_file @ gateway/platforms/whatsapp_cloud.py:send_image_file */
 char *wac_send_image_file(const char *chat_id, const char *file_path, const char *caption) {
     /* Python: two-step upload + id. */
     if (!chat_id || !file_path) return strdup("{\"success\": false}");
@@ -106,7 +106,7 @@ char *wac_send_image_file(const char *chat_id, const char *file_path, const char
     return strdup("{\"success\": true}");
 }
 
-/* PoP: send_video @ gateway/platforms/whatsapp_cloud.py:send_video */
+/* PoP: wac_send_video @ gateway/platforms/whatsapp_cloud.py:send_video */
 char *wac_send_video(const char *chat_id, const char *video_path, const char *caption) {
     /* Python: local → upload; https → link. */
     if (!chat_id || !video_path) return strdup("{\"success\": false}");
@@ -114,7 +114,7 @@ char *wac_send_video(const char *chat_id, const char *video_path, const char *ca
     return strdup("{\"success\": true}");
 }
 
-/* PoP: send_voice @ gateway/platforms/whatsapp_cloud.py:send_voice */
+/* PoP: wac_send_voice @ gateway/platforms/whatsapp_cloud.py:send_voice */
 char *wac_send_voice(const char *chat_id, const char *audio_path, const char *caption) {
     /* Python: audio/ogg; codecs=opus voice bubble. */
     if (!chat_id || !audio_path) return strdup("{\"success\": false}");
@@ -122,14 +122,14 @@ char *wac_send_voice(const char *chat_id, const char *audio_path, const char *ca
     return strdup("{\"success\": true}");
 }
 
-/* PoP: send_document @ gateway/platforms/whatsapp_cloud.py:send_document */
+/* PoP: wac_send_document @ gateway/platforms/whatsapp_cloud.py:send_document */
 char *wac_send_document(const char *chat_id, const char *file_path, const char *caption) {
     if (!chat_id || !file_path) return strdup("{\"success\": false}");
     printf("whatsapp document sent (%s)\n", file_path);
     return strdup("{\"success\": true}");
 }
 
-/* PoP: _convert_to_opus @ gateway/platforms/whatsapp_cloud.py:_convert_to_opus */
+/* PoP: wac_convert_to_opus @ gateway/platforms/whatsapp_cloud.py:_convert_to_opus */
 char *wac_convert_to_opus(const char *mp3_path, const char *out_path) {
     /* Python: ffmpeg → audio/ogg; codecs=opus. */
     if (!mp3_path || !out_path) return NULL;
@@ -140,13 +140,13 @@ char *wac_convert_to_opus(const char *mp3_path, const char *out_path) {
     return rc == 0 ? strdup(out_path) : NULL;
 }
 
-/* PoP: _handle_health @ gateway/platforms/whatsapp_cloud.py:_handle_health */
+/* PoP: wac_handle_health @ gateway/platforms/whatsapp_cloud.py:_handle_health */
 char *wac_handle_health(void) {
     /* Python: health json. */
     return strdup("{\"status\": \"ok\"}");
 }
 
-/* PoP: _handle_webhook @ gateway/platforms/whatsapp_cloud.py:_handle_webhook */
+/* PoP: wac_handle_webhook @ gateway/platforms/whatsapp_cloud.py:_handle_webhook */
 char *wac_handle_webhook(const char *body_json) {
     /* Python: signature check + message dispatch. */
     if (!body_json) return strdup("{\"status\": 400}");

@@ -362,7 +362,7 @@ static char *cch_strip(const char *s, char *buf, size_t cap) {
     return buf;
 }
 
-/* PoP: chat_completion_helpers__validated_openrouter_provider_sort @ agent/chat_completion_helpers.py:_validated_openrouter_provider_sort */
+/* PoP: value @ agent/chat_completion_helpers.py:_validated_openrouter_provider_sort */
 /* Return a normalized OpenRouter provider.sort value ("throughput"|"latency"|
  * "price") or NULL. Invalid non-empty values log a warning. Result is a static
  * string — do NOT free. */
@@ -381,7 +381,7 @@ const char *chat_completion_helpers__validated_openrouter_provider_sort(const ch
     return NULL;
 }
 
-/* PoP: chat_completion_helpers__rewrite_prompt_model_identity @ agent/chat_completion_helpers.py:rewrite_prompt_model_identity */
+/* PoP: input @ agent/chat_completion_helpers.py:rewrite_prompt_model_identity */
 /* Rewrite the LAST "Model: ..." and "Provider: ..." lines of the cached system
  * prompt in place, pointing them at the active runtime after a provider switch.
  * Takes the prompt string and returns a freshly-allocated rewritten copy
@@ -429,7 +429,7 @@ char *chat_completion_helpers__rewrite_prompt_model_identity(const char *sp, con
     return cur;
 }
 
-/* PoP: chat_completion_helpers__fallback_entry_key @ agent/chat_completion_helpers.py:_fallback_entry_key */
+/* PoP: the @ agent/chat_completion_helpers.py:_fallback_entry_key */
 /* Build the (provider_lower, model, base_url_no_trailing_slash) identity key for
  * a fallback entry. Writes the three parts to caller buffers. */
 void chat_completion_helpers__fallback_entry_key(const json_t *fb,

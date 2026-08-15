@@ -22,7 +22,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _utc_now_iso @ gateway/status.py:_utc_now_iso */
+/* PoP: gst_utc_now_iso @ gateway/status.py:_utc_now_iso */
 char *gst_utc_now_iso(void) {
     time_t t = time(NULL);
     struct tm g;
@@ -34,7 +34,7 @@ char *gst_utc_now_iso(void) {
     return out;
 }
 
-/* PoP: parse_active_agents @ gateway/status.py:parse_active_agents */
+/* PoP: gst_parse_active_agents @ gateway/status.py:parse_active_agents */
 long gst_parse_active_agents(const char *value) {
     /* Python: clamp to non-negative int. */
     if (!value || !*value) return 0;
@@ -42,13 +42,13 @@ long gst_parse_active_agents(const char *value) {
     return v > 0 ? v : 0;
 }
 
-/* PoP: derive_gateway_drainable @ gateway/status.py:derive_gateway_drainable */
+/* PoP: gst_derive_gateway_drainable @ gateway/status.py:derive_gateway_drainable */
 bool gst_derive_gateway_drainable(long active_agents, long pending_ticks) {
     /* Python: drainable iff no active agents or ticks. */
     return active_agents <= 0 && pending_ticks <= 0;
 }
 
-/* PoP: is_gateway_running @ gateway/status.py:is_gateway_running */
+/* PoP: gst_is_gateway_running @ gateway/status.py:is_gateway_running */
 bool gst_is_gateway_running(const char *pid_file) {
     /* Python: real pid probe — REAL kill(0). */
     if (!pid_file) return false;

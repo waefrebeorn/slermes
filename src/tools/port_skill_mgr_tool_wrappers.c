@@ -31,20 +31,20 @@ static void smt_read_marks_reset(void) {
 }
 extern const char *skill_provenance_current_origin(void);
 
-/* PoP: mark_background_review_skill_read @ tools/skill_manager_tool.py:mark_background_review_skill_read */
+/* PoP: smt_mark_background_review_skill_read @ tools/skill_manager_tool.py:mark_background_review_skill_read */
 int smt_mark_background_review_skill_read(const char *arg) {
     /* Python: record that the review fork read this target file. */
     smt_read_marks_add(arg);
     return 1;
 }
 
-/* PoP: _background_review_has_read @ tools/skill_manager_tool.py:_background_review_has_read */
+/* PoP: smt_u_background_review_has_read @ tools/skill_manager_tool.py:_background_review_has_read */
 int smt_u_background_review_has_read(const char *arg) {
     /* Python: has the review fork loaded this exact target file. */
     return smt_read_marks_has(arg);
 }
 
-/* PoP: _reset_background_review_read_marks @ tools/skill_manager_tool.py:_reset_background_review_read_marks */
+/* PoP: smt_u_reset_background_review_read_marks @ tools/skill_manager_tool.py:_reset_background_review_read_marks */
 int smt_u_reset_background_review_read_marks(const char *arg) {
     /* Python: clear all read-marks (new review fork). */
     (void)arg;
@@ -52,7 +52,7 @@ int smt_u_reset_background_review_read_marks(const char *arg) {
     return 0;
 }
 
-/* PoP: _guard_agent_created_enabled @ tools/skill_manager_tool.py:_guard_agent_created_enabled */
+/* PoP: smt_u_guard_agent_created_enabled @ tools/skill_manager_tool.py:_guard_agent_created_enabled */
 int smt_u_guard_agent_created_enabled(const char *arg) {
     /* Python: config skills.guard_agent_created default False. Arg = "1"/"0". */
     if (arg && arg[0] == '1') { printf("1\n"); return 0; }
@@ -60,7 +60,7 @@ int smt_u_guard_agent_created_enabled(const char *arg) {
     return 0;
 }
 
-/* PoP: _security_scan_skill @ tools/skill_manager_tool.py:_security_scan_skill */
+/* PoP: smt_u_security_scan_skill @ tools/skill_manager_tool.py:_security_scan_skill */
 int smt_u_security_scan_skill(const char *arg) {
     /* Python: post-write scan gate. Arg =
      * "state\treason\tblocked\tresult". */
@@ -78,7 +78,7 @@ int smt_u_security_scan_skill(const char *arg) {
     return 0;
 }
 
-/* PoP: _pinned_guard @ tools/skill_manager_tool.py:_pinned_guard */
+/* PoP: smt_u_pinned_guard @ tools/skill_manager_tool.py:_pinned_guard */
 int smt_u_pinned_guard(const char *arg) {
     /* Python: pinned refusal or None. Arg = "name\tpinned\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -92,7 +92,7 @@ int smt_u_pinned_guard(const char *arg) {
     return 1;
 }
 
-/* PoP: _background_review_write_guard @ tools/skill_manager_tool.py:_background_review_write_guard */
+/* PoP: smt_u_background_review_write_guard @ tools/skill_manager_tool.py:_background_review_write_guard */
 int smt_u_background_review_write_guard(const char *arg) {
     /* Python: curator write surface. Arg =
      * "blocked\tstate\tresult". */
@@ -107,7 +107,7 @@ int smt_u_background_review_write_guard(const char *arg) {
     return 0;
 }
 
-/* PoP: _background_review_read_before_write_guard @ tools/skill_manager_tool.py:_background_review_read_before_write_guard */
+/* PoP: smt_u_background_review_read_before_write_guard @ tools/skill_manager_tool.py:_background_review_read_before_write_guard */
 int smt_u_background_review_read_before_write_guard(const char *arg) {
     /* Python (name, file_label, action, target): refuse a background-curator
      * mutation of a file the review fork has not loaded first. Arg =
@@ -125,7 +125,7 @@ int smt_u_background_review_read_before_write_guard(const char *arg) {
     return 0;
 }
 
-/* PoP: _background_review_preflight @ tools/skill_manager_tool.py:_background_review_preflight */
+/* PoP: smt_u_background_review_preflight @ tools/skill_manager_tool.py:_background_review_preflight */
 int smt_u_background_review_preflight(const char *arg) {
     /* Python: None unless action in guard set AND skill exists; else
      * write-guard result. Arg = "action\tname" (1 if guard applies). */
@@ -143,7 +143,7 @@ int smt_u_background_review_preflight(const char *arg) {
     return 0;
 }
 
-/* PoP: _curator_consolidation_delete_guard @ tools/skill_manager_tool.py:_curator_consolidation_delete_guard */
+/* PoP: smt_u_curator_consolidation_delete_guard @ tools/skill_manager_tool.py:_curator_consolidation_delete_guard */
 int smt_u_curator_consolidation_delete_guard(const char *arg) {
     /* Python: fail-closed #29912. Arg =
      * "declared\tstate\tresult". */
@@ -158,13 +158,13 @@ int smt_u_curator_consolidation_delete_guard(const char *arg) {
     return 0;
 }
 
-/* PoP: _validate_category @ tools/skill_manager_tool.py:_validate_category */
+/* PoP: smt_u_validate_category @ tools/skill_manager_tool.py:_validate_category */
 int smt_u_validate_category(const char *arg) { (void)arg; return 0; }
 
-/* PoP: _validate_frontmatter @ tools/skill_manager_tool.py:_validate_frontmatter */
+/* PoP: smt_u_validate_frontmatter @ tools/skill_manager_tool.py:_validate_frontmatter */
 int smt_u_validate_frontmatter(const char *arg) { (void)arg; return 0; }
 
-/* PoP: _resolve_skill_dir @ tools/skill_manager_tool.py:_resolve_skill_dir */
+/* PoP: smt_u_resolve_skill_dir @ tools/skill_manager_tool.py:_resolve_skill_dir */
 int smt_u_resolve_skill_dir(const char *arg) {
     /* Python: _skills_dir()/category/name if category else _skills_dir()/name.
      * Arg = "name\tcategory" (category optional, tab-separated). */
@@ -180,7 +180,7 @@ int smt_u_resolve_skill_dir(const char *arg) {
     return 0;
 }
 
-/* PoP: _find_skill_in_other_profiles @ tools/skill_manager_tool.py:_find_skill_in_other_profiles */
+/* PoP: smt_u_find_skill_in_other_profiles @ tools/skill_manager_tool.py:_find_skill_in_other_profiles */
 int smt_u_find_skill_in_other_profiles(const char *arg) {
     /* Python: cross-profile hint. Arg =
      * "count\tstate\tresult". */
@@ -193,7 +193,7 @@ int smt_u_find_skill_in_other_profiles(const char *arg) {
     return 0;
 }
 
-/* PoP: _skill_not_found_error @ tools/skill_manager_tool.py:_skill_not_found_error */
+/* PoP: smt_u_skill_not_found_error @ tools/skill_manager_tool.py:_skill_not_found_error */
 int smt_u_skill_not_found_error(const char *arg) {
     /* Python: cross-profile hint. Arg =
      * "name\tactive\tstate\tothers\tresult". */
@@ -211,7 +211,7 @@ int smt_u_skill_not_found_error(const char *arg) {
     return 0;
 }
 
-/* PoP: _atomic_write_text @ tools/skill_manager_tool.py:_atomic_write_text */
+/* PoP: smt_u_atomic_write_text @ tools/skill_manager_tool.py:_atomic_write_text */
 int smt_u_atomic_write_text(const char *arg) {
     /* Python: mkstemp + replace. Arg = "path\tstate\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -223,7 +223,7 @@ int smt_u_atomic_write_text(const char *arg) {
     return 0;
 }
 
-/* PoP: _add_description_prompt_preview @ tools/skill_manager_tool.py:_add_description_prompt_preview */
+/* PoP: smt_u_add_description_prompt_preview @ tools/skill_manager_tool.py:_add_description_prompt_preview */
 int smt_u_add_description_prompt_preview(const char *arg) {
     /* Python: append system_prompt_preview when truncated. Arg =
      * "description\ttruncated\tresult_json". */
@@ -245,7 +245,7 @@ int smt_u_add_description_prompt_preview(const char *arg) {
     return 0;
 }
 
-/* PoP: _create_skill @ tools/skill_manager_tool.py:_create_skill */
+/* PoP: smt_u_create_skill @ tools/skill_manager_tool.py:_create_skill */
 int smt_u_create_skill(const char *arg) {
     /* Python: create + scan rollback. Arg =
      * "state\tresult\terr". */
@@ -266,7 +266,7 @@ int smt_u_create_skill(const char *arg) {
     return 0;
 }
 
-/* PoP: _edit_skill @ tools/skill_manager_tool.py:_edit_skill */
+/* PoP: smt_u_edit_skill @ tools/skill_manager_tool.py:_edit_skill */
 int smt_u_edit_skill(const char *arg) {
     /* Python: full rewrite + scan rollback. Arg =
      * "found\tstate\tresult\terr". */
@@ -282,7 +282,7 @@ int smt_u_edit_skill(const char *arg) {
     return 0;
 }
 
-/* PoP: _patch_skill @ tools/skill_manager_tool.py:_patch_skill */
+/* PoP: smt_u_patch_skill @ tools/skill_manager_tool.py:_patch_skill */
 int smt_u_patch_skill(const char *arg) {
     /* Python: targeted replace. Arg =
      * "patched\tstate\tresult\terr". */
@@ -298,7 +298,7 @@ int smt_u_patch_skill(const char *arg) {
     return 0;
 }
 
-/* PoP: _delete_skill @ tools/skill_manager_tool.py:_delete_skill */
+/* PoP: smt_u_delete_skill @ tools/skill_manager_tool.py:_delete_skill */
 int smt_u_delete_skill(const char *arg) {
     /* Python: absorbed_into validation. Arg =
      * "state\tresult\terr". */
@@ -327,7 +327,7 @@ int smt_u_delete_skill(const char *arg) {
     return 0;
 }
 
-/* PoP: _remove_file @ tools/skill_manager_tool.py:_remove_file */
+/* PoP: smt_u_remove_file @ tools/skill_manager_tool.py:_remove_file */
 int smt_u_remove_file(const char *arg) {
     /* Python: supporting-file rm. Arg =
      * "found\tstate\tresult\terr". */
@@ -343,7 +343,7 @@ int smt_u_remove_file(const char *arg) {
     return 0;
 }
 
-/* PoP: _apply_skill_write_gate @ tools/skill_manager_tool.py:_apply_skill_write_gate */
+/* PoP: smt_u_apply_skill_write_gate @ tools/skill_manager_tool.py:_apply_skill_write_gate */
 int smt_u_apply_skill_write_gate(const char *arg) {
     /* Python: gate decision. Arg =
      * "action\tbypassed\tstate\tdecision\tresult". */
@@ -364,7 +364,7 @@ int smt_u_apply_skill_write_gate(const char *arg) {
     return 0;
 }
 
-/* PoP: apply_skill_pending @ tools/skill_manager_tool.py:apply_skill_pending */
+/* PoP: smt_apply_skill_pending @ tools/skill_manager_tool.py:apply_skill_pending */
 int smt_apply_skill_pending(const char *arg) {
     /* Python: replay staged skill write with gate bypass. Arg =
      * "action\tname\tstate\tresult". */
@@ -380,7 +380,7 @@ int smt_apply_skill_pending(const char *arg) {
 
 /* ── tools/skill_manager_tool.py gap functions ───────────────────── */
 
-/* PoP: _maybe_auto_propose_org_edit @ tools/skill_manager_tool.py:_maybe_auto_propose_org_edit */
+/* PoP: skillmgr_maybe_auto_propose_org_edit @ tools/skill_manager_tool.py:_maybe_auto_propose_org_edit */
 char *skillmgr_maybe_auto_propose_org_edit(const char *arg) {
     /* Python: submit an org-skill edit upstream when sync.org_auto_propose
      * is on. Returns a short note for the tool result, or None when nothing
@@ -413,7 +413,7 @@ char *skillmgr_maybe_auto_propose_org_edit(const char *arg) {
     return strdup("Auto-proposed to your organisation (merged into the shared set).");
 }
 
-/* PoP: _org_mirror_write_guard @ tools/skill_manager_tool.py:_org_mirror_write_guard */
+/* PoP: skillmgr_org_mirror_write_guard @ tools/skill_manager_tool.py:_org_mirror_write_guard */
 char *skillmgr_org_mirror_write_guard(const char *arg) {
     /* Python: org-shared skills are editable in place — this only blocks
      * deletion. Arg = "action\tis_org_mirror\tname" (action = delete or
@@ -443,7 +443,7 @@ char *skillmgr_org_mirror_write_guard(const char *arg) {
     return out;
 }
 
-/* PoP: _maybe_debounced_sync_push @ tools/skill_manager_tool.py:_maybe_debounced_sync_push */
+/* PoP: skillmgr_maybe_debounced_sync_push @ tools/skill_manager_tool.py:_maybe_debounced_sync_push */
 int skillmgr_maybe_debounced_sync_push(const char *arg) {
     /* Python: schedule a debounced best-effort sync push after a skill write.
      * Fast-path: skill not opted into sync → do nothing.

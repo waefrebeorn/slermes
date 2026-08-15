@@ -14,37 +14,37 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_process_registry_worker_memory_max_bytes @ tools/process_registry.py:_worker_memory_max_bytes */
+/* PoP: tools_process_registry_worker_memory_max_bytes_p @ tools/process_registry.py:_worker_memory_max_bytes */
 json_t *tools_process_registry_worker_memory_max_bytes_p(void) {
     return json_object();
 }
 
-/* PoP: tools_process_registry_systemd_run_user_scope_available @ tools/process_registry.py:_systemd_run_user_scope_available */
+/* PoP: tools_process_registry_systemd_run_user_scope_available_p @ tools/process_registry.py:_systemd_run_user_scope_available */
 json_t *tools_process_registry_systemd_run_user_scope_available_p(void) {
     return json_object();
 }
 
-/* PoP: tools_process_registry_is_supervised_gateway_process @ tools/process_registry.py:_is_supervised_gateway_process */
+/* PoP: tools_process_registry_is_supervised_gateway_process_p @ tools/process_registry.py:_is_supervised_gateway_process */
 json_t *tools_process_registry_is_supervised_gateway_process_p(void) {
     return json_object();
 }
 
-/* PoP: tools_process_registry_stop_systemd_unit @ tools/process_registry.py:_stop_systemd_unit */
+/* PoP: tools_process_registry_stop_systemd_unit_p @ tools/process_registry.py:_stop_systemd_unit */
 json_t *tools_process_registry_stop_systemd_unit_p(void) {
     return json_object();
 }
 
-/* PoP: tools_process_registry_format_async_delegation @ tools/process_registry.py:_format_async_delegation */
+/* PoP: tools_process_registry_format_async_delegation_p @ tools/process_registry.py:_format_async_delegation */
 json_t *tools_process_registry_format_async_delegation_p(void) {
     return json_object();
 }
 
-/* PoP: tools_process_registry_format_process_notification @ tools/process_registry.py:format_process_notification */
+/* PoP: tools_process_registry_format_process_notification_p @ tools/process_registry.py:format_process_notification */
 json_t *tools_process_registry_format_process_notification_p(void) {
     return json_object();
 }
 
-/* PoP: tools_process_registry_redact_process_result @ tools/process_registry.py:_redact_process_result */
+/* PoP: tools_process_registry_redact_process_result_p @ tools/process_registry.py:_redact_process_result */
 json_t *tools_process_registry_redact_process_result_p(void) {
     return json_object();
 }

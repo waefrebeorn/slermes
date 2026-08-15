@@ -284,7 +284,7 @@ bool skills_hub_fetch_catalog(void) {
     g_last_fetch = 0;
 
     /* Register well-known source first */
-/* PoP: skills_hub_register_static @ tools/skills_hub.py:register_static */
+/* PoP: skills_hub_search @ tools/skills_hub.py:register_static */
     skills_hub_register_static(g_wellknown_skills, WELLKNOWN_SKILL_COUNT,
                                 SKILLS_HUB_SOURCE_ID_WELLKNOWN);
 
@@ -309,11 +309,11 @@ int skills_hub_search(const char *query, hub_skill_meta_t *results, int limit) {
 
     /* Auto-fetch if not loaded */
     if (g_source_count == 0) {
-/* PoP: skills_hub_fetch_catalog @ tools/skills_hub.py:SkillsHub.fetch_catalog */
+/* PoP: skills_hub_get_by_slug @ tools/skills_hub.py:SkillsHub.fetch_catalog */
         skills_hub_fetch_catalog();
     }
 
-/* PoP: skills_hub_unified_search @ tools/skills_hub.py:SkillsHub.unified_search */
+/* PoP: skills_hub_get_by_slug @ tools/skills_hub.py:SkillsHub.unified_search */
     return skills_hub_unified_search(query, results, limit);
 }
 
@@ -324,7 +324,7 @@ bool skills_hub_get_by_slug(const char *slug, hub_skill_meta_t *out) {
 
     /* Auto-fetch if not loaded */
     if (g_source_count == 0) {
-/* PoP: skills_hub_fetch_catalog @ tools/skills_hub.py:SkillsHub.fetch_catalog */
+/* PoP: skills_hub_clear_cache @ tools/skills_hub.py:SkillsHub.fetch_catalog */
         skills_hub_fetch_catalog();
     }
 
@@ -370,7 +370,7 @@ void skills_hub_clear_cache(void) {
 char *skills_hub_summary(void) {
     /* Auto-fetch if not loaded */
     if (g_source_count == 0) {
-/* PoP: skills_hub_fetch_catalog @ tools/skills_hub.py:SkillsHub.fetch_catalog */
+/* PoP: WellKnownSkillSource @ tools/skills_hub.py:SkillsHub.fetch_catalog */
         skills_hub_fetch_catalog();
     }
 
@@ -458,7 +458,7 @@ int skills_hub_unified_search(const char *query, hub_skill_meta_t *results, int 
     if (!results || limit <= 0) return 0;
 
     if (g_source_count == 0) {
-/* PoP: skills_hub_fetch_catalog @ tools/skills_hub.py:SkillsHub.fetch_catalog */
+/* PoP: skills_hub_source_count @ tools/skills_hub.py:SkillsHub.fetch_catalog */
         skills_hub_fetch_catalog();
     }
 
@@ -498,7 +498,7 @@ static const char *skills_install_dir(void) {
 }
 
 /* Get hub directory path (skills/.hub). Returns pointer to static buf. */
-/* PoP: skills_hub_hub_dir @ tools/skills_hub.py:_hub_dir */
+/* PoP: hub_dir @ tools/skills_hub.py:_hub_dir */
 static const char *hub_dir(void) {
     static char path[HERMES_PATH_MAX];
     const char *base = skills_install_dir();
@@ -508,7 +508,7 @@ static const char *hub_dir(void) {
 }
 
 /* Get lock file path. Returns pointer to static buf. */
-/* PoP: skills_hub_lock_file @ tools/skills_hub.py:_lock_file */
+/* PoP: hub_lock_path @ tools/skills_hub.py:_lock_file */
 static const char *hub_lock_path(void) {
     static char path[HERMES_PATH_MAX];
     const char *hd = hub_dir();
@@ -528,7 +528,7 @@ static const char *hub_taps_path(void) {
 }
 
 /* Get audit log path. Returns pointer to static buf. */
-/* PoP: dash_audit_log @ tools/skills_hub.py:_audit_log */
+/* PoP: hub_audit_path @ tools/skills_hub.py:_audit_log */
 static const char *hub_audit_path(void) {
     static char path[HERMES_PATH_MAX];
     const char *hd = hub_dir();
@@ -538,7 +538,7 @@ static const char *hub_audit_path(void) {
 }
 
 /* Get quarantine directory path. Returns pointer to static buf. */
-/* PoP: skills_hub_quarantine_dir @ tools/skills_hub.py:_quarantine_dir */
+/* PoP: hub_quarantine_dir @ tools/skills_hub.py:_quarantine_dir */
 static const char *hub_quarantine_dir(void) {
     static char path[HERMES_PATH_MAX];
     const char *hd = hub_dir();
@@ -571,7 +571,7 @@ static bool ensure_dir(const char *dir) {
 }
 
 /* Port of Python: UrlSource.fetch (single-file skill install) */
-/* PoP: models_live_http_fetch @ tools/skills_hub.py:fetch */
+/* PoP: skills_hub_install_from_url @ tools/skills_hub.py:fetch */
 bool skills_hub_install_from_url(const char *url) {
     if (!url || !url[0]) return false;
 
@@ -699,11 +699,11 @@ bool skills_hub_install_from_source(const char *source_id, const char *identifie
     strftime(ts, sizeof(ts), "%Y-%m-%dT%H:%M:%SZ", tm);
     snprintf(lock_entry.installed_at, sizeof(lock_entry.installed_at), "%s", ts);
     snprintf(lock_entry.updated_at, sizeof(lock_entry.updated_at), "%s", ts);
-/* PoP: hub_lock_record_install @ tools/skills_hub.py:_lock_record_install */
+/* PoP: skills_hub_uninstall @ tools/skills_hub.py:_lock_record_install */
     hub_lock_record_install(&lock_entry);
 
     /* Audit log */
-/* PoP: hub_append_audit_log @ tools/skills_hub.py:_append_audit_log */
+/* PoP: skills_hub_uninstall @ tools/skills_hub.py:_append_audit_log */
     hub_append_audit_log(HUB_AUDIT_INSTALL, lock_entry.name,
                           source_id, HUB_TRUST_BUILTIN,
                           HUB_SCAN_CLEAN, "installed via source");
@@ -733,9 +733,9 @@ bool skills_hub_uninstall(const char *skill_name) {
 
     /* Remove from lock file if filesystem removal succeeded */
     if (removed) {
-/* PoP: hub_lock_record_uninstall @ tools/skills_hub.py:_lock_record_uninstall */
+/* PoP: skills_hub_list_installed @ tools/skills_hub.py:_lock_record_uninstall */
         hub_lock_record_uninstall(skill_name);
-/* PoP: hub_append_audit_log @ tools/skills_hub.py:_append_audit_log */
+/* PoP: skills_hub_list_installed @ tools/skills_hub.py:_append_audit_log */
         hub_append_audit_log(HUB_AUDIT_UNINSTALL, skill_name,
                               "unknown", HUB_TRUST_BUILTIN,
                               HUB_SCAN_CLEAN, "uninstalled");
@@ -746,13 +746,13 @@ bool skills_hub_uninstall(const char *skill_name) {
 
 /* Port of Python: installed skills listing */
 /* PoP: skills_hub_list_installed @ tools/skills_hub.py:HubLockFile.list_installed */
-/* PoP: hub_lock_list_installed @ tools/skills_hub.py:list_installed */
+/* PoP: skills_hub_list_installed @ tools/skills_hub.py:list_installed */
 int skills_hub_list_installed(char names[][128], int max_count) {
     if (!names || max_count <= 0) return 0;
 
     const char *base = skills_install_dir();
     if (!base) return 0;
-/* PoP: ensure_dir @ tools/skills_hub.py:_ensure_dir */
+/* PoP: skills_hub_is_installed @ tools/skills_hub.py:_ensure_dir */
     ensure_dir(base); /* ensure base dir exists */
 
     char cmd[HERMES_PATH_MAX + 64];
@@ -797,7 +797,7 @@ bool skills_hub_is_installed(const char *skill_name) {
  * ================================================================ */
 
 /* Port of Python: _validate_skill_name */
-/* PoP: hub_validate_skill_name @ tools/skills_hub.py:_validate_skill_name */
+/* PoP: _normalize_bundle_path @ tools/skills_hub.py:_validate_skill_name */
 /* Delegates to the faithful _normalize_bundle_path (allow_nested=False), so
  * it rejects separators, absolute paths, ".." traversal, Windows drive
  * letters ("C:"), and empty/dot-only names — exactly like Python. */
@@ -875,13 +875,13 @@ bool hub_ensure_dirs(void) {
     /* Create quarantine subdirectory */
     char qdir[HERMES_PATH_MAX];
     snprintf(qdir, sizeof(qdir), "%s/" HUB_QUARANTINE_DIRNAME, hd);
-/* PoP: ensure_dir @ tools/skills_hub.py:_ensure_dir */
+/* PoP: lock_file_read @ tools/skills_hub.py:_ensure_dir */
     ensure_dir(qdir);
 
     /* Create index-cache subdirectory */
     char icsdir[HERMES_PATH_MAX];
     snprintf(icsdir, sizeof(icsdir), "%s/" HUB_INDEX_CACHE_DIRNAME, hd);
-/* PoP: ensure_dir @ tools/skills_hub.py:_ensure_dir */
+/* PoP: lock_file_read @ tools/skills_hub.py:_ensure_dir */
     ensure_dir(icsdir);
 
     return true;
@@ -1057,7 +1057,7 @@ int hub_lock_list_installed(hub_installed_skill_t *entries, int max_count) {
  * ================================================================ */
 
 /* Port of Python: TapsManager.add */
-/* PoP: ss_add @ tools/skills_hub.py:add */
+/* PoP: hub_taps_add @ tools/skills_hub.py:add */
 /* PoP: hub_taps_add @ tools/skills_hub.py:add */
 bool hub_taps_add(const char *repo, const char *path) {
     if (!repo || !repo[0]) return false;
@@ -1114,7 +1114,7 @@ bool hub_taps_add(const char *repo, const char *path) {
 }
 
 /* Port of Python: TapsManager.remove */
-/* PoP: mom_remove @ tools/skills_hub.py:remove */
+/* PoP: hub_taps_remove @ tools/skills_hub.py:remove */
 /* PoP: hub_taps_remove @ tools/skills_hub.py:remove */
 bool hub_taps_remove(const char *repo) {
     if (!repo || !repo[0]) return false;
@@ -1289,8 +1289,8 @@ bool hub_is_path_redirect(const char *path) {
 }
 
 /* Port of Python: quarantine_bundle (simplified — write single file to quarantine) */
-/* PoP: tools_skills_hub_quarantine_bundle @ tools/skills_hub.py:quarantine_bundle */
-/* PoP: tools_skills_hub_quarantine_bundle @ tools/skills_hub.py:quarantine_bundle */
+/* PoP: hub_quarantine_write @ tools/skills_hub.py:quarantine_bundle */
+/* PoP: hub_quarantine_write @ tools/skills_hub.py:quarantine_bundle */
 bool hub_quarantine_write(const char *skill_name, const char *filename,
                            const char *content, size_t content_len) {
     if (!skill_name || !skill_name[0] || !filename || !filename[0] || !content)
@@ -1445,7 +1445,7 @@ json_t *skills_hub_load_stale_index_cache(const char *key, time_t max_age) {
 int skills_hub_parallel_search(const char *query, hub_skill_meta_t *results, int limit) {
     if (!query || !results || limit <= 0) return 0;
     /* For C: sequential search across registered sources (no async) */
-/* PoP: skills_hub_unified_search @ tools/skills_hub.py:SkillsHub.unified_search */
+/* PoP: hub_skill_meta_to_json @ tools/skills_hub.py:SkillsHub.unified_search */
     return skills_hub_unified_search(query, results, limit);
 }
 
@@ -1504,7 +1504,7 @@ static bool g_override_audit_log_set = false;
 static bool g_override_taps_file_set = false;
 static bool g_override_index_cache_dir_set = false;
 
-/* PoP: set_model_override @ tools/skills_hub.py:_override */
+/* PoP: skills_hub_override @ tools/skills_hub.py:_override */
 const char *skills_hub_override(const char *name) {
     if (!name) return NULL;
     if (strcmp(name, "SKILLS_DIR") == 0 && g_override_skills_dir_set)
@@ -1540,7 +1540,7 @@ void skills_hub_set_override(const char *name, const char *value) {
     else { dst[0] = '\0'; *flag = false; }
 }
 
-/* PoP: lm_hermes_home @ tools/skills_hub.py:_hermes_home */
+/* PoP: skills_hub_hermes_home @ tools/skills_hub.py:_hermes_home */
 const char *skills_hub_hermes_home(void) {
     const char *h = getenv("HERMES_HOME");
     if (h && h[0]) return h;
@@ -1549,7 +1549,7 @@ const char *skills_hub_hermes_home(void) {
     return "/tmp/hermes";
 }
 
-/* PoP: main_u__getattr__ @ tools/skills_hub.py:__getattr__ */
+/* PoP: skills_hub_getattr @ tools/skills_hub.py:__getattr__ */
 const char *skills_hub_getattr(const char *name) {
     if (!name) return NULL;
     /* Same dynamic resolver as Python PEP-562 __getattr__: parallel to the
@@ -1943,7 +1943,7 @@ const char *github_source_trust_level_for(github_source_t *src, const char *iden
     return "community";
 }
 
-/* PoP: github_source_check_rate_limit_response @ tools/skills_hub.py:GitHubSource._check_rate_limit_response */
+/* PoP: github_source_get_repo_tree @ tools/skills_hub.py:GitHubSource._check_rate_limit_response */
 void github_source_check_rate_limit_response(github_source_t *src, int status_code,
                                               const char *rate_limit_remaining_header) {
     if (!src) return;
@@ -2099,7 +2099,7 @@ char *github_source_fetch_file_content(github_source_t *src, const char *repo, c
     return body;
 }
 
-/* PoP: re_search @ tools/skills_hub.py:search */
+/* PoP: github_source_search @ tools/skills_hub.py:search */
 int github_source_search(github_source_t *src, const char *query, int limit,
                           hub_skill_meta_t *results) {
     if (!src || !query || limit <= 0 || !results) return 0;

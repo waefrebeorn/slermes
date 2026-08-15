@@ -6,6 +6,8 @@
  * macOS:           pbcopy / pbpaste
  * Windows:         Win32 Clipboard API
  *
+ * PoP: clipboard_read  @ electron/main.cjs:readClipboard
+ * PoP: clipboard_write @ electron/main.cjs:writeClipboard
  */
 
 #include "clipboard.h"
@@ -65,7 +67,7 @@ static const char *detect_clipboard_tool(void) {
     return NULL;
 }
 
-/* PoP: clipboard_read @ electron/main.cjs:readClipboard */
+/* PoP: clipboard_read_text @ electron/main.cjs:readClipboard */
 char *clipboard_read_text(void) {
     const char *tool = detect_clipboard_tool();
     if (!tool) {
@@ -85,7 +87,7 @@ char *clipboard_read_text(void) {
     return run_cmd_capture(cmd);
 }
 
-/* PoP: clipboard_write @ electron/main.cjs:writeClipboard */
+/* PoP: clipboard_write_text @ electron/main.cjs:writeClipboard */
 bool clipboard_write_text(const char *text) {
     if (!text) return false;
 
@@ -130,12 +132,12 @@ bool clipboard_has_text(void) {
 
 #if defined(__APPLE__) && !defined(_WIN32)
 
-/* PoP: clipboard_read @ electron/main.cjs:readClipboard */
+/* PoP: clipboard_read_text @ electron/main.cjs:readClipboard */
 char *clipboard_read_text(void) {
     return run_cmd_capture("pbpaste 2>/dev/null");
 }
 
-/* PoP: clipboard_write @ electron/main.cjs:writeClipboard */
+/* PoP: clipboard_write_text @ electron/main.cjs:writeClipboard */
 bool clipboard_write_text(const char *text) {
     if (!text) return false;
     FILE *fp = popen("pbcopy", "w");
@@ -162,7 +164,7 @@ bool clipboard_has_text(void) {
 
 #if defined(_WIN32)
 
-/* PoP: clipboard_read @ electron/main.cjs:readClipboard */
+/* PoP: clipboard_read_text @ electron/main.cjs:readClipboard */
 char *clipboard_read_text(void) {
     if (!OpenClipboard(NULL)) return NULL;
 
@@ -184,7 +186,7 @@ char *clipboard_read_text(void) {
     return buf;
 }
 
-/* PoP: clipboard_write @ electron/main.cjs:writeClipboard */
+/* PoP: clipboard_write_text @ electron/main.cjs:writeClipboard */
 bool clipboard_write_text(const char *text) {
     if (!text) return false;
 

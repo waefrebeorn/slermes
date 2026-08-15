@@ -14,7 +14,7 @@
 #include "hermes_logger.h"
 #include "browser_redact.h"  /* browser_redact_sensitive_text */
 
-/* PoP: _redact_terminal_error_text @ tools/terminal_tool.py:_redact_terminal_error_text */
+/* PoP: terminal_redact_error_text @ tools/terminal_tool.py:_redact_terminal_error_text */
 /* Force-redact text before serializing a terminal error envelope. */
 char *terminal_redact_error_text(const char *value) {
     return browser_redact_sensitive_text(value ? value : "");
@@ -28,7 +28,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: set_sudo_password_callback @ tools/terminal_tool.py:set_sudo_password_callback */
+/* PoP: ttm_set_sudo_password_callback @ tools/terminal_tool.py:set_sudo_password_callback */
 int ttm_set_sudo_password_callback(const char *callback_desc) {
     /* Python: per-thread sudo callback. Registered against the caller's
      * execution context; in C we record it as env state for the active task. */
@@ -40,14 +40,14 @@ int ttm_set_sudo_password_callback(const char *callback_desc) {
     return 0;
 }
 
-/* PoP: set_approval_callback @ tools/terminal_tool.py:set_approval_callback */
+/* PoP: ttm_set_approval_callback @ tools/terminal_tool.py:set_approval_callback */
 int ttm_set_approval_callback(const char *callback_desc) {
     if (!callback_desc) return -1;
     hermes_log(LOG_DEBUG, "terminal", "dangerous-command approval callback registered");
     return 0;
 }
 
-/* PoP: clear_session_cwd @ tools/terminal_tool.py:clear_session_cwd */
+/* PoP: ttm_clear_session_cwd @ tools/terminal_tool.py:clear_session_cwd */
 int ttm_clear_session_cwd(const char *session_id) {
     /* Python: drop cwd record on teardown. */
     if (!session_id) return -1;
@@ -64,7 +64,7 @@ static const char *SUPPORTED_VERCEL_RUNTIME_LIST[] = {
 };
 #define WORKDIR_SAFE_ASCII_CHARS "/\\:_-.~ +@=,"
 
-/* PoP: _is_supported_vercel_runtime @ tools/terminal_tool.py:_is_supported_vercel_runtime */
+/* PoP: termtool_is_supported_vercel_runtime @ tools/terminal_tool.py:_is_supported_vercel_runtime */
 int termtool_is_supported_vercel_runtime(const char *runtime) {
     /* Python: not runtime or runtime in _SUPPORTED_VERCEL_RUNTIMES. */
     if (!runtime || !runtime[0]) { printf("1\n"); return 1; }
@@ -78,7 +78,7 @@ int termtool_is_supported_vercel_runtime(const char *runtime) {
     return 0;
 }
 
-/* PoP: _check_vercel_sandbox_requirements @ tools/terminal_tool.py:_check_vercel_sandbox_requirements */
+/* PoP: termtool_check_vercel_sandbox_requirements @ tools/terminal_tool.py:_check_vercel_sandbox_requirements */
 int termtool_check_vercel_sandbox_requirements(const char *arg) {
     /* Python: validate Vercel Sandbox terminal backend requirements.
      * Checks runtime support, container_disk in {0, 51200}, and creds.
@@ -96,7 +96,7 @@ int termtool_check_vercel_sandbox_requirements(const char *arg) {
     return 1;
 }
 
-/* PoP: _is_safe_workdir_char @ tools/terminal_tool.py:_is_safe_workdir_char */
+/* PoP: termtool_is_safe_workdir_char @ tools/terminal_tool.py:_is_safe_workdir_char */
 int termtool_is_safe_workdir_char(const char *arg) {
     /* Python: allowlist check — reject control chars/NUL; accept alnum +
      * safe ASCII. Arg = single char (as string). */

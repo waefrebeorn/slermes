@@ -11,7 +11,7 @@
 #include <string.h>
 #include <ctype.h>
 
-/* PoP: cli_hermes_cli_prompt_size__build_inspection_agent @ hermes_cli/prompt_size.py:_build_inspection_agent */
+/* PoP: path @ hermes_cli/prompt_size.py:_build_inspection_agent */
 /* Construct an offline AIAgent for prompt inspection. Dummy api_key + base_url
  * force the direct-construction path (no provider auto-detection, no network),
  * matching the Python module: toolsets/platform come from the caller so the
@@ -147,7 +147,7 @@ void cli_hermes_cli_prompt_size_cmd_prompt_size(const char *platform, int as_jso
 
 #define SKILL_LINE_PREFIX "    - "
 
-/* PoP: _tool_name @ hermes_cli/prompt_size.py:_tool_name */
+/* PoP: psize_tool_name @ hermes_cli/prompt_size.py:_tool_name */
 char *psize_tool_name(const char *arg) {
     /* Python: return the callable name of a tool schema (OpenAI function
      * shape). Arg = "tool_json" (dict with function.name or name). */
@@ -177,7 +177,7 @@ char *psize_tool_name(const char *arg) {
     return out;
 }
 
-/* PoP: _skill_md_paths_by_name @ hermes_cli/prompt_size.py:_skill_md_paths_by_name */
+/* PoP: psize_skill_md_paths_by_name @ hermes_cli/prompt_size.py:_skill_md_paths_by_name */
 char *psize_skill_md_paths_by_name(const char *arg) {
     /* Python: map each installed skill's name to its SKILL.md path.
      * Keyed by frontmatter name and directory name; local wins.
@@ -186,7 +186,7 @@ char *psize_skill_md_paths_by_name(const char *arg) {
     return strdup(arg);
 }
 
-/* PoP: _compute_skills_breakdown @ hermes_cli/prompt_size.py:_compute_skills_breakdown */
+/* PoP: psize_compute_skills_breakdown @ hermes_cli/prompt_size.py:_compute_skills_breakdown */
 char *psize_compute_skills_breakdown(const char *arg) {
     /* Python: per-skill byte breakdown parsed from the rendered
      * <available_skills> block. Arg = "skills_block". Returns JSON array of
@@ -243,7 +243,7 @@ char *psize_compute_skills_breakdown(const char *arg) {
     return result;
 }
 
-/* PoP: _compute_toolsets_breakdown @ hermes_cli/prompt_size.py:_compute_toolsets_breakdown */
+/* PoP: psize_compute_toolsets_breakdown @ hermes_cli/prompt_size.py:_compute_toolsets_breakdown */
 char *psize_compute_toolsets_breakdown(const char *arg) {
     /* Python: per-toolset schema-byte breakdown of the resolved tool list.
      * Arg = "tools_json" (JSON array of tool schemas). Returns JSON array

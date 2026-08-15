@@ -55,7 +55,7 @@ const char *smc_execution_surfaces[] = {
 const size_t smc_execution_surfaces_count =
     sizeof(smc_execution_surfaces) / sizeof(smc_execution_surfaces[0]);
 
-/* PoP: is_valid_execution_surface @ agent/shared_metrics_contract.py:is_valid_execution_surface */
+/* PoP: smc_is_valid_execution_surface @ agent/shared_metrics_contract.py:is_valid_execution_surface */
 bool smc_is_valid_execution_surface(const char *s) {
     if (!s) return false;
     for (size_t i = 0; i < smc_execution_surfaces_count; i++)
@@ -844,7 +844,7 @@ char *smc_model_call_fields(const char *provider,
     return result;
 }
 
-/* PoP: skill_lifecycle_fields @ hermes_cli/observability/shared_metrics_contract.py:skill_lifecycle_fields */
+/* PoP: smc_skill_lifecycle_fields @ hermes_cli/observability/shared_metrics_contract.py:skill_lifecycle_fields */
 char *smc_skill_lifecycle_fields(const char *action_val, const char *provenance_val) {
     char *action = str_lower_strip(action_val);
     static const char *allowed[] = {
@@ -865,7 +865,7 @@ char *smc_skill_lifecycle_fields(const char *action_val, const char *provenance_
     return result;
 }
 
-/* PoP: skill_load_fields @ hermes_cli/observability/shared_metrics_contract.py:skill_load_fields */
+/* PoP: smc_skill_load_fields @ hermes_cli/observability/shared_metrics_contract.py:skill_load_fields */
 char *smc_skill_load_fields(bool reused, bool reuse_after_patch,
                             int use_count, const char *provenance_val) {
     /* Guard: use_count must be a positive int, bool flags required,

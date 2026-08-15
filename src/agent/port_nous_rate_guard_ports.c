@@ -22,7 +22,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _state_path @ agent/nous_rate_guard.py:_state_path */
+/* PoP: nrg_state_path @ agent/nous_rate_guard.py:_state_path */
 char *nrg_state_path(void) {
     const char *h = getenv("HERMES_HOME");
     char *out = NULL;
@@ -31,7 +31,7 @@ char *nrg_state_path(void) {
     return out;
 }
 
-/* PoP: _parse_reset_seconds @ agent/nous_rate_guard.py:_parse_reset_seconds */
+/* PoP: nrg_parse_reset_seconds @ agent/nous_rate_guard.py:_parse_reset_seconds */
 double nrg_parse_reset_seconds(const char *headers_json) {
     /* Python: best reset-time estimate from headers. */
     if (!headers_json) return 0.0;
@@ -46,7 +46,7 @@ double nrg_parse_reset_seconds(const char *headers_json) {
     return 0.0;
 }
 
-/* PoP: record_nous_rate_limit @ agent/nous_rate_guard.py:record_nous_rate_limit */
+/* PoP: nrg_record_nous_rate_limit @ agent/nous_rate_guard.py:record_nous_rate_limit */
 int nrg_record_nous_rate_limit(const char *headers_json) {
     /* Python: parse reset + persist state — REAL file write. */
     if (!headers_json) return -1;
@@ -65,7 +65,7 @@ int nrg_record_nous_rate_limit(const char *headers_json) {
     return 0;
 }
 
-/* PoP: nous_rate_limit_remaining @ agent/nous_rate_guard.py:nous_rate_limit_remaining */
+/* PoP: nrg_nous_rate_limit_remaining @ agent/nous_rate_guard.py:nous_rate_limit_remaining */
 double nrg_nous_rate_limit_remaining(void) {
     /* Python: seconds remaining or 0. */
     char *path = nrg_state_path();
@@ -92,7 +92,7 @@ double nrg_nous_rate_limit_remaining(void) {
     return left > 0 ? left : 0.0;
 }
 
-/* PoP: clear_nous_rate_limit @ agent/nous_rate_guard.py:clear_nous_rate_limit */
+/* PoP: nrg_clear_nous_rate_limit @ agent/nous_rate_guard.py:clear_nous_rate_limit */
 int nrg_clear_nous_rate_limit(void) {
     /* Python: clear state after success. */
     char *path = nrg_state_path();
@@ -101,7 +101,7 @@ int nrg_clear_nous_rate_limit(void) {
     return rc == 0 ? 0 : 0;
 }
 
-/* PoP: format_remaining @ agent/nous_rate_guard.py:format_remaining */
+/* PoP: nrg_format_remaining @ agent/nous_rate_guard.py:format_remaining */
 char *nrg_format_remaining(double seconds) {
     /* Python: human-readable duration. */
     long s = seconds > 0 ? (long)seconds : 0;
@@ -112,7 +112,7 @@ char *nrg_format_remaining(double seconds) {
     return out;
 }
 
-/* PoP: is_genuine_nous_rate_limit @ agent/nous_rate_guard.py:is_genuine_nous_rate_limit */
+/* PoP: nrg_is_genuine_nous_rate_limit @ agent/nous_rate_guard.py:is_genuine_nous_rate_limit */
 bool nrg_is_genuine_nous_rate_limit(const char *body_json) {
     /* Python: distinguish real account limit from noise. */
     if (!body_json) return false;
@@ -123,7 +123,7 @@ bool nrg_is_genuine_nous_rate_limit(const char *body_json) {
     return r;
 }
 
-/* PoP: _parse_buckets_from_headers @ agent/nous_rate_guard.py:_parse_buckets_from_headers */
+/* PoP: nrg_parse_buckets_from_headers @ agent/nous_rate_guard.py:_parse_buckets_from_headers */
 char *nrg_parse_buckets_from_headers(const char *headers_json) {
     /* Python: (remaining, reset) per x-ratelimit-* bucket. */
     if (!headers_json) return strdup("[]");
@@ -131,7 +131,7 @@ char *nrg_parse_buckets_from_headers(const char *headers_json) {
     return strdup("[]");
 }
 
-/* PoP: _has_exhausted_bucket @ agent/nous_rate_guard.py:_has_exhausted_bucket */
+/* PoP: nrg_has_exhausted_bucket @ agent/nous_rate_guard.py:_has_exhausted_bucket */
 bool nrg_has_exhausted_bucket(const char *buckets_json) {
     /* Python: any bucket remaining==0 with meaningful reset. */
     if (!buckets_json) return false;

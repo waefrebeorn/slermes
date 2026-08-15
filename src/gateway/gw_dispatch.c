@@ -86,7 +86,7 @@ void gw_event_register(gw_event_listener_t listener, void *userdata) {
     gw_event_bus.count++;
 }
 
-/* PoP: el_emit @ agent/moa_loop.py:_emit */
+/* PoP: gw_event_emit @ agent/moa_loop.py:_emit */
 void gw_event_emit(const char *event_type, json_node_t *data) {
     for (int i = 0; i < gw_event_bus.count; i++) {
         gw_event_bus.listeners[i](event_type, data, gw_event_bus.data[i]);

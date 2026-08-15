@@ -144,7 +144,7 @@ void fuzzy_match_fuzzy_find_and_replace(const char *content, const char *old_str
 /* PART2 */
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _unicode_normalize @ tools/fuzzy_match.py:_unicode_normalize */
+/* PoP: fuzzy_match_unicode_normalize @ tools/fuzzy_match.py:_unicode_normalize */
 char *fuzzy_match_unicode_normalize(const char *text)
 {
     if (!text) return strdup("");
@@ -165,7 +165,7 @@ char *fuzzy_match_unicode_normalize(const char *text)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _leading_whitespace @ tools/fuzzy_match.py:_leading_whitespace */
+/* PoP: fuzzy_match_leading_whitespace @ tools/fuzzy_match.py:_leading_whitespace */
 size_t fuzzy_match_leading_whitespace(const char *line)
 {
     size_t i=0;
@@ -174,7 +174,7 @@ size_t fuzzy_match_leading_whitespace(const char *line)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _first_meaningful_line @ tools/fuzzy_match.py:_first_meaningful_line */
+/* PoP: fuzzy_match_first_meaningful_line @ tools/fuzzy_match.py:_first_meaningful_line */
 /* Returns malloc'd first non-blank line, or NULL if none. */
 char *fuzzy_match_first_meaningful_line(const char *text)
 {
@@ -200,7 +200,7 @@ static void push_match(long **arr, size_t *n, size_t *cap, long s, long e){
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _apply_replacements @ tools/fuzzy_match.py:_apply_replacements */
+/* PoP: fuzzy_match_apply_replacements @ tools/fuzzy_match.py:_apply_replacements */
 char *fuzzy_match_apply_replacements(const char *content, long *matches, size_t nmatch, const char *new_string, const char *old_string)
 {
     /* sort matches descending by start */
@@ -234,7 +234,7 @@ char *fuzzy_match_apply_replacements(const char *content, long *matches, size_t 
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _reindent_replacement @ tools/fuzzy_match.py:_reindent_replacement */
+/* PoP: fuzzy_match_reindent_replacement @ tools/fuzzy_match.py:_reindent_replacement */
 char *fuzzy_match_reindent_replacement(const char *file_region, const char *old_string, const char *new_string)
 {
     if (!new_string || !*new_string) return strdup(new_string ? new_string : "");
@@ -270,7 +270,7 @@ char *fuzzy_match_reindent_replacement(const char *file_region, const char *old_
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _maybe_unescape_new_string @ tools/fuzzy_match.py:_maybe_unescape_new_string */
+/* PoP: fuzzy_match_maybe_unescape_new_string @ tools/fuzzy_match.py:_maybe_unescape_new_string */
 char *fuzzy_match_maybe_unescape_new_string(const char *new_string, const char *content, long *matches, size_t nmatch)
 {
     if (!new_string) return strdup("");
@@ -300,7 +300,7 @@ char *fuzzy_match_maybe_unescape_new_string(const char *new_string, const char *
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _detect_escape_drift @ tools/fuzzy_match.py:_detect_escape_drift */
+/* PoP: fuzzy_match_detect_escape_drift @ tools/fuzzy_match.py:_detect_escape_drift */
 char *fuzzy_match_detect_escape_drift(const char *content, long *matches, size_t nmatch, const char *old_string, const char *new_string)
 {
     if (!new_string) return NULL;
@@ -326,7 +326,7 @@ char *fuzzy_match_detect_escape_drift(const char *content, long *matches, size_t
 /* PART5 */
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _strategy_exact @ tools/fuzzy_match.py:_strategy_exact */
+/* PoP: fuzzy_match_strategy_exact @ tools/fuzzy_match.py:_strategy_exact */
 void fuzzy_match_strategy_exact(const char *content, const char *pattern, long **matches, size_t *nmatch)
 {
     *matches = NULL; *nmatch = 0; size_t cap = 0;
@@ -342,7 +342,7 @@ void fuzzy_match_strategy_exact(const char *content, const char *pattern, long *
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _calculate_line_positions @ tools/fuzzy_match.py:_calculate_line_positions */
+/* PoP: fuzzy_match_calculate_line_positions @ tools/fuzzy_match.py:_calculate_line_positions */
 void fuzzy_match_calculate_line_positions(char **lines, size_t nlines, size_t start_line, size_t end_line, size_t content_length, long *out_start, long *out_end)
 {
     long sp = 0;
@@ -356,7 +356,7 @@ void fuzzy_match_calculate_line_positions(char **lines, size_t nlines, size_t st
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _find_normalized_matches @ tools/fuzzy_match.py:_find_normalized_matches */
+/* PoP: fuzzy_match_find_normalized_matches @ tools/fuzzy_match.py:_find_normalized_matches */
 void fuzzy_match_find_normalized_matches(const char *content, char **content_lines, size_t ncontent,
                                          char **cnorm_lines, size_t ncnorm, const char *pattern_normalized, long **matches, size_t *nmatch)
 {
@@ -388,7 +388,7 @@ static void collapse_ws(const char *s, ds_t *out)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _strategy_line_trimmed @ tools/fuzzy_match.py:_strategy_line_trimmed */
+/* PoP: fuzzy_match_strategy_line_trimmed @ tools/fuzzy_match.py:_strategy_line_trimmed */
 void fuzzy_match_strategy_line_trimmed(const char *content, const char *pattern, long **matches, size_t *nmatch)
 {
     *matches = NULL; *nmatch = 0;
@@ -404,7 +404,7 @@ void fuzzy_match_strategy_line_trimmed(const char *content, const char *pattern,
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _strategy_whitespace_normalized @ tools/fuzzy_match.py:_strategy_whitespace_normalized */
+/* PoP: fuzzy_match_strategy_whitespace_normalized @ tools/fuzzy_match.py:_strategy_whitespace_normalized */
 void fuzzy_match_strategy_whitespace_normalized(const char *content, const char *pattern, long **matches, size_t *nmatch)
 {
     *matches = NULL; *nmatch = 0; size_t cap = 0;
@@ -431,7 +431,7 @@ void fuzzy_match_strategy_whitespace_normalized(const char *content, const char 
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _strategy_indentation_flexible @ tools/fuzzy_match.py:_strategy_indentation_flexible */
+/* PoP: fuzzy_match_strategy_indentation_flexible @ tools/fuzzy_match.py:_strategy_indentation_flexible */
 void fuzzy_match_strategy_indentation_flexible(const char *content, const char *pattern, long **matches, size_t *nmatch)
 {
     *matches = NULL; *nmatch = 0;
@@ -447,7 +447,7 @@ void fuzzy_match_strategy_indentation_flexible(const char *content, const char *
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _strategy_escape_normalized @ tools/fuzzy_match.py:_strategy_escape_normalized */
+/* PoP: fuzzy_match_strategy_escape_normalized @ tools/fuzzy_match.py:_strategy_escape_normalized */
 void fuzzy_match_strategy_escape_normalized(const char *content, const char *pattern, long **matches, size_t *nmatch)
 {
     *matches = NULL; *nmatch = 0;
@@ -466,7 +466,7 @@ void fuzzy_match_strategy_escape_normalized(const char *content, const char *pat
 /* PART6 */
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _strategy_trimmed_boundary @ tools/fuzzy_match.py:_strategy_trimmed_boundary */
+/* PoP: fuzzy_match_strategy_trimmed_boundary @ tools/fuzzy_match.py:_strategy_trimmed_boundary */
 void fuzzy_match_strategy_trimmed_boundary(const char *content, const char *pattern, long **matches, size_t *nmatch)
 {
     *matches = NULL; *nmatch = 0; size_t cap = 0;
@@ -489,7 +489,7 @@ void fuzzy_match_strategy_trimmed_boundary(const char *content, const char *patt
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _build_orig_to_norm_map @ tools/fuzzy_match.py:_build_orig_to_norm_map */
+/* PoP: fuzzy_match_build_orig_to_norm_map @ tools/fuzzy_match.py:_build_orig_to_norm_map */
 long *fuzzy_match_build_orig_to_norm_map(const char *original, size_t *out_len)
 {
     size_t n = strlen(original);
@@ -510,7 +510,7 @@ long *fuzzy_match_build_orig_to_norm_map(const char *original, size_t *out_len)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _map_positions_norm_to_orig @ tools/fuzzy_match.py:_map_positions_norm_to_orig */
+/* PoP: fuzzy_match_map_positions_norm_to_orig @ tools/fuzzy_match.py:_map_positions_norm_to_orig */
 void fuzzy_match_map_positions_norm_to_orig(long *orig_to_norm, size_t olen, long *norm_matches, size_t nmatch, long **matches, size_t *nmatch_out)
 {
     *matches = NULL; *nmatch_out = 0; size_t cap = 0;
@@ -534,7 +534,7 @@ void fuzzy_match_map_positions_norm_to_orig(long *orig_to_norm, size_t olen, lon
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _strategy_unicode_normalized @ tools/fuzzy_match.py:_strategy_unicode_normalized */
+/* PoP: fuzzy_match_strategy_unicode_normalized @ tools/fuzzy_match.py:_strategy_unicode_normalized */
 void fuzzy_match_strategy_unicode_normalized(const char *content, const char *pattern, long **matches, size_t *nmatch)
 {
     *matches = NULL; *nmatch = 0;
@@ -551,7 +551,7 @@ void fuzzy_match_strategy_unicode_normalized(const char *content, const char *pa
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _strategy_block_anchor @ tools/fuzzy_match.py:_strategy_block_anchor */
+/* PoP: fuzzy_match_strategy_block_anchor @ tools/fuzzy_match.py:_strategy_block_anchor */
 void fuzzy_match_strategy_block_anchor(const char *content, const char *pattern, long **matches, size_t *nmatch)
 {
     *matches = NULL; *nmatch = 0; size_t cap = 0;
@@ -595,7 +595,7 @@ void fuzzy_match_strategy_block_anchor(const char *content, const char *pattern,
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _strategy_context_aware @ tools/fuzzy_match.py:_strategy_context_aware */
+/* PoP: fuzzy_match_strategy_context_aware @ tools/fuzzy_match.py:_strategy_context_aware */
 void fuzzy_match_strategy_context_aware(const char *content, const char *pattern, long **matches, size_t *nmatch)
 {
     *matches = NULL; *nmatch = 0; size_t cap = 0;
@@ -622,7 +622,7 @@ void fuzzy_match_strategy_context_aware(const char *content, const char *pattern
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _preserve_unicode_in_replacement @ tools/fuzzy_match.py:_preserve_unicode_in_replacement */
+/* PoP: fuzzy_match_preserve_unicode_in_replacement @ tools/fuzzy_match.py:_preserve_unicode_in_replacement */
 char *fuzzy_match_preserve_unicode_in_replacement(const char *content, long *matches, size_t nmatch, const char *old_string, const char *new_string)
 {
     ds_t reg; ds_init(&reg);
@@ -701,7 +701,7 @@ char *fuzzy_match_preserve_unicode_in_replacement(const char *content, long *mat
 /* PART7 */
 
 /* ---------------------------------------------------------------------- */
-/* PoP: find_closest_lines @ tools/fuzzy_match.py:find_closest_lines */
+/* PoP: fuzzy_match_find_closest_lines @ tools/fuzzy_match.py:find_closest_lines */
 char *fuzzy_match_find_closest_lines(const char *old_string, const char *content, int context_lines, int max_results)
 {
     if (!old_string || !*old_string || !content || !*content) return strdup("");
@@ -750,7 +750,7 @@ char *fuzzy_match_find_closest_lines(const char *old_string, const char *content
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: format_no_match_hint @ tools/fuzzy_match.py:format_no_match_hint */
+/* PoP: fuzzy_match_format_no_match_hint @ tools/fuzzy_match.py:format_no_match_hint */
 char *fuzzy_match_format_no_match_hint(const char *error, int match_count, const char *old_string, const char *content)
 {
     if (match_count != 0) return strdup("");
@@ -765,7 +765,7 @@ char *fuzzy_match_format_no_match_hint(const char *error, int match_count, const
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: fuzzy_match_fuzzy_find_and_replace @ tools/fuzzy_match.py:fuzzy_find_and_replace */
+/* PoP: out_new_content @ tools/fuzzy_match.py:fuzzy_find_and_replace */
 /* Out-params: *out_new_content (malloc'd), *out_match_count, *out_strategy
  * (malloc'd), *out_error (malloc'd, NULL on success). */
 void fuzzy_match_fuzzy_find_and_replace(const char *content, const char *old_string, const char *new_string,
@@ -822,7 +822,7 @@ void fuzzy_match_fuzzy_find_and_replace(const char *content, const char *old_str
 
 /* ── tools/fuzzy_match.py gap functions ──────────────────────────── */
 
-/* PoP: is_already_applied @ tools/fuzzy_match.py:is_already_applied */
+/* PoP: fuzzy_is_already_applied @ tools/fuzzy_match.py:is_already_applied */
 bool fuzzy_is_already_applied(const char *content, const char *old_string,
                               const char *new_string) {
     /* Python: True when the requested edit is already present.
@@ -840,7 +840,7 @@ bool fuzzy_is_already_applied(const char *content, const char *old_string,
     return !strstr(content, old_string);
 }
 
-/* PoP: _format_match_locations @ tools/fuzzy_match.py:_format_match_locations */
+/* PoP: fuzzy_format_match_locations @ tools/fuzzy_match.py:_format_match_locations */
 char *fuzzy_format_match_locations(const char *arg) {
     /* Python: render up to cap match positions as 'L<line>: <snippet>' rows.
      * Arg = "content\tmatches_json" — matches_json is array of [start, end]. */
@@ -900,7 +900,7 @@ char *fuzzy_format_match_locations(const char *arg) {
     return out;
 }
 
-/* PoP: _visualize_whitespace @ tools/fuzzy_match.py:_visualize_whitespace */
+/* PoP: fuzzy_visualize_whitespace @ tools/fuzzy_match.py:_visualize_whitespace */
 char *fuzzy_visualize_whitespace(const char *line) {
     /* Python: render leading whitespace visibly (→ = tab, · = space).
      * Only the leading run is visualized. */

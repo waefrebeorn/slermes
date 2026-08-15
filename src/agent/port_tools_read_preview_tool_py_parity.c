@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_read_preview_tool_read_preview_tool @ tools/read_preview_tool.py:read_preview_tool */
+/* PoP: tools_read_preview_tool_read_preview_tool_p @ tools/read_preview_tool.py:read_preview_tool */
 json_t *tools_read_preview_tool_read_preview_tool_p(void) {
     return json_object();
 }

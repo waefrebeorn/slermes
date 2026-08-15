@@ -14,7 +14,7 @@
 #include <string.h>
 #include <sys/stat.h>
 
-/* PoP: cli_tools_credential_files__get_registered @ tools/credential_files.py:_get_registered */
+/* PoP: cli_tools_credential_files_clear_credential_files @ tools/credential_files.py:_get_registered */
 json_node_t* cli_tools_credential_files__get_registered(void) {
     /*
      * Get or create the registered credential files dict for the current context/session.
@@ -32,7 +32,7 @@ json_node_t* cli_tools_credential_files__get_registered(void) {
     return registered;
 }
 
-/* PoP: cli_tools_credential_files__resolve_hermes_home @ tools/credential_files.py:_resolve_hermes_home */
+/* PoP: cli_tools_credential_files_clear_credential_files @ tools/credential_files.py:_resolve_hermes_home */
 const char* cli_tools_credential_files__resolve_hermes_home(char *buf, size_t bufsz) {
     /*
      * Resolve the HERMES_HOME directory.
@@ -58,7 +58,7 @@ const char* cli_tools_credential_files__resolve_hermes_home(char *buf, size_t bu
     return NULL;
 }
 
-/* PoP: cli_tools_credential_files__load_config_files @ tools/credential_files.py:_load_config_files */
+/* PoP: cli_tools_credential_files_clear_credential_files @ tools/credential_files.py:_load_config_files */
 json_node_t* cli_tools_credential_files__load_config_files(void) {
     /*
      * Load terminal.credential_files from config.yaml (cached).
@@ -72,7 +72,7 @@ json_node_t* cli_tools_credential_files__load_config_files(void) {
     return config_files;
 }
 
-/* PoP: cli_tools_credential_files_get_credential_file_mounts @ tools/credential_files.py:get_credential_file_mounts */
+/* PoP: cli_tools_credential_files_clear_credential_files @ tools/credential_files.py:get_credential_file_mounts */
 json_node_t* cli_tools_credential_files_get_credential_file_mounts(void) {
     /*
      * Return all credential files that should be mounted into remote sandboxes.
@@ -103,7 +103,7 @@ json_node_t* cli_tools_credential_files_get_credential_file_mounts(void) {
     return mounts;
 }
 
-/* PoP: cli_tools_credential_files_get_skills_directory_mount @ tools/credential_files.py:get_skills_directory_mount */
+/* PoP: cli_tools_credential_files_clear_credential_files @ tools/credential_files.py:get_skills_directory_mount */
 json_node_t* cli_tools_credential_files_get_skills_directory_mount(const char *container_base) {
     /*
      * Return mount info for all skill directories (local + external).
@@ -133,7 +133,7 @@ json_node_t* cli_tools_credential_files_get_skills_directory_mount(const char *c
     return mounts;
 }
 
-/* PoP: cli_tools_credential_files__safe_skills_path @ tools/credential_files.py:_safe_skills_path */
+/* PoP: cli_tools_credential_files_clear_credential_files @ tools/credential_files.py:_safe_skills_path */
 char* cli_tools_credential_files__safe_skills_path(const char *skills_dir, char *buf, size_t bufsz) {
     /*
      * Return skills_dir if symlink-free, else a sanitized temp copy path.
@@ -152,7 +152,7 @@ char* cli_tools_credential_files__safe_skills_path(const char *skills_dir, char 
     return NULL;
 }
 
-/* PoP: cli_tools_credential_files_get_cache_directory_mounts @ tools/credential_files.py:get_cache_directory_mounts */
+/* PoP: cli_tools_credential_files_clear_credential_files @ tools/credential_files.py:get_cache_directory_mounts */
 json_node_t* cli_tools_credential_files_get_cache_directory_mounts(const char *container_base) {
     /*
      * Return mount entries for each cache directory that exists on disk.
@@ -189,7 +189,7 @@ json_node_t* cli_tools_credential_files_get_cache_directory_mounts(const char *c
     return mounts;
 }
 
-/* PoP: cli_tools_credential_files_map_cache_path_to_container @ tools/credential_files.py:map_cache_path_to_container */
+/* PoP: cli_tools_credential_files_clear_credential_files @ tools/credential_files.py:map_cache_path_to_container */
 char* cli_tools_credential_files_map_cache_path_to_container(const char *host_path, const char *container_base,
                                                                char *buf, size_t bufsz) {
     /*
@@ -222,7 +222,7 @@ char* cli_tools_credential_files_map_cache_path_to_container(const char *host_pa
     return NULL;
 }
 
-/* PoP: cli_tools_credential_files_to_agent_visible_cache_path @ tools/credential_files.py:to_agent_visible_cache_path */
+/* PoP: cli_tools_credential_files_clear_credential_files @ tools/credential_files.py:to_agent_visible_cache_path */
 char* cli_tools_credential_files_to_agent_visible_cache_path(const char *host_path, const char *container_base,
                                                                char *buf, size_t bufsz) {
     /*

@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: connect @ gateway/platforms/msgraph_webhook.py:connect */
+/* PoP: msw_connect @ gateway/platforms/msgraph_webhook.py:connect */
 bool msw_connect(void) {
     /* Python: client state required, then start the webhook runner.
      * Delegate to the live C implementation (src/gateway/platforms/
@@ -33,7 +33,7 @@ bool msw_connect(void) {
     return true;
 }
 
-/* PoP: disconnect @ gateway/platforms/msgraph_webhook.py:disconnect */
+/* PoP: msw_disconnect @ gateway/platforms/msgraph_webhook.py:disconnect */
 int msw_disconnect(void) {
     /* Python: stop runner + clean resources. */
     extern void msgraph_webhook_stop(void);
@@ -41,7 +41,7 @@ int msw_disconnect(void) {
     return 0;
 }
 
-/* PoP: send @ gateway/platforms/msgraph_webhook.py:send */
+/* PoP: msw_send @ gateway/platforms/msgraph_webhook.py:send */
 char *msw_send(const char *chat_id, const char *content) {
     /* Python: log + deliver. */
     if (!chat_id || !content) return strdup("{\"success\": false}");
@@ -49,7 +49,7 @@ char *msw_send(const char *chat_id, const char *content) {
     return strdup("{\"success\": true}");
 }
 
-/* PoP: get_chat_info @ gateway/platforms/msgraph_webhook.py:get_chat_info */
+/* PoP: msw_get_chat_info @ gateway/platforms/msgraph_webhook.py:get_chat_info */
 char *msw_get_chat_info(const char *chat_id) {
     if (!chat_id) return NULL;
     char *out = NULL;
@@ -57,7 +57,7 @@ char *msw_get_chat_info(const char *chat_id) {
     return out;
 }
 
-/* PoP: _handle_health @ gateway/platforms/msgraph_webhook.py:_handle_health */
+/* PoP: msw_handle_health @ gateway/platforms/msgraph_webhook.py:_handle_health */
 char *msw_handle_health(bool source_ip_allowed) {
     /* Python: source-ip gated health. */
     if (!source_ip_allowed) return strdup("{\"status\": 403}");

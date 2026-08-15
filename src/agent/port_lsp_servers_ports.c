@@ -63,7 +63,7 @@ static char *root_or_workspace(const char *file_path, const char *workspace,
     return strdup(workspace);
 }
 
-/* PoP: _resolve_override @ agent/lsp/servers.py:_resolve_override */
+/* PoP: lsv_resolve_override @ agent/lsp/servers.py:_resolve_override */
 char *lsv_resolve_override(const char *overrides_json, const char *server_id) {
     /* Python: config-pinned binary path. */
     if (!overrides_json || !server_id) return NULL;
@@ -83,7 +83,7 @@ char *lsv_resolve_override(const char *overrides_json, const char *server_id) {
     return NULL;
 }
 
-/* PoP: _spawn_terraform_ls @ agent/lsp/servers.py:_spawn_terraform_ls */
+/* PoP: lsv_spawn_terraform_ls @ agent/lsp/servers.py:_spawn_terraform_ls */
 char *lsv_spawn_terraform_ls(const char *override_path) {
     /* Python: terraform-ls is heavy to auto-install; require present. */
     char *bin = override_path ? strdup(override_path) : which("terraform-ls");
@@ -94,7 +94,7 @@ char *lsv_spawn_terraform_ls(const char *override_path) {
     return out;
 }
 
-/* PoP: _spawn_dart @ agent/lsp/servers.py:_spawn_dart */
+/* PoP: lsv_spawn_dart @ agent/lsp/servers.py:_spawn_dart */
 char *lsv_spawn_dart(const char *override_path) {
     char *bin = override_path ? strdup(override_path) : which("dart");
     if (!bin) return NULL;
@@ -104,7 +104,7 @@ char *lsv_spawn_dart(const char *override_path) {
     return out;
 }
 
-/* PoP: _spawn_haskell_ls @ agent/lsp/servers.py:_spawn_haskell_ls */
+/* PoP: lsv_spawn_haskell_ls @ agent/lsp/servers.py:_spawn_haskell_ls */
 char *lsv_spawn_haskell_ls(const char *override_path) {
     char *bin = override_path ? strdup(override_path) : which("haskell-language-server-wrapper");
     if (!bin) {
@@ -117,7 +117,7 @@ char *lsv_spawn_haskell_ls(const char *override_path) {
     return out;
 }
 
-/* PoP: _spawn_julia @ agent/lsp/servers.py:_spawn_julia */
+/* PoP: lsv_spawn_julia @ agent/lsp/servers.py:_spawn_julia */
 char *lsv_spawn_julia(const char *override_path) {
     char *bin = override_path ? strdup(override_path) : which("julia");
     if (!bin) return NULL;
@@ -128,7 +128,7 @@ char *lsv_spawn_julia(const char *override_path) {
     return out;
 }
 
-/* PoP: _spawn_clojure_lsp @ agent/lsp/servers.py:_spawn_clojure_lsp */
+/* PoP: lsv_spawn_clojure_lsp @ agent/lsp/servers.py:_spawn_clojure_lsp */
 char *lsv_spawn_clojure_lsp(const char *override_path) {
     char *bin = override_path ? strdup(override_path) : which("clojure-lsp");
     if (!bin) return NULL;
@@ -138,7 +138,7 @@ char *lsv_spawn_clojure_lsp(const char *override_path) {
     return out;
 }
 
-/* PoP: _spawn_nixd @ agent/lsp/servers.py:_spawn_nixd */
+/* PoP: lsv_spawn_nixd @ agent/lsp/servers.py:_spawn_nixd */
 char *lsv_spawn_nixd(const char *override_path) {
     char *bin = override_path ? strdup(override_path) : which("nixd");
     if (!bin) return NULL;
@@ -148,7 +148,7 @@ char *lsv_spawn_nixd(const char *override_path) {
     return out;
 }
 
-/* PoP: _spawn_zls @ agent/lsp/servers.py:_spawn_zls */
+/* PoP: lsv_spawn_zls @ agent/lsp/servers.py:_spawn_zls */
 char *lsv_spawn_zls(const char *override_path) {
     char *bin = override_path ? strdup(override_path) : which("zls");
     if (!bin) return NULL;
@@ -158,7 +158,7 @@ char *lsv_spawn_zls(const char *override_path) {
     return out;
 }
 
-/* PoP: _spawn_gleam @ agent/lsp/servers.py:_spawn_gleam */
+/* PoP: lsv_spawn_gleam @ agent/lsp/servers.py:_spawn_gleam */
 char *lsv_spawn_gleam(const char *override_path) {
     char *bin = override_path ? strdup(override_path) : which("gleam");
     if (!bin) return NULL;
@@ -168,7 +168,7 @@ char *lsv_spawn_gleam(const char *override_path) {
     return out;
 }
 
-/* PoP: _spawn_elixir_ls @ agent/lsp/servers.py:_spawn_elixir_ls */
+/* PoP: lsv_spawn_elixir_ls @ agent/lsp/servers.py:_spawn_elixir_ls */
 char *lsv_spawn_elixir_ls(const char *override_path) {
     char *bin = override_path ? strdup(override_path) : which("elixir-ls");
     if (!bin) {
@@ -181,7 +181,7 @@ char *lsv_spawn_elixir_ls(const char *override_path) {
     return out;
 }
 
-/* PoP: _spawn_prisma @ agent/lsp/servers.py:_spawn_prisma */
+/* PoP: lsv_spawn_prisma @ agent/lsp/servers.py:_spawn_prisma */
 char *lsv_spawn_prisma(const char *override_path) {
     char *bin = override_path ? strdup(override_path) : which("prisma-language-server");
     if (!bin) return NULL;
@@ -191,7 +191,7 @@ char *lsv_spawn_prisma(const char *override_path) {
     return out;
 }
 
-/* PoP: _spawn_kotlin_ls @ agent/lsp/servers.py:_spawn_kotlin_ls */
+/* PoP: lsv_spawn_kotlin_ls @ agent/lsp/servers.py:_spawn_kotlin_ls */
 char *lsv_spawn_kotlin_ls(const char *override_path) {
     char *bin = override_path ? strdup(override_path) : which("kotlin-language-server");
     if (!bin) return NULL;
@@ -201,7 +201,7 @@ char *lsv_spawn_kotlin_ls(const char *override_path) {
     return out;
 }
 
-/* PoP: _spawn_jdtls @ agent/lsp/servers.py:_spawn_jdtls */
+/* PoP: lsv_spawn_jdtls @ agent/lsp/servers.py:_spawn_jdtls */
 char *lsv_spawn_jdtls(const char *override_path) {
     /* Python: complex install — wrapper script required. */
     char *bin = override_path ? strdup(override_path) : which("jdtls");
@@ -212,7 +212,7 @@ char *lsv_spawn_jdtls(const char *override_path) {
     return out;
 }
 
-/* PoP: _spawn_vue @ agent/lsp/servers.py:_spawn_vue */
+/* PoP: lsv_spawn_vue @ agent/lsp/servers.py:_spawn_vue */
 char *lsv_spawn_vue(const char *override_path) {
     char *bin = override_path ? strdup(override_path) : which("vue-language-server");
     if (!bin) {
@@ -225,7 +225,7 @@ char *lsv_spawn_vue(const char *override_path) {
     return out;
 }
 
-/* PoP: _spawn_svelte @ agent/lsp/servers.py:_spawn_svelte */
+/* PoP: lsv_spawn_svelte @ agent/lsp/servers.py:_spawn_svelte */
 char *lsv_spawn_svelte(const char *override_path) {
     char *bin = override_path ? strdup(override_path) : which("svelteserver");
     if (!bin) {
@@ -238,7 +238,7 @@ char *lsv_spawn_svelte(const char *override_path) {
     return out;
 }
 
-/* PoP: _spawn_astro @ agent/lsp/servers.py:_spawn_astro */
+/* PoP: lsv_spawn_astro @ agent/lsp/servers.py:_spawn_astro */
 char *lsv_spawn_astro(const char *override_path) {
     char *bin = override_path ? strdup(override_path) : which("astro-ls");
     if (!bin) {
@@ -251,7 +251,7 @@ char *lsv_spawn_astro(const char *override_path) {
     return out;
 }
 
-/* PoP: _find_pses_bundle @ agent/lsp/servers.py:_find_pses_bundle */
+/* PoP: lsv_find_pses_bundle @ agent/lsp/servers.py:_find_pses_bundle */
 char *lsv_find_pses_bundle(const char *hermes_home) {
     /* Python: PSES GitHub release zip — no auto-install recipe. */
     if (!hermes_home) return NULL;
@@ -260,7 +260,7 @@ char *lsv_find_pses_bundle(const char *hermes_home) {
     return out;
 }
 
-/* PoP: _spawn_powershell_es @ agent/lsp/servers.py:_spawn_powershell_es */
+/* PoP: lsv_spawn_powershell_es @ agent/lsp/servers.py:_spawn_powershell_es */
 char *lsv_spawn_powershell_es(const char *pwsh_path, const char *bundle_dir) {
     /* Python: bootstrap script over stdio. */
     if (!pwsh_path || !bundle_dir) return NULL;
@@ -270,7 +270,7 @@ char *lsv_spawn_powershell_es(const char *pwsh_path, const char *bundle_dir) {
     return out;
 }
 
-/* PoP: hermes_lsp_session_dir @ agent/lsp/servers.py:hermes_lsp_session_dir */
+/* PoP: lsv_hermes_lsp_session_dir @ agent/lsp/servers.py:hermes_lsp_session_dir */
 char *lsv_hermes_lsp_session_dir(const char *hermes_home) {
     /* Python: $HERMES_HOME or ~/.hermes + /lsp-sessions, created. */
     char *out = NULL;
@@ -278,134 +278,134 @@ char *lsv_hermes_lsp_session_dir(const char *hermes_home) {
     return out;
 }
 
-/* PoP: _root_python @ agent/lsp/servers.py:_root_python */
+/* PoP: lsv_root_python @ agent/lsp/servers.py:_root_python */
 char *lsv_root_python(const char *file_path, const char *workspace) {
     return root_or_workspace(file_path, workspace,
         "pyproject.toml,setup.py,setup.cfg,requirements.txt,Pipfile,pyrightconfig.json", NULL, NULL);
 }
 
-/* PoP: _root_typescript @ agent/lsp/servers.py:_root_typescript */
+/* PoP: lsv_root_typescript @ agent/lsp/servers.py:_root_typescript */
 char *lsv_root_typescript(const char *file_path, const char *workspace) {
     return root_or_workspace(file_path, workspace,
         "package-lock.json,bun.lockb,bun.lock,yarn.lock,pnpm-lock.yaml,tsconfig.json", NULL, NULL);
 }
 
-/* PoP: _root_go @ agent/lsp/servers.py:_root_go */
+/* PoP: lsv_root_go @ agent/lsp/servers.py:_root_go */
 char *lsv_root_go(const char *file_path, const char *workspace) {
     return root_or_workspace(file_path, workspace, "go.work,go.mod,go.sum", NULL, NULL);
 }
 
-/* PoP: _root_rust @ agent/lsp/servers.py:_root_rust */
+/* PoP: lsv_root_rust @ agent/lsp/servers.py:_root_rust */
 char *lsv_root_rust(const char *file_path, const char *workspace) {
     return root_or_workspace(file_path, workspace, "Cargo.toml,Cargo.lock", NULL, NULL);
 }
 
-/* PoP: _root_ruby @ agent/lsp/servers.py:_root_ruby */
+/* PoP: lsv_root_ruby @ agent/lsp/servers.py:_root_ruby */
 char *lsv_root_ruby(const char *file_path, const char *workspace) {
     return root_or_workspace(file_path, workspace, "Gemfile", NULL, NULL);
 }
 
-/* PoP: _root_clangd @ agent/lsp/servers.py:_root_clangd */
+/* PoP: lsv_root_clangd @ agent/lsp/servers.py:_root_clangd */
 char *lsv_root_clangd(const char *file_path, const char *workspace) {
     return root_or_workspace(file_path, workspace,
         "compile_commands.json,compile_flags.txt,.clangd", NULL, NULL);
 }
 
-/* PoP: _root_bash @ agent/lsp/servers.py:_root_bash */
+/* PoP: lsv_root_bash @ agent/lsp/servers.py:_root_bash */
 char *lsv_root_bash(const char *file_path, const char *workspace) {
     (void)file_path;
     return workspace ? strdup(workspace) : NULL;
 }
 
-/* PoP: _root_yaml @ agent/lsp/servers.py:_root_yaml */
+/* PoP: lsv_root_yaml @ agent/lsp/servers.py:_root_yaml */
 char *lsv_root_yaml(const char *file_path, const char *workspace) {
     (void)file_path;
     return workspace ? strdup(workspace) : NULL;
 }
 
-/* PoP: _root_lua @ agent/lsp/servers.py:_root_lua */
+/* PoP: lsv_root_lua @ agent/lsp/servers.py:_root_lua */
 char *lsv_root_lua(const char *file_path, const char *workspace) {
     return root_or_workspace(file_path, workspace,
         ".luarc.json,.luarc.jsonc,.luacheckrc,.stylua.toml,stylua.toml,selene.toml,selene.toml", NULL, NULL);
 }
 
-/* PoP: _root_php @ agent/lsp/servers.py:_root_php */
+/* PoP: lsv_root_php @ agent/lsp/servers.py:_root_php */
 char *lsv_root_php(const char *file_path, const char *workspace) {
     return root_or_workspace(file_path, workspace, "composer.json,composer.lock,.php-version", NULL, NULL);
 }
 
-/* PoP: _root_ocaml @ agent/lsp/servers.py:_root_ocaml */
+/* PoP: lsv_root_ocaml @ agent/lsp/servers.py:_root_ocaml */
 char *lsv_root_ocaml(const char *file_path, const char *workspace) {
     return root_or_workspace(file_path, workspace, "dune-project,dune-workspace,.merlin,opam", NULL, NULL);
 }
 
-/* PoP: _root_docker @ agent/lsp/servers.py:_root_docker */
+/* PoP: lsv_root_docker @ agent/lsp/servers.py:_root_docker */
 char *lsv_root_docker(const char *file_path, const char *workspace) {
     (void)file_path;
     return workspace ? strdup(workspace) : NULL;
 }
 
-/* PoP: _root_terraform @ agent/lsp/servers.py:_root_terraform */
+/* PoP: lsv_root_terraform @ agent/lsp/servers.py:_root_terraform */
 char *lsv_root_terraform(const char *file_path, const char *workspace) {
     return root_or_workspace(file_path, workspace, ".terraform.lock.hcl,terraform.tfstate", NULL, NULL);
 }
 
-/* PoP: _root_dart @ agent/lsp/servers.py:_root_dart */
+/* PoP: lsv_root_dart @ agent/lsp/servers.py:_root_dart */
 char *lsv_root_dart(const char *file_path, const char *workspace) {
     return root_or_workspace(file_path, workspace, "pubspec.yaml,analysis_options.yaml", NULL, NULL);
 }
 
-/* PoP: _root_haskell @ agent/lsp/servers.py:_root_haskell */
+/* PoP: lsv_root_haskell @ agent/lsp/servers.py:_root_haskell */
 char *lsv_root_haskell(const char *file_path, const char *workspace) {
     return root_or_workspace(file_path, workspace, "stack.yaml,cabal.project,hie.yaml", NULL, NULL);
 }
 
-/* PoP: _root_julia @ agent/lsp/servers.py:_root_julia */
+/* PoP: lsv_root_julia @ agent/lsp/servers.py:_root_julia */
 char *lsv_root_julia(const char *file_path, const char *workspace) {
     return root_or_workspace(file_path, workspace, "Project.toml,Manifest.toml", NULL, NULL);
 }
 
-/* PoP: _root_clojure @ agent/lsp/servers.py:_root_clojure */
+/* PoP: lsv_root_clojure @ agent/lsp/servers.py:_root_clojure */
 char *lsv_root_clojure(const char *file_path, const char *workspace) {
     return root_or_workspace(file_path, workspace,
         "deps.edn,project.clj,shadow-cljs.edn,bb.edn,build.boot", NULL, NULL);
 }
 
-/* PoP: _root_nix @ agent/lsp/servers.py:_root_nix */
+/* PoP: lsv_root_nix @ agent/lsp/servers.py:_root_nix */
 char *lsv_root_nix(const char *file_path, const char *workspace) {
     char *found = root_or_workspace(file_path, workspace, "flake.nix", NULL, NULL);
     if (found) return found;
     return workspace ? strdup(workspace) : NULL;
 }
 
-/* PoP: _root_zig @ agent/lsp/servers.py:_root_zig */
+/* PoP: lsv_root_zig @ agent/lsp/servers.py:_root_zig */
 char *lsv_root_zig(const char *file_path, const char *workspace) {
     return root_or_workspace(file_path, workspace, "build.zig", NULL, NULL);
 }
 
-/* PoP: _root_elixir @ agent/lsp/servers.py:_root_elixir */
+/* PoP: lsv_root_elixir @ agent/lsp/servers.py:_root_elixir */
 char *lsv_root_elixir(const char *file_path, const char *workspace) {
     return root_or_workspace(file_path, workspace, "mix.exs,mix.lock", NULL, NULL);
 }
 
-/* PoP: _root_prisma @ agent/lsp/servers.py:_root_prisma */
+/* PoP: lsv_root_prisma @ agent/lsp/servers.py:_root_prisma */
 char *lsv_root_prisma(const char *file_path, const char *workspace) {
     return root_or_workspace(file_path, workspace, "schema.prisma,prisma/schema.prisma", NULL, NULL);
 }
 
-/* PoP: _root_kotlin @ agent/lsp/servers.py:_root_kotlin */
+/* PoP: lsv_root_kotlin @ agent/lsp/servers.py:_root_kotlin */
 char *lsv_root_kotlin(const char *file_path, const char *workspace) {
     return root_or_workspace(file_path, workspace,
         "settings.gradle,settings.gradle.kts,build.gradle,build.gradle.kts,pom.xml", NULL, NULL);
 }
 
-/* PoP: _root_java @ agent/lsp/servers.py:_root_java */
+/* PoP: lsv_root_java @ agent/lsp/servers.py:_root_java */
 char *lsv_root_java(const char *file_path, const char *workspace) {
     return root_or_workspace(file_path, workspace,
         "pom.xml,build.gradle,build.gradle.kts,.project,.classpath,settings.gradle", NULL, NULL);
 }
 
-/* PoP: _root_powershell @ agent/lsp/servers.py:_root_powershell */
+/* PoP: lsv_root_powershell @ agent/lsp/servers.py:_root_powershell */
 char *lsv_root_powershell(const char *file_path, const char *workspace) {
     /* Python: PSScriptAnalyzer settings or git root. */
     char *found = root_or_workspace(file_path, workspace, "PSScriptAnalyzerSettings.psd1", NULL, NULL);
@@ -413,7 +413,7 @@ char *lsv_root_powershell(const char *file_path, const char *workspace) {
     return workspace ? strdup(workspace) : NULL;
 }
 
-/* PoP: find_server_for_file @ agent/lsp/servers.py:find_server_for_file */
+/* PoP: lsv_find_server_for_file @ agent/lsp/servers.py:find_server_for_file */
 char *lsv_find_server_for_file(const char *file_path) {
     /* Python: first registry entry matching the path. */
     if (!file_path) return NULL;
@@ -437,7 +437,7 @@ char *lsv_find_server_for_file(const char *file_path) {
     return NULL;
 }
 
-/* PoP: language_id_for @ agent/lsp/servers.py:language_id_for */
+/* PoP: lsv_language_id_for @ agent/lsp/servers.py:language_id_for */
 char *lsv_language_id_for(const char *path) {
     /* Python: LANGUAGE_BY_EXT or plaintext. */
     if (!path) return strdup("plaintext");

@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: cli_tools_debug_helpers_get_session_info @ tools/debug_helpers.py:get_session_info */
+/* PoP: get_debug_session_info @ tools/debug_helpers.py:get_session_info */
 
 /* Port of Python tools/debug_helpers.py:get_session_info */
 /* Return a summary dict suitable for returning from get_debug_session_info(). */

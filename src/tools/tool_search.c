@@ -59,7 +59,7 @@ int tool_search_estimate_tokens(const char *schema_json) {
  *  Tokenization
  * ═════════════════════════════════════════════════════════════════════ */
 
-/* PoP: tool_search_tokenize @ tools/tool_search.py:_tokenize */
+/* PoP: _tokenize @ tools/tool_search.py:_tokenize */
 /* Port of Python: _tokenize() — extract lowercase alphanumeric tokens */
 int tool_search_tokenize(const char *text, char tokens[][64], int max_tokens) {
     if (!text || max_tokens <= 0) return 0;
@@ -114,7 +114,7 @@ void tool_search_entry_text(const char *name, const char *description,
 }
 
 /* Classify tool source by name — Port of Python: _classify_source() */
-/* PoP: _classify_source @ tools/tool_search.py:_classify_source */
+/* PoP: classify_source @ tools/tool_search.py:_classify_source */
 static catalog_source_t classify_source(const char *name, char *source_name, size_t sn_size) {
     if (!name) return CATALOG_SOURCE_OTHER;
     tool_t *t = registry_find(name);
@@ -132,7 +132,7 @@ static catalog_source_t classify_source(const char *name, char *source_name, siz
     return CATALOG_SOURCE_OTHER;
 }
 
-/* PoP: tool_search_build_catalog @ tools/tool_search.py:build_catalog */
+/* PoP: build_catalog @ tools/tool_search.py:build_catalog */
 /* Port of Python: build_catalog() */
 int tool_search_build_catalog(const char *tool_schemas[], int schema_count,
                               tool_catalog_t *catalog) {
@@ -197,7 +197,7 @@ int tool_search_build_catalog(const char *tool_schemas[], int schema_count,
  *  BM25 scoring
  * ═════════════════════════════════════════════════════════════════════ */
 
-/* PoP: tool_search_bm25_score @ tools/tool_search.py:_bm25_score */
+/* PoP: _bm25_score @ tools/tool_search.py:_bm25_score */
 /* Port of Python: _bm25_score() */
 double tool_search_bm25_score(const char *query_tokens[], int query_count,
                               const catalog_entry_t *entry,
@@ -331,7 +331,7 @@ int tool_search_query(const tool_catalog_t *catalog, const char *query,
  *  Threshold gate
  * ═════════════════════════════════════════════════════════════════════ */
 
-/* PoP: tool_search_should_activate @ tools/tool_search.py:should_activate */
+/* PoP: should_activate @ tools/tool_search.py:should_activate */
 /* Port of Python: should_activate() */
 bool tool_search_should_activate(const tool_search_config_t *config,
                                  int deferrable_tokens,
@@ -733,7 +733,7 @@ void tool_search_catalog_free(tool_catalog_t *catalog) {
  *  Listing budget + helpers
  * ═════════════════════════════════════════════════════════════════════ */
 
-/* PoP: tool_search_listing_token_budget @ tools/tool_search.py:listing_token_budget */
+/* PoP: listing_token_budget @ tools/tool_search.py:listing_token_budget */
 /* Port of Python: listing_token_budget() — min(listing_max_tokens, pct% of context) */
 int tool_search_listing_token_budget(const tool_search_config_t *config,
                                      int context_length) {
@@ -750,7 +750,7 @@ int tool_search_listing_token_budget(const tool_search_config_t *config,
     return result;
 }
 
-/* PoP: tool_search_short_desc @ tools/tool_search.py:_short_desc */
+/* PoP: _short_desc @ tools/tool_search.py:_short_desc */
 /* Port of Python: _short_desc() — first sentence, clipped to max_chars */
 void tool_search_short_desc(const char *description, int max_chars,
                             char *out, size_t out_size) {
@@ -815,7 +815,7 @@ void tool_search_short_desc(const char *description, int max_chars,
     snprintf(out, out_size, "%s", trunc);
 }
 
-/* PoP: tool_search_listing_group_label @ tools/tool_search.py:_listing_group_label */
+/* PoP: _listing_group_label @ tools/tool_search.py:_listing_group_label */
 /* Port of Python: _listing_group_label() — mcp-foo → foo */
 void tool_search_listing_group_label(const char *source_name,
                                      char *out, size_t out_size) {

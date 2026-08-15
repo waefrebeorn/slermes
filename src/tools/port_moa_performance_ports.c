@@ -23,7 +23,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: to_dict @ tools/moa_performance.py:to_dict */
+/* PoP: moa_to_dict @ tools/moa_performance.py:to_dict */
 char *moa_to_dict(const char *project_id, const char *project_name) {
     char *out = NULL;
     asprintf(&out, "{\"project_id\": \"%s\", \"project_name\": \"%s\"}",
@@ -31,13 +31,13 @@ char *moa_to_dict(const char *project_id, const char *project_name) {
     return out;
 }
 
-/* PoP: from_dict @ tools/moa_performance.py:from_dict */
+/* PoP: moa_from_dict @ tools/moa_performance.py:from_dict */
 char *moa_from_dict(const char *data_json) {
     if (!data_json) return strdup("{}");
     return strdup(data_json);
 }
 
-/* PoP: __init__ @ tools/moa_performance.py:__init__ */
+/* PoP: moa_cache_init @ tools/moa_performance.py:__init__ */
 char *moa_cache_init(const char *base_path) {
     /* Python: ~/.hermes cache path default. */
     if (base_path) return strdup(base_path);
@@ -46,7 +46,7 @@ char *moa_cache_init(const char *base_path) {
     return out;
 }
 
-/* PoP: get @ tools/moa_performance.py:get */
+/* PoP: moa_cache_get @ tools/moa_performance.py:get */
 char *moa_cache_get(const char *query, const char *intent, const char *project_id) {
     /* Python: cached research when not expired. */
     if (!query) return NULL;
@@ -54,7 +54,7 @@ char *moa_cache_get(const char *query, const char *intent, const char *project_i
     return NULL;
 }
 
-/* PoP: set @ tools/moa_performance.py:set */
+/* PoP: moa_cache_set @ tools/moa_performance.py:set */
 int moa_cache_set(const char *query, const char *intent, const char *project_id, const char *results_json) {
     /* Python: sqlite INSERT with TTL — REAL fs-backed cache write. */
     if (!query || !results_json) return -1;

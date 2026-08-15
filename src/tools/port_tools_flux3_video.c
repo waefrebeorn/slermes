@@ -18,7 +18,7 @@
 #include <string.h>
 #include <ctype.h>
 
-/* PoP: _looks_like_local_path @ tools/flux3_video_tool.py:_looks_like_local_path */
+/* PoP: f3_looks_like_local_path @ tools/flux3_video_tool.py:_looks_like_local_path */
 bool f3_looks_like_local_path(const char *value)
 {
     if (!value) return false;
@@ -55,7 +55,7 @@ bool f3_looks_like_local_path(const char *value)
     return false;
 }
 
-/* PoP: _display_path @ tools/flux3_video_tool.py:_display_path */
+/* PoP: f3_display_path @ tools/flux3_video_tool.py:_display_path */
 char *f3_display_path(const char *path)
 {
     if (!path) return NULL;
@@ -74,7 +74,7 @@ char *f3_display_path(const char *path)
     return out;
 }
 
-/* PoP: _poll_is_finished @ tools/flux3_video_tool.py:_poll_is_finished */
+/* PoP: f3_poll_is_finished @ tools/flux3_video_tool.py:_poll_is_finished */
 bool f3_poll_is_finished(const char *raw_json)
 {
     if (!raw_json || !*raw_json) return true; /* unreadable -> finished */
@@ -105,7 +105,7 @@ bool f3_poll_is_finished(const char *raw_json)
     return false;
 }
 
-/* PoP: _retry_after_seconds @ tools/flux3_video_tool.py:_retry_after_seconds */
+/* PoP: f3_retry_after_seconds @ tools/flux3_video_tool.py:_retry_after_seconds */
 double f3_retry_after_seconds(const char *raw_json)
 {
     if (!raw_json || !*raw_json) return -1.0;
@@ -136,7 +136,7 @@ double f3_retry_after_seconds(const char *raw_json)
     return value;
 }
 
-/* PoP: _is_transport_error @ tools/flux3_video_tool.py:_is_transport_error */
+/* PoP: f3_is_transport_error @ tools/flux3_video_tool.py:_is_transport_error */
 bool f3_is_transport_error(const char *raw_json)
 {
     if (!raw_json || !*raw_json) return false;
@@ -148,7 +148,7 @@ bool f3_is_transport_error(const char *raw_json)
     return is_te;
 }
 
-/* PoP: _without_media @ tools/flux3_video_tool.py:_without_media */
+/* PoP: f3_without_media @ tools/flux3_video_tool.py:_without_media */
 char *f3_without_media(const char *args_json)
 {
     if (!args_json) return NULL;
@@ -165,7 +165,7 @@ char *f3_without_media(const char *args_json)
     return out;
 }
 
-/* PoP: _submit_args @ tools/flux3_video_tool.py:_submit_args */
+/* PoP: f3_submit_args @ tools/flux3_video_tool.py:_submit_args */
 char *f3_submit_args(const char *args_json, const char *mode)
 {
     if (!args_json || !mode) return NULL;
@@ -188,7 +188,7 @@ char *f3_submit_args(const char *args_json, const char *mode)
     return out;
 }
 
-/* PoP: _error @ tools/flux3_video_tool.py:_error */
+/* PoP: f3_error @ tools/flux3_video_tool.py:_error */
 char *f3_error(const char *message)
 {
     if (!message) return NULL;
@@ -199,7 +199,7 @@ char *f3_error(const char *message)
     return out;
 }
 
-/* PoP: _filename_from_url @ tools/flux3_video_tool.py:_filename_from_url */
+/* PoP: f3_filename_from_url @ tools/flux3_video_tool.py:_filename_from_url */
 char *f3_filename_from_url(const char *url)
 {
     if (!url) return strdup(F3_FALLBACK_FILENAME);
@@ -262,7 +262,7 @@ char *f3_filename_from_url(const char *url)
     return out;
 }
 
-/* PoP: _delivery_lead_in @ tools/flux3_video_tool.py:_delivery_lead_in */
+/* PoP: f3_delivery_lead_in @ tools/flux3_video_tool.py:_delivery_lead_in */
 char *f3_delivery_lead_in(const char *target, bool delivers_as_attachment)
 {
     if (!target) return NULL;
@@ -284,7 +284,7 @@ char *f3_delivery_lead_in(const char *target, bool delivers_as_attachment)
     return out;
 }
 
-/* PoP: _download_read_timeout @ tools/flux3_video_tool.py:_download_read_timeout */
+/* PoP: f3_download_read_timeout @ tools/flux3_video_tool.py:_download_read_timeout */
 double f3_download_read_timeout(double elapsed)
 {
     double left = F3_CALL_BACKSTOP_SECONDS - elapsed - F3_DOWNLOAD_GRACE_SECONDS;

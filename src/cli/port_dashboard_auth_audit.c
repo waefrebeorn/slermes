@@ -34,7 +34,7 @@ typedef struct { const char *k; const char *v; } dash_audit_kv_t;
 /* ================================================================
  *  _resolve_log_path
  * ================================================================ */
-/* PoP: dash_audit_resolve_log_path @ hermes_cli/dashboard_auth/audit.py:_resolve_log_path */
+/* PoP: buffer @ hermes_cli/dashboard_auth/audit.py:_resolve_log_path */
 /* "$SLERMES_HOME/logs/dashboard-auth.log" with the standard fallback:
  * env var wins, else ~/.slermes. Writes into a static buffer (do not
  * free). */
@@ -53,7 +53,7 @@ const char *dash_audit_resolve_log_path(void)
 /* ================================================================
  *  audit_log
  * ================================================================ */
-/* PoP: dash_audit_log @ hermes_cli/dashboard_auth/audit.py:audit_log */
+/* PoP: fields @ hermes_cli/dashboard_auth/audit.py:audit_log */
 /* Append one event to the audit log. Token-like fields (G_REDACTED_FIELDS)
  * are dropped. Missing log directory is created. Write failures are logged
  * at WARNING but never raise — auth must not fail because the logger broke.

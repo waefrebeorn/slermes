@@ -16,7 +16,7 @@
 #include <limits.h>
 #include <sys/stat.h>
 
-/* PoP: _nous_recommended_disk_path @ hermes_cli/models.py:_nous_recommended_disk_path */
+/* PoP: nous_recommended_disk_path @ hermes_cli/models.py:_nous_recommended_disk_path */
 /* Returns malloc'd path to the persisted recommended-models cache JSON. Caller frees. */
 char *nous_recommended_disk_path(void)
 {
@@ -27,7 +27,7 @@ char *nous_recommended_disk_path(void)
     return strdup(out);
 }
 
-/* PoP: _read_nous_recommended_disk @ hermes_cli/models.py:_read_nous_recommended_disk */
+/* PoP: string @ hermes_cli/models.py:_read_nous_recommended_disk */
 /* Reads the disk cache and returns the last-known-good data payload for `base`
  * as a malloc'd JSON string (already JSON-encoded), or NULL. Caller frees. */
 char *read_nous_recommended_disk(const char *base)
@@ -70,7 +70,7 @@ char *read_nous_recommended_disk(const char *base)
     return out; /* malloc'd; caller frees */
 }
 
-/* PoP: _custom_endpoint_fingerprint @ hermes_cli/models.py:_custom_endpoint_fingerprint */
+/* PoP: models_custom_endpoint_fingerprint @ hermes_cli/models.py:_custom_endpoint_fingerprint */
 /* Returns malloc'd fingerprint string. Caller frees. */
 char *models_custom_endpoint_fingerprint(const char *api_key, const char *api_mode, const char *headers_json) {
     /* Simplified: use SHA256 instead of blake2b */
@@ -89,7 +89,7 @@ char *models_custom_endpoint_fingerprint(const char *api_key, const char *api_mo
     return result;
 }
 
-/* PoP: _cache_entry_valid @ hermes_cli/models.py:_cache_entry_valid */
+/* PoP: models_cache_entry_valid @ hermes_cli/models.py:_cache_entry_valid */
 /* Returns 1 if valid, 0 otherwise. entry_json is the cache entry JSON. */
 int models_cache_entry_valid(const char *entry_json, const char *fp) {
     if (!entry_json || !fp) return 0;

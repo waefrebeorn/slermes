@@ -14,12 +14,12 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_skill_manager_tool_validate_frontmatter @ tools/skill_manager_tool.py:_validate_frontmatter */
+/* PoP: tools_skill_manager_tool_validate_frontmatter_p @ tools/skill_manager_tool.py:_validate_frontmatter */
 json_t *tools_skill_manager_tool_validate_frontmatter_p(void) {
     return json_object();
 }
 
-/* PoP: tools_skill_manager_tool_attach_lint_findings @ tools/skill_manager_tool.py:_attach_lint_findings */
+/* PoP: tools_skill_manager_tool_attach_lint_findings_p @ tools/skill_manager_tool.py:_attach_lint_findings */
 json_t *tools_skill_manager_tool_attach_lint_findings_p(void) {
     return json_object();
 }

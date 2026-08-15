@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_working_diff_untracked_files @ tools/working_diff.py:_untracked_files */
+/* PoP: tools_working_diff_untracked_files_p @ tools/working_diff.py:_untracked_files */
 json_t *tools_working_diff_untracked_files_p(void) {
     return json_object();
 }

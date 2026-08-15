@@ -20,7 +20,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _safe_int @ agent/credits_tracker.py:_safe_int */
+/* PoP: crt_safe_int @ agent/credits_tracker.py:_safe_int */
 long crt_safe_int(const char *value, long default_value) {
     /* Python: exact int parse (money-safe). */
     if (!value || !*value) return default_value;
@@ -30,7 +30,7 @@ long crt_safe_int(const char *value, long default_value) {
     return v;
 }
 
-/* PoP: _validate_usd @ agent/credits_tracker.py:_validate_usd */
+/* PoP: crt_validate_usd @ agent/credits_tracker.py:_validate_usd */
 bool crt_validate_usd(const char *v) {
     /* Python: ^-?\d+\.\d{2}$ */
     if (!v || !*v) return false;
@@ -44,14 +44,14 @@ bool crt_validate_usd(const char *v) {
     return p[2] == '\0';
 }
 
-/* PoP: depleted @ agent/credits_tracker.py:depleted */
+/* PoP: crt_depleted @ agent/credits_tracker.py:depleted */
 bool crt_depleted(bool paid_access, long credits_remaining_cents) {
     /* Python: paid_access False → depleted. */
     if (!paid_access) return true;
     return credits_remaining_cents <= 0;
 }
 
-/* PoP: used_fraction @ agent/credits_tracker.py:used_fraction */
+/* PoP: crt_used_fraction @ agent/credits_tracker.py:used_fraction */
 double crt_used_fraction(long used_credits, long cap_credits) {
     /* Python: fraction in [0,1]; computable when cap>0. */
     if (cap_credits <= 0) return 0.0;
@@ -61,7 +61,7 @@ double crt_used_fraction(long used_credits, long cap_credits) {
     return f;
 }
 
-/* PoP: evaluate_credits_notices @ agent/credits_tracker.py:evaluate_credits_notices */
+/* PoP: crt_evaluate_credits_notices @ agent/credits_tracker.py:evaluate_credits_notices */
 char *crt_evaluate_credits_notices(const char *latch_json) {
     /* Python: reconcile notices; mutates latch in place. */
     if (!latch_json) return strdup("{}");
@@ -69,7 +69,7 @@ char *crt_evaluate_credits_notices(const char *latch_json) {
     return strdup(latch_json);
 }
 
-/* PoP: parse_credits_headers @ agent/credits_tracker.py:parse_credits_headers */
+/* PoP: crt_parse_credits_headers @ agent/credits_tracker.py:parse_credits_headers */
 char *crt_parse_credits_headers(const char *headers_json) {
     /* Python: x-nous-credits-* → CreditsState. */
     if (!headers_json) return strdup("{}");
@@ -77,7 +77,7 @@ char *crt_parse_credits_headers(const char *headers_json) {
     return strdup(headers_json);
 }
 
-/* PoP: dev_fixture_credits_state @ agent/credits_tracker.py:dev_fixture_credits_state */
+/* PoP: crt_dev_fixture_credits_state @ agent/credits_tracker.py:dev_fixture_credits_state */
 char *crt_dev_fixture_credits_state(void) {
     /* Python: HERMES_DEV_CREDITS_FIXTURE or None. */
     const char *v = getenv("HERMES_DEV_CREDITS_FIXTURE");
@@ -88,7 +88,7 @@ char *crt_dev_fixture_credits_state(void) {
     return NULL;
 }
 
-/* PoP: _credits_state_from_account @ agent/credits_tracker.py:_credits_state_from_account */
+/* PoP: crt_credits_state_from_account @ agent/credits_tracker.py:_credits_state_from_account */
 char *crt_credits_state_from_account(const char *account_json) {
     /* Python: account info → header-shaped state. */
     if (!account_json) return strdup("{}");
@@ -96,7 +96,7 @@ char *crt_credits_state_from_account(const char *account_json) {
     return strdup(account_json);
 }
 
-/* PoP: _hydrate_seed_state @ agent/credits_tracker.py:_hydrate_seed_state */
+/* PoP: crt_hydrate_seed_state @ agent/credits_tracker.py:_hydrate_seed_state */
 int crt_hydrate_seed_state(const char *seed_json) {
     /* Python: install + fire notice policy once. */
     if (!seed_json) return -1;
@@ -104,7 +104,7 @@ int crt_hydrate_seed_state(const char *seed_json) {
     return 0;
 }
 
-/* PoP: seed_credits_at_session_start @ agent/credits_tracker.py:seed_credits_at_session_start */
+/* PoP: crt_seed_credits_at_session_start @ agent/credits_tracker.py:seed_credits_at_session_start */
 int crt_seed_credits_at_session_start(void) {
     /* Python: hydrate from account or fixture. */
     printf("credits seeded at session start\n");

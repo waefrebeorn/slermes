@@ -41,7 +41,7 @@ typedef struct cua_mcp_proc {
  * When NULL, the child inherits the current environment. */
 typedef void (*cua_mcp_env_fn)(void);
 
-/* PoP: _open_mcp @ tools/computer_use/doctor.py:_open_mcp */
+/* PoP: failure @ tools/computer_use/doctor.py:_open_mcp */
 
 /* Port of Python _open_mcp: spawn `<binary> mcp` with piped stdio.
  * Returns NULL on spawn failure (errno preserved). */
@@ -109,7 +109,7 @@ cua_mcp_proc_t *cua_mcp_open(const char *binary)
     return p;
 }
 
-/* PoP: _mcp_rpc @ tools/computer_use/doctor.py:_mcp_rpc */
+/* PoP: line @ tools/computer_use/doctor.py:_mcp_rpc */
 
 /* Port of Python _mcp_rpc: write one JSON-RPC request line, read one
  * response line, parse it. On protocol failure returns NULL and fills
@@ -238,7 +238,7 @@ char *cua_mcp_rpc(cua_mcp_proc_t *p, int msg_id, const char *method,
     return line;   /* caller parses JSON; caller frees */
 }
 
-/* PoP: _close_mcp @ tools/computer_use/doctor.py:_close_mcp */
+/* PoP: cua_mcp_close @ tools/computer_use/doctor.py:_close_mcp */
 
 /* Port of Python _close_mcp: close stdin, wait with timeout, kill on
  * timeout. timeout_secs <= 0 means wait indefinitely. */

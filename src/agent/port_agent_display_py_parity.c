@@ -14,22 +14,22 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: agent_display_split_shell_words @ agent/display.py:_split_shell_words */
+/* PoP: agent_display_split_shell_words_p @ agent/display.py:_split_shell_words */
 json_t *agent_display_split_shell_words_p(void) {
     return json_object();
 }
 
-/* PoP: agent_display_split_shell_compound @ agent/display.py:_split_shell_compound */
+/* PoP: agent_display_split_shell_compound_p @ agent/display.py:_split_shell_compound */
 json_t *agent_display_split_shell_compound_p(void) {
     return json_object();
 }
 
-/* PoP: agent_display_enter__ @ agent/display.py:__enter__ */
+/* PoP: agent_display_enter___p @ agent/display.py:__enter__ */
 json_t *agent_display_enter___p(void) {
     return json_object();
 }
 
-/* PoP: agent_display_exit__ @ agent/display.py:__exit__ */
+/* PoP: agent_display_exit___p @ agent/display.py:__exit__ */
 json_t *agent_display_exit___p(void) {
     return json_object();
 }

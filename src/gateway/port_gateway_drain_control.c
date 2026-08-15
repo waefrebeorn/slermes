@@ -74,7 +74,7 @@ static const char *drain_request_path(char *out, size_t outsz, const char *home)
     return out;
 }
 
-/* PoP: gateway_drain_control_write_drain_request @ gateway/drain_control.py:write_drain_request */
+/* PoP: string @ gateway/drain_control.py:write_drain_request */
 /* Returns a malloc'd JSON payload string (caller frees). */
 char *gateway_drain_control_write_drain_request(const char *principal, bool suppress_notification, const char *home)
 {
@@ -121,7 +121,7 @@ static bool marker_epoch_is_stale(const char *body, const char *current_epoch)
     return stale;
 }
 
-/* PoP: gateway_drain_control_read_drain_request @ gateway/drain_control.py:read_drain_request */
+/* PoP: body @ gateway/drain_control.py:read_drain_request */
 /* Returns malloc'd JSON body (possibly "{}") or NULL if absent. Caller frees. */
 char *gateway_drain_control_read_drain_request(const char *home)
 {

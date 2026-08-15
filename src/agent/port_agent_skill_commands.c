@@ -26,7 +26,7 @@ static const char RUNTIME_NOTE[] = "\n\n[Runtime note:";
 static const char BUNDLE_MARKER[] = " skill bundle,";
 static const char BUNDLE_USER_INSTRUCTION[] = "\nUser instruction: ";
 static const char BUNDLE_FIRST_SKILL_BLOCK[] = "\n\n[Loaded as part of the ";
-/* PoP: SKILL_EXCERPT_JOINT @ agent/skill_commands.py:SKILL_EXCERPT_JOINT */
+/* PoP: strip_dup @ agent/skill_commands.py:SKILL_EXCERPT_JOINT */
 static const char SKILL_EXCERPT_JOINT_CH = '\x1e';
 
 /* Duplicate [s, s+len) with Python str.strip() semantics applied. */

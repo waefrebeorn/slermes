@@ -14,37 +14,37 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_gateway_windows_install @ hermes_cli/gateway_windows.py:install */
+/* PoP: hermes_cli_gateway_windows_install_p @ hermes_cli/gateway_windows.py:install */
 json_t *hermes_cli_gateway_windows_install_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_gateway_windows_uninstall @ hermes_cli/gateway_windows.py:uninstall */
+/* PoP: hermes_cli_gateway_windows_uninstall_p @ hermes_cli/gateway_windows.py:uninstall */
 json_t *hermes_cli_gateway_windows_uninstall_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_gateway_windows_is_installed @ hermes_cli/gateway_windows.py:is_installed */
+/* PoP: hermes_cli_gateway_windows_is_installed_p @ hermes_cli/gateway_windows.py:is_installed */
 json_t *hermes_cli_gateway_windows_is_installed_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_gateway_windows_status @ hermes_cli/gateway_windows.py:status */
+/* PoP: hermes_cli_gateway_windows_status_p @ hermes_cli/gateway_windows.py:status */
 json_t *hermes_cli_gateway_windows_status_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_gateway_windows_start @ hermes_cli/gateway_windows.py:start */
+/* PoP: hermes_cli_gateway_windows_start_p @ hermes_cli/gateway_windows.py:start */
 json_t *hermes_cli_gateway_windows_start_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_gateway_windows_stop @ hermes_cli/gateway_windows.py:stop */
+/* PoP: hermes_cli_gateway_windows_stop_p @ hermes_cli/gateway_windows.py:stop */
 json_t *hermes_cli_gateway_windows_stop_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_gateway_windows_restart @ hermes_cli/gateway_windows.py:restart */
+/* PoP: hermes_cli_gateway_windows_restart_p @ hermes_cli/gateway_windows.py:restart */
 json_t *hermes_cli_gateway_windows_restart_p(void) {
     return json_object();
 }

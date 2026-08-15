@@ -22,7 +22,7 @@
 
 /* now_iso is declared in hermes_core_types.h / exposed via the agent
  * timestamp port — used for the manifest updatedAt field. */
-/* PoP: tools_delegation_live_log_u_manifest_path @ agent/verify/environment.py:manifest_path */
+/* PoP: verify_manifest_path @ agent/verify/environment.py:manifest_path */
 char *verify_manifest_path(const char *root)
 {
     if (!root || !*root) return NULL;
@@ -47,7 +47,7 @@ static char *read_file_all(const char *path)
     return buf;
 }
 
-/* PoP: load_manifest @ agent/verify/environment.py:load_manifest */
+/* PoP: verify_load_manifest @ agent/verify/environment.py:load_manifest */
 recipe_t *verify_load_manifest(const char *root)
 {
     char *path = verify_manifest_path(root);
@@ -93,7 +93,7 @@ static int mkdir_p(const char *path)
     return 0;
 }
 
-/* PoP: save_manifest @ agent/verify/environment.py:save_manifest */
+/* PoP: verify_save_manifest @ agent/verify/environment.py:save_manifest */
 char *verify_save_manifest(const char *root, const recipe_t *recipe)
 {
     if (!recipe) return NULL;
@@ -126,7 +126,7 @@ char *verify_save_manifest(const char *root, const recipe_t *recipe)
     return path;
 }
 
-/* PoP: load_or_detect @ agent/verify/environment.py:load_or_detect */
+/* PoP: verify_load_or_detect @ agent/verify/environment.py:load_or_detect */
 recipe_t *verify_load_or_detect(const char *root, char *source_out)
 {
     recipe_t *saved = verify_load_manifest(root);

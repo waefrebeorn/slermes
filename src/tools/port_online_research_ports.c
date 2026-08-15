@@ -20,7 +20,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ tools/online_research.py:__init__ */
+/* PoP: onr_init @ tools/online_research.py:__init__ */
 char *onr_init(long ttl_seconds) {
     if (ttl_seconds <= 0) ttl_seconds = 3600;
     char *out = NULL;
@@ -28,7 +28,7 @@ char *onr_init(long ttl_seconds) {
     return out;
 }
 
-/* PoP: get @ tools/online_research.py:get */
+/* PoP: onr_get @ tools/online_research.py:get */
 char *onr_get(const char *cache_json, const char *query, const char *intent) {
     /* Python: cache hit w/ expiry. */
     if (!cache_json || !query) return NULL;
@@ -37,7 +37,7 @@ char *onr_get(const char *cache_json, const char *query, const char *intent) {
     return NULL;
 }
 
-/* PoP: set @ tools/online_research.py:set */
+/* PoP: onr_set @ tools/online_research.py:set */
 int onr_set(const char *cache_json, const char *summary_json) {
     /* Python: cache store. */
     if (!summary_json) return -1;
@@ -45,7 +45,7 @@ int onr_set(const char *cache_json, const char *summary_json) {
     return 0;
 }
 
-/* PoP: research @ tools/online_research.py:research */
+/* PoP: onr_research @ tools/online_research.py:research */
 char *onr_research(const char *query, const char *intent) {
     /* Python: multi-source research + synthesis. */
     if (!query) return NULL;

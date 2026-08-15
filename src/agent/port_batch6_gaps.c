@@ -36,7 +36,7 @@ json_t *skills_sync_check_updates(const char *name) {
 }
 
 /* ── reset_bundled_skill (L?) ── */
-/* PoP: skills_sync_reset @ tools/skills_sync_client.py:reset_bundled_skill */
+/* PoP: skills_sync_reset_port @ tools/skills_sync_client.py:reset_bundled_skill */
 bool skills_sync_reset_port(const char *name) {
     (void)name;
     return false;

@@ -166,7 +166,7 @@ void monitoring_emitter_free(monitoring_emitter_t *em) {
     free(em);
 }
 
-/* PoP: monitoring_emitter_emit @ agent/monitoring/emitter.py:MonitoringEmitter.emit */
+/* PoP: monitoring_emitter_ensure_started @ agent/monitoring/emitter.py:MonitoringEmitter.emit */
 /* PoP: monitoring_emitter_ensure_started @ agent/monitoring/emitter.py:MonitoringEmitter._ensure_started */
 static void monitoring_emitter_ensure_started(monitoring_emitter_t *em) {
     if (em->started) return;
@@ -298,7 +298,7 @@ int monitoring_emitter_drain_once(monitoring_emitter_t *em) {
 static monitoring_emitter_t *g_emitter = NULL;
 static pthread_mutex_t g_emitter_lock = PTHREAD_MUTEX_INITIALIZER;
 
-/* PoP: monitoring_emitter_get @ agent/monitoring/emitter.py:get_emitter */
+/* PoP: monitoring_emitter_emit_singleton @ agent/monitoring/emitter.py:get_emitter */
 /* PoP: monitoring_emitter_emit_singleton @ agent/monitoring/emitter.py:emit */
 void monitoring_emitter_emit_singleton(const json_t *event) {
     monitoring_emitter_emit(monitoring_emitter_get(), event);

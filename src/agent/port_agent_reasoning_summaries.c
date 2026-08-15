@@ -35,7 +35,7 @@ static int pcs_prev_ends_whitespace(const char *s)
     return pcs_isspace_char(s[len - 1]);
 }
 
-/* PoP: separate_glued_reasoning_blocks @ agent/reasoning_summaries.py:separate_glued_reasoning_blocks */
+/* PoP: heading @ agent/reasoning_summaries.py:separate_glued_reasoning_blocks */
 /* Return *delta*, prefixed with "\n\n" when it glues onto *previous*.
  *
  * A break is inserted when:

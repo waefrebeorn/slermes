@@ -20,7 +20,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _getenv @ gateway/config.py:_getenv */
+/* PoP: gwc_getenv @ gateway/config.py:_getenv */
 char *gwc_getenv(const char *key) {
     /* Python: read env vars through the active profile secret scope. */
     if (!key) return NULL;
@@ -29,7 +29,7 @@ char *gwc_getenv(const char *key) {
     return NULL;
 }
 
-/* PoP: __post_init__ @ gateway/config.py:__post_init__ */
+/* PoP: gwc_post_init @ gateway/config.py:__post_init__ */
 char *gwc_post_init(const char *config_json) {
     /* Python: coerce systemd_watchdog_seconds. */
     if (!config_json) return strdup("{}");
@@ -37,7 +37,7 @@ char *gwc_post_init(const char *config_json) {
     return strdup(config_json);
 }
 
-/* PoP: to_dict @ gateway/config.py:to_dict */
+/* PoP: gwc_binding_to_dict @ gateway/config.py:to_dict */
 char *gwc_binding_to_dict(const char *platform, const char *chat_id) {
     /* Python: binding → {"platform":..,"chat_id":..}. */
     char *out = NULL;
@@ -46,7 +46,7 @@ char *gwc_binding_to_dict(const char *platform, const char *chat_id) {
     return out;
 }
 
-/* PoP: from_dict @ gateway/config.py:from_dict */
+/* PoP: gwc_binding_from_dict @ gateway/config.py:from_dict */
 char *gwc_binding_from_dict(const char *data_json) {
     /* Python: dict → binding. */
     if (!data_json) return strdup("{\"platform\": \"\", \"chat_id\": \"\"}");
@@ -54,7 +54,7 @@ char *gwc_binding_from_dict(const char *data_json) {
     return out ? out : strdup("{\"platform\": \"\", \"chat_id\": \"\"}");
 }
 
-/* PoP: to_dict @ gateway/config.py:to_dict */
+/* PoP: gwc_credential_to_dict @ gateway/config.py:to_dict */
 char *gwc_credential_to_dict(const char *platform, const char *key, const char *value) {
     char *out = NULL;
     asprintf(&out, "{\"platform\": \"%s\", \"key\": \"%s\", \"value\": \"%s\"}",
@@ -62,13 +62,13 @@ char *gwc_credential_to_dict(const char *platform, const char *key, const char *
     return out;
 }
 
-/* PoP: from_dict @ gateway/config.py:from_dict */
+/* PoP: gwc_credential_from_dict @ gateway/config.py:from_dict */
 char *gwc_credential_from_dict(const char *data_json) {
     if (!data_json) return strdup("{}");
     return strdup(data_json);
 }
 
-/* PoP: to_dict @ gateway/config.py:to_dict */
+/* PoP: gwc_home_to_dict @ gateway/config.py:to_dict */
 char *gwc_home_to_dict(const char *platform, const char *chat_id, const char *thread_id) {
     char *out = NULL;
     asprintf(&out, "{\"platform\": \"%s\", \"chat_id\": \"%s\", \"thread_id\": \"%s\"}",
@@ -76,13 +76,13 @@ char *gwc_home_to_dict(const char *platform, const char *chat_id, const char *th
     return out;
 }
 
-/* PoP: from_dict @ gateway/config.py:from_dict */
+/* PoP: gwc_home_from_dict @ gateway/config.py:from_dict */
 char *gwc_home_from_dict(const char *data_json) {
     if (!data_json) return strdup("{}");
     return strdup(data_json);
 }
 
-/* PoP: to_dict @ gateway/config.py:to_dict */
+/* PoP: gwc_forward_to_dict @ gateway/config.py:to_dict */
 char *gwc_forward_to_dict(const char *src_platform, const char *dst_platform) {
     char *out = NULL;
     asprintf(&out, "{\"source_platform\": \"%s\", \"destination_platform\": \"%s\"}",
@@ -90,13 +90,13 @@ char *gwc_forward_to_dict(const char *src_platform, const char *dst_platform) {
     return out;
 }
 
-/* PoP: from_dict @ gateway/config.py:from_dict */
+/* PoP: gwc_forward_from_dict @ gateway/config.py:from_dict */
 char *gwc_forward_from_dict(const char *data_json) {
     if (!data_json) return strdup("{}");
     return strdup(data_json);
 }
 
-/* PoP: to_dict @ gateway/config.py:to_dict */
+/* PoP: gwc_allowlist_to_dict @ gateway/config.py:to_dict */
 char *gwc_allowlist_to_dict(const char *platform, const char *chat_ids_json) {
     char *out = NULL;
     asprintf(&out, "{\"platform\": \"%s\", \"chat_ids\": %s}",
@@ -104,7 +104,7 @@ char *gwc_allowlist_to_dict(const char *platform, const char *chat_ids_json) {
     return out;
 }
 
-/* PoP: from_dict @ gateway/config.py:from_dict */
+/* PoP: gwc_allowlist_from_dict @ gateway/config.py:from_dict */
 char *gwc_allowlist_from_dict(const char *data_json) {
     if (!data_json) return strdup("{}");
     return strdup(data_json);

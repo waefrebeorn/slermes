@@ -14,17 +14,17 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_nous_account_is_paid @ hermes_cli/nous_account.py:is_paid */
+/* PoP: hermes_cli_nous_account_is_paid_p @ hermes_cli/nous_account.py:is_paid */
 json_t *hermes_cli_nous_account_is_paid_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_nous_account_is_free_tier @ hermes_cli/nous_account.py:is_free_tier */
+/* PoP: hermes_cli_nous_account_is_free_tier_p @ hermes_cli/nous_account.py:is_free_tier */
 json_t *hermes_cli_nous_account_is_free_tier_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_nous_account_get_nous_portal_account_info @ hermes_cli/nous_account.py:get_nous_portal_account_info */
+/* PoP: hermes_cli_nous_account_get_nous_portal_account_info_p @ hermes_cli/nous_account.py:get_nous_portal_account_info */
 json_t *hermes_cli_nous_account_get_nous_portal_account_info_p(void) {
     return json_object();
 }

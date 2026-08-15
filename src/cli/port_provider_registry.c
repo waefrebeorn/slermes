@@ -61,7 +61,7 @@ static const char *ENV_OLLAMA[]      = { "OLLAMA_API_KEY", NULL };
 static const char *ENV_AZURE[]       = { "AZURE_FOUNDRY_API_KEY", NULL };
 static const char *ENV_NONE[]        = { NULL };
 
-/* PoP: PROVIDER_REGISTRY @ hermes_cli/auth.py:PROVIDER_REGISTRY */
+/* PoP: provider_registry_get @ hermes_cli/auth.py:PROVIDER_REGISTRY */
 static const catalog_provider_t CATALOG[] = {
     { "nous", "Nous Portal", "oauth_device_code", D_NOUS_PORTAL, D_NOUS_INFER, D_NOUS_CLIENT, D_NOUS_SCOPE, "", ENV_NONE },
     { "openai-codex", "OpenAI Codex", "oauth_external", "", D_CODEX_BASE, "", "", "", ENV_NONE },
@@ -128,7 +128,7 @@ static char *strip_lower(const char *s) {
 }
 
 /* ─── utils.base_url_hostname / base_url_host_matches ──────────────────── */
-/* PoP: base_url_hostname @ utils.py:base_url_hostname */
+/* PoP: provider_base_url_hostname @ utils.py:base_url_hostname */
 char *provider_base_url_hostname(const char *base_url) {
     if (!base_url) return dup_or_empty("");
     /* strip leading/trailing ws */
@@ -169,7 +169,7 @@ char *provider_base_url_hostname(const char *base_url) {
     return out;
 }
 
-/* PoP: base_url_host_matches @ utils.py:base_url_host_matches */
+/* PoP: provider_base_url_host_matches @ utils.py:base_url_host_matches */
 bool provider_base_url_host_matches(const char *base_url, const char *domain) {
     char *host = provider_base_url_hostname(base_url);
     if (!host || !*host) { free(host); return false; }
@@ -189,7 +189,7 @@ bool provider_base_url_host_matches(const char *base_url, const char *domain) {
 }
 
 /* ─── runtime_provider.py pure helpers ────────────────────────────────── */
-/* PoP: _normalize_custom_provider_name @ hermes_cli/runtime_provider.py:_normalize_custom_provider_name */
+/* PoP: provider_normalize_custom_name @ hermes_cli/runtime_provider.py:_normalize_custom_provider_name */
 char *provider_normalize_custom_name(const char *value) {
     char *low = strip_lower(value);
     if (!low) return NULL;
@@ -197,7 +197,7 @@ char *provider_normalize_custom_name(const char *value) {
     return low;
 }
 
-/* PoP: _loopback_hostname @ hermes_cli/runtime_provider.py:_loopback_hostname */
+/* PoP: provider_loopback_hostname @ hermes_cli/runtime_provider.py:_loopback_hostname */
 bool provider_loopback_hostname(const char *host) {
     char *h = strip_lower(host);
     if (!h) return false;
@@ -208,7 +208,7 @@ bool provider_loopback_hostname(const char *host) {
     return ok;
 }
 
-/* PoP: _parse_api_mode @ hermes_cli/runtime_provider.py:_parse_api_mode */
+/* PoP: provider_parse_api_mode @ hermes_cli/runtime_provider.py:_parse_api_mode */
 const char *provider_parse_api_mode(const char *raw) {
     char *m = strip_lower(raw);
     if (!m) return NULL;
@@ -222,7 +222,7 @@ const char *provider_parse_api_mode(const char *raw) {
     return r;
 }
 
-/* PoP: _provider_supports_explicit_api_mode @ hermes_cli/runtime_provider.py:_provider_supports_explicit_api_mode */
+/* PoP: provider_supports_explicit_api_mode @ hermes_cli/runtime_provider.py:_provider_supports_explicit_api_mode */
 bool provider_supports_explicit_api_mode(const char *provider,
                                          const char *configured_provider) {
     char *np = strip_lower(provider);
@@ -260,7 +260,7 @@ static bool ends_with(const char *s, const char *suf) {
     return ls >= lf && strcmp(s + ls - lf, suf) == 0;
 }
 
-/* PoP: _detect_api_mode_for_url @ hermes_cli/runtime_provider.py:_detect_api_mode_for_url */
+/* PoP: provider_detect_api_mode_for_url @ hermes_cli/runtime_provider.py:_detect_api_mode_for_url */
 const char *provider_detect_api_mode_for_url(const char *base_url) {
     char *host = provider_base_url_hostname(base_url);
     const char *r = NULL;
@@ -288,7 +288,7 @@ const char *provider_detect_api_mode_for_url(const char *base_url) {
     return r;
 }
 
-/* PoP: _anthropic_base_url_override_ok @ hermes_cli/runtime_provider.py:_anthropic_base_url_override_ok */
+/* PoP: provider_anthropic_base_url_override_ok @ hermes_cli/runtime_provider.py:_anthropic_base_url_override_ok */
 bool provider_anthropic_base_url_override_ok(const char *base_url) {
     if (!base_url) return false;
     const char *p = base_url; while (*p && isspace((unsigned char)*p)) p++;
@@ -306,7 +306,7 @@ bool provider_anthropic_base_url_override_ok(const char *base_url) {
     return (m && strcmp(m,"anthropic_messages")==0);
 }
 
-/* PoP: _host_derived_api_key @ hermes_cli/runtime_provider.py:_host_derived_api_key */
+/* PoP: provider_host_derived_api_key @ hermes_cli/runtime_provider.py:_host_derived_api_key */
 char *provider_host_derived_api_key(const char *base_url) {
     char *host = provider_base_url_hostname(base_url);
     if (!host || !*host) { free(host); return dup_or_empty(""); }
@@ -358,7 +358,7 @@ char *provider_host_derived_api_key(const char *base_url) {
 
 /* ─── auth.py:resolve_provider alias map (deterministic part) ──────────── */
 struct alias_pair { const char *from; const char *to; };
-/* PoP: agent_pet_generate_imagegen_resolve_provider @ hermes_cli/auth.py:resolve_provider */
+/* PoP: provider_resolve_alias @ hermes_cli/auth.py:resolve_provider */
 static const struct alias_pair ALIASES[] = {
     {"glm","zai"},{"z-ai","zai"},{"z.ai","zai"},{"zhipu","zai"},
     {"google","gemini"},{"google-gemini","gemini"},{"google-ai-studio","gemini"},
@@ -394,7 +394,7 @@ static const struct alias_pair ALIASES[] = {
 };
 static const int ALIASES_N = (int)(sizeof(ALIASES)/sizeof(ALIASES[0]));
 
-/* PoP: resolve_provider @ hermes_cli/auth.py:resolve_provider */
+/* PoP: provider_resolve_alias @ hermes_cli/auth.py:resolve_provider */
 char *provider_resolve_alias(const char *requested) {
     char *norm = strip_lower((requested && *requested) ? requested : "auto");
     if (!norm) return NULL;
@@ -433,7 +433,7 @@ static json_t *pr_load_config(void) {
     return cfg;
 }
 
-/* PoP: _normalize_base_url_for_match @ hermes_cli/runtime_provider.py:_normalize_base_url_for_match */
+/* PoP: provider_normalize_base_url_for_match @ hermes_cli/runtime_provider.py:_normalize_base_url_for_match */
 char *provider_normalize_base_url_for_match(const char *value) {
     if (!value) return dup_or_empty("");
     /* strip whitespace */
@@ -471,7 +471,7 @@ static const char *pr_entry_url(const json_t *entry) {
     return NULL;
 }
 
-/* PoP: find_custom_provider_identity @ hermes_cli/runtime_provider.py:find_custom_provider_identity */
+/* PoP: provider_find_custom_identity_by_url @ hermes_cli/runtime_provider.py:find_custom_provider_identity */
 char *provider_find_custom_identity_by_url(const char *base_url) {
     char *target = provider_normalize_base_url_for_match(base_url);
     if (!target || !*target) { free(target); return NULL; }
@@ -564,7 +564,7 @@ static bool pr_entry_serves_model(const json_t *entry, const char *target) {
     return false;
 }
 
-/* PoP: find_custom_provider_identity_by_model @ hermes_cli/runtime_provider.py:find_custom_provider_identity_by_model */
+/* PoP: provider_find_custom_identity_by_model @ hermes_cli/runtime_provider.py:find_custom_provider_identity_by_model */
 char *provider_find_custom_identity_by_model(const char *model) {
     char *target = strip_lower(model);
     if (!target || !*target) { free(target); return NULL; }
@@ -688,7 +688,7 @@ static bool pr_named_custom_exists(const char *candidate) {
     return found;
 }
 
-/* PoP: canonical_custom_identity @ hermes_cli/runtime_provider.py:canonical_custom_identity */
+/* PoP: provider_canonical_custom_identity @ hermes_cli/runtime_provider.py:canonical_custom_identity */
 char *provider_canonical_custom_identity(const char *base_url,
                                          const char *config_provider,
                                          const char *model) {

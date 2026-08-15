@@ -35,7 +35,7 @@ int cli_gateway_platforms_wecom_callback_check_wecom_callback_requirements(void)
     return result;
 }
 
-/* PoP: cli_gateway_platforms_wecom_callback__normalize_apps @ gateway/platforms/wecom_callback.py:_normalize_apps */
+/* PoP: cli_gateway_platforms_wecom_callback__handle_verify @ gateway/platforms/wecom_callback.py:_normalize_apps */
 json_node_t* cli_gateway_platforms_wecom_callback__normalize_apps(json_node_t *extra) {
     /*
      * Normalize the apps configuration from the extra config dict.
@@ -75,7 +75,7 @@ json_node_t* cli_gateway_platforms_wecom_callback__normalize_apps(json_node_t *e
     return apps;
 }
 
-/* PoP: cli_gateway_platforms_wecom_callback__resolve_app_for_chat @ gateway/platforms/wecom_callback.py:_resolve_app_for_chat */
+/* PoP: cli_gateway_platforms_wecom_callback__handle_verify @ gateway/platforms/wecom_callback.py:_resolve_app_for_chat */
 json_node_t* cli_gateway_platforms_wecom_callback__resolve_app_for_chat(const char *chat_id,
                                                                           json_node_t *user_app_map,
                                                                           json_node_t *apps) {
@@ -109,7 +109,7 @@ json_node_t* cli_gateway_platforms_wecom_callback__resolve_app_for_chat(const ch
 }
 
 /* PoP: cli_gateway_platforms_wecom_callback__handle_verify @ gateway/platforms/wecom_callback.py:_handle_verify */
-/* PoP: _handle_verify @ gateway/platforms/whatsapp_cloud.py:_handle_verify */
+/* PoP: cli_gateway_platforms_wecom_callback__handle_verify @ gateway/platforms/whatsapp_cloud.py:_handle_verify */
 int cli_gateway_platforms_wecom_callback__handle_verify(const char *msg_signature, const char *timestamp,
                                                          const char *nonce, const char *echostr,
                                                          json_node_t *apps, char *buf, size_t bufsz) {

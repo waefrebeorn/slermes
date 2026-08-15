@@ -14,27 +14,27 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_checkpoints_cmd_status @ hermes_cli/checkpoints.py:cmd_status */
+/* PoP: hermes_cli_checkpoints_cmd_status_p @ hermes_cli/checkpoints.py:cmd_status */
 json_t *hermes_cli_checkpoints_cmd_status_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_checkpoints_cmd_list @ hermes_cli/checkpoints.py:cmd_list */
+/* PoP: hermes_cli_checkpoints_cmd_list_p @ hermes_cli/checkpoints.py:cmd_list */
 json_t *hermes_cli_checkpoints_cmd_list_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_checkpoints_cmd_prune @ hermes_cli/checkpoints.py:cmd_prune */
+/* PoP: hermes_cli_checkpoints_cmd_prune_p @ hermes_cli/checkpoints.py:cmd_prune */
 json_t *hermes_cli_checkpoints_cmd_prune_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_checkpoints_cmd_clear @ hermes_cli/checkpoints.py:cmd_clear */
+/* PoP: hermes_cli_checkpoints_cmd_clear_p @ hermes_cli/checkpoints.py:cmd_clear */
 json_t *hermes_cli_checkpoints_cmd_clear_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_checkpoints_register_cli @ hermes_cli/checkpoints.py:register_cli */
+/* PoP: hermes_cli_checkpoints_register_cli_p @ hermes_cli/checkpoints.py:register_cli */
 json_t *hermes_cli_checkpoints_register_cli_p(void) {
     return json_object();
 }

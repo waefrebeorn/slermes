@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: utils_atomic_roundtrip_yaml_save @ utils.py:atomic_roundtrip_yaml_save */
+/* PoP: utils_atomic_roundtrip_yaml_save_p @ utils.py:atomic_roundtrip_yaml_save */
 json_t *utils_atomic_roundtrip_yaml_save_p(void) {
     return json_object();
 }

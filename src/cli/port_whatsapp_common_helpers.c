@@ -16,7 +16,7 @@
 #include "hermes_json.h"
 #include "hermes_logger.h"
 
-/* PoP: _sanitize_outbound_text @ gateway/platforms/whatsapp_common.py:_sanitize_outbound_text */
+/* PoP: whatsapp_common_sanitize_outbound_text @ gateway/platforms/whatsapp_common.py:_sanitize_outbound_text */
 char *whatsapp_common_sanitize_outbound_text(const char *text) {
     if (!text) return strdup("");
     size_t n = strlen(text);
@@ -33,12 +33,12 @@ char *whatsapp_common_sanitize_outbound_text(const char *text) {
     return out;
 }
 
-/* PoP: _effective_reply_prefix @ gateway/platforms/whatsapp_common.py:_effective_reply_prefix */
+/* PoP: whatsapp_common_effective_reply_prefix @ gateway/platforms/whatsapp_common.py:_effective_reply_prefix */
 const char *whatsapp_common_effective_reply_prefix(const char *config_prefix) {
     return config_prefix && config_prefix[0] ? config_prefix : "";
 }
 
-/* PoP: _outgoing_chunk_limit @ gateway/platforms/whatsapp_common.py:_outgoing_chunk_limit */
+/* PoP: whatsapp_common_outgoing_chunk_limit @ gateway/platforms/whatsapp_common.py:_outgoing_chunk_limit */
 /* PoP: whatsapp_common_outgoing_chunk_limit @ gateway/platforms/whatsapp_common.py:_outgoing_chunk_limit */
 int whatsapp_common_outgoing_chunk_limit(int config_limit) {
     if (config_limit <= 0) return 4096;
@@ -46,13 +46,13 @@ int whatsapp_common_outgoing_chunk_limit(int config_limit) {
     return config_limit;
 }
 
-/* PoP: _whatsapp_require_mention @ gateway/platforms/whatsapp_common.py:_whatsapp_require_mention */
+/* PoP: whatsapp_common_require_mention @ gateway/platforms/whatsapp_common.py:_whatsapp_require_mention */
 bool whatsapp_common_require_mention(const char *chat_type) {
     if (!chat_type) return false;
     return strcasecmp(chat_type, "group") == 0 || strcasecmp(chat_type, "supergroup") == 0;
 }
 
-/* PoP: _whatsapp_free_response_chats @ gateway/platforms/whatsapp_common.py:_whatsapp_free_response_chats */
+/* PoP: whatsapp_common_free_response_chats @ gateway/platforms/whatsapp_common.py:_whatsapp_free_response_chats */
 bool whatsapp_common_free_response_chats(const char *chat_id) {
     /* Python: set of chat ids from config.extra.free_response_chats or
      * WHATSAPP_FREE_RESPONSE_CHATS env (comma-split). C: membership check. */
@@ -82,7 +82,7 @@ bool whatsapp_common_free_response_chats(const char *chat_id) {
     return false;
 }
 
-/* PoP: _coerce_allow_list @ gateway/platforms/whatsapp_common.py:_coerce_allow_list */
+/* PoP: whatsapp_common_coerce_allow_list @ gateway/platforms/whatsapp_common.py:_coerce_allow_list */
 json_t *whatsapp_common_coerce_allow_list(json_t *raw) {
     json_t *out = json_array();
     if (!raw) return out;
@@ -101,7 +101,7 @@ json_t *whatsapp_common_coerce_allow_list(json_t *raw) {
     return out;
 }
 
-/* PoP: _normalize_whatsapp_id @ gateway/platforms/whatsapp_common.py:_normalize_whatsapp_id */
+/* PoP: whatsapp_common_normalize_whatsapp_id @ gateway/platforms/whatsapp_common.py:_normalize_whatsapp_id */
 char *whatsapp_common_normalize_whatsapp_id(const char *id) {
     if (!id) return NULL;
     /* Strip non-digit chars, keep + prefix */
@@ -117,13 +117,13 @@ char *whatsapp_common_normalize_whatsapp_id(const char *id) {
     return out;
 }
 
-/* PoP: _is_broadcast_chat @ gateway/platforms/whatsapp_common.py:_is_broadcast_chat */
+/* PoP: whatsapp_common_is_broadcast_chat @ gateway/platforms/whatsapp_common.py:_is_broadcast_chat */
 bool whatsapp_common_is_broadcast_chat(const char *chat_type) {
     if (!chat_type) return false;
     return strcasecmp(chat_type, "broadcast") == 0 || strcasecmp(chat_type, "status") == 0;
 }
 
-/* PoP: _matches_whatsapp_allowlist @ gateway/platforms/whatsapp_common.py:_matches_whatsapp_allowlist */
+/* PoP: whatsapp_common_matches_allowlist @ gateway/platforms/whatsapp_common.py:_matches_whatsapp_allowlist */
 bool whatsapp_common_matches_allowlist(const char *id, json_t *allowlist) {
     if (!id || !allowlist) return false;
     size_t n = json_array_size(allowlist);
@@ -134,27 +134,27 @@ bool whatsapp_common_matches_allowlist(const char *id, json_t *allowlist) {
     return false;
 }
 
-/* PoP: _is_dm_allowed @ gateway/platforms/whatsapp_common.py:_is_dm_allowed */
+/* PoP: whatsapp_common_is_dm_allowed @ gateway/platforms/whatsapp_common.py:_is_dm_allowed */
 bool whatsapp_common_is_dm_allowed(const char *sender_id, json_t *allowlist, bool allowlist_enabled) {
     if (!allowlist_enabled) return true;
     return whatsapp_common_matches_allowlist(sender_id, allowlist);
 }
 
-/* PoP: _is_dm_intake_allowed @ gateway/platforms/whatsapp_common.py:_is_dm_intake_allowed */
+/* PoP: whatsapp_common_is_dm_intake_allowed @ gateway/platforms/whatsapp_common.py:_is_dm_intake_allowed */
 /* PoP: whatsapp_common_is_dm_intake_allowed @ gateway/platforms/qqbot/adapter.py:_is_dm_intake_allowed */
 bool whatsapp_common_is_dm_intake_allowed(const char *sender_id, json_t *allowlist, bool intake_enabled) {
     if (!intake_enabled) return false;
     return whatsapp_common_matches_allowlist(sender_id, allowlist);
 }
 
-/* PoP: _is_group_allowed @ gateway/platforms/whatsapp_common.py:_is_group_allowed */
+/* PoP: whatsapp_common_is_group_allowed @ gateway/platforms/whatsapp_common.py:_is_group_allowed */
 /* PoP: whatsapp_common_is_group_allowed @ gateway/platforms/qqbot/adapter.py:_is_group_allowed */
 bool whatsapp_common_is_group_allowed(const char *chat_id, json_t *allowlist, bool allowlist_enabled) {
     if (!allowlist_enabled) return true;
     return whatsapp_common_matches_allowlist(chat_id, allowlist);
 }
 
-/* PoP: _compile_mention_patterns @ gateway/platforms/whatsapp_common.py:_compile_mention_patterns */
+/* PoP: whatsapp_common_compile_mention_patterns @ gateway/platforms/whatsapp_common.py:_compile_mention_patterns */
 /* PoP: whatsapp_common_compile_mention_patterns @ gateway/platforms/bluebubbles.py:_compile_mention_patterns */
 json_t *whatsapp_common_compile_mention_patterns(json_t *bot_names) {
     json_t *patterns = json_array();
@@ -171,7 +171,7 @@ json_t *whatsapp_common_compile_mention_patterns(json_t *bot_names) {
     return patterns;
 }
 
-/* PoP: _bot_ids_from_message @ gateway/platforms/whatsapp_common.py:_bot_ids_from_message */
+/* PoP: whatsapp_common_bot_ids_from_message @ gateway/platforms/whatsapp_common.py:_bot_ids_from_message */
 json_t *whatsapp_common_bot_ids_from_message(json_t *msg) {
     json_t *ids = json_array();
     if (!msg) return ids;
@@ -183,7 +183,7 @@ json_t *whatsapp_common_bot_ids_from_message(json_t *msg) {
     return ids;
 }
 
-/* PoP: _message_is_reply_to_bot @ gateway/platforms/whatsapp_common.py:_message_is_reply_to_bot */
+/* PoP: whatsapp_common_message_is_reply_to_bot @ gateway/platforms/whatsapp_common.py:_message_is_reply_to_bot */
 bool whatsapp_common_message_is_reply_to_bot(json_t *msg, const char *bot_id) {
     if (!msg || !bot_id) return false;
     json_t *reply = json_object_get(msg, "reply_to");
@@ -192,7 +192,7 @@ bool whatsapp_common_message_is_reply_to_bot(json_t *msg, const char *bot_id) {
     return sender && strcmp(sender, bot_id) == 0;
 }
 
-/* PoP: _message_mentions_bot @ gateway/platforms/whatsapp_common.py:_message_mentions_bot */
+/* PoP: whatsapp_common_message_mentions_bot @ gateway/platforms/whatsapp_common.py:_message_mentions_bot */
 bool whatsapp_common_message_mentions_bot(json_t *msg, const char *bot_id) {
     if (!msg || !bot_id) return false;
     json_t *ids = whatsapp_common_bot_ids_from_message(msg);
@@ -201,7 +201,7 @@ bool whatsapp_common_message_mentions_bot(json_t *msg, const char *bot_id) {
     return found;
 }
 
-/* PoP: _message_matches_mention_patterns @ gateway/platforms/whatsapp_common.py:_message_matches_mention_patterns */
+/* PoP: whatsapp_common_message_matches_mention_patterns @ gateway/platforms/whatsapp_common.py:_message_matches_mention_patterns */
 /* PoP: whatsapp_common_message_matches_mention_patterns @ gateway/platforms/bluebubbles.py:_message_matches_mention_patterns */
 bool whatsapp_common_message_matches_mention_patterns(const char *text, json_t *patterns) {
     if (!text || !patterns) return false;
@@ -213,7 +213,7 @@ bool whatsapp_common_message_matches_mention_patterns(const char *text, json_t *
     return false;
 }
 
-/* PoP: _clean_bot_mention_text @ gateway/platforms/whatsapp_common.py:_clean_bot_mention_text */
+/* PoP: whatsapp_common_clean_bot_mention_text @ gateway/platforms/whatsapp_common.py:_clean_bot_mention_text */
 char *whatsapp_common_clean_bot_mention_text(const char *text, const char *bot_name) {
     if (!text) return strdup("");
     if (!bot_name) return strdup(text);
@@ -233,7 +233,7 @@ char *whatsapp_common_clean_bot_mention_text(const char *text, const char *bot_n
     return out;
 }
 
-/* PoP: _should_process_message @ gateway/platforms/whatsapp_common.py:_should_process_message */
+/* PoP: whatsapp_common_should_process_message @ gateway/platforms/whatsapp_common.py:_should_process_message */
 bool whatsapp_common_should_process_message(json_t *msg, bool is_dm, bool require_mention,
                                              bool mentions_bot, bool is_reply_to_bot) {
     (void)msg;
@@ -242,7 +242,7 @@ bool whatsapp_common_should_process_message(json_t *msg, bool is_dm, bool requir
     return mentions_bot || is_reply_to_bot;
 }
 
-/* PoP: resolve_whatsapp_bridge_dir @ gateway/platforms/whatsapp_common.py:resolve_whatsapp_bridge_dir */
+/* PoP: whatsapp_common_resolve_bridge_dir @ gateway/platforms/whatsapp_common.py:resolve_whatsapp_bridge_dir */
 char *whatsapp_common_resolve_bridge_dir(void) {
     const char *home = getenv("HOME");
     if (!home) home = "/tmp";
@@ -267,7 +267,7 @@ char *whatsapp_common_resolve_bridge_dir(void) {
  * the provided default). */
 extern const char *secret_scope_get_secret(const char *name, const char *default_val);
 
-/* PoP: _get_wsecret @ gateway/platforms/whatsapp_common.py:_get_wsecret */
+/* PoP: whatsapp_common_get_wsecret @ gateway/platforms/whatsapp_common.py:_get_wsecret */
 char *whatsapp_common_get_wsecret(const char *name, const char *default_value) {
     const char *val = secret_scope_get_secret(name, default_value);
     return val ? strdup(val) : (default_value ? strdup(default_value) : NULL);

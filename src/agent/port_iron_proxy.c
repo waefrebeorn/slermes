@@ -167,7 +167,7 @@ char *ip_management_token_path(void) {
     return out;
 }
 
-/* PoP: ip_pid_alive @ agent/proxy_sources/iron_proxy.py:_pid_alive */
+/* PoP: true @ agent/proxy_sources/iron_proxy.py:_pid_alive */
 /* Return 1 iff pid is alive AND is an iron-proxy process.
  * Defends against PID reuse: /proc/<pid>/environ nonce match →
  * argv0 basename match → ps fallback → conservative true (exotic platforms). */

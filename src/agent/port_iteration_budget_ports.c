@@ -18,14 +18,14 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ agent/iteration_budget.py:__init__ */
+/* PoP: itb_init @ agent/iteration_budget.py:__init__ */
 char *itb_init(long max_total) {
     char *out = NULL;
     asprintf(&out, "{\"max_total\": %ld, \"used\": 0}", max_total);
     return out;
 }
 
-/* PoP: consume @ agent/iteration_budget.py:consume */
+/* PoP: itb_consume @ agent/iteration_budget.py:consume */
 bool itb_consume(const char *state_json) {
     /* Python: one iteration if allowed. */
     if (!state_json) return false;
@@ -37,7 +37,7 @@ bool itb_consume(const char *state_json) {
     return used < max_total;
 }
 
-/* PoP: refund @ agent/iteration_budget.py:refund */
+/* PoP: itb_refund @ agent/iteration_budget.py:refund */
 int itb_refund(const char *state_json) {
     /* Python: give back one (execute_code turns). */
     if (!state_json) return -1;
@@ -45,7 +45,7 @@ int itb_refund(const char *state_json) {
     return 0;
 }
 
-/* PoP: used @ agent/iteration_budget.py:used */
+/* PoP: itb_used @ agent/iteration_budget.py:used */
 long itb_used(const char *state_json) {
     if (!state_json) return 0;
     const char *p = strstr(state_json, "used");
@@ -55,7 +55,7 @@ long itb_used(const char *state_json) {
     return atol(c + 1);
 }
 
-/* PoP: remaining @ agent/iteration_budget.py:remaining */
+/* PoP: itb_remaining @ agent/iteration_budget.py:remaining */
 long itb_remaining(const char *state_json) {
     /* Python: max(0, max - used). */
     if (!state_json) return 0;

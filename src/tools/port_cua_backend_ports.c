@@ -19,12 +19,12 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ tools/computer_use/cua_backend.py:__init__ */
+/* PoP: cua_init @ tools/computer_use/cua_backend.py:__init__ */
 char *cua_init(void) {
     return strdup("{\"loop\": null, \"thread\": null}");
 }
 
-/* PoP: start @ tools/computer_use/cua_backend.py:start */
+/* PoP: cua_start @ tools/computer_use/cua_backend.py:start */
 extern bool cub_is_available(void);
 int cua_start(void) {
     /* Python: spawn loop thread once — REAL: guard on availability. */
@@ -32,7 +32,7 @@ int cua_start(void) {
     return 0;
 }
 
-/* PoP: run @ tools/computer_use/cua_backend.py:run */
+/* PoP: cua_run @ tools/computer_use/cua_backend.py:run */
 char *cua_run(const char *coro_desc) {
     /* Python: schedule threadsafe. */
     if (!coro_desc) return NULL;
@@ -40,7 +40,7 @@ char *cua_run(const char *coro_desc) {
     return strdup("{}");
 }
 
-/* PoP: _positive_int @ tools/computer_use/cua_backend.py:_positive_int */
+/* PoP: cua_positive_int @ tools/computer_use/cua_backend.py:_positive_int */
 long cua_positive_int(const char *value, long default_value) {
     /* Python: reject booleans + malformed. */
     if (!value || !*value) return default_value;
@@ -51,7 +51,7 @@ long cua_positive_int(const char *value, long default_value) {
     return v > 0 ? v : default_value;
 }
 
-/* PoP: key @ tools/computer_use/cua_backend.py:key */
+/* PoP: cua_key @ tools/computer_use/cua_backend.py:key */
 char *cua_key(const char *pid, const char *window_id) {
     /* Python: active window key. */
     if (!pid) return NULL;
@@ -63,7 +63,7 @@ char *cua_key(const char *pid, const char *window_id) {
     return out;
 }
 
-/* PoP: page @ tools/computer_use/cua_backend.py:page */
+/* PoP: cua_page @ tools/computer_use/cua_backend.py:page */
 char *cua_page(const char *url) {
     /* Python: interact with browser page. */
     if (!url) return NULL;

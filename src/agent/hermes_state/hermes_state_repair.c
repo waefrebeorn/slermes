@@ -113,7 +113,7 @@ static void register_tool_calls(idset_t *s, const char *tool_call_ids) {
 
 /* ── the repair ───────────────────────────────────────────────────────── */
 
-/* PoP: repair_message_sequence @ agent/agent_runtime_helpers.py:repair_message_sequence */
+/* PoP: hermes_state_repair_message_sequence @ agent/agent_runtime_helpers.py:repair_message_sequence */
 int hermes_state_repair_message_sequence(repair_msg_t *msgs, int *count) {
     if (!msgs || !count || *count == 0) return 0;
     int repairs = 0;

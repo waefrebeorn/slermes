@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_callbacks_clarify_callback @ hermes_cli/callbacks.py:clarify_callback */
+/* PoP: hermes_cli_callbacks_clarify_callback_p @ hermes_cli/callbacks.py:clarify_callback */
 json_t *hermes_cli_callbacks_clarify_callback_p(void) {
     return json_object();
 }

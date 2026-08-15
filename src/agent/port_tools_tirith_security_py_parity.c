@@ -14,22 +14,22 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_tirith_security_load_security_config @ tools/tirith_security.py:_load_security_config */
+/* PoP: tools_tirith_security_load_security_config_p @ tools/tirith_security.py:_load_security_config */
 json_t *tools_tirith_security_load_security_config_p(void) {
     return json_object();
 }
 
-/* PoP: tools_tirith_security_resolve_tirith_path @ tools/tirith_security.py:_resolve_tirith_path */
+/* PoP: tools_tirith_security_resolve_tirith_path_p @ tools/tirith_security.py:_resolve_tirith_path */
 json_t *tools_tirith_security_resolve_tirith_path_p(void) {
     return json_object();
 }
 
-/* PoP: tools_tirith_security_background_install @ tools/tirith_security.py:_background_install */
+/* PoP: tools_tirith_security_background_install_p @ tools/tirith_security.py:_background_install */
 json_t *tools_tirith_security_background_install_p(void) {
     return json_object();
 }
 
-/* PoP: tools_tirith_security_ensure_installed @ tools/tirith_security.py:ensure_installed */
+/* PoP: tools_tirith_security_ensure_installed_p @ tools/tirith_security.py:ensure_installed */
 json_t *tools_tirith_security_ensure_installed_p(void) {
     return json_object();
 }

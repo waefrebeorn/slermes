@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: agent_model_metadata_fetch_codex_oauth_context_lengths @ agent/model_metadata.py:_fetch_codex_oauth_context_lengths */
+/* PoP: agent_model_metadata_fetch_codex_oauth_context_lengths_p @ agent/model_metadata.py:_fetch_codex_oauth_context_lengths */
 json_t *agent_model_metadata_fetch_codex_oauth_context_lengths_p(void) {
     return json_object();
 }

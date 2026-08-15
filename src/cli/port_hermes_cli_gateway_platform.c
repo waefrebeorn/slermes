@@ -52,7 +52,7 @@ static int valid_profile_name(const char *s)
     return 1;
 }
 
-/* PoP: _profile_suffix @ hermes_cli/gateway.py:_profile_suffix */
+/* PoP: suffix @ hermes_cli/gateway.py:_profile_suffix */
 /* Returns malloc'd suffix ("" for default root, profile name, or short
  * hash for arbitrary paths). Caller frees. */
 /* PoP: gateway_profile_suffix @ hermes_cli/gateway.py:_profile_suffix */
@@ -86,7 +86,7 @@ char *gateway_profile_suffix(void)
     return hex;
 }
 
-/* PoP: _profile_arg @ hermes_cli/gateway.py:_profile_arg */
+/* PoP: gateway_profile_arg @ hermes_cli/gateway.py:_profile_arg */
 /* Returns malloc'd "--profile <name>" for named profiles, "" otherwise. */
 /* PoP: gateway_profile_arg @ hermes_cli/gateway.py:_profile_arg */
 char *gateway_profile_arg(const char *hermes_home)

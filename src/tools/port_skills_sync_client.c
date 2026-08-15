@@ -406,7 +406,7 @@ static bool sync_config_bool(const char *env_var, const char *config_key,
 
 /* ── sync feature knobs (L391-435) ────────────────────────────────────── *//* ── config bool helpers (L358-388) ───────────────────────────────────── */
 
-/* PoP: _parse_bool @ tools/skills_sync_client.py:_parse_bool */
+/* PoP: unrecognized @ tools/skills_sync_client.py:_parse_bool */
 /* Parse a config/env bool; returns -1 for unrecognized (None in Python). */
 static int ssc_parse_bool(const char *value) {
     if (!value) return -1;
@@ -431,7 +431,7 @@ static int ssc_parse_bool(const char *value) {
     return -1;
 }
 
-/* PoP: _sync_config_bool @ tools/skills_sync_client.py:_sync_config_bool */
+/* PoP: ssc_sync_config_bool @ tools/skills_sync_client.py:_sync_config_bool */
 /* Resolve a boolean sync knob: env_var -> sync.<config_key> -> default. */
 static bool ssc_sync_config_bool(const char *env_var, const char *config_key,
                                  bool default_val) {
@@ -475,7 +475,7 @@ bool skills_sync_default_opt_in(void) {
 /* ── _skills_dir (L446) ───────────────────────────────────────────────── */
 
 /* Return $SLERMES_HOME/skills into out. */
-/* PoP: _skills_dir @ tools/skills_sync_client.py:_skills_dir */
+/* PoP: skills_dir @ tools/skills_sync_client.py:_skills_dir */
 static void skills_dir(char *out, size_t sz) {
     const char *home = slermes_home();
     if (!home || !home[0]) home = getenv("HOME");
@@ -749,7 +749,7 @@ struct ssc_object {
  * address, so identical blobs across skills upload once. */
 
 
-/* PoP: add @ tools/skills_sync_client.py:add */
+/* PoP: address @ tools/skills_sync_client.py:add */
 /* Add an object; returns malloc'd address (deduped by content address). */
 char *ssc_object_set_add(ssc_object_set_t *set, const char *kind,
                          const unsigned char *data, size_t len) {
@@ -786,14 +786,14 @@ void ssc_object_set_free(ssc_object_set_t *set) {
     set->count = 0;
 }
 
-/* PoP: __len__ @ tools/skills_sync_client.py:__len__ */
+/* PoP: ssc_object_set_len @ tools/skills_sync_client.py:__len__ */
 size_t ssc_object_set_len(const ssc_object_set_t *set) {
     return set ? set->count : 0;
 }
 
 /* ── _file_mode (L576) ───────────────────────────────────────────────── */
 
-/* PoP: _file_mode @ tools/skills_sync_client.py:_file_mode */
+/* PoP: ssc_file_mode @ tools/skills_sync_client.py:_file_mode */
 /* Return the tree mode for a regular file: "exec" if any +x bit else
  * "file" (contract §2.3). */
 static const char *ssc_file_mode(const char *path) {
@@ -935,7 +935,7 @@ static char *ssc_build_tree_rec(const char *dir_path,
     return tree_addr;
 }
 
-/* PoP: build_tree @ tools/skills_sync_client.py:build_tree */
+/* PoP: ssc_build_tree @ tools/skills_sync_client.py:build_tree */
 char *ssc_build_tree(const char *dir_path, ssc_object_set_t *objects,
                      long max_object_bytes, int *too_large) {
     if (too_large) *too_large = 0;
@@ -992,7 +992,7 @@ char *ssc_build_commit(const char *tree_hash,
 
 /* ── device identity (L656-727) ──────────────────────────────────────── */
 
-/* PoP: _default_device_label @ tools/skills_sync_client.py:_default_device_label */
+/* PoP: ssc_default_device_label @ tools/skills_sync_client.py:_default_device_label */
 /* A human-friendly default device label: short hostname + 6-hex random
  * suffix; falls back to bare hex uuid. Returns malloc'd string. */
 static char *ssc_default_device_label(void) {
@@ -1034,7 +1034,7 @@ static char *ssc_default_device_label(void) {
 
 /* _skills_dir path helper (already defined above as skills_dir). */
 
-/* PoP: stable_device_id @ tools/skills_sync_client.py:stable_device_id */
+/* PoP: ssc_stable_device_id @ tools/skills_sync_client.py:stable_device_id */
 /* Return a stable per-device label for commit author.device. Persisted
  * under ~/.slermes/skills/.sync_device_id. Returns malloc'd string. */
 char *ssc_stable_device_id(void) {
@@ -1075,7 +1075,7 @@ char *ssc_stable_device_id(void) {
     return val;
 }
 
-/* PoP: set_device_name @ tools/skills_sync_client.py:set_device_name */
+/* PoP: ssc_set_device_name @ tools/skills_sync_client.py:set_device_name */
 /* Set the human-friendly device label; writes (trimmed) name to
  * ~/.slermes/skills/.sync_device_id. Returns 0 on success, -1 on empty
  * name (Python raises ValueError). */
@@ -1115,7 +1115,7 @@ typedef struct ssc_sync_client {
     http_t *h;
 } ssc_sync_client_t;
 
-/* PoP: __init__ @ tools/skills_sync_client.py:__init__ */
+/* PoP: ssc_client_new @ tools/skills_sync_client.py:__init__ */
 ssc_sync_client_t *ssc_client_new(const char *base_url, const char *api_key,
                                   int timeout_sec) {
     ssc_sync_client_t *c = calloc(1, sizeof(ssc_sync_client_t));
@@ -1136,7 +1136,7 @@ void ssc_client_free(ssc_sync_client_t *c) {
     free(c);
 }
 
-/* PoP: _url @ tools/skills_sync_client.py:_url */
+/* PoP: ssc_client_url @ tools/skills_sync_client.py:_url */
 static void ssc_client_url(const ssc_sync_client_t *c, const char *path,
                            char *out, size_t out_sz) {
     const char *p = path;
@@ -1149,7 +1149,7 @@ static void ssc_auth_header(const ssc_sync_client_t *c, char *out, size_t sz) {
     snprintf(out, sz, "Authorization: Bearer %s", c->api_key);
 }
 
-/* PoP: capabilities @ tools/skills_sync_client.py:capabilities */
+/* PoP: JSON @ tools/skills_sync_client.py:capabilities */
 /* GET /v1/sync/capabilities. No auth required. Returns parsed JSON (caller
  * frees) or NULL on failure (status != 200). */
 json_t *ssc_client_capabilities(ssc_sync_client_t *c, int *out_status) {
@@ -1169,7 +1169,7 @@ json_t *ssc_client_capabilities(ssc_sync_client_t *c, int *out_status) {
     return j;
 }
 
-/* PoP: get_refs @ tools/skills_sync_client.py:get_refs */
+/* PoP: objects @ tools/skills_sync_client.py:get_refs */
 /* GET /v1/sync/refs?prefix=... (or org route). Returns a JSON array of
  * ref objects (caller frees) or NULL on failure. */
 json_t *ssc_client_get_refs(ssc_sync_client_t *c, const char *prefix,
@@ -1217,7 +1217,7 @@ json_t *ssc_client_get_refs(ssc_sync_client_t *c, const char *prefix,
     return out;
 }
 
-/* PoP: get_object @ tools/skills_sync_client.py:get_object */
+/* PoP: set @ tools/skills_sync_client.py:get_object */
 /* GET /v1/sync/objects/:hash (or org route). Kind from the
  * X-HSP-Object-Type header; blob default. Returns 0 on success with
  * out_kind/out_data set (caller frees), -1 on error with *out_status set. */
@@ -1283,7 +1283,7 @@ int ssc_client_get_object(ssc_sync_client_t *c, const char *obj_hash,
     return 0;
 }
 
-/* PoP: get_commit_json @ tools/skills_sync_client.py:get_commit_json */
+/* PoP: ssc_client_get_commit_json @ tools/skills_sync_client.py:get_commit_json */
 json_t *ssc_client_get_commit_json(ssc_sync_client_t *c, const char *hash,
                                    bool org_scope, int *out_status) {
     char *kind = NULL;
@@ -1302,7 +1302,7 @@ json_t *ssc_client_get_commit_json(ssc_sync_client_t *c, const char *hash,
     return j;
 }
 
-/* PoP: get_tree_json @ tools/skills_sync_client.py:get_tree_json */
+/* PoP: ssc_client_get_tree_json @ tools/skills_sync_client.py:get_tree_json */
 json_t *ssc_client_get_tree_json(ssc_sync_client_t *c, const char *hash,
                                  bool org_scope, int *out_status) {
     char *kind = NULL;
@@ -1321,7 +1321,7 @@ json_t *ssc_client_get_tree_json(ssc_sync_client_t *c, const char *hash,
     return j;
 }
 
-/* PoP: put_objects @ tools/skills_sync_client.py:put_objects */
+/* PoP: success @ tools/skills_sync_client.py:put_objects */
 /* POST /v1/sync/objects — multipart upload, one part per object,
  * field name = sha256:<hex> hash, filename = object type, body = raw
  * bytes. Returns 0 on success (200/201), -1 on error with *out_status. */
@@ -1367,7 +1367,7 @@ int ssc_client_put_objects(ssc_sync_client_t *c, const ssc_object_set_t *set,
     return rc;
 }
 
-/* PoP: cas_ref @ tools/skills_sync_client.py:cas_ref */
+/* PoP: head @ tools/skills_sync_client.py:cas_ref */
 /* POST /v1/sync/refs/:name — atomic CAS. Returns:
  *  0 = merged (200)
  *  1 = proposal_pending (202)
@@ -1448,21 +1448,21 @@ extern char *su_find_skill_dir(const char *hermes_home, const char *name);
 
 /* ── sync state path helpers (L946-951) ────────────────────────────── */
 
-/* PoP: _sync_state_path @ tools/skills_sync_client.py:_sync_state_path */
+/* PoP: ssc_sync_state_path @ tools/skills_sync_client.py:_sync_state_path */
 static void ssc_sync_state_path(char *out, size_t out_sz) {
     char root[4096];
     skills_dir(root, sizeof(root));
     snprintf(out, out_sz, "%s/.sync_state", root);
 }
 
-/* PoP: _legacy_sync_state_path @ tools/skills_sync_client.py:_legacy_sync_state_path */
+/* PoP: ssc_legacy_sync_state_path @ tools/skills_sync_client.py:_legacy_sync_state_path */
 static void ssc_legacy_sync_state_path(char *out, size_t out_sz) {
     char root[4096];
     skills_dir(root, sizeof(root));
     snprintf(out, out_sz, "%s/.sync_manifest", root);
 }
 
-/* PoP: read_sync_state @ tools/skills_sync_client.py:read_sync_state */
+/* PoP: object @ tools/skills_sync_client.py:read_sync_state */
 /* Read the local sync state; migrate legacy .sync_manifest on first
  * read. Returns a malloc'd JSON object (caller frees) or NULL on
  * total failure (returns {"head":null,"skills":{}} as JSON). */
@@ -1509,7 +1509,7 @@ json_t *ssc_read_sync_state(void) {
     return def;
 }
 
-/* PoP: write_sync_state @ tools/skills_sync_client.py:write_sync_state */
+/* PoP: ssc_write_sync_state @ tools/skills_sync_client.py:write_sync_state */
 /* Write sync state atomically (tempfile + os.replace). Best-effort;
  * returns 0 on success, -1 on failure. */
 int ssc_write_sync_state(json_t *data) {
@@ -1544,7 +1544,7 @@ int ssc_write_sync_state(json_t *data) {
  * (restored exec bit for MODE_EXEC), nested trees -> subdirs.
  * Path traversal entries ("..", "/") are skipped. Returns 0 on success,
  * -1 on error. */
-/* PoP: materialize_tree @ tools/skills_sync_client.py:materialize_tree */
+/* PoP: ssc_materialize_tree @ tools/skills_sync_client.py:materialize_tree */
 int ssc_materialize_tree(ssc_sync_client_t *client, const char *tree_hash,
                              const char *dest, bool org_scope) {
     if (!client || !tree_hash || !dest) return -1;
@@ -1699,7 +1699,7 @@ static int ssc_find_skill_dir(const char *skill_name, char *out, size_t out_sz) 
     return ssc_find_skill_dir_rec(root, skill_name, out, out_sz);
 }
 
-/* PoP: _skill_rel_path @ tools/skills_sync_client.py:_skill_rel_path */
+/* PoP: ssc_skill_rel_path @ tools/skills_sync_client.py:_skill_rel_path */
 const char *ssc_skill_rel_path(const char *skill_name, char *out, size_t out_sz) {
     char skill_dir[4096];
     if (ssc_find_skill_dir(skill_name, skill_dir, sizeof(skill_dir)) != 0)
@@ -1725,7 +1725,7 @@ const char *ssc_skill_rel_path(const char *skill_name, char *out, size_t out_sz)
 char *ssc_build_root_tree(json_t *node, ssc_object_set_t *objects,
                           const char *manifest_hash);
 
-/* PoP: snapshot_profile @ tools/skills_sync_client.py:snapshot_profile */
+/* PoP: ssc_snapshot_profile @ tools/skills_sync_client.py:snapshot_profile */
 json_t *ssc_snapshot_profile(const char *const *skill_names, size_t n_names,
                                  long max_object_bytes, ssc_object_set_t *objects) {
     json_t *root = json_object();
@@ -1899,12 +1899,12 @@ char *ssc_build_root_tree(json_t *node, ssc_object_set_t *objects,
 
 /* ── ref naming (L1172-1177) ────────────────────────────────────────── */
 
-/* PoP: user_head_ref @ tools/skills_sync_client.py:user_head_ref */
+/* PoP: ssc_user_head_ref @ tools/skills_sync_client.py:user_head_ref */
 void ssc_user_head_ref(const char *owner, char *out, size_t out_sz) {
     snprintf(out, out_sz, "refs/user/%s/HEAD", owner ? owner : "");
 }
 
-/* PoP: user_conflict_ref @ tools/skills_sync_client.py:user_conflict_ref */
+/* PoP: ssc_user_conflict_ref @ tools/skills_sync_client.py:user_conflict_ref */
 void ssc_user_conflict_ref(const char *owner, int n, char *out, size_t out_sz) {
     snprintf(out, out_sz, "refs/user/%s/conflict/%d", owner ? owner : "", n);
 }
@@ -1912,7 +1912,7 @@ void ssc_user_conflict_ref(const char *owner, int n, char *out, size_t out_sz) {
 /* ── _root_tree_of_commit (L1180) ───────────────────────────────────── */
 
 /* Return the tree hash referenced by a commit. */
-/* PoP: _root_tree_of_commit @ tools/skills_sync_client.py:_root_tree_of_commit */
+/* PoP: ssc_root_tree_of_commit @ tools/skills_sync_client.py:_root_tree_of_commit */
 const char *ssc_root_tree_of_commit(ssc_sync_client_t *client, const char *commit_hash,
                                         bool org_scope) {
     json_t *commit = ssc_client_get_commit_json(client, commit_hash, org_scope, NULL);
@@ -1927,7 +1927,7 @@ const char *ssc_root_tree_of_commit(ssc_sync_client_t *client, const char *commi
 
 /* Flatten a profile-root tree into {posix_rel_path: tree_hash}.
  * A subtree containing a SKILL.md blob is a skill leaf. */
-/* PoP: _skill_trees_of_root @ tools/skills_sync_client.py:_skill_trees_of_root */
+/* PoP: ssc_skill_trees_of_root @ tools/skills_sync_client.py:_skill_trees_of_root */
 json_t *ssc_skill_trees_of_root(ssc_sync_client_t *client, const char *root_tree_hash,
                                      bool org_scope) {
     json_t *result = json_object();
@@ -2004,7 +2004,7 @@ json_t *ssc_skill_trees_of_root(ssc_sync_client_t *client, const char *root_tree
 
 /* Read the sync-manifest blob at the root of root_tree_hash.
  * Returns {name: enabled} dict, or NULL if absent/malformed. */
-/* PoP: read_manifest_of_root @ tools/skills_sync_client.py:read_manifest_of_root */
+/* PoP: ssc_read_manifest_of_root @ tools/skills_sync_client.py:read_manifest_of_root */
 json_t *ssc_read_manifest_of_root(ssc_sync_client_t *client, const char *root_tree_hash) {
     if (!client || !root_tree_hash) return NULL;
     json_t *tree = ssc_client_get_tree_json(client, root_tree_hash, false, NULL);
@@ -2048,7 +2048,7 @@ json_t *ssc_read_manifest_of_root(ssc_sync_client_t *client, const char *root_tr
 
 /* Reject an incompatible server major version (sync contract).
  * Returns 0 if compatible, -1 if incompatible (raises SyncError in Python). */
-/* PoP: _check_version @ tools/skills_sync_client.py:_check_version */
+/* PoP: ssc_check_version @ tools/skills_sync_client.py:_check_version */
 int ssc_check_version(json_t *caps) {
     if (!caps) return -1;
     const char *ver = json_get_str(caps, "hsp_version", "");
@@ -2074,7 +2074,7 @@ int ssc_check_version(json_t *caps) {
 
 /* Three-way decision for one skill's tree hash. Returns one of:
  * "ours", "theirs", "either", "overlap", "none". */
-/* PoP: _merge_skill @ tools/skills_sync_client.py:_merge_skill */
+/* PoP: ssc_merge_skill @ tools/skills_sync_client.py:_merge_skill */
 const char *ssc_merge_skill(const char *base, const char *ours,
                             const char *theirs) {
     /* Python: ours == theirs -> "either" if ours is not None else "none".
@@ -2097,7 +2097,7 @@ const char *ssc_merge_skill(const char *base, const char *ours,
 /* ── _next_conflict_index (L1490) ───────────────────────────────────── */
 
 /* Pick the next free conflict ref index for the owner. */
-/* PoP: _next_conflict_index @ tools/skills_sync_client.py:_next_conflict_index */
+/* PoP: ssc_next_conflict_index @ tools/skills_sync_client.py:_next_conflict_index */
 int ssc_next_conflict_index(ssc_sync_client_t *client, const char *owner) {
     char prefix[512];
     snprintf(prefix, sizeof(prefix), "refs/user/%s/conflict/", owner);
@@ -2132,7 +2132,7 @@ int ssc_next_conflict_index(ssc_sync_client_t *client, const char *owner) {
 /* Build a profile-root tree object from {posix_rel_path: tree_hash}.
  * Rebuilds intermediate category trees; only new root/intermediate
  * objects are added. Returns malloc'd root hash. */
-/* PoP: _assemble_root_from_skill_trees @ tools/skills_sync_client.py:_assemble_root_from_skill_trees */
+/* PoP: ssc_assemble_root_from_skill_trees @ tools/skills_sync_client.py:_assemble_root_from_skill_trees */
 char *ssc_assemble_root_from_skill_trees(ssc_sync_client_t *client,
                                          json_t *skill_trees,
                                          ssc_object_set_t *objects) {
@@ -2184,7 +2184,7 @@ char *ssc_assemble_root_from_skill_trees(ssc_sync_client_t *client,
 
 /* Resolve a push conflict via three-way merge. Returns a result JSON
  * object. */
-/* PoP: _resolve_push_conflict @ tools/skills_sync_client.py:_resolve_push_conflict */
+/* PoP: ssc_resolve_push_conflict @ tools/skills_sync_client.py:_resolve_push_conflict */
 json_t *ssc_resolve_push_conflict(ssc_sync_client_t *client,
                                   json_t *identity,
                                   const char *actual_head,
@@ -2329,7 +2329,7 @@ json_t *ssc_resolve_push_conflict(ssc_sync_client_t *client,
 /* ── push_skills (L1258) ────────────────────────────────────────────── */
 
 /* Push opted-in skills to the owner's HEAD. Returns result JSON. */
-/* PoP: push_skills @ tools/skills_sync_client.py:push_skills */
+/* PoP: ssc_push_skills @ tools/skills_sync_client.py:push_skills */
 json_t *ssc_push_skills(ssc_sync_client_t *client, json_t *identity,
                         const char *const *skill_names, size_t n_skill_names,
                         const char *message) {
@@ -2466,7 +2466,7 @@ json_t *ssc_push_skills(ssc_sync_client_t *client, json_t *identity,
 
 /* Pull the owner's HEAD and materialize opted-in skills to disk.
  * Returns result JSON. */
-/* PoP: pull_skills @ tools/skills_sync_client.py:pull_skills */
+/* PoP: ssc_pull_skills @ tools/skills_sync_client.py:pull_skills */
 json_t *ssc_pull_skills(ssc_sync_client_t *client, json_t *identity) {
     const char *owner = json_get_str(identity, "owner", "");
     const char *api_key = json_get_str(identity, "api_key", "");
@@ -2607,7 +2607,7 @@ json_t *ssc_pull_skills(ssc_sync_client_t *client, json_t *identity) {
 /* ── _opted_in_rel_paths (L1594) ────────────────────────────────────── */
 
 /* Relative posix paths of skills the user opted into sync. */
-/* PoP: _opted_in_rel_paths @ tools/skills_sync_client.py:_opted_in_rel_paths */
+/* PoP: ssc_opted_in_rel_paths @ tools/skills_sync_client.py:_opted_in_rel_paths */
 json_t *ssc_opted_in_rel_paths(void) {
     json_t *paths = json_object();
     /* list synced skill names via the cluster-1 backend */
@@ -2629,7 +2629,7 @@ json_t *ssc_opted_in_rel_paths(void) {
 /* ── org helpers (L1701-2013) ───────────────────────────────────────── */
 
 /* Skill names present in the local org mirror. */
-/* PoP: list_org_skill_names @ tools/skills_sync_client.py:list_org_skill_names */
+/* PoP: ssc_list_org_skill_names @ tools/skills_sync_client.py:list_org_skill_names */
 json_t *ssc_list_org_skill_names(void) {
     json_t *names = json_array();
     char sroot[4096];
@@ -2691,13 +2691,13 @@ json_t *ssc_list_org_skill_names(void) {
     return names;
 }
 
-/* PoP: org_head_ref @ tools/skills_sync_client.py:org_head_ref */
+/* PoP: ssc_org_head_ref @ tools/skills_sync_client.py:org_head_ref */
 void ssc_org_head_ref(const char *org_id, char *out, size_t out_sz) {
     snprintf(out, out_sz, "refs/org/%s/HEAD", org_id ? org_id : "");
 }
 
 /* _read_org_head: current refs/org/<org_id>/HEAD via ORG endpoint. */
-/* PoP: _read_org_head @ tools/skills_sync_client.py:_read_org_head */
+/* PoP: ssc_read_org_head @ tools/skills_sync_client.py:_read_org_head */
 static char *ssc_read_org_head(ssc_sync_client_t *client, const char *org_id) {
     char prefix[512];
     snprintf(prefix, sizeof(prefix), "refs/org/%s/", org_id);
@@ -2722,7 +2722,7 @@ static char *ssc_read_org_head(ssc_sync_client_t *client, const char *org_id) {
 }
 
 /* _org_dir */
-/* PoP: _org_dir @ tools/skills_sync_client.py:_org_dir */
+/* PoP: ssc_org_dir @ tools/skills_sync_client.py:_org_dir */
 static void ssc_org_dir(char *out, size_t out_sz) {
     char sroot[4096];
     skills_dir(sroot, sizeof(sroot));
@@ -2730,7 +2730,7 @@ static void ssc_org_dir(char *out, size_t out_sz) {
 }
 
 /* _skill_dir_fingerprint: stable content hash of a materialized dir. */
-/* PoP: _skill_dir_fingerprint @ tools/skills_sync_client.py:_skill_dir_fingerprint */
+/* PoP: ssc_skill_dir_fingerprint @ tools/skills_sync_client.py:_skill_dir_fingerprint */
 static char *ssc_skill_dir_fingerprint(const char *path) {
     /* walk all files recursively, sorted; hash relpath\0bytes\0 */
     char *files[4096];
@@ -2808,7 +2808,7 @@ static char *ssc_skill_dir_fingerprint(const char *path) {
 }
 
 /* _org_baseline_path */
-/* PoP: _org_baseline_path @ tools/skills_sync_client.py:_org_baseline_path */
+/* PoP: ssc_org_baseline_path @ tools/skills_sync_client.py:_org_baseline_path */
 static void ssc_org_baseline_path(const char *org_id, char *out, size_t out_sz) {
     char orgd[4096];
     ssc_org_dir(orgd, sizeof(orgd));
@@ -2816,7 +2816,7 @@ static void ssc_org_baseline_path(const char *org_id, char *out, size_t out_sz) 
 }
 
 /* _read_org_baseline */
-/* PoP: _read_org_baseline @ tools/skills_sync_client.py:_read_org_baseline */
+/* PoP: ssc_read_org_baseline @ tools/skills_sync_client.py:_read_org_baseline */
 static json_t *ssc_read_org_baseline(const char *org_id) {
     char path[8192];
     ssc_org_baseline_path(org_id, path, sizeof(path));
@@ -2827,7 +2827,7 @@ static json_t *ssc_read_org_baseline(const char *org_id) {
 }
 
 /* _write_org_baseline */
-/* PoP: _write_org_baseline @ tools/skills_sync_client.py:_write_org_baseline */
+/* PoP: ssc_write_org_baseline @ tools/skills_sync_client.py:_write_org_baseline */
 static void ssc_write_org_baseline(const char *org_id, json_t *baseline) {
     char path[8192];
     ssc_org_baseline_path(org_id, path, sizeof(path));
@@ -2841,8 +2841,8 @@ static void ssc_write_org_baseline(const char *org_id, json_t *baseline) {
     free(ser);
 }
 
-/* PoP: org_skill_is_locally_modified @ tools/skills_sync_client.py:org_skill_is_locally_modified */
-/* PoP: org_skill_is_locally_modified @ tools/skills_sync_client.py:org_skill_is_locally_modified */
+/* PoP: ssc_org_skill_is_locally_modified @ tools/skills_sync_client.py:org_skill_is_locally_modified */
+/* PoP: ssc_org_skill_is_locally_modified @ tools/skills_sync_client.py:org_skill_is_locally_modified */
 bool ssc_org_skill_is_locally_modified(const char *skill_rel_path,
                                        const char *org_id) {
     char orgd[4096];
@@ -2867,8 +2867,8 @@ bool ssc_org_skill_is_locally_modified(const char *skill_rel_path,
     return modified;
 }
 
-/* PoP: list_locally_modified_org_skills @ tools/skills_sync_client.py:list_locally_modified_org_skills */
-/* PoP: list_locally_modified_org_skills @ tools/skills_sync_client.py:list_locally_modified_org_skills */
+/* PoP: ssc_list_locally_modified_org_skills @ tools/skills_sync_client.py:list_locally_modified_org_skills */
+/* PoP: ssc_list_locally_modified_org_skills @ tools/skills_sync_client.py:list_locally_modified_org_skills */
 json_t *ssc_list_locally_modified_org_skills(const char *org_id) {
     json_t *result = json_array();
     if (!org_id || !org_id[0]) return result;
@@ -2897,7 +2897,7 @@ json_t *ssc_list_locally_modified_org_skills(const char *org_id) {
 }
 
 /* _write_active_org_marker */
-/* PoP: _write_active_org_marker @ tools/skills_sync_client.py:_write_active_org_marker */
+/* PoP: ssc_write_active_org_marker @ tools/skills_sync_client.py:_write_active_org_marker */
 static void ssc_write_active_org_marker(const char *org_id) {
     char orgd[4096];
     ssc_org_dir(orgd, sizeof(orgd));
@@ -2909,7 +2909,7 @@ static void ssc_write_active_org_marker(const char *org_id) {
 }
 
 /* _write_org_provenance */
-/* PoP: _write_org_provenance @ tools/skills_sync_client.py:_write_org_provenance */
+/* PoP: ssc_write_org_provenance @ tools/skills_sync_client.py:_write_org_provenance */
 static void ssc_write_org_provenance(const char *org_id, json_t *data) {
     char orgd[4096];
     ssc_org_dir(orgd, sizeof(orgd));
@@ -2931,7 +2931,7 @@ static void ssc_write_org_provenance(const char *org_id, json_t *data) {
 
 /* Pull the org canonical set into skills/_org/<org_id>/. Fast-forward
  * only; local edits are protected (never clobbered). */
-/* PoP: pull_org_skills @ tools/skills_sync_client.py:pull_org_skills */
+/* PoP: ssc_pull_org_skills @ tools/skills_sync_client.py:pull_org_skills */
 json_t *ssc_pull_org_skills(ssc_sync_client_t *client, json_t *identity) {
     const char *org_id = json_get_str(identity, "org_id", "");
     const char *api_key = json_get_str(identity, "api_key", "");
@@ -3105,7 +3105,7 @@ json_t *ssc_pull_org_skills(ssc_sync_client_t *client, json_t *identity) {
 
 /* Propose a local skill's current content to the org canonical set.
  * Splice/replace that one skill subtree onto the current org HEAD. */
-/* PoP: propose_skill @ tools/skills_sync_client.py:propose_skill */
+/* PoP: ssc_propose_skill @ tools/skills_sync_client.py:propose_skill */
 json_t *ssc_propose_skill(const char *skill_name, ssc_sync_client_t *client,
                           json_t *identity, const char *message) {
     const char *org_id = json_get_str(identity, "org_id", "");
@@ -3284,7 +3284,7 @@ json_t *ssc_propose_skill(const char *skill_name, ssc_sync_client_t *client,
 /* Resolve identity + org context for org-skill operations. Returns
  * identity dict extended with org_id + org_role, or NULL when the token
  * carries no org_role claim (personal org — org sync unavailable). */
-/* PoP: resolve_org_identity @ tools/skills_sync_client.py:resolve_org_identity */
+/* PoP: ssc_resolve_org_identity @ tools/skills_sync_client.py:resolve_org_identity */
 json_t *ssc_resolve_org_identity(void) {
     json_t *identity = skills_sync_resolve_identity();
     if (!identity) return NULL;
@@ -3300,7 +3300,7 @@ json_t *ssc_resolve_org_identity(void) {
     return identity;
 }
 
-/* PoP: org_sync_available @ tools/skills_sync_client.py:org_sync_available */
+/* PoP: ssc_org_sync_available @ tools/skills_sync_client.py:org_sync_available */
 bool ssc_org_sync_available(void) {
     json_t *ident = ssc_resolve_org_identity();
     if (!ident) return false;
@@ -3311,7 +3311,7 @@ bool ssc_org_sync_available(void) {
 /* ── maybe_push_skills (L1613) ──────────────────────────────────────── */
 
 /* Best-effort push if all gates pass; NULL when inert. Never raises. */
-/* PoP: maybe_push_skills @ tools/skills_sync_client.py:maybe_push_skills */
+/* PoP: ssc_maybe_push_skills @ tools/skills_sync_client.py:maybe_push_skills */
 json_t *ssc_maybe_push_skills(const char *message) {
     json_t *identity = skills_sync_resolve_identity();
     if (!identity) return NULL;
@@ -3348,7 +3348,7 @@ json_t *ssc_maybe_push_skills(const char *message) {
 /* ── maybe_pull_skills (L1632) ──────────────────────────────────────── */
 
 /* Best-effort pull if all gates pass; NULL when inert. Never raises. */
-/* PoP: maybe_pull_skills @ tools/skills_sync_client.py:maybe_pull_skills */
+/* PoP: ssc_maybe_pull_skills @ tools/skills_sync_client.py:maybe_pull_skills */
 json_t *ssc_maybe_pull_skills(void) {
     json_t *identity = skills_sync_resolve_identity();
     if (!identity) return NULL;
@@ -3375,7 +3375,7 @@ json_t *ssc_maybe_pull_skills(void) {
 /* ── sync_status (L1650) ────────────────────────────────────────────── */
 
 /* Return a status snapshot for `hermes sync status`. Never raises. */
-/* PoP: sync_status @ tools/skills_sync_client.py:sync_status */
+/* PoP: ssc_sync_status @ tools/skills_sync_client.py:sync_status */
 json_t *ssc_sync_status(void) {
     json_t *status = json_object();
     json_set(status, "nous_admin", json_bool(false));
@@ -3438,7 +3438,7 @@ json_t *ssc_sync_status(void) {
 /* ── _clear_active_org_marker (L2174) ───────────────────────────────── */
 
 /* Remove the active-org marker (org skills stop resolving). */
-/* PoP: _clear_active_org_marker @ tools/skills_sync_client.py:_clear_active_org_marker */
+/* PoP: ssc_clear_active_org_marker @ tools/skills_sync_client.py:_clear_active_org_marker */
 void ssc_clear_active_org_marker(void) {
     char orgd[4096];
     ssc_org_dir(orgd, sizeof(orgd));
@@ -3450,7 +3450,7 @@ void ssc_clear_active_org_marker(void) {
 /* ── maybe_pull_org_skills (L2130) ──────────────────────────────────── */
 
 /* Best-effort org pull if all gates pass; NULL when inert. Never raises. */
-/* PoP: maybe_pull_org_skills @ tools/skills_sync_client.py:maybe_pull_org_skills */
+/* PoP: ssc_maybe_pull_org_skills @ tools/skills_sync_client.py:maybe_pull_org_skills */
 json_t *ssc_maybe_pull_org_skills(void) {
     json_t *org_ident = ssc_resolve_org_identity();
     if (!org_ident) {

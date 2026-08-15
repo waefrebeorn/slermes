@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_web_routers_git_git_pr_list_route @ hermes_cli/web_routers/git.py:git_pr_list_route */
+/* PoP: hermes_cli_web_routers_git_git_pr_list_route_p @ hermes_cli/web_routers/git.py:git_pr_list_route */
 json_t *hermes_cli_web_routers_git_git_pr_list_route_p(void) {
     return json_object();
 }

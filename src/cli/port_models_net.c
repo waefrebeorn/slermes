@@ -30,8 +30,8 @@
 
 /* ── Pure parse helpers (faithful ports of models.py) ───────────────────── */
 
-/* PoP: _payload_items @ hermes_cli/models.py:_payload_items */
-/* PoP: load_items @ cron/scripts/classify_items.py:_load_items */
+/* PoP: payload_items @ hermes_cli/models.py:_payload_items */
+/* PoP: payload_items @ cron/scripts/classify_items.py:_load_items */
 static void payload_items(const json_t *payload, json_t ***out_items, size_t *out_n) {
     size_t cap = 16, n = 0;
     json_t **items = malloc(cap * sizeof(json_t *));
@@ -52,7 +52,7 @@ static void payload_items(const json_t *payload, json_t ***out_items, size_t *ou
     *out_items = items;
 }
 
-/* PoP: _copilot_catalog_item_is_text_model @ hermes_cli/models.py:_copilot_catalog_item_is_text_model */
+/* PoP: models_copilot_item_is_text_model @ hermes_cli/models.py:_copilot_catalog_item_is_text_model */
 int models_copilot_item_is_text_model(const json_t *item) {
     if (!item || item->type != JSON_OBJECT) return 0;
     json_t *id = json_obj_get(item, "id");
@@ -67,7 +67,7 @@ int models_copilot_item_is_text_model(const json_t *item) {
     return 1;
 }
 
-/* PoP: _is_github_models_base_url @ hermes_cli/models.py:_is_github_models_base_url */
+/* PoP: models_is_github_models_base_url @ hermes_cli/models.py:_is_github_models_base_url */
 int models_is_github_models_base_url(const char *base_url) {
     if (!base_url) return 0;
     char buf[1024];
@@ -88,7 +88,7 @@ int models_is_github_models_base_url(const char *base_url) {
 
 /* ── Fetchers (injectable HTTP) ─────────────────────────────────────────── */
 
-/* PoP: fetch_github_model_catalog @ hermes_cli/models.py:fetch_github_model_catalog */
+/* PoP: models_fetch_github_model_catalog @ hermes_cli/models.py:fetch_github_model_catalog */
 /* Fetch the live GitHub Copilot model catalog. Injectable transport so the parse/filter logic is testable offline. Returns a JSON array string of */
 char *models_fetch_github_model_catalog(http_fetch_fn fetch, void *ctx,
                                         const char *api_key) {
@@ -145,7 +145,7 @@ char *models_fetch_github_model_catalog(http_fetch_fn fetch, void *ctx,
     return res;
 }
 
-/* PoP: _fetch_anthropic_models @ hermes_cli/models.py:_fetch_anthropic_models */
+/* PoP: models_fetch_anthropic_models @ hermes_cli/models.py:_fetch_anthropic_models */
 /* Fetch available models from the Anthropic /v1/models endpoint. Sorts opus > sonnet > haiku, latest first. Returns a malloc'd JSON array of */
 char *models_fetch_anthropic_models(http_fetch_fn fetch, void *ctx,
                                     const char *base_url, const char *api_key) {
@@ -209,7 +209,7 @@ char *models_fetch_anthropic_models(http_fetch_fn fetch, void *ctx,
     return res;
 }
 
-/* PoP: fetch_lmstudio_models @ hermes_cli/models.py:fetch_lmstudio_models */
+/* PoP: models_fetch_lmstudio_models @ hermes_cli/models.py:fetch_lmstudio_models */
 /* Fetch the local LM Studio /v1/models catalog. Returns a malloc'd JSON */
 char *models_fetch_lmstudio_models(http_fetch_fn fetch, void *ctx,
                                    const char *server_root) {
@@ -240,7 +240,7 @@ char *models_fetch_lmstudio_models(http_fetch_fn fetch, void *ctx,
     return res;
 }
 
-/* PoP: fetch_ollama_cloud_models @ hermes_cli/models.py:fetch_ollama_cloud_models */
+/* PoP: models_fetch_ollama_cloud_models @ hermes_cli/models.py:fetch_ollama_cloud_models */
 /* Fetch the Ollama Cloud catalog. Returns a malloc'd JSON array of model-id */
 char *models_fetch_ollama_cloud_models(http_fetch_fn fetch, void *ctx,
                                        const char *server_root) {
@@ -276,7 +276,7 @@ char *models_fetch_ollama_cloud_models(http_fetch_fn fetch, void *ctx,
 
 /* ── Pure model-tier / alias helpers (no network) ───────────────────────── */
 
-/* PoP: _provider_keys @ hermes_cli/models.py:_provider_keys */
+/* PoP: models_provider_keys @ hermes_cli/models.py:_provider_keys */
 void models_provider_keys(const char *provider, char *out_key, size_t key_sz,
                           char *out_norm, size_t norm_sz) {
     char raw[256];
@@ -293,7 +293,7 @@ void models_provider_keys(const char *provider, char *out_key, size_t key_sz,
     snprintf(out_norm, norm_sz, "%s", norm);
 }
 
-/* PoP: _model_in_provider_catalog @ hermes_cli/models.py:_model_in_provider_catalog */
+/* PoP: model @ hermes_cli/models.py:_model_in_provider_catalog */
 /* True when name_lower equals any model (lowercased) in any of providers' */
 int models_model_in_provider_catalog(const char *name_lower,
                                      char *const *providers) {
@@ -304,7 +304,7 @@ int models_model_in_provider_catalog(const char *name_lower,
     return 0;
 }
 
-/* PoP: _xai_promote_top @ hermes_cli/models.py:_xai_promote_top */
+/* PoP: models_xai_promote_top @ hermes_cli/models.py:_xai_promote_top */
 /* Pin _XAI_TOP_MODEL to the front of the list. ids is a NULL-terminated */
 void models_xai_promote_top(char *const *ids, char **out, size_t cap) {
     const char *TOP = "grok-build-0.1";
@@ -323,7 +323,7 @@ void models_xai_promote_top(char *const *ids, char **out, size_t cap) {
     out[o] = NULL;
 }
 
-/* PoP: _xai_merge_curated_extras @ hermes_cli/models.py:_xai_merge_curated_extras */
+/* PoP: models_xai_merge_curated_extras @ hermes_cli/models.py:_xai_merge_curated_extras */
 /* Append Hermes-curated xAI extras that are missing. out is a NULL-terminated */
 void models_xai_merge_curated_extras(char **ids, size_t cap) {
     static const char *EXTRAS[] = { "grok-composer-2.5-fast", NULL };
@@ -342,7 +342,7 @@ void models_xai_merge_curated_extras(char **ids, size_t cap) {
     }
 }
 
-/* PoP: _xai_curated_models @ hermes_cli/models.py:_xai_curated_models */
+/* PoP: models_xai_curated_models @ hermes_cli/models.py:_xai_curated_models */
 /* Fills *out (caller frees each + array) with xAI curated model ids; *out_n is
  * the count. Static fallback (Python reads models.dev disk cache; live path
  * via the injectable fetch is layered on top). */
@@ -360,7 +360,7 @@ void models_xai_curated_models(char ***out, size_t *out_n) {
     *out_n = n;
 }
 
-/* PoP: _codex_curated_models @ hermes_cli/models.py:_codex_curated_models */
+/* PoP: models_codex_curated_models @ hermes_cli/models.py:_codex_curated_models */
 /* Fills *out (caller frees each + array) with openai-codex curated model ids.
  * The Python derives from codex_models.DEFAULT_CODEX_MODELS; we port the
  * equivalent curated list. */
@@ -377,7 +377,7 @@ void models_codex_curated_models(char ***out, size_t *out_n) {
     *out_n = n;
 }
 
-/* PoP: get_nous_recommended_aux_model @ hermes_cli/models.py:get_nous_recommended_aux_model */
+/* PoP: payload @ hermes_cli/models.py:get_nous_recommended_aux_model */
 /* Extract the aux model id from a Nous recommended payload (dict with a "aux_model" or "auxiliary" key, else first model in the list). Returns */
 char *models_nous_recommended_aux_model(const char *recommended_json) {
     if (!recommended_json) return NULL;
@@ -402,7 +402,7 @@ char *models_nous_recommended_aux_model(const char *recommended_json) {
 
 /* ── Nous recommended-models disk cache + curated list ──────────────────── */
 
-/* PoP: _write_nous_recommended_disk @ hermes_cli/models.py:_write_nous_recommended_disk */
+/* PoP: data_json @ hermes_cli/models.py:_write_nous_recommended_disk */
 /* Persist data_json (already JSON-encoded) as the last-known-good payload for
  * `base`, merged into any existing per-base map, written atomically. */
 void models_write_nous_recommended_disk(const char *base, const char *data_json) {
@@ -449,7 +449,7 @@ void models_write_nous_recommended_disk(const char *base, const char *data_json)
     free(path);
 }
 
-/* PoP: get_curated_nous_model_ids @ hermes_cli/models.py:get_curated_nous_model_ids */
+/* PoP: out @ hermes_cli/models.py:get_curated_nous_model_ids */
 /* Fills *out (caller frees each + array) with the Nous curated list, preferring
  * the live catalog manifest (injectable) and falling back to the static
  * _PROVIDER_MODELS["nous"] snapshot. */
@@ -494,7 +494,7 @@ void models_get_curated_nous_model_ids(http_fetch_fn fetch, void *ctx,
     *out = res; *out_n = rn;
 }
 
-/* PoP: fetch_nous_recommended_models @ hermes_cli/models.py:fetch_nous_recommended_models */
+/* PoP: endpoint @ hermes_cli/models.py:fetch_nous_recommended_models */
 /* Hits the Portal recommended-models endpoint (injectable HTTP) and returns the
  * parsed JSON dict string, or falls back to the disk cache on any failure. */
 char *models_fetch_nous_recommended_models(http_fetch_fn fetch, void *ctx,

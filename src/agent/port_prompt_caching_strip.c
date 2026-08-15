@@ -41,7 +41,7 @@ static bool part_has_cache_control(const json_t *part)
 }
 
 /* ── strip_anthropic_cache_control ────────────────────────────────────────── */
-/* PoP: strip_anthropic_cache_control @ agent/prompt_caching.py:strip_anthropic_cache_control */
+/* PoP: pca_strip_anthropic_cache_control @ agent/prompt_caching.py:strip_anthropic_cache_control */
 /*
  * Python: mutates api_messages in place (pop "cache_control" from each msg,
  * strip cache_control from content parts, and flatten decoration-shaped
@@ -130,7 +130,7 @@ void pca_strip_anthropic_cache_control(json_t *api_messages)
 }
 
 /* ── strip_anthropic_tool_cache_control ──────────────────────────────────── */
-/* PoP: strip_anthropic_tool_cache_control @ agent/prompt_caching.py:strip_anthropic_tool_cache_control */
+/* PoP: copy @ agent/prompt_caching.py:strip_anthropic_tool_cache_control */
 /*
  * Python: cleaned = deepcopy(tools or []); pop "cache_control" per tool dict;
  *  return cleaned.  C: returns a deep copy (caller frees with json_free).

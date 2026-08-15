@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: get_project_root @ hermes_cli/uninstall.py:get_project_root */
+/* PoP: uni_get_project_root @ hermes_cli/uninstall.py:get_project_root */
 char *uni_get_project_root(void) {
     /* Python: installation dir. */
     const char *h = getenv("HERMES_HOME");
@@ -30,7 +30,7 @@ char *uni_get_project_root(void) {
     return strdup(".");
 }
 
-/* PoP: __init__ @ hermes_cli/uninstall.py:__init__ */
+/* PoP: uni_init @ hermes_cli/uninstall.py:__init__ */
 char *uni_init(const char *mode) {
     /* Python: gui/lite/full flags. */
     bool gui = mode && strcmp(mode, "gui") == 0;
@@ -41,7 +41,7 @@ char *uni_init(const char *mode) {
     return out;
 }
 
-/* PoP: main @ hermes_cli/uninstall.py:main */
+/* PoP: uni_main @ hermes_cli/uninstall.py:main */
 int uni_main(const char *argv_json) {
     /* Python: module entrypoint. */
     if (!argv_json) return -1;

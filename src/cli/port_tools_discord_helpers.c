@@ -14,13 +14,13 @@
 #include "hermes_json.h"
 #include "hermes_logger.h"
 
-/* PoP: _get_bot_token @ tools/discord_tool.py:_get_bot_token */
+/* PoP: discord_get_bot_token @ tools/discord_tool.py:_get_bot_token */
 char *discord_get_bot_token(void) {
     const char *t = getenv("DISCORD_BOT_TOKEN");
     return t && t[0] ? strdup(t) : NULL;
 }
 
-/* PoP: _token_cache_key @ tools/discord_tool.py:_token_cache_key */
+/* PoP: discord_token_cache_key @ tools/discord_tool.py:_token_cache_key */
 char *discord_token_cache_key(const char *bot_id) {
     if (!bot_id) return NULL;
     char key[256];
@@ -28,7 +28,7 @@ char *discord_token_cache_key(const char *bot_id) {
     return strdup(key);
 }
 
-/* PoP: _channel_type_name @ tools/discord_tool.py:_channel_type_name */
+/* PoP: discord_channel_type_name @ tools/discord_tool.py:_channel_type_name */
 const char *discord_channel_type_name(int type) {
     switch (type) {
         case 0: return "text"; case 1: return "dm"; case 2: return "voice";
@@ -49,7 +49,7 @@ static const char *discord_cache_dir(void) {
     return dir;
 }
 
-/* PoP: _capability_disk_cache_path @ tools/discord_tool.py:_capability_disk_cache_path */
+/* PoP: discord_capability_disk_cache_path @ tools/discord_tool.py:_capability_disk_cache_path */
 char *discord_capability_disk_cache_path(const char *guild_id) {
     const char *dir = discord_cache_dir();
     char path[1024];
@@ -57,7 +57,7 @@ char *discord_capability_disk_cache_path(const char *guild_id) {
     return strdup(path);
 }
 
-/* PoP: _load_caps_from_disk @ tools/discord_tool.py:_load_caps_from_disk */
+/* PoP: discord_load_caps_from_disk @ tools/discord_tool.py:_load_caps_from_disk */
 json_t *discord_load_caps_from_disk(const char *guild_id) {
     char *path = discord_capability_disk_cache_path(guild_id);
     if (!path) return NULL;
@@ -73,7 +73,7 @@ json_t *discord_load_caps_from_disk(const char *guild_id) {
     return j;
 }
 
-/* PoP: _save_caps_to_disk @ tools/discord_tool.py:_save_caps_to_disk */
+/* PoP: discord_save_caps_to_disk @ tools/discord_tool.py:_save_caps_to_disk */
 bool discord_save_caps_to_disk(const char *guild_id, json_t *caps) {
     if (!guild_id || !caps) return false;
     const char *dir = discord_cache_dir();
@@ -87,7 +87,7 @@ bool discord_save_caps_to_disk(const char *guild_id, json_t *caps) {
     return true;
 }
 
-/* PoP: _reset_capability_cache @ tools/discord_tool.py:_reset_capability_cache */
+/* PoP: discord_reset_capability_cache @ tools/discord_tool.py:_reset_capability_cache */
 void discord_reset_capability_cache(void) {
     const char *dir = discord_cache_dir();
     char cmd[1024];
@@ -95,7 +95,7 @@ void discord_reset_capability_cache(void) {
     system(cmd);
 }
 
-/* PoP: _server_info @ tools/discord_tool.py:_server_info */
+/* PoP: discord_server_info @ tools/discord_tool.py:_server_info */
 json_t *discord_server_info(const char *guild_id) {
     json_t *info = json_object();
     json_set(info, "guild_id", json_string(guild_id ? guild_id : ""));
@@ -103,7 +103,7 @@ json_t *discord_server_info(const char *guild_id) {
     return info;
 }
 
-/* PoP: _load_allowed_actions_config @ tools/discord_tool.py:_load_allowed_actions_config */
+/* PoP: discord_load_allowed_actions_config @ tools/discord_tool.py:_load_allowed_actions_config */
 json_t *discord_load_allowed_actions_config(void) {
     json_t *cfg = json_object();
     json_set(cfg, "allow_send_messages", json_bool(true));
@@ -113,7 +113,7 @@ json_t *discord_load_allowed_actions_config(void) {
     return cfg;
 }
 
-/* PoP: _available_actions @ tools/discord_tool.py:_available_actions */
+/* PoP: discord_available_actions @ tools/discord_tool.py:_available_actions */
 json_t *discord_available_actions(void) {
     json_t *arr = json_array();
     json_array_append(arr, json_string("send_message"));
@@ -126,7 +126,7 @@ json_t *discord_available_actions(void) {
     return arr;
 }
 
-/* PoP: _build_schema @ tools/discord_tool.py:_build_schema */
+/* PoP: discord_build_schema @ tools/discord_tool.py:_build_schema */
 json_t *discord_build_schema(void) {
     json_t *schema = json_object();
     json_set(schema, "name", json_string("discord"));
@@ -137,7 +137,7 @@ json_t *discord_build_schema(void) {
     return schema;
 }
 
-/* PoP: _get_dynamic_schema @ tools/discord_tool.py:_get_dynamic_schema */
+/* PoP: discord_get_dynamic_schema @ tools/discord_tool.py:_get_dynamic_schema */
 json_t *discord_get_dynamic_schema(void) {
     json_t *base = discord_build_schema();
     json_t *actions = discord_available_actions();
@@ -145,10 +145,10 @@ json_t *discord_get_dynamic_schema(void) {
     return base;
 }
 
-/* PoP: get_dynamic_schema_core @ tools/discord_tool.py:get_dynamic_schema_core */
+/* PoP: discord_get_dynamic_schema_core @ tools/discord_tool.py:get_dynamic_schema_core */
 json_t *discord_get_dynamic_schema_core(void) { return discord_get_dynamic_schema(); }
 
-/* PoP: get_dynamic_schema_admin @ tools/discord_tool.py:get_dynamic_schema_admin */
+/* PoP: discord_get_dynamic_schema_admin @ tools/discord_tool.py:get_dynamic_schema_admin */
 json_t *discord_get_dynamic_schema_admin(void) {
     json_t *s = discord_get_dynamic_schema();
     json_t *admin_actions = json_array();
@@ -159,10 +159,10 @@ json_t *discord_get_dynamic_schema_admin(void) {
     return s;
 }
 
-/* PoP: get_dynamic_schema @ tools/discord_tool.py:get_dynamic_schema */
+/* PoP: discord_enrich_403 @ tools/discord_tool.py:get_dynamic_schema */
 /* discord_get_dynamic_schema is defined above as the core variant */
 
-/* PoP: _enrich_403 @ tools/discord_tool.py:_enrich_403 */
+/* PoP: discord_enrich_403 @ tools/discord_tool.py:_enrich_403 */
 char *discord_enrich_403(const char *error_body) {
     if (!error_body) return NULL;
     if (strstr(error_body, "403") || strcasestr(error_body, "Missing Access"))
@@ -170,13 +170,13 @@ char *discord_enrich_403(const char *error_body) {
     return NULL;
 }
 
-/* PoP: check_discord_tool_requirements @ tools/discord_tool.py:check_discord_tool_requirements */
+/* PoP: discord_check_requirements @ tools/discord_tool.py:check_discord_tool_requirements */
 bool discord_check_requirements(void) {
     const char *t = getenv("DISCORD_BOT_TOKEN");
     return t && t[0];
 }
 
-/* PoP: _read_limited_response_body @ tools/discord_tool.py:_read_limited_response_body */
+/* PoP: discord_read_limited_response_body @ tools/discord_tool.py:_read_limited_response_body */
 char *discord_read_limited_response_body(FILE *fp, size_t max_bytes) {
     if (!fp || max_bytes == 0) return NULL;
     char *buf = malloc(max_bytes + 1);
@@ -186,14 +186,14 @@ char *discord_read_limited_response_body(FILE *fp, size_t max_bytes) {
     return buf;
 }
 
-/* PoP: _discord_request @ tools/discord_tool.py:_discord_request */
+/* PoP: discord_request @ tools/discord_tool.py:_discord_request */
 void *discord_request(const char *method, const char *endpoint, const char *body) {
     (void)method; (void)endpoint; (void)body;
     /* Full HTTP request handled by libhttp gateway infrastructure */
     return NULL;
 }
 
-/* PoP: _detect_capabilities_nonblocking @ tools/discord_tool.py:_detect_capabilities_nonblocking */
+/* PoP: discord_detect_capabilities_nonblocking @ tools/discord_tool.py:_detect_capabilities_nonblocking */
 /* PoP: discord_detect_capabilities_nonblocking @ tools/discord_tool.py:_detect_capabilities_nonblocking */
 void discord_detect_capabilities_nonblocking(const char *guild_id) {
     (void)guild_id;
@@ -203,7 +203,7 @@ void discord_detect_capabilities_nonblocking(const char *guild_id) {
     printf("caps default (permissive): members_intent=1 message_content=1 detected=0\n");
 }
 
-/* PoP: _fetch_capabilities @ tools/discord_tool.py:_fetch_capabilities */
+/* PoP: discord_fetch_capabilities @ tools/discord_tool.py:_fetch_capabilities */
 json_t *discord_fetch_capabilities(const char *guild_id) {
     json_t *caps = discord_load_caps_from_disk(guild_id);
     if (caps) return caps;
@@ -214,7 +214,7 @@ json_t *discord_fetch_capabilities(const char *guild_id) {
     return caps;
 }
 
-/* PoP: _detect_capabilities @ tools/discord_tool.py:_detect_capabilities */
+/* PoP: discord_detect_capabilities @ tools/discord_tool.py:_detect_capabilities */
 json_t *discord_detect_capabilities(const char *guild_id) {
     return discord_fetch_capabilities(guild_id);
 }
@@ -231,13 +231,13 @@ char *discord_admin_handler(const char *args_json) {
     return strdup("{\"ok\":true,\"admin\":true}");
 }
 
-/* PoP: _make_handler @ tools/discord_tool.py:_make_handler */
+/* PoP: discord_make_handler @ tools/discord_tool.py:_make_handler */
 void *discord_make_handler(const char *name) {
     (void)name;
     return NULL;
 }
 
-/* PoP: _run_discord_action @ tools/discord_tool.py:_run_discord_action */
+/* PoP: discord_run_action @ tools/discord_tool.py:_run_discord_action */
 char *discord_run_action(const char *action, const char *args_json) {
     if (!action) return NULL;
     char buf[256];

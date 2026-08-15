@@ -18,7 +18,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-/* PoP: _send_or_update_status_coro @ gateway/run.py:_send_or_update_status_coro */
+/* PoP: grun_u_send_or_update_status_coro @ gateway/run.py:_send_or_update_status_coro */
 int grun_u_send_or_update_status_coro(const char *arg) {
     /* Python: bubble edit #30045. Arg =
      * "updated\tstate\tresult". */
@@ -33,7 +33,7 @@ int grun_u_send_or_update_status_coro(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_runtime_agent_kwargs @ gateway/run.py:_resolve_runtime_agent_kwargs */
+/* PoP: grun_u_resolve_runtime_agent_kwargs @ gateway/run.py:_resolve_runtime_agent_kwargs */
 int grun_u_resolve_runtime_agent_kwargs(const char *arg) {
     /* Python: config-authoritative. Arg =
      * "state\tresult\terr". */
@@ -56,7 +56,7 @@ int grun_u_resolve_runtime_agent_kwargs(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_runtime_agent_kwargs_for_provider @ gateway/run.py:_resolve_runtime_agent_kwargs_for_provider */
+/* PoP: grun_u_resolve_runtime_agent_kwargs_for_provider @ gateway/run.py:_resolve_runtime_agent_kwargs_for_provider */
 int grun_u_resolve_runtime_agent_kwargs_for_provider(const char *arg) {
     /* Python: resolve runtime provider kwargs. Arg =
      * "provider\tstate\tresult_json". */
@@ -72,7 +72,7 @@ int grun_u_resolve_runtime_agent_kwargs_for_provider(const char *arg) {
     return 0;
 }
 
-/* PoP: _try_resolve_fallback_provider @ gateway/run.py:_try_resolve_fallback_provider */
+/* PoP: grun_u_try_resolve_fallback_provider @ gateway/run.py:_try_resolve_fallback_provider */
 int grun_u_try_resolve_fallback_provider(const char *arg) {
     /* Python: fallback chain. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -83,7 +83,7 @@ int grun_u_try_resolve_fallback_provider(const char *arg) {
     return 0;
 }
 
-/* PoP: _probe_audio_duration @ gateway/run.py:_probe_audio_duration */
+/* PoP: grun_u_probe_audio_duration @ gateway/run.py:_probe_audio_duration */
 int grun_u_probe_audio_duration(const char *arg) {
     /* Python: best-effort duration. Arg =
      * "dur\tstate\tresult". */
@@ -96,7 +96,7 @@ int grun_u_probe_audio_duration(const char *arg) {
     return 0;
 }
 
-/* PoP: _dequeue_pending_event @ gateway/run.py:_dequeue_pending_event */
+/* PoP: grun_u_dequeue_pending_event @ gateway/run.py:_dequeue_pending_event */
 int grun_u_dequeue_pending_event(const char *arg) {
     /* Python: adapter.get_pending_message(session_key) — full event incl.
      * media metadata. Arg = pending event JSON (or empty). */
@@ -105,7 +105,7 @@ int grun_u_dequeue_pending_event(const char *arg) {
     return 0;
 }
 
-/* PoP: _get_channel_override @ gateway/run.py:_get_channel_override */
+/* PoP: grun_u_get_channel_override @ gateway/run.py:_get_channel_override */
 int grun_u_get_channel_override(const char *arg) {
     /* Python: chat_id then thread_id then parent_id lookup. Arg =
      * "found\tresult". */
@@ -116,7 +116,7 @@ int grun_u_get_channel_override(const char *arg) {
     return 0;
 }
 
-/* PoP: _drain_gateway_watch_events @ gateway/run.py:_drain_gateway_watch_events */
+/* PoP: grun_u_drain_gateway_watch_events @ gateway/run.py:_drain_gateway_watch_events */
 int grun_u_drain_gateway_watch_events(const char *arg) {
     /* Python: watch drain w/o spin. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -128,7 +128,7 @@ int grun_u_drain_gateway_watch_events(const char *arg) {
     return 0;
 }
 
-/* PoP: _dispose_unused_adapter @ gateway/run.py:_dispose_unused_adapter */
+/* PoP: grun_u_dispose_unused_adapter @ gateway/run.py:_dispose_unused_adapter */
 int grun_u_dispose_unused_adapter(const char *arg) {
     /* Python: never-installed cleanup. Arg =
      * "disposed\tstate\tresult". */
@@ -143,7 +143,7 @@ int grun_u_dispose_unused_adapter(const char *arg) {
     return 0;
 }
 
-/* PoP: _wire_teams_pipeline_runtime @ gateway/run.py:_wire_teams_pipeline_runtime */
+/* PoP: grun_u_wire_teams_pipeline_runtime @ gateway/run.py:_wire_teams_pipeline_runtime */
 int grun_u_wire_teams_pipeline_runtime(const char *arg) {
     /* Python: pipeline bind. Arg = "has_adapter\tplugin_enabled\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -158,7 +158,7 @@ int grun_u_wire_teams_pipeline_runtime(const char *arg) {
     return 0;
 }
 
-/* PoP: _warn_if_docker_media_delivery_is_risky @ gateway/run.py:_warn_if_docker_media_delivery_is_risky */
+/* PoP: grun_u_warn_if_docker_media_delivery_is_risky @ gateway/run.py:_warn_if_docker_media_delivery_is_risky */
 int grun_u_warn_if_docker_media_delivery_is_risky(const char *arg) {
     /* Python: export-mount warn. Arg =
      * "docker\thas_platforms\tstate\tresult". */
@@ -174,7 +174,7 @@ int grun_u_warn_if_docker_media_delivery_is_risky(const char *arg) {
     return 0;
 }
 
-/* PoP: _set_adapter_auto_tts_disabled @ gateway/run.py:_set_adapter_auto_tts_disabled */
+/* PoP: grun_u_set_adapter_auto_tts_disabled @ gateway/run.py:_set_adapter_auto_tts_disabled */
 int grun_u_set_adapter_auto_tts_disabled(const char *arg) {
     /* Python: add/discard in TTS suppression sets. Arg =
      * "chat_id\tdisabled\tsets_present". */
@@ -188,7 +188,7 @@ int grun_u_set_adapter_auto_tts_disabled(const char *arg) {
     return 0;
 }
 
-/* PoP: _set_adapter_auto_tts_enabled @ gateway/run.py:_set_adapter_auto_tts_enabled */
+/* PoP: grun_u_set_adapter_auto_tts_enabled @ gateway/run.py:_set_adapter_auto_tts_enabled */
 int grun_u_set_adapter_auto_tts_enabled(const char *arg) {
     /* Python: per-chat opt-in set + stale /voice off clear. Arg =
      * "enabled\tchat_id\tstate". */
@@ -203,7 +203,7 @@ int grun_u_set_adapter_auto_tts_enabled(const char *arg) {
     return 0;
 }
 
-/* PoP: _sync_voice_mode_state_to_adapter @ gateway/run.py:_sync_voice_mode_state_to_adapter */
+/* PoP: grun_u_sync_voice_mode_state_to_adapter @ gateway/run.py:_sync_voice_mode_state_to_adapter */
 int grun_u_sync_voice_mode_state_to_adapter(const char *arg) {
     /* Python: persisted /voice. Arg =
      * "synced\tstate\tresult". */
@@ -218,7 +218,7 @@ int grun_u_sync_voice_mode_state_to_adapter(const char *arg) {
     return 0;
 }
 
-/* PoP: _await_adapter_cleanup_with_timeout @ gateway/run.py:_await_adapter_cleanup_with_timeout */
+/* PoP: grun_u_await_adapter_cleanup_with_timeout @ gateway/run.py:_await_adapter_cleanup_with_timeout */
 int grun_u_await_adapter_cleanup_with_timeout(const char *arg) {
     /* Python: ownership-kept wait. Arg =
      * "done\tstate\tresult". */
@@ -231,7 +231,7 @@ int grun_u_await_adapter_cleanup_with_timeout(const char *arg) {
     return 0;
 }
 
-/* PoP: _safe_adapter_disconnect @ gateway/run.py:_safe_adapter_disconnect */
+/* PoP: grun_u_safe_adapter_disconnect @ gateway/run.py:_safe_adapter_disconnect */
 int grun_u_safe_adapter_disconnect(const char *arg) {
     /* Python: defensive disconnect. Arg =
      * "done\tstate\tresult". */
@@ -244,7 +244,7 @@ int grun_u_safe_adapter_disconnect(const char *arg) {
     return 0;
 }
 
-/* PoP: _bounded_adapter_teardown @ gateway/run.py:_bounded_adapter_teardown */
+/* PoP: grun_u_bounded_adapter_teardown @ gateway/run.py:_bounded_adapter_teardown */
 int grun_u_bounded_adapter_teardown(const char *arg) {
     /* Python: timeout-budget teardown. Arg =
      * "torn\tstate\tresult". */
@@ -257,7 +257,7 @@ int grun_u_bounded_adapter_teardown(const char *arg) {
     return 0;
 }
 
-/* PoP: _connect_initial_adapter_with_timeout @ gateway/run.py:_connect_initial_adapter_with_timeout */
+/* PoP: grun_u_connect_initial_adapter_with_timeout @ gateway/run.py:_connect_initial_adapter_with_timeout */
 int grun_u_connect_initial_adapter_with_timeout(const char *arg) {
     /* Python: scoped replace intent. Arg =
      * "connected\tstate\tresult". */
@@ -272,7 +272,7 @@ int grun_u_connect_initial_adapter_with_timeout(const char *arg) {
     return 0;
 }
 
-/* PoP: _telegram_topic_mode_enabled @ gateway/run.py:_telegram_topic_mode_enabled */
+/* PoP: grun_u_telegram_topic_mode_enabled @ gateway/run.py:_telegram_topic_mode_enabled */
 int grun_u_telegram_topic_mode_enabled(const char *arg) {
     /* Python: DM topic mode check. Arg =
      * "is_telegram\tis_dm\tstate\tresult". */
@@ -288,7 +288,7 @@ int grun_u_telegram_topic_mode_enabled(const char *arg) {
     return 0;
 }
 
-/* PoP: _should_send_telegram_lobby_reminder @ gateway/run.py:_should_send_telegram_lobby_reminder */
+/* PoP: grun_u_should_send_telegram_lobby_reminder @ gateway/run.py:_should_send_telegram_lobby_reminder */
 int grun_u_should_send_telegram_lobby_reminder(const char *arg) {
     /* Python: cooldown window per chat. Arg = "chat_id\telapsed\tcooldown\tsend". */
     if (!arg || !*arg) { printf("1\n"); return 0; }
@@ -302,7 +302,7 @@ int grun_u_should_send_telegram_lobby_reminder(const char *arg) {
     return 0;
 }
 
-/* PoP: _record_telegram_topic_binding @ gateway/run.py:_record_telegram_topic_binding */
+/* PoP: grun_u_record_telegram_topic_binding @ gateway/run.py:_record_telegram_topic_binding */
 int grun_u_record_telegram_topic_binding(const char *arg) {
     /* Python: bind_telegram_topic persistence. Arg =
      * "chat_id\tthread_id\tsession_key\tstate". */
@@ -317,7 +317,7 @@ int grun_u_record_telegram_topic_binding(const char *arg) {
     return 0;
 }
 
-/* PoP: _sync_telegram_topic_binding @ gateway/run.py:_sync_telegram_topic_binding */
+/* PoP: grun_u_sync_telegram_topic_binding @ gateway/run.py:_sync_telegram_topic_binding */
 int grun_u_sync_telegram_topic_binding(const char *arg) {
     /* Python: refresh binding for topic lanes. Arg = "is_lane\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -331,7 +331,7 @@ int grun_u_sync_telegram_topic_binding(const char *arg) {
     return 0;
 }
 
-/* PoP: _recover_telegram_topic_thread_id @ gateway/run.py:_recover_telegram_topic_thread_id */
+/* PoP: grun_u_recover_telegram_topic_thread_id @ gateway/run.py:_recover_telegram_topic_thread_id */
 int grun_u_recover_telegram_topic_thread_id(const char *arg) {
     /* Python: lobby-pin. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -342,7 +342,7 @@ int grun_u_recover_telegram_topic_thread_id(const char *arg) {
     return 0;
 }
 
-/* PoP: _normalize_source_for_session_key @ gateway/run.py:_normalize_source_for_session_key */
+/* PoP: grun_u_normalize_source_for_session_key @ gateway/run.py:_normalize_source_for_session_key */
 int grun_u_normalize_source_for_session_key(const char *arg) {
     /* Python: topic recovery copy. Arg = "recovered\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -355,7 +355,7 @@ int grun_u_normalize_source_for_session_key(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_session_agent_runtime @ gateway/run.py:_resolve_session_agent_runtime */
+/* PoP: grun_u_resolve_session_agent_runtime @ gateway/run.py:_resolve_session_agent_runtime */
 int grun_u_resolve_session_agent_runtime(const char *arg) {
     /* Python: runtime priority. Arg =
      * "override\tstate\tresult". */
@@ -369,7 +369,7 @@ int grun_u_resolve_session_agent_runtime(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_turn_agent_config @ gateway/run.py:_resolve_turn_agent_config */
+/* PoP: grun_u_resolve_turn_agent_config @ gateway/run.py:_resolve_turn_agent_config */
 int grun_u_resolve_turn_agent_config(const char *arg) {
     /* Python: turn route build. Arg =
      * "model\ttier\tstate\tresult". */
@@ -383,7 +383,7 @@ int grun_u_resolve_turn_agent_config(const char *arg) {
     return 0;
 }
 
-/* PoP: _sync_session_model_from_agent @ gateway/run.py:_sync_session_model_from_agent */
+/* PoP: grun_u_sync_session_model_from_agent @ gateway/run.py:_sync_session_model_from_agent */
 int grun_u_sync_session_model_from_agent(const char *arg) {
     /* Python: runtime model persist. Arg =
      * "synced\tstate\tresult". */
@@ -398,7 +398,7 @@ int grun_u_sync_session_model_from_agent(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_reaction_event @ gateway/run.py:_handle_reaction_event */
+/* PoP: grun_u_handle_reaction_event @ gateway/run.py:_handle_reaction_event */
 int grun_u_handle_reaction_event(const char *arg) {
     /* Python: hook fan-out. Arg =
      * "emitted\tstate\tresult". */
@@ -413,7 +413,7 @@ int grun_u_handle_reaction_event(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_adapter_fatal_error @ gateway/run.py:_handle_adapter_fatal_error */
+/* PoP: grun_u_handle_adapter_fatal_error @ gateway/run.py:_handle_adapter_fatal_error */
 int grun_u_handle_adapter_fatal_error(const char *arg) {
     /* Python: retryable queue. Arg =
      * "queued\tstate\tresult". */
@@ -428,7 +428,7 @@ int grun_u_handle_adapter_fatal_error(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_adapter_fatal_error_detached @ gateway/run.py:_handle_adapter_fatal_error_detached */
+/* PoP: grun_u_handle_adapter_fatal_error_detached @ gateway/run.py:_handle_adapter_fatal_error_detached */
 int grun_u_handle_adapter_fatal_error_detached(const char *arg) {
     /* Python: strand-exit. Arg =
      * "exited\tstate\tresult". */
@@ -443,7 +443,7 @@ int grun_u_handle_adapter_fatal_error_detached(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_adapter_fatal_error_impl @ gateway/run.py:_handle_adapter_fatal_error_impl */
+/* PoP: grun_u_handle_adapter_fatal_error_impl @ gateway/run.py:_handle_adapter_fatal_error_impl */
 int grun_u_handle_adapter_fatal_error_impl(const char *arg) {
     /* Python: impl body. Arg =
      * "state\tresult". */
@@ -455,7 +455,7 @@ int grun_u_handle_adapter_fatal_error_impl(const char *arg) {
     return 0;
 }
 
-/* PoP: _restart_loop_guard_config @ gateway/run.py:_restart_loop_guard_config */
+/* PoP: grun_u_restart_loop_guard_config @ gateway/run.py:_restart_loop_guard_config */
 int grun_u_restart_loop_guard_config(const char *arg) {
     /* Python: config w/ defaults. Arg = "state\tmax_restarts\twindow\tresult". */
     if (!arg || !*arg) { printf("5\t300\n"); return 0; }
@@ -468,7 +468,7 @@ int grun_u_restart_loop_guard_config(const char *arg) {
     return 0;
 }
 
-/* PoP: _log_scale_to_zero_not_armed_reason @ gateway/run.py:_log_scale_to_zero_not_armed_reason */
+/* PoP: grun_u_log_scale_to_zero_not_armed_reason @ gateway/run.py:_log_scale_to_zero_not_armed_reason */
 int grun_u_log_scale_to_zero_not_armed_reason(const char *arg) {
     /* Python: opted-in only. Arg =
      * "opted_in\trelay_only\twake_url\tstate\tresult". */
@@ -486,7 +486,7 @@ int grun_u_log_scale_to_zero_not_armed_reason(const char *arg) {
     return 0;
 }
 
-/* PoP: _scale_to_zero_note_real_inbound @ gateway/run.py:_scale_to_zero_note_real_inbound */
+/* PoP: grun_u_scale_to_zero_note_real_inbound @ gateway/run.py:_scale_to_zero_note_real_inbound */
 int grun_u_scale_to_zero_note_real_inbound(const char *arg) {
     /* Python: stamp inbound + restore running. Arg = "in_cooldown\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -499,7 +499,7 @@ int grun_u_scale_to_zero_note_real_inbound(const char *arg) {
     return 0;
 }
 
-/* PoP: _relay_adapter_for_dormancy @ gateway/run.py:_relay_adapter_for_dormancy */
+/* PoP: grun_u_relay_adapter_for_dormancy @ gateway/run.py:_relay_adapter_for_dormancy */
 int grun_u_relay_adapter_for_dormancy(const char *arg) {
     /* Python: connected relay. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -510,7 +510,7 @@ int grun_u_relay_adapter_for_dormancy(const char *arg) {
     return 0;
 }
 
-/* PoP: _scale_to_zero_watcher @ gateway/run.py:_scale_to_zero_watcher */
+/* PoP: grun_u_scale_to_zero_watcher @ gateway/run.py:_scale_to_zero_watcher */
 int grun_u_scale_to_zero_watcher(const char *arg) {
     /* Python: D12 sequence. Arg =
      * "dormant\tstate\tresult". */
@@ -525,7 +525,7 @@ int grun_u_scale_to_zero_watcher(const char *arg) {
     return 0;
 }
 
-/* PoP: _enqueue_fifo @ gateway/run.py:_enqueue_fifo */
+/* PoP: grun_u_enqueue_fifo @ gateway/run.py:_enqueue_fifo */
 int grun_u_enqueue_fifo(const char *arg) {
     /* Python: append to pending slot or FIFO chain. Arg =
      * "session_key\tpending\tqueued". */
@@ -537,7 +537,7 @@ int grun_u_enqueue_fifo(const char *arg) {
     return 0;
 }
 
-/* PoP: _promote_queued_event @ gateway/run.py:_promote_queued_event */
+/* PoP: grun_u_promote_queued_event @ gateway/run.py:_promote_queued_event */
 int grun_u_promote_queued_event(const char *arg) {
     /* Python: overflow promote. Arg =
      * "has_overflow\tslot_empty\tstate\tresult". */
@@ -553,7 +553,7 @@ int grun_u_promote_queued_event(const char *arg) {
     return 0;
 }
 
-/* PoP: _clear_goal_pending_continuations @ gateway/run.py:_clear_goal_pending_continuations */
+/* PoP: grun_u_clear_goal_pending_continuations @ gateway/run.py:_clear_goal_pending_continuations */
 int grun_u_clear_goal_pending_continuations(const char *arg) {
     /* Python: synthetic /goal removal. Arg =
      * "removed\tstate\tresult". */
@@ -566,7 +566,7 @@ int grun_u_clear_goal_pending_continuations(const char *arg) {
     return 0;
 }
 
-/* PoP: _persist_active_agents @ gateway/run.py:_persist_active_agents */
+/* PoP: grun_u_persist_active_agents @ gateway/run.py:_persist_active_agents */
 int grun_u_persist_active_agents(const char *arg) {
     /* Python: turn-boundary write. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -578,7 +578,7 @@ int grun_u_persist_active_agents(const char *arg) {
     return 0;
 }
 
-/* PoP: _enter_external_drain @ gateway/run.py:_enter_external_drain */
+/* PoP: grun_u_enter_external_drain @ gateway/run.py:_enter_external_drain */
 int grun_u_enter_external_drain(const char *arg) {
     /* Python: idempotent drain entry. Arg = "already_active\tinflight\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -591,7 +591,7 @@ int grun_u_enter_external_drain(const char *arg) {
     return 0;
 }
 
-/* PoP: _exit_external_drain @ gateway/run.py:_exit_external_drain */
+/* PoP: grun_u_exit_external_drain @ gateway/run.py:_exit_external_drain */
 int grun_u_exit_external_drain(const char *arg) {
     /* Python: revert drain. Arg =
      * "mid_drain\tshutting\tstate\tresult". */
@@ -608,7 +608,7 @@ int grun_u_exit_external_drain(const char *arg) {
     return 0;
 }
 
-/* PoP: _drain_control_watcher @ gateway/run.py:_drain_control_watcher */
+/* PoP: grun_u_drain_control_watcher @ gateway/run.py:_drain_control_watcher */
 int grun_u_drain_control_watcher(const char *arg) {
     /* Python: marker reconcile. Arg =
      * "draining\tstate\tresult". */
@@ -623,7 +623,7 @@ int grun_u_drain_control_watcher(const char *arg) {
     return 0;
 }
 
-/* PoP: _pause_failed_platform @ gateway/run.py:_pause_failed_platform */
+/* PoP: grun_u_pause_failed_platform @ gateway/run.py:_pause_failed_platform */
 int grun_u_pause_failed_platform(const char *arg) {
     /* Python: manual pause. Arg =
      * "known\tpaused\tstate\tresult". */
@@ -639,7 +639,7 @@ int grun_u_pause_failed_platform(const char *arg) {
     return 0;
 }
 
-/* PoP: _resume_paused_platform @ gateway/run.py:_resume_paused_platform */
+/* PoP: grun_u_resume_paused_platform @ gateway/run.py:_resume_paused_platform */
 int grun_u_resume_paused_platform(const char *arg) {
     /* Python: unpause + immediate retry. Arg =
      * "paused\tstate\tresult". */
@@ -654,7 +654,7 @@ int grun_u_resume_paused_platform(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_model_for_channel @ gateway/run.py:_resolve_model_for_channel */
+/* PoP: grun_u_resolve_model_for_channel @ gateway/run.py:_resolve_model_for_channel */
 int grun_u_resolve_model_for_channel(const char *arg) {
     /* Python: channel override else global default. Arg =
      * "override\tdefault". */
@@ -664,7 +664,7 @@ int grun_u_resolve_model_for_channel(const char *arg) {
     return 0;
 }
 
-/* PoP: _get_system_prompt_for_channel @ gateway/run.py:_get_system_prompt_for_channel */
+/* PoP: grun_u_get_system_prompt_for_channel @ gateway/run.py:_get_system_prompt_for_channel */
 int grun_u_get_system_prompt_for_channel(const char *arg) {
     /* Python: channel_overrides lookup by chat_id, then thread_id, then
      * parent_id (forum children inherit the parent entry); falls back to
@@ -714,7 +714,7 @@ int grun_u_get_system_prompt_for_channel(const char *arg) {
     return 0;
 }
 
-/* PoP: _refresh_fallback_model @ gateway/run.py:_refresh_fallback_model */
+/* PoP: grun_u_refresh_fallback_model @ gateway/run.py:_refresh_fallback_model */
 int grun_u_refresh_fallback_model(const char *arg) {
     /* Python: re-read chain. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -726,7 +726,7 @@ int grun_u_refresh_fallback_model(const char *arg) {
     return 0;
 }
 
-/* PoP: _apply_fallback_chain_to_agent @ gateway/run.py:_apply_fallback_chain_to_agent */
+/* PoP: grun_u_apply_fallback_chain_to_agent @ gateway/run.py:_apply_fallback_chain_to_agent */
 int grun_u_apply_fallback_chain_to_agent(const char *arg) {
     /* Python: cooldown skip. Arg =
      * "activated\tin_cooldown\tchanged\tstate\tresult". */
@@ -745,7 +745,7 @@ int grun_u_apply_fallback_chain_to_agent(const char *arg) {
     return 0;
 }
 
-/* PoP: _snapshot_running_agents @ gateway/run.py:_snapshot_running_agents */
+/* PoP: grun_u_snapshot_running_agents @ gateway/run.py:_snapshot_running_agents */
 int grun_u_snapshot_running_agents(const char *arg) {
     /* Python: {session_key: agent for ... if agent is not the pending
      * sentinel}. Arg = "session_key\tagent..." pairs (agent != "PENDING"
@@ -755,7 +755,7 @@ int grun_u_snapshot_running_agents(const char *arg) {
     return 0;
 }
 
-/* PoP: _claim_active_session_slot @ gateway/run.py:_claim_active_session_slot */
+/* PoP: grun_u_claim_active_session_slot @ gateway/run.py:_claim_active_session_slot */
 int grun_u_claim_active_session_slot(const char *arg) {
     /* Python: cross-process slot claim. Arg =
      * "local_running\tlocal_limit\tstate\tresult". */
@@ -772,7 +772,7 @@ int grun_u_claim_active_session_slot(const char *arg) {
     return 0;
 }
 
-/* PoP: _agent_has_active_subagents @ gateway/run.py:_agent_has_active_subagents */
+/* PoP: grun_u_agent_has_active_subagents @ gateway/run.py:_agent_has_active_subagents */
 int grun_u_agent_has_active_subagents(const char *arg) {
     /* Python: running_agent._active_children must be a non-empty real
      * collection (guards MagicMock auto-creation). The shim receives the
@@ -785,7 +785,7 @@ int grun_u_agent_has_active_subagents(const char *arg) {
     return n > 0;
 }
 
-/* PoP: _session_has_compression_in_flight @ gateway/run.py:_session_has_compression_in_flight */
+/* PoP: grun_u_session_has_compression_in_flight @ gateway/run.py:_session_has_compression_in_flight */
 int grun_u_session_has_compression_in_flight(const char *arg) {
     /* Python: lock holder probe. Arg =
      * "in_flight\tstate\tresult". */
@@ -799,7 +799,7 @@ int grun_u_session_has_compression_in_flight(const char *arg) {
     return 0;
 }
 
-/* PoP: _lookup_session_id_under_store_lock @ gateway/run.py:_lookup_session_id_under_store_lock */
+/* PoP: grun_u_lookup_session_id_under_store_lock @ gateway/run.py:_lookup_session_id_under_store_lock */
 int grun_u_lookup_session_id_under_store_lock(const char *arg) {
     /* Python: locked read. Arg = "session_key\tstate\tsession_id". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -811,7 +811,7 @@ int grun_u_lookup_session_id_under_store_lock(const char *arg) {
     return 0;
 }
 
-/* PoP: _queue_or_replace_pending_event @ gateway/run.py:_queue_or_replace_pending_event */
+/* PoP: grun_u_queue_or_replace_pending_event @ gateway/run.py:_queue_or_replace_pending_event */
 int grun_u_queue_or_replace_pending_event(const char *arg) {
     /* Python: FIFO overflow #28503. Arg =
      * "queued\tstate\tresult". */
@@ -826,7 +826,7 @@ int grun_u_queue_or_replace_pending_event(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_active_session_busy_message @ gateway/run.py:_handle_active_session_busy_message */
+/* PoP: grun_u_handle_active_session_busy_message @ gateway/run.py:_handle_active_session_busy_message */
 int grun_u_handle_active_session_busy_message(const char *arg) {
     /* Python: busy-path auth #17775. Arg =
      * "queued\tstate\tresult". */
@@ -841,7 +841,7 @@ int grun_u_handle_active_session_busy_message(const char *arg) {
     return 0;
 }
 
-/* PoP: _notify_active_sessions_of_shutdown @ gateway/run.py:_notify_active_sessions_of_shutdown */
+/* PoP: grun_u_notify_active_sessions_of_shutdown @ gateway/run.py:_notify_active_sessions_of_shutdown */
 int grun_u_notify_active_sessions_of_shutdown(const char *arg) {
     /* Python: pre-stop notices. Arg =
      * "sent\tstate\tresult". */
@@ -854,7 +854,7 @@ int grun_u_notify_active_sessions_of_shutdown(const char *arg) {
     return 0;
 }
 
-/* PoP: _finalize_shutdown_agents @ gateway/run.py:_finalize_shutdown_agents */
+/* PoP: grun_u_finalize_shutdown_agents @ gateway/run.py:_finalize_shutdown_agents */
 int grun_u_finalize_shutdown_agents(const char *arg) {
     /* Python: persist in-flight. Arg =
      * "finalized\tstate\tresult". */
@@ -867,7 +867,7 @@ int grun_u_finalize_shutdown_agents(const char *arg) {
     return 0;
 }
 
-/* PoP: _should_emit_long_running_notification @ gateway/run.py:_should_emit_long_running_notification */
+/* PoP: grun_u_should_emit_long_running_notification @ gateway/run.py:_should_emit_long_running_notification */
 int grun_u_should_emit_long_running_notification(const char *arg) {
     /* Python: ownership guard. Arg =
      * "has_agent\texecutor_done\trebound\tstate\tresult". */
@@ -885,7 +885,7 @@ int grun_u_should_emit_long_running_notification(const char *arg) {
     return 0;
 }
 
-/* PoP: _defer_agent_cleanup_until_future_done @ gateway/run.py:_defer_agent_cleanup_until_future_done */
+/* PoP: grun_u_defer_agent_cleanup_until_future_done @ gateway/run.py:_defer_agent_cleanup_until_future_done */
 int grun_u_defer_agent_cleanup_until_future_done(const char *arg) {
     /* Python: shielded waiter. Arg =
      * "state\tresult". */
@@ -897,7 +897,7 @@ int grun_u_defer_agent_cleanup_until_future_done(const char *arg) {
     return 0;
 }
 
-/* PoP: _cleanup_agent_resources_off_loop @ gateway/run.py:_cleanup_agent_resources_off_loop */
+/* PoP: grun_u_cleanup_agent_resources_off_loop @ gateway/run.py:_cleanup_agent_resources_off_loop */
 int grun_u_cleanup_agent_resources_off_loop(const char *arg) {
     /* Python: bounded worker. Arg =
      * "done\tstate\tresult". */
@@ -910,7 +910,7 @@ int grun_u_cleanup_agent_resources_off_loop(const char *arg) {
     return 0;
 }
 
-/* PoP: _cleanup_agent_resources @ gateway/run.py:_cleanup_agent_resources */
+/* PoP: grun_u_cleanup_agent_resources @ gateway/run.py:_cleanup_agent_resources */
 int grun_u_cleanup_agent_resources(const char *arg) {
     /* Python: best-effort teardown. Arg =
      * "has_agent\tstate\tresult". */
@@ -924,7 +924,7 @@ int grun_u_cleanup_agent_resources(const char *arg) {
     return 0;
 }
 
-/* PoP: _increment_restart_failure_counts @ gateway/run.py:_increment_restart_failure_counts */
+/* PoP: grun_u_increment_restart_failure_counts @ gateway/run.py:_increment_restart_failure_counts */
 int grun_u_increment_restart_failure_counts(const char *arg) {
     /* Python: persistent stuck-loop counters. Arg =
      * "active_keys\tstate\tresult_json". */
@@ -937,7 +937,7 @@ int grun_u_increment_restart_failure_counts(const char *arg) {
     return 0;
 }
 
-/* PoP: _suspend_stuck_loop_sessions @ gateway/run.py:_suspend_stuck_loop_sessions */
+/* PoP: grun_u_suspend_stuck_loop_sessions @ gateway/run.py:_suspend_stuck_loop_sessions */
 int grun_u_suspend_stuck_loop_sessions(const char *arg) {
     /* Python: restart-loop suspension. Arg =
      * "suspended\tstate\tresult". */
@@ -950,7 +950,7 @@ int grun_u_suspend_stuck_loop_sessions(const char *arg) {
     return 0;
 }
 
-/* PoP: _launch_detached_restart_command @ gateway/run.py:_launch_detached_restart_command */
+/* PoP: grun_u_launch_detached_restart_command @ gateway/run.py:_launch_detached_restart_command */
 int grun_u_launch_detached_restart_command(const char *arg) {
     /* Python: detached helper. Arg =
      * "launched\tstate\tresult". */
@@ -965,7 +965,7 @@ int grun_u_launch_detached_restart_command(const char *arg) {
     return 0;
 }
 
-/* PoP: _run_startup_resume_event @ gateway/run.py:_run_startup_resume_event */
+/* PoP: grun_u_run_startup_resume_event @ gateway/run.py:_run_startup_resume_event */
 int grun_u_run_startup_resume_event(const char *arg) {
     /* Python: bounded resume. Arg =
      * "done\tstate\tresult". */
@@ -978,7 +978,7 @@ int grun_u_run_startup_resume_event(const char *arg) {
     return 0;
 }
 
-/* PoP: _queue_startup_restore_event @ gateway/run.py:_queue_startup_restore_event */
+/* PoP: grun_u_queue_startup_restore_event @ gateway/run.py:_queue_startup_restore_event */
 int grun_u_queue_startup_restore_event(const char *arg) {
     /* Python: startup queue. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -989,7 +989,7 @@ int grun_u_queue_startup_restore_event(const char *arg) {
     return 0;
 }
 
-/* PoP: _drain_startup_restore_queue @ gateway/run.py:_drain_startup_restore_queue */
+/* PoP: grun_u_drain_startup_restore_queue @ gateway/run.py:_drain_startup_restore_queue */
 int grun_u_drain_startup_restore_queue(const char *arg) {
     /* Python: replay queue. Arg =
      * "drained\tstate\tresult". */
@@ -1002,7 +1002,7 @@ int grun_u_drain_startup_restore_queue(const char *arg) {
     return 0;
 }
 
-/* PoP: _finish_startup_restore @ gateway/run.py:_finish_startup_restore */
+/* PoP: grun_u_finish_startup_restore @ gateway/run.py:_finish_startup_restore */
 int grun_u_finish_startup_restore(const char *arg) {
     /* Python: gather + drain. Arg =
      * "drained\tstate\tresult". */
@@ -1015,7 +1015,7 @@ int grun_u_finish_startup_restore(const char *arg) {
     return 0;
 }
 
-/* PoP: _redeliver_pending_obligations @ gateway/run.py:_redeliver_pending_obligations */
+/* PoP: grun_u_redeliver_pending_obligations @ gateway/run.py:_redeliver_pending_obligations */
 int grun_u_redeliver_pending_obligations(const char *arg) {
     /* Python: ledger replay. Arg =
      * "redelivered\tstate\tresult". */
@@ -1028,7 +1028,7 @@ int grun_u_redeliver_pending_obligations(const char *arg) {
     return 0;
 }
 
-/* PoP: _schedule_resume_pending_sessions @ gateway/run.py:_schedule_resume_pending_sessions */
+/* PoP: grun_u_schedule_resume_pending_sessions @ gateway/run.py:_schedule_resume_pending_sessions */
 int grun_u_schedule_resume_pending_sessions(const char *arg) {
     /* Python: resume pass. Arg =
      * "resumed\tstate\tresult". */
@@ -1041,7 +1041,7 @@ int grun_u_schedule_resume_pending_sessions(const char *arg) {
     return 0;
 }
 
-/* PoP: _abort_startup_if_shutdown_requested @ gateway/run.py:_abort_startup_if_shutdown_requested */
+/* PoP: grun_u_abort_startup_if_shutdown_requested @ gateway/run.py:_abort_startup_if_shutdown_requested */
 int grun_u_abort_startup_if_shutdown_requested(const char *arg) {
     /* Python: mid-startup stop. Arg =
      * "aborted\tstate\tresult". */
@@ -1056,7 +1056,7 @@ int grun_u_abort_startup_if_shutdown_requested(const char *arg) {
     return 0;
 }
 
-/* PoP: _start_loop_liveness_guards @ gateway/run.py:_start_loop_liveness_guards */
+/* PoP: grun_u_start_loop_liveness_guards @ gateway/run.py:_start_loop_liveness_guards */
 int grun_u_start_loop_liveness_guards(const char *arg) {
     /* Python: arm floor timer + watchdog. Arg =
      * "enabled\tfloor_armed\twatchdog_started\tstate". */
@@ -1072,7 +1072,7 @@ int grun_u_start_loop_liveness_guards(const char *arg) {
     return 0;
 }
 
-/* PoP: _stop_loop_liveness_guards @ gateway/run.py:_stop_loop_liveness_guards */
+/* PoP: grun_u_stop_loop_liveness_guards @ gateway/run.py:_stop_loop_liveness_guards */
 int grun_u_stop_loop_liveness_guards(const char *arg) {
     /* Python: disarm before shutdown. Arg =
      * "stopped\tstate\tresult". */
@@ -1087,7 +1087,7 @@ int grun_u_stop_loop_liveness_guards(const char *arg) {
     return 0;
 }
 
-/* PoP: _spawn_supervised @ gateway/run.py:_spawn_supervised */
+/* PoP: grun_u_spawn_supervised @ gateway/run.py:_spawn_supervised */
 int grun_u_spawn_supervised(const char *arg) {
     /* Python: task-level supervision. Arg =
      * "spawned\tstate\tresult". */
@@ -1102,7 +1102,7 @@ int grun_u_spawn_supervised(const char *arg) {
     return 0;
 }
 
-/* PoP: _handoff_watcher @ gateway/run.py:_handoff_watcher */
+/* PoP: grun_u_handoff_watcher @ gateway/run.py:_handoff_watcher */
 int grun_u_handoff_watcher(const char *arg) {
     /* Python: CLI→gateway handoff. Arg =
      * "handled\tstate\tresult". */
@@ -1115,7 +1115,7 @@ int grun_u_handoff_watcher(const char *arg) {
     return 0;
 }
 
-/* PoP: _process_handoff @ gateway/run.py:_process_handoff */
+/* PoP: grun_u_process_handoff @ gateway/run.py:_process_handoff */
 int grun_u_process_handoff(const char *arg) {
     /* Python: one handoff row. Arg =
      * "done\tstate\tresult". */
@@ -1128,7 +1128,7 @@ int grun_u_process_handoff(const char *arg) {
     return 0;
 }
 
-/* PoP: _session_expiry_watcher @ gateway/run.py:_session_expiry_watcher */
+/* PoP: grun_u_session_expiry_watcher @ gateway/run.py:_session_expiry_watcher */
 int grun_u_session_expiry_watcher(const char *arg) {
     /* Python: finalize loop. Arg =
      * "finalized\tstate\tresult". */
@@ -1141,7 +1141,7 @@ int grun_u_session_expiry_watcher(const char *arg) {
     return 0;
 }
 
-/* PoP: _ensure_reconnect_watcher_running @ gateway/run.py:_ensure_reconnect_watcher_running */
+/* PoP: grun_u_ensure_reconnect_watcher_running @ gateway/run.py:_ensure_reconnect_watcher_running */
 int grun_u_ensure_reconnect_watcher_running(const char *arg) {
     /* Python: watcher respawn. Arg =
      * "respawned\tstate\tresult". */
@@ -1156,7 +1156,7 @@ int grun_u_ensure_reconnect_watcher_running(const char *arg) {
     return 0;
 }
 
-/* PoP: _platform_reconnect_watcher @ gateway/run.py:_platform_reconnect_watcher */
+/* PoP: grun_u_platform_reconnect_watcher @ gateway/run.py:_platform_reconnect_watcher */
 int grun_u_platform_reconnect_watcher(const char *arg) {
     /* Python: backoff retry. Arg =
      * "retried\tstate\tresult". */
@@ -1169,7 +1169,7 @@ int grun_u_platform_reconnect_watcher(const char *arg) {
     return 0;
 }
 
-/* PoP: _cancel_secondary_profile_reconnect_tasks @ gateway/run.py:_cancel_secondary_profile_reconnect_tasks */
+/* PoP: grun_u_cancel_secondary_profile_reconnect_tasks @ gateway/run.py:_cancel_secondary_profile_reconnect_tasks */
 int grun_u_cancel_secondary_profile_reconnect_tasks(const char *arg) {
     /* Python: pre-teardown cancel. Arg =
      * "cancelled\tstate\tresult". */
@@ -1182,7 +1182,7 @@ int grun_u_cancel_secondary_profile_reconnect_tasks(const char *arg) {
     return 0;
 }
 
-/* PoP: _start_systemd_watchdog @ gateway/run.py:_start_systemd_watchdog */
+/* PoP: grun_u_start_systemd_watchdog @ gateway/run.py:_start_systemd_watchdog */
 int grun_u_start_systemd_watchdog(const char *arg) {
     /* Python: sd_notify gate. Arg =
      * "started\tstate\tresult". */
@@ -1197,7 +1197,7 @@ int grun_u_start_systemd_watchdog(const char *arg) {
     return 0;
 }
 
-/* PoP: _stop_systemd_watchdog @ gateway/run.py:_stop_systemd_watchdog */
+/* PoP: grun_u_stop_systemd_watchdog @ gateway/run.py:_stop_systemd_watchdog */
 int grun_u_stop_systemd_watchdog(const char *arg) {
     /* Python: stop before drain. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1208,7 +1208,7 @@ int grun_u_stop_systemd_watchdog(const char *arg) {
     return 0;
 }
 
-/* PoP: _start_secondary_profile_adapters @ gateway/run.py:_start_secondary_profile_adapters */
+/* PoP: grun_u_start_secondary_profile_adapters @ gateway/run.py:_start_secondary_profile_adapters */
 int grun_u_start_secondary_profile_adapters(const char *arg) {
     /* Python: multiplex bring-up. Arg =
      * "count\tstate\tresult". */
@@ -1221,7 +1221,7 @@ int grun_u_start_secondary_profile_adapters(const char *arg) {
     return 0;
 }
 
-/* PoP: _start_one_profile_adapters @ gateway/run.py:_start_one_profile_adapters */
+/* PoP: grun_u_start_one_profile_adapters @ gateway/run.py:_start_one_profile_adapters */
 int grun_u_start_one_profile_adapters(const char *arg) {
     /* Python: scoped bring-up. Arg =
      * "count\tstate\tresult". */
@@ -1234,7 +1234,7 @@ int grun_u_start_one_profile_adapters(const char *arg) {
     return 0;
 }
 
-/* PoP: _configure_profile_adapter @ gateway/run.py:_configure_profile_adapter */
+/* PoP: grun_u_configure_profile_adapter @ gateway/run.py:_configure_profile_adapter */
 int grun_u_configure_profile_adapter(const char *arg) {
     /* Python: shared handler install. Arg =
      * "state\tresult". */
@@ -1246,7 +1246,7 @@ int grun_u_configure_profile_adapter(const char *arg) {
     return 0;
 }
 
-/* PoP: _run_secondary_profile_reconnect @ gateway/run.py:_run_secondary_profile_reconnect */
+/* PoP: grun_u_run_secondary_profile_reconnect @ gateway/run.py:_run_secondary_profile_reconnect */
 int grun_u_run_secondary_profile_reconnect(const char *arg) {
     /* Python: scoped retry. Arg =
      * "reconnected\tstate\tresult". */
@@ -1259,7 +1259,7 @@ int grun_u_run_secondary_profile_reconnect(const char *arg) {
     return 0;
 }
 
-/* PoP: _schedule_secondary_profile_reconnect @ gateway/run.py:_schedule_secondary_profile_reconnect */
+/* PoP: grun_u_schedule_secondary_profile_reconnect @ gateway/run.py:_schedule_secondary_profile_reconnect */
 int grun_u_schedule_secondary_profile_reconnect(const char *arg) {
     /* Python: runner-owned reconnect task. Arg =
      * "running\tretryable\tstate\tresult". */
@@ -1275,7 +1275,7 @@ int grun_u_schedule_secondary_profile_reconnect(const char *arg) {
     return 0;
 }
 
-/* PoP: _make_profile_fatal_error_handler @ gateway/run.py:_make_profile_fatal_error_handler */
+/* PoP: grun_u_make_profile_fatal_error_handler @ gateway/run.py:_make_profile_fatal_error_handler */
 int grun_u_make_profile_fatal_error_handler(const char *arg) {
     /* Python: secondary-profile route. Arg =
      * "profile\tstate\tresult". */
@@ -1288,7 +1288,7 @@ int grun_u_make_profile_fatal_error_handler(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_profile_adapter_fatal_error @ gateway/run.py:_handle_profile_adapter_fatal_error */
+/* PoP: grun_u_handle_profile_adapter_fatal_error @ gateway/run.py:_handle_profile_adapter_fatal_error */
 int grun_u_handle_profile_adapter_fatal_error(const char *arg) {
     /* Python: secondary remove. Arg =
      * "removed\tstate\tresult". */
@@ -1303,7 +1303,7 @@ int grun_u_handle_profile_adapter_fatal_error(const char *arg) {
     return 0;
 }
 
-/* PoP: _make_profile_message_handler @ gateway/run.py:_make_profile_message_handler */
+/* PoP: grun_u_make_profile_message_handler @ gateway/run.py:_make_profile_message_handler */
 int grun_u_make_profile_message_handler(const char *arg) {
     /* Python: profile-stamping wrapper. Arg =
      * "profile\tstate\tresult". */
@@ -1316,7 +1316,7 @@ int grun_u_make_profile_message_handler(const char *arg) {
     return 0;
 }
 
-/* PoP: _create_adapter @ gateway/run.py:_create_adapter */
+/* PoP: grun_u_create_adapter @ gateway/run.py:_create_adapter */
 int grun_u_create_adapter(const char *arg) {
     /* Python: registry-first. Arg =
      * "plugin\tstate\tresult". */
@@ -1330,7 +1330,7 @@ int grun_u_create_adapter(const char *arg) {
     return 0;
 }
 
-/* PoP: _make_adapter_auth_check @ gateway/run.py:_make_adapter_auth_check */
+/* PoP: grun_u_make_adapter_auth_check @ gateway/run.py:_make_adapter_auth_check */
 int grun_u_make_adapter_auth_check(const char *arg) {
     /* Python: platform-bound callback. Arg =
      * "built\tstate\tresult". */
@@ -1345,7 +1345,7 @@ int grun_u_make_adapter_auth_check(const char *arg) {
     return 0;
 }
 
-/* PoP: _deliver_platform_notice @ gateway/run.py:_deliver_platform_notice */
+/* PoP: grun_u_deliver_platform_notice @ gateway/run.py:_deliver_platform_notice */
 int grun_u_deliver_platform_notice(const char *arg) {
     /* Python: privacy-aware notice. Arg =
      * "delivered\tstate\tresult". */
@@ -1360,7 +1360,7 @@ int grun_u_deliver_platform_notice(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_async_delegation_session @ gateway/run.py:_resolve_async_delegation_session */
+/* PoP: grun_u_resolve_async_delegation_session @ gateway/run.py:_resolve_async_delegation_session */
 int grun_u_resolve_async_delegation_session(const char *arg) {
     /* Python: lineage follow. Arg =
      * "session\tstate\tresult". */
@@ -1373,7 +1373,7 @@ int grun_u_resolve_async_delegation_session(const char *arg) {
     return 0;
 }
 
-/* PoP: _prepare_inbound_message_text @ gateway/run.py:_prepare_inbound_message_text */
+/* PoP: grun_u_prepare_inbound_message_text @ gateway/run.py:_prepare_inbound_message_text */
 int grun_u_prepare_inbound_message_text(const char *arg) {
     /* Python: shared preprocessing. Arg =
      * "prepared\tstate\tresult". */
@@ -1388,7 +1388,7 @@ int grun_u_prepare_inbound_message_text(const char *arg) {
     return 0;
 }
 
-/* PoP: _prepare_profile_scoped_inbound_message_text @ gateway/run.py:_prepare_profile_scoped_inbound_message_text */
+/* PoP: grun_u_prepare_profile_scoped_inbound_message_text @ gateway/run.py:_prepare_profile_scoped_inbound_message_text */
 int grun_u_prepare_profile_scoped_inbound_message_text(const char *arg) {
     /* Python: multiplex scope. Arg =
      * "scoped\tstate\tresult". */
@@ -1403,7 +1403,7 @@ int grun_u_prepare_profile_scoped_inbound_message_text(const char *arg) {
     return 0;
 }
 
-/* PoP: async_session_store @ gateway/run.py:async_session_store */
+/* PoP: grun_async_session_store @ gateway/run.py:async_session_store */
 int grun_async_session_store(const char *arg) {
     /* Python: return cached async facade for session_store. Arg = store id. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1411,7 +1411,7 @@ int grun_async_session_store(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_message_with_agent @ gateway/run.py:_handle_message_with_agent */
+/* PoP: grun_u_handle_message_with_agent @ gateway/run.py:_handle_message_with_agent */
 int grun_u_handle_message_with_agent(const char *arg) {
     /* Python: inner handler under _running_agents sentinel guard.
      * Full pipeline: topic recovery → session get/create → pinned
@@ -1431,7 +1431,7 @@ int grun_u_handle_message_with_agent(const char *arg) {
     return 0;
 }
 
-/* PoP: _reset_notice_session_info @ gateway/run.py:_reset_notice_session_info */
+/* PoP: grun_u_reset_notice_session_info @ gateway/run.py:_reset_notice_session_info */
 int grun_u_reset_notice_session_info(const char *arg) {
     /* Python: profile-scoped notice info. Arg = "multiplex\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1444,7 +1444,7 @@ int grun_u_reset_notice_session_info(const char *arg) {
     return 0;
 }
 
-/* PoP: _format_session_info @ gateway/run.py:_format_session_info */
+/* PoP: grun_u_format_session_info @ gateway/run.py:_format_session_info */
 int grun_u_format_session_info(const char *arg) {
     /* Python: model info block. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1455,7 +1455,7 @@ int grun_u_format_session_info(const char *arg) {
     return 0;
 }
 
-/* PoP: _sibling_thread_run_keys @ gateway/run.py:_sibling_thread_run_keys */
+/* PoP: grun_u_sibling_thread_run_keys @ gateway/run.py:_sibling_thread_run_keys */
 int grun_u_sibling_thread_run_keys(const char *arg) {
     /* Python: per-user thread keys. Arg =
      * "in_thread\tcount\tstate\tresult". */
@@ -1470,7 +1470,7 @@ int grun_u_sibling_thread_run_keys(const char *arg) {
     return 0;
 }
 
-/* PoP: _is_stale_restart_redelivery @ gateway/run.py:_is_stale_restart_redelivery */
+/* PoP: grun_u_is_stale_restart_redelivery @ gateway/run.py:_is_stale_restart_redelivery */
 int grun_u_is_stale_restart_redelivery(const char *arg) {
     /* Python: update_id marker. Arg =
      * "stale\tstate\tresult". */
@@ -1484,13 +1484,13 @@ int grun_u_is_stale_restart_redelivery(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_suggestions_command @ gateway/run.py:_handle_suggestions_command */
+/* PoP: grun_u_handle_suggestions_command @ gateway/run.py:_handle_suggestions_command */
 int grun_u_handle_suggestions_command(const char *arg) { (void)arg; return 0; }
 
-/* PoP: _handle_blueprint_command @ gateway/run.py:_handle_blueprint_command */
+/* PoP: grun_u_handle_blueprint_command @ gateway/run.py:_handle_blueprint_command */
 int grun_u_handle_blueprint_command(const char *arg) { (void)arg; return 0; }
 
-/* PoP: _get_goal_manager_for_event @ gateway/run.py:_get_goal_manager_for_event */
+/* PoP: grun_u_get_goal_manager_for_event @ gateway/run.py:_get_goal_manager_for_event */
 int grun_u_get_goal_manager_for_event(const char *arg) {
     /* Python: session-bound. Arg =
      * "found\tstate\tresult". */
@@ -1505,7 +1505,7 @@ int grun_u_get_goal_manager_for_event(const char *arg) {
     return 0;
 }
 
-/* PoP: _send_goal_status_notice @ gateway/run.py:_send_goal_status_notice */
+/* PoP: grun_u_send_goal_status_notice @ gateway/run.py:_send_goal_status_notice */
 int grun_u_send_goal_status_notice(const char *arg) {
     /* Python: judge status line. Arg =
      * "sent\tstate\tresult". */
@@ -1520,7 +1520,7 @@ int grun_u_send_goal_status_notice(const char *arg) {
     return 0;
 }
 
-/* PoP: _defer_goal_status_notice_after_delivery @ gateway/run.py:_defer_goal_status_notice_after_delivery */
+/* PoP: grun_u_defer_goal_status_notice_after_delivery @ gateway/run.py:_defer_goal_status_notice_after_delivery */
 int grun_u_defer_goal_status_notice_after_delivery(const char *arg) {
     /* Python: post-delivery callback. Arg =
      * "deferred\tstate\tresult". */
@@ -1535,7 +1535,7 @@ int grun_u_defer_goal_status_notice_after_delivery(const char *arg) {
     return 0;
 }
 
-/* PoP: _post_turn_goal_continuation @ gateway/run.py:_post_turn_goal_continuation */
+/* PoP: grun_u_post_turn_goal_continuation @ gateway/run.py:_post_turn_goal_continuation */
 int grun_u_post_turn_goal_continuation(const char *arg) {
     /* Python: judge + enqueue. Arg =
      * "enqueued\tstate\tresult". */
@@ -1550,7 +1550,7 @@ int grun_u_post_turn_goal_continuation(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_voice_channel_join @ gateway/run.py:_handle_voice_channel_join */
+/* PoP: grun_u_handle_voice_channel_join @ gateway/run.py:_handle_voice_channel_join */
 int grun_u_handle_voice_channel_join(const char *arg) {
     /* Python: join voice. Arg =
      * "joined\tstate\tresult". */
@@ -1565,7 +1565,7 @@ int grun_u_handle_voice_channel_join(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_voice_channel_leave @ gateway/run.py:_handle_voice_channel_leave */
+/* PoP: grun_u_handle_voice_channel_leave @ gateway/run.py:_handle_voice_channel_leave */
 int grun_u_handle_voice_channel_leave(const char *arg) {
     /* Python: leave voice. Arg =
      * "left\tstate\tresult". */
@@ -1580,7 +1580,7 @@ int grun_u_handle_voice_channel_leave(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_voice_timeout_cleanup @ gateway/run.py:_handle_voice_timeout_cleanup */
+/* PoP: grun_u_handle_voice_timeout_cleanup @ gateway/run.py:_handle_voice_timeout_cleanup */
 int grun_u_handle_voice_timeout_cleanup(const char *arg) {
     /* Python: voice_mode off + save + disable auto-tts. Arg = "chat_id\tstate". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -1590,7 +1590,7 @@ int grun_u_handle_voice_timeout_cleanup(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_voice_channel_input @ gateway/run.py:_handle_voice_channel_input */
+/* PoP: grun_u_handle_voice_channel_input @ gateway/run.py:_handle_voice_channel_input */
 int grun_u_handle_voice_channel_input(const char *arg) {
     /* Python: voice → synthetic event. Arg =
      * "processed\tstate\tresult". */
@@ -1605,7 +1605,7 @@ int grun_u_handle_voice_channel_input(const char *arg) {
     return 0;
 }
 
-/* PoP: _should_send_voice_reply @ gateway/run.py:_should_send_voice_reply */
+/* PoP: grun_u_should_send_voice_reply @ gateway/run.py:_should_send_voice_reply */
 int grun_u_should_send_voice_reply(const char *arg) {
     /* Python: TTS dedup ladder. Arg =
      * "mode_ok\thas_agent_tts\tvoice_input\talready_sent\tstate\tresult". */
@@ -1626,7 +1626,7 @@ int grun_u_should_send_voice_reply(const char *arg) {
     return 0;
 }
 
-/* PoP: _send_voice_reply @ gateway/run.py:_send_voice_reply */
+/* PoP: grun_u_send_voice_reply @ gateway/run.py:_send_voice_reply */
 int grun_u_send_voice_reply(const char *arg) {
     /* Python: TTS bubble. Arg =
      * "sent\tstate\tresult". */
@@ -1641,7 +1641,7 @@ int grun_u_send_voice_reply(const char *arg) {
     return 0;
 }
 
-/* PoP: _deliver_media_from_response @ gateway/run.py:_deliver_media_from_response */
+/* PoP: grun_u_deliver_media_from_response @ gateway/run.py:_deliver_media_from_response */
 int grun_u_deliver_media_from_response(const char *arg) {
     /* Python: explicit MEDIA: only. Arg =
      * "delivered\tstate\tresult". */
@@ -1654,7 +1654,7 @@ int grun_u_deliver_media_from_response(const char *arg) {
     return 0;
 }
 
-/* PoP: _run_background_task @ gateway/run.py:_run_background_task */
+/* PoP: grun_u_run_background_task @ gateway/run.py:_run_background_task */
 int grun_u_run_background_task(const char *arg) {
     /* Python: profile-scoped wrapper. Arg =
      * "scoped\tstate\tresult". */
@@ -1669,7 +1669,7 @@ int grun_u_run_background_task(const char *arg) {
     return 0;
 }
 
-/* PoP: _run_background_task_inner @ gateway/run.py:_run_background_task_inner */
+/* PoP: grun_u_run_background_task_inner @ gateway/run.py:_run_background_task_inner */
 int grun_u_run_background_task_inner(const char *arg) {
     /* Python: inner impl. Arg =
      * "done\tstate\tresult". */
@@ -1682,7 +1682,7 @@ int grun_u_run_background_task_inner(const char *arg) {
     return 0;
 }
 
-/* PoP: _get_telegram_topic_capabilities @ gateway/run.py:_get_telegram_topic_capabilities */
+/* PoP: grun_u_get_telegram_topic_capabilities @ gateway/run.py:_get_telegram_topic_capabilities */
 int grun_u_get_telegram_topic_capabilities(const char *arg) {
     /* Python: getMe flags. Arg =
      * "checked\tstate\tresult". */
@@ -1697,7 +1697,7 @@ int grun_u_get_telegram_topic_capabilities(const char *arg) {
     return 0;
 }
 
-/* PoP: _ensure_telegram_system_topic @ gateway/run.py:_ensure_telegram_system_topic */
+/* PoP: grun_u_ensure_telegram_system_topic @ gateway/run.py:_ensure_telegram_system_topic */
 int grun_u_ensure_telegram_system_topic(const char *arg) {
     /* Python: System topic. Arg =
      * "created\tstate\tresult". */
@@ -1712,7 +1712,7 @@ int grun_u_ensure_telegram_system_topic(const char *arg) {
     return 0;
 }
 
-/* PoP: _send_telegram_topic_setup_image @ gateway/run.py:_send_telegram_topic_setup_image */
+/* PoP: grun_u_send_telegram_topic_setup_image @ gateway/run.py:_send_telegram_topic_setup_image */
 int grun_u_send_telegram_topic_setup_image(const char *arg) {
     /* Python: bundled screenshot. Arg =
      * "sent\tstate\tresult". */
@@ -1727,7 +1727,7 @@ int grun_u_send_telegram_topic_setup_image(const char *arg) {
     return 0;
 }
 
-/* PoP: _rename_discord_auto_thread_for_session_title @ gateway/run.py:_rename_discord_auto_thread_for_session_title */
+/* PoP: grun_u_rename_discord_auto_thread_for_session_title @ gateway/run.py:_rename_discord_auto_thread_for_session_title */
 int grun_u_rename_discord_auto_thread_for_session_title(const char *arg) {
     /* Python: semantic rename. Arg =
      * "renamed\tstate\tresult". */
@@ -1742,7 +1742,7 @@ int grun_u_rename_discord_auto_thread_for_session_title(const char *arg) {
     return 0;
 }
 
-/* PoP: _schedule_discord_semantic_thread_rename @ gateway/run.py:_schedule_discord_semantic_thread_rename */
+/* PoP: grun_u_schedule_discord_semantic_thread_rename @ gateway/run.py:_schedule_discord_semantic_thread_rename */
 int grun_u_schedule_discord_semantic_thread_rename(const char *arg) {
     /* Python: threadsafe schedule. Arg =
      * "scheduled\tstate\tresult". */
@@ -1756,7 +1756,7 @@ int grun_u_schedule_discord_semantic_thread_rename(const char *arg) {
     return 0;
 }
 
-/* PoP: _rename_telegram_topic_for_session_title @ gateway/run.py:_rename_telegram_topic_for_session_title */
+/* PoP: grun_u_rename_telegram_topic_for_session_title @ gateway/run.py:_rename_telegram_topic_for_session_title */
 int grun_u_rename_telegram_topic_for_session_title(const char *arg) {
     /* Python: auto-title rename. Arg =
      * "renamed\tstate\tresult". */
@@ -1771,7 +1771,7 @@ int grun_u_rename_telegram_topic_for_session_title(const char *arg) {
     return 0;
 }
 
-/* PoP: _schedule_telegram_topic_title_rename @ gateway/run.py:_schedule_telegram_topic_title_rename */
+/* PoP: grun_u_schedule_telegram_topic_title_rename @ gateway/run.py:_schedule_telegram_topic_title_rename */
 int grun_u_schedule_telegram_topic_title_rename(const char *arg) {
     /* Python: thread-safe rename schedule. Arg =
      * "title\tstate\tresult". */
@@ -1784,7 +1784,7 @@ int grun_u_schedule_telegram_topic_title_rename(const char *arg) {
     return 0;
 }
 
-/* PoP: _disable_telegram_topic_mode_for_chat @ gateway/run.py:_disable_telegram_topic_mode_for_chat */
+/* PoP: grun_u_disable_telegram_topic_mode_for_chat @ gateway/run.py:_disable_telegram_topic_mode_for_chat */
 int grun_u_disable_telegram_topic_mode_for_chat(const char *arg) {
     /* Python: /topic off. Arg =
      * "disabled\tstate\tresult". */
@@ -1799,7 +1799,7 @@ int grun_u_disable_telegram_topic_mode_for_chat(const char *arg) {
     return 0;
 }
 
-/* PoP: _telegram_topic_root_status_message @ gateway/run.py:_telegram_topic_root_status_message */
+/* PoP: grun_u_telegram_topic_root_status_message @ gateway/run.py:_telegram_topic_root_status_message */
 int grun_u_telegram_topic_root_status_message(const char *arg) {
     /* Python: multi-session help. Arg =
      * "state\tresult". */
@@ -1812,7 +1812,7 @@ int grun_u_telegram_topic_root_status_message(const char *arg) {
     return 0;
 }
 
-/* PoP: _restore_telegram_topic_session @ gateway/run.py:_restore_telegram_topic_session */
+/* PoP: grun_u_restore_telegram_topic_session @ gateway/run.py:_restore_telegram_topic_session */
 int grun_u_restore_telegram_topic_session(const char *arg) {
     /* Python: /topic restore. Arg =
      * "restored\tstate\tresult". */
@@ -1827,7 +1827,7 @@ int grun_u_restore_telegram_topic_session(const char *arg) {
     return 0;
 }
 
-/* PoP: _execute_mcp_reload @ gateway/run.py:_execute_mcp_reload */
+/* PoP: grun_u_execute_mcp_reload @ gateway/run.py:_execute_mcp_reload */
 int grun_u_execute_mcp_reload(const char *arg) {
     /* Python: disconnect+reconnect. Arg =
      * "reloaded\tstate\tresult". */
@@ -1842,7 +1842,7 @@ int grun_u_execute_mcp_reload(const char *arg) {
     return 0;
 }
 
-/* PoP: _maybe_confirm_destructive_slash @ gateway/run.py:_maybe_confirm_destructive_slash */
+/* PoP: grun_u_maybe_confirm_destructive_slash @ gateway/run.py:_maybe_confirm_destructive_slash */
 int grun_u_maybe_confirm_destructive_slash(const char *arg) {
     /* Python: destructive gate. Arg =
      * "result\tstate\tresult". */
@@ -1856,7 +1856,7 @@ int grun_u_maybe_confirm_destructive_slash(const char *arg) {
     return 0;
 }
 
-/* PoP: _request_slash_confirm @ gateway/run.py:_request_slash_confirm */
+/* PoP: grun_u_request_slash_confirm @ gateway/run.py:_request_slash_confirm */
 int grun_u_request_slash_confirm(const char *arg) {
     /* Python: once/always/cancel. Arg =
      * "buttons\tstate\tresult". */
@@ -1871,7 +1871,7 @@ int grun_u_request_slash_confirm(const char *arg) {
     return 0;
 }
 
-/* PoP: _read_user_config @ gateway/run.py:_read_user_config */
+/* PoP: grun_u_read_user_config @ gateway/run.py:_read_user_config */
 int grun_u_read_user_config(const char *arg) {
     /* Python: load_config() or {} (fail-open). Arg = config JSON. */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -1879,7 +1879,7 @@ int grun_u_read_user_config(const char *arg) {
     return 0;
 }
 
-/* PoP: _schedule_update_notification_watch @ gateway/run.py:_schedule_update_notification_watch */
+/* PoP: grun_u_schedule_update_notification_watch @ gateway/run.py:_schedule_update_notification_watch */
 int grun_u_schedule_update_notification_watch(const char *arg) {
     /* Python: single watcher. Arg =
      * "scheduled\tstate\tresult". */
@@ -1894,7 +1894,7 @@ int grun_u_schedule_update_notification_watch(const char *arg) {
     return 0;
 }
 
-/* PoP: _watch_update_progress @ gateway/run.py:_watch_update_progress */
+/* PoP: grun_u_watch_update_progress @ gateway/run.py:_watch_update_progress */
 int grun_u_watch_update_progress(const char *arg) {
     /* Python: .update_output stream. Arg =
      * "state\tresult". */
@@ -1906,7 +1906,7 @@ int grun_u_watch_update_progress(const char *arg) {
     return 0;
 }
 
-/* PoP: _send_update_notification @ gateway/run.py:_send_update_notification */
+/* PoP: grun_u_send_update_notification @ gateway/run.py:_send_update_notification */
 int grun_u_send_update_notification(const char *arg) {
     /* Python: legacy claim. Arg =
      * "notified\tstate\tresult". */
@@ -1921,7 +1921,7 @@ int grun_u_send_update_notification(const char *arg) {
     return 0;
 }
 
-/* PoP: _send_restart_notification @ gateway/run.py:_send_restart_notification */
+/* PoP: grun_u_send_restart_notification @ gateway/run.py:_send_restart_notification */
 int grun_u_send_restart_notification(const char *arg) {
     /* Python: .restart_notify.json. Arg =
      * "sent\tstate\tresult". */
@@ -1936,7 +1936,7 @@ int grun_u_send_restart_notification(const char *arg) {
     return 0;
 }
 
-/* PoP: _send_home_channel_startup_notifications @ gateway/run.py:_send_home_channel_startup_notifications */
+/* PoP: grun_u_send_home_channel_startup_notifications @ gateway/run.py:_send_home_channel_startup_notifications */
 int grun_u_send_home_channel_startup_notifications(const char *arg) {
     /* Python: ♻️ once per home. Arg =
      * "sent\tstate\tresult". */
@@ -1949,7 +1949,7 @@ int grun_u_send_home_channel_startup_notifications(const char *arg) {
     return 0;
 }
 
-/* PoP: _set_session_env @ gateway/run.py:_set_session_env */
+/* PoP: grun_u_set_session_env @ gateway/run.py:_set_session_env */
 int grun_u_set_session_env(const char *arg) {
     /* Python: contextvar bind. Arg =
      * "platform\tasync_delivery\tstate\ttokens". */
@@ -1963,7 +1963,7 @@ int grun_u_set_session_env(const char *arg) {
     return 0;
 }
 
-/* PoP: _clear_session_env @ gateway/run.py:_clear_session_env */
+/* PoP: grun_u_clear_session_env @ gateway/run.py:_clear_session_env */
 int grun_u_clear_session_env(const char *arg) {
     /* Python: restore session context vars. Arg = "tokens\tstate". */
     (void)arg;
@@ -1971,7 +1971,7 @@ int grun_u_clear_session_env(const char *arg) {
     return 0;
 }
 
-/* PoP: _run_in_executor_with_context @ gateway/run.py:_run_in_executor_with_context */
+/* PoP: grun_u_run_in_executor_with_context @ gateway/run.py:_run_in_executor_with_context */
 int grun_u_run_in_executor_with_context(const char *arg) {
     /* Python: contextvars-preserving. Arg =
      * "done\tstate\tresult". */
@@ -1984,7 +1984,7 @@ int grun_u_run_in_executor_with_context(const char *arg) {
     return 0;
 }
 
-/* PoP: _get_executor @ gateway/run.py:_get_executor */
+/* PoP: grun_u_get_executor @ gateway/run.py:_get_executor */
 int grun_u_get_executor(const char *arg) {
     /* Python: gateway pool or raise. Arg = "closing\trebuilt\tstate". */
     if (!arg || !*arg) { printf("executor ready\n"); return 0; }
@@ -1999,7 +1999,7 @@ int grun_u_get_executor(const char *arg) {
     return 0;
 }
 
-/* PoP: _shutdown_executor @ gateway/run.py:_shutdown_executor */
+/* PoP: grun_u_shutdown_executor @ gateway/run.py:_shutdown_executor */
 int grun_u_shutdown_executor(const char *arg) {
     /* Python: executor shutdown wait=False cancel_futures. Arg = "state". */
     (void)arg;
@@ -2007,7 +2007,7 @@ int grun_u_shutdown_executor(const char *arg) {
     return 0;
 }
 
-/* PoP: _enrich_message_with_vision @ gateway/run.py:_enrich_message_with_vision */
+/* PoP: grun_u_enrich_message_with_vision @ gateway/run.py:_enrich_message_with_vision */
 int grun_u_enrich_message_with_vision(const char *arg) {
     /* Python: auto vision prefix. Arg =
      * "enriched\tstate\tresult". */
@@ -2022,7 +2022,7 @@ int grun_u_enrich_message_with_vision(const char *arg) {
     return 0;
 }
 
-/* PoP: _enrich_message_with_transcription @ gateway/run.py:_enrich_message_with_transcription */
+/* PoP: grun_u_enrich_message_with_transcription @ gateway/run.py:_enrich_message_with_transcription */
 int grun_u_enrich_message_with_transcription(const char *arg) {
     /* Python: STT prefix. Arg =
      * "enriched\tstate\tresult". */
@@ -2035,7 +2035,7 @@ int grun_u_enrich_message_with_transcription(const char *arg) {
     return 0;
 }
 
-/* PoP: _pending_event_audio_paths @ gateway/run.py:_pending_event_audio_paths */
+/* PoP: grun_u_pending_event_audio_paths @ gateway/run.py:_pending_event_audio_paths */
 int grun_u_pending_event_audio_paths(const char *arg) {
     /* Python: STT-eligible filter. Arg =
      * "count\tstate\tresult". */
@@ -2048,7 +2048,7 @@ int grun_u_pending_event_audio_paths(const char *arg) {
     return 0;
 }
 
-/* PoP: _transcribe_pending_audio_event_once @ gateway/run.py:_transcribe_pending_audio_event_once */
+/* PoP: grun_u_transcribe_pending_audio_event_once @ gateway/run.py:_transcribe_pending_audio_event_once */
 int grun_u_transcribe_pending_audio_event_once(const char *arg) {
     /* Python: cached STT. Arg =
      * "text\tstate\tresult". */
@@ -2061,7 +2061,7 @@ int grun_u_transcribe_pending_audio_event_once(const char *arg) {
     return 0;
 }
 
-/* PoP: _echo_pending_stt_transcripts_once @ gateway/run.py:_echo_pending_stt_transcripts_once */
+/* PoP: grun_u_echo_pending_stt_transcripts_once @ gateway/run.py:_echo_pending_stt_transcripts_once */
 int grun_u_echo_pending_stt_transcripts_once(const char *arg) {
     /* Python: 🎙️ echo. Arg =
      * "echoed\tstate\tresult". */
@@ -2076,7 +2076,7 @@ int grun_u_echo_pending_stt_transcripts_once(const char *arg) {
     return 0;
 }
 
-/* PoP: _transcribe_and_echo_pending_voice @ gateway/run.py:_transcribe_and_echo_pending_voice */
+/* PoP: grun_u_transcribe_and_echo_pending_voice @ gateway/run.py:_transcribe_and_echo_pending_voice */
 int grun_u_transcribe_and_echo_pending_voice(const char *arg) {
     /* Python: unified voice helper. Arg =
      * "enriched\tstate\tresult". */
@@ -2089,7 +2089,7 @@ int grun_u_transcribe_and_echo_pending_voice(const char *arg) {
     return 0;
 }
 
-/* PoP: _build_process_event_source @ gateway/run.py:_build_process_event_source */
+/* PoP: grun_u_build_process_event_source @ gateway/run.py:_build_process_event_source */
 int grun_u_build_process_event_source(const char *arg) {
     /* Python: session-store origin first. Arg =
      * "origin\tstate\tresult". */
@@ -2102,7 +2102,7 @@ int grun_u_build_process_event_source(const char *arg) {
     return 0;
 }
 
-/* PoP: _inject_watch_notification @ gateway/run.py:_inject_watch_notification */
+/* PoP: grun_u_inject_watch_notification @ gateway/run.py:_inject_watch_notification */
 int grun_u_inject_watch_notification(const char *arg) {
     /* Python: queued-event route. Arg =
      * "accepted\tstate\tresult". */
@@ -2116,7 +2116,7 @@ int grun_u_inject_watch_notification(const char *arg) {
     return 0;
 }
 
-/* PoP: _classify_completion_target @ gateway/run.py:_classify_completion_target */
+/* PoP: grun_u_classify_completion_target @ gateway/run.py:_classify_completion_target */
 int grun_u_classify_completion_target(const char *arg) {
     /* Python: deliver/terminal/delayed. Arg =
      * "class\tstate\tresult". */
@@ -2130,7 +2130,7 @@ int grun_u_classify_completion_target(const char *arg) {
     return 0;
 }
 
-/* PoP: _deliver_completion_notification @ gateway/run.py:_deliver_completion_notification */
+/* PoP: grun_u_deliver_completion_notification @ gateway/run.py:_deliver_completion_notification */
 int grun_u_deliver_completion_notification(const char *arg) {
     /* Python: once-per-lifecycle. Arg =
      * "delivered\tstate\tresult". */
@@ -2144,7 +2144,7 @@ int grun_u_deliver_completion_notification(const char *arg) {
     return 0;
 }
 
-/* PoP: _enrich_async_delegation_routing @ gateway/run.py:_enrich_async_delegation_routing */
+/* PoP: grun_u_enrich_async_delegation_routing @ gateway/run.py:_enrich_async_delegation_routing */
 int grun_u_enrich_async_delegation_routing(const char *arg) {
     /* Python: session_key parse. Arg =
      * "enriched\tstate\tresult". */
@@ -2159,7 +2159,7 @@ int grun_u_enrich_async_delegation_routing(const char *arg) {
     return 0;
 }
 
-/* PoP: _async_delegation_watcher @ gateway/run.py:_async_delegation_watcher */
+/* PoP: grun_u_async_delegation_watcher @ gateway/run.py:_async_delegation_watcher */
 int grun_u_async_delegation_watcher(const char *arg) {
     /* Python: idle drain. Arg =
      * "drained\tstate\tresult". */
@@ -2172,7 +2172,7 @@ int grun_u_async_delegation_watcher(const char *arg) {
     return 0;
 }
 
-/* PoP: _run_process_watcher @ gateway/run.py:_run_process_watcher */
+/* PoP: grun_u_run_process_watcher @ gateway/run.py:_run_process_watcher */
 int grun_u_run_process_watcher(const char *arg) {
     /* Python: bg process push. Arg =
      * "mode\tstate\tresult". */
@@ -2186,7 +2186,7 @@ int grun_u_run_process_watcher(const char *arg) {
     return 0;
 }
 
-/* PoP: _extract_honcho_cache_busting_config @ gateway/run.py:_extract_honcho_cache_busting_config */
+/* PoP: grun_u_extract_honcho_cache_busting_config @ gateway/run.py:_extract_honcho_cache_busting_config */
 int grun_u_extract_honcho_cache_busting_config(const char *arg) {
     /* Python: memoized honcho keys. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -2197,7 +2197,7 @@ int grun_u_extract_honcho_cache_busting_config(const char *arg) {
     return 0;
 }
 
-/* PoP: _extract_cache_busting_config @ gateway/run.py:_extract_cache_busting_config */
+/* PoP: grun_u_extract_cache_busting_config @ gateway/run.py:_extract_cache_busting_config */
 int grun_u_extract_cache_busting_config(const char *arg) {
     /* Python: registry generation. Arg =
      * "count\tstate\tresult". */
@@ -2210,7 +2210,7 @@ int grun_u_extract_cache_busting_config(const char *arg) {
     return 0;
 }
 
-/* PoP: _agent_config_signature @ gateway/run.py:_agent_config_signature */
+/* PoP: grun_u_agent_config_signature @ gateway/run.py:_agent_config_signature */
 int grun_u_agent_config_signature(const char *arg) {
     /* Python: cache-stability key. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2221,7 +2221,7 @@ int grun_u_agent_config_signature(const char *arg) {
     return 0;
 }
 
-/* PoP: _rehydrate_session_model_override @ gateway/run.py:_rehydrate_session_model_override */
+/* PoP: grun_u_rehydrate_session_model_override @ gateway/run.py:_rehydrate_session_model_override */
 int grun_u_rehydrate_session_model_override(const char *arg) {
     /* Python: restart persistence. Arg =
      * "rehydrated\tstate\tresult". */
@@ -2236,7 +2236,7 @@ int grun_u_rehydrate_session_model_override(const char *arg) {
     return 0;
 }
 
-/* PoP: _release_running_agent_state @ gateway/run.py:_release_running_agent_state */
+/* PoP: grun_u_release_running_agent_state @ gateway/run.py:_release_running_agent_state */
 int grun_u_release_running_agent_state(const char *arg) {
     /* Python: full-pop funnel. Arg =
      * "generation_ok\tstate\tresult". */
@@ -2251,7 +2251,7 @@ int grun_u_release_running_agent_state(const char *arg) {
     return 0;
 }
 
-/* PoP: _release_turn_lease @ gateway/run.py:_release_turn_lease */
+/* PoP: grun_u_release_turn_lease @ gateway/run.py:_release_turn_lease */
 int grun_u_release_turn_lease(const char *arg) {
     /* Python: generation-keyed lease release. Arg =
      * "session_key\tstate\tresult". */
@@ -2264,7 +2264,7 @@ int grun_u_release_turn_lease(const char *arg) {
     return 0;
 }
 
-/* PoP: _rebind_turn_lease @ gateway/run.py:_rebind_turn_lease */
+/* PoP: grun_u_rebind_turn_lease @ gateway/run.py:_rebind_turn_lease */
 int grun_u_rebind_turn_lease(const char *arg) {
     /* Python: rotation-follow rebind. Arg =
      * "has_key\thas_new\tstate\tresult". */
@@ -2280,7 +2280,7 @@ int grun_u_rebind_turn_lease(const char *arg) {
     return 0;
 }
 
-/* PoP: _clear_conversation_scope @ gateway/run.py:_clear_conversation_scope */
+/* PoP: grun_u_clear_conversation_scope @ gateway/run.py:_clear_conversation_scope */
 int grun_u_clear_conversation_scope(const char *arg) {
     /* Python: THE funnel. Arg =
      * "has_key\tstate\tresult". */
@@ -2294,7 +2294,7 @@ int grun_u_clear_conversation_scope(const char *arg) {
     return 0;
 }
 
-/* PoP: _clear_session_boundary_security_state @ gateway/run.py:_clear_session_boundary_security_state */
+/* PoP: grun_u_clear_session_boundary_security_state @ gateway/run.py:_clear_session_boundary_security_state */
 int grun_u_clear_session_boundary_security_state(const char *arg) {
     /* Python: per-session clear. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2305,7 +2305,7 @@ int grun_u_clear_session_boundary_security_state(const char *arg) {
     return 0;
 }
 
-/* PoP: _bind_adapter_run_generation @ gateway/run.py:_bind_adapter_run_generation */
+/* PoP: grun_u_bind_adapter_run_generation @ gateway/run.py:_bind_adapter_run_generation */
 int grun_u_bind_adapter_run_generation(const char *arg) {
     /* Python: gen stamp. Arg =
      * "bound\tstate\tresult". */
@@ -2320,7 +2320,7 @@ int grun_u_bind_adapter_run_generation(const char *arg) {
     return 0;
 }
 
-/* PoP: _interrupt_and_clear_session @ gateway/run.py:_interrupt_and_clear_session */
+/* PoP: grun_u_interrupt_and_clear_session @ gateway/run.py:_interrupt_and_clear_session */
 int grun_u_interrupt_and_clear_session(const char *arg) {
     /* Python: consistent clear. Arg =
      * "cleared\tstate\tresult". */
@@ -2335,7 +2335,7 @@ int grun_u_interrupt_and_clear_session(const char *arg) {
     return 0;
 }
 
-/* PoP: _refresh_agent_cache_message_count @ gateway/run.py:_refresh_agent_cache_message_count */
+/* PoP: grun_u_refresh_agent_cache_message_count @ gateway/run.py:_refresh_agent_cache_message_count */
 int grun_u_refresh_agent_cache_message_count(const char *arg) {
     /* Python: re-baseline #45966. Arg =
      * "refreshed\tstate\tresult". */
@@ -2348,7 +2348,7 @@ int grun_u_refresh_agent_cache_message_count(const char *arg) {
     return 0;
 }
 
-/* PoP: _voice_channel_sidecar_note @ gateway/run.py:_voice_channel_sidecar_note */
+/* PoP: grun_u_voice_channel_sidecar_note @ gateway/run.py:_voice_channel_sidecar_note */
 int grun_u_voice_channel_sidecar_note(const char *arg) {
     /* Python: VC-change note. Arg =
      * "is_discord\tchanged\tstate\tresult". */
@@ -2364,7 +2364,7 @@ int grun_u_voice_channel_sidecar_note(const char *arg) {
     return 0;
 }
 
-/* PoP: _pinned_session_context_prompt @ gateway/run.py:_pinned_session_context_prompt */
+/* PoP: grun_u_pinned_session_context_prompt @ gateway/run.py:_pinned_session_context_prompt */
 int grun_u_pinned_session_context_prompt(const char *arg) {
     /* Python: pinned bytes or re-render. Arg =
      * "session_key\tpin_hit\tstate\ttext". */
@@ -2379,7 +2379,7 @@ int grun_u_pinned_session_context_prompt(const char *arg) {
     return 0;
 }
 
-/* PoP: _init_cached_agent_for_turn @ gateway/run.py:_init_cached_agent_for_turn */
+/* PoP: grun_u_init_cached_agent_for_turn @ gateway/run.py:_init_cached_agent_for_turn */
 int grun_u_init_cached_agent_for_turn(const char *arg) {
     /* Python: per-turn reset. Arg = "interrupt_depth\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2393,7 +2393,7 @@ int grun_u_init_cached_agent_for_turn(const char *arg) {
     return 0;
 }
 
-/* PoP: _commit_memory_before_soft_evict @ gateway/run.py:_commit_memory_before_soft_evict */
+/* PoP: grun_u_commit_memory_before_soft_evict @ gateway/run.py:_commit_memory_before_soft_evict */
 int grun_u_commit_memory_before_soft_evict(const char *arg) {
     /* Python: LRU-cap on_session_end. Arg =
      * "committed\tstate\tresult". */
@@ -2408,7 +2408,7 @@ int grun_u_commit_memory_before_soft_evict(const char *arg) {
     return 0;
 }
 
-/* PoP: _commit_then_release_soft @ gateway/run.py:_commit_then_release_soft */
+/* PoP: grun_u_commit_then_release_soft @ gateway/run.py:_commit_then_release_soft */
 int grun_u_commit_then_release_soft(const char *arg) {
     /* Python: commit memory then soft-release on eviction thread. Arg =
      * "agent\tkey\tstate". */
@@ -2420,7 +2420,7 @@ int grun_u_commit_then_release_soft(const char *arg) {
     return 0;
 }
 
-/* PoP: _release_evicted_agent_soft @ gateway/run.py:_release_evicted_agent_soft */
+/* PoP: grun_u_release_evicted_agent_soft @ gateway/run.py:_release_evicted_agent_soft */
 int grun_u_release_evicted_agent_soft(const char *arg) {
     /* Python: soft cleanup. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2431,7 +2431,7 @@ int grun_u_release_evicted_agent_soft(const char *arg) {
     return 0;
 }
 
-/* PoP: _enforce_agent_cache_cap @ gateway/run.py:_enforce_agent_cache_cap */
+/* PoP: grun_u_enforce_agent_cache_cap @ gateway/run.py:_enforce_agent_cache_cap */
 int grun_u_enforce_agent_cache_cap(const char *arg) {
     /* Python: LRU evict. Arg =
      * "evicted\tstate\tresult". */
@@ -2446,7 +2446,7 @@ int grun_u_enforce_agent_cache_cap(const char *arg) {
     return 0;
 }
 
-/* PoP: _sweep_idle_cached_agents @ gateway/run.py:_sweep_idle_cached_agents */
+/* PoP: grun_u_sweep_idle_cached_agents @ gateway/run.py:_sweep_idle_cached_agents */
 int grun_u_sweep_idle_cached_agents(const char *arg) {
     /* Python: idle TTL evict. Arg =
      * "evicted\tstate\tresult". */
@@ -2459,7 +2459,7 @@ int grun_u_sweep_idle_cached_agents(const char *arg) {
     return 0;
 }
 
-/* PoP: _run_agent_via_proxy @ gateway/run.py:_run_agent_via_proxy */
+/* PoP: grun_u_run_agent_via_proxy @ gateway/run.py:_run_agent_via_proxy */
 int grun_u_run_agent_via_proxy(const char *arg) {
     /* Python: thin-relay mode. Arg =
      * "done\tstate\tresult". */
@@ -2472,7 +2472,7 @@ int grun_u_run_agent_via_proxy(const char *arg) {
     return 0;
 }
 
-/* PoP: _profile_name_for_source @ gateway/run.py:_profile_name_for_source */
+/* PoP: grun_u_profile_name_for_source @ gateway/run.py:_profile_name_for_source */
 int grun_u_profile_name_for_source(const char *arg) {
     /* Python: route match. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2483,7 +2483,7 @@ int grun_u_profile_name_for_source(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_profile_home_for_source @ gateway/run.py:_resolve_profile_home_for_source */
+/* PoP: grun_u_resolve_profile_home_for_source @ gateway/run.py:_resolve_profile_home_for_source */
 int grun_u_resolve_profile_home_for_source(const char *arg) {
     /* Python: 3-step home. Arg =
      * "home\tstate\tresult". */
@@ -2496,7 +2496,7 @@ int grun_u_resolve_profile_home_for_source(const char *arg) {
     return 0;
 }
 
-/* PoP: _run_planned_stop_watcher @ gateway/run.py:_run_planned_stop_watcher */
+/* PoP: grun_u_run_planned_stop_watcher @ gateway/run.py:_run_planned_stop_watcher */
 int grun_u_run_planned_stop_watcher(const char *arg) {
     /* Python: Windows SIGTERM bridge. Arg =
      * "marker\tstate\tresult". */
@@ -2511,7 +2511,7 @@ int grun_u_run_planned_stop_watcher(const char *arg) {
     return 0;
 }
 
-/* PoP: _start_gateway_housekeeping @ gateway/run.py:_start_gateway_housekeeping */
+/* PoP: grun_u_start_gateway_housekeeping @ gateway/run.py:_start_gateway_housekeeping */
 int grun_u_start_gateway_housekeeping(const char *arg) {
     /* Python: non-cron chores. Arg =
      * "state\tresult". */
@@ -2523,7 +2523,7 @@ int grun_u_start_gateway_housekeeping(const char *arg) {
     return 0;
 }
 
-/* PoP: _start_cron_ticker @ gateway/run.py:_start_cron_ticker */
+/* PoP: grun_u_start_cron_ticker @ gateway/run.py:_start_cron_ticker */
 int grun_u_start_cron_ticker(const char *arg) {
     /* Python: deprecated shim -> InProcessCronScheduler. Arg = "state". */
     (void)arg;
@@ -2531,7 +2531,7 @@ int grun_u_start_cron_ticker(const char *arg) {
     return 0;
 }
 
-/* PoP: _await_thread_exit @ gateway/run.py:_await_thread_exit */
+/* PoP: grun_u_await_thread_exit @ gateway/run.py:_await_thread_exit */
 int grun_u_await_thread_exit(const char *arg) {
     /* Python: non-blocking join. Arg =
      * "exited\tstate\tresult". */
@@ -2546,7 +2546,7 @@ int grun_u_await_thread_exit(const char *arg) {
     return 0;
 }
 
-/* PoP: start_gateway @ gateway/run.py:start_gateway */
+/* PoP: grun_start_gateway @ gateway/run.py:start_gateway */
 int grun_start_gateway(const char *arg) {
     /* Python: main entry. Arg =
      * "ran\tstate\tresult". */
@@ -2561,7 +2561,7 @@ int grun_start_gateway(const char *arg) {
     return 0;
 }
 
-/* PoP: _exit_after_graceful_shutdown @ gateway/run.py:_exit_after_graceful_shutdown */
+/* PoP: grun_u_exit_after_graceful_shutdown @ gateway/run.py:_exit_after_graceful_shutdown */
 int grun_u_exit_after_graceful_shutdown(const char *arg) {
     /* Python: os._exit backstop. Arg =
      * "state\tresult". */
@@ -2579,7 +2579,7 @@ int grun_u_exit_after_graceful_shutdown(const char *arg) {
  * _running_agent_items) live in the gateway-runner seam and are exercised by
  * the already-ported _enforce_agent_cache_cap / _sweep_idle_cached_agents. */
 
-/* PoP: _agent_cache_bounds @ gateway/run.py:_agent_cache_bounds */
+/* PoP: grun_u_agent_cache_bounds @ gateway/run.py:_agent_cache_bounds */
 agent_cache_bounds_t grun_u_agent_cache_bounds(void) {
     static agent_cache_bounds_t cached;
     static bool filled = false;
@@ -2592,13 +2592,13 @@ agent_cache_bounds_t grun_u_agent_cache_bounds(void) {
     return b;
 }
 
-/* PoP: _agent_cache_cap @ gateway/run.py:_agent_cache_cap */
+/* PoP: grun_u_agent_cache_cap @ gateway/run.py:_agent_cache_cap */
 int grun_u_agent_cache_cap(void) {
     agent_cache_bounds_t b = grun_u_agent_cache_bounds();
     return b.max_size != ACB_UNSET_INT ? b.max_size : ACB_AGENT_CACHE_MAX_SIZE;
 }
 
-/* PoP: _agent_cache_idle_ttl @ gateway/run.py:_agent_cache_idle_ttl */
+/* PoP: grun_u_agent_cache_idle_ttl @ gateway/run.py:_agent_cache_idle_ttl */
 double grun_u_agent_cache_idle_ttl(void) {
     agent_cache_bounds_t b = grun_u_agent_cache_bounds();
     return b.idle_ttl_secs != ACB_UNSET_FLOAT ? b.idle_ttl_secs : ACB_AGENT_CACHE_IDLE_TTL_SECS;

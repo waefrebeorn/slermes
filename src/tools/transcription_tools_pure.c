@@ -22,7 +22,7 @@
 #define TS_CLOUD_TRIM_THRESHOLD_DB_DEFAULT (-40)
 #define TS_CLOUD_TRIM_KEEP_MS_DEFAULT 300
 
-/* PoP: _is_local_stt_provider @ tools/transcription_tools.py:_is_local_stt_provider */
+/* PoP: ts_is_local_stt_provider @ tools/transcription_tools.py:_is_local_stt_provider */
 bool ts_is_local_stt_provider(const char *provider, const char *stt_config_json)
 {
     if (!provider) return false;
@@ -39,7 +39,7 @@ bool ts_is_local_stt_provider(const char *provider, const char *stt_config_json)
     return strcmp(p, "local") == 0 || strcmp(p, "local_command") == 0;
 }
 
-/* PoP: _command_stt_env_passthrough @ tools/transcription_stt.py:_command_stt_env_passthrough */
+/* PoP: ts_command_stt_env_passthrough @ tools/transcription_stt.py:_command_stt_env_passthrough */
 char **ts_command_stt_env_passthrough(const char *config_json, int *out_count)
 {
     if (out_count) *out_count = 0;
@@ -223,7 +223,7 @@ void ts_confidence_thresholds(const char *stt_config_json,
     if (logprob_out) *logprob_out = logprob;
 }
 
-/* PoP: ts_is_hallucinated_segment @ tools/transcription_tools.py:_is_hallucinated_segment */
+/* PoP: hallucination @ tools/transcription_tools.py:_is_hallucinated_segment */
 /* True when a segment is very likely a silence hallucination (AND gate). */
 /* Faithful to Python: uses getattr() — which returns None for dict-like */
 /* JSON objects (dicts have no attributes), so JSON/dict segments are never */
@@ -243,14 +243,14 @@ bool ts_is_hallucinated_segment(const char *segment_json,
     return false;
 }
 
-/* PoP: _command_provider_env_passthrough @ tools/tts_tool.py:_command_provider_env_passthrough */
+/* PoP: tts_command_provider_env_passthrough @ tools/tts_tool.py:_command_provider_env_passthrough */
 /* Identical logic to the STT variant — one owner for env_passthrough. */
 char **tts_command_provider_env_passthrough(const char *config_json, int *out_count)
 {
     return ts_command_stt_env_passthrough(config_json, out_count);
 }
 
-/* PoP: ts_get_idle_unload_seconds @ tools/transcription_tools.py:_get_idle_unload_seconds */
+/* PoP: max @ tools/transcription_tools.py:_get_idle_unload_seconds */
 /* Python: int(local_cfg.get("unload_after_idle_seconds", 0)) with try/except
  * -> 0 on TypeError/ValueError; then max(val, 0). */
 int ts_get_idle_unload_seconds(const char *local_cfg_json)

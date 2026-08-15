@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_kanban_diagnostics_compute_task_diagnostics @ hermes_cli/kanban_diagnostics.py:compute_task_diagnostics */
+/* PoP: hermes_cli_kanban_diagnostics_compute_task_diagnostics_p @ hermes_cli/kanban_diagnostics.py:compute_task_diagnostics */
 json_t *hermes_cli_kanban_diagnostics_compute_task_diagnostics_p(void) {
     return json_object();
 }

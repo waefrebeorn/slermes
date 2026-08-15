@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_moa_config_validate_moa_payload @ hermes_cli/moa_config.py:validate_moa_payload */
+/* PoP: hermes_cli_moa_config_validate_moa_payload_p @ hermes_cli/moa_config.py:validate_moa_payload */
 json_t *hermes_cli_moa_config_validate_moa_payload_p(void) {
     return json_object();
 }

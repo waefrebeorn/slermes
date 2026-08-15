@@ -20,14 +20,14 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ hermes_cli/win_pty_bridge.py:__init__ */
+/* PoP: wpb_init @ hermes_cli/win_pty_bridge.py:__init__ */
 char *wpb_init(long fd_child, long pid_child) {
     char *out = NULL;
     asprintf(&out, "{\"fd\": %ld, \"pid\": %ld, \"closed\": false}", fd_child, pid_child);
     return out;
 }
 
-/* PoP: read @ hermes_cli/win_pty_bridge.py:read */
+/* PoP: wpb_read @ hermes_cli/win_pty_bridge.py:read */
 char *wpb_read(long fd_child) {
     /* Python: up to 64 KiB, b"" when empty — REAL read. */
     if (fd_child < 0) return strdup("");
@@ -41,7 +41,7 @@ char *wpb_read(long fd_child) {
     return out;
 }
 
-/* PoP: resize @ hermes_cli/win_pty_bridge.py:resize */
+/* PoP: wpb_resize @ hermes_cli/win_pty_bridge.py:resize */
 int wpb_resize(bool closed, unsigned short cols, unsigned short rows) {
     /* Python: no-op when closed; clamped. */
     if (closed) return 0;
@@ -51,7 +51,7 @@ int wpb_resize(bool closed, unsigned short cols, unsigned short rows) {
     return 0;
 }
 
-/* PoP: close @ hermes_cli/win_pty_bridge.py:close */
+/* PoP: wpb_close @ hermes_cli/win_pty_bridge.py:close */
 int wpb_close(bool closed, long fd_child) {
     /* Python: idempotent close. */
     if (closed) return 0;

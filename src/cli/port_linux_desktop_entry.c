@@ -22,7 +22,7 @@
 
 #define LDE_ENTRY_NAME "hermes.desktop"
 
-/* PoP: is_supported @ hermes_cli/linux_desktop_entry.py:is_supported */
+/* PoP: lde_is_supported @ hermes_cli/linux_desktop_entry.py:is_supported */
 /* Python: sys.platform.startswith(("linux","freebsd","openbsd","netbsd")). */
 bool lde_is_supported(void) {
 #if defined(__linux__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__)
@@ -32,7 +32,7 @@ bool lde_is_supported(void) {
 #endif
 }
 
-/* PoP: _xdg_data_home @ hermes_cli/linux_desktop_entry.py:_xdg_data_home */
+/* PoP: lde_xdg_data_home @ hermes_cli/linux_desktop_entry.py:_xdg_data_home */
 char *lde_xdg_data_home(void) {
     const char *raw = getenv("XDG_DATA_HOME");
     if (raw && raw[0] && raw[strspn(raw, " \t")]) {
@@ -51,7 +51,7 @@ char *lde_xdg_data_home(void) {
     return out;
 }
 
-/* PoP: desktop_entry_path @ hermes_cli/linux_desktop_entry.py:desktop_entry_path */
+/* PoP: lde_desktop_entry_path @ hermes_cli/linux_desktop_entry.py:desktop_entry_path */
 char *lde_desktop_entry_path(void) {
     char *xdg = lde_xdg_data_home();
     if (!xdg) return NULL;
@@ -61,7 +61,7 @@ char *lde_desktop_entry_path(void) {
     return out;
 }
 
-/* PoP: icon_path @ hermes_cli/linux_desktop_entry.py:icon_path */
+/* PoP: lde_icon_path @ hermes_cli/linux_desktop_entry.py:icon_path */
 char *lde_icon_path(const char *project_root) {
     if (!project_root) return NULL;
     char *out = NULL;
@@ -69,7 +69,7 @@ char *lde_icon_path(const char *project_root) {
     return out;
 }
 
-/* PoP: _quote_exec_arg @ hermes_cli/linux_desktop_entry.py:_quote_exec_arg */
+/* PoP: lde_quote_exec_arg @ hermes_cli/linux_desktop_entry.py:_quote_exec_arg */
 char *lde_quote_exec_arg(const char *arg) {
     if (!arg) return strdup("");
     /* Reserved characters: space tab newline " ' \ > < ~ | & ; $ * ? # ( ) ` */
@@ -93,7 +93,7 @@ char *lde_quote_exec_arg(const char *arg) {
     return out;
 }
 
-/* PoP: render_desktop_entry @ hermes_cli/linux_desktop_entry.py:render_desktop_entry */
+/* PoP: lde_render_desktop_entry @ hermes_cli/linux_desktop_entry.py:render_desktop_entry */
 char *lde_render_desktop_entry(const char *exec_command, const char *icon) {
     if (!exec_command) exec_command = "";
     if (!icon) icon = "";
@@ -114,7 +114,7 @@ char *lde_render_desktop_entry(const char *exec_command, const char *icon) {
     return out;
 }
 
-/* PoP: _run_quiet @ hermes_cli/linux_desktop_entry.py:_run_quiet */
+/* PoP: lde_run_quiet @ hermes_cli/linux_desktop_entry.py:_run_quiet */
 bool lde_run_quiet(const char *const *cmd, int cmd_count) {
     if (!cmd || cmd_count <= 0) return false;
     pid_t pid = fork();
@@ -141,7 +141,7 @@ bool lde_run_quiet(const char *const *cmd, int cmd_count) {
     return false;
 }
 
-/* PoP: refresh_desktop_databases @ hermes_cli/linux_desktop_entry.py:refresh_desktop_databases */
+/* PoP: lde_refresh_desktop_databases @ hermes_cli/linux_desktop_entry.py:refresh_desktop_databases */
 char *lde_refresh_desktop_databases(const char *applications_dir, int *out_ran) {
     int ran = 0;
     json_t *arr = json_array();
@@ -183,7 +183,7 @@ char *lde_refresh_desktop_databases(const char *applications_dir, int *out_ran) 
     return ser ? ser : strdup("[]");
 }
 
-/* PoP: resolve_exec_command @ hermes_cli/linux_desktop_entry.py:resolve_exec_command */
+/* PoP: lde_resolve_exec_command @ hermes_cli/linux_desktop_entry.py:resolve_exec_command */
 char *lde_resolve_exec_command(void) {
     /* Python: prefer the real hermes executable (argv[0] or PATH); else use
      * the current interpreter -m hermes_cli.main. In C, resolve our own
@@ -202,7 +202,7 @@ char *lde_resolve_exec_command(void) {
     return strdup("hermes desktop");
 }
 
-/* PoP: install_desktop_entry @ hermes_cli/linux_desktop_entry.py:install_desktop_entry */
+/* PoP: lde_install_desktop_entry @ hermes_cli/linux_desktop_entry.py:install_desktop_entry */
 char *lde_install_desktop_entry(const char *project_root) {
     if (!lde_is_supported()) return NULL;
     if (!project_root) return NULL;

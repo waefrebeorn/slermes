@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ agent/copilot_acp_client.py:__init__ */
+/* PoP: cac2_init @ agent/copilot_acp_client.py:__init__ */
 char *cac2_init(const char *client_desc) {
     /* Python: wrapper over client. */
     if (!client_desc) return NULL;
@@ -27,7 +27,7 @@ char *cac2_init(const char *client_desc) {
     return out;
 }
 
-/* PoP: create @ agent/copilot_acp_client.py:create */
+/* PoP: cac2_create @ agent/copilot_acp_client.py:create */
 char *cac2_create(const char *kwargs_json) {
     /* Python: delegate chat completion. */
     if (!kwargs_json) return NULL;
@@ -35,7 +35,7 @@ char *cac2_create(const char *kwargs_json) {
     return strdup("{}");
 }
 
-/* PoP: close @ agent/copilot_acp_client.py:close */
+/* PoP: cac2_close @ agent/copilot_acp_client.py:close */
 int cac2_close(void) {
     /* Python: terminate active process — REAL: no active child in this
      * port; closing is a no-op success. */

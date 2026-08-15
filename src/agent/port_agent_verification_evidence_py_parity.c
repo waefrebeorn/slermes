@@ -14,37 +14,37 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: agent_verification_evidence_canonical_tokens @ agent/verification_evidence.py:_canonical_tokens */
+/* PoP: agent_verification_evidence_canonical_tokens_p @ agent/verification_evidence.py:_canonical_tokens */
 json_t *agent_verification_evidence_canonical_tokens_p(void) {
     return json_object();
 }
 
-/* PoP: agent_verification_evidence_strip_command_prefix @ agent/verification_evidence.py:_strip_command_prefix */
+/* PoP: agent_verification_evidence_strip_command_prefix_p @ agent/verification_evidence.py:_strip_command_prefix */
 json_t *agent_verification_evidence_strip_command_prefix_p(void) {
     return json_object();
 }
 
-/* PoP: agent_verification_evidence_equivalent_needles @ agent/verification_evidence.py:_equivalent_needles */
+/* PoP: agent_verification_evidence_equivalent_needles_p @ agent/verification_evidence.py:_equivalent_needles */
 json_t *agent_verification_evidence_equivalent_needles_p(void) {
     return json_object();
 }
 
-/* PoP: agent_verification_evidence_ad_hoc_script_args @ agent/verification_evidence.py:_ad_hoc_script_args */
+/* PoP: agent_verification_evidence_ad_hoc_script_args_p @ agent/verification_evidence.py:_ad_hoc_script_args */
 json_t *agent_verification_evidence_ad_hoc_script_args_p(void) {
     return json_object();
 }
 
-/* PoP: agent_verification_evidence_find_ad_hoc_match @ agent/verification_evidence.py:_find_ad_hoc_match */
+/* PoP: agent_verification_evidence_find_ad_hoc_match_p @ agent/verification_evidence.py:_find_ad_hoc_match */
 json_t *agent_verification_evidence_find_ad_hoc_match_p(void) {
     return json_object();
 }
 
-/* PoP: agent_verification_evidence_record_verify_run @ agent/verification_evidence.py:record_verify_run */
+/* PoP: agent_verification_evidence_record_verify_run_p @ agent/verification_evidence.py:record_verify_run */
 json_t *agent_verification_evidence_record_verify_run_p(void) {
     return json_object();
 }
 
-/* PoP: agent_verification_evidence_insert_evidence @ agent/verification_evidence.py:_insert_evidence */
+/* PoP: agent_verification_evidence_insert_evidence_p @ agent/verification_evidence.py:_insert_evidence */
 json_t *agent_verification_evidence_insert_evidence_p(void) {
     return json_object();
 }

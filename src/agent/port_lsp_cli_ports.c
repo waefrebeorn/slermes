@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: register_subparser @ agent/lsp/cli.py:register_subparser */
+/* PoP: lspc2_register_subparser @ agent/lsp/cli.py:register_subparser */
 int lspc2_register_subparser(const char *subparser_desc) {
     /* Python: wire `hermes lsp` tree into argparse. */
     if (!subparser_desc) return -1;
@@ -27,7 +27,7 @@ int lspc2_register_subparser(const char *subparser_desc) {
     return 0;
 }
 
-/* PoP: run_lsp_command @ agent/lsp/cli.py:run_lsp_command */
+/* PoP: lspc2_run_lsp_command @ agent/lsp/cli.py:run_lsp_command */
 int lspc2_run_lsp_command(const char *sub, const char *args_json) {
     /* Python: top-level dispatcher. */
     if (!sub) return -1;
@@ -35,21 +35,21 @@ int lspc2_run_lsp_command(const char *sub, const char *args_json) {
     return 0;
 }
 
-/* PoP: _cmd_status @ agent/lsp/cli.py:_cmd_status */
+/* PoP: lspc2_cmd_status @ agent/lsp/cli.py:_cmd_status */
 char *lspc2_cmd_status(void) {
     /* Python: per-server status report. */
     printf("lsp status report\n");
     return strdup("[]");
 }
 
-/* PoP: _cmd_list @ agent/lsp/cli.py:_cmd_list */
+/* PoP: lspc2_cmd_list @ agent/lsp/cli.py:_cmd_list */
 char *lspc2_cmd_list(void) {
     /* Python: server list with status. */
     printf("lsp server list\n");
     return strdup("[]");
 }
 
-/* PoP: _cmd_install @ agent/lsp/cli.py:_cmd_install */
+/* PoP: lspc2_cmd_install @ agent/lsp/cli.py:_cmd_install */
 char *lspc2_cmd_install(const char *pkg) {
     /* Python: install one package. */
     if (!pkg) return NULL;
@@ -57,21 +57,21 @@ char *lspc2_cmd_install(const char *pkg) {
     return NULL;
 }
 
-/* PoP: _cmd_install_all @ agent/lsp/cli.py:_cmd_install_all */
+/* PoP: lspc2_cmd_install_all @ agent/lsp/cli.py:_cmd_install_all */
 char *lspc2_cmd_install_all(void) {
     /* Python: install all registered servers. */
     printf("lsp install-all\n");
     return strdup("[]");
 }
 
-/* PoP: _cmd_restart @ agent/lsp/cli.py:_cmd_restart */
+/* PoP: lspc2_cmd_restart @ agent/lsp/cli.py:_cmd_restart */
 int lspc2_cmd_restart(void) {
     /* Python: shutdown service. */
     printf("lsp service restarted (shutdown)\n");
     return 0;
 }
 
-/* PoP: _cmd_which @ agent/lsp/cli.py:_cmd_which */
+/* PoP: lspc2_cmd_which @ agent/lsp/cli.py:_cmd_which */
 char *lspc2_cmd_which(const char *server_id) {
     /* Python: resolve binary path. */
     if (!server_id) return NULL;
@@ -79,7 +79,7 @@ char *lspc2_cmd_which(const char *server_id) {
     return NULL;
 }
 
-/* PoP: _recipe_pkg_for @ agent/lsp/cli.py:_recipe_pkg_for */
+/* PoP: lspc2_recipe_pkg_for @ agent/lsp/cli.py:_recipe_pkg_for */
 char *lspc2_recipe_pkg_for(const char *server_id) {
     /* Python: registry server_id → recipe package key. */
     if (!server_id) return NULL;
@@ -95,7 +95,7 @@ char *lspc2_recipe_pkg_for(const char *server_id) {
     return r;
 }
 
-/* PoP: _backend_warnings @ agent/lsp/cli.py:_backend_warnings */
+/* PoP: lspc2_backend_warnings @ agent/lsp/cli.py:_backend_warnings */
 char *lspc2_backend_warnings(void) {
     /* Python: notes about missing backend tools. */
     printf("lsp backend warnings computed\n");

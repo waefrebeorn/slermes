@@ -90,7 +90,7 @@ static void as_set_free(as_set_t *s) {
     free(s->items); s->items = NULL; s->n = s->cap = 0;
 }
 
-/* PoP: default_db_path @ hermes_cli/approvals_suggest.py:default_db_path */
+/* PoP: asuggest_default_db_path @ hermes_cli/approvals_suggest.py:default_db_path */
 char *asuggest_default_db_path(void) {
     const char *home = slermes_home();
     if (!home) return NULL;
@@ -99,7 +99,7 @@ char *asuggest_default_db_path(void) {
     return path;
 }
 
-/* PoP: _connect_readonly @ hermes_cli/approvals_suggest.py:_connect_readonly */
+/* PoP: asuggest_connect_readonly @ hermes_cli/approvals_suggest.py:_connect_readonly */
 sqlite3 *asuggest_connect_readonly(const char *db_path) {
     sqlite3 *db = NULL;
     char uri[2048];
@@ -112,7 +112,7 @@ sqlite3 *asuggest_connect_readonly(const char *db_path) {
     return db;
 }
 
-/* PoP: _blocked_tool_call_ids @ hermes_cli/approvals_suggest.py:_blocked_tool_call_ids */
+/* PoP: asuggest_blocked_tool_call_ids @ hermes_cli/approvals_suggest.py:_blocked_tool_call_ids */
 /* Returns 0 ok (set filled); fills the caller-owned set. Non-zero on sqlite error. */
 int asuggest_blocked_tool_call_ids(sqlite3 *db, double since_ts, as_set_t *out) {
     static const char SQL[] =
@@ -138,7 +138,7 @@ int asuggest_blocked_tool_call_ids(sqlite3 *db, double since_ts, as_set_t *out) 
  * Calls cb(ctx, tool_call_id, command); nonzero return aborts. */
 typedef int (*as_terminal_cb)(void *ctx, const char *tool_call_id, const char *command);
 
-/* PoP: _iter_terminal_calls @ hermes_cli/approvals_suggest.py:_iter_terminal_calls */
+/* PoP: asuggest_iter_terminal_calls @ hermes_cli/approvals_suggest.py:_iter_terminal_calls */
 int asuggest_iter_terminal_calls(sqlite3 *db, double since_ts, as_terminal_cb cb, void *ctx) {
     static const char SQL[] =
         "SELECT tool_calls FROM messages "
@@ -206,7 +206,7 @@ static int _scan_on_terminal(void *ctxp, const char *tc_id, const char *command)
     return 0;
 }
 
-/* PoP: scan_approval_history @ hermes_cli/approvals_suggest.py:scan_approval_history */
+/* PoP: asuggest_scan_approval_history @ hermes_cli/approvals_suggest.py:scan_approval_history */
 int asuggest_scan_approval_history(const char *db_path, int days,
                                    as_records_t *out) {
     if (!out) return -1;
@@ -240,7 +240,7 @@ typedef struct {
 
 /* (parse_apply_indices is declared in approval.h; reused from tools/approval.c) */
 
-/* PoP: apply_proposals @ hermes_cli/approvals_suggest.py:apply_proposals */
+/* PoP: asuggest_apply_proposals @ hermes_cli/approvals_suggest.py:apply_proposals */
 int asuggest_apply_proposals(proposal_t **props, size_t n, const int *indices, int n_idx,
                              char ***out_merged, size_t *out_n) {
     if (out_merged) *out_merged = NULL;
@@ -275,7 +275,7 @@ int asuggest_apply_proposals(proposal_t **props, size_t n, const int *indices, i
     return 0;
 }
 
-/* PoP: _render_text @ hermes_cli/approvals_suggest.py:_render_text */
+/* PoP: asuggest_render_text @ hermes_cli/approvals_suggest.py:_render_text */
 void asuggest_render_text(proposal_t **props, size_t n, int days) {
     const char *window = (days <= 0) ? "all history" : NULL;
     char *winbuf = NULL;
@@ -308,7 +308,7 @@ void asuggest_render_text(proposal_t **props, size_t n, int days) {
     free(winbuf);
 }
 
-/* PoP: suggest_command @ hermes_cli/approvals_suggest.py:suggest_command */
+/* PoP: asuggest_suggest_command @ hermes_cli/approvals_suggest.py:suggest_command */
 int asuggest_suggest_command(const as_suggest_args_t *args) {
     const char *db_path = args ? args->db : NULL;
     int days = args ? (args->days ? args->days : 90) : 90;
@@ -408,7 +408,7 @@ done:
     return rc;
 }
 
-/* PoP: approvals_command @ hermes_cli/approvals_suggest.py:approvals_command */
+/* PoP: asuggest_approvals_command @ hermes_cli/approvals_suggest.py:approvals_command */
 int asuggest_approvals_command(const char *sub, const as_suggest_args_t *args) {
     if (!sub || !*sub || strcmp(sub, "suggest") == 0) return asuggest_suggest_command(args);
     /* 'test' subcommand (hermes_cli.approvals_test.approvals_test_command) is
@@ -417,7 +417,7 @@ int asuggest_approvals_command(const char *sub, const as_suggest_args_t *args) {
     return 1;
 }
 
-/* PoP: _render_text @ hermes_cli/approvals_test.py:_render_text */
+/* PoP: approvals_test_render_text @ hermes_cli/approvals_test.py:_render_text */
 /* Returns malloc'd text representation of a verdict. verdict_json = {"command":...,"env_type":...,"verdict":...,"exit_code":...,"rule":...,"detail":...,"normalized_variants":[...]}. Caller frees. */
 char *approvals_test_render_text(const char *verdict_json) {
     if (!verdict_json) return strdup("");

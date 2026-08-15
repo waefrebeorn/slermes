@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _fingerprint @ gateway/code_skew.py:_fingerprint */
+/* PoP: csk_fingerprint @ gateway/code_skew.py:_fingerprint */
 char *csk_fingerprint(const char *repo_dir) {
     /* Python: git:<ref>:<sha> — REAL git rev-parse. */
     if (!repo_dir) return NULL;
@@ -48,7 +48,7 @@ char *csk_fingerprint(const char *repo_dir) {
     return out;
 }
 
-/* PoP: record_boot_fingerprint @ gateway/code_skew.py:record_boot_fingerprint */
+/* PoP: csk_record_boot_fingerprint @ gateway/code_skew.py:record_boot_fingerprint */
 char *csk_record_boot_fingerprint(const char *repo_dir) {
     /* Python: snapshot at startup, idempotent. */
     char *fp = csk_fingerprint(repo_dir);
@@ -56,7 +56,7 @@ char *csk_record_boot_fingerprint(const char *repo_dir) {
     return fp ? fp : strdup("");
 }
 
-/* PoP: _short @ gateway/code_skew.py:_short */
+/* PoP: csk_short @ gateway/code_skew.py:_short */
 char *csk_short(const char *fingerprint) {
     /* Python: git:<ref>:<sha> → compact label. */
     if (!fingerprint) return strdup("");
@@ -67,7 +67,7 @@ char *csk_short(const char *fingerprint) {
     return strdup(p + 1);
 }
 
-/* PoP: detect_code_skew @ gateway/code_skew.py:detect_code_skew */
+/* PoP: csk_detect_code_skew @ gateway/code_skew.py:detect_code_skew */
 char *csk_detect_code_skew(const char *boot_fp, const char *repo_dir) {
     /* Python: drift since boot. */
     if (!boot_fp || !*boot_fp || !repo_dir) return NULL;

@@ -72,7 +72,7 @@ int aux__aux_progress_active(void)
     return g_aux_hook != NULL;
 }
 
-/* PoP: aux__aux_progress_hook @ agent/auxiliary_client.py:aux_progress_hook */
+/* PoP: passthrough @ agent/auxiliary_client.py:aux_progress_hook */
 /* Install *hook* as the current aux forward-progress callback.
  * hook==NULL is a no-op passthrough (previous hook kept), mirroring the
  * Python context manager's `hook if callable(hook) else prev`. Returns the
@@ -185,7 +185,7 @@ static char g_rtm_snapshot[AUX_RT_FIELDS][2048];
 static json_t *g_rtm_context = NULL;
 static int g_rtm_context_set = 0; /* distinguishes "unset" from "set to none" */
 
-/* PoP: aux__compat_runtime_main @ agent/auxiliary_client.py:_compat_runtime_main */
+/* PoP: object @ agent/auxiliary_client.py:_compat_runtime_main */
 /* Expose deliberately patched legacy mirrors as a main context. Recognized
  * only when the mirrors differ from the snapshot minted by the last
  * set_runtime_main (Python also gates on main-thread; the C runtime is
@@ -204,7 +204,7 @@ json_t *aux__compat_runtime_main(void)
     return out;
 }
 
-/* PoP: aux__runtime_main_value @ agent/auxiliary_client.py:_runtime_main_value */
+/* PoP: copy @ agent/auxiliary_client.py:_runtime_main_value */
 /* Read one runtime field through context-local/controlled legacy state.
  * Returns a malloc'd copy ("" when unset/falsy). */
 char *aux__runtime_main_value(const char *field)
@@ -225,7 +225,7 @@ char *aux__runtime_main_value(const char *field)
     return out ? out : strdup("");
 }
 
-/* PoP: aux__set_runtime_main_ctx @ agent/auxiliary_client.py:set_runtime_main */
+/* PoP: Python @ agent/auxiliary_client.py:set_runtime_main */
 /* Record the live main runtime for auxiliary routing. Normalizes exactly
  * like Python (provider/auth_mode lowered+stripped, others stripped) and
  * publishes context before updating the locked compat mirrors+snapshot. */
@@ -298,7 +298,7 @@ static char *aux_rt_cfg_model_str(const char *key)
     return out;
 }
 
-/* PoP: aux__read_main_api_key @ agent/auxiliary_client.py:_read_main_api_key */
+/* PoP: config @ agent/auxiliary_client.py:_read_main_api_key */
 /* Runtime override first, then model.api_key in config (issue #9318). */
 char *aux__read_main_api_key(void)
 {
@@ -318,7 +318,7 @@ char *aux__read_main_base_url(void)
     return aux_rt_cfg_model_str("base_url");
 }
 
-/* PoP: aux__resolve_moa_aggregator @ agent/auxiliary_client.py:_resolve_moa_aggregator */
+/* PoP: aggregator @ agent/auxiliary_client.py:_resolve_moa_aggregator */
 /* Resolve a MoA preset to its aggregator (provider, model) pair via the
  * single shared moa_resolve_preset helper. Outputs are malloc'd or NULL
  * when the preset cannot be resolved / aggregator is malformed / itself
@@ -362,7 +362,7 @@ int aux__resolve_moa_aggregator(const char *preset_name,
     return ok;
 }
 
-/* PoP: aux__read_main_model_for_aux @ agent/auxiliary_client.py:_read_main_model_for_aux */
+/* PoP: string @ agent/auxiliary_client.py:_read_main_model_for_aux */
 /* Main model with MoA presets unwrapped to the aggregator's model. Returns
  * malloc'd string ("" when moa preset unresolvable — sending nothing beats
  * sending a preset name that 400s). */
@@ -447,7 +447,7 @@ char *aux__auth_refresh_provider_for_route(const char *resolved_provider,
     return normalized ? normalized : strdup("");
 }
 
-/* PoP: aux__fallback_entry_timeout @ agent/auxiliary_client.py:_fallback_entry_timeout */
+/* PoP: candidate @ agent/auxiliary_client.py:_fallback_entry_timeout */
 /* Per-entry timeout for a configured fallback candidate (#62452). Parses
  * the entry index out of a "fallback_chain[<i>](<provider>)" label and
  * reads auxiliary.<task>.fallback_chain[<i>].timeout from config.yaml.
@@ -590,7 +590,7 @@ int aux__is_streaming_rejected_error(const char *error_msg)
     return rc;
 }
 
-/* PoP: aux__provider_requires_stream @ agent/auxiliary_client.py:_provider_requires_stream */
+/* PoP: providers @ agent/auxiliary_client.py:_provider_requires_stream */
 /* Stream-only providers (non-stream = HTTP 400): Tencent Copilot by host,
  * plus any endpoint matching auxiliary.stream_only_base_urls substrings
  * from config.yaml (credit @kudi88, PR #60686). */
@@ -634,7 +634,7 @@ void aux__close_cached_client(void *client)
     aux__force_close_async_httpx(client);
 }
 
-/* PoP: aux__contains_profile_reasoning_fields @ agent/auxiliary_client.py:_contains_profile_reasoning_fields */
+/* PoP: payload @ agent/auxiliary_client.py:_contains_profile_reasoning_fields */
 /* Whether a profile payload (JSON object) contains a reasoning wire control
  * at any nesting depth (_PROFILE_REASONING_KEYS, case-insensitive). */
 int aux__contains_profile_reasoning_fields(const json_t *value)
@@ -712,7 +712,7 @@ void aux_stream_acc_init(aux_stream_acc_t *acc, const char *model,
     snprintf(acc->resp_model, sizeof(acc->resp_model), "%s", model ? model : "");
 }
 
-/* PoP: aux_stream_acc_feed @ agent/auxiliary_client.py:feed */
+/* PoP: elapsed @ agent/auxiliary_client.py:feed */
 /* _ChatStreamAccumulator.feed — tick progress, enforce total ceiling,
  * accumulate content/reasoning deltas + finish_reason/id/model.
  * Returns 0 ok, -1 when the total ceiling elapsed (Python raises
@@ -830,7 +830,7 @@ json_t *aux__aggregate_chat_stream_async(llm_config_t *cfg,
                                       model, total_ceiling);
 }
 
-/* PoP: aux__create_with_progress @ agent/auxiliary_client.py:_create_with_progress */
+/* PoP: surfaced @ agent/auxiliary_client.py:_create_with_progress */
 /* chat.completions.create() that streams when a progress hook is active or
  * the provider only accepts streamed requests; plain create otherwise.
  * Streamed failures that are NOT provider-genuine (auth/payment/rate/
@@ -888,7 +888,7 @@ json_t *aux__acreate_with_stream(llm_config_t *cfg,
                                             cfg ? cfg->model : "", ceiling);
 }
 
-/* PoP: aux__call_fallback_candidate_sync @ agent/auxiliary_client.py:_call_fallback_candidate_sync */
+/* PoP: 401s @ agent/auxiliary_client.py:_call_fallback_candidate_sync */
 /* Call one fallback candidate with stale-credential recovery. On a 401:
  * refresh the candidate's provider credentials and retry once; if the
  * retry also 401s (unrefreshable token), quarantine the provider and

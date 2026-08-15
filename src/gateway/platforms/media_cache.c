@@ -69,7 +69,7 @@ void mc_normalize_mime(const char *mime, char *out, size_t out_sz) {
     if (lead) memmove(out, out + lead, strlen(out + lead) + 1);
 }
 
-/* PoP: ext_for_mime @ gateway/platforms/media_cache.py:ext_for_mime */
+/* PoP: mc_ext_for_mime @ gateway/platforms/media_cache.py:ext_for_mime */
 const char *mc_ext_for_mime(const char *mime, const char *overrides_json,
                             int use_defaults, int use_mimetypes,
                             const char *fallback) {
@@ -111,7 +111,7 @@ const char *mc_ext_for_mime(const char *mime, const char *overrides_json,
     return fallback;
 }
 
-/* PoP: mime_for_ext @ gateway/platforms/media_cache.py:mime_for_ext */
+/* PoP: mc_mime_for_ext @ gateway/platforms/media_cache.py:mime_for_ext */
 const char *mc_mime_for_ext(const char *ext, const char *overrides_json,
                             const char *fallback) {
     /* Python: inverse lookup: file extension → canonical mime type.
@@ -147,7 +147,7 @@ const char *mc_mime_for_ext(const char *ext, const char *overrides_json,
     return fallback;
 }
 
-/* PoP: cache_media_bytes @ gateway/platforms/media_cache.py:cache_media_bytes */
+/* PoP: mc_cache_media_bytes @ gateway/platforms/media_cache.py:cache_media_bytes */
 char *mc_cache_media_bytes(const unsigned char *data, size_t len,
                            const char *mime, const char *filename_hint,
                            const char *kind_hint, const char *ext_overrides) {

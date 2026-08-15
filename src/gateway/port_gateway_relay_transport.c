@@ -52,7 +52,7 @@ passthrough_handler_fn relay_transport_get_passthrough_handler(void)
     return relay_passthrough_handler;
 }
 
-/* PoP: relay_transport_go_idle @ gateway/relay/transport.py:go_idle */
+/* PoP: timeout_s @ gateway/relay/transport.py:go_idle */
 /*
  * Port of Python gateway/relay/transport.py:go_idle().
  * Sends a `going_idle` frame and awaits the connector's `going_idle_ack`

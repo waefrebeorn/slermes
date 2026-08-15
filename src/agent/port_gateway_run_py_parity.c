@@ -14,12 +14,12 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: gateway_run_csv_or_list_to_set @ gateway/run.py:_csv_or_list_to_set */
+/* PoP: gateway_run_csv_or_list_to_set_p @ gateway/run.py:_csv_or_list_to_set */
 json_t *gateway_run_csv_or_list_to_set_p(void) {
     return json_object();
 }
 
-/* PoP: gateway_run_slack_ignored_channels_from_gateway_config @ gateway/run.py:_slack_ignored_channels_from_gateway_config */
+/* PoP: gateway_run_slack_ignored_channels_from_gateway_config_p @ gateway/run.py:_slack_ignored_channels_from_gateway_config */
 json_t *gateway_run_slack_ignored_channels_from_gateway_config_p(void) {
     return json_object();
 }

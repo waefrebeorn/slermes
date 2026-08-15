@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ gateway/platforms/helpers.py:__init__ */
+/* PoP: phl_init @ gateway/platforms/helpers.py:__init__ */
 char *phl_init(long max_size, long ttl_seconds) {
     /* Python: seen-set cache. */
     if (max_size <= 0) max_size = 1000;
@@ -29,20 +29,20 @@ char *phl_init(long max_size, long ttl_seconds) {
     return out;
 }
 
-/* PoP: contains @ gateway/platforms/helpers.py:contains */
+/* PoP: phl_contains @ gateway/platforms/helpers.py:contains */
 bool phl_contains(const char *seen_json, const char *msg_id, double now) {
     /* Python: live without inserting. */
     if (!seen_json || !msg_id) return false;
     return strstr(seen_json, msg_id) != NULL;
 }
 
-/* PoP: is_enabled @ gateway/platforms/helpers.py:is_enabled */
+/* PoP: phl_is_enabled @ gateway/platforms/helpers.py:is_enabled */
 bool phl_is_enabled(double batch_delay) {
     /* Python: batching active when delay > 0. */
     return batch_delay > 0.0;
 }
 
-/* PoP: _flush @ gateway/platforms/helpers.py:_flush */
+/* PoP: phl_flush @ gateway/platforms/helpers.py:_flush */
 int phl_flush(const char *key) {
     /* Python: wait then dispatch batched event. */
     if (!key) return -1;
@@ -50,7 +50,7 @@ int phl_flush(const char *key) {
     return 0;
 }
 
-/* PoP: _state_path @ gateway/platforms/helpers.py:_state_path */
+/* PoP: phl_state_path @ gateway/platforms/helpers.py:_state_path */
 char *phl_state_path(const char *service_name) {
     /* Python: <home>/<service>.json state. */
     const char *h = getenv("HERMES_HOME");

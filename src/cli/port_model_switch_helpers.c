@@ -55,7 +55,7 @@ static void normalize_unicode_dashes(char *s)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: parse_model_flags @ hermes_cli/model_switch.py:parse_model_flags */
+/* PoP: model_switch_parse_model_flags @ hermes_cli/model_switch.py:parse_model_flags */
 void model_switch_parse_model_flags(const char *raw_args,
                                      char **out_model_input,
                                      char **out_explicit_provider,

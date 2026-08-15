@@ -20,27 +20,27 @@
  * Constants
  * ═══════════════════════════════════════════════════════════════════ */
 
-/* PoP: fv_tool_progress_visible_modes @ hermes_cli/focus_view.py:TOOL_PROGRESS_VISIBLE_MODES */
+/* PoP: str_in_list @ hermes_cli/focus_view.py:TOOL_PROGRESS_VISIBLE_MODES */
 static const char *FV_VISIBLE_MODES[] = {"new", "all", "verbose"};
 #define FV_VISIBLE_MODES_COUNT 3
 
-/* PoP: fv_tool_progress_modes @ hermes_cli/focus_view.py:TOOL_PROGRESS_MODES */
+/* PoP: str_in_list @ hermes_cli/focus_view.py:TOOL_PROGRESS_MODES */
 static const char *FV_ALL_MODES[] = {"off", "new", "all", "verbose", "log"};
 #define FV_ALL_MODES_COUNT 5
 
-/* PoP: fv_on_words @ hermes_cli/focus_view.py:_ON_WORDS */
+/* PoP: str_in_list @ hermes_cli/focus_view.py:_ON_WORDS */
 static const char *FV_ON_WORDS[] = {"on", "enable", "enabled", "true", "yes", "1"};
 #define FV_ON_WORDS_COUNT 6
 
-/* PoP: fv_off_words @ hermes_cli/focus_view.py:_OFF_WORDS */
+/* PoP: str_in_list @ hermes_cli/focus_view.py:_OFF_WORDS */
 static const char *FV_OFF_WORDS[] = {"off", "disable", "disabled", "false", "no", "0"};
 #define FV_OFF_WORDS_COUNT 6
 
-/* PoP: fv_status_words @ hermes_cli/focus_view.py:_STATUS_WORDS */
+/* PoP: str_in_list @ hermes_cli/focus_view.py:_STATUS_WORDS */
 static const char *FV_STATUS_WORDS[] = {"status", "show", "?"};
 #define FV_STATUS_WORDS_COUNT 3
 
-/* PoP: fv_toggle_words @ hermes_cli/focus_view.py:_TOGGLE_WORDS */
+/* PoP: str_in_list @ hermes_cli/focus_view.py:_TOGGLE_WORDS */
 static const char *FV_TOGGLE_WORDS[] = {"", "toggle"};
 #define FV_TOGGLE_WORDS_COUNT 2
 

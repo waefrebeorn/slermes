@@ -33,7 +33,7 @@ bool profile_has_kanban_toolset(void)
     return strstr(toolsets, "kanban") != NULL;
 }
 
-/* PoP: check_kanban_mode @ tools/kanban_tools.py:_check_kanban_mode */
+/* PoP: set @ tools/kanban_tools.py:_check_kanban_mode */
 /* Port of Python tools/kanban_tools.py:_check_kanban_mode().
  * True when: HERMES_KANBAN_TASK is set (dispatcher worker) OR
  * profile has kanban toolset (orchestrator). */
@@ -43,7 +43,7 @@ bool check_kanban_mode(void)
     return profile_has_kanban_toolset();
 }
 
-/* PoP: check_kanban_orchestrator_mode @ tools/kanban_tools.py:_check_kanban_orchestrator_mode */
+/* PoP: tools @ tools/kanban_tools.py:_check_kanban_orchestrator_mode */
 /* Port of Python tools/kanban_tools.py:_check_kanban_orchestrator_mode().
  * Board-routing tools (list/unblock) are hidden from task workers.
  * Returns true only for orchestrator profiles (kanban toolset, no task env). */
@@ -57,7 +57,7 @@ bool check_kanban_orchestrator_mode(void)
  *  Worker identity / task ownership
  * ================================================================ */
 
-/* PoP: worker_run_id @ tools/kanban_tools.py:_worker_run_id */
+/* PoP: NULL @ tools/kanban_tools.py:_worker_run_id */
 /* Port of Python tools/kanban_tools.py:_worker_run_id().
  * Returns the dispatcher run id when this worker is scoped to task_id.
  * Returns NULL (0) if not a dispatcher-spawned worker for this task. */
@@ -201,7 +201,7 @@ json_t *ok(const json_t *fields)
     return obj;
 }
 
-/* PoP: normalize_profile @ tools/kanban_tools.py:_normalize_profile */
+/* PoP: string @ tools/kanban_tools.py:_normalize_profile */
 /* Port of Python tools/kanban_tools.py:_normalize_profile().
  * Normalizes CLI-compatible assignee sentinels for the tool surface.
  * Returns malloc'd string (caller frees) or NULL for none/null/empty. */
@@ -246,7 +246,7 @@ bool parse_bool_arg(const char *arg, bool default_val)
     return default_val;
 }
 
-/* PoP: require_orchestrator_tool @ tools/kanban_tools.py:_require_orchestrator_tool */
+/* PoP: string @ tools/kanban_tools.py:_require_orchestrator_tool */
 /* Port of Python tools/kanban_tools.py:_require_orchestrator_tool().
  * Returns error string (caller frees) if called from worker context (has HERMES_KANBAN_TASK).
  * Returns NULL when called from orchestrator/CLI context. */
@@ -316,7 +316,7 @@ bool maybe_auto_subscribe(const char *conn, const char *task_id)
 /* ================================================================
  *  _default_task_id
  * ================================================================ */
-/* PoP: default_task_id @ tools/kanban_tools.py:_default_task_id */
+/* PoP: string @ tools/kanban_tools.py:_default_task_id */
 /* Resolve `task_id` arg or fall back to the env var the dispatcher set
  * (HERMES_KANBAN_TASK). Returns a malloc'd string (caller frees) or NULL. */
 char *default_task_id(const char *arg)
@@ -336,7 +336,7 @@ char *default_task_id(const char *arg)
 static double      g_comment_poll_last_attempt = 0.0;   /* monotonic */
 static char       *g_comment_watermark = NULL;           /* "task_id" -> long */
 
-/* PoP: inject_new_comments_from_env @ tools/kanban_tools.py:inject_new_comments_from_env */
+/* PoP: comments @ tools/kanban_tools.py:inject_new_comments_from_env */
 /* Port of Python inject_new_comments_from_env: best-effort, self-gating.
  * No-op unless HERMES_KANBAN_TASK is set and a steer callback is provided.
  * First poll per task only seeds the watermark to the newest existing

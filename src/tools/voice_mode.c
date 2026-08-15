@@ -127,7 +127,7 @@ void voice_set_channels(int channels) {
  *  Audio Environment Detection
  * ================================================================ */
 
-/* PoP: _import_audio @ tools/voice_mode.py:voice_import_audio */
+/* PoP: voice_import_audio @ tools/voice_mode.py:voice_import_audio */
 /* Port of Python tools/voice_mode.py:_import_audio(). */
 const char *voice_import_audio(void) {
     /* Check for available audio backends */
@@ -142,7 +142,7 @@ const char *voice_import_audio(void) {
     return NULL;
 }
 
-/* PoP: _audio_available @ tools/voice_mode.py:voice_audio_available */
+/* PoP: voice_audio_available @ tools/voice_mode.py:voice_audio_available */
 /* Port of Python tools/voice_mode.py:_audio_available(). */
 int voice_audio_available(void) {
     /* Check if audio libraries are available */
@@ -151,7 +151,7 @@ int voice_audio_available(void) {
     return 0;
 }
 
-/* PoP: _voice_capture_install_hint @ tools/voice_mode.py:_voice_capture_install_hint */
+/* PoP: voice_capture_install_hint @ tools/voice_mode.py:_voice_capture_install_hint */
 /* Port of Python tools/voice_mode.py:_voice_capture_install_hint(). */
 void voice_capture_install_hint(void) {
     printf("Voice capture requires one of:\n");
@@ -169,7 +169,7 @@ static int check_pulse_socket(void) {
     return stat(pulse_server, &st) == 0 && (st.st_mode & S_IFMT) == S_IFSOCK;
 }
 
-/* PoP: _pulse_socket_reachable @ tools/voice_mode.py:voice_pulse_socket_reachable */
+/* PoP: voice_pulse_socket_reachable @ tools/voice_mode.py:voice_pulse_socket_reachable */
 /* Port of Python tools/voice_mode.py:_pulse_socket_reachable(). */
 int voice_pulse_socket_reachable(void) {
     /* Check if PulseAudio socket is reachable */
@@ -182,7 +182,7 @@ static int check_termux_api(void) {
            access("/data/data/com.termux/files/usr/bin/termux-api", X_OK) == 0;
 }
 
-/* PoP: _termux_api_app_installed @ tools/voice_mode.py:voice_termux_api_app_installed */
+/* PoP: voice_termux_api_app_installed @ tools/voice_mode.py:voice_termux_api_app_installed */
 /* Port of Python tools/voice_mode.py:_termux_api_app_installed(). */
 int voice_termux_api_app_installed(void) {
     /* Check if Termux API app is installed */
@@ -190,7 +190,7 @@ int voice_termux_api_app_installed(void) {
     return result;
 }
 
-/* PoP: _termux_microphone_command @ tools/voice_mode.py:voice_termux_microphone_command */
+/* PoP: voice_termux_microphone_command @ tools/voice_mode.py:voice_termux_microphone_command */
 /* Port of Python tools/voice_mode.py:_termux_microphone_command(). */
 char *voice_termux_microphone_command(void) {
     /* Get the termux-microphone-record command path */
@@ -199,7 +199,7 @@ char *voice_termux_microphone_command(void) {
     return cmd;
 }
 
-/* PoP: _termux_voice_capture_available @ tools/voice_mode.py:voice_termux_voice_capture_available */
+/* PoP: voice_termux_voice_capture_available @ tools/voice_mode.py:voice_termux_voice_capture_available */
 /* Port of Python tools/voice_mode.py:_termux_voice_capture_available(). */
 int voice_termux_voice_capture_available(void) {
     /* Check if Termux voice capture is available */
@@ -234,7 +234,7 @@ char *detect_audio_environment(void) {
  *  Audio Playback
  * ================================================================ */
 
-/* PoP: vmd_play_beep @ hermes_cli/voice.py:_play_beep */
+/* PoP: play_beep @ hermes_cli/voice.py:_play_beep */
 /* Port of Python tools/voice_mode.py:play_beep(). */
 void play_beep(void) {
     /* Try various beep commands */
@@ -522,7 +522,7 @@ double current_rms(void) {
     return rms;
 }
 
-/* PoP: _ensure_stream @ tools/voice_mode.py:voice_ensure_stream */
+/* PoP: voice_ensure_stream @ tools/voice_mode.py:voice_ensure_stream */
 /* Port of Python tools/voice_mode.py:_ensure_stream(). */
 int voice_ensure_stream(void) {
     if (!g_recorder.running) {
@@ -611,7 +611,7 @@ char *voice_recorder_stop(void) {
     return result;
 }
 
-/* PoP: _close_stream_with_timeout @ tools/voice_mode.py:voice_close_stream_with_timeout */
+/* PoP: voice_close_stream_with_timeout @ tools/voice_mode.py:voice_close_stream_with_timeout */
 /* Port of Python tools/voice_mode.py:_close_stream_with_timeout(). */
 int voice_close_stream_with_timeout(int timeout_sec) {
     if (!g_recorder.running) return 0;
@@ -642,7 +642,7 @@ int voice_close_stream_with_timeout(int timeout_sec) {
     return 0;
 }
 
-/* PoP: _stop_termux_recording @ tools/voice_mode.py:voice_stop_termux_recording */
+/* PoP: voice_stop_termux_recording @ tools/voice_mode.py:voice_stop_termux_recording */
 /* Port of Python tools/voice_mode.py:_stop_termux_recording(). */
 void voice_stop_termux_recording(void) {
     system("termux-microphone-record -s 2>/dev/null");
@@ -668,7 +668,7 @@ typedef struct {
     uint32_t subchunk2_size;
 } wav_header_t;
 
-/* PoP: _write_wav @ tools/voice_mode.py:voice_write_wav */
+/* PoP: voice_write_wav @ tools/voice_mode.py:voice_write_wav */
 /* Port of Python tools/voice_mode.py:_write_wav(). */
 int voice_write_wav(const char *file_path, const void *data, size_t data_len,
                     int sample_rate, int channels, int bits_per_sample) {
@@ -778,7 +778,7 @@ int is_whisper_hallucination(const char *text) {
     return 0;
 }
 
-/* PoP: _should_chunk_for_transcription @ tools/voice_mode.py:should_chunk_for_transcription */
+/* PoP: should_chunk_for_transcription @ tools/voice_mode.py:should_chunk_for_transcription */
 /* Port of Python tools/voice_mode.py:_should_chunk_for_transcription(). */
 int should_chunk_for_transcription(const char *file_path, int chunk_seconds) {
     if (!file_path) return 0;
@@ -793,7 +793,7 @@ int should_chunk_for_transcription(const char *file_path, int chunk_seconds) {
     return estimated_seconds > chunk_seconds;
 }
 
-/* PoP: _split_wav_for_transcription @ tools/voice_mode.py:split_wav_for_transcription */
+/* PoP: split_wav_for_transcription @ tools/voice_mode.py:split_wav_for_transcription */
 /* Port of Python tools/voice_mode.py:_split_wav_for_transcription(). */
 char **split_wav_for_transcription(const char *file_path, int chunk_seconds, int *count) {
     if (!file_path || !count) return NULL;
@@ -857,7 +857,7 @@ char **split_wav_for_transcription(const char *file_path, int chunk_seconds, int
     return result;
 }
 
-/* PoP: _transcribe_wav_in_chunks @ tools/voice_mode.py:transcribe_wav_in_chunks */
+/* PoP: transcribe_wav_in_chunks @ tools/voice_mode.py:transcribe_wav_in_chunks */
 /* Port of Python tools/voice_mode.py:_transcribe_wav_in_chunks(). */
 char *transcribe_wav_in_chunks(const char *file_path, int chunk_seconds, const char *model) {
     if (!file_path) return NULL;
@@ -894,7 +894,7 @@ char *transcribe_wav_in_chunks(const char *file_path, int chunk_seconds, const c
     return combined;
 }
 
-/* PoP: transcribe_recording @ tools/voice_mode.py:transcribe_recording */
+/* PoP: no_speech @ tools/voice_mode.py:transcribe_recording */
 /* Port of Python tools/voice_mode.py:transcribe_recording().
  * Delegates to transcribe_audio(); filters Whisper hallucinations on
  * silence, and maps provider no_speech (empty transcript) to a silent
@@ -1447,7 +1447,7 @@ void voice_play_int16_via_tempfile(const int16_t *samples, size_t n, int sample_
     unlink(tmp_path);
 }
 
-/* PoP: _synth_thinking_blip @ tools/voice_mode.py:_synth_thinking_blip */
+/* PoP: envelope @ tools/voice_mode.py:_synth_thinking_blip */
 /* One soft 'blub': short sine with a downward pitch glide + smooth
  * attack/decay envelope (no clicks), low-volume. Returns sample count in
  * *out_n. Caller frees the returned int16 buffer. */
@@ -1482,7 +1482,7 @@ int16_t *voice_synth_thinking_blip(float frequency, size_t *out_n) {
     return samples;
 }
 
-/* PoP: _thinking_sound_loop @ tools/voice_mode.py:_thinking_sound_loop */
+/* PoP: voice_thinking_sound_loop @ tools/voice_mode.py:_thinking_sound_loop */
 static void *voice_thinking_sound_loop(void *arg) {
     (void)arg;
     float pitches[2] = {392.0f, 329.6f};
@@ -1551,7 +1551,7 @@ bool voice_play_audio_file_impl(const char *file_path) {
     return play_audio_file(file_path) == 0;
 }
 
-/* PoP: full_duplex_listen @ tools/voice_mode.py:full_duplex_listen */
+/* PoP: voice_full_duplex_listen @ tools/voice_mode.py:full_duplex_listen */
 char *voice_full_duplex_listen(int (*should_stop)(void),
                                bool (*is_playing)(void),
                                void (*on_trigger)(const char *phase),

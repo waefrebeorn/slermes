@@ -32,19 +32,19 @@ static const char *videos_cache_dir(void) {
     return buf;
 }
 
-/* PoP: name @ agent/video_gen_provider.py:name */
+/* PoP: vgp_name @ agent/video_gen_provider.py:name */
 char *vgp_name(void) {
     /* Python: stable short id. */
     return strdup("video_gen");
 }
 
-/* PoP: display_name @ agent/video_gen_provider.py:display_name */
+/* PoP: vgp_display_name @ agent/video_gen_provider.py:display_name */
 char *vgp_display_name(void) {
     /* Python: title-cased label. */
     return strdup("Video Gen");
 }
 
-/* PoP: is_available @ agent/video_gen_provider.py:is_available */
+/* PoP: vgp_is_available @ agent/video_gen_provider.py:is_available */
 bool vgp_is_available(void) {
     /* Python: typically key presence check. Any registered provider that
      * reports available (delegates to the real registry). */
@@ -58,7 +58,7 @@ bool vgp_is_available(void) {
     return false;
 }
 
-/* PoP: list_models @ agent/video_gen_provider.py:list_models */
+/* PoP: vgp_list_models @ agent/video_gen_provider.py:list_models */
 char *vgp_list_models(void) {
     /* Python: catalog entries for the picker. Return the registered
      * provider names as a JSON array of {id, name}. */
@@ -79,14 +79,14 @@ char *vgp_list_models(void) {
     return ser ? ser : strdup("[]");
 }
 
-/* PoP: get_setup_schema @ agent/video_gen_provider.py:get_setup_schema */
+/* PoP: vgp_get_setup_schema @ agent/video_gen_provider.py:get_setup_schema */
 char *vgp_get_setup_schema(void) {
     /* Python: picker metadata. */
     return strdup("{\"fields\": [{\"key\": \"api_key\", \"label\": \"API Key\", "
                   "\"type\": \"password\"}]}");
 }
 
-/* PoP: default_model @ agent/video_gen_provider.py:default_model */
+/* PoP: vgp_default_model @ agent/video_gen_provider.py:default_model */
 char *vgp_default_model(void) {
     /* Python: first model id or None. */
     extern int video_gen_provider_count(void);
@@ -98,7 +98,7 @@ char *vgp_default_model(void) {
     return strdup(p->name);
 }
 
-/* PoP: capabilities @ agent/video_gen_provider.py:capabilities */
+/* PoP: vgp_capabilities @ agent/video_gen_provider.py:capabilities */
 char *vgp_capabilities(void) {
     /* Python: supported feature dict. */
     bool avail = vgp_is_available();
@@ -110,7 +110,7 @@ char *vgp_capabilities(void) {
     return ser ? ser : strdup("{\"text_to_video\": false, \"image_to_video\": false}");
 }
 
-/* PoP: generate @ agent/video_gen_provider.py:generate */
+/* PoP: vgp_generate @ agent/video_gen_provider.py:generate */
 char *vgp_generate(const char *prompt, const char *input_image) {
     /* Python: text-to-video or image animation. Delegates to the active
      * registered provider's generate. */
@@ -124,7 +124,7 @@ char *vgp_generate(const char *prompt, const char *input_image) {
                        input_image ? "image_to_video" : "generate", "720p");
 }
 
-/* PoP: save_b64_video @ agent/video_gen_provider.py:save_b64_video */
+/* PoP: vgp_save_b64_video @ agent/video_gen_provider.py:save_b64_video */
 char *vgp_save_b64_video(const char *b64_data) {
     /* Python: decode + write under cache/videos. */
     if (!b64_data) return NULL;
@@ -160,7 +160,7 @@ char *vgp_save_b64_video(const char *b64_data) {
     return path;
 }
 
-/* PoP: save_bytes_video @ agent/video_gen_provider.py:save_bytes_video */
+/* PoP: vgp_save_bytes_video @ agent/video_gen_provider.py:save_bytes_video */
 char *vgp_save_bytes_video(const char *data, size_t len) {
     /* Python: write raw bytes to cache. */
     if (!data) return NULL;
@@ -172,7 +172,7 @@ char *vgp_save_bytes_video(const char *data, size_t len) {
     return path;
 }
 
-/* PoP: success_response @ agent/video_gen_provider.py:success_response */
+/* PoP: vgp_success_response @ agent/video_gen_provider.py:success_response */
 char *vgp_success_response(const char *video, const char *model) {
     /* Python: uniform success dict. */
     char *out = NULL;
@@ -181,7 +181,7 @@ char *vgp_success_response(const char *video, const char *model) {
     return out;
 }
 
-/* PoP: error_response @ agent/video_gen_provider.py:error_response */
+/* PoP: vgp_error_response @ agent/video_gen_provider.py:error_response */
 char *vgp_error_response(const char *error, const char *code) {
     /* Python: uniform error dict. */
     char *out = NULL;

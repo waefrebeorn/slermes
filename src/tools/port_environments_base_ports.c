@@ -26,7 +26,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ tools/environments/base.py:__init__ */
+/* PoP: envb_handle_init @ tools/environments/base.py:__init__ */
 char *envb_handle_init(long max_chars) {
     /* Python: bounded output handle. */
     if (max_chars < 1) max_chars = 1;
@@ -35,7 +35,7 @@ char *envb_handle_init(long max_chars) {
     return out;
 }
 
-/* PoP: render @ tools/environments/base.py:render */
+/* PoP: envb_handle_render @ tools/environments/base.py:render */
 char *envb_handle_render(const char *output, long max_chars, const char *status_suffix) {
     /* Python: render within max_chars preserving status suffix. */
     if (!output) return strdup("");
@@ -56,27 +56,27 @@ char *envb_handle_render(const char *output, long max_chars, const char *status_
     return out;
 }
 
-/* PoP: poll @ tools/environments/base.py:poll */
+/* PoP: envb_handle_poll @ tools/environments/base.py:poll */
 long envb_handle_poll(long returncode, bool done) {
     /* Python: returncode when done else None. */
     return done ? returncode : -1;
 }
 
-/* PoP: kill @ tools/environments/base.py:kill */
+/* PoP: envb_handle_kill @ tools/environments/base.py:kill */
 int envb_handle_kill(void) {
     /* Python: cancel_fn call. */
     printf("process handle killed (cancel_fn)\n");
     return 0;
 }
 
-/* PoP: wait @ tools/environments/base.py:wait */
+/* PoP: envb_handle_wait @ tools/environments/base.py:wait */
 long envb_handle_wait(long returncode, bool done, double timeout) {
     /* Python: block until done; return returncode. */
     (void)timeout;
     return done ? returncode : -1;
 }
 
-/* PoP: _run_bash @ tools/environments/base.py:_run_bash */
+/* PoP: envb_run_bash @ tools/environments/base.py:_run_bash */
 char *envb_run_bash(const char *cmd_string) {
     /* Python: spawn bash process; ProcessHandle. */
     if (!cmd_string) return NULL;
@@ -84,7 +84,7 @@ char *envb_run_bash(const char *cmd_string) {
     return strdup("{}");
 }
 
-/* PoP: _before_execute @ tools/environments/base.py:_before_execute */
+/* PoP: envb_before_execute @ tools/environments/base.py:_before_execute */
 int envb_before_execute(const char *cmd_string) {
     /* Python: hook before each command. */
     if (!cmd_string) return -1;
@@ -92,7 +92,7 @@ int envb_before_execute(const char *cmd_string) {
     return 0;
 }
 
-/* PoP: execute @ tools/environments/base.py:execute */
+/* PoP: envb_execute @ tools/environments/base.py:execute */
 char *envb_execute(const char *cmd_string, bool bounded) {
     /* Python: {output, returncode}. */
     if (!cmd_string) return strdup("{\"output\": \"\", \"returncode\": -1}");
@@ -100,7 +100,7 @@ char *envb_execute(const char *cmd_string, bool bounded) {
     return strdup("{\"output\": \"\", \"returncode\": 0}");
 }
 
-/* PoP: stop @ tools/environments/base.py:stop */
+/* PoP: envb_stop @ tools/environments/base.py:stop */
 int envb_stop(void) {
     /* Python: cleanup alias — stop() calls cleanup(), which for the
      * concrete backends releases backend resources. Delegate to the
@@ -159,7 +159,7 @@ void envb_collector_free(envb_collector_t *c) {
     free(c);
 }
 
-/* PoP: _maybe_spill @ tools/environments/base.py:_maybe_spill */
+/* PoP: envb_maybe_spill @ tools/environments/base.py:_maybe_spill */
 int envb_maybe_spill(envb_collector_t *c, const char *text) {
     if (!c || !text || !text[0]) return -1;
     if (!c->spill_path || c->spill_capped) return -1;
@@ -203,7 +203,7 @@ int envb_maybe_spill(envb_collector_t *c, const char *text) {
  * Python: close the spill file handle; return its path if it was used.
  * C: fclose, return the spill_path (caller may free it).
  */
-/* PoP: close_spill @ tools/environments/base.py:close_spill */
+/* PoP: envb_close_spill @ tools/environments/base.py:close_spill */
 char *envb_close_spill(envb_collector_t *c) {
     if (!c) return NULL;
     if (c->spill_fh) {
@@ -223,7 +223,7 @@ char *envb_close_spill(envb_collector_t *c) {
  */
 static __thread void (*_envb_activity_callback)(const char *) = NULL;
 
-/* PoP: get_activity_callback @ tools/environments/base.py:get_activity_callback */
+/* PoP: envb_get_activity_callback @ tools/environments/base.py:get_activity_callback */
 void *envb_get_activity_callback(void) {
     return _envb_activity_callback ? (void *)_envb_activity_callback : NULL;
 }
@@ -240,7 +240,7 @@ void envb_set_activity_callback(void (*cb)(const char *)) {
  * C: generate the same brace-group shell string. tmp_path is a shell variable
  *    expansion (the caller expands it in the current shell).
  */
-/* PoP: _export_dump_excluding_session_vars @ tools/environments/base.py:_export_dump_excluding_session_vars */
+/* PoP: envb_export_dump_excluding_session_vars @ tools/environments/base.py:_export_dump_excluding_session_vars */
 char *envb_export_dump_excluding_session_vars(const char *tmp_path,
                                                const char **excluded_names,
                                                int n_excluded) {
@@ -311,7 +311,7 @@ char *envb_export_dump_excluding_session_vars(const char *tmp_path,
  *         backend-specific names.
  * C: returns NULL (no additional names) — subclasses may call a hook.
  */
-/* PoP: _additional_profile_scoped_passthrough_names @ tools/environments/base.py:_additional_profile_scoped_passthrough_names */
+/* PoP: envb_additional_profile_scoped_passthrough_names @ tools/environments/base.py:_additional_profile_scoped_passthrough_names */
 const char **envb_additional_profile_scoped_passthrough_names(int *out_count) {
     if (out_count) *out_count = 0;
     return NULL;  /* base returns empty tuple */
@@ -329,7 +329,7 @@ const char **envb_additional_profile_scoped_passthrough_names(int *out_count) {
  *    has entries, collect + filter them; otherwise return the additional
  *    names. The multiplex-active check is a no-op (single-process C).
  */
-/* PoP: _snapshot_excluded_passthrough_names @ tools/environments/base.py:_snapshot_excluded_passthrough_names */
+/* PoP: envb_snapshot_excluded_passthrough_names @ tools/environments/base.py:_snapshot_excluded_passthrough_names */
 char **envb_snapshot_excluded_passthrough_names(bool has_profile_scoped,
                                                 int *out_count) {
     if (out_count) *out_count = 0;
@@ -430,7 +430,7 @@ char **envb_snapshot_excluded_passthrough_names(bool has_profile_scoped,
  * C: caller passes the rendered string, returncode, and spill metadata
  *    (total_chars=0 means no spill). Returns malloc'd JSON string.
  */
-/* PoP: _finalize_wait_result @ tools/environments/base.py:_finalize_wait_result */
+/* PoP: envb_finalize_wait_result @ tools/environments/base.py:_finalize_wait_result */
 char *envb_finalize_wait_result(const char *rendered, long returncode,
                                  long total_chars, const char *spill_path) {
     json_t *r = json_object();
@@ -451,7 +451,7 @@ char *envb_finalize_wait_result(const char *rendered, long returncode,
  * C: kill the process via process group (SIGKILL), swallow ESRCH/EPERM.
  *    proc is a pid_t in C.
  */
-/* PoP: _kill_process @ tools/environments/base.py:_kill_process */
+/* PoP: envb_kill_process @ tools/environments/base.py:_kill_process */
 int envb_kill_process(pid_t pid) {
     if (pid <= 0) return -1;
     /* Try process-group kill first (negative pid = kill the group) */

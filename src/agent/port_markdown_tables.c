@@ -309,7 +309,7 @@ static char **md_render_block(md_row_t *rows, size_t nrows, size_t ncols,
 
 /* ---------- top-level ---------- */
 
-/* PoP: realign_markdown_tables @ agent/markdown_tables.py:realign_markdown_tables */
+/* PoP: md_realign_markdown_tables @ agent/markdown_tables.py:realign_markdown_tables */
 char *md_realign_markdown_tables(const char *text, int available_width /* -1 = None */)
 {
     setlocale(LC_ALL, "C.UTF-8");

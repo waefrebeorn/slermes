@@ -20,7 +20,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _redact @ gateway/platforms/bluebubbles.py:_redact */
+/* PoP: bb_redact @ gateway/platforms/bluebubbles.py:_redact */
 char *bb_redact(const char *text) {
     /* Python: redact phone numbers + emails from logs — real regex. */
     if (!text) return strdup("");
@@ -52,14 +52,14 @@ char *bb_redact(const char *text) {
     return out;
 }
 
-/* PoP: __init__ @ gateway/platforms/bluebubbles.py:__init__ */
+/* PoP: bb_init @ gateway/platforms/bluebubbles.py:__init__ */
 char *bb_init(const char *config_json) {
     if (!config_json) return strdup("{}");
     printf("bluebubbles adapter init (server url + password from extra)\n");
     return strdup(config_json);
 }
 
-/* PoP: connect @ gateway/platforms/bluebubbles.py:connect */
+/* PoP: bb_connect @ gateway/platforms/bluebubbles.py:connect */
 bool bb_connect(const char *server_url, const char *password) {
     /* Python: requires server url + password, then sets up the
      * HTTP client and registers the webhook.  Delegate to the
@@ -72,7 +72,7 @@ bool bb_connect(const char *server_url, const char *password) {
     return true;
 }
 
-/* PoP: disconnect @ gateway/platforms/bluebubbles.py:disconnect */
+/* PoP: bb_disconnect @ gateway/platforms/bluebubbles.py:disconnect */
 int bb_disconnect(void) {
     /* Python: unregister webhook + close client + mark disconnected.
      * The C adapter keeps URL/password state — clear them to
@@ -84,7 +84,7 @@ int bb_disconnect(void) {
     return 0;
 }
 
-/* PoP: truncate_message @ gateway/platforms/bluebubbles.py:truncate_message */
+/* PoP: bb_truncate_message @ gateway/platforms/bluebubbles.py:truncate_message */
 char *bb_truncate_message(const char *text, long max_len) {
     /* Python: base splitter without pagination indicators. */
     if (!text) return strdup("");
@@ -96,7 +96,7 @@ char *bb_truncate_message(const char *text, long max_len) {
     return out;
 }
 
-/* PoP: send @ gateway/platforms/bluebubbles.py:send */
+/* PoP: bb_send @ gateway/platforms/bluebubbles.py:send */
 char *bb_send(const char *chat_id, const char *content) {
     /* Python: format_message then send. */
     if (!chat_id || !content) return strdup("{\"success\": false}");
@@ -104,42 +104,42 @@ char *bb_send(const char *chat_id, const char *content) {
     return strdup("{\"success\": true}");
 }
 
-/* PoP: send_image @ gateway/platforms/bluebubbles.py:send_image */
+/* PoP: bb_send_image @ gateway/platforms/bluebubbles.py:send_image */
 char *bb_send_image(const char *chat_id, const char *image_url, const char *caption) {
     if (!chat_id || !image_url) return strdup("{\"success\": false}");
     printf("bluebubbles image sent (%s)\n", image_url);
     return strdup("{\"success\": true}");
 }
 
-/* PoP: send_image_file @ gateway/platforms/bluebubbles.py:send_image_file */
+/* PoP: bb_send_image_file @ gateway/platforms/bluebubbles.py:send_image_file */
 char *bb_send_image_file(const char *chat_id, const char *file_path, const char *caption) {
     if (!chat_id || !file_path) return strdup("{\"success\": false}");
     printf("bluebubbles image file sent (%s)\n", file_path);
     return strdup("{\"success\": true}");
 }
 
-/* PoP: send_voice @ gateway/platforms/bluebubbles.py:send_voice */
+/* PoP: bb_send_voice @ gateway/platforms/bluebubbles.py:send_voice */
 char *bb_send_voice(const char *chat_id, const char *audio_path, const char *caption) {
     if (!chat_id || !audio_path) return strdup("{\"success\": false}");
     printf("bluebubbles voice sent (%s)\n", audio_path);
     return strdup("{\"success\": true}");
 }
 
-/* PoP: send_video @ gateway/platforms/bluebubbles.py:send_video */
+/* PoP: bb_send_video @ gateway/platforms/bluebubbles.py:send_video */
 char *bb_send_video(const char *chat_id, const char *video_path, const char *caption) {
     if (!chat_id || !video_path) return strdup("{\"success\": false}");
     printf("bluebubbles video sent (%s)\n", video_path);
     return strdup("{\"success\": true}");
 }
 
-/* PoP: send_document @ gateway/platforms/bluebubbles.py:send_document */
+/* PoP: bb_send_document @ gateway/platforms/bluebubbles.py:send_document */
 char *bb_send_document(const char *chat_id, const char *file_path, const char *caption) {
     if (!chat_id || !file_path) return strdup("{\"success\": false}");
     printf("bluebubbles document sent (%s)\n", file_path);
     return strdup("{\"success\": true}");
 }
 
-/* PoP: send_animation @ gateway/platforms/bluebubbles.py:send_animation */
+/* PoP: bb_send_animation @ gateway/platforms/bluebubbles.py:send_animation */
 char *bb_send_animation(const char *chat_id, const char *animation_url, const char *caption) {
     /* Python: routes through send_image. */
     if (!chat_id || !animation_url) return strdup("{\"success\": false}");
@@ -147,7 +147,7 @@ char *bb_send_animation(const char *chat_id, const char *animation_url, const ch
     return strdup("{\"success\": true}");
 }
 
-/* PoP: get_chat_info @ gateway/platforms/bluebubbles.py:get_chat_info */
+/* PoP: bb_get_chat_info @ gateway/platforms/bluebubbles.py:get_chat_info */
 char *bb_get_chat_info(const char *chat_id) {
     /* Python: ;+; → group. */
     if (!chat_id) return NULL;
@@ -157,7 +157,7 @@ char *bb_get_chat_info(const char *chat_id) {
     return out;
 }
 
-/* PoP: format_message @ gateway/platforms/bluebubbles.py:format_message */
+/* PoP: bb_format_message @ gateway/platforms/bluebubbles.py:format_message */
 char *bb_format_message(const char *content) {
     /* Python: strip markdown. */
     if (!content) return strdup("");
@@ -176,7 +176,7 @@ char *bb_format_message(const char *content) {
     return out;
 }
 
-/* PoP: _handle_webhook @ gateway/platforms/bluebubbles.py:_handle_webhook */
+/* PoP: bb_handle_webhook @ gateway/platforms/bluebubbles.py:_handle_webhook */
 char *bb_handle_webhook(const char *query_json) {
     /* Python: password check then event dispatch. */
     if (!query_json) return strdup("{\"status\": 401}");
@@ -198,7 +198,7 @@ char *bb_handle_webhook(const char *query_json) {
  * the provided default). */
 extern const char *secret_scope_get_secret(const char *name, const char *default_val);
 
-/* PoP: _get_scoped_secret @ gateway/platforms/bluebubbles.py:_get_scoped_secret */
+/* PoP: bb_get_scoped_secret @ gateway/platforms/bluebubbles.py:_get_scoped_secret */
 char *bb_get_scoped_secret(const char *name, const char *default_value) {
     const char *val = secret_scope_get_secret(name, default_value);
     return val ? strdup(val) : (default_value ? strdup(default_value) : NULL);

@@ -1245,7 +1245,7 @@ static json_t *wh_render_delivery_extra(json_t *extra, json_t *payload) {
     return rendered;
 }
 
-/* PoP: wh_end_webhook_session @ gateway/platforms/webhook.py:_end_webhook_session */
+/* PoP: DB @ gateway/platforms/webhook.py:_end_webhook_session */
 /* Faithful port: resolve the per-delivery webhook session from g_gw by
  * chat_id and mark it ended in the session DB (first-writer-wins). Reuses the
  * real db_end_session port of SessionDB.end_session — no fake stub. */
@@ -1388,7 +1388,7 @@ bool wh_is_webhook_silence_response(const char *content) {
     return wh_is_autonomous_silence_response(content);
 }
 
-/* PoP: wh_route_allows_profile @ gateway/platforms/webhook.py:_route_allows_profile */
+/* PoP: string @ gateway/platforms/webhook.py:_route_allows_profile */
 /* Return whether a route is bound to the URL-selected profile.
  * route_config_json = serialized {"profile": "..."} (or {} for default).
  * request_profile = the profile string (or NULL for default).

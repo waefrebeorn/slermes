@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: cli_tools_read_terminal_tool_read_terminal_tool @ tools/read_terminal_tool.py:read_terminal_tool */
+/* PoP: contents @ tools/read_terminal_tool.py:read_terminal_tool */
 
 /* Port of Python tools/read_terminal_tool.py:read_terminal_tool */
 /* Return the in-app terminal's contents (+ line metadata) as a JSON string. */

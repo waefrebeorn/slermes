@@ -19,31 +19,31 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: name @ hermes_cli/proxy/adapters/base.py:name */
+/* PoP: pxb_name @ hermes_cli/proxy/adapters/base.py:name */
 char *pxb_name(void) {
     return strdup("nous");
 }
 
-/* PoP: display_name @ hermes_cli/proxy/adapters/base.py:display_name */
+/* PoP: pxb_display_name @ hermes_cli/proxy/adapters/base.py:display_name */
 char *pxb_display_name(void) {
     return strdup("Nous");
 }
 
-/* PoP: is_authenticated @ hermes_cli/proxy/adapters/base.py:is_authenticated */
+/* PoP: pxb_is_authenticated @ hermes_cli/proxy/adapters/base.py:is_authenticated */
 bool pxb_is_authenticated(void) {
     /* Python: usable credentials. */
     printf("upstream auth probe\n");
     return false;
 }
 
-/* PoP: get_credential @ hermes_cli/proxy/adapters/base.py:get_credential */
+/* PoP: pxb_get_credential @ hermes_cli/proxy/adapters/base.py:get_credential */
 char *pxb_get_credential(void) {
     /* Python: fresh credential, refresh if needed. */
     printf("upstream credential fetched (refresh-aware)\n");
     return NULL;
 }
 
-/* PoP: get_retry_credential @ hermes_cli/proxy/adapters/base.py:get_retry_credential */
+/* PoP: pxb_get_retry_credential @ hermes_cli/proxy/adapters/base.py:get_retry_credential */
 char *pxb_get_retry_credential(long status_code) {
     /* Python: alternate after auth failure; default None. */
     if (status_code != 401 && status_code != 403 && status_code != 429) return NULL;

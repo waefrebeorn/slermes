@@ -66,7 +66,7 @@ static void lm_yaml_count_keys(const char *key, const char *val, void *user)
     (*(int *)user)++;
 }
 
-/* PoP: learning_mutations_validate_frontmatter @ agent/learning_mutations.py:_edit_skill */
+/* PoP: string @ agent/learning_mutations.py:_edit_skill */
 /* Faithful port of tools/skill_manager_tool._validate_frontmatter.
  * Returns a malloc'd error string (caller frees) or NULL if valid. */
 static char *lm_validate_frontmatter(const char *content)
@@ -275,7 +275,7 @@ int learning_mutations_parse_memory_id(const char *node_id, char *out_source,
     return 0;
 }
 
-/* PoP: learning_mutations_memory_local_index @ agent/learning_mutations.py:_memory_local_index */
+/* PoP: lm_memory_local_index @ agent/learning_mutations.py:_memory_local_index */
 /* local index: which entry within the source's own file */
 static int lm_memory_local_index(const char *hermes_home, const char *source, int gidx)
 {
@@ -299,8 +299,8 @@ static int lm_memory_local_index(const char *hermes_home, const char *source, in
     return gidx - mem_count;
 }
 
-/* PoP: learning_mutations_locate_memory @ agent/learning_mutations.py:_locate_memory */
-/* PoP: learning_mutations_memories_dir @ agent/learning_mutations.py:_memories_dir */
+/* PoP: to @ agent/learning_mutations.py:_locate_memory */
+/* PoP: to @ agent/learning_mutations.py:_memories_dir */
 /* resolve memory card to (path, all entries, local index) */
 static int lm_locate_memory(const char *hermes_home, const char *source, int gidx,
                             char *out_path, char ***out_chunks, int *out_local)
@@ -329,7 +329,7 @@ static int lm_locate_memory(const char *hermes_home, const char *source, int gid
     return 0;
 }
 
-/* PoP: learning_mutations_node_detail_impl @ agent/learning_mutations.py:_node_detail */
+/* PoP: lm_node_detail @ agent/learning_mutations.py:_node_detail */
 static char *lm_node_detail(const char *node_id)
 {
     char home[LM_MAX_PATH];
@@ -425,8 +425,8 @@ char *learning_mutations_node_detail(const char *node_id)
     return ret;
 }
 
-/* PoP: learning_mutations_delete_skill @ agent/learning_mutations.py:_delete_skill */
-/* PoP: learning_mutations_delete_memory @ agent/learning_mutations.py:_delete_memory */
+/* PoP: learning_mutations_delete_node @ agent/learning_mutations.py:_delete_skill */
+/* PoP: learning_mutations_delete_node @ agent/learning_mutations.py:_delete_memory */
 /* PoP: learning_mutations_delete_node @ agent/learning_mutations.py:delete_node */
 char *learning_mutations_delete_node(const char *node_id)
 {
@@ -499,8 +499,8 @@ out:
     return ret;
 }
 
-/* PoP: learning_mutations_edit_skill @ agent/learning_mutations.py:_edit_skill */
-/* PoP: learning_mutations_edit_memory @ agent/learning_mutations.py:_edit_memory */
+/* PoP: learning_mutations_edit_node @ agent/learning_mutations.py:_edit_skill */
+/* PoP: learning_mutations_edit_node @ agent/learning_mutations.py:_edit_memory */
 /* PoP: learning_mutations_edit_node @ agent/learning_mutations.py:edit_node */
 char *learning_mutations_edit_node(const char *node_id, const char *content)
 {

@@ -21,7 +21,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: register_provider @ agent/web_search_registry.py:register_provider */
+/* PoP: wsr_register_provider @ agent/web_search_registry.py:register_provider */
 int wsr_register_provider(const char *name, const char *provider_desc) {
     /* Python: overwrite on same name. */
     if (!name) return -1;
@@ -33,7 +33,7 @@ int wsr_register_provider(const char *name, const char *provider_desc) {
     return web_search_register_provider(&prov) ? 0 : -1;
 }
 
-/* PoP: list_providers @ agent/web_search_registry.py:list_providers */
+/* PoP: wsr_list_providers @ agent/web_search_registry.py:list_providers */
 char *wsr_list_providers(void) {
     /* Python: sorted by name. */
     int n = web_search_provider_count();
@@ -47,7 +47,7 @@ char *wsr_list_providers(void) {
     return ser ? ser : strdup("[]");
 }
 
-/* PoP: get_provider @ agent/web_search_registry.py:get_provider */
+/* PoP: wsr_get_provider @ agent/web_search_registry.py:get_provider */
 char *wsr_get_provider(const char *name) {
     /* Python: provider or None. */
     if (!name) return NULL;
@@ -55,7 +55,7 @@ char *wsr_get_provider(const char *name) {
     return p ? strdup(p->name) : NULL;
 }
 
-/* PoP: _read_config_key @ agent/web_search_registry.py:_read_config_key */
+/* PoP: wsr_read_config_key @ agent/web_search_registry.py:_read_config_key */
 char *wsr_read_config_key(const char *config_yaml, const char *dotted_key) {
     /* Python: dotted config read. */
     if (!config_yaml || !dotted_key) return NULL;
@@ -71,7 +71,7 @@ char *wsr_read_config_key(const char *config_yaml, const char *dotted_key) {
     return strndup(v, (size_t)(e - v));
 }
 
-/* PoP: _resolve @ agent/web_search_registry.py:_resolve */
+/* PoP: wsr_resolve @ agent/web_search_registry.py:_resolve */
 char *wsr_resolve(const char *capability, const char *config_yaml) {
     /* Python: active provider for search/extract. */
     if (!capability) return NULL;
@@ -87,7 +87,7 @@ char *wsr_resolve(const char *capability, const char *config_yaml) {
     return v ? v : strdup("builtin");
 }
 
-/* PoP: _reset_for_tests @ agent/web_search_registry.py:_reset_for_tests */
+/* PoP: wsr_reset_for_tests @ agent/web_search_registry.py:_reset_for_tests */
 int wsr_reset_for_tests(void) {
     web_search_reset_registry();
     return 0;

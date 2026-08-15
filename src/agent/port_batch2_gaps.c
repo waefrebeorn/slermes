@@ -102,7 +102,7 @@ bool svc_mgr_s6_is_running(const char *name) {
 
 /* ── format_uptime_short (L966) — already ported as proc_reg_format_uptime_short ── */
 /* Adding alias for scanner match */
-/* PoP: format_uptime_short @ tools/process_registry.py:format_uptime_short */
+/* PoP: format_uptime_short_batch @ tools/process_registry.py:format_uptime_short */
 const char *format_uptime_short_batch(double seconds) {
     static char buf[64];
     if (seconds < 60) snprintf(buf, sizeof(buf), "%.0fs", seconds);

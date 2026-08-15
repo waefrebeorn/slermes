@@ -71,7 +71,7 @@ static bool content_list_has_payload(const json_t *container)
 }
 
 /* ── _msg_has_payload ────────────────────────────────────────────────────── */
-/* PoP: arh_msg_has_payload @ agent/agent_runtime_helpers.py:_msg_has_payload */
+/* PoP: msg_has_payload @ agent/agent_runtime_helpers.py:_msg_has_payload */
 bool msg_has_payload(const json_t *msg)
 {
     if (!msg || msg->type != JSON_OBJECT) return false;

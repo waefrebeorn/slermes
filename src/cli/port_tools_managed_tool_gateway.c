@@ -60,7 +60,7 @@ int cli_tools_managed_tool_gateway_managed_gateway_auth_headers(const char *url)
     return -1;
 }
 
-/* PoP: cli_tools_managed_tool_gateway_auth_json_path @ tools/managed_tool_gateway.py:auth_json_path */
+/* PoP: cli_tools_managed_tool_gateway__read_nous_provider_state @ tools/managed_tool_gateway.py:auth_json_path */
 const char* cli_tools_managed_tool_gateway_auth_json_path(void) {
     const char *home = getenv("HERMES_HOME");
     if (!home) {
@@ -179,7 +179,7 @@ int cli_tools_managed_tool_gateway_read_nous_access_token(char *buf, size_t bufs
     return rc;
 }
 
-/* PoP: cli_tools_managed_tool_gateway_get_tool_gateway_scheme @ tools/managed_tool_gateway.py:get_tool_gateway_scheme */
+/* PoP: cli_tools_managed_tool_gateway_build_vendor_gateway_url @ tools/managed_tool_gateway.py:get_tool_gateway_scheme */
 const char* cli_tools_managed_tool_gateway_get_tool_gateway_scheme(void) {
     const char *scheme = getenv("TOOL_GATEWAY_SCHEME");
     if (scheme && *scheme) {
@@ -243,7 +243,7 @@ int cli_tools_managed_tool_gateway_is_managed_tool_gateway_ready(const char *ven
     return ready;
 }
 
-/* PoP: _describe_media_upload_refusal @ tools/managed_tool_gateway.py:_describe_media_upload_refusal */
+/* PoP: cli_tools_managed_tool_gateway__describe_media_upload_refusal @ tools/managed_tool_gateway.py:_describe_media_upload_refusal */
 char *cli_tools_managed_tool_gateway__describe_media_upload_refusal(
     const char *response_body, long http_status) {
     /* Python: surface error.message from the gateway's 4xx body verbatim
@@ -274,7 +274,7 @@ char *cli_tools_managed_tool_gateway__describe_media_upload_refusal(
     return out;
 }
 
-/* PoP: build_managed_media_uploader @ tools/managed_tool_gateway.py:build_managed_media_uploader */
+/* PoP: success @ tools/managed_tool_gateway.py:build_managed_media_uploader */
 
 /* Port of Python build_managed_media_uploader — one-shot uploader for a
  * managed vendor's media upload protocol:

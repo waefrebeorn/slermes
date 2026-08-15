@@ -167,7 +167,7 @@ static unsigned int decode_utf8_before(const char *s, size_t len, size_t end, si
     return cp;
 }
 
-/* PoP: zwj_has_emoji_neighbour @ tools/cronjob_tools.py:_zwj_has_emoji_neighbour */
+/* PoP: selectors @ tools/cronjob_tools.py:_zwj_has_emoji_neighbour */
 /* Port of Python tools/cronjob_tools.py:_zwj_has_emoji_neighbour().
  * Returns true when the ZWJ at text[byte_idx] appears inside an emoji sequence.
  * Works on byte offsets: walks to the start of the left/right codepoints
@@ -385,7 +385,7 @@ static char *strip_cron_safe_constructs(const char *prompt)
  *  injection markers are found, after stripping legitimate emoji ZWJs.
  *  Empty string on success.
  * ================================================================ */
-/* PoP: check_invisible_unicode @ tools/cronjob_tools.py:_check_invisible_unicode */
+/* PoP: prompt @ tools/cronjob_tools.py:_check_invisible_unicode */
 /* Port of Python tools/cronjob_tools.py:_check_invisible_unicode().
  * Scans prompt (minus legitimate emoji ZWJs) for invisible unicode codepoints.
  * Returns malloc'd error string on block, empty string ("") on pass.
@@ -424,7 +424,7 @@ char *cron_prompt_sanitize_check_invisible(const char *prompt)
  *  Returns a JSON object {cleaned_prompt, removed_codepoints[]}.
  *  Caller owns the returned json_t*.
  * ================================================================ */
-/* PoP: strip_invisible_unicode @ tools/cronjob_tools.py:_strip_invisible_unicode */
+/* PoP: cron_prompt_sanitize_strip_invisible @ tools/cronjob_tools.py:_strip_invisible_unicode */
 /* Port of Python tools/cronjob_tools.py:_strip_invisible_unicode().
  * Strips invisible unicode characters from prompt, preserving emoji ZWJs.
  * Returns json_t* object with "cleaned" (string) and "removed" (array of "U+XXXX").
@@ -537,7 +537,7 @@ static bool match_disregard_rules(const char *s)
     return has_qual && has_obj;
 }
 
-/* PoP: scan_cron_skill_assembled @ tools/cronjob_tools.py:_scan_cron_skill_assembled */
+/* PoP: cron_prompt_sanitize_scan_skill_assembled @ tools/cronjob_tools.py:_scan_cron_skill_assembled */
 /* Port of Python tools/cronjob_tools.py:_scan_cron_skill_assembled().
  * Looser pattern set — only catches unambiguous prompt-injection directives.
  * Invisible unicode is SANITIZED, not blocked. Skill bodies are already

@@ -21,7 +21,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: find_bws @ agent/secret_sources/bitwarden.py:find_bws */
+/* PoP: bw_find_bws @ agent/secret_sources/bitwarden.py:find_bws */
 char *bw_find_bws(const char *hermes_home) {
     /* Python: managed copy then PATH. */
     char *managed = NULL;
@@ -44,7 +44,7 @@ char *bw_find_bws(const char *hermes_home) {
     return NULL;
 }
 
-/* PoP: _http_download @ agent/secret_sources/bitwarden.py:_http_download */
+/* PoP: bw_http_download @ agent/secret_sources/bitwarden.py:_http_download */
 char *bw_http_download(const char *url) {
     /* Python: UA hermes-agent GET, timeout-bounded — REAL http_get. */
     if (!url) return NULL;
@@ -58,7 +58,7 @@ char *bw_http_download(const char *url) {
     return out;
 }
 
-/* PoP: _expected_sha256 @ agent/secret_sources/bitwarden.py:_expected_sha256 */
+/* PoP: bw_expected_sha256 @ agent/secret_sources/bitwarden.py:_expected_sha256 */
 char *bw_expected_sha256(const char *version, const char *platform) {
     /* Python: pinned checksum table. */
     if (!version || !platform) return NULL;
@@ -66,7 +66,7 @@ char *bw_expected_sha256(const char *version, const char *platform) {
     return strdup("");
 }
 
-/* PoP: _pick_zip_member @ agent/secret_sources/bitwarden.py:_pick_zip_member */
+/* PoP: bw_pick_zip_member @ agent/secret_sources/bitwarden.py:_pick_zip_member */
 char *bw_pick_zip_member(const char *members_json) {
     /* Python: select the bws binary member from zip listing. */
     if (!members_json) return NULL;
@@ -74,7 +74,7 @@ char *bw_pick_zip_member(const char *members_json) {
     return NULL;
 }
 
-/* PoP: _safe_extract_member @ agent/secret_sources/bitwarden.py:_safe_extract_member */
+/* PoP: bw_safe_extract_member @ agent/secret_sources/bitwarden.py:_safe_extract_member */
 int bw_safe_extract_member(const char *archive_path, const char *member, const char *dest) {
     /* Python: path-traversal-safe zip member extract. */
     if (!archive_path || !member || !dest) return -1;
@@ -82,7 +82,7 @@ int bw_safe_extract_member(const char *archive_path, const char *member, const c
     return 0;
 }
 
-/* PoP: _b64e @ agent/secret_sources/bitwarden.py:_b64e */
+/* PoP: bw_b64e @ agent/secret_sources/bitwarden.py:_b64e */
 char *bw_b64e(const char *data, size_t len) {
     /* Python: urlsafe base64 encode (no padding). */
     if (!data) return strdup("");
@@ -105,7 +105,7 @@ char *bw_b64e(const char *data, size_t len) {
     return out;
 }
 
-/* PoP: _b64d @ agent/secret_sources/bitwarden.py:_b64d */
+/* PoP: bw_b64d @ agent/secret_sources/bitwarden.py:_b64d */
 char *bw_b64d(const char *b64, size_t *out_len) {
     /* Python: urlsafe base64 decode. */
     if (!b64) { if (out_len) *out_len = 0; return NULL; }
@@ -135,7 +135,7 @@ char *bw_b64d(const char *b64, size_t *out_len) {
     return out;
 }
 
-/* PoP: _derive_encrypted_cache_key @ agent/secret_sources/bitwarden.py:_derive_encrypted_cache_key */
+/* PoP: bw_derive_encrypted_cache_key @ agent/secret_sources/bitwarden.py:_derive_encrypted_cache_key */
 char *bw_derive_encrypted_cache_key(const char *client_id, const char *secret) {
     /* Python: derived key from credentials (HKDF-ish). */
     if (!client_id || !secret) return NULL;
@@ -143,21 +143,21 @@ char *bw_derive_encrypted_cache_key(const char *client_id, const char *secret) {
     return strdup("");
 }
 
-/* PoP: _write_encrypted_disk_cache @ agent/secret_sources/bitwarden.py:_write_encrypted_disk_cache */
+/* PoP: bw_write_encrypted_disk_cache @ agent/secret_sources/bitwarden.py:_write_encrypted_disk_cache */
 int bw_write_encrypted_disk_cache(const char *path, const char *key, const char *data_json) {
     if (!path || !key || !data_json) return -1;
     printf("encrypted disk cache written (%s)\n", path);
     return 0;
 }
 
-/* PoP: _read_encrypted_disk_cache @ agent/secret_sources/bitwarden.py:_read_encrypted_disk_cache */
+/* PoP: bw_read_encrypted_disk_cache @ agent/secret_sources/bitwarden.py:_read_encrypted_disk_cache */
 char *bw_read_encrypted_disk_cache(const char *path, const char *key) {
     if (!path || !key) return NULL;
     printf("encrypted disk cache read (%s)\n", path);
     return NULL;
 }
 
-/* PoP: fetch_bitwarden_secrets @ agent/secret_sources/bitwarden.py:fetch_bitwarden_secrets */
+/* PoP: bw_fetch_bitwarden_secrets @ agent/secret_sources/bitwarden.py:fetch_bitwarden_secrets */
 char *bw_fetch_bitwarden_secrets(const char *config_json) {
     /* Python: bws secret list → secret map. */
     if (!config_json) return strdup("{}");
@@ -165,7 +165,7 @@ char *bw_fetch_bitwarden_secrets(const char *config_json) {
     return strdup("{}");
 }
 
-/* PoP: _summarize_bws_stderr @ agent/secret_sources/bitwarden.py:_summarize_bws_stderr */
+/* PoP: bw_summarize_bws_stderr @ agent/secret_sources/bitwarden.py:_summarize_bws_stderr */
 char *bw_summarize_bws_stderr(const char *stderr_text) {
     /* Python: one-line actionable summary. */
     if (!stderr_text) return strdup("");
@@ -173,7 +173,7 @@ char *bw_summarize_bws_stderr(const char *stderr_text) {
     return strdup("");
 }
 
-/* PoP: _run_bws_list @ agent/secret_sources/bitwarden.py:_run_bws_list */
+/* PoP: bw_run_bws_list @ agent/secret_sources/bitwarden.py:_run_bws_list */
 char *bw_run_bws_list(const char *bws_path, const char *token) {
     /* Python: bws secret list subprocess. */
     if (!bws_path || !token) return NULL;
@@ -181,7 +181,7 @@ char *bw_run_bws_list(const char *bws_path, const char *token) {
     return NULL;
 }
 
-/* PoP: apply_bitwarden_secrets @ agent/secret_sources/bitwarden.py:apply_bitwarden_secrets */
+/* PoP: bw_apply_bitwarden_secrets @ agent/secret_sources/bitwarden.py:apply_bitwarden_secrets */
 long bw_apply_bitwarden_secrets(const char *secrets_json) {
     /* Python: merge into env — real: parse {"KEY": "value", ...}
      * and setenv each. */
@@ -213,23 +213,23 @@ long bw_apply_bitwarden_secrets(const char *secrets_json) {
     return applied;
 }
 
-/* PoP: override_existing @ agent/secret_sources/bitwarden.py:override_existing */
+/* PoP: bw_override_existing @ agent/secret_sources/bitwarden.py:override_existing */
 bool bw_override_existing(void) {
     /* Python: config flag default. */
     return false;
 }
 
-/* PoP: protected_env_vars @ agent/secret_sources/bitwarden.py:protected_env_vars */
+/* PoP: bw_protected_env_vars @ agent/secret_sources/bitwarden.py:protected_env_vars */
 char *bw_protected_env_vars(void) {
     return strdup("[]");
 }
 
-/* PoP: config_schema @ agent/secret_sources/bitwarden.py:config_schema */
+/* PoP: bw_config_schema @ agent/secret_sources/bitwarden.py:config_schema */
 char *bw_config_schema(void) {
     return strdup("{\"type\": \"object\"}");
 }
 
-/* PoP: fetch @ agent/secret_sources/bitwarden.py:fetch */
+/* PoP: bw_fetch @ agent/secret_sources/bitwarden.py:fetch */
 char *bw_fetch(const char *config_json) {
     /* Python: source fetch entry point. */
     if (!config_json) return NULL;
@@ -237,7 +237,7 @@ char *bw_fetch(const char *config_json) {
     return NULL;
 }
 
-/* PoP: remediation @ agent/secret_sources/bitwarden.py:remediation */
+/* PoP: bw_remediation @ agent/secret_sources/bitwarden.py:remediation */
 char *bw_remediation(const char *error) {
     /* Python: user-facing fix guidance. */
     if (!error) return strdup("");
@@ -245,7 +245,7 @@ char *bw_remediation(const char *error) {
     return strdup("");
 }
 
-/* PoP: _classify_bws_error @ agent/secret_sources/bitwarden.py:_classify_bws_error */
+/* PoP: bw_classify_bws_error @ agent/secret_sources/bitwarden.py:_classify_bws_error */
 char *bw_classify_bws_error(const char *error) {
     /* Python: auth/network/parse classification. */
     if (!error) return strdup("unknown");
@@ -264,7 +264,7 @@ char *bw_classify_bws_error(const char *error) {
     return r;
 }
 
-/* PoP: clear_caches @ agent/secret_sources/bitwarden.py:clear_caches */
+/* PoP: bw_clear_caches @ agent/secret_sources/bitwarden.py:clear_caches */
 int bw_clear_caches(void) {
     /* Python: clear cached vault/status — REAL fs cache remove. */
     const char *home = getenv("HERMES_HOME");
@@ -275,7 +275,7 @@ int bw_clear_caches(void) {
     return 0;
 }
 
-/* PoP: _reset_cache_for_tests @ agent/secret_sources/bitwarden.py:_reset_cache_for_tests */
+/* PoP: bw_reset_cache_for_tests @ agent/secret_sources/bitwarden.py:_reset_cache_for_tests */
 int bw_reset_cache_for_tests(void) {
     printf("bitwarden test caches reset\n");
     return 0;

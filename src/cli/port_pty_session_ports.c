@@ -169,7 +169,7 @@ static pty_session_t *registry_find(int id) {
 /*  Public PoP surface                                                 */
 /* ------------------------------------------------------------------ */
 
-/* PoP: __init__ @ hermes_cli/pty_session.py:__init__ */
+/* PoP: pty_init @ hermes_cli/pty_session.py:__init__ */
 char *pty_init(long capacity) {
     /* Python: bounded output buffer. */
     if (capacity <= 0) capacity = 65536;
@@ -178,14 +178,14 @@ char *pty_init(long capacity) {
     return out;
 }
 
-/* PoP: snapshot @ hermes_cli/pty_session.py:snapshot */
+/* PoP: pty_snapshot @ hermes_cli/pty_session.py:snapshot */
 char *pty_snapshot(const char *buf_json) {
     /* Python: raw bytes. */
     if (!buf_json) return strdup("");
     return strdup(buf_json);
 }
 
-/* PoP: start @ hermes_cli/pty_session.py:start */
+/* PoP: pty_start @ hermes_cli/pty_session.py:start */
 int pty_start(void) {
     /* Python: create the session and spawn the drain task.
      * Allocates a real PTY child ($SHELL) and starts the drain thread. */
@@ -207,7 +207,7 @@ int pty_start(void) {
     return s->id;
 }
 
-/* PoP: attach @ hermes_cli/pty_session.py:attach */
+/* PoP: pty_attach @ hermes_cli/pty_session.py:attach */
 int pty_attach(const char *ws_desc) {
     /* Python: replace ws attachment + push snapshot. */
     if (!ws_desc) return -1;
@@ -222,7 +222,7 @@ int pty_attach(const char *ws_desc) {
     return 0;
 }
 
-/* PoP: close @ hermes_cli/pty_session.py:close */
+/* PoP: pty_close @ hermes_cli/pty_session.py:close */
 int pty_close(void) {
     /* Python: cancel drain + close bridge.
      * Closes the newest session: stops its drain thread, disposes the
@@ -239,7 +239,7 @@ int pty_close(void) {
     return 0;
 }
 
-/* PoP: close_all @ hermes_cli/pty_session.py:close_all */
+/* PoP: pty_close_all @ hermes_cli/pty_session.py:close_all */
 int pty_close_all(void) {
     /* Python: pop + close each session. Closes every session in the
      * registry: stop drain threads, dispose PTY children, free all. */

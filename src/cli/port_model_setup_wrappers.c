@@ -11,7 +11,7 @@
 #include <ctype.h>
 #include "hermes_json.h"
 
-/* PoP: bedrock_region_geo_prefix @ hermes_cli/model_setup_flows.py:bedrock_region_geo_prefix */
+/* PoP: msf_bedrock_region_geo_prefix @ hermes_cli/model_setup_flows.py:bedrock_region_geo_prefix */
 int msf_bedrock_region_geo_prefix(const char *arg) {
     /* Python: us./eu./ap./ca./sa./me./af. prefix map. Arg = region. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -27,7 +27,7 @@ int msf_bedrock_region_geo_prefix(const char *arg) {
     return 0;
 }
 
-/* PoP: bedrock_model_routable_from_region @ hermes_cli/model_setup_flows.py:bedrock_model_routable_from_region */
+/* PoP: msf_bedrock_model_routable_from_region @ hermes_cli/model_setup_flows.py:bedrock_model_routable_from_region */
 int msf_bedrock_model_routable_from_region(const char *arg) {
     /* Python: geo prefix route check. Arg =
      * "model_geo\tregion_geo\tresult". */
@@ -46,7 +46,7 @@ int msf_bedrock_model_routable_from_region(const char *arg) {
     return 0;
 }
 
-/* PoP: _prune_replaced_custom_model_config_credentials @ hermes_cli/model_setup_flows.py:_prune_replaced_custom_model_config_credentials */
+/* PoP: msf_u_prune_replaced_custom_model_config_credentials @ hermes_cli/model_setup_flows.py:_prune_replaced_custom_model_config_credentials */
 int msf_u_prune_replaced_custom_model_config_credentials(const char *arg) {
     /* Python: stale model_config drop. Arg =
      * "removed\tstate\tresult". */
@@ -59,7 +59,7 @@ int msf_u_prune_replaced_custom_model_config_credentials(const char *arg) {
     return 0;
 }
 
-/* PoP: _prompt_auth_credentials_choice @ hermes_cli/model_setup_flows.py:_prompt_auth_credentials_choice */
+/* PoP: msf_u_prompt_auth_credentials_choice @ hermes_cli/model_setup_flows.py:_prompt_auth_credentials_choice */
 int msf_u_prompt_auth_credentials_choice(const char *arg) {
     /* Python: use/reauth/cancel. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("use\n"); return 0; }
@@ -70,7 +70,7 @@ int msf_u_prompt_auth_credentials_choice(const char *arg) {
     return 0;
 }
 
-/* PoP: _model_flow_openrouter @ hermes_cli/model_setup_flows.py:_model_flow_openrouter */
+/* PoP: msf_u_model_flow_openrouter @ hermes_cli/model_setup_flows.py:_model_flow_openrouter */
 int msf_u_model_flow_openrouter(const char *arg) {
     /* Python: in-flow key replace. Arg =
      * "has_key\tstate\tresult". */
@@ -87,7 +87,7 @@ int msf_u_model_flow_openrouter(const char *arg) {
     return 0;
 }
 
-/* PoP: _print_moa_preset @ hermes_cli/model_setup_flows.py:_print_moa_preset */
+/* PoP: msf_u_print_moa_preset @ hermes_cli/model_setup_flows.py:_print_moa_preset */
 int msf_u_print_moa_preset(const char *arg) {
     /* Python: preset breakdown print. Arg = "name\tpreset_json". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -118,7 +118,7 @@ int msf_u_print_moa_preset(const char *arg) {
     return 0;
 }
 
-/* PoP: _model_flow_moa @ hermes_cli/model_setup_flows.py:_model_flow_moa */
+/* PoP: msf_u_model_flow_moa @ hermes_cli/model_setup_flows.py:_model_flow_moa */
 int msf_u_model_flow_moa(const char *arg) {
     /* Python: preset picker. Arg =
      * "has_presets\tstate\tresult". */
@@ -136,7 +136,7 @@ int msf_u_model_flow_moa(const char *arg) {
     return 0;
 }
 
-/* PoP: _model_flow_nous @ hermes_cli/model_setup_flows.py:_model_flow_nous */
+/* PoP: msf_u_model_flow_nous @ hermes_cli/model_setup_flows.py:_model_flow_nous */
 int msf_u_model_flow_nous(const char *arg) {
     /* Python: portal flow. Arg =
      * "logged_in\tstate\tresult". */
@@ -155,7 +155,7 @@ int msf_u_model_flow_nous(const char *arg) {
     return 0;
 }
 
-/* PoP: _model_flow_openai_codex @ hermes_cli/model_setup_flows.py:_model_flow_openai_codex */
+/* PoP: msf_u_model_flow_openai_codex @ hermes_cli/model_setup_flows.py:_model_flow_openai_codex */
 int msf_u_model_flow_openai_codex(const char *arg) {
     /* Python: codex flow. Arg =
      * "logged_in\tstate\tresult". */
@@ -176,7 +176,7 @@ int msf_u_model_flow_openai_codex(const char *arg) {
     return 0;
 }
 
-/* PoP: _model_flow_xai_oauth @ hermes_cli/model_setup_flows.py:_model_flow_xai_oauth */
+/* PoP: msf_u_model_flow_xai_oauth @ hermes_cli/model_setup_flows.py:_model_flow_xai_oauth */
 int msf_u_model_flow_xai_oauth(const char *arg) {
     /* Python: xai flow. Arg =
      * "logged_in\tstate\tresult". */
@@ -196,7 +196,7 @@ int msf_u_model_flow_xai_oauth(const char *arg) {
     return 0;
 }
 
-/* PoP: _model_flow_qwen_oauth @ hermes_cli/model_setup_flows.py:_model_flow_qwen_oauth */
+/* PoP: msf_u_model_flow_qwen_oauth @ hermes_cli/model_setup_flows.py:_model_flow_qwen_oauth */
 int msf_u_model_flow_qwen_oauth(const char *arg) {
     /* Python: qwen CLI reuse. Arg =
      * "logged_in\tstate\tresult\terr". */
@@ -214,7 +214,7 @@ int msf_u_model_flow_qwen_oauth(const char *arg) {
     return 0;
 }
 
-/* PoP: _model_flow_minimax_oauth @ hermes_cli/model_setup_flows.py:_model_flow_minimax_oauth */
+/* PoP: msf_u_model_flow_minimax_oauth @ hermes_cli/model_setup_flows.py:_model_flow_minimax_oauth */
 int msf_u_model_flow_minimax_oauth(const char *arg) {
     /* Python: minimax login gate. Arg =
      * "logged_in\tstate\tresult\terr". */
@@ -234,7 +234,7 @@ int msf_u_model_flow_minimax_oauth(const char *arg) {
     return 0;
 }
 
-/* PoP: _model_flow_custom @ hermes_cli/model_setup_flows.py:_model_flow_custom */
+/* PoP: msf_u_model_flow_custom @ hermes_cli/model_setup_flows.py:_model_flow_custom */
 int msf_u_model_flow_custom(const char *arg) {
     /* Python: endpoint collect. Arg =
      * "saved\tstate\tresult". */
@@ -250,7 +250,7 @@ int msf_u_model_flow_custom(const char *arg) {
     return 0;
 }
 
-/* PoP: _model_flow_azure_foundry @ hermes_cli/model_setup_flows.py:_model_flow_azure_foundry */
+/* PoP: msf_u_model_flow_azure_foundry @ hermes_cli/model_setup_flows.py:_model_flow_azure_foundry */
 int msf_u_model_flow_azure_foundry(const char *arg) {
     /* Python: Foundry wizard. Arg =
      * "entra\tstate\tresult". */
@@ -265,7 +265,7 @@ int msf_u_model_flow_azure_foundry(const char *arg) {
     return 0;
 }
 
-/* PoP: _model_flow_named_custom @ hermes_cli/model_setup_flows.py:_model_flow_named_custom */
+/* PoP: msf_u_model_flow_named_custom @ hermes_cli/model_setup_flows.py:_model_flow_named_custom */
 int msf_u_model_flow_named_custom(const char *arg) {
     /* Python: custom provider. Arg =
      * "probed\tstate\tresult". */
@@ -280,7 +280,7 @@ int msf_u_model_flow_named_custom(const char *arg) {
     return 0;
 }
 
-/* PoP: _model_flow_copilot @ hermes_cli/model_setup_flows.py:_model_flow_copilot */
+/* PoP: msf_u_model_flow_copilot @ hermes_cli/model_setup_flows.py:_model_flow_copilot */
 int msf_u_model_flow_copilot(const char *arg) {
     /* Python: gh CLI flow. Arg =
      * "token\tstate\tresult". */
@@ -300,7 +300,7 @@ int msf_u_model_flow_copilot(const char *arg) {
     return 0;
 }
 
-/* PoP: _model_flow_copilot_acp @ hermes_cli/model_setup_flows.py:_model_flow_copilot_acp */
+/* PoP: msf_u_model_flow_copilot_acp @ hermes_cli/model_setup_flows.py:_model_flow_copilot_acp */
 int msf_u_model_flow_copilot_acp(const char *arg) {
     /* Python: copilot ACP flow. Arg =
      * "status\tstate\tresult". */
@@ -316,7 +316,7 @@ int msf_u_model_flow_copilot_acp(const char *arg) {
     return 0;
 }
 
-/* PoP: _model_flow_kimi @ hermes_cli/model_setup_flows.py:_model_flow_kimi */
+/* PoP: msf_u_model_flow_kimi @ hermes_cli/model_setup_flows.py:_model_flow_kimi */
 int msf_u_model_flow_kimi(const char *arg) {
     /* Python: key-prefix routing. Arg =
      * "coding_plan\tstate\tresult". */
@@ -331,7 +331,7 @@ int msf_u_model_flow_kimi(const char *arg) {
     return 0;
 }
 
-/* PoP: _model_flow_stepfun @ hermes_cli/model_setup_flows.py:_model_flow_stepfun */
+/* PoP: msf_u_model_flow_stepfun @ hermes_cli/model_setup_flows.py:_model_flow_stepfun */
 int msf_u_model_flow_stepfun(const char *arg) {
     /* Python: region endpoints. Arg =
      * "region\tstate\tresult". */
@@ -346,7 +346,7 @@ int msf_u_model_flow_stepfun(const char *arg) {
     return 0;
 }
 
-/* PoP: _model_flow_bedrock_api_key @ hermes_cli/model_setup_flows.py:_model_flow_bedrock_api_key */
+/* PoP: msf_u_model_flow_bedrock_api_key @ hermes_cli/model_setup_flows.py:_model_flow_bedrock_api_key */
 int msf_u_model_flow_bedrock_api_key(const char *arg) {
     /* Python: mantle endpoint. Arg =
      * "region\tstate\tresult". */
@@ -361,7 +361,7 @@ int msf_u_model_flow_bedrock_api_key(const char *arg) {
     return 0;
 }
 
-/* PoP: _model_flow_bedrock @ hermes_cli/model_setup_flows.py:_model_flow_bedrock */
+/* PoP: msf_u_model_flow_bedrock @ hermes_cli/model_setup_flows.py:_model_flow_bedrock */
 int msf_u_model_flow_bedrock(const char *arg) {
     /* Python: Converse API. Arg =
      * "has_aws\tstate\tresult". */
@@ -379,7 +379,7 @@ int msf_u_model_flow_bedrock(const char *arg) {
     return 0;
 }
 
-/* PoP: _model_flow_vertex @ hermes_cli/model_setup_flows.py:_model_flow_vertex */
+/* PoP: msf_u_model_flow_vertex @ hermes_cli/model_setup_flows.py:_model_flow_vertex */
 int msf_u_model_flow_vertex(const char *arg) {
     /* Python: vertex OAuth2. Arg =
      * "sa\tstate\tresult". */
@@ -398,7 +398,7 @@ int msf_u_model_flow_vertex(const char *arg) {
     return 0;
 }
 
-/* PoP: _select_zai_endpoint @ hermes_cli/model_setup_flows.py:_select_zai_endpoint */
+/* PoP: msf_u_select_zai_endpoint @ hermes_cli/model_setup_flows.py:_select_zai_endpoint */
 int msf_u_select_zai_endpoint(const char *arg) {
     /* Python: 4 endpoints + custom. Arg =
      * "state\tresult". */
@@ -410,7 +410,7 @@ int msf_u_select_zai_endpoint(const char *arg) {
     return 0;
 }
 
-/* PoP: _model_flow_anthropic @ hermes_cli/model_setup_flows.py:_model_flow_anthropic */
+/* PoP: msf_u_model_flow_anthropic @ hermes_cli/model_setup_flows.py:_model_flow_anthropic */
 int msf_u_model_flow_anthropic(const char *arg) {
     /* Python: 3-source flow. Arg =
      * "cc\tstate\tresult". */
@@ -430,7 +430,7 @@ int msf_u_model_flow_anthropic(const char *arg) {
     return 0;
 }
 
-/* PoP: _existing_api_key_for_model_flow @ hermes_cli/model_setup_flows.py:_existing_api_key_for_model_flow */
+/* PoP: msf_u_existing_api_key_for_model_flow @ hermes_cli/model_setup_flows.py:_existing_api_key_for_model_flow */
 int msf_u_existing_api_key_for_model_flow(const char *arg) {
     /* Python: resolve existing wizard credential without changing storage —
      * delegates to _resolve_api_key_provider_secret. Arg =
@@ -445,7 +445,7 @@ int msf_u_existing_api_key_for_model_flow(const char *arg) {
     return 0;
 }
 
-/* PoP: _model_flow_ai_gateway @ hermes_cli/model_setup_flows.py:_model_flow_ai_gateway */
+/* PoP: msf_u_model_flow_ai_gateway @ hermes_cli/model_setup_flows.py:_model_flow_ai_gateway */
 int msf_u_model_flow_ai_gateway(const char *arg) {
     /* Python: Vercel AI Gateway flow — ensure key, fetch model list + pricing,
      * prompt selection, persist. Arg = "configured\tselected\tsaved". */

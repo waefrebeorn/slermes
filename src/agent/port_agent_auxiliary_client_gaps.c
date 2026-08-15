@@ -38,7 +38,7 @@ static pthread_mutex_t g_aux_irq_lock = PTHREAD_MUTEX_INITIALIZER;
 static bool g_aux_irq_active = false;
 static bool g_aux_irq_cancel_requested = false;   /* the explicit cancel flag */
 
-/* PoP: _aux_interrupt_cancel_requested @ agent/auxiliary_client.py:_aux_interrupt_cancel_requested */
+/* PoP: auxc_interrupt_cancel_requested @ agent/auxiliary_client.py:_aux_interrupt_cancel_requested */
 bool auxc_interrupt_cancel_requested(void) {
     /* Python: explicit host cancel overrides aux protection (cancel_event
      * is_set() or cancel_check()). The C port consults the process-wide
@@ -56,7 +56,7 @@ void auxc_set_interrupt_cancel_requested(bool requested) {
     pthread_mutex_unlock(&g_aux_irq_lock);
 }
 
-/* PoP: _capture_aux_cancel_check @ agent/auxiliary_client.py:_capture_aux_cancel_check */
+/* PoP: auxc_capture_aux_cancel_check @ agent/auxiliary_client.py:_capture_aux_cancel_check */
 int auxc_capture_aux_cancel_check(bool *out_has_check) {
     /* Python: capture the current explicit-cancel source on the owning
      * request thread; None when no source is installed. The C port returns
@@ -65,14 +65,14 @@ int auxc_capture_aux_cancel_check(bool *out_has_check) {
     return auxc_interrupt_cancel_requested() ? 1 : 0;
 }
 
-/* PoP: _captured_aux_cancel_requested @ agent/auxiliary_client.py:_captured_aux_cancel_requested */
+/* PoP: auxc_captured_aux_cancel_requested @ agent/auxiliary_client.py:_captured_aux_cancel_requested */
 bool auxc_captured_aux_cancel_requested(int captured) {
     /* Python: read a request-thread cancellation source without leaking
      * its failures. */
     return captured != 0;
 }
 
-/* PoP: begin_timeout_cleanup @ agent/auxiliary_client.py:begin_timeout_cleanup */
+/* PoP: auxc_begin_timeout_cleanup @ agent/auxiliary_client.py:begin_timeout_cleanup */
 int auxc_begin_timeout_cleanup(void) {
     /* Python: host-side hook that marks the aux call's timeout-cleanup
      * window (guards the protected call from abort during cleanup). The C
@@ -83,7 +83,7 @@ int auxc_begin_timeout_cleanup(void) {
     return 0;
 }
 
-/* PoP: _run_protected_sync_provider_call @ agent/auxiliary_client.py:_run_protected_sync_provider_call */
+/* PoP: auxc_run_protected_sync_provider_call @ agent/auxiliary_client.py:_run_protected_sync_provider_call */
 int auxc_run_protected_sync_provider_call(int (*fn)(void *ctx), void *ctx) {
     /* Python: run the provider call under aux interrupt protection (the
      * gateway interrupt must not abort an atomic aux task mid-flight).
@@ -103,7 +103,7 @@ int auxc_run_protected_sync_provider_call(int (*fn)(void *ctx), void *ctx) {
  * scoped key env
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _scoped_key_env @ agent/auxiliary_client.py:_scoped_key_env */
+/* PoP: auxc_scoped_key_env @ agent/auxiliary_client.py:_scoped_key_env */
 char *auxc_scoped_key_env(const char *name) {
     /* Python: read a provider API key env var through the profile secret
      * scope; unscoped paths fall back to os.environ. The C port reads the
@@ -121,7 +121,7 @@ char *auxc_scoped_key_env(const char *name) {
  * free model + OpenRouter settings
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _is_free_model @ agent/auxiliary_client.py:_is_free_model */
+/* PoP: auxc_is_free_model @ agent/auxiliary_client.py:_is_free_model */
 bool auxc_is_free_model(const char *model) {
     /* Python: model ends with ":free" (OpenRouter free SKU). */
     if (!model) return false;
@@ -131,7 +131,7 @@ bool auxc_is_free_model(const char *model) {
 
 #define AUXC_OPENROUTER_MODEL "meta-llama/llama-3.1-8b-instruct:free"
 
-/* PoP: _aux_openrouter_settings @ agent/auxiliary_client.py:_aux_openrouter_settings */
+/* PoP: auxc_aux_openrouter_settings @ agent/auxiliary_client.py:_aux_openrouter_settings */
 int auxc_aux_openrouter_settings(const char *config_json, bool *out_free_only,
                                  char *out_model, size_t model_sz) {
     /* Python: read free_only + openrouter_model from auxiliary config in
@@ -161,7 +161,7 @@ static pthread_mutex_t g_paid_warn_lock = PTHREAD_MUTEX_INITIALIZER;
 static char g_paid_warned[8][256];
 static int g_paid_warned_n = 0;
 
-/* PoP: _warn_paid_lane_once @ agent/auxiliary_client.py:_warn_paid_lane_once */
+/* PoP: auxc_warn_paid_lane_once @ agent/auxiliary_client.py:_warn_paid_lane_once */
 void auxc_warn_paid_lane_once(const char *model) {
     /* Python: log a WARNING the first time a non-:free OpenRouter model is
      * engaged (once per model). */
@@ -192,7 +192,7 @@ static char g_aux_relay_provider[128] = "auxiliary";
 static char g_aux_relay_model[256] = "unknown";
 static char g_aux_relay_api_mode[64] = "chat_completions";
 
-/* PoP: _relay_auxiliary_call @ agent/auxiliary_client.py:_relay_auxiliary_call */
+/* PoP: auxc_relay_auxiliary_call @ agent/auxiliary_client.py:_relay_auxiliary_call */
 int auxc_relay_auxiliary_call(const char *task) {
     /* Python: give every physical retry in one auxiliary call a shared
      * Relay identity (fresh request_id + attempt counter). Returns the
@@ -213,14 +213,14 @@ int auxc_relay_auxiliary_call(const char *task) {
     return out ? 1 : 0;
 }
 
-/* PoP: _relay_auxiliary_call_async @ agent/auxiliary_client.py:_relay_auxiliary_call_async */
+/* PoP: auxc_relay_auxiliary_call_async @ agent/auxiliary_client.py:_relay_auxiliary_call_async */
 int auxc_relay_auxiliary_call_async(const char *task) {
     /* Python: async counterpart — same context setup. The C port shares
      * the synchronous state (no event-loop distinction). */
     return auxc_relay_auxiliary_call(task);
 }
 
-/* PoP: _set_relay_auxiliary_route @ agent/auxiliary_client.py:_set_relay_auxiliary_route */
+/* PoP: auxc_set_relay_auxiliary_route @ agent/auxiliary_client.py:_set_relay_auxiliary_route */
 void auxc_set_relay_auxiliary_route(const char *provider, const char *model,
                                     const char *api_mode) {
     pthread_mutex_lock(&g_aux_relay_lock);
@@ -234,7 +234,7 @@ void auxc_set_relay_auxiliary_route(const char *provider, const char *model,
     pthread_mutex_unlock(&g_aux_relay_lock);
 }
 
-/* PoP: _relay_auxiliary_metadata @ agent/auxiliary_client.py:_relay_auxiliary_metadata */
+/* PoP: auxc_relay_auxiliary_metadata @ agent/auxiliary_client.py:_relay_auxiliary_metadata */
 char *auxc_relay_auxiliary_metadata(const char *provider, const char *api_mode) {
     /* Python: return (provider, model, metadata-dict) for the current
      * auxiliary call; None when no call context is active. The C port
@@ -259,7 +259,7 @@ char *auxc_relay_auxiliary_metadata(const char *provider, const char *api_mode) 
     return out;
 }
 
-/* PoP: _complete_relay_auxiliary_call @ agent/auxiliary_client.py:_complete_relay_auxiliary_call */
+/* PoP: auxc_complete_relay_auxiliary_call @ agent/auxiliary_client.py:_complete_relay_auxiliary_call */
 void auxc_complete_relay_auxiliary_call(const char *outcome) {
     /* Python: close one auxiliary logical call after acceptance or
      * terminal failure via relay_llm.complete_logical_call. */
@@ -273,14 +273,14 @@ void auxc_complete_relay_auxiliary_call(const char *outcome) {
                                     outcome && outcome[0] ? outcome : "success");
 }
 
-/* PoP: _fail_relay_auxiliary_call @ agent/auxiliary_client.py:_fail_relay_auxiliary_call */
+/* PoP: auxc_fail_relay_auxiliary_call @ agent/auxiliary_client.py:_fail_relay_auxiliary_call */
 void auxc_fail_relay_auxiliary_call(void) {
     /* Python: close a terminally failed call without replacing its
      * original error. */
     auxc_complete_relay_auxiliary_call("failed");
 }
 
-/* PoP: _relay_sync_completion @ agent/auxiliary_client.py:_relay_sync_completion */
+/* PoP: auxc_relay_sync_completion @ agent/auxiliary_client.py:_relay_sync_completion */
 int auxc_relay_sync_completion(const char *outcome) {
     /* Python: relay a synchronous completion (end the logical call with
      * the given outcome). Returns 1 when a call context was active. */
@@ -290,12 +290,12 @@ int auxc_relay_sync_completion(const char *outcome) {
     return 1;
 }
 
-/* PoP: _relay_async_completion @ agent/auxiliary_client.py:_relay_async_completion */
+/* PoP: auxc_relay_async_completion @ agent/auxiliary_client.py:_relay_async_completion */
 int auxc_relay_async_completion(const char *outcome) {
     return auxc_relay_sync_completion(outcome);
 }
 
-/* PoP: _relay_sync_stream @ agent/auxiliary_client.py:_relay_sync_stream */
+/* PoP: directly @ agent/auxiliary_client.py:_relay_sync_stream */
 /* Faithful C analogue of Python _relay_sync_stream: resolve the auxiliary
  * Relay route metadata, then hand the provider request off to
  * relay_llm_stream_current (the live Relay stream path) or, when no route is
@@ -335,7 +335,7 @@ relay_llm_managed_stream_t *auxc_relay_sync_stream(
  * fallback chain resolution
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _fallback_chain_entry @ agent/auxiliary_client.py:_fallback_chain_entry */
+/* PoP: auxc_fallback_chain_entry @ agent/auxiliary_client.py:_fallback_chain_entry */
 json_t *auxc_fallback_chain_entry(const char *task, const char *fb_label,
                                   const char *task_config_json) {
     /* Python: resolve the configured fallback_chain entry a label points
@@ -373,7 +373,7 @@ json_t *auxc_fallback_chain_entry(const char *task, const char *fb_label,
     return entry;
 }
 
-/* PoP: _fallback_provider_from_label @ agent/auxiliary_client.py:_fallback_provider_from_label */
+/* PoP: auxc_fallback_provider_from_label @ agent/auxiliary_client.py:_fallback_provider_from_label */
 char *auxc_fallback_provider_from_label(const char *label) {
     /* Python: recover the provider identifier from a fallback display
      * label ("fallback_chain[N](provider)" or "main-agent(provider)"). */
@@ -396,7 +396,7 @@ char *auxc_fallback_provider_from_label(const char *label) {
     return strdup(label);
 }
 
-/* PoP: _complete_fallback_destination @ agent/auxiliary_client.py:_complete_fallback_destination */
+/* PoP: auxc_complete_fallback_destination @ agent/auxiliary_client.py:_complete_fallback_destination */
 char *auxc_complete_fallback_destination(const char *provider, const char *base_url,
                                          const char *api_mode, const char *model) {
     /* Python: fill a missing api_mode from the endpoint (Anthropic
@@ -427,7 +427,7 @@ char *auxc_complete_fallback_destination(const char *provider, const char *base_
     return out;
 }
 
-/* PoP: _fallback_destination_from_entry @ agent/auxiliary_client.py:_fallback_destination_from_entry */
+/* PoP: auxc_fallback_destination_from_entry @ agent/auxiliary_client.py:_fallback_destination_from_entry */
 char *auxc_fallback_destination_from_entry(json_t *entry, const char *fb_base_url,
                                            const char *fb_model) {
     /* Python: build a destination from a configured chain entry. */
@@ -441,7 +441,7 @@ char *auxc_fallback_destination_from_entry(json_t *entry, const char *fb_base_ur
     return auxc_complete_fallback_destination(provider, base_url, api_mode, model);
 }
 
-/* PoP: _fallback_destination @ agent/auxiliary_client.py:_fallback_destination */
+/* PoP: auxc_fallback_destination @ agent/auxiliary_client.py:_fallback_destination */
 char *auxc_fallback_destination(const char *task, const char *fb_base_url,
                                 const char *fb_model, const char *fb_label,
                                 const char *task_config_json) {
@@ -457,7 +457,7 @@ char *auxc_fallback_destination(const char *task, const char *fb_base_url,
     return dest;
 }
 
-/* PoP: _replan_synchronous_cache_sections @ agent/auxiliary_client.py:_replan_synchronous_cache_sections */
+/* PoP: auxc_replan_synchronous_cache_sections @ agent/auxiliary_client.py:_replan_synchronous_cache_sections */
 int auxc_replan_synchronous_cache_sections(const char *messages_json,
                                            const char *provider,
                                            const char *base_url,
@@ -522,7 +522,7 @@ static aux_sem_entry_t g_aux_sync_sems[16];
 static char g_aux_sync_sem_tasks[16][128];
 static int g_aux_sync_sem_n = 0;
 
-/* PoP: _get_task_max_concurrency @ agent/auxiliary_client.py:_get_task_max_concurrency */
+/* PoP: auxc_get_task_max_concurrency @ agent/auxiliary_client.py:_get_task_max_concurrency */
 int auxc_get_task_max_concurrency(const char *task, const char *config_json) {
     /* Python: auxiliary.<task>.max_concurrency as a positive int, or 0
      * (None). Vision is exempt (its LLM calls stay concurrent). */
@@ -548,7 +548,7 @@ int auxc_get_task_max_concurrency(const char *task, const char *config_json) {
     return limit;
 }
 
-/* PoP: _acquire_sync_aux_semaphore @ agent/auxiliary_client.py:_acquire_sync_aux_semaphore */
+/* PoP: auxc_acquire_sync_aux_semaphore @ agent/auxiliary_client.py:_acquire_sync_aux_semaphore */
 sem_t *auxc_acquire_sync_aux_semaphore(const char *task, const char *config_json) {
     /* Python: get a per-task sync semaphore, rebuilding it after a config
      * change. Returns NULL when no limit is configured. */
@@ -580,14 +580,14 @@ sem_t *auxc_acquire_sync_aux_semaphore(const char *task, const char *config_json
     return NULL;
 }
 
-/* PoP: _acquire_async_aux_semaphore @ agent/auxiliary_client.py:_acquire_async_aux_semaphore */
+/* PoP: auxc_acquire_async_aux_semaphore @ agent/auxiliary_client.py:_acquire_async_aux_semaphore */
 sem_t *auxc_acquire_async_aux_semaphore(const char *task, const char *config_json) {
     /* Python: per-task, per-event-loop async semaphore; the C port shares
      * the sync semaphore registry (no event-loop distinction). */
     return auxc_acquire_sync_aux_semaphore(task, config_json);
 }
 
-/* PoP: _reset_aux_semaphores @ agent/auxiliary_client.py:_reset_aux_semaphores */
+/* PoP: auxc_reset_aux_semaphores @ agent/auxiliary_client.py:_reset_aux_semaphores */
 void auxc_reset_aux_semaphores(void) {
     pthread_mutex_lock(&g_aux_sem_lock);
     for (int i = 0; i < g_aux_sync_sem_n; i++)
@@ -596,7 +596,7 @@ void auxc_reset_aux_semaphores(void) {
     pthread_mutex_unlock(&g_aux_sem_lock);
 }
 
-/* PoP: _release_sync_semaphore_after_stream @ agent/auxiliary_client.py:_release_sync_semaphore_after_stream */
+/* PoP: auxc_release_sync_semaphore_after_stream @ agent/auxiliary_client.py:_release_sync_semaphore_after_stream */
 void auxc_release_sync_semaphore_after_stream(sem_t *sem) {
     /* Python: release the sync semaphore after a stream completes. */
     if (sem) sem_post(sem);

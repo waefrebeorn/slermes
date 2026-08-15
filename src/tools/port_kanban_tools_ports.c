@@ -21,7 +21,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _handle_list @ tools/kanban_tools.py:_handle_list */
+/* PoP: kbt_handle_list @ tools/kanban_tools.py:_handle_list */
 char *kbt_handle_list(const char *args_json) {
     /* Python: task summaries with CLI filters. */
     if (!args_json) return NULL;
@@ -29,7 +29,7 @@ char *kbt_handle_list(const char *args_json) {
     return strdup("[]");
 }
 
-/* PoP: _maybe_auto_subscribe @ tools/kanban_tools.py:_maybe_auto_subscribe */
+/* PoP: kbt_maybe_auto_subscribe @ tools/kanban_tools.py:_maybe_auto_subscribe */
 bool kbt_maybe_auto_subscribe(const char *session_id) {
     /* Python: write subscription row — REAL fs marker. */
     if (!session_id || !*session_id) return false;
@@ -47,7 +47,7 @@ bool kbt_maybe_auto_subscribe(const char *session_id) {
     return true;
 }
 
-/* PoP: _board_schema_prop @ tools/kanban_tools.py:_board_schema_prop */
+/* PoP: kbt_board_schema_prop @ tools/kanban_tools.py:_board_schema_prop */
 char *kbt_board_schema_prop(void) {
     /* Python: optional board param fragment. */
     return strdup("{\"board\": {\"type\": \"string\", \"description\": \"Board name\", \"optional\": true}}");

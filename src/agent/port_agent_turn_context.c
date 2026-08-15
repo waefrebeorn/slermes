@@ -13,7 +13,7 @@ bool agent_turn_context_compression_made_progress(
     return orig_tokens > 0 && new_tokens < orig_tokens * 0.95;
 }
 
-/* PoP: agent_turn_context__should_run_preflight_estimate @ agent/turn_context.py:_should_run_preflight_estimate */
+/* PoP: the @ agent/turn_context.py:_should_run_preflight_estimate */
 /* Cheap gate for the (expensive) full preflight token estimate.
  * Returns True when EITHER:
  *   (a) message count exceeds the protected ranges (historical gate), OR

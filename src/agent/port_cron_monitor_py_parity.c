@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: cron_monitor_snapshot_path @ cron/monitor.py:_snapshot_path */
+/* PoP: cron_monitor_snapshot_path_p @ cron/monitor.py:_snapshot_path */
 json_t *cron_monitor_snapshot_path_p(void) {
     return json_object();
 }

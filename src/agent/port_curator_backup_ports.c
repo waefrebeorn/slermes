@@ -32,7 +32,7 @@ static const char *hermes_home_dir(void) {
     return ".";
 }
 
-/* PoP: _backups_dir @ agent/curator_backup.py:_backups_dir */
+/* PoP: cub_backups_dir @ agent/curator_backup.py:_backups_dir */
 char *cub_backups_dir(void) {
     /* Python: <home>/skills/.curator_backups. */
     char *out = NULL;
@@ -40,21 +40,21 @@ char *cub_backups_dir(void) {
     return out;
 }
 
-/* PoP: _skills_dir @ agent/curator_backup.py:_skills_dir */
+/* PoP: cub_skills_dir @ agent/curator_backup.py:_skills_dir */
 char *cub_skills_dir(void) {
     char *out = NULL;
     asprintf(&out, "%s/skills", hermes_home_dir());
     return out;
 }
 
-/* PoP: _cron_jobs_file @ agent/curator_backup.py:_cron_jobs_file */
+/* PoP: cub_cron_jobs_file @ agent/curator_backup.py:_cron_jobs_file */
 char *cub_cron_jobs_file(void) {
     char *out = NULL;
     asprintf(&out, "%s/cron/jobs.json", hermes_home_dir());
     return out;
 }
 
-/* PoP: _backup_cron_jobs_into @ agent/curator_backup.py:_backup_cron_jobs_into */
+/* PoP: cub_backup_cron_jobs_into @ agent/curator_backup.py:_backup_cron_jobs_into */
 char *cub_backup_cron_jobs_into(const char *dest) {
     /* Python: copy jobs.json → dest/cron-jobs.json. */
     if (!dest) return NULL;
@@ -85,7 +85,7 @@ char *cub_backup_cron_jobs_into(const char *dest) {
     return out;
 }
 
-/* PoP: _utc_id @ agent/curator_backup.py:_utc_id */
+/* PoP: cub_utc_id @ agent/curator_backup.py:_utc_id */
 char *cub_utc_id(const char *now_iso) {
     /* Python: 2026-05-01T13-05-42Z filesystem-safe. */
     if (now_iso) {
@@ -105,7 +105,7 @@ char *cub_utc_id(const char *now_iso) {
     return out;
 }
 
-/* PoP: _load_config @ agent/curator_backup.py:_load_config */
+/* PoP: cub_load_config @ agent/curator_backup.py:_load_config */
 char *cub_load_config(const char *config_path) {
     /* Python: config.yaml read. */
     if (!config_path) return strdup("{}");
@@ -122,7 +122,7 @@ char *cub_load_config(const char *config_path) {
     return buf;
 }
 
-/* PoP: is_enabled @ agent/curator_backup.py:is_enabled */
+/* PoP: cub_is_enabled @ agent/curator_backup.py:is_enabled */
 bool cub_is_enabled(const char *config_yaml) {
     /* Python: default ON. */
     if (!config_yaml) return true;
@@ -138,7 +138,7 @@ bool cub_is_enabled(const char *config_yaml) {
     return r;
 }
 
-/* PoP: _count_skill_files @ agent/curator_backup.py:_count_skill_files */
+/* PoP: cub_count_skill_files @ agent/curator_backup.py:_count_skill_files */
 long cub_count_skill_files(const char *base) {
     /* Python: SKILL.md count under base. */
     if (!base) return 0;
@@ -163,7 +163,7 @@ long cub_count_skill_files(const char *base) {
     return count;
 }
 
-/* PoP: _write_manifest @ agent/curator_backup.py:_write_manifest */
+/* PoP: cub_write_manifest @ agent/curator_backup.py:_write_manifest */
 int cub_write_manifest(const char *snap_dir, const char *manifest_json) {
     /* Python: manifest.json write. */
     if (!snap_dir || !manifest_json) return -1;
@@ -183,7 +183,7 @@ int cub_write_manifest(const char *snap_dir, const char *manifest_json) {
     return rc == 0 ? 0 : -1;
 }
 
-/* PoP: _prune_old @ agent/curator_backup.py:_prune_old */
+/* PoP: cub_prune_old @ agent/curator_backup.py:_prune_old */
 char *cub_prune_old(const char *backups_dir, long keep) {
     /* Python: delete regular snapshots beyond newest keep. */
     if (!backups_dir) return strdup("[]");
@@ -243,7 +243,7 @@ char *cub_prune_old(const char *backups_dir, long keep) {
     return out;
 }
 
-/* PoP: _read_manifest @ agent/curator_backup.py:_read_manifest */
+/* PoP: cub_read_manifest @ agent/curator_backup.py:_read_manifest */
 char *cub_read_manifest(const char *snap_dir) {
     /* Python: manifest.json or {}. */
     if (!snap_dir) return strdup("{}");
@@ -266,7 +266,7 @@ char *cub_read_manifest(const char *snap_dir) {
     return out ? out : strdup("{}");
 }
 
-/* PoP: list_backups @ agent/curator_backup.py:list_backups */
+/* PoP: cub_list_backups @ agent/curator_backup.py:list_backups */
 char *cub_list_backups(void) {
     /* Python: restorable snapshots, newest first. */
     char *dir = cub_backups_dir();
@@ -323,7 +323,7 @@ char *cub_list_backups(void) {
     return out;
 }
 
-/* PoP: _resolve_backup @ agent/curator_backup.py:_resolve_backup */
+/* PoP: cub_resolve_backup @ agent/curator_backup.py:_resolve_backup */
 char *cub_resolve_backup(const char *backup_id) {
     /* Python: requested path or newest. */
     char *dir = cub_backups_dir();
@@ -348,7 +348,7 @@ char *cub_resolve_backup(const char *backup_id) {
     return out;
 }
 
-/* PoP: _restore_cron_skill_links @ agent/curator_backup.py:_restore_cron_skill_links */
+/* PoP: cub_restore_cron_skill_links @ agent/curator_backup.py:_restore_cron_skill_links */
 int cub_restore_cron_skill_links(const char *snap_dir) {
     /* Python: reconcile backed-up cron skill links (no overwrite). */
     if (!snap_dir) return -1;
@@ -365,7 +365,7 @@ int cub_restore_cron_skill_links(const char *snap_dir) {
     return 0;
 }
 
-/* PoP: rollback @ agent/curator_backup.py:rollback */
+/* PoP: cub_rollback @ agent/curator_backup.py:rollback */
 char *cub_rollback(const char *backup_id) {
     /* Python: restore skills from snapshot. */
     char *snap = cub_resolve_backup(backup_id);
@@ -384,7 +384,7 @@ char *cub_rollback(const char *backup_id) {
     return out;
 }
 
-/* PoP: format_size @ agent/curator_backup.py:format_size */
+/* PoP: cub_format_size @ agent/curator_backup.py:format_size */
 char *cub_format_size(double n) {
     /* Python: human size. */
     char *out = NULL;
@@ -395,7 +395,7 @@ char *cub_format_size(double n) {
     return out;
 }
 
-/* PoP: summarize_backups @ agent/curator_backup.py:summarize_backups */
+/* PoP: cub_summarize_backups @ agent/curator_backup.py:summarize_backups */
 char *cub_summarize_backups(void) {
     /* Python: human summary. */
     char *rows = cub_list_backups();
@@ -428,7 +428,7 @@ typedef struct {
     char *dest;   /* staged copy path */
 } unstage_move_t;
 
-/* PoP: _unstage @ agent/curator_backup.py:_unstage */
+/* PoP: cub_unstage @ agent/curator_backup.py:_unstage */
 char *cub_unstage(unstage_move_t *moved, int n_moves) {
     char *failed_buf = strdup("");
     size_t failed_cap = 1;

@@ -12,28 +12,28 @@
 #include <sys/stat.h>
 #include "hermes_json.h"
 
-/* PoP: log_info @ hermes_cli/uninstall.py:log_info */
+/* PoP: uninst_log_info @ hermes_cli/uninstall.py:log_info */
 int uninst_log_info(const char *arg) {
     /* Python: print(f"{color('→', Colors.CYAN)} {msg}"). */
     printf("\x1b[36m→\x1b[0m %s\n", arg ? arg : "");
     return 0;
 }
 
-/* PoP: log_success @ hermes_cli/uninstall.py:log_success */
+/* PoP: uninst_log_success @ hermes_cli/uninstall.py:log_success */
 int uninst_log_success(const char *arg) {
     /* Python: print(f"{color('✓', Colors.GREEN)} {msg}"). */
     printf("\x1b[32m✓\x1b[0m %s\n", arg ? arg : "");
     return 0;
 }
 
-/* PoP: log_warn @ hermes_cli/uninstall.py:log_warn */
+/* PoP: uninst_log_warn @ hermes_cli/uninstall.py:log_warn */
 int uninst_log_warn(const char *arg) {
     /* Python: print(f"{color('⚠', Colors.YELLOW)} {msg}"). */
     printf("\x1b[33m⚠\x1b[0m %s\n", arg ? arg : "");
     return 0;
 }
 
-/* PoP: find_shell_configs @ hermes_cli/uninstall.py:find_shell_configs */
+/* PoP: uninst_find_shell_configs @ hermes_cli/uninstall.py:find_shell_configs */
 int uninst_find_shell_configs(const char *arg) {
     /* Python: existing shell config files under home. Arg = home dir. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -53,7 +53,7 @@ int uninst_find_shell_configs(const char *arg) {
     return 0;
 }
 
-/* PoP: remove_path_from_shell_configs @ hermes_cli/uninstall.py:remove_path_from_shell_configs */
+/* PoP: uninst_remove_path_from_shell_configs @ hermes_cli/uninstall.py:remove_path_from_shell_configs */
 int uninst_remove_path_from_shell_configs(const char *arg) {
     /* Python: shell config strip. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -65,7 +65,7 @@ int uninst_remove_path_from_shell_configs(const char *arg) {
     return 0;
 }
 
-/* PoP: remove_wrapper_script @ hermes_cli/uninstall.py:remove_wrapper_script */
+/* PoP: uninst_remove_wrapper_script @ hermes_cli/uninstall.py:remove_wrapper_script */
 int uninst_remove_wrapper_script(const char *arg) {
     /* Python: remove wrapper if it references hermes_cli. Arg =
      * "home\tlocal_exists\tusr_exists\tremoved". */
@@ -79,7 +79,7 @@ int uninst_remove_wrapper_script(const char *arg) {
     return 0;
 }
 
-/* PoP: _node_symlink_candidate_dirs @ hermes_cli/uninstall.py:_node_symlink_candidate_dirs */
+/* PoP: uninst_u_node_symlink_candidate_dirs @ hermes_cli/uninstall.py:_node_symlink_candidate_dirs */
 int uninst_u_node_symlink_candidate_dirs(const char *arg) {
     /* Python: ~/.local/bin + /usr/local/bin (linux) + $PREFIX/bin (termux).
      * Arg = "home\tprefix\tplatform". */
@@ -99,7 +99,7 @@ int uninst_u_node_symlink_candidate_dirs(const char *arg) {
     return 0;
 }
 
-/* PoP: remove_node_symlinks @ hermes_cli/uninstall.py:remove_node_symlinks */
+/* PoP: uninst_remove_node_symlinks @ hermes_cli/uninstall.py:remove_node_symlinks */
 int uninst_remove_node_symlinks(const char *arg) {
     /* Python: scoped symlink rm. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -111,7 +111,7 @@ int uninst_remove_node_symlinks(const char *arg) {
     return 0;
 }
 
-/* PoP: uninstall_gateway_service @ hermes_cli/uninstall.py:uninstall_gateway_service */
+/* PoP: uninst_uninstall_gateway_service @ hermes_cli/uninstall.py:uninstall_gateway_service */
 int uninst_uninstall_gateway_service(const char *arg) {
     /* Python: cross-platform stop. Arg =
      * "state\tresult". */
@@ -123,7 +123,7 @@ int uninst_uninstall_gateway_service(const char *arg) {
     return 0;
 }
 
-/* PoP: _hermes_path_markers @ hermes_cli/uninstall.py:_hermes_path_markers */
+/* PoP: uninst_u_hermes_path_markers @ hermes_cli/uninstall.py:_hermes_path_markers */
 int uninst_u_hermes_path_markers(const char *arg) {
     /* Python: HERMES_HOME-rooted markers sweeping hermes-agent/git/node/
      * venv sub-entries (prefix match on backslash-joined components).
@@ -148,7 +148,7 @@ int uninst_u_hermes_path_markers(const char *arg) {
     return 0;
 }
 
-/* PoP: remove_path_from_windows_registry @ hermes_cli/uninstall.py:remove_path_from_windows_registry */
+/* PoP: uninst_remove_path_from_windows_registry @ hermes_cli/uninstall.py:remove_path_from_windows_registry */
 int uninst_remove_path_from_windows_registry(const char *arg) {
     /* Python: HKCU PATH strip. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -160,7 +160,7 @@ int uninst_remove_path_from_windows_registry(const char *arg) {
     return 0;
 }
 
-/* PoP: remove_hermes_env_vars_windows @ hermes_cli/uninstall.py:remove_hermes_env_vars_windows */
+/* PoP: uninst_remove_hermes_env_vars_windows @ hermes_cli/uninstall.py:remove_hermes_env_vars_windows */
 int uninst_remove_hermes_env_vars_windows(const char *arg) {
     /* Python: delete 2 User-scope env vars. Arg = "removed" (tab-sep). */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -168,7 +168,7 @@ int uninst_remove_hermes_env_vars_windows(const char *arg) {
     return 0;
 }
 
-/* PoP: remove_portable_tooling_windows @ hermes_cli/uninstall.py:remove_portable_tooling_windows */
+/* PoP: uninst_remove_portable_tooling_windows @ hermes_cli/uninstall.py:remove_portable_tooling_windows */
 int uninst_remove_portable_tooling_windows(const char *arg) {
     /* Python: rmtree git/node/gateway-service subdirs. Arg = "home\tremoved". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -179,7 +179,7 @@ int uninst_remove_portable_tooling_windows(const char *arg) {
     return 0;
 }
 
-/* PoP: _is_default_hermes_home @ hermes_cli/uninstall.py:_is_default_hermes_home */
+/* PoP: uninst_u_is_default_hermes_home @ hermes_cli/uninstall.py:_is_default_hermes_home */
 int uninst_u_is_default_hermes_home(const char *arg) {
     /* Python: hermes_home.resolve() == default root. Arg = "home\tdefault"
      * (resolve via realpath on both). */
@@ -198,7 +198,7 @@ int uninst_u_is_default_hermes_home(const char *arg) {
     return 0;
 }
 
-/* PoP: _discover_named_profiles @ hermes_cli/uninstall.py:_discover_named_profiles */
+/* PoP: uninst_u_discover_named_profiles @ hermes_cli/uninstall.py:_discover_named_profiles */
 int uninst_u_discover_named_profiles(const char *arg) {
     /* Python: non-default profiles or []. Arg = "profiles" (tab-sep, empty =
      * none). */
@@ -207,7 +207,7 @@ int uninst_u_discover_named_profiles(const char *arg) {
     return 0;
 }
 
-/* PoP: _uninstall_profile @ hermes_cli/uninstall.py:_uninstall_profile */
+/* PoP: uninst_u_uninstall_profile @ hermes_cli/uninstall.py:_uninstall_profile */
 int uninst_u_uninstall_profile(const char *arg) {
     /* Python: stop+alias+wipe. Arg =
      * "name\tstate\tresult". */
@@ -222,7 +222,7 @@ int uninst_u_uninstall_profile(const char *arg) {
     return 0;
 }
 
-/* PoP: run_gui_uninstall @ hermes_cli/uninstall.py:run_gui_uninstall */
+/* PoP: uninst_run_gui_uninstall @ hermes_cli/uninstall.py:run_gui_uninstall */
 int uninst_run_gui_uninstall(const char *arg) {
     /* Python: GUI-only uninstall. Arg =
      * "installed\tconfirmed\tstate\tresult". */
@@ -247,7 +247,7 @@ int uninst_run_gui_uninstall(const char *arg) {
     return 0;
 }
 
-/* PoP: run_uninstall @ hermes_cli/uninstall.py:run_uninstall */
+/* PoP: uninst_run_uninstall @ hermes_cli/uninstall.py:run_uninstall */
 int uninst_run_uninstall(const char *arg) {
     /* Python: full/keep-data. Arg =
      * "state\tresult\terr". */
@@ -272,7 +272,7 @@ int uninst_run_uninstall(const char *arg) {
     return 0;
 }
 
-/* PoP: _print_uninstall_dry_run @ hermes_cli/uninstall.py:_print_uninstall_dry_run */
+/* PoP: uninst_u_print_uninstall_dry_run @ hermes_cli/uninstall.py:_print_uninstall_dry_run */
 int uninst_u_print_uninstall_dry_run(const char *arg) {
     /* Python: dry-run plan. Arg = "full\tproject_root\thermes_home\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -293,7 +293,7 @@ int uninst_u_print_uninstall_dry_run(const char *arg) {
     return 0;
 }
 
-/* PoP: _perform_uninstall @ hermes_cli/uninstall.py:_perform_uninstall */
+/* PoP: uninst_u_perform_uninstall @ hermes_cli/uninstall.py:_perform_uninstall */
 int uninst_u_perform_uninstall(const char *arg) {
     /* Python: destructive sequence. Arg =
      * "done\tstate\tresult". */

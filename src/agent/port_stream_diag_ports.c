@@ -19,13 +19,13 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: stream_diag_init @ agent/stream_diag.py:stream_diag_init */
+/* PoP: sdi_stream_diag_init @ agent/stream_diag.py:stream_diag_init */
 char *sdi_stream_diag_init(void) {
     /* Python: fresh per-attempt dict. */
     return strdup("{\"attempt\": 0, \"drops\": 0, \"headers\": {}}");
 }
 
-/* PoP: stream_diag_capture_response @ agent/stream_diag.py:stream_diag_capture_response */
+/* PoP: sdi_stream_diag_capture_response @ agent/stream_diag.py:stream_diag_capture_response */
 char *sdi_stream_diag_capture_response(long status, const char *headers_json) {
     /* Python: snapshot headers + status. */
     char *out = NULL;
@@ -34,7 +34,7 @@ char *sdi_stream_diag_capture_response(long status, const char *headers_json) {
     return out;
 }
 
-/* PoP: flatten_exception_chain @ agent/stream_diag.py:flatten_exception_chain */
+/* PoP: sdi_flatten_exception_chain @ agent/stream_diag.py:flatten_exception_chain */
 char *sdi_flatten_exception_chain(const char *exc_json) {
     /* Python: Outer(msg) <- Inner(msg) <- ... */
     if (!exc_json) return strdup("");
@@ -42,7 +42,7 @@ char *sdi_flatten_exception_chain(const char *exc_json) {
     return strdup(exc_json);
 }
 
-/* PoP: log_stream_retry @ agent/stream_diag.py:log_stream_retry */
+/* PoP: sdi_log_stream_retry @ agent/stream_diag.py:log_stream_retry */
 int sdi_log_stream_retry(const char *diag_json, const char *reason) {
     /* Python: record transient drop + retry. */
     if (!diag_json) return -1;
@@ -50,7 +50,7 @@ int sdi_log_stream_retry(const char *diag_json, const char *reason) {
     return 0;
 }
 
-/* PoP: emit_stream_drop @ agent/stream_diag.py:emit_stream_drop */
+/* PoP: sdi_emit_stream_drop @ agent/stream_diag.py:emit_stream_drop */
 int sdi_emit_stream_drop(const char *reason) {
     /* Python: single user-visible line. */
     if (!reason) return -1;

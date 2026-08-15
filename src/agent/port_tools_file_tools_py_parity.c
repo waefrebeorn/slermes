@@ -14,12 +14,12 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_file_tools_get_real_hermes_home @ tools/file_tools.py:_get_real_hermes_home */
+/* PoP: tools_file_tools_get_real_hermes_home_p @ tools/file_tools.py:_get_real_hermes_home */
 json_t *tools_file_tools_get_real_hermes_home_p(void) {
     return json_object();
 }
 
-/* PoP: tools_file_tools_check_protected_instruction_write @ tools/file_tools.py:_check_protected_instruction_write */
+/* PoP: tools_file_tools_check_protected_instruction_write_p @ tools/file_tools.py:_check_protected_instruction_write */
 json_t *tools_file_tools_check_protected_instruction_write_p(void) {
     return json_object();
 }

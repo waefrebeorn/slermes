@@ -145,7 +145,7 @@ static const char *const TITLE_MACHINE_PREFIXES[] = {
 /* Python MAX_DERIVED_TITLE_CHARS = 48. */
 #define TITLE_MAX_DERIVED 48
 
-/* PoP: strip_control_wrappers @ agent/title_generator.py:strip_control_wrappers */
+/* PoP: title_strip_control_wrappers @ agent/title_generator.py:strip_control_wrappers */
 char *title_strip_control_wrappers(const char *text) {
     if (!text) return strdup("");
     /* current = text.strip() */
@@ -224,7 +224,7 @@ char *title_strip_control_wrappers(const char *text) {
     return current;
 }
 
-/* PoP: _clean_title @ agent/title_generator.py:_clean_title */
+/* PoP: title_clean_title @ agent/title_generator.py:_clean_title */
 char *title_clean_title(const char *text) {
     if (!text) return NULL;
     /* title = " ".join((text or "").split()) */
@@ -287,7 +287,7 @@ char *title_clean_title(const char *text) {
     return buf;
 }
 
-/* PoP: _extract_title_text @ agent/title_generator.py:_extract_title_text */
+/* PoP: title_extract_title_text @ agent/title_generator.py:_extract_title_text */
 char *title_extract_title_text(const char *content) {
     if (!content || !*content) return strdup("");
     /* raw = content.strip() */
@@ -413,7 +413,7 @@ char *title_extract_title_text(const char *content) {
     }
 }
 
-/* PoP: is_titleable_user_message @ agent/title_generator.py:is_titleable_user_message */
+/* PoP: title_is_titleable_user_message @ agent/title_generator.py:is_titleable_user_message */
 bool title_is_titleable_user_message(const char *user_message) {
     if (!user_message) return false;
     /* if not isinstance(str) or not user_message.strip() */
@@ -439,7 +439,7 @@ bool title_is_titleable_user_message(const char *user_message) {
     return result != 0;
 }
 
-/* PoP: derive_title @ agent/title_generator.py:derive_title */
+/* PoP: title_derive_title @ agent/title_generator.py:derive_title */
 char *title_derive_title(const char *user_message) {
     char *text = summarize_user_message(user_message);
     if (!text) return NULL;
@@ -488,7 +488,7 @@ char *title_derive_title(const char *user_message) {
     return out && *out ? out : (out ? (free(out), NULL) : NULL);
 }
 
-/* PoP: _is_real_user_turn @ agent/title_generator.py:_is_real_user_turn */
+/* PoP: title_is_real_user_turn @ agent/title_generator.py:_is_real_user_turn */
 /* Returns 1 if the message is a real user turn, 0 otherwise. */
 int title_is_real_user_turn(const char *message_json) {
     if (!message_json) return 0;

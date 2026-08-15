@@ -5,15 +5,15 @@
 
 
 /* PoP: CLI loop (port of cli.py, hermes_cli/secret_prompt.py, hermes_cli/auth_commands.py) */
-/* PoP: masked_secret_prompt @ hermes_cli/secret_prompt.py:masked_secret_prompt */
-/* PoP: auth_command @ hermes_cli/auth_commands.py:auth_command */
-/* PoP: auth_add_command @ hermes_cli/auth_commands.py:auth_add_command */
-/* PoP: auth_list_command @ hermes_cli/auth_commands.py:auth_list_command */
-/* PoP: auth_remove_command @ hermes_cli/auth_commands.py:auth_remove_command */
-/* PoP: auth_reset_command @ hermes_cli/auth_commands.py:auth_reset_command */
-/* PoP: auth_status_command @ hermes_cli/auth_commands.py:auth_status_command */
-/* PoP: auth_logout_command @ hermes_cli/auth_commands.py:auth_logout_command */
-/* PoP: auth_spotify_command @ hermes_cli/auth_commands.py:auth_spotify_command */
+/* PoP: cli_complete @ hermes_cli/secret_prompt.py:masked_secret_prompt */
+/* PoP: cli_complete @ hermes_cli/auth_commands.py:auth_command */
+/* PoP: cli_complete @ hermes_cli/auth_commands.py:auth_add_command */
+/* PoP: cli_complete @ hermes_cli/auth_commands.py:auth_list_command */
+/* PoP: cli_complete @ hermes_cli/auth_commands.py:auth_remove_command */
+/* PoP: cli_complete @ hermes_cli/auth_commands.py:auth_reset_command */
+/* PoP: cli_complete @ hermes_cli/auth_commands.py:auth_status_command */
+/* PoP: cli_complete @ hermes_cli/auth_commands.py:auth_logout_command */
+/* PoP: cli_complete @ hermes_cli/auth_commands.py:auth_spotify_command */
 
 #include "hermes_core_types.h"
 #include "hermes_agent.h"

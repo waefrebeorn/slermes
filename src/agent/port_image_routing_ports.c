@@ -21,7 +21,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: extract_image_refs @ agent/image_routing.py:extract_image_refs */
+/* PoP: imgr_extract_image_refs @ agent/image_routing.py:extract_image_refs */
 char *imgr_extract_image_refs(const char *text) {
     /* Python: scan for image references (paths/urls). */
     if (!text) return strdup("[]\t");
@@ -55,7 +55,7 @@ char *imgr_extract_image_refs(const char *text) {
     return out;
 }
 
-/* PoP: _coerce_capability_bool @ agent/image_routing.py:_coerce_capability_bool */
+/* PoP: imgr_coerce_capability_bool @ agent/image_routing.py:_coerce_capability_bool */
 int imgr_coerce_capability_bool(const char *value) {
     /* Python: True/False for recognised; -1 None. */
     if (!value) return -1;
@@ -69,7 +69,7 @@ int imgr_coerce_capability_bool(const char *value) {
     return r;
 }
 
-/* PoP: _supports_vision_override @ agent/image_routing.py:_supports_vision_override */
+/* PoP: imgr_supports_vision_override @ agent/image_routing.py:_supports_vision_override */
 int imgr_supports_vision_override(const char *config_yaml) {
     /* Python: user-declared vision from config. */
     if (!config_yaml) return -1;
@@ -80,7 +80,7 @@ int imgr_supports_vision_override(const char *config_yaml) {
     return imgr_coerce_capability_bool(colon + 1);
 }
 
-/* PoP: _coerce_mode @ agent/image_routing.py:_coerce_mode */
+/* PoP: imgr_coerce_mode @ agent/image_routing.py:_coerce_mode */
 char *imgr_coerce_mode(const char *raw) {
     /* Python: normalize to native/text. */
     if (!raw) return NULL;
@@ -94,14 +94,14 @@ char *imgr_coerce_mode(const char *raw) {
     return r;
 }
 
-/* PoP: _explicit_aux_vision_override @ agent/image_routing.py:_explicit_aux_vision_override */
+/* PoP: imgr_explicit_aux_vision_override @ agent/image_routing.py:_explicit_aux_vision_override */
 bool imgr_explicit_aux_vision_override(const char *config_yaml) {
     /* Python: user configured specific aux vision backend. */
     if (!config_yaml) return false;
     return strstr(config_yaml, "auxiliary_vision") != NULL;
 }
 
-/* PoP: _lookup_supports_vision @ agent/image_routing.py:_lookup_supports_vision */
+/* PoP: imgr_lookup_supports_vision @ agent/image_routing.py:_lookup_supports_vision */
 int imgr_lookup_supports_vision(const char *provider, const char *model, const char *config_yaml) {
     /* Python: resolve caps; -1 unknown. */
     int ov = imgr_supports_vision_override(config_yaml);
@@ -116,7 +116,7 @@ int imgr_lookup_supports_vision(const char *provider, const char *model, const c
     return hit ? 1 : -1;
 }
 
-/* PoP: decide_image_input_mode @ agent/image_routing.py:decide_image_input_mode */
+/* PoP: imgr_decide_image_input_mode @ agent/image_routing.py:decide_image_input_mode */
 char *imgr_decide_image_input_mode(const char *provider, const char *model, const char *config_yaml) {
     /* Python: "native" or "text". */
     int v = imgr_lookup_supports_vision(provider, model, config_yaml);
@@ -125,7 +125,7 @@ char *imgr_decide_image_input_mode(const char *provider, const char *model, cons
     return strdup("text");
 }
 
-/* PoP: _sniff_mime_from_bytes @ agent/image_routing.py:_sniff_mime_from_bytes */
+/* PoP: imgr_sniff_mime_from_bytes @ agent/image_routing.py:_sniff_mime_from_bytes */
 char *imgr_sniff_mime_from_bytes(const unsigned char *buf, size_t len) {
     /* Python: magic-byte MIME detect. */
     if (!buf || len < 4) return NULL;
@@ -141,7 +141,7 @@ char *imgr_sniff_mime_from_bytes(const unsigned char *buf, size_t len) {
     return NULL;
 }
 
-/* PoP: _guess_mime @ agent/image_routing.py:_guess_mime */
+/* PoP: imgr_guess_mime @ agent/image_routing.py:_guess_mime */
 char *imgr_guess_mime(const char *path, const unsigned char *raw, size_t raw_len) {
     /* Python: magic bytes first, filename fallback. */
     if (raw && raw_len >= 4) {
@@ -165,7 +165,7 @@ char *imgr_guess_mime(const char *path, const unsigned char *raw, size_t raw_len
     return r;
 }
 
-/* PoP: _file_to_data_url @ agent/image_routing.py:_file_to_data_url */
+/* PoP: imgr_file_to_data_url @ agent/image_routing.py:_file_to_data_url */
 char *imgr_file_to_data_url(const char *path, long max_bytes) {
     /* Python: base64 data URL at native size. */
     if (!path) return NULL;
@@ -204,7 +204,7 @@ char *imgr_file_to_data_url(const char *path, long max_bytes) {
     return out;
 }
 
-/* PoP: build_native_content_parts @ agent/image_routing.py:build_native_content_parts */
+/* PoP: imgr_build_native_content_parts @ agent/image_routing.py:build_native_content_parts */
 char *imgr_build_native_content_parts(const char *image_url, const char *mime) {
     /* Python: OpenAI-style content part. */
     if (!image_url) return strdup("[]");

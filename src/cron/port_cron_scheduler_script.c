@@ -196,7 +196,7 @@ static const char *ENV_BLOCKLIST[] = {
 /* Active-venv markers that must not leak (#23473). */
 static const char *VENV_MARKERS[] = { "VIRTUAL_ENV", "CONDA_PREFIX", NULL };
 
-/* PoP: scheduler_env_is_internal_secret @ tools/environments/local.py:_is_hermes_internal_secret */
+/* PoP: env_is_internal_secret @ tools/environments/local.py:_is_hermes_internal_secret */
 static bool env_is_internal_secret(const char *key)
 {
     char upper[256];

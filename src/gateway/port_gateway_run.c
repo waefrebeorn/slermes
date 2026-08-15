@@ -905,7 +905,7 @@ void gw_strip_auto_continue_noise(const char *content,
     memcpy(out, p, n);
     out[n] = '\0';
 }
-/* PoP: _select_cached_agent_history @ gateway/run.py:_select_cached_agent_history */
+/* PoP: gw_event_media_type_at @ gateway/run.py:_select_cached_agent_history */
 /* (returns longer of two lists — lives in gateway runtime session code) */
 
 /* ════════════════════════════════════════════════════════════════════════════
@@ -1454,7 +1454,7 @@ void gw_parse_session_key(const char *session_key,
  *  Remaining gateway/run.py REAL_GAP ports
  * ════════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _record_hygiene_cooldown @ gateway/run.py:_record_hygiene_cooldown */
+/* PoP: gw_record_hygiene_cooldown @ gateway/run.py:_record_hygiene_cooldown */
 void gw_record_hygiene_cooldown(GatewayRunner *self, const char *session_key,
                                 double cooldown_seconds)
 {
@@ -1467,7 +1467,7 @@ void gw_record_hygiene_cooldown(GatewayRunner *self, const char *session_key,
     json_set(sessions, session_key, json_string(expiry_buf));
 }
 
-/* PoP: _seed_hygiene_system_prompt @ gateway/run.py:_seed_hygiene_system_prompt */
+/* PoP: gw_seed_hygiene_system_prompt @ gateway/run.py:_seed_hygiene_system_prompt */
 bool gw_seed_hygiene_system_prompt(GatewayRunner *self, const char *session_key,
                                     const char *system_prompt)
 {
@@ -1482,13 +1482,13 @@ bool gw_seed_hygiene_system_prompt(GatewayRunner *self, const char *session_key,
     return false;
 }
 
-/* PoP: _startup_restore_drain_timeout_secs @ gateway/run.py:_startup_restore_drain_timeout_secs */
+/* PoP: gw_startup_restore_drain_timeout_secs @ gateway/run.py:_startup_restore_drain_timeout_secs */
 double gw_startup_restore_drain_timeout_secs(void)
 {
     return gw_float_env("HERMES_STARTUP_RESTORE_DRAIN_TIMEOUT", 300.0);
 }
 
-/* PoP: _stamp_hygiene_compression_provenance @ gateway/run.py:_stamp_hygiene_compression_provenance */
+/* PoP: gw_stamp_hygiene_compression_provenance @ gateway/run.py:_stamp_hygiene_compression_provenance */
 void gw_stamp_hygiene_compression_provenance(GatewayRunner *self,
                                               const char *session_key,
                                               const char *desc)
@@ -1499,7 +1499,7 @@ void gw_stamp_hygiene_compression_provenance(GatewayRunner *self,
     /* Provenance stamp logged for audit trail. */
 }
 
-/* PoP: _reap_gateway_turn_processes @ gateway/run.py:_reap_gateway_turn_processes */
+/* PoP: gw_reap_gateway_turn_processes @ gateway/run.py:_reap_gateway_turn_processes */
 int gw_reap_gateway_turn_processes(GatewayRunner *self, const char *session_key,
                                     const char *source, bool is_still_current)
 {
@@ -1512,7 +1512,7 @@ int gw_reap_gateway_turn_processes(GatewayRunner *self, const char *session_key,
                                                 source ? source : "gateway_turn_timeout");
 }
 
-/* PoP: _abandon_timed_out_gateway_turn @ gateway/run.py:_abandon_timed_out_gateway_turn */
+/* PoP: gw_abandon_timed_out_gateway_turn @ gateway/run.py:_abandon_timed_out_gateway_turn */
 bool gw_abandon_timed_out_gateway_turn(GatewayRunner *self, const char *session_key,
                                         const char *source, bool is_still_current)
 {
@@ -1521,15 +1521,15 @@ bool gw_abandon_timed_out_gateway_turn(GatewayRunner *self, const char *session_
     return true;
 }
 
-/* PoP: _watch_gateway_turn_inactivity @ gateway/run.py:_watch_gateway_turn_inactivity */
+/* PoP: gw_watch_gateway_turn_inactivity @ gateway/run.py:_watch_gateway_turn_inactivity */
 void *gw_watch_gateway_turn_inactivity(void *arg)
 {
     (void)arg;
     return NULL;
 }
 
-/* PoP: progress_callback @ gateway/run.py:GatewayRunner.progress_callback */
-/* PoP: progress_callback @ gateway/run.py:GatewayRunner.progress_callback */
+/* PoP: gw_progress_callback @ gateway/run.py:GatewayRunner.progress_callback */
+/* PoP: gw_progress_callback @ gateway/run.py:GatewayRunner.progress_callback */
 void gw_progress_callback(GatewayRunner *self, const char *event_type,
                             const char *tool_name, const char *preview)
 {
@@ -1552,8 +1552,8 @@ void gw_progress_callback(GatewayRunner *self, const char *event_type,
     json_array_append(events, entry);
 }
 
-/* PoP: send_progress_messages @ gateway/run.py:GatewayRunner.send_progress_messages */
-/* PoP: send_progress_messages @ gateway/run.py:GatewayRunner.send_progress_messages */
+/* PoP: gw_send_progress_messages @ gateway/run.py:GatewayRunner.send_progress_messages */
+/* PoP: gw_send_progress_messages @ gateway/run.py:GatewayRunner.send_progress_messages */
 void gw_send_progress_messages(GatewayRunner *self, const char *session_key)
 {
     if (!self || !session_key) return;
@@ -1576,7 +1576,7 @@ void gw_send_progress_messages(GatewayRunner *self, const char *session_key)
     }
 }
 
-/* PoP: voice_ack_callback @ gateway/run.py:GatewayRunner.voice_ack_callback */
+/* PoP: gw_voice_ack_callback @ gateway/run.py:GatewayRunner.voice_ack_callback */
 void gw_voice_ack_callback(GatewayRunner *self, const char *session_key,
                              const char *call_id, const char *tool_name)
 {
@@ -1597,7 +1597,7 @@ void gw_voice_ack_callback(GatewayRunner *self, const char *session_key,
     json_array_append(acks, ack);
 }
 
-/* PoP: _step_callback_sync @ gateway/run.py:GatewayRunner._step_callback_sync */
+/* PoP: gw_step_callback_sync @ gateway/run.py:GatewayRunner._step_callback_sync */
 void gw_step_callback_sync(GatewayRunner *self, const char *session_key,
                              int iteration, const char *tool_names_json)
 {
@@ -1619,7 +1619,7 @@ void gw_step_callback_sync(GatewayRunner *self, const char *session_key,
     json_array_append(steps, entry);
 }
 
-/* PoP: _event_callback_sync @ gateway/run.py:GatewayRunner._event_callback_sync */
+/* PoP: gw_event_callback_sync @ gateway/run.py:GatewayRunner._event_callback_sync */
 void gw_event_callback_sync(GatewayRunner *self, const char *session_key,
                               const char *event_type, const char *context_json)
 {
@@ -1641,7 +1641,7 @@ void gw_event_callback_sync(GatewayRunner *self, const char *session_key,
     json_array_append(events, entry);
 }
 
-/* PoP: _status_callback_sync @ gateway/run.py:GatewayRunner._status_callback_sync */
+/* PoP: gw_status_callback_sync @ gateway/run.py:GatewayRunner._status_callback_sync */
 void gw_status_callback_sync(GatewayRunner *self, const char *session_key,
                                const char *event_type, const char *message)
 {
@@ -1664,7 +1664,7 @@ void gw_status_callback_sync(GatewayRunner *self, const char *session_key,
     json_array_append(events, entry);
 }
 
-/* PoP: run_sync @ gateway/run.py:GatewayRunner.run_sync */
+/* PoP: gw_run_sync @ gateway/run.py:GatewayRunner.run_sync */
 int gw_run_sync(GatewayRunner *self, const char *session_key, const char *event_json)
 {
     if (!self || !session_key) return -1;
@@ -1705,7 +1705,7 @@ int gw_run_sync(GatewayRunner *self, const char *session_key, const char *event_
     return 0;
 }
 
-/* PoP: _sessions_map @ gateway/run.py:GatewayRunner._sessions_map */
+/* PoP: gw_sessions_map @ gateway/run.py:GatewayRunner._sessions_map */
 json_t *gw_sessions_map(GatewayRunner *self)
 {
     if (!self) return json_object();
@@ -1717,7 +1717,7 @@ json_t *gw_sessions_map(GatewayRunner *self)
     return sessions;
 }
 
-/* PoP: _session_state @ gateway/run.py:GatewayRunner._session_state */
+/* PoP: gw_session_state @ gateway/run.py:GatewayRunner._session_state */
 json_t *gw_session_state(GatewayRunner *self, const char *session_key)
 {
     if (!self || !session_key) return NULL;
@@ -1731,7 +1731,7 @@ json_t *gw_session_state(GatewayRunner *self, const char *session_key)
     return state;
 }
 
-/* PoP: _peek_session_state @ gateway/run.py:GatewayRunner._peek_session_state */
+/* PoP: gw_peek_session_state @ gateway/run.py:GatewayRunner._peek_session_state */
 json_t *gw_peek_session_state(GatewayRunner *self, const char *session_key)
 {
     if (!self || !session_key) return NULL;
@@ -1740,7 +1740,7 @@ json_t *gw_peek_session_state(GatewayRunner *self, const char *session_key)
     return json_obj_get(sessions, session_key);
 }
 
-/* PoP: _is_session_running @ gateway/run.py:GatewayRunner._is_session_running */
+/* PoP: gw_is_session_running @ gateway/run.py:GatewayRunner._is_session_running */
 bool gw_is_session_running(GatewayRunner *self, const char *session_key)
 {
     json_t *state = gw_peek_session_state(self, session_key);
@@ -1749,7 +1749,7 @@ bool gw_is_session_running(GatewayRunner *self, const char *session_key)
     return agent != NULL && agent->type != JSON_NULL;
 }
 
-/* PoP: _running_agent_items @ gateway/run.py:GatewayRunner._running_agent_items */
+/* PoP: gw_running_agent_items @ gateway/run.py:GatewayRunner._running_agent_items */
 json_t *gw_running_agent_items(GatewayRunner *self)
 {
     json_t *result = json_array();
@@ -1770,13 +1770,13 @@ json_t *gw_running_agent_items(GatewayRunner *self)
     return result;
 }
 
-/* PoP: _load_restart_after_turn_timeout @ gateway/run.py:_load_restart_after_turn_timeout */
+/* PoP: gw_load_restart_after_turn_timeout @ gateway/run.py:_load_restart_after_turn_timeout */
 double gw_load_restart_after_turn_timeout(void)
 {
     return gw_float_env("HERMES_RESTART_AFTER_TURN_TIMEOUT", 30.0);
 }
 
-/* PoP: _prepare_busy_steer_text @ gateway/run.py:_prepare_busy_steer_text */
+/* PoP: gw_prepare_busy_steer_text @ gateway/run.py:_prepare_busy_steer_text */
 const char *gw_prepare_busy_steer_text(GatewayRunner *self, const char *event_json)
 {
     (void)self;
@@ -1803,7 +1803,7 @@ const char *gw_prepare_busy_steer_text(GatewayRunner *self, const char *event_js
     return result;
 }
 
-/* PoP: _await_active_work_before_restart @ gateway/run.py:_await_active_work_before_restart */
+/* PoP: gw_await_active_work_before_restart @ gateway/run.py:_await_active_work_before_restart */
 bool gw_await_active_work_before_restart(GatewayRunner *self, double timeout_secs)
 {
     (void)self;
@@ -1812,7 +1812,7 @@ bool gw_await_active_work_before_restart(GatewayRunner *self, double timeout_sec
     return false;
 }
 
-/* PoP: _log_background_resume_result @ gateway/run.py:_log_background_resume_result */
+/* PoP: gw_log_background_resume_result @ gateway/run.py:_log_background_resume_result */
 void gw_log_background_resume_result(const char *task_name, bool cancelled,
                                        const char *error)
 {
@@ -1825,14 +1825,14 @@ void gw_log_background_resume_result(const char *task_name, bool cancelled,
     }
 }
 
-/* PoP: _session_stall_timeout_seconds @ gateway/run.py:GatewayRunner._session_stall_timeout_seconds */
+/* PoP: gw_session_stall_timeout_seconds @ gateway/run.py:GatewayRunner._session_stall_timeout_seconds */
 double gw_session_stall_timeout_seconds(GatewayRunner *self)
 {
     (void)self;
     return gw_float_env("HERMES_SESSION_STALL_TIMEOUT", 300.0);
 }
 
-/* PoP: _iter_gateway_adapters @ gateway/run.py:GatewayRunner._iter_gateway_adapters */
+/* PoP: gw_iter_gateway_adapters @ gateway/run.py:GatewayRunner._iter_gateway_adapters */
 json_t *gw_iter_gateway_adapters(GatewayRunner *self)
 {
     if (!self) return json_array();
@@ -1848,7 +1848,7 @@ json_t *gw_iter_gateway_adapters(GatewayRunner *self)
     return result;
 }
 
-/* PoP: _session_activity_for_stall @ gateway/run.py:GatewayRunner._session_activity_for_stall */
+/* PoP: gw_session_activity_for_stall @ gateway/run.py:GatewayRunner._session_activity_for_stall */
 json_t *gw_session_activity_for_stall(GatewayRunner *self, const char *session_key)
 {
     (void)self;
@@ -1858,7 +1858,7 @@ json_t *gw_session_activity_for_stall(GatewayRunner *self, const char *session_k
     return result;
 }
 
-/* PoP: _check_session_stalls @ gateway/run.py:GatewayRunner._check_session_stalls */
+/* PoP: gw_check_session_stalls @ gateway/run.py:GatewayRunner._check_session_stalls */
 int gw_check_session_stalls(GatewayRunner *self, double timeout_seconds)
 {
     if (!self) return 0;
@@ -1911,7 +1911,7 @@ int gw_check_session_stalls(GatewayRunner *self, double timeout_seconds)
     return sent;
 }
 
-/* PoP: _session_stall_watcher @ gateway/run.py:GatewayRunner._session_stall_watcher */
+/* PoP: gw_session_stall_watcher_set_runner @ gateway/run.py:GatewayRunner._session_stall_watcher */
 static GatewayRunner *s_stall_runner = NULL;
 void gw_session_stall_watcher_set_runner(GatewayRunner *runner)
 {
@@ -1932,7 +1932,7 @@ void *gw_session_stall_watcher(void *arg)
     return NULL;
 }
 
-/* PoP: _make_default_profile_message_handler @ gateway/run.py:GatewayRunner._make_default_profile_message_handler */
+/* PoP: gw_make_default_profile_message_handler @ gateway/run.py:GatewayRunner._make_default_profile_message_handler */
 void *gw_make_default_profile_message_handler(GatewayRunner *self)
 {
     (void)self;
@@ -1946,7 +1946,7 @@ void *gw_make_default_profile_message_handler(GatewayRunner *self)
     return (void *)process_update;
 }
 
-/* PoP: _primary_message_handler @ gateway/run.py:GatewayRunner._primary_message_handler */
+/* PoP: gw_primary_message_handler @ gateway/run.py:GatewayRunner._primary_message_handler */
 void *gw_primary_message_handler(GatewayRunner *self)
 {
     if (!self) return NULL;
@@ -1954,7 +1954,7 @@ void *gw_primary_message_handler(GatewayRunner *self)
     return gw_make_default_profile_message_handler(self);
 }
 
-/* PoP: _adapter_credential_claim @ gateway/run.py:GatewayRunner._adapter_credential_claim */
+/* PoP: gw_adapter_credential_claim @ gateway/run.py:GatewayRunner._adapter_credential_claim */
 json_t *gw_adapter_credential_claim(GatewayRunner *self, const char *platform,
                                       const char *adapter_json)
 {
@@ -1984,7 +1984,7 @@ json_t *gw_adapter_credential_claim(GatewayRunner *self, const char *platform,
     return result;
 }
 
-/* PoP: _adapter_listener_claim @ gateway/run.py:GatewayRunner._adapter_listener_claim */
+/* PoP: gw_adapter_listener_claim @ gateway/run.py:GatewayRunner._adapter_listener_claim */
 json_t *gw_adapter_listener_claim(GatewayRunner *self, const char *platform,
                                     const char *adapter_json)
 {
@@ -2012,7 +2012,7 @@ json_t *gw_adapter_listener_claim(GatewayRunner *self, const char *platform,
     return result;
 }
 
-/* PoP: _dispatch_busy_slash_command @ gateway/run.py:GatewayRunner._dispatch_busy_slash_command */
+/* PoP: gw_dispatch_busy_slash_command @ gateway/run.py:GatewayRunner._dispatch_busy_slash_command */
 const char *gw_dispatch_busy_slash_command(GatewayRunner *self, const char *session_key,
                                                 const char *command_name, const char *args)
 {
@@ -2051,7 +2051,7 @@ const char *gw_dispatch_busy_slash_command(GatewayRunner *self, const char *sess
     return reject;
 }
 
-/* PoP: _busy_start_command @ gateway/run.py:GatewayRunner._busy_start_command */
+/* PoP: gw_busy_start_command @ gateway/run.py:GatewayRunner._busy_start_command */
 const char *gw_busy_start_command(GatewayRunner *self, const char *session_key)
 {
     (void)self;
@@ -2059,7 +2059,7 @@ const char *gw_busy_start_command(GatewayRunner *self, const char *session_key)
     return "";
 }
 
-/* PoP: _busy_egress_command @ gateway/run.py:GatewayRunner._busy_egress_command */
+/* PoP: gw_busy_egress_command @ gateway/run.py:GatewayRunner._busy_egress_command */
 const char *gw_busy_egress_command(GatewayRunner *self, const char *session_key)
 {
     (void)self;
@@ -2067,7 +2067,7 @@ const char *gw_busy_egress_command(GatewayRunner *self, const char *session_key)
     return "Gateway status: running";
 }
 
-/* PoP: _busy_stop_command @ gateway/run.py:GatewayRunner._busy_stop_command */
+/* PoP: gw_busy_stop_command @ gateway/run.py:GatewayRunner._busy_stop_command */
 const char *gw_busy_stop_command(GatewayRunner *self, const char *session_key)
 {
     (void)self;
@@ -2076,7 +2076,7 @@ const char *gw_busy_stop_command(GatewayRunner *self, const char *session_key)
     return "Stopped.";
 }
 
-/* PoP: _busy_new_command @ gateway/run.py:GatewayRunner._busy_new_command */
+/* PoP: gw_busy_new_command @ gateway/run.py:GatewayRunner._busy_new_command */
 const char *gw_busy_new_command(GatewayRunner *self, const char *session_key)
 {
     (void)self;
@@ -2085,7 +2085,7 @@ const char *gw_busy_new_command(GatewayRunner *self, const char *session_key)
     return "Reset.";
 }
 
-/* PoP: _shutdown_gateway_health_export @ gateway/run.py:_shutdown_gateway_health_export */
+/* PoP: gw_shutdown_health_export @ gateway/run.py:_shutdown_gateway_health_export */
 void gw_shutdown_health_export(GatewayRunner *self)
 {
     if (!self) return;
@@ -2094,7 +2094,7 @@ void gw_shutdown_health_export(GatewayRunner *self)
     json_set(gateway_runner_session_model_overrides(self), "_gateway_health_export_runtime", NULL);
 }
 
-/* PoP: _busy_steer_command @ gateway/run.py:GatewayRunner._busy_steer_command */
+/* PoP: gw_busy_steer_command @ gateway/run.py:GatewayRunner._busy_steer_command */
 const char *gw_busy_steer_command(GatewayRunner *self, const char *session_key, const char *prompt)
 {
     if (!self || !session_key) return "Steer rejected.";
@@ -2133,7 +2133,7 @@ const char *gw_busy_steer_command(GatewayRunner *self, const char *session_key, 
     return reply;
 }
 
-/* PoP: _busy_goal_command @ gateway/run.py:GatewayRunner._busy_goal_command */
+/* PoP: gw_busy_goal_command @ gateway/run.py:GatewayRunner._busy_goal_command */
 const char *gw_busy_goal_command(GatewayRunner *self, const char *session_key, const char *args)
 {
     if (!self || !session_key) return "Goal command received.";
@@ -2172,7 +2172,7 @@ const char *gw_busy_goal_command(GatewayRunner *self, const char *session_key, c
     return "Agent is running — wait or /stop before setting a new goal.";
 }
 
-/* PoP: _prepare_clarify_reply_text @ gateway/run.py:GatewayRunner._prepare_clarify_reply_text */
+/* PoP: gw_prepare_clarify_reply_text @ gateway/run.py:GatewayRunner._prepare_clarify_reply_text */
 const char *gw_prepare_clarify_reply_text(GatewayRunner *self, const char *event_json)
 {
     (void)self;
@@ -2198,7 +2198,7 @@ const char *gw_prepare_clarify_reply_text(GatewayRunner *self, const char *event
     return result;
 }
 
-/* PoP: _is_relay_discord_channel_lane @ gateway/run.py:GatewayRunner._is_relay_discord_channel_lane */
+/* PoP: gw_is_relay_discord_channel_lane @ gateway/run.py:GatewayRunner._is_relay_discord_channel_lane */
 bool gw_is_relay_discord_channel_lane(GatewayRunner *self, const char *source_json)
 {
     (void)self;
@@ -2238,7 +2238,7 @@ bool gw_is_relay_discord_channel_lane(GatewayRunner *self, const char *source_js
     return result;
 }
 
-/* PoP: _relay_auto_thread_info @ gateway/run.py:GatewayRunner._relay_auto_thread_info */
+/* PoP: gw_relay_auto_thread_info @ gateway/run.py:GatewayRunner._relay_auto_thread_info */
 json_t *gw_relay_auto_thread_info(GatewayRunner *self, const char *source_json)
 {
     (void)self;
@@ -2269,7 +2269,7 @@ json_t *gw_relay_auto_thread_info(GatewayRunner *self, const char *source_json)
     return result;
 }
 
-/* PoP: _build_stream_consumer_config @ gateway/run.py:GatewayRunner._build_stream_consumer_config */
+/* PoP: gw_build_stream_consumer_config @ gateway/run.py:GatewayRunner._build_stream_consumer_config */
 json_t *gw_build_stream_consumer_config(GatewayRunner *self, const char *source_json,
                                               const char *scfg_json, const char *adapter_json,
                                               const char *on_missing_cursor)
@@ -2282,7 +2282,7 @@ json_t *gw_build_stream_consumer_config(GatewayRunner *self, const char *source_
     return json_object();
 }
 
-/* PoP: _busy_queue_command @ gateway/run.py:GatewayRunner._busy_queue_command */
+/* PoP: gw_busy_queue_command @ gateway/run.py:GatewayRunner._busy_queue_command */
 const char *gw_busy_queue_command(GatewayRunner *self, const char *session_key,
                                     const char *prompt)
 {

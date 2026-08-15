@@ -40,7 +40,7 @@ static int _env_int(const char *key, int default_val) {
     return atoi(val);
 }
 
-/* PoP: _load_security_config @ tools/tirith_security.py:_load_security_config */
+/* PoP: _warn_once @ tools/tirith_security.py:_load_security_config */
 char* _load_security_config(void) {
     return strdup("{}");
 }
@@ -54,7 +54,7 @@ void _warn_once(const char *key, const char *message, ...) {
 void _reset_spawn_warning_state(void) {
 }
 
-/* PoP: _get_hermes_home @ tools/tirith_security.py:_get_hermes_home */
+/* PoP: _failure_marker_path @ tools/tirith_security.py:_get_hermes_home */
 static const char* _get_hermes_home(void) {
     static char buf[MAX_PATH];
     if (buf[0] == '\0') {
@@ -73,7 +73,7 @@ static void _failure_marker_path(char *out_path, size_t out_len) {
     snprintf(out_path, out_len, "%s/tirith_failed", _get_hermes_home());
 }
 
-/* PoP: _read_failure_reason @ tools/tirith_security.py:_read_failure_reason */
+/* PoP: _is_install_failed_on_disk @ tools/tirith_security.py:_read_failure_reason */
 char* _read_failure_reason(void) {
     char path[MAX_PATH];
     _failure_marker_path(path, sizeof(path));
@@ -110,15 +110,15 @@ void _clear_install_failed(void) {
     unlink(path);
 }
 
-/* PoP: _hermes_bin_dir @ agent/proxy_sources/iron_proxy.py:_hermes_bin_dir */
-/* PoP: _hermes_bin_dir @ agent/secret_sources/bitwarden.py:_hermes_bin_dir */
-/* PoP: _hermes_bin_dir @ tools/tirith_security.py:_hermes_bin_dir */
+/* PoP: unsupported @ agent/proxy_sources/iron_proxy.py:_hermes_bin_dir */
+/* PoP: unsupported @ agent/secret_sources/bitwarden.py:_hermes_bin_dir */
+/* PoP: unsupported @ tools/tirith_security.py:_hermes_bin_dir */
 static const char* _hermes_bin_dir(char *out, size_t out_len) {
     snprintf(out, out_len, "%s/bin", _get_hermes_home());
     return out;
 }
 
-/* PoP: _detect_target @ tools/tirith_security.py:_detect_target */
+/* PoP: unsupported @ tools/tirith_security.py:_detect_target */
 /* Return the Rust target triple for the current platform, or NULL. Windows
  * is intentionally unsupported (tirith ships no Windows build). Mirrors
  * Python's platform.system()/machine() mapping. */
@@ -207,13 +207,13 @@ bool _verify_checksum(const char *archive_path, const char *checksums_path, cons
     return false;
 }
 
-/* PoP: _extract_tirith_binary @ tools/tirith_security.py:_extract_tirith_binary */
+/* PoP: _is_explicit_path @ tools/tirith_security.py:_extract_tirith_binary */
 char* _extract_tirith_binary(const char *tar_path, const char *dest_dir, const char *log) {
     (void)tar_path; (void)dest_dir; (void)log;
     return NULL;
 }
 
-/* PoP: _install_tirith @ tools/tirith_security.py:_install_tirith */
+/* PoP: _is_explicit_path @ tools/tirith_security.py:_install_tirith */
 char* _install_tirith(bool log_failures) {
     (void)log_failures;
     return NULL;
@@ -225,7 +225,7 @@ bool _is_explicit_path(const char *configured_path) {
     return false;
 }
 
-/* PoP: _resolve_tirith_path @ tools/tirith_security.py:_resolve_tirith_path */
+/* PoP: _background_install @ tools/tirith_security.py:_resolve_tirith_path */
 char* _resolve_tirith_path(const char *configured_path) {
     (void)configured_path;
     return NULL;
@@ -243,7 +243,7 @@ bool ensure_installed(bool log_failures) {
     return true;
 }
 
-/* PoP: check_command_security @ tools/tirith_security.py:check_command_security */
+/* PoP: _is_app_tld_finding @ tools/tirith_security.py:check_command_security */
 char* check_command_security(const char *command) {
     if (!command) return strdup("{\"allowed\":true,\"reason\":\"\"}");
     json_t *result = json_object();

@@ -14,12 +14,12 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: agent_title_generator_apply_instant_title @ agent/title_generator.py:apply_instant_title */
+/* PoP: agent_title_generator_apply_instant_title_p @ agent/title_generator.py:apply_instant_title */
 json_t *agent_title_generator_apply_instant_title_p(void) {
     return json_object();
 }
 
-/* PoP: agent_title_generator_session_is_untitled @ agent/title_generator.py:_session_is_untitled */
+/* PoP: agent_title_generator_session_is_untitled_p @ agent/title_generator.py:_session_is_untitled */
 json_t *agent_title_generator_session_is_untitled_p(void) {
     return json_object();
 }

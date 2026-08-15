@@ -46,7 +46,7 @@ static bool he_has_key(const char *const keys[], const char *key)
     return false;
 }
 
-/* PoP: _gateway_health_config @ agent/monitoring/gateway_health_export.py:_gateway_health_config */
+/* PoP: he_gateway_health_config @ agent/monitoring/gateway_health_export.py:_gateway_health_config */
 char *he_gateway_health_config(const char *config_json)
 {
     if (!config_json) return strdup("{}");
@@ -67,7 +67,7 @@ char *he_gateway_health_config(const char *config_json)
     return out;
 }
 
-/* PoP: _otlp_config @ agent/monitoring/gateway_health_export.py:_otlp_config */
+/* PoP: he_otlp_config @ agent/monitoring/gateway_health_export.py:_otlp_config */
 char *he_otlp_config(const char *config_json)
 {
     if (!config_json) return strdup("{}");
@@ -90,7 +90,7 @@ char *he_otlp_config(const char *config_json)
     return out;
 }
 
-/* PoP: _enabled @ agent/monitoring/gateway_health_export.py:_enabled */
+/* PoP: he_enabled @ agent/monitoring/gateway_health_export.py:_enabled */
 bool he_enabled(const char *config_json)
 {
     if (!config_json) return false;
@@ -160,7 +160,7 @@ void *he_start_metric_provider(const char *config_json) {
     return NULL;
 }
 
-/* PoP: _metric_endpoint @ agent/monitoring/gateway_health_export.py:_metric_endpoint */
+/* PoP: he_metric_endpoint @ agent/monitoring/gateway_health_export.py:_metric_endpoint */
 char *he_metric_endpoint(const char *endpoint)
 {
     if (!endpoint) return NULL;
@@ -177,7 +177,7 @@ char *he_metric_endpoint(const char *endpoint)
     return strdup(endpoint);
 }
 
-/* PoP: _logs_endpoint @ agent/monitoring/gateway_health_export.py:_logs_endpoint */
+/* PoP: he_logs_endpoint @ agent/monitoring/gateway_health_export.py:_logs_endpoint */
 char *he_logs_endpoint(const char *endpoint)
 {
     if (!endpoint) return NULL;
@@ -197,7 +197,7 @@ char *he_logs_endpoint(const char *endpoint)
     return strdup(endpoint);
 }
 
-/* PoP: _resolve_headers @ agent/monitoring/gateway_health_export.py:_resolve_headers */
+/* PoP: he_resolve_headers @ agent/monitoring/gateway_health_export.py:_resolve_headers */
 /* Resolve headers from env-var-name mapping. input: JSON object */
 /* {"header_name": "ENV_VAR"}; output: JSON object {"header_name": value}. Only */
 /* headers whose ENV_VAR is set to a non-empty string are included. malloc'd. */
@@ -231,7 +231,7 @@ char *he_resolve_headers(const char *headers_env_json)
     return s;
 }
 
-/* PoP: _severity_number @ agent/monitoring/gateway_health_export.py:_severity_number */
+/* PoP: he_severity_number @ agent/monitoring/gateway_health_export.py:_severity_number */
 int he_severity_number(const char *severity)
 {
     if (!severity) return 13; /* WARN */
@@ -251,7 +251,7 @@ int he_severity_number(const char *severity)
     return 13; /* WARN */
 }
 
-/* PoP: _diagnostic_log_attributes @ agent/monitoring/gateway_health_export.py:_diagnostic_log_attributes */
+/* PoP: he_diagnostic_log_attributes @ agent/monitoring/gateway_health_export.py:_diagnostic_log_attributes */
 char *he_diagnostic_log_attributes(const char *event_json)
 {
     if (!event_json) return strdup("{}");
@@ -299,7 +299,7 @@ char *he_diagnostic_log_attributes(const char *event_json)
  * are unavailable (not ported to C), the functions degrade gracefully
  * exactly as the Python try/except blocks do. */
 
-/* PoP: _read_gateway_snapshot @ agent/monitoring/gateway_health_export.py:_read_gateway_snapshot */
+/* PoP: he_read_gateway_snapshot @ agent/monitoring/gateway_health_export.py:_read_gateway_snapshot */
 char *he_read_gateway_snapshot(const char *config_json) {
     /* Python: build_gateway_health_snapshot(runtime, ...). The C equivalent
      * uses gw_build_health_snapshot() from hermes_gateway_health.h when the
@@ -349,7 +349,7 @@ char *he_read_gateway_snapshot(const char *config_json) {
     return result;
 }
 
-/* PoP: _read_cron_snapshot @ agent/monitoring/gateway_health_export.py:_read_cron_snapshot */
+/* PoP: he_read_cron_snapshot @ agent/monitoring/gateway_health_export.py:_read_cron_snapshot */
 char *he_read_cron_snapshot(void) {
     /* Python: build_cron_health_snapshot() from agent.monitoring.cron_health.
      * Not yet ported to C; degrade gracefully (same as Python's
@@ -357,7 +357,7 @@ char *he_read_cron_snapshot(void) {
     return strdup("{}");
 }
 
-/* PoP: _read_background_work_count @ agent/monitoring/gateway_health_export.py:_read_background_work_count */
+/* PoP: he_read_background_work_count @ agent/monitoring/gateway_health_export.py:_read_background_work_count */
 long he_read_background_work_count(void) {
     long total = 0;
     /* async_delegation.active_task_count() — count via process registry */
@@ -365,14 +365,14 @@ long he_read_background_work_count(void) {
     return total;
 }
 
-/* PoP: _read_background_delegations_count @ agent/monitoring/gateway_health_export.py:_read_background_delegations_count */
+/* PoP: he_read_background_delegations_count @ agent/monitoring/gateway_health_export.py:_read_background_delegations_count */
 long he_read_background_delegations_count(void) {
     /* Python: active_count() from tools.async_delegation — now ported. */
     extern int async_delegation_active_count(void);
     return (long)async_delegation_active_count();
 }
 
-/* PoP: _read_runtime_snapshot @ agent/monitoring/gateway_health_export.py:_read_runtime_snapshot */
+/* PoP: he_read_runtime_snapshot @ agent/monitoring/gateway_health_export.py:_read_runtime_snapshot */
 char *he_read_runtime_snapshot(const char *config_json) {
     /* Build gateway snapshot. */
     char *gateway_json = he_read_gateway_snapshot(config_json);
@@ -428,7 +428,7 @@ char *he_read_runtime_snapshot(const char *config_json) {
     return result;
 }
 
-/* PoP: _emit_snapshot_events @ agent/monitoring/gateway_health_export.py:_emit_snapshot_events */
+/* PoP: he_emit_snapshot_events @ agent/monitoring/gateway_health_export.py:_emit_snapshot_events */
 void he_emit_snapshot_events(const char *config_json) {
     char *gh = he_gateway_health_config(config_json);
     json_t *gh_obj = NULL;
@@ -471,7 +471,7 @@ void he_emit_snapshot_events(const char *config_json) {
     if (gh_obj) json_free(gh_obj);
 }
 
-/* PoP: _gateway_health_event @ agent/monitoring/gateway_health_export.py:_gateway_health_event */
+/* PoP: he_gateway_health_event @ agent/monitoring/gateway_health_export.py:_gateway_health_event */
 bool he_gateway_health_event(const char *event_json) {
     if (!event_json) return false;
     json_t *event = json_parse(event_json, NULL);
@@ -582,7 +582,7 @@ void he_log_streamer_shutdown(void *streamer) {
      * unsubscribe. No SDK processor/provider to flush/shutdown. */
 }
 
-/* PoP: _start_diagnostic_log_streamer @ ...:_start_diagnostic_log_streamer */
+/* PoP: he_start_diagnostic_log_streamer @ ...:_start_diagnostic_log_streamer */
 void *he_start_diagnostic_log_streamer(const char *config_json, void *sdk) {
     /* Python: subscribe to emitter, return the streamer.
      * C port: create streamer init (returns NULL if no SDK),
@@ -594,7 +594,7 @@ void *he_start_diagnostic_log_streamer(const char *config_json, void *sdk) {
     return streamer;
 }
 
-/* PoP: _start_snapshot_thread @ agent/monitoring/gateway_health_export.py:_start_snapshot_thread */
+/* PoP: snapshot_loop @ agent/monitoring/gateway_health_export.py:_start_snapshot_thread */
 /* Start a daemon pthread running the snapshot emit loop. `stop_event` is an
  * opaque pointer to an int flag that the caller sets to 1 to stop the thread
  * (mirrors Python's threading.Event; we keep the same void* ABI so callers
@@ -652,7 +652,7 @@ void *he_start_snapshot_thread(const char *config_json, void *stop_event) {
     return tid;
 }
 
-/* PoP: _attach_log_handler @ agent/monitoring/gateway_health_export.py:_attach_log_handler */
+/* PoP: he_attach_log_handler @ agent/monitoring/gateway_health_export.py:_attach_log_handler */
 /* Attach a diagnostic log handler to the C logging pipeline. Python adds a
  * GatewayDiagnosticLogHandler to the root logger; the C logger has no plugin
  * handler chain, so the faithful equivalent is to enable diagnostic-level
@@ -683,7 +683,7 @@ void *he_attach_log_handler(const char *config_json) {
     return h;
 }
 
-/* PoP: start_gateway_health_export @ agent/monitoring/gateway_health_export.py:start_gateway_health_export */
+/* PoP: he_start_gateway_health_export @ agent/monitoring/gateway_health_export.py:start_gateway_health_export */
 char *he_start_gateway_health_export(const char *config_json) {
     /* Python: returns GatewayHealthExportRuntime. Never raises. */
     he_runtime_t runtime = {0};

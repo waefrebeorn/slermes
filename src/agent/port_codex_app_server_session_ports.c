@@ -23,7 +23,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _notification_scope_ids @ agent/transports/codex_app_server_session.py:_notification_scope_ids */
+/* PoP: cas2_notification_scope_ids @ agent/transports/codex_app_server_session.py:_notification_scope_ids */
 char *cas2_notification_scope_ids(const char *notification_json) {
     /* Python: extract the thread/turn identity carried by a notification.
      * Returns {"thread_id": ..., "turn_id": ...} (nulls omitted). */
@@ -65,7 +65,7 @@ char *cas2_notification_scope_ids(const char *notification_json) {
     return ser ? ser : strdup("[]");
 }
 
-/* PoP: _coerce_turn_input_text @ agent/transports/codex_app_server_session.py:_coerce_turn_input_text */
+/* PoP: cas2_coerce_turn_input_text @ agent/transports/codex_app_server_session.py:_coerce_turn_input_text */
 char *cas2_coerce_turn_input_text(const char *content_json) {
     /* Python: rich content → plain text input. */
     if (!content_json) return strdup("");
@@ -103,7 +103,7 @@ char *cas2_coerce_turn_input_text(const char *content_json) {
     return out;
 }
 
-/* PoP: __init__ @ agent/transports/codex_app_server_session.py:__init__ */
+/* PoP: cas2_init @ agent/transports/codex_app_server_session.py:__init__ */
 char *cas2_init(const char *cwd, const char *codex_bin) {
     /* Python: session state. */
     char *out = NULL;
@@ -112,23 +112,23 @@ char *cas2_init(const char *cwd, const char *codex_bin) {
     return out;
 }
 
-/* PoP: close @ agent/transports/codex_app_server_session.py:close */
+/* PoP: cas2_close @ agent/transports/codex_app_server_session.py:close */
 int cas2_close(void) {
     printf("codex session closed\n");
     return 0;
 }
 
-/* PoP: __enter__ @ agent/transports/codex_app_server_session.py:__enter__ */
+/* PoP: cas2_enter @ agent/transports/codex_app_server_session.py:__enter__ */
 char *cas2_enter(void) {
     return strdup("{}");
 }
 
-/* PoP: __exit__ @ agent/transports/codex_app_server_session.py:__exit__ */
+/* PoP: cas2_exit @ agent/transports/codex_app_server_session.py:__exit__ */
 int cas2_exit(void) {
     return cas2_close();
 }
 
-/* PoP: request_steer @ agent/transports/codex_app_server_session.py:request_steer */
+/* PoP: cas2_request_steer @ agent/transports/codex_app_server_session.py:request_steer */
 char *cas2_request_steer(const char *guidance) {
     /* Python: append user guidance to the active Codex turn via turn/steer.
      * Returns {"ok": true} when the steer request was sent. */
@@ -165,7 +165,7 @@ char *cas2_request_steer(const char *guidance) {
     return out_ser ? out_ser : strdup("{\"ok\": false}");
 }
 
-/* PoP: _decide_exec_approval @ agent/transports/codex_app_server_session.py:_decide_exec_approval */
+/* PoP: cas2_decide_exec_approval @ agent/transports/codex_app_server_session.py:_decide_exec_approval */
 char *cas2_decide_exec_approval(bool auto_approve, const char *command) {
     /* Python: accept when auto; else policy. */
     if (auto_approve) return strdup("accept");
@@ -174,13 +174,13 @@ char *cas2_decide_exec_approval(bool auto_approve, const char *command) {
     return strdup("reject");
 }
 
-/* PoP: _decide_apply_patch_approval @ agent/transports/codex_app_server_session.py:_decide_apply_patch_approval */
+/* PoP: cas2_decide_apply_patch_approval @ agent/transports/codex_app_server_session.py:_decide_apply_patch_approval */
 char *cas2_decide_apply_patch_approval(bool auto_approve) {
     if (auto_approve) return strdup("accept");
     return strdup("reject");
 }
 
-/* PoP: _lookup_pending_file_change @ agent/transports/codex_app_server_session.py:_lookup_pending_file_change */
+/* PoP: cas2_lookup_pending_file_change @ agent/transports/codex_app_server_session.py:_lookup_pending_file_change */
 char *cas2_lookup_pending_file_change(const char *item_id, const char *pending_json) {
     /* Python: in-progress fileChange item lookup. Returns the matching
      * item JSON (or NULL when absent). */
@@ -207,7 +207,7 @@ char *cas2_lookup_pending_file_change(const char *item_id, const char *pending_j
     return NULL;
 }
 
-/* PoP: _apply_token_usage_notification @ agent/transports/codex_app_server_session.py:_apply_token_usage_notification */
+/* PoP: cas2_apply_token_usage_notification @ agent/transports/codex_app_server_session.py:_apply_token_usage_notification */
 char *cas2_apply_token_usage_notification(const char *usage_json) {
     /* Python: capture Codex token usage updates for caller accounting.
      * Only thread/tokenUsage/updated notifications carry usage; extract
@@ -249,7 +249,7 @@ char *cas2_apply_token_usage_notification(const char *usage_json) {
     return ser ? ser : strdup("{\"captured\": false}");
 }
 
-/* PoP: _apply_compaction_notification @ agent/transports/codex_app_server_session.py:_apply_compaction_notification */
+/* PoP: cas2_apply_compaction_notification @ agent/transports/codex_app_server_session.py:_apply_compaction_notification */
 int cas2_apply_compaction_notification(const char *notification_json) {
     /* Python: capture Codex-native context compaction boundaries. Both the
      * thread/compacted notification and a ContextCompaction item mean the
@@ -283,14 +283,14 @@ int cas2_apply_compaction_notification(const char *notification_json) {
     return compacted;
 }
 
-/* PoP: _has_turn_aborted_marker @ agent/transports/codex_app_server_session.py:_has_turn_aborted_marker */
+/* PoP: cas2_has_turn_aborted_marker @ agent/transports/codex_app_server_session.py:_has_turn_aborted_marker */
 bool cas2_has_turn_aborted_marker(const char *text) {
     /* Python: raw abort markers from codex. */
     if (!text) return false;
     return strstr(text, "turn aborted") != NULL || strstr(text, "TURN_ABORTED") != NULL;
 }
 
-/* PoP: _get_hermes_version @ agent/transports/codex_app_server_session.py:_get_hermes_version */
+/* PoP: cas2_get_hermes_version @ agent/transports/codex_app_server_session.py:_get_hermes_version */
 char *cas2_get_hermes_version(void) {
     /* Python: best-effort version for userAgent. */
     const char *v = getenv("HERMES_VERSION");

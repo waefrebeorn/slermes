@@ -23,7 +23,7 @@
 #include <string.h>
 #include <ctype.h>
 
-/* PoP: _looks_like_absolute_file_path @ tools/image_generation_tool.py:_looks_like_absolute_file_path */
+/* PoP: image_gen_path_looks_like_absolute_file_path @ tools/image_generation_tool.py:_looks_like_absolute_file_path */
 bool image_gen_path_looks_like_absolute_file_path(const char *value)
 {
     if (!value || !*value) return false;

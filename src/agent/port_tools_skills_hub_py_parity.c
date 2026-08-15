@@ -14,12 +14,12 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_skills_hub_github_provider_for @ tools/skills_hub.py:github_provider_for */
+/* PoP: tools_skills_hub_github_provider_for_p @ tools/skills_hub.py:github_provider_for */
 json_t *tools_skills_hub_github_provider_for_p(void) {
     return json_object();
 }
 
-/* PoP: tools_skills_hub_quarantine_bundle @ tools/skills_hub.py:quarantine_bundle */
+/* PoP: tools_skills_hub_quarantine_bundle_p @ tools/skills_hub.py:quarantine_bundle */
 json_t *tools_skills_hub_quarantine_bundle_p(void) {
     return json_object();
 }

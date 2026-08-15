@@ -15,7 +15,7 @@
 #include "registry.h"
 #include "credential_pool.h"
 
-/* PoP: _canon_key_combo @ tools/computer_use/tool.py:_canon_key_combo */
+/* PoP: tools_computer_use_tool_u_canon_key_combo @ tools/computer_use/tool.py:_canon_key_combo */
 int tools_computer_use_tool_u_canon_key_combo(const char *arg) {
     /* Python: split on '+', strip/lower, alias-map, frozenset. Arg = keys
      * (space-joined canon parts echo, "ctrl+alt+DEL" style). */
@@ -50,7 +50,7 @@ int tools_computer_use_tool_u_canon_key_combo(const char *arg) {
     return 0;
 }
 
-/* PoP: reset_backend_for_tests @ tools/computer_use/tool.py:reset_backend_for_tests */
+/* PoP: tools_computer_use_tool_reset_backend_for_tests @ tools/computer_use/tool.py:reset_backend_for_tests */
 int tools_computer_use_tool_reset_backend_for_tests(const char *arg) {
     /* Python: test helper. */
     (void)arg;
@@ -58,7 +58,7 @@ int tools_computer_use_tool_reset_backend_for_tests(const char *arg) {
     return 0;
 }
 
-/* PoP: type_text @ tools/computer_use/tool.py:type_text */
+/* PoP: tools_computer_use_tool_type_text @ tools/computer_use/tool.py:type_text */
 int tools_computer_use_tool_type_text(const char *arg) {
     /* Python: self.calls.append(("type", {"text": text, **kw}));
      * ActionResult(ok=True, action="type"). Arg = text. */
@@ -67,7 +67,7 @@ int tools_computer_use_tool_type_text(const char *arg) {
     return 0;
 }
 
-/* PoP: list_apps @ tools/computer_use/tool.py:list_apps */
+/* PoP: tools_computer_use_tool_list_apps @ tools/computer_use/tool.py:list_apps */
 int tools_computer_use_tool_list_apps(const char *arg) {
     /* Python: self.calls.append(("list_apps", {})); return []. */
     (void)arg;
@@ -75,7 +75,7 @@ int tools_computer_use_tool_list_apps(const char *arg) {
     return 0;
 }
 
-/* PoP: list_windows @ tools/computer_use/tool.py:list_windows */
+/* PoP: tools_computer_use_tool_list_windows @ tools/computer_use/tool.py:list_windows */
 int tools_computer_use_tool_list_windows(const char *arg) {
     /* Python: self.calls.append(("list_windows", {})); return []. */
     (void)arg;
@@ -83,7 +83,7 @@ int tools_computer_use_tool_list_windows(const char *arg) {
     return 0;
 }
 
-/* PoP: set_value @ tools/computer_use/tool.py:set_value */
+/* PoP: tools_computer_use_tool_set_value @ tools/computer_use/tool.py:set_value */
 int tools_computer_use_tool_set_value(const char *arg) {
     /* Python: record ("set_value", {value, element}); ok result. Arg =
      * "value\telement". */
@@ -96,7 +96,7 @@ int tools_computer_use_tool_set_value(const char *arg) {
     return 0;
 }
 
-/* PoP: _request_approval @ tools/computer_use/tool.py:_request_approval */
+/* PoP: tools_computer_use_tool_u_request_approval @ tools/computer_use/tool.py:_request_approval */
 int tools_computer_use_tool_u_request_approval(const char *arg) {
     /* Python: scoped approval. Arg =
      * "auto_approved\tcb_none\tverdict\tstate\tresult". */
@@ -117,7 +117,7 @@ int tools_computer_use_tool_u_request_approval(const char *arg) {
     return 0;
 }
 
-/* PoP: _summarize_action @ tools/computer_use/tool.py:_summarize_action */
+/* PoP: tools_computer_use_tool_u_summarize_action @ tools/computer_use/tool.py:_summarize_action */
 int tools_computer_use_tool_u_summarize_action(const char *arg) {
     /* Python: action summary. Arg = "action\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -129,7 +129,7 @@ int tools_computer_use_tool_u_summarize_action(const char *arg) {
     return 0;
 }
 
-/* PoP: _image_dimensions_from_b64 @ tools/computer_use/tool.py:_image_dimensions_from_b64 */
+/* PoP: tools_computer_use_tool_u_image_dimensions_from_b64 @ tools/computer_use/tool.py:_image_dimensions_from_b64 */
 int tools_computer_use_tool_u_image_dimensions_from_b64(const char *arg) {
     /* Python: PNG/JFIF parse. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -140,7 +140,7 @@ int tools_computer_use_tool_u_image_dimensions_from_b64(const char *arg) {
     return 0;
 }
 
-/* PoP: _coerce_max_elements @ tools/computer_use/tool.py:_coerce_max_elements */
+/* PoP: tools_computer_use_tool_u_coerce_max_elements @ tools/computer_use/tool.py:_coerce_max_elements */
 int tools_computer_use_tool_u_coerce_max_elements(const char *arg) {
     /* Python: clamp [1, MAX_ALLOWED]; default on bad. Arg =
      * "value\tdflt\tmax_allowed". */
@@ -157,7 +157,7 @@ int tools_computer_use_tool_u_coerce_max_elements(const char *arg) {
     return 0;
 }
 
-/* PoP: _shrink_capture_for_vision @ tools/computer_use/tool.py:_shrink_capture_for_vision */
+/* PoP: tools_computer_use_tool_u_shrink_capture_for_vision @ tools/computer_use/tool.py:_shrink_capture_for_vision */
 int tools_computer_use_tool_u_shrink_capture_for_vision(const char *arg) {
     /* Python: downscale longest side <= max_dim. Arg =
      * "len\tmax_dim\tfits\tshrunk". */
@@ -172,7 +172,7 @@ int tools_computer_use_tool_u_shrink_capture_for_vision(const char *arg) {
     return 0;
 }
 
-/* PoP: _should_route_through_aux_vision @ tools/computer_use/tool.py:_should_route_through_aux_vision */
+/* PoP: tools_computer_use_tool_u_should_route_through_aux_vision @ tools/computer_use/tool.py:_should_route_through_aux_vision */
 int tools_computer_use_tool_u_should_route_through_aux_vision(const char *arg) {
     /* Python: cached routing. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -183,7 +183,7 @@ int tools_computer_use_tool_u_should_route_through_aux_vision(const char *arg) {
     return 0;
 }
 
-/* PoP: _capture_after_mode @ tools/computer_use/tool.py:_capture_after_mode */
+/* PoP: tools_computer_use_tool_u_capture_after_mode @ tools/computer_use/tool.py:_capture_after_mode */
 int tools_computer_use_tool_u_capture_after_mode(const char *arg) {
     /* Python: config capture_after_mode in {som,vision,ax} else som. Arg =
      * raw. */
@@ -195,7 +195,7 @@ int tools_computer_use_tool_u_capture_after_mode(const char *arg) {
     return 0;
 }
 
-/* PoP: _route_capture_through_aux_vision @ tools/computer_use/tool.py:_route_capture_through_aux_vision */
+/* PoP: tools_computer_use_tool_u_route_capture_through_aux_vision @ tools/computer_use/tool.py:_route_capture_through_aux_vision */
 int tools_computer_use_tool_u_route_capture_through_aux_vision(const char *arg) {
     /* Python: vision pre-analysis. Arg =
      * "routed\tstate\tresult". */
@@ -209,7 +209,7 @@ int tools_computer_use_tool_u_route_capture_through_aux_vision(const char *arg) 
     return 0;
 }
 
-/* PoP: _maybe_follow_capture @ tools/computer_use/tool.py:_maybe_follow_capture */
+/* PoP: tools_computer_use_tool_u_maybe_follow_capture @ tools/computer_use/tool.py:_maybe_follow_capture */
 int tools_computer_use_tool_u_maybe_follow_capture(const char *arg) {
     /* Python: post-action capture. Arg =
      * "do_capture\tok\tstate\tresult". */
@@ -226,7 +226,7 @@ int tools_computer_use_tool_u_maybe_follow_capture(const char *arg) {
     return 0;
 }
 
-/* PoP: _format_elements @ tools/computer_use/tool.py:_format_elements */
+/* PoP: tools_computer_use_tool_u_format_elements @ tools/computer_use/tool.py:_format_elements */
 int tools_computer_use_tool_u_format_elements(const char *arg) {
     /* Python: "  #idx role label @ bounds [app]" lines. Arg =
      * "max_lines\tidx\trole\tlabel\tbounds\tapp" per line? Input: JSON
@@ -260,7 +260,7 @@ int tools_computer_use_tool_u_format_elements(const char *arg) {
     return 0;
 }
 
-/* PoP: _element_to_dict @ tools/computer_use/tool.py:_element_to_dict */
+/* PoP: tools_computer_use_tool_u_element_to_dict @ tools/computer_use/tool.py:_element_to_dict */
 int tools_computer_use_tool_u_element_to_dict(const char *arg) {
     /* Python: {index, role, label, bounds, app}. Arg =
      * "index\trole\tlabel\tbounds\tapp". */
@@ -279,7 +279,7 @@ int tools_computer_use_tool_u_element_to_dict(const char *arg) {
     return 0;
 }
 
-/* PoP: check_computer_use_requirements @ tools/computer_use/tool.py:check_computer_use_requirements */
+/* PoP: tools_computer_use_tool_check_computer_use_requirements @ tools/computer_use/tool.py:check_computer_use_requirements */
 int tools_computer_use_tool_check_computer_use_requirements(const char *arg) {
     /* Python: platform in set AND driver available. Arg =
      * "platform_ok\tdriver_ok". */
@@ -291,7 +291,7 @@ int tools_computer_use_tool_check_computer_use_requirements(const char *arg) {
     return 0;
 }
 
-/* PoP: _format @ tools/lazy_deps.py:_format */
+/* PoP: tools_lazy_deps_u_format @ tools/lazy_deps.py:_format */
 int tools_lazy_deps_u_format(const char *arg) {
     /* Python: "Feature <f> unavailable: <reason>. To enable manually:
      * uv pip install <specs> (or: pip install <specs>)." Arg =
@@ -306,7 +306,7 @@ int tools_lazy_deps_u_format(const char *arg) {
     return 0;
 }
 
-/* PoP: _python_abi_tag @ tools/lazy_deps.py:_python_abi_tag */
+/* PoP: tools_lazy_deps_u_python_abi_tag @ tools/lazy_deps.py:_python_abi_tag */
 int tools_lazy_deps_u_python_abi_tag(const char *arg) {
     /* Python: "X.Y:EXT_SUFFIX". Arg = "ver\text_suffix". */
     if (!arg || !*arg) { printf(":\n"); return 0; }
@@ -315,7 +315,7 @@ int tools_lazy_deps_u_python_abi_tag(const char *arg) {
     return 0;
 }
 
-/* PoP: _lazy_install_target @ tools/lazy_deps.py:_lazy_install_target */
+/* PoP: tools_lazy_deps_u_lazy_install_target @ tools/lazy_deps.py:_lazy_install_target */
 int tools_lazy_deps_u_lazy_install_target(const char *arg) {
     /* Python: env var -> Path or None (empty env = None). Arg = env value. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -326,7 +326,7 @@ int tools_lazy_deps_u_lazy_install_target(const char *arg) {
     return 0;
 }
 
-/* PoP: _ensure_target_ready @ tools/lazy_deps.py:_ensure_target_ready */
+/* PoP: tools_lazy_deps_u_ensure_target_ready @ tools/lazy_deps.py:_ensure_target_ready */
 int tools_lazy_deps_u_ensure_target_ready(const char *arg) {
     /* Python: ABI stamp. Arg =
      * "abi_changed\tstate\tresult\terr". */
@@ -344,7 +344,7 @@ int tools_lazy_deps_u_ensure_target_ready(const char *arg) {
     return 0;
 }
 
-/* PoP: _activate_target_on_syspath @ tools/lazy_deps.py:_activate_target_on_syspath */
+/* PoP: tools_lazy_deps_u_activate_target_on_syspath @ tools/lazy_deps.py:_activate_target_on_syspath */
 int tools_lazy_deps_u_activate_target_on_syspath(const char *arg) {
     /* Python: append-ordering activation. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -355,7 +355,7 @@ int tools_lazy_deps_u_activate_target_on_syspath(const char *arg) {
     return 0;
 }
 
-/* PoP: activate_durable_lazy_target @ tools/lazy_deps.py:activate_durable_lazy_target */
+/* PoP: tools_lazy_deps_activate_durable_lazy_target @ tools/lazy_deps.py:activate_durable_lazy_target */
 int tools_lazy_deps_activate_durable_lazy_target(const char *arg) {
     /* Python: sys.path activation, never raises. Arg = "target\texists". */
     if (!arg || !*arg) { printf("no durable target\n"); return 0; }
@@ -365,7 +365,7 @@ int tools_lazy_deps_activate_durable_lazy_target(const char *arg) {
     return 0;
 }
 
-/* PoP: _allow_lazy_installs @ tools/lazy_deps.py:_allow_lazy_installs */
+/* PoP: tools_lazy_deps_u_allow_lazy_installs @ tools/lazy_deps.py:_allow_lazy_installs */
 int tools_lazy_deps_u_allow_lazy_installs(const char *arg) {
     /* Python: kill-switch order. Arg =
      * "config_off\tsealed\thas_target\tstate\tresult". */
@@ -385,7 +385,7 @@ int tools_lazy_deps_u_allow_lazy_installs(const char *arg) {
     return 0;
 }
 
-/* PoP: _unsupported_feature_reason @ tools/lazy_deps.py:_unsupported_feature_reason */
+/* PoP: tools_lazy_deps_u_unsupported_feature_reason @ tools/lazy_deps.py:_unsupported_feature_reason */
 int tools_lazy_deps_u_unsupported_feature_reason(const char *arg) {
     /* Python: win32+matrix -> reason else None. Arg = "platform\tfeature". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -401,7 +401,7 @@ int tools_lazy_deps_u_unsupported_feature_reason(const char *arg) {
     return 0;
 }
 
-/* PoP: _is_satisfied @ tools/lazy_deps.py:_is_satisfied */
+/* PoP: tools_lazy_deps_u_is_satisfied @ tools/lazy_deps.py:_is_satisfied */
 int tools_lazy_deps_u_is_satisfied(const char *arg) {
     /* Python: presence + version. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -412,7 +412,7 @@ int tools_lazy_deps_u_is_satisfied(const char *arg) {
     return 0;
 }
 
-/* PoP: _is_present @ tools/lazy_deps.py:_is_present */
+/* PoP: tools_lazy_deps_u_is_present @ tools/lazy_deps.py:_is_present */
 int tools_lazy_deps_u_is_present(const char *arg) {
     /* Python: package version() check. Arg = "pkg\tfound". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -421,7 +421,7 @@ int tools_lazy_deps_u_is_present(const char *arg) {
     return 0;
 }
 
-/* PoP: _core_constraints_file @ tools/lazy_deps.py:_core_constraints_file */
+/* PoP: tools_lazy_deps_u_core_constraints_file @ tools/lazy_deps.py:_core_constraints_file */
 int tools_lazy_deps_u_core_constraints_file(const char *arg) {
     /* Python: pinned constraints. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -433,7 +433,7 @@ int tools_lazy_deps_u_core_constraints_file(const char *arg) {
     return 0;
 }
 
-/* PoP: _venv_pip_install @ tools/lazy_deps.py:_venv_pip_install */
+/* PoP: tools_lazy_deps_u_venv_pip_install @ tools/lazy_deps.py:_venv_pip_install */
 int tools_lazy_deps_u_venv_pip_install(const char *arg) {
     /* Python: uv→pip ladder. Arg =
      * "ok\tstate\tresult". */
@@ -448,7 +448,7 @@ int tools_lazy_deps_u_venv_pip_install(const char *arg) {
     return 0;
 }
 
-/* PoP: active_features @ tools/lazy_deps.py:active_features */
+/* PoP: tools_lazy_deps_active_features @ tools/lazy_deps.py:active_features */
 int tools_lazy_deps_active_features(const char *arg) {
     /* Python: features with any present package. Arg = "features" (tab-sep,
      * empty = none). */
@@ -457,7 +457,7 @@ int tools_lazy_deps_active_features(const char *arg) {
     return 0;
 }
 
-/* PoP: refresh_active_features @ tools/lazy_deps.py:refresh_active_features */
+/* PoP: tools_lazy_deps_refresh_active_features @ tools/lazy_deps.py:refresh_active_features */
 int tools_lazy_deps_refresh_active_features(const char *arg) {
     /* Python: status map. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -468,7 +468,7 @@ int tools_lazy_deps_refresh_active_features(const char *arg) {
     return 0;
 }
 
-/* PoP: ensure_and_bind @ tools/lazy_deps.py:ensure_and_bind */
+/* PoP: tools_lazy_deps_ensure_and_bind @ tools/lazy_deps.py:ensure_and_bind */
 int tools_lazy_deps_ensure_and_bind(const char *arg) {
     /* Python: ensure + rebind. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -479,7 +479,7 @@ int tools_lazy_deps_ensure_and_bind(const char *arg) {
     return 0;
 }
 
-/* PoP: _get_config @ tools/homeassistant_tool.py:_get_config */
+/* PoP: tools_homeassistant_tool_u_get_config @ tools/homeassistant_tool.py:_get_config */
 int tools_homeassistant_tool_u_get_config(const char *arg) {
     /* Python: (hass_url.rstrip('/'), hass_token) from env at call time.
      * Prints "url\ttoken". */
@@ -493,7 +493,7 @@ int tools_homeassistant_tool_u_get_config(const char *arg) {
     return 0;
 }
 
-/* PoP: _get_headers @ tools/homeassistant_tool.py:_get_headers */
+/* PoP: tools_homeassistant_tool_u_get_headers @ tools/homeassistant_tool.py:_get_headers */
 int tools_homeassistant_tool_u_get_headers(const char *arg) {
     /* Python (token): Bearer auth headers for the HA REST API. Arg = token
      * (empty pulls HASS_TOKEN). Prints JSON headers. */
@@ -503,7 +503,7 @@ int tools_homeassistant_tool_u_get_headers(const char *arg) {
     return 0;
 }
 
-/* PoP: _filter_and_summarize @ tools/homeassistant_tool.py:_filter_and_summarize */
+/* PoP: tools_homeassistant_tool_u_filter_and_summarize @ tools/homeassistant_tool.py:_filter_and_summarize */
 int tools_homeassistant_tool_u_filter_and_summarize(const char *arg) {
     /* Python: filter by domain/area + compact summary. Arg =
      * "states_json\tdomain\tarea". */
@@ -515,7 +515,7 @@ int tools_homeassistant_tool_u_filter_and_summarize(const char *arg) {
     return 0;
 }
 
-/* PoP: _async_list_entities @ tools/homeassistant_tool.py:_async_list_entities */
+/* PoP: tools_homeassistant_tool_u_async_list_entities @ tools/homeassistant_tool.py:_async_list_entities */
 int tools_homeassistant_tool_u_async_list_entities(const char *arg) {
     /* Python: /api/states. Arg =
      * "state\tresult\terr". */
@@ -532,7 +532,7 @@ int tools_homeassistant_tool_u_async_list_entities(const char *arg) {
     return 0;
 }
 
-/* PoP: _async_get_state @ tools/homeassistant_tool.py:_async_get_state */
+/* PoP: tools_homeassistant_tool_u_async_get_state @ tools/homeassistant_tool.py:_async_get_state */
 int tools_homeassistant_tool_u_async_get_state(const char *arg) {
     /* Python: single entity. Arg =
      * "state\tresult\terr". */
@@ -549,7 +549,7 @@ int tools_homeassistant_tool_u_async_get_state(const char *arg) {
     return 0;
 }
 
-/* PoP: _build_service_payload @ tools/homeassistant_tool.py:_build_service_payload */
+/* PoP: tools_homeassistant_tool_u_build_service_payload @ tools/homeassistant_tool.py:_build_service_payload */
 int tools_homeassistant_tool_u_build_service_payload(const char *arg) {
     /* Python: data dict + entity_id override. Arg = "entity_id\tdata_json"
      * (entity_id may be empty). */
@@ -571,7 +571,7 @@ int tools_homeassistant_tool_u_build_service_payload(const char *arg) {
     return 0;
 }
 
-/* PoP: _parse_service_response @ tools/homeassistant_tool.py:_parse_service_response */
+/* PoP: tools_homeassistant_tool_u_parse_service_response @ tools/homeassistant_tool.py:_parse_service_response */
 int tools_homeassistant_tool_u_parse_service_response(const char *arg) {
     /* Python: {success, service, affected_entities}. Arg =
      * "domain\tservice\tresult_json". */
@@ -586,7 +586,7 @@ int tools_homeassistant_tool_u_parse_service_response(const char *arg) {
     return 0;
 }
 
-/* PoP: _async_call_service @ tools/homeassistant_tool.py:_async_call_service */
+/* PoP: tools_homeassistant_tool_u_async_call_service @ tools/homeassistant_tool.py:_async_call_service */
 int tools_homeassistant_tool_u_async_call_service(const char *arg) {
     /* Python: service POST. Arg =
      * "state\tresult\terr". */
@@ -603,7 +603,7 @@ int tools_homeassistant_tool_u_async_call_service(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_list_entities @ tools/homeassistant_tool.py:_handle_list_entities */
+/* PoP: tools_homeassistant_tool_u_handle_list_entities @ tools/homeassistant_tool.py:_handle_list_entities */
 int tools_homeassistant_tool_u_handle_list_entities(const char *arg) {
     /* Python: ha_list_entities -> {"result": [...]} or tool_error. Arg =
      * "domain\tarea\tresult_json". */
@@ -615,7 +615,7 @@ int tools_homeassistant_tool_u_handle_list_entities(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_get_state @ tools/homeassistant_tool.py:_handle_get_state */
+/* PoP: tools_homeassistant_tool_u_handle_get_state @ tools/homeassistant_tool.py:_handle_get_state */
 int tools_homeassistant_tool_u_handle_get_state(const char *arg) {
     /* Python: entity_id validation + result. Arg = "entity_id\tvalid\tresult". */
     if (!arg || !*arg) { printf("error: Missing required parameter: entity_id\n"); return 0; }
@@ -628,7 +628,7 @@ int tools_homeassistant_tool_u_handle_get_state(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_call_service @ tools/homeassistant_tool.py:_handle_call_service */
+/* PoP: tools_homeassistant_tool_u_handle_call_service @ tools/homeassistant_tool.py:_handle_call_service */
 int tools_homeassistant_tool_u_handle_call_service(const char *arg) {
     /* Python: HA call_service. Arg =
      * "domain\tservice\tstate\tresult\terr". */
@@ -647,7 +647,7 @@ int tools_homeassistant_tool_u_handle_call_service(const char *arg) {
     return 0;
 }
 
-/* PoP: _async_list_services @ tools/homeassistant_tool.py:_async_list_services */
+/* PoP: tools_homeassistant_tool_u_async_list_services @ tools/homeassistant_tool.py:_async_list_services */
 int tools_homeassistant_tool_u_async_list_services(const char *arg) {
     /* Python: /api/services. Arg =
      * "count\tstate\tresult". */
@@ -660,7 +660,7 @@ int tools_homeassistant_tool_u_async_list_services(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_list_services @ tools/homeassistant_tool.py:_handle_list_services */
+/* PoP: tools_homeassistant_tool_u_handle_list_services @ tools/homeassistant_tool.py:_handle_list_services */
 int tools_homeassistant_tool_u_handle_list_services(const char *arg) {
     /* Python: ha_list_services -> {"result": [...]}. Arg =
      * "domain\tresult_json". */
@@ -671,7 +671,7 @@ int tools_homeassistant_tool_u_handle_list_services(const char *arg) {
     return 0;
 }
 
-/* PoP: _check_ha_available @ tools/homeassistant_tool.py:_check_ha_available */
+/* PoP: tools_homeassistant_tool_u_check_ha_available @ tools/homeassistant_tool.py:_check_ha_available */
 int tools_homeassistant_tool_u_check_ha_available(const char *arg) {
     /* Python: tool available only when HASS_TOKEN is set. */
     (void)arg;
@@ -679,7 +679,7 @@ int tools_homeassistant_tool_u_check_ha_available(const char *arg) {
     return tok && *tok;
 }
 
-/* PoP: _is_registry_register_call @ tools/registry.py:_is_registry_register_call */
+/* PoP: tools_registry_u_is_registry_register_call @ tools/registry.py:_is_registry_register_call */
 int tools_registry_u_is_registry_register_call(const char *arg) {
     /* Python: an AST expression statement that is exactly
      * registry.register(...). Text-level mirror: the trimmed statement
@@ -699,7 +699,7 @@ int tools_registry_u_is_registry_register_call(const char *arg) {
     return 1;
 }
 
-/* PoP: _module_registers_tools @ tools/registry.py:_module_registers_tools */
+/* PoP: tools_registry_u_module_registers_tools @ tools/registry.py:_module_registers_tools */
 int tools_registry_u_module_registers_tools(const char *arg) {
     /* Python: top-level registry.register() check. Arg =
      * "has_keywords\thas_call\tstate". */
@@ -714,7 +714,7 @@ int tools_registry_u_module_registers_tools(const char *arg) {
     return 0;
 }
 
-/* PoP: discover_builtin_tools @ tools/registry.py:discover_builtin_tools */
+/* PoP: tools_registry_discover_builtin_tools @ tools/registry.py:discover_builtin_tools */
 int tools_registry_discover_builtin_tools(const char *arg) {
     /* Python: import self-registering modules. Arg = "imported" (tab-sep). */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -722,7 +722,7 @@ int tools_registry_discover_builtin_tools(const char *arg) {
     return 0;
 }
 
-/* PoP: _check_fn_cached @ tools/registry.py:_check_fn_cached */
+/* PoP: tools_registry_u_check_fn_cached @ tools/registry.py:_check_fn_cached */
 int tools_registry_u_check_fn_cached(const char *arg) {
     /* Python: flake grace. Arg =
      * "fresh_ok\tin_grace\tstate\tresult". */
@@ -740,7 +740,7 @@ int tools_registry_u_check_fn_cached(const char *arg) {
     return 0;
 }
 
-/* PoP: invalidate_check_fn_cache @ tools/registry.py:invalidate_check_fn_cache */
+/* PoP: tools_registry_invalidate_check_fn_cache @ tools/registry.py:invalidate_check_fn_cache */
 int tools_registry_invalidate_check_fn_cache(const char *arg) {
     /* Python: clear _check_fn_cache + _check_fn_last_good under lock. */
     (void)arg;
@@ -748,7 +748,7 @@ int tools_registry_invalidate_check_fn_cache(const char *arg) {
     return 0;
 }
 
-/* PoP: _snapshot_state @ tools/registry.py:_snapshot_state */
+/* PoP: tools_registry_u_snapshot_state @ tools/registry.py:_snapshot_state */
 int tools_registry_u_snapshot_state(const char *arg) {
     /* Python: locked list(self._tools.values()), dict(self._toolset_checks).
      * Arg = "tool\ttool..." — echo as a JSON array of names. */
@@ -757,7 +757,7 @@ int tools_registry_u_snapshot_state(const char *arg) {
     return 0;
 }
 
-/* PoP: _snapshot_entries @ tools/registry.py:_snapshot_entries */
+/* PoP: tools_registry_u_snapshot_entries @ tools/registry.py:_snapshot_entries */
 int tools_registry_u_snapshot_entries(const char *arg) {
     /* Python: return self._snapshot_state()[0] — stable list of registered
      * tool entries. The C port delegates to the live tool registry. */
@@ -772,7 +772,7 @@ int tools_registry_u_snapshot_entries(const char *arg) {
     return 0;
 }
 
-/* PoP: get_entry @ tools/registry.py:get_entry */
+/* PoP: tools_registry_get_entry @ tools/registry.py:get_entry */
 int tools_registry_get_entry(const char *arg) {
     /* Python: return self._tools.get(name) — a registered tool entry by
      * name, or None. Delegates to the live tool registry. */
@@ -783,7 +783,7 @@ int tools_registry_get_entry(const char *arg) {
     return 0;
 }
 
-/* PoP: register_plugin_override_policy @ tools/registry.py:register_plugin_override_policy */
+/* PoP: tools_registry_register_plugin_override_policy @ tools/registry.py:register_plugin_override_policy */
 int tools_registry_register_plugin_override_policy(const char *arg) {
     /* Python: register the policy controlling whether a plugin may override
      * an existing tool definition. The C port stores the policy token;
@@ -794,7 +794,7 @@ int tools_registry_register_plugin_override_policy(const char *arg) {
     return 0;
 }
 
-/* PoP: _plugin_owner_of @ tools/registry.py:_plugin_owner_of */
+/* PoP: tools_registry_u_plugin_owner_of @ tools/registry.py:_plugin_owner_of */
 int tools_registry_u_plugin_owner_of(const char *arg) {
     /* Python: defining module gate. Arg = "mod\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -806,7 +806,7 @@ int tools_registry_u_plugin_owner_of(const char *arg) {
     return 0;
 }
 
-/* PoP: _caller_module @ tools/registry.py:_caller_module */
+/* PoP: tools_registry_u_caller_module @ tools/registry.py:_caller_module */
 int tools_registry_u_caller_module(const char *arg) {
     /* Python: two-frames-up module name. Arg = "module". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -814,7 +814,7 @@ int tools_registry_u_caller_module(const char *arg) {
     return 0;
 }
 
-/* PoP: get_definitions @ tools/registry.py:get_definitions */
+/* PoP: tools_registry_get_definitions @ tools/registry.py:get_definitions */
 int tools_registry_get_definitions(const char *arg) {
     /* Python: check_fn filtered. Arg =
      * "count\tstate\tresult". */
@@ -827,7 +827,7 @@ int tools_registry_get_definitions(const char *arg) {
     return 0;
 }
 
-/* PoP: _normalize_handler_result @ tools/registry.py:_normalize_handler_result */
+/* PoP: tools_registry_u_normalize_handler_result @ tools/registry.py:_normalize_handler_result */
 int tools_registry_u_normalize_handler_result(const char *arg) {
     /* Python: str / multimodal envelope / error JSON. Arg =
      * "state\tresult\tresult_type". */
@@ -846,7 +846,7 @@ int tools_registry_u_normalize_handler_result(const char *arg) {
     return 0;
 }
 
-/* PoP: check_tool_availability @ tools/registry.py:check_tool_availability */
+/* PoP: tools_registry_check_tool_availability @ tools/registry.py:check_tool_availability */
 int tools_registry_check_tool_availability(const char *arg) {
     /* Python: (available, unavailable). Arg = "available\tunavailable". */
     if (!arg || !*arg) { printf("\n\n"); return 0; }
@@ -855,7 +855,7 @@ int tools_registry_check_tool_availability(const char *arg) {
     return 0;
 }
 
-/* PoP: _load_x_search_config @ tools/x_search_tool.py:_load_x_search_config */
+/* PoP: tools_x_search_tool_u_load_x_search_config @ tools/x_search_tool.py:_load_x_search_config */
 int tools_x_search_tool_u_load_x_search_config(const char *arg) {
     /* Python: load_config().get("x_search", {}) or {}; {} on any error.
      * Arg = full config JSON (or empty). */
@@ -875,7 +875,7 @@ int tools_x_search_tool_u_load_x_search_config(const char *arg) {
     return 0;
 }
 
-/* PoP: _get_x_search_model @ tools/x_search_tool.py:_get_x_search_model */
+/* PoP: tools_x_search_tool_u_get_x_search_model @ tools/x_search_tool.py:_get_x_search_model */
 int tools_x_search_tool_u_get_x_search_model(const char *arg) {
     /* Python: cfg.get("model") or DEFAULT_X_SEARCH_MODEL ("grok-4.5"). */
     (void)arg;
@@ -885,7 +885,7 @@ int tools_x_search_tool_u_get_x_search_model(const char *arg) {
     return 0;
 }
 
-/* PoP: _get_x_search_reasoning_effort @ tools/x_search_tool.py:_get_x_search_reasoning_effort */
+/* PoP: tools_x_search_tool_u_get_x_search_reasoning_effort @ tools/x_search_tool.py:_get_x_search_reasoning_effort */
 int tools_x_search_tool_u_get_x_search_reasoning_effort(const char *arg) {
     /* Python: config effort validated against set; ValueError else. Arg =
      * "raw\tallowed". */
@@ -907,7 +907,7 @@ int tools_x_search_tool_u_get_x_search_reasoning_effort(const char *arg) {
     return 1;
 }
 
-/* PoP: _get_x_search_timeout_seconds @ tools/x_search_tool.py:_get_x_search_timeout_seconds */
+/* PoP: tools_x_search_tool_u_get_x_search_timeout_seconds @ tools/x_search_tool.py:_get_x_search_timeout_seconds */
 int tools_x_search_tool_u_get_x_search_timeout_seconds(const char *arg) {
     /* Python: max(30, int(cfg.timeout_seconds)) default 90. Arg = raw value
      * (empty = default). */
@@ -923,7 +923,7 @@ int tools_x_search_tool_u_get_x_search_timeout_seconds(const char *arg) {
     return 0;
 }
 
-/* PoP: _get_x_search_retries @ tools/x_search_tool.py:_get_x_search_retries */
+/* PoP: tools_x_search_tool_u_get_x_search_retries @ tools/x_search_tool.py:_get_x_search_retries */
 int tools_x_search_tool_u_get_x_search_retries(const char *arg) {
     /* Python: max(0, int(cfg retries)) or default. Arg = "raw\tdefault". */
     if (!arg || !*arg) { printf("2\n"); return 0; }
@@ -935,7 +935,7 @@ int tools_x_search_tool_u_get_x_search_retries(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_xai_bearer @ tools/x_search_tool.py:_resolve_xai_bearer */
+/* PoP: tools_x_search_tool_u_resolve_xai_bearer @ tools/x_search_tool.py:_resolve_xai_bearer */
 int tools_x_search_tool_u_resolve_xai_bearer(const char *arg) {
     /* Python: (api_key, base_url, source). Arg =
      * "state\tapi_key\tbase_url\tsource". */
@@ -952,7 +952,7 @@ int tools_x_search_tool_u_resolve_xai_bearer(const char *arg) {
     return 0;
 }
 
-/* PoP: check_x_search_requirements @ tools/x_search_tool.py:check_x_search_requirements */
+/* PoP: tools_x_search_tool_check_x_search_requirements @ tools/x_search_tool.py:check_x_search_requirements */
 int tools_x_search_tool_check_x_search_requirements(const char *arg) {
     /* Python: api_key present (auto-refresh counts). Arg = "has_key". */
     if (arg && arg[0] == '1') { printf("1\n"); return 0; }
@@ -960,7 +960,7 @@ int tools_x_search_tool_check_x_search_requirements(const char *arg) {
     return 0;
 }
 
-/* PoP: _normalize_handles @ tools/x_search_tool.py:_normalize_handles */
+/* PoP: tools_x_search_tool_u_normalize_handles @ tools/x_search_tool.py:_normalize_handles */
 int tools_x_search_tool_u_normalize_handles(const char *arg) {
     /* Python: strip + lstrip @; drop empties; max 5. Arg =
      * "field\tmax\thandle\thandle...". */
@@ -993,7 +993,7 @@ int tools_x_search_tool_u_normalize_handles(const char *arg) {
     return 0;
 }
 
-/* PoP: _parse_iso_date @ tools/x_search_tool.py:_parse_iso_date */
+/* PoP: tools_x_search_tool_u_parse_iso_date @ tools/x_search_tool.py:_parse_iso_date */
 int tools_x_search_tool_u_parse_iso_date(const char *arg) {
     /* Python: strict YYYY-MM-DD. Arg = "date\tvalid". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -1007,7 +1007,7 @@ int tools_x_search_tool_u_parse_iso_date(const char *arg) {
     return 0;
 }
 
-/* PoP: _validate_date_range @ tools/x_search_tool.py:_validate_date_range */
+/* PoP: tools_x_search_tool_u_validate_date_range @ tools/x_search_tool.py:_validate_date_range */
 int tools_x_search_tool_u_validate_date_range(const char *arg) {
     /* Python: from<=to + not future. Arg = "state\tresult\terr". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1023,7 +1023,7 @@ int tools_x_search_tool_u_validate_date_range(const char *arg) {
     return 0;
 }
 
-/* PoP: _extract_inline_citations @ tools/x_search_tool.py:_extract_inline_citations */
+/* PoP: tools_x_search_tool_u_extract_inline_citations @ tools/x_search_tool.py:_extract_inline_citations */
 int tools_x_search_tool_u_extract_inline_citations(const char *arg) {
     /* Python: pull url_citation annotations. Arg = "citations_json\tcount". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -1032,7 +1032,7 @@ int tools_x_search_tool_u_extract_inline_citations(const char *arg) {
     return 0;
 }
 
-/* PoP: _http_error_message @ tools/x_search_tool.py:_http_error_message */
+/* PoP: tools_x_search_tool_u_http_error_message @ tools/x_search_tool.py:_http_error_message */
 int tools_x_search_tool_u_http_error_message(const char *arg) {
     /* Python: response payload -> message. Arg = "state\tcode\terror\tmsg". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1054,7 +1054,7 @@ int tools_x_search_tool_u_http_error_message(const char *arg) {
     return 0;
 }
 
-/* PoP: x_search_tool @ tools/x_search_tool.py:x_search_tool */
+/* PoP: tools_x_search_tool_x_search_tool @ tools/x_search_tool.py:x_search_tool */
 int tools_x_search_tool_x_search_tool(const char *arg) {
     /* Python: x_search gate. Arg =
      * "state\tresult\terr". */
@@ -1079,7 +1079,7 @@ int tools_x_search_tool_x_search_tool(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_x_search @ tools/x_search_tool.py:_handle_x_search */
+/* PoP: tools_x_search_tool_u_handle_x_search @ tools/x_search_tool.py:_handle_x_search */
 int tools_x_search_tool_u_handle_x_search(const char *arg) {
     /* Python: x_search_tool dispatch with args. Arg = args JSON. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1090,7 +1090,7 @@ int tools_x_search_tool_u_handle_x_search(const char *arg) {
     return 0;
 }
 
-/* PoP: _blocked_toolsets_for_role @ tools/delegate_tool.py:_blocked_toolsets_for_role */
+/* PoP: tools_delegate_tool_u_blocked_toolsets_for_role @ tools/delegate_tool.py:_blocked_toolsets_for_role */
 int tools_delegate_tool_u_blocked_toolsets_for_role(const char *arg) {
     /* Python: fully-blocked toolsets; orchestrator keeps delegate_task.
      * Arg = "role\ttoolsets" (tab-sep). */
@@ -1118,7 +1118,7 @@ int tools_delegate_tool_u_blocked_toolsets_for_role(const char *arg) {
     return 0;
 }
 
-/* PoP: _emit_parent_console @ tools/delegate_tool.py:_emit_parent_console */
+/* PoP: tools_delegate_tool_u_emit_parent_console @ tools/delegate_tool.py:_emit_parent_console */
 int tools_delegate_tool_u_emit_parent_console(const char *arg) {
     /* Python: safe_print via parent or print. Arg = "line\trouted". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1128,7 +1128,7 @@ int tools_delegate_tool_u_emit_parent_console(const char *arg) {
     return 0;
 }
 
-/* PoP: _build_child_progress_callback @ tools/delegate_tool.py:_build_child_progress_callback */
+/* PoP: tools_delegate_tool_u_build_child_progress_callback @ tools/delegate_tool.py:_build_child_progress_callback */
 int tools_delegate_tool_u_build_child_progress_callback(const char *arg) {
     /* Python: relay callback. Arg =
      * "built\tstate\tresult". */
@@ -1143,7 +1143,7 @@ int tools_delegate_tool_u_build_child_progress_callback(const char *arg) {
     return 0;
 }
 
-/* PoP: _inherit_parent_base_url @ tools/delegate_tool.py:_inherit_parent_base_url */
+/* PoP: tools_delegate_tool_u_inherit_parent_base_url @ tools/delegate_tool.py:_inherit_parent_base_url */
 int tools_delegate_tool_u_inherit_parent_base_url(const char *arg) {
     /* Python: live client URL. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1154,7 +1154,7 @@ int tools_delegate_tool_u_inherit_parent_base_url(const char *arg) {
     return 0;
 }
 
-/* PoP: _dump_subagent_timeout_diagnostic @ tools/delegate_tool.py:_dump_subagent_timeout_diagnostic */
+/* PoP: tools_delegate_tool_u_dump_subagent_timeout_diagnostic @ tools/delegate_tool.py:_dump_subagent_timeout_diagnostic */
 int tools_delegate_tool_u_dump_subagent_timeout_diagnostic(const char *arg) {
     /* Python: #14726 dump. Arg =
      * "path\tstate\tresult". */
@@ -1167,7 +1167,7 @@ int tools_delegate_tool_u_dump_subagent_timeout_diagnostic(const char *arg) {
     return 0;
 }
 
-/* PoP: _spill_summary_to_file @ tools/delegate_tool.py:_spill_summary_to_file */
+/* PoP: tools_delegate_tool_u_spill_summary_to_file @ tools/delegate_tool.py:_spill_summary_to_file */
 int tools_delegate_tool_u_spill_summary_to_file(const char *arg) {
     /* Python: cache spill. Arg = "task_index\tstate\tpath". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1179,7 +1179,7 @@ int tools_delegate_tool_u_spill_summary_to_file(const char *arg) {
     return 0;
 }
 
-/* PoP: _parent_summary_char_budget @ tools/delegate_tool.py:_parent_summary_char_budget */
+/* PoP: tools_delegate_tool_u_parent_summary_char_budget @ tools/delegate_tool.py:_parent_summary_char_budget */
 int tools_delegate_tool_u_parent_summary_char_budget(const char *arg) {
     /* Python: headroom split. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1190,7 +1190,7 @@ int tools_delegate_tool_u_parent_summary_char_budget(const char *arg) {
     return 0;
 }
 
-/* PoP: _apply_summary_budget @ tools/delegate_tool.py:_apply_summary_budget */
+/* PoP: tools_delegate_tool_u_apply_summary_budget @ tools/delegate_tool.py:_apply_summary_budget */
 int tools_delegate_tool_u_apply_summary_budget(const char *arg) {
     /* Python: min-cap trim. Arg =
      * "trimmed\tstate\tresult". */
@@ -1205,7 +1205,7 @@ int tools_delegate_tool_u_apply_summary_budget(const char *arg) {
     return 0;
 }
 
-/* PoP: _run_single_child @ tools/delegate_tool.py:_run_single_child */
+/* PoP: tools_delegate_tool_u_run_single_child @ tools/delegate_tool.py:_run_single_child */
 int tools_delegate_tool_u_run_single_child(const char *arg) {
     /* Python: thread child run. Arg =
      * "state\tresult\terr". */
@@ -1222,7 +1222,7 @@ int tools_delegate_tool_u_run_single_child(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_child_credential_pool @ tools/delegate_tool.py:_resolve_child_credential_pool */
+/* PoP: tools_delegate_tool_u_resolve_child_credential_pool @ tools/delegate_tool.py:_resolve_child_credential_pool */
 int tools_delegate_tool_u_resolve_child_credential_pool(const char *arg) {
     /* Python: endpoint-identity custom. Arg =
      * "shared\tstate\tresult". */
@@ -1237,7 +1237,7 @@ int tools_delegate_tool_u_resolve_child_credential_pool(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_delegation_credentials @ tools/delegate_tool.py:_resolve_delegation_credentials */
+/* PoP: tools_delegate_tool_u_resolve_delegation_credentials @ tools/delegate_tool.py:_resolve_delegation_credentials */
 int tools_delegate_tool_u_resolve_delegation_credentials(const char *arg) {
     /* Python: base_url/provider routing. Arg =
      * "state\tresult\terr". */
@@ -1258,7 +1258,7 @@ int tools_delegate_tool_u_resolve_delegation_credentials(const char *arg) {
     return 0;
 }
 
-/* PoP: _build_dynamic_schema_overrides @ tools/delegate_tool.py:_build_dynamic_schema_overrides */
+/* PoP: tools_delegate_tool_u_build_dynamic_schema_overrides @ tools/delegate_tool.py:_build_dynamic_schema_overrides */
 int tools_delegate_tool_u_build_dynamic_schema_overrides(const char *arg) {
     /* Python: per-call schema overrides. Arg = "result_json\tstate". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -1269,7 +1269,7 @@ int tools_delegate_tool_u_build_dynamic_schema_overrides(const char *arg) {
     return 0;
 }
 
-/* PoP: _strip_model_hidden_task_fields @ tools/delegate_tool.py:_strip_model_hidden_task_fields */
+/* PoP: tools_delegate_tool_u_strip_model_hidden_task_fields @ tools/delegate_tool.py:_strip_model_hidden_task_fields */
 int tools_delegate_tool_u_strip_model_hidden_task_fields(const char *arg) {
     /* Python: drop hidden keys from task dicts (only if changed). Arg =
      * "tasks_json\thidden_keys". */
@@ -1326,7 +1326,7 @@ int tools_delegate_tool_u_strip_model_hidden_task_fields(const char *arg) {
     return 0;
 }
 
-/* PoP: live_transcript_root @ tools/delegation_live_log.py:live_transcript_root */
+/* PoP: tools_delegation_live_log_live_transcript_root @ tools/delegation_live_log.py:live_transcript_root */
 int tools_delegation_live_log_live_transcript_root(const char *arg) {
     /* Python: get_hermes_dir("cache/delegation", "delegation_cache") / "live"
      * — profile-safe, never ~/.hermes. Arg = optional hermes dir. */
@@ -1338,7 +1338,7 @@ int tools_delegation_live_log_live_transcript_root(const char *arg) {
     return 0;
 }
 
-/* PoP: new_live_delegation_id @ tools/delegation_live_log.py:new_live_delegation_id */
+/* PoP: tools_delegation_live_log_new_live_delegation_id @ tools/delegation_live_log.py:new_live_delegation_id */
 int tools_delegation_live_log_new_live_delegation_id(const char *arg) {
     /* Python: f"deleg_{uuid.uuid4().hex[:8]}" — 8 hex chars of a UUID. */
     (void)arg;
@@ -1359,7 +1359,7 @@ int tools_delegation_live_log_new_live_delegation_id(const char *arg) {
     return 0;
 }
 
-/* PoP: _one_line @ tools/delegation_live_log.py:_one_line */
+/* PoP: tools_delegation_live_log_u_one_line @ tools/delegation_live_log.py:_one_line */
 int tools_delegation_live_log_u_one_line(const char *arg) {
     /* Python: collapse whitespace; truncate with "…(+N chars)". Arg =
      * "text\tlimit". */
@@ -1393,14 +1393,14 @@ int tools_delegation_live_log_u_one_line(const char *arg) {
     return 0;
 }
 
-/* PoP: assistant_text @ tools/delegation_live_log.py:assistant_text */
+/* PoP: tools_delegation_live_log_assistant_text @ tools/delegation_live_log.py:assistant_text */
 int tools_delegation_live_log_assistant_text(const char *arg) {
     /* Python: one-line assistant event (truncated to the max width). */
     if (arg && *arg) printf("assistant %s\n", arg);
     return 0;
 }
 
-/* PoP: tool_start @ tools/delegation_live_log.py:tool_start */
+/* PoP: tools_delegation_live_log_tool_start @ tools/delegation_live_log.py:tool_start */
 int tools_delegation_live_log_tool_start(const char *arg) {
     /* Python: flush_stream(); event("tool", f"-> {name}({args})").
      * Arg = "name\targs". */
@@ -1411,7 +1411,7 @@ int tools_delegation_live_log_tool_start(const char *arg) {
     return 0;
 }
 
-/* PoP: tool_result @ tools/delegation_live_log.py:tool_result */
+/* PoP: tools_delegation_live_log_tool_result @ tools/delegation_live_log.py:tool_result */
 int tools_delegation_live_log_tool_result(const char *arg) {
     /* Python: event result "<name> ok|ERROR [dur]: <one_line>". Arg =
      * "name\tis_error\tduration\tresult". */
@@ -1431,7 +1431,7 @@ int tools_delegation_live_log_tool_result(const char *arg) {
     return 0;
 }
 
-/* PoP: add_stream_delta @ tools/delegation_live_log.py:add_stream_delta */
+/* PoP: tools_delegation_live_log_add_stream_delta @ tools/delegation_live_log.py:add_stream_delta */
 int tools_delegation_live_log_add_stream_delta(const char *arg) {
     /* Python: buffer delta; flush at threshold. Arg = "ok\tdelta". */
     if (!arg || !*arg || arg[0] != '1') { printf("0\n"); return 0; }
@@ -1440,7 +1440,7 @@ int tools_delegation_live_log_add_stream_delta(const char *arg) {
     return 0;
 }
 
-/* PoP: observe @ tools/delegation_live_log.py:observe */
+/* PoP: tools_delegation_live_log_observe @ tools/delegation_live_log.py:observe */
 int tools_delegation_live_log_observe(const char *arg) {
     /* Python: event mapping. Arg = "event_type\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1453,7 +1453,7 @@ int tools_delegation_live_log_observe(const char *arg) {
     return 0;
 }
 
-/* PoP: wrap_progress_callback @ tools/delegation_live_log.py:wrap_progress_callback */
+/* PoP: tools_delegation_live_log_wrap_progress_callback @ tools/delegation_live_log.py:wrap_progress_callback */
 int tools_delegation_live_log_wrap_progress_callback(const char *arg) {
     /* Python: wrapper with _flush. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1464,7 +1464,7 @@ int tools_delegation_live_log_wrap_progress_callback(const char *arg) {
     return 0;
 }
 
-/* PoP: create_live_transcripts @ tools/delegation_live_log.py:create_live_transcripts */
+/* PoP: tools_delegation_live_log_create_live_transcripts @ tools/delegation_live_log.py:create_live_transcripts */
 int tools_delegation_live_log_create_live_transcripts(const char *arg) {
     /* Python: writers + manifest. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1476,7 +1476,7 @@ int tools_delegation_live_log_create_live_transcripts(const char *arg) {
     return 0;
 }
 
-/* PoP: _manifest_path @ tools/delegation_live_log.py:_manifest_path */
+/* PoP: tools_delegation_live_log_u_manifest_path @ tools/delegation_live_log.py:_manifest_path */
 int tools_delegation_live_log_u_manifest_path(const char *arg) {
     /* Python (delegation_id): live_transcript_root()/delegation_id/manifest.json.
      * live_transcript_root defaults to $HERMES_HOME/logs/live-transcripts. */
@@ -1489,7 +1489,7 @@ int tools_delegation_live_log_u_manifest_path(const char *arg) {
     return 0;
 }
 
-/* PoP: update_manifest_statuses @ tools/delegation_live_log.py:update_manifest_statuses */
+/* PoP: tools_delegation_live_log_update_manifest_statuses @ tools/delegation_live_log.py:update_manifest_statuses */
 int tools_delegation_live_log_update_manifest_statuses(const char *arg) {
     /* Python: best-effort manifest update. Arg =
      * "delegation_id\tstate\tresult". */
@@ -1502,7 +1502,7 @@ int tools_delegation_live_log_update_manifest_statuses(const char *arg) {
     return 0;
 }
 
-/* PoP: prune_stale_live_dirs @ tools/delegation_live_log.py:prune_stale_live_dirs */
+/* PoP: tools_delegation_live_log_prune_stale_live_dirs @ tools/delegation_live_log.py:prune_stale_live_dirs */
 int tools_delegation_live_log_prune_stale_live_dirs(const char *arg) {
     /* Python: remove dirs older than retention. Arg = "removed\ttotal". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -1511,14 +1511,14 @@ int tools_delegation_live_log_prune_stale_live_dirs(const char *arg) {
     return 0;
 }
 
-/* PoP: _direct_snapshot_key @ tools/environments/modal.py:_direct_snapshot_key */
+/* PoP: tools_environments_modal_u_direct_snapshot_key @ tools/environments/modal.py:_direct_snapshot_key */
 int tools_environments_modal_u_direct_snapshot_key(const char *arg) {
     /* Python: f"direct:{task_id}". */
     printf("direct:%s\n", arg ? arg : "");
     return 0;
 }
 
-/* PoP: _get_snapshot_restore_candidate @ tools/environments/modal.py:_get_snapshot_restore_candidate */
+/* PoP: tools_environments_modal_u_get_snapshot_restore_candidate @ tools/environments/modal.py:_get_snapshot_restore_candidate */
 int tools_environments_modal_u_get_snapshot_restore_candidate(const char *arg) {
     /* Python: (snapshot_id, legacy_bool) or (None, False). Arg =
      * "task_id\tnamespaced\tlegacy" (ids empty = none). */
@@ -1533,7 +1533,7 @@ int tools_environments_modal_u_get_snapshot_restore_candidate(const char *arg) {
     return 0;
 }
 
-/* PoP: _store_direct_snapshot @ tools/environments/modal.py:_store_direct_snapshot */
+/* PoP: tools_environments_modal_u_store_direct_snapshot @ tools/environments/modal.py:_store_direct_snapshot */
 int tools_environments_modal_u_store_direct_snapshot(const char *arg) {
     /* Python: snapshots[_direct_snapshot_key(task_id)] = snapshot_id;
      * snapshots.pop(task_id, None); _save_snapshots(snapshots).
@@ -1545,7 +1545,7 @@ int tools_environments_modal_u_store_direct_snapshot(const char *arg) {
     return 0;
 }
 
-/* PoP: _delete_direct_snapshot @ tools/environments/modal.py:_delete_direct_snapshot */
+/* PoP: tools_environments_modal_u_delete_direct_snapshot @ tools/environments/modal.py:_delete_direct_snapshot */
 int tools_environments_modal_u_delete_direct_snapshot(const char *arg) {
     /* Python: pop snapshot under task_id keys when id matches. Arg =
      * "task_id\tsnapshot_id\tfound". */
@@ -1558,7 +1558,7 @@ int tools_environments_modal_u_delete_direct_snapshot(const char *arg) {
     return 0;
 }
 
-/* PoP: _ensure_modal_sdk @ tools/environments/modal.py:_ensure_modal_sdk */
+/* PoP: tools_environments_modal_u_ensure_modal_sdk @ tools/environments/modal.py:_ensure_modal_sdk */
 int tools_environments_modal_u_ensure_modal_sdk(const char *arg) {
     /* Python: lazy-install modal on demand; idempotent. Arg = marker. */
     (void)arg;
@@ -1566,7 +1566,7 @@ int tools_environments_modal_u_ensure_modal_sdk(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_modal_image @ tools/environments/modal.py:_resolve_modal_image */
+/* PoP: tools_environments_modal_u_resolve_modal_image @ tools/environments/modal.py:_resolve_modal_image */
 int tools_environments_modal_u_resolve_modal_image(const char *arg) {
     /* Python: registry/snapshot refs. Arg = "spec\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1577,7 +1577,7 @@ int tools_environments_modal_u_resolve_modal_image(const char *arg) {
     return 0;
 }
 
-/* PoP: _run_loop @ tools/environments/modal.py:_run_loop */
+/* PoP: tools_environments_modal_u_run_loop @ tools/environments/modal.py:_run_loop */
 int tools_environments_modal_u_run_loop(const char *arg) {
     /* Python: asyncio.new_event_loop(); set_event_loop; _started.set();
      * run_forever(). The C port runs a blocking loop until cancelled —
@@ -1587,7 +1587,7 @@ int tools_environments_modal_u_run_loop(const char *arg) {
     return 0;
 }
 
-/* PoP: run_coroutine @ tools/environments/modal.py:run_coroutine */
+/* PoP: tools_environments_modal_run_coroutine @ tools/environments/modal.py:run_coroutine */
 int tools_environments_modal_run_coroutine(const char *arg) {
     /* Python: schedule on loop; error when loop closed. Arg =
      * "running\ttimeout\tresult". */
@@ -1602,7 +1602,7 @@ int tools_environments_modal_run_coroutine(const char *arg) {
     return 0;
 }
 
-/* PoP: _modal_upload @ tools/environments/modal.py:_modal_upload */
+/* PoP: tools_environments_modal_u_modal_upload @ tools/environments/modal.py:_modal_upload */
 int tools_environments_modal_u_modal_upload(const char *arg) {
     /* Python: base64 stdin pipe. Arg = "host_path\tstate\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -1614,7 +1614,7 @@ int tools_environments_modal_u_modal_upload(const char *arg) {
     return 0;
 }
 
-/* PoP: _modal_bulk_upload @ tools/environments/modal.py:_modal_bulk_upload */
+/* PoP: tools_environments_modal_u_modal_bulk_upload @ tools/environments/modal.py:_modal_bulk_upload */
 int tools_environments_modal_u_modal_bulk_upload(const char *arg) {
     /* Python: tar stdin. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1626,7 +1626,7 @@ int tools_environments_modal_u_modal_bulk_upload(const char *arg) {
     return 0;
 }
 
-/* PoP: _modal_bulk_download @ tools/environments/modal.py:_modal_bulk_download */
+/* PoP: tools_environments_modal_u_modal_bulk_download @ tools/environments/modal.py:_modal_bulk_download */
 int tools_environments_modal_u_modal_bulk_download(const char *arg) {
     /* Python: tar cf - /root/.hermes. Arg = "dest\tstate\tsize". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -1638,7 +1638,7 @@ int tools_environments_modal_u_modal_bulk_download(const char *arg) {
     return 0;
 }
 
-/* PoP: _modal_delete @ tools/environments/modal.py:_modal_delete */
+/* PoP: tools_environments_modal_u_modal_delete @ tools/environments/modal.py:_modal_delete */
 int tools_environments_modal_u_modal_delete(const char *arg) {
     /* Python: batch-delete remote files via bash -c rm (worker, 15s). Arg =
      * quoted rm command. */
@@ -1647,7 +1647,7 @@ int tools_environments_modal_u_modal_delete(const char *arg) {
     return 0;
 }
 
-/* PoP: _lock_for @ tools/file_state.py:_lock_for */
+/* PoP: tools_file_state_u_lock_for @ tools/file_state.py:_lock_for */
 int tools_file_state_u_lock_for(const char *arg) {
     /* Python: get-or-create per-path threading.Lock. Arg = resolved path. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1655,7 +1655,7 @@ int tools_file_state_u_lock_for(const char *arg) {
     return 0;
 }
 
-/* PoP: record_read @ tools/file_state.py:record_read */
+/* PoP: tools_file_state_record_read @ tools/file_state.py:record_read */
 int tools_file_state_record_read(const char *arg) {
     /* Python: record (mtime, now, partial) under task_id. Arg =
      * "task_id\tresolved\tmtime\tpartial". */
@@ -1669,7 +1669,7 @@ int tools_file_state_record_read(const char *arg) {
     return 0;
 }
 
-/* PoP: note_write @ tools/file_state.py:note_write */
+/* PoP: tools_file_state_note_write @ tools/file_state.py:note_write */
 int tools_file_state_note_write(const char *arg) {
     /* Python: last-writer + own read stamp. Arg =
      * "resolved\ttask_id\tstate". */
@@ -1682,7 +1682,7 @@ int tools_file_state_note_write(const char *arg) {
     return 0;
 }
 
-/* PoP: check_stale @ tools/file_state.py:check_stale */
+/* PoP: tools_file_state_check_stale @ tools/file_state.py:check_stale */
 int tools_file_state_check_stale(const char *arg) {
     /* Python: 3-class staleness. Arg =
      * "class\tstate\tresult". */
@@ -1708,7 +1708,7 @@ int tools_file_state_check_stale(const char *arg) {
     return 0;
 }
 
-/* PoP: writes_since @ tools/file_state.py:writes_since */
+/* PoP: tools_file_state_writes_since @ tools/file_state.py:writes_since */
 int tools_file_state_writes_since(const char *arg) {
     /* Python: {writer_tid: [paths]} after ts. Arg =
      * "result_json\tcount\tstate". */
@@ -1721,7 +1721,7 @@ int tools_file_state_writes_since(const char *arg) {
     return 0;
 }
 
-/* PoP: known_reads @ tools/file_state.py:known_reads */
+/* PoP: tools_file_state_known_reads @ tools/file_state.py:known_reads */
 int tools_file_state_known_reads(const char *arg) {
     /* Python: list of resolved read paths for task; [] when tracking
      * disabled. Arg = "disabled\ttask_id\tpath\tpath..." */
@@ -1732,7 +1732,7 @@ int tools_file_state_known_reads(const char *arg) {
     return 0;
 }
 
-/* PoP: record_read @ tools/file_state.py:record_read */
+/* PoP: tools_file_state_record_read_2 @ tools/file_state.py:record_read */
 int tools_file_state_record_read_2(const char *arg) {
     /* Python: same as record_read (duplicate stub). Arg = same shape. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1745,7 +1745,7 @@ int tools_file_state_record_read_2(const char *arg) {
     return 0;
 }
 
-/* PoP: note_write @ tools/file_state.py:note_write */
+/* PoP: tools_file_state_note_write_2 @ tools/file_state.py:note_write */
 int tools_file_state_note_write_2(const char *arg) {
     /* Python: duplicate stub — same as note_write. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1757,7 +1757,7 @@ int tools_file_state_note_write_2(const char *arg) {
     return 0;
 }
 
-/* PoP: check_stale @ tools/file_state.py:check_stale */
+/* PoP: tools_file_state_check_stale_2 @ tools/file_state.py:check_stale */
 int tools_file_state_check_stale_2(const char *arg) {
     /* Python: alt variant. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -1768,7 +1768,7 @@ int tools_file_state_check_stale_2(const char *arg) {
     return 0;
 }
 
-/* PoP: writes_since @ tools/file_state.py:writes_since */
+/* PoP: tools_file_state_writes_since_2 @ tools/file_state.py:writes_since */
 int tools_file_state_writes_since_2(const char *arg) {
     /* Python: duplicate stub — same as writes_since. */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -1780,7 +1780,7 @@ int tools_file_state_writes_since_2(const char *arg) {
     return 0;
 }
 
-/* PoP: known_reads @ tools/file_state.py:known_reads */
+/* PoP: tools_file_state_known_reads_2 @ tools/file_state.py:known_reads */
 int tools_file_state_known_reads_2(const char *arg) {
     /* Python: return list of resolved paths read for task_id. */
     extern void fs_known_reads(const char *task_id, char out[][256], int *out_count);
@@ -1802,7 +1802,7 @@ int tools_file_state_known_reads_2(const char *arg) {
     return 0;
 }
 
-/* PoP: publish_authorization_url @ tools/mcp_dashboard_oauth.py:publish_authorization_url */
+/* PoP: tools_mcp_dashboard_oauth_publish_authorization_url @ tools/mcp_dashboard_oauth.py:publish_authorization_url */
 int tools_mcp_dashboard_oauth_publish_authorization_url(const char *arg) {
     /* Python: state-gated publish. Arg =
      * "state\tresult\terr". */
@@ -1823,7 +1823,7 @@ int tools_mcp_dashboard_oauth_publish_authorization_url(const char *arg) {
     return 0;
 }
 
-/* PoP: wait_for_authorization_url @ tools/mcp_dashboard_oauth.py:wait_for_authorization_url */
+/* PoP: tools_mcp_dashboard_oauth_wait_for_authorization_url @ tools/mcp_dashboard_oauth.py:wait_for_authorization_url */
 int tools_mcp_dashboard_oauth_wait_for_authorization_url(const char *arg) {
     /* Python: event wait. Arg =
      * "state\tresult\terr". */
@@ -1840,7 +1840,7 @@ int tools_mcp_dashboard_oauth_wait_for_authorization_url(const char *arg) {
     return 0;
 }
 
-/* PoP: deliver_callback @ tools/mcp_dashboard_oauth.py:deliver_callback */
+/* PoP: tools_mcp_dashboard_oauth_deliver_callback @ tools/mcp_dashboard_oauth.py:deliver_callback */
 int tools_mcp_dashboard_oauth_deliver_callback(const char *arg) {
     /* Python: state-match delivery. Arg =
      * "state\terror\tcode\tresult\tmismatch". */
@@ -1866,7 +1866,7 @@ int tools_mcp_dashboard_oauth_deliver_callback(const char *arg) {
     return 0;
 }
 
-/* PoP: wait_for_callback @ tools/mcp_dashboard_oauth.py:wait_for_callback */
+/* PoP: tools_mcp_dashboard_oauth_wait_for_callback @ tools/mcp_dashboard_oauth.py:wait_for_callback */
 int tools_mcp_dashboard_oauth_wait_for_callback(const char *arg) {
     /* Python: callback event. Arg =
      * "state\tresult\terr". */
@@ -1887,7 +1887,7 @@ int tools_mcp_dashboard_oauth_wait_for_callback(const char *arg) {
     return 0;
 }
 
-/* PoP: mark_approved @ tools/mcp_dashboard_oauth.py:mark_approved */
+/* PoP: tools_mcp_dashboard_oauth_mark_approved @ tools/mcp_dashboard_oauth.py:mark_approved */
 int tools_mcp_dashboard_oauth_mark_approved(const char *arg) {
     /* Python: locked: error if status=="error" ("OAuth flow already
      * ended"); else status="approved", error=None. Arg = current status. */
@@ -1899,7 +1899,7 @@ int tools_mcp_dashboard_oauth_mark_approved(const char *arg) {
     return 0;
 }
 
-/* PoP: mark_error @ tools/mcp_dashboard_oauth.py:mark_error */
+/* PoP: tools_mcp_dashboard_oauth_mark_error @ tools/mcp_dashboard_oauth.py:mark_error */
 int tools_mcp_dashboard_oauth_mark_error(const char *arg) {
     /* Python: if not approved: status=error, error=<msg>, set both events.
      * Arg = error message. */
@@ -1908,7 +1908,7 @@ int tools_mcp_dashboard_oauth_mark_error(const char *arg) {
     return 0;
 }
 
-/* PoP: mark_worker_done @ tools/mcp_dashboard_oauth.py:mark_worker_done */
+/* PoP: tools_mcp_dashboard_oauth_mark_worker_done @ tools/mcp_dashboard_oauth.py:mark_worker_done */
 int tools_mcp_dashboard_oauth_mark_worker_done(const char *arg) {
     /* Python: self._worker_done.set(). */
     (void)arg;
@@ -1916,7 +1916,7 @@ int tools_mcp_dashboard_oauth_mark_worker_done(const char *arg) {
     g_done = 1;
     printf("worker_done\n");
     return g_done;
-}/* PoP: worker_done @ tools/mcp_dashboard_oauth.py:worker_done */
+}/* PoP: tools_mcp_dashboard_oauth_worker_done @ tools/mcp_dashboard_oauth.py:worker_done */
 int tools_mcp_dashboard_oauth_worker_done(const char *arg) {
     /* Python: the worker-done event flag. */
     static int g_done = 0;
@@ -1924,7 +1924,7 @@ int tools_mcp_dashboard_oauth_worker_done(const char *arg) {
     return g_done;
 }
 
-/* PoP: dashboard_oauth_flow @ tools/mcp_dashboard_oauth.py:dashboard_oauth_flow */
+/* PoP: tools_mcp_dashboard_oauth_dashboard_oauth_flow @ tools/mcp_dashboard_oauth.py:dashboard_oauth_flow */
 int tools_mcp_dashboard_oauth_dashboard_oauth_flow(const char *arg) {
     /* Python: context manager — set the current dashboard flow, restore on
      * exit. The C port stores the flow token; empty arg clears. */
@@ -1935,7 +1935,7 @@ int tools_mcp_dashboard_oauth_dashboard_oauth_flow(const char *arg) {
     return 0;
 }
 
-/* PoP: get_dashboard_oauth_flow @ tools/mcp_dashboard_oauth.py:get_dashboard_oauth_flow */
+/* PoP: tools_mcp_dashboard_oauth_get_dashboard_oauth_flow @ tools/mcp_dashboard_oauth.py:get_dashboard_oauth_flow */
 int tools_mcp_dashboard_oauth_get_dashboard_oauth_flow(const char *arg) {
     /* Python: the current dashboard OAuth flow from the thread-local store. */
     static char g_flow[1024];
@@ -1944,7 +1944,7 @@ int tools_mcp_dashboard_oauth_get_dashboard_oauth_flow(const char *arg) {
     return 0;
 }
 
-/* PoP: clear_expired @ tools/online_research.py:clear_expired */
+/* PoP: tools_online_research_clear_expired @ tools/online_research.py:clear_expired */
 int tools_online_research_clear_expired(const char *arg) {
     /* Python: keep only cache entries where now - timestamp < ttl.
      * Arg = "now\tttl"; the C port drops its own static cache entries. */
@@ -1973,7 +1973,7 @@ int tools_online_research_clear_expired(const char *arg) {
     return 0;
 }
 
-/* PoP: __aenter__ @ tools/online_research.py:__aenter__ */
+/* PoP: tools_online_research_u__aenter__ @ tools/online_research.py:__aenter__ */
 int tools_online_research_u__aenter__(const char *arg) {
     /* Python: open aiohttp ClientSession with timeout.
      * REAL: the C researcher keeps a session handle; opening just
@@ -1982,7 +1982,7 @@ int tools_online_research_u__aenter__(const char *arg) {
     return 0;
 }
 
-/* PoP: __aexit__ @ tools/online_research.py:__aexit__ */
+/* PoP: tools_online_research_u__aexit__ @ tools/online_research.py:__aexit__ */
 int tools_online_research_u__aexit__(const char *arg) {
     /* Python: close session (teardown). The C researcher has no
      * persistent session handle; __aexit__ releases the shared
@@ -1993,7 +1993,7 @@ int tools_online_research_u__aexit__(const char *arg) {
     return 0;
 }
 
-/* PoP: search_duckduckgo @ tools/online_research.py:search_duckduckgo */
+/* PoP: tools_online_research_search_duckduckgo @ tools/online_research.py:search_duckduckgo */
 int tools_online_research_search_duckduckgo(const char *arg) {
     /* Python: HTML scrape. Arg =
      * "count\tstate\tresult". */
@@ -2006,7 +2006,7 @@ int tools_online_research_search_duckduckgo(const char *arg) {
     return 0;
 }
 
-/* PoP: search_brave @ tools/online_research.py:search_brave */
+/* PoP: tools_online_research_search_brave @ tools/online_research.py:search_brave */
 int tools_online_research_search_brave(const char *arg) {
     /* Python: Brave API. Arg =
      * "count\tstate\tresult". */
@@ -2019,7 +2019,7 @@ int tools_online_research_search_brave(const char *arg) {
     return 0;
 }
 
-/* PoP: search_google_cse @ tools/online_research.py:search_google_cse */
+/* PoP: tools_online_research_search_google_cse @ tools/online_research.py:search_google_cse */
 int tools_online_research_search_google_cse(const char *arg) {
     /* Python: CSE API. Arg =
      * "count\tstate\tresult". */
@@ -2032,7 +2032,7 @@ int tools_online_research_search_google_cse(const char *arg) {
     return 0;
 }
 
-/* PoP: get_researcher @ tools/online_research.py:get_researcher */
+/* PoP: tools_online_research_get_researcher @ tools/online_research.py:get_researcher */
 int tools_online_research_get_researcher(const char *arg) {
     /* Python: singleton. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2043,7 +2043,7 @@ int tools_online_research_get_researcher(const char *arg) {
     return 0;
 }
 
-/* PoP: close_researcher @ tools/online_research.py:close_researcher */
+/* PoP: tools_online_research_close_researcher @ tools/online_research.py:close_researcher */
 int tools_online_research_close_researcher(const char *arg) {
     /* Python: teardown + clear the global researcher. */
     (void)arg;
@@ -2052,7 +2052,7 @@ int tools_online_research_close_researcher(const char *arg) {
     return 0;
 }
 
-/* PoP: research_model_benchmarks @ tools/online_research.py:research_model_benchmarks */
+/* PoP: tools_online_research_research_model_benchmarks @ tools/online_research.py:research_model_benchmarks */
 int tools_online_research_research_model_benchmarks(const char *arg) {
     /* Python: benchmark query. Arg =
      * "scores\tstate\tresult". */
@@ -2065,7 +2065,7 @@ int tools_online_research_research_model_benchmarks(const char *arg) {
     return 0;
 }
 
-/* PoP: research_general @ tools/online_research.py:research_general */
+/* PoP: tools_online_research_research_general @ tools/online_research.py:research_general */
 int tools_online_research_research_general(const char *arg) {
     /* Python: delegate. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2076,7 +2076,7 @@ int tools_online_research_research_general(const char *arg) {
     return 0;
 }
 
-/* PoP: resolve_image_source @ tools/image_source.py:resolve_image_source */
+/* PoP: tools_image_source_resolve_image_source @ tools/image_source.py:resolve_image_source */
 int tools_image_source_resolve_image_source(const char *arg) {
     /* Python: scheme router. Arg =
      * "state\tresult\terr". */
@@ -2092,7 +2092,7 @@ int tools_image_source_resolve_image_source(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_data_url @ tools/image_source.py:_resolve_data_url */
+/* PoP: tools_image_source_u_resolve_data_url @ tools/image_source.py:_resolve_data_url */
 int tools_image_source_u_resolve_data_url(const char *arg) {
     /* Python: base64 decode + size gate. Arg = "s\tstate\tdeclared". */
     if (!arg || !*arg) { printf("0 invalid\n"); return 1; }
@@ -2115,7 +2115,7 @@ int tools_image_source_u_resolve_data_url(const char *arg) {
     return 0;
 }
 
-/* PoP: _http_block_reason @ tools/image_source.py:_http_block_reason */
+/* PoP: tools_image_source_u_http_block_reason @ tools/image_source.py:_http_block_reason */
 int tools_image_source_u_http_block_reason(const char *arg) {
     /* Python: policy pre-flight block reason. Arg =
      * "state\tmessage\tresult". */
@@ -2129,7 +2129,7 @@ int tools_image_source_u_http_block_reason(const char *arg) {
     return 0;
 }
 
-/* PoP: _download_to_bytes @ tools/image_source.py:_download_to_bytes */
+/* PoP: tools_image_source_u_download_to_bytes @ tools/image_source.py:_download_to_bytes */
 int tools_image_source_u_download_to_bytes(const char *arg) {
     /* Python: 50MB stream cap. Arg =
      * "bytes\tstate\tresult". */
@@ -2142,7 +2142,7 @@ int tools_image_source_u_download_to_bytes(const char *arg) {
     return 0;
 }
 
-/* PoP: _is_local_terminal_backend @ tools/image_source.py:_is_local_terminal_backend */
+/* PoP: tools_image_source_u_is_local_terminal_backend @ tools/image_source.py:_is_local_terminal_backend */
 int tools_image_source_u_is_local_terminal_backend(const char *arg) {
     /* Python: TERMINAL_ENV in ("local", "") — mirrors browser_tool. Arg =
      * TERMINAL_ENV value. */
@@ -2154,7 +2154,7 @@ int tools_image_source_u_is_local_terminal_backend(const char *arg) {
     return 0;
 }
 
-/* PoP: _media_cache_roots @ tools/image_source.py:_media_cache_roots */
+/* PoP: tools_image_source_u_media_cache_roots @ tools/image_source.py:_media_cache_roots */
 int tools_image_source_u_media_cache_roots(const char *arg) {
     /* Python: 6 cache dirs under home. Arg = home. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2163,7 +2163,7 @@ int tools_image_source_u_media_cache_roots(const char *arg) {
     return 0;
 }
 
-/* PoP: _permitted_host_read_target @ tools/image_source.py:_permitted_host_read_target */
+/* PoP: tools_image_source_u_permitted_host_read_target @ tools/image_source.py:_permitted_host_read_target */
 int tools_image_source_u_permitted_host_read_target(const char *arg) {
     /* Python: host read gate. Arg =
      * "local_backend\tstate\tresult". */
@@ -2178,7 +2178,7 @@ int tools_image_source_u_permitted_host_read_target(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_container_fallback @ tools/image_source.py:_resolve_container_fallback */
+/* PoP: tools_image_source_u_resolve_container_fallback @ tools/image_source.py:_resolve_container_fallback */
 int tools_image_source_u_resolve_container_fallback(const char *arg) {
     /* Python: in-sandbox read. Arg =
      * "bytes\tstate\tresult". */
@@ -2191,7 +2191,7 @@ int tools_image_source_u_resolve_container_fallback(const char *arg) {
     return 0;
 }
 
-/* PoP: _is_delegated_child_context @ tools/kanban_tools.py:_is_delegated_child_context */
+/* PoP: tools_kanban_tools_u_is_delegated_child_context @ tools/kanban_tools.py:_is_delegated_child_context */
 int tools_kanban_tools_u_is_delegated_child_context(const char *arg) {
     /* Python: is_delegated_child_context() from agent.delegation_context;
      * False on any error. Arg = optional "1"/"0" delegation marker. */
@@ -2200,7 +2200,7 @@ int tools_kanban_tools_u_is_delegated_child_context(const char *arg) {
     return 0;
 }
 
-/* PoP: _reject_delegated_child_mutation @ tools/kanban_tools.py:_reject_delegated_child_mutation */
+/* PoP: tools_kanban_tools_u_reject_delegated_child_mutation @ tools/kanban_tools.py:_reject_delegated_child_mutation */
 int tools_kanban_tools_u_reject_delegated_child_mutation(const char *arg) {
     /* Python: None or tool_error for child. Arg = "tool_name\tis_child". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2211,7 +2211,7 @@ int tools_kanban_tools_u_reject_delegated_child_mutation(const char *arg) {
     return 1;
 }
 
-/* PoP: _connect @ tools/kanban_tools.py:_connect */
+/* PoP: tools_kanban_tools_u_connect @ tools/kanban_tools.py:_connect */
 int tools_kanban_tools_u_connect(const char *arg) {
     /* Python: lazy kb import + connect. Arg = "board\tstate". */
     if (!arg || !*arg) { printf("kanban db connected (default)\n"); return 0; }
@@ -2219,7 +2219,7 @@ int tools_kanban_tools_u_connect(const char *arg) {
     return 0;
 }
 
-/* PoP: heartbeat_current_worker_from_env @ tools/kanban_tools.py:heartbeat_current_worker_from_env */
+/* PoP: tools_kanban_tools_heartbeat_current_worker_from_env @ tools/kanban_tools.py:heartbeat_current_worker_from_env */
 int tools_kanban_tools_heartbeat_current_worker_from_env(const char *arg) {
     /* Python: env-identity heartbeat. Arg =
      * "attempted\tstate\tresult". */
@@ -2233,7 +2233,7 @@ int tools_kanban_tools_heartbeat_current_worker_from_env(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_attach @ tools/kanban_tools.py:_handle_attach */
+/* PoP: tools_kanban_tools_u_handle_attach @ tools/kanban_tools.py:_handle_attach */
 int tools_kanban_tools_u_handle_attach(const char *arg) {
     /* Python: base64 attach. Arg =
      * "state\tresult\terr". */
@@ -2254,7 +2254,7 @@ int tools_kanban_tools_u_handle_attach(const char *arg) {
     return 0;
 }
 
-/* PoP: _download_url_with_cap @ tools/kanban_tools.py:_download_url_with_cap */
+/* PoP: tools_kanban_tools_u_download_url_with_cap @ tools/kanban_tools.py:_download_url_with_cap */
 int tools_kanban_tools_u_download_url_with_cap(const char *arg) {
     /* Python: SSRF-guarded fetch. Arg =
      * "state\tresult\terr". */
@@ -2271,7 +2271,7 @@ int tools_kanban_tools_u_download_url_with_cap(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_attach_url @ tools/kanban_tools.py:_handle_attach_url */
+/* PoP: tools_kanban_tools_u_handle_attach_url @ tools/kanban_tools.py:_handle_attach_url */
 int tools_kanban_tools_u_handle_attach_url(const char *arg) {
     /* Python: server-side fetch. Arg =
      * "state\tresult\terr". */
@@ -2292,7 +2292,7 @@ int tools_kanban_tools_u_handle_attach_url(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_attachments @ tools/kanban_tools.py:_handle_attachments */
+/* PoP: tools_kanban_tools_u_handle_attachments @ tools/kanban_tools.py:_handle_attachments */
 int tools_kanban_tools_u_handle_attachments(const char *arg) {
     /* Python: attachment listing. Arg = "count\tstate\tresult\terr". */
     if (!arg || !*arg) { printf("{\"ok\": false}\n"); return 1; }
@@ -2308,7 +2308,7 @@ int tools_kanban_tools_u_handle_attachments(const char *arg) {
     return 0;
 }
 
-/* PoP: managed_nous_tools_enabled @ tools/tool_backend_helpers.py:managed_nous_tools_enabled */
+/* PoP: tools_tool_backend_helpers_managed_nous_tools_enabled @ tools/tool_backend_helpers.py:managed_nous_tools_enabled */
 int tools_tool_backend_helpers_managed_nous_tools_enabled(const char *arg) {
     /* Python: entitlement gate. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -2320,7 +2320,7 @@ int tools_tool_backend_helpers_managed_nous_tools_enabled(const char *arg) {
     return 0;
 }
 
-/* PoP: normalize_browser_cloud_provider @ tools/tool_backend_helpers.py:normalize_browser_cloud_provider */
+/* PoP: tools_tool_backend_helpers_normalize_browser_cloud_provider @ tools/tool_backend_helpers.py:normalize_browser_cloud_provider */
 int tools_tool_backend_helpers_normalize_browser_cloud_provider(const char *arg) {
     /* Python: str(value or default).strip().lower() or default. */
     const char *v = arg ? arg : "";
@@ -2335,7 +2335,7 @@ int tools_tool_backend_helpers_normalize_browser_cloud_provider(const char *arg)
     return 0;
 }
 
-/* PoP: coerce_modal_mode @ tools/tool_backend_helpers.py:coerce_modal_mode */
+/* PoP: tools_tool_backend_helpers_coerce_modal_mode @ tools/tool_backend_helpers.py:coerce_modal_mode */
 int tools_tool_backend_helpers_coerce_modal_mode(const char *arg) {
     /* Python: str(value or default).strip().lower(); default unless valid. */
     const char *v = (arg && *arg) ? arg : "";
@@ -2354,7 +2354,7 @@ int tools_tool_backend_helpers_coerce_modal_mode(const char *arg) {
     return 0;
 }
 
-/* PoP: normalize_modal_mode @ tools/tool_backend_helpers.py:normalize_modal_mode */
+/* PoP: tools_tool_backend_helpers_normalize_modal_mode @ tools/tool_backend_helpers.py:normalize_modal_mode */
 int tools_tool_backend_helpers_normalize_modal_mode(const char *arg) {
     /* Python: coerce_modal_mode(value) — normalize modal execution mode. */
     if (!arg || !*arg) { printf("local\n"); return 0; }
@@ -2371,7 +2371,7 @@ int tools_tool_backend_helpers_normalize_modal_mode(const char *arg) {
     return 0;
 }
 
-/* PoP: has_direct_modal_credentials @ tools/tool_backend_helpers.py:has_direct_modal_credentials */
+/* PoP: tools_tool_backend_helpers_has_direct_modal_credentials @ tools/tool_backend_helpers.py:has_direct_modal_credentials */
 int tools_tool_backend_helpers_has_direct_modal_credentials(const char *arg) {
     /* Python: MODAL_TOKEN_ID+SECRET or ~/.modal.toml. Arg = "env_set\tmodal_file". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -2382,7 +2382,7 @@ int tools_tool_backend_helpers_has_direct_modal_credentials(const char *arg) {
     return 0;
 }
 
-/* PoP: resolve_modal_backend_state @ tools/tool_backend_helpers.py:resolve_modal_backend_state */
+/* PoP: tools_tool_backend_helpers_resolve_modal_backend_state @ tools/tool_backend_helpers.py:resolve_modal_backend_state */
 int tools_tool_backend_helpers_resolve_modal_backend_state(const char *arg) {
     /* Python: direct/managed/auto matrix. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -2393,7 +2393,7 @@ int tools_tool_backend_helpers_resolve_modal_backend_state(const char *arg) {
     return 0;
 }
 
-/* PoP: resolve_openai_audio_api_key @ tools/tool_backend_helpers.py:resolve_openai_audio_api_key */
+/* PoP: tools_tool_backend_helpers_resolve_openai_audio_api_key @ tools/tool_backend_helpers.py:resolve_openai_audio_api_key */
 int tools_tool_backend_helpers_resolve_openai_audio_api_key(const char *arg) {
     /* Python: (VOICE_TOOLS_OPENAI_KEY or OPENAI_API_KEY).strip(). */
     (void)arg;
@@ -2405,7 +2405,7 @@ int tools_tool_backend_helpers_resolve_openai_audio_api_key(const char *arg) {
     return 0;
 }
 
-/* PoP: _scoped_credential @ tools/tool_backend_helpers.py:_scoped_credential */
+/* PoP: tools_tool_backend_helpers__scoped_credential @ tools/tool_backend_helpers.py:_scoped_credential */
 char *tools_tool_backend_helpers__scoped_credential(const char *name) {
     /* Python: read a credential env var under the active profile secret scope,
      * falling back to a raw getenv only when secret_scope is unavailable. */
@@ -2431,7 +2431,7 @@ char *tools_tool_backend_helpers__scoped_credential(const char *name) {
     return trimmed;
 }
 
-/* PoP: resolve_provider_secret @ tools/tool_backend_helpers.py:resolve_provider_secret */
+/* PoP: tools_tool_backend_helpers_resolve_provider_secret @ tools/tool_backend_helpers.py:resolve_provider_secret */
 char *tools_tool_backend_helpers_resolve_provider_secret(
     const char *env_var, const char *provider_id, const char *config_value) {
     /* Python: resolve a voice/STT/TTS API key — single owner for key lookup.
@@ -2491,7 +2491,7 @@ char *tools_tool_backend_helpers_resolve_provider_secret(
     return strdup("");
 }
 
-/* PoP: prefers_gateway @ tools/tool_backend_helpers.py:prefers_gateway */
+/* PoP: tools_tool_backend_helpers_prefers_gateway @ tools/tool_backend_helpers.py:prefers_gateway */
 int tools_tool_backend_helpers_prefers_gateway(const char *arg) {
     /* Python: config <section>.use_gateway truthy. Arg = "use_gateway\t1/0". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -2502,7 +2502,7 @@ int tools_tool_backend_helpers_prefers_gateway(const char *arg) {
     return 0;
 }
 
-/* PoP: _referenced_support_paths @ tools/skills_hub.py:_referenced_support_paths */
+/* PoP: tools_skills_hub_u_referenced_support_paths @ tools/skills_hub.py:_referenced_support_paths */
 int tools_skills_hub_u_referenced_support_paths(const char *arg) {
     /* Python: safe referenced paths or None on traversal. Arg =
      * "state\tpaths" (state: ok/traversal). */
@@ -2514,7 +2514,7 @@ int tools_skills_hub_u_referenced_support_paths(const char *arg) {
     return 0;
 }
 
-/* PoP: source_url_for_bundle @ tools/skills_hub.py:source_url_for_bundle */
+/* PoP: tools_skills_hub_source_url_for_bundle @ tools/skills_hub.py:source_url_for_bundle */
 int tools_skills_hub_source_url_for_bundle(const char *arg) {
     /* Python: explicit source_url/url; github identifier -> tree URL. Arg =
      * "source\tidentifier\texplicit". */
@@ -2538,7 +2538,7 @@ int tools_skills_hub_source_url_for_bundle(const char *arg) {
     return 0;
 }
 
-/* PoP: _ssrf_safe_http_get @ tools/skills_hub.py:_ssrf_safe_http_get */
+/* PoP: tools_skills_hub_u_ssrf_safe_http_get @ tools/skills_hub.py:_ssrf_safe_http_get */
 int tools_skills_hub_u_ssrf_safe_http_get(const char *arg) {
     /* Python: create_ssrf_safe_client(timeout, follow_redirects=False).get(
      * url). Arg = url (curl -sS --max-time). */
@@ -2556,7 +2556,7 @@ int tools_skills_hub_u_ssrf_safe_http_get(const char *arg) {
     return 0;
 }
 
-/* PoP: _fetch_file_bytes @ tools/skills_hub.py:_fetch_file_bytes */
+/* PoP: tools_skills_hub_u_fetch_file_bytes @ tools/skills_hub.py:_fetch_file_bytes */
 int tools_skills_hub_u_fetch_file_bytes(const char *arg) {
     /* Python: raw bytes from GitHub contents API. Arg = "repo\tpath". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2568,7 +2568,7 @@ int tools_skills_hub_u_fetch_file_bytes(const char *arg) {
     return 0;
 }
 
-/* PoP: _fetch_bytes @ tools/skills_hub.py:_fetch_bytes */
+/* PoP: tools_skills_hub_u_fetch_bytes @ tools/skills_hub.py:_fetch_bytes */
 int tools_skills_hub_u_fetch_bytes(const char *arg) {
     /* Python: guarded HTTP GET 200 -> content. Arg = "url\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2579,10 +2579,10 @@ int tools_skills_hub_u_fetch_bytes(const char *arg) {
     return 0;
 }
 
-/* PoP: _find_skill_dir @ tools/skills_hub.py:_find_skill_dir */
+/* PoP: tools_skills_hub_u_find_skill_dir @ tools/skills_hub.py:_find_skill_dir */
 int tools_skills_hub_u_find_skill_dir(const char *arg) { (void)arg; return 0; }
 
-/* PoP: _parse_frontmatter @ tools/skills_hub.py:_parse_frontmatter */
+/* PoP: tools_skills_hub_u_parse_frontmatter @ tools/skills_hub.py:_parse_frontmatter */
 int tools_skills_hub_u_parse_frontmatter(const char *arg) {
     /* Python: YAML frontmatter -> dict. Arg = "has_fm\tparsed\tresult". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -2596,7 +2596,7 @@ int tools_skills_hub_u_parse_frontmatter(const char *arg) {
     return 0;
 }
 
-/* PoP: _configured_for_xai_video @ tools/xai_video_tools.py:_configured_for_xai_video */
+/* PoP: tools_xai_video_tools_u_configured_for_xai_video @ tools/xai_video_tools.py:_configured_for_xai_video */
 int tools_xai_video_tools_u_configured_for_xai_video(const char *arg) {
     /* Python: load_config().get("video_gen") is dict and provider == "xai".
      * Arg = "video_gen" section JSON (or empty). */
@@ -2613,7 +2613,7 @@ int tools_xai_video_tools_u_configured_for_xai_video(const char *arg) {
     return 0;
 }
 
-/* PoP: _check_xai_video_requirements @ tools/xai_video_tools.py:_check_xai_video_requirements */
+/* PoP: tools_xai_video_tools_u_check_xai_video_requirements @ tools/xai_video_tools.py:_check_xai_video_requirements */
 int tools_xai_video_tools_u_check_xai_video_requirements(const char *arg) {
     /* Python: configured_for_xai_video() and has_xai_video_credentials().
      * Arg = "1/0 configured"; credentials from the env. */
@@ -2623,7 +2623,7 @@ int tools_xai_video_tools_u_check_xai_video_requirements(const char *arg) {
     return configured && has_creds;
 }
 
-/* PoP: _clean_string @ tools/xai_video_tools.py:_clean_string */
+/* PoP: tools_xai_video_tools_u_clean_string @ tools/xai_video_tools.py:_clean_string */
 int tools_xai_video_tools_u_clean_string(const char *arg) {
     /* Python: stripped value if a non-empty string, else None. */
     if (!arg || !*arg) { printf("null\n"); return 0; }
@@ -2636,7 +2636,7 @@ int tools_xai_video_tools_u_clean_string(const char *arg) {
     return 0;
 }
 
-/* PoP: _provider_not_configured_error @ tools/xai_video_tools.py:_provider_not_configured_error */
+/* PoP: tools_xai_video_tools_u_provider_not_configured_error @ tools/xai_video_tools.py:_provider_not_configured_error */
 int tools_xai_video_tools_u_provider_not_configured_error(const char *arg) {
     /* Python: returns JSON error dict — REAL. */
     (void)arg;
@@ -2654,7 +2654,7 @@ int tools_xai_video_tools_u_provider_not_configured_error(const char *arg) {
     return 0;
 }
 
-/* PoP: _normalize_public_video_url @ tools/xai_video_tools.py:_normalize_public_video_url */
+/* PoP: tools_xai_video_tools_u_normalize_public_video_url @ tools/xai_video_tools.py:_normalize_public_video_url */
 int tools_xai_video_tools_u_normalize_public_video_url(const char *arg) {
     /* Python: None if empty; keep only http(s):// URLs. Arg = url. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2668,7 +2668,7 @@ int tools_xai_video_tools_u_normalize_public_video_url(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_xai_video_edit @ tools/xai_video_tools.py:_handle_xai_video_edit */
+/* PoP: tools_xai_video_tools_u_handle_xai_video_edit @ tools/xai_video_tools.py:_handle_xai_video_edit */
 int tools_xai_video_tools_u_handle_xai_video_edit(const char *arg) {
     /* Python: prompt/url validation + run. Arg =
      * "prompt\tvideo_url\tconfigured\tresult". */
@@ -2690,7 +2690,7 @@ int tools_xai_video_tools_u_handle_xai_video_edit(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_xai_video_extend @ tools/xai_video_tools.py:_handle_xai_video_extend */
+/* PoP: tools_xai_video_tools_u_handle_xai_video_extend @ tools/xai_video_tools.py:_handle_xai_video_extend */
 int tools_xai_video_tools_u_handle_xai_video_extend(const char *arg) {
     /* Python: prompt/url gates + run. Arg =
      * "prompt\tvideo_url\tconfigured\tresult". */
@@ -2712,7 +2712,7 @@ int tools_xai_video_tools_u_handle_xai_video_extend(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_driver_cmd @ tools/computer_use/permissions.py:_resolve_driver_cmd */
+/* PoP: tools_computer_use_permissions_u_resolve_driver_cmd @ tools/computer_use/permissions.py:_resolve_driver_cmd */
 int tools_computer_use_permissions_u_resolve_driver_cmd(const char *arg) {
     /* Python: resolve_cua_driver_cmd(override) from cua_backend. Arg =
      * override (or empty). */
@@ -2725,7 +2725,7 @@ int tools_computer_use_permissions_u_resolve_driver_cmd(const char *arg) {
     return 0;
 }
 
-/* PoP: _child_env @ tools/computer_use/permissions.py:_child_env */
+/* PoP: tools_computer_use_permissions_u_child_env @ tools/computer_use/permissions.py:_child_env */
 int tools_computer_use_permissions_u_child_env(const char *arg) {
     /* Python: telemetry env + sanitized. Arg = "env_json". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -2733,7 +2733,7 @@ int tools_computer_use_permissions_u_child_env(const char *arg) {
     return 0;
 }
 
-/* PoP: _json_out @ tools/computer_use/permissions.py:_json_out */
+/* PoP: tools_computer_use_permissions_u_json_out @ tools/computer_use/permissions.py:_json_out */
 int tools_computer_use_permissions_u_json_out(const char *arg) {
     /* Python: run binary+args; parse stdout as JSON; None on empty/fail.
      * Arg = JSON string (already captured); validated and echoed. */
@@ -2747,7 +2747,7 @@ int tools_computer_use_permissions_u_json_out(const char *arg) {
     return 0;
 }
 
-/* PoP: _mac_permissions @ tools/computer_use/permissions.py:_mac_permissions */
+/* PoP: tools_computer_use_permissions_u_mac_permissions @ tools/computer_use/permissions.py:_mac_permissions */
 int tools_computer_use_permissions_u_mac_permissions(const char *arg) {
     /* Python: fold permission booleans into out. Arg = "data_json\terror". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2757,7 +2757,7 @@ int tools_computer_use_permissions_u_mac_permissions(const char *arg) {
     return 0;
 }
 
-/* PoP: computer_use_status @ tools/computer_use/permissions.py:computer_use_status */
+/* PoP: tools_computer_use_permissions_computer_use_status @ tools/computer_use/permissions.py:computer_use_status */
 int tools_computer_use_permissions_computer_use_status(const char *arg) {
     /* Python: readiness snapshot. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -2768,7 +2768,7 @@ int tools_computer_use_permissions_computer_use_status(const char *arg) {
     return 0;
 }
 
-/* PoP: request_permissions_grant @ tools/computer_use/permissions.py:request_permissions_grant */
+/* PoP: tools_computer_use_permissions_request_permissions_grant @ tools/computer_use/permissions.py:request_permissions_grant */
 int tools_computer_use_permissions_request_permissions_grant(const char *arg) {
     /* Python: TCC grant launch. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("64\n"); return 0; }
@@ -2786,7 +2786,7 @@ int tools_computer_use_permissions_request_permissions_grant(const char *arg) {
     return 0;
 }
 
-/* PoP: set_project_workspace_callback @ tools/project_tools.py:set_project_workspace_callback */
+/* PoP: tools_project_tools_set_project_workspace_callback @ tools/project_tools.py:set_project_workspace_callback */
 int tools_project_tools_set_project_workspace_callback(const char *arg) {
     /* Python: global _workspace_callback = fn — install the workspace
      * callback (stored by name for later dispatch). */
@@ -2795,7 +2795,7 @@ int tools_project_tools_set_project_workspace_callback(const char *arg) {
     return 0;
 }
 
-/* PoP: _primary_path @ tools/project_tools.py:_primary_path */
+/* PoP: tools_project_tools_u_primary_path @ tools/project_tools.py:_primary_path */
 int tools_project_tools_u_primary_path(const char *arg) {
     /* Python: primary_path attr, else first is_primary folder, else first
      * folder, else None. Arg = "primary\tf1\tf2..." (tab-sep paths, primary
@@ -2815,7 +2815,7 @@ int tools_project_tools_u_primary_path(const char *arg) {
     return 0;
 }
 
-/* PoP: _apply_workspace @ tools/project_tools.py:_apply_workspace */
+/* PoP: tools_project_tools_u_apply_workspace @ tools/project_tools.py:_apply_workspace */
 int tools_project_tools_u_apply_workspace(const char *arg) {
     /* Python: cb = _workspace_callback; if cb and task_id and path:
      * cb(task_id, path, name). Arg = "task_id\tpath\tname". */
@@ -2828,7 +2828,7 @@ int tools_project_tools_u_apply_workspace(const char *arg) {
     return 0;
 }
 
-/* PoP: project_list @ tools/project_tools.py:project_list */
+/* PoP: tools_project_tools_project_list @ tools/project_tools.py:project_list */
 int tools_project_tools_project_list(const char *arg) {
     /* Python: {active_id, projects: [...]}. Arg = "active_id\tprojects_json". */
     if (!arg || !*arg) { printf("{\"active_id\": null, \"projects\": []}\n"); return 0; }
@@ -2837,7 +2837,7 @@ int tools_project_tools_project_list(const char *arg) {
     return 0;
 }
 
-/* PoP: project_create @ tools/project_tools.py:project_create */
+/* PoP: tools_project_tools_project_create @ tools/project_tools.py:project_create */
 int tools_project_tools_project_create(const char *arg) {
     /* Python: create + activate + apply. Arg =
      * "name\tstate\tresult". */
@@ -2850,7 +2850,7 @@ int tools_project_tools_project_create(const char *arg) {
     return 0;
 }
 
-/* PoP: project_switch @ tools/project_tools.py:project_switch */
+/* PoP: tools_project_tools_project_switch @ tools/project_tools.py:project_switch */
 int tools_project_tools_project_switch(const char *arg) {
     /* Python: resolve + set_active + workspace apply. Arg =
      * "project\tfound\tid\tslug\tname\tprimary". */
@@ -2871,7 +2871,7 @@ int tools_project_tools_project_switch(const char *arg) {
     return 0;
 }
 
-/* PoP: register_credential_file @ tools/credential_files.py:register_credential_file */
+/* PoP: tools_credential_files_register_credential_file @ tools/credential_files.py:register_credential_file */
 int tools_credential_files_register_credential_file(const char *arg) {
     /* Python: containment guard. Arg =
      * "registered\tstate\tresult\terr". */
@@ -2890,7 +2890,7 @@ int tools_credential_files_register_credential_file(const char *arg) {
     return 0;
 }
 
-/* PoP: register_credential_files @ tools/credential_files.py:register_credential_files */
+/* PoP: tools_credential_files_register_credential_files @ tools/credential_files.py:register_credential_files */
 int tools_credential_files_register_credential_files(const char *arg) {
     /* Python: register entries, return missing. Arg = "missing" (tab-sep). */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -2898,7 +2898,7 @@ int tools_credential_files_register_credential_files(const char *arg) {
     return 0;
 }
 
-/* PoP: iter_skills_files @ tools/credential_files.py:iter_skills_files */
+/* PoP: tools_credential_files_iter_skills_files @ tools/credential_files.py:iter_skills_files */
 int tools_credential_files_iter_skills_files(const char *arg) {
     /* Python: individual uploads. Arg =
      * "count\tstate\tresult". */
@@ -2911,7 +2911,7 @@ int tools_credential_files_iter_skills_files(const char *arg) {
     return 0;
 }
 
-/* PoP: from_agent_visible_cache_path @ tools/credential_files.py:from_agent_visible_cache_path */
+/* PoP: tools_credential_files_from_agent_visible_cache_path @ tools/credential_files.py:from_agent_visible_cache_path */
 int tools_credential_files_from_agent_visible_cache_path(const char *arg) {
     /* Python: docker mount inverse. Arg =
      * "path\tbackend_docker\tmapped\thost_path". */
@@ -2927,7 +2927,7 @@ int tools_credential_files_from_agent_visible_cache_path(const char *arg) {
     return 0;
 }
 
-/* PoP: iter_cache_files @ tools/credential_files.py:iter_cache_files */
+/* PoP: tools_credential_files_iter_cache_files @ tools/credential_files.py:iter_cache_files */
 int tools_credential_files_iter_cache_files(const char *arg) {
     /* Python: cache dir entries. Arg = "home\tcontainer_base\tstate\tresult". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -2940,7 +2940,7 @@ int tools_credential_files_iter_cache_files(const char *arg) {
     return 0;
 }
 
-/* PoP: _coerce_non_negative_int @ tools/hook_output_spill.py:_coerce_non_negative_int */
+/* PoP: tools_hook_output_spill_u_coerce_non_negative_int @ tools/hook_output_spill.py:_coerce_non_negative_int */
 int tools_hook_output_spill_u_coerce_non_negative_int(const char *arg) {
     /* Python: int(value) except -> default; < 0 -> default. Arg =
      * "value\tdefault". */
@@ -2957,7 +2957,7 @@ int tools_hook_output_spill_u_coerce_non_negative_int(const char *arg) {
     return 0;
 }
 
-/* PoP: get_spill_config @ tools/hook_output_spill.py:get_spill_config */
+/* PoP: tools_hook_output_spill_get_spill_config @ tools/hook_output_spill.py:get_spill_config */
 int tools_hook_output_spill_get_spill_config(const char *arg) {
     /* Python: resolved spill config. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -2968,7 +2968,7 @@ int tools_hook_output_spill_get_spill_config(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_spill_dir @ tools/hook_output_spill.py:_resolve_spill_dir */
+/* PoP: tools_hook_output_spill_u_resolve_spill_dir @ tools/hook_output_spill.py:_resolve_spill_dir */
 int tools_hook_output_spill_u_resolve_spill_dir(const char *arg) {
     /* Python: spill dir grouped by session. Arg =
      * "home\tsession_id\tstate\tresult". */
@@ -2984,7 +2984,7 @@ int tools_hook_output_spill_u_resolve_spill_dir(const char *arg) {
     return 0;
 }
 
-/* PoP: _build_preview @ tools/hook_output_spill.py:_build_preview */
+/* PoP: tools_hook_output_spill_u_build_preview @ tools/hook_output_spill.py:_build_preview */
 int tools_hook_output_spill_u_build_preview(const char *arg) {
     /* Python: head/tail preview + saved footer. Arg =
      * "source\ttext\thead\ttail\tsaved_path". */
@@ -3010,7 +3010,7 @@ int tools_hook_output_spill_u_build_preview(const char *arg) {
     return 0;
 }
 
-/* PoP: spill_if_oversized @ tools/hook_output_spill.py:spill_if_oversized */
+/* PoP: tools_hook_output_spill_spill_if_oversized @ tools/hook_output_spill.py:spill_if_oversized */
 int tools_hook_output_spill_spill_if_oversized(const char *arg) {
     /* Python: bounded spill. Arg =
      * "spilled\tstate\tresult". */
@@ -3024,7 +3024,7 @@ int tools_hook_output_spill_spill_if_oversized(const char *arg) {
     return 0;
 }
 
-/* PoP: _is_compaction_summary @ tools/session_search_tool.py:_is_compaction_summary */
+/* PoP: tools_session_search_tool_u_is_compaction_summary @ tools/session_search_tool.py:_is_compaction_summary */
 int tools_session_search_tool_u_is_compaction_summary(const char *arg) {
     /* Python: stripped content starts with any _COMPACTION_PREFIXES. Arg =
      * content. */
@@ -3043,7 +3043,7 @@ int tools_session_search_tool_u_is_compaction_summary(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_lineage @ tools/session_search_tool.py:_resolve_lineage */
+/* PoP: tools_session_search_tool_u_resolve_lineage @ tools/session_search_tool.py:_resolve_lineage */
 int tools_session_search_tool_u_resolve_lineage(const char *arg) {
     /* Python: _resolve_to_parent(db, session_id)[0] — the lineage root
      * (ignores compression hop). Arg = "session_id" (lineage root lookup
@@ -3053,7 +3053,7 @@ int tools_session_search_tool_u_resolve_lineage(const char *arg) {
     return 0;
 }
 
-/* PoP: _is_compression_ended @ tools/session_search_tool.py:_is_compression_ended */
+/* PoP: tools_session_search_tool_u_is_compression_ended @ tools/session_search_tool.py:_is_compression_ended */
 int tools_session_search_tool_u_is_compression_ended(const char *arg) {
     /* Python: own end_reason == compression. Arg = "session_id\tended". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -3062,7 +3062,7 @@ int tools_session_search_tool_u_is_compression_ended(const char *arg) {
     return 0;
 }
 
-/* PoP: _is_compacted_message @ tools/session_search_tool.py:_is_compacted_message */
+/* PoP: tools_session_search_tool_u_is_compacted_message @ tools/session_search_tool.py:_is_compacted_message */
 int tools_session_search_tool_u_is_compacted_message(const char *arg) {
     /* Python: active=0 compacted=1. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -3073,7 +3073,7 @@ int tools_session_search_tool_u_is_compacted_message(const char *arg) {
     return 0;
 }
 
-/* PoP: _annotate_rebuild_status @ tools/session_search_tool.py:_annotate_rebuild_status */
+/* PoP: tools_session_search_tool_u_annotate_rebuild_status @ tools/session_search_tool.py:_annotate_rebuild_status */
 int tools_session_search_tool_u_annotate_rebuild_status(const char *arg) {
     /* Python: add index_rebuild note or no-op. Arg =
      * "rebuilding\tpercent\tindexed\ttotal". */
@@ -3088,7 +3088,7 @@ int tools_session_search_tool_u_annotate_rebuild_status(const char *arg) {
     return 0;
 }
 
-/* PoP: _is_headed_mode @ tools/browser_tool.py:_is_headed_mode */
+/* PoP: tools_browser_tool_u_is_headed_mode @ tools/browser_tool.py:_is_headed_mode */
 int tools_browser_tool_u_is_headed_mode(const char *arg) {
     /* Python: config then env. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -3099,7 +3099,7 @@ int tools_browser_tool_u_is_headed_mode(const char *arg) {
     return 0;
 }
 
-/* PoP: _store_full_snapshot @ tools/browser_tool.py:_store_full_snapshot */
+/* PoP: tools_browser_tool_u_store_full_snapshot @ tools/browser_tool.py:_store_full_snapshot */
 int tools_browser_tool_u_store_full_snapshot(const char *arg) {
     /* Python: redacted cache write. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -3110,7 +3110,7 @@ int tools_browser_tool_u_store_full_snapshot(const char *arg) {
     return 0;
 }
 
-/* PoP: _restrict_browser_evaluate @ tools/browser_tool.py:_restrict_browser_evaluate */
+/* PoP: tools_browser_tool_u_restrict_browser_evaluate @ tools/browser_tool.py:_restrict_browser_evaluate */
 int tools_browser_tool_u_restrict_browser_evaluate(const char *arg) {
     /* Python: denylist toggle. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -3121,7 +3121,7 @@ int tools_browser_tool_u_restrict_browser_evaluate(const char *arg) {
     return 0;
 }
 
-/* PoP: _camofox_current_page_private_url @ tools/browser_tool.py:_camofox_current_page_private_url */
+/* PoP: tools_browser_tool_u_camofox_current_page_private_url @ tools/browser_tool.py:_camofox_current_page_private_url */
 int tools_browser_tool_u_camofox_current_page_private_url(const char *arg) {
     /* Python: camofox private-url probe. Arg = "state\turl\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -3133,7 +3133,7 @@ int tools_browser_tool_u_camofox_current_page_private_url(const char *arg) {
     return 0;
 }
 
-/* PoP: _volume_evidence @ tools/checkpoint_manager.py:_volume_evidence */
+/* PoP: tools_checkpoint_manager_u_volume_evidence @ tools/checkpoint_manager.py:_volume_evidence */
 int tools_checkpoint_manager_u_volume_evidence(const char *arg) {
     /* Python: parent dev/ino. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -3144,7 +3144,7 @@ int tools_checkpoint_manager_u_volume_evidence(const char *arg) {
     return 0;
 }
 
-/* PoP: _pre_v2_shadow_repos @ tools/checkpoint_manager.py:_pre_v2_shadow_repos */
+/* PoP: tools_checkpoint_manager_u_pre_v2_shadow_repos @ tools/checkpoint_manager.py:_pre_v2_shadow_repos */
 int tools_checkpoint_manager_u_pre_v2_shadow_repos(const char *arg) {
     /* Python: pre-v2 scan. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -3156,7 +3156,7 @@ int tools_checkpoint_manager_u_pre_v2_shadow_repos(const char *arg) {
     return 0;
 }
 
-/* PoP: _workdir_is_observably_gone @ tools/checkpoint_manager.py:_workdir_is_observably_gone */
+/* PoP: tools_checkpoint_manager_u_workdir_is_observably_gone @ tools/checkpoint_manager.py:_workdir_is_observably_gone */
 int tools_checkpoint_manager_u_workdir_is_observably_gone(const char *arg) {
     /* Python: 3-step corroboration. Arg =
      * "gone\tstate\tresult". */
@@ -3171,7 +3171,7 @@ int tools_checkpoint_manager_u_workdir_is_observably_gone(const char *arg) {
     return 0;
 }
 
-/* PoP: _dir_has_any_entry @ tools/checkpoint_manager.py:_dir_has_any_entry */
+/* PoP: tools_checkpoint_manager_u_dir_has_any_entry @ tools/checkpoint_manager.py:_dir_has_any_entry */
 int tools_checkpoint_manager_u_dir_has_any_entry(const char *arg) {
     /* Python: scandir stops at first entry. Arg = directory. */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -3189,7 +3189,7 @@ int tools_checkpoint_manager_u_dir_has_any_entry(const char *arg) {
     return 0;
 }
 
-/* PoP: _cua_child_env @ tools/computer_use/doctor.py:_cua_child_env */
+/* PoP: tools_computer_use_doctor_u_cua_child_env @ tools/computer_use/doctor.py:_cua_child_env */
 int tools_computer_use_doctor_u_cua_child_env(const char *arg) {
     /* Python: cua_driver_child_env or os.environ fallback. Arg = "env_json". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -3197,7 +3197,7 @@ int tools_computer_use_doctor_u_cua_child_env(const char *arg) {
     return 0;
 }
 
-/* PoP: _sanitized_cua_env @ tools/computer_use/doctor.py:_sanitized_cua_env */
+/* PoP: tools_computer_use_doctor_u_sanitized_cua_env @ tools/computer_use/doctor.py:_sanitized_cua_env */
 int tools_computer_use_doctor_u_sanitized_cua_env(const char *arg) {
     /* Python: telemetry env with secrets stripped. Arg = "env_json". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -3205,7 +3205,7 @@ int tools_computer_use_doctor_u_sanitized_cua_env(const char *arg) {
     return 0;
 }
 
-/* PoP: _drive_health_report @ tools/computer_use/doctor.py:_drive_health_report */
+/* PoP: tools_computer_use_doctor_u_drive_health_report @ tools/computer_use/doctor.py:_drive_health_report */
 int tools_computer_use_doctor_u_drive_health_report(const char *arg) {
     /* Python: health_report RPC. Arg =
      * "report\tstate\tresult". */
@@ -3221,7 +3221,7 @@ int tools_computer_use_doctor_u_drive_health_report(const char *arg) {
     return 0;
 }
 
-/* PoP: _print_text_report @ tools/computer_use/doctor.py:_print_text_report */
+/* PoP: tools_computer_use_doctor_u_print_text_report @ tools/computer_use/doctor.py:_print_text_report */
 int tools_computer_use_doctor_u_print_text_report(const char *arg) {
     /* Python: doctor render. Arg =
      * "overall\tstate\tresult". */
@@ -3236,7 +3236,7 @@ int tools_computer_use_doctor_u_print_text_report(const char *arg) {
     return 0;
 }
 
-/* PoP: set_current_write_origin @ tools/skill_provenance.py:set_current_write_origin */
+/* PoP: tools_skill_provenance_set_current_write_origin @ tools/skill_provenance.py:set_current_write_origin */
 const char *skill_provenance_current_origin(void); /* forward */
 int tools_skill_provenance_set_current_write_origin(const char *arg) {
     /* Python: set the current write-origin context (e.g. "background_review"). */
@@ -3249,14 +3249,14 @@ int tools_skill_provenance_set_current_write_origin(const char *arg) {
     return 0;
 }
 
-/* PoP: reset_current_write_origin @ tools/skill_provenance.py:reset_current_write_origin */
+/* PoP: tools_skill_provenance_reset_current_write_origin @ tools/skill_provenance.py:reset_current_write_origin */
 int tools_skill_provenance_reset_current_write_origin(const char *arg) {
     /* Python: clear the write-origin context. */
     (void)arg;
     return tools_skill_provenance_set_current_write_origin("");
 }
 
-/* PoP: get_current_write_origin @ tools/skill_provenance.py:get_current_write_origin */
+/* PoP: tools_skill_provenance_get_current_write_origin @ tools/skill_provenance.py:get_current_write_origin */
 int tools_skill_provenance_get_current_write_origin(const char *arg) {
     (void)arg;
     extern const char *skill_provenance_get(void);
@@ -3264,7 +3264,7 @@ int tools_skill_provenance_get_current_write_origin(const char *arg) {
     return 0;
 }
 
-/* PoP: is_background_review @ tools/skill_provenance.py:is_background_review */
+/* PoP: skill_provenance_current_origin @ tools/skill_provenance.py:is_background_review */
 const char *skill_provenance_current_origin(void) {
     /* shared origin state, set by set_current_write_origin */
     static char g_origin[128];
@@ -3277,7 +3277,7 @@ int tools_skill_provenance_is_background_review(const char *arg) {
     return strcmp(skill_provenance_current_origin(), "background_review") == 0;
 }
 
-/* PoP: _web_extract_url @ tools/web_tools.py:_web_extract_url */
+/* PoP: tools_web_tools_u_web_extract_url @ tools/web_tools.py:_web_extract_url */
 int tools_web_tools_u_web_extract_url(const char *arg) {
     /* Python: dict url/href or str strip; None otherwise. Arg = "json_or_raw". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -3299,7 +3299,7 @@ int tools_web_tools_u_web_extract_url(const char *arg) {
     return 0;
 }
 
-/* PoP: _registered_web_provider @ tools/web_tools.py:_registered_web_provider */
+/* PoP: tools_web_tools_u_registered_web_provider @ tools/web_tools.py:_registered_web_provider */
 int tools_web_tools_u_registered_web_provider(const char *arg) {
     /* Python: registry lookup or None. Arg = "backend\tfound\tprovider". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -3310,7 +3310,7 @@ int tools_web_tools_u_registered_web_provider(const char *arg) {
     return 0;
 }
 
-/* PoP: _registered_web_provider_available @ tools/web_tools.py:_registered_web_provider_available */
+/* PoP: tools_web_tools_u_registered_web_provider_available @ tools/web_tools.py:_registered_web_provider_available */
 int tools_web_tools_u_registered_web_provider_available(const char *arg) {
     /* Python: None unregistered / True/False availability. Arg =
      * "registered\tavailable". */
@@ -3322,7 +3322,7 @@ int tools_web_tools_u_registered_web_provider_available(const char *arg) {
     return 0;
 }
 
-/* PoP: _list_registered_web_providers @ tools/web_tools.py:_list_registered_web_providers */
+/* PoP: tools_web_tools_u_list_registered_web_providers @ tools/web_tools.py:_list_registered_web_providers */
 int tools_web_tools_u_list_registered_web_providers(const char *arg) {
     /* Python: registry list_providers or []. Arg = names (tab-sep). */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -3330,7 +3330,7 @@ int tools_web_tools_u_list_registered_web_providers(const char *arg) {
     return 0;
 }
 
-/* PoP: _probe_worker @ tools/env_probe.py:_probe_worker */
+/* PoP: tools_env_probe_u_probe_worker @ tools/env_probe.py:_probe_worker */
 int tools_env_probe_u_probe_worker(const char *arg) {
     /* Python: compute probe line, publish. Arg = "gen\tcurrent_gen\tline". */
     if (!arg || !*arg) { printf("probe line published\n"); return 0; }
@@ -3343,7 +3343,7 @@ int tools_env_probe_u_probe_worker(const char *arg) {
     return 0;
 }
 
-/* PoP: _ensure_probe_started @ tools/env_probe.py:_ensure_probe_started */
+/* PoP: tools_env_probe_u_ensure_probe_started @ tools/env_probe.py:_ensure_probe_started */
 int tools_env_probe_u_ensure_probe_started(const char *arg) {
     /* Python: start thread unless done/alive. Arg = "done\talive". */
     if (!arg || !*arg) { printf("probe started\n"); return 0; }
@@ -3356,7 +3356,7 @@ int tools_env_probe_u_ensure_probe_started(const char *arg) {
     return 0;
 }
 
-/* PoP: warm_environment_probe_async @ tools/env_probe.py:warm_environment_probe_async */
+/* PoP: tools_env_probe_warm_environment_probe_async @ tools/env_probe.py:warm_environment_probe_async */
 int tools_env_probe_warm_environment_probe_async(const char *arg) {
     /* Python: kick off probe thread (idempotent) — REAL thread spawn. */
     (void)arg;
@@ -3368,7 +3368,7 @@ int tools_env_probe_warm_environment_probe_async(const char *arg) {
     return 0;
 }
 
-/* PoP: _is_orphaned @ tools/mcp_stdio_watchdog.py:_is_orphaned */
+/* PoP: tools_mcp_stdio_watchdog_u_is_orphaned @ tools/mcp_stdio_watchdog.py:_is_orphaned */
 int tools_mcp_stdio_watchdog_u_is_orphaned(const char *arg) {
     /* Python: getppid() != original_ppid — the process lost its original
      * POSIX parent. The C port captures the original ppid on first call. */
@@ -3379,7 +3379,7 @@ int tools_mcp_stdio_watchdog_u_is_orphaned(const char *arg) {
     return 0;
 }
 
-/* PoP: _terminate_process_group @ tools/mcp_stdio_watchdog.py:_terminate_process_group */
+/* PoP: tools_mcp_stdio_watchdog_u_terminate_process_group @ tools/mcp_stdio_watchdog.py:_terminate_process_group */
 int tools_mcp_stdio_watchdog_u_terminate_process_group(const char *arg) {
     /* Python: SIGTERM then SIGKILL. Arg =
      * "has_killpg\tstate\tresult". */
@@ -3394,7 +3394,7 @@ int tools_mcp_stdio_watchdog_u_terminate_process_group(const char *arg) {
     return 0;
 }
 
-/* PoP: _watchdog_loop @ tools/mcp_stdio_watchdog.py:_watchdog_loop */
+/* PoP: tools_mcp_stdio_watchdog_u_watchdog_loop @ tools/mcp_stdio_watchdog.py:_watchdog_loop */
 int tools_mcp_stdio_watchdog_u_watchdog_loop(const char *arg) {
     /* Python: while proc alive: if orphaned(original_ppid):
      * terminate_process_group(proc); return; sleep(_POLL_INTERVAL_S).
@@ -3414,7 +3414,7 @@ int tools_mcp_stdio_watchdog_u_watchdog_loop(const char *arg) {
     return 0;
 }
 
-/* PoP: _normalize_target @ tools/open_preview_tool.py:_normalize_target */
+/* PoP: tools_open_preview_tool_u_normalize_target @ tools/open_preview_tool.py:_normalize_target */
 int tools_open_preview_tool_u_normalize_target(const char *arg) {
     /* Python: bare host -> https; localhost -> http; pass through. Arg =
      * raw. */
@@ -3438,7 +3438,7 @@ int tools_open_preview_tool_u_normalize_target(const char *arg) {
     return 0;
 }
 
-/* PoP: open_preview_tool @ tools/open_preview_tool.py:open_preview_tool */
+/* PoP: tools_open_preview_tool_open_preview_tool @ tools/open_preview_tool.py:open_preview_tool */
 int tools_open_preview_tool_open_preview_tool(const char *arg) {
     /* Python: normalize + emit preview.open. Arg =
      * "target\tstate\terr". */
@@ -3461,7 +3461,7 @@ int tools_open_preview_tool_open_preview_tool(const char *arg) {
     return 0;
 }
 
-/* PoP: check_open_preview_requirements @ tools/open_preview_tool.py:check_open_preview_requirements */
+/* PoP: tools_open_preview_tool_check_open_preview_requirements @ tools/open_preview_tool.py:check_open_preview_requirements */
 int tools_open_preview_tool_check_open_preview_requirements(const char *arg) {
     /* Python: env_var_enabled("HERMES_DESKTOP") — desktop GUI only. */
     (void)arg;
@@ -3471,7 +3471,7 @@ int tools_open_preview_tool_check_open_preview_requirements(const char *arg) {
     return 0;
 }
 
-/* PoP: mark_speech_interrupted @ tools/tts_streaming.py:mark_speech_interrupted */
+/* PoP: tools_tts_streaming_mark_speech_interrupted @ tools/tts_streaming.py:mark_speech_interrupted */
 int tools_tts_streaming_mark_speech_interrupted(const char *arg) {
     /* Python: global _interrupted_at = time.monotonic(). */
     (void)arg;
@@ -3481,7 +3481,7 @@ int tools_tts_streaming_mark_speech_interrupted(const char *arg) {
     return 0;
 }
 
-/* PoP: take_speech_interrupted @ tools/tts_streaming.py:take_speech_interrupted */
+/* PoP: tools_tts_streaming_take_speech_interrupted @ tools/tts_streaming.py:take_speech_interrupted */
 int tools_tts_streaming_take_speech_interrupted(const char *arg) {
     /* Python: pop latch; True when barge within TTL. Arg = "at\tnow" epoch
      * doubles (at empty = no latch). */
@@ -3495,7 +3495,7 @@ int tools_tts_streaming_take_speech_interrupted(const char *arg) {
     return 0;
 }
 
-/* PoP: resolve_streaming_provider @ tools/tts_streaming.py:resolve_streaming_provider */
+/* PoP: tools_tts_streaming_resolve_streaming_provider @ tools/tts_streaming.py:resolve_streaming_provider */
 int tools_tts_streaming_resolve_streaming_provider(const char *arg) {
     /* Python: ready streamer or None. Arg = "name\tavailable\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -3509,7 +3509,7 @@ int tools_tts_streaming_resolve_streaming_provider(const char *arg) {
     return 0;
 }
 
-/* PoP: list_windows @ tools/computer_use/backend.py:list_windows */
+/* PoP: tools_computer_use_backend_list_windows @ tools/computer_use/backend.py:list_windows */
 int tools_computer_use_backend_list_windows(const char *arg) {
     /* Python: return [] (compatibility hook for pre-window-discovery
      * backends). Arg unused. */
@@ -3518,7 +3518,7 @@ int tools_computer_use_backend_list_windows(const char *arg) {
     return 0;
 }
 
-/* PoP: set_value @ tools/computer_use/backend.py:set_value */
+/* PoP: tools_computer_use_backend_set_value @ tools/computer_use/backend.py:set_value */
 int tools_computer_use_backend_set_value(const char *arg) {
     /* Python: set native value on element (AXPopUpButton selection) by
      * 1-based SOM index. Arg = "index\tvalue". */
@@ -3531,7 +3531,7 @@ int tools_computer_use_backend_set_value(const char *arg) {
     return 0;
 }
 
-/* PoP: focus_pane_tool @ tools/focus_pane_tool.py:focus_pane_tool */
+/* PoP: tools_focus_pane_tool_focus_pane_tool @ tools/focus_pane_tool.py:focus_pane_tool */
 int tools_focus_pane_tool_focus_pane_tool(const char *arg) {
     /* Python: pane reveal or tool_error. Arg = "pane\tvalid\tok". */
     if (!arg || !*arg) { printf("error: pane must be one of: <panes>.\n"); return 0; }
@@ -3545,7 +3545,7 @@ int tools_focus_pane_tool_focus_pane_tool(const char *arg) {
     return 0;
 }
 
-/* PoP: check_focus_pane_requirements @ tools/focus_pane_tool.py:check_focus_pane_requirements */
+/* PoP: tools_focus_pane_tool_check_focus_pane_requirements @ tools/focus_pane_tool.py:check_focus_pane_requirements */
 int tools_focus_pane_tool_check_focus_pane_requirements(const char *arg) {
     /* Python: env_var_enabled("HERMES_DESKTOP") — desktop GUI only. */
     (void)arg;
@@ -3555,7 +3555,7 @@ int tools_focus_pane_tool_check_focus_pane_requirements(const char *arg) {
     return 0;
 }
 
-/* PoP: check_image_generation_requirements @ tools/image_generation_tool.py:check_image_generation_requirements */
+/* PoP: tools_image_generation_tool_check_image_generation_requirements @ tools/image_generation_tool.py:check_image_generation_requirements */
 int tools_image_generation_tool_check_image_generation_requirements(const char *arg) {
     /* Python: fal or configured plugin. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -3566,7 +3566,7 @@ int tools_image_generation_tool_check_image_generation_requirements(const char *
     return 0;
 }
 
-/* PoP: _dispatch_to_plugin_provider @ tools/image_generation_tool.py:_dispatch_to_plugin_provider */
+/* PoP: tools_image_generation_tool_u_dispatch_to_plugin_provider @ tools/image_generation_tool.py:_dispatch_to_plugin_provider */
 int tools_image_generation_tool_u_dispatch_to_plugin_provider(const char *arg) {
     /* Python: plugin registry route. Arg =
      * "dispatched\tstate\tresult". */
@@ -3581,7 +3581,7 @@ int tools_image_generation_tool_u_dispatch_to_plugin_provider(const char *arg) {
     return 0;
 }
 
-/* PoP: post_json @ tools/microsoft_graph_client.py:post_json */
+/* PoP: tools_microsoft_graph_client_post_json @ tools/microsoft_graph_client.py:post_json */
 int tools_microsoft_graph_client_post_json(const char *arg) {
     /* Python: POST decode. Arg =
      * "state\tresult\terr". */
@@ -3598,7 +3598,7 @@ int tools_microsoft_graph_client_post_json(const char *arg) {
     return 0;
 }
 
-/* PoP: _request @ tools/microsoft_graph_client.py:_request */
+/* PoP: tools_microsoft_graph_client_u_request @ tools/microsoft_graph_client.py:_request */
 int tools_microsoft_graph_client_u_request(const char *arg) {
     /* Python: retry + refresh. Arg =
      * "state\tresult\terr". */
@@ -3615,7 +3615,7 @@ int tools_microsoft_graph_client_u_request(const char *arg) {
     return 0;
 }
 
-/* PoP: _media_caption_split @ tools/send_message_tool.py:_media_caption_split */
+/* PoP: tools_send_message_tool_u_media_caption_split @ tools/send_message_tool.py:_media_caption_split */
 int tools_send_message_tool_u_media_caption_split(const char *arg) {
     /* Python: caption chokepoint. Arg =
      * "captionable\tstate\tresult". */
@@ -3629,7 +3629,7 @@ int tools_send_message_tool_u_media_caption_split(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_slack_user_target @ tools/send_message_tool.py:_resolve_slack_user_target */
+/* PoP: tools_send_message_tool_u_resolve_slack_user_target @ tools/send_message_tool.py:_resolve_slack_user_target */
 int tools_send_message_tool_u_resolve_slack_user_target(const char *arg) {
     /* Python: DM open. Arg =
      * "state\tresult\terr". */
@@ -3646,7 +3646,7 @@ int tools_send_message_tool_u_resolve_slack_user_target(const char *arg) {
     return 0;
 }
 
-/* PoP: _callback_api @ tools/thread_context.py:_callback_api */
+/* PoP: tools_thread_context_u_callback_api @ tools/thread_context.py:_callback_api */
 int tools_thread_context_u_callback_api(const char *arg) {
     /* Python: lazy terminal_tool callback getters/setters. Arg =
      * "available\tstate". */
@@ -3656,7 +3656,7 @@ int tools_thread_context_u_callback_api(const char *arg) {
     return 0;
 }
 
-/* PoP: propagate_context_to_thread @ tools/thread_context.py:propagate_context_to_thread */
+/* PoP: tools_thread_context_propagate_context_to_thread @ tools/thread_context.py:propagate_context_to_thread */
 int tools_thread_context_propagate_context_to_thread(const char *arg) {
     /* Python: fail-closed wrapper. Arg =
      * "cb_captured\tstate\tresult". */
@@ -3670,7 +3670,7 @@ int tools_thread_context_propagate_context_to_thread(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_active_provider @ tools/video_generation_tool.py:_resolve_active_provider */
+/* PoP: tools_video_generation_tool_u_resolve_active_provider @ tools/video_generation_tool.py:_resolve_active_provider */
 int tools_video_generation_tool_u_resolve_active_provider(const char *arg) {
     /* Python: active provider object or None. Arg = "provider\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -3680,7 +3680,7 @@ int tools_video_generation_tool_u_resolve_active_provider(const char *arg) {
     return 0;
 }
 
-/* PoP: _handle_video_generate @ tools/video_generation_tool.py:_handle_video_generate */
+/* PoP: tools_video_generation_tool_u_handle_video_generate @ tools/video_generation_tool.py:_handle_video_generate */
 int tools_video_generation_tool_u_handle_video_generate(const char *arg) {
     /* Python: video surface. Arg =
      * "state\tresult\terr". */
@@ -3705,7 +3705,7 @@ int tools_video_generation_tool_u_handle_video_generate(const char *arg) {
     return 0;
 }
 
-/* PoP: cancel @ tools/voice_mode.py:cancel */
+/* PoP: tools_voice_mode_cancel @ tools/voice_mode.py:cancel */
 int tools_voice_mode_cancel(const char *arg) {
     /* Python: stop recording, unlink path. Arg = "path\texists". */
     if (!arg || !*arg) { printf("voice recording cancelled\n"); return 0; }
@@ -3715,7 +3715,7 @@ int tools_voice_mode_cancel(const char *arg) {
     return 0;
 }
 
-/* PoP: cancel @ tools/voice_mode.py:cancel */
+/* PoP: tools_voice_mode_cancel_2 @ tools/voice_mode.py:cancel */
 int tools_voice_mode_cancel_2(const char *arg) {
     /* Python: duplicate stub — same as cancel. Arg = "path\texists". */
     if (!arg || !*arg) { printf("voice recording cancelled\n"); return 0; }
@@ -3725,7 +3725,7 @@ int tools_voice_mode_cancel_2(const char *arg) {
     return 0;
 }
 
-/* PoP: sanitize_display_text @ tools/ansi_strip.py:sanitize_display_text */
+/* PoP: tools_ansi_strip_sanitize_display_text @ tools/ansi_strip.py:sanitize_display_text */
 int tools_ansi_strip_sanitize_display_text(const char *arg) {
     /* Python: strip escapes + control chars. Arg = "text\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -3737,7 +3737,7 @@ int tools_ansi_strip_sanitize_display_text(const char *arg) {
     return 0;
 }
 
-/* PoP: has_binary_extension @ tools/binary_extensions.py:has_binary_extension */
+/* PoP: tools_binary_extensions_has_binary_extension @ tools/binary_extensions.py:has_binary_extension */
 int tools_binary_extensions_has_binary_extension(const char *arg) {
     /* Python: path[dot:].lower() in BINARY_EXTENSIONS (no I/O).
      * Arg = file path. */
@@ -3763,7 +3763,7 @@ int tools_binary_extensions_has_binary_extension(const char *arg) {
     return 0;
 }
 
-/* PoP: get_camofox_state_dir @ tools/browser_camofox_state.py:get_camofox_state_dir */
+/* PoP: tools_browser_camofox_state_get_camofox_state_dir @ tools/browser_camofox_state.py:get_camofox_state_dir */
 int tools_browser_camofox_state_get_camofox_state_dir(const char *arg) {
     /* Python: get_hermes_home() / CAMOFOX_STATE_DIR_NAME / CAMOFOX_STATE_SUBDIR. */
     (void)arg;
@@ -3773,7 +3773,7 @@ int tools_browser_camofox_state_get_camofox_state_dir(const char *arg) {
     return 0;
 }
 
-/* PoP: resolve_threshold @ tools/budget_config.py:resolve_threshold */
+/* PoP: tools_budget_config_resolve_threshold @ tools/budget_config.py:resolve_threshold */
 int tools_budget_config_resolve_threshold(const char *arg) {
     /* Python: pinned > overrides > registry > default. Arg =
      * "state\tresult". */
@@ -3785,7 +3785,7 @@ int tools_budget_config_resolve_threshold(const char *arg) {
     return 0;
 }
 
-/* PoP: resolve_clarify_timeout @ tools/clarify_gateway.py:resolve_clarify_timeout */
+/* PoP: tools_clarify_gateway_resolve_clarify_timeout @ tools/clarify_gateway.py:resolve_clarify_timeout */
 int tools_clarify_gateway_resolve_clarify_timeout(const char *arg) {
     /* Python: clarify.timeout > agent.clarify_timeout > 3600. Arg =
      * "legacy\tagent\tresult". */
@@ -3800,7 +3800,7 @@ int tools_clarify_gateway_resolve_clarify_timeout(const char *arg) {
     return 0;
 }
 
-/* PoP: _adjust_thread_count @ tools/daemon_pool.py:_adjust_thread_count */
+/* PoP: tools_daemon_pool_u_adjust_thread_count @ tools/daemon_pool.py:_adjust_thread_count */
 int tools_daemon_pool_u_adjust_thread_count(const char *arg) {
     /* Python: spawn daemon worker when under max. Arg =
      * "num_threads\tmax_workers\tspawned". */
@@ -3814,7 +3814,7 @@ int tools_daemon_pool_u_adjust_thread_count(const char *arg) {
     return 0;
 }
 
-/* PoP: log_call @ tools/debug_helpers.py:log_call */
+/* PoP: tools_debug_helpers_log_call @ tools/debug_helpers.py:log_call */
 int tools_debug_helpers_log_call(const char *arg) {
     /* Python: append {timestamp, tool_name, **data} to in-memory log when
      * enabled. Arg = "enabled\ttool_name\tdata_json". */
@@ -3828,7 +3828,7 @@ int tools_debug_helpers_log_call(const char *arg) {
     return 0;
 }
 
-/* PoP: set_emitter @ tools/desktop_ui.py:set_emitter */
+/* PoP: tools_desktop_ui_set_emitter @ tools/desktop_ui.py:set_emitter */
 int tools_desktop_ui_set_emitter(const char *arg) {
     /* Python: global _emit; _emit = fn — install (or clear) the renderer
      * event sink. The C port stores the emitter token; NULL/empty clears. */
@@ -3839,7 +3839,7 @@ int tools_desktop_ui_set_emitter(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_host_path @ tools/environments/file_sync.py:_resolve_host_path */
+/* PoP: tools_environments_file_sync_u_resolve_host_path @ tools/environments/file_sync.py:_resolve_host_path */
 int tools_environments_file_sync_u_resolve_host_path(const char *arg) {
     /* Python: first host whose remote == remote_path, else None. Arg =
      * "remote_path\thost=remote\thost=remote..." */
@@ -3864,7 +3864,7 @@ int tools_environments_file_sync_u_resolve_host_path(const char *arg) {
     return 0;
 }
 
-/* PoP: _request @ tools/environments/managed_modal.py:_request */
+/* PoP: tools_environments_managed_mod_u_request @ tools/environments/managed_modal.py:_request */
 int tools_environments_managed_mod_u_request(const char *arg) {
     /* Python: requests.request with bearer + JSON. Arg =
      * "method\torigin\tpath\tpayload". */
@@ -3879,7 +3879,7 @@ int tools_environments_managed_mod_u_request(const char *arg) {
     return 0;
 }
 
-/* PoP: _do_request @ tools/feishu_drive_tool.py:_do_request */
+/* PoP: tools_feishu_drive_tool_u_do_request @ tools/feishu_drive_tool.py:_do_request */
 int tools_feishu_drive_tool_u_do_request(const char *arg) {
     /* Python: lark request. Arg = "state\tcode\tresult". */
     if (!arg || !*arg) { printf("0\t\t{}\n"); return 0; }
@@ -3891,7 +3891,7 @@ int tools_feishu_drive_tool_u_do_request(const char *arg) {
     return 0;
 }
 
-/* PoP: clear_current_thread_interrupt @ tools/interrupt.py:clear_current_thread_interrupt */
+/* PoP: tools_interrupt_clear_current_thread_interrupt @ tools/interrupt.py:clear_current_thread_interrupt */
 int tools_interrupt_clear_current_thread_interrupt(const char *arg) {
     /* Python: per-thread clear. Arg = "state". */
     (void)arg;
@@ -3900,7 +3900,7 @@ int tools_interrupt_clear_current_thread_interrupt(const char *arg) {
     return 0;
 }
 
-/* PoP: _build_auth_header @ tools/mixture_of_agents_tool.py:_build_auth_header */
+/* PoP: tools_mixture_of_agents_tool_u_build_auth_header @ tools/mixture_of_agents_tool.py:_build_auth_header */
 int tools_mixture_of_agents_tool_u_build_auth_header(const char *arg) {
     /* Python: env key. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -3911,7 +3911,7 @@ int tools_mixture_of_agents_tool_u_build_auth_header(const char *arg) {
     return 0;
 }
 
-/* PoP: _build_auth_header @ tools/moa_performance.py:_build_auth_header */
+/* PoP: tools_moa_performance_u_build_auth_header @ tools/moa_performance.py:_build_auth_header */
 int tools_moa_performance_u_build_auth_header(const char *arg) {
     /* Python: env-key bearer. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -3922,7 +3922,7 @@ int tools_moa_performance_u_build_auth_header(const char *arg) {
     return 0;
 }
 
-/* PoP: scan_file @ tools/skills_guard.py:scan_file */
+/* PoP: tools_skills_guard_scan_file @ tools/skills_guard.py:scan_file */
 int tools_skills_guard_scan_file(const char *arg) {
     /* Python: threat scan. Arg =
      * "findings\tstate\tresult". */
@@ -3937,7 +3937,7 @@ int tools_skills_guard_scan_file(const char *arg) {
     return 0;
 }
 
-/* PoP: _record_tirith_crash @ tools/tirith_security.py:_record_tirith_crash */
+/* PoP: tools_tirith_security_u_record_tirith_crash @ tools/tirith_security.py:_record_tirith_crash */
 int tools_tirith_security_u_record_tirith_crash(const char *arg) {
     /* Python: ++crash, open breaker at limit. Arg = "count\tlimit". */
     if (!arg || !*arg) { printf("crash recorded\n"); return 0; }
@@ -3948,7 +3948,7 @@ int tools_tirith_security_u_record_tirith_crash(const char *arg) {
     return 0;
 }
 
-/* PoP: _safe_float @ tools/tool_search.py:_safe_float */
+/* PoP: tools_tool_search_u_safe_float @ tools/tool_search.py:_safe_float */
 int tools_tool_search_u_safe_float(const char *arg) {
     /* Python: float(value) or fallback. Arg = "value\tfallback". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -3965,7 +3965,7 @@ int tools_tool_search_u_safe_float(const char *arg) {
     return 0;
 }
 
-/* PoP: check_website_access @ tools/website_policy.py:check_website_access */
+/* PoP: tools_website_policy_check_website_access @ tools/website_policy.py:check_website_access */
 int tools_website_policy_check_website_access(const char *arg) {
     /* Python: fail-open blocklist. Arg =
      * "blocked\tstate\tresult". */

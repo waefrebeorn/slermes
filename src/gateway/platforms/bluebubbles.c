@@ -80,7 +80,7 @@ static char *url_encode(const char *s) {
  *  Send text message (existing, refactored)
  * ================================================================ */
 
-/* PoP: send_message @ gateway/platforms/bluebubbles.py:send_message */
+/* PoP: bluebubbles_send_message @ gateway/platforms/bluebubbles.py:send_message */
 /* Port of Python gateway/platforms/bluebubbles.py:send_message(). */
 bool bluebubbles_send_message(http_client_t *http, const char *to, const char *text) {
     if (!g_bb_url[0] || !to || !text) return false;
@@ -164,9 +164,9 @@ bool bluebubbles_send_tapback(http_client_t *http,
  *   -F "tempGuid=<uuid>"
  * ================================================================ */
 
-/* PoP: signal_send_attachment @ gateway/platforms/bluebubbles.py:_send_attachment */
+/* PoP: bluebubbles_send_attachment @ gateway/platforms/bluebubbles.py:_send_attachment */
 /* Port of Python gateway/platforms/bluebubbles.py:_send_attachment(). */
-/* PoP: send_attachment @ gateway/platforms/bluebubbles.py:send_attachment */
+/* PoP: bluebubbles_send_attachment @ gateway/platforms/bluebubbles.py:send_attachment */
 /* Port of Python gateway/platforms/bluebubbles.py:send_attachment(). */
 bool bluebubbles_send_attachment(http_client_t *http,
                                   const char *chat_id,
@@ -253,7 +253,7 @@ const char *bluebubbles_get_group_id(json_node_t *update) {
  * DELETE /api/v1/chat/{encoded_guid}/typing (stop)
  * ================================================================ */
 
-/* PoP: pb_send_typing @ gateway/platforms/bluebubbles.py:send_typing */
+/* PoP: bluebubbles_send_typing @ gateway/platforms/bluebubbles.py:send_typing */
 /* Port of Python gateway/platforms/bluebubbles.py:send_typing(). */
 bool bluebubbles_send_typing(http_client_t *http, const char *chat_id) {
     if (!g_bb_url[0] || !chat_id) return false;
@@ -279,7 +279,7 @@ bool bluebubbles_send_typing(http_client_t *http, const char *chat_id) {
     return ok;
 }
 
-/* PoP: pb_stop_typing @ gateway/platforms/bluebubbles.py:stop_typing */
+/* PoP: bluebubbles_stop_typing @ gateway/platforms/bluebubbles.py:stop_typing */
 /* Port of Python gateway/platforms/bluebubbles.py:stop_typing(). */
 bool bluebubbles_stop_typing(http_client_t *http, const char *chat_id) {
     if (!g_bb_url[0] || !chat_id) return false;

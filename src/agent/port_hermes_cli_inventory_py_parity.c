@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_inventory_load_picker_context @ hermes_cli/inventory.py:load_picker_context */
+/* PoP: hermes_cli_inventory_load_picker_context_p @ hermes_cli/inventory.py:load_picker_context */
 json_t *hermes_cli_inventory_load_picker_context_p(void) {
     return json_object();
 }

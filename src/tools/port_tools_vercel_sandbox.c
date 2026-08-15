@@ -46,7 +46,7 @@ static bool ve_is_transient_name(const char *name)
            strstr(lower, "servererror") != NULL;
 }
 
-/* PoP: _exception_chain @ tools/environments/vercel_sandbox.py:_exception_chain */
+/* PoP: ve_exception_chain @ tools/environments/vercel_sandbox.py:_exception_chain */
 char *ve_exception_chain(const char *exc_json)
 {
     if (!exc_json) return strdup("[]");
@@ -79,7 +79,7 @@ char *ve_exception_chain(const char *exc_json)
     return out;
 }
 
-/* PoP: _extract_status_code @ tools/environments/vercel_sandbox.py:_extract_status_code */
+/* PoP: ve_extract_status_code @ tools/environments/vercel_sandbox.py:_extract_status_code */
 int ve_extract_status_code(const char *exc_json)
 {
     if (!exc_json) return -1;
@@ -106,7 +106,7 @@ int ve_extract_status_code(const char *exc_json)
     return code;
 }
 
-/* PoP: _is_transient_vercel_error @ tools/environments/vercel_sandbox.py:_is_transient_vercel_error */
+/* PoP: ve_is_transient_vercel_error @ tools/environments/vercel_sandbox.py:_is_transient_vercel_error */
 bool ve_is_transient_vercel_error(const char *exc_json)
 {
     if (!exc_json) return false;
@@ -132,7 +132,7 @@ bool ve_is_transient_vercel_error(const char *exc_json)
     return false;
 }
 
-/* PoP: _coerce_text @ tools/environments/vercel_sandbox.py:_coerce_text */
+/* PoP: ve_coerce_text @ tools/environments/vercel_sandbox.py:_coerce_text */
 char *ve_coerce_text(const char *value_json)
 {
     if (!value_json) return strdup("");
@@ -162,7 +162,7 @@ char *ve_coerce_text(const char *value_json)
     return out;
 }
 
-/* PoP: _extract_result_output @ tools/environments/vercel_sandbox.py:_extract_result_output */
+/* PoP: ve_extract_result_output @ tools/environments/vercel_sandbox.py:_extract_result_output */
 char *ve_extract_result_output(const char *result_json)
 {
     if (!result_json) return strdup("");
@@ -193,7 +193,7 @@ char *ve_extract_result_output(const char *result_json)
     return out;
 }
 
-/* PoP: _extract_result_returncode @ tools/environments/vercel_sandbox.py:_extract_result_returncode */
+/* PoP: ve_extract_result_returncode @ tools/environments/vercel_sandbox.py:_extract_result_returncode */
 int ve_extract_result_returncode(const char *result_json)
 {
     if (!result_json) return 1;
@@ -215,7 +215,7 @@ int ve_extract_result_returncode(const char *result_json)
     return code;
 }
 
-/* PoP: _extract_snapshot_id @ tools/environments/vercel_sandbox.py:_extract_snapshot_id */
+/* PoP: ve_extract_snapshot_id @ tools/environments/vercel_sandbox.py:_extract_snapshot_id */
 char *ve_extract_snapshot_id(const char *snapshot_json)
 {
     if (!snapshot_json) return NULL;

@@ -14,17 +14,17 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: agent_chat_completion_helpers_report_stale_nonstream_kill @ agent/chat_completion_helpers.py:_report_stale_nonstream_kill */
+/* PoP: agent_chat_completion_helpers_report_stale_nonstream_kill_p @ agent/chat_completion_helpers.py:_report_stale_nonstream_kill */
 json_t *agent_chat_completion_helpers_report_stale_nonstream_kill_p(void) {
     return json_object();
 }
 
-/* PoP: agent_chat_completion_helpers_touch_stale_kill_activity @ agent/chat_completion_helpers.py:_touch_stale_kill_activity */
+/* PoP: agent_chat_completion_helpers_touch_stale_kill_activity_p @ agent/chat_completion_helpers.py:_touch_stale_kill_activity */
 json_t *agent_chat_completion_helpers_touch_stale_kill_activity_p(void) {
     return json_object();
 }
 
-/* PoP: agent_chat_completion_helpers_resolve_direct_stale_timeout @ agent/chat_completion_helpers.py:_resolve_direct_stale_timeout */
+/* PoP: agent_chat_completion_helpers_resolve_direct_stale_timeout_p @ agent/chat_completion_helpers.py:_resolve_direct_stale_timeout */
 json_t *agent_chat_completion_helpers_resolve_direct_stale_timeout_p(void) {
     return json_object();
 }

@@ -14,7 +14,7 @@
  * active HERMES_HOME auth.json path. */
 extern char *auth_file_path(void);
 
-/* PoP: cli_agent_anthropic_adapter__get_anthropic_sdk @ agent/anthropic_adapter.py:_get_anthropic_sdk */
+/* PoP: cli_agent_anthropic_adapter__resolve_positive_anthropic_max_tokens @ agent/anthropic_adapter.py:_get_anthropic_sdk */
 const char* cli_agent_anthropic_adapter__get_anthropic_sdk(void) {
     hermes_log(LOG_DEBUG, "anthropic_adapter", "_get_anthropic_sdk: lazy import not available in C");
     return NULL;
@@ -179,7 +179,7 @@ int cli_agent_anthropic_adapter_sanitize_anthropic_kwargs(const char *model, int
     return 0;
 }
 
-/* PoP: cli_agent_anthropic_adapter__resolve_anthropic_pool_token @ agent/anthropic_adapter.py:_resolve_anthropic_pool_token */
+/* PoP: token @ agent/anthropic_adapter.py:_resolve_anthropic_pool_token */
 /* Return the first available Anthropic OAuth token from credential_pool
  * (read-only: never clears expired entries or triggers a network refresh, so a
  * bare resolve never mutates ~/.hermes/auth.json). Faithful to the Python

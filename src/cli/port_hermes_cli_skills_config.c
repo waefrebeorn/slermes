@@ -43,7 +43,7 @@ int cli_hermes_cli_skills_config_save_disabled_skills(
     return 0;
 }
 
-/* PoP: cli_hermes_cli_skills_config__list_all_skills @ hermes_cli/skills_config.py:_list_all_skills */
+/* PoP: skills @ hermes_cli/skills_config.py:_list_all_skills */
 
 /* Port of Python hermes_cli/skills_config.py:_list_all_skills */
 /* Returns all installed skills (ignoring disabled state). */
@@ -57,7 +57,7 @@ int cli_hermes_cli_skills_config__list_all_skills(
     return 0;
 }
 
-/* PoP: cli_hermes_cli_skills_config__get_categories @ hermes_cli/skills_config.py:_get_categories */
+/* PoP: names @ hermes_cli/skills_config.py:_get_categories */
 
 /* Port of Python hermes_cli/skills_config.py:_get_categories */
 /* Returns sorted unique category names (None -> 'uncategorized'). */
@@ -91,7 +91,7 @@ int cli_hermes_cli_skills_config__toggle_by_category(
     return 0;
 }
 
-/* PoP: cli_hermes_cli_skills_config__select_platform @ hermes_cli/skills_config.py:_select_platform */
+/* PoP: key @ hermes_cli/skills_config.py:_select_platform */
 /*
  * Port of Python hermes_cli/skills_config.py:_select_platform().
  * The Python version prompts via TTY input(); the C port takes the selection

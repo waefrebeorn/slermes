@@ -11,7 +11,7 @@
 #include <ctype.h>
 #include "hermes_json.h"
 
-/* PoP: _normalize_forward_env_names @ tools/environments/docker.py:_normalize_forward_env_names */
+/* PoP: envd_u_normalize_forward_env_names @ tools/environments/docker.py:_normalize_forward_env_names */
 int envd_u_normalize_forward_env_names(const char *arg) {
     /* Python: dedup valid env names. Arg = "items" (tab-sep). */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -36,7 +36,7 @@ int envd_u_normalize_forward_env_names(const char *arg) {
     return 0;
 }
 
-/* PoP: _normalize_env_dict @ tools/environments/docker.py:_normalize_env_dict */
+/* PoP: envd_u_normalize_env_dict @ tools/environments/docker.py:_normalize_env_dict */
 int envd_u_normalize_env_dict(const char *arg) {
     /* Python: {str:str} normalize. Arg = "env_json\tresult". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -45,7 +45,7 @@ int envd_u_normalize_env_dict(const char *arg) {
     return 0;
 }
 
-/* PoP: _load_hermes_env_vars @ tools/environments/docker.py:_load_hermes_env_vars */
+/* PoP: envd_u_load_hermes_env_vars @ tools/environments/docker.py:_load_hermes_env_vars */
 int envd_u_load_hermes_env_vars(const char *arg) {
     /* Python: load_env() or {} (never fatal). Arg = env JSON. */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -53,7 +53,7 @@ int envd_u_load_hermes_env_vars(const char *arg) {
     return 0;
 }
 
-/* PoP: _sanitize_label_value @ tools/environments/docker.py:_sanitize_label_value */
+/* PoP: envd_u_sanitize_label_value @ tools/environments/docker.py:_sanitize_label_value */
 int envd_u_sanitize_label_value(const char *arg) {
     /* Python: alnum + _.- only, cap 63, empty -> unknown. Arg = value. */
     if (!arg || !*arg) { printf("unknown\n"); return 0; }
@@ -71,14 +71,14 @@ int envd_u_sanitize_label_value(const char *arg) {
     return 0;
 }
 
-/* PoP: _get_active_profile_name @ tools/environments/docker.py:_get_active_profile_name */
+/* PoP: envd_u_get_active_profile_name @ tools/environments/docker.py:_get_active_profile_name */
 int envd_u_get_active_profile_name(const char *arg) {
     const char *p = getenv("HERMES_PROFILE");
     printf("%s\n", (p && *p) ? p : "default");
     return 0;
 }
 
-/* PoP: reap_orphan_containers @ tools/environments/docker.py:reap_orphan_containers */
+/* PoP: envd_reap_orphan_containers @ tools/environments/docker.py:reap_orphan_containers */
 int envd_reap_orphan_containers(const char *arg) {
     /* Python: label-scoped sweep. Arg =
      * "removed\tstate\tresult". */
@@ -91,7 +91,7 @@ int envd_reap_orphan_containers(const char *arg) {
     return 0;
 }
 
-/* PoP: _container_finished_at @ tools/environments/docker.py:_container_finished_at */
+/* PoP: envd_u_container_finished_at @ tools/environments/docker.py:_container_finished_at */
 int envd_u_container_finished_at(const char *arg) {
     /* Python: FinishedAt parse. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -102,7 +102,7 @@ int envd_u_container_finished_at(const char *arg) {
     return 0;
 }
 
-/* PoP: find_docker @ tools/environments/docker.py:find_docker */
+/* PoP: envd_find_docker @ tools/environments/docker.py:find_docker */
 int envd_find_docker(const char *arg) {
     /* Python: 4-step resolver. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -113,7 +113,7 @@ int envd_find_docker(const char *arg) {
     return 0;
 }
 
-/* PoP: _egress_proxy_args_for_docker @ tools/environments/docker.py:_egress_proxy_args_for_docker */
+/* PoP: envd_u_egress_proxy_args_for_docker @ tools/environments/docker.py:_egress_proxy_args_for_docker */
 int envd_u_egress_proxy_args_for_docker(const char *arg) {
     /* Python: iron-proxy wiring. Arg =
      * "enforced\tstate\tresult". */
@@ -128,7 +128,7 @@ int envd_u_egress_proxy_args_for_docker(const char *arg) {
     return 0;
 }
 
-/* PoP: _egress_reuse_fingerprint @ tools/environments/docker.py:_egress_reuse_fingerprint */
+/* PoP: envd_u_egress_reuse_fingerprint @ tools/environments/docker.py:_egress_reuse_fingerprint */
 int envd_u_egress_reuse_fingerprint(const char *arg) {
     /* Python: "off" when no args; sha256 of sorted JSON else. Arg =
      * "volume_args\tenv_overrides\thost_args" (tab-sep, may be empty). */
@@ -148,7 +148,7 @@ int envd_u_egress_reuse_fingerprint(const char *arg) {
     return 0;
 }
 
-/* PoP: _egress_enforce_on_docker @ tools/environments/docker.py:_egress_enforce_on_docker */
+/* PoP: envd_u_egress_enforce_on_docker @ tools/environments/docker.py:_egress_enforce_on_docker */
 int envd_u_egress_enforce_on_docker(const char *arg) {
     /* Python: bool(cfg.proxy.enforce_on_docker, default) fail-safe. Arg =
      * "enforce\tdefault" (enforce empty = unset). */
@@ -161,7 +161,7 @@ int envd_u_egress_enforce_on_docker(const char *arg) {
     return 0;
 }
 
-/* PoP: _critical_egress_env_names @ tools/environments/docker.py:_critical_egress_env_names */
+/* PoP: envd_u_critical_egress_env_names @ tools/environments/docker.py:_critical_egress_env_names */
 int envd_u_critical_egress_env_names(const char *arg) {
     /* Python: proxy/CA/env override names + *_API_KEY/_TOKEN. Arg =
      * "env_overrides" (tab-sep, may be empty). */
@@ -192,7 +192,7 @@ int envd_u_critical_egress_env_names(const char *arg) {
     return 0;
 }
 
-/* PoP: _extra_args_egress_collisions @ tools/environments/docker.py:_extra_args_egress_collisions */
+/* PoP: envd_u_extra_args_egress_collisions @ tools/environments/docker.py:_extra_args_egress_collisions */
 int envd_u_extra_args_egress_collisions(const char *arg) {
     /* Python: egress override scan. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -203,7 +203,7 @@ int envd_u_extra_args_egress_collisions(const char *arg) {
     return 0;
 }
 
-/* PoP: _build_security_args @ tools/environments/docker.py:_build_security_args */
+/* PoP: envd_u_build_security_args @ tools/environments/docker.py:_build_security_args */
 int envd_u_build_security_args(const char *arg) {
     /* Python: base security args + tmpfs + privdrop caps. Arg =
      * "run_exec\trun_as_host_user\targs". */
@@ -218,7 +218,7 @@ int envd_u_build_security_args(const char *arg) {
     return 0;
 }
 
-/* PoP: _image_uses_init_entrypoint @ tools/environments/docker.py:_image_uses_init_entrypoint */
+/* PoP: envd_u_image_uses_init_entrypoint @ tools/environments/docker.py:_image_uses_init_entrypoint */
 int envd_u_image_uses_init_entrypoint(const char *arg) {
     /* Python: s6 /init detect. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -229,7 +229,7 @@ int envd_u_image_uses_init_entrypoint(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_host_user_spec @ tools/environments/docker.py:_resolve_host_user_spec */
+/* PoP: envd_u_resolve_host_user_spec @ tools/environments/docker.py:_resolve_host_user_spec */
 int envd_u_resolve_host_user_spec(const char *arg) {
     /* Python: "<uid>:<gid>" or None. Arg = "uid\tgid\thas". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -240,7 +240,7 @@ int envd_u_resolve_host_user_spec(const char *arg) {
     return 0;
 }
 
-/* PoP: _cgroup_limits_available @ tools/environments/docker.py:_cgroup_limits_available */
+/* PoP: envd_u_cgroup_limits_available @ tools/environments/docker.py:_cgroup_limits_available */
 int envd_u_cgroup_limits_available(const char *arg) {
     /* Python: sleep-0 probe. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -251,7 +251,7 @@ int envd_u_cgroup_limits_available(const char *arg) {
     return 0;
 }
 
-/* PoP: _ensure_docker_available @ tools/environments/docker.py:_ensure_docker_available */
+/* PoP: envd_u_ensure_docker_available @ tools/environments/docker.py:_ensure_docker_available */
 int envd_u_ensure_docker_available(const char *arg) {
     /* Python: preflight. Arg = "state\tresult\terr". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -279,7 +279,7 @@ int envd_u_ensure_docker_available(const char *arg) {
     return 0;
 }
 
-/* PoP: _build_init_env_args @ tools/environments/docker.py:_build_init_env_args */
+/* PoP: envd_u_build_init_env_args @ tools/environments/docker.py:_build_init_env_args */
 int envd_u_build_init_env_args(const char *arg) {
     /* Python: -e args. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -291,7 +291,7 @@ int envd_u_build_init_env_args(const char *arg) {
     return 0;
 }
 
-/* PoP: _is_container_gone @ tools/environments/docker.py:_is_container_gone */
+/* PoP: envd_u_is_container_gone @ tools/environments/docker.py:_is_container_gone */
 int envd_u_is_container_gone(const char *arg) {
     /* Python: any(p in output for p in _NO_CONTAINER_PATTERNS) — true when
      * docker output says the container no longer exists. Arg = output. */
@@ -305,7 +305,7 @@ int envd_u_is_container_gone(const char *arg) {
     return 0;
 }
 
-/* PoP: _recreate_container @ tools/environments/docker.py:_recreate_container */
+/* PoP: envd_u_recreate_container @ tools/environments/docker.py:_recreate_container */
 int envd_u_recreate_container(const char *arg) {
     /* Python: label reuse first. Arg =
      * "reused\tstate\tresult". */
@@ -320,7 +320,7 @@ int envd_u_recreate_container(const char *arg) {
     return 0;
 }
 
-/* PoP: _storage_opt_supported @ tools/environments/docker.py:_storage_opt_supported */
+/* PoP: envd_u_storage_opt_supported @ tools/environments/docker.py:_storage_opt_supported */
 int envd_u_storage_opt_supported(const char *arg) {
     /* Python: overlay2+XFS probe. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -331,7 +331,7 @@ int envd_u_storage_opt_supported(const char *arg) {
     return 0;
 }
 
-/* PoP: _container_network_mode @ tools/environments/docker.py:_container_network_mode */
+/* PoP: envd_u_container_network_mode @ tools/environments/docker.py:_container_network_mode */
 int envd_u_container_network_mode(const char *arg) {
     /* Python: inspect NetworkMode. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -342,7 +342,7 @@ int envd_u_container_network_mode(const char *arg) {
     return 0;
 }
 
-/* PoP: _find_reusable_container @ tools/environments/docker.py:_find_reusable_container */
+/* PoP: envd_u_find_reusable_container @ tools/environments/docker.py:_find_reusable_container */
 int envd_u_find_reusable_container(const char *arg) {
     /* Python: label-restricted. Arg =
      * "state\tresult". */
@@ -354,7 +354,7 @@ int envd_u_find_reusable_container(const char *arg) {
     return 0;
 }
 
-/* PoP: wait_for_cleanup @ tools/environments/docker.py:wait_for_cleanup */
+/* PoP: envd_wait_for_cleanup @ tools/environments/docker.py:wait_for_cleanup */
 int envd_wait_for_cleanup(const char *arg) {
     /* Python: join cleanup thread. Arg = "alive\tjoined". */
     if (!arg || !*arg) { printf("1\n"); return 0; }
@@ -367,7 +367,7 @@ int envd_wait_for_cleanup(const char *arg) {
 
 /* ── tools/environments/docker.py gap functions ──────────────────── */
 
-/* PoP: _extra_args_set_shm_size @ tools/environments/docker.py:_extra_args_set_shm_size */
+/* PoP: envd_u_extra_args_set_shm_size @ tools/environments/docker.py:_extra_args_set_shm_size */
 int envd_u_extra_args_set_shm_size(const char *arg) {
     /* Python: True when user docker_extra_args already set --shm-size.
      * Arg = "extra_args_json" (JSON array of arg strings). */
@@ -391,7 +391,7 @@ int envd_u_extra_args_set_shm_size(const char *arg) {
     return found;
 }
 
-/* PoP: _additional_profile_scoped_passthrough_names @ tools/environments/docker.py:_additional_profile_scoped_passthrough_names */
+/* PoP: envd_u_additional_profile_scoped_passthrough_names @ tools/environments/docker.py:_additional_profile_scoped_passthrough_names */
 char *envd_u_additional_profile_scoped_passthrough_names(const char *arg) {
     /* Python: keep explicit docker_forward_env values out of shared snapshots.
      * Arg = "forward_env_json" (JSON array). */
@@ -399,7 +399,7 @@ char *envd_u_additional_profile_scoped_passthrough_names(const char *arg) {
     return strdup(arg);
 }
 
-/* PoP: _build_passthrough_env @ tools/environments/docker.py:_build_passthrough_env */
+/* PoP: envd_u_build_passthrough_env @ tools/environments/docker.py:_build_passthrough_env */
 char *envd_u_build_passthrough_env(const char *arg) {
     /* Python: resolve forwarded host variables through active profile scope.
      * Arg = "env_json" (JSON object of key->value). */
@@ -407,7 +407,7 @@ char *envd_u_build_passthrough_env(const char *arg) {
     return strdup(arg);
 }
 
-/* PoP: _resolve_passthrough_env @ tools/environments/docker.py:_resolve_passthrough_env */
+/* PoP: envd_u_resolve_passthrough_env @ tools/environments/docker.py:_resolve_passthrough_env */
 char *envd_u_resolve_passthrough_env(const char *arg) {
     /* Python: return (forwarded_values, scoped_names_to_unset).
      * Arg = "env_json\tunset_json". */
@@ -420,7 +420,7 @@ char *envd_u_resolve_passthrough_env(const char *arg) {
     return out;
 }
 
-/* PoP: _build_runtime_env_args_with_unsets @ tools/environments/docker.py:_build_runtime_env_args_with_unsets */
+/* PoP: envd_u_build_runtime_env_args_with_unsets @ tools/environments/docker.py:_build_runtime_env_args_with_unsets */
 char *envd_u_build_runtime_env_args_with_unsets(const char *arg) {
     /* Python: build runtime forwarding args plus absent-from-scope names.
      * Arg = "args_json\tunset_json". */
@@ -433,7 +433,7 @@ char *envd_u_build_runtime_env_args_with_unsets(const char *arg) {
     return out;
 }
 
-/* PoP: _build_runtime_env_args @ tools/environments/docker.py:_build_runtime_env_args */
+/* PoP: envd_u_build_runtime_env_args @ tools/environments/docker.py:_build_runtime_env_args */
 char *envd_u_build_runtime_env_args(const char *arg) {
     /* Python: build only dynamic forwarded values for a non-login command.
      * Arg = "args_json" (JSON array of -e key=value entries). */

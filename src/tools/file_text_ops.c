@@ -24,7 +24,7 @@ static char *dup_str(const char *s)
 
 /* ---- strip_terminal_fence_leaks ----------------------------------------- */
 
-/* PoP: file_text_ops_strip_terminal_fence_leaks @ tools/file_operations.py:_strip_terminal_fence_leaks */
+/* PoP: line @ tools/file_operations.py:_strip_terminal_fence_leaks */
 /* Per line: if the line contains an OSC (\x1b]) or a __HERMES_FENCE_ marker
  * (a "terminal wrapper"), strip OSC sequences, fence markers, and bell chars;
  * if the cleaned line is then empty, drop the whole line (incl. its \n).
@@ -105,7 +105,7 @@ char *file_text_ops_strip_terminal_fence_leaks(const char *text)
 
 /* ---- detect_line_ending ------------------------------------------------- */
 
-/* PoP: file_text_ops_detect_line_ending @ tools/file_operations.py:_detect_line_ending */
+/* PoP: newline @ tools/file_operations.py:_detect_line_ending */
 /* Returns malloc'd "crlf" / "lf" / "unknown". Python's _detect_line_ending
  * returns None for content without a newline (undetermined: new/empty/
  * single-line file), and the FS wrapper _detect_file_line_ending surfaces
@@ -175,7 +175,7 @@ char *file_text_ops_strip_bom(const char *text)
     return dup_str(text);
 }
 
-/* PoP: fo_file_has_bom @ tools/file_operations.py:_has_bom */
+/* PoP: file_text_ops_has_bom @ tools/file_operations.py:_has_bom */
 bool file_text_ops_has_bom(const char *text)
 {
     if (!text) return false;
@@ -270,7 +270,7 @@ char *file_text_ops_escape_shell_arg(const char *arg)
 
 /* ---- parse_search_context_line ------------------------------------------ */
 
-/* PoP: file_text_ops_parse_search_context_line @ tools/file_operations.py:_parse_search_context_line */
+/* PoP: present @ tools/file_operations.py:_parse_search_context_line */
 /* Parses grep/rg "path-line-content" format via the rightmost -<digits>-
  * separator. Returns JSON {"path":..,"line":..,"content":..} on match, or
  * "{}" when no -<digits>- separator is present (Python returns None). */

@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _sanitize_surrogates @ agent/message_sanitization.py:_sanitize_surrogates */
+/* PoP: msz_sanitize_surrogates @ agent/message_sanitization.py:_sanitize_surrogates */
 char *msz_sanitize_surrogates(const char *text) {
     /* Python: lone surrogates → U+FFFD. */
     if (!text) return strdup("");
@@ -44,7 +44,7 @@ char *msz_sanitize_surrogates(const char *text) {
     return out;
 }
 
-/* PoP: _sanitize_structure_surrogates @ agent/message_sanitization.py:_sanitize_structure_surrogates */
+/* PoP: msz_sanitize_structure_surrogates @ agent/message_sanitization.py:_sanitize_structure_surrogates */
 char *msz_sanitize_structure_surrogates(const char *payload_json) {
     /* Python: in-place nested payload pass. */
     if (!payload_json) return strdup("{}");
@@ -52,14 +52,14 @@ char *msz_sanitize_structure_surrogates(const char *payload_json) {
     return strdup(payload_json);
 }
 
-/* PoP: _sanitize_messages_surrogates @ agent/message_sanitization.py:_sanitize_messages_surrogates */
+/* PoP: msz_sanitize_messages_surrogates @ agent/message_sanitization.py:_sanitize_messages_surrogates */
 char *msz_sanitize_messages_surrogates(const char *messages_json) {
     if (!messages_json) return strdup("[]");
     printf("message surrogates sanitized\n");
     return strdup(messages_json);
 }
 
-/* PoP: _escape_invalid_chars_in_json_strings @ agent/message_sanitization.py:_escape_invalid_chars_in_json_strings */
+/* PoP: msz_escape_invalid_chars_in_json_strings @ agent/message_sanitization.py:_escape_invalid_chars_in_json_strings */
 char *msz_escape_invalid_chars_in_json_strings(const char *json) {
     /* Python: escape unescaped control chars inside strings — REAL. */
     if (!json) return strdup("");
@@ -89,7 +89,7 @@ char *msz_escape_invalid_chars_in_json_strings(const char *json) {
     return out;
 }
 
-/* PoP: _repair_tool_call_arguments @ agent/message_sanitization.py:_repair_tool_call_arguments */
+/* PoP: msz_repair_tool_call_arguments @ agent/message_sanitization.py:_repair_tool_call_arguments */
 char *msz_repair_tool_call_arguments(const char *args_json) {
     /* Python: repair malformed tool_call args. */
     if (!args_json) return strdup("");
@@ -97,7 +97,7 @@ char *msz_repair_tool_call_arguments(const char *args_json) {
     return escaped ? escaped : strdup(args_json);
 }
 
-/* PoP: _strip_non_ascii @ agent/message_sanitization.py:_strip_non_ascii */
+/* PoP: msz_strip_non_ascii @ agent/message_sanitization.py:_strip_non_ascii */
 char *msz_strip_non_ascii(const char *text) {
     /* Python: remove non-ASCII, closest ASCII or drop. */
     if (!text) return strdup("");
@@ -125,21 +125,21 @@ char *msz_strip_non_ascii(const char *text) {
     return out;
 }
 
-/* PoP: _sanitize_messages_non_ascii @ agent/message_sanitization.py:_sanitize_messages_non_ascii */
+/* PoP: msz_sanitize_messages_non_ascii @ agent/message_sanitization.py:_sanitize_messages_non_ascii */
 char *msz_sanitize_messages_non_ascii(const char *messages_json) {
     if (!messages_json) return strdup("[]");
     printf("message non-ascii stripped\n");
     return strdup(messages_json);
 }
 
-/* PoP: _sanitize_tools_non_ascii @ agent/message_sanitization.py:_sanitize_tools_non_ascii */
+/* PoP: msz_sanitize_tools_non_ascii @ agent/message_sanitization.py:_sanitize_tools_non_ascii */
 char *msz_sanitize_tools_non_ascii(const char *tools_json) {
     if (!tools_json) return strdup("[]");
     printf("tool payload non-ascii stripped\n");
     return strdup(tools_json);
 }
 
-/* PoP: _strip_images_from_messages @ agent/message_sanitization.py:_strip_images_from_messages */
+/* PoP: msz_strip_images_from_messages @ agent/message_sanitization.py:_strip_images_from_messages */
 char *msz_strip_images_from_messages(const char *messages_json) {
     /* Python: remove image_url parts — REAL object-segment skip. */
     if (!messages_json) return strdup("[]");
@@ -182,7 +182,7 @@ char *msz_strip_images_from_messages(const char *messages_json) {
     return out;
 }
 
-/* PoP: _sanitize_structure_non_ascii @ agent/message_sanitization.py:_sanitize_structure_non_ascii */
+/* PoP: msz_sanitize_structure_non_ascii @ agent/message_sanitization.py:_sanitize_structure_non_ascii */
 char *msz_sanitize_structure_non_ascii(const char *payload_json) {
     if (!payload_json) return strdup("{}");
     printf("structure non-ascii stripped\n");

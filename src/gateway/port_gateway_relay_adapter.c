@@ -162,7 +162,7 @@ static int relay_message_len(const char *text) {
 }
 
 /* ── _apply_descriptor ───────────────────────────────────────────────── */
-/* PoP: _apply_descriptor @ gateway/relay/adapter.py:_apply_descriptor */
+/* PoP: relay_adapter_apply_descriptor @ gateway/relay/adapter.py:_apply_descriptor */
 void relay_adapter_apply_descriptor(const char *descriptor_json, char *config_out, size_t out_sz) {
     if (!descriptor_json || !config_out || out_sz == 0) return;
 
@@ -218,7 +218,7 @@ void relay_adapter_apply_descriptor(const char *descriptor_json, char *config_ou
 }
 
 /* ── _capture_scope ──────────────────────────────────────────────────── */
-/* PoP: _capture_scope @ gateway/relay/adapter.py:_capture_scope */
+/* PoP: relay_adapter_capture_scope @ gateway/relay/adapter.py:_capture_scope */
 relay_scope_t relay_adapter_capture_scope(const char *event_json) {
     relay_scope_t result = {0};
     if (!event_json) return result;
@@ -262,7 +262,7 @@ relay_scope_t relay_adapter_capture_scope(const char *event_json) {
 }
 
 /* ── _with_scope ─────────────────────────────────────────────────────── */
-/* PoP: _with_scope @ gateway/relay/adapter.py:_with_scope */
+/* PoP: relay_adapter_with_scope @ gateway/relay/adapter.py:_with_scope */
 typedef struct {
     char key[256];
     char value[1024];
@@ -302,12 +302,12 @@ int relay_adapter_with_scope(const char *chat_id, metadata_entry_t *meta_in,
 }
 
 /* ── message_len_fn ──────────────────────────────────────────────────── */
-/* PoP: message_len_fn @ gateway/relay/adapter.py:message_len_fn */
+/* PoP: relay_adapter_message_len @ gateway/relay/adapter.py:message_len_fn */
 int relay_adapter_message_len(const char *text) {
     return relay_message_len(text);
 }
 /* ── supports_draft_streaming ────────────────────────────────────────── */
-/* PoP: supports_draft_streaming @ gateway/relay/adapter.py:supports_draft_streaming */
+/* PoP: relay_adapter_supports_draft_streaming @ gateway/relay/adapter.py:supports_draft_streaming */
 bool relay_adapter_supports_draft_streaming(const char *chat_type, const char *metadata)
 {
     if (!chat_type || !metadata) {
@@ -344,7 +344,7 @@ bool relay_adapter_supports_code_blocks(void) {
 }
 
 /* ── Async connect ───────────────────────────────────────────────────── */
-/* PoP: connect @ gateway/relay/adapter.py:connect */
+/* PoP: connect_worker @ gateway/relay/adapter.py:connect */
 typedef struct {
     relay_transport_t *transport;
     bool result;
@@ -413,7 +413,7 @@ bool relay_adapter_connect(relay_transport_t *transport) {
 }
 
 /* ── Async disconnect ────────────────────────────────────────────────── */
-/* PoP: disconnect @ gateway/relay/adapter.py:disconnect */
+/* PoP: disconnect_worker @ gateway/relay/adapter.py:disconnect */
 static void *disconnect_worker(void *arg) {
     relay_transport_t *t = (relay_transport_t *)arg;
     pthread_mutex_lock(&t->write_lock);
@@ -441,7 +441,7 @@ bool relay_adapter_disconnect(void) {
 }
 
 /* ── Async send ──────────────────────────────────────────────────────── */
-/* PoP: send @ gateway/relay/adapter.py:send */
+/* PoP: send_worker @ gateway/relay/adapter.py:send */
 typedef struct {
     relay_transport_t *transport;
     char chat_id[256];
@@ -566,7 +566,7 @@ relay_send_result_t relay_adapter_send(const char *chat_id, const char *content,
 }
 
 /* ── Async get_chat_info ─────────────────────────────────────────────── */
-/* PoP: get_chat_info @ gateway/relay/adapter.py:get_chat_info */
+/* PoP: get_chat_info_worker @ gateway/relay/adapter.py:get_chat_info */
 typedef struct {
     relay_transport_t *transport;
     char chat_id[256];
@@ -629,7 +629,7 @@ relay_chat_info_t relay_adapter_get_chat_info(const char *chat_id) {
 }
 
 /* ── Async send_follow_up ────────────────────────────────────────────── */
-/* PoP: send_follow_up @ gateway/relay/adapter.py:send_follow_up */
+/* PoP: relay_adapter_send_follow_up @ gateway/relay/adapter.py:send_follow_up */
 relay_send_result_t relay_adapter_send_follow_up(const char *session_key, const char *kind,
                                                   const char *content,
                                                   metadata_entry_t *metadata, int meta_count) {
@@ -680,7 +680,7 @@ relay_send_result_t relay_adapter_send_follow_up(const char *session_key, const 
 }
 
 /* ── Async on_interrupt ──────────────────────────────────────────────── */
-/* PoP: on_interrupt @ gateway/relay/adapter.py:on_interrupt */
+/* PoP: on_interrupt_worker @ gateway/relay/adapter.py:on_interrupt */
 typedef struct {
     char session_key[256];
     char chat_id[256];
@@ -738,7 +738,7 @@ bool relay_adapter_on_interrupt(const char *session_key, const char *chat_id) {
 }
 
 /* ── _on_inbound (bridge from transport to adapter) ──────────────────── */
-/* PoP: _on_inbound @ gateway/relay/adapter.py:_on_inbound */
+/* PoP: relay_adapter_on_inbound @ gateway/relay/adapter.py:_on_inbound */
 void relay_adapter_on_inbound(const char *event_json) {
     if (!event_json) return;
 

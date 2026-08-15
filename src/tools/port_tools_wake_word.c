@@ -111,7 +111,7 @@ bool ww_get_bool(const json_t *cfg, const char *key, bool dflt)
     return dflt;
 }
 
-/* PoP: _provider @ tools/wake_word.py:_provider */
+/* PoP: ww_provider @ tools/wake_word.py:_provider */
 char *ww_provider(const json_t *cfg)
 {
     const char *raw = ww_get_str(cfg, "provider");
@@ -134,7 +134,7 @@ char *ww_provider(const json_t *cfg)
     return out;
 }
 
-/* PoP: _input_device @ tools/wake_word.py:_input_device */
+/* PoP: ww_input_device @ tools/wake_word.py:_input_device */
 int ww_input_device(const json_t *cfg, int *out_int, char **out_str)
 {
     if (out_int) *out_int = 0;
@@ -171,7 +171,7 @@ int ww_input_device(const json_t *cfg, int *out_int, char **out_str)
     return 0; /* other types -> None */
 }
 
-/* PoP: _sensitivity @ tools/wake_word.py:_sensitivity */
+/* PoP: ww_sensitivity @ tools/wake_word.py:_sensitivity */
 double ww_sensitivity(const json_t *cfg)
 {
     double s = ww_get_num(cfg, "sensitivity", WW_DEFAULT_SENSITIVITY);
@@ -180,7 +180,7 @@ double ww_sensitivity(const json_t *cfg)
     return s;
 }
 
-/* PoP: _confirmation_frames @ tools/wake_word.py:_confirmation_frames */
+/* PoP: ww_confirmation_frames @ tools/wake_word.py:_confirmation_frames */
 int ww_confirmation_frames(const json_t *cfg)
 {
     double n = ww_get_num(cfg, "confirmation_frames", WW_DEFAULT_CONFIRMATION_FRAMES);
@@ -190,7 +190,7 @@ int ww_confirmation_frames(const json_t *cfg)
     return v;
 }
 
-/* PoP: wake_phrase @ tools/wake_word.py:wake_phrase */
+/* PoP: ww_wake_phrase @ tools/wake_word.py:wake_phrase */
 char *ww_wake_phrase(const json_t *cfg)
 {
     const char *raw = ww_get_str(cfg, "phrase");
@@ -198,7 +198,7 @@ char *ww_wake_phrase(const json_t *cfg)
     return strdup(raw);
 }
 
-/* PoP: wake_surface_enabled @ tools/wake_word.py:wake_surface_enabled */
+/* PoP: ww_wake_surface_enabled @ tools/wake_word.py:wake_surface_enabled */
 bool ww_wake_surface_enabled(const char *surface, const json_t *cfg)
 {
     if (!surface) return false;
@@ -234,7 +234,7 @@ bool ww_wake_surface_enabled(const char *surface, const json_t *cfg)
     return true;
 }
 
-/* PoP: resolve_inference_framework @ tools/wake_word.py:resolve_inference_framework */
+/* PoP: ww_resolve_inference_framework @ tools/wake_word.py:resolve_inference_framework */
 char *ww_resolve_inference_framework(const json_t *cfg, bool is_macos_arm64)
 {
     const char *framework = "onnx";
@@ -265,7 +265,7 @@ char *ww_resolve_inference_framework(const json_t *cfg, bool is_macos_arm64)
     return strdup(is_macos_arm64 ? "tflite" : "onnx");
 }
 
-/* PoP: _device_label @ tools/wake_word.py:_device_label */
+/* PoP: ww_device_label @ tools/wake_word.py:_device_label */
 char *ww_device_label(const json_t *details)
 {
     if (!details || details->type != JSON_OBJECT) return strdup("system default");
@@ -316,7 +316,7 @@ char *ww_device_label(const json_t *details)
     return label;
 }
 
-/* PoP: _looks_like_path @ tools/wake_word.py:_looks_like_path */
+/* PoP: ww_looks_like_path @ tools/wake_word.py:_looks_like_path */
 bool ww_looks_like_path(const char *value)
 {
     if (!value) return false;
@@ -328,7 +328,7 @@ bool ww_looks_like_path(const char *value)
     return false;
 }
 
-/* PoP: _bundled_wakeword_path @ tools/wake_word.py:_bundled_wakeword_path */
+/* PoP: ww_bundled_wakeword_path @ tools/wake_word.py:_bundled_wakeword_path */
 char *ww_bundled_wakeword_path(const char *tools_dir, const char *framework)
 {
     if (!tools_dir) return NULL;
@@ -354,7 +354,7 @@ char *ww_bundled_wakeword_path(const char *tools_dir, const char *framework)
  * Platform helpers
  * --------------------------------------------------------------------------- */
 
-/* PoP: _is_macos_arm64 @ tools/wake_word.py:_is_macos_arm64 */
+/* PoP: ww_is_macos_arm64 @ tools/wake_word.py:_is_macos_arm64 */
 bool ww_is_macos_arm64(void)
 {
 #if defined(__APPLE__) && defined(__aarch64__)
@@ -364,7 +364,7 @@ bool ww_is_macos_arm64(void)
 #endif
 }
 
-/* PoP: default_inference_framework @ tools/wake_word.py:default_inference_framework */
+/* PoP: ww_default_inference_framework @ tools/wake_word.py:default_inference_framework */
 const char *ww_default_inference_framework(void)
 {
     return ww_is_macos_arm64() ? "tflite" : "onnx";
@@ -464,7 +464,7 @@ static bool ww_allow_lazy_installs(void)
     return true; /* fail open */
 }
 
-/* PoP: ensure_tflite_runtime @ tools/wake_word.py:ensure_tflite_runtime */
+/* PoP: ww_ensure_tflite_runtime @ tools/wake_word.py:ensure_tflite_runtime */
 bool ww_ensure_tflite_runtime(void)
 {
     /* Native probe: the tflite runtime is a site-packages package; check for
@@ -474,7 +474,7 @@ bool ww_ensure_tflite_runtime(void)
     return false;
 }
 
-/* PoP: load_wake_word_config @ tools/wake_word.py:load_wake_word_config */
+/* PoP: ww_load_wake_word_config @ tools/wake_word.py:load_wake_word_config */
 json_t *ww_load_wake_word_config(void)
 {
     /* Load the merged config natively and extract the wake_word section.
@@ -502,7 +502,7 @@ json_t *ww_load_wake_word_config(void)
     return result;
 }
 
-/* PoP: _active_profile_name @ tools/wake_word.py:_active_profile_name */
+/* PoP: ww_active_profile_name @ tools/wake_word.py:_active_profile_name */
 char *ww_active_profile_name(void)
 {
     /* Native: infer the current profile name from HERMES_HOME.
@@ -510,7 +510,7 @@ char *ww_active_profile_name(void)
     return profile_get_active_name();
 }
 
-/* PoP: enrolled_profile_phrases @ tools/wake_word.py:enrolled_profile_phrases */
+/* PoP: ww_enrolled_profile_phrases @ tools/wake_word.py:enrolled_profile_phrases */
 json_t *ww_enrolled_profile_phrases(void)
 {
     /* Enumerate profiles natively (default + all named, mirroring
@@ -578,7 +578,7 @@ json_t *ww_enrolled_profile_phrases(void)
     return result;
 }
 
-/* PoP: _import_audio @ tools/wake_word.py:_import_audio */
+/* PoP: ww_import_audio @ tools/wake_word.py:_import_audio */
 int ww_import_audio(void)
 {
     /* Native ALSA probe: open the default PCM in capture mode briefly to
@@ -590,13 +590,13 @@ int ww_import_audio(void)
     return (err == 0) ? 0 : -1;
 }
 
-/* PoP: _audio_available @ tools/wake_word.py:_audio_available */
+/* PoP: ww_audio_available @ tools/wake_word.py:_audio_available */
 bool ww_audio_available(void)
 {
     return ww_import_audio() == 0;
 }
 
-/* PoP: _describe_input_device @ tools/wake_word.py:_describe_input_device */
+/* PoP: ww_describe_input_device @ tools/wake_word.py:_describe_input_device */
 json_t *ww_describe_input_device(int selector)
 {
     json_t *details = json_object();
@@ -679,7 +679,7 @@ json_t *ww_describe_input_device(int selector)
     return details;
 }
 
-/* PoP: silent_audio_hint @ tools/wake_word.py:silent_audio_hint */
+/* PoP: ww_silent_audio_hint @ tools/wake_word.py:silent_audio_hint */
 char *ww_silent_audio_hint(const json_t *device_details)
 {
     const char *name = NULL;
@@ -725,7 +725,7 @@ char *ww_silent_audio_hint(const json_t *device_details)
 #endif
 }
 
-/* PoP: _build_engine @ tools/wake_word.py:_build_engine */
+/* PoP: ww_build_engine @ tools/wake_word.py:_build_engine */
 void *ww_build_engine(const json_t *cfg)
 {
     /* The engine factory dispatches to the active provider.
@@ -773,7 +773,7 @@ void *ww_build_engine(const json_t *cfg)
     return engine;
 }
 
-/* PoP: _stt_ready @ tools/wake_word.py:_stt_ready */
+/* PoP: ww_stt_ready @ tools/wake_word.py:_stt_ready */
 bool ww_stt_ready(void)
 {
     /* Native: read the merged config's stt section; enabled + real provider.
@@ -810,7 +810,7 @@ bool ww_stt_ready(void)
     return strncasecmp(provider, "none", 4) != 0;     /* != "none" */
 }
 
-/* PoP: _tts_ready @ tools/wake_word.py:_tts_ready */
+/* PoP: ww_tts_ready @ tools/wake_word.py:_tts_ready */
 bool ww_tts_ready(void)
 {
     /* Native: read the merged config's tts section; any non-empty,
@@ -844,7 +844,7 @@ bool ww_tts_ready(void)
     return strncasecmp(provider, "none", 4) != 0;       /* != "none" */
 }
 
-/* PoP: check_wake_word_requirements @ tools/wake_word.py:check_wake_word_requirements */
+/* PoP: ww_check_wake_word_requirements @ tools/wake_word.py:check_wake_word_requirements */
 json_t *ww_check_wake_word_requirements(const json_t *cfg)
 {
     /* Native port: deterministic feasibility report over the same signals as
@@ -970,7 +970,7 @@ ww_detector_t *ww_detector_create(void *engine,
     return det;
 }
 
-/* PoP: running @ tools/wake_word.py:running */
+/* PoP: ww_detector_running @ tools/wake_word.py:running */
 bool ww_detector_running(const ww_detector_t *det)
 {
     if (!det) return false;
@@ -980,7 +980,7 @@ bool ww_detector_running(const ww_detector_t *det)
     return r;
 }
 
-/* PoP: _halt_thread @ tools/wake_word.py:_halt_thread */
+/* PoP: ww_detector_halt_locked @ tools/wake_word.py:_halt_thread */
 static void ww_detector_halt_locked(ww_detector_t *det)
 {
     if (!det) return;
@@ -1000,7 +1000,7 @@ static void ww_detector_halt_locked(ww_detector_t *det)
      * the caller manages the lock state. */
 }
 
-/* PoP: _halt_thread @ tools/wake_word.py:_halt_thread */
+/* PoP: ww_detector_halt @ tools/wake_word.py:_halt_thread */
 void ww_detector_halt(ww_detector_t *det)
 {
     if (!det) return;
@@ -1014,7 +1014,7 @@ void ww_detector_halt(ww_detector_t *det)
     pthread_mutex_unlock(&det->lock);
 }
 
-/* PoP: _dispatch_wake @ tools/wake_word.py:_dispatch_wake */
+/* PoP: ww_detector_dispatch_wake @ tools/wake_word.py:_dispatch_wake */
 void ww_detector_dispatch_wake(ww_detector_t *det)
 {
     if (!det || !det->on_wake) return;
@@ -1025,7 +1025,7 @@ void ww_detector_dispatch_wake(ww_detector_t *det)
     det->callback_inflight = false;
 }
 
-/* PoP: _run @ tools/wake_word.py:_run */
+/* PoP: ww_detector_run @ tools/wake_word.py:_run */
 void *ww_detector_run(void *arg)
 {
     ww_detector_t *det = (ww_detector_t *)arg;
@@ -1140,7 +1140,7 @@ void *ww_detector_run(void *arg)
     return NULL;
 }
 
-/* PoP: start @ tools/wake_word.py:start */
+/* PoP: ww_detector_start @ tools/wake_word.py:start */
 int ww_detector_start(ww_detector_t *det)
 {
     if (!det) return -2;
@@ -1176,21 +1176,21 @@ int ww_detector_start(ww_detector_t *det)
     return 0;
 }
 
-/* PoP: pause @ tools/wake_word.py:pause */
+/* PoP: ww_detector_pause @ tools/wake_word.py:pause */
 void ww_detector_pause(ww_detector_t *det)
 {
     if (!det) return;
     ww_detector_halt(det);
 }
 
-/* PoP: resume @ tools/wake_word.py:resume */
+/* PoP: ww_detector_resume @ tools/wake_word.py:resume */
 int ww_detector_resume(ww_detector_t *det)
 {
     if (!det) return -1;
     return ww_detector_start(det);
 }
 
-/* PoP: stop @ tools/wake_word.py:stop */
+/* PoP: ww_detector_stop @ tools/wake_word.py:stop */
 void ww_detector_stop(ww_detector_t *det)
 {
     if (!det) return;
@@ -1202,7 +1202,7 @@ void ww_detector_stop(ww_detector_t *det)
     }
 }
 
-/* PoP: _lock_path @ tools/wake_word.py:_lock_path */
+/* PoP: ww_lock_path @ tools/wake_word.py:_lock_path */
 char *ww_lock_path(void)
 {
     /* Use /tmp as the default lock directory. */
@@ -1213,7 +1213,7 @@ char *ww_lock_path(void)
     return path;
 }
 
-/* PoP: _acquire_machine_lock @ tools/wake_word.py:_acquire_machine_lock */
+/* PoP: ww_acquire_machine_lock @ tools/wake_word.py:_acquire_machine_lock */
 FILE *ww_acquire_machine_lock(const char *lock_path)
 {
     if (!lock_path) return NULL;
@@ -1251,7 +1251,7 @@ FILE *ww_acquire_machine_lock(const char *lock_path)
     return fp;
 }
 
-/* PoP: _release_machine_lock @ tools/wake_word.py:_release_machine_lock */
+/* PoP: ww_release_machine_lock @ tools/wake_word.py:_release_machine_lock */
 void ww_release_machine_lock(FILE *handle)
 {
     if (!handle) return;
@@ -1261,7 +1261,7 @@ void ww_release_machine_lock(FILE *handle)
     fclose(handle);
 }
 
-/* PoP: _detector_failed @ tools/wake_word.py:_detector_failed */
+/* PoP: ww_detector_failed @ tools/wake_word.py:_detector_failed */
 void ww_detector_failed(ww_detector_t *det)
 {
     if (!det) return;
@@ -1272,7 +1272,7 @@ void ww_detector_failed(ww_detector_t *det)
     pthread_mutex_unlock(&det->lock);
 }
 
-/* PoP: start_listening @ tools/wake_word.py:start_listening */
+/* PoP: ww_start_listening @ tools/wake_word.py:start_listening */
 ww_detector_t *ww_start_listening(void (*on_wake)(void),
                                   void *owner,
                                   const json_t *config)
@@ -1300,7 +1300,7 @@ ww_detector_t *ww_start_listening(void (*on_wake)(void),
     return det;
 }
 
-/* PoP: owns_listener @ tools/wake_word.py:owns_listener */
+/* PoP: ww_owns_listener @ tools/wake_word.py:owns_listener */
 bool ww_owns_listener(void *owner)
 {
     (void)owner;
@@ -1310,7 +1310,7 @@ bool ww_owns_listener(void *owner)
     return false;
 }
 
-/* PoP: pause_listening @ tools/wake_word.py:pause_listening */
+/* PoP: ww_pause_listening @ tools/wake_word.py:pause_listening */
 bool ww_pause_listening(void *owner)
 {
     (void)owner;
@@ -1318,33 +1318,33 @@ bool ww_pause_listening(void *owner)
     return false;
 }
 
-/* PoP: resume_listening @ tools/wake_word.py:resume_listening */
+/* PoP: ww_resume_listening @ tools/wake_word.py:resume_listening */
 bool ww_resume_listening(void *owner)
 {
     (void)owner;
     return false;
 }
 
-/* PoP: stop_listening @ tools/wake_word.py:stop_listening */
+/* PoP: ww_stop_listening @ tools/wake_word.py:stop_listening */
 bool ww_stop_listening(void *owner)
 {
     (void)owner;
     return false;
 }
 
-/* PoP: is_listening @ tools/wake_word.py:is_listening */
+/* PoP: ww_is_listening @ tools/wake_word.py:is_listening */
 bool ww_is_listening(void)
 {
     return false; /* Application-level state. */
 }
 
-/* PoP: audio_is_silent @ tools/wake_word.py:audio_is_silent */
+/* PoP: ww_audio_is_silent @ tools/wake_word.py:audio_is_silent */
 bool ww_audio_is_silent(void)
 {
     return false; /* Application-level state. */
 }
 
-/* PoP: get_input_device_status @ tools/wake_word.py:get_input_device_status */
+/* PoP: ww_get_input_device_status @ tools/wake_word.py:get_input_device_status */
 json_t *ww_get_input_device_status(const json_t *cfg)
 {
     int selector = 0;
@@ -1362,7 +1362,7 @@ json_t *ww_get_input_device_status(const json_t *cfg)
     return ww_describe_input_device(selector);
 }
 
-/* PoP: get_last_match @ tools/wake_word.py:get_last_match */
+/* PoP: ww_get_last_match @ tools/wake_word.py:get_last_match */
 json_t *ww_get_last_match(void)
 {
     /* The last_match lives in the engine (Python side).
@@ -1406,7 +1406,7 @@ static const char *WW_SH_SHERPA_MODEL_URL =
 static const char *WW_SH_SHERPA_MODEL_DIR =
     "sherpa-onnx-kws-zipformer-gigaspeech-3.3M-2024-01-01";
 
-/* PoP: _sherpa_model_root @ tools/wake_word.py:_sherpa_model_root */
+/* PoP: ww_sherpa_model_root @ tools/wake_word.py:_sherpa_model_root */
 char *ww_sherpa_model_root(void)
 {
     const char *home = getenv("HERMES_HOME");
@@ -1421,7 +1421,7 @@ char *ww_sherpa_model_root(void)
     return out;
 }
 
-/* PoP: _ensure_sherpa_model @ tools/wake_word.py:_ensure_sherpa_model */
+/* PoP: ww_ensure_sherpa_model @ tools/wake_word.py:_ensure_sherpa_model */
 char *ww_ensure_sherpa_model(const char *root)
 {
     const char *base = root && *root ? root : "/tmp/hermes/cache/wakewords";
@@ -1657,7 +1657,7 @@ void ww_engine_close(ww_engine_t *eng)
     free(eng);
 }
 
-/* PoP: _capture_sample_rate @ tools/wake_word.py:_capture_sample_rate */
+/* PoP: wake_word_capture_sample_rate @ tools/wake_word.py:_capture_sample_rate */
 /* Returns sample rate from device details. details_json = {"default_samplerate": ...} */
 int wake_word_capture_sample_rate(const char *details_json) {
     if (!details_json) return 16000;  /* SAMPLE_RATE default */

@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: is_available @ tools/computer_use/backend.py:is_available */
+/* PoP: cub_is_available @ tools/computer_use/backend.py:is_available */
 bool cub_is_available(void) {
     /* Python: usable on this host — REAL: DISPLAY/WAYLAND + XDG probe. */
     if (getenv("WAYLAND_DISPLAY")) return true;
@@ -26,7 +26,7 @@ bool cub_is_available(void) {
     return false;
 }
 
-/* PoP: key @ tools/computer_use/backend.py:key */
+/* PoP: cub_key @ tools/computer_use/backend.py:key */
 char *cub_key(const char *combo) {
     /* Python: key combo like cmd+s. */
     if (!combo) return strdup("{\"ok\": false}");
@@ -34,7 +34,7 @@ char *cub_key(const char *combo) {
     return strdup("{\"ok\": true}");
 }
 
-/* PoP: start @ tools/computer_use/backend.py:start */
+/* PoP: cub_start @ tools/computer_use/backend.py:start */
 char *cub_start(void) {
     /* Python: start backend — REAL: probe + start flag. */
     if (!cub_is_available()) return strdup("{\"ok\": false}");

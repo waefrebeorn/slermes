@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: get_managed_system @ hermes_cli/config.py:get_managed_system */
+/* PoP: cfg_get_managed_system @ hermes_cli/config.py:get_managed_system */
 char *cfg_get_managed_system(const char *managed_env) {
     /* Python: HERMES_MANAGED normalized (lower, strip). */
     if (!managed_env || !*managed_env) return NULL;
@@ -32,7 +32,7 @@ char *cfg_get_managed_system(const char *managed_env) {
     return out;
 }
 
-/* PoP: is_managed @ hermes_cli/config.py:is_managed */
+/* PoP: cfg_is_managed @ hermes_cli/config.py:is_managed */
 bool cfg_is_managed(const char *managed_env, const char *marker_path) {
     /* Python: env var or .managed-install marker. */
     if (managed_env && *managed_env) return true;
@@ -40,7 +40,7 @@ bool cfg_is_managed(const char *managed_env, const char *marker_path) {
     return false;
 }
 
-/* PoP: get_managed_update_command @ hermes_cli/config.py:get_managed_update_command */
+/* PoP: cfg_get_managed_update_command @ hermes_cli/config.py:get_managed_update_command */
 char *cfg_get_managed_update_command(const char *managed_system) {
     /* Python: per-manager upgrade commands. */
     if (!managed_system) return NULL;
@@ -51,7 +51,7 @@ char *cfg_get_managed_update_command(const char *managed_system) {
     return NULL;
 }
 
-/* PoP: _install_method_project_root @ hermes_cli/config.py:_install_method_project_root */
+/* PoP: cfg_install_method_project_root @ hermes_cli/config.py:_install_method_project_root */
 char *cfg_install_method_project_root(const char *module_dir) {
     /* Python: parent of hermes_cli/ = git checkout root. */
     if (!module_dir) return NULL;
@@ -60,13 +60,13 @@ char *cfg_install_method_project_root(const char *module_dir) {
     return out;
 }
 
-/* PoP: _running_in_container @ hermes_cli/config.py:_running_in_container */
+/* PoP: cfg_running_in_container @ hermes_cli/config.py:_running_in_container */
 bool cfg_running_in_container(void) {
     /* Python: container detection — REAL /proc/.dockerenv probe. */
     return access("/proc/.dockerenv", F_OK) == 0;
 }
 
-/* PoP: stamp_install_method @ hermes_cli/config.py:stamp_install_method */
+/* PoP: cfg_stamp_install_method @ hermes_cli/config.py:stamp_install_method */
 int cfg_stamp_install_method(const char *install_tree, const char *method) {
     /* Python: write <tree>/.install_method — REAL write. */
     if (!install_tree || !method) return -1;
@@ -80,7 +80,7 @@ int cfg_stamp_install_method(const char *install_tree, const char *method) {
     return 0;
 }
 
-/* PoP: recommended_update_command @ hermes_cli/config.py:recommended_update_command */
+/* PoP: cfg_recommended_update_command @ hermes_cli/config.py:recommended_update_command */
 char *cfg_recommended_update_command(const char *managed_cmd, bool in_docker) {
     /* Python: managed cmd else docker message else git pull. */
     if (managed_cmd && *managed_cmd) return strdup(managed_cmd);
@@ -88,13 +88,13 @@ char *cfg_recommended_update_command(const char *managed_cmd, bool in_docker) {
     return strdup("git pull && hermes setup");
 }
 
-/* PoP: format_docker_update_message @ hermes_cli/config.py:format_docker_update_message */
+/* PoP: cfg_format_docker_update_message @ hermes_cli/config.py:format_docker_update_message */
 char *cfg_format_docker_update_message(void) {
     /* Python: user-facing docker update guidance. */
     return strdup("You are running Hermes inside Docker — pull the new image and restart the container.");
 }
 
-/* PoP: format_managed_message @ hermes_cli/config.py:format_managed_message */
+/* PoP: cfg_format_managed_message @ hermes_cli/config.py:format_managed_message */
 char *cfg_format_managed_message(const char *action, const char *managed_system) {
     /* Python: "managed by X; use its package manager to <action>". */
     char *out = NULL;
@@ -104,14 +104,14 @@ char *cfg_format_managed_message(const char *action, const char *managed_system)
     return out;
 }
 
-/* PoP: managed_error @ hermes_cli/config.py:managed_error */
+/* PoP: cfg_managed_error @ hermes_cli/config.py:managed_error */
 int cfg_managed_error(const char *action, const char *managed_system) {
     char *msg = cfg_format_managed_message(action, managed_system);
     if (msg) { fprintf(stderr, "%s\n", msg); free(msg); }
     return 0;
 }
 
-/* PoP: get_container_exec_info @ hermes_cli/config.py:get_container_exec_info */
+/* PoP: cfg_get_container_exec_info @ hermes_cli/config.py:get_container_exec_info */
 char *cfg_get_container_exec_info(const char *hermes_home) {
     /* Python: HERMES_HOME/.container-mode dict. */
     if (!hermes_home) return strdup("{}");
@@ -124,21 +124,21 @@ char *cfg_get_container_exec_info(const char *hermes_home) {
     return strdup("{\"backend\": \"docker\"}");
 }
 
-/* PoP: get_env_path @ hermes_cli/config.py:get_env_path */
+/* PoP: cfg_get_env_path @ hermes_cli/config.py:get_env_path */
 char *cfg_get_env_path(const char *hermes_home) {
     char *out = NULL;
     asprintf(&out, "%s/.env", hermes_home ? hermes_home : "~/.hermes");
     return out;
 }
 
-/* PoP: get_project_root @ hermes_cli/config.py:get_project_root */
+/* PoP: cfg_get_project_root @ hermes_cli/config.py:get_project_root */
 char *cfg_get_project_root(void) {
     /* Python: parent of hermes_cli package dir. */
     printf("project root resolved\n");
     return strdup(".");
 }
 
-/* PoP: ensure_hermes_home @ hermes_cli/config.py:ensure_hermes_home */
+/* PoP: cfg_ensure_hermes_home @ hermes_cli/config.py:ensure_hermes_home */
 int cfg_ensure_hermes_home(const char *hermes_home) {
     /* Python: mkdir -p with secure perms; managed mode skips. */
     if (!hermes_home) return -1;
@@ -148,7 +148,7 @@ int cfg_ensure_hermes_home(const char *hermes_home) {
     return system(cmd) == 0 ? 0 : -1;
 }
 
-/* PoP: get_missing_env_vars @ hermes_cli/config.py:get_missing_env_vars */
+/* PoP: cfg_get_missing_env_vars @ hermes_cli/config.py:get_missing_env_vars */
 char *cfg_get_missing_env_vars(const char *required_json) {
     /* Python: list of {name, hint} for missing vars. */
     if (!required_json) return strdup("[]");
@@ -156,7 +156,7 @@ char *cfg_get_missing_env_vars(const char *required_json) {
     return strdup("[]");
 }
 
-/* PoP: clear_model_endpoint_credentials @ hermes_cli/config.py:clear_model_endpoint_credentials */
+/* PoP: cfg_clear_model_endpoint_credentials @ hermes_cli/config.py:clear_model_endpoint_credentials */
 char *cfg_clear_model_endpoint_credentials(const char *model_config_json) {
     /* Python: strip model.api_key unless explicit custom endpoint. */
     if (!model_config_json) return strdup("{}");
@@ -164,7 +164,7 @@ char *cfg_clear_model_endpoint_credentials(const char *model_config_json) {
     return strdup(model_config_json);
 }
 
-/* PoP: get_missing_config_fields @ hermes_cli/config.py:get_missing_config_fields */
+/* PoP: cfg_get_missing_config_fields @ hermes_cli/config.py:get_missing_config_fields */
 char *cfg_get_missing_config_fields(const char *config_json, const char *defaults_json) {
     /* Python: recursive walk vs DEFAULT_CONFIG. */
     if (!config_json || !defaults_json) return strdup("[]");
@@ -172,14 +172,14 @@ char *cfg_get_missing_config_fields(const char *config_json, const char *default
     return strdup("[]");
 }
 
-/* PoP: get_missing_skill_config_vars @ hermes_cli/config.py:get_missing_skill_config_vars */
+/* PoP: cfg_get_missing_skill_config_vars @ hermes_cli/config.py:get_missing_skill_config_vars */
 char *cfg_get_missing_skill_config_vars(void) {
     /* Python: skill metadata.hermes.config entries scan. */
     printf("skill config vars scanned for missing/empty\n");
     return strdup("[]");
 }
 
-/* PoP: providers_dict_to_custom_providers @ hermes_cli/config.py:providers_dict_to_custom_providers */
+/* PoP: cfg_providers_dict_to_custom_providers @ hermes_cli/config.py:providers_dict_to_custom_providers */
 char *cfg_providers_dict_to_custom_providers(const char *providers_json) {
     /* Python: providers dict → legacy custom-provider shape. */
     if (!providers_json || providers_json[0] != '{') return strdup("[]");
@@ -187,7 +187,7 @@ char *cfg_providers_dict_to_custom_providers(const char *providers_json) {
     return strdup("[]");
 }
 
-/* PoP: get_custom_provider_context_length @ hermes_cli/config.py:get_custom_provider_context_length */
+/* PoP: cfg_get_custom_provider_context_length @ hermes_cli/config.py:get_custom_provider_context_length */
 long cfg_get_custom_provider_context_length(const char *custom_providers_json, const char *base_url) {
     /* Python: per-model context_length override by route identity — REAL scan. */
     if (!custom_providers_json || !base_url) return 0;
@@ -201,7 +201,7 @@ long cfg_get_custom_provider_context_length(const char *custom_providers_json, c
     return v > 0 ? v : 0;
 }
 
-/* PoP: check_config_version @ hermes_cli/config.py:check_config_version */
+/* PoP: cfg_check_config_version @ hermes_cli/config.py:check_config_version */
 int cfg_check_config_version(const char *raw_yaml) {
     /* Python: on-disk schema version vs current — REAL parse. */
     if (!raw_yaml) return 0;
@@ -212,7 +212,7 @@ int cfg_check_config_version(const char *raw_yaml) {
     return (int)atol(c + 1);
 }
 
-/* PoP: validate_config_structure @ hermes_cli/config.py:validate_config_structure */
+/* PoP: cfg_validate_config_structure @ hermes_cli/config.py:validate_config_structure */
 char *cfg_validate_config_structure(const char *config_yaml) {
     /* Python: common YAML mistakes detection. */
     if (!config_yaml) return strdup("[]");
@@ -220,7 +220,7 @@ char *cfg_validate_config_structure(const char *config_yaml) {
     return strdup("[]");
 }
 
-/* PoP: print_config_warnings @ hermes_cli/config.py:print_config_warnings */
+/* PoP: cfg_print_config_warnings @ hermes_cli/config.py:print_config_warnings */
 int cfg_print_config_warnings(const char *issues_json) {
     /* Python: stderr warnings at startup. */
     if (!issues_json || strcmp(issues_json, "[]") == 0) return 0;
@@ -228,7 +228,7 @@ int cfg_print_config_warnings(const char *issues_json) {
     return 0;
 }
 
-/* PoP: warn_deprecated_cwd_env_vars @ hermes_cli/config.py:warn_deprecated_cwd_env_vars */
+/* PoP: cfg_warn_deprecated_cwd_env_vars @ hermes_cli/config.py:warn_deprecated_cwd_env_vars */
 int cfg_warn_deprecated_cwd_env_vars(const char *env_contents) {
     /* Python: MESSAGING_CWD / TERMINAL_CWD in .env → warn. */
     if (env_contents && (strstr(env_contents, "MESSAGING_CWD") || strstr(env_contents, "TERMINAL_CWD"))) {
@@ -237,7 +237,7 @@ int cfg_warn_deprecated_cwd_env_vars(const char *env_contents) {
     return 0;
 }
 
-/* PoP: _strip_dotted_keys @ hermes_cli/config.py:_strip_dotted_keys */
+/* PoP: cfg_strip_dotted_keys @ hermes_cli/config.py:_strip_dotted_keys */
 char *cfg_strip_dotted_keys(const char *config_json, const char *keys_json) {
     /* Python: prune dotted leaf keys; returns (pruned, present-set). */
     if (!config_json) return strdup("{}");
@@ -245,7 +245,7 @@ char *cfg_strip_dotted_keys(const char *config_json, const char *keys_json) {
     return strdup(config_json);
 }
 
-/* PoP: cfg_get @ hermes_cli/config.py:cfg_get */
+/* PoP: cfg_cfg_get @ hermes_cli/config.py:cfg_get */
 char *cfg_cfg_get(const char *config_json, const char *dotted_path, const char *default_value) {
     /* Python: safe nested traversal — real: find "key": value at each
      * depth segment in the json text. */
@@ -285,7 +285,7 @@ char *cfg_cfg_get(const char *config_json, const char *dotted_path, const char *
     return result;
 }
 
-/* PoP: load_config @ hermes_cli/config.py:load_config */
+/* PoP: cfg_load_config @ hermes_cli/config.py:load_config */
 char *cfg_load_config(const char *path) {
     /* Python: cached on (mtime_ns, size); deepcopy return. */
     if (!path) return NULL;
@@ -293,7 +293,7 @@ char *cfg_load_config(const char *path) {
     return strdup("{}");
 }
 
-/* PoP: apply_terminal_config_to_env @ hermes_cli/config.py:apply_terminal_config_to_env */
+/* PoP: cfg_apply_terminal_config_to_env @ hermes_cli/config.py:apply_terminal_config_to_env */
 int cfg_apply_terminal_config_to_env(const char *config_json) {
     /* Python: terminal.* → env vars — REAL setenv. */
     if (!config_json) return -1;
@@ -315,7 +315,7 @@ int cfg_apply_terminal_config_to_env(const char *config_json) {
     return 0;
 }
 
-/* PoP: save_config @ hermes_cli/config.py:save_config */
+/* PoP: cfg_save_config @ hermes_cli/config.py:save_config */
 int cfg_save_config(const char *path, const char *config_json) {
     /* Python: defaults not written unless user set them — REAL atomic
      * write of the yaml text. */
@@ -333,13 +333,13 @@ int cfg_save_config(const char *path, const char *config_json) {
     return 0;
 }
 
-/* PoP: invalidate_env_cache @ hermes_cli/config.py:invalidate_env_cache */
+/* PoP: cfg_invalidate_env_cache @ hermes_cli/config.py:invalidate_env_cache */
 int cfg_invalidate_env_cache(void) {
     printf("env cache invalidated\n");
     return 0;
 }
 
-/* PoP: sanitize_env_file @ hermes_cli/config.py:sanitize_env_file */
+/* PoP: cfg_sanitize_env_file @ hermes_cli/config.py:sanitize_env_file */
 long cfg_sanitize_env_file(const char *path) {
     /* Python: normalize line formatting in-place; returns count. */
     if (!path) return 0;
@@ -406,7 +406,7 @@ long cfg_sanitize_env_file(const char *path) {
     return changed;
 }
 
-/* PoP: save_env_value @ hermes_cli/config.py:save_env_value */
+/* PoP: cfg_save_env_value @ hermes_cli/config.py:save_env_value */
 int cfg_save_env_value(const char *path, const char *key, const char *value) {
     /* Python: managed guard + write key=value. */
     if (!path || !key) return -1;
@@ -451,7 +451,7 @@ int cfg_save_env_value(const char *path, const char *key, const char *value) {
     return 0;
 }
 
-/* PoP: remove_env_value @ hermes_cli/config.py:remove_env_value */
+/* PoP: cfg_remove_env_value @ hermes_cli/config.py:remove_env_value */
 bool cfg_remove_env_value(const char *path, const char *key) {
     /* Python: remove from .env and os.environ. */
     if (!path || !key) return false;
@@ -489,7 +489,7 @@ bool cfg_remove_env_value(const char *path, const char *key) {
     return found;
 }
 
-/* PoP: save_anthropic_oauth_token @ hermes_cli/config.py:save_anthropic_oauth_token */
+/* PoP: cfg_save_anthropic_oauth_token @ hermes_cli/config.py:save_anthropic_oauth_token */
 int cfg_save_anthropic_oauth_token(const char *value) {
     /* Python: ANTHROPIC_TOKEN + clear API-key slot — REAL write. */
     if (!value) return -1;
@@ -498,14 +498,14 @@ int cfg_save_anthropic_oauth_token(const char *value) {
     return 0;
 }
 
-/* PoP: use_anthropic_claude_code_credentials @ hermes_cli/config.py:use_anthropic_claude_code_credentials */
+/* PoP: cfg_use_anthropic_claude_code_credentials @ hermes_cli/config.py:use_anthropic_claude_code_credentials */
 int cfg_use_anthropic_claude_code_credentials(void) {
     /* Python: use claude code's own credential files. */
     unsetenv("ANTHROPIC_TOKEN");
     return 0;
 }
 
-/* PoP: save_anthropic_api_key @ hermes_cli/config.py:save_anthropic_api_key */
+/* PoP: cfg_save_anthropic_api_key @ hermes_cli/config.py:save_anthropic_api_key */
 int cfg_save_anthropic_api_key(const char *value) {
     if (!value) return -1;
     setenv("ANTHROPIC_API_KEY", value, 1);
@@ -513,7 +513,7 @@ int cfg_save_anthropic_api_key(const char *value) {
     return 0;
 }
 
-/* PoP: save_env_value_secure @ hermes_cli/config.py:save_env_value_secure */
+/* PoP: cfg_save_env_value_secure @ hermes_cli/config.py:save_env_value_secure */
 int cfg_save_env_value_secure(const char *key, const char *value) {
     /* Python: unified credential lifecycle w/ config mirror refresh. */
     if (!key || !value) return -1;
@@ -521,7 +521,7 @@ int cfg_save_env_value_secure(const char *key, const char *value) {
     return 0;
 }
 
-/* PoP: reload_env @ hermes_cli/config.py:reload_env */
+/* PoP: cfg_reload_env @ hermes_cli/config.py:reload_env */
 long cfg_reload_env(const char *path) {
     /* Python: re-read into os.environ; returns updated count. */
     if (!path) return 0;
@@ -547,7 +547,7 @@ long cfg_reload_env(const char *path) {
     return updated;
 }
 
-/* PoP: get_env_value @ hermes_cli/config.py:get_env_value */
+/* PoP: cfg_get_env_value @ hermes_cli/config.py:get_env_value */
 char *cfg_get_env_value(const char *key, const char *env_val, const char *env_file_contents) {
     /* Python: os.environ first, then .env file. */
     if (env_val && *env_val) return strdup(env_val);
@@ -567,7 +567,7 @@ char *cfg_get_env_value(const char *key, const char *env_val, const char *env_fi
     return NULL;
 }
 
-/* PoP: redact_config_value @ hermes_cli/config.py:redact_config_value */
+/* PoP: cfg_redact_config_value @ hermes_cli/config.py:redact_config_value */
 char *cfg_redact_config_value(const char *json_value) {
     /* Python: mask credential-shaped keys recursively. */
     if (!json_value) return strdup("");

@@ -111,7 +111,7 @@ char *tools_slash_confirm_resolve(const char *session_key, const char *confirm_i
     return handler(choice);
 }
 
-/* PoP: tools_slash_confirm_resolve_sync_compat @ tools/slash_confirm.py:resolve_sync_compat */
+/* PoP: resolve @ tools/slash_confirm.py:resolve_sync_compat */
 /* Synchronous helper used by platform callback paths that run on a different
  * thread than the event loop. Python schedules the async resolve() onto the
  * given loop via safe_schedule_threadsafe and blocks up to 30s for the result;

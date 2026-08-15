@@ -71,13 +71,13 @@ static char *norm_provider_dup(const char *provider) {
 
 /* ── OpenRouter / Novita / Nous pricing ────────────────────────────────── */
 
-/* PoP: _resolve_openrouter_api_key @ hermes_cli/models.py:_resolve_openrouter_api_key */
+/* PoP: models_resolve_openrouter_api_key @ hermes_cli/models.py:_resolve_openrouter_api_key */
 char *models_resolve_openrouter_api_key(void) {
     const char *v = getenv("OPENROUTER_API_KEY");
     return xstrdup(v && *v ? v : "");
 }
 
-/* PoP: _resolve_nous_pricing_credentials @ hermes_cli/models.py:_resolve_nous_pricing_credentials */
+/* PoP: models_resolve_nous_pricing_credentials @ hermes_cli/models.py:_resolve_nous_pricing_credentials */
 void models_resolve_nous_pricing_credentials(nous_creds_fn resolve, void *ctx,
                                              char **out_key, char **out_base) {
     if (resolve) {
@@ -93,7 +93,7 @@ void models_resolve_nous_pricing_credentials(nous_creds_fn resolve, void *ctx,
     *out_base = xstrdup(NOUS_INFERENCE_BASE);
 }
 
-/* PoP: fetch_models_with_pricing @ hermes_cli/models.py:fetch_models_with_pricing */
+/* PoP: models_fetch_models_with_pricing @ hermes_cli/models.py:fetch_models_with_pricing */
 char *models_fetch_models_with_pricing(http_fetch_fn fetch, void *ctx,
                                        const char *api_key, const char *base_url,
                                        int force_refresh) {
@@ -146,7 +146,7 @@ char *models_fetch_models_with_pricing(http_fetch_fn fetch, void *ctx,
     return res ? res : xstrdup("{}");
 }
 
-/* PoP: _fetch_novita_pricing @ hermes_cli/models.py:_fetch_novita_pricing */
+/* PoP: models_fetch_novita_pricing @ hermes_cli/models.py:_fetch_novita_pricing */
 char *models_fetch_novita_pricing(http_fetch_fn fetch, void *ctx, int force_refresh) {
     (void)force_refresh;
     const char *key = getenv("NOVITA_API_KEY");
@@ -200,7 +200,7 @@ char *models_fetch_novita_pricing(http_fetch_fn fetch, void *ctx, int force_refr
     return res ? res : xstrdup("{}");
 }
 
-/* PoP: get_pricing_for_provider @ hermes_cli/models.py:get_pricing_for_provider */
+/* PoP: models_get_pricing_for_provider @ hermes_cli/models.py:get_pricing_for_provider */
 char *models_get_pricing_for_provider(http_fetch_fn fetch, void *ctx,
                                       nous_creds_fn resolve_nous, void *nous_ctx,
                                       const char *provider, int force_refresh) {
@@ -237,7 +237,7 @@ char *models_get_pricing_for_provider(http_fetch_fn fetch, void *ctx,
 
 /* ── LM Studio native API helpers ──────────────────────────────────────── */
 
-/* PoP: _lmstudio_server_root @ hermes_cli/models.py:_lmstudio_server_root */
+/* PoP: models_lmstudio_server_root @ hermes_cli/models.py:_lmstudio_server_root */
 char *models_lmstudio_server_root(const char *base_url) {
     char tmp[1024];
     const char *b = base_url ? base_url : "";
@@ -260,7 +260,7 @@ char *models_lmstudio_server_root(const char *base_url) {
     return xstrdup(tmp[0] ? tmp : "");
 }
 
-/* PoP: _lmstudio_request_headers @ hermes_cli/models.py:_lmstudio_request_headers */
+/* PoP: models_lmstudio_request_headers @ hermes_cli/models.py:_lmstudio_request_headers */
 char *models_lmstudio_request_headers(const char *api_key) {
     const char *tok = api_key ? api_key : "";
     while (*tok == ' ' || *tok == '\t') tok++;
@@ -269,7 +269,7 @@ char *models_lmstudio_request_headers(const char *api_key) {
     return xstrdup_printf("{\"User-Agent\":\"%s\"}", HERMES_UA);
 }
 
-/* PoP: _lmstudio_fetch_raw_models @ hermes_cli/models.py:_lmstudio_fetch_raw_models */
+/* PoP: models_lmstudio_fetch_raw_models @ hermes_cli/models.py:_lmstudio_fetch_raw_models */
 json_t *models_lmstudio_fetch_raw_models(http_fetch_fn fetch, void *ctx,
                                          const char *api_key, const char *base_url) {
     char *root = models_lmstudio_server_root(base_url);
@@ -290,7 +290,7 @@ json_t *models_lmstudio_fetch_raw_models(http_fetch_fn fetch, void *ctx,
     return parsed;
 }
 
-/* PoP: probe_lmstudio_models @ hermes_cli/models.py:probe_lmstudio_models */
+/* PoP: models_probe_lmstudio_models @ hermes_cli/models.py:probe_lmstudio_models */
 char **models_probe_lmstudio_models(http_fetch_fn fetch, void *ctx,
                                     const char *api_key, const char *base_url) {
     json_t *raw = models_lmstudio_fetch_raw_models(fetch, ctx, api_key, base_url);
@@ -321,7 +321,7 @@ char **models_probe_lmstudio_models(http_fetch_fn fetch, void *ctx,
     return keys;
 }
 
-/* PoP: lmstudio_model_reasoning_options @ hermes_cli/models.py:lmstudio_model_reasoning_options */
+/* PoP: models_lmstudio_reasoning_options @ hermes_cli/models.py:lmstudio_model_reasoning_options */
 char **models_lmstudio_reasoning_options(http_fetch_fn fetch, void *ctx,
                                          const char *model, const char *base_url,
                                          const char *api_key) {
@@ -376,7 +376,7 @@ static json_t *fetch_github_catalog(http_fetch_fn fetch, void *ctx, const char *
     return parsed;
 }
 
-/* PoP: _fetch_github_models @ hermes_cli/models.py:_fetch_github_models */
+/* PoP: models_fetch_github_models @ hermes_cli/models.py:_fetch_github_models */
 char **models_fetch_github_models(http_fetch_fn fetch, void *ctx,
                                   const char *api_key) {
     json_t *cat = api_key ? fetch_github_catalog(fetch, ctx, api_key) : NULL;
@@ -398,7 +398,7 @@ char **models_fetch_github_models(http_fetch_fn fetch, void *ctx,
     return ids;
 }
 
-/* PoP: _copilot_catalog_ids @ hermes_cli/models.py:_copilot_catalog_ids */
+/* PoP: models_copilot_catalog_ids @ hermes_cli/models.py:_copilot_catalog_ids */
 char **models_copilot_catalog_ids(http_fetch_fn fetch, void *ctx,
                                   json_t *catalog, const char *api_key) {
     json_t *cat = catalog;
@@ -424,7 +424,7 @@ char **models_copilot_catalog_ids(http_fetch_fn fetch, void *ctx,
     return ids;
 }
 
-/* PoP: _github_reasoning_efforts_for_model_id @ hermes_cli/models.py:_github_reasoning_efforts_for_model_id */
+/* PoP: models_github_reasoning_efforts_for_id @ hermes_cli/models.py:_github_reasoning_efforts_for_model_id */
 char **models_github_reasoning_efforts_for_id(const char *model_id) {
     char raw[512];
     size_t n = strlen(model_id ? model_id : "");
@@ -453,7 +453,7 @@ char **models_github_reasoning_efforts_for_id(const char *model_id) {
     return out;
 }
 
-/* PoP: copilot_model_api_mode @ hermes_cli/models.py:copilot_model_api_mode */
+/* PoP: models_copilot_model_api_mode @ hermes_cli/models.py:copilot_model_api_mode */
 char *models_copilot_model_api_mode(http_fetch_fn fetch, void *ctx,
                                     const char *model_id, json_t *catalog,
                                     const char *api_key) {
@@ -503,7 +503,7 @@ char *models_copilot_model_api_mode(http_fetch_fn fetch, void *ctx,
     return mode;
 }
 
-/* PoP: github_model_reasoning_efforts @ hermes_cli/models.py:github_model_reasoning_efforts */
+/* PoP: models_github_model_reasoning_efforts @ hermes_cli/models.py:github_model_reasoning_efforts */
 char **models_github_model_reasoning_efforts(http_fetch_fn fetch, void *ctx,
                                              const char *model_id, json_t *catalog,
                                              const char *api_key) {
@@ -555,7 +555,7 @@ char **models_github_model_reasoning_efforts(http_fetch_fn fetch, void *ctx,
     return out;
 }
 
-/* PoP: get_copilot_model_context @ hermes_cli/models.py:get_copilot_model_context */
+/* PoP: models_get_copilot_model_context @ hermes_cli/models.py:get_copilot_model_context */
 char *models_get_copilot_model_context(http_fetch_fn fetch, void *ctx,
                                        const char *model_id, const char *api_key) {
     json_t *catalog = fetch_github_catalog(fetch, ctx, api_key);
@@ -585,7 +585,7 @@ char *models_get_copilot_model_context(http_fetch_fn fetch, void *ctx,
 
 /* ── Custom /v1 probe helpers ──────────────────────────────────────────── */
 
-/* PoP: probe_api_models @ hermes_cli/models.py:probe_api_models */
+/* PoP: models_probe_api_models @ hermes_cli/models.py:probe_api_models */
 char *models_probe_api_models(http_fetch_fn fetch, void *ctx,
                               const char *api_key, const char *base_url,
                               const char *api_mode) {
@@ -701,7 +701,7 @@ char *models_probe_api_models(http_fetch_fn fetch, void *ctx,
     return r ? r : xstrdup("{}");
 }
 
-/* PoP: fetch_api_models @ hermes_cli/models.py:fetch_api_models */
+/* PoP: models_fetch_api_models @ hermes_cli/models.py:fetch_api_models */
 char **models_fetch_api_models(http_fetch_fn fetch, void *ctx,
                                const char *api_key, const char *base_url,
                                const char *api_mode) {
@@ -729,14 +729,14 @@ char **models_fetch_api_models(http_fetch_fn fetch, void *ctx,
 
 /* ── Config / base-url resolvers (injectable) ──────────────────────────── */
 
-/* PoP: _get_custom_base_url @ hermes_cli/models.py:_get_custom_base_url */
+/* PoP: models_get_custom_base_url @ hermes_cli/models.py:_get_custom_base_url */
 char *models_get_custom_base_url(void) {
     const char *v = getenv("HERMES_CUSTOM_BASE_URL");
     if (v && *v) return xstrdup(v);
     return xstrdup("");
 }
 
-/* PoP: _get_model_config_dict @ hermes_cli/models.py:_get_model_config_dict */
+/* PoP: models_get_model_config_dict @ hermes_cli/models.py:_get_model_config_dict */
 char *models_get_model_config_dict(model_config_fn get, void *ctx) {
     if (get) {
         char *r = get(ctx);
@@ -745,7 +745,7 @@ char *models_get_model_config_dict(model_config_fn get, void *ctx) {
     return xstrdup("{}");
 }
 
-/* PoP: _resolve_copilot_catalog_api_key @ hermes_cli/models.py:_resolve_copilot_catalog_api_key */
+/* PoP: models_resolve_copilot_catalog_api_key @ hermes_cli/models.py:_resolve_copilot_catalog_api_key */
 char *models_resolve_copilot_catalog_api_key(copilot_apikey_fn get, void *ctx) {
     if (get) {
         char *r = get(ctx);
@@ -758,7 +758,7 @@ char *models_resolve_copilot_catalog_api_key(copilot_apikey_fn get, void *ctx) {
     return xstrdup("");
 }
 
-/* PoP: _resolve_nous_portal_url @ hermes_cli/models.py:_resolve_nous_portal_url */
+/* PoP: models_resolve_nous_portal_url @ hermes_cli/models.py:_resolve_nous_portal_url */
 char *models_resolve_nous_portal_url(void) {
     const char *v = getenv("NOUS_PORTAL_URL");
     return xstrdup(v && *v ? v : "https://portal.nousresearch.com");
@@ -766,7 +766,7 @@ char *models_resolve_nous_portal_url(void) {
 
 /* ── Ollama Cloud disk cache ───────────────────────────────────────────── */
 
-/* PoP: _ollama_cloud_cache_path @ hermes_cli/models.py:_ollama_cloud_cache_path */
+/* PoP: models_ollama_cloud_cache_path @ hermes_cli/models.py:_ollama_cloud_cache_path */
 char *models_ollama_cloud_cache_path(void) {
     char home[PATH_MAX];
     hermes_home_dir(home, sizeof(home));
@@ -775,7 +775,7 @@ char *models_ollama_cloud_cache_path(void) {
     return xstrdup(out);
 }
 
-/* PoP: _load_ollama_cloud_cache @ hermes_cli/models.py:_load_ollama_cloud_cache */
+/* PoP: models_load_ollama_cloud_cache @ hermes_cli/models.py:_load_ollama_cloud_cache */
 char *models_load_ollama_cloud_cache(int ignore_ttl) {
     char *path = models_ollama_cloud_cache_path();
     FILE *f = fopen(path, "r");
@@ -807,7 +807,7 @@ char *models_load_ollama_cloud_cache(int ignore_ttl) {
     return ser ? ser : NULL;
 }
 
-/* PoP: _save_ollama_cloud_cache @ hermes_cli/models.py:_save_ollama_cloud_cache */
+/* PoP: models_save_ollama_cloud_cache @ hermes_cli/models.py:_save_ollama_cloud_cache */
 void models_save_ollama_cloud_cache(const char *json) {
     if (!json || !*json) return;
     char *path = models_ollama_cloud_cache_path();
@@ -821,7 +821,7 @@ void models_save_ollama_cloud_cache(const char *json) {
 
 /* ── Nous free-tier / portal recommendation unions ─────────────────────── */
 
-/* PoP: check_nous_free_tier @ hermes_cli/models.py:check_nous_free_tier */
+/* PoP: models_check_nous_free_tier @ hermes_cli/models.py:check_nous_free_tier */
 int models_check_nous_free_tier(http_fetch_fn fetch, void *ctx,
                                 nous_creds_fn resolve_nous, void *nous_ctx) {
     char *pricing = models_get_pricing_for_provider(fetch, ctx, resolve_nous, nous_ctx, "nous", 0);
@@ -837,7 +837,7 @@ int models_check_nous_free_tier(http_fetch_fn fetch, void *ctx,
     return free_tier;
 }
 
-/* PoP: _merge_with_models_dev @ hermes_cli/models.py:_merge_with_models_dev */
+/* PoP: models_merge_with_models_dev @ hermes_cli/models.py:_merge_with_models_dev */
 char **models_merge_with_models_dev(char *const *live, char *const *mdev) {
     /* live first (deduped), then mdev additions not already present. */
     size_t cap = 16, n = 0;
@@ -860,7 +860,7 @@ char **models_merge_with_models_dev(char *const *live, char *const *mdev) {
     return out;
 }
 
-/* PoP: union_with_portal_free_recommendations @ hermes_cli/models.py:union_with_portal_free_recommendations */
+/* PoP: union_portal @ hermes_cli/models.py:union_with_portal_free_recommendations */
 /* (also covers union_with_portal_paid_recommendations; `paid` selects tier semantics). */
 static char **union_portal(http_fetch_fn fetch, void *ctx, const char *portal_base_url,
                            char *const *base, int paid) {
@@ -896,14 +896,14 @@ static char **union_portal(http_fetch_fn fetch, void *ctx, const char *portal_ba
     return merged;
 }
 
-/* PoP: union_with_portal_free_recommendations @ hermes_cli/models.py:union_with_portal_free_recommendations */
+/* PoP: models_union_portal_free_recommendations @ hermes_cli/models.py:union_with_portal_free_recommendations */
 char **models_union_portal_free_recommendations(http_fetch_fn fetch, void *ctx,
                                                  const char *portal_base_url,
                                                  char *const *base) {
     return union_portal(fetch, ctx, portal_base_url, base, 0);
 }
 
-/* PoP: union_with_portal_paid_recommendations @ hermes_cli/models.py:union_with_portal_paid_recommendations */
+/* PoP: models_union_portal_paid_recommendations @ hermes_cli/models.py:union_with_portal_paid_recommendations */
 char **models_union_portal_paid_recommendations(http_fetch_fn fetch, void *ctx,
                                                  const char *portal_base_url,
                                                  char *const *base) {

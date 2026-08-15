@@ -18,14 +18,14 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _coerce_bool @ hermes_cli/nous_account.py:_coerce_bool */
+/* PoP: nac_coerce_bool @ hermes_cli/nous_account.py:_coerce_bool */
 bool nac_coerce_bool(const char *value) {
     /* Python: bool only; else None. */
     if (!value) return false;
     return strcmp(value, "true") == 0;
 }
 
-/* PoP: _coerce_int @ hermes_cli/nous_account.py:_coerce_int */
+/* PoP: nac_coerce_int @ hermes_cli/nous_account.py:_coerce_int */
 long nac_coerce_int(const char *value) {
     /* Python: strict int, no bool. */
     if (!value) return -1;
@@ -35,7 +35,7 @@ long nac_coerce_int(const char *value) {
     return v;
 }
 
-/* PoP: _coerce_float @ hermes_cli/nous_account.py:_coerce_float */
+/* PoP: nac_coerce_float @ hermes_cli/nous_account.py:_coerce_float */
 double nac_coerce_float(const char *value) {
     /* Python: strict float, no bool. */
     if (!value) return -1.0;

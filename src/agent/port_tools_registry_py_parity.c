@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_registry_check_fn_cache_scope @ tools/registry.py:check_fn_cache_scope */
+/* PoP: tools_registry_check_fn_cache_scope_p @ tools/registry.py:check_fn_cache_scope */
 json_t *tools_registry_check_fn_cache_scope_p(void) {
     return json_object();
 }

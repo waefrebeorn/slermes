@@ -14,12 +14,12 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_memory_setup_print_cancelled_setup @ hermes_cli/memory_setup.py:_print_cancelled_setup */
+/* PoP: hermes_cli_memory_setup_print_cancelled_setup_p @ hermes_cli/memory_setup.py:_print_cancelled_setup */
 json_t *hermes_cli_memory_setup_print_cancelled_setup_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_memory_setup_clear_interactive_transition @ hermes_cli/memory_setup.py:_clear_interactive_transition */
+/* PoP: hermes_cli_memory_setup_clear_interactive_transition_p @ hermes_cli/memory_setup.py:_clear_interactive_transition */
 json_t *hermes_cli_memory_setup_clear_interactive_transition_p(void) {
     return json_object();
 }

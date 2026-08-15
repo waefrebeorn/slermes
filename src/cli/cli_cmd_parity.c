@@ -65,7 +65,7 @@ static int get_config_bool(const char *key) {
 }
 
 /* ── /battery ───────────────────────────────────────────────────────── */
-/* PoP: battery @ hermes_cli/commands.py:battery */
+/* PoP: cmd_battery @ hermes_cli/commands.py:battery */
 /* PoP: cmd_battery @ hermes_cli/cli_commands_mixin.py:_handle_battery_command */
 void cmd_battery(const char *args, agent_state_t *state) {
     (void)state;
@@ -115,7 +115,7 @@ void cmd_battery(const char *args, agent_state_t *state) {
 }
 
 /* ── /timestamps ────────────────────────────────────────────────────── */
-/* PoP: timestamps @ hermes_cli/commands.py:timestamps */
+/* PoP: cmd_timestamps @ hermes_cli/commands.py:timestamps */
 /* PoP: cmd_timestamps @ hermes_cli/cli_commands_mixin.py:_handle_timestamps_command */
 void cmd_timestamps(const char *args, agent_state_t *state) {
     (void)state;
@@ -124,7 +124,7 @@ void cmd_timestamps(const char *args, agent_state_t *state) {
 }
 
 /* ── /start ─────────────────────────────────────────────────────────── */
-/* PoP: start @ hermes_cli/commands.py:start */
+/* PoP: cmd_start @ hermes_cli/commands.py:start */
 void cmd_start(const char *args, agent_state_t *state) {
     (void)args; (void)state;
     /* Python: acknowledge platform start pings without replying. */
@@ -132,7 +132,7 @@ void cmd_start(const char *args, agent_state_t *state) {
 }
 
 /* ── /egress ────────────────────────────────────────────────────────── */
-/* PoP: egress @ hermes_cli/commands.py:egress */
+/* PoP: cmd_egress @ hermes_cli/commands.py:egress */
 void cmd_egress(const char *args, agent_state_t *state) {
     (void)state;
     const char *arg = "";
@@ -183,7 +183,7 @@ void cmd_codex_runtime(const char *args, agent_state_t *state) {
 }
 
 /* ── /subscription ──────────────────────────────────────────────────── */
-/* PoP: subscription @ hermes_cli/commands.py:subscription */
+/* PoP: cmd_subscription @ hermes_cli/commands.py:subscription */
 /* PoP: cmd_subscription @ hermes_cli/cli_billing_mixin.py:_show_subscription */
 void cmd_subscription(const char *args, agent_state_t *state) {
     (void)args; (void)state;
@@ -218,7 +218,7 @@ void cmd_subscription(const char *args, agent_state_t *state) {
 }
 
 /* ── /topup ─────────────────────────────────────────────────────────── */
-/* PoP: topup @ hermes_cli/commands.py:topup */
+/* PoP: cmd_topup @ hermes_cli/commands.py:topup */
 /* PoP: cmd_topup @ hermes_cli/cli_billing_mixin.py:_show_billing */
 void cmd_topup(const char *args, agent_state_t *state) {
     (void)args; (void)state;
@@ -250,7 +250,7 @@ void cmd_topup(const char *args, agent_state_t *state) {
 }
 
 /* ── /journey ───────────────────────────────────────────────────────── */
-/* PoP: journey @ hermes_cli/commands.py:journey */
+/* PoP: cmd_journey @ hermes_cli/commands.py:journey */
 /* PoP: cmd_journey @ hermes_cli/cli_commands_mixin.py:_handle_journey_command */
 void cmd_journey(const char *args, agent_state_t *state) {
     (void)state;
@@ -259,7 +259,7 @@ void cmd_journey(const char *args, agent_state_t *state) {
 }
 
 /* ── /learn ─────────────────────────────────────────────────────────── */
-/* PoP: learn @ hermes_cli/commands.py:learn */
+/* PoP: cmd_learn @ hermes_cli/commands.py:learn */
 /* PoP: cmd_learn @ hermes_cli/cli_commands_mixin.py:_handle_learn_command */
 void cmd_learn(const char *args, agent_state_t *state) {
     (void)state;
@@ -268,7 +268,7 @@ void cmd_learn(const char *args, agent_state_t *state) {
 }
 
 /* ── /moa ───────────────────────────────────────────────────────────── */
-/* PoP: moa @ hermes_cli/commands.py:moa */
+/* PoP: cmd_moa @ hermes_cli/commands.py:moa */
 /* PoP: cmd_moa @ hermes_cli/moa_cmd.py:cmd_moa */
 void cmd_moa(const char *args, agent_state_t *state) {
     (void)state;
@@ -278,7 +278,7 @@ void cmd_moa(const char *args, agent_state_t *state) {
 }
 
 /* ── /prompt ────────────────────────────────────────────────────────── */
-/* PoP: prompt @ hermes_cli/commands.py:prompt */
+/* PoP: cmd_prompt @ hermes_cli/commands.py:prompt */
 /* PoP: cmd_prompt @ hermes_cli/cli_commands_mixin.py:_handle_prompt_command */
 void cmd_prompt(const char *args, agent_state_t *state) {
     (void)state;
@@ -287,7 +287,7 @@ void cmd_prompt(const char *args, agent_state_t *state) {
 }
 
 /* ── /suggestions ───────────────────────────────────────────────────── */
-/* PoP: suggestions @ hermes_cli/commands.py:suggestions */
+/* PoP: cmd_suggestions @ hermes_cli/commands.py:suggestions */
 /* PoP: cmd_suggestions @ hermes_cli/suggestions_cmd.py:handle_suggestions_command */
 void cmd_suggestions(const char *args, agent_state_t *state) {
     (void)state;
@@ -296,7 +296,7 @@ void cmd_suggestions(const char *args, agent_state_t *state) {
 }
 
 /* ── /blueprint ─────────────────────────────────────────────────────── */
-/* PoP: blueprint @ hermes_cli/commands.py:blueprint */
+/* PoP: cmd_blueprint @ hermes_cli/commands.py:blueprint */
 void cmd_blueprint(const char *args, agent_state_t *state) {
     (void)state;
     /* Delegate to the faithful blueprint wrapper. */
@@ -321,7 +321,7 @@ void cmd_blueprint(const char *args, agent_state_t *state) {
  * Python exactly means ONE estop handler: cmd_pause, with the disengage
  * branch inline. */
 /* PoP: cmd_pause @ hermes_cli/subcommands/pause.py:cmd_pause */
-/* PoP: _handle_pause_command @ gateway/run.py:_handle_pause_command */
+/* PoP: cmd_pause @ gateway/run.py:_handle_pause_command */
 void cmd_pause(const char *args, agent_state_t *state) {
     (void)state;
     /* Mirror pause.py / run.py: strip leading spaces. */
@@ -392,7 +392,7 @@ void cmd_pause(const char *args, agent_state_t *state) {
 }
 
 /* ── /hatch ─────────────────────────────────────────────────────────── */
-/* PoP: hatch @ hermes_cli/commands.py:hatch */
+/* PoP: cmd_hatch @ hermes_cli/commands.py:hatch */
 /* PoP: cmd_hatch @ hermes_cli/cli_commands_mixin.py:_handle_hatch_command */
 void cmd_hatch(const char *args, agent_state_t *state) {
     (void)state;

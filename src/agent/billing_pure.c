@@ -10,7 +10,7 @@
 #include "libjson/json.h"
 #include "hermes_json.h"
 
-/* PoP: _parse_payment_method @ agent/billing_view.py:_parse_payment_method */
+/* PoP: ts_parse_payment_method @ agent/billing_view.py:_parse_payment_method */
 char *ts_parse_payment_method(const char *raw_json)
 {
     char *err = NULL;

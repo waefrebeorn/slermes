@@ -24,12 +24,12 @@
 #include "sqlite3.h"
 
 /* ── constants (PoP: MIN_INTERVAL_SECONDS / POLL_SECONDS) ─────────────── */
-/* PoP: MIN_INTERVAL_SECONDS @ hermes_cli/heartbeat.py:MIN_INTERVAL_SECONDS */
+/* PoP: hb_unit_seconds @ hermes_cli/heartbeat.py:MIN_INTERVAL_SECONDS */
 const int hb_MIN_INTERVAL_SECONDS = 60;
-/* PoP: POLL_SECONDS @ hermes_cli/heartbeat.py:POLL_SECONDS */
+/* PoP: hb_unit_seconds @ hermes_cli/heartbeat.py:POLL_SECONDS */
 const double hb_POLL_SECONDS = 5.0;
 
-/* PoP: HEARTBEAT_PROMPT_TEMPLATE @ hermes_cli/heartbeat.py:HEARTBEAT_PROMPT_TEMPLATE */
+/* PoP: hb_unit_seconds @ hermes_cli/heartbeat.py:HEARTBEAT_PROMPT_TEMPLATE */
 const char *hb_PROMPT_TEMPLATE =
     "[Heartbeat — recurring instruction, fires every %s]\n"
     "%s\n\n"
@@ -39,7 +39,7 @@ const char *hb_PROMPT_TEMPLATE =
 
 /* ── interval parsing ──────────────────────────────────────────────── */
 
-/* PoP: _INTERVAL_RE @ hermes_cli/heartbeat.py:_INTERVAL_RE */
+/* PoP: hb_unit_seconds @ hermes_cli/heartbeat.py:_INTERVAL_RE */
 /* Faithful port of the compiled regex: captures a float + word unit. */
 typedef struct { const char *word; int seconds; } hb_unit_t;
 static const hb_unit_t HB_UNITS[] = {
@@ -48,7 +48,7 @@ static const hb_unit_t HB_UNITS[] = {
     {"h",3600},{"hr",3600},{"hrs",3600},{"hour",3600},{"hours",3600},
     {"d",86400},{"day",86400},{"days",86400},
 };
-/* PoP: _UNIT_SECONDS @ hermes_cli/heartbeat.py:_UNIT_SECONDS */
+/* PoP: hb_unit_seconds @ hermes_cli/heartbeat.py:_UNIT_SECONDS */
 static int hb_unit_seconds(const char *word) {
     size_t bestlen = 0; const char *best = NULL;
     for (size_t i = 0; i < sizeof(HB_UNITS)/sizeof(HB_UNITS[0]); i++) {
@@ -64,7 +64,7 @@ static int hb_unit_seconds(const char *word) {
     return 0;
 }
 
-/* PoP: parse_interval @ hermes_cli/heartbeat.py:parse_interval */
+/* PoP: None @ hermes_cli/heartbeat.py:parse_interval */
 /* Faithful port: returns None (0, *out=NULL) for non-interval,
  * -1 (0, *out=INT_MIN) for below the floor, else the seconds.
  * Uses libregex (POSIX ERE) with the exact same anchored semantics as
@@ -107,7 +107,7 @@ int hb_parse_interval(const char *text, int *out) {
     return ok ? 1 : 0;
 }
 
-/* PoP: format_interval @ hermes_cli/heartbeat.py:format_interval */
+/* PoP: hb_format_interval @ hermes_cli/heartbeat.py:format_interval */
 /* Faithful port: 600 -> "10m" etc. */
 char *hb_format_interval(int seconds) {
     seconds = (int)seconds;
@@ -246,7 +246,7 @@ char *hb_state_render_prompt(const hb_state_t *s) {
 
 /* ── meta key + persistence ────────────────────────────────────────── */
 
-/* PoP: _meta_key @ hermes_cli/heartbeat.py:_meta_key */
+/* PoP: hb_meta_key @ hermes_cli/heartbeat.py:_meta_key */
 char *hb_meta_key(const char *session_id) {
     if (!session_id || !*session_id) return NULL;
     char *out = NULL;
@@ -254,7 +254,7 @@ char *hb_meta_key(const char *session_id) {
     return out;
 }
 
-/* PoP: _get_session_db @ hermes_cli/heartbeat.py:_get_session_db */
+/* PoP: hb_get_session_db_path @ hermes_cli/heartbeat.py:_get_session_db */
 /* In C the SessionDB is the on-disk state.db; return its path. */
 char *hb_get_session_db_path(void) {
     const char *home = slermes_home();
@@ -264,7 +264,7 @@ char *hb_get_session_db_path(void) {
     return out;
 }
 
-/* PoP: load_heartbeat @ hermes_cli/heartbeat.py:load_heartbeat */
+/* PoP: hb_load_heartbeat @ hermes_cli/heartbeat.py:load_heartbeat */
 hb_state_t *hb_load_heartbeat(const char *session_id) {
     if (!session_id || !*session_id) return NULL;
     char *key = hb_meta_key(session_id);
@@ -282,7 +282,7 @@ hb_state_t *hb_load_heartbeat(const char *session_id) {
     return state;
 }
 
-/* PoP: save_heartbeat @ hermes_cli/heartbeat.py:save_heartbeat */
+/* PoP: hb_save_heartbeat @ hermes_cli/heartbeat.py:save_heartbeat */
 bool hb_save_heartbeat(const char *session_id, const hb_state_t *state) {
     if (!session_id || !*session_id || !state) return false;
     char *key = hb_meta_key(session_id);
@@ -435,7 +435,7 @@ char *hb_manager_due_prompt(hb_manager_t *m, double now) {
     return hb_state_render_prompt(m->state);
 }
 
-/* PoP: migrate_heartbeat_to_session @ hermes_cli/heartbeat.py:migrate_heartbeat_to_session */
+/* PoP: hb_migrate_heartbeat_to_session @ hermes_cli/heartbeat.py:migrate_heartbeat_to_session */
 bool hb_migrate_heartbeat_to_session(const char *old_session_id,
                                      const char *new_session_id) {
     if (!old_session_id || !new_session_id ||

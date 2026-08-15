@@ -392,7 +392,7 @@ int scheduler_resolve_single_delivery_target(const scheduler_job_t *job,
 
 /* ── PoP: _resolve_delivery_targets @ cron/scheduler.py:_resolve_delivery_targets ──
  * csv deliver (+ "all" token), deduped by (platform, chat_id, thread_id). */
-/* PoP: scheduler_resolve_delivery_target @ cron/scheduler.py:_resolve_delivery_target */
+/* PoP: scheduler_resolve_delivery_targets @ cron/scheduler.py:_resolve_delivery_target */
 /* PoP: scheduler_resolve_delivery_targets @ cron/scheduler.py:_resolve_delivery_targets */
 int scheduler_resolve_delivery_targets(const scheduler_job_t *job,
                                        scheduler_target_t *out, int max)
@@ -628,7 +628,7 @@ char *scheduler_preflight_check_delivery(const char *deliver_value,
     return NULL;
 }
 
-/* PoP: _cron_inactivity_seconds @ cron/scheduler.py:_cron_inactivity_seconds */
+/* PoP: scheduler_cron_inactivity_seconds @ cron/scheduler.py:_cron_inactivity_seconds */
 double scheduler_cron_inactivity_seconds(void) {
     const char *raw = getenv("HERMES_CRON_TIMEOUT");
     if (raw) raw = raw + strspn(raw, " \t");
@@ -639,7 +639,7 @@ double scheduler_cron_inactivity_seconds(void) {
     return val;
 }
 
-/* PoP: _cwd_lock_timeout_seconds @ cron/scheduler.py:_cwd_lock_timeout_seconds */
+/* PoP: scheduler_cwd_lock_timeout_seconds @ cron/scheduler.py:_cwd_lock_timeout_seconds */
 double scheduler_cwd_lock_timeout_seconds(void) {
     double inactivity = scheduler_cron_inactivity_seconds();
     if (inactivity <= 0) inactivity = 600.0;
@@ -649,7 +649,7 @@ double scheduler_cwd_lock_timeout_seconds(void) {
     return inactivity + 10.0;
 }
 
-/* PoP: _utcnow_iso_ms @ cron/scheduler.py:_utcnow_iso_ms */
+/* PoP: scheduler_utcnow_iso_ms @ cron/scheduler.py:_utcnow_iso_ms */
 /* Returns malloc'd RFC3339 UTC timestamp with ms precision. Caller frees. */
 char *scheduler_utcnow_iso_ms(void) {
     time_t now = time(NULL);
@@ -665,7 +665,7 @@ char *scheduler_utcnow_iso_ms(void) {
     return out;
 }
 
-/* PoP: _usage_audit_path @ cron/scheduler.py:_usage_audit_path */
+/* PoP: scheduler_usage_audit_path @ cron/scheduler.py:_usage_audit_path */
 /* Returns malloc'd path to usage_audit.jsonl. Caller frees. */
 char *scheduler_usage_audit_path(void) {
     extern char *dashboard_procs_hermes_home_dir(void);
@@ -676,7 +676,7 @@ char *scheduler_usage_audit_path(void) {
     return out;
 }
 
-/* PoP: _origin_thread_is_stale @ cron/scheduler.py:_origin_thread_is_stale */
+/* PoP: scheduler_origin_thread_is_stale @ cron/scheduler.py:_origin_thread_is_stale */
 int scheduler_origin_thread_is_stale(const char *platform, const char *thread_id,
                                      const char *chat_id) {
     if (!platform || strcasecmp(platform, "slack") != 0) return 0;
@@ -687,7 +687,7 @@ int scheduler_origin_thread_is_stale(const char *platform, const char *thread_id
     return 0;  /* fail-safe: never mark as stale without config access */
 }
 
-/* PoP: _origin_delivery_thread @ cron/scheduler.py:_origin_delivery_thread */
+/* PoP: scheduler_origin_delivery_thread @ cron/scheduler.py:_origin_delivery_thread */
 /* Returns malloc'd thread id or NULL. Caller frees. */
 char *scheduler_origin_delivery_thread(const char *platform, const char *origin_thread_id,
                                        int is_stale) {

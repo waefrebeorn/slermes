@@ -20,7 +20,7 @@
 
 /* ── _is_nan ─────────────────────────────────────────────────────── */
 
-/* PoP: _is_nan @ tools/voice_mode.py:_is_nan */
+/* PoP: is_nan @ tools/voice_mode.py:_is_nan */
 bool is_nan(double value) {
     return isnan(value);
 }
@@ -237,7 +237,7 @@ bool audio_recorder_max_duration_reached(double cap, double elapsed) {
     return cap > 0 && elapsed >= cap;
 }
 
-/* PoP: _normalize_for_echo_compare @ tools/voice_mode.py:_normalize_for_echo_compare */
+/* PoP: voice_mode_normalize_for_echo_compare @ tools/voice_mode.py:_normalize_for_echo_compare */
 /* Returns malloc'd normalized text. Caller frees. */
 char *voice_mode_normalize_for_echo_compare(const char *text) {
     if (!text) return strdup("");

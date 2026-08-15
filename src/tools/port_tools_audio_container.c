@@ -27,7 +27,7 @@
 #include <string.h>
 #include <ctype.h>
 
-/* PoP: sniff_container @ tools/audio_container.py:sniff_container */
+/* PoP: pca_sniff_container @ tools/audio_container.py:sniff_container */
 /* Return a malloc'd container id from magic bytes, or NULL when unknown.
  * Possible ids: m4a, mp4, ogg, flac, wav, mp3, aac, webm. Only audio/AV
  * containers are claimed — images (RIFF/WEBP) return NULL. */
@@ -71,7 +71,7 @@ char *pca_sniff_container(const unsigned char *data, size_t len)
     return NULL;
 }
 
-/* PoP: sniff_audio_ext @ tools/audio_container.py:sniff_audio_ext */
+/* PoP: pca_sniff_audio_ext @ tools/audio_container.py:sniff_audio_ext */
 /* Return a malloc'd container-matching extension, or fallback_ext when unknown.
  * In an audio context, generic MP4 → .m4a (AAC audio regardless of brand). */
 char *pca_sniff_audio_ext(const unsigned char *data, size_t len, const char *fallback_ext)

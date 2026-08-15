@@ -355,7 +355,7 @@ int usage_pricing_prompt_tokens(const usage_counts_t *usage)
     return usage ? usage->input_tokens : 0;
 }
 
-/* PoP: total_tokens @ agent/usage_pricing.py:total_tokens */
+/* PoP: usage_pricing_total_tokens @ agent/usage_pricing.py:total_tokens */
 /* Port of Python agent/usage_pricing.py:total_tokens(). */
 int usage_pricing_total_tokens(const usage_counts_t *usage)
 {

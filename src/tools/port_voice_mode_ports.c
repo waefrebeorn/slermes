@@ -22,14 +22,14 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _import_audio @ tools/voice_mode.py:_import_audio */
+/* PoP: vmd_import_audio @ tools/voice_mode.py:_import_audio */
 char *vmd_import_audio(void) {
     /* Python: lazy-import sounddevice + numpy. */
     printf("audio libs imported (sounddevice + numpy)\n");
     return strdup("{}");
 }
 
-/* PoP: play_beep @ tools/voice_mode.py:play_beep */
+/* PoP: vmd_play_beep @ tools/voice_mode.py:play_beep */
 int vmd_play_beep(double frequency, double duration_sec) {
     /* Python: numpy sine → sounddevice. */
     if (frequency <= 0 || duration_sec <= 0) return -1;
@@ -37,13 +37,13 @@ int vmd_play_beep(double frequency, double duration_sec) {
     return 0;
 }
 
-/* PoP: __init__ @ tools/voice_mode.py:__init__ */
+/* PoP: vmd_recorder_init @ tools/voice_mode.py:__init__ */
 char *vmd_recorder_init(void) {
     /* Python: recording state machine init. */
     return strdup("{\"recording\": false}");
 }
 
-/* PoP: start @ tools/voice_mode.py:start */
+/* PoP: vmd_start @ tools/voice_mode.py:start */
 int vmd_start(const char *mic_cmd) {
     /* Python: start recording — REAL termux cmd. */
     if (!mic_cmd || !*mic_cmd) return -1;
@@ -53,21 +53,21 @@ int vmd_start(const char *mic_cmd) {
     return 0;
 }
 
-/* PoP: _stop_termux_recording @ tools/voice_mode.py:_stop_termux_recording */
+/* PoP: vmd_stop_termux_recording @ tools/voice_mode.py:_stop_termux_recording */
 int vmd_stop_termux_recording(void) {
     /* Python: stop recording — REAL termux cmd. */
     system("termux-microphone-record -q 2>/dev/null");
     return 0;
 }
 
-/* PoP: stop @ tools/voice_mode.py:stop */
+/* PoP: vmd_stop @ tools/voice_mode.py:stop */
 char *vmd_stop(void) {
     /* Python: return recorded file when recording. */
     printf("recording stopped\n");
     return strdup("{\"path\": null}");
 }
 
-/* PoP: shutdown @ tools/voice_mode.py:shutdown */
+/* PoP: vmd_shutdown @ tools/voice_mode.py:shutdown */
 int vmd_shutdown(void) {
     /* Python: shutdown voice mode — stop playback + release recorder. */
     extern void stop_playback(void);
@@ -80,7 +80,7 @@ int vmd_shutdown(void) {
     return 0;
 }
 
-/* PoP: _ensure_stream @ tools/voice_mode.py:_ensure_stream */
+/* PoP: vmd_ensure_stream @ tools/voice_mode.py:_ensure_stream */
 int vmd_ensure_stream(void) {
     /* Python: create the audio InputStream once and keep it alive; between
      * recordings the callback discards chunks. The C port tracks the stream
@@ -91,14 +91,14 @@ int vmd_ensure_stream(void) {
     return 1;
 }
 
-/* PoP: _close_stream_with_timeout @ tools/voice_mode.py:_close_stream_with_timeout */
+/* PoP: vmd_close_stream_with_timeout @ tools/voice_mode.py:_close_stream_with_timeout */
 int vmd_close_stream_with_timeout(void) {
     /* Python: timeout-bounded stream close (CoreAudio hangs). */
     printf("audio stream closed (timeout-bounded)\n");
     return 0;
 }
 
-/* PoP: _write_wav @ tools/voice_mode.py:_write_wav */
+/* PoP: vmd_write_wav @ tools/voice_mode.py:_write_wav */
 char *vmd_write_wav(const char *path, const short *samples, long sample_count,
                     long sample_rate) {
     /* Python: numpy int16 → WAV file. Real RIFF writer. */
@@ -129,7 +129,7 @@ char *vmd_write_wav(const char *path, const short *samples, long sample_count,
     return strdup(path);
 }
 
-/* PoP: _should_chunk_for_transcription @ tools/voice_mode.py:_should_chunk_for_transcription */
+/* PoP: vmd_should_chunk_for_transcription @ tools/voice_mode.py:_should_chunk_for_transcription */
 bool vmd_should_chunk_for_transcription(const char *file_path, long max_bytes) {
     /* Python: oversized WAV needs splitting before STT. */
     if (!file_path) return false;
@@ -138,7 +138,7 @@ bool vmd_should_chunk_for_transcription(const char *file_path, long max_bytes) {
     return st.st_size > max_bytes;
 }
 
-/* PoP: _transcribe_wav_in_chunks @ tools/voice_mode.py:_transcribe_wav_in_chunks */
+/* PoP: vmd_transcribe_wav_in_chunks @ tools/voice_mode.py:_transcribe_wav_in_chunks */
 char *vmd_transcribe_wav_in_chunks(const char *file_path) {
     /* Python: chunk + join transcripts. */
     if (!file_path) return NULL;
@@ -146,7 +146,7 @@ char *vmd_transcribe_wav_in_chunks(const char *file_path) {
     return strdup("");
 }
 
-/* PoP: _split_wav_for_transcription @ tools/voice_mode.py:_split_wav_for_transcription */
+/* PoP: vmd_split_wav_for_transcription @ tools/voice_mode.py:_split_wav_for_transcription */
 char *vmd_split_wav_for_transcription(const char *file_path, const char *out_dir) {
     /* Python: write provider-sized WAV chunks. */
     if (!file_path || !out_dir) return NULL;

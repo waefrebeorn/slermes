@@ -27,7 +27,7 @@ struct browser_tool_path {
 browser_tool_path_t *browser_tool_path_init(void) { return calloc(1, sizeof(browser_tool_path_t)); }
 void browser_tool_path_cleanup(browser_tool_path_t *s) { free(s); }
 
-/* PoP: _discover_homebrew_node_dirs @ tools/browser_tool.py:_discover_homebrew_node_dirs */
+/* PoP: browser_discover_homebrew_node_dirs @ tools/browser_tool.py:_discover_homebrew_node_dirs */
 char *browser_discover_homebrew_node_dirs(void)
 {
     /* Find Homebrew versioned Node.js bin directories */
@@ -56,7 +56,7 @@ char *browser_discover_homebrew_node_dirs(void)
     return result;
 }
 
-/* PoP: _browser_candidate_path_dirs @ tools/browser_tool.py:_browser_candidate_path_dirs */
+/* PoP: browser_browser_candidate_path_dirs @ tools/browser_tool.py:_browser_candidate_path_dirs */
 char *browser_browser_candidate_path_dirs(void)
 {
     /* Return ordered browser CLI PATH candidates */
@@ -79,7 +79,7 @@ char *browser_browser_candidate_path_dirs(void)
     return result;
 }
 
-/* PoP: _merge_browser_path @ tools/browser_tool.py:_merge_browser_path */
+/* PoP: browser_merge_browser_path @ tools/browser_tool.py:_merge_browser_path */
 char *browser_merge_browser_path(const char *existing_path)
 {
     /* Prepend browser-specific PATH fallbacks without reordering existing entries */

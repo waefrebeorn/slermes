@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: agent_turn_context_maybe_title_session_at_turn_start @ agent/turn_context.py:_maybe_title_session_at_turn_start */
+/* PoP: agent_turn_context_maybe_title_session_at_turn_start_p @ agent/turn_context.py:_maybe_title_session_at_turn_start */
 json_t *agent_turn_context_maybe_title_session_at_turn_start_p(void) {
     return json_object();
 }

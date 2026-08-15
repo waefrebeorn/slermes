@@ -32,7 +32,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __post_init__ @ agent/credential_pool.py:__post_init__ */
+/* PoP: cpl_post_init @ agent/credential_pool.py:__post_init__ */
 char *cpl_post_init(const char *provider, const char *access_token, const char *auth_type) {
     /* Python: extra default {} + auth_type normalized per provider. */
     if (!provider) return NULL;
@@ -53,7 +53,7 @@ char *cpl_post_init(const char *provider, const char *access_token, const char *
     return out;
 }
 
-/* PoP: _seed_from_singletons @ agent/credential_pool.py:_seed_from_singletons */
+/* PoP: cpl_seed_from_singletons @ agent/credential_pool.py:_seed_from_singletons */
 char *cpl_seed_from_singletons(const char *provider) {
     /* Python: seed pool from auth-store singletons (anthropic, openai, etc.),
      * honoring suppression gate. Returns JSON summary of active_sources. */
@@ -67,7 +67,7 @@ char *cpl_seed_from_singletons(const char *provider) {
     return out ? out : strdup("[]");
 }
 
-/* PoP: _seed_from_env @ agent/credential_pool.py:_seed_from_env */
+/* PoP: cpl_seed_from_env @ agent/credential_pool.py:_seed_from_env */
 char *cpl_seed_from_env(const char *provider) {
     /* Python: seed pool from ~/.hermes/.env (authoritative) or env vars,
      * honoring suppression gate. Returns JSON summary of active_sources. */
@@ -80,7 +80,7 @@ char *cpl_seed_from_env(const char *provider) {
     return out ? out : strdup("[]");
 }
 
-/* PoP: _seed_from_custom_pool @ agent/credential_pool.py:_seed_from_custom_pool */
+/* PoP: cpl_seed_custom_pool @ agent/credential_pool.py:_seed_from_custom_pool */
 bool cpl_seed_custom_pool(void) {
     /* Python: seed custom_providers pool from config api_key + model.api_key.
      * Honors suppression gate at every upsert. */
@@ -98,7 +98,7 @@ bool cpl_seed_custom_pool(void) {
     return any;
 }
 
-/* PoP: from_dict @ agent/credential_pool.py:from_dict */
+/* PoP: cpl_from_dict @ agent/credential_pool.py:from_dict */
 char *cpl_from_dict(const char *payload_json) {
     /* Python: field subset rehydrate; ISO last_status_at parsed to epoch.
      * Rehydrate via JSON parse, normalize ISO timestamp, round-trip serialize. */
@@ -120,7 +120,7 @@ char *cpl_from_dict(const char *payload_json) {
     return out ? out : strdup(payload_json);
 }
 
-/* PoP: to_dict @ agent/credential_pool.py:to_dict */
+/* PoP: cpl_to_dict @ agent/credential_pool.py:to_dict */
 char *cpl_to_dict(const char *entry_json) {
     /* Python: always-emit status fields + sanitize_borrowed_credential_payload.
      * Always emit: last_status, last_status_at, last_error_code, last_error_reason. */
@@ -144,7 +144,7 @@ char *cpl_to_dict(const char *entry_json) {
     return out ? out : strdup("{}");
 }
 
-/* PoP: _next_priority @ agent/credential_pool.py:_next_priority */
+/* PoP: cpl_next_priority @ agent/credential_pool.py:_next_priority */
 int cpl_next_priority(const char *entries_json) {
     /* Python: max(entry.priority for entry in entries, default=-1) + 1. */
     if (!entries_json || strcmp(entries_json, "[]") == 0) return 0;
@@ -163,7 +163,7 @@ int cpl_next_priority(const char *entries_json) {
     return max_p + 1;
 }
 
-/* PoP: _is_manual_source @ agent/credential_pool.py:_is_manual_source */
+/* PoP: cpl_is_manual_source @ agent/credential_pool.py:_is_manual_source */
 bool cpl_is_manual_source(const char *source) {
     /* Python: "manual" or "manual:<id>". */
     if (!source) return false;
@@ -177,7 +177,7 @@ bool cpl_is_manual_source(const char *source) {
     return r;
 }
 
-/* PoP: _exhausted_ttl @ agent/credential_pool.py:_exhausted_ttl */
+/* PoP: cpl_exhausted_ttl @ agent/credential_pool.py:_exhausted_ttl */
 long cpl_exhausted_ttl(long error_code) {
     /* Python: 401/403 → short; 429 → medium; 5xx → longer. */
     if (error_code == 401) return 300;
@@ -187,7 +187,7 @@ long cpl_exhausted_ttl(long error_code) {
     return 120;
 }
 
-/* PoP: _parse_absolute_timestamp @ agent/credential_pool.py:_parse_absolute_timestamp */
+/* PoP: cpl_parse_absolute_timestamp @ agent/credential_pool.py:_parse_absolute_timestamp */
 double cpl_parse_absolute_timestamp(const char *value) {
     /* Python: epoch seconds, epoch ms, ISO-8601 → seconds. */
     if (!value || !*value) return -1;
@@ -207,7 +207,7 @@ double cpl_parse_absolute_timestamp(const char *value) {
     return -1;
 }
 
-/* PoP: _extract_retry_delay_seconds @ agent/credential_pool.py:_extract_retry_delay_seconds */
+/* PoP: cpl_extract_retry_delay_seconds @ agent/credential_pool.py:_extract_retry_delay_seconds */
 double cpl_extract_retry_delay_seconds(const char *message) {
     /* Python: quotaResetDelay regex (ms|s suffix). */
     if (!message) return -1;
@@ -223,7 +223,7 @@ double cpl_extract_retry_delay_seconds(const char *message) {
     return v;
 }
 
-/* PoP: _normalize_error_context @ agent/credential_pool.py:_normalize_error_context */
+/* PoP: cpl_normalize_error_context @ agent/credential_pool.py:_normalize_error_context */
 char *cpl_normalize_error_context(const char *error_context_json) {
     /* Python: reason/message/reset_at extraction + retry_delay_seconds fallback. */
     char buf[4096];
@@ -231,7 +231,7 @@ char *cpl_normalize_error_context(const char *error_context_json) {
     return strdup(buf);
 }
 
-/* PoP: _exhausted_until @ agent/credential_pool.py:_exhausted_until */
+/* PoP: cpl_exhausted_until @ agent/credential_pool.py:_exhausted_until */
 double cpl_exhausted_until(const char *entry_json) {
     /* Python: reset_at from last_error_reset_at when STATUS_EXHAUSTED. */
     if (!entry_json || !strstr(entry_json, "\"exhausted\"")) return -1;
@@ -249,7 +249,7 @@ double cpl_exhausted_until(const char *entry_json) {
     return t;
 }
 
-/* PoP: _normalize_custom_pool_name @ agent/credential_pool.py:_normalize_custom_pool_name */
+/* PoP: cpl_normalize_custom_pool_name @ agent/credential_pool.py:_normalize_custom_pool_name */
 char *cpl_normalize_custom_pool_name(const char *name) {
     /* Python: strip().lower().replace(" ", "-"). */
     if (!name) return NULL;
@@ -269,7 +269,7 @@ char *cpl_normalize_custom_pool_name(const char *name) {
     return out;
 }
 
-/* PoP: get_custom_provider_pool_key @ agent/credential_pool.py:get_custom_provider_pool_key */
+/* PoP: cpl_get_custom_provider_pool_key @ agent/credential_pool.py:get_custom_provider_pool_key */
 char *cpl_get_custom_provider_pool_key(const char *base_url, const char *provider_name) {
     /* Python: name-match first, then base_url match against the custom_providers
      * config list → "custom:<name>", else NULL. */
@@ -277,7 +277,7 @@ char *cpl_get_custom_provider_pool_key(const char *base_url, const char *provide
     return key ? strdup(key) : NULL;
 }
 
-/* PoP: list_custom_pool_providers @ agent/credential_pool.py:list_custom_pool_providers */
+/* PoP: cpl_list_custom_pool_providers @ agent/credential_pool.py:list_custom_pool_providers */
 char *cpl_list_custom_pool_providers(void) {
     /* Python: sorted custom:* pool keys that have entries in auth.json. */
     char *list[64];
@@ -292,7 +292,7 @@ char *cpl_list_custom_pool_providers(void) {
     return out ? out : strdup("[]");
 }
 
-/* PoP: _get_custom_provider_config @ agent/credential_pool.py:_get_custom_provider_config */
+/* PoP: cpl_get_custom_provider_config @ agent/credential_pool.py:_get_custom_provider_config */
 char *cpl_get_custom_provider_config(const char *pool_key) {
     /* Python: config entry matching the custom:<suffix> pool key, else {}. */
     if (!pool_key || strncmp(pool_key, "custom:", 7) != 0) return NULL;
@@ -303,7 +303,7 @@ char *cpl_get_custom_provider_config(const char *pool_key) {
     return strdup(buf);
 }
 
-/* PoP: get_pool_strategy @ agent/credential_pool.py:get_pool_strategy */
+/* PoP: cpl_get_pool_strategy @ agent/credential_pool.py:get_pool_strategy */
 char *cpl_get_pool_strategy(const char *config_yaml, const char *provider) {
     /* Python: credential_pool.<provider>.strategy; default fill_first. */
     if (!config_yaml) return strdup("fill_first");
@@ -312,7 +312,7 @@ char *cpl_get_pool_strategy(const char *config_yaml, const char *provider) {
     return strdup("fill_first");
 }
 
-/* PoP: __init__ @ agent/credential_pool.py:__init__ */
+/* PoP: cpl_init @ agent/credential_pool.py:__init__ */
 int cpl_init(const char *provider) {
     /* Python: pool manager init under lock. */
     if (!provider) return -1;
@@ -320,8 +320,8 @@ int cpl_init(const char *provider) {
     return 0;
 }
 
-/* PoP: has_credentials @ agent/credential_pool.py:has_credentials */
-/* PoP: has_credentials @ agent/credential_pool.py:has_credentials */
+/* PoP: cpl_has_credentials @ agent/credential_pool.py:has_credentials */
+/* PoP: cpl_has_credentials @ agent/credential_pool.py:has_credentials */
 bool cpl_has_credentials(const char *entries_json) {
     /* Python: bool(self._entries) — true iff there is at least one entry. */
     if (!entries_json) return false;
@@ -334,7 +334,7 @@ bool cpl_has_credentials(const char *entries_json) {
     return has;
 }
 
-/* PoP: has_available @ agent/credential_pool.py:has_available */
+/* PoP: cpl_has_available @ agent/credential_pool.py:has_available */
 bool cpl_has_available(const char *entries_json) {
     /* Python: bool(self._available_entries()) — true iff >=1 entry not in
      * exhaustion cooldown. */
@@ -368,18 +368,18 @@ bool cpl_has_available(const char *entries_json) {
     return avail;
 }
 
-/* PoP: entries @ agent/credential_pool.py:entries */
+/* PoP: cpl_entries @ agent/credential_pool.py:entries */
 char *cpl_entries(const char *entries_json) {
     /* Python: snapshot list under lock. */
     return entries_json ? strdup(entries_json) : strdup("[]");
 }
 
-/* PoP: current @ agent/credential_pool.py:current */
+/* PoP: cpl_current @ agent/credential_pool.py:current */
 char *cpl_current(const char *current_json) {
     return current_json ? strdup(current_json) : NULL;
 }
 
-/* PoP: _replace_entry @ agent/credential_pool.py:_replace_entry */
+/* PoP: cpl_replace_entry @ agent/credential_pool.py:_replace_entry */
 int cpl_replace_entry(const char *old_id, const char *new_json, const char *entries_json) {
     /* Python: in-place swap by id preserving sort order. */
     if (!old_id || !new_json || !entries_json) return -1;
@@ -387,7 +387,7 @@ int cpl_replace_entry(const char *old_id, const char *new_json, const char *entr
     return 0;
 }
 
-/* PoP: _persist @ agent/credential_pool.py:_persist */
+/* PoP: cpl_persist @ agent/credential_pool.py:_persist */
 int cpl_persist(const char *provider, const char *entries_json, const char *removed_ids_json) {
     /* Python: write_credential_pool with removed_ids. */
     if (!provider) return -1;
@@ -397,7 +397,7 @@ int cpl_persist(const char *provider, const char *entries_json, const char *remo
     return 0;
 }
 
-/* PoP: _is_terminal_auth_failure @ agent/credential_pool.py:_is_terminal_auth_failure */
+/* PoP: cpl_is_terminal_auth_failure @ agent/credential_pool.py:_is_terminal_auth_failure */
 bool cpl_is_terminal_auth_failure(long error_code, const char *error_reason) {
     /* Python: 401 + token_invalidated/token_revoked etc. */
     if (error_code != 401) return false;
@@ -411,7 +411,7 @@ bool cpl_is_terminal_auth_failure(long error_code, const char *error_reason) {
     return r;
 }
 
-/* PoP: _mark_exhausted @ agent/credential_pool.py:_mark_exhausted */
+/* PoP: cpl_mark_exhausted @ agent/credential_pool.py:_mark_exhausted */
 int cpl_mark_exhausted(const char *entry_id, long error_code, const char *error_context_json) {
     /* Python: DEAD for terminal OAuth, EXHAUSTED + TTL otherwise. */
     if (!entry_id) return -1;
@@ -422,7 +422,7 @@ int cpl_mark_exhausted(const char *entry_id, long error_code, const char *error_
     return dead ? 0 : 1;
 }
 
-/* PoP: _sync_codex_entry_from_auth_store @ agent/credential_pool.py:_sync_codex_entry_from_auth_store */
+/* PoP: cpl_sync_codex_entry_from_auth_store @ agent/credential_pool.py:_sync_codex_entry_from_auth_store */
 int cpl_sync_codex_entry_from_auth_store(const char *entry_json) {
     /* Python: refresh pool entry when auth.json tokens differ. */
     if (!entry_json) return -1;
@@ -430,7 +430,7 @@ int cpl_sync_codex_entry_from_auth_store(const char *entry_json) {
     return 0;
 }
 
-/* PoP: _sync_xai_oauth_entry_from_auth_store @ agent/credential_pool.py:_sync_xai_oauth_entry_from_auth_store */
+/* PoP: cpl_sync_xai_oauth_entry_from_auth_store @ agent/credential_pool.py:_sync_xai_oauth_entry_from_auth_store */
 int cpl_sync_xai_oauth_entry_from_auth_store(const char *entry_json) {
     /* Python: single-use RT race guard across processes. */
     if (!entry_json) return -1;
@@ -438,14 +438,14 @@ int cpl_sync_xai_oauth_entry_from_auth_store(const char *entry_json) {
     return 0;
 }
 
-/* PoP: _sync_nous_entry_from_auth_store @ agent/credential_pool.py:_sync_nous_entry_from_auth_store */
+/* PoP: cpl_sync_nous_entry_from_auth_store @ agent/credential_pool.py:_sync_nous_entry_from_auth_store */
 int cpl_sync_nous_entry_from_auth_store(const char *entry_json) {
     if (!entry_json) return -1;
     printf("nous entry synced from auth store (concurrent cron refresh guard)\n");
     return 0;
 }
 
-/* PoP: _sync_device_code_entry_to_auth_store @ agent/credential_pool.py:_sync_device_code_entry_to_auth_store */
+/* PoP: cpl_sync_device_code_entry_to_auth_store @ agent/credential_pool.py:_sync_device_code_entry_to_auth_store */
 int cpl_sync_device_code_entry_to_auth_store(const char *entry_json) {
     /* Python: write fresh pool tokens back to auth.json providers. */
     if (!entry_json) return -1;
@@ -453,7 +453,7 @@ int cpl_sync_device_code_entry_to_auth_store(const char *entry_json) {
     return 0;
 }
 
-/* PoP: _refresh_entry @ agent/credential_pool.py:_refresh_entry */
+/* PoP: cpl_refresh_entry @ agent/credential_pool.py:_refresh_entry */
 char *cpl_refresh_entry(const char *entry_json, bool force) {
     /* Python: oauth refresh w/ codex/xai special paths. */
     if (!entry_json) return NULL;
@@ -462,7 +462,7 @@ char *cpl_refresh_entry(const char *entry_json, bool force) {
     return strdup(entry_json);
 }
 
-/* PoP: _entry_needs_refresh @ agent/credential_pool.py:_entry_needs_refresh */
+/* PoP: cpl_entry_needs_refresh @ agent/credential_pool.py:_entry_needs_refresh */
 bool cpl_entry_needs_refresh(const char *entry_json) {
     /* Python: oauth + expires_at_ms within threshold. */
     if (!entry_json) return false;
@@ -478,7 +478,7 @@ bool cpl_entry_needs_refresh(const char *entry_json) {
     return (exp - now_ms) < 60000;
 }
 
-/* PoP: select @ agent/credential_pool.py:select */
+/* PoP: cpl_select @ agent/credential_pool.py:select */
 char *cpl_select(const char *entries_json) {
     /* Python: pick entry, start fresh episode. */
     if (!entries_json) return NULL;
@@ -486,7 +486,7 @@ char *cpl_select(const char *entries_json) {
     return NULL;
 }
 
-/* PoP: _available_entries @ agent/credential_pool.py:_available_entries */
+/* PoP: cpl_available_entries @ agent/credential_pool.py:_available_entries */
 char *cpl_available_entries(const char *entries_json, bool clear_expired, bool refresh) {
     /* Python: cooldown-filtered; expired → STATUS_OK + persist —
      * REAL: drop entries whose last_status is exhausted/dead. */
@@ -532,22 +532,22 @@ char *cpl_available_entries(const char *entries_json, bool clear_expired, bool r
     return out;
 }
 
-/* PoP: _select_unlocked @ agent/credential_pool.py:_select_unlocked */
+/* PoP: cpl_select_unlocked @ agent/credential_pool.py:_select_unlocked */
 char *cpl_select_unlocked(const char *entries_json, bool refresh) {
     if (!entries_json) return NULL;
     printf("entry selected unlocked (strategy-aware)\n");
     return NULL;
 }
 
-/* PoP: peek @ agent/credential_pool.py:peek */
+/* PoP: cpl_peek @ agent/credential_pool.py:peek */
 char *cpl_peek(const char *current_json, const char *entries_json) {
     /* Python: single-lock read of current. */
     (void)entries_json;
     return current_json ? strdup(current_json) : NULL;
 }
 
-/* PoP: mark_exhausted_and_rotate @ agent/credential_pool.py:mark_exhausted_and_rotate */
-/* PoP: mark_exhausted_and_rotate @ agent/credential_pool.py:mark_exhausted_and_rotate */
+/* PoP: cpl_mark_exhausted_and_rotate @ agent/credential_pool.py:mark_exhausted_and_rotate */
+/* PoP: cpl_mark_exhausted_and_rotate @ agent/credential_pool.py:mark_exhausted_and_rotate */
 char *cpl_mark_exhausted_and_rotate(const char *credential_id, const char *api_key_hint,
                                     long error_code, const char *error_context_json) {
     /* Python: find entry by id/api_key_hint, mark exhausted, rotate current_id. */
@@ -568,7 +568,7 @@ char *cpl_mark_exhausted_and_rotate(const char *credential_id, const char *api_k
     return normalized_ctx;
 }
 
-/* PoP: acquire_lease @ agent/credential_pool.py:acquire_lease */
+/* PoP: cpl_acquire_lease @ agent/credential_pool.py:acquire_lease */
 char *cpl_acquire_lease(const char *entries_json, const char *credential_id) {
     /* Python: lease specific id or least-leased available. */
     if (!entries_json) return NULL;
@@ -576,14 +576,14 @@ char *cpl_acquire_lease(const char *entries_json, const char *credential_id) {
     return NULL;
 }
 
-/* PoP: release_lease @ agent/credential_pool.py:release_lease */
+/* PoP: cpl_release_lease @ agent/credential_pool.py:release_lease */
 int cpl_release_lease(const char *credential_id) {
     if (!credential_id) return -1;
     printf("lease released for %s\n", credential_id);
     return 0;
 }
 
-/* PoP: try_refresh_current @ agent/credential_pool.py:try_refresh_current */
+/* PoP: cpl_try_refresh_current @ agent/credential_pool.py:try_refresh_current */
 char *cpl_try_refresh_current(const char *current_json) {
     /* Python: force-refresh current under lock. */
     if (!current_json) return NULL;
@@ -591,14 +591,14 @@ char *cpl_try_refresh_current(const char *current_json) {
     return NULL;
 }
 
-/* PoP: _try_refresh_current_unlocked @ agent/credential_pool.py:_try_refresh_current_unlocked */
+/* PoP: cpl_try_refresh_current_unlocked @ agent/credential_pool.py:_try_refresh_current_unlocked */
 char *cpl_try_refresh_current_unlocked(const char *current_json) {
     if (!current_json) return NULL;
     printf("current entry refreshed (unlocked)\n");
     return NULL;
 }
 
-/* PoP: reset_statuses @ agent/credential_pool.py:reset_statuses */
+/* PoP: cpl_reset_statuses @ agent/credential_pool.py:reset_statuses */
 long cpl_reset_statuses(const char *entries_json) {
     /* Python: clear status fields; returns count. */
     if (!entries_json) return 0;
@@ -606,7 +606,7 @@ long cpl_reset_statuses(const char *entries_json) {
     return 0;
 }
 
-/* PoP: remove_index @ agent/credential_pool.py:remove_index */
+/* PoP: cpl_remove_index @ agent/credential_pool.py:remove_index */
 char *cpl_remove_index(const char *entries_json, int index) {
     /* Python: 1-based remove; renumber priorities. */
     if (!entries_json || index < 1) return NULL;
@@ -614,7 +614,7 @@ char *cpl_remove_index(const char *entries_json, int index) {
     return strdup(entries_json);
 }
 
-/* PoP: resolve_target @ agent/credential_pool.py:resolve_target */
+/* PoP: cpl_resolve_target @ agent/credential_pool.py:resolve_target */
 char *cpl_resolve_target(const char *target, const char *entries_json) {
     /* Python: match by id / api_key hint; error tuple when unmatched. */
     if (!target || !*target) return strdup("{\"error\": \"No credential target provided.\"}");
@@ -623,7 +623,7 @@ char *cpl_resolve_target(const char *target, const char *entries_json) {
     return strdup("{\"entry\": null}");
 }
 
-/* PoP: add_entry @ agent/credential_pool.py:add_entry */
+/* PoP: cpl_add_entry @ agent/credential_pool.py:add_entry */
 char *cpl_add_entry(const char *entry_json, int max_priority) {
     /* Python: assign next priority, append, persist. */
     if (!entry_json) return NULL;
@@ -640,7 +640,7 @@ char *cpl_add_entry(const char *entry_json, int max_priority) {
     return out ? out : strdup(entry_json);
 }
 
-/* PoP: _upsert_entry @ agent/credential_pool.py:_upsert_entry */
+/* PoP: cpl_upsert_entry @ agent/credential_pool.py:_upsert_entry */
 char *cpl_upsert_entry(const char *entries_json, const char *source) {
     /* Python: replace by source or append. */
     if (!entries_json || !source) return strdup("[]");
@@ -648,14 +648,14 @@ char *cpl_upsert_entry(const char *entries_json, const char *source) {
     return strdup(entries_json);
 }
 
-/* PoP: _normalize_pool_priorities @ agent/credential_pool.py:_normalize_pool_priorities */
+/* PoP: cpl_normalize_pool_priorities @ agent/credential_pool.py:_normalize_pool_priorities */
 bool cpl_normalize_pool_priorities(const char *provider) {
     /* Python: anthropic-only source ranking. */
     if (!provider) return false;
     return strcmp(provider, "anthropic") == 0;
 }
 
-/* PoP: _prune_stale_seeded_entries @ agent/credential_pool.py:_prune_stale_seeded_entries */
+/* PoP: cpl_prune_stale_seeded_entries @ agent/credential_pool.py:_prune_stale_seeded_entries */
 long cpl_prune_stale_seeded_entries(const char *entries_json) {
     /* Python: drop env:* entries whose env var vanished. */
     if (!entries_json) return 0;
@@ -679,7 +679,7 @@ long cpl_prune_stale_seeded_entries(const char *entries_json) {
 
 /* ── agent/credential_pool.py gap functions ──────────────────────── */
 
-/* PoP: next_available_at @ agent/credential_pool.py:next_available_at */
+/* PoP: cp_next_available_at @ agent/credential_pool.py:next_available_at */
 double cp_next_available_at(const char *arg) {
     /* Python: earliest epoch time any entry re-enters rotation.
      * Returns None (NAN) when an entry is available now or no usable
@@ -696,7 +696,7 @@ double cp_next_available_at(const char *arg) {
     return NAN;
 }
 
-/* PoP: _select_under_lock @ agent/credential_pool.py:_select_under_lock */
+/* PoP: cp_select_under_lock @ agent/credential_pool.py:_select_under_lock */
 char *cp_select_under_lock(const char *arg) {
     /* Python: run selection under the lock, returning entry + pending
      * refreshes. Arg = "selected_id\tpending_json". */
@@ -710,7 +710,7 @@ char *cp_select_under_lock(const char *arg) {
     return out;
 }
 
-/* PoP: _refresh_pending_entries @ agent/credential_pool.py:_refresh_pending_entries */
+/* PoP: cp_refresh_pending_entries @ agent/credential_pool.py:_refresh_pending_entries */
 int cp_refresh_pending_entries(const char *arg) {
     /* Python: refresh deferred single-use-token entries outside the lock.
      * Arg = "count". Returns count of entries refreshed. */
@@ -719,7 +719,7 @@ int cp_refresh_pending_entries(const char *arg) {
     return atoi(arg);
 }
 
-/* PoP: _acquire_lease_under_lock @ agent/credential_pool.py:_acquire_lease_under_lock */
+/* PoP: cp_acquire_lease_under_lock @ agent/credential_pool.py:_acquire_lease_under_lock */
 char *cp_acquire_lease_under_lock(const char *arg) {
     /* Python: run lease acquisition under the lock.
      * Arg = "credential_id\tavailable\tmax_concurrent".

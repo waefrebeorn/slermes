@@ -354,7 +354,7 @@ int cli_tools_env_probe__build_probe_line(
     return 0;
 }
 
-/* PoP: cli_tools_env_probe_get_environment_probe_line @ tools/env_probe.py:get_environment_probe_line */
+/* PoP: line @ tools/env_probe.py:get_environment_probe_line */
 
 /* Port of Python tools/env_probe.py:get_environment_probe_line.
  * Returns the cached probe line (building it on first call). */

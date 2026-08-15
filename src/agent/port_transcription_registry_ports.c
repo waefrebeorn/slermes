@@ -20,18 +20,18 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: register_provider @ agent/transcription_registry.py:register_provider */
+/* PoP: tcr_register_provider @ agent/transcription_registry.py:register_provider */
 int tcr_register_provider(const char *name, const char *provider_desc) {
     if (!name) return -1;
     return transcription_register_provider(name, provider_desc) ? 0 : -1;
 }
 
-/* PoP: list_providers @ agent/transcription_registry.py:list_providers */
+/* PoP: tcr_list_providers @ agent/transcription_registry.py:list_providers */
 char *tcr_list_providers(void) {
     return transcription_list_providers();
 }
 
-/* PoP: get_provider @ agent/transcription_registry.py:get_provider */
+/* PoP: tcr_get_provider @ agent/transcription_registry.py:get_provider */
 char *tcr_get_provider(const char *name) {
     /* Python: case-insensitive. */
     if (!name) return NULL;
@@ -39,7 +39,7 @@ char *tcr_get_provider(const char *name) {
     return t ? strdup(t) : NULL;
 }
 
-/* PoP: _reset_for_tests @ agent/transcription_registry.py:_reset_for_tests */
+/* PoP: tcr_reset_for_tests @ agent/transcription_registry.py:_reset_for_tests */
 int tcr_reset_for_tests(void) {
     transcription_reset_for_tests();
     return 0;

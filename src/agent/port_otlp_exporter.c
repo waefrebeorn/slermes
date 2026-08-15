@@ -28,7 +28,7 @@
 
 /* ── Shared function: identical body to gateway_health_export's _otlp_config ── */
 
-/* PoP: _otlp_config @ agent/monitoring/otlp_exporter.py:_otlp_config */
+/* PoP: otlp_exporter_otlp_config @ agent/monitoring/otlp_exporter.py:_otlp_config */
 char *otlp_exporter_otlp_config(const char *config_json)
 {
     if (!config_json) return strdup("{}");
@@ -53,7 +53,7 @@ char *otlp_exporter_otlp_config(const char *config_json)
 
 /* ── Shared function: delegates to gateway_health_export's _resolve_headers ── */
 
-/* PoP: _resolve_headers @ agent/monitoring/otlp_exporter.py:_resolve_headers */
+/* PoP: he_resolve_headers @ agent/monitoring/otlp_exporter.py:_resolve_headers */
 /* Reuses he_resolve_headers (ported from gateway_health_export.py) — both
  * faithfully mirror the identical Python _resolve_headers body. */
 char *otlp_exporter_resolve_headers(const char *headers_env_json)
@@ -63,7 +63,7 @@ char *otlp_exporter_resolve_headers(const char *headers_env_json)
 
 /* ── is_enabled: otlp.get("enabled") and otlp.get("endpoint") ── */
 
-/* PoP: is_enabled @ agent/monitoring/otlp_exporter.py:is_enabled */
+/* PoP: otlp_exporter_is_enabled @ agent/monitoring/otlp_exporter.py:is_enabled */
 bool otlp_exporter_is_enabled(const char *config_json)
 {
     if (!config_json) return false;
@@ -319,7 +319,7 @@ char *otlp_exporter_redact_for_export(const char *text)
 /* ── _span_attrs: event → span attribute mapping ── */
 /* keep_by_kind keys and their attribute column sets, mirroring the Python dict. */
 
-/* PoP: _span_attrs @ agent/monitoring/otlp_exporter.py:_span_attrs */
+/* PoP: otlp_exporter_span_attrs @ agent/monitoring/otlp_exporter.py:_span_attrs */
 char *otlp_exporter_span_attrs(const char *event_json)
 {
     if (!event_json) return strdup("{}");
@@ -419,7 +419,7 @@ char *otlp_exporter_span_attrs(const char *event_json)
  * and start_streaming no-ops (returns NULL). The pure mapping core
  * (export_batch → span_attrs) is faithfully ported. */
 
-/* PoP: _require_sdk @ agent/monitoring/otlp_exporter.py:_require_sdk */
+/* PoP: otlp_exporter_require_sdk @ agent/monitoring/otlp_exporter.py:_require_sdk */
 bool otlp_exporter_require_sdk(char **err_out) {
     if (err_out) {
         *err_out = strdup("OTLP export requires the optional dependency. "
@@ -429,13 +429,13 @@ bool otlp_exporter_require_sdk(char **err_out) {
     return false;
 }
 
-/* PoP: is_available @ agent/monitoring/otlp_exporter.py:is_available */
+/* PoP: otlp_exporter_is_available @ agent/monitoring/otlp_exporter.py:is_available */
 bool otlp_exporter_is_available(void) {
     /* No OTel SDK in the C runtime — pure availability check, never auto-installs. */
     return false;
 }
 
-/* PoP: _resource_attributes @ agent/monitoring/otlp_exporter.py:_resource_attributes */
+/* PoP: otlp_exporter_resource_attributes @ agent/monitoring/otlp_exporter.py:_resource_attributes */
 char *otlp_exporter_resource_attributes(const char *config_json) {
     json_t *out = json_object();
     /* service.name */
@@ -453,7 +453,7 @@ char *otlp_exporter_resource_attributes(const char *config_json) {
     return s;
 }
 
-/* PoP: build_exporter @ agent/monitoring/otlp_exporter.py:build_exporter */
+/* PoP: unavailable @ agent/monitoring/otlp_exporter.py:build_exporter */
 /* Port of Python: constructs an OTLPSpanExporter. In C the OTel SDK is absent,
  * so this reports unavailable (mirrors Python raising OTLPUnavailable when the
  * optional extra is missing). Returns NULL — no live exporter object exists. */
@@ -462,7 +462,7 @@ void *otlp_exporter_build_exporter(const char *config_json, char **err_out) {
     return otlp_exporter_require_sdk(err_out) ? (void *)1 : NULL;
 }
 
-/* PoP: _make_provider @ agent/monitoring/otlp_exporter.py:_make_provider */
+/* PoP: TracerProvider @ agent/monitoring/otlp_exporter.py:_make_provider */
 /* Port of Python: TracerProvider(Resource) + BatchSpanProcessor(OTLPSpanExporter).
  * In C (no OTel SDK) there is no provider/processor to construct — the
  * streamer seam returns NULL at start_streaming, so this is a no-op stand-in
@@ -475,7 +475,7 @@ void *otlp_exporter_make_provider(const char *config_json) {
     return NULL;
 }
 
-/* PoP: export_batch @ agent/monitoring/otlp_exporter.py:export_batch */
+/* PoP: otlp_exporter_export_batch @ agent/monitoring/otlp_exporter.py:export_batch */
 int otlp_exporter_export_batch(const char *events_json_array) {
     if (!events_json_array) return 0;
     char *err = NULL;
@@ -518,7 +518,7 @@ static void otlp_streamer_subscriber(void *ctx, const json_t *batch) {
     }
 }
 
-/* PoP: __init__ @ agent/monitoring/otlp_exporter.py:OTLPStreamer.__init__ */
+/* PoP: otlp_streamer_new @ agent/monitoring/otlp_exporter.py:OTLPStreamer.__init__ */
 otlp_streamer_t *otlp_streamer_new(const char *config_json) {
     (void)config_json;
     otlp_streamer_t *s = (otlp_streamer_t *)calloc(1, sizeof(*s));
@@ -528,7 +528,7 @@ otlp_streamer_t *otlp_streamer_new(const char *config_json) {
     return s;
 }
 
-/* PoP: __call__ @ agent/monitoring/otlp_exporter.py:OTLPStreamer.__call__ */
+/* PoP: otlp_streamer_call @ agent/monitoring/otlp_exporter.py:OTLPStreamer.__call__ */
 void otlp_streamer_call(otlp_streamer_t *s, const char *events_json_array) {
     if (!s || !s->active || !events_json_array) return;
     /* Python filters by event_filter then calls export_batch; the C seam has
@@ -536,14 +536,14 @@ void otlp_streamer_call(otlp_streamer_t *s, const char *events_json_array) {
     s->exported += otlp_exporter_export_batch(events_json_array);
 }
 
-/* PoP: shutdown @ agent/monitoring/otlp_exporter.py:OTLPStreamer.shutdown */
+/* PoP: otlp_streamer_shutdown @ agent/monitoring/otlp_exporter.py:OTLPStreamer.shutdown */
 void otlp_streamer_shutdown(otlp_streamer_t *s) {
     if (!s) return;
     s->active = false;
     free(s);
 }
 
-/* PoP: start_streaming @ agent/monitoring/otlp_exporter.py:start_streaming */
+/* PoP: otlp_exporter_start_streaming @ agent/monitoring/otlp_exporter.py:start_streaming */
 otlp_streamer_t *otlp_exporter_start_streaming(const char *config_json) {
     if (!config_json) return NULL;
     if (!otlp_exporter_is_enabled(config_json)) return NULL;

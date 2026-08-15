@@ -22,14 +22,14 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ hermes_cli/pty_bridge.py:__init__ */
+/* PoP: ptb_init @ hermes_cli/pty_bridge.py:__init__ */
 char *ptb_init(long fd_master, long child_pid) {
     char *out = NULL;
     asprintf(&out, "{\"fd\": %ld, \"child_pid\": %ld}", fd_master, child_pid);
     return out;
 }
 
-/* PoP: read @ hermes_cli/pty_bridge.py:read */
+/* PoP: ptb_read @ hermes_cli/pty_bridge.py:read */
 char *ptb_read(long fd_master) {
     /* Python: up to 64 KiB raw — REAL read. */
     if (fd_master < 0) return NULL;
@@ -43,7 +43,7 @@ char *ptb_read(long fd_master) {
     return out;
 }
 
-/* PoP: resize @ hermes_cli/pty_bridge.py:resize */
+/* PoP: ptb_resize @ hermes_cli/pty_bridge.py:resize */
 int ptb_resize(long fd_master, unsigned short rows, unsigned short cols) {
     /* Python: TIOCSWINSZ — REAL ioctl. */
     if (fd_master < 0) return -1;
@@ -55,7 +55,7 @@ int ptb_resize(long fd_master, unsigned short rows, unsigned short cols) {
     return 0;
 }
 
-/* PoP: close @ hermes_cli/pty_bridge.py:close */
+/* PoP: ptb_close @ hermes_cli/pty_bridge.py:close */
 int ptb_close(long fd_master, long child_pid) {
     /* Python: SIGTERM → 0.5s → SIGKILL, idempotent. */
     if (child_pid > 0) {

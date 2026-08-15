@@ -66,7 +66,7 @@ int cli_gateway_platforms_sms__basic_auth_header(
     return 0;
 }
 
-/* PoP: cli_gateway_platforms_sms__validate_twilio_signature @ gateway/platforms/sms.py:_validate_twilio_signature */
+/* PoP: header @ gateway/platforms/sms.py:_validate_twilio_signature */
 
 /* Port of Python gateway/platforms/sms.py:_validate_twilio_signature */
 /* Validate X-Twilio-Signature header (HMAC-SHA1, base64). */

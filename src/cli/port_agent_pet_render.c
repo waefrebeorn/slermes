@@ -18,13 +18,13 @@
 
 /* ── Sheet opening ───────────────────────────────────────────── */
 
-/* PoP: _open_sheet @ agent/pet/render.py:_open_sheet */
+/* PoP: pet_open_sheet @ agent/pet/render.py:_open_sheet */
 FILE *pet_open_sheet(const char *path) {
     if (!path) return NULL;
     return fopen(path, "rb");
 }
 
-/* PoP: _frame_is_blank @ agent/pet/render.py:_frame_is_blank */
+/* PoP: pet_frame_is_blank @ agent/pet/render.py:_frame_is_blank */
 bool pet_frame_is_blank(const unsigned char *rgba, size_t len) {
     if (!rgba || len < 4) return true;
     /* Frame is blank if all pixels are fully transparent (alpha=0) */
@@ -34,7 +34,7 @@ bool pet_frame_is_blank(const unsigned char *rgba, size_t len) {
     return true;
 }
 
-/* PoP: _raw_frames @ agent/pet/render.py:_raw_frames */
+/* PoP: pet_raw_frames @ agent/pet/render.py:_raw_frames */
 json_t *pet_raw_frames(const char *sheet_path, int cell_w, int cell_h) {
     if (!sheet_path) return json_array();
     FILE *f = fopen(sheet_path, "rb");
@@ -49,14 +49,14 @@ json_t *pet_raw_frames(const char *sheet_path, int cell_w, int cell_h) {
     return frames;
 }
 
-/* PoP: _frames_for @ agent/pet/render.py:_frames_for */
+/* PoP: pet_frames_for @ agent/pet/render.py:_frames_for */
 json_t *pet_frames_for(const char *sheet_path, int cell_w, int cell_h, int count) {
     json_t *frames = pet_raw_frames(sheet_path, cell_w, cell_h);
     (void)count;
     return frames;
 }
 
-/* PoP: _png_bytes @ agent/pet/render.py:_png_bytes */
+/* PoP: pet_png_bytes @ agent/pet/render.py:_png_bytes */
 unsigned char *pet_png_bytes(const char *png_path, size_t *out_len) {
     if (!png_path || !out_len) return NULL;
     *out_len = 0;
@@ -76,7 +76,7 @@ unsigned char *pet_png_bytes(const char *png_path, size_t *out_len) {
 
 /* ── Alpha bbox / crop ───────────────────────────────────────── */
 
-/* PoP: _union_alpha_bbox @ agent/pet/render.py:_union_alpha_bbox */
+/* PoP: pet_union_alpha_bbox @ agent/pet/render.py:_union_alpha_bbox */
 void pet_union_alpha_bbox(const unsigned char *rgba, int w, int h,
                            int *out_x, int *out_y, int *out_w, int *out_h) {
     if (!rgba || w <= 0 || h <= 0) { *out_x=*out_y=*out_w=*out_h=0; return; }
@@ -97,14 +97,14 @@ void pet_union_alpha_bbox(const unsigned char *rgba, int w, int h,
     *out_w = maxx - minx + 1; *out_h = maxy - miny + 1;
 }
 
-/* PoP: _crop_frames_to_alpha_union @ agent/pet/render.py:_crop_frames_to_alpha_union */
+/* PoP: pet_crop_frames_to_alpha_union @ agent/pet/render.py:_crop_frames_to_alpha_union */
 /* PoP: pet_crop_frames_to_alpha_union @ agent/pet/render.py:_crop_frames_to_alpha_union */
 void pet_crop_frames_to_alpha_union(const unsigned char *rgba, int w, int h,
                                      int *out_x, int *out_y, int *out_w, int *out_h) {
     pet_union_alpha_bbox(rgba, w, h, out_x, out_y, out_w, out_h);
 }
 
-/* PoP: _snap_frames_to_cell_grid @ agent/pet/render.py:_snap_frames_to_cell_grid */
+/* PoP: pet_snap_frames_to_cell_grid @ agent/pet/render.py:_snap_frames_to_cell_grid */
 /* PoP: pet_snap_frames_to_cell_grid @ agent/pet/render.py:_snap_frames_to_cell_grid */
 void pet_snap_frames_to_cell_grid(int *x, int *y, int *w, int *h, int cell_w, int cell_h) {
     if (!x || !y || !w || !h) return;
@@ -114,7 +114,7 @@ void pet_snap_frames_to_cell_grid(int *x, int *y, int *w, int *h, int cell_w, in
 
 /* ── Encoders ────────────────────────────────────────────────── */
 
-/* PoP: _kitty_apc @ agent/pet/render.py:_kitty_apc */
+/* PoP: pet_kitty_apc @ agent/pet/render.py:_kitty_apc */
 char *pet_kitty_apc(const char *data, size_t data_len) {
     if (!data || data_len == 0) return NULL;
     /* Kitty APC: ESC ] 1 1 ; <data> ST */
@@ -131,7 +131,7 @@ char *pet_kitty_apc(const char *data, size_t data_len) {
     return out;
 }
 
-/* PoP: _encode_kitty @ agent/pet/render.py:_encode_kitty */
+/* PoP: pet_encode_kitty @ agent/pet/render.py:_encode_kitty */
 char *pet_encode_kitty(const char *png_path) {
     if (!png_path) return NULL;
     size_t len = 0;
@@ -142,7 +142,7 @@ char *pet_encode_kitty(const char *png_path) {
     return encoded;
 }
 
-/* PoP: kitty_placeholder_rows @ agent/pet/render.py:kitty_placeholder_rows */
+/* PoP: pet_kitty_placeholder_rows @ agent/pet/render.py:kitty_placeholder_rows */
 char *pet_kitty_placeholder_rows(int rows) {
     char *out = malloc(rows * 2 + 1);
     if (!out) return NULL;
@@ -151,12 +151,12 @@ char *pet_kitty_placeholder_rows(int rows) {
     return out;
 }
 
-/* PoP: _encode_kitty_virtual @ agent/pet/render.py:_encode_kitty_virtual */
+/* PoP: pet_encode_kitty_virtual @ agent/pet/render.py:_encode_kitty_virtual */
 char *pet_encode_kitty_virtual(const char *png_path) {
     return pet_encode_kitty(png_path);
 }
 
-/* PoP: _encode_iterm @ agent/pet/render.py:_encode_iterm */
+/* PoP: pet_encode_iterm @ agent/pet/render.py:_encode_iterm */
 char *pet_encode_iterm(const char *png_path) {
     if (!png_path) return NULL;
     size_t len = 0;
@@ -174,7 +174,7 @@ char *pet_encode_iterm(const char *png_path) {
     return out;
 }
 
-/* PoP: _encode_sixel @ agent/pet/render.py:_encode_sixel */
+/* PoP: pet_encode_sixel @ agent/pet/render.py:_encode_sixel */
 char *pet_encode_sixel(const char *png_path) {
     if (!png_path) return NULL;
     /* Sixel encoding requires PNG rasterization — not implemented in pure C.
@@ -183,7 +183,7 @@ char *pet_encode_sixel(const char *png_path) {
     return strdup("\x1bPq\x1b\\");
 }
 
-/* PoP: _downscale_cells @ agent/pet/render.py:_downscale_cells */
+/* PoP: pet_downscale_cells @ agent/pet/render.py:_downscale_cells */
 int pet_downscale_cells(int pixel_w, int pixel_h, int cell_w, int cell_h) {
     if (cell_w <= 0 || cell_h <= 0) return 1;
     int cols = (pixel_w + cell_w - 1) / cell_w;
@@ -191,23 +191,23 @@ int pet_downscale_cells(int pixel_w, int pixel_h, int cell_w, int cell_h) {
     return cols * rows;
 }
 
-/* PoP: _encode_unicode @ agent/pet/render.py:_encode_unicode */
+/* PoP: pet_encode_unicode @ agent/pet/render.py:_encode_unicode */
 char *pet_encode_unicode(const char *png_path) {
     (void)png_path;
     return strdup("🐱");
 }
 
-/* PoP: _frames @ agent/pet/render.py:_frames */
+/* PoP: pet_frames @ agent/pet/render.py:_frames */
 json_t *pet_frames(const char *sheet_path, int cell_w, int cell_h) {
     return pet_frames_for(sheet_path, cell_w, cell_h, 0);
 }
 
-/* PoP: cells @ agent/pet/render.py:cells */
+/* PoP: pet_cells @ agent/pet/render.py:cells */
 json_t *pet_cells(const char *sheet_path, int cell_w, int cell_h) {
     return pet_frames(sheet_path, cell_w, cell_h);
 }
 
-/* PoP: _cell_box @ agent/pet/render.py:_cell_box */
+/* PoP: pet_cell_box @ agent/pet/render.py:_cell_box */
 /* PoP: pet_cell_box @ agent/pet/render.py:_cell_box */
 void pet_cell_box(int frame_idx, int cell_w, int cell_h, int sheet_w,
                   int *out_x, int *out_y, int *out_w, int *out_h) {
@@ -221,13 +221,13 @@ void pet_cell_box(int frame_idx, int cell_w, int cell_h, int sheet_w,
     if (out_h) *out_h = cell_h;
 }
 
-/* PoP: kitty_payload @ agent/pet/render.py:kitty_payload */
+/* PoP: pet_kitty_payload @ agent/pet/render.py:kitty_payload */
 char *pet_kitty_payload(const char *png_path, int cell_w, int cell_h) {
     (void)cell_w; (void)cell_h;
     return pet_encode_kitty(png_path);
 }
 
-/* PoP: build_renderer @ agent/pet/render.py:build_renderer */
+/* PoP: pet_build_renderer @ agent/pet/render.py:build_renderer */
 json_t *pet_build_renderer(const char *sheet_path, int cell_w, int cell_h) {
     json_t *renderer = json_object();
     json_set(renderer, "sheet_path", json_string(sheet_path ? sheet_path : ""));

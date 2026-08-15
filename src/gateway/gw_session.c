@@ -400,7 +400,7 @@ int session_get_or_create(const char *platform, const char *chat_id) {
     return session_create(platform, chat_id);
 }
 
-/* PoP: _find_gateway_session_row @ gateway/session.py:_find_gateway_session_row */
+/* PoP: session_find_by_key @ gateway/session.py:_find_gateway_session_row */
 int session_find_by_key(const char *session_key) {
     if (!session_key || !g_gw.sessions) return -1;
     hive_iter_t it;
@@ -548,12 +548,12 @@ bool _has_active_processes_safe(void) {
     return false;
 }
 
-/* PoP: _routing_scope @ gateway/session.py:_routing_scope */
+/* PoP: routing_scope @ gateway/session.py:_routing_scope */
 const char *routing_scope(void) {
     return g_gw.routing_scope[0] ? g_gw.routing_scope : "default";
 }
 
-/* PoP: envd_u_get_active_profile_name @ gateway/session.py:_active_profile_name */
+/* PoP: active_profile_name @ gateway/session.py:_active_profile_name */
 const char *active_profile_name(void) {
     return g_gw.active_profile[0] ? g_gw.active_profile : "default";
 }
@@ -854,7 +854,7 @@ void set_session_metadata(const char *session_key, json_t *meta) {
     if (sid) snprintf(se->session_id, sizeof(se->session_id), "%s", sid);
 }
 
-/* PoP: main_u__getattr__ @ gateway/session.py:__getattr__ */
+/* PoP: _session_dunder_getattr @ gateway/session.py:__getattr__ */
 void _session_dunder_getattr(const char *name) { (void)name; }
 
 /* PoP: _ensure_loaded_locked @ gateway/session.py:_ensure_loaded_locked */

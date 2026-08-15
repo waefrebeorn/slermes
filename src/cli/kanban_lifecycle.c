@@ -122,7 +122,7 @@ static int kb_has_sticky_block(sqlite3 *conn, const char *task_id)
     return res;
 }
 
-/* PoP: kdb_recompute_ready @ hermes_cli/kanban_db.py:recompute_ready */
+/* PoP: kdb_block_task @ hermes_cli/kanban_db.py:recompute_ready */
 int kdb_recompute_ready(sqlite3 *conn, int failure_limit)
 {
     if (!conn) return 0;
@@ -176,7 +176,7 @@ int kdb_recompute_ready(sqlite3 *conn, int failure_limit)
                 sqlite3_step(up); sqlite3_finalize(up);
             }
         }
-/* PoP: kdb_append_event @ hermes_cli/kanban_db.py:_append_event */
+/* PoP: kb_claimer_id @ hermes_cli/kanban_db.py:_append_event */
         kdb_append_event(conn, task_id, -1, "promoted", NULL);
         promoted++;
     }
@@ -196,7 +196,7 @@ static const char *kb_claimer_id(char *buf, size_t sz)
     return buf;
 }
 
-/* PoP: kdb_reclaim_task @ hermes_cli/kanban_db.py:claim_task */
+/* PoP: kdb_claim_task @ hermes_cli/kanban_db.py:claim_task */
 char *kdb_claim_task(sqlite3 *conn, const char *task_id, int ttl_seconds, const char *claimer)
 {
     if (!conn || !task_id) return NULL;

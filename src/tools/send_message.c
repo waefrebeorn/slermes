@@ -768,7 +768,7 @@ void registry_init_send_message(void) {
         SCHEMA, send_message_handler);
 }
 
-/* PoP: has_error @ tools/send_message_tool.py:_error */
+/* PoP: send_message_error @ tools/send_message_tool.py:_error */
 /* Build {"error": sanitized} payload via the canonical sanitizer. */
 char *send_message_error(const char *message)
 {

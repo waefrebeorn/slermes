@@ -38,7 +38,7 @@ const cfg_category_t CFG_CATEGORIES[] = {
 
 /* ── Backup ────────────────────────────────────────────────── */
 /* AG26: Port of Python hermes_cli/main.py:cmd_backup(). */
-/* PoP: mn_cmd_backup @ hermes_cli/curator.py:_cmd_backup */
+/* PoP: cmd_backup @ hermes_cli/curator.py:_cmd_backup */
 void cmd_backup(const char *args, agent_state_t *state) {
     (void)state;
     bool full = false;

@@ -103,7 +103,7 @@ static char *smc_build_dims(const char *const *keys, const char *const *vals, in
 
 /* ── shared metric identifier normalizer ────────────────────────── */
 
-/* PoP: _metric_identifier @ hermes_cli/observability/shared_metrics_contract.py:_metric_identifier */
+/* PoP: smc_metric_identifier @ hermes_cli/observability/shared_metrics_contract.py:_metric_identifier */
 char *smc_metric_identifier(const char *value, int max_length) {
     if (!value) return strdup("unknown");
     if ((int)strlen(value) > max_length) return strdup("unknown");
@@ -119,7 +119,7 @@ char *smc_metric_identifier(const char *value, int max_length) {
 
 /* ── non-negative number ────────────────────────────────────────── */
 
-/* PoP: _non_negative_number @ hermes_cli/observability/shared_metrics_contract.py:_non_negative_number */
+/* PoP: smc_non_negative_number @ hermes_cli/observability/shared_metrics_contract.py:_non_negative_number */
 double smc_non_negative_number(const json_t *value) {
     if (!value || value->type == JSON_BOOL || value->type != JSON_NUMBER) return NAN;
     double num = value->num_val;
@@ -203,7 +203,7 @@ static bool smc_aux_data_valid(const json_t *data) {
     return strcmp(ocs, "cancelled") == 0 || strcmp(ocs, "failed") == 0 || strcmp(ocs, "success") == 0;
 }
 
-/* PoP: _auxiliary_model_call_dimensions @ hermes_cli/observability/shared_metrics_contract.py:_auxiliary_model_call_dimensions */
+/* PoP: smc_auxiliary_model_call_dimensions @ hermes_cli/observability/shared_metrics_contract.py:_auxiliary_model_call_dimensions */
 char *smc_auxiliary_model_call_dimensions(const char *event_json) {
     if (!event_json) return strdup("None");
     json_t *event = json_parse(event_json, NULL);
@@ -239,7 +239,7 @@ char *smc_auxiliary_model_call_dimensions(const char *event_json) {
 
 /* ── model call dimensions ────────────────────────────────────── */
 
-/* PoP: model_call_dimensions @ hermes_cli/observability/shared_metrics_contract.py:model_call_dimensions */
+/* PoP: smc_model_call_dimensions @ hermes_cli/observability/shared_metrics_contract.py:model_call_dimensions */
 char *smc_model_call_dimensions(const char *event_json) {
     if (!event_json) return strdup("None");
     /* 1) auxiliary projection wins */
@@ -310,7 +310,7 @@ char *smc_task_terminal_fields_json(const json_t *data) {
     return smc_build_dims(keys, (const char *const *)vals, 9);
 }
 
-/* PoP: task_counter @ hermes_cli/observability/shared_metrics_contract.py:task_counter */
+/* PoP: smc_task_counter @ hermes_cli/observability/shared_metrics_contract.py:task_counter */
 char *smc_task_counter(const char *event_json) {
     if (!event_json) return strdup("None");
     json_t *event = json_parse(event_json, NULL);
@@ -345,7 +345,7 @@ char *smc_task_counter(const char *event_json) {
 
 /* ── tool call dimensions ───────────────────────────────────────── */
 
-/* PoP: tool_call_dimensions @ hermes_cli/observability/shared_metrics_contract.py:tool_call_dimensions */
+/* PoP: smc_tool_call_dimensions @ hermes_cli/observability/shared_metrics_contract.py:tool_call_dimensions */
 char *smc_tool_call_dimensions(const char *event_json) {
     if (!event_json) return strdup("None");
     json_t *event = json_parse(event_json, NULL);
@@ -375,7 +375,7 @@ char *smc_tool_call_dimensions(const char *event_json) {
 
 /* ── tool approval counter ──────────────────────────────────────── */
 
-/* PoP: tool_approval_counter @ hermes_cli/observability/shared_metrics_contract.py:tool_approval_counter */
+/* PoP: smc_tool_approval_counter @ hermes_cli/observability/shared_metrics_contract.py:tool_approval_counter */
 char *smc_tool_approval_counter(const char *event_json) {
     if (!event_json) return strdup("None");
     json_t *event = json_parse(event_json, NULL);
@@ -414,7 +414,7 @@ char *smc_tool_approval_counter(const char *event_json) {
 
 /* ── skill counter ──────────────────────────────────────────────── */
 
-/* PoP: skill_counter @ hermes_cli/observability/shared_metrics_contract.py:skill_counter */
+/* PoP: smc_skill_counter @ hermes_cli/observability/shared_metrics_contract.py:skill_counter */
 char *smc_skill_counter(const char *event_json) {
     if (!event_json) return strdup("None");
     json_t *event = json_parse(event_json, NULL);
@@ -462,7 +462,7 @@ char *smc_skill_counter(const char *event_json) {
 
 /* ── client active counter ─────────────────────────────────────── */
 
-/* PoP: client_active_counter @ hermes_cli/observability/shared_metrics_contract.py:client_active_counter */
+/* PoP: smc_client_active_counter @ hermes_cli/observability/shared_metrics_contract.py:client_active_counter */
 char *smc_client_active_counter(const char *event_json) {
     if (!event_json) return strdup("None");
     json_t *event = json_parse(event_json, NULL);
@@ -490,7 +490,7 @@ char *smc_client_active_counter(const char *event_json) {
 
 /* ── skill provenance / tool categories / outcomes ─────────────── */
 
-/* PoP: skill_provenance @ hermes_cli/observability/shared_metrics_contract.py:skill_provenance */
+/* PoP: smc_skill_provenance @ hermes_cli/observability/shared_metrics_contract.py:skill_provenance */
 const char *smc_skill_provenance(const char *value) {
     static const char *prov[] = {"agent_created","external","installed","local","unknown",NULL};
     char *norm = smc_dup_lower_strip(value);
@@ -507,7 +507,7 @@ const char *smc_skill_provenance(const char *value) {
     return ret;
 }
 
-/* PoP: tool_category @ hermes_cli/observability/shared_metrics_contract.py:tool_category */
+/* PoP: smc_tool_category @ hermes_cli/observability/shared_metrics_contract.py:tool_category */
 const char *smc_tool_category(const char *toolset) {
     char *s = smc_dup_lower_strip(toolset);
     if (!s || !*s) { if (s) free(s); return "unknown"; }
@@ -535,7 +535,7 @@ const char *smc_tool_category(const char *toolset) {
     return "other";
 }
 
-/* PoP: tool_outcome @ hermes_cli/observability/shared_metrics_contract.py:tool_outcome */
+/* PoP: smc_tool_outcome @ hermes_cli/observability/shared_metrics_contract.py:tool_outcome */
 const char *smc_tool_outcome(const char *status) {
     char *s = smc_dup_lower_strip(status);
     if (!s) return "unknown";
@@ -553,7 +553,7 @@ const char *smc_tool_outcome(const char *status) {
     return ret;
 }
 
-/* PoP: tool_approval_outcome @ hermes_cli/observability/shared_metrics_contract.py:tool_approval_outcome */
+/* PoP: smc_tool_approval_outcome @ hermes_cli/observability/shared_metrics_contract.py:tool_approval_outcome */
 const char *smc_tool_approval_outcome(const char *choice) {
     char *s = smc_dup_lower_strip(choice);
     if (!s) return "unknown";
@@ -569,7 +569,7 @@ const char *smc_tool_approval_outcome(const char *choice) {
 
 /* ── tool terminal fields / latency / retry ────────────────────── */
 
-/* PoP: tool_latency_bucket @ hermes_cli/observability/shared_metrics_contract.py:tool_latency_bucket */
+/* PoP: smc_tool_latency_bucket @ hermes_cli/observability/shared_metrics_contract.py:tool_latency_bucket */
 const char *smc_tool_latency_bucket(const json_t *value, const json_t *fallback) {
     double ms = smc_non_negative_number(value);
     if (isnan(ms)) {
@@ -587,7 +587,7 @@ const char *smc_tool_latency_bucket(const json_t *value, const json_t *fallback)
     return "gte_30s";
 }
 
-/* PoP: tool_retry_bucket @ hermes_cli/observability/shared_metrics_contract.py:tool_retry_bucket */
+/* PoP: smc_tool_retry_bucket @ hermes_cli/observability/shared_metrics_contract.py:tool_retry_bucket */
 const char *smc_tool_retry_bucket(const json_t *value) {
     if (!value || value->type == JSON_BOOL || value->type != JSON_NUMBER) return "unknown";
     double d = value->num_val;
@@ -595,7 +595,7 @@ const char *smc_tool_retry_bucket(const json_t *value) {
     return smc_count_bucket((int)d);
 }
 
-/* PoP: tool_terminal_fields @ hermes_cli/observability/shared_metrics_contract.py:tool_terminal_fields */
+/* PoP: smc_tool_terminal_fields_json @ hermes_cli/observability/shared_metrics_contract.py:tool_terminal_fields */
 char *smc_tool_terminal_fields_json(const json_t *data, const char *category,
                                     const char *approval_outcome,
                                     const json_t *fallback_duration_ms) {
@@ -636,7 +636,7 @@ char *smc_tool_terminal_fields_json(const json_t *data, const char *category,
 
 /* ── client resource taxonomies ─────────────────────────────────── */
 
-/* PoP: client_os_family @ hermes_cli/observability/shared_metrics_contract.py:client_os_family */
+/* PoP: smc_client_os_family @ hermes_cli/observability/shared_metrics_contract.py:client_os_family */
 const char *smc_client_os_family(const char *value) {
     char *s = smc_dup_lower_strip(value);
     if (!s) return "unknown";
@@ -648,7 +648,7 @@ const char *smc_client_os_family(const char *value) {
     return ret;
 }
 
-/* PoP: client_architecture @ hermes_cli/observability/shared_metrics_contract.py:client_architecture */
+/* PoP: smc_client_architecture @ hermes_cli/observability/shared_metrics_contract.py:client_architecture */
 const char *smc_client_architecture(const char *value) {
     char *s = smc_dup_lower_strip(value);
     if (!s) return "unknown";
@@ -663,7 +663,7 @@ const char *smc_client_architecture(const char *value) {
     return ret;
 }
 
-/* PoP: client_install_method @ hermes_cli/observability/shared_metrics_contract.py:client_install_method */
+/* PoP: smc_client_install_method @ hermes_cli/observability/shared_metrics_contract.py:client_install_method */
 const char *smc_client_install_method(const char *value) {
     char *s = smc_dup_lower_strip(value);
     if (!s || !*s) { if (s) free(s); return "unknown"; }
@@ -674,7 +674,7 @@ const char *smc_client_install_method(const char *value) {
     return "unknown";
 }
 
-/* PoP: client_resource @ hermes_cli/observability/shared_metrics_contract.py:client_resource */
+/* PoP: smc_client_resource @ hermes_cli/observability/shared_metrics_contract.py:client_resource */
 char *smc_client_resource(const char *hermes_version, const char *os_name,
                           const char *architecture, const char *install_method) {
     char hv[80];
@@ -698,7 +698,7 @@ char *smc_client_resource(const char *hermes_version, const char *os_name,
     return smc_build_dims(keys, vals, 4);
 }
 
-/* PoP: client_resource_is_valid @ hermes_cli/observability/shared_metrics_contract.py:client_resource_is_valid */
+/* PoP: smc_client_resource_is_valid @ hermes_cli/observability/shared_metrics_contract.py:client_resource_is_valid */
 bool smc_client_resource_is_valid(const char *resource_json) {
     if (!resource_json) return false;
     json_t *r = json_parse(resource_json, NULL);

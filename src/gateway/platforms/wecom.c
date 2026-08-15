@@ -108,7 +108,7 @@ static const char *get_app_token(http_client_t *http) {
 /* ================================================================
  *  P113: Send plain text message (webhook)
  * ================================================================ */
-/* PoP: send_message @ gateway/platforms/wecom.py:send_message */
+/* PoP: wecom_send_message @ gateway/platforms/wecom.py:send_message */
 /* Port of Python gateway/platforms/wecom.py:send_message(). */
 bool wecom_send_message(http_client_t *http, const char *text) {
     if (!text) return false;
@@ -124,7 +124,7 @@ bool wecom_send_message(http_client_t *http, const char *text) {
  *  P113: Send markdown message (webhook)
  *  WeCom markdown syntax: # header, **bold**, [link](url), @user
  * ================================================================ */
-/* PoP: send_markdown @ gateway/platforms/wecom.py:send_markdown */
+/* PoP: wecom_send_markdown @ gateway/platforms/wecom.py:send_markdown */
 /* Port of Python gateway/platforms/wecom.py:send_markdown(). */
 bool wecom_send_markdown(http_client_t *http, const char *text) {
     if (!text) return false;
@@ -171,7 +171,7 @@ bool wecom_send_text_with_at(http_client_t *http, const char *text,
  *  P113: Send image message (app API mode)
  *  requries get_app_token to have succeeded
  * ================================================================ */
-/* PoP: send_image @ gateway/platforms/wecom.py:send_image */
+/* PoP: wecom_send_image @ gateway/platforms/wecom.py:send_image */
 /* Port of Python gateway/platforms/wecom.py:send_image(). */
 bool wecom_send_image(http_client_t *http, const char *base64_data,
                        const char *md5_hex) {
@@ -226,7 +226,7 @@ bool wecom_send_image(http_client_t *http, const char *base64_data,
 /* ================================================================
  *  P113: Send file by media_id (app API mode)
  * ================================================================ */
-/* PoP: send_file @ gateway/platforms/wecom.py:send_file */
+/* PoP: wecom_send_file @ gateway/platforms/wecom.py:send_file */
 /* Port of Python gateway/platforms/wecom.py:send_file(). */
 bool wecom_send_file(http_client_t *http, const char *media_id) {
     if (!media_id) return false;
@@ -273,7 +273,7 @@ bool wecom_send_file(http_client_t *http, const char *media_id) {
  *  P113: Send news/article message (webhook)
  *  articles_json: JSON array of {"title":"...","url":"...","picurl":"..."}
  * ================================================================ */
-/* PoP: send_news @ gateway/platforms/wecom.py:send_news */
+/* PoP: wecom_send_news @ gateway/platforms/wecom.py:send_news */
 /* Port of Python gateway/platforms/wecom.py:send_news(). */
 bool wecom_send_news(http_client_t *http, const char *articles_json) {
     if (!articles_json) return false;

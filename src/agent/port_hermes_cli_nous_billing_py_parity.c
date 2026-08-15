@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_nous_billing_billing_not_logged_in @ hermes_cli/nous_billing.py:_billing_not_logged_in */
+/* PoP: hermes_cli_nous_billing_billing_not_logged_in_p @ hermes_cli/nous_billing.py:_billing_not_logged_in */
 json_t *hermes_cli_nous_billing_billing_not_logged_in_p(void) {
     return json_object();
 }

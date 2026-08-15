@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ gateway/session.py:__init__ */
+/* PoP: gsn_init @ gateway/session.py:__init__ */
 char *gsn_init(void) {
     /* Python: event + result holder. */
     return strdup("{\"event\": false, \"result\": null}");

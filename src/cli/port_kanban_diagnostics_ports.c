@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: to_dict @ hermes_cli/kanban_diagnostics.py:to_dict */
+/* PoP: kdi_to_dict @ hermes_cli/kanban_diagnostics.py:to_dict */
 char *kdi_to_dict(const char *kind, const char *label, const char *detail_json) {
     char *out = NULL;
     asprintf(&out, "{\"kind\": \"%s\", \"label\": \"%s\", \"detail\": %s}",
@@ -26,7 +26,7 @@ char *kdi_to_dict(const char *kind, const char *label, const char *detail_json) 
     return out;
 }
 
-/* PoP: _positive_int @ hermes_cli/kanban_diagnostics.py:_positive_int */
+/* PoP: kdi_positive_int @ hermes_cli/kanban_diagnostics.py:_positive_int */
 long kdi_positive_int(const char *value, long fallback) {
     /* Python: parse or default. */
     if (!value) return fallback;

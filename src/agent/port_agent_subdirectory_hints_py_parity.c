@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: agent_subdirectory_hints_is_ancestor_or_same @ agent/subdirectory_hints.py:_is_ancestor_or_same */
+/* PoP: agent_subdirectory_hints_is_ancestor_or_same_p @ agent/subdirectory_hints.py:_is_ancestor_or_same */
 json_t *agent_subdirectory_hints_is_ancestor_or_same_p(void) {
     return json_object();
 }

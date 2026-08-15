@@ -78,7 +78,7 @@ static int g_hook_count = 0;
 
 /* ── Config parsing ─────────────────────────────────────────────── */
 
-/* PoP: agent_shell_hooks_spec_post_init @ agent/shell_hooks.py:__post_init__ */
+/* PoP: matcher @ agent/shell_hooks.py:__post_init__ */
 /* ShellHookSpec.__post_init__: strip whitespace from the matcher (YAML folding
  * can introduce leading/trailing spaces that would silently break matching),
  * treat an empty result as "no matcher", and compile the matcher as a regex.
@@ -151,7 +151,7 @@ static int parse_single_hook(const char *event, const json_t *node) {
  * The object keys are event names, values are arrays of hook specs.
  * Returns number of parsed specs.
  * Port of Python agent/shell_hooks.py:_parse_hooks_block(). */
-/* PoP: qqbot_u_parse_json @ gateway/platforms/qqbot/adapter.py:_parse_json */
+/* PoP: shell_hooks_parse_json @ gateway/platforms/qqbot/adapter.py:_parse_json */
 int shell_hooks_parse_json(const json_t *hooks_json) {
     if (!hooks_json || hooks_json->type != JSON_OBJECT) return 0;
 

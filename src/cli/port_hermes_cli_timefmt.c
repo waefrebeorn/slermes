@@ -13,7 +13,7 @@
 #include <string.h>
 #include <time.h>
 
-/* PoP: relative_time @ hermes_cli/timefmt.py:relative_time */
+/* PoP: tf_relative_time @ hermes_cli/timefmt.py:relative_time */
 char *tf_relative_time(double ts) {
     if (ts == 0) return strdup("?");
     double delta = (double)time(NULL) - ts;

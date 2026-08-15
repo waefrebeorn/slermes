@@ -28,7 +28,7 @@ static int mm_istag_at(const char *s, const char *tag, size_t *consumed, int *is
 static const char *mm_find_closing_fence(const char *s, size_t L);
 
 /* --- normalize_tool_schema --------------------------------------------- */
-/* PoP: normalize_tool_schema @ agent/memory_manager.py:normalize_tool_schema */
+/* PoP: schema @ agent/memory_manager.py:normalize_tool_schema */
 /*
  * Parse a tool-schema JSON string. If it is a bare function schema (dict with
  * a string "name") or an already-wrapped {"type":"function","function":{...}}
@@ -68,7 +68,7 @@ int memory_manager_normalize_tool_schema(const char *schema_json,
 }
 
 /* --- sanitize_context --------------------------------------------------- */
-/* PoP: sanitize_context @ agent/memory_manager.py:sanitize_context */
+/* PoP: removals @ agent/memory_manager.py:sanitize_context */
 /*
  * Strip fence tags, injected context blocks, and [System note: ...] markers.
  * Three removals (matching the Python regexes):

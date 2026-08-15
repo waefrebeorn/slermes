@@ -33,7 +33,7 @@ void browser_route_state_free(browser_route_state_t *s) {
     free(s->refs);
     free(s->continuation);
 }
-/* PoP: clear_refs @ tools/computer_use/browser_route.py:BrowserRouteState.clear_refs */
+/* PoP: browser_route_state_clear_refs @ tools/computer_use/browser_route.py:BrowserRouteState.clear_refs */
 void browser_route_state_clear_refs(browser_route_state_t *s) {
     for (size_t i = 0; i < s->n_refs; i++) {
         free(s->refs[i].ref);
@@ -45,7 +45,7 @@ void browser_route_state_clear_refs(browser_route_state_t *s) {
     free(s->continuation);
     s->continuation = NULL;
 }
-/* PoP: clear @ tools/computer_use/browser_route.py:BrowserRouteState.clear */
+/* PoP: browser_route_state_clear @ tools/computer_use/browser_route.py:BrowserRouteState.clear */
 void browser_route_state_clear(browser_route_state_t *s) {
     s->pid = -1;
     s->window_id = -1;
@@ -67,7 +67,7 @@ static void set_str(char **dst, const char *v) {
 
 /* ---- pure helpers ---- */
 
-/* PoP: _positive_int @ tools/computer_use/browser_route.py:_positive_int */
+/* PoP: browser_route_positive_int @ tools/computer_use/browser_route.py:_positive_int */
 long browser_route_positive_int(const json_t *value) {
     if (!value) return -1;
     if (value->type == JSON_BOOL) return -1;  /* bool is not int */
@@ -84,7 +84,7 @@ long browser_route_positive_int(const json_t *value) {
     return -1;
 }
 
-/* PoP: _tool_payload @ tools/computer_use/browser_route.py:_tool_payload */
+/* PoP: browser_route_tool_payload @ tools/computer_use/browser_route.py:_tool_payload */
 json_t *browser_route_tool_payload(const json_t *out) {
     json_t *payload = json_object();
     if (!out || out->type != JSON_OBJECT) return payload;
@@ -137,7 +137,7 @@ static json_t *br_deep_copy(const json_t *v) {
     return json_null();
 }
 
-/* PoP: _ref_map @ tools/computer_use/browser_route.py:_ref_map */
+/* PoP: browser_route_ref_map @ tools/computer_use/browser_route.py:_ref_map */
 json_t *browser_route_ref_map(const json_t *payload) {
     /* returns json_t* object: ref -> actions(array) */
     json_t *normalized = json_object();
@@ -195,7 +195,7 @@ json_t *browser_route_ref_map(const json_t *payload) {
     return normalized;
 }
 
-/* PoP: _continuation @ tools/computer_use/browser_route.py:_continuation */
+/* PoP: browser_route_continuation @ tools/computer_use/browser_route.py:_continuation */
 char *browser_route_continuation(const json_t *payload) {
     if (payload && payload->type == JSON_OBJECT) {
         const json_t *d = br_obj_get(payload, "continuation");
@@ -211,7 +211,7 @@ char *browser_route_continuation(const json_t *payload) {
     return NULL;
 }
 
-/* PoP: _tab_ids @ tools/computer_use/browser_route.py:_tab_ids */
+/* PoP: browser_route_tab_ids @ tools/computer_use/browser_route.py:_tab_ids */
 json_t *browser_route_tab_ids(const json_t *payload) {
     json_t *result = json_array();
     if (!payload || payload->type != JSON_OBJECT) return result;
@@ -229,7 +229,7 @@ json_t *browser_route_tab_ids(const json_t *payload) {
     return result;
 }
 
-/* PoP: _refusal_code @ tools/computer_use/browser_route.py:_refusal_code */
+/* PoP: browser_route_refusal_code @ tools/computer_use/browser_route.py:_refusal_code */
 char *browser_route_refusal_code(const json_t *payload) {
     if (payload && payload->type == JSON_OBJECT) {
         const json_t *code = br_obj_get(payload, "code");
@@ -243,7 +243,7 @@ char *browser_route_refusal_code(const json_t *payload) {
     return NULL;
 }
 
-/* PoP: _refusal @ tools/computer_use/browser_route.py:_refusal */
+/* PoP: browser_route_refusal @ tools/computer_use/browser_route.py:_refusal */
 json_t *browser_route_refusal(const char *code, const char *message,
                               bool native_fallback, const json_t *extra) {
     json_t *p = json_object();
@@ -261,7 +261,7 @@ json_t *browser_route_refusal(const char *code, const char *message,
 
 /* ---- adapter ---- */
 
-/* PoP: _typed_browser_unavailable @ tools/computer_use/backend.py:_typed_browser_unavailable */
+/* PoP: browser_route_typed_browser_unavailable @ tools/computer_use/backend.py:_typed_browser_unavailable */
 /* Port of Python _typed_browser_unavailable: the native-only backends fail
  * closed — return the standard refusal payload. Caller frees. */
 json_t *browser_route_typed_browser_unavailable(void) {
@@ -281,7 +281,7 @@ struct cua_typed_browser_route {
     browser_route_state_t state;
 };
 
-/* PoP: __init__ @ tools/computer_use/browser_route.py:CuaTypedBrowserRoute.__init__ */
+/* PoP: cua_typed_browser_route_new @ tools/computer_use/browser_route.py:CuaTypedBrowserRoute.__init__ */
 cua_typed_browser_route_t *cua_typed_browser_route_new(
     const char *session_id,
     browser_route_call_fn call_tool, void *call_ctx,
@@ -304,7 +304,7 @@ const browser_route_state_t *cua_typed_browser_route_state(const cua_typed_brows
 }
 
 /* _call: inject session, run call_tool, return tool_payload */
-/* PoP: _call @ tools/computer_use/browser_route.py:CuaTypedBrowserRoute._call */
+/* PoP: route_call @ tools/computer_use/browser_route.py:CuaTypedBrowserRoute._call */
 static json_t *route_call(cua_typed_browser_route_t *r, const char *name, const json_t *args) {
     json_t *payload = json_object();
     if (args && args->type == JSON_OBJECT)
@@ -318,7 +318,7 @@ static json_t *route_call(cua_typed_browser_route_t *r, const char *name, const 
     return res;
 }
 
-/* PoP: _require_tool @ tools/computer_use/browser_route.py:CuaTypedBrowserRoute._require_tool */
+/* PoP: route_require_tool @ tools/computer_use/browser_route.py:CuaTypedBrowserRoute._require_tool */
 static json_t *route_require_tool(cua_typed_browser_route_t *r, const char *name) {
     if (r->has_tool(name, r->has_ctx)) return NULL;
     return browser_route_refusal(
@@ -333,7 +333,7 @@ static const char *arg_str(const json_t *args, const char *k) {
     return (v && v->type == JSON_STRING) ? v->str_val : NULL;
 }
 
-/* PoP: observe @ tools/computer_use/browser_route.py:CuaTypedBrowserRoute.observe */
+/* PoP: cua_typed_browser_route_observe @ tools/computer_use/browser_route.py:CuaTypedBrowserRoute.observe */
 json_t *cua_typed_browser_route_observe(cua_typed_browser_route_t *r, const json_t *args) {
     json_t *missing = route_require_tool(r, "get_browser_state");
     if (missing) return missing;
@@ -505,7 +505,7 @@ json_t *cua_typed_browser_route_observe(cua_typed_browser_route_t *r, const json
     return payload;
 }
 
-/* PoP: prepare @ tools/computer_use/browser_route.py:CuaTypedBrowserRoute.prepare */
+/* PoP: cua_typed_browser_route_prepare @ tools/computer_use/browser_route.py:CuaTypedBrowserRoute.prepare */
 json_t *cua_typed_browser_route_prepare(cua_typed_browser_route_t *r, const json_t *args) {
     json_t *missing = route_require_tool(r, "browser_prepare");
     if (missing) return missing;
@@ -565,13 +565,13 @@ json_t *cua_typed_browser_route_prepare(cua_typed_browser_route_t *r, const json
     return payload;
 }
 
-/* PoP: _require_mutation @ tools/computer_use/browser_route.py:CuaTypedBrowserRoute._require_mutation */
+/* PoP: route_has_ref @ tools/computer_use/browser_route.py:CuaTypedBrowserRoute._require_mutation */
 static bool route_has_ref(const browser_route_state_t *s, const char *ref) {
     for (size_t i = 0; i < s->n_refs; i++)
         if (strcmp(s->refs[i].ref, ref) == 0) return true;
     return false;
 }
-/* PoP: _require_ref @ tools/computer_use/browser_route.py:CuaTypedBrowserRoute._require_ref */
+/* PoP: ref_declares_action @ tools/computer_use/browser_route.py:CuaTypedBrowserRoute._require_ref */
 static bool ref_declares_action(const browser_route_state_t *s, const char *ref,
                                 const json_t *actions) {
     /* actions: json_t* array; return true if declared ∩ actions nonempty */
@@ -595,7 +595,7 @@ static bool ref_declares_action(const browser_route_state_t *s, const char *ref,
     return false;
 }
 
-/* PoP: mutate @ tools/computer_use/browser_route.py:CuaTypedBrowserRoute.mutate */
+/* PoP: cua_typed_browser_route_mutate @ tools/computer_use/browser_route.py:CuaTypedBrowserRoute.mutate */
 json_t *cua_typed_browser_route_mutate(cua_typed_browser_route_t *r, const char *tool,
                                         const json_t *args) {
     json_t *call_args = json_object();

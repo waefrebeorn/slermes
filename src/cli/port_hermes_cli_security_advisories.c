@@ -275,7 +275,7 @@ static json_t *make_hit(const advisory_t *a, const char *pkg,
     return h;
 }
 
-/* PoP: cli_security_advisories_detect_compromised @ hermes_cli/security_advisories.py:detect_compromised */
+/* PoP: objects @ hermes_cli/security_advisories.py:detect_compromised */
 /* Scan installed packages against the advisory catalog. Returns a JSON
  * array of hit objects (caller frees). A hit means the package is
  * installed AND its version is in the compromised set (or the set is
@@ -305,7 +305,7 @@ json_t *cli_security_advisories_detect_compromised(void) {
  * Ack persistence (config.security.acked_advisories)
  * ============================================================ */
 
-/* PoP: cli_security_advisories_get_acked_ids @ hermes_cli/security_advisories.py:get_acked_ids */
+/* PoP: strings @ hermes_cli/security_advisories.py:get_acked_ids */
 /* Returns a JSON array of acked advisory ID strings (caller frees).
  * Empty array if config can't be loaded — don't block startup just
  * because config is broken. */
@@ -387,7 +387,7 @@ bool cli_security_advisories_ack_advisory(const char *advisory_id) {
     return ok;
 }
 
-/* PoP: cli_security_advisories_filter_unacked @ hermes_cli/security_advisories.py:filter_unacked */
+/* PoP: array @ hermes_cli/security_advisories.py:filter_unacked */
 /* Return only hits whose advisories the user has not dismissed.
  * Input: JSON array of hits. Returns a new JSON array (caller frees). */
 json_t *cli_security_advisories_filter_unacked(const json_t *hits) {
@@ -577,7 +577,7 @@ void cli_security_advisories_write_banner_cache(const json_t *seen) {
     fclose(f);
 }
 
-/* PoP: cli_security_advisories_hits_due_for_banner @ hermes_cli/security_advisories.py:hits_due_for_banner */
+/* PoP: due @ hermes_cli/security_advisories.py:hits_due_for_banner */
 /* Return only hits whose banner is due (not acked, not shown within
  * repeat_hours). Side effect: stamps the cache for hits about to be
  * shown, exactly like the Python. Caller frees the returned array. */

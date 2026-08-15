@@ -14,27 +14,27 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_providers_normalize_provider @ hermes_cli/providers.py:normalize_provider */
+/* PoP: hermes_cli_providers_normalize_provider_p @ hermes_cli/providers.py:normalize_provider */
 json_t *hermes_cli_providers_normalize_provider_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_providers_get_provider @ hermes_cli/providers.py:get_provider */
+/* PoP: hermes_cli_providers_get_provider_p @ hermes_cli/providers.py:get_provider */
 json_t *hermes_cli_providers_get_provider_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_providers_get_label @ hermes_cli/providers.py:get_label */
+/* PoP: hermes_cli_providers_get_label_p @ hermes_cli/providers.py:get_label */
 json_t *hermes_cli_providers_get_label_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_providers_is_aggregator @ hermes_cli/providers.py:is_aggregator */
+/* PoP: hermes_cli_providers_is_aggregator_p @ hermes_cli/providers.py:is_aggregator */
 json_t *hermes_cli_providers_is_aggregator_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_providers_resolve_provider_full @ hermes_cli/providers.py:resolve_provider_full */
+/* PoP: hermes_cli_providers_resolve_provider_full_p @ hermes_cli/providers.py:resolve_provider_full */
 json_t *hermes_cli_providers_resolve_provider_full_p(void) {
     return json_object();
 }

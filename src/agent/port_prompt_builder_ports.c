@@ -21,7 +21,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _find_hermes_md @ agent/prompt_builder.py:_find_hermes_md */
+/* PoP: prb_find_hermes_md @ agent/prompt_builder.py:_find_hermes_md */
 char *prb_find_hermes_md(const char *cwd) {
     /* Python: nearest .hermes.md or HERMES.md, cwd up. */
     if (!cwd) return NULL;
@@ -45,7 +45,7 @@ char *prb_find_hermes_md(const char *cwd) {
     return NULL;
 }
 
-/* PoP: _dynamic_context_file_max_chars @ agent/prompt_builder.py:_dynamic_context_file_max_chars */
+/* PoP: prb_dynamic_context_file_max_chars @ agent/prompt_builder.py:_dynamic_context_file_max_chars */
 long prb_dynamic_context_file_max_chars(long context_window) {
     /* Python: cap from context window; at least 20000. */
     if (context_window <= 0) return 20000;
@@ -53,7 +53,7 @@ long prb_dynamic_context_file_max_chars(long context_window) {
     return cap > 20000 ? cap : 20000;
 }
 
-/* PoP: _get_context_file_max_chars @ agent/prompt_builder.py:_get_context_file_max_chars */
+/* PoP: prb_get_context_file_max_chars @ agent/prompt_builder.py:_get_context_file_max_chars */
 long prb_get_context_file_max_chars(long context_window, const char *config_yaml) {
     /* Python: explicit config first. */
     if (config_yaml) {
@@ -69,7 +69,7 @@ long prb_get_context_file_max_chars(long context_window, const char *config_yaml
     return prb_dynamic_context_file_max_chars(context_window);
 }
 
-/* PoP: _record_truncation_warning @ agent/prompt_builder.py:_record_truncation_warning */
+/* PoP: prb_record_truncation_warning @ agent/prompt_builder.py:_record_truncation_warning */
 int prb_record_truncation_warning(const char *warnings_json, const char *path, long truncated) {
     /* Python: append warning to accumulator. */
     if (!path) return -1;
@@ -82,7 +82,7 @@ int prb_record_truncation_warning(const char *warnings_json, const char *path, l
     return 0;
 }
 
-/* PoP: drain_truncation_warnings @ agent/prompt_builder.py:drain_truncation_warnings */
+/* PoP: prb_drain_truncation_warnings @ agent/prompt_builder.py:drain_truncation_warnings */
 char *prb_drain_truncation_warnings(void) {
     /* Python: return + clear. */
     printf("truncation warnings drained\n");

@@ -21,7 +21,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _skills_dir @ tools/skill_manager_tool.py:_skills_dir */
+/* PoP: smt_skills_dir @ tools/skill_manager_tool.py:_skills_dir */
 char *smt_skills_dir(void) {
     const char *h = getenv("HERMES_HOME");
     if (h && *h) {
@@ -32,7 +32,7 @@ char *smt_skills_dir(void) {
     return strdup("skills");
 }
 
-/* PoP: _is_path_redirect @ tools/skill_manager_tool.py:_is_path_redirect */
+/* PoP: smt_is_path_redirect @ tools/skill_manager_tool.py:_is_path_redirect */
 bool smt_is_path_redirect(const char *path) {
     /* Python: symlink or junction — REAL lstat. */
     if (!path) return false;
@@ -40,7 +40,7 @@ bool smt_is_path_redirect(const char *path) {
     return lstat(path, &st) == 0 && S_ISLNK(st.st_mode);
 }
 
-/* PoP: _validate_name @ tools/skill_manager_tool.py:_validate_name */
+/* PoP: smt_validate_name @ tools/skill_manager_tool.py:_validate_name */
 char *smt_validate_name(const char *name) {
     /* Python: error message or None. */
     if (!name || !*name) return strdup("name is required");
@@ -51,7 +51,7 @@ char *smt_validate_name(const char *name) {
     return NULL;
 }
 
-/* PoP: _write_file @ tools/skill_manager_tool.py:_write_file */
+/* PoP: smt_write_file @ tools/skill_manager_tool.py:_write_file */
 int smt_write_file(const char *skill_name, const char *file_path, const char *content) {
     /* Python: add/overwrite supporting file — REAL write. */
     if (!skill_name || !file_path || !content) return -1;
@@ -72,7 +72,7 @@ int smt_write_file(const char *skill_name, const char *file_path, const char *co
     return 0;
 }
 
-/* PoP: skill_manage @ tools/skill_manager_tool.py:skill_manage */
+/* PoP: smt_skill_manage @ tools/skill_manager_tool.py:skill_manage */
 char *smt_skill_manage(const char *action, const char *args_json) {
     /* Python: dispatch to handler. */
     if (!action) return NULL;

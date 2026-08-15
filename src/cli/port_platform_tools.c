@@ -16,7 +16,7 @@ extern bool parse_enabled_flag(const char *value, bool default_val);
 extern bool toolset_allowed_for_platform(const char *ts_key, const char *platform);
 extern char *config_py_get_env_value_prefer_dotenv(const char *key);
 
-/* PoP: configurable_toolsets_keys @ hermes_cli/tools_config.py:CONFIGURABLE_TOOLSETS */
+/* PoP: platform_tools_configurable_keys @ hermes_cli/tools_config.py:CONFIGURABLE_TOOLSETS */
 static const char *const CONFIGURABLE_KEYS[] = {
     "web", "browser", "terminal", "file", "code_execution", "vision",
     "video", "image_gen", "video_gen", "x_search", "tts", "skills", "todo",
@@ -25,7 +25,7 @@ static const char *const CONFIGURABLE_KEYS[] = {
     "yuanbao", "computer_use", NULL
 };
 
-/* PoP: default_off_toolsets @ hermes_cli/tools_config.py:_DEFAULT_OFF_TOOLSETS */
+/* PoP: platform_tools_configurable_keys @ hermes_cli/tools_config.py:_DEFAULT_OFF_TOOLSETS */
 static const char *const DEFAULT_OFF[] = {
     "homeassistant", "spotify", "discord", "discord_admin", "video",
     "video_gen", "x_search", NULL

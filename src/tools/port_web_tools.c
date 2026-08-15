@@ -46,7 +46,7 @@ void port_web_tools_state_cleanup(port_web_tools_state_t *state)
 /* Forward declarations */
 char *web_env_value(const char *name);
 bool web_has_env(const char *name);
-/* PoP: web_get_backend @ tools/computer_use/tool.py:_get_backend */
+/* PoP: web_env_value @ tools/computer_use/tool.py:_get_backend */
 char *web_get_backend(void);
 char *web_get_search_backend(void);
 char *web_get_extract_backend(void);
@@ -233,7 +233,7 @@ int web_get_extract_char_limit(void)
     return v;
 }
 
-/* PoP: web_convert_base64_images_to_links @ tools/web_tools.py:convert_base64_images_to_links */
+/* PoP: module @ tools/web_tools.py:convert_base64_images_to_links */
 /* Delegate to the focused web_base64_img module (faithful POSIX-ERE port). */
 char *web_convert_base64_images_to_links(const char *text)
 {

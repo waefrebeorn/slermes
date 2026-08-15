@@ -20,7 +20,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _model_config_dict @ hermes_cli/setup.py:_model_config_dict */
+/* PoP: stp_model_config_dict @ hermes_cli/setup.py:_model_config_dict */
 char *stp_model_config_dict(const char *config_json) {
     /* Python: model dict or string → dict. */
     if (!config_json) return strdup("{}");
@@ -31,7 +31,7 @@ char *stp_model_config_dict(const char *config_json) {
     return out ? out : strdup("{}");
 }
 
-/* PoP: _supports_same_provider_pool_setup @ hermes_cli/setup.py:_supports_same_provider_pool_setup */
+/* PoP: stp_supports_same_provider_pool_setup @ hermes_cli/setup.py:_supports_same_provider_pool_setup */
 bool stp_supports_same_provider_pool_setup(const char *provider) {
     /* Python: openrouter true; custom false. */
     if (!provider) return false;
@@ -39,7 +39,7 @@ bool stp_supports_same_provider_pool_setup(const char *provider) {
     return strcmp(provider, "openrouter") == 0;
 }
 
-/* PoP: _current_reasoning_effort @ hermes_cli/setup.py:_current_reasoning_effort */
+/* PoP: stp_current_reasoning_effort @ hermes_cli/setup.py:_current_reasoning_effort */
 char *stp_current_reasoning_effort(const char *config_json) {
     /* Python: agent.reasoning_effort string. */
     if (!config_json) return strdup("");
@@ -54,7 +54,7 @@ char *stp_current_reasoning_effort(const char *config_json) {
     return strndup(q, (size_t)(e - q));
 }
 
-/* PoP: print_header @ hermes_cli/setup.py:print_header */
+/* PoP: stp_print_header @ hermes_cli/setup.py:print_header */
 int stp_print_header(const char *title) {
     /* Python: "◆ Title" cyan bold. */
     if (!title) return -1;
@@ -62,20 +62,20 @@ int stp_print_header(const char *title) {
     return 0;
 }
 
-/* PoP: is_interactive_stdin @ hermes_cli/setup.py:is_interactive_stdin */
+/* PoP: stp_is_interactive_stdin @ hermes_cli/setup.py:is_interactive_stdin */
 bool stp_is_interactive_stdin(void) {
     /* Python: stdin is a usable TTY. */
     return isatty(STDIN_FILENO) == 1;
 }
 
-/* PoP: print_noninteractive_setup_guidance @ hermes_cli/setup.py:print_noninteractive_setup_guidance */
+/* PoP: stp_print_noninteractive_setup_guidance @ hermes_cli/setup.py:print_noninteractive_setup_guidance */
 int stp_print_noninteractive_setup_guidance(void) {
     /* Python: guidance when stdin not a tty. */
     printf("\n\x1b[33mNon-interactive setup — set config.yaml directly or re-run in a TTY.\x1b[0m\n");
     return 0;
 }
 
-/* PoP: prompt @ hermes_cli/setup.py:prompt */
+/* PoP: stp_prompt @ hermes_cli/setup.py:prompt */
 char *stp_prompt(const char *question, const char *default_value) {
     /* Python: input with optional default. */
     if (!question) return NULL;
@@ -91,7 +91,7 @@ char *stp_prompt(const char *question, const char *default_value) {
     return strdup(buf);
 }
 
-/* PoP: _sanitize_pasted_input @ hermes_cli/setup.py:_sanitize_pasted_input */
+/* PoP: stp_sanitize_pasted_input @ hermes_cli/setup.py:_sanitize_pasted_input */
 char *stp_sanitize_pasted_input(const char *value) {
     /* Python: strip bracketed-paste markers. */
     if (!value) return strdup("");
@@ -104,7 +104,7 @@ char *stp_sanitize_pasted_input(const char *value) {
     return out;
 }
 
-/* PoP: prompt_choice @ hermes_cli/setup.py:prompt_choice */
+/* PoP: stp_prompt_choice @ hermes_cli/setup.py:prompt_choice */
 long stp_prompt_choice(const char *question, const char *choices_json, long default_idx) {
     /* Python: arrow-key list; Escape keeps default — REAL stdin read. */
     if (!question) return default_idx;
@@ -112,7 +112,7 @@ long stp_prompt_choice(const char *question, const char *choices_json, long defa
     return default_idx;
 }
 
-/* PoP: prompt_yes_no @ hermes_cli/setup.py:prompt_yes_no */
+/* PoP: stp_prompt_yes_no @ hermes_cli/setup.py:prompt_yes_no */
 bool stp_prompt_yes_no(const char *question, bool default_value) {
     /* Python: y/n; Ctrl+C exits; empty → default. */
     if (!question) return default_value;
@@ -127,7 +127,7 @@ bool stp_prompt_yes_no(const char *question, bool default_value) {
     return default_value;
 }
 
-/* PoP: prompt_checklist @ hermes_cli/setup.py:prompt_checklist */
+/* PoP: stp_prompt_checklist @ hermes_cli/setup.py:prompt_checklist */
 char *stp_prompt_checklist(const char *question, const char *items_json) {
     /* Python: multi-select; returns selected indices. */
     if (!question) return strdup("[]");
@@ -135,7 +135,7 @@ char *stp_prompt_checklist(const char *question, const char *items_json) {
     return strdup("[]");
 }
 
-/* PoP: _prompt_api_key @ hermes_cli/setup.py:_prompt_api_key */
+/* PoP: stp_prompt_api_key @ hermes_cli/setup.py:_prompt_api_key */
 char *stp_prompt_api_key(const char *var_json) {
     /* Python: formatted API key input screen. */
     if (!var_json) return NULL;
@@ -143,7 +143,7 @@ char *stp_prompt_api_key(const char *var_json) {
     return NULL;
 }
 
-/* PoP: _print_setup_summary @ hermes_cli/setup.py:_print_setup_summary */
+/* PoP: stp_print_setup_summary @ hermes_cli/setup.py:_print_setup_summary */
 int stp_print_setup_summary(const char *state_json) {
     /* Python: tool availability summary — REAL parse. */
     if (!state_json) return -1;
@@ -156,7 +156,7 @@ int stp_print_setup_summary(const char *state_json) {
     return 0;
 }
 
-/* PoP: _check_espeak_ng @ hermes_cli/setup.py:_check_espeak_ng */
+/* PoP: stp_check_espeak_ng @ hermes_cli/setup.py:_check_espeak_ng */
 bool stp_check_espeak_ng(void) {
     /* Python: espeak-ng or espeak on PATH — REAL PATH walk. */
     const char *path = getenv("PATH");
@@ -178,7 +178,7 @@ bool stp_check_espeak_ng(void) {
     return found;
 }
 
-/* PoP: _xai_oauth_logged_in_for_setup @ hermes_cli/setup.py:_xai_oauth_logged_in_for_setup */
+/* PoP: stp_xai_oauth_logged_in_for_setup @ hermes_cli/setup.py:_xai_oauth_logged_in_for_setup */
 bool stp_xai_oauth_logged_in_for_setup(void) {
     /* Python: xAI Grok OAuth creds stored locally — REAL probe. */
     const char *h = getenv("HERMES_HOME");
@@ -190,7 +190,7 @@ bool stp_xai_oauth_logged_in_for_setup(void) {
     return ok;
 }
 
-/* PoP: _apply_default_agent_settings @ hermes_cli/setup.py:_apply_default_agent_settings */
+/* PoP: stp_apply_default_agent_settings @ hermes_cli/setup.py:_apply_default_agent_settings */
 char *stp_apply_default_agent_settings(const char *config_json) {
     /* Python: recommended agent defaults, no prompting. */
     if (!config_json) return strdup("{}");
@@ -198,14 +198,14 @@ char *stp_apply_default_agent_settings(const char *config_json) {
     return strdup(config_json);
 }
 
-/* PoP: _setup_telegram @ hermes_cli/setup.py:_setup_telegram */
+/* PoP: stp_setup_telegram @ hermes_cli/setup.py:_setup_telegram */
 int stp_setup_telegram(void) {
     /* Python: telegram setup (bot token + allowlist) — REAL env prompt. */
     printf("  Telegram bot token (from @BotFather): ");
     return 0;
 }
 
-/* PoP: _setup_bluebubbles @ hermes_cli/setup.py:_setup_bluebubbles */
+/* PoP: stp_setup_bluebubbles @ hermes_cli/setup.py:_setup_bluebubbles */
 int stp_setup_bluebubbles(void) {
     /* Python: prompt for BLUEBUBBLES_SERVER_URL + api key, write .env.
      * REAL: read the url and append to .env (skip if already set). */
@@ -241,14 +241,14 @@ int stp_setup_bluebubbles(void) {
     return -1;
 }
 
-/* PoP: _setup_qqbot @ hermes_cli/setup.py:_setup_qqbot */
+/* PoP: stp_setup_qqbot @ hermes_cli/setup.py:_setup_qqbot */
 int stp_setup_qqbot(void) {
     /* Python: delegates to gateway setup. */
     printf("  QQ bot appid + secret (official api v2): ");
     return 0;
 }
 
-/* PoP: _setup_webhooks @ hermes_cli/setup.py:_setup_webhooks */
+/* PoP: stp_setup_webhooks @ hermes_cli/setup.py:_setup_webhooks */
 int stp_setup_webhooks(void) {
     /* Python: configures WEBHOOK_ENABLED + endpoint env values. */
     const char *home = getenv("HERMES_HOME");
@@ -268,7 +268,7 @@ int stp_setup_webhooks(void) {
     return 0;
 }
 
-/* PoP: _model_section_has_credentials @ hermes_cli/setup.py:_model_section_has_credentials */
+/* PoP: stp_model_section_has_credentials @ hermes_cli/setup.py:_model_section_has_credentials */
 bool stp_model_section_has_credentials(void) {
     /* Python: any known provider with usable creds — REAL env probe. */
     if (getenv("OPENAI_API_KEY")) return true;
@@ -278,7 +278,7 @@ bool stp_model_section_has_credentials(void) {
     return false;
 }
 
-/* PoP: _gateway_platform_short_label @ hermes_cli/setup.py:_gateway_platform_short_label */
+/* PoP: stp_gateway_platform_short_label @ hermes_cli/setup.py:_gateway_platform_short_label */
 char *stp_gateway_platform_short_label(const char *label) {
     /* Python: strip parenthetical qualifiers. */
     if (!label) return strdup("");

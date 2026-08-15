@@ -12,7 +12,7 @@
 #include <unistd.h>
 #include "hermes_json.h"
 
-/* PoP: _schtasks_encoding @ hermes_cli/gateway_windows.py:_schtasks_encoding */
+/* PoP: gw_u_schtasks_encoding @ hermes_cli/gateway_windows.py:_schtasks_encoding */
 int gw_u_schtasks_encoding(const char *arg) {
     /* Python: preferred locale encoding or utf-8. Arg = "encoding". */
     if (!arg || !*arg) { printf("utf-8\n"); return 0; }
@@ -20,7 +20,7 @@ int gw_u_schtasks_encoding(const char *arg) {
     return 0;
 }
 
-/* PoP: _assert_windows @ hermes_cli/gateway_windows.py:_assert_windows */
+/* PoP: gw_u_assert_windows @ hermes_cli/gateway_windows.py:_assert_windows */
 int gw_u_assert_windows(const char *arg) {
     /* Python: raise RuntimeError("gateway_windows is Windows-only") unless
      * win32. The C build targets POSIX; the shim reports the refusal. */
@@ -33,7 +33,7 @@ int gw_u_assert_windows(const char *arg) {
 #endif
 }
 
-/* PoP: _preserve_hermes_home_path @ hermes_cli/gateway_windows.py:_preserve_hermes_home_path */
+/* PoP: gw_u_preserve_hermes_home_path @ hermes_cli/gateway_windows.py:_preserve_hermes_home_path */
 int gw_u_preserve_hermes_home_path(const char *arg) {
     /* Python: home-spelling preserve. Arg = "path\tunder_home\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -47,7 +47,7 @@ int gw_u_preserve_hermes_home_path(const char *arg) {
     return 0;
 }
 
-/* PoP: _quote_cmd_script_arg @ hermes_cli/gateway_windows.py:_quote_cmd_script_arg */
+/* PoP: gw_u_quote_cmd_script_arg @ hermes_cli/gateway_windows.py:_quote_cmd_script_arg */
 int gw_u_quote_cmd_script_arg(const char *arg) {
     /* Python: cmd.exe quoting; refuse newlines; bare if clean. Arg = value. */
     if (!arg || !*arg) { printf("\"\"\n"); return 0; }
@@ -68,7 +68,7 @@ int gw_u_quote_cmd_script_arg(const char *arg) {
     return 0;
 }
 
-/* PoP: _quote_schtasks_arg @ hermes_cli/gateway_windows.py:_quote_schtasks_arg */
+/* PoP: gw_u_quote_schtasks_arg @ hermes_cli/gateway_windows.py:_quote_schtasks_arg */
 int gw_u_quote_schtasks_arg(const char *arg) {
     if (!arg) { printf("\n"); return 0; }
     int needs = 0;
@@ -82,7 +82,7 @@ int gw_u_quote_schtasks_arg(const char *arg) {
     return 0;
 }
 
-/* PoP: _exec_schtasks @ hermes_cli/gateway_windows.py:_exec_schtasks */
+/* PoP: gw_u_exec_schtasks @ hermes_cli/gateway_windows.py:_exec_schtasks */
 int gw_u_exec_schtasks(const char *arg) {
     /* Python: hard-timeout schtasks. Arg =
      * "state\tcode\tresult\terr". */
@@ -99,7 +99,7 @@ int gw_u_exec_schtasks(const char *arg) {
     return 0;
 }
 
-/* PoP: _should_fall_back @ hermes_cli/gateway_windows.py:_should_fall_back */
+/* PoP: gw_u_should_fall_back @ hermes_cli/gateway_windows.py:_should_fall_back */
 int gw_u_should_fall_back(const char *arg) {
     /* Python: code == 124 or fallback patterns. Arg = "code\tdetail". */
     if (!arg || !*arg) return 0;
@@ -118,7 +118,7 @@ int gw_u_should_fall_back(const char *arg) {
     return hit;
 }
 
-/* PoP: _is_access_denied @ hermes_cli/gateway_windows.py:_is_access_denied */
+/* PoP: gw_u_is_access_denied @ hermes_cli/gateway_windows.py:_is_access_denied */
 int gw_u_is_access_denied(const char *arg) {
     /* Python: (access is denied|acceso denegado) case-insensitive. */
     if (!arg || !*arg) return 0;
@@ -129,7 +129,7 @@ int gw_u_is_access_denied(const char *arg) {
     return hit;
 }
 
-/* PoP: _is_running_as_admin @ hermes_cli/gateway_windows.py:_is_running_as_admin */
+/* PoP: gw_u_is_running_as_admin @ hermes_cli/gateway_windows.py:_is_running_as_admin */
 int gw_u_is_running_as_admin(const char *arg) {
     /* Python: ctypes.windll.shell32.IsUserAnAdmin() on Windows; False on
      * any exception. On POSIX the C port reports 0 (no elevation query). */
@@ -138,7 +138,7 @@ int gw_u_is_running_as_admin(const char *arg) {
     return 0;
 }
 
-/* PoP: _current_profile_cli_args @ hermes_cli/gateway_windows.py:_current_profile_cli_args */
+/* PoP: gw_u_current_profile_cli_args @ hermes_cli/gateway_windows.py:_current_profile_cli_args */
 int gw_u_current_profile_cli_args(const char *arg) {
     /* Python: shlex.split(_profile_arg()) if set, else []. Arg = profile
      * name (empty = default, no args). */
@@ -147,7 +147,7 @@ int gw_u_current_profile_cli_args(const char *arg) {
     return 0;
 }
 
-/* PoP: _launch_elevated_gateway_command @ hermes_cli/gateway_windows.py:_launch_elevated_gateway_command */
+/* PoP: gw_u_launch_elevated_gateway_command @ hermes_cli/gateway_windows.py:_launch_elevated_gateway_command */
 int gw_u_launch_elevated_gateway_command(const char *arg) {
     /* Python: ShellExecuteW runas. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -161,7 +161,7 @@ int gw_u_launch_elevated_gateway_command(const char *arg) {
     return 1;
 }
 
-/* PoP: _launch_elevated_install @ hermes_cli/gateway_windows.py:_launch_elevated_install */
+/* PoP: gw_u_launch_elevated_install @ hermes_cli/gateway_windows.py:_launch_elevated_install */
 int gw_u_launch_elevated_install(const char *arg) {
     /* Python: UAC handoff. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -172,7 +172,7 @@ int gw_u_launch_elevated_install(const char *arg) {
     return 0;
 }
 
-/* PoP: _launch_elevated_uninstall @ hermes_cli/gateway_windows.py:_launch_elevated_uninstall */
+/* PoP: gw_u_launch_elevated_uninstall @ hermes_cli/gateway_windows.py:_launch_elevated_uninstall */
 int gw_u_launch_elevated_uninstall(const char *arg) {
     /* Python: UAC handoff for uninstall. Arg = "1"/"0" handoff success. */
     if (arg && arg[0] == '1') { printf("1\n"); return 0; }
@@ -180,7 +180,7 @@ int gw_u_launch_elevated_uninstall(const char *arg) {
     return 0;
 }
 
-/* PoP: get_task_name @ hermes_cli/gateway_windows.py:get_task_name */
+/* PoP: gw_get_task_name @ hermes_cli/gateway_windows.py:get_task_name */
 int gw_get_task_name(const char *arg) {
     /* Python: Hermes_Gateway[_suffix]. Arg = suffix (empty = default). */
     if (!arg || !*arg) { printf("Hermes_Gateway\n"); return 0; }
@@ -188,7 +188,7 @@ int gw_get_task_name(const char *arg) {
     return 0;
 }
 
-/* PoP: _sanitize_filename @ hermes_cli/gateway_windows.py:_sanitize_filename */
+/* PoP: gw_u_sanitize_filename @ hermes_cli/gateway_windows.py:_sanitize_filename */
 int gw_u_sanitize_filename(const char *arg) {
     if (!arg) { printf("\n"); return 0; }
     for (const char *p = arg; *p; p++) {
@@ -200,7 +200,7 @@ int gw_u_sanitize_filename(const char *arg) {
     return 0;
 }
 
-/* PoP: get_task_script_path @ hermes_cli/gateway_windows.py:get_task_script_path */
+/* PoP: gw_get_task_script_path @ hermes_cli/gateway_windows.py:get_task_script_path */
 int gw_get_task_script_path(const char *arg) {
     /* Python: HERMES_HOME/gateway-service/<task>.cmd. Arg = "home\ttask_name". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -209,7 +209,7 @@ int gw_get_task_script_path(const char *arg) {
     return 0;
 }
 
-/* PoP: _startup_dir @ hermes_cli/gateway_windows.py:_startup_dir */
+/* PoP: gw_u_startup_dir @ hermes_cli/gateway_windows.py:_startup_dir */
 int gw_u_startup_dir(const char *arg) {
     /* Python: APPDATA or USERPROFILE Startup path. Arg = "appdata\tuserprofile". */
     if (!arg || !*arg) {
@@ -222,7 +222,7 @@ int gw_u_startup_dir(const char *arg) {
     return 0;
 }
 
-/* PoP: get_startup_entry_path @ hermes_cli/gateway_windows.py:get_startup_entry_path */
+/* PoP: gw_get_startup_entry_path @ hermes_cli/gateway_windows.py:get_startup_entry_path */
 int gw_get_startup_entry_path(const char *arg) {
     /* Python: _startup_dir() / "<task>.vbs" (Windows-only; the C shim
      * reports the Windows startup dir layout). */
@@ -231,7 +231,7 @@ int gw_get_startup_entry_path(const char *arg) {
     return 0;
 }
 
-/* PoP: _legacy_startup_entry_path @ hermes_cli/gateway_windows.py:_legacy_startup_entry_path */
+/* PoP: gw_u_legacy_startup_entry_path @ hermes_cli/gateway_windows.py:_legacy_startup_entry_path */
 int gw_u_legacy_startup_entry_path(const char *arg) {
     /* Python: <startup_dir>/<sanitized task name>.cmd (Windows-only). Arg =
      * "startup_dir\ttask_name". */
@@ -246,7 +246,7 @@ int gw_u_legacy_startup_entry_path(const char *arg) {
     return 0;
 }
 
-/* PoP: _stable_gateway_working_dir @ hermes_cli/gateway_windows.py:_stable_gateway_working_dir */
+/* PoP: gw_u_stable_gateway_working_dir @ hermes_cli/gateway_windows.py:_stable_gateway_working_dir */
 int gw_u_stable_gateway_working_dir(const char *arg) {
     /* Python: HERMES_HOME anchor. Arg = "home\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -258,7 +258,7 @@ int gw_u_stable_gateway_working_dir(const char *arg) {
     return 0;
 }
 
-/* PoP: _build_gateway_cmd_script @ hermes_cli/gateway_windows.py:_build_gateway_cmd_script */
+/* PoP: gw_u_build_gateway_cmd_script @ hermes_cli/gateway_windows.py:_build_gateway_cmd_script */
 int gw_u_build_gateway_cmd_script(const char *arg) {
     /* Python: CRLF wrapper. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -269,7 +269,7 @@ int gw_u_build_gateway_cmd_script(const char *arg) {
     return 0;
 }
 
-/* PoP: _quote_vbs_string @ hermes_cli/gateway_windows.py:_quote_vbs_string */
+/* PoP: gw_u_quote_vbs_string @ hermes_cli/gateway_windows.py:_quote_vbs_string */
 int gw_u_quote_vbs_string(const char *arg) {
     /* Python: VBS double-quote doubling; refuse newlines. Arg = value. */
     if (!arg || !*arg) { printf("\"\"\n"); return 0; }
@@ -288,7 +288,7 @@ int gw_u_quote_vbs_string(const char *arg) {
     return 0;
 }
 
-/* PoP: _build_gateway_vbs_script @ hermes_cli/gateway_windows.py:_build_gateway_vbs_script */
+/* PoP: gw_u_build_gateway_vbs_script @ hermes_cli/gateway_windows.py:_build_gateway_vbs_script */
 int gw_u_build_gateway_vbs_script(const char *arg) {
     /* Python: wscript launcher. Arg =
      * "state\tresult". */
@@ -300,7 +300,7 @@ int gw_u_build_gateway_vbs_script(const char *arg) {
     return 0;
 }
 
-/* PoP: _build_startup_launcher @ hermes_cli/gateway_windows.py:_build_startup_launcher */
+/* PoP: gw_u_build_startup_launcher @ hermes_cli/gateway_windows.py:_build_startup_launcher */
 int gw_u_build_startup_launcher(const char *arg) {
     /* Python: .vbs startup launcher. Arg = "target\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -312,7 +312,7 @@ int gw_u_build_startup_launcher(const char *arg) {
     return 0;
 }
 
-/* PoP: _write_task_script @ hermes_cli/gateway_windows.py:_write_task_script */
+/* PoP: gw_u_write_task_script @ hermes_cli/gateway_windows.py:_write_task_script */
 int gw_u_write_task_script(const char *arg) {
     /* Python: cmd + vbs atomic. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -323,7 +323,7 @@ int gw_u_write_task_script(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_task_user @ hermes_cli/gateway_windows.py:_resolve_task_user */
+/* PoP: gw_u_resolve_task_user @ hermes_cli/gateway_windows.py:_resolve_task_user */
 int gw_u_resolve_task_user(const char *arg) {
     /* Python: DOMAIN\\USER if available, else bare USERNAME, else None. */
     (void)arg;
@@ -338,7 +338,7 @@ int gw_u_resolve_task_user(const char *arg) {
     return 0;
 }
 
-/* PoP: _build_scheduled_task_xml @ hermes_cli/gateway_windows.py:_build_scheduled_task_xml */
+/* PoP: gw_u_build_scheduled_task_xml @ hermes_cli/gateway_windows.py:_build_scheduled_task_xml */
 int gw_u_build_scheduled_task_xml(const char *arg) {
     /* Python: Task XML render. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -349,7 +349,7 @@ int gw_u_build_scheduled_task_xml(const char *arg) {
     return 0;
 }
 
-/* PoP: _write_scheduled_task_xml @ hermes_cli/gateway_windows.py:_write_scheduled_task_xml */
+/* PoP: gw_u_write_scheduled_task_xml @ hermes_cli/gateway_windows.py:_write_scheduled_task_xml */
 int gw_u_write_scheduled_task_xml(const char *arg) {
     /* Python: write <launcher>.task.xml (utf-16) built from task_name,
      * launcher_path, user. Arg = "task_name\tlauncher_path\tuser". */
@@ -377,7 +377,7 @@ int gw_u_write_scheduled_task_xml(const char *arg) {
     return 0;
 }
 
-/* PoP: _install_scheduled_task @ hermes_cli/gateway_windows.py:_install_scheduled_task */
+/* PoP: gw_u_install_scheduled_task @ hermes_cli/gateway_windows.py:_install_scheduled_task */
 int gw_u_install_scheduled_task(const char *arg) {
     /* Python: delete+create. Arg =
      * "state\tresult\terr". */
@@ -394,7 +394,7 @@ int gw_u_install_scheduled_task(const char *arg) {
     return 0;
 }
 
-/* PoP: _install_startup_entry @ hermes_cli/gateway_windows.py:_install_startup_entry */
+/* PoP: gw_u_install_startup_entry @ hermes_cli/gateway_windows.py:_install_startup_entry */
 int gw_u_install_startup_entry(const char *arg) {
     /* Python: write launcher atomically + remove legacy. Arg = "entry\tlegacy_exists". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -404,7 +404,7 @@ int gw_u_install_startup_entry(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_detached_python @ hermes_cli/gateway_windows.py:_resolve_detached_python */
+/* PoP: gw_u_resolve_detached_python @ hermes_cli/gateway_windows.py:_resolve_detached_python */
 int gw_u_resolve_detached_python(const char *arg) {
     /* Python: console python. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\t\t\n"); return 0; }
@@ -415,7 +415,7 @@ int gw_u_resolve_detached_python(const char *arg) {
     return 0;
 }
 
-/* PoP: _prepend_pythonpath @ hermes_cli/gateway_windows.py:_prepend_pythonpath */
+/* PoP: gw_u_prepend_pythonpath @ hermes_cli/gateway_windows.py:_prepend_pythonpath */
 int gw_u_prepend_pythonpath(const char *arg) {
     /* Python: join clean entries + existing PYTHONPATH into env overlay.
      * Arg = "entry\tentry..." (tab-sep, empties dropped). */
@@ -443,7 +443,7 @@ int gw_u_prepend_pythonpath(const char *arg) {
     return 0;
 }
 
-/* PoP: _build_gateway_argv @ hermes_cli/gateway_windows.py:_build_gateway_argv */
+/* PoP: gw_u_build_gateway_argv @ hermes_cli/gateway_windows.py:_build_gateway_argv */
 int gw_u_build_gateway_argv(const char *arg) {
     /* Python: native argv build. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n\n{}\n"); return 0; }
@@ -455,7 +455,7 @@ int gw_u_build_gateway_argv(const char *arg) {
     return 0;
 }
 
-/* PoP: windowless_gateway_restart_spec @ hermes_cli/gateway_windows.py:windowless_gateway_restart_spec */
+/* PoP: gw_windowless_gateway_restart_spec @ hermes_cli/gateway_windows.py:windowless_gateway_restart_spec */
 int gw_windowless_gateway_restart_spec(const char *arg) {
     /* Python: respawn spec. Arg =
      * "win32\tstate\tresult". */
@@ -469,7 +469,7 @@ int gw_windowless_gateway_restart_spec(const char *arg) {
     return 0;
 }
 
-/* PoP: _spawn_detached @ hermes_cli/gateway_windows.py:_spawn_detached */
+/* PoP: gw_u_spawn_detached @ hermes_cli/gateway_windows.py:_spawn_detached */
 int gw_u_spawn_detached(const char *arg) {
     /* Python: direct python.exe spawn. Arg =
      * "pid\tstate\tresult". */
@@ -482,7 +482,7 @@ int gw_u_spawn_detached(const char *arg) {
     return 0;
 }
 
-/* PoP: _install_choice_from_env @ hermes_cli/gateway_windows.py:_install_choice_from_env */
+/* PoP: gw_u_install_choice_from_env @ hermes_cli/gateway_windows.py:_install_choice_from_env */
 int gw_u_install_choice_from_env(const char *arg) {
     /* Python: tri-state parse of an env var — {1,true,yes,y,on} -> True,
      * {0,false,no,n,off} -> False, absent -> None (0 in the shim). */
@@ -504,7 +504,7 @@ int gw_u_install_choice_from_env(const char *arg) {
     return 0;
 }
 
-/* PoP: _prompt_install_choices @ hermes_cli/gateway_windows.py:_prompt_install_choices */
+/* PoP: gw_u_prompt_install_choices @ hermes_cli/gateway_windows.py:_prompt_install_choices */
 int gw_u_prompt_install_choices(const char *arg) {
     /* Python: (start_now, start_on_login) w/ env fast path. Arg =
      * "state\tstart_now\tstart_on_login". */
@@ -520,7 +520,7 @@ int gw_u_prompt_install_choices(const char *arg) {
     return 0;
 }
 
-/* PoP: _install_startup_fallback @ hermes_cli/gateway_windows.py:_install_startup_fallback */
+/* PoP: gw_u_install_startup_fallback @ hermes_cli/gateway_windows.py:_install_startup_fallback */
 int gw_u_install_startup_fallback(const char *arg) {
     /* Python: Startup-folder fallback. Arg =
      * "detail\tstart_now\tstate\tresult". */
@@ -539,7 +539,7 @@ int gw_u_install_startup_fallback(const char *arg) {
     return 0;
 }
 
-/* PoP: _wait_for_gateway_ready @ hermes_cli/gateway_windows.py:_wait_for_gateway_ready */
+/* PoP: gw_u_wait_for_gateway_ready @ hermes_cli/gateway_windows.py:_wait_for_gateway_ready */
 int gw_u_wait_for_gateway_ready(const char *arg) {
     /* Python: poll find_gateway_pids until deadline. Arg = "pids" (tab-sep,
      * empty = none found). */
@@ -548,7 +548,7 @@ int gw_u_wait_for_gateway_ready(const char *arg) {
     return 0;
 }
 
-/* PoP: _report_gateway_start @ hermes_cli/gateway_windows.py:_report_gateway_start */
+/* PoP: gw_u_report_gateway_start @ hermes_cli/gateway_windows.py:_report_gateway_start */
 int gw_u_report_gateway_start(const char *arg) {
     /* Python: PID success or 6s failure + log hints. Arg = "via\tpids". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -565,7 +565,7 @@ int gw_u_report_gateway_start(const char *arg) {
     return 0;
 }
 
-/* PoP: _print_next_steps @ hermes_cli/gateway_windows.py:_print_next_steps */
+/* PoP: gw_u_print_next_steps @ hermes_cli/gateway_windows.py:_print_next_steps */
 int gw_u_print_next_steps(const char *arg) {
     /* Python: blank line + "Next steps:" + status + log hints. Arg = hermes
      * home (optional). */
@@ -578,7 +578,7 @@ int gw_u_print_next_steps(const char *arg) {
     return 0;
 }
 
-/* PoP: is_task_registered @ hermes_cli/gateway_windows.py:is_task_registered */
+/* PoP: gw_is_task_registered @ hermes_cli/gateway_windows.py:is_task_registered */
 int gw_is_task_registered(const char *arg) {
     /* Python: schtasks /Query /TN <task_name> exits 0 when registered. */
     if (!arg || !*arg) return 0;
@@ -587,7 +587,7 @@ int gw_is_task_registered(const char *arg) {
     return system(cmd) == 0;
 }
 
-/* PoP: is_startup_entry_installed @ hermes_cli/gateway_windows.py:is_startup_entry_installed */
+/* PoP: gw_is_startup_entry_installed @ hermes_cli/gateway_windows.py:is_startup_entry_installed */
 int gw_is_startup_entry_installed(const char *arg) {
     /* Python: startup entry path exists or legacy path exists. Arg =
      * "entry_path\tlegacy_path". */
@@ -605,7 +605,7 @@ int gw_is_startup_entry_installed(const char *arg) {
     return 0;
 }
 
-/* PoP: query_task_status @ hermes_cli/gateway_windows.py:query_task_status */
+/* PoP: gw_query_task_status @ hermes_cli/gateway_windows.py:query_task_status */
 int gw_query_task_status(const char *arg) {
     /* Python: schtasks /Query parse. Arg = "info_json\tcode\tstate". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -617,7 +617,7 @@ int gw_query_task_status(const char *arg) {
     return 0;
 }
 
-/* PoP: _gateway_pids @ hermes_cli/gateway_windows.py:_gateway_pids */
+/* PoP: gw_u_gateway_pids @ hermes_cli/gateway_windows.py:_gateway_pids */
 int gw_u_gateway_pids(const char *arg) {
     /* Python: list(find_gateway_pids()) — reuse the cross-platform PID
      * scanner in gateway.py. Arg = optional "pid\tpid..." from a scan; the
@@ -627,7 +627,7 @@ int gw_u_gateway_pids(const char *arg) {
     return 0;
 }
 
-/* PoP: _print_deep_probes @ hermes_cli/gateway_windows.py:_print_deep_probes */
+/* PoP: gw_u_print_deep_probes @ hermes_cli/gateway_windows.py:_print_deep_probes */
 int gw_u_print_deep_probes(const char *arg) {
     /* Python: 6-signal block. Arg =
      * "passes\tstate\tresult". */
@@ -640,7 +640,7 @@ int gw_u_print_deep_probes(const char *arg) {
     return 0;
 }
 
-/* PoP: _drain_gateway_pid @ hermes_cli/gateway_windows.py:_drain_gateway_pid */
+/* PoP: gw_u_drain_gateway_pid @ hermes_cli/gateway_windows.py:_drain_gateway_pid */
 int gw_u_drain_gateway_pid(const char *arg) {
     /* Python: marker + wait. Arg = "pid\tstate\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -652,7 +652,7 @@ int gw_u_drain_gateway_pid(const char *arg) {
     return 0;
 }
 
-/* PoP: _windows_stop_drain_timeout @ hermes_cli/gateway_windows.py:_windows_stop_drain_timeout */
+/* PoP: gw_u_windows_stop_drain_timeout @ hermes_cli/gateway_windows.py:_windows_stop_drain_timeout */
 int gw_u_windows_stop_drain_timeout(const char *arg) {
     /* Python: clamp configured drain to [1, 30]. Arg = "configured". */
     if (!arg || !*arg) { printf("30.00\n"); return 0; }
@@ -663,7 +663,7 @@ int gw_u_windows_stop_drain_timeout(const char *arg) {
     return 0;
 }
 
-/* PoP: _force_terminate_known_gateway_pids @ hermes_cli/gateway_windows.py:_force_terminate_known_gateway_pids */
+/* PoP: gw_u_force_terminate_known_gateway_pids @ hermes_cli/gateway_windows.py:_force_terminate_known_gateway_pids */
 int gw_u_force_terminate_known_gateway_pids(const char *arg) {
     /* Python: force-kill known pids. Arg = "killed\tcount\tstate". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -675,7 +675,7 @@ int gw_u_force_terminate_known_gateway_pids(const char *arg) {
     return 0;
 }
 
-/* PoP: _collect_gateway_stop_pids @ hermes_cli/gateway_windows.py:_collect_gateway_stop_pids */
+/* PoP: gw_u_collect_gateway_stop_pids @ hermes_cli/gateway_windows.py:_collect_gateway_stop_pids */
 int gw_u_collect_gateway_stop_pids(const char *arg) {
     /* Python: [primary] + others dedup, >0 only. Arg = "primary\tothers"
      * (tab sep, may be empty). */

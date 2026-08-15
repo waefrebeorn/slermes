@@ -61,7 +61,7 @@ static const char *CODE_LANG_MAP[][2] = {
  * faithful to Python where url refs are expanded via web_extract_tool). */
 static context_ref_url_fetcher_t g_url_fetcher = NULL;
 
-/* PoP: agent_context_references__default_url_fetcher @ agent/context_references.py:_default_url_fetcher */
+/* PoP: result @ agent/context_references.py:_default_url_fetcher */
 /* Default URL fetcher: perform a real HTTP GET and return the body content,
  * approximating the Python web_extract_tool markdown result (HTML stripped to
  * plain text). On any failure returns "" (never NULL-crashes the expander). */
@@ -247,7 +247,7 @@ static char *resolve_path(const char *cwd, const char *target, const char *allow
 }
 
 /* Port of Python context_references.py:_ensure_reference_path_allowed(). */
-/* PoP: ws_is_sensitive_path @ hermes_cli/web_server.py:_is_sensitive_path */
+/* PoP: is_sensitive_path @ hermes_cli/web_server.py:_is_sensitive_path */
 static bool is_sensitive_path(const char *path) {
     const char *home = getenv("HOME");
     if (!home) return false;

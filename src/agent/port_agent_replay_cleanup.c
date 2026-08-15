@@ -51,7 +51,7 @@ static bool rc_tool_may_have_side_effect(const char *name)
 }
 
 /* ── Interrupted-tool detection (is_interrupted_tool_result) ── */
-/* PoP: is_interrupted_tool_result @ agent/replay_cleanup.py:is_interrupted_tool_result */
+/* PoP: agent_replay_cleanup_is_interrupted_tool_result @ agent/replay_cleanup.py:is_interrupted_tool_result */
 bool agent_replay_cleanup_is_interrupted_tool_result(const char *content)
 {
     if (!content) return false;
@@ -97,7 +97,7 @@ static char *msg_tool_call_name(const json_t *msg, size_t idx, char *out, size_t
 
 /* Build a recovery tool-result message matching Python make_tool_result_message:
  * {role, name, tool_name, content, tool_call_id, effect_disposition}. */
-/* PoP: tool_result @ tools/registry.py:tool_result */
+/* PoP: make_recovery_tool_result @ tools/registry.py:tool_result */
 static json_t *make_recovery_tool_result(const char *name, const char *content,
                                           const char *tool_call_id,
                                           const char *effect_disposition)
@@ -124,7 +124,7 @@ static const char *RECOVERY_INTERRUPTED_UNKNOWN =
 static const char *RECOVERY_INTERRUPTED_NONE =
     "[Orphan recovery: interrupted read-only tool did not complete.]";
 
-/* PoP: strip_interrupted_tool_tails @ agent/replay_cleanup.py:strip_interrupted_tool_tails */
+/* PoP: agent_replay_cleanup_strip_interrupted_tool_tails @ agent/replay_cleanup.py:strip_interrupted_tool_tails */
 /* Returns a NEW json_t* array. Interrupted assistant→tool blocks whose calls
  * may have side effects are RECOVERED (interrupted tool results enriched with
  * effect_disposition + recovery sentinel); read-only interrupted blocks are
@@ -228,7 +228,7 @@ json_t *agent_replay_cleanup_strip_interrupted_tool_tails(const json_t *history)
     return out;
 }
 
-/* PoP: strip_dangling_tool_call_tail @ agent/replay_cleanup.py:strip_dangling_tool_call_tail */
+/* PoP: agent_replay_cleanup_strip_dangling_tool_call_tail @ agent/replay_cleanup.py:strip_dangling_tool_call_tail */
 /* Returns a NEW json_t* array. A trailing unanswered assistant(tool_calls)
  * whose calls may have side effects is RECOVERED as UNKNOWN tool-result
  * messages; a read-only dangling tail is stripped; otherwise unchanged. */
@@ -294,7 +294,7 @@ json_t *agent_replay_cleanup_strip_dangling_tool_call_tail(const json_t *history
     return out;
 }
 
-/* PoP: sanitize_replay_history @ agent/replay_cleanup.py:sanitize_replay_history */
+/* PoP: agent_replay_cleanup_sanitize_replay_history @ agent/replay_cleanup.py:sanitize_replay_history */
 json_t *agent_replay_cleanup_sanitize_replay_history(const json_t *history)
 {
     if (!history || history->type != JSON_ARRAY) return NULL;
@@ -306,7 +306,7 @@ json_t *agent_replay_cleanup_sanitize_replay_history(const json_t *history)
 
 /* ── Dangerous-confirmation expiry (#59607) ── */
 
-/* PoP: is_dangerous_confirmation @ agent/replay_cleanup.py:is_dangerous_confirmation */
+/* PoP: agent_replay_cleanup_is_dangerous_confirmation @ agent/replay_cleanup.py:is_dangerous_confirmation */
 /* Faithful port of the module-level is_dangerous_confirmation(content): returns
  * True when the (lowercased) text contains any of _DANGEROUS_CONFIRMATION_PATTERNS
  * as a substring. Python does content.strip().lower() then `pattern in text`;
@@ -331,7 +331,7 @@ bool agent_replay_cleanup_is_dangerous_confirmation(const char *content)
     return false;
 }
 
-/* PoP: strip_stale_dangerous_confirmations @ agent/replay_cleanup.py:strip_stale_dangerous_confirmations */
+/* PoP: expiry_seconds @ agent/replay_cleanup.py:strip_stale_dangerous_confirmations */
 /* Returns a NEW json_t* array; user messages whose dangerous-confirmation text
  * is older than expiry_seconds (and have a numeric "timestamp") are redacted in
  * place (role preserved) with the expired-confirmation sentinel. Caller frees. */

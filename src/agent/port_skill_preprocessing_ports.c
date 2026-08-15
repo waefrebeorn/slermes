@@ -20,7 +20,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: load_skills_config @ agent/skill_preprocessing.py:load_skills_config */
+/* PoP: skp_load_skills_config @ agent/skill_preprocessing.py:load_skills_config */
 char *skp_load_skills_config(const char *config_yaml) {
     /* Python: skills section dict, best-effort. */
     if (!config_yaml) return strdup("{}");
@@ -34,7 +34,7 @@ char *skp_load_skills_config(const char *config_yaml) {
     return json;
 }
 
-/* PoP: substitute_template_vars @ agent/skill_preprocessing.py:substitute_template_vars */
+/* PoP: skp_substitute_template_vars @ agent/skill_preprocessing.py:substitute_template_vars */
 char *skp_substitute_template_vars(const char *content, const char *skill_dir, const char *session_id) {
     /* Python: ${HERMES_SKILL_DIR} / ${HERMES_SESSION_ID} — REAL. */
     if (!content) return strdup("");
@@ -84,7 +84,7 @@ char *skp_substitute_template_vars(const char *content, const char *skill_dir, c
     return out;
 }
 
-/* PoP: run_inline_shell @ agent/skill_preprocessing.py:run_inline_shell */
+/* PoP: skp_run_inline_shell @ agent/skill_preprocessing.py:run_inline_shell */
 char *skp_run_inline_shell(const char *snippet) {
     /* Python: single snippet stdout trimmed — REAL popen. */
     if (!snippet) return NULL;
@@ -113,7 +113,7 @@ char *skp_run_inline_shell(const char *snippet) {
     return out;
 }
 
-/* PoP: expand_inline_shell @ agent/skill_preprocessing.py:expand_inline_shell */
+/* PoP: skp_expand_inline_shell @ agent/skill_preprocessing.py:expand_inline_shell */
 char *skp_expand_inline_shell(const char *content) {
     /* Python: replace !`cmd` with stdout. */
     if (!content) return strdup("");
@@ -161,7 +161,7 @@ char *skp_expand_inline_shell(const char *content) {
     return out;
 }
 
-/* PoP: preprocess_skill_content @ agent/skill_preprocessing.py:preprocess_skill_content */
+/* PoP: skp_preprocess_skill_content @ agent/skill_preprocessing.py:preprocess_skill_content */
 char *skp_preprocess_skill_content(const char *content) {
     /* Python: template + inline-shell pipeline. */
     if (!content) return strdup("");

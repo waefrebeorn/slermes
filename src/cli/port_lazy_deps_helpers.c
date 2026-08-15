@@ -30,7 +30,7 @@ static const char *SAFE_SPEC_PATTERN =
     "^[A-Za-z0-9_][A-Za-z0-9_.\\-]*(?:\\[[A-Za-z0-9_,\\-]+\\])?(?:[<>=!~]=?[A-Za-z0-9_.\\-+,*<>=!~]+)?$";
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _spec_is_safe @ tools/lazy_deps.py:_spec_is_safe */
+/* PoP: lazy_deps_spec_is_safe @ tools/lazy_deps.py:_spec_is_safe */
 int lazy_deps_spec_is_safe(const char *spec)
 {
     if (!spec || spec[0] == '\0' || strlen(spec) > 200)
@@ -53,7 +53,7 @@ int lazy_deps_spec_is_safe(const char *spec)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _pkg_name_from_spec @ tools/lazy_deps.py:_pkg_name_from_spec */
+/* PoP: lazy_deps_pkg_name_from_spec @ tools/lazy_deps.py:_pkg_name_from_spec */
 char *lazy_deps_pkg_name_from_spec(const char *spec)
 {
     /* mimic re.match(r"^([A-Za-z0-9_][A-Za-z0-9_.\-]*)", spec) */
@@ -74,7 +74,7 @@ char *lazy_deps_pkg_name_from_spec(const char *spec)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: _specifier_from_spec @ tools/lazy_deps.py:_specifier_from_spec */
+/* PoP: lazy_deps_specifier_from_spec @ tools/lazy_deps.py:_specifier_from_spec */
 char *lazy_deps_specifier_from_spec(const char *spec)
 {
     /* mimic re.match(r"^[A-Za-z0-9_][A-Za-z0-9_.\-]*(?:\[[A-Za-z0-9_,\-]+\])?", spec) */
@@ -112,7 +112,7 @@ typedef struct {
     char *stderr_output; /* owned or NULL */
 } install_specs_result_t;
 
-/* PoP: install_specs @ tools/lazy_deps.py:install_specs */
+/* PoP: lazy_deps_install_specs @ tools/lazy_deps.py:install_specs */
 char *lazy_deps_install_specs(const char *specs_json, const char *timeout_str) {
     /* Python: install_specs validates specs (_spec_is_safe), checks policy
      * (_allow_lazy_installs + HERMES_DISABLE_LAZY_INSTALLS + target),

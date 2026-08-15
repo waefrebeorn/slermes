@@ -151,7 +151,7 @@ json_t *cm_cfg(void) {
 
 /* ── Migration functions ──────────────────────────────────────────────────── */
 
-/* PoP: support_floor_message @ hermes_cli/config_migrations.py:support_floor_message */
+/* PoP: cm_support_floor_message @ hermes_cli/config_migrations.py:support_floor_message */
 char *cm_support_floor_message(void) {
     const char *home = slermes_home();
     if (!home) home = getenv("HOME");
@@ -164,7 +164,7 @@ char *cm_support_floor_message(void) {
     return msg;
 }
 
-/* PoP: _migrate_to_12 @ hermes_cli/config_migrations.py:_migrate_to_12 */
+/* PoP: cm_migrate_to_12 @ hermes_cli/config_migrations.py:_migrate_to_12 */
 void cm_migrate_to_12(json_t *results, bool quiet) {
     json_t *config = config_py_read_raw_config();
     if (!config || config->type != JSON_OBJECT) {
@@ -287,7 +287,7 @@ void cm_migrate_to_12(json_t *results, bool quiet) {
     json_free(config);
 }
 
-/* PoP: _migrate_to_13 @ hermes_cli/config_migrations.py:_migrate_to_13 */
+/* PoP: cm_migrate_to_13 @ hermes_cli/config_migrations.py:_migrate_to_13 */
 void cm_migrate_to_13(json_t *results, bool quiet) {
     const char *dead_vars[] = {"LLM_MODEL", "OPENAI_MODEL", NULL};
     for (int i = 0; dead_vars[i]; i++) {
@@ -303,7 +303,7 @@ void cm_migrate_to_13(json_t *results, bool quiet) {
     (void)results;
 }
 
-/* PoP: _migrate_to_14 @ hermes_cli/config_migrations.py:_migrate_to_14 */
+/* PoP: cm_migrate_to_14 @ hermes_cli/config_migrations.py:_migrate_to_14 */
 void cm_migrate_to_14(json_t *results, bool quiet) {
     json_t *config = config_py_read_raw_config();
     if (!config || config->type != JSON_OBJECT) { if (config) json_free(config); return; }
@@ -360,7 +360,7 @@ void cm_migrate_to_14(json_t *results, bool quiet) {
     (void)results;
 }
 
-/* PoP: _migrate_to_15 @ hermes_cli/config_migrations.py:_migrate_to_15 */
+/* PoP: cm_migrate_to_15 @ hermes_cli/config_migrations.py:_migrate_to_15 */
 void cm_migrate_to_15(json_t *results, bool quiet) {
     json_t *config = config_py_read_raw_config();
     if (!config || config->type != JSON_OBJECT) { if (config) json_free(config); return; }
@@ -380,7 +380,7 @@ void cm_migrate_to_15(json_t *results, bool quiet) {
     json_free(config);
 }
 
-/* PoP: _migrate_to_16 @ hermes_cli/config_migrations.py:_migrate_to_16 */
+/* PoP: cm_migrate_to_16 @ hermes_cli/config_migrations.py:_migrate_to_16 */
 void cm_migrate_to_16(json_t *results, bool quiet) {
     json_t *config = config_py_read_raw_config();
     if (!config || config->type != JSON_OBJECT) { if (config) json_free(config); return; }
@@ -418,7 +418,7 @@ void cm_migrate_to_16(json_t *results, bool quiet) {
     json_free(config);
 }
 
-/* PoP: _migrate_to_17 @ hermes_cli/config_migrations.py:_migrate_to_17 */
+/* PoP: cm_migrate_to_17 @ hermes_cli/config_migrations.py:_migrate_to_17 */
 void cm_migrate_to_17(json_t *results, bool quiet) {
     json_t *config = config_py_read_raw_config();
     if (!config || config->type != JSON_OBJECT) { if (config) json_free(config); return; }
@@ -499,7 +499,7 @@ void cm_migrate_to_17(json_t *results, bool quiet) {
     (void)results;
 }
 
-/* PoP: _migrate_to_21 @ hermes_cli/config_migrations.py:_migrate_to_21 */
+/* PoP: cm_migrate_to_21 @ hermes_cli/config_migrations.py:_migrate_to_21 */
 void cm_migrate_to_21(json_t *results, bool quiet) {
     json_t *config = config_py_read_raw_config();
     if (!config || config->type != JSON_OBJECT) { if (config) json_free(config); return; }
@@ -591,7 +591,7 @@ void cm_migrate_to_21(json_t *results, bool quiet) {
     json_free(config);
 }
 
-/* PoP: _migrate_to_23 @ hermes_cli/config_migrations.py:_migrate_to_23 */
+/* PoP: cm_migrate_to_23 @ hermes_cli/config_migrations.py:_migrate_to_23 */
 void cm_migrate_to_23(json_t *results, bool quiet) {
     char plugins_dir[4096];
     const char *home = slermes_home();
@@ -626,7 +626,7 @@ void cm_migrate_to_23(json_t *results, bool quiet) {
     (void)results; (void)quiet;
 }
 
-/* PoP: _migrate_to_25 @ hermes_cli/config_migrations.py:_migrate_to_25 */
+/* PoP: cm_migrate_to_25 @ hermes_cli/config_migrations.py:_migrate_to_25 */
 void cm_migrate_to_25(json_t *results, bool quiet) {
     json_t *config = config_py_read_raw_config();
     if (!config || config->type != JSON_OBJECT) { if (config) json_free(config); return; }
@@ -647,7 +647,7 @@ void cm_migrate_to_25(json_t *results, bool quiet) {
     (void)results;
 }
 
-/* PoP: _migrate_to_29 @ hermes_cli/config_migrations.py:_migrate_to_29 */
+/* PoP: cm_migrate_to_29 @ hermes_cli/config_migrations.py:_migrate_to_29 */
 void cm_migrate_to_29(json_t *results, bool quiet) {
     json_t *config = config_py_read_raw_config();
     if (!config || config->type != JSON_OBJECT) { if (config) json_free(config); return; }
@@ -682,7 +682,7 @@ void cm_migrate_to_29(json_t *results, bool quiet) {
     (void)results;
 }
 
-/* PoP: _migrate_to_31 @ hermes_cli/config_migrations.py:_migrate_to_31 */
+/* PoP: cm_migrate_to_31 @ hermes_cli/config_migrations.py:_migrate_to_31 */
 void cm_migrate_to_31(json_t *results, bool quiet) {
     json_t *config = config_py_read_raw_config();
     if (!config || config->type != JSON_OBJECT) { if (config) json_free(config); return; }
@@ -709,7 +709,7 @@ void cm_migrate_to_31(json_t *results, bool quiet) {
     (void)results;
 }
 
-/* PoP: _migrate_to_32 @ hermes_cli/config_migrations.py:_migrate_to_32 */
+/* PoP: cm_migrate_to_32 @ hermes_cli/config_migrations.py:_migrate_to_32 */
 void cm_migrate_to_32(json_t *results, bool quiet) {
     json_t *config = config_py_read_raw_config();
     if (!config || config->type != JSON_OBJECT) { if (config) json_free(config); return; }
@@ -730,7 +730,7 @@ void cm_migrate_to_32(json_t *results, bool quiet) {
     (void)results;
 }
 
-/* PoP: _migrate_to_33 @ hermes_cli/config_migrations.py:_migrate_to_33 */
+/* PoP: cm_migrate_to_33 @ hermes_cli/config_migrations.py:_migrate_to_33 */
 void cm_migrate_to_33(json_t *results, bool quiet) {
     json_t *config = config_py_read_raw_config();
     if (!config || config->type != JSON_OBJECT) { if (config) json_free(config); return; }
@@ -764,7 +764,7 @@ void cm_migrate_to_33(json_t *results, bool quiet) {
     (void)results;
 }
 
-/* PoP: run_migrations @ hermes_cli/config_migrations.py:run_migrations */
+/* PoP: cm_run_migrations @ hermes_cli/config_migrations.py:run_migrations */
 void cm_run_migrations(int current_ver, json_t *results, bool quiet) {
     /* Table-driven: apply every entry whose target > current_ver, ascending. */
     int targets[] = {12, 13, 14, 15, 16, 17, 21, 23, 25, 29, 31, 32, 33};

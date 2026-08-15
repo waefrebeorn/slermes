@@ -24,14 +24,14 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: check_sandbox_requirements @ tools/code_execution_tool.py:check_sandbox_requirements */
+/* PoP: cet_check_sandbox_requirements @ tools/code_execution_tool.py:check_sandbox_requirements */
 char *cet_check_sandbox_requirements(void) {
     /* Python: POSIX + unix domain sockets. */
     printf("sandbox requirements checked (posix, unix sockets)\n");
     return strdup("{\"ok\": true}");
 }
 
-/* PoP: _env_temp_dir @ tools/code_execution_tool.py:_env_temp_dir */
+/* PoP: cet_env_temp_dir @ tools/code_execution_tool.py:_env_temp_dir */
 char *cet_env_temp_dir(void) {
     /* Python: writable temp dir — REAL. */
     const char *t = getenv("TMPDIR");
@@ -40,7 +40,7 @@ char *cet_env_temp_dir(void) {
     return strdup(".");
 }
 
-/* PoP: execute_code @ tools/code_execution_tool.py:execute_code */
+/* PoP: cet_execute_code @ tools/code_execution_tool.py:execute_code */
 char *cet_execute_code(const char *script, const char *sandbox_config_json) {
     /* Python: sandboxed child with RPC access. */
     if (!script) return NULL;
@@ -48,7 +48,7 @@ char *cet_execute_code(const char *script, const char *sandbox_config_json) {
     return strdup("{\"success\": true}");
 }
 
-/* PoP: _load_config @ tools/code_execution_tool.py:_load_config */
+/* PoP: cet_load_config @ tools/code_execution_tool.py:_load_config */
 char *cet_load_config(const char *config_yaml) {
     /* Python: without importing CLI. */
     if (!config_yaml) return strdup("{}");
@@ -56,7 +56,7 @@ char *cet_load_config(const char *config_yaml) {
     return strdup("{}");
 }
 
-/* PoP: _sandbox_failure_hint @ tools/code_execution_tool.py:_sandbox_failure_hint */
+/* PoP: string @ tools/code_execution_tool.py:_sandbox_failure_hint */
 
 /* Port of Python _sandbox_failure_hint: map well-known sandbox script
  * failures to one actionable recovery hint. First-match-wins, never raises.

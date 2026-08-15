@@ -51,7 +51,7 @@ static char *_str_replace_char(const char *s, char from, char to) {
     return dup;
 }
 
-/* PoP: fuzzy_find_and_replace @ fuzzy_match:fuzzy_find_and_replace */
+/* PoP: match @ fuzzy_match:fuzzy_find_and_replace */
 /* Strategy 1: Exact match (returns 1 if found, 0 if not).
  * Sets *match_start = position in content, *match_len = pattern length. */
 static int _fuzzy_exact(const char *content, const char *pattern,
@@ -1631,7 +1631,7 @@ static char *apply_patch(const char *path, const char *old_str,
  *  Handler
  * ================================================================ */
 
-/* PoP: _handle_patch @ src/tools/patch.c:patch_handler */
+/* PoP: patch_handler @ src/tools/patch.c:patch_handler */
 /* Port of Python tools/file_operations.py:patch_tool(). */
 char *patch_handler(const char *args_json, const char *task_id) {
     (void)task_id;

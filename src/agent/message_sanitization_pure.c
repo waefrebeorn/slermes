@@ -105,7 +105,7 @@ static char *to_lower(const char *s) {
     return l;
 }
 
-/* PoP: _family_rule @ agent/message_sanitization.py:_family_rule */
+/* PoP: msg_sanitize_family_rule @ agent/message_sanitization.py:_family_rule */
 const echo_rule_t *msg_sanitize_family_rule(const char *family) {
     if (!family) return NULL;
     for (size_t i = 0; i < ECHO_RULES_COUNT; i++)
@@ -130,7 +130,7 @@ bool msg_sanitize_matches_reasoning_echo_family(
     return ret;
 }
 
-/* PoP: msg_sanitize_matches_reasoning_echo_family @ agent/message_sanitization.py:reasoning_echo_family */
+/* PoP: msg_sanitize_reasoning_echo_family @ agent/message_sanitization.py:reasoning_echo_family */
 const char *msg_sanitize_reasoning_echo_family(
     const char *provider, const char *model, const char *base_url
 ) {
@@ -148,7 +148,7 @@ bool msg_sanitize_needs_reasoning_echo(
     return msg_sanitize_reasoning_echo_family(provider, model, base_url) != NULL;
 }
 
-/* PoP: deterministic_call_id @ agent/message_sanitization.py:deterministic_call_id */
+/* PoP: sha256 @ agent/message_sanitization.py:deterministic_call_id */
 /* Returns "call_" + first 12 hex chars of sha256("fn:args:index"). */
 char *msg_sanitize_deterministic_call_id(const char *fn_name,
                                           const char *arguments,
@@ -169,7 +169,7 @@ char *msg_sanitize_deterministic_call_id(const char *fn_name,
     return out;
 }
 
-/* PoP: coalesce_tool_call_id @ agent/message_sanitization.py:coalesce_tool_call_id */
+/* PoP: msg_sanitize_coalesce_tool_call_id @ agent/message_sanitization.py:coalesce_tool_call_id */
 const char *msg_sanitize_coalesce_tool_call_id(const json_t *tc) {
     if (!tc) return "";
     if (tc->type == JSON_OBJECT) {
@@ -298,7 +298,7 @@ int msg_sanitize_reapply_reasoning_echo(json_t *api_messages, int needs_thinking
     return changed;
 }
 
-/* PoP: uniquify_tool_call_ids @ agent/message_sanitization.py:uniquify_tool_call_ids */
+/* PoP: place @ agent/message_sanitization.py:uniquify_tool_call_ids */
 /* Mutates tool_calls array in place (dicts get _d<n> suffixes on collision). */
 json_t *msg_sanitize_uniquify_tool_call_ids(json_t *tool_calls)
 {

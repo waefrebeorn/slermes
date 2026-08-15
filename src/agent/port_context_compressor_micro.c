@@ -164,7 +164,7 @@ static int cc_is_context_summary_message_c(const json_t *msg) {
 }
 
 /* ── on_session_end: clear ALL per-session compaction state ──────────── */
-/* PoP: on_session_end @ agent/context_compressor.py:on_session_end */
+/* PoP: cc_micro_compact_on_session_end @ agent/context_compressor.py:on_session_end */
 void cc_micro_compact_on_session_end(cc_micro_compact_state_t *st) {
     if (!st) return;
     memset(st->previous_summary, 0, sizeof(st->previous_summary));
@@ -181,7 +181,7 @@ void cc_micro_compact_on_session_end(cc_micro_compact_state_t *st) {
 }
 
 /* ── _emit_init_summary_once ─────────────────────────────────────────── */
-/* PoP: _emit_init_summary_once @ agent/context_compressor.py:_emit_init_summary_once */
+/* PoP: cc_micro_compact_emit_init_summary_once @ agent/context_compressor.py:_emit_init_summary_once */
 void cc_micro_compact_emit_init_summary_once(cc_micro_compact_state_t *st) {
     if (!st || !st->log_init_summary) return;
     st->log_init_summary = false;
@@ -197,7 +197,7 @@ void cc_micro_compact_emit_init_summary_once(cc_micro_compact_state_t *st) {
 }
 
 /* ── _resolve_context_length ─────────────────────────────────────────── */
-/* PoP: _resolve_context_length @ agent/context_compressor.py:_resolve_context_length */
+/* PoP: cc_micro_compact_resolve_context_length @ agent/context_compressor.py:_resolve_context_length */
 long cc_micro_compact_resolve_context_length(cc_micro_compact_state_t *st) {
     if (!st) return 0;
     if (st->resolved_context_length > 0)
@@ -216,7 +216,7 @@ long cc_micro_compact_resolve_context_length(cc_micro_compact_state_t *st) {
 }
 
 /* ── context_length (getter) ──────────────────────────────────────────── */
-/* PoP: context_length @ agent/context_compressor.py:context_length */
+/* PoP: cc_micro_compact_context_length @ agent/context_compressor.py:context_length */
 long cc_micro_compact_context_length(cc_micro_compact_state_t *st) {
     if (!st) return 0;
     if (st->resolved_context_length > 0)
@@ -225,7 +225,7 @@ long cc_micro_compact_context_length(cc_micro_compact_state_t *st) {
 }
 
 /* ── context_length (setter) ─────────────────────────────────────────── */
-/* PoP: context_length @ agent/context_compressor.py:context_length */
+/* PoP: cc_micro_compact_set_context_length @ agent/context_compressor.py:context_length */
 void cc_micro_compact_set_context_length(cc_micro_compact_state_t *st, long value) {
     if (!st) return;
     /* No-op guard: same window as currently resolved → don't invalidate. */
@@ -241,7 +241,7 @@ void cc_micro_compact_set_context_length(cc_micro_compact_state_t *st, long valu
 }
 
 /* ── threshold_tokens (getter) ───────────────────────────────────────── */
-/* PoP: threshold_tokens @ agent/context_compressor.py:threshold_tokens */
+/* PoP: cc_micro_compact_threshold_tokens @ agent/context_compressor.py:threshold_tokens */
 long cc_micro_compact_threshold_tokens(cc_micro_compact_state_t *st) {
     if (!st) return 0;
     if (st->resolved_context_length <= 0)
@@ -259,14 +259,14 @@ long cc_micro_compact_threshold_tokens(cc_micro_compact_state_t *st) {
 }
 
 /* ── threshold_tokens (setter) ───────────────────────────────────────── */
-/* PoP: threshold_tokens @ agent/context_compressor.py:threshold_tokens */
+/* PoP: cc_micro_compact_set_threshold_tokens @ agent/context_compressor.py:threshold_tokens */
 void cc_micro_compact_set_threshold_tokens(cc_micro_compact_state_t *st, long value) {
     if (!st) return;
     st->threshold_tokens = value;
 }
 
 /* ── tail_token_budget (getter) ──────────────────────────────────────── */
-/* PoP: tail_token_budget @ agent/context_compressor.py:tail_token_budget */
+/* PoP: cc_micro_compact_tail_token_budget @ agent/context_compressor.py:tail_token_budget */
 long cc_micro_compact_tail_token_budget(cc_micro_compact_state_t *st) {
     if (!st) return 0;
     if (st->tail_token_budget < 0) {
@@ -277,14 +277,14 @@ long cc_micro_compact_tail_token_budget(cc_micro_compact_state_t *st) {
 }
 
 /* ── tail_token_budget (setter) ──────────────────────────────────────── */
-/* PoP: tail_token_budget @ agent/context_compressor.py:tail_token_budget */
+/* PoP: cc_micro_compact_set_tail_token_budget @ agent/context_compressor.py:tail_token_budget */
 void cc_micro_compact_set_tail_token_budget(cc_micro_compact_state_t *st, long value) {
     if (!st) return;
     st->tail_token_budget = value;
 }
 
 /* ── max_summary_tokens (getter) ─────────────────────────────────────── */
-/* PoP: max_summary_tokens @ agent/context_compressor.py:max_summary_tokens */
+/* PoP: cc_micro_compact_max_summary_tokens @ agent/context_compressor.py:max_summary_tokens */
 long cc_micro_compact_max_summary_tokens(cc_micro_compact_state_t *st) {
     if (!st) return 0;
     if (st->max_summary_tokens < 0) {
@@ -296,14 +296,14 @@ long cc_micro_compact_max_summary_tokens(cc_micro_compact_state_t *st) {
 }
 
 /* ── max_summary_tokens (setter) ─────────────────────────────────────── */
-/* PoP: max_summary_tokens @ agent/context_compressor.py:max_summary_tokens */
+/* PoP: cc_micro_compact_set_max_summary_tokens @ agent/context_compressor.py:max_summary_tokens */
 void cc_micro_compact_set_max_summary_tokens(cc_micro_compact_state_t *st, long value) {
     if (!st) return;
     st->max_summary_tokens = value;
 }
 
 /* ── record_timeout_failure ──────────────────────────────────────────── */
-/* PoP: record_timeout_failure @ agent/context_compressor.py:record_timeout_failure */
+/* PoP: cc_micro_compact_record_timeout_failure @ agent/context_compressor.py:record_timeout_failure */
 void cc_micro_compact_record_timeout_failure(cc_micro_compact_state_t *st,
                                               const char *error) {
     if (!st) return;
@@ -321,7 +321,7 @@ void cc_micro_compact_record_timeout_failure(cc_micro_compact_state_t *st,
 }
 
 /* ── _resolve_compact_cursor ─────────────────────────────────────────── */
-/* PoP: _resolve_compact_cursor @ agent/context_compressor.py:_resolve_compact_cursor */
+/* PoP: cc_micro_compact_resolve_compact_cursor @ agent/context_compressor.py:_resolve_compact_cursor */
 long cc_micro_compact_resolve_compact_cursor(cc_micro_compact_state_t *st,
                                               json_t *messages,
                                               long head_end,
@@ -374,7 +374,7 @@ long cc_micro_compact_resolve_compact_cursor(cc_micro_compact_state_t *st,
 }
 
 /* ── _find_one_exchange ──────────────────────────────────────────────── */
-/* PoP: _find_one_exchange @ agent/context_compressor.py:_find_one_exchange */
+/* PoP: cc_micro_compact_find_one_exchange @ agent/context_compressor.py:_find_one_exchange */
 /* Returns exchange_start via *out_start; returns exchange_end, or -1 if None. */
 bool cc_micro_compact_find_one_exchange(cc_micro_compact_state_t *st,
                                          json_t *messages,
@@ -433,7 +433,7 @@ bool cc_micro_compact_find_one_exchange(cc_micro_compact_state_t *st,
 }
 
 /* ── _serialize_one_exchange ──────────────────────────────────────────── */
-/* PoP: _serialize_one_exchange @ agent/context_compressor.py:_serialize_one_exchange */
+/* PoP: cc_micro_compact_serialize_one_exchange @ agent/context_compressor.py:_serialize_one_exchange */
 /* Serialize messages[start:end] (a JSON array slice) for the summarizer.
  * Delegates to _serialize_for_summary. Returns a newly malloc'd string. */
 char *cc_micro_compact_serialize_one_exchange(json_t *messages,
@@ -457,7 +457,7 @@ char *cc_micro_compact_serialize_one_exchange(json_t *messages,
 }
 
 /* ── _build_micro_summary_prompt ─────────────────────────────────────── */
-/* PoP: _build_micro_summary_prompt @ agent/context_compressor.py:_build_micro_summary_prompt */
+/* PoP: text @ agent/context_compressor.py:_build_micro_summary_prompt */
 /* Build the prompt text for a single-exchange micro-summary.
  * existing_summary: running summary text (may be empty).
  * exchange_text: serialized exchange text.
@@ -488,7 +488,7 @@ char *cc_micro_compact_build_micro_summary_prompt(const char *existing_summary,
 }
 
 /* ── _micro_summarize_one ─────────────────────────────────────────────── */
-/* PoP: _micro_summarize_one @ agent/context_compressor.py:_micro_summarize_one */
+/* PoP: exchange_text @ agent/context_compressor.py:_micro_summarize_one */
 /* Summarize exchange_text (or the rolling summary for defrag).
  * Calls the summarize_fn callback with the prompt + budget.
  * Returns malloc'd updated summary, or NULL on failure. */
@@ -507,7 +507,7 @@ char *cc_micro_compact_micro_summarize_one(cc_micro_compact_state_t *st,
 }
 
 /* ── _needs_defrag ───────────────────────────────────────────────────── */
-/* PoP: _needs_defrag @ agent/context_compressor.py:_needs_defrag */
+/* PoP: cc_micro_compact_needs_defrag @ agent/context_compressor.py:_needs_defrag */
 bool cc_micro_compact_needs_defrag(cc_micro_compact_state_t *st) {
     if (!st) return false;
     if (st->micro_compact_rolling_summary[0] == '\0') return false;
@@ -516,7 +516,7 @@ bool cc_micro_compact_needs_defrag(cc_micro_compact_state_t *st) {
 }
 
 /* ── _defrag_rolling_summary ─────────────────────────────────────────── */
-/* PoP: _defrag_rolling_summary @ agent/context_compressor.py:_defrag_rolling_summary */
+/* PoP: cc_micro_compact_defrag_rolling_summary @ agent/context_compressor.py:_defrag_rolling_summary */
 bool cc_micro_compact_defrag_rolling_summary(cc_micro_compact_state_t *st,
                                               json_t *messages) {
     if (!st || !messages || messages->type != JSON_ARRAY) return false;
@@ -565,7 +565,7 @@ bool cc_micro_compact_defrag_rolling_summary(cc_micro_compact_state_t *st,
 }
 
 /* ── _cursor_after_splice ────────────────────────────────────────────── */
-/* PoP: _cursor_after_splice @ agent/context_compressor.py:_cursor_after_splice */
+/* PoP: cc_micro_compact_cursor_after_splice @ agent/context_compressor.py:_cursor_after_splice */
 long cc_micro_compact_cursor_after_splice(cc_micro_compact_state_t *st,
                                            json_t *result,
                                            long fallback) {
@@ -586,7 +586,7 @@ long cc_micro_compact_cursor_after_splice(cc_micro_compact_state_t *st,
 }
 
 /* ── _splice_micro_compact_result ────────────────────────────────────── */
-/* PoP: _splice_micro_compact_result @ agent/context_compressor.py:_splice_micro_compact_result */
+/* PoP: cc_micro_compact_splice_micro_compact_result @ agent/context_compressor.py:_splice_micro_compact_result */
 json_t *cc_micro_compact_splice_micro_compact_result(cc_micro_compact_state_t *st,
                                                      json_t *messages,
                                                      long splice_start,
@@ -705,7 +705,7 @@ json_t *cc_micro_compact_splice_micro_compact_result(cc_micro_compact_state_t *s
 }
 
 /* ── _sync_micro_compact_to_db ───────────────────────────────────────── */
-/* PoP: _sync_micro_compact_to_db @ agent/context_compressor.py:_sync_micro_compact_to_db */
+/* PoP: cc_micro_compact_sync_to_db @ agent/context_compressor.py:_sync_micro_compact_to_db */
 void cc_micro_compact_sync_to_db(cc_micro_compact_state_t *st,
                                   json_t *compacted_messages) {
     if (!st || !compacted_messages) return;
@@ -725,7 +725,7 @@ void cc_micro_compact_sync_to_db(cc_micro_compact_state_t *st,
 }
 
 /* ── _emit_micro_compaction_telemetry ────────────────────────────────── */
-/* PoP: _emit_micro_compaction_telemetry @ agent/context_compressor.py:_emit_micro_compaction_telemetry */
+/* PoP: cc_micro_compact_emit_telemetry @ agent/context_compressor.py:_emit_micro_compaction_telemetry */
 void cc_micro_compact_emit_telemetry(cc_micro_compact_state_t *st,
                                       const char *outcome,
                                       long messages_before,
@@ -763,7 +763,7 @@ void cc_micro_compact_emit_telemetry(cc_micro_compact_state_t *st,
 }
 
 /* ── _micro_compact ──────────────────────────────────────────────────── */
-/* PoP: _micro_compact @ agent/context_compressor.py:_micro_compact */
+/* PoP: cc_micro_compact_micro_compact @ agent/context_compressor.py:_micro_compact */
 json_t *cc_micro_compact_micro_compact(cc_micro_compact_state_t *st,
                                         json_t *messages,
                                         void (*on_overrun)(double waited, double ceiling)) {
@@ -882,7 +882,7 @@ json_t *cc_micro_compact_micro_compact(cc_micro_compact_state_t *st,
 }
 
 /* ── Protect head size ────────────────────────────────────────────────── */
-/* PoP: _protect_head_size @ agent/context_compressor.py:_protect_head_size */
+/* PoP: cc_micro_compact_protect_head_size @ agent/context_compressor.py:_protect_head_size */
 static long cc_micro_compact_protect_head_size(cc_micro_compact_state_t *st,
                                                 json_t *messages) {
     if (!st || !messages || messages->type != JSON_ARRAY) return 0;
@@ -899,7 +899,7 @@ static long cc_micro_compact_protect_head_size(cc_micro_compact_state_t *st,
 }
 
 /* ── _align_boundary_forward ─────────────────────────────────────────── */
-/* PoP: _align_boundary_forward @ agent/context_compressor.py:_align_boundary_forward */
+/* PoP: cc_micro_compact_align_boundary_forward @ agent/context_compressor.py:_align_boundary_forward */
 static long cc_micro_compact_align_boundary_forward(json_t *messages, long idx) {
     if (!messages || messages->type != JSON_ARRAY || idx < 0) return idx;
     long n = (long)json_len(messages);
@@ -914,7 +914,7 @@ static long cc_micro_compact_align_boundary_forward(json_t *messages, long idx) 
 }
 
 /* ── _align_boundary_backward ────────────────────────────────────────── */
-/* PoP: _align_boundary_backward @ agent/context_compressor.py:_align_boundary_backward */
+/* PoP: cc_micro_compact_align_boundary_backward @ agent/context_compressor.py:_align_boundary_backward */
 static long cc_micro_compact_align_boundary_backward(json_t *messages, long idx) {
     if (!messages || messages->type != JSON_ARRAY || idx < 0) return idx;
     long n = (long)json_len(messages);
@@ -943,7 +943,7 @@ static long cc_micro_compact_align_boundary_backward(json_t *messages, long idx)
 }
 
 /* ── _find_turn_pair_end ──────────────────────────────────────────────── */
-/* PoP: _find_turn_pair_end @ agent/context_compressor.py:_find_turn_pair_end */
+/* PoP: cc_micro_compact_find_turn_pair_end @ agent/context_compressor.py:_find_turn_pair_end */
 static long cc_micro_compact_find_turn_pair_end(json_t *messages, long user_idx) {
     if (!messages || messages->type != JSON_ARRAY) return user_idx;
     long n = (long)json_len(messages);
@@ -964,7 +964,7 @@ static long cc_micro_compact_find_turn_pair_end(json_t *messages, long user_idx)
 }
 
 /* ── _find_tail_cut_by_tokens ────────────────────────────────────────── */
-/* PoP: _find_tail_cut_by_tokens @ agent/context_compressor.py:_find_tail_cut_by_tokens */
+/* PoP: cc_micro_compact_find_tail_cut_by_tokens @ agent/context_compressor.py:_find_tail_cut_by_tokens */
 static long cc_micro_compact_find_tail_cut_by_tokens(cc_micro_compact_state_t *st,
                                                       json_t *messages,
                                                       long head_end,
@@ -1044,7 +1044,7 @@ static long cc_micro_compact_find_tail_cut_by_tokens(cc_micro_compact_state_t *s
 }
 
 /* ── _estimate_msg_budget_tokens (micro-compaction version) ──────────── */
-/* PoP: _estimate_msg_budget_tokens @ agent/context_compressor.py:_estimate_msg_budget_tokens */
+/* PoP: cc_micro_compact_estimate_msg_budget_tokens @ agent/context_compressor.py:_estimate_msg_budget_tokens */
 static long cc_micro_compact_estimate_msg_budget_tokens(json_t *msg) {
     if (!msg || msg->type != JSON_OBJECT) return 10;
     /* content length + full tool_call envelope */
@@ -1065,7 +1065,7 @@ static long cc_micro_compact_estimate_msg_budget_tokens(json_t *msg) {
 }
 
 /* ── _find_last_user_message_idx ──────────────────────────────────────── */
-/* PoP: _find_last_user_message_idx @ agent/context_compressor.py:_find_last_user_message_idx */
+/* PoP: cc_micro_compact_find_last_user_message_idx @ agent/context_compressor.py:_find_last_user_message_idx */
 static long cc_micro_compact_find_last_user_message_idx(json_t *messages, long end_idx) {
     if (!messages || messages->type != JSON_ARRAY) return -1;
     long n = (long)json_len(messages);
@@ -1080,7 +1080,7 @@ static long cc_micro_compact_find_last_user_message_idx(json_t *messages, long e
 }
 
 /* ── _find_last_assistant_message_idx ────────────────────────────────── */
-/* PoP: _find_last_assistant_message_idx @ agent/context_compressor.py:_find_last_assistant_message_idx */
+/* PoP: cc_micro_compact_find_last_assistant_message_idx @ agent/context_compressor.py:_find_last_assistant_message_idx */
 static long cc_micro_compact_find_last_assistant_message_idx(json_t *messages, long end_idx) {
     if (!messages || messages->type != JSON_ARRAY) return -1;
     long n = (long)json_len(messages);
@@ -1096,7 +1096,7 @@ static long cc_micro_compact_find_last_assistant_message_idx(json_t *messages, l
 }
 
 /* ── _ensure_last_user_message_in_tail ───────────────────────────────── */
-/* PoP: _ensure_last_user_message_in_tail @ agent/context_compressor.py:_ensure_last_user_message_in_tail */
+/* PoP: cc_micro_compact_ensure_last_user_message_in_tail @ agent/context_compressor.py:_ensure_last_user_message_in_tail */
 static long cc_micro_compact_ensure_last_user_message_in_tail(json_t *messages,
                                                                 long cut_idx,
                                                                 long head_end) {
@@ -1114,7 +1114,7 @@ static long cc_micro_compact_ensure_last_user_message_in_tail(json_t *messages,
 }
 
 /* ── _ensure_last_assistant_message_in_tail ──────────────────────────── */
-/* PoP: _ensure_last_assistant_message_in_tail @ agent/context_compressor.py:_ensure_last_assistant_message_in_tail */
+/* PoP: cc_micro_compact_ensure_last_assistant_message_in_tail @ agent/context_compressor.py:_ensure_last_assistant_message_in_tail */
 static long cc_micro_compact_ensure_last_assistant_message_in_tail(json_t *messages,
                                                                     long cut_idx,
                                                                     long head_end) {
@@ -1127,7 +1127,7 @@ static long cc_micro_compact_ensure_last_assistant_message_in_tail(json_t *messa
 }
 
 /* ── _find_last_n_user_messages_in_tail ──────────────────────────────── */
-/* PoP: _ensure_last_n_user_messages_in_tail @ agent/context_compressor.py:_ensure_last_n_user_messages_in_tail */
+/* PoP: cc_micro_compact_ensure_last_n_user_messages_in_tail @ agent/context_compressor.py:_ensure_last_n_user_messages_in_tail */
 static long cc_micro_compact_ensure_last_n_user_messages_in_tail(json_t *messages,
                                                                   long cut_idx,
                                                                   long head_end,

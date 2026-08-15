@@ -552,7 +552,7 @@ const char *models_dev_resolve_hermes_provider(const char *provider) {
 
 /* Port of Python agent/models_dev.py:ModelCapabilities.has_cost_data().
  * Check if a model entry has meaningful cost data. */
-/* PoP: mdv_has_cost_data @ agent/models_dev.py:has_cost_data */
+/* PoP: capability @ agent/models_dev.py:has_cost_data */
 /* Port of Python agent/models_dev.py:has_cost_data(). */
 
 /* Port of Python agent/models_dev.py:ModelCapabilities.supports_vision().
@@ -560,7 +560,7 @@ const char *models_dev_resolve_hermes_provider(const char *provider) {
 
 /* Port of Python agent/models_dev.py:ModelCapabilities.supports_pdf().
  * Check if "pdf" is in input_modalities. */
-/* PoP: mdv_supports_pdf @ agent/models_dev.py:supports_pdf */
+/* PoP: models_dev_get_provider_info_json @ agent/models_dev.py:supports_pdf */
 /* Port of Python agent/models_dev.py:supports_pdf(). */
 
 /* Port of Python agent/models_dev.py:_parse_provider_info().
@@ -1136,7 +1136,7 @@ bool provider_is_known_base_url(const char *base_url) {
 /* ---- provider_auth_headers ---- */
 /* Port of Python model_metadata._auth_headers().
  * Returns json_t dict {Authorization: Bearer <key>} or NULL if key empty. */
-/* PoP: hermes_cli_mcp_config_u_bearer_auth_headers @ agent/model_metadata.py:_auth_headers */
+/* PoP: provider_auth_headers @ agent/model_metadata.py:_auth_headers */
 json_t *provider_auth_headers(const char *api_key) {
     if (!api_key) return NULL;
     while (*api_key == ' ' || *api_key == '\t') api_key++;

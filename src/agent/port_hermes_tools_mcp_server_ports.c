@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _signature_from_schema @ agent/transports/hermes_tools_mcp_server.py:_signature_from_schema */
+/* PoP: htm_signature_from_schema @ agent/transports/hermes_tools_mcp_server.py:_signature_from_schema */
 char *htm_signature_from_schema(const char *schema_json) {
     /* Python: fn signature + annotations. */
     if (!schema_json) return NULL;
@@ -27,14 +27,14 @@ char *htm_signature_from_schema(const char *schema_json) {
     return strdup("def tool(**kwargs): ...");
 }
 
-/* PoP: _build_server @ agent/transports/hermes_tools_mcp_server.py:_build_server */
+/* PoP: htm_build_server @ agent/transports/hermes_tools_mcp_server.py:_build_server */
 char *htm_build_server(void) {
     /* Python: FastMCP with tools attached (lazy). */
     printf("hermes-tools mcp server built (lazy imports)\n");
     return strdup("{}");
 }
 
-/* PoP: main @ agent/transports/hermes_tools_mcp_server.py:main */
+/* PoP: htm_main @ agent/transports/hermes_tools_mcp_server.py:main */
 int htm_main(const char *argv_json) {
     /* Python: module entry — REAL: dispatch on first argv token. */
     if (!argv_json) return -1;

@@ -31,8 +31,8 @@
  * ====================================================================== */
 
 static char *handle_computer_use(const char *args_json, const char *task_id);
-/* PoP: action @ tools/computer_use/cua_backend.py:action */
-/* PoP: app_hover_action @ tools/computer_use/cua_backend.py:_action */
+/* PoP: noop_is_available @ tools/computer_use/cua_backend.py:action */
+/* PoP: noop_is_available @ tools/computer_use/cua_backend.py:_action */
 static char *dispatch_action(cu_backend_t *b, const char *action, json_t *args);
 
 /* ======================================================================
@@ -45,12 +45,12 @@ typedef struct {
 
 static bool noop_is_available(void) { return true; }
 static bool noop_start(void) { return true; }
-/* PoP: ccp_stop @ tools/computer_use/cua_backend.py:stop */
-/* PoP: ccp_stop @ tools/computer_use/tool.py:stop */
+/* PoP: noop_stop @ tools/computer_use/cua_backend.py:stop */
+/* PoP: noop_stop @ tools/computer_use/tool.py:stop */
 static void noop_stop(void) {}
-/* PoP: cua_u_failed_capture @ tools/computer_use/cua_backend.py:capture */
+/* PoP: noop_capture @ tools/computer_use/cua_backend.py:capture */
 
-/* PoP: cua_u_failed_capture @ tools/computer_use/tool.py:capture */
+/* PoP: noop_capture @ tools/computer_use/tool.py:capture */
 static cu_capture_t *noop_capture(const char *mode, const char *app) {
     (void)mode;
     cu_capture_t *cap = (cu_capture_t *)calloc(1, sizeof(cu_capture_t));
@@ -90,7 +90,7 @@ static cu_action_t *noop_click(int element, int x, int y,
     return noop_make_action("click", true, "clicked at (%d,%d) [%s] x%d",
                              x, y, button ? button : "left", click_count);
 }
-/* PoP: drag @ tools/computer_use/tool.py:drag */
+/* PoP: noop_drag @ tools/computer_use/tool.py:drag */
 
 static cu_action_t *noop_drag(int from_e, int to_e,
                                int fx, int fy, int tx, int ty,
@@ -111,7 +111,7 @@ static cu_action_t *noop_scroll(const char *dir, int amount,
                              dir ? dir : "down", amount > 0 ? amount : 3);
 }
 
-/* PoP: tools_computer_use_tool_type_text @ tools/computer_use/cua_backend.py:type_text */
+/* PoP: noop_type_text @ tools/computer_use/cua_backend.py:type_text */
 static cu_action_t *noop_type_text(const char *text) {
     return noop_make_action("type", true, "typed %zu chars",
                              text ? strlen(text) : 0);
@@ -125,7 +125,7 @@ static cu_action_t *noop_list_apps(void) {
     return noop_make_action("list_apps", true, "3 apps running");
 }
 
-/* PoP: focus_app @ tools/computer_use/tool.py:focus_app */
+/* PoP: noop_focus_app @ tools/computer_use/tool.py:focus_app */
 static cu_action_t *noop_focus_app(const char *app, bool raise) {
     return noop_make_action("focus_app", true, "focused %s%s",
                              app ? app : "(frontmost)",
@@ -717,7 +717,7 @@ static cu_action_t *wayland_list_apps(void) {
         "active apps unknown (install swaymsg+jq)");
 }
 
-/* PoP: focus_app @ tools/computer_use/cua_backend.py:focus_app */
+/* PoP: wayland_focus_app @ tools/computer_use/cua_backend.py:focus_app */
 static cu_action_t *wayland_focus_app(const char *app, bool raise) {
     (void)raise;
     if (!_has_cmd("swaymsg") || !_has_cmd("jq")) {
@@ -927,13 +927,13 @@ static bool macos_browser_has_tool(const char *name, void *ctx) {
 }
 
 /* ── _browser_route / typed_browser_* (PoP: _browser_route / typed_browser_*) ─ */
-/* PoP: _browser_route @ tools/computer_use/cua_backend.py:CuaDriverBackend._browser_route */
-/* PoP: typed_browser_state @ tools/computer_use/backend.py:ComputerUseBackend.typed_browser_state */
-/* PoP: typed_browser_state @ tools/computer_use/cua_backend.py:CuaDriverBackend.typed_browser_state */
-/* PoP: typed_browser_prepare @ tools/computer_use/backend.py:ComputerUseBackend.typed_browser_prepare */
-/* PoP: typed_browser_prepare @ tools/computer_use/cua_backend.py:CuaDriverBackend.typed_browser_prepare */
-/* PoP: typed_browser_action @ tools/computer_use/backend.py:ComputerUseBackend.typed_browser_action */
-/* PoP: typed_browser_action @ tools/computer_use/cua_backend.py:CuaDriverBackend.typed_browser_action */
+/* PoP: getattr @ tools/computer_use/cua_backend.py:CuaDriverBackend._browser_route */
+/* PoP: getattr @ tools/computer_use/backend.py:ComputerUseBackend.typed_browser_state */
+/* PoP: getattr @ tools/computer_use/cua_backend.py:CuaDriverBackend.typed_browser_state */
+/* PoP: getattr @ tools/computer_use/backend.py:ComputerUseBackend.typed_browser_prepare */
+/* PoP: getattr @ tools/computer_use/cua_backend.py:CuaDriverBackend.typed_browser_prepare */
+/* PoP: getattr @ tools/computer_use/backend.py:ComputerUseBackend.typed_browser_action */
+/* PoP: getattr @ tools/computer_use/cua_backend.py:CuaDriverBackend.typed_browser_action */
 /* _browser_route returns the cached route, constructing it on first access.
  * Mirrors Python: getattr(self,"_typed_browser",None) -> if None, construct. */
 static cua_typed_browser_route_t *macos_browser_route(macos_state_t *st) {
@@ -980,7 +980,7 @@ static char *macos_typed_browser_action(macos_state_t *st, const char *driver_to
 }
 
 /* ── _run_input_action ──────────────────────────────────────────────── */
-/* PoP: _run_input_action @ tools/computer_use/cua_backend.py:CuaDriverBackend._run_input_action */
+/* PoP: macos_run_input_action @ tools/computer_use/cua_backend.py:CuaDriverBackend._run_input_action */
 /* Apply one delivery rung, optionally focusing via bring_to_front first.
  * Returns a cu_action_t* (the C ActionResult equivalent). */
 static cu_action_t *macos_run_input_action(macos_state_t *st,
@@ -1057,7 +1057,7 @@ static cu_action_t *macos_run_input_action(macos_state_t *st,
 }
 
 /* ── _revive_declared_session_once ────────────────────────────────────── */
-/* PoP: _revive_declared_session_once @ tools/computer_use/cua_backend.py:CuaDriverBackend._revive_declared_session_once */
+/* PoP: macos_revive_declared_session_once @ tools/computer_use/cua_backend.py:CuaDriverBackend._revive_declared_session_once */
 /* If the session ended during a tool call, revive it and retry once.
  * This is the sync C equivalent: on an ended-session error, call
  * start_session again, then re-issue the original tool call. */
@@ -1833,7 +1833,7 @@ cu_backend_t *cu_get_global_backend(void) {
 /* PoP: cu_reset_global_backend @ tools/computer_use/cua_backend.py:CuaDriverBackend.set_config */
 void cu_reset_global_backend(void) {
     if (g_cu_backend) {
-/* PoP: ccp_stop @ tools/computer_use/backend.py:stop */
+/* PoP: cu_capture_free @ tools/computer_use/backend.py:stop */
         g_cu_backend->stop();
         free(g_cu_backend->state);
         free(g_cu_backend);
@@ -2011,7 +2011,7 @@ static char *dispatch_capture(cu_backend_t *b, json_t *args) {
     if (max_elements > 1000) max_elements = 1000;
 
     /* Try requested mode first */
-/* PoP: cua_u_failed_capture @ tools/computer_use/backend.py:capture */
+/* PoP: dispatch_action @ tools/computer_use/backend.py:capture */
     cu_capture_t *cap = b->capture(mode, app);
 
     /* Vision fallback: if vision mode failed, fall back to som
@@ -2054,7 +2054,7 @@ static char *dispatch_action(cu_backend_t *b, const char *action,
         double secs = json_get_num(args, "seconds", 1.0);
         if (secs < 0.0) secs = 0.0;
         if (secs > 30.0) secs = 30.0;
-/* PoP: envb_handle_wait @ tools/computer_use/backend.py:wait */
+/* PoP: handle_computer_use @ tools/computer_use/backend.py:wait */
         cu_action_t *act = b->wait(secs);
         char *resp = make_text_response(act);
         cu_action_free(act);
@@ -2149,7 +2149,7 @@ static char *dispatch_action(cu_backend_t *b, const char *action,
         }
         const char *btn = json_get_str(args, "button", "left");
         const char *mods = json_get_str(args, "modifiers", NULL);
-/* PoP: drag @ tools/computer_use/cua_backend.py:drag */
+/* PoP: handle_computer_use @ tools/computer_use/cua_backend.py:drag */
         cu_action_t *act = b->drag(from_e, to_e, fx, fy, tx, ty, btn, mods);
         char *resp = make_text_response(act);
         cu_action_free(act);
@@ -2367,7 +2367,7 @@ void registry_init_computer_use(void) {
         handle_computer_use);
 }
 
-/* PoP: get_computer_use_schema @ tools/computer_use/tool.py:get_computer_use_schema */
+/* PoP: string @ tools/computer_use/tool.py:get_computer_use_schema */
 /*
  * Port of Python tools/computer_use/schema.py:get_computer_use_schema().
  * Returns the generic OpenAI function-calling schema for the computer_use tool

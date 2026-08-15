@@ -22,14 +22,14 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: is_fresh @ agent/secret_sources/_cache.py:is_fresh */
+/* PoP: scc_is_fresh @ agent/secret_sources/_cache.py:is_fresh */
 bool scc_is_fresh(double fetched_at, long ttl_seconds, double now) {
     /* Python: ttl <= 0 → stale. */
     if (ttl_seconds <= 0) return false;
     return (now - fetched_at) <= (double)ttl_seconds;
 }
 
-/* PoP: resolve_cache_home @ agent/secret_sources/_cache.py:resolve_cache_home */
+/* PoP: scc_resolve_cache_home @ agent/secret_sources/_cache.py:resolve_cache_home */
 char *scc_resolve_cache_home(const char *home_path) {
     /* Python: hermes home for cache paths. */
     if (home_path && *home_path) return strdup(home_path);
@@ -40,7 +40,7 @@ char *scc_resolve_cache_home(const char *home_path) {
     return strdup(".");
 }
 
-/* PoP: __init__ @ agent/secret_sources/_cache.py:__init__ */
+/* PoP: scc_init @ agent/secret_sources/_cache.py:__init__ */
 char *scc_init(const char *basename) {
     /* Python: cache store with key serializer. */
     if (!basename) return NULL;
@@ -49,7 +49,7 @@ char *scc_init(const char *basename) {
     return out;
 }
 
-/* PoP: path @ agent/secret_sources/_cache.py:path */
+/* PoP: scc_path @ agent/secret_sources/_cache.py:path */
 char *scc_path(const char *basename, const char *home_path) {
     /* Python: <home>/cache/<basename>. */
     char *home = scc_resolve_cache_home(home_path);
@@ -59,7 +59,7 @@ char *scc_path(const char *basename, const char *home_path) {
     return out;
 }
 
-/* PoP: read @ agent/secret_sources/_cache.py:read */
+/* PoP: scc_read @ agent/secret_sources/_cache.py:read */
 char *scc_read(const char *path) {
     /* Python: fresh cached entry or None; best-effort. */
     if (!path) return NULL;
@@ -77,7 +77,7 @@ char *scc_read(const char *path) {
     return buf;
 }
 
-/* PoP: write @ agent/secret_sources/_cache.py:write */
+/* PoP: scc_write @ agent/secret_sources/_cache.py:write */
 int scc_write(const char *path, const char *entry_json, long ttl_seconds) {
     /* Python: atomic 0600 write; no-op when ttl disabled. */
     if (!path || !entry_json) return -1;
@@ -96,7 +96,7 @@ int scc_write(const char *path, const char *entry_json, long ttl_seconds) {
     return 0;
 }
 
-/* PoP: clear @ agent/secret_sources/_cache.py:clear */
+/* PoP: scc_clear @ agent/secret_sources/_cache.py:clear */
 int scc_clear(const char *path) {
     /* Python: delete cache file, idempotent. */
     if (!path) return -1;

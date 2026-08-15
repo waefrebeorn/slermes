@@ -34,7 +34,7 @@
 #define CRON_KNOWN_DELIVERY_OUTCOMES {"delivered","failed","suppressed","not_configured"}
 
 /* ── _now ────────────────────────────────────────────────────────── */
-/* PoP: _now @ agent/monitoring/cron_health.py:_now */
+/* PoP: cron_now @ agent/monitoring/cron_health.py:_now */
 /* Faithful port of `_hermes_now()`: wall-clock epoch seconds as double. */
 double cron_now(void) {
     struct timespec ts;
@@ -43,7 +43,7 @@ double cron_now(void) {
 }
 
 /* ── _job_key ────────────────────────────────────────────────────── */
-/* PoP: _job_key @ agent/monitoring/cron_health.py:_job_key */
+/* PoP: cron_job_key @ agent/monitoring/cron_health.py:_job_key */
 char *cron_job_key(const char *raw) {
     /* mirror: str(raw or "unknown") — empty string is falsy in Python */
     const char *value = (raw && raw[0] != '\0') ? raw : "unknown";
@@ -124,7 +124,7 @@ const char *classify_cron_error(const char *raw) {
 }
 
 /* ── _parse_time ─────────────────────────────────────────────────── */
-/* PoP: _parse_time @ agent/monitoring/cron_health.py:_parse_time */
+/* PoP: seconds @ agent/monitoring/cron_health.py:_parse_time */
 /* Parse an ISO-8601 timestamp to epoch seconds (fractional, double).
  * Returns -1.0 on failure (mirrors None).  Uses datetime_parse_iso8601 for
  * the integer-seconds component, then layers fractional-second parsing so
@@ -148,7 +148,7 @@ double cron_parse_time(const char *raw) {
 }
 
 /* ── _duration_ms ────────────────────────────────────────────────── */
-/* PoP: _duration_ms @ agent/monitoring/cron_health.py:_duration_ms */
+/* PoP: cron_duration_ms @ agent/monitoring/cron_health.py:_duration_ms */
 int cron_duration_ms(const json_t *record) {
     if (!record || record->type != JSON_OBJECT) return -1;
     double start = -1.0;
@@ -282,7 +282,7 @@ json_t *cron_execution_event_to_json(const struct cron_execution_event *ev) {
 }
 
 /* ── _is_overdue ──────────────────────────────────────────────────── */
-/* PoP: _is_overdue @ agent/monitoring/cron_health.py:_is_overdue */
+/* PoP: cron_is_overdue @ agent/monitoring/cron_health.py:_is_overdue */
 bool cron_is_overdue(const json_t *job, double now_epoch) {
     if (!job || job->type != JSON_OBJECT) return false;
     /* if not job.get("enabled", True): return False — default True */
@@ -307,8 +307,8 @@ bool cron_is_overdue(const json_t *job, double now_epoch) {
 }
 
 /* ── emit_execution_state ─────────────────────────────────────────── */
-/* PoP: emit_execution_state @ agent/monitoring/cron_health.py:emit_execution_state */
-/* PoP: _emit_execution_state @ cron/executions.py:_emit_execution_state */
+/* PoP: cron_emit_execution_state @ agent/monitoring/cron_health.py:emit_execution_state */
+/* PoP: cron_emit_execution_state @ cron/executions.py:_emit_execution_state */
 void cron_emit_execution_state(const json_t *record, const char *delivery_outcome) {
     if (!record) return;
     struct cron_execution_event ev = project_execution_event(record, delivery_outcome);
@@ -330,7 +330,7 @@ void cron_emit_execution_state(const json_t *record, const char *delivery_outcom
 }
 
 /* ── build_cron_health_snapshot ────────────────────────────────────── */
-/* PoP: build_cron_health_snapshot @ agent/monitoring/cron_health.py:build_cron_health_snapshot */
+/* PoP: cron_build_health_snapshot @ agent/monitoring/cron_health.py:build_cron_health_snapshot */
 json_t *cron_build_health_snapshot(void) {
     json_t *metrics = json_array();
     if (!metrics) return NULL;

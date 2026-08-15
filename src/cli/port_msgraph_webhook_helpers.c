@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-/* PoP: check_msgraph_webhook_requirements @ gateway/platforms/msgraph_webhook.py:check_msgraph_webhook_requirements */
+/* PoP: msgraph_webhook_check_requirements @ gateway/platforms/msgraph_webhook.py:check_msgraph_webhook_requirements */
 /* Returns whether required webhook dependencies are available.
  * Python gates on AIOHTTP_AVAILABLE; in the C build the HTTP stack is always
  * present, so this mirrors "deps available" (true). */
@@ -20,7 +20,7 @@ bool msgraph_webhook_check_requirements(void) {
     return true;
 }
 
-/* PoP: _string_or_none @ gateway/platforms/msgraph_webhook.py:_string_or_none */
+/* PoP: msgraph_string_or_none @ gateway/platforms/msgraph_webhook.py:_string_or_none */
 /* Return a trimmed copy of `value`, or NULL when empty/None.
  * Caller must free the result. */
 char *msgraph_string_or_none(const char *value) {
@@ -40,7 +40,7 @@ char *msgraph_string_or_none(const char *value) {
     return out;
 }
 
-/* PoP: _build_receipt_key @ gateway/platforms/msgraph_webhook.py:_build_receipt_key */
+/* PoP: msgraph_build_receipt_key @ gateway/platforms/msgraph_webhook.py:_build_receipt_key */
 /* Build a stable dedup key from a notification dict. Returns "id:<id>" when an
  * explicit id is present, else NULL. Caller must free. */
 char *msgraph_build_receipt_key(const char *tenant, const char *resource, const char *event) {

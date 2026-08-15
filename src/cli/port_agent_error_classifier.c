@@ -284,7 +284,7 @@ int cli_agent_error_classifier__is_openrouter_upstream_error(
     return 0;
 }
 
-/* PoP: cli_agent_error_classifier__extract_upstream_provider_name @ agent/error_classifier.py:_extract_upstream_provider_name */
+/* PoP: string @ agent/error_classifier.py:_extract_upstream_provider_name */
 
 /* Port of Python agent/error_classifier.py:_extract_upstream_provider_name */
 /* Pull the upstream provider name out of OpenRouter's error metadata.

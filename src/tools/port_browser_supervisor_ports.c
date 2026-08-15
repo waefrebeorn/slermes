@@ -221,7 +221,7 @@ static void *bsv_thread_main(void *arg) {
 /*  Public PoP surface                                                 */
 /* ------------------------------------------------------------------ */
 
-/* PoP: __init__ @ tools/browser_supervisor.py:__init__ */
+/* PoP: bsv_init @ tools/browser_supervisor.py:__init__ */
 int bsv_init(const char *dialog_policy) {
     /* Python: validate policy. */
     if (!dialog_policy) return -1;
@@ -236,7 +236,7 @@ int bsv_init(const char *dialog_policy) {
     return -1;
 }
 
-/* PoP: start @ tools/browser_supervisor.py:start */
+/* PoP: bsv_start @ tools/browser_supervisor.py:start */
 int bsv_start(void) {
     /* Python: launch the background supervisor thread and wait for
      * attachment.  The thread itself handles reconnect/backoff, so
@@ -256,7 +256,7 @@ int bsv_start(void) {
     return 0;
 }
 
-/* PoP: stop @ tools/browser_supervisor.py:stop */
+/* PoP: bsv_stop @ tools/browser_supervisor.py:stop */
 int bsv_stop(void) {
     /* Python: cancel the supervisor task and join the thread. */
     g_bsv.stop_requested = true;
@@ -268,7 +268,7 @@ int bsv_stop(void) {
     return 0;
 }
 
-/* PoP: snapshot @ tools/browser_supervisor.py:snapshot */
+/* PoP: bsv_snapshot @ tools/browser_supervisor.py:snapshot */
 char *bsv_snapshot(void) {
     /* Python: immutable state snapshot. */
     json_t *o = json_object();
@@ -287,7 +287,7 @@ char *bsv_snapshot(void) {
     return s ? s : strdup("{}");
 }
 
-/* PoP: _cdp @ tools/browser_supervisor.py:_cdp */
+/* PoP: bsv_cdp @ tools/browser_supervisor.py:_cdp */
 char *bsv_cdp(const char *method, const char *params_json) {
     /* Python: send a CDP command over the active socket. */
     if (!method) return NULL;
@@ -354,7 +354,7 @@ char *bsv_cdp(const char *method, const char *params_json) {
     return strdup("{}");
 }
 
-/* PoP: _read_loop @ tools/browser_supervisor.py:_read_loop */
+/* PoP: bsv_read_loop @ tools/browser_supervisor.py:_read_loop */
 int bsv_read_loop(void) {
     /* Python: dispatch incoming CDP frames.  In the C port the read
      * loop runs inside the supervisor thread; a direct call drives it

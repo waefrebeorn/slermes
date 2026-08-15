@@ -63,7 +63,7 @@ static bool notepad_file_exists(void) {
 
 /* ── Connection / schema ───────────────────────────────────────────── */
 
-/* PoP: _connect @ cron/notepad.py:_connect */
+/* PoP: notepad_connect @ cron/notepad.py:_connect */
 static sqlite3 *notepad_connect(void) {
     char *path = notepad_path();
     if (!path) return NULL;
@@ -80,7 +80,7 @@ static sqlite3 *notepad_connect(void) {
     return db;
 }
 
-/* PoP: _initialize_schema @ cron/notepad.py:_initialize_schema */
+/* PoP: notepad_init_schema @ cron/notepad.py:_initialize_schema */
 static int notepad_init_schema(sqlite3 *db) {
     char *err = NULL;
     int rc = sqlite3_exec(db,
@@ -101,7 +101,7 @@ static int notepad_init_schema(sqlite3 *db) {
     return SQLITE_OK;
 }
 
-/* PoP: _transaction @ cron/notepad.py:_transaction */
+/* PoP: notepad_begin @ cron/notepad.py:_transaction */
 /* Opens conn + schema inside the body (so a PRAGMA/DDL failure still closes),
  * caller commits/rolls back on exit, then closes. Returns NULL on hard error
  * (caller treats NULL as "no-op"). */
@@ -169,7 +169,7 @@ static long utf8_byte_len(const char *v) {
 
 /* ── Public API ────────────────────────────────────────────────────── */
 
-/* PoP: set_note @ cron/notepad.py:set_note */
+/* PoP: cron_notepad_set_note @ cron/notepad.py:set_note */
 json_t *cron_notepad_set_note(const char *job_id, const char *key,
                               const char *value, char **err) {
     notepad_txn_t t = notepad_begin();
@@ -248,7 +248,7 @@ json_t *cron_notepad_set_note(const char *job_id, const char *key,
     return r;  /* caller json_free() */
 }
 
-/* PoP: _validate @ cron/notepad.py:_validate */
+/* PoP: notepad_validate_note @ cron/notepad.py:_validate */
 int notepad_validate_note(const char *job_id, const char *key, const char *value, char **err) {
     if (!job_id || !*job_id) { if (err) *err = np_xstrdup("job_id must be non-empty"); return -1; }
     if (!key || !*key)        { if (err) *err = np_xstrdup("key must be non-empty"); return -2; }
@@ -259,7 +259,7 @@ int notepad_validate_note(const char *job_id, const char *key, const char *value
     return 0;
 }
 
-/* PoP: get_note @ cron/notepad.py:get_note */
+/* PoP: cron_notepad_get_note @ cron/notepad.py:get_note */
 char *cron_notepad_get_note(const char *job_id, const char *key) {
     if (!job_id || !key) return NULL;
     sqlite3 *db = notepad_connect();
@@ -280,7 +280,7 @@ char *cron_notepad_get_note(const char *job_id, const char *key) {
     return result;  /* NULL when no row → caller maps to None */
 }
 
-/* PoP: delete_note @ cron/notepad.py:delete_note */
+/* PoP: cron_notepad_delete_note @ cron/notepad.py:delete_note */
 bool cron_notepad_delete_note(const char *job_id, const char *key) {
     if (!job_id || !key) return false;
     sqlite3 *db = notepad_connect();
@@ -298,7 +298,7 @@ bool cron_notepad_delete_note(const char *job_id, const char *key) {
     return changed > 0;
 }
 
-/* PoP: list_notes @ cron/notepad.py:list_notes */
+/* PoP: cron_notepad_list_notes @ cron/notepad.py:list_notes */
 json_t *cron_notepad_list_notes(const char *job_id) {
     json_t *out = json_array();
     if (!out || !job_id) return out;
@@ -329,7 +329,7 @@ json_t *cron_notepad_list_notes(const char *job_id) {
     return out;  /* caller json_free() */
 }
 
-/* PoP: clear_notepad @ cron/notepad.py:clear_notepad */
+/* PoP: cron_notepad_clear_notepad @ cron/notepad.py:clear_notepad */
 int cron_notepad_clear_notepad(const char *job_id) {
     if (!job_id) return 0;
     if (!notepad_file_exists()) return 0;  /* no-op, never create the DB */
@@ -347,7 +347,7 @@ int cron_notepad_clear_notepad(const char *job_id) {
     return n;
 }
 
-/* PoP: render_notepad_section @ cron/notepad.py:render_notepad_section */
+/* PoP: cron_notepad_render_notepad_section @ cron/notepad.py:render_notepad_section */
 char *cron_notepad_render_notepad_section(const char *job_id) {
     json_t *notes = cron_notepad_list_notes(job_id);
     if (!notes || json_array_size(notes) == 0) { json_free(notes); return np_xstrdup(""); }

@@ -26,7 +26,7 @@ static char *state_dir(void) {
     return out;
 }
 
-/* PoP: _state_path @ hermes_cli/active_sessions.py:_state_path */
+/* PoP: acs_state_path @ hermes_cli/active_sessions.py:_state_path */
 char *acs_state_path(void) {
     char *d = state_dir();
     char *out = NULL;
@@ -35,7 +35,7 @@ char *acs_state_path(void) {
     return out;
 }
 
-/* PoP: _lock_path @ hermes_cli/active_sessions.py:_lock_path */
+/* PoP: acs_lock_path @ hermes_cli/active_sessions.py:_lock_path */
 char *acs_lock_path(void) {
     char *d = state_dir();
     char *out = NULL;
@@ -44,7 +44,7 @@ char *acs_lock_path(void) {
     return out;
 }
 
-/* PoP: __init__ @ hermes_cli/active_sessions.py:__init__ */
+/* PoP: acs_init @ hermes_cli/active_sessions.py:__init__ */
 char *acs_init(const char *path) {
     /* Python: lock handle holder. */
     if (!path) return NULL;
@@ -55,7 +55,7 @@ char *acs_init(const char *path) {
 
 /* ── hermes_cli/active_sessions.py gap functions ─────────────────── */
 
-/* PoP: format_age @ hermes_cli/active_sessions.py:format_age */
+/* PoP: activesess_format_age @ hermes_cli/active_sessions.py:format_age */
 char *activesess_format_age(double seconds) {
     /* Python: format uptime. < 60s -> "0m"; < 60min -> "Xm"; else "Xh" or
     "XhYm". */
@@ -75,7 +75,7 @@ char *activesess_format_age(double seconds) {
     return out;
 }
 
-/* PoP: summarize_holders @ hermes_cli/active_sessions.py:summarize_holders */
+/* PoP: activesess_summarize_holders @ hermes_cli/active_sessions.py:summarize_holders */
 char *activesess_summarize_holders(const char *arg) {
     /* Python: compact "who is holding the slots" phrase.
     * Counts surfaces, sorts by count desc then name.
@@ -145,7 +145,7 @@ char *activesess_summarize_holders(const char *arg) {
     return out;
 }
 
-/* PoP: release_orphaned_leases @ hermes_cli/active_sessions.py:release_orphaned_leases */
+/* PoP: activesess_release_orphaned_leases @ hermes_cli/active_sessions.py:release_orphaned_leases */
 int activesess_release_orphaned_leases(const char *arg) {
     /* Python: drop this process's registry entries that no live session owns.
     * Arg = "dropped" (count of entries dropped). */

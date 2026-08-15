@@ -19,12 +19,12 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ tools/memory_tool.py:__init__ */
+/* PoP: memt_init @ tools/memory_tool.py:__init__ */
 char *memt_init(void) {
     return strdup("{\"memory_entries\": [], \"user_entries\": []}");
 }
 
-/* PoP: replace @ tools/memory_tool.py:replace */
+/* PoP: memt_replace @ tools/memory_tool.py:replace */
 char *memt_replace(const char *entries_json, const char *old_text, const char *new_content) {
     /* Python: entry containing old_text → new_content. */
     if (!entries_json || !old_text) return strdup("[]");
@@ -71,7 +71,7 @@ char *memt_replace(const char *entries_json, const char *old_text, const char *n
     return out;
 }
 
-/* PoP: remove @ tools/memory_tool.py:remove */
+/* PoP: memt_remove @ tools/memory_tool.py:remove */
 char *memt_remove(const char *entries_json, const char *old_text) {
     /* Python: remove entry containing old_text. */
     if (!entries_json || !old_text) return strdup("[]");
@@ -111,12 +111,12 @@ char *memt_remove(const char *entries_json, const char *old_text) {
     return out;
 }
 
-/* PoP: _success_response @ tools/memory_tool.py:_success_response */
+/* PoP: memt_success_response @ tools/memory_tool.py:_success_response */
 char *memt_success_response(void) {
     return strdup("{\"success\": true, \"memory_changed\": true}");
 }
 
-/* PoP: _render_block @ tools/memory_tool.py:_render_block */
+/* PoP: memt_render_block @ tools/memory_tool.py:_render_block */
 char *memt_render_block(const char *entries_json) {
     /* Python: header + usage indicator. */
     if (!entries_json) return strdup("");
@@ -127,7 +127,7 @@ char *memt_render_block(const char *entries_json) {
     return out;
 }
 
-/* PoP: _write_file @ tools/memory_tool.py:_write_file */
+/* PoP: memt_write_file @ tools/memory_tool.py:_write_file */
 int memt_write_file(const char *path, const char *content) {
     /* Python: atomic temp + rename — REAL. */
     if (!path || !content) return -1;

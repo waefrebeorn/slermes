@@ -408,7 +408,7 @@ static void tts_repl_heading(const char *text, PCRE2_SIZE *ov, int ngroup,
     free(cap);
 }
 
-/* PoP: strip_markdown_for_tts @ tools/tts_text_normalize.py:strip_markdown_for_tts */
+/* PoP: tts_strip_markdown @ tools/tts_text_normalize.py:strip_markdown_for_tts */
 char *tts_strip_markdown(const char *text, size_t *out_len)
 {
     if (out_len) *out_len = 0;
@@ -528,14 +528,14 @@ static char *tts_normalize_temperature_ranges_len(const char *text, size_t tlen,
     return nxt;
 }
 
-/* PoP: _normalize_temperature_ranges @ tools/tts_text_normalize.py:_normalize_temperature_ranges */
+/* PoP: tts_normalize_temperature_ranges @ tools/tts_text_normalize.py:_normalize_temperature_ranges */
 char *tts_normalize_temperature_ranges(const char *text, size_t *out_len)
 {
     if (!text) { if (out_len) *out_len = 0; return strdup(""); }
     return tts_normalize_temperature_ranges_len(text, strlen(text), out_len);
 }
 
-/* PoP: normalize_symbols_for_tts @ tools/tts_text_normalize.py:normalize_symbols_for_tts */
+/* PoP: tts_normalize_symbols @ tools/tts_text_normalize.py:normalize_symbols_for_tts */
 char *tts_normalize_symbols(const char *text, size_t *out_len)
 {
     return tts_normalize_symbols_len(text, text ? strlen(text) : 0, out_len);
@@ -603,7 +603,7 @@ static char *tts_normalize_symbols_len(const char *text, size_t tlen, size_t *ou
 /* strip_nonspoken_blocks                                              */
 /* ------------------------------------------------------------------ */
 
-/* PoP: strip_nonspoken_blocks @ tools/tts_text_normalize.py:strip_nonspoken_blocks */
+/* PoP: tts_strip_nonspoken_blocks @ tools/tts_text_normalize.py:strip_nonspoken_blocks */
 char *tts_strip_nonspoken_blocks(const char *text, size_t *out_len)
 {
     if (out_len) *out_len = 0;
@@ -624,7 +624,7 @@ char *tts_strip_nonspoken_blocks(const char *text, size_t *out_len)
 /* flatten_newlines_for_payload                                        */
 /* ------------------------------------------------------------------ */
 
-/* PoP: flatten_newlines_for_payload @ tools/tts_text_normalize.py:flatten_newlines_for_payload */
+/* PoP: tts_flatten_newlines @ tools/tts_text_normalize.py:flatten_newlines_for_payload */
 char *tts_flatten_newlines(const char *text, size_t *out_len)
 {
     if (out_len) *out_len = 0;
@@ -665,7 +665,7 @@ static size_t tts_rstrip_chars(const char *s, size_t n)
     return n;
 }
 
-/* PoP: smooth_whitespace_for_tts @ tools/tts_text_normalize.py:smooth_whitespace_for_tts */
+/* PoP: tts_smooth_whitespace @ tools/tts_text_normalize.py:smooth_whitespace_for_tts */
 char *tts_smooth_whitespace(const char *text, size_t *out_len)
 {
     return tts_smooth_whitespace_len(text, text ? strlen(text) : 0, out_len);
@@ -925,7 +925,7 @@ static void tts_truncate_chars(const char *s, size_t n, int max_chars,
     *out = r; *out_len = end;
 }
 
-/* PoP: prepare_spoken_text @ tools/tts_text_normalize.py:prepare_spoken_text */
+/* PoP: tts_prepare_spoken_text @ tools/tts_text_normalize.py:prepare_spoken_text */
 char *tts_prepare_spoken_text(const char *text, int max_chars, size_t *out_len)
 {
     if (out_len) *out_len = 0;

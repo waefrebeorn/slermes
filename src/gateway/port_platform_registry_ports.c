@@ -18,12 +18,12 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ gateway/platform_registry.py:__init__ */
+/* PoP: prg_init @ gateway/platform_registry.py:__init__ */
 char *prg_init(void) {
     return strdup("{\"entries\": {}, \"deferred\": {}}");
 }
 
-/* PoP: _resolve @ gateway/platform_registry.py:_resolve */
+/* PoP: prg_resolve @ gateway/platform_registry.py:_resolve */
 char *prg_resolve(const char *name) {
     /* Python: run pending deferred loader. */
     if (!name) return NULL;
@@ -31,7 +31,7 @@ char *prg_resolve(const char *name) {
     return strdup("{}");
 }
 
-/* PoP: register @ gateway/platform_registry.py:register */
+/* PoP: prg_register @ gateway/platform_registry.py:register */
 int prg_register(const char *name, const char *entry_desc) {
     /* Python: replace on same name. */
     if (!name) return -1;
@@ -39,7 +39,7 @@ int prg_register(const char *name, const char *entry_desc) {
     return 0;
 }
 
-/* PoP: get @ gateway/platform_registry.py:get */
+/* PoP: prg_get @ gateway/platform_registry.py:get */
 char *prg_get(const char *name) {
     if (!name) return NULL;
     printf("platform entry fetched: %s\n", name);

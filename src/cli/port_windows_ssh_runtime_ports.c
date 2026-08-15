@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _lock_path @ hermes_cli/windows_ssh_runtime.py:_lock_path */
+/* PoP: wss_lock_path @ hermes_cli/windows_ssh_runtime.py:_lock_path */
 char *wss_lock_path(const char *ownership_id) {
     if (!ownership_id) return NULL;
     char *out = NULL;
@@ -26,7 +26,7 @@ char *wss_lock_path(const char *ownership_id) {
     return out;
 }
 
-/* PoP: dispatch @ hermes_cli/windows_ssh_runtime.py:dispatch */
+/* PoP: wss_dispatch @ hermes_cli/windows_ssh_runtime.py:dispatch */
 char *wss_dispatch(const char *argv_json) {
     /* Python: first arg is operation. */
     if (!argv_json) return NULL;
@@ -34,7 +34,7 @@ char *wss_dispatch(const char *argv_json) {
     return strdup("{}");
 }
 
-/* PoP: main @ hermes_cli/windows_ssh_runtime.py:main */
+/* PoP: wss_main @ hermes_cli/windows_ssh_runtime.py:main */
 int wss_main(const char *argv_json) {
     /* Python: json print dispatch result. */
     if (!argv_json) return -1;

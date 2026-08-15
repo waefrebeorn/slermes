@@ -37,7 +37,7 @@ void *cli_tools_feishu_drive_tool_get_client(void)
     return _feishu_local.client;
 }
 
-/* PoP: cli_tools_feishu_drive_tool__check_feishu @ tools/feishu_drive_tool.py:_check_feishu */
+/* PoP: lark_oapi @ tools/feishu_drive_tool.py:_check_feishu */
 
 /* Port of Python tools/feishu_doc_tool.py:_check_feishu */
 /* Check if the lark_oapi (Feishu SDK) is importable/available. */

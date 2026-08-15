@@ -356,7 +356,7 @@ int kdb_set_worker_pid(sqlite3 *conn, const char *task_id, pid_t pid)
 /* ===================================================================== */
 /* _worker_terminal_timeout_env                                       */
 /* ===================================================================== */
-/* PoP: kdb_worker_terminal_timeout_env @ hermes_cli/kanban_db.py:_worker_terminal_timeout_env */
+/* PoP: string @ hermes_cli/kanban_db.py:_worker_terminal_timeout_env */
 /* Returns malloc'd string (caller frees) or NULL. */
 char *kdb_worker_terminal_timeout_env(long max_runtime_seconds,
                                       const char *current_timeout)
@@ -405,7 +405,7 @@ int kdb_execute_boundary_with_retry(sqlite3 *conn, const char *sql)
 /* ===================================================================== */
 /* _resolve_hermes_argv / _hermes_path_argv / _module_hermes_argv    */
 /* ===================================================================== */
-/* PoP: kdb_module_hermes_argv @ hermes_cli/kanban_db.py:_module_hermes_argv */
+/* PoP: vector @ hermes_cli/kanban_db.py:_module_hermes_argv */
 /* Returns a malloc'd NULL-terminated argv vector (caller frees with kdb_argv_free). */
 char **kdb_module_hermes_argv(void)
 {
@@ -459,7 +459,7 @@ void kdb_argv_free(char **argv)
 /* ===================================================================== */
 /* _resolve_worker_cli_toolsets                                      */
 /* ===================================================================== */
-/* PoP: kdb_resolve_worker_cli_toolsets @ hermes_cli/kanban_db.py:_resolve_worker_cli_toolsets */
+/* PoP: names @ hermes_cli/kanban_db.py:_resolve_worker_cli_toolsets */
 /* Returns a malloc'd NULL-terminated array of toolset names (caller frees
  * with kdb_strv_free), or NULL when resolution is unavailable. Mirrors the
  * Python except-branch: config toolset resolution is owned by the config
@@ -627,7 +627,7 @@ int kdb_gc_worker_logs(long older_than_seconds, const char *board)
     return removed;
 }
 
-/* PoP: kdb_read_worker_log @ hermes_cli/kanban_db.py:read_worker_log */
+/* PoP: text @ hermes_cli/kanban_db.py:read_worker_log */
 /* Returns malloc'd text (caller frees) or NULL. */
 char *kdb_read_worker_log(const char *task_id, const char *board,
                            long tail_bytes)
@@ -998,7 +998,7 @@ int kdb_set_branch_name(sqlite3 *conn, const char *task_id,
 /* _pid_alive / reap_worker_zombies                                   */
 /* ===================================================================== */
 
-/* PoP: kdb_pid_alive @ hermes_cli/kanban_db.py:_pid_alive */
+/* PoP: kill @ hermes_cli/kanban_db.py:_pid_alive */
 /* Host-local liveness: kill(pid,0) plus a /proc/<pid>/status zombie peek
  * on Linux. Returns 1 if alive (and not a zombie). */
 int kdb_pid_alive(long pid)
@@ -1060,7 +1060,7 @@ int kdb_reap_worker_zombies(void)
 /* _cross_process_init_lock / _dispatch_tick_lock (flock)             */
 /* ===================================================================== */
 
-/* PoP: kdb_init_lock_acquire @ hermes_cli/kanban_db.py:_cross_process_init_lock */
+/* PoP: flock @ hermes_cli/kanban_db.py:_cross_process_init_lock */
 /* Bounded non-blocking flock (LOCK_EX|LOCK_NB) with timeout. On success
  * *held_out=1 and *handle_out is the open FILE* the caller must release. */
 int kdb_init_lock_acquire(const char *db_path, int *held_out, void **handle_out)
@@ -1091,7 +1091,7 @@ int kdb_init_lock_acquire(const char *db_path, int *held_out, void **handle_out)
 #endif
 }
 
-/* PoP: tls_release @ hermes_cli/active_sessions.py:release */
+/* PoP: kdb_init_lock_release @ hermes_cli/active_sessions.py:release */
 void kdb_init_lock_release(void *handle)
 {
 #ifndef _WIN32
@@ -1200,7 +1200,7 @@ int kdb_heartbeat_worker(sqlite3 *conn, const char *task_id,
 /* _defer_reclaim_for_live_worker (host-local SIGTERM/SIGKILL)         */
 /* ===================================================================== */
 
-/* PoP: kb_terminate_reclaimed_worker @ hermes_cli/kanban_db.py:_terminate_reclaimed_worker */
+/* PoP: attempt @ hermes_cli/kanban_db.py:_terminate_reclaimed_worker */
 /* Returns malloc'd JSON describing the termination attempt (caller frees). */
 static char *kb_terminate_reclaimed_worker(long pid, const char *claim_lock)
 {
@@ -1613,7 +1613,7 @@ char **kdb_detect_stale_running(sqlite3 *conn, int stale_timeout_seconds)
 /* check_respawn_guard                                                */
 /* ===================================================================== */
 
-/* PoP: kdb_check_respawn_guard @ hermes_cli/kanban_db.py:check_respawn_guard */
+/* PoP: string @ hermes_cli/kanban_db.py:check_respawn_guard */
 /* Returns malloc'd reason string (caller frees) or NULL. */
 char *kdb_check_respawn_guard(sqlite3 *conn, const char *task_id)
 {
@@ -2189,7 +2189,7 @@ void kdb_run_daemon(sqlite3 *conn, double interval, int max_spawn,
 /* build_worker_context                                               */
 /* ===================================================================== */
 
-/* PoP: kdb_build_worker_context @ hermes_cli/kanban_db.py:build_worker_context */
+/* PoP: text @ hermes_cli/kanban_db.py:build_worker_context */
 /* Returns malloc'd worker prompt text (caller frees) or NULL on unknown task. */
 char *kdb_build_worker_context(sqlite3 *conn, const char *task_id)
 {

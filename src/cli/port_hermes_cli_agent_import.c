@@ -24,7 +24,7 @@
 
 /* ── is_secret_key ───────────────────────────────────────────── */
 
-/* PoP: is_secret_key @ hermes_cli/agent_import.py:is_secret_key */
+/* PoP: ai_is_secret_key @ hermes_cli/agent_import.py:is_secret_key */
 bool ai_is_secret_key(const char *key)
 {
     if (!key || !*key) return false;
@@ -74,7 +74,7 @@ bool ai_is_secret_key(const char *key)
 
 /* ── normalize_text ─────────────────────────────────────────── */
 
-/* PoP: normalize_text @ hermes_cli/agent_import.py:normalize_text */
+/* PoP: ai_normalize_text @ hermes_cli/agent_import.py:normalize_text */
 char *ai_normalize_text(const char *text)
 {
     if (!text) return strdup("");
@@ -236,7 +236,7 @@ static void ai_flush_paragraph(char ***entries, size_t *n_ent, size_t *cap_ent,
     if (entry) ai_strarr_push(entries, n_ent, cap_ent, entry);
 }
 
-/* PoP: extract_markdown_entries @ hermes_cli/agent_import.py:extract_markdown_entries */
+/* PoP: ai_extract_markdown_entries @ hermes_cli/agent_import.py:extract_markdown_entries */
 char **ai_extract_markdown_entries(const char *text)
 {
     if (!text) text = "";
@@ -442,7 +442,7 @@ char **ai_extract_markdown_entries(const char *text)
 
 /* ── claude_rule_to_command_pattern ──────────────────────────── */
 
-/* PoP: claude_rule_to_command_pattern @ hermes_cli/agent_import.py:claude_rule_to_command_pattern */
+/* PoP: ai_claude_rule_to_command_pattern @ hermes_cli/agent_import.py:claude_rule_to_command_pattern */
 char *ai_claude_rule_to_command_pattern(const char *rule)
 {
     if (!rule) return NULL;
@@ -471,7 +471,7 @@ char *ai_claude_rule_to_command_pattern(const char *rule)
 
 /* ── sanitize_mcp_env ────────────────────────────────────────── */
 
-/* PoP: sanitize_mcp_env @ hermes_cli/agent_import.py:sanitize_mcp_env */
+/* PoP: ai_sanitize_mcp_env @ hermes_cli/agent_import.py:sanitize_mcp_env */
 void ai_sanitize_mcp_env(const char *env_json,
                          char **out_kept, char ***out_stripped)
 {
@@ -516,7 +516,7 @@ void ai_sanitize_mcp_env(const char *env_json,
 
 /* ── parse_existing_memory_entries ─────────────────────────── */
 
-/* PoP: parse_existing_memory_entries @ hermes_cli/agent_import.py:parse_existing_memory_entries */
+/* PoP: ai_parse_existing_memory_entries @ hermes_cli/agent_import.py:parse_existing_memory_entries */
 char **ai_parse_existing_memory_entries(const char *file_contents)
 {
     char **entries = calloc(1, sizeof(char *));
@@ -559,7 +559,7 @@ char **ai_parse_existing_memory_entries(const char *file_contents)
 
 /* ── merge_entries ──────────────────────────────────────────── */
 
-/* PoP: merge_entries @ hermes_cli/agent_import.py:merge_entries */
+/* PoP: ai_merge_entries @ hermes_cli/agent_import.py:merge_entries */
 char **ai_merge_entries(const char *existing_json, const char *incoming_json,
                         long limit, size_t *out_added,
                         size_t *out_duplicates, size_t *out_overflowed)
@@ -679,7 +679,7 @@ static void ai_buf_puts(struct ai_yaml_buf *b, const char *s) {
     b->buf[b->len] = '\0';
 }
 
-/* PoP: load_yaml_file @ hermes_cli/agent_import.py:load_yaml_file */
+/* PoP: ai_load_yaml_from_string @ hermes_cli/agent_import.py:load_yaml_file */
 /* Parse a YAML string into a JSON string. Mirrors Python's
  * yaml.safe_load: returns "{}" for empty/non-dict input. */
 char *ai_load_yaml_from_string(const char *yaml_text) {
@@ -703,7 +703,7 @@ char *ai_load_yaml_from_string(const char *yaml_text) {
     return json_str;
 }
 
-/* PoP: dump_yaml_file @ hermes_cli/agent_import.py:dump_yaml_file */
+/* PoP: ai_yaml_emit_scalar @ hermes_cli/agent_import.py:dump_yaml_file */
 /* Serialize a JSON dict to YAML string. Mirrors Python's
  * yaml.safe_dump(data, default_flow_style=False, sort_keys=False,
  * allow_unicode=True). Produces block-style YAML. */
@@ -872,7 +872,7 @@ char *ai_dump_yaml_to_string(const char *json_dict) {
 
 /* ── default_source_dir ─────────────────────────────────────── */
 
-/* PoP: default_source_dir @ hermes_cli/agent_import.py:default_source_dir */
+/* PoP: ai_default_source_dir @ hermes_cli/agent_import.py:default_source_dir */
 /* Build the default source dir path for an agent.
  * claude-code → "<home>/.claude"
  * codex → "<home>/.codex" */
@@ -891,7 +891,7 @@ char *ai_default_source_dir(const char *agent, const char *home) {
 
 /* ── detect_agents ──────────────────────────────────────────── */
 
-/* PoP: detect_agents @ hermes_cli/agent_import.py:detect_agents */
+/* PoP: ai_detect_agents @ hermes_cli/agent_import.py:detect_agents */
 /* Return list of agents whose default dirs exist under home.
  * Returns malloc'd NULL-terminated array of malloc'd strings. */
 char **ai_detect_agents(const char *home) {
@@ -914,7 +914,7 @@ char **ai_detect_agents(const char *home) {
 
 /* ── backup_memory_file ─────────────────────────────────────── */
 
-/* PoP: backup_memory_file @ hermes_cli/agent_import.py:backup_memory_file */
+/* PoP: ai_backup_path @ hermes_cli/agent_import.py:backup_memory_file */
 /* Build a backup path: "<path>.bak.<unix_ts>".
  * Returns NULL if path doesn't exist. The caller provides the
  * unix timestamp via ai_backup_path (no time() calls for test
@@ -938,7 +938,7 @@ char *ai_backup_path(const char *path, long unix_ts) {
 
 /* ── record / build_report ──────────────────────────────────── */
 
-/* PoP: record @ hermes_cli/agent_import.py:AgentImporter.record */
+/* PoP: strings @ hermes_cli/agent_import.py:AgentImporter.record */
 /* Build a JSON item dict from import fields.
  * kind, source, destination: strings (may be NULL → null in JSON)
  * status: string (imported/skipped/conflict/error)
@@ -969,7 +969,7 @@ char *ai_record(const char *kind, const char *source,
     return out;
 }
 
-/* PoP: build_report @ hermes_cli/agent_import.py:AgentImporter.build_report */
+/* PoP: strings @ hermes_cli/agent_import.py:AgentImporter.build_report */
 /* Build a JSON report from import items.
  * agent: string
  * source_path: string

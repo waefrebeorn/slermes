@@ -33,7 +33,7 @@ struct browser_tool_cdp {
 browser_tool_cdp_t *browser_tool_cdp_init(void) { return calloc(1, sizeof(browser_tool_cdp_t)); }
 void browser_tool_cdp_cleanup(browser_tool_cdp_t *s) { free(s); }
 
-/* PoP: _get_vision_model @ tools/browser_tool.py:_get_vision_model */
+/* PoP: browser_get_vision_model @ tools/browser_tool.py:_get_vision_model */
 char *browser_get_vision_model(void)
 {
     const char *model = getenv("AUXILIARY_VISION_MODEL");
@@ -41,7 +41,7 @@ char *browser_get_vision_model(void)
     return strdup("");
 }
 
-/* PoP: _get_extraction_model @ tools/browser_tool.py:_get_extraction_model */
+/* PoP: browser_get_extraction_model @ tools/browser_tool.py:_get_extraction_model */
 char *browser_get_extraction_model(void)
 {
     const char *model = getenv("AUXILIARY_WEB_EXTRACT_MODEL");
@@ -49,7 +49,7 @@ char *browser_get_extraction_model(void)
     return strdup("");
 }
 
-/* PoP: _resolve_cdp_override @ tools/browser_tool.py:_resolve_cdp_override */
+/* PoP: browser_resolve_cdp_override @ tools/browser_tool.py:_resolve_cdp_override */
 char *browser_resolve_cdp_override(const char *cdp_url)
 {
     if (!cdp_url) return strdup("");
@@ -89,7 +89,7 @@ char *browser_resolve_cdp_override(const char *cdp_url)
     return version_url;
 }
 
-/* PoP: _get_cdp_override @ tools/browser_tool.py:_get_cdp_override */
+/* PoP: browser_get_cdp_override @ tools/browser_tool.py:_get_cdp_override */
 char *browser_get_cdp_override(void)
 {
     const char *env_override = getenv("BROWSER_CDP_URL");
@@ -101,7 +101,7 @@ char *browser_get_cdp_override(void)
     return strdup("");
 }
 
-/* PoP: _get_dialog_policy_config @ tools/browser_tool.py:_get_dialog_policy_config */
+/* PoP: browser_get_dialog_policy_config @ tools/browser_tool.py:_get_dialog_policy_config */
 char *browser_get_dialog_policy_config(void)
 {
     /* Return policy and timeout as JSON */
@@ -117,7 +117,7 @@ char *browser_get_dialog_policy_config(void)
     return result;
 }
 
-/* PoP: _ensure_cdp_supervisor @ tools/browser_tool.py:_ensure_cdp_supervisor */
+/* PoP: browser_ensure_cdp_supervisor @ tools/browser_tool.py:_ensure_cdp_supervisor */
 json_t *browser_ensure_cdp_supervisor(const char *task_id)
 {
     json_t *result = json_object();
@@ -168,7 +168,7 @@ json_t *browser_ensure_cdp_supervisor(const char *task_id)
     return result;
 }
 
-/* PoP: _stop_cdp_supervisor @ tools/browser_tool.py:_stop_cdp_supervisor */
+/* PoP: browser_stop_cdp_supervisor @ tools/browser_tool.py:_stop_cdp_supervisor */
 json_t *browser_stop_cdp_supervisor(const char *task_id)
 {
     json_t *result = json_object();
@@ -226,7 +226,7 @@ bool browser_url_is_private(const char *url)
     return false;
 }
 
-/* PoP: _navigation_session_key @ tools/browser_tool.py:_navigation_session_key */
+/* PoP: browser_navigation_session_key @ tools/browser_tool.py:_navigation_session_key */
 char *browser_navigation_session_key(const char *task_id)
 {
     if (!task_id) return strdup("default");
@@ -236,7 +236,7 @@ char *browser_navigation_session_key(const char *task_id)
     return result;
 }
 
-/* PoP: _socket_safe_tmpdir @ tools/browser_tool.py:_socket_safe_tmpdir */
+/* PoP: browser_socket_safe_tmpdir @ tools/browser_tool.py:_socket_safe_tmpdir */
 char *browser_socket_safe_tmpdir(void)
 {
     const char *tmpdir = getenv("TMPDIR");
@@ -244,7 +244,7 @@ char *browser_socket_safe_tmpdir(void)
     return strdup(tmpdir);
 }
 
-/* PoP: _create_local_session @ tools/browser_tool.py:_create_local_session */
+/* PoP: browser_create_local_session @ tools/browser_tool.py:_create_local_session */
 json_t *browser_create_local_session(const char *task_id)
 {
     json_t *result = json_object();
@@ -255,7 +255,7 @@ json_t *browser_create_local_session(const char *task_id)
     return result;
 }
 
-/* PoP: _create_cdp_session @ tools/browser_tool.py:_create_cdp_session */
+/* PoP: browser_create_cdp_session @ tools/browser_tool.py:_create_cdp_session */
 json_t *browser_create_cdp_session(const char *task_id, const char *cdp_url)
 {
     json_t *result = json_object();
@@ -267,7 +267,7 @@ json_t *browser_create_cdp_session(const char *task_id, const char *cdp_url)
     return result;
 }
 
-/* PoP: _get_session_info @ tools/browser_tool.py:_get_session_info */
+/* PoP: browser_get_session_info @ tools/browser_tool.py:_get_session_info */
 json_t *browser_get_session_info(const char *session_key)
 {
     json_t *result = json_object();
@@ -277,7 +277,7 @@ json_t *browser_get_session_info(const char *session_key)
     return result;
 }
 
-/* PoP: _find_agent_browser @ tools/browser_tool.py:_find_agent_browser */
+/* PoP: browser_find_agent_browser @ tools/browser_tool.py:_find_agent_browser */
 char *browser_find_agent_browser(void)
 {
     const char *candidates[] = {
@@ -295,7 +295,7 @@ char *browser_find_agent_browser(void)
     return strdup("");
 }
 
-/* PoP: _truncate_snapshot @ tools/browser_tool.py:_truncate_snapshot */
+/* PoP: browser_truncate_snapshot @ tools/browser_tool.py:_truncate_snapshot */
 char *browser_truncate_snapshot(const char *snapshot, size_t max_chars)
 {
     if (!snapshot) return strdup("");
@@ -308,7 +308,7 @@ char *browser_truncate_snapshot(const char *snapshot, size_t max_chars)
     return result;
 }
 
-/* PoP: check_browser_requirements @ tools/browser_tool.py:check_browser_requirements */
+/* PoP: browser_check_browser_requirements @ tools/browser_tool.py:check_browser_requirements */
 json_t *browser_check_browser_requirements(void)
 {
     json_t *result = json_object();
@@ -319,7 +319,7 @@ json_t *browser_check_browser_requirements(void)
     return result;
 }
 
-/* PoP: check_browser_vision_requirements @ tools/browser_tool.py:check_browser_vision_requirements */
+/* PoP: browser_check_browser_vision_requirements @ tools/browser_tool.py:check_browser_vision_requirements */
 json_t *browser_check_browser_vision_requirements(void)
 {
     json_t *result = json_object();

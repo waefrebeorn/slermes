@@ -220,7 +220,7 @@ int gw_profile_runtime_scope_enter(const char *profile_home,
     return 1;
 }
 
-/* PoP: gw_profile_runtime_scope_exit @ gateway/run.py:_profile_runtime_scope */
+/* PoP: scope @ gateway/run.py:_profile_runtime_scope */
 /* Restore the previous home override + secret scope (the contextmanager's
  * finally block). */
 void gw_profile_runtime_scope_exit(gw_profile_scope_token_t *tok)
@@ -233,7 +233,7 @@ void gw_profile_runtime_scope_exit(gw_profile_scope_token_t *tok)
     secret_scope_reset_secret_scope(tok->prev_secret_scope);
 }
 
-/* PoP: gw_slack_ignored_channels_from_config @ gateway/run.py:_slack_ignored_channels_from_gateway_config */
+/* PoP: csv_or_list @ gateway/run.py:_slack_ignored_channels_from_gateway_config */
 /* Port of Python gateway.run._slack_ignored_channels_from_gateway_config.
  * Returns a csv_or_list (comma/semicolon/space/newline separated) set
  * of Slack channel IDs that the generic gateway must never dispatch.
@@ -302,7 +302,7 @@ bool gw_is_slack_ignored_channel(
     return result;
 }
 
-/* PoP: _retry_ordinal @ hermes_cli/observability/relay_shared_metrics.py:_retry_ordinal */
+/* PoP: gw_retry_ordinal @ hermes_cli/observability/relay_shared_metrics.py:_retry_ordinal */
 /* Extract retry_count from event dict, validate it's a non-negative int. */
 /* (Python's dict.get + isinstance + value >= 0 check) */
 int gw_retry_ordinal(const json_t *event)

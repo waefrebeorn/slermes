@@ -227,7 +227,7 @@ static void build_and_emit_event(async_delegation_rec_t *rec, json_node_t *resul
  * the record active. Returns a shallow copy of the record at claim time
  * (ownership of heap fields transferred to caller), or NULL if no record
  * exists or its status is not running/stalling. */
-/* PoP: _begin_finalization @ tools/async_delegation.py:_begin_finalization */
+/* PoP: begin_finalization @ tools/async_delegation.py:_begin_finalization */
 static async_delegation_rec_t *begin_finalization(const char *delegation_id) {
     if (!delegation_id) return NULL;
     pthread_mutex_lock(&g_lock);
@@ -277,7 +277,7 @@ static async_delegation_rec_t *begin_finalization(const char *delegation_id) {
 }
 
 /* Mark the record terminal and prune. Caller does NOT hold the lock. */
-/* PoP: _finish_finalization @ tools/async_delegation.py:_finish_finalization */
+/* PoP: finish_finalization @ tools/async_delegation.py:_finish_finalization */
 static void finish_finalization(const char *delegation_id, const char *status) {
     pthread_mutex_lock(&g_lock);
     for (async_delegation_rec_t *p = g_head; p; p = p->next) {
@@ -293,7 +293,7 @@ static void finish_finalization(const char *delegation_id, const char *status) {
 }
 
 /* Match a record against optional session selectors (OR semantics, like Python). */
-/* PoP: _matches_session_selectors @ tools/async_delegation.py:_matches_session_selectors */
+/* PoP: matches_session_selectors @ tools/async_delegation.py:_matches_session_selectors */
 static int matches_session_selectors(const async_delegation_rec_t *r,
                                       const char *session_key,
                                       const char *origin_ui_session_id,
@@ -665,7 +665,7 @@ void async_delegation_reset_for_tests(void) {
 
 /* ── Session-scoped queries + interrupt (async_delegation.py gaps) ── */
 
-/* PoP: active_for_session @ tools/async_delegation.py:active_for_session */
+/* PoP: async_delegation_active_for_session @ tools/async_delegation.py:active_for_session */
 int async_delegation_active_for_session(const char *session_key,
                                         const char *origin_ui_session_id,
                                         const char *parent_session_id) {
@@ -681,7 +681,7 @@ int async_delegation_active_for_session(const char *session_key,
     return n;
 }
 
-/* PoP: active_task_count @ tools/async_delegation.py:active_task_count */
+/* PoP: async_delegation_active_task_count @ tools/async_delegation.py:active_task_count */
 int async_delegation_active_task_count(void) {
     int total = 0;
     pthread_mutex_lock(&g_lock);
@@ -697,7 +697,7 @@ int async_delegation_active_task_count(void) {
     return total;
 }
 
-/* PoP: has_live_for_session @ tools/async_delegation.py:has_live_for_session */
+/* PoP: async_delegation_has_live_for_session @ tools/async_delegation.py:has_live_for_session */
 bool async_delegation_has_live_for_session(const char *session_key,
                                            const char *origin_ui_session_id,
                                            const char *parent_session_id) {
@@ -717,7 +717,7 @@ bool async_delegation_has_live_for_session(const char *session_key,
     return found;
 }
 
-/* PoP: interrupt_for_session @ tools/async_delegation.py:interrupt_for_session */
+/* PoP: async_delegation_interrupt_for_session @ tools/async_delegation.py:interrupt_for_session */
 int async_delegation_interrupt_for_session(const char *session_key,
                                            const char *origin_ui_session_id,
                                            const char *parent_session_id) {
@@ -746,7 +746,7 @@ int async_delegation_interrupt_for_session(const char *session_key,
  * uses begin/finish_finalization + build_and_emit_event (all above). */
 static void finalize_stalled(const char *delegation_id);
 
-/* PoP: _push_batch_completion_event @ tools/async_delegation.py:_push_batch_completion_event */
+/* PoP: push_batch_completion_event @ tools/async_delegation.py:_push_batch_completion_event */
 /* Build the combined async-delegation batch completion event and deliver to sink. */
 static void push_batch_completion_event(async_delegation_rec_t *rec,
                                         json_node_t *combined, const char *status) {
@@ -787,7 +787,7 @@ static void push_batch_completion_event(async_delegation_rec_t *rec,
     json_free(evt);
 }
 
-/* PoP: _stale_monitor_loop @ tools/async_delegation.py:_stale_monitor_loop */
+/* PoP: stale_monitor_loop @ tools/async_delegation.py:_stale_monitor_loop */
 static void *stale_monitor_loop(void *arg) {
     (void)arg;
     while (1) {
@@ -883,7 +883,7 @@ static void *stale_monitor_loop(void *arg) {
     return NULL;
 }
 
-/* PoP: _ensure_stale_monitor @ tools/async_delegation.py:_ensure_stale_monitor */
+/* PoP: async_delegation_ensure_stale_monitor @ tools/async_delegation.py:_ensure_stale_monitor */
 void async_delegation_ensure_stale_monitor(void) {
     pthread_mutex_lock(&g_monitor_lock);
     if (g_monitor_running) { pthread_mutex_unlock(&g_monitor_lock); return; }
@@ -897,7 +897,7 @@ void async_delegation_ensure_stale_monitor(void) {
     pthread_mutex_unlock(&g_monitor_lock);
 }
 
-/* PoP: _finalize_stalled @ tools/async_delegation.py:_finalize_stalled */
+/* PoP: finalize @ tools/async_delegation.py:_finalize_stalled */
 /* Force-finalize a stalling delegation whose runner never returned, with stall
  * metadata. Reuses finalize() which goes through begin/finish_finalization. */
 static void finalize_stalled(const char *delegation_id) {
@@ -939,7 +939,7 @@ static void finalize_stalled(const char *delegation_id) {
     if (result) json_free(result);
 }
 
-/* PoP: _children_activity_from_token @ tools/async_delegation.py:_children_activity_from_token */
+/* PoP: registry @ tools/async_delegation.py:_children_activity_from_token */
 /* Python parses a per-child (api_calls, current_tool, last_activity_ts) tuple.
  * In the in-memory C registry the token is opaque to the registry (mirrors
  * Python's comment: "the token contract is intentionally opaque"). We expose

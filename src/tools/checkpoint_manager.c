@@ -85,7 +85,7 @@ static void _git_env(void) {
     setenv("GIT_WORK_TREE", ".", 1);
 }
 
-/* PoP: _run_git @ tools/checkpoint_manager.py:_run_git */
+/* PoP: _run_git_idx @ tools/checkpoint_manager.py:_run_git */
 static bool _run_git(const char *repo_path, const char *cmd, char *out, size_t out_len) {
     char full_cmd[MAX_PATH * 2];
     snprintf(full_cmd, sizeof(full_cmd), "cd '%s' && git %s 2>&1", repo_path, cmd);
@@ -236,15 +236,15 @@ bool _validate_file_path(const char *file_path, const char *working_dir) {
     return file_path[0] != '\0' && strstr(file_path, "..") == NULL;
 }
 
-/* PoP: _normalize_path @ tools/checkpoint_manager.py:_normalize_path */
-/* PoP: _normalize_path @ gateway/platforms/msgraph_webhook.py:_normalize_path */
-/* PoP: _normalize_path @ gateway/platforms/whatsapp_cloud.py:_normalize_path */
+/* PoP: _run_git_idx @ tools/checkpoint_manager.py:_normalize_path */
+/* PoP: _run_git_idx @ gateway/platforms/msgraph_webhook.py:_normalize_path */
+/* PoP: _run_git_idx @ gateway/platforms/whatsapp_cloud.py:_normalize_path */
 char* _normalize_path(const char *path_value) {
     if (!path_value) return strdup(".");
     return realpath(path_value, NULL) ? : strdup(path_value);
 }
 
-/* PoP: _migrate_legacy_store @ tools/checkpoint_manager.py:_migrate_legacy_store */
+/* PoP: _run_git_idx @ tools/checkpoint_manager.py:_migrate_legacy_store */
 char* _migrate_legacy_store(const char *base) {
     (void)base;
     return NULL;
@@ -526,7 +526,7 @@ bool checkpoint_manager_ensure(tool_checkpoint_mgr_t *self,
         return false;
     if (_cm_in_dirset(self, abs_dir)) return false;
     _cm_add_dir(self, abs_dir);
-/* PoP: idset_take @ tools/checkpoint_manager.py:_take */
+/* PoP: checkpoint_manager_take @ tools/checkpoint_manager.py:_take */
 
     return checkpoint_manager_take(self, abs_dir, reason ? reason : "auto");
 }
@@ -676,7 +676,7 @@ char *checkpoint_manager_list(tool_checkpoint_mgr_t *self, const char *working_d
     len += snprintf(res + len, cap - len, "]");
     return res;
 }
-/* PoP: wd_untracked_diff @ tools/checkpoint_manager.py:diff */
+/* PoP: checkpoint_manager_diff @ tools/checkpoint_manager.py:diff */
 
 char *checkpoint_manager_diff(tool_checkpoint_mgr_t *self,
                             const char *working_dir, const char *commit_hash) {
@@ -726,7 +726,7 @@ char *checkpoint_manager_diff(tool_checkpoint_mgr_t *self,
              ok_stat ? stat_out : "", ok_diff ? diff_out : "");
     return r;
 }
-/* PoP: mco_restore @ tools/checkpoint_manager.py:restore */
+/* PoP: checkpoint_manager_restore @ tools/checkpoint_manager.py:restore */
 
 char *checkpoint_manager_restore(tool_checkpoint_mgr_t *self,
                                const char *working_dir, const char *commit_hash,
@@ -849,7 +849,7 @@ char *store_status(const char *checkpoint_base) {
     return r;
 }
 
-/* PoP: checkpoint_clear_all @ tools/checkpoint_manager.py:clear_all */
+/* PoP: clear_all @ tools/checkpoint_manager.py:clear_all */
 char *clear_all(const char *checkpoint_base) {
     char store[MAX_PATH];
     _store_path(NULL, store, sizeof(store));
@@ -867,7 +867,7 @@ char *clear_legacy(const char *checkpoint_base) {
     return strdup("{\"cleared\":0}");
 }
 
-/* PoP: ccm_print_session_diff @ tools/checkpoint_manager.py:session_diff */
+/* PoP: checkpoint_manager_diff @ tools/checkpoint_manager.py:session_diff */
 /* Cumulative diff of everything changed in the working tree since the
  * earliest retained checkpoint. Powers `/diff session`.
  *

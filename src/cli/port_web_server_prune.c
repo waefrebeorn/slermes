@@ -65,7 +65,7 @@ static void add_lower(where_t *w, const char *s) {
     add_str(w, buf);
 }
 
-/* PoP: ws_prune_filter_where @ hermes_state.py:_prune_filter_where */
+/* PoP: build_where @ hermes_state.py:_prune_filter_where */
 static void build_where(where_t *w, const ws_prune_filters_t *f) {
     w->sql[0] = '\0';
     w->np = 0;

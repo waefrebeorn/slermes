@@ -527,7 +527,7 @@ bool gateway_event_media_is_video(const json_node_t *event, int index)
     return msg_type && msg_type->type == JSON_STRING && strcmp(msg_type->str_val, "VIDEO") == 0;
 }
 
-/* PoP: _build_media_placeholder @ hermes_cli/web_server.py:_build_media_placeholder */
+/* PoP: gateway_build_media_placeholder @ hermes_cli/web_server.py:_build_media_placeholder */
 /* Text placeholder for media events from run.py */
 /* PoP: gateway_build_media_placeholder @ gateway/run.py:_build_media_placeholder */
 char *gateway_build_media_placeholder(const char *media_urls_json,
@@ -612,7 +612,7 @@ char *gateway_build_document_context_note(const char *display_name,
  *  web_server.py pure helpers ported from hermes_cli/web_server.py
  * =========================================================================== */
 
-/* PoP: port_web_server__tail_lines @ hermes_cli/web_server.py:_tail_lines */
+/* PoP: web_tail_lines @ hermes_cli/web_server.py:_tail_lines */
 /* Return malloc'd string with last n lines of file at path. */
 char *web_tail_lines(const char *path, int n)
 {
@@ -654,7 +654,7 @@ char *web_tail_lines(const char *path, int n)
     return buf;
 }
 
-/* PoP: port_web_server__dashboard_spawn_executable @ hermes_cli/web_server.py:_dashboard_spawn_executable */
+/* PoP: web_dashboard_spawn_executable @ hermes_cli/web_server.py:_dashboard_spawn_executable */
 /* Returns malloc'd string - pythonw.exe on Windows, sys.executable otherwise. */
 char *web_dashboard_spawn_executable(void)
 {
@@ -696,7 +696,7 @@ void web_record_completed_action(const char *name, int exit_code, const char *me
  *  web_server.py config normalization helpers
  * =========================================================================== */
 
-/* PoP: web_normalize_config_for_web @ hermes_cli/web_server.py:_normalize_config_for_web */
+/* PoP: objects @ hermes_cli/web_server.py:_normalize_config_for_web */
 /* Normalize config for web UI: flatten model dict to string, extract context_length.
  * Input and output are JSON objects (caller frees). */
 json_node_t *web_normalize_config_for_web(json_node_t *config)

@@ -25,7 +25,7 @@ static const char *home_dir(void) {
     return (h && *h) ? h : ".";
 }
 
-/* PoP: matches @ agent/credential_sources.py:matches */
+/* PoP: crs_matches @ agent/credential_sources.py:matches */
 bool crs_matches(const char *step_provider, const char *step_source, const char *provider, const char *source) {
     /* Python: provider != "*" must equal; source match. */
     if (step_provider && strcmp(step_provider, "*") != 0 && strcmp(step_provider, provider) != 0)
@@ -34,7 +34,7 @@ bool crs_matches(const char *step_provider, const char *step_source, const char 
     return true;
 }
 
-/* PoP: register @ agent/credential_sources.py:register */
+/* PoP: crs_register @ agent/credential_sources.py:register */
 int crs_register(const char *step_json) {
     /* Python: append to registry. */
     if (!step_json) return -1;
@@ -42,7 +42,7 @@ int crs_register(const char *step_json) {
     return 0;
 }
 
-/* PoP: find_removal_step @ agent/credential_sources.py:find_removal_step */
+/* PoP: crs_find_removal_step @ agent/credential_sources.py:find_removal_step */
 char *crs_find_removal_step(const char *provider, const char *source) {
     /* Python: first matching step or None. */
     if (!provider) return NULL;
@@ -50,7 +50,7 @@ char *crs_find_removal_step(const char *provider, const char *source) {
     return NULL;
 }
 
-/* PoP: _remove_env_source @ agent/credential_sources.py:_remove_env_source */
+/* PoP: crs_remove_env_source @ agent/credential_sources.py:_remove_env_source */
 int crs_remove_env_source(const char *var) {
     /* Python: env:<VAR> — unset + strip from .env files. */
     if (!var) return -1;
@@ -59,14 +59,14 @@ int crs_remove_env_source(const char *var) {
     return 0;
 }
 
-/* PoP: _remove_claude_code @ agent/credential_sources.py:_remove_claude_code */
+/* PoP: crs_remove_claude_code @ agent/credential_sources.py:_remove_claude_code */
 int crs_remove_claude_code(void) {
     /* Python: ~/.claude/.credentials.json owned by Claude Code — no delete. */
     printf("claude code credentials untouched (third-party owned)\n");
     return 0;
 }
 
-/* PoP: _remove_hermes_pkce @ agent/credential_sources.py:_remove_hermes_pkce */
+/* PoP: crs_remove_hermes_pkce @ agent/credential_sources.py:_remove_hermes_pkce */
 int crs_remove_hermes_pkce(void) {
     /* Python: ~/.hermes/.anthropic_oauth.json — ours, delete. */
     char *path = NULL;
@@ -80,7 +80,7 @@ int crs_remove_hermes_pkce(void) {
     return 0;
 }
 
-/* PoP: _clear_auth_store_provider @ agent/credential_sources.py:_clear_auth_store_provider */
+/* PoP: crs_clear_auth_store_provider @ agent/credential_sources.py:_clear_auth_store_provider */
 bool crs_clear_auth_store_provider(const char *provider) {
     /* Python: delete auth_store.providers[provider]. */
     if (!provider) return false;
@@ -88,20 +88,20 @@ bool crs_clear_auth_store_provider(const char *provider) {
     return true;
 }
 
-/* PoP: _remove_nous_device_code @ agent/credential_sources.py:_remove_nous_device_code */
+/* PoP: crs_remove_nous_device_code @ agent/credential_sources.py:_remove_nous_device_code */
 int crs_remove_nous_device_code(void) {
     /* Python: auth.json providers.nous clear + suppress. */
     printf("nous device code cleared from auth.json\n");
     return 0;
 }
 
-/* PoP: _remove_minimax_oauth @ agent/credential_sources.py:_remove_minimax_oauth */
+/* PoP: crs_remove_minimax_oauth @ agent/credential_sources.py:_remove_minimax_oauth */
 int crs_remove_minimax_oauth(void) {
     printf("minimax oauth cleared from auth.json\n");
     return 0;
 }
 
-/* PoP: _remove_codex_device_code @ agent/credential_sources.py:_remove_codex_device_code */
+/* PoP: crs_remove_codex_device_code @ agent/credential_sources.py:_remove_codex_device_code */
 int crs_remove_codex_device_code(void) {
     /* Python: our store + ~/.codex/auth.json. */
     char *path = NULL;
@@ -113,14 +113,14 @@ int crs_remove_codex_device_code(void) {
     return 0;
 }
 
-/* PoP: _remove_qwen_cli @ agent/credential_sources.py:_remove_qwen_cli */
+/* PoP: crs_remove_qwen_cli @ agent/credential_sources.py:_remove_qwen_cli */
 int crs_remove_qwen_cli(void) {
     /* Python: ~/.qwen/oauth_creds.json owned by Qwen CLI. */
     printf("qwen cli credentials untouched (third-party owned)\n");
     return 0;
 }
 
-/* PoP: _remove_copilot_gh @ agent/credential_sources.py:_remove_copilot_gh */
+/* PoP: crs_remove_copilot_gh @ agent/credential_sources.py:_remove_copilot_gh */
 int crs_remove_copilot_gh(void) {
     /* Python: gh auth token / env vars. */
     unsetenv("COPILOT_GITHUB_TOKEN");
@@ -130,14 +130,14 @@ int crs_remove_copilot_gh(void) {
     return 0;
 }
 
-/* PoP: _remove_custom_config @ agent/credential_sources.py:_remove_custom_config */
+/* PoP: crs_remove_custom_config @ agent/credential_sources.py:_remove_custom_config */
 int crs_remove_custom_config(void) {
     /* Python: custom_providers pool seeding. */
     printf("custom provider pool seeding removed from config\n");
     return 0;
 }
 
-/* PoP: _register_all_sources @ agent/credential_sources.py:_register_all_sources */
+/* PoP: crs_register_all_sources @ agent/credential_sources.py:_register_all_sources */
 int crs_register_all_sources(void) {
     /* Python: import-time registry build; order matters. */
     printf("all credential removal sources registered (ordered)\n");

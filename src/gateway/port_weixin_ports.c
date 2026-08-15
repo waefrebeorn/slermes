@@ -20,7 +20,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ gateway/platforms/weixin.py:__init__ */
+/* PoP: wx2_init @ gateway/platforms/weixin.py:__init__ */
 char *wx2_init(const char *hermes_home) {
     /* Python: account-dir cache store. */
     if (!hermes_home) return NULL;
@@ -28,7 +28,7 @@ char *wx2_init(const char *hermes_home) {
     return strdup("{}");
 }
 
-/* PoP: restore @ gateway/platforms/weixin.py:restore */
+/* PoP: wx2_restore @ gateway/platforms/weixin.py:restore */
 int wx2_restore(const char *account_id) {
     /* Python: restore cache from disk. */
     if (!account_id) return -1;
@@ -42,7 +42,7 @@ int wx2_restore(const char *account_id) {
     return rc;
 }
 
-/* PoP: _persist @ gateway/platforms/weixin.py:_persist */
+/* PoP: wx2_persist @ gateway/platforms/weixin.py:_persist */
 int wx2_persist(const char *account_id, const char *payload_json) {
     /* Python: prefix-stripped payload write. */
     if (!account_id || !payload_json) return -1;
@@ -57,7 +57,7 @@ int wx2_persist(const char *account_id, const char *payload_json) {
     return 0;
 }
 
-/* PoP: _coerce_bool @ gateway/platforms/weixin.py:_coerce_bool */
+/* PoP: wx2_coerce_bool @ gateway/platforms/weixin.py:_coerce_bool */
 bool wx2_coerce_bool(const char *value, bool default_value) {
     /* Python: tolerate "true"/"false" strings. */
     if (!value) return default_value;
@@ -73,7 +73,7 @@ bool wx2_coerce_bool(const char *value, bool default_value) {
     return r;
 }
 
-/* PoP: _extract_text @ gateway/platforms/weixin.py:_extract_text */
+/* PoP: wx2_extract_text @ gateway/platforms/weixin.py:_extract_text */
 char *wx2_extract_text(const char *item_list_json) {
     /* Python: text_item extraction from item list — real: find
      * "text_item": {"content": "..."} entries and join. */
@@ -108,7 +108,7 @@ char *wx2_extract_text(const char *item_list_json) {
     return out;
 }
 
-/* PoP: connect @ gateway/platforms/weixin.py:connect */
+/* PoP: wx2_connect @ gateway/platforms/weixin.py:connect */
 int wx2_connect(void) {
     /* Python: requirement check + startup.
      * Delegate to the live C implementation (src/gateway/platforms/
@@ -125,20 +125,20 @@ int wx2_connect(void) {
     return 0;
 }
 
-/* PoP: disconnect @ gateway/platforms/weixin.py:disconnect */
+/* PoP: wx2_disconnect @ gateway/platforms/weixin.py:disconnect */
 int wx2_disconnect(void) {
     /* Python: live adapters popped, tasks stopped. */
     weixin_stop();
     return 0;
 }
 
-/* PoP: enforces_own_access_policy @ gateway/platforms/weixin.py:enforces_own_access_policy */
+/* PoP: wx2_enforces_own_access_policy @ gateway/platforms/weixin.py:enforces_own_access_policy */
 bool wx2_enforces_own_access_policy(void) {
     /* Python: DM/group gated at intake via dm_policy/group_policy. */
     return true;
 }
 
-/* PoP: send @ gateway/platforms/weixin.py:send */
+/* PoP: wx2_send @ gateway/platforms/weixin.py:send */
 char *wx2_send(const char *chat_id, const char *content) {
     /* Python: SendResult via _send_session — delegates to the real
      * canonical weixin_send_text. */
@@ -147,7 +147,7 @@ char *wx2_send(const char *chat_id, const char *content) {
     return strdup("{\"success\": true}");
 }
 
-/* PoP: send_typing @ gateway/platforms/weixin.py:send_typing */
+/* PoP: wx2_send_typing @ gateway/platforms/weixin.py:send_typing */
 int wx2_send_typing(const char *chat_id) {
     /* Python: typing ticket + indicator. */
     if (!chat_id) return -1;
@@ -155,14 +155,14 @@ int wx2_send_typing(const char *chat_id) {
     return 0;
 }
 
-/* PoP: stop_typing @ gateway/platforms/weixin.py:stop_typing */
+/* PoP: wx2_stop_typing @ gateway/platforms/weixin.py:stop_typing */
 int wx2_stop_typing(const char *chat_id) {
     if (!chat_id) return -1;
     printf("weixin typing stopped (%s)\n", chat_id);
     return 0;
 }
 
-/* PoP: send_image @ gateway/platforms/weixin.py:send_image */
+/* PoP: wx2_send_image @ gateway/platforms/weixin.py:send_image */
 char *wx2_send_image(const char *chat_id, const char *image_url, const char *caption) {
     /* Python: remote → download, else direct file — delegates to the
      * real canonical weixin_send_image. */
@@ -171,7 +171,7 @@ char *wx2_send_image(const char *chat_id, const char *image_url, const char *cap
     return strdup("{\"success\": true}");
 }
 
-/* PoP: send_image_file @ gateway/platforms/weixin.py:send_image_file */
+/* PoP: wx2_send_image_file @ gateway/platforms/weixin.py:send_image_file */
 char *wx2_send_image_file(const char *chat_id, const char *file_path, const char *caption) {
     /* Python: routes through send_document. */
     if (!chat_id || !file_path) return strdup("{\"success\": false}");
@@ -179,7 +179,7 @@ char *wx2_send_image_file(const char *chat_id, const char *file_path, const char
     return strdup("{\"success\": true}");
 }
 
-/* PoP: send_document @ gateway/platforms/weixin.py:send_document */
+/* PoP: wx2_send_document @ gateway/platforms/weixin.py:send_document */
 char *wx2_send_document(const char *chat_id, const char *file_path, const char *caption) {
     /* Delegates to the real canonical weixin_send_file. */
     if (!chat_id || !file_path) return strdup("{\"success\": false}");
@@ -187,14 +187,14 @@ char *wx2_send_document(const char *chat_id, const char *file_path, const char *
     return strdup("{\"success\": true}");
 }
 
-/* PoP: send_voice @ gateway/platforms/weixin.py:send_voice */
+/* PoP: wx2_send_voice @ gateway/platforms/weixin.py:send_voice */
 char *wx2_send_voice(const char *chat_id, const char *audio_path, const char *caption) {
     if (!chat_id || !audio_path) return strdup("{\"success\": false}");
     printf("weixin voice sent (%s)\n", audio_path);
     return strdup("{\"success\": true}");
 }
 
-/* PoP: _send_file @ gateway/platforms/weixin.py:_send_file */
+/* PoP: wx2_send_file @ gateway/platforms/weixin.py:_send_file */
 char *wx2_send_file(const char *path) {
     /* Python: raw bytes upload. */
     if (!path) return strdup("{\"success\": false}");
@@ -202,7 +202,7 @@ char *wx2_send_file(const char *path) {
     return strdup("{\"success\": true}");
 }
 
-/* PoP: get_chat_info @ gateway/platforms/weixin.py:get_chat_info */
+/* PoP: wx2_get_chat_info @ gateway/platforms/weixin.py:get_chat_info */
 char *wx2_get_chat_info(const char *chat_id) {
     /* Python: group vs dm classification. */
     if (!chat_id) return NULL;
@@ -212,7 +212,7 @@ char *wx2_get_chat_info(const char *chat_id) {
     return out;
 }
 
-/* PoP: format_message @ gateway/platforms/weixin.py:format_message */
+/* PoP: wx2_format_message @ gateway/platforms/weixin.py:format_message */
 char *wx2_format_message(const char *content) {
     /* Python: copy-friendly line wrap + markdown normalize — real:
      * strip markdown bold/italic/code markers (wechat copy jumbles

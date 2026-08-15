@@ -20,7 +20,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _classify_responses_issuer @ agent/codex_responses_adapter.py:_classify_responses_issuer */
+/* PoP: crx_classify_responses_issuer @ agent/codex_responses_adapter.py:_classify_responses_issuer */
 char *crx_classify_responses_issuer(const char *model) {
     /* Python: stable issuer id for Responses endpoint. */
     if (!model) return strdup("unknown");
@@ -29,7 +29,7 @@ char *crx_classify_responses_issuer(const char *model) {
     return strdup("chat");
 }
 
-/* PoP: _chat_content_to_responses_parts @ agent/codex_responses_adapter.py:_chat_content_to_responses_parts */
+/* PoP: crx_chat_content_to_responses_parts @ agent/codex_responses_adapter.py:_chat_content_to_responses_parts */
 char *crx_chat_content_to_responses_parts(const char *content_json) {
     /* Python: chat multimodal content → Responses input parts. */
     if (!content_json) return strdup("[]");
@@ -37,7 +37,7 @@ char *crx_chat_content_to_responses_parts(const char *content_json) {
     return strdup(content_json);
 }
 
-/* PoP: _summarize_user_message_for_log @ agent/codex_responses_adapter.py:_summarize_user_message_for_log */
+/* PoP: crx_summarize_user_message_for_log @ agent/codex_responses_adapter.py:_summarize_user_message_for_log */
 char *crx_summarize_user_message_for_log(const char *content_json) {
     /* Python: flatten to plain text. */
     if (!content_json) return strdup("");
@@ -75,7 +75,7 @@ char *crx_summarize_user_message_for_log(const char *content_json) {
     return out;
 }
 
-/* PoP: _deterministic_call_id @ agent/codex_responses_adapter.py:_deterministic_call_id */
+/* PoP: crx_deterministic_call_id @ agent/codex_responses_adapter.py:_deterministic_call_id */
 char *crx_deterministic_call_id(const char *tool_call_content) {
     /* Python: deterministic call_id fallback. */
     if (!tool_call_content) return strdup("fc_0");
@@ -89,7 +89,7 @@ char *crx_deterministic_call_id(const char *tool_call_content) {
     return out;
 }
 
-/* PoP: _split_responses_tool_id @ agent/codex_responses_adapter.py:_split_responses_tool_id */
+/* PoP: crx_split_responses_tool_id @ agent/codex_responses_adapter.py:_split_responses_tool_id */
 char *crx_split_responses_tool_id(const char *tool_id) {
     /* Python: stored id → (call_id, response_item_id). */
     if (!tool_id) return strdup("\t");
@@ -99,7 +99,7 @@ char *crx_split_responses_tool_id(const char *tool_id) {
     return strdup(tool_id);
 }
 
-/* PoP: _derive_responses_function_call_id @ agent/codex_responses_adapter.py:_derive_responses_function_call_id */
+/* PoP: crx_derive_responses_function_call_id @ agent/codex_responses_adapter.py:_derive_responses_function_call_id */
 char *crx_derive_responses_function_call_id(const char *call_id) {
     /* Python: valid fc_ prefix enforced. */
     if (!call_id) return strdup("fc_0");
@@ -109,7 +109,7 @@ char *crx_derive_responses_function_call_id(const char *call_id) {
     return out;
 }
 
-/* PoP: _responses_tools @ agent/codex_responses_adapter.py:_responses_tools */
+/* PoP: crx_responses_tools @ agent/codex_responses_adapter.py:_responses_tools */
 char *crx_responses_tools(const char *tools_json) {
     /* Python: chat schemas → Responses function tools. */
     if (!tools_json) return strdup("[]");
@@ -117,7 +117,7 @@ char *crx_responses_tools(const char *tools_json) {
     return strdup(tools_json);
 }
 
-/* PoP: _normalize_responses_message_status @ agent/codex_responses_adapter.py:_normalize_responses_message_status */
+/* PoP: crx_normalize_responses_message_status @ agent/codex_responses_adapter.py:_normalize_responses_message_status */
 char *crx_normalize_responses_message_status(const char *status) {
     /* Python: API accepts completed/in_progress. */
     if (!status) return strdup("completed");
@@ -126,7 +126,7 @@ char *crx_normalize_responses_message_status(const char *status) {
     return strdup("completed");
 }
 
-/* PoP: _chat_messages_to_responses_input @ agent/codex_responses_adapter.py:_chat_messages_to_responses_input */
+/* PoP: crx_chat_messages_to_responses_input @ agent/codex_responses_adapter.py:_chat_messages_to_responses_input */
 char *crx_chat_messages_to_responses_input(const char *messages_json, bool is_xai_responses) {
     /* Python: chat-style → Responses input items. */
     if (!messages_json) return strdup("[]");
@@ -134,7 +134,7 @@ char *crx_chat_messages_to_responses_input(const char *messages_json, bool is_xa
     return strdup(messages_json);
 }
 
-/* PoP: _preflight_codex_input_items @ agent/codex_responses_adapter.py:_preflight_codex_input_items */
+/* PoP: crx_preflight_codex_input_items @ agent/codex_responses_adapter.py:_preflight_codex_input_items */
 int crx_preflight_codex_input_items(const char *items_json) {
     /* Python: must be a list. */
     if (!items_json) return -1;
@@ -142,14 +142,14 @@ int crx_preflight_codex_input_items(const char *items_json) {
     return 0;
 }
 
-/* PoP: _preflight_codex_api_kwargs @ agent/codex_responses_adapter.py:_preflight_codex_api_kwargs */
+/* PoP: crx_preflight_codex_api_kwargs @ agent/codex_responses_adapter.py:_preflight_codex_api_kwargs */
 int crx_preflight_codex_api_kwargs(const char *kwargs_json) {
     if (!kwargs_json) return -1;
     if (kwargs_json[0] != '{') return -1;
     return 0;
 }
 
-/* PoP: _extract_responses_message_text @ agent/codex_responses_adapter.py:_extract_responses_message_text */
+/* PoP: crx_extract_responses_message_text @ agent/codex_responses_adapter.py:_extract_responses_message_text */
 char *crx_extract_responses_message_text(const char *message_json) {
     /* Python: assistant text from Responses output item. */
     if (!message_json) return strdup("");
@@ -165,7 +165,7 @@ char *crx_extract_responses_message_text(const char *message_json) {
     return strndup(v, (size_t)(e - v));
 }
 
-/* PoP: _extract_responses_reasoning_text @ agent/codex_responses_adapter.py:_extract_responses_reasoning_text */
+/* PoP: crx_extract_responses_reasoning_text @ agent/codex_responses_adapter.py:_extract_responses_reasoning_text */
 char *crx_extract_responses_reasoning_text(const char *reasoning_json) {
     /* Python: compact reasoning text. */
     if (!reasoning_json) return strdup("");
@@ -173,7 +173,7 @@ char *crx_extract_responses_reasoning_text(const char *reasoning_json) {
     return strdup("");
 }
 
-/* PoP: _format_responses_error @ agent/codex_responses_adapter.py:_format_responses_error */
+/* PoP: crx_format_responses_error @ agent/codex_responses_adapter.py:_format_responses_error */
 char *crx_format_responses_error(const char *error_json) {
     /* Python: human-readable error string. */
     if (!error_json) return strdup("unknown error");
@@ -205,7 +205,7 @@ char *crx_format_responses_error(const char *error_json) {
     return out ? out : strdup("unknown error");
 }
 
-/* PoP: _normalize_codex_response @ agent/codex_responses_adapter.py:_normalize_codex_response */
+/* PoP: crx_normalize_codex_response @ agent/codex_responses_adapter.py:_normalize_codex_response */
 char *crx_normalize_codex_response(const char *response_json) {
     /* Python: Responses object → assistant_message-like. */
     if (!response_json) return strdup("{}");
@@ -235,7 +235,7 @@ char *crx_clamp_responses_call_id(const char *call_id) {
 }
 
 /* PoP: crx_neutralize_harmony_tokens @ agent/codex_responses_adapter.py:_neutralize_harmony_tokens */
-/* PoP: crx_neutralize_harmony_structure @ agent/codex_responses_adapter.py:_neutralize_harmony_structure */
+/* PoP: crx_neutralize_harmony_tokens @ agent/codex_responses_adapter.py:_neutralize_harmony_structure */
 /* These walk arbitrary JSON-like values and rewrite reserved Harmony token
  * sequences (<|...|>) by widening the pipes to U+FF5C. _neutralize_harmony_structure
  * recurses into dicts/lists; _neutralize_harmony_tokens does the string-level rewrite.

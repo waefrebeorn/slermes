@@ -14,17 +14,17 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_checkpoint_manager_normalize_path @ tools/checkpoint_manager.py:_normalize_path */
+/* PoP: tools_checkpoint_manager_normalize_path_p @ tools/checkpoint_manager.py:_normalize_path */
 json_t *tools_checkpoint_manager_normalize_path_p(void) {
     return json_object();
 }
 
-/* PoP: tools_checkpoint_manager_list_projects @ tools/checkpoint_manager.py:_list_projects */
+/* PoP: tools_checkpoint_manager_list_projects_p @ tools/checkpoint_manager.py:_list_projects */
 json_t *tools_checkpoint_manager_list_projects_p(void) {
     return json_object();
 }
 
-/* PoP: tools_checkpoint_manager_maybe_auto_prune_checkpoints @ tools/checkpoint_manager.py:maybe_auto_prune_checkpoints */
+/* PoP: tools_checkpoint_manager_maybe_auto_prune_checkpoints_p @ tools/checkpoint_manager.py:maybe_auto_prune_checkpoints */
 json_t *tools_checkpoint_manager_maybe_auto_prune_checkpoints_p(void) {
     return json_object();
 }

@@ -14,7 +14,7 @@
 #include <sys/stat.h>
 #include "hermes_json.h"
 
-/* PoP: _win32 @ hermes_cli/windows_ssh_runtime.py:_win32 */
+/* PoP: wssr_u_win32 @ hermes_cli/windows_ssh_runtime.py:_win32 */
 int wssr_u_win32(const char *arg) {
     /* Python: Windows-only import bundle; POSIX raises RuntimeError. */
     (void)arg;
@@ -22,7 +22,7 @@ int wssr_u_win32(const char *arg) {
     return 1;
 }
 
-/* PoP: _ownership @ hermes_cli/windows_ssh_runtime.py:_ownership */
+/* PoP: wssr_u_ownership @ hermes_cli/windows_ssh_runtime.py:_ownership */
 int wssr_u_ownership(const char *arg) {
     /* Python: value must fullmatch [0-9a-f]{32} else ValueError. */
     if (!arg || !*arg) { printf("invalid ownership ID\n"); return 1; }
@@ -36,7 +36,7 @@ int wssr_u_ownership(const char *arg) {
     return 0;
 }
 
-/* PoP: _nonce @ hermes_cli/windows_ssh_runtime.py:_nonce */
+/* PoP: wssr_u_nonce @ hermes_cli/windows_ssh_runtime.py:_nonce */
 int wssr_u_nonce(const char *arg) {
     /* Python: value must fullmatch [0-9a-f]{16} else ValueError. */
     if (!arg || !*arg) { printf("invalid spawn nonce\n"); return 1; }
@@ -50,7 +50,7 @@ int wssr_u_nonce(const char *arg) {
     return 0;
 }
 
-/* PoP: _root @ hermes_cli/windows_ssh_runtime.py:_root */
+/* PoP: wssr_u_root @ hermes_cli/windows_ssh_runtime.py:_root */
 int wssr_u_root(const char *arg) {
     /* Python: get_hermes_home() / "desktop-ssh". */
     (void)arg;
@@ -62,7 +62,7 @@ int wssr_u_root(const char *arg) {
     return 0;
 }
 
-/* PoP: _directory @ hermes_cli/windows_ssh_runtime.py:_directory */
+/* PoP: wssr_u_directory @ hermes_cli/windows_ssh_runtime.py:_directory */
 int wssr_u_directory(const char *arg) {
     /* Python: _root() / _ownership(ownership_id) — desktop-ssh/<id> with
      * a 32-hex ownership-id validation. */
@@ -80,7 +80,7 @@ int wssr_u_directory(const char *arg) {
     return 0;
 }
 
-/* PoP: _log_path @ hermes_cli/windows_ssh_runtime.py:_log_path */
+/* PoP: wssr_u_log_path @ hermes_cli/windows_ssh_runtime.py:_log_path */
 int wssr_u_log_path(const char *arg) {
     /* Python: _directory(ownership_id) / f"{_nonce(spawn_nonce)}.log" with
      * _root() = get_hermes_home()/desktop-ssh. Arg = "ownership_id\tnonce". */
@@ -95,7 +95,7 @@ int wssr_u_log_path(const char *arg) {
     return 0;
 }
 
-/* PoP: _current_sid @ hermes_cli/windows_ssh_runtime.py:_current_sid */
+/* PoP: wssr_u_current_sid @ hermes_cli/windows_ssh_runtime.py:_current_sid */
 int wssr_u_current_sid(const char *arg) {
     /* Python: win32security.OpenProcessToken + GetTokenInformation(TokenUser)
      * — Windows-only; POSIX port returns empty. */
@@ -104,7 +104,7 @@ int wssr_u_current_sid(const char *arg) {
     return 0;
 }
 
-/* PoP: _system_sid @ hermes_cli/windows_ssh_runtime.py:_system_sid */
+/* PoP: wssr_u_system_sid @ hermes_cli/windows_ssh_runtime.py:_system_sid */
 int wssr_u_system_sid(const char *arg) {
     /* Python: the SYSTEM SID "S-1-5-18" via the win32 bridge. */
     (void)arg;
@@ -112,7 +112,7 @@ int wssr_u_system_sid(const char *arg) {
     return 0;
 }
 
-/* PoP: _security_attributes @ hermes_cli/windows_ssh_runtime.py:_security_attributes */
+/* PoP: wssr_u_security_attributes @ hermes_cli/windows_ssh_runtime.py:_security_attributes */
 int wssr_u_security_attributes(const char *arg) {
     /* Python: owner+system ACL, DACL protected. Arg = "owner_sid\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -123,7 +123,7 @@ int wssr_u_security_attributes(const char *arg) {
     return 0;
 }
 
-/* PoP: _allowed_sids @ hermes_cli/windows_ssh_runtime.py:_allowed_sids */
+/* PoP: wssr_u_allowed_sids @ hermes_cli/windows_ssh_runtime.py:_allowed_sids */
 int wssr_u_allowed_sids(const char *arg) {
     /* Python: {ConvertSidToStringSid(_current_sid()),
      * ConvertSidToStringSid(_system_sid())} — the two Windows SIDs the SSH
@@ -133,7 +133,7 @@ int wssr_u_allowed_sids(const char *arg) {
     return 0;
 }
 
-/* PoP: _verify_security @ hermes_cli/windows_ssh_runtime.py:_verify_security */
+/* PoP: wssr_u_verify_security @ hermes_cli/windows_ssh_runtime.py:_verify_security */
 int wssr_u_verify_security(const char *arg) {
     /* Python: owner + DACL check. Arg = "state\tresult\terr". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -149,7 +149,7 @@ int wssr_u_verify_security(const char *arg) {
     return 0;
 }
 
-/* PoP: _open @ hermes_cli/windows_ssh_runtime.py:_open */
+/* PoP: wssr_u_open @ hermes_cli/windows_ssh_runtime.py:_open */
 int wssr_u_open(const char *arg) {
     /* Python: CreateFile + path escape/reparse guard. Arg =
      * "path\tstate\terror". */
@@ -169,7 +169,7 @@ int wssr_u_open(const char *arg) {
     return 0;
 }
 
-/* PoP: _ensure_directory @ hermes_cli/windows_ssh_runtime.py:_ensure_directory */
+/* PoP: wssr_u_ensure_directory @ hermes_cli/windows_ssh_runtime.py:_ensure_directory */
 int wssr_u_ensure_directory(const char *arg) {
     /* Python: recursive create + verify handle. Arg = "path\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -178,7 +178,7 @@ int wssr_u_ensure_directory(const char *arg) {
     return 0;
 }
 
-/* PoP: _ensure_scope @ hermes_cli/windows_ssh_runtime.py:_ensure_scope */
+/* PoP: wssr_u_ensure_scope @ hermes_cli/windows_ssh_runtime.py:_ensure_scope */
 int wssr_u_ensure_scope(const char *arg) {
     /* Python: root = _root(); _ensure_directory(root); directory =
      * _directory(ownership_id); _ensure_directory(directory); return it.
@@ -193,7 +193,7 @@ int wssr_u_ensure_scope(const char *arg) {
     return 0;
 }
 
-/* PoP: upload_token @ hermes_cli/windows_ssh_runtime.py:upload_token */
+/* PoP: wssr_upload_token @ hermes_cli/windows_ssh_runtime.py:upload_token */
 int wssr_upload_token(const char *arg) {
     /* Python: hex64 check + CREATE_NEW write. Arg = "token_len\tvalid\tstate". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -209,7 +209,7 @@ int wssr_upload_token(const char *arg) {
     return 0;
 }
 
-/* PoP: read_token @ hermes_cli/windows_ssh_runtime.py:read_token */
+/* PoP: wssr_read_token @ hermes_cli/windows_ssh_runtime.py:read_token */
 int wssr_read_token(const char *arg) {
     /* Python: token file read + validate. Arg =
      * "path\tstate\tresult\tvalid". */
@@ -238,7 +238,7 @@ int wssr_read_token(const char *arg) {
     return 0;
 }
 
-/* PoP: _read_json_stdin @ hermes_cli/windows_ssh_runtime.py:_read_json_stdin */
+/* PoP: wssr_u_read_json_stdin @ hermes_cli/windows_ssh_runtime.py:_read_json_stdin */
 int wssr_u_read_json_stdin(const char *arg) {
     /* Python: read stdin JSON object, error on oversize/non-object. Arg =
      * payload (or empty = read stdin). */
@@ -256,7 +256,7 @@ int wssr_u_read_json_stdin(const char *arg) {
     return 0;
 }
 
-/* PoP: read_lock @ hermes_cli/windows_ssh_runtime.py:read_lock */
+/* PoP: wssr_read_lock @ hermes_cli/windows_ssh_runtime.py:read_lock */
 int wssr_read_lock(const char *arg) {
     /* Python: read + parse lock JSON. Arg = "state\tresult\tmissing". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -269,7 +269,7 @@ int wssr_read_lock(const char *arg) {
     return 0;
 }
 
-/* PoP: write_lock @ hermes_cli/windows_ssh_runtime.py:write_lock */
+/* PoP: wssr_write_lock @ hermes_cli/windows_ssh_runtime.py:write_lock */
 int wssr_write_lock(const char *arg) {
     /* Python: temp + atomic move lock. Arg = "ownership_id\tsize\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -283,7 +283,7 @@ int wssr_write_lock(const char *arg) {
     return 0;
 }
 
-/* PoP: remove_artifact @ hermes_cli/windows_ssh_runtime.py:remove_artifact */
+/* PoP: wssr_remove_artifact @ hermes_cli/windows_ssh_runtime.py:remove_artifact */
 int wssr_remove_artifact(const char *arg) {
     /* Python: Windows delete-on-close handle; POSIX unlink analog. Arg =
      * path. */
@@ -294,7 +294,7 @@ int wssr_remove_artifact(const char *arg) {
     return 0;
 }
 
-/* PoP: process_state @ hermes_cli/windows_ssh_runtime.py:process_state */
+/* PoP: wssr_process_state @ hermes_cli/windows_ssh_runtime.py:process_state */
 int wssr_process_state(const char *arg) {
     /* Python: nonce-anchored. Arg =
      * "alive\towned\tindeterminate\tstate\tresult". */
@@ -312,7 +312,7 @@ int wssr_process_state(const char *arg) {
     return 0;
 }
 
-/* PoP: terminate_owned @ hermes_cli/windows_ssh_runtime.py:terminate_owned */
+/* PoP: wssr_terminate_owned @ hermes_cli/windows_ssh_runtime.py:terminate_owned */
 int wssr_terminate_owned(const char *arg) {
     /* Python: verify alive+owned+create_time then terminate/kill. Arg =
      * "alive\towned\tmatch". */
@@ -327,7 +327,7 @@ int wssr_terminate_owned(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_direct_interpreter @ hermes_cli/windows_ssh_runtime.py:_resolve_direct_interpreter */
+/* PoP: wssr_u_resolve_direct_interpreter @ hermes_cli/windows_ssh_runtime.py:_resolve_direct_interpreter */
 int wssr_u_resolve_direct_interpreter(const char *arg) {
     /* Python: base interpreter. Arg = "state\tresult\terr". */
     if (!arg || !*arg) { printf("\t\n"); return 1; }
@@ -347,7 +347,7 @@ int wssr_u_resolve_direct_interpreter(const char *arg) {
     return 0;
 }
 
-/* PoP: spawn_backend @ hermes_cli/windows_ssh_runtime.py:spawn_backend */
+/* PoP: wssr_spawn_backend @ hermes_cli/windows_ssh_runtime.py:spawn_backend */
 int wssr_spawn_backend(const char *arg) {
     /* Python: bootstrap -c spawn. Arg =
      * "state\tresult\terr". */
@@ -372,7 +372,7 @@ int wssr_spawn_backend(const char *arg) {
     return 0;
 }
 
-/* PoP: inspect_hermes @ hermes_cli/windows_ssh_runtime.py:inspect_hermes */
+/* PoP: wssr_inspect_hermes @ hermes_cli/windows_ssh_runtime.py:inspect_hermes */
 int wssr_inspect_hermes(const char *arg) {
     /* Python: version + serve help probes. Arg =
      * "path\tversion\tsupported\tstate". */

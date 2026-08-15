@@ -31,39 +31,39 @@ extern char *sf_project_root_str(void);
  * startup fast-path wrappers
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _project_root_str_fast @ hermes_cli/main.py:_project_root_str_fast */
+/* PoP: main_g_project_root_str_fast @ hermes_cli/main.py:_project_root_str_fast */
 char *main_g_project_root_str_fast(void) {
     return sf_project_root_str();
 }
 
-/* PoP: _ensure_project_root_on_path_fast @ hermes_cli/main.py:_ensure_project_root_on_path_fast */
+/* PoP: main_g_ensure_project_root_on_path_fast @ hermes_cli/main.py:_ensure_project_root_on_path_fast */
 void main_g_ensure_project_root_on_path_fast(void) {
     /* Python: put PROJECT_ROOT on sys.path. The C port is a single binary,
      * so this is a no-op by construction (the project root is baked in). */
     (void)0;
 }
 
-/* PoP: _is_global_fast_version_argv @ hermes_cli/main.py:_is_global_fast_version_argv */
+/* PoP: main_g_is_global_fast_version_argv @ hermes_cli/main.py:_is_global_fast_version_argv */
 bool main_g_is_global_fast_version_argv(int argc, char **argv) {
     return sf_is_global_fast_version_argv(argc, argv);
 }
 
-/* PoP: _is_container_startup_environment_fast @ hermes_cli/main.py:_is_container_startup_environment_fast */
+/* PoP: main_g_is_container_startup_environment_fast @ hermes_cli/main.py:_is_container_startup_environment_fast */
 bool main_g_is_container_startup_environment_fast(void) {
     return sf_is_container_startup_environment();
 }
 
-/* PoP: _active_profile_may_override_home_fast @ hermes_cli/main.py:_active_profile_may_override_home_fast */
+/* PoP: main_g_active_profile_may_override_home_fast @ hermes_cli/main.py:_active_profile_may_override_home_fast */
 bool main_g_active_profile_may_override_home_fast(const char *hermes_root) {
     return sf_active_profile_may_override_home(hermes_root);
 }
 
-/* PoP: _container_mode_may_be_active_fast @ hermes_cli/main.py:_container_mode_may_be_active_fast */
+/* PoP: main_g_container_mode_may_be_active_fast @ hermes_cli/main.py:_container_mode_may_be_active_fast */
 bool main_g_container_mode_may_be_active_fast(void) {
     return sf_container_mode_may_be_active();
 }
 
-/* PoP: _try_ultrafast_version @ hermes_cli/main.py:_try_ultrafast_version */
+/* PoP: main_g_try_ultrafast_version @ hermes_cli/main.py:_try_ultrafast_version */
 bool main_g_try_ultrafast_version(int argc, char **argv) {
     /* Python: _startup_fast.try_fast_version() — handle --version/-V before
      * the heavy import wall. Termux keeps its historical contract (also
@@ -113,7 +113,7 @@ bool main_g_try_ultrafast_version(int argc, char **argv) {
  * _resolve_workspace_key
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _resolve_workspace_key @ hermes_cli/main.py:_resolve_workspace_key */
+/* PoP: main_g_resolve_workspace_key @ hermes_cli/main.py:_resolve_workspace_key */
 char *main_g_resolve_workspace_key(void) {
     /* Python: git repo root when CWD is inside a repo, else CWD itself;
      * None when neither can be determined. */
@@ -143,7 +143,7 @@ char *main_g_resolve_workspace_key(void) {
  * _parse_dashboard_runtime / _dashboard_probe_host
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _parse_dashboard_runtime @ hermes_cli/main.py:_parse_dashboard_runtime */
+/* PoP: main_g_parse_dashboard_runtime @ hermes_cli/main.py:_parse_dashboard_runtime */
 int main_g_parse_dashboard_runtime(const char *command, char *mode_out, size_t mode_sz,
                                    char *host_out, size_t host_sz, int *port_out) {
     /* Python: detect dashboard/serve mode, --port, --host from a cmdline.
@@ -201,7 +201,7 @@ int main_g_parse_dashboard_runtime(const char *command, char *mode_out, size_t m
     return 1;
 }
 
-/* PoP: _dashboard_probe_host @ hermes_cli/main.py:_dashboard_probe_host */
+/* PoP: main_g_dashboard_probe_host @ hermes_cli/main.py:_dashboard_probe_host */
 void main_g_dashboard_probe_host(const char *host, char *out, size_t out_sz) {
     /* Python: map wildcard binds (0.0.0.0, ::, empty) to 127.0.0.1. */
     const char *normalized = host ? host : "127.0.0.1";
@@ -226,7 +226,7 @@ void main_g_dashboard_probe_host(const char *host, char *out, size_t out_sz) {
  * systemd / cgroup introspection
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _get_systemd_service_for_pid @ hermes_cli/main.py:_get_systemd_service_for_pid */
+/* PoP: main_g_get_systemd_service_for_pid @ hermes_cli/main.py:_get_systemd_service_for_pid */
 char *main_g_get_systemd_service_for_pid(long pid) {
     /* Python: read /proc/<pid>/cgroup, return the .service unit name. */
     char path[256];
@@ -253,7 +253,7 @@ char *main_g_get_systemd_service_for_pid(long pid) {
     return result;
 }
 
-/* PoP: _extract_scope_from_cgroup @ hermes_cli/main.py:_extract_scope_from_cgroup */
+/* PoP: main_g_extract_scope_from_cgroup @ hermes_cli/main.py:_extract_scope_from_cgroup */
 char *main_g_extract_scope_from_cgroup(const char *cgroup_entry) {
     /* Python: system.slice → "system", user.slice → "user". */
     if (!cgroup_entry) return NULL;
@@ -262,7 +262,7 @@ char *main_g_extract_scope_from_cgroup(const char *cgroup_entry) {
     return NULL;
 }
 
-/* PoP: _get_pid_cgroup_path @ hermes_cli/main.py:_get_pid_cgroup_path */
+/* PoP: main_g_get_pid_cgroup_path @ hermes_cli/main.py:_get_pid_cgroup_path */
 char *main_g_get_pid_cgroup_path(long pid) {
     /* Python: return the unified (0::) cgroup path from /proc/<pid>/cgroup. */
     char path[256];
@@ -286,7 +286,7 @@ char *main_g_get_pid_cgroup_path(long pid) {
     return result;
 }
 
-/* PoP: _dashboard_cmdline_for_pid @ hermes_cli/main.py:_dashboard_cmdline_for_pid */
+/* PoP: main_g_dashboard_cmdline_for_pid @ hermes_cli/main.py:_dashboard_cmdline_for_pid */
 char *main_g_dashboard_cmdline_for_pid(long pid) {
     /* Python: read /proc/<pid>/cmdline (NUL-joined → spaces). */
     char path[256];
@@ -302,7 +302,7 @@ char *main_g_dashboard_cmdline_for_pid(long pid) {
     return strdup(buf);
 }
 
-/* PoP: _try_restart_systemd_service @ hermes_cli/main.py:_try_restart_systemd_service */
+/* PoP: main_g_try_restart_systemd_service @ hermes_cli/main.py:_try_restart_systemd_service */
 int main_g_try_restart_systemd_service(const char *unit) {
     /* Python: systemctl restart <unit>; returns 0 on success. */
     if (!unit || !unit[0]) return -1;
@@ -312,7 +312,7 @@ int main_g_try_restart_systemd_service(const char *unit) {
     return rc == 0 ? 0 : -1;
 }
 
-/* PoP: _respawn_dashboard_processes @ hermes_cli/main.py:_respawn_dashboard_processes */
+/* PoP: main_g_respawn_dashboard_processes @ hermes_cli/main.py:_respawn_dashboard_processes */
 int main_g_respawn_dashboard_processes(const char *command_line) {
     /* Python: respawn the dashboard/serve command detached. */
     if (!command_line || !command_line[0]) return -1;
@@ -360,7 +360,7 @@ static char *read_git_revision_fingerprint(const char *project_root) {
     return strdup(head);
 }
 
-/* PoP: _record_bytecode_fingerprint @ hermes_cli/main.py:_record_bytecode_fingerprint */
+/* PoP: main_g_record_bytecode_fingerprint @ hermes_cli/main.py:_record_bytecode_fingerprint */
 int main_g_record_bytecode_fingerprint(const char *project_root) {
     /* Python: persist the checkout fingerprint atomically (tmp + rename).
      * Never raises; a failed write just means the next launch re-sweeps. */
@@ -405,7 +405,7 @@ static int clear_bytecode_cache(const char *root) {
     return removed;
 }
 
-/* PoP: _sweep_stale_bytecode_if_checkout_changed @ hermes_cli/main.py:_sweep_stale_bytecode_if_checkout_changed */
+/* PoP: main_g_sweep_stale_bytecode_if_checkout_changed @ hermes_cli/main.py:_sweep_stale_bytecode_if_checkout_changed */
 int main_g_sweep_stale_bytecode_if_checkout_changed(const char *project_root) {
     /* Python: compare the fingerprint against the stamp; sweep __pycache__
      * once when they diverge. Returns the number of cache dirs removed. */
@@ -433,7 +433,7 @@ int main_g_sweep_stale_bytecode_if_checkout_changed(const char *project_root) {
  * _pytest_owns_live_checkout / _missing_web_build_tool
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _pytest_owns_live_checkout @ hermes_cli/main.py:_pytest_owns_live_checkout */
+/* PoP: main_g_pytest_owns_live_checkout @ hermes_cli/main.py:_pytest_owns_live_checkout */
 bool main_g_pytest_owns_live_checkout(const char *root) {
     /* Python: PYTEST_CURRENT_TEST set AND root == this checkout itself. */
     if (!getenv("PYTEST_CURRENT_TEST")) return false;
@@ -446,7 +446,7 @@ bool main_g_pytest_owns_live_checkout(const char *root) {
     return same;
 }
 
-/* PoP: _missing_web_build_tool @ hermes_cli/main.py:_missing_web_build_tool */
+/* PoP: main_g_missing_web_build_tool @ hermes_cli/main.py:_missing_web_build_tool */
 char *main_g_missing_web_build_tool(const char *output) {
     /* Python: detect which build tool (tsc/vite) a failed npm run build
      * could not resolve, across shell wordings. */
@@ -469,7 +469,7 @@ char *main_g_missing_web_build_tool(const char *output) {
     return NULL;
 }
 
-/* PoP: _run_npm_watching_for_engine_failure @ hermes_cli/main.py:_run_npm_watching_for_engine_failure */
+/* PoP: main_g_run_npm_watching_for_engine_failure @ hermes_cli/main.py:_run_npm_watching_for_engine_failure */
 int main_g_run_npm_watching_for_engine_failure(const char *web_dir) {
     /* Python: npm run build under a lock, serializing across processes;
      * serves existing dist when another process holds the lock. The C port
@@ -507,7 +507,7 @@ static const char *pe_machine_name(unsigned short machine) {
     }
 }
 
-/* PoP: _windows_native_machine_from_iswow64 @ hermes_cli/main.py:_windows_native_machine_from_iswow64 */
+/* PoP: main_g_windows_native_machine_from_iswow64 @ hermes_cli/main.py:_windows_native_machine_from_iswow64 */
 char *main_g_windows_native_machine_from_iswow64(const char *iswow64_native_machine) {
     /* Python: map the IsWow64Process2 native machine code. The C port takes
      * the machine code as a decimal string (the Windows API result) and
@@ -520,7 +520,7 @@ char *main_g_windows_native_machine_from_iswow64(const char *iswow64_native_mach
     return name ? strdup(name) : NULL;
 }
 
-/* PoP: _windows_user_runnable_pe_machines @ hermes_cli/main.py:_windows_user_runnable_pe_machines */
+/* PoP: main_g_windows_user_runnable_pe_machines @ hermes_cli/main.py:_windows_user_runnable_pe_machines */
 char *main_g_windows_user_runnable_pe_machines(const char *runnable_csv) {
     /* Python: the set of PE machines the host can load. The C port takes
      * the comma-separated machine codes reported by GetMachineTypeAttributes
@@ -543,7 +543,7 @@ char *main_g_windows_user_runnable_pe_machines(const char *runnable_csv) {
     return out;
 }
 
-/* PoP: _windows_native_machine @ hermes_cli/main.py:_windows_native_machine */
+/* PoP: main_g_windows_native_machine @ hermes_cli/main.py:_windows_native_machine */
 char *main_g_windows_native_machine(const char *env_arch, const char *env_archw6432) {
     /* Python: normalized native machine; prefers PROCESSOR_ARCHITEW6432
      * (the WOW64 truth), then PROCESSOR_ARCHITECTURE, then platform.machine.
@@ -562,7 +562,7 @@ char *main_g_windows_native_machine(const char *env_arch, const char *env_archw6
  * macOS desktop signing helpers
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _desktop_macos_bundle_id @ hermes_cli/main.py:_desktop_macos_bundle_id */
+/* PoP: main_g_desktop_macos_bundle_id @ hermes_cli/main.py:_desktop_macos_bundle_id */
 char *main_g_desktop_macos_bundle_id(const char *bundle_path) {
     /* Python: read CFBundleIdentifier from Contents/Info.plist (or the
      * framework Variants/Resources variant). The C port shells to plutil
@@ -590,7 +590,7 @@ char *main_g_desktop_macos_bundle_id(const char *bundle_path) {
     return out[0] ? strdup(out) : NULL;
 }
 
-/* PoP: _desktop_macos_local_signing_identity @ hermes_cli/main.py:_desktop_macos_local_signing_identity */
+/* PoP: main_g_desktop_macos_local_signing_identity @ hermes_cli/main.py:_desktop_macos_local_signing_identity */
 char *main_g_desktop_macos_local_signing_identity(const char *config_identity) {
     /* Python: return the opt-in keychain identity from config; None when
      * empty/unset (keeps identifier-pinned ad-hoc signing). */
@@ -606,7 +606,7 @@ char *main_g_desktop_macos_local_signing_identity(const char *config_identity) {
     return out;
 }
 
-/* PoP: _desktop_macos_has_valid_real_signature @ hermes_cli/main.py:_desktop_macos_has_valid_real_signature */
+/* PoP: main_g_desktop_macos_has_valid_real_signature @ hermes_cli/main.py:_desktop_macos_has_valid_real_signature */
 bool main_g_desktop_macos_has_valid_real_signature(const char *app_path) {
     /* Python: codesign --verify a real (non-adhoc) signature. The C port
      * runs the same codesign verification and checks the authority line
@@ -618,7 +618,7 @@ bool main_g_desktop_macos_has_valid_real_signature(const char *app_path) {
     return system(cmd) == 0;
 }
 
-/* PoP: _desktop_macos_local_codesign @ hermes_cli/main.py:_desktop_macos_local_codesign */
+/* PoP: main_g_desktop_macos_local_codesign @ hermes_cli/main.py:_desktop_macos_local_codesign */
 int main_g_desktop_macos_local_codesign(const char *app_path, const char *identity) {
     /* Python: ad-hoc or identity-pinned codesign of the app bundle. */
     if (!app_path) return -1;
@@ -636,7 +636,7 @@ int main_g_desktop_macos_local_codesign(const char *app_path, const char *identi
  * _resolve_deferred_platform_cli_command
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: _resolve_deferred_platform_cli_command @ hermes_cli/main.py:_resolve_deferred_platform_cli_command */
+/* PoP: main_g_resolve_deferred_platform_cli_command @ hermes_cli/main.py:_resolve_deferred_platform_cli_command */
 int main_g_resolve_deferred_platform_cli_command(const char *command_name) {
     /* Python: materialize the deferred platform whose top-level CLI command
      * matches (registry probe). The C port probes the platform registry and

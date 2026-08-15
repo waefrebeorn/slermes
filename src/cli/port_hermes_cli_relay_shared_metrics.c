@@ -158,7 +158,7 @@ static bool rsm_json_get_bool(const json_t *obj, const char *key) {
  * _Runtime surface
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: __init__ @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.__init__ */
+/* PoP: rsm_runtime_init @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.__init__ */
 int rsm_runtime_init(relay_runtime_t *host) {
     /* Python: resolve the core Relay host, register the subscriber and
      * retain managed execution. Returns 0 on success, -1 when the runtime
@@ -181,7 +181,7 @@ int rsm_runtime_init(relay_runtime_t *host) {
     return 0;
 }
 
-/* PoP: ensure_session @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.ensure_session */
+/* PoP: rsm_runtime_ensure_session @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.ensure_session */
 int rsm_runtime_ensure_session(relay_runtime_t *host, const char *session_id) {
     /* Python: resolve (or create) the relay session and track a metrics
      * session for it. Returns 1 when a live session is available. */
@@ -210,13 +210,13 @@ int rsm_runtime_ensure_session(relay_runtime_t *host, const char *session_id) {
     return 1;
 }
 
-/* PoP: _session @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._session */
+/* PoP: rsm_session_lookup @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._session */
 static rsm_session_t *rsm_session_lookup(const char *session_id) {
     if (!g_sessions || !session_id) return NULL;
     return (rsm_session_t *)omap_get(g_sessions, session_id);
 }
 
-/* PoP: _task_session @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._task_session */
+/* PoP: rsm_task_session @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._task_session */
 static rsm_session_t *rsm_task_session(const char *session_id, const char *task_id,
                                        const char *turn_id, bool allow_fallback) {
     if (!g_task_sessions || !session_id || !task_id || !task_id[0]) return NULL;
@@ -251,17 +251,17 @@ static rsm_session_t *rsm_task_session(const char *session_id, const char *task_
     return candidates == 1 ? candidate : NULL;
 }
 
-/* PoP: _task_key @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._task_key */
+/* PoP: rsm_runtime_task_key @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._task_key */
 char *rsm_runtime_task_key(const char *session_id, const char *task_id) {
     return rsm_task_key(session_id, task_id);
 }
 
-/* PoP: _turn_key @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._turn_key */
+/* PoP: rsm_runtime_turn_key @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._turn_key */
 char *rsm_runtime_turn_key(const char *session_id, const char *turn_id) {
     return rsm_turn_key(session_id, turn_id);
 }
 
-/* PoP: _remember_turn @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._remember_turn */
+/* PoP: rsm_remember_turn @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._remember_turn */
 static void rsm_remember_turn(rsm_session_t *session, rsm_task_t *task,
                               const char *turn_id) {
     if (!turn_id || !turn_id[0] || !session || !task) return;
@@ -278,7 +278,7 @@ static void rsm_remember_turn(rsm_session_t *session, rsm_task_t *task,
     }
 }
 
-/* PoP: start_task @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.start_task */
+/* PoP: rsm_runtime_start_task @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.start_task */
 int rsm_runtime_start_task(relay_runtime_t *host, const char *session_id,
                            const char *task_id, const char *turn_id,
                            const char *event_json) {
@@ -336,7 +336,7 @@ int rsm_runtime_start_task(relay_runtime_t *host, const char *session_id,
     return 1;
 }
 
-/* PoP: start_model_call @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.start_model_call */
+/* PoP: rsm_runtime_start_model_call @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.start_model_call */
 int rsm_runtime_start_model_call(relay_runtime_t *host, const char *session_id,
                                  const char *task_id, const char *request_id,
                                  const char *turn_id, const char *event_json) {
@@ -378,7 +378,7 @@ int rsm_runtime_start_model_call(relay_runtime_t *host, const char *session_id,
     return 1;
 }
 
-/* PoP: record_tool_call @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.record_tool_call */
+/* PoP: rsm_runtime_record_tool_call @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.record_tool_call */
 int rsm_runtime_record_tool_call(relay_runtime_t *host, const char *session_id,
                                  const char *task_id, const char *tool_call_id,
                                  const char *turn_id, const char *event_json) {
@@ -402,7 +402,7 @@ int rsm_runtime_record_tool_call(relay_runtime_t *host, const char *session_id,
     return 1;
 }
 
-/* PoP: _finish_model_call @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._finish_model_call */
+/* PoP: rsm_finish_model_call @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._finish_model_call */
 static void rsm_finish_model_call(rsm_session_t *session, const char *request_id,
                                   const char *outcome) {
     (void)outcome;
@@ -411,7 +411,7 @@ static void rsm_finish_model_call(rsm_session_t *session, const char *request_id
     if (state) free(state);
 }
 
-/* PoP: end_model_call @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.end_model_call */
+/* PoP: rsm_runtime_end_model_call @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.end_model_call */
 int rsm_runtime_end_model_call(relay_runtime_t *host, const char *session_id,
                                const char *task_id, const char *request_id,
                                const char *turn_id, const char *outcome,
@@ -467,14 +467,14 @@ static char *rsm_tc_key(const char *task_id, const char *request_id,
     return out;
 }
 
-/* PoP: _tool_call_identity @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._tool_call_identity */
+/* PoP: rsm_tool_call_identity @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._tool_call_identity */
 static void rsm_tool_call_identity(const json_t *event, const char *out[3]) {
     out[0] = rsm_f(event, "api_request_id");
     out[1] = rsm_f(event, "turn_id");
     out[2] = rsm_f(event, "tool_call_id");
 }
 
-/* PoP: _tool_call_identities_are_compatible @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._tool_call_identities_are_compatible */
+/* PoP: rsm_identities_compatible @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._tool_call_identities_are_compatible */
 static bool rsm_identities_compatible(const char *const cand[3],
                                       const char *const obs[3]) {
     if (!cand[2][0] || strcmp(cand[2], obs[2]) != 0) return false;
@@ -485,7 +485,7 @@ static bool rsm_identities_compatible(const char *const cand[3],
     return true;
 }
 
-/* PoP: _event_matches_task_turn @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._event_matches_task_turn */
+/* PoP: rsm_event_matches_task_turn @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._event_matches_task_turn */
 static bool rsm_event_matches_task_turn(rsm_task_t *task, const char *turn_id) {
     if (!task) return false;
     if (!turn_id || !turn_id[0]) return true;
@@ -495,7 +495,7 @@ static bool rsm_event_matches_task_turn(rsm_task_t *task, const char *turn_id) {
     return omap_contains(task->turn_ids, turn_id);
 }
 
-/* PoP: _new_model_call_key @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._new_model_call_key */
+/* PoP: rsm_new_model_call_key @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._new_model_call_key */
 static bool rsm_new_model_call_key(const json_t *event, const char **out_task_id,
                                    const char **out_request_id) {
     const char *rid = rsm_f(event, "api_request_id");
@@ -505,7 +505,7 @@ static bool rsm_new_model_call_key(const json_t *event, const char **out_task_id
     return true;
 }
 
-/* PoP: _existing_model_call_key @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._existing_model_call_key */
+/* PoP: rsm_existing_model_call_key @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._existing_model_call_key */
 static bool rsm_existing_model_call_key(rsm_session_t *session,
                                         const char *task_id,
                                         const char *request_id,
@@ -524,7 +524,7 @@ static bool rsm_existing_model_call_key(rsm_session_t *session,
     return false;
 }
 
-/* PoP: _approval_task @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._approval_task */
+/* PoP: rsm_approval_task @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._approval_task */
 static rsm_task_t *rsm_approval_task(relay_runtime_t *host,
                                      rsm_session_t *session,
                                      const char *task_id,
@@ -568,7 +568,7 @@ static rsm_task_t *rsm_approval_task(relay_runtime_t *host,
     return NULL;
 }
 
-/* PoP: _open_tool_call @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._open_tool_call */
+/* PoP: rsm_open_tool_call @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._open_tool_call */
 static rsm_toolcall_t *rsm_open_tool_call(rsm_task_t *task, const json_t *event) {
     if (!task) return NULL;
     rsm_toolcall_t *tc = calloc(1, sizeof(*tc));
@@ -596,7 +596,7 @@ static const char *rsm_latency_bucket(double ms) {
     return "gte_30s";
 }
 
-/* PoP: _finish_tool_call @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._finish_tool_call */
+/* PoP: rsm_finish_tool_call @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._finish_tool_call */
 static void rsm_finish_tool_call(rsm_task_t *task, rsm_toolcall_t *tc,
                                  const json_t *event) {
     (void)task;
@@ -614,7 +614,7 @@ static void rsm_finish_tool_call(rsm_task_t *task, rsm_toolcall_t *tc,
      * the relay transport (tools.call_end) is backend-driven. */
 }
 
-/* PoP: _end_pending_tool_calls @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._end_pending_tool_calls */
+/* PoP: rsm_end_pending_tool_calls @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._end_pending_tool_calls */
 static void rsm_end_pending_tool_calls(rsm_session_t *session, rsm_task_t *task,
                                        const char *turn_exit_reason) {
     if (!session || !session->tool_calls || !task) return;
@@ -655,7 +655,7 @@ static void rsm_end_pending_tool_calls(rsm_session_t *session, rsm_task_t *task,
     free(keys);
 }
 
-/* PoP: record_client_active @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.record_client_active */
+/* PoP: rsm_runtime_record_client_active @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.record_client_active */
 int rsm_runtime_record_client_active(relay_runtime_t *host, const char *session_id,
                                      const char *event_json) {
     (void)event_json;
@@ -665,7 +665,7 @@ int rsm_runtime_record_client_active(relay_runtime_t *host, const char *session_
     return rsm_runtime_emit_client_active(host, session);
 }
 
-/* PoP: _emit_client_active @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._emit_client_active */
+/* PoP: rsm_runtime_emit_client_active @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._emit_client_active */
 int rsm_runtime_emit_client_active(relay_runtime_t *host, rsm_session_t *session) {
     if (!session) return 0;
     char *md = rsm_runtime_event_metadata("local");
@@ -674,7 +674,7 @@ int rsm_runtime_emit_client_active(relay_runtime_t *host, rsm_session_t *session
     return 1;
 }
 
-/* PoP: record_model_call_error @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.record_model_call_error */
+/* PoP: rsm_runtime_record_model_call_error @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.record_model_call_error */
 int rsm_runtime_record_model_call_error(relay_runtime_t *host,
                                         const char *session_id,
                                         const char *task_id,
@@ -705,7 +705,7 @@ int rsm_runtime_record_model_call_error(relay_runtime_t *host,
     return 1;
 }
 
-/* PoP: start_tool_call @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.start_tool_call */
+/* PoP: rsm_runtime_start_tool_call @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.start_tool_call */
 int rsm_runtime_start_tool_call(relay_runtime_t *host, const char *session_id,
                                 const char *task_id, const char *tool_call_id,
                                 const char *turn_id, const char *event_json) {
@@ -753,7 +753,7 @@ int rsm_runtime_start_tool_call(relay_runtime_t *host, const char *session_id,
     return 1;
 }
 
-/* PoP: record_approval @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.record_approval */
+/* PoP: rsm_runtime_record_approval @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.record_approval */
 int rsm_runtime_record_approval(relay_runtime_t *host, const char *session_id,
                                 const char *task_id, const char *tool_call_id,
                                 const char *turn_id, const char *event_json) {
@@ -789,7 +789,7 @@ int rsm_runtime_record_approval(relay_runtime_t *host, const char *session_id,
     return 1;
 }
 
-/* PoP: record_skill_lifecycle @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.record_skill_lifecycle */
+/* PoP: rsm_runtime_record_skill_lifecycle @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.record_skill_lifecycle */
 int rsm_runtime_record_skill_lifecycle(relay_runtime_t *host,
                                        const char *session_id,
                                        const char *task_id,
@@ -837,7 +837,7 @@ int rsm_runtime_record_skill_lifecycle(relay_runtime_t *host,
     return emitted ? 1 : 0;
 }
 
-/* PoP: _with_runtime_toolset @ hermes_cli/observability/relay_shared_metrics.py:_with_runtime_toolset */
+/* PoP: rsm_with_runtime_toolset @ hermes_cli/observability/relay_shared_metrics.py:_with_runtime_toolset */
 char *rsm_with_runtime_toolset(const char *tool_name, const char *event_json) {
     if (event_json) {
         json_t *ev = json_parse(event_json, NULL);
@@ -871,7 +871,7 @@ int rsm_observe_pre_tool_call(relay_runtime_t *host, const char *session_id,
     return rc;
 }
 
-/* PoP: _end_pending_model_calls @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._end_pending_model_calls */
+/* PoP: rsm_end_pending_model_calls @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._end_pending_model_calls */
 static void rsm_end_pending_model_calls(rsm_session_t *session,
                                         const char *task_id, bool interrupted) {
     if (!session || !session->model_calls) return;
@@ -895,7 +895,7 @@ static void rsm_end_pending_model_calls(rsm_session_t *session,
         rsm_finish_model_call(session, pending[i], outcome);
 }
 
-/* PoP: end_pending_model_calls @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.end_pending_model_calls */
+/* PoP: rsm_runtime_end_pending_model_calls @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.end_pending_model_calls */
 int rsm_runtime_end_pending_model_calls(relay_runtime_t *host, const char *session_id,
                                         const char *task_id, const char *turn_id,
                                         const char *event_json) {
@@ -913,7 +913,7 @@ int rsm_runtime_end_pending_model_calls(relay_runtime_t *host, const char *sessi
     return 1;
 }
 
-/* PoP: _finish_task @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._finish_task */
+/* PoP: rsm_finish_task @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._finish_task */
 static bool rsm_finish_task(rsm_session_t *session, const char *task_id,
                             const char *event_json) {
     if (!session || !session->tasks) return false;
@@ -988,7 +988,7 @@ static bool rsm_finish_task(rsm_session_t *session, const char *task_id,
     return true;
 }
 
-/* PoP: finish_task @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.finish_task */
+/* PoP: rsm_runtime_finish_task @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.finish_task */
 int rsm_runtime_finish_task(relay_runtime_t *host, const char *session_id,
                             const char *task_id, const char *turn_id,
                             const char *event_json) {
@@ -1004,7 +1004,7 @@ int rsm_runtime_finish_task(relay_runtime_t *host, const char *session_id,
     return finished ? 1 : 0;
 }
 
-/* PoP: close_session @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.close_session */
+/* PoP: rsm_runtime_close_session @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.close_session */
 int rsm_runtime_close_session(relay_runtime_t *host, const char *session_id,
                               const char *event_json) {
     (void)host;
@@ -1038,7 +1038,7 @@ int rsm_runtime_close_session(relay_runtime_t *host, const char *session_id,
     return 1;
 }
 
-/* PoP: shutdown @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.shutdown */
+/* PoP: rsm_runtime_shutdown @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.shutdown */
 int rsm_runtime_shutdown(relay_runtime_t *host) {
     /* Python: deactivate, close every session, deregister + release. */
     (void)host;
@@ -1076,7 +1076,7 @@ int rsm_runtime_shutdown(relay_runtime_t *host) {
     return 0;
 }
 
-/* PoP: deactivate @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.deactivate */
+/* PoP: rsm_runtime_deactivate @ hermes_cli/observability/relay_shared_metrics.py:_Runtime.deactivate */
 int rsm_runtime_deactivate(relay_runtime_t *host) {
     /* Python: stop collection without exporting. */
     (void)host;
@@ -1090,7 +1090,7 @@ int rsm_runtime_deactivate(relay_runtime_t *host) {
     return 0;
 }
 
-/* PoP: _export @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._export */
+/* PoP: rsm_runtime_export @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._export */
 int rsm_runtime_export(void) {
     /* Python: export a shared-metrics package when due. The C port flushes
      * the subscriber store (the relay flush is the export transport). */
@@ -1098,7 +1098,7 @@ int rsm_runtime_export(void) {
     return 0;
 }
 
-/* PoP: _event_metadata @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._event_metadata */
+/* PoP: rsm_runtime_event_metadata @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._event_metadata */
 char *rsm_runtime_event_metadata(const char *runtime_id) {
     char *out = NULL;
     asprintf(&out, "{\"%s\":\"%s\",\"runtime_id\":\"%s\"}",
@@ -1106,7 +1106,7 @@ char *rsm_runtime_event_metadata(const char *runtime_id) {
     return out;
 }
 
-/* PoP: _safe @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._safe */
+/* PoP: rsm_runtime_safe @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._safe */
 int rsm_runtime_safe(int (*cb)(void *ctx), void *ctx) {
     if (!cb) return 0;
     return cb(ctx);
@@ -1117,7 +1117,7 @@ int rsm_runtime_safe(int (*cb)(void *ctx), void *ctx) {
  * _reset_for_tests
  * ════════════════════════════════════════════════════════════════════ */
 
-/* PoP: enabled @ hermes_cli/observability/relay_shared_metrics.py:enabled */
+/* PoP: rsm_enabled @ hermes_cli/observability/relay_shared_metrics.py:enabled */
 bool rsm_enabled(const char *config_json) {
     /* Python: shared-metrics policy from config.telemetry.shared_metrics
      * .enabled; deactivates the runtime when disabled. */
@@ -1140,7 +1140,7 @@ bool rsm_enabled(const char *config_json) {
     return value;
 }
 
-/* PoP: handles_hook @ hermes_cli/observability/relay_shared_metrics.py:handles_hook */
+/* PoP: rsm_handles_hook @ hermes_cli/observability/relay_shared_metrics.py:handles_hook */
 bool rsm_handles_hook(const char *hook_name, const char *config_json) {
     /* Python: hook_name in HANDLED_HOOKS and enabled(). */
     if (!hook_name) return false;
@@ -1158,7 +1158,7 @@ bool rsm_handles_hook(const char *hook_name, const char *config_json) {
     return rsm_enabled(config_json);
 }
 
-/* PoP: observe_lifecycle @ hermes_cli/observability/relay_shared_metrics.py:observe_lifecycle */
+/* PoP: rsm_observe_lifecycle @ hermes_cli/observability/relay_shared_metrics.py:observe_lifecycle */
 int rsm_observe_lifecycle(relay_runtime_t *host, const char *hook_name,
                           const char *event_json) {
     /* Python: project one lifecycle event into the runtime. Returns 1 when
@@ -1222,7 +1222,7 @@ int rsm_observe_lifecycle(relay_runtime_t *host, const char *hook_name,
     return rc;
 }
 
-/* PoP: _run_in_session @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._run_in_session */
+/* PoP: rsm_runtime_run_in_session @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._run_in_session */
 int rsm_runtime_run_in_session(relay_runtime_t *host, rsm_session_t *session,
                                relay_session_cb callback, void *user) {
     /* Python: host.run_in_session(session.relay_session, callback, *args).
@@ -1233,7 +1233,7 @@ int rsm_runtime_run_in_session(relay_runtime_t *host, rsm_session_t *session,
                                         user, false, &out) ? 1 : 0;
 }
 
-/* PoP: _run_in_task @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._run_in_task */
+/* PoP: rsm_runtime_run_in_task @ hermes_cli/observability/relay_shared_metrics.py:_Runtime._run_in_task */
 int rsm_runtime_run_in_task(rsm_task_t *task, relay_session_cb callback, void *user) {
     /* Python: task.context.copy().run(invoke). The C port runs the
      * callback directly (the task context is the session's relay scope;
@@ -1244,7 +1244,7 @@ int rsm_runtime_run_in_task(rsm_task_t *task, relay_session_cb callback, void *u
     return 1;
 }
 
-/* PoP: prepare_session_start @ hermes_cli/observability/relay_shared_metrics.py:prepare_session_start */
+/* PoP: rsm_prepare_session_start @ hermes_cli/observability/relay_shared_metrics.py:prepare_session_start */
 int rsm_prepare_session_start(relay_runtime_t *host, const char *config_json) {
     /* Python: register the subscriber before any producer opens the session
      * scope (no-op when disabled). */
@@ -1253,7 +1253,7 @@ int rsm_prepare_session_start(relay_runtime_t *host, const char *config_json) {
     return rsm_get_runtime(host) ? 1 : 0;
 }
 
-/* PoP: _prepare_core_session @ hermes_cli/observability/relay_shared_metrics.py:_prepare_core_session */
+/* PoP: rsm_prepare_core_session @ hermes_cli/observability/relay_shared_metrics.py:_prepare_core_session */
 int rsm_prepare_core_session(relay_runtime_t *host, const char *config_json) {
     /* Python: prepare the profile subscriber when the host's profile is the
      * active one. */
@@ -1262,7 +1262,7 @@ int rsm_prepare_core_session(relay_runtime_t *host, const char *config_json) {
     return rsm_prepare_session_start(host, config_json);
 }
 
-/* PoP: start_task_run @ hermes_cli/observability/relay_shared_metrics.py:start_task_run */
+/* PoP: rsm_start_task_run @ hermes_cli/observability/relay_shared_metrics.py:start_task_run */
 int rsm_start_task_run(relay_runtime_t *host, const char *config_json,
                        const char *session_id, const char *task_id,
                        const char *platform, const char *parent_session_id) {
@@ -1280,7 +1280,7 @@ int rsm_start_task_run(relay_runtime_t *host, const char *config_json,
     return rc;
 }
 
-/* PoP: finish_task_run @ hermes_cli/observability/relay_shared_metrics.py:finish_task_run */
+/* PoP: rsm_finish_task_run @ hermes_cli/observability/relay_shared_metrics.py:finish_task_run */
 int rsm_finish_task_run(relay_runtime_t *host, const char *config_json,
                         const char *session_id, const char *task_id,
                         const char *platform, const char *result_json,
@@ -1329,7 +1329,7 @@ int rsm_finish_task_run(relay_runtime_t *host, const char *config_json,
     return rc;
 }
 
-/* PoP: _get_runtime @ hermes_cli/observability/relay_shared_metrics.py:_get_runtime */
+/* PoP: rsm_get_runtime @ hermes_cli/observability/relay_shared_metrics.py:_get_runtime */
 int rsm_get_runtime(relay_runtime_t *host) {
     /* Python: resolve the profile's runtime (initializing on first use). */
     if (!host) return 0;
@@ -1340,7 +1340,7 @@ int rsm_get_runtime(relay_runtime_t *host) {
     return 1;
 }
 
-/* PoP: _reset_for_tests @ hermes_cli/observability/relay_shared_metrics.py:_reset_for_tests */
+/* PoP: rsm_reset_for_tests @ hermes_cli/observability/relay_shared_metrics.py:_reset_for_tests */
 int rsm_reset_for_tests(void) {
     /* Python: tear down every runtime and reset the registry (tests only). */
     pthread_mutex_lock(&g_rsm_lock);

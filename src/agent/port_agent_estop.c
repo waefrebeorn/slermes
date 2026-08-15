@@ -48,7 +48,7 @@ static void pget_hermes_home(char *out, size_t cap)
         snprintf(out, cap, ".slermes");
 }
 
-/* PoP: sentinel_path @ agent/estop.py:sentinel_path */
+/* PoP: estop_sentinel_path @ agent/estop.py:sentinel_path */
 char *estop_sentinel_path(void)
 {
     char home[4096];
@@ -70,7 +70,7 @@ static int pget_logged(const char *component)
     return -1;
 }
 
-/* PoP: _hermes_home @ agent/estop.py:_hermes_home */
+/* PoP: estop_hermes_home @ agent/estop.py:_hermes_home */
 /* (resolution lives in pget_hermes_home above; this returns the resolved
  * path the same way _hermes_home does.) */
 char *estop_hermes_home(void)
@@ -80,7 +80,7 @@ char *estop_hermes_home(void)
     return strdup(home);
 }
 
-/* PoP: is_engaged @ agent/estop.py:is_engaged */
+/* PoP: estop_is_engaged @ agent/estop.py:is_engaged */
 /* Fail-SAFE: stat failure → engaged (pause must hold when FS misbehaves). */
 int estop_is_engaged(void)
 {
@@ -107,7 +107,7 @@ static void pnow_iso(char *out, size_t cap)
     strftime(out, cap, "%Y-%m-%dT%H:%M:%S+00:00", &tm_info);
 }
 
-/* PoP: engage @ agent/estop.py:engage */
+/* PoP: pauses @ agent/estop.py:engage */
 /* Create the sentinel JSON body {"engaged_at":..., "reason":...}. Best effort:
  * an empty/partial sentinel still pauses (fail safe). */
 char *estop_engage(const char *reason)
@@ -153,7 +153,7 @@ char *estop_engage(const char *reason)
     return path;
 }
 
-/* PoP: disengage @ agent/estop.py:disengage */
+/* PoP: estop_disengage @ agent/estop.py:disengage */
 int estop_disengage(void)
 {
     char *path = estop_sentinel_path();
@@ -162,7 +162,7 @@ int estop_disengage(void)
     return (rc == 0) ? 1 : 0; /* FileNotFoundError & OSError → False */
 }
 
-/* PoP: get_state @ agent/estop.py:get_state */
+/* PoP: estop_get_state @ agent/estop.py:get_state */
 /* Returns {"reason":..., "engaged_at":...} as JSON or NULL when not engaged.
  * Corrupt body → engaged with both fields null. Caller frees. */
 char *estop_get_state(void)
@@ -211,7 +211,7 @@ char *estop_get_state(void)
     return s;
 }
 
-/* PoP: paused_reply @ agent/estop.py:paused_reply */
+/* PoP: estop_paused_reply @ agent/estop.py:paused_reply */
 char *estop_paused_reply(void)
 {
     char *state_json = estop_get_state();
@@ -234,7 +234,7 @@ char *estop_paused_reply(void)
     return reply;
 }
 
-/* PoP: check_paused @ agent/estop.py:check_paused */
+/* PoP: estop_check_paused @ agent/estop.py:check_paused */
 int estop_check_paused(const char *component)
 {
     if (!estop_is_engaged()) {
@@ -282,7 +282,7 @@ int estop_check_paused(const char *component)
     return 1;
 }
 
-/* PoP: _reset_log_state_for_tests @ agent/estop.py:_reset_log_state_for_tests */
+/* PoP: estop_reset_log_state_for_tests @ agent/estop.py:_reset_log_state_for_tests */
 void estop_reset_log_state_for_tests(void)
 {
     g_logged_count = 0;

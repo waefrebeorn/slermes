@@ -32,7 +32,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: get_env_value @ tools/transcription_tools.py:get_env_value */
+/* PoP: trt_get_env_value @ tools/transcription_tools.py:get_env_value */
 char *trt_get_env_value(const char *key, const char *config_yaml) {
     /* Python: live config module read. */
     if (!key) return NULL;
@@ -54,7 +54,7 @@ char *trt_get_env_value(const char *key, const char *config_yaml) {
     return NULL;
 }
 
-/* PoP: _has_openai_audio_backend @ tools/transcription_tools.py:_has_openai_audio_backend */
+/* PoP: trt_has_openai_audio_backend @ tools/transcription_tools.py:_has_openai_audio_backend */
 bool trt_has_openai_audio_backend(const char *config_yaml) {
     /* Python: config creds, env creds, or default. */
     if (trt_get_env_value("OPENAI_API_KEY", config_yaml)) return true;
@@ -63,7 +63,7 @@ bool trt_has_openai_audio_backend(const char *config_yaml) {
     return false;
 }
 
-/* PoP: _resolve_openai_audio_client_config @ tools/transcription_tools.py:_resolve_openai_audio_client_config */
+/* PoP: trt_resolve_openai_audio_client_config @ tools/transcription_tools.py:_resolve_openai_audio_client_config */
 char *trt_resolve_openai_audio_client_config(const char *config_yaml) {
     /* Python: direct config or managed gateway fallback. */
     if (!config_yaml) return strdup("{}");
@@ -71,7 +71,7 @@ char *trt_resolve_openai_audio_client_config(const char *config_yaml) {
     return strdup("{}");
 }
 
-/* PoP: _resolve_provider_key @ tools/transcription_tools.py:_resolve_provider_key */
+/* PoP: trt_resolve_provider_key @ tools/transcription_tools.py:_resolve_provider_key */
 char *trt_resolve_provider_key(const char *env_var, const char *provider_id) {
     /* Python: delegates to resolve_provider_secret, falls back to get_env_value. */
     if (env_var) {
@@ -81,7 +81,7 @@ char *trt_resolve_provider_key(const char *env_var, const char *provider_id) {
     return NULL;
 }
 
-/* PoP: _resolve_stt_language @ tools/transcription_tools.py:_resolve_stt_language */
+/* PoP: trt_resolve_stt_language @ tools/transcription_tools.py:_resolve_stt_language */
 char *trt_resolve_stt_language(const char *provider_key, const char *stt_config_json,
                                const char *extra_keys_csv) {
     /* Python: provider config language → global → env → None. */
@@ -113,7 +113,7 @@ char *trt_resolve_stt_language(const char *provider_key, const char *stt_config_
     return NULL;
 }
 
-/* PoP: _transcode_audio_for_stt @ tools/transcription_tools.py:_transcode_audio_for_stt */
+/* PoP: trt_transcode_audio_for_stt @ tools/transcription_tools.py:_transcode_audio_for_stt */
 char *trt_transcode_audio_for_stt(const char *file_path, const char *work_dir, char **error_out) {
     /* Python: ffmpeg → 16kHz mono AAC/m4a. Returns (converted_path, error). */
     char ffmpeg_path[512];
@@ -162,7 +162,7 @@ char *trt_transcode_audio_for_stt(const char *file_path, const char *work_dir, c
     return strdup(converted);
 }
 
-/* PoP: _unregistered_stt_provider_error @ tools/transcription_tools.py:_unregistered_stt_provider_error */
+/* PoP: trt_unregistered_stt_provider_error @ tools/transcription_tools.py:_unregistered_stt_provider_error */
 char *trt_unregistered_stt_provider_error(const char *provider) {
     /* Python: returns error dict JSON for unregistered STT provider. */
     json_t *obj = json_object();
@@ -183,7 +183,7 @@ char *trt_unregistered_stt_provider_error(const char *provider) {
     return out;
 }
 
-/* PoP: _validate_audio_file_size @ tools/transcription_tools.py:_validate_audio_file_size */
+/* PoP: trt_validate_audio_file_size @ tools/transcription_tools.py:_validate_audio_file_size */
 char *trt_validate_audio_file_size(const char *audio_path) {
     /* Python: check file size against MAX_FILE_SIZE (25 MB). */
     struct stat st;
@@ -204,7 +204,7 @@ char *trt_validate_audio_file_size(const char *audio_path) {
     return NULL;
 }
 
-/* PoP: _validate_audio_source_file @ tools/transcription_tools.py:_validate_audio_source_file */
+/* PoP: trt_validate_audio_source_file @ tools/transcription_tools.py:_validate_audio_source_file */
 char *trt_validate_audio_source_file(const char *file_path, bool enforce_size_limit) {
     /* Python: symlink check, existence check, file check, optional size check. */
     struct stat st;
@@ -237,7 +237,7 @@ char *trt_validate_audio_source_file(const char *file_path, bool enforce_size_li
     return NULL;
 }
 
-/* PoP: _prepare_audio_for_transcription @ tools/transcription_tools.py:_prepare_audio_for_transcription */
+/* PoP: trt_prepare_audio_for_transcription @ tools/transcription_tools.py:_prepare_audio_for_transcription */
 char *trt_prepare_audio_for_transcription(const char *file_path, char **work_dir_out) {
     /* Python: .silk → WAV via pilk. Non-.silk returns original path. */
     if (!file_path) return NULL;
@@ -254,7 +254,7 @@ char *trt_prepare_audio_for_transcription(const char *file_path, char **work_dir
     return err;
 }
 
-/* PoP: _sysctl_value @ tools/transcription_tools.py:_sysctl_value */
+/* PoP: trt_sysctl_value @ tools/transcription_tools.py:_sysctl_value */
 char *trt_sysctl_value(const char *name) {
     /* Python: subprocess.check_output(["/usr/sbin/sysctl", "-n", name]). */
     if (!name) return NULL;
@@ -272,7 +272,7 @@ char *trt_sysctl_value(const char *name) {
     return strdup(buf);
 }
 
-/* PoP: _should_force_faster_whisper_cpu @ tools/transcription_tools.py:_should_force_faster_whisper_cpu */
+/* PoP: trt_should_force_faster_whisper_cpu @ tools/transcription_tools.py:_should_force_faster_whisper_cpu */
 bool trt_should_force_faster_whisper_cpu(void) {
     /* Python: force CPU on Apple Silicon / Rosetta to avoid hard aborts. */
 #ifdef __APPLE__
@@ -315,7 +315,7 @@ static void trt_confidence_thresholds_impl(const char *local_cfg_json, double *n
     if (p) { const char *c = strchr(p, ':'); if (c) *log_prob = atof(c + 1); }
 }
 
-/* PoP: build_local_transcribe_kwargs @ tools/transcription_tools.py:build_local_transcribe_kwargs */
+/* PoP: trt_build_local_transcribe_kwargs @ tools/transcription_tools.py:build_local_transcribe_kwargs */
 char *trt_build_local_transcribe_kwargs(const char *stt_config_json) {
     /* Python: build kwargs dict for faster-whisper model.transcribe(). */
     json_t *kwargs = json_object();
@@ -369,7 +369,7 @@ char *trt_build_local_transcribe_kwargs(const char *stt_config_json) {
     return out;
 }
 
-/* PoP: _join_confident_segments @ tools/transcription_tools.py:_join_confident_segments */
+/* PoP: trt_join_confident_segments @ tools/transcription_tools.py:_join_confident_segments */
 char *trt_join_confident_segments(const char *segments_json, const char *local_cfg_json) {
     /* Python: join segment texts, dropping hallucinated segments. */
     if (!segments_json) return strdup("");
@@ -417,7 +417,7 @@ char *trt_join_confident_segments(const char *segments_json, const char *local_c
     return result;
 }
 
-/* PoP: _convert_caf_to_wav @ tools/transcription_tools.py:_convert_caf_to_wav */
+/* PoP: trt_convert_caf_to_wav @ tools/transcription_tools.py:_convert_caf_to_wav */
 char *trt_convert_caf_to_wav(const char *file_path) {
     /* Python: ffmpeg or afconvert (macOS) for CAF→WAV. */
     if (!file_path) return NULL;
@@ -446,7 +446,7 @@ char *trt_convert_caf_to_wav(const char *file_path) {
     return NULL;
 }
 
-/* PoP: _transcribe_prepared_audio @ tools/transcription_tools.py:_transcribe_prepared_audio */
+/* PoP: trt_transcribe_prepared_audio @ tools/transcription_tools.py:_transcribe_prepared_audio */
 char *trt_transcribe_prepared_audio(const char *file_path, const char *model) {
     /* Python: dispatch to configured STT provider. Returns JSON result. */
     if (!file_path) return strdup("{\"success\":false,\"transcript\":\"\",\"error\":\"no file\"}");
@@ -459,7 +459,7 @@ char *trt_transcribe_prepared_audio(const char *file_path, const char *model) {
     return result;
 }
 
-/* PoP: transcribe_audio_local_fallback @ tools/transcription_tools.py:transcribe_audio_local_fallback */
+/* PoP: trt_transcribe_audio_local_fallback @ tools/transcription_tools.py:transcribe_audio_local_fallback */
 char *trt_transcribe_audio_local_fallback(const char *file_path, const char *model) {
     /* Python: try already-installed local STT backend without changing config. */
     if (!file_path) return strdup("{\"success\":false,\"transcript\":\"\",\"error\":\"no file\"}");
@@ -482,7 +482,7 @@ static const char *const TRT_STT_M4A_ENCODE_ARGS[] = {
     NULL
 };
 
-/* PoP: _run_ffmpeg_stt_encode @ tools/transcription_tools.py:_run_ffmpeg_stt_encode */
+/* PoP: trt_run_ffmpeg_stt_encode @ tools/transcription_tools.py:_run_ffmpeg_stt_encode */
 /* Python: ffmpeg -y -i input [-af filter] <encode_args> output (check=True,
  * timeout=120). Raises on failure. Returns 0 on success, -1 on failure. */
 int trt_run_ffmpeg_stt_encode(const char *ffmpeg, const char *input_path,
@@ -499,13 +499,13 @@ int trt_run_ffmpeg_stt_encode(const char *ffmpeg, const char *input_path,
     return system(cmd) == 0 ? 0 : -1;
 }
 
-/* PoP: _find_ffprobe_binary @ tools/transcription_tools.py:_find_ffprobe_binary */
+/* PoP: _find_binary @ tools/transcription_tools.py:_find_ffprobe_binary */
 /* Python: _find_binary("ffprobe"). Returns the ffprobe path or NULL. */
 const char *trt_find_ffprobe_binary(void) {
     return transcribe_find_binary("ffprobe");
 }
 
-/* PoP: _probe_audio_duration @ tools/transcription_tools.py:_probe_audio_duration */
+/* PoP: trt_probe_audio_duration @ tools/transcription_tools.py:_probe_audio_duration */
 /* Python: ffprobe -v error -show_entries format=duration -of
  * default=noprint_wrappers=1:nokey=1 <file> -> float seconds, or NULL. */
 double trt_probe_audio_duration(const char *file_path, int *ok) {
@@ -533,7 +533,7 @@ double trt_probe_audio_duration(const char *file_path, int *ok) {
     return d;
 }
 
-/* PoP: _safe_find_spec @ tools/transcription_tools.py:_safe_find_spec */
+/* PoP: trt_safe_find_spec @ tools/transcription_tools.py:_safe_find_spec */
 /* Python importlib.util.find_spec(module) — the C port has no Python runtime,
  * so the faithful analog is "is this native STT capability available". Cloud
  * providers are always available (built-in HTTP clients); local ones require
@@ -559,7 +559,7 @@ static int trt_idle_thread_alive = 0;
 static volatile double trt_last_transcription_time = 0.0;
 static volatile int trt_idle_stop = 0;
 
-/* PoP: _touch_transcription_time @ tools/transcription_tools.py:_touch_transcription_time */
+/* PoP: trt_touch_transcription_time @ tools/transcription_tools.py:_touch_transcription_time */
 void trt_touch_transcription_time(void) {
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
@@ -570,7 +570,7 @@ void trt_touch_transcription_time(void) {
  * unloading is a no-op that releases the cached binary-handle flag. */
 static volatile int trt_local_model_loaded = 0;
 
-/* PoP: _unload_local_model @ tools/transcription_tools.py:_unload_local_model */
+/* PoP: trt_unload_local_model @ tools/transcription_tools.py:_unload_local_model */
 void trt_unload_local_model(void) {
     pthread_mutex_lock(&trt_idle_mgmt_lock);
     trt_local_model_loaded = 0;
@@ -592,7 +592,7 @@ static void *trt_idle_watch_fn(void *arg) {
     return NULL;
 }
 
-/* PoP: _start_idle_unload_watcher @ tools/transcription_tools.py:_start_idle_unload_watcher */
+/* PoP: trt_start_idle_unload_watcher @ tools/transcription_tools.py:_start_idle_unload_watcher */
 void trt_start_idle_unload_watcher(int timeout_seconds) {
     (void)timeout_seconds;
     pthread_mutex_lock(&trt_idle_mgmt_lock);
@@ -612,7 +612,7 @@ void trt_start_idle_unload_watcher(int timeout_seconds) {
 #define TRT_CLOUD_TRIM_MIN_RESULT_SECONDS 0.3
 #define TRT_CLOUD_TRIM_MIN_INPUT_SECONDS 12.0
 
-/* PoP: _trim_silence_for_cloud_stt @ tools/transcription_tools.py:_trim_silence_for_cloud_stt */
+/* PoP: trt_trim_silence_for_cloud_stt @ tools/transcription_tools.py:_trim_silence_for_cloud_stt */
 char *trt_trim_silence_for_cloud_stt(const char *file_path,
                                      const char *stt_config_json) {
     if (!file_path) return NULL;
@@ -682,7 +682,7 @@ static bool trt_is_builtin_provider(const char *p) {
            strcmp(p, "elevenlabs") == 0 || strcmp(p, "deepinfra") == 0;
 }
 
-/* PoP: _dispatch_stt_provider @ tools/transcription_tools.py:_dispatch_stt_provider */
+/* PoP: string @ tools/transcription_tools.py:_dispatch_stt_provider */
 /* Route *file_path* to the handler for *provider* (built-in). Returns JSON
  * result string (caller frees). Command/plugin providers fall back to the
  * generic no-provider error (C port has no plugin registry for STT). */

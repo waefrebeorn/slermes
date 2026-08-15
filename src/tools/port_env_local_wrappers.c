@@ -13,7 +13,7 @@
 #include <sys/stat.h>
 #include "hermes_json.h"
 
-/* PoP: _msys_to_windows_path @ tools/environments/local.py:_msys_to_windows_path */
+/* PoP: envl_u_msys_to_windows_path @ tools/environments/local.py:_msys_to_windows_path */
 int envl_u_msys_to_windows_path(const char *arg) {
     /* Python: MSYS -> native. Arg = "cwd\tis_windows\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -32,7 +32,7 @@ int envl_u_msys_to_windows_path(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_local_initial_cwd @ tools/environments/local.py:_resolve_local_initial_cwd */
+/* PoP: envl_u_resolve_local_initial_cwd @ tools/environments/local.py:_resolve_local_initial_cwd */
 int envl_u_resolve_local_initial_cwd(const char *arg) {
     /* Python: anchor relative. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -43,7 +43,7 @@ int envl_u_resolve_local_initial_cwd(const char *arg) {
     return 0;
 }
 
-/* PoP: _windows_to_msys_path @ tools/environments/local.py:_windows_to_msys_path */
+/* PoP: envl_u_windows_to_msys_path @ tools/environments/local.py:_windows_to_msys_path */
 int envl_u_windows_to_msys_path(const char *arg) {
     /* Python: C:\Users\x -> /c/Users/x. Arg = "is_windows\tpath". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -71,14 +71,14 @@ int envl_u_windows_to_msys_path(const char *arg) {
     return 0;
 }
 
-/* PoP: _bash_safe_path @ tools/environments/local.py:_bash_safe_path */
+/* PoP: envl_u_bash_safe_path @ tools/environments/local.py:_bash_safe_path */
 int envl_u_bash_safe_path(const char *arg) {
     if (!arg) { printf("\n"); return 0; }
     printf("%s\n", arg);
     return 0;
 }
 
-/* PoP: _quote_bash_path @ tools/environments/local.py:_quote_bash_path */
+/* PoP: envl_u_quote_bash_path @ tools/environments/local.py:_quote_bash_path */
 int envl_u_quote_bash_path(const char *arg) {
     /* Python: shlex.quote(_bash_safe_path(path)) — single-quote the path
      * for safe interpolation into a Git Bash script. */
@@ -87,7 +87,7 @@ int envl_u_quote_bash_path(const char *arg) {
     return 0;
 }
 
-/* PoP: _cwd_usable @ tools/environments/local.py:_cwd_usable */
+/* PoP: envl_u_cwd_usable @ tools/environments/local.py:_cwd_usable */
 int envl_u_cwd_usable(const char *arg) {
     /* Python: isdir AND X_OK. Arg = path. */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -97,7 +97,7 @@ int envl_u_cwd_usable(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_safe_cwd @ tools/environments/local.py:_resolve_safe_cwd */
+/* PoP: envl_u_resolve_safe_cwd @ tools/environments/local.py:_resolve_safe_cwd */
 int envl_u_resolve_safe_cwd(const char *arg) {
     /* Python: ancestor walk. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -108,7 +108,7 @@ int envl_u_resolve_safe_cwd(const char *arg) {
     return 0;
 }
 
-/* PoP: _build_provider_env_blocklist @ tools/environments/local.py:_build_provider_env_blocklist */
+/* PoP: envl_u_build_provider_env_blocklist @ tools/environments/local.py:_build_provider_env_blocklist */
 int envl_u_build_provider_env_blocklist(const char *arg) {
     /* Python: derived blocklist. Arg =
      * "count\tstate\tresult". */
@@ -121,7 +121,7 @@ int envl_u_build_provider_env_blocklist(const char *arg) {
     return 0;
 }
 
-/* PoP: _inject_context_hermes_home @ tools/environments/local.py:_inject_context_hermes_home */
+/* PoP: envl_u_inject_context_hermes_home @ tools/environments/local.py:_inject_context_hermes_home */
 int envl_u_inject_context_hermes_home(const char *arg) {
     /* Python: env["HERMES_HOME"] = override when set. Arg =
      * "override\tenv_json" (override empty = no-op). */
@@ -146,7 +146,7 @@ int envl_u_inject_context_hermes_home(const char *arg) {
     return 0;
 }
 
-/* PoP: _inject_session_context_env @ tools/environments/local.py:_inject_session_context_env */
+/* PoP: envl_u_inject_session_context_env @ tools/environments/local.py:_inject_session_context_env */
 int envl_u_inject_session_context_env(const char *arg) {
     /* Python: contextvar bridge. Arg =
      * "engaged\tstate\tresult". */
@@ -160,7 +160,7 @@ int envl_u_inject_session_context_env(const char *arg) {
     return 0;
 }
 
-/* PoP: _scrub_delegated_child_kanban_env @ tools/environments/local.py:_scrub_delegated_child_kanban_env */
+/* PoP: envl_u_scrub_delegated_child_kanban_env @ tools/environments/local.py:_scrub_delegated_child_kanban_env */
 int envl_u_scrub_delegated_child_kanban_env(const char *arg) {
     /* Python: strip kanban env for children. Arg = "is_child\tstate\tresult". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -173,7 +173,7 @@ int envl_u_scrub_delegated_child_kanban_env(const char *arg) {
     return 0;
 }
 
-/* PoP: hermes_subprocess_env @ tools/environments/local.py:hermes_subprocess_env */
+/* PoP: envl_hermes_subprocess_env @ tools/environments/local.py:hermes_subprocess_env */
 int envl_hermes_subprocess_env(const char *arg) {
     /* Python: 2-tier strip. Arg =
      * "inherit\tstate\tresult". */
@@ -187,7 +187,7 @@ int envl_hermes_subprocess_env(const char *arg) {
     return 0;
 }
 
-/* PoP: _find_bash @ tools/environments/local.py:_find_bash */
+/* PoP: envl_u_find_bash @ tools/environments/local.py:_find_bash */
 int envl_u_find_bash(const char *arg) {
     /* Python: portable-git first. Arg =
      * "state\tresult". */
@@ -199,7 +199,7 @@ int envl_u_find_bash(const char *arg) {
     return 0;
 }
 
-/* PoP: _looks_like_msys_spawn_failure @ tools/environments/local.py:_looks_like_msys_spawn_failure */
+/* PoP: envl_u_looks_like_msys_spawn_failure @ tools/environments/local.py:_looks_like_msys_spawn_failure */
 int envl_u_looks_like_msys_spawn_failure(const char *arg) {
     /* Python: case-insensitive marker match (dofork:, child_copy:,
      * 0xc0000142, 0xc0000005). Arg = details text. */
@@ -217,7 +217,7 @@ int envl_u_looks_like_msys_spawn_failure(const char *arg) {
     return 0;
 }
 
-/* PoP: _mandatory_aslr_enabled @ tools/environments/local.py:_mandatory_aslr_enabled */
+/* PoP: envl_u_mandatory_aslr_enabled @ tools/environments/local.py:_mandatory_aslr_enabled */
 int envl_u_mandatory_aslr_enabled(const char *arg) {
     /* Python: ForceRelocateImages state. Arg =
      * "state\tresult". */
@@ -229,7 +229,7 @@ int envl_u_mandatory_aslr_enabled(const char *arg) {
     return 0;
 }
 
-/* PoP: _git_root_from_bash @ tools/environments/local.py:_git_root_from_bash */
+/* PoP: envl_u_git_root_from_bash @ tools/environments/local.py:_git_root_from_bash */
 int envl_u_git_root_from_bash(const char *arg) {
     /* Python: <root>/bin/bash -> root; <root>/usr/bin/bash -> root.
      * Arg = bash path (POSIX slash form). */
@@ -263,7 +263,7 @@ int envl_u_git_root_from_bash(const char *arg) {
     return 0;
 }
 
-/* PoP: _git_bash_aslr_help @ tools/environments/local.py:_git_bash_aslr_help */
+/* PoP: envl_u_git_bash_aslr_help @ tools/environments/local.py:_git_bash_aslr_help */
 int envl_u_git_bash_aslr_help(const char *arg) {
     /* Python: Mandatory-ASLR remediation. Arg = "bash\tgit_root\tdetails". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -279,7 +279,7 @@ int envl_u_git_bash_aslr_help(const char *arg) {
     return 0;
 }
 
-/* PoP: _bash_starts @ tools/environments/local.py:_bash_starts */
+/* PoP: envl_u_bash_starts @ tools/environments/local.py:_bash_starts */
 int envl_u_bash_starts(const char *arg) {
     /* Python: external-program probe. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -290,7 +290,7 @@ int envl_u_bash_starts(const char *arg) {
     return 0;
 }
 
-/* PoP: _git_bash_bin_dirs @ tools/environments/local.py:_git_bash_bin_dirs */
+/* PoP: envl_u_git_bash_bin_dirs @ tools/environments/local.py:_git_bash_bin_dirs */
 int envl_u_git_bash_bin_dirs(const char *arg) {
     /* Python: /etc/profile order. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -302,7 +302,7 @@ int envl_u_git_bash_bin_dirs(const char *arg) {
     return 0;
 }
 
-/* PoP: _prepend_git_bash_dirs @ tools/environments/local.py:_prepend_git_bash_dirs */
+/* PoP: envl_u_prepend_git_bash_dirs @ tools/environments/local.py:_prepend_git_bash_dirs */
 int envl_u_prepend_git_bash_dirs(const char *arg) {
     /* Python: prepend missing git dirs. Arg =
      * "existing_path\tstate\tresult". */
@@ -315,7 +315,7 @@ int envl_u_prepend_git_bash_dirs(const char *arg) {
     return 0;
 }
 
-/* PoP: _find_shell @ tools/environments/local.py:_find_shell */
+/* PoP: envl_u_find_shell @ tools/environments/local.py:_find_shell */
 int envl_u_find_shell(const char *arg) {
     /* Python: $SHELL preference. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -326,7 +326,7 @@ int envl_u_find_shell(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_hermes_bin_dir @ tools/environments/local.py:_resolve_hermes_bin_dir */
+/* PoP: envl_u_resolve_hermes_bin_dir @ tools/environments/local.py:_resolve_hermes_bin_dir */
 int envl_u_resolve_hermes_bin_dir(const char *arg) {
     /* Python: shutil.which("hermes") dir -> argv[0] dir (absolute hermes*
      * executable) -> sys.executable dir with a hermes shim; None if none
@@ -384,7 +384,7 @@ int envl_u_resolve_hermes_bin_dir(const char *arg) {
     return 0;
 }
 
-/* PoP: _prepend_hermes_bin_dir @ tools/environments/local.py:_prepend_hermes_bin_dir */
+/* PoP: envl_u_prepend_hermes_bin_dir @ tools/environments/local.py:_prepend_hermes_bin_dir */
 int envl_u_prepend_hermes_bin_dir(const char *arg) {
     /* Python: prepend bin dir if missing. Arg = "bin_dir\texisting_path". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -405,7 +405,7 @@ int envl_u_prepend_hermes_bin_dir(const char *arg) {
     return 0;
 }
 
-/* PoP: _append_missing_sane_path_entries @ tools/environments/local.py:_append_missing_sane_path_entries */
+/* PoP: envl_u_append_missing_sane_path_entries @ tools/environments/local.py:_append_missing_sane_path_entries */
 int envl_u_append_missing_sane_path_entries(const char *arg) {
     /* Python: dedupe + strip empties. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -416,7 +416,7 @@ int envl_u_append_missing_sane_path_entries(const char *arg) {
     return 0;
 }
 
-/* PoP: _apply_windows_msys_bash_env_defaults @ tools/environments/local.py:_apply_windows_msys_bash_env_defaults */
+/* PoP: envl_u_apply_windows_msys_bash_env_defaults @ tools/environments/local.py:_apply_windows_msys_bash_env_defaults */
 int envl_u_apply_windows_msys_bash_env_defaults(const char *arg) {
     /* Python: MSYS path conversion off. Arg = "is_windows\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -429,7 +429,7 @@ int envl_u_apply_windows_msys_bash_env_defaults(const char *arg) {
     return 0;
 }
 
-/* PoP: _path_env_key @ tools/environments/local.py:_path_env_key */
+/* PoP: envl_u_path_env_key @ tools/environments/local.py:_path_env_key */
 int envl_u_path_env_key(const char *arg) {
     /* Python: on POSIX always "PATH"; on Windows the correctly-cased key
      * actually present in the environment (Path vs PATH). */
@@ -442,7 +442,7 @@ int envl_u_path_env_key(const char *arg) {
     return 0;
 }
 
-/* PoP: _make_run_env @ tools/environments/local.py:_make_run_env */
+/* PoP: envl_u_make_run_env @ tools/environments/local.py:_make_run_env */
 int envl_u_make_run_env(const char *arg) {
     /* Python: sanitized env. Arg =
      * "count\tstate\tresult". */
@@ -455,7 +455,7 @@ int envl_u_make_run_env(const char *arg) {
     return 0;
 }
 
-/* PoP: _read_terminal_shell_init_config @ tools/environments/local.py:_read_terminal_shell_init_config */
+/* PoP: envl_u_read_terminal_shell_init_config @ tools/environments/local.py:_read_terminal_shell_init_config */
 int envl_u_read_terminal_shell_init_config(const char *arg) {
     /* Python: (files, auto_bashrc) defaults on failure. Arg =
      * "state\tfiles\tauto_bashrc". */
@@ -470,7 +470,7 @@ int envl_u_read_terminal_shell_init_config(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_shell_init_files @ tools/environments/local.py:_resolve_shell_init_files */
+/* PoP: envl_u_resolve_shell_init_files @ tools/environments/local.py:_resolve_shell_init_files */
 int envl_u_resolve_shell_init_files(const char *arg) {
     /* Python: source list. Arg = "count\tstate\tresult". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -482,7 +482,7 @@ int envl_u_resolve_shell_init_files(const char *arg) {
     return 0;
 }
 
-/* PoP: _prepend_shell_init @ tools/environments/local.py:_prepend_shell_init */
+/* PoP: envl_u_prepend_shell_init @ tools/environments/local.py:_prepend_shell_init */
 int envl_u_prepend_shell_init(const char *arg) {
     /* Python: guarded source lines + cmd. Arg = "files\tcmd" (tab-sep). */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -501,7 +501,7 @@ int envl_u_prepend_shell_init(const char *arg) {
     return 0;
 }
 
-/* PoP: get_temp_dir @ tools/environments/local.py:get_temp_dir */
+/* PoP: envl_get_temp_dir @ tools/environments/local.py:get_temp_dir */
 int envl_get_temp_dir(const char *arg) {
     /* Python: POSIX-safe temp. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("/tmp\n"); return 0; }
@@ -512,7 +512,7 @@ int envl_get_temp_dir(const char *arg) {
     return 0;
 }
 
-/* PoP: _quote_cwd_for_cd @ tools/environments/local.py:_quote_cwd_for_cd */
+/* PoP: envl_u_quote_cwd_for_cd @ tools/environments/local.py:_quote_cwd_for_cd */
 int envl_u_quote_cwd_for_cd(const char *arg) {
     /* Python: BaseEnvironment._quote_cwd_for_cd(_windows_to_msys_path(cwd))
      * — Git Bash-friendly path for cd. Arg = cwd. */
@@ -521,7 +521,7 @@ int envl_u_quote_cwd_for_cd(const char *arg) {
     return 0;
 }
 
-/* PoP: _quote_shell_path @ tools/environments/local.py:_quote_shell_path */
+/* PoP: envl_u_quote_shell_path @ tools/environments/local.py:_quote_shell_path */
 int envl_u_quote_shell_path(const char *arg) {
     if (!arg) { printf("''\n"); return 0; }
     putchar('\'');
@@ -533,7 +533,7 @@ int envl_u_quote_shell_path(const char *arg) {
     return 0;
 }
 
-/* PoP: _update_cwd @ tools/environments/local.py:_update_cwd */
+/* PoP: envl_u_update_cwd @ tools/environments/local.py:_update_cwd */
 int envl_u_update_cwd(const char *arg) {
     /* Python: extract cwd from stdout marker. Arg = "result\tcwd". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -542,7 +542,7 @@ int envl_u_update_cwd(const char *arg) {
     return 0;
 }
 
-/* PoP: _extract_cwd_from_output @ tools/environments/local.py:_extract_cwd_from_output */
+/* PoP: envl_u_extract_cwd_from_output @ tools/environments/local.py:_extract_cwd_from_output */
 int envl_u_extract_cwd_from_output(const char *arg) {
     /* Python: MSYS normalize + validate. Arg =
      * "changed\tvalid\tresult\tstate". */

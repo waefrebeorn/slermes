@@ -13,13 +13,13 @@
 /* PoP: goal_meta_key           @ hermes_cli/goals.py:_meta_key */
 /* PoP: goal_contract_is_empty  @ hermes_cli/goals.py:is_empty */
 /* PoP: goal_contract_to_dict   @ hermes_cli/goals.py:to_dict */
-/* PoP: goal_contract_from_dict @ hermes_cli/goals.py:from_dict */
+/* PoP: field_index @ hermes_cli/goals.py:from_dict */
 /* PoP: goal_contract_render    @ hermes_cli/goals.py:render_block */
 /* PoP: parse_contract          @ hermes_cli/goals.py:parse_contract */
 /* PoP: goal_state_to_json      @ hermes_cli/goals.py:to_json */
 /* PoP: goal_state_from_json    @ hermes_cli/goals.py:from_json */
-/* PoP: goal_state_has_contract @ hermes_cli/goals.py:has_contract */
-/* PoP: goal_state_render_subgoals @ hermes_cli/goals.py:render_subgoals_block */
+/* PoP: field_index @ hermes_cli/goals.py:has_contract */
+/* PoP: field_index @ hermes_cli/goals.py:render_subgoals_block */
 
 #include "goal_contract.h"
 #include "goal_contract_internal.h"

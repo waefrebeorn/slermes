@@ -92,7 +92,7 @@ bool budget_tracker_is_exceeded(const budget_tracker_t *bt) {
     return false;
 }
 
-/* PoP: push_warning @ hermes_cli/mcp_config.py:_warning */
+/* PoP: budget_tracker_get_warning @ hermes_cli/mcp_config.py:_warning */
 const char *budget_tracker_get_warning(budget_tracker_t *bt) {
     if (!bt) return NULL;
 

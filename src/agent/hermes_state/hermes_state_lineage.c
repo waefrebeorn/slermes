@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: get_conversation_root @ hermes_state.py:get_conversation_root */
+/* PoP: hermes_state_get_conversation_root @ hermes_state.py:get_conversation_root */
 char *hermes_state_get_conversation_root(hermes_state_db_t *db,
                                          const char *session_id) {
     if (!db || !session_id || !*session_id) return strdup(session_id ? session_id : "");
@@ -45,7 +45,7 @@ char *hermes_state_get_conversation_root(hermes_state_db_t *db,
     return root;
 }
 
-/* PoP: get_compression_tip @ hermes_state.py:get_compression_tip */
+/* PoP: hermes_state_get_compression_tip @ hermes_state.py:get_compression_tip */
 char *hermes_state_get_compression_tip(hermes_state_db_t *db,
                                        const char *session_id) {
     if (!db || !session_id || !*session_id) return strdup(session_id ? session_id : "");
@@ -80,7 +80,7 @@ char *hermes_state_get_compression_tip(hermes_state_db_t *db,
     return current;
 }
 
-/* PoP: resolve_resume_session_id @ hermes_state.py:resolve_resume_session_id */
+/* PoP: hermes_state_resolve_resume_session_id @ hermes_state.py:resolve_resume_session_id */
 char *hermes_state_resolve_resume_session_id(hermes_state_db_t *db,
                                              const char *session_id) {
     if (!db || !session_id || !*session_id) return strdup(session_id ? session_id : "");
@@ -131,7 +131,7 @@ char *hermes_state_resolve_resume_session_id(hermes_state_db_t *db,
     return result;
 }
 
-/* PoP: get_compression_lineage @ hermes_state.py:get_compression_lineage */
+/* PoP: hermes_state_get_compression_lineage @ hermes_state.py:get_compression_lineage */
 char *hermes_state_get_compression_lineage(hermes_state_db_t *db,
                                            const char *session_id) {
     if (!db || !session_id || !*session_id) return strdup("[]");

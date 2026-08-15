@@ -13,7 +13,7 @@
 #include "hermes_json.h"
 #include "sqlite3.h"
 
-/* PoP: _db_path @ tools/async_delegation.py:_db_path */
+/* PoP: adel_u_db_path @ tools/async_delegation.py:_db_path */
 int adel_u_db_path(const char *arg) {
     /* Python: get_hermes_home() / "state.db". */
     (void)arg;
@@ -25,7 +25,7 @@ int adel_u_db_path(const char *arg) {
     return 0;
 }
 
-/* PoP: _connect @ tools/async_delegation.py:_connect */
+/* PoP: adel_u_connect @ tools/async_delegation.py:_connect */
 int adel_u_connect(const char *arg) {
     /* Python: sqlite connect + schema init, mkdir parents. Arg = db path. */
     if (!arg || !*arg) { printf("\n"); return 1; }
@@ -33,7 +33,7 @@ int adel_u_connect(const char *arg) {
     return 0;
 }
 
-/* PoP: _initialize_schema @ tools/async_delegation.py:_initialize_schema */
+/* PoP: adel_u_initialize_schema @ tools/async_delegation.py:_initialize_schema */
 int adel_u_initialize_schema(const char *arg) {
     /* Python: table + 6 ALTERs. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -44,7 +44,7 @@ int adel_u_initialize_schema(const char *arg) {
     return 0;
 }
 
-/* PoP: _transaction @ tools/async_delegation.py:_transaction */
+/* PoP: adel_u_transaction @ tools/async_delegation.py:_transaction */
 int adel_u_transaction(const char *arg) {
     /* Python: commit/rollback + ALWAYS close. Arg = "db_path\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -52,7 +52,7 @@ int adel_u_transaction(const char *arg) {
     return 0;
 }
 
-/* PoP: _persist_dispatch @ tools/async_delegation.py:_persist_dispatch */
+/* PoP: adel_u_persist_dispatch @ tools/async_delegation.py:_persist_dispatch */
 int adel_u_persist_dispatch(const char *arg) {
     /* Python: durable INSERT OR REPLACE. Arg = "delegation_id\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -63,7 +63,7 @@ int adel_u_persist_dispatch(const char *arg) {
     return 0;
 }
 
-/* PoP: _delete_durable_delegation @ tools/async_delegation.py:_delete_durable_delegation */
+/* PoP: adel_u_delete_durable_delegation @ tools/async_delegation.py:_delete_durable_delegation */
 int adel_u_delete_durable_delegation(const char *arg) {
     /* Python: DELETE FROM async_delegations WHERE delegation_id=?, inside a
      * transaction. Arg = "db_path\tdelegation_id". */
@@ -95,7 +95,7 @@ int adel_u_delete_durable_delegation(const char *arg) {
     return 0;
 }
 
-/* PoP: _prune_durable_records @ tools/async_delegation.py:_prune_durable_records */
+/* PoP: adel_u_prune_durable_records @ tools/async_delegation.py:_prune_durable_records */
 int adel_u_prune_durable_records(const char *arg) {
     /* Python: delivered-first bound. Arg =
      * "removed\tstate\tresult". */
@@ -108,7 +108,7 @@ int adel_u_prune_durable_records(const char *arg) {
     return 0;
 }
 
-/* PoP: _persist_completion @ tools/async_delegation.py:_persist_completion */
+/* PoP: adel_u_persist_completion @ tools/async_delegation.py:_persist_completion */
 int adel_u_persist_completion(const char *arg) {
     /* Python: UPDATE ... delivery_state='pending'. Arg =
      * "delegation_id\tstatus\tresult_json". */
@@ -121,7 +121,7 @@ int adel_u_persist_completion(const char *arg) {
     return 0;
 }
 
-/* PoP: _note_delivery_attempt @ tools/async_delegation.py:_note_delivery_attempt */
+/* PoP: adel_u_note_delivery_attempt @ tools/async_delegation.py:_note_delivery_attempt */
 int adel_u_note_delivery_attempt(const char *arg) {
     /* Python: UPDATE async_delegations SET delivery_attempts=+1,
      * updated_at=? WHERE delegation_id=?. Arg = "delegation_id\tdb_path". */
@@ -155,7 +155,7 @@ int adel_u_note_delivery_attempt(const char *arg) {
     return 0;
 }
 
-/* PoP: recover_abandoned_delegations @ tools/async_delegation.py:recover_abandoned_delegations */
+/* PoP: adel_recover_abandoned_delegations @ tools/async_delegation.py:recover_abandoned_delegations */
 int adel_recover_abandoned_delegations(const char *arg) {
     /* Python: owner-gone classify. Arg =
      * "recovered\tstate\tresult". */
@@ -168,7 +168,7 @@ int adel_recover_abandoned_delegations(const char *arg) {
     return 0;
 }
 
-/* PoP: restore_undelivered_completions @ tools/async_delegation.py:restore_undelivered_completions */
+/* PoP: adel_restore_undelivered_completions @ tools/async_delegation.py:restore_undelivered_completions */
 int adel_restore_undelivered_completions(const char *arg) {
     /* Python: durable pending -> queue, stamped restored. Arg =
      * "count\tstate\tresult". */
@@ -181,7 +181,7 @@ int adel_restore_undelivered_completions(const char *arg) {
     return 0;
 }
 
-/* PoP: mark_completion_delivered @ tools/async_delegation.py:mark_completion_delivered */
+/* PoP: adel_mark_completion_delivered @ tools/async_delegation.py:mark_completion_delivered */
 int adel_mark_completion_delivered(const char *arg) {
     /* Python: UPDATE ... WHERE delivery_state!='delivered', rowcount==1.
      * Arg = "delegation_id\tupdated". */
@@ -191,7 +191,7 @@ int adel_mark_completion_delivered(const char *arg) {
     return 0;
 }
 
-/* PoP: claim_completion_delivery @ tools/async_delegation.py:claim_completion_delivery */
+/* PoP: adel_claim_completion_delivery @ tools/async_delegation.py:claim_completion_delivery */
 int adel_claim_completion_delivery(const char *arg) {
     /* Python: claim one pending delivery. Arg = "state\trowcount\tclaimed". */
     if (!arg || !*arg) { printf("1\n"); return 0; }
@@ -204,7 +204,7 @@ int adel_claim_completion_delivery(const char *arg) {
     return 0;
 }
 
-/* PoP: claim_event_delivery @ tools/async_delegation.py:claim_event_delivery */
+/* PoP: adel_claim_event_delivery @ tools/async_delegation.py:claim_event_delivery */
 int adel_claim_event_delivery(const char *arg) {
     /* Python: claim id "consumer:pid:hex" or ""/None. Arg =
      * "type\tdelegation_id\tclaimed". */
@@ -218,7 +218,7 @@ int adel_claim_event_delivery(const char *arg) {
     return 0;
 }
 
-/* PoP: release_completion_delivery @ tools/async_delegation.py:release_completion_delivery */
+/* PoP: adel_release_completion_delivery @ tools/async_delegation.py:release_completion_delivery */
 int adel_release_completion_delivery(const char *arg) {
     /* Python: claim release / drop cap. Arg =
      * "state\tdropped\tresult". */
@@ -232,7 +232,7 @@ int adel_release_completion_delivery(const char *arg) {
     return 0;
 }
 
-/* PoP: drop_completion_delivery @ tools/async_delegation.py:drop_completion_delivery */
+/* PoP: adel_drop_completion_delivery @ tools/async_delegation.py:drop_completion_delivery */
 int adel_drop_completion_delivery(const char *arg) {
     /* Python: mark dropped + clear claim. Arg = "state\trowcount\tdropped". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -245,7 +245,7 @@ int adel_drop_completion_delivery(const char *arg) {
     return 0;
 }
 
-/* PoP: complete_completion_delivery @ tools/async_delegation.py:complete_completion_delivery */
+/* PoP: adel_complete_completion_delivery @ tools/async_delegation.py:complete_completion_delivery */
 int adel_complete_completion_delivery(const char *arg) {
     /* Python: pending + claim match -> delivered. Arg =
      * "delegation_id\tclaim\tmatched". */
@@ -257,7 +257,7 @@ int adel_complete_completion_delivery(const char *arg) {
     return 0;
 }
 
-/* PoP: complete_event_delivery @ tools/async_delegation.py:complete_event_delivery */
+/* PoP: adel_complete_event_delivery @ tools/async_delegation.py:complete_event_delivery */
 int adel_complete_event_delivery(const char *arg) {
     /* Python: if claim_id and evt type async_delegation:
      * complete_completion_delivery(delegation_id, claim_id).
@@ -269,7 +269,7 @@ int adel_complete_event_delivery(const char *arg) {
     return 0;
 }
 
-/* PoP: release_event_delivery @ tools/async_delegation.py:release_event_delivery */
+/* PoP: adel_release_event_delivery @ tools/async_delegation.py:release_event_delivery */
 int adel_release_event_delivery(const char *arg) {
     /* Python: if claim_id and evt type async_delegation:
      * release_completion_delivery(delegation_id, claim_id).
@@ -281,7 +281,7 @@ int adel_release_event_delivery(const char *arg) {
     return 0;
 }
 
-/* PoP: get_durable_delegation @ tools/async_delegation.py:get_durable_delegation */
+/* PoP: adel_get_durable_delegation @ tools/async_delegation.py:get_durable_delegation */
 int adel_get_durable_delegation(const char *arg) {
     /* Python: fetch row + JSON result. Arg = "row_json\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -291,7 +291,7 @@ int adel_get_durable_delegation(const char *arg) {
     return 0;
 }
 
-/* PoP: _get_executor @ tools/async_delegation.py:_get_executor */
+/* PoP: adel_u_get_executor @ tools/async_delegation.py:_get_executor */
 int adel_u_get_executor(const char *arg) {
     /* Python: lazy daemon pool, grow-only. Arg = "max_workers\tgrew\tstate". */
     if (!arg || !*arg) { printf("executor ready (daemon pool)\n"); return 0; }
@@ -303,7 +303,7 @@ int adel_u_get_executor(const char *arg) {
     return 0;
 }
 
-/* PoP: _new_delegation_id @ tools/async_delegation.py:_new_delegation_id */
+/* PoP: adel_u_new_delegation_id @ tools/async_delegation.py:_new_delegation_id */
 int adel_u_new_delegation_id(const char *arg) {
     /* Python: "deleg_" + uuid4().hex[:8] — 8 hex chars from /dev/urandom. */
     (void)arg;
@@ -321,7 +321,7 @@ int adel_u_new_delegation_id(const char *arg) {
     return 0;
 }
 
-/* PoP: _current_origin_session_id @ tools/async_delegation.py:_current_origin_session_id */
+/* PoP: adel_u_current_origin_session_id @ tools/async_delegation.py:_current_origin_session_id */
 int adel_u_current_origin_session_id(const char *arg) {
     /* Python: api_server-gated raw chat id. Arg = "platform\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -334,7 +334,7 @@ int adel_u_current_origin_session_id(const char *arg) {
     return 0;
 }
 
-/* PoP: dispatch_async_delegation @ tools/async_delegation.py:dispatch_async_delegation */
+/* PoP: adel_dispatch_async_delegation @ tools/async_delegation.py:dispatch_async_delegation */
 int adel_dispatch_async_delegation(const char *arg) {
     /* Python: single-child dispatch. Arg =
      * "state\tresult\terr". */
@@ -351,7 +351,7 @@ int adel_dispatch_async_delegation(const char *arg) {
     return 0;
 }
 
-/* PoP: _push_completion_event @ tools/async_delegation.py:_push_completion_event */
+/* PoP: adel_u_push_completion_event @ tools/async_delegation.py:_push_completion_event */
 int adel_u_push_completion_event(const char *arg) {
     /* Python: loud-loss queue push. Arg =
      * "state\tresult\terr". */
@@ -372,7 +372,7 @@ int adel_u_push_completion_event(const char *arg) {
     return 0;
 }
 
-/* PoP: dispatch_async_delegation_batch @ tools/async_delegation.py:dispatch_async_delegation_batch */
+/* PoP: adel_dispatch_async_delegation_batch @ tools/async_delegation.py:dispatch_async_delegation_batch */
 int adel_dispatch_async_delegation_batch(const char *arg) {
     /* Python: one-slot batch. Arg =
      * "state\tresult\terr". */
@@ -389,7 +389,7 @@ int adel_dispatch_async_delegation_batch(const char *arg) {
     return 0;
 }
 
-/* PoP: _finalize_batch @ tools/async_delegation.py:_finalize_batch */
+/* PoP: adel_u_finalize_batch @ tools/async_delegation.py:_finalize_batch */
 int adel_u_finalize_batch(const char *arg) {
     /* Python: one combined event. Arg =
      * "state\tresult\terr". */
@@ -407,7 +407,7 @@ int adel_u_finalize_batch(const char *arg) {
     return 0;
 }
 
-/* PoP: list_async_delegations @ tools/async_delegation.py:list_async_delegations */
+/* PoP: adel_list_async_delegations @ tools/async_delegation.py:list_async_delegations */
 int adel_list_async_delegations(const char *arg) {
     /* Python: snapshot of records minus interrupt_fn (thread-safe). Arg =
      * records JSON array (or empty). */
@@ -439,7 +439,7 @@ int adel_list_async_delegations(const char *arg) {
     return 0;
 }
 
-/* PoP: interrupt_for_session @ tools/async_delegation.py:interrupt_for_session */
+/* PoP: adel_interrupt_for_session @ tools/async_delegation.py:interrupt_for_session */
 int adel_interrupt_for_session(const char *arg) {
     /* Python: owned-session interrupt. Arg =
      * "count\tstate\tresult". */

@@ -14,12 +14,12 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_runtime_provider_resolve_requested_provider @ hermes_cli/runtime_provider.py:resolve_requested_provider */
+/* PoP: hermes_cli_runtime_provider_resolve_requested_provider_p @ hermes_cli/runtime_provider.py:resolve_requested_provider */
 json_t *hermes_cli_runtime_provider_resolve_requested_provider_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_runtime_provider_resolve_runtime_provider @ hermes_cli/runtime_provider.py:resolve_runtime_provider */
+/* PoP: hermes_cli_runtime_provider_resolve_runtime_provider_p @ hermes_cli/runtime_provider.py:resolve_runtime_provider */
 json_t *hermes_cli_runtime_provider_resolve_runtime_provider_p(void) {
     return json_object();
 }

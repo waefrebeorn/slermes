@@ -17,7 +17,7 @@
 #include <stdlib.h>
 
 /* Format a per-million cost. value==NULL -> "unknown". */
-/* PoP: _format_money @ hermes_cli/model_cost_guard.py:_format_money */
+/* PoP: model_cost_guard_format_money @ hermes_cli/model_cost_guard.py:_format_money */
 void model_cost_guard_format_money(const double *value, char *out, size_t out_sz)
 {
     if (!out) return;
@@ -29,7 +29,7 @@ void model_cost_guard_format_money(const double *value, char *out, size_t out_sz
  * Mirrors Python ModelInfo (flat cost_input/cost_output floats), which is also
  * the shape provider_metadata.c emits for the API response. Returns 1 if cost
  * data present, 0 (and empties the out values) otherwise. */
-/* PoP: _pricing_from_model_info @ hermes_cli/model_cost_guard.py:_pricing_from_model_info */
+/* PoP: model_cost_guard_pricing_from_model_info @ hermes_cli/model_cost_guard.py:_pricing_from_model_info */
 int model_cost_guard_pricing_from_model_info(const json_t *model_info,
                                               double *in_out, double *out_out,
                                               char *source, size_t source_sz)

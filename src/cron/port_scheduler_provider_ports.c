@@ -19,33 +19,33 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: name @ cron/scheduler_provider.py:name */
+/* PoP: schp_name @ cron/scheduler_provider.py:name */
 char *schp_name(void) {
     return strdup("builtin");
 }
 
-/* PoP: is_available @ cron/scheduler_provider.py:is_available */
+/* PoP: schp_is_available @ cron/scheduler_provider.py:is_available */
 bool schp_is_available(void) {
     /* Python: environment check, no network. */
     printf("cron scheduler availability probe\n");
     return true;
 }
 
-/* PoP: start @ cron/scheduler_provider.py:start */
+/* PoP: schp_start @ cron/scheduler_provider.py:start */
 int schp_start(void) {
     /* Python: built-in blocks in 60s loop. */
     printf("cron scheduler started (60s loop)\n");
     return 0;
 }
 
-/* PoP: stop @ cron/scheduler_provider.py:stop */
+/* PoP: schp_stop @ cron/scheduler_provider.py:stop */
 int schp_stop(void) {
     /* Python: eager teardown. */
     printf("cron scheduler stopped\n");
     return 0;
 }
 
-/* PoP: fire_due @ cron/scheduler_provider.py:fire_due */
+/* PoP: schp_fire_due @ cron/scheduler_provider.py:fire_due */
 char *schp_fire_due(const char *job_id) {
     /* Python: run job now via orchestrator. */
     if (!job_id) return NULL;
@@ -53,7 +53,7 @@ char *schp_fire_due(const char *job_id) {
     return strdup("{}");
 }
 
-/* PoP: reconcile @ cron/scheduler_provider.py:reconcile */
+/* PoP: schp_reconcile @ cron/scheduler_provider.py:reconcile */
 char *schp_reconcile(const char *jobs_json) {
     /* Python: converge external registry toward jobs.json. */
     if (!jobs_json) return NULL;
@@ -61,7 +61,7 @@ char *schp_reconcile(const char *jobs_json) {
     return strdup(jobs_json);
 }
 
-/* PoP: resolve_cron_scheduler @ cron/scheduler_provider.py:resolve_cron_scheduler */
+/* PoP: schp_resolve_cron_scheduler @ cron/scheduler_provider.py:resolve_cron_scheduler */
 char *schp_resolve_cron_scheduler(const char *config_yaml) {
     /* Python: cron.provider config read. */
     if (!config_yaml) return strdup("builtin");
@@ -78,7 +78,7 @@ char *schp_resolve_cron_scheduler(const char *config_yaml) {
     return r;
 }
 
-/* PoP: register_job @ cron/scheduler_provider.py:register_job */
+/* PoP: schp_register_job @ cron/scheduler_provider.py:register_job */
 void *schp_register_job(const char *job_json) {
     /* Register the first external trigger for one newly persisted job.
      * The built-in provider reads the local store on every tick, so its

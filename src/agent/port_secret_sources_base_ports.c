@@ -20,7 +20,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: fetch @ agent/secret_sources/base.py:fetch */
+/* PoP: ssb_fetch @ agent/secret_sources/base.py:fetch */
 char *ssb_fetch(const char *cfg_json) {
     /* Python: resolve; must not raise/prompt. */
     if (!cfg_json) return NULL;
@@ -28,19 +28,19 @@ char *ssb_fetch(const char *cfg_json) {
     return NULL;
 }
 
-/* PoP: override_existing @ agent/secret_sources/base.py:override_existing */
+/* PoP: ssb_override_existing @ agent/secret_sources/base.py:override_existing */
 bool ssb_override_existing(void) {
     /* Python: may this source overwrite env vars? */
     return false;
 }
 
-/* PoP: protected_env_vars @ agent/secret_sources/base.py:protected_env_vars */
+/* PoP: ssb_protected_env_vars @ agent/secret_sources/base.py:protected_env_vars */
 char *ssb_protected_env_vars(void) {
     /* Python: never-overwrite list. */
     return strdup("[\"HERMES_HOME\", \"HOME\", \"PATH\"]");
 }
 
-/* PoP: fetch_timeout_seconds @ agent/secret_sources/base.py:fetch_timeout_seconds */
+/* PoP: ssb_fetch_timeout_seconds @ agent/secret_sources/base.py:fetch_timeout_seconds */
 long ssb_fetch_timeout_seconds(void) {
     /* Python: wall-clock budget; config read. */
     const char *v = getenv("HERMES_SECRET_FETCH_TIMEOUT");
@@ -52,12 +52,12 @@ long ssb_fetch_timeout_seconds(void) {
     return 10;
 }
 
-/* PoP: config_schema @ agent/secret_sources/base.py:config_schema */
+/* PoP: ssb_config_schema @ agent/secret_sources/base.py:config_schema */
 char *ssb_config_schema(void) {
     return strdup("{}");
 }
 
-/* PoP: remediation @ agent/secret_sources/base.py:remediation */
+/* PoP: ssb_remediation @ agent/secret_sources/base.py:remediation */
 char *ssb_remediation(const char *error) {
     /* Python: one-line actionable next step. */
     if (!error) return strdup("");

@@ -14,7 +14,7 @@
 #include <math.h>
 #include <time.h>
 
-/* PoP: should_emit_session_stall_notification @ gateway/session_stall.py:should_emit_session_stall_notification */
+/* PoP: gwstall_should_emit @ gateway/session_stall.py:should_emit_session_stall_notification */
 bool gwstall_should_emit(double timeout_seconds, double idle_seconds,
                          int has_pending_inbound, int already_notified) {
     /* Python: True when a stall warning should be sent for this session. */
@@ -25,7 +25,7 @@ bool gwstall_should_emit(double timeout_seconds, double idle_seconds,
     return idle_seconds >= timeout_seconds;
 }
 
-/* PoP: should_clear_session_stall_notification @ gateway/session_stall.py:should_clear_session_stall_notification */
+/* PoP: gwstall_should_clear @ gateway/session_stall.py:should_clear_session_stall_notification */
 bool gwstall_should_clear(double timeout_seconds, double idle_seconds,
                           int has_pending_inbound) {
     /* Python: True when a prior stall notice may be cleared (episode ended). */
@@ -36,7 +36,7 @@ bool gwstall_should_clear(double timeout_seconds, double idle_seconds,
     return idle_seconds < timeout_seconds;
 }
 
-/* PoP: format_session_stall_notification @ gateway/session_stall.py:format_session_stall_notification */
+/* PoP: gwstall_format_notification @ gateway/session_stall.py:format_session_stall_notification */
 char *gwstall_format_notification(double idle_seconds) {
     /* Python: user-facing stall warning (ASCII minutes). */
     long mins = (long)(idle_seconds / 60.0);
@@ -48,7 +48,7 @@ char *gwstall_format_notification(double idle_seconds) {
     return out;
 }
 
-/* PoP: resolve_session_idle_seconds_from_activity @ gateway/session_stall.py:resolve_session_idle_seconds_from_activity */
+/* PoP: gwstall_resolve_idle_seconds @ gateway/session_stall.py:resolve_session_idle_seconds_from_activity */
 double gwstall_resolve_idle_seconds(const char *seconds_since_activity,
                                     const char *last_activity_ts,
                                     double now) {

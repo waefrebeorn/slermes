@@ -19,14 +19,14 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _ra @ agent/system_prompt.py:_ra */
+/* PoP: syp_ra @ agent/system_prompt.py:_ra */
 char *syp_ra(void) {
     /* Python: lazy run_agent ref. */
     printf("run_agent lazy reference (system prompt helpers)\n");
     return NULL;
 }
 
-/* PoP: _resolve_platform_hint @ agent/system_prompt.py:_resolve_platform_hint */
+/* PoP: syp_resolve_platform_hint @ agent/system_prompt.py:_resolve_platform_hint */
 char *syp_resolve_platform_hint(const char *config_yaml) {
     /* Python: per-platform prompt-hint override. */
     if (!config_yaml) return NULL;
@@ -42,7 +42,7 @@ char *syp_resolve_platform_hint(const char *config_yaml) {
     return strndup(v, (size_t)(e - v));
 }
 
-/* PoP: build_system_prompt_parts @ agent/system_prompt.py:build_system_prompt_parts */
+/* PoP: syp_build_system_prompt_parts @ agent/system_prompt.py:build_system_prompt_parts */
 char *syp_build_system_prompt_parts(const char *parts_json) {
     /* Python: three ordered cache tiers. */
     if (!parts_json) return strdup("{}");
@@ -50,7 +50,7 @@ char *syp_build_system_prompt_parts(const char *parts_json) {
     return strdup(parts_json);
 }
 
-/* PoP: build_system_prompt @ agent/system_prompt.py:build_system_prompt */
+/* PoP: syp_build_system_prompt @ agent/system_prompt.py:build_system_prompt */
 char *syp_build_system_prompt(const char *parts_json) {
     /* Python: full prompt from layers; per-session cache. */
     if (!parts_json) return strdup("");
@@ -58,14 +58,14 @@ char *syp_build_system_prompt(const char *parts_json) {
     return strdup(parts_json);
 }
 
-/* PoP: invalidate_system_prompt @ agent/system_prompt.py:invalidate_system_prompt */
+/* PoP: syp_invalidate_system_prompt @ agent/system_prompt.py:invalidate_system_prompt */
 int syp_invalidate_system_prompt(void) {
     /* Python: force rebuild next turn. */
     printf("system prompt cache invalidated\n");
     return 0;
 }
 
-/* PoP: format_tools_for_system_message @ agent/system_prompt.py:format_tools_for_system_message */
+/* PoP: syp_format_tools_for_system_message @ agent/system_prompt.py:format_tools_for_system_message */
 char *syp_format_tools_for_system_message(const char *tools_json) {
     /* Python: trajectory-format tool defs. */
     if (!tools_json) return strdup("");

@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: agent_anthropic_adapter_create_anthropic_message @ agent/anthropic_adapter.py:create_anthropic_message */
+/* PoP: agent_anthropic_adapter_create_anthropic_message_p @ agent/anthropic_adapter.py:create_anthropic_message */
 json_t *agent_anthropic_adapter_create_anthropic_message_p(void) {
     return json_object();
 }

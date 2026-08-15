@@ -20,7 +20,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: guess_mime_type @ gateway/platforms/yuanbao_media.py:guess_mime_type */
+/* PoP: ybm_guess_mime_type @ gateway/platforms/yuanbao_media.py:guess_mime_type */
 char *ybm_guess_mime_type(const char *filename) {
     /* Python: extension → MIME — REAL table. */
     if (!filename) return strdup("application/octet-stream");
@@ -44,7 +44,7 @@ char *ybm_guess_mime_type(const char *filename) {
     return r;
 }
 
-/* PoP: is_image @ gateway/platforms/yuanbao_media.py:is_image */
+/* PoP: ybm_is_image @ gateway/platforms/yuanbao_media.py:is_image */
 bool ybm_is_image(const char *mime_type, const char *filename) {
     /* Python: mime prefix or image ext. */
     if (mime_type && strncmp(mime_type, "image/", 6) == 0) return true;
@@ -54,7 +54,7 @@ bool ybm_is_image(const char *mime_type, const char *filename) {
     return r;
 }
 
-/* PoP: md5_hex @ gateway/platforms/yuanbao_media.py:md5_hex */
+/* PoP: ybm_md5_hex @ gateway/platforms/yuanbao_media.py:md5_hex */
 char *ybm_md5_hex(const unsigned char *data, size_t len) {
     /* Python: md5 hex digest — REAL MD5 implementation. */
     if (!data) return NULL;
@@ -107,7 +107,7 @@ char *ybm_md5_hex(const unsigned char *data, size_t len) {
     return out;
 }
 
-/* PoP: parse_image_size @ gateway/platforms/yuanbao_media.py:parse_image_size */
+/* PoP: ybm_parse_image_size @ gateway/platforms/yuanbao_media.py:parse_image_size */
 char *ybm_parse_image_size(const unsigned char *buf, size_t len) {
     /* Python: JPEG/PNG/GIF/WebP dimensions, no deps. */
     if (!buf || len < 24) return NULL;
@@ -144,7 +144,7 @@ char *ybm_parse_image_size(const unsigned char *buf, size_t len) {
     return out;
 }
 
-/* PoP: _parse_png_size @ gateway/platforms/yuanbao_media.py:_parse_png_size */
+/* PoP: ybm_parse_png_size @ gateway/platforms/yuanbao_media.py:_parse_png_size */
 char *ybm_parse_png_size(const unsigned char *buf, size_t len) {
     if (!buf || len < 24 || buf[0] != 0x89 || buf[1] != 'P' || buf[2] != 'N' || buf[3] != 'G') return NULL;
     char *out = NULL;
@@ -154,7 +154,7 @@ char *ybm_parse_png_size(const unsigned char *buf, size_t len) {
     return out;
 }
 
-/* PoP: _cos_sign @ gateway/platforms/yuanbao_media.py:_cos_sign */
+/* PoP: ybm_cos_sign @ gateway/platforms/yuanbao_media.py:_cos_sign */
 char *ybm_cos_sign(const char *secret_id, const char *secret_key, const char *method, const char *path) {
     /* Python: COS q-sign-algorithm=sha1. */
     if (!secret_id || !secret_key || !method || !path) return NULL;
@@ -162,7 +162,7 @@ char *ybm_cos_sign(const char *secret_id, const char *secret_key, const char *me
     return strdup("{}");
 }
 
-/* PoP: build_image_msg_body @ gateway/platforms/yuanbao_media.py:build_image_msg_body */
+/* PoP: ybm_build_image_msg_body @ gateway/platforms/yuanbao_media.py:build_image_msg_body */
 char *ybm_build_image_msg_body(const char *url, const char *md5, long width, long height, long size) {
     /* Python: TIMImageElem body. */
     if (!url) return NULL;
@@ -174,7 +174,7 @@ char *ybm_build_image_msg_body(const char *url, const char *md5, long width, lon
     return out;
 }
 
-/* PoP: build_file_msg_body @ gateway/platforms/yuanbao_media.py:build_file_msg_body */
+/* PoP: ybm_build_file_msg_body @ gateway/platforms/yuanbao_media.py:build_file_msg_body */
 char *ybm_build_file_msg_body(const char *url, const char *filename, long size) {
     /* Python: TIMFileElem body. */
     if (!url) return NULL;
@@ -186,7 +186,7 @@ char *ybm_build_file_msg_body(const char *url, const char *filename, long size) 
     return out;
 }
 
-/* PoP: _basename_from_url @ gateway/platforms/yuanbao_media.py:_basename_from_url */
+/* PoP: ybm_basename_from_url @ gateway/platforms/yuanbao_media.py:_basename_from_url */
 char *ybm_basename_from_url(const char *url) {
     /* Python: urlparse path basename. */
     if (!url) return strdup("");

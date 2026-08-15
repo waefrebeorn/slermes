@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: generate_bash @ hermes_cli/completion.py:generate_bash */
+/* PoP: cpl_generate_bash @ hermes_cli/completion.py:generate_bash */
 char *cpl_generate_bash(const char *parser_tree_json) {
     /* Python: bash completion script. */
     if (!parser_tree_json) return NULL;
@@ -26,14 +26,14 @@ char *cpl_generate_bash(const char *parser_tree_json) {
     return strdup("_hermes_complete() { :; }\ncomplete -F _hermes_complete hermes");
 }
 
-/* PoP: generate_zsh @ hermes_cli/completion.py:generate_zsh */
+/* PoP: cpl_generate_zsh @ hermes_cli/completion.py:generate_zsh */
 char *cpl_generate_zsh(const char *parser_tree_json) {
     if (!parser_tree_json) return NULL;
     printf("zsh completion generated from parser tree\n");
     return strdup("#compdef hermes\n_hermes() { :; }");
 }
 
-/* PoP: generate_fish @ hermes_cli/completion.py:generate_fish */
+/* PoP: cpl_generate_fish @ hermes_cli/completion.py:generate_fish */
 char *cpl_generate_fish(const char *parser_tree_json) {
     if (!parser_tree_json) return NULL;
     printf("fish completion generated from parser tree\n");

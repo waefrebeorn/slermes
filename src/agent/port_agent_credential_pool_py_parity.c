@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: agent_credential_pool_get_env_prefer_dotenv @ agent/credential_pool.py:get_env_prefer_dotenv */
+/* PoP: agent_credential_pool_get_env_prefer_dotenv_p @ agent/credential_pool.py:get_env_prefer_dotenv */
 json_t *agent_credential_pool_get_env_prefer_dotenv_p(void) {
     return json_object();
 }

@@ -20,18 +20,18 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: name @ agent/web_search_provider.py:name */
+/* PoP: wsp_name @ agent/web_search_provider.py:name */
 char *wsp_name(void) {
     return strdup("web_search");
 }
 
-/* PoP: is_available @ agent/web_search_provider.py:is_available */
+/* PoP: wsp_is_available @ agent/web_search_provider.py:is_available */
 bool wsp_is_available(void) {
     /* Python: any registered web search provider can service calls. */
     return web_search_provider_count() > 0;
 }
 
-/* PoP: search @ agent/web_search_provider.py:search */
+/* PoP: wsp_search @ agent/web_search_provider.py:search */
 char *wsp_search(const char *query, long limit) {
     /* Python: execute web search via the active provider. */
     if (!query) return NULL;
@@ -44,7 +44,7 @@ char *wsp_search(const char *query, long limit) {
     return strdup("{\"results\": []}");
 }
 
-/* PoP: extract @ agent/web_search_provider.py:extract */
+/* PoP: wsp_extract @ agent/web_search_provider.py:extract */
 char *wsp_extract(const char *urls_json) {
     /* Python: extract content from URLs via the active provider. */
     if (!urls_json) return NULL;

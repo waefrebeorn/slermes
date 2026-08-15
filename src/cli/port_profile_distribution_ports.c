@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: from_dict @ hermes_cli/profile_distribution.py:from_dict */
+/* PoP: prd_from_dict @ hermes_cli/profile_distribution.py:from_dict */
 char *prd_from_dict(const char *data_json) {
     /* Python: strict validation. */
     if (!data_json || data_json[0] != '{') {
@@ -32,7 +32,7 @@ char *prd_from_dict(const char *data_json) {
     return strdup(data_json);
 }
 
-/* PoP: to_dict @ hermes_cli/profile_distribution.py:to_dict */
+/* PoP: prd_to_dict @ hermes_cli/profile_distribution.py:to_dict */
 char *prd_to_dict(const char *data_json) {
     /* Python: name + description, optional extras. */
     if (!data_json) return strdup("{}");

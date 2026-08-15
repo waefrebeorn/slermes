@@ -152,7 +152,7 @@ char *aux__validate_proxy_env_urls(const char *env_val) {
     return NULL;
 }
 
-/* PoP: aux__resolve_aux_verify @ agent/auxiliary_client.py:_resolve_aux_verify */
+/* PoP: 1 @ agent/auxiliary_client.py:_resolve_aux_verify */
 /* Resolve an SSL verify flag from config/env. Returns 1 (verify) by default. */
 int aux__resolve_aux_verify(const char *env_val) {
     if (!env_val) return 1;
@@ -162,7 +162,7 @@ int aux__resolve_aux_verify(const char *env_val) {
     return 1;
 }
 
-/* PoP: aux__openai_http_client_kwargs @ agent/auxiliary_client.py:_openai_http_client_kwargs */
+/* PoP: kwargs @ agent/auxiliary_client.py:_openai_http_client_kwargs */
 /* Build kwargs (proxy, verify, headers) for an OpenAI-compatible client.
  * Returns malloc'd JSON string of kwargs. */
 char *aux__openai_http_client_kwargs(const char *proxy_url, int verify, const char *extra_headers_json) {
@@ -201,7 +201,7 @@ char *aux__apply_user_default_headers(const char *base_json, const char *user_js
  *  Client pool + provider resolution
  * ================================================================ */
 
-/* PoP: aux__select_pool_entry @ agent/auxiliary_client.py:_select_pool_entry */
+/* PoP: for @ agent/auxiliary_client.py:_select_pool_entry */
 /* Pick a cached pool entry for (provider, model). Returns index or -1. */
 int aux__select_pool_entry(const char *provider, const char *model) {
     pthread_mutex_lock(&g_pool_lock);
@@ -263,7 +263,7 @@ char *aux__read_nous_auth(void) {
     return strdup(buf[0] ? buf : "");
 }
 
-/* PoP: aux__resolve_nous_runtime_api @ agent/auxiliary_client.py:_resolve_nous_runtime_api */
+/* PoP: base @ agent/auxiliary_client.py:_resolve_nous_runtime_api */
 /* Resolve Nous runtime API base (portal). Returns malloc'd URL. */
 char *aux__resolve_nous_runtime_api(void) {
     char buf[512];
@@ -410,7 +410,7 @@ int aux__evict_cached_client_instance(const char *provider, const char *model) {
     return removed;
 }
 
-/* PoP: aux__pool_cache_hint @ agent/auxiliary_client.py:_pool_cache_hint */
+/* PoP: for @ agent/auxiliary_client.py:_pool_cache_hint */
 /* Return a malloc'd cache key hint for (provider, model). */
 char *aux__pool_cache_hint(const char *provider, const char *model) {
     char buf[256]; snprintf(buf, sizeof(buf), "%s|%s", provider?provider:"", model?model:"");
@@ -498,7 +498,7 @@ int aux__cached_client_accepts_slash_models(const char *provider) {
     /* OpenRouter exposes the /models slash catalog. */
     return provider && strcmp(provider, "openrouter") == 0;
 }
-/* PoP: aux__compat_model @ agent/auxiliary_client.py:_compat_model */
+/* PoP: provider @ agent/auxiliary_client.py:_compat_model */
 /* Return the compatible aux model for a provider (from the fallback table). */
 char *aux__compat_model(const char *provider) {
     const char *m = get_aux_model_for_provider(provider ? provider : "");
@@ -639,7 +639,7 @@ int aux__task_minimum_context_length(const char *task_type) {
     if (strcmp(task_type, "compression") == 0) return 65536;
     return -1;
 }
-/* PoP: aux__candidate_context_window @ agent/auxiliary_client.py:_candidate_context_window */
+/* PoP: get_model_context_length @ agent/auxiliary_client.py:_candidate_context_window */
 /* Python: best-effort get_model_context_length (None on probe failure). */
 int aux__candidate_context_window(const char *provider, const char *model) {
     (void)provider;
@@ -750,7 +750,7 @@ extern char *aux__pool_runtime_api_key(const char *provider);
 extern char *aux__pool_runtime_base_url(const char *provider);
 bool auxiliary_task_llm_config(const char *task_name, llm_config_t *out);
 
-/* PoP: _call_llm_impl @ agent/auxiliary_client.py:_call_llm_impl */
+/* PoP: object @ agent/auxiliary_client.py:_call_llm_impl */
 /* Port of Python _call_llm_impl: centralized synchronous LLM call. Takes a
  * JSON kwargs object (provider, model, base_url, api_key, messages,
  * temperature, max_tokens, tools, timeout, extra_body, reasoning_config,
@@ -871,7 +871,7 @@ char *aux__call_llm_impl(const char *task, const char *kwargs_json) {
     return out;
 }
 
-/* PoP: _async_call_llm_impl @ agent/auxiliary_client.py:_async_call_llm_impl */
+/* PoP: aux__async_call_llm_impl @ agent/auxiliary_client.py:_async_call_llm_impl */
 /* Port of Python _async_call_llm_impl: async variant. C runs synchronously
  * (single-threaded event loop), so this delegates to the sync impl. */
 char *aux__async_call_llm_impl(const char *task, const char *kwargs_json) {

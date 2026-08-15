@@ -28,7 +28,7 @@
  *  Format / MIME detection (wrapping the private magic-byte logic)
  * ────────────────────────────────────────────────────────────── */
 
-/* PoP: vision_detect_image_mime_type_from_bytes @ tools/vision_tools.py:_detect_image_mime_type_from_bytes */
+/* PoP: vision_detect_image_mime_from_bytes @ tools/vision_tools.py:_detect_image_mime_type_from_bytes */
 const char *vision_detect_image_mime_from_bytes(const unsigned char *buf, size_t len)
 {
     if (!buf || len < 4) return "application/octet-stream";
@@ -446,7 +446,7 @@ char *vision_check_requirements(void)
 
 /* ── Pure helpers (oracle-verified) ──────────────────────────────── */
 
-/* PoP: _terminal_backend_is_local @ tools/vision_tools.py:_terminal_backend_is_local */
+/* PoP: vision_terminal_backend_is_local @ tools/vision_tools.py:_terminal_backend_is_local */
 int vision_terminal_backend_is_local(void) {
     const char *backend = getenv("TERMINAL_ENV");
     if (!backend) return 1;
@@ -456,7 +456,7 @@ int vision_terminal_backend_is_local(void) {
     return (strcasecmp(backend, "local") == 0);
 }
 
-/* PoP: _is_path_like_video_source @ tools/vision_tools.py:_is_path_like_video_source */
+/* PoP: vision_is_path_like_video_source @ tools/vision_tools.py:_is_path_like_video_source */
 int vision_is_path_like_video_source(const char *value) {
     if (!value) return 0;
     while (*value == ' ' || *value == '\t') value++;
@@ -471,7 +471,7 @@ int vision_is_path_like_video_source(const char *value) {
     return result;
 }
 
-/* PoP: _build_scale_note @ tools/vision_tools.py:_build_scale_note */
+/* PoP: vision_build_scale_note @ tools/vision_tools.py:_build_scale_note */
 /* Returns malloc'd note string or NULL. Caller frees. */
 char *vision_build_scale_note(const char *scale_json, const char *crop_json) {
     (void)scale_json;

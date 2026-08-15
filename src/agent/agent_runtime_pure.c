@@ -143,7 +143,7 @@ void cache_policy_stub_free(struct cache_policy_stub *s)
 }
 
 /* ── _direct_native_anthropic_tool_cache_capability ─────────────────────── */
-/* PoP: arh_direct_native_anthropic_tool_cache_capability @ agent/agent_runtime_helpers.py:_direct_native_anthropic_tool_cache_capability */
+/* PoP: strings @ agent/agent_runtime_helpers.py:_direct_native_anthropic_tool_cache_capability */
 /*
  * Takes effective strings (Python resolves base_url/api_mode from the agent or
  * kwargs).  Caller passes the stub/agent's base_url + api_mode + overrides.
@@ -181,7 +181,7 @@ bool cache_policy_stub_disabled(struct cache_policy_stub *s) { return s ? (s->ca
 #define DEFAULT_COMPACT_THRESHOLD 200000
 #define LOCAL_TRIGGER_SAFETY_MARGIN 8192
 
-/* PoP: is_native_compaction_model @ agent/native_compaction.py:is_native_compaction_model */
+/* PoP: native_compaction_is_model @ agent/native_compaction.py:is_native_compaction_model */
 int native_compaction_is_model(const char *model) {
     if (!model) return 0;
     return strcasestr(model, NATIVE_COMPACT_ELIGIBLE_MARKER) != NULL;
@@ -205,7 +205,7 @@ int native_compaction_is_direct_openai_route(const char *base_url, int is_codex_
     return match;
 }
 
-/* PoP: resolve_compact_threshold @ agent/native_compaction.py:resolve_compact_threshold */
+/* PoP: native_compaction_resolve_threshold @ agent/native_compaction.py:resolve_compact_threshold */
 int native_compaction_resolve_threshold(int configured_threshold, int local_trigger_tokens, int has_local) {
     int configured = configured_threshold;
     if (configured_threshold <= 0) configured = DEFAULT_COMPACT_THRESHOLD;
@@ -221,14 +221,14 @@ int native_compaction_resolve_threshold(int configured_threshold, int local_trig
     return configured;
 }
 
-/* PoP: is_native_compaction_rejection @ agent/native_compaction.py:is_native_compaction_rejection */
+/* PoP: native_compaction_is_rejection @ agent/native_compaction.py:is_native_compaction_rejection */
 int native_compaction_is_rejection(const char *error_text) {
     if (!error_text) return 0;
     return (strcasestr(error_text, "context_management") != NULL ||
             strcasestr(error_text, "compact_threshold") != NULL);
 }
 
-/* PoP: merge_interim_reasoning_items @ agent/native_compaction.py:merge_interim_reasoning_items */
+/* PoP: native_compaction_merge_reasoning @ agent/native_compaction.py:merge_interim_reasoning_items */
 /* Returns a JSON array string merging prior + new items. Caller frees. */
 char *native_compaction_merge_reasoning(const char *prior_json, const char *new_json) {
     /* Simplified: merge two JSON arrays, deduping by content */

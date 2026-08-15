@@ -50,7 +50,7 @@ char *cli_worktree_merge_cache_path(void) {
     return path;
 }
 
-/* PoP: _load_worktree_merge_cache @ cli.py:_load_worktree_merge_cache */
+/* PoP: cli_load_worktree_merge_cache @ cli.py:_load_worktree_merge_cache */
 json_t *cli_load_worktree_merge_cache(void) {
     char *path = cli_worktree_merge_cache_path();
     if (!path) return json_object();
@@ -82,7 +82,7 @@ json_t *cli_load_worktree_merge_cache(void) {
     return out;
 }
 
-/* PoP: _save_worktree_merge_cache @ cli.py:_save_worktree_merge_cache */
+/* PoP: cli_save_worktree_merge_cache @ cli.py:_save_worktree_merge_cache */
 void cli_save_worktree_merge_cache(json_t *verdicts) {
     if (!verdicts) return;
     char *path = cli_worktree_merge_cache_path();
@@ -136,7 +136,7 @@ void cli_save_worktree_merge_cache(json_t *verdicts) {
 }
 
 /* ── Context breakdown display ─────────────────────────────────────────── */
-/* PoP: _show_context_breakdown @ cli.py:_show_context_breakdown */
+/* PoP: cli_show_context_breakdown @ cli.py:_show_context_breakdown */
 char *cli_show_context_breakdown(context_breakdown_agent_t *agent,
                                  const char *cmd_original) {
     if (!agent) {
@@ -292,7 +292,7 @@ char *cli_render_stash_panel(const char **stash_items, size_t n_items,
  * These delegate to port_tools_wake_word.c, which owns the full detector
  * lifecycle (monitor thread, cooldown, callback dispatch) and spawns the
  * Python audio-capture + ML-inference subprocess. */
-/* PoP: _voice_stt_provider @ cli.py:_voice_stt_provider */
+/* PoP: cli_voice_stt_provider @ cli.py:_voice_stt_provider */
 const char *cli_voice_stt_provider(json_t *config) {
     if (!config || config->type != JSON_OBJECT) return "";
     json_t *stt = json_obj_get(config, "stt");
@@ -302,13 +302,13 @@ const char *cli_voice_stt_provider(json_t *config) {
     return provider->str_val;
 }
 
-/* PoP: _typed_voice_stop @ cli.py:_typed_voice_stop */
+/* PoP: cli_typed_voice_stop @ cli.py:_typed_voice_stop */
 bool cli_typed_voice_stop(const char *user_input, bool voice_on) {
     (void)user_input;
     return voice_on; /* No active voice mode in CLI-only C build. */
 }
 
-/* PoP: _maybe_start_wake_word @ cli.py:_maybe_start_wake_word */
+/* PoP: cli_maybe_start_wake_word @ cli.py:_maybe_start_wake_word */
 void cli_maybe_start_wake_word(void) {
     json_t *cfg = ww_load_wake_word_config();
     if (!ww_wake_surface_enabled("cli", cfg)) {
@@ -319,7 +319,7 @@ void cli_maybe_start_wake_word(void) {
     if (cfg) json_free(cfg);
 }
 
-/* PoP: _start_wake_word_listener @ cli.py:_start_wake_word_listener */
+/* PoP: cli_start_wake_word_listener @ cli.py:_start_wake_word_listener */
 bool cli_start_wake_word_listener(bool announce) {
     (void)announce;
     hermes_log(LOG_DEBUG, "cli", "Starting wake word listener");
@@ -331,14 +331,14 @@ bool cli_start_wake_word_listener(bool announce) {
     return ok;
 }
 
-/* PoP: _stop_wake_word_listener @ cli.py:_stop_wake_word_listener */
+/* PoP: cli_stop_wake_word_listener @ cli.py:_stop_wake_word_listener */
 void cli_stop_wake_word_listener(bool announce) {
     (void)announce;
     bool stopped = ww_stop_listening(NULL);
     if (stopped) hermes_log(LOG_DEBUG, "cli", "Wake word stopped");
 }
 
-/* PoP: _on_wake_word @ cli.py:_on_wake_word */
+/* PoP: to @ cli.py:_on_wake_word */
 /* Fired after the detector hears the wake phrase. The C surface has no
  * live session/voice-pipeline state to hand off to (those live behind the
  * Python cli.py HermesCli class), so the faithful C behavior is: silence
@@ -390,7 +390,7 @@ void cli_schedule_wake_rearm(int grace_seconds) {
     pthread_attr_destroy(&attr);
 }
 
-/* PoP: _start_wake_watchdog @ cli.py:_start_wake_watchdog */
+/* PoP: cli_start_wake_watchdog @ cli.py:_start_wake_watchdog */
 void cli_start_wake_watchdog(void) {
     /* Python: daemon thread that polls idle state and calls resume_listening.
      * In the C CLI the detector lifecycle is owned by port_tools_wake_word.c;
@@ -399,7 +399,7 @@ void cli_start_wake_watchdog(void) {
     hermes_log(LOG_DEBUG, "cli", "Wake-word watchdog started");
 }
 
-/* PoP: _show_wake_word_status @ cli.py:_show_wake_word_status */
+/* PoP: cli_show_wake_word_status @ cli.py:_show_wake_word_status */
 void cli_show_wake_word_status(void) {
     json_t *cfg = ww_load_wake_word_config();
     json_t *reqs = ww_check_wake_word_requirements(cfg);
@@ -441,7 +441,7 @@ void cli_show_wake_word_status(void) {
     if (cfg) json_free(cfg);
 }
 
-/* PoP: _voice_full_duplex_listener @ cli.py:_voice_full_duplex_listener */
+/* PoP: cli_voice_full_duplex_listener @ cli.py:_voice_full_duplex_listener */
 void cli_voice_full_duplex_listener(void) {
     hermes_log(LOG_DEBUG, "cli", "Full-duplex voice listener not available in C CLI build");
 }
@@ -455,7 +455,7 @@ bool cli_handle_bang_shell(const char *text) {
     return false;
 }
 
-/* PoP: _should_handle_background_command_inline @ cli.py:_should_handle_background_command_inline */
+/* PoP: cli_should_handle_background_command_inline @ cli.py:_should_handle_background_command_inline */
 bool cli_should_handle_background_command_inline(const char *text, bool has_images) {
     if (!text || has_images) return false;
     if (text[0] != '/') return false;
@@ -483,7 +483,7 @@ bool cli_restore_session_yolo(json_t *session_meta, const char *session_key) {
 
 /* ── /wake subcommand (cli_commands_mixin.py:_handle_wake_command + _persist_wake_word_enabled) */
 
-/* PoP: _persist_wake_word_enabled @ hermes_cli/cli_commands_mixin.py:_persist_wake_word_enabled */
+/* PoP: cli_persist_wake_word_enabled @ hermes_cli/cli_commands_mixin.py:_persist_wake_word_enabled */
 /* Port of Python: save ``wake_word.enabled`` to config.yaml so the /wake
  * toggle persists. If the on-disk value already equals `enabled`, no-op
  * (don't rewrite config or re-announce). Delegates to the C wake-word config
@@ -507,7 +507,7 @@ bool cli_persist_wake_word_enabled(bool enabled) {
     return false;
 }
 
-/* PoP: _handle_wake_command @ hermes_cli/cli_commands_mixin.py:_handle_wake_command */
+/* PoP: cli_handle_wake_command @ hermes_cli/cli_commands_mixin.py:_handle_wake_command */
 /* Port of Python /wake [on|off|status]: toggles the wake-word listener and
  * persists wake_word.enabled. Reuses cli_start/stop_wake_word_listener and
  * cli_show_wake_word_status (the listener lifecycle already lives in this

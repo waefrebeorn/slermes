@@ -244,7 +244,7 @@ static double osv_monotonic_now(void)
     return (double)ts.tv_sec + (double)ts.tv_nsec / 1e9;
 }
 
-/* PoP: _cache_get @ tools/osv_check.py:_cache_get */
+/* PoP: 1 @ tools/osv_check.py:_cache_get */
 /* Return 1 (hit) + *out_result on a fresh entry, or 0 (miss) on absent/expired.
  * On eviction of an expired entry, the slot is compacted. *out_result is
  * malloc'd (caller frees) or NULL. */
@@ -274,7 +274,7 @@ int cli_tools_osv_check__cache_get(const char *key, char **out_result)
     return 0;
 }
 
-/* PoP: _cache_put @ tools/osv_check.py:_cache_put */
+/* PoP: cache @ tools/osv_check.py:_cache_put */
 /* Store (key, result) with a TTL. At capacity, evict expired first; if still
  * full, clear the whole cache (safe reset — tiny working set in practice). */
 void cli_tools_osv_check__cache_put(const char *key, const char *result)

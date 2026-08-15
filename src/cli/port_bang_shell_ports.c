@@ -26,7 +26,7 @@
 #define BANG_SHELL_DEFAULT_TIMEOUT 120
 
 /* ── is_bang_command ───────────────────────────────────────────────── */
-/* PoP: is_bang_command @ hermes_cli/bang_shell.py:is_bang_command */
+/* PoP: bang_shell_is_bang_command @ hermes_cli/bang_shell.py:is_bang_command */
 bool bang_shell_is_bang_command(const char *text) {
     if (!text || !*text) return false;
     /* Skip leading whitespace */
@@ -36,7 +36,7 @@ bool bang_shell_is_bang_command(const char *text) {
 }
 
 /* ── parse_bang_command ────────────────────────────────────────────── */
-/* PoP: parse_bang_command @ hermes_cli/bang_shell.py:parse_bang_command */
+/* PoP: bang_shell_parse_bang_command @ hermes_cli/bang_shell.py:parse_bang_command */
 char *bang_shell_parse_bang_command(const char *text) {
     if (!text || !*text) return strdup("");
     /* Strip leading whitespace */
@@ -72,7 +72,7 @@ bool bang_shell_enabled(void) {
 }
 
 /* ── resolve_bang_cwd ──────────────────────────────────────────────── */
-/* PoP: resolve_bang_cwd @ hermes_cli/bang_shell.py:resolve_bang_cwd */
+/* PoP: bang_shell_resolve_cwd @ hermes_cli/bang_shell.py:resolve_bang_cwd */
 const char *bang_shell_resolve_cwd(const char *session_key) {
     (void)session_key;
     /* Try configured TERMINAL_CWD */
@@ -82,7 +82,7 @@ const char *bang_shell_resolve_cwd(const char *session_key) {
 }
 
 /* ── check_bang_approval ───────────────────────────────────────────── */
-/* PoP: check_bang_approval @ hermes_cli/bang_shell.py:check_bang_approval */
+/* PoP: bang_shell_check_approval @ hermes_cli/bang_shell.py:check_bang_approval */
 /* Returns JSON: {"approved": bool, "message": "..."} */
 char *bang_shell_check_approval(const char *command) {
     /* In the C port, the approval gate is handled by the terminal tool's
@@ -121,7 +121,7 @@ char *bang_shell_check_approval(const char *command) {
 }
 
 /* ── _bang_env ─────────────────────────────────────────────────────── */
-/* PoP: _bang_env @ hermes_cli/bang_shell.py:_bang_env */
+/* PoP: bang_shell_bang_env @ hermes_cli/bang_shell.py:_bang_env */
 /* Returns a JSON object of environment variables with secrets filtered.
  * In the C port, we return a minimal env snapshot. */
 char *bang_shell_bang_env(void) {
@@ -147,7 +147,7 @@ char *bang_shell_bang_env(void) {
 }
 
 /* ── run_bang_command ──────────────────────────────────────────────── */
-/* PoP: run_bang_command @ hermes_cli/bang_shell.py:run_bang_command */
+/* PoP: bang_shell_run_command @ hermes_cli/bang_shell.py:run_bang_command */
 int bang_shell_run_command(const char *command, const char *cwd,
                             int timeout_seconds, void *writer_ctx) {
     /* Execute command via shell, streaming output.

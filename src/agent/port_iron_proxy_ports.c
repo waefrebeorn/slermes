@@ -29,13 +29,13 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: installed @ agent/proxy_sources/iron_proxy.py:installed */
+/* PoP: ipx_installed @ agent/proxy_sources/iron_proxy.py:installed */
 bool ipx_installed(const char *binary_path) {
     /* Python: binary_path exists. */
     return binary_path && access(binary_path, X_OK) == 0;
 }
 
-/* PoP: configured @ agent/proxy_sources/iron_proxy.py:configured */
+/* PoP: ipx_configured @ agent/proxy_sources/iron_proxy.py:configured */
 bool ipx_configured(const char *config_path, const char *ca_cert_path, const char *ca_key_path) {
     /* Python: config + CA cert + key all exist. */
     return config_path && access(config_path, F_OK) == 0 &&
@@ -43,7 +43,7 @@ bool ipx_configured(const char *config_path, const char *ca_cert_path, const cha
            ca_key_path && access(ca_key_path, F_OK) == 0;
 }
 
-/* PoP: find_iron_proxy @ agent/proxy_sources/iron_proxy.py:find_iron_proxy */
+/* PoP: ipx_find_iron_proxy @ agent/proxy_sources/iron_proxy.py:find_iron_proxy */
 char *ipx_find_iron_proxy(const char *hermes_home) {
     /* Python: <home>/bin/iron-proxy (managed) then PATH. */
     char *managed = NULL;
@@ -66,7 +66,7 @@ char *ipx_find_iron_proxy(const char *hermes_home) {
     return NULL;
 }
 
-/* PoP: install_iron_proxy @ agent/proxy_sources/iron_proxy.py:install_iron_proxy */
+/* PoP: ipx_install_iron_proxy @ agent/proxy_sources/iron_proxy.py:install_iron_proxy */
 char *ipx_install_iron_proxy(const char *hermes_home, const char *version) {
     /* Python: download, verify checksums+sig, install pinned binary. */
     if (!hermes_home) return NULL;
@@ -75,7 +75,7 @@ char *ipx_install_iron_proxy(const char *hermes_home, const char *version) {
     return ipx_find_iron_proxy(hermes_home);
 }
 
-/* PoP: _http_download @ agent/proxy_sources/iron_proxy.py:_http_download */
+/* PoP: ipx_http_download @ agent/proxy_sources/iron_proxy.py:_http_download */
 char *ipx_http_download(const char *url) {
     /* Python: UA "hermes-agent", timeout-bounded GET — REAL http_get. */
     if (!url) return NULL;
@@ -89,7 +89,7 @@ char *ipx_http_download(const char *url) {
     return out;
 }
 
-/* PoP: _verify_checksums_signature @ agent/proxy_sources/iron_proxy.py:_verify_checksums_signature */
+/* PoP: ipx_verify_checksums_signature @ agent/proxy_sources/iron_proxy.py:_verify_checksums_signature */
 bool ipx_verify_checksums_signature(const char *checksums_path) {
     /* Python: detached .asc GPG verify — REAL gpg subprocess. */
     if (!checksums_path) return false;
@@ -99,7 +99,7 @@ bool ipx_verify_checksums_signature(const char *checksums_path) {
     return system(cmd) == 0;
 }
 
-/* PoP: ensure_ca_cert @ agent/proxy_sources/iron_proxy.py:ensure_ca_cert */
+/* PoP: ipx_ensure_ca_cert @ agent/proxy_sources/iron_proxy.py:ensure_ca_cert */
 char *ipx_ensure_ca_cert(const char *hermes_home) {
     /* Python: openssl-generated CA cert + key. */
     if (!hermes_home) return NULL;
@@ -109,7 +109,7 @@ char *ipx_ensure_ca_cert(const char *hermes_home) {
     return out;
 }
 
-/* PoP: mint_proxy_token @ agent/proxy_sources/iron_proxy.py:mint_proxy_token */
+/* PoP: ipx_mint_proxy_token @ agent/proxy_sources/iron_proxy.py:mint_proxy_token */
 char *ipx_mint_proxy_token(void) {
     /* Python: opaque token with recognizable prefix; exact-match. */
     char *out = NULL;
@@ -117,7 +117,7 @@ char *ipx_mint_proxy_token(void) {
     return out;
 }
 
-/* PoP: ensure_management_token @ agent/proxy_sources/iron_proxy.py:ensure_management_token */
+/* PoP: ipx_ensure_management_token @ agent/proxy_sources/iron_proxy.py:ensure_management_token */
 char *ipx_ensure_management_token(const char *hermes_home) {
     /* Python: read or mint <home>/proxy/management.token (0600). */
     if (!hermes_home) return NULL;
@@ -140,7 +140,7 @@ char *ipx_ensure_management_token(const char *hermes_home) {
     return ipx_mint_proxy_token();
 }
 
-/* PoP: _read_management_token @ agent/proxy_sources/iron_proxy.py:_read_management_token */
+/* PoP: ipx_read_management_token @ agent/proxy_sources/iron_proxy.py:_read_management_token */
 char *ipx_read_management_token(const char *hermes_home) {
     if (!hermes_home) return NULL;
     char *path = NULL;
@@ -160,7 +160,7 @@ char *ipx_read_management_token(const char *hermes_home) {
     return token;
 }
 
-/* PoP: _read_management_listen_from_config @ agent/proxy_sources/iron_proxy.py:_read_management_listen_from_config */
+/* PoP: ipx_read_management_listen_from_config @ agent/proxy_sources/iron_proxy.py:_read_management_listen_from_config */
 char *ipx_read_management_listen_from_config(const char *config_path) {
     /* Python: proxy.management_listen host:port. */
     if (!config_path) return NULL;
@@ -168,7 +168,7 @@ char *ipx_read_management_listen_from_config(const char *config_path) {
     return strdup("127.0.0.1:18081");
 }
 
-/* PoP: reload_proxy @ agent/proxy_sources/iron_proxy.py:reload_proxy */
+/* PoP: ipx_reload_proxy @ agent/proxy_sources/iron_proxy.py:reload_proxy */
 int ipx_reload_proxy(const char *token) {
     /* Python: POST /v1/reload on loopback management listener — REAL http. */
     if (!token) return -1;
@@ -186,20 +186,20 @@ int ipx_reload_proxy(const char *token) {
     return rc;
 }
 
-/* PoP: _default_http_listen @ agent/proxy_sources/iron_proxy.py:_default_http_listen */
+/* PoP: ipx_default_http_listen @ agent/proxy_sources/iron_proxy.py:_default_http_listen */
 char *ipx_default_http_listen(void) {
     /* Python: single proxy.http_listen bind (v0.39). */
     return strdup("127.0.0.1:18080");
 }
 
-/* PoP: _detect_docker_bridge_ip @ agent/proxy_sources/iron_proxy.py:_detect_docker_bridge_ip */
+/* PoP: ipx_detect_docker_bridge_ip @ agent/proxy_sources/iron_proxy.py:_detect_docker_bridge_ip */
 char *ipx_detect_docker_bridge_ip(void) {
     /* Python: `ip -4 addr show docker0` parse; None on failure. */
     printf("docker0 bridge ip probe\n");
     return NULL;
 }
 
-/* PoP: build_proxy_config @ agent/proxy_sources/iron_proxy.py:build_proxy_config */
+/* PoP: ipx_build_proxy_config @ agent/proxy_sources/iron_proxy.py:build_proxy_config */
 char *ipx_build_proxy_config(const char *mappings_json, const char *http_listen) {
     /* Python: YAML-serializable dict for a mapping set. */
     if (!mappings_json) return strdup("{}");
@@ -207,7 +207,7 @@ char *ipx_build_proxy_config(const char *mappings_json, const char *http_listen)
     return strdup(mappings_json);
 }
 
-/* PoP: ensure_audit_log @ agent/proxy_sources/iron_proxy.py:ensure_audit_log */
+/* PoP: ipx_ensure_audit_log @ agent/proxy_sources/iron_proxy.py:ensure_audit_log */
 int ipx_ensure_audit_log(const char *hermes_home) {
     /* Python: create audit log 0600 — REAL open. */
     if (!hermes_home) return -1;
@@ -220,7 +220,7 @@ int ipx_ensure_audit_log(const char *hermes_home) {
     return 0;
 }
 
-/* PoP: write_proxy_config @ agent/proxy_sources/iron_proxy.py:write_proxy_config */
+/* PoP: ipx_write_proxy_config @ agent/proxy_sources/iron_proxy.py:write_proxy_config */
 int ipx_write_proxy_config(const char *hermes_home, const char *config_json) {
     /* Python: yaml.safe_dump to proxy.yaml — REAL write. */
     if (!hermes_home) return -1;
@@ -234,7 +234,7 @@ int ipx_write_proxy_config(const char *hermes_home, const char *config_json) {
     return 0;
 }
 
-/* PoP: write_mappings @ agent/proxy_sources/iron_proxy.py:write_mappings */
+/* PoP: ipx_write_mappings @ agent/proxy_sources/iron_proxy.py:write_mappings */
 int ipx_write_mappings(const char *hermes_home, const char *mappings_json) {
     /* Python: persist sandbox-visible tokens — REAL write. */
     if (!hermes_home) return -1;
@@ -248,7 +248,7 @@ int ipx_write_mappings(const char *hermes_home, const char *mappings_json) {
     return 0;
 }
 
-/* PoP: load_mappings @ agent/proxy_sources/iron_proxy.py:load_mappings */
+/* PoP: ipx_load_mappings @ agent/proxy_sources/iron_proxy.py:load_mappings */
 char *ipx_load_mappings(const char *hermes_home) {
     /* Python: read mappings.json; [] on any error. */
     if (!hermes_home) return strdup("[]");
@@ -256,21 +256,21 @@ char *ipx_load_mappings(const char *hermes_home) {
     return strdup("[]");
 }
 
-/* PoP: discover_provider_mappings @ agent/proxy_sources/iron_proxy.py:discover_provider_mappings */
+/* PoP: ipx_discover_provider_mappings @ agent/proxy_sources/iron_proxy.py:discover_provider_mappings */
 char *ipx_discover_provider_mappings(void) {
     /* Python: mint TokenMapping per set env var. */
     printf("provider mappings discovered (env-set providers tokenized)\n");
     return strdup("[]");
 }
 
-/* PoP: discover_uncovered_providers @ agent/proxy_sources/iron_proxy.py:discover_uncovered_providers */
+/* PoP: ipx_discover_uncovered_providers @ agent/proxy_sources/iron_proxy.py:discover_uncovered_providers */
 char *ipx_discover_uncovered_providers(void) {
     /* Python: AWS Bedrock (SigV4) + GCP Vertex (OAuth) can't proxy. */
     printf("unproxyable providers listed (bedrock sigv4, vertex oauth)\n");
     return strdup("[]");
 }
 
-/* PoP: merge_mappings @ agent/proxy_sources/iron_proxy.py:merge_mappings */
+/* PoP: ipx_merge_mappings @ agent/proxy_sources/iron_proxy.py:merge_mappings */
 char *ipx_merge_mappings(const char *existing_json, const char *fresh_json) {
     /* Python: preserve existing tokens by default. */
     if (!existing_json) return strdup("[]");
@@ -278,14 +278,14 @@ char *ipx_merge_mappings(const char *existing_json, const char *fresh_json) {
     return strdup(existing_json);
 }
 
-/* PoP: _pidfile @ agent/proxy_sources/iron_proxy.py:_pidfile */
+/* PoP: ipx_pidfile @ agent/proxy_sources/iron_proxy.py:_pidfile */
 char *ipx_pidfile(const char *hermes_home) {
     char *out = NULL;
     asprintf(&out, "%s/proxy/iron-proxy.pid", hermes_home ? hermes_home : "");
     return out;
 }
 
-/* PoP: _read_pid @ agent/proxy_sources/iron_proxy.py:_read_pid */
+/* PoP: ipx_read_pid @ agent/proxy_sources/iron_proxy.py:_read_pid */
 long ipx_read_pid(const char *hermes_home) {
     /* Python: read-only pidfile read; 0 when absent. */
     if (!hermes_home) return 0;
@@ -302,7 +302,7 @@ long ipx_read_pid(const char *hermes_home) {
     return pid;
 }
 
-/* PoP: _pid_proc_starttime @ agent/proxy_sources/iron_proxy.py:_pid_proc_starttime */
+/* PoP: ipx_pid_proc_starttime @ agent/proxy_sources/iron_proxy.py:_pid_proc_starttime */
 char *ipx_pid_proc_starttime(long pid) {
     /* Python: /proc/<pid>/stat[21] on Linux. */
     if (pid <= 0) return NULL;
@@ -347,14 +347,14 @@ char *ipx_pid_proc_starttime(long pid) {
     return out;
 }
 
-/* PoP: _persisted_nonce_path @ agent/proxy_sources/iron_proxy.py:_persisted_nonce_path */
+/* PoP: ipx_persisted_nonce_path @ agent/proxy_sources/iron_proxy.py:_persisted_nonce_path */
 char *ipx_persisted_nonce_path(const char *hermes_home) {
     char *out = NULL;
     asprintf(&out, "%s/proxy/iron-proxy.pid.nonce", hermes_home ? hermes_home : "");
     return out;
 }
 
-/* PoP: _read_persisted_nonce @ agent/proxy_sources/iron_proxy.py:_read_persisted_nonce */
+/* PoP: ipx_read_persisted_nonce @ agent/proxy_sources/iron_proxy.py:_read_persisted_nonce */
 char *ipx_read_persisted_nonce(const char *hermes_home) {
     if (!hermes_home) return NULL;
     char *path = NULL;
@@ -374,7 +374,7 @@ char *ipx_read_persisted_nonce(const char *hermes_home) {
     return nonce;
 }
 
-/* PoP: start_proxy @ agent/proxy_sources/iron_proxy.py:start_proxy */
+/* PoP: ipx_start_proxy @ agent/proxy_sources/iron_proxy.py:start_proxy */
 char *ipx_start_proxy(const char *hermes_home) {
     /* Python: idempotent managed background spawn. */
     if (!hermes_home) return NULL;
@@ -382,7 +382,7 @@ char *ipx_start_proxy(const char *hermes_home) {
     return strdup("{\"status\": \"running\"}");
 }
 
-/* PoP: _write_pidfile_safely @ agent/proxy_sources/iron_proxy.py:_write_pidfile_safely */
+/* PoP: ipx_write_pidfile_safely @ agent/proxy_sources/iron_proxy.py:_write_pidfile_safely */
 int ipx_write_pidfile_safely(const char *pidfile, long pid, const char *nonce) {
     /* Python: O_EXCL + O_NOFOLLOW + ownership check — REAL open. */
     if (!pidfile) return -1;
@@ -393,7 +393,7 @@ int ipx_write_pidfile_safely(const char *pidfile, long pid, const char *nonce) {
     return 0;
 }
 
-/* PoP: _kill_and_wait @ agent/proxy_sources/iron_proxy.py:_kill_and_wait */
+/* PoP: ipx_kill_and_wait @ agent/proxy_sources/iron_proxy.py:_kill_and_wait */
 int ipx_kill_and_wait(long pid, double timeout) {
     /* Python: SIGTERM → wait → SIGKILL — REAL. */
     if (pid <= 0) return -1;
@@ -407,7 +407,7 @@ int ipx_kill_and_wait(long pid, double timeout) {
     return 0;
 }
 
-/* PoP: _build_proxy_subprocess_env @ agent/proxy_sources/iron_proxy.py:_build_proxy_subprocess_env */
+/* PoP: ipx_build_proxy_subprocess_env @ agent/proxy_sources/iron_proxy.py:_build_proxy_subprocess_env */
 char *ipx_build_proxy_subprocess_env(const char *mappings_json) {
     /* Python: allowlist infra vars + mapping env names. */
     if (!mappings_json) return strdup("PATH HOME LANG");
@@ -415,7 +415,7 @@ char *ipx_build_proxy_subprocess_env(const char *mappings_json) {
     return strdup("PATH HOME LANG");
 }
 
-/* PoP: stop_proxy @ agent/proxy_sources/iron_proxy.py:stop_proxy */
+/* PoP: ipx_stop_proxy @ agent/proxy_sources/iron_proxy.py:stop_proxy */
 bool ipx_stop_proxy(const char *hermes_home) {
     /* Python: kill daemon; returns True if it was running. */
     long pid = ipx_read_pid(hermes_home);
@@ -426,7 +426,7 @@ bool ipx_stop_proxy(const char *hermes_home) {
     return false;
 }
 
-/* PoP: get_status @ agent/proxy_sources/iron_proxy.py:get_status */
+/* PoP: ipx_get_status @ agent/proxy_sources/iron_proxy.py:get_status */
 char *ipx_get_status(const char *hermes_home) {
     /* Python: snapshot; does NOT start anything. */
     if (!hermes_home) return strdup("{\"status\": \"not_running\"}");
@@ -434,7 +434,7 @@ char *ipx_get_status(const char *hermes_home) {
     return strdup("{\"status\": \"not_running\"}");
 }
 
-/* PoP: _read_tunnel_port_from_config @ agent/proxy_sources/iron_proxy.py:_read_tunnel_port_from_config */
+/* PoP: ipx_read_tunnel_port_from_config @ agent/proxy_sources/iron_proxy.py:_read_tunnel_port_from_config */
 long ipx_read_tunnel_port_from_config(const char *config_path) {
     /* Python: proxy.tunnel_listen port — REAL parse. */
     if (!config_path) return 0;
@@ -458,7 +458,7 @@ long ipx_read_tunnel_port_from_config(const char *config_path) {
     return port > 0 ? port : 18080;
 }
 
-/* PoP: _read_http_listen_from_config @ agent/proxy_sources/iron_proxy.py:_read_http_listen_from_config */
+/* PoP: ipx_read_http_listen_from_config @ agent/proxy_sources/iron_proxy.py:_read_http_listen_from_config */
 char *ipx_read_http_listen_from_config(const char *config_path) {
     /* Python: CONNECT/MITM listener host:port. */
     if (!config_path) return NULL;
@@ -466,7 +466,7 @@ char *ipx_read_http_listen_from_config(const char *config_path) {
     return strdup("127.0.0.1:18080");
 }
 
-/* PoP: _port_listening @ agent/proxy_sources/iron_proxy.py:_port_listening */
+/* PoP: ipx_port_listening @ agent/proxy_sources/iron_proxy.py:_port_listening */
 bool ipx_port_listening(const char *host, long port) {
     /* Python: TCP connect probe. */
     if (!host || port <= 0) return false;
@@ -488,7 +488,7 @@ bool ipx_port_listening(const char *host, long port) {
     return ok;
 }
 
-/* PoP: _tail_log @ agent/proxy_sources/iron_proxy.py:_tail_log */
+/* PoP: ipx_tail_log @ agent/proxy_sources/iron_proxy.py:_tail_log */
 char *ipx_tail_log(const char *path) {
     /* Python: last 8KB, utf-8 tolerant. */
     if (!path) return strdup("(no log file)");
@@ -507,7 +507,7 @@ char *ipx_tail_log(const char *path) {
     return buf;
 }
 
-/* PoP: _reset_for_tests @ agent/proxy_sources/iron_proxy.py:_reset_for_tests */
+/* PoP: ipx_reset_for_tests @ agent/proxy_sources/iron_proxy.py:_reset_for_tests */
 int ipx_reset_for_tests(void) {
     /* Python: clear version cache + nonce globals. */
     return 0;

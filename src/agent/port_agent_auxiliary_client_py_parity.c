@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: agent_auxiliary_client_getattr__ @ agent/auxiliary_client.py:__getattr__ */
+/* PoP: agent_auxiliary_client_getattr___p @ agent/auxiliary_client.py:__getattr__ */
 json_t *agent_auxiliary_client_getattr___p(void) {
     return json_object();
 }

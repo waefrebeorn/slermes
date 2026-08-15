@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _truncate @ hermes_cli/kanban_decompose.py:_truncate */
+/* PoP: kbd_truncate @ hermes_cli/kanban_decompose.py:_truncate */
 char *kbd_truncate(const char *text, long limit) {
     /* Python: text[:limit-1] + …. */
     if (!text) return strdup("");
@@ -34,7 +34,7 @@ char *kbd_truncate(const char *text, long limit) {
     return out;
 }
 
-/* PoP: _profile_author @ hermes_cli/kanban_decompose.py:_profile_author */
+/* PoP: kbd_profile_author @ hermes_cli/kanban_decompose.py:_profile_author */
 char *kbd_profile_author(void) {
     /* Python: env author mirror. */
     const char *a = getenv("HERMES_PROFILE");
@@ -43,7 +43,7 @@ char *kbd_profile_author(void) {
     return u ? strdup(u) : strdup("unknown");
 }
 
-/* PoP: _load_config @ hermes_cli/kanban_decompose.py:_load_config */
+/* PoP: kbd_load_config @ hermes_cli/kanban_decompose.py:_load_config */
 char *kbd_load_config(const char *config_yaml) {
     /* Python: load_config or {}. */
     if (!config_yaml) return strdup("{}");

@@ -127,7 +127,7 @@ static const char *primary_arg_key(const char *tool)
     return NULL;
 }
 
-/* PoP: cli_agent_display__build_tool_preview @ agent/display.py:build_tool_preview */
+/* PoP: string @ agent/display.py:build_tool_preview */
 /* tool_name + args_json (object) + max_len (0 = unlimited). Returns a malloc'd
  * preview string (caller frees) or strdup("") on empty/None. */
 char *cli_agent_display__build_tool_preview(const char *tool_name, const char *args_json, int max_len)
@@ -390,7 +390,7 @@ int cli_agent_display__get_friendly_tool_labels(void)
 
 /* ---- build_tool_label ---- */
 
-/* PoP: cli_agent_display__build_tool_label @ agent/display.py:build_tool_label */
+/* PoP: TOOL_VERBS @ agent/display.py:build_tool_label */
 
 static const char *TOOL_VERBS(const char *tool)
 {
@@ -430,7 +430,7 @@ static int verb_no_preview(const char *tool) {
     return cli_agent_display__verb_drops_preview(tool);
 }
 
-/* PoP: cli_agent_display__tool_verb_connector @ agent/display.py:tool_verb_connector */
+/* PoP: preview @ agent/display.py:tool_verb_connector */
 /* Returns the connector between a verb and its preview (" for " or " "). */
 const char *cli_agent_display__tool_verb_connector(const char *tool_name) {
     if (tool_name && (strcmp(tool_name,"web_search")==0 || strcmp(tool_name,"search_files")==0))
@@ -464,7 +464,7 @@ char *cli_agent_display__build_tool_label(const char *tool_name, const char *arg
     return r;
 }
 
-/* PoP: _display_url @ agent/display.py:_display_url */
+/* PoP: cli_agent_display__display_url @ agent/display.py:_display_url */
 /* Extract a display-only URL. For a dict, prefers "url" then "href". For a
  * string, strip whitespace. Everything else → "". Returns malloc'd string. */
 char *cli_agent_display__display_url(const char *value_json)
@@ -489,7 +489,7 @@ char *cli_agent_display__display_url(const char *value_json)
     return strndup(s, n);
 }
 
-/* PoP: prepare_tool_preview @ agent/display.py:prepare_tool_preview */
+/* PoP: cli_agent_display__prepare_tool_preview @ agent/display.py:prepare_tool_preview */
 /* Build one canonical compact preview before platform formatting.
  *
  * Rebuilds the uncapped preview from the tool arguments (max_len=0 →
@@ -560,7 +560,7 @@ void cli_agent_display__tool_preview_free(agent_tool_preview_t *p)
     free(p);
 }
 
-/* PoP: _browser_exec_step_label @ agent/display.py:_browser_exec_step_label */
+/* PoP: NULL @ agent/display.py:_browser_exec_step_label */
 /* User-friendly step label from browser_exec code's leading comment.
  * args is a JSON object string; reads "code", takes the first line, and if
  * it starts with '#', strips leading '#' + whitespace and truncates to

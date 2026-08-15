@@ -91,7 +91,7 @@ void subagent_launch_request_free(subagent_launch_request_t *r) {
 
 /* ── Handle ───────────────────────────────────────────────── */
 
-/* PoP: __init__ @ agent/subagent_lifecycle.py:_Registry.__init__ */
+/* PoP: subagent_handle_create @ agent/subagent_lifecycle.py:_Registry.__init__ */
 /* PoP: subagent_handle_create @ agent/subagent_lifecycle.py:SubagentHandle.__init__ */
 subagent_handle_t *subagent_handle_create(
     const char *subagent_id,
@@ -131,7 +131,7 @@ void subagent_handle_free(subagent_handle_t *h) {
     free(h);
 }
 
-/* PoP: to_dict @ agent/subagent_lifecycle.py:SubagentHandle.to_dict */
+/* PoP: subagent_handle_to_dict @ agent/subagent_lifecycle.py:SubagentHandle.to_dict */
 json_t *subagent_handle_to_dict(const subagent_handle_t *h) {
     if (!h) return NULL;
     json_t *d = json_object();
@@ -153,7 +153,7 @@ json_t *subagent_handle_to_dict(const subagent_handle_t *h) {
     return d;
 }
 
-/* PoP: from_dict @ agent/subagent_lifecycle.py:SubagentHandle.from_dict */
+/* PoP: subagent_handle_from_dict @ agent/subagent_lifecycle.py:SubagentHandle.from_dict */
 subagent_handle_t *subagent_handle_from_dict(const json_t *d) {
     if (!d || d->type != JSON_OBJECT)
         return NULL;
@@ -220,12 +220,12 @@ subagent_handle_t *subagent_handle_from_dict(const json_t *d) {
 
 /* ── Context vars (Thread-local) ─────────────────────────── */
 
-/* PoP: bind_subagent_parent @ agent/subagent_lifecycle.py:bind_subagent_parent */
+/* PoP: subagent_bind_parent @ agent/subagent_lifecycle.py:bind_subagent_parent */
 void subagent_bind_parent(void *parent_agent) {
     g_active_parent = parent_agent;
 }
 
-/* PoP: get_active_subagent_parent @ agent/subagent_lifecycle.py:get_active_subagent_parent */
+/* PoP: subagent_get_active_parent @ agent/subagent_lifecycle.py:get_active_subagent_parent */
 void *subagent_get_active_parent(void) {
     return g_active_parent;
 }
@@ -258,7 +258,7 @@ static void ensure_secret(void) {
     pthread_mutex_unlock(&subagent_secret_lock);
 }
 
-/* PoP: capability @ agent/subagent_lifecycle.py:SubagentLifecycleService._capability */
+/* PoP: subagent_compute_capability @ agent/subagent_lifecycle.py:SubagentLifecycleService._capability */
 char *subagent_compute_capability(
     const char *subagent_id,
     const char *parent_session_id,
@@ -287,7 +287,7 @@ char *subagent_compute_capability(
 
 /* ── Validation ──────────────────────────────────────────── */
 
-/* PoP: validate_request @ agent/subagent_lifecycle.py:SubagentLifecycleService._validate_request */
+/* PoP: subagent_validate_request @ agent/subagent_lifecycle.py:SubagentLifecycleService._validate_request */
 int subagent_validate_request(const subagent_launch_request_t *r, char **error_out) {
     if (!r || !r->goal || !r->goal[0]) {
         if (error_out) *error_out = strdup("goal must be a non-empty string of at most 16000 characters.");
@@ -347,7 +347,7 @@ void subagent_terminal_state_free(subagent_terminal_state_t *ts) {
     free(ts->diagnostic);
 }
 
-/* PoP: SubagentResult @ agent/subagent_lifecycle.py:SubagentResult */
+/* PoP: subagent_result_create @ agent/subagent_lifecycle.py:SubagentResult */
 /* Create a fresh SubagentResult. Caller frees via subagent_result_free. */
 subagent_result_t *subagent_result_create(subagent_handle_t handle,
                                           subagent_state_t terminal_state,
@@ -419,7 +419,7 @@ typedef struct {
 
 static subagent_registry_t g_registry = {PTHREAD_MUTEX_INITIALIZER, NULL, 0, 0, NULL, 0, 0};
 
-/* PoP: _record @ agent/subagent_lifecycle.py:SubagentLifecycleService._record */
+/* PoP: registry_find_locked @ agent/subagent_lifecycle.py:SubagentLifecycleService._record */
 static subagent_record_t *registry_find_locked(const char *subagent_id) {
     for (size_t i = 0; i < g_registry.n_records; i++) {
         if (g_registry.records[i].handle.subagent_id &&
@@ -481,7 +481,7 @@ void subagent_service_free(subagent_lifecycle_service_t *svc) {
     free(svc);
 }
 
-/* PoP: launch @ agent/subagent_lifecycle.py:SubagentLifecycleService.launch */
+/* PoP: subagent_service_launch @ agent/subagent_lifecycle.py:SubagentLifecycleService.launch */
 int subagent_service_launch(
     subagent_lifecycle_service_t *svc,
     const subagent_launch_request_t *req,
@@ -535,7 +535,7 @@ int subagent_service_launch(
     return 0;
 }
 
-/* PoP: _run @ agent/subagent_lifecycle.py:SubagentLifecycleService._run */
+/* PoP: transition @ agent/subagent_lifecycle.py:SubagentLifecycleService._run */
 /* Port of Python SubagentLifecycleService._run: invoked by launch in a worker
  * thread. Resolves the parent, runs the child lifecycle via delegate_tool,
  * then applies the result dict -> SubagentState transition (completed ->
@@ -619,7 +619,7 @@ int subagent_service_run(
     return 0;
 }
 
-/* PoP: status @ agent/subagent_lifecycle.py:SubagentLifecycleService.status */
+/* PoP: subagent_service_status @ agent/subagent_lifecycle.py:SubagentLifecycleService.status */
 int subagent_service_status(
     subagent_lifecycle_service_t *svc,
     const subagent_handle_t *handle,
@@ -653,7 +653,7 @@ int subagent_service_status(
     return 0;
 }
 
-/* PoP: wait @ agent/subagent_lifecycle.py:SubagentLifecycleService.wait */
+/* PoP: subagent_service_wait @ agent/subagent_lifecycle.py:SubagentLifecycleService.wait */
 int subagent_service_wait(
     subagent_lifecycle_service_t *svc,
     const subagent_handle_t *handle,
@@ -688,7 +688,7 @@ int subagent_service_wait(
     return 0;
 }
 
-/* PoP: cancel @ agent/subagent_lifecycle.py:SubagentLifecycleService.cancel */
+/* PoP: subagent_service_cancel @ agent/subagent_lifecycle.py:SubagentLifecycleService.cancel */
 int subagent_service_cancel(
     subagent_lifecycle_service_t *svc,
     const subagent_handle_t *handle,
@@ -726,7 +726,7 @@ int subagent_service_cancel(
     return 0;
 }
 
-/* PoP: result @ agent/subagent_lifecycle.py:SubagentLifecycleService.result */
+/* PoP: subagent_service_result @ agent/subagent_lifecycle.py:SubagentLifecycleService.result */
 int subagent_service_result(
     subagent_lifecycle_service_t *svc,
     const subagent_handle_t *handle,
@@ -762,7 +762,7 @@ int subagent_service_result(
     return 0;
 }
 
-/* PoP: reconnect @ agent/subagent_lifecycle.py:SubagentLifecycleService.reconnect */
+/* PoP: subagent_service_reconnect @ agent/subagent_lifecycle.py:SubagentLifecycleService.reconnect */
 int subagent_service_reconnect(
     subagent_lifecycle_service_t *svc,
     const subagent_handle_t *handle,

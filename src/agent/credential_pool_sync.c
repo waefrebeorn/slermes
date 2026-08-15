@@ -212,7 +212,7 @@ bool remove_index(credential_pool_t *pool, int index) {
 }
 
 /* Port of Python agent/credential_pool.py:resolve_target(). */
-/* PoP: _resolve_target @ hermes_cli/send_cmd.py:_resolve_target */
+/* PoP: resolve_target @ hermes_cli/send_cmd.py:_resolve_target */
 /* Port of Python hermes_cli/send_cmd.py:_resolve_target(). */
 int resolve_target(const credential_pool_t *pool, const char *target) {
     if (!pool || !target || !*target) return -1;
@@ -276,7 +276,7 @@ long long jwt_exp_claim(const char *token) {
 
 /* Nous NAS invoke-JWT usability: the token must carry `scope` and not be
  * past its `exp`. Mirrors hermes_cli.auth._nous_invoke_jwt_is_usable(). */
-/* PoP: auth_nous_invoke_jwt_is_usable @ hermes_cli/auth.py:_nous_invoke_jwt_is_usable */
+/* PoP: nous_invoke_jwt_is_usable @ hermes_cli/auth.py:_nous_invoke_jwt_is_usable */
 bool nous_invoke_jwt_is_usable(const char *token, const char *scope, const char *expires_at) {
     (void)expires_at;
     if (!token || !*token) return false;
@@ -312,7 +312,7 @@ char *credential_entry_runtime_base_url(const credential_entry_t *e, const char 
     return e->base_url[0] ? strdup(e->base_url) : NULL;
 }
 
-/* PoP: main_u__getattr__ @ agent/credential_pool.py:__getattr__ */
+/* PoP: credential_entry_get_extra @ agent/credential_pool.py:__getattr__ */
 /* PooledCredential.__getattr__ — resolve a key from the entry's `extra` dict. */
 char *credential_entry_get_extra(const credential_entry_t *e, const char *key) {
     if (!e || !e->extra || !key) return NULL;

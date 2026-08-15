@@ -17,7 +17,7 @@
 #include "hermes_util_str.h"
 #include "sqlite3.h"
 
-/* PoP: _connect @ cron/executions.py:_connect */
+/* PoP: cron_executions_u_connect @ cron/executions.py:_connect */
 int cron_executions_u_connect(const char *arg) {
     /* Python: EXECUTIONS_FILE.parent.mkdir(parents=True, exist_ok=True);
      * sqlite3.connect(EXECUTIONS_FILE, timeout=5). The shim opens (creating
@@ -40,7 +40,7 @@ int cron_executions_u_connect(const char *arg) {
     return 0;
 }
 
-/* PoP: _initialize_schema @ cron/executions.py:_initialize_schema */
+/* PoP: cron_executions_u_initialize_schema @ cron/executions.py:_initialize_schema */
 int cron_executions_u_initialize_schema(const char *arg) {
     /* Python: WAL + table + 2 indexes. Arg = "db_label\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -51,7 +51,7 @@ int cron_executions_u_initialize_schema(const char *arg) {
     return 0;
 }
 
-/* PoP: _transaction @ cron/executions.py:_transaction */
+/* PoP: cron_executions_u_transaction @ cron/executions.py:_transaction */
 int cron_executions_u_transaction(const char *arg) {
     /* Python: schema init + commit/rollback + ALWAYS close. Arg =
      * "db_path\tstate". */
@@ -60,7 +60,7 @@ int cron_executions_u_transaction(const char *arg) {
     return 0;
 }
 
-/* PoP: _process_start_time @ cron/executions.py:_process_start_time */
+/* PoP: cron_executions_u_process_start_time @ cron/executions.py:_process_start_time */
 int cron_executions_u_process_start_time(const char *arg) {
     /* Python: get_process_start_time(pid) from gateway.status, else None.
      * Arg = pid. Read /proc/<pid>/stat field 22 (starttime in clock ticks)
@@ -104,7 +104,7 @@ int cron_executions_u_process_start_time(const char *arg) {
     return 0;
 }
 
-/* PoP: _owner_is_live @ cron/executions.py:_owner_is_live */
+/* PoP: cron_executions_u_owner_is_live @ cron/executions.py:_owner_is_live */
 int cron_executions_u_owner_is_live(const char *arg) {
     /* Python: pid exists + start-time match (fail safe True). Arg =
      * "pid\tstarted_at". */
@@ -118,7 +118,7 @@ int cron_executions_u_owner_is_live(const char *arg) {
     return 0;
 }
 
-/* PoP: _prune_unlocked @ cron/executions.py:_prune_unlocked */
+/* PoP: cron_executions_u_prune_unlocked @ cron/executions.py:_prune_unlocked */
 int cron_executions_u_prune_unlocked(const char *arg) {
     /* Python: DELETE terminal-status executions beyond limit. Arg =
      * "limit\ttotal" (delete total-limit, min 0). */
@@ -133,7 +133,7 @@ int cron_executions_u_prune_unlocked(const char *arg) {
     return 0;
 }
 
-/* PoP: create_execution @ cron/executions.py:create_execution */
+/* PoP: cron_executions_create_execution @ cron/executions.py:create_execution */
 int cron_executions_create_execution(const char *arg) {
     /* Python: insert claimed row. Arg = "job_id\tstate\texecution_id". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -145,7 +145,7 @@ int cron_executions_create_execution(const char *arg) {
     return 0;
 }
 
-/* PoP: mark_execution_running @ cron/executions.py:mark_execution_running */
+/* PoP: cron_executions_mark_execution_running @ cron/executions.py:mark_execution_running */
 int cron_executions_mark_execution_running(const char *arg) {
     /* Python: claimed -> running exactly once. Arg = "claimed\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -155,7 +155,7 @@ int cron_executions_mark_execution_running(const char *arg) {
     return 0;
 }
 
-/* PoP: finish_execution @ cron/executions.py:finish_execution */
+/* PoP: cron_executions_finish_execution @ cron/executions.py:finish_execution */
 int cron_executions_finish_execution(const char *arg) {
     /* Python: terminal result once. Arg = "claimable\tstatus\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -167,7 +167,7 @@ int cron_executions_finish_execution(const char *arg) {
     return 0;
 }
 
-/* PoP: recover_interrupted_executions @ cron/executions.py:recover_interrupted_executions */
+/* PoP: cron_executions_recover_interrupted_executions @ cron/executions.py:recover_interrupted_executions */
 int cron_executions_recover_interrupted_executions(const char *arg) {
     /* Python: mark abandoned -> unknown. Arg = "changed\tstate". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -178,7 +178,7 @@ int cron_executions_recover_interrupted_executions(const char *arg) {
     return 0;
 }
 
-/* PoP: list_executions @ cron/executions.py:list_executions */
+/* PoP: cron_executions_list_executions @ cron/executions.py:list_executions */
 int cron_executions_list_executions(const char *arg) {
     /* Python: newest-first paged rows. Arg = "rows_json\tcount". */
     if (!arg || !*arg) { printf("[]\n"); return 0; }
@@ -187,7 +187,7 @@ int cron_executions_list_executions(const char *arg) {
     return 0;
 }
 
-/* PoP: latest_execution @ cron/executions.py:latest_execution */
+/* PoP: cron_executions_latest_execution @ cron/executions.py:latest_execution */
 int cron_executions_latest_execution(const char *arg) {
     /* Python: list_executions(job_id, limit=1) -> rows[0] if rows else
      * None. Arg = JSON array of execution rows. */
@@ -205,7 +205,7 @@ int cron_executions_latest_execution(const char *arg) {
     return 0;
 }
 
-/* PoP: latest_executions @ cron/executions.py:latest_executions */
+/* PoP: cron_executions_latest_executions @ cron/executions.py:latest_executions */
 int cron_executions_latest_executions(const char *arg) {
     /* Python: indexed latest-per-job query. Arg = "rows_json\tcount". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -215,7 +215,7 @@ int cron_executions_latest_executions(const char *arg) {
     return 0;
 }
 
-/* PoP: _current_cron_store @ cron/jobs.py:_current_cron_store */
+/* PoP: cron_jobs_u_current_cron_store @ cron/jobs.py:_current_cron_store */
 int cron_jobs_u_current_cron_store(const char *arg) {
     /* Python: profile-pinned paths. Arg =
      * "override\tconst_repointed\thome_changed\tstate\tresult". */
@@ -235,7 +235,7 @@ int cron_jobs_u_current_cron_store(const char *arg) {
     return 0;
 }
 
-/* PoP: use_cron_store @ cron/jobs.py:use_cron_store */
+/* PoP: cron_jobs_use_cron_store @ cron/jobs.py:use_cron_store */
 int cron_jobs_use_cron_store(const char *arg) {
     /* Python: context manager routing cron storage to home/cron. Arg =
      * "home\tstate". */
@@ -246,7 +246,7 @@ int cron_jobs_use_cron_store(const char *arg) {
     return 0;
 }
 
-/* PoP: get_cron_output_dir @ cron/jobs.py:get_cron_output_dir */
+/* PoP: cron_jobs_get_cron_output_dir @ cron/jobs.py:get_cron_output_dir */
 int cron_jobs_get_cron_output_dir(const char *arg) {
     /* Python: current cron store output dir. Arg = path. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -254,7 +254,7 @@ int cron_jobs_get_cron_output_dir(const char *arg) {
     return 0;
 }
 
-/* PoP: _oneshot_run_claim_ttl_seconds @ cron/jobs.py:_oneshot_run_claim_ttl_seconds */
+/* PoP: cron_jobs_u_oneshot_run_claim_ttl_seconds @ cron/jobs.py:_oneshot_run_claim_ttl_seconds */
 int cron_jobs_u_oneshot_run_claim_ttl_seconds(const char *arg) {
     /* Python: derived TTL. Arg = "raw\tstate\tresult". */
     if (!arg || !*arg) { printf("1800.0\n"); return 0; }
@@ -266,7 +266,7 @@ int cron_jobs_u_oneshot_run_claim_ttl_seconds(const char *arg) {
     return 0;
 }
 
-/* PoP: _job_running_in_this_process @ cron/jobs.py:_job_running_in_this_process */
+/* PoP: cron_jobs_u_job_running_in_this_process @ cron/jobs.py:_job_running_in_this_process */
 int cron_jobs_u_job_running_in_this_process(const char *arg) {
     /* Python: scheduler running set. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("1\n"); return 0; }
@@ -277,7 +277,7 @@ int cron_jobs_u_job_running_in_this_process(const char *arg) {
     return 0;
 }
 
-/* PoP: _preserve_file_ownership @ cron/jobs.py:_preserve_file_ownership */
+/* PoP: cron_jobs_u_preserve_file_ownership @ cron/jobs.py:_preserve_file_ownership */
 int cron_jobs_u_preserve_file_ownership(const char *arg) {
     /* Python: chown back. Arg =
      * "is_root\tchanged\tstate\tresult". */
@@ -293,7 +293,7 @@ int cron_jobs_u_preserve_file_ownership(const char *arg) {
     return 0;
 }
 
-/* PoP: record_ticker_error @ cron/jobs.py:record_ticker_error */
+/* PoP: cron_jobs_record_ticker_error @ cron/jobs.py:record_ticker_error */
 int cron_jobs_record_ticker_error(const char *arg) {
     /* Python: atomic ticker error write. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -304,7 +304,7 @@ int cron_jobs_record_ticker_error(const char *arg) {
     return 0;
 }
 
-/* PoP: clear_ticker_error @ cron/jobs.py:clear_ticker_error */
+/* PoP: cron_jobs_clear_ticker_error @ cron/jobs.py:clear_ticker_error */
 int cron_jobs_clear_ticker_error(const char *arg) {
     /* Python: best-effort unlink of cron_dir / "ticker_last_error";
      * OSError ignored. Arg = cron dir path. */
@@ -316,7 +316,7 @@ int cron_jobs_clear_ticker_error(const char *arg) {
     return 0;
 }
 
-/* PoP: get_ticker_last_error @ cron/jobs.py:get_ticker_last_error */
+/* PoP: cron_jobs_get_ticker_last_error @ cron/jobs.py:get_ticker_last_error */
 int cron_jobs_get_ticker_last_error(const char *arg) {
     /* Python: ticker_last_error file lines[1:] or None. Arg =
      * "state\tmessage" (state: missing/short/ok). */
@@ -328,7 +328,7 @@ int cron_jobs_get_ticker_last_error(const char *arg) {
     return 0;
 }
 
-/* PoP: _windows_cron_python_invocation @ cron/scheduler.py:_windows_cron_python_invocation */
+/* PoP: cron_scheduler_u_windows_cron_python_invocation @ cron/scheduler.py:_windows_cron_python_invocation */
 int cron_scheduler_u_windows_cron_python_invocation(const char *arg) {
     /* Python: uv launcher bypass. Arg =
      * "is_windows\tstate\tresult". */
@@ -342,7 +342,7 @@ int cron_scheduler_u_windows_cron_python_invocation(const char *arg) {
     return 0;
 }
 
-/* PoP: _teardown_cron_agent @ cron/scheduler.py:_teardown_cron_agent */
+/* PoP: cron_scheduler_u_teardown_cron_agent @ cron/scheduler.py:_teardown_cron_agent */
 int cron_scheduler_u_teardown_cron_agent(const char *arg) {
     /* Python: agent.close + client reap. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -353,7 +353,7 @@ int cron_scheduler_u_teardown_cron_agent(const char *arg) {
     return 0;
 }
 
-/* PoP: recover_interrupted @ cron/scheduler_provider.py:recover_interrupted */
+/* PoP: cron_scheduler_provider_recover_interrupted @ cron/scheduler_provider.py:recover_interrupted */
 int cron_scheduler_provider_recover_interrupted(const char *arg) {
     /* Python: recover_interrupted_executions() — profile-local attempt
      * recovery for every provider lifecycle. Arg = optional db path. */
@@ -362,7 +362,7 @@ int cron_scheduler_provider_recover_interrupted(const char *arg) {
     return 0;
 }
 
-/* PoP: _start_multiplex @ cron/scheduler_provider.py:_start_multiplex */
+/* PoP: cron_scheduler_provider_u_start_multiplex @ cron/scheduler_provider.py:_start_multiplex */
 int cron_scheduler_provider_u_start_multiplex(const char *arg) {
     /* Python: per-profile ticks. Arg =
      * "count\tstate\tresult". */

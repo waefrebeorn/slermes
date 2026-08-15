@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _get_session_db @ hermes_cli/goals.py:_get_session_db */
+/* PoP: gls_get_session_db @ hermes_cli/goals.py:_get_session_db */
 char *gls_get_session_db(void) {
     /* Python: SessionDB for current home. */
     const char *h = getenv("HERMES_HOME");
@@ -31,7 +31,7 @@ char *gls_get_session_db(void) {
     return strdup("sessions.db");
 }
 
-/* PoP: migrate_goal_to_session @ hermes_cli/goals.py:migrate_goal_to_session */
+/* PoP: gls_migrate_goal_to_session @ hermes_cli/goals.py:migrate_goal_to_session */
 char *gls_migrate_goal_to_session(const char *goal_text, const char *parent_session_id, const char *session_id) {
     /* Python: carry persistent /goal to continuation. */
     if (!goal_text || !session_id) return NULL;
@@ -39,7 +39,7 @@ char *gls_migrate_goal_to_session(const char *goal_text, const char *parent_sess
     return strdup("{\"success\": true}");
 }
 
-/* PoP: _truncate @ hermes_cli/goals.py:_truncate */
+/* PoP: gls_truncate @ hermes_cli/goals.py:_truncate */
 char *gls_truncate(const char *text, long limit) {
     /* Python: hard truncate. */
     if (!text) return strdup("");
@@ -52,7 +52,7 @@ char *gls_truncate(const char *text, long limit) {
     return out;
 }
 
-/* PoP: __init__ @ hermes_cli/goals.py:__init__ */
+/* PoP: gls_init @ hermes_cli/goals.py:__init__ */
 char *gls_init(const char *session_id, long default_max_turns) {
     char *out = NULL;
     asprintf(&out, "{\"session_id\": \"%s\", \"default_max_turns\": %ld}",

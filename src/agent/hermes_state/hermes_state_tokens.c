@@ -54,7 +54,7 @@ bool hermes_state_update_token_counts(hermes_state_db_t *db,
     return ok;
 }
 
-/* PoP: state_usage_record_auxiliary_usage @ hermes_state.py:record_auxiliary_usage */
+/* PoP: hermes_state_record_auxiliary_usage @ hermes_state.py:record_auxiliary_usage */
 bool hermes_state_record_auxiliary_usage(hermes_state_db_t *db,
                                          const char *session_id,
                                          const char *task,

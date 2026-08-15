@@ -14,17 +14,17 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_voice_start_recording @ hermes_cli/voice.py:start_recording */
+/* PoP: hermes_cli_voice_start_recording_p @ hermes_cli/voice.py:start_recording */
 json_t *hermes_cli_voice_start_recording_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_voice_start_continuous @ hermes_cli/voice.py:start_continuous */
+/* PoP: hermes_cli_voice_start_continuous_p @ hermes_cli/voice.py:start_continuous */
 json_t *hermes_cli_voice_start_continuous_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_voice_speak_text @ hermes_cli/voice.py:speak_text */
+/* PoP: hermes_cli_voice_speak_text_p @ hermes_cli/voice.py:speak_text */
 json_t *hermes_cli_voice_speak_text_p(void) {
     return json_object();
 }

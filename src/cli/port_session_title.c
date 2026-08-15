@@ -155,7 +155,7 @@ static bool is_compression_ancestor(db_t *db, const char *ancestor_id,
     return false;
 }
 
-/* PoP: session_title_set_impl @ hermes_state.py:_set_session_title */
+/* PoP: set_title_impl @ hermes_state.py:_set_session_title */
 static session_title_result_t set_title_impl(db_t *db, const char *session_id,
                                              const char *title,
                                              bool only_if_empty) {

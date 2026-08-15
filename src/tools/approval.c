@@ -97,7 +97,7 @@ void approval_set_yolo(bool enabled) {
     g_yolo_approval = enabled;
 }
 
-/* PoP: approval_is_yolo_enabled @ tools/approval.py:is_current_session_yolo_enabled */
+/* PoP: yolo @ tools/approval.py:is_current_session_yolo_enabled */
 /* Returns whether yolo (skip-all-approvals) mode is active for the session. */
 bool approval_is_yolo_enabled(void) {
     return g_yolo_approval;
@@ -191,7 +191,7 @@ void approval_save_allowlist(void) {
 
 /* List permanent allowlist command strings. Returns a malloc'd NULL-terminated
  * array (caller frees each entry + the array). Sets *out_n. */
-/* PoP: apr_load_permanent_allowlist @ tools/approval.py:load_permanent_allowlist */
+/* PoP: approval_permanent_allowlist_list @ tools/approval.py:load_permanent_allowlist */
 char **approval_permanent_allowlist_list(size_t *out_n) {
     if (out_n) *out_n = 0;
     size_t n = 0, cap = 0;
@@ -212,7 +212,7 @@ char **approval_permanent_allowlist_list(size_t *out_n) {
 }
 
 
-/* PoP: apr_save_permanent_allowlist @ tools/approval.py:save_permanent_allowlist */
+/* PoP: approval_save_permanent_allowlist @ tools/approval.py:save_permanent_allowlist */
 int approval_save_permanent_allowlist(const char **patterns, size_t n) {
     int write = 0;
     for (int i = 0; i < g_approval_count; i++) {
@@ -254,7 +254,7 @@ void approval_dump_allowlist(void) {
     if (shown == 0) printf("  (empty)\n");
 }
 
-/* PoP: reset_session @ src/tools/approval.c:approval_reset_session */
+/* PoP: approval_reset_session @ src/tools/approval.c:approval_reset_session */
 /* Port of Python session.py:reset_session(). */
 /* AG26: Port of Python tools/approval.py:clear_session() (session reset). */
 void approval_reset_session(void) {
@@ -354,7 +354,7 @@ char *approval_normalize_command(const char *command) {
 
 /* ── approvals_suggest.py ports ──────────────────────────────── */
 
-/* PoP: approval_parse_apply_indices @ hermes_cli/approvals_suggest.py:parse_apply_indices */
+/* PoP: error @ hermes_cli/approvals_suggest.py:parse_apply_indices */
 /* Parse "1,3" into validated zero-based indices. On error (invalid
  * integer, out of range, or no valid selections), returns -1. */
 int approval_parse_apply_indices(const char *spec, int total, int *out, int max_out) {
@@ -449,7 +449,7 @@ bool approval_is_unsafe_class(const char *description) {
     return false;
 }
 
-/* PoP: derive_glob @ hermes_cli/approvals_suggest.py:derive_glob */
+/* PoP: approval_derive_glob @ hermes_cli/approvals_suggest.py:derive_glob */
 /* Returns a malloc'd command glob string, or NULL for compound/unsafe commands. */
 char *approval_derive_glob(const char *normalized) {
     if (!normalized || !*normalized) return NULL;
@@ -779,7 +779,7 @@ typedef struct {
     const char *args_json;
 } tool_invocation_t;
 
-/* PoP: approval_check_all_command_guards @ tools/approval.py:check_all_command_guards */
+/* PoP: guards @ tools/approval.py:check_all_command_guards */
 /* Run all command guards (hardline, sudo-stdin, sensitive-path) for a tool
  * invocation. The C implementation folds this into approval_check, so we
  * delegate. Returns 1=approved, 0=denied, -1=not dangerous. */

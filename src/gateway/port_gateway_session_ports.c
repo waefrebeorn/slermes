@@ -21,7 +21,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __post_init__ @ gateway/session.py:__post_init__ */
+/* PoP: gss_post_init @ gateway/session.py:__post_init__ */
 char *gss_post_init(const char *source_json) {
     /* Python: scope_id canonical, guild_id deprecated alias. */
     if (!source_json) return strdup("{}");
@@ -35,7 +35,7 @@ char *gss_post_init(const char *source_json) {
     return strdup(source_json);
 }
 
-/* PoP: description @ gateway/session.py:description */
+/* PoP: gss_description @ gateway/session.py:description */
 char *gss_description(const char *source_json) {
     /* Python: human-readable description of the source. */
     if (!source_json) return strdup("");
@@ -49,26 +49,26 @@ char *gss_description(const char *source_json) {
     return out;
 }
 
-/* PoP: to_dict @ gateway/session.py:to_dict */
+/* PoP: gss_source_to_dict @ gateway/session.py:to_dict */
 char *gss_source_to_dict(const char *source_json) {
     if (!source_json) return strdup("{}");
     return strdup(source_json);
 }
 
-/* PoP: from_dict @ gateway/session.py:from_dict */
+/* PoP: gss_source_from_dict @ gateway/session.py:from_dict */
 char *gss_source_from_dict(const char *data_json) {
     /* Python: platform enum + chat_id str coercion. */
     if (!data_json) return strdup("{}");
     return strdup(data_json);
 }
 
-/* PoP: to_dict @ gateway/session.py:to_dict */
+/* PoP: gss_entry_to_dict @ gateway/session.py:to_dict */
 char *gss_entry_to_dict(const char *entry_json) {
     if (!entry_json) return strdup("{}");
     return strdup(entry_json);
 }
 
-/* PoP: _discord_tools_loaded @ gateway/session.py:_discord_tools_loaded */
+/* PoP: gss_discord_tools_loaded @ gateway/session.py:_discord_tools_loaded */
 bool gss_discord_tools_loaded(void) {
     /* Python: discord/discord_admin toolset enabled check.
      * REAL: probe the toolset config flag. */
@@ -77,7 +77,7 @@ bool gss_discord_tools_loaded(void) {
     return false;
 }
 
-/* PoP: build_session_context_prompt @ gateway/session.py:build_session_context_prompt */
+/* PoP: gss_build_session_context_prompt @ gateway/session.py:build_session_context_prompt */
 char *gss_build_session_context_prompt(const char *source_json) {
     /* Python: dynamic system prompt section about context. */
     if (!source_json) return strdup("");
@@ -88,19 +88,19 @@ char *gss_build_session_context_prompt(const char *source_json) {
     return out;
 }
 
-/* PoP: to_dict @ gateway/session.py:to_dict */
+/* PoP: gss_meta_to_dict @ gateway/session.py:to_dict */
 char *gss_meta_to_dict(const char *meta_json) {
     if (!meta_json) return strdup("{}");
     return strdup(meta_json);
 }
 
-/* PoP: from_dict @ gateway/session.py:from_dict */
+/* PoP: gss_meta_from_dict @ gateway/session.py:from_dict */
 char *gss_meta_from_dict(const char *data_json) {
     if (!data_json) return strdup("{}");
     return strdup(data_json);
 }
 
-/* PoP: is_shared_multi_user_session @ gateway/session.py:is_shared_multi_user_session */
+/* PoP: gss_is_shared_multi_user_session @ gateway/session.py:is_shared_multi_user_session */
 bool gss_is_shared_multi_user_session(const char *source_json) {
     /* Python: non-DM session shared across participants. */
     if (!source_json) return false;
@@ -110,7 +110,7 @@ bool gss_is_shared_multi_user_session(const char *source_json) {
     return false;
 }
 
-/* PoP: build_session_key @ gateway/session.py:build_session_key */
+/* PoP: gss_build_session_key @ gateway/session.py:build_session_key */
 char *gss_build_session_key(const char *platform, const char *chat_id, const char *thread_id) {
     /* Python: deterministic session key from message source. */
     if (!platform || !chat_id) return NULL;
@@ -122,7 +122,7 @@ char *gss_build_session_key(const char *platform, const char *chat_id, const cha
     return out;
 }
 
-/* PoP: _ensure_loaded @ gateway/session.py:_ensure_loaded */
+/* PoP: gss_ensure_loaded @ gateway/session.py:_ensure_loaded */
 int gss_ensure_loaded(const char *index_path) {
     /* Python: load sessions index from disk if not loaded. */
     if (!index_path) return -1;
@@ -133,7 +133,7 @@ int gss_ensure_loaded(const char *index_path) {
     return 0;
 }
 
-/* PoP: _should_reset @ gateway/session.py:_should_reset */
+/* PoP: gss_should_reset @ gateway/session.py:_should_reset */
 bool gss_should_reset(const char *entry_json, const char *policy_json) {
     /* Python: policy-based session reset check. */
     if (!entry_json) return false;
@@ -141,7 +141,7 @@ bool gss_should_reset(const char *entry_json, const char *policy_json) {
     return false;
 }
 
-/* PoP: reset_session @ gateway/session.py:reset_session */
+/* PoP: gss_reset_session @ gateway/session.py:reset_session */
 char *gss_reset_session(const char *entry_json) {
     /* Python: force reset, creating a new session ID. */
     if (!entry_json) return NULL;
@@ -150,7 +150,7 @@ char *gss_reset_session(const char *entry_json) {
     return out;
 }
 
-/* PoP: list_sessions @ gateway/session.py:list_sessions */
+/* PoP: gss_list_sessions @ gateway/session.py:list_sessions */
 char *gss_list_sessions(const char *index_json, bool active_only) {
     /* Python: list sessions, optionally filtered by activity. */
     if (!index_json) return strdup("[]");

@@ -60,7 +60,7 @@ static long cua_json_positive_int(const json_t *value)
  * shape exactly. Returns a malloc'd json_t* (caller frees via json_free),
  * or NULL on NULL/empty/non-array input.
  * =========================================================================== */
-/* PoP: _ingest_windows @ tools/computer_use/cua_backend.py:_ingest_windows */
+/* PoP: cua_ingest_windows @ tools/computer_use/cua_backend.py:_ingest_windows */
 json_t *cua_ingest_windows(const json_t *raw_windows)
 {
     json_t *out = json_array();
@@ -108,7 +108,7 @@ json_t *cua_ingest_windows(const json_t *raw_windows)
  * Python: env = cua_driver_child_env(); env["X"]="..."; env["Y"]="..."; return
  * We accept a base env json object; caller owns result.
  * =========================================================================== */
-/* PoP: child_env @ tools/computer_use/cua_backend.py:_EmbeddedCuaDaemon.child_env */
+/* PoP: cua_daemon_child_env @ tools/computer_use/cua_backend.py:_EmbeddedCuaDaemon.child_env */
 json_t *cua_daemon_child_env(const json_t *base_env)
 {
     /* Delegate to the already-ported cua_driver_child_env wrapper which
@@ -134,7 +134,7 @@ json_t *cua_daemon_child_env(const json_t *base_env)
  * Mirrors Python exactly: for line in stream: text=str(line).strip(); if text: append.
  * We accept a newline-separated dump of stderr text.
  * =========================================================================== */
-/* PoP: _drain_stderr @ tools/computer_use/cua_backend.py:_EmbeddedCuaDaemon._drain_stderr */
+/* PoP: cua_daemon_drain_stderr @ tools/computer_use/cua_backend.py:_EmbeddedCuaDaemon._drain_stderr */
 void cua_daemon_drain_stderr(json_t *stderr_tail, const char *stderr_text)
 {
     if (!stderr_tail || stderr_tail->type != JSON_ARRAY || !stderr_text)
@@ -166,7 +166,7 @@ void cua_daemon_drain_stderr(json_t *stderr_tail, const char *stderr_text)
  * proxy_invocation — return (command, [*mcp_args, --embedded, --socket, path])
  * as a serialized JSON string "command\targ1,arg2,...". Mirrors Python exactly.
  * =========================================================================== */
-/* PoP: proxy_invocation @ tools/computer_use/cua_backend.py:_EmbeddedCuaDaemon.proxy_invocation */
+/* PoP: cua_daemon_proxy_invocation @ tools/computer_use/cua_backend.py:_EmbeddedCuaDaemon.proxy_invocation */
 char *cua_daemon_proxy_invocation(const char *command,
                                   const json_t *mcp_args,
                                   const char *socket_path)
@@ -226,7 +226,7 @@ char *cua_daemon_proxy_invocation(const char *command,
 /* ===========================================================================
  * supports_input_property — is property_name in tool's schema["properties"]?
  * =========================================================================== */
-/* PoP: supports_input_property @ tools/computer_use/cua_backend.py:_CuaDriverSession.supports_input_property */
+/* PoP: cua_session_supports_input_property @ tools/computer_use/cua_backend.py:_CuaDriverSession.supports_input_property */
 bool cua_session_supports_input_property(const json_t *tool_schemas,
                                          const char *tool,
                                          const char *property_name)
@@ -247,7 +247,7 @@ bool cua_session_supports_input_property(const json_t *tool_schemas,
  * _logical_error_text — flatten result["data"] + result["structuredContent"]
  * into a newline-joined text blob. Mirrors Python exactly.
  * =========================================================================== */
-/* PoP: _logical_error_text @ tools/computer_use/cua_backend.py:_CuaDriverSession._logical_error_text */
+/* PoP: cua_session_logical_error_text @ tools/computer_use/cua_backend.py:_CuaDriverSession._logical_error_text */
 char *cua_session_logical_error_text(const json_t *result)
 {
     if (!result || result->type != JSON_OBJECT)
@@ -293,7 +293,7 @@ char *cua_session_logical_error_text(const json_t *result)
 /* ===========================================================================
  * _is_ended_session_result — recognise cua-driver's ended-session error.
  * =========================================================================== */
-/* PoP: _is_ended_session_result @ tools/computer_use/cua_backend.py:_CuaDriverSession._is_ended_session_result */
+/* PoP: cua_session_is_ended_session_result @ tools/computer_use/cua_backend.py:_CuaDriverSession._is_ended_session_result */
 bool cua_session_is_ended_session_result(const json_t *result)
 {
     if (!result || result->type != JSON_OBJECT)
@@ -322,7 +322,7 @@ bool cua_session_is_ended_session_result(const json_t *result)
  * shapes (structuredContent/windows, data/windows, data/_legacy_windows,
  * top-level windows/_legacy_windows).
  * =========================================================================== */
-/* PoP: _windows_from_tool_result @ tools/computer_use/cua_backend.py:_windows_from_tool_result */
+/* PoP: cua_windows_from_tool_result @ tools/computer_use/cua_backend.py:_windows_from_tool_result */
 json_t *cua_windows_from_tool_result(const json_t *out)
 {
     if (!out || out->type != JSON_OBJECT)
@@ -359,7 +359,7 @@ json_t *cua_windows_from_tool_result(const json_t *out)
  * _apps_from_windows — dedupe windows to {name, pid} pairs, preserving order.
  * Depends on cua_ingest_windows (normalises raw -> window summaries).
  * =========================================================================== */
-/* PoP: _apps_from_windows @ tools/computer_use/cua_backend.py:_apps_from_windows */
+/* PoP: cua_apps_from_windows @ tools/computer_use/cua_backend.py:_apps_from_windows */
 json_t *cua_apps_from_windows(const json_t *raw_windows)
 {
     json_t *windows = cua_ingest_windows(raw_windows);

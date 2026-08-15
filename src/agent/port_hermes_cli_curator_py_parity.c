@@ -14,12 +14,12 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_curator_register_cli @ hermes_cli/curator.py:register_cli */
+/* PoP: hermes_cli_curator_register_cli_p @ hermes_cli/curator.py:register_cli */
 json_t *hermes_cli_curator_register_cli_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_curator_cli_main @ hermes_cli/curator.py:cli_main */
+/* PoP: hermes_cli_curator_cli_main_p @ hermes_cli/curator.py:cli_main */
 json_t *hermes_cli_curator_cli_main_p(void) {
     return json_object();
 }

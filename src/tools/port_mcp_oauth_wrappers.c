@@ -13,7 +13,7 @@
 #include <sys/stat.h>
 #include "hermes_json.h"
 
-/* PoP: _get_token_dir @ tools/mcp_oauth.py:_get_token_dir */
+/* PoP: mcpo_u_get_token_dir @ tools/mcp_oauth.py:_get_token_dir */
 int mcpo_u_get_token_dir(const char *arg) {
     /* Python: HERMES_HOME/mcp-tokens. Arg = hermes_home. */
     if (!arg || !*arg) {
@@ -25,7 +25,7 @@ int mcpo_u_get_token_dir(const char *arg) {
     return 0;
 }
 
-/* PoP: _safe_filename @ tools/mcp_oauth.py:_safe_filename */
+/* PoP: mcpo_u_safe_filename @ tools/mcp_oauth.py:_safe_filename */
 int mcpo_u_safe_filename(const char *arg) {
     if (!arg || !*arg) { printf("default\n"); return 0; }
     char out[160]; int n = 0;
@@ -44,7 +44,7 @@ int mcpo_u_safe_filename(const char *arg) {
     return 0;
 }
 
-/* PoP: _find_free_port @ tools/mcp_oauth.py:_find_free_port */
+/* PoP: mcpo_u_find_free_port @ tools/mcp_oauth.py:_find_free_port */
 int mcpo_u_find_free_port(const char *arg) {
     /* Python: bind 127.0.0.1:0 -> port. Arg = "port". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -52,7 +52,7 @@ int mcpo_u_find_free_port(const char *arg) {
     return 0;
 }
 
-/* PoP: _reserve_callback_port @ tools/mcp_oauth.py:_reserve_callback_port */
+/* PoP: mcpo_u_reserve_callback_port @ tools/mcp_oauth.py:_reserve_callback_port */
 int mcpo_u_reserve_callback_port(const char *arg) {
     /* Python: bound ephemeral port. Arg = "state\tport\treserved". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -64,7 +64,7 @@ int mcpo_u_reserve_callback_port(const char *arg) {
     return 0;
 }
 
-/* PoP: _cached_redirect_port @ tools/mcp_oauth.py:_cached_redirect_port */
+/* PoP: mcpo_u_cached_redirect_port @ tools/mcp_oauth.py:_cached_redirect_port */
 int mcpo_u_cached_redirect_port(const char *arg) {
     /* Python: loopback port from cache. Arg = "state\tport\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -76,7 +76,7 @@ int mcpo_u_cached_redirect_port(const char *arg) {
     return 0;
 }
 
-/* PoP: _cached_redirect_uri @ tools/mcp_oauth.py:_cached_redirect_uri */
+/* PoP: mcpo_u_cached_redirect_uri @ tools/mcp_oauth.py:_cached_redirect_uri */
 int mcpo_u_cached_redirect_uri(const char *arg) {
     /* Python: first https redirect_uri with netloc. Arg = "client_info_json". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -101,7 +101,7 @@ int mcpo_u_cached_redirect_uri(const char *arg) {
     return 0;
 }
 
-/* PoP: _is_interactive @ tools/mcp_oauth.py:_is_interactive */
+/* PoP: mcpo_u_is_interactive @ tools/mcp_oauth.py:_is_interactive */
 int mcpo_u_is_interactive(const char *arg) {
     /* Python: enabled flag; forced flag; else stdin isatty. Arg =
      * "enabled\tforced". */
@@ -115,7 +115,7 @@ int mcpo_u_is_interactive(const char *arg) {
     return 0;
 }
 
-/* PoP: _raise_if_non_interactive @ tools/mcp_oauth.py:_raise_if_non_interactive */
+/* PoP: mcpo_u_raise_if_non_interactive @ tools/mcp_oauth.py:_raise_if_non_interactive */
 int mcpo_u_raise_if_non_interactive(const char *arg) {
     /* Python: raise unless interactive. Arg = "interactive\tlead". */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -126,7 +126,7 @@ int mcpo_u_raise_if_non_interactive(const char *arg) {
     return 1;
 }
 
-/* PoP: force_interactive_oauth @ tools/mcp_oauth.py:force_interactive_oauth */
+/* PoP: mcpo_force_interactive_oauth @ tools/mcp_oauth.py:force_interactive_oauth */
 int mcpo_force_interactive_oauth(const char *arg) {
     /* Python: ContextVar force-true during block. Arg = "state". */
     (void)arg;
@@ -134,7 +134,7 @@ int mcpo_force_interactive_oauth(const char *arg) {
     return 0;
 }
 
-/* PoP: suppress_interactive_oauth @ tools/mcp_oauth.py:suppress_interactive_oauth */
+/* PoP: mcpo_suppress_interactive_oauth @ tools/mcp_oauth.py:suppress_interactive_oauth */
 int mcpo_suppress_interactive_oauth(const char *arg) {
     /* Python: ContextVar suppress during block. Arg = "state". */
     (void)arg;
@@ -142,7 +142,7 @@ int mcpo_suppress_interactive_oauth(const char *arg) {
     return 0;
 }
 
-/* PoP: _can_open_browser @ tools/mcp_oauth.py:_can_open_browser */
+/* PoP: mcpo_u_can_open_browser @ tools/mcp_oauth.py:_can_open_browser */
 int mcpo_u_can_open_browser(const char *arg) {
     /* Python: SSH -> False; nt/Darwin -> True; DISPLAY/WAYLAND -> True. Arg =
      * "ssh\tos\tdisplay\twayland". */
@@ -158,7 +158,7 @@ int mcpo_u_can_open_browser(const char *arg) {
     return 0;
 }
 
-/* PoP: _read_json @ tools/mcp_oauth.py:_read_json */
+/* PoP: mcpo_u_read_json @ tools/mcp_oauth.py:_read_json */
 int mcpo_u_read_json(const char *arg) {
     /* Python: read JSON file or None on missing/invalid. Arg = path. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -177,7 +177,7 @@ int mcpo_u_read_json(const char *arg) {
     return 0;
 }
 
-/* PoP: _write_json @ tools/mcp_oauth.py:_write_json */
+/* PoP: mcpo_u_write_json @ tools/mcp_oauth.py:_write_json */
 int mcpo_u_write_json(const char *arg) {
     /* Python: 0600 O_EXCL. Arg = "path\tstate\tresult". */
     if (!arg || !*arg) { printf("0\n"); return 1; }
@@ -189,7 +189,7 @@ int mcpo_u_write_json(const char *arg) {
     return 0;
 }
 
-/* PoP: _tokens_path @ tools/mcp_oauth.py:_tokens_path */
+/* PoP: mcpo_u_tokens_path @ tools/mcp_oauth.py:_tokens_path */
 int mcpo_u_tokens_path(const char *arg) {
     /* Python: HERMES_HOME/mcp-tokens/<server>.json. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -199,7 +199,7 @@ int mcpo_u_tokens_path(const char *arg) {
     return 0;
 }
 
-/* PoP: _client_info_path @ tools/mcp_oauth.py:_client_info_path */
+/* PoP: mcpo_u_client_info_path @ tools/mcp_oauth.py:_client_info_path */
 int mcpo_u_client_info_path(const char *arg) {
     /* Python: HERMES_HOME/mcp-tokens/<server>.client.json. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -209,7 +209,7 @@ int mcpo_u_client_info_path(const char *arg) {
     return 0;
 }
 
-/* PoP: _meta_path @ tools/mcp_oauth.py:_meta_path */
+/* PoP: mcpo_u_meta_path @ tools/mcp_oauth.py:_meta_path */
 int mcpo_u_meta_path(const char *arg) {
     /* Python: HERMES_HOME/mcp-tokens/<server>.meta.json. */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -219,7 +219,7 @@ int mcpo_u_meta_path(const char *arg) {
     return 0;
 }
 
-/* PoP: get_tokens @ tools/mcp_oauth.py:get_tokens */
+/* PoP: mcpo_get_tokens @ tools/mcp_oauth.py:get_tokens */
 int mcpo_get_tokens(const char *arg) {
     /* Python: expires_in rewrite. Arg =
      * "state\tresult\terr". */
@@ -236,7 +236,7 @@ int mcpo_get_tokens(const char *arg) {
     return 0;
 }
 
-/* PoP: set_tokens @ tools/mcp_oauth.py:set_tokens */
+/* PoP: mcpo_set_tokens @ tools/mcp_oauth.py:set_tokens */
 int mcpo_set_tokens(const char *arg) {
     /* Python: absolute expires_at. Arg =
      * "saved\tstate\tresult". */
@@ -251,7 +251,7 @@ int mcpo_set_tokens(const char *arg) {
     return 0;
 }
 
-/* PoP: get_client_info @ tools/mcp_oauth.py:get_client_info */
+/* PoP: mcpo_get_client_info @ tools/mcp_oauth.py:get_client_info */
 int mcpo_get_client_info(const char *arg) {
     /* Python: client info read. Arg =
      * "state\tresult\terr". */
@@ -268,7 +268,7 @@ int mcpo_get_client_info(const char *arg) {
     return 0;
 }
 
-/* PoP: set_client_info @ tools/mcp_oauth.py:set_client_info */
+/* PoP: mcpo_set_client_info @ tools/mcp_oauth.py:set_client_info */
 int mcpo_set_client_info(const char *arg) {
     /* Python: persist client info. Arg =
      * "saved\tstate\tresult". */
@@ -283,7 +283,7 @@ int mcpo_set_client_info(const char *arg) {
     return 0;
 }
 
-/* PoP: save_oauth_metadata @ tools/mcp_oauth.py:save_oauth_metadata */
+/* PoP: mcpo_save_oauth_metadata @ tools/mcp_oauth.py:save_oauth_metadata */
 int mcpo_save_oauth_metadata(const char *arg) {
     /* Python: _write_json(self._meta_path(), metadata.model_dump(
      * exclude_none=True, mode="json")). Arg = metadata JSON; the C port
@@ -293,7 +293,7 @@ int mcpo_save_oauth_metadata(const char *arg) {
     return 0;
 }
 
-/* PoP: load_oauth_metadata @ tools/mcp_oauth.py:load_oauth_metadata */
+/* PoP: mcpo_load_oauth_metadata @ tools/mcp_oauth.py:load_oauth_metadata */
 int mcpo_load_oauth_metadata(const char *arg) {
     /* Python: parse meta JSON or None on corrupt. Arg = "json" (empty =
      * missing file). */
@@ -311,7 +311,7 @@ int mcpo_load_oauth_metadata(const char *arg) {
     return 0;
 }
 
-/* PoP: poison_client_registration @ tools/mcp_oauth.py:poison_client_registration */
+/* PoP: mcpo_poison_client_registration @ tools/mcp_oauth.py:poison_client_registration */
 int mcpo_poison_client_registration(const char *arg) {
     /* Python: invalid_client re-register. Arg =
      * "had_client\tstate\tresult". */
@@ -325,7 +325,7 @@ int mcpo_poison_client_registration(const char *arg) {
     return 1;
 }
 
-/* PoP: has_cached_tokens @ tools/mcp_oauth.py:has_cached_tokens */
+/* PoP: mcpo_has_cached_tokens @ tools/mcp_oauth.py:has_cached_tokens */
 int mcpo_has_cached_tokens(const char *arg) {
     /* Python: tokens path exists. Arg = path. */
     if (!arg || !*arg) { printf("0\n"); return 0; }
@@ -334,7 +334,7 @@ int mcpo_has_cached_tokens(const char *arg) {
     return 0;
 }
 
-/* PoP: _make_callback_handler @ tools/mcp_oauth.py:_make_callback_handler */
+/* PoP: mcpo_u_make_callback_handler @ tools/mcp_oauth.py:_make_callback_handler */
 int mcpo_u_make_callback_handler(const char *arg) {
     /* Python: per-flow handler. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n\n"); return 0; }
@@ -345,7 +345,7 @@ int mcpo_u_make_callback_handler(const char *arg) {
     return 0;
 }
 
-/* PoP: _make_redirect_handler @ tools/mcp_oauth.py:_make_redirect_handler */
+/* PoP: mcpo_u_make_redirect_handler @ tools/mcp_oauth.py:_make_redirect_handler */
 int mcpo_u_make_redirect_handler(const char *arg) {
     /* Python: port closure. Arg =
      * "proxied\tstate\tresult". */
@@ -359,7 +359,7 @@ int mcpo_u_make_redirect_handler(const char *arg) {
     return 0;
 }
 
-/* PoP: _wait_for_callback @ tools/mcp_oauth.py:_wait_for_callback */
+/* PoP: mcpo_u_wait_for_callback @ tools/mcp_oauth.py:_wait_for_callback */
 int mcpo_u_wait_for_callback(const char *arg) {
     /* Python: legacy port wait. Arg =
      * "state\tresult\terr". */
@@ -380,7 +380,7 @@ int mcpo_u_wait_for_callback(const char *arg) {
     return 0;
 }
 
-/* PoP: _make_callback_waiter @ tools/mcp_oauth.py:_make_callback_waiter */
+/* PoP: mcpo_u_make_callback_waiter @ tools/mcp_oauth.py:_make_callback_waiter */
 int mcpo_u_make_callback_waiter(const char *arg) {
     /* Python: port-bound waiter. Arg =
      * "state\tresult\terr". */
@@ -397,7 +397,7 @@ int mcpo_u_make_callback_waiter(const char *arg) {
     return 0;
 }
 
-/* PoP: _paste_callback_reader @ tools/mcp_oauth.py:_paste_callback_reader */
+/* PoP: mcpo_u_paste_callback_reader @ tools/mcp_oauth.py:_paste_callback_reader */
 int mcpo_u_paste_callback_reader(const char *arg) {
     /* Python: stdin fallback. Arg =
      * "state\tresult". */
@@ -413,7 +413,7 @@ int mcpo_u_paste_callback_reader(const char *arg) {
     return 0;
 }
 
-/* PoP: remove_oauth_tokens @ tools/mcp_oauth.py:remove_oauth_tokens */
+/* PoP: mcpo_remove_oauth_tokens @ tools/mcp_oauth.py:remove_oauth_tokens */
 int mcpo_remove_oauth_tokens(const char *arg) {
     /* Python: storage.remove(). Arg = "server_name\tstate". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -421,7 +421,7 @@ int mcpo_remove_oauth_tokens(const char *arg) {
     return 0;
 }
 
-/* PoP: _configure_callback_port @ tools/mcp_oauth.py:_configure_callback_port */
+/* PoP: mcpo_u_configure_callback_port @ tools/mcp_oauth.py:_configure_callback_port */
 int mcpo_u_configure_callback_port(const char *arg) {
     /* Python: port precedence. Arg =
      * "dashboard\tcached\tstate\tresult". */
@@ -439,7 +439,7 @@ int mcpo_u_configure_callback_port(const char *arg) {
     return 0;
 }
 
-/* PoP: _resolve_redirect_uri @ tools/mcp_oauth.py:_resolve_redirect_uri */
+/* PoP: mcpo_u_resolve_redirect_uri @ tools/mcp_oauth.py:_resolve_redirect_uri */
 int mcpo_u_resolve_redirect_uri(const char *arg) {
     /* Python: configured or loopback. Arg =
      * "configured\tredirect_host\tport\tresult". */
@@ -453,7 +453,7 @@ int mcpo_u_resolve_redirect_uri(const char *arg) {
     return 0;
 }
 
-/* PoP: _build_client_metadata @ tools/mcp_oauth.py:_build_client_metadata */
+/* PoP: mcpo_u_build_client_metadata @ tools/mcp_oauth.py:_build_client_metadata */
 int mcpo_u_build_client_metadata(const char *arg) {
     /* Python: OAuth client metadata. Arg =
      * "port\tclient_name\tscope\tsecret\tstate\tresult". */
@@ -474,7 +474,7 @@ int mcpo_u_build_client_metadata(const char *arg) {
     return 0;
 }
 
-/* PoP: _maybe_preregister_client @ tools/mcp_oauth.py:_maybe_preregister_client */
+/* PoP: mcpo_u_maybe_preregister_client @ tools/mcp_oauth.py:_maybe_preregister_client */
 int mcpo_u_maybe_preregister_client(const char *arg) {
     /* Python: persist pre-registered client. Arg =
      * "client_id\tport\tstate\tresult". */
@@ -488,7 +488,7 @@ int mcpo_u_maybe_preregister_client(const char *arg) {
     return 0;
 }
 
-/* PoP: build_oauth_auth @ tools/mcp_oauth.py:build_oauth_auth */
+/* PoP: mcpo_build_oauth_auth @ tools/mcp_oauth.py:build_oauth_auth */
 int mcpo_build_oauth_auth(const char *arg) {
     /* Python: OAuthClientProvider. Arg =
      * "state\tresult\terr". */

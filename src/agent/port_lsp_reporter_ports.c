@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _sanitize_field @ agent/lsp/reporter.py:_sanitize_field */
+/* PoP: lsr_sanitize_field @ agent/lsp/reporter.py:_sanitize_field */
 char *lsr_sanitize_field(const char *value) {
     /* Python: strip control chars for tool-result blocks. */
     if (!value) return strdup("");
@@ -37,7 +37,7 @@ char *lsr_sanitize_field(const char *value) {
     return out;
 }
 
-/* PoP: format_diagnostic @ agent/lsp/reporter.py:format_diagnostic */
+/* PoP: lsr_format_diagnostic @ agent/lsp/reporter.py:format_diagnostic */
 char *lsr_format_diagnostic(const char *message, const char *code, const char *severity, long line, long col) {
     /* Python: one-line diagnostic. */
     if (!message) return strdup("");
@@ -52,7 +52,7 @@ char *lsr_format_diagnostic(const char *message, const char *code, const char *s
     return out;
 }
 
-/* PoP: report_for_file @ agent/lsp/reporter.py:report_for_file */
+/* PoP: lsr_report_for_file @ agent/lsp/reporter.py:report_for_file */
 char *lsr_report_for_file(const char *file_path, const char *diagnostics_json) {
     /* Python: <diagnostics file=...> block. */
     if (!file_path) return strdup("");
@@ -62,7 +62,7 @@ char *lsr_report_for_file(const char *file_path, const char *diagnostics_json) {
     return out;
 }
 
-/* PoP: truncate @ agent/lsp/reporter.py:truncate */
+/* PoP: lsr_truncate @ agent/lsp/reporter.py:truncate */
 char *lsr_truncate(const char *summary, long limit) {
     /* Python: hard-cap formatted summary. */
     if (!summary) return strdup("");

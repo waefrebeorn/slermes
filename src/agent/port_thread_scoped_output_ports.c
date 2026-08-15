@@ -19,7 +19,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ agent/thread_scoped_output.py:__init__ */
+/* PoP: tso_init @ agent/thread_scoped_output.py:__init__ */
 char *tso_init(const char *passthrough_desc, const char *sink_desc) {
     char *out = NULL;
     asprintf(&out, "{\"passthrough\": \"%s\", \"sink\": \"%s\", \"nesting\": {}}",
@@ -27,7 +27,7 @@ char *tso_init(const char *passthrough_desc, const char *sink_desc) {
     return out;
 }
 
-/* PoP: write @ agent/thread_scoped_output.py:write */
+/* PoP: tso_write @ agent/thread_scoped_output.py:write */
 long tso_write(const char *text, size_t len) {
     /* Python: route to sink when scoped else passthrough. */
     if (!text) return 0;
@@ -35,18 +35,18 @@ long tso_write(const char *text, size_t len) {
     return (long)len;
 }
 
-/* PoP: flush @ agent/thread_scoped_output.py:flush */
+/* PoP: tso_flush @ agent/thread_scoped_output.py:flush */
 int tso_flush(void) {
     if (fflush(stdout) != 0) return -1;
     return 0;
 }
 
-/* PoP: isatty @ agent/thread_scoped_output.py:isatty */
+/* PoP: tso_isatty @ agent/thread_scoped_output.py:isatty */
 bool tso_isatty(void) {
     return isatty(STDOUT_FILENO) == 1;
 }
 
-/* PoP: fileno @ agent/thread_scoped_output.py:fileno */
+/* PoP: tso_fileno @ agent/thread_scoped_output.py:fileno */
 long tso_fileno(void) {
     return STDOUT_FILENO;
 }

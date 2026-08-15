@@ -29,7 +29,7 @@ char *cli_tools_xai_http_hermes_xai_user_agent(void)
     return result ? result : strdup("Hermes-Agent/unknown");
 }
 
-/* PoP: hermes_xai_default_headers @ tools/xai_http.py:hermes_xai_default_headers */
+/* PoP: cli_tools_xai_http_hermes_xai_default_headers @ tools/xai_http.py:hermes_xai_default_headers */
 char *cli_tools_xai_http_hermes_xai_default_headers(void)
 {
     /* Default headers for OpenAI-SDK and raw HTTP clients talking to xAI.
@@ -218,7 +218,7 @@ char *cli_tools_xai_http_read_xai_imagine_storage_config(const char *section_nam
     return strdup(buf);
 }
 
-/* PoP: cli_tools_xai_http_build_xai_storage_options @ tools/xai_http.py:build_xai_storage_options */
+/* PoP: NULL @ tools/xai_http.py:build_xai_storage_options */
 /* Returns malloc'd storage_options JSON, or NULL (strdup("null")) when disabled. */
 char *cli_tools_xai_http_build_xai_storage_options(const char *section_name,
                                                    const char *filename_prefix,
@@ -317,7 +317,7 @@ char *cli_tools_xai_http_xai_storage_notice_text(const char *section_name)
     return ret;
 }
 
-/* PoP: cli_tools_xai_http_maybe_mark_xai_storage_notice_seen @ tools/xai_http.py:maybe_mark_xai_storage_notice_seen */
+/* PoP: seen @ tools/xai_http.py:maybe_mark_xai_storage_notice_seen */
 /* Returns the notice once per Hermes home, then marks it seen (state dir). */
 char *cli_tools_xai_http_maybe_mark_xai_storage_notice_seen(const char *section_name)
 {

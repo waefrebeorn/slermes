@@ -22,7 +22,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __call__ @ agent/auxiliary_client.py:__call__ */
+/* PoP: aux2_call @ agent/auxiliary_client.py:__call__ */
 char *aux2_call(const char *args_json) {
     /* Python: load openai class + construct. C: the auxiliary client is
      * built-in; verify the args are well-formed JSON and return them. */
@@ -33,7 +33,7 @@ char *aux2_call(const char *args_json) {
     return strdup(args_json);
 }
 
-/* PoP: _aux_interrupt_protected @ agent/auxiliary_client.py:_aux_interrupt_protected */
+/* PoP: getattr @ agent/auxiliary_client.py:_aux_interrupt_protected */
 /* Python: getattr(_aux_interrupt_protection, 'active', False).
  * Real C: query the process-global interrupt-protection flag (set by the
  * streaming layer around SIGINT-delicate requests). */
@@ -41,7 +41,7 @@ bool aux2_aux_interrupt_protected(void) {
     return aux_interrupt_protected();
 }
 
-/* PoP: create @ agent/auxiliary_client.py:create */
+/* PoP: aux2_create @ agent/auxiliary_client.py:create */
 char *aux2_create(const char *kwargs_json) {
     /* Python: chat completion create. kwargs_json carries
      * {messages: [{role, content}...], model, provider, base_url, api_key,
@@ -121,7 +121,7 @@ char *aux2_create(const char *kwargs_json) {
     return ser ? ser : strdup("{}");
 }
 
-/* PoP: close @ agent/auxiliary_client.py:close */
+/* PoP: create @ agent/auxiliary_client.py:close */
 /* Python: self._real_client.close(). The C auxiliary client is stateless:
  * each create() invokes llm_chat_completion directly and holds no persistent
  * client object or pooled handle, so there is genuinely nothing to tear down

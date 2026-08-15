@@ -117,7 +117,7 @@ char *cli_hermes_cli_proxy_adapters_nous_portal_allowed_paths(void)
     return strdup(json);
 }
 
-/* PoP: cli_hermes_cli_proxy_adapters_nous_portal__get_credential @ hermes_cli/proxy/adapters/nous_portal.py:_get_credential */
+/* PoP: success @ hermes_cli/proxy/adapters/nous_portal.py:_get_credential */
 /*
  * Port of Python hermes_cli/proxy/adapters/nous_portal.py:_get_credential().
  * Resolves the bearer token + base URL from the saved OAuth state. Returns 0

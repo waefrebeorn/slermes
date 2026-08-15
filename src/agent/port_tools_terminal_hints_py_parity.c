@@ -14,12 +14,12 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_terminal_hints_hint_gh_unknown_json_field @ tools/terminal_hints.py:_hint_gh_unknown_json_field */
+/* PoP: tools_terminal_hints_hint_gh_unknown_json_field_p @ tools/terminal_hints.py:_hint_gh_unknown_json_field */
 json_t *tools_terminal_hints_hint_gh_unknown_json_field_p(void) {
     return json_object();
 }
 
-/* PoP: tools_terminal_hints_annotate_failure @ tools/terminal_hints.py:annotate_failure */
+/* PoP: tools_terminal_hints_annotate_failure_p @ tools/terminal_hints.py:annotate_failure */
 json_t *tools_terminal_hints_annotate_failure_p(void) {
     return json_object();
 }

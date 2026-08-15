@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: tools_fuzzy_match_fuzzy_find_and_replace @ tools/fuzzy_match.py:fuzzy_find_and_replace */
+/* PoP: tools_fuzzy_match_fuzzy_find_and_replace_p @ tools/fuzzy_match.py:fuzzy_find_and_replace */
 json_t *tools_fuzzy_match_fuzzy_find_and_replace_p(void) {
     return json_object();
 }

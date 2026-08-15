@@ -23,7 +23,7 @@ char *cli_hermes_cli_proxy_adapters_xai_allowed_paths(void)
     return strdup(json);
 }
 
-/* PoP: cli_hermes_cli_proxy_adapters_xai__credential_from_entry @ hermes_cli/proxy/adapters/xai.py:_credential_from_entry */
+/* PoP: success @ hermes_cli/proxy/adapters/xai.py:_credential_from_entry */
 
 /* Port of Python hermes_cli/proxy/adapters/xai.py:_credential_from_entry().
  * Resolves a bearer token + base URL from a pooled credential entry. The entry

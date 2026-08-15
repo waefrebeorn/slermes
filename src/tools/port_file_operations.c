@@ -196,7 +196,7 @@ bool file_ops_has_command(const char *cmd)
  * ================================================================ */
 
 /* Port of Python: _is_likely_binary */
-/* PoP: file_ops_is_likely_binary @ tools/file_operations.py:_is_likely_binary */
+/* PoP: file_fs_ops_is_likely_binary @ tools/file_operations.py:_is_likely_binary */
 /* delegates to file_fs_ops_is_likely_binary (faithful BINARY_EXTENSIONS + 30% rule) */
 bool file_ops_is_likely_binary(const char *path)
 {
@@ -204,7 +204,7 @@ bool file_ops_is_likely_binary(const char *path)
 }
 
 /* Port of Python: _is_image */
-/* PoP: file_ops_is_image @ tools/file_operations.py:_is_image */
+/* PoP: file_fs_ops_is_image @ tools/file_operations.py:_is_image */
 /* delegates to file_fs_ops_is_image (faithful IMAGE_EXTENSIONS, includes .ico) */
 bool file_ops_is_image(const char *path)
 {
@@ -370,7 +370,7 @@ static void fops_parse_rg_count(const char *out, int *out_total, int *out_files)
     free(lines);
 }
 
-/* PoP: _zero_match_probe @ tools/file_operations.py:_zero_match_probe */
+/* PoP: file_ops_zero_match_probe @ tools/file_operations.py:_zero_match_probe */
 char *file_ops_zero_match_probe(const char *pattern, const char *path,
                                   const char *file_glob) {
     /* Python: run ONE cheap case-insensitive count probe; if it hits, say so.
@@ -462,7 +462,7 @@ char *file_ops_zero_match_probe(const char *pattern, const char *path,
     return NULL;  /* Python: return None */
 }
 
-/* PoP: _try_multi_path_search @ tools/file_operations.py:_try_multi_path_search */
+/* PoP: list @ tools/file_operations.py:_try_multi_path_search */
 
 /* Port of Python _search_files_rg: find files by name pattern via rg.
  * Returns space-newline-separated list (caller parses), or empty string. */

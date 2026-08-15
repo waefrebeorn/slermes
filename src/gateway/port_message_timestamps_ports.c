@@ -20,7 +20,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: coerce_message_timestamp @ gateway/message_timestamps.py:coerce_message_timestamp */
+/* PoP: mts_coerce_message_timestamp @ gateway/message_timestamps.py:coerce_message_timestamp */
 long mts_coerce_message_timestamp(const char *value) {
     /* Python: epoch number or iso parse; -1 on failure. */
     if (!value || !*value) return -1;
@@ -44,7 +44,7 @@ long mts_coerce_message_timestamp(const char *value) {
     return -1;
 }
 
-/* PoP: format_message_timestamp @ gateway/message_timestamps.py:format_message_timestamp */
+/* PoP: mts_format_message_timestamp @ gateway/message_timestamps.py:format_message_timestamp */
 char *mts_format_message_timestamp(const char *value) {
     /* Python: [Tue 2026-04-28 13:40:53 CEST]. */
     long epoch = mts_coerce_message_timestamp(value);
@@ -57,7 +57,7 @@ char *mts_format_message_timestamp(const char *value) {
     return strdup(buf);
 }
 
-/* PoP: strip_leading_message_timestamps @ gateway/message_timestamps.py:strip_leading_message_timestamps */
+/* PoP: mts_strip_leading_message_timestamps @ gateway/message_timestamps.py:strip_leading_message_timestamps */
 char *mts_strip_leading_message_timestamps(const char *content) {
     /* Python: strip one or more leading prefixes. */
     if (!content) return strdup("");
@@ -82,7 +82,7 @@ char *mts_strip_leading_message_timestamps(const char *content) {
     return strdup(p);
 }
 
-/* PoP: render_user_content_with_timestamp @ gateway/message_timestamps.py:render_user_content_with_timestamp */
+/* PoP: mts_render_user_content_with_timestamp @ gateway/message_timestamps.py:render_user_content_with_timestamp */
 char *mts_render_user_content_with_timestamp(const char *content, const char *timestamp) {
     /* Python: exactly one prefix. */
     if (!content) return strdup("");
@@ -93,7 +93,7 @@ char *mts_render_user_content_with_timestamp(const char *content, const char *ti
     return out;
 }
 
-/* PoP: _parse_timestamp_prefix @ gateway/message_timestamps.py:_parse_timestamp_prefix */
+/* PoP: mts_parse_timestamp_prefix @ gateway/message_timestamps.py:_parse_timestamp_prefix */
 char *mts_parse_timestamp_prefix(const char *text) {
     /* Python: human or iso prefix match. */
     if (!text) return NULL;
@@ -110,7 +110,7 @@ char *mts_parse_timestamp_prefix(const char *text) {
     return NULL;
 }
 
-/* PoP: _parse_timestamp_match @ gateway/message_timestamps.py:_parse_timestamp_match */
+/* PoP: mts_parse_timestamp_match @ gateway/message_timestamps.py:_parse_timestamp_match */
 long mts_parse_timestamp_match(const char *match_text) {
     /* Python: match → epoch. */
     if (!match_text) return -1;

@@ -105,7 +105,7 @@ struct billing_block {
 
 /* Faithful port of hermes-agent/agent/billing_links.py */
 
-/* PoP: billing_links__nous_billing_url @ agent/billing_links.py:_nous_billing_url */
+/* PoP: _nous_billing_url @ agent/billing_links.py:_nous_billing_url */
 /* Best-effort Nous portal billing URL (text-surface fallback; Nous prefers
  * the in-app flow). Nous_portal_billing_url is not yet ported, so we fall back
  * to the canonical portal URL exactly as the Python try/except does. */
@@ -116,7 +116,7 @@ static const char *_nous_billing_url(void) {
     return "https://portal.nousresearch.com/billing";
 }
 
-/* PoP: billing_links__resolve_provider_link @ agent/billing_links.py:_resolve_provider_link */
+/* PoP: out_url @ agent/billing_links.py:_resolve_provider_link */
 /* Resolve (label, url): exact slug -> base_url host -> readable-label fallback.
  * Caller must free *out_label and *out_url (strdup'd). url may be NULL. */
 static void _resolve_provider_link(const char *slug, const char *base_url,
@@ -167,7 +167,7 @@ static void _resolve_provider_link(const char *slug, const char *base_url,
     if (out_url)   *out_url   = NULL;
 }
 
-/* PoP: billing_links_build_billing_block @ agent/billing_links.py:build_billing_block */
+/* PoP: billing_block_build @ agent/billing_links.py:build_billing_block */
 billing_block_t *billing_block_build(const char *provider,
                                      const char *base_url,
                                      const char *model,
@@ -228,7 +228,7 @@ bool billing_links_is_nous_inference_route(const char *provider,
     return is_nous_inference_route(provider, base_url);
 }
 
-/* PoP: billing_links_build_billing_block @ agent/billing_links.py:BillingBlock.to_dict */
+/* PoP: to_dict @ agent/billing_links.py:BillingBlock.to_dict */
 /* Faithful to_dict(): returns the asdict() JSON via libjson. Caller frees. */
 char *billing_block_to_json(const billing_block_t *b) {
     if (!b) return strdup("null");

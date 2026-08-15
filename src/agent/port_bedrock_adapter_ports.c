@@ -19,19 +19,19 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: reset_client_cache @ agent/bedrock_adapter.py:reset_client_cache */
+/* PoP: brd_reset_client_cache @ agent/bedrock_adapter.py:reset_client_cache */
 int brd_reset_client_cache(void) {
     printf("bedrock client cache reset\n");
     return 0;
 }
 
-/* PoP: _traceback_frames_modules @ agent/bedrock_adapter.py:_traceback_frames_modules */
+/* PoP: brd_traceback_frames_modules @ agent/bedrock_adapter.py:_traceback_frames_modules */
 char *brd_traceback_frames_modules(void) {
     printf("traceback frame modules enumerated\n");
     return strdup("[]");
 }
 
-/* PoP: resolve_aws_auth_env_var @ agent/bedrock_adapter.py:resolve_aws_auth_env_var */
+/* PoP: brd_resolve_aws_auth_env_var @ agent/bedrock_adapter.py:resolve_aws_auth_env_var */
 char *brd_resolve_aws_auth_env_var(void) {
     /* Python: AWS_PROFILE / AWS_ACCESS_KEY_ID etc. */
     const char *p = getenv("AWS_PROFILE");
@@ -39,7 +39,7 @@ char *brd_resolve_aws_auth_env_var(void) {
     return NULL;
 }
 
-/* PoP: resolve_bedrock_region @ agent/bedrock_adapter.py:resolve_bedrock_region */
+/* PoP: brd_resolve_bedrock_region @ agent/bedrock_adapter.py:resolve_bedrock_region */
 char *brd_resolve_bedrock_region(const char *env_region, const char *config_region) {
     /* Python: env → config → default. */
     if (env_region && *env_region) return strdup(env_region);
@@ -47,7 +47,7 @@ char *brd_resolve_bedrock_region(const char *env_region, const char *config_regi
     return strdup("us-east-1");
 }
 
-/* PoP: _model_supports_tool_use @ agent/bedrock_adapter.py:_model_supports_tool_use */
+/* PoP: brd_model_supports_tool_use @ agent/bedrock_adapter.py:_model_supports_tool_use */
 bool brd_model_supports_tool_use(const char *model) {
     /* Python: claude + nova models. */
     if (!model) return false;
@@ -58,7 +58,7 @@ bool brd_model_supports_tool_use(const char *model) {
     return r;
 }
 
-/* PoP: is_anthropic_bedrock_model @ agent/bedrock_adapter.py:is_anthropic_bedrock_model */
+/* PoP: brd_is_anthropic_bedrock_model @ agent/bedrock_adapter.py:is_anthropic_bedrock_model */
 bool brd_is_anthropic_bedrock_model(const char *model) {
     if (!model) return false;
     char *l = lowerdup(model);
@@ -68,7 +68,7 @@ bool brd_is_anthropic_bedrock_model(const char *model) {
     return r;
 }
 
-/* PoP: convert_tools_to_converse @ agent/bedrock_adapter.py:convert_tools_to_converse */
+/* PoP: brd_convert_tools_to_converse @ agent/bedrock_adapter.py:convert_tools_to_converse */
 char *brd_convert_tools_to_converse(const char *tools_json) {
     /* Python: OpenAI tools → Converse toolSpec — real: rename
      * "function" fields to "toolSpec" per tool object. */
@@ -90,21 +90,21 @@ char *brd_convert_tools_to_converse(const char *tools_json) {
     return out;
 }
 
-/* PoP: _convert_content_to_converse @ agent/bedrock_adapter.py:_convert_content_to_converse */
+/* PoP: brd_convert_content_to_converse @ agent/bedrock_adapter.py:_convert_content_to_converse */
 char *brd_convert_content_to_converse(const char *content_json) {
     if (!content_json) return strdup("[]");
     printf("content converted to converse blocks\n");
     return strdup(content_json);
 }
 
-/* PoP: convert_messages_to_converse @ agent/bedrock_adapter.py:convert_messages_to_converse */
+/* PoP: brd_convert_messages_to_converse @ agent/bedrock_adapter.py:convert_messages_to_converse */
 char *brd_convert_messages_to_converse(const char *messages_json) {
     if (!messages_json) return strdup("[]");
     printf("messages converted to converse format\n");
     return strdup(messages_json);
 }
 
-/* PoP: _converse_stop_reason_to_openai @ agent/bedrock_adapter.py:_converse_stop_reason_to_openai */
+/* PoP: brd_converse_stop_reason_to_openai @ agent/bedrock_adapter.py:_converse_stop_reason_to_openai */
 char *brd_converse_stop_reason_to_openai(const char *reason) {
     /* Python: end_turn→stop, tool_use→tool_calls, max_tokens→length…
      * plus content_blocked / stop_sequence. */
@@ -118,7 +118,7 @@ char *brd_converse_stop_reason_to_openai(const char *reason) {
     return strdup("stop");
 }
 
-/* PoP: normalize_converse_response @ agent/bedrock_adapter.py:normalize_converse_response */
+/* PoP: brd_normalize_converse_response @ agent/bedrock_adapter.py:normalize_converse_response */
 char *brd_normalize_converse_response(const char *response_json) {
     /* Python: Converse output → OpenAI message shape. */
     if (!response_json) return strdup("{}");
@@ -126,14 +126,14 @@ char *brd_normalize_converse_response(const char *response_json) {
     return strdup(response_json);
 }
 
-/* PoP: normalize_converse_stream_events @ agent/bedrock_adapter.py:normalize_converse_stream_events */
+/* PoP: brd_normalize_converse_stream_events @ agent/bedrock_adapter.py:normalize_converse_stream_events */
 char *brd_normalize_converse_stream_events(const char *events_json) {
     if (!events_json) return strdup("[]");
     printf("converse stream events normalized\n");
     return strdup(events_json);
 }
 
-/* PoP: stream_converse_with_callbacks @ agent/bedrock_adapter.py:stream_converse_with_callbacks */
+/* PoP: brd_stream_converse_with_callbacks @ agent/bedrock_adapter.py:stream_converse_with_callbacks */
 char *brd_stream_converse_with_callbacks(const char *kwargs_json) {
     /* Python: streaming invoke with callback wiring. */
     if (!kwargs_json) return strdup("{}");
@@ -141,7 +141,7 @@ char *brd_stream_converse_with_callbacks(const char *kwargs_json) {
     return strdup("{}");
 }
 
-/* PoP: build_converse_kwargs @ agent/bedrock_adapter.py:build_converse_kwargs */
+/* PoP: brd_build_converse_kwargs @ agent/bedrock_adapter.py:build_converse_kwargs */
 char *brd_build_converse_kwargs(const char *model, const char *messages_json, const char *tools_json) {
     /* Python: modelId + inferenceConfig + toolConfig — REAL. */
     if (!model) return NULL;
@@ -157,7 +157,7 @@ char *brd_build_converse_kwargs(const char *model, const char *messages_json, co
     return out;
 }
 
-/* PoP: call_converse @ agent/bedrock_adapter.py:call_converse */
+/* PoP: brd_call_converse @ agent/bedrock_adapter.py:call_converse */
 char *brd_call_converse(const char *kwargs_json) {
     /* Python: non-streaming invoke. */
     if (!kwargs_json) return NULL;
@@ -165,20 +165,20 @@ char *brd_call_converse(const char *kwargs_json) {
     return strdup("{}");
 }
 
-/* PoP: call_converse_stream @ agent/bedrock_adapter.py:call_converse_stream */
+/* PoP: brd_call_converse_stream @ agent/bedrock_adapter.py:call_converse_stream */
 char *brd_call_converse_stream(const char *kwargs_json) {
     if (!kwargs_json) return NULL;
     printf("converse stream invoked\n");
     return strdup("{}");
 }
 
-/* PoP: reset_discovery_cache @ agent/bedrock_adapter.py:reset_discovery_cache */
+/* PoP: brd_reset_discovery_cache @ agent/bedrock_adapter.py:reset_discovery_cache */
 int brd_reset_discovery_cache(void) {
     printf("bedrock discovery cache reset\n");
     return 0;
 }
 
-/* PoP: _extract_provider_from_arn @ agent/bedrock_adapter.py:_extract_provider_from_arn */
+/* PoP: brd_extract_provider_from_arn @ agent/bedrock_adapter.py:_extract_provider_from_arn */
 char *brd_extract_provider_from_arn(const char *arn) {
     /* Python: arn:aws:bedrock:...:foundation-model/... */
     if (!arn) return NULL;
@@ -190,7 +190,7 @@ char *brd_extract_provider_from_arn(const char *arn) {
     return strndup(q, (size_t)(e - q));
 }
 
-/* PoP: is_context_overflow_error @ agent/bedrock_adapter.py:is_context_overflow_error */
+/* PoP: brd_is_context_overflow_error @ agent/bedrock_adapter.py:is_context_overflow_error */
 bool brd_is_context_overflow_error(const char *error) {
     /* Python: TokenCount / context length exceeded. */
     if (!error) return false;
@@ -202,7 +202,7 @@ bool brd_is_context_overflow_error(const char *error) {
     return r;
 }
 
-/* PoP: classify_bedrock_error @ agent/bedrock_adapter.py:classify_bedrock_error */
+/* PoP: brd_classify_bedrock_error @ agent/bedrock_adapter.py:classify_bedrock_error */
 char *brd_classify_bedrock_error(const char *error) {
     /* Python: throttling/validation/access taxonomy. */
     if (!error) return strdup("unknown");
@@ -217,7 +217,7 @@ char *brd_classify_bedrock_error(const char *error) {
     return r;
 }
 
-/* PoP: get_bedrock_context_length @ agent/bedrock_adapter.py:get_bedrock_context_length */
+/* PoP: brd_get_bedrock_context_length @ agent/bedrock_adapter.py:get_bedrock_context_length */
 long brd_get_bedrock_context_length(const char *model) {
     /* Python: per-model context table. */
     if (!model) return 200000;

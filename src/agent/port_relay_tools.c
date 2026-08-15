@@ -13,7 +13,7 @@
 #include <stdbool.h>
 #include "hermes_json.h"
 
-/* PoP: _jsonable @ agent/relay_tools.py:_jsonable */
+/* PoP: relay_tools_jsonable @ agent/relay_tools.py:_jsonable */
 char *relay_tools_jsonable(const char *arg) {
     /* Python: normalize a value into a JSON-able form. The C core works on
      * JSON strings already — normalize by parsing and re-serializing. */
@@ -25,7 +25,7 @@ char *relay_tools_jsonable(const char *arg) {
     return out;
 }
 
-/* PoP: _json_equal @ agent/relay_tools.py:_json_equal */
+/* PoP: relay_tools_json_equal @ agent/relay_tools.py:_json_equal */
 bool relay_tools_json_equal(const char *left, const char *right) {
     /* Python: canonical JSON equality (sort_keys, compact separators). */
     if (!left && !right) return true;
@@ -47,7 +47,7 @@ bool relay_tools_json_equal(const char *left, const char *right) {
     return eq;
 }
 
-/* PoP: _run_awaitable @ agent/relay_tools.py:_run_awaitable */
+/* PoP: relay_tools_run_awaitable @ agent/relay_tools.py:_run_awaitable */
 char *relay_tools_run_awaitable(const char *arg) {
     /* Python: run an awaitable to completion, or return the value as-is.
      * The C core has no asyncio; coroutine objects never reach it. The
@@ -55,7 +55,7 @@ char *relay_tools_run_awaitable(const char *arg) {
     return arg ? strdup(arg) : strdup("");
 }
 
-/* PoP: execute @ agent/relay_tools.py:execute */
+/* PoP: relay_tools_execute @ agent/relay_tools.py:execute */
 char *relay_tools_execute(const char *arg) {
     /* Python: run one tool call through Relay and return its final args.
      * Arg = "tool_name\targs_json\tresult_json" — when managed relay

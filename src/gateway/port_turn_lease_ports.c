@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ gateway/turn_lease.py:__init__ */
+/* PoP: tls_init @ gateway/turn_lease.py:__init__ */
 char *tls_init(const char *session_id, const char *owner_key) {
     /* Python: lease state. */
     char *out = NULL;
@@ -27,14 +27,14 @@ char *tls_init(const char *session_id, const char *owner_key) {
     return out;
 }
 
-/* PoP: idle @ gateway/turn_lease.py:idle */
+/* PoP: tls_idle @ gateway/turn_lease.py:idle */
 bool tls_idle(const char *lease_json) {
     /* Python: nobody holds or awaits. */
     if (!lease_json) return true;
     return strstr(lease_json, "\"held\": true") == NULL;
 }
 
-/* PoP: acquire @ gateway/turn_lease.py:acquire */
+/* PoP: tls_acquire @ gateway/turn_lease.py:acquire */
 char *tls_acquire(const char *session_id, const char *owner_key) {
     /* Python: wait if held. */
     if (!session_id || !owner_key) return NULL;
@@ -45,7 +45,7 @@ char *tls_acquire(const char *session_id, const char *owner_key) {
     return out;
 }
 
-/* PoP: release @ gateway/turn_lease.py:release */
+/* PoP: tls_release @ gateway/turn_lease.py:release */
 bool tls_release(const char *lease_json, const char *owner_key) {
     /* Python: ownership-checked, idempotent. */
     if (!lease_json || !owner_key) return false;

@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ hermes_state.py:__init__ */
+/* PoP: hst_init @ hermes_state.py:__init__ */
 char *hst_init(const char *session_id) {
     /* Python: session-not-found error. */
     if (!session_id) return NULL;

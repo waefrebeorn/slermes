@@ -212,7 +212,7 @@ static char *resolve_key(const char *key, const char *payload_json) {
     return out;
 }
 
-/* PoP: agent_oneshot_render_template @ gateway/platforms/msgraph_webhook.py:_render_template */
+/* PoP: msgraph_render_template @ gateway/platforms/msgraph_webhook.py:_render_template */
 char *msgraph_render_template(const char *template_str, const char *payload_json) {
     if (!template_str) return strdup("");
     if (!payload_json) payload_json = "{}";
@@ -382,7 +382,7 @@ void msgraph_webhook_destroy(msgraph_webhook_adapter_t *a) {
     free(a);
 }
 
-/* PoP: set_notification_scheduler @ gateway/platforms/msgraph_webhook.py:set_notification_scheduler */
+/* PoP: msgraph_webhook_set_scheduler @ gateway/platforms/msgraph_webhook.py:set_notification_scheduler */
 void msgraph_webhook_set_scheduler(msgraph_webhook_adapter_t *a,
                                    msgraph_notification_scheduler_fn fn, void *user) {
     if (!a) return;

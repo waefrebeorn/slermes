@@ -20,7 +20,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _validate_references @ agent/secret_sources/onepassword.py:_validate_references */
+/* PoP: opw_validate_references @ agent/secret_sources/onepassword.py:_validate_references */
 char *opw_validate_references(const char *env_json) {
     /* Python: (valid_refs, warnings) from env mapping. */
     if (!env_json) return strdup("[]\t[]");
@@ -35,7 +35,7 @@ char *opw_validate_references(const char *env_json) {
     return out;
 }
 
-/* PoP: find_op @ agent/secret_sources/onepassword.py:find_op */
+/* PoP: opw_find_op @ agent/secret_sources/onepassword.py:find_op */
 char *opw_find_op(const char *binary_path) {
     /* Python: usable op binary or None. */
     if (binary_path && *binary_path) {
@@ -58,14 +58,14 @@ char *opw_find_op(const char *binary_path) {
     return NULL;
 }
 
-/* PoP: _op_child_env @ agent/secret_sources/onepassword.py:_op_child_env */
+/* PoP: opw_op_child_env @ agent/secret_sources/onepassword.py:_op_child_env */
 char *opw_op_child_env(void) {
     /* Python: minimal allowlisted env for op child. */
     printf("op child env built (allowlisted)\n");
     return strdup("{}");
 }
 
-/* PoP: _run_op_read @ agent/secret_sources/onepassword.py:_run_op_read */
+/* PoP: opw_run_op_read @ agent/secret_sources/onepassword.py:_run_op_read */
 char *opw_run_op_read(const char *reference) {
     /* Python: resolve one op:// reference. */
     if (!reference) return NULL;
@@ -73,7 +73,7 @@ char *opw_run_op_read(const char *reference) {
     return NULL;
 }
 
-/* PoP: fetch_onepassword_secrets @ agent/secret_sources/onepassword.py:fetch_onepassword_secrets */
+/* PoP: opw_fetch_onepassword_secrets @ agent/secret_sources/onepassword.py:fetch_onepassword_secrets */
 char *opw_fetch_onepassword_secrets(const char *refs_json) {
     /* Python: resolve name → op:// to (secrets, warnings). */
     if (!refs_json) return strdup("{}");
@@ -81,7 +81,7 @@ char *opw_fetch_onepassword_secrets(const char *refs_json) {
     return strdup("{}");
 }
 
-/* PoP: apply_onepassword_secrets @ agent/secret_sources/onepassword.py:apply_onepassword_secrets */
+/* PoP: opw_apply_onepassword_secrets @ agent/secret_sources/onepassword.py:apply_onepassword_secrets */
 long opw_apply_onepassword_secrets(const char *refs_json) {
     /* Python: set os.environ from op:// refs.
      * REAL: parse "VAR=op://vault/item/field" pairs, export each. */
@@ -103,25 +103,25 @@ long opw_apply_onepassword_secrets(const char *refs_json) {
     return applied;
 }
 
-/* PoP: override_existing @ agent/secret_sources/onepassword.py:override_existing */
+/* PoP: opw_override_existing @ agent/secret_sources/onepassword.py:override_existing */
 bool opw_override_existing(void) {
     /* Python: explicit VAR→op:// binding is strongest intent. */
     return true;
 }
 
-/* PoP: config_schema @ agent/secret_sources/onepassword.py:config_schema */
+/* PoP: opw_config_schema @ agent/secret_sources/onepassword.py:config_schema */
 char *opw_config_schema(void) {
     return strdup("{\"enabled\": {\"description\": \"Master switch\", \"default\": false}}");
 }
 
-/* PoP: fetch @ agent/secret_sources/onepassword.py:fetch */
+/* PoP: opw_fetch @ agent/secret_sources/onepassword.py:fetch */
 char *opw_fetch(const char *config_json) {
     if (!config_json) return NULL;
     printf("onepassword source fetch\n");
     return NULL;
 }
 
-/* PoP: remediation @ agent/secret_sources/onepassword.py:remediation */
+/* PoP: opw_remediation @ agent/secret_sources/onepassword.py:remediation */
 char *opw_remediation(const char *error_kind) {
     /* Python: fix guidance per error kind. */
     if (!error_kind) return strdup("");
@@ -132,7 +132,7 @@ char *opw_remediation(const char *error_kind) {
     return strdup("");
 }
 
-/* PoP: _classify_op_error @ agent/secret_sources/onepassword.py:_classify_op_error */
+/* PoP: opw_classify_op_error @ agent/secret_sources/onepassword.py:_classify_op_error */
 char *opw_classify_op_error(const char *error) {
     /* Python: shared taxonomy mapping. */
     if (!error) return strdup("UNKNOWN");
@@ -150,13 +150,13 @@ char *opw_classify_op_error(const char *error) {
     return r;
 }
 
-/* PoP: clear_caches @ agent/secret_sources/onepassword.py:clear_caches */
+/* PoP: opw_clear_caches @ agent/secret_sources/onepassword.py:clear_caches */
 int opw_clear_caches(void) {
     printf("onepassword caches cleared (in-process + disk)\n");
     return 0;
 }
 
-/* PoP: _reset_cache_for_tests @ agent/secret_sources/onepassword.py:_reset_cache_for_tests */
+/* PoP: opw_reset_cache_for_tests @ agent/secret_sources/onepassword.py:_reset_cache_for_tests */
 int opw_reset_cache_for_tests(void) {
     printf("onepassword test caches reset\n");
     return 0;

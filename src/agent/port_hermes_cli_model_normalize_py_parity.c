@@ -14,12 +14,12 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_model_normalize_detect_vendor @ hermes_cli/model_normalize.py:detect_vendor */
+/* PoP: hermes_cli_model_normalize_detect_vendor_p @ hermes_cli/model_normalize.py:detect_vendor */
 json_t *hermes_cli_model_normalize_detect_vendor_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_model_normalize_normalize_model_for_provider @ hermes_cli/model_normalize.py:normalize_model_for_provider */
+/* PoP: hermes_cli_model_normalize_normalize_model_for_provider_p @ hermes_cli/model_normalize.py:normalize_model_for_provider */
 json_t *hermes_cli_model_normalize_normalize_model_for_provider_p(void) {
     return json_object();
 }

@@ -21,7 +21,7 @@ static bool is_falsey_string(const char *s)
            strcmp(buf, "no") == 0 || strcmp(buf, "off") == 0;
 }
 
-/* PoP: agent_ssl_verify__coerce_insecure @ agent/ssl_verify.py:_coerce_insecure */
+/* PoP: agent_ssl_verify_coerce_insecure @ agent/ssl_verify.py:_coerce_insecure */
 bool agent_ssl_verify_coerce_insecure(const char *ssl_verify)
 {
     if (ssl_verify == NULL) return false;

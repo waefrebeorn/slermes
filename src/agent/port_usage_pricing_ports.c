@@ -20,18 +20,18 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: prompt_tokens @ agent/usage_pricing.py:prompt_tokens */
+/* PoP: upr_prompt_tokens @ agent/usage_pricing.py:prompt_tokens */
 long upr_prompt_tokens(long input_tokens, long cache_read_tokens, long cache_write_tokens) {
     /* Python: input + cache reads + cache writes. */
     return input_tokens + cache_read_tokens + cache_write_tokens;
 }
 
-/* PoP: total_tokens @ agent/usage_pricing.py:total_tokens */
+/* PoP: upr_total_tokens @ agent/usage_pricing.py:total_tokens */
 long upr_total_tokens(long input_tokens, long cache_read_tokens, long cache_write_tokens, long output_tokens) {
     return upr_prompt_tokens(input_tokens, cache_read_tokens, cache_write_tokens) + output_tokens;
 }
 
-/* PoP: __add__ @ agent/usage_pricing.py:__add__ */
+/* PoP: upr_add @ agent/usage_pricing.py:__add__ */
 char *upr_add(const char *a_json, const char *b_json) {
     /* Python: sum two buckets (fan-out + aggregator). */
     if (!a_json) return strdup(b_json ? b_json : "{}");
@@ -54,7 +54,7 @@ char *upr_add(const char *a_json, const char *b_json) {
     return out;
 }
 
-/* PoP: resolve_billing_route @ agent/usage_pricing.py:resolve_billing_route */
+/* PoP: upr_resolve_billing_route @ agent/usage_pricing.py:resolve_billing_route */
 char *upr_resolve_billing_route(const char *model_name, const char *provider, const char *base_url) {
     /* Python: provider/base → route id. */
     if (!model_name) return NULL;
@@ -69,7 +69,7 @@ char *upr_resolve_billing_route(const char *model_name, const char *provider, co
     return r;
 }
 
-/* PoP: _normalize_bedrock_model_name @ agent/usage_pricing.py:_normalize_bedrock_model_name */
+/* PoP: upr_normalize_bedrock_model_name @ agent/usage_pricing.py:_normalize_bedrock_model_name */
 char *upr_normalize_bedrock_model_name(const char *model) {
     /* Python: bare foundation-model form. */
     if (!model) return NULL;
@@ -78,7 +78,7 @@ char *upr_normalize_bedrock_model_name(const char *model) {
     return strdup(p + strlen("foundation-model/"));
 }
 
-/* PoP: _openrouter_pricing_entry @ agent/usage_pricing.py:_openrouter_pricing_entry */
+/* PoP: upr_openrouter_pricing_entry @ agent/usage_pricing.py:_openrouter_pricing_entry */
 char *upr_openrouter_pricing_entry(const char *metadata_json, const char *model_id) {
     /* Python: pricing from metadata. */
     if (!metadata_json || !model_id) return NULL;
@@ -104,13 +104,13 @@ char *upr_openrouter_pricing_entry(const char *metadata_json, const char *model_
     return out;
 }
 
-/* PoP: _pricing_entry_from_metadata @ agent/usage_pricing.py:_pricing_entry_from_metadata */
+/* PoP: upr_pricing_entry_from_metadata @ agent/usage_pricing.py:_pricing_entry_from_metadata */
 char *upr_pricing_entry_from_metadata(const char *metadata_json, const char *model_id) {
     /* Python: pricing from metadata (same logic, different name). */
     return upr_openrouter_pricing_entry(metadata_json, model_id);
 }
 
-/* PoP: estimate_usage_cost @ agent/usage_pricing.py:estimate_usage_cost */
+/* PoP: upr_estimate_usage_cost @ agent/usage_pricing.py:estimate_usage_cost */
 double upr_estimate_usage_cost(const char *model_name, const char *provider, const char *base_url,
                                long input_tokens, long output_tokens) {
     /* Python: route-resolved cost estimate. */
@@ -123,7 +123,7 @@ double upr_estimate_usage_cost(const char *model_name, const char *provider, con
     return (double)input_tokens * in_price + (double)output_tokens * out_price;
 }
 
-/* PoP: has_known_pricing @ agent/usage_pricing.py:has_known_pricing */
+/* PoP: upr_has_known_pricing @ agent/usage_pricing.py:has_known_pricing */
 bool upr_has_known_pricing(const char *model_name, const char *provider, const char *base_url) {
     if (!model_name) return false;
     char *route = upr_resolve_billing_route(model_name, provider, base_url);
@@ -132,7 +132,7 @@ bool upr_has_known_pricing(const char *model_name, const char *provider, const c
     return r;
 }
 
-/* PoP: format_duration_compact @ agent/usage_pricing.py:format_duration_compact */
+/* PoP: upr_format_duration_compact @ agent/usage_pricing.py:format_duration_compact */
 char *upr_format_duration_compact(double seconds) {
     /* Python: 42s / 3m 12s / 1h 5m / 2d 3h. */
     char *out = NULL;
@@ -143,7 +143,7 @@ char *upr_format_duration_compact(double seconds) {
     return out;
 }
 
-/* PoP: format_token_count_compact @ agent/usage_pricing.py:format_token_count_compact */
+/* PoP: upr_format_token_count_compact @ agent/usage_pricing.py:format_token_count_compact */
 char *upr_format_token_count_compact(long value) {
     /* Python: 999 / 1.2K / 3.4M. */
     long abs_v = value < 0 ? -value : value;

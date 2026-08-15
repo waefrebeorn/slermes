@@ -569,7 +569,7 @@ int codex_client_notify(codex_client_t *c,
     write(c->stdin_fd, "\n", 1);
     return 0;
 }
-/* PoP: cli_json_respond @ agent/transports/codex_app_server.py:respond */
+/* PoP: codex_client_respond @ agent/transports/codex_app_server.py:respond */
 
 int codex_client_respond(codex_client_t *c,
                          int request_id,
@@ -642,7 +642,7 @@ bool codex_client_is_alive(codex_client_t *c) {
     return (w == 0); /* 0 = still running */
 }
 
-/* PoP: hermes_cli_browser_connect_u_read_stderr_tail @ agent/transports/codex_app_server.py:stderr_tail */
+/* PoP: codex_client_stderr_tail @ agent/transports/codex_app_server.py:stderr_tail */
 char *codex_client_stderr_tail(codex_client_t *c, int n_lines) {
     if (!c) return NULL;
     pthread_mutex_lock(&c->stderr_mutex);

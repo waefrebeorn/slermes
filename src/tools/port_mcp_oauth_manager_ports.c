@@ -19,12 +19,12 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ tools/mcp_oauth_manager.py:__init__ */
+/* PoP: mom_init @ tools/mcp_oauth_manager.py:__init__ */
 char *mom_init(void) {
     return strdup("{\"entries\": {}, \"lock\": true}");
 }
 
-/* PoP: _key @ tools/mcp_oauth_manager.py:_key */
+/* PoP: mom_key @ tools/mcp_oauth_manager.py:_key */
 char *mom_key(const char *provider, const char *server_name) {
     /* Python: home-scoped provider key. */
     if (!provider || !server_name) return NULL;
@@ -35,7 +35,7 @@ char *mom_key(const char *provider, const char *server_name) {
     return out;
 }
 
-/* PoP: remove @ tools/mcp_oauth_manager.py:remove */
+/* PoP: mom_remove @ tools/mcp_oauth_manager.py:remove */
 int mom_remove(const char *provider, const char *server_name) {
     /* Python: evict cache + delete disk tokens. */
     if (!provider || !server_name) return -1;

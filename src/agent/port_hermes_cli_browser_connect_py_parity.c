@@ -14,17 +14,17 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_browser_connect_get_chrome_debug_candidates @ hermes_cli/browser_connect.py:get_chrome_debug_candidates */
+/* PoP: hermes_cli_browser_connect_get_chrome_debug_candidates_p @ hermes_cli/browser_connect.py:get_chrome_debug_candidates */
 json_t *hermes_cli_browser_connect_get_chrome_debug_candidates_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_browser_connect_is_browser_debug_ready @ hermes_cli/browser_connect.py:is_browser_debug_ready */
+/* PoP: hermes_cli_browser_connect_is_browser_debug_ready_p @ hermes_cli/browser_connect.py:is_browser_debug_ready */
 json_t *hermes_cli_browser_connect_is_browser_debug_ready_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_browser_connect_try_launch_chrome_debug @ hermes_cli/browser_connect.py:try_launch_chrome_debug */
+/* PoP: hermes_cli_browser_connect_try_launch_chrome_debug_p @ hermes_cli/browser_connect.py:try_launch_chrome_debug */
 json_t *hermes_cli_browser_connect_try_launch_chrome_debug_p(void) {
     return json_object();
 }

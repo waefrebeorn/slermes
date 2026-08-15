@@ -319,7 +319,7 @@ char *kdb_normalize_assignee_choice(const char *assignee,
 /* ------------------------------------------------------------------ */
 /*  list_triage_ids                                                  */
 /* ------------------------------------------------------------------ */
-/* PoP: kdb_list_triage_ids @ hermes_cli/kanban_decompose.py:list_triage_ids */
+/* PoP: strings @ hermes_cli/kanban_decompose.py:list_triage_ids */
 /* Return task ids currently in the triage column, as a malloc'd
  * NULL-terminated array of malloc'd id strings (caller frees with
  * kdb_string_list_free). `tenant` may be NULL. Faithful to the Python

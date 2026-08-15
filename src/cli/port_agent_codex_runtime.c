@@ -84,7 +84,7 @@ int cli_agent_codex_runtime__record_codex_app_server_usage(
     return 0;
 }
 
-/* PoP: cli_agent_codex_runtime_run_codex_app_server_turn @ agent/codex_runtime.py:run_codex_app_server_turn */
+/* PoP: response @ agent/codex_runtime.py:run_codex_app_server_turn */
 
 /* Port of Python agent/codex_runtime.py:run_codex_app_server_turn */
 /* Codex app-server runtime path. Spawns the `codex` CLI as a subprocess for
@@ -147,7 +147,7 @@ int cli_agent_codex_runtime_run_codex_app_server_turn(
     return 0;
 }
 
-/* PoP: cli_agent_codex_runtime__event_field @ agent/codex_runtime.py:_event_field */
+/* PoP: dict @ agent/codex_runtime.py:_event_field */
 
 /* Port of Python agent/codex_runtime.py:_event_field */
 /* Field access that handles both attr-style (SDK objects) and dict (raw JSON) events. */
@@ -213,7 +213,7 @@ int cli_agent_codex_runtime__raise_stream_error(
     return 0;
 }
 
-/* PoP: cli_agent_codex_runtime__consume_codex_event_stream @ agent/codex_runtime.py:_consume_codex_event_stream */
+/* PoP: deltas @ agent/codex_runtime.py:_consume_codex_event_stream */
 
 /* Port of Python agent/codex_runtime.py:_consume_codex_event_stream */
 /* Consume a Codex Responses SSE event stream and assemble the final response.
@@ -282,7 +282,7 @@ int cli_agent_codex_runtime__consume_codex_event_stream(
     return 0;
 }
 
-/* PoP: cli_agent_codex_runtime_run_codex_stream @ agent/codex_runtime.py:run_codex_stream */
+/* PoP: codex_build_responses_body @ agent/codex_runtime.py:run_codex_stream */
 
 /* Build the OpenAI Responses API request body from messages_json.
  * Returns a malloc'd JSON string or NULL. */

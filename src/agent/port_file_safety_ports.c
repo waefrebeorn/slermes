@@ -28,13 +28,13 @@ static const char *hermes_home(void) {
     return ".";
 }
 
-/* PoP: _hermes_home_path @ agent/file_safety.py:_hermes_home_path */
+/* PoP: fsf_hermes_home_path @ agent/file_safety.py:_hermes_home_path */
 char *fsf_hermes_home_path(void) {
     /* Python: profile-aware HERMES_HOME. */
     return strdup(hermes_home());
 }
 
-/* PoP: _hermes_root_path @ agent/file_safety.py:_hermes_root_path */
+/* PoP: fsf_hermes_root_path @ agent/file_safety.py:_hermes_root_path */
 char *fsf_hermes_root_path(void) {
     /* Python: always parent of any profile. */
     char *home = fsf_hermes_home_path();
@@ -50,7 +50,7 @@ char *fsf_hermes_root_path(void) {
     return strdup(hermes_home());
 }
 
-/* PoP: build_write_denied_paths @ agent/file_safety.py:build_write_denied_paths */
+/* PoP: fsf_build_write_denied_paths @ agent/file_safety.py:build_write_denied_paths */
 char *fsf_build_write_denied_paths(void) {
     /* Python: exact sensitive paths never written. */
     const char *h = hermes_home();
@@ -62,7 +62,7 @@ char *fsf_build_write_denied_paths(void) {
     return out;
 }
 
-/* PoP: build_write_denied_prefixes @ agent/file_safety.py:build_write_denied_prefixes */
+/* PoP: fsf_build_write_denied_prefixes @ agent/file_safety.py:build_write_denied_prefixes */
 char *fsf_build_write_denied_prefixes(void) {
     /* Python: sensitive directory prefixes. */
     const char *h = hermes_home();
@@ -72,7 +72,7 @@ char *fsf_build_write_denied_prefixes(void) {
     return out;
 }
 
-/* PoP: is_write_denied @ agent/file_safety.py:is_write_denied */
+/* PoP: fsf_is_write_denied @ agent/file_safety.py:is_write_denied */
 bool fsf_is_write_denied(const char *path) {
     /* Python: blocked by denylist or safe root. */
     if (!path) return false;
@@ -110,7 +110,7 @@ bool fsf_is_write_denied(const char *path) {
     return hit;
 }
 
-/* PoP: get_read_block_error @ agent/file_safety.py:get_read_block_error */
+/* PoP: fsf_get_read_block_error @ agent/file_safety.py:get_read_block_error */
 char *fsf_get_read_block_error(const char *path) {
     /* Python: three-category read block message. */
     if (!path) return NULL;
@@ -121,7 +121,7 @@ char *fsf_get_read_block_error(const char *path) {
     return strdup("blocked: denied path");
 }
 
-/* PoP: _resolve_active_profile_name @ agent/file_safety.py:_resolve_active_profile_name */
+/* PoP: fsf_resolve_active_profile_name @ agent/file_safety.py:_resolve_active_profile_name */
 char *fsf_resolve_active_profile_name(void) {
     /* Python: profile name from HERMES_HOME; default for ~/.hermes. */
     const char *h = getenv("HERMES_HOME");
@@ -132,7 +132,7 @@ char *fsf_resolve_active_profile_name(void) {
     return strdup("default");
 }
 
-/* PoP: classify_cross_profile_target @ agent/file_safety.py:classify_cross_profile_target */
+/* PoP: fsf_classify_cross_profile_target @ agent/file_safety.py:classify_cross_profile_target */
 bool fsf_classify_cross_profile_target(const char *path) {
     /* Python: lands in another profile's scope. */
     if (!path) return false;
@@ -151,7 +151,7 @@ bool fsf_classify_cross_profile_target(const char *path) {
     return cross;
 }
 
-/* PoP: get_cross_profile_warning @ agent/file_safety.py:get_cross_profile_warning */
+/* PoP: fsf_get_cross_profile_warning @ agent/file_safety.py:get_cross_profile_warning */
 char *fsf_get_cross_profile_warning(const char *path) {
     /* Python: model-facing warning. */
     if (!path || !fsf_classify_cross_profile_target(path)) return NULL;
@@ -160,7 +160,7 @@ char *fsf_get_cross_profile_warning(const char *path) {
     return out;
 }
 
-/* PoP: _find_sandbox_mirror_segments @ agent/file_safety.py:_find_sandbox_mirror_segments */
+/* PoP: fsf_find_sandbox_mirror_segments @ agent/file_safety.py:_find_sandbox_mirror_segments */
 char *fsf_find_sandbox_mirror_segments(const char *path) {
     /* Python: index of inner .hermes part in mirror path. */
     if (!path) return strdup("-1");
@@ -177,14 +177,14 @@ char *fsf_find_sandbox_mirror_segments(const char *path) {
     return out;
 }
 
-/* PoP: classify_sandbox_mirror_target @ agent/file_safety.py:classify_sandbox_mirror_target */
+/* PoP: fsf_classify_sandbox_mirror_target @ agent/file_safety.py:classify_sandbox_mirror_target */
 bool fsf_classify_sandbox_mirror_target(const char *path) {
     /* Python: sandbox mirror of authoritative Hermes state. */
     if (!path) return false;
     return strstr(path, ".hermes") != NULL && strstr(path, "/sandbox") != NULL;
 }
 
-/* PoP: get_sandbox_mirror_warning @ agent/file_safety.py:get_sandbox_mirror_warning */
+/* PoP: fsf_get_sandbox_mirror_warning @ agent/file_safety.py:get_sandbox_mirror_warning */
 char *fsf_get_sandbox_mirror_warning(const char *path) {
     if (!path || !fsf_classify_sandbox_mirror_target(path)) return NULL;
     char *out = NULL;
@@ -192,14 +192,14 @@ char *fsf_get_sandbox_mirror_warning(const char *path) {
     return out;
 }
 
-/* PoP: classify_container_mirror_target @ agent/file_safety.py:classify_container_mirror_target */
+/* PoP: fsf_classify_container_mirror_target @ agent/file_safety.py:classify_container_mirror_target */
 bool fsf_classify_container_mirror_target(const char *path, const char *mirror_prefix) {
     if (!path) return false;
     if (!mirror_prefix) return false;
     return strncmp(path, mirror_prefix, strlen(mirror_prefix)) == 0;
 }
 
-/* PoP: get_container_mirror_warning @ agent/file_safety.py:get_container_mirror_warning */
+/* PoP: fsf_get_container_mirror_warning @ agent/file_safety.py:get_container_mirror_warning */
 char *fsf_get_container_mirror_warning(const char *path, const char *mirror_prefix) {
     if (!path || !fsf_classify_container_mirror_target(path, mirror_prefix)) return NULL;
     char *out = NULL;

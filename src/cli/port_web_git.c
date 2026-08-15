@@ -1236,7 +1236,7 @@ json_t *web_git_review_create_pr(const char *cwd) {
     return r;
 }
 
-/* PoP: _pr_query @ hermes_cli/web_git.py:_pr_query */
+/* PoP: web_git_pr_query @ hermes_cli/web_git.py:_pr_query */
 /* Returns malloc'd GraphQL query string. Caller frees. */
 char *web_git_pr_query(const char *owner, const char *name, const char *branches_json, const char *numbers_json) {
     if (!owner || !name) return strdup("");
@@ -1274,7 +1274,7 @@ char *web_git_pr_query(const char *owner, const char *name, const char *branches
     return result ? result : strdup("");
 }
 
-/* PoP: _pr_payload @ hermes_cli/web_git.py:_pr_payload */
+/* PoP: web_git_pr_payload @ hermes_cli/web_git.py:_pr_payload */
 /* Returns malloc'd JSON payload dict. pr_json = {"headRefName":...,"isDraft":...,"number":...,"state":...,"title":...,"url":...}. Caller frees. */
 char *web_git_pr_payload(const char *pr_json) {
     if (!pr_json) return strdup("{}");

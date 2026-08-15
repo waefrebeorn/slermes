@@ -294,7 +294,7 @@ int doctor_acknowledge_advisory(const char *advisory_id) {
     return 0;
 }
 
-/* PoP: _sqlite_upgrade_hint @ hermes_cli/doctor.py:_sqlite_upgrade_hint */
+/* PoP: doctor_sqlite_upgrade_hint @ hermes_cli/doctor.py:_sqlite_upgrade_hint */
 char *doctor_sqlite_upgrade_hint(const char *install_method) {
     /* Python: build an actionable SQLite upgrade hint string based on
      * install method. Uses detect_install_method() (already ported as

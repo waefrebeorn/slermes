@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <ctype.h>
 
-/* PoP: gui_toolset_label @ hermes_cli/tools_config.py:gui_toolset_label */
+/* PoP: token @ hermes_cli/tools_config.py:gui_toolset_label */
 /* gui_toolset_label: strip a leading non-alphanumeric token (emoji/icon). */
 char *gui_toolset_label(const char *label) {
     if (!label) return strdup("");

@@ -37,7 +37,7 @@ backup_path_list_t memory_provider_backup_paths(void) {
 }
 
 
-/* PoP: memory_provider_is_trivial_prompt @ agent/memory_provider.py:is_trivial_prompt */
+/* PoP: is_trailing_utf8_punct @ agent/memory_provider.py:is_trivial_prompt */
 
 /* Trivial words: (yes|no|ok|okay|sure|thanks|thank you|y|n|yep|nope|yeah|nah|
  * hi|hey|hello|yo|sup|continue|go ahead|do it|proceed|got it|cool|nice|great|

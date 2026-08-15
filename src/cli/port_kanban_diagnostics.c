@@ -201,7 +201,7 @@ static json_t *build_diagnostic(const char *kind, const char *severity,
     return d;
 }
 
-/* PoP: kanban_diagnostic_rule_review_dependency_deadlock @ hermes_cli/kanban_diagnostics.py:_rule_review_dependency_deadlock */
+/* PoP: epoch @ hermes_cli/kanban_diagnostics.py:_rule_review_dependency_deadlock */
 /* Detect a legacy review handoff that starves downstream children.
  * task/events/runs/cfg are JSON-objects/arrays; now is a unix epoch (int).
  * Returns a JSON array of Diagnostic dicts (empty when not applicable). */

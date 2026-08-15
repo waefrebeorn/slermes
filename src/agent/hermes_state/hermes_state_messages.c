@@ -93,7 +93,7 @@ long long hermes_state_append_message(hermes_state_db_t *db,
     return rowid;
 }
 
-/* PoP: get_messages_around @ hermes_state.py:get_messages_around */
+/* PoP: hermes_state_rewind_to_message @ hermes_state.py:get_messages_around */
 char *hermes_state_get_messages_around(hermes_state_db_t *db,
                                        const char *session_id,
                                        long long around_message_id,
@@ -175,7 +175,7 @@ char *hermes_state_get_messages_around(hermes_state_db_t *db,
     return buf;
 }
 
-/* PoP: get_anchored_view @ hermes_state.py:get_anchored_view */
+/* PoP: hermes_state_get_anchored_view @ hermes_state.py:get_anchored_view */
 char *hermes_state_get_anchored_view(hermes_state_db_t *db,
                                      const char *session_id,
                                      long long around_message_id,
@@ -321,7 +321,7 @@ char *hermes_state_get_anchored_view(hermes_state_db_t *db,
     return buf;
 }
 
-/* PoP: get_messages_as_conversation @ hermes_state.py:get_messages_as_conversation */
+/* PoP: hermes_state_get_messages_as_conversation @ hermes_state.py:get_messages_as_conversation */
 char *hermes_state_get_messages_as_conversation(hermes_state_db_t *db,
                                                 const char *session_id,
                                                 bool include_inactive) {

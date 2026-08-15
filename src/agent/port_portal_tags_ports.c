@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _hermes_version @ agent/portal_tags.py:_hermes_version */
+/* PoP: ptg_hermes_version @ agent/portal_tags.py:_hermes_version */
 char *ptg_hermes_version(void) {
     /* Python: release version or fallback. */
     const char *v = getenv("HERMES_VERSION");
@@ -26,7 +26,7 @@ char *ptg_hermes_version(void) {
     return strdup("0.0.0");
 }
 
-/* PoP: hermes_client_tag @ agent/portal_tags.py:hermes_client_tag */
+/* PoP: ptg_hermes_client_tag @ agent/portal_tags.py:hermes_client_tag */
 char *ptg_hermes_client_tag(void) {
     /* Python: client=hermes-<version>. */
     char *ver = ptg_hermes_version();
@@ -36,7 +36,7 @@ char *ptg_hermes_client_tag(void) {
     return out;
 }
 
-/* PoP: nous_portal_tags @ agent/portal_tags.py:nous_portal_tags */
+/* PoP: ptg_nous_portal_tags @ agent/portal_tags.py:nous_portal_tags */
 char *ptg_nous_portal_tags(void) {
     /* Python: canonical product tags, fresh list. */
     return strdup("[\"hermes\", \"agent\"]");

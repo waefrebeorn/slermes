@@ -22,7 +22,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _diff_ansi @ agent/display.py:_diff_ansi */
+/* PoP: dict @ agent/display.py:_diff_ansi */
 /* Python: RGB truecolor ANSI escapes resolved from the active skin; when no
  * skin / on import failure, falls back to dark-terminal defaults. The C port
  * returns the exact dark-terminal fallback dict (skin engine not wired). */
@@ -34,7 +34,7 @@ char *disp_diff_ansi(void) {
                   "\"plus\":\"\\033[38;2;255;255;255;48;2;20;90;20m\"}");
 }
 
-/* PoP: set_tool_preview_max_len @ agent/display.py:set_tool_preview_max_len */
+/* PoP: disp_set_tool_preview_max_len @ agent/display.py:set_tool_preview_max_len */
 long disp_set_tool_preview_max_len(const char *n) {
     /* Python: clamp >= 0; 0 = no limit. */
     if (!n || !*n) return 0;
@@ -42,20 +42,20 @@ long disp_set_tool_preview_max_len(const char *n) {
     return v < 0 ? 0 : v;
 }
 
-/* PoP: _get_skin @ agent/display.py:_get_skin */
+/* PoP: disp_get_skin @ agent/display.py:_get_skin */
 char *disp_get_skin(void) {
     /* Python: active skin config or None. */
     printf("active skin loaded\n");
     return NULL;
 }
 
-/* PoP: get_skin_tool_prefix @ agent/display.py:get_skin_tool_prefix */
+/* PoP: disp_get_skin_tool_prefix @ agent/display.py:get_skin_tool_prefix */
 char *disp_get_skin_tool_prefix(void) {
     /* Python: skin tool_prefix, default "┊". */
     return strdup("┊");
 }
 
-/* PoP: get_tool_emoji @ agent/display.py:get_tool_emoji */
+/* PoP: disp_get_tool_emoji @ agent/display.py:get_tool_emoji */
 char *disp_get_tool_emoji(const char *tool_name) {
     /* Python: skin overrides → registry emoji. */
     if (!tool_name) return strdup("⚙️");
@@ -70,7 +70,7 @@ char *disp_get_tool_emoji(const char *tool_name) {
     return strdup("⚙️");
 }
 
-/* PoP: _delegate_task_goal_parts @ agent/display.py:_delegate_task_goal_parts */
+/* PoP: disp_delegate_task_goal_parts @ agent/display.py:_delegate_task_goal_parts */
 char *disp_delegate_task_goal_parts(const char *tasks_json) {
     /* Python: (count, goal list) from tasks array. */
     if (!tasks_json || tasks_json[0] != '[') return strdup("0\t[]");
@@ -81,7 +81,7 @@ char *disp_delegate_task_goal_parts(const char *tasks_json) {
     return out;
 }
 
-/* PoP: _resolved_path @ agent/display.py:_resolved_path */
+/* PoP: disp_resolved_path @ agent/display.py:_resolved_path */
 char *disp_resolved_path(const char *path) {
     /* Python: expanduser + cwd-relative resolution. */
     if (!path) return NULL;
@@ -110,7 +110,7 @@ char *disp_resolved_path(const char *path) {
     return abs;
 }
 
-/* PoP: _snapshot_text @ agent/display.py:_snapshot_text */
+/* PoP: disp_snapshot_text @ agent/display.py:_snapshot_text */
 char *disp_snapshot_text(const char *path) {
     /* Python: UTF-8 file content or NULL. */
     if (!path) return NULL;
@@ -128,7 +128,7 @@ char *disp_snapshot_text(const char *path) {
     return buf;
 }
 
-/* PoP: _display_diff_path @ agent/display.py:_display_diff_path */
+/* PoP: disp_display_diff_path @ agent/display.py:_display_diff_path */
 char *disp_display_diff_path(const char *path) {
     /* Python: cwd-relative when possible. */
     if (!path) return NULL;
@@ -136,7 +136,7 @@ char *disp_display_diff_path(const char *path) {
     return strdup(path);
 }
 
-/* PoP: _resolve_skill_manage_paths @ agent/display.py:_resolve_skill_manage_paths */
+/* PoP: disp_resolve_skill_manage_paths @ agent/display.py:_resolve_skill_manage_paths */
 char *disp_resolve_skill_manage_paths(const char *args_json) {
     /* Python: skill_manage write targets → paths. */
     if (!args_json) return strdup("[]");
@@ -144,7 +144,7 @@ char *disp_resolve_skill_manage_paths(const char *args_json) {
     return strdup("[]");
 }
 
-/* PoP: _resolve_local_edit_paths @ agent/display.py:_resolve_local_edit_paths */
+/* PoP: disp_resolve_local_edit_paths @ agent/display.py:_resolve_local_edit_paths */
 char *disp_resolve_local_edit_paths(const char *tool_name, const char *args_json) {
     /* Python: write-capable tool targets. */
     if (!tool_name || !args_json) return strdup("[]");
@@ -152,7 +152,7 @@ char *disp_resolve_local_edit_paths(const char *tool_name, const char *args_json
     return strdup("[]");
 }
 
-/* PoP: capture_local_edit_snapshot @ agent/display.py:capture_local_edit_snapshot */
+/* PoP: disp_capture_local_edit_snapshot @ agent/display.py:capture_local_edit_snapshot */
 char *disp_capture_local_edit_snapshot(const char *tool_name, const char *args_json) {
     /* Python: before-state for write previews. */
     if (!tool_name) return strdup("{}");
@@ -160,7 +160,7 @@ char *disp_capture_local_edit_snapshot(const char *tool_name, const char *args_j
     return strdup("{}");
 }
 
-/* PoP: _result_succeeded @ agent/display.py:_result_succeeded */
+/* PoP: disp_result_succeeded @ agent/display.py:_result_succeeded */
 bool disp_result_succeeded(const char *result) {
     /* Python: conservative success detection. */
     if (!result || !*result) return false;
@@ -170,7 +170,7 @@ bool disp_result_succeeded(const char *result) {
     return true;
 }
 
-/* PoP: _diff_from_snapshot @ agent/display.py:_diff_from_snapshot */
+/* PoP: disp_diff_from_snapshot @ agent/display.py:_diff_from_snapshot */
 char *disp_diff_from_snapshot(const char *snapshot_json) {
     /* Python: unified diff from before-state + current files. */
     if (!snapshot_json) return NULL;
@@ -178,7 +178,7 @@ char *disp_diff_from_snapshot(const char *snapshot_json) {
     return strdup("");
 }
 
-/* PoP: extract_edit_diff @ agent/display.py:extract_edit_diff */
+/* PoP: disp_extract_edit_diff @ agent/display.py:extract_edit_diff */
 char *disp_extract_edit_diff(const char *tool_name, const char *result) {
     /* Python: diff from patch tool result. */
     if (!tool_name || !result) return NULL;
@@ -186,7 +186,7 @@ char *disp_extract_edit_diff(const char *tool_name, const char *result) {
     return strdup("");
 }
 
-/* PoP: _emit_inline_diff @ agent/display.py:_emit_inline_diff */
+/* PoP: disp_emit_inline_diff @ agent/display.py:_emit_inline_diff */
 bool disp_emit_inline_diff(const char *diff_text) {
     /* Python: prompt_toolkit-safe printer — REAL write. */
     if (!diff_text) return false;
@@ -195,7 +195,7 @@ bool disp_emit_inline_diff(const char *diff_text) {
     return true;
 }
 
-/* PoP: _render_inline_unified_diff @ agent/display.py:_render_inline_unified_diff */
+/* PoP: disp_render_inline_unified_diff @ agent/display.py:_render_inline_unified_diff */
 char *disp_render_inline_unified_diff(const char *diff_text) {
     /* Python: transcript-style colored diff lines — real: prefix
      * +/-/@@ lines with ansi colors. */
@@ -238,7 +238,7 @@ char *disp_render_inline_unified_diff(const char *diff_text) {
     return out;
 }
 
-/* PoP: _split_unified_diff_sections @ agent/display.py:_split_unified_diff_sections */
+/* PoP: disp_split_unified_diff_sections @ agent/display.py:_split_unified_diff_sections */
 char *disp_split_unified_diff_sections(const char *diff) {
     /* Python: per-file sections — real: group lines between
      * "diff --git" headers into a json array of arrays. */
@@ -298,7 +298,7 @@ char *disp_split_unified_diff_sections(const char *diff) {
     return out;
 }
 
-/* PoP: _summarize_rendered_diff_sections @ agent/display.py:_summarize_rendered_diff_sections */
+/* PoP: disp_summarize_rendered_diff_sections @ agent/display.py:_summarize_rendered_diff_sections */
 char *disp_summarize_rendered_diff_sections(const char *diff) {
     /* Python: cap file count + total lines. */
     if (!diff) return strdup("");
@@ -306,7 +306,7 @@ char *disp_summarize_rendered_diff_sections(const char *diff) {
     return strdup(diff);
 }
 
-/* PoP: render_edit_diff_with_delta @ agent/display.py:render_edit_diff_with_delta */
+/* PoP: disp_render_edit_diff_with_delta @ agent/display.py:render_edit_diff_with_delta */
 int disp_render_edit_diff_with_delta(const char *tool_name, const char *result, const char *args_json) {
     /* Python: inline edit diff without terminal takeover — REAL print. */
     if (!tool_name) return -1;
@@ -314,7 +314,7 @@ int disp_render_edit_diff_with_delta(const char *tool_name, const char *result, 
     return 0;
 }
 
-/* PoP: get_waiting_faces @ agent/display.py:get_waiting_faces */
+/* PoP: list @ agent/display.py:get_waiting_faces */
 /* Python: active-skin spinner.waiting_faces or KAWAII_WAITING fallback.
  * C returns the exact KAWAII_WAITING list (skin engine not wired), newline-
  * joined to match this file's list-as-string convention. */
@@ -323,21 +323,21 @@ char *disp_get_waiting_faces(void) {
                   "♪(´ε` )\n(◕ᴗ◕✿)\nヾ(＾∇＾)\n(≧◡≦)\n(★ω★)");
 }
 
-/* PoP: get_thinking_faces @ agent/display.py:get_thinking_faces */
+/* PoP: disp_get_thinking_faces @ agent/display.py:get_thinking_faces */
 char *disp_get_thinking_faces(void) {
     return strdup("(｡•́︿•̀｡)\n(◔_◔)\n(¬‿¬)\n( •_•)>⌐■-■\n(⌐■_■)\n"
                   "(´･_･`)\n◉_◉\n(°ロ°)\n( ˘⌣˘)♡\nヽ(>∀<☆)☆\n"
                   "٩(๑❛ᴗ❛๑)۶\n(⊙_⊙)\n(¬_¬)\n( ͡° ͜ʖ ͡°)\nಠ_ಠ");
 }
 
-/* PoP: get_thinking_verbs @ agent/display.py:get_thinking_verbs */
+/* PoP: disp_get_thinking_verbs @ agent/display.py:get_thinking_verbs */
 char *disp_get_thinking_verbs(void) {
     return strdup("pondering\ncontemplating\nmusing\ncogitating\nruminating\n"
                   "deliberating\nmulling\nreflecting\nprocessing\nreasoning\n"
                   "analyzing\ncomputing\nsynthesizing\nformulating\nbrainstorming");
 }
 
-/* PoP: __init__ @ agent/display.py:__init__ */
+/* PoP: disp_spinner_init @ agent/display.py:__init__ */
 char *disp_spinner_init(const char *message, const char *spinner_type) {
     /* Python: spinner init w/ frame selection. */
     if (!message) return NULL;
@@ -347,7 +347,7 @@ char *disp_spinner_init(const char *message, const char *spinner_type) {
     return out;
 }
 
-/* PoP: _write @ agent/display.py:_write */
+/* PoP: disp_spinner_write @ agent/display.py:_write */
 int disp_spinner_write(const char *text) {
     /* Python: route through print_fn when supplied — REAL write. */
     if (!text) return -1;
@@ -356,18 +356,18 @@ int disp_spinner_write(const char *text) {
     return 0;
 }
 
-/* PoP: _is_tty @ agent/display.py:_is_tty */
+/* PoP: disp_spinner_is_tty @ agent/display.py:_is_tty */
 bool disp_spinner_is_tty(void) {
     return isatty(STDOUT_FILENO) == 1;
 }
 
-/* PoP: _is_patch_stdout_proxy @ agent/display.py:_is_patch_stdout_proxy */
+/* PoP: disp_spinner_is_patch_stdout_proxy @ agent/display.py:_is_patch_stdout_proxy */
 bool disp_spinner_is_patch_stdout_proxy(void) {
     /* Python: prompt_toolkit StdoutProxy detection. */
     return false;
 }
 
-/* PoP: _animate @ agent/display.py:_animate */
+/* PoP: disp_spinner_animate @ agent/display.py:_animate */
 int disp_spinner_animate(const char *frames_json) {
     /* Python: frame loop; skips when not a tty. */
     if (!frames_json) return -1;
@@ -375,19 +375,19 @@ int disp_spinner_animate(const char *frames_json) {
     return 0;
 }
 
-/* PoP: start @ agent/display.py:start */
+/* PoP: disp_spinner_start @ agent/display.py:start */
 int disp_spinner_start(void) {
     /* Python: spinner thread start. */
     return 0;
 }
 
-/* PoP: update_text @ agent/display.py:update_text */
+/* PoP: disp_spinner_update_text @ agent/display.py:update_text */
 int disp_spinner_update_text(const char *new_message) {
     if (!new_message) return -1;
     return 0;
 }
 
-/* PoP: print_above @ agent/display.py:print_above */
+/* PoP: disp_spinner_print_above @ agent/display.py:print_above */
 int disp_spinner_print_above(const char *text) {
     /* Python: clear line, print, resume animation. */
     if (!text) return -1;
@@ -395,14 +395,14 @@ int disp_spinner_print_above(const char *text) {
     return 0;
 }
 
-/* PoP: stop @ agent/display.py:stop */
+/* PoP: disp_spinner_stop @ agent/display.py:stop */
 int disp_spinner_stop(void) {
     /* Python: join thread, clear line on tty. */
     if (disp_spinner_is_tty()) fputs("\r\x1b[K", stdout);
     return 0;
 }
 
-/* PoP: _trim_error @ agent/display.py:_trim_error */
+/* PoP: disp_trim_error @ agent/display.py:_trim_error */
 char *disp_trim_error(const char *error) {
     /* Python: strip long absolute paths to just the filename so the
      * status line stays short. Real: tokenize on whitespace; any token
@@ -434,7 +434,7 @@ char *disp_trim_error(const char *error) {
     return out;
 }
 
-/* PoP: _detect_tool_failure @ agent/display.py:_detect_tool_failure */
+/* PoP: disp_detect_tool_failure @ agent/display.py:_detect_tool_failure */
 char *disp_detect_tool_failure(const char *result) {
     /* Python: (is_failure, suffix) inspection. */
     if (!result) return strdup("0\t");
@@ -443,7 +443,7 @@ char *disp_detect_tool_failure(const char *result) {
     return strdup("0\t");
 }
 
-/* PoP: get_cute_tool_message @ agent/display.py:get_cute_tool_message */
+/* PoP: disp_get_cute_tool_message @ agent/display.py:get_cute_tool_message */
 char *disp_get_cute_tool_message(const char *tool_name, const char *args_json,
                                  double duration, const char *result) {
     /* Python: completion label; cosmetic failures never escape. */

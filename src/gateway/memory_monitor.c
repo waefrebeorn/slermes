@@ -29,7 +29,7 @@
  * Port of Python gateway/memory_monitor.py _get_rss_mb().
  * AG26: Port of Python gateway/memory_monitor.py:_get_rss_mb().
  * Returns RSS in MB, or 0 if unavailable. */
-/* PoP: _get_rss_mb @ gateway/memory_monitor.py:_get_rss_mb */
+/* PoP: get_rss_mb @ gateway/memory_monitor.py:_get_rss_mb */
 int get_rss_mb(void) {
     FILE *f = fopen("/proc/self/statm", "r");
     if (!f) return 0;
@@ -50,7 +50,7 @@ static pthread_t g_memory_monitor_thread;
 static bool g_memory_monitor_running = false;
 static pthread_mutex_t g_memory_monitor_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-/* PoP: gw_memory_monitor_is_running @ gateway/memory_monitor.py:is_running */
+/* PoP: is_alive @ gateway/memory_monitor.py:is_running */
 /* True if the background monitor thread is alive. Read under the monitor lock
  * (mirrors Python's `with _lock: return _monitor_thread and is_alive()`). */
 bool gw_memory_monitor_is_running(void) {

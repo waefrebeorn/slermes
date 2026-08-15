@@ -30,7 +30,7 @@ static int hexv(const char *s) {
     return v;
 }
 
-/* PoP: _resolve @ hermes_cli/journey.py:_resolve */
+/* PoP: jny_resolve @ hermes_cli/journey.py:_resolve */
 char *jny_resolve(const char *ink_hex, const char *bg_hex, double alpha) {
     /* Python: fade ink toward bg (rgba-over-bg). */
     if (!ink_hex || !bg_hex) return NULL;
@@ -49,7 +49,7 @@ char *jny_resolve(const char *ink_hex, const char *bg_hex, double alpha) {
     return out;
 }
 
-/* PoP: _console @ hermes_cli/journey.py:_console */
+/* PoP: jny_console @ hermes_cli/journey.py:_console */
 char *jny_console(bool color, bool force) {
     /* Python: rich console; force truecolor. */
     char *out = NULL;
@@ -58,7 +58,7 @@ char *jny_console(bool color, bool force) {
     return out;
 }
 
-/* PoP: _cmd_list @ hermes_cli/journey.py:_cmd_list */
+/* PoP: jny_cmd_list @ hermes_cli/journey.py:_cmd_list */
 char *jny_cmd_list(const char *graph_json) {
     /* Python: journey list rendering. */
     if (!graph_json) return NULL;

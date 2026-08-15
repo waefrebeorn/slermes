@@ -19,33 +19,33 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: name @ agent/memory_provider.py:name */
+/* PoP: mpr_name @ agent/memory_provider.py:name */
 char *mpr_name(void) {
     /* Python: short provider id. */
     return strdup("builtin");
 }
 
-/* PoP: is_available @ agent/memory_provider.py:is_available */
+/* PoP: mpr_is_available @ agent/memory_provider.py:is_available */
 bool mpr_is_available(void) {
     /* Python: configured + credentials + ready. */
     printf("memory provider availability probe\n");
     return false;
 }
 
-/* PoP: initialize @ agent/memory_provider.py:initialize */
+/* PoP: mpr_initialize @ agent/memory_provider.py:initialize */
 int mpr_initialize(void) {
     /* Python: session init at startup. */
     printf("memory provider initialized\n");
     return 0;
 }
 
-/* PoP: get_tool_schemas @ agent/memory_provider.py:get_tool_schemas */
+/* PoP: mpr_get_tool_schemas @ agent/memory_provider.py:get_tool_schemas */
 char *mpr_get_tool_schemas(void) {
     /* Python: exposed tool schemas. */
     return strdup("[]");
 }
 
-/* PoP: handle_tool_call @ agent/memory_provider.py:handle_tool_call */
+/* PoP: mpr_handle_tool_call @ agent/memory_provider.py:handle_tool_call */
 char *mpr_handle_tool_call(const char *tool_name, const char *args_json) {
     /* Python: route tool call; JSON string result. */
     if (!tool_name) return NULL;
@@ -53,21 +53,21 @@ char *mpr_handle_tool_call(const char *tool_name, const char *args_json) {
     return strdup("{}");
 }
 
-/* PoP: shutdown @ agent/memory_provider.py:shutdown */
+/* PoP: mpr_shutdown @ agent/memory_provider.py:shutdown */
 int mpr_shutdown(void) {
     /* Python: flush + close. */
     printf("memory provider shut down (queues flushed)\n");
     return 0;
 }
 
-/* PoP: on_session_end @ agent/memory_provider.py:on_session_end */
+/* PoP: mpr_on_session_end @ agent/memory_provider.py:on_session_end */
 int mpr_on_session_end(void) {
     /* Python: end-of-session hook. */
     printf("memory provider session-end hook\n");
     return 0;
 }
 
-/* PoP: save_config @ agent/memory_provider.py:save_config */
+/* PoP: mpr_save_config @ agent/memory_provider.py:save_config */
 int mpr_save_config(const char *config_json) {
     /* Python: write non-secret config natively. */
     if (!config_json) return -1;
@@ -75,7 +75,7 @@ int mpr_save_config(const char *config_json) {
     return 0;
 }
 
-/* PoP: backup_paths @ agent/memory_provider.py:backup_paths */
+/* PoP: mpr_backup_paths @ agent/memory_provider.py:backup_paths */
 char *mpr_backup_paths(void) {
     /* Python: paths outside HERMES_HOME. */
     return strdup("[]");

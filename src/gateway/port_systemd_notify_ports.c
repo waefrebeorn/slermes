@@ -40,7 +40,7 @@ static void sd_n_state_init(void) {
     sd_n_state_initialized = true;
 }
 
-/* PoP: watchdog_interval_seconds @ gateway/systemd_notify.py:watchdog_interval_seconds */
+/* PoP: sd_n_watchdog_interval_seconds @ gateway/systemd_notify.py:watchdog_interval_seconds */
 /* Return systemd's configured watchdog interval in seconds from WATCHDOG_USEC
  * (microseconds), or 0 when no NOTIFY_SOCKET / WATCHDOG_USEC / bad value. */
 double sd_n_watchdog_interval_seconds(void) {
@@ -78,14 +78,14 @@ static int sd_notify_send(const char *state) {
     return n > 0 ? 0 : -1;
 }
 
-/* PoP: notify @ gateway/systemd_notify.py:notify */
+/* PoP: sd_n_notify @ gateway/systemd_notify.py:notify */
 int sd_n_notify(const char *state) {
     /* Python: one nonblocking sd_notify datagram. */
     if (!state) return -1;
     return sd_notify_send(state);
 }
 
-/* PoP: __init__ @ gateway/systemd_notify.py:__init__ */
+/* PoP: sd_n_init @ gateway/systemd_notify.py:__init__ */
 char *sd_n_init(bool config_enabled, long watchdog_interval) {
     sd_n_state_init();
     sd_n_config_enabled = config_enabled;
@@ -103,17 +103,17 @@ char *sd_n_init(bool config_enabled, long watchdog_interval) {
     return out;
 }
 
-/* PoP: enabled @ gateway/systemd_notify.py:enabled */
+/* PoP: sd_n_enabled @ gateway/systemd_notify.py:enabled */
 bool sd_n_enabled(bool config_enabled, long interval_seconds) {
     return config_enabled && interval_seconds > 0;
 }
 
-/* PoP: unhealthy @ gateway/systemd_notify.py:unhealthy */
+/* PoP: sd_n_unhealthy_state @ gateway/systemd_notify.py:unhealthy */
 bool sd_n_unhealthy_state(void) {
     return sd_n_unhealthy;
 }
 
-/* PoP: _lag_tolerance @ gateway/systemd_notify.py:_lag_tolerance */
+/* PoP: sd_n_lag_tolerance @ gateway/systemd_notify.py:_lag_tolerance */
 /* Python: max(0.1, interval*0.25) unless explicitly configured; configured
  * value clamped to >= 0. */
 double sd_n_lag_tolerance(double interval_seconds, double configured) {
@@ -125,12 +125,12 @@ double sd_n_lag_tolerance(double interval_seconds, double configured) {
     return configured;
 }
 
-/* PoP: task @ gateway/systemd_notify.py:task */
+/* PoP: sd_n_task @ gateway/systemd_notify.py:task */
 char *sd_n_task(void) {
     return strdup("{}");
 }
 
-/* PoP: start @ gateway/systemd_notify.py:start */
+/* PoP: sd_n_start @ gateway/systemd_notify.py:start */
 int sd_n_start(bool config_enabled, long interval_seconds) {
     /* Python: start loop-progress sampler when systemd watchdog is enabled. */
     if (!config_enabled || interval_seconds <= 0) return 0;
@@ -144,7 +144,7 @@ int sd_n_start(bool config_enabled, long interval_seconds) {
     return 1;
 }
 
-/* PoP: ready @ gateway/systemd_notify.py:ready */
+/* PoP: sd_n_ready @ gateway/systemd_notify.py:ready */
 int sd_n_ready(const char *status) {
     /* Python: READY=1 + STATUS=<status> to systemd. */
     if (!sd_n_enabled(sd_n_config_enabled, (long)sd_n_interval_seconds))
@@ -160,7 +160,7 @@ int sd_n_ready(const char *status) {
     return sd_notify_send(msg) == 0 ? 1 : 0;
 }
 
-/* PoP: record_tick @ gateway/systemd_notify.py:record_tick */
+/* PoP: sd_n_record_tick @ gateway/systemd_notify.py:record_tick */
 /* Feed systemd only when the event loop woke within its lag budget. */
 int sd_n_record_tick(double scheduled_at, double now) {
     if (!sd_n_enabled(sd_n_config_enabled, (long)sd_n_interval_seconds))
@@ -177,7 +177,7 @@ int sd_n_record_tick(double scheduled_at, double now) {
     return 1;
 }
 
-/* PoP: _run @ gateway/systemd_notify.py:_run */
+/* PoP: sd_n_run @ gateway/systemd_notify.py:_run */
 int sd_n_run(long interval_seconds) {
     /* Python: WATCHDOG=1 heartbeat loop. Emits the heartbeat when the loop
      * budget is met; marks unhealthy when the loop is late. */
@@ -193,7 +193,7 @@ int sd_n_run(long interval_seconds) {
     return r;
 }
 
-/* PoP: stop @ gateway/systemd_notify.py:stop */
+/* PoP: sd_n_stop @ gateway/systemd_notify.py:stop */
 int sd_n_stop(void) {
     /* Python: STOPPING=1 at most once, then the loop ends. */
     if (sd_n_stopping_notified) return 0;

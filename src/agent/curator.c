@@ -950,7 +950,7 @@ bool curator_get_consolidate(void) {
     return false; /* DEFAULT_CONSOLIDATE = false */
 }
 
-/* PoP: curator_merge_request_overrides @ agent/curator.py:_merge_request_overrides */
+/* PoP: metadata @ agent/curator.py:_merge_request_overrides */
 /* Merge resolver metadata (runtime_overrides) with task-local request
  * body fields (slot_extra_body).  Mirrors the Python dict merge:
  *   merged = dict(runtime_overrides or {})

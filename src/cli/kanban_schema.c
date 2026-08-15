@@ -187,7 +187,7 @@ static int kanban_migrate_optional_columns(sqlite3 *conn)
  * + migrations under a write txn. Path resolution precedence:
  *   board arg -> kanban_db_path(board) (which honours HERMES_KANBAN_DB env,
  *   current-board file, default). */
-/* PoP: pb_connect @ hermes_cli/kanban_db.py:connect */
+/* PoP: kdb_connect @ hermes_cli/kanban_db.py:connect */
 sqlite3 *kdb_connect(const char *board)
 {
     char *path = kanban_db_path(board);
@@ -228,7 +228,7 @@ sqlite3 *kdb_connect(const char *board)
     return conn;
 }
 
-/* PoP: hermes_cli_projects_db_connect_closing @ hermes_cli/kanban_db.py:connect_closing */
+/* PoP: kdb_connect_path @ hermes_cli/kanban_db.py:connect_closing */
 sqlite3 *kdb_connect_path(const char *db_path)
 {
     if (!db_path) return NULL;

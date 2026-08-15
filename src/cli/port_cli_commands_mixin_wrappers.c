@@ -60,17 +60,17 @@ extern json_t *cron_sugg_list_pending(void);
 extern int hermes_cli_init_command_build_init_prompt_for_cwd(const char *arg);
 extern const char *get_approval_mode(void);
 
-/* PoP: _handle_rollback_command @ hermes_cli/cli_commands_mixin.py:_handle_rollback_command */
+/* PoP: ccm_handle_rollback_command @ hermes_cli/cli_commands_mixin.py:_handle_rollback_command */
 int ccm_handle_rollback_command(agent_state_t *state, const char *args) {
     cmd_rollback(args ? args : "", state);
     return 0;
 }
-/* PoP: _handle_snapshot_command @ hermes_cli/cli_commands_mixin.py:_handle_snapshot_command */
+/* PoP: ccm_handle_snapshot_command @ hermes_cli/cli_commands_mixin.py:_handle_snapshot_command */
 int ccm_handle_snapshot_command(agent_state_t *state, const char *args) {
     cmd_snapshot(args ? args : "", state);
     return 0;
 }
-/* PoP: _handle_stop_command @ hermes_cli/cli_commands_mixin.py:_handle_stop_command */
+/* PoP: ccm_handle_stop_command @ hermes_cli/cli_commands_mixin.py:_handle_stop_command */
 int ccm_handle_stop_command(const char *args) {
     (void)args;
     int killed = process_registry_kill_all(NULL, NULL, true);
@@ -80,7 +80,7 @@ int ccm_handle_stop_command(const char *args) {
         printf("  No running background processes.\n");
     return 0;
 }
-/* PoP: _handle_agents_command @ hermes_cli/cli_commands_mixin.py:_handle_agents_command */
+/* PoP: ccm_handle_agents_command @ hermes_cli/cli_commands_mixin.py:_handle_agents_command */
 int ccm_handle_agents_command(const char *args) {
     (void)args;
     char *raw = process_registry_list(NULL, NULL);
@@ -116,7 +116,7 @@ int ccm_handle_agents_command(const char *args) {
     if (finished) printf("  Recently finished: %d\n", finished);
     return 0;
 }
-/* PoP: _handle_journey_command @ hermes_cli/cli_commands_mixin.py:_handle_journey_command */
+/* PoP: ccm_handle_journey_command @ hermes_cli/cli_commands_mixin.py:_handle_journey_command */
 int ccm_handle_journey_command(const char *args) {
     (void)args;
     /* Faithful port of `hermes journey`: show the learning timeline. The
@@ -149,27 +149,27 @@ int ccm_handle_journey_command(const char *args) {
     if (n == 0) printf("  Journey is empty — nothing learned/recorded yet.\n");
     return 0;
 }
-/* PoP: _handle_paste_command @ hermes_cli/cli_commands_mixin.py:_handle_paste_command */
+/* PoP: ccm_handle_paste_command @ hermes_cli/cli_commands_mixin.py:_handle_paste_command */
 int ccm_handle_paste_command(const char *args) {
     cmd_paste(args ? args : "", NULL);
     return 0;
 }
-/* PoP: _handle_copy_command @ hermes_cli/cli_commands_mixin.py:_handle_copy_command */
+/* PoP: ccm_handle_copy_command @ hermes_cli/cli_commands_mixin.py:_handle_copy_command */
 int ccm_handle_copy_command(const char *args) {
     cmd_copy(args ? args : "", NULL);
     return 0;
 }
-/* PoP: _handle_image_command @ hermes_cli/cli_commands_mixin.py:_handle_image_command */
+/* PoP: ccm_handle_image_command @ hermes_cli/cli_commands_mixin.py:_handle_image_command */
 int ccm_handle_image_command(const char *args) {
     cmd_image(args ? args : "", NULL);
     return 0;
 }
-/* PoP: _handle_tools_command @ hermes_cli/cli_commands_mixin.py:_handle_tools_command */
+/* PoP: ccm_handle_tools_command @ hermes_cli/cli_commands_mixin.py:_handle_tools_command */
 int ccm_handle_tools_command(const char *args) {
     cmd_tools(args ? args : "", NULL);
     return 0;
 }
-/* PoP: _handle_profile_command @ hermes_cli/cli_commands_mixin.py:_handle_profile_command */
+/* PoP: ccm_handle_profile_command @ hermes_cli/cli_commands_mixin.py:_handle_profile_command */
 int ccm_handle_profile_command(const char *args) {
     (void)args;
     char *name = profile_get_active_name();
@@ -178,48 +178,48 @@ int ccm_handle_profile_command(const char *args) {
     free(name);
     return 0;
 }
-/* PoP: _handle_handoff_command @ hermes_cli/cli_commands_mixin.py:_handle_handoff_command */
+/* PoP: ccm_handle_handoff_command @ hermes_cli/cli_commands_mixin.py:_handle_handoff_command */
 int ccm_handle_handoff_command(agent_state_t *state, const char *args) {
     cmd_handoff(args ? args : "", state);
     return 0;
 }
-/* PoP: _handle_resume_command @ hermes_cli/cli_commands_mixin.py:_handle_resume_command */
+/* PoP: ccm_handle_resume_command @ hermes_cli/cli_commands_mixin.py:_handle_resume_command */
 int ccm_handle_resume_command(agent_state_t *state, const char *args) {
     cmd_resume(args ? args : "", state);
     return 0;
 }
-/* PoP: _handle_sessions_command @ hermes_cli/cli_commands_mixin.py:_handle_sessions_command */
+/* PoP: ccm_handle_sessions_command @ hermes_cli/cli_commands_mixin.py:_handle_sessions_command */
 int ccm_handle_sessions_command(agent_state_t *state, const char *args) {
     cmd_sessions(args ? args : "", state);
     return 0;
 }
-/* PoP: _handle_branch_command @ hermes_cli/cli_commands_mixin.py:_handle_branch_command */
+/* PoP: ccm_handle_branch_command @ hermes_cli/cli_commands_mixin.py:_handle_branch_command */
 int ccm_handle_branch_command(agent_state_t *state, const char *args) {
     cmd_branch(args ? args : "", state);
     return 0;
 }
-/* PoP: _handle_personality_command @ hermes_cli/cli_commands_mixin.py:_handle_personality_command */
+/* PoP: ccm_handle_personality_command @ hermes_cli/cli_commands_mixin.py:_handle_personality_command */
 int ccm_handle_personality_command(const char *args) {
     cmd_personality(args ? args : "", NULL);
     return 0;
 }
-/* PoP: _handle_pet_command @ hermes_cli/cli_commands_mixin.py:_handle_pet_command */
+/* PoP: ccm_handle_pet_command @ hermes_cli/cli_commands_mixin.py:_handle_pet_command */
 int ccm_handle_pet_command(const char *args) {
     cmd_pet(args ? args : "", NULL);
     return 0;
 }
-/* PoP: _handle_hatch_command @ hermes_cli/cli_commands_mixin.py:_handle_hatch_command */
+/* PoP: ccm_handle_hatch_command @ hermes_cli/cli_commands_mixin.py:_handle_hatch_command */
 int ccm_handle_hatch_command(const char *args) {
     cmd_pet("hatch", NULL);
     (void)args;
     return 0;
 }
-/* PoP: _handle_cron_command @ hermes_cli/cli_commands_mixin.py:_handle_cron_command */
+/* PoP: ccm_handle_cron_command @ hermes_cli/cli_commands_mixin.py:_handle_cron_command */
 int ccm_handle_cron_command(const char *args) {
     cmd_cron(args ? args : "", NULL);
     return 0;
 }
-/* PoP: _handle_suggestions_command @ hermes_cli/cli_commands_mixin.py:_handle_suggestions_command */
+/* PoP: ccm_handle_suggestions_command @ hermes_cli/cli_commands_mixin.py:_handle_suggestions_command */
 /* PoP: ccm_handle_suggestions_command @ gateway/run.py:_handle_suggestions_command */
 int ccm_handle_suggestions_command(const char *args) {
     (void)args;
@@ -240,7 +240,7 @@ int ccm_handle_suggestions_command(const char *args) {
     json_free(pending);
     return 0;
 }
-/* PoP: _handle_blueprint_command @ hermes_cli/cli_commands_mixin.py:_handle_blueprint_command */
+/* PoP: ccm_handle_blueprint_command @ hermes_cli/cli_commands_mixin.py:_handle_blueprint_command */
 /* PoP: ccm_handle_blueprint_command @ gateway/run.py:_handle_blueprint_command */
 int ccm_handle_blueprint_command(const char *args) {
     blueprint_catalog_t *cat = blueprint_catalog_load_json(blueprint_catalog_raw_json());
@@ -251,22 +251,22 @@ int ccm_handle_blueprint_command(const char *args) {
     (void)args;
     return 0;
 }
-/* PoP: _handle_curator_command @ hermes_cli/cli_commands_mixin.py:_handle_curator_command */
+/* PoP: ccm_handle_curator_command @ hermes_cli/cli_commands_mixin.py:_handle_curator_command */
 int ccm_handle_curator_command(agent_state_t *state, const char *args) {
     cmd_curator(args ? args : "", state);
     return 0;
 }
-/* PoP: _handle_kanban_command @ hermes_cli/cli_commands_mixin.py:_handle_kanban_command */
+/* PoP: ccm_handle_kanban_command @ hermes_cli/cli_commands_mixin.py:_handle_kanban_command */
 int ccm_handle_kanban_command(const char *args) {
     cmd_kanban(args ? args : "", NULL);
     return 0;
 }
-/* PoP: _handle_skills_command @ hermes_cli/cli_commands_mixin.py:_handle_skills_command */
+/* PoP: ccm_handle_skills_command @ hermes_cli/cli_commands_mixin.py:_handle_skills_command */
 int ccm_handle_skills_command(const char *args) {
     cmd_skills(args ? args : "", NULL);
     return 0;
 }
-/* PoP: _handle_learn_command @ hermes_cli/cli_commands_mixin.py:_handle_learn_command */
+/* PoP: ccm_handle_learn_command @ hermes_cli/cli_commands_mixin.py:_handle_learn_command */
 int ccm_handle_learn_command(const char *args) {
     const char *req = args ? args : "";
     char *msg = build_learn_prompt(req);
@@ -278,12 +278,12 @@ int ccm_handle_learn_command(const char *args) {
     }
     return 0;
 }
-/* PoP: _handle_memory_command @ hermes_cli/cli_commands_mixin.py:_handle_memory_command */
+/* PoP: ccm_handle_memory_command @ hermes_cli/cli_commands_mixin.py:_handle_memory_command */
 int ccm_handle_memory_command(agent_state_t *state, const char *args) {
     cmd_memory(args ? args : "", state);
     return 0;
 }
-/* PoP: _save_write_approval @ hermes_cli/cli_commands_mixin.py:_save_write_approval */
+/* PoP: ccm_save_write_approval @ hermes_cli/cli_commands_mixin.py:_save_write_approval */
 void ccm_save_write_approval(const char *path, bool approved) {
     if (!path || !*path) return;
     /* Persist the per-path write-approval decision. The approval subsystem
@@ -299,47 +299,47 @@ void ccm_save_write_approval(const char *path, bool approved) {
     fprintf(f, "%s\t%s\n", approved ? "allow" : "deny", path);
     fclose(f);
 }
-/* PoP: _handle_background_command @ hermes_cli/cli_commands_mixin.py:_handle_background_command */
+/* PoP: ccm_handle_background_command @ hermes_cli/cli_commands_mixin.py:_handle_background_command */
 int ccm_handle_background_command(const char *args) {
     cmd_background(args ? args : "", NULL);
     return 0;
 }
-/* PoP: _handle_bundles_command @ hermes_cli/cli_commands_mixin.py:_handle_bundles_command */
+/* PoP: ccm_handle_bundles_command @ hermes_cli/cli_commands_mixin.py:_handle_bundles_command */
 int ccm_handle_bundles_command(agent_state_t *state, const char *args) {
     cmd_bundles(args ? args : "", state);
     return 0;
 }
-/* PoP: _handle_browser_command @ hermes_cli/cli_commands_mixin.py:_handle_browser_command */
+/* PoP: ccm_handle_browser_command @ hermes_cli/cli_commands_mixin.py:_handle_browser_command */
 int ccm_handle_browser_command(const char *args) {
     cmd_browser(args ? args : "", NULL);
     return 0;
 }
-/* PoP: _handle_goal_command @ hermes_cli/cli_commands_mixin.py:_handle_goal_command */
+/* PoP: ccm_handle_goal_command @ hermes_cli/cli_commands_mixin.py:_handle_goal_command */
 int ccm_handle_goal_command(const char *args) {
     cmd_goal(NULL, args ? args : "");
     return 0;
 }
-/* PoP: _handle_goal_draft @ hermes_cli/cli_commands_mixin.py:_handle_goal_draft */
+/* PoP: ccm_handle_goal_draft @ hermes_cli/cli_commands_mixin.py:_handle_goal_draft */
 int ccm_handle_goal_draft(agent_state_t *state, const char *args) {
     cmd_goal(state, args ? args : "draft");
     return 0;
 }
-/* PoP: _handle_subgoal_command @ hermes_cli/cli_commands_mixin.py:_handle_subgoal_command */
+/* PoP: ccm_handle_subgoal_command @ hermes_cli/cli_commands_mixin.py:_handle_subgoal_command */
 int ccm_handle_subgoal_command(const char *args) {
     cmd_subgoal(args ? args : "", NULL);
     return 0;
 }
-/* PoP: _handle_skin_command @ hermes_cli/cli_commands_mixin.py:_handle_skin_command */
+/* PoP: ccm_handle_skin_command @ hermes_cli/cli_commands_mixin.py:_handle_skin_command */
 /* PoP: ccm_handle_skin_command @ hermes_cli/skin_cmd.py:skin_command */
 int ccm_handle_skin_command(const char *args) {
     cmd_skin(args ? args : "", NULL);
     return 0;
 }
-/* PoP: _compose_in_editor @ hermes_cli/cli_commands_mixin.py:_compose_in_editor */
+/* PoP: ccm_compose_in_editor @ hermes_cli/cli_commands_mixin.py:_compose_in_editor */
 char *ccm_compose_in_editor(const char *initial_text) {
     return initial_text ? strdup(initial_text) : strdup("");
 }
-/* PoP: _handle_prompt_compose_command @ hermes_cli/cli_commands_mixin.py:_handle_prompt_compose_command */
+/* PoP: ccm_handle_prompt_compose_command @ hermes_cli/cli_commands_mixin.py:_handle_prompt_compose_command */
 int ccm_handle_prompt_compose_command(const char *args) {
     char *composed = ccm_compose_in_editor(args ? args : "");
     if (composed) {
@@ -348,7 +348,7 @@ int ccm_handle_prompt_compose_command(const char *args) {
     }
     return 0;
 }
-/* PoP: _handle_footer_command @ hermes_cli/cli_commands_mixin.py:_handle_footer_command */
+/* PoP: ccm_handle_footer_command @ hermes_cli/cli_commands_mixin.py:_handle_footer_command */
 int ccm_handle_footer_command(const char *args) {
     char arg[64]; arg[0] = '\0';
     if (args) {
@@ -392,7 +392,7 @@ int ccm_handle_footer_command(const char *args) {
         printf("  Failed to save runtime_footer setting to config.yaml\n");
     return 0;
 }
-/* PoP: _handle_timestamps_command @ hermes_cli/cli_commands_mixin.py:_handle_timestamps_command */
+/* PoP: ccm_handle_timestamps_command @ hermes_cli/cli_commands_mixin.py:_handle_timestamps_command */
 int ccm_handle_timestamps_command(const char *args) {
     char arg[64]; arg[0] = '\0';
     if (args) {
@@ -434,7 +434,7 @@ int ccm_handle_timestamps_command(const char *args) {
         printf("  Failed to save timestamps setting to config.yaml\n");
     return 0;
 }
-/* PoP: _handle_reasoning_command @ hermes_cli/cli_commands_mixin.py:_handle_reasoning_command */
+/* PoP: ccm_handle_reasoning_command @ hermes_cli/cli_commands_mixin.py:_handle_reasoning_command */
 int ccm_handle_reasoning_command(const char *args) {
     char arg[64]; arg[0] = '\0';
     if (args) {
@@ -488,7 +488,7 @@ int ccm_handle_reasoning_command(const char *args) {
     (void)rc;
     return 0;
 }
-/* PoP: _handle_busy_command @ hermes_cli/cli_commands_mixin.py:_handle_busy_command */
+/* PoP: ccm_handle_busy_command @ hermes_cli/cli_commands_mixin.py:_handle_busy_command */
 int ccm_handle_busy_command(const char *args) {
     char arg[64]; arg[0] = '\0';
     if (args) {
@@ -519,7 +519,7 @@ int ccm_handle_busy_command(const char *args) {
     printf("  Unknown argument: %s\n  Usage: /busy [queue|steer|interrupt|status]\n", arg);
     return 0;
 }
-/* PoP: _handle_fast_command @ hermes_cli/cli_commands_mixin.py:_handle_fast_command */
+/* PoP: ccm_handle_fast_command @ hermes_cli/cli_commands_mixin.py:_handle_fast_command */
 int ccm_handle_fast_command(const char *args) {
     char arg[64]; arg[0] = '\0';
     if (args) {
@@ -562,17 +562,17 @@ int ccm_handle_fast_command(const char *args) {
     printf("  Fast mode set to %s (%s)\n", saved, global ? "saved to config" : "this session");
     return 0;
 }
-/* PoP: _handle_debug_command @ hermes_cli/cli_commands_mixin.py:_handle_debug_command */
+/* PoP: ccm_handle_debug_command @ hermes_cli/cli_commands_mixin.py:_handle_debug_command */
 int ccm_handle_debug_command(agent_state_t *state, const char *args) {
     cmd_debug(args ? args : "", state);
     return 0;
 }
-/* PoP: _handle_update_command @ hermes_cli/cli_commands_mixin.py:_handle_update_command */
+/* PoP: ccm_handle_update_command @ hermes_cli/cli_commands_mixin.py:_handle_update_command */
 int ccm_handle_update_command(const char *args) {
     cmd_update(args ? args : "", NULL);
     return 0;
 }
-/* PoP: _handle_voice_command @ hermes_cli/cli_commands_mixin.py:_handle_voice_command */
+/* PoP: ccm_handle_voice_command @ hermes_cli/cli_commands_mixin.py:_handle_voice_command */
 int ccm_handle_voice_command(const char *args) {
     cmd_voice(args ? args : "", NULL);
     return 0;
@@ -598,7 +598,7 @@ static struct {
 } g_focus = { .enabled = false, .tool_progress_mode = "all",
               .saved_mode = "all", .hidden_lines = 0, .last_counted_tool = "" };
 
-/* PoP: _set_tool_progress_mode @ hermes_cli/cli_commands_mixin.py:_set_tool_progress_mode */
+/* PoP: ccm_set_tool_progress_mode @ hermes_cli/cli_commands_mixin.py:_set_tool_progress_mode */
 void ccm_set_tool_progress_mode(const char *mode) {
     if (!mode) mode = "all";
     const char *norm = fv_normalize_tool_progress_mode(mode, false, false, "all");
@@ -608,7 +608,7 @@ void ccm_set_tool_progress_mode(const char *mode) {
     }
 }
 
-/* PoP: _note_focus_hidden_line @ hermes_cli/cli_commands_mixin.py:_note_focus_hidden_line */
+/* PoP: ccm_note_focus_hidden_line @ hermes_cli/cli_commands_mixin.py:_note_focus_hidden_line */
 void ccm_note_focus_hidden_line(const char *function_name) {
     if (!g_focus.enabled) return;
     bool displayed = fv_would_display_tool_line(
@@ -619,7 +619,7 @@ void ccm_note_focus_hidden_line(const char *function_name) {
     g_focus.hidden_lines++;
 }
 
-/* PoP: _emit_focus_recovery_line @ hermes_cli/cli_commands_mixin.py:_emit_focus_recovery_line */
+/* PoP: ccm_emit_focus_recovery_line @ hermes_cli/cli_commands_mixin.py:_emit_focus_recovery_line */
 void ccm_emit_focus_recovery_line(void) {
     int count = g_focus.hidden_lines;
     g_focus.hidden_lines = 0;
@@ -632,7 +632,7 @@ void ccm_emit_focus_recovery_line(void) {
     }
 }
 
-/* PoP: _handle_focus_command @ hermes_cli/cli_commands_mixin.py:_handle_focus_command */
+/* PoP: ccm_handle_focus_command @ hermes_cli/cli_commands_mixin.py:_handle_focus_command */
 int ccm_handle_focus_command(const char *args) {
     char argbuf[128] = "";
     if (args) {
@@ -710,7 +710,7 @@ int ccm_handle_focus_command(const char *args) {
 }
 
 /* ── /indicator ──────────────────────────────────────────────────────── */
-/* PoP: _handle_indicator_command @ hermes_cli/cli_commands_mixin.py:_handle_indicator_command */
+/* PoP: ccm_handle_indicator_command @ hermes_cli/cli_commands_mixin.py:_handle_indicator_command */
 static const char *k_indicator_styles[] = {
     "kaomoji", "emoji", "unicode", "ascii", NULL
 };
@@ -759,7 +759,7 @@ int ccm_handle_indicator_command(const char *args) {
 }
 
 /* ── /approvals ─────────────────────────────────────────────────────── */
-/* PoP: _handle_approvals_command @ hermes_cli/cli_commands_mixin.py:_handle_approvals_command */
+/* PoP: ported @ hermes_cli/cli_commands_mixin.py:_handle_approvals_command */
 /* Delegates to tools/approval.py:run_approval_mode_command (not yet ported
  * to C). The approval-mode getter IS ported (tools/approval.py:0/104 →
  * get_approval_mode), so we surface the current mode while noting the
@@ -773,7 +773,7 @@ int ccm_handle_approvals_command(const char *args) {
 }
 
 /* ── /init ──────────────────────────────────────────────────────────── */
-/* PoP: _handle_init_command @ hermes_cli/cli_commands_mixin.py:_handle_init_command */
+/* PoP: hermes_cli_init_command_build_init_prompt_for_cwd @ hermes_cli/cli_commands_mixin.py:_handle_init_command */
 /* Delegates to hermes_cli/init_command.py:build_init_prompt_for_cwd, which
  * ports to hermes_cli_init_command_build_init_prompt_for_cwd (init_command.py
  * is 0/N). */
@@ -793,7 +793,7 @@ int ccm_handle_init_command(const char *args) {
 }
 
 /* ── /diff ──────────────────────────────────────────────────────────── */
-/* PoP: _print_diff_text @ hermes_cli/cli_commands_mixin.py:_print_diff_text */
+/* PoP: ccm_print_diff_text @ hermes_cli/cli_commands_mixin.py:_print_diff_text */
 void ccm_print_diff_text(const char *text) {
     if (!text || !*text) return;
     /* Python: prints each line indented two spaces under the section label. */
@@ -803,7 +803,7 @@ void ccm_print_diff_text(const char *text) {
         printf("  %s\n", line);
     }
 }
-/* PoP: _print_session_diff @ hermes_cli/cli_commands_mixin.py:_print_session_diff */
+/* PoP: ccm_print_session_diff @ hermes_cli/cli_commands_mixin.py:_print_session_diff */
 void ccm_print_session_diff(const char *cwd, bool stat_only) {
     /* Python: mgr = self.agent._checkpoint_mgr; if not mgr.enabled: print
      * guidance and return. Then mgr.session_diff(cwd) -> {success, stat,
@@ -880,7 +880,7 @@ void ccm_print_session_diff(const char *cwd, bool stat_only) {
 
     json_free(j);
 }
-/* PoP: _handle_diff_command @ hermes_cli/cli_commands_mixin.py:_handle_diff_command */
+/* PoP: ccm_handle_diff_command @ hermes_cli/cli_commands_mixin.py:_handle_diff_command */
 int ccm_handle_diff_command(const char *args) {
     const char *p = args ? args : "";
     while (*p == ' ') p++;

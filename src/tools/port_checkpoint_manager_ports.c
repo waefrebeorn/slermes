@@ -22,7 +22,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ tools/checkpoint_manager.py:__init__ */
+/* PoP: ckm_init @ tools/checkpoint_manager.py:__init__ */
 char *ckm_init(bool enabled, long max_snapshots) {
     if (max_snapshots < 1) max_snapshots = 1;
     char *out = NULL;
@@ -31,14 +31,14 @@ char *ckm_init(bool enabled, long max_snapshots) {
     return out;
 }
 
-/* PoP: new_turn @ tools/checkpoint_manager.py:new_turn */
+/* PoP: ckm_new_turn @ tools/checkpoint_manager.py:new_turn */
 int ckm_new_turn(void) {
     /* Python: reset per-turn dedup. */
     printf("checkpoint per-turn dedup reset\n");
     return 0;
 }
 
-/* PoP: format_checkpoint_list @ tools/checkpoint_manager.py:format_checkpoint_list */
+/* PoP: ckm_format_checkpoint_list @ tools/checkpoint_manager.py:format_checkpoint_list */
 char *ckm_format_checkpoint_list(const char *checkpoints_json) {
     /* Python: user display. */
     if (!checkpoints_json || strcmp(checkpoints_json, "[]") == 0)
@@ -47,7 +47,7 @@ char *ckm_format_checkpoint_list(const char *checkpoints_json) {
     return strdup(checkpoints_json);
 }
 
-/* PoP: clear_legacy @ tools/checkpoint_manager.py:clear_legacy */
+/* PoP: ckm_clear_legacy @ tools/checkpoint_manager.py:clear_legacy */
 char *ckm_clear_legacy(const char *checkpoint_dir) {
     /* Python: delete legacy-* dirs — REAL. */
     if (!checkpoint_dir) return strdup("{\"bytes_freed\": 0}");

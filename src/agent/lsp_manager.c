@@ -118,7 +118,7 @@ lsp_service_t *lsp_service_create(bool enabled, lsp_server_desc_t **servers)
     return svc;
 }
 
-/* PoP: ui_shutdown @ agent/lsp/manager.py:shutdown */
+/* PoP: lsp_service_destroy @ agent/lsp/manager.py:shutdown */
 void lsp_service_destroy(lsp_service_t *svc)
 {
     if (!svc) return;
@@ -149,7 +149,7 @@ void lsp_service_destroy(lsp_service_t *svc)
     free(svc);
 }
 
-/* PoP: goals_is_active @ agent/lsp/manager.py:is_active */
+/* PoP: lsp_service_is_active @ agent/lsp/manager.py:is_active */
 bool lsp_service_is_active(lsp_service_t *svc) { return svc && svc->enabled; }
 
 /* ── resolution ──────────────────────────────────────────────────────── */
@@ -182,7 +182,7 @@ found:
 }
 
 /* ── client get-or-spawn ─────────────────────────────────────────────── */
-/* PoP: _get_or_spawn @ agent/lsp/manager.py:_get_or_spawn */
+/* PoP: get_or_spawn @ agent/lsp/manager.py:_get_or_spawn */
 static lsp_client_t *get_or_spawn(lsp_service_t *svc, const char *server_id,
                                    const char *ws_root, char **err_out)
 {

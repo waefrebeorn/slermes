@@ -14,17 +14,17 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_pt_input_extras_install_shift_enter_alias @ hermes_cli/pt_input_extras.py:install_shift_enter_alias */
+/* PoP: hermes_cli_pt_input_extras_install_shift_enter_alias_p @ hermes_cli/pt_input_extras.py:install_shift_enter_alias */
 json_t *hermes_cli_pt_input_extras_install_shift_enter_alias_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_pt_input_extras_install_ctrl_enter_alias @ hermes_cli/pt_input_extras.py:install_ctrl_enter_alias */
+/* PoP: hermes_cli_pt_input_extras_install_ctrl_enter_alias_p @ hermes_cli/pt_input_extras.py:install_ctrl_enter_alias */
 json_t *hermes_cli_pt_input_extras_install_ctrl_enter_alias_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_pt_input_extras_install_cmd_backspace_alias @ hermes_cli/pt_input_extras.py:install_cmd_backspace_alias */
+/* PoP: hermes_cli_pt_input_extras_install_cmd_backspace_alias_p @ hermes_cli/pt_input_extras.py:install_cmd_backspace_alias */
 json_t *hermes_cli_pt_input_extras_install_cmd_backspace_alias_p(void) {
     return json_object();
 }

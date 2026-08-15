@@ -16,7 +16,7 @@
 /* Python module global _account_info_cache. */
 static json_t *g_nous_account_info_cache = NULL;
 
-/* PoP: tool_gateway_entitled @ hermes_cli/nous_account.py:tool_gateway_entitled */
+/* PoP: nous_tool_gateway_entitled @ hermes_cli/nous_account.py:tool_gateway_entitled */
 int nous_tool_gateway_entitled(const char *arg) {
     /* Python: paid_service_access is True OR tool_access.enabled. The shim
      * receives the cached account-info JSON ("" when none). */
@@ -37,7 +37,7 @@ int nous_tool_gateway_entitled(const char *arg) {
     return ok;
 }
 
-/* PoP: tool_gateway_entitled_for @ hermes_cli/nous_account.py:tool_gateway_entitled_for */
+/* PoP: nous_tool_gateway_entitled_for @ hermes_cli/nous_account.py:tool_gateway_entitled_for */
 int nous_tool_gateway_entitled_for(const char *arg) {
     /* Python: paid -> True; else enabled && coverage[cat]. Arg =
      * "paid\tenabled\tcoverage_json\tcategory". */
@@ -60,7 +60,7 @@ int nous_tool_gateway_entitled_for(const char *arg) {
     return 0;
 }
 
-/* PoP: nous_portal_billing_url @ hermes_cli/nous_account.py:nous_portal_billing_url */
+/* PoP: nous_nous_portal_billing_url @ hermes_cli/nous_account.py:nous_portal_billing_url */
 int nous_nous_portal_billing_url(const char *arg) {
     /* Python: portal_base_url or default + /billing. Arg = base_url. */
     if (!arg || !*arg) { printf("https://portal.nousresearch.com/billing\n"); return 0; }
@@ -70,7 +70,7 @@ int nous_nous_portal_billing_url(const char *arg) {
     return 0;
 }
 
-/* PoP: nous_portal_topup_url @ hermes_cli/nous_account.py:nous_portal_topup_url */
+/* PoP: nous_nous_portal_topup_url @ hermes_cli/nous_account.py:nous_portal_topup_url */
 int nous_nous_portal_topup_url(const char *arg) {
     /* Python: org-pinned topup URL. Arg = "base_billing\torg_slug\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -94,7 +94,7 @@ int nous_nous_portal_topup_url(const char *arg) {
     return 0;
 }
 
-/* PoP: format_nous_portal_entitlement_message @ hermes_cli/nous_account.py:format_nous_portal_entitlement_message */
+/* PoP: nous_format_nous_portal_entitlement_message @ hermes_cli/nous_account.py:format_nous_portal_entitlement_message */
 int nous_format_nous_portal_entitlement_message(const char *arg) {
     /* Python: entitlement guidance. Arg =
      * "entitled\tstate\tresult". */
@@ -109,7 +109,7 @@ int nous_format_nous_portal_entitlement_message(const char *arg) {
     return 0;
 }
 
-/* PoP: _no_paid_access_message @ hermes_cli/nous_account.py:_no_paid_access_message */
+/* PoP: nous_u_no_paid_access_message @ hermes_cli/nous_account.py:_no_paid_access_message */
 int nous_u_no_paid_access_message(const char *arg) {
     /* Python: 4-case message. Arg = "case\tstate\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -134,7 +134,7 @@ int nous_u_no_paid_access_message(const char *arg) {
     return 0;
 }
 
-/* PoP: _credit_detail @ hermes_cli/nous_account.py:_credit_detail */
+/* PoP: nous_u_credit_detail @ hermes_cli/nous_account.py:_credit_detail */
 int nous_u_credit_detail(const char *arg) {
     /* Python: " (usable $X, subscription $Y, purchased $Z)" of present parts.
      * Arg = "usable\tsubscription\tpurchased" (empty = absent). */
@@ -150,7 +150,7 @@ int nous_u_credit_detail(const char *arg) {
     return 0;
 }
 
-/* PoP: reset_nous_portal_account_info_cache @ hermes_cli/nous_account.py:reset_nous_portal_account_info_cache */
+/* PoP: nous_reset_nous_portal_account_info_cache @ hermes_cli/nous_account.py:reset_nous_portal_account_info_cache */
 int nous_reset_nous_portal_account_info_cache(const char *arg) {
     /* Python: _account_info_cache = None (short-lived cache clear). */
     (void)arg;
@@ -161,7 +161,7 @@ int nous_reset_nous_portal_account_info_cache(const char *arg) {
     return 0;
 }
 
-/* PoP: _fresh_account_info @ hermes_cli/nous_account.py:_fresh_account_info */
+/* PoP: nous_u_fresh_account_info @ hermes_cli/nous_account.py:_fresh_account_info */
 int nous_u_fresh_account_info(const char *arg) {
     /* Python: TTL cache. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -175,7 +175,7 @@ int nous_u_fresh_account_info(const char *arg) {
     return 0;
 }
 
-/* PoP: _info_from_inference_key_pool @ hermes_cli/nous_account.py:_info_from_inference_key_pool */
+/* PoP: nous_u_info_from_inference_key_pool @ hermes_cli/nous_account.py:_info_from_inference_key_pool */
 int nous_u_info_from_inference_key_pool(const char *arg) {
     /* Python: opaque-key snapshot. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -186,7 +186,7 @@ int nous_u_info_from_inference_key_pool(const char *arg) {
     return 0;
 }
 
-/* PoP: _info_from_oauth_pool @ hermes_cli/nous_account.py:_info_from_oauth_pool */
+/* PoP: nous_u_info_from_oauth_pool @ hermes_cli/nous_account.py:_info_from_oauth_pool */
 int nous_u_info_from_oauth_pool(const char *arg) {
     /* Python: pool entry path. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -197,7 +197,7 @@ int nous_u_info_from_oauth_pool(const char *arg) {
     return 0;
 }
 
-/* PoP: _select_nous_pool_entry @ hermes_cli/nous_account.py:_select_nous_pool_entry */
+/* PoP: nous_u_select_nous_pool_entry @ hermes_cli/nous_account.py:_select_nous_pool_entry */
 int nous_u_select_nous_pool_entry(const char *arg) {
     /* Python: max by (agent_exp, access_exp, -priority). Arg =
      * "entries_json\tselected". */
@@ -209,7 +209,7 @@ int nous_u_select_nous_pool_entry(const char *arg) {
     return 0;
 }
 
-/* PoP: _pool_entry_is_portal_oauth @ hermes_cli/nous_account.py:_pool_entry_is_portal_oauth */
+/* PoP: nous_u_pool_entry_is_portal_oauth @ hermes_cli/nous_account.py:_pool_entry_is_portal_oauth */
 int nous_u_pool_entry_is_portal_oauth(const char *arg) {
     /* Python: a non-empty access_token AND (auth_type startswith "oauth"
      * OR a refresh_token exists). Arg carries the pool entry as JSON. */
@@ -231,7 +231,7 @@ int nous_u_pool_entry_is_portal_oauth(const char *arg) {
     return ok;
 }
 
-/* PoP: _fetch_nous_account_info @ hermes_cli/nous_account.py:_fetch_nous_account_info */
+/* PoP: nous_u_fetch_nous_account_info @ hermes_cli/nous_account.py:_fetch_nous_account_info */
 int nous_u_fetch_nous_account_info(const char *arg) {
     /* Python: GET /api/oauth/account with bearer. Arg = "base_url\tresult".
      * result empty = failure. */
@@ -243,7 +243,7 @@ int nous_u_fetch_nous_account_info(const char *arg) {
     return 0;
 }
 
-/* PoP: _info_from_valid_jwt @ hermes_cli/nous_account.py:_info_from_valid_jwt */
+/* PoP: nous_u_info_from_valid_jwt @ hermes_cli/nous_account.py:_info_from_valid_jwt */
 int nous_u_info_from_valid_jwt(const char *arg) {
     /* Python: JWT claims map. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -254,7 +254,7 @@ int nous_u_info_from_valid_jwt(const char *arg) {
     return 0;
 }
 
-/* PoP: _info_from_account_payload @ hermes_cli/nous_account.py:_info_from_account_payload */
+/* PoP: nous_u_info_from_account_payload @ hermes_cli/nous_account.py:_info_from_account_payload */
 int nous_u_info_from_account_payload(const char *arg) {
     /* Python: account map. Arg = "state\tresult". */
     if (!arg || !*arg) { printf("{}\n"); return 0; }
@@ -265,7 +265,7 @@ int nous_u_info_from_account_payload(const char *arg) {
     return 0;
 }
 
-/* PoP: _tool_access_from_value @ hermes_cli/nous_account.py:_tool_access_from_value */
+/* PoP: nous_u_tool_access_from_value @ hermes_cli/nous_account.py:_tool_access_from_value */
 int nous_u_tool_access_from_value(const char *arg) {
     /* Python: {enabled, coverage} fail-closed. Arg = "value_json". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -293,7 +293,7 @@ int nous_u_tool_access_from_value(const char *arg) {
     return 0;
 }
 
-/* PoP: _subscription_from_payload @ hermes_cli/nous_account.py:_subscription_from_payload */
+/* PoP: nous_u_subscription_from_payload @ hermes_cli/nous_account.py:_subscription_from_payload */
 int nous_u_subscription_from_payload(const char *arg) {
     /* Python: coerce payload fields. Arg = "payload_json". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -312,7 +312,7 @@ int nous_u_subscription_from_payload(const char *arg) {
     return 0;
 }
 
-/* PoP: _paid_service_access_from_payload @ hermes_cli/nous_account.py:_paid_service_access_from_payload */
+/* PoP: nous_u_paid_service_access_from_payload @ hermes_cli/nous_account.py:_paid_service_access_from_payload */
 int nous_u_paid_service_access_from_payload(const char *arg) {
     /* Python: paid access info map. Arg = "payload_json\tresult". */
     if (!arg || !*arg) { printf("\n"); return 0; }
@@ -321,7 +321,7 @@ int nous_u_paid_service_access_from_payload(const char *arg) {
     return 0;
 }
 
-/* PoP: _error_info @ hermes_cli/nous_account.py:_error_info */
+/* PoP: nous_u_error_info @ hermes_cli/nous_account.py:_error_info */
 int nous_u_error_info(const char *arg) {
     /* Python: NousPortalAccountInfo(logged_in, source="error", fresh=False,
      * portal_base_url, raw_account, error=str(error)). Arg = "error" (or
@@ -346,7 +346,7 @@ int nous_u_error_info(const char *arg) {
     return 0;
 }
 
-/* PoP: _portal_base_url @ hermes_cli/nous_account.py:_portal_base_url */
+/* PoP: nous_u_portal_base_url @ hermes_cli/nous_account.py:_portal_base_url */
 int nous_u_portal_base_url(const char *arg) {
     /* Python: state.get("portal_base_url"); None unless a non-empty str;
      * stripped and rstrip("/"). Arg = state JSON. */
@@ -368,7 +368,7 @@ int nous_u_portal_base_url(const char *arg) {
     return 0;
 }
 
-/* PoP: _cache_key @ hermes_cli/nous_account.py:_cache_key */
+/* PoP: nous_u_cache_key @ hermes_cli/nous_account.py:_cache_key */
 int nous_u_cache_key(const char *arg) {
     /* Python: f"{portal_base_url or ''}:{sha256(access_token).hexdigest()}".
      * Arg = "access_token\tportal_base_url". */
@@ -386,7 +386,7 @@ int nous_u_cache_key(const char *arg) {
     return 0;
 }
 
-/* PoP: _parse_iso_timestamp @ hermes_cli/nous_account.py:_parse_iso_timestamp */
+/* PoP: nous_u_parse_iso_timestamp @ hermes_cli/nous_account.py:_parse_iso_timestamp */
 int nous_u_parse_iso_timestamp(const char *arg) {
     if (!arg || !*arg) return 0;
     char buf[64]; strncpy(buf, arg, sizeof buf - 1); buf[sizeof buf - 1] = 0;
@@ -402,7 +402,7 @@ int nous_u_parse_iso_timestamp(const char *arg) {
     return 0;
 }
 
-/* PoP: _coerce_str @ hermes_cli/nous_account.py:_coerce_str */
+/* PoP: nous_u_coerce_str @ hermes_cli/nous_account.py:_coerce_str */
 int nous_u_coerce_str(const char *arg) {
     /* Python: a truthy str returns the value, anything else None. */
     if (!arg || !*arg) { printf("\n"); return 0; }

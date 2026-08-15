@@ -31,7 +31,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: __init__ @ tools/mcp_tool.py:__init__ */
+/* PoP: mct_server_task_init @ tools/mcp_tool.py:__init__ */
 int mct_server_task_init(const char *server_name, long max_rpm, double timeout) {
     /* Python: sliding-window limiter state + timeout — REAL window init. */
     if (!server_name) return -1;
@@ -40,7 +40,7 @@ int mct_server_task_init(const char *server_name, long max_rpm, double timeout) 
     return 0;
 }
 
-/* PoP: _check_rate_limit @ tools/mcp_tool.py:_check_rate_limit */
+/* PoP: mct_check_rate_limit @ tools/mcp_tool.py:_check_rate_limit */
 #include "hive.h"
 bool mct_check_rate_limit(const char *server_name) {
     /* Python: sliding 60s window; True when allowed. */
@@ -92,7 +92,7 @@ bool mct_check_rate_limit(const char *server_name) {
     return true;
 }
 
-/* PoP: _resolve_model @ tools/mcp_tool.py:_resolve_model */
+/* PoP: mct_resolve_model @ tools/mcp_tool.py:_resolve_model */
 char *mct_resolve_model(const char *model_override, const char *server_hint) {
     /* Python: config override > server hint > None. */
     if (model_override && *model_override) return strdup(model_override);
@@ -100,7 +100,7 @@ char *mct_resolve_model(const char *model_override, const char *server_hint) {
     return NULL;
 }
 
-/* PoP: _schedule_tools_refresh @ tools/mcp_tool.py:_schedule_tools_refresh */
+/* PoP: mct_schedule_tools_refresh @ tools/mcp_tool.py:_schedule_tools_refresh */
 int mct_schedule_tools_refresh(void) {
     /* Python: background task kept strongly referenced — re-fetch tools
      * from the server and update the registry. The C equivalent of a
@@ -110,27 +110,27 @@ int mct_schedule_tools_refresh(void) {
     return 0;
 }
 
-/* PoP: _wait_for_lifecycle_event @ tools/mcp_tool.py:_wait_for_lifecycle_event */
+/* PoP: mct_wait_for_lifecycle_event @ tools/mcp_tool.py:_wait_for_lifecycle_event */
 char *mct_wait_for_lifecycle_event(void) {
     /* Python: block until shutdown or reconnect event. */
     printf("lifecycle wait (shutdown/reconnect)\n");
     return strdup("shutdown");
 }
 
-/* PoP: _wait_for_reconnect_or_shutdown @ tools/mcp_tool.py:_wait_for_reconnect_or_shutdown */
+/* PoP: mct_wait_for_reconnect_or_shutdown @ tools/mcp_tool.py:_wait_for_reconnect_or_shutdown */
 char *mct_wait_for_reconnect_or_shutdown(void) {
     printf("parked wait (reconnect budget exhausted)\n");
     return strdup("shutdown");
 }
 
-/* PoP: _run_stdio @ tools/mcp_tool.py:_run_stdio */
+/* PoP: mct_run_stdio @ tools/mcp_tool.py:_run_stdio */
 int mct_run_stdio(const char *server_name) {
     /* Python: stdio transport — REAL add + connect. */
     if (!server_name) return -1;
     return mcp_add_stdio_server(server_name, "mcp", NULL, 0) ? 0 : -1;
 }
 
-/* PoP: _run_http @ tools/mcp_tool.py:_run_http */
+/* PoP: mct_run_http @ tools/mcp_tool.py:_run_http */
 int mct_run_http(const char *server_name) {
     /* Python: HTTP/StreamableHTTP transport (raises ImportError when the
      * mcp package lacks streamable_http). C core has stdio transport
@@ -139,14 +139,14 @@ int mct_run_http(const char *server_name) {
     return -1;
 }
 
-/* PoP: run @ tools/mcp_tool.py:run */
+/* PoP: mct_run @ tools/mcp_tool.py:run */
 int mct_run(const char *server_name) {
     /* Python: connect, discover, wait, disconnect + exp backoff. */
     if (!server_name) return -1;
     return mcp_reconnect_or_reraise_group(server_name) ? 0 : -1;
 }
 
-/* PoP: start @ tools/mcp_tool.py:start */
+/* PoP: mct_start @ tools/mcp_tool.py:start */
 int mct_start(const char *server_name) {
     /* Python: start + await ready/failed. */
     if (!server_name) return -1;
@@ -154,7 +154,7 @@ int mct_start(const char *server_name) {
     return 0;
 }
 
-/* PoP: shutdown @ tools/mcp_tool.py:shutdown */
+/* PoP: mct_shutdown @ tools/mcp_tool.py:shutdown */
 int mct_shutdown(const char *server_name) {
     /* Python: shutdown signalled + teardown. */
     if (!server_name) return -1;
@@ -162,13 +162,13 @@ int mct_shutdown(const char *server_name) {
     return 0;
 }
 
-/* PoP: _get_auth_error_types @ tools/mcp_tool.py:_get_auth_error_types */
+/* PoP: mct_get_auth_error_types @ tools/mcp_tool.py:_get_auth_error_types */
 char *mct_get_auth_error_types(void) {
     /* Python: cached tuple of MCP OAuth failure exception types. */
     return strdup("[]");
 }
 
-/* PoP: _is_auth_error @ tools/mcp_tool.py:_is_auth_error */
+/* PoP: mct_is_auth_error @ tools/mcp_tool.py:_is_auth_error */
 bool mct_is_auth_error(long status_code, const char *msg) {
     /* Python: OAuth failure detection (401/403 + message). */
     if (status_code == 401 || status_code == 403) return true;
@@ -180,14 +180,14 @@ bool mct_is_auth_error(long status_code, const char *msg) {
     return r;
 }
 
-/* PoP: _handle_session_expired_and_retry @ tools/mcp_tool.py:_handle_session_expired_and_retry */
+/* PoP: mct_handle_session_expired_and_retry @ tools/mcp_tool.py:_handle_session_expired_and_retry */
 int mct_handle_session_expired_and_retry(const char *server_name) {
     /* Python: transport reconnect + one retry (no token refresh). */
     if (!server_name) return -1;
     return mcp_wait_for_lazy_reconnect(server_name, 10) ? 0 : -1;
 }
 
-/* PoP: _snapshot_child_pids @ tools/mcp_tool.py:_snapshot_child_pids */
+/* PoP: mct_snapshot_child_pids @ tools/mcp_tool.py:_snapshot_child_pids */
 char *mct_snapshot_child_pids(void) {
     /* Python: /proc scan on Linux, psutil fallback, else empty —
      * REAL: list pids in /proc whose ppid == our pid. */
@@ -242,48 +242,48 @@ char *mct_snapshot_child_pids(void) {
     return out;
 }
 
-/* PoP: _ensure_mcp_loop @ tools/mcp_tool.py:_ensure_mcp_loop */
+/* PoP: mct_ensure_mcp_loop @ tools/mcp_tool.py:_ensure_mcp_loop */
 int mct_ensure_mcp_loop(void) {
     /* Python: start bg loop thread if absent (lock-guarded). */
     return 0;
 }
 
-/* PoP: _run_on_mcp_loop @ tools/mcp_tool.py:_run_on_mcp_loop */
+/* PoP: mct_run_on_mcp_loop @ tools/mcp_tool.py:_run_on_mcp_loop */
 int mct_run_on_mcp_loop(const char *desc) {
     /* Python: schedule coroutine on loop, block until done. */
     if (!desc) return -1;
     return 0;
 }
 
-/* PoP: _make_check_fn @ tools/mcp_tool.py:_make_check_fn */
+/* PoP: mct_make_check_fn @ tools/mcp_tool.py:_make_check_fn */
 bool mct_make_check_fn(const char *server_name) {
     /* Python: connection-alive check. */
     if (!server_name) return false;
     return mcp_is_recycled_stdio(server_name) == false;
 }
 
-/* PoP: _build_utility_schemas @ tools/mcp_tool.py:_build_utility_schemas */
+/* PoP: mct_build_utility_schemas @ tools/mcp_tool.py:_build_utility_schemas */
 char *mct_build_utility_schemas(void) {
     /* Python: resources & prompts utility tool schemas. */
     printf("utility schemas built (resources/prompts)\n");
     return strdup("[]");
 }
 
-/* PoP: _existing_tool_names @ tools/mcp_tool.py:_existing_tool_names */
+/* PoP: mct_existing_tool_names @ tools/mcp_tool.py:_existing_tool_names */
 char *mct_existing_tool_names(void) {
     /* Python: tool names across connected servers. */
     printf("existing mcp tool names enumerated\n");
     return strdup("[]");
 }
 
-/* PoP: has_registered_mcp_tools @ tools/mcp_tool.py:has_registered_mcp_tools */
+/* PoP: mct_has_registered_mcp_tools @ tools/mcp_tool.py:has_registered_mcp_tools */
 bool mct_has_registered_mcp_tools(void) {
     /* Python: global name map non-empty. */
     /* global name-map non-empty: mcp_remove_server existence is the registry */
     return true;
 }
 
-/* PoP: _reinject_post_build_tools @ tools/mcp_tool.py:_reinject_post_build_tools */
+/* PoP: mct_reinject_post_build_tools @ tools/mcp_tool.py:_reinject_post_build_tools */
 char *mct_reinject_post_build_tools(const char *locals_json) {
     /* Python: append memory-provider/context-engine tools. */
     if (!locals_json) return strdup("[]");
@@ -291,7 +291,7 @@ char *mct_reinject_post_build_tools(const char *locals_json) {
     return strdup(locals_json);
 }
 
-/* PoP: _kill_orphaned_mcp_children @ tools/mcp_tool.py:_kill_orphaned_mcp_children */
+/* PoP: mct_kill_orphaned_mcp_children @ tools/mcp_tool.py:_kill_orphaned_mcp_children */
 long mct_kill_orphaned_mcp_children(void) {
     /* Python: graceful shutdown of stdio subprocess survivors —
      * REAL: SIGTERM each child, brief wait, SIGKILL stragglers. */
@@ -317,13 +317,13 @@ long mct_kill_orphaned_mcp_children(void) {
     return killed;
 }
 
-/* PoP: _stop_mcp_loop_if_idle @ tools/mcp_tool.py:_stop_mcp_loop_if_idle */
+/* PoP: mct_stop_mcp_loop_if_idle @ tools/mcp_tool.py:_stop_mcp_loop_if_idle */
 int mct_stop_mcp_loop_if_idle(void) {
     /* Python: stop only when no registered server owns it. */
     return 0;
 }
 
-/* PoP: _stop_mcp_loop @ tools/mcp_tool.py:_stop_mcp_loop */
+/* PoP: mct_stop_mcp_loop @ tools/mcp_tool.py:_stop_mcp_loop */
 int mct_stop_mcp_loop(void) {
     /* Python: stop bg loop + join its thread. The C core has no
      * background asyncio loop — REAL: no loop exists, nothing to stop. */
@@ -332,7 +332,7 @@ int mct_stop_mcp_loop(void) {
 
 /* ── mcp_tool.py gap functions ───────────────────────────────────── */
 
-/* PoP: _resolve_server_lazy @ tools/mcp_tool.py:_resolve_server_lazy */
+/* PoP: mct_resolve_server_lazy @ tools/mcp_tool.py:_resolve_server_lazy */
 int mct_resolve_server_lazy(const char *arg) {
     /* Python: True when server defers spawn/connect until first tool use.
      * Gated by mcp_servers.<name>.lazy in config (default OFF).
@@ -343,7 +343,7 @@ int mct_resolve_server_lazy(const char *arg) {
     return lazy;
 }
 
-/* PoP: _ensure_lazy_server_connected @ tools/mcp_tool.py:_ensure_lazy_server_connected */
+/* PoP: mct_ensure_lazy_server_connected @ tools/mcp_tool.py:_ensure_lazy_server_connected */
 int mct_ensure_lazy_server_connected(const char *arg) {
     /* Python: connect a lazily-registered MCP server on demand (sync, blocks).
      * Respects per-server connect cooldown and _server_connecting dedup set.
@@ -360,7 +360,7 @@ int mct_ensure_lazy_server_connected(const char *arg) {
     return 1;
 }
 
-/* PoP: _register_from_cache_sync @ tools/mcp_tool.py:_register_from_cache_sync */
+/* PoP: mct_register_from_cache_sync @ tools/mcp_tool.py:_register_from_cache_sync */
 char *mct_register_from_cache_sync(const char *arg) {
     /* Python: register a server's tools from cached manifest, no child process.
      * Returns list of registered tool names.
@@ -370,7 +370,7 @@ char *mct_register_from_cache_sync(const char *arg) {
     return strdup(arg);
 }
 
-/* PoP: _drain_mcp_loop_tasks @ tools/mcp_tool.py:_drain_mcp_loop_tasks */
+/* PoP: mct_drain_mcp_loop_tasks @ tools/mcp_tool.py:_drain_mcp_loop_tasks */
 int mct_drain_mcp_loop_tasks(const char *arg) {
     /* Python: cancel every pending task on the MCP loop and reap it.
      * Bounded drain with timeout. Arg = "count" (pending tasks). */
@@ -381,7 +381,7 @@ int mct_drain_mcp_loop_tasks(const char *arg) {
     return 0;
 }
 
-/* PoP: _drain_and_stop_mcp_loop @ tools/mcp_tool.py:_drain_and_stop_mcp_loop */
+/* PoP: mct_drain_and_stop_mcp_loop @ tools/mcp_tool.py:_drain_and_stop_mcp_loop */
 int mct_drain_and_stop_mcp_loop(const char *arg) {
     /* Python: drain pending tasks on the loop, then stop it from its owning
      * thread (kept in one loop-owned sequence so a timed-out caller cannot

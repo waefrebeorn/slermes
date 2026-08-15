@@ -20,7 +20,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: is_native_gemini_base_url @ agent/gemini_native_adapter.py:is_native_gemini_base_url */
+/* PoP: gna_is_native_gemini_base_url @ agent/gemini_native_adapter.py:is_native_gemini_base_url */
 bool gna_is_native_gemini_base_url(const char *base_url) {
     /* Python: generativelanguage.googleapis.com / v1beta / v1 paths. */
     if (!base_url) return false;
@@ -34,7 +34,7 @@ bool gna_is_native_gemini_base_url(const char *base_url) {
     return r;
 }
 
-/* PoP: probe_gemini_tier @ agent/gemini_native_adapter.py:probe_gemini_tier */
+/* PoP: gna_probe_gemini_tier @ agent/gemini_native_adapter.py:probe_gemini_tier */
 char *gna_probe_gemini_tier(const char *api_key) {
     /* Python: AI Studio key probe → free/paid/error. */
     if (!api_key) return strdup("error");
@@ -42,13 +42,13 @@ char *gna_probe_gemini_tier(const char *api_key) {
     return strdup("paid");
 }
 
-/* PoP: is_free_tier_quota_error @ agent/gemini_native_adapter.py:is_free_tier_quota_error */
+/* PoP: gna_is_free_tier_quota_error @ agent/gemini_native_adapter.py:is_free_tier_quota_error */
 bool gna_is_free_tier_quota_error(const char *error_message) {
     if (!error_message) return false;
     return strstr(error_message, "free_tier") != NULL;
 }
 
-/* PoP: _coerce_content_to_text @ agent/gemini_native_adapter.py:_coerce_content_to_text */
+/* PoP: gna_coerce_content_to_text @ agent/gemini_native_adapter.py:_coerce_content_to_text */
 char *gna_coerce_content_to_text(const char *content_json) {
     /* Python: None→""; str→itself; list→joined text pieces. */
     if (!content_json) return strdup("");
@@ -82,7 +82,7 @@ char *gna_coerce_content_to_text(const char *content_json) {
     return out;
 }
 
-/* PoP: _extract_multimodal_parts @ agent/gemini_native_adapter.py:_extract_multimodal_parts */
+/* PoP: gna_extract_multimodal_parts @ agent/gemini_native_adapter.py:_extract_multimodal_parts */
 char *gna_extract_multimodal_parts(const char *content_json) {
     /* Python: list → parts; text-only → [{"text": ...}]. */
     if (!content_json) return strdup("[]");
@@ -90,7 +90,7 @@ char *gna_extract_multimodal_parts(const char *content_json) {
     return strdup(content_json);
 }
 
-/* PoP: _tool_call_extra_signature @ agent/gemini_native_adapter.py:_tool_call_extra_signature */
+/* PoP: gna_tool_call_extra_signature @ agent/gemini_native_adapter.py:_tool_call_extra_signature */
 char *gna_tool_call_extra_signature(const char *tool_call_json) {
     /* Python: extra_content.google/thinking_signature. */
     if (!tool_call_json) return NULL;
@@ -98,7 +98,7 @@ char *gna_tool_call_extra_signature(const char *tool_call_json) {
     return NULL;
 }
 
-/* PoP: _translate_tool_call_to_gemini @ agent/gemini_native_adapter.py:_translate_tool_call_to_gemini */
+/* PoP: gna_translate_tool_call_to_gemini @ agent/gemini_native_adapter.py:_translate_tool_call_to_gemini */
 char *gna_translate_tool_call_to_gemini(const char *tool_call_json) {
     /* Python: OpenAI functionCall → Gemini functionCall part — REAL:
      * {"id":..,"function":{"name":..,"arguments":..}} →
@@ -143,7 +143,7 @@ char *gna_translate_tool_call_to_gemini(const char *tool_call_json) {
     return out;
 }
 
-/* PoP: _translate_tool_result_to_gemini @ agent/gemini_native_adapter.py:_translate_tool_result_to_gemini */
+/* PoP: gna_translate_tool_result_to_gemini @ agent/gemini_native_adapter.py:_translate_tool_result_to_gemini */
 char *gna_translate_tool_result_to_gemini(const char *message_json, const char *names_json) {
     /* Python: tool_result part with name resolution. */
     if (!message_json) return NULL;
@@ -151,7 +151,7 @@ char *gna_translate_tool_result_to_gemini(const char *message_json, const char *
     return strdup(message_json);
 }
 
-/* PoP: _build_gemini_contents @ agent/gemini_native_adapter.py:_build_gemini_contents */
+/* PoP: gna_build_gemini_contents @ agent/gemini_native_adapter.py:_build_gemini_contents */
 char *gna_build_gemini_contents(const char *messages_json) {
     /* Python: contents + system_instruction split. */
     if (!messages_json) return strdup("{\"contents\": [], \"system\": null}");
@@ -159,7 +159,7 @@ char *gna_build_gemini_contents(const char *messages_json) {
     return strdup(messages_json);
 }
 
-/* PoP: _translate_tools_to_gemini @ agent/gemini_native_adapter.py:_translate_tools_to_gemini */
+/* PoP: gna_translate_tools_to_gemini @ agent/gemini_native_adapter.py:_translate_tools_to_gemini */
 char *gna_translate_tools_to_gemini(const char *tools_json) {
     /* Python: OpenAI tools → Gemini functionDeclarations. */
     if (!tools_json) return strdup("[]");
@@ -167,7 +167,7 @@ char *gna_translate_tools_to_gemini(const char *tools_json) {
     return strdup(tools_json);
 }
 
-/* PoP: _translate_tool_choice_to_gemini @ agent/gemini_native_adapter.py:_translate_tool_choice_to_gemini */
+/* PoP: gna_translate_tool_choice_to_gemini @ agent/gemini_native_adapter.py:_translate_tool_choice_to_gemini */
 char *gna_translate_tool_choice_to_gemini(const char *tool_choice) {
     /* Python: auto/none/required → functionCallingConfig. */
     if (!tool_choice) return NULL;
@@ -178,7 +178,7 @@ char *gna_translate_tool_choice_to_gemini(const char *tool_choice) {
     return strdup("{\"functionCallingConfig\": {\"mode\": \"AUTO\"}}");
 }
 
-/* PoP: _normalize_thinking_config @ agent/gemini_native_adapter.py:_normalize_thinking_config */
+/* PoP: gna_normalize_thinking_config @ agent/gemini_native_adapter.py:_normalize_thinking_config */
 char *gna_normalize_thinking_config(const char *config_json) {
     /* Python: thinkingBudget + includeThoughts. */
     if (!config_json || strcmp(config_json, "{}") == 0) return NULL;
@@ -203,7 +203,7 @@ char *gna_normalize_thinking_config(const char *config_json) {
     return out;
 }
 
-/* PoP: build_gemini_request @ agent/gemini_native_adapter.py:build_gemini_request */
+/* PoP: gna_build_gemini_request @ agent/gemini_native_adapter.py:build_gemini_request */
 char *gna_build_gemini_request(const char *messages_json, const char *model) {
     /* Python: full generateContent request dict. */
     if (!messages_json || !model) return NULL;
@@ -211,7 +211,7 @@ char *gna_build_gemini_request(const char *messages_json, const char *model) {
     return strdup("{}");
 }
 
-/* PoP: _map_gemini_finish_reason @ agent/gemini_native_adapter.py:_map_gemini_finish_reason */
+/* PoP: gna_map_gemini_finish_reason @ agent/gemini_native_adapter.py:_map_gemini_finish_reason */
 char *gna_map_gemini_finish_reason(const char *reason) {
     /* Python: STOP→stop, MAX_TOKENS→length, SAFETY→content_filter… */
     if (!reason) return strdup("stop");
@@ -224,7 +224,7 @@ char *gna_map_gemini_finish_reason(const char *reason) {
     return strdup("stop");
 }
 
-/* PoP: _tool_call_extra_from_part @ agent/gemini_native_adapter.py:_tool_call_extra_from_part */
+/* PoP: gna_tool_call_extra_from_part @ agent/gemini_native_adapter.py:_tool_call_extra_from_part */
 char *gna_tool_call_extra_from_part(const char *part_json) {
     /* Python: thoughtSignature → google extra. */
     if (!part_json || !strstr(part_json, "thoughtSignature")) return NULL;
@@ -232,7 +232,7 @@ char *gna_tool_call_extra_from_part(const char *part_json) {
     return strdup("{\"google\": {\"thought_signature\": \"...\"}}");
 }
 
-/* PoP: _empty_response @ agent/gemini_native_adapter.py:_empty_response */
+/* PoP: gna_empty_response @ agent/gemini_native_adapter.py:_empty_response */
 char *gna_empty_response(const char *model) {
     /* Python: empty assistant response namespace. */
     char *out = NULL;
@@ -241,7 +241,7 @@ char *gna_empty_response(const char *model) {
     return out;
 }
 
-/* PoP: translate_gemini_response @ agent/gemini_native_adapter.py:translate_gemini_response */
+/* PoP: gna_translate_gemini_response @ agent/gemini_native_adapter.py:translate_gemini_response */
 char *gna_translate_gemini_response(const char *resp_json, const char *model) {
     /* Python: candidates[0] → OpenAI-style response. */
     if (!resp_json || !strstr(resp_json, "candidates")) return gna_empty_response(model);
@@ -249,7 +249,7 @@ char *gna_translate_gemini_response(const char *resp_json, const char *model) {
     return strdup("{}");
 }
 
-/* PoP: _make_stream_chunk @ agent/gemini_native_adapter.py:_make_stream_chunk */
+/* PoP: gna_make_stream_chunk @ agent/gemini_native_adapter.py:_make_stream_chunk */
 char *gna_make_stream_chunk(const char *delta_json) {
     /* Python: chunk namespace with role/tool_calls/reasoning. */
     if (!delta_json) return NULL;
@@ -257,7 +257,7 @@ char *gna_make_stream_chunk(const char *delta_json) {
     return strdup(delta_json);
 }
 
-/* PoP: _iter_sse_events @ agent/gemini_native_adapter.py:_iter_sse_events */
+/* PoP: gna_iter_sse_events @ agent/gemini_native_adapter.py:_iter_sse_events */
 char *gna_iter_sse_events(const char *chunk) {
     /* Python: buffer + newline-split SSE events. */
     if (!chunk) return strdup("");
@@ -265,7 +265,7 @@ char *gna_iter_sse_events(const char *chunk) {
     return strdup(chunk);
 }
 
-/* PoP: translate_stream_event @ agent/gemini_native_adapter.py:translate_stream_event */
+/* PoP: gna_translate_stream_event @ agent/gemini_native_adapter.py:translate_stream_event */
 char *gna_translate_stream_event(const char *event_json) {
     /* Python: candidates[0] delta → openai chunk list. */
     if (!event_json || !strstr(event_json, "candidates")) return strdup("[]");
@@ -273,7 +273,7 @@ char *gna_translate_stream_event(const char *event_json) {
     return strdup("[]");
 }
 
-/* PoP: gemini_http_error @ agent/gemini_native_adapter.py:gemini_http_error */
+/* PoP: gna_gemini_http_error @ agent/gemini_native_adapter.py:gemini_http_error */
 char *gna_gemini_http_error(long status, const char *body_text) {
     /* Python: error dict from status + body. */
     char *out = NULL;
@@ -282,7 +282,7 @@ char *gna_gemini_http_error(long status, const char *body_text) {
     return out;
 }
 
-/* PoP: is_standard_key_auth_error @ agent/gemini_native_adapter.py:is_standard_key_auth_error */
+/* PoP: gna_is_standard_key_auth_error @ agent/gemini_native_adapter.py:is_standard_key_auth_error */
 /*
  * Return True when a Gemini 401 indicates Google rejected the key TYPE.
  *

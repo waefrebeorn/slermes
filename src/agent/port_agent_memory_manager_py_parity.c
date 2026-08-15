@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: agent_memory_manager_build_memory_context_block @ agent/memory_manager.py:build_memory_context_block */
+/* PoP: agent_memory_manager_build_memory_context_block_p @ agent/memory_manager.py:build_memory_context_block */
 json_t *agent_memory_manager_build_memory_context_block_p(void) {
     return json_object();
 }

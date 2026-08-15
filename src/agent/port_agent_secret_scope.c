@@ -176,7 +176,7 @@ const char *secret_scope_get_secret(const char *name, const char *default_val)
 
 /* ── .env file parsing ────────────────────────────────────────────────── */
 
-/* PoP: _strip_inline_comment @ agent/secret_scope.py:_strip_inline_comment */
+/* PoP: string @ agent/secret_scope.py:_strip_inline_comment */
 /*
  * Strip a dotenv-style inline comment from a raw .env value.
  *

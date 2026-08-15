@@ -14,37 +14,37 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_plugins_cmd_cmd_install @ hermes_cli/plugins_cmd.py:cmd_install */
+/* PoP: hermes_cli_plugins_cmd_cmd_install_p @ hermes_cli/plugins_cmd.py:cmd_install */
 json_t *hermes_cli_plugins_cmd_cmd_install_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_plugins_cmd_cmd_update @ hermes_cli/plugins_cmd.py:cmd_update */
+/* PoP: hermes_cli_plugins_cmd_cmd_update_p @ hermes_cli/plugins_cmd.py:cmd_update */
 json_t *hermes_cli_plugins_cmd_cmd_update_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_plugins_cmd_cmd_remove @ hermes_cli/plugins_cmd.py:cmd_remove */
+/* PoP: hermes_cli_plugins_cmd_cmd_remove_p @ hermes_cli/plugins_cmd.py:cmd_remove */
 json_t *hermes_cli_plugins_cmd_cmd_remove_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_plugins_cmd_cmd_enable @ hermes_cli/plugins_cmd.py:cmd_enable */
+/* PoP: hermes_cli_plugins_cmd_cmd_enable_p @ hermes_cli/plugins_cmd.py:cmd_enable */
 json_t *hermes_cli_plugins_cmd_cmd_enable_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_plugins_cmd_cmd_disable @ hermes_cli/plugins_cmd.py:cmd_disable */
+/* PoP: hermes_cli_plugins_cmd_cmd_disable_p @ hermes_cli/plugins_cmd.py:cmd_disable */
 json_t *hermes_cli_plugins_cmd_cmd_disable_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_plugins_cmd_bundled_default_on @ hermes_cli/plugins_cmd.py:_bundled_default_on */
+/* PoP: hermes_cli_plugins_cmd_bundled_default_on_p @ hermes_cli/plugins_cmd.py:_bundled_default_on */
 json_t *hermes_cli_plugins_cmd_bundled_default_on_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_plugins_cmd_cmd_list @ hermes_cli/plugins_cmd.py:cmd_list */
+/* PoP: hermes_cli_plugins_cmd_cmd_list_p @ hermes_cli/plugins_cmd.py:cmd_list */
 json_t *hermes_cli_plugins_cmd_cmd_list_p(void) {
     return json_object();
 }

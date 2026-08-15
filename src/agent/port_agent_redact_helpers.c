@@ -27,7 +27,7 @@ static const char *ENV_DUMP_COMMANDS[] = {
     "env", "printenv", "set", "export", "declare", NULL
 };
 
-/* PoP: agent_redact__mask_token_nonreusable @ agent/redact.py:_mask_token_nonreusable */
+/* PoP: agent_redact_mask_token_nonreusable @ agent/redact.py:_mask_token_nonreusable */
 char *agent_redact_mask_token_nonreusable(const char *token)
 {
     if (!token || token[0] == '\0') return strdup("\u00abredacted-secret\u00bb");
@@ -173,7 +173,7 @@ char *agent_redact_redact_terminal_output(const char *output, const char *comman
 }
 
 /* ── _is_word_start ─────────────────────────────────────────────────────── */
-/* PoP: agent_redact__is_word_start @ agent/redact.py:_is_word_start */
+/* PoP: agent_redact_is_word_start @ agent/redact.py:_is_word_start */
 bool agent_redact_is_word_start(const char *s, size_t i)
 {
     if (!s) return false;
@@ -188,7 +188,7 @@ bool agent_redact_is_word_start(const char *s, size_t i)
 }
 
 /* ── _is_word_end ───────────────────────────────────────────────────────── */
-/* PoP: agent_redact__is_word_end @ agent/redact.py:_is_word_end */
+/* PoP: agent_redact_is_word_end @ agent/redact.py:_is_word_end */
 bool agent_redact_is_word_end(const char *s, size_t j, bool allow_plural)
 {
     if (!s) return false;
@@ -257,7 +257,7 @@ static const char *next_keyword_match(const char *s, size_t from, size_t *match_
 }
 
 /* ── _key_has_secret_keyword ────────────────────────────────────────────── */
-/* PoP: agent_redact__key_has_secret_keyword @ agent/redact.py:_key_has_secret_keyword */
+/* PoP: agent_redact_key_has_secret_keyword @ agent/redact.py:_key_has_secret_keyword */
 /* Faithful port: returns true if key contains a secret keyword at a word boundary.
  * All-caps keys short-circuit to legacy embedded-match behavior. */
 bool agent_redact_key_has_secret_keyword(const char *key)
@@ -307,7 +307,7 @@ static const char *ENV_FILE_BASENAMES[] = {
     ".env.staging", ".env.test", ".envrc", NULL
 };
 
-/* PoP: agent_redact__command_reads_env_file @ agent/redact.py:_command_reads_env_file */
+/* PoP: files @ agent/redact.py:_command_reads_env_file */
 /* True when `command` reads a .env file to stdout. Detects file-read
  * commands (cat/head/tail/...) where any argument's basename is a
  * .env-style file. Template files (.env.example, .env.sample, ...) are not

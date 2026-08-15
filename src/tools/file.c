@@ -121,7 +121,7 @@ static const char *SCHEMA_WRITE = "{"
  *  Handlers
  * ================================================================ */
 
-/* PoP: _handle_read_file @ src/tools/file.c:handle_read */
+/* PoP: handle_read @ src/tools/file.c:handle_read */
 /* Port of Python tools/file_operations.py:read_file_tool(). */
 /* PoP: handle_read @ tools/file_operations.py:ShellFileOperations.read_file */
 static char *handle_read(const char *args_json) {
@@ -204,13 +204,13 @@ static char *handle_read(const char *args_json) {
     return json_out;
 }
 
-/* PoP: _handle_write_file @ src/tools/file.c:handle_write */
+/* PoP: handle_write @ src/tools/file.c:handle_write */
 /* Port of Python tools/file_operations.py:write_file_tool(). */
 /* PoP: handle_write @ tools/file_tools.py:write */
 /* PoP: handle_write @ agent/process_bootstrap.py:write */
-/* PoP: pty_write @ hermes_cli/main.py:write */
-/* PoP: pty_write @ hermes_cli/pty_bridge.py:write */
-/* PoP: pty_write @ hermes_cli/win_pty_bridge.py:write */
+/* PoP: handle_write @ hermes_cli/main.py:write */
+/* PoP: handle_write @ hermes_cli/pty_bridge.py:write */
+/* PoP: handle_write @ hermes_cli/win_pty_bridge.py:write */
 /* PoP: handle_write @ todo_tool:write */
 /* PoP: handle_write @ tools/file_operations.py:ShellFileOperations.write_file */
 static char *handle_write(const char *args_json) {
@@ -280,7 +280,7 @@ static char *handle_write(const char *args_json) {
     return json_out;
 }
 
-/* PoP: _handle_search_file @ src/tools/file.c:handle_search */
+/* PoP: handle_search @ src/tools/file.c:handle_search */
 /* Port of Python tools/file_operations.py:search_tool(). */
 /* PoP: handle_search @ tools/file_operations.py:ShellFileOperations.search */
 static char *handle_search(const char *args_json) {
@@ -944,7 +944,7 @@ void registry_init_file(void) {
         SCHEMA_HASH, file_hash_handler);
 }
 
-/* PoP: _unified_diff @ tools/file_operations.py:_unified_diff */
+/* PoP: file_ops_unified_diff @ tools/file_operations.py:_unified_diff */
 /* Unified diff between old and new content via the canonical difflib. */
 char *file_ops_unified_diff(const char *old_content, const char *new_content,
                             const char *filename)

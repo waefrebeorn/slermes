@@ -251,7 +251,7 @@ next_array:
  *  Main generation
  * ══════════════════════════════════════════════════════════════ */
 
-/* PoP: petg_generate @ agent/insights.py:generate */
+/* PoP: insights_generate @ agent/insights.py:generate */
 /* Port of Python agent/insights.py:generate(). */
 insights_report_t *insights_generate(db_t *db, int days, const char *source_filter) {
     if (!db) return NULL;
@@ -740,7 +740,7 @@ static void bar_string(char *out, size_t out_size, int value, int max_value, int
     out[pos] = '\0';
 }
 
-/* PoP: format_terminal @ agent/insights.py:format_terminal */
+/* PoP: insights_format_terminal @ agent/insights.py:format_terminal */
 /* Port of Python agent/insights.py:format_terminal(). */
 char *insights_format_terminal(const insights_report_t *r) {
     if (!r) return strdup("No insights data available.\n");
@@ -1022,7 +1022,7 @@ char *insights_format_terminal(const insights_report_t *r) {
  *  Formatting — Gateway (Markdown)
  * ══════════════════════════════════════════════════════════════ */
 
-/* PoP: format_gateway @ agent/insights.py:format_gateway */
+/* PoP: insights_format_gateway @ agent/insights.py:format_gateway */
 /* Port of Python agent/insights.py:format_gateway(). */
 char *insights_format_gateway(const insights_report_t *r) {
     if (!r) return strdup("No insights data available.");
@@ -1190,7 +1190,7 @@ char *insights_quick_stats(db_t *db, int days) {
     return result;
 }
 
-/* PoP: get_usage_breakdown @ agent/insights.py:get_usage_breakdown */
+/* PoP: payload @ agent/insights.py:get_usage_breakdown */
 
 /* Port of Python InsightsEngine.get_usage_breakdown: return the analytics
  * usage payload ({"tools": [...], "skills": [...]}) without running a full

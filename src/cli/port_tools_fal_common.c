@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: cli_tools_fal_common_import_fal_client @ tools/fal_common.py:import_fal_client */
+/* PoP: client @ tools/fal_common.py:import_fal_client */
 
 /* Port of Python tools/fal_common.py:import_fal_client */
 /* Lazy import of the fal_client SDK. In C there is no SDK to import — the
@@ -97,9 +97,9 @@ int cli_tools_fal_common__extract_http_status(const char *error_str)
     return 0;
 }
 
-/* PoP: cli_tools_fal_common_submit @ tools/fal_common.py:submit */
+/* PoP: JSON @ tools/fal_common.py:submit */
 
-/* PoP: cli_tools_fal_common_submit @ tools/fal_common.py:submit */
+/* PoP: JSON @ tools/fal_common.py:submit */
 /* Submit a FAL job: POST the arguments JSON to the managed FAL queue URL and
  * return the real response JSON (request_id / response_url / status_url /
  * cancel_url) exactly as the Python client does. */

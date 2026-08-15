@@ -14,32 +14,32 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_auth_resolve_provider @ hermes_cli/auth.py:resolve_provider */
+/* PoP: hermes_cli_auth_resolve_provider_p @ hermes_cli/auth.py:resolve_provider */
 json_t *hermes_cli_auth_resolve_provider_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_auth_scope_values @ hermes_cli/auth.py:_scope_values */
+/* PoP: hermes_cli_auth_scope_values_p @ hermes_cli/auth.py:_scope_values */
 json_t *hermes_cli_auth_scope_values_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_auth_spotify_scope_list @ hermes_cli/auth.py:_spotify_scope_list */
+/* PoP: hermes_cli_auth_spotify_scope_list_p @ hermes_cli/auth.py:_spotify_scope_list */
 json_t *hermes_cli_auth_spotify_scope_list_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_auth_get_auth_status @ hermes_cli/auth.py:get_auth_status */
+/* PoP: hermes_cli_auth_get_auth_status_p @ hermes_cli/auth.py:get_auth_status */
 json_t *hermes_cli_auth_get_auth_status_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_auth_login_command @ hermes_cli/auth.py:login_command */
+/* PoP: hermes_cli_auth_login_command_p @ hermes_cli/auth.py:login_command */
 json_t *hermes_cli_auth_login_command_p(void) {
     return json_object();
 }
 
-/* PoP: hermes_cli_auth_logout_command @ hermes_cli/auth.py:logout_command */
+/* PoP: hermes_cli_auth_logout_command_p @ hermes_cli/auth.py:logout_command */
 json_t *hermes_cli_auth_logout_command_p(void) {
     return json_object();
 }

@@ -59,7 +59,7 @@ char *auth_ssh_user_at_host(void)
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: auth_is_terminal_nous_refresh_error @ hermes_cli/auth.py:_is_terminal_nous_refresh_error */
+/* PoP: explicitly @ hermes_cli/auth.py:_is_terminal_nous_refresh_error */
 /* provider/code/relogin passed explicitly (no AuthError object). */
 int auth_is_terminal_nous_refresh_error(const char *provider, const char *code, int relogin_required)
 {
@@ -74,7 +74,7 @@ int auth_is_terminal_nous_refresh_error(const char *provider, const char *code, 
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: auth_is_source_suppressed @ hermes_cli/auth.py:is_source_suppressed */
+/* PoP: JSON @ hermes_cli/auth.py:is_source_suppressed */
 /* Takes the auth.json "suppressed_sources" object as JSON (caller loads it).
  * Returns 1 if (provider_id -> list) contains source. */
 int auth_is_source_suppressed(const char *provider_id, const char *source, const char *suppressed_json)

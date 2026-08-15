@@ -612,7 +612,7 @@ void profile_read_distribution_meta(const char *profile_dir, char **name,
 
 /* ── profile.yaml (per-profile description/role metadata) ─────────── */
 
-/* PoP: profile_yaml_path @ hermes_cli/profiles.py:_profile_yaml_path */
+/* PoP: free @ hermes_cli/profiles.py:_profile_yaml_path */
 /* Returns malloc'd "<profile_dir>/profile.yaml". Caller free(). */
 char *profile_yaml_path(const char *profile_dir) {
     if (!profile_dir) return NULL;

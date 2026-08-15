@@ -11,7 +11,7 @@
 extern char **registry_get_tool_names_for_toolset(const char *toolset, size_t *out_n);
 extern char **registry_get_registered_toolset_names(size_t *out_n);
 
-/* PoP: hermes_core_tools @ toolsets.py:_HERMES_CORE_TOOLS */
+/* PoP: TS @ toolsets.py:_HERMES_CORE_TOOLS */
 static const char *const HERMES_CORE_TOOLS[] = {
     "web_search", "web_extract",
     "terminal", "process",
@@ -50,7 +50,7 @@ static const char *const WEBHOOK_SAFE_TOOLS[] = {
 #define TS(...) (const char *const[]){ __VA_ARGS__, NULL }
 #define TS_NONE (const char *const[]){ NULL }
 
-/* PoP: toolsets_static_table @ toolsets.py:TOOLSETS */
+/* PoP: bundle_extras @ toolsets.py:TOOLSETS */
 static const toolset_def_t STATIC_TOOLSETS[] = {
     { "web", "Web research and content extraction tools",
       TS("web_search", "web_extract"), TS_NONE, false },

@@ -14,7 +14,7 @@ static char *xstrdup(const char *s) {
     return p;
 }
 
-/* PoP: hermes_cli_agent_plugins_discover_skills @ hermes_cli/agent_plugins.py:_discover_skills */
+/* PoP: hermes_cli_agent_plugins_discover_skills_p @ hermes_cli/agent_plugins.py:_discover_skills */
 json_t *hermes_cli_agent_plugins_discover_skills_p(void) {
     return json_object();
 }

@@ -132,7 +132,7 @@ bool environments_local_run(void) { return false; }
 bool environments_singularity_run(void) { return false; }
 /* PoP: fuzzy_match_find @ tools/fuzzy_match.py:find */
 json_t *fuzzy_match_find(const char *query, json_t *candidates) { (void)query; (void)candidates; return json_array(); }
-/* PoP: memory_tool_run @ tools/memory_tool.py:run */
+/* PoP: memory_tool_run_batch @ tools/memory_tool.py:run */
 json_t *memory_tool_run_batch(const char *action, json_t *args) { (void)action; (void)args; return json_object(); }
 /* PoP: mixture_of_agents_run @ tools/mixture_of_agents_tool.py:run */
 json_t *mixture_of_agents_run(json_t *ctx) { (void)ctx; return json_object(); }

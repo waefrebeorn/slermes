@@ -18,7 +18,7 @@ static char *lowerdup(const char *s) {
     return d;
 }
 
-/* PoP: _field @ agent/message_content.py:_field */
+/* PoP: mct_field @ agent/message_content.py:_field */
 char *mct_field(const char *value_json, const char *key) {
     /* Python: mapping get or attr. */
     if (!value_json || !key) return NULL;
@@ -36,7 +36,7 @@ char *mct_field(const char *value_json, const char *key) {
     return strndup(v, (size_t)(e - v));
 }
 
-/* PoP: _text_from_part @ agent/message_content.py:_text_from_part */
+/* PoP: mct_text_from_part @ agent/message_content.py:_text_from_part */
 char *mct_text_from_part(const char *part_json) {
     /* Python: str or mapping text. */
     if (!part_json) return strdup("");
@@ -48,7 +48,7 @@ char *mct_text_from_part(const char *part_json) {
     return t ? t : strdup("");
 }
 
-/* PoP: flatten_message_text @ agent/message_content.py:flatten_message_text */
+/* PoP: mct_flatten_message_text @ agent/message_content.py:flatten_message_text */
 char *mct_flatten_message_text(const char *message_json) {
     /* Python: visible text from common shapes. */
     if (!message_json) return strdup("");

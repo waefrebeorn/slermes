@@ -170,7 +170,7 @@ void cc_compressor_set_session(context_compressor_t *cc,
 
 /* ── proactive-prune-rearm runway (durable session_config) ─────────────── */
 
-/* PoP: _load_proactive_prune_rearm_tokens @ agent/context_compressor.py:_load_proactive_prune_rearm_tokens */
+/* PoP: cc_load_proactive_prune_rearm_tokens @ agent/context_compressor.py:_load_proactive_prune_rearm_tokens */
 void cc_load_proactive_prune_rearm_tokens(context_compressor_t *cc) {
     if (!cc || !cc->session_id || !cc->session_db) return;
     char *val = hermes_state_get_session_model_config_value(
@@ -186,7 +186,7 @@ void cc_load_proactive_prune_rearm_tokens(context_compressor_t *cc) {
     }
 }
 
-/* PoP: _clear_durable_proactive_prune_rearm @ agent/context_compressor.py:_clear_durable_proactive_prune_rearm */
+/* PoP: cc_clear_durable_proactive_prune_rearm @ agent/context_compressor.py:_clear_durable_proactive_prune_rearm */
 void cc_clear_durable_proactive_prune_rearm(context_compressor_t *cc) {
     if (!cc || !cc->session_id || !cc->session_db) return;
     hermes_state_patch_session_model_config(
@@ -198,7 +198,7 @@ void cc_clear_durable_proactive_prune_rearm(context_compressor_t *cc) {
 /* ── note_request_rough_estimate ────────────────────────────────────────── */
 /* (canonical PoP-tagged impl — see context_compressor_pure.c)              */
 /* ── _emit_init_summary_once ──────────────────────────────────────────── */
-/* PoP: _emit_init_summary_once @ agent/context_compressor.py:_emit_init_summary_once */
+/* PoP: cc_arm_init_summary @ agent/context_compressor.py:_emit_init_summary_once */
 void cc_arm_init_summary(context_compressor_t *cc) {
     if (cc) cc->_log_init_summary = 1;
 }
@@ -219,7 +219,7 @@ void cc_emit_init_summary_once(context_compressor_t *cc) {
 }
 
 /* ── _build_micro_summary_prompt ──────────────────────────────────────── */
-/* PoP: _build_micro_summary_prompt @ agent/context_compressor.py:_build_micro_summary_prompt */
+/* PoP: cc_build_micro_summary_prompt @ agent/context_compressor.py:_build_micro_summary_prompt */
 json_t *cc_build_micro_summary_prompt(const char *existing_summary,
                                       const char *exchange_text) {
     const char *summary_block = (existing_summary && existing_summary[0] != '\0')
@@ -267,7 +267,7 @@ json_t *cc_build_micro_summary_prompt(const char *existing_summary,
 }
 
 /* ── _resolve_compact_cursor ────────────────────────────────────────────── */
-/* PoP: _resolve_compact_cursor @ agent/context_compressor.py:_resolve_compact_cursor */
+/* PoP: cc_resolve_compact_cursor @ agent/context_compressor.py:_resolve_compact_cursor */
 long cc_resolve_compact_cursor(context_compressor_t *cc, const json_t *messages,
                                long head_end, long tail_start) {
     if (!cc || !messages || messages->type != JSON_ARRAY) return head_end;
@@ -310,7 +310,7 @@ long cc_resolve_compact_cursor(context_compressor_t *cc, const json_t *messages,
 }
 
 /* ── _find_one_exchange ─────────────────────────────────────────────────── */
-/* PoP: _find_one_exchange @ agent/context_compressor.py:_find_one_exchange */
+/* PoP: cc_find_one_exchange @ agent/context_compressor.py:_find_one_exchange */
 bool cc_find_one_exchange(context_compressor_t *cc, const json_t *messages,
                           long start, long tail_start,
                           long *out_start, long *out_end) {
@@ -359,7 +359,7 @@ bool cc_find_one_exchange(context_compressor_t *cc, const json_t *messages,
 }
 
 /* ── _serialize_one_exchange ───────────────────────────────────────────── */
-/* PoP: _serialize_one_exchange @ agent/context_compressor.py:_serialize_one_exchange */
+/* PoP: cc_serialize_one_exchange @ agent/context_compressor.py:_serialize_one_exchange */
 char *cc_serialize_one_exchange(context_compressor_t *cc, const json_t *messages,
                                 long start, long end) {
     if (!cc || !messages || messages->type != JSON_ARRAY) return NULL;
@@ -381,7 +381,7 @@ char *cc_serialize_one_exchange(context_compressor_t *cc, const json_t *messages
 }
 
 /* ── _splice_micro_compact_result ─────────────────────────────────────── */
-/* PoP: _splice_micro_compact_result @ agent/context_compressor.py:_splice_micro_compact_result */
+/* PoP: cc_splice_micro_compact_result @ agent/context_compressor.py:_splice_micro_compact_result */
 json_t *cc_splice_micro_compact_result(context_compressor_t *cc,
                                        const json_t *messages,
                                        long splice_start, long splice_end,
@@ -442,7 +442,7 @@ json_t *cc_splice_micro_compact_result(context_compressor_t *cc,
 }
 
 /* ── _needs_defrag ────────────────────────────────────────────────────── */
-/* PoP: _needs_defrag @ agent/context_compressor.py:_needs_defrag */
+/* PoP: cc_needs_defrag @ agent/context_compressor.py:_needs_defrag */
 bool cc_needs_defrag(const context_compressor_t *cc) {
     if (!cc || !cc->micro_compact_rolling_summary) return false;
     long tokens = (long)(strlen(cc->micro_compact_rolling_summary) / 4);
@@ -450,7 +450,7 @@ bool cc_needs_defrag(const context_compressor_t *cc) {
 }
 
 /* ── _emit_micro_compaction_telemetry ─────────────────────────────────── */
-/* PoP: _emit_micro_compaction_telemetry @ agent/context_compressor.py:_emit_micro_compaction_telemetry */
+/* PoP: cc_emit_micro_compaction_telemetry @ agent/context_compressor.py:_emit_micro_compaction_telemetry */
 void cc_emit_micro_compaction_telemetry(context_compressor_t *cc,
         const char *outcome, int messages_before, int messages_after,
         long tokens_before, long tokens_after, long exchange_tokens,
