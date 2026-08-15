@@ -71,7 +71,7 @@ bool skills_hub_is_path_redirect(const char *path) {
 
 /* ── _hermes_home (L63) ── */
 /* PoP: skills_hub_hermes_home @ tools/skills_hub.py:_hermes_home */
-const char *skills_hub_hermes_home(void) {
+const char *skills_hub_hermes_home_port(void) {
     const char *home = getenv("HERMES_HOME");
     if (home && *home) return home;
     return "~/.hermes";
@@ -80,7 +80,7 @@ const char *skills_hub_hermes_home(void) {
 /* ── _skills_dir (L67) ── */
 /* PoP: skills_hub_skills_dir @ tools/skills_hub.py:_skills_dir */
 void skills_hub_skills_dir(char *out, size_t out_sz) {
-    const char *home = skills_hub_hermes_home();
+    const char *home = skills_hub_hermes_home_port();
     snprintf(out, out_sz, "%s/skills", home);
 }
 

@@ -77,8 +77,8 @@ json_t *cli_load_config(void) {
 }
 
 /* ── _strip_reasoning_tags (L?) ── */
-/* PoP: cli_strip_reasoning_tags @ cli.py:_strip_reasoning_tags */
-char *cli_strip_reasoning_tags(const char *text) {
+/* PoP: cli_strip_reasoning_tags_batch4 @ cli.py:_strip_reasoning_tags */
+char *cli_strip_reasoning_tags_batch4(const char *text) {
     if (!text) return xstrdup("");
     /* Strip <reasoning>...</reasoning> tags */
     size_t len = strlen(text);

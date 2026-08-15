@@ -105,8 +105,8 @@ bool hs_is_malformed_db_error(const char *errmsg) {
 }
 
 /* ── is_disk_full_error (L1378) ── */
-/* PoP: hs_is_disk_full_error @ hermes_state.py:is_disk_full_error */
-bool hs_is_disk_full_error(const char *errmsg) {
+/* PoP: hs_is_disk_full_error_port @ hermes_state.py:is_disk_full_error */
+bool hs_is_disk_full_error_port(const char *errmsg) {
     if (!errmsg) return false;
     return strstr(errmsg, "database or disk is full") != NULL || strstr(errmsg, "disk full") != NULL;
 }
@@ -115,7 +115,7 @@ bool hs_is_disk_full_error(const char *errmsg) {
 /* PoP: hs_classify_persistence_error @ hermes_state.py:classify_persistence_error */
 const char *hs_classify_persistence_error(const char *errmsg) {
     if (!errmsg) return "unknown";
-    if (hs_is_disk_full_error(errmsg)) return "disk_full";
+    if (hs_is_disk_full_error_port(errmsg)) return "disk_full";
     if (hs_is_malformed_db_error(errmsg)) return "malformed";
     if (strstr(errmsg, "locked") != NULL) return "locked";
     if (strstr(errmsg, "busy") != NULL) return "busy";

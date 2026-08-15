@@ -93,8 +93,8 @@ void proc_reg_format_uptime_short(int seconds, char *out, size_t out_sz) {
  * ═══════════════════════════════════════════════════════════════════ */
 
 /* ── _jittered (L440) ── */
-/* PoP: mcp_jittered @ tools/mcp_tool.py:_jittered */
-double mcp_jittered(double seconds) {
+/* PoP: mcp_jittered_port @ tools/mcp_tool.py:_jittered */
+double mcp_jittered_port(double seconds) {
     /* +/-20% uniform jitter */
     double jitter = 1.0 + (((double)rand() / RAND_MAX) - 0.5) * 0.4;
     double result = seconds * jitter;

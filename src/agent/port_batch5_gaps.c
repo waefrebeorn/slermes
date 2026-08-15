@@ -114,8 +114,8 @@ bool terminal_looks_like_env(const char *cmd) {
 }
 
 /* ── _read_shell_token (L?) ── */
-/* PoP: terminal_read_shell_token @ tools/terminal_tool.py:_read_shell_token */
-char *terminal_read_shell_token(const char *cmd) {
+/* PoP: terminal_read_shell_token_batch5 @ tools/terminal_tool.py:_read_shell_token */
+char *terminal_read_shell_token_batch5(const char *cmd) {
     if (!cmd) return xstrdup("");
     /* Read first token */
     while (*cmd == ' ' || *cmd == '\t') cmd++;

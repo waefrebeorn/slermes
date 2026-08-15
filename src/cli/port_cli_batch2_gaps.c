@@ -21,8 +21,8 @@ static char *xstrdup(const char *s) {
 }
 
 /* ── _parse_service_tier_config (L419) ── */
-/* PoP: cli_parse_service_tier_config @ cli.py:_parse_service_tier_config */
-const char *cli_parse_service_tier_config(const char *raw) {
+/* PoP: cli_parse_service_tier_config_batch2 @ cli.py:_parse_service_tier_config */
+const char *cli_parse_service_tier_config_batch2(const char *raw) {
     if (!raw || !*raw) return NULL;
     /* Normalize */
     char val[64];
@@ -140,8 +140,8 @@ char *cli_strip_markdown_syntax(const char *text) {
 
 /* ── _hex_to_ansi (L2518) — already ported in port_cli_pure_gaps.c ── */
 /* Adding alias for scanner */
-/* PoP: cli_hex_to_ansi @ cli.py:_hex_to_ansi */
-const char *cli_hex_to_ansi(const char *hex) {
+/* PoP: cli_hex_to_ansi_batch2 @ cli.py:_hex_to_ansi */
+const char *cli_hex_to_ansi_batch2(const char *hex) {
     if (!hex || hex[0] != '#') return xstrdup("");
     int r, g, b;
     if (sscanf(hex + 1, "%02x%02x%02x", &r, &g, &b) != 3) return xstrdup("");
@@ -151,8 +151,8 @@ const char *cli_hex_to_ansi(const char *hex) {
 }
 
 /* ── _luminance_from_hex (L2559) — already ported in port_cli_pure_gaps.c ── */
-/* PoP: cli_luminance_from_hex @ cli.py:_luminance_from_hex */
-double cli_luminance_from_hex(const char *hex) {
+/* PoP: cli_luminance_from_hex_batch2 @ cli.py:_luminance_from_hex */
+double cli_luminance_from_hex_batch2(const char *hex) {
     if (!hex || hex[0] != '#') return 0.0;
     int r, g, b;
     if (sscanf(hex + 1, "%02x%02x%02x", &r, &g, &b) != 3) return 0.0;
@@ -160,8 +160,8 @@ double cli_luminance_from_hex(const char *hex) {
 }
 
 /* ── _normalize_git_bash_path (L1399) — already ported in port_cli_pure_gaps.c ── */
-/* PoP: cli_normalize_git_bash_path @ cli.py:_normalize_git_bash_path */
-char *cli_normalize_git_bash_path(const char *path) {
+/* PoP: cli_normalize_git_bash_path_batch2 @ cli.py:_normalize_git_bash_path */
+char *cli_normalize_git_bash_path_batch2(const char *path) {
     if (!path) return xstrdup("");
     if (path[0] != '/') return xstrdup(path);
     /* /c/Users/... → C:/Users/... */

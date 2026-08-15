@@ -9,6 +9,13 @@
 #include <unistd.h>
 #include "hermes_json.h"
 #include "hermes_logger.h"
+#include <time.h>
+
+static double now_mono(void) {
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return ts.tv_sec + ts.tv_nsec / 1e9;
+}
 
 static char *xstrdup(const char *s) {
     if (!s) return NULL;
@@ -64,8 +71,8 @@ char *models_format_price_per_mtok(const char *per_token_str) {
 }
 
 /* ── compute_sale_discount (L?) ── */
-/* PoP: models_compute_sale_discount @ hermes_cli/models.py:compute_sale_discount */
-double models_compute_sale_discount(double original_price, double sale_price) {
+/* PoP: models_compute_sale_discount_batch3 @ hermes_cli/models.py:compute_sale_discount */
+double models_compute_sale_discount_batch3(double original_price, double sale_price) {
     if (original_price <= 0) return 0;
     return (1.0 - sale_price / original_price) * 100.0;
 }

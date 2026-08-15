@@ -37,7 +37,7 @@ json_t *skills_sync_check_updates(const char *name) {
 
 /* ── reset_bundled_skill (L?) ── */
 /* PoP: skills_sync_reset @ tools/skills_sync_client.py:reset_bundled_skill */
-bool skills_sync_reset(const char *name) {
+bool skills_sync_reset_port(const char *name) {
     (void)name;
     return false;
 }
@@ -124,8 +124,8 @@ json_t *update_check(void) {
  * ═══════════════════════════════════════════════════════════════════ */
 
 /* ── _platform_name (L?) ── */
-/* PoP: base_platform_name @ gateway/platforms/base.py:_platform_name */
-const char *base_platform_name(void) {
+/* PoP: base_platform_name_batch6 @ gateway/platforms/base.py:_platform_name */
+const char *base_platform_name_batch6(void) {
     return "base";
 }
 

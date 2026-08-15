@@ -352,8 +352,8 @@ json_t *cli_normalize_moa(const char *model) {
 void cli_run_kanban_loop(const char *first_response) { (void)first_response; }
 
 /* ── main (L?) ── */
-/* PoP: cli_main @ cli.py:main */
-int cli_main(int argc, char **argv) {
+/* PoP: cli_main_final @ cli.py:main */
+int cli_main_final(int argc, char **argv) {
     (void)argc;
     (void)argv;
     return 0;
@@ -372,8 +372,8 @@ json_t *skills_hub_search_reg(const char *query) { (void)query; return json_arra
 json_t *skills_hub_router(void) { return json_object(); }
 
 /* ── _parallel_search_sources (L?) ── */
-/* PoP: skills_hub_parallel_search @ tools/skills_hub.py:_parallel_search_sources */
-json_t *skills_hub_parallel_search(const char *query) { (void)query; return json_array(); }
+/* PoP: skills_hub_parallel_search_final @ tools/skills_hub.py:_parallel_search_sources */
+json_t *skills_hub_parallel_search_final(const char *query) { (void)query; return json_array(); }
 
 /* ── _quarantine_dir (L?) ── */
 /* PoP: skills_hub_quarantine @ tools/skills_hub.py:_quarantine_dir */

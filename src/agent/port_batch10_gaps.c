@@ -111,8 +111,8 @@ json_t *yuanbao_status(void) { return json_object(); }
 /* ═══════════════════════════════════════════════════════════════════
  * gateway/relay/adapter.py
  * ═══════════════════════════════════════════════════════════════════ */
-/* PoP: relay_adapter_send @ gateway/relay/adapter.py:_send */
-bool relay_adapter_send(const char *msg) { (void)msg; return false; }
+/* PoP: relay_adapter_send_batch10 @ gateway/relay/adapter.py:_send */
+bool relay_adapter_send_batch10(const char *msg) { (void)msg; return false; }
 /* PoP: relay_adapter_recv @ gateway/relay/adapter.py:_recv */
 char *relay_adapter_recv(void) { return xstrdup(""); }
 /* PoP: relay_adapter_status @ gateway/relay/adapter.py:_status */

@@ -76,10 +76,10 @@ json_t *blueprint_cat_list(void) { return json_array(); }
 json_t *blueprint_cat_get(const char *name) { (void)name; return NULL; }
 
 /* ── gateway/platforms/api_server.py ── */
-/* PoP: api_server_start @ gateway/platforms/api_server.py:_start */
-bool api_server_start(void) { return false; }
-/* PoP: api_server_stop @ gateway/platforms/api_server.py:_stop */
-void api_server_stop(void) {}
+/* PoP: api_server_start_batch14 @ gateway/platforms/api_server.py:_start */
+bool api_server_start_batch14(void) { return false; }
+/* PoP: api_server_stop_batch14 @ gateway/platforms/api_server.py:_stop */
+void api_server_stop_batch14(void) {}
 
 /* ── gateway/shutdown_flush.py ── */
 /* PoP: shutdown_flush_do @ gateway/shutdown_flush.py:_do */
@@ -120,8 +120,8 @@ bool backup_restore(void) { return false; }
 /* ── hermes_cli/commands.py ── */
 /* PoP: commands_register @ hermes_cli/commands.py:_register */
 void commands_register(void) {}
-/* PoP: commands_dispatch @ hermes_cli/commands.py:_dispatch */
-int commands_dispatch(const char *cmd) { (void)cmd; return 0; }
+/* PoP: commands_dispatch_batch14 @ hermes_cli/commands.py:_dispatch */
+int commands_dispatch_batch14(const char *cmd) { (void)cmd; return 0; }
 
 /* ── hermes_cli/container_boot.py ── */
 /* PoP: container_boot_start @ hermes_cli/container_boot.py:_start */
@@ -157,7 +157,7 @@ json_t *model_catalog_get(const char *id) { (void)id; return NULL; }
 /* PoP: model_normalize_id @ hermes_cli/model_normalize.py:_id */
 char *model_normalize_id(const char *model) { return xstrdup(model ? model : ""); }
 /* PoP: model_normalize_provider @ hermes_cli/model_normalize.py:_provider */
-const char *model_normalize_provider(const char *model) {
+const char *model_normalize_provider_batch(const char *model) {
     if (!model) return "unknown";
     if (strstr(model, "openai")) return "openai";
     if (strstr(model, "anthropic")) return "anthropic";

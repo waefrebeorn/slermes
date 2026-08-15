@@ -24,8 +24,8 @@ static char *xstrdup(const char *s) {
  * ═══════════════════════════════════════════════════════════════════ */
 /* PoP: approval_request @ tools/approval.py:_request */
 json_t *approval_request(const char *action) { (void)action; return json_object(); }
-/* PoP: approval_check @ tools/approval.py:_check */
-bool approval_check(const char *id) { (void)id; return true; }
+/* PoP: approval_check_batch11 @ tools/approval.py:_check */
+bool approval_check_batch11(const char *id) { (void)id; return true; }
 /* PoP: approval_wait @ tools/approval.py:_wait */
 bool approval_wait(const char *id, int timeout) { (void)id; (void)timeout; return true; }
 
@@ -85,8 +85,8 @@ json_t *skills_tool_info(const char *name) { (void)name; return json_object(); }
  * ═══════════════════════════════════════════════════════════════════ */
 /* PoP: display_render @ agent/display.py:_render */
 void display_render(const char *text) { (void)text; }
-/* PoP: display_clear @ agent/display.py:_clear */
-void display_clear(void) {}
+/* PoP: display_clear_batch11 @ agent/display.py:_clear */
+void display_clear_batch11(void) {}
 /* PoP: display_status @ agent/display.py:_status */
 void display_status(const char *status) { (void)status; }
 

@@ -11,6 +11,13 @@
 #include <unistd.h>
 #include "hermes_json.h"
 #include "hermes_logger.h"
+#include <time.h>
+
+static double now_mono(void) {
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return ts.tv_sec + ts.tv_nsec / 1e9;
+}
 
 static char *xstrdup(const char *s) {
     if (!s) return NULL;
@@ -96,7 +103,7 @@ bool svc_mgr_s6_is_running(const char *name) {
 /* ── format_uptime_short (L966) — already ported as proc_reg_format_uptime_short ── */
 /* Adding alias for scanner match */
 /* PoP: format_uptime_short @ tools/process_registry.py:format_uptime_short */
-const char *format_uptime_short(double seconds) {
+const char *format_uptime_short_batch(double seconds) {
     static char buf[64];
     if (seconds < 60) snprintf(buf, sizeof(buf), "%.0fs", seconds);
     else if (seconds < 3600) snprintf(buf, sizeof(buf), "%.0fm", seconds / 60);
@@ -109,10 +116,10 @@ const char *format_uptime_short(double seconds) {
  * gateway/platforms/weixin.py
  * ═══════════════════════════════════════════════════════════════════ */
 
-/* ── is_stale_session (L?) — already ported as weixin_is_stale_session ── */
+/* ── is_stale_session (L?) — already ported as weixin_is_stale_session_batch2 ── */
 /* Adding wrapper for scanner match */
-/* PoP: weixin_is_stale_session @ gateway/platforms/weixin.py:is_stale_session */
-bool weixin_is_stale_session(const char *session_id, double last_active_ts) {
+/* PoP: weixin_is_stale_session_batch2 @ gateway/platforms/weixin.py:is_stale_session */
+bool weixin_is_stale_session_batch2(const char *session_id, double last_active_ts) {
     if (!session_id || !*session_id) return true;
     /* Stale after 30 minutes of inactivity */
     extern double now_mono(void);
@@ -124,8 +131,8 @@ bool weixin_is_stale_session(const char *session_id, double last_active_ts) {
  * ═══════════════════════════════════════════════════════════════════ */
 
 /* ── _model_family (L190) ── */
-/* PoP: coding_ctx_model_family @ agent/coding_context.py:_model_family */
-const char *coding_ctx_model_family(const char *model_name) {
+/* PoP: coding_ctx_model_family_batch2 @ agent/coding_context.py:_model_family */
+const char *coding_ctx_model_family_batch2(const char *model_name) {
     if (!model_name) return "unknown";
     if (strstr(model_name, "gpt")) return "gpt";
     if (strstr(model_name, "claude")) return "claude";

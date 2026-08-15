@@ -17,8 +17,8 @@ static char *xstrdup(const char *s) {
 }
 
 /* ── _model_family (L190) ── */
-/* PoP: coding_ctx_model_family @ agent/coding_context.py:_model_family */
-const char *coding_ctx_model_family(const char *model) {
+/* PoP: coding_ctx_model_family_port @ agent/coding_context.py:_model_family */
+const char *coding_ctx_model_family_port(const char *model) {
     if (!model) return NULL;
     char lowered[256];
     size_t len = strlen(model);
@@ -40,7 +40,7 @@ const char *coding_ctx_model_family(const char *model) {
 /* ── _edit_format_line (L206) ── */
 /* PoP: coding_ctx_edit_format_line @ agent/coding_context.py:_edit_format_line */
 const char *coding_ctx_edit_format_line(const char *model) {
-    const char *family = coding_ctx_model_family(model);
+    const char *family = coding_ctx_model_family_port(model);
     if (!family) return "";
     if (strcmp(family, "claude") == 0) return "Use the Edit tool for file modifications.";
     if (strcmp(family, "gpt") == 0) return "Use the file_editor tool for modifications.";
