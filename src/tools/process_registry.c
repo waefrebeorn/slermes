@@ -914,7 +914,7 @@ char* process_registry_wait(const char *session_id, int timeout_sec) {
     return result;
 }
 
-/* PoP: process_registry_kill @ tools/process_registry.py:kill_process */
+/* PoP: envb_kill_process @ tools/process_registry.py:kill_process */
 char* process_registry_kill(const char *session_id, const char *source,
                             bool consume_output) {
     if (!source) source = "process.kill";

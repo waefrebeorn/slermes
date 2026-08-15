@@ -140,7 +140,7 @@ int custom_unit_to_cp(const char *s, int len, int budget,
  * ================================================================ */
 
 /* Port of Python: _float_env */
-/* PoP: _float_env @ gateway/platforms/base.py:_float_env */
+/* PoP: gw_float_env @ gateway/platforms/base.py:_float_env */
 double float_env(const char *name, double default_value) {
     if (!name) return default_value;
 

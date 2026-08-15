@@ -38,7 +38,7 @@ const cfg_category_t CFG_CATEGORIES[] = {
 
 /* ── Backup ────────────────────────────────────────────────── */
 /* AG26: Port of Python hermes_cli/main.py:cmd_backup(). */
-/* PoP: cmd_backup @ hermes_cli/curator.py:_cmd_backup */
+/* PoP: mn_cmd_backup @ hermes_cli/curator.py:_cmd_backup */
 void cmd_backup(const char *args, agent_state_t *state) {
     (void)state;
     bool full = false;
@@ -1226,7 +1226,7 @@ void show_section_cron(const hermes_config_t *cfg) {
     show_cfg_val_bool("notify_on_failure", cfg->cron.notify_on_failure);
 }
 
-/* PoP: on_delegation @ agent/memory_manager.py:on_delegation */
+/* PoP: show_section_delegation @ agent/memory_manager.py:on_delegation */
 void show_section_delegation(const hermes_config_t *cfg) {
     printf("delegation:  Subagent spawning and child config\n");
     show_cfg_val_int("max_concurrent_children", cfg->delegation.max_concurrent_children);
@@ -1312,7 +1312,7 @@ void show_section_sessions(const hermes_config_t *cfg) {
     show_cfg_val_bool("store_trajectories", cfg->session.store_trajectories);
 }
 
-/* PoP: stt @ hermes_cli/nous_subscription.py:stt */
+/* PoP: show_section_stt @ hermes_cli/nous_subscription.py:stt */
 void show_section_stt(const hermes_config_t *cfg) {
     printf("stt:  Speech-to-text configuration\n");
     show_cfg_val_bool("enabled", cfg->stt.enabled);

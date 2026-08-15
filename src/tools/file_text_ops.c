@@ -175,7 +175,7 @@ char *file_text_ops_strip_bom(const char *text)
     return dup_str(text);
 }
 
-/* PoP: file_text_ops_has_bom @ tools/file_operations.py:_has_bom */
+/* PoP: fo_file_has_bom @ tools/file_operations.py:_has_bom */
 bool file_text_ops_has_bom(const char *text)
 {
     if (!text) return false;

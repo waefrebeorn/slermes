@@ -143,7 +143,7 @@ void cache_policy_stub_free(struct cache_policy_stub *s)
 }
 
 /* ── _direct_native_anthropic_tool_cache_capability ─────────────────────── */
-/* PoP: _direct_native_anthropic_tool_cache_capability @ agent/agent_runtime_helpers.py:_direct_native_anthropic_tool_cache_capability */
+/* PoP: arh_direct_native_anthropic_tool_cache_capability @ agent/agent_runtime_helpers.py:_direct_native_anthropic_tool_cache_capability */
 /*
  * Takes effective strings (Python resolves base_url/api_mode from the agent or
  * kwargs).  Caller passes the stub/agent's base_url + api_mode + overrides.
@@ -187,7 +187,7 @@ int native_compaction_is_model(const char *model) {
     return strcasestr(model, NATIVE_COMPACT_ELIGIBLE_MARKER) != NULL;
 }
 
-/* PoP: is_direct_openai_route @ agent/native_compaction.py:is_direct_openai_route */
+/* PoP: native_compaction_is_direct_openai_route @ agent/native_compaction.py:is_direct_openai_route */
 int native_compaction_is_direct_openai_route(const char *base_url, int is_codex_backend) {
     if (is_codex_backend) return 1;
     if (!base_url) return 0;

@@ -22,7 +22,7 @@
 
 /* now_iso is declared in hermes_core_types.h / exposed via the agent
  * timestamp port — used for the manifest updatedAt field. */
-/* PoP: manifest_path @ agent/verify/environment.py:manifest_path */
+/* PoP: tools_delegation_live_log_u_manifest_path @ agent/verify/environment.py:manifest_path */
 char *verify_manifest_path(const char *root)
 {
     if (!root || !*root) return NULL;

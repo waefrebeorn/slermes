@@ -37,7 +37,7 @@ void url_reset_allow_private(void) {
     g_allow_private = false;
 }
 
-/* PoP: url_allow_private_enabled @ tools/url_safety.py:_global_allow_private_urls */
+/* PoP: cli_tools_url_safety__global_allow_private_urls @ tools/url_safety.py:_global_allow_private_urls */
 /* Getter for the global allow-private-URLs toggle. Mirrors Python's cached
  * _global_allow_private_urls() result (env/config resolved into g_allow_private
  * via url_set_allow_private / config load). */
@@ -45,7 +45,7 @@ bool url_allow_private_enabled(void) {
     return g_allow_private;
 }
 
-/* PoP: _resolve_allow_private_urls @ tools/url_safety.py:_resolve_allow_private_urls */
+/* PoP: url_resolve_allow_private_urls @ tools/url_safety.py:_resolve_allow_private_urls */
 /* Resolve the effective private-URL toggle from env var (highest priority) then */
 /* config. input: full config JSON string. Returns true/false. */
 bool url_resolve_allow_private_urls(const char *config_json)

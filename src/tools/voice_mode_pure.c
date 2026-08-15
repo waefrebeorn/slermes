@@ -27,7 +27,7 @@ bool is_nan(double value) {
 
 /* ── _get_beep_volume ────────────────────────────────────────────── */
 
-/* PoP: _get_beep_volume @ tools/voice_mode.py:_get_beep_volume */
+/* PoP: voice_get_beep_volume @ tools/voice_mode.py:_get_beep_volume */
 double voice_get_beep_volume(const json_t *voice_cfg) {
     const double default_vol = VM_DEFAULT_BEEP_VOLUME;
     if (!voice_cfg || voice_cfg->type != JSON_OBJECT) return default_vol;
@@ -230,7 +230,7 @@ bool is_audio_output_active(void) {
     return r;
 }
 
-/* PoP: _max_duration_reached @ tools/voice_mode.py:_max_duration_reached */
+/* PoP: audio_recorder_max_duration_reached @ tools/voice_mode.py:_max_duration_reached */
 /* Whether the configured hard recording-length cap has elapsed.
  * cap: voice.max_recording_seconds (0 or <=0 disables). elapsed: seconds. */
 bool audio_recorder_max_duration_reached(double cap, double elapsed) {

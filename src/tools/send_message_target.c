@@ -24,7 +24,7 @@
 #include <math.h>
 #include <regex.h>
 
-/* PoP: _parse_target_ref @ tools/send_message_tool.py:_parse_target_ref */
+/* PoP: send_message_parse_target_ref @ tools/send_message_tool.py:_parse_target_ref */
 /* Faithful subset for the regex-based platforms Python implements. Uses
  * POSIX ERE (capturing groups only — no (?:...) which fails to compile
  * under this glibc). g1 = chat_id, g2 = thread_id (where present). */
@@ -39,7 +39,7 @@ int send_message_target_parse_target_ref(const char *platform_name, const char *
     const char *pattern = NULL;
     int chat_g = 1, thread_g = 2;
     if (strcmp(platform_name, "telegram") == 0) {
-/* PoP: target @ agent/thread_scoped_output.py:_target */
+/* PoP: resolve_target @ agent/thread_scoped_output.py:_target */
         /* Telegram topic target (digits:digits) OR @username. */
         if (target_ref[0] == '@') {
             if (chat_id_size > 0) {
@@ -129,7 +129,7 @@ char *send_message_target_display_chat_id(const char *platform_name, const char 
     return strdup(chat_id ? chat_id : "default");
 }
 
-/* PoP: _telegram_retry_delay @ tools/send_message_tool.py:_telegram_retry_delay */
+/* PoP: send_message_telegram_retry_delay @ tools/send_message_tool.py:_telegram_retry_delay */
 /* Backoff seconds for retryable Telegram API errors; -1 / NULL = no retry.
  * NOTE: Python reads `retry_after` from the exception ATTRIBUTE, not the
  * error text. A plain error string has no such attribute, so we do NOT

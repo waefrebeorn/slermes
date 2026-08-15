@@ -669,7 +669,7 @@ void kdb_event_list_free(kanban_event_t **list)
 
 /* ---- runs ---- */
 
-/* PoP: kdb_list_runs @ hermes_cli/kanban_db.py:list_runs */
+/* PoP: kdbport_list_runs @ hermes_cli/kanban_db.py:list_runs */
 kanban_run_t **kdb_list_runs(sqlite3 *conn, const char *task_id,
                                 int include_active, int *out_n)
 {
@@ -700,7 +700,7 @@ void kdb_run_list_free(kanban_run_t **list)
     free(list);
 }
 
-/* PoP: kdb_get_run @ hermes_cli/kanban_db.py:get_run */
+/* PoP: api_server_handle_get_run @ hermes_cli/kanban_db.py:get_run */
 kanban_run_t *kdb_get_run(sqlite3 *conn, long run_id)
 {
     if (!conn) return NULL;
@@ -714,7 +714,7 @@ kanban_run_t *kdb_get_run(sqlite3 *conn, long run_id)
     return r;
 }
 
-/* PoP: kdb_latest_summary @ hermes_cli/kanban_db.py:complete_task */
+/* PoP: kdb_complete_task @ hermes_cli/kanban_db.py:complete_task */
 char *kdb_latest_summary(sqlite3 *conn, const char *task_id)
 {
     if (!conn || !task_id) return NULL;

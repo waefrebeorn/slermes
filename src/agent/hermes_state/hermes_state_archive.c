@@ -56,19 +56,19 @@ static bool lineage_flag_update(hermes_state_db_t *db, const char *session_id,
     return sqlite3_changes(db->db) > 0;
 }
 
-/* PoP: set_session_archived @ hermes_state.py:set_session_archived */
+/* PoP: hermes_state_set_session_archived @ hermes_state.py:set_session_archived */
 bool hermes_state_set_session_archived(hermes_state_db_t *db,
                                        const char *session_id, bool archived) {
     return lineage_flag_update(db, session_id, "archived", archived);
 }
 
-/* PoP: set_session_pinned @ hermes_state.py:set_session_pinned */
+/* PoP: hermes_state_set_session_pinned @ hermes_state.py:set_session_pinned */
 bool hermes_state_set_session_pinned(hermes_state_db_t *db,
                                      const char *session_id, bool pinned) {
     return lineage_flag_update(db, session_id, "pinned", pinned);
 }
 
-/* PoP: archive_stale_sessions @ hermes_state.py:archive_stale_sessions */
+/* PoP: hermes_state_archive_stale_sessions @ hermes_state.py:archive_stale_sessions */
 int hermes_state_archive_stale_sessions(hermes_state_db_t *db,
                                         double idle_days, bool exclude_pinned) {
     if (!db || idle_days <= 0) return 0;
@@ -162,7 +162,7 @@ char *hermes_state_list_prune_candidates(hermes_state_db_t *db,
     return buf;
 }
 
-/* PoP: archive_sessions @ hermes_state.py:archive_sessions */
+/* PoP: hermes_state_archive_sessions @ hermes_state.py:archive_sessions */
 int hermes_state_archive_sessions(hermes_state_db_t *db,
                                   double older_than_days, const char *source) {
     if (!db) return 0;

@@ -49,17 +49,17 @@ static int hermes_state_transcript_limit(const char *key, int fallback) {
     return result;
 }
 
-/* PoP: _configured_transcript_limit @ hermes_state.py:_configured_transcript_limit */
+/* PoP: hermes_state_configured_transcript_limit @ hermes_state.py:_configured_transcript_limit */
 int hermes_state_configured_transcript_limit(const char *key, int fallback) {
     return hermes_state_transcript_limit(key, fallback);
 }
 
-/* PoP: resolved_max_resume_messages @ hermes_state.py:resolved_max_resume_messages */
+/* PoP: hs_resolved_max_resume_messages @ hermes_state.py:resolved_max_resume_messages */
 int hermes_state_resolved_max_resume_messages(void) {
     return hermes_state_transcript_limit("max_resume_messages", HERMES_STATE_MAX_SAFE_RESUME);
 }
 
-/* PoP: resolved_max_export_messages @ hermes_state.py:resolved_max_export_messages */
+/* PoP: hs_resolved_max_export_messages @ hermes_state.py:resolved_max_export_messages */
 int hermes_state_resolved_max_export_messages(void) {
     return hermes_state_transcript_limit("max_export_messages", HERMES_STATE_MAX_SAFE_EXPORT);
 }
@@ -100,7 +100,7 @@ char *hermes_state_real_platform_state_root(void) {
     return strdup(expanded);
 }
 
-/* PoP: _running_under_pytest @ hermes_state.py:_running_under_pytest */
+/* PoP: hs_running_under_pytest @ hermes_state.py:_running_under_pytest */
 bool hermes_state_running_under_pytest(void) {
     const char *t = getenv("PYTEST_CURRENT_TEST");
     if (t && t[0]) return true;
@@ -109,7 +109,7 @@ bool hermes_state_running_under_pytest(void) {
     return false;
 }
 
-/* PoP: _production_state_roots @ hermes_state.py:_production_state_roots */
+/* PoP: hermes_state_production_state_roots @ hermes_state.py:_production_state_roots */
 static void hermes_state_production_state_roots(char roots[][4096], int *out_n, int cap) {
     int n = 0;
     char *real = hermes_state_real_platform_state_root();
@@ -121,7 +121,7 @@ static void hermes_state_production_state_roots(char roots[][4096], int *out_n, 
     *out_n = n;
 }
 
-/* PoP: _is_production_state_db @ hermes_state.py:_is_production_state_db */
+/* PoP: hs_is_production_state_db @ hermes_state.py:_is_production_state_db */
 bool hermes_state_is_production_state_db(const char *resolved, const char *root) {
     size_t rl = strlen(root);
     if (strncmp(resolved, root, rl) != 0)
@@ -142,7 +142,7 @@ bool hermes_state_is_production_state_db(const char *resolved, const char *root)
     return false;
 }
 
-/* PoP: _ensure_test_isolation @ hermes_state.py:_ensure_test_isolation */
+/* PoP: hermes_state_ensure_test_isolation @ hermes_state.py:_ensure_test_isolation */
 int hermes_state_ensure_test_isolation(const char *db_path) {
     /* _STATE_DB_GUARD_BYPASS = False; only active under pytest. */
     if (!hermes_state_running_under_pytest())
@@ -228,7 +228,7 @@ bool hermes_state_is_stale_tool_call_marker(const json_t *msg) {
     return result;
 }
 
-/* PoP: _strip_stale_tool_call_markers @ hermes_state.py:_strip_stale_tool_call_markers */
+/* PoP: hermes_state_strip_stale_tool_call_markers @ hermes_state.py:_strip_stale_tool_call_markers */
 int hermes_state_strip_stale_tool_call_markers(json_t *messages) {
     if (!messages || messages->type != JSON_ARRAY) return 0;
     int repaired = 0;
@@ -259,7 +259,7 @@ static const char *const HERMES_STATE_DISK_FULL_MARKERS[] = {
     NULL
 };
 
-/* PoP: is_disk_full_error @ hermes_state.py:is_disk_full_error */
+/* PoP: hs_is_disk_full_error @ hermes_state.py:is_disk_full_error */
 bool hermes_state_is_disk_full_error(const char *err_str) {
     if (!err_str || !err_str[0]) return false;
     char lowered[512];
@@ -294,7 +294,7 @@ const char *hermes_state_classify_persistence_error(const char *err_str) {
     return "unknown";
 }
 
-/* PoP: count_db_holders @ hermes_state.py:count_db_holders */
+/* PoP: hermes_state_count_db_holders @ hermes_state.py:count_db_holders */
 int hermes_state_count_db_holders(const char *db_path) {
     if (!db_path || !db_path[0]) return -1;
     char target[4096];
@@ -348,7 +348,7 @@ char *hermes_state_default_db_path(void) {
     return out;
 }
 
-/* PoP: apply_database_pragmas @ hermes_state.py:apply_database_pragmas */
+/* PoP: hermes_state_apply_database_pragmas @ hermes_state.py:apply_database_pragmas */
 int hermes_state_apply_database_pragmas(hermes_state_db_t *db) {
     /* Python: WAL + synchronous=NORMAL + busy_timeout + foreign_keys. */
     if (!db || !db->db) return -1;

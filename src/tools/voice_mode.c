@@ -234,7 +234,7 @@ char *detect_audio_environment(void) {
  *  Audio Playback
  * ================================================================ */
 
-/* PoP: play_beep @ hermes_cli/voice.py:_play_beep */
+/* PoP: vmd_play_beep @ hermes_cli/voice.py:_play_beep */
 /* Port of Python tools/voice_mode.py:play_beep(). */
 void play_beep(void) {
     /* Try various beep commands */
@@ -1398,7 +1398,7 @@ static pthread_t g_thinking_thread = 0;
 static int g_thinking_stop_flag = 0;
 static pthread_mutex_t g_thinking_lock = PTHREAD_MUTEX_INITIALIZER;
 
-/* PoP: _import_numpy @ tools/voice_mode.py:_import_numpy */
+/* PoP: voice_import_numpy @ tools/voice_mode.py:_import_numpy */
 /* Lazy-import numpy availability probe. The C port does NOT require numpy
  * (tones are synthesized natively); this only resolves whether a numpy
  * backend exists so callers can branch. Probes the filesystem directly
@@ -1428,12 +1428,12 @@ int voice_import_numpy(void) {
     return -1;
 }
 
-/* PoP: _default_input_samplerate @ tools/voice_mode.py:_default_input_samplerate */
+/* PoP: voice_default_input_samplerate @ tools/voice_mode.py:_default_input_samplerate */
 int voice_default_input_samplerate(void) {
     return VOICE_SAMPLE_RATE;
 }
 
-/* PoP: _play_int16_via_tempfile @ tools/voice_mode.py:_play_int16_via_tempfile */
+/* PoP: voice_play_int16_via_tempfile @ tools/voice_mode.py:_play_int16_via_tempfile */
 void voice_play_int16_via_tempfile(const int16_t *samples, size_t n, int sample_rate) {
     if (!samples || n == 0) return;
     char tmp_path[256];
@@ -1502,7 +1502,7 @@ static void *voice_thinking_sound_loop(void *arg) {
     return NULL;
 }
 
-/* PoP: start_thinking_sound @ tools/voice_mode.py:start_thinking_sound */
+/* PoP: voice_start_thinking_sound @ tools/voice_mode.py:start_thinking_sound */
 bool voice_start_thinking_sound(void) {
     if (!thinking_sound_enabled(NULL)) return false;
     pthread_mutex_lock(&g_thinking_lock);
@@ -1515,7 +1515,7 @@ bool voice_start_thinking_sound(void) {
     return true;
 }
 
-/* PoP: stop_thinking_sound @ tools/voice_mode.py:stop_thinking_sound */
+/* PoP: voice_stop_thinking_sound @ tools/voice_mode.py:stop_thinking_sound */
 void voice_stop_thinking_sound(void) {
     pthread_mutex_lock(&g_thinking_lock);
     __atomic_store_n(&g_thinking_stop_flag, 1, __ATOMIC_RELEASE);
@@ -1525,7 +1525,7 @@ void voice_stop_thinking_sound(void) {
     if (t) pthread_join(t, NULL);
 }
 
-/* PoP: _play_audio_file_impl @ tools/voice_mode.py:_play_audio_file_impl */
+/* PoP: voice_play_audio_file_impl @ tools/voice_mode.py:_play_audio_file_impl */
 bool voice_play_audio_file_impl(const char *file_path) {
     if (!file_path || !*file_path) return false;
     struct stat st;
@@ -1679,7 +1679,7 @@ char *voice_full_duplex_listen(int (*should_stop)(void),
 #endif
 }
 
-/* PoP: _check_plugin_stt_provider @ tools/voice_mode.py:_check_plugin_stt_provider */
+/* PoP: voice_check_plugin_stt_provider @ tools/voice_mode.py:_check_plugin_stt_provider */
 bool voice_check_plugin_stt_provider(const char *provider) {
     if (!provider || !*provider) return false;
     char key[64]; size_t k = 0;

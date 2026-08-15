@@ -27,7 +27,7 @@ struct browser_tool_platform {
 browser_tool_platform_t *browser_tool_platform_init(void) { return calloc(1, sizeof(browser_tool_platform_t)); }
 void browser_tool_platform_cleanup(browser_tool_platform_t *s) { free(s); }
 
-/* PoP: _running_in_docker @ tools/browser_tool.py:_running_in_docker */
+/* PoP: browser_running_in_docker @ tools/browser_tool.py:_running_in_docker */
 /* PoP: browser_running_in_docker @ tools/browser_tool.py:_running_in_docker */
 bool browser_running_in_docker(void)
 {
@@ -46,7 +46,7 @@ bool browser_running_in_docker(void)
     return false;
 }
 
-/* PoP: _is_local_mode @ tools/browser_tool.py:_is_local_mode */
+/* PoP: browser_is_local_mode @ tools/browser_tool.py:_is_local_mode */
 /* PoP: browser_is_local_mode @ tools/browser_tool.py:_is_local_mode */
 bool browser_is_local_mode(void)
 {

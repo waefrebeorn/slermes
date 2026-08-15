@@ -53,7 +53,7 @@ static void emit_message_json(char **buf, size_t *cap, size_t *len, bool first,
     (*buf)[*len] = '\0';
 }
 
-/* PoP: append_message @ hermes_state.py:append_message */
+/* PoP: hermes_state_append_message @ hermes_state.py:append_message */
 long long hermes_state_append_message(hermes_state_db_t *db,
                                       const char *session_id,
                                       const char *role,

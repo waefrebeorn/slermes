@@ -71,7 +71,7 @@ void fetch_result_add_warning(fetch_result_t *r, const char *msg)
     r->warnings[r->warning_count++] = xstrdup(msg);
 }
 
-/* PoP: fetch_result_ok @ agent/secret_sources/base.py:ok */
+/* PoP: h_ok @ agent/secret_sources/base.py:ok */
 bool fetch_result_ok(const fetch_result_t *r)
 {
     return r && r->error == NULL;
@@ -441,7 +441,7 @@ typedef struct {
     char *command;   /* argv template or shell? We use argv list from cfg.cmd */
 } command_source_t;
 
-/* PoP: command_source_fetch @ agent/secret_sources/command.py:fetch */
+/* PoP: models_live_http_fetch @ agent/secret_sources/command.py:fetch */
 static fetch_result_t *command_source_fetch(secret_source_t *self,
                                              const char *cfg_json, const char *home_path)
 {
@@ -571,7 +571,7 @@ typedef struct secret_env_token {
 
 static _Thread_local char **tl_source_environment = NULL;
 
-/* PoP: set_source_environment @ agent/secret_sources/base.py:set_source_environment */
+/* PoP: secret_reset_source_environment @ agent/secret_sources/base.py:set_source_environment */
 secret_env_token_t *secret_set_source_environment(char **environ_view)
 {
     secret_env_token_t *tok = calloc(1, sizeof(*tok));
@@ -581,7 +581,7 @@ secret_env_token_t *secret_set_source_environment(char **environ_view)
     return tok;
 }
 
-/* PoP: reset_source_environment @ agent/secret_sources/base.py:reset_source_environment */
+/* PoP: secret_reset_source_environment @ agent/secret_sources/base.py:reset_source_environment */
 void secret_reset_source_environment(secret_env_token_t *token)
 {
     if (!token) return;

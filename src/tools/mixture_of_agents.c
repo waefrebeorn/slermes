@@ -1048,7 +1048,7 @@ int moa_provider_health_is_healthy(const char *provider_name) {
     return is_provider_healthy(provider_name);
 }
 
-/* PoP: moa_provider_health_record_success @ tools/mixture_of_agents_tool.py:record_success */
+/* PoP: moa_model_selector_record_success @ tools/mixture_of_agents_tool.py:record_success */
 void moa_provider_health_record_success(const char *provider_name) {
     record_provider_success(provider_name);
 }
@@ -1143,9 +1143,9 @@ char *moa_mixture_of_agents_math(const char *user_prompt) {
 }
 
 /* Context-manager no-ops (Python __aenter__ / __aexit__ on MoAHttpClient). */
-/* PoP: moa_http_client_enter @ tools/mixture_of_agents_tool.py:__aenter__ */
+/* PoP: tools_online_research_u__aenter__ @ tools/mixture_of_agents_tool.py:__aenter__ */
 void moa_http_client_enter(void) { /* session lifecycle handled by engine */ }
-/* PoP: moa_http_client_exit @ tools/mixture_of_agents_tool.py:__aexit__ */
+/* PoP: tools_online_research_u__aexit__ @ tools/mixture_of_agents_tool.py:__aexit__ */
 void moa_http_client_exit(void) { /* no-op */ }
 
 /* ─── REGISTRY INTEGRATION ───────────────────────────────────────── */

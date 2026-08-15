@@ -90,7 +90,7 @@ void response_store_free(response_store_t *store) {
     free(store->db_path);
     free(store);
 }
-/* PoP: get @ gateway/platforms/api_server.py:get */
+/* PoP: plugin_get @ gateway/platforms/api_server.py:get */
 
 char *response_store_get(response_store_t *store, const char *response_id) {
     if (!store || !store->conn || !response_id) return NULL;
@@ -252,7 +252,7 @@ void idempotency_cache_free(idempotency_cache_t *cache) {
     free(cache);
 }
 
-/* PoP: _purge @ gateway/platforms/api_server.py:_purge */
+/* PoP: cache_purge @ gateway/platforms/api_server.py:_purge */
 static void cache_purge(idempotency_cache_t *cache) {
     time_t now = time(NULL);
     struct cache_entry **pp = &cache->head;
@@ -436,10 +436,10 @@ bool api_server_adapter_connect(api_server_adapter_t *adapter) {
         addr.sin_family = AF_INET;
         addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
         addr.sin_port = htons(adapter->port);
-/* PoP: connect @ gateway/platforms/api_server.py:connect */
+/* PoP: pb_connect @ gateway/platforms/api_server.py:connect */
         if (connect(sock, (struct sockaddr *)&addr, sizeof(addr)) == 0) {
             fprintf(stderr, "[api-server-adapter] Port %d already in use\n", adapter->port);
-/* PoP: close @ gateway/platforms/api_server.py:close */
+/* PoP: cas_close @ gateway/platforms/api_server.py:close */
             close(sock);
             return false;
         }
@@ -458,7 +458,7 @@ bool api_server_adapter_connect(api_server_adapter_t *adapter) {
            adapter->host, adapter->port, adapter->model_name);
     return true;
 }
-/* PoP: disconnect @ gateway/platforms/api_server.py:disconnect */
+/* PoP: pb_disconnect @ gateway/platforms/api_server.py:disconnect */
 
 void api_server_adapter_disconnect(api_server_adapter_t *adapter) {
     if (!adapter) return;
@@ -480,11 +480,11 @@ gw_send_result_t api_server_adapter_send(
     const json_t *metadata
 ) {
     (void)adapter; (void)chat_id; (void)content; (void)reply_to; (void)metadata;
-/* PoP: send @ gateway/platforms/api_server.py:send */
+/* PoP: pb_send @ gateway/platforms/api_server.py:send */
     gw_send_result_t result = {false, "API server uses HTTP request/response, not send()"};
     return result;
 }
-/* PoP: get_chat_info @ gateway/platforms/api_server.py:get_chat_info */
+/* PoP: ws_transport_get_chat_info @ gateway/platforms/api_server.py:get_chat_info */
 
 json_t *api_server_adapter_get_chat_info(api_server_adapter_t *adapter, const char *chat_id) {
     (void)chat_id;
@@ -1007,7 +1007,7 @@ void sse_write_chunk(sse_writer_t *writer, const char *content, int index) {
     json_free(chunk);
 }
 
-/* PoP: finish @ gateway/stream_consumer.py:finish */
+/* PoP: sse_write_finish @ gateway/stream_consumer.py:finish */
 void sse_write_finish(sse_writer_t *writer, const char *usage_json) {
     if (!writer) return;
     json_t *chunk = json_object();
@@ -1069,7 +1069,7 @@ void register_api_server_platform(void) {
 /* End of api_server_adapter.c */
 /* ── gateway/platforms/api_server.py gap functions ───────────────── */
 
-/* PoP: _get_scoped_secret @ gateway/platforms/api_server.py:_get_scoped_secret */
+/* PoP: bb_u_get_scoped_secret @ gateway/platforms/api_server.py:_get_scoped_secret */
 char *gwapi_get_scoped_secret(const char *arg) {
     /* Python: scope-aware credential read with default-profile fallback.
      * Arg = "name\tvalue" (value empty = miss -> default). */
@@ -1079,7 +1079,7 @@ char *gwapi_get_scoped_secret(const char *arg) {
     return NULL;
 }
 
-/* PoP: _reap_disconnected_agent_processes @ gateway/platforms/api_server.py:_reap_disconnected_agent_processes */
+/* PoP: gwapi_reap_disconnected_agent_processes @ gateway/platforms/api_server.py:_reap_disconnected_agent_processes */
 int gwapi_reap_disconnected_agent_processes(const char *arg) {
     /* Python: reap background processes an abandoned API-server turn created.
      * Fire-and-forget on a daemon thread; epoch-gated. Arg = "task_id\tbaseline_present" */
@@ -1088,7 +1088,7 @@ int gwapi_reap_disconnected_agent_processes(const char *arg) {
     return 0;
 }
 
-/* PoP: _publish_turn_process_ownership @ gateway/platforms/api_server.py:_publish_turn_process_ownership */
+/* PoP: gwapi_publish_turn_process_ownership @ gateway/platforms/api_server.py:_publish_turn_process_ownership */
 int gwapi_publish_turn_process_ownership(const char *arg) {
     /* Python: snapshot process baseline and claim the task_id's epoch.
      * Arg = "task_id". */
@@ -1097,7 +1097,7 @@ int gwapi_publish_turn_process_ownership(const char *arg) {
     return 0;
 }
 
-/* PoP: _clear_turn_process_ownership @ gateway/platforms/api_server.py:_clear_turn_process_ownership */
+/* PoP: gwapi_clear_turn_process_ownership @ gateway/platforms/api_server.py:_clear_turn_process_ownership */
 int gwapi_clear_turn_process_ownership(const char *arg) {
     /* Python: clear turn ownership the moment the turn finishes.
      * Arg = "cleared" (1/0). */

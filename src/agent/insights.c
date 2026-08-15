@@ -251,7 +251,7 @@ next_array:
  *  Main generation
  * ══════════════════════════════════════════════════════════════ */
 
-/* PoP: generate @ agent/insights.py:generate */
+/* PoP: petg_generate @ agent/insights.py:generate */
 /* Port of Python agent/insights.py:generate(). */
 insights_report_t *insights_generate(db_t *db, int days, const char *source_filter) {
     if (!db) return NULL;

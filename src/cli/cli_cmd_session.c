@@ -743,8 +743,8 @@ void cmd_rollback(const char *args, agent_state_t *state) {
     }
 }
 
-/* PoP: cmd_save @ gateway/session.py:_save */
-/* PoP: cmd_save @ gateway/platforms/helpers.py:_save */
+/* PoP: sh_save @ gateway/session.py:_save */
+/* PoP: sh_save @ gateway/platforms/helpers.py:_save */
 void cmd_save(const char *args, agent_state_t *state) {
     (void)args;
     /* Auto-open DB if needed */
@@ -1174,8 +1174,8 @@ void cmd_stats(const char *args, agent_state_t *state) {
  * AG26: Port of Python hermes_cli/curator.py:cmd_status().
  * AG26: Port of Python hermes_cli/portal_cli.py:cmd_status().
  */
-/* PoP: cmd_status @ hermes_cli/portal_cli.py:_cmd_status */
-/* PoP: cmd_status @ hermes_cli/curator.py:_cmd_status */
+/* PoP: mn_cmd_status @ hermes_cli/portal_cli.py:_cmd_status */
+/* PoP: mn_cmd_status @ hermes_cli/curator.py:_cmd_status */
 void cmd_status(const char *args, agent_state_t *state) {
     if (args && args[0]) {
         /* Show platform/connection status */
@@ -1406,7 +1406,7 @@ void cmd_usage(const char *args, agent_state_t *state) {
         printf("  Est. cost:   $%.6f\n", state->session_estimated_cost_usd);
 }
 
-/* PoP: cmd_approve @ hermes_cli/callbacks.py:approval_callback */
+/* PoP: cut_set_approval_callback @ hermes_cli/callbacks.py:approval_callback */
 /* PoP: cmd_approve @ hermes_cli/write_approval_commands.py:handle_pending_subcommand */
 /* PoP: cmd_auth @ hermes_cli/auth.py:get_auth_status */
 /* PoP: cmd_auth @ hermes_cli/auth.py:login_command */
@@ -1421,36 +1421,36 @@ void cmd_usage(const char *args, agent_state_t *state) {
 /* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:_fmt_no_match */
 /* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:_humanize_schedule */
 /* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:_manage_hint */
-/* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:_parse_kv */
-/* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:_resolve_origin */
+/* PoP: blueprint_cmd_parse_kv @ hermes_cli/blueprint_cmd.py:_parse_kv */
+/* PoP: scheduler_resolve_origin @ hermes_cli/blueprint_cmd.py:_resolve_origin */
 /* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:build_blueprint_seed */
-/* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:handle_blueprint_command */
+/* PoP: ccm_handle_blueprint_command @ hermes_cli/blueprint_cmd.py:handle_blueprint_command */
 /* PoP: cmd_blueprint @ hermes_cli/blueprint_cmd.py:match_blueprint */
 /* PoP: cmd_browser @ hermes_cli/browser_connect.py:get_chrome_debug_candidates */
 /* PoP: cmd_browser @ hermes_cli/browser_connect.py:is_browser_debug_ready */
 /* PoP: cmd_browser @ hermes_cli/browser_connect.py:try_launch_chrome_debug */
 /* PoP: cmd_checkpoint @ hermes_cli/checkpoints.py:cmd_clear */
-/* PoP: cmd_checkpoint @ hermes_cli/checkpoints.py:cmd_list */
-/* PoP: cmd_checkpoint @ hermes_cli/checkpoints.py:cmd_prune */
+/* PoP: hcli_pets_cmd_list @ hermes_cli/checkpoints.py:cmd_list */
+/* PoP: hermes_cli_curator_u_cmd_prune @ hermes_cli/checkpoints.py:cmd_prune */
 /* PoP: cmd_checkpoint @ hermes_cli/checkpoints.py:cmd_status */
-/* PoP: cmd_checkpoint @ hermes_cli/checkpoints.py:register_cli */
-/* PoP: cmd_clarify @ hermes_cli/callbacks.py:clarify_callback */
+/* PoP: hermes_cli_pets_register_cli @ hermes_cli/checkpoints.py:register_cli */
+/* PoP: hermes_cli_oneshot_u_oneshot_clarify_callback @ hermes_cli/callbacks.py:clarify_callback */
 /* PoP: cmd_commands @ hermes_cli/commands.py:resolve_command */
 /* PoP: cmd_completions @ hermes_cli/commands.py:get_completions */
 /* PoP: cmd_compress @ hermes_cli/partial_compress.py:parse_partial_compress_args */
 /* PoP: cmd_compress @ hermes_cli/partial_compress.py:rejoin_compressed_head_and_tail */
 /* PoP: cmd_compress @ hermes_cli/partial_compress.py:split_history_for_partial_compress */
-/* PoP: cmd_config @ hermes_cli/config.py:edit_config */
-/* PoP: cmd_config @ hermes_cli/config.py:migrate_config */
-/* PoP: cmd_config @ hermes_cli/config.py:set_config_value */
-/* PoP: cmd_config @ hermes_cli/config.py:show_config */
+/* PoP: config_edit_config @ hermes_cli/config.py:edit_config */
+/* PoP: config_migrate_config @ hermes_cli/config.py:migrate_config */
+/* PoP: config_set_config_value @ hermes_cli/config.py:set_config_value */
+/* PoP: cl2_show_config @ hermes_cli/config.py:show_config */
 /* PoP: cmd_cron @ hermes_cli/cron.py:cron_create */
 /* PoP: cmd_cron @ hermes_cli/cron.py:cron_edit */
 /* PoP: cmd_cron @ hermes_cli/cron.py:cron_list */
 /* PoP: cmd_cron @ hermes_cli/cron.py:cron_status */
 /* PoP: cmd_cron @ hermes_cli/cron.py:cron_tick */
 /* PoP: cmd_curator @ hermes_cli/curator.py:cli_main */
-/* PoP: cmd_curator @ hermes_cli/curator.py:register_cli */
+/* PoP: hermes_cli_pets_register_cli @ hermes_cli/curator.py:register_cli */
 /* PoP: cmd_debug @ hermes_cli/debug.py:build_debug_share */
 /* PoP: cmd_debug @ hermes_cli/debug.py:collect_debug_report */
 /* PoP: cmd_debug @ hermes_cli/debug.py:run_debug_delete */
@@ -1482,18 +1482,18 @@ void cmd_usage(const char *args, agent_state_t *state) {
 /* PoP: cmd_gateway @ hermes_cli/container_boot.py:main */
 /* PoP: cmd_gateway @ hermes_cli/container_boot.py:reconcile_profile_gateways */
 /* PoP: cmd_gateway @ hermes_cli/gateway.py:find_gateway_pids */
-/* PoP: cmd_gateway @ hermes_cli/gateway.py:gateway_command */
+/* PoP: gw_u_launch_elevated_gateway_command @ hermes_cli/gateway.py:gateway_command */
 /* PoP: cmd_gateway @ hermes_cli/gateway.py:gateway_setup */
 /* PoP: cmd_gateway @ hermes_cli/gateway.py:kill_gateway_processes */
 /* PoP: cmd_gateway @ hermes_cli/gateway.py:run_gateway */
 /* PoP: cmd_gateway @ hermes_cli/gateway.py:stop_profile_gateway */
-/* PoP: cmd_gateway @ hermes_cli/gateway_windows.py:install */
-/* PoP: cmd_gateway @ hermes_cli/gateway_windows.py:is_installed */
-/* PoP: cmd_gateway @ hermes_cli/gateway_windows.py:restart */
-/* PoP: cmd_gateway @ hermes_cli/gateway_windows.py:start */
-/* PoP: cmd_gateway @ hermes_cli/gateway_windows.py:status */
-/* PoP: cmd_gateway @ hermes_cli/gateway_windows.py:stop */
-/* PoP: cmd_gateway @ hermes_cli/gateway_windows.py:uninstall */
+/* PoP: pet_install @ hermes_cli/gateway_windows.py:install */
+/* PoP: skills_hub_is_installed @ hermes_cli/gateway_windows.py:is_installed */
+/* PoP: cmd_restart @ hermes_cli/gateway_windows.py:restart */
+/* PoP: ccp_start @ hermes_cli/gateway_windows.py:start */
+/* PoP: h_status @ hermes_cli/gateway_windows.py:status */
+/* PoP: ccp_stop @ hermes_cli/gateway_windows.py:stop */
+/* PoP: cmd_uninstall @ hermes_cli/gateway_windows.py:uninstall */
 /* PoP: cmd_goal @ hermes_cli/goals.py:clear_goal */
 /* PoP: cmd_goal @ hermes_cli/goals.py:judge_goal */
 /* PoP: cmd_goal @ hermes_cli/goals.py:load_goal */
@@ -1515,7 +1515,7 @@ void cmd_usage(const char *args, agent_state_t *state) {
 /* PoP: cmd_info @ hermes_cli/colors.py:color */
 /* PoP: cmd_info @ hermes_cli/colors.py:should_use_color */
 /* PoP: cmd_inventory @ hermes_cli/inventory.py:load_picker_context */
-/* PoP: cmd_kanban @ hermes_cli/kanban.py:build_parser */
+/* PoP: hermes_cli_projects_cmd_build_parser @ hermes_cli/kanban.py:build_parser */
 /* PoP: cmd_kanban @ hermes_cli/kanban.py:run_slash */
 /* PoP: cmd_kanban @ hermes_cli/kanban_db.py:* */
 /* PoP: cmd_kanban @ hermes_cli/kanban_decompose.py:decompose_task */
@@ -1526,7 +1526,7 @@ void cmd_usage(const char *args, agent_state_t *state) {
 /* PoP: cmd_mcp @ hermes_cli/mcp_catalog.py:install_entry */
 /* PoP: cmd_mcp @ hermes_cli/mcp_catalog.py:installed_servers */
 /* PoP: cmd_mcp @ hermes_cli/mcp_catalog.py:is_enabled */
-/* PoP: cmd_mcp @ hermes_cli/mcp_catalog.py:is_installed */
+/* PoP: skills_hub_is_installed @ hermes_cli/mcp_catalog.py:is_installed */
 /* PoP: cmd_mcp @ hermes_cli/mcp_catalog.py:list_catalog */
 /* PoP: cmd_mcp @ hermes_cli/mcp_catalog.py:uninstall_entry */
 /* PoP: cmd_mcp @ hermes_cli/mcp_config.py:cmd_mcp_add */
@@ -1590,7 +1590,7 @@ typedef struct cua_key_alias {
 static cua_key_alias_t g_key_aliases[5];
 static int g_key_alias_count = 0;
 
-/* PoP: install_cmd_backspace_alias @ hermes_cli/pt_input_extras.py:install_cmd_backspace_alias */
+/* PoP: cli_pt_input_extras_install_cmd_backspace_alias @ hermes_cli/pt_input_extras.py:install_cmd_backspace_alias */
 /* Port of Python install_cmd_backspace_alias(): map Cmd+Backspace /
  * Cmd+ForwardDelete terminal sequences to the readline kill bindings.
  * Returns the number of sequences whose mapping was *changed*

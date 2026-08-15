@@ -226,7 +226,7 @@ char *run_conversation(agent_state_t *state,
             state->prefetch_result = NULL;
         }
         state->prefetch_in_progress = 0;
-/* PoP: prefetch @ agent/memory_provider.py:prefetch */
+/* PoP: agent_memory_provider_queue_prefetch @ agent/memory_provider.py:prefetch */
         /* Do synchronous prefetch (C is single-threaded per agent, so
            background thread adds complexity without benefit for the
            typical case). Search memory with the user query. */
@@ -977,7 +977,7 @@ retry_done:
          * Ensure primary provider/model are restored after fallback. In C the
          * fallback is per-call, so saved values are already restored above, but
          * the label exists for goto targets that skip the restore. */
-/* PoP: success @ hermes_cli/mcp_config.py:_success */
+/* PoP: uninst_log_success @ hermes_cli/mcp_config.py:_success */
         /* P95: Log upstream diagnostic headers on success (verbose only) */
         if (llm_resp && llm_resp->diag.upstream_headers[0] && getenv("SLERMES_DEBUG")) {
             fprintf(stderr, "[llm] upstream=[%s]\n",
@@ -1657,7 +1657,7 @@ bool agent_snapshot_restore(agent_state_t *state) {
 }
 
 /* Simple chat interface */
-/* PoP: chat @ cli.py:chat */
+/* PoP: cl2_chat @ cli.py:chat */
 /* Port of Python cli.py:chat(). */
 char *agent_chat(agent_state_t *state, const char *message) {
     return run_conversation(state, message, NULL);

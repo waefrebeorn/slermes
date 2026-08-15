@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: create_session @ hermes_state.py:create_session */
+/* PoP: get_or_create_session @ hermes_state.py:create_session */
 bool hermes_state_create_session(hermes_state_db_t *db, const char *session_id,
                                  const char *source) {
     if (!db || !session_id || !*session_id) return false;
@@ -29,7 +29,7 @@ bool hermes_state_create_session(hermes_state_db_t *db, const char *session_id,
     return ok;
 }
 
-/* PoP: end_session @ hermes_state.py:end_session */
+/* PoP: suspend_session @ hermes_state.py:end_session */
 /* PoP: hermes_state_end_session @ hermes_state.py:end_session */
 bool hermes_state_end_session(hermes_state_db_t *db, const char *session_id,
                               const char *end_reason) {
@@ -106,7 +106,7 @@ char *hermes_state_get_session_model_config_value(hermes_state_db_t *db,
     return result;
 }
 
-/* PoP: patch_session_model_config @ hermes_state.py:patch_session_model_config */
+/* PoP: hermes_state_patch_session_model_config @ hermes_state.py:patch_session_model_config */
 bool hermes_state_patch_session_model_config(hermes_state_db_t *db,
                                              const char *session_id,
                                              const char *patch_json) {
@@ -175,7 +175,7 @@ bool hermes_state_link_child(hermes_state_db_t *db, const char *child_id,
     return ok;
 }
 
-/* PoP: get_session @ hermes_state.py:get_session */
+/* PoP: process_registry_get_session @ hermes_state.py:get_session */
 char *hermes_state_get_session(hermes_state_db_t *db, const char *session_id) {
     if (!db || !session_id || !*session_id) return NULL;
     sqlite3_stmt *st = NULL;

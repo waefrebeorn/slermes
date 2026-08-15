@@ -318,7 +318,7 @@ static bool uids_match(pairing_store_t *st, const char *platform, const char *le
 }
 
 /* ── approved ── */
-/* PoP: is_approved @ gateway/pairing.py:is_approved */
+/* PoP: apr_is_approved @ gateway/pairing.py:is_approved */
 
 bool pairing_is_approved(pairing_store_t *st, const char *platform, const char *user_id) {
     char name[256]; snprintf(name,sizeof(name),"%s-approved.json",platform);
@@ -590,7 +590,7 @@ pairing_result_t *pairing_approve_code(pairing_store_t *st, const char *platform
     free(up); free(pname);
     return r;
 }
-/* PoP: list_pending @ gateway/pairing.py:list_pending */
+/* PoP: pairing_list_pending @ gateway/pairing.py:list_pending */
 
 int pairing_list_pending(pairing_store_t *st, const char *platform, double now, pairing_pending_t **out) {
     pairing_pending_t *arr=NULL; int n=0, cap=0;
@@ -763,7 +763,7 @@ static void pairing_record_failed_attempt(pairing_store_t *st, const char *platf
     pj_free(rl);
 }
 
-/* PoP: pairing_all_platforms @ gateway/pairing.py:_all_platforms */
+/* PoP: cgw_u_all_platforms @ gateway/pairing.py:_all_platforms */
 static char **pairing_all_platforms(pairing_store_t *st, const char *suffix, int *out_n) {
     char **arr = NULL; int n = 0, cap = 0;
     size_t slen = strlen(suffix);
@@ -819,7 +819,7 @@ static const char *pairing_env_for_platform(const char *platform) {
     #undef PM
     return NULL;
 }
-/* PoP: _sync_allowlist_remove @ gateway/pairing.py:_sync_allowlist_remove */
+/* PoP: pairing_sync_allowlist_remove @ gateway/pairing.py:_sync_allowlist_remove */
 static void pairing_sync_allowlist_remove(const char *platform, const char *user_id) {
     const char *env_var = pairing_env_for_platform(platform);
     if (!env_var) return;
@@ -914,7 +914,7 @@ static void pairing_migrate_split_pairing_dirs(pairing_store_t *st) {
  * level helpers are thin wrappers exposing name parity.
  * ──────────────────────────────────────────────────────────────── */
 
-/* PoP: _platform_uses_whatsapp_identity @ gateway/pairing.py:_platform_uses_whatsapp_identity */
+/* PoP: pairing_platform_uses_whatsapp_identity @ gateway/pairing.py:_platform_uses_whatsapp_identity */
 static bool pairing_platform_uses_whatsapp_identity(const char *platform) {
     return platform && (strcmp(platform, "whatsapp") == 0 ||
                         strcmp(platform, "whatsapp_cloud") == 0);
@@ -1025,7 +1025,7 @@ static const char *pairing_adapter_platform_name(void *adapter) {
     return NULL;
 }
 
-/* PoP: _sync_live_adapter_allowlist_remove @ gateway/pairing.py:_sync_live_adapter_allowlist_remove */
+/* PoP: pairing_sync_live_adapter_allowlist_remove @ gateway/pairing.py:_sync_live_adapter_allowlist_remove */
 static void pairing_sync_live_adapter_allowlist_remove(const char *platform, const char *user_id) {
     (void)platform; (void)user_id;
 #ifdef HERMES_GATEWAY_RUNNING
@@ -1081,7 +1081,7 @@ static pairing_result_t *pairing_finish_approval(pairing_store_t *st, const char
     return r;
 }
 
-/* PoP: _reset_failed_attempts @ gateway/pairing.py:_reset_failed_attempts */
+/* PoP: pairing_reset_failed_attempts @ gateway/pairing.py:_reset_failed_attempts */
 void pairing_reset_failed_attempts(pairing_store_t *st, const char *platform, double now) {
     pj_val_t *rl = load_json(st, "_rate_limits.json");
     if (!rl) return;
@@ -1095,7 +1095,7 @@ void pairing_reset_failed_attempts(pairing_store_t *st, const char *platform, do
     (void)now;
 }
 
-/* PoP: looks_like_request_id @ gateway/pairing.py:looks_like_request_id */
+/* PoP: pairing_looks_like_request_id @ gateway/pairing.py:looks_like_request_id */
 bool pairing_looks_like_request_id(const char *value) {
     if (!value) return false;
     /* request ids are 16 hex chars (secrets.token_hex(8)) */

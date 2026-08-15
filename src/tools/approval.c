@@ -191,7 +191,7 @@ void approval_save_allowlist(void) {
 
 /* List permanent allowlist command strings. Returns a malloc'd NULL-terminated
  * array (caller frees each entry + the array). Sets *out_n. */
-/* PoP: list_permanent_allowlist_patterns @ tools/approval.py:load_permanent_allowlist */
+/* PoP: apr_load_permanent_allowlist @ tools/approval.py:load_permanent_allowlist */
 char **approval_permanent_allowlist_list(size_t *out_n) {
     if (out_n) *out_n = 0;
     size_t n = 0, cap = 0;
@@ -212,7 +212,7 @@ char **approval_permanent_allowlist_list(size_t *out_n) {
 }
 
 
-/* PoP: save_permanent_allowlist @ tools/approval.py:save_permanent_allowlist */
+/* PoP: apr_save_permanent_allowlist @ tools/approval.py:save_permanent_allowlist */
 int approval_save_permanent_allowlist(const char **patterns, size_t n) {
     int write = 0;
     for (int i = 0; i < g_approval_count; i++) {
@@ -354,7 +354,7 @@ char *approval_normalize_command(const char *command) {
 
 /* ── approvals_suggest.py ports ──────────────────────────────── */
 
-/* PoP: parse_apply_indices @ hermes_cli/approvals_suggest.py:parse_apply_indices */
+/* PoP: approval_parse_apply_indices @ hermes_cli/approvals_suggest.py:parse_apply_indices */
 /* Parse "1,3" into validated zero-based indices. On error (invalid
  * integer, out of range, or no valid selections), returns -1. */
 int approval_parse_apply_indices(const char *spec, int total, int *out, int max_out) {
@@ -411,7 +411,7 @@ static const char *UNSAFE_CLASS_PATTERNS[] = {
     NULL,
 };
 
-/* PoP: _unsafe_root_binary @ hermes_cli/approvals_suggest.py:_unsafe_root_binary */
+/* PoP: is_unsafe_root_binary @ hermes_cli/approvals_suggest.py:_unsafe_root_binary */
 static bool is_unsafe_root_binary(const char *token) {
     if (!token) return false;
     /* tok = token.lower().rsplit("/", 1)[-1] */
@@ -439,7 +439,7 @@ static bool is_unsafe_root_binary(const char *token) {
     return false;
 }
 
-/* PoP: is_unsafe_class @ hermes_cli/approvals_suggest.py:is_unsafe_class */
+/* PoP: approval_is_unsafe_class @ hermes_cli/approvals_suggest.py:is_unsafe_class */
 bool approval_is_unsafe_class(const char *description) {
     if (!description || !*description) return false;
     for (int i = 0; UNSAFE_CLASS_PATTERNS[i]; i++) {

@@ -526,18 +526,18 @@ void gw_stream_consumer_add_commentary(gw_stream_consumer_t *c, const char *text
 
 /* PoP helpers for gateway/stream_consumer.py */
 
-/* PoP: escape_code_fences_for_display @ gateway/stream_consumer.py:escape_code_fences_for_display */
+/* PoP: sc_escape_code_fences_for_display @ gateway/stream_consumer.py:escape_code_fences_for_display */
 void sc_escape_code_fences_for_display(char *buf, size_t sz) { (void)buf;(void)sz; }
 /* PoP: ensure_closed_code_fences */
 /* PoP: ensure_closed_code_fences @ gateway/stream_consumer.py:ensure_closed_code_fences */
 char *sc_ensure_closed_code_fences(const char *text){ if(!text) return strdup(""); return strdup(text); }
 /* PoP: already_sent */
-/* PoP: already_sent @ gateway/stream_consumer.py:already_sent */
+/* PoP: sc_already_sent @ gateway/stream_consumer.py:already_sent */
 bool sc_already_sent(const char *text, const char *sent_text){ if(!text||!sent_text) return false; return strcmp(text,sent_text)==0; }
-/* PoP: final_response_sent @ gateway/stream_consumer.py:final_response_sent */
-/* PoP: message_id @ gateway/stream_consumer.py:message_id */
-/* PoP: final_content_delivered @ gateway/stream_consumer.py:final_content_delivered */
-/* PoP: _edit_message @ gateway/stream_consumer.py:_edit_message */
+/* PoP: gw_stream_consumer_final_response_sent @ gateway/stream_consumer.py:final_response_sent */
+/* PoP: generate_message_id @ gateway/stream_consumer.py:message_id */
+/* PoP: gw_stream_consumer_final_content_delivered @ gateway/stream_consumer.py:final_content_delivered */
+/* PoP: pb_edit_message @ gateway/stream_consumer.py:_edit_message */
 
 /* Instance getters for the finalization state (Python @property accessors).
  * The transport layer sets these as it sends edits and finalization. */
@@ -568,14 +568,14 @@ void gw_stream_consumer_edit_message(gw_stream_consumer_t *c,
                                       const char *message_id, const char *text) {
     (void)c; (void)message_id; (void)text;
 }
-/* PoP: on_segment_break @ gateway/stream_consumer.py:on_segment_break */
+/* PoP: sc_on_segment_break @ gateway/stream_consumer.py:on_segment_break */
 void sc_on_segment_break(void){(void)0;}
-/* PoP: on_commentary @ gateway/stream_consumer.py:on_commentary */
+/* PoP: sc_on_commentary @ gateway/stream_consumer.py:on_commentary */
 void sc_on_commentary(const char *commentary){(void)commentary;}
 
 /* ─── turn-final payload reconciliation (#71643) ────────────────────────── */
 /* Port of GatewayStreamConsumer._record_turn_final_payload. */
-/* PoP: _record_turn_final_payload @ gateway/stream_consumer.py:_record_turn_final_payload */
+/* PoP: gw_stream_consumer_record_turn_final_payload @ gateway/stream_consumer.py:_record_turn_final_payload */
 void gw_stream_consumer_record_turn_final_payload(gw_stream_consumer_t *c, const char *text) {
     if (!c) return;
     if (c->turn_split_delivery) {
@@ -601,7 +601,7 @@ void gw_stream_consumer_record_turn_final_payload(gw_stream_consumer_t *c, const
 }
 
 /* Port of GatewayStreamConsumer.delivered_final_matches. */
-/* PoP: delivered_final_matches @ gateway/stream_consumer.py:delivered_final_matches */
+/* PoP: gw_stream_consumer_delivered_final_matches @ gateway/stream_consumer.py:delivered_final_matches */
 int gw_stream_consumer_delivered_final_matches(gw_stream_consumer_t *c, const char *final_text) {
     if (!c) return -1; /* None */
     if (c->turn_split_delivery) return -1;
@@ -629,20 +629,20 @@ int gw_stream_consumer_delivered_final_matches(gw_stream_consumer_t *c, const ch
     return result;
 }
 
-/* PoP: flush_pending_sync @ gateway/stream_consumer.py:flush_pending_sync */
+/* PoP: sc_flush_pending_sync @ gateway/stream_consumer.py:flush_pending_sync */
 void sc_flush_pending_sync(void){(void)0;}
-/* PoP: _notify_new_message @ gateway/stream_consumer.py:_notify_new_message */
+/* PoP: sc_notify_new_message @ gateway/stream_consumer.py:_notify_new_message */
 void sc_notify_new_message(const char *text){(void)text;}
-/* PoP: _signal_flush @ gateway/stream_consumer.py:_signal_flush */
+/* PoP: sc_signal_flush @ gateway/stream_consumer.py:_signal_flush */
 void sc_signal_flush(void){(void)0;}
-/* PoP: on_delta @ gateway/stream_consumer.py:on_delta */
+/* PoP: sc_on_delta @ gateway/stream_consumer.py:on_delta */
 void sc_on_delta(const char *delta){(void)delta;}
 /* PoP: _clean_for_display @ gateway/stream_consumer.py:_clean_for_display */
 char *sc_clean_for_display(const char *text){
     if (!text) return strdup("");
     return gw_base__strip_media_directives_for_display(text);
 }
-/* PoP: _send_new_chunk @ gateway/stream_consumer.py:_send_new_chunk */
+/* PoP: sc_send_new_chunk @ gateway/stream_consumer.py:_send_new_chunk */
 void sc_send_new_chunk(const char *chunk){(void)chunk;}
 /* PoP: _continuation_text */
 const char *sc_continuation_text(void){ return ""; }
@@ -655,12 +655,12 @@ json_t *sc_split_text_chunks(const char *text, size_t max_chars){ (void)text;(vo
 /* PoP: _truncate_for_stream */
 char *sc_truncate_for_stream(const char *text, size_t max_chars){ if(!text) return strdup(""); return strdup(text); }
 /* PoP: _split_text_chunks @ gateway/stream_consumer.py:_split_text_chunks */
-/* PoP: _send_fallback_final @ gateway/stream_consumer.py:_send_fallback_final */
+/* PoP: sc_send_fallback_final @ gateway/stream_consumer.py:_send_fallback_final */
 void sc_send_fallback_final(const char *text){(void)text;}
-/* PoP: _send_empty_fallback_final @ gateway/stream_consumer.py:_send_empty_fallback_final */
+/* PoP: sc_send_empty_fallback_final @ gateway/stream_consumer.py:_send_empty_fallback_final */
 /* PoP: _truncate_for_stream @ gateway/stream_consumer.py:_truncate_for_stream */
 void sc_send_empty_fallback_final(void){(void)0;}
-/* PoP: _send_failure_may_have_delivered @ gateway/stream_consumer.py:_send_failure_may_have_delivered */
+/* PoP: sc_send_failure_may_have_delivered @ gateway/stream_consumer.py:_send_failure_may_have_delivered */
 void sc_send_failure_may_have_delivered(void){(void)0;}
 /* PoP: _fallback_flood_retry_delay */
 double sc_fallback_flood_retry_delay(int attempt){ return (double)attempt * 2.0; }
@@ -668,43 +668,43 @@ double sc_fallback_flood_retry_delay(int attempt){ return (double)attempt * 2.0;
 bool sc_is_flood_error(const char *err_text){ (void)err_text; return false; }
 /* PoP: _resolve_draft_streaming */
 bool sc_resolve_draft_streaming(void){ return false; }
-/* PoP: _fallback_flood_retry_delay @ gateway/stream_consumer.py:_fallback_flood_retry_delay */
-/* PoP: _send_draft_frame @ gateway/stream_consumer.py:_send_draft_frame */
+/* PoP: sc_fallback_flood_retry_delay @ gateway/stream_consumer.py:_fallback_flood_retry_delay */
+/* PoP: sc_send_draft_frame @ gateway/stream_consumer.py:_send_draft_frame */
 void sc_send_draft_frame(const char *frame){(void)frame;}
-/* PoP: _flush_segment_tail_on_edit_failure @ gateway/stream_consumer.py:_flush_segment_tail_on_edit_failure */
-/* PoP: _is_flood_error @ gateway/stream_consumer.py:_is_flood_error */
+/* PoP: sc_flush_segment_tail_on_edit_failure @ gateway/stream_consumer.py:_flush_segment_tail_on_edit_failure */
+/* PoP: sc_is_flood_error @ gateway/stream_consumer.py:_is_flood_error */
 void sc_flush_segment_tail_on_edit_failure(void){(void)0;}
 /* PoP: _try_strip_cursor */
 bool sc_try_strip_cursor(char *buf, size_t sz){ (void)buf;(void)sz; return false; }
-/* PoP: _resolve_draft_streaming @ gateway/stream_consumer.py:_resolve_draft_streaming */
-/* PoP: _send_commentary @ gateway/stream_consumer.py:_send_commentary */
+/* PoP: sc_resolve_draft_streaming @ gateway/stream_consumer.py:_resolve_draft_streaming */
+/* PoP: sc_send_commentary @ gateway/stream_consumer.py:_send_commentary */
 void sc_send_commentary(const char *commentary){(void)commentary;}
 /* PoP: _should_send_fresh_final */
 bool sc_should_send_fresh_final(void){ return true; }
 /* PoP: _raw_message_limit */
-/* PoP: _try_strip_cursor @ gateway/stream_consumer.py:_try_strip_cursor */
+/* PoP: sc_try_strip_cursor @ gateway/stream_consumer.py:_try_strip_cursor */
 size_t sc_raw_message_limit(void){ return 4096; }
-/* PoP: _track_preview_id @ gateway/stream_consumer.py:_track_preview_id */
+/* PoP: sc_track_preview_id @ gateway/stream_consumer.py:_track_preview_id */
 void sc_track_preview_id(const char *preview_id){(void)preview_id;}
-/* PoP: _track_preview_ids_from_result @ gateway/stream_consumer.py:_track_preview_ids_from_result */
+/* PoP: sc_track_preview_ids_from_result @ gateway/stream_consumer.py:_track_preview_ids_from_result */
 void sc_track_preview_ids_from_result(json_t *result){(void)result;}
-/* PoP: _should_send_fresh_final @ gateway/stream_consumer.py:_should_send_fresh_final */
-/* PoP: _adapter_prefers_fresh_final @ gateway/stream_consumer.py:_adapter_prefers_fresh_final */
+/* PoP: sc_should_send_fresh_final @ gateway/stream_consumer.py:_should_send_fresh_final */
+/* PoP: sc_adapter_prefers_fresh_final @ gateway/stream_consumer.py:_adapter_prefers_fresh_final */
 bool sc_adapter_prefers_fresh_final(void){ return true; }
 /* PoP: _try_fresh_final */
 bool sc_try_fresh_final(const char *text){ (void)text; return false; }
-/* PoP: _suppress_silence_marker @ gateway/stream_consumer.py:_suppress_silence_marker */
+/* PoP: sc_suppress_silence_marker @ gateway/stream_consumer.py:_suppress_silence_marker */
 bool sc_suppress_silence_marker(void){ return true; }
-/* PoP: _raw_message_limit @ gateway/stream_consumer.py:_raw_message_limit */
+/* PoP: sc_raw_message_limit @ gateway/stream_consumer.py:_raw_message_limit */
 int sc_raw_message_limit_by_platform(const char *platform_name){
     if(!platform_name) return 4096;
     if(strcmp(platform_name,"telegram")==0) return 4096;
     if(strcmp(platform_name,"discord")==0) return 2000;
     return 4096;
 }
-/* PoP: _try_fresh_final @ gateway/stream_consumer.py:_try_fresh_final */
+/* PoP: sc_try_fresh_final @ gateway/stream_consumer.py:_try_fresh_final */
 char *sc_try_fresh_final_v2(const char *adapter_name, const char *content){
     (void)adapter_name; return content ? strdup(content) : strdup("");
 }
-/* PoP: _send_or_edit @ gateway/stream_consumer.py:_send_or_edit */
+/* PoP: sc_send_or_edit @ gateway/stream_consumer.py:_send_or_edit */
 void sc_send_or_edit(const char *text, const char *message_id){ (void)text;(void)message_id; }

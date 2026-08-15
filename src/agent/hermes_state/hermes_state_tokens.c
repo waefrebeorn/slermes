@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* PoP: update_token_counts @ hermes_state.py:update_token_counts */
+/* PoP: hermes_state_update_token_counts @ hermes_state.py:update_token_counts */
 bool hermes_state_update_token_counts(hermes_state_db_t *db,
                                       const char *session_id,
                                       long long input_tokens,
@@ -54,7 +54,7 @@ bool hermes_state_update_token_counts(hermes_state_db_t *db,
     return ok;
 }
 
-/* PoP: record_auxiliary_usage @ hermes_state.py:record_auxiliary_usage */
+/* PoP: state_usage_record_auxiliary_usage @ hermes_state.py:record_auxiliary_usage */
 bool hermes_state_record_auxiliary_usage(hermes_state_db_t *db,
                                          const char *session_id,
                                          const char *task,

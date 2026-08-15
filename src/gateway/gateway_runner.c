@@ -264,10 +264,10 @@ bool gateway_runner_should_exit_cleanly(const GatewayRunner *self)
 /* PoP: gateway_runner_should_exit_with_failure @ gateway/run.py:should_exit_with_failure */
 bool gateway_runner_should_exit_with_failure(const GatewayRunner *self)
     { return self ? self->exit_with_failure : false; }
-/* PoP: gateway_runner_exit_reason @ gateway/run.py:exit_reason */
+/* PoP: tui_entry_get_exit_reason @ gateway/run.py:exit_reason */
 const char *gateway_runner_exit_reason(const GatewayRunner *self)
     { return self ? self->exit_reason : NULL; }
-/* PoP: gateway_runner_exit_code @ gateway/run.py:exit_code */
+/* PoP: _interpret_exit_code @ gateway/run.py:exit_code */
 int gateway_runner_exit_code(const GatewayRunner *self)
     { return self ? self->exit_code_val : -1; }
 const char *gateway_runner_busy_input_mode(const GatewayRunner *self)

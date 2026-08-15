@@ -14,7 +14,7 @@
  *       as opposed to a real lint error in the file being checked.
  */
 
-/* PoP: file_ops_looks_like_linter_unusable @ tools/file_operations.py:_looks_like_linter_unusable */
+/* PoP: fo_looks_like_linter_unusable @ tools/file_operations.py:_looks_like_linter_unusable */
 bool file_ops_looks_like_linter_unusable(const char *base_cmd, const char *output);
 
 #endif /* SLERMES_FILE_OPS_LINT_H */

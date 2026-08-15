@@ -38,7 +38,7 @@ static bool cache_is_warm(void) {
     return (now_monotonic() - g_manifest_cache.fetched_at) < PET_MANIFEST_TTL;
 }
 
-/* PoP: pet_clear_manifest_cache @ agent/pet/manifest.py:clear_cache */
+/* PoP: lsw_clear_cache @ agent/pet/manifest.py:clear_cache */
 void pet_clear_manifest_cache(void) {
     pthread_mutex_lock(&g_manifest_lock);
     if (g_manifest_cache.entries) {
@@ -51,7 +51,7 @@ void pet_clear_manifest_cache(void) {
 }
 
 /* PoP: pet_fetch_manifest @ agent/pet/manifest.py:fetch_manifest */
-/* PoP: _fetch_manifest @ hermes_cli/model_catalog.py:_fetch_manifest */
+/* PoP: pet_fetch_manifest @ hermes_cli/model_catalog.py:_fetch_manifest */
 int pet_fetch_manifest(pet_manifest_entry_t *out, int max_count, bool force) {
     if (!out || max_count <= 0) return 0;
 
@@ -186,7 +186,7 @@ bool pet_find_entry(const char *slug, pet_manifest_entry_t *out) {
     return false;
 }
 
-/* PoP: pet_prefetch_manifest @ agent/pet/manifest.py:prefetch */
+/* PoP: agent_memory_provider_queue_prefetch @ agent/pet/manifest.py:prefetch */
 void pet_prefetch_manifest(void) {
     if (cache_is_warm()) return;
 

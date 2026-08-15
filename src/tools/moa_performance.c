@@ -771,7 +771,7 @@ void moa_model_selector_record_success(moa_project_context_t *project, const cha
 /* shared http client handle (the engine owns the actual transport) */
 static int g_http_client_open = 0;
 
-/* PoP: moa_perf_init_db @ tools/moa_performance.py:_init_db */
+/* PoP: kdb_init_db @ tools/moa_performance.py:_init_db */
 void moa_perf_init_db(void) {
     moa_get_project_manager();   /* triggers sqlite schema init via pthread_once */
     moa_get_response_cache();
@@ -877,9 +877,9 @@ void moa_perf_ensure_session(void) {
     moa_get_project_manager();
 }
 
-/* PoP: moa_perf_enter @ tools/moa_performance.py:__aenter__ */
+/* PoP: tools_online_research_u__aenter__ @ tools/moa_performance.py:__aenter__ */
 void moa_perf_enter(void) { g_http_client_open = 1; }
-/* PoP: moa_perf_exit @ tools/moa_performance.py:__aexit__ */
+/* PoP: tools_online_research_u__aexit__ @ tools/moa_performance.py:__aexit__ */
 void moa_perf_exit(void) { g_http_client_open = 0; }
 
 /* PoP: moa_perf_call_model @ tools/moa_performance.py:call_model */

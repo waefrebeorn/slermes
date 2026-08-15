@@ -377,7 +377,7 @@ static void _cm_drop_oversize(tool_checkpoint_mgr_t *self,
 }
 
 /* Keep only the last max_snapshots commits on the per-project ref. */
-/* PoP: _prune @ tools/checkpoint_manager.py:_prune */
+/* PoP: _cm_prune @ tools/checkpoint_manager.py:_prune */
 static void _cm_prune(tool_checkpoint_mgr_t *self,
                        const char *shadow_repo, const char *working_dir,
                        const char *ref) {
@@ -526,7 +526,7 @@ bool checkpoint_manager_ensure(tool_checkpoint_mgr_t *self,
         return false;
     if (_cm_in_dirset(self, abs_dir)) return false;
     _cm_add_dir(self, abs_dir);
-/* PoP: _take @ tools/checkpoint_manager.py:_take */
+/* PoP: idset_take @ tools/checkpoint_manager.py:_take */
 
     return checkpoint_manager_take(self, abs_dir, reason ? reason : "auto");
 }
@@ -676,7 +676,7 @@ char *checkpoint_manager_list(tool_checkpoint_mgr_t *self, const char *working_d
     len += snprintf(res + len, cap - len, "]");
     return res;
 }
-/* PoP: diff @ tools/checkpoint_manager.py:diff */
+/* PoP: wd_untracked_diff @ tools/checkpoint_manager.py:diff */
 
 char *checkpoint_manager_diff(tool_checkpoint_mgr_t *self,
                             const char *working_dir, const char *commit_hash) {
@@ -726,7 +726,7 @@ char *checkpoint_manager_diff(tool_checkpoint_mgr_t *self,
              ok_stat ? stat_out : "", ok_diff ? diff_out : "");
     return r;
 }
-/* PoP: restore @ tools/checkpoint_manager.py:restore */
+/* PoP: mco_restore @ tools/checkpoint_manager.py:restore */
 
 char *checkpoint_manager_restore(tool_checkpoint_mgr_t *self,
                                const char *working_dir, const char *commit_hash,
@@ -849,7 +849,7 @@ char *store_status(const char *checkpoint_base) {
     return r;
 }
 
-/* PoP: clear_all @ tools/checkpoint_manager.py:clear_all */
+/* PoP: checkpoint_clear_all @ tools/checkpoint_manager.py:clear_all */
 char *clear_all(const char *checkpoint_base) {
     char store[MAX_PATH];
     _store_path(NULL, store, sizeof(store));
@@ -867,7 +867,7 @@ char *clear_legacy(const char *checkpoint_base) {
     return strdup("{\"cleared\":0}");
 }
 
-/* PoP: session_diff @ tools/checkpoint_manager.py:session_diff */
+/* PoP: ccm_print_session_diff @ tools/checkpoint_manager.py:session_diff */
 /* Cumulative diff of everything changed in the working tree since the
  * earliest retained checkpoint. Powers `/diff session`.
  *

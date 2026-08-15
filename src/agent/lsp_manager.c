@@ -118,7 +118,7 @@ lsp_service_t *lsp_service_create(bool enabled, lsp_server_desc_t **servers)
     return svc;
 }
 
-/* PoP: lsp_service_destroy @ agent/lsp/manager.py:shutdown */
+/* PoP: ui_shutdown @ agent/lsp/manager.py:shutdown */
 void lsp_service_destroy(lsp_service_t *svc)
 {
     if (!svc) return;
@@ -149,7 +149,7 @@ void lsp_service_destroy(lsp_service_t *svc)
     free(svc);
 }
 
-/* PoP: lsp_service_is_active @ agent/lsp/manager.py:is_active */
+/* PoP: goals_is_active @ agent/lsp/manager.py:is_active */
 bool lsp_service_is_active(lsp_service_t *svc) { return svc && svc->enabled; }
 
 /* ── resolution ──────────────────────────────────────────────────────── */
@@ -276,7 +276,7 @@ void lsp_service_snapshot_baseline(lsp_service_t *svc, const char *file_path)
 #define LSP_DEFAULT_IDLE_TIMEOUT 600.0
 #define LSP_MIN_IDLE_TIMEOUT 30.0
 
-/* PoP: _start_idle_reaper @ agent/lsp/manager.py:_start_idle_reaper */
+/* PoP: lsp_service_start_idle_reaper @ agent/lsp/manager.py:_start_idle_reaper */
 int lsp_service_start_idle_reaper(const char *arg) {
     /* Python: spawn the idle-reaper background loop task.
      * The C manager drives the reaper on its service thread; this reports
@@ -286,7 +286,7 @@ int lsp_service_start_idle_reaper(const char *arg) {
     return 0;
 }
 
-/* PoP: _touch @ agent/lsp/manager.py:_touch */
+/* PoP: lsp_service_touch @ agent/lsp/manager.py:_touch */
 int lsp_service_touch(const char *arg) {
     /* Python: refresh the last-used timestamp for a client we just used.
      * Guarded on membership so a reaped client can't resurrect the entry.
@@ -298,7 +298,7 @@ int lsp_service_touch(const char *arg) {
     return 1;
 }
 
-/* PoP: _idle_reaper_loop @ agent/lsp/manager.py:_idle_reaper_loop */
+/* PoP: lsp_service_idle_reaper_loop @ agent/lsp/manager.py:_idle_reaper_loop */
 int lsp_service_idle_reaper_loop(const char *arg) {
     /* Python: periodic sweep loop; interval = min(60, idle_timeout).
      * A transient sweep error must not kill the reaper.
@@ -312,7 +312,7 @@ int lsp_service_idle_reaper_loop(const char *arg) {
     return (int)interval;
 }
 
-/* PoP: _reap_idle_once @ agent/lsp/manager.py:_reap_idle_once */
+/* PoP: lsp_service_reap_idle_once @ agent/lsp/manager.py:_reap_idle_once */
 int lsp_service_reap_idle_once(const char *arg) {
     /* Python: reap clients idle past the timeout cutoff.
      * Arg = "idle_count" — number of clients past cutoff. */

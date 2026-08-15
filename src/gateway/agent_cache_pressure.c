@@ -28,7 +28,7 @@ int gateway_cgroup_cleanup_own_cgroup_path(const char *buf, char *out, size_t ou
 
 /* ── _positive_int(value) ──
  * value is a json_t*. Booleans/None -> NULL (sentinel ACB_UNSET_INT). */
-/* PoP: _positive_int @ gateway/agent_cache_pressure.py:_positive_int */
+/* PoP: tg_positive_int @ gateway/agent_cache_pressure.py:_positive_int */
 int acb_positive_int(const void *value) {
     const json_t *v = (const json_t *)value;
     if (!v) return ACB_UNSET_INT;
@@ -49,7 +49,7 @@ int acb_positive_int(const void *value) {
     return ACB_UNSET_INT;
 }
 
-/* PoP: _positive_float @ gateway/agent_cache_pressure.py:_positive_float */
+/* PoP: acb_positive_float @ gateway/agent_cache_pressure.py:_positive_float */
 double acb_positive_float(const void *value) {
     const json_t *v = (const json_t *)value;
     if (!v) return ACB_UNSET_FLOAT;
@@ -70,7 +70,7 @@ double acb_positive_float(const void *value) {
 }
 
 /* ── _cgroup_limit_bytes() ── */
-/* PoP: _cgroup_limit_bytes @ gateway/agent_cache_pressure.py:_cgroup_limit_bytes */
+/* PoP: acb_cgroup_limit_bytes @ gateway/agent_cache_pressure.py:_cgroup_limit_bytes */
 long long acb_cgroup_limit_bytes(void) {
     const char *candidates[] = {
         "/sys/fs/cgroup/memory.high",
@@ -129,7 +129,7 @@ long long acb_total_memory_bytes(void) {
 
 /* ── resolve_memory_high_mb(setting) ──
  * `setting` is a json_t* raw config value for the `memory_high_mb` key. */
-/* PoP: resolve_memory_high_mb @ gateway/agent_cache_pressure.py:resolve_memory_high_mb */
+/* PoP: acb_resolve_memory_high_mb @ gateway/agent_cache_pressure.py:resolve_memory_high_mb */
 int acb_resolve_memory_high_mb(const void *setting) {
     const json_t *v = (const json_t *)setting;
     if (v && v->type == JSON_STRING) {
@@ -165,7 +165,7 @@ int acb_resolve_memory_high_mb(const void *setting) {
 
 /* ── resolve_agent_cache_bounds(raw_config) ──
  * raw_config is a json_t* (object) like read_raw_config() returns. */
-/* PoP: resolve_agent_cache_bounds @ gateway/agent_cache_pressure.py:resolve_agent_cache_bounds */
+/* PoP: acb_resolve_agent_cache_bounds @ gateway/agent_cache_pressure.py:resolve_agent_cache_bounds */
 agent_cache_bounds_t acb_resolve_agent_cache_bounds(const void *raw_config) {
     agent_cache_bounds_t b = {
         ACB_UNSET_INT, ACB_UNSET_FLOAT, ACB_UNSET_INT,
@@ -205,7 +205,7 @@ agent_cache_bounds_t acb_resolve_agent_cache_bounds(const void *raw_config) {
 
 /* ── read_anon_rss_mb() ──
  * Anonymous RSS from /proc/self/status; falls back to total RSS. */
-/* PoP: read_anon_rss_mb @ gateway/agent_cache_pressure.py:read_anon_rss_mb */
+/* PoP: acb_read_anon_rss_mb @ gateway/agent_cache_pressure.py:read_anon_rss_mb */
 int acb_read_anon_rss_mb(void) {
     FILE *fp = fopen("/proc/self/status", "r");
     if (!fp) return 0;
@@ -233,7 +233,7 @@ int acb_read_anon_rss_mb(void) {
 
 /* ── transcript_persistence_caught_up(agent) ──
  * Safe default: false (never evict a potentially-in-flight agent). */
-/* PoP: transcript_persistence_caught_up @ gateway/agent_cache_pressure.py:transcript_persistence_caught_up */
+/* PoP: acb_transcript_persistence_caught_up @ gateway/agent_cache_pressure.py:transcript_persistence_caught_up */
 bool acb_transcript_persistence_caught_up(const void *agent) {
     (void)agent;
     return false;

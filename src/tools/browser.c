@@ -50,8 +50,8 @@ typedef struct {
 static browser_tab_t g_tab;
 
 /* Get current browser tab URL (NULL if no active session) */
-/* PoP: _get @ tools/browser_camofox.py:_get */
-/* PoP: get @ tools/browser_supervisor.py:get */
+/* PoP: plugin_get @ tools/browser_camofox.py:_get */
+/* PoP: plugin_get @ tools/browser_supervisor.py:get */
 const char *browser_get_current_url(void) {
     return g_tab.url[0] ? g_tab.url : NULL;
 }
@@ -838,11 +838,11 @@ static char *resolve_url(const char *base, const char *href) {
 /* browser_click: Click on an element by its text content or @ref */
 /* PoP: browser_click_handler @ browser_tool:click */
 /* PoP: browser_click_handler @ backend:click */
-/* PoP: browser_click_handler @ tools/computer_use/cua_backend.py:click */
+/* PoP: pet_ui_handle_click @ tools/computer_use/cua_backend.py:click */
 /* PoP: browser_click_handler @ computer_use:click */
 /* PoP: browser_click_handler @ tools/browser_tool.py:click */
-/* PoP: browser_click_handler @ tools/computer_use/backend.py:click */
-/* PoP: browser_click_handler @ tools/computer_use/tool.py:click */
+/* PoP: pet_ui_handle_click @ tools/computer_use/backend.py:click */
+/* PoP: pet_ui_handle_click @ tools/computer_use/tool.py:click */
 char *browser_click_handler(const char *args_json, const char *task_id) {
     (void)task_id;
     json_t *args = json_parse(args_json, NULL);
@@ -1003,7 +1003,7 @@ char *browser_type_handler(const char *args_json, const char *task_id) {
 /* browser_scroll: Scroll the page up or down */
 /* PoP: browser_scroll_handler @ browser_tool:scroll */
 /* PoP: browser_scroll_handler @ backend:scroll */
-/* PoP: browser_scroll_handler @ tools/computer_use/cua_backend.py:scroll */
+/* PoP: app_chat_scroll @ tools/computer_use/cua_backend.py:scroll */
 /* PoP: browser_scroll_handler @ computer_use:scroll */
 /* PoP: browser_scroll_handler @ session_search:_scroll */
 /* PoP: browser_scroll_handler @ tools/browser_tool.py:scroll */
@@ -1840,7 +1840,7 @@ void registry_init_browser(void) {
 
 /* ── tools/browser_tool.py gap functions ─────────────────────────── */
 
-/* PoP: __getattr__ @ tools/browser_tool.py:__getattr__ */
+/* PoP: main_u__getattr__ @ tools/browser_tool.py:__getattr__ */
 const char *browser_tool_getattr(const char *name) {
     /* Python: lazy module attributes (PEP 562) — requests + call_llm.
      * The C core has no module-level lazy imports; attribute resolution
@@ -1851,7 +1851,7 @@ const char *browser_tool_getattr(const char *name) {
     return NULL;
 }
 
-/* PoP: _lazy_call_llm @ tools/browser_tool.py:_lazy_call_llm */
+/* PoP: browser_tool_lazy_call_llm @ tools/browser_tool.py:_lazy_call_llm */
 int browser_tool_lazy_call_llm(const char *arg) {
     /* Python: invoke call_llm through module globals, importing lazily.
      * The C core resolves the LLM call statically via llm_client; the
@@ -1872,7 +1872,7 @@ char *browser_tool_get_cdp_override_raw(void) {
     return strdup("");
 }
 
-/* PoP: _resolve_allow_private_urls @ tools/browser_tool.py:_resolve_allow_private_urls */
+/* PoP: url_resolve_allow_private_urls @ tools/browser_tool.py:_resolve_allow_private_urls */
 int browser_tool_resolve_allow_private_urls(void) {
     /* Python: read browser.allow_private_urls toggle from config scope.
      * The C core reads HERMES_ALLOW_PRIVATE_URLS env override, else config. */
@@ -1883,7 +1883,7 @@ int browser_tool_resolve_allow_private_urls(void) {
     return 0;
 }
 
-/* PoP: _session_expiry_timestamp @ tools/browser_tool.py:_session_expiry_timestamp */
+/* PoP: browser_tool_session_expiry_timestamp @ tools/browser_tool.py:_session_expiry_timestamp */
 double browser_tool_session_expiry_timestamp(const char *arg) {
     /* Python: provider-authoritative session expiry as epoch seconds.
      * Arg = "expires_at_epoch_or_iso". Numeric values pass through;
@@ -1902,7 +1902,7 @@ double browser_tool_session_expiry_timestamp(const char *arg) {
     return 0.0;
 }
 
-/* PoP: _session_has_expired @ tools/browser_tool.py:_session_has_expired */
+/* PoP: browser_tool_session_has_expired @ tools/browser_tool.py:_session_has_expired */
 int browser_tool_session_has_expired(const char *arg) {
     /* Python: whether a cached browser session crossed its deadline.
      * Arg = "expires_at\ttimezone_suffix". Returns 1 if expired. */
@@ -1917,7 +1917,7 @@ int browser_tool_session_has_expired(const char *arg) {
 
 /* ── tools/browser_supervisor.py gap functions ───────────────────── */
 
-/* PoP: to_dict @ tools/browser_supervisor.py:to_dict */
+/* PoP: tools_computer_use_tool_u_element_to_dict @ tools/browser_supervisor.py:to_dict */
 char *browser_supervisor_pending_dialog_to_dict(const char *arg) {
     /* Python: PendingDialog.to_dict — serialize dialog state.
      * Arg = "id\ttype\tmessage\topened_at\tframe_id". */
@@ -2003,7 +2003,7 @@ char *browser_supervisor_snapshot_to_dict(const char *arg) {
     return out;
 }
 
-/* PoP: _run @ tools/browser_supervisor.py:_run */
+/* PoP: wd_run @ tools/browser_supervisor.py:_run */
 int browser_supervisor_run(const char *arg) {
     /* Python: CDPSupervisor._run — main supervisor loop.
      * The C core drives the CDP session loop; this reports loop status.

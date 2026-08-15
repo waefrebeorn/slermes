@@ -34,7 +34,7 @@
  * ================================================================ */
 
 /* Port of Python: _coerce_bool */
-/* PoP: _coerce_bool @ gateway/config.py:_coerce_bool */
+/* PoP: wbs_coerce_bool @ gateway/config.py:_coerce_bool */
 bool gateway_config_coerce_bool(const json_node_t *value, bool default_val) {
     if (!value || json_node_is_null(value)) {
         return default_val;
@@ -76,7 +76,7 @@ bool gateway_config_coerce_bool(const json_node_t *value, bool default_val) {
 }
 
 /* Port of Python: _coerce_float */
-/* PoP: _coerce_float @ gateway/config.py:_coerce_float */
+/* PoP: moa_coerce_float @ gateway/config.py:_coerce_float */
 double gateway_config_coerce_float(const json_node_t *value, double default_val) {
     if (!value || json_node_is_null(value)) {
         return default_val;
@@ -101,7 +101,7 @@ double gateway_config_coerce_float(const json_node_t *value, double default_val)
 }
 
 /* Port of Python: _coerce_int */
-/* PoP: _coerce_int @ gateway/config.py:_coerce_int */
+/* PoP: fo_coerce_int @ gateway/config.py:_coerce_int */
 int gateway_config_coerce_int(const json_node_t *value, int default_val) {
     if (!value || json_node_is_null(value)) {
         return default_val;
@@ -126,7 +126,7 @@ int gateway_config_coerce_int(const json_node_t *value, int default_val) {
 }
 
 /* Port of Python: _coerce_optional_positive_int */
-/* PoP: _coerce_optional_positive_int @ gateway/config.py:_coerce_optional_positive_int */
+/* PoP: gateway_config_coerce_optional_positive_int @ gateway/config.py:_coerce_optional_positive_int */
 int gateway_config_coerce_optional_positive_int(const json_node_t *value, const char *key, bool *out_valid) {
     if (!value || json_node_is_null(value)) {
         if (out_valid) *out_valid = true;
@@ -874,7 +874,7 @@ bool gateway_config_validate(const gateway_config_t *cfg, json_node_t *issues_ob
     return valid;
 
 /* Port of Python: _apply_env_overrides */
-/* PoP: _apply_env_overrides @ gateway/config.py:_apply_env_overrides */
+/* PoP: gateway_config_apply_env_overrides @ gateway/config.py:_apply_env_overrides */
 void gateway_config_apply_env_overrides(gateway_config_t *cfg) {
     if (!cfg) return;
 

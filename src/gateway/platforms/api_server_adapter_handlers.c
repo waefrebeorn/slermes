@@ -139,7 +139,7 @@ void api_server_handle_health(api_server_adapter_t *adapter, int client_fd, cons
 
 /* Port of Python gateway/platforms/api_server.py:_handle_capabilities(). */
 
-/* PoP: api_server_handle_capabilities @ gateway/platforms/api_server.py:_handle_capabilities */
+/* PoP: seat_handle_capabilities @ gateway/platforms/api_server.py:_handle_capabilities */
 void api_server_handle_capabilities(api_server_adapter_t *adapter, int client_fd, const char *headers, const char *origin) {
     (void)headers;
     (void)origin;

@@ -159,7 +159,7 @@ const char *hermes_state_sqlite_source_id(void) {
     return sqlite3_sourceid();
 }
 
-/* PoP: hermes_state_is_malformed_db_error @ hermes_state.py:is_malformed_db_error */
+/* PoP: hs_is_malformed_db_error @ hermes_state.py:is_malformed_db_error */
 bool hermes_state_is_malformed_db_error(const char *msg) {
     if (!msg) return false;
     return strstr(msg, "malformed database schema") != NULL
@@ -250,7 +250,7 @@ char *hermes_state_get_session_title(hermes_state_db_t *db, const char *session_
     return title;
 }
 
-/* PoP: hermes_state_session_count @ hermes_state.py:session_count */
+/* PoP: app_session_count @ hermes_state.py:session_count */
 long long hermes_state_session_count(hermes_state_db_t *db, const char *source,
                                      bool exclude_children, const char *exclude_sources) {
     if (!db) return 0;
@@ -273,7 +273,7 @@ long long hermes_state_session_count(hermes_state_db_t *db, const char *source,
     return count;
 }
 
-/* PoP: hermes_state_message_count @ hermes_state.py:message_count */
+/* PoP: app_message_count @ hermes_state.py:message_count */
 long long hermes_state_message_count(hermes_state_db_t *db, const char *session_id) {
     if (!db) return 0;
     sqlite3_stmt *st = NULL;
@@ -684,7 +684,7 @@ void hermes_state_fail_handoff(hermes_state_db_t *db, const char *session_id, co
 
 /* ── session titles ────────────────────────────────────────────────────── */
 
-/* PoP: hermes_state_set_session_title_impl @ hermes_state.py:_set_session_title */
+/* PoP: hermes_state_set_session_title @ hermes_state.py:_set_session_title */
 int hermes_state_set_session_title_impl(hermes_state_db_t *db, const char *session_id,
                                         const char *title, bool only_if_empty) {
     /* sanitize + uniqueness + upsert. Returns 1 on change, 0 when nothing
@@ -1237,7 +1237,7 @@ void hermes_state_update_system_prompt(hermes_state_db_t *db, const char *sessio
     sqlite3_finalize(st);
 }
 
-/* PoP: hermes_state_update_session_model @ hermes_state.py:update_session_model */
+/* PoP: session_db_update_session_model @ hermes_state.py:update_session_model */
 void hermes_state_update_session_model(hermes_state_db_t *db, const char *session_id, const char *model) {
     /* Unconditional set; nulls system_prompt so stale footers cannot lie. */
     if (!db || !session_id) return;
@@ -1779,7 +1779,7 @@ bool hermes_state_set_latest_user_api_content(hermes_state_db_t *db, const char 
     return ok;
 }
 
-/* PoP: hermes_state_ensure_session @ hermes_state.py:ensure_session */
+/* PoP: moa_perf_ensure_session @ hermes_state.py:ensure_session */
 void hermes_state_ensure_session(hermes_state_db_t *db, const char *session_id,
                                  const char *source, const char *model) {
     if (!db || !session_id) return;
@@ -1949,7 +1949,7 @@ static void hs_delete_session_row(hermes_state_db_t *db, const char *session_id)
     }
 }
 
-/* PoP: hermes_state_prune_sessions @ hermes_state.py:prune_sessions */
+/* PoP: ws_prune_sessions @ hermes_state.py:prune_sessions */
 long long hermes_state_prune_sessions(hermes_state_db_t *db, double older_than_days,
                                       const char *source) {
     /* Delete ended sessions inactive for older_than_days, optionally
@@ -2031,7 +2031,7 @@ void hermes_state_remove_session_files(const char *home, const char *session_id)
     closedir(dir);
 }
 
-/* PoP: hermes_state_delete_session @ hermes_state.py:delete_session */
+/* PoP: ws_sess_delete_session @ hermes_state.py:delete_session */
 bool hermes_state_delete_session(hermes_state_db_t *db, const char *session_id) {
     /* Delegate subagent children cascade-deleted; branch/compression
      * children orphaned; messages + row removed. */

@@ -66,7 +66,7 @@ char *kdb_claimer_id(void)
 /* parent / phantom resolution                                        */
 /* ------------------------------------------------------------------ */
 
-/* PoP: kdb_find_missing_parents @ hermes_cli/kanban_db.py:_find_missing_parents */
+/* PoP: kanban_find_missing_parents @ hermes_cli/kanban_db.py:_find_missing_parents */
 char **kdb_find_missing_parents(sqlite3 *conn, char **parents, int n)
 {
     if (!conn || n <= 0) { char **e = malloc(sizeof(char*)); e[0] = NULL; return e; }
@@ -639,7 +639,7 @@ char *kdb_safe_which_no_cwd(const char *command)
 /* schema drift detection                                             */
 /* ------------------------------------------------------------------ */
 
-/* PoP: kdb_table_has_drifted @ hermes_cli/kanban_db.py:_table_has_drifted */
+/* PoP: kb_table_has_drifted @ hermes_cli/kanban_db.py:_table_has_drifted */
 int kdb_table_has_drifted(sqlite3 *conn, const char *table)
 {
     if (!conn || !table) return 0;

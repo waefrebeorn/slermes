@@ -180,7 +180,7 @@ char *context_scan_content(const char *content, const char *filename) {
  * ================================================================ */
 
 /* Port of Python: _find_git_root */
-/* PoP: context_find_git_root @ agent/prompt_builder.py:_find_git_root */
+/* PoP: coding_context_find_git_root @ agent/prompt_builder.py:_find_git_root */
 char *context_find_git_root(const char *start_dir) {
     if (!start_dir) return NULL;
 

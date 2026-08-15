@@ -75,7 +75,7 @@ char *flux3_resolve_destination(const char *save_to, const char *filename)
     return flux3_free_path(dir, filename);
 }
 
-/* PoP: _free_path @ tools/flux3_video_tool.py:_free_path */
+/* PoP: kdbport_u_collision_free_path @ tools/flux3_video_tool.py:_free_path */
 char *flux3_free_path(const char *directory, const char *name)
 {
     char candidate[4096];
@@ -185,7 +185,7 @@ json_t *flux3_shared_submit_properties(void)
     return props;
 }
 
-/* PoP: _endpoints @ tools/flux3_video_tool.py:_endpoints */
+/* PoP: cli_tools_managed_tool_gateway_managed_vendor_endpoints @ tools/flux3_video_tool.py:_endpoints */
 /* Python: return managed_vendor_endpoints(_VENDOR)  ("bfl"). */
 /* Delegates to managed_gateway lib. Returns NULL when unreachable. */
 json_t *flux3_endpoints(void)
@@ -205,7 +205,7 @@ json_t *flux3_endpoints(void)
         return r;
 }
 
-/* PoP: _warm_nous_token @ tools/flux3_video_tool.py:_warm_nous_token */
+/* PoP: flux3_warm_nous_token @ tools/flux3_video_tool.py:_warm_nous_token */
 /* Python: read_nous_access_token() with exception swallowed. Delegates to
  * the already-ported managed_tool_gateway read_nous_access_token wrapper. */
 void flux3_warm_nous_token(void)
@@ -215,7 +215,7 @@ void flux3_warm_nous_token(void)
     (void)cli_tools_managed_tool_gateway_read_nous_access_token(tok, sizeof(tok));
 }
 
-/* PoP: _has_nous_credential @ tools/flux3_video_tool.py:_has_nous_credential */
+/* PoP: flux3_has_nous_credential @ tools/flux3_video_tool.py:_has_nous_credential */
 /* Faithful to Python: True if peek_nous_access_token() succeeds OR if
  * get_provider_auth_state("nous") has a non-empty access_token. */
 bool flux3_has_nous_credential(void)
@@ -238,7 +238,7 @@ bool flux3_has_nous_credential(void)
     return r;
 }
 
-/* PoP: check_bfl_requirements @ tools/flux3_video_tool.py:check_bfl_requirements */
+/* PoP: flux3_check_bfl_requirements @ tools/flux3_video_tool.py:check_bfl_requirements */
 /* True if _endpoints() resolves AND _has_nous_credential(). */
 bool flux3_check_bfl_requirements(void)
 {
@@ -248,7 +248,7 @@ bool flux3_check_bfl_requirements(void)
     return flux3_has_nous_credential();
 }
 
-/* PoP: _delivers_as_an_attachment @ tools/flux3_video_tool.py:_delivers_as_an_attachment */
+/* PoP: flux3_delivers_as_an_attachment @ tools/flux3_video_tool.py:_delivers_as_an_attachment */
 bool flux3_delivers_as_an_attachment(void)
 {
     return gw_session_is_messaging_surface();
@@ -440,7 +440,7 @@ char *f3_call_gateway(const char *method, const char *url,
     return result ? result : strdup("{}");
 }
 
-/* PoP: _wait_between_looks @ tools/flux3_video_tool.py:_wait_between_looks */
+/* PoP: f3_wait_between_looks @ tools/flux3_video_tool.py:_wait_between_looks */
 bool f3_wait_between_looks(double seconds) {
     /* Python: asyncio.sleep in slices, checking is_interrupted. */
     double remaining = seconds;
@@ -533,7 +533,7 @@ char *f3_prepare_media(const char *args_json, const char *task_id) {
     return out ? out : strdup("{}");
 }
 
-/* PoP: _download_video @ tools/flux3_video_tool.py:_download_video */
+/* PoP: wx_u_download_video @ tools/flux3_video_tool.py:_download_video */
 char *f3_download_video(const char *url, const char *save_to, double started) {
     /* Python: stream download with SSRF guard, write to .part, rename on success.
      * Returns JSON: {"path": ..., "bytes": ...} or raises. */
@@ -641,7 +641,7 @@ char *f3_save_if_ready(const char *raw, const char *save_to, double started) {
     return out ? out : strdup("{}");
 }
 
-/* PoP: _submit @ tools/flux3_video_tool.py:_submit */
+/* PoP: scheduler_pool_submit @ tools/flux3_video_tool.py:_submit */
 char *f3_submit(const char *mode, const char *args_json) {
     /* Python: POST to gateway generations endpoint with mode + args. */
     json_t *endpoints = flux3_endpoints();

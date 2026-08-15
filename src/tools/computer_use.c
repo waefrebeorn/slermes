@@ -32,7 +32,7 @@
 
 static char *handle_computer_use(const char *args_json, const char *task_id);
 /* PoP: action @ tools/computer_use/cua_backend.py:action */
-/* PoP: _action @ tools/computer_use/cua_backend.py:_action */
+/* PoP: app_hover_action @ tools/computer_use/cua_backend.py:_action */
 static char *dispatch_action(cu_backend_t *b, const char *action, json_t *args);
 
 /* ======================================================================
@@ -45,12 +45,12 @@ typedef struct {
 
 static bool noop_is_available(void) { return true; }
 static bool noop_start(void) { return true; }
-/* PoP: stop @ tools/computer_use/cua_backend.py:stop */
-/* PoP: stop @ tools/computer_use/tool.py:stop */
+/* PoP: ccp_stop @ tools/computer_use/cua_backend.py:stop */
+/* PoP: ccp_stop @ tools/computer_use/tool.py:stop */
 static void noop_stop(void) {}
-/* PoP: capture @ tools/computer_use/cua_backend.py:capture */
+/* PoP: cua_u_failed_capture @ tools/computer_use/cua_backend.py:capture */
 
-/* PoP: capture @ tools/computer_use/tool.py:capture */
+/* PoP: cua_u_failed_capture @ tools/computer_use/tool.py:capture */
 static cu_capture_t *noop_capture(const char *mode, const char *app) {
     (void)mode;
     cu_capture_t *cap = (cu_capture_t *)calloc(1, sizeof(cu_capture_t));
@@ -111,7 +111,7 @@ static cu_action_t *noop_scroll(const char *dir, int amount,
                              dir ? dir : "down", amount > 0 ? amount : 3);
 }
 
-/* PoP: type_text @ tools/computer_use/cua_backend.py:type_text */
+/* PoP: tools_computer_use_tool_type_text @ tools/computer_use/cua_backend.py:type_text */
 static cu_action_t *noop_type_text(const char *text) {
     return noop_make_action("type", true, "typed %zu chars",
                              text ? strlen(text) : 0);
@@ -1833,7 +1833,7 @@ cu_backend_t *cu_get_global_backend(void) {
 /* PoP: cu_reset_global_backend @ tools/computer_use/cua_backend.py:CuaDriverBackend.set_config */
 void cu_reset_global_backend(void) {
     if (g_cu_backend) {
-/* PoP: stop @ tools/computer_use/backend.py:stop */
+/* PoP: ccp_stop @ tools/computer_use/backend.py:stop */
         g_cu_backend->stop();
         free(g_cu_backend->state);
         free(g_cu_backend);
@@ -2011,7 +2011,7 @@ static char *dispatch_capture(cu_backend_t *b, json_t *args) {
     if (max_elements > 1000) max_elements = 1000;
 
     /* Try requested mode first */
-/* PoP: capture @ tools/computer_use/backend.py:capture */
+/* PoP: cua_u_failed_capture @ tools/computer_use/backend.py:capture */
     cu_capture_t *cap = b->capture(mode, app);
 
     /* Vision fallback: if vision mode failed, fall back to som
@@ -2054,7 +2054,7 @@ static char *dispatch_action(cu_backend_t *b, const char *action,
         double secs = json_get_num(args, "seconds", 1.0);
         if (secs < 0.0) secs = 0.0;
         if (secs > 30.0) secs = 30.0;
-/* PoP: wait @ tools/computer_use/backend.py:wait */
+/* PoP: envb_handle_wait @ tools/computer_use/backend.py:wait */
         cu_action_t *act = b->wait(secs);
         char *resp = make_text_response(act);
         cu_action_free(act);

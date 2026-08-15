@@ -212,7 +212,7 @@ static char *resolve_key(const char *key, const char *payload_json) {
     return out;
 }
 
-/* PoP: msgraph_render_template @ gateway/platforms/msgraph_webhook.py:_render_template */
+/* PoP: agent_oneshot_render_template @ gateway/platforms/msgraph_webhook.py:_render_template */
 char *msgraph_render_template(const char *template_str, const char *payload_json) {
     if (!template_str) return strdup("");
     if (!payload_json) payload_json = "{}";

@@ -145,7 +145,7 @@ char *browser_expression_targets_private_url(const char *expression)
     return NULL;
 }
 
-/* PoP: browser_current_page_private_url @ tools/browser_tool.py:_current_page_private_url */
+/* PoP: tools_browser_tool_u_camofox_current_page_private_url @ tools/browser_tool.py:_current_page_private_url */
 /* PoP: browser_current_page_private_url @ tools/browser_tool.py:_current_page_private_url */
 char *browser_current_page_private_url(const char *effective_task_id)
 {

@@ -271,7 +271,7 @@ const char *HERMES_STATE_FTS_TRIGRAM_SQL =
     "    WHERE new.role <> 'tool';"
     "END;";
 
-/* PoP: apply_telegram_topic_migration @ hermes_state.py:apply_telegram_topic_migration */
+/* PoP: hermes_state_apply_telegram_topic_migration @ hermes_state.py:apply_telegram_topic_migration */
 const char *HERMES_STATE_TOPIC_SQL =
     "CREATE TABLE IF NOT EXISTS telegram_dm_topic_mode ("
     "    chat_id TEXT PRIMARY KEY,"

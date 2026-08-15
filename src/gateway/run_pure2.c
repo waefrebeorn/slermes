@@ -197,7 +197,7 @@ bool gw_platform_has_bot_credential(const char *platform,
 }
 
 /* ────────── _resolve_hermes_bin ────────── */
-/* PoP: gw_resolve_hermes_bin @ gateway/run.py:_resolve_hermes_bin */
+/* PoP: hermes_cli_relaunch_resolve_hermes_bin @ gateway/run.py:_resolve_hermes_bin */
 /* Returns malloc'd "hermes" or NULL when no shim is available. */
 char *gw_resolve_hermes_bin(void) {
     const char *path = getenv("PATH");
@@ -918,7 +918,7 @@ char *gw_multiplex_profile_homes(void) {
     return profile_profiles_to_serve(true);
 }
 
-/* PoP: gateway_run_pure2_hygiene_compaction_recovered @ gateway/run.py:hygiene_compaction_recovered */
+/* PoP: gw_run_hygiene_compaction_recovered @ gateway/run.py:hygiene_compaction_recovered */
 /* True when a hygiene run actually recovered the session. */
 
 bool gateway_run_pure2_hygiene_compaction_recovered(bool aborted, bool rotated,

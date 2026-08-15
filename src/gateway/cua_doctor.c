@@ -48,7 +48,7 @@ static const char *_jstr(const json_t *n) { return (n && n->type==JSON_STRING) ?
 
 /* ── Validation ──────────────────────────────────────────── */
 
-/* PoP: _is_valid_health_report @ tools/computer_use/doctor.py:_is_valid_health_report */
+/* PoP: cua_doctor_is_valid_health_report @ tools/computer_use/doctor.py:_is_valid_health_report */
 bool cua_doctor_is_valid_health_report(const json_t *payload)
 {
     if (!payload || payload->type != JSON_OBJECT) return false;
@@ -81,7 +81,7 @@ char *cua_doctor_normalize_version_token(const char *text)
     return low;
 }
 
-/* PoP: _platform_name @ tools/computer_use/doctor.py:_platform_name */
+/* PoP: cua_doctor_platform_name @ tools/computer_use/doctor.py:_platform_name */
 void cua_doctor_platform_name(char *out, size_t out_sz)
 {
     if (!out || !out_sz) return;
@@ -238,7 +238,7 @@ char *cua_doctor_read_cli_version(const char *stdout_text, const char *stderr_te
     return r;
 }
 
-/* PoP: _cli_driver_version @ tools/computer_use/doctor.py:_cli_driver_version */
+/* PoP: cua_doctor_cli_driver_version @ tools/computer_use/doctor.py:_cli_driver_version */
 cua_doc_ver_t cua_doctor_cli_driver_version(const char *combined_text, int return_code)
 {
     cua_doc_ver_t v = {NULL, NULL};

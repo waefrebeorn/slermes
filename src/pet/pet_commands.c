@@ -40,7 +40,7 @@ static const char *pet_state_emoji(pet_state_t state) {
    Pet System Lifecycle
    ════════════════════════════════════════════════════════════════════════ */
 
-/* PoP: pet_init @ agent/pet/store.py:resolve_active_pet */
+/* PoP: pet_resolve_active_pet @ agent/pet/store.py:resolve_active_pet */
 void pet_init(const pet_config_t *cfg) {
     if (g_pet.initialized) return;
 
@@ -114,7 +114,7 @@ char *pet_info_json(void) {
     return s;
 }
 
-/* PoP: pet_gallery_json @ agent/pet/store.py:installed_pets */
+/* PoP: pet_installed_pets @ agent/pet/store.py:installed_pets */
 char *pet_gallery_json(void) {
     json_t *root = json_object();
     json_t *pets_arr = json_array();

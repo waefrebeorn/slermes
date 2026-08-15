@@ -765,7 +765,7 @@ char *fuzzy_match_format_no_match_hint(const char *error, int match_count, const
 }
 
 /* ---------------------------------------------------------------------- */
-/* PoP: fuzzy_find_and_replace @ tools/fuzzy_match.py:fuzzy_find_and_replace */
+/* PoP: fuzzy_match_fuzzy_find_and_replace @ tools/fuzzy_match.py:fuzzy_find_and_replace */
 /* Out-params: *out_new_content (malloc'd), *out_match_count, *out_strategy
  * (malloc'd), *out_error (malloc'd, NULL on success). */
 void fuzzy_match_fuzzy_find_and_replace(const char *content, const char *old_string, const char *new_string,

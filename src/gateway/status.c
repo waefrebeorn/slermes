@@ -143,7 +143,7 @@ static void utc_now_iso(char *buf, size_t n) {
 
 /* ── Process control ─────────────────────────────────────────────────── */
 
-/* PoP: terminate_pid @ gateway/status.py:terminate_pid */
+/* PoP: gwstatus_terminate_pid @ gateway/status.py:terminate_pid */
 /* Port of Python: terminate_pid */
 int gwstatus_terminate_pid(pid_t pid, bool force) {
     int sig = force ? SIGKILL : SIGTERM;
@@ -200,7 +200,7 @@ long gwstatus_get_process_start_time(pid_t pid) {
     return -1;
 }
 
-/* PoP: _pid_exists @ gateway/status.py:_pid_exists */
+/* PoP: gwstatus_pid_exists @ gateway/status.py:_pid_exists */
 /* Port of Python: _pid_exists — alive check that never signals a kill.
  * Reports zombies as dead (issue #42126). */
 bool gwstatus_pid_exists(pid_t pid) {
@@ -387,7 +387,7 @@ static char *gateway_command_subcommand(const char *command) {
     return result;
 }
 
-/* PoP: looks_like_gateway_command_line @ gateway/status.py:looks_like_gateway_command_line */
+/* PoP: gwstatus_looks_like_gateway_command_line @ gateway/status.py:looks_like_gateway_command_line */
 /* Port of Python: looks_like_gateway_command_line */
 bool gwstatus_looks_like_gateway_command_line(const char *command) {
     char *sub = gateway_command_subcommand(command);
@@ -396,7 +396,7 @@ bool gwstatus_looks_like_gateway_command_line(const char *command) {
     return ok;
 }
 
-/* PoP: looks_like_gateway_runtime_command_line @ gateway/status.py:looks_like_gateway_runtime_command_line */
+/* PoP: gwstatus_looks_like_gateway_runtime_command_line @ gateway/status.py:looks_like_gateway_runtime_command_line */
 /* Port of Python: looks_like_gateway_runtime_command_line */
 bool gwstatus_looks_like_gateway_runtime_command_line(const char *command) {
     char *sub = gateway_command_subcommand(command);
@@ -442,7 +442,7 @@ static json_t *read_json_file(const char *path) {
     return node;
 }
 
-/* PoP: write_json_file @ gateway/status.py:_write_json_file */
+/* PoP: sm_write_json_file @ gateway/status.py:_write_json_file */
 static int write_json_file(const char *path, json_t *payload) {
     ensure_parent_dir(path);
     char *ser = json_serialize(payload);
@@ -699,7 +699,7 @@ static void cleanup_invalid_pid_path(const char *pid_path, bool cleanup_stale) {
     unlink(lock);
 }
 
-/* PoP: acquire_gateway_runtime_lock @ gateway/status.py:acquire_gateway_runtime_lock */
+/* PoP: gwstatus_acquire_gateway_runtime_lock @ gateway/status.py:acquire_gateway_runtime_lock */
 /* Port of Python: acquire_gateway_runtime_lock */
 bool gwstatus_acquire_gateway_runtime_lock(void) {
     if (g_gateway_lock_fd >= 0) return true;  /* already held */
@@ -716,7 +716,7 @@ bool gwstatus_acquire_gateway_runtime_lock(void) {
     return true;
 }
 
-/* PoP: release_gateway_runtime_lock @ gateway/status.py:release_gateway_runtime_lock */
+/* PoP: gwstatus_release_gateway_runtime_lock @ gateway/status.py:release_gateway_runtime_lock */
 /* Port of Python: release_gateway_runtime_lock */
 void gwstatus_release_gateway_runtime_lock(void) {
     if (g_gateway_lock_fd < 0) return;
@@ -755,7 +755,7 @@ bool gwstatus_is_gateway_runtime_lock_active(const char *lock_path) {
 
 /* ── PID file ────────────────────────────────────────────────────────── */
 
-/* PoP: write_pid_file @ gateway/status.py:write_pid_file */
+/* PoP: gwstatus_write_pid_file @ gateway/status.py:write_pid_file */
 /* Port of Python: write_pid_file */
 int gwstatus_write_pid_file(void) {
     char path[1200];
@@ -767,7 +767,7 @@ int gwstatus_write_pid_file(void) {
     return rc;
 }
 
-/* PoP: remove_pid_file @ gateway/status.py:remove_pid_file */
+/* PoP: gwstatus_remove_pid_file @ gateway/status.py:remove_pid_file */
 /* Port of Python: remove_pid_file — only if it belongs to this process. */
 void gwstatus_remove_pid_file(void) {
     char path[1200];
@@ -780,7 +780,7 @@ void gwstatus_remove_pid_file(void) {
         unlink(path);
 }
 
-/* PoP: get_running_pid @ gateway/status.py:get_running_pid */
+/* PoP: cached_get_running_pid @ gateway/status.py:get_running_pid */
 /* Port of Python: get_running_pid */
 pid_t gwstatus_get_running_pid(const char *pid_path, bool cleanup_stale) {
     char defbuf[1200];
@@ -1107,7 +1107,7 @@ int gwstatus_parse_active_agents_str(const char *raw) {
     return (int)v;
 }
 
-/* PoP: derive_gateway_busy @ gateway/status.py:derive_gateway_busy */
+/* PoP: gwstatus_derive_gateway_busy @ gateway/status.py:derive_gateway_busy */
 /* Port of Python: derive_gateway_busy */
 bool gwstatus_derive_gateway_busy(bool gateway_running,
                                   const char *gateway_state,
@@ -1138,7 +1138,7 @@ static json_t *build_runtime_status_record(void) {
     return o;
 }
 
-/* PoP: write_runtime_status @ gateway/status.py:write_runtime_status */
+/* PoP: gwstatus_write_runtime_status @ gateway/status.py:write_runtime_status */
 /* Port of Python: write_runtime_status */
 int gwstatus_write_runtime_status(const char *gateway_state,
                                   const char *exit_reason,
@@ -1259,7 +1259,7 @@ static long record_start_time(json_t *rec) {
     return (long)st->num_val;
 }
 
-/* PoP: acquire_scoped_lock @ gateway/status.py:acquire_scoped_lock */
+/* PoP: gwstatus_acquire_scoped_lock @ gateway/status.py:acquire_scoped_lock */
 /* Port of Python: acquire_scoped_lock */
 bool gwstatus_acquire_scoped_lock(const char *scope, const char *identity,
                                   const char *metadata_json,
@@ -1366,7 +1366,7 @@ bool gwstatus_acquire_scoped_lock(const char *scope, const char *identity,
     return true;
 }
 
-/* PoP: release_scoped_lock @ gateway/status.py:release_scoped_lock */
+/* PoP: gwstatus_release_scoped_lock @ gateway/status.py:release_scoped_lock */
 /* Port of Python: release_scoped_lock */
 void gwstatus_release_scoped_lock(const char *scope, const char *identity) {
     char lock_path[1200];
@@ -1381,7 +1381,7 @@ void gwstatus_release_scoped_lock(const char *scope, const char *identity) {
     unlink(lock_path);
 }
 
-/* PoP: release_all_scoped_locks @ gateway/status.py:release_all_scoped_locks */
+/* PoP: gwstatus_release_all_scoped_locks @ gateway/status.py:release_all_scoped_locks */
 /* Port of Python: release_all_scoped_locks */
 int gwstatus_release_all_scoped_locks(pid_t owner_pid, long owner_start_time) {
     char dir[1100];
@@ -1483,7 +1483,7 @@ static bool consume_pid_marker_for_self(const char *path,
     return matches;
 }
 
-/* PoP: write_takeover_marker @ gateway/status.py:write_takeover_marker */
+/* PoP: gwstatus_write_takeover_marker @ gateway/status.py:write_takeover_marker */
 /* Port of Python: write_takeover_marker */
 bool gwstatus_write_takeover_marker(pid_t target_pid) {
     long target_start = gwstatus_get_process_start_time(target_pid);
@@ -1502,7 +1502,7 @@ bool gwstatus_write_takeover_marker(pid_t target_pid) {
     return rc == 0;
 }
 
-/* PoP: consume_takeover_marker_for_self @ gateway/status.py:consume_takeover_marker_for_self */
+/* PoP: gwstatus_consume_takeover_marker_for_self @ gateway/status.py:consume_takeover_marker_for_self */
 /* Port of Python: consume_takeover_marker_for_self */
 bool gwstatus_consume_takeover_marker_for_self(void) {
     char path[1200];
@@ -1511,7 +1511,7 @@ bool gwstatus_consume_takeover_marker_for_self(void) {
                                        "target_start_time", TAKEOVER_MARKER_TTL_S);
 }
 
-/* PoP: clear_takeover_marker @ gateway/status.py:clear_takeover_marker */
+/* PoP: gwstatus_clear_takeover_marker @ gateway/status.py:clear_takeover_marker */
 /* Port of Python: clear_takeover_marker */
 void gwstatus_clear_takeover_marker(void) {
     char path[1200];
@@ -1519,7 +1519,7 @@ void gwstatus_clear_takeover_marker(void) {
     unlink(path);
 }
 
-/* PoP: write_planned_stop_marker @ gateway/status.py:write_planned_stop_marker */
+/* PoP: gwstatus_write_planned_stop_marker @ gateway/status.py:write_planned_stop_marker */
 /* Port of Python: write_planned_stop_marker */
 bool gwstatus_write_planned_stop_marker(pid_t target_pid) {
     long target_start = gwstatus_get_process_start_time(target_pid);
@@ -1537,7 +1537,7 @@ bool gwstatus_write_planned_stop_marker(pid_t target_pid) {
     return rc == 0;
 }
 
-/* PoP: consume_planned_stop_marker_for_self @ gateway/status.py:consume_planned_stop_marker_for_self */
+/* PoP: gwstatus_consume_planned_stop_marker_for_self @ gateway/status.py:consume_planned_stop_marker_for_self */
 /* Port of Python: consume_planned_stop_marker_for_self */
 bool gwstatus_consume_planned_stop_marker_for_self(void) {
     char path[1200];
@@ -1546,7 +1546,7 @@ bool gwstatus_consume_planned_stop_marker_for_self(void) {
                                        "target_start_time", PLANNED_STOP_MARKER_TTL_S);
 }
 
-/* PoP: planned_stop_marker_targets_self @ gateway/status.py:planned_stop_marker_targets_self */
+/* PoP: gwstatus_planned_stop_marker_targets_self @ gateway/status.py:planned_stop_marker_targets_self */
 /* Port of Python: planned_stop_marker_targets_self — non-destructive probe. */
 bool gwstatus_planned_stop_marker_targets_self(void) {
     char path[1200];
@@ -1585,7 +1585,7 @@ bool gwstatus_planned_stop_marker_targets_self(void) {
     return result;  /* never unlink a matching marker (non-destructive) */
 }
 
-/* PoP: clear_planned_stop_marker @ gateway/status.py:clear_planned_stop_marker */
+/* PoP: gwstatus_clear_planned_stop_marker @ gateway/status.py:clear_planned_stop_marker */
 /* Port of Python: clear_planned_stop_marker */
 void gwstatus_clear_planned_stop_marker(void) {
     char path[1200];

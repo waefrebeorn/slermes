@@ -288,7 +288,7 @@ int config_py_unset_nested(json_t *config, const char *dotted_key) {
  * _explicit_config_paths
  * ============================================================ */
 
-/* PoP: config_py_explicit_paths @ hermes_cli/config.py:_explicit_config_paths */
+/* PoP: config_explicit_config_paths @ hermes_cli/config.py:_explicit_config_paths */
 char **config_py_explicit_paths(const json_t *config, int *out_count) {
     char **result = NULL;
     int cap = 16, count = 0;

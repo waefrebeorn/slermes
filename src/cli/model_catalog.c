@@ -404,7 +404,7 @@ static int is_known_provider_name(const char *s) {
     return strcmp(s, "openrouter") == 0 || strcmp(s, "custom") == 0;
 }
 
-/* PoP: parse_model_input @ hermes_cli/models.py:parse_model_input */
+/* PoP: model_parse_model_input @ hermes_cli/models.py:parse_model_input */
 void model_parse_model_input(const char *raw, const char *current_provider,
                              char *provider_out, size_t poutsz,
                              char *model_out, size_t moutsz) {
@@ -477,7 +477,7 @@ static int resolve_static_model_alias(const char *name_lower,
     return 0;
 }
 
-/* PoP: detect_static_provider_for_model @ hermes_cli/models.py:detect_static_provider_for_model */
+/* PoP: model_detect_static_provider_for_model @ hermes_cli/models.py:detect_static_provider_for_model */
 int model_detect_static_provider_for_model(const char *model_name,
                                            const char *current_provider,
                                            char *provider_out, size_t poutsz,
@@ -702,7 +702,7 @@ char *model_load_provider_models_cache(void) {
     return blob;
 }
 
-/* PoP: _save_provider_models_cache @ hermes_cli/models.py:_save_provider_models_cache */
+/* PoP: model_save_provider_models_cache @ hermes_cli/models.py:_save_provider_models_cache */
 void model_save_provider_models_cache(const char *json) {
     if (!json) return;
     char *path = model_provider_models_cache_path();
@@ -782,7 +782,7 @@ char *model_cached_provider_model_ids(const char *provider, int force_refresh) {
     return result;
 }
 
-/* PoP: clear_provider_models_cache @ hermes_cli/models.py:clear_provider_models_cache */
+/* PoP: model_clear_provider_models_cache @ hermes_cli/models.py:clear_provider_models_cache */
 void model_clear_provider_models_cache(const char *provider) {
     if (!provider) {
         char *path = model_provider_models_cache_path();
@@ -803,7 +803,7 @@ void model_clear_provider_models_cache(const char *provider) {
     free(cache);
 }
 
-/* PoP: curated_models_for_provider @ hermes_cli/models.py:curated_models_for_provider */
+/* PoP: model_curated_models_for_provider @ hermes_cli/models.py:curated_models_for_provider */
 /*
  * Faithful port of models.py:curated_models_for_provider's STATIC-CATALOG
  * fallback path. Mirrors the Python:

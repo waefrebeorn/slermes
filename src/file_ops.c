@@ -46,7 +46,7 @@ static void file_entry_init(file_entry_t *e, const char *name, const char *path,
 /* ── File read ──────────────────────────────────────────────────────────── */
 
 /* PoP: file_read_text @ electron/main.cjs:readFileText */
-/* PoP: file_read_text @ hermes_cli/agent_import.py:read_text */
+/* PoP: ws_fs_read_text @ hermes_cli/agent_import.py:read_text */
 char *file_read_text(const char *path, size_t *out_len) {
     if (!path) return NULL;
 
@@ -283,7 +283,7 @@ const char *file_dirname(const char *path) {
     return d ? d : ".";
 }
 
-/* PoP: file_join @ gateway/shutdown_watchdog.py:join */
+/* PoP: grun_u_handle_voice_channel_join @ gateway/shutdown_watchdog.py:join */
 char *file_join(const char *dir, const char *name) {
     if (!dir || !name) return NULL;
     size_t dlen = strlen(dir);

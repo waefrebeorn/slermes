@@ -49,7 +49,7 @@ static const struct { const char *ext; const char *mime; } DEFAULT_EXT_TO_MIME[]
     { NULL, NULL }
 };
 
-/* PoP: _normalize_mime @ gateway/platforms/media_cache.py:_normalize_mime */
+/* PoP: mc_normalize_mime @ gateway/platforms/media_cache.py:_normalize_mime */
 void mc_normalize_mime(const char *mime, char *out, size_t out_sz) {
     /* Python: lowercase and strip any ; charset=... style parameters. */
     if (!out || out_sz == 0) return;

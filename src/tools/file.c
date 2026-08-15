@@ -208,9 +208,9 @@ static char *handle_read(const char *args_json) {
 /* Port of Python tools/file_operations.py:write_file_tool(). */
 /* PoP: handle_write @ tools/file_tools.py:write */
 /* PoP: handle_write @ agent/process_bootstrap.py:write */
-/* PoP: handle_write @ hermes_cli/main.py:write */
-/* PoP: handle_write @ hermes_cli/pty_bridge.py:write */
-/* PoP: handle_write @ hermes_cli/win_pty_bridge.py:write */
+/* PoP: pty_write @ hermes_cli/main.py:write */
+/* PoP: pty_write @ hermes_cli/pty_bridge.py:write */
+/* PoP: pty_write @ hermes_cli/win_pty_bridge.py:write */
 /* PoP: handle_write @ todo_tool:write */
 /* PoP: handle_write @ tools/file_operations.py:ShellFileOperations.write_file */
 static char *handle_write(const char *args_json) {

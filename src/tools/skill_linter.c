@@ -116,7 +116,7 @@ void lint_finding_format(const lint_finding_t *f, char *out, size_t out_sz)
     snprintf(out, out_sz, "%s [%s] %s", badge, f->rule, f->message);
 }
 
-/* PoP: has_errors @ tools/skill_linter.py:has_errors */
+/* PoP: lint_has_errors @ tools/skill_linter.py:has_errors */
 int lint_has_errors(const lint_finding_t *findings, size_t n)
 {
     for (size_t i = 0; i < n; i++)
@@ -763,7 +763,7 @@ size_t lint_skill(const char *skill_md_path, lint_finding_t *out, size_t cap)
     return n;
 }
 
-/* PoP: format_findings @ tools/skill_linter.py:format_findings */
+/* PoP: lint_format_findings @ tools/skill_linter.py:format_findings */
 size_t lint_format_findings(const lint_finding_t *findings, size_t n,
                             char *out, size_t out_sz)
 {
@@ -788,7 +788,7 @@ size_t lint_format_findings(const lint_finding_t *findings, size_t n,
     return off;
 }
 
-/* PoP: _main @ tools/skill_linter.py:_main */
+/* PoP: htm_main @ tools/skill_linter.py:_main */
 int skill_linter_main(int argc, char **argv)
 {
     if (argc < 2) {

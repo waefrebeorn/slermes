@@ -680,7 +680,7 @@ char *skills_tool_parse_frontmatter(const char *content)
     return s;
 }
 
-/* PoP: skills_tool_get_disabled_skill_names @ tools/skills_tool.py:_get_disabled_skill_names */
+/* PoP: sku_get_disabled_skill_names @ tools/skills_tool.py:_get_disabled_skill_names */
 char **skills_tool_get_disabled_skill_names(int *out_n)
 {
     char **out = NULL; int n = 0;

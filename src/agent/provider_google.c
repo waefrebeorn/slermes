@@ -2115,7 +2115,7 @@ char *gemini_native_adapter_bare_gemini_model_id(const char *model) {
     return out;
 }
 
-/* PoP: handle @ gateway/platforms/yuanbao.py:handle */
+/* PoP: relay_turn_handle @ gateway/platforms/yuanbao.py:handle */
 /* Opaque native client handle (mirrors GeminiNativeClient: api_key, base_url,
  * _default_headers). _default_headers is currently empty in C (the Python
  * default is {}), so only api_key/base_url are material. */
@@ -2124,7 +2124,7 @@ typedef struct gemini_native_client {
     char *base_url;
 } gemini_native_client_t;
 
-/* PoP: gemini_native_adapter__enter @ agent/gemini_native_adapter.py:__enter__ */
+/* PoP: hermes_cli_active_sessions_u__enter__ @ agent/gemini_native_adapter.py:__enter__ */
 gemini_native_client_t *gemini_native_adapter__enter(const char *api_key,
                                                       const char *base_url) {
     gemini_native_client_t *c = calloc(1, sizeof(*c));
@@ -2134,7 +2134,7 @@ gemini_native_client_t *gemini_native_adapter__enter(const char *api_key,
     return c; /* Python __enter__ returns self */
 }
 
-/* PoP: gemini_native_adapter__exit @ agent/gemini_native_adapter.py:__exit__ */
+/* PoP: hermes_cli_active_sessions_u__exit__ @ agent/gemini_native_adapter.py:__exit__ */
 void gemini_native_adapter__exit(gemini_native_client_t *c) {
     /* Python __exit__ calls self.close(); the C client holds no open socket,
      * so this frees the handle (the real teardown). */
@@ -2144,7 +2144,7 @@ void gemini_native_adapter__exit(gemini_native_client_t *c) {
     free(c);
 }
 
-/* PoP: gemini_native_adapter__headers @ agent/gemini_native_adapter.py:_headers */
+/* PoP: bb_headers @ agent/gemini_native_adapter.py:_headers */
 char *gemini_native_adapter__headers(const gemini_native_client_t *c) {
     /* Mirrors Python: Content-Type/Accept/x-goog-api-key/User-Agent, then
      * update(self._default_headers) — which is empty here. Reuses the same

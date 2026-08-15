@@ -498,7 +498,7 @@ static const char *skills_install_dir(void) {
 }
 
 /* Get hub directory path (skills/.hub). Returns pointer to static buf. */
-/* PoP: hub_dir @ tools/skills_hub.py:_hub_dir */
+/* PoP: skills_hub_hub_dir @ tools/skills_hub.py:_hub_dir */
 static const char *hub_dir(void) {
     static char path[HERMES_PATH_MAX];
     const char *base = skills_install_dir();
@@ -508,7 +508,7 @@ static const char *hub_dir(void) {
 }
 
 /* Get lock file path. Returns pointer to static buf. */
-/* PoP: hub_lock_path @ tools/skills_hub.py:_lock_file */
+/* PoP: skills_hub_lock_file @ tools/skills_hub.py:_lock_file */
 static const char *hub_lock_path(void) {
     static char path[HERMES_PATH_MAX];
     const char *hd = hub_dir();
@@ -528,7 +528,7 @@ static const char *hub_taps_path(void) {
 }
 
 /* Get audit log path. Returns pointer to static buf. */
-/* PoP: hub_audit_path @ tools/skills_hub.py:_audit_log */
+/* PoP: dash_audit_log @ tools/skills_hub.py:_audit_log */
 static const char *hub_audit_path(void) {
     static char path[HERMES_PATH_MAX];
     const char *hd = hub_dir();
@@ -538,7 +538,7 @@ static const char *hub_audit_path(void) {
 }
 
 /* Get quarantine directory path. Returns pointer to static buf. */
-/* PoP: hub_quarantine_dir @ tools/skills_hub.py:_quarantine_dir */
+/* PoP: skills_hub_quarantine_dir @ tools/skills_hub.py:_quarantine_dir */
 static const char *hub_quarantine_dir(void) {
     static char path[HERMES_PATH_MAX];
     const char *hd = hub_dir();
@@ -571,7 +571,7 @@ static bool ensure_dir(const char *dir) {
 }
 
 /* Port of Python: UrlSource.fetch (single-file skill install) */
-/* PoP: skills_hub_install_from_url @ tools/skills_hub.py:fetch */
+/* PoP: models_live_http_fetch @ tools/skills_hub.py:fetch */
 bool skills_hub_install_from_url(const char *url) {
     if (!url || !url[0]) return false;
 
@@ -746,7 +746,7 @@ bool skills_hub_uninstall(const char *skill_name) {
 
 /* Port of Python: installed skills listing */
 /* PoP: skills_hub_list_installed @ tools/skills_hub.py:HubLockFile.list_installed */
-/* PoP: skills_hub_list_installed @ tools/skills_hub.py:list_installed */
+/* PoP: hub_lock_list_installed @ tools/skills_hub.py:list_installed */
 int skills_hub_list_installed(char names[][128], int max_count) {
     if (!names || max_count <= 0) return 0;
 
@@ -1057,7 +1057,7 @@ int hub_lock_list_installed(hub_installed_skill_t *entries, int max_count) {
  * ================================================================ */
 
 /* Port of Python: TapsManager.add */
-/* PoP: hub_taps_add @ tools/skills_hub.py:add */
+/* PoP: ss_add @ tools/skills_hub.py:add */
 /* PoP: hub_taps_add @ tools/skills_hub.py:add */
 bool hub_taps_add(const char *repo, const char *path) {
     if (!repo || !repo[0]) return false;
@@ -1114,7 +1114,7 @@ bool hub_taps_add(const char *repo, const char *path) {
 }
 
 /* Port of Python: TapsManager.remove */
-/* PoP: hub_taps_remove @ tools/skills_hub.py:remove */
+/* PoP: mom_remove @ tools/skills_hub.py:remove */
 /* PoP: hub_taps_remove @ tools/skills_hub.py:remove */
 bool hub_taps_remove(const char *repo) {
     if (!repo || !repo[0]) return false;
@@ -1504,7 +1504,7 @@ static bool g_override_audit_log_set = false;
 static bool g_override_taps_file_set = false;
 static bool g_override_index_cache_dir_set = false;
 
-/* PoP: skills_hub_override @ tools/skills_hub.py:_override */
+/* PoP: set_model_override @ tools/skills_hub.py:_override */
 const char *skills_hub_override(const char *name) {
     if (!name) return NULL;
     if (strcmp(name, "SKILLS_DIR") == 0 && g_override_skills_dir_set)
@@ -1540,7 +1540,7 @@ void skills_hub_set_override(const char *name, const char *value) {
     else { dst[0] = '\0'; *flag = false; }
 }
 
-/* PoP: skills_hub_hermes_home @ tools/skills_hub.py:_hermes_home */
+/* PoP: lm_hermes_home @ tools/skills_hub.py:_hermes_home */
 const char *skills_hub_hermes_home(void) {
     const char *h = getenv("HERMES_HOME");
     if (h && h[0]) return h;
@@ -1549,7 +1549,7 @@ const char *skills_hub_hermes_home(void) {
     return "/tmp/hermes";
 }
 
-/* PoP: skills_hub_getattr @ tools/skills_hub.py:__getattr__ */
+/* PoP: main_u__getattr__ @ tools/skills_hub.py:__getattr__ */
 const char *skills_hub_getattr(const char *name) {
     if (!name) return NULL;
     /* Same dynamic resolver as Python PEP-562 __getattr__: parallel to the
@@ -2099,7 +2099,7 @@ char *github_source_fetch_file_content(github_source_t *src, const char *repo, c
     return body;
 }
 
-/* PoP: github_source_search @ tools/skills_hub.py:search */
+/* PoP: re_search @ tools/skills_hub.py:search */
 int github_source_search(github_source_t *src, const char *query, int limit,
                           hub_skill_meta_t *results) {
     if (!src || !query || limit <= 0 || !results) return 0;

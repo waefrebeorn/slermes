@@ -147,7 +147,7 @@ static void safe_getcwd(char *buf, size_t bufsz) {
 }
 
 /* ------------------------------------------------------------------ */
-/* PoP: record_session_cwd @ tools/terminal_tool.py:record_session_cwd */
+/* PoP: tt_record_session_cwd @ tools/terminal_tool.py:record_session_cwd */
 /* ------------------------------------------------------------------ */
 void term_rec_record_session_cwd(const char *session_key, const char *cwd) {
     if (!cwd || !*cwd) return;                 /* empty cwd ignored */
@@ -164,7 +164,7 @@ void term_rec_record_session_cwd(const char *session_key, const char *cwd) {
     pthread_mutex_unlock(&g_lock);
 }
 
-/* PoP: get_session_cwd @ tools/terminal_tool.py:get_session_cwd */
+/* PoP: tt_get_session_cwd @ tools/terminal_tool.py:get_session_cwd */
 const char *term_rec_get_session_cwd(const char *session_key) {
     const char *key = (session_key && *session_key) ? session_key : "default";
     pthread_mutex_lock(&g_lock);
@@ -184,7 +184,7 @@ void term_rec_clear_session_cwd(const char *session_key) {
     pthread_mutex_unlock(&g_lock);
 }
 
-/* PoP: register_task_env_overrides @ tools/terminal_tool.py:register_task_env_overrides */
+/* PoP: tt_register_task_env_overrides @ tools/terminal_tool.py:register_task_env_overrides */
 void term_reg_register_task_env_overrides(const char *task_id, json_t *overrides) {
     if (!task_id || !*task_id || !overrides) return;
     pthread_mutex_lock(&g_lock);
@@ -205,7 +205,7 @@ void term_reg_register_task_env_overrides(const char *task_id, json_t *overrides
     pthread_mutex_unlock(&g_lock);
 }
 
-/* PoP: clear_task_env_overrides @ tools/terminal_tool.py:clear_task_env_overrides */
+/* PoP: tt_clear_task_env_overrides @ tools/terminal_tool.py:clear_task_env_overrides */
 void term_reg_clear_task_env_overrides(const char *task_id) {
     if (!task_id) return;
     pthread_mutex_lock(&g_lock);
@@ -215,7 +215,7 @@ void term_reg_clear_task_env_overrides(const char *task_id) {
     term_rec_clear_session_cwd(task_id);
 }
 
-/* PoP: _resolve_container_task_id @ tools/terminal_tool.py:_resolve_container_task_id */
+/* PoP: term_resolve_container_task_id @ tools/terminal_tool.py:_resolve_container_task_id */
 /* Map a tool-call task_id to the container/sandbox key. Subagents collapse to
  * "default"; override-registered rollouts with isolation keys stay distinct. */
 void term_resolve_container_task_id(const char *task_id, char *out, size_t outsz) {
@@ -237,7 +237,7 @@ void term_resolve_container_task_id(const char *task_id, char *out, size_t outsz
     snprintf(out, outsz, "%s", "default");
 }
 
-/* PoP: resolve_task_overrides @ tools/terminal_tool.py:resolve_task_overrides */
+/* PoP: tt_resolve_task_overrides @ tools/terminal_tool.py:resolve_task_overrides */
 /* Raw key first, then collapsed container id — the single source so the
  * terminal and file layers can't drift apart. */
 json_t *term_resolve_task_overrides(const char *task_id) {
@@ -256,7 +256,7 @@ json_t *term_resolve_task_overrides(const char *task_id) {
 }
 
 /* ------------------------------------------------------------------ */
-/* PoP: _is_unusable_container_cwd @ tools/terminal_tool.py:_is_unusable_container_cwd */
+/* PoP: term_is_unusable_container_cwd @ tools/terminal_tool.py:_is_unusable_container_cwd */
 /* ------------------------------------------------------------------ */
 bool term_is_unusable_container_cwd(const char *cwd) {
     if (!cwd || !*cwd) return false;

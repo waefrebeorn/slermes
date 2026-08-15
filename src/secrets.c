@@ -328,7 +328,7 @@ char *hermes_secrets_resolve_string(const char *input, bool strict) {
     *ow = '\0';
     return output;
 }
-/* PoP: hermes_secrets_cleanup @ tools/environments/base.py:cleanup */
+/* PoP: mdl_cleanup @ tools/environments/base.py:cleanup */
 
 void hermes_secrets_cleanup(void) {
     g_project_id[0] = '\0';

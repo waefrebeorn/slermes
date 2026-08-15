@@ -284,7 +284,7 @@ char *deliver_to_platform(gw_base_platform_adapter_t *adapter,
         free(jerr);
     }
 
-/* PoP: send @ gateway/delivery.py:send */
+/* PoP: pb_send @ gateway/delivery.py:send */
     gw_send_result_t res = adapter->send(adapter, chat_id, to_send, NULL, meta);
     if (meta) json_free(meta);
     free(truncated);
@@ -303,7 +303,7 @@ char *deliver_to_platform(gw_base_platform_adapter_t *adapter,
 }
 
 
-/* PoP: parse @ gateway/delivery.py:parse */
+/* PoP: fts5_parse @ gateway/delivery.py:parse */
 /* Parse a delivery target string: "origin", "local", "platform", or
  * "platform:chat_id". Returns malloc'd JSON {target, platform, chat_id}. */
 char *gw_delivery_parse_target(const char *target)

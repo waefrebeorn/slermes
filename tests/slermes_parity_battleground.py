@@ -909,7 +909,7 @@ class ParityAnalyzer:
             return
         defined = {}
         for fname, rels in self.c_index._filename_index.items():
-            if not (fname.startswith('port_') and (fname.endswith('.c') or fname.endswith('.h'))):
+            if not (fname.endswith('.c') or fname.endswith('.h')):
                 continue
             for rel in rels:
                 content, _ = self.c_index._get_cached_content(rel)

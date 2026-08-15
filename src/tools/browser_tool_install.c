@@ -56,7 +56,7 @@ bool browser_maybe_autoinstall_chromium(void)
     return false;
 }
 
-/* PoP: _chromium_installed @ tools/browser_tool.py:_chromium_installed */
+/* PoP: browser_chromium_installed @ tools/browser_tool.py:_chromium_installed */
 /* PoP: browser_chromium_installed @ tools/browser_tool.py:_chromium_installed */
 bool browser_chromium_installed(void)
 {
@@ -78,7 +78,7 @@ bool browser_chromium_installed(void)
     return false;
 }
 
-/* PoP: _is_local_backend @ tools/browser_tool.py:_is_local_backend */
+/* PoP: browser_is_local_backend @ tools/browser_tool.py:_is_local_backend */
 /* PoP: browser_is_local_backend @ tools/browser_tool.py:_is_local_backend */
 bool browser_is_local_backend(void)
 {
@@ -93,7 +93,7 @@ bool browser_is_local_backend(void)
     return true; /* Default to local */
 }
 
-/* PoP: _is_local_sidecar_key @ tools/browser_tool.py:_is_local_sidecar_key */
+/* PoP: browser_is_local_sidecar_key @ tools/browser_tool.py:_is_local_sidecar_key */
 /* PoP: browser_is_local_sidecar_key @ tools/browser_tool.py:_is_local_sidecar_key */
 bool browser_is_local_sidecar_key(const char *session_key)
 {
@@ -104,7 +104,7 @@ bool browser_is_local_sidecar_key(const char *session_key)
     return len > suf_len && strcmp(session_key + len - suf_len, suffix) == 0;
 }
 
-/* PoP: _allow_private_urls @ tools/browser_tool.py:_allow_private_urls */
+/* PoP: browser_allow_private_urls @ tools/browser_tool.py:_allow_private_urls */
 /* PoP: browser_allow_private_urls @ tools/browser_tool.py:_allow_private_urls */
 bool browser_allow_private_urls(void)
 {
@@ -156,7 +156,7 @@ bool browser_is_safe_url(const char *url)
     return true;
 }
 
-/* PoP: _is_camofox_mode @ tools/browser_camofox.py:is_camofox_mode */
+/* PoP: browser_is_camofox_mode @ tools/browser_camofox.py:is_camofox_mode */
 /* PoP: browser_is_camofox_mode @ tools/browser_camofox.py:is_camofox_mode */
 bool browser_is_camofox_mode(void)
 {

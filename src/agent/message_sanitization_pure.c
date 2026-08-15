@@ -114,7 +114,7 @@ const echo_rule_t *msg_sanitize_family_rule(const char *family) {
     return NULL;
 }
 
-/* PoP: matches_reasoning_echo_family @ agent/message_sanitization.py:matches_reasoning_echo_family */
+/* PoP: msg_sanitize_matches_reasoning_echo_family @ agent/message_sanitization.py:matches_reasoning_echo_family */
 bool msg_sanitize_matches_reasoning_echo_family(
     const char *family, const char *provider, const char *model, const char *base_url
 ) {
@@ -130,7 +130,7 @@ bool msg_sanitize_matches_reasoning_echo_family(
     return ret;
 }
 
-/* PoP: reasoning_echo_family @ agent/message_sanitization.py:reasoning_echo_family */
+/* PoP: msg_sanitize_matches_reasoning_echo_family @ agent/message_sanitization.py:reasoning_echo_family */
 const char *msg_sanitize_reasoning_echo_family(
     const char *provider, const char *model, const char *base_url
 ) {
@@ -141,7 +141,7 @@ const char *msg_sanitize_reasoning_echo_family(
     return NULL;
 }
 
-/* PoP: needs_reasoning_echo @ agent/message_sanitization.py:needs_reasoning_echo */
+/* PoP: msg_sanitize_needs_reasoning_echo @ agent/message_sanitization.py:needs_reasoning_echo */
 bool msg_sanitize_needs_reasoning_echo(
     const char *provider, const char *model, const char *base_url
 ) {
@@ -200,7 +200,7 @@ const char *msg_sanitize_coalesce_tool_call_id(const json_t *tc) {
     return "";
 }
 
-/* PoP: apply_reasoning_content_policy @ agent/message_sanitization.py:apply_reasoning_content_policy */
+/* PoP: msg_sanitize_apply_reasoning_content_policy @ agent/message_sanitization.py:apply_reasoning_content_policy */
 /* Mutates api_msg JSON object in place following the 5-case policy. */
 int msg_sanitize_apply_reasoning_content_policy(json_t *source_msg, json_t *api_msg, int needs_thinking_pad)
 {
@@ -269,7 +269,7 @@ int msg_sanitize_apply_reasoning_content_policy(json_t *source_msg, json_t *api_
     return changed;
 }
 
-/* PoP: reapply_reasoning_echo @ agent/message_sanitization.py:reapply_reasoning_echo */
+/* PoP: msg_sanitize_reapply_reasoning_echo @ agent/message_sanitization.py:reapply_reasoning_echo */
 int msg_sanitize_reapply_reasoning_echo(json_t *api_messages, int needs_thinking_pad)
 {
     if (!api_messages || api_messages->type != JSON_ARRAY)

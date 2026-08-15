@@ -137,7 +137,7 @@ char *yuanbao_build_file_msg(const char *url,
     return result;
 }
 
-/* PoP: get_image_format @ gateway/platforms/yuanbao_media.py:get_image_format */
+/* PoP: url_get_image_format @ gateway/platforms/yuanbao_media.py:get_image_format */
 /* TIM image format number from mime type; 255 = unknown. */
 long yuanbao_get_image_format(const char *mime_type)
 {

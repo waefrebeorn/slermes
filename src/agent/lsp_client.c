@@ -182,7 +182,7 @@ static int send_raw(lsp_client_t *c, const char *json)
 }
 
 /* ── stderr drain ───────────────────────────────────────────────────── */
-/* PoP: stderr_thread_fn @ agent/lsp/client.py:_drain_stderr */
+/* PoP: cua_daemon_drain_stderr @ agent/lsp/client.py:_drain_stderr */
 static void *stderr_thread_fn(void *arg)
 {
     lsp_client_t *c = arg;
@@ -386,7 +386,7 @@ static char *send_request_blocking(lsp_client_t *c, const char *method,
 }
 
 /* ── spawn ──────────────────────────────────────────────────────────── */
-/* PoP: spawn_server @ agent/lsp/client.py:_spawn */
+/* PoP: kdb_default_spawn @ agent/lsp/client.py:_spawn */
 static int spawn_server(lsp_client_t *c, char **err_out)
 {
     int in_pipe[2], out_pipe[2], err_pipe[2];
@@ -474,7 +474,7 @@ void lsp_client_destroy(lsp_client_t *c)
 }
 
 /* ── lifecycle ──────────────────────────────────────────────────────── */
-/* PoP: lsp_client_start @ agent/lsp/client.py:start */
+/* PoP: ccp_start @ agent/lsp/client.py:start */
 int lsp_client_start(lsp_client_t *c, char **err_out)
 {
     if (strcmp(c->state, "running") == 0 || strcmp(c->state, "starting") == 0) return 0;
@@ -538,7 +538,7 @@ int lsp_client_start(lsp_client_t *c, char **err_out)
     return 0;
 }
 
-/* PoP: lsp_client_shutdown @ agent/lsp/client.py:shutdown */
+/* PoP: ui_shutdown @ agent/lsp/client.py:shutdown */
 int lsp_client_shutdown(lsp_client_t *c)
 {
     if (c->stopping) return 0;
@@ -562,12 +562,12 @@ int lsp_client_shutdown(lsp_client_t *c)
     return 0;
 }
 
-/* PoP: lsp_client_is_running @ agent/lsp/client.py:is_running */
+/* PoP: sm_is_running @ agent/lsp/client.py:is_running */
 bool lsp_client_is_running(lsp_client_t *c)
 {
     return strcmp(c->state, "running") == 0 && c->pid > 0;
 }
-/* PoP: lsp_client_state @ agent/lsp/client.py:state */
+/* PoP: set_state @ agent/lsp/client.py:state */
 const char *lsp_client_state(lsp_client_t *c) { return c->state; }
 
 /* ── document sync ──────────────────────────────────────────────────── */

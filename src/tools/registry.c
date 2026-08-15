@@ -216,7 +216,7 @@ static tool_t *find_unlocked(const char *name) {
 /* ================================================================
  *  Registration
  * ================================================================ */
-/* PoP: register @ tools/registry.py:register */
+/* PoP: crs_register @ tools/registry.py:register */
 
 bool registry_register(const char *name, const char *description,
                         const char *schema_json,
@@ -804,7 +804,7 @@ const char *registry_get_emoji(const char *name, const char *default_emoji) {
 }
 
 /* S14 gap #16: Rich query API — check if any tool in a toolset is available */
-/* PoP: is_toolset_available @ tools/registry.py:is_toolset_available */
+/* PoP: registry_is_toolset_available @ tools/registry.py:is_toolset_available */
 /* Port of Python tools/registry.py:is_toolset_available(). */
 bool registry_is_toolset_available(const char *toolset) {
     if (!toolset) return false;
@@ -972,7 +972,7 @@ void registry_refresh_availability(void) {
 }
 
 /* S14 gap #11: Deregister a tool by name. Removes from array by shifting. */
-/* PoP: deregister @ tools/registry.py:deregister */
+/* PoP: registry_deregister @ tools/registry.py:deregister */
 /* Port of Python tools/registry.py:deregister(). */
 bool registry_deregister(const char *name) {
     if (!name) return false;
@@ -1052,7 +1052,7 @@ char **registry_get_tool_names_for_toolset(const char *toolset, size_t *out_n) {
 
 /* Return sorted names of every registered tool.
  * Caller frees the returned NULL-terminated char* array. */
-/* PoP: get_all_tool_names @ tools/registry.py:get_all_tool_names */
+/* PoP: mm_get_all_tool_names @ tools/registry.py:get_all_tool_names */
 char **registry_get_all_tool_names(size_t *out_n) {
     pthread_mutex_lock(&g_registry_mutex);
     char **names = calloc(g_registry.count + 1, sizeof(char*));

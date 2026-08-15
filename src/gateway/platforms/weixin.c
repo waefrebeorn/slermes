@@ -117,7 +117,7 @@ static void build_headers(const char *body, char *hdr_buf, size_t hdr_sz,
 }
 
 /* POST to iLink API with full payload */
-/* PoP: _api_post @ gateway/platforms/weixin.py:_api_post */
+/* PoP: bb_u_api_post @ gateway/platforms/weixin.py:_api_post */
 static char *wx_api_post(const char *endpoint, const char *payload_json,
                           int timeout_ms, const char *override_token) {
     char url[2048];
@@ -195,7 +195,7 @@ static void ctx_token_save(const char *user_id, const char *token) {
     }
 
     if (!data) data = json_object();
-/* PoP: set @ gateway/platforms/weixin.py:set */
+/* PoP: reset @ gateway/platforms/weixin.py:set */
     json_set(data, user_id, json_string(token));
 
     char *json_str = json_serialize(data);
@@ -206,7 +206,7 @@ static void ctx_token_save(const char *user_id, const char *token) {
     }
     json_free(data);
 }
-/* PoP: get @ gateway/platforms/weixin.py:get */
+/* PoP: plugin_get @ gateway/platforms/weixin.py:get */
 
 static const char *ctx_token_get(const char *user_id) {
     static char cached_token[512];
@@ -691,13 +691,13 @@ unsigned char *weixin_pkcs7_pad(const unsigned char *data, size_t len, size_t *o
     return buf;
 }
 
-/* PoP: _aes_padded_size @ gateway/platforms/weixin.py:_aes_padded_size */
+/* PoP: weixin_aes_padded_size @ gateway/platforms/weixin.py:_aes_padded_size */
 size_t weixin_aes_padded_size(size_t size)
 {
     return ((size + 1 + 15) / 16) * 16;
 }
 
-/* PoP: _aes128_ecb_encrypt @ gateway/platforms/weixin.py:_aes128_ecb_encrypt */
+/* PoP: weixin_aes128_ecb_encrypt @ gateway/platforms/weixin.py:_aes128_ecb_encrypt */
 /* Encrypts PKCS7-padded plaintext with AES-128-ECB. Caller frees *out. */
 /* PoP: weixin_aes128_ecb_encrypt @ gateway/platforms/weixin.py:_aes128_ecb_encrypt */
 int weixin_aes128_ecb_encrypt(const unsigned char *plaintext, size_t pt_len,
@@ -726,7 +726,7 @@ int weixin_aes128_ecb_encrypt(const unsigned char *plaintext, size_t pt_len,
     return 0;
 }
 
-/* PoP: _aes128_ecb_decrypt @ gateway/platforms/weixin.py:_aes128_ecb_decrypt */
+/* PoP: weixin_aes128_ecb_decrypt @ gateway/platforms/weixin.py:_aes128_ecb_decrypt */
 /* Decrypts AES-128-ECB and strips PKCS7 padding. Caller frees *out. */
 /* PoP: weixin_aes128_ecb_decrypt @ gateway/platforms/weixin.py:_aes128_ecb_decrypt */
 int weixin_aes128_ecb_decrypt(const unsigned char *ciphertext, size_t ct_len,
@@ -759,7 +759,7 @@ int weixin_aes128_ecb_decrypt(const unsigned char *ciphertext, size_t ct_len,
     return 0;
 }
 
-/* PoP: _safe_id @ gateway/platforms/weixin.py:_safe_id */
+/* PoP: weixin_safe_id @ gateway/platforms/weixin.py:_safe_id */
 /* Strip non-printable / non-identifier chars for safe logging. */
 /* PoP: weixin_safe_id @ gateway/platforms/weixin.py:_safe_id */
 void weixin_safe_id(const char *in, char *out, size_t out_sz)
@@ -774,7 +774,7 @@ void weixin_safe_id(const char *in, char *out, size_t out_sz)
     out[o] = '\0';
 }
 
-/* PoP: _random_wechat_uin @ gateway/platforms/weixin.py:_random_wechat_uin */
+/* PoP: weixin_random_wechat_uin @ gateway/platforms/weixin.py:_random_wechat_uin */
 /* Generate a random 32-bit big-endian value, base64-encoded as ASCII. */
 /* PoP: weixin_random_wechat_uin @ gateway/platforms/weixin.py:_random_wechat_uin */
 void weixin_random_wechat_uin(char *out, size_t out_sz)
@@ -902,7 +902,7 @@ const char *weixin_mime_from_filename(const char *filename)
     return "application/octet-stream";
 }
 
-/* PoP: _split_table_row @ gateway/platforms/weixin.py:_split_table_row */
+/* PoP: md_split_table_row @ gateway/platforms/weixin.py:_split_table_row */
 /* PoP: weixin_split_table_row @ gateway/platforms/weixin.py:_split_table_row */
 char **weixin_split_table_row(const char *line, int *count)
 {
@@ -935,7 +935,7 @@ char **weixin_split_table_row(const char *line, int *count)
     return result;
 }
 
-/* PoP: _looks_like_heading_line_for_weixin @ gateway/platforms/weixin.py:_looks_like_heading_line_for_weixin */
+/* PoP: weixin_looks_like_heading_line_for_weixin @ gateway/platforms/weixin.py:_looks_like_heading_line_for_weixin */
 /* PoP: weixin_looks_like_heading_line @ gateway/platforms/weixin.py:_looks_like_heading_line_for_weixin */
 bool weixin_looks_like_heading_line(const char *line)
 {
@@ -958,7 +958,7 @@ bool weixin_looks_like_heading_line(const char *line)
     return false;
 }
 
-/* PoP: _looks_like_chatty_line_for_weixin @ gateway/platforms/weixin.py:_looks_like_chatty_line_for_weixin */
+/* PoP: weixin_looks_like_chatty_line_for_weixin @ gateway/platforms/weixin.py:_looks_like_chatty_line_for_weixin */
 /* PoP: weixin_looks_like_chatty_line @ gateway/platforms/weixin.py:_looks_like_chatty_line_for_weixin */
 bool weixin_looks_like_chatty_line(const char *line)
 {
@@ -978,7 +978,7 @@ bool weixin_looks_like_chatty_line(const char *line)
     return false;
 }
 
-/* PoP: _coerce_float_extra @ gateway/platforms/weixin.py:_coerce_float_extra */
+/* PoP: weixin_coerce_float_extra @ gateway/platforms/weixin.py:_coerce_float_extra */
 /* PoP: weixin_coerce_float_extra @ gateway/platforms/weixin.py:_coerce_float_extra */
 double weixin_coerce_float_extra(const json_t *obj, const char *key, double default_val)
 {
@@ -986,7 +986,7 @@ double weixin_coerce_float_extra(const json_t *obj, const char *key, double defa
     return json_get_num(obj, key, default_val);
 }
 
-/* PoP: _is_dm_allowed @ gateway/platforms/weixin.py:_is_dm_allowed */
+/* PoP: yb_is_dm_allowed @ gateway/platforms/weixin.py:_is_dm_allowed */
 /* PoP: weixin_is_dm_allowed @ gateway/platforms/weixin.py:_is_dm_allowed */
 bool weixin_is_dm_allowed(const char *sender_id, bool open_dm_opted_in,
                            const char *allowlist_json, const char *blocklist_json)
@@ -1038,7 +1038,7 @@ bool weixin_assert_cdn_url(const char *url)
     return false;
 }
 
-/* PoP: _rate_limit_error @ gateway/platforms/weixin.py:_rate_limit_error */
+/* PoP: is_rate_limit_error @ gateway/platforms/weixin.py:_rate_limit_error */
 /* PoP: weixin_rate_limit_error @ gateway/platforms/weixin.py:_rate_limit_error */
 char *weixin_rate_limit_error(double cooldown_remaining)
 {
@@ -1072,7 +1072,7 @@ char *weixin_load_sync_buf(const char *hermes_home, const char *account_id)
     return buf;
 }
 
-/* PoP: _headers @ gateway/platforms/weixin.py:_headers */
+/* PoP: bb_headers @ gateway/platforms/weixin.py:_headers */
 /* PoP: weixin_headers @ gateway/platforms/weixin.py:_headers */
 json_t *weixin_headers(const char *token, const char *body)
 {
@@ -1092,7 +1092,7 @@ json_t *weixin_headers(const char *token, const char *body)
     return h;
 }
 
-/* PoP: _coerce_list @ gateway/platforms/weixin.py:_coerce_list */
+/* PoP: qqbot_u_coerce_list @ gateway/platforms/weixin.py:_coerce_list */
 /* PoP: weixin_coerce_list @ gateway/platforms/weixin.py:_coerce_list */
 char **weixin_coerce_list(const json_t *value, int *count)
 {
@@ -1123,7 +1123,7 @@ char **weixin_coerce_list(const json_t *value, int *count)
     return NULL;
 }
 
-/* PoP: _rate_limit_cooldown_remaining @ gateway/platforms/weixin.py:_rate_limit_cooldown_remaining */
+/* PoP: weixin_rate_limit_cooldown_remaining @ gateway/platforms/weixin.py:_rate_limit_cooldown_remaining */
 /* PoP: weixin_rate_limit_cooldown_remaining @ gateway/platforms/weixin.py:_rate_limit_cooldown_remaining */
 double weixin_rate_limit_cooldown_remaining(double circuit_until)
 {
@@ -1175,7 +1175,7 @@ bool weixin_open_dm_opted_in(void)
 
 #define WEIXIN_RATE_LIMIT_ERRCODE (-2)
 
-/* PoP: _is_stale_session_ret @ gateway/platforms/weixin.py:_is_stale_session_ret */
+/* PoP: weixin_is_stale_session_ret @ gateway/platforms/weixin.py:_is_stale_session_ret */
 /* True when iLink returns ret=-2 / errcode=-2 with 'unknown error' — stale-session signal. */
 bool weixin_is_stale_session_ret(int ret, int errcode, const char *errmsg)
 {
@@ -1184,9 +1184,9 @@ bool weixin_is_stale_session_ret(int ret, int errcode, const char *errmsg)
     return errmsg != NULL && strcasecmp(errmsg, "unknown error") == 0;
 }
 
-/* PoP: _parse_aes_key @ gateway/platforms/weixin.py:_parse_aes_key */
+/* PoP: weixin_parse_aes_key @ gateway/platforms/weixin.py:_parse_aes_key */
 /* Decode a base64 AES key; accept 16 raw bytes or a 32-char hex string. */
-/* PoP: _key @ gateway/platforms/weixin.py:_key */
+/* PoP: cmd_key @ gateway/platforms/weixin.py:_key */
 int weixin_parse_aes_key(const char *aes_key_b64, unsigned char *out, size_t *out_len)
 {
     if (!aes_key_b64 || !out || !out_len) return -1;
@@ -1223,7 +1223,7 @@ int weixin_parse_aes_key(const char *aes_key_b64, unsigned char *out, size_t *ou
     return -1; /* unexpected aes_key format */
 }
 
-/* PoP: _guess_chat_type @ gateway/platforms/weixin.py:_guess_chat_type */
+/* PoP: weixin_guess_chat_type @ gateway/platforms/weixin.py:_guess_chat_type */
 /* Derive (chat_type, peer_id) from a raw inbound message dict. */
 void weixin_guess_chat_type(json_t *message, const char *account_id,
                              char *out_type, size_t type_cap,
@@ -1247,7 +1247,7 @@ void weixin_guess_chat_type(json_t *message, const char *account_id,
     }
 }
 
-/* PoP: _message_type_from_media @ gateway/platforms/weixin.py:_message_type_from_media */
+/* PoP: weixin_message_type_from_media @ gateway/platforms/weixin.py:_message_type_from_media */
 typedef enum {
     WEIXIN_MSG_TEXT = 0,
     WEIXIN_MSG_PHOTO,
@@ -1499,7 +1499,7 @@ static bool weixin_looks_like_heading_line_for_weixin(const char *line) {
     return (L > 0 && (s[L-1] == ':' || s[L-1] == '：'));
 }
 
-/* PoP: _should_split_short_chat_block_for_weixin @ gateway/platforms/weixin.py:_should_split_short_chat_block_for_weixin */
+/* PoP: weixin_should_split_short_chat_block_for_weixin @ gateway/platforms/weixin.py:_should_split_short_chat_block_for_weixin */
 static bool weixin_should_split_short_chat_block_for_weixin(const char *block) {
     char **lines = NULL; int nl = 0;
     const char *start = block;

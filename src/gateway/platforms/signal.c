@@ -119,7 +119,7 @@ bool signal_send_group_message(http_client_t *http,
  *   signal-cli -a <number> send-reaction -e <emoji> \
  *     --target-author <author> --target-timestamp <ts> <recipient>
  * ------------------------------------------------------------------ */
-/* PoP: send_reaction @ gateway/platforms/signal.py:send_reaction */
+/* PoP: signal_send_reaction @ gateway/platforms/signal.py:send_reaction */
 /* Port of Python gateway/platforms/signal.py:send_reaction(). */
 bool signal_send_reaction(http_client_t *http,
                            const char *recipient,
@@ -175,7 +175,7 @@ bool signal_send_quote_reply(http_client_t *http,
  *   signal-cli -a <number> send -a <file_path> -m "<text>" <recipient>
  * If text is NULL or empty, sends the attachment without a text caption.
  * ------------------------------------------------------------------ */
-/* PoP: _send_attachment @ gateway/platforms/signal.py:_send_attachment */
+/* PoP: signal_send_attachment @ gateway/platforms/signal.py:_send_attachment */
 /* Port of Python gateway/platforms/signal.py:_send_attachment(). */
 /* PoP: send_attachment @ gateway/platforms/signal.py:send_attachment */
 /* Port of Python gateway/platforms/signal.py:send_attachment(). */
@@ -593,7 +593,7 @@ static const char *sig_ext_to_mime(const char *ext) {
     return _sig_ext_to_mime(buf);
 }
 
-/* PoP: _is_audio_ext @ gateway/platforms/signal.py:_is_audio_ext */
+/* PoP: sig_is_audio_ext @ gateway/platforms/signal.py:_is_audio_ext */
 /* _is_audio_ext(ext) / _is_image_ext(ext). */
 static bool sig_is_audio_ext(const char *ext) {
     if (!ext) return false;
@@ -604,7 +604,7 @@ static bool sig_is_audio_ext(const char *ext) {
            strcmp(buf, ".ogg") == 0 || strcmp(buf, ".m4a") == 0 ||
            strcmp(buf, ".aac") == 0;
 }
-/* PoP: _is_image_ext @ gateway/platforms/signal.py:_is_image_ext */
+/* PoP: sig_is_image_ext @ gateway/platforms/signal.py:_is_image_ext */
 /* PoP: sig_is_image_ext @ gateway/platforms/signal.py:_is_image_ext */
 static bool sig_is_image_ext(const char *ext) {
     if (!ext) return false;
@@ -651,7 +651,7 @@ static bool sig_is_uuid(const char *v) {
     return gi == 5 && !need_dash;
 }
 
-/* PoP: _is_signal_service_id @ gateway/platforms/signal.py:_is_signal_service_id */
+/* PoP: sig_is_signal_service_id @ gateway/platforms/signal.py:_is_signal_service_id */
 /* _is_signal_service_id(value) — PNI:/u:/valid UUID. */
 static bool sig_is_signal_service_id(const char *value) {
     if (!value || !value[0]) return false;
@@ -724,7 +724,7 @@ static bool sig_check_requirements(void) {
     return getenv("SIGNAL_HTTP_URL") != NULL && getenv("SIGNAL_ACCOUNT") != NULL;
 }
 
-/* PoP: _markdown_to_signal @ gateway/platforms/signal.py:_markdown_to_signal */
+/* PoP: gateway_signal_markdown_to_signal @ gateway/platforms/signal.py:_markdown_to_signal */
 /* _markdown_to_signal(text) — plain-text fallback (strip markdown).
  * The Python wrapper delegates to the shared markdown_to_signal(); the C
  * port's equivalent (gateway_signal_markdown_to_signal) is a plain-text

@@ -87,7 +87,7 @@ void mcp_lock_cookie_free(struct mcp_lock_cookie *c)
 }
 
 /* ── _acquire_lock_on_fh ─────────────────────────────────── */
-/* PoP: _acquire_lock_on_fh @ tools/mcp_tool.py:_acquire_lock_on_fh */
+/* PoP: mcp_acquire_lock_on_fh @ tools/mcp_tool.py:_acquire_lock_on_fh */
 /*
  * Faithful port of _acquire_lock_on_fh. Python returns True/False on
  * EACCES/EAGAIN/EWOULDBLOCK and re-raises other OSErrors as RuntimeError.
@@ -115,7 +115,7 @@ bool mcp_acquire_lock_on_fh(int fd, int *out_errno_reraise)
 }
 
 /* ── _try_acquire_mcp_discovery_lock ─────────────────────── */
-/* PoP: _try_acquire_mcp_discovery_lock @ tools/mcp_tool.py:_try_acquire_mcp_discovery_lock */
+/* PoP: mcp_try_acquire_mcp_discovery_lock @ tools/mcp_tool.py:_try_acquire_mcp_discovery_lock */
 /* Returns: MCP_LOCK_COOKIE (acquired), MCP_LOCK_BUSY (held by other),
  *          MCP_LOCK_UNAVAILABLE (broken/unavailable). */
 enum mcp_lock_result mcp_try_acquire_mcp_discovery_lock(struct mcp_lock_cookie **out)
@@ -304,7 +304,7 @@ char *mcp_normalize_server_trust(const json_t *value) {
     return strdup(_TRUST_UNTRUSTED);
 }
 
-/* PoP: _annotation_read_only_hint @ tools/mcp_tool.py:_annotation_read_only_hint */
+/* PoP: mcp_annotation_read_only_hint @ tools/mcp_tool.py:_annotation_read_only_hint */
 /* Return true only when annotations.readOnlyHint is exactly True. */
 bool mcp_annotation_read_only_hint(const json_t *mcp_tool) {
     if (!mcp_tool) return false;

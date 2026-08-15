@@ -28,7 +28,7 @@ static int     g_cap = 0;
 
 static char *dup_key(const char *p) { return p ? strdup(p) : NULL; }
 
-/* PoP: _key @ hermes_cli/sqlite_safe_read.py:_key */
+/* PoP: cmd_key @ hermes_cli/sqlite_safe_read.py:_key */
 char *sqlite_safe_key(const char *path)
 {
     if (!path || !*path) return NULL;
@@ -71,7 +71,7 @@ static void reg_incr(const char *key, int delta)
     pthread_mutex_unlock(&g_lock);
 }
 
-/* PoP: track_connection @ hermes_cli/sqlite_safe_read.py:track_connection */
+/* PoP: sqlite_safe_track_connection @ hermes_cli/sqlite_safe_read.py:track_connection */
 void sqlite_safe_track_connection(const char *path)
 {
     char *key = sqlite_safe_key(path);
@@ -80,7 +80,7 @@ void sqlite_safe_track_connection(const char *path)
     free(key);
 }
 
-/* PoP: untrack_connection @ hermes_cli/sqlite_safe_read.py:untrack_connection */
+/* PoP: sqlite_safe_untrack_connection @ hermes_cli/sqlite_safe_read.py:untrack_connection */
 void sqlite_safe_untrack_connection(const char *path)
 {
     char *key = sqlite_safe_key(path);
@@ -129,7 +129,7 @@ char *sqlite_safe_canonical_db_path(sqlite3 *conn)
 
 /* ── Safe reads ──────────────────────────────────────────────────── */
 
-/* PoP: page_count_bytes @ hermes_cli/sqlite_safe_read.py:page_count_bytes */
+/* PoP: sqlite_safe_page_count_bytes @ hermes_cli/sqlite_safe_read.py:page_count_bytes */
 long long sqlite_safe_page_count_bytes(sqlite3 *conn)
 {
     if (!conn) return -1;
@@ -147,7 +147,7 @@ long long sqlite_safe_page_count_bytes(sqlite3 *conn)
     return page_count * page_size;
 }
 
-/* PoP: file_length_matches_header @ hermes_cli/sqlite_safe_read.py:file_length_matches_header */
+/* PoP: sqlite_safe_file_length_matches_header @ hermes_cli/sqlite_safe_read.py:file_length_matches_header */
 bool sqlite_safe_file_length_matches_header(sqlite3 *conn)
 {
     char *path = sqlite_safe_canonical_db_path(conn);

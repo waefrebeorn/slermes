@@ -187,14 +187,14 @@ json_t *browser_stop_cdp_supervisor(const char *task_id)
     return result;
 }
 
-/* PoP: _using_lightpanda_engine @ tools/browser_tool.py:_using_lightpanda_engine */
+/* PoP: browser_using_lightpanda_engine @ tools/browser_tool.py:_using_lightpanda_engine */
 bool browser_using_lightpanda_engine(void)
 {
     const char *engine = getenv("HERMES_BROWSER_ENGINE");
     return engine && strcmp(engine, "lightpanda") == 0;
 }
 
-/* PoP: _copy_fallback_warning @ tools/browser_tool.py:_copy_fallback_warning */
+/* PoP: browser_copy_fallback_warning @ tools/browser_tool.py:_copy_fallback_warning */
 void browser_copy_fallback_warning(char *dest, size_t dest_size)
 {
     if (dest && dest_size > 0) {
@@ -202,14 +202,14 @@ void browser_copy_fallback_warning(char *dest, size_t dest_size)
     }
 }
 
-/* PoP: _auto_local_for_private_urls @ tools/browser_tool.py:_auto_local_for_private_urls */
+/* PoP: browser_auto_local_for_private_urls @ tools/browser_tool.py:_auto_local_for_private_urls */
 bool browser_auto_local_for_private_urls(void)
 {
     const char *env = getenv("HERMES_BROWSER_AUTO_LOCAL_PRIVATE");
     return env && (strcmp(env, "true") == 0 || strcmp(env, "1") == 0);
 }
 
-/* PoP: _url_is_private @ tools/browser_tool.py:_url_is_private */
+/* PoP: browser_url_is_private @ tools/browser_tool.py:_url_is_private */
 bool browser_url_is_private(const char *url)
 {
     if (!url) return false;

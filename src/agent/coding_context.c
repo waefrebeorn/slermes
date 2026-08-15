@@ -262,7 +262,7 @@ static void path_dirname(const char *path, char *out, size_t out_size) {
     free(copy);
 }
 
-/* PoP: file_exists @ agent/pet/store.py:exists */
+/* PoP: dir_exists @ agent/pet/store.py:exists */
 static bool file_exists(const char *path) {
     if (!path) return false;
     struct stat st;
@@ -438,7 +438,7 @@ bool coding_context_find_marker_root(const char *cwd, char *out, size_t out_size
 
 /* AG26: Port of Python agent/coding_context.py:_detect_profile_name() */
 /* AG26: Port of Python agent/coding_context.py:is_coding_context() */
-/* PoP: is_coding_context @ agent/coding_context.py:is_coding_context */
+/* PoP: coding_context_is_coding_context @ agent/coding_context.py:is_coding_context */
 const char *coding_context_detect_profile_name(
     const char *mode, const char *platform, const char *cwd) {
 
@@ -863,7 +863,7 @@ int coding_context_read_small(const char *path, char *out, size_t out_size, size
  * agent/coding_context.py:_project_facts
  * Detects manifests, package managers, verify commands, context files for a
  * root and renders them as workspace-snapshot lines into out (malloc'd, caller frees). */
-/* PoP: _project_facts @ agent/coding_context.py:_project_facts */
+/* PoP: detect_project_facts @ agent/coding_context.py:_project_facts */
 char *coding_context_project_facts(const char *root)
 {
     if (!root || !root[0]) return NULL;

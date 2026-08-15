@@ -22,7 +22,7 @@
 #include <stdio.h>
 
 /* ---- internal helpers (declared in kanban_db.h as _port-owned) ---- */
-/* PoP: kdb_end_run @ hermes_cli/kanban_db.py:_end_run */
+/* PoP: kb_end_run @ hermes_cli/kanban_db.py:_end_run */
 int   kdb_end_run(sqlite3 *conn, const char *task_id, const char *outcome,
                   const char *summary, const char *error, const char *metadata,
                   const char *status);
@@ -142,7 +142,7 @@ int kdb_synthesize_ended_run(sqlite3 *conn, const char *task_id,
  * Sticky block + dependency helpers
  * ========================================================================= */
 
-/* PoP: kdb_has_sticky_block @ hermes_cli/kanban_db.py:_has_sticky_block */
+/* PoP: kb_has_sticky_block @ hermes_cli/kanban_db.py:_has_sticky_block */
 int kdb_has_sticky_block(sqlite3 *conn, const char *task_id)
 {
     if (!conn || !task_id) return 0;

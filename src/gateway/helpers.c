@@ -200,7 +200,7 @@ char *gateway_redact_user_facing_secrets(const char *text) {
 
 /* Faithful port of run.py render_notice_line: emit an AgentNotice's text as a
  * single stripped plaintext line (fail-soft to "" on missing/empty). */
-/* PoP: gateway_render_notice_line @ gateway/run.py:render_notice_line */
+/* PoP: gw_render_notice_line @ gateway/run.py:render_notice_line */
 char *gateway_render_notice_line(const char *notice_text) {
     if (!notice_text) return strdup("");
     /* strip leading/trailing whitespace */
@@ -307,7 +307,7 @@ bool msg_dedup_is_duplicate(msg_dedup_t *d, const char *msg_id) {
 
     return false;
 }
-/* PoP: clear @ gateway/platforms/helpers.py:clear */
+/* PoP: scc_clear @ gateway/platforms/helpers.py:clear */
 
 void msg_dedup_clear(msg_dedup_t *d) {
     if (!d) return;
@@ -595,7 +595,7 @@ void thread_tracker_init(thread_tracker_t *t, const char *platform,
     else
         t->state_dir[0] = '\0';
 }
-/* PoP: _load @ gateway/platforms/helpers.py:_load */
+/* PoP: cmd_load @ gateway/platforms/helpers.py:_load */
 
 void thread_tracker_load(thread_tracker_t *t) {
     if (!t || !t->state_dir[0] || !t->platform[0]) return;

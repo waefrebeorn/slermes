@@ -196,7 +196,7 @@ static const char *kb_claimer_id(char *buf, size_t sz)
     return buf;
 }
 
-/* PoP: kdb_claim_task @ hermes_cli/kanban_db.py:claim_task */
+/* PoP: kdb_reclaim_task @ hermes_cli/kanban_db.py:claim_task */
 char *kdb_claim_task(sqlite3 *conn, const char *task_id, int ttl_seconds, const char *claimer)
 {
     if (!conn || !task_id) return NULL;

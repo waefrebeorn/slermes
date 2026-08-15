@@ -881,7 +881,7 @@ int parse_structured_summary(const char *llm_final,
 /* AG26: Port of Python agent/curator.py:run_curator_review() */
 /* AG26: Port of Python agent/curator.py:_run_llm_review() */
 
-/* PoP: agent_curator__cron_referenced_skills @ agent/curator.py:_cron_referenced_skills */
+/* PoP: agent_curator_cron_referenced_skills @ agent/curator.py:_cron_referenced_skills */
 /* Skill names referenced by any cron job (incl. paused/disabled). Best-effort:
  * any failure yields an empty set. Returns a malloc'd array of malloc'd strings
  * via *out_names (caller frees each + the array) and the count. On failure

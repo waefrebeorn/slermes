@@ -180,7 +180,7 @@ static char *mcp_json_serialize_sorted(const json_t *n)
 }
 
 /* ── cache_path ──────────────────────────────────────────────────────────── */
-/* PoP: _cache_path @ tools/mcp_schema_cache.py:_cache_path */
+/* PoP: provider_context_cache_path @ tools/mcp_schema_cache.py:_cache_path */
 char *mcp_cache_path(void)
 {
     const char *home = slermes_home();
@@ -290,7 +290,7 @@ json_t *mcp_load_all(void)
     return data;
 }
 
-/* PoP: _save_all @ tools/mcp_schema_cache.py:_save_all */
+/* PoP: mcp_save_all @ tools/mcp_schema_cache.py:_save_all */
 /* Python: atomic_json_write(path, data, mode=0o600).  C uses
  * util_atomic_json_write (indent=2) + chmod 0600. */
 void mcp_save_all(const json_t *data)
@@ -339,7 +339,7 @@ json_t *mcp_get_cached_entry(const char *server_name, const char *fingerprint)
     return copy;
 }
 
-/* PoP: has_cached_entry @ tools/mcp_schema_cache.py:has_cached_entry */
+/* PoP: mcp_has_cached_entry @ tools/mcp_schema_cache.py:has_cached_entry */
 bool mcp_has_cached_entry(const char *server_name, const char *fingerprint)
 {
     json_t *e = mcp_get_cached_entry(server_name, fingerprint);
@@ -348,7 +348,7 @@ bool mcp_has_cached_entry(const char *server_name, const char *fingerprint)
 }
 
 /* ── write_cache_entry / clear_cache_entry ───────────────────────────────── */
-/* PoP: write_cache_entry @ tools/mcp_schema_cache.py:write_cache_entry */
+/* PoP: mcp_write_cache_entry @ tools/mcp_schema_cache.py:write_cache_entry */
 void mcp_write_cache_entry(const char *server_name, const char *fingerprint,
                            const json_t *tools, const json_t *utility_tools)
 {
@@ -385,7 +385,7 @@ void mcp_write_cache_entry(const char *server_name, const char *fingerprint,
     pthread_mutex_unlock(&_cache_lock);
 }
 
-/* PoP: clear_cache_entry @ tools/mcp_schema_cache.py:clear_cache_entry */
+/* PoP: mcp_clear_cache_entry @ tools/mcp_schema_cache.py:clear_cache_entry */
 void mcp_clear_cache_entry(const char *server_name)
 {
     pthread_mutex_lock(&_cache_lock);

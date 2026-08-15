@@ -34,7 +34,7 @@
 /* Path helpers                                                        */
 /* ------------------------------------------------------------------ */
 
-/* PoP: _process_hermes_home @ gateway/lifecycle_ledger.py:_process_hermes_home */
+/* PoP: gstat_u_get_process_hermes_home @ gateway/lifecycle_ledger.py:_process_hermes_home */
 char *llg_process_hermes_home(void)
 {
     const char *val = getenv("HERMES_HOME");
@@ -143,7 +143,7 @@ json_t *llg_sample_memory(void)
 /* JSON read / atomic write                                            */
 /* ------------------------------------------------------------------ */
 
-/* PoP: _read_json @ gateway/lifecycle_ledger.py:_read_json */
+/* PoP: mcpo_u_read_json @ gateway/lifecycle_ledger.py:_read_json */
 json_t *llg_read_json(const char *path)
 {
     if (!path) return NULL;
@@ -195,7 +195,7 @@ static void llg_mkdir_p(const char *dir)
     free(tmp);
 }
 
-/* PoP: _write_sentinel @ gateway/lifecycle_ledger.py:_write_sentinel */
+/* PoP: llg_write_sentinel @ gateway/lifecycle_ledger.py:_write_sentinel */
 void llg_write_sentinel(const json_t *payload, const char *home)
 {
     char *path = llg_get_lifecycle_sentinel_path(home);
@@ -227,7 +227,7 @@ void llg_write_sentinel(const json_t *payload, const char *home)
     free(path);
 }
 
-/* PoP: _append_exit_diag @ gateway/lifecycle_ledger.py:_append_exit_diag */
+/* PoP: llg_append_exit_diag @ gateway/lifecycle_ledger.py:_append_exit_diag */
 void llg_append_exit_diag(const json_t *record, const char *home)
 {
     char *path = llg_join(home, LLG_EXIT_DIAG_REL);
@@ -254,7 +254,7 @@ void llg_append_exit_diag(const json_t *record, const char *home)
 /* PID liveness + start-time guard                                     */
 /* ------------------------------------------------------------------ */
 
-/* PoP: _pid_alive_with_start_time @ gateway/lifecycle_ledger.py:_pid_alive_with_start_time */
+/* PoP: llg_pid_alive_with_start_time @ gateway/lifecycle_ledger.py:_pid_alive_with_start_time */
 bool llg_pid_alive_with_start_time(const char *pid, const char *start_time)
 {
     if (!pid) return false;
@@ -379,7 +379,7 @@ json_t *llg_record_startup(const char *home)
     return evidence;
 }
 
-/* PoP: mark_exited @ gateway/lifecycle_ledger.py:mark_exited */
+/* PoP: llg_mark_exited @ gateway/lifecycle_ledger.py:mark_exited */
 void llg_mark_exited(long exit_code, const char *reason, const char *home)
 {
     char *path = llg_get_lifecycle_sentinel_path(home);
@@ -411,7 +411,7 @@ void llg_mark_exited(long exit_code, const char *reason, const char *home)
     json_free(payload);
 }
 
-/* PoP: read_prior_exit_label @ gateway/lifecycle_ledger.py:read_prior_exit_label */
+/* PoP: hermes_cli_container_boot_u_read_prior_exit_label @ gateway/lifecycle_ledger.py:read_prior_exit_label */
 char *llg_read_prior_exit_label(const char *profile_home)
 {
     char *path = llg_get_lifecycle_sentinel_path(profile_home);

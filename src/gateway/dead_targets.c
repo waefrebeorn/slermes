@@ -51,7 +51,7 @@ static void strip_only(const char *s, char *out, size_t bufsz) {
     out[len] = '\0';
 }
 
-/* PoP: dead_target_normalize @ gateway/dead_targets.py:_normalize */
+/* PoP: pep503_normalize @ gateway/dead_targets.py:_normalize */
 static void dead_target_normalize(const char *platform, const char *chat_id,
                                   char *out, size_t bufsz) {
     char p[256], c[256];
@@ -60,7 +60,7 @@ static void dead_target_normalize(const char *platform, const char *chat_id,
     snprintf(out, bufsz, "%s:%s", p, c);
 }
 
-/* PoP: dead_target_registry_load @ gateway/dead_targets.py:_load */
+/* PoP: cmd_load @ gateway/dead_targets.py:_load */
 static void dead_target_registry_load(dead_target_registry_t *r) {
     FILE *f = fopen(r->path, "rb");
     if (!f) return; /* missing file -> stay empty */
@@ -188,7 +188,7 @@ bool dead_target_mark_dead(dead_target_registry_t *r, const char *platform,
 /* Key deletion: canonical json_obj_del() lives in libjson. */
 #define json_object_delete(obj, key) ((void)json_obj_del((obj), (key)))
 
-/* PoP: dead_target_clear @ gateway/dead_targets.py:clear */
+/* PoP: scc_clear @ gateway/dead_targets.py:clear */
 bool dead_target_clear(dead_target_registry_t *r, const char *platform,
                        const char *chat_id) {
     if (!chat_id || !chat_id[0]) return false;

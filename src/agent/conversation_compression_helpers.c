@@ -376,7 +376,7 @@ json_t *cc_recover_rotated_compression_session(hermes_state_db_t *db,
 
 /* ── Compaction message shaping ──────────────────────────────────────── */
 
-/* PoP: cc_message_text @ agent/conversation_compression.py:_message_text */
+/* PoP: sexp_u_message_text @ agent/conversation_compression.py:_message_text */
 char *cc_message_text(const json_t *message) {
     if (!message || message->type != JSON_OBJECT) return strdup("");
     const json_t *content = json_obj_get(message, "content");
@@ -796,7 +796,7 @@ bool cc_cached_prompt_reflects_builtin_memory(const char *memory_block,
 
 /* ── Skew / guard helpers + codex-app-server route ───────────────────── */
 
-/* PoP: _lock_api_is_absent_on_session_db @ agent/conversation_compression.py:_lock_api_is_absent_on_session_db */
+/* PoP: cc_lock_api_is_absent_on_session_db @ agent/conversation_compression.py:_lock_api_is_absent_on_session_db */
 /* The C SessionDB (hermes_state_db_t) always carries the lock API, so the
  * hot-reload skew (old class missing try_acquire_compression_lock) cannot
  * occur. Mirrors the fail-closed return for any non-hermes_state_db handle. */
@@ -809,7 +809,7 @@ bool cc_lock_api_is_absent_on_session_db(const void *lock_db) {
     return lock_db == NULL; /* NULL handle = structurally degenerate → absent */
 }
 
-/* PoP: _refresh_persisted_compression_guards @ agent/conversation_compression.py:_refresh_persisted_compression_guards */
+/* PoP: cc_refresh_persisted_compression_guards @ agent/conversation_compression.py:_refresh_persisted_compression_guards */
 /* Durable automatic-compression guards live on the ContextCompressor. The
  * C ContextCompressor exposes the same refresh entry points; calling them
  * with the same method-name table keeps the two implementations in lockstep.
@@ -1043,7 +1043,7 @@ const char *CC_COMPACTION_STATUS =
 static pthread_mutex_t g_cc_admission_lock = PTHREAD_MUTEX_INITIALIZER;
 static int g_cc_admitted_count = 0;
 
-/* PoP: _try_admit_compression_job @ agent/conversation_compression.py:_try_admit_compression_job */
+/* PoP: cc_try_admit_compression_job @ agent/conversation_compression.py:_try_admit_compression_job */
 bool cc_try_admit_compression_job(void) {
     /* Reserve one bounded compression-pool admission slot (F6). */
     bool ok;
@@ -1058,7 +1058,7 @@ bool cc_try_admit_compression_job(void) {
     return ok;
 }
 
-/* PoP: _release_compression_admission @ agent/conversation_compression.py:_release_compression_admission */
+/* PoP: cc_release_compression_admission @ agent/conversation_compression.py:_release_compression_admission */
 void cc_release_compression_admission(void) {
     /* Free an admission slot (future done-callback or failed submit). */
     pthread_mutex_lock(&g_cc_admission_lock);
@@ -1067,7 +1067,7 @@ void cc_release_compression_admission(void) {
     pthread_mutex_unlock(&g_cc_admission_lock);
 }
 
-/* PoP: resolve_context_compression_timeouts @ agent/conversation_compression.py:resolve_context_compression_timeouts */
+/* PoP: cc_resolve_context_compression_timeouts @ agent/conversation_compression.py:resolve_context_compression_timeouts */
 void cc_resolve_context_compression_timeouts(const char *compression_cfg_json,
                                              double *out_idle,
                                              double *out_ceiling) {
@@ -1153,7 +1153,7 @@ json_t *cc_snapshot_compressor_attempt_state(const json_t *state) {
     return out;
 }
 
-/* PoP: _restore_compressor_attempt_state @ agent/conversation_compression.py:_restore_compressor_attempt_state */
+/* PoP: cc_restore_compressor_attempt_state @ agent/conversation_compression.py:_restore_compressor_attempt_state */
 void cc_restore_compressor_attempt_state(json_t *state,
                                          const json_t *snapshot,
                                          bool durable_cooldown_authoritative,
@@ -1239,7 +1239,7 @@ void cc_restore_compressor_attempt_state(json_t *state,
     }
 }
 
-/* PoP: _capture_authoritative_cooldown_under_lease @ agent/conversation_compression.py:_capture_authoritative_cooldown_under_lease */
+/* PoP: cc_capture_authoritative_cooldown_under_lease @ agent/conversation_compression.py:_capture_authoritative_cooldown_under_lease */
 void cc_capture_authoritative_cooldown_under_lease(json_t *state,
                                                    json_t *attempt_snapshot,
                                                    hermes_state_db_t *db,

@@ -10,20 +10,20 @@
  * dependencies. Process liveness + persistence are injected via a vtable so
  * this module stays pure (no DB, TTY, network, or OS-process calls).
  *
-/* PoP: goal_manager_set @ hermes_cli/goals.py:set */
-/* PoP: goal_manager_set_contract @ hermes_cli/goals.py:set_contract */
+/* PoP: reset @ hermes_cli/goals.py:set */
+/* PoP: goal_state_set_contract @ hermes_cli/goals.py:set_contract */
 /* PoP: goal_manager_pause @ hermes_cli/goals.py:pause */
-/* PoP: goal_manager_resume @ hermes_cli/goals.py:resume */
-/* PoP: goal_manager_clear @ hermes_cli/goals.py:clear */
+/* PoP: cmd_resume @ hermes_cli/goals.py:resume */
+/* PoP: scc_clear @ hermes_cli/goals.py:clear */
 /* PoP: goal_manager_mark_done @ hermes_cli/goals.py:mark_done */
-/* PoP: goal_manager_add_subgoal @ hermes_cli/goals.py:add_subgoal */
+/* PoP: goal_state_add_subgoal @ hermes_cli/goals.py:add_subgoal */
 /* PoP: goal_manager_remove_subgoal @ hermes_cli/goals.py:remove_subgoal */
 /* PoP: goal_manager_clear_subgoals @ hermes_cli/goals.py:clear_subgoals */
 /* PoP: goal_manager_status_line @ hermes_cli/goals.py:status_line */
-/* PoP: goal_manager_has_goal @ hermes_cli/goals.py:has_goal */
-/* PoP: goal_manager_has_contract @ hermes_cli/goals.py:has_contract */
-/* PoP: goal_manager_is_active @ hermes_cli/goals.py:is_active */
-/* PoP: goal_manager_is_waiting @ hermes_cli/goals.py:is_waiting */
+/* PoP: goals_has_goal @ hermes_cli/goals.py:has_goal */
+/* PoP: goals_has_contract @ hermes_cli/goals.py:has_contract */
+/* PoP: goals_is_active @ hermes_cli/goals.py:is_active */
+/* PoP: goals_is_waiting @ hermes_cli/goals.py:is_waiting */
 /* PoP: goal_manager_stop_waiting @ hermes_cli/goals.py:stop_waiting */
 /* PoP: goal_manager_wait_on @ hermes_cli/goals.py:wait_on */
 /* PoP: goal_manager_wait_on_session @ hermes_cli/goals.py:wait_on_session */
@@ -261,8 +261,8 @@ char *goal_manager_status_line(const goal_manager_t *m) {
             return out;
         }
         if (s->waiting_on_pid && (!m->vtab || !m->vtab->pid_alive ||
-/* PoP: pid_alive @ hermes_cli/active_sessions.py:_pid_alive */
-/* PoP: pid_alive @ hermes_cli/kanban_db.py:_pid_alive */
+/* PoP: ip_pid_alive @ hermes_cli/active_sessions.py:_pid_alive */
+/* PoP: ip_pid_alive @ hermes_cli/kanban_db.py:_pid_alive */
                                   m->vtab->pid_alive(s->waiting_on_pid))) {
             char wr_buf[128];
             snprintf(wr_buf, sizeof(wr_buf), "pid %ld%s%s%s", s->waiting_on_pid,

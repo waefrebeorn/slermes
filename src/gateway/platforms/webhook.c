@@ -1383,12 +1383,12 @@ static bool wh_is_autonomous_silence_response(const char *content) {
     return first_line_silent || last_line_silent;
 }
 
-/* PoP: _is_webhook_silence_response @ gateway/platforms/webhook.py:_is_webhook_silence_response */
+/* PoP: wh_is_webhook_silence_response @ gateway/platforms/webhook.py:_is_webhook_silence_response */
 bool wh_is_webhook_silence_response(const char *content) {
     return wh_is_autonomous_silence_response(content);
 }
 
-/* PoP: _route_allows_profile @ gateway/platforms/webhook.py:_route_allows_profile */
+/* PoP: wh_route_allows_profile @ gateway/platforms/webhook.py:_route_allows_profile */
 /* Return whether a route is bound to the URL-selected profile.
  * route_config_json = serialized {"profile": "..."} (or {} for default).
  * request_profile = the profile string (or NULL for default).

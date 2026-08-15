@@ -233,7 +233,7 @@ static bool _is_non_messaging_surface(const char *s)
     return false;
 }
 
-/* PoP: session_is_messaging_surface @ gateway/session_context.py:session_is_messaging_surface */
+/* PoP: gw_session_is_messaging_surface @ gateway/session_context.py:session_is_messaging_surface */
 bool gw_session_is_messaging_surface(void)
 {
     const char *platform = getenv("HERMES_PLATFORM");

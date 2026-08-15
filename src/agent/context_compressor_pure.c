@@ -674,7 +674,7 @@ int cc_starts_with_summary_prefix(const char *text) {
     return 0;
 }
 
-/* PoP: cc_strip_summary_prefix @ agent/context_compressor.py:_strip_summary_prefix */
+/* PoP: cli_agent_context_compressor__strip_summary_prefix @ agent/context_compressor.py:_strip_summary_prefix */
 char *cc_strip_summary_prefix(const char *summary) {
     if (!summary) return strdup("");
     char *text = strdup(summary);
@@ -712,7 +712,7 @@ char *cc_strip_summary_prefix(const char *summary) {
     return res;
 }
 
-/* PoP: cc_with_summary_prefix @ agent/context_compressor.py:_with_summary_prefix */
+/* PoP: cc_starts_with_summary_prefix @ agent/context_compressor.py:_with_summary_prefix */
 char *cc_with_summary_prefix(const char *summary) {
     char *body = cc_strip_summary_prefix(summary);
     if (!body || *body == '\0') {
@@ -1250,7 +1250,7 @@ int cc_strip_persistence_markers(json_t *messages) {
 
 /* ── batch 5: standalone handoff + user-turn predicates (pure) ─────────── */
 
-/* PoP: _handoff_carries_live_user_content @ agent/context_compressor.py:_handoff_carries_live_user_content */
+/* PoP: cc_handoff_carries_live_user_content @ agent/context_compressor.py:_handoff_carries_live_user_content */
 /* True when a summary-bearing row still carries a live user ask after the handoff is stripped. */
 bool cc_handoff_carries_live_user_content(const json_t *message) {
     if (!message || message->type != JSON_OBJECT) return false;
@@ -1258,7 +1258,7 @@ bool cc_handoff_carries_live_user_content(const json_t *message) {
     return cc_strip_context_summary_handoff_message(message) != NULL;
 }
 
-/* PoP: reference_handoff_would_drive_next_model_call @ agent/context_compressor.py:reference_handoff_would_drive_next_model_call */
+/* PoP: cc_reference_handoff_would_drive_next_model_call @ agent/context_compressor.py:reference_handoff_would_drive_next_model_call */
 /* True when the next model call would be driven ONLY by a handoff (no real
  * user/tool continuation after the last driving summary handoff). */
 bool cc_reference_handoff_would_drive_next_model_call(const json_t *messages) {
@@ -1459,7 +1459,7 @@ const char *cc_template_visible_role(const json_t *message) {
     return role;
 }
 
-/* PoP: _is_clarify_non_response_sentinel @ agent/context_compressor.py:_is_clarify_non_response_sentinel */
+/* PoP: cc_is_clarify_non_response_sentinel @ agent/context_compressor.py:_is_clarify_non_response_sentinel */
 /* True when a clarify user_response is runtime sentinel prose (timeout /
  * no-user), not an actual user answer. For lists, ANY sentinel item poisons
  * the whole response. */
@@ -1499,7 +1499,7 @@ bool cc_is_clarify_non_response_sentinel(const json_t *response) {
     return false;
 }
 
-/* PoP: _last_assistant_index @ agent/context_compressor.py:_last_assistant_index */
+/* PoP: cc_last_assistant_index @ agent/context_compressor.py:_last_assistant_index */
 /* Index of the newest assistant message, or -1. */
 int cc_last_assistant_index(const json_t *messages) {
     if (!messages || messages->type != JSON_ARRAY) return -1;
@@ -1513,7 +1513,7 @@ int cc_last_assistant_index(const json_t *messages) {
     return -1;
 }
 
-/* PoP: _prune_stale_reasoning_replay @ agent/context_compressor.py:_prune_stale_reasoning_replay */
+/* PoP: cc_prune_stale_reasoning_replay @ agent/context_compressor.py:_prune_stale_reasoning_replay */
 /* Strip stale per-turn replay items (codex_reasoning_items) from assistant
  * messages belonging to turns older than the active one. Turn boundary is the
  * LAST USER message; everything after it keeps its items. Native compaction
@@ -1658,7 +1658,7 @@ void cc_budget_max_summary_tokens_set(cc_compressor_budget_t *b, long value) {
 }
 
 /* ── note_request_rough_estimate (canonical impl, pure tracker math) ───── */
-/* PoP: note_request_rough_estimate @ agent/context_compressor.py:note_request_rough_estimate */
+/* PoP: cc_note_request_rough_estimate @ agent/context_compressor.py:note_request_rough_estimate */
 void cc_note_request_rough_estimate(cc_request_tracker_t *t, long rough_tokens) {
     if (!t) return;
     if (rough_tokens < 0) rough_tokens = 0;

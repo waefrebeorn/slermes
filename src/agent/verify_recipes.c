@@ -201,7 +201,7 @@ char *recipe_detect_package_manager(const char *root)
 /* ---- port inference ---- */
 
 /* regex-free: scan for --port <n> or -p <n>, then PORT=<n> */
-/* PoP: _infer_port_from_command @ agent/verify/recipes.py:_infer_port_from_command */
+/* PoP: recipe_infer_port_from_command @ agent/verify/recipes.py:_infer_port_from_command */
 int recipe_infer_port_from_command(const char *command)
 {
     if (!command || !*command) return 0;
@@ -228,7 +228,7 @@ int recipe_infer_port_from_command(const char *command)
     return 0;
 }
 
-/* PoP: _read_text @ agent/verify/recipes.py:_read_text */
+/* PoP: ws_fs_read_text @ agent/verify/recipes.py:_read_text */
 /* Read a file's UTF-8 text, or NULL on OSError (mirrors _read_text). */
 char *recipe_read_text(const char *root, const char *name)
 {
