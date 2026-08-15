@@ -66,60 +66,14 @@ static int is_sensitive_param(const char *key_lower)
     return 0;
 }
 
-/* Return a malloc'd copy of the first sensitive query-param NAME (the
- * percent-decoded key, matching Python's unquote) if url carries one with a
- * non-empty value; otherwise NULL. Caller frees. */
-char *tools_url_safety_sensitive_query_param_name(const char *url)
-{
-    if (!url || !*url) return NULL;
-    if (!strchr(url, '?')) return NULL;
-
-    /* must be http/https */
-    const char *colon = strchr(url, ':');
-    if (colon && (size_t)(colon - url) < 7) {
-        size_t sl = (size_t)(colon - url);
-        if (sl != 4 && sl != 5) return NULL;
-        if ((sl == 4 && strncmp(url, "http", 4) != 0) ||
-            (sl == 5 && strncmp(url, "https", 5) != 0)) return NULL;
-    } else {
-        return NULL;
-    }
-
-    const char *q = strchr(url, '?');
-    if (!q[1]) return NULL;
-    const char *query = q + 1;
-    size_t qlen = strlen(query);
-    char *buf = malloc(qlen + 1);
-    memcpy(buf, query, qlen + 1);
-
-    char *found = NULL;
-    char *pair = strtok(buf, "&");
-    while (pair && !found) {
-        char *eq = strchr(pair, '=');
-        char *key = pair;
-        char *val = NULL;
-        if (eq) { *eq = '\0'; val = eq + 1; }
-        /* decode key, lowercase */
-        url_pct_decode(key);
-        size_t kl = strlen(key);
-        char *klow = malloc(kl + 1);
-        for (size_t i = 0; i <= kl; i++)
-            klow[i] = (char)tolower((unsigned char)key[i]);
-        int val_nonempty = val && val[0] != '\0';
-        if (is_sensitive_param(klow) && val_nonempty) {
-            found = strdup(key); /* percent-decoded key, matches Python unquote */
-        }
-        free(klow);
-        pair = strtok(NULL, "&");
-    }
-    free(buf);
-    return found;
-}
+/* PoP: sensitive_query_param_name @ tools/url_safety.py:sensitive_query_param_name
+ * Wrapper — canonical implementation is in url_safety.c */
+char *sensitive_query_param_name(const char *url);  /* decl only, impl in url_safety.c */
 
 /* PoP: has_sensitive_query_params */
 bool tools_url_safety_has_sensitive_query_params(const char *url)
 {
-    char *r = tools_url_safety_sensitive_query_param_name(url);
+    char *r = sensitive_query_param_name(url);
     if (r) { free(r); return true; }
     return false;
 }

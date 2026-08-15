@@ -1214,14 +1214,14 @@ void auth_oauth_trace(const char *event, const char *sequence_id, const json_t *
     json_free(payload);
 }
 
-/* _token_fingerprint: reuse auth_token_fingerprint() from auth_helpers.c */
+/* _token_fingerprint: reuse _token_fingerprint() from auth_helpers.c */
 
-/* _optional_base_url: reuse auth_optional_base_url() from auth_helpers.c */
+/* _optional_base_url: reuse _optional_base_url() from auth_helpers.c */
 
 /* PoP: auth_nous_inference_env_override @ hermes_cli/auth.py:_nous_inference_env_override */
 char *auth_nous_inference_env_override(void)
 {
-    return auth_optional_base_url(getenv("NOUS_INFERENCE_BASE_URL"));
+    return _optional_base_url(getenv("NOUS_INFERENCE_BASE_URL"));
 }
 
 /* PoP: auth_nous_portal_env_override @ hermes_cli/auth.py:_nous_portal_env_override */
@@ -1229,7 +1229,7 @@ char *auth_nous_portal_env_override(void)
 {
     const char *v = getenv("HERMES_PORTAL_BASE_URL");
     if (!v || !*v) v = getenv("NOUS_PORTAL_BASE_URL");
-    return auth_optional_base_url(v);
+    return _optional_base_url(v);
 }
 
 /* extract hostname (lowercased) from a URL into buf; returns false on malformed */
@@ -1307,7 +1307,7 @@ void auth_migrate_stale_nous_portal_url(json_t *providers)
 
 /* _parse_iso_timestamp: reuse auth_parse_iso_timestamp() from auth_helpers.c */
 
-/* _is_expiring: reuse auth_is_expiring() from auth_helpers.c */
+/* _is_expiring: reuse _is_expiring() from auth_helpers.c */
 
 /* json_t-input TTL coercer; string form is auth_coerce_ttl_seconds() in auth_helpers.c */
 static int auth_coerce_ttl_seconds_json(const json_t *expires_in)
@@ -1399,7 +1399,7 @@ auth_error_t *auth_assert_nous_inference_jwt_usable(const json_t *state, const c
 void auth_log_nous_invoke_jwt_selected(const char *access_token, const char *sequence_id)
 {
     hermes_log(LOG_INFO, "auth", "Nous inference auth: using NAS invoke JWT");
-    char *fp = auth_token_fingerprint(access_token);
+    char *fp = _token_fingerprint(access_token);
     json_t *fields = json_new_object();
     json_set(fields, "access_token_fp", fp ? json_new_string(fp) : json_null());
     free(fp);
@@ -1717,7 +1717,7 @@ void auth_write_shared_nous_state(const json_t *state)
                 if (wr == (ssize_t)len && rename(tmp, path) == 0) {
                     json_t *fields = json_new_object();
                     json_set(fields, "path", json_new_string(path));
-                    char *fp = auth_token_fingerprint(refresh_token);
+                    char *fp = _token_fingerprint(refresh_token);
                     json_set(fields, "refresh_token_fp",
                              fp ? json_new_string(fp) : json_null());
                     free(fp);
@@ -1830,7 +1830,7 @@ void auth_quarantine_nous_oauth_state(json_t *state, const auth_error_t *error,
     json_set(forensic, "client_id", ci ? json_copy(ci) : json_null());
     json_t *aki = json_obj_get(state, "agent_key_id");
     json_set(forensic, "agent_key_id", aki ? json_copy(aki) : json_null());
-    char *fp = auth_token_fingerprint(json_get_str(state, "refresh_token", NULL));
+    char *fp = _token_fingerprint(json_get_str(state, "refresh_token", NULL));
     json_set(forensic, "refresh_token_fp", fp ? json_new_string(fp) : json_null());
     free(fp);
 

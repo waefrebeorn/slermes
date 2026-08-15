@@ -46,6 +46,7 @@ static int64_t chars_to_tokens(const char *text) {
     return (int64_t)((len + 3) / 4);
 }
 
+/* PoP: json_tokens @ agent/context_breakdown.py:_json_tokens */
 static int64_t json_tokens(const char *json_text) {
     size_t len = json_text ? strlen(json_text) : 0;
     if (len == 0) return 0;

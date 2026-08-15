@@ -1113,8 +1113,8 @@ static void url_safe_urldecode(char *s) {
 
 /* Return malloc'd first sensitive query-param NAME, or NULL.
  * Mirrors sensitive_query_param_name: returns the key (not value). */
-/* PoP: url_safety_sensitive_query_param_name @ tools.url_safety.py:sensitive_query_param_name */
-char *url_safety_sensitive_query_param_name(const char *url) {
+/* PoP: sensitive_query_param_name @ tools/url_safety.py:sensitive_query_param_name */
+char *sensitive_query_param_name(const char *url) {
     if (!url || !*url) return NULL;
     /* find '?' */
     const char *q = strchr(url, '?');
@@ -1167,7 +1167,7 @@ done:
 
 /* PoP: url_safety_has_sensitive_query_params @ tools/url_safety.py:has_sensitive_query_params */
 bool url_safety_has_sensitive_query_params(const char *url) {
-    char *r = url_safety_sensitive_query_param_name(url);
+    char *r = sensitive_query_param_name(url);
     bool has = (r != NULL);
     free(r);
     return has;

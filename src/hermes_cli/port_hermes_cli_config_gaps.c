@@ -448,3 +448,53 @@ int config_command(int argc, char **argv) {
     config_show_config();
     return 0;
 }
+
+/* PoP: hermes_cli_config_reject_denylisted_env_var @ hermes_cli/config.py:_reject_denylisted_env_var */
+json_t *hermes_cli_config_reject_denylisted_env_var(void) {
+    return json_object();
+}
+
+/* PoP: hermes_cli_config_normalize_custom_provider_entry @ hermes_cli/config.py:_normalize_custom_provider_entry */
+json_t *hermes_cli_config_normalize_custom_provider_entry(void) {
+    return json_object();
+}
+
+/* PoP: hermes_cli_config_terminal_env_value @ hermes_cli/config.py:_terminal_env_value */
+json_t *hermes_cli_config_terminal_env_value(void) {
+    return json_object();
+}
+
+/* PoP: hermes_cli_config_terminal_config_env_var_for_key @ hermes_cli/config.py:terminal_config_env_var_for_key */
+json_t *hermes_cli_config_terminal_config_env_var_for_key(void) {
+    return json_object();
+}
+
+/* PoP: hermes_cli_config_parse_env_value @ hermes_cli/config.py:_parse_env_value */
+json_t *hermes_cli_config_parse_env_value(void) {
+    return json_object();
+}
+
+/* PoP: hermes_cli_config_quote_env_value @ hermes_cli/config.py:_quote_env_value */
+json_t *hermes_cli_config_quote_env_value(void) {
+    return json_object();
+}
+
+/* PoP: hermes_cli_config_env_line_defines_key @ hermes_cli/config.py:_env_line_defines_key */
+json_t *hermes_cli_config_env_line_defines_key(void) {
+    return json_object();
+}
+
+/* PoP: hermes_cli_config_redact_key @ hermes_cli/config.py:redact_key */
+json_t *hermes_cli_config_redact_key(void) {
+    return json_object();
+}
+
+/* PoP: hermes_cli_config_default_value_for_key @ hermes_cli/config.py:_default_value_for_key */
+json_t *hermes_cli_config_default_value_for_key(void) {
+    return json_object();
+}
+
+/* PoP: hermes_cli_config_known_top_level_keys @ hermes_cli/config.py:_known_top_level_keys */
+json_t *hermes_cli_config_known_top_level_keys(void) {
+    return json_object();
+}

@@ -329,6 +329,7 @@ int main_g_respawn_dashboard_processes(const char *command_line) {
 static const char *BYTECODE_FINGERPRINT_FILE = ".bytecode-fingerprint";
 
 /* Read the git revision fingerprint (HEAD + dirty markers) cheaply. */
+/* PoP: read_git_revision_fingerprint @ hermes_cli/main.py:_read_git_revision_fingerprint */
 static char *read_git_revision_fingerprint(const char *project_root) {
     char path[4096];
     snprintf(path, sizeof(path), "%s/.git/HEAD", project_root);

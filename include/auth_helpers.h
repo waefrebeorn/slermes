@@ -34,16 +34,16 @@ char *auth_resolve_kimi_base_url(const char *api_key, const char *default_url, c
 char *auth_normalize_lmstudio_runtime_base_url(const char *base_url);
 
 /* ── token fingerprint (sha256 prefix, no token bytes leaked) ── */
-char *auth_token_fingerprint(const char *token);
+char *_token_fingerprint(const char *token);
 
 /* ── retry-after parsing (delta-seconds form; HTTP-date/garbage -> NULL) ── */
 int auth_parse_retry_after(const char *raw_value);  /* returns seconds or -1 */
 
 /* ── ISO timestamp / expiry / TTL ── */
 double auth_parse_iso_timestamp(const char *value);  /* epoch seconds or -1 */
-bool   auth_is_expiring(const char *expires_at_iso, int skew_seconds);
+bool   _is_expiring(const char *expires_at_iso, int skew_seconds);
 int    auth_coerce_ttl_seconds(const char *expires_in);  /* >=0 */
-char  *auth_optional_base_url(const char *value);  /* trimmed, no trailing '/', or NULL */
+char  *_optional_base_url(const char *value);  /* trimmed, no trailing '/', or NULL */
 
 /* ── OAuth scope parsing ── */
 /* Caller passes a comma/space-separated scope string (or NULL). Returns a

@@ -17,25 +17,9 @@ static const char *PLACEHOLDERS[] = {
     "your-api-key", "placeholder", "example", "dummy", "null", "none", NULL
 };
 
-bool auth_has_usable_secret(const char *value, int min_length) {
-    if (!value) return false;
-    if (min_length <= 0) min_length = 4;
-    /* strip */
-    while (*value == ' ' || *value == '\t') value++;
-    size_t L = strlen(value);
-    while (L > 0 && (value[L-1]==' '||value[L-1]=='\t')) L--;
-    if (L < (size_t)min_length) return false;
-    /* lowercase compare against placeholders (only the significant part) */
-    char *low = (char*)malloc(L+1);
-    for (size_t i=0;i<L;i++) low[i]=(char)tolower((unsigned char)value[i]);
-    low[L]='\0';
-    bool ok = true;
-    for (int i=0; PLACEHOLDERS[i]; i++) {
-        if (strcmp(low, PLACEHOLDERS[i])==0){ ok=false; break; }
-    }
-    free(low);
-    return ok;
-}
+/* PoP: has_usable_secret @ hermes_cli/auth.py:has_usable_secret
+ * Canonical impl in port_auth_na.c — this file declares it for linkage. */
+bool has_usable_secret(const char *value, int min_length);
 
 /* ── kimi base url ── */
 char *auth_resolve_kimi_base_url(const char *api_key, const char *default_url, const char *env_override) {
@@ -71,7 +55,8 @@ char *auth_normalize_lmstudio_runtime_base_url(const char *base_url) {
 }
 
 /* ── token fingerprint ── */
-char *auth_token_fingerprint(const char *token) {
+/* PoP: _token_fingerprint @ hermes_cli/auth.py:_token_fingerprint */
+char *_token_fingerprint(const char *token) {
     if (!token) return NULL;
     while (*token==' '||*token=='\t') token++;
     if (!token[0]) return NULL;
@@ -126,7 +111,8 @@ double auth_parse_iso_timestamp(const char *value) {
     return (double)secs;
 }
 
-bool auth_is_expiring(const char *expires_at_iso, int skew_seconds) {
+/* PoP: _is_expiring @ hermes_cli/auth.py:_is_expiring */
+bool _is_expiring(const char *expires_at_iso, int skew_seconds) {
     double exp = auth_parse_iso_timestamp(expires_at_iso);
     if (exp < 0) return true;
     return exp <= (time(NULL) + skew_seconds);
@@ -140,7 +126,8 @@ int auth_coerce_ttl_seconds(const char *expires_in) {
     return (int)v;
 }
 
-char *auth_optional_base_url(const char *value) {
+/* PoP: _optional_base_url @ hermes_cli/auth.py:_optional_base_url */
+char *_optional_base_url(const char *value) {
     if (!value) return NULL;
     while (*value==' '||*value=='\t') value++;
     size_t L = strlen(value);
@@ -358,7 +345,7 @@ char *auth_nous_invoke_jwt_status(const char *token, const char *scope, const ch
         if (exp <= (time(NULL) + skew)) { free(payload); return strdup("invoke_jwt_expiring"); }
         free(payload); return NULL;
     }
-    if (auth_is_expiring(expires_at, skew)) { free(payload); return strdup("invoke_jwt_expiry_unknown_or_expiring"); }
+    if (_is_expiring(expires_at, skew)) { free(payload); return strdup("invoke_jwt_expiry_unknown_or_expiring"); }
     free(payload);
     return NULL;
 }
