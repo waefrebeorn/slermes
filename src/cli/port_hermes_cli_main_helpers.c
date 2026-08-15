@@ -32,7 +32,7 @@ static void join_path(char *out, size_t sz, const char *a, const char *b)
 /*
  * Look up a ref in .git/packed-refs without spawning git.
  * Returns malloc'd sha, or NULL. Caller frees. */
-char *read_packed_ref(const char *common_dir, const char *ref)
+char *_read_packed_ref(const char *common_dir, const char *ref)
 {
     if (!common_dir || !ref) return NULL;
     char path[PATH_MAX];
@@ -139,7 +139,7 @@ char *read_git_revision_fingerprint(const char *repo_root)
             }
         }
         /* Packed ref */
-        char *packed = read_packed_ref(common_dir, ref);
+        char *packed = _read_packed_ref(common_dir, ref);
         if (packed) {
             char *out = malloc(strlen(ref)+strlen(packed)+8);
             sprintf(out, "git:%s:%s", ref, packed);
@@ -202,7 +202,7 @@ char *workspace_root(const char *dir)
 
 /*
  * Returns container memory limit in bytes, or -1 if unconstrained/unavailable. */
-long read_cgroup_memory_limit(void)
+long _read_cgroup_memory_limit(void)
 {
     const char *candidates[2] = {
         "/sys/fs/cgroup/memory.max",            /* cgroup v2 */
@@ -231,7 +231,7 @@ long read_cgroup_memory_limit(void)
 /*
  * Reads a JSON file and extracts the "session_id" field. Returns malloc'd
  * session id, or NULL. Caller frees. */
-char *read_tui_active_session_file(const char *path)
+char *_read_tui_active_session_file(const char *path)
 {
     if (!path) return NULL;
     FILE *f = fopen(path, "r");
@@ -314,7 +314,7 @@ const char *infer_stepfun_region(const char *base_url)
 
 /*
  * Returns the StepFun base URL for a region. Caller must NOT free (static). */
-const char *stepfun_base_url_for_region(const char *region)
+const char *_stepfun_base_url_for_region(const char *region)
 {
     /* Mirror the Python STEPFUN_STEP_PLAN_*_BASE_URL constants. */
     static const char *CN  = "https://api.stepfun.com/v1";
@@ -325,7 +325,7 @@ const char *stepfun_base_url_for_region(const char *region)
 
 /*
  * Returns 1 when the invocation is a TUI chat launch (flag or env). */
-int is_tui_chat_launch(int tui_flag, const char *hermes_tui_env)
+int _is_tui_chat_launch(int tui_flag, const char *hermes_tui_env)
 {
     if (tui_flag) return 1;
     return (hermes_tui_env && strcmp(hermes_tui_env, "1") == 0) ? 1 : 0;
@@ -354,7 +354,7 @@ int is_android_python(void)
 /*
  * Generate a display name from a custom endpoint URL.
  * Returns malloc'd name. Caller frees. */
-char *auto_provider_name(const char *base_url)
+char *_auto_provider_name(const char *base_url)
 {
     if (!base_url) return strdup("");
     char tmp[256];
@@ -438,7 +438,7 @@ char **coalesce_session_name_args(const char *const *argv, int argc, int *out_ar
 /*
  * Return the first non-flag, non-flag-value token in argv[1:].
  * Returns malloc'd string, or NULL if none. Caller frees. */
-char *first_positional_argv(const char *const *argv, int argc)
+char *_first_positional_argv(const char *const *argv, int argc)
 {
     /* Top-level flags that consume a following value. */
     static const char *VALUE_FLAGS[] = {
@@ -480,7 +480,7 @@ static void edc_add(char ***out, int *n, int *cap, const char *d)
     (*out)[(*n)++] = strdup(d);
 }
 
-char **electron_download_cache_dirs(int *out_count)
+char **_electron_download_cache_dirs(int *out_count)
 {
     char **out = NULL;
     int n = 0, cap = 0;

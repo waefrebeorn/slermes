@@ -383,7 +383,7 @@ int resolve_rate_limit_cooldown_seconds(void)
 
 /*
  * Returns malloc'd coarse age string. Caller frees. */
-char *relative_age(long ts, long now)
+char *_relative_age(long ts, long now)
 {
     if (ts <= 0) return strdup("");
     if (now <= 0) now = (long)time(NULL);
@@ -397,7 +397,7 @@ char *relative_age(long ts, long now)
 
 /*
  * Returns malloc'd normalized slug or NULL (invalid/empty). Caller frees. */
-char *normalize_board_slug(const char *slug)
+char *_normalize_board_slug(const char *slug)
 {
     if (!slug) return NULL;
     char s[128];
@@ -470,7 +470,7 @@ char *get_current_board(void)
     /* 1. HERMES_KANBAN_BOARD env (must be valid + exist) */
     const char *env = getenv("HERMES_KANBAN_BOARD");
     if (env && env[0]) {
-        char *normed = normalize_board_slug(env);
+        char *normed = _normalize_board_slug(env);
         if (normed) {
             if (kanban_board_exists(normed)) return normed;
             free(normed);
@@ -486,7 +486,7 @@ char *get_current_board(void)
             fclose(f);
             size_t n = strlen(buf);
             while (n > 0 && (buf[n-1]=='\n'||buf[n-1]=='\r'||buf[n-1]==' '||buf[n-1]=='\t')) buf[--n]=0;
-            char *normed = normalize_board_slug(buf);
+            char *normed = _normalize_board_slug(buf);
             if (normed) {
                 if (kanban_board_exists(normed)) return normed;
                 free(normed);
@@ -504,7 +504,7 @@ char *get_current_board(void)
 /* PoP: set_current_board @ hermes_cli/kanban_db.py:set_current_board */
 int set_current_board(const char *slug)
 {
-    char *normed = normalize_board_slug(slug);
+    char *normed = _normalize_board_slug(slug);
     if (!normed) return -1;
     char *cp = kanban_current_board_path();
     char dir[PATH_MAX];
@@ -524,7 +524,7 @@ int set_current_board(const char *slug)
 /* ===========================================================================
  *  Additional Kanban path / string / sqlite helpers
  *  Ported from hermes_cli/kanban_db.py (faithful; reuse kanban_home,
- *  kanban_boards_root, normalize_board_slug, kanban_board_exists,
+ *  kanban_boards_root, _normalize_board_slug, kanban_board_exists,
  *  get_current_board already ported above).
  * =========================================================================== */
 
@@ -533,7 +533,7 @@ int set_current_board(const char *slug)
 /* PoP: board_dir @ hermes_cli/kanban_db.py:board_dir */
 char *board_dir(const char *board)
 {
-    char *slug = normalize_board_slug(board);
+    char *slug = _normalize_board_slug(board);
     if (!slug) slug = strdup(KB_DEFAULT_BOARD);
     char *br = kanban_boards_root();
     char out[PATH_MAX];
@@ -547,7 +547,7 @@ char *board_dir(const char *board)
  * PoP: board_exists @ hermes_cli/kanban_db.py:board_exists */
 int board_exists(const char *board)
 {
-    char *slug = normalize_board_slug(board);
+    char *slug = _normalize_board_slug(board);
     if (!slug) slug = strdup(KB_DEFAULT_BOARD);
     int r = kanban_board_exists(slug);
     free(slug);
@@ -561,7 +561,7 @@ char *kanban_db_path(const char *board)
 {
     const char *override = getenv("HERMES_KANBAN_DB");
     if (override && override[0]) return strdup(override);
-    char *slug = normalize_board_slug(board);
+    char *slug = _normalize_board_slug(board);
     if (!slug) slug = get_current_board();   /* may return a fresh malloc */
     char out[PATH_MAX];
     if (strcmp(slug, KB_DEFAULT_BOARD) == 0) {
@@ -600,7 +600,7 @@ char *workspaces_root(const char *board)
 {
     const char *override = getenv("HERMES_KANBAN_WORKSPACES_ROOT");
     if (override && override[0]) return strdup(override);
-    char *slug = normalize_board_slug(board);
+    char *slug = _normalize_board_slug(board);
     if (!slug) slug = get_current_board();
     char out[PATH_MAX];
     if (strcmp(slug, KB_DEFAULT_BOARD) == 0) {
@@ -623,7 +623,7 @@ char *attachments_root(const char *board)
 {
     const char *override = getenv("HERMES_KANBAN_ATTACHMENTS_ROOT");
     if (override && override[0]) return strdup(override);
-    char *slug = normalize_board_slug(board);
+    char *slug = _normalize_board_slug(board);
     if (!slug) slug = get_current_board();
     char out[PATH_MAX];
     if (strcmp(slug, KB_DEFAULT_BOARD) == 0) {
@@ -656,7 +656,7 @@ char *task_attachments_dir(const char *task_id, const char *board)
 /* PoP: worker_logs_dir @ hermes_cli/kanban_db.py:worker_logs_dir */
 char *worker_logs_dir(const char *board)
 {
-    char *slug = normalize_board_slug(board);
+    char *slug = _normalize_board_slug(board);
     if (!slug) slug = get_current_board();
     char out[PATH_MAX];
     if (strcmp(slug, KB_DEFAULT_BOARD) == 0) {
@@ -677,7 +677,7 @@ char *worker_logs_dir(const char *board)
 /* PoP: board_metadata_path @ hermes_cli/kanban_db.py:board_metadata_path */
 char *board_metadata_path(const char *board)
 {
-    char *slug = normalize_board_slug(board);
+    char *slug = _normalize_board_slug(board);
     if (!slug) slug = strdup(KB_DEFAULT_BOARD);
     char *bd = board_dir(slug);
     char out[PATH_MAX];
@@ -689,7 +689,7 @@ char *board_metadata_path(const char *board)
 
 /*
  * Turns "atm10-server" -> "Atm10 Server". Returns malloc'd string. Caller frees. */
-char *default_board_display_name(const char *slug)
+char *_default_board_display_name(const char *slug)
 {
     /* Replace '_' with '-', split on '-', capitalize each part, join with space. */
     char tmp[256];
@@ -812,7 +812,7 @@ int looks_like_tls_record_at(const unsigned char *data, size_t len, size_t offse
 /*
  * Returns 1 if path is absent/empty/sqlite-header, 0 if a non-empty
  * non-sqlite file (caller should error). */
-int validate_sqlite_header(const char *path)
+int _validate_sqlite_header(const char *path)
 {
     struct stat st;
     if (stat(path, &st) != 0) return 1;          /* absent => OK (sqlite creates it) */
@@ -829,7 +829,7 @@ int validate_sqlite_header(const char *path)
 /*
  * Normalises an error string for grouping identical failures.
  * Returns malloc'd fingerprint (lowercased, host details stripped). Caller frees. */
-char *error_fingerprint(const char *error_text)
+char *_error_fingerprint(const char *error_text)
 {
     if (!error_text) return strdup("");
     char buf[128];
@@ -889,7 +889,7 @@ char *rotated_log_path(const char *log_path, int generation)
 
 /*
  * Returns 1 when a command override is an explicit path, not a name. */
-int looks_like_path(const char *value)
+int _looks_like_path(const char *value)
 {
     if (!value || !value[0]) return 0;
     /* ~ expansion is best-effort; we check leading '~', absolute, has dirname,

@@ -243,6 +243,7 @@ char *file_tools_configured_terminal_cwd(void)
  * --------------------------------------------------------------------------- */
 /* PoP: file_tools_authoritative_workspace_root @ tools/file_tools.py:_authoritative_workspace_root */
 /* Best-effort absolute workspace root for divergence checks. Caller frees. */
+/* PoP: file_tools_authoritative_workspace_root @ hermes_cli/main.py:_workspace_root */
 char *file_tools_authoritative_workspace_root(const char *task_id)
 {
     (void)task_id;

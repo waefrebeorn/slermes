@@ -15,15 +15,15 @@
  *   partition_nous_models_by_tier_json      <- partition_nous_models_by_tier
  *   extract_model_name                      <- _extract_model_name
  *   format_price_per_mtok                   <- _format_price_per_mtok
- *   base_url_looks_like_anthropic_messages  <- _base_url_looks_like_anthropic_messages
- *   anthropic_models_url                    <- _anthropic_models_url
+ *   _base_url_looks_like_anthropic_messages  <- _base_url_looks_like_anthropic_messages
+ *   _anthropic_models_url                    <- _anthropic_models_url
  *   strip_vendor_prefix                     <- _strip_vendor_prefix
- *   is_openai_fast_model                    <- _is_openai_fast_model
+ *   _is_openai_fast_model                    <- _is_openai_fast_model
  *   is_anthropic_fast_model                 <- _is_anthropic_fast_model
  *   model_supports_fast_mode                <- model_supports_fast_mode
  *   fast_mode_overrides_json                <- resolve_fast_mode_overrides
  *   openrouter_model_is_free                <- _openrouter_model_is_free
- *   strip_ollama_cloud_suffix               <- _strip_ollama_cloud_suffix
+ *   _strip_ollama_cloud_suffix               <- _strip_ollama_cloud_suffix
  *   is_github_models_base_url               <- _is_github_models_base_url
  *   lmstudio_server_root                    <- _lmstudio_server_root
  *   credential_fingerprint                  <- _credential_fingerprint
@@ -259,7 +259,7 @@ static int url_has_scheme_host(const char *u)
 
 /*
  * True if normalized path ends with /anthropic or /anthropic/v1. */
-int base_url_looks_like_anthropic_messages(const char *base_url)
+int _base_url_looks_like_anthropic_messages(const char *base_url)
 {
     if (!base_url || !base_url[0]) return 0;
     char buf[1024];
@@ -284,7 +284,7 @@ int base_url_looks_like_anthropic_messages(const char *base_url)
 
 /*
  * Append /v1/models or /models to a base URL. Returns malloc'd string. */
-char *anthropic_models_url(const char *base_url)
+char *_anthropic_models_url(const char *base_url)
 {
     const char *ep = base_url && base_url[0] ? base_url : "https://api.anthropic.com";
     char buf[1024];
@@ -324,7 +324,7 @@ char *strip_vendor_prefix(const char *model_id)
 
 /*
  * PoP: _is_openai_fast_model @ hermes_cli/models.py:_is_openai_fast_model */
-int is_openai_fast_model(const char *model_id)
+int _is_openai_fast_model(const char *model_id)
 {
     char *raw = strip_vendor_prefix(model_id);
     char *base = strdup(raw);
@@ -363,7 +363,7 @@ int is_anthropic_fast_model(const char *model_id)
  * PoP: model_supports_fast_mode @ hermes_cli/models.py:model_supports_fast_mode */
 int model_supports_fast_mode(const char *model_id)
 {
-    return is_anthropic_fast_model(model_id) || is_openai_fast_model(model_id);
+    return is_anthropic_fast_model(model_id) || _is_openai_fast_model(model_id);
 }
 
 /*
@@ -399,7 +399,7 @@ int openrouter_model_is_free(const char *pricing_json)
 
 /*
  * Strip :cloud / -cloud suffix. Returns malloc'd string. Caller frees. */
-char *strip_ollama_cloud_suffix(const char *model_id)
+char *_strip_ollama_cloud_suffix(const char *model_id)
 {
     if (!model_id) return strdup("");
     size_t L = strlen(model_id);

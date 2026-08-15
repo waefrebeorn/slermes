@@ -57,6 +57,7 @@ const char *VALID_ASPECT_RATIOS[] = {
 /* ================================================================== */
 
 /* AG26: Port of Python agent/image_gen_provider.py:resolve_aspect_ratio() */
+/* PoP: image_gen_resolve_aspect_ratio @ agent/image_gen_provider.py:resolve_aspect_ratio */
 const char *image_gen_resolve_aspect_ratio(const char *value) {
     if (!value || !value[0]) return DEFAULT_ASPECT_RATIO;
 

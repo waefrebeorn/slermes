@@ -10,6 +10,7 @@
 
 /* ── agent/retry_utils.py:parse_retry_after_seconds ── */
 /* PoP: retry_parse_retry_after_seconds @ agent/retry_utils.py:parse_retry_after_seconds */
+/* PoP: retry_parse_retry_after_seconds @ hermes_cli/auth.py:_parse_retry_after_seconds */
 double retry_parse_retry_after_seconds(const char *raw, bool *ok) {
     if (!raw || !*raw) { if (ok) *ok = false; return 0.0; }
     char *end = NULL;

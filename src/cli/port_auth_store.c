@@ -1,7 +1,7 @@
 /*
  * port_auth_store.c — auth.json persistence layer ported from hermes_cli/auth.py.
  * See include/port_auth_store.h for the API surface. C11, opaque txn struct,
- * minimal includes. Reuses: auth_file_path/global_auth_file_path/has_usable_secret
+ * minimal includes. Reuses: auth_file_path/_global_auth_file_path/has_usable_secret
  * (port_auth_na.c), auth_helpers (JWT/scope/expiry), provider_registry,
  * config_py_* (config.yaml IO), sanitize_borrowed_credential_payload,
  * _parse_absolute_timestamp/_exhausted_ttl (credential_pool internals).
@@ -28,7 +28,7 @@
 
 /* ── external reuse (port_auth_na.c) ── */
 extern char *auth_file_path(void);           /* malloc'd <home>/auth.json */
-extern char *global_auth_file_path(void);    /* malloc'd or NULL */
+extern char *_global_auth_file_path(void);    /* malloc'd or NULL */
 extern int   has_usable_secret(const char *value, int min_length);
 /* port_config_py_io.c */
 extern json_t *config_py_read_raw_config(void);
@@ -275,7 +275,7 @@ json_t *authstore_load(const char *auth_file)
 /* PoP: authstore_load_global @ hermes_cli/auth.py:_load_global_auth_store */
 json_t *authstore_load_global(void)
 {
-    char *gpath = global_auth_file_path();
+    char *gpath = _global_auth_file_path();
     if (!gpath) return json_new_object();
     struct stat st;
     if (stat(gpath, &st) != 0) { free(gpath); return json_new_object(); }
@@ -364,7 +364,7 @@ json_t *authstore_load_provider_state_with_source(json_t *auth_store, const char
         }
     }
 
-    char *gpath = global_auth_file_path();
+    char *gpath = _global_auth_file_path();
     json_t *gstore = authstore_load_global();
     if (gstore) {
         json_t *gproviders = json_obj_get(gstore, "providers");

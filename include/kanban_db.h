@@ -12,9 +12,9 @@
  *
  * Reuses (no duplication):
  *   - path/config helpers already in src/cli/port_kanban_db.c
- *     (kanban_db_path, kanban_home, board_dir, normalize_board_slug,
- *      board_exists, kanban_board_exists, to_epoch, relative_age,
- *      error_fingerprint, looks_like_path, is_windows_batch_shim, ...)
+ *     (kanban_db_path, kanban_home, board_dir, _normalize_board_slug,
+ *      board_exists, kanban_board_exists, to_epoch, _relative_age,
+ *      _error_fingerprint, _looks_like_path, is_windows_batch_shim, ...)
  *   - src/hermes_cli/sqlite_util.{c,h} (add_column_if_missing, write_txn)
  *   - lib/libdb/sqlite3.c (bundled SQLite)
  *   - lib/libjson via hermes_json.h (json_t shim)
@@ -474,7 +474,7 @@ char *kanban_db_path(const char *board);
 char *board_dir(const char *board);          /* <home>/kanban/boards/<slug>/  */
 char *kanban_boards_root(void);              /* <home>/kanban/boards          */
 char *board_metadata_path(const char *board);/* board_dir(slug)/board.json    */
-char *normalize_board_slug(const char *slug);
+char *_normalize_board_slug(const char *slug);
 char *get_current_board(void);
 #define KB_DEFAULT_BOARD "default"
 
@@ -527,7 +527,7 @@ int  profile_exists(const char *name);
 char *worker_logs_dir(const char *board);
 
 /* True when `value` is an explicit filesystem path, not a bare command name. */
-int  looks_like_path(const char *value);
+int  _looks_like_path(const char *value);
 
 /* True for Windows .cmd/.bat shims (unsafe as argv[0]). */
 int  is_windows_batch_shim(const char *path);
@@ -539,13 +539,13 @@ int  resolve_crash_grace_seconds(void);
 int  resolve_rate_limit_cooldown_seconds(void);
 
 /* malloc'd coarse relative-age string ("3h ago"). Caller frees. */
-char *relative_age(long ts, long now);
+char *_relative_age(long ts, long now);
 
 /* Parse an int/numeric/ISO8601 timestamp to epoch seconds, or -1. */
 long to_epoch(const char *val);
 
 /* Normalize an error message for grouping (strip pid/ts). Caller frees. */
-char *error_fingerprint(const char *error_text);
+char *_error_fingerprint(const char *error_text);
 
 /* =========================================================================
  * Utilities  (kanban_util.c)  — portable DB/logic helpers

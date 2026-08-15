@@ -15,7 +15,7 @@
  *   config_normalize_max_turns   (port_config_pure.c  = _normalize_max_turns_config)
  *   normalize_custom_provider_entry_json (port_config_helpers.c = _normalize_custom_provider_entry)
  *   coerce_ssl_verify / coerce_config_version / is_env_config_key /
- *   format_config_get_value / validate_config_key (port_config_helpers.c)
+ *   format_config_get_value / _validate_config_key (port_config_helpers.c)
  */
 
 #ifndef PORT_CONFIG_PY_HELPERS_H
@@ -38,7 +38,7 @@ char *normalize_custom_provider_entry_json(const char *entry_json, const char *p
 int  coerce_ssl_verify(const char *value, int is_bool, int bool_val);
 int  coerce_config_version(const char *value, int is_bool);
 bool is_env_config_key(const char *key);
-bool validate_config_key(const char *key, char *suggestion, size_t sug_size);
+bool _validate_config_key(const char *key, char *suggestion, size_t sug_size);
 void format_config_get_value(const char *value, int as_json, char *out, size_t out_size);
 
 /* ===================================================================
@@ -67,7 +67,7 @@ bool config_is_env_config_key(const char *key);
 /* PoP: _format_config_get_value @ hermes_cli/config.py:_format_config_get_value */
 void config_format_config_get_value(const char *value, int as_json, char *out, size_t out_size);
 
-/* _suggest_closest_key — thin wrapper over validate_config_key. */
+/* _suggest_closest_key — thin wrapper over _validate_config_key. */
 /* PoP: _suggest_closest_key @ hermes_cli/config.py:_suggest_closest_key */
 bool config_suggest_closest_key(const char *key, char *suggestion, size_t sug_size);
 

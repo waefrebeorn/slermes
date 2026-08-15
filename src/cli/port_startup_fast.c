@@ -41,6 +41,7 @@ static void sf_resolve_home(char *buf, size_t bufsize)
 /* ------------------------------------------------------------------ */
 
 /* PoP: sf_is_termux_env @ hermes_cli/_startup_fast.py:is_termux_env */
+/* PoP: sf_is_termux_env @ hermes_cli/main.py:_is_termux_env */
 bool sf_is_termux_env(void)
 {
     const char *termux_version = getenv("TERMUX_VERSION");

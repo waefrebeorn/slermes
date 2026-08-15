@@ -262,6 +262,7 @@ void desktop_notify_info(const char *title, const char *message) {
     desktop_notify(NOTIFY_INFO, title, message);
 }
 
+/* PoP: desktop_notify_success @ hermes_cli/mcp_config.py:_success */
 void desktop_notify_success(const char *title, const char *message) {
     desktop_notify(NOTIFY_SUCCESS, title, message);
 }

@@ -291,6 +291,7 @@ static const fal_model_t *fal_find_model(const char *model_id)
 /* ---------------------------------------------------------------------------
  * --------------------------------------------------------------------------- */
 
+/* PoP: image_gen_resolve_managed_fal_gateway @ tools/image_generation_tool.py:_resolve_managed_fal_gateway */
 json_t *image_gen_resolve_managed_fal_gateway(void)
 {
     hermes_log(LOG_DEBUG, "port", "image_gen_resolve_managed_fal_gateway called");
@@ -327,6 +328,7 @@ json_t *image_gen_resolve_managed_fal_gateway(void)
 /* ---------------------------------------------------------------------------
  * --------------------------------------------------------------------------- */
 
+/* PoP: image_gen_submit_fal_request @ tools/image_generation_tool.py:_submit_fal_request */
 json_t *image_gen_submit_fal_request(const char *model, json_t *arguments)
 {
     if (!model || !arguments) {
@@ -562,7 +564,7 @@ json_t *image_gen_resolve_fal_model(void)
 /* ---------------------------------------------------------------------------
  * --------------------------------------------------------------------------- */
 
-json_t *image_gen_build_fal_payload(const char *model_id, const char *prompt,
+json_t *_build_fal_payload(const char *model_id, const char *prompt,
                                      const char *aspect_ratio, int seed,
                                      json_t *overrides)
 {
@@ -686,6 +688,7 @@ json_t *image_gen_upscale_image(const char *image_url, const char *original_prom
 /* ---------------------------------------------------------------------------
  * --------------------------------------------------------------------------- */
 
+/* PoP: image_gen_active_terminal_env @ tools/image_generation_tool.py:_active_terminal_env */
 json_t *image_gen_active_terminal_env(const char *task_id)
 {
     /* In Python this calls tools.terminal_tool.get_active_env(task_id or "default")
@@ -721,6 +724,7 @@ json_t *image_gen_active_terminal_env(const char *task_id)
 /* ---------------------------------------------------------------------------
  * --------------------------------------------------------------------------- */
 
+/* PoP: image_gen_agent_cache_base_for_env @ tools/image_generation_tool.py:_agent_cache_base_for_env */
 char *image_gen_agent_cache_base_for_env(json_t *env)
 {
     if (env) {
@@ -815,6 +819,7 @@ char *image_gen_agent_visible_cache_path(const char *host_path, json_t *env)
 /* ---------------------------------------------------------------------------
  * --------------------------------------------------------------------------- */
 
+/* PoP: image_gen_force_artifact_sync @ tools/image_generation_tool.py:_force_artifact_sync */
 void image_gen_force_artifact_sync(json_t *env)
 {
     if (!env) return;
@@ -834,6 +839,7 @@ void image_gen_force_artifact_sync(json_t *env)
 /* ---------------------------------------------------------------------------
  * --------------------------------------------------------------------------- */
 
+/* PoP: image_gen_postprocess_image_generate_result @ tools/image_generation_tool.py:_postprocess_image_generate_result */
 char *image_gen_postprocess_image_generate_result(const char *raw, const char *task_id)
 {
     if (!raw) return strdup("");
@@ -996,6 +1002,7 @@ char *image_gen_normalize_krea_model(const char *model_id)
 /* ---------------------------------------------------------------------------
  * --------------------------------------------------------------------------- */
 
+/* PoP: image_gen_is_krea_model @ tools/image_generation_tool.py:is_krea_model */
 bool image_gen_is_krea_model(const char *model_id)
 {
     return image_gen_normalize_krea_model(model_id) != NULL;
@@ -1004,7 +1011,7 @@ bool image_gen_is_krea_model(const char *model_id)
 /* ---------------------------------------------------------------------------
  * --------------------------------------------------------------------------- */
 
-json_t *image_gen_maybe_route_managed_krea(const char *prompt, const char *aspect_ratio,
+json_t *_maybe_route_managed_krea(const char *prompt, const char *aspect_ratio,
                                             const char *image_url, json_t *reference_image_urls)
 {
     /* In Python this checks:
@@ -1110,7 +1117,7 @@ char *image_gen_handle_image_generate(json_t *args, json_t *kw)
     }
 
     /* Try managed Krea routing */
-    json_t *krea_routed = image_gen_maybe_route_managed_krea(
+    json_t *krea_routed = _maybe_route_managed_krea(
         prompt, aspect_ratio, image_url, reference_image_urls);
     if (krea_routed) {
         char *processed = image_gen_postprocess_image_generate_result(
@@ -1148,7 +1155,7 @@ char *image_gen_handle_image_generate(json_t *args, json_t *kw)
     }
 
     /* Build payload */
-    json_t *payload = image_gen_build_fal_payload(model_id, prompt, aspect_ratio, -1, NULL);
+    json_t *payload = _build_fal_payload(model_id, prompt, aspect_ratio, -1, NULL);
     if (json_object_get(payload, "error")) {
         json_free(model_info);
         char *raw = json_dumps(payload, 0);
@@ -1260,6 +1267,7 @@ bool image_gen_check_fal_api_key(void)
 /* ---------------------------------------------------------------------------
  * --------------------------------------------------------------------------- */
 
+/* PoP: image_gen_build_no_backend_setup_message @ tools/image_generation_tool.py:_build_no_backend_setup_message */
 char *image_gen_build_no_backend_setup_message(void)
 {
     const char *managed_str = getenv("HERMES_MANAGED_NOUS_TOOLS_ENABLED");
@@ -1364,14 +1372,14 @@ char *build_dynamic_image_schema(void)
     return json_dumps(schema, 0);
 }
 
-char *build_fal_edit_payload(const char *model_id, const char *prompt,
+char *_build_fal_edit_payload(const char *model_id, const char *prompt,
                               const char *image_urls, double aspect_ratio,
                               const char *seed, const char *overrides)
 {
     (void)model_id; (void)prompt; (void)image_urls; (void)aspect_ratio;
     (void)seed; (void)overrides;
     hermes_log(LOG_WARNING, "port",
-        "build_fal_edit_payload: deprecated; use image_gen_build_fal_edit_payload");
+        "_build_fal_edit_payload: deprecated; use image_gen_build_fal_edit_payload");
     return strdup("{\"error\": \"use image_gen_build_fal_edit_payload\"}");
 }
 

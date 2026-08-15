@@ -5,7 +5,7 @@
  * migrations, and provide the write-transaction primitives. Reuses
  * sqlite_util (add_column_if_missing, write_txn) and the path/config
  * helpers already ported in src/cli/port_kanban_db.c (kanban_db_path,
- * get_current_board, board_exists, kanban_board_exists, normalize_board_slug).
+ * get_current_board, board_exists, kanban_board_exists, _normalize_board_slug).
  *
  * Minimal includes: only what this TU needs. No god header.
  *
@@ -29,7 +29,7 @@
 char *kanban_db_path(const char *board);
 char *get_current_board(void);
 int   board_exists(const char *board);
-char *normalize_board_slug(const char *slug);
+char *_normalize_board_slug(const char *slug);
 extern int resolve_busy_timeout_ms(void);   /* defined in port_kanban_db.c */
 
 /* The full v1 schema (mirrors SCHEMA_SQL in the Python module). */

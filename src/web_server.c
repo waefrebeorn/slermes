@@ -3175,8 +3175,8 @@ static void send_json(int fd) {
 static const char *WS_GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
 /* Encode a WebSocket frame with text opcode (0x01), masked bit clear, no mask */
-/* PoP: ws_send_text @ gateway/platforms/yuanbao.py:send_text */
-static void ws_send_text(int fd, const char *msg) {
+/* PoP: send_text @ gateway/platforms/yuanbao.py:send_text */
+static void send_text(int fd, const char *msg) {
     size_t len = strlen(msg);
     unsigned char header[10];
     int hlen;

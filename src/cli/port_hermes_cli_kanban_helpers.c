@@ -176,7 +176,7 @@ char *fmt_task_line(const kb_task_t *t)
 
 /*
  * Serialise a task into a JSON object (caller frees via json_free). */
-json_t *task_to_dict(const kb_task_t *t)
+json_t *_task_to_dict(const kb_task_t *t)
 {
     json_t *o = json_new_object();
     if (!o) return NULL;

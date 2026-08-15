@@ -71,8 +71,8 @@ json_t *agent_memory_provider_prefetch(void) {
     return json_object();
 }
 
-/* PoP: agent_model_metadata_fetch_codex_oauth_context_lengths @ agent/model_metadata.py:_fetch_codex_oauth_context_lengths */
-json_t *agent_model_metadata_fetch_codex_oauth_context_lengths(void) {
+/* PoP: _fetch_codex_oauth_context_lengths @ agent/model_metadata.py:_fetch_codex_oauth_context_lengths */
+json_t *_fetch_codex_oauth_context_lengths(void) {
     return json_object();
 }
 
@@ -1470,8 +1470,8 @@ json_t *tools_registry_get_all_tool_names(void) {
     return json_object();
 }
 
-/* PoP: tools_skills_hub_github_provider_for @ tools/skills_hub.py:github_provider_for */
-json_t *tools_skills_hub_github_provider_for(void) {
+/* PoP: github_provider_for @ tools/skills_hub.py:github_provider_for */
+json_t *github_provider_for(void) {
     return json_object();
 }
 

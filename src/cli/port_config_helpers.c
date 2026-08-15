@@ -448,7 +448,7 @@ const char *known_top_level_keys(const char *prev)
 
 /*
  * Return true if key is a valid dot-separated config path. */
-bool validate_config_key(const char *key, char *suggestion, size_t sug_size)
+bool _validate_config_key(const char *key, char *suggestion, size_t sug_size)
 {
     if (suggestion && sug_size > 0) suggestion[0] = '\0';
     if (!key || !key[0]) return false;

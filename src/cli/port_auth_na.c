@@ -404,7 +404,8 @@ char *auth_file_path(void)
 /*
  * Returns malloc'd global-root auth.json when in profile mode (root != home),
  * else NULL (classic mode). Caller frees result (or ignores NULL). */
-char *global_auth_file_path(void)
+/* PoP: _global_auth_file_path @ hermes_cli/auth.py:_auth_file_path */
+char *_global_auth_file_path(void)
 {
     const char *home = auth_hermes_home();
     /* get_default_hermes_root() resolves to ~/.hermes unless HERMES_ROOT set */
@@ -521,7 +522,7 @@ char *optional_base_url(const char *value)
 /*
  * Decode the payload segment of a JWT into a JSON object. Returns NULL on
  * failure; caller frees via json_free. */
-json_t *decode_jwt_claims(const char *token)
+json_t *_decode_jwt_claims(const char *token)
 {
     if (!token) return NULL;
     /* count dots */
@@ -638,7 +639,7 @@ char *spotify_scope_string(const char *raw_scope)
 
 /*
  * Returns malloc'd client_id from explicit/state/env, or NULL if missing. */
-char *spotify_client_id(const char *explicit, const char *state_client_id)
+char *_spotify_client_id(const char *explicit, const char *state_client_id)
 {
     const char *cands[4];
     cands[0] = explicit;
@@ -715,7 +716,7 @@ char *spotify_accounts_base_url(const char *state_accounts_base_url, const char 
 /*
  * Returns malloc'd PKCE code_verifier (urlsafe base64 of `length` random bytes,
  * stripped of '=' and truncated to 128). Caller frees. */
-char *spotify_code_verifier(int length)
+char *_spotify_code_verifier(int length)
 {
     if (length <= 0) length = 64;
     unsigned char raw[128];
@@ -747,7 +748,7 @@ char *spotify_code_challenge(const char *code_verifier)
  * PoP: _oauth_pkce_code_verifier @ hermes_cli/auth.py:_oauth_pkce_code_verifier */
 char *oauth_pkce_code_verifier(int length)
 {
-    return spotify_code_verifier(length);
+    return _spotify_code_verifier(length);
 }
 
 /*
@@ -759,7 +760,7 @@ char *oauth_pkce_code_challenge(const char *code_verifier)
 
 /*
  * Build the Spotify PKCE authorize URL. Returns malloc'd string. Caller frees. */
-char *spotify_build_authorize_url(const char *client_id, const char *redirect_uri,
+char *_spotify_build_authorize_url(const char *client_id, const char *redirect_uri,
                                   const char *scope, const char *state,
                                   const char *code_challenge, const char *accounts_base_url)
 {
@@ -784,7 +785,7 @@ char *spotify_build_authorize_url(const char *client_id, const char *redirect_ur
 /*
  * Validate a Spotify loopback redirect URI. Returns 0 on success (filling
  * *host_out, *port_out, *path_out via malloc), -1 on invalid (err filled). */
-int spotify_validate_redirect_uri(const char *redirect_uri, char **host_out,
+int _spotify_validate_redirect_uri(const char *redirect_uri, char **host_out,
                                   int *port_out, char **path_out, char *err, size_t errsz)
 {
     if (host_out) *host_out = NULL;
@@ -876,7 +877,7 @@ int minimax_expired_in_looks_like_unix_ms(long expired_in, long now_ms)
 
 /*
  * Returns access-token expiry as unix seconds. */
-double minimax_resolve_token_expiry_unix(long expired_in, double now_unix)
+double _minimax_resolve_token_expiry_unix(long expired_in, double now_unix)
 {
     long now_ms = (long)(now_unix * 1000.0);
     if (minimax_expired_in_looks_like_unix_ms(expired_in, now_ms))
@@ -886,7 +887,7 @@ double minimax_resolve_token_expiry_unix(long expired_in, double now_unix)
 
 /*
  * Returns malloc'd path to the Qwen CLI auth tokens file. Caller frees. */
-char *qwen_cli_auth_path(void)
+char *_qwen_cli_auth_path(void)
 {
     const char *home = getenv("HOME");
     if (!home) home = "~";

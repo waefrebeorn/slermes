@@ -7,6 +7,7 @@
 #include "hermes_json.h"
 
 /* PoP: tools_computer_use_doctor_run_doctor @ tools/computer_use/doctor.py:run_doctor */
+/* PoP: tools_computer_use_doctor_run_doctor @ hermes_cli/doctor.py:run_doctor */
 json_t *tools_computer_use_doctor_run_doctor(void) {
     return json_object();
 }

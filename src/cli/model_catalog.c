@@ -559,7 +559,7 @@ char *model_find_openrouter_slug(const char *model_name) {
 }
 
 /* ── Fast-mode capability ─────────────────────────────────────────────
- * Fast-mode detection is owned by port_models_helpers.c (is_openai_fast_model,
+ * Fast-mode detection is owned by port_models_helpers.c (_is_openai_fast_model,
  * is_anthropic_fast_model, model_supports_fast_mode). We delegate rather than
  * redefining — model_catalog.h surfaces model_supports_fast_mode, which
  * resolves to the canonical definition in that module. */
